@@ -1,8 +1,6 @@
 package uk.gov.justice.digital.hmpps.entity
 
-import jakarta.persistence.Column
-import jakarta.persistence.Entity
-import jakarta.persistence.Id
+import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 
 @Entity
@@ -17,4 +15,11 @@ class Borough(
 
     @Column
     val description: String,
+
+    @ManyToOne
+    @JoinColumn(name = "probation_area_id")
+    val provider: Provider,
+
+    @OneToMany(mappedBy = "borough")
+    val districts: Set<District> = setOf()
 )
