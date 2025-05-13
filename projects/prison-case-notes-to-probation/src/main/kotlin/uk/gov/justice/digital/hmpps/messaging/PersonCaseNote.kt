@@ -22,7 +22,7 @@ class PersonCaseNote(
     fun handle(event: HmppsDomainEvent) {
         val prisonCaseNote: PrisonCaseNote = try {
             detailService.getDetail(event)
-        } catch (e: HttpClientErrorException.NotFound) {
+        } catch (_: HttpClientErrorException.NotFound) {
             return telemetryService.trackEvent("CaseNoteNotFound", mapOf("detailUrl" to event.detailUrl!!))
         }
 

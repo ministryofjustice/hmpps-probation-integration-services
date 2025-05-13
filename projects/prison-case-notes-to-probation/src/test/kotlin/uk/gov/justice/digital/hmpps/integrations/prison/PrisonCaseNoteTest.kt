@@ -27,7 +27,7 @@ class PrisonCaseNoteTest {
             "subType",
             creationDateTime = ZonedDateTime.now(),
             occurrenceDateTime = ZonedDateTime.now(),
-            authorName = "Smith,Bob",
+            authorName = "Bob Raymond John Smith ",
             text = "",
             amendments = listOf()
         )
