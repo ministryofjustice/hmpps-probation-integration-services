@@ -11,7 +11,7 @@ spec:
         spec:
           serviceAccountName: person-search-index-from-delius
           containers:
-            - name: contact-reindex
+            - name: contact-keyword-reindex
               image: "ghcr.io/ministryofjustice/hmpps-probation-integration-services/person-search-index-from-delius:{{ .Values.version }}"
               securityContext:
                 capabilities:
@@ -38,13 +38,13 @@ spec:
                 - name: CONTACT_KEYWORD_INDEX_PREFIX
                   value: contact-search
                 - name: CONTACT_KEYWORD_REINDEXING_TIMEOUT
-                  value: '172800' # 48 hours
+                  value: '259200' # 48 hours
                 - name: PIPELINES_ENABLED
                   value: contact-full-load
                 - name: PIPELINE_BATCH_SIZE # Maximum number of in-memory events per worker
                   value: '10000'
                 - name: JDBC_BATCH_SIZE # Maximum number of results to return from DB at a time
-                  value: '1000000'
+                  value: '100000'
                 - name: APPLICATIONINSIGHTS_CONNECTION_STRING
                   valueFrom:
                     secretKeyRef:
