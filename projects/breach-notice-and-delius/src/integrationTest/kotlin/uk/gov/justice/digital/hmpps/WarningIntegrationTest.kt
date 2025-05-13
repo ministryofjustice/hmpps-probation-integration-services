@@ -6,7 +6,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import uk.gov.justice.digital.hmpps.data.generator.DocumentGenerator.BREACH_NOTICE_ID
-import uk.gov.justice.digital.hmpps.data.generator.DocumentGenerator.PSS_BREACH_NOTICED_ID
+import uk.gov.justice.digital.hmpps.data.generator.DocumentGenerator.PSS_BREACH_NOTICE_ID
 import uk.gov.justice.digital.hmpps.data.generator.DocumentGenerator.UNSENTENCED_BREACH_NOTICE_ID
 import uk.gov.justice.digital.hmpps.data.generator.EventGenerator.UNSENTENCED_EVENT
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
@@ -72,7 +72,7 @@ internal class WarningIntegrationTest : BaseIntegrationTest() {
     fun `can retrieve warning details for PSS`() {
         val person = PersonGenerator.PSS_PERSON
         val response = mockMvc
-            .perform(get("/warning-details/${person.crn}/$PSS_BREACH_NOTICED_ID").withToken())
+            .perform(get("/warning-details/${person.crn}/$PSS_BREACH_NOTICE_ID").withToken())
             .andExpect(status().is2xxSuccessful)
             .andReturn().response.contentAsJson<WarningDetails>()
 
@@ -82,5 +82,16 @@ internal class WarningIntegrationTest : BaseIntegrationTest() {
                 enforceableContacts = listOf(PSS_ENFORCEABLE_CONTACT.toEnforceableContact()),
             ),
         )
+    }
+
+    @Test
+    fun `cannot retrieve warning details if crn does not match`() {
+        mockMvc
+            .perform(get("/warning-details/${PersonGenerator.PSS_PERSON.crn}/$BREACH_NOTICE_ID").withToken())
+            .andExpect(status().isNotFound)
+
+        mockMvc
+            .perform(get("/warning-details/${PersonGenerator.DEFAULT_PERSON.crn}/$PSS_BREACH_NOTICE_ID").withToken())
+            .andExpect(status().isNotFound)
     }
 }

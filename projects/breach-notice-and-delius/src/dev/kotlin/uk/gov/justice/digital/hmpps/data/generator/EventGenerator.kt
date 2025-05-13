@@ -11,16 +11,16 @@ import uk.gov.justice.digital.hmpps.set
 
 object EventGenerator {
     val DEFAULT_DISPOSAL_TYPE = generateDisposalType("123")
-    val DEFAULT_EVENT = generateEvent()
+    val DEFAULT_EVENT = generateEvent(PersonGenerator.DEFAULT_PERSON)
     val DEFAULT_DISPOSAL = generateDisposal(DEFAULT_EVENT, DEFAULT_DISPOSAL_TYPE)
-    val UNSENTENCED_EVENT = generateEvent()
+    val UNSENTENCED_EVENT = generateEvent(PersonGenerator.DEFAULT_PERSON)
 
     val DEFAULT_RQMNT_CATEGORY = generateRequirementMainCategory("DRMC")
     val DS_REQUIREMENT_SUB_CATEOGORY = generateDataset(Dataset.REQUIREMENT_SUB_CATEGORY)
     val DEFAULT_RQMNT_SUB_CATEGORY = generateReferenceData(DS_REQUIREMENT_SUB_CATEOGORY, "DRSC")
     val DEFAULT_RQMNT = generateRequirement(DEFAULT_DISPOSAL, DEFAULT_RQMNT_CATEGORY, DEFAULT_RQMNT_SUB_CATEGORY)
 
-    val PSS_EVENT = generateEvent()
+    val PSS_EVENT = generateEvent(PersonGenerator.PSS_PERSON)
     val PSS_DISPOSAL = generateDisposal(PSS_EVENT, DEFAULT_DISPOSAL_TYPE)
     val PSS_CUSTODY = generateCustody(PSS_DISPOSAL)
     val DEFAULT_PSS_CATEGORY = generatePssRequirementMainCategory("PSS1")
@@ -28,10 +28,11 @@ object EventGenerator {
     val PSS_REQUIREMENT = generatePssRequirement(PSS_CUSTODY, DEFAULT_PSS_CATEGORY, DEFAULT_PSS_SUB_CATEGORY)
 
     fun generateEvent(
+        person: Person,
         active: Boolean = true,
         softDeleted: Boolean = false,
         id: Long = IdGenerator.getAndIncrement(),
-    ) = Event(null, active, softDeleted, id)
+    ) = Event(person, null, active, softDeleted, id)
 
     fun generateDisposal(
         event: Event,
