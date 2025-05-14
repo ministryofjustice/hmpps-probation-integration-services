@@ -39,6 +39,69 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/CaseAccess"
+  /providers:
+    get:
+      tags:
+      - Person
+      summary: Returns a list of providers
+      operationId: getProviders
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Provider"
+  /providers/{providerCode}/pdus:
+    get:
+      tags:
+      - Person
+      summary: Returns a list of pdus for a given provider code
+      operationId: getPdus
+      parameters:
+      - name: providerCode
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ProbationDeliveryUnit"
+  /providers/{providerCode}/pdus/{pduCode}/locations:
+    get:
+      tags:
+      - Person
+      summary: Returns a list of office locations for a given provider code and pdu
+        code
+      operationId: getPduOfficeLocations
+      parameters:
+      - name: providerCode
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: pduCode
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/OfficeAddress"
   /person/find/{identifier}:
     get:
       tags:
@@ -77,6 +140,59 @@ components:
       - crn
       - userExcluded
       - userRestricted
+    Provider:
+      type: object
+      properties:
+        code:
+          type: string
+        description:
+          type: string
+      required:
+      - description
+    ProbationDeliveryUnit:
+      type: object
+      properties:
+        code:
+          type: string
+        description:
+          type: string
+      required:
+      - description
+    OfficeAddress:
+      type: object
+      properties:
+        officeName:
+          type: string
+        buildingName:
+          type: string
+        buildingNumber:
+          type: string
+        streetName:
+          type: string
+        district:
+          type: string
+        town:
+          type: string
+        county:
+          type: string
+        postcode:
+          type: string
+        email:
+          type: string
+        ldu:
+          type: string
+        telephoneNumber:
+          type: string
+        from:
+          type: string
+          format: date
+        to:
+          type: string
+          format: date
+      required:
+      - from
+      - ldu
+      - officeName
     Name:
       type: object
       properties:
@@ -114,15 +230,6 @@ components:
       - dateOfBirth
       - name
       - setting
-    ProbationDeliveryUnit:
-      type: object
-      properties:
-        code:
-          type: string
-        description:
-          type: string
-      required:
-      - description
   securitySchemes:
     hmpps-auth-token:
       type: http
