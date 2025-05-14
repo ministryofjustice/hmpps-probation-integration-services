@@ -164,4 +164,23 @@ internal class DocumentsIntegrationTest {
         assertThat(res.documents.get(0).alfrescoId, equalTo("B002"))
         assertThat(res.documents.get(1).alfrescoId, equalTo("B001"))
     }
+
+    @Test
+    fun `find all documents with text search and no query goes straight to the DB`() {
+        val person = OVERVIEW
+        val res = mockMvc
+            .perform(
+                post("/documents/${person.crn}/search/text?page=1&size=2").withToken()
+                    .withJson(
+                        DocumentTextSearch(
+                        )
+                    )
+            )
+            .andExpect(status().isOk)
+            .andReturn().response.contentAsJson<PersonDocuments>()
+        assertThat(res.totalElements, equalTo(4))
+        assertThat(res.documents.size, equalTo(2))
+        assertThat(res.documents.get(0).alfrescoId, equalTo("B002"))
+        assertThat(res.documents.get(1).alfrescoId, equalTo("B001"))
+    }
 }
