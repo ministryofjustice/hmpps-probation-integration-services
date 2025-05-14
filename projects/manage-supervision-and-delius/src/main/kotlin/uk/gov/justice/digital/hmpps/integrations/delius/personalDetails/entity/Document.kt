@@ -269,7 +269,6 @@ interface DocumentsRepository : JpaRepository<DocumentEntity, Long> {
         pageable: Pageable
     ): Page<DocumentEntity>
 
-
     @Query(
         """
             select d from DocumentEntity d
