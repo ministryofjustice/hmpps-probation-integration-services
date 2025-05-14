@@ -76,15 +76,6 @@ class DataLoader(
             EventGenerator.DISPOSAL,
             EventGenerator.CUSTODY,
         )
-        /*
-            val RMC38 = RequirementMainCategory(id = IdGenerator.getAndIncrement(), code = "RM38")
-    val RMC_7 = RequirementMainCategory(id = IdGenerator.getAndIncrement(), code = "7")
-    val RMC_OTHER = RequirementMainCategory(id = IdGenerator.getAndIncrement(), code = "O")
-    val SUB_CAT = ReferenceData(id = IdGenerator.getAndIncrement(), code = "SCAT", description = "Sub Category")
-    val TERMINATION_DETAILS = ReferenceData(id = IdGenerator.getAndIncrement(), code = "TD", description = "Termination Details")
-    val AMC_RMC38 = RequirementAdditionalMainCategory(id = IdGenerator.getAndIncrement(), code = "RM38")
-    val AMC_7 = RequirementAdditionalMainCategory(id = IdGenerator.getAndIncrement(), code = "7")
-         */
         entityManager.persistAll(
             RequirementGenerator.RMC38,
             RequirementGenerator.RMC_7,
