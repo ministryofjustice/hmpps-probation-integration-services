@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.flags.FeatureFlags
 import uk.gov.justice.digital.hmpps.integrations.delius.model.MergeResult
+import uk.gov.justice.digital.hmpps.integrations.delius.model.MergeResult.Action.Created
 import uk.gov.justice.digital.hmpps.integrations.delius.model.MergeResult.Failure
 import uk.gov.justice.digital.hmpps.integrations.delius.model.MergeResult.Success
 import uk.gov.justice.digital.hmpps.integrations.delius.service.DeliusService
@@ -60,13 +61,18 @@ class PrisonIdentifierAdded(
         val results = cnResults + alertResults
         val success = results.firstOrNull { it is Success } as Success?
 
+        val (cnCreated, cnUpdated) = cnResults.filterIsInstance<Success>().partition { it.action == Created }
+        val (alertCreated, alertUpdated) = alertResults.filterIsInstance<Success>().partition { it.action == Created }
+
         telemetryService.trackEvent(
             "CaseNotesMigrated", listOfNotNull(
                 "nomsId" to nomsId,
                 success?.crn?.let { "crn" to it },
                 "cause" to event.eventType,
-                "caseNotes" to cnResults.filterIsInstance<Success>().size.toString(),
-                "alerts" to alertResults.filterIsInstance<Success>().size.toString(),
+                "caseNotesCreated" to cnCreated.size.toString(),
+                "caseNotesUpdated" to cnUpdated.size.toString(),
+                "alertsCreated" to alertCreated.size.toString(),
+                "alertsUpdated" to alertUpdated.size.toString()
             ).toMap()
         )
 
