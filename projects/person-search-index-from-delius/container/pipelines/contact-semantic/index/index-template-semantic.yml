@@ -8,6 +8,7 @@ template:
     index.knn: true
     index.number_of_shards: 120
     index.number_of_replicas: 1
+    index.analyse.max_token_count: 100000
     index.mapping.ignore_malformed: true
     analysis:
       analyzer:
