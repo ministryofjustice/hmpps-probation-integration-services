@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController
 import uk.gov.justice.digital.hmpps.service.ProviderService
 
 @RestController
-@Tag(name = "Person")
+@Tag(name = "Probation Delivery Unit")
 @RequestMapping("/providers")
 @PreAuthorize("hasRole('PROBATION_API__FIND_AND_REFER__CASE_DETAIL')")
 class ProviderController(private val providerService: ProviderService) {
