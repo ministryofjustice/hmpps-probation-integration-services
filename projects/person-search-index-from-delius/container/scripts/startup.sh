@@ -59,6 +59,9 @@ if grep -q 'contact-semantic' <<<"$PIPELINES_ENABLED"; then
     -y /pipelines/contact-semantic/index/index-state-management-policy.json
   if grep -q 'contact-semantic-full-load' <<<"$PIPELINES_ENABLED"; then
     sentry-cli monitors run "$CONTACT_REINDEXING_SENTRY_MONITOR_ID" -- /scripts/monitor-reindexing.sh -i "$CONTACT_SEMANTIC_INDEX_PREFIX" -t "$CONTACT_SEMANTIC_REINDEXING_TIMEOUT" &
+    # export the name of the standby index to be referenced in logstash-full-load.conf, because the max_token_count check in the text_chunking ingest processor does not account for aliases (as of OpenSearch 2.19)
+    CONTACT_SEMANTIC_INDEX_STANDBY=$(curl_json "${SEARCH_URL}/_alias/${CONTACT_SEMANTIC_INDEX_PREFIX}-standby" | jq -r 'keys[0]')
+    export CONTACT_SEMANTIC_INDEX_STANDBY
   fi
 fi
 
