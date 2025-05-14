@@ -52,7 +52,6 @@ class Requirement(
     val id: Long
 )
 
-
 @Immutable
 @Entity
 @Table(name = "r_ad_rqmnt_type_main_category")
