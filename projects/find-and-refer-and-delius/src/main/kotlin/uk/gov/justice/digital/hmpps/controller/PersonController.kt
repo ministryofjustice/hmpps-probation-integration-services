@@ -20,4 +20,11 @@ class PersonController(private val personService: PersonService) {
     fun findPerson(
         @PathVariable identifier: String
     ) = personService.findPerson(identifier)
+
+    @PreAuthorize("hasRole('PROBATION_API__FIND_AND_REFER__CASE_DETAIL')")
+    @GetMapping(value = ["/{crn}/accredited-programme-history"])
+    @Operation(summary = "Returns a list of accredited programmes for the provided crn")
+    fun accreditedProgrammeHistory(
+        @PathVariable crn: String
+    ) = personService.accreditedProgrammeHistory(crn)
 }

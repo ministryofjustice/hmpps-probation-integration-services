@@ -3,6 +3,8 @@ package uk.gov.justice.digital.hmpps.service
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.entity.Person
 import uk.gov.justice.digital.hmpps.entity.PersonManager
+import uk.gov.justice.digital.hmpps.entity.Requirement
+import uk.gov.justice.digital.hmpps.model.AccreditedProgramme
 import uk.gov.justice.digital.hmpps.model.Name
 import uk.gov.justice.digital.hmpps.model.PersonResponse
 import uk.gov.justice.digital.hmpps.model.ProbationDeliveryUnit
@@ -12,7 +14,8 @@ import uk.gov.justice.digital.hmpps.repository.*
 class PersonService(
     private val personRepository: PersonRepository,
     private val personManagerRepository: PersonManagerRepository,
-    private val custodyRepository: CustodyRepository
+    private val custodyRepository: CustodyRepository,
+    private val requirementRepository: RequirementRepository
 ) {
     companion object {
         private const val CRN_REGEX = "[A-Za-z][0-9]{6}"
@@ -28,13 +31,27 @@ class PersonService(
         return person.toPersonResponse(pdu, setting)
     }
 
+    fun accreditedProgrammeHistory(crn: String): List<AccreditedProgramme> {
+        val person = personRepository.getPersonByCrn(crn)
+        return requirementRepository.getAccreditedProgrammeHistory(person.id).map { it.toAccreditedProgramme() }
+    }
+
     private fun resolvePerson(identifier: String): Person {
         return CRN_REGEX.toRegex().find(identifier)?.let { crn -> personRepository.getPersonByCrn(crn.value) }
             ?: NOMS_REGEX.toRegex().find(identifier)
                 ?.let { nomsNumber -> personRepository.getPersonByNoms(nomsNumber.value) }
-            ?: throw IllegalArgumentException("${identifier} is not a valid crn or prisoner number")
+            ?: throw IllegalArgumentException("$identifier is not a valid crn or prisoner number")
     }
 }
+
+fun Requirement.toAccreditedProgramme() = AccreditedProgramme(
+    programme = subCategory?.description,
+    startDate = startDate,
+    endDate = endDate,
+    endReason = terminationDetails?.description,
+    notes = notes,
+    active = active
+)
 
 fun Person.toPersonResponse(pdu: ProbationDeliveryUnit?, setting: String) = PersonResponse(
     crn = crn,

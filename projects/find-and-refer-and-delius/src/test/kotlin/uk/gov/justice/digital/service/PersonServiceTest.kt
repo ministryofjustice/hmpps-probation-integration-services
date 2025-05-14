@@ -15,6 +15,7 @@ import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.repository.CustodyRepository
 import uk.gov.justice.digital.hmpps.repository.PersonManagerRepository
 import uk.gov.justice.digital.hmpps.repository.PersonRepository
+import uk.gov.justice.digital.hmpps.repository.RequirementRepository
 import uk.gov.justice.digital.hmpps.service.PersonService
 import uk.gov.justice.digital.hmpps.service.toPersonResponse
 
@@ -28,6 +29,9 @@ class PersonServiceTest {
 
     @Mock
     lateinit var personManagerRepository: PersonManagerRepository
+
+    @Mock
+    lateinit var requirementRepository: RequirementRepository
 
     @InjectMocks
     lateinit var service: PersonService
