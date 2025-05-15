@@ -847,3 +847,11 @@ template:
         type: date
       requiresOutcome:
         type: keyword
+      attendanceContact:
+        type: keyword
+      outcomeRequiredFlag:
+        type: keyword
+      MessageId:
+        type: keyword
+      '@version':
+        type: integer

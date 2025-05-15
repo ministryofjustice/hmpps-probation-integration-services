@@ -45,19 +45,51 @@ class DataLoader(
             LimitedAccessGenerator.BOTH_EXCLUSION,
             LimitedAccessGenerator.BOTH_RESTRICTION,
         )
-
+        entityManager.persistAll(
+            PersonManagerGenerator.DEFAULT_PROVIDER,
+            PersonManagerGenerator.PROVIDER_1,
+            PersonManagerGenerator.PROVIDER_2
+        )
+        entityManager.flush()
         entityManager.persistAll(
             PersonManagerGenerator.DEFAULT_BOROUGH,
+            PersonManagerGenerator.BOROUGH_1,
+            PersonManagerGenerator.BOROUGH_2,
             PersonManagerGenerator.DEFAULT_DISTRICT,
+            PersonManagerGenerator.DISTRICT_1,
+            PersonManagerGenerator.DISTRICT_2,
             PersonManagerGenerator.DEFAULT_TEAM,
+            PersonManagerGenerator.TEAM_1,
+            PersonManagerGenerator.TEAM_2,
             PersonManagerGenerator.PERSON_MANAGER,
         )
-
+        entityManager.flush()
+        entityManager.persistAll(
+            OfficeLocationGenerator.LOCATION_1,
+            OfficeLocationGenerator.LOCATION_2,
+            OfficeLocationGenerator.TEAM_OFFICE_1,
+            OfficeLocationGenerator.TEAM_OFFICE_2,
+        )
         entityManager.persistAll(
             EventGenerator.CUSTODIAL_STATUS,
             EventGenerator.EVENT,
             EventGenerator.DISPOSAL,
             EventGenerator.CUSTODY,
+        )
+        entityManager.persistAll(
+            RequirementGenerator.RMC38,
+            RequirementGenerator.RMC_7,
+            RequirementGenerator.RMC_OTHER,
+            RequirementGenerator.SUB_CAT,
+            RequirementGenerator.TERMINATION_DETAILS,
+            RequirementGenerator.AMC_RMC38,
+            RequirementGenerator.AMC_7,
+            RequirementGenerator.ACC_PROG_1,
+            RequirementGenerator.ACC_PROG_2,
+            RequirementGenerator.ACC_PROG_3,
+            RequirementGenerator.ACC_PROG_4,
+            RequirementGenerator.ACC_PROG_5,
+            RequirementGenerator.ACC_PROG_6,
         )
     }
 

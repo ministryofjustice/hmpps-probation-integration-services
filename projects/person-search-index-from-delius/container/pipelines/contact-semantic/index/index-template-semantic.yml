@@ -6,8 +6,9 @@ template:
     default_pipeline: contact-semantic-search-pipeline
     index.search.default_pipeline: contact-semantic-search-search-pipeline
     index.knn: true
-    index.number_of_shards: 9
+    index.number_of_shards: 120
     index.number_of_replicas: 1
+    index.analyze.max_token_count: 100000
     index.mapping.ignore_malformed: true
     analysis:
       analyzer:
@@ -1290,3 +1291,21 @@ template:
       rowVersion:
         type: double
         index: false
+      nationalStandard:
+        type: keyword
+      systemGenerated:
+        type: keyword
+      startDateTime:
+        type: date
+      endDateTime:
+        type: date
+      requiresOutcome:
+        type: keyword
+      attendanceContact:
+        type: keyword
+      outcomeRequiredFlag:
+        type: keyword
+      MessageId:
+        type: keyword
+      '@version':
+        type: integer

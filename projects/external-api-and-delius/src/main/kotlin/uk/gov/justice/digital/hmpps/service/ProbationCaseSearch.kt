@@ -27,7 +27,7 @@ class ProbationCaseSearch(
                 o.middleNames ?: emptyList(),
                 o.offenderProfile?.asProfile() ?: CaseProfile(),
                 o.contactDetails,
-                o.offenderAliases?.map { a -> a.asCaseAlias() } ?: emptyList(),
+                o.offenderAliases?.map { a -> a.asCaseAlias() }?.sorted() ?: emptyList(),
                 o.activeProbationManagedSentence == true,
                 o.currentRestriction == true,
                 o.restrictionMessage,
@@ -47,7 +47,7 @@ class ProbationCaseSearch(
                         listOfNotNull(p.secondName, p.thirdName),
                         p.profile(),
                         p.contactDetails(),
-                        p.aliases.map { a -> a.asAlias() },
+                        p.aliases.map { a -> a.asAlias() }.sorted(),
                         p.currentDisposal,
                         p.currentRestriction == true,
                         p.restrictionMessage,
@@ -118,3 +118,5 @@ fun Person.contactDetails() = ContactDetails(
 
 fun PersonAlias.asAlias() =
     CaseAlias(firstName, surname, dateOfBirth, gender.description, listOfNotNull(secondName, thirdName))
+
+fun List<CaseAlias>.sorted() = sortedWith(compareBy(CaseAlias::surname, CaseAlias::firstName, CaseAlias::dateOfBirth))

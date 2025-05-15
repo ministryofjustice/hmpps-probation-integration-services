@@ -26,7 +26,7 @@ data class DeliusCaseNote(val header: CaseNoteHeader, val body: CaseNoteBody) {
         }
 
         fun CaseNoteHeader.getCaseNoteUrn(): String {
-            return "${DeliusCaseNote.CASE_NOTE_URN_PREFIX}${uuid}"
+            return "${CASE_NOTE_URN_PREFIX}${uuid}"
         }
     }
 }

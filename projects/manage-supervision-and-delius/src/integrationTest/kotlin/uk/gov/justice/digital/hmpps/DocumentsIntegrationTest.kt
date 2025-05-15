@@ -12,6 +12,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import uk.gov.justice.digital.hmpps.api.model.personalDetails.DocumentSearch
+import uk.gov.justice.digital.hmpps.api.model.personalDetails.DocumentTextSearch
 import uk.gov.justice.digital.hmpps.api.model.personalDetails.PersonDocuments
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.OVERVIEW
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
@@ -125,5 +126,61 @@ internal class DocumentsIntegrationTest {
         assertThat(res.documents.size, equalTo(2))
         assertThat(res.documents[0].name, equalTo("contact2.doc"))
         assertThat(res.documents[1].name, equalTo("contact.doc"))
+    }
+
+    @Test
+    fun `find all documents using the alfresco text search returning all records`() {
+        val person = OVERVIEW
+        val res = mockMvc
+            .perform(
+                post("/documents/${person.crn}/search/text").withToken()
+                    .withJson(
+                        DocumentTextSearch(
+                            query = "text"
+                        )
+                    )
+            )
+            .andExpect(status().isOk)
+            .andReturn().response.contentAsJson<PersonDocuments>()
+        assertThat(res.documents.size, equalTo(4))
+    }
+
+    @Test
+    fun `find all documents using the alfresco text search maintaining overall pagination`() {
+        val person = OVERVIEW
+        val res = mockMvc
+            .perform(
+                post("/documents/${person.crn}/search/text?page=1&size=2").withToken()
+                    .withJson(
+                        DocumentTextSearch(
+                            query = "text"
+                        )
+                    )
+            )
+            .andExpect(status().isOk)
+            .andReturn().response.contentAsJson<PersonDocuments>()
+        assertThat(res.totalElements, equalTo(4))
+        assertThat(res.documents.size, equalTo(2))
+        assertThat(res.documents.get(0).alfrescoId, equalTo("B002"))
+        assertThat(res.documents.get(1).alfrescoId, equalTo("B001"))
+    }
+
+    @Test
+    fun `find all documents with text search and no query goes straight to the DB`() {
+        val person = OVERVIEW
+        val res = mockMvc
+            .perform(
+                post("/documents/${person.crn}/search/text?page=1&size=2").withToken()
+                    .withJson(
+                        DocumentTextSearch(
+                        )
+                    )
+            )
+            .andExpect(status().isOk)
+            .andReturn().response.contentAsJson<PersonDocuments>()
+        assertThat(res.totalElements, equalTo(4))
+        assertThat(res.documents.size, equalTo(2))
+        assertThat(res.documents.get(0).alfrescoId, equalTo("B002"))
+        assertThat(res.documents.get(1).alfrescoId, equalTo("B001"))
     }
 }

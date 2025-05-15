@@ -20,7 +20,7 @@ class DetailsService(
 ) {
     fun basicDetails(crn: String, username: String): BasicDetails {
         val homeArea = ldapTemplate.findAttributeByUsername(username, "userHomeArea")
-            ?: throw IllegalArgumentException("No home area found for $username")
+            ?: throw NotFoundException("No home area found for $username")
         val defaultReplyAddress = ldapTemplate.findPreferenceByUsername(username, "replyAddress")?.toLongOrNull()
         val officeLocations = officeLocationRepository.findAllByProviderCode(homeArea)
         val person = personRepository.getByCrn(crn)

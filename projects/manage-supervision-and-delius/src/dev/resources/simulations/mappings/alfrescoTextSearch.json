@@ -1,0 +1,93 @@
+{
+  "request": {
+    "method": "POST",
+    "urlPath": "/alfresco/search/text/X000004",
+    "queryParameters": {
+      "query": {
+        "matches": "text"
+      }
+    }
+  },
+  "response": {
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "status": 200,
+    "jsonBody": {
+      "numberOfDocuments": "4",
+      "maxResults": "1000",
+      "pageSize": "4",
+      "startIndex": "0",
+      "documents": [
+        {
+          "id": "B001",
+          "crn": "X756510",
+          "name": "James-Morrison-X756510-UPW.pdf",
+          "entityId": "2509017671",
+          "entityType": "CONTACT",
+          "docType": "DOCUMENT",
+          "author": "Service,UPW",
+          "lockOwner": "",
+          "locked": false,
+          "reserved": false,
+          "reservationOwner": "",
+          "lastModifiedDate": "2025-04-09T17:14:21.034Z",
+          "modifier": "N00",
+          "creationDate": "2025-04-09T17:14:21.034Z",
+          "url": "/noms-spg/fetch/baf7b8ed-379d-4d84-b07e-c20fad939f14"
+        },
+        {
+          "id": "B002",
+          "crn": "X756510",
+          "name": "James M test document.png",
+          "entityId": "2501155433",
+          "entityType": "OFFENDER",
+          "docType": "DOCUMENT",
+          "author": "Harris,Jenna",
+          "lockOwner": "",
+          "locked": false,
+          "reserved": false,
+          "reservationOwner": "",
+          "lastModifiedDate": "2025-04-11T09:02:42.153Z",
+          "modifier": "N00",
+          "creationDate": "2025-03-27T13:49:50.199Z",
+          "url": "/noms-spg/fetch/88db71c9-016a-4e41-81b6-50125977b3c0"
+        },
+        {
+          "id": "A003",
+          "crn": "X756510",
+          "name": "James-Morrison-X756510-UPW-1.pdf",
+          "entityId": "2509204747",
+          "entityType": "CONTACT",
+          "docType": "DOCUMENT",
+          "author": "Service,UPW",
+          "lockOwner": "",
+          "locked": false,
+          "reserved": false,
+          "reservationOwner": "",
+          "lastModifiedDate": "2025-05-13T17:08:04.26Z",
+          "modifier": "N00",
+          "creationDate": "2025-05-13T17:08:04.26Z",
+          "url": "/noms-spg/fetch/fe012bb3-9870-4c1b-b6ee-6d3ffe1307b7"
+        },
+        {
+          "id": "A004",
+          "crn": "X756510",
+          "name": "AT NPS Breach Report_31102024_125211_Morrison_J_X756510.doc",
+          "entityId": "2501155433",
+          "entityType": "OFFENDER",
+          "docType": "DOCUMENT",
+          "author": "Aspin,Marcus",
+          "lockOwner": "",
+          "locked": false,
+          "reserved": false,
+          "reservationOwner": "",
+          "lastModifiedDate": "2024-10-31T12:52:11.674Z",
+          "modifier": "N00",
+          "creationDate": "2024-10-31T12:52:11.674Z",
+          "url": "/noms-spg/fetch/2ce74b63-b46a-438a-b083-f15dd60210db"
+        }
+      ]
+    }
+  }
+}
