@@ -7,7 +7,7 @@ import java.time.LocalDate
 import java.time.LocalDate.now
 
 object SearchGenerator {
-    val JOHN_DOE = generatePerson("S123456", "John", "Doe", LocalDate.of(1998,2,23), "S3477CH", "1964/8284523P", MALE)
+    val JOHN_DOE = generatePerson("S123456", "John", "Doe", LocalDate.of(1998, 2, 23), "S3477CH", "1964/8284523P", MALE)
 
     val JOHN_SMITH_1 =
         generatePerson("S223456", "John", "Smith", LocalDate.of(1998, 1, 1), nomsId = "S3478CH", gender = MALE)

@@ -14,7 +14,7 @@ data class SearchRequest(
     val pncNumber: String? = null,
     val crn: String? = null,
     val nomsNumber: String? = null,
-){
+) {
     fun fields() = listOfNotNull(
         firstName?.let { ::firstName.name },
         surname?.let { ::surname.name },
