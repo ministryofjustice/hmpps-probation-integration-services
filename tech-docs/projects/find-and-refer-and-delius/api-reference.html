@@ -110,6 +110,9 @@
         <a href="./api-reference.html#providers-providercode-pdus-pducode-locations"><span>/providers/{providerCode}/pdus/{pduCode}/locations</span></a>
       </li>
       <li>
+        <a href="./api-reference.html#person-crn-accredited-programme-history"><span>/person/{crn}/accredited-programme-history</span></a>
+      </li>
+      <li>
         <a href="./api-reference.html#person-find-identifier"><span>/person/find/{identifier}</span></a>
       </li>
       <li>
@@ -367,6 +370,67 @@
 
 
 <h4 id="providers-providercode-pdus-pducode-locations-get-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+<pre><code>{
+}</code></pre>
+
+</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h2 id="person-crn-accredited-programme-history">/person/{crn}/accredited-programme-history</h2>
+
+<h3 id="person-crn-accredited-programme-history-get">get</h3>
+
+  <p><em>Returns a list of accredited programmes for the provided crn</em></p>
+
+
+
+
+<h4 id="person-crn-accredited-programme-history-get-parameters">Parameters</h4>
+<table>
+<thead>
+<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>crn</td>
+<td>path</td>
+<td>string</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h4 id="person-crn-accredited-programme-history-get-responses">Responses</h4>
 <table>
 <thead>
 <tr><th>Status</th><th>Description</th><th>Schema</th></tr>
@@ -730,6 +794,88 @@
 
 <tr>
 <td>to</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-accreditedprogramme">AccreditedProgramme</h3>
+
+
+<table class='schema-accreditedprogramme'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>programme</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>startDate</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>endDate</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>endReason</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>description</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>active</td>
+<td>boolean</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>notes</td>
 <td>string</td>
 <td>false</td>
 <td></td>

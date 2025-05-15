@@ -17,7 +17,7 @@ paths:
   /users/{username}/access/{identifier}:
     get:
       tags:
-      - user-controller
+      - User Access
       summary: Provides the case access for a given user and case identifier (crn
         or prisoner number)
       operationId: checkAccess
@@ -42,7 +42,7 @@ paths:
   /providers:
     get:
       tags:
-      - Person
+      - Probation Delivery Unit
       summary: Returns a list of providers
       operationId: getProviders
       responses:
@@ -57,7 +57,7 @@ paths:
   /providers/{providerCode}/pdus:
     get:
       tags:
-      - Person
+      - Probation Delivery Unit
       summary: Returns a list of pdus for a given provider code
       operationId: getPdus
       parameters:
@@ -78,7 +78,7 @@ paths:
   /providers/{providerCode}/pdus/{pduCode}/locations:
     get:
       tags:
-      - Person
+      - Probation Delivery Unit
       summary: Returns a list of office locations for a given provider code and pdu
         code
       operationId: getPduOfficeLocations
@@ -102,6 +102,27 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/OfficeAddress"
+  /person/{crn}/accredited-programme-history:
+    get:
+      tags:
+      - Person
+      summary: Returns a list of accredited programmes for the provided crn
+      operationId: accreditedProgrammeHistory
+      parameters:
+      - name: crn
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/AccreditedProgramme"
   /person/find/{identifier}:
     get:
       tags:
@@ -193,6 +214,28 @@ components:
       - from
       - ldu
       - officeName
+    AccreditedProgramme:
+      type: object
+      properties:
+        programme:
+          type: string
+        startDate:
+          type: string
+          format: date
+        endDate:
+          type: string
+          format: date
+        endReason:
+          type: string
+        description:
+          type: string
+        active:
+          type: boolean
+        notes:
+          type: string
+      required:
+      - active
+      - startDate
     Name:
       type: object
       properties:

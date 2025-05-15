@@ -129,6 +129,9 @@
         <a href="./api-reference.html#documents-crn-search"><span>/documents/{crn}/search</span></a>
       </li>
       <li>
+        <a href="./api-reference.html#documents-crn-search-text"><span>/documents/{crn}/search/text</span></a>
+      </li>
+      <li>
         <a href="./api-reference.html#caseload-user-username-search"><span>/caseload/user/{username}/search</span></a>
       </li>
       <li>
@@ -943,6 +946,126 @@
 
 
 <h4 id="documents-crn-search-post-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+<pre><code>{
+  "personSummary": {
+    "name": {
+      "forename": "string",
+      "middleName": "string",
+      "surname": "string"
+    },
+    "crn": "string",
+    "offenderId": "integer",
+    "pnc": "string",
+    "noms": "string",
+    "dateOfBirth": "string"
+  },
+  "totalPages": "integer",
+  "totalElements": "integer",
+  "sortedBy": "string",
+  "documents": [
+    {
+      "alfrescoId": "string",
+      "offenderId": "integer",
+      "name": "string",
+      "level": "string",
+      "type": "string",
+      "createdAt": "string",
+      "lastUpdatedAt": "string",
+      "author": "string",
+      "status": "string",
+      "workInProgress": "boolean"
+    }
+  ]
+}</code></pre>
+
+</td>
+<td>
+<a href='#schema-persondocuments'>PersonDocuments</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h2 id="documents-crn-search-text">/documents/{crn}/search/text</h2>
+
+<h3 id="documents-crn-search-text-post">post</h3>
+
+  <p><em>Search within documents for a person for a search query and created date</em></p>
+
+
+
+
+<h4 id="documents-crn-search-text-post-parameters">Parameters</h4>
+<table>
+<thead>
+<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>crn</td>
+<td>path</td>
+<td>string</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+<tr>
+<td>page</td>
+<td>query</td>
+<td>integer</td>
+<td>false</td>
+<td>
+
+</td>
+</tr>
+
+<tr>
+<td>size</td>
+<td>query</td>
+<td>integer</td>
+<td>false</td>
+<td>
+
+</td>
+</tr>
+
+<tr>
+<td>sortBy</td>
+<td>query</td>
+<td>string</td>
+<td>false</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h4 id="documents-crn-search-text-post-responses">Responses</h4>
 <table>
 <thead>
 <tr><th>Status</th><th>Description</th><th>Schema</th></tr>
@@ -9456,6 +9579,48 @@
 <td></td>
 <td>
   <a href='#schema-documentdetails'>DocumentDetails</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-documenttextsearch">DocumentTextSearch</h3>
+
+
+<table class='schema-documenttextsearch'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>query</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>dateFrom</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>dateTo</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
 </td>
 </tr>
 

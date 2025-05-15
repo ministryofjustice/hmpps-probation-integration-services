@@ -135,6 +135,52 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/PersonDocuments"
+  /documents/{crn}/search/text:
+    post:
+      tags:
+      - Documents
+      summary: Search within documents for a person for a search query and created
+        date
+      operationId: searchTextPersonDocuments
+      parameters:
+      - name: crn
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: page
+        in: query
+        required: false
+        schema:
+          type: integer
+          format: int32
+          default: 0
+      - name: size
+        in: query
+        required: false
+        schema:
+          type: integer
+          format: int32
+          default: 10
+      - name: sortBy
+        in: query
+        required: false
+        schema:
+          type: string
+          default: createdAt.desc
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DocumentTextSearch"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PersonDocuments"
   /caseload/user/{username}/search:
     post:
       tags:
@@ -1905,6 +1951,17 @@ components:
       - personSummary
       - totalElements
       - totalPages
+    DocumentTextSearch:
+      type: object
+      properties:
+        query:
+          type: string
+        dateFrom:
+          type: string
+          format: date-time
+        dateTo:
+          type: string
+          format: date-time
     UserSearchFilter:
       type: object
       properties:
