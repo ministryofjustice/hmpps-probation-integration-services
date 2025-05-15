@@ -129,7 +129,7 @@ internal class DocumentsIntegrationTest {
     }
 
     @Test
-    fun `find all documents using the alfresco text search returning all records`() {
+    fun `find all documents using the alfresco text search returning all records maintaining search sort`() {
         val person = OVERVIEW
         val res = mockMvc
             .perform(
@@ -143,6 +143,10 @@ internal class DocumentsIntegrationTest {
             .andExpect(status().isOk)
             .andReturn().response.contentAsJson<PersonDocuments>()
         assertThat(res.documents.size, equalTo(4))
+        assertThat(res.documents[0].alfrescoId, equalTo("B001"))
+        assertThat(res.documents[1].alfrescoId, equalTo("B002"))
+        assertThat(res.documents[2].alfrescoId, equalTo("A003"))
+        assertThat(res.documents[3].alfrescoId, equalTo("A004"))
     }
 
     @Test
@@ -150,7 +154,7 @@ internal class DocumentsIntegrationTest {
         val person = OVERVIEW
         val res = mockMvc
             .perform(
-                post("/documents/${person.crn}/search/text?page=1&size=2").withToken()
+                post("/documents/${person.crn}/search/text?sortBy=createdAt.desc&page=1&size=2").withToken()
                     .withJson(
                         DocumentTextSearch(
                             query = "text"
@@ -161,8 +165,8 @@ internal class DocumentsIntegrationTest {
             .andReturn().response.contentAsJson<PersonDocuments>()
         assertThat(res.totalElements, equalTo(4))
         assertThat(res.documents.size, equalTo(2))
-        assertThat(res.documents.get(0).alfrescoId, equalTo("B002"))
-        assertThat(res.documents.get(1).alfrescoId, equalTo("B001"))
+        assertThat(res.documents[0].alfrescoId, equalTo("B002"))
+        assertThat(res.documents[1].alfrescoId, equalTo("B001"))
     }
 
     @Test
@@ -170,7 +174,7 @@ internal class DocumentsIntegrationTest {
         val person = OVERVIEW
         val res = mockMvc
             .perform(
-                post("/documents/${person.crn}/search/text?page=1&size=2").withToken()
+                post("/documents/${person.crn}/search/text?sortBy=createdAt.desc&page=1&size=2").withToken()
                     .withJson(
                         DocumentTextSearch(
                         )
@@ -180,7 +184,7 @@ internal class DocumentsIntegrationTest {
             .andReturn().response.contentAsJson<PersonDocuments>()
         assertThat(res.totalElements, equalTo(4))
         assertThat(res.documents.size, equalTo(2))
-        assertThat(res.documents.get(0).alfrescoId, equalTo("B002"))
-        assertThat(res.documents.get(1).alfrescoId, equalTo("B001"))
+        assertThat(res.documents[0].alfrescoId, equalTo("B002"))
+        assertThat(res.documents[1].alfrescoId, equalTo("B001"))
     }
 }

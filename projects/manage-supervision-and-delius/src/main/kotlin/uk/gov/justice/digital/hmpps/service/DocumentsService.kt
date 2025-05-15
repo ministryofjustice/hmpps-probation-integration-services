@@ -54,32 +54,39 @@ class DocumentsService(
         documentTextSearch: DocumentTextSearch,
         crn: String,
         pageable: Pageable,
-        sortedBy: String
+        sortedBy: String?
     ): PersonDocuments {
         val summary = personRepository.getSummary(crn)
-        val documents = if (documentTextSearch.query.isNullOrBlank()) {
-            documentsRepository.search(
+        if (documentTextSearch.query.isNullOrBlank()) {
+            val documents = documentsRepository.search(
                 summary.id,
                 documentTextSearch.dateFrom?.toLocalDate()?.atStartOfDay(),
                 documentTextSearch.dateTo?.toLocalDate()?.atTime(LocalTime.MAX),
                 pageable
             )
-        } else {
-            val ids = alfrescoClient.textSearch(crn, documentTextSearch.query).documents.map { it.id }
-            documentsRepository.searchWithIds(
-                summary.id,
-                ids,
-                documentTextSearch.dateFrom?.toLocalDate()?.atStartOfDay(),
-                documentTextSearch.dateTo?.toLocalDate()?.atTime(LocalTime.MAX),
-                pageable
+            return PersonDocuments(
+                personSummary = summary.toPersonSummary(),
+                totalElements = documents.totalElements.toInt(),
+                totalPages = documents.totalPages,
+                documents = documents.content.map { it.toDocumentDetails() },
+                sortedBy = sortedBy
             )
         }
-
+        val ids = alfrescoClient.textSearch(crn, documentTextSearch.query).documents.map { it.id }
+        val documents = documentsRepository.searchWithIds(
+            summary.id,
+            ids,
+            documentTextSearch.dateFrom?.toLocalDate()?.atStartOfDay(),
+            documentTextSearch.dateTo?.toLocalDate()?.atTime(LocalTime.MAX),
+            pageable
+        )
+        val orderedDocuments =
+            if (sortedBy == null) ids.mapNotNull { id -> documents.content.firstOrNull { it.alfrescoId == id } } else documents.content
         return PersonDocuments(
             personSummary = summary.toPersonSummary(),
             totalElements = documents.totalElements.toInt(),
             totalPages = documents.totalPages,
-            documents = documents.content.map { it.toDocumentDetails() },
+            documents = orderedDocuments.map { it.toDocumentDetails() },
             sortedBy = sortedBy
         )
     }
