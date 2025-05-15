@@ -54,7 +54,7 @@ class DocumentsService(
         documentTextSearch: DocumentTextSearch,
         crn: String,
         pageable: Pageable,
-        sortedBy: String
+        sortedBy: String?
     ): PersonDocuments {
         val summary = personRepository.getSummary(crn)
         val documents = if (documentTextSearch.query.isNullOrBlank()) {
