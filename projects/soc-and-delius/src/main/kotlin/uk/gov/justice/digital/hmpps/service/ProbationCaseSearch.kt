@@ -3,12 +3,46 @@ package uk.gov.justice.digital.hmpps.service
 import org.springframework.data.jpa.domain.Specification
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.entity.*
+import uk.gov.justice.digital.hmpps.integration.probationsearch.ProbationSearchClient
 import uk.gov.justice.digital.hmpps.model.*
+import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 
 @Service
-class ProbationCaseSearch(val personRepository: DetailRepository) {
-    fun find(request: SearchRequest): List<OffenderDetail> =
-        personRepository.findAll(request.asSpecification()).map { it.toProbationCase(false) }
+class ProbationCaseSearch(
+    private val personRepository: DetailRepository,
+    private val searchClient: ProbationSearchClient,
+    private val telemetry: TelemetryService
+) {
+    fun find(request: SearchRequest, useSearch: Boolean): List<OffenderDetail> {
+        val psResult = searchClient.findAll(request).map {
+            it.copy(
+                offenderAliases = emptyList(),
+                offenderManagers = it.offenderManagers?.filter { it.active == true }
+            )
+        }
+
+        val dbResult = try {
+            val dbResult = personRepository.findAll(request.asSpecification()).map { it.toProbationCase(false) }
+
+            if (dbResult.toSet() != psResult.toSet()) {
+                telemetry.trackEvent(
+                    "SearchMismatch",
+                    mapOf(
+                        "searchFields" to request.fields().joinToString(","),
+                        "resultsSize" to "${dbResult.size} / ${psResult.size}",
+                        "searchResults" to psResult.joinToString(",") { it.otherIds.crn },
+                        "dbResults" to dbResult.joinToString(",") { it.otherIds.crn }
+                    )
+                )
+            }
+            dbResult
+        } catch (ex: Exception) {
+            telemetry.trackException(ex)
+            null
+        }
+
+        return if (useSearch) psResult else dbResult ?: psResult
+    }
 
     fun crns(crns: Set<String>): List<OffenderDetail> =
         personRepository.findByCrnIn(crns).map { it.toProbationCase(true) }

@@ -14,7 +14,16 @@ data class SearchRequest(
     val pncNumber: String? = null,
     val crn: String? = null,
     val nomsNumber: String? = null,
-)
+){
+    fun fields() = listOfNotNull(
+        firstName?.let { ::firstName.name },
+        surname?.let { ::surname.name },
+        dateOfBirth?.let { ::dateOfBirth.name },
+        pncNumber?.let { ::pncNumber.name },
+        crn?.let { ::crn.name },
+        nomsNumber?.let { ::nomsNumber.name },
+    )
+}
 
 @Target(AnnotationTarget.CLASS)
 @Retention(AnnotationRetention.RUNTIME)
