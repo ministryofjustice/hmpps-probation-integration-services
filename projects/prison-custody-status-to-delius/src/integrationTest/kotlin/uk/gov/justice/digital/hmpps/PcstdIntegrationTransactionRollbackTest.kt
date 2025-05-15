@@ -17,7 +17,6 @@ import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 @TestPropertySource(properties = ["logging.level.org.springframework.transaction=DEBUG", "logging.level.org.hibernate.engine.transaction.internal.TransactionImpl=DEBUG"])
 @ExtendWith(OutputCaptureExtension::class)
 class PcstdIntegrationTransactionRollbackTest : PcstdIntegrationTestBase() {
-    private val releaseOnLicence = "Released on Licence"
 
     @Test
     fun `when a prisoner is matched with more than one pom`(output: CapturedOutput) {

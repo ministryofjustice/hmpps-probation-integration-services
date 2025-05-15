@@ -4,9 +4,9 @@ generic-service:
   serviceAccountName: person-search-index-from-delius
   resources:
     limits:
-      memory: 4Gi
-    requests:
       memory: 2Gi
+    requests:
+      memory: 1Gi
 
   image:
     repository: ghcr.io/ministryofjustice/hmpps-probation-integration-services/person-search-index-from-delius
@@ -26,13 +26,12 @@ generic-service:
     tlsSecretName: person-search-index-from-delius-cert
 
   env:
-    CONTACT_INDEX_PREFIX: contact-search
     PERSON_INDEX_PREFIX: person-search
-    PIPELINES_ENABLED: person-incremental,contact-incremental,contact-semantic
-    PIPELINE_WORKERS: 10
-    PIPELINE_BATCH_SIZE: 1
+    CONTACT_KEYWORD_INDEX_PREFIX: contact-search
+    CONTACT_SEMANTIC_INDEX_PREFIX: contact-semantic-search
+    PIPELINES_ENABLED: person-incremental,contact-keyword-incremental,contact-semantic-incremental
     JDK_JAVA_OPTIONS: ''
-    LS_JAVA_OPTS: -Xms3g -Xmx3g # = 75% of pod memory limit (see above)
+    LS_JAVA_OPTS: -Xms1536m -Xmx1536m # = 75% of pod memory limit (see above)
 
   namespace_secrets:
     common:
@@ -51,7 +50,7 @@ generic-service:
     person-search-index-from-delius-contact-keyword-queue:
       CONTACT_KEYWORD_SQS_QUEUE_NAME: QUEUE_NAME
     person-search-index-from-delius-contact-queue:
-      CONTACT_SQS_QUEUE_NAME: QUEUE_NAME
+      CONTACT_SEMANTIC_SQS_QUEUE_NAME: QUEUE_NAME
 
 generic-prometheus-alerts:
   targetApplication: person-search-index-from-delius

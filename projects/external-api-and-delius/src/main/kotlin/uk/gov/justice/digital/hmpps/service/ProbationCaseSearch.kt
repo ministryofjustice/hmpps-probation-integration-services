@@ -16,7 +16,7 @@ class ProbationCaseSearch(
     private val searchClient: ProbationSearchClient,
     private val telemetry: TelemetryService,
 ) {
-    fun find(request: SearchRequest): List<ProbationCaseDetail> {
+    fun find(request: SearchRequest, useSearch: Boolean): List<ProbationCaseDetail> {
         val psResult = searchClient.findAll(request).map { o ->
             ProbationCaseDetail(
                 o.otherIds.ids(),
@@ -27,7 +27,7 @@ class ProbationCaseSearch(
                 o.middleNames ?: emptyList(),
                 o.offenderProfile?.asProfile() ?: CaseProfile(),
                 o.contactDetails,
-                o.offenderAliases?.map { a -> a.asCaseAlias() } ?: emptyList(),
+                o.offenderAliases?.map { a -> a.asCaseAlias() }?.sorted() ?: emptyList(),
                 o.activeProbationManagedSentence == true,
                 o.currentRestriction == true,
                 o.restrictionMessage,
@@ -35,7 +35,7 @@ class ProbationCaseSearch(
                 o.exclusionMessage,
             )
         }
-        try {
+        val dbResult = try {
             val dbResult = personRepository.findAll(request.asSpecification())
                 .map { p ->
                     ProbationCaseDetail(
@@ -47,7 +47,7 @@ class ProbationCaseSearch(
                         listOfNotNull(p.secondName, p.thirdName),
                         p.profile(),
                         p.contactDetails(),
-                        p.aliases.map { a -> a.asAlias() },
+                        p.aliases.map { a -> a.asAlias() }.sorted(),
                         p.currentDisposal,
                         p.currentRestriction == true,
                         p.restrictionMessage,
@@ -67,11 +67,14 @@ class ProbationCaseSearch(
                     )
                 )
             }
+
+            dbResult
         } catch (ex: Exception) {
             telemetry.trackException(ex)
+            null
         }
 
-        return psResult
+        return if (useSearch) psResult else dbResult ?: psResult
     }
 
     private fun SearchRequest.asSpecification(): Specification<Person> = listOfNotNull(
@@ -94,7 +97,7 @@ fun Person.profile() =
         nationality?.description,
         religion?.description,
         sexualOrientation?.description,
-        disabilities.map { it.asCaseDisability() }
+        disabilities.map { it.asCaseDisability() }.sortedByDescending { it.startDate }
     )
 
 fun Disability.asCaseDisability() = CaseDisability(
@@ -115,3 +118,5 @@ fun Person.contactDetails() = ContactDetails(
 
 fun PersonAlias.asAlias() =
     CaseAlias(firstName, surname, dateOfBirth, gender.description, listOfNotNull(secondName, thirdName))
+
+fun List<CaseAlias>.sorted() = sortedWith(compareBy(CaseAlias::surname, CaseAlias::firstName, CaseAlias::dateOfBirth))

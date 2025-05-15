@@ -261,9 +261,39 @@ interface DocumentsRepository : JpaRepository<DocumentEntity, Long> {
             and ((:createdDateFrom is null or :createdDateTo is null) or (d.createdAt >= :createdDateFrom and d.createdAt <= :createdDateTo))
         """
     )
-    fun search(
+    fun searchWithFilename(
         offenderId: Long,
         name: String?,
+        createdDateFrom: LocalDateTime?,
+        createdDateTo: LocalDateTime?,
+        pageable: Pageable
+    ): Page<DocumentEntity>
+
+    @Query(
+        """
+            select d from DocumentEntity d
+            where d.offenderId = :offenderId
+            and ((:createdDateFrom is null or :createdDateTo is null) or (d.createdAt >= :createdDateFrom and d.createdAt <= :createdDateTo))
+        """
+    )
+    fun search(
+        offenderId: Long,
+        createdDateFrom: LocalDateTime?,
+        createdDateTo: LocalDateTime?,
+        pageable: Pageable
+    ): Page<DocumentEntity>
+
+    @Query(
+        """
+            select d from DocumentEntity d
+            where d.offenderId = :offenderId
+            and ((:createdDateFrom is null or :createdDateTo is null) or (d.createdAt >= :createdDateFrom and d.createdAt <= :createdDateTo))
+            and d.alfrescoId in (:ids)
+        """
+    )
+    fun searchWithIds(
+        offenderId: Long,
+        ids: List<String>,
         createdDateFrom: LocalDateTime?,
         createdDateTo: LocalDateTime?,
         pageable: Pageable

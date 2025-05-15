@@ -6,8 +6,9 @@ template:
     default_pipeline: contact-semantic-search-pipeline
     index.search.default_pipeline: contact-semantic-search-search-pipeline
     index.knn: true
-    index.number_of_shards: 9
+    index.number_of_shards: 120
     index.number_of_replicas: 1
+    index.analyze.max_token_count: 100000
     index.mapping.ignore_malformed: true
     analysis:
       analyzer:
@@ -144,7 +145,6 @@ template:
             - approved premise => approved_premise, approved premise
             - approved premises => approved_premises, approved premises
             - assessment care in custody and teamwork => assessment_care_in_custody_and_teamwork, assessment care in custody and teamwork
-            - assessment\\, care in custody and teamwork => assessment_care_in_custody_and_teamwork, assessment\\, care in custody and teamwork
             - assistant chief officer => assistant_chief_officer, assistant chief officer
             - at large => at_large, at large
             - attention deficit hyperactivity disorder => attention_deficit_hyperactivity_disorder, attention deficit hyperactivity disorder
@@ -154,7 +154,6 @@ template:
             - bail accommodation support service => bail_accommodation_support_service, bail accommodation support service
             - bail hostel => bail_hostel, bail hostel
             - black asian and minority ethnic => black_asian_and_minority_ethnic, black asian and minority ethnic
-            - black\\, asian and minority ethnic => black_asian_and_minority_ethnic, black\\, asian and minority ethnic
             - basic custody screening => basic_custody_screening, basic custody screening
             - basic custody screening tool => basic_custody_screening_tool, basic custody screening tool
             - becoming new me sex offender treatment program => becoming_new_me_sex_offender_treatment_program, becoming new me sex offender treatment program
@@ -219,7 +218,6 @@ template:
             - domestic abuse protection order => domestic_abuse_protection_order, domestic abuse protection order
             - domestic abuse safety officer => domestic_abuse_safety_officer, domestic abuse safety officer
             - domestic abuse stalking and harassment => domestic_abuse_stalking_and_harassment, domestic abuse stalking and harassment
-            - domestic abuse\\, stalking and harassment => domestic_abuse_stalking_and_harassment, domestic abuse\\, stalking and harassment
             - domestic violence => domestic_violence, domestic violence
             - did program => did_program, did program
             - drink-impaired driver program => drink-impaired_driver_program, drink-impaired driver program
@@ -239,7 +237,6 @@ template:
             - early release => early_release, early release
             - early removal => early_removal, early removal
             - education training and employment => education_training_and_employment, education training and employment
-            - education\\, training and employment => education_training_and_employment, education\\, training and employment
             - education training employment => education_training_employment, education training employment
             - electronic monitoring => electronic_monitoring, electronic monitoring
             - electronic monitoring services => electronic_monitoring_services, electronic monitoring services
@@ -303,7 +300,6 @@ template:
             - internet sex offender treatment programme => internet_sex_offender_treatment_programme, internet sex offender treatment programme
             - ka ks => ka_ks, ka ks
             - kent surrey and sussex probation service => kent_surrey_and_sussex_probation_service, kent surrey and sussex probation service
-            - kent\\, surrey and sussex probation service => kent_surrey_and_sussex_probation_service, kent\\, surrey and sussex probation service
             - key worker => key_worker, key worker
             - licence condition => licence_condition, licence condition
             - living as new me sex offender treatment program => living_as_new_me_sex_offender_treatment_program, living as new me sex offender treatment program
@@ -1236,14 +1232,12 @@ template:
       endTime:
         type: date
         format: hour_minute_second
-      textChunks:
-        type: keyword
       textEmbedding:
         type: nested
         properties:
           knn:
             type: knn_vector
-            dimension: 1024
+            dimension: 256
             space_type: cosinesimil
             method:
               name: hnsw
@@ -1297,3 +1291,21 @@ template:
       rowVersion:
         type: double
         index: false
+      nationalStandard:
+        type: keyword
+      systemGenerated:
+        type: keyword
+      startDateTime:
+        type: date
+      endDateTime:
+        type: date
+      requiresOutcome:
+        type: keyword
+      attendanceContact:
+        type: keyword
+      outcomeRequiredFlag:
+        type: keyword
+      MessageId:
+        type: keyword
+      '@version':
+        type: integer

@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.controller
 
+import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.GetMapping
@@ -15,7 +16,15 @@ class PersonController(private val personService: PersonService) {
 
     @PreAuthorize("hasRole('PROBATION_API__FIND_AND_REFER__CASE_DETAIL')")
     @GetMapping(value = ["/find/{identifier}"])
+    @Operation(summary = "Finds an offender with the provided identifier (crn or prisoner number)")
     fun findPerson(
         @PathVariable identifier: String
     ) = personService.findPerson(identifier)
+
+    @PreAuthorize("hasRole('PROBATION_API__FIND_AND_REFER__CASE_DETAIL')")
+    @GetMapping(value = ["/{crn}/accredited-programme-history"])
+    @Operation(summary = "Returns a list of accredited programmes for the provided crn")
+    fun accreditedProgrammeHistory(
+        @PathVariable crn: String
+    ) = personService.accreditedProgrammeHistory(crn)
 }

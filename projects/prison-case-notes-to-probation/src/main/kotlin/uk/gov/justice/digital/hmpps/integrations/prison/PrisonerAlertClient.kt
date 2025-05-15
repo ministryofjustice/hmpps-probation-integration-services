@@ -38,8 +38,8 @@ data class Alert(
     val prisonCodeWhenCreated: String?
 ) {
     fun staffName(): StaffName {
-        val name = lastModifiedByDisplayName ?: createdByDisplayName
-        return StaffName(name.substringBeforeLast(" ").trim(), name.substringAfterLast(" ").trim())
+        val name = (lastModifiedByDisplayName ?: createdByDisplayName).trim().split("\\s+".toRegex())
+        return StaffName(name.first(), name.last())
     }
 }
 

@@ -41,7 +41,7 @@ internal class ProbationCaseSearchTest {
         whenever(personRepository.findAll(any<Specification<Person>>()))
             .thenReturn(listOf(PersonGenerator.generate("A123456")))
 
-        val result = probationCaseSearch.find(SearchRequest(firstName = "James"))
+        val result = probationCaseSearch.find(SearchRequest(firstName = "James"), true)
         assertThat(result.first().otherIds.crn).isEqualTo("D123456")
 
         verify(telemetryService).trackEvent(

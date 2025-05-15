@@ -58,6 +58,11 @@ class SearchIntegrationTest {
             .perform(post("/search/probation-cases").withToken().withJson(request))
             .andExpect(status().is2xxSuccessful)
             .andExpectJson(listOf(person.asProbationCase()))
+
+        mockMvc
+            .perform(post("/search/probation-cases?useSearch=false").withToken().withJson(request))
+            .andExpect(status().is2xxSuccessful)
+            .andExpectJson(listOf(person.asProbationCase()))
     }
 
     @Test
@@ -66,6 +71,11 @@ class SearchIntegrationTest {
 
         mockMvc
             .perform(post("/search/probation-cases").withToken().withJson(request))
+            .andExpect(status().is2xxSuccessful)
+            .andExpectJson(listOf(JOHN_SMITH_1.asProbationCase(), JOHN_SMITH_2.asProbationCase()))
+
+        mockMvc
+            .perform(post("/search/probation-cases?useSearch=false").withToken().withJson(request))
             .andExpect(status().is2xxSuccessful)
             .andExpectJson(listOf(JOHN_SMITH_1.asProbationCase(), JOHN_SMITH_2.asProbationCase()))
     }
@@ -78,6 +88,11 @@ class SearchIntegrationTest {
             .perform(post("/search/probation-cases").withToken().withJson(request))
             .andExpect(status().is2xxSuccessful)
             .andExpectJson(listOf(JOHN_SMITH_2.asProbationCase()))
+
+        mockMvc
+            .perform(post("/search/probation-cases?useSearch=false").withToken().withJson(request))
+            .andExpect(status().is2xxSuccessful)
+            .andExpectJson(listOf(JOHN_SMITH_2.asProbationCase()))
     }
 
     @Test
@@ -86,6 +101,11 @@ class SearchIntegrationTest {
 
         mockMvc
             .perform(post("/search/probation-cases").withToken().withJson(request))
+            .andExpect(status().is2xxSuccessful)
+            .andExpectJson(listOf(JOHN_SMITH_1.asProbationCase()))
+
+        mockMvc
+            .perform(post("/search/probation-cases?useSearch=false").withToken().withJson(request))
             .andExpect(status().is2xxSuccessful)
             .andExpectJson(listOf(JOHN_SMITH_1.asProbationCase()))
     }

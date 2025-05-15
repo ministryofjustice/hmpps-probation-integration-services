@@ -66,9 +66,11 @@ function delete_ready_for_reindex() {
 function wait_for_index_to_complete() {
   echo 'Waiting for indexing to complete ...'
   SECONDS=0
-  until [ "$(curl_json --no-show-error "${SEARCH_URL}/${STANDBY_INDEX}/_doc/-1" | jq '._source.indexReady')" = 'true' ]; do
+  get_status
+  until [ "$(jq '._source.indexReady' <<< "$STATUS")" = 'true' ]; do
     if [ "$SECONDS" -gt "$REINDEXING_TIMEOUT" ]; then fail "Indexing process timed out after ${SECONDS}s." 'ProbationSearchIndexFailure'; fi
     sleep 60
+    get_status
   done
   COUNT=$(curl_json "${SEARCH_URL}/${STANDBY_INDEX}/_count" | jq '.count')
   echo "Indexing complete. The $STANDBY_INDEX index now has $COUNT documents"
@@ -88,8 +90,41 @@ function switch_aliases() {
   track_custom_event 'ProbationSearchIndexCompleted' '{"indexName": "'"$STANDBY_INDEX"'", "duration": "'"$SECONDS"'", "count": "'"$COUNT"'"}'
 }
 
+function get_status() {
+  echo 'Getting status document ...'
+  if [ -z "$ROUTING_REQUIRED" ]; then
+    ROUTING_REQUIRED=$(curl_json "${SEARCH_URL}/${STANDBY_INDEX}/_mappings" | jq '.["'"${STANDBY_INDEX}"'"].mappings._routing.required // false')
+    ROUTING_SUFFIX=$(if [ "$ROUTING_REQUIRED" = 'true' ]; then echo '?routing=-1'; else echo ''; fi)
+  fi
+  STATUS=$(curl_json --no-fail --no-show-error "${SEARCH_URL}/${STANDBY_INDEX}/_doc/-1${ROUTING_SUFFIX}")
+}
+
+function partially_completed() {
+  if [ -z "$STATUS" ]; then get_status; fi
+  if [ "$(jq '._source.indexReady' <<< "$STATUS")" = 'false' ]; then
+    echo "Found result of a partially completed re-indexing job"
+    return 0
+  else
+    echo "No partially completed re-indexing job found, starting a new job"
+    return 1
+  fi
+}
+
+function resume_indexing() {
+  if [ -z "$STATUS" ]; then get_status; fi
+  next_value=$(jq '._source.nextValue' <<< "$STATUS")
+  resume_from_id=$((next_value-1))
+  echo "Resuming from id=$resume_from_id ..."
+  mkdir -p /usr/share/logstash/data/plugins/inputs/jdbc
+  echo '--- !ruby/object:BigDecimal '"'0:$(printf "0.%se%d" "$resume_from_id" "${#resume_from_id}")'" > /usr/share/logstash/data/plugins/inputs/jdbc/logstash_jdbc_last_run
+}
+
 get_current_indices
-delete_ready_for_reindex
+if partially_completed; then
+  resume_indexing
+else
+  delete_ready_for_reindex
+fi
 wait_for_index_to_complete
 switch_aliases
 

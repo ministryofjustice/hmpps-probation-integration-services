@@ -12,7 +12,11 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import uk.gov.justice.digital.hmpps.advice.ErrorResponse
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
+import uk.gov.justice.digital.hmpps.data.generator.RequirementGenerator
+import uk.gov.justice.digital.hmpps.model.AccreditedProgramme
 import uk.gov.justice.digital.hmpps.model.PersonResponse
+import uk.gov.justice.digital.hmpps.model.ProbationDeliveryUnit
+import uk.gov.justice.digital.hmpps.service.toAccreditedProgramme
 import uk.gov.justice.digital.hmpps.service.toPersonResponse
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
@@ -30,7 +34,17 @@ internal class PersonIntegrationTest {
             .andExpect(status().isOk)
             .andReturn().response.contentAsJson<PersonResponse>()
 
-        assertThat(response, equalTo(PersonGenerator.PERSON_1.toPersonResponse()))
+        assertThat(
+            response,
+            equalTo(
+                PersonGenerator.PERSON_1.toPersonResponse(
+                    ProbationDeliveryUnit(
+                        code = "A",
+                        description = "Default Test PDU"
+                    ), "Custody"
+                )
+            )
+        )
     }
 
     @Test
@@ -40,7 +54,7 @@ internal class PersonIntegrationTest {
             .andExpect(status().isOk)
             .andReturn().response.contentAsJson<PersonResponse>()
 
-        assertThat(response, equalTo(PersonGenerator.PERSON_2.toPersonResponse()))
+        assertThat(response, equalTo(PersonGenerator.PERSON_2.toPersonResponse(null, "Community")))
     }
 
     @Test
@@ -71,5 +85,29 @@ internal class PersonIntegrationTest {
             .andReturn().response.contentAsJson<ErrorResponse>()
 
         assertThat(response.message, equalTo("Person with prisoner number of A5456AX not found"))
+    }
+
+    @Test
+    fun `find a persons accredited programme history`() {
+        val response = mockMvc
+            .perform(get("/person/X123456/accredited-programme-history").withToken())
+            .andExpect(status().isOk)
+            .andReturn().response.contentAsJson<List<AccreditedProgramme>>()
+        assertThat(response.get(0), equalTo(RequirementGenerator.ACC_PROG_6.toAccreditedProgramme()))
+        assertThat(response.get(1), equalTo(RequirementGenerator.ACC_PROG_5.toAccreditedProgramme()))
+        assertThat(response.get(2), equalTo(RequirementGenerator.ACC_PROG_1.toAccreditedProgramme()))
+        assertThat(response.get(3), equalTo(RequirementGenerator.ACC_PROG_2.toAccreditedProgramme()))
+        assertThat(response.get(4), equalTo(RequirementGenerator.ACC_PROG_3.toAccreditedProgramme()))
+        assertThat(response.get(5), equalTo(RequirementGenerator.ACC_PROG_4.toAccreditedProgramme()))
+        assertThat(response.size, equalTo(6))
+    }
+
+    @Test
+    fun `find a persons accredited programme history returns person not found`() {
+        val response = mockMvc
+            .perform(get("/person/X123457/accredited-programme-history").withToken())
+            .andExpect(status().isNotFound)
+            .andReturn().response.contentAsJson<ErrorResponse>()
+        assertThat(response.message, equalTo("Person with crn of X123457 not found"))
     }
 }

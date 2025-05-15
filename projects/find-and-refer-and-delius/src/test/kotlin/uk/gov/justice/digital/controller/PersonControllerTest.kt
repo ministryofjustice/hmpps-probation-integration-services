@@ -23,8 +23,13 @@ class PersonControllerTest {
 
     @Test
     fun `noms number results in offender found`() {
-        whenever(personService.findPerson("A4321BA")).thenReturn(PersonGenerator.PERSON_2.toPersonResponse())
+        whenever(personService.findPerson("A4321BA")).thenReturn(
+            PersonGenerator.PERSON_2.toPersonResponse(
+                null,
+                "Community"
+            )
+        )
         val person = controller.findPerson("A4321BA")
-        assertThat(person, equalTo(PersonGenerator.PERSON_2.toPersonResponse()))
+        assertThat(person, equalTo(PersonGenerator.PERSON_2.toPersonResponse(null, "Community")))
     }
 }
