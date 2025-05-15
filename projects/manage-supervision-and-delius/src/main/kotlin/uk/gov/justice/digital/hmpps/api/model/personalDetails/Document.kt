@@ -24,6 +24,12 @@ data class DocumentSearch(
     val dateTo: LocalDateTime? = null,
 )
 
+data class DocumentTextSearch(
+    val query: String? = null,
+    val dateFrom: LocalDateTime? = null,
+    val dateTo: LocalDateTime? = null,
+)
+
 data class DocumentDetails(
     val alfrescoId: String,
     val offenderId: Long,

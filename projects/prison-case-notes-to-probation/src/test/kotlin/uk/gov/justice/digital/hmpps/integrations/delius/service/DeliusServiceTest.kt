@@ -89,7 +89,8 @@ class DeliusServiceTest {
 
     @Test
     fun `duplicate or late messages result in no-op`() {
-        whenever(caseNoteRepository.findByExternalReference(deliusCaseNote.urn)).thenReturn(caseNote)
+        whenever(caseNoteRepository.findByExternalReference(deliusCaseNote.urn))
+            .thenReturn(caseNote.copy(externalReference = deliusCaseNote.urn))
 
         deliusService.mergeCaseNote(
             deliusCaseNote.copy(

@@ -12,6 +12,7 @@ import org.mockito.kotlin.whenever
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
+import uk.gov.justice.digital.hmpps.alfresco.AlfrescoClient
 import uk.gov.justice.digital.hmpps.api.model.personalDetails.DocumentSearch
 import uk.gov.justice.digital.hmpps.data.generator.personalDetails.PersonDetailsGenerator.PERSONAL_DETAILS
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.PersonRepository
@@ -29,6 +30,9 @@ internal class DocumentsServiceTest {
 
     @Mock
     lateinit var personRepository: PersonRepository
+
+    @Mock
+    lateinit var alfrescoClient: AlfrescoClient
 
     @InjectMocks
     lateinit var service: DocumentsService
@@ -109,7 +113,7 @@ internal class DocumentsServiceTest {
 
         whenever(
             documentsRepository
-                .search(
+                .searchWithFilename(
                     offenderId, docSearch.name,
                     docSearch.dateFrom?.toLocalDate()?.atStartOfDay(),
                     docSearch.dateTo?.toLocalDate()?.atTime(LocalTime.MAX),
