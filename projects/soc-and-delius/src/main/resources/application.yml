@@ -14,6 +14,16 @@ spring:
         query.mutation_strategy.global_temporary:
             create_tables: false
             drop_tables: false
+  security.oauth2.client:
+    registration:
+      default:
+        provider: hmpps-auth
+        authorization-grant-type: client_credentials
+        client-id: ${oauth2.client-id}
+        client-secret: ${oauth2.client-secret}
+    provider:
+      hmpps-auth:
+        token-uri: http://localhost:${wiremock.port}/auth/oauth/token
   threads.virtual.enabled: true
 
 oauth2.roles:
@@ -42,6 +52,8 @@ spring:
 
 seed.database: true
 wiremock.enabled: true
+
+integrations.probation-search.url: http://localhost:${wiremock.port}
 
 logging.level:
   uk.gov.justice.digital.hmpps: DEBUG
