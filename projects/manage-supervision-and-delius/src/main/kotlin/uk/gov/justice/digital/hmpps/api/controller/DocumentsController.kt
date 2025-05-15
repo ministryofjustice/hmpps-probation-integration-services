@@ -48,7 +48,7 @@ class DocumentsController(private val documentsService: DocumentsService) {
     ) = documentsService.textSearch(documentTextSearch, crn, PageRequest.of(page, size, sort(sortBy)), sortBy)
 
     private fun sort(sortString: String?): Sort {
-        if(sortString == null) {
+        if (sortString == null) {
             return Sort.unsorted()
         }
         val regex = Regex(pattern = "[A-Z]+\\.(ASC|DESC)", options = setOf(RegexOption.IGNORE_CASE))
