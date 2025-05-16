@@ -43,7 +43,8 @@ class DocumentsService(
             totalElements = documents.totalElements.toInt(),
             totalPages = documents.totalPages,
             documents = documents.content.map { it.toDocumentDetails() },
-            sortedBy = sortedBy
+            sortedBy = sortedBy,
+            metadata = metadata()
         )
     }
 
