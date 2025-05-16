@@ -83,6 +83,8 @@ internal class DocumentsIntegrationTest {
         assertThat(res.documents[0].name, equalTo("court report"))
         assertThat(res.documents[1].name, equalTo("contact2.doc"))
         assertThat(res.documents[2].name, equalTo("contact.doc"))
+
+
     }
 
     @Test
@@ -124,10 +126,13 @@ internal class DocumentsIntegrationTest {
             )
             .andExpect(status().isOk)
             .andReturn().response.contentAsJson<PersonDocuments>()
-
+        val expectedMetadata =
+            (listOf(DocumentLevelCode.ALL) + (DocumentLevelCode.entries.filter { it != DocumentLevelCode.ALL }
+                .sortedBy { it.name })).map { DocumentLevel(it.name, it.description) }
         assertThat(res.documents.size, equalTo(2))
         assertThat(res.documents[0].name, equalTo("contact2.doc"))
         assertThat(res.documents[1].name, equalTo("contact.doc"))
+        assertThat(res.metadata?.documentLevels, equalTo(expectedMetadata))
     }
 
     @Test
