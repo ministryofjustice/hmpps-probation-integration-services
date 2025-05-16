@@ -21,12 +21,13 @@ fi
 ## Create SageMaker connector if it doesn't exist
 echo Searching for existing connector...
 connector_id=$(curl_json -XPOST "${SEARCH_INDEX_HOST}/_plugins/_ml/connectors/_search" --data "{\"query\":{\"match\":{\"name.keyword\":\"sagemaker-embeddings\"}}}" | jq -r '.hits.hits[0]._id // ""')
+connector_body=$(envsubst < /pipelines/contact-semantic/index/sagemaker-connector.json)
 if [ -z "$connector_id" ]; then
   echo Creating connector...
-  connector_body=$(envsubst < /pipelines/contact-semantic/index/sagemaker-connector.json)
-  connector_id=$(curl_json -XPOST "${SEARCH_INDEX_HOST}/_plugins/_ml/connectors/_create" --data "$connector_body" | jq -r '.connector_id')
+  connector_id=$(curl_json -XPOST "${SEARCH_INDEX_HOST}/_plugins/_ml/connectors/_create" --data "${connector_body}" | jq -r '.connector_id')
 else
-  echo "Found connector with id=$connector_id"
+  echo "Updating connector id=${connector_id}..."
+  curl_json -XPUT "${SEARCH_INDEX_HOST}/_plugins/_ml/connectors/${connector_id}" --data "${connector_body}" || echo 'Warning: Failed to update connector' >&2
 fi
 
 ## Register model if it doesn't exist
@@ -37,12 +38,13 @@ model_body="{
   \"model_group_id\": \"${model_group_id}\",
   \"connector_id\": \"${connector_id}\"
 }"
+echo Searching for existing model...
 model_id=$(curl_json -XPOST "${SEARCH_INDEX_HOST}/_plugins/_ml/models/_search" --data "{\"query\":{\"match\":{\"name.keyword\":\"sagemaker-embeddings\"}}}" | jq -r '.hits.hits[0]._id // ""')
 if [ -z "$model_id" ]; then
   echo Registering model...
   curl_json -XPOST "${SEARCH_INDEX_HOST}/_plugins/_ml/models/_register" --data "${model_body}"
 else
-  echo Updating model...
+  echo "Updating model id=${model_id}..."
   curl_json -XPUT "${SEARCH_INDEX_HOST}/_plugins/_ml/models/${model_id}" --data "${model_body}" || echo 'Warning: Failed to update model' >&2
 fi
 
