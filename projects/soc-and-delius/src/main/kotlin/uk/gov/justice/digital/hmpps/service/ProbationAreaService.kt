@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.stereotype.Service
+import uk.gov.justice.digital.hmpps.entity.ManagerHistory
 import uk.gov.justice.digital.hmpps.entity.ManagerHistoryRepository
 import uk.gov.justice.digital.hmpps.entity.ProbationAreaRepository
 import uk.gov.justice.digital.hmpps.model.*
@@ -31,14 +32,23 @@ class ProbationAreaService(
     fun getProbationAreaHistory(crns: List<String>): Map<String, List<ProbationAreaHistory>> =
         managerHistoryRepository.findByPersonCrnInOrderByPersonCrn(crns)
             .groupBy { it.person.crn }
-            .mapValues { (_, v) ->
-                v.map {
-                    ProbationAreaHistory(
-                        it.allocationDate,
-                        it.endDate,
-                        CodeDescription(it.probationArea.code, it.probationArea.description)
-                    )
-                }.sortedBy { it.startDate }
-            }
+            .mapValues { (_, v) -> v.mergeOverlapping().sortedBy { it.startDate } }
             .toMap()
+
+    private fun List<ManagerHistory>.mergeOverlapping() = groupBy { it.probationArea.code }.values
+        .flatMap { rows ->
+            rows.sortedBy { it.allocationDate }
+                .fold(emptyList<ProbationAreaHistory>()) { merged, next ->
+                    merged.lastOrNull()?.let { last ->
+                        when {
+                            last.endDate == null -> merged
+                            next.allocationDate <= last.endDate -> merged.dropLast(1) + last.copy(endDate = next.endDate?.takeIf { it > last.endDate })
+                            else -> null
+                        }
+                    } ?: (merged + next.toProbationAreaHistory())
+                }
+        }
+
+    private fun ManagerHistory.toProbationAreaHistory() =
+        ProbationAreaHistory(allocationDate, endDate, CodeDescription(probationArea.code, probationArea.description))
 }

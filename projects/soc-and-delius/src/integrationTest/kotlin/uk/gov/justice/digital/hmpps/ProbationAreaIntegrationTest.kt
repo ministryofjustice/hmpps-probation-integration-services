@@ -5,8 +5,10 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
+import org.springframework.test.json.JsonCompareMode
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import uk.gov.justice.digital.hmpps.data.generator.ManagerGenerator
@@ -43,48 +45,57 @@ internal class ProbationAreaIntegrationTest {
     @Test
     fun `get probation history for multiple CRNs`() {
         val crns = listOf(ManagerGenerator.PERSON.crn, ManagerGenerator.PERSON_2.crn, "SOME_OTHER_CRN")
-        mockMvc.perform(get("/probation-area-history").withToken().withJson(crns))
+        mockMvc.perform(post("/probation-area-history").withToken().withJson(crns))
             .andExpect(status().is2xxSuccessful)
             .andExpect(
                 content().json(
                     """
-                   {
-                     "MH00001": [
-                       {
-                         "startDate": "2000-01-01",
-                         "endDate": "2001-01-01",
-                         "probationArea": {
-                           "code": "M01",
-                           "description": "Area 1"
-                         }
-                       },
-                       {
-                         "startDate": "2001-01-01",
-                         "endDate": "2002-01-01",
-                         "probationArea": {
-                           "code": "M02",
-                           "description": "Area 2"
-                         }
-                       },
-                       {
-                         "startDate": "2002-01-01",
-                         "probationArea": {
-                           "code": "M03",
-                           "description": "Area 3"
-                         }
-                       }
-                     ],
-                     "MH00002": [
-                       {
-                         "startDate": "2025-05-15",
-                         "probationArea": {
-                           "code": "M01",
-                           "description": "Area 1"
-                         }
-                       }
-                     ]
-                   }
-                    """.trimIndent()
+                    {
+                      "MH00001": [
+                        {
+                          "startDate": "2000-01-01",
+                          "endDate": "2002-01-01",
+                          "probationArea": {
+                            "code": "M01",
+                            "description": "Area 1"
+                          }
+                        },
+                        {
+                          "startDate": "2001-01-01",
+                          "endDate": "2003-01-01",
+                          "probationArea": {
+                            "code": "M02",
+                            "description": "Area 2"
+                          }
+                        },
+                        {
+                          "startDate": "2002-01-01",
+                          "probationArea": {
+                            "code": "M03",
+                            "description": "Area 3"
+                          }
+                        },
+                        {
+                          "startDate": "2005-01-01",
+                          "endDate": "2007-01-01",
+                          "probationArea": {
+                            "code": "M01",
+                            "description": "Area 1"
+                          }
+                        }
+                      ],
+                      "MH00002": [
+                        {
+                          "startDate": "2025-05-15",
+                          "probationArea": {
+                            "code": "M01",
+                            "description": "Area 1"
+                          }
+                        }
+                      ]
+                    }
+                    """.trimIndent(),
+                    JsonCompareMode.STRICT
                 )
             )
     }
@@ -92,7 +103,7 @@ internal class ProbationAreaIntegrationTest {
     @Test
     fun `does not accept over 500 crns`() {
         mockMvc
-            .perform(get("/probation-area-history").withToken().withJson(List(501) { "CRN" }))
+            .perform(post("/probation-area-history").withToken().withJson(List(501) { "CRN" }))
             .andExpect(status().isBadRequest)
     }
 
