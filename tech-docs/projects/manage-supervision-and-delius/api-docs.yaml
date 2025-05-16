@@ -167,7 +167,6 @@ paths:
         required: false
         schema:
           type: string
-          default: createdAt.desc
       requestBody:
         content:
           application/json:
