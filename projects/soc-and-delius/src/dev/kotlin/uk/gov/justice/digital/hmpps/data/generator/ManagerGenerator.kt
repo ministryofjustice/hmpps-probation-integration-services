@@ -22,8 +22,36 @@ object ManagerGenerator {
         ManagerHistory(
             IdGenerator.getAndIncrement(),
             PERSON,
+            PROBATION_AREA_1,
+            LocalDate.of(2000, 1, 1),
+            LocalDate.of(2002, 1, 1)
+        ),
+        ManagerHistory(
+            IdGenerator.getAndIncrement(),
+            PERSON,
+            PROBATION_AREA_1,
+            LocalDate.of(2005, 1, 1),
+            LocalDate.of(2007, 1, 1)
+        ),
+        ManagerHistory(
+            IdGenerator.getAndIncrement(),
+            PERSON,
+            PROBATION_AREA_2,
+            LocalDate.of(2002, 1, 1),
+            LocalDate.of(2003, 1, 1)
+        ),
+        ManagerHistory(
+            IdGenerator.getAndIncrement(),
+            PERSON,
             PROBATION_AREA_2,
             LocalDate.of(2001, 1, 1),
+            LocalDate.of(2002, 6, 1)
+        ),
+        ManagerHistory(
+            IdGenerator.getAndIncrement(),
+            PERSON,
+            PROBATION_AREA_3,
+            LocalDate.of(2002, 1, 1),
             LocalDate.of(2002, 1, 1)
         ),
         ManagerHistory(IdGenerator.getAndIncrement(), PERSON, PROBATION_AREA_3, LocalDate.of(2002, 1, 1)),
