@@ -36,7 +36,8 @@ class WarningService(
         val breachReasons = rdRepository.findByDatasetCodeAndSelectableTrue(Dataset.BREACH_REASON)
         val disposal = documentRepository.findEventIdFromDocument(breachNoticeUrn(breachNoticeId))
             ?.let { crn.disposalForEvent(it) }
-        val enforceableContacts = contactRepository.findByEventIdAndOutcomeEnforceableTrue(disposal!!.event.id)
+        val enforceableContacts =
+            contactRepository.findEnforceableContacts(disposal!!.event.id)
         return WarningDetails(
             breachReasons = breachReasons.codedDescriptions(),
             enforceableContacts = enforceableContacts.map(Contact::toEnforceableContact),
