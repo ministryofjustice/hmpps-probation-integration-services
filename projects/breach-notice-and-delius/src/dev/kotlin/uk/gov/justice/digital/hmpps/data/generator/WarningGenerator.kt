@@ -11,6 +11,7 @@ import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator.genera
 import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator.generateDataset
 import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator.generateReferenceData
 import uk.gov.justice.digital.hmpps.data.generator.StaffGenerator.DEFAULT_STAFF
+import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.integrations.delius.*
 import java.time.ZonedDateTime
 
@@ -49,14 +50,17 @@ object WarningGenerator {
 
     val ENFORCEABLE_CONTACT_TYPE = generateContactType("ENCT")
     val ENFORCEABLE_CONTACT_OUTCOME = generateContactOutcome("ENOC", enforceable = true)
-    val DEFAULT_ENFORCEABLE_CONTACT = generateEnforceableContact(
-        DEFAULT_PERSON,
-        ENFORCEABLE_CONTACT_TYPE,
-        requirement = DEFAULT_RQMNT,
-        outcome = ENFORCEABLE_CONTACT_OUTCOME,
-        description = "Enforceable Description",
-        notes = "Some notes about the enforceable contact",
-    )
+    val ENFORCEABLE_CONTACTS = listOf(3, 1, 2).map {
+        generateEnforceableContact(
+            DEFAULT_PERSON,
+            ENFORCEABLE_CONTACT_TYPE,
+            dateTime = ZonedDateTime.of(2020, 1, it, 0, 0, 0, 0, EuropeLondon),
+            requirement = DEFAULT_RQMNT,
+            outcome = ENFORCEABLE_CONTACT_OUTCOME,
+            description = "Enforceable Description",
+            notes = "Some notes about the enforceable contact",
+        )
+    }
 
     val PSS_ENFORCEABLE_CONTACT = generateEnforceableContact(
         PSS_PERSON,

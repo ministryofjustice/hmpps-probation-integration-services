@@ -11,7 +11,7 @@ import uk.gov.justice.digital.hmpps.data.generator.DocumentGenerator.UNSENTENCED
 import uk.gov.justice.digital.hmpps.data.generator.EventGenerator.UNSENTENCED_EVENT
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.WarningGenerator
-import uk.gov.justice.digital.hmpps.data.generator.WarningGenerator.DEFAULT_ENFORCEABLE_CONTACT
+import uk.gov.justice.digital.hmpps.data.generator.WarningGenerator.ENFORCEABLE_CONTACTS
 import uk.gov.justice.digital.hmpps.data.generator.WarningGenerator.NOTICE_TYPES
 import uk.gov.justice.digital.hmpps.data.generator.WarningGenerator.PSS_ENFORCEABLE_CONTACT
 import uk.gov.justice.digital.hmpps.data.generator.WarningGenerator.SENTENCE_TYPES
@@ -62,7 +62,7 @@ internal class WarningIntegrationTest : BaseIntegrationTest() {
         assertThat(response).isEqualTo(
             WarningDetails(
                 breachReasons = WarningGenerator.BREACH_REASONS.filter { it.selectable }.codedDescriptions(),
-                enforceableContacts = listOf(DEFAULT_ENFORCEABLE_CONTACT.toEnforceableContact()),
+                enforceableContacts = ENFORCEABLE_CONTACTS.sortedBy { it.date }.map { it.toEnforceableContact() },
             ),
         )
         assertThat(response.enforceableContacts.firstOrNull()).isNotNull()

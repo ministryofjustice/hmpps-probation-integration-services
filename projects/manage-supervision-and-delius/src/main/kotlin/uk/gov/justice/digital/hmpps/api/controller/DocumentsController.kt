@@ -44,10 +44,13 @@ class DocumentsController(private val documentsService: DocumentsService) {
         @RequestBody @Valid documentTextSearch: DocumentTextSearch,
         @RequestParam(required = false, defaultValue = "0") page: Int,
         @RequestParam(required = false, defaultValue = "10") size: Int,
-        @RequestParam(required = false, defaultValue = "createdAt.desc") sortBy: String,
+        @RequestParam(required = false) sortBy: String?,
     ) = documentsService.textSearch(documentTextSearch, crn, PageRequest.of(page, size, sort(sortBy)), sortBy)
 
-    private fun sort(sortString: String): Sort {
+    private fun sort(sortString: String?): Sort {
+        if (sortString == null) {
+            return Sort.unsorted()
+        }
         val regex = Regex(pattern = "[A-Z]+\\.(ASC|DESC)", options = setOf(RegexOption.IGNORE_CASE))
         if (!regex.matches(sortString)) {
             throw InvalidRequestException("Sort criteria invalid format")
