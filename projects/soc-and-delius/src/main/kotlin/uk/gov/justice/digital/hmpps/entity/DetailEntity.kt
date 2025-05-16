@@ -109,11 +109,11 @@ class PersonManager(
     val probationArea: DetailProbationArea,
 
     @ManyToOne
-    @JoinColumn(name = "allocation_staff_id", nullable = false)
+    @JoinColumn(name = "allocation_staff_id")
     val staff: DetailStaff,
 
     @ManyToOne
-    @JoinColumn(name = "team_id", nullable = false)
+    @JoinColumn(name = "team_id")
     val team: Team,
 
     @Column(name = "active_flag", columnDefinition = "number")
@@ -169,7 +169,7 @@ class Team(
 @Entity
 class DetailProbationArea(
 
-    @Column(nullable = false)
+    @Column
     @Convert(converter = YesNoConverter::class)
     val selectable: Boolean = true,
 
