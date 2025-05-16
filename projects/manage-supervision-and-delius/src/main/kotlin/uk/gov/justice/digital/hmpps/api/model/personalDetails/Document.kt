@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.api.model.personalDetails
 
 import uk.gov.justice.digital.hmpps.api.model.PersonSummary
+import uk.gov.justice.digital.hmpps.service.DocumentLevelCode
 import java.time.LocalDateTime
 import java.time.ZonedDateTime
 
@@ -15,7 +16,8 @@ data class PersonDocuments(
     val totalPages: Int,
     val totalElements: Int,
     val sortedBy: String? = null,
-    val documents: List<DocumentDetails>
+    val documents: List<DocumentDetails>,
+    val metadata: DocumentMetadata? = null
 )
 
 data class DocumentSearch(
@@ -26,8 +28,18 @@ data class DocumentSearch(
 
 data class DocumentTextSearch(
     val query: String? = null,
+    val levelCode: DocumentLevelCode = DocumentLevelCode.ALL,
     val dateFrom: LocalDateTime? = null,
     val dateTo: LocalDateTime? = null,
+)
+
+data class DocumentMetadata(
+    val documentLevels: List<DocumentLevel> = emptyList(),
+)
+
+data class DocumentLevel(
+    val code: String,
+    val description: String,
 )
 
 data class DocumentDetails(
