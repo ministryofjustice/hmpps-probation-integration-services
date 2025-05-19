@@ -5,7 +5,10 @@ generic-service:
   resources:
     requests:
       cpu: 128m
-      memory: 512Mi
+      memory: 1024Mi
+    limits:
+      cpu: 1024m
+      memory: 1280Mi
 
   startupProbe:
     httpGet:
@@ -26,7 +29,7 @@ generic-service:
   env:
     AWS_REGION: eu-west-2
     FLIPT_URL: http://feature-flags
-    JDK_JAVA_OPTIONS: -javaagent:/agent/agent.jar -XX:MaxRAMPercentage=75.0
+    JDK_JAVA_OPTIONS: "-javaagent:/agent/agent.jar -Xmx512m -XX:+UseG1GC"
     SENTRY_TRACES_SAMPLE_RATE: '0.05'
     SENTRY_IGNORED_EXCEPTIONS_FOR_TYPE: "org.apache.catalina.connector.ClientAbortException"
     SPRING_DATASOURCE_HIKARI_MAXIMUMPOOLSIZE: 10
