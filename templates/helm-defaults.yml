@@ -7,7 +7,7 @@ generic-service:
       cpu: 128m
       memory: 1024Mi
     limits:
-      cpu: 1024m
+      cpu: "1" # or 1000m
       memory: 1280Mi
 
   startupProbe:
