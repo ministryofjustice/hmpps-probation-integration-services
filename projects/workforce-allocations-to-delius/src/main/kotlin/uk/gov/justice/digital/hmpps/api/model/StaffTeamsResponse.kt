@@ -1,7 +1,8 @@
 package uk.gov.justice.digital.hmpps.api.model
 
 data class StaffTeamsResponse(
-    val teams: List<TeamWithLocalAdminUnit>
+    val datasets: List<Provider>?,
+    val teams: List<TeamWithLocalAdminUnit>,
 )
 
 data class TeamWithLocalAdminUnit(

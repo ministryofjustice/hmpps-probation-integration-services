@@ -53,6 +53,13 @@ object StaffGenerator {
         teams = listOf(TeamGenerator.TEAM_IN_LAU),
     )
 
+    val STAFF_WITH_TEAM_AND_USER = StaffWithTeamUser(
+        id = IdGenerator.getAndIncrement(),
+        username = "s001wt",
+        staff = STAFF_WITH_TEAM,
+        datasets = listOf(ProviderGenerator.DEFAULT),
+    )
+
     fun generateStaffWithUser(
         code: String,
         forename: String = "Test",
