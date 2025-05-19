@@ -15,12 +15,16 @@ import uk.gov.justice.digital.hmpps.data.generator.StaffGenerator
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.person.PersonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.StaffRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.provider.StaffWithTeamsRepository
 import java.time.LocalDate
 
 @ExtendWith(MockitoExtension::class)
 class StaffServiceTest {
     @Mock
     lateinit var staffRepository: StaffRepository
+
+    @Mock
+    lateinit var staffWithTeamsRepository: StaffWithTeamsRepository
 
     @Mock
     lateinit var ldapService: LdapService
