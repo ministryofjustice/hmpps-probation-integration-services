@@ -112,7 +112,6 @@ class DeliusService(
             eventId = relatedIds.eventId,
             nsiId = relatedIds.nsiId,
             type = caseNoteType,
-            nomisId = header.legacyId,
             description = description,
             notes = body.notes(),
             date = body.contactTimeStamp,

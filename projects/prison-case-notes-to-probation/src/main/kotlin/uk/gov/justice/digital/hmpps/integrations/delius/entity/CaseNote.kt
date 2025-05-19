@@ -28,7 +28,7 @@ data class CaseNote(
     val nsiId: Long?,
 
     @Column(name = "nomis_case_note_id", updatable = false)
-    val nomisId: Long?,
+    val nomisId: Long? = null,
 
     @ManyToOne
     @JoinColumn(name = "contact_type_id", updatable = false)
