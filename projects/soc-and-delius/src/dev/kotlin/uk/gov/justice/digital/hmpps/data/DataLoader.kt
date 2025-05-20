@@ -92,6 +92,12 @@ class DataLoader(
             SearchGenerator.JOHN_SMITH_1_ALIAS,
             SearchGenerator.JOHN_SMITH_2,
             generatePersonManager(SearchGenerator.JOHN_SMITH_2),
+            ManagerGenerator.PERSON,
+            ManagerGenerator.PERSON_2,
+            ManagerGenerator.PROBATION_AREA_1,
+            ManagerGenerator.PROBATION_AREA_2,
+            ManagerGenerator.PROBATION_AREA_3,
+            *ManagerGenerator.PERSON_MANAGERS.toTypedArray(),
         )
 
         em.createNativeQuery(

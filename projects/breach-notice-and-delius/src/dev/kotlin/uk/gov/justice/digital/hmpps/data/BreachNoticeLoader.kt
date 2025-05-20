@@ -77,7 +77,7 @@ class BreachNoticeLoader(
             EventGenerator.DS_REQUIREMENT_SUB_CATEOGORY,
             EventGenerator.DEFAULT_RQMNT_SUB_CATEGORY,
             EventGenerator.DEFAULT_RQMNT,
-            WarningGenerator.DEFAULT_ENFORCEABLE_CONTACT,
+            *WarningGenerator.ENFORCEABLE_CONTACTS.toTypedArray(),
         )
     }
 

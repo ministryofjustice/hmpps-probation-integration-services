@@ -19,7 +19,7 @@ class Offender(
     val crn: String,
 
     @Column(name = "noms_number", columnDefinition = "char(7)")
-    val nomsId: String,
+    val nomsId: String?,
 
     @Column(updatable = false, columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)

@@ -6,13 +6,15 @@ import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.person.PersonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.getCaseType
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.StaffRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.provider.TeamWithDistrict
+import uk.gov.justice.digital.hmpps.integrations.delius.provider.StaffWithTeams
+import uk.gov.justice.digital.hmpps.integrations.delius.provider.StaffWithTeamsRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.getWithUserByCode
 import java.time.LocalDate
 
 @Service
 class StaffService(
     private val staffRepository: StaffRepository,
+    private val staffWithTeamsRepository: StaffWithTeamsRepository,
     private val ldapService: LdapService,
     private val personRepository: PersonRepository
 ) {
@@ -47,30 +49,33 @@ class StaffService(
         )
     }
 
-    fun getTeams(code: String) = StaffTeamsResponse(
-        staffRepository.findStaffWithTeamsByCode(code)?.teams?.map { it.withLau() }
+    fun getTeams(code: String) =
+        staffWithTeamsRepository.findStaffWithTeamsByCode(code)?.toResponse()
             ?: throw NotFoundException("Staff", "code", code)
-    )
 
-    fun getTeamsByUsername(username: String) = StaffTeamsResponse(
-        staffRepository.findStaffWithTeamsByUsername(username)?.teams?.map { it.withLau() }
+    fun getTeamsByUsername(username: String) =
+        staffWithTeamsRepository.findStaffWithTeamsByUsername(username)?.toResponse()
             ?: throw NotFoundException("Staff", "username", username)
-    )
 
-    private fun TeamWithDistrict.withLau() = TeamWithLocalAdminUnit(
-        code = code,
-        description = description,
-        localAdminUnit = LocalAdminUnit(
-            code = district.code,
-            description = district.description,
-            probationDeliveryUnit = ProbationDeliveryUnit(
-                code = district.borough.code,
-                description = district.borough.description,
-                provider = Provider(
-                    code = district.borough.probationArea.code,
-                    description = district.borough.probationArea.description,
-                )
+    private fun StaffWithTeams.toResponse(): StaffTeamsResponse = StaffTeamsResponse(
+        datasets = user?.datasets?.map { Provider(it.code, it.description) },
+        teams = teams.map {
+            TeamWithLocalAdminUnit(
+                code = it.code,
+                description = it.description,
+                localAdminUnit = LocalAdminUnit(
+                    code = it.district.code,
+                    description = it.district.description,
+                    probationDeliveryUnit = ProbationDeliveryUnit(
+                        code = it.district.borough.code,
+                        description = it.district.borough.description,
+                        provider = Provider(
+                            code = it.district.borough.probationArea.code,
+                            description = it.district.borough.probationArea.description,
+                        )
+                    )
+                ),
             )
-        ),
+        }
     )
 }
