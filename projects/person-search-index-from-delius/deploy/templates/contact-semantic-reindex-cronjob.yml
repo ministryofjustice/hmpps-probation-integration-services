@@ -39,7 +39,7 @@ spec:
                 - name: CONTACT_SEMANTIC_INDEX_PREFIX
                   value: contact-semantic-search
                 - name: CONTACT_SEMANTIC_REINDEXING_TIMEOUT
-                  value: '172800' # 48 hours
+                  value: '259200' # 72 hours
                 - name: PIPELINES_ENABLED
                   value: contact-semantic-full-load
                 - name: PIPELINE_WORKERS
