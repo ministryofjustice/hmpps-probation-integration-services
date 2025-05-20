@@ -3,9 +3,6 @@ generic-service:
   productId: HMPPS518
   nameOverride: prison-identifier-and-delius
   serviceAccountName: prison-identifier-and-delius
-  resources:
-    limits:
-      memory: 2Gi
   image:
     repository: ghcr.io/ministryofjustice/hmpps-probation-integration-services/prison-identifier-and-delius
   ingress:
