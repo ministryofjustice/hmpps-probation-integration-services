@@ -126,11 +126,11 @@ class NsiService(
         nsi.eventId?.let {
             eventRepository.findEventByIdAndSoftDeletedIsFalseAndActiveIsTrue(nsi.eventId).orElseThrow {
                 EventNotFoundException(
-                        termination.urn,
-                        termination.crn,
-                        termination.eventId,
-                        termination.startDate.toLocalDate()
-                    )
+                    termination.urn,
+                    termination.crn,
+                    termination.eventId,
+                    termination.startDate.toLocalDate()
+                )
             }
         }
         return nsi

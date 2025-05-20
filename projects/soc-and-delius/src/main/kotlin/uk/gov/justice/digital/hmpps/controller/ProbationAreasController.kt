@@ -1,10 +1,9 @@
 package uk.gov.justice.digital.hmpps.controller
 
 import io.swagger.v3.oas.annotations.Parameter
+import jakarta.validation.constraints.Size
 import org.springframework.security.access.prepost.PreAuthorize
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.RequestParam
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 import uk.gov.justice.digital.hmpps.service.ProbationAreaService
 
 @RestController
@@ -16,4 +15,11 @@ class ProbationAreasController(private val probationAreaService: ProbationAreaSe
         @RequestParam(defaultValue = "false")
         includeNonSelectable: Boolean = false
     ) = probationAreaService.getProbationAreas(includeNonSelectable)
+
+    @PreAuthorize("hasRole('PROBATION_API__SOC__CASE_DETAIL')")
+
+    @PostMapping(value = ["/probation-area-history"])
+    fun probationAreas(
+        @RequestBody @Size(min = 1, max = 500, message = "Please provide between 1 and 500 CRNs") crns: List<String>
+    ) = probationAreaService.getProbationAreaHistory(crns)
 }

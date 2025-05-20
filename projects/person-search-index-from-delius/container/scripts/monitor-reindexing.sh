@@ -91,7 +91,6 @@ function switch_aliases() {
 }
 
 function get_status() {
-  echo 'Getting status document ...'
   if [ -z "$ROUTING_REQUIRED" ]; then
     ROUTING_REQUIRED=$(curl_json "${SEARCH_URL}/${STANDBY_INDEX}/_mappings" | jq '.["'"${STANDBY_INDEX}"'"].mappings._routing.required // false')
     ROUTING_SUFFIX=$(if [ "$ROUTING_REQUIRED" = 'true' ]; then echo '?routing=-1'; else echo ''; fi)

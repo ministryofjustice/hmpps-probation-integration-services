@@ -111,12 +111,17 @@ internal class RepositoryExtensionMethodTests {
 
         assertThrows<EventNotFoundException> { nsiService.terminateNsi(termination) }
     }
+
     @Test
     fun `nsi type not found causes failure`() {
         val person = PersonGenerator.DEFAULT
         val nsi = NsiGenerator.WITHDRAWN
         whenever(nsiRepository.findByPersonCrnAndExternalReference(person.crn, nsi.externalReference!!)).thenReturn(nsi)
-        whenever(eventRepository.findEventByIdAndSoftDeletedIsFalseAndActiveIsTrue(nsi.eventId!!)).thenReturn(Optional.of(SentenceGenerator.EVENT_WITH_NSI))
+        whenever(eventRepository.findEventByIdAndSoftDeletedIsFalseAndActiveIsTrue(nsi.eventId!!)).thenReturn(
+            Optional.of(
+                SentenceGenerator.EVENT_WITH_NSI
+            )
+        )
 
         val ex = assertThrows<NotFoundException> {
             nsiService.terminateNsi(
@@ -143,7 +148,11 @@ internal class RepositoryExtensionMethodTests {
         val person = PersonGenerator.DEFAULT
         val nsi = NsiGenerator.WITHDRAWN
         whenever(nsiRepository.findByPersonCrnAndExternalReference(person.crn, nsi.externalReference!!)).thenReturn(nsi)
-        whenever(eventRepository.findEventByIdAndSoftDeletedIsFalseAndActiveIsTrue(nsi.eventId!!)).thenReturn(Optional.of(SentenceGenerator.EVENT_WITH_NSI))
+        whenever(eventRepository.findEventByIdAndSoftDeletedIsFalseAndActiveIsTrue(nsi.eventId!!)).thenReturn(
+            Optional.of(
+                SentenceGenerator.EVENT_WITH_NSI
+            )
+        )
         whenever(nsiStatusRepository.findByCode(NsiStatus.Code.END.value)).thenReturn(NsiGenerator.COMP_STATUS)
 
         val ex = assertThrows<NotFoundException> {
@@ -165,5 +174,4 @@ internal class RepositoryExtensionMethodTests {
 
         assertThat(ex.message, equalTo("NsiOutcome with code of CRS03 not found"))
     }
-
 }

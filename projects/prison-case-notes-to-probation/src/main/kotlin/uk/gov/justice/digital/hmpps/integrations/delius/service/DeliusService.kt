@@ -44,6 +44,9 @@ class DeliusService(
                 ?: caseNote.header.legacyId?.let { caseNoteRepository.findByNomisId(it) }
 
             ActiveAlert, InactiveAlert -> caseNoteRepository.findByExternalReference(caseNote.urn)
+        }?.takeIf {
+            //get a case note and need to ensure the noms id matches the delius noms id
+            it.offender.nomsId == caseNote.header.nomisId
         }
 
         return (if (existing == null) caseNote.newEntity() else existing.updateFrom(caseNote))
@@ -56,7 +59,7 @@ class DeliusService(
                     )
                 )
             }
-            ?.let { Success(it.offender.crn, it.offender.nomsId, if (existing == null) Created else Updated) }
+            ?.let { Success(it.offender.crn, it.offender.nomsId!!, if (existing == null) Created else Updated) }
     }
 
     private fun CaseNote.updateFrom(caseNote: DeliusCaseNote): CaseNote? {
@@ -109,7 +112,6 @@ class DeliusService(
             eventId = relatedIds.eventId,
             nsiId = relatedIds.nsiId,
             type = caseNoteType,
-            nomisId = header.legacyId,
             description = description,
             notes = body.notes(),
             date = body.contactTimeStamp,
