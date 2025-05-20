@@ -38,7 +38,7 @@ spec:
                 - name: CONTACT_KEYWORD_INDEX_PREFIX
                   value: contact-search
                 - name: CONTACT_KEYWORD_REINDEXING_TIMEOUT
-                  value: '259200' # 48 hours
+                  value: '259200' # 72 hours
                 - name: PIPELINES_ENABLED
                   value: contact-keyword-full-load
                 - name: PIPELINE_BATCH_SIZE # Maximum number of in-memory events per worker
