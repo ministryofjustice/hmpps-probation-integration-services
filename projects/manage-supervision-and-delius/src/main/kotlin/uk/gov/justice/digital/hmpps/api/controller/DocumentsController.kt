@@ -44,8 +44,15 @@ class DocumentsController(private val documentsService: DocumentsService) {
         @RequestBody @Valid documentTextSearch: DocumentTextSearch,
         @RequestParam(required = false, defaultValue = "0") page: Int,
         @RequestParam(required = false, defaultValue = "10") size: Int,
+        @RequestParam(required = false, defaultValue = "false") useDBFilenameSearch: Boolean,
         @RequestParam(required = false) sortBy: String?,
-    ) = documentsService.textSearch(documentTextSearch, crn, PageRequest.of(page, size, sort(sortBy)), sortBy)
+    ) = documentsService.textSearch(
+        documentTextSearch,
+        crn,
+        useDBFilenameSearch,
+        PageRequest.of(page, size, sort(sortBy)),
+        sortBy
+    )
 
     private fun sort(sortString: String?): Sort {
         if (sortString == null) {

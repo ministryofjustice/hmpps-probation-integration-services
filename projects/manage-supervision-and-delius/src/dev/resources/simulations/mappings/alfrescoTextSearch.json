@@ -1,12 +1,7 @@
 {
   "request": {
     "method": "POST",
-    "urlPath": "/alfresco/search/text/X000004",
-    "queryParameters": {
-      "query": {
-        "matches": "text"
-      }
-    }
+    "urlPath": "/alfresco/search/text/X000004"
   },
   "response": {
     "headers": {

@@ -158,6 +158,7 @@ class DataLoader(
             ContactGenerator.COMMUNICATION_CATEGORY,
             ContactGenerator.CONTACT_DOCUMENT_1,
             ContactGenerator.CONTACT_DOCUMENT_2,
+            ContactGenerator.CONTACT_DOCUMENT_3,
             PersonGenerator.OFFENCE_1,
             PersonGenerator.MAIN_OFFENCE_1,
             PersonGenerator.OFFENCE_2,

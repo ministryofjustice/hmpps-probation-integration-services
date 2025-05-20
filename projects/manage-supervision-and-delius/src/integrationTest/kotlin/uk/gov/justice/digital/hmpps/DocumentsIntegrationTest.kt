@@ -37,15 +37,16 @@ internal class DocumentsIntegrationTest {
             .andExpect(status().isOk)
             .andReturn().response.contentAsJson<PersonDocuments>()
 
-        assertThat(res.documents.size, equalTo(4))
+        assertThat(res.documents.size, equalTo(5))
         assertThat(res.documents[0].name, equalTo("event report"))
         assertThat(res.documents[1].name, equalTo("court report"))
-        assertThat(res.documents[2].name, equalTo("contact2.doc"))
-        assertThat(res.documents[2].workInProgress, equalTo(false))
-        assertThat(res.documents[2].status, equalTo(null))
-        assertThat(res.documents[3].name, equalTo("contact.doc"))
-        assertThat(res.documents[3].workInProgress, equalTo(true))
-        assertThat(res.documents[3].status, equalTo("Sensitive"))
+        assertThat(res.documents[2].name, equalTo("dic.doc"))
+        assertThat(res.documents[3].name, equalTo("contact2.doc"))
+        assertThat(res.documents[3].workInProgress, equalTo(false))
+        assertThat(res.documents[3].status, equalTo(null))
+        assertThat(res.documents[4].name, equalTo("contact.doc"))
+        assertThat(res.documents[4].workInProgress, equalTo(true))
+        assertThat(res.documents[4].status, equalTo("Sensitive"))
     }
 
     @Test
@@ -59,7 +60,7 @@ internal class DocumentsIntegrationTest {
 
         assertThat(res.documents.size, equalTo(2))
         assertThat(res.documents[0].name, equalTo("event report"))
-        assertThat(res.documents[1].name, equalTo("court report"))
+        assertThat(res.documents[1].name, equalTo("dic.doc"))
     }
 
     @Test
@@ -97,15 +98,16 @@ internal class DocumentsIntegrationTest {
             .andExpect(status().isOk)
             .andReturn().response.contentAsJson<PersonDocuments>()
 
-        assertThat(res.documents.size, equalTo(4))
+        assertThat(res.documents.size, equalTo(5))
         assertThat(res.documents[0].name, equalTo("event report"))
         assertThat(res.documents[1].name, equalTo("court report"))
-        assertThat(res.documents[2].name, equalTo("contact2.doc"))
-        assertThat(res.documents[2].workInProgress, equalTo(false))
-        assertThat(res.documents[2].status, equalTo(null))
-        assertThat(res.documents[3].name, equalTo("contact.doc"))
-        assertThat(res.documents[3].workInProgress, equalTo(true))
-        assertThat(res.documents[3].status, equalTo("Sensitive"))
+        assertThat(res.documents[2].name, equalTo("dic.doc"))
+        assertThat(res.documents[3].name, equalTo("contact2.doc"))
+        assertThat(res.documents[3].workInProgress, equalTo(false))
+        assertThat(res.documents[3].status, equalTo(null))
+        assertThat(res.documents[4].name, equalTo("contact.doc"))
+        assertThat(res.documents[4].workInProgress, equalTo(true))
+        assertThat(res.documents[4].status, equalTo("Sensitive"))
     }
 
     @Test
@@ -127,9 +129,10 @@ internal class DocumentsIntegrationTest {
         val expectedMetadata =
             (listOf(DocumentLevelCode.ALL) + (DocumentLevelCode.entries.filter { it != DocumentLevelCode.ALL }
                 .sortedBy { it.name })).map { DocumentLevel(it.name, it.description) }
-        assertThat(res.documents.size, equalTo(2))
-        assertThat(res.documents[0].name, equalTo("contact2.doc"))
-        assertThat(res.documents[1].name, equalTo("contact.doc"))
+        assertThat(res.documents.size, equalTo(3))
+        assertThat(res.documents[0].name, equalTo("dic.doc"))
+        assertThat(res.documents[1].name, equalTo("contact2.doc"))
+        assertThat(res.documents[2].name, equalTo("contact.doc"))
         assertThat(res.metadata?.documentLevels, equalTo(expectedMetadata))
     }
 
@@ -187,10 +190,10 @@ internal class DocumentsIntegrationTest {
             )
             .andExpect(status().isOk)
             .andReturn().response.contentAsJson<PersonDocuments>()
-        assertThat(res.totalElements, equalTo(4))
+        assertThat(res.totalElements, equalTo(5))
         assertThat(res.documents.size, equalTo(2))
-        assertThat(res.documents[0].alfrescoId, equalTo("B002"))
-        assertThat(res.documents[1].alfrescoId, equalTo("B001"))
+        assertThat(res.documents[0].alfrescoId, equalTo("C001"))
+        assertThat(res.documents[1].alfrescoId, equalTo("B002"))
     }
 
     @Test
@@ -215,6 +218,59 @@ internal class DocumentsIntegrationTest {
         assertThat(res.documents.size, equalTo(2))
         assertThat(res.documents[0].alfrescoId, equalTo("B001"))
         assertThat(res.documents[1].alfrescoId, equalTo("B002"))
+        assertThat(res.metadata?.documentLevels, equalTo(expectedMetadata))
+    }
+
+    @Test
+    fun `find all documents using the alfresco text search and also the DB filename with multiple keywords`() {
+        val person = OVERVIEW
+        val res = mockMvc
+            .perform(
+                post("/documents/${person.crn}/search/text?useDBFilenameSearch=true").withToken()
+                    .withJson(
+                        DocumentTextSearch(
+                            query = "text dic",
+                        )
+                    )
+            )
+            .andExpect(status().isOk)
+            .andReturn().response.contentAsJson<PersonDocuments>()
+        val expectedMetadata =
+            (listOf(DocumentLevelCode.ALL) + (DocumentLevelCode.entries.filter { it != DocumentLevelCode.ALL }
+                .sortedBy { it.name })).map { DocumentLevel(it.name, it.description) }
+        assertThat(res.totalElements, equalTo(5))
+        assertThat(res.documents.size, equalTo(5))
+        assertThat(res.documents[0].alfrescoId, equalTo("B001"))
+        assertThat(res.documents[1].alfrescoId, equalTo("B002"))
+        assertThat(res.documents[2].alfrescoId, equalTo("A003"))
+        assertThat(res.documents[3].alfrescoId, equalTo("A004"))
+        assertThat(res.documents[4].alfrescoId, equalTo("C001"))
+        assertThat(res.metadata?.documentLevels, equalTo(expectedMetadata))
+    }
+
+    @Test
+    fun `find all documents using the alfresco text search without the DB filename search with multiple keywords`() {
+        val person = OVERVIEW
+        val res = mockMvc
+            .perform(
+                post("/documents/${person.crn}/search/text?useDBFilenameSearch=false").withToken()
+                    .withJson(
+                        DocumentTextSearch(
+                            query = "text dic",
+                        )
+                    )
+            )
+            .andExpect(status().isOk)
+            .andReturn().response.contentAsJson<PersonDocuments>()
+        val expectedMetadata =
+            (listOf(DocumentLevelCode.ALL) + (DocumentLevelCode.entries.filter { it != DocumentLevelCode.ALL }
+                .sortedBy { it.name })).map { DocumentLevel(it.name, it.description) }
+        assertThat(res.totalElements, equalTo(4))
+        assertThat(res.documents.size, equalTo(4))
+        assertThat(res.documents[0].alfrescoId, equalTo("B001"))
+        assertThat(res.documents[1].alfrescoId, equalTo("B002"))
+        assertThat(res.documents[2].alfrescoId, equalTo("A003"))
+        assertThat(res.documents[3].alfrescoId, equalTo("A004"))
         assertThat(res.metadata?.documentLevels, equalTo(expectedMetadata))
     }
 }

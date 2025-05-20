@@ -92,7 +92,11 @@ internal class ScheduleIntegrationTest {
             .andExpect(status().isOk)
             .andReturn().response.contentAsJson<PersonAppointment>()
         val expectedDocs =
-            listOf(ContactGenerator.CONTACT_DOCUMENT_1.toDocument(), ContactGenerator.CONTACT_DOCUMENT_2.toDocument())
+            listOf(
+                ContactGenerator.CONTACT_DOCUMENT_1.toDocument(),
+                ContactGenerator.CONTACT_DOCUMENT_2.toDocument(),
+                ContactGenerator.CONTACT_DOCUMENT_3.toDocument()
+            )
         val expectedAppointment = ContactGenerator.NEXT_APPT_CONTACT.toActivity().copy(documents = expectedDocs)
         assertThat(res.personSummary.crn, equalTo(person.crn))
         assertThat(res.appointment.id, equalTo(expectedAppointment.id))
