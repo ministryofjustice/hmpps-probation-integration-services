@@ -28,7 +28,7 @@ class Contact(
     val date: LocalDate,
 
     @Column(name = "contact_start_time")
-    val startTime: ZonedDateTime,
+    val startTime: ZonedDateTime?,
 
     @ManyToOne
     @JoinColumn(name = "event_id")
