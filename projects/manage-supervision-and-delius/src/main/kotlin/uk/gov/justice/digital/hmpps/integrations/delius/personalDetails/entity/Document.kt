@@ -276,7 +276,7 @@ interface DocumentsRepository : JpaRepository<DocumentEntity, Long> {
             where d.offenderId = :offenderId
             and ((:createdDateFrom is null or :createdDateTo is null) or (d.createdAt >= :createdDateFrom and d.createdAt <= :createdDateTo))
             and (:#{#documentLevelCode.name} = "ALL" or d.level = :#{#documentLevelCode.description})
-            and (:ids is null or d.alfrescoId in (:ids))
+            and ((:ids is null or d.alfrescoId in (:ids)) or (:keywords is not null and regexp_substr(d.name, :keywords, 1, 1, 'i') is not null ))
         """
     )
     fun search(
@@ -285,6 +285,7 @@ interface DocumentsRepository : JpaRepository<DocumentEntity, Long> {
         createdDateTo: LocalDateTime?,
         documentLevelCode: DocumentLevelCode,
         ids: List<String>? = null,
+        keywords: String? = null,
         pageable: Pageable
     ): Page<DocumentEntity>
 }

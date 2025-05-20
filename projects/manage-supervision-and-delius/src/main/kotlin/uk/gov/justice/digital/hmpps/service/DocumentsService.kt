@@ -51,6 +51,7 @@ class DocumentsService(
     fun textSearch(
         documentTextSearch: DocumentTextSearch,
         crn: String,
+        useDBFilenameSearch: Boolean,
         pageable: Pageable,
         sortedBy: String?
     ): PersonDocuments {
@@ -60,13 +61,15 @@ class DocumentsService(
             crn,
             documentTextSearch.query
         ).documents.map { it.id }
-
+        val keywords =
+            if (!useDBFilenameSearch) null else documentTextSearch.query?.split("\\s+".toRegex())?.joinToString("|")
         val documents = documentsRepository.search(
             summary.id,
             documentTextSearch.dateFrom?.toLocalDate()?.atStartOfDay(),
             documentTextSearch.dateTo?.toLocalDate()?.atTime(LocalTime.MAX),
             documentTextSearch.levelCode,
             ids,
+            keywords,
             pageable
         )
 
@@ -88,8 +91,10 @@ class DocumentsService(
         if (sortedBy != null) {
             return documents.map { it.toDocumentDetails() }
         }
+
+        val filenameMatches = documents.filter { ids?.contains(it.alfrescoId) == false }.map { it.toDocumentDetails() }
         return (ids?.mapNotNull { id -> documents.firstOrNull { it.alfrescoId == id } }
-            ?: documents).map { it.toDocumentDetails() }
+            ?: documents).map { it.toDocumentDetails() } + filenameMatches
     }
 
     fun metadata(): DocumentMetadata {
