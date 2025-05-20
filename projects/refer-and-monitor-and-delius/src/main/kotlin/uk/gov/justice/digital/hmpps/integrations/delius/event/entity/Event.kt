@@ -85,6 +85,8 @@ interface EventRepository : JpaRepository<Event, Long> {
     @EntityGraph(attributePaths = ["disposal.type", "mainOffence.offence"])
     override fun findById(id: Long): Optional<Event>
 
+    fun findEventByIdAndSoftDeletedIsFalseAndActiveIsTrue(id: Long): Optional<Event>
+
     @Query(
         """
         select e from Event e

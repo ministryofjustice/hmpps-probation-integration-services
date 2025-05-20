@@ -13,11 +13,14 @@ import org.mockito.kotlin.whenever
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
 import uk.gov.justice.digital.hmpps.data.generator.NsiGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
+import uk.gov.justice.digital.hmpps.data.generator.SentenceGenerator
+import uk.gov.justice.digital.hmpps.exception.EventNotFoundException
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.exception.ReferralNotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactOutcomeRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactTypeRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.EventRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceDataRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.referral.NsiRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.referral.NsiStatusHistoryRepository
@@ -27,6 +30,7 @@ import uk.gov.justice.digital.hmpps.messaging.NsiTermination
 import uk.gov.justice.digital.hmpps.messaging.ReferralEndType
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import java.time.ZonedDateTime
+import java.util.Optional
 
 @ExtendWith(MockitoExtension::class)
 internal class RepositoryExtensionMethodTests {
@@ -61,6 +65,9 @@ internal class RepositoryExtensionMethodTests {
     @Mock
     lateinit var telemetryService: TelemetryService
 
+    @Mock
+    lateinit var eventRepository: EventRepository
+
     @InjectMocks
     lateinit var nsiService: NsiService
 
@@ -84,10 +91,37 @@ internal class RepositoryExtensionMethodTests {
     }
 
     @Test
+    fun `nsi not soft deleted, but event is not active`() {
+        val person = PersonGenerator.DEFAULT
+        val nsi = NsiGenerator.WITHDRAWN
+        whenever(nsiRepository.findByPersonCrnAndExternalReference(person.crn, nsi.externalReference!!)).thenReturn(nsi)
+
+        val termination = NsiTermination(
+            person.crn,
+            nsi.externalReference!!,
+            1,
+            ZonedDateTime.now().minusDays(1),
+            ZonedDateTime.now(),
+            ReferralEndType.CANCELLED,
+            null,
+            "Notes",
+            ZonedDateTime.now(),
+            "End Of Service Report Submitted"
+        )
+
+        assertThrows<EventNotFoundException> { nsiService.terminateNsi(termination) }
+    }
+
+    @Test
     fun `nsi type not found causes failure`() {
         val person = PersonGenerator.DEFAULT
         val nsi = NsiGenerator.WITHDRAWN
         whenever(nsiRepository.findByPersonCrnAndExternalReference(person.crn, nsi.externalReference!!)).thenReturn(nsi)
+        whenever(eventRepository.findEventByIdAndSoftDeletedIsFalseAndActiveIsTrue(nsi.eventId!!)).thenReturn(
+            Optional.of(
+                SentenceGenerator.EVENT_WITH_NSI
+            )
+        )
 
         val ex = assertThrows<NotFoundException> {
             nsiService.terminateNsi(
@@ -114,6 +148,11 @@ internal class RepositoryExtensionMethodTests {
         val person = PersonGenerator.DEFAULT
         val nsi = NsiGenerator.WITHDRAWN
         whenever(nsiRepository.findByPersonCrnAndExternalReference(person.crn, nsi.externalReference!!)).thenReturn(nsi)
+        whenever(eventRepository.findEventByIdAndSoftDeletedIsFalseAndActiveIsTrue(nsi.eventId!!)).thenReturn(
+            Optional.of(
+                SentenceGenerator.EVENT_WITH_NSI
+            )
+        )
         whenever(nsiStatusRepository.findByCode(NsiStatus.Code.END.value)).thenReturn(NsiGenerator.COMP_STATUS)
 
         val ex = assertThrows<NotFoundException> {

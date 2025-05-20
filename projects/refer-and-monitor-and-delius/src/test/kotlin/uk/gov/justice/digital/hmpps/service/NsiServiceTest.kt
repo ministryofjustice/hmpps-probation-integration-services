@@ -17,6 +17,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactOutcomeRe
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactTypeRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactType
+import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.EventRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceDataRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.referral.NsiRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.referral.NsiStatusHistoryRepository
@@ -57,6 +58,9 @@ internal class NsiServiceTest {
 
     @Mock
     lateinit var telemetryService: TelemetryService
+
+    @Mock
+    lateinit var eventRepository: EventRepository
 
     @InjectMocks
     lateinit var nsiService: NsiService
