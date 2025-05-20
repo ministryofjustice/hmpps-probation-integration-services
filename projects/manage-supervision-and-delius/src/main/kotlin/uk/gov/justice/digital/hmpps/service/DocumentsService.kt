@@ -61,7 +61,8 @@ class DocumentsService(
             crn,
             documentTextSearch.query
         ).documents.map { it.id }
-        val keywords = if(!useDBFilenameSearch) null else documentTextSearch.query?.split("\\s+".toRegex())?.joinToString ( "|")
+        val keywords =
+            if (!useDBFilenameSearch) null else documentTextSearch.query?.split("\\s+".toRegex())?.joinToString("|")
         val documents = documentsRepository.search(
             summary.id,
             documentTextSearch.dateFrom?.toLocalDate()?.atStartOfDay(),
@@ -91,7 +92,7 @@ class DocumentsService(
             return documents.map { it.toDocumentDetails() }
         }
 
-        val filenameMatches = documents.filter{ ids?.contains(it.alfrescoId) == false }.map { it.toDocumentDetails() }
+        val filenameMatches = documents.filter { ids?.contains(it.alfrescoId) == false }.map { it.toDocumentDetails() }
         return (ids?.mapNotNull { id -> documents.firstOrNull { it.alfrescoId == id } }
             ?: documents).map { it.toDocumentDetails() } + filenameMatches
     }
