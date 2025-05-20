@@ -5,6 +5,7 @@ import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.api.model.ReferralStarted
 import uk.gov.justice.digital.hmpps.audit.service.AuditableService
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
+import uk.gov.justice.digital.hmpps.exception.EventNotFoundException
 import uk.gov.justice.digital.hmpps.exception.ReferralNotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractionCode.MANAGE_NSI
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactOutcomeRepository
@@ -15,6 +16,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactOu
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactType
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactType.Code.*
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.getByCode
+import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.EventRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceDataRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.nsiOutcome
 import uk.gov.justice.digital.hmpps.integrations.delius.referral.NsiRepository
@@ -39,6 +41,7 @@ class NsiService(
     private val contactTypeRepository: ContactTypeRepository,
     private val contactOutcomeRepository: ContactOutcomeRepository,
     private val createNsi: CreateNsi,
+    private val eventRepository: EventRepository,
 ) : AuditableService(auditedInteractionService) {
 
     @Transactional
@@ -118,6 +121,17 @@ class NsiService(
                     else -> "Unknown"
                 }
             )
+        }
+
+        nsi.eventId?.let {
+            eventRepository.findEventByIdAndSoftDeletedIsFalseAndActiveIsTrue(nsi.eventId).orElseThrow {
+                EventNotFoundException(
+                        termination.urn,
+                        termination.crn,
+                        termination.eventId,
+                        termination.startDate.toLocalDate()
+                    )
+            }
         }
         return nsi
     }
