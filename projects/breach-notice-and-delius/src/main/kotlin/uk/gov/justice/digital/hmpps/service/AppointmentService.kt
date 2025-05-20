@@ -7,6 +7,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.*
 import uk.gov.justice.digital.hmpps.ldap.findAttributeByUsername
 import uk.gov.justice.digital.hmpps.model.*
 import java.time.LocalDateTime
+import java.time.LocalTime
 
 @Service
 class AppointmentService(
@@ -34,7 +35,7 @@ fun PersonManager.asResponsibleOfficer(): ResponsibleOfficer = ResponsibleOffice
 fun Contact.asAppointment() = Appointment(
     id,
     type.codedDescription(),
-    LocalDateTime.of(date, startTime.withZoneSameInstant(EuropeLondon).toLocalTime()),
+    LocalDateTime.of(date, startTime?.withZoneSameInstant(EuropeLondon)?.toLocalTime() ?: LocalTime.MIN),
     description,
     location?.toAddress(),
     Officer(staff.code, staff.name()),
