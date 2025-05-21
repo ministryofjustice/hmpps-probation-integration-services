@@ -118,6 +118,9 @@
         <a href="./api-reference.html#search-probation-cases-crns"><span>/search/probation-cases/crns</span></a>
       </li>
       <li>
+        <a href="./api-reference.html#probation-area-history"><span>/probation-area-history</span></a>
+      </li>
+      <li>
         <a href="./api-reference.html#court-appearances"><span>/court-appearances</span></a>
       </li>
       <li>
@@ -236,6 +239,45 @@
 
 
 <h4 id="search-probation-cases-crns-post-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+<pre><code>{
+}</code></pre>
+
+</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h2 id="probation-area-history">/probation-area-history</h2>
+
+<h3 id="probation-area-history-post">post</h3>
+
+
+
+
+
+
+
+<h4 id="probation-area-history-post-responses">Responses</h4>
 <table>
 <thead>
 <tr><th>Status</th><th>Description</th><th>Schema</th></tr>
@@ -1324,6 +1366,80 @@
 <td></td>
 <td>
   
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-codedescription">CodeDescription</h3>
+
+
+<table class='schema-codedescription'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>code</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>description</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-probationareahistory">ProbationAreaHistory</h3>
+
+
+<table class='schema-probationareahistory'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>startDate</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>endDate</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>probationArea</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-codedescription'>CodeDescription</a>
 </td>
 </tr>
 

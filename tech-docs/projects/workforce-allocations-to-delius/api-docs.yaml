@@ -315,6 +315,18 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/RiskSummary"
+  /probation-estate:
+    get:
+      tags:
+      - team-resource
+      operationId: allTeams
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProbationEstateResponse"
   /person/{value}:
     get:
       tags:
@@ -1053,6 +1065,10 @@ components:
     StaffTeamsResponse:
       type: object
       properties:
+        datasets:
+          type: array
+          items:
+            $ref: "#/components/schemas/Provider"
         teams:
           type: array
           items:
@@ -1144,6 +1160,70 @@ components:
           $ref: "#/components/schemas/RiskItem"
         publicProtection:
           $ref: "#/components/schemas/RiskItem"
+    LocalAdminUnitWithTeams:
+      type: object
+      properties:
+        code:
+          type: string
+        description:
+          type: string
+        teams:
+          type: array
+          items:
+            $ref: "#/components/schemas/Team"
+      required:
+      - code
+      - description
+      - teams
+    ProbationDeliveryUnitWithLocalAdminUnits:
+      type: object
+      properties:
+        code:
+          type: string
+        description:
+          type: string
+        localAdminUnits:
+          type: array
+          items:
+            $ref: "#/components/schemas/LocalAdminUnitWithTeams"
+      required:
+      - code
+      - description
+      - localAdminUnits
+    ProbationEstateResponse:
+      type: object
+      properties:
+        providers:
+          type: array
+          items:
+            $ref: "#/components/schemas/ProviderWithProbationDeliveryUnits"
+      required:
+      - providers
+    ProviderWithProbationDeliveryUnits:
+      type: object
+      properties:
+        code:
+          type: string
+        description:
+          type: string
+        probationDeliveryUnits:
+          type: array
+          items:
+            $ref: "#/components/schemas/ProbationDeliveryUnitWithLocalAdminUnits"
+      required:
+      - code
+      - description
+      - probationDeliveryUnits
+    Team:
+      type: object
+      properties:
+        code:
+          type: string
+        description:
+          type: string
+      required:
+      - code
+      - description
     Person:
       type: object
       properties:

@@ -162,6 +162,12 @@ paths:
           type: integer
           format: int32
           default: 10
+      - name: useDBFilenameSearch
+        in: query
+        required: false
+        schema:
+          type: boolean
+          default: false
       - name: sortBy
         in: query
         required: false
@@ -1928,6 +1934,25 @@ components:
       - name
       - offenderId
       - type
+    DocumentLevel:
+      type: object
+      properties:
+        code:
+          type: string
+        description:
+          type: string
+      required:
+      - code
+      - description
+    DocumentMetadata:
+      type: object
+      properties:
+        documentLevels:
+          type: array
+          items:
+            $ref: "#/components/schemas/DocumentLevel"
+      required:
+      - documentLevels
     PersonDocuments:
       type: object
       properties:
@@ -1945,6 +1970,8 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/DocumentDetails"
+        metadata:
+          $ref: "#/components/schemas/DocumentMetadata"
       required:
       - documents
       - personSummary
@@ -1955,12 +1982,36 @@ components:
       properties:
         query:
           type: string
+        levelCode:
+          type: string
+          enum:
+          - ALL
+          - PERSON
+          - PRE_CONS
+          - ADDRESS_ASSESSMENT
+          - PERSONAL_CONTACT
+          - PERSONAL_CIRCUMSTANCE
+          - EVENT
+          - CPS
+          - COURT_REPORT
+          - INSTITUTIONAL_REPORT
+          - AP_REFERRAL
+          - ASSESSMENT
+          - CASE_ALLOCATION
+          - REFERRAL
+          - UPW
+          - CONTACT
+          - NSI
+          - ADDRESS
+          - REGISTER
         dateFrom:
           type: string
           format: date-time
         dateTo:
           type: string
           format: date-time
+      required:
+      - levelCode
     UserSearchFilter:
       type: object
       properties:

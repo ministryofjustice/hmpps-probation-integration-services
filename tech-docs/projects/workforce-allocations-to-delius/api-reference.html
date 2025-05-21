@@ -148,6 +148,9 @@
         <a href="./api-reference.html#registrations-crn-flags"><span>/registrations/{crn}/flags</span></a>
       </li>
       <li>
+        <a href="./api-reference.html#probation-estate"><span>/probation-estate</span></a>
+      </li>
+      <li>
         <a href="./api-reference.html#person-value"><span>/person/{value}</span></a>
       </li>
       <li>
@@ -815,6 +818,12 @@
 
 
 <pre><code>{
+  "datasets": [
+    {
+      "code": "string",
+      "description": "string"
+    }
+  ],
   "teams": [
     {
       "code": "string",
@@ -958,6 +967,12 @@
 
 
 <pre><code>{
+  "datasets": [
+    {
+      "code": "string",
+      "description": "string"
+    }
+  ],
   "teams": [
     {
       "code": "string",
@@ -1140,6 +1155,69 @@
 </td>
 <td>
 <a href='#schema-risksummary'>RiskSummary</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h2 id="probation-estate">/probation-estate</h2>
+
+<h3 id="probation-estate-get">get</h3>
+
+
+
+
+
+
+
+<h4 id="probation-estate-get-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+<pre><code>{
+  "providers": [
+    {
+      "code": "string",
+      "description": "string",
+      "probationDeliveryUnits": [
+        {
+          "code": "string",
+          "description": "string",
+          "localAdminUnits": [
+            {
+              "code": "string",
+              "description": "string",
+              "teams": [
+                {
+                  "code": "string",
+                  "description": "string"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}</code></pre>
+
+</td>
+<td>
+<a href='#schema-probationestateresponse'>ProbationEstateResponse</a>
 </td>
 </tr>
 
@@ -3623,6 +3701,16 @@
 <tbody>
 
 <tr>
+<td>datasets</td>
+<td>array</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-provider'>Provider</a>
+</td>
+</tr>
+
+<tr>
 <td>teams</td>
 <td>array</td>
 <td>true</td>
@@ -3872,6 +3960,186 @@
 <td></td>
 <td>
   <a href='#schema-riskitem'>RiskItem</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-localadminunitwithteams">LocalAdminUnitWithTeams</h3>
+
+
+<table class='schema-localadminunitwithteams'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>code</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>description</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>teams</td>
+<td>array</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-team'>Team</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-probationdeliveryunitwithlocaladminunits">ProbationDeliveryUnitWithLocalAdminUnits</h3>
+
+
+<table class='schema-probationdeliveryunitwithlocaladminunits'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>code</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>description</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>localAdminUnits</td>
+<td>array</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-localadminunitwithteams'>LocalAdminUnitWithTeams</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-probationestateresponse">ProbationEstateResponse</h3>
+
+
+<table class='schema-probationestateresponse'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>providers</td>
+<td>array</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-providerwithprobationdeliveryunits'>ProviderWithProbationDeliveryUnits</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-providerwithprobationdeliveryunits">ProviderWithProbationDeliveryUnits</h3>
+
+
+<table class='schema-providerwithprobationdeliveryunits'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>code</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>description</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>probationDeliveryUnits</td>
+<td>array</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-probationdeliveryunitwithlocaladminunits'>ProbationDeliveryUnitWithLocalAdminUnits</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-team">Team</h3>
+
+
+<table class='schema-team'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>code</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>description</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
 </td>
 </tr>
 

@@ -988,7 +988,15 @@
       "status": "string",
       "workInProgress": "boolean"
     }
-  ]
+  ],
+  "metadata": {
+    "documentLevels": [
+      {
+        "code": "string",
+        "description": "string"
+      }
+    ]
+  }
 }</code></pre>
 
 </td>
@@ -1043,6 +1051,16 @@
 <td>size</td>
 <td>query</td>
 <td>integer</td>
+<td>false</td>
+<td>
+
+</td>
+</tr>
+
+<tr>
+<td>useDBFilenameSearch</td>
+<td>query</td>
+<td>boolean</td>
 <td>false</td>
 <td>
 
@@ -1108,7 +1126,15 @@
       "status": "string",
       "workInProgress": "boolean"
     }
-  ]
+  ],
+  "metadata": {
+    "documentLevels": [
+      {
+        "code": "string",
+        "description": "string"
+      }
+    ]
+  }
 }</code></pre>
 
 </td>
@@ -7294,7 +7320,15 @@
       "status": "string",
       "workInProgress": "boolean"
     }
-  ]
+  ],
+  "metadata": {
+    "documentLevels": [
+      {
+        "code": "string",
+        "description": "string"
+      }
+    ]
+  }
 }</code></pre>
 
 </td>
@@ -9523,6 +9557,60 @@
 </tbody>
 </table>
 
+<h3 id="schema-documentlevel">DocumentLevel</h3>
+
+
+<table class='schema-documentlevel'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>code</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>description</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-documentmetadata">DocumentMetadata</h3>
+
+
+<table class='schema-documentmetadata'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>documentLevels</td>
+<td>array</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-documentlevel'>DocumentLevel</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
 <h3 id="schema-persondocuments">PersonDocuments</h3>
 
 
@@ -9582,6 +9670,16 @@
 </td>
 </tr>
 
+<tr>
+<td>metadata</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-documentmetadata'>DocumentMetadata</a>
+</td>
+</tr>
+
 </tbody>
 </table>
 
@@ -9598,6 +9696,16 @@
 <td>query</td>
 <td>string</td>
 <td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>levelCode</td>
+<td>string</td>
+<td>true</td>
 <td></td>
 <td>
   
