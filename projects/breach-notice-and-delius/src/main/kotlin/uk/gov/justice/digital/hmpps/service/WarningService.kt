@@ -20,6 +20,8 @@ class WarningService(
     private val documentRepository: DocumentRepository,
     private val disposalRepository: DisposalRepository,
     private val contactRepository: ContactRepository,
+    private val upwAppointmentRepository: UpwAppointmentRepository,
+    private val requirementRepository: RequirementRepository
 ) {
     fun getWarningTypes(crn: String, breachNoticeId: UUID): WarningTypesResponse {
         val disposal = documentRepository.findEventIdFromDocument(breachNoticeUrn(breachNoticeId))
@@ -39,9 +41,11 @@ class WarningService(
             ?.let { crn.disposalForEvent(it) }
         val enforceableContacts =
             contactRepository.findEnforceableContacts(disposal!!.event.id)
+
         return WarningDetails(
             breachReasons = breachReasons.codedDescriptions(),
             enforceableContacts = enforceableContacts.map(Contact::toEnforceableContact),
+            unpaidWorkRequirements = enforceableContacts.mapNotNull { it.toUnpaidWorkRequirements(disposal) }
         )
     }
 
@@ -49,6 +53,15 @@ class WarningService(
         requireNotNull(disposalRepository.getByEventId(eventId)) { "Event with id $eventId is not sentenced" }
             .takeIf { this == it.event.person.crn }
             ?: throw NotFoundException("Breach Notice not found")
+
+    private fun Contact.toUnpaidWorkRequirements(disposal: Disposal):uk.gov.justice.digital.hmpps.model.Requirement? {
+        if (upwAppointmentRepository.existsUpwAppointmentsByContactId(id)) {
+            requirementRepository.getAllByDisposal(disposal).map {
+                it.takeIf { it.mainCategory?.code == "W" && it.subCategory?.code in listOf("W01", "W03", "W05") }?.toModel()
+            }
+        }
+        return null
+    }
 }
 
 fun Contact.toEnforceableContact() = EnforceableContact(
@@ -60,6 +73,7 @@ fun Contact.toEnforceableContact() = EnforceableContact(
     notes,
     requirement?.toModel() ?: pssRequirement?.toModel(),
 )
+
 
 fun Requirement.toModel() = uk.gov.justice.digital.hmpps.model.Requirement(
     id,

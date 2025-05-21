@@ -38,8 +38,4 @@ class Referral(@Id val referralId: Long, val eventId: Long)
 
 @Immutable
 @Entity
-class UpwAppointment(@Id val upwAppointmentId: Long, val upwDetailsId: Long)
-
-@Immutable
-@Entity
 class UpwDetails(@Id val upwDetailsId: Long, val disposalId: Long)

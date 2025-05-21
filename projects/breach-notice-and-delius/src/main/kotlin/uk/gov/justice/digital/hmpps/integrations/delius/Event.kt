@@ -126,6 +126,10 @@ class Requirement(
     val id: Long,
 )
 
+interface RequirementRepository : JpaRepository<Requirement, Long> {
+    fun getAllByDisposal(disposal: Disposal): List<Requirement>
+}
+
 @Immutable
 @Entity
 @Table(name = "r_rqmnt_type_main_category")
