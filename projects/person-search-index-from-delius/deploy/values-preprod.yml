@@ -20,5 +20,6 @@ reindexing:
   person_schedule: 0 3 * * 1-5
   contact_keyword_schedule: 0 7 * * 2
   contact_semantic_schedule: 0 18 * * 5
+  contact_semantic_schedule_suspended: true
   sentry_environment: preprod
 
