@@ -8,10 +8,12 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import uk.gov.justice.digital.hmpps.data.generator.DocumentGenerator.BREACH_NOTICE_ID
 import uk.gov.justice.digital.hmpps.data.generator.DocumentGenerator.PSS_BREACH_NOTICE_ID
 import uk.gov.justice.digital.hmpps.data.generator.DocumentGenerator.UNSENTENCED_BREACH_NOTICE_ID
+import uk.gov.justice.digital.hmpps.data.generator.EventGenerator.UNPAID_WORK_RQMTS
 import uk.gov.justice.digital.hmpps.data.generator.EventGenerator.UNSENTENCED_EVENT
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.WarningGenerator
 import uk.gov.justice.digital.hmpps.data.generator.WarningGenerator.ENFORCEABLE_CONTACTS
+import uk.gov.justice.digital.hmpps.data.generator.WarningGenerator.ENFORCEABLE_CONTACTS_UNPAID
 import uk.gov.justice.digital.hmpps.data.generator.WarningGenerator.NOTICE_TYPES
 import uk.gov.justice.digital.hmpps.data.generator.WarningGenerator.PSS_ENFORCEABLE_CONTACT
 import uk.gov.justice.digital.hmpps.data.generator.WarningGenerator.SENTENCE_TYPES
@@ -20,6 +22,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.sentenceTypes
 import uk.gov.justice.digital.hmpps.model.WarningDetails
 import uk.gov.justice.digital.hmpps.model.WarningTypesResponse
 import uk.gov.justice.digital.hmpps.service.toEnforceableContact
+import uk.gov.justice.digital.hmpps.service.toModel
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 
@@ -62,8 +65,8 @@ internal class WarningIntegrationTest : BaseIntegrationTest() {
         assertThat(response).isEqualTo(
             WarningDetails(
                 breachReasons = WarningGenerator.BREACH_REASONS.filter { it.selectable }.codedDescriptions(),
-                enforceableContacts = ENFORCEABLE_CONTACTS.sortedBy { it.date }.map { it.toEnforceableContact() },
-                unpaidWorkRequirements = listOf()
+                enforceableContacts = (ENFORCEABLE_CONTACTS + ENFORCEABLE_CONTACTS_UNPAID).sortedBy { it.date }.map { it.toEnforceableContact() },
+                unpaidWorkRequirements = UNPAID_WORK_RQMTS.filter { it.subCategory!!.code in listOf("W01", "W03", "W05") }.map { it.toModel() }
             ),
         )
         assertThat(response.enforceableContacts.firstOrNull()).isNotNull()

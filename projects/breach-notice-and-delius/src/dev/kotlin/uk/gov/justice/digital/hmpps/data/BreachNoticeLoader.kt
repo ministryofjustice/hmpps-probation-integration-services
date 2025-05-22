@@ -74,10 +74,15 @@ class BreachNoticeLoader(
             EventGenerator.DEFAULT_DISPOSAL,
             EventGenerator.UNSENTENCED_EVENT,
             EventGenerator.DEFAULT_RQMNT_CATEGORY,
+            EventGenerator.UNPAID_RQMT_CATEGORY,
+            *EventGenerator.UNPAID_RQMT_SUB_CATEOGORY_RECORDS.toTypedArray(),
             EventGenerator.DS_REQUIREMENT_SUB_CATEOGORY,
             EventGenerator.DEFAULT_RQMNT_SUB_CATEGORY,
             EventGenerator.DEFAULT_RQMNT,
             *WarningGenerator.ENFORCEABLE_CONTACTS.toTypedArray(),
+            *WarningGenerator.ENFORCEABLE_CONTACTS_UNPAID.toTypedArray(),
+            WarningGenerator.UPW_APPOINTMENT,
+            *EventGenerator.UNPAID_WORK_RQMTS.toTypedArray(),
         )
     }
 

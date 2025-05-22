@@ -17,8 +17,18 @@ object EventGenerator {
 
     val DEFAULT_RQMNT_CATEGORY = generateRequirementMainCategory("DRMC")
     val DS_REQUIREMENT_SUB_CATEOGORY = generateDataset(Dataset.REQUIREMENT_SUB_CATEGORY)
+
+    val UNPAID_RQMT_CATEGORY = generateRequirementMainCategory("W")
+    val UNPAID_RQMT_SUB_CATEOGORY_RECORDS = listOf("W01", "W02", "W03", "W04", "W05").map {
+        generateReferenceData(DS_REQUIREMENT_SUB_CATEOGORY, it)
+    }
+
     val DEFAULT_RQMNT_SUB_CATEGORY = generateReferenceData(DS_REQUIREMENT_SUB_CATEOGORY, "DRSC")
     val DEFAULT_RQMNT = generateRequirement(DEFAULT_DISPOSAL, DEFAULT_RQMNT_CATEGORY, DEFAULT_RQMNT_SUB_CATEGORY)
+
+    val UNPAID_WORK_RQMTS = UNPAID_RQMT_SUB_CATEOGORY_RECORDS.map {
+        generateRequirement(DEFAULT_DISPOSAL, UNPAID_RQMT_CATEGORY, it)
+    }
 
     val PSS_EVENT = generateEvent(PersonGenerator.PSS_PERSON)
     val PSS_DISPOSAL = generateDisposal(PSS_EVENT, DEFAULT_DISPOSAL_TYPE)
