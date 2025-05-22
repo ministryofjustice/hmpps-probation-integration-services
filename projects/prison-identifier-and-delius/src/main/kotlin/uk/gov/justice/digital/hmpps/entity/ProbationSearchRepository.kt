@@ -43,7 +43,7 @@ interface ProbationSearchRepository : JpaRepository<Person, Long> {
         pncNumber: String?,
         croNumber: String?,
         nomsNumber: String?,
-        activeSentence: Boolean = false,
+        activeSentence: Boolean,
         forename: String?,
         surname: String?,
         dateOfBirth: LocalDate? = null,
@@ -83,7 +83,7 @@ interface ProbationSearchRepository : JpaRepository<Person, Long> {
         pncNumber: String?,
         croNumber: String?,
         nomsNumber: String?,
-        activeSentence: Boolean = false,
+        activeSentence: Boolean,
         forename: String?,
         surname: String?,
         dateOfBirth: LocalDate? = null,
@@ -242,7 +242,7 @@ interface ProbationSearchRepository : JpaRepository<Person, Long> {
         forename: String?,
         surname: String?,
         dateOfBirths: List<LocalDate>,
-        activeSentence: Boolean = false
+        activeSentence: Boolean
     ): List<Person>
 }
 
@@ -300,6 +300,8 @@ fun ProbationSearchRepository.searchByPartialName(request: ProbationMatchRequest
 fun ProbationSearchRepository.searchByPartialNameLenientDob(request: ProbationMatchRequest): List<Person> {
     return findPersonByPartialNameLenientDob(
         request.firstName.takeIf { it.isNotEmpty() },
-        request.surname.takeIf { it.isNotEmpty() }, allLenientDateVariations(request.dateOfBirth)
+        request.surname.takeIf { it.isNotEmpty() },
+        allLenientDateVariations(request.dateOfBirth),
+        request.activeSentence
     )
 }
