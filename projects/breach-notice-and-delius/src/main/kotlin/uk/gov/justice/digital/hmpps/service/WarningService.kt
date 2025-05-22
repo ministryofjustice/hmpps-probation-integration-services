@@ -45,7 +45,7 @@ class WarningService(
         val unpaidWorkRequirements = mutableListOf<uk.gov.justice.digital.hmpps.model.Requirement>()
         repeat(
             enforceableContacts
-            .filter { upwAppointmentRepository.existsUpwAppointmentsByContactId(it.id) }.size
+                .filter { upwAppointmentRepository.existsUpwAppointmentsByContactId(it.id) }.size
         ) {
             requirementRepository.getUnpaidWorkRequirementsByDisposal(disposal)
                 .forEach { unpaidWorkRequirements.add(it.toModel()) }
