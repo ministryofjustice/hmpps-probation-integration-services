@@ -63,15 +63,6 @@ class WarningService(
         requireNotNull(disposalRepository.getByEventId(eventId)) { "Event with id $eventId is not sentenced" }
             .takeIf { this == it.event.person.crn }
             ?: throw NotFoundException("Breach Notice not found")
-
-    private fun Contact.toUnpaidWorkRequirements(disposal: Disposal):uk.gov.justice.digital.hmpps.model.Requirement? {
-        if (upwAppointmentRepository.existsUpwAppointmentsByContactId(id)) {
-            requirementRepository.getUnpaidWorkRequirementsByDisposal(disposal).map {
-                it.toModel()
-            }
-        }
-        return null
-    }
 }
 
 fun Contact.toEnforceableContact() = EnforceableContact(
