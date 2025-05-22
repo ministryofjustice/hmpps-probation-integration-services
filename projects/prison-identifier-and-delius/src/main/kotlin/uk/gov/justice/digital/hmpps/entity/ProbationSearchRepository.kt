@@ -125,7 +125,12 @@ interface ProbationSearchRepository : JpaRepository<Person, Long> {
                         and om.softDeleted = false)
         """
     )
-    fun findPersonByCroNumber(croNumber: String?, surname: String?, dateOfBirth: LocalDate?, activeSentence: Boolean): List<Person>
+    fun findPersonByCroNumber(
+        croNumber: String?,
+        surname: String?,
+        dateOfBirth: LocalDate?,
+        activeSentence: Boolean
+    ): List<Person>
 
     @Query(
         """
@@ -155,7 +160,12 @@ interface ProbationSearchRepository : JpaRepository<Person, Long> {
                         and om.softDeleted = false)
         """
     )
-    fun findPersonByPncNumber(pncNumber: String?, surname: String?, dateOfBirth: LocalDate?, activeSentence: Boolean): List<Person>
+    fun findPersonByPncNumber(
+        pncNumber: String?,
+        surname: String?,
+        dateOfBirth: LocalDate?,
+        activeSentence: Boolean
+    ): List<Person>
 
     @Query(
         """
