@@ -65,8 +65,15 @@ internal class WarningIntegrationTest : BaseIntegrationTest() {
         assertThat(response).isEqualTo(
             WarningDetails(
                 breachReasons = WarningGenerator.BREACH_REASONS.filter { it.selectable }.codedDescriptions(),
-                enforceableContacts = (ENFORCEABLE_CONTACTS + ENFORCEABLE_CONTACTS_UNPAID).sortedBy { it.date }.map { it.toEnforceableContact() },
-                unpaidWorkRequirements = UNPAID_WORK_RQMTS.filter { it.subCategory!!.code in listOf("W01", "W03", "W05") }.map { it.toModel() }
+                enforceableContacts = (ENFORCEABLE_CONTACTS + ENFORCEABLE_CONTACTS_UNPAID).sortedBy { it.date }
+                    .map { it.toEnforceableContact() },
+                unpaidWorkRequirements = UNPAID_WORK_RQMTS.filter {
+                    it.subCategory!!.code in listOf(
+                        "W01",
+                        "W03",
+                        "W05"
+                    )
+                }.map { it.toModel() }
             ),
         )
         assertThat(response.enforceableContacts.firstOrNull()).isNotNull()

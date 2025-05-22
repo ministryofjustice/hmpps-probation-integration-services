@@ -73,7 +73,6 @@ fun Contact.toEnforceableContact() = EnforceableContact(
     requirement?.toModel() ?: pssRequirement?.toModel(),
 )
 
-
 fun Requirement.toModel() = uk.gov.justice.digital.hmpps.model.Requirement(
     id,
     checkNotNull(mainCategory?.codedDescription()),
