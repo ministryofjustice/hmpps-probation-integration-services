@@ -43,12 +43,13 @@ class WarningService(
             contactRepository.findEnforceableContacts(disposal!!.event.id)
 
         val unpaidWorkRequirements = mutableListOf<uk.gov.justice.digital.hmpps.model.Requirement>()
-        enforceableContacts
-            .filter { upwAppointmentRepository.existsUpwAppointmentsByContactId(it.id) }
-            .forEach { _ ->
-                requirementRepository.getUnpaidWorkRequirementsByDisposal(disposal)
-                    .forEach { unpaidWorkRequirements.add(it.toModel()) }
-            }
+        repeat(
+            enforceableContacts
+            .filter { upwAppointmentRepository.existsUpwAppointmentsByContactId(it.id) }.size
+        ) {
+            requirementRepository.getUnpaidWorkRequirementsByDisposal(disposal)
+                .forEach { unpaidWorkRequirements.add(it.toModel()) }
+        }
 
         return WarningDetails(
             breachReasons = breachReasons.codedDescriptions(),
