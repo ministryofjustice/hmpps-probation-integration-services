@@ -46,10 +46,8 @@ class WarningService(
         enforceableContacts
             .filter { upwAppointmentRepository.existsUpwAppointmentsByContactId(it.id) }
             .forEach { _ ->
-                val requirements = requirementRepository.getUnpaidWorkRequirementsByDisposal(disposal)
-                requirements.forEach {
-                    unpaidWorkRequirements.add(it.toModel())
-                }
+                requirementRepository.getUnpaidWorkRequirementsByDisposal(disposal)
+                    .forEach { unpaidWorkRequirements.add(it.toModel()) }
             }
 
         return WarningDetails(
