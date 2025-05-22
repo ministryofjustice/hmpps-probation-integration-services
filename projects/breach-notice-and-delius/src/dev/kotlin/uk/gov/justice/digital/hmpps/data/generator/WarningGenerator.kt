@@ -62,6 +62,20 @@ object WarningGenerator {
         )
     }
 
+    val ENFORCEABLE_CONTACTS_UNPAID = listOf(4).map {
+        generateEnforceableContact(
+            DEFAULT_PERSON,
+            ENFORCEABLE_CONTACT_TYPE,
+            event = EventGenerator.DEFAULT_EVENT,
+            dateTime = ZonedDateTime.of(2020, 1, it, 0, 0, 0, 0, EuropeLondon),
+            outcome = ENFORCEABLE_CONTACT_OUTCOME,
+            description = "Unpaid Enforceable Description",
+            notes = "Some notes about the enforceable contact",
+        )
+    }
+
+    val UPW_APPOINTMENT = generateUnpaidAppointment(ENFORCEABLE_CONTACTS_UNPAID[0].id)
+
     val PSS_ENFORCEABLE_CONTACT = generateEnforceableContact(
         PSS_PERSON,
         ENFORCEABLE_CONTACT_TYPE,
@@ -109,6 +123,7 @@ object WarningGenerator {
         type: ContactType,
         dateTime: ZonedDateTime = zonedDateTime().minusDays(1),
         requirement: Requirement? = null,
+        event: Event? = null,
         pssRequirement: PssRequirement? = null,
         staff: Staff = DEFAULT_STAFF,
         location: OfficeLocation? = DEFAULT_LOCATION,
@@ -122,7 +137,7 @@ object WarningGenerator {
         type,
         dateTime.toLocalDate(),
         dateTime,
-        requirement?.disposal?.event ?: pssRequirement?.custody?.disposal?.event,
+        requirement?.disposal?.event ?: pssRequirement?.custody?.disposal?.event ?: event,
         requirement,
         pssRequirement,
         staff,
@@ -133,5 +148,13 @@ object WarningGenerator {
         true,
         softDeleted,
         id
+    )
+
+    fun generateUnpaidAppointment(
+        contactId: Long,
+    ) = UpwAppointment(
+        id = IdGenerator.getAndIncrement(),
+        contactId = contactId,
+        upwDetailsId = IdGenerator.getAndIncrement(),
     )
 }

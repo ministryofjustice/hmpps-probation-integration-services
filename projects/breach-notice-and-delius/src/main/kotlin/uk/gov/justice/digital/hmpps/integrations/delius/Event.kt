@@ -5,6 +5,7 @@ import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.NumericBooleanConverter
 import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.jpa.repository.Query
 
 @Immutable
 @Entity
@@ -125,6 +126,18 @@ class Requirement(
     @Column(name = "rqmnt_id")
     val id: Long,
 )
+
+interface RequirementRepository : JpaRepository<Requirement, Long> {
+    @Query(
+        """
+            SELECT r 
+            FROM Requirement r
+            WHERE r.mainCategory.code = 'W'
+            AND r.subCategory.code in ('W01', 'W03', 'W05')
+        """
+    )
+    fun getUnpaidWorkRequirementsByDisposal(disposal: Disposal): List<Requirement>
+}
 
 @Immutable
 @Entity
