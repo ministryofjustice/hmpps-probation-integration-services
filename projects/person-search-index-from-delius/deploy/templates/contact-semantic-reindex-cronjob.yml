@@ -4,7 +4,7 @@ metadata:
   name: contact-semantic-reindex
 spec:
   schedule: {{ .Values.reindexing.contact_semantic_schedule }}
-  suspend: true
+  suspend: {{ .Values.reindexing.contact_semantic_schedule_suspended }}
   concurrencyPolicy: Replace
   jobTemplate:
     spec:
