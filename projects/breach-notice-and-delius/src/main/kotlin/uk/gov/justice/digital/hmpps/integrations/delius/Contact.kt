@@ -72,8 +72,7 @@ class Contact(
     @Column(name = "contact_id")
     val id: Long,
 
-    @OneToMany
-    @JoinColumn("contact_id")
+    @OneToMany(mappedBy = "contact")
     val unpaidWorkAppointments: List<UpwAppointment>? = emptyList(),
 )
 
