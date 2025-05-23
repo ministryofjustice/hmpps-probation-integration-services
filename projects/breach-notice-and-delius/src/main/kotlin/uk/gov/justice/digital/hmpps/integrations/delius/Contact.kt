@@ -73,7 +73,7 @@ class Contact(
     val id: Long,
 
     @OneToMany(mappedBy = "contact")
-    val unpaidWorkAppointments: List<UpwAppointment>? = emptyList(),
+    val unpaidWorkAppointments: List<UpwAppointment> = emptyList(),
 )
 
 @Immutable
