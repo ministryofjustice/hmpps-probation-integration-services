@@ -247,9 +247,14 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/EnforceableContact"
+        unpaidWorkRequirements:
+          type: array
+          items:
+            $ref: "#/components/schemas/Requirement"
       required:
       - breachReasons
       - enforceableContacts
+      - unpaidWorkRequirements
     CaseAccess:
       type: object
       properties:
