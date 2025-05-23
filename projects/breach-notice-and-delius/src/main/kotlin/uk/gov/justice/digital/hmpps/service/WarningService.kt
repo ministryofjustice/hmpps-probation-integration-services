@@ -44,9 +44,12 @@ class WarningService(
         return WarningDetails(
             breachReasons = breachReasons.codedDescriptions(),
             enforceableContacts = enforceableContacts.map(Contact::toEnforceableContact),
-            unpaidWorkRequirements = enforceableContacts.filter { it.unpaidWorkAppointments?.isNotEmpty() == true }.let {
+            unpaidWorkRequirements =
+                if (enforceableContacts.any { it.unpaidWorkAppointments?.isNotEmpty()  == true }) {
                 requirementRepository.getUnpaidWorkRequirementsByDisposal(disposal.id)
                     .map { it.toModel() }
+            } else {
+                emptyList()
             }
         )
     }
