@@ -44,10 +44,11 @@ class WarningService(
         return WarningDetails(
             breachReasons = breachReasons.codedDescriptions(),
             enforceableContacts = enforceableContacts.map(Contact::toEnforceableContact),
-            unpaidWorkRequirements = enforceableContacts.filter { it.unpaidWorkAppointments?.isNotEmpty() == true }.let {
-                requirementRepository.getUnpaidWorkRequirementsByDisposal(disposal.id)
-                    .map { it.toModel() }
-            }
+            unpaidWorkRequirements = enforceableContacts.filter { it.unpaidWorkAppointments?.isNotEmpty() == true }
+                .let {
+                    requirementRepository.getUnpaidWorkRequirementsByDisposal(disposal.id)
+                        .map { it.toModel() }
+                }
         )
     }
 
