@@ -74,7 +74,7 @@ object WarningGenerator {
         )
     }
 
-    val UPW_APPOINTMENT = generateUnpaidAppointment(ENFORCEABLE_CONTACTS_UNPAID[0].id)
+    val UPW_APPOINTMENT = generateUnpaidAppointment(ENFORCEABLE_CONTACTS_UNPAID[0])
 
     val PSS_ENFORCEABLE_CONTACT = generateEnforceableContact(
         PSS_PERSON,
@@ -151,10 +151,10 @@ object WarningGenerator {
     )
 
     fun generateUnpaidAppointment(
-        contactId: Long,
+        contact: Contact,
     ) = UpwAppointment(
         id = IdGenerator.getAndIncrement(),
-        contactId = contactId,
+        contact = contact,
         upwDetailsId = IdGenerator.getAndIncrement(),
     )
 }

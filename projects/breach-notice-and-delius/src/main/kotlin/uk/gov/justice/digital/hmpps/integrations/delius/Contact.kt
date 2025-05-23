@@ -71,6 +71,9 @@ class Contact(
     @Id
     @Column(name = "contact_id")
     val id: Long,
+
+    @OneToMany(mappedBy = "contact")
+    val unpaidWorkAppointments: List<UpwAppointment> = emptyList(),
 )
 
 @Immutable
@@ -105,7 +108,8 @@ class ContactOutcome(
 interface ContactRepository : JpaRepository<Contact, Long> {
     @Query(
         """
-        select c from Contact c
+        select c, ua from Contact c
+        left join c.unpaidWorkAppointments ua
         where c.event.id = :eventId and c.outcome.enforceable = true 
         order by c.date asc, c.startTime asc
         """
