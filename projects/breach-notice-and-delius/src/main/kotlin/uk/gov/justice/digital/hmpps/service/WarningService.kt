@@ -20,7 +20,6 @@ class WarningService(
     private val documentRepository: DocumentRepository,
     private val disposalRepository: DisposalRepository,
     private val contactRepository: ContactRepository,
-    private val upwAppointmentRepository: UpwAppointmentRepository,
     private val requirementRepository: RequirementRepository
 ) {
     fun getWarningTypes(crn: String, breachNoticeId: UUID): WarningTypesResponse {
@@ -42,19 +41,13 @@ class WarningService(
         val enforceableContacts =
             contactRepository.findEnforceableContacts(disposal!!.event.id)
 
-        val unpaidWorkRequirements = mutableListOf<uk.gov.justice.digital.hmpps.model.Requirement>()
-        repeat(
-            enforceableContacts
-                .filter { upwAppointmentRepository.existsUpwAppointmentsByContactId(it.id) }.size
-        ) {
-            requirementRepository.getUnpaidWorkRequirementsByDisposal(disposal)
-                .forEach { unpaidWorkRequirements.add(it.toModel()) }
-        }
-
         return WarningDetails(
             breachReasons = breachReasons.codedDescriptions(),
             enforceableContacts = enforceableContacts.map(Contact::toEnforceableContact),
-            unpaidWorkRequirements = unpaidWorkRequirements
+            unpaidWorkRequirements = enforceableContacts.filter { it.unpaidWorkAppointments?.isNotEmpty() == true }.let {
+                requirementRepository.getUnpaidWorkRequirementsByDisposal(disposal.id)
+                    .map { it.toModel() }
+            }
         )
     }
 

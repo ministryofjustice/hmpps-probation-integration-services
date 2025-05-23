@@ -134,9 +134,10 @@ interface RequirementRepository : JpaRepository<Requirement, Long> {
             FROM Requirement r
             WHERE r.mainCategory.code = 'W'
             AND r.subCategory.code in ('W01', 'W03', 'W05')
+            AND r.disposal.id = :id
         """
     )
-    fun getUnpaidWorkRequirementsByDisposal(disposal: Disposal): List<Requirement>
+    fun getUnpaidWorkRequirementsByDisposal(id: Long): List<Requirement>
 }
 
 @Immutable
