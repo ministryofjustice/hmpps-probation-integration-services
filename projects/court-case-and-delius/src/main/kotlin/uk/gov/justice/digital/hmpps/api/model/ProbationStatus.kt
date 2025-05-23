@@ -20,3 +20,6 @@ enum class ProbationStatus {
     PREVIOUSLY_KNOWN,
     CURRENT
 }
+
+data class ProbationCase(val offenderId: Long, val otherIds: Ids, val probationStatus: ProbationStatusDetail)
+data class Ids(val crn: String, val nomsNumber: String?, val pncNumber: String?)

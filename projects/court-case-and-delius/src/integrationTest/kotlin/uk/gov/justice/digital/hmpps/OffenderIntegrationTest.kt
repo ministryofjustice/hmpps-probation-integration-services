@@ -40,7 +40,7 @@ internal class OffenderIntegrationTest {
     lateinit var mockMvc: MockMvc
 
     @Test
-    fun `Summary API call retuns probation record with active sentence`() {
+    fun `Summary API call returns probation record with active sentence`() {
         val crn = PersonGenerator.CURRENTLY_MANAGED.crn
         val detailResponse = mockMvc
             .perform(get("/probation-case/$crn").withToken())
@@ -117,7 +117,7 @@ internal class OffenderIntegrationTest {
         assertThat(detailResponse.otherIds.crn, equalTo(crn))
         assertThat(detailResponse.otherIds.niNumber, equalTo("JK002213K"))
         assertThat(detailResponse.otherIds.pncNumber, equalTo("1234567890123"))
-        assertThat(detailResponse.otherIds.nomsNumber, equalTo("NOMS123"))
+        assertThat(detailResponse.otherIds.nomsNumber, equalTo("A1234BC"))
         assertThat(detailResponse.otherIds.croNumber, equalTo("CRO123"))
         assertThat(detailResponse.otherIds.immigrationNumber, equalTo("IMA123"))
         assertThat(detailResponse.otherIds.mostRecentPrisonerNumber, equalTo("PRS123"))
@@ -260,7 +260,7 @@ internal class OffenderIntegrationTest {
         assertThat(detailResponse.otherIds.crn, equalTo(crn))
         assertThat(detailResponse.otherIds.niNumber, equalTo("JK002213K"))
         assertThat(detailResponse.otherIds.pncNumber, equalTo("1234567890123"))
-        assertThat(detailResponse.otherIds.nomsNumber, equalTo("NOMS123"))
+        assertThat(detailResponse.otherIds.nomsNumber, equalTo("A1234BC"))
         assertThat(detailResponse.otherIds.croNumber, equalTo("CRO123"))
         assertThat(detailResponse.otherIds.immigrationNumber, equalTo("IMA123"))
         assertThat(detailResponse.otherIds.mostRecentPrisonerNumber, equalTo("PRS123"))

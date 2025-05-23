@@ -30,7 +30,7 @@ object PersonGenerator {
 
     val NEW_TO_PROBATION = generate("N123456")
     val SOFT_DELETED = generate("S123456", softDeleted = true)
-    val CURRENTLY_MANAGED = generate("C123456", currentDisposal = true)
+    val CURRENTLY_MANAGED = generate("C123456", "A1234BC", currentDisposal = true)
     val PREVIOUSLY_MANAGED = generate("P123456")
     val NO_SENTENCE = generate("U123456")
     val NO_ACTIVE_EVENTS = generate("Z123456")
@@ -55,6 +55,7 @@ object PersonGenerator {
 
     fun generate(
         crn: String,
+        nomsNumber: String? = null,
         softDeleted: Boolean = false,
         id: Long = IdGenerator.getAndIncrement(),
         currentDisposal: Boolean = false,
@@ -103,7 +104,7 @@ object PersonGenerator {
             religion = RELIGION,
             niNumber = "JK002213K",
             pnc = "1234567890123",
-            nomsNumber = "NOMS123",
+            nomsNumber = nomsNumber,
             croNumber = "CRO123",
             immigrationNumber = "IMA123",
             mostRecentPrisonerNumber = "PRS123",
@@ -112,7 +113,7 @@ object PersonGenerator {
             offenderManagers = emptyList(),
             restrictionMessage = "restrictionMessage",
             exclusionMessage = "exclusionMessage",
-            currentTier = currentTier
+            currentTier = currentTier,
         )
 
     fun generatePrisonManager(person: Person) = PrisonManager(
