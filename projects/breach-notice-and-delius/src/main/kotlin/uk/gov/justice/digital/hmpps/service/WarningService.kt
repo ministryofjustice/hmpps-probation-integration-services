@@ -45,12 +45,12 @@ class WarningService(
             breachReasons = breachReasons.codedDescriptions(),
             enforceableContacts = enforceableContacts.map(Contact::toEnforceableContact),
             unpaidWorkRequirements =
-                if (enforceableContacts.any { it.unpaidWorkAppointments?.isNotEmpty()  == true }) {
-                requirementRepository.getUnpaidWorkRequirementsByDisposal(disposal.id)
-                    .map { it.toModel() }
-            } else {
-                emptyList()
-            }
+                if (enforceableContacts.any { it.unpaidWorkAppointments?.isNotEmpty() == true }) {
+                    requirementRepository.getUnpaidWorkRequirementsByDisposal(disposal.id)
+                        .map { it.toModel() }
+                } else {
+                    emptyList()
+                }
         )
     }
 
