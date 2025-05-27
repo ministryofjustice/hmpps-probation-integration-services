@@ -57,10 +57,12 @@ class DocumentsService(
     ): PersonDocuments {
         val summary = personRepository.getSummary(crn)
         val metadata = metadata()
-        val ids = if (documentTextSearch.query.isNullOrBlank()) null else alfrescoClient.textSearch(
-            crn,
-            documentTextSearch.query
-        ).documents.map { it.id }
+        val ids = if (documentTextSearch.query.isNullOrBlank()) null else
+            try {
+                alfrescoClient.textSearch(crn, documentTextSearch.query).documents.map { it.id }
+            } catch (_: Exception) {
+                null
+            }
         val keywords =
             if (!useDBFilenameSearch) null else documentTextSearch.query?.split("\\s+".toRegex())?.joinToString("|")
         val documents = documentsRepository.search(
