@@ -221,6 +221,7 @@ class DataLoader(
             PersonDetailsGenerator.LANGUAGE_RD,
             PersonDetailsGenerator.GENDER_IDENTITY_RD,
             PersonDetailsGenerator.PERSONAL_DETAILS,
+            PersonDetailsGenerator.PERSONAL_DETAILS_2,
             PersonDetailsGenerator.RESTRICTION,
             PersonDetailsGenerator.EXCLUSION,
             PersonDetailsGenerator.RESTRICTION_EXCLUSION,
