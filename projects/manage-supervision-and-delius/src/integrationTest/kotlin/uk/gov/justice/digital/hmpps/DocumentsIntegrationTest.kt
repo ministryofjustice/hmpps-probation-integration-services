@@ -275,7 +275,6 @@ internal class DocumentsIntegrationTest {
         assertThat(res.metadata?.documentLevels, equalTo(expectedMetadata))
     }
 
-
     @Test
     fun `when alfresco client throws error, return no documents but returns metadata`() {
         val person = PERSONAL_DETAILS_2
