@@ -72,7 +72,7 @@ object PersonGenerator {
         surname: String = "TestSurname",
         dateOfBirth: LocalDate = LocalDate.of(1977, 8, 12),
         gender: ReferenceData = GENDER_MALE,
-        pncNumber: String? ="2025/0133303Z"
+        pncNumber: String? = "2025/0133303Z"
     ) = Person(
         id = id,
         crn = crn,
@@ -196,23 +196,23 @@ object PersonGenerator {
         type: ReferenceData? = DEFAULT_ADDRESS_TYPE,
         typeVerified: Boolean? = true
     ) = PersonAddress(
-            id = IdGenerator.getAndIncrement(),
-            personId = personId,
-            type = type,
-            status = DEFAULT_ADDRESS_STATUS,
-            streetName = "A Street",
-            town = "A town",
-            county = "A county",
-            postcode = "NE209XL",
-            telephoneNumber = "089876765",
-            buildingName = "The building",
-            district = "A District",
-            addressNumber = "20",
-            noFixedAbode = false,
-            typeVerified = typeVerified,
-            startDate = LocalDate.now().minusDays(1),
-            endDate = null,
-            softDeleted = softDeleted,
-            createdDatetime = ZonedDateTime.now().minusDays(1),
-        )
+        id = IdGenerator.getAndIncrement(),
+        personId = personId,
+        type = type,
+        status = DEFAULT_ADDRESS_STATUS,
+        streetName = "A Street",
+        town = "A town",
+        county = "A county",
+        postcode = "NE209XL",
+        telephoneNumber = "089876765",
+        buildingName = "The building",
+        district = "A District",
+        addressNumber = "20",
+        noFixedAbode = false,
+        typeVerified = typeVerified,
+        startDate = LocalDate.now().minusDays(1),
+        endDate = null,
+        softDeleted = softDeleted,
+        createdDatetime = ZonedDateTime.now().minusDays(1),
+    )
 }

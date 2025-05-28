@@ -22,4 +22,9 @@ enum class ProbationStatus {
 }
 
 data class ProbationCase(val offenderId: Long, val otherIds: Ids, val probationStatus: ProbationStatusDetail)
-data class Ids(val crn: String, val nomsNumber: String? = null, val pncNumber: String? = null, val croNumber: String? = null)
+data class Ids(
+    val crn: String,
+    val nomsNumber: String? = null,
+    val pncNumber: String? = null,
+    val croNumber: String? = null
+)
