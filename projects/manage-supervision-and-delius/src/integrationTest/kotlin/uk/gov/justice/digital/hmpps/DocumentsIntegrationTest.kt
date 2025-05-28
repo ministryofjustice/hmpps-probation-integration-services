@@ -16,7 +16,7 @@ import uk.gov.justice.digital.hmpps.api.model.personalDetails.DocumentSearch
 import uk.gov.justice.digital.hmpps.api.model.personalDetails.DocumentTextSearch
 import uk.gov.justice.digital.hmpps.api.model.personalDetails.PersonDocuments
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.OVERVIEW
-import uk.gov.justice.digital.hmpps.data.generator.personalDetails.PersonDetailsGenerator.PERSONAL_DETAILS_2
+import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.PERSON_2
 import uk.gov.justice.digital.hmpps.service.DocumentLevelCode
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withJson
@@ -277,13 +277,13 @@ internal class DocumentsIntegrationTest {
 
     @Test
     fun `when alfresco client throws error, return no documents but returns metadata`() {
-        val person = PERSONAL_DETAILS_2
+        val person = PERSON_2
         val res = mockMvc
             .perform(
-                post("/documents/${person.crn}/search/text?useDBFilenameSearch=false").withToken()
+                post("/documents/${person.crn}/search/text?useDBFilenameSearch=true").withToken()
                     .withJson(
                         DocumentTextSearch(
-                            query = "''''''''''''''''''''",
+                            query = "-",
                         )
                     )
             )
