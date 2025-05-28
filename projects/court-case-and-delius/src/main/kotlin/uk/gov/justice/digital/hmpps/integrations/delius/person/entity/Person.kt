@@ -10,6 +10,7 @@ import org.springframework.data.jpa.domain.Specification
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor
 import org.springframework.data.jpa.repository.Query
+import uk.gov.justice.digital.hmpps.api.model.LenientDate
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.ReferenceData
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.Person.Companion.ALIASES
@@ -420,15 +421,36 @@ fun matchesAlias(surname: String, firstName: String?, dateOfBirth: LocalDate?) =
         cb.and(*toMatch.toTypedArray())
     }
 
-fun hasActiveEventAndCommunityManager() = Specification<Person> { person, _, cb ->
-    cb.and(
-        cb.equal(person.get<Boolean>(CURRENT_DISPOSAL), true),
-        cb.isNotEmpty(person.get<List<PersonManager>>(COMMUNITY_MANAGERS)),
-    )
+fun hasActiveEventAndCommunityManager(activeOnly: Boolean) = Specification<Person> { person, _, cb ->
+    if (activeOnly) {
+        cb.and(
+            cb.equal(person.get<Boolean>(CURRENT_DISPOSAL), true),
+            cb.isNotEmpty(person.get<List<PersonManager>>(COMMUNITY_MANAGERS)),
+        )
+    } else {
+        cb.isNotEmpty(person.get<List<PersonManager>>(COMMUNITY_MANAGERS))
+    }
 }
 
 fun matchesPnc(pnc: String) =
     Specification<Person> { person, _, cb ->
         val pnc = PncNumber.from(pnc) ?: throw IllegalArgumentException("Invalid PNC number")
         cb.equal(person.get<String>(PNC), pnc.matchValue())
+    }
+
+fun matchesLeniently(surname: String, firstName: String?, dateOfBirth: LocalDate?) =
+    Specification<Person> { person, _, cb ->
+        val dates: Set<LocalDate> = dateOfBirth?.let { LenientDate(it).allVariations() } ?: emptySet()
+        val alias = person.join<Person, OffenderAlias>(ALIASES, JoinType.LEFT)
+        val toMatch = listOfNotNull(
+            cb.equal(cb.lower(person[SURNAME]), surname.lowercase()),
+            firstName?.lowercase()?.let {
+                cb.or(
+                    cb.equal(cb.lower(person[FORENAME]), it),
+                    cb.equal(cb.lower(alias[OffenderAlias.FORENAME]), it)
+                )
+            },
+            dateOfBirth?.let { person.get<LocalDate>(DOB).`in`(dates) }
+        )
+        cb.and(*toMatch.toTypedArray())
     }

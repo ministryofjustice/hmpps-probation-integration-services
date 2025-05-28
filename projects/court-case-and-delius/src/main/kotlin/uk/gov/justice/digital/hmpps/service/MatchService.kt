@@ -16,27 +16,38 @@ class MatchService(private val personRepository: PersonRepository) {
         if (allAlias.isNotEmpty()) return MatchResponse(allAlias.matches(), MatchedBy.ALL_SUPPLIED_ALIAS)
         val pnc = request.pncNumber?.let { personRepository.findAll(matchesPnc(it)) } ?: emptyList()
         if (pnc.isNotEmpty()) return MatchResponse(pnc.matches(), MatchedBy.EXTERNAL_KEY)
-        val name = personRepository.findAll(
-            matchesPerson(request.surname, request.firstName, request.dateOfBirth)
-                .or(matchesAlias(request.surname, request.firstName, request.dateOfBirth))
-        )
+        val name = personRepository.findAll(request.name())
         if (name.isNotEmpty()) return MatchResponse(name.matches(), MatchedBy.NAME)
-        val partialName = personRepository.findAll(matchesPerson(request.surname, null, request.dateOfBirth))
+        val partialName = personRepository.findAll(request.partialName())
         if (partialName.isNotEmpty()) return MatchResponse(partialName.matches(), MatchedBy.PARTIAL_NAME)
+        val lenient = personRepository.findAll(request.lenient())
+        if (lenient.isNotEmpty()) return MatchResponse(lenient.matches(), MatchedBy.PARTIAL_NAME_DOB_LENIENT)
         return MatchResponse(emptyList(), MatchedBy.NOTHING)
     }
 
     private fun MatchRequest.allSpecified(): Specification<Person> = listOfNotNull(
-        hasActiveEventAndCommunityManager(),
+        hasActiveEventAndCommunityManager(activeSentence),
         matchesPerson(surname, firstName, dateOfBirth),
         pncNumber?.let { matchesPnc(it) }
     ).reduce { a, b -> a.and(b) }
 
     private fun MatchRequest.allAlias(): Specification<Person> = listOfNotNull(
-        hasActiveEventAndCommunityManager(),
+        hasActiveEventAndCommunityManager(activeSentence),
         matchesAlias(surname, firstName, dateOfBirth),
         pncNumber?.let { matchesPnc(it) }
     ).reduce { a, b -> a.and(b) }
+
+    private fun MatchRequest.name(): Specification<Person> =
+        hasActiveEventAndCommunityManager(activeSentence).and(
+            matchesPerson(surname, firstName, dateOfBirth)
+                .or(matchesAlias(surname, firstName, dateOfBirth))
+        )
+
+    private fun MatchRequest.partialName(): Specification<Person> =
+        hasActiveEventAndCommunityManager(activeSentence).and(matchesPerson(surname, null, dateOfBirth))
+
+    private fun MatchRequest.lenient(): Specification<Person> =
+        hasActiveEventAndCommunityManager(activeSentence).and(matchesLeniently(surname, firstName, dateOfBirth))
 
     private fun Person.statusDetail() = personRepository.statusOf(crn)?.detail() ?: ProbationStatusDetail.NO_RECORD
 

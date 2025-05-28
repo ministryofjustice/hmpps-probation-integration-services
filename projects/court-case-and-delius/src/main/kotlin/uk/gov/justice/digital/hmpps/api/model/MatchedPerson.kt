@@ -30,4 +30,5 @@ data class MatchRequest(
     val pncNumber: String? = null,
     val firstName: String? = null,
     val dateOfBirth: LocalDate? = null,
+    val activeSentence: Boolean = false,
 )
