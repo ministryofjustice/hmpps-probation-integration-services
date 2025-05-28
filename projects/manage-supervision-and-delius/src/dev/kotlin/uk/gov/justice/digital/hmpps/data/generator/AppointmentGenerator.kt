@@ -9,12 +9,18 @@ import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.ContactT
 
 object AppointmentGenerator {
 
-    val APPOINTMENT_TYPES = CreateAppointment.Type.entries.map { generateType(it.code, attendanceType = true) }
+    val APPOINTMENT_TYPES = CreateAppointment.Type.entries.mapNotNull {
+        when (it.code) {
+            "CODC" -> null
+            else -> generateType(it.code, attendanceType = true)
+        }
+    }
 
     fun generateType(
         code: String,
         description: String = "Description for $code",
         attendanceType: Boolean,
+        offenderContact: Boolean = false,
         id: Long = IdGenerator.getAndIncrement()
     ) = ContactType(IdGenerator.getAndIncrement(), code, true, description)
 

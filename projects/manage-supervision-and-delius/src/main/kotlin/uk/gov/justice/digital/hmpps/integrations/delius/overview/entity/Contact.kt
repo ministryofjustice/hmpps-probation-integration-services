@@ -9,6 +9,7 @@ import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
+import org.springframework.data.repository.CrudRepository
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.ContactDocument
@@ -186,7 +187,17 @@ class ContactType(
     @Column(name = "contact_outcome_flag")
     @Convert(converter = YesNoConverter::class)
     val contactOutcomeFlag: Boolean? = false,
+
+    @Column(name = "OFFENDER_EVENT_0")
+    @Convert(converter = YesNoConverter::class)
+    val offenderContact: Boolean = false
 )
+
+interface ContactTypeRepository : CrudRepository<ContactType, Long> {
+    fun findByCode(code: String): ContactType?
+}
+
+fun ContactTypeRepository.getContactType(code: String) = findByCode(code) ?: throw NotFoundException("ContactType", "code", code)
 
 @Immutable
 @Entity
