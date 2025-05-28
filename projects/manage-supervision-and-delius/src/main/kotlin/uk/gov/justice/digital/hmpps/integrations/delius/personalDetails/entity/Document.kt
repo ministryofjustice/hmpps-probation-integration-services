@@ -12,6 +12,7 @@ import org.springframework.data.jpa.repository.Query
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.Contact
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.ReferenceData
+import uk.gov.justice.digital.hmpps.service.DocumentLevelCode
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.ZonedDateTime
@@ -274,28 +275,17 @@ interface DocumentsRepository : JpaRepository<DocumentEntity, Long> {
             select d from DocumentEntity d
             where d.offenderId = :offenderId
             and ((:createdDateFrom is null or :createdDateTo is null) or (d.createdAt >= :createdDateFrom and d.createdAt <= :createdDateTo))
+            and (:#{#documentLevelCode.name} = "ALL" or d.level = :#{#documentLevelCode.description})
+            and ((:ids is null or d.alfrescoId in (:ids)) or (:keywords is not null and regexp_substr(d.name, :keywords, 1, 1, 'i') is not null ))
         """
     )
     fun search(
         offenderId: Long,
         createdDateFrom: LocalDateTime?,
         createdDateTo: LocalDateTime?,
-        pageable: Pageable
-    ): Page<DocumentEntity>
-
-    @Query(
-        """
-            select d from DocumentEntity d
-            where d.offenderId = :offenderId
-            and ((:createdDateFrom is null or :createdDateTo is null) or (d.createdAt >= :createdDateFrom and d.createdAt <= :createdDateTo))
-            and d.alfrescoId in (:ids)
-        """
-    )
-    fun searchWithIds(
-        offenderId: Long,
-        ids: List<String>,
-        createdDateFrom: LocalDateTime?,
-        createdDateTo: LocalDateTime?,
+        documentLevelCode: DocumentLevelCode,
+        ids: List<String>? = null,
+        keywords: String? = null,
         pageable: Pageable
     ): Page<DocumentEntity>
 }

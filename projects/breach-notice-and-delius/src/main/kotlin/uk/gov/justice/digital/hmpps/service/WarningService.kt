@@ -9,6 +9,7 @@ import uk.gov.justice.digital.hmpps.model.EnforceableContact
 import uk.gov.justice.digital.hmpps.model.WarningDetails
 import uk.gov.justice.digital.hmpps.model.WarningTypesResponse
 import java.time.LocalDateTime
+import java.time.LocalTime
 import java.time.ZoneId.systemDefault
 import java.util.*
 
@@ -19,6 +20,7 @@ class WarningService(
     private val documentRepository: DocumentRepository,
     private val disposalRepository: DisposalRepository,
     private val contactRepository: ContactRepository,
+    private val requirementRepository: RequirementRepository
 ) {
     fun getWarningTypes(crn: String, breachNoticeId: UUID): WarningTypesResponse {
         val disposal = documentRepository.findEventIdFromDocument(breachNoticeUrn(breachNoticeId))
@@ -36,10 +38,19 @@ class WarningService(
         val breachReasons = rdRepository.findByDatasetCodeAndSelectableTrue(Dataset.BREACH_REASON)
         val disposal = documentRepository.findEventIdFromDocument(breachNoticeUrn(breachNoticeId))
             ?.let { crn.disposalForEvent(it) }
-        val enforceableContacts = contactRepository.findByEventIdAndOutcomeEnforceableTrue(disposal!!.event.id)
+        val enforceableContacts =
+            contactRepository.findEnforceableContacts(disposal!!.event.id)
+
         return WarningDetails(
             breachReasons = breachReasons.codedDescriptions(),
             enforceableContacts = enforceableContacts.map(Contact::toEnforceableContact),
+            unpaidWorkRequirements =
+                if (enforceableContacts.any { it.unpaidWorkAppointments.isNotEmpty() }) {
+                    requirementRepository.getUnpaidWorkRequirementsByDisposal(disposal.id)
+                        .map { it.toModel() }
+                } else {
+                    emptyList()
+                }
         )
     }
 
@@ -51,7 +62,7 @@ class WarningService(
 
 fun Contact.toEnforceableContact() = EnforceableContact(
     id,
-    LocalDateTime.of(date, startTime.withZoneSameInstant(systemDefault()).toLocalTime()),
+    LocalDateTime.of(date, startTime?.withZoneSameInstant(systemDefault())?.toLocalTime() ?: LocalTime.MIN),
     description,
     type.codedDescription(),
     outcome!!.codedDescription(),

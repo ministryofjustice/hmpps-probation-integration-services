@@ -109,7 +109,7 @@ internal class ActivityIntegrationTest {
         )
         assertThat(res.activities[3].location?.postcode, equalTo("H34 7TH"))
         assertThat(res.activities[3].isAppointment, equalTo(true))
-        assertThat(res.activities[0].documents.size, equalTo(2))
+        assertThat(res.activities[0].documents.size, equalTo(3))
         assertThat(res.activities[4].isAppointment, equalTo(true))
         assertThat(res.activities[1].documents.size, equalTo(0))
         assertThat(res.activities[6].action, equalTo("Breach Enforcement Action"))

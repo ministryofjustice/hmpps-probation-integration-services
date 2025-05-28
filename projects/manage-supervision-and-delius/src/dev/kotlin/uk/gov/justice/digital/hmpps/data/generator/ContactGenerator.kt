@@ -155,6 +155,17 @@ object ContactGenerator {
         contact = NEXT_APPT_CONTACT
     )
 
+    val CONTACT_DOCUMENT_3 = generateContactDocument(
+        OVERVIEW.id,
+        "C001",
+        "dic.doc",
+        "DOCUMENT",
+        primaryKeyId = NEXT_APPT_CONTACT.id,
+        contact = NEXT_APPT_CONTACT,
+        sensitive = true,
+        workInProgress = true
+    )
+
     fun generateContactDocument(
         personId: Long,
         alfrescoId: String,

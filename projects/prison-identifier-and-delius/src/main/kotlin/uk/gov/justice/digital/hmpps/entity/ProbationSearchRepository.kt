@@ -43,7 +43,7 @@ interface ProbationSearchRepository : JpaRepository<Person, Long> {
         pncNumber: String?,
         croNumber: String?,
         nomsNumber: String?,
-        activeSentence: Boolean = false,
+        activeSentence: Boolean,
         forename: String?,
         surname: String?,
         dateOfBirth: LocalDate? = null,
@@ -83,7 +83,7 @@ interface ProbationSearchRepository : JpaRepository<Person, Long> {
         pncNumber: String?,
         croNumber: String?,
         nomsNumber: String?,
-        activeSentence: Boolean = false,
+        activeSentence: Boolean,
         forename: String?,
         surname: String?,
         dateOfBirth: LocalDate? = null,
@@ -94,19 +94,21 @@ interface ProbationSearchRepository : JpaRepository<Person, Long> {
             select distinct p 
             from Person p 
             where :nomsNumber is not null and lower(trim(p.nomsNumber)) = lower(trim(:nomsNumber))
+            and (:activeSentence != true or (:activeSentence = true and p.currentDisposal = true ))
             and exists (select 1 from OffenderManager om
                         where om.personId = p.id
                         and om.active = true
                         and om.softDeleted = false)
         """
     )
-    fun findPersonByNomsNumber(nomsNumber: String?): List<Person>
+    fun findPersonByNomsNumber(nomsNumber: String?, activeSentence: Boolean): List<Person>
 
     @Query(
         """
             select distinct p 
             from Person p left join Alias a on a.offenderId = p.id
             where :croNumber is not null and lower(trim(p.croNumber)) = lower(trim(:croNumber))
+            and (:activeSentence != true or (:activeSentence = true and p.currentDisposal = true ))
             and (
                 ((:surname is not null and (
                     lower(trim(p.surname)) = lower(trim(:surname)) 
@@ -123,7 +125,12 @@ interface ProbationSearchRepository : JpaRepository<Person, Long> {
                         and om.softDeleted = false)
         """
     )
-    fun findPersonByCroNumber(croNumber: String?, surname: String?, dateOfBirth: LocalDate?): List<Person>
+    fun findPersonByCroNumber(
+        croNumber: String?,
+        surname: String?,
+        dateOfBirth: LocalDate?,
+        activeSentence: Boolean
+    ): List<Person>
 
     @Query(
         """
@@ -146,13 +153,19 @@ interface ProbationSearchRepository : JpaRepository<Person, Long> {
                     or a.dateOfBirth = :dateOfBirth)
                 )) or (:dateOfBirth is null and :surname is null)      
             )
+            and (:activeSentence != true or (:activeSentence = true and p.currentDisposal = true ))
             and exists (select 1 from OffenderManager om
                         where om.personId = p.id
                         and om.active = true
                         and om.softDeleted = false)
         """
     )
-    fun findPersonByPncNumber(pncNumber: String?, surname: String?, dateOfBirth: LocalDate?): List<Person>
+    fun findPersonByPncNumber(
+        pncNumber: String?,
+        surname: String?,
+        dateOfBirth: LocalDate?,
+        activeSentence: Boolean
+    ): List<Person>
 
     @Query(
         """
@@ -188,7 +201,7 @@ interface ProbationSearchRepository : JpaRepository<Person, Long> {
         forename: String?,
         surname: String?,
         dateOfBirth: LocalDate?,
-        activeSentence: Boolean = false
+        activeSentence: Boolean,
     ): List<Person>
 
     @Query(
@@ -212,7 +225,7 @@ interface ProbationSearchRepository : JpaRepository<Person, Long> {
     fun findPersonByPartialName(
         surname: String?,
         dateOfBirth: LocalDate?,
-        activeSentence: Boolean = false
+        activeSentence: Boolean,
     ): List<Person>
 
     @Query(
@@ -239,7 +252,7 @@ interface ProbationSearchRepository : JpaRepository<Person, Long> {
         forename: String?,
         surname: String?,
         dateOfBirths: List<LocalDate>,
-        activeSentence: Boolean = false
+        activeSentence: Boolean
     ): List<Person>
 }
 
@@ -265,32 +278,40 @@ fun ProbationSearchRepository.fullSearchAlias(request: ProbationMatchRequest): L
     )
 
 fun ProbationSearchRepository.searchByNoms(request: ProbationMatchRequest): List<Person> =
-    findPersonByNomsNumber(request.nomsNumber.takeIf { it.isNotEmpty() })
+    findPersonByNomsNumber(request.nomsNumber.takeIf { it.isNotEmpty() }, request.activeSentence)
 
 fun ProbationSearchRepository.searchByCro(request: ProbationMatchRequest): List<Person> =
     findPersonByCroNumber(
         request.croNumber?.takeIf { it.isNotEmpty() },
-        request.surname.takeIf { it.isNotEmpty() }, request.dateOfBirth
+        request.surname.takeIf { it.isNotEmpty() },
+        request.dateOfBirth,
+        request.activeSentence
     )
 
 fun ProbationSearchRepository.searchByPnc(request: ProbationMatchRequest): List<Person> =
     findPersonByPncNumber(
         request.pncNumber?.takeIf { it.isNotEmpty() }?.let { SearchHelpers.formatPncNumber(it) },
-        request.surname.takeIf { it.isNotEmpty() }, request.dateOfBirth
+        request.surname.takeIf { it.isNotEmpty() },
+        request.dateOfBirth,
+        request.activeSentence
     )
 
 fun ProbationSearchRepository.searchByName(request: ProbationMatchRequest): List<Person> =
     findPersonByName(
         request.firstName.takeIf { it.isNotEmpty() },
-        request.surname.takeIf { it.isNotEmpty() }, request.dateOfBirth
+        request.surname.takeIf { it.isNotEmpty() },
+        request.dateOfBirth,
+        request.activeSentence
     )
 
 fun ProbationSearchRepository.searchByPartialName(request: ProbationMatchRequest): List<Person> =
-    findPersonByPartialName(request.surname.takeIf { it.isNotEmpty() }, request.dateOfBirth)
+    findPersonByPartialName(request.surname.takeIf { it.isNotEmpty() }, request.dateOfBirth, request.activeSentence)
 
 fun ProbationSearchRepository.searchByPartialNameLenientDob(request: ProbationMatchRequest): List<Person> {
     return findPersonByPartialNameLenientDob(
         request.firstName.takeIf { it.isNotEmpty() },
-        request.surname.takeIf { it.isNotEmpty() }, allLenientDateVariations(request.dateOfBirth)
+        request.surname.takeIf { it.isNotEmpty() },
+        allLenientDateVariations(request.dateOfBirth),
+        request.activeSentence
     )
 }

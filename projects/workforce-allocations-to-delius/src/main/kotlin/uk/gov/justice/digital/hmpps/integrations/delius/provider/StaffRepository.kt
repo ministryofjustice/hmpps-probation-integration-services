@@ -42,20 +42,6 @@ interface StaffRepository : JpaRepository<StaffRecord, Long> {
     @Query("select s from StaffWithUser s join s.teams t where t.code = :teamCode and (s.endDate is null or s.endDate > current_date)")
     fun findActiveStaffInTeam(teamCode: String): List<StaffWithUser>
 
-    @Query("select s from StaffWithTeams s left join fetch s.teams t left join fetch t.district d left join fetch d.borough where s.code = :code")
-    fun findStaffWithTeamsByCode(code: String): StaffWithTeams?
-
-    @Query(
-        """
-        select s from StaffWithTeams s 
-        left join fetch s.teams t 
-        left join fetch t.district d 
-        left join fetch d.borough 
-        where upper(s.user.username) = upper(:username)
-    """
-    )
-    fun findStaffWithTeamsByUsername(username: String): StaffWithTeams?
-
     @Query(
         """
         select count(1) from offender_manager om 
@@ -126,10 +112,17 @@ interface StaffRepository : JpaRepository<StaffRecord, Long> {
     fun getParoleReportsDueCountByStaffId(staffId: Long, toDate: LocalDate): Long
 }
 
+interface StaffWithTeamsRepository : JpaRepository<StaffWithTeams, Long> {
+    @EntityGraph(attributePaths = ["teams.district.borough"])
+    @Query("select s from StaffWithTeams s where s.code = :code")
+    fun findStaffWithTeamsByCode(code: String): StaffWithTeams?
+
+    @EntityGraph(attributePaths = ["teams.district.borough"])
+    @Query("select s from StaffWithTeams s where upper(s.user.username) = upper(:username)")
+    fun findStaffWithTeamsByUsername(username: String): StaffWithTeams?
+}
+
 fun StaffRepository.getWithUserByCode(code: String): StaffWithUser =
     findStaffWithUserByCode(code) ?: throw NotFoundException("Staff", "code", code)
-
-fun StaffRepository.getByCode(code: String): Staff =
-    findByCode(code) ?: throw NotFoundException("Staff", "code", code)
 
 fun StaffRepository.verifyTeamMembership(staffId: Long, teamId: Long) = countTeamMembership(staffId, teamId) > 0

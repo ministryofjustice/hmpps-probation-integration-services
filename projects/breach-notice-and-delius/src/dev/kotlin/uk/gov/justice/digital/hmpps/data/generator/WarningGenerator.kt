@@ -11,6 +11,7 @@ import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator.genera
 import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator.generateDataset
 import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator.generateReferenceData
 import uk.gov.justice.digital.hmpps.data.generator.StaffGenerator.DEFAULT_STAFF
+import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.integrations.delius.*
 import java.time.ZonedDateTime
 
@@ -49,14 +50,31 @@ object WarningGenerator {
 
     val ENFORCEABLE_CONTACT_TYPE = generateContactType("ENCT")
     val ENFORCEABLE_CONTACT_OUTCOME = generateContactOutcome("ENOC", enforceable = true)
-    val DEFAULT_ENFORCEABLE_CONTACT = generateEnforceableContact(
-        DEFAULT_PERSON,
-        ENFORCEABLE_CONTACT_TYPE,
-        requirement = DEFAULT_RQMNT,
-        outcome = ENFORCEABLE_CONTACT_OUTCOME,
-        description = "Enforceable Description",
-        notes = "Some notes about the enforceable contact",
-    )
+    val ENFORCEABLE_CONTACTS = listOf(3, 1, 2).map {
+        generateEnforceableContact(
+            DEFAULT_PERSON,
+            ENFORCEABLE_CONTACT_TYPE,
+            dateTime = ZonedDateTime.of(2020, 1, it, 0, 0, 0, 0, EuropeLondon),
+            requirement = DEFAULT_RQMNT,
+            outcome = ENFORCEABLE_CONTACT_OUTCOME,
+            description = "Enforceable Description",
+            notes = "Some notes about the enforceable contact",
+        )
+    }
+
+    val ENFORCEABLE_CONTACTS_UNPAID = listOf(4).map {
+        generateEnforceableContact(
+            DEFAULT_PERSON,
+            ENFORCEABLE_CONTACT_TYPE,
+            event = EventGenerator.DEFAULT_EVENT,
+            dateTime = ZonedDateTime.of(2020, 1, it, 0, 0, 0, 0, EuropeLondon),
+            outcome = ENFORCEABLE_CONTACT_OUTCOME,
+            description = "Unpaid Enforceable Description",
+            notes = "Some notes about the enforceable contact",
+        )
+    }
+
+    val UPW_APPOINTMENT = generateUnpaidAppointment(ENFORCEABLE_CONTACTS_UNPAID[0])
 
     val PSS_ENFORCEABLE_CONTACT = generateEnforceableContact(
         PSS_PERSON,
@@ -105,6 +123,7 @@ object WarningGenerator {
         type: ContactType,
         dateTime: ZonedDateTime = zonedDateTime().minusDays(1),
         requirement: Requirement? = null,
+        event: Event? = null,
         pssRequirement: PssRequirement? = null,
         staff: Staff = DEFAULT_STAFF,
         location: OfficeLocation? = DEFAULT_LOCATION,
@@ -118,7 +137,7 @@ object WarningGenerator {
         type,
         dateTime.toLocalDate(),
         dateTime,
-        requirement?.disposal?.event ?: pssRequirement?.custody?.disposal?.event,
+        requirement?.disposal?.event ?: pssRequirement?.custody?.disposal?.event ?: event,
         requirement,
         pssRequirement,
         staff,
@@ -129,5 +148,13 @@ object WarningGenerator {
         true,
         softDeleted,
         id
+    )
+
+    fun generateUnpaidAppointment(
+        contact: Contact,
+    ) = UpwAppointment(
+        id = IdGenerator.getAndIncrement(),
+        contact = contact,
+        upwDetailsId = IdGenerator.getAndIncrement(),
     )
 }

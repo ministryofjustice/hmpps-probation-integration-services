@@ -3,10 +3,7 @@ package uk.gov.justice.digital.hmpps.service
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.alfresco.AlfrescoClient
-import uk.gov.justice.digital.hmpps.api.model.personalDetails.DocumentDetails
-import uk.gov.justice.digital.hmpps.api.model.personalDetails.DocumentSearch
-import uk.gov.justice.digital.hmpps.api.model.personalDetails.DocumentTextSearch
-import uk.gov.justice.digital.hmpps.api.model.personalDetails.PersonDocuments
+import uk.gov.justice.digital.hmpps.api.model.personalDetails.*
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.PersonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.getSummary
 import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.DocumentEntity
@@ -46,43 +43,90 @@ class DocumentsService(
             totalElements = documents.totalElements.toInt(),
             totalPages = documents.totalPages,
             documents = documents.content.map { it.toDocumentDetails() },
-            sortedBy = sortedBy
+            sortedBy = sortedBy,
+            metadata = metadata()
         )
     }
 
     fun textSearch(
         documentTextSearch: DocumentTextSearch,
         crn: String,
+        useDBFilenameSearch: Boolean,
         pageable: Pageable,
-        sortedBy: String
+        sortedBy: String?
     ): PersonDocuments {
         val summary = personRepository.getSummary(crn)
-        val documents = if (documentTextSearch.query.isNullOrBlank()) {
-            documentsRepository.search(
-                summary.id,
-                documentTextSearch.dateFrom?.toLocalDate()?.atStartOfDay(),
-                documentTextSearch.dateTo?.toLocalDate()?.atTime(LocalTime.MAX),
-                pageable
-            )
-        } else {
-            val ids = alfrescoClient.textSearch(crn, documentTextSearch.query).documents.map { it.id }
-            documentsRepository.searchWithIds(
-                summary.id,
-                ids,
-                documentTextSearch.dateFrom?.toLocalDate()?.atStartOfDay(),
-                documentTextSearch.dateTo?.toLocalDate()?.atTime(LocalTime.MAX),
-                pageable
-            )
-        }
+        val metadata = metadata()
+        val ids = if (documentTextSearch.query.isNullOrBlank()) null else
+            try {
+                alfrescoClient.textSearch(crn, documentTextSearch.query).documents.map { it.id }
+            } catch (_: Exception) {
+                null
+            }
+        val keywords =
+            if (!useDBFilenameSearch) null else documentTextSearch.query?.split("\\s+".toRegex())?.joinToString("|")
+        val documents = documentsRepository.search(
+            summary.id,
+            documentTextSearch.dateFrom?.toLocalDate()?.atStartOfDay(),
+            documentTextSearch.dateTo?.toLocalDate()?.atTime(LocalTime.MAX),
+            documentTextSearch.levelCode,
+            ids,
+            keywords,
+            pageable
+        )
 
         return PersonDocuments(
             personSummary = summary.toPersonSummary(),
             totalElements = documents.totalElements.toInt(),
             totalPages = documents.totalPages,
-            documents = documents.content.map { it.toDocumentDetails() },
-            sortedBy = sortedBy
+            documents = sortUsingSearchResults(ids, sortedBy, documents.content),
+            sortedBy = sortedBy,
+            metadata = metadata
         )
     }
+
+    fun sortUsingSearchResults(
+        ids: List<String>?,
+        sortedBy: String?,
+        documents: List<DocumentEntity>
+    ): List<DocumentDetails> {
+        if (sortedBy != null) {
+            return documents.map { it.toDocumentDetails() }
+        }
+
+        val filenameMatches = documents.filter { ids?.contains(it.alfrescoId) == false }.map { it.toDocumentDetails() }
+        return (ids?.mapNotNull { id -> documents.firstOrNull { it.alfrescoId == id } }
+            ?: documents).map { it.toDocumentDetails() } + filenameMatches
+    }
+
+    fun metadata(): DocumentMetadata {
+        return DocumentMetadata(
+            documentLevels = (listOf(DocumentLevelCode.ALL) + (DocumentLevelCode.entries.filter { it != DocumentLevelCode.ALL }
+                .sortedBy { it.name })).map { DocumentLevel(it.name, it.description) }
+        )
+    }
+}
+
+enum class DocumentLevelCode(val description: String) {
+    ALL("All documents"),
+    PERSON("Person"),
+    PRE_CONS("Pre Cons"),
+    ADDRESS_ASSESSMENT("Address assessment"),
+    PERSONAL_CONTACT("Personal contact"),
+    PERSONAL_CIRCUMSTANCE("Personal circumstance"),
+    EVENT("Event"),
+    CPS("CPS Pack"),
+    COURT_REPORT("Court report"),
+    INSTITUTIONAL_REPORT("Institutional report"),
+    AP_REFERRAL("AP Referral"),
+    ASSESSMENT("Assessment"),
+    CASE_ALLOCATION("Case allocation"),
+    REFERRAL("Referral"),
+    UPW("UPW Appointment"),
+    CONTACT("Contact"),
+    NSI("NSI"),
+    ADDRESS("Address"),
+    REGISTER("Register")
 }
 
 fun DocumentEntity.toDocumentDetails() = DocumentDetails(

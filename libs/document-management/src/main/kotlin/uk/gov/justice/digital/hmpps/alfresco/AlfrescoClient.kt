@@ -49,9 +49,9 @@ class AlfrescoClient(
                             it.copy(HttpHeaders.LAST_MODIFIED, res)
                         }.body(res.bodyTo(type))
 
-                    else -> throw RuntimeException("Failed to download document. Alfresco responded with ${res.statusCode}.")
+                    else -> throw RuntimeException("Document text search failed. Alfresco responded with ${res.statusCode}.")
                 }
-            }, false) ?: throw RuntimeException("Failed to download document")
+            }, false) ?: throw RuntimeException("Document text search failed")
     }
 
     fun streamDocument(id: String, filename: String): ResponseEntity<StreamingResponseBody> =

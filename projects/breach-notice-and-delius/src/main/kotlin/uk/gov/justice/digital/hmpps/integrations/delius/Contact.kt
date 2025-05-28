@@ -28,7 +28,7 @@ class Contact(
     val date: LocalDate,
 
     @Column(name = "contact_start_time")
-    val startTime: ZonedDateTime,
+    val startTime: ZonedDateTime?,
 
     @ManyToOne
     @JoinColumn(name = "event_id")
@@ -71,6 +71,9 @@ class Contact(
     @Id
     @Column(name = "contact_id")
     val id: Long,
+
+    @OneToMany(mappedBy = "contact")
+    val unpaidWorkAppointments: List<UpwAppointment> = emptyList(),
 )
 
 @Immutable
@@ -103,13 +106,22 @@ class ContactOutcome(
 ) : CodeAndDescription
 
 interface ContactRepository : JpaRepository<Contact, Long> {
-    fun findByEventIdAndOutcomeEnforceableTrue(eventId: Long): List<Contact>
+    @Query(
+        """
+        select c, ua from Contact c
+        left join c.unpaidWorkAppointments ua
+        where c.event.id = :eventId and c.outcome.enforceable = true 
+        order by c.date asc, c.startTime asc
+        """
+    )
+    fun findEnforceableContacts(eventId: Long): List<Contact>
 
     @Query(
         """
         select c from Contact c
         where c.person.crn = :crn and c.type.attendanceContact = true 
         and c.outcome is null and c.date > current_date
+        order by c.date asc, c.startTime asc
         """
     )
     fun findFutureAppointments(crn: String): List<Contact>

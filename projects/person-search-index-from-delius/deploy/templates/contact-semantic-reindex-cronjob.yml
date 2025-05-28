@@ -4,7 +4,7 @@ metadata:
   name: contact-semantic-reindex
 spec:
   schedule: {{ .Values.reindexing.contact_semantic_schedule }}
-  suspend: true
+  suspend: {{ .Values.reindexing.contact_semantic_schedule_suspended }}
   concurrencyPolicy: Replace
   jobTemplate:
     spec:
@@ -39,13 +39,13 @@ spec:
                 - name: CONTACT_SEMANTIC_INDEX_PREFIX
                   value: contact-semantic-search
                 - name: CONTACT_SEMANTIC_REINDEXING_TIMEOUT
-                  value: '172800' # 48 hours
+                  value: '259200' # 72 hours
                 - name: PIPELINES_ENABLED
                   value: contact-semantic-full-load
                 - name: PIPELINE_WORKERS
-                  value: '10'
+                  value: '4'
                 - name: PIPELINE_BATCH_SIZE # Maximum number of in-memory events per worker
-                  value: '1000'
+                  value: '100'
                 - name: JDBC_BATCH_SIZE # Maximum number of cases to return from DB at a time, note: each case corresponds to >1000 events
                   value: '50'
                 - name: APPLICATIONINSIGHTS_CONNECTION_STRING
