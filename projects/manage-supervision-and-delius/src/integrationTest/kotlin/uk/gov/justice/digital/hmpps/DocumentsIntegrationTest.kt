@@ -16,6 +16,7 @@ import uk.gov.justice.digital.hmpps.api.model.personalDetails.DocumentSearch
 import uk.gov.justice.digital.hmpps.api.model.personalDetails.DocumentTextSearch
 import uk.gov.justice.digital.hmpps.api.model.personalDetails.PersonDocuments
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.OVERVIEW
+import uk.gov.justice.digital.hmpps.data.generator.personalDetails.PersonDetailsGenerator.PERSONAL_DETAILS_2
 import uk.gov.justice.digital.hmpps.service.DocumentLevelCode
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withJson
@@ -271,6 +272,28 @@ internal class DocumentsIntegrationTest {
         assertThat(res.documents[1].alfrescoId, equalTo("B002"))
         assertThat(res.documents[2].alfrescoId, equalTo("A003"))
         assertThat(res.documents[3].alfrescoId, equalTo("A004"))
+        assertThat(res.metadata?.documentLevels, equalTo(expectedMetadata))
+    }
+
+    @Test
+    fun `when alfresco client throws error, return no documents but returns metadata`() {
+        val person = PERSONAL_DETAILS_2
+        val res = mockMvc
+            .perform(
+                post("/documents/${person.crn}/search/text?useDBFilenameSearch=false").withToken()
+                    .withJson(
+                        DocumentTextSearch(
+                            query = "''''''''''''''''''''",
+                        )
+                    )
+            )
+            .andExpect(status().isOk)
+            .andReturn().response.contentAsJson<PersonDocuments>()
+        val expectedMetadata =
+            (listOf(DocumentLevelCode.ALL) + (DocumentLevelCode.entries.filter { it != DocumentLevelCode.ALL }
+                .sortedBy { it.name })).map { DocumentLevel(it.name, it.description) }
+        assertThat(res.totalElements, equalTo(0))
+        assertThat(res.documents.size, equalTo(0))
         assertThat(res.metadata?.documentLevels, equalTo(expectedMetadata))
     }
 }
