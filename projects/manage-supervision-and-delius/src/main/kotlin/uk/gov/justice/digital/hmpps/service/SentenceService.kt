@@ -162,8 +162,6 @@ class SentenceService(
         )
     }
 
-    fun Disposal.toMinimalOrder() = MinimalOrder(type.description, date, expectedEndDate())
-
     fun RequirementEntity.toRequirement(): Requirement {
         val rar = requirementService.getRar(disposal!!.id, mainCategory!!.code)
 
@@ -271,4 +269,5 @@ fun formatNote(notes: String?, truncateNote: Boolean): List<NoteDetail> {
     } ?: listOf()
 }
 
+fun Disposal.toMinimalOrder() = MinimalOrder(type.description, date, expectedEndDate())
 

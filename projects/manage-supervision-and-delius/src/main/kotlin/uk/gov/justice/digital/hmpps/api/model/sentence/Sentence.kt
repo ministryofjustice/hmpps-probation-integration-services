@@ -31,7 +31,7 @@ data class AssociationSummary(
 
 data class MinimalOrder(
     val description: String,
-    val startDate: LocalDate,
+    val startDate: LocalDate? = null,
     val endDate: LocalDate? = null,
 )
 

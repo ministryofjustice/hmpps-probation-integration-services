@@ -3,16 +3,11 @@ package uk.gov.justice.digital.hmpps.service
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.api.model.appointment.ContactTypeAssociation
 import uk.gov.justice.digital.hmpps.api.model.appointment.CreateAppointment
-import uk.gov.justice.digital.hmpps.api.model.sentence.AssociationSummary
+import uk.gov.justice.digital.hmpps.api.model.sentence.MinimalOrder
+import uk.gov.justice.digital.hmpps.api.model.sentence.MinimalRequirement
+import uk.gov.justice.digital.hmpps.api.model.sentence.MinimalSentence
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
-import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.ContactTypeRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.Event
-import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.PersonRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.Requirement
-import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.RequirementRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.getContactType
-import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.getPerson
-import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.LicenceCondition
+import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.LicenceConditionRepository
 
 @Service
@@ -40,23 +35,28 @@ class AppointmentService(
             personSummary = person.toSummary(),
             contactTypeCode = code,
             associatedWithPerson = contactType.offenderContact,
-            events = activeEvents.map { it.toAssociationSummary() },
-            licenceConditions = activeEvents.mapNotNull { event ->
-                event.disposal?.let {
-                    licenceConditionRepository.findAllByDisposalId(it.id)
-                }
-            }.flatten().map { it.toAssociationSummary() },
-            requirements = activeEvents.map {
-                requirementRepository.getRequirements(it.id, it.eventNumber)
-            }.flatten().map { it.toAssociationSummary() }
+            sentences = activeEvents.map { it.toMinimalSentence() }
         )
     }
 
-    fun Requirement.toAssociationSummary(): AssociationSummary {
+    fun Event.toMinimalSentence(): MinimalSentence =
+        MinimalSentence(
+            id,
+            disposal?.toMinimalOrder() ?: MinimalOrder("Pre-Sentence"),
+            licenceConditions = disposal?.let {
+                licenceConditionRepository.findAllByDisposalId(disposal.id).map {
+                    it.toMinimalLicenceCondition()
+                }
+            } ?: emptyList(),
+            requirements = requirementRepository.getRequirements(id, eventNumber)
+                .map { it.toMinimalRequirement() },
+        )
+
+    fun Requirement.toMinimalRequirement(): MinimalRequirement {
         val rar = requirementService.getRar(disposal!!.id, mainCategory!!.code)
-        return AssociationSummary(id, populateRequirementDescription(mainCategory.description, subCategory?.description, length, rar))
+        return MinimalRequirement(
+            id,
+            populateRequirementDescription(mainCategory.description, subCategory?.description, length, rar)
+        )
     }
 }
-
-fun LicenceCondition.toAssociationSummary() = AssociationSummary(id, mainCategory.description)
-fun Event.toAssociationSummary() = AssociationSummary(id, disposal?.type?.description ?: "Pre-Sentence")

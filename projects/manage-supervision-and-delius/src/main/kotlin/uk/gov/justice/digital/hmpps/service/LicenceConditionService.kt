@@ -36,8 +36,6 @@ fun EntityLicenceCondition.toLicenceCondition() =
         toLicenceConditionNote(true)
     )
 
-fun EntityLicenceCondition.toMinimalLicenceCondition() = MinimalLicenceCondition(id, mainCategory.description)
-
 fun EntityLicenceCondition.toLicenceConditionSingleNote(noteId: Int, truncateNote: Boolean) =
     LicenceCondition(
         id,
@@ -52,3 +50,5 @@ fun EntityLicenceCondition.toLicenceConditionNote(truncateNote: Boolean): List<N
 
     return formatNote(notes, truncateNote)
 }
+
+fun EntityLicenceCondition.toMinimalLicenceCondition() = MinimalLicenceCondition(id, mainCategory.description)

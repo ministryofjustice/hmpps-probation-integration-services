@@ -10,13 +10,19 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 import uk.gov.justice.digital.hmpps.api.model.appointment.ContactTypeAssociation
 import uk.gov.justice.digital.hmpps.api.model.appointment.CreateAppointment
-import uk.gov.justice.digital.hmpps.api.model.sentence.AssociationSummary
+import uk.gov.justice.digital.hmpps.api.model.sentence.MinimalLicenceCondition
+import uk.gov.justice.digital.hmpps.api.model.sentence.MinimalOrder
+import uk.gov.justice.digital.hmpps.api.model.sentence.MinimalRequirement
+import uk.gov.justice.digital.hmpps.api.model.sentence.MinimalSentence
 import uk.gov.justice.digital.hmpps.data.generator.LicenceConditionGenerator.LC_WITHOUT_NOTES
 import uk.gov.justice.digital.hmpps.data.generator.LicenceConditionGenerator.LC_WITH_1500_CHAR_NOTE
 import uk.gov.justice.digital.hmpps.data.generator.LicenceConditionGenerator.LC_WITH_NOTES
 import uk.gov.justice.digital.hmpps.data.generator.LicenceConditionGenerator.LC_WITH_NOTES_WITHOUT_ADDED_BY
 import uk.gov.justice.digital.hmpps.data.generator.LicenceConditionGenerator.LIC_COND_MAIN_CAT
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
+import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.ACTIVE_ORDER
+import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.EVENT_1
+import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.EVENT_2
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.REQUIREMENT
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.REQUIREMENT_UNPAID_WORK
 import uk.gov.justice.digital.hmpps.data.generator.personalDetails.PersonDetailsGenerator
@@ -62,19 +68,22 @@ class AppointmentIntegrationTest {
             personSummary = PersonGenerator.OVERVIEW.toSummary(),
             contactTypeCode = code,
             associatedWithPerson = false,
-            events = listOf(
-                AssociationSummary(PersonGenerator.EVENT_2.id, "Pre-Sentence"),
-                AssociationSummary(PersonGenerator.EVENT_1.id, "Default Sentence Type")
-            ),
-            licenceConditions = listOf(
-                AssociationSummary(LC_WITHOUT_NOTES.id, LIC_COND_MAIN_CAT.description),
-                AssociationSummary(LC_WITH_NOTES.id, LIC_COND_MAIN_CAT.description),
-                AssociationSummary(LC_WITH_NOTES_WITHOUT_ADDED_BY.id, LIC_COND_MAIN_CAT.description),
-                AssociationSummary(LC_WITH_1500_CHAR_NOTE.id, LIC_COND_MAIN_CAT.description)
-            ),
-            requirements = listOf(
-                AssociationSummary(REQUIREMENT.id, "2 of 12 RAR days completed"),
-                AssociationSummary(REQUIREMENT_UNPAID_WORK.id, "Unpaid Work - Intensive")
+            listOf(
+                MinimalSentence(EVENT_2.id, MinimalOrder("Pre-Sentence")),
+                MinimalSentence(
+                    EVENT_1.id,
+                    order = MinimalOrder(ACTIVE_ORDER.type.description, ACTIVE_ORDER.date),
+                    licenceConditions = listOf(
+                        MinimalLicenceCondition(LC_WITHOUT_NOTES.id, LIC_COND_MAIN_CAT.description),
+                        MinimalLicenceCondition(LC_WITH_NOTES.id, LIC_COND_MAIN_CAT.description),
+                        MinimalLicenceCondition(LC_WITH_NOTES_WITHOUT_ADDED_BY.id, LIC_COND_MAIN_CAT.description),
+                        MinimalLicenceCondition(LC_WITH_1500_CHAR_NOTE.id, LIC_COND_MAIN_CAT.description)
+                    ),
+                    requirements = listOf(
+                        MinimalRequirement(REQUIREMENT.id, "2 of 12 RAR days completed"),
+                        MinimalRequirement(REQUIREMENT_UNPAID_WORK.id, "Unpaid Work - Intensive")
+                    )
+                )
             )
         )
         val response = mockMvc
