@@ -83,7 +83,7 @@ class NsiType(
 
     val code: String,
 
-    val description: String? = null,
+    val description: String,
 
     @Id
     @Column(name = "nsi_type_id") val id: Long
