@@ -10,6 +10,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 import uk.gov.justice.digital.hmpps.api.model.appointment.ContactTypeAssociation
 import uk.gov.justice.digital.hmpps.api.model.appointment.CreateAppointment
+import uk.gov.justice.digital.hmpps.api.model.appointment.MinimalNsi
 import uk.gov.justice.digital.hmpps.api.model.sentence.MinimalLicenceCondition
 import uk.gov.justice.digital.hmpps.api.model.sentence.MinimalOrder
 import uk.gov.justice.digital.hmpps.api.model.sentence.MinimalRequirement
@@ -74,6 +75,9 @@ class AppointmentIntegrationTest {
                 MinimalSentence(
                     EVENT_1.id,
                     order = MinimalOrder(ACTIVE_ORDER.type.description, ACTIVE_ORDER.date),
+                    nsis = listOf(
+                        MinimalNsi(PersonGenerator.BREACH_ON_ACTIVE_ORDER.id, "BRE description"),
+                        MinimalNsi(PersonGenerator.OPD_NSI.id, "OPD1 description")),
                     licenceConditions = listOf(
                         MinimalLicenceCondition(LC_WITHOUT_NOTES.id, LIC_COND_MAIN_CAT.description),
                         MinimalLicenceCondition(LC_WITH_NOTES.id, LIC_COND_MAIN_CAT.description),

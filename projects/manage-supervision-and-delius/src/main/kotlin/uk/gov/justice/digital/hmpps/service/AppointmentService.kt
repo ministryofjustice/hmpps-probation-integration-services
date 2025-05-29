@@ -47,9 +47,11 @@ class AppointmentService(
     }
 
     fun Event.toMinimalSentence(eventLevelNsis: List<Nsi>): MinimalSentence {
+        val filteredNsiList = eventLevelNsis.filter { nsi -> nsi.eventId == id }
         return MinimalSentence(
             id,
             disposal?.toMinimalOrder() ?: MinimalOrder("Pre-Sentence"),
+            filteredNsiList.map { it.toMinimalNsi() },
             licenceConditions = disposal?.let {
                 licenceConditionRepository.findAllByDisposalId(disposal.id).map {
                     it.toMinimalLicenceCondition()
