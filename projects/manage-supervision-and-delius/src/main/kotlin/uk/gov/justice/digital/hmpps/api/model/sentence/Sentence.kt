@@ -21,10 +21,10 @@ data class MinimalSentence(
 )
 
 data class Events(
-    val events : List<OrderSummary> = listOf(),
+    val events : List<AssociationSummary> = listOf(),
 )
 
-data class OrderSummary(
+data class AssociationSummary(
     val id: Long,
     val description: String
 )

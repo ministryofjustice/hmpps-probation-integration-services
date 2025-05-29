@@ -10,7 +10,12 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 import uk.gov.justice.digital.hmpps.api.model.appointment.ContactTypeAssociation
 import uk.gov.justice.digital.hmpps.api.model.appointment.CreateAppointment
-import uk.gov.justice.digital.hmpps.api.model.sentence.OrderSummary
+import uk.gov.justice.digital.hmpps.api.model.sentence.AssociationSummary
+import uk.gov.justice.digital.hmpps.data.generator.LicenceConditionGenerator.LC_WITHOUT_NOTES
+import uk.gov.justice.digital.hmpps.data.generator.LicenceConditionGenerator.LC_WITH_1500_CHAR_NOTE
+import uk.gov.justice.digital.hmpps.data.generator.LicenceConditionGenerator.LC_WITH_NOTES
+import uk.gov.justice.digital.hmpps.data.generator.LicenceConditionGenerator.LC_WITH_NOTES_WITHOUT_ADDED_BY
+import uk.gov.justice.digital.hmpps.data.generator.LicenceConditionGenerator.LIC_COND_MAIN_CAT
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.personalDetails.PersonDetailsGenerator
 import uk.gov.justice.digital.hmpps.service.toSummary
@@ -52,14 +57,19 @@ class AppointmentIntegrationTest {
 
         val code = CreateAppointment.Type.HomeVisitToCaseNS.code
         val expected = ContactTypeAssociation(
-            PersonGenerator.OVERVIEW.toSummary(),
-            code,
-            false,
-            listOf(
-                OrderSummary(PersonGenerator.EVENT_2.id, "Pre-Sentence"),
-                OrderSummary(PersonGenerator.EVENT_1.id, "Default Sentence Type")
+            personSummary = PersonGenerator.OVERVIEW.toSummary(),
+            contactTypeCode = code,
+            associatedWithPerson = false,
+            events = listOf(
+                AssociationSummary(PersonGenerator.EVENT_2.id, "Pre-Sentence"),
+                AssociationSummary(PersonGenerator.EVENT_1.id, "Default Sentence Type")
+            ),
+            licenceConditions = listOf(
+                AssociationSummary(LC_WITHOUT_NOTES.id, LIC_COND_MAIN_CAT.description),
+                AssociationSummary(LC_WITH_NOTES.id, LIC_COND_MAIN_CAT.description),
+                AssociationSummary(LC_WITH_NOTES_WITHOUT_ADDED_BY.id, LIC_COND_MAIN_CAT.description),
+                AssociationSummary(LC_WITH_1500_CHAR_NOTE.id, LIC_COND_MAIN_CAT.description)
             )
-
         )
         val response = mockMvc
             .perform(get("/appointment/${PersonGenerator.OVERVIEW.crn}/contact-type/${code}").withToken())
