@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps
 
 import com.github.tomakehurst.wiremock.WireMockServer
+import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
@@ -13,16 +14,19 @@ import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import uk.gov.justice.digital.hmpps.api.model.Ids
+import uk.gov.justice.digital.hmpps.api.model.ProbationCase
 import uk.gov.justice.digital.hmpps.api.model.ProbationStatus
 import uk.gov.justice.digital.hmpps.api.model.ProbationStatusDetail
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
+import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.andExpectJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 import java.time.LocalDate
 
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = RANDOM_PORT)
-internal class IntegrationTest {
+internal class ProbationStatusIntegrationTest {
     @Autowired
     lateinit var mockMvc: MockMvc
 
@@ -31,6 +35,21 @@ internal class IntegrationTest {
 
     @MockitoBean
     lateinit var telemetryService: TelemetryService
+
+    @Test
+    fun `can return status with other ids`() {
+        val person = PersonGenerator.CURRENTLY_MANAGED
+        mockMvc
+            .perform(get("/probation-case/${person.crn}/search").withToken())
+            .andExpect(status().is2xxSuccessful)
+            .andExpectJson(
+                ProbationCase(
+                    person.id,
+                    Ids(person.crn, person.nomsNumber, person.pnc),
+                    DEFAULT_DETAIL.copy(ProbationStatus.CURRENT, inBreach = true)
+                )
+            )
+    }
 
     @ParameterizedTest
     @MethodSource("probationStatuses")
