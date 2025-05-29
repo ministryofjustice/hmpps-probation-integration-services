@@ -8,5 +8,6 @@ data class ContactTypeAssociation (
     val contactTypeCode: String,
     val associatedWithPerson: Boolean,
     val events: List<AssociationSummary> = emptyList(),
-    val licenceConditions: List<AssociationSummary> = emptyList()
+    val licenceConditions: List<AssociationSummary> = emptyList(),
+    val requirements: List<AssociationSummary> = emptyList()
 )

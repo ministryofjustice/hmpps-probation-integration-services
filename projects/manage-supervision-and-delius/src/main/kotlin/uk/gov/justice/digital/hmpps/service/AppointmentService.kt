@@ -8,6 +8,8 @@ import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.ContactTypeRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.Event
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.PersonRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.Requirement
+import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.RequirementRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.getContactType
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.getPerson
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.LicenceCondition
@@ -18,7 +20,9 @@ class AppointmentService(
     private val personRepository: PersonRepository,
     private val contactTypeRepository: ContactTypeRepository,
     private val sentenceService: SentenceService,
-    private val licenceConditionRepository: LicenceConditionRepository
+    private val requirementService: RequirementService,
+    private val licenceConditionRepository: LicenceConditionRepository,
+    private val requirementRepository: RequirementRepository
 ) {
 
     fun getProbationRecordsByContactType(crn: String, code: String): ContactTypeAssociation {
@@ -37,15 +41,22 @@ class AppointmentService(
             contactTypeCode = code,
             associatedWithPerson = contactType.offenderContact,
             events = activeEvents.map { it.toAssociationSummary() },
-            licenceConditions = activeEvents.mapNotNull {
-                it.disposal?.let {
+            licenceConditions = activeEvents.mapNotNull { event ->
+                event.disposal?.let {
                     licenceConditionRepository.findAllByDisposalId(it.id)
                 }
+            }.flatten().map { it.toAssociationSummary() },
+            requirements = activeEvents.map {
+                requirementRepository.getRequirements(it.id, it.eventNumber)
             }.flatten().map { it.toAssociationSummary() }
         )
     }
-}
 
+    fun Requirement.toAssociationSummary(): AssociationSummary {
+        val rar = requirementService.getRar(disposal!!.id, mainCategory!!.code)
+        return AssociationSummary(id, populateRequirementDescription(mainCategory.description, subCategory?.description, length, rar))
+    }
+}
 
 fun LicenceCondition.toAssociationSummary() = AssociationSummary(id, mainCategory.description)
 fun Event.toAssociationSummary() = AssociationSummary(id, disposal?.type?.description ?: "Pre-Sentence")

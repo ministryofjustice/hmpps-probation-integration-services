@@ -17,6 +17,8 @@ import uk.gov.justice.digital.hmpps.data.generator.LicenceConditionGenerator.LC_
 import uk.gov.justice.digital.hmpps.data.generator.LicenceConditionGenerator.LC_WITH_NOTES_WITHOUT_ADDED_BY
 import uk.gov.justice.digital.hmpps.data.generator.LicenceConditionGenerator.LIC_COND_MAIN_CAT
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
+import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.REQUIREMENT
+import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.REQUIREMENT_UNPAID_WORK
 import uk.gov.justice.digital.hmpps.data.generator.personalDetails.PersonDetailsGenerator
 import uk.gov.justice.digital.hmpps.service.toSummary
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
@@ -69,6 +71,10 @@ class AppointmentIntegrationTest {
                 AssociationSummary(LC_WITH_NOTES.id, LIC_COND_MAIN_CAT.description),
                 AssociationSummary(LC_WITH_NOTES_WITHOUT_ADDED_BY.id, LIC_COND_MAIN_CAT.description),
                 AssociationSummary(LC_WITH_1500_CHAR_NOTE.id, LIC_COND_MAIN_CAT.description)
+            ),
+            requirements = listOf(
+                AssociationSummary(REQUIREMENT.id, "2 of 12 RAR days completed"),
+                AssociationSummary(REQUIREMENT_UNPAID_WORK.id, "Unpaid Work - Intensive")
             )
         )
         val response = mockMvc
