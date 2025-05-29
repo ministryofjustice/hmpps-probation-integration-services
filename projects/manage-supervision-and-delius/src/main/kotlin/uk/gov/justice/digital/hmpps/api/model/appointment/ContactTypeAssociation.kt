@@ -7,5 +7,11 @@ data class ContactTypeAssociation (
     val personSummary: PersonSummary,
     val contactTypeCode: String,
     val associatedWithPerson: Boolean,
+    val personNsis: List<MinimalNsi> = emptyList(),
     val sentences: List<MinimalSentence> = emptyList(),
+)
+
+data class MinimalNsi(
+    val id: Long,
+    val description: String
 )

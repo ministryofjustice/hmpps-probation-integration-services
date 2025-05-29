@@ -68,6 +68,7 @@ class AppointmentIntegrationTest {
             personSummary = PersonGenerator.OVERVIEW.toSummary(),
             contactTypeCode = code,
             associatedWithPerson = false,
+            emptyList(),
             listOf(
                 MinimalSentence(EVENT_2.id, MinimalOrder("Pre-Sentence")),
                 MinimalSentence(
