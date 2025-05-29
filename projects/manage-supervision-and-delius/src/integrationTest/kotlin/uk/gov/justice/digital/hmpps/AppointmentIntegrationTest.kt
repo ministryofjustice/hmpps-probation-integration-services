@@ -10,6 +10,8 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 import uk.gov.justice.digital.hmpps.api.model.appointment.ContactTypeAssociation
 import uk.gov.justice.digital.hmpps.api.model.appointment.CreateAppointment
+import uk.gov.justice.digital.hmpps.api.model.sentence.OrderSummary
+import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.personalDetails.PersonDetailsGenerator
 import uk.gov.justice.digital.hmpps.service.toSummary
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
@@ -39,6 +41,28 @@ class AppointmentIntegrationTest {
         )
         val response = mockMvc
             .perform(get("/appointment/${PersonDetailsGenerator.PERSONAL_DETAILS.crn}/contact-type/${code}").withToken())
+            .andExpect(MockMvcResultMatchers.status().isOk)
+            .andReturn().response.contentAsJson<ContactTypeAssociation>()
+
+        assertEquals(expected, response)
+    }
+
+    @Test
+    fun `person records associated with contact type`() {
+
+        val code = CreateAppointment.Type.HomeVisitToCaseNS.code
+        val expected = ContactTypeAssociation(
+            PersonGenerator.OVERVIEW.toSummary(),
+            code,
+            false,
+            listOf(
+                OrderSummary(PersonGenerator.EVENT_2.id, "Pre-Sentence"),
+                OrderSummary(PersonGenerator.EVENT_1.id, "Default Sentence Type")
+            )
+
+        )
+        val response = mockMvc
+            .perform(get("/appointment/${PersonGenerator.OVERVIEW.crn}/contact-type/${code}").withToken())
             .andExpect(MockMvcResultMatchers.status().isOk)
             .andReturn().response.contentAsJson<ContactTypeAssociation>()
 

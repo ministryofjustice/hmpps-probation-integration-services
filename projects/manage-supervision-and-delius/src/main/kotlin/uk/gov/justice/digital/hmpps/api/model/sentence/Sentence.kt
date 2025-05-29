@@ -20,6 +20,15 @@ data class MinimalSentence(
     val requirements: List<MinimalRequirement> = listOf()
 )
 
+data class Events(
+    val events : List<OrderSummary> = listOf(),
+)
+
+data class OrderSummary(
+    val id: Long,
+    val description: String
+)
+
 data class MinimalOrder(
     val description: String,
     val startDate: LocalDate,

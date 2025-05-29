@@ -270,3 +270,5 @@ fun formatNote(notes: String?, truncateNote: Boolean): List<NoteDetail> {
         }.filter { it.note != "null" && it.note.isNotEmpty() }
     } ?: listOf()
 }
+
+
