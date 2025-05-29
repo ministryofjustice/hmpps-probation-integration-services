@@ -24,6 +24,7 @@ class NsiType(
 
 enum class NsiTypeCode(val code: String) {
     APPROVED_PREMISES_RESIDENCE("APR01"),
+    PRE_RELEASE_ARRIVAL("APR02"),
     REHABILITATIVE_ACTIVITY("APR04")
 }
 

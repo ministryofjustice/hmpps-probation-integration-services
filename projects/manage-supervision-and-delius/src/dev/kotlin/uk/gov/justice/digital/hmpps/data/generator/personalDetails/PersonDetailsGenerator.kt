@@ -36,22 +36,6 @@ object PersonDetailsGenerator {
         requiresInterpreter = true
     )
 
-    val PERSONAL_DETAILS_2 = generatePersonDetails(
-        "X000006",
-        "Jenny",
-        "Alice",
-        "Jones",
-        "Jeff",
-        GENDER_FEMALE,
-        RELIGION_DEFAULT,
-        SEXUAL_ORIENTATION,
-        LANGUAGE_RD,
-        "Smith",
-        GENDER_IDENTITY_RD,
-        "Some gender description",
-        requiresInterpreter = false
-    )
-
     val EXCLUSION = generatePersonDetails(
         "E123456",
         exclusionMessage = "There is an exclusion on this person"

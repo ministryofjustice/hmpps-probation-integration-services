@@ -23,10 +23,10 @@ class NsiStatus(
 )
 
 enum class NsiStatusCode(val code: String) {
+    AP_CASE_ALLOCATED("APARP1"),
     IN_REFERRAL("AP01"),
     REFERRAL_ACCEPTED("AP02"),
     IN_RESIDENCE("AP03"),
-
     ACTIVE("SLI01"),
     COMPLETED("COMP"),
 }

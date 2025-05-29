@@ -68,6 +68,7 @@ class DataLoader(
             ReferenceDataGenerator.PSS_SUB_CAT,
             ReferenceDataGenerator.COURT_REPORT_TYPE,
             ReferenceDataGenerator.GENDER_MALE,
+            ReferenceDataGenerator.GENDER_FEMALE,
             ReferenceDataGenerator.PROVISION_TYPE_1,
             ReferenceDataGenerator.PROVISION_CATEGORY_1,
             ReferenceDataGenerator.DISABILITY_TYPE_1,
