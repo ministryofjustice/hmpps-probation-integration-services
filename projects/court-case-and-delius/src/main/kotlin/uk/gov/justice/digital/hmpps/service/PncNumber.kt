@@ -6,7 +6,7 @@ data class PncNumber(val year: Int, val serial: Int, val checkSum: Char) {
     fun matchValue() = "${fullYear()}/${String.format("%07d", serial)}" + checkSum.uppercase()
     private fun fullYear() = when {
         year > 99 -> year
-        year % 100 <= now().year % 100 -> "20${formattedYear()}"
+        year <= now().year % 100 -> "20${formattedYear()}"
         else -> "19${formattedYear()}"
     }
 
