@@ -27,7 +27,7 @@ class AppointmentService(
     fun getProbationRecordsByContactType(crn: String, code: String): ContactTypeAssociation {
         val person = personRepository.getPerson(crn)
 
-        if (!CreateAppointment.Type.entries.any {it.code == code}) {
+        if (!CreateAppointment.Type.entries.any { it.code == code }) {
             throw NotFoundException("CreateAppointment", "code", code)
         }
 

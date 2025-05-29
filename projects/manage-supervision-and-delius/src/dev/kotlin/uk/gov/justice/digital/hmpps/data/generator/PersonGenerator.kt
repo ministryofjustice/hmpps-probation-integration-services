@@ -560,7 +560,9 @@ object PersonGenerator {
 
     val OPD_NSI = generateNsi(OVERVIEW.id, ACTIVE_ORDER.event.id, NSI_OPD_TYPE, NSI_STATUS, subType = NSI_OPD_SUB_TYPE)
 
-    fun generateNsiType(code: String) = NsiType(id = IdGenerator.getAndIncrement(), code = code, description = "$code description")
+    fun generateNsiType(code: String) =
+        NsiType(id = IdGenerator.getAndIncrement(), code = code, description = "$code description")
+
     fun generateNsiStatus(code: String, description: String) =
         NsiStatus(id = IdGenerator.getAndIncrement(), code = code, description = description)
 

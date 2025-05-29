@@ -30,5 +30,6 @@ class AppointmentController(
     fun recordOutcome(@RequestBody outcome: Outcome) = appointmentOutcomeService.recordOutcome(outcome)
 
     @GetMapping("/{crn}/contact-type/{code}")
-    fun getProbationRecordsByContactType(@PathVariable crn: String, @PathVariable code: String) = appointmentService.getProbationRecordsByContactType(crn, code)
+    fun getProbationRecordsByContactType(@PathVariable crn: String, @PathVariable code: String) =
+        appointmentService.getProbationRecordsByContactType(crn, code)
 }

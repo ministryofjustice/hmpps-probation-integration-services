@@ -77,7 +77,8 @@ class AppointmentIntegrationTest {
                     order = MinimalOrder(ACTIVE_ORDER.type.description, ACTIVE_ORDER.date),
                     nsis = listOf(
                         MinimalNsi(PersonGenerator.BREACH_ON_ACTIVE_ORDER.id, "BRE description"),
-                        MinimalNsi(PersonGenerator.OPD_NSI.id, "OPD1 description (OPD1 subtype)")),
+                        MinimalNsi(PersonGenerator.OPD_NSI.id, "OPD1 description (OPD1 subtype)")
+                    ),
                     licenceConditions = listOf(
                         MinimalLicenceCondition(LC_WITHOUT_NOTES.id, LIC_COND_MAIN_CAT.description),
                         MinimalLicenceCondition(LC_WITH_NOTES.id, LIC_COND_MAIN_CAT.description),

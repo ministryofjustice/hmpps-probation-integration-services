@@ -197,7 +197,8 @@ interface ContactTypeRepository : CrudRepository<ContactType, Long> {
     fun findByCode(code: String): ContactType?
 }
 
-fun ContactTypeRepository.getContactType(code: String) = findByCode(code) ?: throw NotFoundException("ContactType", "code", code)
+fun ContactTypeRepository.getContactType(code: String) =
+    findByCode(code) ?: throw NotFoundException("ContactType", "code", code)
 
 @Immutable
 @Entity
