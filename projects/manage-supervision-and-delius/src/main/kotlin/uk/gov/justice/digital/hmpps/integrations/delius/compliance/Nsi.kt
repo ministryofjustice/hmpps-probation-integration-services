@@ -6,6 +6,7 @@ import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.NumericBooleanConverter
 import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.ReferenceData
 import java.time.LocalDate
 import java.time.ZonedDateTime
 
@@ -21,6 +22,10 @@ class Nsi(
     @ManyToOne
     @JoinColumn(name = "nsi_type_id")
     val type: NsiType,
+
+    @ManyToOne
+    @JoinColumn(name = "nsi_sub_type_id")
+    val subType: ReferenceData? = null,
 
     @Column(name = "event_id")
     val eventId: Long?,
@@ -51,8 +56,6 @@ class Nsi(
     @Column(name = "active_flag", columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)
     val active: Boolean = true,
-
-    val nsiSubTypeId: Long? = null,
 
     @Column(columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)

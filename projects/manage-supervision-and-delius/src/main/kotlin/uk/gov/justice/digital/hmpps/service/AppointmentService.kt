@@ -70,5 +70,5 @@ class AppointmentService(
         )
     }
 
-    fun Nsi.toMinimalNsi() = MinimalNsi(id, type.description)
+    fun Nsi.toMinimalNsi() = MinimalNsi(id, type.description + (subType?.let { " (${it.description})" } ?: ""))
 }

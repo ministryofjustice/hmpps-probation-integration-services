@@ -194,6 +194,7 @@ class DataLoader(
             PersonGenerator.DEREGISTRATION_1,
             PersonGenerator.NSI_BREACH_TYPE,
             PersonGenerator.NSI_OPD_TYPE,
+            PersonGenerator.NSI_OPD_SUB_TYPE,
             PersonGenerator.NSI_STATUS,
             PersonGenerator.BREACH_PREVIOUS_ORDER_1,
             PersonGenerator.BREACH_PREVIOUS_ORDER_2,

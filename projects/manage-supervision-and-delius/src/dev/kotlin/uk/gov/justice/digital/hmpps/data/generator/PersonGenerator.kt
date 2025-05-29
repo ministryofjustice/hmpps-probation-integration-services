@@ -552,12 +552,13 @@ object PersonGenerator {
 
     val NSI_BREACH_TYPE = generateNsiType("BRE")
     val NSI_OPD_TYPE = generateNsiType("OPD1")
+    val NSI_OPD_SUB_TYPE = ReferenceData(IdGenerator.getAndIncrement(), "OPD11", "OPD1 subtype")
     val NSI_STATUS = generateNsiStatus("STATUS1", "An NSI Status")
     val BREACH_PREVIOUS_ORDER_1 = generateNsi(OVERVIEW.id, INACTIVE_ORDER_1.event.id, NSI_BREACH_TYPE, NSI_STATUS)
     val BREACH_PREVIOUS_ORDER_2 = generateNsi(OVERVIEW.id, INACTIVE_ORDER_2.event.id, NSI_BREACH_TYPE, NSI_STATUS)
     val BREACH_ON_ACTIVE_ORDER = generateNsi(OVERVIEW.id, ACTIVE_ORDER.event.id, NSI_BREACH_TYPE, NSI_STATUS)
 
-    val OPD_NSI = generateNsi(OVERVIEW.id, ACTIVE_ORDER.event.id, NSI_OPD_TYPE, NSI_STATUS)
+    val OPD_NSI = generateNsi(OVERVIEW.id, ACTIVE_ORDER.event.id, NSI_OPD_TYPE, NSI_STATUS, subType = NSI_OPD_SUB_TYPE)
 
     fun generateNsiType(code: String) = NsiType(id = IdGenerator.getAndIncrement(), code = code, description = "$code description")
     fun generateNsiStatus(code: String, description: String) =
@@ -568,8 +569,8 @@ object PersonGenerator {
         eventId: Long,
         type: NsiType,
         status: NsiStatus,
-        active: Boolean = true
-
+        active: Boolean = true,
+        subType: ReferenceData? = null
     ) = Nsi(
         id = IdGenerator.getAndIncrement(),
         personId = personId,
@@ -577,6 +578,7 @@ object PersonGenerator {
         expectedStartDate = LocalDate.now().minusDays(5),
         eventId = eventId,
         type = type,
+        subType = subType,
         nsiStatus = status,
         lastUpdated = ZonedDateTime.now().truncatedTo(ChronoUnit.SECONDS),
         active = active
