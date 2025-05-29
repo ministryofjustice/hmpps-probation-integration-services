@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import uk.gov.justice.digital.hmpps.integrations.approvedpremises.BookingMade
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.PersonArrived
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.PersonDeparted
 import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.entity.ApprovedPremises
@@ -44,6 +45,18 @@ class NsiService(
     private val referenceDataRepository: ReferenceDataRepository,
     private val eventRepository: EventRepository
 ) {
+    fun preArrival(person: Person, details: BookingMade) {
+        val existing = nsiRepository.findByPersonIdAndTypeCodeAndActualEndDateIsNull(
+            person.id,
+            NsiTypeCode.PRE_RELEASE_ARRIVAL.code
+        )
+        if (existing.isNotEmpty()) return
+
+        val team = teamRepository.getApprovedPremisesTeam(details.premises.legacyApCode)
+        val staff = staffRepository.getByCode(details.bookedBy.staffMember.staffCode)
+        createPreArrivalNsi(person, details, staff, team)
+    }
+
     fun personArrived(
         person: Person,
         details: PersonArrived,
@@ -207,8 +220,61 @@ class NsiService(
         probationAreaCode = team.probationArea.code
     )
 
+    private fun Nsi.caseAllocatedContact(date: ZonedDateTime, staff: Staff, team: Team) {
+        contactService.createContact(
+            ContactDetails(
+                date = date,
+                typeCode = ContactTypeCode.CASE_ALLOCATED.code,
+                createAlert = false
+            ),
+            person = person,
+            nsiId = id,
+            staff = staff,
+            team = team,
+            probationAreaCode = team.probationArea.code,
+        )
+    }
+
+    private fun createPreArrivalNsi(
+        person: Person,
+        details: BookingMade,
+        staff: Staff,
+        team: Team,
+    ) {
+        val type = nsiTypeRepository.getByCode(NsiTypeCode.PRE_RELEASE_ARRIVAL.code)
+        val status = nsiStatusRepository.getByCode(NsiStatusCode.AP_CASE_ALLOCATED.code)
+        val nsi = nsiRepository.save(
+            Nsi(
+                person = person,
+                event = null,
+                type = type,
+                status = status,
+                referralDate = details.bookingMadeAt.toLocalDate(),
+                expectedStartDate = details.arrivalOn,
+                notes = listOfNotNull(
+                    "AP placement allocated to ${details.premises.name}",
+                    "For more details, click here: ${details.applicationUrl}"
+                ).joinToString(System.lineSeparator() + System.lineSeparator()),
+                externalReference = details.preArrivalRef()
+            )
+        )
+        nsiManagerRepository.save(
+            NsiManager(
+                nsi = nsi,
+                staff = staff,
+                team = team,
+                probationArea = team.probationArea,
+                startDate = details.bookingMadeAt,
+                transferReason = transferReasonRepository.getNsiTransferReason()
+            )
+        )
+        nsi.caseAllocatedContact(details.bookingMadeAt, staff, team)
+        nsi.statusChangeContact(details.bookingMadeAt, staff, team)
+    }
+
     private fun PersonArrived.residencyRef() = EXT_REF_BOOKING_PREFIX + bookingId
     private fun PersonArrived.rehabilitativeActivityRef() = EXT_REF_REHABILITATIVE_ACTIVITY_PREFIX + bookingId
     private fun PersonDeparted.residencyRef() = EXT_REF_BOOKING_PREFIX + bookingId
     private fun PersonDeparted.rehabilitativeActivityRef() = EXT_REF_REHABILITATIVE_ACTIVITY_PREFIX + bookingId
+    private fun BookingMade.preArrivalRef() = EXT_REF_PREARRIVAL_PREFIX + bookingId
 }
