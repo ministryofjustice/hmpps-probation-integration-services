@@ -111,7 +111,6 @@ object PersonGenerator {
 
     val DEFAULT_DISPOSAL_TYPE = generateDisposalType("DFS", "Default Sentence Type", "NP", 0)
 
-
     val TERMINATION_REASON = generateTerminationReason()
 
     val REF_DATA_YEARS = ReferenceData(IdGenerator.getAndIncrement(), "Y", "Years")
