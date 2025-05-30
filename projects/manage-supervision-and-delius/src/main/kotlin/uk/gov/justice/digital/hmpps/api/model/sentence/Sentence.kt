@@ -16,6 +16,7 @@ data class Sentence(
 
 data class MinimalSentence(
     val id: Long,
+    val eventNumber: String,
     val order: MinimalOrder? = null,
     val nsis: List<MinimalNsi> = emptyList(),
     val licenceConditions: List<MinimalLicenceCondition> = listOf(),

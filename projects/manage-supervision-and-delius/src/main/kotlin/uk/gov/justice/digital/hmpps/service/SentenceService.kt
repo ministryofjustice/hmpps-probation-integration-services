@@ -88,6 +88,7 @@ class SentenceService(
     fun Event.toMinimalSentence(): MinimalSentence =
         MinimalSentence(
             id,
+            eventNumber,
             disposal?.toMinimalOrder(),
             licenceConditions = disposal?.let {
                 licenceConditionRepository.findAllByDisposalId(disposal.id).map {

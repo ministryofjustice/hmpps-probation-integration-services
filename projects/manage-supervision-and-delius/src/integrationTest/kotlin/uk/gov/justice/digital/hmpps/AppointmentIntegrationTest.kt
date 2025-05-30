@@ -71,9 +71,10 @@ class AppointmentIntegrationTest {
             associatedWithPerson = false,
             emptyList(),
             listOf(
-                MinimalSentence(EVENT_2.id, MinimalOrder("Pre-Sentence")),
+                MinimalSentence(EVENT_2.id, EVENT_2.eventNumber,MinimalOrder("Pre-Sentence")),
                 MinimalSentence(
-                    EVENT_1.id,
+                    id = EVENT_1.id,
+                    eventNumber = EVENT_1.eventNumber,
                     order = MinimalOrder(ACTIVE_ORDER.type.description + " (12 Months)", ACTIVE_ORDER.date),
                     nsis = listOf(
                         MinimalNsi(PersonGenerator.BREACH_ON_ACTIVE_ORDER.id, "BRE description"),

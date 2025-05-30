@@ -64,9 +64,10 @@ class SentencesIntegrationTest {
         val expected = MinimalSentenceOverview(
             PersonGenerator.OVERVIEW.toSummary(),
             listOf(
-                MinimalSentence(EVENT_2.id),
+                MinimalSentence(EVENT_2.id, EVENT_2.eventNumber),
                 MinimalSentence(
-                    EVENT_1.id,
+                    id = EVENT_1.id,
+                    EVENT_1.eventNumber,
                     order = MinimalOrder(ACTIVE_ORDER.type.description + " (12 Months)", ACTIVE_ORDER.date),
                     licenceConditions = listOf(
                         MinimalLicenceCondition(LC_WITHOUT_NOTES.id, LIC_COND_MAIN_CAT.description),
