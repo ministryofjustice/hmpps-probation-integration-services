@@ -74,7 +74,7 @@ class AppointmentIntegrationTest {
                 MinimalSentence(EVENT_2.id, MinimalOrder("Pre-Sentence")),
                 MinimalSentence(
                     EVENT_1.id,
-                    order = MinimalOrder(ACTIVE_ORDER.type.description, ACTIVE_ORDER.date),
+                    order = MinimalOrder(ACTIVE_ORDER.type.description + " (12 Months)", ACTIVE_ORDER.date),
                     nsis = listOf(
                         MinimalNsi(PersonGenerator.BREACH_ON_ACTIVE_ORDER.id, "BRE description"),
                         MinimalNsi(PersonGenerator.OPD_NSI.id, "OPD1 description (OPD1 subtype)")

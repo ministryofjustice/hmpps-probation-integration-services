@@ -12,6 +12,7 @@ import uk.gov.justice.digital.hmpps.service.SentenceService
 @PreAuthorize("hasRole('PROBATION_API__MANAGE_A_SUPERVISION__CASE_DETAIL')")
 class SentencesController(private val sentenceService: SentenceService) {
 
+    //TODO remove this api after f/e integration with getProbationRecordsByContactType
     @GetMapping
     @Operation(summary = "Display active events")
     fun getOverview(

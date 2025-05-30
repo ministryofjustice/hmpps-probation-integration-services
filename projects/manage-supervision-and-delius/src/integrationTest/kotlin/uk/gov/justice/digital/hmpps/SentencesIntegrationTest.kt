@@ -67,7 +67,7 @@ class SentencesIntegrationTest {
                 MinimalSentence(EVENT_2.id),
                 MinimalSentence(
                     EVENT_1.id,
-                    order = MinimalOrder(ACTIVE_ORDER.type.description, ACTIVE_ORDER.date),
+                    order = MinimalOrder(ACTIVE_ORDER.type.description + " (12 Months)", ACTIVE_ORDER.date),
                     licenceConditions = listOf(
                         MinimalLicenceCondition(LC_WITHOUT_NOTES.id, LIC_COND_MAIN_CAT.description),
                         MinimalLicenceCondition(LC_WITH_NOTES.id, LIC_COND_MAIN_CAT.description),

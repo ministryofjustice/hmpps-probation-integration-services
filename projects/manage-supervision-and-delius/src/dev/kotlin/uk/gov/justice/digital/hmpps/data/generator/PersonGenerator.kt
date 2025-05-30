@@ -110,11 +110,13 @@ object PersonGenerator {
     )
 
     val DEFAULT_DISPOSAL_TYPE = generateDisposalType("DFS", "Default Sentence Type", "NP", 0)
-    val ACTIVE_ORDER = generateDisposal(EVENT_1, length = 12)
+
 
     val TERMINATION_REASON = generateTerminationReason()
 
     val REF_DATA_YEARS = ReferenceData(IdGenerator.getAndIncrement(), "Y", "Years")
+    val REF_DATA_MONTHS = ReferenceData(IdGenerator.getAndIncrement(), "M", "Months")
+    val ACTIVE_ORDER = generateDisposal(EVENT_1, length = 12, lengthUnit = REF_DATA_MONTHS)
     val INACTIVE_ORDER_1 =
         generateDisposal(
             INACTIVE_EVENT_1,
@@ -124,7 +126,6 @@ object PersonGenerator {
             terminationReason = TERMINATION_REASON
         )
 
-    val REF_DATA_MONTHS = ReferenceData(IdGenerator.getAndIncrement(), "M", "Months")
     val INACTIVE_ORDER_2 = generateDisposal(INACTIVE_EVENT_2, LocalDate.now().minusDays(7), REF_DATA_MONTHS, length = 7)
     val INACTIVE_ORDER_3 = generateDisposal(INACTIVE_EVENT_3, LocalDate.now().minusDays(7), active = false)
 
