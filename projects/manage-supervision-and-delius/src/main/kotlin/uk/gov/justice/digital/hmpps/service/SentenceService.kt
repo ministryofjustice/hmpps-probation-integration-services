@@ -279,6 +279,8 @@ fun Disposal.toMinimalOrder(): MinimalOrder {
         }
     }
 
-    return MinimalOrder(type.description + (lengthUnit?.let { " (${length} ${it.description})" } ?: ""), date, expectedEndDate())
+    return MinimalOrder(type.description + (lengthUnit?.let { " (${length} ${it.description})" } ?: ""),
+        date,
+        expectedEndDate())
 }
 
