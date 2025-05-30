@@ -15,6 +15,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referra
 import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referral.entity.ReferralSourceRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.caseload.CaseloadRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.outcome.ContactOutcomeRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.ContactType
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.ContactTypeCode
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.ContactTypeRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.location.OfficeLocationRepository
@@ -184,7 +185,9 @@ class DataLoader(
             )
         )
 
-        contactTypeRepository.saveAll(ContactTypeCode.entries.map { ContactTypeGenerator.generate(it.code) })
+        val contactTypes = contactTypeRepository.saveAll(
+            ContactTypeCode.entries.map { ContactTypeGenerator.generate(it.code) }
+        ).associateBy { it.code }
         contactOutcomeRepository.saveAll(
             listOf(
                 ContactOutcomeGenerator.generate("AP_N"),
@@ -194,7 +197,14 @@ class DataLoader(
         nsiTypeRepository.saveAll(NsiTypeCode.entries.map { NsiTypeGenerator.generate(it.code) })
         val linkedContact = contactTypeRepository.save(ContactTypeGenerator.generate("SMLI001"))
         nsiStatusRepository.saveAll(NsiStatusCode.entries.map {
-            NsiStatusGenerator.generate(it.code, if (it.code == NsiStatusCode.ACTIVE.code) linkedContact else null)
+            NsiStatusGenerator.generate(
+                it.code,
+                when (it.code) {
+                    NsiStatusCode.ACTIVE.code -> linkedContact
+                    NsiStatusCode.AP_CASE_ALLOCATED.code -> contactTypes[ContactTypeCode.CASE_ALLOCATED.code]
+                    else -> null
+                }
+            )
         })
         transferReasonRepository.save(TransferReasonGenerator.NSI)
 

@@ -222,7 +222,7 @@ internal class MessagingIntegrationTest {
         assertThat(nsi.type.code, equalTo(NsiTypeCode.PRE_RELEASE_ARRIVAL.code))
         assertThat(nsi.status.code, equalTo(NsiStatusCode.AP_CASE_ALLOCATED.code))
         assertThat(nsi.referralDate, equalTo(LocalDate.parse("2022-11-30")))
-        assertThat(nsi.expectedStartDate, equalTo(LocalDate.parse("2023-01-30")))
+        assertThat(nsi.expectedStartDate, equalTo(null))
         assertThat(nsi.event, equalTo(null))
 
         val caseAllocatedContact = contactRepository.findAll()
