@@ -220,21 +220,6 @@ class NsiService(
         probationAreaCode = team.probationArea.code
     )
 
-    private fun Nsi.caseAllocatedContact(date: ZonedDateTime, staff: Staff, team: Team) {
-        contactService.createContact(
-            ContactDetails(
-                date = date,
-                typeCode = ContactTypeCode.CASE_ALLOCATED.code,
-                createAlert = false
-            ),
-            person = person,
-            nsiId = id,
-            staff = staff,
-            team = team,
-            probationAreaCode = team.probationArea.code,
-        )
-    }
-
     private fun createPreArrivalNsi(
         person: Person,
         details: BookingMade,
@@ -250,7 +235,6 @@ class NsiService(
                 type = type,
                 status = status,
                 referralDate = details.bookingMadeAt.toLocalDate(),
-                expectedStartDate = details.arrivalOn,
                 notes = listOfNotNull(
                     "AP placement allocated to ${details.premises.name}",
                     "For more details, click here: ${details.applicationUrl}"
@@ -268,7 +252,7 @@ class NsiService(
                 transferReason = transferReasonRepository.getNsiTransferReason()
             )
         )
-        nsi.caseAllocatedContact(details.bookingMadeAt, staff, team)
+        nsi.referralContact(details.bookingMadeAt, staff, team)
         nsi.statusChangeContact(details.bookingMadeAt, staff, team)
     }
 
