@@ -14,6 +14,24 @@ servers:
 security:
 - hmpps-auth-token: []
 paths:
+  /probation-cases/match:
+    post:
+      tags:
+      - match-controller
+      operationId: getMatches
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MatchRequest"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MatchResponse"
   /secure/offenders/crn/{crn}:
     get:
       tags:
@@ -480,6 +498,24 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ProbationStatusDetail"
+  /probation-case/{crn}/search:
+    get:
+      tags:
+      - probation-status-resource
+      operationId: getProbationCase
+      parameters:
+      - name: crn
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProbationCase"
   /probation-case/{crn}/registrations:
     get:
       tags:
@@ -918,6 +954,135 @@ paths:
                 type: string
 components:
   schemas:
+    MatchRequest:
+      required:
+      - activeSentence
+      - surname
+      type: object
+      properties:
+        surname:
+          type: string
+        pncNumber:
+          type: string
+        firstName:
+          type: string
+        dateOfBirth:
+          type: string
+          format: date
+        activeSentence:
+          type: boolean
+    Ids:
+      required:
+      - crn
+      type: object
+      properties:
+        crn:
+          type: string
+        nomsNumber:
+          type: string
+        pncNumber:
+          type: string
+        croNumber:
+          type: string
+    Match:
+      required:
+      - offender
+      type: object
+      properties:
+        offender:
+          $ref: "#/components/schemas/MatchedPerson"
+    MatchResponse:
+      required:
+      - matchedBy
+      - matches
+      type: object
+      properties:
+        matches:
+          type: array
+          items:
+            $ref: "#/components/schemas/Match"
+        matchedBy:
+          type: string
+          enum:
+          - ALL_SUPPLIED
+          - ALL_SUPPLIED_ALIAS
+          - EXTERNAL_KEY
+          - NAME
+          - PARTIAL_NAME
+          - PARTIAL_NAME_DOB_LENIENT
+          - NOTHING
+    MatchedPerson:
+      required:
+      - dateOfBirth
+      - firstName
+      - offenderAliases
+      - otherIds
+      - probationStatus
+      - surname
+      type: object
+      properties:
+        firstName:
+          type: string
+        surname:
+          type: string
+        dateOfBirth:
+          type: string
+          format: date
+        otherIds:
+          $ref: "#/components/schemas/Ids"
+        probationStatus:
+          $ref: "#/components/schemas/ProbationStatusDetail"
+        offenderAliases:
+          type: array
+          items:
+            $ref: "#/components/schemas/OffenderAlias"
+    OffenderAlias:
+      required:
+      - firstName
+      - gender
+      - id
+      - surname
+      type: object
+      properties:
+        id:
+          type: string
+        dateOfBirth:
+          type: string
+          format: date
+        firstName:
+          type: string
+        middleNames:
+          type: array
+          items:
+            type: string
+        surname:
+          type: string
+        gender:
+          type: string
+    ProbationStatusDetail:
+      required:
+      - awaitingPsr
+      - inBreach
+      - preSentenceActivity
+      - status
+      type: object
+      properties:
+        status:
+          type: string
+          enum:
+          - NO_RECORD
+          - NOT_SENTENCED
+          - PREVIOUSLY_KNOWN
+          - CURRENT
+        terminationDate:
+          type: string
+          format: date
+        inBreach:
+          type: boolean
+        preSentenceActivity:
+          type: boolean
+        awaitingPsr:
+          type: boolean
     ContactDetailsSummary:
       type: object
       properties:
@@ -2278,29 +2443,6 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/Address"
-    OffenderAlias:
-      required:
-      - firstName
-      - gender
-      - id
-      - surname
-      type: object
-      properties:
-        id:
-          type: string
-        dateOfBirth:
-          type: string
-          format: date
-        firstName:
-          type: string
-        middleNames:
-          type: array
-          items:
-            type: string
-        surname:
-          type: string
-        gender:
-          type: string
     OffenderDetail:
       required:
       - activeProbationManagedSentence
@@ -2472,30 +2614,20 @@ components:
           description: Phone number
           example: "0123411278"
       description: staff name and contact details
-    ProbationStatusDetail:
+    ProbationCase:
       required:
-      - awaitingPsr
-      - inBreach
-      - preSentenceActivity
-      - status
+      - offenderId
+      - otherIds
+      - probationStatus
       type: object
       properties:
-        status:
-          type: string
-          enum:
-          - NO_RECORD
-          - NOT_SENTENCED
-          - PREVIOUSLY_KNOWN
-          - CURRENT
-        terminationDate:
-          type: string
-          format: date
-        inBreach:
-          type: boolean
-        preSentenceActivity:
-          type: boolean
-        awaitingPsr:
-          type: boolean
+        offenderId:
+          type: integer
+          format: int64
+        otherIds:
+          $ref: "#/components/schemas/Ids"
+        probationStatus:
+          $ref: "#/components/schemas/ProbationStatusDetail"
   securitySchemes:
     hmpps-auth-token:
       type: http
