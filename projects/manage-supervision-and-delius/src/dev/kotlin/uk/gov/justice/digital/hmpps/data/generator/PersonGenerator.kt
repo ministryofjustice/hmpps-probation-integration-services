@@ -110,11 +110,12 @@ object PersonGenerator {
     )
 
     val DEFAULT_DISPOSAL_TYPE = generateDisposalType("DFS", "Default Sentence Type", "NP", 0)
-    val ACTIVE_ORDER = generateDisposal(EVENT_1, length = 12)
 
     val TERMINATION_REASON = generateTerminationReason()
 
     val REF_DATA_YEARS = ReferenceData(IdGenerator.getAndIncrement(), "Y", "Years")
+    val REF_DATA_MONTHS = ReferenceData(IdGenerator.getAndIncrement(), "M", "Months")
+    val ACTIVE_ORDER = generateDisposal(EVENT_1, length = 12, lengthUnit = REF_DATA_MONTHS)
     val INACTIVE_ORDER_1 =
         generateDisposal(
             INACTIVE_EVENT_1,
@@ -124,7 +125,6 @@ object PersonGenerator {
             terminationReason = TERMINATION_REASON
         )
 
-    val REF_DATA_MONTHS = ReferenceData(IdGenerator.getAndIncrement(), "M", "Months")
     val INACTIVE_ORDER_2 = generateDisposal(INACTIVE_EVENT_2, LocalDate.now().minusDays(7), REF_DATA_MONTHS, length = 7)
     val INACTIVE_ORDER_3 = generateDisposal(INACTIVE_EVENT_3, LocalDate.now().minusDays(7), active = false)
 
@@ -552,14 +552,17 @@ object PersonGenerator {
 
     val NSI_BREACH_TYPE = generateNsiType("BRE")
     val NSI_OPD_TYPE = generateNsiType("OPD1")
+    val NSI_OPD_SUB_TYPE = ReferenceData(IdGenerator.getAndIncrement(), "OPD11", "OPD1 subtype")
     val NSI_STATUS = generateNsiStatus("STATUS1", "An NSI Status")
     val BREACH_PREVIOUS_ORDER_1 = generateNsi(OVERVIEW.id, INACTIVE_ORDER_1.event.id, NSI_BREACH_TYPE, NSI_STATUS)
     val BREACH_PREVIOUS_ORDER_2 = generateNsi(OVERVIEW.id, INACTIVE_ORDER_2.event.id, NSI_BREACH_TYPE, NSI_STATUS)
     val BREACH_ON_ACTIVE_ORDER = generateNsi(OVERVIEW.id, ACTIVE_ORDER.event.id, NSI_BREACH_TYPE, NSI_STATUS)
 
-    val OPD_NSI = generateNsi(OVERVIEW.id, ACTIVE_ORDER.event.id, NSI_OPD_TYPE, NSI_STATUS)
+    val OPD_NSI = generateNsi(OVERVIEW.id, ACTIVE_ORDER.event.id, NSI_OPD_TYPE, NSI_STATUS, subType = NSI_OPD_SUB_TYPE)
 
-    fun generateNsiType(code: String) = NsiType(id = IdGenerator.getAndIncrement(), code = code)
+    fun generateNsiType(code: String) =
+        NsiType(id = IdGenerator.getAndIncrement(), code = code, description = "$code description")
+
     fun generateNsiStatus(code: String, description: String) =
         NsiStatus(id = IdGenerator.getAndIncrement(), code = code, description = description)
 
@@ -568,8 +571,8 @@ object PersonGenerator {
         eventId: Long,
         type: NsiType,
         status: NsiStatus,
-        active: Boolean = true
-
+        active: Boolean = true,
+        subType: ReferenceData? = null
     ) = Nsi(
         id = IdGenerator.getAndIncrement(),
         personId = personId,
@@ -577,6 +580,7 @@ object PersonGenerator {
         expectedStartDate = LocalDate.now().minusDays(5),
         eventId = eventId,
         type = type,
+        subType = subType,
         nsiStatus = status,
         lastUpdated = ZonedDateTime.now().truncatedTo(ChronoUnit.SECONDS),
         active = active

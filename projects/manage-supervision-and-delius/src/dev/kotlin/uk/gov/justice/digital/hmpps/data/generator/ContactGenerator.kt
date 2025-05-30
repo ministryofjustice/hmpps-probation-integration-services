@@ -74,7 +74,7 @@ object ContactGenerator {
     val APPT_CT_1 = generateContactType("C089", true, "Alcohol Key Worker Session (NS)", contactOutcomeFlag = true)
     val OTHER_CT = generateContactType("XXXX", false, "Non attendance contact type", systemGenerated = true)
     val APPT_CT_2 = generateContactType("CODI", true, "Initial Appointment on Doorstep (NS)")
-    val APPT_CT_3 = generateContactType("CODC", true, "Planned Doorstep Contact (NS)")
+    val APPT_CT_3 = generateContactType("CODC", true, "Planned Doorstep Contact (NS)", offenderContact = true)
 
     val ACCEPTABLE_ABSENCE = generateOutcome("OUT", "Acceptable", false, true)
 
@@ -244,6 +244,7 @@ object ContactGenerator {
         description: String,
         systemGenerated: Boolean = false,
         contactOutcomeFlag: Boolean = false,
+        offenderContact: Boolean = false
     ) =
         ContactType(
             IdGenerator.getAndIncrement(),
@@ -251,7 +252,8 @@ object ContactGenerator {
             attendance,
             description,
             systemGenerated = systemGenerated,
-            contactOutcomeFlag = contactOutcomeFlag
+            contactOutcomeFlag = contactOutcomeFlag,
+            offenderContact = offenderContact
         )
 
     private fun generateContactCategory(contactType: ContactType, contactCategory: ReferenceData) =

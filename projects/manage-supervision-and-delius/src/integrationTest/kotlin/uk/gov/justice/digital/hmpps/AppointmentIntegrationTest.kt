@@ -6,9 +6,15 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
-import uk.gov.justice.digital.hmpps.api.model.sentence.*
+import uk.gov.justice.digital.hmpps.api.model.appointment.ContactTypeAssociation
+import uk.gov.justice.digital.hmpps.api.model.appointment.CreateAppointment
+import uk.gov.justice.digital.hmpps.api.model.appointment.MinimalNsi
+import uk.gov.justice.digital.hmpps.api.model.sentence.MinimalLicenceCondition
+import uk.gov.justice.digital.hmpps.api.model.sentence.MinimalOrder
+import uk.gov.justice.digital.hmpps.api.model.sentence.MinimalRequirement
+import uk.gov.justice.digital.hmpps.api.model.sentence.MinimalSentence
 import uk.gov.justice.digital.hmpps.data.generator.LicenceConditionGenerator.LC_WITHOUT_NOTES
 import uk.gov.justice.digital.hmpps.data.generator.LicenceConditionGenerator.LC_WITH_1500_CHAR_NOTE
 import uk.gov.justice.digital.hmpps.data.generator.LicenceConditionGenerator.LC_WITH_NOTES
@@ -27,48 +33,53 @@ import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class SentencesIntegrationTest {
+class AppointmentIntegrationTest {
     @Autowired
-    lateinit var mockMvc: MockMvc
+    internal lateinit var mockMvc: MockMvc
 
     @Test
     fun `unauthorized status returned`() {
         mockMvc
-            .perform(MockMvcRequestBuilders.get("/sentences/X123456"))
+            .perform(get("/appointment/D123456/contact-type/abc"))
             .andExpect(MockMvcResultMatchers.status().isUnauthorized)
     }
 
     @Test
-    fun `no active sentences`() {
-        val response = mockMvc
-            .perform(
-                MockMvcRequestBuilders.get("/sentences/${PersonDetailsGenerator.PERSONAL_DETAILS.crn}").withToken()
-            )
-            .andExpect(MockMvcResultMatchers.status().isOk)
-            .andReturn().response.contentAsJson<MinimalSentenceOverview>()
+    fun `no person records associated with contact type`() {
 
-        val expected = MinimalSentenceOverview(
-            PersonDetailsGenerator.PERSONAL_DETAILS.toSummary()
+        val code = CreateAppointment.Type.PlannedDoorstepContactNS.code
+        val expected = ContactTypeAssociation(
+            PersonDetailsGenerator.PERSONAL_DETAILS.toSummary(),
+            code,
+            true
         )
+        val response = mockMvc
+            .perform(get("/appointment/${PersonDetailsGenerator.PERSONAL_DETAILS.crn}/contact-type/${code}").withToken())
+            .andExpect(MockMvcResultMatchers.status().isOk)
+            .andReturn().response.contentAsJson<ContactTypeAssociation>()
 
         assertEquals(expected, response)
     }
 
     @Test
-    fun `get active sentences`() {
-        val response = mockMvc
-            .perform(MockMvcRequestBuilders.get("/sentences/${PersonGenerator.OVERVIEW.crn}").withToken())
-            .andExpect(MockMvcResultMatchers.status().isOk)
-            .andReturn().response.contentAsJson<MinimalSentenceOverview>()
+    fun `person records associated with contact type`() {
 
-        val expected = MinimalSentenceOverview(
-            PersonGenerator.OVERVIEW.toSummary(),
+        val code = CreateAppointment.Type.HomeVisitToCaseNS.code
+        val expected = ContactTypeAssociation(
+            personSummary = PersonGenerator.OVERVIEW.toSummary(),
+            contactTypeCode = code,
+            associatedWithPerson = false,
+            emptyList(),
             listOf(
-                MinimalSentence(EVENT_2.id, EVENT_2.eventNumber),
+                MinimalSentence(EVENT_2.id, EVENT_2.eventNumber, MinimalOrder("Pre-Sentence")),
                 MinimalSentence(
                     id = EVENT_1.id,
-                    EVENT_1.eventNumber,
+                    eventNumber = EVENT_1.eventNumber,
                     order = MinimalOrder(ACTIVE_ORDER.type.description + " (12 Months)", ACTIVE_ORDER.date),
+                    nsis = listOf(
+                        MinimalNsi(PersonGenerator.BREACH_ON_ACTIVE_ORDER.id, "BRE description"),
+                        MinimalNsi(PersonGenerator.OPD_NSI.id, "OPD1 description (OPD1 subtype)")
+                    ),
                     licenceConditions = listOf(
                         MinimalLicenceCondition(LC_WITHOUT_NOTES.id, LIC_COND_MAIN_CAT.description),
                         MinimalLicenceCondition(LC_WITH_NOTES.id, LIC_COND_MAIN_CAT.description),
@@ -82,6 +93,10 @@ class SentencesIntegrationTest {
                 )
             )
         )
+        val response = mockMvc
+            .perform(get("/appointment/${PersonGenerator.OVERVIEW.crn}/contact-type/${code}").withToken())
+            .andExpect(MockMvcResultMatchers.status().isOk)
+            .andReturn().response.contentAsJson<ContactTypeAssociation>()
 
         assertEquals(expected, response)
     }

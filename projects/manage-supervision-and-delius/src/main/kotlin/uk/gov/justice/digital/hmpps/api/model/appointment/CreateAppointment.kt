@@ -24,6 +24,7 @@ data class CreateAppointment(
     enum class Type(val code: String) {
         HomeVisitToCaseNS("CHVS"),
         InitialAppointmentInOfficeNS("COAI"),
+        PlannedDoorstepContactNS("CODC"),
         PlannedOfficeVisitNS("COAP"),
         InitialAppointmentHomeVisitNS("COHV")
     }
