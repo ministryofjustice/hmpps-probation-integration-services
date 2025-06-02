@@ -33,7 +33,8 @@ class AppointmentService(
 
         val contactType = contactTypeRepository.getContactType(code)
         val activeEvents = sentenceService.getActiveSentences(person.id)
-        val (eventLevelNsis, personLevelNsis) = nsiRepository.findByPersonIdAndActiveIsTrue(person.id).partition { it.eventId != null }
+        val (eventLevelNsis, personLevelNsis) = nsiRepository.findByPersonIdAndActiveIsTrue(person.id)
+            .partition { it.eventId != null }
 
         return ContactTypeAssociation(
             personSummary = person.toSummary(),
