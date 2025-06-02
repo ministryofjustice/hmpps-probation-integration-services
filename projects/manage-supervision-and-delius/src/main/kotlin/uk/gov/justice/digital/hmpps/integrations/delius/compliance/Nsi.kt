@@ -100,7 +100,7 @@ interface NsiRepository : JpaRepository<Nsi, Long> {
     @EntityGraph(attributePaths = ["type", "nsiStatus"])
     fun findByPersonIdAndTypeCode(personId: Long, typeCode: String): List<Nsi>
 
-    fun findByPersonId(personId: Long): List<Nsi>
+    fun findByPersonIdAndActiveIsTrue(personId: Long): List<Nsi>
 
     fun findByEventId(eventId: Long): List<Nsi>
 }

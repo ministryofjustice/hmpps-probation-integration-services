@@ -33,7 +33,7 @@ class AppointmentService(
 
         val contactType = contactTypeRepository.getContactType(code)
         val activeEvents = sentenceService.getActiveSentences(person.id)
-        val (eventLevelNsis, personLevelNsis) = nsiRepository.findByPersonId(person.id).partition { it.eventId != null }
+        val (eventLevelNsis, personLevelNsis) = nsiRepository.findByPersonIdAndActiveIsTrue(person.id).partition { it.eventId != null }
 
         return ContactTypeAssociation(
             personSummary = person.toSummary(),
@@ -58,7 +58,7 @@ class AppointmentService(
                     it.toMinimalLicenceCondition()
                 }
             } ?: emptyList(),
-            requirements = requirementRepository.getRequirements(id, eventNumber)
+            requirements = requirementRepository.getRequirements(id, eventNumber).filter { it.active }
                 .map { it.toMinimalRequirement() },
         )
     }
