@@ -99,7 +99,7 @@ internal class MatchIntegrationTest {
 
         val r1 = mockMvc
             .perform(
-                post("/probation-cases/match")
+                post("/probation-cases/match?useSearch=false")
                     .withJson(
                         MatchRequest(
                             firstName = "Robert",
@@ -118,7 +118,7 @@ internal class MatchIntegrationTest {
 
         val r2 = mockMvc
             .perform(
-                post("/probation-cases/match")
+                post("/probation-cases/match?useSearch=false")
                     .withJson(MatchRequest(surname = "Smith"))
                     .withToken()
             )
@@ -131,7 +131,7 @@ internal class MatchIntegrationTest {
 
         val r3 = mockMvc
             .perform(
-                post("/probation-cases/match")
+                post("/probation-cases/match?useSearch=false")
                     .withJson(
                         MatchRequest(
                             surname = "Smith",
@@ -149,7 +149,7 @@ internal class MatchIntegrationTest {
 
         val r4 = mockMvc
             .perform(
-                post("/probation-cases/match")
+                post("/probation-cases/match?useSearch=false")
                     .withJson(
                         MatchRequest(
                             firstName = "Marge",
@@ -168,7 +168,7 @@ internal class MatchIntegrationTest {
 
         val r5 = mockMvc
             .perform(
-                post("/probation-cases/match")
+                post("/probation-cases/match?useSearch=false")
                     .withJson(
                         MatchRequest(
                             pncNumber = "09/516048H",
@@ -188,7 +188,7 @@ internal class MatchIntegrationTest {
 
         val r6 = mockMvc
             .perform(
-                post("/probation-cases/match")
+                post("/probation-cases/match?useSearch=false")
                     .withJson(
                         MatchRequest(
                             surname = "Smith",
@@ -207,7 +207,7 @@ internal class MatchIntegrationTest {
 
         val r7 = mockMvc
             .perform(
-                post("/probation-cases/match")
+                post("/probation-cases/match?useSearch=false")
                     .withJson(MatchRequest(surname = "Smith", dateOfBirth = LocalDate.of(1980, 1, 2)))
                     .withToken()
             )
@@ -220,7 +220,7 @@ internal class MatchIntegrationTest {
 
         val r8 = mockMvc
             .perform(
-                post("/probation-cases/match")
+                post("/probation-cases/match?useSearch=false")
                     .withJson(MatchRequest(surname = "Smith", dateOfBirth = LocalDate.of(1980, 2, 1)))
                     .withToken()
             )
@@ -259,7 +259,7 @@ internal class MatchIntegrationTest {
 
         val r1 = mockMvc
             .perform(
-                post("/probation-cases/match")
+                post("/probation-cases/match?useSearch=false")
                     .withJson(MatchRequest(surname = "Any", pncNumber = "1973/5052670T")).withToken()
             )
             .andExpect(status().is2xxSuccessful)
@@ -271,7 +271,7 @@ internal class MatchIntegrationTest {
 
         val r2 = mockMvc
             .perform(
-                post("/probation-cases/match")
+                post("/probation-cases/match?useSearch=false")
                     .withJson(MatchRequest(surname = "Any", pncNumber = "99/9158411A")).withToken()
             )
             .andExpect(status().is2xxSuccessful)
