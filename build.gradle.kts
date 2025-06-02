@@ -11,7 +11,7 @@ plugins {
     kotlin("jvm") version "2.1.21"
     kotlin("plugin.spring") version "2.1.21" apply false
     kotlin("plugin.jpa") version "2.1.21" apply false
-    id("org.springframework.boot") version "3.4.5" apply false
+    id("org.springframework.boot") version "3.5.0" apply false
     id("io.spring.dependency-management") version "1.1.7" apply false
     id("com.gorylenko.gradle-git-properties") version "2.5.0" apply false
     id("com.google.cloud.tools.jib") apply false
@@ -23,7 +23,7 @@ plugins {
 val agentDeps: Configuration by configurations.creating
 
 dependencies {
-    agentDeps("com.microsoft.azure:applicationinsights-agent:3.7.2")
+    agentDeps("com.microsoft.azure:applicationinsights-agent:3.7.3")
 }
 
 val copyAgentTask = project.tasks.register<Copy>("copyAgent") {
