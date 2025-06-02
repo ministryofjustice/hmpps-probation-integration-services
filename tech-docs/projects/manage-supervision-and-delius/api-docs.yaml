@@ -1435,6 +1435,29 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/TeamStaff"
+  /appointment/{crn}/contact-type/{code}:
+    get:
+      tags:
+      - Sentence
+      operationId: getProbationRecordsByContactType
+      parameters:
+      - name: crn
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: code
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ContactTypeAssociation"
 components:
   schemas:
     CaseAccess:
@@ -2119,6 +2142,7 @@ components:
           enum:
           - HomeVisitToCaseNS
           - InitialAppointmentInOfficeNS
+          - PlannedDoorstepContactNS
           - PlannedOfficeVisitNS
           - InitialAppointmentHomeVisitNS
         start:
@@ -2544,6 +2568,17 @@ components:
       required:
       - id
       - mainDescription
+    MinimalNsi:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        description:
+          type: string
+      required:
+      - description
+      - id
     MinimalOrder:
       type: object
       properties:
@@ -2557,7 +2592,6 @@ components:
           format: date
       required:
       - description
-      - startDate
     MinimalRequirement:
       type: object
       properties:
@@ -2575,8 +2609,14 @@ components:
         id:
           type: integer
           format: int64
+        eventNumber:
+          type: string
         order:
           $ref: "#/components/schemas/MinimalOrder"
+        nsis:
+          type: array
+          items:
+            $ref: "#/components/schemas/MinimalNsi"
         licenceConditions:
           type: array
           items:
@@ -2586,8 +2626,10 @@ components:
           items:
             $ref: "#/components/schemas/MinimalRequirement"
       required:
+      - eventNumber
       - id
       - licenceConditions
+      - nsis
       - requirements
     MinimalSentenceOverview:
       type: object
@@ -3584,6 +3626,29 @@ components:
             $ref: "#/components/schemas/Staff"
       required:
       - staff
+    ContactTypeAssociation:
+      type: object
+      properties:
+        personSummary:
+          $ref: "#/components/schemas/PersonSummary"
+        contactTypeCode:
+          type: string
+        associatedWithPerson:
+          type: boolean
+        personNsis:
+          type: array
+          items:
+            $ref: "#/components/schemas/MinimalNsi"
+        sentences:
+          type: array
+          items:
+            $ref: "#/components/schemas/MinimalSentence"
+      required:
+      - associatedWithPerson
+      - contactTypeCode
+      - personNsis
+      - personSummary
+      - sentences
     PersonActivity:
       type: object
       properties:
