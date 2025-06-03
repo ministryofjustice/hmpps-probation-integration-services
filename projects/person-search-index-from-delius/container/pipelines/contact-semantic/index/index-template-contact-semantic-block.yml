@@ -2,8 +2,8 @@ index_patterns:
   - contact-semantic-block
 template:
   settings:
-    default_pipeline: add-timestamp-pipeline
-    index.search.default_pipeline: add-timestamp-pipeline
+    default_pipeline: contact-semantic-block-pipeline
+    index.search.default_pipeline: contact-semantic-block-pipeline
     number_of_shards: 1
     number_of_replicas: 0
   mappings:
