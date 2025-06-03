@@ -15,7 +15,6 @@ import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
-import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.DEFAULT
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.EXCLUSION
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.RESTRICTION
@@ -98,7 +97,8 @@ internal class IntegrationTest {
                 content().json(
                     """
                     {
-                      "message": "Access has been denied as this case is a Limited Access case."
+                      "status": 403,
+                      "message": "Access has been denied as this case is a Limited Access case"
                     }
                     """
                 )
