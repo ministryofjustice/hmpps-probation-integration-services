@@ -110,7 +110,10 @@ internal class MessagingIntegrationTest : BaseIntegrationTest() {
         assertThat(document.lastUpdatedUserId).isEqualTo(UserGenerator.TEST_USER.id)
 
         // And the file is uploaded to Alfresco
-        wireMockServer.verify(postRequestedFor(urlEqualTo("/alfresco/uploadandrelease/${document.alfrescoId}")).withAlfrescoHeaders())
+        wireMockServer.verify(postRequestedFor(urlEqualTo("/alfresco/uploadandrelease/${document.alfrescoId}"))
+            .withRequestBodyPart(aMultipart().withFileName("name.pdf").build())
+            .withRequestBodyPart(aMultipart().withName("fileName").withBody(equalTo("name.pdf")).build())
+            .withAlfrescoHeaders())
         wireMockServer.verify(putRequestedFor(urlEqualTo("/alfresco/lock/${document.alfrescoId}")).withAlfrescoHeaders())
     }
 
