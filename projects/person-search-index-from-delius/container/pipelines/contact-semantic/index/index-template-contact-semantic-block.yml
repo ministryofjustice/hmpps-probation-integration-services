@@ -1,0 +1,15 @@
+index_patterns:
+  - contact-semantic-block-*
+template:
+  settings:
+    default_pipeline: contact-semantic-block-pipeline
+    index.number_of_shards: 1
+    index.number_of_replicas: 0
+  mappings:
+    _routing:
+      required: false
+    properties:
+      crn:
+        type: keyword
+      timestamp:
+        type: date
