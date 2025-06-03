@@ -29,6 +29,8 @@ generic-service:
     PERSON_INDEX_PREFIX: person-search
     CONTACT_KEYWORD_INDEX_PREFIX: contact-search
     CONTACT_SEMANTIC_INDEX_PREFIX: contact-semantic-search
+    CONTACT_SEMANTIC_BLOCK: contact-semantic-block
+    ADD_TIMESTAMP_PREFIX: add-timestamp
     PIPELINES_ENABLED: person-incremental,contact-keyword-incremental,contact-semantic-incremental
     JDK_JAVA_OPTIONS: ''
     LS_JAVA_OPTS: -Xms1536m -Xmx1536m # = 75% of pod memory limit (see above)

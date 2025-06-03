@@ -1,0 +1,16 @@
+index_patterns:
+  - contact-semantic-block
+template:
+  settings:
+    default_pipeline: add-timestamp-pipeline
+    index.search.default_pipeline: add-timestamp-pipeline
+    number_of_shards: 1
+    number_of_replicas: 0
+  mappings:
+    _routing:
+      required: false
+    properties:
+      crn:
+        type: keyword
+      timestamp:
+        type: date
