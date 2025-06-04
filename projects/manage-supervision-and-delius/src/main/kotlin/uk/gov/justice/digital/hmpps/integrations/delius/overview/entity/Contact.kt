@@ -195,6 +195,8 @@ class ContactType(
 
 interface ContactTypeRepository : CrudRepository<ContactType, Long> {
     fun findByCode(code: String): ContactType?
+
+    fun findByCodeIn(values: List<String>): List<ContactType>
 }
 
 fun ContactTypeRepository.getContactType(code: String) =
