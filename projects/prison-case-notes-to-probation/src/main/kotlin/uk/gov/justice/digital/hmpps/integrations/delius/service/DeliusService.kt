@@ -73,7 +73,7 @@ class DeliusService(
                 lastModifiedDateTime = caseNote.body.systemTimestamp,
                 externalReference = caseNote.urn
             )
-        } else if (externalReference == null) {
+        } else if (externalReference == null && caseNote.isOfInterestForExternalReference()) {
             apply { externalReference = caseNote.urn }
         } else {
             log.warn("Case Note update ignored because it was out of sequence ${caseNote.header}")

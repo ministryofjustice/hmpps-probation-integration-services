@@ -15,3 +15,9 @@ data class MinimalNsi(
     val id: Long,
     val description: String
 )
+
+data class AppointmentType(
+    val code: String,
+    val description: String,
+    val isPersonLevelContact: Boolean,
+)

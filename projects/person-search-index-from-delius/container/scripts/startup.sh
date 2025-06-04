@@ -51,12 +51,18 @@ if grep -q 'contact-semantic' <<<"$PIPELINES_ENABLED"; then
   echo "Deployed semantic search model. model_id=${model_id}"
   envsubst < /pipelines/contact-semantic/index/ingest-pipeline.tpl.json > /pipelines/contact-semantic/index/ingest-pipeline.json
   envsubst < /pipelines/contact-semantic/index/search-pipeline.tpl.json > /pipelines/contact-semantic/index/search-pipeline.json
+  envsubst < /pipelines/contact-semantic/index/contact-semantic-block-pipeline.tpl.json > /pipelines/contact-semantic/index/contact-semantic-block-pipeline.json
 
   /scripts/setup-index.sh -i "$CONTACT_SEMANTIC_INDEX_PREFIX" \
     -p /pipelines/contact-semantic/index/ingest-pipeline.json \
     -s /pipelines/contact-semantic/index/search-pipeline.json \
     -t /pipelines/contact-semantic/index/index-template-semantic.json \
     -y /pipelines/contact-semantic/index/index-state-management-policy.json
+
+  /scripts/setup-index.sh -i "$CONTACT_SEMANTIC_BLOCK_INDEX_PREFIX" \
+    -p /pipelines/contact-semantic/index/contact-semantic-block-pipeline.json \
+    -t /pipelines/contact-semantic/index/index-template-contact-semantic-block.json \
+
   if grep -q 'contact-semantic-full-load' <<<"$PIPELINES_ENABLED"; then
     sentry-cli monitors run "$CONTACT_REINDEXING_SENTRY_MONITOR_ID" -- /scripts/monitor-reindexing.sh -i "$CONTACT_SEMANTIC_INDEX_PREFIX" -t "$CONTACT_SEMANTIC_REINDEXING_TIMEOUT" &
     # export the name of the standby index to be referenced in logstash-full-load.conf, because the max_token_count check in the text_chunking ingest processor does not account for aliases (as of OpenSearch 2.19)

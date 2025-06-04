@@ -32,4 +32,7 @@ class AppointmentController(
     @GetMapping("/{crn}/contact-type/{code}")
     fun getProbationRecordsByContactType(@PathVariable crn: String, @PathVariable code: String) =
         appointmentService.getProbationRecordsByContactType(crn, code)
+
+    @GetMapping("/types")
+    fun getAppointmentTypes() = appointmentService.getAppointmentTypes()
 }

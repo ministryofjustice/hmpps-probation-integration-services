@@ -26,7 +26,7 @@ runs:
       shell: bash
 
     - name: Publish test reports
-      uses: mikepenz/action-junit-report@cf701569b05ccdd861a76b8607a66d76f6fd4857 # v5
+      uses: mikepenz/action-junit-report@65fe03598d8d251738592a497a9e8547a5c48eaa # v5
       if: always() && github.actor != 'dependabot[bot]'
       with:
         check_name: |-
