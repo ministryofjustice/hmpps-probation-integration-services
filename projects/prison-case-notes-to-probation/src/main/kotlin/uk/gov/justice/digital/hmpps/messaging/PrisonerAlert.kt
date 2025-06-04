@@ -26,6 +26,9 @@ class PrisonerAlert(
             return telemetryService.trackEvent("AlertNotFound", mapOf("detailUrl" to event.detailUrl!!))
         }
 
+        // ignore OCG Nominal - Do not share
+        if (alert.alertCode.code == "DOCGM") return
+
         try {
             val result = deliusService.mergeCaseNote(alert.toDeliusCaseNote())
             telemetryService.trackEvent("AlertMerged", alert.properties() + result.properties())
