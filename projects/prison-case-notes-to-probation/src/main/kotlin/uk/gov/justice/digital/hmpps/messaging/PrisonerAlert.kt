@@ -9,6 +9,7 @@ import uk.gov.justice.digital.hmpps.exceptions.OffenderNotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.model.properties
 import uk.gov.justice.digital.hmpps.integrations.delius.service.DeliusService
 import uk.gov.justice.digital.hmpps.integrations.prison.Alert
+import uk.gov.justice.digital.hmpps.integrations.prison.AlertCode
 import uk.gov.justice.digital.hmpps.integrations.prison.toDeliusCaseNote
 import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
@@ -27,7 +28,7 @@ class PrisonerAlert(
         }
 
         // ignore OCG Nominal - Do not share
-        if (alert.alertCode.code == "DOCGM") return
+        if (alert.alertCode.code == AlertCode.OCG_NOMINAL) return
 
         try {
             val result = deliusService.mergeCaseNote(alert.toDeliusCaseNote())
