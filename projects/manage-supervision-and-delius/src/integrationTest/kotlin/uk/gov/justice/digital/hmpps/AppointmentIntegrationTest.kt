@@ -2,6 +2,8 @@ package uk.gov.justice.digital.hmpps
 
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.ValueSource
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
@@ -41,10 +43,11 @@ class AppointmentIntegrationTest {
     @Autowired
     internal lateinit var mockMvc: MockMvc
 
-    @Test
-    fun `unauthorized status returned`() {
+    @ParameterizedTest
+    @ValueSource(strings = ["D123456/contact-type/abc", "types"])
+    fun `unauthorized status returned`(path: String) {
         mockMvc
-            .perform(get("/appointment/D123456/contact-type/abc"))
+            .perform(get("/appointment/$path"))
             .andExpect(MockMvcResultMatchers.status().isUnauthorized)
     }
 
