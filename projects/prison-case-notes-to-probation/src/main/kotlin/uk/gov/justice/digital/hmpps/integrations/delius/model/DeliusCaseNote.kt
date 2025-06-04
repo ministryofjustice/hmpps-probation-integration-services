@@ -6,7 +6,6 @@ import jakarta.validation.constraints.NotNull
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.CaseNoteType
 import uk.gov.justice.digital.hmpps.integrations.prison.UNKNOWN_LOCATION
 import uk.gov.justice.digital.hmpps.model.StaffName
-import java.time.LocalDateTime
 import java.time.ZonedDateTime
 import java.util.*
 
@@ -32,11 +31,8 @@ data class DeliusCaseNote(val header: CaseNoteHeader, val body: CaseNoteBody) {
     }
 
     fun isOfInterestForExternalReference(): Boolean = when (header.type) {
-        CaseNoteHeader.Type.CaseNote, CaseNoteHeader.Type.InactiveAlert -> body.contactTimeStamp.isAfter(
-            ZonedDateTime.now().minusYears(1)
-        )
-
-        else -> true
+        CaseNoteHeader.Type.ActiveAlert -> true
+        else -> body.contactTimeStamp.isAfter(ZonedDateTime.now().minusYears(1))
     }
 }
 
