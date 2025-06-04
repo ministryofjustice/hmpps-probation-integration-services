@@ -32,7 +32,10 @@ data class DeliusCaseNote(val header: CaseNoteHeader, val body: CaseNoteBody) {
     }
 
     fun isOfInterestForExternalReference(): Boolean = when (header.type) {
-        CaseNoteHeader.Type.CaseNote, CaseNoteHeader.Type.InactiveAlert -> body.contactTimeStamp.isAfter(ZonedDateTime.now().minusYears(1))
+        CaseNoteHeader.Type.CaseNote, CaseNoteHeader.Type.InactiveAlert -> body.contactTimeStamp.isAfter(
+            ZonedDateTime.now().minusYears(1)
+        )
+
         else -> true
     }
 }
