@@ -40,7 +40,7 @@ class PrisonIdentifierAdded(
             alertsApi.getActiveAlerts(URI.create("$alertsBaseUrl/prisoners/$nomsId/alerts")).content
         } else {
             emptyList()
-        }
+        }.filter { it.alertCode.code != AlertCode.OCG_NOMINAL }
 
         val cnResults: List<MergeResult> = caseNotes.mapNotNull {
             try {

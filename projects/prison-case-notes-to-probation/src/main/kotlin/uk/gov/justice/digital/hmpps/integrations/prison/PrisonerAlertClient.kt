@@ -48,7 +48,11 @@ data class AlertCode(
     val alertTypeDescription: String,
     val code: String,
     val description: String,
-)
+) {
+    companion object {
+        const val OCG_NOMINAL = "DOCGM"
+    }
+}
 
 data class Alerts(val content: List<Alert>)
 

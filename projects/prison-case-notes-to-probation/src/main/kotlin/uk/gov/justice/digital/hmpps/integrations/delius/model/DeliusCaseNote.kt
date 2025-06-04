@@ -29,6 +29,11 @@ data class DeliusCaseNote(val header: CaseNoteHeader, val body: CaseNoteBody) {
             return "${CASE_NOTE_URN_PREFIX}${uuid}"
         }
     }
+
+    fun isOfInterestForExternalReference(): Boolean = when (header.type) {
+        CaseNoteHeader.Type.ActiveAlert -> true
+        else -> body.contactTimeStamp.isAfter(ZonedDateTime.now().minusYears(1))
+    }
 }
 
 data class CaseNoteHeader(val nomisId: String, val legacyId: Long?, val uuid: UUID, val type: Type) {

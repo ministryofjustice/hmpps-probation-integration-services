@@ -88,6 +88,7 @@ class DocumentService(
 
     private fun Document.toMultipart(file: ByteArray) = MultipartBodyBuilder().apply {
         part("CRN", person.crn, MediaType.TEXT_PLAIN)
+        part("fileName", name, MediaType.TEXT_PLAIN)
         part("filedata", file, MediaType.APPLICATION_OCTET_STREAM).filename(name)
         part("author", "Service,Breach Notice", MediaType.TEXT_PLAIN)
         part("docType", "DOCUMENT", MediaType.TEXT_PLAIN)
