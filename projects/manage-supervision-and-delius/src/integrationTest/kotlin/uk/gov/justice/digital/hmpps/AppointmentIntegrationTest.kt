@@ -10,7 +10,7 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
-import uk.gov.justice.digital.hmpps.api.model.appointment.AppointmentType
+import uk.gov.justice.digital.hmpps.api.model.appointment.AppointmentTypeResponse
 import uk.gov.justice.digital.hmpps.api.model.appointment.ContactTypeAssociation
 import uk.gov.justice.digital.hmpps.api.model.appointment.CreateAppointment
 import uk.gov.justice.digital.hmpps.api.model.appointment.MinimalNsi
@@ -113,9 +113,9 @@ class AppointmentIntegrationTest {
         val response = mockMvc
             .perform(get("/appointment/types").withToken())
             .andExpect(MockMvcResultMatchers.status().isOk)
-            .andReturn().response.contentAsJson<List<AppointmentType>>()
+            .andReturn().response.contentAsJson<AppointmentTypeResponse>()
 
-        val expected = APPOINTMENT_TYPES.map { it.toAppointmentType() } + APPT_CT_3.toAppointmentType()
+        val expected = AppointmentTypeResponse(APPOINTMENT_TYPES.map { it.toAppointmentType() } + APPT_CT_3.toAppointmentType())
         assertEquals(expected, response)
     }
 }
