@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.stereotype.Service
+import uk.gov.justice.digital.hmpps.api.model.appointment.AppointmentType
 import uk.gov.justice.digital.hmpps.api.model.appointment.ContactTypeAssociation
 import uk.gov.justice.digital.hmpps.api.model.appointment.CreateAppointment
 import uk.gov.justice.digital.hmpps.api.model.appointment.MinimalNsi
@@ -10,7 +11,14 @@ import uk.gov.justice.digital.hmpps.api.model.sentence.MinimalSentence
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.compliance.Nsi
 import uk.gov.justice.digital.hmpps.integrations.delius.compliance.NsiRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.*
+import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.ContactType as ContactTypeEntity
+import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.PersonRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.ContactTypeRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.Event
+import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.Requirement
+import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.RequirementRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.getContactType
+import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.getPerson
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.LicenceConditionRepository
 
 @Service
@@ -47,6 +55,11 @@ class AppointmentService(
         )
     }
 
+    fun getAppointmentTypes(): List<AppointmentType> =
+        contactTypeRepository.findByCodeIn(CreateAppointment.Type.entries.map { it.code }).map {
+            it.toAppointmentType()
+        }
+
     fun Event.toMinimalSentence(eventLevelNsis: List<Nsi>): MinimalSentence {
         val filteredNsiList = eventLevelNsis.filter { nsi -> nsi.eventId == id }
         return MinimalSentence(
@@ -74,3 +87,5 @@ class AppointmentService(
 
     fun Nsi.toMinimalNsi() = MinimalNsi(id, type.description + (subType?.let { " (${it.description})" } ?: ""))
 }
+
+fun ContactTypeEntity.toAppointmentType() = AppointmentType(code, description, offenderContact)

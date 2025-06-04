@@ -8,6 +8,7 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
+import uk.gov.justice.digital.hmpps.api.model.appointment.AppointmentType
 import uk.gov.justice.digital.hmpps.api.model.appointment.ContactTypeAssociation
 import uk.gov.justice.digital.hmpps.api.model.appointment.CreateAppointment
 import uk.gov.justice.digital.hmpps.api.model.appointment.MinimalNsi
@@ -15,6 +16,8 @@ import uk.gov.justice.digital.hmpps.api.model.sentence.MinimalLicenceCondition
 import uk.gov.justice.digital.hmpps.api.model.sentence.MinimalOrder
 import uk.gov.justice.digital.hmpps.api.model.sentence.MinimalRequirement
 import uk.gov.justice.digital.hmpps.api.model.sentence.MinimalSentence
+import uk.gov.justice.digital.hmpps.data.generator.AppointmentGenerator.APPOINTMENT_TYPES
+import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.APPT_CT_3
 import uk.gov.justice.digital.hmpps.data.generator.LicenceConditionGenerator.LC_WITHOUT_NOTES
 import uk.gov.justice.digital.hmpps.data.generator.LicenceConditionGenerator.LC_WITH_1500_CHAR_NOTE
 import uk.gov.justice.digital.hmpps.data.generator.LicenceConditionGenerator.LC_WITH_NOTES
@@ -27,6 +30,7 @@ import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.EVENT_2
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.REQUIREMENT
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.REQUIREMENT_UNPAID_WORK
 import uk.gov.justice.digital.hmpps.data.generator.personalDetails.PersonDetailsGenerator
+import uk.gov.justice.digital.hmpps.service.toAppointmentType
 import uk.gov.justice.digital.hmpps.service.toSummary
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
@@ -98,6 +102,17 @@ class AppointmentIntegrationTest {
             .andExpect(MockMvcResultMatchers.status().isOk)
             .andReturn().response.contentAsJson<ContactTypeAssociation>()
 
+        assertEquals(expected, response)
+    }
+
+    @Test
+    fun `return mpop contact types`() {
+        val response = mockMvc
+            .perform(get("/appointment/types").withToken())
+            .andExpect(MockMvcResultMatchers.status().isOk)
+            .andReturn().response.contentAsJson<List<AppointmentType>>()
+
+        val expected = APPOINTMENT_TYPES.map { it.toAppointmentType() } + APPT_CT_3.toAppointmentType()
         assertEquals(expected, response)
     }
 }
