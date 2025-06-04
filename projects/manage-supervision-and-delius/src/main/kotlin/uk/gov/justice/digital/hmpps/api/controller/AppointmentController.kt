@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*
 import uk.gov.justice.digital.hmpps.api.model.appointment.CreateAppointment
 import uk.gov.justice.digital.hmpps.api.model.appointment.Outcome
 import uk.gov.justice.digital.hmpps.service.AppointmentOutcomeService
+import uk.gov.justice.digital.hmpps.service.AppointmentService
 import uk.gov.justice.digital.hmpps.service.SentenceAppointmentService
 
 @RestController
@@ -14,16 +15,24 @@ import uk.gov.justice.digital.hmpps.service.SentenceAppointmentService
 @RequestMapping("/appointment")
 @PreAuthorize("hasRole('PROBATION_API__MANAGE_A_SUPERVISION__CASE_DETAIL')")
 class AppointmentController(
-    private val appointmentService: SentenceAppointmentService,
-    private val appointmentOutcomeService: AppointmentOutcomeService
+    private val sentenceAppointmentService: SentenceAppointmentService,
+    private val appointmentOutcomeService: AppointmentOutcomeService,
+    private val appointmentService: AppointmentService
 ) {
 
     @PostMapping("/{crn}")
     @ResponseStatus(HttpStatus.CREATED)
     fun createAppointment(@PathVariable crn: String, @RequestBody createAppointment: CreateAppointment) =
-        appointmentService.createAppointment(crn, createAppointment)
+        sentenceAppointmentService.createAppointment(crn, createAppointment)
 
     @PatchMapping
     @ResponseStatus(HttpStatus.OK)
     fun recordOutcome(@RequestBody outcome: Outcome) = appointmentOutcomeService.recordOutcome(outcome)
+
+    @GetMapping("/{crn}/contact-type/{code}")
+    fun getProbationRecordsByContactType(@PathVariable crn: String, @PathVariable code: String) =
+        appointmentService.getProbationRecordsByContactType(crn, code)
+
+    @GetMapping("/types")
+    fun getAppointmentTypes() = appointmentService.getAppointmentTypes()
 }

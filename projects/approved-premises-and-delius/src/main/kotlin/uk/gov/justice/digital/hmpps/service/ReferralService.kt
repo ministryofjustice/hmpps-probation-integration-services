@@ -47,8 +47,7 @@ class ReferralService(
     private val registrationRepository: RegistrationRepository,
     private val contactService: ContactService
 ) {
-    fun bookingMade(crn: String, details: BookingMade, ap: ApprovedPremises) {
-        val person = personRepository.getByCrn(crn)
+    fun bookingMade(person: Person, details: BookingMade, ap: ApprovedPremises) {
         val event = eventRepository.getEvent(person.id, details.eventNumber)
         val apTeam = teamRepository.getApprovedPremisesTeam(ap.code.code)
         val apStaff = staffRepository.getUnallocated(apTeam.code)
@@ -351,3 +350,4 @@ class ReferralService(
 
 const val EXT_REF_BOOKING_PREFIX = "urn:uk:gov:hmpps:approved-premises-service:booking:"
 const val EXT_REF_REHABILITATIVE_ACTIVITY_PREFIX = "urn:uk:gov:hmpps:approved-premises-service:rehabilitative-activity:"
+const val EXT_REF_PREARRIVAL_PREFIX = "urn:uk:gov:hmpps:approved-premises-service:pre-arrival:"

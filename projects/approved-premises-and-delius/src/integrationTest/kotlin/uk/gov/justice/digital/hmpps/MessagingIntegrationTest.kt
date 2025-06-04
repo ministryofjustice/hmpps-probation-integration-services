@@ -12,14 +12,17 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestMethodOrder
 import org.mockito.Mockito.verify
 import org.mockito.kotlin.times
+import org.mockito.kotlin.whenever
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
 import org.springframework.test.context.bean.override.mockito.MockitoBean
+import uk.gov.justice.digital.hmpps.config.FeatureFlagName
 import uk.gov.justice.digital.hmpps.data.generator.*
 import uk.gov.justice.digital.hmpps.data.generator.AddressGenerator.PERSON_ADDRESS_ID
+import uk.gov.justice.digital.hmpps.flags.FeatureFlags
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.EventDetails
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.PersonArrived
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.PersonDeparted
@@ -30,6 +33,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referra
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.outcome.ContactOutcome
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.ContactTypeCode
+import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.ContactTypeCode.CASE_ALLOCATED
 import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.entity.NsiManagerRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.entity.NsiRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.entity.NsiStatusCode
@@ -44,6 +48,7 @@ import uk.gov.justice.digital.hmpps.messaging.crn
 import uk.gov.justice.digital.hmpps.messaging.telemetryProperties
 import uk.gov.justice.digital.hmpps.resourceloader.ResourceLoader
 import uk.gov.justice.digital.hmpps.service.EXT_REF_BOOKING_PREFIX
+import uk.gov.justice.digital.hmpps.service.EXT_REF_PREARRIVAL_PREFIX
 import uk.gov.justice.digital.hmpps.service.EXT_REF_REHABILITATIVE_ACTIVITY_PREFIX
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import uk.gov.justice.digital.hmpps.test.CustomMatchers.isSameTimeAs
@@ -91,6 +96,9 @@ internal class MessagingIntegrationTest {
 
     @Autowired
     private lateinit var nsiManagerRepository: NsiManagerRepository
+
+    @MockitoBean
+    private lateinit var featureFlags: FeatureFlags
 
     @BeforeEach
     fun clearTopic() {
@@ -150,7 +158,8 @@ internal class MessagingIntegrationTest {
 
     @Test
     @Order(1)
-    fun `booking made creates referral and contact`() {
+    fun `booking made creates referral, nsi and contact`() {
+        whenever(featureFlags.enabled(FeatureFlagName.PRE_ARRIVAL_NSI)).thenReturn(true)
         // Given a booking-made event
         val event = prepEvent("booking-made", wireMockServer.port())
 
@@ -206,6 +215,19 @@ internal class MessagingIntegrationTest {
         assertThat(referral.rohResidentsId, equalTo(ReferenceDataGenerator.RISK_UNKNOWN.id))
         assertTrue(referral.gangAffiliated)
         assertFalse(referral.sexOffender)
+
+        val nsi = nsiRepository.findAll()
+            .single { it.person.crn == contact.person.crn && it.type.code == NsiTypeCode.PRE_RELEASE_ARRIVAL.code }
+        assertThat(nsi.externalReference, equalTo("${EXT_REF_PREARRIVAL_PREFIX}14c80733-4b6d-4f35-b724-66955aac320c"))
+        assertThat(nsi.type.code, equalTo(NsiTypeCode.PRE_RELEASE_ARRIVAL.code))
+        assertThat(nsi.status.code, equalTo(NsiStatusCode.AP_CASE_ALLOCATED.code))
+        assertThat(nsi.referralDate, equalTo(LocalDate.parse("2022-11-30")))
+        assertThat(nsi.expectedStartDate, equalTo(null))
+        assertThat(nsi.event, equalTo(null))
+
+        val caseAllocatedContact = contactRepository.findAll()
+            .single { it.person.id == nsi.person.id && it.type.code == CASE_ALLOCATED.code && it.nsiId == nsi.id }
+        assertThat(caseAllocatedContact.date, equalTo(nsi.referralDate))
     }
 
     @Test

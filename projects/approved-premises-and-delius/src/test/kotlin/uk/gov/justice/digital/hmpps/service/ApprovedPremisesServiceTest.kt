@@ -17,6 +17,7 @@ import org.springframework.boot.context.event.ApplicationStartedEvent
 import uk.gov.justice.digital.hmpps.data.generator.*
 import uk.gov.justice.digital.hmpps.detail.DomainEventDetailService
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
+import uk.gov.justice.digital.hmpps.flags.FeatureFlags
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.*
 import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.ApprovedPremisesRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.entity.ApprovedPremises
@@ -137,6 +138,9 @@ internal class ApprovedPremisesServiceTest {
     @Mock
     lateinit var notifier: Notifier
 
+    @Mock
+    lateinit var featureFlags: FeatureFlags
+
     lateinit var addressService: AddressService
     lateinit var contactService: ContactService
     lateinit var nsiService: NsiService
@@ -199,6 +203,7 @@ internal class ApprovedPremisesServiceTest {
             nsiService,
             referralService,
             notifier,
+            featureFlags
         )
     }
 

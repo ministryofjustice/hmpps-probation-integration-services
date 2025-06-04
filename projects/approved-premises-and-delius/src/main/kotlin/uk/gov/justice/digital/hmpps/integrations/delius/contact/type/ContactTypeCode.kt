@@ -11,5 +11,6 @@ enum class ContactTypeCode(val code: String) {
     NOT_ARRIVED("EAPX"),
     DEPARTED("EAPD"),
     NSI_REFERRAL("NREF"),
-    NSI_TERMINATED("NTER")
+    NSI_TERMINATED("NTER"),
+    CASE_ALLOCATED("ARAP1"),
 }

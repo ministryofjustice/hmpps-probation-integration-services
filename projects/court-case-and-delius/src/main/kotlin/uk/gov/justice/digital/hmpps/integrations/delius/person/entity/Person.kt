@@ -1,14 +1,26 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.person.entity
 
 import jakarta.persistence.*
+import jakarta.persistence.criteria.JoinType
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.NumericBooleanConverter
 import org.hibernate.type.YesNoConverter
+import org.springframework.data.jpa.domain.Specification
 import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor
 import org.springframework.data.jpa.repository.Query
+import uk.gov.justice.digital.hmpps.api.model.LenientDate
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.ReferenceData
+import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.Person.Companion.ALIASES
+import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.Person.Companion.COMMUNITY_MANAGERS
+import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.Person.Companion.CURRENT_DISPOSAL
+import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.Person.Companion.DOB
+import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.Person.Companion.FORENAME
+import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.Person.Companion.PNC
+import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.Person.Companion.SURNAME
+import uk.gov.justice.digital.hmpps.service.PncNumber
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.ZonedDateTime
@@ -186,7 +198,17 @@ class Person(
     @SQLRestriction("active_flag = 1 and soft_deleted = 0")
     val prisonOffenderManagers: List<PrisonManager> = emptyList()
 
-)
+) {
+    companion object {
+        val FORENAME = Person::forename.name
+        val SURNAME = Person::surname.name
+        val DOB = Person::dateOfBirth.name
+        val PNC = Person::pnc.name
+        val CURRENT_DISPOSAL = Person::currentDisposal.name
+        val ALIASES = Person::offenderAliases.name
+        val COMMUNITY_MANAGERS = Person::offenderManagers.name
+    }
+}
 
 @Immutable
 @Entity
@@ -222,7 +244,13 @@ class OffenderAlias(
     @ManyToOne
     @JoinColumn(name = "gender_id")
     val gender: ReferenceData
-)
+) {
+    companion object {
+        val FORENAME = OffenderAlias::firstName.name
+        val SURNAME = OffenderAlias::surname.name
+        val DOB = OffenderAlias::dateOfBirth.name
+    }
+}
 
 @Entity
 @Table(name = "offender_address")
@@ -311,18 +339,18 @@ class PartitionArea(
     val area: String,
 )
 
-interface PersonRepository : JpaRepository<Person, Long> {
+interface PersonRepository : JpaRepository<Person, Long>, JpaSpecificationExecutor<Person> {
 
     @Query(
         """
         select
            o.crn,
-           sum(case when d.active_flag = 1 then 1 else 0 end)                                         as currentCount,
-           sum(case when d.active_flag = 0 then 1 else 0 end)                                         as previousCount,
-           max(d.termination_date)                                                                    as terminationDate,
-           sum(e.in_breach)                                                                           as breachCount,
-           sum(case when e.active_flag = 1 and d.disposal_id is null then 1 else 0 end)               as preSentenceCount,
-           sum(case when d.disposal_id is null and ca.outcome_code = '101' then 1 else 0 end)         as awaitingPsrCount
+           sum(case when d.active_flag = 1 then 1 else 0 end)                                         as currentcount,
+           sum(case when d.active_flag = 0 then 1 else 0 end)                                         as previouscount,
+           max(d.termination_date)                                                                    as terminationdate,
+           sum(e.in_breach)                                                                           as breachcount,
+           sum(case when e.active_flag = 1 and d.disposal_id is null then 1 else 0 end)               as presentencecount,
+           sum(case when d.disposal_id is null and ca.outcome_code = '101' then 1 else 0 end)         as awaitingpsrcount
         from offender o
              join event e on e.offender_id = o.offender_id and e.soft_deleted = 0
              left join disposal d on d.event_id = e.event_id and d.soft_deleted = 0
@@ -371,3 +399,58 @@ interface SentenceCounts {
     val preSentenceCount: Int
     val awaitingPsrCount: Int
 }
+
+fun matchesPerson(surname: String, firstName: String?, dateOfBirth: LocalDate?) =
+    Specification<Person> { person, _, cb ->
+        val toMatch = listOfNotNull(
+            cb.equal(cb.lower(person[SURNAME]), surname.lowercase()),
+            firstName?.lowercase()?.let { cb.equal(cb.lower(person[FORENAME]), it) },
+            dateOfBirth?.let { cb.equal(person.get<LocalDate>(DOB), it) }
+        )
+        cb.and(*toMatch.toTypedArray())
+    }
+
+fun matchesAlias(surname: String, firstName: String?, dateOfBirth: LocalDate?) =
+    Specification<Person> { person, _, cb ->
+        val alias = person.join<Person, OffenderAlias>(ALIASES, JoinType.LEFT)
+        val toMatch = listOfNotNull(
+            cb.equal(cb.lower(alias[OffenderAlias.SURNAME]), surname.lowercase()),
+            firstName?.lowercase()?.let { cb.equal(cb.lower(alias[OffenderAlias.FORENAME]), it) },
+            dateOfBirth?.let { cb.equal(alias.get<LocalDate>(OffenderAlias.DOB), it) }
+        )
+        cb.and(*toMatch.toTypedArray())
+    }
+
+fun hasActiveEventAndCommunityManager(activeOnly: Boolean) = Specification<Person> { person, _, cb ->
+    if (activeOnly) {
+        cb.and(
+            cb.equal(person.get<Boolean>(CURRENT_DISPOSAL), true),
+            cb.isNotEmpty(person.get<List<PersonManager>>(COMMUNITY_MANAGERS)),
+        )
+    } else {
+        cb.isNotEmpty(person.get<List<PersonManager>>(COMMUNITY_MANAGERS))
+    }
+}
+
+fun matchesPnc(pnc: String) =
+    Specification<Person> { person, _, cb ->
+        val pnc = PncNumber.from(pnc) ?: throw IllegalArgumentException("Invalid PNC number")
+        cb.equal(person.get<String>(PNC), pnc.matchValue())
+    }
+
+fun matchesLeniently(surname: String, firstName: String?, dateOfBirth: LocalDate?) =
+    Specification<Person> { person, _, cb ->
+        val dates: Set<LocalDate> = dateOfBirth?.let { LenientDate(it).allVariations() } ?: emptySet()
+        val alias = person.join<Person, OffenderAlias>(ALIASES, JoinType.LEFT)
+        val toMatch = listOfNotNull(
+            cb.equal(cb.lower(person[SURNAME]), surname.lowercase()),
+            firstName?.lowercase()?.let {
+                cb.or(
+                    cb.equal(cb.lower(person[FORENAME]), it),
+                    cb.equal(cb.lower(alias[OffenderAlias.FORENAME]), it)
+                )
+            },
+            dateOfBirth?.let { person.get<LocalDate>(DOB).`in`(dates) }
+        )
+        cb.and(*toMatch.toTypedArray())
+    }

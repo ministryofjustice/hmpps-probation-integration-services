@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.api.model.sentence
 
+import uk.gov.justice.digital.hmpps.api.model.appointment.MinimalNsi
 import uk.gov.justice.digital.hmpps.api.model.overview.Order
 import java.time.LocalDate
 
@@ -15,14 +16,16 @@ data class Sentence(
 
 data class MinimalSentence(
     val id: Long,
+    val eventNumber: String,
     val order: MinimalOrder? = null,
+    val nsis: List<MinimalNsi> = emptyList(),
     val licenceConditions: List<MinimalLicenceCondition> = listOf(),
     val requirements: List<MinimalRequirement> = listOf()
 )
 
 data class MinimalOrder(
     val description: String,
-    val startDate: LocalDate,
+    val startDate: LocalDate? = null,
     val endDate: LocalDate? = null,
 )
 

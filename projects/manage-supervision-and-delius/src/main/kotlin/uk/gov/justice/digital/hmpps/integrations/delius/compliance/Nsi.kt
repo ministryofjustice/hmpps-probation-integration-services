@@ -6,6 +6,7 @@ import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.NumericBooleanConverter
 import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.ReferenceData
 import java.time.LocalDate
 import java.time.ZonedDateTime
 
@@ -21,6 +22,10 @@ class Nsi(
     @ManyToOne
     @JoinColumn(name = "nsi_type_id")
     val type: NsiType,
+
+    @ManyToOne
+    @JoinColumn(name = "nsi_sub_type_id")
+    val subType: ReferenceData? = null,
 
     @Column(name = "event_id")
     val eventId: Long?,
@@ -52,8 +57,6 @@ class Nsi(
     @Convert(converter = NumericBooleanConverter::class)
     val active: Boolean = true,
 
-    val nsiSubTypeId: Long? = null,
-
     @Column(columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean = false
@@ -83,7 +86,7 @@ class NsiType(
 
     val code: String,
 
-    val description: String? = null,
+    val description: String,
 
     @Id
     @Column(name = "nsi_type_id") val id: Long
@@ -96,6 +99,10 @@ class NsiType(
 interface NsiRepository : JpaRepository<Nsi, Long> {
     @EntityGraph(attributePaths = ["type", "nsiStatus"])
     fun findByPersonIdAndTypeCode(personId: Long, typeCode: String): List<Nsi>
+
+    fun findByPersonIdAndActiveIsTrue(personId: Long): List<Nsi>
+
+    fun findByEventId(eventId: Long): List<Nsi>
 }
 
 fun NsiRepository.getAllBreaches(personId: Long): List<Nsi> = findByPersonIdAndTypeCode(personId, "BRE")

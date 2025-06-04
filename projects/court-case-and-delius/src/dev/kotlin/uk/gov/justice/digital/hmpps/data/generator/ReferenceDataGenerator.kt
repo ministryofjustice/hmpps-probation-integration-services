@@ -106,6 +106,12 @@ object ReferenceDataGenerator {
         IdGenerator.getAndIncrement()
     )
 
+    val GENDER_FEMALE = ReferenceData(
+        "FEMALE",
+        "Female",
+        IdGenerator.getAndIncrement()
+    )
+
     val PROVISION_TYPE_1 = ReferenceData(
         "PROV1",
         "Provision type 1",

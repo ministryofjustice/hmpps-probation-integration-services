@@ -39,8 +39,6 @@ springdoc:
 
 delius.db.username: CourtCaseAndDelius # Should match value in [deploy/database/access.yml].
 
-integrations.alfresco.url: http://localhost:${wiremock.port}/alfresco
-
 management:
   endpoints.web:
     base-path: /
@@ -75,6 +73,8 @@ integrations:
   court-case-notes:
     client-id: court-case-and-delius
     client-secret: court-case-and-delius
+  alfresco.url: http://localhost:${wiremock.port}/alfresco
+  probation-search.url: http://localhost:${wiremock.port}
 
 logging.level:
   uk.gov.justice.digital.hmpps: DEBUG
