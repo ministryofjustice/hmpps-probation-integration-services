@@ -71,9 +71,9 @@ class AppointmentService(
 
     fun getTeamsByProvider(providerId: Long) =
         TeamResponse(
-        teamRepository
-            .findByProviderId(providerId).map { it.toTeam() }
-    )
+            teamRepository
+                .findByProviderId(providerId).map { it.toTeam() }
+        )
 
     fun Event.toMinimalSentence(eventLevelNsis: List<Nsi>): MinimalSentence {
         val filteredNsiList = eventLevelNsis.filter { nsi -> nsi.eventId == id }
