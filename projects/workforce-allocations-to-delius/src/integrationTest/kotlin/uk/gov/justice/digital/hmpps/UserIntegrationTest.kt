@@ -211,4 +211,10 @@ class UserIntegrationTest {
                 )
             )
     }
+
+    @Test
+    fun `403 forbidden - staff is end dated`() {
+        mockMvc.perform(get("/users/e001dt/teams").withToken())
+            .andExpect(status().isForbidden)
+    }
 }

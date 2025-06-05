@@ -73,4 +73,10 @@ class TeamsIntegrationTest {
                 )
             )
     }
+
+    @Test
+    fun `403 forbidden - staff end dated`() {
+        mockMvc.perform(get("/staff/${StaffGenerator.END_DATED_STAFF_WITH_TEAM.code}/teams").withToken())
+            .andExpect(status().isForbidden)
+    }
 }

@@ -53,10 +53,24 @@ object StaffGenerator {
         teams = listOf(TeamGenerator.TEAM_IN_LAU),
     )
 
+    val END_DATED_STAFF_WITH_TEAM = StaffWithTeams(
+        id = IdGenerator.getAndIncrement(),
+        code = "END0001",
+        teams = listOf(TeamGenerator.TEAM_IN_LAU),
+        endDate = ZonedDateTime.now().minusDays(7)
+    )
+
     val STAFF_WITH_TEAM_AND_USER = StaffWithTeamUser(
         id = IdGenerator.getAndIncrement(),
         username = "s001wt",
         staff = STAFF_WITH_TEAM,
+        datasets = listOf(ProviderGenerator.DEFAULT),
+    )
+
+    val END_DATED_STAFF_WITH_USER = StaffWithTeamUser(
+        id = IdGenerator.getAndIncrement(),
+        username = "e001dt",
+        staff = END_DATED_STAFF_WITH_TEAM,
         datasets = listOf(ProviderGenerator.DEFAULT),
     )
 
