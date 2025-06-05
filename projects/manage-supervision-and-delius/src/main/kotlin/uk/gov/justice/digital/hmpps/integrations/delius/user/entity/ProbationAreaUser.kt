@@ -31,6 +31,7 @@ interface ProbationAreaUserRepository : JpaRepository<ProbationAreaUser, Long> {
         SELECT pau FROM ProbationAreaUser pau 
         JOIN FETCH pau.id.provider 
         WHERE UPPER(pau.id.user.username) = UPPER(:username)
+        AND pau.id.provider.selectable IS TRUE 
         """
     )
     fun findByUsername(username: String): List<ProbationAreaUser>

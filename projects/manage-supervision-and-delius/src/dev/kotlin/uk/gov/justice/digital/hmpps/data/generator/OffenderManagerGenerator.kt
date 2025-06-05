@@ -26,8 +26,10 @@ object OffenderManagerGenerator {
     val STAFF_TEAM = ContactStaffTeam(StaffTeamLinkId(STAFF_1.id, TEAM))
 
     val PAU_USER_RECORD1 = ProbationAreaUser(ProbationAreaUserId(STAFF_USER_1, DEFAULT_PROVIDER))
-    val PROVIDER_2 = generateProvider("W01")
+    val PROVIDER_2 = generateProvider("W01", selectable = true)
+    val PROVIDER_3 = generateProvider("A01", selectable = false)
     val PAU_USER_RECORD2 = ProbationAreaUser(ProbationAreaUserId(STAFF_USER_1, PROVIDER_2))
+    val PAU_USER_RECORD3 = ProbationAreaUser(ProbationAreaUserId(STAFF_USER_1, PROVIDER_3))
 
     val DEFAULT_LOCATION =
         Location(

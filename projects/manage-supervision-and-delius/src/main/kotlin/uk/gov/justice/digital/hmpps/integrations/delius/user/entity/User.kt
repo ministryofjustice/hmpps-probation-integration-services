@@ -5,6 +5,7 @@ import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
 import org.hibernate.annotations.Subselect
 import org.hibernate.annotations.Synchronize
+import org.hibernate.type.YesNoConverter
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.repository.JpaRepository
@@ -202,7 +203,10 @@ class Provider(
     val id: Long,
 
     @Column(name = "end_date")
-    val endDate: LocalDate? = null
+    val endDate: LocalDate? = null,
+
+    @Convert(converter = YesNoConverter::class)
+    val selectable: Boolean = true
 )
 
 @Entity
