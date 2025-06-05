@@ -5,6 +5,8 @@ import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.Borough
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.District
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.*
+import uk.gov.justice.digital.hmpps.integrations.delius.user.entity.ProbationAreaUser
+import uk.gov.justice.digital.hmpps.integrations.delius.user.entity.ProbationAreaUserId
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.ZonedDateTime
@@ -22,6 +24,10 @@ object OffenderManagerGenerator {
     val STAFF_USER_2 = StaffUser(IdGenerator.getAndIncrement(), STAFF_2, "bwayne", "bruce", surname = "wayne")
     val STAFF_USER_3 = StaffUser(IdGenerator.getAndIncrement(), STAFF_3, "ckent", "clark", surname = "kent")
     val STAFF_TEAM = ContactStaffTeam(StaffTeamLinkId(STAFF_1.id, TEAM))
+
+    val PAU_USER_RECORD1 = ProbationAreaUser(ProbationAreaUserId(STAFF_USER_1, DEFAULT_PROVIDER))
+    val PROVIDER_2 = generateProvider("W01")
+    val PAU_USER_RECORD2 = ProbationAreaUser(ProbationAreaUserId(STAFF_USER_1, PROVIDER_2))
 
     val DEFAULT_LOCATION =
         Location(

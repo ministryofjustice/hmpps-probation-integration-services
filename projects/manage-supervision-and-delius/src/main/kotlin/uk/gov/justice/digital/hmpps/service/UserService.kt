@@ -195,7 +195,7 @@ class UserService(
     }
 
     fun getProvidersForUser(username: String) =
-        ProviderResponse(probationAreaUserRepository.findByUsername(username).map { Provider(it.id.provider.code, it.id.provider.description) })
+        UserProviderResponse(probationAreaUserRepository.findByUsername(username).map { Provider(it.id.provider.code, it.id.provider.description) })
 
 
     fun getUser(username: String) =

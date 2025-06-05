@@ -5,6 +5,6 @@ data class Provider(
     val name: String,
 )
 
-data class ProviderResponse(
+data class UserProviderResponse(
     val providers: List<Provider>,
 )

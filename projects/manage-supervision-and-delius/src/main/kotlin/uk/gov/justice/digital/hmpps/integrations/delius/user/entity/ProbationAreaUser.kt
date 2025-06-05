@@ -4,8 +4,8 @@ import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
-import uk.gov.justice.digital.hmpps.user.AuditUser
 import java.io.Serializable
+import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.StaffUser
 
 @Entity
 @Immutable
@@ -19,7 +19,7 @@ class ProbationAreaUser(
 class ProbationAreaUserId(
     @ManyToOne
     @JoinColumn(name = "user_id")
-    val user: AuditUser,
+    val user: StaffUser,
 
     @ManyToOne
     @JoinColumn(name = "probation_area_id")
