@@ -16,7 +16,7 @@ import java.time.ZonedDateTime
 
 object ContactGenerator {
 
-    val DEFAULT_PROVIDER = generateProvider("N01")
+    val DEFAULT_PROVIDER = generateProvider("N01", selectable = true)
     val DEFAULT_BOROUGH = generateBorough("N01B")
     val DEFAULT_DISTRICT = generateDistrict("N01D")
     val LOCATION_BRK_1 = generateOfficeLocation(
@@ -309,8 +309,9 @@ fun generateProvider(
     code: String,
     description: String = "Description of $code",
     id: Long = IdGenerator.getAndIncrement(),
-    endDate: LocalDate? = null
-) = Provider(code, description, id, endDate)
+    endDate: LocalDate? = null,
+    selectable: Boolean,
+) = Provider(code, description, id, endDate, selectable = selectable)
 
 fun generateTeam(
     code: String,

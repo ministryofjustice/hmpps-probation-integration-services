@@ -5,6 +5,8 @@ import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.Borough
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.District
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.*
+import uk.gov.justice.digital.hmpps.integrations.delius.user.entity.ProbationAreaUser
+import uk.gov.justice.digital.hmpps.integrations.delius.user.entity.ProbationAreaUserId
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.ZonedDateTime
@@ -22,6 +24,13 @@ object OffenderManagerGenerator {
     val STAFF_USER_2 = StaffUser(IdGenerator.getAndIncrement(), STAFF_2, "bwayne", "bruce", surname = "wayne")
     val STAFF_USER_3 = StaffUser(IdGenerator.getAndIncrement(), STAFF_3, "ckent", "clark", surname = "kent")
     val STAFF_TEAM = ContactStaffTeam(StaffTeamLinkId(STAFF_1.id, TEAM))
+
+    val PAU_USER_RECORD1 = ProbationAreaUser(ProbationAreaUserId(STAFF_USER_1, DEFAULT_PROVIDER))
+    val PROVIDER_2 = generateProvider("W01", selectable = true)
+    val PROVIDER_3 = generateProvider("A01", selectable = false)
+    val PAU_USER_RECORD2 = ProbationAreaUser(ProbationAreaUserId(STAFF_USER_1, PROVIDER_2))
+    val PAU_USER_RECORD3 = ProbationAreaUser(ProbationAreaUserId(STAFF_USER_1, PROVIDER_3))
+    val PAU_USER_RECORD4 = ProbationAreaUser(ProbationAreaUserId(STAFF_USER_2, PROVIDER_2))
 
     val DEFAULT_LOCATION =
         Location(
@@ -42,7 +51,7 @@ object OffenderManagerGenerator {
         OffenderManager(
             IdGenerator.getAndIncrement(),
             PersonGenerator.OVERVIEW,
-            ContactGenerator.DEFAULT_PROVIDER,
+            DEFAULT_PROVIDER,
             TEAM,
             STAFF_1,
             LocalDate.of(2025, 2, 10),
@@ -53,7 +62,7 @@ object OffenderManagerGenerator {
         OffenderManager(
             IdGenerator.getAndIncrement(),
             PersonGenerator.OVERVIEW,
-            ContactGenerator.DEFAULT_PROVIDER,
+            DEFAULT_PROVIDER,
             TEAM,
             STAFF_2,
             LocalDate.of(2025, 2, 9),
@@ -65,7 +74,7 @@ object OffenderManagerGenerator {
     val PRISON_OFFENDER_MANAGER_ACTIVE = PrisonManager(
         IdGenerator.getAndIncrement(),
         PersonGenerator.OVERVIEW,
-        ContactGenerator.DEFAULT_PROVIDER,
+        DEFAULT_PROVIDER,
         TEAM,
         STAFF_3,
         LocalDate.of(2025, 2, 7),
@@ -77,7 +86,7 @@ object OffenderManagerGenerator {
     val PRISON_OFFENDER_MANAGER_INACTIVE = PrisonManager(
         IdGenerator.getAndIncrement(),
         PersonGenerator.OVERVIEW,
-        ContactGenerator.DEFAULT_PROVIDER,
+        DEFAULT_PROVIDER,
         TEAM,
         STAFF_3,
         LocalDate.of(2025, 2, 7),

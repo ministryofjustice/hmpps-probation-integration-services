@@ -59,4 +59,7 @@ class UserController(
             else -> Sort.by(direction, "contact_date", "contact_start_time")
         }
     }
+
+    @GetMapping("/providers")
+    fun getUserProviders(@PathVariable username: String) = userService.getProvidersForUser(username)
 }

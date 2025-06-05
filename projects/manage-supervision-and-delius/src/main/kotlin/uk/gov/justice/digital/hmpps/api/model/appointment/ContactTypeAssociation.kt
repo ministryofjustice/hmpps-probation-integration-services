@@ -16,6 +16,10 @@ data class MinimalNsi(
     val description: String
 )
 
+data class AppointmentTypeResponse(
+    val appointmentTypes: List<AppointmentType>
+)
+
 data class AppointmentType(
     val code: String,
     val description: String,

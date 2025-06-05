@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.stereotype.Service
+import uk.gov.justice.digital.hmpps.api.model.appointment.AppointmentTypeResponse
 import uk.gov.justice.digital.hmpps.api.model.appointment.AppointmentType
 import uk.gov.justice.digital.hmpps.api.model.appointment.ContactTypeAssociation
 import uk.gov.justice.digital.hmpps.api.model.appointment.CreateAppointment
@@ -55,10 +56,10 @@ class AppointmentService(
         )
     }
 
-    fun getAppointmentTypes(): List<AppointmentType> =
-        contactTypeRepository.findByCodeIn(CreateAppointment.Type.entries.map { it.code }).map {
+    fun getAppointmentTypes(): AppointmentTypeResponse =
+        AppointmentTypeResponse(contactTypeRepository.findByCodeIn(CreateAppointment.Type.entries.map { it.code }).map {
             it.toAppointmentType()
-        }
+        })
 
     fun Event.toMinimalSentence(eventLevelNsis: List<Nsi>): MinimalSentence {
         val filteredNsiList = eventLevelNsis.filter { nsi -> nsi.eventId == id }
