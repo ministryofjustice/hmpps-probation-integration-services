@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.service
 
+import org.springframework.security.access.AccessDeniedException
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.api.model.*
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
@@ -57,25 +58,28 @@ class StaffService(
         staffWithTeamsRepository.findStaffWithTeamsByUsername(username)?.toResponse()
             ?: throw NotFoundException("Staff", "username", username)
 
-    private fun StaffWithTeams.toResponse(): StaffTeamsResponse = StaffTeamsResponse(
-        datasets = user?.datasets?.map { Provider(it.code, it.description) },
-        teams = teams.map {
-            TeamWithLocalAdminUnit(
-                code = it.code,
-                description = it.description,
-                localAdminUnit = LocalAdminUnit(
-                    code = it.district.code,
-                    description = it.district.description,
-                    probationDeliveryUnit = ProbationDeliveryUnit(
-                        code = it.district.borough.code,
-                        description = it.district.borough.description,
-                        provider = Provider(
-                            code = it.district.borough.probationArea.code,
-                            description = it.district.borough.probationArea.description,
+    private fun StaffWithTeams.toResponse(): StaffTeamsResponse {
+        if (endDate != null || user?.endDate != null) throw AccessDeniedException("User or staff expired")
+        return StaffTeamsResponse(
+            datasets = user?.datasets?.map { Provider(it.code, it.description) },
+            teams = teams.map {
+                TeamWithLocalAdminUnit(
+                    code = it.code,
+                    description = it.description,
+                    localAdminUnit = LocalAdminUnit(
+                        code = it.district.code,
+                        description = it.district.description,
+                        probationDeliveryUnit = ProbationDeliveryUnit(
+                            code = it.district.borough.code,
+                            description = it.district.borough.description,
+                            provider = Provider(
+                                code = it.district.borough.probationArea.code,
+                                description = it.district.borough.probationArea.description,
+                            )
                         )
-                    )
-                ),
-            )
-        }
-    )
+                    ),
+                )
+            }
+        )
+    }
 }

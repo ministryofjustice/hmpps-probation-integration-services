@@ -91,5 +91,8 @@ class StaffWithTeams(
         joinColumns = [JoinColumn(name = "staff_id")],
         inverseJoinColumns = [JoinColumn(name = "team_id")]
     )
-    val teams: List<TeamWithDistrict> = mutableListOf()
+    val teams: List<TeamWithDistrict> = mutableListOf(),
+
+    @Column(name = "end_date")
+    val endDate: ZonedDateTime? = null,
 )

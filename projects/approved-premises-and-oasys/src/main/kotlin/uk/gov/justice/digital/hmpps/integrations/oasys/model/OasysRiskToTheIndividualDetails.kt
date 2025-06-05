@@ -30,6 +30,10 @@ data class OasysRiskToTheIndividualAssessment(
     val currentConcernsRiskOfSelfHarm: String? = null,
     val currentConcernsRiskOfSuicide: String? = null,
     val concernsBreachOfTrust: String? = null,
-    val concernsRiskOfSelfHarm: String? = null
-
+    val concernsRiskOfSelfHarm: String? = null,
+    val currentControlBehaveTrust: String? = null,
+    val analysisControlBehaveTrust: String? = null,
+    val analysisCoping: String? = null,
+    val analysisSuicideSelfharm: String? = null,
+    val analysisVulnerabilities: String? = null,
 ) : OasysAssessment()

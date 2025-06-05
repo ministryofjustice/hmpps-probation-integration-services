@@ -44,7 +44,9 @@ data class RiskAssessmentDetails(
                         previousWhoVictims,
                         previousHowDone,
                         previousWhereAndWhen,
-                        previousWhatDone
+                        previousWhatDone,
+                        identifyBehavioursIncidents,
+                        analysisBehavioursIncidents,
                     )
                 )
             }
@@ -66,5 +68,7 @@ data class RiskAssessment(
     val previousWhoVictims: String? = null,
     val previousHowDone: String? = null,
     val previousWhereAndWhen: String? = null,
-    val previousWhatDone: String? = null
+    val previousWhatDone: String? = null,
+    val identifyBehavioursIncidents: String? = null,
+    val analysisBehavioursIncidents: String? = null,
 )
