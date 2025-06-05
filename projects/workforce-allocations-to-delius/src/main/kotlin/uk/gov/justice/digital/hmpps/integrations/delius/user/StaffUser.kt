@@ -6,6 +6,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.provider.Provider
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.StaffWithTeams
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.StaffWithUser
 import java.io.Serializable
+import java.time.ZonedDateTime
 
 @Entity
 @Immutable
@@ -41,6 +42,9 @@ class StaffWithTeamUser(
     )
     @ManyToMany
     val datasets: List<Provider>,
+
+    @Column(name = "end_date")
+    val endDate: ZonedDateTime? = null,
 
     @Id
     @Column(name = "user_id")

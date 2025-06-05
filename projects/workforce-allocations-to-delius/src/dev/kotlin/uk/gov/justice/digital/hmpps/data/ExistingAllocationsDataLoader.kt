@@ -33,7 +33,9 @@ class ExistingAllocationsDataLoader(
         staffRepository.save(StaffGenerator.ALLOCATED)
         eventRepository.save(EventGenerator.HAS_INITIAL_ALLOCATION)
         staffWithTeamsRepository.save(StaffGenerator.STAFF_WITH_TEAM)
+        staffWithTeamsRepository.save(StaffGenerator.END_DATED_STAFF_WITH_TEAM)
         staffWithTeamUserRepository.save(StaffGenerator.STAFF_WITH_TEAM_AND_USER)
+        staffWithTeamUserRepository.save(StaffGenerator.END_DATED_STAFF_WITH_USER)
     }
 }
 
