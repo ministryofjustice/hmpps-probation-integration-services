@@ -41,6 +41,11 @@ internal class RiskToTheIndividualDetailsTest {
             .isTrue
         assertThat(riskToTheIndividualDetails.riskToTheIndividual.riskOfSeriousHarm)
             .isEqualTo("R8.4.1 RoSH")
+        assertThat(riskToTheIndividualDetails.riskToTheIndividual.currentControlBehaveTrust).isEqualTo(true)
+        assertThat(riskToTheIndividualDetails.riskToTheIndividual.analysisControlBehaveTrust).isEqualTo("Analysis of Behaviour and Trust")
+        assertThat(riskToTheIndividualDetails.riskToTheIndividual.analysisCoping).isEqualTo("Analysis of coping")
+        assertThat(riskToTheIndividualDetails.riskToTheIndividual.analysisSuicideSelfharm).isEqualTo("Analysis of risk of suicide or harm")
+        assertThat(riskToTheIndividualDetails.riskToTheIndividual.analysisVulnerabilities).isEqualTo("Analysis of vulnerabilities")
     }
 
     @Test
