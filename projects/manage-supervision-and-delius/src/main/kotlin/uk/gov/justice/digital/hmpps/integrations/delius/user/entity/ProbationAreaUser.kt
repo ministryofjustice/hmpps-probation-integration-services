@@ -27,7 +27,8 @@ class ProbationAreaUserId(
 ) : Serializable
 
 interface ProbationAreaUserRepository : JpaRepository<ProbationAreaUser, Long> {
-    @Query("""
+    @Query(
+        """
         SELECT pau FROM ProbationAreaUser pau 
         JOIN FETCH pau.id.provider p
         WHERE UPPER(pau.id.user.username) = UPPER(:username)

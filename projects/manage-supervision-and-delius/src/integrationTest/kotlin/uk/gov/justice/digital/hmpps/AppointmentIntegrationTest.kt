@@ -115,7 +115,8 @@ class AppointmentIntegrationTest {
             .andExpect(MockMvcResultMatchers.status().isOk)
             .andReturn().response.contentAsJson<AppointmentTypeResponse>()
 
-        val expected = AppointmentTypeResponse(APPOINTMENT_TYPES.map { it.toAppointmentType() } + APPT_CT_3.toAppointmentType())
+        val expected =
+            AppointmentTypeResponse(APPOINTMENT_TYPES.map { it.toAppointmentType() } + APPT_CT_3.toAppointmentType())
         assertEquals(expected, response)
     }
 }

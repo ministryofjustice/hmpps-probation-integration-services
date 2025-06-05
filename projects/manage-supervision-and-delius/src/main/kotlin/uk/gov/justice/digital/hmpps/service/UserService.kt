@@ -195,8 +195,9 @@ class UserService(
     }
 
     fun getProvidersForUser(username: String) =
-        UserProviderResponse(probationAreaUserRepository.findByUsername(username).map { Provider(it.id.provider.code, it.id.provider.description) })
-
+        UserProviderResponse(
+            probationAreaUserRepository.findByUsername(username)
+                .map { Provider(it.id.provider.code, it.id.provider.description) })
 
     fun getUser(username: String) =
         userRepository.findUserByUsername(username) ?: throw NotFoundException("User", "username", username)
