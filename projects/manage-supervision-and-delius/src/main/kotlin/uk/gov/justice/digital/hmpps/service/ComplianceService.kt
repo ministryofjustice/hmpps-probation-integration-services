@@ -78,7 +78,7 @@ class ComplianceService(
             personSummary = summary.toPersonSummary(),
             currentSentences = currentSentences.mapNotNull { it.toSentenceCompliance() },
             previousOrders = PreviousOrders(
-                breaches = previousOrders.map { breachesForSentence(it.id) }.count(),
+                breaches = previousOrders.count { it.inBreach },
                 count = previousOrders.size,
                 lastEndedDate = previousOrders.firstOrNull()?.disposal?.terminationDate,
                 orders = previousOrders.mapNotNull {

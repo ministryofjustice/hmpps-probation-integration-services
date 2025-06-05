@@ -71,7 +71,7 @@ object PersonGenerator {
     val INACTIVE_EVENT_NO_TIME_UNIT = generateEvent(
         OVERVIEW,
         eventNumber = "954322",
-        inBreach = true,
+        inBreach = false,
         active = false,
         notes = "inactive",
         additionalOffences = emptyList()
