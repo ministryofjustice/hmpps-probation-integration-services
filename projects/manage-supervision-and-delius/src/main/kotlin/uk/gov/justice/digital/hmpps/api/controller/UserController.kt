@@ -61,5 +61,5 @@ class UserController(
     }
 
     @GetMapping("/providers")
-    fun getUserProviders(@PathVariable username: String) =  userService.getProvidersForUser(username)
+    fun getUserProviders(@PathVariable username: String) = userService.getProvidersForUser(username)
 }

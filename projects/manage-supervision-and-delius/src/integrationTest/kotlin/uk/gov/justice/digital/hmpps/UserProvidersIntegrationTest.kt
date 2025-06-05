@@ -34,7 +34,8 @@ class UserProvidersIntegrationTest {
             .andExpect(MockMvcResultMatchers.status().isOk)
             .andReturn().response.contentAsJson<UserProviderResponse>()
 
-        val expected = UserProviderResponse(listOf(Provider("N01", "Description of N01"), Provider("W01", "Description of W01")))
+        val expected =
+            UserProviderResponse(listOf(Provider("N01", "Description of N01"), Provider("W01", "Description of W01")))
         assertEquals(expected, response)
     }
 }
