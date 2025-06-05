@@ -181,6 +181,16 @@ interface TeamRepository : JpaRepository<Team, Long> {
     """
     )
     fun findByTeamCode(teamCode: String): Team?
+
+    @Query(
+        """
+            SELECT t
+            FROM Team t
+            WHERE t.provider.id = :providerId
+            ORDER BY UPPER(t.description) 
+        """
+    )
+    fun findByProviderId(providerId: Long): List<Team>
 }
 
 fun TeamRepository.getTeam(teamCode: String) =

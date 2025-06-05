@@ -10,6 +10,8 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 import uk.gov.justice.digital.hmpps.api.model.user.Provider
 import uk.gov.justice.digital.hmpps.api.model.user.UserProviderResponse
+import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.DEFAULT_PROVIDER
+import uk.gov.justice.digital.hmpps.data.generator.OffenderManagerGenerator.PROVIDER_2
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 
@@ -35,7 +37,7 @@ class UserProvidersIntegrationTest {
             .andReturn().response.contentAsJson<UserProviderResponse>()
 
         val expected =
-            UserProviderResponse(listOf(Provider("N01", "Description of N01"), Provider("W01", "Description of W01")))
+            UserProviderResponse(listOf(Provider(DEFAULT_PROVIDER.id,"N01", "Description of N01"), Provider(PROVIDER_2.id, "W01", "Description of W01")))
         assertEquals(expected, response)
     }
 }

@@ -9,6 +9,8 @@ import uk.gov.justice.digital.hmpps.api.model.appointment.MinimalNsi
 import uk.gov.justice.digital.hmpps.api.model.sentence.MinimalOrder
 import uk.gov.justice.digital.hmpps.api.model.sentence.MinimalRequirement
 import uk.gov.justice.digital.hmpps.api.model.sentence.MinimalSentence
+import uk.gov.justice.digital.hmpps.api.model.user.Team
+import uk.gov.justice.digital.hmpps.api.model.user.TeamResponse
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.compliance.Nsi
 import uk.gov.justice.digital.hmpps.integrations.delius.compliance.NsiRepository
@@ -21,6 +23,8 @@ import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.Requirem
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.getContactType
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.getPerson
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.LicenceConditionRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.user.entity.TeamRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.user.entity.Team as TeamEntity
 
 @Service
 class AppointmentService(
@@ -30,6 +34,7 @@ class AppointmentService(
     private val requirementService: RequirementService,
     private val licenceConditionRepository: LicenceConditionRepository,
     private val requirementRepository: RequirementRepository,
+    private val teamRepository: TeamRepository,
     private val nsiRepository: NsiRepository
 ) {
 
@@ -57,9 +62,18 @@ class AppointmentService(
     }
 
     fun getAppointmentTypes(): AppointmentTypeResponse =
-        AppointmentTypeResponse(contactTypeRepository.findByCodeIn(CreateAppointment.Type.entries.map { it.code }).map {
-            it.toAppointmentType()
-        })
+        AppointmentTypeResponse(
+            contactTypeRepository
+                .findByCodeIn(
+                    CreateAppointment.Type.entries.map { it.code }
+                ).map { it.toAppointmentType() }
+        )
+
+    fun getTeamsByProvider(providerId: Long) =
+        TeamResponse(
+        teamRepository
+            .findByProviderId(providerId).map { it.toTeam() }
+    )
 
     fun Event.toMinimalSentence(eventLevelNsis: List<Nsi>): MinimalSentence {
         val filteredNsiList = eventLevelNsis.filter { nsi -> nsi.eventId == id }
@@ -90,3 +104,5 @@ class AppointmentService(
 }
 
 fun ContactTypeEntity.toAppointmentType() = AppointmentType(code, description, offenderContact)
+
+fun TeamEntity.toTeam() = Team(code = code, description = description)
