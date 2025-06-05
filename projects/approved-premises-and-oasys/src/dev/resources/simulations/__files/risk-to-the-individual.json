@@ -41,6 +41,11 @@
       "currentConcernsRiskOfSuicide": "Yes",
       "concernsBreachOfTrust": "Yes",
       "concernsRiskOfSelfHarm": "Yes",
+      "currentControlBehaveTrust": "Yes",
+      "analysisControlBehaveTrust": "Analysis of Behaviour and Trust",
+      "analysisCoping": "Analysis of coping",
+      "analysisSuicideSelfharm": "Analysis of risk of suicide or harm",
+      "analysisVulnerabilities": "Analysis of vulnerabilities",
       "lastUpdatedDate": "2022-11-17T15:02:17"
     }
   ]

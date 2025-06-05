@@ -55,6 +55,8 @@ internal class RiskAssessmentDetailsTest {
             .isEqualTo("passers by")
         assertThat(riskToTheIndividualDetails.riskAssessment.currentHowDone)
             .isEqualTo("knife")
+        assertThat(riskToTheIndividualDetails.riskAssessment.identifyBehavioursIncidents).isEqualTo("Description of behaviour or incident")
+        assertThat(riskToTheIndividualDetails.riskAssessment.analysisBehavioursIncidents).isEqualTo("Analysis of behaviour or incident")
     }
 
     @Test
