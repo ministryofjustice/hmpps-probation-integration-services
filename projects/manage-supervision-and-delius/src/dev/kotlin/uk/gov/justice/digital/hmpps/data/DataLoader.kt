@@ -128,6 +128,7 @@ class DataLoader(
             OffenderManagerGenerator.PAU_USER_RECORD2,
             OffenderManagerGenerator.PROVIDER_3,
             OffenderManagerGenerator.PAU_USER_RECORD3,
+            OffenderManagerGenerator.PAU_USER_RECORD4,
             PersonGenerator.DEFAULT_DISPOSAL_TYPE,
             LicenceConditionGenerator.LIC_COND_MAIN_CAT,
             LicenceConditionGenerator.LIC_COND_SUB_CAT,

@@ -30,6 +30,7 @@ object OffenderManagerGenerator {
     val PROVIDER_3 = generateProvider("A01", selectable = false)
     val PAU_USER_RECORD2 = ProbationAreaUser(ProbationAreaUserId(STAFF_USER_1, PROVIDER_2))
     val PAU_USER_RECORD3 = ProbationAreaUser(ProbationAreaUserId(STAFF_USER_1, PROVIDER_3))
+    val PAU_USER_RECORD4 = ProbationAreaUser(ProbationAreaUserId(STAFF_USER_2, PROVIDER_3))
 
     val DEFAULT_LOCATION =
         Location(
@@ -50,7 +51,7 @@ object OffenderManagerGenerator {
         OffenderManager(
             IdGenerator.getAndIncrement(),
             PersonGenerator.OVERVIEW,
-            ContactGenerator.DEFAULT_PROVIDER,
+            DEFAULT_PROVIDER,
             TEAM,
             STAFF_1,
             LocalDate.of(2025, 2, 10),
@@ -61,7 +62,7 @@ object OffenderManagerGenerator {
         OffenderManager(
             IdGenerator.getAndIncrement(),
             PersonGenerator.OVERVIEW,
-            ContactGenerator.DEFAULT_PROVIDER,
+            DEFAULT_PROVIDER,
             TEAM,
             STAFF_2,
             LocalDate.of(2025, 2, 9),
@@ -73,7 +74,7 @@ object OffenderManagerGenerator {
     val PRISON_OFFENDER_MANAGER_ACTIVE = PrisonManager(
         IdGenerator.getAndIncrement(),
         PersonGenerator.OVERVIEW,
-        ContactGenerator.DEFAULT_PROVIDER,
+        DEFAULT_PROVIDER,
         TEAM,
         STAFF_3,
         LocalDate.of(2025, 2, 7),
@@ -85,7 +86,7 @@ object OffenderManagerGenerator {
     val PRISON_OFFENDER_MANAGER_INACTIVE = PrisonManager(
         IdGenerator.getAndIncrement(),
         PersonGenerator.OVERVIEW,
-        ContactGenerator.DEFAULT_PROVIDER,
+        DEFAULT_PROVIDER,
         TEAM,
         STAFF_3,
         LocalDate.of(2025, 2, 7),
