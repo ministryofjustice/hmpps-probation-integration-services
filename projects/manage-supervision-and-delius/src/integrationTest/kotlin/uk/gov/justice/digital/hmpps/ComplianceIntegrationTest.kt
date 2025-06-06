@@ -34,7 +34,7 @@ internal class ComplianceIntegrationTest {
         assertThat(res.personSummary.name.forename, equalTo(person.forename))
         assertThat(
             res.previousOrders.breaches,
-            equalTo(3)
+            equalTo(2)
         )
         assertThat(res.currentSentences[1].rarCategory, equalTo("Main"))
         assertThat(res.currentSentences[1].rarDescription, equalTo("2 of 12 RAR days completed"))
