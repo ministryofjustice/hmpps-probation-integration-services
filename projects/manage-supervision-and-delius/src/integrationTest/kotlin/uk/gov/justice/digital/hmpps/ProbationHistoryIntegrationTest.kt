@@ -10,13 +10,13 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 import uk.gov.justice.digital.hmpps.api.model.sentence.History
 import uk.gov.justice.digital.hmpps.api.model.sentence.ProbationHistory
+import uk.gov.justice.digital.hmpps.api.model.sentence.SentenceSummary
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.personalDetails.PersonDetailsGenerator
 import uk.gov.justice.digital.hmpps.service.toSummary
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 import java.time.LocalDate
-import uk.gov.justice.digital.hmpps.api.model.sentence.SentenceSummary
 
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -58,7 +58,7 @@ class ProbationHistoryIntegrationTest {
                 SentenceSummary("1234567", "Pre-Sentence"),
                 SentenceSummary("7654321", "Default Sentence Type")
             ),
-            ProbationHistory(3, LocalDate.now().minusDays(7), 3, 1)
+            ProbationHistory(4, LocalDate.now().minusDays(7), 3, 1)
         )
 
         assertEquals(expected, response)

@@ -36,7 +36,6 @@ object ContactGenerator {
 
     val DEFAULT_TEAM = generateTeam(code = "TEAM11", description = "Main Team", staff = listOf(DEFAULT_STAFF, STAFF_1))
 
-
     val USER = User(
         id = IdGenerator.getAndIncrement(),
         forename = "John",
@@ -319,7 +318,14 @@ fun generateTeam(
     description: String = "Description of $code",
     id: Long = IdGenerator.getAndIncrement(),
     staff: List<Staff>,
-) = Team(id = id, code = code, description = description, staff = staff, startDate = LocalDate.now(), provider = DEFAULT_PROVIDER)
+) = Team(
+    id = id,
+    code = code,
+    description = description,
+    staff = staff,
+    startDate = LocalDate.now(),
+    provider = DEFAULT_PROVIDER
+)
 
 fun generateStaff(
     code: String,
