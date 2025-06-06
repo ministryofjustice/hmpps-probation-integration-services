@@ -44,7 +44,12 @@ data class RiskToTheIndividualDetails(
                         stringToBoolean(currentConcernsRiskOfSelfHarm),
                         stringToBoolean(currentConcernsRiskOfSuicide),
                         stringToBoolean(concernsBreachOfTrust),
-                        stringToBoolean(concernsRiskOfSelfHarm)
+                        stringToBoolean(concernsRiskOfSelfHarm),
+                        stringToBoolean(currentControlBehaveTrust),
+                        analysisControlBehaveTrust,
+                        analysisCoping,
+                        analysisSuicideSelfharm,
+                        analysisVulnerabilities,
                     )
                 )
             }
@@ -66,5 +71,10 @@ data class RiskToTheIndividual(
     val currentConcernsRiskOfSelfHarm: Boolean? = null,
     val currentConcernsRiskOfSuicide: Boolean? = null,
     val concernsBreachOfTrust: Boolean? = null,
-    val concernsRiskOfSelfHarm: Boolean? = null
+    val concernsRiskOfSelfHarm: Boolean? = null,
+    val currentControlBehaveTrust: Boolean? = null,
+    val analysisControlBehaveTrust: String? = null,
+    val analysisCoping: String? = null,
+    val analysisSuicideSelfharm: String? = null,
+    val analysisVulnerabilities: String? = null,
 )

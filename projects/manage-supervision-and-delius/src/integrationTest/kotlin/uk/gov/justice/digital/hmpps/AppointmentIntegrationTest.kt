@@ -136,7 +136,8 @@ class AppointmentIntegrationTest {
             listOf(
                 Team(code = DEFAULT_TEAM.code, description = DEFAULT_TEAM.description),
                 Team(code = OffenderManagerGenerator.TEAM.code, description = OffenderManagerGenerator.TEAM.description)
-            ))
+            )
+        )
         assertEquals(expected, response)
     }
 }

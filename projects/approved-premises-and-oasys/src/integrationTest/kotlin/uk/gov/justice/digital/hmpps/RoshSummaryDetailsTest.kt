@@ -43,6 +43,9 @@ internal class RoshSummaryDetailsTest {
             .isEqualTo("Risk greatest around Christmas")
         assertThat(roshSummaryDetails.roshSummary.natureOfRisk)
             .isEqualTo("Risks varying in nature")
+        assertThat(roshSummaryDetails.roshSummary.factorsAnalysisOfRisk).isEqualTo("Analysis of the risk")
+        assertThat(roshSummaryDetails.roshSummary.factorsStrengthsAndProtective).isEqualTo("Alcohol monitoring and counselling course. This has worked in the past")
+        assertThat(roshSummaryDetails.roshSummary.factorsSituationsLikelyToOffend).isEqualTo("Drinking increases risk")
     }
 
     @Test

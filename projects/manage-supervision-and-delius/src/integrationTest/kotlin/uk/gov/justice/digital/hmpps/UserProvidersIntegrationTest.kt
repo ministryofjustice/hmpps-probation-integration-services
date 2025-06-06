@@ -37,7 +37,12 @@ class UserProvidersIntegrationTest {
             .andReturn().response.contentAsJson<UserProviderResponse>()
 
         val expected =
-            UserProviderResponse(listOf(Provider(DEFAULT_PROVIDER.id,"N01", "Description of N01"), Provider(PROVIDER_2.id, "W01", "Description of W01")))
+            UserProviderResponse(
+                listOf(
+                    Provider(DEFAULT_PROVIDER.id, "N01", "Description of N01"),
+                    Provider(PROVIDER_2.id, "W01", "Description of W01")
+                )
+            )
         assertEquals(expected, response)
     }
 }
