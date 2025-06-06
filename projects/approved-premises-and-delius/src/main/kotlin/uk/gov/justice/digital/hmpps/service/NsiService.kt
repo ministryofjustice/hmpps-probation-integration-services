@@ -168,7 +168,10 @@ class NsiService(
                 probationArea = team.probationArea,
                 startDate = details.arrivedAt,
                 transferReason = transferReasonRepository.getNsiTransferReason(),
-                allocationReason = referenceDataRepository.findByCodeAndDatasetCode("IN1", DatasetCode.NM_ALLOCATION_REASON)!!
+                allocationReason = referenceDataRepository.findByCodeAndDatasetCode(
+                    "IN1",
+                    DatasetCode.NM_ALLOCATION_REASON
+                )!!
             )
         )
         nsi.referralContact(details.arrivedAt, staff, team)
@@ -254,7 +257,10 @@ class NsiService(
                 probationArea = team.probationArea,
                 startDate = details.bookingMadeAt,
                 transferReason = null,
-                allocationReason = referenceDataRepository.findByCodeAndDatasetCode("IN1", DatasetCode.NM_ALLOCATION_REASON)!!
+                allocationReason = referenceDataRepository.findByCodeAndDatasetCode(
+                    "IN1",
+                    DatasetCode.NM_ALLOCATION_REASON
+                )!!
             )
         )
         nsi.referralContact(details.bookingMadeAt, staff, team)
