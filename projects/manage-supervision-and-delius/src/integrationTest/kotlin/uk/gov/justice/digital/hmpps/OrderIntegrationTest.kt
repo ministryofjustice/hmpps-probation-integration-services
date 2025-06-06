@@ -15,6 +15,7 @@ import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.INACTIVE_EVENT_1
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.INACTIVE_EVENT_2
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.INACTIVE_EVENT_3
+import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.INACTIVE_EVENT_NO_TIME_UNIT
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.INACTIVE_ORDER_1
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.MAIN_OFFENCE_3
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.OFFENCE_1
@@ -82,6 +83,12 @@ class OrderIntegrationTest {
         val expected = PreviousOrderHistory(
             Name("Forename", "Middle1", "Surname"),
             listOf(
+                PreviousOrder(
+                    INACTIVE_EVENT_NO_TIME_UNIT.eventNumber,
+                    "Default Sentence Type (36 not provided)",
+                    "Burglary, other than a dwelling - 03000",
+                    LocalDate.now().minusDays(7)
+                ),
                 PreviousOrder(
                     INACTIVE_EVENT_3.eventNumber,
                     "Default Sentence Type",
