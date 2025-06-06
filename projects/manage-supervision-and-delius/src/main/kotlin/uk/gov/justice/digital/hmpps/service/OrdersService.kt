@@ -55,6 +55,6 @@ class OrdersService(
                 else -> it
             }
         }
-        return disposal?.type?.description + if (length != null) " (${length} ${disposal?.lengthUnit?.description})" else ""
+        return disposal?.type?.description + if (length != null) " (${length} ${disposal?.lengthUnit?.description ?: "not provided"})" else ""
     }
 }
