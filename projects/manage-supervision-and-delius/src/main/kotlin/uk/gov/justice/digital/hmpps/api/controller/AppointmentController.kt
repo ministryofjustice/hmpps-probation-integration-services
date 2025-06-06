@@ -36,6 +36,6 @@ class AppointmentController(
     @GetMapping("/types")
     fun getAppointmentTypes() = appointmentService.getAppointmentTypes()
 
-    @GetMapping("/teams/provider/{providerId}")
-    fun getTeamsByProvider(@PathVariable providerId: Long) = appointmentService.getTeamsByProvider(providerId)
+    @GetMapping("/teams/provider/{code}")
+    fun getTeamsByProvider(@PathVariable code: String) = appointmentService.getTeamsByProvider(code)
 }

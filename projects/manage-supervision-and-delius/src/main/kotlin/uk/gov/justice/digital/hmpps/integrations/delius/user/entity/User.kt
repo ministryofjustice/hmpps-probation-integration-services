@@ -188,13 +188,13 @@ interface TeamRepository : JpaRepository<Team, Long> {
         """
             SELECT t
             FROM Team t
-            WHERE t.provider.id = :providerId
+            WHERE t.provider.code = :code
             AND (t.endDate IS NULL OR t.endDate > CURRENT_DATE)
             AND t.startDate <= CURRENT_DATE
             ORDER BY UPPER(t.description) 
         """
     )
-    fun findByProviderId(providerId: Long): List<Team>
+    fun findByProviderCode(code: String): List<Team>
 }
 
 fun TeamRepository.getTeam(teamCode: String) =

@@ -69,10 +69,10 @@ class AppointmentService(
                 ).map { it.toAppointmentType() }
         )
 
-    fun getTeamsByProvider(providerId: Long) =
+    fun getTeamsByProvider(code: String) =
         TeamResponse(
             teamRepository
-                .findByProviderId(providerId).map { it.toTeam() }
+                .findByProviderCode(code).map { it.toTeam() }
         )
 
     fun Event.toMinimalSentence(eventLevelNsis: List<Nsi>): MinimalSentence {

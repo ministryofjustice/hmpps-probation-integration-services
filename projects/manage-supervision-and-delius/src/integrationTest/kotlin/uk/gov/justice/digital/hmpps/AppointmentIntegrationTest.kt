@@ -128,7 +128,7 @@ class AppointmentIntegrationTest {
     @Test
     fun `return teams by provider`() {
         val response = mockMvc
-            .perform(get("/appointment/teams/provider/${DEFAULT_PROVIDER.id}").withToken())
+            .perform(get("/appointment/teams/provider/${DEFAULT_PROVIDER.code}").withToken())
             .andExpect(MockMvcResultMatchers.status().isOk)
             .andReturn().response.contentAsJson<TeamResponse>()
 
