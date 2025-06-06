@@ -82,6 +82,7 @@ class DataLoader(
         referralSourceRepository.save(ReferenceDataGenerator.OTHER_REFERRAL_SOURCE)
         moveOnCategoryRepository.save(ReferenceDataGenerator.MC05)
         registerTypeRepository.saveAll(ReferenceDataGenerator.REGISTER_TYPES.values)
+        referenceDataRepository.save(ReferenceDataGenerator.NSI_INITIAL_ALLOCATION)
 
         addressRepository.saveAll(AddressGenerator.ALL_ADDRESSES)
         boroughRepository.save(ProbationCaseGenerator.BOROUGH)

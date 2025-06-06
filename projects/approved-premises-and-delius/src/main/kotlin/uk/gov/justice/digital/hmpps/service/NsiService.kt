@@ -18,6 +18,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention
 import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.entity.NsiTypeCode.REHABILITATIVE_ACTIVITY
 import uk.gov.justice.digital.hmpps.integrations.delius.person.Person
 import uk.gov.justice.digital.hmpps.integrations.delius.person.address.PersonAddress
+import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.DatasetCode
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceDataRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.endOfEngagementOutcome
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.referralCompleted
@@ -45,7 +46,7 @@ class NsiService(
     private val referenceDataRepository: ReferenceDataRepository,
     private val eventRepository: EventRepository
 ) {
-    fun preArrival(person: Person, details: BookingMade) {
+    fun preArrival(ap: ApprovedPremises, person: Person, details: BookingMade) {
         val existing = nsiRepository.findByPersonIdAndTypeCodeAndActualEndDateIsNull(
             person.id,
             NsiTypeCode.PRE_RELEASE_ARRIVAL.code
@@ -53,8 +54,8 @@ class NsiService(
         if (existing.isNotEmpty()) return
 
         val team = teamRepository.getApprovedPremisesTeam(details.premises.legacyApCode)
-        val staff = staffRepository.getByCode(details.bookedBy.staffMember.staffCode)
-        createPreArrivalNsi(person, details, staff, team)
+        val staff = staffRepository.getByCode(team.unallocatedStaffCode())
+        createPreArrivalNsi(ap, person, details, staff, team)
     }
 
     fun personArrived(
@@ -166,7 +167,8 @@ class NsiService(
                 team = team,
                 probationArea = team.probationArea,
                 startDate = details.arrivedAt,
-                transferReason = transferReasonRepository.getNsiTransferReason()
+                transferReason = transferReasonRepository.getNsiTransferReason(),
+                allocationReason = referenceDataRepository.findByCodeAndDatasetCode("IN1", DatasetCode.NM_ALLOCATION_REASON)!!
             )
         )
         nsi.referralContact(details.arrivedAt, staff, team)
@@ -221,6 +223,7 @@ class NsiService(
     )
 
     private fun createPreArrivalNsi(
+        ap: ApprovedPremises,
         person: Person,
         details: BookingMade,
         staff: Staff,
@@ -239,7 +242,8 @@ class NsiService(
                     "AP placement allocated to ${details.premises.name}",
                     "For more details, click here: ${details.applicationUrl}"
                 ).joinToString(System.lineSeparator() + System.lineSeparator()),
-                externalReference = details.preArrivalRef()
+                externalReference = details.preArrivalRef(),
+                intendedProviderId = ap.probationArea.id
             )
         )
         nsiManagerRepository.save(
@@ -249,7 +253,8 @@ class NsiService(
                 team = team,
                 probationArea = team.probationArea,
                 startDate = details.bookingMadeAt,
-                transferReason = transferReasonRepository.getNsiTransferReason()
+                transferReason = null,
+                allocationReason = referenceDataRepository.findByCodeAndDatasetCode("IN1", DatasetCode.NM_ALLOCATION_REASON)!!
             )
         )
         nsi.referralContact(details.bookingMadeAt, staff, team)

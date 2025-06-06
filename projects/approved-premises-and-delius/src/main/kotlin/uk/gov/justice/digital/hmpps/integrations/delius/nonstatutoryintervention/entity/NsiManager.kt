@@ -11,6 +11,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import org.springframework.data.jpa.repository.JpaRepository
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.ProbationArea
+import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceData
 import uk.gov.justice.digital.hmpps.integrations.delius.staff.Staff
 import uk.gov.justice.digital.hmpps.integrations.delius.team.Team
 import java.time.ZonedDateTime
@@ -52,7 +53,11 @@ class NsiManager(
 
     @ManyToOne
     @JoinColumn(name = "transfer_reason_id")
-    val transferReason: TransferReason,
+    val transferReason: TransferReason? = null,
+
+    @ManyToOne
+    @JoinColumn(name = "allocation_reason_id")
+    val allocationReason: ReferenceData,
 
     @Column
     @CreatedDate

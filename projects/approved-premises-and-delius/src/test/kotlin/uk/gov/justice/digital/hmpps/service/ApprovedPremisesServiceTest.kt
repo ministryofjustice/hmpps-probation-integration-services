@@ -317,6 +317,7 @@ internal class ApprovedPremisesServiceTest {
         givenAnApprovedPremises(ApprovedPremisesGenerator.DEFAULT)
         givenAddressStatuses(listOf(ReferenceDataGenerator.MAIN_ADDRESS_STATUS))
         givenAddressTypes(listOf(ReferenceDataGenerator.AP_ADDRESS_TYPE))
+        givenNsiManagerInitialAllocation()
         givenAuditUser()
         givenReferral(person, details.eventDetails.bookingId, andResidence = true)
         whenever(personAddressRepository.save(any())).thenAnswer { it.arguments[0].apply { set("id", 0L) } }
@@ -535,6 +536,11 @@ internal class ApprovedPremisesServiceTest {
             whenever(referenceDataRepository.findByCodeAndDatasetCode(it.code, DatasetCode.ADDRESS_TYPE))
                 .thenReturn(it)
         }
+    }
+
+    private fun givenNsiManagerInitialAllocation() {
+        whenever(referenceDataRepository.findByCodeAndDatasetCode("IN1", DatasetCode.NM_ALLOCATION_REASON))
+            .thenReturn(ReferenceDataGenerator.NSI_INITIAL_ALLOCATION)
     }
 
     private fun givenNsiTypes(types: List<NsiTypeCode> = listOf(), statuses: List<NsiStatusCode> = listOf()) {
