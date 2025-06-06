@@ -146,9 +146,11 @@ class Team(
     @ManyToOne
     val provider: Provider,
 
+    @Column(name = "start_date")
+    val startDate: LocalDate,
+
     @Column(name = "end_date")
     val endDate: LocalDate? = null
-
 )
 
 interface TeamRepository : JpaRepository<Team, Long> {
@@ -181,6 +183,18 @@ interface TeamRepository : JpaRepository<Team, Long> {
     """
     )
     fun findByTeamCode(teamCode: String): Team?
+
+    @Query(
+        """
+            SELECT t
+            FROM Team t
+            WHERE t.provider.code = :code
+            AND (t.endDate IS NULL OR t.endDate > CURRENT_DATE)
+            AND t.startDate <= CURRENT_DATE
+            ORDER BY UPPER(t.description) 
+        """
+    )
+    fun findByProviderCode(code: String): List<Team>
 }
 
 fun TeamRepository.getTeam(teamCode: String) =

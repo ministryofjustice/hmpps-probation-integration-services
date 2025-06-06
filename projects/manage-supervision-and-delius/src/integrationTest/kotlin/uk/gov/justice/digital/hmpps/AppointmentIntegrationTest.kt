@@ -18,13 +18,18 @@ import uk.gov.justice.digital.hmpps.api.model.sentence.MinimalLicenceCondition
 import uk.gov.justice.digital.hmpps.api.model.sentence.MinimalOrder
 import uk.gov.justice.digital.hmpps.api.model.sentence.MinimalRequirement
 import uk.gov.justice.digital.hmpps.api.model.sentence.MinimalSentence
+import uk.gov.justice.digital.hmpps.api.model.user.Team
+import uk.gov.justice.digital.hmpps.api.model.user.TeamResponse
 import uk.gov.justice.digital.hmpps.data.generator.AppointmentGenerator.APPOINTMENT_TYPES
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.APPT_CT_3
+import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.DEFAULT_PROVIDER
+import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.DEFAULT_TEAM
 import uk.gov.justice.digital.hmpps.data.generator.LicenceConditionGenerator.LC_WITHOUT_NOTES
 import uk.gov.justice.digital.hmpps.data.generator.LicenceConditionGenerator.LC_WITH_1500_CHAR_NOTE
 import uk.gov.justice.digital.hmpps.data.generator.LicenceConditionGenerator.LC_WITH_NOTES
 import uk.gov.justice.digital.hmpps.data.generator.LicenceConditionGenerator.LC_WITH_NOTES_WITHOUT_ADDED_BY
 import uk.gov.justice.digital.hmpps.data.generator.LicenceConditionGenerator.LIC_COND_MAIN_CAT
+import uk.gov.justice.digital.hmpps.data.generator.OffenderManagerGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.ACTIVE_ORDER
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.EVENT_1
@@ -117,6 +122,22 @@ class AppointmentIntegrationTest {
 
         val expected =
             AppointmentTypeResponse(APPOINTMENT_TYPES.map { it.toAppointmentType() } + APPT_CT_3.toAppointmentType())
+        assertEquals(expected, response)
+    }
+
+    @Test
+    fun `return teams by provider`() {
+        val response = mockMvc
+            .perform(get("/appointment/teams/provider/${DEFAULT_PROVIDER.code}").withToken())
+            .andExpect(MockMvcResultMatchers.status().isOk)
+            .andReturn().response.contentAsJson<TeamResponse>()
+
+        val expected = TeamResponse(
+            listOf(
+                Team(code = DEFAULT_TEAM.code, description = DEFAULT_TEAM.description),
+                Team(code = OffenderManagerGenerator.TEAM.code, description = OffenderManagerGenerator.TEAM.description)
+            )
+        )
         assertEquals(expected, response)
     }
 }
