@@ -39,8 +39,8 @@ class UserProvidersIntegrationTest {
         val expected =
             UserProviderResponse(
                 listOf(
-                    Provider(DEFAULT_PROVIDER.id, "N01", "Description of N01"),
-                    Provider(PROVIDER_2.id, "W01", "Description of W01")
+                    Provider(DEFAULT_PROVIDER.code, "Description of N01"),
+                    Provider(PROVIDER_2.code, "Description of W01")
                 )
             )
         assertEquals(expected, response)
