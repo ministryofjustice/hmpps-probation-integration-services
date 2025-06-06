@@ -52,7 +52,7 @@ class AssessmentService(
     fun AssessmentSummary.oasysAssessment(person: Person, event: Event, contact: Contact): OasysAssessment {
         val assessment = OasysAssessment(
             oasysId = assessmentPk.toString(),
-            date = dateCompleted,
+            date = dateCompleted ?: initiationDate,
             person = person,
             eventNumber = event.number,
             contact = contact,
@@ -108,7 +108,7 @@ private fun AssessmentSummary.contactDetail() =
             "LOCKED_INCOMPLETE" -> ContactType.Code.OASYS_ASSESSMENT_LOCKED_INCOMPLETE
             else -> throw IllegalArgumentException("Unexpected assessment status: $assessmentStatus")
         },
-        dateCompleted,
+        dateCompleted ?: initiationDate,
         "Reason for Assessment: ${furtherInformation.pOAssessmentDesc}",
         "urn:uk:gov:hmpps:oasys:assessment:${assessmentPk}"
     )
