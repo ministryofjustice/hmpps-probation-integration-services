@@ -15,7 +15,9 @@ object OffenderManagerGenerator {
 
     val BOROUGH = Borough("LTS_ALL", "Leicestershire All", IdGenerator.getAndIncrement())
     val DISTRICT = District("LTS_ALL", "Leicestershire All", BOROUGH, IdGenerator.getAndIncrement())
-    val TEAM = Team(IdGenerator.getAndIncrement(), DISTRICT, DEFAULT_PROVIDER, "N07T02", "OMU B")
+    val TEAM = Team(IdGenerator.getAndIncrement(), DISTRICT, DEFAULT_PROVIDER, "N07T02", "OMU B", startDate = LocalDate.now(), endDate = LocalDate.now().plusDays(1))
+    val TEAM_1 = Team(IdGenerator.getAndIncrement(), DISTRICT, DEFAULT_PROVIDER, "T1", "team1", startDate = LocalDate.now().minusDays(3), endDate = LocalDate.now().minusDays(1))
+    val TEAM_2 = Team(IdGenerator.getAndIncrement(), DISTRICT, DEFAULT_PROVIDER, "T2", "team2", startDate = LocalDate.now().plusDays(1),)
 
     val STAFF_1 = Staff(IdGenerator.getAndIncrement(), "Peter", "Parker", DEFAULT_PROVIDER, null)
     val STAFF_2 = Staff(IdGenerator.getAndIncrement(), "Bruce", "Wayne", DEFAULT_PROVIDER, null)

@@ -213,6 +213,12 @@ class Team(
     @Column(name = "code", columnDefinition = "char(6)")
     val code: String,
     val description: String,
+
+    @Column(name = "start_date")
+    val startDate: LocalDate,
+
+    @Column(name = "end_date")
+    val endDate: LocalDate? = null
 )
 
 @Immutable
