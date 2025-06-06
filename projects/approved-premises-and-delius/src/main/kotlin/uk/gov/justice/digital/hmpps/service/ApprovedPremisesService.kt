@@ -93,7 +93,7 @@ class ApprovedPremisesService(
         val person = personRepository.getByCrn(event.crn())
         referralService.bookingMade(person, details, ap)
         if (featureFlags.enabled(FeatureFlagName.PRE_ARRIVAL_NSI)) {
-            nsiService.preArrival(person, details)
+            nsiService.preArrival(ap, person, details)
         }
     }
 
