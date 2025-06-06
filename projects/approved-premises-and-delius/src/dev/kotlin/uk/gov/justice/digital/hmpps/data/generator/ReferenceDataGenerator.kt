@@ -94,6 +94,8 @@ object ReferenceDataGenerator {
 
     val NON_MAPPA_CATEGORY = generate("RC07", REGISTER_CATEGORY.id, "Other category")
 
+    val NSI_INITIAL_ALLOCATION = generate("IN1", ALL_DATASETS[DatasetCode.NM_ALLOCATION_REASON]!!.id)
+
     fun generate(
         code: String,
         datasetId: Long,
