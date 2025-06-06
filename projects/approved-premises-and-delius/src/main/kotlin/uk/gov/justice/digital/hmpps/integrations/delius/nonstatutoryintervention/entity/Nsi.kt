@@ -75,6 +75,9 @@ class Nsi(
     @ManyToOne
     var outcome: ReferenceData? = null,
 
+    @Column(name = "intended_provider_id")
+    val intendedProviderId: Long? = null,
+
     @Column
     @CreatedDate
     var createdDatetime: ZonedDateTime = ZonedDateTime.now(),
