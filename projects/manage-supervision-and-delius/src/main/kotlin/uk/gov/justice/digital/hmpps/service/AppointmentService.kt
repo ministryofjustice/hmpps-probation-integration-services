@@ -79,8 +79,6 @@ class AppointmentService(
                 .findByProviderCode(code).map { it.toTeam() }
         )
 
-
-
     fun getOfficeByProviderAndTeam(locationRequest: OfficeLocationRequest): ProviderOfficeLocation =
         ProviderOfficeLocation(
             locationRepository.findByProviderAndTeam(locationRequest.provideCode, locationRequest.teamCode)

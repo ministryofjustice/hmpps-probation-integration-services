@@ -8,6 +8,7 @@ data class UserOfficeLocation(
 data class ProviderOfficeLocation(
     val locations: List<LocationDetails>
 )
+
 data class Name(
     val forename: String,
     val middleName: String? = null,
