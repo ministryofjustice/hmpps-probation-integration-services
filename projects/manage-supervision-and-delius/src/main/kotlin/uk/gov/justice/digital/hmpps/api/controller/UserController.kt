@@ -6,6 +6,7 @@ import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
+import uk.gov.justice.digital.hmpps.api.model.appointment.StaffLocationRequest
 import uk.gov.justice.digital.hmpps.service.UserLocationService
 import uk.gov.justice.digital.hmpps.service.UserService
 
@@ -21,6 +22,10 @@ class UserController(
     @GetMapping("/locations")
     @Operation(summary = "Display user locations")
     fun getUserOfficeLocations(@PathVariable username: String) = userLocationService.getUserOfficeLocations(username)
+
+    @GetMapping("/location")
+    @Operation(summary = "Display user locations")
+    fun getUserOfficeLocation(@PathVariable username: String, @RequestBody request: StaffLocationRequest) = userLocationService.getUserOfficeLocation(username, request)
 
     @GetMapping("/schedule/upcoming")
     @Operation(summary = "Gets upcoming appointments for a user")

@@ -40,7 +40,7 @@ class AppointmentController(
     @GetMapping("/teams/provider/{code}")
     fun getTeamsByProvider(@PathVariable code: String) = appointmentService.getTeamsByProvider(code)
 
-    @GetMapping("location")
+    @GetMapping("/location")
     fun getOfficeLocationByTeamAndProvider(@RequestBody locationRequest: OfficeLocationRequest) =
         appointmentService.getOfficeByProviderAndTeam(locationRequest)
 }

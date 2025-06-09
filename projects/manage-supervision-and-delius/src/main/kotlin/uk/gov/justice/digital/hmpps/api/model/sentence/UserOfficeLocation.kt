@@ -2,7 +2,8 @@ package uk.gov.justice.digital.hmpps.api.model.sentence
 
 data class UserOfficeLocation(
     val name: Name,
-    val locations: List<LocationDetails>
+    val locations: List<LocationDetails>? = null,
+    val location: LocationDetails? = null
 )
 
 data class ProviderOfficeLocation(
@@ -17,6 +18,7 @@ data class Name(
 
 data class LocationDetails(
     val id: Long,
+    val code: String,
     val description: String,
     val address: Address
 )
