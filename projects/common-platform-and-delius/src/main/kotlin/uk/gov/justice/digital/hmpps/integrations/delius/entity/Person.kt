@@ -93,6 +93,9 @@ class Person(
     @Column(name = "OFFENDER_DETAILS", columnDefinition = "clob")
     var notes: String? = null,
 
+    @Column(name = "DEFENDANT_ID")
+    var defendantId: String? = null,
+
     @Column
     @Version
     val rowVersion: Long = 0L,

@@ -89,6 +89,9 @@ class CourtAppearance(
     @ManyToOne
     @JoinColumn(name = "offender_id")
     val person: Person,
+
+    @Column(name = "hearing_id")
+    val hearingId: String? = null
 )
 
 interface CourtAppearanceRepository : JpaRepository<CourtAppearance, Long>

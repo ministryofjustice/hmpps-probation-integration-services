@@ -4,12 +4,9 @@ import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.audit.service.AuditableService
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
 import uk.gov.justice.digital.hmpps.dto.InsertPersonResult
-import uk.gov.justice.digital.hmpps.integrations.client.*
-import uk.gov.justice.digital.hmpps.integrations.delius.IDs
-import uk.gov.justice.digital.hmpps.integrations.delius.OffenderDetail
-import uk.gov.justice.digital.hmpps.integrations.delius.OffenderMatch
-import uk.gov.justice.digital.hmpps.integrations.delius.ProbationMatchRequest
-import uk.gov.justice.digital.hmpps.integrations.delius.ProbationMatchResponse
+import uk.gov.justice.digital.hmpps.integrations.client.OsClient
+import uk.gov.justice.digital.hmpps.integrations.client.OsPlacesResponse
+import uk.gov.justice.digital.hmpps.integrations.delius.*
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractionCode
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonAddress
@@ -106,7 +103,8 @@ class PersonService(
                         addressNumber = deliveryPointAddress.buildingNumber?.toString(),
                         streetName = deliveryPointAddress.thoroughfareName,
                         town = deliveryPointAddress.postTown,
-                        district = deliveryPointAddress.localCustodianCodeDescription
+                        district = deliveryPointAddress.localCustodianCodeDescription,
+                        uprn = deliveryPointAddress.uprn
                     )
                 )
             } else {
@@ -173,6 +171,7 @@ class PersonService(
             surnameSoundex = personRepository.getSoundex(personDetails.lastName),
             middleNameSoundex = personDetails.middleName?.let { personRepository.getSoundex(it) },
             firstNameSoundex = personRepository.getSoundex(personDetails.firstName),
+            defendantId = id,
             notes = "This case record was initially created using information from HMCTS Common Platform."
         )
     }
