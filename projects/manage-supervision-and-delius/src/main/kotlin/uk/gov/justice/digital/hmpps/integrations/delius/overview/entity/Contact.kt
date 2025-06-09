@@ -188,9 +188,12 @@ class ContactType(
     @Convert(converter = YesNoConverter::class)
     val contactOutcomeFlag: Boolean? = false,
 
-    @Column(name = "OFFENDER_EVENT_0")
+    @Column(name = "offender_event_0")
     @Convert(converter = YesNoConverter::class)
-    val offenderContact: Boolean = false
+    val offenderContact: Boolean = false,
+
+    @Column(name= "contact_location_flag", columnDefinition = "char(1)")
+    val locationRequired: String
 )
 
 interface ContactTypeRepository : CrudRepository<ContactType, Long> {

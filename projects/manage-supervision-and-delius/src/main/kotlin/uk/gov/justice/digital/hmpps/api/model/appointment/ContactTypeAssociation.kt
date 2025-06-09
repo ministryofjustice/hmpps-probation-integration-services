@@ -24,4 +24,5 @@ data class AppointmentType(
     val code: String,
     val description: String,
     val isPersonLevelContact: Boolean,
+    val isLocationRequired: Boolean,
 )

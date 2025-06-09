@@ -317,7 +317,8 @@ class SentenceAppointmentServiceTest {
                 1,
                 appointment.type.code,
                 true,
-                "description"
+                "description",
+                locationRequired = "Y"
             )
         )
 
