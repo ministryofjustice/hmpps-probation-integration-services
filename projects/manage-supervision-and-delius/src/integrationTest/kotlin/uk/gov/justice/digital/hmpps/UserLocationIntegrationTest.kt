@@ -15,9 +15,8 @@ import uk.gov.justice.digital.hmpps.api.model.sentence.Address
 import uk.gov.justice.digital.hmpps.api.model.sentence.LocationDetails
 import uk.gov.justice.digital.hmpps.api.model.sentence.Name
 import uk.gov.justice.digital.hmpps.api.model.sentence.UserOfficeLocation
-import uk.gov.justice.digital.hmpps.data.generator.OffenderManagerGenerator.DEFAULT_LOCATION
-import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.DEFAULT_PROVIDER
 import uk.gov.justice.digital.hmpps.data.generator.OffenderManagerGenerator
+import uk.gov.justice.digital.hmpps.data.generator.OffenderManagerGenerator.DEFAULT_LOCATION
 import uk.gov.justice.digital.hmpps.data.generator.OffenderManagerGenerator.STAFF_USER_1
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withJson
@@ -75,7 +74,6 @@ class UserLocationIntegrationTest {
             MockMvcRequestBuilders.get("/user/${STAFF_USER_1.username}/location")
                 .withJson(
                     StaffLocationRequest(
-                        DEFAULT_PROVIDER.code,
                         OffenderManagerGenerator.TEAM.code,
                         DEFAULT_LOCATION.code
 

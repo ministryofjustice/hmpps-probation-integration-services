@@ -6,7 +6,6 @@ data class OfficeLocationRequest (
 )
 
 data class StaffLocationRequest (
-    val providerCode: String,
     val teamCode: String,
     val locationCode: String
 )

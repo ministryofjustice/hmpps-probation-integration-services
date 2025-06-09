@@ -33,7 +33,6 @@ class UserLocationService(private val staffUserRepository: StaffUserRepository) 
 
         val location = staffUserRepository.getUserOfficeLocation(
             id = user.id,
-            providerCode = request.providerCode,
             teamCode = request.teamCode,
             locationCode = request.locationCode
         )
