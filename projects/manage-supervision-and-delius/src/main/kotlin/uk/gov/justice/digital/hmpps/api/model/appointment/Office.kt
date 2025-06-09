@@ -1,11 +1,11 @@
 package uk.gov.justice.digital.hmpps.api.model.appointment
 
-data class OfficeLocationRequest (
+data class OfficeLocationRequest(
     val provideCode: String,
     val teamCode: String
 )
 
-data class StaffLocationRequest (
+data class StaffLocationRequest(
     val providerCode: String,
     val teamCode: String,
     val locationCode: String

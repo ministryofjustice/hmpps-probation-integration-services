@@ -214,8 +214,17 @@ interface StaffUserRepository : JpaRepository<StaffUser, Long> {
     fun findStaffByTeam(teamCode: String): List<StaffUser>
 }
 
-fun StaffUserRepository.getUserOfficeLocation(id: Long, providerCode: String, teamCode: String, locationCode: String):Location =
-    findUserOfficeLocation(id, providerCode, teamCode, locationCode) ?: throw NotFoundException("Location", "user id, probation code, team code, location code", listOf(id, providerCode, teamCode, locationCode))
+fun StaffUserRepository.getUserOfficeLocation(
+    id: Long,
+    providerCode: String,
+    teamCode: String,
+    locationCode: String
+): Location =
+    findUserOfficeLocation(id, providerCode, teamCode, locationCode) ?: throw NotFoundException(
+        "Location",
+        "user id, probation code, team code, location code",
+        listOf(id, providerCode, teamCode, locationCode)
+    )
 
 fun StaffUserRepository.getUser(username: String) =
     findByUsername(username) ?: throw NotFoundException("User", "username", username)

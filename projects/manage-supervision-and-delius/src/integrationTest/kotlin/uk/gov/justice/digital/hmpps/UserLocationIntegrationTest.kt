@@ -81,7 +81,8 @@ class UserLocationIntegrationTest {
 
                     )
                 )
-                .withToken())
+                .withToken()
+        )
             .andExpect(MockMvcResultMatchers.status().isOk)
             .andReturn().response.contentAsJson<UserOfficeLocation>()
 
