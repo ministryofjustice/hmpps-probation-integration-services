@@ -82,7 +82,13 @@ class Staff(
     val provider: Provider,
 
     @OneToOne(mappedBy = "staff")
-    val user: StaffUser?
+    val user: StaffUser? = null,
+
+    @Column(name = "start_date")
+    val startDate: LocalDate,
+
+    @Column(name = "end_date")
+    val endDate: LocalDate? = null
 )
 
 @Entity
@@ -191,7 +197,21 @@ interface StaffUserRepository : JpaRepository<StaffUser, Long> {
             AND l.code = :locationCode 
         """
     )
-    fun findUserOfficeLocation(id: Long, providerCode: String, teamCode: String, locationCode: String) : Location?
+    fun findUserOfficeLocation(id: Long, providerCode: String, teamCode: String, locationCode: String): Location?
+
+    @Query(
+        """
+            SELECT u
+            FROM StaffUser u
+            JOIN u.staff st
+            JOIN ContactStaffTeam cst ON cst.id.staffId = st.id
+            JOIN Team t ON t.id = cst.id.team.id
+            WHERE t.code = :teamCode
+            AND st.startDate <= CURRENT_DATE
+            AND (st.endDate IS NULL OR st.endDate > CURRENT_DATE)
+        """
+    )
+    fun findStaffByTeam(teamCode: String): List<StaffUser>
 }
 
 fun StaffUserRepository.getUserOfficeLocation(id: Long, providerCode: String, teamCode: String, locationCode: String):Location =

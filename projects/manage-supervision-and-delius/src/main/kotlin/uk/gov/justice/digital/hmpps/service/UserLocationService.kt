@@ -5,8 +5,11 @@ import uk.gov.justice.digital.hmpps.api.model.appointment.StaffLocationRequest
 import uk.gov.justice.digital.hmpps.api.model.sentence.Address
 import uk.gov.justice.digital.hmpps.api.model.sentence.LocationDetails
 import uk.gov.justice.digital.hmpps.api.model.sentence.Name
+import uk.gov.justice.digital.hmpps.api.model.sentence.StaffTeam
+import uk.gov.justice.digital.hmpps.api.model.sentence.User
 import uk.gov.justice.digital.hmpps.api.model.sentence.UserOfficeLocation
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.Location
+import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.StaffUser
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.StaffUserRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.getUser
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.getUserOfficeLocation
@@ -40,7 +43,12 @@ class UserLocationService(private val staffUserRepository: StaffUserRepository) 
             location = location.toLocationDetails()
         )
     }
+
+    fun getStaffByTeam(code: String): StaffTeam =
+        StaffTeam(staffUserRepository.findStaffByTeam(code).map { it.toUser() })
 }
 
 fun Location.toLocationDetails(): LocationDetails =
     LocationDetails(id, code.trim(), description, Address(buildingNumber, streetName, townCity, county, postcode))
+
+fun StaffUser.toUser(): User = User(username, Name(forename, forename2, surname))

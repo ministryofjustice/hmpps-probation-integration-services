@@ -35,6 +35,7 @@ import uk.gov.justice.digital.hmpps.data.generator.personalDetails.PersonDetails
 import uk.gov.justice.digital.hmpps.service.toAppointmentType
 import uk.gov.justice.digital.hmpps.service.toLocationDetails
 import uk.gov.justice.digital.hmpps.service.toSummary
+import uk.gov.justice.digital.hmpps.service.toUser
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
@@ -151,6 +152,19 @@ class AppointmentIntegrationTest {
 
         val expected = ProviderOfficeLocation(listOf(DEFAULT_LOCATION.toLocationDetails()))
 
+        assertEquals(expected, response)
+    }
+
+    @Test
+    fun `get staff by team`() {
+        val response = mockMvc
+            .perform(
+                get("/appointment/staff/team/${OffenderManagerGenerator.TEAM.code}")
+                    .withToken())
+            .andExpect(MockMvcResultMatchers.status().isOk)
+            .andReturn().response.contentAsJson<StaffTeam>()
+
+        val expected = StaffTeam(listOf(OffenderManagerGenerator.STAFF_USER_1.toUser()))
         assertEquals(expected, response)
     }
 }

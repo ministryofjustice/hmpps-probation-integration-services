@@ -10,6 +10,15 @@ data class ProviderOfficeLocation(
     val locations: List<LocationDetails>
 )
 
+data class StaffTeam(
+    val users: List<User>
+)
+
+data class User(
+    val username: String,
+    val name: Name,
+)
+
 data class Name(
     val forename: String,
     val middleName: String? = null,
