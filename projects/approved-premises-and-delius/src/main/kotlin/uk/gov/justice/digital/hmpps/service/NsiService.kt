@@ -264,7 +264,7 @@ class NsiService(
             )
         )
         nsi.referralContact(details.bookingMadeAt, staff, team)
-        nsi.statusChangeContact(details.bookingMadeAt, staff, team)
+        nsi.statusChangeContact(nsi.statusDate, staff, team)
     }
 
     private fun PersonArrived.residencyRef() = EXT_REF_BOOKING_PREFIX + bookingId
