@@ -25,7 +25,8 @@ class UserController(
 
     @GetMapping("/location")
     @Operation(summary = "Display user locations")
-    fun getUserOfficeLocation(@PathVariable username: String, @RequestBody request: StaffLocationRequest) = userLocationService.getUserOfficeLocation(username, request)
+    fun getUserOfficeLocation(@PathVariable username: String, @RequestBody request: StaffLocationRequest) =
+        userLocationService.getUserOfficeLocation(username, request)
 
     @GetMapping("/schedule/upcoming")
     @Operation(summary = "Gets upcoming appointments for a user")

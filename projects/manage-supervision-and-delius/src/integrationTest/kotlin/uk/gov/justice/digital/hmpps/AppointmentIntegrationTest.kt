@@ -160,7 +160,8 @@ class AppointmentIntegrationTest {
         val response = mockMvc
             .perform(
                 get("/appointment/staff/team/${OffenderManagerGenerator.TEAM.code}")
-                    .withToken())
+                    .withToken()
+            )
             .andExpect(MockMvcResultMatchers.status().isOk)
             .andReturn().response.contentAsJson<StaffTeam>()
 
