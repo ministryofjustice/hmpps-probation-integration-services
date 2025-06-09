@@ -14,7 +14,7 @@ interface OrdsClient {
 data class AssessmentSummary(
     val assessmentPk: Long,
     val assessmentType: String,
-    val dateCompleted: LocalDate,
+    val dateCompleted: LocalDate?,
     val initiationDate: LocalDate,
     val assessmentStatus: String,
     @JsonFormat(pattern = "[yyyy-MM-dd][dd/MM/yyyy]") // temporary until oasys bug fixed, should not be used for responses
