@@ -71,10 +71,34 @@ object ContactGenerator {
     val BREACH_CONTACT_TYPE = generateContactType("BRE02", false, "Breach Contact Type", locationRequired = "B")
     val BREACH_ENFORCEMENT_ACTION = generateEnforcementAction("BRE02", "Breach Enforcement Action", BREACH_CONTACT_TYPE)
 
-    val APPT_CT_1 = generateContactType("C089", true, "Alcohol Key Worker Session (NS)", contactOutcomeFlag = true, locationRequired = "Y")
-    val OTHER_CT = generateContactType("XXXX", false, "Non attendance contact type", systemGenerated = true, locationRequired = "N")
-    val APPT_CT_2 = generateContactType("CODI", true, "Initial Appointment on Doorstep (NS)", contactOutcomeFlag = true, locationRequired = "Y")
-    val APPT_CT_3 = generateContactType("CODC", true, "Planned Doorstep Contact (NS)", offenderContact = true, locationRequired = "Y")
+    val APPT_CT_1 = generateContactType(
+        "C089",
+        true,
+        "Alcohol Key Worker Session (NS)",
+        contactOutcomeFlag = true,
+        locationRequired = "Y"
+    )
+    val OTHER_CT = generateContactType(
+        "XXXX",
+        false,
+        "Non attendance contact type",
+        systemGenerated = true,
+        locationRequired = "N"
+    )
+    val APPT_CT_2 = generateContactType(
+        "CODI",
+        true,
+        "Initial Appointment on Doorstep (NS)",
+        contactOutcomeFlag = true,
+        locationRequired = "Y"
+    )
+    val APPT_CT_3 = generateContactType(
+        "CODC",
+        true,
+        "Planned Doorstep Contact (NS)",
+        offenderContact = true,
+        locationRequired = "Y"
+    )
 
     val ACCEPTABLE_ABSENCE = generateOutcome("OUT", "Acceptable", false, true)
 

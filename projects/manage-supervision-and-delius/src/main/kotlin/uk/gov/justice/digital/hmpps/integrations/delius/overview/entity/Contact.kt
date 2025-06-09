@@ -192,7 +192,7 @@ class ContactType(
     @Convert(converter = YesNoConverter::class)
     val offenderContact: Boolean = false,
 
-    @Column(name= "contact_location_flag", columnDefinition = "char(1)")
+    @Column(name = "contact_location_flag", columnDefinition = "char(1)")
     val locationRequired: String
 )
 
