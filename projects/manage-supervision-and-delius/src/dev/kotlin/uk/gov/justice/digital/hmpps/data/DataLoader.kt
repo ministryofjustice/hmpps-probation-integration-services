@@ -126,6 +126,7 @@ class DataLoader(
             OffenderManagerGenerator.RESPONSIBLE_OFFICER,
             OffenderManagerGenerator.DEFAULT_LOCATION,
             OffenderManagerGenerator.TEAM_OFFICE,
+            OffenderManagerGenerator.TEAM_OFFICE_1,
             OffenderManagerGenerator.PAU_USER_RECORD1,
             OffenderManagerGenerator.PROVIDER_2,
             OffenderManagerGenerator.PAU_USER_RECORD2,

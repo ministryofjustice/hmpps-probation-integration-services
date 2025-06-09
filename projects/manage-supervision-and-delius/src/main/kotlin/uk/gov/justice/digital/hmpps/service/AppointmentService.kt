@@ -6,9 +6,11 @@ import uk.gov.justice.digital.hmpps.api.model.appointment.AppointmentType
 import uk.gov.justice.digital.hmpps.api.model.appointment.ContactTypeAssociation
 import uk.gov.justice.digital.hmpps.api.model.appointment.CreateAppointment
 import uk.gov.justice.digital.hmpps.api.model.appointment.MinimalNsi
+import uk.gov.justice.digital.hmpps.api.model.appointment.OfficeLocationRequest
 import uk.gov.justice.digital.hmpps.api.model.sentence.MinimalOrder
 import uk.gov.justice.digital.hmpps.api.model.sentence.MinimalRequirement
 import uk.gov.justice.digital.hmpps.api.model.sentence.MinimalSentence
+import uk.gov.justice.digital.hmpps.api.model.sentence.ProviderOfficeLocation
 import uk.gov.justice.digital.hmpps.api.model.user.Team
 import uk.gov.justice.digital.hmpps.api.model.user.TeamResponse
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
@@ -23,6 +25,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.Requirem
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.getContactType
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.getPerson
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.LicenceConditionRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.LocationRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.user.entity.TeamRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.user.entity.Team as TeamEntity
 
@@ -35,7 +38,8 @@ class AppointmentService(
     private val licenceConditionRepository: LicenceConditionRepository,
     private val requirementRepository: RequirementRepository,
     private val teamRepository: TeamRepository,
-    private val nsiRepository: NsiRepository
+    private val nsiRepository: NsiRepository,
+    private val locationRepository: LocationRepository
 ) {
 
     fun getProbationRecordsByContactType(crn: String, code: String): ContactTypeAssociation {
@@ -73,6 +77,12 @@ class AppointmentService(
         TeamResponse(
             teamRepository
                 .findByProviderCode(code).map { it.toTeam() }
+        )
+
+    fun getOfficeByProviderAndTeam(locationRequest: OfficeLocationRequest): ProviderOfficeLocation =
+        ProviderOfficeLocation(
+            locationRepository.findByProviderAndTeam(locationRequest.provideCode, locationRequest.teamCode)
+                .map { it.toLocationDetails() }
         )
 
     fun Event.toMinimalSentence(eventLevelNsis: List<Nsi>): MinimalSentence {

@@ -10,14 +10,8 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
-import uk.gov.justice.digital.hmpps.api.model.appointment.AppointmentTypeResponse
-import uk.gov.justice.digital.hmpps.api.model.appointment.ContactTypeAssociation
-import uk.gov.justice.digital.hmpps.api.model.appointment.CreateAppointment
-import uk.gov.justice.digital.hmpps.api.model.appointment.MinimalNsi
-import uk.gov.justice.digital.hmpps.api.model.sentence.MinimalLicenceCondition
-import uk.gov.justice.digital.hmpps.api.model.sentence.MinimalOrder
-import uk.gov.justice.digital.hmpps.api.model.sentence.MinimalRequirement
-import uk.gov.justice.digital.hmpps.api.model.sentence.MinimalSentence
+import uk.gov.justice.digital.hmpps.api.model.appointment.*
+import uk.gov.justice.digital.hmpps.api.model.sentence.*
 import uk.gov.justice.digital.hmpps.api.model.user.Team
 import uk.gov.justice.digital.hmpps.api.model.user.TeamResponse
 import uk.gov.justice.digital.hmpps.data.generator.AppointmentGenerator.APPOINTMENT_TYPES
@@ -30,6 +24,7 @@ import uk.gov.justice.digital.hmpps.data.generator.LicenceConditionGenerator.LC_
 import uk.gov.justice.digital.hmpps.data.generator.LicenceConditionGenerator.LC_WITH_NOTES_WITHOUT_ADDED_BY
 import uk.gov.justice.digital.hmpps.data.generator.LicenceConditionGenerator.LIC_COND_MAIN_CAT
 import uk.gov.justice.digital.hmpps.data.generator.OffenderManagerGenerator
+import uk.gov.justice.digital.hmpps.data.generator.OffenderManagerGenerator.DEFAULT_LOCATION
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.ACTIVE_ORDER
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.EVENT_1
@@ -38,8 +33,10 @@ import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.REQUIREMENT
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.REQUIREMENT_UNPAID_WORK
 import uk.gov.justice.digital.hmpps.data.generator.personalDetails.PersonDetailsGenerator
 import uk.gov.justice.digital.hmpps.service.toAppointmentType
+import uk.gov.justice.digital.hmpps.service.toLocationDetails
 import uk.gov.justice.digital.hmpps.service.toSummary
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
+import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 
 @AutoConfigureMockMvc
@@ -138,6 +135,22 @@ class AppointmentIntegrationTest {
                 Team(code = OffenderManagerGenerator.TEAM.code, description = OffenderManagerGenerator.TEAM.description)
             )
         )
+        assertEquals(expected, response)
+    }
+
+    @Test
+    fun `return location by provider and team`() {
+        val response = mockMvc
+            .perform(
+                get("/appointment/location")
+                    .withToken()
+                    .withJson(OfficeLocationRequest(DEFAULT_PROVIDER.code, OffenderManagerGenerator.TEAM.code))
+            )
+            .andExpect(MockMvcResultMatchers.status().isOk)
+            .andReturn().response.contentAsJson<ProviderOfficeLocation>()
+
+        val expected = ProviderOfficeLocation(listOf(DEFAULT_LOCATION.toLocationDetails()))
+
         assertEquals(expected, response)
     }
 }
