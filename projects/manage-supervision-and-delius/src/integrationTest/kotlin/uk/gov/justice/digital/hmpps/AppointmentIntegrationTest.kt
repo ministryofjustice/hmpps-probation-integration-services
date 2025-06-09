@@ -56,7 +56,6 @@ class AppointmentIntegrationTest {
 
     @Test
     fun `no person records associated with contact type`() {
-
         val code = CreateAppointment.Type.PlannedDoorstepContactNS.code
         val expected = ContactTypeAssociation(
             PersonDetailsGenerator.PERSONAL_DETAILS.toSummary(),
@@ -73,7 +72,6 @@ class AppointmentIntegrationTest {
 
     @Test
     fun `person records associated with contact type`() {
-
         val code = CreateAppointment.Type.HomeVisitToCaseNS.code
         val expected = ContactTypeAssociation(
             personSummary = PersonGenerator.OVERVIEW.toSummary(),
