@@ -130,7 +130,7 @@ class LicenceConditionService(
             ),
             transfer.licenceCondition.disposal.event.person,
             transfer.licenceCondition.disposal.event,
-            object : Manager() {
+            object : Manager {
                 override val staffId = transfer.receivingStaff.id
                 override val teamId = transfer.receivingTeam.id
                 override val probationAreaId = transfer.receivingTeam.probationArea.id

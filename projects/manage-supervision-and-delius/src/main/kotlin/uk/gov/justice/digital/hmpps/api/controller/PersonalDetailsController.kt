@@ -57,7 +57,7 @@ class PersonalDetailsController(private val personalDetailsService: PersonalDeta
     @GetMapping("/personal-contact/{id}/note/{noteId}")
     @Operation(summary = "Person Contact")
     fun getPersonContactSingleNote(@PathVariable crn: String, @PathVariable id: Long, @PathVariable noteId: Int) =
-        personalDetailsService.getPersonContactSingleNote(crn, id, noteId)
+        personalDetailsService.getPersonContactSingleNote(crn, id)
 
     @GetMapping("/addresses")
     @Operation(summary = "Person Addresses")

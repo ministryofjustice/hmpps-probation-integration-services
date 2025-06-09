@@ -31,13 +31,11 @@ class QueuePublisher(
     @WithSpan(kind = SpanKind.PRODUCER)
     override fun publish(notification: Notification<*>) {
         Span.current().updateName("PUBLISH ${notification.eventType}").setAttribute("queue", queue)
-        notification.message?.also { _ ->
-            permit.acquire()
-            try {
-                sqsTemplate.send(queue, notification.asMessage())
-            } finally {
-                permit.release()
-            }
+        permit.acquire()
+        try {
+            sqsTemplate.send(queue, notification.asMessage())
+        } finally {
+            permit.release()
         }
     }
 

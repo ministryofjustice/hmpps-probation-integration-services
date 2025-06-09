@@ -26,7 +26,7 @@ class TopicPublisher(
     @WithSpan(kind = SpanKind.PRODUCER)
     override fun publish(notification: Notification<*>) {
         Span.current().updateName("PUBLISH ${notification.eventType}").setAttribute("topic", topic)
-        notification.message?.let { message ->
+        notification.message?.also { message ->
             notificationTemplate.convertAndSend(topic, message) { msg ->
                 MessageBuilder.createMessage(
                     msg.payload,

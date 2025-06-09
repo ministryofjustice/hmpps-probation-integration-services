@@ -66,10 +66,6 @@ class Handler(
     private fun Notification<HmppsDomainEvent>.details(): RecommendationDetails = detailService.getDetail(this.message)
 }
 
-private fun Notification<HmppsDomainEvent>.detailUrl() =
-    message.detailUrl?.takeIf { it.isNotBlank() }?.let { URI(it) }
-        ?: throw IllegalArgumentException("No detail url provided")
-
 private fun Notification<HmppsDomainEvent>.decision() =
     ManagementDecision.valueOf(message.additionalInformation["contactOutcome"] as String)
 

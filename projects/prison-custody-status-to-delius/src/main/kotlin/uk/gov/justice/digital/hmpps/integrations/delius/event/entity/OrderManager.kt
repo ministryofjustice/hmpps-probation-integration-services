@@ -36,7 +36,7 @@ class OrderManager(
     @Column(columnDefinition = "number", nullable = false)
     @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean = false
-) : Manager()
+) : Manager
 
 interface OrderManagerRepository : JpaRepository<OrderManager, Long> {
     fun findByEventId(eventId: Long): OrderManager?

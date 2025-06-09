@@ -25,7 +25,7 @@ class MatchWriter(
         }
         val bookingNumberChanged = custody != null && custody.prisonerNumber != prisonIdentifiers.bookingNumber
         if (bookingNumberChanged) {
-            custody!!.prisonerNumber = prisonIdentifiers.bookingNumber
+            custody.prisonerNumber = prisonIdentifiers.bookingNumber
             custodyRepository.save(custody)
             person.mostRecentPrisonerNumber = prisonIdentifiers.bookingNumber
             personRepository.save(person)
