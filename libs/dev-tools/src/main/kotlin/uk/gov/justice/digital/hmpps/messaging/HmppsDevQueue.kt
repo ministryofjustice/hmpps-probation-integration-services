@@ -71,7 +71,7 @@ abstract class NotificationChannel(
     fun waitUntilEmpty(timeout: Duration = Duration.ofSeconds(20)) {
         val start = LocalDateTime.now()
         val end = start.plus(timeout)
-        while (messages.size > 0 || processing.isNotEmpty()) {
+        while (messages.isNotEmpty() || processing.isNotEmpty()) {
             if (end.isBefore(LocalDateTime.now())) throw TimeoutException("Took too long to process")
             TimeUnit.MILLISECONDS.sleep(100)
         }

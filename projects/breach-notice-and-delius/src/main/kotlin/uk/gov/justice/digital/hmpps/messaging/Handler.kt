@@ -47,10 +47,10 @@ class Handler(
     }
 }
 
-val HmppsDomainEvent.breachNoticeId get() = requireNotNull(additionalInformation["breachNoticeId"] as String?)
-val HmppsDomainEvent.username get() = requireNotNull(additionalInformation["username"] as String?)
+val HmppsDomainEvent.breachNoticeId get() = additionalInformation["breachNoticeId"] as String
+val HmppsDomainEvent.username get() = additionalInformation["username"] as String
 fun HmppsDomainEvent.telemetry() = mapOf(
     "crn" to personReference.findCrn(),
-    "breachNoticeId" to additionalInformation["breachNoticeId"] as String?,
-    "username" to additionalInformation["username"] as String?,
+    "breachNoticeId" to breachNoticeId,
+    "username" to username,
 )

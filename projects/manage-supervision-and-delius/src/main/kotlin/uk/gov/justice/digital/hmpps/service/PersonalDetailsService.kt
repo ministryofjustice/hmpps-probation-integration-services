@@ -140,7 +140,7 @@ class PersonalDetailsService(
         val postcode = if (request.noFixedAddress == true) "NF1 1NF" else request.postcode
         val status =
             if (request.endDate != null) referenceDataRepository.getPreviousAddressType() else referenceDataRepository.getMainAddressType()
-        if (mainAddress != null) {
+        return if (mainAddress != null) {
             mainAddress.buildingName = request.buildingName
             mainAddress.buildingNumber = request.buildingNumber
             mainAddress.streetName = request.streetName
@@ -155,9 +155,9 @@ class PersonalDetailsService(
             mainAddress.endDate = request.endDate
             mainAddress.notes = listOfNotNull(mainAddress.notes, request.notes).joinToString(System.lineSeparator())
             mainAddress.status = status
-            return mainAddress
+            mainAddress
         } else {
-            return PersonAddress(
+            PersonAddress(
                 personId = personId,
                 status = status,
                 type = addressType,
@@ -280,7 +280,7 @@ class PersonalDetailsService(
         return personalContactRepository.getContact(crn, contactId).toContact()
     }
 
-    fun getPersonContactSingleNote(crn: String, contactId: Long, noteId: Int): PersonalContact {
+    fun getPersonContactSingleNote(crn: String, contactId: Long): PersonalContact {
         return personalContactRepository.getContact(crn, contactId).toContact(true, 0)
     }
 

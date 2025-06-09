@@ -79,26 +79,26 @@ fun Person.toContactDetails() = ContactDetails(
     allowSMS = allowSms,
     emailAddresses = toEmailAddresses(),
     phoneNumbers = toPhoneNumbers(),
-    addresses = addresses.map { it ->
+    addresses = addresses.map { address ->
         Address(
-            from = it.startDate,
-            to = it.endDate,
-            noFixedAbode = it.noFixedAbode,
-            notes = it.notes?.takeIf { it.isNotBlank() },
-            addressNumber = it.addressNumber,
-            buildingName = it.buildingName,
-            streetName = it.streetName,
-            district = it.district,
-            town = it.town,
-            county = it.county,
-            postcode = it.postcode,
-            telephoneNumber = it.telephoneNumber,
-            status = it.status.keyValueOf(),
-            type = it.type?.keyValueOf(),
-            typeVerified = it.typeVerified ?: false,
-            latestAssessmentDate = it.addressAssessments.map { it.assessmentDate }.maxByOrNull { it },
-            createdDatetime = it.createdDatetime.toLocalDateTime(),
-            lastUpdatedDatetime = it.lastUpdatedDatetime.toLocalDateTime()
+            from = address.startDate,
+            to = address.endDate,
+            noFixedAbode = address.noFixedAbode,
+            notes = address.notes?.takeIf { it.isNotBlank() },
+            addressNumber = address.addressNumber,
+            buildingName = address.buildingName,
+            streetName = address.streetName,
+            district = address.district,
+            town = address.town,
+            county = address.county,
+            postcode = address.postcode,
+            telephoneNumber = address.telephoneNumber,
+            status = address.status.keyValueOf(),
+            type = address.type?.keyValueOf(),
+            typeVerified = address.typeVerified ?: false,
+            latestAssessmentDate = address.addressAssessments.map { it.assessmentDate }.maxByOrNull { it },
+            createdDatetime = address.createdDatetime.toLocalDateTime(),
+            lastUpdatedDatetime = address.lastUpdatedDatetime.toLocalDateTime()
         )
     }.takeIf { addresses.isNotEmpty() }
 )
@@ -113,15 +113,15 @@ fun Person.toOtherIds() = OtherIds(
     pncNumber = pnc
 )
 
-fun Person.toOffenderManagers() = offenderManagers.sortedByDescending { it.date }.map { it ->
+fun Person.toOffenderManagers() = offenderManagers.sortedByDescending { it.date }.map { manager ->
     OffenderManager(
         trustOfficer = Human(
-            forenames = listOfNotNull(it.officer.forename, it.officer.forename2).joinToString(" "),
-            surname = it.officer.surname
+            forenames = listOfNotNull(manager.officer.forename, manager.officer.forename2).joinToString(" "),
+            surname = manager.officer.surname
         ),
-        softDeleted = it.softDeleted,
-        partitionArea = it.partitionArea.area,
-        staff = it.staff?.let { staff ->
+        softDeleted = manager.softDeleted,
+        partitionArea = manager.partitionArea.area,
+        staff = manager.staff?.let { staff ->
             StaffHuman(
                 code = staff.code,
                 forenames = listOfNotNull(staff.forename, staff.forename2).joinToString(" "),
@@ -129,7 +129,7 @@ fun Person.toOffenderManagers() = offenderManagers.sortedByDescending { it.date 
                 unallocated = staff.isUnallocated()
             )
         },
-        providerEmployee = it.providerEmployee.let { emp ->
+        providerEmployee = manager.providerEmployee.let { emp ->
             emp?.surname?.let { surname ->
                 Human(
                     forenames = listOfNotNull(emp.forename, emp.forename2).joinToString(" "),
@@ -137,7 +137,7 @@ fun Person.toOffenderManagers() = offenderManagers.sortedByDescending { it.date 
                 )
             }
         },
-        team = it.team?.let { team ->
+        team = manager.team?.let { team ->
             Team(
                 code = team.code,
                 description = team.description,
@@ -149,14 +149,14 @@ fun Person.toOffenderManagers() = offenderManagers.sortedByDescending { it.date 
             )
         },
         probationArea = ProbationArea(
-            code = it.provider.code,
-            description = it.provider.description,
-            nps = !it.provider.privateSector
+            code = manager.provider.code,
+            description = manager.provider.description,
+            nps = !manager.provider.privateSector
         ),
-        active = it.active,
-        fromDate = it.date.toLocalDate(),
-        toDate = it.endDate,
-        allocationReason = it.allocationReason.keyValueOf()
+        active = manager.active,
+        fromDate = manager.date.toLocalDate(),
+        toDate = manager.endDate,
+        allocationReason = manager.allocationReason.keyValueOf()
     )
 }
 
