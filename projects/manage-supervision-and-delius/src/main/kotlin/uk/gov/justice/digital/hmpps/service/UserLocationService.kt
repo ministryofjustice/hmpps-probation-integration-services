@@ -22,7 +22,7 @@ class UserLocationService(private val staffUserRepository: StaffUserRepository) 
             userLocations.map { it.toLocationDetails() }
         )
     }
-
-    fun Location.toLocationDetails(): LocationDetails =
-        LocationDetails(id, description, Address(buildingNumber, streetName, townCity, county, postcode))
 }
+
+fun Location.toLocationDetails(): LocationDetails =
+    LocationDetails(id, description, Address(buildingNumber, streetName, townCity, county, postcode))

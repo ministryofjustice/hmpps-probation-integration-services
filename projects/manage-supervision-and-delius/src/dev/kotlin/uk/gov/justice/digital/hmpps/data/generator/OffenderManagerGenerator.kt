@@ -67,10 +67,12 @@ object OffenderManagerGenerator {
             "Birmingham Street",
             "Birmingham",
             "West Midlands",
-            "B20 3BA"
+            "B20 3BA",
+            startDate = LocalDate.now().minusDays(1)
         )
 
     val TEAM_OFFICE = TeamOfficeLink(TeamOfficeLinkId(TEAM.id, DEFAULT_LOCATION))
+    val TEAM_OFFICE_1 = TeamOfficeLink(TeamOfficeLinkId(TEAM_1.id, DEFAULT_LOCATION))
 
     val OFFENDER_MANAGER_ACTIVE =
         OffenderManager(

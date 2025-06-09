@@ -252,7 +252,28 @@ class Location(
     val county: String?,
 
     val postcode: String?,
+
+    val startDate: LocalDate,
+
+    val endDate: LocalDate? = null,
 )
+
+interface LocationRepository : JpaRepository<Location, Long> {
+    @Query(
+        """
+            SELECT l
+            FROM Location l
+            JOIN TeamOfficeLink tol ON tol.id.officeLocation.id = l.id
+            JOIN Team t ON t.id = tol.id.teamId
+            WHERE t.provider.code = :providerCode
+            AND t.code = :teamCode
+            AND l.startDate <= CURRENT_DATE
+            AND (l.endDate IS NULL OR l.endDate > CURRENT_DATE)
+            ORDER BY UPPER(l.description)
+        """
+    )
+    fun findByProviderAndTeam(providerCode: String, teamCode: String): List<Location>
+}
 
 @Embeddable
 class TeamOfficeLinkId(
