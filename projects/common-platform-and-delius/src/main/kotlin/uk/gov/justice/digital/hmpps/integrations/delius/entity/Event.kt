@@ -95,6 +95,9 @@ class Event(
 
     @Column
     val courtId: Long? = null,
+
+    @Column(name = "court_case_urn")
+    val courtCaseUrn: String? = null,
 )
 
 @Entity

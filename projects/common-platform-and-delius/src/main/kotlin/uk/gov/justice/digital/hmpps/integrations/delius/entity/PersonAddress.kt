@@ -110,6 +110,9 @@ class PersonAddress(
 
     @Column(name = "approved_premises_residence_id")
     val approvedPremisesResidenceId: Long? = null,
+
+    @Column(name = "uprn")
+    val uprn: Long? = null,
 )
 
 interface PersonAddressRepository : JpaRepository<PersonAddress, Long>

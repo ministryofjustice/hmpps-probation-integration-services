@@ -49,7 +49,7 @@ class EventService(
                     referralDate = sittingDay.toLocalDate(), // TODO: Identify event's referral date
                     active = true,
                     ftcCount = 0,
-                    notes = "caseUrn:$caseUrn"
+                    courtCaseUrn = caseUrn
                 )
             )
 
@@ -106,7 +106,8 @@ class EventService(
                     plea = plea,
                     outcome = remandedInCustodyOutcome, // TODO: Determine the outcome, for now use Remanded in custody
                     remandStatus = remandedInCustodyStatus,
-                    person = person
+                    person = person,
+                    hearingId = hearingId
                 )
             )
 
