@@ -1,18 +1,11 @@
 package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.stereotype.Service
-import uk.gov.justice.digital.hmpps.api.model.appointment.StaffLocationRequest
-import uk.gov.justice.digital.hmpps.api.model.sentence.Address
-import uk.gov.justice.digital.hmpps.api.model.sentence.LocationDetails
-import uk.gov.justice.digital.hmpps.api.model.sentence.Name
-import uk.gov.justice.digital.hmpps.api.model.sentence.StaffTeam
-import uk.gov.justice.digital.hmpps.api.model.sentence.User
-import uk.gov.justice.digital.hmpps.api.model.sentence.UserOfficeLocation
+import uk.gov.justice.digital.hmpps.api.model.sentence.*
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.Location
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.StaffUser
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.StaffUserRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.getUser
-import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.getUserOfficeLocation
 
 @Service
 class UserLocationService(private val staffUserRepository: StaffUserRepository) {
@@ -25,21 +18,6 @@ class UserLocationService(private val staffUserRepository: StaffUserRepository) 
         return UserOfficeLocation(
             Name(user.forename, user.forename2, user.surname),
             userLocations.map { it.toLocationDetails() }
-        )
-    }
-
-    fun getUserOfficeLocation(username: String, request: StaffLocationRequest): UserOfficeLocation {
-        val user = staffUserRepository.getUser(username)
-
-        val location = staffUserRepository.getUserOfficeLocation(
-            id = user.id,
-            teamCode = request.teamCode,
-            locationCode = request.locationCode
-        )
-
-        return UserOfficeLocation(
-            Name(user.forename, user.forename2, user.surname),
-            location = location.toLocationDetails()
         )
     }
 

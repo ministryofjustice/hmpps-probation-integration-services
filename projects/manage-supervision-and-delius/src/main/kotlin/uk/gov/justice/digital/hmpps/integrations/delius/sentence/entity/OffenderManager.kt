@@ -184,22 +184,6 @@ interface StaffUserRepository : JpaRepository<StaffUser, Long> {
 
     @Query(
         """
-            SELECT l
-            FROM StaffUser u
-            JOIN u.staff st
-            JOIN ContactStaffTeam cst ON cst.id.staffId = st.id
-            JOIN Team t ON t.id = cst.id.team.id
-            JOIN TeamOfficeLink tol ON tol.id.teamId = t.id
-            JOIN Location l ON l = tol.id.officeLocation
-            WHERE u.id = :id
-            AND t.code = :teamCode
-            AND l.code = :locationCode 
-        """
-    )
-    fun findUserOfficeLocation(id: Long, teamCode: String, locationCode: String): Location?
-
-    @Query(
-        """
             SELECT u
             FROM StaffUser u
             JOIN u.staff st
@@ -212,13 +196,6 @@ interface StaffUserRepository : JpaRepository<StaffUser, Long> {
     )
     fun findStaffByTeam(teamCode: String): List<StaffUser>
 }
-
-fun StaffUserRepository.getUserOfficeLocation(id: Long, teamCode: String, locationCode: String): Location =
-    findUserOfficeLocation(id, teamCode, locationCode) ?: throw NotFoundException(
-        "Location",
-        "user id, probation code, team code, location code",
-        listOf(id, teamCode, locationCode)
-    )
 
 fun StaffUserRepository.getUser(username: String) =
     findByUsername(username) ?: throw NotFoundException("User", "username", username)

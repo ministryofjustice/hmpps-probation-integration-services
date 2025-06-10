@@ -4,8 +4,3 @@ data class OfficeLocationRequest(
     val provideCode: String,
     val teamCode: String
 )
-
-data class StaffLocationRequest(
-    val teamCode: String,
-    val locationCode: String
-)
