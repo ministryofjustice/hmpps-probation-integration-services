@@ -50,6 +50,7 @@ class UserLocationIntegrationTest {
             listOf(
                 LocationDetails(
                     DEFAULT_LOCATION.id,
+                    DEFAULT_LOCATION.code,
                     DEFAULT_LOCATION.description,
                     Address(
                         DEFAULT_LOCATION.buildingNumber,

@@ -113,6 +113,6 @@ class AppointmentService(
     fun Nsi.toMinimalNsi() = MinimalNsi(id, type.description + (subType?.let { " (${it.description})" } ?: ""))
 }
 
-fun ContactTypeEntity.toAppointmentType() = AppointmentType(code, description, offenderContact)
+fun ContactTypeEntity.toAppointmentType() = AppointmentType(code, description, offenderContact, locationRequired == "Y")
 
 fun TeamEntity.toTeam() = Team(code = code, description = description)

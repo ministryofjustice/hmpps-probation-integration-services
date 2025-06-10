@@ -10,6 +10,7 @@ import uk.gov.justice.digital.hmpps.api.model.appointment.Outcome
 import uk.gov.justice.digital.hmpps.service.AppointmentOutcomeService
 import uk.gov.justice.digital.hmpps.service.AppointmentService
 import uk.gov.justice.digital.hmpps.service.SentenceAppointmentService
+import uk.gov.justice.digital.hmpps.service.UserLocationService
 
 @RestController
 @Tag(name = "Sentence")
@@ -18,6 +19,7 @@ import uk.gov.justice.digital.hmpps.service.SentenceAppointmentService
 class AppointmentController(
     private val sentenceAppointmentService: SentenceAppointmentService,
     private val appointmentOutcomeService: AppointmentOutcomeService,
+    private val userLocationService: UserLocationService,
     private val appointmentService: AppointmentService
 ) {
 
@@ -40,7 +42,11 @@ class AppointmentController(
     @GetMapping("/teams/provider/{code}")
     fun getTeamsByProvider(@PathVariable code: String) = appointmentService.getTeamsByProvider(code)
 
-    @GetMapping("location")
+    @GetMapping("/location")
     fun getOfficeLocationByTeamAndProvider(@RequestBody locationRequest: OfficeLocationRequest) =
         appointmentService.getOfficeByProviderAndTeam(locationRequest)
+
+    @GetMapping("/staff/team/{code}")
+    fun getStaffByTeam(@PathVariable code: String) =
+        userLocationService.getStaffByTeam(code)
 }

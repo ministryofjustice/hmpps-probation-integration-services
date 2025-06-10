@@ -12,7 +12,9 @@ object AppointmentGenerator {
     val APPOINTMENT_TYPES = CreateAppointment.Type.entries.mapNotNull {
         when (it.code) {
             "CODC" -> null
-            else -> generateType(it.code, attendanceType = true)
+            "COPT" -> generateType(it.code, attendanceType = true, locationRequired = "B")
+            "CHVS" -> generateType(it.code, attendanceType = true, locationRequired = "N")
+            else -> generateType(it.code, attendanceType = true, locationRequired = "Y")
         }
     }
 
@@ -21,8 +23,9 @@ object AppointmentGenerator {
         description: String = "Description for $code",
         attendanceType: Boolean,
         offenderContact: Boolean = false,
+        locationRequired: String,
         id: Long = IdGenerator.getAndIncrement()
-    ) = ContactType(IdGenerator.getAndIncrement(), code, true, description)
+    ) = ContactType(IdGenerator.getAndIncrement(), code, true, description, locationRequired = locationRequired)
 
     val ATTENDED_COMPLIED = generateOutcome("ATTC", "Attended - Complied", true, true)
 
