@@ -47,6 +47,6 @@ class AppointmentController(
         appointmentService.getOfficeByProviderAndTeam(locationRequest)
 
     @GetMapping("/staff/team/{code}")
-    fun getStaffByProviderTeamAndLocation(@PathVariable code: String) =
+    fun getStaffByTeam(@PathVariable code: String) =
         userLocationService.getStaffByTeam(code)
 }
