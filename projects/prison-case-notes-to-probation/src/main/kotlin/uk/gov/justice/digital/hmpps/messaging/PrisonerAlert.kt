@@ -23,7 +23,7 @@ class PrisonerAlert(
     fun handle(event: HmppsDomainEvent) {
         val alert: Alert = try {
             detailService.getDetail(event)
-        } catch (e: HttpClientErrorException.NotFound) {
+        } catch (_: HttpClientErrorException.NotFound) {
             return telemetryService.trackEvent("AlertNotFound", mapOf("detailUrl" to event.detailUrl!!))
         }
 

@@ -1,12 +1,7 @@
 package uk.gov.justice.digital.hmpps.entity
 
-import jakarta.persistence.Column
-import jakarta.persistence.Convert
-import jakarta.persistence.Entity
-import jakarta.persistence.Id
-import jakarta.persistence.OneToMany
+import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
-import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.YesNoConverter
 
 @Entity

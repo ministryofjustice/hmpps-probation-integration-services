@@ -19,7 +19,7 @@ class DomainEventDetailService(
     fun validate(detailUrl: String?): URI {
         val uri = URI.create(requireNotNull(detailUrl) { "Detail URL must not be null" })
         val baseUrl = "${uri.scheme}://${uri.authority}"
-        require(allowedUrls == null || allowedUrls!!.contains(baseUrl)) { "Unexpected detail URL: $baseUrl" }
+        require(allowedUrls?.contains(baseUrl) != false) { "Unexpected detail URL: $baseUrl" }
         return uri
     }
 

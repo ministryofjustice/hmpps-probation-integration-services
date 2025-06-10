@@ -3,10 +3,10 @@ package uk.gov.justice.digital.hmpps.service
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.api.model.overview.Order
 import uk.gov.justice.digital.hmpps.api.model.sentence.*
+import uk.gov.justice.digital.hmpps.api.model.sentence.AdditionalSentence
 import uk.gov.justice.digital.hmpps.api.model.sentence.Offence
 import uk.gov.justice.digital.hmpps.api.model.sentence.Requirement
 import uk.gov.justice.digital.hmpps.datetime.DeliusDateFormatter
-import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.Requirement as RequirementEntity
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.CourtDocumentDetails
 import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.DocumentRepository
@@ -14,7 +14,9 @@ import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.Len
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.*
 import java.time.Duration
 import java.time.LocalDate
+import kotlin.math.min
 import kotlin.time.toKotlinDuration
+import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.Requirement as RequirementEntity
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.AdditionalSentence as ExtraSentence
 
 @Service
@@ -206,19 +208,23 @@ class SentenceService(
     }
 
     fun getUnpaidWorkTime(hoursOrdered: Long, minutesCredited: Long): String {
-        val totalMessage = hoursOrdered
-            .let { " (of $hoursOrdered hour${if (hoursOrdered != 1L) "s" else ""})" }
+        val totalMessage = hoursOrdered.let { " (of ${hours(hoursOrdered)})" }
 
         val creditedMessage = Duration.ofMinutes(minutesCredited).toKotlinDuration()
             .toComponents { hours, minutes, _, _ ->
                 when {
-                    hours == 0L -> "$minutes minute${if (minutes != 1) "s" else ""} completed"
-                    minutes == 0 -> "$hours hour${if (hours != 1L) "s" else ""} completed"
-                    else -> "$hours hour${if (hours != 1L) "s" else ""} $minutes minute${if (minutes != 1) "s" else ""} completed"
+                    hours == 0L -> "${minutes(minutes)} completed"
+                    minutes == 0 -> "${hours(hours)} completed"
+                    else -> "${hours(hours)} ${minutes(minutes)} completed"
                 }
             }
         return "$creditedMessage$totalMessage"
     }
+
+    private fun minutes(minutes: Int): String = "$minutes minute${singularOrPlural(minutes.toLong())}"
+    private fun hours(hours: Long): String = "$hours hour${singularOrPlural(hours)}"
+
+    private fun singularOrPlural(num: Long): String = if (num == 1L) "" else "s"
 
     fun CourtDocumentDetails.toCourtDocument(): CourtDocument = CourtDocument(id, lastSaved, documentName)
 

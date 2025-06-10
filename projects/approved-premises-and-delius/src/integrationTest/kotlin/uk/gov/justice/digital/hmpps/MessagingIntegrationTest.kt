@@ -227,7 +227,7 @@ internal class MessagingIntegrationTest {
 
         val caseAllocatedContact = contactRepository.findAll()
             .single { it.person.id == nsi.person.id && it.type.code == CASE_ALLOCATED.code && it.nsiId == nsi.id }
-        assertThat(caseAllocatedContact.date, equalTo(nsi.referralDate))
+        assertThat(caseAllocatedContact.date, equalTo(nsi.statusDate.toLocalDate()))
     }
 
     @Test

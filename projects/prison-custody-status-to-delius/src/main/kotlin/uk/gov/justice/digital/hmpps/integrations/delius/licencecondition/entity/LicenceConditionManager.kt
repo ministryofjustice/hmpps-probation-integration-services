@@ -35,4 +35,4 @@ class LicenceConditionManager(
     @Column(columnDefinition = "number", nullable = false)
     @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean = false
-) : Manager()
+) : Manager

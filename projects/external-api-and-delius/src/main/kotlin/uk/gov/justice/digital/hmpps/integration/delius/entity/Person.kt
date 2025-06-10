@@ -13,7 +13,6 @@ import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integration.delius.entity.Person.Companion.ADDITIONAL_IDENTIFIERS
 import uk.gov.justice.digital.hmpps.integration.delius.entity.Person.Companion.ALIASES
 import uk.gov.justice.digital.hmpps.integration.delius.entity.Person.Companion.CRN
-import uk.gov.justice.digital.hmpps.integration.delius.entity.Person.Companion.DOB
 import uk.gov.justice.digital.hmpps.integration.delius.entity.Person.Companion.FORENAME
 import uk.gov.justice.digital.hmpps.integration.delius.entity.Person.Companion.NOMS
 import uk.gov.justice.digital.hmpps.integration.delius.entity.Person.Companion.PNC
