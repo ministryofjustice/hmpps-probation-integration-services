@@ -18,7 +18,7 @@ import uk.gov.justice.digital.hmpps.api.model.appointment.Outcome
 import uk.gov.justice.digital.hmpps.api.model.appointment.User
 import uk.gov.justice.digital.hmpps.data.generator.AppointmentGenerator.APPOINTMENT_TYPES
 import uk.gov.justice.digital.hmpps.data.generator.AppointmentGenerator.ATTENDED_COMPLIED
-import uk.gov.justice.digital.hmpps.data.generator.OffenderManagerGenerator.DEFAULT_LOCATION
+import uk.gov.justice.digital.hmpps.data.generator.OffenderManagerGenerator.TEAM
 import uk.gov.justice.digital.hmpps.data.generator.OffenderManagerGenerator.STAFF_USER_1
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.AppointmentRepository
@@ -134,7 +134,7 @@ class AppointmentOutcomeIntegrationTest {
             .withToken()
             .withJson(
                 CreateAppointment(
-                    User(STAFF_USER_1.username, DEFAULT_LOCATION.id),
+                    User(STAFF_USER_1.username, TEAM.code),
                     CreateAppointment.Type.PlannedOfficeVisitNS,
                     ZonedDateTime.now().plusDays(1),
                     ZonedDateTime.now().plusDays(2),

@@ -44,11 +44,14 @@ class SentenceAppointmentService(
 
             checkForConflicts(createAppointment)
 
-            val userAndLocation =
-                staffUserRepository.getUserAndLocation(
+            val userAndTeam = staffUserRepository.getUserAndTeamAssociation(
                     createAppointment.user.username,
-                    createAppointment.user.locationId
-                )
+                    createAppointment.user.teamCode)
+
+            val location = createAppointment.user.locationCode?.let {
+                staffUserRepository.getTeamAndLocationAssociation(createAppointment.user.teamCode, createAppointment.user.locationCode)
+            }
+
             val createAppointments: ArrayList<CreateAppointment> = arrayListOf()
 
             createAppointment.let {
@@ -107,7 +110,7 @@ class SentenceAppointmentService(
                 )
             }
 
-            val appointments = createAppointments.map { it.withManager(om, userAndLocation) }
+            val appointments = createAppointments.map { it.withManager(om, userAndTeam, location) }
             val savedAppointments = appointmentRepository.saveAll(appointments)
             val createdAppointments = savedAppointments.map { CreatedAppointment(it.id) }
             audit["contactId"] = createdAppointments.joinToString { it.id.toString() }
@@ -152,21 +155,21 @@ class SentenceAppointmentService(
         }
     }
 
-    private fun CreateAppointment.withManager(om: OffenderManager, userAndLocation: UserLocation) = Appointment(
+    private fun CreateAppointment.withManager(om: OffenderManager, staffAndTeam: UserTeam, location: Location?) = Appointment(
         om.person,
         appointmentTypeRepository.getByCode(type.code),
         start.toLocalDate(),
         ZonedDateTime.of(LocalDate.EPOCH, start.toLocalTime(), EuropeLondon),
-        teamId = userAndLocation.teamId,
-        staffId = userAndLocation.staffId,
+        teamId = staffAndTeam.teamId,
+        staffId = staffAndTeam.staffId,
         0,
         end.let { ZonedDateTime.of(LocalDate.EPOCH, end.toLocalTime(), EuropeLondon) },
-        probationAreaId = userAndLocation.providerId,
+        probationAreaId = staffAndTeam.providerId,
         urn,
         eventId = eventId,
         rqmntId = requirementId,
         licConditionId = licenceConditionId,
-        createdByUserId = userAndLocation.userId,
-        officeLocationId = userAndLocation.locationId
+        createdByUserId = staffAndTeam.userId,
+        officeLocationId = location?.id
     )
 }

@@ -16,7 +16,6 @@ import uk.gov.justice.digital.hmpps.api.model.appointment.CreateAppointment
 import uk.gov.justice.digital.hmpps.api.model.appointment.User
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
 import uk.gov.justice.digital.hmpps.data.generator.OffenderManagerGenerator
-import uk.gov.justice.digital.hmpps.data.generator.OffenderManagerGenerator.DEFAULT_LOCATION
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.exception.ConflictException
 import uk.gov.justice.digital.hmpps.exception.InvalidRequestException
@@ -24,6 +23,7 @@ import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.ContactType
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.RequirementRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.*
+import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.UserTeam
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
@@ -64,7 +64,7 @@ class SentenceAppointmentServiceTest {
 
     private val uuid: UUID = UUID.randomUUID()
 
-    private val user = User("user", DEFAULT_LOCATION.id)
+    private val user = User("user", OffenderManagerGenerator.TEAM.code)
 
     @Test
     fun `licence and requirement id provided`() {
@@ -274,8 +274,8 @@ class SentenceAppointmentServiceTest {
         whenever(offenderManagerRepository.findByPersonCrnAndSoftDeletedIsFalseAndActiveIsTrue(PersonGenerator.PERSON_1.crn)).thenReturn(
             OffenderManagerGenerator.OFFENDER_MANAGER_ACTIVE
         )
-        whenever(staffUserRepository.findUserAndLocation(appointment.user.username, appointment.user.locationId))
-            .thenReturn(UserLoc(1, 2, 3, 4, 5))
+        whenever(staffUserRepository.findUserAndTeamAssociation(appointment.user.username, appointment.user.teamCode))
+            .thenReturn(UserTeamInfo(1, 2, 3, 4,))
 
         whenever(eventSentenceRepository.existsById(appointment.eventId)).thenReturn(true)
 
@@ -307,8 +307,8 @@ class SentenceAppointmentServiceTest {
         whenever(offenderManagerRepository.findByPersonCrnAndSoftDeletedIsFalseAndActiveIsTrue(PersonGenerator.PERSON_1.crn)).thenReturn(
             OffenderManagerGenerator.OFFENDER_MANAGER_ACTIVE
         )
-        whenever(staffUserRepository.findUserAndLocation(appointment.user.username, appointment.user.locationId))
-            .thenReturn(UserLoc(1, 2, 3, 4, 5))
+        whenever(staffUserRepository.findUserAndTeamAssociation(appointment.user.username, appointment.user.teamCode))
+            .thenReturn(UserTeamInfo(1, 2, 3, 4, ))
 
         whenever(eventSentenceRepository.existsById(appointment.eventId)).thenReturn(true)
 
@@ -334,13 +334,12 @@ class SentenceAppointmentServiceTest {
         service.createAppointment(PersonGenerator.PERSON_1.crn, appointment)
     }
 
-    data class UserLoc(
+    data class UserTeamInfo(
         val _userId: Long,
         val _staffId: Long,
         val _teamId: Long,
-        val _providerId: Long,
-        val _locationId: Long,
-    ) : UserLocation {
+        val _providerId: Long
+    ) : UserTeam {
         override val userId: Long
             get() = _userId
         override val staffId: Long
@@ -349,7 +348,5 @@ class SentenceAppointmentServiceTest {
             get() = _teamId
         override val providerId: Long
             get() = _providerId
-        override val locationId: Long
-            get() = _locationId
     }
 }
