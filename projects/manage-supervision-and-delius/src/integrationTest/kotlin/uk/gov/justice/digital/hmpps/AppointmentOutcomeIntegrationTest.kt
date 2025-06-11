@@ -135,7 +135,7 @@ class AppointmentOutcomeIntegrationTest {
             .withToken()
             .withJson(
                 CreateAppointment(
-                    User(STAFF_USER_1.username, TEAM.code, locationCode = DEFAULT_LOCATION.code ),
+                    User(STAFF_USER_1.username, TEAM.code, locationCode = DEFAULT_LOCATION.code),
                     CreateAppointment.Type.PlannedOfficeVisitNS,
                     ZonedDateTime.now().plusDays(1),
                     ZonedDateTime.now().plusDays(2),

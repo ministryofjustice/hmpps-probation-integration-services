@@ -276,7 +276,7 @@ class SentenceAppointmentServiceTest {
             OffenderManagerGenerator.OFFENDER_MANAGER_ACTIVE
         )
         whenever(staffUserRepository.findUserAndTeamAssociation(appointment.user.username, appointment.user.teamCode))
-            .thenReturn(UserTeamInfo(1, 2, 3, 4,))
+            .thenReturn(UserTeamInfo(1, 2, 3, 4))
 
         whenever(eventSentenceRepository.existsById(appointment.eventId!!)).thenReturn(true)
 
@@ -319,7 +319,7 @@ class SentenceAppointmentServiceTest {
             OffenderManagerGenerator.OFFENDER_MANAGER_ACTIVE
         )
         whenever(staffUserRepository.findUserAndTeamAssociation(appointment.user.username, appointment.user.teamCode))
-            .thenReturn(UserTeamInfo(1, 2, 3, 4, ))
+            .thenReturn(UserTeamInfo(1, 2, 3, 4))
 
         whenever(eventSentenceRepository.existsById(appointment.eventId!!)).thenReturn(true)
 
@@ -354,7 +354,7 @@ class SentenceAppointmentServiceTest {
             ZonedDateTime.now().plusDays(2),
             interval = CreateAppointment.Interval.WEEK,
             numberOfAppointments = 3,
-            uuid= uuid,
+            uuid = uuid,
         )
 
         whenever(offenderManagerRepository.findByPersonCrnAndSoftDeletedIsFalseAndActiveIsTrue(PersonGenerator.PERSON_1.crn)).thenReturn(
@@ -416,21 +416,25 @@ class SentenceAppointmentServiceTest {
 
     companion object {
         val user = User("user", OffenderManagerGenerator.TEAM.code)
+
         @JvmStatic
         fun createAppointment() = listOf(
-            CreateAppointment( user,
+            CreateAppointment(
+                user,
                 CreateAppointment.Type.PlannedOfficeVisitNS,
                 ZonedDateTime.now().plusDays(1),
                 ZonedDateTime.now().plusDays(1).plusHours(1),
                 licenceConditionId = PersonGenerator.EVENT_1.id,
-                uuid = UUID.randomUUID()),
-            CreateAppointment( user,
+                uuid = UUID.randomUUID()
+            ),
+            CreateAppointment(
+                user,
                 CreateAppointment.Type.PlannedOfficeVisitNS,
                 ZonedDateTime.now().plusDays(1),
                 ZonedDateTime.now().plusDays(1).plusHours(1),
                 licenceConditionId = PersonGenerator.EVENT_1.id,
-                uuid = UUID.randomUUID())
+                uuid = UUID.randomUUID()
+            )
         )
-
     }
 }

@@ -223,7 +223,6 @@ fun StaffUserRepository.getTeamAndLocationAssociation(teamCode: String, location
         "$teamCode in location $locationCode"
     )
 
-
 interface UserTeam {
     val userId: Long
     val staffId: Long

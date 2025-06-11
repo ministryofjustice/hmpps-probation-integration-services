@@ -45,11 +45,15 @@ class SentenceAppointmentService(
             checkForConflicts(createAppointment)
 
             val userAndTeam = staffUserRepository.getUserAndTeamAssociation(
-                    createAppointment.user.username,
-                    createAppointment.user.teamCode)
+                createAppointment.user.username,
+                createAppointment.user.teamCode
+            )
 
             val location = createAppointment.user.locationCode?.let {
-                staffUserRepository.getTeamAndLocationAssociation(createAppointment.user.teamCode, createAppointment.user.locationCode)
+                staffUserRepository.getTeamAndLocationAssociation(
+                    createAppointment.user.teamCode,
+                    createAppointment.user.locationCode
+                )
             }
 
             val createAppointments: ArrayList<CreateAppointment> = arrayListOf()
@@ -123,7 +127,11 @@ class SentenceAppointmentService(
     private fun checkForConflicts(
         createAppointment: CreateAppointment
     ) {
-        val appointmentIds = listOfNotNull( createAppointment.requirementId, createAppointment.licenceConditionId, createAppointment.nsiId)
+        val appointmentIds = listOfNotNull(
+            createAppointment.requirementId,
+            createAppointment.licenceConditionId,
+            createAppointment.nsiId
+        )
         if (appointmentIds.size > 1) {
             throw InvalidRequestException("Either licence id or requirement id or nsi id can be provided")
         }
@@ -162,26 +170,27 @@ class SentenceAppointmentService(
             throw InvalidRequestException("Location required for contact type ${createAppointment.type.code}")
         }
 
-        if (!contactType.offenderContact && (listOfNotNull(createAppointment.eventId) + appointmentIds).isEmpty() ) {
+        if (!contactType.offenderContact && (listOfNotNull(createAppointment.eventId) + appointmentIds).isEmpty()) {
             throw InvalidRequestException("Event id, licence id, requirement id or nsi id need to be provided for contact type ${createAppointment.type.code}")
         }
     }
 
-    private fun CreateAppointment.withManager(om: OffenderManager, staffAndTeam: UserTeam, location: Location?) = Appointment(
-        om.person,
-        appointmentTypeRepository.getByCode(type.code),
-        start.toLocalDate(),
-        ZonedDateTime.of(LocalDate.EPOCH, start.toLocalTime(), EuropeLondon),
-        teamId = staffAndTeam.teamId,
-        staffId = staffAndTeam.staffId,
-        0,
-        end.let { ZonedDateTime.of(LocalDate.EPOCH, end.toLocalTime(), EuropeLondon) },
-        probationAreaId = staffAndTeam.providerId,
-        urn,
-        eventId = eventId,
-        rqmntId = requirementId,
-        licConditionId = licenceConditionId,
-        createdByUserId = staffAndTeam.userId,
-        officeLocationId = location?.id
-    )
+    private fun CreateAppointment.withManager(om: OffenderManager, staffAndTeam: UserTeam, location: Location?) =
+        Appointment(
+            om.person,
+            appointmentTypeRepository.getByCode(type.code),
+            start.toLocalDate(),
+            ZonedDateTime.of(LocalDate.EPOCH, start.toLocalTime(), EuropeLondon),
+            teamId = staffAndTeam.teamId,
+            staffId = staffAndTeam.staffId,
+            0,
+            end.let { ZonedDateTime.of(LocalDate.EPOCH, end.toLocalTime(), EuropeLondon) },
+            probationAreaId = staffAndTeam.providerId,
+            urn,
+            eventId = eventId,
+            rqmntId = requirementId,
+            licConditionId = licenceConditionId,
+            createdByUserId = staffAndTeam.userId,
+            officeLocationId = location?.id
+        )
 }
