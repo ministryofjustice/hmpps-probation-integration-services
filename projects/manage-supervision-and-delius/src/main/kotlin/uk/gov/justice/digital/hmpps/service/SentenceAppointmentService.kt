@@ -138,8 +138,10 @@ class SentenceAppointmentService(
                 throw InvalidRequestException("Until cannot be before start time")
         }
 
-        if (!eventSentenceRepository.existsById(createAppointment.eventId)) {
-            throw NotFoundException("Event", "eventId", createAppointment.eventId)
+        createAppointment.eventId?.let {
+            if (!eventSentenceRepository.existsById(it)) {
+                throw NotFoundException("Event", "eventId", createAppointment.eventId)
+            }
         }
 
         if (createAppointment.requirementId != null && !requirementRepository.existsById(createAppointment.requirementId)) {
@@ -156,7 +158,7 @@ class SentenceAppointmentService(
             throw InvalidRequestException("Location required for contact type ${createAppointment.type.code}")
         }
 
-        if (!contactType.offenderContact && (listOf(createAppointment.eventId) + appointmentIds).isEmpty() ) {
+        if (!contactType.offenderContact && (listOfNotNull(createAppointment.eventId) + appointmentIds).isEmpty() ) {
             throw InvalidRequestException("Event id licence id or requirement id or nsi id need to be provided for contact type ${createAppointment.type.code}")
         }
     }

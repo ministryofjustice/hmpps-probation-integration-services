@@ -11,7 +11,7 @@ data class CreateAppointment(
     val end: ZonedDateTime,
     val interval: Interval = Interval.DAY,
     val numberOfAppointments: Int = 1,
-    val eventId: Long,
+    val eventId: Long? = null,
     val uuid: UUID,
     val createOverlappingAppointment: Boolean = false,
     val requirementId: Long? = null,

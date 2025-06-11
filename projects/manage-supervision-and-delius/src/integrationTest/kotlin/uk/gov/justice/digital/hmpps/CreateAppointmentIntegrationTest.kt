@@ -176,6 +176,14 @@ class CreateAppointmentIntegrationTest {
                 CreateAppointment.Interval.DAY,
                 eventId = PersonGenerator.EVENT_1.id,
                 uuid = UUID.randomUUID()
+            ),
+            CreateAppointment(
+                user,
+                CreateAppointment.Type.PlannedDoorstepContactNS,
+                ZonedDateTime.now().plusDays(1),
+                ZonedDateTime.now().plusDays(1).plusHours(1),
+                CreateAppointment.Interval.DAY,
+                uuid = UUID.randomUUID()
             )
         )
 

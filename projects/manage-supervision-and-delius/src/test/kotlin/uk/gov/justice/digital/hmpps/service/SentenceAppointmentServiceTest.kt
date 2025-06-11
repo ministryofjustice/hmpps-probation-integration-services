@@ -178,7 +178,7 @@ class SentenceAppointmentServiceTest {
         whenever(offenderManagerRepository.findByPersonCrnAndSoftDeletedIsFalseAndActiveIsTrue(PersonGenerator.PERSON_1.crn)).thenReturn(
             OffenderManagerGenerator.OFFENDER_MANAGER_ACTIVE
         )
-        whenever(eventSentenceRepository.existsById(appointment.eventId)).thenReturn(false)
+        whenever(eventSentenceRepository.existsById(appointment.eventId!!)).thenReturn(false)
         val exception = assertThrows<NotFoundException> {
             service.createAppointment(PersonGenerator.PERSON_1.crn, appointment)
         }
@@ -210,7 +210,7 @@ class SentenceAppointmentServiceTest {
         whenever(offenderManagerRepository.findByPersonCrnAndSoftDeletedIsFalseAndActiveIsTrue(PersonGenerator.PERSON_1.crn)).thenReturn(
             OffenderManagerGenerator.OFFENDER_MANAGER_ACTIVE
         )
-        whenever(eventSentenceRepository.existsById(appointment.eventId)).thenReturn(true)
+        whenever(eventSentenceRepository.existsById(appointment.eventId!!)).thenReturn(true)
         whenever(requirementRepository.existsById(appointment.requirementId!!)).thenReturn(false)
         val exception = assertThrows<NotFoundException> {
             service.createAppointment(PersonGenerator.PERSON_1.crn, appointment)
@@ -242,7 +242,7 @@ class SentenceAppointmentServiceTest {
         whenever(offenderManagerRepository.findByPersonCrnAndSoftDeletedIsFalseAndActiveIsTrue(PersonGenerator.PERSON_1.crn)).thenReturn(
             OffenderManagerGenerator.OFFENDER_MANAGER_ACTIVE
         )
-        whenever(eventSentenceRepository.existsById(appointment.eventId)).thenReturn(true)
+        whenever(eventSentenceRepository.existsById(appointment.eventId!!)).thenReturn(true)
         whenever(licenceConditionRepository.existsById(appointment.licenceConditionId!!)).thenReturn(false)
         val exception = assertThrows<NotFoundException> {
             service.createAppointment(PersonGenerator.PERSON_1.crn, appointment)
@@ -276,7 +276,7 @@ class SentenceAppointmentServiceTest {
         whenever(staffUserRepository.findUserAndTeamAssociation(appointment.user.username, appointment.user.teamCode))
             .thenReturn(UserTeamInfo(1, 2, 3, 4,))
 
-        whenever(eventSentenceRepository.existsById(appointment.eventId)).thenReturn(true)
+        whenever(eventSentenceRepository.existsById(appointment.eventId!!)).thenReturn(true)
 
         whenever(appointmentTypeRepository.findByCode(appointment.type.code)).thenReturn(
             ContactType(
@@ -319,7 +319,7 @@ class SentenceAppointmentServiceTest {
         whenever(staffUserRepository.findUserAndTeamAssociation(appointment.user.username, appointment.user.teamCode))
             .thenReturn(UserTeamInfo(1, 2, 3, 4, ))
 
-        whenever(eventSentenceRepository.existsById(appointment.eventId)).thenReturn(true)
+        whenever(eventSentenceRepository.existsById(appointment.eventId!!)).thenReturn(true)
 
         whenever(appointmentTypeRepository.findByCode(appointment.type.code)).thenReturn(
             ContactType(
@@ -341,6 +341,31 @@ class SentenceAppointmentServiceTest {
         ).thenReturn(1)
 
         service.createAppointment(PersonGenerator.PERSON_1.crn, appointment)
+    }
+
+
+    fun `non personal level contact without appointment ids`() {
+        val appointment = CreateAppointment(
+            user,
+            CreateAppointment.Type.InitialAppointmentInOfficeNS,
+            ZonedDateTime.now().plusDays(1),
+            ZonedDateTime.now().plusDays(2),
+            interval = CreateAppointment.Interval.WEEK,
+            numberOfAppointments = 3,
+            uuid= uuid,
+        )
+
+        whenever(offenderManagerRepository.findByPersonCrnAndSoftDeletedIsFalseAndActiveIsTrue(PersonGenerator.PERSON_1.crn)).thenReturn(
+            OffenderManagerGenerator.OFFENDER_MANAGER_ACTIVE
+        )
+        val exception = assertThrows<InvalidRequestException> {
+            service.createAppointment(PersonGenerator.PERSON_1.crn, appointment)
+        }
+
+        assertThat(
+            exception.message,
+            equalTo("Either licence id or requirement id or nsi id can be provided")
+        )
     }
 
     data class UserTeamInfo(
