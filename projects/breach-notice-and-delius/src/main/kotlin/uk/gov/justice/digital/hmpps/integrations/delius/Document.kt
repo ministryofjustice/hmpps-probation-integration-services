@@ -5,6 +5,7 @@ import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.NumericBooleanConverter
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
+import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import java.time.ZonedDateTime
 import java.util.*
 
@@ -104,3 +105,6 @@ interface DocumentRepository : JpaRepository<Document, Long> {
 
     fun existsByTableNameAndPrimaryKeyIdAndIdNot(tableName: String, primaryKeyId: Long, id: Long): Boolean
 }
+
+fun DocumentRepository.eventId(urn: String): Long = findEventIdFromDocument(urn)
+    ?: throw NotFoundException("Event", "breach notice urn", urn)
