@@ -23,23 +23,20 @@ class WarningService(
     private val requirementRepository: RequirementRepository
 ) {
     fun getWarningTypes(crn: String, breachNoticeId: UUID): WarningTypesResponse {
-        val disposal = documentRepository.findEventIdFromDocument(breachNoticeUrn(breachNoticeId))
-            ?.let { crn.disposalForEvent(it) }
+        val disposal = crn.disposalForEvent(documentRepository.eventId(breachNoticeUrn(breachNoticeId)))
         return WarningTypesResponse(
             warningTypes = rdRepository
                 .findByDatasetCodeAndSelectableTrue(Dataset.BREACH_NOTICE_TYPE).codedDescriptions(),
             sentenceTypes = rdRepository
                 .findByDatasetCodeAndSelectableTrue(Dataset.BREACH_SENTENCE_TYPE).sentenceTypes(),
-            defaultSentenceTypeCode = disposal!!.type.defaultSentenceTypeCode()
+            defaultSentenceTypeCode = disposal.type.defaultSentenceTypeCode()
         )
     }
 
     fun getWarningDetails(crn: String, breachNoticeId: UUID): WarningDetails {
         val breachReasons = rdRepository.findByDatasetCodeAndSelectableTrue(Dataset.BREACH_REASON)
-        val disposal = documentRepository.findEventIdFromDocument(breachNoticeUrn(breachNoticeId))
-            ?.let { crn.disposalForEvent(it) }
-        val enforceableContacts =
-            contactRepository.findEnforceableContacts(disposal!!.event.id)
+        val disposal = crn.disposalForEvent(documentRepository.eventId(breachNoticeUrn(breachNoticeId)))
+        val enforceableContacts = contactRepository.findEnforceableContacts(disposal.event.id)
 
         return WarningDetails(
             breachReasons = breachReasons.codedDescriptions(),
