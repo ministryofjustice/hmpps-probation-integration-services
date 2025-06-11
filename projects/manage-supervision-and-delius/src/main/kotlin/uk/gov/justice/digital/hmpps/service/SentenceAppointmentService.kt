@@ -128,6 +128,10 @@ class SentenceAppointmentService(
             throw InvalidRequestException("Either licence id or requirement id or nsi id can be provided")
         }
 
+        if (createAppointment.eventId == null && (createAppointment.requirementId != null || createAppointment.licenceConditionId != null)) {
+            throw InvalidRequestException("Event id required when licence id or requirement id provided")
+        }
+
         createAppointment.end.let {
             if (it.isBefore(createAppointment.start))
                 throw InvalidRequestException("Appointment end time cannot be before start time")

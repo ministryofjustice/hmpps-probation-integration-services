@@ -6,6 +6,8 @@ import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.MethodSource
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.Mockito.verifyNoMoreInteractions
@@ -379,6 +381,23 @@ class SentenceAppointmentServiceTest {
         )
     }
 
+    @ParameterizedTest
+    @MethodSource("createAppointment")
+    fun `requirement or licence without event`(appointment: CreateAppointment) {
+        whenever(offenderManagerRepository.findByPersonCrnAndSoftDeletedIsFalseAndActiveIsTrue(PersonGenerator.PERSON_1.crn)).thenReturn(
+            OffenderManagerGenerator.OFFENDER_MANAGER_ACTIVE
+        )
+
+        val exception = assertThrows<InvalidRequestException> {
+            service.createAppointment(PersonGenerator.PERSON_1.crn, appointment)
+        }
+
+        assertThat(
+            exception.message,
+            equalTo("Event id required when licence id or requirement id provided")
+        )
+    }
+
     data class UserTeamInfo(
         val _userId: Long,
         val _staffId: Long,
@@ -393,5 +412,17 @@ class SentenceAppointmentServiceTest {
             get() = _teamId
         override val providerId: Long
             get() = _providerId
+    }
+
+    companion object {
+        val user = User("user", OffenderManagerGenerator.TEAM.code)
+        @JvmStatic
+        fun createAppointment() = listOf(
+            CreateAppointment( user,
+                CreateAppointment.Type.PlannedOfficeVisitNS,
+                ZonedDateTime.now().plusDays(1),
+                ZonedDateTime.now().plusDays(1).plusHours(1),
+                licenceConditionId = PersonGenerator.EVENT_1.id,
+                uuid = UUID.randomUUID()))
     }
 }
