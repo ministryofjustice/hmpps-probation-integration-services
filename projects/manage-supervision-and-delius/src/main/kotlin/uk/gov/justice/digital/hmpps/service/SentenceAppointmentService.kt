@@ -79,6 +79,7 @@ class SentenceAppointmentService(
                             createAppointment.createOverlappingAppointment,
                             createAppointment.requirementId,
                             createAppointment.licenceConditionId,
+                            createAppointment.nsiId,
                             createAppointment.until
                         )
                     )
@@ -122,7 +123,7 @@ class SentenceAppointmentService(
     private fun checkForConflicts(
         createAppointment: CreateAppointment
     ) {
-        if (createAppointment.requirementId != null && createAppointment.licenceConditionId != null) {
+        if (listOfNotNull(createAppointment.requirementId, createAppointment.licenceConditionId, createAppointment.nsiId).size > 1) {
             throw InvalidRequestException("Either licence id or requirement id can be provided, not both")
         }
 

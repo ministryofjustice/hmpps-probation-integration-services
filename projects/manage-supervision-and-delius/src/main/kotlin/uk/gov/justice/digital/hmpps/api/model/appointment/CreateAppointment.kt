@@ -16,6 +16,7 @@ data class CreateAppointment(
     val createOverlappingAppointment: Boolean = false,
     val requirementId: Long? = null,
     val licenceConditionId: Long? = null,
+    val nsiId: Long? = null,
     val until: ZonedDateTime? = null,
 ) {
     @JsonIgnore
