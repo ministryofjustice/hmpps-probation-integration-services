@@ -320,8 +320,6 @@ interface LocationRepository : JpaRepository<Location, Long> {
         """
     )
     fun findByTeamAndLocation(teamCode: String, locationCode: String): Location?
-
-
 }
 
 fun LocationRepository.getTeamAndLocation(teamCode: String, locationCode: String) =
