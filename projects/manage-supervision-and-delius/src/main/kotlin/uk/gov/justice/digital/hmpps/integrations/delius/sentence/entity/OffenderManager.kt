@@ -311,12 +311,11 @@ interface LocationRepository : JpaRepository<Location, Long> {
 
     @Query(
         """
-            SELECT l
-            FROM Location l
-            JOIN TeamOfficeLink tol ON tol.id.officeLocation.id = l.id
+            SELECT tol.id.officeLocation
+            FROM TeamOfficeLink tol 
             JOIN Team t ON t.id = tol.id.teamId
             WHERE t.code = :teamCode
-            AND l.code = :locationCode
+            AND tol.id.officeLocation.code = :locationCode
         """
     )
     fun findByTeamAndLocation(teamCode: String, locationCode: String): Location?
