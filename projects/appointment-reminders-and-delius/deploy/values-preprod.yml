@@ -18,7 +18,16 @@ jobs:
     east-of-england:
       templates:
         - cd713c1b-1b27-45a0-b493-37a34666635a
+    greater-manchester:
+      templates:
+        - cd713c1b-1b27-45a0-b493-37a34666635a
+    london:
+      templates:
+        - cd713c1b-1b27-45a0-b493-37a34666635a
     wales:
       templates:
         - cd713c1b-1b27-45a0-b493-37a34666635a # English
         - 3f599a2a-1535-4381-8beb-bfb3304bee9d # Welsh
+    west-midlands:
+      templates:
+        - cd713c1b-1b27-45a0-b493-37a34666635a
