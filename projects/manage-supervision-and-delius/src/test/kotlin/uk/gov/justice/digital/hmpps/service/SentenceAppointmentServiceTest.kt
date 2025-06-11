@@ -343,11 +343,11 @@ class SentenceAppointmentServiceTest {
         service.createAppointment(PersonGenerator.PERSON_1.crn, appointment)
     }
 
-
+    @Test
     fun `non personal level contact without appointment ids`() {
         val appointment = CreateAppointment(
             user,
-            CreateAppointment.Type.InitialAppointmentInOfficeNS,
+            CreateAppointment.Type.HomeVisitToCaseNS,
             ZonedDateTime.now().plusDays(1),
             ZonedDateTime.now().plusDays(2),
             interval = CreateAppointment.Interval.WEEK,
@@ -358,13 +358,24 @@ class SentenceAppointmentServiceTest {
         whenever(offenderManagerRepository.findByPersonCrnAndSoftDeletedIsFalseAndActiveIsTrue(PersonGenerator.PERSON_1.crn)).thenReturn(
             OffenderManagerGenerator.OFFENDER_MANAGER_ACTIVE
         )
+
+        whenever(appointmentTypeRepository.findByCode(appointment.type.code)).thenReturn(
+            ContactType(
+                1,
+                appointment.type.code,
+                true,
+                "description",
+                locationRequired = "N"
+            )
+        )
+
         val exception = assertThrows<InvalidRequestException> {
             service.createAppointment(PersonGenerator.PERSON_1.crn, appointment)
         }
 
         assertThat(
             exception.message,
-            equalTo("Either licence id or requirement id or nsi id can be provided")
+            equalTo("Event id, licence id, requirement id or nsi id need to be provided for contact type ${CreateAppointment.Type.HomeVisitToCaseNS.code}")
         )
     }
 

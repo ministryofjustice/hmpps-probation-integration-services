@@ -159,7 +159,7 @@ class SentenceAppointmentService(
         }
 
         if (!contactType.offenderContact && (listOfNotNull(createAppointment.eventId) + appointmentIds).isEmpty() ) {
-            throw InvalidRequestException("Event id licence id or requirement id or nsi id need to be provided for contact type ${createAppointment.type.code}")
+            throw InvalidRequestException("Event id, licence id, requirement id or nsi id need to be provided for contact type ${createAppointment.type.code}")
         }
     }
 
