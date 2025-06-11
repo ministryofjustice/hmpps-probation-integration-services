@@ -123,8 +123,9 @@ class SentenceAppointmentService(
     private fun checkForConflicts(
         createAppointment: CreateAppointment
     ) {
-        if (listOfNotNull(createAppointment.requirementId, createAppointment.licenceConditionId, createAppointment.nsiId).size > 1) {
-            throw InvalidRequestException("Either licence id or requirement id can be provided, not both")
+        val appointmentIds = listOfNotNull( createAppointment.requirementId, createAppointment.licenceConditionId, createAppointment.nsiId)
+        if (appointmentIds.size > 1) {
+            throw InvalidRequestException("Either licence id or requirement id or nsi id can be provided")
         }
 
         createAppointment.end.let {
@@ -149,10 +150,14 @@ class SentenceAppointmentService(
             throw NotFoundException("LicenceCondition", "licenceConditionId", createAppointment.licenceConditionId)
         }
 
-        val licenceOrRequirement = listOfNotNull(createAppointment.licenceConditionId, createAppointment.requirementId)
+        val contactType = appointmentTypeRepository.getByCode(createAppointment.type.code)
 
-        if (licenceOrRequirement.size > 1) {
-            throw InvalidRequestException("Either licence id or requirement id can be provided, not both")
+        if (contactType.locationRequired == "Y" && createAppointment.user.locationCode == null) {
+            throw InvalidRequestException("Location required for contact type ${createAppointment.type.code}")
+        }
+
+        if (!contactType.offenderContact && (listOf(createAppointment.eventId) + appointmentIds).isEmpty() ) {
+            throw InvalidRequestException("Event id licence id or requirement id or nsi id need to be provided for contact type ${createAppointment.type.code}")
         }
     }
 

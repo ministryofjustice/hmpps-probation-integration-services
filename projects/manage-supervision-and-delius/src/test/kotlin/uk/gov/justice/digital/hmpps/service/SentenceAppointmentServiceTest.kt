@@ -23,7 +23,6 @@ import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.ContactType
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.RequirementRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.*
-import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.UserTeam
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
@@ -90,7 +89,7 @@ class SentenceAppointmentServiceTest {
 
         assertThat(
             exception.message,
-            equalTo("Either licence id or requirement id can be provided, not both")
+            equalTo("Either licence id or requirement id or nsi id can be provided")
         )
 
         verifyNoMoreInteractions(offenderManagerRepository)
@@ -279,6 +278,16 @@ class SentenceAppointmentServiceTest {
 
         whenever(eventSentenceRepository.existsById(appointment.eventId)).thenReturn(true)
 
+        whenever(appointmentTypeRepository.findByCode(appointment.type.code)).thenReturn(
+            ContactType(
+                1,
+                appointment.type.code,
+                true,
+                "description",
+                locationRequired = "N"
+            )
+        )
+
         whenever(
             appointmentRepository.getClashCount(
                 OffenderManagerGenerator.OFFENDER_MANAGER_ACTIVE.person.id,
@@ -318,7 +327,7 @@ class SentenceAppointmentServiceTest {
                 appointment.type.code,
                 true,
                 "description",
-                locationRequired = "Y"
+                locationRequired = "N"
             )
         )
 
