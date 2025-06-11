@@ -31,10 +31,34 @@ jobs:
       schedule: '0 10 * * *' # 10am every day
       daysInAdvance: 2
 
+    greater-manchester:
+      provider:
+        code: N50
+        name: Greater Manchester
+      apiKeySecret: API_KEY
+      schedule: '0 18 * * *' # 6pm every day
+      daysInAdvance: 1
+
+    london:
+      provider:
+        code: N07
+        name: London
+      apiKeySecret: API_KEY
+      schedule: '0 18 * * *' # 6pm every day
+      daysInAdvance: 1
+
     wales:
       provider:
         code: N03
         name: Wales
+      apiKeySecret: API_KEY
+      schedule: '0 18 * * *' # 6pm every day
+      daysInAdvance: 1
+
+    west-midlands:
+      provider:
+        code: N52
+        name: West Midlands
       apiKeySecret: API_KEY
       schedule: '0 18 * * *' # 6pm every day
       daysInAdvance: 1
