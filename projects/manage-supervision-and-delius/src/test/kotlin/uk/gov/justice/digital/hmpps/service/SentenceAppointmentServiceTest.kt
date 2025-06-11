@@ -423,6 +423,14 @@ class SentenceAppointmentServiceTest {
                 ZonedDateTime.now().plusDays(1),
                 ZonedDateTime.now().plusDays(1).plusHours(1),
                 licenceConditionId = PersonGenerator.EVENT_1.id,
-                uuid = UUID.randomUUID()))
+                uuid = UUID.randomUUID()),
+            CreateAppointment( user,
+                CreateAppointment.Type.PlannedOfficeVisitNS,
+                ZonedDateTime.now().plusDays(1),
+                ZonedDateTime.now().plusDays(1).plusHours(1),
+                licenceConditionId = PersonGenerator.EVENT_1.id,
+                uuid = UUID.randomUUID())
+        )
+
     }
 }
