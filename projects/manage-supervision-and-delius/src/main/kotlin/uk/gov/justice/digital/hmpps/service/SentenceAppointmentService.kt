@@ -31,6 +31,7 @@ class SentenceAppointmentService(
     private val requirementRepository: RequirementRepository,
     private val licenceConditionRepository: LicenceConditionRepository,
     private val staffUserRepository: StaffUserRepository,
+    private val locationRepository: LocationRepository,
     private val objectMapper: ObjectMapper
 ) : AuditableService(auditedInteractionService) {
 
@@ -50,7 +51,7 @@ class SentenceAppointmentService(
             )
 
             val location = createAppointment.user.locationCode?.let {
-                staffUserRepository.getTeamAndLocationAssociation(
+                locationRepository.getTeamAndLocation(
                     createAppointment.user.teamCode,
                     createAppointment.user.locationCode
                 )

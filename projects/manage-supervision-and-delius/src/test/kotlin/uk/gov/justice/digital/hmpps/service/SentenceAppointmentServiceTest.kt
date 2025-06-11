@@ -58,6 +58,9 @@ class SentenceAppointmentServiceTest {
     lateinit var staffUserRepository: StaffUserRepository
 
     @Mock
+    lateinit var locationRepository: LocationRepository
+
+    @Mock
     lateinit var objectMapper: ObjectMapper
 
     @InjectMocks

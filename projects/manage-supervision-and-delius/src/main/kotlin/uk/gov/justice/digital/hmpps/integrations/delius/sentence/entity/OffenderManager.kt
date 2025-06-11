@@ -217,12 +217,6 @@ fun StaffUserRepository.getUserAndTeamAssociation(username: String, teamCode: St
         "$username in team $teamCode"
     )
 
-fun StaffUserRepository.getTeamAndLocationAssociation(teamCode: String, locationCode: String) =
-    findByTeamAndLocation(teamCode, locationCode) ?: throw NotFoundException(
-        "Location", "code",
-        "$teamCode in location $locationCode"
-    )
-
 interface UserTeam {
     val userId: Long
     val staffId: Long
@@ -314,7 +308,27 @@ interface LocationRepository : JpaRepository<Location, Long> {
         """
     )
     fun findByProviderAndTeam(providerCode: String, teamCode: String): List<Location>
+
+    @Query(
+        """
+            SELECT l
+            FROM Location l
+            JOIN TeamOfficeLink tol ON tol.id.officeLocation.id = l.id
+            JOIN Team t ON t.id = tol.id.teamId
+            WHERE t.code = :teamCode
+            AND l.code = :locationCode
+        """
+    )
+    fun findByTeamAndLocation(teamCode: String, locationCode: String): Location?
+
+
 }
+
+fun LocationRepository.getTeamAndLocation(teamCode: String, locationCode: String) =
+    findByTeamAndLocation(teamCode, locationCode) ?: throw NotFoundException(
+        "Location", "code",
+        "$teamCode in location $locationCode"
+    )
 
 @Embeddable
 class TeamOfficeLinkId(
