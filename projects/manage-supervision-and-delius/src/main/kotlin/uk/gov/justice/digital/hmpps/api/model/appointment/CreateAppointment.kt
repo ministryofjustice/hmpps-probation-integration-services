@@ -11,11 +11,12 @@ data class CreateAppointment(
     val end: ZonedDateTime,
     val interval: Interval = Interval.DAY,
     val numberOfAppointments: Int = 1,
-    val eventId: Long,
+    val eventId: Long? = null,
     val uuid: UUID,
     val createOverlappingAppointment: Boolean = false,
     val requirementId: Long? = null,
     val licenceConditionId: Long? = null,
+    val nsiId: Long? = null,
     val until: ZonedDateTime? = null,
 ) {
     @JsonIgnore
@@ -47,7 +48,8 @@ data class CreateAppointment(
 
 data class User(
     val username: String,
-    val locationId: Long
+    val teamCode: String,
+    val locationCode: String? = null,
 )
 
 data class OverlappingAppointment(

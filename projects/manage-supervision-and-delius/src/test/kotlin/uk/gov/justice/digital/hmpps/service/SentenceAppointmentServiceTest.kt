@@ -6,6 +6,8 @@ import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.MethodSource
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.Mockito.verifyNoMoreInteractions
@@ -16,11 +18,11 @@ import uk.gov.justice.digital.hmpps.api.model.appointment.CreateAppointment
 import uk.gov.justice.digital.hmpps.api.model.appointment.User
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
 import uk.gov.justice.digital.hmpps.data.generator.OffenderManagerGenerator
-import uk.gov.justice.digital.hmpps.data.generator.OffenderManagerGenerator.DEFAULT_LOCATION
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.exception.ConflictException
 import uk.gov.justice.digital.hmpps.exception.InvalidRequestException
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
+import uk.gov.justice.digital.hmpps.integrations.delius.compliance.NsiRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.ContactType
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.RequirementRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.*
@@ -57,6 +59,12 @@ class SentenceAppointmentServiceTest {
     lateinit var staffUserRepository: StaffUserRepository
 
     @Mock
+    lateinit var locationRepository: LocationRepository
+
+    @Mock
+    lateinit var nsiRepository: NsiRepository
+
+    @Mock
     lateinit var objectMapper: ObjectMapper
 
     @InjectMocks
@@ -64,7 +72,7 @@ class SentenceAppointmentServiceTest {
 
     private val uuid: UUID = UUID.randomUUID()
 
-    private val user = User("user", DEFAULT_LOCATION.id)
+    private val user = User("user", OffenderManagerGenerator.TEAM.code)
 
     @Test
     fun `licence and requirement id provided`() {
@@ -90,7 +98,7 @@ class SentenceAppointmentServiceTest {
 
         assertThat(
             exception.message,
-            equalTo("Either licence id or requirement id can be provided, not both")
+            equalTo("Either licence id or requirement id or nsi id can be provided")
         )
 
         verifyNoMoreInteractions(offenderManagerRepository)
@@ -179,7 +187,7 @@ class SentenceAppointmentServiceTest {
         whenever(offenderManagerRepository.findByPersonCrnAndSoftDeletedIsFalseAndActiveIsTrue(PersonGenerator.PERSON_1.crn)).thenReturn(
             OffenderManagerGenerator.OFFENDER_MANAGER_ACTIVE
         )
-        whenever(eventSentenceRepository.existsById(appointment.eventId)).thenReturn(false)
+        whenever(eventSentenceRepository.existsById(appointment.eventId!!)).thenReturn(false)
         val exception = assertThrows<NotFoundException> {
             service.createAppointment(PersonGenerator.PERSON_1.crn, appointment)
         }
@@ -211,7 +219,7 @@ class SentenceAppointmentServiceTest {
         whenever(offenderManagerRepository.findByPersonCrnAndSoftDeletedIsFalseAndActiveIsTrue(PersonGenerator.PERSON_1.crn)).thenReturn(
             OffenderManagerGenerator.OFFENDER_MANAGER_ACTIVE
         )
-        whenever(eventSentenceRepository.existsById(appointment.eventId)).thenReturn(true)
+        whenever(eventSentenceRepository.existsById(appointment.eventId!!)).thenReturn(true)
         whenever(requirementRepository.existsById(appointment.requirementId!!)).thenReturn(false)
         val exception = assertThrows<NotFoundException> {
             service.createAppointment(PersonGenerator.PERSON_1.crn, appointment)
@@ -243,13 +251,44 @@ class SentenceAppointmentServiceTest {
         whenever(offenderManagerRepository.findByPersonCrnAndSoftDeletedIsFalseAndActiveIsTrue(PersonGenerator.PERSON_1.crn)).thenReturn(
             OffenderManagerGenerator.OFFENDER_MANAGER_ACTIVE
         )
-        whenever(eventSentenceRepository.existsById(appointment.eventId)).thenReturn(true)
+        whenever(eventSentenceRepository.existsById(appointment.eventId!!)).thenReturn(true)
         whenever(licenceConditionRepository.existsById(appointment.licenceConditionId!!)).thenReturn(false)
         val exception = assertThrows<NotFoundException> {
             service.createAppointment(PersonGenerator.PERSON_1.crn, appointment)
         }
 
         assertThat(exception.message, equalTo("LicenceCondition with licenceConditionId of 3 not found"))
+
+        verifyNoMoreInteractions(offenderManagerRepository)
+        verifyNoMoreInteractions(eventSentenceRepository)
+        verifyNoMoreInteractions(licenceConditionRepository)
+        verifyNoInteractions(requirementRepository)
+        verifyNoInteractions(appointmentRepository)
+        verifyNoInteractions(appointmentTypeRepository)
+    }
+
+    @Test
+    fun `nsi not found`() {
+        val appointment = CreateAppointment(
+            user,
+            CreateAppointment.Type.InitialAppointmentInOfficeNS,
+            ZonedDateTime.now().plusDays(1),
+            ZonedDateTime.now().plusDays(2),
+            interval = CreateAppointment.Interval.DAY,
+            uuid = uuid,
+            nsiId = 3
+        )
+
+        whenever(offenderManagerRepository.findByPersonCrnAndSoftDeletedIsFalseAndActiveIsTrue(PersonGenerator.PERSON_1.crn)).thenReturn(
+            OffenderManagerGenerator.OFFENDER_MANAGER_ACTIVE
+        )
+        whenever(nsiRepository.existsById(appointment.nsiId!!)).thenReturn(false)
+
+        val exception = assertThrows<NotFoundException> {
+            service.createAppointment(PersonGenerator.PERSON_1.crn, appointment)
+        }
+
+        assertThat(exception.message, equalTo("Nsi with nsiId of 3 not found"))
 
         verifyNoMoreInteractions(offenderManagerRepository)
         verifyNoMoreInteractions(eventSentenceRepository)
@@ -274,10 +313,20 @@ class SentenceAppointmentServiceTest {
         whenever(offenderManagerRepository.findByPersonCrnAndSoftDeletedIsFalseAndActiveIsTrue(PersonGenerator.PERSON_1.crn)).thenReturn(
             OffenderManagerGenerator.OFFENDER_MANAGER_ACTIVE
         )
-        whenever(staffUserRepository.findUserAndLocation(appointment.user.username, appointment.user.locationId))
-            .thenReturn(UserLoc(1, 2, 3, 4, 5))
+        whenever(staffUserRepository.findUserAndTeamAssociation(appointment.user.username, appointment.user.teamCode))
+            .thenReturn(UserTeamInfo(1, 2, 3, 4))
 
-        whenever(eventSentenceRepository.existsById(appointment.eventId)).thenReturn(true)
+        whenever(eventSentenceRepository.existsById(appointment.eventId!!)).thenReturn(true)
+
+        whenever(appointmentTypeRepository.findByCode(appointment.type.code)).thenReturn(
+            ContactType(
+                1,
+                appointment.type.code,
+                true,
+                "description",
+                locationRequired = "N"
+            )
+        )
 
         whenever(
             appointmentRepository.getClashCount(
@@ -307,10 +356,10 @@ class SentenceAppointmentServiceTest {
         whenever(offenderManagerRepository.findByPersonCrnAndSoftDeletedIsFalseAndActiveIsTrue(PersonGenerator.PERSON_1.crn)).thenReturn(
             OffenderManagerGenerator.OFFENDER_MANAGER_ACTIVE
         )
-        whenever(staffUserRepository.findUserAndLocation(appointment.user.username, appointment.user.locationId))
-            .thenReturn(UserLoc(1, 2, 3, 4, 5))
+        whenever(staffUserRepository.findUserAndTeamAssociation(appointment.user.username, appointment.user.teamCode))
+            .thenReturn(UserTeamInfo(1, 2, 3, 4))
 
-        whenever(eventSentenceRepository.existsById(appointment.eventId)).thenReturn(true)
+        whenever(eventSentenceRepository.existsById(appointment.eventId!!)).thenReturn(true)
 
         whenever(appointmentTypeRepository.findByCode(appointment.type.code)).thenReturn(
             ContactType(
@@ -318,7 +367,7 @@ class SentenceAppointmentServiceTest {
                 appointment.type.code,
                 true,
                 "description",
-                locationRequired = "Y"
+                locationRequired = "N"
             )
         )
 
@@ -334,13 +383,65 @@ class SentenceAppointmentServiceTest {
         service.createAppointment(PersonGenerator.PERSON_1.crn, appointment)
     }
 
-    data class UserLoc(
+    @Test
+    fun `non personal level contact without appointment ids`() {
+        val appointment = CreateAppointment(
+            user,
+            CreateAppointment.Type.HomeVisitToCaseNS,
+            ZonedDateTime.now().plusDays(1),
+            ZonedDateTime.now().plusDays(2),
+            interval = CreateAppointment.Interval.WEEK,
+            numberOfAppointments = 3,
+            uuid = uuid,
+        )
+
+        whenever(offenderManagerRepository.findByPersonCrnAndSoftDeletedIsFalseAndActiveIsTrue(PersonGenerator.PERSON_1.crn)).thenReturn(
+            OffenderManagerGenerator.OFFENDER_MANAGER_ACTIVE
+        )
+
+        whenever(appointmentTypeRepository.findByCode(appointment.type.code)).thenReturn(
+            ContactType(
+                1,
+                appointment.type.code,
+                true,
+                "description",
+                locationRequired = "N"
+            )
+        )
+
+        val exception = assertThrows<InvalidRequestException> {
+            service.createAppointment(PersonGenerator.PERSON_1.crn, appointment)
+        }
+
+        assertThat(
+            exception.message,
+            equalTo("Event id, licence id, requirement id or nsi id need to be provided for contact type ${CreateAppointment.Type.HomeVisitToCaseNS.code}")
+        )
+    }
+
+    @ParameterizedTest
+    @MethodSource("createAppointment")
+    fun `requirement or licence without event`(appointment: CreateAppointment) {
+        whenever(offenderManagerRepository.findByPersonCrnAndSoftDeletedIsFalseAndActiveIsTrue(PersonGenerator.PERSON_1.crn)).thenReturn(
+            OffenderManagerGenerator.OFFENDER_MANAGER_ACTIVE
+        )
+
+        val exception = assertThrows<InvalidRequestException> {
+            service.createAppointment(PersonGenerator.PERSON_1.crn, appointment)
+        }
+
+        assertThat(
+            exception.message,
+            equalTo("Event id required when licence id or requirement id provided")
+        )
+    }
+
+    data class UserTeamInfo(
         val _userId: Long,
         val _staffId: Long,
         val _teamId: Long,
-        val _providerId: Long,
-        val _locationId: Long,
-    ) : UserLocation {
+        val _providerId: Long
+    ) : UserTeam {
         override val userId: Long
             get() = _userId
         override val staffId: Long
@@ -349,7 +450,29 @@ class SentenceAppointmentServiceTest {
             get() = _teamId
         override val providerId: Long
             get() = _providerId
-        override val locationId: Long
-            get() = _locationId
+    }
+
+    companion object {
+        val user = User("user", OffenderManagerGenerator.TEAM.code)
+
+        @JvmStatic
+        fun createAppointment() = listOf(
+            CreateAppointment(
+                user,
+                CreateAppointment.Type.PlannedOfficeVisitNS,
+                ZonedDateTime.now().plusDays(1),
+                ZonedDateTime.now().plusDays(1).plusHours(1),
+                licenceConditionId = PersonGenerator.EVENT_1.id,
+                uuid = UUID.randomUUID()
+            ),
+            CreateAppointment(
+                user,
+                CreateAppointment.Type.PlannedOfficeVisitNS,
+                ZonedDateTime.now().plusDays(1),
+                ZonedDateTime.now().plusDays(1).plusHours(1),
+                licenceConditionId = PersonGenerator.EVENT_1.id,
+                uuid = UUID.randomUUID()
+            )
+        )
     }
 }

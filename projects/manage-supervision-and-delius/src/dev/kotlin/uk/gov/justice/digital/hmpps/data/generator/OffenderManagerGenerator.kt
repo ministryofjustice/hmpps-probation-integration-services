@@ -72,7 +72,7 @@ object OffenderManagerGenerator {
     val DEFAULT_LOCATION =
         Location(
             IdGenerator.getAndIncrement(),
-            "B20",
+            "B20_MTH",
             "1 Birmingham Street",
             "Bham House",
             "1",

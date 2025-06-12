@@ -18,6 +18,7 @@ import uk.gov.justice.digital.hmpps.api.model.appointment.CreateAppointment
 import uk.gov.justice.digital.hmpps.api.model.appointment.User
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.DEFAULT_PROVIDER
 import uk.gov.justice.digital.hmpps.data.generator.OffenderManagerGenerator.DEFAULT_LOCATION
+import uk.gov.justice.digital.hmpps.data.generator.OffenderManagerGenerator.TEAM
 import uk.gov.justice.digital.hmpps.data.generator.OffenderManagerGenerator.STAFF_1
 import uk.gov.justice.digital.hmpps.data.generator.OffenderManagerGenerator.STAFF_USER_1
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
@@ -40,7 +41,7 @@ class CreateAppointmentIntegrationTest {
     @Autowired
     internal lateinit var appointmentRepository: AppointmentRepository
 
-    private val user = User(STAFF_USER_1.username, DEFAULT_LOCATION.id)
+    private val user = User(STAFF_USER_1.username, TEAM.code)
 
     private val person = PersonGenerator.PERSON_1
 
@@ -155,7 +156,7 @@ class CreateAppointmentIntegrationTest {
     }
 
     companion object {
-        private val user = User(STAFF_USER_1.username, DEFAULT_LOCATION.id)
+        private val user = User(STAFF_USER_1.username, TEAM.code, DEFAULT_LOCATION.code)
 
         @JvmStatic
         fun createAppointment() = listOf(
@@ -174,6 +175,14 @@ class CreateAppointmentIntegrationTest {
                 ZonedDateTime.now().plusDays(1).plusHours(1),
                 CreateAppointment.Interval.DAY,
                 eventId = PersonGenerator.EVENT_1.id,
+                uuid = UUID.randomUUID()
+            ),
+            CreateAppointment(
+                user,
+                CreateAppointment.Type.PlannedDoorstepContactNS,
+                ZonedDateTime.now().plusDays(1),
+                ZonedDateTime.now().plusDays(1).plusHours(1),
+                CreateAppointment.Interval.DAY,
                 uuid = UUID.randomUUID()
             )
         )

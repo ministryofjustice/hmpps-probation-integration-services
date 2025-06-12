@@ -14,6 +14,7 @@ import uk.gov.justice.digital.hmpps.exception.ConflictException
 import uk.gov.justice.digital.hmpps.exception.InvalidRequestException
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractionCode
+import uk.gov.justice.digital.hmpps.integrations.delius.compliance.NsiRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.RequirementRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.*
 import java.time.Duration
@@ -31,7 +32,9 @@ class SentenceAppointmentService(
     private val requirementRepository: RequirementRepository,
     private val licenceConditionRepository: LicenceConditionRepository,
     private val staffUserRepository: StaffUserRepository,
-    private val objectMapper: ObjectMapper
+    private val locationRepository: LocationRepository,
+    private val objectMapper: ObjectMapper,
+    private val nsiRepository: NsiRepository
 ) : AuditableService(auditedInteractionService) {
 
     fun createAppointment(
@@ -44,11 +47,18 @@ class SentenceAppointmentService(
 
             checkForConflicts(createAppointment)
 
-            val userAndLocation =
-                staffUserRepository.getUserAndLocation(
-                    createAppointment.user.username,
-                    createAppointment.user.locationId
+            val userAndTeam = staffUserRepository.getUserAndTeamAssociation(
+                createAppointment.user.username,
+                createAppointment.user.teamCode
+            )
+
+            val location = createAppointment.user.locationCode?.let {
+                locationRepository.getTeamAndLocation(
+                    createAppointment.user.teamCode,
+                    createAppointment.user.locationCode
                 )
+            }
+
             val createAppointments: ArrayList<CreateAppointment> = arrayListOf()
 
             createAppointment.let {
@@ -76,6 +86,7 @@ class SentenceAppointmentService(
                             createAppointment.createOverlappingAppointment,
                             createAppointment.requirementId,
                             createAppointment.licenceConditionId,
+                            createAppointment.nsiId,
                             createAppointment.until
                         )
                     )
@@ -107,7 +118,7 @@ class SentenceAppointmentService(
                 )
             }
 
-            val appointments = createAppointments.map { it.withManager(om, userAndLocation) }
+            val appointments = createAppointments.map { it.withManager(om, userAndTeam, location) }
             val savedAppointments = appointmentRepository.saveAll(appointments)
             val createdAppointments = savedAppointments.map { CreatedAppointment(it.id) }
             audit["contactId"] = createdAppointments.joinToString { it.id.toString() }
@@ -119,8 +130,17 @@ class SentenceAppointmentService(
     private fun checkForConflicts(
         createAppointment: CreateAppointment
     ) {
-        if (createAppointment.requirementId != null && createAppointment.licenceConditionId != null) {
-            throw InvalidRequestException("Either licence id or requirement id can be provided, not both")
+        val appointmentIds = listOfNotNull(
+            createAppointment.requirementId,
+            createAppointment.licenceConditionId,
+            createAppointment.nsiId
+        )
+        if (appointmentIds.size > 1) {
+            throw InvalidRequestException("Either licence id or requirement id or nsi id can be provided")
+        }
+
+        if (createAppointment.eventId == null && (createAppointment.requirementId != null || createAppointment.licenceConditionId != null)) {
+            throw InvalidRequestException("Event id required when licence id or requirement id provided")
         }
 
         createAppointment.end.let {
@@ -133,8 +153,10 @@ class SentenceAppointmentService(
                 throw InvalidRequestException("Until cannot be before start time")
         }
 
-        if (!eventSentenceRepository.existsById(createAppointment.eventId)) {
-            throw NotFoundException("Event", "eventId", createAppointment.eventId)
+        createAppointment.eventId?.let {
+            if (!eventSentenceRepository.existsById(it)) {
+                throw NotFoundException("Event", "eventId", createAppointment.eventId)
+            }
         }
 
         if (createAppointment.requirementId != null && !requirementRepository.existsById(createAppointment.requirementId)) {
@@ -145,28 +167,37 @@ class SentenceAppointmentService(
             throw NotFoundException("LicenceCondition", "licenceConditionId", createAppointment.licenceConditionId)
         }
 
-        val licenceOrRequirement = listOfNotNull(createAppointment.licenceConditionId, createAppointment.requirementId)
+        if (createAppointment.nsiId != null && !nsiRepository.existsById(createAppointment.nsiId)) {
+            throw NotFoundException("Nsi", "nsiId", createAppointment.nsiId)
+        }
 
-        if (licenceOrRequirement.size > 1) {
-            throw InvalidRequestException("Either licence id or requirement id can be provided, not both")
+        val contactType = appointmentTypeRepository.getByCode(createAppointment.type.code)
+
+        if (contactType.locationRequired == "Y" && createAppointment.user.locationCode == null) {
+            throw InvalidRequestException("Location required for contact type ${createAppointment.type.code}")
+        }
+
+        if (!contactType.offenderContact && (listOfNotNull(createAppointment.eventId) + appointmentIds).isEmpty()) {
+            throw InvalidRequestException("Event id, licence id, requirement id or nsi id need to be provided for contact type ${createAppointment.type.code}")
         }
     }
 
-    private fun CreateAppointment.withManager(om: OffenderManager, userAndLocation: UserLocation) = Appointment(
-        om.person,
-        appointmentTypeRepository.getByCode(type.code),
-        start.toLocalDate(),
-        ZonedDateTime.of(LocalDate.EPOCH, start.toLocalTime(), EuropeLondon),
-        teamId = userAndLocation.teamId,
-        staffId = userAndLocation.staffId,
-        0,
-        end.let { ZonedDateTime.of(LocalDate.EPOCH, end.toLocalTime(), EuropeLondon) },
-        probationAreaId = userAndLocation.providerId,
-        urn,
-        eventId = eventId,
-        rqmntId = requirementId,
-        licConditionId = licenceConditionId,
-        createdByUserId = userAndLocation.userId,
-        officeLocationId = userAndLocation.locationId
-    )
+    private fun CreateAppointment.withManager(om: OffenderManager, staffAndTeam: UserTeam, location: Location?) =
+        Appointment(
+            om.person,
+            appointmentTypeRepository.getByCode(type.code),
+            start.toLocalDate(),
+            ZonedDateTime.of(LocalDate.EPOCH, start.toLocalTime(), EuropeLondon),
+            teamId = staffAndTeam.teamId,
+            staffId = staffAndTeam.staffId,
+            0,
+            end.let { ZonedDateTime.of(LocalDate.EPOCH, end.toLocalTime(), EuropeLondon) },
+            probationAreaId = staffAndTeam.providerId,
+            urn,
+            eventId = eventId,
+            rqmntId = requirementId,
+            licConditionId = licenceConditionId,
+            createdByUserId = staffAndTeam.userId,
+            officeLocationId = location?.id
+        )
 }

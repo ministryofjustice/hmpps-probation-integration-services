@@ -155,18 +155,28 @@ interface StaffUserRepository : JpaRepository<StaffUser, Long> {
 
     @Query(
         """
-            SELECT u.id AS userId, st.id AS staffId, t.id AS teamId, st.provider.id AS providerId, l.id AS locationId
+            SELECT l
+            FROM Team t 
+            JOIN  TeamOfficeLink tol ON tol.id.teamId = t.id
+            JOIN  Location l ON l = tol.id.officeLocation
+            WHERE t.code = :teamCode
+            AND l.code = :locationCode
+        """
+    )
+    fun findByTeamAndLocation(teamCode: String, locationCode: String): Location?
+
+    @Query(
+        """
+            SELECT u.id AS userId, st.id AS staffId, t.id AS teamId, t.provider.id AS providerId
             FROM StaffUser u
             JOIN  u.staff st
             JOIN  ContactStaffTeam cst ON cst.id.staffId = st.id
             JOIN  Team t ON t.id = cst.id.team.id
-            JOIN  TeamOfficeLink tol ON tol.id.teamId = t.id
-            JOIN  Location l ON l = tol.id.officeLocation
             WHERE UPPER(u.username) = UPPER(:username)
-            AND l.id = :locationId
+            AND t.code = :teamCode
         """
     )
-    fun findUserAndLocation(username: String, locationId: Long): UserLocation?
+    fun findUserAndTeamAssociation(username: String, teamCode: String): UserTeam?
 
     @Query(
         """
@@ -192,6 +202,7 @@ interface StaffUserRepository : JpaRepository<StaffUser, Long> {
             WHERE t.code = :teamCode
             AND st.startDate <= CURRENT_DATE
             AND (st.endDate IS NULL OR st.endDate > CURRENT_DATE)
+            ORDER BY UPPER(u.username)
         """
     )
     fun findStaffByTeam(teamCode: String): List<StaffUser>
@@ -200,17 +211,21 @@ interface StaffUserRepository : JpaRepository<StaffUser, Long> {
 fun StaffUserRepository.getUser(username: String) =
     findByUsername(username) ?: throw NotFoundException("User", "username", username)
 
-fun StaffUserRepository.getUserAndLocation(username: String, locationId: Long) =
-    findUserAndLocation(username, locationId) ?: throw NotFoundException(
+fun StaffUserRepository.getUserAndTeamAssociation(username: String, teamCode: String) =
+    findUserAndTeamAssociation(username, teamCode) ?: throw NotFoundException(
         "User", "username",
-        "$username in $locationId"
+        "$username in team $teamCode"
     )
 
-interface UserLocation {
+interface UserTeam {
     val userId: Long
     val staffId: Long
     val teamId: Long
     val providerId: Long
+}
+
+interface TeamLocation {
+    val teamId: Long
     val locationId: Long
 }
 
@@ -293,7 +308,24 @@ interface LocationRepository : JpaRepository<Location, Long> {
         """
     )
     fun findByProviderAndTeam(providerCode: String, teamCode: String): List<Location>
+
+    @Query(
+        """
+            SELECT tol.id.officeLocation
+            FROM TeamOfficeLink tol 
+            JOIN Team t ON t.id = tol.id.teamId
+            WHERE t.code = :teamCode
+            AND tol.id.officeLocation.code = :locationCode
+        """
+    )
+    fun findByTeamAndLocation(teamCode: String, locationCode: String): Location?
 }
+
+fun LocationRepository.getTeamAndLocation(teamCode: String, locationCode: String) =
+    findByTeamAndLocation(teamCode, locationCode) ?: throw NotFoundException(
+        "Location", "code",
+        "$teamCode in location $locationCode"
+    )
 
 @Embeddable
 class TeamOfficeLinkId(
