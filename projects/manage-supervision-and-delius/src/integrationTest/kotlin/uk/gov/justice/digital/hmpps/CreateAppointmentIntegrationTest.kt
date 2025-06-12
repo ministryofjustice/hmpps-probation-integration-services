@@ -116,6 +116,7 @@ class CreateAppointmentIntegrationTest {
         assertThat(appointment.staffId, equalTo(STAFF_1.id))
         assertThat(appointment.probationAreaId, equalTo(DEFAULT_PROVIDER.id))
         assertThat(appointment.officeLocationId, equalTo(DEFAULT_LOCATION.id))
+        assertThat(appointment.nsiId, equalTo(createAppointment.nsiId))
 
 
         appointmentRepository.delete(appointment)

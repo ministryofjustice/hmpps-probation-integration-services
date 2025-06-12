@@ -68,6 +68,8 @@ class Appointment(
 
     val licConditionId: Long? = null,
 
+    val nsiId: Long? = null,
+
     @Column(name = "soft_deleted", columnDefinition = "number", nullable = false)
     @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean = false,
