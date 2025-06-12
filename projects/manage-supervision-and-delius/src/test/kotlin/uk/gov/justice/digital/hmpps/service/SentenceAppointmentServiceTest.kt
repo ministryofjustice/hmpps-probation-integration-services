@@ -22,6 +22,7 @@ import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.exception.ConflictException
 import uk.gov.justice.digital.hmpps.exception.InvalidRequestException
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
+import uk.gov.justice.digital.hmpps.integrations.delius.compliance.NsiRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.ContactType
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.RequirementRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.*
@@ -59,6 +60,9 @@ class SentenceAppointmentServiceTest {
 
     @Mock
     lateinit var locationRepository: LocationRepository
+
+    @Mock
+    lateinit var nsiRepository: NsiRepository
 
     @Mock
     lateinit var objectMapper: ObjectMapper
@@ -254,6 +258,37 @@ class SentenceAppointmentServiceTest {
         }
 
         assertThat(exception.message, equalTo("LicenceCondition with licenceConditionId of 3 not found"))
+
+        verifyNoMoreInteractions(offenderManagerRepository)
+        verifyNoMoreInteractions(eventSentenceRepository)
+        verifyNoMoreInteractions(licenceConditionRepository)
+        verifyNoInteractions(requirementRepository)
+        verifyNoInteractions(appointmentRepository)
+        verifyNoInteractions(appointmentTypeRepository)
+    }
+
+    @Test
+    fun `nsi not found`() {
+        val appointment = CreateAppointment(
+            user,
+            CreateAppointment.Type.InitialAppointmentInOfficeNS,
+            ZonedDateTime.now().plusDays(1),
+            ZonedDateTime.now().plusDays(2),
+            interval = CreateAppointment.Interval.DAY,
+            uuid = uuid,
+            nsiId = 3
+        )
+
+        whenever(offenderManagerRepository.findByPersonCrnAndSoftDeletedIsFalseAndActiveIsTrue(PersonGenerator.PERSON_1.crn)).thenReturn(
+            OffenderManagerGenerator.OFFENDER_MANAGER_ACTIVE
+        )
+        whenever(nsiRepository.existsById(appointment.nsiId!!)).thenReturn(false)
+
+        val exception = assertThrows<NotFoundException> {
+            service.createAppointment(PersonGenerator.PERSON_1.crn, appointment)
+        }
+
+        assertThat(exception.message, equalTo("Nsi with nsiId of 3 not found"))
 
         verifyNoMoreInteractions(offenderManagerRepository)
         verifyNoMoreInteractions(eventSentenceRepository)

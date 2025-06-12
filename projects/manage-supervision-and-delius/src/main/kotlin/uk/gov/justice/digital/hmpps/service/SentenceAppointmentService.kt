@@ -14,6 +14,7 @@ import uk.gov.justice.digital.hmpps.exception.ConflictException
 import uk.gov.justice.digital.hmpps.exception.InvalidRequestException
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractionCode
+import uk.gov.justice.digital.hmpps.integrations.delius.compliance.NsiRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.RequirementRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.*
 import java.time.Duration
@@ -32,7 +33,8 @@ class SentenceAppointmentService(
     private val licenceConditionRepository: LicenceConditionRepository,
     private val staffUserRepository: StaffUserRepository,
     private val locationRepository: LocationRepository,
-    private val objectMapper: ObjectMapper
+    private val objectMapper: ObjectMapper,
+    private val nsiRepository: NsiRepository
 ) : AuditableService(auditedInteractionService) {
 
     fun createAppointment(
@@ -163,6 +165,10 @@ class SentenceAppointmentService(
 
         if (createAppointment.licenceConditionId != null && !licenceConditionRepository.existsById(createAppointment.licenceConditionId)) {
             throw NotFoundException("LicenceCondition", "licenceConditionId", createAppointment.licenceConditionId)
+        }
+
+        if (createAppointment.nsiId != null && !nsiRepository.existsById(createAppointment.nsiId)) {
+            throw NotFoundException("Nsi", "nsiId", createAppointment.nsiId)
         }
 
         val contactType = appointmentTypeRepository.getByCode(createAppointment.type.code)
