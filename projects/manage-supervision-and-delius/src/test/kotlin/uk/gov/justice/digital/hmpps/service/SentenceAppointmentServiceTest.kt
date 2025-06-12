@@ -384,8 +384,20 @@ class SentenceAppointmentServiceTest {
         ).thenReturn(1)
 
         whenever(appointmentRepository.saveAll<Appointment>(any()))
-            .thenReturn(listOf(Appointment(PersonGenerator.OVERVIEW, AppointmentGenerator.APPOINTMENT_TYPES[0], LocalDate.now(), ZonedDateTime.now(), 1234, 3457, 789,
-                ZonedDateTime.now())))
+            .thenReturn(
+                listOf(
+                    Appointment(
+                        PersonGenerator.OVERVIEW,
+                        AppointmentGenerator.APPOINTMENT_TYPES[0],
+                        LocalDate.now(),
+                        ZonedDateTime.now(),
+                        1234,
+                        3457,
+                        789,
+                        ZonedDateTime.now()
+                    )
+                )
+            )
 
         service.createAppointment(PersonGenerator.PERSON_1.crn, appointment)
     }
