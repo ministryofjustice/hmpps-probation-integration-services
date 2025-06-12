@@ -121,6 +121,10 @@ class SentenceAppointmentService(
             val appointments = createAppointments.map { it.withManager(om, userAndTeam, location) }
             val savedAppointments = appointmentRepository.saveAll(appointments)
             val createdAppointments = savedAppointments.map { CreatedAppointment(it.id) }
+
+            if (savedAppointments.isEmpty()) {
+                throw RuntimeException("appointments not created")
+            }
             audit["contactId"] = createdAppointments.joinToString { it.id.toString() }
 
             return@audit AppointmentDetail(createdAppointments)
@@ -196,6 +200,7 @@ class SentenceAppointmentService(
             urn,
             eventId = eventId,
             rqmntId = requirementId,
+            nsiId = nsiId,
             licConditionId = licenceConditionId,
             createdByUserId = staffAndTeam.userId,
             officeLocationId = location?.id
