@@ -13,6 +13,7 @@ interface RestrictionRepository : JpaRepository<Restriction, Long> {
     )
     fun findActiveRestrictions(personId: Long): List<Restriction>
 }
+
 interface ExclusionRepository : JpaRepository<Exclusion, Long> {
     @Query(
         """
