@@ -113,7 +113,12 @@ class CreateAppointmentIntegrationTest {
                 )
         )
             .andExpect(MockMvcResultMatchers.status().isBadRequest)
-            .andExpect(jsonPath("$.fields[0].message", equalTo("number of appointments must be greater than or equal to 1")))
+            .andExpect(
+                jsonPath(
+                    "$.fields[0].message",
+                    equalTo("number of appointments must be greater than or equal to 1")
+                )
+            )
     }
 
     @ParameterizedTest
