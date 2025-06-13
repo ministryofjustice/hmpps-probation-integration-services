@@ -12,6 +12,7 @@ import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.Mockito.verifyNoMoreInteractions
 import org.mockito.junit.jupiter.MockitoExtension
+import org.mockito.kotlin.any
 import org.mockito.kotlin.verifyNoInteractions
 import org.mockito.kotlin.whenever
 import uk.gov.justice.digital.hmpps.api.model.appointment.CreateAppointment
@@ -27,6 +28,8 @@ import uk.gov.justice.digital.hmpps.integrations.delius.compliance.NsiRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.ContactType
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.RequirementRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.*
+import java.time.LocalDate
+import uk.gov.justice.digital.hmpps.data.generator.AppointmentGenerator
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
@@ -383,6 +386,22 @@ class SentenceAppointmentServiceTest {
                 appointment.end.format(DateTimeFormatter.ISO_LOCAL_TIME.withZone(ZoneId.systemDefault()))
             )
         ).thenReturn(1)
+
+        whenever(appointmentRepository.saveAll<Appointment>(any()))
+            .thenReturn(
+                listOf(
+                    Appointment(
+                        PersonGenerator.OVERVIEW,
+                        AppointmentGenerator.APPOINTMENT_TYPES[0],
+                        LocalDate.now(),
+                        ZonedDateTime.now(),
+                        1234,
+                        3457,
+                        789,
+                        ZonedDateTime.now()
+                    )
+                )
+            )
 
         service.createAppointment(PersonGenerator.PERSON_1.crn, appointment)
     }

@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.api.model.appointment
 
 import com.fasterxml.jackson.annotation.JsonIgnore
+import jakarta.validation.constraints.Positive
 import java.time.ZonedDateTime
 import java.util.*
 
@@ -10,6 +11,7 @@ data class CreateAppointment(
     val start: ZonedDateTime,
     val end: ZonedDateTime,
     val interval: Interval = Interval.DAY,
+    @field:Positive(message = "number of appointments must be greater than or equal to 1")
     val numberOfAppointments: Int = 1,
     val eventId: Long? = null,
     val uuid: UUID,

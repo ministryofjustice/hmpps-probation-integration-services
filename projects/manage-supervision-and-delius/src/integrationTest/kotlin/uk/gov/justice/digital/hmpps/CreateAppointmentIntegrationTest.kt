@@ -94,6 +94,33 @@ class CreateAppointmentIntegrationTest {
             .andExpect(jsonPath("$.message", equalTo("Appointment end time cannot be before start time")))
     }
 
+    @Test
+    fun `number of appointments set to 0`() {
+        mockMvc.perform(
+            post("/appointment/${PersonGenerator.PERSON_1.crn}")
+                .withToken()
+                .withJson(
+                    CreateAppointment(
+                        user,
+                        CreateAppointment.Type.InitialAppointmentInOfficeNS,
+                        ZonedDateTime.now().plusDays(1),
+                        ZonedDateTime.now().plusDays(1).plusHours(1),
+                        interval = CreateAppointment.Interval.DAY,
+                        numberOfAppointments = 0,
+                        PersonGenerator.EVENT_1.id,
+                        UUID.randomUUID()
+                    )
+                )
+        )
+            .andExpect(MockMvcResultMatchers.status().isBadRequest)
+            .andExpect(
+                jsonPath(
+                    "$.fields[0].message",
+                    equalTo("number of appointments must be greater than or equal to 1")
+                )
+            )
+    }
+
     @ParameterizedTest
     @MethodSource("createAppointment")
     fun `create a new appointment`(createAppointment: CreateAppointment) {
@@ -116,6 +143,7 @@ class CreateAppointmentIntegrationTest {
         assertThat(appointment.staffId, equalTo(STAFF_1.id))
         assertThat(appointment.probationAreaId, equalTo(DEFAULT_PROVIDER.id))
         assertThat(appointment.officeLocationId, equalTo(DEFAULT_LOCATION.id))
+        assertThat(appointment.nsiId, equalTo(createAppointment.nsiId))
 
 
         appointmentRepository.delete(appointment)
