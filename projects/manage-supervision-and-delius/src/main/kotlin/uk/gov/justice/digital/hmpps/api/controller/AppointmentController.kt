@@ -29,6 +29,10 @@ class AppointmentController(
     fun createAppointment(@PathVariable crn: String, @Valid @RequestBody createAppointment: CreateAppointment) =
         sentenceAppointmentService.createAppointment(crn, createAppointment)
 
+    @PostMapping("/{crn}/check")
+    fun checkAppointment(@PathVariable crn: String, @RequestBody createAppointment: CreateAppointment) =
+        sentenceAppointmentService.checkAppointment(crn, createAppointment)
+
     @PatchMapping
     @ResponseStatus(HttpStatus.OK)
     fun recordOutcome(@RequestBody outcome: Outcome) = appointmentOutcomeService.recordOutcome(outcome)

@@ -5,3 +5,4 @@ generic-service:
     SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK_SET_URI: https://sign-in.hmpps.service.justice.gov.uk/auth/.well-known/jwks.json
     INTEGRATIONS_ALFRESCO_URL: https://alfresco.probation.service.justice.gov.uk/alfresco/service/noms-spg
     INTEGRATIONS_PROBATION-SEARCH_URL: https://probation-offender-search.hmpps.service.justice.gov.uk
+    GOV_UK_URL: https://www.gov.uk
