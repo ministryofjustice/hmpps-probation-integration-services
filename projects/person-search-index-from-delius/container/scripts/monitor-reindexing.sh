@@ -30,18 +30,18 @@ if [ -z "$INDEX_PREFIX" ]; then help 'Missing -i'; fi
 if [ -z "$REINDEXING_TIMEOUT" ]; then help 'Missing -t'; fi
 
 function stop_logstash() {
-    exit_code=$?
-    echo 'Printing final stats...'
-    curl --silent localhost:9600/_node/stats
-    if [ "$exit_code" = '0' ]; then
-      echo 'Gracefully stopping Logstash process...'
-      pgrep java | xargs -n1 kill -TERM
-    else
-      echo 'Killing Logstash process...'
-      _sentry_err_trap "${BASH_COMMAND:-unknown}" "$exit_code"
-      pgrep java | xargs -n1 kill -KILL
-    fi
-    exit "$exit_code"
+  exit_code=$?
+  echo 'Printing final stats...'
+  curl --silent localhost:9600/_node/stats
+  if [ "$exit_code" = '0' ]; then
+    echo 'Gracefully stopping Logstash process...'
+    pgrep java | xargs -n1 kill -TERM
+  else
+    echo 'Killing Logstash process...'
+    _sentry_err_trap "${BASH_COMMAND:-unknown}" "$exit_code"
+    pgrep java | xargs -n1 kill -KILL
+  fi
+  exit "$exit_code"
 }
 trap stop_logstash EXIT
 
@@ -55,39 +55,6 @@ function get_current_indices() {
   if [ -z "$PRIMARY_INDEX" ] || [ -z "$STANDBY_INDEX" ] || [ "$PRIMARY_INDEX" = 'error' ] || [ "$STANDBY_INDEX" = 'error' ]; then
     fail "Unable to get index aliases."
   fi
-}
-
-function delete_ready_for_reindex() {
-  echo "Deleting ${STANDBY_INDEX} ready for indexing ..."
-  curl_json -XDELETE "${SEARCH_URL}/${STANDBY_INDEX}"
-  curl_json -XPUT "${SEARCH_URL}/${STANDBY_INDEX}" --data '{"aliases": {"'"${INDEX_PREFIX}-standby"'": {}}}'
-}
-
-function wait_for_index_to_complete() {
-  echo 'Waiting for indexing to complete ...'
-  SECONDS=0
-  get_status
-  until [ "$(jq '._source.indexReady' <<< "$STATUS")" = 'true' ]; do
-    if [ "$SECONDS" -gt "$REINDEXING_TIMEOUT" ]; then fail "Indexing process timed out after ${SECONDS}s." 'ProbationSearchIndexFailure'; fi
-    sleep 60
-    get_status
-  done
-  COUNT=$(curl_json "${SEARCH_URL}/${STANDBY_INDEX}/_count" | jq '.count')
-  echo "Indexing complete. The $STANDBY_INDEX index now has $COUNT documents"
-}
-
-function switch_aliases() {
-  echo 'Switching aliases ...'
-  curl_json "${SEARCH_URL}/_aliases" --data '{
-    "actions": [
-      { "remove": { "index": "'"${PRIMARY_INDEX}"'", "alias": "'"${INDEX_PREFIX}-primary"'" }},
-      { "remove": { "index": "'"${STANDBY_INDEX}"'", "alias": "'"${INDEX_PREFIX}-standby"'" }},
-      { "add": { "index": "'"${STANDBY_INDEX}"'", "alias": "'"${INDEX_PREFIX}-primary"'" }},
-      { "add": { "index": "'"${PRIMARY_INDEX}"'", "alias": "'"${INDEX_PREFIX}-standby"'" }}
-    ]
-  }'
-  echo "$STANDBY_INDEX is now the primary index, and $PRIMARY_INDEX is the standby"
-  track_custom_event 'ProbationSearchIndexCompleted' '{"indexName": "'"$STANDBY_INDEX"'", "duration": "'"$SECONDS"'", "count": "'"$COUNT"'"}'
 }
 
 function get_status() {
@@ -109,7 +76,15 @@ function partially_completed() {
   fi
 }
 
-function resume_indexing() {
+function prepare_to_begin_indexing() {
+  echo "Deleting and re-creating ${STANDBY_INDEX} ..."
+  curl_json -XDELETE "${SEARCH_URL}/${STANDBY_INDEX}"
+  curl_json -XPUT "${SEARCH_URL}/${STANDBY_INDEX}" --data '{"aliases": {"'"${INDEX_PREFIX}-standby"'": {}}}'
+  echo "Increasing refresh interval ..."
+  curl_json -XPUT "${SEARCH_URL}/${STANDBY_INDEX}/_settings" --data '{"index": {"refresh_interval": "900s"}}'
+}
+
+function prepare_to_resume_indexing() {
   if [ -z "$STATUS" ]; then get_status; fi
   next_value=$(jq '._source.nextValue' <<< "$STATUS")
   resume_from_id=$((next_value-1))
@@ -118,13 +93,42 @@ function resume_indexing() {
   echo '--- !ruby/object:BigDecimal '"'0:$(printf "0.%se%d" "$resume_from_id" "${#resume_from_id}")'" > /usr/share/logstash/data/plugins/inputs/jdbc/logstash_jdbc_last_run
 }
 
-get_current_indices
-if partially_completed; then
-  resume_indexing
-else
-  delete_ready_for_reindex
-fi
-wait_for_index_to_complete
-switch_aliases
+function wait_for_indexing_to_complete() {
+  echo 'Waiting for indexing to complete ...'
+  SECONDS=0
+  get_status
+  until [ "$(jq '._source.indexReady' <<< "$STATUS")" = 'true' ]; do
+    if [ "$SECONDS" -gt "$REINDEXING_TIMEOUT" ]; then fail "Indexing process timed out after ${SECONDS}s." 'ProbationSearchIndexFailure'; fi
+    sleep 60
+    get_status
+  done
+  COUNT=$(curl_json "${SEARCH_URL}/${STANDBY_INDEX}/_count" | jq '.count')
+  echo "Indexing is complete. The $STANDBY_INDEX index now has $COUNT documents"
 
-exit 0
+  echo 'Merging segments to improve performance ...'
+  curl_json -XPOST "${SEARCH_URL}/${STANDBY_INDEX}/_forcemerge"
+  echo 'Resetting refresh interval ...'
+  curl_json -XPUT "${SEARCH_URL}/${STANDBY_INDEX}/_settings" --data '{"index": {"refresh_interval": "1s"}}'
+  echo 'Switching aliases ...'
+  curl_json "${SEARCH_URL}/_aliases" --data '{
+    "actions": [
+      { "remove": { "index": "'"${PRIMARY_INDEX}"'", "alias": "'"${INDEX_PREFIX}-primary"'" }},
+      { "remove": { "index": "'"${STANDBY_INDEX}"'", "alias": "'"${INDEX_PREFIX}-standby"'" }},
+      { "add": { "index": "'"${STANDBY_INDEX}"'", "alias": "'"${INDEX_PREFIX}-primary"'" }},
+      { "add": { "index": "'"${PRIMARY_INDEX}"'", "alias": "'"${INDEX_PREFIX}-standby"'" }}
+    ]
+  }'
+  echo "$STANDBY_INDEX is now the primary index, and $PRIMARY_INDEX is the standby"
+  track_custom_event 'ProbationSearchIndexCompleted' '{"indexName": "'"$STANDBY_INDEX"'", "duration": "'"$SECONDS"'", "count": "'"$COUNT"'"}'
+  exit 0
+}
+
+
+get_current_indices
+
+if partially_completed
+  then prepare_to_resume_indexing
+  else prepare_to_begin_indexing
+fi
+
+wait_for_indexing_to_complete
