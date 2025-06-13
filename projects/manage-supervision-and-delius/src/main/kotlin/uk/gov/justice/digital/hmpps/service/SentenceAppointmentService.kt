@@ -16,6 +16,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractio
 import uk.gov.justice.digital.hmpps.integrations.delius.compliance.NsiRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.RequirementRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.*
+import java.time.DayOfWeek
 import java.time.Duration
 import java.time.LocalDate
 import java.time.ZonedDateTime
@@ -56,6 +57,11 @@ class SentenceAppointmentService(
     }
 
     private fun nonWorkingDay(date: LocalDate): String? {
+
+        if(listOf(DayOfWeek.SATURDAY, DayOfWeek.SUNDAY).contains(date.dayOfWeek)){
+            return date.dayOfWeek.name.lowercase().replaceFirstChar(Char::titlecase)
+        }
+
         return try {
             bankHolidayClient.getBankHolidays().englandAndWales.events.firstOrNull { it.date == date }?.title
         } catch (ex: Exception) {

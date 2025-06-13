@@ -179,6 +179,30 @@ class CheckAppointmentIntegrationTest {
                     isWithinOneHourOfMeetingWith = null,
                     overlapsWithMeetingWith = null
                 ), true
+            ),
+            Arguments.of(
+                named(
+                    "the appointment is on a Saturday",
+                    ZonedDateTime.of(2025, 6, 14, 11, 0, 0, 0, EuropeLondon)
+                ),
+                ZonedDateTime.of(2025, 6, 14, 12, 0, 0, 0, EuropeLondon),
+                AppointmentChecks(
+                    nonWorkingDayName = "Saturday",
+                    isWithinOneHourOfMeetingWith = null,
+                    overlapsWithMeetingWith = null
+                ), true
+            ),
+            Arguments.of(
+                named(
+                    "the appointment is on a Sunday",
+                    ZonedDateTime.of(2025, 6, 15, 11, 0, 0, 0, EuropeLondon)
+                ),
+                ZonedDateTime.of(2025, 6, 15, 12, 0, 0, 0, EuropeLondon),
+                AppointmentChecks(
+                    nonWorkingDayName = "Sunday",
+                    isWithinOneHourOfMeetingWith = null,
+                    overlapsWithMeetingWith = null
+                ), true
             )
         )
     }
