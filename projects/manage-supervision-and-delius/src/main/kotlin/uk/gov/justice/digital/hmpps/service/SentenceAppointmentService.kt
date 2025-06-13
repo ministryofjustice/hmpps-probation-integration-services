@@ -2,12 +2,11 @@ package uk.gov.justice.digital.hmpps.service
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.springframework.stereotype.Service
-import uk.gov.justice.digital.hmpps.api.model.appointment.AppointmentDetail
-import uk.gov.justice.digital.hmpps.api.model.appointment.CreateAppointment
-import uk.gov.justice.digital.hmpps.api.model.appointment.CreatedAppointment
-import uk.gov.justice.digital.hmpps.api.model.appointment.OverlappingAppointment
+import uk.gov.justice.digital.hmpps.api.model.Name
+import uk.gov.justice.digital.hmpps.api.model.appointment.*
 import uk.gov.justice.digital.hmpps.audit.service.AuditableService
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
+import uk.gov.justice.digital.hmpps.client.BankHolidayClient
 import uk.gov.justice.digital.hmpps.datetime.DeliusDateTimeFormatter
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.exception.ConflictException
@@ -34,8 +33,47 @@ class SentenceAppointmentService(
     private val staffUserRepository: StaffUserRepository,
     private val locationRepository: LocationRepository,
     private val objectMapper: ObjectMapper,
-    private val nsiRepository: NsiRepository
+    private val nsiRepository: NsiRepository,
+    private val bankHolidayClient: BankHolidayClient
 ) : AuditableService(auditedInteractionService) {
+
+    private fun getOverlaps(
+        personId: Long,
+        start: ZonedDateTime,
+        end: ZonedDateTime
+    ): Pair<List<StaffAppointment>, List<StaffAppointment>> {
+        val withinHourOf = 1L
+        val overlaps = appointmentRepository.staffAppointmentClashes(
+            personId,
+            start.toLocalDate(),
+            start.minusHours(withinHourOf),
+            end.plusHours(withinHourOf)
+        )
+        return overlaps.partition {
+            it.startDateTime.atZone(EuropeLondon).isBefore(end) &&
+                it.endDateTime?.atZone(EuropeLondon)?.isAfter(start) == true
+        }
+    }
+
+    private fun nonWorkingDay(date: LocalDate): String? {
+        return try {
+            bankHolidayClient.getBankHolidays().englandAndWales.events.firstOrNull { it.date == date }?.title
+        } catch (ex: Exception) {
+            null
+        }
+    }
+
+    fun checkAppointment(crn: String, createAppointment: CreateAppointment): AppointmentChecks {
+        val om = offenderManagerRepository.getByCrn(crn)
+        val overlaps = getOverlaps(om.person.id, createAppointment.start, createAppointment.end)
+        return AppointmentChecks(
+            nonWorkingDayName = nonWorkingDay(createAppointment.start.toLocalDate()),
+            overlapsWithMeetingWith = overlaps.first.firstOrNull()
+                ?.let { Name(forename = it.forename, surname = it.surname) },
+            isWithinOneHourOfMeetingWith = overlaps.second.firstOrNull()
+                ?.let { Name(forename = it.forename, surname = it.surname) },
+        )
+    }
 
     fun createAppointment(
         crn: String,

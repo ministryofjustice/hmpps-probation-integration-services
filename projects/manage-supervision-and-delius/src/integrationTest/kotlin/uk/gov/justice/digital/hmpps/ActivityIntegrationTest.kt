@@ -98,7 +98,7 @@ internal class ActivityIntegrationTest {
             .andReturn().response.contentAsJson<PersonActivity>()
 
         assertThat(res.personSummary.crn, equalTo(person.crn))
-        assertThat(res.activities.size, equalTo(8))
+        assertThat(res.activities.size, equalTo(9))
         assertThat(res.activities[0].isCommunication, equalTo(false))
         assertThat(res.activities[0].isSystemContact, equalTo(false))
         assertThat(res.activities[1].id, equalTo(ContactGenerator.FIRST_APPT_CONTACT.toActivity().id))

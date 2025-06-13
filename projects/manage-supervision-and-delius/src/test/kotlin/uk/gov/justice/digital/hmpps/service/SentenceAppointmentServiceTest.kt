@@ -17,6 +17,7 @@ import org.mockito.kotlin.whenever
 import uk.gov.justice.digital.hmpps.api.model.appointment.CreateAppointment
 import uk.gov.justice.digital.hmpps.api.model.appointment.User
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
+import uk.gov.justice.digital.hmpps.client.BankHolidayClient
 import uk.gov.justice.digital.hmpps.data.generator.OffenderManagerGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.exception.ConflictException
@@ -63,6 +64,9 @@ class SentenceAppointmentServiceTest {
 
     @Mock
     lateinit var nsiRepository: NsiRepository
+
+    @Mock
+    lateinit var bankHolidayClient: BankHolidayClient
 
     @Mock
     lateinit var objectMapper: ObjectMapper
