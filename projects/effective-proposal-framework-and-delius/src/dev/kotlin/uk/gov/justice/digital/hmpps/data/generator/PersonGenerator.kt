@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
+import uk.gov.justice.digital.hmpps.entity.LimitedAccessPerson
 import uk.gov.justice.digital.hmpps.epf.entity.Person
 import uk.gov.justice.digital.hmpps.epf.entity.ReferenceData
 import java.time.LocalDate
@@ -40,4 +41,6 @@ object PersonGenerator {
         description: String = "$code description",
         id: Long = IdGenerator.getAndIncrement()
     ) = ReferenceData(id, code, description)
+
+    fun Person.asLaoPerson() = LimitedAccessPerson(crn, null, null, id)
 }
