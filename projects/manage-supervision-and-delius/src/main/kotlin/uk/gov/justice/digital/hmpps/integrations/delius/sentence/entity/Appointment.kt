@@ -129,7 +129,7 @@ interface AppointmentRepository : JpaRepository<Appointment, Long> {
         """
             select s.forename, s.surname,
             to_date(to_char(c.contact_date, 'yyyy-mm-dd') || ' ' || to_char(c.contact_start_time, 'hh24:mi'), 'yyyy-mm-dd hh24:mi') as startDateTime,
-            to_date(to_char(c.contact_date, 'yyyy-mm-dd') || ' ' || to_char(c.contact_end_time, 'hh24:mi:ss'), 'yyyy-mm-dd hh24:mi') as endDateTime
+            to_date(to_char(c.contact_date, 'yyyy-mm-dd') || ' ' || to_char(c.contact_end_time, 'hh24:mi'), 'yyyy-mm-dd hh24:mi') as endDateTime
             from contact c
             join staff s on s.staff_id = c.staff_id
             join r_contact_type ct on c.contact_type_id = ct.contact_type_id
@@ -138,7 +138,7 @@ interface AppointmentRepository : JpaRepository<Appointment, Long> {
             and c.contact_start_time is not null
             and to_char(c.contact_date, 'YYYY-MM-DD') = :date
             and (c.contact_start_time is null or to_date(to_char(c.contact_date, 'yyyy-mm-dd') || ' ' || to_char(c.contact_start_time, 'hh24:mi'), 'yyyy-mm-dd hh24:mi') < to_date(to_char(c.contact_date, 'yyyy-mm-dd') || ' ' || :endTime , 'yyyy-mm-dd hh24:mi'))
-            and (c.contact_end_time is null or to_date(to_char(c.contact_date, 'yyyy-mm-dd') || ' ' || to_char(c.contact_end_time, 'hh24:mi:ss'), 'yyyy-mm-dd hh24:mi') > to_date(to_char(c.contact_date, 'yyyy-mm-dd') || ' ' || :startTime , 'yyyy-mm-dd hh24:mi'))
+            and (c.contact_end_time is null or to_date(to_char(c.contact_date, 'yyyy-mm-dd') || ' ' || to_char(c.contact_end_time, 'hh24:mi'), 'yyyy-mm-dd hh24:mi') > to_date(to_char(c.contact_date, 'yyyy-mm-dd') || ' ' || :startTime , 'yyyy-mm-dd hh24:mi'))
             and c.soft_deleted = 0 and c.contact_outcome_type_id is null
         """,
         nativeQuery = true
