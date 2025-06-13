@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta http-equiv="x-ua-compatible" content="IE=edge"/>
+<title>Test results - Test Summary</title>
+<link href="css/base-style.css" rel="stylesheet" type="text/css"/>
+<link href="css/style.css" rel="stylesheet" type="text/css"/>
+<script src="js/report.js" type="text/javascript"></script>
+</head>
+<body>
+<div id="content">
+<h1>Test Summary</h1>
+<div id="summary">
+<table>
+<tr>
+<td>
+<div class="summaryGroup">
+<table>
+<tr>
+<td>
+<div class="infoBox" id="tests">
+<div class="counter">179</div>
+<p>tests</p>
+</div>
+</td>
+<td>
+<div class="infoBox" id="failures">
+<div class="counter">9</div>
+<p>failures</p>
+</div>
+</td>
+<td>
+<div class="infoBox" id="ignored">
+<div class="counter">0</div>
+<p>ignored</p>
+</div>
+</td>
+<td>
+<div class="infoBox" id="duration">
+<div class="counter">22.616s</div>
+<p>duration</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</td>
+<td>
+<div class="infoBox failures" id="successRate">
+<div class="percent">94%</div>
+<p>successful</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="tab-container">
+<ul class="tabLinks">
+<li>
+<a href="#">Failed tests</a>
+</li>
+<li>
+<a href="#">Packages</a>
+</li>
+<li>
+<a href="#">Classes</a>
+</li>
+</ul>
+<div class="tab">
+<h2>Failed tests</h2>
+<ul class="linkList">
+<li>
+<a href="classes/uk.gov.justice.digital.hmpps.CheckAppointmentIntegrationTest.html">CheckAppointmentIntegrationTest</a>.
+<a href="classes/uk.gov.justice.digital.hmpps.CheckAppointmentIntegrationTest.html#appointment checks are performed(ZonedDateTime, ZonedDateTime, AppointmentChecks, boolean)[1]">[1] start=the appointment is within 1 hour before an existing meeting at 9:00 to 10:00, end=2024-11-27T08:45Z[Europe/London], expected=AppointmentChecks(nonWorkingDayName=null, isWithinOneHourOfMeetingWith=Name(forename=John, middleName=null, surname=Smith), overlapsWithMeetingWith=null), forceFailBankHolidayCall=false</a>
+</li>
+<li>
+<a href="classes/uk.gov.justice.digital.hmpps.CheckAppointmentIntegrationTest.html">CheckAppointmentIntegrationTest</a>.
+<a href="classes/uk.gov.justice.digital.hmpps.CheckAppointmentIntegrationTest.html#appointment checks are performed(ZonedDateTime, ZonedDateTime, AppointmentChecks, boolean)[2]">[2] start=the appointment is within 1 hour before an existing meeting at 9:00 to 10:00, end=2024-11-27T11:00Z[Europe/London], expected=AppointmentChecks(nonWorkingDayName=null, isWithinOneHourOfMeetingWith=Name(forename=John, middleName=null, surname=Smith), overlapsWithMeetingWith=null), forceFailBankHolidayCall=false</a>
+</li>
+<li>
+<a href="classes/uk.gov.justice.digital.hmpps.CheckAppointmentIntegrationTest.html">CheckAppointmentIntegrationTest</a>.
+<a href="classes/uk.gov.justice.digital.hmpps.CheckAppointmentIntegrationTest.html#appointment checks are performed(ZonedDateTime, ZonedDateTime, AppointmentChecks, boolean)[3]">[3] start=the appointment is within 1 hour after an existing meeting at 9:00 to 10:00, end=2024-11-27T11:15Z[Europe/London], expected=AppointmentChecks(nonWorkingDayName=null, isWithinOneHourOfMeetingWith=Name(forename=John, middleName=null, surname=Smith), overlapsWithMeetingWith=null), forceFailBankHolidayCall=false</a>
+</li>
+<li>
+<a href="classes/uk.gov.justice.digital.hmpps.CheckAppointmentIntegrationTest.html">CheckAppointmentIntegrationTest</a>.
+<a href="classes/uk.gov.justice.digital.hmpps.CheckAppointmentIntegrationTest.html#appointment checks are performed(ZonedDateTime, ZonedDateTime, AppointmentChecks, boolean)[4]">[4] start=the appointment is the same time as an existing meeting at 9:00 to 10:00, end=2024-11-27T10:00Z[Europe/London], expected=AppointmentChecks(nonWorkingDayName=null, isWithinOneHourOfMeetingWith=null, overlapsWithMeetingWith=Name(forename=John, middleName=null, surname=Smith)), forceFailBankHolidayCall=false</a>
+</li>
+<li>
+<a href="classes/uk.gov.justice.digital.hmpps.CheckAppointmentIntegrationTest.html">CheckAppointmentIntegrationTest</a>.
+<a href="classes/uk.gov.justice.digital.hmpps.CheckAppointmentIntegrationTest.html#appointment checks are performed(ZonedDateTime, ZonedDateTime, AppointmentChecks, boolean)[5]">[5] start=the appointment is overlaps the start of the existing meeting at 9:00 to 10:00, end=2024-11-27T09:15Z[Europe/London], expected=AppointmentChecks(nonWorkingDayName=null, isWithinOneHourOfMeetingWith=null, overlapsWithMeetingWith=Name(forename=John, middleName=null, surname=Smith)), forceFailBankHolidayCall=false</a>
+</li>
+<li>
+<a href="classes/uk.gov.justice.digital.hmpps.CheckAppointmentIntegrationTest.html">CheckAppointmentIntegrationTest</a>.
+<a href="classes/uk.gov.justice.digital.hmpps.CheckAppointmentIntegrationTest.html#appointment checks are performed(ZonedDateTime, ZonedDateTime, AppointmentChecks, boolean)[6]">[6] start=the appointment is overlaps the end of the existing meeting at 9:00 to 10:00, end=2024-11-27T10:15Z[Europe/London], expected=AppointmentChecks(nonWorkingDayName=null, isWithinOneHourOfMeetingWith=null, overlapsWithMeetingWith=Name(forename=John, middleName=null, surname=Smith)), forceFailBankHolidayCall=false</a>
+</li>
+<li>
+<a href="classes/uk.gov.justice.digital.hmpps.CheckAppointmentIntegrationTest.html">CheckAppointmentIntegrationTest</a>.
+<a href="classes/uk.gov.justice.digital.hmpps.CheckAppointmentIntegrationTest.html#appointment checks are performed(ZonedDateTime, ZonedDateTime, AppointmentChecks, boolean)[7]">[7] start=the appointment is outside of an hour before the start of the existing meeting at 9:00 to 10:00, end=2024-11-27T08:00Z[Europe/London], expected=AppointmentChecks(nonWorkingDayName=null, isWithinOneHourOfMeetingWith=null, overlapsWithMeetingWith=null), forceFailBankHolidayCall=false</a>
+</li>
+<li>
+<a href="classes/uk.gov.justice.digital.hmpps.CheckAppointmentIntegrationTest.html">CheckAppointmentIntegrationTest</a>.
+<a href="classes/uk.gov.justice.digital.hmpps.CheckAppointmentIntegrationTest.html#appointment checks are performed(ZonedDateTime, ZonedDateTime, AppointmentChecks, boolean)[8]">[8] start=the appointment is inside of an hour (1 min) before the start of the existing meeting at 9:00 to 10:00, end=2024-11-27T08:01Z[Europe/London], expected=AppointmentChecks(nonWorkingDayName=null, isWithinOneHourOfMeetingWith=Name(forename=John, middleName=null, surname=Smith), overlapsWithMeetingWith=null), forceFailBankHolidayCall=false</a>
+</li>
+<li>
+<a href="classes/uk.gov.justice.digital.hmpps.CheckAppointmentIntegrationTest.html">CheckAppointmentIntegrationTest</a>.
+<a href="classes/uk.gov.justice.digital.hmpps.CheckAppointmentIntegrationTest.html#appointment checks are performed(ZonedDateTime, ZonedDateTime, AppointmentChecks, boolean)[9]">[9] start=the appointment is outside of an hour before the start of the existing meeting at 9:00 to 10:00, end=2024-11-27T12:00Z[Europe/London], expected=AppointmentChecks(nonWorkingDayName=null, isWithinOneHourOfMeetingWith=null, overlapsWithMeetingWith=null), forceFailBankHolidayCall=false</a>
+</li>
+</ul>
+</div>
+<div class="tab">
+<h2>Packages</h2>
+<table>
+<thead>
+<tr>
+<th>Package</th>
+<th>Tests</th>
+<th>Failures</th>
+<th>Ignored</th>
+<th>Duration</th>
+<th>Success rate</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="failures">
+<a href="packages/uk.gov.justice.digital.hmpps.html">uk.gov.justice.digital.hmpps</a>
+</td>
+<td>179</td>
+<td>9</td>
+<td>0</td>
+<td>22.616s</td>
+<td class="failures">94%</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="tab">
+<h2>Classes</h2>
+<table>
+<thead>
+<tr>
+<th>Class</th>
+<th>Tests</th>
+<th>Failures</th>
+<th>Ignored</th>
+<th>Duration</th>
+<th>Success rate</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="success">
+<a href="classes/uk.gov.justice.digital.hmpps.ActivityIntegrationTest.html">uk.gov.justice.digital.hmpps.ActivityIntegrationTest</a>
+</td>
+<td>2</td>
+<td>0</td>
+<td>0</td>
+<td>1.861s</td>
+<td class="success">100%</td>
+</tr>
+<tr>
+<td class="success">
+<a href="classes/uk.gov.justice.digital.hmpps.AppointmentIntegrationTest.html">uk.gov.justice.digital.hmpps.AppointmentIntegrationTest</a>
+</td>
+<td>8</td>
+<td>0</td>
+<td>0</td>
+<td>0.492s</td>
+<td class="success">100%</td>
+</tr>
+<tr>
+<td class="success">
+<a href="classes/uk.gov.justice.digital.hmpps.AppointmentOutcomeIntegrationTest.html">uk.gov.justice.digital.hmpps.AppointmentOutcomeIntegrationTest</a>
+</td>
+<td>4</td>
+<td>0</td>
+<td>0</td>
+<td>0.404s</td>
+<td class="success">100%</td>
+</tr>
+<tr>
+<td class="failures">
+<a href="classes/uk.gov.justice.digital.hmpps.CheckAppointmentIntegrationTest.html">uk.gov.justice.digital.hmpps.CheckAppointmentIntegrationTest</a>
+</td>
+<td>13</td>
+<td>9</td>
+<td>0</td>
+<td>0.588s</td>
+<td class="failures">30%</td>
+</tr>
+<tr>
+<td class="success">
+<a href="classes/uk.gov.justice.digital.hmpps.ComplianceIntegrationTest.html">uk.gov.justice.digital.hmpps.ComplianceIntegrationTest</a>
+</td>
+<td>3</td>
+<td>0</td>
+<td>0</td>
+<td>0.198s</td>
+<td class="success">100%</td>
+</tr>
+<tr>
+<td class="success">
+<a href="classes/uk.gov.justice.digital.hmpps.ContactIntegrationTest.html">uk.gov.justice.digital.hmpps.ContactIntegrationTest</a>
+</td>
+<td>4</td>
+<td>0</td>
+<td>0</td>
+<td>0.232s</td>
+<td class="success">100%</td>
+</tr>
+<tr>
+<td class="success">
+<a href="classes/uk.gov.justice.digital.hmpps.CreateAppointmentIntegrationTest.html">uk.gov.justice.digital.hmpps.CreateAppointmentIntegrationTest</a>
+</td>
+<td>9</td>
+<td>0</td>
+<td>0</td>
+<td>0.317s</td>
+<td class="success">100%</td>
+</tr>
+<tr>
+<td class="success">
+<a href="classes/uk.gov.justice.digital.hmpps.DocumentsIntegrationTest.html">uk.gov.justice.digital.hmpps.DocumentsIntegrationTest</a>
+</td>
+<td>12</td>
+<td>0</td>
+<td>0</td>
+<td>2.371s</td>
+<td class="success">100%</td>
+</tr>
+<tr>
+<td class="success">
+<a href="classes/uk.gov.justice.digital.hmpps.LaoCaseloadIntegrationTest.html">uk.gov.justice.digital.hmpps.LaoCaseloadIntegrationTest</a>
+</td>
+<td>3</td>
+<td>0</td>
+<td>0</td>
+<td>0.269s</td>
+<td class="success">100%</td>
+</tr>
+<tr>
+<td class="success">
+<a href="classes/uk.gov.justice.digital.hmpps.LicenceConditionIntegrationTest.html">uk.gov.justice.digital.hmpps.LicenceConditionIntegrationTest</a>
+</td>
+<td>4</td>
+<td>0</td>
+<td>0</td>
+<td>0.070s</td>
+<td class="success">100%</td>
+</tr>
+<tr>
+<td class="success">
+<a href="classes/uk.gov.justice.digital.hmpps.OffenceIntegrationTest.html">uk.gov.justice.digital.hmpps.OffenceIntegrationTest</a>
+</td>
+<td>4</td>
+<td>0</td>
+<td>0</td>
+<td>0.086s</td>
+<td class="success">100%</td>
+</tr>
+<tr>
+<td class="success">
+<a href="classes/uk.gov.justice.digital.hmpps.OrderIntegrationTest.html">uk.gov.justice.digital.hmpps.OrderIntegrationTest</a>
+</td>
+<td>6</td>
+<td>0</td>
+<td>0</td>
+<td>0.175s</td>
+<td class="success">100%</td>
+</tr>
+<tr>
+<td class="success">
+<a href="classes/uk.gov.justice.digital.hmpps.OverviewIntegrationTest.html">uk.gov.justice.digital.hmpps.OverviewIntegrationTest</a>
+</td>
+<td>3</td>
+<td>0</td>
+<td>0</td>
+<td>0.235s</td>
+<td class="success">100%</td>
+</tr>
+<tr>
+<td class="success">
+<a href="classes/uk.gov.justice.digital.hmpps.PersonalDetailsIntegrationTest.html">uk.gov.justice.digital.hmpps.PersonalDetailsIntegrationTest</a>
+</td>
+<td>37</td>
+<td>0</td>
+<td>0</td>
+<td>12.611s</td>
+<td class="success">100%</td>
+</tr>
+<tr>
+<td class="success">
+<a href="classes/uk.gov.justice.digital.hmpps.ProbationHistoryIntegrationTest.html">uk.gov.justice.digital.hmpps.ProbationHistoryIntegrationTest</a>
+</td>
+<td>2</td>
+<td>0</td>
+<td>0</td>
+<td>0.080s</td>
+<td class="success">100%</td>
+</tr>
+<tr>
+<td class="success">
+<a href="classes/uk.gov.justice.digital.hmpps.RequirementIntegrationTest.html">uk.gov.justice.digital.hmpps.RequirementIntegrationTest</a>
+</td>
+<td>3</td>
+<td>0</td>
+<td>0</td>
+<td>0.081s</td>
+<td class="success">100%</td>
+</tr>
+<tr>
+<td class="success">
+<a href="classes/uk.gov.justice.digital.hmpps.RiskFlagIntegrationTest.html">uk.gov.justice.digital.hmpps.RiskFlagIntegrationTest</a>
+</td>
+<td>6</td>
+<td>0</td>
+<td>0</td>
+<td>0.230s</td>
+<td class="success">100%</td>
+</tr>
+<tr>
+<td class="success">
+<a href="classes/uk.gov.justice.digital.hmpps.ScheduleIntegrationTest.html">uk.gov.justice.digital.hmpps.ScheduleIntegrationTest</a>
+</td>
+<td>7</td>
+<td>0</td>
+<td>0</td>
+<td>0.145s</td>
+<td class="success">100%</td>
+</tr>
+<tr>
+<td class="success">
+<a href="classes/uk.gov.justice.digital.hmpps.SentenceIntegrationTest.html">uk.gov.justice.digital.hmpps.SentenceIntegrationTest</a>
+</td>
+<td>4</td>
+<td>0</td>
+<td>0</td>
+<td>0.115s</td>
+<td class="success">100%</td>
+</tr>
+<tr>
+<td class="success">
+<a href="classes/uk.gov.justice.digital.hmpps.SentencesIntegrationTest.html">uk.gov.justice.digital.hmpps.SentencesIntegrationTest</a>
+</td>
+<td>3</td>
+<td>0</td>
+<td>0</td>
+<td>0.049s</td>
+<td class="success">100%</td>
+</tr>
+<tr>
+<td class="success">
+<a href="classes/uk.gov.justice.digital.hmpps.UserDiaryIntegrationTest.html">uk.gov.justice.digital.hmpps.UserDiaryIntegrationTest</a>
+</td>
+<td>15</td>
+<td>0</td>
+<td>0</td>
+<td>0.751s</td>
+<td class="success">100%</td>
+</tr>
+<tr>
+<td class="success">
+<a href="classes/uk.gov.justice.digital.hmpps.UserIntegrationTest.html">uk.gov.justice.digital.hmpps.UserIntegrationTest</a>
+</td>
+<td>20</td>
+<td>0</td>
+<td>0</td>
+<td>1.132s</td>
+<td class="success">100%</td>
+</tr>
+<tr>
+<td class="success">
+<a href="classes/uk.gov.justice.digital.hmpps.UserLocationIntegrationTest.html">uk.gov.justice.digital.hmpps.UserLocationIntegrationTest</a>
+</td>
+<td>3</td>
+<td>0</td>
+<td>0</td>
+<td>0.051s</td>
+<td class="success">100%</td>
+</tr>
+<tr>
+<td class="success">
+<a href="classes/uk.gov.justice.digital.hmpps.UserProvidersIntegrationTest.html">uk.gov.justice.digital.hmpps.UserProvidersIntegrationTest</a>
+</td>
+<td>2</td>
+<td>0</td>
+<td>0</td>
+<td>0.039s</td>
+<td class="success">100%</td>
+</tr>
+<tr>
+<td class="success">
+<a href="classes/uk.gov.justice.digital.hmpps.UserRoleIntegrationTest.html">uk.gov.justice.digital.hmpps.UserRoleIntegrationTest</a>
+</td>
+<td>2</td>
+<td>0</td>
+<td>0</td>
+<td>0.034s</td>
+<td class="success">100%</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div id="footer">
+<p>
+<div>
+<label class="hidden" id="label-for-line-wrapping-toggle" for="line-wrapping-toggle">Wrap lines
+<input id="line-wrapping-toggle" type="checkbox" autocomplete="off"/>
+</label>
+</div>Generated by 
+<a href="https://www.gradle.org">Gradle 8.14.2</a> at Jun 13, 2025, 12:16:59 PM</p>
+</div>
+</div>
+</body>
+</html>
