@@ -38,6 +38,9 @@ internal class CaseDetailsServiceTest {
     @Mock
     internal lateinit var ogrsAssessmentRepository: OgrsAssessmentRepository
 
+    @Mock
+    internal lateinit var limitedAccessService: LimitedAccessService
+
     @InjectMocks
     internal lateinit var service: CaseDetailsService
 

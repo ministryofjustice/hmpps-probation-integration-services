@@ -12,7 +12,8 @@ class CaseDetailsService(
     private val courtAppearanceRepository: CourtAppearanceRepository,
     private val eventRepository: EventRepository,
     private val keyDateRepository: KeyDateRepository,
-    private val ogrsAssessmentRepository: OgrsAssessmentRepository
+    private val ogrsAssessmentRepository: OgrsAssessmentRepository,
+    private val limitedAccess: LimitedAccessService
 ) {
     @Transactional
     fun caseDetails(crn: String, eventNumber: Int): CaseDetails {
@@ -32,7 +33,8 @@ class CaseDetailsService(
             erd?.let { Sentence(it.date) },
             provider,
             ogrsScore,
-            person.dynamicRsrScore
+            person.dynamicRsrScore,
+            if (person.currentExclusion || person.currentRestriction) person.limitedAccessDetail() else null
         )
     }
 
@@ -40,6 +42,8 @@ class CaseDetailsService(
         val provider = communityManager?.provider ?: prisonManager?.provider
         return provider?.let { Provider(it.code, it.description) }
     }
+
+    private fun Person.limitedAccessDetail(): LimitedAccessDetail = limitedAccess.getLimitedAccessDetails(this)
 
     fun PersonManager.provider(): Provider = Provider(provider.code, provider.description)
 }

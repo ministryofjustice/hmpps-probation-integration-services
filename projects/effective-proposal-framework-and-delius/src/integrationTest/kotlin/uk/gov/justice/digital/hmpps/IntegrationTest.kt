@@ -4,6 +4,7 @@ import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
@@ -11,7 +12,6 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ProviderGenerator
@@ -28,7 +28,7 @@ internal class IntegrationTest {
     lateinit var mockMvc: MockMvc
 
     @Test
-    fun `API call retuns a success response`() {
+    fun `API call returns a success response`() {
         val person = PersonGenerator.DEFAULT
         val crn = person.crn
         val eventNumber = 1
@@ -42,11 +42,13 @@ internal class IntegrationTest {
 
     @ParameterizedTest
     @MethodSource("limitedAccess")
-    fun `Response of Not Found when case is Restricted Or Excluded`(person: Person) {
-        mockMvc
+    fun `Response includes lao info when case is Restricted Or Excluded`(person: Person, lad: LimitedAccessDetail) {
+        val response = mockMvc
             .perform(get("/case-details/${person.crn}/1").withToken())
-            .andExpect(status().isNotFound)
-            .andExpect(jsonPath("$.message", equalTo("Person with crn of ${person.crn} not found")))
+            .andExpect(status().isOk)
+            .andReturn().response.contentAsJson<CaseDetails>()
+
+        assertThat(response.limitedAccess, equalTo(lad))
     }
 
     @Test
@@ -75,7 +77,8 @@ internal class IntegrationTest {
                     ),
                     Provider(ProviderGenerator.DEFAULT.code, ProviderGenerator.DEFAULT.description),
                     null,
-                    person.dynamicRsrScore
+                    person.dynamicRsrScore,
+                    null,
                 )
             )
         )
@@ -98,12 +101,22 @@ internal class IntegrationTest {
             null,
             Provider(ProviderGenerator.DEFAULT.code, ProviderGenerator.DEFAULT.description),
             3,
-            PersonGenerator.DEFAULT.dynamicRsrScore
+            PersonGenerator.DEFAULT.dynamicRsrScore,
+            null,
         )
     }
 
     companion object {
         @JvmStatic
-        fun limitedAccess() = listOf(PersonGenerator.EXCLUDED, PersonGenerator.RESTRICTED)
+        fun limitedAccess() = listOf(
+            Arguments.of(
+                PersonGenerator.EXCLUDED,
+                LimitedAccessDetail(listOf(LimitedAccess.ExcludedFrom("john.smith@moj.gov.uk")), emptyList())
+            ),
+            Arguments.of(
+                PersonGenerator.RESTRICTED,
+                LimitedAccessDetail(emptyList(), listOf(LimitedAccess.RestrictedTo("john.smith@moj.gov.uk")))
+            ),
+        )
     }
 }
