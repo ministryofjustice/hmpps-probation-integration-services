@@ -70,6 +70,9 @@ wiremock.enabled: true
 
 integrations:
   probation-search.url: http://localhost:${wiremock.port}/probation-search
+gov:
+  uk:
+    url: http://localhost:${wiremock.port}/gov-uk
 
 oauth2:
   client-id: manage-supervision-and-delius

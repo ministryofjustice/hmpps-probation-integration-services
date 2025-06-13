@@ -12,6 +12,7 @@ import uk.gov.justice.digital.hmpps.data.generator.*
 import uk.gov.justice.digital.hmpps.data.generator.CourtAppearanceGenerator.COURT_APPEARANCE
 import uk.gov.justice.digital.hmpps.data.generator.personalDetails.PersonDetailsGenerator
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractionCode
+import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.AppointmentRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.user.entity.UserRepository
 import java.time.ZonedDateTime
 
@@ -19,7 +20,8 @@ import java.time.ZonedDateTime
 @ConditionalOnProperty("seed.database")
 class DataLoader(
     private val entityManager: EntityManager,
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
+    private val appointmentRepository: AppointmentRepository
 ) : ApplicationListener<ApplicationReadyEvent> {
 
     @PostConstruct
@@ -220,7 +222,6 @@ class DataLoader(
             CustodyGenerator.RELEASE_2,
             CustodyGenerator.RELEASE_3
         )
-
         personalDetailsData()
     }
 
@@ -293,6 +294,8 @@ class DataLoader(
         entityManager.persist(LimitedAccessGenerator.RESTRICTION)
         entityManager.persist(LimitedAccessGenerator.BOTH_EXCLUSION)
         entityManager.persist(LimitedAccessGenerator.BOTH_RESTRICTION)
+
+        appointmentRepository.saveAndFlush(AppointmentGenerator.PERSON_APPOINTMENT)
     }
 
     private fun EntityManager.persistAll(vararg entities: Any) {
