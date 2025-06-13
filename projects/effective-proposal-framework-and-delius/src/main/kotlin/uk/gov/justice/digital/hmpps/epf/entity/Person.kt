@@ -12,7 +12,7 @@ import java.time.LocalDate
 @Immutable
 @Table(name = "offender")
 @Entity
-@SQLRestriction("soft_deleted = 0 and current_exclusion = 0 and current_restriction = 0")
+@SQLRestriction("soft_deleted = 0")
 class Person(
     @Id
     @Column(name = "offender_id")

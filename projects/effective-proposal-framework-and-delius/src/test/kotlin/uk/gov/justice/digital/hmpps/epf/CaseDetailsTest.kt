@@ -24,7 +24,8 @@ internal class CaseDetailsTest {
             Sentence(LocalDate.of(2022, 8, 2)),
             Provider("N00", "London"),
             null,
-            null
+            null,
+            LimitedAccessDetail(emptyList(), emptyList())
         )
 
         private fun CaseDetails.withReleaseDate(releaseDate: LocalDate) =

@@ -7,11 +7,10 @@ import org.springframework.boot.context.event.ApplicationReadyEvent
 import org.springframework.context.ApplicationListener
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
-import uk.gov.justice.digital.hmpps.data.generator.ManagerGenerator
-import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
-import uk.gov.justice.digital.hmpps.data.generator.ProviderGenerator
-import uk.gov.justice.digital.hmpps.data.generator.SentenceGenerator
-import uk.gov.justice.digital.hmpps.data.generator.UserGenerator
+import uk.gov.justice.digital.hmpps.data.generator.*
+import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.asLaoPerson
+import uk.gov.justice.digital.hmpps.entity.Exclusion
+import uk.gov.justice.digital.hmpps.entity.Restriction
 import uk.gov.justice.digital.hmpps.user.AuditUserRepository
 import java.time.LocalDate
 
@@ -25,6 +24,7 @@ class DataLoader(
     @PostConstruct
     fun saveAuditUser() {
         auditUserRepository.save(UserGenerator.AUDIT_USER)
+        auditUserRepository.save(UserGenerator.JOHN_SMITH)
     }
 
     @Transactional
@@ -51,7 +51,25 @@ class DataLoader(
             SentenceGenerator.RELEASED_COURT_APPEARANCE,
             SentenceGenerator.RELEASED_SENTENCE,
             SentenceGenerator.RELEASED_CUSTODY,
-            SentenceGenerator.RELEASE_DATE
+            SentenceGenerator.RELEASE_DATE,
+            SentenceGenerator.generateEvent(PersonGenerator.EXCLUDED),
+            SentenceGenerator.generateEvent(PersonGenerator.RESTRICTED)
+        )
+        em.flush()
+
+        em.saveAll(
+            Exclusion(
+                PersonGenerator.EXCLUDED.asLaoPerson(),
+                UserGenerator.JOHN_SMITH.asLaoUser(),
+                null,
+                IdGenerator.getAndIncrement()
+            ),
+            Restriction(
+                PersonGenerator.RESTRICTED.asLaoPerson(),
+                UserGenerator.JOHN_SMITH.asLaoUser(),
+                null,
+                IdGenerator.getAndIncrement()
+            ),
         )
     }
 
