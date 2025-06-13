@@ -116,7 +116,6 @@ class Appointment(
     var lastUpdatedDateTime: ZonedDateTime = ZonedDateTime.now()
 }
 
-
 interface StaffAppointment {
     val startDateTime: LocalDateTime
     val endDateTime: LocalDateTime?

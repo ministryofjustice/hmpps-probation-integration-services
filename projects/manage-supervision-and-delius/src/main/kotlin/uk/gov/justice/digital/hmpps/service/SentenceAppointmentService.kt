@@ -58,7 +58,7 @@ class SentenceAppointmentService(
 
     private fun nonWorkingDay(date: LocalDate): String? {
 
-        if(listOf(DayOfWeek.SATURDAY, DayOfWeek.SUNDAY).contains(date.dayOfWeek)){
+        if (listOf(DayOfWeek.SATURDAY, DayOfWeek.SUNDAY).contains(date.dayOfWeek)) {
             return date.dayOfWeek.name.lowercase().replaceFirstChar(Char::titlecase)
         }
 
