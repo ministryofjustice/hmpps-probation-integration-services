@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.api.controller
 
 import io.swagger.v3.oas.annotations.tags.Tag
+import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
@@ -25,7 +26,7 @@ class AppointmentController(
 
     @PostMapping("/{crn}")
     @ResponseStatus(HttpStatus.CREATED)
-    fun createAppointment(@PathVariable crn: String, @RequestBody createAppointment: CreateAppointment) =
+    fun createAppointment(@PathVariable crn: String, @Valid @RequestBody createAppointment: CreateAppointment) =
         sentenceAppointmentService.createAppointment(crn, createAppointment)
 
     @PatchMapping

@@ -122,9 +122,6 @@ class SentenceAppointmentService(
             val savedAppointments = appointmentRepository.saveAll(appointments)
             val createdAppointments = savedAppointments.map { CreatedAppointment(it.id) }
 
-            if (savedAppointments.isEmpty()) {
-                throw RuntimeException("appointments not created")
-            }
             audit["contactId"] = createdAppointments.joinToString { it.id.toString() }
 
             return@audit AppointmentDetail(createdAppointments)
