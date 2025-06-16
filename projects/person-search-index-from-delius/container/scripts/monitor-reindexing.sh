@@ -80,8 +80,8 @@ function prepare_to_begin_indexing() {
   echo "Deleting and re-creating ${STANDBY_INDEX} ..."
   curl_json -XDELETE "${SEARCH_URL}/${STANDBY_INDEX}"
   curl_json -XPUT "${SEARCH_URL}/${STANDBY_INDEX}" --data '{"aliases": {"'"${INDEX_PREFIX}-standby"'": {}}}'
-  echo "Increasing refresh interval ..."
-  curl_json -XPUT "${SEARCH_URL}/${STANDBY_INDEX}/_settings" --data '{"index": {"refresh_interval": "900s"}}'
+  echo "Disabling replicas and increasing refresh interval ..."
+  curl_json -XPUT "${SEARCH_URL}/${STANDBY_INDEX}/_settings" --data '{"index": {"number_of_replicas": 0, "refresh_interval": "30m"}}'
 }
 
 function prepare_to_resume_indexing() {
@@ -105,10 +105,15 @@ function wait_for_indexing_to_complete() {
   COUNT=$(curl_json "${SEARCH_URL}/${STANDBY_INDEX}/_count" | jq '.count')
   echo "Indexing is complete. The $STANDBY_INDEX index now has $COUNT documents"
 
-  echo 'Merging segments to improve performance ...'
-  curl_json -XPOST "${SEARCH_URL}/${STANDBY_INDEX}/_forcemerge"
-  echo 'Resetting refresh interval ...'
-  curl_json -XPUT "${SEARCH_URL}/${STANDBY_INDEX}/_settings" --data '{"index": {"refresh_interval": "1s"}}'
+  echo 'Merging segments to improve search performance ...'
+  curl_json --no-fail -XPOST "${SEARCH_URL}/${STANDBY_INDEX}/_forcemerge?max_num_segments=10"
+  echo 'Waiting for merge tasks to complete, this might take a while ...'
+  sleep 60; until [ "$(curl --silent --show-error "${SEARCH_URL}/_cat/tasks?actions=*forcemerge*" | wc -l)" = '0' ]; do sleep 60; done
+  echo 'Resetting replica count and refresh interval ...'
+  curl_json -XPUT "${SEARCH_URL}/${STANDBY_INDEX}/_settings" --data '{"index": {"number_of_replicas": 1, "refresh_interval": "1s"}}'
+  echo 'Waiting for replication to complete and cluster status to turn green ...'
+  sleep 60; until [ "$(curl_json "${SEARCH_URL}/_cluster/health" | jq -r '.status')" = 'green' ]; do sleep 60; done
+
   echo 'Switching aliases ...'
   curl_json "${SEARCH_URL}/_aliases" --data '{
     "actions": [
