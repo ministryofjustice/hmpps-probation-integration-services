@@ -72,6 +72,9 @@ class SentenceAppointmentServiceTest {
     lateinit var bankHolidayClient: BankHolidayClient
 
     @Mock
+    lateinit var userService: UserService
+
+    @Mock
     lateinit var objectMapper: ObjectMapper
 
     @InjectMocks
