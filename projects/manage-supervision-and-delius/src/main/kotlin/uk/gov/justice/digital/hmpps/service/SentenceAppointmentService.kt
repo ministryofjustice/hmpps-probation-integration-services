@@ -216,21 +216,21 @@ class SentenceAppointmentService(
             throw NotFoundException("Nsi", "nsiId", createAppointment.nsiId)
         }
 
-        val contactType = appointmentTypeRepository.getByCode(createAppointment.type.code)
+        val contactType = appointmentTypeRepository.getByCode(createAppointment.type)
 
         if (contactType.locationRequired == "Y" && createAppointment.user.locationCode == null) {
-            throw InvalidRequestException("Location required for contact type ${createAppointment.type.code}")
+            throw InvalidRequestException("Location required for contact type ${createAppointment.type}")
         }
 
         if (!contactType.offenderContact && (listOfNotNull(createAppointment.eventId) + appointmentIds).isEmpty()) {
-            throw InvalidRequestException("Event id, licence id, requirement id or nsi id need to be provided for contact type ${createAppointment.type.code}")
+            throw InvalidRequestException("Event id, licence id, requirement id or nsi id need to be provided for contact type ${createAppointment.type}")
         }
     }
 
     private fun CreateAppointment.withManager(om: OffenderManager, staffAndTeam: UserTeam, location: Location?) =
         Appointment(
             om.person,
-            appointmentTypeRepository.getByCode(type.code),
+            appointmentTypeRepository.getByCode(type),
             start.toLocalDate(),
             ZonedDateTime.of(LocalDate.EPOCH, start.toLocalTime(), EuropeLondon),
             teamId = staffAndTeam.teamId,

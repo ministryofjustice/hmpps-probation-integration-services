@@ -60,7 +60,7 @@ class CreateAppointmentIntegrationTest {
                 .withJson(
                     CreateAppointment(
                         user,
-                        CreateAppointment.Type.HomeVisitToCaseNS,
+                        CreateAppointment.Type.HomeVisitToCaseNS.code,
                         ZonedDateTime.now().plusDays(1),
                         ZonedDateTime.now().plusDays(2),
                         interval = CreateAppointment.Interval.DAY,
@@ -80,7 +80,7 @@ class CreateAppointmentIntegrationTest {
                 .withJson(
                     CreateAppointment(
                         user,
-                        CreateAppointment.Type.InitialAppointmentInOfficeNS,
+                        CreateAppointment.Type.InitialAppointmentInOfficeNS.code,
                         ZonedDateTime.now().plusDays(2),
                         ZonedDateTime.now().plusDays(1),
                         interval = CreateAppointment.Interval.DAY,
@@ -102,7 +102,7 @@ class CreateAppointmentIntegrationTest {
                 .withJson(
                     CreateAppointment(
                         user,
-                        CreateAppointment.Type.InitialAppointmentInOfficeNS,
+                        CreateAppointment.Type.InitialAppointmentInOfficeNS.code,
                         ZonedDateTime.now().plusDays(1),
                         ZonedDateTime.now().plusDays(1).plusHours(1),
                         interval = CreateAppointment.Interval.DAY,
@@ -134,7 +134,7 @@ class CreateAppointmentIntegrationTest {
 
         val appointment = appointmentRepository.findById(response.appointments[0].id).get()
 
-        assertThat(appointment.type.code, equalTo(createAppointment.type.code))
+        assertThat(appointment.type.code, equalTo(createAppointment.type))
         assertThat(appointment.date, equalTo(createAppointment.start.toLocalDate()))
         assertThat(appointment.startTime, isCloseTo(createAppointment.start))
         assertThat(appointment.externalReference, equalTo(createAppointment.urn))
@@ -190,7 +190,7 @@ class CreateAppointmentIntegrationTest {
         fun createAppointment() = listOf(
             CreateAppointment(
                 user,
-                CreateAppointment.Type.PlannedOfficeVisitNS,
+                CreateAppointment.Type.PlannedOfficeVisitNS.code,
                 ZonedDateTime.now().plusDays(1),
                 ZonedDateTime.now().plusDays(1).plusHours(1),
                 eventId = PersonGenerator.EVENT_1.id,
@@ -198,7 +198,7 @@ class CreateAppointmentIntegrationTest {
             ),
             CreateAppointment(
                 user,
-                CreateAppointment.Type.InitialAppointmentInOfficeNS,
+                CreateAppointment.Type.InitialAppointmentInOfficeNS.code,
                 ZonedDateTime.now().plusDays(1),
                 ZonedDateTime.now().plusDays(1).plusHours(1),
                 CreateAppointment.Interval.DAY,
@@ -207,7 +207,7 @@ class CreateAppointmentIntegrationTest {
             ),
             CreateAppointment(
                 user,
-                CreateAppointment.Type.PlannedDoorstepContactNS,
+                CreateAppointment.Type.PlannedDoorstepContactNS.code,
                 ZonedDateTime.now().plusDays(1),
                 ZonedDateTime.now().plusDays(1).plusHours(1),
                 CreateAppointment.Interval.DAY,
@@ -219,7 +219,7 @@ class CreateAppointmentIntegrationTest {
         fun createMultipleAppointments() = listOf(
             CreateAppointment(
                 user,
-                CreateAppointment.Type.HomeVisitToCaseNS,
+                CreateAppointment.Type.HomeVisitToCaseNS.code,
                 ZonedDateTime.now(),
                 ZonedDateTime.now().plusHours(1),
                 numberOfAppointments = 3,
@@ -228,7 +228,7 @@ class CreateAppointmentIntegrationTest {
             ),
             CreateAppointment(
                 user,
-                CreateAppointment.Type.HomeVisitToCaseNS,
+                CreateAppointment.Type.HomeVisitToCaseNS.code,
                 ZonedDateTime.now(),
                 end = ZonedDateTime.now().plusHours(1),
                 until = ZonedDateTime.now().plusDays(2),
@@ -237,7 +237,7 @@ class CreateAppointmentIntegrationTest {
             ),
             CreateAppointment(
                 user,
-                CreateAppointment.Type.HomeVisitToCaseNS,
+                CreateAppointment.Type.HomeVisitToCaseNS.code,
                 start = ZonedDateTime.now(),
                 end = ZonedDateTime.now().plusHours(2),
                 until = ZonedDateTime.now().plusDays(14),

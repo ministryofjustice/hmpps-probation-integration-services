@@ -231,7 +231,7 @@ class CheckAppointmentIntegrationTest {
                 .withJson(
                     CreateAppointment(
                         user,
-                        CreateAppointment.Type.InitialAppointmentInOfficeNS,
+                        CreateAppointment.Type.InitialAppointmentInOfficeNS.code,
                         start,
                         end,
                         interval = CreateAppointment.Interval.DAY,

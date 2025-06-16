@@ -85,7 +85,7 @@ class SentenceAppointmentServiceTest {
     fun `licence and requirement id provided`() {
         val appointment = CreateAppointment(
             user,
-            CreateAppointment.Type.InitialAppointmentInOfficeNS,
+            CreateAppointment.Type.InitialAppointmentInOfficeNS.code,
             ZonedDateTime.now().plusDays(1),
             ZonedDateTime.now().plusDays(2),
             interval = CreateAppointment.Interval.WEEK,
@@ -120,7 +120,7 @@ class SentenceAppointmentServiceTest {
     fun `start date before end date`() {
         val appointment = CreateAppointment(
             user,
-            CreateAppointment.Type.InitialAppointmentInOfficeNS,
+            CreateAppointment.Type.InitialAppointmentInOfficeNS.code,
             start = ZonedDateTime.now().plusDays(2),
             end = ZonedDateTime.now().plusDays(1),
             interval = CreateAppointment.Interval.FORTNIGHT,
@@ -150,7 +150,7 @@ class SentenceAppointmentServiceTest {
     fun `until before start date`() {
         val appointment = CreateAppointment(
             user,
-            CreateAppointment.Type.InitialAppointmentInOfficeNS,
+            CreateAppointment.Type.InitialAppointmentInOfficeNS.code,
             start = ZonedDateTime.now().plusDays(2),
             end = ZonedDateTime.now().plusDays(2),
             until = ZonedDateTime.now().plusDays(1),
@@ -182,7 +182,7 @@ class SentenceAppointmentServiceTest {
     fun `event not found`() {
         val appointment = CreateAppointment(
             user,
-            CreateAppointment.Type.InitialAppointmentInOfficeNS,
+            CreateAppointment.Type.InitialAppointmentInOfficeNS.code,
             ZonedDateTime.now().plusDays(1),
             ZonedDateTime.now().plusDays(1),
             interval = CreateAppointment.Interval.FOUR_WEEKS,
@@ -213,7 +213,7 @@ class SentenceAppointmentServiceTest {
     fun `requirement not found`() {
         val appointment = CreateAppointment(
             user,
-            CreateAppointment.Type.InitialAppointmentInOfficeNS,
+            CreateAppointment.Type.InitialAppointmentInOfficeNS.code,
             ZonedDateTime.now().plusDays(1),
             ZonedDateTime.now().plusDays(2),
             interval = CreateAppointment.Interval.DAY,
@@ -246,7 +246,7 @@ class SentenceAppointmentServiceTest {
     fun `licence not found`() {
         val appointment = CreateAppointment(
             user,
-            CreateAppointment.Type.InitialAppointmentInOfficeNS,
+            CreateAppointment.Type.InitialAppointmentInOfficeNS.code,
             ZonedDateTime.now().plusDays(1),
             ZonedDateTime.now().plusDays(2),
             interval = CreateAppointment.Interval.DAY,
@@ -278,7 +278,7 @@ class SentenceAppointmentServiceTest {
     fun `nsi not found`() {
         val appointment = CreateAppointment(
             user,
-            CreateAppointment.Type.InitialAppointmentInOfficeNS,
+            CreateAppointment.Type.InitialAppointmentInOfficeNS.code,
             ZonedDateTime.now().plusDays(1),
             ZonedDateTime.now().plusDays(2),
             interval = CreateAppointment.Interval.DAY,
@@ -309,7 +309,7 @@ class SentenceAppointmentServiceTest {
     fun `error overlapping appointment`() {
         val appointment = CreateAppointment(
             user,
-            CreateAppointment.Type.HomeVisitToCaseNS,
+            CreateAppointment.Type.HomeVisitToCaseNS.code,
             ZonedDateTime.now().plusDays(1),
             ZonedDateTime.now().plusDays(2),
             numberOfAppointments = 3,
@@ -325,10 +325,10 @@ class SentenceAppointmentServiceTest {
 
         whenever(eventSentenceRepository.existsById(appointment.eventId!!)).thenReturn(true)
 
-        whenever(appointmentTypeRepository.findByCode(appointment.type.code)).thenReturn(
+        whenever(appointmentTypeRepository.findByCode(appointment.type)).thenReturn(
             ContactType(
                 1,
-                appointment.type.code,
+                appointment.type,
                 true,
                 "description",
                 locationRequired = "N"
@@ -351,7 +351,7 @@ class SentenceAppointmentServiceTest {
     fun `success create overlapping appointment`() {
         val appointment = CreateAppointment(
             user,
-            CreateAppointment.Type.HomeVisitToCaseNS,
+            CreateAppointment.Type.HomeVisitToCaseNS.code,
             ZonedDateTime.now().plusDays(1),
             ZonedDateTime.now().plusDays(2),
             numberOfAppointments = 3,
@@ -368,10 +368,10 @@ class SentenceAppointmentServiceTest {
 
         whenever(eventSentenceRepository.existsById(appointment.eventId!!)).thenReturn(true)
 
-        whenever(appointmentTypeRepository.findByCode(appointment.type.code)).thenReturn(
+        whenever(appointmentTypeRepository.findByCode(appointment.type)).thenReturn(
             ContactType(
                 1,
-                appointment.type.code,
+                appointment.type,
                 true,
                 "description",
                 locationRequired = "N"
@@ -410,7 +410,7 @@ class SentenceAppointmentServiceTest {
     fun `non personal level contact without appointment ids`() {
         val appointment = CreateAppointment(
             user,
-            CreateAppointment.Type.HomeVisitToCaseNS,
+            CreateAppointment.Type.HomeVisitToCaseNS.code,
             ZonedDateTime.now().plusDays(1),
             ZonedDateTime.now().plusDays(2),
             interval = CreateAppointment.Interval.WEEK,
@@ -422,10 +422,10 @@ class SentenceAppointmentServiceTest {
             OffenderManagerGenerator.OFFENDER_MANAGER_ACTIVE
         )
 
-        whenever(appointmentTypeRepository.findByCode(appointment.type.code)).thenReturn(
+        whenever(appointmentTypeRepository.findByCode(appointment.type)).thenReturn(
             ContactType(
                 1,
-                appointment.type.code,
+                appointment.type,
                 true,
                 "description",
                 locationRequired = "N"
@@ -482,7 +482,7 @@ class SentenceAppointmentServiceTest {
         fun createAppointment() = listOf(
             CreateAppointment(
                 user,
-                CreateAppointment.Type.PlannedOfficeVisitNS,
+                CreateAppointment.Type.PlannedOfficeVisitNS.code,
                 ZonedDateTime.now().plusDays(1),
                 ZonedDateTime.now().plusDays(1).plusHours(1),
                 licenceConditionId = PersonGenerator.EVENT_1.id,
@@ -490,7 +490,7 @@ class SentenceAppointmentServiceTest {
             ),
             CreateAppointment(
                 user,
-                CreateAppointment.Type.PlannedOfficeVisitNS,
+                CreateAppointment.Type.PlannedOfficeVisitNS.code,
                 ZonedDateTime.now().plusDays(1),
                 ZonedDateTime.now().plusDays(1).plusHours(1),
                 licenceConditionId = PersonGenerator.EVENT_1.id,

@@ -7,7 +7,7 @@ import java.util.*
 
 data class CreateAppointment(
     val user: User,
-    val type: Type,
+    val type: String,
     val start: ZonedDateTime,
     val end: ZonedDateTime,
     val interval: Interval = Interval.DAY,
