@@ -19,7 +19,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import uk.gov.justice.digital.hmpps.api.model.Name
 import uk.gov.justice.digital.hmpps.api.model.appointment.AppointmentChecks
-import uk.gov.justice.digital.hmpps.api.model.appointment.CreateAppointment
+import uk.gov.justice.digital.hmpps.api.model.appointment.CheckAppointment
 import uk.gov.justice.digital.hmpps.api.model.appointment.User
 import uk.gov.justice.digital.hmpps.data.generator.OffenderManagerGenerator.STAFF_USER_1
 import uk.gov.justice.digital.hmpps.data.generator.OffenderManagerGenerator.TEAM
@@ -29,7 +29,6 @@ import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 import java.time.ZonedDateTime
-import java.util.*
 
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -228,18 +227,7 @@ class CheckAppointmentIntegrationTest {
         val response = mockMvc.perform(
             post("/appointment/${person.crn}/check")
                 .withToken()
-                .withJson(
-                    CreateAppointment(
-                        user,
-                        CreateAppointment.Type.InitialAppointmentInOfficeNS.code,
-                        start,
-                        end,
-                        interval = CreateAppointment.Interval.DAY,
-                        numberOfAppointments = 1,
-                        PersonGenerator.EVENT_1.id,
-                        UUID.randomUUID()
-                    )
-                )
+                .withJson(CheckAppointment(start, end))
         ).andExpect(status().isOk).andReturn().response.contentAsJson<AppointmentChecks>()
         assertThat(response, equalTo(expected))
     }

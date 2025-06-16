@@ -69,11 +69,11 @@ class SentenceAppointmentService(
         }
     }
 
-    fun checkAppointment(crn: String, createAppointment: CreateAppointment): AppointmentChecks {
+    fun checkAppointment(crn: String, checkAppointment: CheckAppointment): AppointmentChecks {
         val om = offenderManagerRepository.getByCrn(crn)
-        val overlaps = getOverlaps(om.person.id, createAppointment.start, createAppointment.end)
+        val overlaps = getOverlaps(om.person.id, checkAppointment.start, checkAppointment.end)
         return AppointmentChecks(
-            nonWorkingDayName = nonWorkingDay(createAppointment.start.toLocalDate()),
+            nonWorkingDayName = nonWorkingDay(checkAppointment.start.toLocalDate()),
             overlapsWithMeetingWith = overlaps.first.firstOrNull()
                 ?.let { Name(forename = it.forename, surname = it.surname) },
             isWithinOneHourOfMeetingWith = overlaps.second.firstOrNull()
