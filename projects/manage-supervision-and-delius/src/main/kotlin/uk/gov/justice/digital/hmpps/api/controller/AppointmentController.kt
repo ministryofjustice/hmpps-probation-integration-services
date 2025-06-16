@@ -5,6 +5,7 @@ import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
+import uk.gov.justice.digital.hmpps.api.model.appointment.CheckAppointment
 import uk.gov.justice.digital.hmpps.api.model.appointment.CreateAppointment
 import uk.gov.justice.digital.hmpps.api.model.appointment.OfficeLocationRequest
 import uk.gov.justice.digital.hmpps.api.model.appointment.Outcome
@@ -30,8 +31,8 @@ class AppointmentController(
         sentenceAppointmentService.createAppointment(crn, createAppointment)
 
     @PostMapping("/{crn}/check")
-    fun checkAppointment(@PathVariable crn: String, @RequestBody createAppointment: CreateAppointment) =
-        sentenceAppointmentService.checkAppointment(crn, createAppointment)
+    fun checkAppointment(@PathVariable crn: String, @RequestBody checkAppointment: CheckAppointment) =
+        sentenceAppointmentService.checkAppointment(crn, checkAppointment)
 
     @PatchMapping
     @ResponseStatus(HttpStatus.OK)
