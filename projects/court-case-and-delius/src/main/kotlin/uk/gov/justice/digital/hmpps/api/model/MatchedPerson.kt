@@ -12,7 +12,7 @@ data class MatchedPerson(
     val dateOfBirth: LocalDate,
     val otherIds: Ids,
     val probationStatus: ProbationStatusDetail,
-    val offenderAliases: List<OffenderAlias>
+    val offenderAliases: List<OffenderAlias> = emptyList(),
 )
 
 enum class MatchedBy {
