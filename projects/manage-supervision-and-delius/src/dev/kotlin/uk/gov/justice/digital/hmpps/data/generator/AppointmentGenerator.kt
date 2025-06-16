@@ -1,7 +1,6 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
 import uk.gov.justice.digital.hmpps.api.model.appointment.CreateAppointment
-import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.DEFAULT_STAFF
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.DEFAULT_TEAM
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.USER
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.generateOutcome
@@ -41,7 +40,7 @@ object AppointmentGenerator {
     }
 
     val PERSON_APPOINTMENT = generateAppointment(
-        PersonGenerator.OVERVIEW, DEFAULT_STAFF.id, DEFAULT_TEAM.id,
+        PersonGenerator.OVERVIEW, USER.staff?.id!!, DEFAULT_TEAM.id,
         ZonedDateTime.of(2024, 11, 27, 9, 0, 0, 0, EuropeLondon),
         ZonedDateTime.of(2024, 11, 27, 10, 0, 0, 0, EuropeLondon)
     )

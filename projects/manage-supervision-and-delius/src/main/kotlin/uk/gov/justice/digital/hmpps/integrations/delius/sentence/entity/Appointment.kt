@@ -121,6 +121,7 @@ class Appointment(
 interface StaffAppointment {
     val startDateTime: LocalDateTime
     val endDateTime: LocalDateTime?
+    val staffId: Long
     val forename: String
     val surname: String
 }
@@ -129,7 +130,7 @@ interface AppointmentRepository : JpaRepository<Appointment, Long> {
 
     @Query(
         """
-            select s.forename, s.surname,
+            select s.forename, s.surname, s.staff_id as staffId,
             to_date(to_char(c.contact_date, 'yyyy-mm-dd') || ' ' || to_char(c.contact_start_time, 'hh24:mi'), 'yyyy-mm-dd hh24:mi') as startDateTime,
             to_date(to_char(c.contact_date, 'yyyy-mm-dd') || ' ' || to_char(c.contact_end_time, 'hh24:mi'), 'yyyy-mm-dd hh24:mi') as endDateTime
             from contact c

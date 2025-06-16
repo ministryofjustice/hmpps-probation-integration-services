@@ -16,9 +16,10 @@ import uk.gov.justice.digital.hmpps.api.model.appointment.UserAppointments
 import uk.gov.justice.digital.hmpps.api.model.appointment.UserDiary
 import uk.gov.justice.digital.hmpps.api.model.overview.Appointment
 import uk.gov.justice.digital.hmpps.api.model.user.*
+import uk.gov.justice.digital.hmpps.api.model.user.Provider
 import uk.gov.justice.digital.hmpps.api.model.user.Staff
 import uk.gov.justice.digital.hmpps.api.model.user.Team
-import uk.gov.justice.digital.hmpps.api.model.user.Provider
+import uk.gov.justice.digital.hmpps.aspect.DeliusUserAspect
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.ContactRepository
@@ -40,7 +41,8 @@ class UserService(
     private val userAccessService: UserAccessService,
     private val contactRepository: ContactRepository,
     private val probationAreaUserRepository: ProbationAreaUserRepository,
-    private val ldapTemplate: LdapTemplate
+    private val ldapTemplate: LdapTemplate,
+    private val deliusUserAspect: DeliusUserAspect
 ) {
     fun getUserDetails(username: String) = ldapTemplate.findByUsername<LdapUser>(username)?.toUserDetails()
 
@@ -111,6 +113,12 @@ class UserService(
             metaData = MetaData(sentenceTypes = sentenceTypes, contactTypes = contactTypes),
             sortedBy = sortedBy
         )
+    }
+
+    fun getUserStaffId(): Long? {
+        return deliusUserAspect.getDeliusUsername()?.let { username ->
+            userRepository.findByUsername(username)?.staff?.id
+        }
     }
 
     fun getUpcomingAppointments(username: String, pageable: Pageable): UserDiary {

@@ -42,7 +42,7 @@ class DeliusUserAspect(
         }
     }
 
-    private fun getDeliusUsername(): String? {
+    fun getDeliusUsername(): String? {
         return try {
             httpServletRequest.getHeader(HttpHeaders.AUTHORIZATION)?.let {
                 val claims = SignedJWT.parse(it.replace("Bearer ", "")).jwtClaimsSet?.claims
