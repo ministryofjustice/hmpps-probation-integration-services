@@ -16,8 +16,8 @@ class ProbationCaseSearch(
     fun find(request: SearchRequest, useSearch: Boolean): List<OffenderDetail> {
         val psResult = searchClient.findAll(request).map {
             it.copy(
-                offenderAliases = emptyList(),
-                offenderManagers = it.offenderManagers?.filter { it.active == true }
+                offenderAliases = it.offenderAliases?.sortedBy { it.id },
+                offenderManagers = it.offenderManagers?.filter { it.active == true },
             )
         }
 
@@ -66,7 +66,7 @@ private fun DetailPerson.toProbationCase(includeAliases: Boolean) = OffenderDeta
     otherIds = IDs(crn, nomsNumber, pncNumber),
     offenderProfile = OffenderProfile(ethnicity?.description, nationality?.description, religion?.description),
     offenderManagers = personManager.map { it.asOffenderManager() },
-    offenderAliases = if (includeAliases) offenderAliases.map { it.asProbationAlias() } else emptyList()
+    offenderAliases = if (includeAliases) offenderAliases.map { it.asProbationAlias() }.sortedBy { it.id } else emptyList()
 )
 
 private fun PersonManager.asOffenderManager() = OffenderManager(
