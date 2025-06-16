@@ -19,8 +19,8 @@ spring:
       default:
         provider: hmpps-auth
         authorization-grant-type: client_credentials
-        client-id: court-case-and-delius
-        client-secret: court-case-and-delius
+        client-id: ${oauth2.client-id}
+        client-secret: ${oauth2.client-secret}
     provider:
       hmpps-auth:
         token-uri: http://localhost:${wiremock.port}/auth/oauth/token
