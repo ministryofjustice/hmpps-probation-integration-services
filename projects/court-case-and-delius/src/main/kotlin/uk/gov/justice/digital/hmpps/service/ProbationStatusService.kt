@@ -20,7 +20,11 @@ class ProbationStatusService(private val personRepository: PersonRepository) {
             ?: throw NotFoundException("Person", "crn", crn)
 
     private fun Person.asProbationCase() =
-        ProbationCase(id, Ids(crn, nomsNumber, pnc), personRepository.statusOf(crn)!!.detail())
+        ProbationCase(
+            id,
+            Ids(crn, nomsNumber, pnc),
+            personRepository.statusOf(crn)?.detail() ?: ProbationStatusDetail.NO_RECORD
+        )
 }
 
 fun SentenceCounts.detail() = ProbationStatusDetail(
