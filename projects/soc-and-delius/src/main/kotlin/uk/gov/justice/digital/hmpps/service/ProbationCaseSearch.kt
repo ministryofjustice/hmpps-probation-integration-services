@@ -14,10 +14,10 @@ class ProbationCaseSearch(
     private val telemetry: TelemetryService
 ) {
     fun find(request: SearchRequest, useSearch: Boolean): List<OffenderDetail> {
-        val psResult = searchClient.findAll(request).map {
-            it.copy(
-                offenderAliases = it.offenderAliases?.sortedBy { it.id },
-                offenderManagers = it.offenderManagers?.filter { it.active == true },
+        val psResult = searchClient.findAll(request).map { od ->
+            od.copy(
+                offenderAliases = od.offenderAliases?.sortedBy { it.id },
+                offenderManagers = od.offenderManagers?.filter { it.active == true },
             )
         }
 
@@ -61,19 +61,21 @@ private fun SearchRequest.asSpecification(): Specification<DetailPerson> = listO
 private fun DetailPerson.toProbationCase(includeAliases: Boolean) = OffenderDetail(
     firstName = forename,
     surname = surname,
+    middleNames = listOfNotNull(secondName, thirdName),
     dateOfBirth = dateOfBirth,
     gender = gender.description,
     otherIds = IDs(crn, nomsNumber, pncNumber),
     offenderProfile = OffenderProfile(ethnicity?.description, nationality?.description, religion?.description),
     offenderManagers = personManager.map { it.asOffenderManager() },
-    offenderAliases = if (includeAliases) offenderAliases.map { it.asProbationAlias() }
+    offenderAliases = if (includeAliases && offenderAliases.isNotEmpty()) offenderAliases.map { it.asProbationAlias() }
         .sortedBy { it.id } else emptyList()
 )
 
 private fun PersonManager.asOffenderManager() = OffenderManager(
     staff = StaffHuman(staff.code, staff.forename, staff.surname, staff.unallocated()),
-    team = SearchResponseTeam(team.code, team.description, KeyValue(team.district.code, team.district.description)),
+    team = SearchResponseTeam(team.code, team.description, null),
     probationArea = ProbationArea(probationArea.code, probationArea.description, listOf()),
+    active = active,
 )
 
 private fun PersonAlias.asProbationAlias() = OffenderAlias(
