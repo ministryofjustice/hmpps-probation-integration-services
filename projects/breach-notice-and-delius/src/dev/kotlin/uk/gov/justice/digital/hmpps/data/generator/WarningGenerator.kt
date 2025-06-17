@@ -1,7 +1,9 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
 import uk.gov.justice.digital.hmpps.data.generator.DateTimeGenerator.zonedDateTime
+import uk.gov.justice.digital.hmpps.data.generator.EventGenerator.DEFAULT_EVENT
 import uk.gov.justice.digital.hmpps.data.generator.EventGenerator.DEFAULT_RQMNT
+import uk.gov.justice.digital.hmpps.data.generator.EventGenerator.PSS_EVENT
 import uk.gov.justice.digital.hmpps.data.generator.EventGenerator.PSS_REQUIREMENT
 import uk.gov.justice.digital.hmpps.data.generator.OfficeLocationGenerator.DEFAULT_LOCATION
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.DEFAULT_PERSON
@@ -55,7 +57,7 @@ object WarningGenerator {
             DEFAULT_PERSON,
             ENFORCEABLE_CONTACT_TYPE,
             dateTime = ZonedDateTime.of(2020, 1, it, 0, 0, 0, 0, EuropeLondon),
-            requirement = DEFAULT_RQMNT,
+            event = DEFAULT_EVENT,
             outcome = ENFORCEABLE_CONTACT_OUTCOME,
             description = "Enforceable Description",
             notes = "Some notes about the enforceable contact",
@@ -66,7 +68,7 @@ object WarningGenerator {
         generateEnforceableContact(
             DEFAULT_PERSON,
             ENFORCEABLE_CONTACT_TYPE,
-            event = EventGenerator.DEFAULT_EVENT,
+            event = DEFAULT_EVENT,
             dateTime = ZonedDateTime.of(2020, 1, it, 0, 0, 0, 0, EuropeLondon),
             outcome = ENFORCEABLE_CONTACT_OUTCOME,
             description = "Unpaid Enforceable Description",
@@ -79,7 +81,7 @@ object WarningGenerator {
     val PSS_ENFORCEABLE_CONTACT = generateEnforceableContact(
         PSS_PERSON,
         ENFORCEABLE_CONTACT_TYPE,
-        pssRequirement = PSS_REQUIREMENT,
+        event = PSS_EVENT,
         outcome = ENFORCEABLE_CONTACT_OUTCOME,
         description = "Enforceable Description",
         notes = "Some notes about the enforceable contact",
@@ -122,9 +124,7 @@ object WarningGenerator {
         person: Person,
         type: ContactType,
         dateTime: ZonedDateTime = zonedDateTime().minusDays(1),
-        requirement: Requirement? = null,
         event: Event? = null,
-        pssRequirement: PssRequirement? = null,
         staff: Staff = DEFAULT_STAFF,
         location: OfficeLocation? = DEFAULT_LOCATION,
         outcome: ContactOutcome?,
@@ -137,9 +137,7 @@ object WarningGenerator {
         type,
         dateTime.toLocalDate(),
         dateTime,
-        requirement?.disposal?.event ?: pssRequirement?.custody?.disposal?.event ?: event,
-        requirement,
-        pssRequirement,
+        event,
         staff,
         location,
         outcome,
