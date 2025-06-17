@@ -6,18 +6,15 @@ object CaseNoteTypesOfInterest {
         "TRANSFER" to setOf("FROMTOL"),
         "GEN" to setOf("OSE"),
         "RESET" to setOf("BCST"),
-        "ALERT" to setOf(),
         "OMIC" to setOf(),
         "OMIC_OPD" to setOf(),
         "KA" to setOf()
     )
 
-    fun forSearchRequest(useAlertsApi: Boolean): Set<TypeSubTypeRequest> =
-        typeSubTypeMap.filter { !useAlertsApi || it.key != "ALERT" }.map { TypeSubTypeRequest(it.key, it.value) }
-            .toSet()
+    fun forSearchRequest(): Set<TypeSubTypeRequest> =
+        typeSubTypeMap.map { TypeSubTypeRequest(it.key, it.value) }.toSet()
 
-    fun verifyOfInterest(type: String, subType: String, ignoreAlerts: Boolean): Boolean {
-        if (ignoreAlerts && type == "ALERT") return false
+    fun verifyOfInterest(type: String, subType: String): Boolean {
         val subTypes = typeSubTypeMap[type] ?: return false
         return subTypes.isEmpty() || subTypes.contains(subType)
     }
