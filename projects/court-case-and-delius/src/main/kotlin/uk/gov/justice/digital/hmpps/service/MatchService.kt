@@ -49,7 +49,8 @@ class MatchService(private val personRepository: PersonRepository) {
     private fun MatchRequest.lenient(): Specification<Person> =
         hasActiveEventAndCommunityManager(activeSentence).and(matchesLeniently(surname, firstName, dateOfBirth))
 
-    private fun Person.statusDetail() = personRepository.statusOf(crn)?.matchStatusDetail() ?: MatchProbationStatus.NO_RECORD
+    private fun Person.statusDetail() =
+        personRepository.statusOf(crn)?.matchStatusDetail() ?: MatchProbationStatus.NO_RECORD
 
     private fun List<Person>.matches() = map { it.asMatch(it.statusDetail()) }
 }
