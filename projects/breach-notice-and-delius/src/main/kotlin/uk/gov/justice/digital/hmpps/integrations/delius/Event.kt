@@ -5,7 +5,6 @@ import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.NumericBooleanConverter
 import org.springframework.data.jpa.repository.JpaRepository
-import org.springframework.data.jpa.repository.Query
 
 @Immutable
 @Entity
@@ -127,19 +126,6 @@ class Requirement(
     val id: Long,
 )
 
-interface RequirementRepository : JpaRepository<Requirement, Long> {
-    @Query(
-        """
-            SELECT r 
-            FROM Requirement r
-            WHERE r.mainCategory.code = 'W'
-            AND r.subCategory.code in ('W01', 'W03', 'W05')
-            AND r.disposal.id = :id
-        """
-    )
-    fun getUnpaidWorkRequirementsByDisposal(id: Long): List<Requirement>
-}
-
 @Immutable
 @Entity
 @Table(name = "r_rqmnt_type_main_category")
@@ -206,4 +192,12 @@ class PssRequirementSubCategory(
 
 interface DisposalRepository : JpaRepository<Disposal, Long> {
     fun getByEventId(eventId: Long): Disposal?
+}
+
+interface RequirementRepository : JpaRepository<Requirement, Long> {
+    fun findAllByDisposalId(disposalId: Long): List<Requirement>
+}
+
+interface PssRequirementRepository : JpaRepository<PssRequirement, Long> {
+    fun findAllByCustodyDisposalId(disposalId: Long): List<PssRequirement>
 }

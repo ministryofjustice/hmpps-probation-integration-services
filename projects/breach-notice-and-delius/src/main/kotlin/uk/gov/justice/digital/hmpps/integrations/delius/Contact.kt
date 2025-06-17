@@ -35,14 +35,6 @@ class Contact(
     val event: Event?,
 
     @ManyToOne
-    @JoinColumn(name = "rqmnt_id")
-    val requirement: Requirement?,
-
-    @ManyToOne
-    @JoinColumn(name = "pss_rqmnt_id")
-    val pssRequirement: PssRequirement?,
-
-    @ManyToOne
     @JoinColumn(name = "staff_id")
     val staff: Staff,
 

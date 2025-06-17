@@ -1,7 +1,9 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
 import uk.gov.justice.digital.hmpps.data.generator.DateTimeGenerator.zonedDateTime
+import uk.gov.justice.digital.hmpps.data.generator.EventGenerator.DEFAULT_EVENT
 import uk.gov.justice.digital.hmpps.data.generator.EventGenerator.DEFAULT_RQMNT
+import uk.gov.justice.digital.hmpps.data.generator.EventGenerator.PSS_EVENT
 import uk.gov.justice.digital.hmpps.data.generator.EventGenerator.PSS_REQUIREMENT
 import uk.gov.justice.digital.hmpps.data.generator.OfficeLocationGenerator.DEFAULT_LOCATION
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.DEFAULT_PERSON
@@ -18,9 +20,9 @@ object AppointmentGenerator {
     val APPOINTMENT_OUTCOME = generateContactOutcome("AOUT")
 
     val FUTURE_APPOINTMENTS = listOf(
-        generateAppointment(DEFAULT_PERSON, APPOINTMENT_CONTACT_TYPE, zonedDateTime().plusDays(7), DEFAULT_RQMNT),
-        generateAppointment(DEFAULT_PERSON, APPOINTMENT_CONTACT_TYPE, zonedDateTime().plusDays(14), DEFAULT_RQMNT),
-        generateAppointment(DEFAULT_PERSON, APPOINTMENT_CONTACT_TYPE, zonedDateTime().plusDays(21), DEFAULT_RQMNT),
+        generateAppointment(DEFAULT_PERSON, APPOINTMENT_CONTACT_TYPE, zonedDateTime().plusDays(7), DEFAULT_EVENT),
+        generateAppointment(DEFAULT_PERSON, APPOINTMENT_CONTACT_TYPE, zonedDateTime().plusDays(14), DEFAULT_EVENT),
+        generateAppointment(DEFAULT_PERSON, APPOINTMENT_CONTACT_TYPE, zonedDateTime().plusDays(21), DEFAULT_EVENT),
     )
 
     val OTHER_APPOINTMENTS = listOf(
@@ -28,21 +30,21 @@ object AppointmentGenerator {
             DEFAULT_PERSON,
             APPOINTMENT_CONTACT_TYPE,
             zonedDateTime().plusDays(7),
-            DEFAULT_RQMNT,
+            DEFAULT_EVENT,
             outcome = APPOINTMENT_OUTCOME
         ),
         generateAppointment(
             DEFAULT_PERSON,
             APPOINTMENT_CONTACT_TYPE,
             zonedDateTime().minusDays(14),
-            DEFAULT_RQMNT,
+            DEFAULT_EVENT,
             outcome = APPOINTMENT_OUTCOME
         ),
         generateAppointment(
             DEFAULT_PERSON,
             APPOINTMENT_CONTACT_TYPE,
             zonedDateTime().minusDays(7),
-            DEFAULT_RQMNT
+            DEFAULT_EVENT
         ),
     )
 
@@ -50,7 +52,7 @@ object AppointmentGenerator {
         PSS_PERSON,
         APPOINTMENT_CONTACT_TYPE,
         zonedDateTime().plusDays(7),
-        pssRequirement = PSS_REQUIREMENT,
+        event = PSS_EVENT,
         outcome = APPOINTMENT_OUTCOME
     )
 
@@ -58,8 +60,7 @@ object AppointmentGenerator {
         person: Person,
         type: ContactType,
         dateTime: ZonedDateTime,
-        requirement: Requirement? = null,
-        pssRequirement: PssRequirement? = null,
+        event: Event? = null,
         staff: Staff = DEFAULT_STAFF,
         location: OfficeLocation? = DEFAULT_LOCATION,
         outcome: ContactOutcome? = null,
@@ -72,9 +73,7 @@ object AppointmentGenerator {
         type,
         dateTime.toLocalDate(),
         dateTime.truncatedTo(ChronoUnit.SECONDS),
-        requirement?.disposal?.event ?: pssRequirement?.custody?.disposal?.event,
-        requirement,
-        pssRequirement,
+        event,
         staff,
         location,
         outcome,

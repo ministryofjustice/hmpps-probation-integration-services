@@ -7,6 +7,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.bean.override.mockito.MockitoBean
 import org.springframework.test.web.servlet.MockMvc
+import uk.gov.justice.digital.hmpps.integrations.delius.RequirementRepository
 import uk.gov.justice.digital.hmpps.messaging.HmppsChannelManager
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 
@@ -27,4 +28,7 @@ internal class BaseIntegrationTest {
 
     @MockitoBean
     internal lateinit var telemetryService: TelemetryService
+
+    @Autowired
+    internal lateinit var requirementRepository: RequirementRepository
 }
