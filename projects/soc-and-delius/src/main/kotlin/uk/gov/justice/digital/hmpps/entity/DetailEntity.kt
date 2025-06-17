@@ -281,11 +281,11 @@ fun DetailRepository.findByCrn(crn: String): DetailPerson =
     getByCrn(crn) ?: throw NotFoundException("person", "crn", crn)
 
 fun matchesForename(forename: String) = Specification<DetailPerson> { person, _, cb ->
-    cb.equal(cb.lower(person[FORENAME]), forename.lowercase())
+    cb.equal(cb.trim(cb.lower(person[FORENAME])), forename.lowercase())
 }
 
 fun matchesSurname(surname: String) = Specification<DetailPerson> { person, _, cb ->
-    cb.equal(cb.lower(person[SURNAME]), surname.lowercase())
+    cb.equal(cb.trim(cb.lower(person[SURNAME])), surname.lowercase())
 }
 
 fun matchesDateOfBirth(dob: LocalDate) =
