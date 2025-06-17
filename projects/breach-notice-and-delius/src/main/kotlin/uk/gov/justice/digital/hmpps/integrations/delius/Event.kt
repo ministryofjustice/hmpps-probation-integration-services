@@ -126,10 +126,6 @@ class Requirement(
     val id: Long,
 )
 
-interface RequirementRepository : JpaRepository<Requirement, Long> {
-    fun findAllByDisposalId(disposalId: Long): List<Requirement>
-}
-
 @Immutable
 @Entity
 @Table(name = "r_rqmnt_type_main_category")
@@ -196,4 +192,12 @@ class PssRequirementSubCategory(
 
 interface DisposalRepository : JpaRepository<Disposal, Long> {
     fun getByEventId(eventId: Long): Disposal?
+}
+
+interface RequirementRepository : JpaRepository<Requirement, Long> {
+    fun findAllByDisposalId(disposalId: Long): List<Requirement>
+}
+
+interface PssRequirementRepository : JpaRepository<PssRequirement, Long> {
+    fun findAllByCustodyDisposalId(disposalId: Long): List<PssRequirement>
 }

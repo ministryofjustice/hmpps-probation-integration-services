@@ -9,6 +9,7 @@ import uk.gov.justice.digital.hmpps.data.generator.DocumentGenerator.BREACH_NOTI
 import uk.gov.justice.digital.hmpps.data.generator.DocumentGenerator.PSS_BREACH_NOTICE_ID
 import uk.gov.justice.digital.hmpps.data.generator.DocumentGenerator.UNSENTENCED_BREACH_NOTICE_ID
 import uk.gov.justice.digital.hmpps.data.generator.EventGenerator.DEFAULT_DISPOSAL
+import uk.gov.justice.digital.hmpps.data.generator.EventGenerator.PSS_REQUIREMENT
 import uk.gov.justice.digital.hmpps.data.generator.EventGenerator.UNPAID_WORK_RQMTS
 import uk.gov.justice.digital.hmpps.data.generator.EventGenerator.UNSENTENCED_EVENT
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
@@ -88,7 +89,7 @@ internal class WarningIntegrationTest : BaseIntegrationTest() {
             WarningDetails(
                 breachReasons = WarningGenerator.BREACH_REASONS.filter { it.selectable }.codedDescriptions(),
                 enforceableContacts = listOf(PSS_ENFORCEABLE_CONTACT.toEnforceableContact()),
-                requirements = listOf()
+                requirements = listOf(PSS_REQUIREMENT.toModel())
             ),
         )
     }
