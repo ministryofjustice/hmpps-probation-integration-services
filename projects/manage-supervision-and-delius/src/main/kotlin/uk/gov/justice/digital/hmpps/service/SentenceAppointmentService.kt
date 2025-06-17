@@ -35,7 +35,8 @@ class SentenceAppointmentService(
     private val locationRepository: LocationRepository,
     private val objectMapper: ObjectMapper,
     private val nsiRepository: NsiRepository,
-    private val bankHolidayClient: BankHolidayClient
+    private val bankHolidayClient: BankHolidayClient,
+    private val userService: UserService
 ) : AuditableService(auditedInteractionService) {
 
     private fun getOverlaps(
@@ -75,9 +76,19 @@ class SentenceAppointmentService(
         return AppointmentChecks(
             nonWorkingDayName = nonWorkingDay(checkAppointment.start.toLocalDate()),
             overlapsWithMeetingWith = overlaps.first.firstOrNull()
-                ?.let { Name(forename = it.forename, surname = it.surname) },
+                ?.let {
+                    AppointmentCheck(
+                        appointmentIsWith = Name(forename = it.forename, surname = it.surname),
+                        isCurrentUser = userService.getUserStaffId() == it.staffId
+                    )
+                },
             isWithinOneHourOfMeetingWith = overlaps.second.firstOrNull()
-                ?.let { Name(forename = it.forename, surname = it.surname) },
+                ?.let {
+                    AppointmentCheck(
+                        appointmentIsWith = Name(forename = it.forename, surname = it.surname),
+                        isCurrentUser = userService.getUserStaffId() == it.staffId
+                    )
+                },
         )
     }
 

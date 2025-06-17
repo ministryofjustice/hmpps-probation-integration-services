@@ -5,6 +5,7 @@ import com.github.tomakehurst.wiremock.client.WireMock.aResponse
 import com.github.tomakehurst.wiremock.client.WireMock.get
 import com.github.tomakehurst.wiremock.common.ContentTypes.APPLICATION_JSON
 import com.github.tomakehurst.wiremock.common.ContentTypes.CONTENT_TYPE
+import io.jsonwebtoken.Jwts
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.Named.named
@@ -14,21 +15,28 @@ import org.junit.jupiter.params.provider.MethodSource
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.http.HttpHeaders
 import org.springframework.test.web.servlet.MockMvc
+import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import uk.gov.justice.digital.hmpps.api.model.Name
+import uk.gov.justice.digital.hmpps.api.model.appointment.AppointmentCheck
 import uk.gov.justice.digital.hmpps.api.model.appointment.AppointmentChecks
 import uk.gov.justice.digital.hmpps.api.model.appointment.CheckAppointment
 import uk.gov.justice.digital.hmpps.api.model.appointment.User
+import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.USER
 import uk.gov.justice.digital.hmpps.data.generator.OffenderManagerGenerator.STAFF_USER_1
 import uk.gov.justice.digital.hmpps.data.generator.OffenderManagerGenerator.TEAM
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withJson
-import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
+import java.security.KeyPair
+import java.security.KeyPairGenerator
+import java.time.Duration
 import java.time.ZonedDateTime
+import java.util.*
 
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -55,9 +63,14 @@ class CheckAppointmentIntegrationTest {
                 ZonedDateTime.of(2024, 11, 27, 8, 45, 0, 0, EuropeLondon),
                 AppointmentChecks(
                     nonWorkingDayName = null,
-                    isWithinOneHourOfMeetingWith = Name(forename = "John", surname = "Smith"),
+                    isWithinOneHourOfMeetingWith = AppointmentCheck(
+                        appointmentIsWith = Name(
+                            forename = "John",
+                            surname = "Smith"
+                        ), isCurrentUser = false
+                    ),
                     overlapsWithMeetingWith = null
-                ), false
+                ), false, STAFF_USER_1.username
             ),
             Arguments.of(
                 named(
@@ -67,9 +80,14 @@ class CheckAppointmentIntegrationTest {
                 ZonedDateTime.of(2024, 11, 27, 11, 0, 0, 0, EuropeLondon),
                 AppointmentChecks(
                     nonWorkingDayName = null,
-                    isWithinOneHourOfMeetingWith = Name(forename = "John", surname = "Smith"),
+                    isWithinOneHourOfMeetingWith = AppointmentCheck(
+                        appointmentIsWith = Name(
+                            forename = "John",
+                            surname = "Smith"
+                        ), isCurrentUser = false
+                    ),
                     overlapsWithMeetingWith = null
-                ), false
+                ), false, STAFF_USER_1.username
             ),
             Arguments.of(
                 named(
@@ -79,9 +97,14 @@ class CheckAppointmentIntegrationTest {
                 ZonedDateTime.of(2024, 11, 27, 11, 15, 0, 0, EuropeLondon),
                 AppointmentChecks(
                     nonWorkingDayName = null,
-                    isWithinOneHourOfMeetingWith = Name(forename = "John", surname = "Smith"),
+                    isWithinOneHourOfMeetingWith = AppointmentCheck(
+                        appointmentIsWith = Name(
+                            forename = "John",
+                            surname = "Smith"
+                        ), isCurrentUser = false
+                    ),
                     overlapsWithMeetingWith = null
-                ), false
+                ), false, STAFF_USER_1.username
             ),
             Arguments.of(
                 named(
@@ -92,8 +115,13 @@ class CheckAppointmentIntegrationTest {
                 AppointmentChecks(
                     nonWorkingDayName = null,
                     isWithinOneHourOfMeetingWith = null,
-                    overlapsWithMeetingWith = Name(forename = "John", surname = "Smith")
-                ), false
+                    overlapsWithMeetingWith = AppointmentCheck(
+                        appointmentIsWith = Name(
+                            forename = "John",
+                            surname = "Smith"
+                        ), isCurrentUser = false
+                    ),
+                ), false, STAFF_USER_1.username
             ),
             Arguments.of(
                 named(
@@ -104,8 +132,13 @@ class CheckAppointmentIntegrationTest {
                 AppointmentChecks(
                     nonWorkingDayName = null,
                     isWithinOneHourOfMeetingWith = null,
-                    overlapsWithMeetingWith = Name(forename = "John", surname = "Smith")
-                ), false
+                    overlapsWithMeetingWith = AppointmentCheck(
+                        appointmentIsWith = Name(
+                            forename = "John",
+                            surname = "Smith"
+                        ), isCurrentUser = false
+                    ),
+                ), false, STAFF_USER_1.username
             ),
             Arguments.of(
                 named(
@@ -116,8 +149,13 @@ class CheckAppointmentIntegrationTest {
                 AppointmentChecks(
                     nonWorkingDayName = null,
                     isWithinOneHourOfMeetingWith = null,
-                    overlapsWithMeetingWith = Name(forename = "John", surname = "Smith")
-                ), false
+                    overlapsWithMeetingWith = AppointmentCheck(
+                        appointmentIsWith = Name(
+                            forename = "John",
+                            surname = "Smith"
+                        ), isCurrentUser = false
+                    ),
+                ), false, STAFF_USER_1.username
             ),
             Arguments.of(
                 named(
@@ -129,7 +167,7 @@ class CheckAppointmentIntegrationTest {
                     nonWorkingDayName = null,
                     isWithinOneHourOfMeetingWith = null,
                     overlapsWithMeetingWith = null
-                ), false
+                ), false, STAFF_USER_1.username
             ),
             Arguments.of(
                 named(
@@ -139,9 +177,14 @@ class CheckAppointmentIntegrationTest {
                 ZonedDateTime.of(2024, 11, 27, 8, 1, 0, 0, EuropeLondon),
                 AppointmentChecks(
                     nonWorkingDayName = null,
-                    isWithinOneHourOfMeetingWith = Name(forename = "John", surname = "Smith"),
+                    isWithinOneHourOfMeetingWith = AppointmentCheck(
+                        appointmentIsWith = Name(
+                            forename = "John",
+                            surname = "Smith"
+                        ), isCurrentUser = true
+                    ),
                     overlapsWithMeetingWith = null
-                ), false
+                ), false, USER.username
             ),
             Arguments.of(
                 named(
@@ -153,7 +196,7 @@ class CheckAppointmentIntegrationTest {
                     nonWorkingDayName = null,
                     isWithinOneHourOfMeetingWith = null,
                     overlapsWithMeetingWith = null
-                ), false
+                ), false, STAFF_USER_1.username
             ),
             Arguments.of(
                 named(
@@ -165,7 +208,7 @@ class CheckAppointmentIntegrationTest {
                     nonWorkingDayName = "Early May bank holiday",
                     isWithinOneHourOfMeetingWith = null,
                     overlapsWithMeetingWith = null
-                ), false
+                ), false, STAFF_USER_1.username
             ),
             Arguments.of(
                 named(
@@ -177,7 +220,7 @@ class CheckAppointmentIntegrationTest {
                     nonWorkingDayName = null,
                     isWithinOneHourOfMeetingWith = null,
                     overlapsWithMeetingWith = null
-                ), true
+                ), true, STAFF_USER_1.username
             ),
             Arguments.of(
                 named(
@@ -189,7 +232,7 @@ class CheckAppointmentIntegrationTest {
                     nonWorkingDayName = "Saturday",
                     isWithinOneHourOfMeetingWith = null,
                     overlapsWithMeetingWith = null
-                ), true
+                ), true, STAFF_USER_1.username
             ),
             Arguments.of(
                 named(
@@ -201,7 +244,7 @@ class CheckAppointmentIntegrationTest {
                     nonWorkingDayName = "Sunday",
                     isWithinOneHourOfMeetingWith = null,
                     overlapsWithMeetingWith = null
-                ), true
+                ), true, STAFF_USER_1.username
             )
         )
     }
@@ -217,18 +260,37 @@ class CheckAppointmentIntegrationTest {
         start: ZonedDateTime,
         end: ZonedDateTime,
         expected: AppointmentChecks,
-        forceFailBankHolidayCall: Boolean = false
+        forceFailBankHolidayCall: Boolean = false,
+        username: String,
     ) {
         if (forceFailBankHolidayCall) {
             withJsonResponse("/gov-uk/bank-holidays.json", "error.json", 500)
         } else {
             withJsonResponse("/gov-uk/bank-holidays.json", "bank-holidays.json", 200)
         }
+
         val response = mockMvc.perform(
             post("/appointment/${person.crn}/check")
-                .withToken()
+                .withUserToken(username)
                 .withJson(CheckAppointment(start, end))
         ).andExpect(status().isOk).andReturn().response.contentAsJson<AppointmentChecks>()
         assertThat(response, equalTo(expected))
     }
 }
+
+fun createToken(username: String): String {
+
+    val keyPair: KeyPair = KeyPairGenerator.getInstance("RSA").apply { this.initialize(2048) }.generateKeyPair()
+    return Jwts.builder()
+        .id(UUID.randomUUID().toString())
+        .subject("probation-integration-dev")
+        .claim("user_name", username)
+        .claim("sub", "probation-integration-dev")
+        .claim("authorities", listOf("ROLE_PROBATION_INTEGRATION_ADMIN"))
+        .expiration(Date(System.currentTimeMillis() + Duration.ofHours(1L).toMillis()))
+        .signWith(keyPair.private, Jwts.SIG.RS256)
+        .compact()
+}
+
+fun MockHttpServletRequestBuilder.withUserToken(username: String) =
+    header(HttpHeaders.AUTHORIZATION, "Bearer ${createToken(username)}")
