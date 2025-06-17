@@ -19,7 +19,7 @@ class Document(
     val person: Person,
 
     @Column(name = "alfresco_document_id")
-    val alfrescoId: String,
+    var alfrescoId: String,
 
     @Column(name = "document_name")
     var name: String,
