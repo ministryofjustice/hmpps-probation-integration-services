@@ -41,13 +41,7 @@ class WarningService(
         return WarningDetails(
             breachReasons = breachReasons.codedDescriptions(),
             enforceableContacts = enforceableContacts.map(Contact::toEnforceableContact),
-            unpaidWorkRequirements =
-                if (enforceableContacts.any { it.unpaidWorkAppointments.isNotEmpty() }) {
-                    requirementRepository.getUnpaidWorkRequirementsByDisposal(disposal.id)
-                        .map { it.toModel() }
-                } else {
-                    emptyList()
-                }
+            requirements = requirementRepository.findAllByDisposalId(disposal.id).map { it.toModel() }
         )
     }
 
@@ -64,16 +58,9 @@ fun Contact.toEnforceableContact() = EnforceableContact(
     type.codedDescription(),
     outcome!!.codedDescription(),
     notes,
-    requirement?.toModel() ?: pssRequirement?.toModel(),
 )
 
 fun Requirement.toModel() = uk.gov.justice.digital.hmpps.model.Requirement(
-    id,
-    checkNotNull(mainCategory?.codedDescription()),
-    subCategory?.codedDescription(),
-)
-
-fun PssRequirement.toModel() = uk.gov.justice.digital.hmpps.model.Requirement(
     id,
     checkNotNull(mainCategory?.codedDescription()),
     subCategory?.codedDescription(),

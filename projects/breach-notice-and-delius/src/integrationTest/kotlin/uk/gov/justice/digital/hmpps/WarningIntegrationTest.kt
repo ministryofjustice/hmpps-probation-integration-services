@@ -8,6 +8,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import uk.gov.justice.digital.hmpps.data.generator.DocumentGenerator.BREACH_NOTICE_ID
 import uk.gov.justice.digital.hmpps.data.generator.DocumentGenerator.PSS_BREACH_NOTICE_ID
 import uk.gov.justice.digital.hmpps.data.generator.DocumentGenerator.UNSENTENCED_BREACH_NOTICE_ID
+import uk.gov.justice.digital.hmpps.data.generator.EventGenerator.DEFAULT_DISPOSAL
 import uk.gov.justice.digital.hmpps.data.generator.EventGenerator.UNPAID_WORK_RQMTS
 import uk.gov.justice.digital.hmpps.data.generator.EventGenerator.UNSENTENCED_EVENT
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
@@ -62,18 +63,14 @@ internal class WarningIntegrationTest : BaseIntegrationTest() {
             .andExpect(status().is2xxSuccessful)
             .andReturn().response.contentAsJson<WarningDetails>()
 
+        val requirements = requirementRepository.findAllByDisposalId(DEFAULT_DISPOSAL.id)
+        assertThat(requirements).isNotEmpty
         assertThat(response).isEqualTo(
             WarningDetails(
                 breachReasons = WarningGenerator.BREACH_REASONS.filter { it.selectable }.codedDescriptions(),
                 enforceableContacts = (ENFORCEABLE_CONTACTS + ENFORCEABLE_CONTACTS_UNPAID).sortedBy { it.date }
                     .map { it.toEnforceableContact() },
-                unpaidWorkRequirements = UNPAID_WORK_RQMTS.filter {
-                    it.subCategory!!.code in listOf(
-                        "W01",
-                        "W03",
-                        "W05"
-                    )
-                }.map { it.toModel() }
+                requirements = requirements.map { it.toModel() }
             ),
         )
         assertThat(response.enforceableContacts.firstOrNull()).isNotNull()
@@ -91,7 +88,7 @@ internal class WarningIntegrationTest : BaseIntegrationTest() {
             WarningDetails(
                 breachReasons = WarningGenerator.BREACH_REASONS.filter { it.selectable }.codedDescriptions(),
                 enforceableContacts = listOf(PSS_ENFORCEABLE_CONTACT.toEnforceableContact()),
-                unpaidWorkRequirements = listOf()
+                requirements = listOf()
             ),
         )
     }
