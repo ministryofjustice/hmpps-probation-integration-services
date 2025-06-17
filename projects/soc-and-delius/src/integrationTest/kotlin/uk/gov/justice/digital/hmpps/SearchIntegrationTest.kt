@@ -135,9 +135,9 @@ class SearchIntegrationTest {
                     team = SearchResponseTeam(
                         team.code,
                         team.description,
-                        KeyValue(team.district.code, team.district.description)
                     ),
                     probationArea = ProbationArea(probationArea.code, probationArea.description, listOf()),
+                    active = true,
                 )
             ),
             offenderAliases = listOfNotNull(alias?.let {
