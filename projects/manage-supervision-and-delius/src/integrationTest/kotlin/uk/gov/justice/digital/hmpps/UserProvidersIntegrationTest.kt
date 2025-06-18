@@ -66,7 +66,8 @@ class UserProvidersIntegrationTest {
                     listOf()
                 )
             ),
-            Arguments.of("/user/peter-parker/providers?region=${DEFAULT_PROVIDER.code}&team=${TEAM.code}",
+            Arguments.of(
+                "/user/peter-parker/providers?region=${DEFAULT_PROVIDER.code}&team=${TEAM.code}",
                 UserProviderResponse(
                     listOf(
                         Provider(DEFAULT_PROVIDER.code, "Description of N01"),
@@ -79,7 +80,8 @@ class UserProvidersIntegrationTest {
                     listOf(
                         User(STAFF_USER_1.username, Name(STAFF_USER_1.forename, surname = STAFF_USER_1.surname))
                     )
-                ))
+                )
+            )
         )
     }
 }
