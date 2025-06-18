@@ -13,8 +13,10 @@ class NonProdConnectionValidator(private val dsp: DataSourceProperties) : Hibern
     override fun customize(hibernateProperties: Map<String, Any>) {
         if (dsp.isForPreprodOrProd()) {
             Logger.logger().warn("Application connecting to ${dsp.url}")
-            require(hibernateProperties["hibernate.hbm2ddl.auto"] in listOf("none", "validate")) {
-                "Application attempted to connect to preprod or prod with auto ddl active."
+            hibernateProperties["hibernate.hbm2ddl.auto"]?.also {
+                require(it == "validate") {
+                    "Application attempted to connect to preprod or prod with auto ddl active."
+                }
             }
         }
     }
