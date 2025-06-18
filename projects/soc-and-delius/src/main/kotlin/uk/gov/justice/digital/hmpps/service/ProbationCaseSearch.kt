@@ -68,7 +68,7 @@ private fun DetailPerson.toProbationCase(includeAliases: Boolean) = OffenderDeta
     offenderProfile = OffenderProfile(ethnicity?.description, nationality?.description, religion?.description),
     offenderManagers = personManager.map { it.asOffenderManager() },
     offenderAliases = if (includeAliases && offenderAliases.isNotEmpty()) offenderAliases.map { it.asProbationAlias() }
-        .sortedBy { it.id } else emptyList()
+        .sortedBy { it.id } else null
 )
 
 private fun PersonManager.asOffenderManager() = OffenderManager(
