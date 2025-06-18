@@ -213,9 +213,7 @@ class UserService(
 
         val users = staffUserRepository.findStaffByTeam(team ?: teams.first().code).map { it.toUser() }
 
-        return UserProviderResponse(
-            providers, teams, users
-        )
+        return UserProviderResponse(providers, teams, users)
     }
 
     fun getUser(username: String) =
