@@ -116,3 +116,8 @@ updates:
     directory: "/projects/feature-flags/container"
     schedule:
       interval: "weekly"
+
+  - package-ecosystem: "docker"
+    directory: "/projects/monitor-cron-jobs/container"
+    schedule:
+      interval: "weekly"

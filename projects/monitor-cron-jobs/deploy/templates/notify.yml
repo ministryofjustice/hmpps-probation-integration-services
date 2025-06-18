@@ -1,0 +1,57 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: monitor-cron-jobs
+spec:
+  schedule: {{ .Values.schedule }}
+  concurrencyPolicy: Replace
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - name: dlq-notify
+              image: "ghcr.io/ministryofjustice/hmpps-probation-integration-services/monitor-cron-jobs:{{ .Values.version }}"
+              command:
+                - "/scripts/notify.sh"
+              securityContext:
+                capabilities:
+                  drop:
+                    - ALL
+                runAsNonRoot: true
+                allowPrivilegeEscalation: false
+                seccompProfile:
+                  type: RuntimeDefault
+              resources:
+                requests:
+                  memory: 100Mi
+                  cpu: "0.1"
+                limits:
+                  memory: 500Mi
+                  cpu: "1"
+              env:
+                - name: SLACK_CHANNEL
+                  value: C033HPR0W91 #probation-integration-notifications
+                - name: SLACK_TOKEN
+                  valueFrom:
+                    secretKeyRef:
+                      name: slack-bot
+                      key: TOKEN
+                      optional: false
+                - name: ENVIRONMENT_NAME
+                  value: {{ .Values.environment }}
+                - name: SENTRY_ENVIRONMENT
+                  value: {{ .Values.environment }}
+                - name: SENTRY_DSN
+                  valueFrom:
+                    secretKeyRef:
+                      name: monitor-cron-jobs-sentry
+                      key: SENTRY_DSN
+                      optional: false
+                - name: SENTRY_AUTH_TOKEN
+                  valueFrom:
+                    secretKeyRef:
+                      name: monitor-cron-jobs-sentry
+                      key: SENTRY_AUTH_TOKEN
+                      optional: false
+          restartPolicy: Never
