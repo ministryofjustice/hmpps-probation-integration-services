@@ -10,5 +10,6 @@ data class AppointmentChecks(
 
 data class AppointmentCheck(
     val isCurrentUser: Boolean = false,
-    val appointmentIsWith: Name
+    val appointmentIsWith: Name,
+    val startAndEnd: String
 )

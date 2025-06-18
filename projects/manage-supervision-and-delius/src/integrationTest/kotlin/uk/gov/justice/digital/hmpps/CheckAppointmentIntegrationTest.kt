@@ -67,7 +67,7 @@ class CheckAppointmentIntegrationTest {
                         appointmentIsWith = Name(
                             forename = "John",
                             surname = "Smith"
-                        ), isCurrentUser = false
+                        ), isCurrentUser = false, startAndEnd = "9am to 10am"
                     ),
                     overlapsWithMeetingWith = null
                 ), false, STAFF_USER_1.username
@@ -84,7 +84,7 @@ class CheckAppointmentIntegrationTest {
                         appointmentIsWith = Name(
                             forename = "John",
                             surname = "Smith"
-                        ), isCurrentUser = false
+                        ), isCurrentUser = false, startAndEnd = "9am to 10am"
                     ),
                     overlapsWithMeetingWith = null
                 ), false, STAFF_USER_1.username
@@ -101,7 +101,7 @@ class CheckAppointmentIntegrationTest {
                         appointmentIsWith = Name(
                             forename = "John",
                             surname = "Smith"
-                        ), isCurrentUser = false
+                        ), isCurrentUser = false, startAndEnd = "9am to 10am"
                     ),
                     overlapsWithMeetingWith = null
                 ), false, STAFF_USER_1.username
@@ -119,7 +119,7 @@ class CheckAppointmentIntegrationTest {
                         appointmentIsWith = Name(
                             forename = "John",
                             surname = "Smith"
-                        ), isCurrentUser = false
+                        ), isCurrentUser = false, startAndEnd = "9am to 10am"
                     ),
                 ), false, STAFF_USER_1.username
             ),
@@ -136,7 +136,7 @@ class CheckAppointmentIntegrationTest {
                         appointmentIsWith = Name(
                             forename = "John",
                             surname = "Smith"
-                        ), isCurrentUser = false
+                        ), isCurrentUser = false, startAndEnd = "9am to 10am"
                     ),
                 ), false, STAFF_USER_1.username
             ),
@@ -153,7 +153,7 @@ class CheckAppointmentIntegrationTest {
                         appointmentIsWith = Name(
                             forename = "John",
                             surname = "Smith"
-                        ), isCurrentUser = false
+                        ), isCurrentUser = false, startAndEnd = "9am to 10am"
                     ),
                 ), false, STAFF_USER_1.username
             ),
@@ -181,7 +181,7 @@ class CheckAppointmentIntegrationTest {
                         appointmentIsWith = Name(
                             forename = "John",
                             surname = "Smith"
-                        ), isCurrentUser = true
+                        ), isCurrentUser = true, startAndEnd = "9am to 10am"
                     ),
                     overlapsWithMeetingWith = null
                 ), false, USER.username

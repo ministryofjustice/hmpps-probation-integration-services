@@ -120,7 +120,7 @@ class Appointment(
 
 interface StaffAppointment {
     val startDateTime: LocalDateTime
-    val endDateTime: LocalDateTime?
+    val endDateTime: LocalDateTime
     val staffId: Long
     val forename: String
     val surname: String
