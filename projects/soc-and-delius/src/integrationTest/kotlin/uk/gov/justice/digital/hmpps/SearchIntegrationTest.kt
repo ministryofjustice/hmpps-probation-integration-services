@@ -140,16 +140,18 @@ class SearchIntegrationTest {
                     active = true,
                 )
             ),
-            offenderAliases = listOfNotNull(alias?.let {
-                OffenderAlias(
-                    id = it.aliasID,
-                    dateOfBirth = it.dateOfBirth,
-                    firstName = it.firstName,
-                    middleNames = listOfNotNull(it.secondName, it.thirdName),
-                    surname = it.surname,
-                    gender = it.gender.description
+            offenderAliases = alias?.let {
+                listOf(
+                    OffenderAlias(
+                        id = it.aliasID,
+                        dateOfBirth = it.dateOfBirth,
+                        firstName = it.firstName,
+                        middleNames = listOfNotNull(it.secondName, it.thirdName),
+                        surname = it.surname,
+                        gender = it.gender.description
+                    )
                 )
-            })
+            }
         )
     }
 }
