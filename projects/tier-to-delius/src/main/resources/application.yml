@@ -3,6 +3,7 @@ spring:
   jackson:
     default-property-inclusion: non_null
   jpa:
+    hibernate.ddl-auto: none
     #    hibernate.ddl-auto: validate # TODO re-enable this after "tier-end-date" feature flag is enabled
     properties:
       hibernate:

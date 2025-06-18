@@ -16,6 +16,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractio
 import uk.gov.justice.digital.hmpps.integrations.delius.compliance.NsiRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.RequirementRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.*
+import uk.gov.justice.digital.hmpps.utils.AppointmentTimeHelper
 import java.time.DayOfWeek
 import java.time.Duration
 import java.time.LocalDate
@@ -53,16 +54,14 @@ class SentenceAppointmentService(
         )
         return overlaps.partition {
             it.startDateTime.atZone(EuropeLondon).isBefore(end) &&
-                it.endDateTime?.atZone(EuropeLondon)?.isAfter(start) == true
+                it.endDateTime.atZone(EuropeLondon)?.isAfter(start) == true
         }
     }
 
     private fun nonWorkingDay(date: LocalDate): String? {
-
         if (listOf(DayOfWeek.SATURDAY, DayOfWeek.SUNDAY).contains(date.dayOfWeek)) {
             return date.dayOfWeek.name.lowercase().replaceFirstChar(Char::titlecase)
         }
-
         return try {
             bankHolidayClient.getBankHolidays().englandAndWales.events.firstOrNull { it.date == date }?.title
         } catch (ex: Exception) {
@@ -70,25 +69,22 @@ class SentenceAppointmentService(
         }
     }
 
+    fun StaffAppointment.toAppointmentCheck() = AppointmentCheck(
+        appointmentIsWith = Name(forename = forename, surname = surname),
+        isCurrentUser = userService.getUserStaffId() == staffId,
+        startAndEnd = AppointmentTimeHelper.startAndEnd(
+            startDateTime.atZone(EuropeLondon),
+            endDateTime.atZone(EuropeLondon)
+        ),
+    )
+
     fun checkAppointment(crn: String, checkAppointment: CheckAppointment): AppointmentChecks {
         val om = offenderManagerRepository.getByCrn(crn)
         val overlaps = getOverlaps(om.person.id, checkAppointment.start, checkAppointment.end)
         return AppointmentChecks(
             nonWorkingDayName = nonWorkingDay(checkAppointment.start.toLocalDate()),
-            overlapsWithMeetingWith = overlaps.first.firstOrNull()
-                ?.let {
-                    AppointmentCheck(
-                        appointmentIsWith = Name(forename = it.forename, surname = it.surname),
-                        isCurrentUser = userService.getUserStaffId() == it.staffId
-                    )
-                },
-            isWithinOneHourOfMeetingWith = overlaps.second.firstOrNull()
-                ?.let {
-                    AppointmentCheck(
-                        appointmentIsWith = Name(forename = it.forename, surname = it.surname),
-                        isCurrentUser = userService.getUserStaffId() == it.staffId
-                    )
-                },
+            overlapsWithMeetingWith = overlaps.first.firstOrNull()?.toAppointmentCheck(),
+            isWithinOneHourOfMeetingWith = overlaps.second.firstOrNull()?.toAppointmentCheck(),
         )
     }
 

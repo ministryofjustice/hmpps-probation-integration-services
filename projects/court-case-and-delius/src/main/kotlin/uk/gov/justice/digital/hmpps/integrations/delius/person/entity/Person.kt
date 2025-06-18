@@ -403,8 +403,8 @@ interface SentenceCounts {
 fun matchesPerson(surname: String, firstName: String?, dateOfBirth: LocalDate?) =
     Specification<Person> { person, _, cb ->
         val toMatch = listOfNotNull(
-            cb.equal(cb.lower(person[SURNAME]), surname.lowercase()),
-            firstName?.lowercase()?.let { cb.equal(cb.lower(person[FORENAME]), it) },
+            cb.equal(cb.trim(cb.lower(person[SURNAME])), surname.lowercase()),
+            firstName?.lowercase()?.let { cb.equal(cb.trim(cb.lower(person[FORENAME])), it) },
             dateOfBirth?.let { cb.equal(person.get<LocalDate>(DOB), it) }
         )
         cb.and(*toMatch.toTypedArray())
