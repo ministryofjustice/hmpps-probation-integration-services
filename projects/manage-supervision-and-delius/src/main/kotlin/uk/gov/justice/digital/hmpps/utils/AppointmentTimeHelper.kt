@@ -5,11 +5,10 @@ import java.time.format.DateTimeFormatter
 
 object AppointmentTimeHelper {
     fun startAndEnd(startDate: ZonedDateTime, endDate: ZonedDateTime): String {
-        val startTime =
-            replace(startDate.toOffsetDateTime().toOffsetTime().format(DateTimeFormatter.ofPattern("h:mm a")))
-        val endTime = replace(endDate.toOffsetDateTime().toOffsetTime().format(DateTimeFormatter.ofPattern("h:mm a")))
+        val startTime = replace(startDate.format(DateTimeFormatter.ofPattern("h:mm a")))
+        val endTime = replace(endDate.format(DateTimeFormatter.ofPattern("h:mm a")))
         return "$startTime to $endTime"
     }
 
-    private fun replace(time: String) = time.replace(" ", "").replace(":00", "")
+    private fun replace(time: String) = time.replace(" ", "").replace(":00", "").lowercase()
 }
