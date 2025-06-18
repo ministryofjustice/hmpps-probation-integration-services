@@ -36,6 +36,7 @@ on:
           - manage-offences-and-delius
           - manage-pom-cases-and-delius
           - manage-supervision-and-delius
+          - monitor-cron-jobs
           - oasys-and-delius
           - offender-events-and-delius
           - opd-and-delius
@@ -48,7 +49,7 @@ on:
           - prison-identifier-and-delius
           - prisoner-profile-and-delius
           - probation-search-and-delius
-          - redrive-dead-letter-queue
+          - redrive-dead-letter-queues
           - refer-and-monitor-and-delius
           - resettlement-passport-and-delius
           - risk-assessment-scores-to-delius

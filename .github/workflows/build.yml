@@ -179,6 +179,7 @@ jobs:
           - person-search-index-from-delius
           - redrive-dead-letter-queues
           - feature-flags
+          - monitor-cron-jobs
     steps:
       - uses: actions/checkout@v4
 
