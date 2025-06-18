@@ -9,8 +9,11 @@ import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 import uk.gov.justice.digital.hmpps.api.model.user.Provider
+import uk.gov.justice.digital.hmpps.api.model.user.Team
 import uk.gov.justice.digital.hmpps.api.model.user.UserProviderResponse
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.DEFAULT_PROVIDER
+import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.DEFAULT_TEAM
+import uk.gov.justice.digital.hmpps.data.generator.OffenderManagerGenerator
 import uk.gov.justice.digital.hmpps.data.generator.OffenderManagerGenerator.PROVIDER_2
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
@@ -41,7 +44,12 @@ class UserProvidersIntegrationTest {
                 listOf(
                     Provider(DEFAULT_PROVIDER.code, "Description of N01"),
                     Provider(PROVIDER_2.code, "Description of W01")
-                )
+                ),
+                listOf(
+                    Team(DEFAULT_TEAM.description, DEFAULT_TEAM.code),
+                    Team(OffenderManagerGenerator.TEAM.description, OffenderManagerGenerator.TEAM.code)
+                ),
+                listOf()
             )
         assertEquals(expected, response)
     }

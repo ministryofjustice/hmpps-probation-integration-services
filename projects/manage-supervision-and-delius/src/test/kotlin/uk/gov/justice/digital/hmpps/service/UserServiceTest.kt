@@ -21,6 +21,7 @@ import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.STAFF_1
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.USER
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.CASELOAD_PERSON_1
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.ContactRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.StaffUserRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.user.entity.CaseloadRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.user.entity.ProbationAreaUserRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.user.entity.StaffRepository
@@ -38,6 +39,9 @@ internal class UserServiceTest {
 
     @Mock
     lateinit var staffRepository: StaffRepository
+
+    @Mock
+    lateinit var staffUserRepository: StaffUserRepository
 
     @Mock
     lateinit var teamRepository: TeamRepository

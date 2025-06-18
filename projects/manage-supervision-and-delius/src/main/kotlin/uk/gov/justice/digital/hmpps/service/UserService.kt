@@ -24,6 +24,7 @@ import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.LdapUser
+import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.StaffUserRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.user.entity.*
 import uk.gov.justice.digital.hmpps.ldap.findByUsername
 import java.time.LocalDate
@@ -37,6 +38,7 @@ class UserService(
     private val userRepository: UserRepository,
     private val caseloadRepository: CaseloadRepository,
     private val staffRepository: StaffRepository,
+    private val staffUserRepository: StaffUserRepository,
     private val teamRepository: TeamRepository,
     private val userAccessService: UserAccessService,
     private val contactRepository: ContactRepository,
@@ -202,10 +204,19 @@ class UserService(
         } ?: UserAppointments(Name(user.forename, surname = user.surname), totalAppointments = 0, totalOutcomes = 0)
     }
 
-    fun getProvidersForUser(username: String) =
-        UserProviderResponse(
-            probationAreaUserRepository.findByUsername(username)
-                .map { Provider(it.id.provider.code, it.id.provider.description) })
+    fun getProvidersForUser(username: String, region: String?, team: String?): UserProviderResponse {
+
+        val providers = probationAreaUserRepository.findByUsername(username)
+            .map { Provider(it.id.provider.code, it.id.provider.description) }
+
+        val teams = teamRepository.findByProviderCode(region ?: providers.first().code).map { it.toTeam() }
+
+        val users = staffUserRepository.findStaffByTeam(team ?: teams.first().code).map { it.toUser() }
+
+        return UserProviderResponse(
+            providers, teams, users
+        )
+    }
 
     fun getUser(username: String) =
         userRepository.findUserByUsername(username) ?: throw NotFoundException("User", "username", username)
