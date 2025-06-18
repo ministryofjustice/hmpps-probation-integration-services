@@ -11,7 +11,7 @@ data class MatchedPerson(
     val surname: String,
     val dateOfBirth: LocalDate,
     val otherIds: Ids,
-    val probationStatus: ProbationStatusDetail,
+    val probationStatus: MatchProbationStatus,
     val offenderAliases: List<OffenderAlias> = emptyList(),
 )
 
@@ -32,3 +32,15 @@ data class MatchRequest(
     val dateOfBirth: LocalDate? = null,
     val activeSentence: Boolean = false,
 )
+
+data class MatchProbationStatus(
+    val status: ProbationStatus,
+    val previouslyKnownTerminationDate: LocalDate? = null,
+    val inBreach: Boolean = false,
+    val preSentenceActivity: Boolean = false,
+    val awaitingPsr: Boolean = false
+) {
+    companion object {
+        val NO_RECORD = MatchProbationStatus(ProbationStatus.NO_RECORD)
+    }
+}
