@@ -9,6 +9,7 @@ spec:
     spec:
       template:
         spec:
+          serviceAccountName: cd-serviceaccount
           containers:
             - name: dlq-notify
               image: "ghcr.io/ministryofjustice/hmpps-probation-integration-services/monitor-cron-jobs:{{ .Values.version }}"
