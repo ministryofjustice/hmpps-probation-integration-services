@@ -8,7 +8,7 @@ resource "aws_sns_topic_subscription" "SERVICE_NAME-queue-subscription" {
 }
 
 module "SERVICE_NAME-queue" {
-  source = "github.com/ministryofjustice/cloud-platform-terraform-sqs?ref=6.0.0"
+  source = "github.com/ministryofjustice/cloud-platform-terraform-sqs?ref=5.1.2"
 
   # Queue configuration
   sqs_name = "SERVICE_NAME-queue"
@@ -25,7 +25,6 @@ module "SERVICE_NAME-queue" {
   is_production          = var.is_production
   namespace              = var.namespace
   team_name              = var.team_name
-  use_team_name          = true
 }
 
 resource "aws_sqs_queue_policy" "SERVICE_NAME-queue-policy" {
@@ -34,7 +33,7 @@ resource "aws_sqs_queue_policy" "SERVICE_NAME-queue-policy" {
 }
 
 module "SERVICE_NAME-dlq" {
-  source = "github.com/ministryofjustice/cloud-platform-terraform-sqs?ref=6.0.0"
+  source = "github.com/ministryofjustice/cloud-platform-terraform-sqs?ref=5.1.2"
 
   # Queue configuration
   sqs_name                  = "SERVICE_NAME-dlq"
@@ -48,7 +47,6 @@ module "SERVICE_NAME-dlq" {
   is_production          = var.is_production
   namespace              = var.namespace
   team_name              = var.team_name
-  use_team_name          = true
 }
 
 resource "aws_sqs_queue_policy" "SERVICE_NAME-dlq-policy" {
