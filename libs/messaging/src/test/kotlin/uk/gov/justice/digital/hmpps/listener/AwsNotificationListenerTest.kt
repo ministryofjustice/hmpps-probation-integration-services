@@ -98,5 +98,4 @@ class AwsNotificationListenerTest {
         verify(visibility, times(2)).changeTo(30)
         verify(handler).handle(notification)
     }
-
 }
