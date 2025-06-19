@@ -61,5 +61,9 @@ class UserController(
     }
 
     @GetMapping("/providers")
-    fun getUserProviders(@PathVariable username: String) = userService.getProvidersForUser(username)
+    fun getUserProviders(
+        @PathVariable username: String,
+        @RequestParam(required = false) region: String?,
+        @RequestParam(required = false) team: String?
+    ) = userService.getProvidersForUser(username, region, team)
 }
