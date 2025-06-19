@@ -15,7 +15,7 @@ get_timeout_for_job() {
 job_data=$(kubectl get jobs -o json | jq '
   [
     .items[]
-    | select((.status.startTime | fromdateiso8601) > (now - 86400))
+    | select(.status.completionTime == null or (.status.startTime | fromdateiso8601) > (now - 86400))
     | {
         name: .metadata.name,
         status:
