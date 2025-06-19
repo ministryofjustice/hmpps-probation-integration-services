@@ -56,5 +56,5 @@ spec:
                 - name: JOBS_UNPAID-WORK-APPOINTMENT-REMINDERS_DAYS-IN-ADVANCE
                   value: "{{ $config.daysInAdvance }}"
           restartPolicy: Never
-          backoffLimit: 0
+      backoffLimit: 0
 {{ end }}
