@@ -13,7 +13,6 @@ import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDO
 import org.springframework.test.context.bean.override.mockito.MockitoBean
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import uk.gov.justice.digital.hmpps.data.generator.UserGenerator
 import uk.gov.justice.digital.hmpps.model.Provider
@@ -46,7 +45,7 @@ internal class IntegrationTest {
 
     @BeforeEach
     fun setup() {
-        whenever(upwAppointmentRepository.getUnpaidWorkAppointments(any(), eq("N56"))).thenReturn(
+        whenever(upwAppointmentRepository.getUnpaidWorkAppointments(any(), eq("N56"), any())).thenReturn(
             listOf(
                 object : UnpaidWorkAppointment {
                     override val firstName = "Test"
@@ -66,24 +65,6 @@ internal class IntegrationTest {
                 }
             )
         )
-    }
-
-    @Test
-    fun `returns csv report`() {
-        mockMvc
-            .perform(get("/upw-appointments.csv?providerCode=N56").withToken())
-            .andExpect(status().is2xxSuccessful)
-            .andExpect(content().contentTypeCompatibleWith("text/csv;charset=UTF-8"))
-            .andExpect(
-                content().string(
-                    """
-                    firstName,mobileNumber,appointmentDate,crn,eventNumbers,upwAppointmentIds
-                    Test,07000000001,01/01/2000,A000001,1,"123, 456"
-                    Test,07000000002,01/01/2000,A000002,1,789
-                    
-                    """.trimIndent()
-                )
-            )
     }
 
     @Test

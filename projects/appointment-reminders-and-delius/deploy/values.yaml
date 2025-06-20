@@ -38,6 +38,11 @@ jobs:
       apiKeySecret: API_KEY
       schedule: '0 18 * * *' # 6pm every day
       daysInAdvance: 1
+      excludedProjectCodes:
+        - N50SHIFTS # Shift Worker (Variable - Minimum 1 day/week, by Sunday at latest each week) - BROT Team
+        - N50SWG    # BWST Shift Worker Group
+        - N50MSTSW  # MST Shift Worker (Variable - Minimum 1 day/week, by Sunday at latest each week)
+        - N502025   # Shift Worker. Variable attendance agreed.
 
     london:
       provider:
