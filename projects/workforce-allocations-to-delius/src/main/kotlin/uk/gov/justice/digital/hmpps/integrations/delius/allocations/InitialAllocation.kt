@@ -37,7 +37,7 @@ interface InitialAllocation {
     val allocationDate: LocalDate
 
     @get:JsonFormat(shape = STRING, pattern = "dd/MM/yyyy")
-    val endDate: LocalDate
+    val endDate: LocalDate?
     val officerCode: String
     val teamCode: String
     val teamDescription: String
