@@ -83,7 +83,6 @@ data class Person(
 )
 
 interface PersonRepository : JpaRepository<Person, Long> {
-    //@EntityGraph(attributePaths = ["title", "gender", "ethnicity", "nationality", "personManager.probationArea"])
     @Query(
         """
             select p from Person p
