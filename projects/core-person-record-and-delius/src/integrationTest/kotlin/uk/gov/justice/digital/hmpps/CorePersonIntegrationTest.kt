@@ -46,6 +46,13 @@ internal class CorePersonIntegrationTest {
     }
 
     @Test
+    fun `returns 404 not found for test cases by crn`() {
+        mockMvc
+            .perform(get("/probation-cases/${PersonGenerator.DO_NOT_FIND_PERSON.crn}").withToken())
+            .andExpect(status().isNotFound)
+    }
+
+    @Test
     fun `correctly returns detail by id`() {
         mockMvc
             .perform(get("/probation-cases/${PersonGenerator.FULL_PERSON.id}").withToken())

@@ -12,6 +12,21 @@ object PersonGenerator {
     val PREVIOUS_ADDRESS = generateReferenceData("P", "Previous Address")
     val MAIN_ADDRESS = generateReferenceData("M", "Main Address")
 
+    val DO_NOT_FIND_PERSON = generatePerson(
+        crn = "X999999",
+        nomsId = "A9999BC",
+        firstname = "John",
+        surname = "Doe",
+        dob = LocalDate.of(1975, 7, 15),
+        telephoneNumber = "0191 255 9874",
+        mobileNumber = "07515481285",
+        emailAddress = "john@gmail.com",
+        title = TITLE,
+        gender = GENDER,
+        nationality = NATIONALITY,
+        ethnicity = ETHNICITY,
+    )
+
     val MIN_PERSON =
         generatePerson("M123456", firstname = "Isabelle", surname = "Necessary", dob = LocalDate.of(1990, 3, 5))
     val FULL_PERSON = generatePerson(
@@ -144,6 +159,7 @@ object PersonGenerator {
         restrictionMessage = restrictionMessage,
         softDeleted = softDeleted,
         id = id,
+        personManager = null
     )
 
     fun generateAlias(
