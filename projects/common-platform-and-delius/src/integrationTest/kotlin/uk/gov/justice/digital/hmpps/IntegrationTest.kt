@@ -26,7 +26,6 @@ import software.amazon.awssdk.services.s3.model.GetObjectResponse
 import uk.gov.justice.digital.hmpps.audit.entity.AuditedInteraction
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
 import uk.gov.justice.digital.hmpps.data.generator.MessageGenerator
-import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.generate
 import uk.gov.justice.digital.hmpps.flags.FeatureFlags
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractionCode
@@ -43,7 +42,6 @@ import uk.gov.justice.digital.hmpps.service.PersonService
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryMessagingExtensions.notificationReceived
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import java.io.ByteArrayInputStream
-import java.time.Duration
 import java.time.LocalDate
 import java.util.function.Function
 
@@ -220,8 +218,8 @@ internal class IntegrationTest {
 
         verify(addressRepository).save(check<PersonAddress> {
             assertThat(it.start, Matchers.equalTo(LocalDate.now()))
-            assertNull(it.endDate)
-            assertNotNull(it.notes)
+            Assertions.assertNull(it.endDate)
+            Assertions.assertNotNull(it.notes)
             assertThat(it.softDeleted, Matchers.equalTo(false))
             assertThat(it.status.code, Matchers.equalTo(ReferenceData.StandardRefDataCode.ADDRESS_MAIN_STATUS.code))
             assertThat(it.noFixedAbode, Matchers.equalTo(false))
@@ -276,8 +274,8 @@ internal class IntegrationTest {
 
         verify(addressRepository).save(check<PersonAddress> {
             assertThat(it.start, Matchers.equalTo(LocalDate.now()))
-            assertNull(it.endDate)
-            assertNotNull(it.notes)
+            Assertions.assertNull(it.endDate)
+            Assertions.assertNotNull(it.notes)
             assertThat(it.softDeleted, Matchers.equalTo(false))
             assertThat(it.status.code, Matchers.equalTo(ReferenceData.StandardRefDataCode.ADDRESS_MAIN_STATUS.code))
             assertThat(it.noFixedAbode, Matchers.equalTo(false))
@@ -307,8 +305,8 @@ internal class IntegrationTest {
                     assertEquals(1, event.version)
                     assertEquals("probation-case.engagement.created", event.eventType)
                     assertEquals("A probation case record for a person has been created in Delius", event.description)
-                    assertNotNull(event.personReference.findCrn())
-                    assertNull(event.detailUrl)
+                    Assertions.assertNotNull(event.personReference.findCrn())
+                    Assertions.assertNull(event.detailUrl)
                     assertTrue(event.additionalInformation.isEmpty())
                 }
 
@@ -316,8 +314,8 @@ internal class IntegrationTest {
                     assertEquals(1, event.version)
                     assertEquals("probation-case.address.created", event.eventType)
                     assertEquals("A new address has been created on the probation case", event.description)
-                    assertNotNull(event.personReference.findCrn())
-                    assertNull(event.detailUrl)
+                    Assertions.assertNotNull(event.personReference.findCrn())
+                    Assertions.assertNull(event.detailUrl)
 
                     with(event.additionalInformation) {
                         assertTrue(containsKey("addressStatus"))
@@ -354,7 +352,7 @@ internal class IntegrationTest {
             assertThat(it.district, Matchers.containsString("Example Address Line 2"))
             assertThat(it.town, Matchers.containsString("Example Address Line 3"))
             assertThat(it.postcode, Matchers.containsString("AA1 1AA"))
-            assertNull(it.endDate)
+            Assertions.assertNull(it.endDate)
             assertThat(
                 it.notes,
                 Matchers.equalTo("This address record was initially created using information from HMCTS Common Platform.")
@@ -379,8 +377,8 @@ internal class IntegrationTest {
             assertThat(it.streetName, Matchers.containsString("Test Street"))
             assertThat(it.addressNumber, Matchers.containsString("123"))
             assertThat(it.town, Matchers.containsString("Test"))
-            assertNull(it.endDate)
-            assertNotNull(it.notes)
+            Assertions.assertNull(it.endDate)
+            Assertions.assertNotNull(it.notes)
             assertThat(it.softDeleted, Matchers.equalTo(false))
             assertThat(it.status.code, Matchers.equalTo(ReferenceData.StandardRefDataCode.ADDRESS_MAIN_STATUS.code))
             assertThat(it.noFixedAbode, Matchers.equalTo(false))
@@ -419,7 +417,7 @@ internal class IntegrationTest {
             assertThat(it.person.forename, Matchers.equalTo("Example First Name"))
             assertThat(it.person.surname, Matchers.equalTo("Example Last Name"))
             assertThat(it.offence.description, Matchers.equalTo("Murder"))
-            assertNotNull(it.offence)
+            Assertions.assertNotNull(it.offence)
         })
         verify(courtAppearanceRepository).save(check<CourtAppearance> {
             assertThat(it.person.forename, Matchers.equalTo("Example First Name"))
@@ -442,7 +440,7 @@ internal class IntegrationTest {
             assertThat(it.allocationReason.description, Matchers.equalTo("Initial Allocation"))
             assertTrue(it.active)
             assertThat(it.allocationDate, Matchers.equalTo(LocalDate.of(2024, 1, 1)))
-            assertNull(it.endDate)
+            Assertions.assertNull(it.endDate)
         })
 
         verify(personService).updatePerson(check<Person> {
