@@ -5,6 +5,7 @@ import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import io.awspring.cloud.sqs.annotation.SqsListener
 import io.awspring.cloud.sqs.listener.AsyncAdapterBlockingExecutionFailedException
 import io.awspring.cloud.sqs.listener.ListenerExecutionFailedException
+import io.awspring.cloud.sqs.listener.Visibility
 import io.opentelemetry.api.trace.Span
 import io.opentelemetry.api.trace.SpanKind
 import io.opentelemetry.api.trace.StatusCode
@@ -16,6 +17,7 @@ import org.springframework.context.annotation.Conditional
 import org.springframework.dao.CannotAcquireLockException
 import org.springframework.jdbc.CannotGetJdbcConnectionException
 import org.springframework.orm.ObjectOptimisticLockingFailureException
+import org.springframework.scheduling.concurrent.SimpleAsyncTaskScheduler
 import org.springframework.stereotype.Component
 import org.springframework.transaction.CannotCreateTransactionException
 import org.springframework.transaction.UnexpectedRollbackException
@@ -26,6 +28,8 @@ import uk.gov.justice.digital.hmpps.messaging.NotificationHandler
 import uk.gov.justice.digital.hmpps.retry.retry
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryMessagingExtensions.extractTelemetryContext
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryMessagingExtensions.withSpan
+import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
+import java.time.Duration
 import java.util.concurrent.CancellationException
 import java.util.concurrent.CompletionException
 
@@ -35,29 +39,54 @@ import java.util.concurrent.CompletionException
 class AwsNotificationListener(
     private val handler: NotificationHandler<*>,
     private val objectMapper: ObjectMapper,
-    @Value("\${messaging.consumer.queue}") private val queueName: String
+    private val telemetryService: TelemetryService,
+    private val taskScheduler: SimpleAsyncTaskScheduler,
+    @Value("\${messaging.consumer.queue}") private val queueName: String,
+    @Value("\${messaging.consumer.visibility.extensionInterval:15}") private val visibilityExtensionInterval: Long
 ) {
     @SentryTransaction(operation = "messaging")
     @SqsListener("\${messaging.consumer.queue}")
-    fun receive(message: String) {
-        val notification = objectMapper.readValue(message, jacksonTypeRef<Notification<String>>())
-        notification.attributes
-            .extractTelemetryContext()
-            .withSpan(
-                this::class.java.simpleName,
-                "RECEIVE ${notification.eventType ?: "unknown event type"}",
-                SpanKind.CONSUMER
-            ) {
-                Span.current().setAttribute("queue", queueName)
-                try {
-                    retry(3, RETRYABLE_EXCEPTIONS) { handler.handle(message) }
-                } catch (t: Throwable) {
-                    val e = unwrapSqsExceptions(t)
-                    Span.current().recordException(e).setStatus(StatusCode.ERROR)
-                    Sentry.captureException(e)
-                    throw t
+    fun receive(message: String, visibility: Visibility? = null) {
+        visibility.extendWhileRunning {
+            val notification = objectMapper.readValue(message, jacksonTypeRef<Notification<String>>())
+            notification.attributes
+                .extractTelemetryContext()
+                .withSpan(
+                    this::class.java.simpleName,
+                    "RECEIVE ${notification.eventType ?: "unknown event type"}",
+                    SpanKind.CONSUMER
+                ) {
+                    Span.current().setAttribute("queue", queueName)
+                    try {
+                        retry(3, RETRYABLE_EXCEPTIONS) { handler.handle(message) }
+                    } catch (t: Throwable) {
+                        val e = unwrapSqsExceptions(t)
+                        Span.current().recordException(e).setStatus(StatusCode.ERROR)
+                        Sentry.captureException(e)
+                        throw t
+                    }
                 }
-            }
+        }
+    }
+
+    fun Visibility?.extendWhileRunning(fn: () -> Unit) {
+        // At each interval, reset the visibility timeout to 30 seconds
+        val scheduledFuture = this?.let { visibility ->
+            taskScheduler.scheduleAtFixedRate({
+                try {
+                    visibility.changeTo(30)
+                } catch (e: Exception) {
+                    telemetryService.trackException(e)
+                    Sentry.captureException(e)
+                }
+            }, Duration.ofSeconds(visibilityExtensionInterval))
+        }
+
+        try {
+            fn()
+        } finally {
+            scheduledFuture?.cancel(false)
+        }
     }
 
     fun unwrapSqsExceptions(e: Throwable): Throwable {
