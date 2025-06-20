@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.listener
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
+import io.awspring.cloud.sqs.SqsException
 import io.awspring.cloud.sqs.annotation.SqsListener
 import io.awspring.cloud.sqs.listener.AsyncAdapterBlockingExecutionFailedException
 import io.awspring.cloud.sqs.listener.ListenerExecutionFailedException
@@ -76,8 +77,10 @@ class AwsNotificationListener(
                 try {
                     visibility.changeTo(30)
                 } catch (e: Exception) {
-                    telemetryService.trackException(e)
-                    Sentry.captureException(e)
+                    if (e.cause !is SqsException || e.cause?.message?.contains(MESSAGE_ACKNOWLEDGED) != true) {
+                        telemetryService.trackException(e)
+                        Sentry.captureException(e)
+                    }
                 }
             }, Duration.ofSeconds(visibilityExtensionInterval))
         }
@@ -105,6 +108,7 @@ class AwsNotificationListener(
     }
 
     companion object {
+        const val MESSAGE_ACKNOWLEDGED = "Message does not exist or is not available for visibility timeout change"
         val RETRYABLE_EXCEPTIONS = listOf(
             RestClientException::class,
             CancellationException::class,
