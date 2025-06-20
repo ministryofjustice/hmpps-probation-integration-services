@@ -33,6 +33,7 @@ echo "$job_data"
 failed_blocks="[]"
 running_blocks="[]"
 completed_blocks="[]"
+send_alert=false
 for job_json in $(echo "$job_data" | jq -c '.[]'); do
   name=$(echo "$job_json" | jq -r .name)
   status=$(echo "$job_json" | jq -r .status)
@@ -51,11 +52,17 @@ for job_json in $(echo "$job_data" | jq -c '.[]'); do
   case "$status" in
     "Failed")
       text='❌'
+      send_alert=true
       failed_blocks=$(jq --arg name "$name" --arg text "$text" --arg env "$ENVIRONMENT_NAME" "$job_block" <<<"$failed_blocks")
       ;;
 
     "Running")
-      if (( duration_seconds > $(get_timeout_for_job "$name") )); then text="⚠️ ${duration_friendly}"; else text="⏳ ${duration_friendly}"; fi
+      if (( duration_seconds > $(get_timeout_for_job "$name") )); then
+        text="⚠️ ${duration_friendly}" # warn: job has been running for too long
+        send_alert=true
+      else
+        text="⏳ ${duration_friendly}" # ok: job is running, but hasn't exceeded timeout
+      fi
       running_blocks=$(jq --arg name "$name" --arg text "$text" --arg env "$ENVIRONMENT_NAME" "$job_block" <<<"$running_blocks")
       ;;
 
@@ -66,7 +73,7 @@ for job_json in $(echo "$job_data" | jq -c '.[]'); do
   esac
 done
 
-if [[ $(echo "$failed_blocks" | jq 'length') -eq 0 && $(echo "$running_blocks" | jq 'length') -eq 0 ]]; then
+if [ "$send_alert" != "true" ]; then
   echo "No failing or long-running cron jobs found!"
   exit 0
 fi
