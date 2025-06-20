@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta http-equiv="x-ua-compatible" content="IE=edge"/>
+<title>Test results - AllocationCompletedIntegrationTest</title>
+<link href="../css/base-style.css" rel="stylesheet" type="text/css"/>
+<link href="../css/style.css" rel="stylesheet" type="text/css"/>
+<script src="../js/report.js" type="text/javascript"></script>
+</head>
+<body>
+<div id="content">
+<h1>AllocationCompletedIntegrationTest</h1>
+<div class="breadcrumbs">
+<a href="../index.html">all</a> &gt; 
+<a href="../packages/uk.gov.justice.digital.hmpps.html">uk.gov.justice.digital.hmpps</a> &gt; AllocationCompletedIntegrationTest</div>
+<div id="summary">
+<table>
+<tr>
+<td>
+<div class="summaryGroup">
+<table>
+<tr>
+<td>
+<div class="infoBox" id="tests">
+<div class="counter">2</div>
+<p>tests</p>
+</div>
+</td>
+<td>
+<div class="infoBox" id="failures">
+<div class="counter">0</div>
+<p>failures</p>
+</div>
+</td>
+<td>
+<div class="infoBox" id="ignored">
+<div class="counter">0</div>
+<p>ignored</p>
+</div>
+</td>
+<td>
+<div class="infoBox" id="duration">
+<div class="counter">0.561s</div>
+<p>duration</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</td>
+<td>
+<div class="infoBox success" id="successRate">
+<div class="percent">100%</div>
+<p>successful</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="tab-container">
+<ul class="tabLinks">
+<li>
+<a href="#">Tests</a>
+</li>
+<li>
+<a href="#">Standard output</a>
+</li>
+</ul>
+<div class="tab">
+<h2>Tests</h2>
+<table>
+<thead>
+<tr>
+<th>Test</th>
+<th>Duration</th>
+<th>Result</th>
+</tr>
+</thead>
+<tr>
+<td class="success">allocation order manager successful response()</td>
+<td class="success">0.205s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">successful response()</td>
+<td class="success">0.356s</td>
+<td class="success">passed</td>
+</tr>
+</table>
+</div>
+<div class="tab">
+<h2>Standard output</h2>
+<span class="code">
+<pre>2025-06-20T07:57:35.751Z  INFO 2990 --- [    Test worker] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [uk.gov.justice.digital.hmpps.AllocationCompletedIntegrationTest]: AllocationCompletedIntegrationTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2025-06-20T07:57:35.758Z  INFO 2990 --- [    Test worker] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration uk.gov.justice.digital.hmpps.App for test class uk.gov.justice.digital.hmpps.AllocationCompletedIntegrationTest
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.5.3)
+
+2025-06-20T07:57:35.833Z  INFO 2990 --- [    Test worker] u.g.j.d.h.wiremock.WireMockInitialiser   : WireMock server started on port 34983
+2025-06-20T07:57:35.834Z  INFO 2990 --- [    Test worker] j.d.h.AllocationCompletedIntegrationTest : Starting AllocationCompletedIntegrationTest using Java 21.0.7 with PID 2990 (started by runner in /home/runner/work/hmpps-probation-integration-services/hmpps-probation-integration-services/projects/workforce-allocations-to-delius)
+2025-06-20T07:57:35.834Z DEBUG 2990 --- [    Test worker] j.d.h.AllocationCompletedIntegrationTest : Running with Spring Boot v3.5.3, Spring v6.2.8
+2025-06-20T07:57:35.835Z  INFO 2990 --- [    Test worker] j.d.h.AllocationCompletedIntegrationTest : The following 2 profiles are active: &quot;integration-test&quot;, &quot;oracle&quot;
+2025-06-20T07:57:36.207Z  INFO 2990 --- [    Test worker] .s.d.r.c.RepositoryConfigurationDelegate : Multiple Spring Data modules found, entering strict repository configuration mode
+2025-06-20T07:57:36.207Z  INFO 2990 --- [    Test worker] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-06-20T07:57:36.269Z  INFO 2990 --- [    Test worker] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 60 ms. Found 58 JPA repository interfaces.
+2025-06-20T07:57:36.606Z  INFO 2990 --- [    Test worker] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 0 (http)
+2025-06-20T07:57:36.623Z  INFO 2990 --- [    Test worker] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2025-06-20T07:57:36.623Z  INFO 2990 --- [    Test worker] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.42]
+2025-06-20T07:57:36.686Z  INFO 2990 --- [    Test worker] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2025-06-20T07:57:36.686Z  INFO 2990 --- [    Test worker] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 849 ms
+2025-06-20T07:57:36.837Z  INFO 2990 --- [    Test worker] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-06-20T07:57:36.840Z  INFO 2990 --- [    Test worker] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2025-06-20T07:57:36.850Z  INFO 2990 --- [    Test worker] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-06-20T07:57:36.851Z  INFO 2990 --- [    Test worker] com.zaxxer.hikari.HikariDataSource       : HikariPool-2 - Starting...
+2025-06-20T07:57:37.037Z  INFO 2990 --- [    Test worker] com.zaxxer.hikari.pool.HikariPool        : HikariPool-2 - Added connection org.testcontainers.jdbc.ConnectionWrapper@11f74bb1
+2025-06-20T07:57:37.037Z  INFO 2990 --- [    Test worker] com.zaxxer.hikari.HikariDataSource       : HikariPool-2 - Start completed.
+2025-06-20T07:57:37.042Z  INFO 2990 --- [    Test worker] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-2)']
+	Database driver: undefined/unknown
+	Database version: 23.7
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-06-20T07:57:37.379Z  WARN 2990 --- [    Test worker] org.hibernate.mapping.RootClass          : HHH000038: Composite-id class does not override equals(): uk.gov.justice.digital.hmpps.integrations.delius.user.ProbationAreaUserId
+2025-06-20T07:57:37.380Z  WARN 2990 --- [    Test worker] org.hibernate.mapping.RootClass          : HHH000039: Composite-id class does not override hashCode(): uk.gov.justice.digital.hmpps.integrations.delius.user.ProbationAreaUserId
+2025-06-20T07:57:37.664Z  INFO 2990 --- [    Test worker] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-06-20T07:57:39.736Z  INFO 2990 --- [    Test worker] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-06-20T07:57:39.835Z  INFO 2990 --- [    Test worker] o.s.l.c.support.AbstractContextSource    : Property 'userDn' not set - anonymous context will be used for read-only operations
+2025-06-20T07:57:40.429Z  WARN 2990 --- [    Test worker] a.c.CredentialsProviderAutoConfiguration : Skipping creating `StsCredentialsProvider`. `software.amazon.awssdk:sts` is on the classpath, but neither `spring.cloud.aws.credentials.sts` properties are configured nor `AWS_WEB_IDENTITY_TOKEN_FILE` or the javaproperty `aws.webIdentityTokenFile` is set
+2025-06-20T07:57:40.456Z  WARN 2990 --- [    Test worker] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-06-20T07:57:40.544Z  INFO 2990 --- [    Test worker] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 2 endpoints beneath base path ''
+2025-06-20T07:57:41.351Z  INFO 2990 --- [    Test worker] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring TestDispatcherServlet ''
+2025-06-20T07:57:41.351Z  INFO 2990 --- [    Test worker] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2025-06-20T07:57:41.352Z  INFO 2990 --- [    Test worker] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 1 ms
+2025-06-20T07:57:41.386Z  INFO 2990 --- [    Test worker] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 42685 (http) with context path '/'
+2025-06-20T07:57:41.396Z  INFO 2990 --- [    Test worker] j.d.h.AllocationCompletedIntegrationTest : Started AllocationCompletedIntegrationTest in 5.635 seconds (process running for 91.316)
+</pre>
+</span>
+</div>
+</div>
+<div id="footer">
+<p>
+<div>
+<label class="hidden" id="label-for-line-wrapping-toggle" for="line-wrapping-toggle">Wrap lines
+<input id="line-wrapping-toggle" type="checkbox" autocomplete="off"/>
+</label>
+</div>Generated by 
+<a href="https://www.gradle.org">Gradle 8.14.2</a> at Jun 20, 2025, 7:57:55 AM</p>
+</div>
+</div>
+</body>
+</html>
