@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta http-equiv="x-ua-compatible" content="IE=edge"/>
+<title>Test results - AllocateEventIntegrationTest</title>
+<link href="../css/base-style.css" rel="stylesheet" type="text/css"/>
+<link href="../css/style.css" rel="stylesheet" type="text/css"/>
+<script src="../js/report.js" type="text/javascript"></script>
+</head>
+<body>
+<div id="content">
+<h1>AllocateEventIntegrationTest</h1>
+<div class="breadcrumbs">
+<a href="../index.html">all</a> &gt; 
+<a href="../packages/uk.gov.justice.digital.hmpps.html">uk.gov.justice.digital.hmpps</a> &gt; AllocateEventIntegrationTest</div>
+<div id="summary">
+<table>
+<tr>
+<td>
+<div class="summaryGroup">
+<table>
+<tr>
+<td>
+<div class="infoBox" id="tests">
+<div class="counter">3</div>
+<p>tests</p>
+</div>
+</td>
+<td>
+<div class="infoBox" id="failures">
+<div class="counter">0</div>
+<p>failures</p>
+</div>
+</td>
+<td>
+<div class="infoBox" id="ignored">
+<div class="counter">0</div>
+<p>ignored</p>
+</div>
+</td>
+<td>
+<div class="infoBox" id="duration">
+<div class="counter">1.787s</div>
+<p>duration</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</td>
+<td>
+<div class="infoBox success" id="successRate">
+<div class="percent">100%</div>
+<p>successful</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="tab-container">
+<ul class="tabLinks">
+<li>
+<a href="#">Tests</a>
+</li>
+<li>
+<a href="#">Standard output</a>
+</li>
+<li>
+<a href="#">Standard error</a>
+</li>
+</ul>
+<div class="tab">
+<h2>Tests</h2>
+<table>
+<thead>
+<tr>
+<th>Test</th>
+<th>Duration</th>
+<th>Result</th>
+</tr>
+</thead>
+<tr>
+<td class="success">allocate historic order manager with no spoStaffCode present()</td>
+<td class="success">0.153s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">allocate new order manager spoStaffCode present()</td>
+<td class="success">0.231s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">spo contact is created()</td>
+<td class="success">1.403s</td>
+<td class="success">passed</td>
+</tr>
+</table>
+</div>
+<div class="tab">
+<h2>Standard output</h2>
+<span class="code">
+<pre>08:24:08.575 [Test worker] INFO org.springframework.test.context.support.AnnotationConfigContextLoaderUtils -- Could not detect default configuration classes for test class [uk.gov.justice.digital.hmpps.AllocateEventIntegrationTest]: AllocateEventIntegrationTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+08:24:09.150 [Test worker] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper -- Found @SpringBootConfiguration uk.gov.justice.digital.hmpps.App for test class uk.gov.justice.digital.hmpps.AllocateEventIntegrationTest
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.5.3)
+
+2025-06-20T08:24:15.428Z  INFO 3025 --- [    Test worker] u.g.j.d.h.wiremock.WireMockInitialiser   : WireMock server started on port 39307
+2025-06-20T08:24:15.447Z  INFO 3025 --- [    Test worker] u.g.j.d.h.AllocateEventIntegrationTest   : Starting AllocateEventIntegrationTest using Java 21.0.7 with PID 3025 (started by runner in /home/runner/work/hmpps-probation-integration-services/hmpps-probation-integration-services/projects/workforce-allocations-to-delius)
+2025-06-20T08:24:15.448Z DEBUG 3025 --- [    Test worker] u.g.j.d.h.AllocateEventIntegrationTest   : Running with Spring Boot v3.5.3, Spring v6.2.8
+2025-06-20T08:24:15.449Z  INFO 3025 --- [    Test worker] u.g.j.d.h.AllocateEventIntegrationTest   : The following 2 profiles are active: &quot;integration-test&quot;, &quot;oracle&quot;
+2025-06-20T08:24:19.422Z  INFO 3025 --- [    Test worker] .s.d.r.c.RepositoryConfigurationDelegate : Multiple Spring Data modules found, entering strict repository configuration mode
+2025-06-20T08:24:19.430Z  INFO 3025 --- [    Test worker] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-06-20T08:24:19.861Z  INFO 3025 --- [    Test worker] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 403 ms. Found 58 JPA repository interfaces.
+2025-06-20T08:24:23.761Z  INFO 3025 --- [    Test worker] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-06-20T08:24:23.900Z  INFO 3025 --- [    Test worker] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.18.Final
+2025-06-20T08:24:24.008Z  INFO 3025 --- [    Test worker] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2025-06-20T08:24:24.260Z  INFO 3025 --- [    Test worker] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-06-20T08:24:24.312Z  INFO 3025 --- [    Test worker] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-06-20T08:24:24.653Z  INFO 3025 --- [    Test worker] org.testcontainers.images.PullPolicy     : Image pull policy will be performed by: DefaultPullPolicy()
+2025-06-20T08:24:24.658Z  INFO 3025 --- [    Test worker] o.t.utility.ImageNameSubstitutor         : Image name substitution will be performed by: DefaultImageNameSubstitutor (composite of 'ConfigurationFileImageNameSubstitutor' and 'PrefixingImageNameSubstitutor')
+2025-06-20T08:24:24.672Z  INFO 3025 --- [    Test worker] org.testcontainers.DockerClientFactory   : Testcontainers version: 1.21.2
+2025-06-20T08:24:25.667Z  INFO 3025 --- [    Test worker] o.t.d.DockerClientProviderStrategy       : Found Docker environment with local Unix socket (unix:///var/run/docker.sock)
+2025-06-20T08:24:25.671Z  INFO 3025 --- [    Test worker] org.testcontainers.DockerClientFactory   : Docker host IP address is localhost
+2025-06-20T08:24:25.695Z  INFO 3025 --- [    Test worker] org.testcontainers.DockerClientFactory   : Connected to docker: 
+  Server Version: 28.0.4
+  API Version: 1.48
+  Operating System: Ubuntu 24.04.2 LTS
+  Total Memory: 15995 MB
+2025-06-20T08:24:25.774Z  INFO 3025 --- [    Test worker] tc.testcontainers/ryuk:0.12.0            : Pulling docker image: testcontainers/ryuk:0.12.0. Please be patient; this may take some time but only needs to be done once.
+2025-06-20T08:24:26.779Z  INFO 3025 --- [ream--155517570] tc.testcontainers/ryuk:0.12.0            : Starting to pull image
+2025-06-20T08:24:26.817Z  INFO 3025 --- [ream--155517570] tc.testcontainers/ryuk:0.12.0            : Pulling image layers:  0 pending,  0 downloaded,  0 extracted, (0 bytes/0 bytes)
+2025-06-20T08:24:27.362Z  INFO 3025 --- [ream--155517570] tc.testcontainers/ryuk:0.12.0            : Pulling image layers:  2 pending,  1 downloaded,  0 extracted, (118 KB/? MB)
+2025-06-20T08:24:27.403Z  INFO 3025 --- [ream--155517570] tc.testcontainers/ryuk:0.12.0            : Pulling image layers:  1 pending,  2 downloaded,  0 extracted, (118 KB/? MB)
+2025-06-20T08:24:27.457Z  INFO 3025 --- [ream--155517570] tc.testcontainers/ryuk:0.12.0            : Pulling image layers:  0 pending,  3 downloaded,  0 extracted, (6 MB/11 MB)
+2025-06-20T08:24:27.600Z  INFO 3025 --- [ream--155517570] tc.testcontainers/ryuk:0.12.0            : Pulling image layers:  0 pending,  3 downloaded,  1 extracted, (10 MB/11 MB)
+2025-06-20T08:24:27.748Z  INFO 3025 --- [ream--155517570] tc.testcontainers/ryuk:0.12.0            : Pulling image layers:  0 pending,  3 downloaded,  2 extracted, (11 MB/11 MB)
+2025-06-20T08:24:27.795Z  INFO 3025 --- [ream--155517570] tc.testcontainers/ryuk:0.12.0            : Pulling image layers:  0 pending,  3 downloaded,  3 extracted, (11 MB/11 MB)
+2025-06-20T08:24:27.803Z  INFO 3025 --- [ream--155517570] tc.testcontainers/ryuk:0.12.0            : Pull complete. 3 layers, pulled in 1s (downloaded 11 MB at 11 MB/s)
+2025-06-20T08:24:27.803Z  INFO 3025 --- [    Test worker] tc.testcontainers/ryuk:0.12.0            : Image testcontainers/ryuk:0.12.0 pull took PT2.028261499S
+2025-06-20T08:24:27.843Z  INFO 3025 --- [    Test worker] tc.testcontainers/ryuk:0.12.0            : Creating container for image: testcontainers/ryuk:0.12.0
+2025-06-20T08:24:27.956Z  INFO 3025 --- [    Test worker] tc.testcontainers/ryuk:0.12.0            : Container testcontainers/ryuk:0.12.0 is starting: 90cff6f3cc7440afe882224ed2dd0d1d3520cabbd8cb52d836a1e45d73b919d4
+2025-06-20T08:24:28.825Z  INFO 3025 --- [    Test worker] tc.testcontainers/ryuk:0.12.0            : Container testcontainers/ryuk:0.12.0 started in PT0.982213009S
+2025-06-20T08:24:28.833Z  INFO 3025 --- [    Test worker] o.t.utility.RyukResourceReaper           : Ryuk started - will monitor and terminate Testcontainers containers on JVM exit
+2025-06-20T08:24:28.833Z  INFO 3025 --- [    Test worker] org.testcontainers.DockerClientFactory   : Checking the system...
+2025-06-20T08:24:28.834Z  INFO 3025 --- [    Test worker] org.testcontainers.DockerClientFactory   : ✔︎ Docker server version should be at least 1.6.0
+2025-06-20T08:24:28.837Z  INFO 3025 --- [    Test worker] tc.gvenzl/oracle-free:slim-faststart     : Pulling docker image: gvenzl/oracle-free:slim-faststart. Please be patient; this may take some time but only needs to be done once.
+2025-06-20T08:24:29.732Z  INFO 3025 --- [ream-1299458033] tc.gvenzl/oracle-free:slim-faststart     : Starting to pull image
+2025-06-20T08:24:29.733Z  INFO 3025 --- [ream-1299458033] tc.gvenzl/oracle-free:slim-faststart     : Pulling image layers:  0 pending,  0 downloaded,  0 extracted, (0 bytes/0 bytes)
+2025-06-20T08:24:30.689Z  INFO 3025 --- [ream-1299458033] tc.gvenzl/oracle-free:slim-faststart     : Pulling image layers:  8 pending,  1 downloaded,  0 extracted, (135 MB/? MB)
+2025-06-20T08:24:30.740Z  INFO 3025 --- [ream-1299458033] tc.gvenzl/oracle-free:slim-faststart     : Pulling image layers:  7 pending,  2 downloaded,  0 extracted, (173 MB/? MB)
+2025-06-20T08:24:31.427Z  INFO 3025 --- [ream-1299458033] tc.gvenzl/oracle-free:slim-faststart     : Pulling image layers:  6 pending,  3 downloaded,  0 extracted, (354 MB/? MB)
+2025-06-20T08:24:31.502Z  INFO 3025 --- [ream-1299458033] tc.gvenzl/oracle-free:slim-faststart     : Pulling image layers:  5 pending,  4 downloaded,  0 extracted, (383 MB/? MB)
+2025-06-20T08:24:31.849Z  INFO 3025 --- [ream-1299458033] tc.gvenzl/oracle-free:slim-faststart     : Pulling image layers:  4 pending,  5 downloaded,  0 extracted, (439 MB/? MB)
+2025-06-20T08:24:32.254Z  INFO 3025 --- [ream-1299458033] tc.gvenzl/oracle-free:slim-faststart     : Pulling image layers:  3 pending,  6 downloaded,  0 extracted, (578 MB/? MB)
+2025-06-20T08:24:32.896Z  INFO 3025 --- [ream-1299458033] tc.gvenzl/oracle-free:slim-faststart     : Pulling image layers:  2 pending,  7 downloaded,  0 extracted, (836 MB/? MB)
+2025-06-20T08:24:33.027Z  INFO 3025 --- [ream-1299458033] tc.gvenzl/oracle-free:slim-faststart     : Pulling image layers:  1 pending,  8 downloaded,  0 extracted, (891 MB/? MB)
+2025-06-20T08:24:33.657Z  INFO 3025 --- [ream-1299458033] tc.gvenzl/oracle-free:slim-faststart     : Pulling image layers:  1 pending,  8 downloaded,  1 extracted, (1007 MB/? MB)
+2025-06-20T08:24:33.790Z  INFO 3025 --- [ream-1299458033] tc.gvenzl/oracle-free:slim-faststart     : Pulling image layers:  0 pending,  9 downloaded,  1 extracted, (1 GB/1 GB)
+2025-06-20T08:24:37.154Z  INFO 3025 --- [ream-1299458033] tc.gvenzl/oracle-free:slim-faststart     : Pulling image layers:  0 pending,  9 downloaded,  2 extracted, (1 GB/1 GB)
+2025-06-20T08:24:40.403Z  INFO 3025 --- [ream-1299458033] tc.gvenzl/oracle-free:slim-faststart     : Pulling image layers:  0 pending,  9 downloaded,  3 extracted, (1 GB/1 GB)
+2025-06-20T08:24:42.953Z  INFO 3025 --- [ream-1299458033] tc.gvenzl/oracle-free:slim-faststart     : Pulling image layers:  0 pending,  9 downloaded,  4 extracted, (1 GB/1 GB)
+2025-06-20T08:24:44.605Z  INFO 3025 --- [ream-1299458033] tc.gvenzl/oracle-free:slim-faststart     : Pulling image layers:  0 pending,  9 downloaded,  5 extracted, (1 GB/1 GB)
+2025-06-20T08:24:45.613Z  INFO 3025 --- [ream-1299458033] tc.gvenzl/oracle-free:slim-faststart     : Pulling image layers:  0 pending,  9 downloaded,  6 extracted, (1 GB/1 GB)
+2025-06-20T08:24:52.808Z  INFO 3025 --- [ream-1299458033] tc.gvenzl/oracle-free:slim-faststart     : Pulling image layers:  0 pending,  9 downloaded,  7 extracted, (1 GB/1 GB)
+2025-06-20T08:24:55.212Z  INFO 3025 --- [ream-1299458033] tc.gvenzl/oracle-free:slim-faststart     : Pulling image layers:  0 pending,  9 downloaded,  8 extracted, (1 GB/1 GB)
+2025-06-20T08:25:00.556Z  INFO 3025 --- [ream-1299458033] tc.gvenzl/oracle-free:slim-faststart     : Pulling image layers:  0 pending,  9 downloaded,  9 extracted, (1 GB/1 GB)
+2025-06-20T08:25:00.562Z  INFO 3025 --- [ream-1299458033] tc.gvenzl/oracle-free:slim-faststart     : Pull complete. 9 layers, pulled in 30s (downloaded 1 GB at 36 MB/s)
+2025-06-20T08:25:00.562Z  INFO 3025 --- [    Test worker] tc.gvenzl/oracle-free:slim-faststart     : Image gvenzl/oracle-free:slim-faststart pull took PT31.723975929S
+2025-06-20T08:25:00.565Z  INFO 3025 --- [    Test worker] tc.gvenzl/oracle-free:slim-faststart     : Creating container for image: gvenzl/oracle-free:slim-faststart
+2025-06-20T08:25:00.602Z  INFO 3025 --- [    Test worker] tc.gvenzl/oracle-free:slim-faststart     : Container gvenzl/oracle-free:slim-faststart is starting: fdb972e5d386dd891984a724563f46a44ff8b10423f29da966d8d99792e94ce4
+2025-06-20T08:25:13.462Z  INFO 3025 --- [    Test worker] tc.gvenzl/oracle-free:slim-faststart     : Container gvenzl/oracle-free:slim-faststart started in PT12.897274045S
+2025-06-20T08:25:13.462Z  INFO 3025 --- [    Test worker] tc.gvenzl/oracle-free:slim-faststart     : Container is started (JDBC URL: jdbc:oracle:thin:@localhost:32769/freepdb1)
+2025-06-20T08:25:14.246Z  INFO 3025 --- [    Test worker] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection org.testcontainers.jdbc.ConnectionWrapper@6daa1a03
+2025-06-20T08:25:14.248Z  INFO 3025 --- [    Test worker] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-06-20T08:25:14.872Z  INFO 3025 --- [    Test worker] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 23.7
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-06-20T08:25:16.095Z  WARN 3025 --- [    Test worker] org.hibernate.mapping.RootClass          : HHH000038: Composite-id class does not override equals(): uk.gov.justice.digital.hmpps.integrations.delius.user.ProbationAreaUserId
+2025-06-20T08:25:16.096Z  WARN 3025 --- [    Test worker] org.hibernate.mapping.RootClass          : HHH000039: Composite-id class does not override hashCode(): uk.gov.justice.digital.hmpps.integrations.delius.user.ProbationAreaUserId
+2025-06-20T08:25:17.431Z  INFO 3025 --- [    Test worker] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-06-20T08:25:18.811Z  INFO 3025 --- [    Test worker] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-06-20T08:25:19.505Z  INFO 3025 --- [    Test worker] o.s.d.j.r.query.QueryEnhancerFactory     : Hibernate is in classpath; If applicable, HQL parser will be used.
+2025-06-20T08:25:23.273Z  INFO 3025 --- [    Test worker] o.s.l.c.support.AbstractContextSource    : Property 'userDn' not set - anonymous context will be used for read-only operations
+2025-06-20T08:25:26.751Z  WARN 3025 --- [    Test worker] a.c.CredentialsProviderAutoConfiguration : Skipping creating `StsCredentialsProvider`. `software.amazon.awssdk:sts` is on the classpath, but neither `spring.cloud.aws.credentials.sts` properties are configured nor `AWS_WEB_IDENTITY_TOKEN_FILE` or the javaproperty `aws.webIdentityTokenFile` is set
+2025-06-20T08:25:26.933Z  WARN 3025 --- [    Test worker] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-06-20T08:25:27.271Z  INFO 3025 --- [    Test worker] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 2 endpoints beneath base path ''
+2025-06-20T08:25:30.003Z  INFO 3025 --- [    Test worker] u.g.j.d.h.AllocateEventIntegrationTest   : Started AllocateEventIntegrationTest in 79.411 seconds (process running for 84.975)
+</pre>
+</span>
+</div>
+<div class="tab">
+<h2>Standard error</h2>
+<span class="code">
+<pre>Mockito is currently self-attaching to enable the inline-mock-maker. This will no longer work in future releases of the JDK. Please add Mockito as an agent to your build as described in Mockito's documentation: https://javadoc.io/doc/org.mockito/mockito-core/latest/org.mockito/org/mockito/Mockito.html#0.3
+WARNING: A Java agent has been loaded dynamically (/home/runner/.gradle/caches/modules-2/files-2.1/net.bytebuddy/byte-buddy-agent/1.17.6/17b32fd9f57deef02842f7f05abc4ad8127fe34e/byte-buddy-agent-1.17.6.jar)
+WARNING: If a serviceability tool is in use, please run with -XX:+EnableDynamicAgentLoading to hide this warning
+WARNING: If a serviceability tool is not in use, please run with -Djdk.instrument.traceUsage for more information
+WARNING: Dynamic loading of agents will be disallowed by default in a future release
+</pre>
+</span>
+</div>
+</div>
+<div id="footer">
+<p>
+<div>
+<label class="hidden" id="label-for-line-wrapping-toggle" for="line-wrapping-toggle">Wrap lines
+<input id="line-wrapping-toggle" type="checkbox" autocomplete="off"/>
+</label>
+</div>Generated by 
+<a href="https://www.gradle.org">Gradle 8.14.2</a> at Jun 20, 2025, 8:25:52 AM</p>
+</div>
+</div>
+</body>
+</html>
