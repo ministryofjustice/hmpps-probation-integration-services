@@ -179,6 +179,20 @@ internal class HandlerTest {
         assertThat(captor.firstValue.hearingOffence.offenceCode, equalTo("ZZ00120"))
     }
 
+    @Test
+    fun `domain event notifications sent when person record is created successfully`() {
+        personOnRemandIsSuccessfullyCreated()
+
+        probationSearchMatchNotFound()
+        featureFlagIsEnabled(true)
+
+        val notification = Notification(message = MessageGenerator.COMMON_PLATFORM_EVENT)
+        handler.handle(notification)
+
+        verify(notifier).caseCreated(any())
+        verify(notifier).addressCreated(any())
+    }
+
     private fun featureFlagIsEnabled(flag: Boolean) {
         whenever(featureFlags.enabled("common-platform-record-creation-toggle")).thenReturn(flag)
     }
