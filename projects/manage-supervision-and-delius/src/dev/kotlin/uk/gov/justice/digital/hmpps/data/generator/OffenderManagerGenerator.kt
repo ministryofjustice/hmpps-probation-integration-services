@@ -4,6 +4,7 @@ import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.DEFAULT_PROV
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.Borough
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.District
+import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.ReferenceData
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.user.entity.ProbationAreaUser
 import uk.gov.justice.digital.hmpps.integrations.delius.user.entity.ProbationAreaUserId
@@ -41,13 +42,21 @@ object OffenderManagerGenerator {
         "team2",
         startDate = LocalDate.now().plusDays(1),
     )
-
-    val STAFF_1 = Staff(IdGenerator.getAndIncrement(), "Peter", "Parker", DEFAULT_PROVIDER, startDate = LocalDate.now())
+    val STAFF_ROLE = ReferenceData(IdGenerator.getAndIncrement(), "PS1", "PS Other")
+    val STAFF_1 = Staff(
+        IdGenerator.getAndIncrement(),
+        "Peter",
+        "Parker",
+        DEFAULT_PROVIDER,
+        role = STAFF_ROLE,
+        startDate = LocalDate.now()
+    )
     val STAFF_2 = Staff(
         IdGenerator.getAndIncrement(),
         "Bruce",
         "Wayne",
         DEFAULT_PROVIDER,
+        role = STAFF_ROLE,
         startDate = LocalDate.now().minusDays(1)
     )
     val STAFF_3 = Staff(
@@ -57,6 +66,7 @@ object OffenderManagerGenerator {
         DEFAULT_PROVIDER,
         startDate = LocalDate.now().minusDays(2)
     )
+
     val STAFF_USER_1 = StaffUser(IdGenerator.getAndIncrement(), STAFF_1, "peter-parker", "peter", surname = "parker")
     val STAFF_USER_2 = StaffUser(IdGenerator.getAndIncrement(), STAFF_2, "bwayne", "bruce", surname = "wayne")
     val STAFF_USER_3 = StaffUser(IdGenerator.getAndIncrement(), STAFF_3, "ckent", "clark", surname = "kent")

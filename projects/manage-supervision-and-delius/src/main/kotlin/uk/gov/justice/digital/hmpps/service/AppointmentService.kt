@@ -1,12 +1,7 @@
 package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.stereotype.Service
-import uk.gov.justice.digital.hmpps.api.model.appointment.AppointmentTypeResponse
-import uk.gov.justice.digital.hmpps.api.model.appointment.AppointmentType
-import uk.gov.justice.digital.hmpps.api.model.appointment.ContactTypeAssociation
-import uk.gov.justice.digital.hmpps.api.model.appointment.CreateAppointment
-import uk.gov.justice.digital.hmpps.api.model.appointment.MinimalNsi
-import uk.gov.justice.digital.hmpps.api.model.appointment.OfficeLocationRequest
+import uk.gov.justice.digital.hmpps.api.model.appointment.*
 import uk.gov.justice.digital.hmpps.api.model.sentence.MinimalOrder
 import uk.gov.justice.digital.hmpps.api.model.sentence.MinimalRequirement
 import uk.gov.justice.digital.hmpps.api.model.sentence.MinimalSentence
@@ -16,17 +11,11 @@ import uk.gov.justice.digital.hmpps.api.model.user.TeamResponse
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.compliance.Nsi
 import uk.gov.justice.digital.hmpps.integrations.delius.compliance.NsiRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.ContactType as ContactTypeEntity
-import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.PersonRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.ContactTypeRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.Event
-import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.Requirement
-import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.RequirementRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.getContactType
-import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.getPerson
+import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.LicenceConditionRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.LocationRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.user.entity.TeamRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.ContactType as ContactTypeEntity
 import uk.gov.justice.digital.hmpps.integrations.delius.user.entity.Team as TeamEntity
 
 @Service
@@ -79,9 +68,9 @@ class AppointmentService(
                 .findByProviderCode(code).map { it.toTeam() }
         )
 
-    fun getOfficeByProviderAndTeam(locationRequest: OfficeLocationRequest): ProviderOfficeLocation =
+    fun getOfficeByProviderAndTeam(provideCode: String, teamCode: String): ProviderOfficeLocation =
         ProviderOfficeLocation(
-            locationRepository.findByProviderAndTeam(locationRequest.provideCode, locationRequest.teamCode)
+            locationRepository.findByProviderAndTeam(provideCode, teamCode)
                 .map { it.toLocationDetails() }
         )
 

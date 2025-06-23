@@ -28,4 +28,4 @@ class UserLocationService(private val staffUserRepository: StaffUserRepository) 
 fun Location.toLocationDetails(): LocationDetails =
     LocationDetails(id, code.trim(), description, Address(buildingNumber, streetName, townCity, county, postcode))
 
-fun StaffUser.toUser(): User = User(username, Name(forename, forename2, surname))
+fun StaffUser.toUser(): User = User(username, "$forename $surname (${staff!!.role!!.description})")

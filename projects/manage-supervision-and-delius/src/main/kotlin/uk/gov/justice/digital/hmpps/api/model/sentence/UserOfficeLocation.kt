@@ -16,7 +16,7 @@ data class StaffTeam(
 
 data class User(
     val username: String,
-    val name: Name,
+    val nameAndRole: String,
 )
 
 data class Name(
