@@ -77,7 +77,10 @@ class UserProvidersIntegrationTest {
                         Team(OffenderManagerGenerator.TEAM.description, OffenderManagerGenerator.TEAM.code)
                     ),
                     listOf(
-                        User(STAFF_USER_1.username, "${STAFF_USER_1.forename} ${STAFF_USER_1.surname} (${STAFF_USER_1.staff!!.role!!.description})")
+                        User(
+                            STAFF_USER_1.username,
+                            "${STAFF_USER_1.forename} ${STAFF_USER_1.surname} (${STAFF_USER_1.staff!!.role!!.description})"
+                        )
                     )
                 )
             )

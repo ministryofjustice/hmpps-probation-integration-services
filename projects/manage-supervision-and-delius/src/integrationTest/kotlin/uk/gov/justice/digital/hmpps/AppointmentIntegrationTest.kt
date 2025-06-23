@@ -144,7 +144,8 @@ class AppointmentIntegrationTest {
         val response = mockMvc
             .perform(
                 get("/appointment/location/provider/${DEFAULT_PROVIDER.code}/team/${OffenderManagerGenerator.TEAM.code}")
-                    .withToken())
+                    .withToken()
+            )
             .andExpect(MockMvcResultMatchers.status().isOk)
             .andReturn().response.contentAsJson<ProviderOfficeLocation>()
 
