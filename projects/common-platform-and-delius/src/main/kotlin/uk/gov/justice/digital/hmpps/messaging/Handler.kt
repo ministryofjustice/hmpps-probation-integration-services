@@ -29,7 +29,8 @@ class Handler(
     private val featureFlags: FeatureFlags,
     private val remandService: RemandService,
     private val openSearchClient: OpenSearchClient,
-    private val offenceService: OffenceService
+    private val offenceService: OffenceService,
+    private val notifier: Notifier
 ) : NotificationHandler<CommonPlatformHearing> {
 
     @Publish(messages = [Message(title = "COMMON_PLATFORM_HEARING", payload = Schema(CommonPlatformHearing::class))])
@@ -101,7 +102,7 @@ class Handler(
                         ?: return@forEach
 
                 // Insert person and event
-                remandService.insertPersonOnRemand(
+                val insertRemandResult = remandService.insertPersonOnRemand(
                     InsertRemandDTO(
                         defendant = defendant,
                         courtCode = notification.message.hearing.courtCentre.code,
@@ -111,6 +112,9 @@ class Handler(
                         hearingId = notification.message.hearing.id
                     )
                 )
+
+                notifier.caseCreated(insertRemandResult.insertPersonResult.person)
+                insertRemandResult.insertPersonResult.address?.let { notifier.addressCreated(it) }
             } else {
                 telemetryService.trackEvent(
                     "SimulatedPersonCreated", mapOf(
