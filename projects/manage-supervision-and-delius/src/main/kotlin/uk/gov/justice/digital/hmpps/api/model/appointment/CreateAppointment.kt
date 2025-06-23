@@ -21,7 +21,7 @@ data class CreateAppointment(
     val nsiId: Long? = null,
     val until: ZonedDateTime? = null,
     val notes: String? = null,
-    val sensitive: Boolean = false,
+    val sensitive: Boolean? = null,
 ) {
     @JsonIgnore
     val urn = URN_PREFIX + uuid

@@ -55,6 +55,9 @@ internal class HandlerTest {
     @Mock
     private lateinit var featureFlags: FeatureFlags
 
+    @Mock
+    lateinit var notifier: Notifier
+
     @InjectMocks
     lateinit var handler: Handler
 
@@ -150,6 +153,23 @@ internal class HandlerTest {
         whenever(offenceService.getOffenceHomeOfficeCodeByCJACode("TN42001")).thenReturn("00100")
         whenever(offenceService.getOffenceHomeOfficeCodeByCJACode("ZZ00120")).thenReturn("00200")
         whenever(offenceService.priorityMap).thenReturn(mapOf("00100" to 50, "00200" to 20))
+        whenever(remandService.insertPersonOnRemand(any())).thenReturn(
+            InsertRemandResult(
+                InsertPersonResult(
+                    person = PersonGenerator.DEFAULT,
+                    personManager = PersonManagerGenerator.DEFAULT,
+                    equality = EqualityGenerator.DEFAULT,
+                    address = PersonAddressGenerator.MAIN_ADDRESS,
+                ),
+                InsertEventResult(
+                    EventGenerator.DEFAULT,
+                    MainOffenceGenerator.DEFAULT,
+                    CourtAppearanceGenerator.TRIAL_ADJOURNMENT,
+                    ContactGenerator.EAPP,
+                    OrderManagerGenerator.DEFAULT
+                )
+            )
+        )
 
         val notification = Notification(message = MessageGenerator.COMMON_PLATFORM_EVENT_MULTIPLE_OFFENCES)
         handler.handle(notification)
@@ -157,6 +177,20 @@ internal class HandlerTest {
         val captor = argumentCaptor<InsertRemandDTO>()
         verify(remandService).insertPersonOnRemand(captor.capture())
         assertThat(captor.firstValue.hearingOffence.offenceCode, equalTo("ZZ00120"))
+    }
+
+    @Test
+    fun `domain event notifications sent when person record is created successfully`() {
+        personOnRemandIsSuccessfullyCreated()
+
+        probationSearchMatchNotFound()
+        featureFlagIsEnabled(true)
+
+        val notification = Notification(message = MessageGenerator.COMMON_PLATFORM_EVENT)
+        handler.handle(notification)
+
+        verify(notifier).caseCreated(any())
+        verify(notifier).addressCreated(any())
     }
 
     private fun featureFlagIsEnabled(flag: Boolean) {

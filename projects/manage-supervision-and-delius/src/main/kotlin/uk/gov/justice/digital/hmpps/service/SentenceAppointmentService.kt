@@ -255,6 +255,6 @@ class SentenceAppointmentService(
             createdByUserId = staffAndTeam.userId,
             officeLocationId = location?.id,
             notes = notes,
-            sensitive = sensitive.takeIf { notes != null }
+            sensitive = sensitive
         )
 }

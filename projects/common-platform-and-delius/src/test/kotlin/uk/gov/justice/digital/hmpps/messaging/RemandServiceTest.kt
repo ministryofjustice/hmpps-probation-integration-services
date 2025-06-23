@@ -26,9 +26,6 @@ internal class RemandServiceTest {
     lateinit var telemetryService: TelemetryService
 
     @Mock
-    lateinit var notifier: Notifier
-
-    @Mock
     lateinit var personService: PersonService
 
     @Mock
@@ -38,7 +35,7 @@ internal class RemandServiceTest {
     lateinit var remandService: RemandService
 
     @Test
-    fun `notifier and telemetry called when person on remand is inserted successfully`() {
+    fun `telemetry called when person on remand is inserted successfully`() {
         whenever(personService.insertPerson(any(), any())).thenReturn(
             InsertPersonResult(
                 person = PersonGenerator.DEFAULT,
@@ -64,8 +61,6 @@ internal class RemandServiceTest {
         verify(eventService).insertEvent(any(), any(), any(), any(), any(), any())
         verify(telemetryService).trackEvent(eq("PersonCreated"), anyMap(), anyMap())
         verify(telemetryService).trackEvent(eq("EventCreated"), anyMap(), anyMap())
-        verify(notifier).caseCreated(any())
-        verify(notifier).addressCreated(any())
     }
 
     private fun validInsertRemandDTO(): InsertRemandDTO {
