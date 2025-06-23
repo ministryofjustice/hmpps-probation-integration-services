@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*
 import uk.gov.justice.digital.hmpps.api.model.appointment.CheckAppointment
 import uk.gov.justice.digital.hmpps.api.model.appointment.CreateAppointment
 import uk.gov.justice.digital.hmpps.api.model.appointment.Outcome
+import uk.gov.justice.digital.hmpps.aspect.WithDeliusUser
 import uk.gov.justice.digital.hmpps.service.AppointmentOutcomeService
 import uk.gov.justice.digital.hmpps.service.AppointmentService
 import uk.gov.justice.digital.hmpps.service.SentenceAppointmentService
@@ -25,6 +26,7 @@ class AppointmentController(
 ) {
 
     @PostMapping("/{crn}")
+    @WithDeliusUser
     @ResponseStatus(HttpStatus.CREATED)
     fun createAppointment(@PathVariable crn: String, @Valid @RequestBody createAppointment: CreateAppointment) =
         sentenceAppointmentService.createAppointment(crn, createAppointment)
