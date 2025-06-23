@@ -215,7 +215,7 @@ class CreateAppointmentIntegrationTest {
                     eventId = PersonGenerator.EVENT_1.id,
                     notes = "Some Notes",
                     uuid = UUID.randomUUID()
-                ), "Some Notes", false
+                ), "Some Notes", null
             ),
             Arguments.of(
                 CreateAppointment(
