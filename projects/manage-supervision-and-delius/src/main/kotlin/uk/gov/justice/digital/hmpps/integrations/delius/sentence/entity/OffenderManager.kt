@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.District
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.Person
+import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.ReferenceData
 import uk.gov.justice.digital.hmpps.integrations.delius.user.entity.Provider
 import java.io.Serializable
 import java.time.LocalDate
@@ -83,6 +84,10 @@ class Staff(
 
     @OneToOne(mappedBy = "staff")
     val user: StaffUser? = null,
+
+    @ManyToOne
+    @JoinColumn(name = "staff_grade_id")
+    val role: ReferenceData? = null,
 
     @Column(name = "start_date")
     val startDate: LocalDate,
@@ -194,7 +199,7 @@ interface StaffUserRepository : JpaRepository<StaffUser, Long> {
 
     @Query(
         """
-            SELECT u
+            SELECT u, st.role
             FROM StaffUser u
             JOIN u.staff st
             JOIN ContactStaffTeam cst ON cst.id.staffId = st.id

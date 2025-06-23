@@ -7,7 +7,6 @@ import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
 import uk.gov.justice.digital.hmpps.api.model.appointment.CheckAppointment
 import uk.gov.justice.digital.hmpps.api.model.appointment.CreateAppointment
-import uk.gov.justice.digital.hmpps.api.model.appointment.OfficeLocationRequest
 import uk.gov.justice.digital.hmpps.api.model.appointment.Outcome
 import uk.gov.justice.digital.hmpps.service.AppointmentOutcomeService
 import uk.gov.justice.digital.hmpps.service.AppointmentService
@@ -48,9 +47,9 @@ class AppointmentController(
     @GetMapping("/teams/provider/{code}")
     fun getTeamsByProvider(@PathVariable code: String) = appointmentService.getTeamsByProvider(code)
 
-    @GetMapping("/location")
-    fun getOfficeLocationByTeamAndProvider(@RequestBody locationRequest: OfficeLocationRequest) =
-        appointmentService.getOfficeByProviderAndTeam(locationRequest)
+    @GetMapping("/location/provider/{provideCode}/team/{teamCode}")
+    fun getOfficeLocationByTeamAndProvider(@PathVariable provideCode: String, @PathVariable teamCode: String) =
+        appointmentService.getOfficeByProviderAndTeam(provideCode, teamCode)
 
     @GetMapping("/staff/team/{code}")
     fun getStaffByTeam(@PathVariable code: String) =

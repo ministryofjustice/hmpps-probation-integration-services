@@ -10,7 +10,10 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
-import uk.gov.justice.digital.hmpps.api.model.appointment.*
+import uk.gov.justice.digital.hmpps.api.model.appointment.AppointmentTypeResponse
+import uk.gov.justice.digital.hmpps.api.model.appointment.ContactTypeAssociation
+import uk.gov.justice.digital.hmpps.api.model.appointment.CreateAppointment
+import uk.gov.justice.digital.hmpps.api.model.appointment.MinimalNsi
 import uk.gov.justice.digital.hmpps.api.model.sentence.*
 import uk.gov.justice.digital.hmpps.api.model.user.Team
 import uk.gov.justice.digital.hmpps.api.model.user.TeamResponse
@@ -37,7 +40,6 @@ import uk.gov.justice.digital.hmpps.service.toLocationDetails
 import uk.gov.justice.digital.hmpps.service.toSummary
 import uk.gov.justice.digital.hmpps.service.toUser
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
-import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 
 @AutoConfigureMockMvc
@@ -141,10 +143,8 @@ class AppointmentIntegrationTest {
     fun `return location by provider and team`() {
         val response = mockMvc
             .perform(
-                get("/appointment/location")
-                    .withToken()
-                    .withJson(OfficeLocationRequest(DEFAULT_PROVIDER.code, OffenderManagerGenerator.TEAM.code))
-            )
+                get("/appointment/location/provider/${DEFAULT_PROVIDER.code}/team/${OffenderManagerGenerator.TEAM.code}")
+                    .withToken())
             .andExpect(MockMvcResultMatchers.status().isOk)
             .andReturn().response.contentAsJson<ProviderOfficeLocation>()
 
