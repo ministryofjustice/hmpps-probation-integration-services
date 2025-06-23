@@ -138,7 +138,9 @@ class SentenceAppointmentService(
                             createAppointment.requirementId,
                             createAppointment.licenceConditionId,
                             createAppointment.nsiId,
-                            createAppointment.until
+                            createAppointment.until,
+                            createAppointment.notes,
+                            createAppointment.sensitive
                         )
                     )
                 }
@@ -251,6 +253,8 @@ class SentenceAppointmentService(
             nsiId = nsiId,
             licConditionId = licenceConditionId,
             createdByUserId = staffAndTeam.userId,
-            officeLocationId = location?.id
+            officeLocationId = location?.id,
+            notes = notes,
+            sensitive = sensitive.takeIf { notes != null }
         )
 }
