@@ -4,15 +4,13 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.dto.InsertRemandDTO
 import uk.gov.justice.digital.hmpps.dto.InsertRemandResult
-import uk.gov.justice.digital.hmpps.messaging.Notifier
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 
 @Service
 class RemandService(
     private val personService: PersonService,
     private val eventService: EventService,
-    private val telemetryService: TelemetryService,
-    private val notifier: Notifier
+    private val telemetryService: TelemetryService
 ) {
     @Transactional
     fun insertPersonOnRemand(insertRemandDTO: InsertRemandDTO): InsertRemandResult {
@@ -29,9 +27,6 @@ class RemandService(
             caseUrn = insertRemandDTO.caseUrn,
             hearingId = insertRemandDTO.hearingId
         )
-
-        notifier.caseCreated(insertPersonResult.person)
-        insertPersonResult.address?.let { notifier.addressCreated(it) }
 
         telemetryService.trackEvent(
             "PersonCreated", mapOf(
