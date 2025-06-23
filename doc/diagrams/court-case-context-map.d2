@@ -1,0 +1,63 @@
+
+style { ...@common/style.style }
+vars { ...@common/style.vars }
+** { ...@common/style.all-style }
+
+context-cc: Court Case Context {
+  entities: Entities {
+    grid-columns: 4
+    pop: Person on Probation
+    pm: Person manager
+    conviction: Conviction
+    attendances: Attendances
+    registrations: Registrations
+    court-reports: Court reports
+    probation-record: Probation record
+    document: Document
+    status: Sentence status
+    lc: Licence conditions
+    cr: Conviction requirements
+    pr: PSS requirements
+    nsi: NSI details
+  }
+}
+
+context-delius: Delius Context {
+
+  interface: Court Case\n and Delius {
+    type: Anti-Corruption\nLayer
+  }
+
+  entities: Entities {
+    grid-columns: 5
+    person: Person on Probation
+    person-manager: Person manager
+    prison-manager: Prison manager
+    order-manager: Order manager
+    report-manager: Report manager
+    staff: Staff
+    contact: Contact
+    event: Event
+    offence: Offence
+    registration: Registration
+    deregistration: Deregistration
+    probation-area: Probation area
+    institution: Institution
+    court: Court
+    court-attendance: Court appearance
+    court-report: Court report
+    cr: Conviction requirement
+    pr: PSS requirement
+    lc: Licence condition
+    requirement: Requirement
+    attendance: Attendance
+    disposal: Disposal
+    release: Release
+    provision: Provision
+    as: Additional sentence
+    document: Document
+    nsi: NSI
+  }
+}
+
+context-cc--context-delius.interface: Upstream\n\n\nDownstream

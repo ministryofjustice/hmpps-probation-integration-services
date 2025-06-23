@@ -1,0 +1,12 @@
+http://127.0.0.1:4567
+https://github.com/ministryofjustice/delius
+https://github.com/ministryofjustice/hmpps-auth
+https://github.com/ministryofjustice/hmpps-delius-docker-images.*
+https://github.com/ministryofjustice/hmpps-delius-pipelines.*
+https://github.com/ministryofjustice/prison-to-probation-update.*
+https://github.com/ministryofjustice/hmpps-probation-integration-services/.*/\$SERVICE_NAME/.*
+https://raw.githubusercontent.com/ministryofjustice/hmpps-probation-integration-services/.*/\$SERVICE_NAME/.*
+https://raw.githubusercontent.com/ministryofjustice/hmpps-probation-integration-services/refs/heads/.*//1./2
+https://ministryofjustice.github.io/hmpps-probation-integration-services/tech-docs/projects/
+https://operations-engineering-reports.cloud-platform.service.justice.gov.uk.*
+https://criminaljusticehub.org.uk.*

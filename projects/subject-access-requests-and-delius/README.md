@@ -3,15 +3,15 @@
 This integration service provides an API to get person details from Delius for SAR.
 
 
-# Data dependencies
+## Data dependencies
 This depends on Delius for up-to-date information.
 
 
-## Context Map - Probation Search data
-![](./tech-docs/source/img/sar-and-delius-context-map.svg)
+### Context Map - Probation Search data
+![](../../doc/tech-docs/source/images/sar-and-delius-context-map.svg)
 
 
-# API Access Control
+## API Access Control
 
 API endpoints are secured by roles supplied by the HMPPS Auth client used in
 the requests

@@ -1,0 +1,44 @@
+
+style { ...@common/style.style }
+vars { ...@common/style.vars }
+** { ...@common/style.all-style }
+
+context-afer: Assess for Early Release Context {
+  entities: Entities {
+    grid-columns: 3
+    mo: Managed offender
+    manager: Manager
+    name: Name
+    provider: Provider
+    team: Team
+    district: District
+    borough: Borough
+    address: Office address
+    staff: Staff
+    pdu: PDU head
+    
+  }
+}
+
+context-delius: Delius Context {
+
+  interface: Assess for Early\n Release and Delius {
+    type: Anti-Corruption\nLayer
+  }
+
+  entities: Entities {
+    grid-columns: 3
+    caseload: Caseload
+    user: LDAP user
+    person: Person
+    pm: Person manager
+    provider: Provider
+    team: Team
+    district: District
+    borough: Borough
+    location: Office location
+    staff: Staff
+  }
+}
+
+context-afer--context-delius.interface: Upstream\n\n\nDownstream

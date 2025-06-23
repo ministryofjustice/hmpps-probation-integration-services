@@ -19,7 +19,7 @@ This integration service is used to update the RSR and OSP risk scores in Delius
 
 ### Context map - Risk Assessment Data
 
-![](./tech-docs/source/img/risk-assessment-context-map.svg)
+![](../../doc/tech-docs/source/images/risk-assessment-context-map.svg)
 
 ## Workflows
 
@@ -31,12 +31,12 @@ This integration service is used to update the RSR and OSP risk scores in Delius
 ### Risk Score Workflow
 Two types of scores are provided in the risk score data: risk of serious recidivism (RAR) and OASys sexual reoffending predictor (OSP). The scores are updated in Delius.
 
-![](./tech-docs/source/img/risk-assessment-scores-workflow.svg)
+![](../../doc/tech-docs/source/images/risk-assessment-scores-workflow.svg)
 
 ### OGRS Risk Assessment Workflow
 An OGRS risk assessment is conducted for a **Person on Probation** for a specific **Event**. The offender group reconviction scale (OGRS) score is stored or updated in Delius when the risk assessment is submitted.
 
-![](./tech-docs/source/img/risk-assessment-workflow.svg)
+![](../../doc/tech-docs/source/images/risk-assessment-workflow.svg)
 
 ## Interfaces
 

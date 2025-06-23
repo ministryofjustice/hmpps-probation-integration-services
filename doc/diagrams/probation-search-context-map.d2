@@ -1,0 +1,29 @@
+
+style { ...@common/style.style }
+vars { ...@common/style.vars }
+** { ...@common/style.all-style }
+
+context-ps: Probation Search Context {
+  entities: Entities {
+    grid-columns: 1
+    person: Person on Probation
+    contact: Contact
+    audit: Contact search audit
+  }
+}
+
+context-delius: Delius Context {
+
+  interface: Probation Search\n and Delius {
+    type: Anti-Corruption\nLayer
+  }
+
+  entities: Entities {
+    grid-columns: 1
+    person: Person on Probation
+    contact: Contact
+    audit: Business interaction
+  }
+}
+
+context-ps--context-delius.interface: Upstream\n\n\nDownstream

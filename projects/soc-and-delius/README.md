@@ -10,19 +10,19 @@ APIs are available to enable read-only access to the following data:
 * Probation area
 
 
-# Business need
+## Business need
 This integration service is used to gather the required Delius data via the APIs.
 
 
-# Data dependencies
+## Data dependencies
 This service provides read-only access to data stored in Delius for a **Person on Probation**, their **Convictions** and **Court appearances**.
 
 
-## Context Map
+### Context Map
 
-![](./tech-docs/source/img/soc-delius-context-map.svg)
+![](../../doc/tech-docs/source/images/soc-delius-context-map.svg)
 
-# API Access Control
+## API Access Control
 
 API endpoints are secured by roles supplied by the HMPPS Auth client used in
 the requests

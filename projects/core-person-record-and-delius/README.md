@@ -2,18 +2,18 @@
 
 This service provides an API to get details of the Delius person record.
 
-# Business need
+## Business need
 Provides a background person on probation information to the client.
 
-# Data dependencies
+## Data dependencies
 This integration service depends on Delius data for up-to-date data relating to a **Person on Probation**.
 
 
-## Context Map - Probation Search data
-![](./tech-docs/source/img/cpr-and-delius-context-map.svg)
+### Context Map - Probation Search data
+![](../../doc/tech-docs/source/images/cpr-and-delius-context-map.svg)
 
 
-# API Access Control
+## API Access Control
 
 API endpoints are secured by roles supplied by the HMPPS Auth client used in
 the requests

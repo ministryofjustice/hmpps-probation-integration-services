@@ -14,7 +14,7 @@ Automates sending of reminders to people on probation via SMS.
 
 The service will send appointment reminders to people on probation by combining the data in _Delius_ and the [GOV.UK Notify](https://www.notifications.service.gov.uk/) service. Data is gathered from Delius, validated and templated SMS messages are sent using the GOV.UK Notify API.
 
-![Workflow Map](./tech-docs/source/img/east-of-england-upw-reminders.svg)
+![Workflow Map](../../doc/tech-docs/source/images/east-of-england-upw-reminders.svg)
 
 ### Downloading CSV Data
 

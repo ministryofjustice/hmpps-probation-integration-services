@@ -12,7 +12,7 @@ _Resettlement Passport_ depends on _Delius_ data for background on the relevant 
 
 ## Context Map
 
-![Context Map](./tech-docs/source/img/resettlement-passport-and-delius-context-map.svg)
+![Context Map](../../doc/tech-docs/source/images/resettlement-passport-and-delius-context-map.svg)
 
 ## Workflows
 
@@ -20,13 +20,13 @@ _Resettlement Passport_ depends on _Delius_ data for background on the relevant 
 
 Appointment contacts are created in Delius using a synchronous `POST` request as part of the _Resettlement Passport_ user workflow. No appointment data is stored in the _Resettlement Passport_ system
 
-![Workflow Map](./tech-docs/source/img/resettlement-passport-and-delius-workflow-appointment.svg)
+![Workflow Map](../../doc/tech-docs/source/images/resettlement-passport-and-delius-workflow-appointment.svg)
 
 ### Create Case Note
 
 NOMIS case note contacts are created in Delius using a synchronous `POST` request as part of the _Resettlement Passport_ user workflow. No case note data is stored in the _Resettlement Passport_ system
 
-![Workflow Map](./tech-docs/source/img/resettlement-passport-and-delius-workflow-casenote.svg)
+![Workflow Map](../../doc/tech-docs/source/images/resettlement-passport-and-delius-workflow-casenote.svg)
 
 ## Interfaces
 

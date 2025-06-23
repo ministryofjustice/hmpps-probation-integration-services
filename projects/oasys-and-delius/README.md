@@ -6,20 +6,20 @@ This integration service provides an API to retrieve details about a **Person on
 * Active registrations
 * Latest release recall
 
-# Business need
+## Business need
 This integration service enables the OASys assessment system to retrieve up-to-date data from Delius about a Probation Case.
 
 
-# Data dependencies
+## Data dependencies
 The service depends on Delius data for up to date information on a **Person on Probation**, details about the **Case**, **Registrations** and **Sentence** details.
 
 
-## Context Map
+### Context Map
 
-![](./tech-docs/source/img/oasys-delius-context-map.svg)
+![](../../doc/tech-docs/source/images/oasys-delius-context-map.svg)
 
 
-# API Access Control
+## API Access Control
 
 API endpoints are secured by roles supplied by the HMPPS Auth client used in
 the requests

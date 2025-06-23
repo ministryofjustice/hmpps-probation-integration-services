@@ -1,0 +1,44 @@
+
+style { ...@common/style.style }
+vars { ...@common/style.vars }
+** { ...@common/style.all-style }
+
+context-oasys: OASys Context {
+  entities: Entities {
+    grid-columns: 3
+    case: Case details
+    person: Person on probation
+    profile: Profile
+    contact: Contact details
+    registration: Registration
+    review: Review
+    recall: Release recall
+    release: Release
+    institution: Institution
+  }
+}
+
+context-delius: Delius Context {
+
+  interface: OASys\n and Delius {
+    type: Anti-Corruption\nLayer
+  }
+
+  entities: Entities {
+    grid-columns: 3
+    person: Person on probation
+    institution: Institution
+    area: Probation area
+    team: Team
+    staff: Staff
+    registration: Registration
+    review: Registration review
+    custody: Custody
+    disposal: Disposal
+    event: Event
+    release: Release
+    recall: Recall
+  }
+}
+
+context-oasys--context-delius.interface: Upstream\n\n\nDownstream

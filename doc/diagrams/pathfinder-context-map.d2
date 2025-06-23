@@ -1,0 +1,56 @@
+
+style { ...@common/style.style }
+vars { ...@common/style.vars }
+** { ...@common/style.all-style }
+
+context-pathfinder: Pathfinder Context {
+  entities: Entities {
+    grid-columns: 3
+    conviction: Conviction
+    offence: Offence
+    sentence: Sentence
+    custody: Custody
+    appearance: Court appearance
+    detail: Detail
+    area: Probation area
+    ldu: Local delivery unit
+    user: User
+    role: Role
+    pm: Person manager
+    provider: Provider
+    team: Team
+    profile: Profile
+    alias: Alias
+  }
+}
+
+context-delius: Delius Context {
+
+  interface: Pathfinder\n and Delius {
+    type: Anti-Corruption\nLayer
+  }
+
+  entities: Entities {
+    grid-columns: 3
+    pop: Person on Probation
+    pm: Person manager
+    staff: Staff
+    team: Team
+    area: Probation area
+    district: District
+    borough: Borough
+    alias: Alias
+    event: Event
+    disposal: Disposal
+    offence: Offence
+    appearance: Court appearance
+    court: Court
+    custody: Custody
+    release: Release
+    nsi: NSI
+    institution: Institution
+    recall: Recall
+  }
+}
+
+context-pathfinder--context-delius.interface: Upstream\n\n\nDownstream

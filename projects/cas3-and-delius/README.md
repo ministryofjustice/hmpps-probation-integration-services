@@ -8,7 +8,7 @@ Ensuring the Probation Practitioner has an up-to-date view of activity in the CA
 
 ## Context Map
 
-![Context Map](./tech-docs/source/img/cas3-and-delius-context-map.svg)
+![Context Map](../../doc/tech-docs/source/images/cas3-and-delius-context-map.svg)
 
 ## Workflows
 
@@ -22,7 +22,7 @@ A referral application is created in the CAS3 service which is reflected in a De
 |-------------------------------------------------------------------|-----------------------------------------------|
 | Submission of a accommodation referral application                | accommodation.cas3.referral.submitted         |
 
-![Context Map](./tech-docs/source/img/cas3-and-delius-workflow-application.svg)
+![Context Map](../../doc/tech-docs/source/images/cas3-and-delius-workflow-application.svg)
 
 ### Transitional Accommodation Booking
 
@@ -34,7 +34,7 @@ Accommodation booking activity in the CAS3 service is reflected in a set of Deli
 | Confirmation of an accommodation booking                          | accommodation.cas3.booking.confirmed          |
 | Cancellation of an accommodation booking                          | accommodation.cas3.booking.cancelled          |
 
-![Context Map](./tech-docs/source/img/cas3-and-delius-workflow-booking.svg)
+![Context Map](../../doc/tech-docs/source/images/cas3-and-delius-workflow-booking.svg)
 
 ### Transitional Accommodation Booking Update
 
@@ -45,7 +45,7 @@ Updates to accommodation bookings in the CAS3 service are reflected in the Deliu
 | An update to the details of an accommodation booking cancellation | accommodation.cas3.booking.cancelled.updated  |
 
 
-![Context Map](./tech-docs/source/img/cas3-and-delius-workflow-booking-update.svg)
+![Context Map](../../doc/tech-docs/source/images/cas3-and-delius-workflow-booking-update.svg)
 
 ### Transitional Accommodation Residence
 
@@ -56,7 +56,7 @@ The CAS3 application will raise domain events with details of arrivals and depar
 | Arrival at transitional accommodation                  | accommodation.cas3.person.arrived          |
 | Departure from transitional accommodation              | accommodation.cas3.person.departed         |
 
-![Context Map](./tech-docs/source/img/cas3-and-delius-workflow-accommodation.svg)
+![Context Map](../../doc/tech-docs/source/images/cas3-and-delius-workflow-accommodation.svg)
 
 ### Transitional Accommodation Residence Update
 
@@ -67,7 +67,7 @@ The CAS3 application will raise domain events when details of arrivals and depar
 | Update to transitional accommodation arrival details   | accommodation.cas3.person.arrived.updated  |
 | Update to transitional accommodation departure details | accommodation.cas3.person.departed.updated |
 
-![Context Map](./tech-docs/source/img/cas3-and-delius-workflow-accommodation-update.svg)
+![Context Map](../../doc/tech-docs/source/images/cas3-and-delius-workflow-accommodation-update.svg)
 
 ## Interfaces
 

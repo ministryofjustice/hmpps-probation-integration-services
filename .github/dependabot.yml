@@ -121,3 +121,8 @@ updates:
     directory: "/projects/monitor-cron-jobs/container"
     schedule:
       interval: "weekly"
+
+  - package-ecosystem: "docker"
+    directory: "/doc/tech-docs"
+    schedule:
+      interval: "weekly"
