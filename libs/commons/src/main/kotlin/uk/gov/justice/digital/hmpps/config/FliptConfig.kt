@@ -1,7 +1,7 @@
 package uk.gov.justice.digital.hmpps.config
 
-import io.flipt.api.FliptClient
-import io.flipt.api.authentication.ClientTokenAuthenticationStrategy
+import io.flipt.client.FliptClient
+import io.flipt.client.models.ClientTokenAuthentication
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.context.annotation.Bean
@@ -15,5 +15,6 @@ class FliptConfig(
 ) {
     @Bean
     fun fliptApiClient(): FliptClient =
-        FliptClient.builder().url(url).authentication(ClientTokenAuthenticationStrategy(token)).build()
+        FliptClient.builder().namespace("probation-integration").url(url)
+            .authentication(ClientTokenAuthentication(token)).build()
 }

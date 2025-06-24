@@ -85,7 +85,7 @@ dependencyResolutionManagement {
             library("aws-sts", "software.amazon.awssdk:sts:2.31.69")
             library("azure-app-insights", "com.microsoft.azure:applicationinsights-web:3.7.3")
             library("azure-identity", "com.azure:azure-identity:1.16.2")
-            library("flipt", "io.flipt:flipt-java:1.1.2")
+            library("flipt", "io.flipt:flipt-client-java:1.0.0")
             library("html2md", "com.vladsch.flexmark:flexmark-html2md-converter:0.64.8")
             library("microsoft-graph", "com.microsoft.graph:microsoft-graph:6.42.1")
             library("mockito-inline", "org.mockito:mockito-inline:5.2.0")
