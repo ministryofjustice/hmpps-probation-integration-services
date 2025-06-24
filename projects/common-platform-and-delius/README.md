@@ -2,7 +2,7 @@
 
 This service listens to domain events when a new Court hearing has been published.
 
-# Data dependencies
+## Data dependencies
 
 This service depends on:
 
@@ -10,27 +10,27 @@ This service depends on:
 * Search index to store the Court messages
 * Search index to check if the defendant is already known
 
-## Context Map - Common Platform Data
+### Context Map - Common Platform Data
 
-![](./tech-docs/source/img/cp-delius-context-map.svg)
+![](../../doc/tech-docs/source/images/cp-delius-context-map.svg)
 
 
-# Workflows
+## Workflows
 
-## Hearing received
+### Hearing received
 Store the Court messages in a format optimised for searching. Filter on defendants that are "Remanded in custody" and store if they are not known to the service. The defendant must meet a minimum age.
 
-![](./tech-docs/source/img/hearing-received-workflow.svg)
+![](../../doc/tech-docs/source/images/hearing-received-workflow.svg)
 
 
-## Store person on remand
+### Store person on remand
 Store the person and event in Delius then raise notifications for the creation of the case and person address.
 
-![](./tech-docs/source/img/store-person-on-remand-workflow.svg)
+![](../../doc/tech-docs/source/images/store-person-on-remand-workflow.svg)
 
-# Interfaces
+## Interfaces
 
-## Message formats
+### Message formats
 
 The service responds to HMPPS Domain Event messages via the [Common Platform and Delius Queue](https://github.com/ministryofjustice/cloud-platform-environments/blob/main/namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-prod/resources/common-platform-and-delius-queue.tf).
 

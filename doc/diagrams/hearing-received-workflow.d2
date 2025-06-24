@@ -1,0 +1,57 @@
+# Hearing Received Workflow: Hearing Received
+
+direction: right
+
+style { ...@common/style.style }
+vars { ...@common/style.vars }
+** { ...@common/style.all-style }
+
+# What triggers the workflow?
+Hearing-received: Hearing Received {
+     style.font-size: 24
+
+     explanation: |md
+     ## Hearing Received
+     - A domain event is\
+       created for a new\
+       court hearing
+     |
+
+     hearing_received: Hearing Received
+}
+
+domain_event: "common-platform-and-delius" {
+    style.font-size: 12
+    shape: queue
+}
+
+# What happens in Delius?
+delius: Delius {
+    style.font-size: 24
+    grid-columns: 2
+
+    d_index: Index for search
+    d_filter: Filter defendants
+    d_validation: Validate defendants age
+    d_store: Store person on remand
+
+    d_index -> d_filter -> d_validation -> d_store
+
+    explanation: |md
+    ## Process the hearing 
+    - Store the notification
+      in a search index
+    - Filter on "Remanded in\
+      custody" judicial result
+    - Run a search to check\
+      if the person is known
+    - Validate the age of\
+      new defendants
+    - Store a person\
+      On remand for\
+      new defendants
+    |
+
+}
+
+hearing-received -> domain_event -> delius

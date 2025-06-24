@@ -2,8 +2,10 @@
 host: https://ministryofjustice.github.io/hmpps-probation-integration-services/tech-docs
 
 # Header-related options
-service_name: HMPPS Probation Integration Services
+service_name: HMPPS Probation Integration
+full_service_name: HMPPS Probation Integration Services
 service_link: https://ministryofjustice.github.io/hmpps-probation-integration-services/tech-docs
+show_govuk_logo: false
 
 # Links to show on right-hand-side of header
 header_links:
@@ -25,7 +27,7 @@ collapsible_nav: true
 # Table of contents depth – how many levels to include in the table of contents.
 # If your ToC is too long, reduce this number and we'll only show higher-level
 # headings.
-max_toc_heading_level: 2
+max_toc_heading_level: 1
 
 # Prevent robots from indexing (e.g. whilst in development)
 prevent_indexing: false
@@ -37,4 +39,8 @@ github_branch: main
 
 # Slack
 owner_slack_workspace: mojdt
-default_owner_slack: '#probation-integration-tech'
+default_owner_slack: '#probation-integration-team'
+
+# Content review
+show_expiry: true
+show_review_banner: true

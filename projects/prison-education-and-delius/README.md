@@ -8,7 +8,7 @@ To provide the Prison Education system with background information from the prob
 
 ## Context Map
 
-![Context Map](./tech-docs/source/img/prison-education-context-map.svg)
+![Context Map](../../doc/tech-docs/source/images/prison-education-context-map.svg)
 
 ## Interfaces
 

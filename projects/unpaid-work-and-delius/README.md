@@ -18,7 +18,7 @@ activity in the Unpaid Work Service.
 
 ## Context Maps
 
-![Context Maps](./tech-docs/source/img/unpaid-work-and-delius-context-maps.png)
+![Context Maps](../../doc/tech-docs/source/images/unpaid-work-and-delius-context-maps.png)
 
 ## Interfaces
 

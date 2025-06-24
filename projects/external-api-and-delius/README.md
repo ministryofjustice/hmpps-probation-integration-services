@@ -8,7 +8,7 @@ Supporting the HMPPS Integration API service with the correct and up-to-date inf
 
 ## Context Map
 
-![Context Map](./tech-docs/source/img/external-api-and-delius-context-map.svg)
+![Context Map](../../doc/tech-docs/source/images/external-api-and-delius-context-map.svg)
 
 ### API Access Control
 

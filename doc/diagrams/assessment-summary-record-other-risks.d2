@@ -1,0 +1,36 @@
+# Assessment Summary Workflow: Record risks
+
+direction: right
+
+style { ...@common/style.style }
+vars { ...@common/style.vars }
+** { ...@common/style.all-style }
+
+# Record Other Risks
+Record-other-risks: Record Other Risks {
+    style.font-size: 24
+    grid-columns: 2
+
+    d_create_dereg: Deregister low-level risks
+    d_update_reg: Add/Update registrations
+    d_create_contact: Create contacts
+    d_add_review: Add review
+
+    d_create_dereg -> d_update_reg -> d_create_contact -> d_add_review
+
+    explanation: |md
+    ## Record other risks
+    - Deregister low-level risks
+    - Create a contact for each\
+      new deregistration
+    - Update registrations where risk\
+      levels have changed
+    - Add registrations for new risks
+    - Create a contact for each\
+      new registration
+    - Deregister registrations in\
+      the duplicate group
+    - Add a registration review
+    |
+
+}

@@ -4,7 +4,7 @@ A probation integration service to share data between Ctrl-O's 'Effective Propos
 
 ## Context Map
 
-![Context Map](./tech-docs/source/img/epf-and-delius-context-map.svg)
+![Context Map](../../doc/tech-docs/source/images/epf-and-delius-context-map.svg)
 
 ## Interfaces
 

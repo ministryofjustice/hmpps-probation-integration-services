@@ -3,18 +3,18 @@
 This service acts as an identity provider for the HMPPS Auth service to enable Delius users to authenticate.
 
 
-# Business need
+## Business need
 
 This service enables users to sign into their account using HMPPS Auth.
 
 
-# Data dependencies
+## Data dependencies
 
-## Context Map - Authentication and user data
+### Context Map - Authentication and user data
 
-![](./tech-docs/source/img/auth-context-map.svg)
+![](../../doc/tech-docs/source/images/auth-context-map.svg)
 
-# API Access Control
+## API Access Control
 
 API endpoints are secured by roles supplied by the HMPPS Auth client used in the requests.
 

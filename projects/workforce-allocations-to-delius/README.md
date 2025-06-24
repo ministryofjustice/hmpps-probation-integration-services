@@ -14,20 +14,20 @@ reflected in Delius for the case management activity to proceed.
 
 ## Context Map
 
-![Context Map](tech-docs/source/img/workforce-allocations-to-delius-context-map.png)
+![Context Map](../../doc/tech-docs/source/images/workforce-allocations-to-delius-context-map.png)
 
 ## Interfaces
 
 ### Message Formats
 
 The service responds to various HMPPS Domain Event message via the
-[HMPPS Workforce Allocation Queue](https://github.com/ministryofjustice/cloud-platform-environments/blob/main/namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-domain-events-prod/resources/hmpps-workforce-allocation-queue.tf).
+[HMPPS Workforce Allocation Queue](https://github.com/ministryofjustice/cloud-platform-environments/blob/main/namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-dev/resources/workforce-allocations-to-delius-queue.tf).
 The events are raised by the [HMPPS Workload Service](https://github.com/ministryofjustice/hmpps-workload) and indicate the
 a person, event or requirement has been allocated to a probation practitioner.
 
 Example [messages](./src/dev/resources/messages/) are in the development source tree.
 
-Incoming messages are filtered on `eventType` by the [SQS queue policy](https://github.com/ministryofjustice/cloud-platform-environments/blob/bf1435995cd59ec9b69e641bd4a1f480a561e178/namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-domain-events-prod/resources/hmpps-workforce-allocation-queue.tf#L72-L77).
+Incoming messages are filtered on `eventType` by the [SQS queue policy](https://github.com/ministryofjustice/cloud-platform-environments/blob/c2eec283010d0dca11be3195ef83f89a34e437d7/namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-dev/resources/workforce-allocations-to-delius-queue.tf#L6-L12).
 
 ### Workforce Allocation Details
 

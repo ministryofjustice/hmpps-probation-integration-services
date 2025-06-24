@@ -1,0 +1,42 @@
+name: Diagrams
+
+on:
+  push:
+    paths:
+      - 'doc/diagrams/*.d2'
+
+jobs:
+  generate:
+    name: Generate diagrams
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/create-github-app-token@v2
+        id: app-token
+        with:
+          app-id: ${{ secrets.BOT_APP_ID }}
+          private-key: ${{ secrets.BOT_APP_PRIVATE_KEY }}
+
+      - name: Install D2
+        run: |
+          curl -fsSLO "https://github.com/terrastruct/d2/releases/download/$VERSION/d2-$VERSION-$OS-$ARCH.tar.gz"
+          tar -xzf "d2-$VERSION-$OS-$ARCH.tar.gz"
+          make -sC "d2-$VERSION" install
+        env:
+          VERSION: v0.7.0
+          OS: linux
+          ARCH: amd64
+
+      - name: Generate images
+        run: |
+          ./script/generate-diagrams
+          git add doc/tech-docs/source/images
+
+      - name: Commit and push
+        uses: dsanders11/github-app-commit-action@43de6da2f4d927e997c0784c7a0b61bd19ad6aac # v1.5.0
+        with:
+          fail-on-no-changes: false
+          message: Generate images from diagrams
+          token: ${{ steps.app-token.outputs.token }}

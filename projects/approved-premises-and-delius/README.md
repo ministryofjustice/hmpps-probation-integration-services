@@ -19,7 +19,7 @@ _Approved Premises (CAS1)_ depends on _Delius_ data for background on the releva
 
 ### Context Map
 
-![Context Map](./tech-docs/source/img/approved-premises-and-delius-context-map.svg)
+![Context Map](../../doc/tech-docs/source/images/approved-premises-and-delius-context-map.svg)
 
 ## Workflows
 
@@ -37,7 +37,7 @@ _Approved Premises (CAS1)_ referral activity is reflected in _Delius_ via simple
 | A referral to an approved premises has been submitted | approved-premises.application.submitted |
 | A referral to an approved premises has been withdrawn | approved-premises.application.withdrawn |
 
-![Workflow Map](./tech-docs/source/img/approved-premises-and-delius-workflow-application.svg)
+![Workflow Map](../../doc/tech-docs/source/images/approved-premises-and-delius-workflow-application.svg)
 
 
 ### Approved Premises Booking Workflows
@@ -50,7 +50,7 @@ _Approved Premises (CAS1)_ bookings are reflected in _Delius_ via the entries in
 |-------------------------------------------------|-------------------------------------|
 | An approved premises booking has been completed | approved-premises.booking.made      |
 
-![Workflow Map](./tech-docs/source/img/approved-premises-and-delius-workflow-booking-made.svg)
+![Workflow Map](../../doc/tech-docs/source/images/approved-premises-and-delius-workflow-booking-made.svg)
 
 #### Booking Changed Workflow
 
@@ -58,7 +58,7 @@ _Approved Premises (CAS1)_ bookings are reflected in _Delius_ via the entries in
 |-------------------------------------------------|-------------------------------------|
 | An approved premises booking has been changed   | approved-premises.booking.changed   |
 
-![Workflow Map](./tech-docs/source/img/approved-premises-and-delius-workflow-booking-changed.svg)
+![Workflow Map](../../doc/tech-docs/source/images/approved-premises-and-delius-workflow-booking-changed.svg)
 
 #### Booking Cancelled Workflow
 
@@ -66,7 +66,7 @@ _Approved Premises (CAS1)_ bookings are reflected in _Delius_ via the entries in
 |-------------------------------------------------|-------------------------------------|
 | An approved premises booking has been cancelled | approved-premises.booking.cancelled |
 
-![Workflow Map](./tech-docs/source/img/approved-premises-and-delius-workflow-booking-cancelled.svg)
+![Workflow Map](../../doc/tech-docs/source/images/approved-premises-and-delius-workflow-booking-cancelled.svg)
 
 ## Interfaces
 
