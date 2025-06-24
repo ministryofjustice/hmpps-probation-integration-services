@@ -62,7 +62,7 @@ class UserProvidersIntegrationTest {
                         Team(DEFAULT_TEAM.description, DEFAULT_TEAM.code),
                         Team(OffenderManagerGenerator.TEAM.description, OffenderManagerGenerator.TEAM.code)
                     ),
-                    listOf()
+                    listOf(unallocatedUser)
                 )
             ),
             Arguments.of(
@@ -80,10 +80,13 @@ class UserProvidersIntegrationTest {
                         User(
                             STAFF_USER_1.username,
                             "${STAFF_USER_1.forename} ${STAFF_USER_1.surname} (${STAFF_USER_1.staff!!.role!!.description})"
-                        )
+                        ),
+                        unallocatedUser
                     )
                 )
             )
         )
     }
 }
+
+val unallocatedUser = User("Unallocated", "Unallocated")

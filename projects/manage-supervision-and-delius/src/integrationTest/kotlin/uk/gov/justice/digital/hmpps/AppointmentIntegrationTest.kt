@@ -164,7 +164,12 @@ class AppointmentIntegrationTest {
             .andExpect(MockMvcResultMatchers.status().isOk)
             .andReturn().response.contentAsJson<StaffTeam>()
 
-        val expected = StaffTeam(listOf(OffenderManagerGenerator.STAFF_USER_1.toUser()))
+        val expected = StaffTeam(
+            listOf(
+                OffenderManagerGenerator.STAFF_USER_1.toUser(),
+                unallocatedUser
+            )
+        )
         assertEquals(expected, response)
     }
 }

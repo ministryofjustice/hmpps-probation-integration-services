@@ -199,18 +199,33 @@ interface StaffUserRepository : JpaRepository<StaffUser, Long> {
 
     @Query(
         """
-            SELECT u, st.role
-            FROM StaffUser u
-            JOIN u.staff st
-            JOIN ContactStaffTeam cst ON cst.id.staffId = st.id
-            JOIN Team t ON t.id = cst.id.team.id
-            WHERE t.code = :teamCode
-            AND st.startDate <= CURRENT_DATE
-            AND (st.endDate IS NULL OR st.endDate > CURRENT_DATE)
-            ORDER BY UPPER(u.username)
-        """
+            SELECT username, surname, forename, role FROM (
+            SELECT  u.DISTINGUISHED_NAME as username, 
+                    u.surname as surname, 
+                    u.forename as forename, 
+                    rsrl.CODE_DESCRIPTION as role
+            FROM user_ u
+            JOIN STAFF s ON s.STAFF_ID = u.STAFF_ID
+            JOIN R_STANDARD_REFERENCE_LIST rsrl ON rsrl.STANDARD_REFERENCE_LIST_ID = s.STAFF_GRADE_ID
+            JOIN STAFF_TEAM st ON s.STAFF_ID = st.STAFF_ID 
+            JOIN team t ON t.TEAM_ID = st.TEAM_ID
+            WHERE s.START_DATE <= CURRENT_DATE
+            AND (s.END_DATE IS NULL OR s.END_DATE > CURRENT_DATE)
+            AND t.CODE = :teamCode
+            UNION
+            SELECT 'Unallocated', 'Unallocated', 'Unallocated', 'Unallocated'
+            FROM dual)
+            ORDER BY Upper(surname)
+          """, nativeQuery = true
     )
-    fun findStaffByTeam(teamCode: String): List<StaffUser>
+    fun findStaffByTeam(teamCode: String): List<StaffAndRole>
+}
+
+interface StaffAndRole {
+    val username: String
+    val surname: String
+    val forename: String
+    val role: String
 }
 
 fun StaffUserRepository.getUser(username: String) =
