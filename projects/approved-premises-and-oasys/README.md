@@ -6,7 +6,7 @@ Read-only integration service mediating access to the OASys ORDS endpoints that 
 
 ## Context Map
 
-![Context Map](./tech-docs/source/img/approved-premises-and-oasys-context-map.svg)
+![Context Map](../../doc/tech-docs/source/images/approved-premises-and-oasys-context-map.svg)
 
 ## Interfaces
 

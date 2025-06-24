@@ -6,7 +6,7 @@ Inbound service that keeps Delius updated with key date changes recorded in cust
 
 ## Context Map
 
-![Context Map](./tech-docs/source/img/custody-key-dates-and-delius-context-map.svg)
+![Context Map](../../doc/tech-docs/source/images/custody-key-dates-and-delius-context-map.svg)
 
 ## Interfaces
 
@@ -28,7 +28,7 @@ Example [messages](./src/dev/resources/messages/) are in the development source 
 
 ### Update Key Dates
 
-![Key Dates Workflow](./tech-docs/source/img/custody-key-dates-and-delius-workflow-key-dates.svg)
+![Key Dates Workflow](../../doc/tech-docs/source/images/custody-key-dates-and-delius-workflow-key-dates.svg)
 
 ## Custody Key Dates Recorded in Delius
 

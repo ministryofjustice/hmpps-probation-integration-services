@@ -1,0 +1,50 @@
+# Email Received Workflow: Email Domain Event Received
+
+direction: right
+
+style { ...@common/style.style }
+vars { ...@common/style.vars }
+** { ...@common/style.all-style }
+
+# What triggers the workflow?
+email-received: Email Received {
+     style.font-size: 24
+
+     explanation: |md
+     ## Email Received
+     - A contact is created in Delius\
+       For each email received via a\
+       domain event
+     |
+
+     email_received: Email Received
+}
+
+domain_event: "justice-email-and-delius" {
+    style.font-size: 12
+    shape: queue
+}
+
+# What happens in Delius?
+delius: Delius {
+    style.font-size: 24
+    grid-columns: 2
+
+    d_validate: Validation
+    d_transform: Convert to markdown
+    d_store: Create Contact
+
+    d_validate -> d_transform -> d_store
+
+    explanation: |md
+    ## Email received
+    - Validate the\
+      email sender
+    - Convert the email\
+      into markdown
+    - Add a contact
+    |
+
+}
+
+email-received -> domain_event -> delius

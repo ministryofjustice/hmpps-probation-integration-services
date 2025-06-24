@@ -1,0 +1,35 @@
+
+style { ...@common/style.style }
+vars { ...@common/style.vars }
+** { ...@common/style.all-style }
+
+Context-cpr: CPR Context {
+  entities: Entities {
+    grid-columns: 2
+    la: Limited access
+    lau: Limited access user
+    pd: Person detail
+    address: Address
+    sentence: Sentence
+  }
+}
+
+context-delius: Delius Context {
+
+  interface: CPR\n and Delius {
+    type: Anti-Corruption\nLayer
+  }
+
+  entities: Entities {
+    grid-columns: 2
+    alias: Alias
+    disposal: Disposal
+    exclusion: Exclusion
+    restriction: Restriction
+    lau: Limited access user
+    pop: Person on probation
+    address: Address
+  }
+}
+
+Context-cpr--context-delius.interface: Upstream\n\n\nDownstream

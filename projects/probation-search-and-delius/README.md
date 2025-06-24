@@ -18,7 +18,7 @@ This service depends on Delius data to enable a search on **Contact** data for a
 
 
 ## Context Map - Probation Search data
-![](./tech-docs/source/img/probation-search-context-map.svg)
+![](../../doc/tech-docs/source/images/probation-search-context-map.svg)
 
 
 # API Access Control

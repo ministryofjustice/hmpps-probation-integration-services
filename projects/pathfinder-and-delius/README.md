@@ -13,18 +13,18 @@ The API also supports the following tasks:
 
 * Management of roles
 
-# Business need
+## Business need
 This integration service is used to gather the required Delius data via the APIs.
 
 
-# Data dependencies
+## Data dependencies
 This service provides read-only access to data stored in Delius for a **Person on Probation**, their **Convictions** and **Court appearances**.
 
-## Context Map
+### Context Map
 
-![](./tech-docs/source/img/pathfinder-context-map.svg)
+![](../../doc/tech-docs/source/images/pathfinder-context-map.svg)
 
-# API Access Control
+## API Access Control
 
 API endpoints are secured by roles supplied by the HMPPS Auth client used in
 the requests

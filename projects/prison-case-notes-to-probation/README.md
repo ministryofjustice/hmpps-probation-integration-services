@@ -11,21 +11,20 @@ used by probation practitioners as part of the probation case history
 
 ## Context Map
 
-![Context Map](tech-docs/source/img/prison-case-notes-to-probation-context-map.svg)
+![Context Map](../../doc/tech-docs/source/images/prison-case-notes-to-probation-context-map.svg)
 
 ## Interfaces
 
 ### Message Formats
 
-The service responds to 'offender events' messages via the
-[Case Notes SQS Sub Queue](https://github.com/ministryofjustice/cloud-platform-environments/blob/main/namespaces/live.cloud-platform.service.justice.gov.uk/offender-events-dev/resources/case-notes-sub-queue.tf)
+The service responds to 'HMPPS domain events' messages via the
+[SQS queue](https://github.com/ministryofjustice/cloud-platform-environments/blob/main/namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-dev/resources/prison-case-notes-to-probation-queue.tf)
 which are raised by the [Prison Offender Events](https://github.com/ministryofjustice/prison-offender-events)
 service
 
 Example [messages](./src/dev/resources/messages/) are in the development source tree
 
-Incoming messages are filtered on `eventType` by the [SQS queue
-policy](https://github.com/ministryofjustice/cloud-platform-environments/blob/main/namespaces/live.cloud-platform.service.justice.gov.uk/offender-events-dev/resources/case-notes-sub-queue.tf#L120-L135)
+Incoming messages are filtered on `eventType` by the [SQS queue policy](https://github.com/ministryofjustice/cloud-platform-environments/blob/c2eec283010d0dca11be3195ef83f89a34e437d7/namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-dev/resources/prison-case-notes-to-probation-queue.tf#L6-L28)
 
 ### Case Note Details
 

@@ -1,0 +1,8 @@
+---
+title: API Reference
+source_url: 'https://github.com/ministryofjustice/hmpps-probation-integration-services/blob/main/doc/tech-docs/source/projects/prisoner-profile-and-delius/api-reference.html.md.erb'
+weight: 20
+---
+
+<% project_name = "prisoner-profile-and-delius" -%>
+<%= ERB.new(File.read(File.join(File.dirname(__FILE__), "../../utils/swagger.erb"))).result(binding) -%>

@@ -39,15 +39,15 @@ fields are within the [Delius database query](https://github.com/ministryofjusti
 that forms the core of the indexing process.
 
 The search and match functionality of Probation Offender Search is determined
-by the [index template](https://github.com/ministryofjustice/hmpps-probation-integration-services/blob/main/projects/person-search-index-from-delius/container/management/person-search-template.json)
-and the [indexing pipeline](https://github.com/ministryofjustice/hmpps-probation-integration-services/blob/main/projects/person-search-index-from-delius/container/management/person-search-pipeline.json)
+by the [index template](https://github.com/ministryofjustice/hmpps-probation-integration-services/blob/main/projects/person-search-index-from-delius/container/pipelines/person/index/person-search-template.json)
+and the [indexing pipeline](https://github.com/ministryofjustice/hmpps-probation-integration-services/blob/main/projects/person-search-index-from-delius/container/pipelines/person/index/person-search-pipeline.json)
 which together define the pre-processing and field analysis that result in a
 searchable index.
 
 
 ## Processing Pipeline
 
-![Processing Pipeline](tech-docs/source/img/person-search-index-from-delius-pipeline.png)
+![Processing Pipeline](../../doc/tech-docs/source/images/person-search-index-from-delius-pipeline.png)
 
 
 ## Downstream Business Functionality

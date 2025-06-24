@@ -18,4 +18,4 @@ record, removing a manual step from the overall process.
 
 ## Context Maps
 
-![Context Maps](./tech-docs/source/img/pre-sentence-reports-to-delius-context-maps.png)
+![Context Maps](../../doc/tech-docs/source/images/pre-sentence-reports-to-delius-context-maps.png)

@@ -1,0 +1,26 @@
+# Manage POM Cases Workflow: Update Delius POM Responsibility
+
+direction: right
+
+style { ...@common/style.style }
+vars { ...@common/style.vars }
+** { ...@common/style.all-style }
+
+# What triggers the workflow?
+mpc: Manage POM Cases {
+     style.font-size: 15
+     mpc_responsibility: POM responsibility\nupdated
+}
+
+# What happens in Delius?
+delius: Delius {
+    style {
+        font-size: 20
+    }
+    d_allocate_pom: Update allocated POM
+    d_allocation_reason: Set POM allocation reason
+
+    d_allocate_pom -> d_allocation_reason
+}
+
+mpc -> delius
