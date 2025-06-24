@@ -29,10 +29,10 @@ data class CreateAppointment(
     enum class Type(val code: String) {
         PlannedOfficeVisitNS("COAP"),
         PlannedTelephoneContactNS("COPT"),
-        InitialAppointmentInOfficeNS("COAI"),
         PlannedVideoContactNS("COVC"),
-        PannedContactOtherThanOffice("COOO"),
         PlannedDoorstepContactNS("CODC"),
+        PannedContactOtherThanOffice("COOO"),
+        InitialAppointmentInOfficeNS("COAI"),
         InitialAppointmentHomeVisitNS("COHV"),
         HomeVisitToCaseNS("CHVS"),
         ThreeWayMeetingNS("C084")
