@@ -5,7 +5,6 @@ import io.flipt.client.FliptException
 import io.flipt.client.models.BooleanEvaluationResponse
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
@@ -25,11 +24,6 @@ class FeatureFlagsTest {
 
     @InjectMocks
     private lateinit var featureFlags: FeatureFlags
-
-    @BeforeEach
-    fun setup() {
-//        whenever(fliptClient.evaluation()).thenReturn(evaluation)
-    }
 
     @Test
     fun `returns true if feature flag is enabled`() {
