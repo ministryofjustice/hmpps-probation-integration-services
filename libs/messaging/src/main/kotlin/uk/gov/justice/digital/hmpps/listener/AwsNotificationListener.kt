@@ -2,7 +2,6 @@ package uk.gov.justice.digital.hmpps.listener
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
-import io.awspring.cloud.sqs.SqsException
 import io.awspring.cloud.sqs.annotation.SqsListener
 import io.awspring.cloud.sqs.listener.AsyncAdapterBlockingExecutionFailedException
 import io.awspring.cloud.sqs.listener.ListenerExecutionFailedException
@@ -29,7 +28,6 @@ import uk.gov.justice.digital.hmpps.messaging.NotificationHandler
 import uk.gov.justice.digital.hmpps.retry.retry
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryMessagingExtensions.extractTelemetryContext
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryMessagingExtensions.withSpan
-import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import java.time.Duration
 import java.util.concurrent.CancellationException
 import java.util.concurrent.CompletionException
@@ -40,7 +38,6 @@ import java.util.concurrent.CompletionException
 class AwsNotificationListener(
     private val handler: NotificationHandler<*>,
     private val objectMapper: ObjectMapper,
-    private val telemetryService: TelemetryService,
     private val taskScheduler: SimpleAsyncTaskScheduler,
     @Value("\${messaging.consumer.queue}") private val queueName: String,
     @Value("\${messaging.consumer.visibility.extensionInterval:15}") private val visibilityExtensionInterval: Long
@@ -74,14 +71,7 @@ class AwsNotificationListener(
         // At each interval, reset the visibility timeout to 30 seconds
         val scheduledFuture = this?.let { visibility ->
             taskScheduler.scheduleAtFixedRate({
-                try {
-                    visibility.changeTo(30)
-                } catch (e: Exception) {
-                    if (e.cause !is SqsException || e.cause?.message?.contains(MESSAGE_ACKNOWLEDGED) != true) {
-                        telemetryService.trackException(e)
-                        Sentry.captureException(e)
-                    }
-                }
+                visibility.changeToAsync(30).exceptionally { null }.join()
             }, Duration.ofSeconds(visibilityExtensionInterval))
         }
 
@@ -108,7 +98,6 @@ class AwsNotificationListener(
     }
 
     companion object {
-        const val MESSAGE_ACKNOWLEDGED = "Message does not exist or is not available for visibility timeout change"
         val RETRYABLE_EXCEPTIONS = listOf(
             RestClientException::class,
             CancellationException::class,
