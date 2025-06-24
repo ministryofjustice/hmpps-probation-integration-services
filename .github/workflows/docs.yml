@@ -12,10 +12,6 @@ on:
 
 permissions: {}
 
-concurrency:
-  group: github-pages
-  cancel-in-progress: true
-
 jobs:
   build:
     name: Build
