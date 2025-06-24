@@ -15,5 +15,6 @@ class FliptConfig(
 ) {
     @Bean
     fun fliptApiClient(): FliptClient =
-        FliptClient.builder().namespace("probation-integration").url(url).authentication(ClientTokenAuthentication(token)).build()
+        FliptClient.builder().namespace("probation-integration").url(url)
+            .authentication(ClientTokenAuthentication(token)).build()
 }
