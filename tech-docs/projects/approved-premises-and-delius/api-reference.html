@@ -5,20 +5,22 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 
-    <title>API Reference - HMPPS Approved Premises And Delius</title>
+    <title>API Reference - HMPPS Probation Integration Services</title>
 
-    <link href="stylesheets/manifest.css" rel="stylesheet" />
+    <link href="../../stylesheets/manifest.css" rel="stylesheet" />
 
     <link rel="canonical" href="https://ministryofjustice.github.io/hmpps-probation-integration-services/tech-docs/projects/approved-premises-and-delius/api-reference.html">
+      <link rel="icon" sizes="48x48" href="/images/favicon.ico">
+      <link rel="icon" sizes="any" href="/images/favicon.svg" type="image/svg+xml">
 
       <meta name="twitter:card" content="summary" />
       <meta name="twitter:domain" content="ministryofjustice.github.io" />
-      <meta name="twitter:image" content="https://ministryofjustice.github.io/hmpps-probation-integration-services/tech-docs/projects/approved-premises-and-delius/images/govuk-large.png" />
-      <meta name="twitter:title" content="API Reference - HMPPS Approved Premises And Delius" />
+      <meta name="twitter:image" content="https://ministryofjustice.github.io/hmpps-probation-integration-services/tech-docs/images/opengraph-image.png" />
+      <meta name="twitter:title" content="API Reference - HMPPS Probation Integration Services" />
       <meta name="twitter:url" content="https://ministryofjustice.github.io/hmpps-probation-integration-services/tech-docs/projects/approved-premises-and-delius/api-reference.html" />
 
-      <meta property="og:image" content="https://ministryofjustice.github.io/hmpps-probation-integration-services/tech-docs/projects/approved-premises-and-delius/images/govuk-large.png" />
-      <meta property="og:site_name" content="HMPPS Approved Premises And Delius" />
+      <meta property="og:image" content="https://ministryofjustice.github.io/hmpps-probation-integration-services/tech-docs/images/opengraph-image.png" />
+      <meta property="og:site_name" content="HMPPS Probation Integration Services" />
       <meta property="og:title" content="API Reference" />
       <meta property="og:type" content="object" />
       <meta property="og:url" content="https://ministryofjustice.github.io/hmpps-probation-integration-services/tech-docs/projects/approved-premises-and-delius/api-reference.html" />
@@ -27,7 +29,7 @@
   </head>
 
   <body class="govuk-template__body">
-    <script>document.body.className = ((document.body.className) ? document.body.className + ' js-enabled' : 'js-enabled');</script>
+    <script>document.body.className += ' js-enabled' + ('noModule' in HTMLScriptElement.prototype ? ' govuk-frontend-supported' : '');</script>
 
     <div class="app-pane">
       <div class="app-pane__header toc-open-disabled">
@@ -36,19 +38,16 @@
         <header class="govuk-header app-header" role="banner" data-module="govuk-header">
   <div class="govuk-header__container govuk-header__container--full-width">
     <div class="govuk-header__logo">
-      <a href="https://ministryofjustice.github.io/hmpps-probation-integration-services/tech-docs/projects/approved-premises-and-delius" class="govuk-header__link govuk-header__link--homepage">
+      <a href="https://ministryofjustice.github.io/hmpps-probation-integration-services/tech-docs" class="govuk-header__link govuk-header__link--homepage">
         <span class="govuk-header__product-name">
-          HMPPS Approved Premises And Delius
+          HMPPS Probation Integration
         </span>
       </a>
     </div>
     <div class="govuk-header__content">
       <nav class="govuk-header__navigation govuk-header__navigation--end" aria-label="Menu">
-        <button type="button" class="govuk-header__menu-button govuk-js-header-toggle" aria-controls="navigation" aria-label="Show or hide menu">Menu</button>
+        <button type="button" class="govuk-header__menu-button govuk-js-header-toggle" aria-controls="navigation" hidden>Menu</button>
         <ul id="navigation" class="govuk-header__navigation-list">
-            <li class="govuk-header__navigation-item">
-              <a class="govuk-header__link" href="https://ministryofjustice.github.io/hmpps-probation-integration-services/tech-docs">Home</a>
-            </li>
             <li class="govuk-header__navigation-item">
               <a class="govuk-header__link" href="https://github.com/ministryofjustice/hmpps-probation-integration-services#readme">GitHub</a>
             </li>
@@ -71,15 +70,15 @@
 
       <div class="app-pane__body" data-module="in-page-navigation">
           <div class="app-pane__toc">
-            <div class="toc" data-module="table-of-contents" tabindex="-1" aria-label="Table of contents" role="dialog">
-              <div class="search" data-module="search" data-path-to-site-root="./">
+            <div class="toc" data-module="table-of-contents" tabindex="-1">
+              <div class="search" data-module="search" data-path-to-site-root="../../">
   <form action="https://www.google.co.uk/search" method="get" role="search" class="search__form govuk-!-margin-bottom-4">
-    <input type="hidden" name="as_sitesearch" value="https://ministryofjustice.github.io/hmpps-probation-integration-services/tech-docs/projects/approved-premises-and-delius"/>
-    <label class="govuk-label search__label" for="search" aria-hidden="true">
+    <input type="hidden" name="as_sitesearch" value="https://ministryofjustice.github.io/hmpps-probation-integration-services/tech-docs"/>
+    <label class="govuk-label search__label" for="search">
       Search (via Google)
     </label>
     <input
-      type="text"
+      type="search"
       id="search" name="q"
       class="govuk-input govuk-!-margin-bottom-0 search__input"
       aria-controls="search-results"
@@ -92,71 +91,397 @@
               <nav id="toc" class="js-toc-list toc__list" aria-labelledby="toc-heading" data-module="collapsible-navigation">
                       <ul>
   <li>
-    <a href="./index.html"><span>Approved Premises and Delius</span></a>
-    <ul>
-      <li>
-        <a href="./index.html#business-need"><span>Business Need</span></a>
-      </li>
-      <li>
-        <a href="./index.html#data-dependencies"><span>Data Dependencies</span></a>
-      </li>
-      <li>
-        <a href="./index.html#workflows"><span>Workflows</span></a>
-      </li>
-      <li>
-        <a href="./index.html#interfaces"><span>Interfaces</span></a>
-      </li>
-      <li>
-        <a href="./index.html#authorisation"><span>Authorisation</span></a>
-      </li>
-    </ul>
+    <a href="../../index.html"><span>About</span></a>
+  </li>
+<li><a href="../../projects/index.html"><span>Integration Services</span></a>
+<ul>
+<li><a href="../../projects/refer-and-monitor-and-delius/index.html"><span>Refer and Monitor and Delius</span></a>
+<ul>
+  <li>
+    <a href="../../projects/refer-and-monitor-and-delius/api-reference.html"><span>API Reference</span></a>
   </li>
   <li>
-    <a href="./api-reference.html"><span>API Reference v1.0</span></a>
-    <ul>
-      <li>
-        <a href="./api-reference.html#users-access"><span>/users/access</span></a>
-      </li>
-      <li>
-        <a href="./api-reference.html#probation-cases-summaries"><span>/probation-cases/summaries</span></a>
-      </li>
-      <li>
-        <a href="./api-reference.html#teams-managingcase-crn"><span>/teams/managingCase/{crn}</span></a>
-      </li>
-      <li>
-        <a href="./api-reference.html#staff"><span>/staff</span></a>
-      </li>
-      <li>
-        <a href="./api-reference.html#staff-username"><span>/staff/{userName}</span></a>
-      </li>
-      <li>
-        <a href="./api-reference.html#probation-cases-id-details"><span>/probation-cases/{id}/details</span></a>
-      </li>
-      <li>
-        <a href="./api-reference.html#probation-case-crn-referrals"><span>/probation-case/{crn}/referrals</span></a>
-      </li>
-      <li>
-        <a href="./api-reference.html#probation-case-crn-referrals-bookingid"><span>/probation-case/{crn}/referrals/{bookingId}</span></a>
-      </li>
-      <li>
-        <a href="./api-reference.html#documents-crn-id"><span>/documents/{crn}/{id}</span></a>
-      </li>
-      <li>
-        <a href="./api-reference.html#documents-crn-all"><span>/documents/{crn}/all</span></a>
-      </li>
-      <li>
-        <a href="./api-reference.html#docs-asyncapi"><span>/docs/asyncapi</span></a>
-      </li>
-      <li>
-        <a href="./api-reference.html#approved-premises-code-staff"><span>/approved-premises/{code}/staff</span></a>
-      </li>
-      <li>
-        <a href="./api-reference.html#schemas"><span>Schemas</span></a>
-      </li>
-    </ul>
+    <a href="../../projects/refer-and-monitor-and-delius/asyncapi-reference.html"><span>AsyncAPI Reference</span></a>
+  </li>
+</ul>
+</li>
+<li><a href="../../projects/prison-custody-status-to-delius/index.html"><span>Prison Custody Status to Delius</span></a>
+<ul>
+  <li>
+    <a href="../../projects/prison-custody-status-to-delius/asyncapi-reference.html"><span>AsyncAPI Reference</span></a>
+  </li>
+</ul>
+</li>
+  <li>
+    <a href="../../projects/offender-events-and-delius/index.html"><span>offender-events-and-delius</span></a>
+  </li>
+<li><a href="../../projects/pre-sentence-reports-to-delius/index.html"><span>Pre-Sentence Reports to Delius</span></a>
+<ul>
+  <li>
+    <a href="../../projects/pre-sentence-reports-to-delius/api-reference.html"><span>API Reference</span></a>
   </li>
   <li>
-    <a href="./asyncapi-reference.html"><span>AsyncAPI Reference</span></a>
+    <a href="../../projects/pre-sentence-reports-to-delius/asyncapi-reference.html"><span>AsyncAPI Reference</span></a>
+  </li>
+</ul>
+</li>
+<li><a href="../../projects/common-platform-and-delius/index.html"><span>Common Platform and Delius</span></a>
+<ul>
+  <li>
+    <a href="../../projects/common-platform-and-delius/asyncapi-reference.html"><span>AsyncAPI Reference</span></a>
+  </li>
+</ul>
+</li>
+<li><a href="../../projects/manage-supervision-and-delius/index.html"><span>Manage Supervision and Delius</span></a>
+<ul>
+  <li>
+    <a href="../../projects/manage-supervision-and-delius/api-reference.html"><span>API Reference</span></a>
+  </li>
+</ul>
+</li>
+<li><a href="../../projects/ims-and-delius/index.html"><span>IMS and Delius</span></a>
+<ul>
+  <li>
+    <a href="../../projects/ims-and-delius/api-reference.html"><span>API Reference</span></a>
+  </li>
+</ul>
+</li>
+<li><a href="../../projects/dps-and-delius/index.html"><span>DPS and Delius</span></a>
+<ul>
+  <li>
+    <a href="../../projects/dps-and-delius/api-reference.html"><span>API Reference</span></a>
+  </li>
+</ul>
+</li>
+  <li>
+    <a href="../../projects/person-search-index-from-delius/index.html"><span>Person Search Index From Delius</span></a>
+  </li>
+<li><a href="../../projects/manage-pom-cases-and-delius/index.html"><span>Manage POM Cases and Delius</span></a>
+<ul>
+  <li>
+    <a href="../../projects/manage-pom-cases-and-delius/api-reference.html"><span>API Reference</span></a>
+  </li>
+  <li>
+    <a href="../../projects/manage-pom-cases-and-delius/asyncapi-reference.html"><span>AsyncAPI Reference</span></a>
+  </li>
+</ul>
+</li>
+<li><a href="../../projects/jitbit-and-delius/index.html"><span>Jitbit and Delius</span></a>
+<ul>
+  <li>
+    <a href="../../projects/jitbit-and-delius/api-reference.html"><span>API Reference</span></a>
+  </li>
+</ul>
+</li>
+<li><a href="../../projects/effective-proposal-framework-and-delius/index.html"><span>Effective Proposal Framework and Delius</span></a>
+<ul>
+  <li>
+    <a href="../../projects/effective-proposal-framework-and-delius/api-reference.html"><span>API Reference</span></a>
+  </li>
+</ul>
+</li>
+<li><a href="../../projects/assess-for-early-release-and-delius/index.html"><span>Assess for Early Release and Delius</span></a>
+<ul>
+  <li>
+    <a href="../../projects/assess-for-early-release-and-delius/api-reference.html"><span>API Reference</span></a>
+  </li>
+</ul>
+</li>
+<li><a href="../../projects/make-recall-decisions-and-delius/index.html"><span>Make Recall Decisions and Delius</span></a>
+<ul>
+  <li>
+    <a href="../../projects/make-recall-decisions-and-delius/api-reference.html"><span>API Reference</span></a>
+  </li>
+  <li>
+    <a href="../../projects/make-recall-decisions-and-delius/asyncapi-reference.html"><span>AsyncAPI Reference</span></a>
+  </li>
+</ul>
+</li>
+<li><a href="../../projects/prison-education-and-delius/index.html"><span>Prison Education and Delius</span></a>
+<ul>
+  <li>
+    <a href="../../projects/prison-education-and-delius/api-reference.html"><span>API Reference</span></a>
+  </li>
+</ul>
+</li>
+<li><a href="../../projects/appointment-reminders-and-delius/index.html"><span>Appointment Reminders and Delius</span></a>
+<ul>
+  <li>
+    <a href="../../projects/appointment-reminders-and-delius/api-reference.html"><span>API Reference</span></a>
+  </li>
+</ul>
+</li>
+<li><a href="../../projects/approved-premises-and-delius/index.html"><span>Approved Premises and Delius</span></a>
+<ul>
+  <li>
+    <a href="../../projects/approved-premises-and-delius/api-reference.html"><span>API Reference</span></a>
+  </li>
+  <li>
+    <a href="../../projects/approved-premises-and-delius/asyncapi-reference.html"><span>AsyncAPI Reference</span></a>
+  </li>
+</ul>
+</li>
+<li><a href="../../projects/approved-premises-and-oasys/index.html"><span>Approved Premises and OASys</span></a>
+<ul>
+  <li>
+    <a href="../../projects/approved-premises-and-oasys/api-reference.html"><span>API Reference</span></a>
+  </li>
+</ul>
+</li>
+<li><a href="../../projects/accredited-programmes-and-oasys/index.html"><span>Accredited Programmes and OASys</span></a>
+<ul>
+  <li>
+    <a href="../../projects/accredited-programmes-and-oasys/api-reference.html"><span>API Reference</span></a>
+  </li>
+</ul>
+</li>
+<li><a href="../../projects/prison-case-notes-to-probation/index.html"><span>Prison Case Notes to Probation</span></a>
+<ul>
+  <li>
+    <a href="../../projects/prison-case-notes-to-probation/asyncapi-reference.html"><span>AsyncAPI Reference</span></a>
+  </li>
+</ul>
+</li>
+<li><a href="../../projects/tier-to-delius/index.html"><span>Tier to Delius</span></a>
+<ul>
+  <li>
+    <a href="../../projects/tier-to-delius/api-reference.html"><span>API Reference</span></a>
+  </li>
+  <li>
+    <a href="../../projects/tier-to-delius/asyncapi-reference.html"><span>AsyncAPI Reference</span></a>
+  </li>
+</ul>
+</li>
+<li><a href="../../projects/justice-email-and-delius/index.html"><span>Justice Email and Delius</span></a>
+<ul>
+  <li>
+    <a href="../../projects/justice-email-and-delius/asyncapi-reference.html"><span>AsyncAPI Reference</span></a>
+  </li>
+</ul>
+</li>
+  <li>
+    <a href="../../projects/domain-events-and-delius/index.html"><span>Domain events and Delius</span></a>
+  </li>
+<li><a href="../../projects/create-and-vary-a-licence-and-delius/index.html"><span>Create and Vary a Licence and Delius</span></a>
+<ul>
+  <li>
+    <a href="../../projects/create-and-vary-a-licence-and-delius/api-reference.html"><span>API Reference</span></a>
+  </li>
+  <li>
+    <a href="../../projects/create-and-vary-a-licence-and-delius/asyncapi-reference.html"><span>AsyncAPI Reference</span></a>
+  </li>
+</ul>
+</li>
+<li><a href="../../projects/unpaid-work-and-delius/index.html"><span>Unpaid Work and Delius</span></a>
+<ul>
+  <li>
+    <a href="../../projects/unpaid-work-and-delius/api-reference.html"><span>API Reference</span></a>
+  </li>
+  <li>
+    <a href="../../projects/unpaid-work-and-delius/asyncapi-reference.html"><span>AsyncAPI Reference</span></a>
+  </li>
+</ul>
+</li>
+<li><a href="../../projects/subject-access-requests-and-delius/index.html"><span>Subject Access Requests and Delius</span></a>
+<ul>
+  <li>
+    <a href="../../projects/subject-access-requests-and-delius/api-reference.html"><span>API Reference</span></a>
+  </li>
+</ul>
+</li>
+<li><a href="../../projects/opd-and-delius/index.html"><span>OPD and Delius</span></a>
+<ul>
+  <li>
+    <a href="../../projects/opd-and-delius/asyncapi-reference.html"><span>AsyncAPI Reference</span></a>
+  </li>
+</ul>
+</li>
+<li><a href="../../projects/breach-notice-and-delius/index.html"><span>Breach Notice and Delius</span></a>
+<ul>
+  <li>
+    <a href="../../projects/breach-notice-and-delius/api-reference.html"><span>API Reference</span></a>
+  </li>
+  <li>
+    <a href="../../projects/breach-notice-and-delius/asyncapi-reference.html"><span>AsyncAPI Reference</span></a>
+  </li>
+</ul>
+</li>
+  <li>
+    <a href="../../projects/risk-assessment-scores-to-delius/index.html"><span>Risk Assessment Scores to Delius</span></a>
+  </li>
+<li><a href="../../projects/soc-and-delius/index.html"><span>SOC and Delius</span></a>
+<ul>
+  <li>
+    <a href="../../projects/soc-and-delius/api-reference.html"><span>API Reference</span></a>
+  </li>
+</ul>
+</li>
+<li><a href="../../projects/hdc-licences-and-delius/index.html"><span>HDC Licences and Delius</span></a>
+<ul>
+  <li>
+    <a href="../../projects/hdc-licences-and-delius/api-reference.html"><span>API Reference</span></a>
+  </li>
+</ul>
+</li>
+<li><a href="../../projects/probation-search-and-delius/index.html"><span>Probation Search and Delius</span></a>
+<ul>
+  <li>
+    <a href="../../projects/probation-search-and-delius/api-reference.html"><span>API Reference</span></a>
+  </li>
+</ul>
+</li>
+<li><a href="../../projects/resettlement-passport-and-delius/index.html"><span>Resettlement Passport and Delius</span></a>
+<ul>
+  <li>
+    <a href="../../projects/resettlement-passport-and-delius/api-reference.html"><span>API Reference</span></a>
+  </li>
+</ul>
+</li>
+<li><a href="../../projects/prison-identifier-and-delius/index.html"><span>Prison Identifier and Delius</span></a>
+<ul>
+  <li>
+    <a href="../../projects/prison-identifier-and-delius/api-reference.html"><span>API Reference</span></a>
+  </li>
+  <li>
+    <a href="../../projects/prison-identifier-and-delius/asyncapi-reference.html"><span>AsyncAPI Reference</span></a>
+  </li>
+</ul>
+</li>
+<li><a href="../../projects/hmpps-auth-and-delius/index.html"><span>HMPPS Auth and Delius</span></a>
+<ul>
+  <li>
+    <a href="../../projects/hmpps-auth-and-delius/api-reference.html"><span>API Reference</span></a>
+  </li>
+</ul>
+</li>
+<li><a href="../../projects/oasys-and-delius/index.html"><span>OASys and Delius</span></a>
+<ul>
+  <li>
+    <a href="../../projects/oasys-and-delius/api-reference.html"><span>API Reference</span></a>
+  </li>
+</ul>
+</li>
+<li><a href="../../projects/custody-key-dates-and-delius/index.html"><span>Custody Key Dates and Delius</span></a>
+<ul>
+  <li>
+    <a href="../../projects/custody-key-dates-and-delius/asyncapi-reference.html"><span>AsyncAPI Reference</span></a>
+  </li>
+</ul>
+</li>
+<li><a href="../../projects/sentence-plan-and-delius/index.html"><span>Sentence Plan and Delius</span></a>
+<ul>
+  <li>
+    <a href="../../projects/sentence-plan-and-delius/api-reference.html"><span>API Reference</span></a>
+  </li>
+</ul>
+</li>
+<li><a href="../../projects/court-case-and-delius/index.html"><span>Court Case and Delius</span></a>
+<ul>
+  <li>
+    <a href="../../projects/court-case-and-delius/api-reference.html"><span>API Reference</span></a>
+  </li>
+  <li>
+    <a href="../../projects/court-case-and-delius/asyncapi-reference.html"><span>AsyncAPI Reference</span></a>
+  </li>
+</ul>
+</li>
+<li><a href="../../projects/sentence-plan-and-oasys/index.html"><span>Sentence Plan and OASys</span></a>
+<ul>
+  <li>
+    <a href="../../projects/sentence-plan-and-oasys/api-reference.html"><span>API Reference</span></a>
+  </li>
+</ul>
+</li>
+<li><a href="../../projects/cas3-and-delius/index.html"><span>CAS3 and Delius</span></a>
+<ul>
+  <li>
+    <a href="../../projects/cas3-and-delius/asyncapi-reference.html"><span>AsyncAPI Reference</span></a>
+  </li>
+</ul>
+</li>
+<li><a href="../../projects/workforce-allocations-to-delius/index.html"><span>Workforce Allocations to Delius</span></a>
+<ul>
+  <li>
+    <a href="../../projects/workforce-allocations-to-delius/api-reference.html"><span>API Reference</span></a>
+  </li>
+  <li>
+    <a href="../../projects/workforce-allocations-to-delius/asyncapi-reference.html"><span>AsyncAPI Reference</span></a>
+  </li>
+</ul>
+</li>
+<li><a href="../../projects/external-api-and-delius/index.html"><span>External API and Delius</span></a>
+<ul>
+  <li>
+    <a href="../../projects/external-api-and-delius/api-reference.html"><span>API Reference</span></a>
+  </li>
+</ul>
+</li>
+<li><a href="../../projects/cas2-and-delius/index.html"><span>CAS2 and Delius</span></a>
+<ul>
+  <li>
+    <a href="../../projects/cas2-and-delius/asyncapi-reference.html"><span>AsyncAPI Reference</span></a>
+  </li>
+</ul>
+</li>
+<li><a href="../../projects/arns-and-delius/index.html"><span>ARNS and Delius</span></a>
+<ul>
+  <li>
+    <a href="../../projects/arns-and-delius/api-reference.html"><span>API Reference</span></a>
+  </li>
+</ul>
+</li>
+<li><a href="../../projects/assessment-summary-and-delius/index.html"><span>Assessment Summary and Delius</span></a>
+<ul>
+  <li>
+    <a href="../../projects/assessment-summary-and-delius/asyncapi-reference.html"><span>AsyncAPI Reference</span></a>
+  </li>
+</ul>
+</li>
+<li><a href="../../projects/manage-offences-and-delius/index.html"><span>Manage Offences and Delius</span></a>
+<ul>
+  <li>
+    <a href="../../projects/manage-offences-and-delius/asyncapi-reference.html"><span>AsyncAPI Reference</span></a>
+  </li>
+</ul>
+</li>
+<li><a href="../../projects/pathfinder-and-delius/index.html"><span>Pathfinder and Delius</span></a>
+<ul>
+  <li>
+    <a href="../../projects/pathfinder-and-delius/api-reference.html"><span>API Reference</span></a>
+  </li>
+</ul>
+</li>
+<li><a href="../../projects/prisoner-profile-and-delius/index.html"><span>Prisoner Profile and Delius</span></a>
+<ul>
+  <li>
+    <a href="../../projects/prisoner-profile-and-delius/api-reference.html"><span>API Reference</span></a>
+  </li>
+</ul>
+</li>
+<li><a href="../../projects/find-and-refer-and-delius/index.html"><span>Find and Refer and Delius</span></a>
+<ul>
+  <li>
+    <a href="../../projects/find-and-refer-and-delius/api-reference.html"><span>API Reference</span></a>
+  </li>
+</ul>
+</li>
+<li><a href="../../projects/core-person-record-and-delius/index.html"><span>Core Person Record and Delius</span></a>
+<ul>
+  <li>
+    <a href="../../projects/core-person-record-and-delius/api-reference.html"><span>API Reference</span></a>
+  </li>
+</ul>
+</li>
+</ul>
+</li>
+  <li>
+    <a href="../../guides.html"><span>How-To Guides</span></a>
+  </li>
+  <li>
+    <a href="../../concepts.html"><span>System Concepts</span></a>
+  </li>
+  <li>
+    <a href="../../support.html"><span>Support</span></a>
   </li>
 </ul>
 
@@ -165,2576 +490,54 @@
             </div>
           </div>
 
-        <div class="app-pane__content toc-open-disabled" aria-label="Content" tabindex="0">
+        <div class="app-pane__content toc-open-disabled" aria-label="Content">
           <main id="content" class="technical-documentation" data-module="anchored-headings">
-            <header id="api" class="anchored-heading govuk-heading-xl" style="padding-top: 30px">
-    <a href="#api" class="anchored-heading__icon" aria-hidden="true" tabindex="-1"></a>
-    API Reference
-</header>
-
-<style>.technical-documentation > h1 { display: none !important }</style>
+            <h1 id="api-reference">API Reference</h1>
 <p>The following documentation is also available in these formats:</p>
 
 <ul>
-<li><a href="https://ministryofjustice.github.io/hmpps-probation-integration-services/tech-docs/projects/approved-premises-and-delius/api-docs.json">OpenAPI JSON</a></li>
-<li><a href="https://ministryofjustice.github.io/hmpps-probation-integration-services/tech-docs/projects/approved-premises-and-delius/api-docs.yaml">OpenAPI YAML</a></li>
+<li><a href="https://ministryofjustice.github.io/hmpps-probation-integration-services/tech-docs/projects/approved-premises-and-delius/assets/api-docs.json">OpenAPI JSON</a></li>
+<li><a href="https://ministryofjustice.github.io/hmpps-probation-integration-services/tech-docs/projects/approved-premises-and-delius/assets/api-docs.yaml">OpenAPI YAML</a></li>
 <li><a href="https://approved-premises-and-delius-dev.hmpps.service.justice.gov.uk/swagger-ui/index.html">Swagger UI</a></li>
 </ul>
-<h1 id="api-reference">API Reference v1.0</h1>
 
-
-
-
-
-
-<h2 id="users-access">/users/access</h2>
-
-<h3 id="users-access-get">get</h3>
-
-
-
-
-<h4 id="users-access-get-parameters">Parameters</h4>
-<table>
-<thead>
-<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
-</thead>
-<tbody>
-
-<tr>
-<td>username</td>
-<td>query</td>
-<td>string</td>
-<td>false</td>
-<td>
-
-</td>
-</tr>
-
-</tbody>
-</table>
-
-
-
-
-<h4 id="users-access-get-responses">Responses</h4>
-<table>
-<thead>
-<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
-</thead>
-<tbody>
-
-<tr>
-<td>200</td>
-<td>
-<p>OK</p>
-
-
-
-<pre><code>{
-  "access": [
-    {
-      "crn": "string",
-      "userExcluded": "boolean",
-      "userRestricted": "boolean",
-      "exclusionMessage": "string",
-      "restrictionMessage": "string"
+<style>
+    .technical-documentation { max-width: fit-content }
+    .swagger-ui {
+        .topbar, h2.title, .info { display: none !important }
     }
-  ]
-}</code></pre>
-
-</td>
-<td>
-<a href='#schema-useraccess'>UserAccess</a>
-</td>
-</tr>
-
-</tbody>
-</table>
-
-
-<h3 id="users-access-post">post</h3>
-
-
-
-
-<h4 id="users-access-post-parameters">Parameters</h4>
-<table>
-<thead>
-<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
-</thead>
-<tbody>
-
-<tr>
-<td>username</td>
-<td>query</td>
-<td>string</td>
-<td>false</td>
-<td>
-
-</td>
-</tr>
-
-</tbody>
-</table>
-
-
-
-
-<h4 id="users-access-post-responses">Responses</h4>
-<table>
-<thead>
-<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
-</thead>
-<tbody>
-
-<tr>
-<td>200</td>
-<td>
-<p>OK</p>
-
-
-
-<pre><code>{
-  "access": [
-    {
-      "crn": "string",
-      "userExcluded": "boolean",
-      "userRestricted": "boolean",
-      "exclusionMessage": "string",
-      "restrictionMessage": "string"
-    }
-  ]
-}</code></pre>
-
-</td>
-<td>
-<a href='#schema-useraccess'>UserAccess</a>
-</td>
-</tr>
-
-</tbody>
-</table>
-
-
-
-
-<h2 id="probation-cases-summaries">/probation-cases/summaries</h2>
-
-<h3 id="probation-cases-summaries-get">get</h3>
-
-
-
-
-
-
-
-<h4 id="probation-cases-summaries-get-responses">Responses</h4>
-<table>
-<thead>
-<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
-</thead>
-<tbody>
-
-<tr>
-<td>200</td>
-<td>
-<p>OK</p>
-
-
-
-<pre><code>{
-  "cases": [
-    {
-      "crn": "string",
-      "nomsId": "string",
-      "pnc": "string",
-      "name": {
-        "forename": "string",
-        "surname": "string",
-        "middleNames": [
-          {
-          }
-        ]
-      },
-      "dateOfBirth": "string",
-      "gender": "string",
-      "profile": {
-        "ethnicity": "string",
-        "genderIdentity": "string",
-        "nationality": "string",
-        "religion": "string"
-      },
-      "manager": {
-        "team": {
-          "code": "string",
-          "name": "string",
-          "ldu": {
-            "code": "string",
-            "name": "string"
-          },
-          "borough": {
-            "code": "string",
-            "description": "string"
-          },
-          "startDate": "string",
-          "endDate": "string"
-        }
-      },
-      "currentExclusion": "boolean",
-      "currentRestriction": "boolean"
-    }
-  ]
-}</code></pre>
-
-</td>
-<td>
-<a href='#schema-casesummaries'>CaseSummaries</a>
-</td>
-</tr>
-
-</tbody>
-</table>
-
-
-<h3 id="probation-cases-summaries-post">post</h3>
-
-
-
-
-
-
-
-<h4 id="probation-cases-summaries-post-responses">Responses</h4>
-<table>
-<thead>
-<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
-</thead>
-<tbody>
-
-<tr>
-<td>200</td>
-<td>
-<p>OK</p>
-
-
-
-<pre><code>{
-  "cases": [
-    {
-      "crn": "string",
-      "nomsId": "string",
-      "pnc": "string",
-      "name": {
-        "forename": "string",
-        "surname": "string",
-        "middleNames": [
-          {
-          }
-        ]
-      },
-      "dateOfBirth": "string",
-      "gender": "string",
-      "profile": {
-        "ethnicity": "string",
-        "genderIdentity": "string",
-        "nationality": "string",
-        "religion": "string"
-      },
-      "manager": {
-        "team": {
-          "code": "string",
-          "name": "string",
-          "ldu": {
-            "code": "string",
-            "name": "string"
-          },
-          "borough": {
-            "code": "string",
-            "description": "string"
-          },
-          "startDate": "string",
-          "endDate": "string"
-        }
-      },
-      "currentExclusion": "boolean",
-      "currentRestriction": "boolean"
-    }
-  ]
-}</code></pre>
-
-</td>
-<td>
-<a href='#schema-casesummaries'>CaseSummaries</a>
-</td>
-</tr>
-
-</tbody>
-</table>
-
-
-
-
-<h2 id="teams-managingcase-crn">/teams/managingCase/{crn}</h2>
-
-<h3 id="teams-managingcase-crn-get">get</h3>
-
-  <p><em>List all teams involved in managing the probation case</em></p>
-
-
-  <p>A probation case may be managed by staff members who
-            are associated with multiple teams in Delius. Approve Premises users
-            need to view all applications that may be covered by direct colleagues
-            in order to cover absence and other workload-related issues. Respond
-            with a list of every team code that covers the probation case identified
-            by the CRN to enable the Approved Premises service to present the
-            relevant list of Approved Premises applications to it&rsquo;s users.</p>
-
-
-
-
-<h4 id="teams-managingcase-crn-get-parameters">Parameters</h4>
-<table>
-<thead>
-<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
-</thead>
-<tbody>
-
-<tr>
-<td>crn</td>
-<td>path</td>
-<td>string</td>
-<td>true</td>
-<td>
-
-</td>
-</tr>
-
-<tr>
-<td>staffCode</td>
-<td>query</td>
-<td>string</td>
-<td>false</td>
-<td>
-
-</td>
-</tr>
-
-</tbody>
-</table>
-
-
-
-
-<h4 id="teams-managingcase-crn-get-responses">Responses</h4>
-<table>
-<thead>
-<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
-</thead>
-<tbody>
-
-<tr>
-<td>200</td>
-<td>
-<p>OK</p>
-
-
-
-<pre><code>{
-  "teamCodes": [
-    {
-    }
-  ]
-}</code></pre>
-
-</td>
-<td>
-<a href='#schema-teamcoderesponse'>TeamCodeResponse</a>
-</td>
-</tr>
-
-</tbody>
-</table>
-
-
-
-
-<h2 id="staff">/staff</h2>
-
-<h3 id="staff-get">get</h3>
-
-  <p><em>Get the staff details by code</em></p>
-
-
-
-
-<h4 id="staff-get-parameters">Parameters</h4>
-<table>
-<thead>
-<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
-</thead>
-<tbody>
-
-<tr>
-<td>code</td>
-<td>query</td>
-<td>string</td>
-<td>true</td>
-<td>
-
-</td>
-</tr>
-
-</tbody>
-</table>
-
-
-
-
-<h4 id="staff-get-responses">Responses</h4>
-<table>
-<thead>
-<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
-</thead>
-<tbody>
-
-<tr>
-<td>200</td>
-<td>
-<p>OK</p>
-
-
-
-<pre><code>{
-  "email": "string",
-  "telephoneNumber": "string",
-  "teams": [
-    {
-      "code": "string",
-      "name": "string",
-      "ldu": {
-        "code": "string",
-        "name": "string"
-      },
-      "borough": {
-        "code": "string",
-        "description": "string"
-      },
-      "startDate": "string",
-      "endDate": "string"
-    }
-  ],
-  "probationArea": {
-    "code": "string",
-    "description": "string"
-  },
-  "username": "string",
-  "name": {
-    "forename": "string",
-    "surname": "string",
-    "middleName": "string"
-  },
-  "code": "string",
-  "active": "boolean"
-}</code></pre>
-
-</td>
-<td>
-<a href='#schema-staffdetail'>StaffDetail</a>
-</td>
-</tr>
-
-</tbody>
-</table>
-
-
-
-
-<h2 id="staff-username">/staff/{userName}</h2>
-
-<h3 id="staff-username-get">get</h3>
-
-  <p><em>Get the staff details by username</em></p>
-
-
-
-
-<h4 id="staff-username-get-parameters">Parameters</h4>
-<table>
-<thead>
-<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
-</thead>
-<tbody>
-
-<tr>
-<td>userName</td>
-<td>path</td>
-<td>string</td>
-<td>true</td>
-<td>
-
-</td>
-</tr>
-
-</tbody>
-</table>
-
-
-
-
-<h4 id="staff-username-get-responses">Responses</h4>
-<table>
-<thead>
-<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
-</thead>
-<tbody>
-
-<tr>
-<td>200</td>
-<td>
-<p>OK</p>
-
-
-
-<pre><code>{
-  "email": "string",
-  "telephoneNumber": "string",
-  "teams": [
-    {
-      "code": "string",
-      "name": "string",
-      "ldu": {
-        "code": "string",
-        "name": "string"
-      },
-      "borough": {
-        "code": "string",
-        "description": "string"
-      },
-      "startDate": "string",
-      "endDate": "string"
-    }
-  ],
-  "probationArea": {
-    "code": "string",
-    "description": "string"
-  },
-  "username": "string",
-  "name": {
-    "forename": "string",
-    "surname": "string",
-    "middleName": "string"
-  },
-  "code": "string",
-  "active": "boolean"
-}</code></pre>
-
-</td>
-<td>
-<a href='#schema-staffdetail'>StaffDetail</a>
-</td>
-</tr>
-
-</tbody>
-</table>
-
-
-
-
-<h2 id="probation-cases-id-details">/probation-cases/{id}/details</h2>
-
-<h3 id="probation-cases-id-details-get">get</h3>
-
-
-
-
-<h4 id="probation-cases-id-details-get-parameters">Parameters</h4>
-<table>
-<thead>
-<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
-</thead>
-<tbody>
-
-<tr>
-<td>id</td>
-<td>path</td>
-<td>string</td>
-<td>true</td>
-<td>
-
-</td>
-</tr>
-
-</tbody>
-</table>
-
-
-
-
-<h4 id="probation-cases-id-details-get-responses">Responses</h4>
-<table>
-<thead>
-<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
-</thead>
-<tbody>
-
-<tr>
-<td>200</td>
-<td>
-<p>OK</p>
-
-
-
-<pre><code>{
-  "case": {
-    "crn": "string",
-    "nomsId": "string",
-    "pnc": "string",
-    "name": {
-      "forename": "string",
-      "surname": "string",
-      "middleNames": [
-        {
-        }
-      ]
-    },
-    "dateOfBirth": "string",
-    "gender": "string",
-    "profile": {
-      "ethnicity": "string",
-      "genderIdentity": "string",
-      "nationality": "string",
-      "religion": "string"
-    },
-    "manager": {
-      "team": {
-        "code": "string",
-        "name": "string",
-        "ldu": {
-          "code": "string",
-          "name": "string"
-        },
-        "borough": {
-          "code": "string",
-          "description": "string"
-        },
-        "startDate": "string",
-        "endDate": "string"
-      }
-    },
-    "currentExclusion": "boolean",
-    "currentRestriction": "boolean"
-  },
-  "offences": [
-    {
-      "id": "string",
-      "code": "string",
-      "description": "string",
-      "mainCategoryDescription": "string",
-      "subCategoryDescription": "string",
-      "date": "string",
-      "main": "boolean",
-      "eventId": "integer",
-      "eventNumber": "string"
-    }
-  ],
-  "registrations": [
-    {
-      "code": "string",
-      "description": "string",
-      "startDate": "string"
-    }
-  ],
-  "mappaDetail": {
-    "level": "integer",
-    "levelDescription": "string",
-    "category": "integer",
-    "categoryDescription": "string",
-    "startDate": "string",
-    "lastUpdated": "string"
-  },
-  "careLeaver": "boolean",
-  "veteran": "boolean"
-}</code></pre>
-
-</td>
-<td>
-<a href='#schema-casedetail'>CaseDetail</a>
-</td>
-</tr>
-
-</tbody>
-</table>
-
-
-
-
-<h2 id="probation-case-crn-referrals">/probation-case/{crn}/referrals</h2>
-
-<h3 id="probation-case-crn-referrals-get">get</h3>
-
-
-
-
-<h4 id="probation-case-crn-referrals-get-parameters">Parameters</h4>
-<table>
-<thead>
-<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
-</thead>
-<tbody>
-
-<tr>
-<td>crn</td>
-<td>path</td>
-<td>string</td>
-<td>true</td>
-<td>
-
-</td>
-</tr>
-
-</tbody>
-</table>
-
-
-
-
-<h4 id="probation-case-crn-referrals-get-responses">Responses</h4>
-<table>
-<thead>
-<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
-</thead>
-<tbody>
-
-<tr>
-<td>200</td>
-<td>
-<p>OK</p>
-
-
-
-<pre><code>{
-  "crn": "string",
-  "referrals": [
-    {
-      "referralDate": "string",
-      "expectedArrivalDate": "string",
-      "expectedDepartureDate": "string",
-      "decisionDate": "string",
-      "approvedPremises": {
-        "description": "string"
-      }
-    }
-  ]
-}</code></pre>
-
-</td>
-<td>
-<a href='#schema-existingreferrals'>ExistingReferrals</a>
-</td>
-</tr>
-
-</tbody>
-</table>
-
-
-
-
-<h2 id="probation-case-crn-referrals-bookingid">/probation-case/{crn}/referrals/{bookingId}</h2>
-
-<h3 id="probation-case-crn-referrals-bookingid-get">get</h3>
-
-
-
-
-<h4 id="probation-case-crn-referrals-bookingid-get-parameters">Parameters</h4>
-<table>
-<thead>
-<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
-</thead>
-<tbody>
-
-<tr>
-<td>crn</td>
-<td>path</td>
-<td>string</td>
-<td>true</td>
-<td>
-
-</td>
-</tr>
-
-<tr>
-<td>bookingId</td>
-<td>path</td>
-<td>string</td>
-<td>true</td>
-<td>
-
-</td>
-</tr>
-
-</tbody>
-</table>
-
-
-
-
-<h4 id="probation-case-crn-referrals-bookingid-get-responses">Responses</h4>
-<table>
-<thead>
-<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
-</thead>
-<tbody>
-
-<tr>
-<td>200</td>
-<td>
-<p>OK</p>
-
-
-
-<pre><code>{
-  "referral": {
-    "referralDate": "string",
-    "expectedArrivalDate": "string",
-    "expectedDepartureDate": "string",
-    "decisionDate": "string",
-    "approvedPremises": {
-      "description": "string"
-    }
-  },
-  "arrivedAt": "string",
-  "departedAt": "string"
-}</code></pre>
-
-</td>
-<td>
-<a href='#schema-referraldetail'>ReferralDetail</a>
-</td>
-</tr>
-
-</tbody>
-</table>
-
-
-
-
-<h2 id="documents-crn-id">/documents/{crn}/{id}</h2>
-
-<h3 id="documents-crn-id-get">get</h3>
-
-  <p><em>Download document content</em></p>
-
-
-
-
-<h4 id="documents-crn-id-get-parameters">Parameters</h4>
-<table>
-<thead>
-<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
-</thead>
-<tbody>
-
-<tr>
-<td>crn</td>
-<td>path</td>
-<td>string</td>
-<td>true</td>
-<td>
-
-</td>
-</tr>
-
-<tr>
-<td>id</td>
-<td>path</td>
-<td>string</td>
-<td>true</td>
-<td>
-
-</td>
-</tr>
-
-</tbody>
-</table>
-
-
-
-
-<h4 id="documents-crn-id-get-responses">Responses</h4>
-<table>
-<thead>
-<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
-</thead>
-<tbody>
-
-<tr>
-<td>200</td>
-<td>
-<p>OK</p>
-
-
-
-<pre><code>{
-}</code></pre>
-
-</td>
-<td>
-<a href='#schema-streamingresponsebody'>StreamingResponseBody</a>
-</td>
-</tr>
-
-</tbody>
-</table>
-
-
-
-
-<h2 id="documents-crn-all">/documents/{crn}/all</h2>
-
-<h3 id="documents-crn-all-get">get</h3>
-
-  <p><em>List of documents held in Delius for the probation case</em></p>
-
-
-  <p>List of documents available in Delius for the probation
-            case identified by the CRN provided in the request. Document list
-            includes summary information on the type and purpose of document held.</p>
-
-
-
-
-<h4 id="documents-crn-all-get-parameters">Parameters</h4>
-<table>
-<thead>
-<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
-</thead>
-<tbody>
-
-<tr>
-<td>crn</td>
-<td>path</td>
-<td>string</td>
-<td>true</td>
-<td>
-
-</td>
-</tr>
-
-</tbody>
-</table>
-
-
-
-
-<h4 id="documents-crn-all-get-responses">Responses</h4>
-<table>
-<thead>
-<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
-</thead>
-<tbody>
-
-<tr>
-<td>200</td>
-<td>
-<p>OK</p>
-
-
-
-<pre><code>{
-}</code></pre>
-
-</td>
-<td>
-
-</td>
-</tr>
-
-</tbody>
-</table>
-
-
-
-
-<h2 id="docs-asyncapi">/docs/asyncapi</h2>
-
-<h3 id="docs-asyncapi-get">get</h3>
-
-
-
-
-
-
-
-<h4 id="docs-asyncapi-get-responses">Responses</h4>
-<table>
-<thead>
-<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
-</thead>
-<tbody>
-
-<tr>
-<td>200</td>
-<td>
-<p>OK</p>
-
-
-
-<pre><code>{
-}</code></pre>
-
-</td>
-<td>
-
-</td>
-</tr>
-
-</tbody>
-</table>
-
-
-
-
-<h2 id="approved-premises-code-staff">/approved-premises/{code}/staff</h2>
-
-<h3 id="approved-premises-code-staff-get">get</h3>
-
-  <p><em>List all members of staff that are keyworkers in the Approved Premises</em></p>
-
-
-  <p>An Approved Premises is defined in Delius as part of reference data.
-            Probation staff members can be linked to an Approved Premises as either staff
-            members or keyworkers via the &ldquo;Approved Premises and Teams&rdquo; screen of the Delius
-            user interface. Keyworkers are defined via the &ldquo;Approved Premises and Key Workers&rdquo;
-            screen of the Delius user interface. Respond with a list of all members of staff
-            defined as keyworkers for the Approved Premises identified by the requested code.</p>
-
-
-
-
-<h4 id="approved-premises-code-staff-get-parameters">Parameters</h4>
-<table>
-<thead>
-<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
-</thead>
-<tbody>
-
-<tr>
-<td>code</td>
-<td>path</td>
-<td>string</td>
-<td>true</td>
-<td>
-
-</td>
-</tr>
-
-<tr>
-<td>keyWorker</td>
-<td>query</td>
-<td>boolean</td>
-<td>false</td>
-<td>
-
-</td>
-</tr>
-
-<tr>
-<td>pageable</td>
-<td>query</td>
-<td>object</td>
-<td>false</td>
-<td>
-
-</td>
-</tr>
-
-</tbody>
-</table>
-
-
-
-
-<h4 id="approved-premises-code-staff-get-responses">Responses</h4>
-<table>
-<thead>
-<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
-</thead>
-<tbody>
-
-<tr>
-<td>200</td>
-<td>
-<p>OK</p>
-
-
-
-<pre><code>{
-  "content": [
-    {
-      "code": "string",
-      "name": {
-        "forename": "string",
-        "surname": "string",
-        "middleName": "string"
-      },
-      "grade": {
-        "code": "string",
-        "description": "string"
-      },
-      "keyWorker": "boolean"
-    }
-  ],
-  "page": {
-    "size": "integer",
-    "number": "integer",
-    "totalElements": "integer",
-    "totalPages": "integer"
-  }
-}</code></pre>
-
-</td>
-<td>
-<a href='#schema-pagedmodelstaffresponse'>PagedModelStaffResponse</a>
-</td>
-</tr>
-
-</tbody>
-</table>
-
-
-
-
-
-<h2 id="schemas">Schemas</h2>
-<h3 id="schema-caseaccess">CaseAccess</h3>
-
-
-<table class='schema-caseaccess'>
-<thead>
-<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
-</thead>
-<tbody>
-
-<tr>
-<td>crn</td>
-<td>string</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>userExcluded</td>
-<td>boolean</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>userRestricted</td>
-<td>boolean</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>exclusionMessage</td>
-<td>string</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>restrictionMessage</td>
-<td>string</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-</tbody>
-</table>
-
-<h3 id="schema-useraccess">UserAccess</h3>
-
-
-<table class='schema-useraccess'>
-<thead>
-<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
-</thead>
-<tbody>
-
-<tr>
-<td>access</td>
-<td>array</td>
-<td>true</td>
-<td></td>
-<td>
-  <a href='#schema-caseaccess'>CaseAccess</a>
-</td>
-</tr>
-
-</tbody>
-</table>
-
-<h3 id="schema-borough">Borough</h3>
-
-
-<table class='schema-borough'>
-<thead>
-<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
-</thead>
-<tbody>
-
-<tr>
-<td>code</td>
-<td>string</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>description</td>
-<td>string</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-</tbody>
-</table>
-
-<h3 id="schema-casesummaries">CaseSummaries</h3>
-
-
-<table class='schema-casesummaries'>
-<thead>
-<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
-</thead>
-<tbody>
-
-<tr>
-<td>cases</td>
-<td>array</td>
-<td>true</td>
-<td></td>
-<td>
-  <a href='#schema-casesummary'>CaseSummary</a>
-</td>
-</tr>
-
-</tbody>
-</table>
-
-<h3 id="schema-casesummary">CaseSummary</h3>
-
-
-<table class='schema-casesummary'>
-<thead>
-<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
-</thead>
-<tbody>
-
-<tr>
-<td>crn</td>
-<td>string</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>nomsId</td>
-<td>string</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>pnc</td>
-<td>string</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>name</td>
-<td>object</td>
-<td>true</td>
-<td></td>
-<td>
-  <a href='#schema-name'>Name</a>
-</td>
-</tr>
-
-<tr>
-<td>dateOfBirth</td>
-<td>string</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>gender</td>
-<td>string</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>profile</td>
-<td>object</td>
-<td>false</td>
-<td></td>
-<td>
-  <a href='#schema-profile'>Profile</a>
-</td>
-</tr>
-
-<tr>
-<td>manager</td>
-<td>object</td>
-<td>true</td>
-<td></td>
-<td>
-  <a href='#schema-manager'>Manager</a>
-</td>
-</tr>
-
-<tr>
-<td>currentExclusion</td>
-<td>boolean</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>currentRestriction</td>
-<td>boolean</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-</tbody>
-</table>
-
-<h3 id="schema-ldu">Ldu</h3>
-
-
-<table class='schema-ldu'>
-<thead>
-<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
-</thead>
-<tbody>
-
-<tr>
-<td>code</td>
-<td>string</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>name</td>
-<td>string</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-</tbody>
-</table>
-
-<h3 id="schema-manager">Manager</h3>
-
-
-<table class='schema-manager'>
-<thead>
-<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
-</thead>
-<tbody>
-
-<tr>
-<td>team</td>
-<td>object</td>
-<td>true</td>
-<td></td>
-<td>
-  <a href='#schema-team'>Team</a>
-</td>
-</tr>
-
-</tbody>
-</table>
-
-<h3 id="schema-name">Name</h3>
-
-
-<table class='schema-name'>
-<thead>
-<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
-</thead>
-<tbody>
-
-<tr>
-<td>forename</td>
-<td>string</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>surname</td>
-<td>string</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>middleNames</td>
-<td>array</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-</tbody>
-</table>
-
-<h3 id="schema-profile">Profile</h3>
-
-
-<table class='schema-profile'>
-<thead>
-<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
-</thead>
-<tbody>
-
-<tr>
-<td>ethnicity</td>
-<td>string</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>genderIdentity</td>
-<td>string</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>nationality</td>
-<td>string</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>religion</td>
-<td>string</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-</tbody>
-</table>
-
-<h3 id="schema-team">Team</h3>
-
-
-<table class='schema-team'>
-<thead>
-<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
-</thead>
-<tbody>
-
-<tr>
-<td>code</td>
-<td>string</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>name</td>
-<td>string</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>ldu</td>
-<td>object</td>
-<td>true</td>
-<td></td>
-<td>
-  <a href='#schema-ldu'>Ldu</a>
-</td>
-</tr>
-
-<tr>
-<td>borough</td>
-<td>object</td>
-<td>false</td>
-<td></td>
-<td>
-  <a href='#schema-borough'>Borough</a>
-</td>
-</tr>
-
-<tr>
-<td>startDate</td>
-<td>string</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>endDate</td>
-<td>string</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-</tbody>
-</table>
-
-<h3 id="schema-teamcoderesponse">TeamCodeResponse</h3>
-
-
-<table class='schema-teamcoderesponse'>
-<thead>
-<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
-</thead>
-<tbody>
-
-<tr>
-<td>teamCodes</td>
-<td>array</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-</tbody>
-</table>
-
-<h3 id="schema-personname">PersonName</h3>
-
-
-<table class='schema-personname'>
-<thead>
-<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
-</thead>
-<tbody>
-
-<tr>
-<td>forename</td>
-<td>string</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>surname</td>
-<td>string</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>middleName</td>
-<td>string</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-</tbody>
-</table>
-
-<h3 id="schema-probationarea">ProbationArea</h3>
-
-
-<table class='schema-probationarea'>
-<thead>
-<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
-</thead>
-<tbody>
-
-<tr>
-<td>code</td>
-<td>string</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>description</td>
-<td>string</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-</tbody>
-</table>
-
-<h3 id="schema-staffdetail">StaffDetail</h3>
-
-
-<table class='schema-staffdetail'>
-<thead>
-<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
-</thead>
-<tbody>
-
-<tr>
-<td>email</td>
-<td>string</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>telephoneNumber</td>
-<td>string</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>teams</td>
-<td>array</td>
-<td>true</td>
-<td></td>
-<td>
-  <a href='#schema-team'>Team</a>
-</td>
-</tr>
-
-<tr>
-<td>probationArea</td>
-<td>object</td>
-<td>true</td>
-<td></td>
-<td>
-  <a href='#schema-probationarea'>ProbationArea</a>
-</td>
-</tr>
-
-<tr>
-<td>username</td>
-<td>string</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>name</td>
-<td>object</td>
-<td>true</td>
-<td></td>
-<td>
-  <a href='#schema-personname'>PersonName</a>
-</td>
-</tr>
-
-<tr>
-<td>code</td>
-<td>string</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>active</td>
-<td>boolean</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-</tbody>
-</table>
-
-<h3 id="schema-casedetail">CaseDetail</h3>
-
-
-<table class='schema-casedetail'>
-<thead>
-<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
-</thead>
-<tbody>
-
-<tr>
-<td>case</td>
-<td>object</td>
-<td>true</td>
-<td></td>
-<td>
-  <a href='#schema-casesummary'>CaseSummary</a>
-</td>
-</tr>
-
-<tr>
-<td>offences</td>
-<td>array</td>
-<td>true</td>
-<td></td>
-<td>
-  <a href='#schema-offence'>Offence</a>
-</td>
-</tr>
-
-<tr>
-<td>registrations</td>
-<td>array</td>
-<td>true</td>
-<td></td>
-<td>
-  <a href='#schema-registration'>Registration</a>
-</td>
-</tr>
-
-<tr>
-<td>mappaDetail</td>
-<td>object</td>
-<td>false</td>
-<td></td>
-<td>
-  <a href='#schema-mappadetail'>MappaDetail</a>
-</td>
-</tr>
-
-<tr>
-<td>careLeaver</td>
-<td>boolean</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>veteran</td>
-<td>boolean</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-</tbody>
-</table>
-
-<h3 id="schema-mappadetail">MappaDetail</h3>
-
-
-<table class='schema-mappadetail'>
-<thead>
-<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
-</thead>
-<tbody>
-
-<tr>
-<td>level</td>
-<td>integer</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>levelDescription</td>
-<td>string</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>category</td>
-<td>integer</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>categoryDescription</td>
-<td>string</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>startDate</td>
-<td>string</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>lastUpdated</td>
-<td>string</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-</tbody>
-</table>
-
-<h3 id="schema-offence">Offence</h3>
-
-
-<table class='schema-offence'>
-<thead>
-<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
-</thead>
-<tbody>
-
-<tr>
-<td>id</td>
-<td>string</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>code</td>
-<td>string</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>description</td>
-<td>string</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>mainCategoryDescription</td>
-<td>string</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>subCategoryDescription</td>
-<td>string</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>date</td>
-<td>string</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>main</td>
-<td>boolean</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>eventId</td>
-<td>integer</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>eventNumber</td>
-<td>string</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-</tbody>
-</table>
-
-<h3 id="schema-registration">Registration</h3>
-
-
-<table class='schema-registration'>
-<thead>
-<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
-</thead>
-<tbody>
-
-<tr>
-<td>code</td>
-<td>string</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>description</td>
-<td>string</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>startDate</td>
-<td>string</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-</tbody>
-</table>
-
-<h3 id="schema-apreferral">ApReferral</h3>
-
-
-<table class='schema-apreferral'>
-<thead>
-<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
-</thead>
-<tbody>
-
-<tr>
-<td>referralDate</td>
-<td>string</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>expectedArrivalDate</td>
-<td>string</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>expectedDepartureDate</td>
-<td>string</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>decisionDate</td>
-<td>string</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>approvedPremises</td>
-<td>object</td>
-<td>true</td>
-<td></td>
-<td>
-  <a href='#schema-approvedpremises'>ApprovedPremises</a>
-</td>
-</tr>
-
-</tbody>
-</table>
-
-<h3 id="schema-approvedpremises">ApprovedPremises</h3>
-
-
-<table class='schema-approvedpremises'>
-<thead>
-<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
-</thead>
-<tbody>
-
-<tr>
-<td>description</td>
-<td>string</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-</tbody>
-</table>
-
-<h3 id="schema-existingreferrals">ExistingReferrals</h3>
-
-
-<table class='schema-existingreferrals'>
-<thead>
-<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
-</thead>
-<tbody>
-
-<tr>
-<td>crn</td>
-<td>string</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>referrals</td>
-<td>array</td>
-<td>true</td>
-<td></td>
-<td>
-  <a href='#schema-apreferral'>ApReferral</a>
-</td>
-</tr>
-
-</tbody>
-</table>
-
-<h3 id="schema-referraldetail">ReferralDetail</h3>
-
-
-<table class='schema-referraldetail'>
-<thead>
-<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
-</thead>
-<tbody>
-
-<tr>
-<td>referral</td>
-<td>object</td>
-<td>true</td>
-<td></td>
-<td>
-  <a href='#schema-apreferral'>ApReferral</a>
-</td>
-</tr>
-
-<tr>
-<td>arrivedAt</td>
-<td>string</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>departedAt</td>
-<td>string</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-</tbody>
-</table>
-
-<h3 id="schema-streamingresponsebody">StreamingResponseBody</h3>
-
-
-<h3 id="schema-documentresponse">DocumentResponse</h3>
-
-
-<table class='schema-documentresponse'>
-<thead>
-<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
-</thead>
-<tbody>
-
-<tr>
-<td>id</td>
-<td>string</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>level</td>
-<td>string</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>eventNumber</td>
-<td>string</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>filename</td>
-<td>string</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>typeCode</td>
-<td>string</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>typeDescription</td>
-<td>string</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>dateSaved</td>
-<td>string</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>dateCreated</td>
-<td>string</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>description</td>
-<td>string</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-</tbody>
-</table>
-
-<h3 id="schema-pageable">Pageable</h3>
-
-
-<table class='schema-pageable'>
-<thead>
-<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
-</thead>
-<tbody>
-
-<tr>
-<td>page</td>
-<td>integer</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>size</td>
-<td>integer</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>sort</td>
-<td>array</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-</tbody>
-</table>
-
-<h3 id="schema-pagemetadata">PageMetadata</h3>
-
-
-<table class='schema-pagemetadata'>
-<thead>
-<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
-</thead>
-<tbody>
-
-<tr>
-<td>size</td>
-<td>integer</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>number</td>
-<td>integer</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>totalElements</td>
-<td>integer</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>totalPages</td>
-<td>integer</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-</tbody>
-</table>
-
-<h3 id="schema-pagedmodelstaffresponse">PagedModelStaffResponse</h3>
-
-
-<table class='schema-pagedmodelstaffresponse'>
-<thead>
-<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
-</thead>
-<tbody>
-
-<tr>
-<td>content</td>
-<td>array</td>
-<td>false</td>
-<td></td>
-<td>
-  <a href='#schema-staffresponse'>StaffResponse</a>
-</td>
-</tr>
-
-<tr>
-<td>page</td>
-<td>object</td>
-<td>false</td>
-<td></td>
-<td>
-  <a href='#schema-pagemetadata'>PageMetadata</a>
-</td>
-</tr>
-
-</tbody>
-</table>
-
-<h3 id="schema-staffgrade">StaffGrade</h3>
-
-
-<table class='schema-staffgrade'>
-<thead>
-<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
-</thead>
-<tbody>
-
-<tr>
-<td>code</td>
-<td>string</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>description</td>
-<td>string</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-</tbody>
-</table>
-
-<h3 id="schema-staffresponse">StaffResponse</h3>
-
-
-<table class='schema-staffresponse'>
-<thead>
-<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
-</thead>
-<tbody>
-
-<tr>
-<td>code</td>
-<td>string</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>name</td>
-<td>object</td>
-<td>true</td>
-<td></td>
-<td>
-  <a href='#schema-personname'>PersonName</a>
-</td>
-</tr>
-
-<tr>
-<td>grade</td>
-<td>object</td>
-<td>false</td>
-<td></td>
-<td>
-  <a href='#schema-staffgrade'>StaffGrade</a>
-</td>
-</tr>
-
-<tr>
-<td>keyWorker</td>
-<td>boolean</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-</tbody>
-</table>
-
-
+</style>
+<p><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/5.21.0/swagger-ui.min.css" integrity="sha384-LsDpRNGhFUPSrIpD/AR64esMNXnzf54YbHZCZR5BlijtWGvj5fl0SKnrFI2zcQRu" crossorigin="anonymous"></p>
+
+<div class="tech-docs-swagger-container"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/5.21.0/swagger-ui-bundle.min.js" integrity="sha384-B5ni49cKCfca47eeboXhhQGqpJIhb/ux4eTPPd3HrzESwL5js4FLnzqIEgU5gv3j" crossorigin="anonymous"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/5.21.0/swagger-ui-standalone-preset.min.js" integrity="sha384-qB7VQ/ae87G17ofPIuOzdumKTMV1EvYLY9QQ+ODFrxUI1zYLzfwVAG7AJ+V77/BV" crossorigin="anonymous"></script>
+
+<script>
+    window.addEventListener("load", () => {
+        SwaggerUIBundle({
+            url: 'https://ministryofjustice.github.io/hmpps-probation-integration-services/tech-docs/projects/approved-premises-and-delius/assets/api-docs.json',
+            dom_id: '.tech-docs-swagger-container',
+            presets: [
+                SwaggerUIBundle.presets.apis,
+                SwaggerUIStandalonePreset
+            ],
+            layout: "StandaloneLayout",
+            displayOperationId: false,
+            deepLinking: true,
+            tryItOutEnabled: false
+        })
+    });
+</script>
 
             
           </main>
 
           <aside>
               <ul class="contribution-banner">
-                <li><a href="https://github.com/ministryofjustice/hmpps-probation-integration-services/blob/main/projects/approved-premises-and-delius/tech-docs/source/api-reference.html.md.erb">View source</a></li>
+                <li><a href="https://github.com/ministryofjustice/hmpps-probation-integration-services/blob/main/doc/tech-docs/source/projects/approved-premises-and-delius/api-reference.html.md.erb">View source</a></li>
                 <li><a href="https://github.com/ministryofjustice/hmpps-probation-integration-services/issues/new?body=Problem+with+%27API+Reference%27+%28https%3A%2F%2Fministryofjustice.github.io%2Fhmpps-probation-integration-services%2Ftech-docs%2Fprojects%2Fapproved-premises-and-delius%2Fapi-reference.html%29&amp;labels=bug&amp;title=Re%3A+%27API+Reference%27">Report problem</a></li>
                 <li><a href="https://github.com/ministryofjustice/hmpps-probation-integration-services">GitHub Repo</a></li>
               </ul>
@@ -2782,6 +585,7 @@
     </div>
 
     
-    <script src="javascripts/application.js"></script>
+    <script src="../../javascripts/govuk_frontend.js" type="module"></script>
+    <script src="../../javascripts/application.js"></script>
   </body>
 </html>

@@ -5,20 +5,22 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 
-    <title>API Reference - HMPPS Probation Search And Delius</title>
+    <title>API Reference - HMPPS Probation Integration Services</title>
 
-    <link href="stylesheets/manifest.css" rel="stylesheet" />
+    <link href="../../stylesheets/manifest.css" rel="stylesheet" />
 
     <link rel="canonical" href="https://ministryofjustice.github.io/hmpps-probation-integration-services/tech-docs/projects/probation-search-and-delius/api-reference.html">
+      <link rel="icon" sizes="48x48" href="/images/favicon.ico">
+      <link rel="icon" sizes="any" href="/images/favicon.svg" type="image/svg+xml">
 
       <meta name="twitter:card" content="summary" />
       <meta name="twitter:domain" content="ministryofjustice.github.io" />
-      <meta name="twitter:image" content="https://ministryofjustice.github.io/hmpps-probation-integration-services/tech-docs/projects/probation-search-and-delius/images/govuk-large.png" />
-      <meta name="twitter:title" content="API Reference - HMPPS Probation Search And Delius" />
+      <meta name="twitter:image" content="https://ministryofjustice.github.io/hmpps-probation-integration-services/tech-docs/images/opengraph-image.png" />
+      <meta name="twitter:title" content="API Reference - HMPPS Probation Integration Services" />
       <meta name="twitter:url" content="https://ministryofjustice.github.io/hmpps-probation-integration-services/tech-docs/projects/probation-search-and-delius/api-reference.html" />
 
-      <meta property="og:image" content="https://ministryofjustice.github.io/hmpps-probation-integration-services/tech-docs/projects/probation-search-and-delius/images/govuk-large.png" />
-      <meta property="og:site_name" content="HMPPS Probation Search And Delius" />
+      <meta property="og:image" content="https://ministryofjustice.github.io/hmpps-probation-integration-services/tech-docs/images/opengraph-image.png" />
+      <meta property="og:site_name" content="HMPPS Probation Integration Services" />
       <meta property="og:title" content="API Reference" />
       <meta property="og:type" content="object" />
       <meta property="og:url" content="https://ministryofjustice.github.io/hmpps-probation-integration-services/tech-docs/projects/probation-search-and-delius/api-reference.html" />
@@ -27,7 +29,7 @@
   </head>
 
   <body class="govuk-template__body">
-    <script>document.body.className = ((document.body.className) ? document.body.className + ' js-enabled' : 'js-enabled');</script>
+    <script>document.body.className += ' js-enabled' + ('noModule' in HTMLScriptElement.prototype ? ' govuk-frontend-supported' : '');</script>
 
     <div class="app-pane">
       <div class="app-pane__header toc-open-disabled">
@@ -36,19 +38,16 @@
         <header class="govuk-header app-header" role="banner" data-module="govuk-header">
   <div class="govuk-header__container govuk-header__container--full-width">
     <div class="govuk-header__logo">
-      <a href="https://ministryofjustice.github.io/hmpps-probation-integration-services/tech-docs/projects/probation-search-and-delius" class="govuk-header__link govuk-header__link--homepage">
+      <a href="https://ministryofjustice.github.io/hmpps-probation-integration-services/tech-docs" class="govuk-header__link govuk-header__link--homepage">
         <span class="govuk-header__product-name">
-          HMPPS Probation Search And Delius
+          HMPPS Probation Integration
         </span>
       </a>
     </div>
     <div class="govuk-header__content">
       <nav class="govuk-header__navigation govuk-header__navigation--end" aria-label="Menu">
-        <button type="button" class="govuk-header__menu-button govuk-js-header-toggle" aria-controls="navigation" aria-label="Show or hide menu">Menu</button>
+        <button type="button" class="govuk-header__menu-button govuk-js-header-toggle" aria-controls="navigation" hidden>Menu</button>
         <ul id="navigation" class="govuk-header__navigation-list">
-            <li class="govuk-header__navigation-item">
-              <a class="govuk-header__link" href="https://ministryofjustice.github.io/hmpps-probation-integration-services/tech-docs">Home</a>
-            </li>
             <li class="govuk-header__navigation-item">
               <a class="govuk-header__link" href="https://github.com/ministryofjustice/hmpps-probation-integration-services#readme">GitHub</a>
             </li>
@@ -71,15 +70,15 @@
 
       <div class="app-pane__body" data-module="in-page-navigation">
           <div class="app-pane__toc">
-            <div class="toc" data-module="table-of-contents" tabindex="-1" aria-label="Table of contents" role="dialog">
-              <div class="search" data-module="search" data-path-to-site-root="./">
+            <div class="toc" data-module="table-of-contents" tabindex="-1">
+              <div class="search" data-module="search" data-path-to-site-root="../../">
   <form action="https://www.google.co.uk/search" method="get" role="search" class="search__form govuk-!-margin-bottom-4">
-    <input type="hidden" name="as_sitesearch" value="https://ministryofjustice.github.io/hmpps-probation-integration-services/tech-docs/projects/probation-search-and-delius"/>
-    <label class="govuk-label search__label" for="search" aria-hidden="true">
+    <input type="hidden" name="as_sitesearch" value="https://ministryofjustice.github.io/hmpps-probation-integration-services/tech-docs"/>
+    <label class="govuk-label search__label" for="search">
       Search (via Google)
     </label>
     <input
-      type="text"
+      type="search"
       id="search" name="q"
       class="govuk-input govuk-!-margin-bottom-0 search__input"
       aria-controls="search-results"
@@ -92,35 +91,397 @@
               <nav id="toc" class="js-toc-list toc__list" aria-labelledby="toc-heading" data-module="collapsible-navigation">
                       <ul>
   <li>
-    <a href="./index.html"><span>Probation Search and Delius</span></a>
+    <a href="../../index.html"><span>About</span></a>
+  </li>
+<li><a href="../../projects/index.html"><span>Integration Services</span></a>
+<ul>
+<li><a href="../../projects/refer-and-monitor-and-delius/index.html"><span>Refer and Monitor and Delius</span></a>
+<ul>
+  <li>
+    <a href="../../projects/refer-and-monitor-and-delius/api-reference.html"><span>API Reference</span></a>
   </li>
   <li>
-    <a href="./index.html"><span>Business need</span></a>
+    <a href="../../projects/refer-and-monitor-and-delius/asyncapi-reference.html"><span>AsyncAPI Reference</span></a>
+  </li>
+</ul>
+</li>
+<li><a href="../../projects/prison-custody-status-to-delius/index.html"><span>Prison Custody Status to Delius</span></a>
+<ul>
+  <li>
+    <a href="../../projects/prison-custody-status-to-delius/asyncapi-reference.html"><span>AsyncAPI Reference</span></a>
+  </li>
+</ul>
+</li>
+  <li>
+    <a href="../../projects/offender-events-and-delius/index.html"><span>offender-events-and-delius</span></a>
+  </li>
+<li><a href="../../projects/pre-sentence-reports-to-delius/index.html"><span>Pre-Sentence Reports to Delius</span></a>
+<ul>
+  <li>
+    <a href="../../projects/pre-sentence-reports-to-delius/api-reference.html"><span>API Reference</span></a>
   </li>
   <li>
-    <a href="./index.html"><span>Data dependencies</span></a>
-    <ul>
-      <li>
-        <a href="./index.html#context-map-probation-search-data"><span>Context Map - Probation Search data</span></a>
-      </li>
-    </ul>
+    <a href="../../projects/pre-sentence-reports-to-delius/asyncapi-reference.html"><span>AsyncAPI Reference</span></a>
+  </li>
+</ul>
+</li>
+<li><a href="../../projects/common-platform-and-delius/index.html"><span>Common Platform and Delius</span></a>
+<ul>
+  <li>
+    <a href="../../projects/common-platform-and-delius/asyncapi-reference.html"><span>AsyncAPI Reference</span></a>
+  </li>
+</ul>
+</li>
+<li><a href="../../projects/manage-supervision-and-delius/index.html"><span>Manage Supervision and Delius</span></a>
+<ul>
+  <li>
+    <a href="../../projects/manage-supervision-and-delius/api-reference.html"><span>API Reference</span></a>
+  </li>
+</ul>
+</li>
+<li><a href="../../projects/ims-and-delius/index.html"><span>IMS and Delius</span></a>
+<ul>
+  <li>
+    <a href="../../projects/ims-and-delius/api-reference.html"><span>API Reference</span></a>
+  </li>
+</ul>
+</li>
+<li><a href="../../projects/dps-and-delius/index.html"><span>DPS and Delius</span></a>
+<ul>
+  <li>
+    <a href="../../projects/dps-and-delius/api-reference.html"><span>API Reference</span></a>
+  </li>
+</ul>
+</li>
+  <li>
+    <a href="../../projects/person-search-index-from-delius/index.html"><span>Person Search Index From Delius</span></a>
+  </li>
+<li><a href="../../projects/manage-pom-cases-and-delius/index.html"><span>Manage POM Cases and Delius</span></a>
+<ul>
+  <li>
+    <a href="../../projects/manage-pom-cases-and-delius/api-reference.html"><span>API Reference</span></a>
   </li>
   <li>
-    <a href="./index.html"><span>API Access Control</span></a>
+    <a href="../../projects/manage-pom-cases-and-delius/asyncapi-reference.html"><span>AsyncAPI Reference</span></a>
+  </li>
+</ul>
+</li>
+<li><a href="../../projects/jitbit-and-delius/index.html"><span>Jitbit and Delius</span></a>
+<ul>
+  <li>
+    <a href="../../projects/jitbit-and-delius/api-reference.html"><span>API Reference</span></a>
+  </li>
+</ul>
+</li>
+<li><a href="../../projects/effective-proposal-framework-and-delius/index.html"><span>Effective Proposal Framework and Delius</span></a>
+<ul>
+  <li>
+    <a href="../../projects/effective-proposal-framework-and-delius/api-reference.html"><span>API Reference</span></a>
+  </li>
+</ul>
+</li>
+<li><a href="../../projects/assess-for-early-release-and-delius/index.html"><span>Assess for Early Release and Delius</span></a>
+<ul>
+  <li>
+    <a href="../../projects/assess-for-early-release-and-delius/api-reference.html"><span>API Reference</span></a>
+  </li>
+</ul>
+</li>
+<li><a href="../../projects/make-recall-decisions-and-delius/index.html"><span>Make Recall Decisions and Delius</span></a>
+<ul>
+  <li>
+    <a href="../../projects/make-recall-decisions-and-delius/api-reference.html"><span>API Reference</span></a>
   </li>
   <li>
-    <a href="./api-reference.html"><span>API Reference v1.0</span></a>
-    <ul>
-      <li>
-        <a href="./api-reference.html#probation-search-audit-contact-search"><span>/probation-search/audit/contact-search</span></a>
-      </li>
-      <li>
-        <a href="./api-reference.html#case-crn-contacts"><span>/case/{crn}/contacts</span></a>
-      </li>
-      <li>
-        <a href="./api-reference.html#schemas"><span>Schemas</span></a>
-      </li>
-    </ul>
+    <a href="../../projects/make-recall-decisions-and-delius/asyncapi-reference.html"><span>AsyncAPI Reference</span></a>
+  </li>
+</ul>
+</li>
+<li><a href="../../projects/prison-education-and-delius/index.html"><span>Prison Education and Delius</span></a>
+<ul>
+  <li>
+    <a href="../../projects/prison-education-and-delius/api-reference.html"><span>API Reference</span></a>
+  </li>
+</ul>
+</li>
+<li><a href="../../projects/appointment-reminders-and-delius/index.html"><span>Appointment Reminders and Delius</span></a>
+<ul>
+  <li>
+    <a href="../../projects/appointment-reminders-and-delius/api-reference.html"><span>API Reference</span></a>
+  </li>
+</ul>
+</li>
+<li><a href="../../projects/approved-premises-and-delius/index.html"><span>Approved Premises and Delius</span></a>
+<ul>
+  <li>
+    <a href="../../projects/approved-premises-and-delius/api-reference.html"><span>API Reference</span></a>
+  </li>
+  <li>
+    <a href="../../projects/approved-premises-and-delius/asyncapi-reference.html"><span>AsyncAPI Reference</span></a>
+  </li>
+</ul>
+</li>
+<li><a href="../../projects/approved-premises-and-oasys/index.html"><span>Approved Premises and OASys</span></a>
+<ul>
+  <li>
+    <a href="../../projects/approved-premises-and-oasys/api-reference.html"><span>API Reference</span></a>
+  </li>
+</ul>
+</li>
+<li><a href="../../projects/accredited-programmes-and-oasys/index.html"><span>Accredited Programmes and OASys</span></a>
+<ul>
+  <li>
+    <a href="../../projects/accredited-programmes-and-oasys/api-reference.html"><span>API Reference</span></a>
+  </li>
+</ul>
+</li>
+<li><a href="../../projects/prison-case-notes-to-probation/index.html"><span>Prison Case Notes to Probation</span></a>
+<ul>
+  <li>
+    <a href="../../projects/prison-case-notes-to-probation/asyncapi-reference.html"><span>AsyncAPI Reference</span></a>
+  </li>
+</ul>
+</li>
+<li><a href="../../projects/tier-to-delius/index.html"><span>Tier to Delius</span></a>
+<ul>
+  <li>
+    <a href="../../projects/tier-to-delius/api-reference.html"><span>API Reference</span></a>
+  </li>
+  <li>
+    <a href="../../projects/tier-to-delius/asyncapi-reference.html"><span>AsyncAPI Reference</span></a>
+  </li>
+</ul>
+</li>
+<li><a href="../../projects/justice-email-and-delius/index.html"><span>Justice Email and Delius</span></a>
+<ul>
+  <li>
+    <a href="../../projects/justice-email-and-delius/asyncapi-reference.html"><span>AsyncAPI Reference</span></a>
+  </li>
+</ul>
+</li>
+  <li>
+    <a href="../../projects/domain-events-and-delius/index.html"><span>Domain events and Delius</span></a>
+  </li>
+<li><a href="../../projects/create-and-vary-a-licence-and-delius/index.html"><span>Create and Vary a Licence and Delius</span></a>
+<ul>
+  <li>
+    <a href="../../projects/create-and-vary-a-licence-and-delius/api-reference.html"><span>API Reference</span></a>
+  </li>
+  <li>
+    <a href="../../projects/create-and-vary-a-licence-and-delius/asyncapi-reference.html"><span>AsyncAPI Reference</span></a>
+  </li>
+</ul>
+</li>
+<li><a href="../../projects/unpaid-work-and-delius/index.html"><span>Unpaid Work and Delius</span></a>
+<ul>
+  <li>
+    <a href="../../projects/unpaid-work-and-delius/api-reference.html"><span>API Reference</span></a>
+  </li>
+  <li>
+    <a href="../../projects/unpaid-work-and-delius/asyncapi-reference.html"><span>AsyncAPI Reference</span></a>
+  </li>
+</ul>
+</li>
+<li><a href="../../projects/subject-access-requests-and-delius/index.html"><span>Subject Access Requests and Delius</span></a>
+<ul>
+  <li>
+    <a href="../../projects/subject-access-requests-and-delius/api-reference.html"><span>API Reference</span></a>
+  </li>
+</ul>
+</li>
+<li><a href="../../projects/opd-and-delius/index.html"><span>OPD and Delius</span></a>
+<ul>
+  <li>
+    <a href="../../projects/opd-and-delius/asyncapi-reference.html"><span>AsyncAPI Reference</span></a>
+  </li>
+</ul>
+</li>
+<li><a href="../../projects/breach-notice-and-delius/index.html"><span>Breach Notice and Delius</span></a>
+<ul>
+  <li>
+    <a href="../../projects/breach-notice-and-delius/api-reference.html"><span>API Reference</span></a>
+  </li>
+  <li>
+    <a href="../../projects/breach-notice-and-delius/asyncapi-reference.html"><span>AsyncAPI Reference</span></a>
+  </li>
+</ul>
+</li>
+  <li>
+    <a href="../../projects/risk-assessment-scores-to-delius/index.html"><span>Risk Assessment Scores to Delius</span></a>
+  </li>
+<li><a href="../../projects/soc-and-delius/index.html"><span>SOC and Delius</span></a>
+<ul>
+  <li>
+    <a href="../../projects/soc-and-delius/api-reference.html"><span>API Reference</span></a>
+  </li>
+</ul>
+</li>
+<li><a href="../../projects/hdc-licences-and-delius/index.html"><span>HDC Licences and Delius</span></a>
+<ul>
+  <li>
+    <a href="../../projects/hdc-licences-and-delius/api-reference.html"><span>API Reference</span></a>
+  </li>
+</ul>
+</li>
+<li><a href="../../projects/probation-search-and-delius/index.html"><span>Probation Search and Delius</span></a>
+<ul>
+  <li>
+    <a href="../../projects/probation-search-and-delius/api-reference.html"><span>API Reference</span></a>
+  </li>
+</ul>
+</li>
+<li><a href="../../projects/resettlement-passport-and-delius/index.html"><span>Resettlement Passport and Delius</span></a>
+<ul>
+  <li>
+    <a href="../../projects/resettlement-passport-and-delius/api-reference.html"><span>API Reference</span></a>
+  </li>
+</ul>
+</li>
+<li><a href="../../projects/prison-identifier-and-delius/index.html"><span>Prison Identifier and Delius</span></a>
+<ul>
+  <li>
+    <a href="../../projects/prison-identifier-and-delius/api-reference.html"><span>API Reference</span></a>
+  </li>
+  <li>
+    <a href="../../projects/prison-identifier-and-delius/asyncapi-reference.html"><span>AsyncAPI Reference</span></a>
+  </li>
+</ul>
+</li>
+<li><a href="../../projects/hmpps-auth-and-delius/index.html"><span>HMPPS Auth and Delius</span></a>
+<ul>
+  <li>
+    <a href="../../projects/hmpps-auth-and-delius/api-reference.html"><span>API Reference</span></a>
+  </li>
+</ul>
+</li>
+<li><a href="../../projects/oasys-and-delius/index.html"><span>OASys and Delius</span></a>
+<ul>
+  <li>
+    <a href="../../projects/oasys-and-delius/api-reference.html"><span>API Reference</span></a>
+  </li>
+</ul>
+</li>
+<li><a href="../../projects/custody-key-dates-and-delius/index.html"><span>Custody Key Dates and Delius</span></a>
+<ul>
+  <li>
+    <a href="../../projects/custody-key-dates-and-delius/asyncapi-reference.html"><span>AsyncAPI Reference</span></a>
+  </li>
+</ul>
+</li>
+<li><a href="../../projects/sentence-plan-and-delius/index.html"><span>Sentence Plan and Delius</span></a>
+<ul>
+  <li>
+    <a href="../../projects/sentence-plan-and-delius/api-reference.html"><span>API Reference</span></a>
+  </li>
+</ul>
+</li>
+<li><a href="../../projects/court-case-and-delius/index.html"><span>Court Case and Delius</span></a>
+<ul>
+  <li>
+    <a href="../../projects/court-case-and-delius/api-reference.html"><span>API Reference</span></a>
+  </li>
+  <li>
+    <a href="../../projects/court-case-and-delius/asyncapi-reference.html"><span>AsyncAPI Reference</span></a>
+  </li>
+</ul>
+</li>
+<li><a href="../../projects/sentence-plan-and-oasys/index.html"><span>Sentence Plan and OASys</span></a>
+<ul>
+  <li>
+    <a href="../../projects/sentence-plan-and-oasys/api-reference.html"><span>API Reference</span></a>
+  </li>
+</ul>
+</li>
+<li><a href="../../projects/cas3-and-delius/index.html"><span>CAS3 and Delius</span></a>
+<ul>
+  <li>
+    <a href="../../projects/cas3-and-delius/asyncapi-reference.html"><span>AsyncAPI Reference</span></a>
+  </li>
+</ul>
+</li>
+<li><a href="../../projects/workforce-allocations-to-delius/index.html"><span>Workforce Allocations to Delius</span></a>
+<ul>
+  <li>
+    <a href="../../projects/workforce-allocations-to-delius/api-reference.html"><span>API Reference</span></a>
+  </li>
+  <li>
+    <a href="../../projects/workforce-allocations-to-delius/asyncapi-reference.html"><span>AsyncAPI Reference</span></a>
+  </li>
+</ul>
+</li>
+<li><a href="../../projects/external-api-and-delius/index.html"><span>External API and Delius</span></a>
+<ul>
+  <li>
+    <a href="../../projects/external-api-and-delius/api-reference.html"><span>API Reference</span></a>
+  </li>
+</ul>
+</li>
+<li><a href="../../projects/cas2-and-delius/index.html"><span>CAS2 and Delius</span></a>
+<ul>
+  <li>
+    <a href="../../projects/cas2-and-delius/asyncapi-reference.html"><span>AsyncAPI Reference</span></a>
+  </li>
+</ul>
+</li>
+<li><a href="../../projects/arns-and-delius/index.html"><span>ARNS and Delius</span></a>
+<ul>
+  <li>
+    <a href="../../projects/arns-and-delius/api-reference.html"><span>API Reference</span></a>
+  </li>
+</ul>
+</li>
+<li><a href="../../projects/assessment-summary-and-delius/index.html"><span>Assessment Summary and Delius</span></a>
+<ul>
+  <li>
+    <a href="../../projects/assessment-summary-and-delius/asyncapi-reference.html"><span>AsyncAPI Reference</span></a>
+  </li>
+</ul>
+</li>
+<li><a href="../../projects/manage-offences-and-delius/index.html"><span>Manage Offences and Delius</span></a>
+<ul>
+  <li>
+    <a href="../../projects/manage-offences-and-delius/asyncapi-reference.html"><span>AsyncAPI Reference</span></a>
+  </li>
+</ul>
+</li>
+<li><a href="../../projects/pathfinder-and-delius/index.html"><span>Pathfinder and Delius</span></a>
+<ul>
+  <li>
+    <a href="../../projects/pathfinder-and-delius/api-reference.html"><span>API Reference</span></a>
+  </li>
+</ul>
+</li>
+<li><a href="../../projects/prisoner-profile-and-delius/index.html"><span>Prisoner Profile and Delius</span></a>
+<ul>
+  <li>
+    <a href="../../projects/prisoner-profile-and-delius/api-reference.html"><span>API Reference</span></a>
+  </li>
+</ul>
+</li>
+<li><a href="../../projects/find-and-refer-and-delius/index.html"><span>Find and Refer and Delius</span></a>
+<ul>
+  <li>
+    <a href="../../projects/find-and-refer-and-delius/api-reference.html"><span>API Reference</span></a>
+  </li>
+</ul>
+</li>
+<li><a href="../../projects/core-person-record-and-delius/index.html"><span>Core Person Record and Delius</span></a>
+<ul>
+  <li>
+    <a href="../../projects/core-person-record-and-delius/api-reference.html"><span>API Reference</span></a>
+  </li>
+</ul>
+</li>
+</ul>
+</li>
+  <li>
+    <a href="../../guides.html"><span>How-To Guides</span></a>
+  </li>
+  <li>
+    <a href="../../concepts.html"><span>System Concepts</span></a>
+  </li>
+  <li>
+    <a href="../../support.html"><span>Support</span></a>
   </li>
 </ul>
 
@@ -129,321 +490,54 @@
             </div>
           </div>
 
-        <div class="app-pane__content toc-open-disabled" aria-label="Content" tabindex="0">
+        <div class="app-pane__content toc-open-disabled" aria-label="Content">
           <main id="content" class="technical-documentation" data-module="anchored-headings">
-            <header id="api" class="anchored-heading govuk-heading-xl" style="padding-top: 30px">
-    <a href="#api" class="anchored-heading__icon" aria-hidden="true" tabindex="-1"></a>
-    API Reference
-</header>
-
-<style>.technical-documentation > h1 { display: none !important }</style>
+            <h1 id="api-reference">API Reference</h1>
 <p>The following documentation is also available in these formats:</p>
 
 <ul>
-<li><a href="https://ministryofjustice.github.io/hmpps-probation-integration-services/tech-docs/projects/probation-search-and-delius/api-docs.json">OpenAPI JSON</a></li>
-<li><a href="https://ministryofjustice.github.io/hmpps-probation-integration-services/tech-docs/projects/probation-search-and-delius/api-docs.yaml">OpenAPI YAML</a></li>
+<li><a href="https://ministryofjustice.github.io/hmpps-probation-integration-services/tech-docs/projects/probation-search-and-delius/assets/api-docs.json">OpenAPI JSON</a></li>
+<li><a href="https://ministryofjustice.github.io/hmpps-probation-integration-services/tech-docs/projects/probation-search-and-delius/assets/api-docs.yaml">OpenAPI YAML</a></li>
 <li><a href="https://probation-search-and-delius-dev.hmpps.service.justice.gov.uk/swagger-ui/index.html">Swagger UI</a></li>
 </ul>
-<h1 id="api-reference">API Reference v1.0</h1>
 
-
-
-
-
-
-<h2 id="probation-search-audit-contact-search">/probation-search/audit/contact-search</h2>
-
-<h3 id="probation-search-audit-contact-search-post">post</h3>
-
-
-
-
-
-
-
-<h4 id="probation-search-audit-contact-search-post-responses">Responses</h4>
-<table>
-<thead>
-<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
-</thead>
-<tbody>
-
-<tr>
-<td>201</td>
-<td>
-<p>Created</p>
-
-
-
-</td>
-<td>
-
-</td>
-</tr>
-
-</tbody>
-</table>
-
-
-
-
-<h2 id="case-crn-contacts">/case/{crn}/contacts</h2>
-
-<h3 id="case-crn-contacts-get">get</h3>
-
-
-
-
-<h4 id="case-crn-contacts-get-parameters">Parameters</h4>
-<table>
-<thead>
-<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
-</thead>
-<tbody>
-
-<tr>
-<td>crn</td>
-<td>path</td>
-<td>string</td>
-<td>true</td>
-<td>
-
-</td>
-</tr>
-
-</tbody>
-</table>
-
-
-
-
-<h4 id="case-crn-contacts-get-responses">Responses</h4>
-<table>
-<thead>
-<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
-</thead>
-<tbody>
-
-<tr>
-<td>200</td>
-<td>
-<p>OK</p>
-
-
-
-<pre><code>{
-}</code></pre>
-
-</td>
-<td>
-
-</td>
-</tr>
-
-</tbody>
-</table>
-
-
-
-
-
-<h2 id="schemas">Schemas</h2>
-<h3 id="schema-contactsearchauditrequest">ContactSearchAuditRequest</h3>
-
-
-<table class='schema-contactsearchauditrequest'>
-<thead>
-<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
-</thead>
-<tbody>
-
-<tr>
-<td>search</td>
-<td>object</td>
-<td>true</td>
-<td></td>
-<td>
-  <a href='#schema-contactsearchrequest'>ContactSearchRequest</a>
-</td>
-</tr>
-
-<tr>
-<td>username</td>
-<td>string</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>pagination</td>
-<td>object</td>
-<td>true</td>
-<td></td>
-<td>
-  <a href='#schema-pagerequest'>PageRequest</a>
-</td>
-</tr>
-
-<tr>
-<td>dateTime</td>
-<td>string</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-</tbody>
-</table>
-
-<h3 id="schema-contactsearchrequest">ContactSearchRequest</h3>
-
-
-<table class='schema-contactsearchrequest'>
-<thead>
-<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
-</thead>
-<tbody>
-
-<tr>
-<td>crn</td>
-<td>string</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>query</td>
-<td>string</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>matchAllTerms</td>
-<td>boolean</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-</tbody>
-</table>
-
-<h3 id="schema-pagerequest">PageRequest</h3>
-
-
-<table class='schema-pagerequest'>
-<thead>
-<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
-</thead>
-<tbody>
-
-<tr>
-<td>page</td>
-<td>integer</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>pageSize</td>
-<td>integer</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>sort</td>
-<td>string</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>direction</td>
-<td>string</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-</tbody>
-</table>
-
-<h3 id="schema-contactjsonresponse">ContactJsonResponse</h3>
-
-
-<table class='schema-contactjsonresponse'>
-<thead>
-<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
-</thead>
-<tbody>
-
-<tr>
-<td>contactId</td>
-<td>integer</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>version</td>
-<td>integer</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>json</td>
-<td>string</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-</tbody>
-</table>
-
-
+<style>
+    .technical-documentation { max-width: fit-content }
+    .swagger-ui {
+        .topbar, h2.title, .info { display: none !important }
+    }
+</style>
+<p><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/5.21.0/swagger-ui.min.css" integrity="sha384-LsDpRNGhFUPSrIpD/AR64esMNXnzf54YbHZCZR5BlijtWGvj5fl0SKnrFI2zcQRu" crossorigin="anonymous"></p>
+
+<div class="tech-docs-swagger-container"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/5.21.0/swagger-ui-bundle.min.js" integrity="sha384-B5ni49cKCfca47eeboXhhQGqpJIhb/ux4eTPPd3HrzESwL5js4FLnzqIEgU5gv3j" crossorigin="anonymous"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/5.21.0/swagger-ui-standalone-preset.min.js" integrity="sha384-qB7VQ/ae87G17ofPIuOzdumKTMV1EvYLY9QQ+ODFrxUI1zYLzfwVAG7AJ+V77/BV" crossorigin="anonymous"></script>
+
+<script>
+    window.addEventListener("load", () => {
+        SwaggerUIBundle({
+            url: 'https://ministryofjustice.github.io/hmpps-probation-integration-services/tech-docs/projects/probation-search-and-delius/assets/api-docs.json',
+            dom_id: '.tech-docs-swagger-container',
+            presets: [
+                SwaggerUIBundle.presets.apis,
+                SwaggerUIStandalonePreset
+            ],
+            layout: "StandaloneLayout",
+            displayOperationId: false,
+            deepLinking: true,
+            tryItOutEnabled: false
+        })
+    });
+</script>
 
             
           </main>
 
           <aside>
               <ul class="contribution-banner">
-                <li><a href="https://github.com/ministryofjustice/hmpps-probation-integration-services/blob/main/projects/probation-search-and-delius/tech-docs/source/api-reference.html.md.erb">View source</a></li>
+                <li><a href="https://github.com/ministryofjustice/hmpps-probation-integration-services/blob/main/doc/tech-docs/source/projects/probation-search-and-delius/api-reference.html.md.erb">View source</a></li>
                 <li><a href="https://github.com/ministryofjustice/hmpps-probation-integration-services/issues/new?body=Problem+with+%27API+Reference%27+%28https%3A%2F%2Fministryofjustice.github.io%2Fhmpps-probation-integration-services%2Ftech-docs%2Fprojects%2Fprobation-search-and-delius%2Fapi-reference.html%29&amp;labels=bug&amp;title=Re%3A+%27API+Reference%27">Report problem</a></li>
                 <li><a href="https://github.com/ministryofjustice/hmpps-probation-integration-services">GitHub Repo</a></li>
               </ul>
@@ -491,6 +585,7 @@
     </div>
 
     
-    <script src="javascripts/application.js"></script>
+    <script src="../../javascripts/govuk_frontend.js" type="module"></script>
+    <script src="../../javascripts/application.js"></script>
   </body>
 </html>
