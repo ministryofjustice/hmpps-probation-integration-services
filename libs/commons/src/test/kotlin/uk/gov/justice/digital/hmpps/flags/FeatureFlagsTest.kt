@@ -21,7 +21,6 @@ class FeatureFlagsTest {
     @Mock
     private lateinit var fliptClient: FliptClient
 
-
     @InjectMocks
     private lateinit var featureFlags: FeatureFlags
 
@@ -40,7 +39,8 @@ class FeatureFlagsTest {
     @Test
     fun `throws error if feature flag is not defined`() {
         whenever(fliptClient.evaluateBoolean(any(), any(), any())).thenThrow(
-            FliptException.EvaluationException("Not Found"))
+            FliptException.EvaluationException("Not Found")
+        )
         assertThrows<FeatureFlagException> { featureFlags.enabled("feature-flag-3") }
     }
 
@@ -50,11 +50,11 @@ class FeatureFlagsTest {
 
     private fun flag(key: String, enabled: Boolean) =
         BooleanEvaluationResponse
-        .builder()
-        .enabled(enabled)
-        .flagKey(key)
-        .reason("DEFAULT_EVALUATION_REASON")
-        .requestDurationMillis(100F)
-        .timestamp(LocalTime.now().toString())
-        .build()
+            .builder()
+            .enabled(enabled)
+            .flagKey(key)
+            .reason("DEFAULT_EVALUATION_REASON")
+            .requestDurationMillis(100F)
+            .timestamp(LocalTime.now().toString())
+            .build()
 }
