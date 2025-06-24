@@ -31,7 +31,6 @@ generic-service:
     FLIPT_URL: http://feature-flags
     JDK_JAVA_OPTIONS: "-javaagent:/agent/agent.jar -Xmx512m -XX:+UseG1GC"
     SENTRY_TRACES_SAMPLE_RATE: '0.05'
-    SENTRY_IGNORED_EXCEPTIONS_FOR_TYPE: "org.apache.catalina.connector.ClientAbortException"
     SPRING_DATASOURCE_HIKARI_MAXIMUMPOOLSIZE: 10
     SPRING_DATASOURCE_HIKARI_MINIMUMIDLE: 1
 

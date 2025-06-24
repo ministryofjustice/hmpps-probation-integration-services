@@ -15,12 +15,14 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression
 import org.springframework.context.annotation.Conditional
 import org.springframework.dao.CannotAcquireLockException
+import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.jdbc.CannotGetJdbcConnectionException
 import org.springframework.orm.ObjectOptimisticLockingFailureException
 import org.springframework.scheduling.concurrent.SimpleAsyncTaskScheduler
 import org.springframework.stereotype.Component
 import org.springframework.transaction.CannotCreateTransactionException
 import org.springframework.transaction.UnexpectedRollbackException
+import org.springframework.web.client.HttpClientErrorException
 import org.springframework.web.client.RestClientException
 import uk.gov.justice.digital.hmpps.config.AwsCondition
 import uk.gov.justice.digital.hmpps.message.Notification
@@ -105,7 +107,9 @@ class AwsNotificationListener(
             ObjectOptimisticLockingFailureException::class,
             CannotCreateTransactionException::class,
             CannotGetJdbcConnectionException::class,
-            UnexpectedRollbackException::class
+            UnexpectedRollbackException::class,
+            DataIntegrityViolationException::class,
+            HttpClientErrorException.TooManyRequests::class,
         )
     }
 }
