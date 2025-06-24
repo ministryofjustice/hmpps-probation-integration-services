@@ -1,10 +1,8 @@
 package uk.gov.justice.digital.hmpps.flags
 
-import io.flipt.api.FliptClient
-import io.flipt.api.error.Error
-import io.flipt.api.evaluation.Evaluation
-import io.flipt.api.evaluation.models.BooleanEvaluationResponse
-import io.flipt.api.evaluation.models.EvaluationReason
+import io.flipt.client.FliptClient
+import io.flipt.client.FliptException
+import io.flipt.client.models.BooleanEvaluationResponse
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
@@ -24,15 +22,13 @@ class FeatureFlagsTest {
     @Mock
     private lateinit var fliptClient: FliptClient
 
-    @Mock
-    private lateinit var evaluation: Evaluation
 
     @InjectMocks
     private lateinit var featureFlags: FeatureFlags
 
     @BeforeEach
     fun setup() {
-        whenever(fliptClient.evaluation()).thenReturn(evaluation)
+//        whenever(fliptClient.evaluation()).thenReturn(evaluation)
     }
 
     @Test
@@ -49,19 +45,22 @@ class FeatureFlagsTest {
 
     @Test
     fun `throws error if feature flag is not defined`() {
-        whenever(evaluation.evaluateBoolean(any())).thenThrow(RuntimeException(Error(404, "Not Found")))
+        whenever(fliptClient.evaluateBoolean(any(), any(), any())).thenThrow(
+            FliptException.EvaluationException("Not Found"))
         assertThrows<FeatureFlagException> { featureFlags.enabled("feature-flag-3") }
     }
 
     private fun withFlag(key: String, enabled: Boolean) {
-        whenever(evaluation.evaluateBoolean(any())).thenReturn(flag(key, enabled))
+        whenever(fliptClient.evaluateBoolean(any(), any(), any())).thenReturn(flag(key, enabled))
     }
 
-    private fun flag(key: String, enabled: Boolean) = BooleanEvaluationResponse(
-        enabled,
-        key,
-        EvaluationReason.MATCH_EVALUATION_REASON,
-        100F,
-        LocalTime.now().toString()
-    )
+    private fun flag(key: String, enabled: Boolean) =
+        BooleanEvaluationResponse
+        .builder()
+        .enabled(enabled)
+        .flagKey(key)
+        .reason("DEFAULT_EVALUATION_REASON")
+        .requestDurationMillis(100F)
+        .timestamp(LocalTime.now().toString())
+        .build()
 }
