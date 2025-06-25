@@ -12,7 +12,7 @@ interface ProbationSearchRepository : JpaRepository<Person, Long> {
         """
             select distinct p from Person p
             where
-                (:croNumber is null or (:croNumber is not null and lower(trim(p.croNumber)) = lower(:croNumber)))
+                (:croNumber is null or (:croNumber is not null and lower(trim(p.croNumber)) = lower(trim(:croNumber))))
                 and
                 (
                 :pncNumber is null or (
@@ -23,13 +23,13 @@ interface ProbationSearchRepository : JpaRepository<Person, Long> {
                     )
                 )
                 and
-                (:nomsNumber is null or (:nomsNumber is not null and lower(trim(p.nomsNumber)) = lower(:nomsNumber)))
+                (:nomsNumber is null or (:nomsNumber is not null and lower(trim(p.nomsNumber)) = lower(trim(:nomsNumber))))
                 and
                 (:activeSentence != true or (:activeSentence = true and p.currentDisposal = true ))
                 and
-                (:forename is null or (:forename is not null and lower(trim(p.forename)) = lower(:forename)))
+                (:forename is null or (:forename is not null and lower(trim(p.forename)) = lower(trim(:forename))))
                 and 
-                (:surname is null or (:surname is not null and lower(trim(p.surname)) = lower(:surname)))
+                (:surname is null or (:surname is not null and lower(trim(p.surname)) = lower(trim(:surname))))
                 and 
                 (:dateOfBirth is null or (:dateOfBirth is not null and p.dateOfBirth = :dateOfBirth))
                 and exists (select 1 from OffenderManager om
@@ -53,7 +53,7 @@ interface ProbationSearchRepository : JpaRepository<Person, Long> {
         """
             select distinct p from Person p join Alias a on p.id = a.offenderId
             where
-                (:croNumber is null or (:croNumber is not null and lower(trim(p.croNumber)) = lower(:croNumber)))
+                (:croNumber is null or (:croNumber is not null and lower(trim(p.croNumber)) = lower(trim(:croNumber))))
                 and
                 (
                 :pncNumber is null or (
@@ -63,13 +63,13 @@ interface ProbationSearchRepository : JpaRepository<Person, Long> {
                     lower(trim(p.pncNumber)) = lower(trim(substr(:pncNumber,3)))
                 ))
                 and
-                (:nomsNumber is null or (:nomsNumber is not null and lower(trim(p.nomsNumber)) = lower(:nomsNumber)))
+                (:nomsNumber is null or (:nomsNumber is not null and lower(trim(p.nomsNumber)) = lower(trim(:nomsNumber))))
                 and
                 (:activeSentence != true or (:activeSentence = true and p.currentDisposal = true ))
                 and
-                (:forename is null or (:forename is not null and lower(trim(a.forename)) = lower(:forename)))
+                (:forename is null or (:forename is not null and lower(trim(a.forename)) = lower(trim(:forename))))
                 and 
-                (:surname is null or (:surname is not null and lower(trim(a.surname)) = lower(:surname)))
+                (:surname is null or (:surname is not null and lower(trim(a.surname)) = lower(trim(:surname))))
                 and 
                 (:dateOfBirth is null or (:dateOfBirth is not null and a.dateOfBirth = :dateOfBirth))
                 and exists (select 1 from OffenderManager om
@@ -176,17 +176,17 @@ interface ProbationSearchRepository : JpaRepository<Person, Long> {
             and
             (
                 (
-                    (:forename is null or (:forename is not null and lower(trim(a.forename)) = lower(:forename)))
+                    (:forename is null or (:forename is not null and lower(trim(a.forename)) = lower(trim(:forename))))
                     and 
-                    (:surname is null or (:surname is not null and lower(trim(a.surname)) = lower(:surname)))
+                    (:surname is null or (:surname is not null and lower(trim(a.surname)) = lower(trim(:surname))))
                     and 
                     (:dateOfBirth is null or (:dateOfBirth is not null and a.dateOfBirth = :dateOfBirth))
                 )
                 or
                 (
-                    (:forename is null or (:forename is not null and lower(trim(p.forename)) = lower(:forename)))
+                    (:forename is null or (:forename is not null and lower(trim(p.forename)) = lower(trim(:forename))))
                     and 
-                    (:surname is null or (:surname is not null and lower(trim(p.surname)) = lower(:surname)))
+                    (:surname is null or (:surname is not null and lower(trim(p.surname)) = lower(trim(:surname))))
                     and 
                     (:dateOfBirth is null or (:dateOfBirth is not null and p.dateOfBirth = :dateOfBirth))
                 )
@@ -236,9 +236,9 @@ interface ProbationSearchRepository : JpaRepository<Person, Long> {
             (:activeSentence != true or (:activeSentence = true and p.currentDisposal = true ))
             and
             (
-                (:forename is null or (:forename is not null and (lower(trim(p.forename)) = lower(:forename) or lower(trim(a.forename)) = lower(:forename))))
+                (:forename is null or (:forename is not null and (lower(trim(p.forename)) = lower(trim(:forename)) or lower(trim(a.forename)) = lower(trim(:forename)))))
                 and
-                (:surname is null or (:surname is not null and lower(trim(p.surname)) = lower(:surname)))
+                (:surname is null or (:surname is not null and lower(trim(p.surname)) = lower(trim(:surname))))
                 and 
                 (p.dateOfBirth in (:dateOfBirths))
             )
