@@ -8,13 +8,20 @@ The following documentation is also available in these formats:
 * [Swagger UI](https://<%= project_name ||= 'error' %>-dev.hmpps.service.justice.gov.uk/swagger-ui/index.html)
 
 <style>
-    .technical-documentation { max-width: fit-content }
+    .technical-documentation { max-width: 100% !important }
+    .tech-docs-swagger-container {
+        width: 100%;
+        max-width: 1460px;
+    }
     .swagger-ui {
         .topbar, h2.title, .info { display: none !important }
     }
 </style>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/5.21.0/swagger-ui.min.css" integrity="sha384-LsDpRNGhFUPSrIpD/AR64esMNXnzf54YbHZCZR5BlijtWGvj5fl0SKnrFI2zcQRu" crossorigin="anonymous">
 
+<noscript>The documentation requires JavaScript to be enabled in order for it be displayed</noscript>
+
+## Swagger
 <div class="tech-docs-swagger-container"></div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/5.21.0/swagger-ui-bundle.min.js" integrity="sha384-B5ni49cKCfca47eeboXhhQGqpJIhb/ux4eTPPd3HrzESwL5js4FLnzqIEgU5gv3j" crossorigin="anonymous"></script>

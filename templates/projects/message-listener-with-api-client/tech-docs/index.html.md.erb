@@ -7,3 +7,7 @@ source_url: 'https://github.com/ministryofjustice/hmpps-probation-integration-se
 <%= URI.open('https://raw.githubusercontent.com/ministryofjustice/hmpps-probation-integration-services/main/projects/$SERVICE_NAME/README.md').read
 .gsub(/\.\/(.+?)\.(svg|png)/, 'https://raw.githubusercontent.com/ministryofjustice/hmpps-probation-integration-services/refs/heads/main/projects/$SERVICE_NAME/\1.\2')
 .gsub(/\.\//, 'https://github.com/ministryofjustice/hmpps-probation-integration-services/blob/main/projects/$SERVICE_NAME/') %>
+
+## API Reference
+
+* [AsyncAPI Reference](asyncapi-reference.html)
