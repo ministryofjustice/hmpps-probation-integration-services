@@ -1,5 +1,5 @@
 name: Build Docker image
-description: Build, and optionally push, a Docker image
+description: Build and optionally push image for a Docker project
 
 inputs:
   project:
@@ -7,21 +7,33 @@ inputs:
   push:
     description: Whether to push images to the registry
     default: 'false'
-  force-deploy:
-    description: Forces tagging and deploying of image
+  force:
+    description: Force build, regardless of whether there are changes
     default: 'false'
-  version:
-    description: Version
 
 outputs:
   changes:
     description: A JSON array of projects that have changed
     value: ${{ steps.check-changes.outputs.projects }}
+  version:
+    description: Version
+    value: ${{ steps.version.outputs.version }}
 
 runs:
   using: "composite"
   steps:
-    - id: check-changes
+    - uses: actions/checkout@v4
+
+    - name: Set version
+      id: version
+      shell: bash
+      run: |
+        version=$(date '+%Y-%m-%d').${{ github.run_number }}.$(echo ${{ github.sha }} | cut -c1-7)
+        echo "VERSION=$version" | tee -a "$GITHUB_ENV"
+        echo "version=$version" | tee -a "$GITHUB_OUTPUT"
+
+    - name: Check for changes
+      id: check-changes
       uses: ./.github/actions/check-changes
       with:
         filters: |
@@ -50,4 +62,13 @@ runs:
         provenance: false
         tags: |
           ghcr.io/ministryofjustice/hmpps-probation-integration-services/${{ inputs.project }}:latest
-          ghcr.io/ministryofjustice/hmpps-probation-integration-services/${{ inputs.project }}:${{ inputs.version }}
+          ghcr.io/ministryofjustice/hmpps-probation-integration-services/${{ inputs.project }}:${{ steps.version.outputs.version }}
+
+    - name: Output changes
+      run: echo '${{ steps.check-changes.outputs.projects }}' > ${{ inputs.project }}-changes.json
+      shell: bash
+    - name: Store changes
+      uses: actions/upload-artifact@v4
+      with:
+        name: changes-${{ inputs.project }}
+        path: ${{ inputs.project }}-changes.json
