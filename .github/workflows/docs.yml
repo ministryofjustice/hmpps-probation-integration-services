@@ -37,11 +37,10 @@ jobs:
         working-directory: doc/tech-docs
 
       - name: Publish
-        if: github.ref_name == 'main'
         uses: JamesIves/github-pages-deploy-action@6c2d9db40f9296374acc17b90404b6e8864128c8 # v4.7.3
         with:
           folder: doc/tech-docs/docs
-          target-folder: tech-docs
+          target-folder: tech-docs-test
 
   check-links:
     name: Check links
