@@ -390,6 +390,7 @@ template:
             - police national network => police_national_network, police national network
             - police officer => police_officer, police officer
             - persons posing a risk to children => persons_posing_a_risk_to_children, persons posing a risk to children
+            - po box => po_box
             - pom handover expected start date => pom_handover_expected_start_date, pom handover expected start date
             - pop's => pops, pop's
             - post sentence supervision => post_sentence_supervision, post sentence supervision
@@ -411,6 +412,7 @@ template:
             - probation delivery unit => probation_delivery_unit, probation delivery unit
             - probation officer => probation_officer, probation officer
             - probation order => probation_order, probation order
+            - probation practitioner => probation_practitioner, probation practitioner
             - probation service => probation_service, probation service
             - problem solving court => problem_solving_court, problem solving court
             - prolific priority offender => prolific_priority_offender, prolific priority offender
@@ -431,6 +433,7 @@ template:
             - resettlement day release => resettlement_day_release, resettlement day release
             - responsible officer => responsible_officer, responsible officer
             - restorative justice => restorative_justice, restorative justice
+            - restraining order => restraining_order, restraining order
             - retirement benefit => retirement_benefit, retirement benefit
             - risk management plan => risk_management_plan, risk management plan
             - risk of harm => risk_of_harm, risk of harm
@@ -529,6 +532,7 @@ template:
             - cp => community_payback, child_protection
             - cpn => community_protection_notice, community_psychiatric_nurse
             - partner => husband, wife, boyfriend, girlfriend
+            - ro => responsible_officer, restraining_order
         probation_synonyms:
           type: synonym
           expand: false
@@ -775,6 +779,7 @@ template:
             - pip, personal_independence_payment
             - placement, project, schedule
             - pnn, police_national_network
+            - po, om, pp, cpp, pso, pqip, pquip, offender_manager, probation_practitioner, probation_officer
             - pom, prison_offender_manager
             - pops, person_on_probations
             - ppcs, public_protection_casework_section
