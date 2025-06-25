@@ -26,6 +26,7 @@ runs:
         find templates/projects/${{ inputs.project_template }} -type f -exec sed -i 's/$SERVICE_NAME_CAMELCASE/${{ steps.project_name.outputs.camel_case }}/g' {} \;
         find templates/projects/${{ inputs.project_template }} -type f -exec sed -i 's/$SERVICE_NAME_TITLECASE/${{ steps.project_name.outputs.title_case }}/g' {} \;
         find templates/projects/${{ inputs.project_template }} -type f -exec sed -i 's/$SERVICE_NAME/${{ inputs.project_name }}/g' {} \;
+        find templates/projects/${{ inputs.project_template }} -type f -exec sed -i 's/$SERVICE_BOOTSTRAP_DATE/'"$(date '+%Y-%m-%d')"'/g' {} \;
         cp -R templates/projects/${{ inputs.project_template }} projects/${{ inputs.project_name }}
         mv projects/${{ inputs.project_name }}/tech-docs doc/tech-docs/source/projects/${{ inputs.project_name }}
         sed -i '/add new projects here/a \    "${{ inputs.project_name }}",' settings.gradle.kts
