@@ -58,9 +58,7 @@ class AppointmentService(
         AppointmentTypeResponse(
             contactTypeRepository
                 .findByCodeIn(
-                    CreateAppointment.Type.entries.map { it.code },
-                    CreateAppointment.Type.entries.associate { it.code to it.ordinal }
-                        .toList().joinToString { "'${it.first}', ${it.second}"  }
+                    CreateAppointment.Type.entries.map { it.code }
                 ).map { it.toAppointmentType() }
         )
 

@@ -204,10 +204,10 @@ interface ContactTypeRepository : CrudRepository<ContactType, Long> {
             SELECT ct 
             FROM ContactType ct 
             WHERE ct.code in (:values)
-            ORDER BY DECODE(ct.code, 'C084',0,'CHVS',1,'COAI',2,'COSR',3,'COOO',4,'CODC',5,'COAP',6,'COPT',7,'COVC',8)
+            ORDER BY DECODE(ct.code, 'C084',1,'CHVS',2,'COAI',3,'COSR',4,'COOO',5,'CODC',6,'COAP',7,'COPT',8,'COVC',9)
         """
     )
-    fun findByCodeIn(values: List<String>, order: String): List<ContactType>
+    fun findByCodeIn(values: List<String>): List<ContactType>
 }
 
 fun ContactTypeRepository.getContactType(code: String) =
