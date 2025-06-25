@@ -34,7 +34,7 @@ runs:
         sed -i '/add new projects here/i \          - '"'"'["${{ inputs.project_name }}"]'"'"'' .github/workflows/service-catalogue.yml
         sed -i '/add new projects here/i \          - ${{ inputs.project_name }}' .github/workflows/build.yml
         sed -i '/add new projects here/i \          - ${{ inputs.project_name }}' .github/workflows/deploy-branch.yml
-        sed -i '/add new projects here/i \* [${{ steps.project_name.outputs.title_case }}](${{ inputs.project_name }})' doc/tech-docs/source/projects/index.html.md.erb
+        sed -i '/add new projects here/i \* [${{ steps.project_name.outputs.title_case }}](projects/${{ inputs.project_name }}/about.html)' doc/tech-docs/source/index.html.md.erb
         sed 's/$SERVICE_NAME/${{ inputs.project_name }}/g' templates/runConfiguration.xml > '.idea/runConfigurations/${{ inputs.project_name }}.run.xml'
 
     - name: Render queue-specific files
