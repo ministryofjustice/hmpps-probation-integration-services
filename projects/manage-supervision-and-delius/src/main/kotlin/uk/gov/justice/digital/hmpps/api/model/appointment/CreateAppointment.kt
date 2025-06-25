@@ -27,15 +27,15 @@ data class CreateAppointment(
     val urn = URN_PREFIX + uuid
 
     enum class Type(val code: String) {
+        ThreeWayMeetingNS("C084"),
+        HomeVisitToCaseNS("CHVS"),
+        InitialAppointmentInOfficeNS("COAI"),
+        InterviewForReportOther("COSR"),
+        PannedContactOtherThanOffice("COOO"),
+        PlannedDoorstepContactNS("CODC"),
         PlannedOfficeVisitNS("COAP"),
         PlannedTelephoneContactNS("COPT"),
-        PlannedVideoContactNS("COVC"),
-        PlannedDoorstepContactNS("CODC"),
-        PannedContactOtherThanOffice("COOO"),
-        InitialAppointmentInOfficeNS("COAI"),
-        InitialAppointmentHomeVisitNS("COHV"),
-        HomeVisitToCaseNS("CHVS"),
-        ThreeWayMeetingNS("C084")
+        PlannedVideoContactNS("COVC")
     }
 
     enum class Interval(val value: Int) {
