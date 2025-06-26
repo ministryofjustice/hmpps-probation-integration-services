@@ -26,7 +26,9 @@ import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.ContactR
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.LdapUser
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.StaffUserRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.user.entity.*
+import uk.gov.justice.digital.hmpps.ldap.findAttributeByUsername
 import uk.gov.justice.digital.hmpps.ldap.findByUsername
+import uk.gov.justice.digital.hmpps.ldap.findPreferenceByUsername
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.ZonedDateTime
@@ -127,7 +129,6 @@ class UserService(
         val user = getUser(username)
 
         return user.staff?.let {
-
             val contacts = contactRepository.findUpComingAppointmentsByUser(
                 user.staff.id,
                 LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE),
@@ -205,6 +206,10 @@ class UserService(
     }
 
     fun getProvidersForUser(username: String, region: String?, team: String?): UserProviderResponse {
+
+        val homeArea = ldapTemplate.findAttributeByUsername(username, "userHomeArea")
+            ?: throw NotFoundException("No home area found for $username")
+        val defaultTeam = ldapTemplate.findPreferenceByUsername(username, "defaultTeam")
 
         val providers = probationAreaUserRepository.findByUsername(username)
             .map { Provider(it.id.provider.code, it.id.provider.description) }
