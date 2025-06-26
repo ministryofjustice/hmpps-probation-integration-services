@@ -189,6 +189,8 @@ internal class HandlerTest {
         val notification = Notification(message = MessageGenerator.COMMON_PLATFORM_EVENT)
         handler.handle(notification)
 
+        verify(telemetryService).trackEvent(eq("PersonCreated"), anyMap(), anyMap())
+        verify(telemetryService).trackEvent(eq("EventCreated"), anyMap(), anyMap())
         verify(notifier).caseCreated(any())
         verify(notifier).addressCreated(any())
     }

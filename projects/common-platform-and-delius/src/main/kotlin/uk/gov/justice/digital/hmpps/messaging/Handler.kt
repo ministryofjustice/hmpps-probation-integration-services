@@ -102,19 +102,16 @@ class Handler(
                         ?: return@forEach
 
                 // Insert person and event
-                val insertRemandResult = remandService.insertPersonOnRemand(
-                    InsertRemandDTO(
-                        defendant = defendant,
-                        courtCode = notification.message.hearing.courtCentre.code,
-                        hearingOffence = mainOffence,
-                        sittingDay = notification.message.hearing.hearingDays.first().sittingDay,
-                        caseUrn = caseUrn,
-                        hearingId = notification.message.hearing.id
-                    )
+                val insertRemandDTO = InsertRemandDTO(
+                    defendant = defendant,
+                    courtCode = notification.message.hearing.courtCentre.code,
+                    hearingOffence = mainOffence,
+                    sittingDay = notification.message.hearing.hearingDays.first().sittingDay,
+                    caseUrn = caseUrn,
+                    hearingId = notification.message.hearing.id
                 )
 
-                notifier.caseCreated(insertRemandResult.insertPersonResult.person)
-                insertRemandResult.insertPersonResult.address?.let { notifier.addressCreated(it) }
+                insertPersonAndEvent(insertRemandDTO)
             } else {
                 telemetryService.trackEvent(
                     "SimulatedPersonCreated", mapOf(
@@ -151,5 +148,38 @@ class Handler(
             val offenceCode = it.offenceCode?.let { code -> offenceService.getOffenceHomeOfficeCodeByCJACode(code) }
             offenceService.priorityMap[offenceCode] ?: Int.MAX_VALUE
         }
+    }
+
+    private fun insertPersonAndEvent(insertRemandDTO: InsertRemandDTO) {
+        val insertRemandResult = remandService.insertPersonOnRemand(insertRemandDTO)
+
+        telemetryService.trackEvent(
+            "PersonCreated", mapOf(
+                "hearingId" to insertRemandDTO.hearingId,
+                "defendantId" to insertRemandDTO.hearingId,
+                "CRN" to insertRemandResult.insertPersonResult.person.crn,
+                "personId" to insertRemandResult.insertPersonResult.person.id.toString(),
+                "personManagerId" to insertRemandResult.insertPersonResult.personManager.id.toString(),
+                "equalityId" to insertRemandResult.insertPersonResult.equality.id.toString(),
+                "addressId" to insertRemandResult.insertPersonResult.address?.id.toString(),
+            )
+        )
+
+        telemetryService.trackEvent(
+            "EventCreated", mapOf(
+                "hearingId" to insertRemandDTO.defendant.id,
+                "eventId" to insertRemandResult.insertEventResult.event.id.toString(),
+                "eventNumber" to insertRemandResult.insertEventResult.event.number,
+                "CRN" to insertRemandResult.insertEventResult.event.person.crn,
+                "personId" to insertRemandResult.insertEventResult.event.person.id.toString(),
+                "orderManagerId" to insertRemandResult.insertEventResult.orderManager.id.toString(),
+                "mainOffenceId" to insertRemandResult.insertEventResult.mainOffence.id.toString(),
+                "courtAppearanceId" to insertRemandResult.insertEventResult.courtAppearance.id.toString(),
+                "contactId" to insertRemandResult.insertEventResult.contact.id.toString()
+            )
+        )
+
+        notifier.caseCreated(insertRemandResult.insertPersonResult.person)
+        insertRemandResult.insertPersonResult.address?.let { notifier.addressCreated(it) }
     }
 }
