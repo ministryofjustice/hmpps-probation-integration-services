@@ -28,32 +28,6 @@ class RemandService(
             hearingId = insertRemandDTO.hearingId
         )
 
-        telemetryService.trackEvent(
-            "PersonCreated", mapOf(
-                "hearingId" to insertRemandDTO.hearingId,
-                "defendantId" to insertRemandDTO.defendant.id,
-                "CRN" to insertPersonResult.person.crn,
-                "personId" to insertPersonResult.person.id.toString(),
-                "personManagerId" to insertPersonResult.personManager.id.toString(),
-                "equalityId" to insertPersonResult.equality.id.toString(),
-                "addressId" to insertPersonResult.address?.id.toString(),
-            )
-        )
-
-        telemetryService.trackEvent(
-            "EventCreated", mapOf(
-                "hearingId" to insertRemandDTO.hearingId,
-                "eventId" to insertEventResult.event.id.toString(),
-                "eventNumber" to insertEventResult.event.number,
-                "CRN" to insertEventResult.event.person.crn,
-                "personId" to insertEventResult.event.person.id.toString(),
-                "orderManagerId" to insertEventResult.orderManager.id.toString(),
-                "mainOffenceId" to insertEventResult.mainOffence.id.toString(),
-                "courtAppearanceId" to insertEventResult.courtAppearance.id.toString(),
-                "contactId" to insertEventResult.contact.id.toString()
-            )
-        )
-
         return InsertRemandResult(insertPersonResult, insertEventResult)
     }
 }
