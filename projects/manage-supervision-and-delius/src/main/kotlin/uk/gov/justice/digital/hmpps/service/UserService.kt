@@ -211,6 +211,8 @@ class UserService(
             ?: throw NotFoundException("No home area found for $username")
         val defaultTeam = ldapTemplate.findPreferenceByUsername(username, "defaultTeam")
 
+        val defaultUserDetails = DefaultUserDetails(username, homeArea, defaultTeam)
+
         val providers = probationAreaUserRepository.findByUsername(username)
             .map { Provider(it.id.provider.code, it.id.provider.description) }
 
@@ -218,7 +220,7 @@ class UserService(
 
         val users = staffUserRepository.findStaffByTeam(team ?: teams.first().code).map { it.toUser() }
 
-        return UserProviderResponse(providers, teams, users)
+        return UserProviderResponse(defaultUserDetails, providers, teams, users)
     }
 
     fun getUser(username: String) =
