@@ -1,0 +1,83 @@
+name: Build Gradle project
+description: Build and optionally push image for a Gradle project
+
+inputs:
+  project:
+    description: Project name
+  push:
+    description: Whether to push images to the registry
+    default: 'false'
+  force:
+    description: Force build, regardless of whether there are changes
+    default: 'false'
+  gradle-encryption-key:
+    description: Gradle encryption key
+    required: true
+
+outputs:
+  changes:
+    description: A JSON array of projects that have changed
+    value: ${{ steps.check-changes.outputs.projects }}
+  version:
+    description: Version
+    value: ${{ steps.version.outputs.version }}
+
+runs:
+  using: "composite"
+  steps:
+    - uses: actions/checkout@v4
+
+    - name: Set version
+      id: version
+      shell: bash
+      run: |
+        version=$(date '+%Y-%m-%d').${{ github.run_number }}.$(echo ${{ github.sha }} | cut -c1-7)
+        echo "VERSION=$version" | tee -a "$GITHUB_ENV"
+        echo "version=$version" | tee -a "$GITHUB_OUTPUT"
+
+    - uses: ./.github/actions/setup-gradle
+      with:
+        cache-encryption-key: ${{ inputs.gradle-encryption-key }}
+
+    - name: Build
+      shell: bash
+      run: ./gradlew ${{ inputs.project }}:check
+      env:
+        SPRING_PROFILES_ACTIVE: oracle
+
+    - name: Push
+      if: inputs.push == 'true'
+      uses: nick-fields/retry@ce71cc2ab81d554ebbe88c79ab5975992d79ba08 # v3.0.2
+      with:
+        max_attempts: 3 # Pushing lots of new image versions at once can result in GitHub rate-limiting so we retry this step
+        timeout_minutes: 15
+        # Configuration cache is not yet supported for Jib - see: https://github.com/GoogleContainerTools/jib/issues/3132
+        command: ./gradlew ${{ inputs.project }}:jib --no-configuration-cache
+      env:
+        GITHUB_USERNAME: ${{ github.actor }}
+        GITHUB_PASSWORD: ${{ github.token }}
+        FORCE_DEPLOY: ${{ inputs.force }}
+
+    - name: Check changes
+      shell: bash
+      id: check-changes
+      run: echo "projects=$(find changed -mindepth 1 -maxdepth 1 -printf "%f\n" | jq -R . | jq -s -c '. // []')" | tee -a "$GITHUB_OUTPUT"
+
+    - name: Output changes
+      shell: bash
+      run: echo '${{ steps.check-changes.outputs.projects }}' > ${{ inputs.project }}-changes.json
+
+    - name: Store changes
+      uses: actions/upload-artifact@v4
+      with:
+        name: changes-${{ inputs.project }}
+        path: ${{ inputs.project }}-changes.json
+
+    - name: Store test artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: test-results-${{ inputs.project }}
+        path: |
+          **/build/jacoco
+          **/build/reports/jacoco/**/*.xml
+          **/build/test-results
