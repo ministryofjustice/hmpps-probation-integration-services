@@ -35,17 +35,21 @@ class DataLoaderForAPI(
     private val requirementRepository: RequirementRepository,
     private val requirementMainCategoryRepository: RequirementMainCategoryRepository,
     private val nsiEventRepository: NsiEventRepository,
-    private val nsiRepository: NsiRepository
+    private val nsiRepository: NsiRepository,
+    private val rsrScoreHistoryRepository: RsrScoreHistoryRepository
 ) : ApplicationListener<ApplicationReadyEvent> {
 
     override fun onApplicationEvent(are: ApplicationReadyEvent) {
         referenceDataSetRepository.save(ReferenceDataSetGenerator.GENDER)
         referenceDataSetRepository.save(ReferenceDataSetGenerator.REGISTER_LEVEL)
         referenceDataSetRepository.save(ReferenceDataSetGenerator.REGISTER_TYPE_FLAG)
+        referenceDataSetRepository.save(ReferenceDataSetGenerator.RSR_TYPE)
         referenceDataRepository.save(ReferenceDataGenerator.GENDER_MALE)
         referenceDataRepository.save(ReferenceDataGenerator.TIER_ONE)
         referenceDataRepository.save(ReferenceDataGenerator.LEVEL_ONE)
         referenceDataRepository.save(ReferenceDataGenerator.FLAG)
+        referenceDataRepository.save(ReferenceDataGenerator.STATIC_RSR)
+        referenceDataRepository.save(ReferenceDataGenerator.DYNAMIC_RSR)
         registerTypeRepository.save(RegisterTypeGenerator.DEFAULT)
 
         referenceDataSetRepository.save(ReferenceDataSetGenerator.NSI_OUTCOME)
@@ -60,6 +64,7 @@ class DataLoaderForAPI(
         ogrsAssessmentRepository.save(OgrsAssessmentGenerator.DEFAULT)
         oasysAssessmentRepository.save(OasysAssessmentGenerator.DEFAULT)
         registerRepository.save(RegistrationGenerator.DEFAULT)
+        rsrScoreHistoryRepository.saveAll(RsrScoreHistoryGenerator.HISTORY)
 
         val nsiEvent = nsiEventRepository.findById(event.id).orElseThrow()
         nsiRepository.save(

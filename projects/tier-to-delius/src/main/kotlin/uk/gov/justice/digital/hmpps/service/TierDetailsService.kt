@@ -14,6 +14,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.oasys.assessment.findLat
 import uk.gov.justice.digital.hmpps.integrations.delius.oasys.ogrs.OGRSAssessmentRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.oasys.ogrs.findLatest
 import uk.gov.justice.digital.hmpps.integrations.delius.oasys.rsr.RsrScoreHistoryRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.oasys.rsr.findLatest
 import uk.gov.justice.digital.hmpps.integrations.delius.person.CaseEntity
 import uk.gov.justice.digital.hmpps.integrations.delius.person.CaseEntityRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.getCase
@@ -26,7 +27,8 @@ class TierDetailsService(
     val eventRepository: EventRepository,
     val oasysAssessmentRepository: OASYSAssessmentRepository,
     val ogrsAssessmentRepository: OGRSAssessmentRepository,
-    val nsiRepository: NsiRepository
+    val nsiRepository: NsiRepository,
+    val rsrScoreHistoryRepository: RsrScoreHistoryRepository
 ) {
     fun tierDetails(crn: String): TierDetails {
         val case = caseEntityRepository.getCase(crn)
@@ -34,12 +36,13 @@ class TierDetailsService(
         val eventEntities = eventRepository.findByCrn(crn)
         val convictions = mapToConvictions(eventEntities)
         val ogrsScore = getRiskOgrs(case)
+        val rsrScore = getStaticOrDynamicRsrScore(case)
 
         return TierDetails(
             case.gender.description,
             case.tier?.code,
             ogrsScore,
-            case.dynamicRsrScore,
+            rsrScore,
             registrationEntities.map { Registration(it.type.code, it.type.description, it.level?.code, it.date) },
             convictions,
             nsiRepository.previousEnforcementActivity(case.id)
@@ -66,4 +69,7 @@ class TierDetailsService(
             .filter { it.score != null }
             .maxByOrNull { it.assessmentDate }?.score
     }
+
+    private fun getStaticOrDynamicRsrScore(case: CaseEntity) =
+        rsrScoreHistoryRepository.findLatest(case.id)?.score
 }
