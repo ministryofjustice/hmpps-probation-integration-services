@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.controller.entity
+package uk.gov.justice.digital.hmpps.integrations.delius.oasys
 
 import java.time.LocalDate
 import java.time.ZonedDateTime

@@ -1,21 +1,23 @@
-package uk.gov.justice.digital.hmpps.controller
+package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.stereotype.Service
-import uk.gov.justice.digital.hmpps.controller.entity.CaseEntity
-import uk.gov.justice.digital.hmpps.controller.entity.CaseEntityRepository
-import uk.gov.justice.digital.hmpps.controller.entity.EventEntity
-import uk.gov.justice.digital.hmpps.controller.entity.EventRepository
-import uk.gov.justice.digital.hmpps.controller.entity.OASYSAssessmentRepository
-import uk.gov.justice.digital.hmpps.controller.entity.OGRSAssessmentRepository
-import uk.gov.justice.digital.hmpps.controller.entity.RegistrationRepository
-import uk.gov.justice.digital.hmpps.controller.entity.findLatest
-import uk.gov.justice.digital.hmpps.controller.entity.getCase
 import uk.gov.justice.digital.hmpps.controller.model.Conviction
 import uk.gov.justice.digital.hmpps.controller.model.Registration
 import uk.gov.justice.digital.hmpps.controller.model.Requirement
 import uk.gov.justice.digital.hmpps.controller.model.TierDetails
+import uk.gov.justice.digital.hmpps.integrations.delius.event.EventRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.EventEntity
 import uk.gov.justice.digital.hmpps.integrations.delius.nsi.entity.NsiRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.nsi.entity.previousEnforcementActivity
+import uk.gov.justice.digital.hmpps.integrations.delius.oasys.assessment.OASYSAssessmentRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.oasys.assessment.findLatest
+import uk.gov.justice.digital.hmpps.integrations.delius.oasys.ogrs.OGRSAssessmentRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.oasys.ogrs.findLatest
+import uk.gov.justice.digital.hmpps.integrations.delius.oasys.rsr.RsrScoreHistoryRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.person.CaseEntity
+import uk.gov.justice.digital.hmpps.integrations.delius.person.CaseEntityRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.person.getCase
+import uk.gov.justice.digital.hmpps.integrations.delius.registration.RegistrationRepository
 
 @Service
 class TierDetailsService(

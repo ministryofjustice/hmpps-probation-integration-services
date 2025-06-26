@@ -1,6 +1,6 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
-import uk.gov.justice.digital.hmpps.controller.entity.DisposalType
+import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.DisposalType
 
 object DisposalTypeGenerator {
     val DEFAULT = generate()

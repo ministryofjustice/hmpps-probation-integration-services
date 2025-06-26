@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.controller.entity
+package uk.gov.justice.digital.hmpps.integrations.delius.requirement
 
 import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
@@ -6,6 +6,7 @@ import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.NumericBooleanConverter
 import org.hibernate.type.YesNoConverter
 import org.springframework.data.jpa.repository.JpaRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.Disposal
 
 @Immutable
 @Entity

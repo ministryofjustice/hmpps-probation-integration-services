@@ -1,13 +1,13 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
-import uk.gov.justice.digital.hmpps.controller.entity.OASYSAssessment
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
+import uk.gov.justice.digital.hmpps.integrations.delius.oasys.assessment.entity.OasysAssessment
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.ZonedDateTime
 
 object OasysAssessmentGenerator {
-    val DEFAULT = OASYSAssessment(
+    val DEFAULT = OasysAssessment(
         IdGenerator.getAndIncrement(),
         CaseEntityGenerator.DEFAULT.id,
         LocalDate.now().minusWeeks(10),

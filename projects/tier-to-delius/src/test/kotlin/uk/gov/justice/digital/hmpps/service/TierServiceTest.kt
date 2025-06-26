@@ -1,8 +1,8 @@
-package uk.gov.justice.digital.hmpps.integrations.tier
+package uk.gov.justice.digital.hmpps.service
 
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.MatcherAssert.assertThat
-import org.junit.jupiter.api.Assertions.assertDoesNotThrow
+import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -33,6 +33,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.person.PersonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceDataRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.staff.StaffRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.team.TeamRepository
+import uk.gov.justice.digital.hmpps.integrations.tier.TierCalculation
 import uk.gov.justice.digital.hmpps.messaging.telemetryProperties
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import java.time.ZonedDateTime
@@ -74,7 +75,7 @@ internal class TierServiceTest {
     lateinit var featureFlags: FeatureFlags
 
     @InjectMocks
-    lateinit var tierService: TierService
+    lateinit var tierUpdateService: TierUpdateService
 
     private val tierScore = ReferenceDataGenerator.generate("someTierCode", TIER)
     private val changeReason = ReferenceDataGenerator.generate("ATS", ReferenceDataSetGenerator.TIER_CHANGE_REASON)
@@ -83,8 +84,8 @@ internal class TierServiceTest {
 
     @Test
     fun `should log to telemetry and not throw exception when person not found`() {
-        assertDoesNotThrow {
-            tierService.updateTier(person.crn, tierCalculation)
+        Assertions.assertDoesNotThrow {
+            tierUpdateService.updateTier(person.crn, tierCalculation)
         }
 
         verify(telemetryService).trackEvent("PersonNotFound", tierCalculation.telemetryProperties(person.crn))
@@ -95,7 +96,7 @@ internal class TierServiceTest {
         whenever(personRepository.findByCrnAndSoftDeletedIsFalse(person.crn)).thenReturn(person)
 
         val exception = assertThrows<NotFoundException> {
-            tierService.updateTier(person.crn, tierCalculation)
+            tierUpdateService.updateTier(person.crn, tierCalculation)
         }
 
         assertEquals("TIER with code of UsomeTierCode not found", exception.message)
@@ -108,7 +109,7 @@ internal class TierServiceTest {
             .thenReturn(tierScore)
 
         val exception = assertThrows<NotFoundException> {
-            tierService.updateTier(person.crn, tierCalculation)
+            tierUpdateService.updateTier(person.crn, tierCalculation)
         }
 
         assertEquals("TIER CHANGE REASON with code of ATS not found", exception.message)
@@ -118,17 +119,12 @@ internal class TierServiceTest {
     fun `should throw exception when PersonManager not found`() {
         person.managers.clear()
         whenever(personRepository.findByCrnAndSoftDeletedIsFalse(person.crn)).thenReturn(person)
-        whenever(
-            referenceDataRepository.findByCodeAndSetName(
-                "U${tierScore.code}",
-                ReferenceDataSetGenerator.TIER.name
-            )
-        )
+        whenever(referenceDataRepository.findByCodeAndSetName("U${tierScore.code}", TIER.name))
             .thenReturn(tierScore)
         whenever(referenceDataRepository.findByCodeAndSetName("ATS", ReferenceDataSetGenerator.TIER_CHANGE_REASON.name))
             .thenReturn(changeReason)
 
-        val exception = assertThrows<NotFoundException> { tierService.updateTier(person.crn, tierCalculation) }
+        val exception = assertThrows<NotFoundException> { tierUpdateService.updateTier(person.crn, tierCalculation) }
 
         assertEquals("PersonManager with crn of someCrn not found", exception.message)
     }
@@ -142,7 +138,7 @@ internal class TierServiceTest {
         whenever(referenceDataRepository.findByCodeAndSetName("ATS", ReferenceDataSetGenerator.TIER_CHANGE_REASON.name))
             .thenReturn(changeReason)
 
-        tierService.updateTier(person.crn, tierCalculation)
+        tierUpdateService.updateTier(person.crn, tierCalculation)
         verify(managementTierRepository, never()).save(any())
         verify(contactRepository, never()).save(any())
         verify(personRepository, never()).save(any())
@@ -166,7 +162,7 @@ internal class TierServiceTest {
                 )
             )
 
-        tierService.updateTier(
+        tierUpdateService.updateTier(
             person.crn,
             tierCalculation.copy(
                 tierScore = updatedTierScore.code,
@@ -201,7 +197,7 @@ internal class TierServiceTest {
             ContactTypeGenerator.TIER_UPDATE
         )
 
-        tierService.updateTier(
+        tierUpdateService.updateTier(
             person.crn,
             tierCalculation.copy(
                 calculationDate = tierCalculationDate,
