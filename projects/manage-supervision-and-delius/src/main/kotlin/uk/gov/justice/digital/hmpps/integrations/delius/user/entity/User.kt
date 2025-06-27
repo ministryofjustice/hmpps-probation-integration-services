@@ -195,13 +195,46 @@ interface TeamRepository : JpaRepository<Team, Long> {
         """
     )
     fun findByProviderCode(code: String): List<Team>
+
+    @Query(
+        """
+            SELECT t
+            FROM Team t
+            WHERE t.provider.code = :providerCode
+            AND t.id = :id
+            AND (t.endDate IS NULL OR t.endDate > CURRENT_DATE)
+            AND t.startDate <= CURRENT_DATE
+            ORDER BY UPPER(t.description) 
+        """
+    )
+    fun findByProviderCodeAndTeamId(providerCode: String, id: Long): Team?
+
+    @Query(
+        """
+            SELECT t
+            FROM Team t
+            JOIN ContactStaffTeam cst on cst.id.team.id = t.id
+            JOIN contact_staff cs on cs.id = cst.id.staffId
+            JOIN cs.user u
+            WHERE t.provider.code = :providerCode
+            AND u.username = :username
+            AND (t.endDate IS NULL OR t.endDate > CURRENT_DATE)
+            AND t.startDate <= CURRENT_DATE
+            ORDER BY UPPER(t.description)
+        """
+    )
+    fun findByUsernameAndProvider(username: String, providerCode: String): List<Team>
 }
+
 
 fun TeamRepository.getTeam(teamCode: String) =
     findByTeamCode(teamCode) ?: throw NotFoundException("Team", "teamCode", teamCode)
 
 fun TeamRepository.getProvider(teamCode: String) =
     findProviderByTeamCode(teamCode) ?: throw NotFoundException("Team", "teamCode", teamCode)
+
+fun TeamRepository.getByProviderAndTeam(providerCode: String, id: Long) =
+    findByProviderCodeAndTeamId(providerCode, id) ?: throw NotFoundException("Team", "providerCode", "$providerCode and team id $id")
 
 @Immutable
 @Entity

@@ -17,7 +17,7 @@ dn: cn=UserPreferences,cn=peter-parker,ou=Users,dc=moj,dc=com
 objectclass: top
 objectclass: UserPreferences
 cn: UserPreferences
-defaultTeam: Automated Allocation Team
+defaultTeam: 123
 
 dn: cn=MAABT001,cn=peter-parker,ou=Users,dc=moj,dc=com
 objectclass: NDRoleAssociation
