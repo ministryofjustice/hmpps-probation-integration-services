@@ -2,18 +2,12 @@ name: Setup Gradle
 description: Setup Java and Gradle actions
 
 inputs:
-  cache-read-only:
-    description: |
-      When 'true', existing entries will be read from the cache but no entries will be written.
-      By default this value is 'false' for workflows on the GitHub default branch and 'true' for workflows on other branches.
-    required: false
-    default: ${{ github.event.repository != null && github.ref_name != github.event.repository.default_branch }}
+  cache-role:
+    description: Role to assume to access S3 cache bucket
+    required: true
   cache-encryption-key:
-    description: |
-      A base64 encoded AES key used to encrypt the configuration-cache data. The key is exported as 'GRADLE_ENCRYPTION_KEY' for later steps.
-      A suitable key can be generated with `openssl rand -base64 16`.
-      Configuration-cache data will not be saved/restored without an encryption key being provided.
-    required: false
+    description: Gradle cache encryption key. Required for configuration caching. See https://github.com/gradle/actions/blob/main/docs/setup-gradle.md#saving-configuration-cache-data
+    required: true
 
 runs:
   using: "composite"
@@ -22,10 +16,30 @@ runs:
       with:
         java-version: 21
         distribution: temurin
+
+    - name: Assume role for access to cache bucket
+      uses: aws-actions/configure-aws-credentials@b47578312673ae6fa5b5096b330d9fbac3d116df # v2
+      with:
+        aws-region: eu-west-2
+        role-to-assume: ${{ inputs.cache-role }}
+        role-skip-session-tagging: true
+        role-duration-seconds: 1200
+
+    - name: Set cache encryption key as environment variable
+      shell: bash
+      run: echo "GRADLE_ENCRYPTION_KEY=$key" >> $GITHUB_ENV
+      env:
+        key: ${{ inputs.cache-encryption-key }}
+
     - uses: gradle/actions/setup-gradle@v4
       with:
-        cache-encryption-key: ${{ inputs.cache-encryption-key }}
-        cache-read-only: ${{ inputs.cache-read-only }}
+        add-job-summary: 'on-failure'
+        cache-encryption-key: ${{ env.GRADLE_ENCRYPTION_KEY }}
+        cache-read-only: ${{ github.ref_name != 'main' }}
+        gradle-home-cache-excludes: |
+          caches
+          notifications
+
     - name: Manually cache buildSrc output # workaround for https://github.com/gradle/actions/issues/21
       uses: actions/cache@v4
       with:

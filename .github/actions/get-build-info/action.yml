@@ -8,8 +8,11 @@ inputs:
   version:
     description: The version of the service to deploy
     required: true
-  gradle-encryption-key:
-    description: Gradle encryption key
+  gradle-cache-role:
+    description: Role required for accessing Gradle cache
+    required: true
+  gradle-cache-encryption-key:
+    description: Gradle cache encryption key. Required for configuration caching.
     required: true
 
 runs:
@@ -26,8 +29,8 @@ runs:
     - uses: ./.github/actions/setup-gradle
       if: ${{ steps.gradle_file.outputs.files_exists == 'true' }}
       with:
-        cache-encryption-key: ${{ inputs.gradle-encryption-key }}
-        cache-read-only: true
+        cache-role: ${{ inputs.gradle-cache-role }}
+        cache-encryption-key: ${{ inputs.gradle-cache-encryption-key }}
 
     - name: Get build info
       if: ${{ steps.gradle_file.outputs.files_exists == 'true' }}

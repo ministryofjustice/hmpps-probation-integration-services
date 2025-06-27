@@ -11,6 +11,11 @@ on:
         type: boolean
         default: false
 
+permissions:
+  contents: read
+  id-token: write
+  packages: write
+
 jobs:
   build:
     name: Build
@@ -20,6 +25,7 @@ jobs:
       force-deploy: "${{ inputs.force-deploy || false }}"
     concurrency: pipeline-build-${{ github.ref_name }}
     secrets:
+      GRADLE_CACHE_S3_ROLE_TO_ASSUME: ${{ secrets.GRADLE_CACHE_S3_ROLE_TO_ASSUME }}
       GRADLE_ENCRYPTION_KEY: ${{ secrets.GRADLE_ENCRYPTION_KEY }}
 
   post-build:
@@ -47,7 +53,8 @@ jobs:
       - uses: ./.github/actions/analyse
         with:
           sonar-token: ${{ secrets.SONAR_TOKEN }}
-          gradle-encryption-key: ${{ secrets.GRADLE_ENCRYPTION_KEY }}
+          gradle-cache-role: ${{ secrets.GRADLE_CACHE_S3_ROLE_TO_ASSUME }}
+          gradle-cache-encryption-key: ${{ secrets.GRADLE_ENCRYPTION_KEY }}
 
   deploy-to-test:
     name: Deploy to test
