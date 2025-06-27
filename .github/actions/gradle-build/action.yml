@@ -10,8 +10,11 @@ inputs:
   force:
     description: Force build, regardless of whether there are changes
     default: 'false'
-  gradle-encryption-key:
-    description: Gradle encryption key
+  gradle-cache-role:
+    description: Role required for accessing Gradle cache
+    required: true
+  gradle-cache-encryption-key:
+    description: Gradle cache encryption key. Required for configuration caching.
     required: true
 
 outputs:
@@ -37,13 +40,15 @@ runs:
 
     - uses: ./.github/actions/setup-gradle
       with:
-        cache-encryption-key: ${{ inputs.gradle-encryption-key }}
+        cache-role: ${{ inputs.gradle-cache-role }}
+        cache-encryption-key: ${{ inputs.gradle-cache-encryption-key }}
 
     - name: Build
       shell: bash
       run: ./gradlew ${{ inputs.project }}:check
       env:
         SPRING_PROFILES_ACTIVE: oracle
+        GRADLE_CACHE_READONLY: ${{ github.ref_name != 'PI-3161-gradle-s3-cache' }}
 
     - name: Push
       if: inputs.push == 'true'
@@ -57,6 +62,7 @@ runs:
         GITHUB_USERNAME: ${{ github.actor }}
         GITHUB_PASSWORD: ${{ github.token }}
         FORCE_DEPLOY: ${{ inputs.force }}
+        GRADLE_CACHE_READONLY: ${{ github.ref_name != 'PI-3161-gradle-s3-cache' }}
 
     - name: Check changes
       shell: bash

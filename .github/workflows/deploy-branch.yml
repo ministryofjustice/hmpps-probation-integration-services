@@ -73,6 +73,11 @@ on:
           - preprod
           - prod
 
+permissions:
+  contents: read
+  id-token: write
+  packages: write
+
 jobs:
   build:
     name: Build
@@ -98,7 +103,8 @@ jobs:
           project: ${{ inputs.project }}
           push: true
           force: true
-          gradle-encryption-key: ${{ secrets.GRADLE_ENCRYPTION_KEY }}
+          gradle-cache-role: ${{ secrets.GRADLE_CACHE_S3_ROLE_TO_ASSUME }}
+          gradle-cache-encryption-key: ${{ secrets.GRADLE_ENCRYPTION_KEY }}
 
       - name: Build Docker project
         id: docker

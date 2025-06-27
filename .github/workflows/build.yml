@@ -10,9 +10,10 @@ on:
         type: boolean
         default: false
     secrets:
+      GRADLE_CACHE_S3_ROLE_TO_ASSUME:
+        required: true
       GRADLE_ENCRYPTION_KEY:
         required: true
-        description: Used for encrypting the Gradle cache. See https://github.com/gradle/actions/blob/main/docs/setup-gradle.md#saving-configuration-cache-data
     outputs:
       version:
         value: ${{ jobs.build-gradle.outputs.version || jobs.build-docker.outputs.version }}
@@ -29,6 +30,11 @@ on:
 
 env:
   push: ${{ !(github.event_name == 'push' && github.ref_name != 'main') && inputs.push }}
+
+permissions:
+  contents: read
+  id-token: write
+  packages: write
 
 jobs:
   build-gradle:
@@ -104,7 +110,8 @@ jobs:
           project: ${{ matrix.project }}
           push: ${{ env.push }}
           force: ${{ inputs.force-deploy }}
-          gradle-encryption-key: ${{ secrets.GRADLE_ENCRYPTION_KEY }}
+          gradle-cache-role: ${{ secrets.GRADLE_CACHE_S3_ROLE_TO_ASSUME }}
+          gradle-cache-encryption-key: ${{ secrets.GRADLE_ENCRYPTION_KEY }}
 
   build-docker:
     name: Docker build
