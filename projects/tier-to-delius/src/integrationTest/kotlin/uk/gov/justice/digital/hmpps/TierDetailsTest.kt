@@ -16,6 +16,7 @@ import uk.gov.justice.digital.hmpps.data.generator.CaseEntityGenerator
 import uk.gov.justice.digital.hmpps.data.generator.DisposalTypeGenerator
 import uk.gov.justice.digital.hmpps.data.generator.OgrsAssessmentGenerator
 import uk.gov.justice.digital.hmpps.data.generator.RegistrationGenerator
+import uk.gov.justice.digital.hmpps.data.generator.RsrScoreHistoryGenerator
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 
@@ -31,7 +32,7 @@ class TierDetailsTest {
             .andExpect(status().is2xxSuccessful)
             .andExpect(jsonPath("$.gender").value(CaseEntityGenerator.DEFAULT.gender.description))
             .andExpect(jsonPath("$.currentTier").value(CaseEntityGenerator.DEFAULT.tier?.code))
-            .andExpect(jsonPath("$.rsrscore").value(CaseEntityGenerator.DEFAULT.dynamicRsrScore))
+            .andExpect(jsonPath("$.rsrscore").value(RsrScoreHistoryGenerator.HISTORY.last().score))
             .andExpect(jsonPath("$.ogrsscore").value(OgrsAssessmentGenerator.DEFAULT.score))
             .andExpect(jsonPath("$.previousEnforcementActivity").value(true))
             .andExpect(jsonPath("$.registrations[0].code").value(RegistrationGenerator.DEFAULT.type.code))

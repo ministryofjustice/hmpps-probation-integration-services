@@ -1,6 +1,6 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
-import uk.gov.justice.digital.hmpps.controller.entity.CaseEntity
+import uk.gov.justice.digital.hmpps.integrations.delius.person.CaseEntity
 
 object CaseEntityGenerator {
 
@@ -14,7 +14,6 @@ object CaseEntityGenerator {
             id = id,
             crn = crn,
             gender = ReferenceDataGenerator.GENDER_MALE,
-            dynamicRsrScore = 10.1,
             tier = ReferenceDataGenerator.TIER_ONE
         )
     }

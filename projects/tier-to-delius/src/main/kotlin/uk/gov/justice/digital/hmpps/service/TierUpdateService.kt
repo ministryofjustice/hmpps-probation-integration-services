@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.integrations.tier
+package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -24,12 +24,13 @@ import uk.gov.justice.digital.hmpps.integrations.delius.staff.StaffRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.staff.getByCode
 import uk.gov.justice.digital.hmpps.integrations.delius.team.TeamRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.team.getByCode
+import uk.gov.justice.digital.hmpps.integrations.tier.TierCalculation
 import uk.gov.justice.digital.hmpps.messaging.telemetryProperties
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import java.time.ZonedDateTime
 
 @Service
-class TierService(
+class TierUpdateService(
     private val personRepository: PersonRepository,
     private val referenceDataRepository: ReferenceDataRepository,
     private val managementTierRepository: ManagementTierRepository,

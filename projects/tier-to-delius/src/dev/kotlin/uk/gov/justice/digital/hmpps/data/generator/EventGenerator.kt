@@ -1,7 +1,7 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
-import uk.gov.justice.digital.hmpps.controller.entity.CaseEntity
-import uk.gov.justice.digital.hmpps.controller.entity.EventEntity
+import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.EventEntity
+import uk.gov.justice.digital.hmpps.integrations.delius.person.CaseEntity
 
 object EventGenerator {
     val DEFAULT = generate(eventNumber = "1")

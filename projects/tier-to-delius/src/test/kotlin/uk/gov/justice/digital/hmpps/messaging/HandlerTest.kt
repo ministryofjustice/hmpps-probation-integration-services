@@ -11,7 +11,7 @@ import org.mockito.kotlin.whenever
 import uk.gov.justice.digital.hmpps.converter.NotificationConverter
 import uk.gov.justice.digital.hmpps.detail.DomainEventDetailService
 import uk.gov.justice.digital.hmpps.integrations.tier.TierCalculation
-import uk.gov.justice.digital.hmpps.integrations.tier.TierService
+import uk.gov.justice.digital.hmpps.service.TierUpdateService
 import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
 import uk.gov.justice.digital.hmpps.prepMessage
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryMessagingExtensions.notificationReceived
@@ -27,7 +27,7 @@ internal class HandlerTest {
     lateinit var detailService: DomainEventDetailService
 
     @Mock
-    lateinit var tierService: TierService
+    lateinit var tierUpdateService: TierUpdateService
 
     @Mock
     lateinit var converter: NotificationConverter<HmppsDomainEvent>
@@ -49,7 +49,7 @@ internal class HandlerTest {
         // Then it is updated in Delius and logged to Telemetry
         verify(telemetryService).notificationReceived(message)
         verify(detailService).getDetail<Any>(anyOrNull(), anyOrNull())
-        verify(tierService).updateTier("A000001", calculation)
+        verify(tierUpdateService).updateTier("A000001", calculation)
         verify(telemetryService).trackEvent("TierUpdateSuccess", calculation.telemetryProperties("A000001"))
     }
 }

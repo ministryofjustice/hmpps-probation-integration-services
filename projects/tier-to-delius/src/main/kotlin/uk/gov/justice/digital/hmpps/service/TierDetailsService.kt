@@ -1,21 +1,24 @@
-package uk.gov.justice.digital.hmpps.controller
+package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.stereotype.Service
-import uk.gov.justice.digital.hmpps.controller.entity.CaseEntity
-import uk.gov.justice.digital.hmpps.controller.entity.CaseEntityRepository
-import uk.gov.justice.digital.hmpps.controller.entity.EventEntity
-import uk.gov.justice.digital.hmpps.controller.entity.EventRepository
-import uk.gov.justice.digital.hmpps.controller.entity.OASYSAssessmentRepository
-import uk.gov.justice.digital.hmpps.controller.entity.OGRSAssessmentRepository
-import uk.gov.justice.digital.hmpps.controller.entity.RegistrationRepository
-import uk.gov.justice.digital.hmpps.controller.entity.findLatest
-import uk.gov.justice.digital.hmpps.controller.entity.getCase
 import uk.gov.justice.digital.hmpps.controller.model.Conviction
 import uk.gov.justice.digital.hmpps.controller.model.Registration
 import uk.gov.justice.digital.hmpps.controller.model.Requirement
 import uk.gov.justice.digital.hmpps.controller.model.TierDetails
+import uk.gov.justice.digital.hmpps.integrations.delius.event.EventRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.EventEntity
 import uk.gov.justice.digital.hmpps.integrations.delius.nsi.entity.NsiRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.nsi.entity.previousEnforcementActivity
+import uk.gov.justice.digital.hmpps.integrations.delius.oasys.assessment.OASYSAssessmentRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.oasys.assessment.findLatest
+import uk.gov.justice.digital.hmpps.integrations.delius.oasys.ogrs.OGRSAssessmentRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.oasys.ogrs.findLatest
+import uk.gov.justice.digital.hmpps.integrations.delius.oasys.rsr.RsrScoreHistoryRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.oasys.rsr.findLatest
+import uk.gov.justice.digital.hmpps.integrations.delius.person.CaseEntity
+import uk.gov.justice.digital.hmpps.integrations.delius.person.CaseEntityRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.person.getCase
+import uk.gov.justice.digital.hmpps.integrations.delius.registration.RegistrationRepository
 
 @Service
 class TierDetailsService(
@@ -24,7 +27,8 @@ class TierDetailsService(
     val eventRepository: EventRepository,
     val oasysAssessmentRepository: OASYSAssessmentRepository,
     val ogrsAssessmentRepository: OGRSAssessmentRepository,
-    val nsiRepository: NsiRepository
+    val nsiRepository: NsiRepository,
+    val rsrScoreHistoryRepository: RsrScoreHistoryRepository
 ) {
     fun tierDetails(crn: String): TierDetails {
         val case = caseEntityRepository.getCase(crn)
@@ -32,12 +36,13 @@ class TierDetailsService(
         val eventEntities = eventRepository.findByCrn(crn)
         val convictions = mapToConvictions(eventEntities)
         val ogrsScore = getRiskOgrs(case)
+        val rsrScore = getStaticOrDynamicRsrScore(case)
 
         return TierDetails(
             case.gender.description,
             case.tier?.code,
             ogrsScore,
-            case.dynamicRsrScore,
+            rsrScore,
             registrationEntities.map { Registration(it.type.code, it.type.description, it.level?.code, it.date) },
             convictions,
             nsiRepository.previousEnforcementActivity(case.id)
@@ -64,4 +69,7 @@ class TierDetailsService(
             .filter { it.score != null }
             .maxByOrNull { it.assessmentDate }?.score
     }
+
+    private fun getStaticOrDynamicRsrScore(case: CaseEntity) =
+        rsrScoreHistoryRepository.findLatest(case.id)?.score
 }

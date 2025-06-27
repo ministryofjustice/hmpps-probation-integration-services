@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.controller.entity
+package uk.gov.justice.digital.hmpps.integrations.delius.registration
 
 import jakarta.persistence.*
 import org.hibernate.annotations.Immutable

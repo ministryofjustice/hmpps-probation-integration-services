@@ -1,7 +1,7 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
-import uk.gov.justice.digital.hmpps.controller.entity.RegisterType
-import uk.gov.justice.digital.hmpps.controller.entity.RegistrationEntity
+import uk.gov.justice.digital.hmpps.integrations.delius.registration.RegisterType
+import uk.gov.justice.digital.hmpps.integrations.delius.registration.RegistrationEntity
 import java.time.LocalDate
 
 object RegistrationGenerator {
