@@ -202,7 +202,7 @@ interface TeamRepository : JpaRepository<Team, Long> {
             JOIN contact_staff cs on cs.id = cst.id.staffId
             JOIN cs.user u
             WHERE t.provider.code = :providerCode
-            AND u.username = :username
+            AND UPPER(u.username) = UPPER(:username)
             ORDER BY UPPER(t.description)
         """
     )
