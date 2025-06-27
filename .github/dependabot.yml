@@ -83,6 +83,11 @@ updates:
       interval: "weekly"
 
   - package-ecosystem: "github-actions"
+    directory: "/.github/actions/gradle-build"
+    schedule:
+      interval: "weekly"
+
+  - package-ecosystem: "github-actions"
     directory: "/.github/actions/merge-changes"
     schedule:
       interval: "weekly"

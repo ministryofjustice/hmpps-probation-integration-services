@@ -15,7 +15,7 @@ on:
         description: Used for encrypting the Gradle cache. See https://github.com/gradle/actions/blob/main/docs/setup-gradle.md#saving-configuration-cache-data
     outputs:
       version:
-        value: ${{ jobs.build-gradle.outputs.version }}
+        value: ${{ jobs.build-gradle.outputs.version || jobs.build-docker.outputs.version }}
   workflow_dispatch:
     inputs:
       push:
@@ -92,60 +92,19 @@ jobs:
           # GitHub Actions doesn't support dynamic choices, we must add each project here to enable manual deployments
           # See https://github.com/community/community/discussions/11795
     outputs:
-      version: ${{ steps.version.outputs.version }}
-      changes: ${{ steps.check-changes.outputs.changes }}
+      changes: ${{ steps.build.outputs.changes }}
+      version: ${{ steps.build.outputs.version }}
     steps:
       - uses: actions/checkout@v4
-      - uses: ./.github/actions/setup-gradle
+
+      - name: Build Gradle project
+        uses: ./.github/actions/gradle-build
+        id: build
         with:
-          cache-encryption-key: ${{ secrets.GRADLE_ENCRYPTION_KEY }}
-
-      - name: Set version
-        id: version
-        run: |
-          version=$(date '+%Y-%m-%d').${{ github.run_number }}.$(echo ${{ github.sha }} | cut -c1-7)
-          echo "VERSION=$version" | tee -a "$GITHUB_ENV"
-          echo "version=$version" | tee -a "$GITHUB_OUTPUT"
-
-      - name: Build and test
-        run: ./gradlew ${{ matrix.project }}:check
-        env:
-          SPRING_PROFILES_ACTIVE: oracle
-
-      - name: Push images
-        if: env.push == 'true'
-        uses: nick-fields/retry@ce71cc2ab81d554ebbe88c79ab5975992d79ba08 # v3.0.2
-        with:
-          max_attempts: 3 # Pushing lots of new image versions at once can result in GitHub rate-limiting so we retry this step
-          timeout_minutes: 15
-          # Configuration cache is not yet supported for Jib - see: https://github.com/GoogleContainerTools/jib/issues/3132
-          command: ./gradlew ${{ matrix.project }}:jib --no-configuration-cache
-        env:
-          GITHUB_USERNAME: ${{ github.actor }}
-          GITHUB_PASSWORD: ${{ github.token }}
-          FORCE_DEPLOY: ${{ inputs.force-deploy }}
-
-      - name: Check changes
-        id: check-changes
-        run: echo "changes=$(find changed -mindepth 1 -maxdepth 1 -printf "%f\n" | jq -R . | jq -s -c '. // []')" | tee -a "$GITHUB_OUTPUT"
-
-      - name: Output changes
-        run: echo '${{ steps.check-changes.outputs.changes }}' > ${{ matrix.project }}-changes.json
-
-      - name: Store changes
-        uses: actions/upload-artifact@v4
-        with:
-          name: changes-${{ matrix.project }}
-          path: ${{ matrix.project }}-changes.json
-
-      - name: Store test artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: test-results-${{ matrix.project }}
-          path: |
-            **/build/jacoco
-            **/build/reports/jacoco/**/*.xml
-            **/build/test-results
+          project: ${{ matrix.project }}
+          push: ${{ env.push }}
+          force: ${{ inputs.force-deploy }}
+          gradle-encryption-key: ${{ secrets.GRADLE_ENCRYPTION_KEY }}
 
       - name: Prepare test report
         if: failure()
@@ -173,6 +132,9 @@ jobs:
   build-docker:
     name: Docker build
     runs-on: ubuntu-latest
+    outputs:
+      changes: ${{ steps.build.outputs.changes }}
+      version: ${{ steps.build.outputs.version }}
     strategy:
       matrix:
         project:
@@ -183,26 +145,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set version
-        id: version
-        run: |
-          version=$(date '+%Y-%m-%d').${{ github.run_number }}.$(echo ${{ github.sha }} | cut -c1-7)
-          echo "version=$version" | tee -a "$GITHUB_OUTPUT"
-
-      - name: Build Docker images
+      - name: Build Docker image
         uses: ./.github/actions/docker-build
         id: build
         with:
           project: ${{ matrix.project }}
           push: ${{ env.push }}
-          version: ${{ steps.version.outputs.version }}
-          force-deploy: ${{ inputs.force-deploy }}
-
-      - name: Output changes
-        run: echo '${{ steps.build.outputs.changes }}' > ${{ matrix.project }}-changes.json
-
-      - name: Store changes
-        uses: actions/upload-artifact@v4
-        with:
-          name: changes-${{ matrix.project }}
-          path: ${{ matrix.project }}-changes.json
+          force: ${{ inputs.force-deploy }}
