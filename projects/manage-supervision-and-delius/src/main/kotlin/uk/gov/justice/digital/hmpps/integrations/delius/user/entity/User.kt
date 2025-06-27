@@ -200,14 +200,13 @@ interface TeamRepository : JpaRepository<Team, Long> {
         """
             SELECT t
             FROM Team t
-            WHERE t.provider.code = :providerCode
-            AND t.id = :id
+            WHERE t.id = :id
             AND (t.endDate IS NULL OR t.endDate > CURRENT_DATE)
             AND t.startDate <= CURRENT_DATE
             ORDER BY UPPER(t.description) 
         """
     )
-    fun findByProviderCodeAndTeamId(providerCode: String, id: Long): Team?
+    fun findByTeamId(id: Long): Team?
 
     @Query(
         """
@@ -232,8 +231,8 @@ fun TeamRepository.getTeam(teamCode: String) =
 fun TeamRepository.getProvider(teamCode: String) =
     findProviderByTeamCode(teamCode) ?: throw NotFoundException("Team", "teamCode", teamCode)
 
-fun TeamRepository.getByProviderAndTeam(providerCode: String, id: Long) =
-    findByProviderCodeAndTeamId(providerCode, id) ?: throw NotFoundException("Team", "providerCode", "$providerCode and team id $id")
+fun TeamRepository.getByTeam(id: Long) =
+    findByTeamId(id) ?: throw NotFoundException("Team", "id", id)
 
 @Immutable
 @Entity
