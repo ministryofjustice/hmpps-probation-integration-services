@@ -123,6 +123,7 @@ fun StaffRepository.getStaff(staffCode: String) =
 @Entity
 @Immutable
 @Table(name = "team")
+@SQLRestriction("start_date <= current_date and (end_date is null or end_date > current_date)")
 class Team(
     @Id
     @Column(name = "team_id")
@@ -189,24 +190,12 @@ interface TeamRepository : JpaRepository<Team, Long> {
             SELECT t
             FROM Team t
             WHERE t.provider.code = :code
-            AND (t.endDate IS NULL OR t.endDate > CURRENT_DATE)
-            AND t.startDate <= CURRENT_DATE
             ORDER BY UPPER(t.description) 
         """
     )
     fun findByProviderCode(code: String): List<Team>
 
-    @Query(
-        """
-            SELECT t
-            FROM Team t
-            WHERE t.id = :id
-            AND (t.endDate IS NULL OR t.endDate > CURRENT_DATE)
-            AND t.startDate <= CURRENT_DATE
-            ORDER BY UPPER(t.description) 
-        """
-    )
-    fun findByTeamId(id: Long): Team?
+    fun findTeamById(id: Long): Team?
 
     @Query(
         """
@@ -231,8 +220,8 @@ fun TeamRepository.getTeam(teamCode: String) =
 fun TeamRepository.getProvider(teamCode: String) =
     findProviderByTeamCode(teamCode) ?: throw NotFoundException("Team", "teamCode", teamCode)
 
-fun TeamRepository.getByTeam(id: Long) =
-    findByTeamId(id) ?: throw NotFoundException("Team", "id", id)
+fun TeamRepository.getByTeamById(id: Long) =
+    findTeamById(id) ?: throw NotFoundException("Team", "id", id)
 
 @Immutable
 @Entity
