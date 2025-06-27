@@ -50,7 +50,9 @@ class UserProvidersIntegrationTest {
     }
 
     companion object {
-        val defaultUserDetails = DefaultUserDetails(STAFF_USER_1.username, DEFAULT_PROVIDER.description, TEAM.description)
+        val defaultUserDetails =
+            DefaultUserDetails(STAFF_USER_1.username, DEFAULT_PROVIDER.description, TEAM.description)
+
         @JvmStatic
         fun providerRequests(): List<Arguments> = listOf(
             Arguments.of(

@@ -233,7 +233,11 @@ fun TeamRepository.getProvider(teamCode: String) =
     findProviderByTeamCode(teamCode) ?: throw NotFoundException("Team", "teamCode", teamCode)
 
 fun TeamRepository.getByProviderAndTeam(providerCode: String, id: Long) =
-    findByProviderCodeAndTeamId(providerCode, id) ?: throw NotFoundException("Team", "providerCode", "$providerCode and team id $id")
+    findByProviderCodeAndTeamId(providerCode, id) ?: throw NotFoundException(
+        "Team",
+        "providerCode",
+        "$providerCode and team id $id"
+    )
 
 @Immutable
 @Entity
