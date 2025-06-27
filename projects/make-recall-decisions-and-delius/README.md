@@ -13,7 +13,7 @@ activity around recall decisions in the Delius contact history.
 
 ## Context Maps
 
-![Context Maps](./tech-docs/source/img/make-recall-decisions-and-delius-context-map.png)
+![Context Maps](../../doc/tech-docs/source/images/make-recall-decisions-and-delius-context-map.png)
 
 ## Interfaces
 

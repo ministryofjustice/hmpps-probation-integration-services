@@ -1,6 +1,6 @@
 # Probation Integration Services
 
-[![Repository Standards](https://img.shields.io/badge/dynamic/json?color=blue&logo=github&label=MoJ%20Compliant&query=%24.message&url=https%3A%2F%2Foperations-engineering-reports.cloud-platform.service.justice.gov.uk%2Fapi%2Fv1%2Fcompliant_public_repositories%2Fhmpps-probation-integration-services)](https://operations-engineering-reports.cloud-platform.service.justice.gov.uk/public-report/hmpps-probation-integration-services "Link to report")
+[![Repository Standards](https://img.shields.io/badge/dynamic/json?color=blue&logo=github&label=MoJ%20Compliant&query=%24.message&url=https%3A%2F%2Foperations-engineering-reports.cloud-platform.service.justice.gov.uk%2Fapi%2Fv1%2Fcompliant_public_repositories%2Fhmpps-probation-integration-services)](https://operations-engineering-reports.cloud-platform.service.justice.gov.uk/repository-standards/hmpps-probation-integration-services "Link to report")
 [![Trivy](https://github.com/ministryofjustice/hmpps-probation-integration-services/actions/workflows/security.yml/badge.svg)](https://github.com/ministryofjustice/hmpps-probation-integration-services/actions/workflows/security.yml)
 [![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=ministryofjustice_hmpps-probation-integration-services&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=ministryofjustice_hmpps-probation-integration-services)
 [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=ministryofjustice_hmpps-probation-integration-services&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=ministryofjustice_hmpps-probation-integration-services)
@@ -28,7 +28,7 @@ With this in mind, we aim to:
 ## Tooling
 * Code is written in [Kotlin](https://kotlinlang.org/), using [Spring Boot](https://spring.io/projects/spring-boot)
 * Built and tested as a multi-project [Gradle](https://gradle.org/) build
-* Unit tests with [JUnit 5](https://junit.org/) and [Mockito](https://mockito.org/)
+* Unit tests with [JUnit 5](https://junit.org/) and [Mockito](https://site.mockito.org/)
 * Integration tests with [Spring Boot Test](https://docs.spring.io/spring-boot/docs/current/reference/html/features.html#features.testing), [Wiremock](https://wiremock.org/) and [H2](https://www.h2database.com/)
 * End-to-end testing with [Playwright](https://playwright.dev/) - see [End-to-end tests](https://github.com/ministryofjustice/hmpps-probation-integration-services#end-to-end-tests)
 * Container images are built with [Jib](https://github.com/GoogleContainerTools/jib#readme), and pushed
@@ -118,7 +118,7 @@ In IntelliJ IDEA, a Spring Boot [run configuration](https://www.jetbrains.com/he
 automatically made available for each service. Select it from the toolbar, and click either Run or Debug. The service 
 will start in the `dev` profile, which configures any embedded test data and services.
 
-<img alt="IntelliJ run configuration toolbar" src="./doc/img/intellij-run-config.png" width="350">
+<img alt="IntelliJ run configuration toolbar" src="doc/images/intellij-run-config.png" width="350">
 
 Run configuration files are stored in [.idea/runConfigurations](.idea/runConfigurations).
 
@@ -231,7 +231,7 @@ class MyService(private val featureFlags: FeatureFlags) {
 }
 ```
 
-For more information about Flipt, check out the [documentation](https://www.flipt.io/docs).
+For more information about Flipt, check out the [documentation](https://docs.flipt.io).
 
 # Deployment
 Once the code is built and tested, GitHub Actions deploys the updated images for each service

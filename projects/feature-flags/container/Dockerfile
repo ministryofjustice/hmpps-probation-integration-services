@@ -1,4 +1,4 @@
-FROM ghcr.io/flipt-io/flipt:v1.58.5
+FROM ghcr.io/flipt-io/flipt:v1.59.0
 USER root
 RUN apk upgrade --no-cache
 USER flipt

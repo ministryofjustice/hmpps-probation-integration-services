@@ -11,6 +11,7 @@ generic-service:
 
 generic-prometheus-alerts:
   businessHoursOnly: true
+  sqsAlertsOldestThreshold: 180 # can take a while to catch up after morning startup
   sqsOldestAlertQueueNames:
     - probation-integration-preprod-person-search-index-from-delius-person-queue
     - probation-integration-preprod-person-search-index-from-delius-contact-queue

@@ -2,17 +2,17 @@
 
 This service provides an API to retrieve details about a person on probation, their manager and the caseload.
 
-# Business need
+## Business need
 Provides a background on person on probation information to the client.
 
-# Data dependencies
+## Data dependencies
 This service retrieves up-to-date data on a person on probation, their manager and the caseload from Delius.
 
-## Context Map - Probation Search data
-![](./tech-docs/source/img/afer-and-delius-context-map.svg)
+### Context Map - Probation Search data
+![](../../doc/tech-docs/source/images/afer-and-delius-context-map.svg)
 
 
-# API Access Control
+## API Access Control
 
 API endpoints are secured by roles supplied by the HMPPS Auth client used in
 the requests

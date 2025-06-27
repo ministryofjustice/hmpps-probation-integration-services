@@ -25,7 +25,7 @@ is being released to, as in the case of a release to a secure hospital or IRC, t
 
 ### Context Map
 
-![Context Map](./tech-docs/source/img/prison-custody-status-to-delius-context-map.svg)
+![Context Map](../../doc/tech-docs/source/images/prison-custody-status-to-delius-context-map.svg)
 
 ## Workflows
 
@@ -39,7 +39,7 @@ Custody release messages are processed when a person's release is recorded in _N
 |----------------------|------------------------------------------|
 | Release from Custody | prison-offender-events.prisoner.released |
 
-![Release Workflow](./tech-docs/source/img/prison-custody-status-to-delius-workflow-release.svg)
+![Release Workflow](../../doc/tech-docs/source/images/prison-custody-status-to-delius-workflow-release.svg)
 
 ### Recall to Custody
 
@@ -49,20 +49,20 @@ Custody received messages are processed when a person's arrival at a custody loc
 |-------------------|------------------------------------------|
 | Recall to Custody | prison-offender-events.prisoner.received |
 
-![Release Workflow](./tech-docs/source/img/prison-custody-status-to-delius-workflow-recall.svg)
+![Release Workflow](../../doc/tech-docs/source/images/prison-custody-status-to-delius-workflow-recall.svg)
 
 ## Interfaces
 
 ### Message Formats
 
 The service responds to HMPPS Domain Event messages via the
-[HMPPS Prison Custody Status to Delius Queue](https://github.com/ministryofjustice/cloud-platform-environments/blob/main/namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-domain-events-prod/resources/hmpps-prison-custody-status-to-delius-queue.tf)
+[HMPPS Prison Custody Status to Delius Queue](https://github.com/ministryofjustice/cloud-platform-environments/blob/main/namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-dev/resources/prison-custody-status-to-delius-queue.tf)
 The events are raised by the [Prison Offender Events](https://github.com/ministryofjustice/prison-offender-events/) service,
 which responds to changes made in the NOMIS database.
 
 Example [messages](./src/dev/resources/messages/) are in the development source tree.
 
-Incoming messages are filtered on the `eventType` attribute by the [SQS queue policy](https://github.com/ministryofjustice/cloud-platform-environments/blob/main/namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-domain-events-prod/resources/hmpps-prison-custody-status-to-delius-queue.tf#L6-L10).
+Incoming messages are filtered on the `eventType` attribute by the [SQS queue policy](https://github.com/ministryofjustice/cloud-platform-environments/blob/c2eec283010d0dca11be3195ef83f89a34e437d7/namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-dev/resources/prison-custody-status-to-delius-queue.tf#L6-L13).
 
 ### Custody Status Details
 

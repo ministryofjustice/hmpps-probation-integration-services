@@ -61,8 +61,12 @@ jobs:
       - uses: ./.github/actions/app-insights-to-slack
         with:
           title: Refer and Monitor Integration Report
-          summary: The following cases failed to process in Delius over the last 7 days. Please check and manually correct the cases if required.
+          summary: The following number of cases (categorised by reason) failed to process in Delius within the last 7 days. Follow the link for an example of each failure reason.
           event_name: ReferAndMonitorFailureReport
+          summarise_count_by: message
+          column1_header: Count
+          column1_value: EventCount
+          column2_header: Reason
           column2_value: message
           project_name: refer-and-monitor-and-delius
           slack_channel: topic-pi-referandmonitor

@@ -1,0 +1,27 @@
+# Refer and Monitor Workflow: Appointment Reschedule
+
+direction: right
+
+style { ...@common/style.style }
+vars { ...@common/style.vars }
+** { ...@common/style.all-style }
+
+# What triggers the workflow?
+refer_and_monitor: Refer and Monitor  {
+     style.font-size: 15
+     crs_reschedule_session: Reschedule CRS session
+}
+
+# What happens in Delius?
+delius: Delius {
+    style {
+        font-size: 20
+    }
+
+    d_appointment_outcome: Set outcome on\nDelius appointment
+    d_create_new_appointment: Create new\n appointment contact
+
+    d_appointment_outcome -> d_create_new_appointment
+}
+
+refer_and_monitor -> delius

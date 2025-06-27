@@ -25,18 +25,18 @@ The supported user admin tasks are:
 * Checking access levels and office locations of a user
 
 
-# Business need
+## Business need
 The service provides a simplified view of the data relating to a **Person on Probation** which is held in the Delius system. The service is used by **Probation Practitioners** by providing a summary of the key information required for their day-to-day activities. The users can also use the service for managing sentencing appointments.
  
 
-# Data dependencies
+## Data dependencies
 Manage People on Probation (MPoP) depends on Delius data for **Probation Cases** and details of a **Person on Probation**.
 
-## Context Map - Manage People on Probation
+### Context Map - Manage People on Probation
 
-![](./tech-docs/source/img/mpop-context-map.svg)
+![](../../doc/tech-docs/source/images/mpop-context-map.svg)
 
-### API Access Control
+## API Access Control
 
 API endpoints are secured by roles supplied by the HMPPS Auth client used in
 the requests

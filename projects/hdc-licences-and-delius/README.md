@@ -8,7 +8,7 @@ Ensuring the user of the _HDC Licences_ has an up-to-date view of the probation 
 
 ## Context Map
 
-![Context Map](./tech-docs/source/img/hdc-licences-context-map.svg)
+![Context Map](../../doc/tech-docs/source/images/hdc-licences-context-map.svg)
 
 ## Workflows
 

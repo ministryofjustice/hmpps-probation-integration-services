@@ -12,7 +12,7 @@ _Create and Vary a Licence_ depends on _Delius_ data for background on the relev
 
 ### Context Map - Probation Data
 
-![Context Map](./tech-docs/source/img/create-and-vary-a-licence-api-context-map.svg)
+![Context Map](../../doc/tech-docs/source/images/create-and-vary-a-licence-api-context-map.svg)
 
 **Case Responsibility** is not a single concept in _Delius_ and therefore _Create and Vary a Licence_ uses a number of _Delius_ entities to determine which cases to show to it's users.
 
@@ -24,7 +24,7 @@ Licence conditions are managed in _Create and Vary a Licence_ and supervised by 
 
 #### Context Map - Licence Conditions
 
-![Context Map](./tech-docs/source/img/create-and-vary-a-licence-activation-workflow-context-map.svg)
+![Context Map](../../doc/tech-docs/source/images/create-and-vary-a-licence-activation-workflow-context-map.svg)
 
 #### Workflow: Licence Activation
 
@@ -34,7 +34,7 @@ Activation of a licence on release from prison triggers creation of licence cond
 |--------------------|---------------------------------------------|
 | Licence Activation | create-and-vary-a-licence.licence.activated |
 
-![Workflow Map](./tech-docs/source/img/create-and-vary-a-licence-workflow-create-licence-condition.svg)
+![Workflow Map](../../doc/tech-docs/source/images/create-and-vary-a-licence-workflow-create-licence-condition.svg)
 
 ## Interfaces
 

@@ -6,7 +6,7 @@ Service that manages data exchange between Delius and the 'Manage POM Cases' ser
 
 ## Context Map
 
-![Context Map](./tech-docs/source/img/manage-pom-cases-and-delius-context-map.svg)
+![Context Map](../../doc/tech-docs/source/images/manage-pom-cases-and-delius-context-map.svg)
 
 ## Interfaces
 
@@ -34,11 +34,11 @@ Example [messages](./src/dev/resources/messages/) are in the development source 
 
 ### Prison Offender Manager Handover Dates
 
-![Handover Dates Workflow](./tech-docs/source/img/manage-pom-cases-workflow-handover-dates.svg)
+![Handover Dates Workflow](../../doc/tech-docs/source/images/manage-pom-cases-workflow-handover-dates.svg)
 
 ### Responsibility Change
 
-![Responsibiliy Change Workflow](./tech-docs/source/img/manage-pom-cases-workflow-responsibility.svg)
+![Responsibiliy Change Workflow](../../doc/tech-docs/source/images/manage-pom-cases-workflow-responsibility.svg)
 
 ## Delius Case Allocation
 

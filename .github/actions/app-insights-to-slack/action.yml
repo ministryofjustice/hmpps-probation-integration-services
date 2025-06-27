@@ -34,6 +34,10 @@ inputs:
     description: Filter the timestamp
     default: ago(7d)..now()
     required: true
+  summarise_count_by:
+    description: Summarise by count of value from customDimensions
+    default: none
+    required: true
   slack_channel:
     description: Name to the Slack channel to report to
     required: true
@@ -63,7 +67,8 @@ runs:
     - name: Search app insights
       id: search
       run: |
-        echo "result=$(curl -fsSL -H "x-api-key: $key" --data-urlencode "query=$query" --get "$url")" | tee -a "$GITHUB_OUTPUT"
+        if [[ "${{ inputs.summarise_count_by }}" != "none"  ]]; then _query=$countQuery; else _query=$query; fi
+        echo "result=$(curl -fsSL -H "x-api-key: $key" --data-urlencode "query=$_query" --get "$url")" | tee -a "$GITHUB_OUTPUT"
       shell: bash
       env:
         url: https://api.applicationinsights.io/v1/apps/${{ inputs.app_insights_guid }}/query
@@ -79,7 +84,24 @@ runs:
               itemId,
               timestamp
           | order by tostring(customDimensions_${{ inputs.column1_value }}) asc
-
+        countQuery: |
+          customEvents
+          | where timestamp between (${{ inputs.time_range }})
+          | where cloud_RoleName in ("${{ inputs.project_name }}")
+          | where name in ("${{ steps.event_names.outputs.result }}")
+          | project customDimensions.${{ inputs.summarise_count_by }}
+          | summarize EventCount=count() by tostring(customDimensions_${{ inputs.summarise_count_by }})
+          | project EventCount, customDimensions_${{ inputs.summarise_count_by }}
+          | join kind=fullouter  (
+             customEvents
+            | where timestamp between (${{ inputs.time_range }})
+            | where cloud_RoleName in ("${{ inputs.project_name }}")
+            | where name in ("${{ steps.event_names.outputs.result }}")
+            | summarize arg_max(itemId, *) by tostring(customDimensions.${{ inputs.summarise_count_by }})
+            | project tostring(customDimensions.${{ inputs.summarise_count_by }}), itemId, timestamp
+          ) on customDimensions_message
+          | project tostring(EventCount), customDimensions_${{ inputs.summarise_count_by }}, itemId, timestamp
+          | order by EventCount desc
     - name: Transform results into Slack message
       id: transform
       if: fromJson(steps.search.outputs.result).tables[0].rows[0] != null
@@ -88,6 +110,8 @@ runs:
         echo "result=$(echo "$search_result" | jq -rc '.tables[0].rows |
           {
             "channel": "${{ inputs.slack_channel }}",
+            "unfurl_links": false,
+            "unfurl_media": false,
             "text": "Probation Integration Report",
             "blocks": ([
               {

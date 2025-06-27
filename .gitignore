@@ -51,3 +51,4 @@ out/
 
 ### Application specific ###
 *.db
+doc/tech-docs/docs/

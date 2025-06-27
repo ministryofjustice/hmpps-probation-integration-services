@@ -83,6 +83,11 @@ updates:
       interval: "weekly"
 
   - package-ecosystem: "github-actions"
+    directory: "/.github/actions/gradle-build"
+    schedule:
+      interval: "weekly"
+
+  - package-ecosystem: "github-actions"
     directory: "/.github/actions/merge-changes"
     schedule:
       interval: "weekly"
@@ -119,5 +124,10 @@ updates:
 
   - package-ecosystem: "docker"
     directory: "/projects/monitor-cron-jobs/container"
+    schedule:
+      interval: "weekly"
+
+  - package-ecosystem: "docker"
+    directory: "/doc/tech-docs"
     schedule:
       interval: "weekly"

@@ -76,30 +76,30 @@ dependencyResolutionManagement {
     versionCatalogs {
         create("libs") {
             library("asyncapi", "org.openfolder:kotlin-asyncapi-spring-web:3.1.1")
-            library("aws-s3", "io.awspring.cloud:spring-cloud-aws-starter-s3:3.3.0")
-            library("aws-autoconfigure", "io.awspring.cloud:spring-cloud-aws-autoconfigure:3.3.0")
-            library("aws-query-protocol", "software.amazon.awssdk:aws-query-protocol:2.31.45")
-            library("aws-sns", "io.awspring.cloud:spring-cloud-aws-starter-sns:3.3.0")
-            library("aws-sqs", "io.awspring.cloud:spring-cloud-aws-starter-sqs:3.3.0")
-            library("aws-starter", "io.awspring.cloud:spring-cloud-aws-starter:3.3.0")
-            library("aws-sts", "software.amazon.awssdk:sts:2.31.45")
-            library("azure-app-insights", "com.microsoft.azure:applicationinsights-web:3.7.2")
-            library("azure-identity", "com.azure:azure-identity:1.16.1")
-            library("flipt", "io.flipt:flipt-java:1.1.2")
+            library("aws-s3", "io.awspring.cloud:spring-cloud-aws-starter-s3:3.4.0")
+            library("aws-autoconfigure", "io.awspring.cloud:spring-cloud-aws-autoconfigure:3.4.0")
+            library("aws-query-protocol", "software.amazon.awssdk:aws-query-protocol:2.31.71")
+            library("aws-sns", "io.awspring.cloud:spring-cloud-aws-starter-sns:3.4.0")
+            library("aws-sqs", "io.awspring.cloud:spring-cloud-aws-starter-sqs:3.4.0")
+            library("aws-starter", "io.awspring.cloud:spring-cloud-aws-starter:3.4.0")
+            library("aws-sts", "software.amazon.awssdk:sts:2.31.71")
+            library("azure-app-insights", "com.microsoft.azure:applicationinsights-web:3.7.3")
+            library("azure-identity", "com.azure:azure-identity:1.16.2")
+            library("flipt", "io.flipt:flipt-client-java:1.0.0")
             library("html2md", "com.vladsch.flexmark:flexmark-html2md-converter:0.64.8")
-            library("microsoft-graph", "com.microsoft.graph:microsoft-graph:6.38.0")
+            library("microsoft-graph", "com.microsoft.graph:microsoft-graph:6.43.0")
             library("mockito-inline", "org.mockito:mockito-inline:5.2.0")
             library("mockito-kotlin", "org.mockito.kotlin:mockito-kotlin:5.4.0")
             library("notify", "uk.gov.service.notify:notifications-java-client:5.2.1-RELEASE")
             library("opensearch", "org.opensearch.client:opensearch-java:2.23.0")
-            library("opensearch-starter", "org.opensearch.client:spring-data-opensearch-starter:1.6.3")
+            library("opensearch-starter", "org.opensearch.client:spring-data-opensearch-starter:1.8.1")
             library(
                 "opentelemetry-annotations",
                 "io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:2.16.0"
             )
-            library("sentry", "io.sentry:sentry-spring-boot-starter-jakarta:8.12.0")
-            library("springdoc", "org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.8")
-            library("wiremock", "org.wiremock:wiremock-standalone:3.13.0")
+            library("sentry", "io.sentry:sentry-spring-boot-starter-jakarta:8.15.1")
+            library("springdoc", "org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.9")
+            library("wiremock", "org.wiremock:wiremock-standalone:3.13.1")
 
             bundle(
                 "aws-messaging",
@@ -112,7 +112,7 @@ dependencyResolutionManagement {
     }
 }
 
-plugins { id("com.gradle.develocity") version "4.0.1" }
+plugins { id("com.gradle.develocity") version "4.0.2" }
 develocity {
     buildScan {
         publishing.onlyIf { !System.getenv("CI").isNullOrEmpty() }

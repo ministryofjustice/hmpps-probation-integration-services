@@ -5,6 +5,7 @@ import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.Assertions.assertNotEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
@@ -18,9 +19,9 @@ import uk.gov.justice.digital.hmpps.api.model.appointment.CreateAppointment
 import uk.gov.justice.digital.hmpps.api.model.appointment.User
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.DEFAULT_PROVIDER
 import uk.gov.justice.digital.hmpps.data.generator.OffenderManagerGenerator.DEFAULT_LOCATION
-import uk.gov.justice.digital.hmpps.data.generator.OffenderManagerGenerator.TEAM
 import uk.gov.justice.digital.hmpps.data.generator.OffenderManagerGenerator.STAFF_1
 import uk.gov.justice.digital.hmpps.data.generator.OffenderManagerGenerator.STAFF_USER_1
+import uk.gov.justice.digital.hmpps.data.generator.OffenderManagerGenerator.TEAM
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.AppointmentRepository
 import uk.gov.justice.digital.hmpps.test.CustomMatchers.isCloseTo
@@ -123,7 +124,11 @@ class CreateAppointmentIntegrationTest {
 
     @ParameterizedTest
     @MethodSource("createAppointment")
-    fun `create a new appointment`(createAppointment: CreateAppointment) {
+    fun `create a new appointment without notes`(
+        createAppointment: CreateAppointment,
+        notes: String?,
+        sensitive: Boolean?
+    ) {
         val response = mockMvc.perform(
             post("/appointment/${person.crn}")
                 .withToken()
@@ -144,6 +149,8 @@ class CreateAppointmentIntegrationTest {
         assertThat(appointment.probationAreaId, equalTo(DEFAULT_PROVIDER.id))
         assertThat(appointment.officeLocationId, equalTo(DEFAULT_LOCATION.id))
         assertThat(appointment.nsiId, equalTo(createAppointment.nsiId))
+        assertThat(appointment.notes, equalTo(notes))
+        assertThat(appointment.sensitive, equalTo(sensitive))
 
 
         appointmentRepository.delete(appointment)
@@ -188,30 +195,39 @@ class CreateAppointmentIntegrationTest {
 
         @JvmStatic
         fun createAppointment() = listOf(
-            CreateAppointment(
-                user,
-                CreateAppointment.Type.PlannedOfficeVisitNS.code,
-                ZonedDateTime.now().plusDays(1),
-                ZonedDateTime.now().plusDays(1).plusHours(1),
-                eventId = PersonGenerator.EVENT_1.id,
-                uuid = UUID.randomUUID()
+            Arguments.of(
+                CreateAppointment(
+                    user,
+                    CreateAppointment.Type.PlannedOfficeVisitNS.code,
+                    ZonedDateTime.now().plusDays(1),
+                    ZonedDateTime.now().plusDays(1).plusHours(1),
+                    eventId = PersonGenerator.EVENT_1.id,
+                    uuid = UUID.randomUUID()
+                ), null, null
             ),
-            CreateAppointment(
-                user,
-                CreateAppointment.Type.InitialAppointmentInOfficeNS.code,
-                ZonedDateTime.now().plusDays(1),
-                ZonedDateTime.now().plusDays(1).plusHours(1),
-                CreateAppointment.Interval.DAY,
-                eventId = PersonGenerator.EVENT_1.id,
-                uuid = UUID.randomUUID()
+            Arguments.of(
+                CreateAppointment(
+                    user,
+                    CreateAppointment.Type.InitialAppointmentInOfficeNS.code,
+                    ZonedDateTime.now().plusDays(1),
+                    ZonedDateTime.now().plusDays(1).plusHours(1),
+                    CreateAppointment.Interval.DAY,
+                    eventId = PersonGenerator.EVENT_1.id,
+                    notes = "Some Notes",
+                    uuid = UUID.randomUUID()
+                ), "Some Notes", null
             ),
-            CreateAppointment(
-                user,
-                CreateAppointment.Type.PlannedDoorstepContactNS.code,
-                ZonedDateTime.now().plusDays(1),
-                ZonedDateTime.now().plusDays(1).plusHours(1),
-                CreateAppointment.Interval.DAY,
-                uuid = UUID.randomUUID()
+            Arguments.of(
+                CreateAppointment(
+                    user,
+                    CreateAppointment.Type.PlannedDoorstepContactNS.code,
+                    ZonedDateTime.now().plusDays(1),
+                    ZonedDateTime.now().plusDays(1).plusHours(1),
+                    CreateAppointment.Interval.DAY,
+                    notes = "Some Notes",
+                    sensitive = true,
+                    uuid = UUID.randomUUID()
+                ), "Some Notes", true
             )
         )
 

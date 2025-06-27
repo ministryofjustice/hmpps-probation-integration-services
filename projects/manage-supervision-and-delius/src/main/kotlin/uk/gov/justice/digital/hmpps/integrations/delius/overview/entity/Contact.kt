@@ -199,6 +199,14 @@ class ContactType(
 interface ContactTypeRepository : CrudRepository<ContactType, Long> {
     fun findByCode(code: String): ContactType?
 
+    @Query(
+        """
+            SELECT ct 
+            FROM ContactType ct 
+            WHERE ct.code in (:values)
+            ORDER BY DECODE(ct.code, 'C084',1,'CHVS',2,'COAI',3,'COSR',4,'COOO',5,'CODC',6,'COAP',7,'COPT',8,'COVC',9)
+        """
+    )
     fun findByCodeIn(values: List<String>): List<ContactType>
 }
 

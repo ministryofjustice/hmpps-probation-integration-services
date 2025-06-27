@@ -11,7 +11,6 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
-import uk.gov.justice.digital.hmpps.api.model.sentence.Name
 import uk.gov.justice.digital.hmpps.api.model.sentence.User
 import uk.gov.justice.digital.hmpps.api.model.user.Provider
 import uk.gov.justice.digital.hmpps.api.model.user.Team
@@ -63,7 +62,7 @@ class UserProvidersIntegrationTest {
                         Team(DEFAULT_TEAM.description, DEFAULT_TEAM.code),
                         Team(OffenderManagerGenerator.TEAM.description, OffenderManagerGenerator.TEAM.code)
                     ),
-                    listOf()
+                    listOf(unallocatedUser)
                 )
             ),
             Arguments.of(
@@ -78,10 +77,16 @@ class UserProvidersIntegrationTest {
                         Team(OffenderManagerGenerator.TEAM.description, OffenderManagerGenerator.TEAM.code)
                     ),
                     listOf(
-                        User(STAFF_USER_1.username, Name(STAFF_USER_1.forename, surname = STAFF_USER_1.surname))
+                        User(
+                            STAFF_USER_1.username,
+                            "${STAFF_USER_1.forename} ${STAFF_USER_1.surname} (${STAFF_USER_1.staff!!.role!!.description})"
+                        ),
+                        unallocatedUser
                     )
                 )
             )
         )
     }
 }
+
+val unallocatedUser = User("Unallocated", "Unallocated")

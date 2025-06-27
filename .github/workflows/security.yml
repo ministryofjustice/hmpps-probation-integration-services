@@ -178,7 +178,7 @@ jobs:
           VERACODE_API_KEY_4: ${{ secrets.HMPPS_VERACODE_API_KEY_4 }}
 
       - name: Upload to Veracode
-        uses: veracode/veracode-uploadandscan-action@0.2.7
+        uses: veracode/veracode-uploadandscan-action@0.2.8
         with:
           appname: hmpps-probation-integration-services
           createprofile: false

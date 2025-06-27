@@ -3,34 +3,34 @@
 This integration service automates the processing of emails into Delius contacts.
 
 
-# Data dependencies
+## Data dependencies
 This service depends on Delius to create new contacts.
 
-## Context Map - Justice Email Data
+### Context Map - Justice Email Data
 
-![](./tech-docs/source/img/je-and-delius-context-map.svg)
+![](../../doc/tech-docs/source/images/je-and-delius-context-map.svg)
 
 
-# Workflows
+## Workflows
 
 | Business Event | Message Event Type / Filter |
 | -------------- | --------------------------- |
 | Email received | email.message.received      |
 
-## Polling for unread emails
+### Polling for unread emails
 Create a domain event for each unread email. Once an email has been processed it will be marked as read.
 
-![](./tech-docs/source/img/email-poll-workflow.svg)
+![](../../doc/tech-docs/source/images/email-poll-workflow.svg)
 
 
-##  Email Domain Event Received
+###  Email Domain Event Received
 Validate the email, convert to markdown and store as a contact in Delius.
 
-![](./tech-docs/source/img/email-received-workflow.svg)
+![](../../doc/tech-docs/source/images/email-received-workflow.svg)
 
-# Interfaces
+## Interfaces
 
-## Message formats
+### Message formats
 
 The service responds to HMPPS Domain Event messages via the [Justice Email and Delius Queue](https://github.com/ministryofjustice/cloud-platform-environments/blob/main/namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-prod/resources/justice-email-and-delius-queue.tf).
 

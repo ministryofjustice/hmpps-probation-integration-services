@@ -2,19 +2,19 @@
 
 This integration service provides an API to get the details for the sentence plan for a person on probation.
 
-# Business need
+## Business need
 Provides background information for a person on probation to the client.
 
 
-# Data dependencies
+## Data dependencies
 This depends on Delius for up-to-date information on the sentence plan.
 
 
-## Context Map - Probation Search data
-![](./tech-docs/source/img/sp-and-delius-context-map.svg)
+### Context Map - Probation Search data
+![](../../doc/tech-docs/source/images/sp-and-delius-context-map.svg)
 
 
-# API Access Control
+## API Access Control
 
 API endpoints are secured by roles supplied by the HMPPS Auth client used in
 the requests

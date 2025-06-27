@@ -9,7 +9,7 @@ HMPPS has a number of systems each holding information about a person's interact
 
 ## Context Map
 
-![Context Map](./tech-docs/source/img/prison-identifier-and-delius-context-map.svg)
+![Context Map](../../doc/tech-docs/source/images/prison-identifier-and-delius-context-map.svg)
 
 ## Workflow Triggers
 
@@ -38,7 +38,7 @@ The matching process will be triggered by domain events raised by Delius, once t
 
 ### Batch Processing
 
-![Batch Processing Workflow](./tech-docs/source/img/prison-identifier-and-delius-workflow-id-update.svg)
+![Batch Processing Workflow](../../doc/tech-docs/source/images/prison-identifier-and-delius-workflow-id-update.svg)
 
 ## Interfaces
 
@@ -57,4 +57,4 @@ the requests
 
 The logic used to match NOMIS person records to Delius person records uses the basic personal details, any additional identifiers and the recorded sentence dates.
 
-![Matching Process](./tech-docs/source/img/prison-identifier-and-delius-match-process.svg)
+![Matching Process](../../doc/tech-docs/source/images/prison-identifier-and-delius-match-process.svg)

@@ -20,20 +20,22 @@ data class CreateAppointment(
     val licenceConditionId: Long? = null,
     val nsiId: Long? = null,
     val until: ZonedDateTime? = null,
+    val notes: String? = null,
+    val sensitive: Boolean? = null,
 ) {
     @JsonIgnore
     val urn = URN_PREFIX + uuid
 
     enum class Type(val code: String) {
-        PlannedOfficeVisitNS("COAP"),
-        PlannedTelephoneContactNS("COPT"),
+        ThreeWayMeetingNS("C084"),
+        HomeVisitToCaseNS("CHVS"),
         InitialAppointmentInOfficeNS("COAI"),
-        PlannedVideoContactNS("COVC"),
+        InterviewForReportOther("COSR"),
         PannedContactOtherThanOffice("COOO"),
         PlannedDoorstepContactNS("CODC"),
-        InitialAppointmentHomeVisitNS("COHV"),
-        HomeVisitToCaseNS("CHVS"),
-        ThreeWayMeetingNS("C084")
+        PlannedOfficeVisitNS("COAP"),
+        PlannedTelephoneContactNS("COPT"),
+        PlannedVideoContactNS("COVC")
     }
 
     enum class Interval(val value: Int) {
