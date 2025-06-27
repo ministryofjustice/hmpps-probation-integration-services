@@ -154,12 +154,13 @@ class PersonService(
     fun Defendant.toPerson(): Person {
         val personDetails = personDefendant?.personDetails ?: throw IllegalArgumentException("No person found")
         val genderCode = personDetails.gender?.toDeliusGender() ?: throw IllegalArgumentException("Gender not found")
+        val pncNumber = PncNumber.from(this.pncId)?.matchValue()
 
         return Person(
             id = null,
             crn = generateCrn(),
             croNumber = this.croNumber,
-            pncNumber = this.pncId,
+            pncNumber = pncNumber,
             forename = personDetails.firstName!!,
             secondName = personDetails.middleName,
             telephoneNumber = personDetails.contact?.home,

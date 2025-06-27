@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component
 import uk.gov.justice.digital.hmpps.converter.NotificationConverter
 import uk.gov.justice.digital.hmpps.dto.InsertRemandDTO
 import uk.gov.justice.digital.hmpps.flags.FeatureFlags
+import uk.gov.justice.digital.hmpps.integrations.delius.PncNumber
 import uk.gov.justice.digital.hmpps.integrations.delius.ProbationMatchRequest
 import uk.gov.justice.digital.hmpps.message.Notification
 import uk.gov.justice.digital.hmpps.service.OffenceService
@@ -138,7 +139,7 @@ class Handler(
             firstName = firstName,
             surname = lastName,
             dateOfBirth = dateOfBirth,
-            pncNumber = this.pncId,
+            pncNumber = PncNumber.from(this.pncId)?.matchValue(),
             croNumber = this.croNumber
         )
     }

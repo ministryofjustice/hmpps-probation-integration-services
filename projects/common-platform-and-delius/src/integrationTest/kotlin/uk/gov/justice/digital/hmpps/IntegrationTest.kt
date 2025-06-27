@@ -141,7 +141,7 @@ internal class IntegrationTest {
                 forename = "Example First Name",
                 surname = "Example Last Name",
                 dateOfBirth = LocalDate.of(2000, 1, 1),
-                pnc = "0000/0000000A",
+                pnc = "2000/0000000A",
                 cro = "000000/00A",
                 id = null
             )
@@ -491,6 +491,29 @@ internal class IntegrationTest {
         verify(mainOffenceRepository).save(check<MainOffence> {
             assertThat(it.offence.code, Matchers.equalTo("00101"))
         })
+    }
+
+    @Test
+    fun `When a message is received without a slash separating the year in the PNC, a match can still be made`() {
+        personRepository.save(
+            generate(
+                crn = "F019742",
+                forename = "Example First Name",
+                surname = "Example Last Name",
+                dateOfBirth = LocalDate.of(2000, 1, 1),
+                pnc = "2000/0000000A",
+                cro = "000000/00A",
+                id = null
+            )
+        )
+        Mockito.reset(personRepository)
+
+        // Message with PNC without a slash (e.g., "2000000000A")
+        val notification = Notification(message = MessageGenerator.COMMON_PLATFORM_EVENT_NO_PNC_SLASH)
+        channelManager.getChannel(queueName).publishAndWait(notification)
+
+        // Match found so no record will be inserted
+        thenNoRecordsAreInserted()
     }
 
     private fun thenNoRecordsAreInserted() {

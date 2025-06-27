@@ -19,4 +19,6 @@ object MessageGenerator {
         ResourceLoader.message<CommonPlatformHearing>("common-platform-hearing-future-hearing-dates")
     val COMMON_PLATFORM_EVENT_MULTIPLE_OFFENCES =
         ResourceLoader.message<CommonPlatformHearing>("common-platform-hearing-multiple-offences")
+    val COMMON_PLATFORM_EVENT_NO_PNC_SLASH =
+        ResourceLoader.message<CommonPlatformHearing>("common-platform-hearing-no-pnc-slash")
 }
