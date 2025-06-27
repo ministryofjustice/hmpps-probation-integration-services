@@ -43,7 +43,6 @@ jobs:
           git pull origin gh-pages
           python3 git-filter-repo \
             --path 'tech-docs' \
-            --path 'tech-docs-drafts' \
             --path 'schema-spy-report' \
             --refs gh-pages \
             --force

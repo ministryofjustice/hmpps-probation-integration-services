@@ -106,29 +106,6 @@ jobs:
           force: ${{ inputs.force-deploy }}
           gradle-encryption-key: ${{ secrets.GRADLE_ENCRYPTION_KEY }}
 
-      - name: Prepare test report
-        if: failure()
-        run: |
-          report_dir=test-reports/$REF/$(date '+%Y-%m-%d')/${{ github.sha }}/${{ github.run_id }}/${{ github.run_attempt }}/${{ matrix.project }}
-          mkdir -p projects/${{ matrix.project }}/build/reports/tests
-          sed "s|DEFAULT_PATH|$report_dir|" tools/github-browser.html > projects/${{ matrix.project }}/build/reports/tests/index.html
-          echo "report_dir=$report_dir" | tee -a "$GITHUB_ENV"
-        env:
-          REF: ${{ github.ref_name }}
-
-      - name: Publish test report
-        if: failure()
-        uses: JamesIves/github-pages-deploy-action@6c2d9db40f9296374acc17b90404b6e8864128c8 # v4
-        with:
-          folder: projects/${{ matrix.project }}/build/reports/tests
-          target-folder: ${{ env.report_dir }}
-
-      - name: Output HTML report link
-        if: failure()
-        run: echo "[🧪 Test Report](https://ministryofjustice.github.io/hmpps-probation-integration-services/$report_dir)" | tee -a "$GITHUB_STEP_SUMMARY"
-        env:
-          report_dir: ${{ env.report_dir }}
-
   build-docker:
     name: Docker build
     runs-on: ubuntu-latest
