@@ -12,6 +12,7 @@ import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 import uk.gov.justice.digital.hmpps.api.model.sentence.User
+import uk.gov.justice.digital.hmpps.api.model.user.DefaultUserDetails
 import uk.gov.justice.digital.hmpps.api.model.user.Provider
 import uk.gov.justice.digital.hmpps.api.model.user.Team
 import uk.gov.justice.digital.hmpps.api.model.user.UserProviderResponse
@@ -49,11 +50,15 @@ class UserProvidersIntegrationTest {
     }
 
     companion object {
+        val defaultUserDetails =
+            DefaultUserDetails(STAFF_USER_1.username, DEFAULT_PROVIDER.description, TEAM.description)
+
         @JvmStatic
         fun providerRequests(): List<Arguments> = listOf(
             Arguments.of(
                 "/user/peter-parker/providers",
                 UserProviderResponse(
+                    defaultUserDetails,
                     listOf(
                         Provider(DEFAULT_PROVIDER.code, "Description of N01"),
                         Provider(PROVIDER_2.code, "Description of W01")
@@ -68,6 +73,7 @@ class UserProvidersIntegrationTest {
             Arguments.of(
                 "/user/peter-parker/providers?region=${DEFAULT_PROVIDER.code}&team=${TEAM.code}",
                 UserProviderResponse(
+                    defaultUserDetails,
                     listOf(
                         Provider(DEFAULT_PROVIDER.code, "Description of N01"),
                         Provider(PROVIDER_2.code, "Description of W01")

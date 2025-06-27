@@ -123,6 +123,7 @@ fun StaffRepository.getStaff(staffCode: String) =
 @Entity
 @Immutable
 @Table(name = "team")
+@SQLRestriction("start_date <= current_date and (end_date is null or end_date > current_date)")
 class Team(
     @Id
     @Column(name = "team_id")
@@ -159,7 +160,6 @@ interface TeamRepository : JpaRepository<Team, Long> {
         select t.staff
         from Team t
         where t.code = :teamCode
-        and (t.endDate is null or t.endDate > current_date)
     """
     )
     fun findStaffByTeamCode(teamCode: String): List<Staff>
@@ -169,7 +169,6 @@ interface TeamRepository : JpaRepository<Team, Long> {
         select t.provider.description
         from Team t
         where t.code = :teamCode
-        and (t.endDate is null or t.endDate > current_date)
     """
     )
     fun findProviderByTeamCode(teamCode: String): String?
@@ -179,7 +178,6 @@ interface TeamRepository : JpaRepository<Team, Long> {
         select t
         from Team t
         where t.code = :teamCode
-        and (t.endDate is null or t.endDate > current_date)
     """
     )
     fun findByTeamCode(teamCode: String): Team?
@@ -189,12 +187,26 @@ interface TeamRepository : JpaRepository<Team, Long> {
             SELECT t
             FROM Team t
             WHERE t.provider.code = :code
-            AND (t.endDate IS NULL OR t.endDate > CURRENT_DATE)
-            AND t.startDate <= CURRENT_DATE
             ORDER BY UPPER(t.description) 
         """
     )
     fun findByProviderCode(code: String): List<Team>
+
+    fun findTeamById(id: Long): Team?
+
+    @Query(
+        """
+            SELECT t
+            FROM Team t
+            JOIN ContactStaffTeam cst on cst.id.team.id = t.id
+            JOIN contact_staff cs on cs.id = cst.id.staffId
+            JOIN cs.user u
+            WHERE t.provider.code = :providerCode
+            AND u.username = :username
+            ORDER BY UPPER(t.description)
+        """
+    )
+    fun findByUsernameAndProvider(username: String, providerCode: String): List<Team>
 }
 
 fun TeamRepository.getTeam(teamCode: String) =
@@ -202,6 +214,9 @@ fun TeamRepository.getTeam(teamCode: String) =
 
 fun TeamRepository.getProvider(teamCode: String) =
     findProviderByTeamCode(teamCode) ?: throw NotFoundException("Team", "teamCode", teamCode)
+
+fun TeamRepository.getByTeamById(id: Long) =
+    findTeamById(id) ?: throw NotFoundException("Team", "id", id)
 
 @Immutable
 @Entity

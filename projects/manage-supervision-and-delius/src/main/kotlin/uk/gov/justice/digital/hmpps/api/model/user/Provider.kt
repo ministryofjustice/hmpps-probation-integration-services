@@ -8,7 +8,14 @@ data class Provider(
 )
 
 data class UserProviderResponse(
+    val defaultUserDetails: DefaultUserDetails,
     val providers: List<Provider>,
     val teams: List<Team>,
     val users: List<User>
+)
+
+data class DefaultUserDetails(
+    val username: String,
+    val homeArea: String,
+    val team: String?
 )

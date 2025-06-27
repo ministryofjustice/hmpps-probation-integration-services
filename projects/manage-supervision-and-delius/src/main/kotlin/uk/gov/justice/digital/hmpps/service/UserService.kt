@@ -26,7 +26,9 @@ import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.ContactR
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.LdapUser
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.StaffUserRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.user.entity.*
+import uk.gov.justice.digital.hmpps.ldap.findAttributeByUsername
 import uk.gov.justice.digital.hmpps.ldap.findByUsername
+import uk.gov.justice.digital.hmpps.ldap.findPreferenceByUsername
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.ZonedDateTime
@@ -127,7 +129,6 @@ class UserService(
         val user = getUser(username)
 
         return user.staff?.let {
-
             val contacts = contactRepository.findUpComingAppointmentsByUser(
                 user.staff.id,
                 LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE),
@@ -205,7 +206,6 @@ class UserService(
     }
 
     fun getProvidersForUser(username: String, region: String?, team: String?): UserProviderResponse {
-
         val providers = probationAreaUserRepository.findByUsername(username)
             .map { Provider(it.id.provider.code, it.id.provider.description) }
 
@@ -213,7 +213,20 @@ class UserService(
 
         val users = staffUserRepository.findStaffByTeam(team ?: teams.first().code).map { it.toUser() }
 
-        return UserProviderResponse(providers, teams, users)
+        return UserProviderResponse(getDefaultUserDetails(username, providers), providers, teams, users)
+    }
+
+    fun getDefaultUserDetails(username: String, providers: List<Provider>): DefaultUserDetails {
+        val homeArea = ldapTemplate.findAttributeByUsername(username, "userHomeArea")
+            ?: throw NotFoundException("No home area found for $username")
+
+        val defaultTeamId = ldapTemplate.findPreferenceByUsername(username, "defaultTeam")?.toLongOrNull()
+
+        val team = defaultTeamId?.let {
+            teamRepository.getByTeamById(it)
+        }?.toTeam() ?: teamRepository.findByUsernameAndProvider(username, homeArea)[0].toTeam()
+
+        return DefaultUserDetails(username, providers.first { it.code == homeArea }.name, team.description)
     }
 
     fun getUser(username: String) =

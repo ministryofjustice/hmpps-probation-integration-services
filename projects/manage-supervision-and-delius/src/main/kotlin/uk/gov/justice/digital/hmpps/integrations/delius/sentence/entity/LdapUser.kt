@@ -34,6 +34,9 @@ class LdapUser(
     @Attribute(name = "endDate")
     val endDate: String?,
 
+    @Attribute(name = "userHomeArea")
+    val homeArea: String?,
+
     @Transient
     var roles: List<String>
 ) {
