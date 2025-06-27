@@ -4,6 +4,7 @@ https://github.com/ministryofjustice/hmpps-auth
 https://github.com/ministryofjustice/hmpps-delius-docker-images.*
 https://github.com/ministryofjustice/hmpps-delius-pipelines.*
 https://github.com/ministryofjustice/prison-to-probation-update.*
+https://github.com/ministryofjustice/hmpps-probation-integration-services/blob/main/source/search/index.html.erb
 https://github.com/ministryofjustice/hmpps-probation-integration-services/.*/\$SERVICE_NAME/.*
 https://raw.githubusercontent.com/ministryofjustice/hmpps-probation-integration-services/.*/\$SERVICE_NAME/.*
 https://raw.githubusercontent.com/ministryofjustice/hmpps-probation-integration-services/refs/heads/.*//1./2
