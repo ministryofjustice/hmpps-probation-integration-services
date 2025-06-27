@@ -226,7 +226,6 @@ interface TeamRepository : JpaRepository<Team, Long> {
     fun findByUsernameAndProvider(username: String, providerCode: String): List<Team>
 }
 
-
 fun TeamRepository.getTeam(teamCode: String) =
     findByTeamCode(teamCode) ?: throw NotFoundException("Team", "teamCode", teamCode)
 
