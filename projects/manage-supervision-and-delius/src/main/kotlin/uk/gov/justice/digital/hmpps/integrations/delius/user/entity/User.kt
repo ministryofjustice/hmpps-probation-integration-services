@@ -160,7 +160,6 @@ interface TeamRepository : JpaRepository<Team, Long> {
         select t.staff
         from Team t
         where t.code = :teamCode
-        and (t.endDate is null or t.endDate > current_date)
     """
     )
     fun findStaffByTeamCode(teamCode: String): List<Staff>
@@ -170,7 +169,6 @@ interface TeamRepository : JpaRepository<Team, Long> {
         select t.provider.description
         from Team t
         where t.code = :teamCode
-        and (t.endDate is null or t.endDate > current_date)
     """
     )
     fun findProviderByTeamCode(teamCode: String): String?
@@ -180,7 +178,6 @@ interface TeamRepository : JpaRepository<Team, Long> {
         select t
         from Team t
         where t.code = :teamCode
-        and (t.endDate is null or t.endDate > current_date)
     """
     )
     fun findByTeamCode(teamCode: String): Team?
@@ -206,8 +203,6 @@ interface TeamRepository : JpaRepository<Team, Long> {
             JOIN cs.user u
             WHERE t.provider.code = :providerCode
             AND u.username = :username
-            AND (t.endDate IS NULL OR t.endDate > CURRENT_DATE)
-            AND t.startDate <= CURRENT_DATE
             ORDER BY UPPER(t.description)
         """
     )
