@@ -136,9 +136,9 @@ class AppointmentOutcomeIntegrationTest {
             .withJson(
                 CreateAppointment(
                     User(STAFF_USER_1.username, TEAM.code, locationCode = DEFAULT_LOCATION.code),
-                    CreateAppointment.Type.PlannedOfficeVisitNS.code,
-                    ZonedDateTime.now().plusDays(1),
-                    ZonedDateTime.now().plusDays(2),
+                    type = CreateAppointment.Type.PlannedOfficeVisitNS.code,
+                    start = ZonedDateTime.now().plusDays(1),
+                    end = ZonedDateTime.now().plusDays(2),
                     eventId = PersonGenerator.EVENT_1.id,
                     uuid = UUID.randomUUID()
                 )
