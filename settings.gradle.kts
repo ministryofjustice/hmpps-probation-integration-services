@@ -119,7 +119,7 @@ plugins {
 
 develocity {
     buildScan {
-        publishing.onlyIf { System.getenv().containsKey("CI") }
+        publishing.onlyIf { providers.environmentVariable("CI").isPresent }
         termsOfUseUrl.set("https://gradle.com/help/legal-terms-of-use")
         termsOfUseAgree.set("yes")
     }
@@ -127,11 +127,11 @@ develocity {
 
 buildCache {
     local {
-        isEnabled = !System.getenv().containsKey("CI")
+        isEnabled = !providers.environmentVariable("CI").isPresent
     }
     remote<com.github.burrunan.s3cache.AwsS3BuildCache> {
-        isEnabled = System.getenv().containsKey("CI")
-        isPush = System.getenv().containsKey("CI")
+        isEnabled = providers.environmentVariable("CI").isPresent
+        isPush = providers.environmentVariable("CI").isPresent
         bucket = "hmpps-probation-integration-gradle-cache"
         region = "eu-west-2"
         lookupDefaultAwsCredentials = true
