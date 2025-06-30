@@ -43,5 +43,3 @@ jobs:
 
       - name: Compile and test
         run: ./gradlew test-project:check
-        env:
-          GRADLE_CACHE_READONLY: true
