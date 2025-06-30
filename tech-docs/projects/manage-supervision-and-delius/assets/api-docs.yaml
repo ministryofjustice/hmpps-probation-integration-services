@@ -2664,6 +2664,18 @@ components:
       - size
       - totalPages
       - totalResults
+    DefaultUserDetails:
+      type: object
+      properties:
+        username:
+          type: string
+        homeArea:
+          type: string
+        team:
+          type: string
+      required:
+      - homeArea
+      - username
     Provider:
       type: object
       properties:
@@ -2687,6 +2699,8 @@ components:
     UserProviderResponse:
       type: object
       properties:
+        defaultUserDetails:
+          $ref: "#/components/schemas/DefaultUserDetails"
         providers:
           type: array
           items:
@@ -2700,6 +2714,7 @@ components:
           items:
             $ref: "#/components/schemas/User"
       required:
+      - defaultUserDetails
       - providers
       - teams
       - users

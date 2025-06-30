@@ -32,30 +32,6 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ProviderResponse"
-  /upw-appointments.csv:
-    get:
-      tags:
-      - api-controller
-      operationId: handle
-      parameters:
-      - name: providerCode
-        in: query
-        required: true
-        schema:
-          type: string
-      - name: date
-        in: query
-        required: false
-        schema:
-          type: string
-          format: date
-      responses:
-        "200":
-          description: OK
-          content:
-            text/csv:
-              schema:
-                type: string
 components:
   schemas:
     Provider:
