@@ -13,7 +13,6 @@ import uk.gov.justice.digital.hmpps.message.Notification
 import uk.gov.justice.digital.hmpps.service.RecommendationService
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryMessagingExtensions.notificationReceived
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
-import java.net.URI
 
 @Component
 @Channel("make-recall-decisions-and-delius-queue")
