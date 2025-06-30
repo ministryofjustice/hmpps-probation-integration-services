@@ -42,7 +42,7 @@ class AssessmentController(private val ordsClient: OrdsClient) {
 
 private fun ObjectNode.asResponse(): JsonNode {
     val assessment = this["assessments"].first() as ObjectNode
-    this["probNumber"]?.let { assessment.set<JsonNode>("crn", it) }
-    this["prisNumber"]?.let { assessment.set<JsonNode>("nomsId", it) }
+    this["probNumber"]?.let { with(assessment) { set<JsonNode>("crn", it) } }
+    this["prisNumber"]?.let { with(assessment) { set<JsonNode>("nomsId", it) } }
     return assessment
 }

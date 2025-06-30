@@ -39,7 +39,6 @@ class StaffController(
         ?: throw NotFoundException("Staff", "username", username)
 
     @GetMapping("/staff", params = ["id"])
-    @Deprecated("Use `/staff/{code}` or `/staff?username={username}`")
     fun getStaffById(@RequestParam id: Long) = staffRepository.findStaffById(id)?.toModel()
         ?: throw NotFoundException("Staff", "staffId", id)
 
@@ -48,7 +47,6 @@ class StaffController(
         personRepository.findManagedPrisonerIdentifiersByStaffCode(code)
 
     @GetMapping("/managedPrisonerIds", params = ["staffId"])
-    @Deprecated("Use `/staff/{code}/managedPrisonerIds`")
     fun getManagedPrisonersByStaffId(@RequestParam staffId: Long) =
         personRepository.findManagedPrisonerIdentifiersByStaffId(staffId)
 
