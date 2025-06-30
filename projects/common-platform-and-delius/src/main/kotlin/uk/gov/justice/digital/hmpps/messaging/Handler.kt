@@ -112,6 +112,8 @@ class Handler(
                     hearingId = notification.message.hearing.id
                 )
 
+                if (personService.personWithDefendantIdExists(defendant.id)) return
+
                 insertPersonAndEvent(insertRemandDTO)
             } else {
                 telemetryService.trackEvent(

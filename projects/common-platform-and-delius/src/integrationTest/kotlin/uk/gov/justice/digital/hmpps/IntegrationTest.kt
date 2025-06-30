@@ -516,6 +516,27 @@ internal class IntegrationTest {
         thenNoRecordsAreInserted()
     }
 
+    @Test
+    fun `No insert is attempted if person record with same defendant id already exists`() {
+        personRepository.save(
+            generate(
+                crn = "F019742",
+                forename = "Example First Name",
+                surname = "Example Last Name",
+                dateOfBirth = LocalDate.of(2000, 1, 1),
+                pnc = "2025/0123456A",
+                cro = "123456/99A",
+                id = null,
+                defendantId = "00000000-0000-0000-0000-000000000000"
+            )
+        )
+        Mockito.reset(personRepository)
+
+        val notification = Notification(message = MessageGenerator.COMMON_PLATFORM_EVENT)
+        channelManager.getChannel(queueName).publishAndWait(notification)
+        thenNoRecordsAreInserted()
+    }
+
     private fun thenNoRecordsAreInserted() {
         verify(orderManagerRepository, never()).save(any())
         verify(courtAppearanceRepository, never()).save(any())

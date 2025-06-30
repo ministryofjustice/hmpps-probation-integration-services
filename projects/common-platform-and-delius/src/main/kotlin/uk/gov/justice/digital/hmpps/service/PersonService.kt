@@ -148,6 +148,8 @@ class PersonService(
         return ProbationMatchResponse(results, if (results.isEmpty()) "NONE" else "ALL_SUPPLIED")
     }
 
+    fun personWithDefendantIdExists(defendantId: String)= personRepository.existsByDefendantId(defendantId)
+
     fun String.toDeliusGender() = ReferenceData.GenderCode.entries.find { it.commonPlatformValue == this }?.deliusValue
         ?: throw IllegalStateException("Gender not found: $this")
 
