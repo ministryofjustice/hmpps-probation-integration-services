@@ -127,11 +127,11 @@ develocity {
 
 buildCache {
     local {
-        isEnabled = !providers.environmentVariable("CI").isPresent
+        isEnabled = System.getenv("CI") == null
     }
     remote<com.github.burrunan.s3cache.AwsS3BuildCache> {
-        isEnabled = providers.environmentVariable("CI").isPresent
-        isPush = providers.environmentVariable("CI").isPresent
+        isEnabled = System.getenv("CI") != null
+        isPush = System.getenv("CI") != null
         bucket = "hmpps-probation-integration-gradle-cache"
         region = "eu-west-2"
         lookupDefaultAwsCredentials = true
