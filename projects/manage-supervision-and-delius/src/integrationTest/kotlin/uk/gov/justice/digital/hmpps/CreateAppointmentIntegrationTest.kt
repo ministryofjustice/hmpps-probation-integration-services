@@ -62,7 +62,7 @@ class CreateAppointmentIntegrationTest {
                     CreateAppointment(
                         user,
                         type = CreateAppointment.Type.HomeVisitToCaseNS.code,
-                        start =ZonedDateTime.now().plusDays(1),
+                        start = ZonedDateTime.now().plusDays(1),
                         end = ZonedDateTime.now().plusDays(2),
                         interval = CreateAppointment.Interval.DAY,
                         numberOfAppointments = 1,
