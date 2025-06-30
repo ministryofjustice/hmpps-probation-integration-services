@@ -140,7 +140,8 @@ class SentenceAppointmentService(
                             createAppointment.nsiId,
                             createAppointment.until,
                             createAppointment.notes,
-                            createAppointment.sensitive
+                            createAppointment.sensitive,
+                            createAppointment.visorReport,
                         )
                     )
                 }
@@ -255,6 +256,7 @@ class SentenceAppointmentService(
             createdByUserId = staffAndTeam.userId,
             officeLocationId = location?.id,
             notes = notes,
-            sensitive = sensitive
+            sensitive = sensitive,
+            visorContact = visorReport
         )
 }
