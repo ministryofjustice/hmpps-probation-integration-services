@@ -61,13 +61,13 @@ class CreateAppointmentIntegrationTest {
                 .withJson(
                     CreateAppointment(
                         user,
-                        CreateAppointment.Type.HomeVisitToCaseNS.code,
-                        ZonedDateTime.now().plusDays(1),
-                        ZonedDateTime.now().plusDays(2),
+                        type = CreateAppointment.Type.HomeVisitToCaseNS.code,
+                        start = ZonedDateTime.now().plusDays(1),
+                        end = ZonedDateTime.now().plusDays(2),
                         interval = CreateAppointment.Interval.DAY,
                         numberOfAppointments = 1,
                         eventId = 1,
-                        UUID.randomUUID()
+                        uuid = UUID.randomUUID()
                     )
                 )
         ).andExpect(MockMvcResultMatchers.status().isNotFound)
@@ -81,13 +81,13 @@ class CreateAppointmentIntegrationTest {
                 .withJson(
                     CreateAppointment(
                         user,
-                        CreateAppointment.Type.InitialAppointmentInOfficeNS.code,
-                        ZonedDateTime.now().plusDays(2),
-                        ZonedDateTime.now().plusDays(1),
+                        type = CreateAppointment.Type.InitialAppointmentInOfficeNS.code,
+                        start = ZonedDateTime.now().plusDays(2),
+                        end = ZonedDateTime.now().plusDays(1),
                         interval = CreateAppointment.Interval.DAY,
                         numberOfAppointments = 1,
-                        PersonGenerator.EVENT_1.id,
-                        UUID.randomUUID()
+                        eventId = PersonGenerator.EVENT_1.id,
+                        uuid = UUID.randomUUID()
                     )
                 )
         )
@@ -103,13 +103,13 @@ class CreateAppointmentIntegrationTest {
                 .withJson(
                     CreateAppointment(
                         user,
-                        CreateAppointment.Type.InitialAppointmentInOfficeNS.code,
-                        ZonedDateTime.now().plusDays(1),
-                        ZonedDateTime.now().plusDays(1).plusHours(1),
+                        type = CreateAppointment.Type.InitialAppointmentInOfficeNS.code,
+                        start = ZonedDateTime.now().plusDays(1),
+                        end = ZonedDateTime.now().plusDays(1).plusHours(1),
                         interval = CreateAppointment.Interval.DAY,
                         numberOfAppointments = 0,
-                        PersonGenerator.EVENT_1.id,
-                        UUID.randomUUID()
+                        eventId = PersonGenerator.EVENT_1.id,
+                        uuid = UUID.randomUUID()
                     )
                 )
         )
@@ -198,9 +198,9 @@ class CreateAppointmentIntegrationTest {
             Arguments.of(
                 CreateAppointment(
                     user,
-                    CreateAppointment.Type.PlannedOfficeVisitNS.code,
-                    ZonedDateTime.now().plusDays(1),
-                    ZonedDateTime.now().plusDays(1).plusHours(1),
+                    type = CreateAppointment.Type.PlannedOfficeVisitNS.code,
+                    start = ZonedDateTime.now().plusDays(1),
+                    end = ZonedDateTime.now().plusDays(1).plusHours(1),
                     eventId = PersonGenerator.EVENT_1.id,
                     uuid = UUID.randomUUID()
                 ), null, null
@@ -208,10 +208,10 @@ class CreateAppointmentIntegrationTest {
             Arguments.of(
                 CreateAppointment(
                     user,
-                    CreateAppointment.Type.InitialAppointmentInOfficeNS.code,
-                    ZonedDateTime.now().plusDays(1),
-                    ZonedDateTime.now().plusDays(1).plusHours(1),
-                    CreateAppointment.Interval.DAY,
+                    type = CreateAppointment.Type.InitialAppointmentInOfficeNS.code,
+                    start = ZonedDateTime.now().plusDays(1),
+                    end = ZonedDateTime.now().plusDays(1).plusHours(1),
+                    interval = CreateAppointment.Interval.DAY,
                     eventId = PersonGenerator.EVENT_1.id,
                     notes = "Some Notes",
                     uuid = UUID.randomUUID()
@@ -220,10 +220,10 @@ class CreateAppointmentIntegrationTest {
             Arguments.of(
                 CreateAppointment(
                     user,
-                    CreateAppointment.Type.PlannedDoorstepContactNS.code,
-                    ZonedDateTime.now().plusDays(1),
-                    ZonedDateTime.now().plusDays(1).plusHours(1),
-                    CreateAppointment.Interval.DAY,
+                    type = CreateAppointment.Type.PlannedDoorstepContactNS.code,
+                    start = ZonedDateTime.now().plusDays(1),
+                    end = ZonedDateTime.now().plusDays(1).plusHours(1),
+                    interval = CreateAppointment.Interval.DAY,
                     notes = "Some Notes",
                     sensitive = true,
                     uuid = UUID.randomUUID()
@@ -235,17 +235,17 @@ class CreateAppointmentIntegrationTest {
         fun createMultipleAppointments() = listOf(
             CreateAppointment(
                 user,
-                CreateAppointment.Type.HomeVisitToCaseNS.code,
-                ZonedDateTime.now(),
-                ZonedDateTime.now().plusHours(1),
+                type = CreateAppointment.Type.HomeVisitToCaseNS.code,
+                start = ZonedDateTime.now(),
+                end = ZonedDateTime.now().plusHours(1),
                 numberOfAppointments = 3,
                 eventId = PersonGenerator.EVENT_1.id,
                 uuid = UUID.randomUUID()
             ),
             CreateAppointment(
                 user,
-                CreateAppointment.Type.HomeVisitToCaseNS.code,
-                ZonedDateTime.now(),
+                type = CreateAppointment.Type.HomeVisitToCaseNS.code,
+                start = ZonedDateTime.now(),
                 end = ZonedDateTime.now().plusHours(1),
                 until = ZonedDateTime.now().plusDays(2),
                 eventId = PersonGenerator.EVENT_1.id,

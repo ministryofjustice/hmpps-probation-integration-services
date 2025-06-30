@@ -102,6 +102,10 @@ class Appointment(
     @Convert(converter = YesNoConverter::class)
     var sensitive: Boolean? = null,
 
+    @Column(name = "visor_contact")
+    @Convert(converter = YesNoConverter::class)
+    var visorContact: Boolean? = null,
+
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "contact_id_generator")
     @Column(name = "contact_id")
