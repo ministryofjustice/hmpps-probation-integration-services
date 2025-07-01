@@ -127,7 +127,7 @@ updates:
     schedule:
       interval: "weekly"
 
-  - package-ecosystem: "docker"
+  - package-ecosystem: "docker-compose"
     directory: "/doc/tech-docs"
     schedule:
       interval: "weekly"
