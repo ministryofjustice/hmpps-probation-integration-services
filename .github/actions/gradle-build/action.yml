@@ -91,4 +91,4 @@ runs:
       uses: ./.github/actions/get-build-info
       with:
         project: ${{ inputs.project }}
-        version: ${{ inputs.version }}
+        version: ${{ steps.version.outputs.version }}
