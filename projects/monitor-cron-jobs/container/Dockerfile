@@ -1,4 +1,4 @@
-FROM ghcr.io/ministryofjustice/hmpps-devops-tools:latest
+FROM ghcr.io/ministryofjustice/hmpps-devops-tools:nightly
 
 USER root
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
