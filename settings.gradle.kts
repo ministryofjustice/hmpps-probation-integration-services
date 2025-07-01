@@ -112,11 +112,28 @@ dependencyResolutionManagement {
     }
 }
 
-plugins { id("com.gradle.develocity") version "4.0.2" }
+plugins {
+    id("com.gradle.develocity") version "4.0.2"
+    id("com.github.burrunan.s3-build-cache") version "1.9.2"
+}
+
 develocity {
     buildScan {
-        publishing.onlyIf { !System.getenv("CI").isNullOrEmpty() }
+        publishing.onlyIf { providers.environmentVariable("CI").isPresent }
         termsOfUseUrl.set("https://gradle.com/help/legal-terms-of-use")
         termsOfUseAgree.set("yes")
+    }
+}
+
+buildCache {
+    local {
+        isEnabled = System.getenv("CI") == null
+    }
+    remote<com.github.burrunan.s3cache.AwsS3BuildCache> {
+        isEnabled = System.getenv("CI") != null
+        isPush = System.getenv("CI") != null
+        bucket = "hmpps-probation-integration-gradle-cache"
+        region = "eu-west-2"
+        lookupDefaultAwsCredentials = true
     }
 }

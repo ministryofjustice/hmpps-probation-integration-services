@@ -29,8 +29,11 @@ inputs:
   ip-allowlists:
     description: The HMPPS IP allow list groups to apply, in base64-encoded YAML format
     required: true
-  gradle-encryption-key:
-    description: Gradle encryption key
+  gradle-cache-role:
+    description: Role required for accessing Gradle cache
+    required: true
+  gradle-cache-encryption-key:
+    description: Gradle cache encryption key. Required for configuration caching.
     required: true
 
 runs:
@@ -49,7 +52,8 @@ runs:
       with:
         project: ${{ inputs.project }}
         version: ${{ inputs.version }}
-        gradle-encryption-key: ${{ inputs.gradle-encryption-key }}
+        gradle-cache-role: ${{ inputs.gradle-cache-role }}
+        gradle-cache-encryption-key: ${{ inputs.gradle-cache-encryption-key }}
 
     - name: Authenticate
       uses: ./.github/actions/cloud-platform-auth

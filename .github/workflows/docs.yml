@@ -19,13 +19,14 @@ jobs:
     permissions:
       contents: write
       pages: write
+      id-token: write
     steps:
       - uses: actions/checkout@v4
 
       - uses: ./.github/actions/setup-gradle
         with:
+          cache-role: ${{ secrets.GRADLE_CACHE_S3_ROLE_TO_ASSUME }}
           cache-encryption-key: ${{ secrets.GRADLE_ENCRYPTION_KEY }}
-          cache-read-only: true
 
       - name: Prepare API specs
         run: ./script/prepare-api-specs.sh
