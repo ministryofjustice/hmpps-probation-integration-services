@@ -48,12 +48,16 @@ runs:
         environment: ${{ inputs.environment }}
 
     - name: Get build info
-      uses: ./.github/actions/get-build-info
+      uses: actions/download-artifact@v4
       with:
-        project: ${{ inputs.project }}
-        version: ${{ inputs.version }}
-        gradle-cache-role: ${{ inputs.gradle-cache-role }}
-        gradle-cache-encryption-key: ${{ inputs.gradle-cache-encryption-key }}
+        pattern: build-info-${{ inputs.project }}
+        path: projects/${{ inputs.project }}/build-info.properties
+
+    - name: Get git info
+      uses: actions/download-artifact@v4
+      with:
+        pattern: git-info-${{ inputs.project }}
+        path: projects/${{ inputs.project }}/git.properties
 
     - name: Authenticate
       uses: ./.github/actions/cloud-platform-auth
