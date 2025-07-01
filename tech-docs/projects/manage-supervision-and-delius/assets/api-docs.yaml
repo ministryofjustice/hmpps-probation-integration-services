@@ -2302,6 +2302,8 @@ components:
           type: string
         sensitive:
           type: boolean
+        visorReport:
+          type: boolean
       required:
       - createOverlappingAppointment
       - end

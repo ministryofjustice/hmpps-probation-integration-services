@@ -127,7 +127,6 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Staff"
-      deprecated: true
   /staff/{code}:
     get:
       tags:
@@ -242,7 +241,6 @@ paths:
                 type: array
                 items:
                   type: string
-      deprecated: true
   /case/{nomsNumber}/communityManager:
     get:
       tags:
@@ -382,8 +380,6 @@ components:
         staffId:
           type: integer
           format: int64
-          deprecated: true
-          description: Use `code` instead
         name:
           $ref: "#/components/schemas/Name"
         teams:
