@@ -16,7 +16,8 @@ object PersonGenerator {
         dateOfBirth: LocalDate = LocalDate.now().minusYears(Random.nextInt(16, 76).toLong()),
         pnc: String? = null,
         cro: String? = null,
-        id: Long? = IdGenerator.getAndIncrement()
+        id: Long? = IdGenerator.getAndIncrement(),
+        defendantId: String? = null
     ) = Person(
         id = id,
         crn = crn,
@@ -29,6 +30,7 @@ object PersonGenerator {
         middleNameSoundex = null,
         pncNumber = pnc,
         croNumber = cro,
+        defendantId = defendantId
     )
 }
 

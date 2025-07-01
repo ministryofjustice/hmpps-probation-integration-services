@@ -136,6 +136,8 @@ interface PersonRepository : JpaRepository<Person, Long>, JpaSpecificationExecut
 
     @Query(value = "select offender_support_api.getnextcrn from dual", nativeQuery = true)
     fun getNextCrn(): String
+
+    fun existsByDefendantId(defendantId: String): Boolean
 }
 
 fun matchesName(firstName: String, surname: String) = Specification<Person> { person, _, cb ->
