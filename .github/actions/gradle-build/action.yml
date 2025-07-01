@@ -85,3 +85,10 @@ runs:
           **/build/jacoco
           **/build/reports/jacoco/**/*.xml
           **/build/test-results
+
+    - name: Get build info
+      if: steps.check-changes.outputs.projects != '[]'
+      uses: ./.github/actions/get-build-info
+      with:
+        project: ${{ inputs.project }}
+        version: ${{ steps.version.outputs.version }}

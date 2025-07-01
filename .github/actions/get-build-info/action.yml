@@ -8,32 +8,13 @@ inputs:
   version:
     description: The version of the service to deploy
     required: true
-  gradle-cache-role:
-    description: Role required for accessing Gradle cache
-    required: true
-  gradle-cache-encryption-key:
-    description: Gradle cache encryption key. Required for configuration caching.
-    required: true
 
 runs:
   using: "composite"
   steps:
     - uses: actions/checkout@v4
 
-    - name: Check if Gradle project
-      id: gradle_file
-      uses: andstor/file-existence-action@076e0072799f4942c8bc574a82233e1e4d13e9d6 # v2
-      with:
-        files: projects/${{ inputs.project }}/build.gradle.kts
-
-    - uses: ./.github/actions/setup-gradle
-      if: ${{ steps.gradle_file.outputs.files_exists == 'true' }}
-      with:
-        cache-role: ${{ inputs.gradle-cache-role }}
-        cache-encryption-key: ${{ inputs.gradle-cache-encryption-key }}
-
     - name: Get build info
-      if: ${{ steps.gradle_file.outputs.files_exists == 'true' }}
       run: |
         echo '::group::Generate build info'
         ./gradlew ${{ inputs.project }}:buildInfo ${{ inputs.project }}:gitInfo
@@ -42,3 +23,15 @@ runs:
       shell: bash
       env:
         VERSION: ${{ inputs.version }}
+
+    - name: Store build info
+      uses: actions/upload-artifact@v4
+      with:
+        name: build-info-${{ inputs.project }}
+        path: projects/${{ inputs.project }}/build-info.properties
+
+    - name: Store git info
+      uses: actions/upload-artifact@v4
+      with:
+        name: git-info-${{ inputs.project }}
+        path: projects/${{ inputs.project }}/git.properties

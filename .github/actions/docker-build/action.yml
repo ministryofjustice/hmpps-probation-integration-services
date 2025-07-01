@@ -41,11 +41,11 @@ runs:
             - 'projects/${{ inputs.project }}/**'
 
     - uses: docker/setup-qemu-action@v3
-      if: contains(fromJSON(steps.check-changes.outputs.projects), inputs.project) || inputs.force-deploy == 'true'
+      if: contains(fromJSON(steps.check-changes.outputs.projects), inputs.project) || inputs.force == 'true'
     - uses: docker/setup-buildx-action@v3
-      if: contains(fromJSON(steps.check-changes.outputs.projects), inputs.project) || inputs.force-deploy == 'true'
+      if: contains(fromJSON(steps.check-changes.outputs.projects), inputs.project) || inputs.force == 'true'
     - uses: docker/login-action@v3
-      if: contains(fromJSON(steps.check-changes.outputs.projects), inputs.project) || inputs.force-deploy == 'true'
+      if: contains(fromJSON(steps.check-changes.outputs.projects), inputs.project) || inputs.force == 'true'
       with:
         registry: ghcr.io
         username: ${{ github.actor }}
@@ -53,7 +53,7 @@ runs:
 
     - name: Build Docker images
       uses: docker/build-push-action@v6
-      if: contains(fromJSON(steps.check-changes.outputs.projects), inputs.project) || inputs.force-deploy == 'true'
+      if: contains(fromJSON(steps.check-changes.outputs.projects), inputs.project) || inputs.force == 'true'
       with:
         cache-from: type=gha
         cache-to: type=gha,mode=max
