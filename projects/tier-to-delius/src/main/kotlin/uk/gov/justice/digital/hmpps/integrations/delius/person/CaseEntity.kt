@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.controller.entity
+package uk.gov.justice.digital.hmpps.integrations.delius.person
 
 import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
@@ -31,9 +31,6 @@ class CaseEntity(
     @ManyToOne
     @JoinColumn(name = "current_tier")
     val tier: ReferenceData?,
-
-    @Column(name = "dynamic_rsr_score", columnDefinition = "number(5,2)")
-    val dynamicRsrScore: Double?,
 
     val createdByUserId: Long = 0,
 

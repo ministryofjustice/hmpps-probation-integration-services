@@ -1,11 +1,11 @@
-package uk.gov.justice.digital.hmpps.controller.entity
+package uk.gov.justice.digital.hmpps.integrations.delius.event.entity
 
 import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.NumericBooleanConverter
-import org.springframework.data.jpa.repository.JpaRepository
-import org.springframework.data.jpa.repository.Query
+import uk.gov.justice.digital.hmpps.integrations.delius.person.CaseEntity
+import uk.gov.justice.digital.hmpps.integrations.delius.requirement.RequirementEntity
 import java.time.LocalDate
 
 @Immutable
@@ -81,13 +81,3 @@ class DisposalType(
     val sentenceType: String
 )
 
-interface EventRepository : JpaRepository<EventEntity, Long> {
-
-    @Query(
-        """
-        select e from EventEntity e 
-        where e.person.crn = :crn
-    """
-    )
-    fun findByCrn(crn: String): List<EventEntity>
-}
