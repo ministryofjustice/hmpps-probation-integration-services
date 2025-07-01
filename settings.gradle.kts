@@ -119,7 +119,7 @@ plugins {
 
 develocity {
     buildScan {
-        publishing.onlyIf { providers.environmentVariable("CI").isPresent }
+        publishing.onlyIf { System.getenv("CI") != null }
         termsOfUseUrl.set("https://gradle.com/help/legal-terms-of-use")
         termsOfUseAgree.set("yes")
     }
