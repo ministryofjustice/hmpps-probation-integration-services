@@ -10,7 +10,7 @@ PROJECTS=$(kubectl --namespace=hmpps-probation-integration-services-dev get secr
 
 for PROJECT_NAME in "${PROJECTS[@]}"
 do
-  echo "$PROJECT"
+  echo "$PROJECT_NAME"
   PROJECT_UN_STRING=$(kubectl --namespace=$NAMESPACE get secret $PROJECT_NAME-database -o json \
   | jq -r '.data | map_values(@base64d) | to_entries[] | "\(.key)=\(.value)"'  | grep DB_USERNAME)
 
