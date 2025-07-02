@@ -26,7 +26,7 @@ dependencies {
     agentDeps("com.microsoft.azure:applicationinsights-agent:3.7.3")
 }
 
-val copyAgentTask = project.tasks.register<Copy>("copyAgent") {
+project.tasks.register<Copy>("copyAgent") {
     from(agentDeps)
     into("${project.layout.buildDirectory.dir("agent").get().asFile}")
     rename("applicationinsights-agent(.+).jar", "agent.jar")

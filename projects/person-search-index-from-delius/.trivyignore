@@ -9,3 +9,9 @@ CVE-2025-27610 exp:2025-08-01
 # Reason: Not processing untrusted XML or HTML files
 # Package: nokogiri:1.17.2
 GHSA-mrxw-mxhj-p664 exp:2025-08-01
+
+# crypto/x509: Usage of ExtKeyUsageAny disables policy validation in crypto/x509
+# https://github.com/ministryofjustice/hmpps-probation-integration-services/issues/5122
+# Reason: Not verifying any certificate chains with policy graphs
+# Package: stdlib:v1.24.2
+CVE-2025-22874 exp:2025-08-01
