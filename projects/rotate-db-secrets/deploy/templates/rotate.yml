@@ -34,5 +34,5 @@ spec:
                 - name: NAMESPACE
                   value: "hmpps-probation-integration-services-{{ .Values.environment }}"
                 - name: PROJECT_NAME
-                  value: { .Values.project }}
+                  value: {{ .Values.project }}
           restartPolicy: Never
