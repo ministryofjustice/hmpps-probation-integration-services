@@ -19,6 +19,7 @@ runs:
 
     - name: Assume role for access to cache bucket
       uses: aws-actions/configure-aws-credentials@b47578312673ae6fa5b5096b330d9fbac3d116df # v2
+      if: inputs.cache-role != ''
       with:
         aws-region: eu-west-2
         role-to-assume: ${{ inputs.cache-role }}
@@ -34,7 +35,7 @@ runs:
     - uses: gradle/actions/setup-gradle@v4
       with:
         add-job-summary: 'on-failure'
-        cache-encryption-key: ${{ env.GRADLE_ENCRYPTION_KEY }}
+        #cache-encryption-key: ${{ env.GRADLE_ENCRYPTION_KEY }} # TODO re-enable this following upgrade to Gradle 9.x and check configuration cache can be re-used.
         cache-read-only: ${{ github.ref_name != 'main' }}
         gradle-home-cache-excludes: |
           caches
