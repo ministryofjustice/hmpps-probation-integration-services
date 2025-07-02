@@ -1,0 +1,2 @@
+schedule: 0 0 5 31 2 ? # never
+project: "appointment-reminders-and-delius"

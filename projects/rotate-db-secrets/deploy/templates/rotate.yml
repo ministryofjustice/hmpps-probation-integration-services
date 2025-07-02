@@ -1,0 +1,38 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: rotate-db-secrets
+spec:
+  schedule: {{ .Values.schedule }}
+  concurrencyPolicy: Replace
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          serviceAccountName: cd-serviceaccount
+          containers:
+            - name: rotate-db-secrets
+              image: "ghcr.io/ministryofjustice/hmpps-probation-integration-services/rotate-db-secrets:{{ .Values.version }}"
+              command:
+                - "/scripts/rotate.sh"
+              securityContext:
+                capabilities:
+                  drop:
+                    - ALL
+                runAsNonRoot: true
+                allowPrivilegeEscalation: false
+                seccompProfile:
+                  type: RuntimeDefault
+              resources:
+                requests:
+                  memory: 100Mi
+                  cpu: "0.1"
+                limits:
+                  memory: 500Mi
+                  cpu: "1"
+              env:
+                - name: NAMESPACE
+                  value: "hmpps-probation-integration-services-{{ .Values.environment }}"
+                - name: PROJECT_NAME
+                  value: { .Values.project }}
+          restartPolicy: Never
