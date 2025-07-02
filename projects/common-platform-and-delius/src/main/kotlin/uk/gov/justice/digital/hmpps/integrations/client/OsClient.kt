@@ -57,8 +57,6 @@ class DpaWrapper {
 data class Dpa(
     @JsonProperty("UPRN")
     val uprn: Long,
-    @JsonProperty("UDPRN")
-    val udprn: Long,
     @JsonProperty("ADDRESS")
     val address: String,
     @JsonProperty("PO_BOX_NUMBER")
@@ -85,62 +83,6 @@ data class Dpa(
     val postTown: String,
     @JsonProperty("POSTCODE")
     val postcode: String,
-    @JsonProperty("RPC")
-    val rpc: String,
-    @JsonProperty("X_COORDINATE")
-    val xCoordinate: Double,
-    @JsonProperty("Y_COORDINATE")
-    val yCoordinate: Double,
-    @JsonProperty("LNG")
-    val lng: Double?,
-    @JsonProperty("LAT")
-    val lat: Double?,
-    @JsonProperty("STATUS")
-    val status: String,
-    @JsonProperty("MATCH")
-    val match: Float?,
-    @JsonProperty("MATCH_DESCRIPTION")
-    val matchDescription: String?,
-    @JsonProperty("LANGUAGE")
-    val language: String,
-    @JsonProperty("COUNTRY_CODE")
-    val countryCode: String,
-    @JsonProperty("COUNTRY_CODE_DESCRIPTION")
-    val countryCodeDescription: String,
-    @JsonProperty("LOCAL_CUSTODIAN_CODE")
-    val localCustodianCode: Int,
     @JsonProperty("LOCAL_CUSTODIAN_CODE_DESCRIPTION")
     val localCustodianCodeDescription: String,
-    @JsonProperty("CLASSIFICATION_CODE")
-    val classificationCode: String,
-    @JsonProperty("CLASSIFICATION_CODE_DESCRIPTION")
-    val classificationCodeDescription: String,
-    @JsonProperty("POSTAL_ADDRESS_CODE")
-    val postalAddressCode: String,
-    @JsonProperty("POSTAL_ADDRESS_CODE_DESCRIPTION")
-    val postalAddressCodeDescription: String,
-    @JsonProperty("LOGICAL_STATUS_CODE")
-    val logicalStatusCode: Int,
-    @JsonProperty("BLPU_STATE_CODE")
-    val blpuStateCode: Int,
-    @JsonProperty("BLPU_STATE_CODE_DESCRIPTION")
-    val blpuStateCodeDescription: String?,
-    @JsonProperty("TOPOGRAPHY_LAYER_TOID")
-    val topographyLayerToid: String,
-    @JsonProperty("PARENT_UPRN")
-    val parentUprn: Long?,
-    @JsonProperty("LAST_UPDATE_DATE")
-    val lastUpdateDate: String,
-    @JsonProperty("ENTRY_DATE")
-    val entryDate: String,
-    @JsonProperty("LEGAL_NAME")
-    val legalName: String?,
-    @JsonProperty("BLPU_STATE_DATE")
-    val blpuStateDate: String?,
-    @JsonProperty("DELIVERY_POINT_SUFFIX")
-    val deliveryPointSuffix: String,
-    @JsonProperty("PARISH_CODE")
-    val parishCode: String,
-    @JsonProperty("WARD_CODE")
-    val wardCode: String
 )

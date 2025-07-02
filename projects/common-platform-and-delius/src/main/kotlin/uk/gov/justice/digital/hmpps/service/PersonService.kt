@@ -13,9 +13,12 @@ import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonAddr
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonAddressRepository
 import uk.gov.justice.digital.hmpps.messaging.Address
 import uk.gov.justice.digital.hmpps.messaging.Defendant
+import uk.gov.justice.digital.hmpps.retry.retry
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
+import java.time.Duration
 import java.time.LocalDate
 import java.time.LocalDateTime
+import kotlin.time.Duration.Companion.seconds
 
 @Service
 class PersonService(
@@ -188,7 +191,9 @@ class PersonService(
 
     fun findAddressByFreeText(address: Address): OsPlacesResponse {
         val freeText = address.toFreeText()
-        return osClient.searchByFreeText(query = freeText, maxResults = 1, minMatch = 0.6)
+        return retry(3, delay = Duration.ofSeconds(1)) {
+            osClient.searchByFreeText(query = freeText, maxResults = 1, minMatch = 0.6)
+        }
     }
 
     fun Address.toFreeText(): String {
