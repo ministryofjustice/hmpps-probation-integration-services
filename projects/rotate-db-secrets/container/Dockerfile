@@ -10,7 +10,8 @@ RUN apt update -y && \
     apt install -y curl \
     libaio1 \
     unzip
-RUN mkdir -p /opt/oracle
+RUN mkdir -p /opt/oracle \
+    && curl -sL https://sentry.io/get-cli/ | bash
 WORKDIR /opt/oracle
 RUN curl -o oracleclient.zip https://download.oracle.com/otn_software/linux/instantclient/1924000/instantclient-basic-linux.x64-19.24.0.0.0dbru.zip && \
     curl -o sqlplus.zip https://download.oracle.com/otn_software/linux/instantclient/1924000/instantclient-sqlplus-linux.x64-19.24.0.0.0dbru.zip && \
