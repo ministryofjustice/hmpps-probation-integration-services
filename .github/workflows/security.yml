@@ -10,6 +10,12 @@ on:
     paths:
       - '**/.trivyignore'
 
+permissions:
+  contents: read
+  checks: write
+  id-token: write
+  security-events: write
+
 jobs:
   get-projects:
     runs-on: ubuntu-latest
