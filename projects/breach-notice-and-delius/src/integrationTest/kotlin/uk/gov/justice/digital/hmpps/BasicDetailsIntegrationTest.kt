@@ -49,10 +49,10 @@ internal class BasicDetailsIntegrationTest : BaseIntegrationTest() {
     }
 
     @Test
-    fun `no home area returns 404 response`() {
+    fun `no home area returns 400 response`() {
         mockMvc
             .perform(get("/basic-details/${PersonGenerator.DEFAULT_PERSON.crn}/NoHomeArea").withToken())
-            .andExpect(status().isNotFound)
+            .andExpect(status().isBadRequest)
     }
 
     @Test
