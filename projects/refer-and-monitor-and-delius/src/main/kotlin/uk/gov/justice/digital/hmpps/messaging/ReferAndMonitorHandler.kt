@@ -42,7 +42,7 @@ class ReferAndMonitorHandler(
             is Failure -> {
                 telemetryService.trackEvent(
                     res.exception::class.simpleName!!,
-                    notification.message.commonFields() + res.properties + ("message" to res.exception.message!!)
+                    notification.message.commonFields() + res.properties + ("message" to res.exception.message)
                 )
                 throw res.exception
             }
@@ -50,7 +50,7 @@ class ReferAndMonitorHandler(
             is Rejected -> {
                 telemetryService.trackEvent(
                     "ReferAndMonitorFailureReport",
-                    notification.message.commonFields() + res.properties + ("message" to res.exception.message!!)
+                    notification.message.commonFields() + res.properties + ("message" to res.exception.message)
                 )
             }
 
