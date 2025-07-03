@@ -11,6 +11,7 @@ import uk.gov.justice.digital.hmpps.audit.service.AuditableService
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
 import uk.gov.justice.digital.hmpps.exception.AppointmentNotFoundException
 import uk.gov.justice.digital.hmpps.exception.ConflictException
+import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.exception.asReason
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractionCode.ADD_CONTACT
@@ -195,7 +196,11 @@ class AppointmentService(
             appointment.addNotes(uao.notes)
         }
 
-        uao.outcome.applyTo(appointment)
+        try {
+            uao.outcome.applyTo(appointment)
+        } catch (e: OutcomeScenarioNotMapped) {
+            throw IgnorableMessageException(e.message ?: "Unable to apply outcome")
+        }
     }
 
     private fun handleNonCompliance(appointment: Contact) {
@@ -274,10 +279,12 @@ class AppointmentService(
             NoSessionReasonType.POP_UNACCEPTABLE -> Code.FAILED_TO_COMPLY
             NoSessionReasonType.POP_ACCEPTABLE -> Code.APPOINTMENT_KEPT
             NoSessionReasonType.LOGISTICS -> Code.SENT_HOME
-            else -> throw IllegalArgumentException("Outcome Scenario Not Mapped: $outcome")
+            else -> throw OutcomeScenarioNotMapped(outcome)
         }
     }
 }
+
+class OutcomeScenarioNotMapped(val outcome: Outcome) : IllegalArgumentException("Outcome Scenario Not Mapped: $outcome")
 
 data class UpdateAppointmentOutcome(
     val id: UUID,
