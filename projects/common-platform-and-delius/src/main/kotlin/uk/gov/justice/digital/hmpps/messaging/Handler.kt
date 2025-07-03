@@ -148,8 +148,31 @@ class Handler(
 
     private fun findMainOffence(remandedOffences: List<HearingOffence>): HearingOffence? {
         return remandedOffences.minByOrNull {
-            val offenceCode = it.offenceCode?.let { code -> offenceService.getOffenceHomeOfficeCodeByCJACode(code) }
-            offenceService.priorityMap[offenceCode] ?: Int.MAX_VALUE
+            val homeOfficeCode = it.offenceCode?.let { code -> offenceService.getOffenceHomeOfficeCodeByCJACode(code) }
+
+            // If home office offence code is 222/22 ('Not Known')
+            if (homeOfficeCode == "22222") {
+                telemetryService.trackEvent(
+                    "OffenceCodeIgnored", mapOf(
+                        "offenceCode" to it.offenceCode,
+                        "homeOfficeCode" to homeOfficeCode
+                    )
+                )
+                return null
+            }
+
+            // If CJA offence code suffix is 500 or above
+            if (it.offenceCode?.takeLast(3)?.toIntOrNull()?.let { suffix -> suffix >= 500 } == true) {
+                telemetryService.trackEvent(
+                    "OffenceCodeIgnored", mapOf(
+                        "offenceCode" to it.offenceCode,
+                        "homeOfficeCode" to homeOfficeCode
+                    )
+                )
+                return null
+            }
+
+            offenceService.priorityMap[homeOfficeCode] ?: Int.MAX_VALUE
         }
     }
 
