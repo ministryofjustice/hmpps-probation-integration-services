@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.messaging
 import org.springframework.stereotype.Component
 import uk.gov.justice.digital.hmpps.converter.NotificationConverter
 import uk.gov.justice.digital.hmpps.datetime.ZonedDateTimeDeserializer
+import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException
 import uk.gov.justice.digital.hmpps.integrations.delius.DeliusValidationError
 import uk.gov.justice.digital.hmpps.integrations.delius.RiskAssessmentService
 import uk.gov.justice.digital.hmpps.integrations.delius.RiskScoreService
@@ -61,6 +62,11 @@ class Handler(
                         mapOf("reason" to dve.message) + message.telemetryProperties()
                     )
                     if (!dve.ignored()) throw dve
+                } catch (e: IgnorableMessageException) {
+                    telemetryService.trackEvent(
+                        "AddOrUpdateRiskAssessmentRejected",
+                        mapOf("reason" to e.message) + message.telemetryProperties()
+                    )
                 }
             }
         }
