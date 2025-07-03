@@ -92,10 +92,10 @@ components:
           format: double
         limitedAccess:
           $ref: "#/components/schemas/LimitedAccessDetail"
-        age:
+        ageAtRelease:
           type: integer
           format: int64
-        ageAtRelease:
+        age:
           type: integer
           format: int64
       required:
