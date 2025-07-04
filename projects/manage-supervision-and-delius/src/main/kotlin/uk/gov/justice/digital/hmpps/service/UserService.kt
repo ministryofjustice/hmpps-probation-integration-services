@@ -211,7 +211,6 @@ class UserService(
 
         val defaultTeamId = ldapTemplate.findPreferenceByUsername(username, "defaultTeam")?.toLongOrNull()
 
-
         val providers = probationAreaUserRepository.findByUsername(username)
             .map { Provider(it.id.provider.code, it.id.provider.description) }
 
@@ -228,10 +227,20 @@ class UserService(
         val teamSearch = team ?: teamCode
         val users = staffUserRepository.findStaffByTeam(teamSearch).map { it.toUser() }
 
-        return UserProviderResponse(getDefaultUserDetails(username, homeArea, providers, defaultTeamId), providers, teams, users)
+        return UserProviderResponse(
+            getDefaultUserDetails(username, homeArea, providers, defaultTeamId),
+            providers,
+            teams,
+            users
+        )
     }
 
-    fun getDefaultUserDetails(username: String, homeArea: String, providers: List<Provider>, defaultTeamId: Long?): DefaultUserDetails {
+    fun getDefaultUserDetails(
+        username: String,
+        homeArea: String,
+        providers: List<Provider>,
+        defaultTeamId: Long?
+    ): DefaultUserDetails {
         val team = defaultTeamId?.let {
             teamRepository.getByTeamById(it)
         }?.toTeam() ?: teamRepository.findByUsernameAndProvider(username, homeArea)[0].toTeam()
