@@ -5,6 +5,7 @@ import com.asyncapi.kotlinasyncapi.annotation.channel.Message
 import com.asyncapi.kotlinasyncapi.annotation.channel.Publish
 import org.springframework.stereotype.Component
 import uk.gov.justice.digital.hmpps.converter.NotificationConverter
+import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException
 import uk.gov.justice.digital.hmpps.exception.UnprocessableException
 import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
 import uk.gov.justice.digital.hmpps.message.Notification
@@ -76,6 +77,8 @@ interface DomainEventHandler {
         block(event)
     } catch (upe: UnprocessableException) {
         Rejected(upe, event.commonFields() + upe.properties)
+    } catch (ime: IgnorableMessageException) {
+        Rejected(ime, event.commonFields() + ime.additionalProperties)
     } catch (e: Exception) {
         Failure(e, event.commonFields() + ("message" to (e.message ?: "")))
     }
