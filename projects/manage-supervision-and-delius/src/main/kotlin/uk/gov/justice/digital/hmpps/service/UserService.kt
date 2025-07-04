@@ -209,6 +209,9 @@ class UserService(
         val homeArea = ldapTemplate.findAttributeByUsername(username, "userHomeArea")
             ?: throw NotFoundException("No home area found for $username")
 
+        val defaultTeamId = ldapTemplate.findPreferenceByUsername(username, "defaultTeam")?.toLongOrNull()
+
+
         val providers = probationAreaUserRepository.findByUsername(username)
             .map { Provider(it.id.provider.code, it.id.provider.description) }
 
@@ -216,7 +219,14 @@ class UserService(
 
         val teams = teamRepository.findByProviderCode(regionSearch).map { it.toTeam() }
 
-        val users = staffUserRepository.findStaffByTeam(team ?: teams.first().code).map { it.toUser() }
+        val defaultCode = if (region == null && team == null) {
+            defaultTeamId?.let {
+                teamRepository.getByTeamById(it)
+            }?.code
+        } else teams.first().code
+
+        val teamSearch = team ?: defaultCode!!
+        val users = staffUserRepository.findStaffByTeam(teamSearch).map { it.toUser() }
 
         return UserProviderResponse(getDefaultUserDetails(username, homeArea, providers), providers, teams, users)
     }
