@@ -195,6 +195,30 @@ internal class HandlerTest {
         verify(notifier).addressCreated(any())
     }
 
+    @Test
+    fun `Offences with home office code 22222 are ignored`() {
+        probationSearchMatchNotFound()
+        featureFlagIsEnabled(true)
+        whenever(offenceService.getOffenceHomeOfficeCodeByCJACode("AA00000")).thenReturn("22222")
+
+        val notification = Notification(message = MessageGenerator.COMMON_PLATFORM_EVENT)
+        handler.handle(notification)
+
+        verify(telemetryService).trackEvent(eq("OffenceCodeIgnored"), anyMap(), anyMap())
+    }
+
+    @Test
+    fun `Offences with CJA code suffix greater 500 are ignored`() {
+        probationSearchMatchNotFound()
+        featureFlagIsEnabled(true)
+        whenever(offenceService.getOffenceHomeOfficeCodeByCJACode("AA99999")).thenReturn("22222")
+
+        val notification = Notification(message = MessageGenerator.COMMON_PLATFORM_EVENT_UNKNOWN_OFFENCE)
+        handler.handle(notification)
+
+        verify(telemetryService).trackEvent(eq("OffenceCodeIgnored"), anyMap(), anyMap())
+    }
+
     private fun featureFlagIsEnabled(flag: Boolean) {
         whenever(featureFlags.enabled("common-platform-record-creation-toggle")).thenReturn(flag)
     }

@@ -147,7 +147,7 @@ class Handler(
     }
 
     private fun findMainOffence(remandedOffences: List<HearingOffence>): HearingOffence? {
-        return remandedOffences.minByOrNull {
+        return remandedOffences.map {
             val homeOfficeCode = it.offenceCode?.let { code -> offenceService.getOffenceHomeOfficeCodeByCJACode(code) }
 
             // If home office offence code is 222/22 ('Not Known')
@@ -172,8 +172,9 @@ class Handler(
                 return null
             }
 
-            offenceService.priorityMap[homeOfficeCode] ?: Int.MAX_VALUE
+            it to (offenceService.priorityMap[homeOfficeCode] ?: Int.MAX_VALUE)
         }
+        .minByOrNull { (_, priority) -> priority }?.first
     }
 
     private fun insertPersonAndEvent(insertRemandDTO: InsertRemandDTO) {
