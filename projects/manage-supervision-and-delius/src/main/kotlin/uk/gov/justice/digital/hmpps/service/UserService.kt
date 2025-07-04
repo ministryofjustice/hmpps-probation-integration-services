@@ -219,13 +219,13 @@ class UserService(
 
         val teams = teamRepository.findByProviderCode(regionSearch).map { it.toTeam() }
 
-        val defaultCode = if (region == null && team == null) {
+        val teamCode = if (region == null && team == null) {
             defaultTeamId?.let {
                 teamRepository.getByTeamById(it)
-            }?.code
+            }?.code ?: teams.first().code
         } else teams.first().code
 
-        val teamSearch = team ?: defaultCode!!
+        val teamSearch = team ?: teamCode
         val users = staffUserRepository.findStaffByTeam(teamSearch).map { it.toUser() }
 
         return UserProviderResponse(getDefaultUserDetails(username, homeArea, providers, defaultTeamId), providers, teams, users)
