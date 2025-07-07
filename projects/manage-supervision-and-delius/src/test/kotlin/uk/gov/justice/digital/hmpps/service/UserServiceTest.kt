@@ -146,8 +146,6 @@ internal class UserServiceTest {
         assertThat(res.team.code, equalTo(DEFAULT_TEAM.code))
     }
 
-
-
     @Test
     fun `get user providers without query parameters`() {
 
@@ -162,14 +160,17 @@ internal class UserServiceTest {
         val teams = listOf(
             Team(1, "t01", "team1", listOf(DEFAULT_STAFF, STAFF_1), DEFAULT_PROVIDER, LocalDate.now()),
             Team(2, "t02", "team2", listOf(DEFAULT_STAFF, STAFF_1), DEFAULT_PROVIDER, LocalDate.now()),
-            DEFAULT_TEAM)
+            DEFAULT_TEAM
+        )
         whenever(ldapTemplate.search(any(), any<AttributesMapper<String?>>()))
             .thenReturn(listOf(OffenderManagerGenerator.PAU_USER_RECORD1.id.provider.code))
             .thenReturn(listOf("7"))
 
         whenever(probationAreaUserRepository.findByUsername(STAFF_USER_1.username)).thenReturn(probationAreaUsers)
         whenever(teamRepository.findTeamById(7)).thenReturn(DEFAULT_TEAM)
-        whenever(teamRepository.findByProviderCode(OffenderManagerGenerator.PAU_USER_RECORD1.id.provider.code)).thenReturn(teams)
+        whenever(teamRepository.findByProviderCode(OffenderManagerGenerator.PAU_USER_RECORD1.id.provider.code)).thenReturn(
+            teams
+        )
         whenever(staffUserRepository.findStaffByTeam(DEFAULT_TEAM.code)).thenReturn(listOf(staffRole))
 
         val expected = UserProviderResponse(
@@ -192,7 +193,8 @@ internal class UserServiceTest {
 
         val staffRole = StaffRole("username", "surname", "forename", "role")
         val teams = listOf(
-            Team(1, "t01", "team1", listOf(DEFAULT_STAFF, STAFF_1), DEFAULT_PROVIDER, LocalDate.now()))
+            Team(1, "t01", "team1", listOf(DEFAULT_STAFF, STAFF_1), DEFAULT_PROVIDER, LocalDate.now())
+        )
 
         whenever(ldapTemplate.search(any(), any<AttributesMapper<String?>>()))
             .thenReturn(listOf(OffenderManagerGenerator.PAU_USER_RECORD1.id.provider.code))
@@ -223,7 +225,8 @@ internal class UserServiceTest {
 
         val staffRole = StaffRole("username", "surname", "forename", "role")
         val teams = listOf(
-            Team(1, "t01", "team1", listOf(DEFAULT_STAFF, STAFF_1), DEFAULT_PROVIDER, LocalDate.now()))
+            Team(1, "t01", "team1", listOf(DEFAULT_STAFF, STAFF_1), DEFAULT_PROVIDER, LocalDate.now())
+        )
 
         whenever(ldapTemplate.search(any(), any<AttributesMapper<String?>>()))
             .thenReturn(listOf(OffenderManagerGenerator.PAU_USER_RECORD1.id.provider.code))

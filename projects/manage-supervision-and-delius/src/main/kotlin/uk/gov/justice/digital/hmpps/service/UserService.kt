@@ -205,7 +205,7 @@ class UserService(
         } ?: UserAppointments(Name(user.forename, surname = user.surname), totalAppointments = 0, totalOutcomes = 0)
     }
 
-    fun getProvidersForUser(username: String, region: String? = null, team: String? = null  ): UserProviderResponse {
+    fun getProvidersForUser(username: String, region: String? = null, team: String? = null): UserProviderResponse {
         val homeArea = ldapTemplate.findAttributeByUsername(username, "userHomeArea")
             ?: throw NotFoundException("No home area found for $username")
 
@@ -235,14 +235,14 @@ class UserService(
         username: String,
         homeArea: String,
         providers: List<Provider>,
-        defaultTeam:Team?
+        defaultTeam: Team?
     ): DefaultUserDetails {
         val team = defaultTeam ?: getDefaultTeamByLdap(username)
 
         return DefaultUserDetails(username, providers.first { it.code == homeArea }.name, team?.description)
     }
 
-    fun getDefaultTeamByLdap(username: String):Team? {
+    fun getDefaultTeamByLdap(username: String): Team? {
         val defaultTeamId = ldapTemplate.findPreferenceByUsername(username, "defaultTeam")?.toLongOrNull()
         return defaultTeamId?.let { teamRepository.getByTeamById(it) }?.toTeam()
     }
