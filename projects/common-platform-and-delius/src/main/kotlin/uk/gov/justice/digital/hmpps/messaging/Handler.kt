@@ -174,7 +174,7 @@ class Handler(
 
             it to (offenceService.priorityMap[homeOfficeCode] ?: Int.MAX_VALUE)
         }
-        .minByOrNull { (_, priority) -> priority }?.first
+            .minByOrNull { (_, priority) -> priority }?.first
     }
 
     private fun insertPersonAndEvent(insertRemandDTO: InsertRemandDTO) {
