@@ -211,7 +211,7 @@ internal class HandlerTest {
     fun `Offences with CJA code suffix greater 500 are ignored`() {
         probationSearchMatchNotFound()
         featureFlagIsEnabled(true)
-        whenever(offenceService.getOffenceHomeOfficeCodeByCJACode("AA99999")).thenReturn("22222")
+        whenever(offenceService.getOffenceHomeOfficeCodeByCJACode("AA99999")).thenReturn("00100")
 
         val notification = Notification(message = MessageGenerator.COMMON_PLATFORM_EVENT_UNKNOWN_OFFENCE)
         handler.handle(notification)
