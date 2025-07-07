@@ -234,6 +234,7 @@ internal class UserServiceTest {
         whenever(probationAreaUserRepository.findByUsername(STAFF_USER_1.username)).thenReturn(probationAreaUsers)
         whenever(teamRepository.findByProviderCode(PROVIDER_3.code)).thenReturn(teams)
         whenever(staffUserRepository.findStaffByTeam("t01")).thenReturn(listOf(staffRole))
+        whenever(staffUserRepository.findTeamsByUsernameAndProviderCode(STAFF_USER_1.username, OffenderManagerGenerator.PAU_USER_RECORD1.id.provider.code)).thenReturn(emptyList())
 
         val expected = UserProviderResponse(
             DefaultUserDetails(STAFF_USER_1.username, DEFAULT_PROVIDER.description, null),

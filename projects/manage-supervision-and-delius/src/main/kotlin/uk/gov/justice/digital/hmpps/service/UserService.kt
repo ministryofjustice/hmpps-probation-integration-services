@@ -25,6 +25,7 @@ import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.LdapUser
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.StaffUserRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.getByUserAndProvider
 import uk.gov.justice.digital.hmpps.integrations.delius.user.entity.*
 import uk.gov.justice.digital.hmpps.ldap.findAttributeByUsername
 import uk.gov.justice.digital.hmpps.ldap.findByUsername
@@ -245,7 +246,7 @@ class UserService(
     fun getDefaultTeam(username: String, homeArea: String): Team? {
         val defaultTeamId = ldapTemplate.findPreferenceByUsername(username, "defaultTeam")?.toLongOrNull()
         return defaultTeamId?.let { teamRepository.getByTeamById(it) }?.toTeam() ?:
-        staffUserRepository.findTeamsByUsernameAndProviderCode(username, homeArea)?.get(0)?.toTeam()
+        staffUserRepository.getByUserAndProvider(username, homeArea)?.get(0)?.toTeam()
     }
 
     fun getUser(username: String) =

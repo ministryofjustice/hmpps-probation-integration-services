@@ -230,7 +230,7 @@ interface StaffUserRepository : JpaRepository<StaffUser, Long> {
             WHERE UPPER(u.username) = UPPER(:username)
             AND t.provider.code = :providerCode
         """, nativeQuery = true)
-    fun findTeamsByUsernameAndProviderCode(username: String, teamCode: String): List<uk.gov.justice.digital.hmpps.integrations.delius.user.entity.Team>
+    fun findTeamsByUsernameAndProviderCode(username: String, providerCode: String): List<uk.gov.justice.digital.hmpps.integrations.delius.user.entity.Team>
 }
 
 interface StaffAndRole {
@@ -248,6 +248,14 @@ fun StaffUserRepository.getUserAndTeamAssociation(username: String, teamCode: St
         "User", "username",
         "$username in team $teamCode"
     )
+
+fun StaffUserRepository.getByUserAndProvider(username: String, providerCode: String): List<uk.gov.justice.digital.hmpps.integrations.delius.user.entity.Team>? {
+    val teams = findTeamsByUsernameAndProviderCode(username, providerCode)
+    if (teams.isEmpty()) {
+        return null
+    }
+    return teams
+}
 
 interface UserTeam {
     val userId: Long
