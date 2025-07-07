@@ -205,30 +205,46 @@ class UserService(
         } ?: UserAppointments(Name(user.forename, surname = user.surname), totalAppointments = 0, totalOutcomes = 0)
     }
 
-    fun getProvidersForUser(username: String, region: String?, team: String?): UserProviderResponse {
+    fun getProvidersForUser(username: String, region: String? = null, team: String? = null): UserProviderResponse {
         val homeArea = ldapTemplate.findAttributeByUsername(username, "userHomeArea")
             ?: throw NotFoundException("No home area found for $username")
 
         val providers = probationAreaUserRepository.findByUsername(username)
-            .map { Provider(it.id.provider.code, it.id.provider.description) }
+            .map { it.toProvider() }
 
         val regionSearch = region ?: homeArea
 
+        val defaultTeam = if (region == null && team == null) {
+            getDefaultTeamByLdap(username)
+        } else null
+
         val teams = teamRepository.findByProviderCode(regionSearch).map { it.toTeam() }
 
-        val users = staffUserRepository.findStaffByTeam(team ?: teams.first().code).map { it.toUser() }
+        val teamSearch = team ?: defaultTeam?.code ?: teams.first().code
+        val users = staffUserRepository.findStaffByTeam(teamSearch).map { it.toUser() }
 
-        return UserProviderResponse(getDefaultUserDetails(username, homeArea, providers), providers, teams, users)
+        return UserProviderResponse(
+            getDefaultUserDetails(username, homeArea, providers, defaultTeam),
+            providers,
+            teams,
+            users
+        )
     }
 
-    fun getDefaultUserDetails(username: String, homeArea: String, providers: List<Provider>): DefaultUserDetails {
+    fun getDefaultUserDetails(
+        username: String,
+        homeArea: String,
+        providers: List<Provider>,
+        defaultTeam: Team?
+    ): DefaultUserDetails {
+        val team = defaultTeam ?: getDefaultTeamByLdap(username)
+
+        return DefaultUserDetails(username, providers.first { it.code == homeArea }.name, team?.description)
+    }
+
+    fun getDefaultTeamByLdap(username: String): Team? {
         val defaultTeamId = ldapTemplate.findPreferenceByUsername(username, "defaultTeam")?.toLongOrNull()
-
-        val team = defaultTeamId?.let {
-            teamRepository.getByTeamById(it)
-        }?.toTeam() ?: teamRepository.findByUsernameAndProvider(username, homeArea)[0].toTeam()
-
-        return DefaultUserDetails(username, providers.first { it.code == homeArea }.name, team.description)
+        return defaultTeamId?.let { teamRepository.getByTeamById(it) }?.toTeam()
     }
 
     fun getUser(username: String) =
@@ -333,3 +349,5 @@ private fun AppointmentEntity.toUserAppointment() = UserAppointment(
     ) else null,
     location
 )
+
+fun ProbationAreaUser.toProvider() = Provider(id.provider.code, id.provider.description)
