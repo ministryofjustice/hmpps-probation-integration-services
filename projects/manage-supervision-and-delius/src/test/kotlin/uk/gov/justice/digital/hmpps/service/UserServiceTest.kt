@@ -150,7 +150,8 @@ internal class UserServiceTest {
 
     @Test
     fun `get user providers without query parameters`() {
-        val staff = Staff("PS", STAFF_USER_1.forename, STAFF_USER_1.surname, DEFAULT_PROVIDER, emptyList(), emptyList(), 1)
+        val staff =
+            Staff("PS", STAFF_USER_1.forename, STAFF_USER_1.surname, DEFAULT_PROVIDER, emptyList(), emptyList(), 1)
         val user = User(
             id = 1,
             forename = STAFF_USER_1.forename,
@@ -211,7 +212,8 @@ internal class UserServiceTest {
             DEFAULT_PROVIDER,
             emptyList(),
             teams = teams,
-            1)
+            1
+        )
         val user = User(
             id = 1,
             forename = STAFF_USER_1.forename,
@@ -252,7 +254,8 @@ internal class UserServiceTest {
 
     @Test
     fun `get user providers with region and team query parameters`() {
-        val staff = Staff("PS", STAFF_USER_1.forename, STAFF_USER_1.surname, DEFAULT_PROVIDER, emptyList(), emptyList(), 1)
+        val staff =
+            Staff("PS", STAFF_USER_1.forename, STAFF_USER_1.surname, DEFAULT_PROVIDER, emptyList(), emptyList(), 1)
         val user = User(
             id = 1,
             forename = STAFF_USER_1.forename,
