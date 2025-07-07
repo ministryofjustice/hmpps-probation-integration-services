@@ -45,7 +45,7 @@ internal class IntegrationTest {
 
     @BeforeEach
     fun setup() {
-        whenever(upwAppointmentRepository.getUnpaidWorkAppointments(any(), eq("N56"), any())).thenReturn(
+        whenever(upwAppointmentRepository.getUnpaidWorkAppointments(any(), eq("N56"), any(), any())).thenReturn(
             listOf(
                 object : UnpaidWorkAppointment {
                     override val firstName = "Test"
