@@ -93,7 +93,15 @@ class Staff(
     val startDate: LocalDate,
 
     @Column(name = "end_date")
-    val endDate: LocalDate? = null
+    val endDate: LocalDate? = null,
+
+    @ManyToMany
+    @JoinTable(
+        name = "staff_team",
+        joinColumns = [JoinColumn(name = "staff_id", insertable = false, updatable = false)],
+        inverseJoinColumns = [JoinColumn(name = "team_id", insertable = false, updatable = false)]
+    )
+    val teams: List<Team>,
 )
 
 @Entity

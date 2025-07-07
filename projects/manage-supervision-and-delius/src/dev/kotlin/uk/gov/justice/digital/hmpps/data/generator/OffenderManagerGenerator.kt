@@ -49,7 +49,8 @@ object OffenderManagerGenerator {
         "Parker",
         DEFAULT_PROVIDER,
         role = STAFF_ROLE,
-        startDate = LocalDate.now()
+        startDate = LocalDate.now(),
+        teams = listOf(TEAM, TEAM_1, TEAM_2)
     )
     val STAFF_2 = Staff(
         IdGenerator.getAndIncrement(),
@@ -57,14 +58,16 @@ object OffenderManagerGenerator {
         "Wayne",
         DEFAULT_PROVIDER,
         role = STAFF_ROLE,
-        startDate = LocalDate.now().minusDays(1)
+        startDate = LocalDate.now().minusDays(1),
+        teams = listOf(TEAM_1)
     )
     val STAFF_3 = Staff(
         IdGenerator.getAndIncrement(),
         "Clark",
         "Kent",
         DEFAULT_PROVIDER,
-        startDate = LocalDate.now().minusDays(2)
+        startDate = LocalDate.now().minusDays(2),
+        teams = listOf(TEAM_2)
     )
 
     val STAFF_USER_1 = StaffUser(IdGenerator.getAndIncrement(), STAFF_1, "peter-parker", "peter", surname = "parker")
