@@ -1,0 +1,9 @@
+database:
+  access:
+    username_key: /accredited-programmes-and-delius/db-username
+    password_key: /accredited-programmes-and-delius/db-password
+
+  audit:
+    username: AccreditedProgrammesAndDelius
+    forename: Accredited Programmes
+    surname: Service
