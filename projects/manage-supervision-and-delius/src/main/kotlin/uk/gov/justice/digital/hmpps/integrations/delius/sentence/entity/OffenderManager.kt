@@ -93,15 +93,7 @@ class Staff(
     val startDate: LocalDate,
 
     @Column(name = "end_date")
-    val endDate: LocalDate? = null,
-
-    @ManyToMany
-    @JoinTable(
-        name = "staff_team",
-        joinColumns = [JoinColumn(name = "staff_id", insertable = false, updatable = false)],
-        inverseJoinColumns = [JoinColumn(name = "team_id", insertable = false, updatable = false)]
-    )
-    val teams: List<Team>,
+    val endDate: LocalDate? = null
 )
 
 @Entity
@@ -227,6 +219,18 @@ interface StaffUserRepository : JpaRepository<StaffUser, Long> {
           """, nativeQuery = true
     )
     fun findStaffByTeam(teamCode: String): List<StaffAndRole>
+
+    @Query(
+        """
+            SELECT t
+            FROM StaffUser u
+            JOIN u.staff st
+            JOIN ContactStaffTeam cst ON cst.id.staffId = st.id
+            JOIN Team t ON t.id = cst.id.team.id
+            WHERE UPPER(u.username) = UPPER(:username)
+            AND t.provider.code = :providerCode
+        """, nativeQuery = true)
+    fun findTeamsByUsernameAndProviderCode(username: String, teamCode: String): List<uk.gov.justice.digital.hmpps.integrations.delius.user.entity.Team>
 }
 
 interface StaffAndRole {

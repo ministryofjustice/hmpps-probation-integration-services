@@ -35,11 +35,9 @@ import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.StaffAnd
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.StaffUserRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.user.entity.CaseloadRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.user.entity.ProbationAreaUserRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.user.entity.Staff
 import uk.gov.justice.digital.hmpps.integrations.delius.user.entity.StaffRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.user.entity.Team
 import uk.gov.justice.digital.hmpps.integrations.delius.user.entity.TeamRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.user.entity.User
 import uk.gov.justice.digital.hmpps.integrations.delius.user.entity.UserRepository
 import java.time.LocalDate
 
@@ -150,14 +148,6 @@ internal class UserServiceTest {
 
     @Test
     fun `get user providers without query parameters`() {
-        val staff = Staff("PS", STAFF_USER_1.forename, STAFF_USER_1.surname, DEFAULT_PROVIDER, emptyList(), emptyList(), 1)
-        val user = User(
-            id = 1,
-            forename = STAFF_USER_1.forename,
-            surname = STAFF_USER_1.surname,
-            staff = staff,
-            username = STAFF_USER_1.username,
-        )
 
         val probationAreaUsers = listOf(
             OffenderManagerGenerator.PAU_USER_RECORD1,
@@ -172,8 +162,6 @@ internal class UserServiceTest {
             Team(2, "t02", "team2", listOf(DEFAULT_STAFF, STAFF_1), DEFAULT_PROVIDER, LocalDate.now()),
             DEFAULT_TEAM
         )
-
-        whenever(userRepository.findUserByUsername(STAFF_USER_1.username)).thenReturn(user)
         whenever(ldapTemplate.search(any(), any<AttributesMapper<String?>>()))
             .thenReturn(listOf(OffenderManagerGenerator.PAU_USER_RECORD1.id.provider.code))
             .thenReturn(listOf("7"))
@@ -197,69 +185,7 @@ internal class UserServiceTest {
     }
 
     @Test
-    fun `get user providers without query parameters no ldap team`() {
-        val teams = listOf(
-            Team(1, "t01", "team1", listOf(DEFAULT_STAFF, STAFF_1), DEFAULT_PROVIDER, LocalDate.now()),
-            Team(2, "t02", "team2", listOf(DEFAULT_STAFF, STAFF_1), DEFAULT_PROVIDER, LocalDate.now()),
-            DEFAULT_TEAM
-        )
-
-        val staff = Staff(
-            "PS",
-            STAFF_USER_1.forename,
-            STAFF_USER_1.surname,
-            DEFAULT_PROVIDER,
-            emptyList(),
-            teams = teams,
-            1)
-        val user = User(
-            id = 1,
-            forename = STAFF_USER_1.forename,
-            surname = STAFF_USER_1.surname,
-            staff = staff,
-            username = STAFF_USER_1.username,
-        )
-
-        val probationAreaUsers = listOf(
-            OffenderManagerGenerator.PAU_USER_RECORD1,
-            OffenderManagerGenerator.PAU_USER_RECORD2,
-            OffenderManagerGenerator.PAU_USER_RECORD3,
-            OffenderManagerGenerator.PAU_USER_RECORD4,
-        )
-
-        val staffRole = StaffRole("username", "surname", "forename", "role")
-
-        whenever(userRepository.findUserByUsername(STAFF_USER_1.username)).thenReturn(user)
-        whenever(ldapTemplate.search(any(), any<AttributesMapper<String?>>()))
-            .thenReturn(listOf(OffenderManagerGenerator.PAU_USER_RECORD1.id.provider.code))
-
-        whenever(probationAreaUserRepository.findByUsername(STAFF_USER_1.username)).thenReturn(probationAreaUsers)
-        whenever(teamRepository.findByProviderCode(OffenderManagerGenerator.PAU_USER_RECORD1.id.provider.code)).thenReturn(
-            teams
-        )
-        whenever(staffUserRepository.findStaffByTeam(teams[0].code)).thenReturn(listOf(staffRole))
-
-        val expected = UserProviderResponse(
-            DefaultUserDetails(STAFF_USER_1.username, DEFAULT_PROVIDER.description, teams[0].description),
-            probationAreaUsers.map { it.toProvider() },
-            teams.map { it.toTeam() },
-            listOf(staffRole.toUser())
-        )
-        val response = service.getProvidersForUser(STAFF_USER_1.username)
-
-        assertEquals(expected, response)
-    }
-
-    @Test
     fun `get user providers with region and team query parameters`() {
-        val staff = Staff("PS", STAFF_USER_1.forename, STAFF_USER_1.surname, DEFAULT_PROVIDER, emptyList(), emptyList(), 1)
-        val user = User(
-            id = 1,
-            forename = STAFF_USER_1.forename,
-            surname = STAFF_USER_1.surname,
-            staff = staff,
-            username = STAFF_USER_1.username,
-        )
 
         val probationAreaUsers = listOf(
             OffenderManagerGenerator.PAU_USER_RECORD1
@@ -270,10 +196,10 @@ internal class UserServiceTest {
             Team(1, "t01", "team1", listOf(DEFAULT_STAFF, STAFF_1), DEFAULT_PROVIDER, LocalDate.now())
         )
 
-        whenever(userRepository.findUserByUsername(STAFF_USER_1.username)).thenReturn(user)
         whenever(ldapTemplate.search(any(), any<AttributesMapper<String?>>()))
             .thenReturn(listOf(OffenderManagerGenerator.PAU_USER_RECORD1.id.provider.code))
             .thenReturn(listOf("7"))
+
         whenever(probationAreaUserRepository.findByUsername(STAFF_USER_1.username)).thenReturn(probationAreaUsers)
         whenever(teamRepository.findByProviderCode(PROVIDER_2.code)).thenReturn(teams)
         whenever(staffUserRepository.findStaffByTeam(TEAM_1.code)).thenReturn(listOf(staffRole))
@@ -292,12 +218,6 @@ internal class UserServiceTest {
 
     @Test
     fun `get user providers with region query parameter`() {
-        val user = User(
-            id = 1,
-            forename = STAFF_USER_1.forename,
-            surname = STAFF_USER_1.surname,
-            username = STAFF_USER_1.username,
-        )
 
         val probationAreaUsers = listOf(
             OffenderManagerGenerator.PAU_USER_RECORD1
@@ -308,9 +228,9 @@ internal class UserServiceTest {
             Team(1, "t01", "team1", listOf(DEFAULT_STAFF, STAFF_1), DEFAULT_PROVIDER, LocalDate.now())
         )
 
-        whenever(userRepository.findUserByUsername(STAFF_USER_1.username)).thenReturn(user)
         whenever(ldapTemplate.search(any(), any<AttributesMapper<String?>>()))
             .thenReturn(listOf(OffenderManagerGenerator.PAU_USER_RECORD1.id.provider.code))
+
         whenever(probationAreaUserRepository.findByUsername(STAFF_USER_1.username)).thenReturn(probationAreaUsers)
         whenever(teamRepository.findByProviderCode(PROVIDER_3.code)).thenReturn(teams)
         whenever(staffUserRepository.findStaffByTeam("t01")).thenReturn(listOf(staffRole))

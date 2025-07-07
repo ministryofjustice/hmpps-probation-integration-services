@@ -206,8 +206,6 @@ class UserService(
     }
 
     fun getProvidersForUser(username: String, region: String? = null, team: String? = null): UserProviderResponse {
-        val user = getUser(username)
-
         val homeArea = ldapTemplate.findAttributeByUsername(username, "userHomeArea")
             ?: throw NotFoundException("No home area found for $username")
 
@@ -217,7 +215,7 @@ class UserService(
         val regionSearch = region ?: homeArea
 
         val defaultTeam = if (region == null && team == null) {
-            getDefaultTeamForUser(user)
+            getDefaultTeam(username, homeArea)
         } else null
 
         val teams = teamRepository.findByProviderCode(regionSearch).map { it.toTeam() }
@@ -226,7 +224,7 @@ class UserService(
         val users = staffUserRepository.findStaffByTeam(teamSearch).map { it.toUser() }
 
         return UserProviderResponse(
-            getDefaultUserDetails(user, homeArea, providers, defaultTeam),
+            getDefaultUserDetails(username, homeArea, providers, defaultTeam),
             providers,
             teams,
             users
@@ -234,19 +232,20 @@ class UserService(
     }
 
     fun getDefaultUserDetails(
-        user: User,
+        username: String,
         homeArea: String,
         providers: List<Provider>,
         defaultTeam: Team?
     ): DefaultUserDetails {
-        val team = defaultTeam ?: getDefaultTeamForUser(user)
+        val team = defaultTeam ?: getDefaultTeam(username, homeArea)
 
-        return DefaultUserDetails(user.username, providers.first { it.code == homeArea }.name, team?.description)
+        return DefaultUserDetails(username, providers.first { it.code == homeArea }.name, team?.description)
     }
 
-    fun getDefaultTeamForUser(user: User): Team? {
-        val defaultTeamId = ldapTemplate.findPreferenceByUsername(user.username, "defaultTeam")?.toLongOrNull()
-        return defaultTeamId?.let { teamRepository.getByTeamById(it) }?.toTeam() ?: user.staff?.teams?.get(0)?.toTeam()
+    fun getDefaultTeam(username: String, homeArea: String): Team? {
+        val defaultTeamId = ldapTemplate.findPreferenceByUsername(username, "defaultTeam")?.toLongOrNull()
+        return defaultTeamId?.let { teamRepository.getByTeamById(it) }?.toTeam() ?:
+        staffUserRepository.findTeamsByUsernameAndProviderCode(username, homeArea)?.get(0)?.toTeam()
     }
 
     fun getUser(username: String) =
