@@ -172,7 +172,8 @@ class AppointmentIntegrationTest {
         val expected = StaffTeam(
             listOf(
                 OffenderManagerGenerator.STAFF_USER_1.toUser(),
-                unallocatedUser
+                unallocatedUser,
+                OffenderManagerGenerator.STAFF_USER_2.toUser(),
             )
         )
         assertEquals(expected, response)
