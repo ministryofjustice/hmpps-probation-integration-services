@@ -96,7 +96,7 @@ class Handler(
                     offence.judicialResults?.any { it.label == "Remanded in custody" } == true
                 }
 
-                val mainOffence = findMainOffence(remandedOffences) ?: return@forEach
+                val mainOffence = offenceService.findMainOffence(remandedOffences) ?: return@forEach
 
                 val caseUrn =
                     notification.message.hearing.prosecutionCases.find { it.defendants.contains(defendant) }?.prosecutionCaseIdentifier?.caseURN
@@ -144,37 +144,6 @@ class Handler(
             pncNumber = PncNumber.from(this.pncId)?.matchValue(),
             croNumber = this.croNumber
         )
-    }
-
-    private fun findMainOffence(remandedOffences: List<HearingOffence>): HearingOffence? {
-        return remandedOffences.map {
-            val homeOfficeCode = it.offenceCode?.let { code -> offenceService.getOffenceHomeOfficeCodeByCJACode(code) }
-
-            // If home office offence code is 222/22 ('Not Known')
-            if (homeOfficeCode == "22222") {
-                telemetryService.trackEvent(
-                    "OffenceCodeIgnored", mapOf(
-                        "offenceCode" to it.offenceCode,
-                        "homeOfficeCode" to homeOfficeCode
-                    )
-                )
-                return null
-            }
-
-            // If CJA offence code suffix is 500 or above
-            if (it.offenceCode?.takeLast(3)?.toIntOrNull()?.let { suffix -> suffix >= 500 } == true) {
-                telemetryService.trackEvent(
-                    "OffenceCodeIgnored", mapOf(
-                        "offenceCode" to it.offenceCode,
-                        "homeOfficeCode" to homeOfficeCode
-                    )
-                )
-                return null
-            }
-
-            it to (offenceService.priorityMap[homeOfficeCode] ?: Int.MAX_VALUE)
-        }
-            .minByOrNull { (_, priority) -> priority }?.first
     }
 
     private fun insertPersonAndEvent(insertRemandDTO: InsertRemandDTO) {
