@@ -16,7 +16,6 @@ import uk.gov.justice.digital.hmpps.converter.NotificationConverter
 import uk.gov.justice.digital.hmpps.data.generator.*
 import uk.gov.justice.digital.hmpps.dto.InsertEventResult
 import uk.gov.justice.digital.hmpps.dto.InsertPersonResult
-import uk.gov.justice.digital.hmpps.dto.InsertRemandDTO
 import uk.gov.justice.digital.hmpps.dto.InsertRemandResult
 import uk.gov.justice.digital.hmpps.flags.FeatureFlags
 import uk.gov.justice.digital.hmpps.integrations.delius.IDs
@@ -147,39 +146,6 @@ internal class HandlerTest {
     }
 
     @Test
-    fun `Main offence is set to the offence with the lowest priority`() {
-        probationSearchMatchNotFound()
-        featureFlagIsEnabled(true)
-        whenever(offenceService.getOffenceHomeOfficeCodeByCJACode("TN42001")).thenReturn("00100")
-        whenever(offenceService.getOffenceHomeOfficeCodeByCJACode("ZZ00120")).thenReturn("00200")
-        whenever(offenceService.priorityMap).thenReturn(mapOf("00100" to 50, "00200" to 20))
-        whenever(remandService.insertPersonOnRemand(any())).thenReturn(
-            InsertRemandResult(
-                InsertPersonResult(
-                    person = PersonGenerator.DEFAULT,
-                    personManager = PersonManagerGenerator.DEFAULT,
-                    equality = EqualityGenerator.DEFAULT,
-                    address = PersonAddressGenerator.MAIN_ADDRESS,
-                ),
-                InsertEventResult(
-                    EventGenerator.DEFAULT,
-                    MainOffenceGenerator.DEFAULT,
-                    CourtAppearanceGenerator.TRIAL_ADJOURNMENT,
-                    ContactGenerator.EAPP,
-                    OrderManagerGenerator.DEFAULT
-                )
-            )
-        )
-
-        val notification = Notification(message = MessageGenerator.COMMON_PLATFORM_EVENT_MULTIPLE_OFFENCES)
-        handler.handle(notification)
-
-        val captor = argumentCaptor<InsertRemandDTO>()
-        verify(remandService).insertPersonOnRemand(captor.capture())
-        assertThat(captor.firstValue.hearingOffence.offenceCode, equalTo("ZZ00120"))
-    }
-
-    @Test
     fun `domain event notifications sent when person record is created successfully`() {
         personOnRemandIsSuccessfullyCreated()
 
@@ -200,6 +166,17 @@ internal class HandlerTest {
     }
 
     private fun personOnRemandIsSuccessfullyCreated() {
+        whenever(offenceService.findMainOffence(any())).thenReturn(
+            HearingOffence(
+                id = "0",
+                offenceTitle = "Offence",
+                wording = "Offence",
+                offenceCode = "AA00000",
+                offenceLegislation = "",
+                listingNumber = 0
+            )
+        )
+
         whenever(remandService.insertPersonOnRemand(any())).thenReturn(
             InsertRemandResult(
                 InsertPersonResult(

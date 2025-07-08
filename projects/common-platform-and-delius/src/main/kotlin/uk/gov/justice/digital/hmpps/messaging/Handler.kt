@@ -96,7 +96,7 @@ class Handler(
                     offence.judicialResults?.any { it.label == "Remanded in custody" } == true
                 }
 
-                val mainOffence = findMainOffence(remandedOffences) ?: return@forEach
+                val mainOffence = offenceService.findMainOffence(remandedOffences) ?: return@forEach
 
                 val caseUrn =
                     notification.message.hearing.prosecutionCases.find { it.defendants.contains(defendant) }?.prosecutionCaseIdentifier?.caseURN
@@ -144,13 +144,6 @@ class Handler(
             pncNumber = PncNumber.from(this.pncId)?.matchValue(),
             croNumber = this.croNumber
         )
-    }
-
-    private fun findMainOffence(remandedOffences: List<HearingOffence>): HearingOffence? {
-        return remandedOffences.minByOrNull {
-            val offenceCode = it.offenceCode?.let { code -> offenceService.getOffenceHomeOfficeCodeByCJACode(code) }
-            offenceService.priorityMap[offenceCode] ?: Int.MAX_VALUE
-        }
     }
 
     private fun insertPersonAndEvent(insertRemandDTO: InsertRemandDTO) {

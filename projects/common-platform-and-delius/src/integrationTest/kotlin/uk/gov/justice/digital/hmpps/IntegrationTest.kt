@@ -260,6 +260,8 @@ internal class IntegrationTest {
     @Order(1)
     @Test
     fun `engagement created and address created sns messages are published on insert person`() {
+        mockS3Client()
+
         val notification = Notification(message = MessageGenerator.COMMON_PLATFORM_EVENT)
         channelManager.getChannel(queueName).publishAndWait(notification)
 
@@ -470,20 +472,7 @@ internal class IntegrationTest {
 
     @Test
     fun `Main offence is the offence with the lowest priority when message contains multiple offences`() {
-        val mockCsv = """
-            ho_offence_code,offence_desc,priority,offence_type,max_custodial_sentence
-            00100,Test offence 1,60,Type,30
-            00101,Test offence 2,20,Type,240
-            00102,Test offence 3,30,Type,100
-        """.trimIndent()
-        val inputStream = ByteArrayInputStream(mockCsv.toByteArray())
-        val responseStream = ResponseInputStream(GetObjectResponse.builder().build(), inputStream)
-        val request = GetObjectRequest.builder()
-            .bucket("offence-priority-bucket")
-            .key("offence_priority.csv")
-            .build()
-
-        whenever(s3Client.getObject(request)).thenReturn(responseStream)
+        mockS3Client()
 
         val notification = Notification(message = MessageGenerator.COMMON_PLATFORM_EVENT_MULTIPLE_OFFENCES)
         channelManager.getChannel(queueName).publishAndWait(notification)
@@ -548,6 +537,23 @@ internal class IntegrationTest {
         verify(personManagerRepository, never()).save(any())
         verify(auditedInteractionService, Mockito.never())
             .createAuditedInteraction(any(), any(), eq(AuditedInteraction.Outcome.SUCCESS), any(), anyOrNull())
+    }
+
+    private fun mockS3Client() {
+        val mockCsv = """
+            ho_offence_code,offence_desc,priority,offence_type,max_custodial_sentence
+            00100,Test offence 1,60,Type,30
+            00101,Test offence 2,20,Type,240
+            00102,Test offence 3,30,Type,100
+        """.trimIndent()
+        val inputStream = ByteArrayInputStream(mockCsv.toByteArray())
+        val responseStream = ResponseInputStream(GetObjectResponse.builder().build(), inputStream)
+        val request = GetObjectRequest.builder()
+            .bucket("offence-priority-bucket")
+            .key("offence_priority.csv")
+            .build()
+
+        whenever(s3Client.getObject(request)).thenReturn(responseStream)
     }
 
     @AfterEach
