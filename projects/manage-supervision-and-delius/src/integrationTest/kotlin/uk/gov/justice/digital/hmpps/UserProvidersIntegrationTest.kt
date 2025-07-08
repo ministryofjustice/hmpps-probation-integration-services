@@ -8,6 +8,7 @@ import org.junit.jupiter.params.provider.MethodSource
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.test.context.TestPropertySource
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
@@ -21,12 +22,14 @@ import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.DEFAULT_TEAM
 import uk.gov.justice.digital.hmpps.data.generator.OffenderManagerGenerator
 import uk.gov.justice.digital.hmpps.data.generator.OffenderManagerGenerator.PROVIDER_2
 import uk.gov.justice.digital.hmpps.data.generator.OffenderManagerGenerator.STAFF_USER_1
+import uk.gov.justice.digital.hmpps.data.generator.OffenderManagerGenerator.STAFF_USER_2
 import uk.gov.justice.digital.hmpps.data.generator.OffenderManagerGenerator.TEAM
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@TestPropertySource(properties = ["logging.level.org.hibernate.SQL=DEBUG", "logging.level.org.hibernate.orm.jdbc.bind=TRACE"])
 class UserProvidersIntegrationTest {
 
     @Autowired
@@ -53,6 +56,9 @@ class UserProvidersIntegrationTest {
         val defaultUserDetails =
             DefaultUserDetails(STAFF_USER_1.username, DEFAULT_PROVIDER.description, TEAM.description)
 
+        val defaultUserDetails1 =
+            DefaultUserDetails(STAFF_USER_2.username, DEFAULT_PROVIDER.description, TEAM.description)
+
         @JvmStatic
         fun providerRequests(): List<Arguments> = listOf(
             Arguments.of(
@@ -72,7 +78,11 @@ class UserProvidersIntegrationTest {
                             STAFF_USER_1.username,
                             "${STAFF_USER_1.forename} ${STAFF_USER_1.surname} (${STAFF_USER_1.staff!!.role!!.description})"
                         ),
-                        unallocatedUser
+                        unallocatedUser,
+                        User(
+                            STAFF_USER_2.username,
+                            "${STAFF_USER_2.forename} ${STAFF_USER_2.surname} (${STAFF_USER_2.staff!!.role!!.description})"
+                        ),
                     )
                 )
             ),
@@ -93,7 +103,35 @@ class UserProvidersIntegrationTest {
                             STAFF_USER_1.username,
                             "${STAFF_USER_1.forename} ${STAFF_USER_1.surname} (${STAFF_USER_1.staff!!.role!!.description})"
                         ),
-                        unallocatedUser
+                        unallocatedUser,
+                        User(
+                            STAFF_USER_2.username,
+                            "${STAFF_USER_2.forename} ${STAFF_USER_2.surname} (${STAFF_USER_2.staff!!.role!!.description})"
+                        ),
+                    )
+                )
+            ),
+            Arguments.of(
+                    "/user/bwayne/providers",
+                UserProviderResponse(
+                    defaultUserDetails1,
+                    listOf(
+                        Provider(DEFAULT_PROVIDER.code, "Description of N01"),
+                    ),
+                    listOf(
+                        Team(DEFAULT_TEAM.description, DEFAULT_TEAM.code),
+                        Team(OffenderManagerGenerator.TEAM.description, OffenderManagerGenerator.TEAM.code)
+                    ),
+                    listOf(
+                        User(
+                            STAFF_USER_1.username,
+                            "${STAFF_USER_1.forename} ${STAFF_USER_1.surname} (${STAFF_USER_1.staff!!.role!!.description})"
+                        ),
+                        unallocatedUser,
+                        User(
+                            STAFF_USER_2.username,
+                            "${STAFF_USER_2.forename} ${STAFF_USER_2.surname} (${STAFF_USER_2.staff!!.role!!.description})"
+                        ),
                     )
                 )
             )
