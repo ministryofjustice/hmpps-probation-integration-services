@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>TSTNDA.DELIUS_APP_SCHEMA</title>
+        <!-- Tell the browser to be responsive to screen width -->
+        <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+        <link rel="icon" type="image/png" sizes="16x16" href="../favicon.png">
+        <!-- Bootstrap 3.3.5 -->
+        <link rel="stylesheet" href="../bower/admin-lte/bootstrap/css/bootstrap.min.css">
+        <!-- Font Awesome -->
+        <link rel="stylesheet" href="../bower/font-awesome/css/font-awesome.min.css">
+        <!-- Ionicons -->
+        <link rel="stylesheet" href="../bower/ionicons/css/ionicons.min.css">
+        <!-- DataTables -->
+        <link rel="stylesheet" href="../bower/datatables.net-bs/css/dataTables.bootstrap.min.css">
+        <link rel="stylesheet" href="../bower/datatables.net-buttons-bs/css/buttons.bootstrap.min.css">
+        <!-- Code Mirror -->
+        <link rel="stylesheet" href="../bower/codemirror/codemirror.css">
+        <!-- Fonts -->
+        <link href='../fonts/indieflower/indie-flower.css' rel='stylesheet' type='text/css'>
+        <link href='../fonts/source-sans-pro/source-sans-pro.css' rel='stylesheet' type='text/css'>
+
+        <!-- Theme style -->
+        <link rel="stylesheet" href="../bower/admin-lte/dist/css/AdminLTE.min.css">
+        <!-- Salvattore -->
+        <link rel="stylesheet" href="../bower/salvattore/salvattore.css">
+        <!-- AdminLTE Skins. Choose a skin from the css/skins
+           folder instead of downloading all of them to reduce the load. -->
+        <link rel="stylesheet" href="../bower/admin-lte/dist/css/skins/_all-skins.min.css">
+        <!-- SchemaSpy -->
+        <link rel="stylesheet" href="../schemaSpy.css">
+
+        <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+        <!--[if lt IE 9]>
+        <script src="../bower/html5shiv/html5shiv.min.js"></script>
+        <script src="../bower/respond/respond.min.js"></script>
+        <![endif]-->
+    </head>
+    <!-- ADD THE CLASS layout-top-nav TO REMOVE THE SIDEBAR. -->
+    <body class="hold-transition skin-blue layout-top-nav">
+        <div class="wrapper">
+            <header class="main-header">
+                <nav class="navbar navbar-static-top">
+                    <div class="container">
+                        <div class="navbar-header">
+                            <a href="../index.html" class="navbar-brand"><b>TSTNDA</b></a><span class="navbar-brand" style="padding-left: 0">.DELIUS_APP_SCHEMA</span>
+                            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse"><i class="fa fa-bars"></i></button>
+                        </div>
+
+                        <!-- Collect the nav links, forms, and other content for toggling -->
+                        <div class="collapse navbar-collapse pull-left" id="navbar-collapse">
+                            <ul class="nav navbar-nav">
+                                <li><a href="../index.html">Tables <span class="sr-only">(current)</span></a></li>
+                                <li><a href="../columns.html" title="All of the columns in the schema">Columns</a></li>
+                                <li><a href="../constraints.html" title="Useful for diagnosing error messages that just give constraint name or number">Constraints</a></li>
+                                <li><a href="../relationships.html" title="Diagram of table relationships">Relationships</a></li>
+                                <li><a href="../orphans.html" title="View of tables with neither parents nor children">Orphan&nbsp;Tables</a></li>
+                                <li><a href="../anomalies.html" title="Things that might not be quite right">Anomalies</a></li>
+                                <li><a href="../routines.html" title="Procedures and functions">Routines</a></li>
+                            </ul>
+                        </div>
+                        <!-- /.navbar-collapse -->
+                        <!-- Navbar Right Menu -->
+                    </div>
+                    <!-- /.container-fluid -->
+                </nav>
+            </header>
+            <!-- Main content -->
+            <!-- Full Width Column -->
+            <div class="content-wrapper">
+                <!-- Content Header (Page header) -->
+                <section class="content-header">
+                    <h1>DELIUS_APP_SCHEMA.PKG_LOB_UTILS</h1><br />
+                </section>
+                <!-- Main content -->
+                <section class="content">
+                    <div class="box box-primary">
+                        <div class="box-header with-border">
+                            <span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span>
+                            <h3 id="Columns" class="box-title">Parameters</h3>
+                            <div class="box-tools pull-right">
+                                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                            </div>
+                        </div>
+                        <div class="box-body">
+                            <table id="standard_table" class="table table-bordered table-striped dataTable" role="grid">
+                                <thead align='left'>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Type</th>
+                                    <th>Mode</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="box box-primary">
+                        <div class="box-header with-border">
+                            <i class="fa fa-file-code-o"></i>
+                            <h3 id="RoutineDefinition" class="box-title">Definition</h3>
+                            <div class="box-tools pull-right">
+                                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                            </div>
+                        </div>
+                        <div class="box-body">
+                            <textarea id="sql-script-codemirror" name="sql-script-codemirror" rows="" style="display: none;">PACKAGE BODY PKG_Lob_Utils&#10;AS&#10;--&#10;--&#10;--&#10;&#10;-- Global Variables&#10;g_nvl2_call_level INTEGER :&#61; 0;&#10;&#10;--&#10;--&#10;--&#10;--&#10;&#10;G_TRACE_LEVEL  INTEGER :&#61; 30;&#10;--&#10;g_label        VARCHAR2(30);&#10;g_output_init  VARCHAR2(1) :&#61; &#39;N&#39;;&#10;g_message      VARCHAR2(30000);&#10;&#10;--&#10;-- BLOB Support routines&#10;--&#10;FUNCTION blob_2_clob(p_blob BLOB) RETURN CLOB&#10;IS&#10;    --&#10;    l_clob         CLOB;&#10;    l_pos_2        INTEGER :&#61; 1;&#10;    l_pos_1        INTEGER :&#61; 1;&#10;    l_lob_max_size INTEGER :&#61; DBMS_LOB.lobmaxsize;&#10;    l_clob_csid    NUMBER  :&#61; DBMS_LOB.default_csid;&#10;    l_ctx          INTEGER :&#61; DBMS_LOB.default_lang_ctx;&#10;    l_warn         INTEGER;&#10;    --&#10;BEGIN&#10;    --&#10;    IF p_blob IS NULL THEN&#10;        RETURN NULL;&#10;    END IF;&#10;    --&#10;    DBMS_LOB.createTemporary(lob_loc&#61;&gt;l_clob, cache&#61;&gt;FALSE);&#10;    --&#10;    DBMS_LOB.convertToCLOB(&#10;        dest_lob     &#61;&gt; l_clob,&#10;        src_blob     &#61;&gt; p_blob,&#10;        amount       &#61;&gt; l_lob_max_size,&#10;        dest_offset  &#61;&gt; l_pos_2,&#10;        src_offset   &#61;&gt; l_pos_1,&#10;        blob_csid    &#61;&gt; l_clob_csid,&#10;        lang_context &#61;&gt; l_ctx,&#10;        warning      &#61;&gt; l_warn );&#10;    --&#10;    RETURN l_clob;&#10;    --&#10;END blob_2_clob;&#10;--&#10;FUNCTION clob_2_blob(p_clob CLOB) RETURN BLOB&#10;IS&#10;    --&#10;    l_blob  BLOB;&#10;    l_pos_2 INTEGER :&#61; 1;&#10;    l_pos_1 INTEGER :&#61; 1;&#10;    l_ctx   INTEGER :&#61; DBMS_LOB.default_lang_ctx;&#10;    l_warn  INTEGER :&#61; DBMS_LOB.warn_inconvertible_char;&#10;BEGIN&#10;    --&#10;    DBMS_LOB.createTemporary(lob_loc&#61;&gt;l_blob, cache&#61;&gt;TRUE);&#10;    --&#10;    DBMS_LOB.convertToBLOB(&#10;        dest_lob      &#61;&gt; l_blob,&#10;        src_clob      &#61;&gt; p_clob,&#10;        amount        &#61;&gt; DBMS_LOB.lobmaxsize,&#10;        dest_offset   &#61;&gt; l_pos_2,&#10;        src_offset    &#61;&gt; l_pos_1,&#10;        blob_csid     &#61;&gt; DBMS_LOB.default_csid,&#10;        lang_context  &#61;&gt; l_ctx,&#10;        warning       &#61;&gt; l_warn );&#10;    --&#10;    RETURN l_blob;&#10;    --&#10;END clob_2_blob;&#10;--&#10;/*&#10;--&#10;-- BASE64 Encode/Decode - using Oracle standard APEX_WEB_SERVICE API&#10;--&#10;FUNCTION blob_2_base64(p_blob BLOB, p_compress_flag VARCHAR2 DEFAULT &#39;N&#39;) RETURN CLOB IS&#10;BEGIN&#10;    --&#10;    RETURN&#10;        CASE WHEN p_compress_flag &#61; &#39;Y&#39; THEN&#10;            APEX_WEB_SERVICE.BLOB2CLOBbase64(UTL_COMPRESS.lz_compress(p_blob, quality&#61;&gt;9))&#10;        ELSE&#10;            APEX_WEB_SERVICE.BLOB2CLOBbase64(p_blob)&#10;        END;&#10;    --&#10;END blob_2_base64;&#10;--&#10;FUNCTION base64_2_blob(p_clob CLOB, p_compress_flag VARCHAR2 DEFAULT &#39;N&#39;) RETURN BLOB&#10;IS&#10;    --&#10;    l_blob BLOB;&#10;    --&#10;BEGIN&#10;    --&#10;    l_blob :&#61; APEX_WEB_SERVICE.CLOBbase642BLOB(p_clob);&#10;    --&#10;    IF p_compress_flag &#61; &#39;Y&#39; THEN&#10;        l_blob :&#61; UTL_COMPRESS.lz_uncompress(l_blob);&#10;    END IF;&#10;    --&#10;    RETURN l_blob;&#10;    --&#10;END base64_2_blob;&#10;--&#10;*/&#10;FUNCTION blob_2_base64(p_blob BLOB, p_compress_flag VARCHAR2 DEFAULT &#39;N&#39;) RETURN CLOB&#10;IS&#10;    --&#10;    l_clob CLOB   :&#61; TO_CLOB(&#39;&#39;);&#10;    l_blob BLOB   :&#61; EMPTY_BLOB();&#10;    l_len  NUMBER :&#61; NVL(DBMS_LOB.getLength(p_blob), 0);&#10;    --&#10;    PROCEDURE do_encode_base64&#10;    IS&#10;        --&#10;        lc_chunk_size CONSTANT PLS_INTEGER :&#61; 12000; -- must be set to a multiple of 3 (&lt;&#61;24573)&#10;        --&#10;        l_n PLS_INTEGER;&#10;        --&#10;    BEGIN&#10;        --&#10;        l_n :&#61; TRUNC((DBMS_LOB.getLength(l_blob) - 1 ) / lc_chunk_size);&#10;        --&#10;        FOR l_i IN 0 .. l_n LOOP&#10;            l_clob :&#61;&#10;                l_clob ||&#10;                UTL_RAW.cast_to_varchar2(&#10;                    UTL_ENCODE.base64_encode(&#10;                        DBMS_LOB.substr(l_blob, lc_chunk_size, l_i * lc_chunk_size + 1) ) );&#10;        END LOOP;&#10;        --&#10;  END do_encode_base64;&#10;    --&#10;BEGIN&#10;    --&#10;    IF l_len &gt; 0 THEN&#10;        --&#10;        IF p_compress_flag &#61; &#39;Y&#39; THEN&#10;            l_blob :&#61; UTL_COMPRESS.lz_compress(p_blob, quality&#61;&gt;9);&#10;        ELSE&#10;            l_blob :&#61; p_blob;&#10;        END IF;&#10;        --&#10;        do_encode_base64;&#10;        --&#10;    END IF;&#10;    --&#10;    RETURN l_clob;&#10;    --&#10;END blob_2_base64;&#10;--&#10;FUNCTION base64_2_blob(p_clob CLOB, p_compress_flag VARCHAR2 DEFAULT &#39;N&#39;) RETURN BLOB&#10;IS&#10;    --&#10;    l_blob BLOB :&#61; EMPTY_BLOB();&#10;    l_clob CLOB :&#61; TO_CLOB(&#39;&#39;);&#10;    --&#10;    PROCEDURE do_decode_base64&#10;    IS&#10;        --&#10;        l_chunk_size NUMBER :&#61; 2048; --7700;&#10;        l_pos  NUMBER :&#61; 1;&#10;        l_len  NUMBER;&#10;        --&#10;        l_raw  RAW(32767);&#10;        l_str  VARCHAR2(32767);&#10;        --&#10;        l_exit_flag BOOLEAN :&#61; FALSE;&#10;        --&#10;        FUNCTION concat_blob(p_blob BLOB, p_blob_delta BLOB) RETURN BLOB&#10;        IS&#10;        --    PRAGMA AUTONOMOUS_TRANSACTION;&#10;            --&#10;            l_blob_dest BLOB :&#61; EMPTY_BLOB();&#10;            --&#10;        BEGIN&#10;            --&#10;            DBMS_LOB.createTemporary( lob_loc&#61;&gt;l_blob_dest, cache&#61;&gt;FALSE, dur&#61;&gt;DBMS_LOB.CALL );&#10;            --&#10;            DBMS_LOB.append(l_blob_dest, p_blob);&#10;            DBMS_LOB.append(l_blob_dest, p_blob_delta);&#10;            --&#10;            RETURN l_blob_dest;&#10;        END concat_blob;&#10;        --&#10;    BEGIN&#10;        --&#10;        IF NOT (p_clob IS NULL OR DBMS_LOB.getLength(p_clob) &#61; 0) THEN&#10;            l_clob :&#61; REPLACE(REPLACE(p_clob, CHR(13), &#39;&#39;), CHR(10), &#39;&#39;);&#10;        END IF;&#10;        l_len :&#61; NVL(LENGTH(l_clob), 0);&#10;        --&#10;        IF l_len &gt; 0 THEN&#10;            --&#10;            LOOP&#10;                EXIT WHEN l_pos &gt; l_len;&#10;                --&#10;                l_str  :&#61; SUBSTR(l_clob, l_pos, l_chunk_size);&#10;                l_raw  :&#61; UTL_ENCODE.base64_decode(UTL_RAW.cast_to_raw(l_str));&#10;                l_blob :&#61; concat_blob(l_blob, TO_BLOB(l_raw));&#10;                --&#10;                l_pos  :&#61; l_pos + l_chunk_size;&#10;                --&#10;            END LOOP;&#10;            --&#10;        END IF;&#10;        --&#10;    END do_decode_base64;&#10;    --&#10;BEGIN&#10;    --&#10;    do_decode_base64;&#10;    --&#10;    IF p_compress_flag &#61; &#39;Y&#39; THEN&#10;        l_blob :&#61; UTL_COMPRESS.lz_uncompress(l_blob);&#10;    END IF;&#10;    --&#10;    RETURN l_blob;&#10;    --&#10;END base64_2_blob;&#10;--&#10;PROCEDURE clob_2_file( p_clob CLOB, p_dir VARCHAR2, p_file_name VARCHAR2 )&#10;IS&#10;    --&#10;    l_file_h     UTL_FILE.file_type;&#10;    l_buf        VARCHAR2(32767);&#10;    l_chunk_size PLS_INTEGER :&#61; 4096; --32767;&#10;    l_pos        PLS_INTEGER :&#61; 1;&#10;    l_len        PLS_INTEGER :&#61; NVL(LENGTH(p_clob), 0);&#10;    --&#10;BEGIN&#10;    --&#10;    l_file_h :&#61; UTL_FILE.fopen( p_dir, p_file_name, &#39;w&#39;, max_linesize&#61;&gt;l_chunk_size );&#10;    --&#10;    LOOP&#10;        EXIT WHEN l_pos &gt; l_len;&#10;        --&#10;        l_buf :&#61; SUBSTR(p_clob, l_pos, l_chunk_size);&#10;        UTL_FILE.put(l_file_h, l_buf);&#10;        UTL_FILE.fflush(l_file_h);&#10;        --&#10;        l_pos :&#61; l_pos + l_chunk_size;&#10;    END LOOP;&#10;    UTL_FILE.fclose(l_file_h);&#10;    --&#10;EXCEPTION WHEN OTHERS THEN&#10;    --&#10;    IF UTL_FILE.is_open(l_file_h) THEN&#10;        UTL_FILE.fclose(l_file_h);&#10;    END IF;&#10;    --&#10;    raise_application_error(-20001, &#39;ERROR in PKG_LOB_UTILS.clob_2_file [buf_len&#61;&#39; || LENGTH(SUBSTR(p_clob, l_pos, l_chunk_size)) || &#39;]: &#39; || SQLERRM);&#10;    RAISE;&#10;END ;&#10;--&#10;PROCEDURE blob_2_file( p_blob BLOB, p_dir VARCHAR2, p_file_name VARCHAR2 )&#10;IS&#10;    --&#10;    l_file_h     UTL_FILE.file_type;&#10;    l_buf        RAW(32767);&#10;    l_chunk_size INTEGER :&#61; 32767;&#10;    l_pos        INTEGER :&#61; 1;&#10;    l_len        INTEGER;&#10;BEGIN&#10;    --&#10;    l_len :&#61; NVL(DBMS_LOB.getLength(p_blob), 0);&#10;    --&#10;    l_file_h :&#61; UTL_FILE.fopen( p_dir, p_file_name, &#39;wb&#39;, max_linesize&#61;&gt;l_chunk_size );&#10;    --&#10;    LOOP&#10;        EXIT WHEN l_pos &gt; l_len;&#10;        --&#10;        DBMS_LOB.read(p_blob, l_chunk_size, l_pos, l_buf);&#10;        UTL_FILE.put_raw(l_file_h, l_buf, TRUE);&#10;        --&#10;        l_pos :&#61; l_pos + l_chunk_size;&#10;        --&#10;    END LOOP;&#10;    UTL_FILE.fclose(l_file_h);&#10;    --&#10;EXCEPTION WHEN OTHERS THEN&#10;    --&#10;    IF UTL_FILE.is_open(l_file_h) THEN&#10;        UTL_FILE.fclose(l_file_h);&#10;    END IF;&#10;    --&#10;    RAISE;&#10;END blob_2_file;&#10;--&#10;--&#10;--&#10;--&#10;BEGIN&#10;--&#10;--&#10;    PKG_Global.do_init;&#10;--&#10;--&#10;END PKG_Lob_Utils;</textarea>
+                        </div>
+                    </div>
+                </section>
+            </div>
+            <!-- /.content-wrapper -->
+            <footer class="main-footer">
+                <div>
+                    <div class="pull-right hidden-xs">
+                        <a href="https://github.com/schemaspy/schemaspy" title="GitHub for SchemaSpy"><i class="fa fa-github-square fa-2x"></i></a>
+                        <a href="http://stackoverflow.com/questions/tagged/schemaspy" title="StackOverflow for SchemaSpy"><i class="fa fa-stack-overflow fa-2x"></i></a>
+                    </div>
+                    <strong>Generated by <a href="http://schemaspy.org/" class="logo-text"><i class="fa fa-database"></i> SchemaSpy 6.2.4</a></strong>
+                </div>
+                <!-- /.container -->
+            </footer>
+        </div>
+        <!-- ./wrapper -->
+
+        <!-- jQuery 2.2.3 -->
+        <script src="../bower/admin-lte/plugins/jQuery/jquery-2.2.3.min.js"></script>
+        <script src="../bower/admin-lte/plugins/jQueryUI/jquery-ui.min.js"></script>
+        <!-- Bootstrap 3.3.5 -->
+        <script src="../bower/admin-lte/bootstrap/js/bootstrap.min.js"></script>
+        <!-- DataTables -->
+        <script src="../bower/datatables.net/jquery.dataTables.min.js"></script>
+        <script src="../bower/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+        <script src="../bower/datatables.net-buttons/dataTables.buttons.min.js"></script>
+        <script src="../bower/datatables.net-buttons-bs/js/buttons.bootstrap.min.js"></script>
+        <script src="../bower/datatables.net-buttons/buttons.html5.min.js"></script>
+        <script src="../bower/datatables.net-buttons/buttons.print.min.js"></script>
+        <script src="../bower/datatables.net-buttons/buttons.colVis.min.js"></script>
+        <!-- SheetJS -->
+        <script src="../bower/js-xlsx/xlsx.full.min.js"></script>
+        <!-- pdfmake -->
+        <script src="../bower/pdfmake/pdfmake.min.js"></script>
+        <script src="../bower/pdfmake/vfs_fonts.js"></script>
+        <!-- SlimScroll -->
+        <script src="../bower/admin-lte/plugins/slimScroll/jquery.slimscroll.min.js"></script>
+        <!-- FastClick -->
+        <script src="../bower/admin-lte/plugins/fastclick/fastclick.js"></script>
+        <!-- Salvattore -->
+        <script src="../bower/salvattore/salvattore.min.js"></script>
+        <!-- AnchorJS -->
+        <script src="../bower/anchor-js/anchor.min.js"></script>
+        <!-- CodeMirror -->
+        <script src="../bower/codemirror/codemirror.js"></script>
+        <script src="../bower/codemirror/sql.js"></script>
+        <!-- AdminLTE App -->
+        <script src="../bower/admin-lte/dist/js/app.min.js"></script>
+        <script src="routine.js"></script>
+        <script src="../schemaSpy.js"></script>
+    </body>
+</html>

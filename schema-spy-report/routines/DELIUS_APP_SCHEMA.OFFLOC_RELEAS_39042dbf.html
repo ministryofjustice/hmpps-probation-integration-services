@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>TSTNDA.DELIUS_APP_SCHEMA</title>
+        <!-- Tell the browser to be responsive to screen width -->
+        <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+        <link rel="icon" type="image/png" sizes="16x16" href="../favicon.png">
+        <!-- Bootstrap 3.3.5 -->
+        <link rel="stylesheet" href="../bower/admin-lte/bootstrap/css/bootstrap.min.css">
+        <!-- Font Awesome -->
+        <link rel="stylesheet" href="../bower/font-awesome/css/font-awesome.min.css">
+        <!-- Ionicons -->
+        <link rel="stylesheet" href="../bower/ionicons/css/ionicons.min.css">
+        <!-- DataTables -->
+        <link rel="stylesheet" href="../bower/datatables.net-bs/css/dataTables.bootstrap.min.css">
+        <link rel="stylesheet" href="../bower/datatables.net-buttons-bs/css/buttons.bootstrap.min.css">
+        <!-- Code Mirror -->
+        <link rel="stylesheet" href="../bower/codemirror/codemirror.css">
+        <!-- Fonts -->
+        <link href='../fonts/indieflower/indie-flower.css' rel='stylesheet' type='text/css'>
+        <link href='../fonts/source-sans-pro/source-sans-pro.css' rel='stylesheet' type='text/css'>
+
+        <!-- Theme style -->
+        <link rel="stylesheet" href="../bower/admin-lte/dist/css/AdminLTE.min.css">
+        <!-- Salvattore -->
+        <link rel="stylesheet" href="../bower/salvattore/salvattore.css">
+        <!-- AdminLTE Skins. Choose a skin from the css/skins
+           folder instead of downloading all of them to reduce the load. -->
+        <link rel="stylesheet" href="../bower/admin-lte/dist/css/skins/_all-skins.min.css">
+        <!-- SchemaSpy -->
+        <link rel="stylesheet" href="../schemaSpy.css">
+
+        <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+        <!--[if lt IE 9]>
+        <script src="../bower/html5shiv/html5shiv.min.js"></script>
+        <script src="../bower/respond/respond.min.js"></script>
+        <![endif]-->
+    </head>
+    <!-- ADD THE CLASS layout-top-nav TO REMOVE THE SIDEBAR. -->
+    <body class="hold-transition skin-blue layout-top-nav">
+        <div class="wrapper">
+            <header class="main-header">
+                <nav class="navbar navbar-static-top">
+                    <div class="container">
+                        <div class="navbar-header">
+                            <a href="../index.html" class="navbar-brand"><b>TSTNDA</b></a><span class="navbar-brand" style="padding-left: 0">.DELIUS_APP_SCHEMA</span>
+                            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse"><i class="fa fa-bars"></i></button>
+                        </div>
+
+                        <!-- Collect the nav links, forms, and other content for toggling -->
+                        <div class="collapse navbar-collapse pull-left" id="navbar-collapse">
+                            <ul class="nav navbar-nav">
+                                <li><a href="../index.html">Tables <span class="sr-only">(current)</span></a></li>
+                                <li><a href="../columns.html" title="All of the columns in the schema">Columns</a></li>
+                                <li><a href="../constraints.html" title="Useful for diagnosing error messages that just give constraint name or number">Constraints</a></li>
+                                <li><a href="../relationships.html" title="Diagram of table relationships">Relationships</a></li>
+                                <li><a href="../orphans.html" title="View of tables with neither parents nor children">Orphan&nbsp;Tables</a></li>
+                                <li><a href="../anomalies.html" title="Things that might not be quite right">Anomalies</a></li>
+                                <li><a href="../routines.html" title="Procedures and functions">Routines</a></li>
+                            </ul>
+                        </div>
+                        <!-- /.navbar-collapse -->
+                        <!-- Navbar Right Menu -->
+                    </div>
+                    <!-- /.container-fluid -->
+                </nav>
+            </header>
+            <!-- Main content -->
+            <!-- Full Width Column -->
+            <div class="content-wrapper">
+                <!-- Content Header (Page header) -->
+                <section class="content-header">
+                    <h1>DELIUS_APP_SCHEMA.OFFLOC_RELEASE_DATE_SEARCH</h1><br />
+                </section>
+                <!-- Main content -->
+                <section class="content">
+                    <div class="box box-primary">
+                        <div class="box-header with-border">
+                            <span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span>
+                            <h3 id="Columns" class="box-title">Parameters</h3>
+                            <div class="box-tools pull-right">
+                                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                            </div>
+                        </div>
+                        <div class="box-body">
+                            <table id="standard_table" class="table table-bordered table-striped dataTable" role="grid">
+                                <thead align='left'>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Type</th>
+                                    <th>Mode</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td>INDOB</td>
+                                    <td>DATE</td>
+                                    <td>IN</td>
+                                </tr>
+                                <tr>
+                                    <td>INPNC</td>
+                                    <td>VARCHAR2</td>
+                                    <td>IN</td>
+                                </tr>
+                                <tr>
+                                    <td>INNOMISNO</td>
+                                    <td>VARCHAR2</td>
+                                    <td>IN</td>
+                                </tr>
+                                <tr>
+                                    <td>INPRISONNO</td>
+                                    <td>VARCHAR2</td>
+                                    <td>IN</td>
+                                </tr>
+                                <tr>
+                                    <td>INCRO</td>
+                                    <td>VARCHAR2</td>
+                                    <td>IN</td>
+                                </tr>
+                                <tr>
+                                    <td>INSURNAME</td>
+                                    <td>VARCHAR2</td>
+                                    <td>IN</td>
+                                </tr>
+                                <tr>
+                                    <td>INGENDER</td>
+                                    <td>VARCHAR2</td>
+                                    <td>IN</td>
+                                </tr>
+                                <tr>
+                                    <td>INFORENAME_1</td>
+                                    <td>VARCHAR2</td>
+                                    <td>IN</td>
+                                </tr>
+                                <tr>
+                                    <td>INFORENAME_2</td>
+                                    <td>VARCHAR2</td>
+                                    <td>IN</td>
+                                </tr>
+                                <tr>
+                                    <td>INSORTBY</td>
+                                    <td>VARCHAR2</td>
+                                    <td>IN</td>
+                                </tr>
+                                <tr>
+                                    <td>INMAXRESULTS</td>
+                                    <td>NUMBER</td>
+                                    <td>IN</td>
+                                </tr>
+                                <tr>
+                                    <td>LCURSOR</td>
+                                    <td>REF CURSOR</td>
+                                    <td>IN/OUT</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="box box-primary">
+                        <div class="box-header with-border">
+                            <i class="fa fa-file-code-o"></i>
+                            <h3 id="RoutineDefinition" class="box-title">Definition</h3>
+                            <div class="box-tools pull-right">
+                                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                            </div>
+                        </div>
+                        <div class="box-body">
+                            <textarea id="sql-script-codemirror" name="sql-script-codemirror" rows="" style="display: none;">PROCEDURE OFFLOC_RELEASE_DATE_SEARCH&#10;(inDOB IN DATE,&#10; inPNC in string,&#10; inNOMISNO in string,&#10; inPRISONNO in string,&#10; inCRO in string,&#10; inSURNAME in string,&#10; inGender in string,&#10; inFORENAME_1 in string,&#10; inFORENAME_2 in string,&#10; inSORTBY in string,&#10; inMAXRESULTS in number,&#10; lCursor IN OUT OfflocCursorPkg.CursorType)&#10;AS&#10;  -- Offloc Release Date Search Procedure&#10;  -- based on Legacy Delius version&#10;  --&#10;  -- written by David Graham&#10;&#10;  -- Define individual weightings (as specified in the Throughcare HLD) for each field the stored procedure matches against when building the result set.&#10;  PNC_NUMBER_WEIGHTING CONSTANT NUMBER :&#61; 20;&#10;  NOMIS_NUMBER_WEIGHTING CONSTANT NUMBER :&#61; 30;&#10;  DOB_WEIGHTING CONSTANT NUMBER :&#61; 10;&#10;  SURNAME_WEIGHTING CONSTANT NUMBER :&#61; 5;&#10;&#10;  RowsFound      number;&#10;&#10;  -- Cursor for query based on exact match of NOMIS number OR PNC number.&#10;  CURSOR STAGE1 IS&#10;  SELECT COUNT(DISTINCT(O.OFFLOC_ID)) FROM OFFLOC O, PNC_NUMBER P&#10;  WHERE&#10;  P.OFFLOC_ID(+) &#61; O.OFFLOC_ID AND&#10;  (&#10;      NVL(P.PNC_NUMBER,&#39;----&#39;) LIKE &#39;%&#39; || NVL(inPNC,&#39;++++&#39;) || &#39;%&#39; OR&#10;      NVL(P.PNC_NUMBER,&#39;----&#39;) LIKE &#39;%&#39; || NVL(substr(inPNC,3),&#39;++++&#39;) || &#39;%&#39; OR&#10;      NVL(O.NOMIS_NUMBER,&#39;----&#39;) &#61; NVL(inNOMISNO,&#39;++++&#39;)&#10;  );&#10;&#10;  -- Cursor for query based on exact match of SURNAME AND DOB.&#10;  CURSOR STAGE2 IS&#10;  SELECT COUNT(OFFLOC_ID) FROM OFFLOC&#10;  WHERE&#10;  UPPER(SURNAME) &#61; UPPER(inSURNAME) and&#10;  DOB &#61; inDOB;&#10;&#10;BEGIN&#10; -- Stage 1. Search for match on PNC or NOMIS Number-&#10; OPEN STAGE1;&#10; FETCH STAGE1 INTO RowsFound;&#10;   if RowsFound &gt; 0 then&#10;     OPEN lCursor FOR&#10;      SELECT DISTINCT MATCH_SCORE, OFFLOC_ID, SURNAME, FORENAME_1, FORENAME_2, DOB, GENDER, PNC, PRISON_NUMBER, NOMIS_NUMBER, PRISON_CODE, PRISON_NAME, CRO, ETHNICITY, NATIONALITY, STATUS, DSS_UPDATED_DATE, SOURCE_CODE, ROWS_FOUND, ALIAS_MATCHED, ACTUAL_RELEASE_DATE&#10;      FROM&#10;      (    SELECT&#10;            ( (CASE WHEN GET_OFFLOC_PNCS(O.OFFLOC_ID) LIKE &#39;%&#39; || nvl(inPNC,&#39;-----&#39;) ||&#39;%&#39; THEN PNC_NUMBER_WEIGHTING&#10;                    WHEN GET_OFFLOC_PNCS(O.OFFLOC_ID) LIKE &#39;%&#39; || nvl(substr(inPNC,3),&#39;-----&#39;) ||&#39;%&#39; THEN PNC_NUMBER_WEIGHTING&#10;                    ELSE 0 END) +&#10;              DECODE(NVL(O.NOMIS_NUMBER,&#39;----&#39;), NVL(inNOMISNO,&#39;++++&#39;),NOMIS_NUMBER_WEIGHTING,0) +&#10;              DECODE(O.DOB,inDOB,DOB_WEIGHTING,0) +&#10;              DECODE(O.SURNAME,inSURNAME,SURNAME_WEIGHTING,0)&#10;              ) MATCH_SCORE,&#10;            O.OFFLOC_ID, O.SURNAME, O.FORENAME_1, O.FORENAME_2, O.DOB, O.ACTUAL_RELEASE_DATE, DECODE(SUBSTR(NVL(O.GENDER,&#39;&#39;),1,1),&#39;M&#39;,&#39;Male&#39;,&#39;F&#39;,&#39;Female&#39;,&#39;&#39;,&#39;[Not Recorded]&#39;,&#39;[Not Known]&#39;) GENDER, GET_OFFLOC_PNCS(O.OFFLOC_ID) PNC , O.PRISON_NUMBER, O.NOMIS_NUMBER, O.PRISON_CODE,&#10;            NVL((SELECT I.INSTITUTION_NAME FROM R_INSTITUTION I WHERE TRIM(I.CODE) &#61; TRIM(O.PRISON_CODE) OR TRIM(I.NOMIS_CDE_CODE) &#61; TRIM(O.PRISON_CODE)),&#39;[Not Recorded]&#39;) PRISON_NAME,&#10;            O.CRO, O.ETHNICITY, O.NATIONALITY, O.STATUS, DSS_UPDATED_DATE, SOURCE_CODE, RowsFound as ROWS_FOUND, &#39;false&#39; as ALIAS_MATCHED&#10;          FROM&#10;            OFFLOC O&#10;          WHERE&#10;               O.OFFLOC_ID IN (SELECT offloc_id FROM PNC_NUMBER WHERE PNC_NUMBER IN (inPNC, SUBSTR(inPNC, 3))  )&#10;               OR&#10;               NVL(O.NOMIS_NUMBER,&#39;----&#39;) &#61; NVL(inNOMISNO,&#39;++++&#39;)&#10;&#10;          ORDER BY&#10;          CASE inSORTBY&#10;            WHEN &#39;MATCH_SCORE DESC&#39; THEN TO_CHAR&#10;            ( (CASE WHEN GET_OFFLOC_PNCS(O.OFFLOC_ID) LIKE &#39;%&#39; || nvl(inPNC,&#39;-----&#39;) ||&#39;%&#39; THEN PNC_NUMBER_WEIGHTING&#10;                    WHEN GET_OFFLOC_PNCS(O.OFFLOC_ID) LIKE &#39;%&#39; || nvl(substr(inPNC,3),&#39;-----&#39;) ||&#39;%&#39; THEN PNC_NUMBER_WEIGHTING&#10;                    ELSE 0 END) +&#10;              DECODE(NVL(O.NOMIS_NUMBER,&#39;----&#39;), NVL(inNOMISNO,&#39;++++&#39;),NOMIS_NUMBER_WEIGHTING,0) +&#10;              DECODE(O.DOB,inDOB,DOB_WEIGHTING,0) +&#10;              DECODE(O.SURNAME,inSURNAME,SURNAME_WEIGHTING,0)&#10;              )&#10;            WHEN &#39;PNC DESC&#39; THEN GET_OFFLOC_PNCS(O.OFFLOC_ID)&#10;            WHEN &#39;CRO DESC&#39; THEN O.CRO&#10;            WHEN &#39;SURNAME DESC&#39; THEN O.SURNAME&#10;            WHEN &#39;FORENAME_1 DESC&#39; THEN O.FORENAME_1&#10;            WHEN &#39;FORENAME_2 DESC&#39; THEN O.FORENAME_2&#10;            WHEN &#39;DOB DESC&#39; THEN SUBSTR(TO_CHAR(O.DOB),7,4) || SUBSTR(TO_CHAR(O.DOB),4,2) || SUBSTR(TO_CHAR(O.DOB),1,2)&#10;            WHEN &#39;GENDER DESC&#39; THEN O.GENDER&#10;            WHEN &#39;NATIONALITY DESC&#39; THEN O.NATIONALITY&#10;            WHEN &#39;ETHNICITY DESC&#39; THEN O.ETHNICITY&#10;            WHEN &#39;PRISON_NUMBER DESC&#39; THEN nvl(O.NOMIS_NUMBER, O.PRISON_NUMBER)&#10;            WHEN &#39;CRO DESC&#39; THEN O.CRO&#10;            WHEN &#39;STATUS DESC&#39; THEN O.STATUS&#10;          END DESC,&#10;&#10;&#10;          CASE inSORTBY&#10;            WHEN &#39;MATCH_SCORE DESC&#39; THEN O.SURNAME || &#39;, &#39; || NVL(O.NOMIS_NUMBER,O.PRISON_NUMBER) || &#39;, &#39; || GET_OFFLOC_PNCS(O.OFFLOC_ID)&#10;            WHEN &#39;MATCH_SCORE&#39; THEN TO_CHAR&#10;            ( (CASE WHEN GET_OFFLOC_PNCS(O.OFFLOC_ID) LIKE &#39;%&#39; || nvl(inPNC,&#39;-----&#39;) ||&#39;%&#39; THEN PNC_NUMBER_WEIGHTING&#10;                    WHEN GET_OFFLOC_PNCS(O.OFFLOC_ID) LIKE &#39;%&#39; || nvl(substr(inPNC,3),&#39;-----&#39;) ||&#39;%&#39; THEN PNC_NUMBER_WEIGHTING&#10;                    ELSE 0 END) +&#10;              DECODE(NVL(O.NOMIS_NUMBER,&#39;----&#39;), NVL(inNOMISNO,&#39;++++&#39;),NOMIS_NUMBER_WEIGHTING,0) +&#10;              DECODE(O.DOB,inDOB,DOB_WEIGHTING,0) +&#10;              DECODE(O.SURNAME,inSURNAME,SURNAME_WEIGHTING,0)&#10;            ) || O.SURNAME || &#39;, &#39; || NVL(O.NOMIS_NUMBER,O.PRISON_NUMBER) || &#39;, &#39; || GET_OFFLOC_PNCS(O.OFFLOC_ID)&#10;            WHEN &#39;PNC&#39; THEN GET_OFFLOC_PNCS(O.OFFLOC_ID)&#10;            WHEN &#39;SURNAME&#39; THEN O.SURNAME&#10;            WHEN &#39;FORENAME_1&#39; THEN O.FORENAME_1&#10;            WHEN &#39;FORENAME_2&#39; THEN O.FORENAME_2&#10;            WHEN &#39;DOB&#39; THEN SUBSTR(TO_CHAR(O.DOB),7,4) || SUBSTR(TO_CHAR(O.DOB),4,2) || SUBSTR(TO_CHAR(O.DOB),1,2)&#10;            WHEN &#39;GENDER&#39; THEN O.GENDER&#10;            WHEN &#39;NATIONALITY&#39; THEN O.NATIONALITY&#10;            WHEN &#39;ETHNICITY&#39; THEN O.ETHNICITY&#10;            WHEN &#39;PRISON_NUMBER&#39; THEN NVL(O.NOMIS_NUMBER, O.PRISON_NUMBER)&#10;            WHEN &#39;CRO&#39; THEN O.CRO&#10;            WHEN &#39;STATUS&#39; THEN (CASE WHEN SUBSTR(O.STATUS,1,1) IN (&#39;A&#39;,&#39;B&#39;,&#39;C&#39;,&#39;T&#39;,&#39;U&#39;) THEN &#39;Active&#39; WHEN O.STATUS IS NULL THEN &#39;Unknown&#39; WHEN O.STATUS &#61; &#39;&#39; THEN &#39;Unknown&#39; ELSE &#39;Inactive&#39; END)&#10;          END ASC&#10;       ) WHERE ROWNUM &lt;&#61; inMAXRESULTS;&#10;&#10;  ELSE&#10;     -- Stage 2.  If no records found above, search on DOB and Surname&#10;     OPEN STAGE2;&#10;     FETCH STAGE2 INTO RowsFound;&#10;          OPEN lCursor FOR&#10;          SELECT DISTINCT MATCH_SCORE, OFFLOC_ID, SURNAME, FORENAME_1, FORENAME_2, DOB, GENDER, PNC, PRISON_NUMBER, NOMIS_NUMBER, PRISON_CODE, PRISON_NAME, CRO, ETHNICITY, NATIONALITY, STATUS, DSS_UPDATED_DATE, SOURCE_CODE, ROWS_FOUND, ALIAS_MATCHED, ACTUAL_RELEASE_DATE&#10;          FROM&#10;          (SELECT&#10;            ( (CASE WHEN GET_OFFLOC_PNCS(O.OFFLOC_ID) LIKE &#39;%&#39; || nvl(inPNC,&#39;-----&#39;) ||&#39;%&#39; THEN PNC_NUMBER_WEIGHTING&#10;                    WHEN GET_OFFLOC_PNCS(O.OFFLOC_ID) LIKE &#39;%&#39; || nvl(substr(inPNC,3),&#39;-----&#39;) ||&#39;%&#39; THEN PNC_NUMBER_WEIGHTING&#10;                    ELSE 0 END) +&#10;              DECODE(NVL(O.NOMIS_NUMBER,&#39;----&#39;), NVL(inNOMISNO,&#39;++++&#39;),NOMIS_NUMBER_WEIGHTING,0) +&#10;              DECODE(O.DOB,inDOB,DOB_WEIGHTING,0) +&#10;              DECODE(O.SURNAME,inSURNAME,SURNAME_WEIGHTING,0)&#10;              ) MATCH_SCORE,&#10;            O.OFFLOC_ID, O.SURNAME, O.FORENAME_1, O.FORENAME_2, O.DOB, O.ACTUAL_RELEASE_DATE, DECODE(SUBSTR(NVL(O.GENDER,&#39;&#39;),1,1),&#39;M&#39;,&#39;Male&#39;,&#39;F&#39;,&#39;Female&#39;,&#39;&#39;,&#39;[Not Recorded]&#39;,&#39;[Not Known]&#39;) GENDER, GET_OFFLOC_PNCS(O.OFFLOC_ID) PNC , O.PRISON_NUMBER, O.NOMIS_NUMBER, O.PRISON_CODE,&#10;            NVL((SELECT I.INSTITUTION_NAME FROM R_INSTITUTION I WHERE TRIM(I.CODE) &#61; TRIM(O.PRISON_CODE) OR TRIM(I.NOMIS_CDE_CODE) &#61; TRIM(O.PRISON_CODE)),&#39;[Not Recorded]&#39;) PRISON_NAME,&#10;            O.CRO, O.ETHNICITY, O.NATIONALITY, O.STATUS, DSS_UPDATED_DATE, SOURCE_CODE, RowsFound as ROWS_FOUND, &#39;false&#39; as ALIAS_MATCHED&#10;              FROM&#10;                OFFLOC O&#10;              WHERE&#10;                UPPER(O.SURNAME) &#61; UPPER(inSURNAME) and&#10;                O.DOB &#61; inDOB&#10;             ORDER BY&#10;          CASE inSORTBY&#10;            WHEN &#39;MATCH_SCORE DESC&#39; THEN TO_CHAR&#10;            ( (CASE WHEN GET_OFFLOC_PNCS(O.OFFLOC_ID) LIKE &#39;%&#39; || nvl(inPNC,&#39;-----&#39;) ||&#39;%&#39; THEN PNC_NUMBER_WEIGHTING&#10;                    WHEN GET_OFFLOC_PNCS(O.OFFLOC_ID) LIKE &#39;%&#39; || nvl(substr(inPNC,3),&#39;-----&#39;) ||&#39;%&#39; THEN PNC_NUMBER_WEIGHTING&#10;                    ELSE 0 END) +&#10;              DECODE(NVL(O.NOMIS_NUMBER,&#39;----&#39;), NVL(inNOMISNO,&#39;++++&#39;),NOMIS_NUMBER_WEIGHTING,0) +&#10;              DECODE(O.DOB,inDOB,DOB_WEIGHTING,0) +&#10;              DECODE(O.SURNAME,inSURNAME,SURNAME_WEIGHTING,0)&#10;              )&#10;            WHEN &#39;PNC DESC&#39; THEN GET_OFFLOC_PNCS(O.OFFLOC_ID)&#10;            WHEN &#39;CRO DESC&#39; THEN O.CRO&#10;            WHEN &#39;SURNAME DESC&#39; THEN O.SURNAME&#10;            WHEN &#39;FORENAME_1 DESC&#39; THEN O.FORENAME_1&#10;            WHEN &#39;FORENAME_2 DESC&#39; THEN O.FORENAME_2&#10;            WHEN &#39;DOB DESC&#39; THEN SUBSTR(TO_CHAR(O.DOB),7,4) || SUBSTR(TO_CHAR(O.DOB),4,2) || SUBSTR(TO_CHAR(O.DOB),1,2)&#10;            WHEN &#39;GENDER DESC&#39; THEN O.GENDER&#10;            WHEN &#39;NATIONALITY DESC&#39; THEN O.NATIONALITY&#10;            WHEN &#39;ETHNICITY DESC&#39; THEN O.ETHNICITY&#10;            WHEN &#39;PRISON_NUMBER DESC&#39; THEN nvl(O.NOMIS_NUMBER, O.PRISON_NUMBER)&#10;            WHEN &#39;CRO DESC&#39; THEN O.CRO&#10;            WHEN &#39;STATUS DESC&#39; THEN O.STATUS&#10;          END DESC,&#10;&#10;&#10;          CASE inSORTBY&#10;            WHEN &#39;MATCH_SCORE DESC&#39; THEN O.SURNAME || &#39;, &#39; || NVL(O.NOMIS_NUMBER,O.PRISON_NUMBER) || &#39;, &#39; || GET_OFFLOC_PNCS(O.OFFLOC_ID)&#10;            WHEN &#39;MATCH_SCORE&#39; THEN TO_CHAR&#10;            ( (CASE WHEN GET_OFFLOC_PNCS(O.OFFLOC_ID) LIKE &#39;%&#39; || nvl(inPNC,&#39;-----&#39;) ||&#39;%&#39; THEN PNC_NUMBER_WEIGHTING&#10;                    WHEN GET_OFFLOC_PNCS(O.OFFLOC_ID) LIKE &#39;%&#39; || nvl(substr(inPNC,3),&#39;-----&#39;) ||&#39;%&#39; THEN PNC_NUMBER_WEIGHTING&#10;                    ELSE 0 END) +&#10;              DECODE(NVL(O.NOMIS_NUMBER,&#39;----&#39;), NVL(inNOMISNO,&#39;++++&#39;),NOMIS_NUMBER_WEIGHTING,0) +&#10;              DECODE(O.DOB,inDOB,DOB_WEIGHTING,0) +&#10;              DECODE(O.SURNAME,inSURNAME,SURNAME_WEIGHTING,0)&#10;            ) || O.SURNAME || &#39;, &#39; || NVL(O.NOMIS_NUMBER,O.PRISON_NUMBER) || &#39;, &#39; || GET_OFFLOC_PNCS(O.OFFLOC_ID)&#10;            WHEN &#39;PNC&#39; THEN GET_OFFLOC_PNCS(O.OFFLOC_ID)&#10;            WHEN &#39;SURNAME&#39; THEN O.SURNAME&#10;            WHEN &#39;FORENAME_1&#39; THEN O.FORENAME_1&#10;            WHEN &#39;FORENAME_2&#39; THEN O.FORENAME_2&#10;            WHEN &#39;DOB&#39; THEN SUBSTR(TO_CHAR(O.DOB),7,4) || SUBSTR(TO_CHAR(O.DOB),4,2) || SUBSTR(TO_CHAR(O.DOB),1,2)&#10;            WHEN &#39;GENDER&#39; THEN O.GENDER&#10;            WHEN &#39;NATIONALITY&#39; THEN O.NATIONALITY&#10;            WHEN &#39;ETHNICITY&#39; THEN O.ETHNICITY&#10;            WHEN &#39;PRISON_NUMBER&#39; THEN NVL(O.NOMIS_NUMBER, O.PRISON_NUMBER)&#10;            WHEN &#39;CRO&#39; THEN O.CRO&#10;            WHEN &#39;STATUS&#39; THEN (CASE WHEN SUBSTR(O.STATUS,1,1) IN (&#39;A&#39;,&#39;B&#39;,&#39;C&#39;,&#39;T&#39;,&#39;U&#39;) THEN &#39;Active&#39; WHEN O.STATUS IS NULL THEN &#39;Unknown&#39; WHEN O.STATUS &#61; &#39;&#39; THEN &#39;Unknown&#39; ELSE &#39;Inactive&#39; END)&#10;          END ASC&#10;&#10;&#10;       ) WHERE ROWNUM &lt;&#61; inMAXRESULTS;&#10;     END IF; --open stage1&#10;END;</textarea>
+                        </div>
+                    </div>
+                </section>
+            </div>
+            <!-- /.content-wrapper -->
+            <footer class="main-footer">
+                <div>
+                    <div class="pull-right hidden-xs">
+                        <a href="https://github.com/schemaspy/schemaspy" title="GitHub for SchemaSpy"><i class="fa fa-github-square fa-2x"></i></a>
+                        <a href="http://stackoverflow.com/questions/tagged/schemaspy" title="StackOverflow for SchemaSpy"><i class="fa fa-stack-overflow fa-2x"></i></a>
+                    </div>
+                    <strong>Generated by <a href="http://schemaspy.org/" class="logo-text"><i class="fa fa-database"></i> SchemaSpy 6.2.4</a></strong>
+                </div>
+                <!-- /.container -->
+            </footer>
+        </div>
+        <!-- ./wrapper -->
+
+        <!-- jQuery 2.2.3 -->
+        <script src="../bower/admin-lte/plugins/jQuery/jquery-2.2.3.min.js"></script>
+        <script src="../bower/admin-lte/plugins/jQueryUI/jquery-ui.min.js"></script>
+        <!-- Bootstrap 3.3.5 -->
+        <script src="../bower/admin-lte/bootstrap/js/bootstrap.min.js"></script>
+        <!-- DataTables -->
+        <script src="../bower/datatables.net/jquery.dataTables.min.js"></script>
+        <script src="../bower/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+        <script src="../bower/datatables.net-buttons/dataTables.buttons.min.js"></script>
+        <script src="../bower/datatables.net-buttons-bs/js/buttons.bootstrap.min.js"></script>
+        <script src="../bower/datatables.net-buttons/buttons.html5.min.js"></script>
+        <script src="../bower/datatables.net-buttons/buttons.print.min.js"></script>
+        <script src="../bower/datatables.net-buttons/buttons.colVis.min.js"></script>
+        <!-- SheetJS -->
+        <script src="../bower/js-xlsx/xlsx.full.min.js"></script>
+        <!-- pdfmake -->
+        <script src="../bower/pdfmake/pdfmake.min.js"></script>
+        <script src="../bower/pdfmake/vfs_fonts.js"></script>
+        <!-- SlimScroll -->
+        <script src="../bower/admin-lte/plugins/slimScroll/jquery.slimscroll.min.js"></script>
+        <!-- FastClick -->
+        <script src="../bower/admin-lte/plugins/fastclick/fastclick.js"></script>
+        <!-- Salvattore -->
+        <script src="../bower/salvattore/salvattore.min.js"></script>
+        <!-- AnchorJS -->
+        <script src="../bower/anchor-js/anchor.min.js"></script>
+        <!-- CodeMirror -->
+        <script src="../bower/codemirror/codemirror.js"></script>
+        <script src="../bower/codemirror/sql.js"></script>
+        <!-- AdminLTE App -->
+        <script src="../bower/admin-lte/dist/js/app.min.js"></script>
+        <script src="routine.js"></script>
+        <script src="../schemaSpy.js"></script>
+    </body>
+</html>

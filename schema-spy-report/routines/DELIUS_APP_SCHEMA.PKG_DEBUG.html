@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>TSTNDA.DELIUS_APP_SCHEMA</title>
+        <!-- Tell the browser to be responsive to screen width -->
+        <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+        <link rel="icon" type="image/png" sizes="16x16" href="../favicon.png">
+        <!-- Bootstrap 3.3.5 -->
+        <link rel="stylesheet" href="../bower/admin-lte/bootstrap/css/bootstrap.min.css">
+        <!-- Font Awesome -->
+        <link rel="stylesheet" href="../bower/font-awesome/css/font-awesome.min.css">
+        <!-- Ionicons -->
+        <link rel="stylesheet" href="../bower/ionicons/css/ionicons.min.css">
+        <!-- DataTables -->
+        <link rel="stylesheet" href="../bower/datatables.net-bs/css/dataTables.bootstrap.min.css">
+        <link rel="stylesheet" href="../bower/datatables.net-buttons-bs/css/buttons.bootstrap.min.css">
+        <!-- Code Mirror -->
+        <link rel="stylesheet" href="../bower/codemirror/codemirror.css">
+        <!-- Fonts -->
+        <link href='../fonts/indieflower/indie-flower.css' rel='stylesheet' type='text/css'>
+        <link href='../fonts/source-sans-pro/source-sans-pro.css' rel='stylesheet' type='text/css'>
+
+        <!-- Theme style -->
+        <link rel="stylesheet" href="../bower/admin-lte/dist/css/AdminLTE.min.css">
+        <!-- Salvattore -->
+        <link rel="stylesheet" href="../bower/salvattore/salvattore.css">
+        <!-- AdminLTE Skins. Choose a skin from the css/skins
+           folder instead of downloading all of them to reduce the load. -->
+        <link rel="stylesheet" href="../bower/admin-lte/dist/css/skins/_all-skins.min.css">
+        <!-- SchemaSpy -->
+        <link rel="stylesheet" href="../schemaSpy.css">
+
+        <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+        <!--[if lt IE 9]>
+        <script src="../bower/html5shiv/html5shiv.min.js"></script>
+        <script src="../bower/respond/respond.min.js"></script>
+        <![endif]-->
+    </head>
+    <!-- ADD THE CLASS layout-top-nav TO REMOVE THE SIDEBAR. -->
+    <body class="hold-transition skin-blue layout-top-nav">
+        <div class="wrapper">
+            <header class="main-header">
+                <nav class="navbar navbar-static-top">
+                    <div class="container">
+                        <div class="navbar-header">
+                            <a href="../index.html" class="navbar-brand"><b>TSTNDA</b></a><span class="navbar-brand" style="padding-left: 0">.DELIUS_APP_SCHEMA</span>
+                            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse"><i class="fa fa-bars"></i></button>
+                        </div>
+
+                        <!-- Collect the nav links, forms, and other content for toggling -->
+                        <div class="collapse navbar-collapse pull-left" id="navbar-collapse">
+                            <ul class="nav navbar-nav">
+                                <li><a href="../index.html">Tables <span class="sr-only">(current)</span></a></li>
+                                <li><a href="../columns.html" title="All of the columns in the schema">Columns</a></li>
+                                <li><a href="../constraints.html" title="Useful for diagnosing error messages that just give constraint name or number">Constraints</a></li>
+                                <li><a href="../relationships.html" title="Diagram of table relationships">Relationships</a></li>
+                                <li><a href="../orphans.html" title="View of tables with neither parents nor children">Orphan&nbsp;Tables</a></li>
+                                <li><a href="../anomalies.html" title="Things that might not be quite right">Anomalies</a></li>
+                                <li><a href="../routines.html" title="Procedures and functions">Routines</a></li>
+                            </ul>
+                        </div>
+                        <!-- /.navbar-collapse -->
+                        <!-- Navbar Right Menu -->
+                    </div>
+                    <!-- /.container-fluid -->
+                </nav>
+            </header>
+            <!-- Main content -->
+            <!-- Full Width Column -->
+            <div class="content-wrapper">
+                <!-- Content Header (Page header) -->
+                <section class="content-header">
+                    <h1>DELIUS_APP_SCHEMA.PKG_DEBUG</h1><br />
+                </section>
+                <!-- Main content -->
+                <section class="content">
+                    <div class="box box-primary">
+                        <div class="box-header with-border">
+                            <span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span>
+                            <h3 id="Columns" class="box-title">Parameters</h3>
+                            <div class="box-tools pull-right">
+                                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                            </div>
+                        </div>
+                        <div class="box-body">
+                            <table id="standard_table" class="table table-bordered table-striped dataTable" role="grid">
+                                <thead align='left'>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Type</th>
+                                    <th>Mode</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="box box-primary">
+                        <div class="box-header with-border">
+                            <i class="fa fa-file-code-o"></i>
+                            <h3 id="RoutineDefinition" class="box-title">Definition</h3>
+                            <div class="box-tools pull-right">
+                                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                            </div>
+                        </div>
+                        <div class="box-body">
+                            <textarea id="sql-script-codemirror" name="sql-script-codemirror" rows="" style="display: none;">PACKAGE BODY pkg_Debug&#10;AS&#10;&#10;--&#10;-- Global variables&#10;--&#10;g_nls_date_format VARCHAR2(30) :&#61; &#39;YYYYMMDD HH24:MI:SS&#39;;&#10;&#10;-- Debug mode flag&#10;g_proc_debug_flag BOOLEAN :&#61; TRUE;&#10;g_proc_debug_init BOOLEAN :&#61; FALSE;&#10;g_debug_cnt INTEGER :&#61; 0;&#10;&#10;g_buffer_gets_1 INTEGER;&#10;g_buffer_gets_2 INTEGER;&#10;g_buffer_gets   INTEGER;&#10;&#10;G_CURRENT_DBMS_PIPE_SIZE NUMBER :&#61; GC_DBMS_PIPE_SIZE;&#10;&#10;PROCEDURE procDebug(p_msg CLOB, p_print_flag VARCHAR2 DEFAULT &#39;N&#39;)&#10;IS&#10;    PRAGMA AUTONOMOUS_TRANSACTION;&#10;    --&#10;    l_debug_table VARCHAR2(30) :&#61; &#39;MTT_DEBUG&#39;;&#10;    l_cnt         INTEGER;&#10;    --&#10;    l_dbg_mode VARCHAR2(30);&#10;    l_ctx_user VARCHAR2(100);&#10;    l_ctx_proc VARCHAR2(255);&#10;    --&#10;    l_prefix VARCHAR2(1024);&#10;    --&#10;    PROCEDURE do_msg(p_msg1 VARCHAR2) IS&#10;    BEGIN&#10;        --DBMS_OUTPUT.put_line(p_msg1);&#10;        NULL;&#10;    END do_msg;&#10;    --&#10;BEGIN&#10;    --&#10;    l_dbg_mode :&#61; UPPER(GLOBAL_CACHE_MGR.dbg_get_mode);&#10;    do_msg(&#39;GLOBAL_CACHE_MGR.dbg_get_mode&#61;&#39; || l_dbg_mode);&#10;    --&#10;    IF l_dbg_mode NOT IN (&#39;TABLE&#39;, &#39;DBMS_PIPE&#39;) THEN&#10;        RETURN;&#10;    END IF;&#10;    --&#10;    do_msg(&#39;GLOBAL_CACHE_MGR.dbg_get_dbg_pipe_mode IS ON&#39;);&#10;    l_ctx_user :&#61; TRIM(SUBSTR(GLOBAL_CACHE_MGR.dbg_get_ctx_user, 1, 100));&#10;    do_msg(&#39;l_ctx_user&#61;&#39; || l_ctx_user);&#10;    IF ( l_ctx_user IS NOT NULL AND UPPER(l_ctx_user) &lt;&gt; UPPER(SYS_CONTEXT(&#39;USERENV&#39;, &#39;CLIENT_IDENTIFIER&#39;)) ) THEN&#10;        do_msg(&#39;ctx_user does not match-&gt;RETURN&#39;);&#10;        RETURN;&#10;    END IF;&#10;    --&#10;    l_ctx_proc :&#61; TRIM(SUBSTR(GLOBAL_CACHE_MGR.dbg_get_ctx_proc, 1, 255));&#10;    do_msg(&#39;l_ctx_proc&#61;&#39; || l_ctx_proc);&#10;    IF l_ctx_proc IS NOT NULL AND UPPER(p_msg) NOT LIKE UPPER(l_ctx_proc) || &#39;%&#39; THEN&#10;        do_msg(&#39;ctx_proc does not match-&gt;RETURN&#39;);&#10;        RETURN;&#10;    END IF;&#10;    --&#10;    do_msg(&#39;both ctx_user and ctx_proc DO match-&gt;SEND_MESSAGE_PIPE&#39;);&#10;    --&#10;    l_prefix :&#61;&#10;        TO_CHAR(SYSDATE)                            || &#39; [&#39; ||&#10;        SYS_CONTEXT(&#39;USERENV&#39;, &#39;CLIENT_IDENTIFIER&#39;) || &#39;][&#39; ||&#10;        SYS_CONTEXT(&#39;USERENV&#39;, &#39;SID&#39;)               || &#39;][&#39; ||&#10;        PKG_VpdSupport.get_current_scn_number       || &#39;]&#39;;&#10;    --&#10;    IF p_print_flag &#61; &#39;Y&#39; AND ( l_ctx_user IS NOT NULL ) THEN&#10;        DBMS_OUTPUT.put_line(l_prefix || &#39;: &#39; || SUBSTR(p_msg, 1, 32000));&#10;    END IF;&#10;    --&#10;    IF l_dbg_mode &#61; &#39;DBMS_PIPE&#39; AND ( l_ctx_user IS NOT NULL ) THEN&#10;        --&#10;        send_message_pipe( l_prefix || &#39;: &#39; || SUBSTR(p_msg, 1, 32000) );&#10;        --&#10;    ELSIF l_dbg_mode &#61; &#39;TABLE&#39; THEN&#10;        --&#10;        IF g_proc_debug_flag THEN&#10;            INSERT INTO mtt_debug(&#10;              ID, COLUMN1, COLUMN2&#10;            ) VALUES(&#10;              mtt_debug_SEQ.NEXTVAL, l_prefix, p_msg /*SUBSTR(p_msg, 1, 30000)*/&#10;            );&#10;            COMMIT;&#10;            g_debug_cnt :&#61; g_debug_cnt + 1;&#10;        END IF;&#10;        --&#10;    END IF;&#10;    --&#10;END procDebug;&#10;&#10;PROCEDURE procsetDebugMode(p_debug_mode SMALLINT)&#10;IS&#10;    PRAGMA AUTONOMOUS_TRANSACTION;&#10;    --&#10;    l_id       INTEGER;&#10;    l_opt_name VARCHAR2(100);&#10;    --l_opt_val  INTEGER;&#10;    --&#10;BEGIN&#10;    IF p_debug_mode NOT IN (0, 1, 2) THEN&#10;        raise_application_error(-20001, &#39;ERROR in PKG_DEBUG.procsetDebugMode: invalid value specified [&#39; || p_debug_mode || &#39;]&#39;);&#10;    END IF;&#10;    --&#10;    GLOBAL_CACHE_MGR.dbg_set_mode(&#10;        CASE&#10;            WHEN p_debug_mode &#61; 0 THEN &#39;&#39;&#10;            WHEN p_debug_mode &#61; 1 THEN &#39;TABLE&#39;&#10;            WHEN p_debug_mode &#61; 2 THEN &#39;DBMS_PIPE&#39;&#10;            ELSE &#39;X&#39;&#10;        END&#10;    );&#10;    --&#10;    l_opt_name :&#61; &#39;SEARCH_DEBUG_MODE&#39;;&#10;    DELETE FROM nd_parameter&#10;    WHERE nd_parameter &#61; l_opt_name;&#10;    --&#10;    SELECT NVL(MAX(nd_parameter_id), 0) + 1 INTO l_id&#10;    FROM nd_parameter;&#10;    --&#10;    INSERT INTO nd_parameter(&#10;      nd_parameter_id, nd_parameter, nd_value, training_session_id&#10;    ) VALUES (&#10;      l_id, l_opt_name, (CASE WHEN NVL(p_debug_mode, 0) IN (1,2) THEN p_debug_mode ELSE 0 END), NULL&#10;    );&#10;    COMMIT;&#10;    --&#10;    procDebug(&#39;test debug message&#39;);&#10;    --&#10;END procsetDebugMode;&#10;--&#10;FUNCTION funcgetDebugMode RETURN VARCHAR2&#10;IS&#10;    l_dbg_mode VARCHAR2(30);&#10;BEGIN&#10;    l_dbg_mode :&#61; UPPER(GLOBAL_CACHE_MGR.dbg_get_mode);&#10;    RETURN&#10;        CASE&#10;            WHEN l_dbg_mode &#61; &#39;TABLE&#39;     THEN &#39;1&#39;&#10;            WHEN l_dbg_mode &#61; &#39;DBMS_PIPE&#39; THEN &#39;2&#39;&#10;            ELSE                               &#39;0&#39;&#10;        END;&#10;END funcgetDebugMode;&#10;--&#10;FUNCTION funcGetDebugActive RETURN BOOLEAN IS&#10;BEGIN&#10;    RETURN ( funcgetDebugMode IN (&#39;1&#39;, &#39;2&#39;) );&#10;END funcGetDebugActive;&#10;--&#10;PROCEDURE procrecordDbStats(p_res IN OUT INTEGER) IS&#10;BEGIN&#10;    IF g_proc_debug_flag THEN&#10;        SELECT SUM(s.value) INTO p_res&#10;        FROM --SYS.v_$mystat s, SYS.v_$statname n&#10;          v$mystat s, v$statname n&#10;        WHERE n.statistic# &#61; s.statistic#&#10;          AND n.name IN (&#39;db block gets&#39;, &#39;consistent gets&#39;);&#10;    END IF;&#10;END procrecordDbStats;&#10;&#10;PROCEDURE procrecordDbStats_START IS&#10;BEGIN&#10;    g_buffer_gets_2 :&#61; -1;&#10;    procrecordDbStats(g_buffer_gets_1);&#10;END procrecordDbStats_START;&#10;&#10;PROCEDURE procrecordDbStats_STOP IS&#10;BEGIN&#10;    procrecordDbStats(g_buffer_gets_2);&#10;    g_buffer_gets :&#61; g_buffer_gets_2 - g_buffer_gets_1;&#10;END procrecordDbStats_STOP;&#10;&#10;FUNCTION funcgetDbStats(p_buffer_gets INTEGER DEFAULT NULL) RETURN VARCHAR2&#10;IS&#10;    l_buffer_gets INTEGER;&#10;BEGIN&#10;    IF g_proc_debug_flag THEN&#10;        IF p_buffer_gets IS NULL THEN&#10;            IF g_buffer_gets_2 &#61; -1 THEN&#10;                procrecordDbStats_STOP;&#10;            END IF;&#10;            l_buffer_gets :&#61; g_buffer_gets;&#10;        ELSE&#10;            l_buffer_gets :&#61; p_buffer_gets;&#10;        END IF;&#10;        RETURN &#39;db buffer gets&#61;&#39; || TO_CHAR(l_buffer_gets);&#10;    ELSE&#10;        RETURN &#39;&#39;;&#10;    END IF;&#10;END funcgetDbStats;&#10;&#10;FUNCTION funcExtractToken(p_str VARCHAR2, p_token VARCHAR2) RETURN VARCHAR2&#10;IS&#10;    l_str   VARCHAR2(4000);&#10;    l_token VARCHAR2(100);&#10;    l_pos   INTEGER;&#10;    l_pos1  INTEGER;&#10;BEGIN&#10;    l_token :&#61; &#39;(&#39; || p_token || &#39;&#61;&#39;;&#10;    l_pos   :&#61; INSTR(p_str, l_token);&#10;    IF l_pos &gt; 0 THEN&#10;        l_pos :&#61; l_pos + LENGTH(l_token);&#10;        l_str :&#61; SUBSTR(p_str, l_pos, INSTR(p_str, &#39;)&#39;, l_pos+1) - l_pos);&#10;    ELSE&#10;        l_str :&#61; NULL;&#10;    END IF;&#10;    --&#10;    RETURN l_str;&#10;END funcExtractToken;&#10;&#10;&#10;&#10;--------------------------------------------------------------------------------&#10;-- DBMS_PIPE subroutines&#10;--------------------------------------------------------------------------------&#10;FUNCTION get_pipe_name RETURN VARCHAR2 IS&#10;BEGIN&#10;    RETURN &#39;NDELIUS_DBG_PIPE&#39;;&#10;END get_pipe_name;&#10;&#10;FUNCTION get_pipe_size RETURN NUMBER IS&#10;BEGIN&#10;    RETURN NVL(NVL(G_CURRENT_DBMS_PIPE_SIZE, GC_DBMS_PIPE_SIZE), 32000);&#10;END get_pipe_size;&#10;&#10;PROCEDURE send_message_pipe( p_msg VARCHAR2 )&#10;IS&#10;    l_status    NUMBER;&#10;    l_pipe_size INTEGER :&#61; LEAST( get_pipe_size, 4000 );&#10;BEGIN&#10;    DBMS_PIPE.pack_message( SUBSTR(p_msg, 1, l_pipe_size) );&#10;    --&#10;    l_status :&#61; DBMS_PIPE.send_message(&#10;        pipename &#61;&gt; get_pipe_name&#10;        --, timeout &#61;&gt; 10&#10;        , maxpipesize &#61;&gt; l_pipe_size&#10;    );&#10;    IF l_status &lt;&gt; 0 THEN&#10;        raise_application_error(-20001, &#39;!! message pipe error !!&#39;);&#10;    END IF;&#10;END send_message_pipe;&#10;&#10;PROCEDURE receive_message_pipe&#10;IS&#10;    l_result INTEGER :&#61; 0;&#10;    l_msg VARCHAR2(32000);&#10;BEGIN&#10;    --l_result :&#61; DBMS_PIPE.create_pipe( get_pipe_name );&#10;&#10;    IF l_result &#61; 0 THEN&#10;        WHILE l_result &#61; 0 LOOP&#10;            l_result :&#61; DBMS_PIPE.receive_message( pipename &#61;&gt; get_pipe_name, timeout  &#61;&gt; 1);&#10;            DBMS_PIPE.unpack_message(l_msg);&#10;            DBMS_OUTPUT.put_line(l_msg);&#10;        END LOOP;&#10;    ELSE&#10;        IF l_result &#61; 1 THEN&#10;            dbms_output.put_line(&#39;Timeout limit exceeded!&#39;);&#10;        ELSE&#10;            raise_application_error(-20002, &#39;error receiving message pipe: &#39; || l_result);&#10;        END IF;&#10;    END IF;&#10;    --&#10;EXCEPTION WHEN OTHERS THEN&#10;    NULL;&#10;END receive_message_pipe;&#10;&#10;PROCEDURE reset_pipe(p_pipe_size NUMBER DEFAULT GC_DBMS_PIPE_SIZE)&#10;IS&#10;    l_pipe_name VARCHAR2(30) :&#61; PKG_Debug.get_pipe_name;&#10;    l_pipe_num  NUMBER;&#10;BEGIN&#10;    DBMS_PIPE.PURGE(l_pipe_name);&#10;    l_pipe_num :&#61; DBMS_PIPE.REMOVE_PIPE(l_pipe_name);&#10;    DBMS_PIPE.RESET_BUFFER;&#10;    --&#10;    G_CURRENT_DBMS_PIPE_SIZE :&#61; NVL(p_pipe_size, GC_DBMS_PIPE_SIZE);&#10;    --&#10;    l_pipe_num :&#61; DBMS_PIPE.create_pipe(&#10;        pipename    &#61;&gt; l_pipe_name&#10;      , maxpipesize &#61;&gt; G_CURRENT_DBMS_PIPE_SIZE&#10;    --, private     &#61;&gt; TRUE&#10;    --, global      &#61;&gt; FALSE&#10;    );&#10;END reset_pipe;&#10;&#10;--&#10;--&#10;--&#10;--------------------------------------------------------------------------------&#10;PROCEDURE do_init&#10;IS&#10;    l_dbg_mode ND_PARAMETER.nd_value%TYPE;&#10;BEGIN&#10;    -- set the default NLS_DATE_FORMAT&#10;    EXECUTE IMMEDIATE &#39;ALTER SESSION SET NLS_DATE_FORMAT&#61;&#39;&#39;&#39; || g_nls_date_format || &#39;&#39;&#39;&#39;;&#10;    --&#10;    BEGIN&#10;        SELECT nd_value INTO l_dbg_mode&#10;        FROM nd_parameter&#10;        WHERE nd_parameter &#61; &#39;SEARCH_DEBUG_MODE&#39;;&#10;    EXCEPTION WHEN NO_DATA_FOUND THEN&#10;        l_dbg_mode :&#61; &#39;0&#39;;&#10;    END;&#10;    --&#10;    IF l_dbg_mode IN (&#39;1&#39;, &#39;2&#39;) AND funcgetDebugMode &#61; &#39;0&#39; THEN&#10;        procsetDebugMode(TO_NUMBER(l_dbg_mode));&#10;    END IF;&#10;    --&#10;END do_init;&#10;&#10;--&#10;-- Package Body initialisation block&#10;--&#10;BEGIN&#10;    do_init;&#10;END pkg_Debug;</textarea>
+                        </div>
+                    </div>
+                </section>
+            </div>
+            <!-- /.content-wrapper -->
+            <footer class="main-footer">
+                <div>
+                    <div class="pull-right hidden-xs">
+                        <a href="https://github.com/schemaspy/schemaspy" title="GitHub for SchemaSpy"><i class="fa fa-github-square fa-2x"></i></a>
+                        <a href="http://stackoverflow.com/questions/tagged/schemaspy" title="StackOverflow for SchemaSpy"><i class="fa fa-stack-overflow fa-2x"></i></a>
+                    </div>
+                    <strong>Generated by <a href="http://schemaspy.org/" class="logo-text"><i class="fa fa-database"></i> SchemaSpy 6.2.4</a></strong>
+                </div>
+                <!-- /.container -->
+            </footer>
+        </div>
+        <!-- ./wrapper -->
+
+        <!-- jQuery 2.2.3 -->
+        <script src="../bower/admin-lte/plugins/jQuery/jquery-2.2.3.min.js"></script>
+        <script src="../bower/admin-lte/plugins/jQueryUI/jquery-ui.min.js"></script>
+        <!-- Bootstrap 3.3.5 -->
+        <script src="../bower/admin-lte/bootstrap/js/bootstrap.min.js"></script>
+        <!-- DataTables -->
+        <script src="../bower/datatables.net/jquery.dataTables.min.js"></script>
+        <script src="../bower/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+        <script src="../bower/datatables.net-buttons/dataTables.buttons.min.js"></script>
+        <script src="../bower/datatables.net-buttons-bs/js/buttons.bootstrap.min.js"></script>
+        <script src="../bower/datatables.net-buttons/buttons.html5.min.js"></script>
+        <script src="../bower/datatables.net-buttons/buttons.print.min.js"></script>
+        <script src="../bower/datatables.net-buttons/buttons.colVis.min.js"></script>
+        <!-- SheetJS -->
+        <script src="../bower/js-xlsx/xlsx.full.min.js"></script>
+        <!-- pdfmake -->
+        <script src="../bower/pdfmake/pdfmake.min.js"></script>
+        <script src="../bower/pdfmake/vfs_fonts.js"></script>
+        <!-- SlimScroll -->
+        <script src="../bower/admin-lte/plugins/slimScroll/jquery.slimscroll.min.js"></script>
+        <!-- FastClick -->
+        <script src="../bower/admin-lte/plugins/fastclick/fastclick.js"></script>
+        <!-- Salvattore -->
+        <script src="../bower/salvattore/salvattore.min.js"></script>
+        <!-- AnchorJS -->
+        <script src="../bower/anchor-js/anchor.min.js"></script>
+        <!-- CodeMirror -->
+        <script src="../bower/codemirror/codemirror.js"></script>
+        <script src="../bower/codemirror/sql.js"></script>
+        <!-- AdminLTE App -->
+        <script src="../bower/admin-lte/dist/js/app.min.js"></script>
+        <script src="routine.js"></script>
+        <script src="../schemaSpy.js"></script>
+    </body>
+</html>

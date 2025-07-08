@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>TSTNDA.DELIUS_APP_SCHEMA</title>
+        <!-- Tell the browser to be responsive to screen width -->
+        <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+        <link rel="icon" type="image/png" sizes="16x16" href="../favicon.png">
+        <!-- Bootstrap 3.3.5 -->
+        <link rel="stylesheet" href="../bower/admin-lte/bootstrap/css/bootstrap.min.css">
+        <!-- Font Awesome -->
+        <link rel="stylesheet" href="../bower/font-awesome/css/font-awesome.min.css">
+        <!-- Ionicons -->
+        <link rel="stylesheet" href="../bower/ionicons/css/ionicons.min.css">
+        <!-- DataTables -->
+        <link rel="stylesheet" href="../bower/datatables.net-bs/css/dataTables.bootstrap.min.css">
+        <link rel="stylesheet" href="../bower/datatables.net-buttons-bs/css/buttons.bootstrap.min.css">
+        <!-- Code Mirror -->
+        <link rel="stylesheet" href="../bower/codemirror/codemirror.css">
+        <!-- Fonts -->
+        <link href='../fonts/indieflower/indie-flower.css' rel='stylesheet' type='text/css'>
+        <link href='../fonts/source-sans-pro/source-sans-pro.css' rel='stylesheet' type='text/css'>
+
+        <!-- Theme style -->
+        <link rel="stylesheet" href="../bower/admin-lte/dist/css/AdminLTE.min.css">
+        <!-- Salvattore -->
+        <link rel="stylesheet" href="../bower/salvattore/salvattore.css">
+        <!-- AdminLTE Skins. Choose a skin from the css/skins
+           folder instead of downloading all of them to reduce the load. -->
+        <link rel="stylesheet" href="../bower/admin-lte/dist/css/skins/_all-skins.min.css">
+        <!-- SchemaSpy -->
+        <link rel="stylesheet" href="../schemaSpy.css">
+
+        <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+        <!--[if lt IE 9]>
+        <script src="../bower/html5shiv/html5shiv.min.js"></script>
+        <script src="../bower/respond/respond.min.js"></script>
+        <![endif]-->
+    </head>
+    <!-- ADD THE CLASS layout-top-nav TO REMOVE THE SIDEBAR. -->
+    <body class="hold-transition skin-blue layout-top-nav">
+        <div class="wrapper">
+            <header class="main-header">
+                <nav class="navbar navbar-static-top">
+                    <div class="container">
+                        <div class="navbar-header">
+                            <a href="../index.html" class="navbar-brand"><b>TSTNDA</b></a><span class="navbar-brand" style="padding-left: 0">.DELIUS_APP_SCHEMA</span>
+                            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse"><i class="fa fa-bars"></i></button>
+                        </div>
+
+                        <!-- Collect the nav links, forms, and other content for toggling -->
+                        <div class="collapse navbar-collapse pull-left" id="navbar-collapse">
+                            <ul class="nav navbar-nav">
+                                <li><a href="../index.html">Tables <span class="sr-only">(current)</span></a></li>
+                                <li><a href="../columns.html" title="All of the columns in the schema">Columns</a></li>
+                                <li><a href="../constraints.html" title="Useful for diagnosing error messages that just give constraint name or number">Constraints</a></li>
+                                <li><a href="../relationships.html" title="Diagram of table relationships">Relationships</a></li>
+                                <li><a href="../orphans.html" title="View of tables with neither parents nor children">Orphan&nbsp;Tables</a></li>
+                                <li><a href="../anomalies.html" title="Things that might not be quite right">Anomalies</a></li>
+                                <li><a href="../routines.html" title="Procedures and functions">Routines</a></li>
+                            </ul>
+                        </div>
+                        <!-- /.navbar-collapse -->
+                        <!-- Navbar Right Menu -->
+                    </div>
+                    <!-- /.container-fluid -->
+                </nav>
+            </header>
+            <!-- Main content -->
+            <!-- Full Width Column -->
+            <div class="content-wrapper">
+                <!-- Content Header (Page header) -->
+                <section class="content-header">
+                    <h1>DELIUS_APP_SCHEMA.GLOBAL_CACHE_MGR</h1><br />
+                </section>
+                <!-- Main content -->
+                <section class="content">
+                    <div class="box box-primary">
+                        <div class="box-header with-border">
+                            <span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span>
+                            <h3 id="Columns" class="box-title">Parameters</h3>
+                            <div class="box-tools pull-right">
+                                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                            </div>
+                        </div>
+                        <div class="box-body">
+                            <table id="standard_table" class="table table-bordered table-striped dataTable" role="grid">
+                                <thead align='left'>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Type</th>
+                                    <th>Mode</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="box box-primary">
+                        <div class="box-header with-border">
+                            <i class="fa fa-file-code-o"></i>
+                            <h3 id="RoutineDefinition" class="box-title">Definition</h3>
+                            <div class="box-tools pull-right">
+                                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                            </div>
+                        </div>
+                        <div class="box-body">
+                            <textarea id="sql-script-codemirror" name="sql-script-codemirror" rows="" style="display: none;">PACKAGE BODY global_cache_mgr&#10;AS&#10;--&#10;--&#10;&#10;PROCEDURE put_in_cache (p_key IN VARCHAR2, p_value IN VARCHAR2)&#10;IS&#10;    l_client_identifier VARCHAR2(100) :&#61; TRIM(SYS_CONTEXT(&#39;USERENV&#39;, &#39;CLIENT_IDENTIFIER&#39;));&#10;BEGIN&#10;/*&#10;- after setting Session Client Identifier(DBMS_SESSION.SET_IDENTIFIER) behaviour of Global Context becomes UNEXPECTED,&#10;  almost looks like mix of Global and non-Global Context - tightly bound to the value of Session Client Identifier&#10;- if You have set Client Identifier and don&#39;t use client_id during calling SET_CONTEXT, than you will modify Global Context,&#10;  which is not seen until you RESET Client Identifier with DBMS_SESSION.CLEAR_IDENTIFIER, so use client_id when calling SET_CONTEXT.&#10;- to access values of Global Context inside JDBC pooled connection that use DBMS_SESSION.SET_IDENTIFIER you have to:&#10;  save current value of Client Identifier -&gt; call DBMS_SESSION.CLEAR_IDENTIFIER -&gt; access Global Context -&gt; return Client Identifier back with DBMS_SESSION.SET_IDENTIFIER&#10;- if some part of application depends on values of Global Context, for example: VPD(Virtual Private Database) which RLS(Row Level Security)&#10;  policies are based on values of Global Context, than when you use Apex, ODI 11.1.1.7, or other client that uses DBMS_SESSION.SET_IDENTIFIER&#10;  possible in conjunction with JDBC Connection Pooling, then you may face troubleshooting nightmare&#10;*/&#10;    IF l_client_identifier IS NOT NULL THEN&#10;        DBMS_SESSION.CLEAR_IDENTIFIER;&#10;    END IF;&#10;    --&#10;    DBMS_SESSION.set_context(&#39;GLOBAL_CACHE&#39;, p_key, p_value/*, NULL, l_client_identifier*/);&#10;    --&#10;    IF l_client_identifier IS NOT NULL THEN&#10;        DBMS_SESSION.SET_IDENTIFIER(l_client_identifier);&#10;    END IF;&#10;END put_in_cache;&#10;--&#10;FUNCTION get_from_cache (p_key IN VARCHAR2) RETURN VARCHAR2&#10;IS&#10;    l_client_identifier VARCHAR2(100) :&#61; TRIM(SYS_CONTEXT(&#39;USERENV&#39;, &#39;CLIENT_IDENTIFIER&#39;));&#10;    l_ret               VARCHAR2(1024);&#10;BEGIN&#10;    IF l_client_identifier IS NOT NULL THEN&#10;        DBMS_SESSION.CLEAR_IDENTIFIER;&#10;    END IF;&#10;    --&#10;    l_ret :&#61; SYS_CONTEXT(&#39;GLOBAL_CACHE&#39;, p_key);&#10;    --&#10;    IF l_client_identifier IS NOT NULL THEN&#10;        DBMS_SESSION.SET_IDENTIFIER(l_client_identifier);&#10;    END IF;&#10;    --&#10;    RETURN l_ret;&#10;END get_from_cache;&#10;--&#10;FUNCTION get_spg_modules RETURN NUMBER&#10;IS&#10;    l_ret NUMBER;&#10;BEGIN&#10;    EXECUTE IMMEDIATE &#39;SELECT SPGCONFIG.get_spg_modules FROM dual&#39; INTO l_ret;&#10;    RETURN l_ret;&#10;END get_spg_modules;&#10;--&#10;PROCEDURE set_spg_modules(p_modules NUMBER)&#10;IS&#10;BEGIN&#10;    EXECUTE IMMEDIATE &#39;BEGIN SPGCONFIG.set_spg_modules(:p_modules); END;&#39; USING p_modules;&#10;END set_spg_modules;&#10;--&#10;PROCEDURE add_spg_module(module_in IN PLS_INTEGER)&#10;IS&#10;    l_temp     NUMBER;&#10;    l_max_elem NUMBER :&#61; POWER(2, ABS(PKG_Global.g_SPGMaxElem)) - 1;&#10;BEGIN&#10;    l_temp :&#61; get_spg_modules;&#10;    IF NVL(SUBSTR(pkg_common.dec2bin(l_temp),module_in,1),&#39;0&#39;) &#61; &#39;0&#39; THEN&#10;        l_temp :&#61; l_temp + pkg_common.bin2dec(RPAD(&#39;1&#39;, ABS(module_in), &#39;0&#39;));&#10;        IF l_temp &gt; l_max_elem THEN&#10;            l_temp :&#61; l_max_elem;&#10;        END IF;&#10;        set_spg_modules(l_temp);&#10;    END IF;&#10;END add_spg_module;&#10;--&#10;PROCEDURE remove_spg_module(module_in IN PLS_INTEGER)&#10;IS&#10;  l_temp  NUMBER;&#10;BEGIN&#10;    l_temp :&#61; get_spg_modules;&#10;    IF NVL(SUBSTR(pkg_common.dec2bin(l_temp),module_in,1),&#39;0&#39;) &#61; &#39;1&#39; THEN&#10;      l_temp :&#61; l_temp - pkg_common.bin2dec(RPAD(&#39;1&#39;, ABS(module_in), &#39;0&#39;));&#10;      IF l_temp &lt; 0 THEN&#10;        l_temp :&#61; 0;&#10;      END IF;&#10;      set_spg_modules(l_temp);&#10;    END IF;&#10;END remove_spg_module;&#10;--&#10;PROCEDURE pdt_active&#10;IS&#10;BEGIN&#10;    put_in_cache(&#39;pdt_status&#39;,&#39;ACTIVE&#39;);&#10;END pdt_active;&#10;--&#10;PROCEDURE pdt_inactive&#10;IS&#10;BEGIN&#10;    put_in_cache(&#39;pdt_status&#39;,&#39;INACTIVE&#39;);&#10;END pdt_inactive;&#10;--&#10;FUNCTION pdt_get_status RETURN VARCHAR2&#10;IS&#10;BEGIN&#10;    RETURN get_from_cache(&#39;pdt_status&#39;);&#10;END pdt_get_status;&#10;--&#10;--&#10;--&#10;PROCEDURE spg_infomessage_active&#10;IS&#10;BEGIN&#10;    put_in_cache(&#39;spg_info&#39;,&#39;ACTIVE&#39;);&#10;    add_spg_module(PKG_Global.g_SPGInfoActive);&#10;END spg_infomessage_active;&#10;--&#10;PROCEDURE spg_infomessage_inactive&#10;IS&#10;BEGIN&#10;    put_in_cache(&#39;spg_info&#39;,&#39;INACTIVE&#39;);&#10;    remove_spg_module(PKG_Global.g_SPGInfoActive);&#10;END spg_infomessage_inactive;&#10;--&#10;--&#10;PROCEDURE spg_warnmessage_active&#10;IS&#10;BEGIN&#10;    put_in_cache(&#39;spg_warn&#39;,&#39;ACTIVE&#39;);&#10;    add_spg_module(PKG_Global.g_SPGWarnActive);&#10;END spg_warnmessage_active;&#10;--&#10;PROCEDURE spg_warnmessage_inactive&#10;IS&#10;BEGIN&#10;    put_in_cache(&#39;spg_warn&#39;,&#39;INACTIVE&#39;);&#10;    remove_spg_module(PKG_Global.g_SPGWarnActive);&#10;END spg_warnmessage_inactive;&#10;--&#10;--&#10;PROCEDURE spg_persistmessage_active&#10;IS&#10;BEGIN&#10;    put_in_cache(&#39;spg_persist&#39;,&#39;ACTIVE&#39;);&#10;    add_spg_module(PKG_Global.g_SPGPersistActive);&#10;END spg_persistmessage_active;&#10;--&#10;PROCEDURE spg_persistmessage_inactive&#10;IS&#10;BEGIN&#10;    put_in_cache(&#39;spg_persist&#39;,&#39;INACTIVE&#39;);&#10;    remove_spg_module(PKG_Global.g_SPGPersistActive);&#10;END spg_persistmessage_inactive;&#10;--&#10;--&#10;PROCEDURE spg_docstodisk_active&#10;IS&#10;BEGIN&#10;    put_in_cache(&#39;spg_docstodisk&#39;,&#39;ACTIVE&#39;);&#10;    add_spg_module(PKG_Global.g_SPGDocsToDiskActive);&#10;END spg_docstodisk_active;&#10;--&#10;PROCEDURE spg_docstodisk_inactive&#10;IS&#10;BEGIN&#10;    put_in_cache(&#39;spg_docstodisk&#39;,&#39;INACTIVE&#39;);&#10;    remove_spg_module(PKG_Global.g_SPGDocsToDiskActive);&#10;END spg_docstodisk_inactive;&#10;--&#10;--&#10;PROCEDURE spg_validatexml_active&#10;IS&#10;BEGIN&#10;  put_in_cache(&#39;spg_validatexml&#39;,&#39;ACTIVE&#39;);&#10;  add_spg_module(PKG_Global.g_SPGValidateXMLActive);&#10;END spg_validatexml_active;&#10;--&#10;PROCEDURE spg_validatexml_inactive&#10;IS&#10;BEGIN&#10;  put_in_cache(&#39;spg_validatexml&#39;,&#39;INACTIVE&#39;);&#10;  remove_spg_module(PKG_Global.g_SPGValidateXMLActive);&#10;END spg_validatexml_inactive;&#10;--&#10;--&#10;PROCEDURE spg_alfresco_active&#10;IS&#10;BEGIN&#10;  put_in_cache(&#39;spg_alfresco&#39;,&#39;ACTIVE&#39;);&#10;  add_spg_module(PKG_Global.g_SPGAlfrescoActive);&#10;END spg_alfresco_active;&#10;--&#10;PROCEDURE spg_alfresco_inactive&#10;IS&#10;BEGIN&#10;  put_in_cache(&#39;spg_alfresco&#39;,&#39;INACTIVE&#39;);&#10;  remove_spg_module(PKG_Global.g_SPGAlfrescoActive);&#10;END spg_alfresco_inactive;&#10;--&#10;--&#10;PROCEDURE spg_directpermission_active&#10;IS&#10;BEGIN&#10;  put_in_cache(&#39;spg_directpermission&#39;,&#39;ACTIVE&#39;);&#10;  add_spg_module(PKG_Global.g_SPGPermissionDirectActive);&#10;END spg_directpermission_active;&#10;--&#10;PROCEDURE spg_directpermission_inactive&#10;IS&#10;BEGIN&#10;  put_in_cache(&#39;spg_directpermission&#39;,&#39;INACTIVE&#39;);&#10;  remove_spg_module(PKG_Global.g_SPGPermissionDirectActive);&#10;END spg_directpermission_inactive;&#10;--&#10;--&#10;PROCEDURE spg_savexml_active IS&#10;BEGIN&#10;  put_in_cache(&#39;spg_savexml&#39;,&#39;ACTIVE&#39;);&#10;  add_spg_module(PKG_Global.g_SPGSaveXMLActive);&#10;END spg_savexml_active;&#10;--&#10;PROCEDURE spg_savexml_inactive IS&#10;BEGIN&#10;  put_in_cache(&#39;spg_savexml&#39;,&#39;INACTIVE&#39;);&#10;  remove_spg_module(PKG_Global.g_SPGSaveXMLActive);&#10;END spg_savexml_inactive;&#10;--&#10;--&#10;PROCEDURE spg_multithread_active IS&#10;BEGIN&#10;  put_in_cache(&#39;spg_multithread&#39;,&#39;ACTIVE&#39;);&#10;  add_spg_module(PKG_Global.g_SPGMultiThreadActive);&#10;END spg_multithread_active;&#10;--&#10;PROCEDURE spg_multithread_inactive IS&#10;BEGIN&#10;  put_in_cache(&#39;spg_multithread&#39;,&#39;INACTIVE&#39;);&#10;  remove_spg_module(PKG_Global.g_SPGMultiThreadActive);&#10;END spg_multithread_inactive;&#10;&#10;PROCEDURE spg_suppressdeferral_active IS&#10;BEGIN&#10;  put_in_cache(&#39;spg_suppressdeferral&#39;,&#39;ACTIVE&#39;);&#10;  add_spg_module(PKG_Global.g_SPGSuppressDeferralActive);&#10;END spg_suppressdeferral_active;&#10;&#10;PROCEDURE spg_suppressdeferral_inactive IS&#10;BEGIN&#10;  put_in_cache(&#39;spg_suppressdeferral&#39;,&#39;INACTIVE&#39;);&#10;  remove_spg_module(PKG_Global.g_SPGSuppressDeferralActive);&#10;END spg_suppressdeferral_inactive;&#10;&#10;PROCEDURE spg_docsmigrate_active IS&#10;BEGIN&#10;  put_in_cache(&#39;spg_docsmigrate&#39;,&#39;ACTIVE&#39;);&#10;  add_spg_module(PKG_Global.g_SPGDocsMigrateActive);&#10;END spg_docsmigrate_active;&#10;&#10;PROCEDURE spg_docsmigrate_inactive IS&#10;BEGIN&#10;  put_in_cache(&#39;spg_docsmigrate&#39;,&#39;ACTIVE&#39;);&#10;  remove_spg_module(PKG_Global.g_SPGDocsMigrateActive);&#10;END spg_docsmigrate_inactive;&#10;&#10;PROCEDURE prf_multithread_active IS&#10;BEGIN&#10;  put_in_cache(&#39;prf_multithread&#39;,&#39;ACTIVE&#39;);&#10;  add_spg_module(PKG_Global.g_PRFMultiThreadActive);&#10;END prf_multithread_active;&#10;&#10;PROCEDURE prf_multithread_inactive IS&#10;BEGIN&#10;  put_in_cache(&#39;prf_multithread&#39;,&#39;INACTIVE&#39;);&#10;  remove_spg_module(PKG_Global.g_PRFMultiThreadActive);&#10;END prf_multithread_inactive;&#10;&#10;--&#10;--&#10;PROCEDURE spg_set_jms_threads(p_num_of_threads INTEGER) IS&#10;BEGIN&#10;  put_in_cache(&#39;spg_jms_num_of_threads&#39;, TO_CHAR(p_num_of_threads));&#10;END spg_set_jms_threads;&#10;--&#10;FUNCTION spg_get_jms_threads RETURN INTEGER IS&#10;BEGIN&#10;  RETURN TO_NUMBER(NVL(get_from_cache(&#39;spg_jms_num_of_threads&#39;), &#39;0&#39;));&#10;END spg_get_jms_threads;&#10;--&#10;&#10;--&#10;-- DBG Using DBMS_PIPE&#10;--&#10;PROCEDURE dbg_set_mode(p_mode VARCHAR2)&#10;IS&#10;BEGIN&#10;    IF UPPER(p_mode) NOT IN (&#39;DBMS_PIPE&#39;, &#39;TABLE&#39;) THEN&#10;        raise_application_error(-20001, &#39;ERROR in GLOBAL_CACHE.dbg_set_mode: invalie mode [&#39; || p_mode || &#39;] specified&#39;);&#10;    END IF;&#10;    put_in_cache(&#39;dbg_mode&#39;, UPPER(p_mode));&#10;END dbg_set_mode;&#10;&#10;FUNCTION dbg_get_mode RETURN VARCHAR2 IS&#10;BEGIN&#10;  RETURN NVL(get_from_cache(&#39;dbg_mode&#39;), &#39;NONE&#39;);&#10;END dbg_get_mode;&#10;&#10;PROCEDURE dbg_set_ctx_user(p_user VARCHAR2)&#10;IS&#10;BEGIN&#10;    put_in_cache(&#39;dbg_ctx_user&#39;, p_user);&#10;END dbg_set_ctx_user;&#10;&#10;FUNCTION dbg_get_ctx_user RETURN VARCHAR2 IS&#10;BEGIN&#10;  RETURN NVL(get_from_cache(&#39;dbg_ctx_user&#39;), &#39;&#39;);&#10;END dbg_get_ctx_user;&#10;&#10;PROCEDURE dbg_set_ctx_proc(p_proc VARCHAR2)&#10;IS&#10;BEGIN&#10;    put_in_cache(&#39;dbg_ctx_proc&#39;, p_proc);&#10;END dbg_set_ctx_proc;&#10;&#10;FUNCTION dbg_get_ctx_proc RETURN VARCHAR2 IS&#10;BEGIN&#10;  RETURN NVL(get_from_cache(&#39;dbg_ctx_proc&#39;), &#39;&#39;);&#10;END dbg_get_ctx_proc;&#10;&#10;--&#10;--&#10;--&#10;--&#10;END;</textarea>
+                        </div>
+                    </div>
+                </section>
+            </div>
+            <!-- /.content-wrapper -->
+            <footer class="main-footer">
+                <div>
+                    <div class="pull-right hidden-xs">
+                        <a href="https://github.com/schemaspy/schemaspy" title="GitHub for SchemaSpy"><i class="fa fa-github-square fa-2x"></i></a>
+                        <a href="http://stackoverflow.com/questions/tagged/schemaspy" title="StackOverflow for SchemaSpy"><i class="fa fa-stack-overflow fa-2x"></i></a>
+                    </div>
+                    <strong>Generated by <a href="http://schemaspy.org/" class="logo-text"><i class="fa fa-database"></i> SchemaSpy 6.2.4</a></strong>
+                </div>
+                <!-- /.container -->
+            </footer>
+        </div>
+        <!-- ./wrapper -->
+
+        <!-- jQuery 2.2.3 -->
+        <script src="../bower/admin-lte/plugins/jQuery/jquery-2.2.3.min.js"></script>
+        <script src="../bower/admin-lte/plugins/jQueryUI/jquery-ui.min.js"></script>
+        <!-- Bootstrap 3.3.5 -->
+        <script src="../bower/admin-lte/bootstrap/js/bootstrap.min.js"></script>
+        <!-- DataTables -->
+        <script src="../bower/datatables.net/jquery.dataTables.min.js"></script>
+        <script src="../bower/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+        <script src="../bower/datatables.net-buttons/dataTables.buttons.min.js"></script>
+        <script src="../bower/datatables.net-buttons-bs/js/buttons.bootstrap.min.js"></script>
+        <script src="../bower/datatables.net-buttons/buttons.html5.min.js"></script>
+        <script src="../bower/datatables.net-buttons/buttons.print.min.js"></script>
+        <script src="../bower/datatables.net-buttons/buttons.colVis.min.js"></script>
+        <!-- SheetJS -->
+        <script src="../bower/js-xlsx/xlsx.full.min.js"></script>
+        <!-- pdfmake -->
+        <script src="../bower/pdfmake/pdfmake.min.js"></script>
+        <script src="../bower/pdfmake/vfs_fonts.js"></script>
+        <!-- SlimScroll -->
+        <script src="../bower/admin-lte/plugins/slimScroll/jquery.slimscroll.min.js"></script>
+        <!-- FastClick -->
+        <script src="../bower/admin-lte/plugins/fastclick/fastclick.js"></script>
+        <!-- Salvattore -->
+        <script src="../bower/salvattore/salvattore.min.js"></script>
+        <!-- AnchorJS -->
+        <script src="../bower/anchor-js/anchor.min.js"></script>
+        <!-- CodeMirror -->
+        <script src="../bower/codemirror/codemirror.js"></script>
+        <script src="../bower/codemirror/sql.js"></script>
+        <!-- AdminLTE App -->
+        <script src="../bower/admin-lte/dist/js/app.min.js"></script>
+        <script src="routine.js"></script>
+        <script src="../schemaSpy.js"></script>
+    </body>
+</html>

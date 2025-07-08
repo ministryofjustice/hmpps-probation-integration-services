@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>TSTNDA.DELIUS_APP_SCHEMA</title>
+        <!-- Tell the browser to be responsive to screen width -->
+        <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+        <link rel="icon" type="image/png" sizes="16x16" href="../favicon.png">
+        <!-- Bootstrap 3.3.5 -->
+        <link rel="stylesheet" href="../bower/admin-lte/bootstrap/css/bootstrap.min.css">
+        <!-- Font Awesome -->
+        <link rel="stylesheet" href="../bower/font-awesome/css/font-awesome.min.css">
+        <!-- Ionicons -->
+        <link rel="stylesheet" href="../bower/ionicons/css/ionicons.min.css">
+        <!-- DataTables -->
+        <link rel="stylesheet" href="../bower/datatables.net-bs/css/dataTables.bootstrap.min.css">
+        <link rel="stylesheet" href="../bower/datatables.net-buttons-bs/css/buttons.bootstrap.min.css">
+        <!-- Code Mirror -->
+        <link rel="stylesheet" href="../bower/codemirror/codemirror.css">
+        <!-- Fonts -->
+        <link href='../fonts/indieflower/indie-flower.css' rel='stylesheet' type='text/css'>
+        <link href='../fonts/source-sans-pro/source-sans-pro.css' rel='stylesheet' type='text/css'>
+
+        <!-- Theme style -->
+        <link rel="stylesheet" href="../bower/admin-lte/dist/css/AdminLTE.min.css">
+        <!-- Salvattore -->
+        <link rel="stylesheet" href="../bower/salvattore/salvattore.css">
+        <!-- AdminLTE Skins. Choose a skin from the css/skins
+           folder instead of downloading all of them to reduce the load. -->
+        <link rel="stylesheet" href="../bower/admin-lte/dist/css/skins/_all-skins.min.css">
+        <!-- SchemaSpy -->
+        <link rel="stylesheet" href="../schemaSpy.css">
+
+        <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+        <!--[if lt IE 9]>
+        <script src="../bower/html5shiv/html5shiv.min.js"></script>
+        <script src="../bower/respond/respond.min.js"></script>
+        <![endif]-->
+    </head>
+    <!-- ADD THE CLASS layout-top-nav TO REMOVE THE SIDEBAR. -->
+    <body class="hold-transition skin-blue layout-top-nav">
+        <div class="wrapper">
+            <header class="main-header">
+                <nav class="navbar navbar-static-top">
+                    <div class="container">
+                        <div class="navbar-header">
+                            <a href="../index.html" class="navbar-brand"><b>TSTNDA</b></a><span class="navbar-brand" style="padding-left: 0">.DELIUS_APP_SCHEMA</span>
+                            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse"><i class="fa fa-bars"></i></button>
+                        </div>
+
+                        <!-- Collect the nav links, forms, and other content for toggling -->
+                        <div class="collapse navbar-collapse pull-left" id="navbar-collapse">
+                            <ul class="nav navbar-nav">
+                                <li><a href="../index.html">Tables <span class="sr-only">(current)</span></a></li>
+                                <li><a href="../columns.html" title="All of the columns in the schema">Columns</a></li>
+                                <li><a href="../constraints.html" title="Useful for diagnosing error messages that just give constraint name or number">Constraints</a></li>
+                                <li><a href="../relationships.html" title="Diagram of table relationships">Relationships</a></li>
+                                <li><a href="../orphans.html" title="View of tables with neither parents nor children">Orphan&nbsp;Tables</a></li>
+                                <li><a href="../anomalies.html" title="Things that might not be quite right">Anomalies</a></li>
+                                <li><a href="../routines.html" title="Procedures and functions">Routines</a></li>
+                            </ul>
+                        </div>
+                        <!-- /.navbar-collapse -->
+                        <!-- Navbar Right Menu -->
+                    </div>
+                    <!-- /.container-fluid -->
+                </nav>
+            </header>
+            <!-- Main content -->
+            <!-- Full Width Column -->
+            <div class="content-wrapper">
+                <!-- Content Header (Page header) -->
+                <section class="content-header">
+                    <h1>DELIUS_APP_SCHEMA.PKG_PARTITION_TABLE</h1><br />
+                </section>
+                <!-- Main content -->
+                <section class="content">
+                    <div class="box box-primary">
+                        <div class="box-header with-border">
+                            <span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span>
+                            <h3 id="Columns" class="box-title">Parameters</h3>
+                            <div class="box-tools pull-right">
+                                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                            </div>
+                        </div>
+                        <div class="box-body">
+                            <table id="standard_table" class="table table-bordered table-striped dataTable" role="grid">
+                                <thead align='left'>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Type</th>
+                                    <th>Mode</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="box box-primary">
+                        <div class="box-header with-border">
+                            <i class="fa fa-file-code-o"></i>
+                            <h3 id="RoutineDefinition" class="box-title">Definition</h3>
+                            <div class="box-tools pull-right">
+                                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                            </div>
+                        </div>
+                        <div class="box-body">
+                            <textarea id="sql-script-codemirror" name="sql-script-codemirror" rows="" style="display: none;">PACKAGE BODY pkg_partition_table&#10;AS&#10;&#10;FUNCTION get_free_bytes ( p_tablespace   IN user_segments.tablespace_name%TYPE )&#10;RETURN INTEGER&#10;AS&#10;   l_free_bytes INTEGER;&#10;BEGIN&#10;    -- The amount of free bytes in a tablespace is the sum of the amount&#10;    -- of unused space in the allocated data files (user_free_space)&#10;    -- and the amount by which data files can autoextend (dba_data_files)&#10;    SELECT NVL(SUM(bytes),0) total_bytes&#10;    INTO   l_free_bytes&#10;    FROM (&#10;           SELECT SUM(bytes) bytes&#10;           FROM   user_free_space&#10;           WHERE  tablespace_name &#61; p_tablespace&#10;           UNION ALL&#10;           SELECT SUM(maxbytes-bytes) bytes&#10;           FROM   dba_data_files&#10;           WHERE  tablespace_name &#61; p_tablespace&#10;           AND    autoextensible&#61;&#39;YES&#39;&#10;        );&#10;    RETURN l_free_bytes;&#10;END get_free_bytes;&#10;&#10;PROCEDURE check_prereqs ( p_table_name          IN user_tables.table_name%TYPE&#10;                         ,p_target_tablespace   IN user_segments.tablespace_name%TYPE )&#10;AS&#10;   l_source_tablespace  user_segments.tablespace_name%TYPE;&#10;   l_source_bytes       user_segments.bytes%TYPE;&#10;   C_MARGIN_MULTIPLIER  CONSTANT NUMBER :&#61; 1.1;&#10;BEGIN&#10;   /*&#10;      Check all prerequisites met for partitioning the table:&#10;         1.  Need at least the same amount of free space in the source tablespace as the original table.&#10;         2.  Need at least the same amount of free space in the target tablespace as the original table.&#10;             -- Allow for at least 10% safety margin for free space as tables may grow during the migration&#10;   */&#10;&#10;   SELECT  tablespace_name&#10;          ,bytes&#10;   INTO    l_source_tablespace&#10;          ,l_source_bytes&#10;   FROM   user_segments&#10;   WHERE  segment_name &#61; p_table_name;&#10;&#10;   IF (C_MARGIN_MULTIPLIER*l_source_bytes) &gt; get_free_bytes(l_source_tablespace)&#10;   THEN&#10;      RAISE_APPLICATION_ERROR(-20801,&#39;Insufficient free space for &#39;||p_table_name||&#39; in &#39;||l_source_tablespace||&#39; to run partitioning.&#39;);&#10;   END IF;&#10;&#10;   IF (C_MARGIN_MULTIPLIER*l_source_bytes) &gt; get_free_bytes(p_target_tablespace)&#10;   THEN&#10;      RAISE_APPLICATION_ERROR(-20802,&#39;Insufficient free space for &#39;||p_table_name||&#39; in &#39;||p_target_tablespace||&#39; to run partitioning.&#39;);&#10;   END IF;&#10;&#10;END check_prereqs;&#10;&#10;PROCEDURE partition_table ( p_table_name          IN user_tables.table_name%TYPE&#10;                           ,p_target_tablespace   IN user_segments.tablespace_name%TYPE )&#10;AS&#10;   l_partition_count  INTEGER;&#10;BEGIN&#10;&#10;   -- Run online conversion - this will take a long time to complete&#10;   EXECUTE IMMEDIATE q&#39;[&#10;       ALTER TABLE ]&#39; || p_table_name || q&#39;[&#10;            MODIFY&#10;            PARTITION BY RANGE (date_time)&#10;            INTERVAL (NUMTOYMINTERVAL(1,&#39;MONTH&#39;))&#10;            STORE IN (]&#39; || p_target_tablespace || q&#39;[)&#10;               (&#10;               PARTITION base_partition values LESS THAN (TO_DATE(&#39;01-JAN-2010&#39;,&#39;DD-MON-YYYY&#39;)) TABLESPACE ]&#39; || p_target_tablespace ||&#10;            q&#39;[)  ONLINE]&#39; ;&#10;&#10;END partition_table;&#10;&#10;&#10;&#10;PROCEDURE configure_incremental_stats( p_table_name   IN user_tables.table_name%TYPE )&#10;AS&#10;BEGIN&#10;   -- Enable Incremental Statistics for the table so that we only need to gather statistics&#10;   -- on the most current partition&#10;   DBMS_STATS.set_table_prefs(&#10;       ownname    &#61;&gt; USER&#10;      ,tabname    &#61;&gt; p_table_name&#10;      ,pname      &#61;&gt; &#39;incremental&#39;&#10;      ,pvalue     &#61;&gt; &#39;TRUE&#39;);&#10;   -- Allow the use of locked statistics for gathering incremental statistics&#10;   -- Note that this is a new 18c feature; previously truncating a partition would&#10;   -- invalidate the use of incremental statistics even if locked.&#10;   DBMS_STATS.set_table_prefs(&#10;       ownname    &#61;&gt; USER&#10;      ,tabname    &#61;&gt; p_table_name&#10;      ,pname      &#61;&gt; &#39;incremental_staleness&#39;&#10;      ,pvalue     &#61;&gt; &#39;USE_LOCKED_STATS&#39;);&#10;&#10;END configure_incremental_stats;&#10;&#10;&#10;&#10;PROCEDURE configure_stats_gathering( p_table_name   IN user_tables.table_name%TYPE&#10;                                    ,p_job_name     IN user_scheduler_jobs.job_name%TYPE )&#10;AS&#10;BEGIN&#10;   -- Create job for gathering stale statistics on the audited interaction table&#10;   -- i.e. As the current partition grows or new partitions added.&#10;&#10;   DBMS_SCHEDULER.create_program (&#10;     program_name   &#61;&gt; SUBSTR(p_table_name,1,26)||&#39;_PRG&#39;&#10;    ,program_type   &#61;&gt; &#39;PLSQL_BLOCK&#39;&#10;    ,enabled        &#61;&gt; TRUE&#10;    ,comments       &#61;&gt; &#39;Gather only stale statistics on &#39;||p_table_name&#10;    ,program_action &#61;&gt; q&#39;[&#10;       DECLARE&#10;          l_filter_list   DBMS_STATS.objecttab :&#61; DBMS_STATS.objecttab();&#10;       BEGIN&#10;          l_filter_list.EXTEND(1);&#10;          l_filter_list(1).ownname :&#61; USER;&#10;          l_filter_list(1).objname :&#61; &#39;]&#39; || p_table_name || q&#39;[&#39;;&#10;          DBMS_STATS.gather_schema_stats (&#10;              ownname         &#61;&gt; USER&#10;             ,obj_filter_list &#61;&gt; l_filter_list&#10;             ,options         &#61;&gt; &#39;GATHER AUTO&#39; );&#10;       END;]&#39;&#10;     );&#10;&#10;    DBMS_SCHEDULER.create_schedule (&#10;         schedule_name   &#61;&gt; &#39;DAILY_STATISTICS_SCHEDULE&#39;&#10;        ,start_date      &#61;&gt; SYSTIMESTAMP&#10;        ,repeat_interval &#61;&gt; &#39;freq&#61;daily; byhour&#61;1; byminute&#61;0&#39;&#10;        ,end_date        &#61;&gt; NULL&#10;        ,comments        &#61;&gt; &#39;Repeats daily at 1am.&#39;);&#10;&#10;    DBMS_SCHEDULER.create_job (&#10;         job_name      &#61;&gt; p_job_name&#10;        ,program_name  &#61;&gt; SUBSTR(p_table_name,1,26)||&#39;_PRG&#39;&#10;        ,schedule_name &#61;&gt; &#39;DAILY_STATISTICS_SCHEDULE&#39;&#10;        ,enabled       &#61;&gt; TRUE&#10;        ,comments      &#61;&gt; &#39;Gather stale statistics on &#39;|| p_table_name||&#39; each day.&#39;);&#10;&#10;END configure_stats_gathering;&#10;&#10;&#10;&#10;PROCEDURE gather_initial_stats ( p_job_name     IN user_scheduler_jobs.job_name%TYPE )&#10;AS&#10;   l_stats_timer DATE;&#10;BEGIN&#10;&#10;   l_stats_timer :&#61; SYSDATE;&#10;&#10;   DBMS_SCHEDULER.run_job(p_job_name);&#10;&#10;   DBMS_OUTPUT.put_line(&#39;Initial stats gathering completed in &#39;||(SYSDATE-l_stats_timer)*(24*60*60)||&#39; seconds. &#39;);&#10;&#10;   -- To confirm that the job will not re-gather existing statistics run it again&#10;   -- with the expectation that the second run will be very quick&#10;&#10;   l_stats_timer :&#61; SYSDATE;&#10;&#10;   DBMS_SCHEDULER.run_job(p_job_name);&#10;&#10;   DBMS_OUTPUT.put_line(&#39;Second stats gathering completed in &#39;||(SYSDATE-l_stats_timer)*(24*60*60)||&#39; seconds. &#39;);&#10;&#10;END gather_initial_stats;&#10;&#10;&#10;&#10;PROCEDURE run_partitioning ( p_table_name        IN user_tables.table_name%TYPE&#10;                            ,p_target_tablespace IN user_tablespaces.tablespace_name%TYPE )&#10;AS&#10;BEGIN&#10;&#10;   check_prereqs ( p_table_name &#61;&gt; UPPER(p_table_name)&#10;                    ,p_target_tablespace   &#61;&gt; UPPER(p_target_tablespace) );&#10;&#10;   partition_table ( p_table_name &#61;&gt; UPPER(p_table_name)&#10;                    ,p_target_tablespace   &#61;&gt; UPPER(p_target_tablespace) );&#10;&#10;   configure_incremental_stats( p_table_name &#61;&gt; UPPER(p_table_name) );&#10;&#10;   configure_stats_gathering( p_table_name &#61;&gt; UPPER(p_table_name)&#10;                             ,p_job_name   &#61;&gt; UPPER(SUBSTR(p_table_name,1,24)||&#39;_STATS&#39;));&#10;&#10;   gather_initial_stats (p_job_name   &#61;&gt; UPPER(SUBSTR(p_table_name,1,24)||&#39;_STATS&#39;));&#10;&#10;END run_partitioning;&#10;&#10;END pkg_partition_table;</textarea>
+                        </div>
+                    </div>
+                </section>
+            </div>
+            <!-- /.content-wrapper -->
+            <footer class="main-footer">
+                <div>
+                    <div class="pull-right hidden-xs">
+                        <a href="https://github.com/schemaspy/schemaspy" title="GitHub for SchemaSpy"><i class="fa fa-github-square fa-2x"></i></a>
+                        <a href="http://stackoverflow.com/questions/tagged/schemaspy" title="StackOverflow for SchemaSpy"><i class="fa fa-stack-overflow fa-2x"></i></a>
+                    </div>
+                    <strong>Generated by <a href="http://schemaspy.org/" class="logo-text"><i class="fa fa-database"></i> SchemaSpy 6.2.4</a></strong>
+                </div>
+                <!-- /.container -->
+            </footer>
+        </div>
+        <!-- ./wrapper -->
+
+        <!-- jQuery 2.2.3 -->
+        <script src="../bower/admin-lte/plugins/jQuery/jquery-2.2.3.min.js"></script>
+        <script src="../bower/admin-lte/plugins/jQueryUI/jquery-ui.min.js"></script>
+        <!-- Bootstrap 3.3.5 -->
+        <script src="../bower/admin-lte/bootstrap/js/bootstrap.min.js"></script>
+        <!-- DataTables -->
+        <script src="../bower/datatables.net/jquery.dataTables.min.js"></script>
+        <script src="../bower/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+        <script src="../bower/datatables.net-buttons/dataTables.buttons.min.js"></script>
+        <script src="../bower/datatables.net-buttons-bs/js/buttons.bootstrap.min.js"></script>
+        <script src="../bower/datatables.net-buttons/buttons.html5.min.js"></script>
+        <script src="../bower/datatables.net-buttons/buttons.print.min.js"></script>
+        <script src="../bower/datatables.net-buttons/buttons.colVis.min.js"></script>
+        <!-- SheetJS -->
+        <script src="../bower/js-xlsx/xlsx.full.min.js"></script>
+        <!-- pdfmake -->
+        <script src="../bower/pdfmake/pdfmake.min.js"></script>
+        <script src="../bower/pdfmake/vfs_fonts.js"></script>
+        <!-- SlimScroll -->
+        <script src="../bower/admin-lte/plugins/slimScroll/jquery.slimscroll.min.js"></script>
+        <!-- FastClick -->
+        <script src="../bower/admin-lte/plugins/fastclick/fastclick.js"></script>
+        <!-- Salvattore -->
+        <script src="../bower/salvattore/salvattore.min.js"></script>
+        <!-- AnchorJS -->
+        <script src="../bower/anchor-js/anchor.min.js"></script>
+        <!-- CodeMirror -->
+        <script src="../bower/codemirror/codemirror.js"></script>
+        <script src="../bower/codemirror/sql.js"></script>
+        <!-- AdminLTE App -->
+        <script src="../bower/admin-lte/dist/js/app.min.js"></script>
+        <script src="routine.js"></script>
+        <script src="../schemaSpy.js"></script>
+    </body>
+</html>

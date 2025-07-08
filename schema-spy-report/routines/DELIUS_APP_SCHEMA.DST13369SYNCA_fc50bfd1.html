@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>TSTNDA.DELIUS_APP_SCHEMA</title>
+        <!-- Tell the browser to be responsive to screen width -->
+        <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+        <link rel="icon" type="image/png" sizes="16x16" href="../favicon.png">
+        <!-- Bootstrap 3.3.5 -->
+        <link rel="stylesheet" href="../bower/admin-lte/bootstrap/css/bootstrap.min.css">
+        <!-- Font Awesome -->
+        <link rel="stylesheet" href="../bower/font-awesome/css/font-awesome.min.css">
+        <!-- Ionicons -->
+        <link rel="stylesheet" href="../bower/ionicons/css/ionicons.min.css">
+        <!-- DataTables -->
+        <link rel="stylesheet" href="../bower/datatables.net-bs/css/dataTables.bootstrap.min.css">
+        <link rel="stylesheet" href="../bower/datatables.net-buttons-bs/css/buttons.bootstrap.min.css">
+        <!-- Code Mirror -->
+        <link rel="stylesheet" href="../bower/codemirror/codemirror.css">
+        <!-- Fonts -->
+        <link href='../fonts/indieflower/indie-flower.css' rel='stylesheet' type='text/css'>
+        <link href='../fonts/source-sans-pro/source-sans-pro.css' rel='stylesheet' type='text/css'>
+
+        <!-- Theme style -->
+        <link rel="stylesheet" href="../bower/admin-lte/dist/css/AdminLTE.min.css">
+        <!-- Salvattore -->
+        <link rel="stylesheet" href="../bower/salvattore/salvattore.css">
+        <!-- AdminLTE Skins. Choose a skin from the css/skins
+           folder instead of downloading all of them to reduce the load. -->
+        <link rel="stylesheet" href="../bower/admin-lte/dist/css/skins/_all-skins.min.css">
+        <!-- SchemaSpy -->
+        <link rel="stylesheet" href="../schemaSpy.css">
+
+        <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+        <!--[if lt IE 9]>
+        <script src="../bower/html5shiv/html5shiv.min.js"></script>
+        <script src="../bower/respond/respond.min.js"></script>
+        <![endif]-->
+    </head>
+    <!-- ADD THE CLASS layout-top-nav TO REMOVE THE SIDEBAR. -->
+    <body class="hold-transition skin-blue layout-top-nav">
+        <div class="wrapper">
+            <header class="main-header">
+                <nav class="navbar navbar-static-top">
+                    <div class="container">
+                        <div class="navbar-header">
+                            <a href="../index.html" class="navbar-brand"><b>TSTNDA</b></a><span class="navbar-brand" style="padding-left: 0">.DELIUS_APP_SCHEMA</span>
+                            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse"><i class="fa fa-bars"></i></button>
+                        </div>
+
+                        <!-- Collect the nav links, forms, and other content for toggling -->
+                        <div class="collapse navbar-collapse pull-left" id="navbar-collapse">
+                            <ul class="nav navbar-nav">
+                                <li><a href="../index.html">Tables <span class="sr-only">(current)</span></a></li>
+                                <li><a href="../columns.html" title="All of the columns in the schema">Columns</a></li>
+                                <li><a href="../constraints.html" title="Useful for diagnosing error messages that just give constraint name or number">Constraints</a></li>
+                                <li><a href="../relationships.html" title="Diagram of table relationships">Relationships</a></li>
+                                <li><a href="../orphans.html" title="View of tables with neither parents nor children">Orphan&nbsp;Tables</a></li>
+                                <li><a href="../anomalies.html" title="Things that might not be quite right">Anomalies</a></li>
+                                <li><a href="../routines.html" title="Procedures and functions">Routines</a></li>
+                            </ul>
+                        </div>
+                        <!-- /.navbar-collapse -->
+                        <!-- Navbar Right Menu -->
+                    </div>
+                    <!-- /.container-fluid -->
+                </nav>
+            </header>
+            <!-- Main content -->
+            <!-- Full Width Column -->
+            <div class="content-wrapper">
+                <!-- Content Header (Page header) -->
+                <section class="content-header">
+                    <h1>DELIUS_APP_SCHEMA.DST13369SYNCALFRESCODOCUMENTSDETAILS</h1><br />
+                </section>
+                <!-- Main content -->
+                <section class="content">
+                    <div class="box box-primary">
+                        <div class="box-header with-border">
+                            <span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span>
+                            <h3 id="Columns" class="box-title">Parameters</h3>
+                            <div class="box-tools pull-right">
+                                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                            </div>
+                        </div>
+                        <div class="box-body">
+                            <table id="standard_table" class="table table-bordered table-striped dataTable" role="grid">
+                                <thead align='left'>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Type</th>
+                                    <th>Mode</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td>P_START_ROWID</td>
+                                    <td>ROWID</td>
+                                    <td>IN</td>
+                                </tr>
+                                <tr>
+                                    <td>P_END_ROWID</td>
+                                    <td>ROWID</td>
+                                    <td>IN</td>
+                                </tr>
+                                <tr>
+                                    <td>P_UPDATE_DELIUS</td>
+                                    <td>PL/SQL BOOLEAN</td>
+                                    <td>IN</td>
+                                </tr>
+                                <tr>
+                                    <td>CRN_IN</td>
+                                    <td>VARCHAR2</td>
+                                    <td>IN</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="box box-primary">
+                        <div class="box-header with-border">
+                            <i class="fa fa-file-code-o"></i>
+                            <h3 id="RoutineDefinition" class="box-title">Definition</h3>
+                            <div class="box-tools pull-right">
+                                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                            </div>
+                        </div>
+                        <div class="box-body">
+                            <textarea id="sql-script-codemirror" name="sql-script-codemirror" rows="" style="display: none;">PROCEDURE dst13369SyncAlfrescoDocumentsDetails (&#10;    p_start_rowid   IN ROWID DEFAULT NULL,&#10;    p_end_rowid     IN ROWID DEFAULT NULL,&#10;    p_update_delius IN BOOLEAN DEFAULT FALSE,&#10;    crn_in          IN VARCHAR2 DEFAULT NULL)&#10;IS&#10;    --&#10;    P_CRN       VARCHAR2(30) :&#61; crn_in;&#10;    --&#10;    P_WAIT      NUMBER  :&#61; -1;  -- Delay (in seconds) between each record&#10;    --&#10;    LC_alfresco_wallet           VARCHAR2(1024) :&#61; SPGCONFIG.get_alfresco_wallet;&#10;    LC_DATE_TIME                 DATE :&#61; SYSDATE;&#10;    L_DISTINGUISHED_NAME         user_.distinguished_name%TYPE:&#61; &#39;[Data Maintenance]&#39;;&#10;    LC_USER_ID                   NUMBER;&#10;    --&#10;    l_update_delius              BOOLEAN :&#61; p_update_delius;&#10;    --&#10;    CURSOR cs (cp_start_rowid ROWID, cp_end_rowid ROWID) IS &#10;        SELECT *&#10;        FROM delius_app_scripts.z_dst13369_alfresco_document_details&#10;        WHERE (alf_status IS NULL OR&#10;              (alf_status &#61; &#39;MISSING&#39; AND NVL(processed,&#39;N&#39;) &lt;&gt; &#39;Y&#39;))&#10;        AND rowid BETWEEN NVL(cp_start_rowid,rowid) AND NVL(cp_end_rowid,rowid)&#10;        AND crn &#61; NVL(P_CRN,crn)&#10;        FOR UPDATE;&#10;    --&#10;    l_rec cs%ROWTYPE;&#10;    --&#10;    CURSOR csALFDocument(p_alf_doc_id VARCHAR2) IS&#10;      SELECT *&#10;      FROM&#10;        TABLE(&#10;            DocMigrationSupport.documentContent(&#10;                p_alf_doc_id &#61;&gt; p_alf_doc_id,&#10;                p_wait       &#61;&gt; P_WAIT ) )&#10;      WHERE 1&#61;1;&#10;    --&#10;    l_rec_alf_document      csALFDocument%ROWTYPE; &#10;    l_alf_document_found    BOOLEAN;&#10;    --&#10;    CURSOR csALFDocumentType(p_crn VARCHAR2, p_document_type VARCHAR2, p_entity_id VARCHAR2) IS&#10;      SELECT id&#10;      FROM&#10;        TABLE(&#10;            DocMigrationSupport.AlfrescoContent(&#10;                crn_in       &#61;&gt; p_crn,&#10;                p_wait       &#61;&gt; P_WAIT ) )&#10;      WHERE 1&#61;1&#10;      AND document_type &#61; p_document_type&#10;      AND entity_id &#61; NVL(p_entity_id,entity_id);&#10;    --&#10;    l_rec_alf_document_type         csALFDocumentType%ROWTYPE; &#10;    l_alf_document_type_found       BOOLEAN;&#10;&#10;    CURSOR csSoftDeletedALF(p_crn VARCHAR2, p_alf_doc_id VARCHAR2, p_document_type VARCHAR2) IS&#10;      SELECT *&#10;      FROM&#10;        TABLE(&#10;            dst13369support.softDeletedDocumentContent(&#10;                crn_in &#61;&gt; p_crn,&#10;                p_wait &#61;&gt; P_WAIT ))&#10;      WHERE 1&#61;1&#10;      AND id &#61; p_alf_doc_id&#10;      AND document_type &#61; p_document_type;&#10;    --&#10;    l_rec_alf_soft_deleted      csSoftDeletedALF%ROWTYPE; &#10;    l_alf_soft_deleted_found    BOOLEAN;&#10;    --&#10;    CURSOR csALFUndelete (p_alf_doc_id VARCHAR2) IS&#10;    SELECT *&#10;      FROM&#10;        TABLE(&#10;            dst13369support.undeleteDocumentContent(&#10;                p_alf_doc_id &#61;&gt; p_alf_doc_id,&#10;                p_wait       &#61;&gt; P_WAIT ) )&#10;      WHERE 1&#61;1;&#10;    --&#10;    l_rec_alf_undelete         csALFUndelete%ROWTYPE;&#10;    l_alf_undelete_found       BOOLEAN;&#10;    --&#10;    PROCEDURE do_init IS&#10;    BEGIN&#10;        --&#10;        DBMS_OUTPUT.enable(NULL);&#10;        --&#10;        LC_USER_ID :&#61; PKG_Lookups.GetUserID(L_DISTINGUISHED_NAME);&#10;        --&#10;        IF LC_USER_ID IS NULL&#10;        THEN&#10;          l_distinguished_name :&#61; &#39;DELIUS_SYSTEM_USER&#39;;&#10;          LC_USER_ID :&#61; PKG_Lookups.GetUserID(l_distinguished_name);&#10;        END IF;&#10;        --&#10;        IF LC_alfresco_wallet IS NOT NULL THEN&#10;            UTL_HTTP.set_wallet(path&#61;&gt;LC_alfresco_wallet);&#10;        ELSE&#10;            NULL;&#10;        END IF;&#10;        --&#10;    END do_init;&#10;    --&#10;    PROCEDURE do_find_alf_document(p_alf_doc_id VARCHAR2)&#10;    IS&#10;    --&#10;    BEGIN&#10;        --&#10;        OPEN csALFDocument(p_alf_doc_id);&#10;        FETCH csALFDocument INTO l_rec_alf_document;&#10;        l_alf_document_found :&#61; csALFDocument%FOUND;&#10;        CLOSE csALFDocument;&#10;        --&#10;    EXCEPTION WHEN OTHERS THEN&#10;        --&#10;        IF csALFDocument%ISOPEN THEN&#10;            CLOSE csALFDocument;&#10;        END IF;&#10;        --&#10;        l_alf_document_found :&#61; FALSE;&#10;        --&#10;        RAISE;&#10;        --&#10;    END do_find_alf_document;&#10;    --&#10;    PROCEDURE do_find_alf_document_type(p_crn VARCHAR2, p_document_type VARCHAR2, p_entity_id VARCHAR2)&#10;    IS&#10;    --&#10;    BEGIN&#10;        --&#10;        OPEN csALFDocumentType(p_crn, p_document_type, p_entity_id);&#10;        FETCH csALFDocumentType INTO l_rec_alf_document_type;&#10;        l_alf_document_type_found :&#61; csALFDocumentType%FOUND;&#10;        CLOSE csALFDocumentType;&#10;        --&#10;    EXCEPTION WHEN OTHERS THEN&#10;        --&#10;        IF csALFDocumentType%ISOPEN THEN&#10;            CLOSE csALFDocumentType;&#10;        END IF;&#10;        --&#10;        l_alf_document_type_found :&#61; FALSE;&#10;        --&#10;        RAISE;&#10;        --&#10;    END do_find_alf_document_type;&#10;    --&#10;    PROCEDURE do_find_alf_soft_deleted (p_crn VARCHAR2, p_alf_doc_id VARCHAR2, p_document_type VARCHAR2)&#10;    IS&#10;    --&#10;    BEGIN&#10;        --&#10;        OPEN csSoftDeletedALF(p_crn, p_alf_doc_id, p_document_type);&#10;        FETCH csSoftDeletedALF INTO l_rec_alf_soft_deleted;&#10;        l_alf_soft_deleted_found :&#61; csSoftDeletedALF%FOUND;&#10;        CLOSE csSoftDeletedALF;&#10;        --&#10;    EXCEPTION WHEN OTHERS THEN&#10;        --&#10;        IF csSoftDeletedALF%ISOPEN THEN&#10;            CLOSE csSoftDeletedALF;&#10;        END IF;&#10;        --&#10;        l_alf_soft_deleted_found :&#61; FALSE;&#10;        --&#10;        RAISE;&#10;        --&#10;    END do_find_alf_soft_deleted;&#10;    --&#10;    PROCEDURE do_undelete_alf(p_alf_doc_id VARCHAR2)&#10;    IS&#10;    --&#10;    BEGIN&#10;        --&#10;        OPEN csALFundelete(p_alf_doc_id);&#10;        FETCH csALFundelete INTO l_rec_alf_undelete;&#10;        l_alf_undelete_found :&#61; csALFundelete%FOUND;&#10;        CLOSE csALFundelete;&#10;        --&#10;    EXCEPTION WHEN OTHERS THEN&#10;        --&#10;        IF csALFundelete%ISOPEN THEN&#10;            CLOSE csALFundelete;&#10;        END IF;&#10;        --&#10;        l_alf_undelete_found :&#61; FALSE;&#10;        --&#10;        RAISE;&#10;        --&#10;    END do_undelete_alf;&#10;    --&#10;    /*PROCEDURE do_final &#10;    IS&#10;    --&#10;    BEGIN&#10;        -- Perform final delete on document table for documents which were out of sync ie. MISSING in Alfresco&#10;        -- and a CPS_PACK or PREVIOUS_CONVICTION document did not exist in the Alfresco offender folder&#10;        -- and did not exist in the Alfresco trashcan ie. soft delete&#10;        -- Backup the documents to be deleted&#10;        INSERT INTO delius_app_scripts.z_dst13369_documents_deleted&#10;            SELECT LC_DATE_TIME,&#10;                   d.*&#10;            FROM document d&#10;            JOIN delius_app_scripts.z_dst13369_alfresco_document_details z ON z.document_id &#61; d.document_id&#10;            WHERE z.alf_soft_deleted &#61; 0;&#10;        --&#10;        INSERT INTO delius_app_scripts.z_dst13369_subject_access_report_documents_deleted&#10;            SELECT LC_DATE_TIME,&#10;                   s.*&#10;            FROM subject_access_report_document s&#10;            JOIN delius_app_scripts.z_dst13369_alfresco_document_details z ON z.document_id &#61; s.document_id&#10;            WHERE z.alf_soft_deleted &#61; 0;   &#10;        --&#10;        -- Delete from documents&#10;        DELETE FROM subject_access_report_document&#10;        WHERE document_id IN (SELECT document_id &#10;                              FROM delius_app_scripts.z_dst13369_subject_access_report_documents_deleted);        &#10;        --&#10;        DELETE FROM document&#10;        WHERE document_id IN (SELECT document_id &#10;                              FROM delius_app_scripts.z_dst13369_documents_deleted); &#10;        --&#10;    END do_final;*/&#10;    --&#10;    PROCEDURE do_document_delete (p_document_id NUMBER)&#10;    IS&#10;        --&#10;        l_document_type     VARCHAR2(20) :&#61; CASE &#10;                                                WHEN l_rec.document_type &#61; &#39;PREVIOUS_CONVICTION&#39; THEN &#39;Pre-Con&#39; &#10;                                                WHEN l_rec.document_type &#61; &#39;CPS_PACK&#39; THEN &#39;CPS Pack&#39;&#10;                                            END;&#10;        --&#10;        PROCEDURE do_create_contact &#10;        IS&#10;        --&#10;        BEGIN&#10;            --&#10;            INSERT INTO contact(&#10;                contact_id,&#10;                offender_id,&#10;                contact_date,&#10;                contact_type_id,&#10;                contact_start_time,&#10;                --&#10;                notes,&#10;                --&#10;                team_id,&#10;                staff_id,&#10;                probation_area_id,&#10;                --&#10;                event_id,&#10;                --&#10;                soft_deleted,&#10;                partition_area_id,&#10;                row_version,&#10;                --&#10;                created_by_user_id,&#10;                created_datetime,&#10;                last_updated_user_id,&#10;                last_updated_datetime )&#10;            SELECT&#10;                contact_id_SEQ.nextval,&#10;                l_rec.offender_id,&#10;                LC_DATE_TIME,&#10;                --&#10;                PKG_Lookups.funcgetTabRecord_CACHED(&#10;                    p_table &#61;&gt; &#39;r_contact_type&#39;, &#10;                    p_ref_col  &#61;&gt; &#39;code&#39;, &#10;                    p_ref_val  &#61;&gt; &#39;C250&#39;,&#10;                    p_data_fld &#61;&gt; &#39;contact_type_id&#39;&#10;                ),&#10;                NULL,&#10;                --&#10;                PKG_LstUtl.concat_CLOB(&#10;                    &#39;As part of a system script, a &#39;||l_document_type||&#39; document could not be found in either Delius or the Document store(&#39;,&#10;                    l_rec.alfresco_document_id,&#10;                    &#39;) and has been removed.&#39;,&#10;                    p_delim&#61;&gt;&#39;&#39;),&#10;                --&#10;                PKG_Lookups.funcgetTabRecord_CACHED(&#10;                    p_table &#61;&gt; &#39;team&#39;, &#10;                    p_ref_col  &#61;&gt; &#39;probation_area_id&#39;, &#10;                    p_ref_val  &#61;&gt; OM.probation_area_id,&#10;                    p_data_fld &#61;&gt; &#39;team_id&#39;,&#10;                    p_where    &#61;&gt; &#39;code &#61; :unallocated_team_code&#39;,&#10;                    p_bind_var1 &#61;&gt; PA.code||&#39;UAT&#39;),&#10;                --&#10;                PKG_Lookups.funcgetTabRecord(&#10;                    p_table &#61;&gt; &#39;staff S JOIN staff_team ST ON ST.staff_id &#61; S.staff_id JOIN team T ON ST.team_id &#61; T.team_id&#39;, &#10;                    p_ref_col  &#61;&gt; &#39;T.probation_area_id&#39;, &#10;                    p_ref_val  &#61;&gt; OM.probation_area_id,&#10;                    p_data_fld &#61;&gt; &#39;S.staff_id&#39;,&#10;                    p_where &#61;&gt; &#39;T.code &#61; :team_code AND S.officer_code &#61; :officer_code&#39;,&#10;                    p_bind_var1 &#61;&gt; PA.code||&#39;UAT&#39;,&#10;                    p_bind_var2 &#61;&gt; PA.code||&#39;UATU&#39;) AS unallocated_officer_code,&#10;                --&#10;                OM.probation_area_id,&#10;                --&#10;                l_rec.event_id,&#10;                --&#10;                0,&#10;                0,&#10;                0,&#10;                --&#10;                LC_USER_ID,&#10;                LC_DATE_TIME,&#10;                LC_USER_ID,&#10;                LC_DATE_TIME&#10;                --&#10;            FROM offender_manager OM&#10;            JOIN probation_area PA ON PA.probation_area_id &#61; OM.probation_area_id&#10;            WHERE OM.offender_id &#61; l_rec.offender_id &#10;            AND OM.active_flag &#61; 1;&#10;                --&#10;        END do_create_contact;&#10;        --&#10;    BEGIN&#10;        -- Backup the documents to be deleted&#10;        INSERT INTO delius_app_scripts.z_dst13369_documents_deleted&#10;            SELECT LC_DATE_TIME,&#10;                   d.*&#10;            FROM document d&#10;            WHERE d.document_id &#61; p_document_id;&#10;        --&#10;        INSERT INTO delius_app_scripts.z_dst13369_subject_access_report_documents_deleted&#10;            SELECT LC_DATE_TIME,&#10;                   s.*&#10;            FROM subject_access_report_document s&#10;            WHERE s.document_id &#61; p_document_id;  &#10;        --Delete from document data&#10;        DELETE FROM subject_access_report_document WHERE document_id &#61; p_document_id;&#10;        --&#10;        DELETE FROM document WHERE document_id &#61; p_document_id; &#10;        --&#10;        do_create_contact;&#10;        --&#10;    END do_document_delete;&#10;    --&#10;    PROCEDURE do_document_update (p_document_id NUMBER, p_info OUT VARCHAR2)&#10;    IS&#10;    --&#10;    l_count NUMBER;&#10;    --&#10;    BEGIN&#10;        --&#10;        UPDATE document &#10;        SET alfresco_document_id &#61; l_rec_alf_document_type.id&#10;        WHERE document_id &#61; p_document_id;&#10;        p_info      :&#61; &#39;Alfresco Document Id Updated in NDelius&#39;;&#10;        --&#10;    EXCEPTION WHEN dup_val_on_index THEN&#10;        -- To avoid unique constraint error on document table (constraint_name: XAK1DOCUMENT)&#10;        p_info :&#61; &#39;Cannot Update Alfresco Document Id in NDelius, already exists&#39;;&#10;        --&#10;    END do_document_update;&#10;    --&#10;    PROCEDURE do_documents_details&#10;    IS&#10;        --&#10;        l_alf_status            delius_app_scripts.z_dst13369_alfresco_document_details.alf_status%TYPE;&#10;        l_alf_entity_id         delius_app_scripts.z_dst13369_alfresco_document_details.alf_entity_id%TYPE;&#10;        l_alf_id                delius_app_scripts.z_dst13369_alfresco_document_details.alf_id%TYPE;&#10;        l_alf_crn               delius_app_scripts.z_dst13369_alfresco_document_details.alf_crn%TYPE;&#10;        l_alf_soft_deleted      delius_app_scripts.z_dst13369_alfresco_document_details.alf_soft_deleted%TYPE;&#10;        l_alf_soft_undeleted    delius_app_scripts.z_dst13369_alfresco_document_details.alf_soft_deleted%TYPE;&#10;        l_info                  delius_app_scripts.z_dst13369_alfresco_document_details.info%TYPE;&#10;        l_processed             delius_app_scripts.z_dst13369_alfresco_document_details.processed%TYPE;&#10;        --&#10;    BEGIN&#10;        --   &#10;        OPEN cs (p_start_rowid, p_end_rowid);&#10;        LOOP&#10;            --&#10;            FETCH cs INTO l_rec;&#10;            EXIT WHEN cs%NOTFOUND;&#10;            --&#10;            do_find_alf_document(l_rec.alfresco_document_id);&#10;            --&#10;            l_info              :&#61; NULL;&#10;            l_alf_id            :&#61; NULL;&#10;            l_alf_entity_id     :&#61; NULL;&#10;            l_alf_crn           :&#61; NULL;&#10;            l_alf_soft_deleted  :&#61; NULL;&#10;            l_processed         :&#61; NULL; &#10;            --&#10;            IF NOT l_alf_document_found&#10;            THEN&#10;                --&#10;                l_alf_status    :&#61; &#39;MISSING&#39;; &#10;                -- For PREVIOUS_CONVICTION document type, if the CRN&#39;s document type exists in Alfresco &#10;                -- then update NDelius with the alfresco_document_id. For CPS_PACK document type, if the crn&#39;s &#10;                -- document type exists and entityId matches the NDelius event id in Alfresco then update &#10;                -- NDelius with the alfresco_document_id&#10;                do_find_alf_document_type(l_rec.crn, l_rec.document_type, l_rec.event_id);&#10;                --&#10;                IF l_alf_document_type_found &#10;                THEN&#10;                    --&#10;                    l_alf_id :&#61; l_rec_alf_document_type.id;&#10;                    --&#10;                    IF l_update_delius &#10;                    THEN &#10;                        do_document_update(l_rec.document_id, l_info);&#10;                        l_processed :&#61; &#39;Y&#39;;&#10;                    ELSE&#10;                        l_info :&#61; &#39;Check Only: Alfresco Document Id Updated in NDelius&#39;;&#10;                    END IF;&#10;                    --&#10;                ELSE    &#10;                    -- Check whether the Alfresco document is soft deleted ie. trashcan, and if so, undelete&#10;                    l_alf_soft_deleted :&#61; 0;&#10;                    do_find_alf_soft_deleted(l_rec.crn, l_rec.alfresco_document_id, l_rec.document_type);&#10;                    --&#10;                    IF l_alf_soft_deleted_found &#10;                    THEN&#10;                        --&#10;                        IF l_update_delius &#10;                        THEN &#10;                            --&#10;                            do_undelete_alf(l_rec.alfresco_document_id);&#10;                            --&#10;                            IF l_alf_undelete_found&#10;                            THEN&#10;&#10;                                l_info :&#61; &#39;Alfresco Document Undeleted: [crn&#61;&#39;||l_rec_alf_undelete.crn||&#39;]&#39;||&#10;                                             &#39;[id&#61;&#39;||l_rec_alf_undelete.id||&#39;]&#39;||&#10;                                             &#39;[status&#61;&#39;||l_rec_alf_undelete.status||&#39;]&#39;||&#10;                                             &#39;[message&#61;&#39;||l_rec_alf_undelete.message||&#39;]&#39;||&#10;                                             &#39;[filename&#61;&#39;||l_rec_alf_undelete.filename||&#39;]&#39;;&#10;                                l_alf_soft_deleted  :&#61; 1;&#10;                                l_processed         :&#61; &#39;Y&#39;;&#10;                            END IF;&#10;                            --&#10;                        ELSE&#10;                            l_info :&#61; &#39;Check Only: Alfresco Document Undeleted&#39;;&#10;                        END IF;    &#10;                        --&#10;                    ELSE&#10;                        -- Delete from on document table for documents which were out of sync ie. MISSING in Alfresco&#10;                        -- and a CPS_PACK or PREVIOUS_CONVICTION document did not exist in the Alfresco offender folder&#10;                        -- and did not exist in the Alfresco trashcan ie. soft deleted&#10;                        IF l_update_delius &#10;                        THEN&#10;                            do_document_delete (l_rec.document_id);&#10;                            l_info      :&#61; &#39;Alfresco Document Id Deleted in NDelius&#39;;&#10;                            l_processed :&#61; &#39;Y&#39;;&#10;                        ELSE&#10;                            l_info :&#61; &#39;Check Only: Alfresco Document Id Deleted in NDelius&#39;;&#10;                        END IF;&#10;                        --&#10;                    END IF;&#10;                    --&#10;                END IF; &#10;                --&#10;            ELSE&#10;                --&#10;                l_alf_status        :&#61; &#39;MATCHED&#39;;&#10;                l_alf_entity_id     :&#61; l_rec_alf_document.entity_id;&#10;                l_alf_crn           :&#61; l_rec_alf_document.crn;&#10;                --&#10;                IF l_rec_alf_document.crn &lt;&gt; l_rec.crn&#10;                THEN&#10;                    l_alf_status    :&#61; l_alf_status||&#39;,&#39;||&#39;INVALID_CRN&#39;;&#10;                END IF;&#10;                --&#10;                IF l_rec_alf_document.entity_id &lt;&gt; l_rec.event_id&#10;                THEN&#10;                    l_alf_status    :&#61; l_alf_status||&#39;,&#39;||&#39;INVALID_EVENT&#39;;&#10;                END IF;&#10;                --&#10;                IF l_rec_alf_document.document_type &lt;&gt; l_rec.document_type&#10;                THEN&#10;                    l_alf_status    :&#61; l_alf_status||&#39;,&#39;||&#39;INVALID_DOCTYPE&#39;;&#10;                END IF;&#10;            END IF;&#10;            --&#10;            UPDATE delius_app_scripts.z_dst13369_alfresco_document_details&#10;            SET bu_date             &#61; LC_DATE_TIME,&#10;                alf_status          &#61; l_alf_status,&#10;                alf_crn             &#61; l_alf_crn,  &#10;                alf_entity_id       &#61; l_alf_entity_id,&#10;                alf_soft_deleted    &#61; l_alf_soft_deleted,&#10;                alf_id              &#61; l_alf_id,&#10;                processed           &#61; l_processed,&#10;                info                &#61; l_info&#10;            WHERE CURRENT OF cs;&#10;            --&#10;        END LOOP;&#10;        CLOSE cs; &#10;        --&#10;        -- do_final;&#10;        -- &#10;    EXCEPTION WHEN OTHERS THEN&#10;        --&#10;        IF cs%ISOPEN THEN&#10;            CLOSE cs;&#10;        END IF;&#10;        --&#10;        DBMS_OUTPUT.put_line(&#39;crn: &#39;||l_rec.crn||&#39; Doc: &#39;||l_rec.alfresco_document_id);&#10;        --&#10;        RAISE;&#10;        --&#10;    END do_documents_details;&#10;    --&#10;BEGIN&#10;    --&#10;    do_init;&#10;    --&#10;    do_documents_details;&#10;    --&#10;END dst13369SyncAlfrescoDocumentsDetails;</textarea>
+                        </div>
+                    </div>
+                </section>
+            </div>
+            <!-- /.content-wrapper -->
+            <footer class="main-footer">
+                <div>
+                    <div class="pull-right hidden-xs">
+                        <a href="https://github.com/schemaspy/schemaspy" title="GitHub for SchemaSpy"><i class="fa fa-github-square fa-2x"></i></a>
+                        <a href="http://stackoverflow.com/questions/tagged/schemaspy" title="StackOverflow for SchemaSpy"><i class="fa fa-stack-overflow fa-2x"></i></a>
+                    </div>
+                    <strong>Generated by <a href="http://schemaspy.org/" class="logo-text"><i class="fa fa-database"></i> SchemaSpy 6.2.4</a></strong>
+                </div>
+                <!-- /.container -->
+            </footer>
+        </div>
+        <!-- ./wrapper -->
+
+        <!-- jQuery 2.2.3 -->
+        <script src="../bower/admin-lte/plugins/jQuery/jquery-2.2.3.min.js"></script>
+        <script src="../bower/admin-lte/plugins/jQueryUI/jquery-ui.min.js"></script>
+        <!-- Bootstrap 3.3.5 -->
+        <script src="../bower/admin-lte/bootstrap/js/bootstrap.min.js"></script>
+        <!-- DataTables -->
+        <script src="../bower/datatables.net/jquery.dataTables.min.js"></script>
+        <script src="../bower/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+        <script src="../bower/datatables.net-buttons/dataTables.buttons.min.js"></script>
+        <script src="../bower/datatables.net-buttons-bs/js/buttons.bootstrap.min.js"></script>
+        <script src="../bower/datatables.net-buttons/buttons.html5.min.js"></script>
+        <script src="../bower/datatables.net-buttons/buttons.print.min.js"></script>
+        <script src="../bower/datatables.net-buttons/buttons.colVis.min.js"></script>
+        <!-- SheetJS -->
+        <script src="../bower/js-xlsx/xlsx.full.min.js"></script>
+        <!-- pdfmake -->
+        <script src="../bower/pdfmake/pdfmake.min.js"></script>
+        <script src="../bower/pdfmake/vfs_fonts.js"></script>
+        <!-- SlimScroll -->
+        <script src="../bower/admin-lte/plugins/slimScroll/jquery.slimscroll.min.js"></script>
+        <!-- FastClick -->
+        <script src="../bower/admin-lte/plugins/fastclick/fastclick.js"></script>
+        <!-- Salvattore -->
+        <script src="../bower/salvattore/salvattore.min.js"></script>
+        <!-- AnchorJS -->
+        <script src="../bower/anchor-js/anchor.min.js"></script>
+        <!-- CodeMirror -->
+        <script src="../bower/codemirror/codemirror.js"></script>
+        <script src="../bower/codemirror/sql.js"></script>
+        <!-- AdminLTE App -->
+        <script src="../bower/admin-lte/dist/js/app.min.js"></script>
+        <script src="routine.js"></script>
+        <script src="../schemaSpy.js"></script>
+    </body>
+</html>

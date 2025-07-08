@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>TSTNDA.DELIUS_APP_SCHEMA</title>
+        <!-- Tell the browser to be responsive to screen width -->
+        <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+        <link rel="icon" type="image/png" sizes="16x16" href="../favicon.png">
+        <!-- Bootstrap 3.3.5 -->
+        <link rel="stylesheet" href="../bower/admin-lte/bootstrap/css/bootstrap.min.css">
+        <!-- Font Awesome -->
+        <link rel="stylesheet" href="../bower/font-awesome/css/font-awesome.min.css">
+        <!-- Ionicons -->
+        <link rel="stylesheet" href="../bower/ionicons/css/ionicons.min.css">
+        <!-- DataTables -->
+        <link rel="stylesheet" href="../bower/datatables.net-bs/css/dataTables.bootstrap.min.css">
+        <link rel="stylesheet" href="../bower/datatables.net-buttons-bs/css/buttons.bootstrap.min.css">
+        <!-- Code Mirror -->
+        <link rel="stylesheet" href="../bower/codemirror/codemirror.css">
+        <!-- Fonts -->
+        <link href='../fonts/indieflower/indie-flower.css' rel='stylesheet' type='text/css'>
+        <link href='../fonts/source-sans-pro/source-sans-pro.css' rel='stylesheet' type='text/css'>
+
+        <!-- Theme style -->
+        <link rel="stylesheet" href="../bower/admin-lte/dist/css/AdminLTE.min.css">
+        <!-- Salvattore -->
+        <link rel="stylesheet" href="../bower/salvattore/salvattore.css">
+        <!-- AdminLTE Skins. Choose a skin from the css/skins
+           folder instead of downloading all of them to reduce the load. -->
+        <link rel="stylesheet" href="../bower/admin-lte/dist/css/skins/_all-skins.min.css">
+        <!-- SchemaSpy -->
+        <link rel="stylesheet" href="../schemaSpy.css">
+
+        <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+        <!--[if lt IE 9]>
+        <script src="../bower/html5shiv/html5shiv.min.js"></script>
+        <script src="../bower/respond/respond.min.js"></script>
+        <![endif]-->
+    </head>
+    <!-- ADD THE CLASS layout-top-nav TO REMOVE THE SIDEBAR. -->
+    <body class="hold-transition skin-blue layout-top-nav">
+        <div class="wrapper">
+            <header class="main-header">
+                <nav class="navbar navbar-static-top">
+                    <div class="container">
+                        <div class="navbar-header">
+                            <a href="../index.html" class="navbar-brand"><b>TSTNDA</b></a><span class="navbar-brand" style="padding-left: 0">.DELIUS_APP_SCHEMA</span>
+                            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse"><i class="fa fa-bars"></i></button>
+                        </div>
+
+                        <!-- Collect the nav links, forms, and other content for toggling -->
+                        <div class="collapse navbar-collapse pull-left" id="navbar-collapse">
+                            <ul class="nav navbar-nav">
+                                <li><a href="../index.html">Tables <span class="sr-only">(current)</span></a></li>
+                                <li><a href="../columns.html" title="All of the columns in the schema">Columns</a></li>
+                                <li><a href="../constraints.html" title="Useful for diagnosing error messages that just give constraint name or number">Constraints</a></li>
+                                <li><a href="../relationships.html" title="Diagram of table relationships">Relationships</a></li>
+                                <li><a href="../orphans.html" title="View of tables with neither parents nor children">Orphan&nbsp;Tables</a></li>
+                                <li><a href="../anomalies.html" title="Things that might not be quite right">Anomalies</a></li>
+                                <li><a href="../routines.html" title="Procedures and functions">Routines</a></li>
+                            </ul>
+                        </div>
+                        <!-- /.navbar-collapse -->
+                        <!-- Navbar Right Menu -->
+                    </div>
+                    <!-- /.container-fluid -->
+                </nav>
+            </header>
+            <!-- Main content -->
+            <!-- Full Width Column -->
+            <div class="content-wrapper">
+                <!-- Content Header (Page header) -->
+                <section class="content-header">
+                    <h1>DELIUS_APP_SCHEMA.PKG_VPDSUPPORT</h1><br />
+                </section>
+                <!-- Main content -->
+                <section class="content">
+                    <div class="box box-primary">
+                        <div class="box-header with-border">
+                            <span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span>
+                            <h3 id="Columns" class="box-title">Parameters</h3>
+                            <div class="box-tools pull-right">
+                                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                            </div>
+                        </div>
+                        <div class="box-body">
+                            <table id="standard_table" class="table table-bordered table-striped dataTable" role="grid">
+                                <thead align='left'>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Type</th>
+                                    <th>Mode</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="box box-primary">
+                        <div class="box-header with-border">
+                            <i class="fa fa-file-code-o"></i>
+                            <h3 id="RoutineDefinition" class="box-title">Definition</h3>
+                            <div class="box-tools pull-right">
+                                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                            </div>
+                        </div>
+                        <div class="box-body">
+                            <textarea id="sql-script-codemirror" name="sql-script-codemirror" rows="" style="display: none;">PACKAGE BODY pkg_VpdSupport&#10;AS&#10;--&#10;--&#10;&#10;-- Global variables&#10;g_prob_area_counter     NUMBER :&#61; 0;&#10;g_off_area_cache_HITS   NUMBER :&#61; 0;&#10;g_off_area_cache_MISSES NUMBER :&#61; 0;&#10;g_off_area_cache_INV_PART NUMBER :&#61; 0;&#10;g_off_area_cache_INV_FULL NUMBER :&#61; 0;&#10;--&#10;g_scn_number            NUMBER;&#10;--&#10;&#10;--&#10;TYPE t_tab_off_prob_areas IS TABLE OF t_tab_ORGANISATIONS INDEX BY VARCHAR2(50);&#10;g_tab_off_prob_areas t_tab_off_prob_areas;&#10;&#10;TYPE t_tab_contacts_off IS TABLE OF VARCHAR2(1) INDEX BY VARCHAR2(50);&#10;g_tab_contacts_off t_tab_contacts_off;&#10;&#10;g_tab_cont_off_CNT_HITS INTEGER :&#61; 0;&#10;g_tab_cont_off_CNT_MISS INTEGER :&#61; 0;&#10;&#10;--&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;--&#10;-- Debug Subroutine&#10;--&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;--&#10;&#10;g_debug_cnt NUMBER :&#61; 0;&#10;&#10;PROCEDURE procDebug(p_msg VARCHAR2) IS&#10;BEGIN&#10;    g_debug_cnt :&#61; g_debug_cnt + 1;&#10;    PKG_Debug.procDebug(SUBSTR(&#39;PKG_VpdSupport[&#39; || LPAD(g_debug_cnt, 10) || &#39;].&#39; || REPLACE(p_msg, &#39;@CNT&#39;, LPAD(g_debug_cnt, 10)), 1, 30000));&#10;END procDebug;&#10;&#10;--&#10;--&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;--&#10;-- VPD Support Functions&#10;--&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;--&#10;--&#10;&#10;FUNCTION funcGetUserProbAreas_NOCACHE(p_user_id INTEGER, p_external_provider_id INTEGER DEFAULT NULL, p_nps_flag VARCHAR2 DEFAULT &#39;N&#39;)&#10;RETURN t_tab_ORGANISATIONS IS&#10;    --&#10;    l_proc CONSTANT VARCHAR2(55) :&#61; &#39;PKG_VpdSupport.funcGetUserProbAreas_NOCACHE&#39;;&#10;    --&#10;    l_array t_tab_ORGANISATIONS;&#10;    --&#10;    CURSOR cs IS&#10;      SELECT COUNT(1)&#10;      FROM&#10;        probation_area_user PAU&#10;          INNER JOIN user_ U ON U.user_id &#61; PAU.user_id&#10;          INNER JOIN probation_area PA ON PA.probation_area_id &#61; PAU.probation_area_id&#10;            INNER JOIN organisation ORG ON ORG.organisation_id &#61; PA.organisation_id&#10;      WHERE PAU.user_id &#61; p_user_id&#10;        AND ORG.code &#61; &#39;NPS&#39;&#10;        AND PA.private &#61; 0&#10;        AND ORG.private &#61; 0&#10;        AND U.private &#61; 0&#10;        AND PA.selectable &#61; &#39;Y&#39;&#10;        AND NVL(PA.end_date, SYSDATE) &lt;&#61; SYSDATE&#10;        AND NVL(U.end_date, SYSDATE) &lt;&#61; SYSDATE;&#10;    --&#10;    l_cnt          NUMBER :&#61; 0;&#10;    l_NPS_vpd_flag BOOLEAN :&#61; FALSE;&#10;    --&#10;BEGIN&#10;    --&#10;    IF p_user_id &#61; 1 THEN&#10;        --&#10;        WITH T AS (&#10;          SELECT DISTINCT TO_CHAR(PAU.probation_area_id) AS AREA_ID&#10;          FROM&#10;            probation_area_user PAU&#10;              INNER JOIN user_ U ON U.user_id &#61; PAU.user_id&#10;          WHERE PAU.user_id &#61; p_user_id&#10;            AND NVL(U.end_date, SYSDATE) &lt;&#61; SYSDATE )&#10;        --&#10;        SELECT DISTINCT AREA_ID BULK COLLECT INTO l_array&#10;        FROM T;&#10;        --&#10;    ELSE&#10;        --&#10;        IF NVL(p_nps_flag, &#39;N&#39;) &#61; &#39;Y&#39; THEN&#10;            OPEN cs;&#10;            FETCH cs INTO l_cnt;&#10;            CLOSE cs;&#10;            --&#10;            l_cnt :&#61; NVL(l_cnt, 0);&#10;            --&#10;            IF l_cnt &gt;&#61; 1 THEN&#10;                l_NPS_vpd_flag :&#61; TRUE;&#10;            END IF;&#10;            --&#10;        END IF;&#10;        --&#10;        IF l_NPS_vpd_flag THEN&#10;            --&#10;            WITH T AS (&#10;              SELECT TO_CHAR(probation_area_id) AS AREA_ID&#10;              FROM probation_area&#10;              WHERE 1&#61;1&#10;                AND NVL(end_date, SYSDATE) &lt;&#61; SYSDATE )&#10;            --&#10;            SELECT DISTINCT AREA_ID BULK COLLECT INTO l_array&#10;            FROM T;&#10;            --&#10;        ELSE&#10;            --&#10;            WITH T AS (&#10;              SELECT PAU.probation_area_id || &#39;:&#39; || EP.code AS AREA_ID&#10;              FROM&#10;                probation_area_user PAU&#10;                  INNER JOIN user_ U ON U.user_id &#61; PAU.user_id&#10;                    INNER JOIN external_provider EP ON EP.external_provider_id &#61; U.external_provider_id&#10;              WHERE PAU.user_ID &#61; p_user_id&#10;                AND EP.external_provider_id &#61; NVL(p_external_provider_id, EP.external_provider_id)&#10;                AND NVL(U.end_date, SYSDATE) &lt;&#61; SYSDATE&#10;              --&#10;              UNION ALL&#10;              --&#10;              SELECT TO_CHAR(probation_area_id) AS AREA_ID&#10;              FROM&#10;                probation_area_user PAU&#10;                  INNER JOIN user_ U ON U.user_id &#61; PAU.user_id&#10;              WHERE PAU.user_ID &#61; p_user_id&#10;                AND NVL(U.end_date, SYSDATE) &lt;&#61; SYSDATE )&#10;            --&#10;            SELECT DISTINCT AREA_ID BULK COLLECT INTO l_array&#10;            FROM T;&#10;            --&#10;        END IF;&#10;        --&#10;    END IF;&#10;    --&#10;    RETURN NVL(l_array, t_tab_ORGANISATIONS());&#10;    --&#10;END funcGetUserProbAreas_NOCACHE;&#10;--&#10;FUNCTION funcGetUserProbAreas(p_user_name VARCHAR2, p_nps_flag VARCHAR2 DEFAULT &#39;N&#39;)&#10;RETURN t_tab_ORGANISATIONS&#10;    RESULT_CACHE&#10;IS&#10;    l_user_id              INTEGER;&#10;    l_external_provider_id INTEGER;&#10;BEGIN&#10;    SELECT user_id, external_provider_id&#10;    INTO l_user_id, l_external_provider_id&#10;    FROM user_&#10;    WHERE UPPER(distinguished_name) &#61; UPPER(p_user_name)&#10;      AND ROWNUM &#61; 1;&#10;    --&#10;    g_prob_area_counter :&#61; g_prob_area_counter + 1;&#10;    RETURN funcGetUserProbAreas_NOCACHE(l_user_id, l_external_provider_id, p_nps_flag);&#10;EXCEPTION WHEN NO_DATA_FOUND THEN&#10;    --raise_application_error(-20001, &#39;FATAL ERROR in PKG_TRIGGER_SUPPORT.funcGetUserProbAreas: user [&#39; || p_user_name || &#39;] has not been found in the USER_ table&#39;);&#10;    RETURN t_tab_ORGANISATIONS(&#39;-1&#39;);&#10;END funcGetUserProbAreas;&#10;--&#10;FUNCTION funcGetOffProbAreas_NOCACHE(p_offender_id INTEGER)&#10;RETURN t_tab_ORGANISATIONS&#10;IS&#10;    l_proc CONSTANT VARCHAR2(55) :&#61; &#39;PKG_VpdSupport.funcGetProbAreasList_NOCACHE&#39;;&#10;    --&#10;    l_array t_tab_ORGANISATIONS;&#10;BEGIN&#10;    SELECT DISTINCT AREA_ID&#10;    BULK COLLECT INTO l_array&#10;    FROM (&#10;          SELECT&#10;            CASE WHEN EXTERNAL_PROVIDER_ID IS NULL THEN&#10;                TO_CHAR(PROBATION_AREA_ID)&#10;            ELSE&#10;                PROBATION_AREA_ID&#10;                || &#39;:&#39;&#10;                || PKG_Lookups.funcgetTabRecord_CACHED(&#10;                       p_table&#61;&gt;&#39;EXTERNAL_PROVIDER&#39;,&#10;                       p_data_fld&#61;&gt;&#39;code&#39;,&#10;                       p_ref_col&#61;&gt;&#39;external_provider_id&#39;,&#10;                       p_ref_val&#61;&gt;external_provider_id)&#10;            END AS AREA_ID&#10;          FROM organisation_offender --, EXTERNAL_PROVIDER&#10;          WHERE offender_id &#61; p_offender_id&#10;          --&#10;--           SELECT probation_area_id || &#39;:&#39; || EXTERNAL_PROVIDER.code AS AREA_ID&#10;--           FROM organisation_offender, external_provider&#10;--           WHERE ORGANISATION_OFFENDER.offender_ID &#61; p_offender_id&#10;--             AND EXTERNAL_PROVIDER.external_provider_id &#61; ORGANISATION_OFFENDER.external_provider_id&#10;--           UNION ALL&#10;--           SELECT TO_CHAR(AREA_ID) FROM (&#10;--             SELECT probation_area_id AS AREA_ID&#10;--             FROM organisation_offender&#10;--             WHERE offender_ID &#61; p_offender_id&#10;--               AND external_provider_id IS NULL )&#10;         );&#10;    --&#10;    RETURN NVL(l_array, t_tab_ORGANISATIONS());&#10;END funcGetOffProbAreas_NOCACHE;&#10;--&#10;FUNCTION funcGetOffProbAreas_NOCACHE_1(p_offender_id INTEGER)&#10;RETURN t_tab_ORGANISATIONS&#10;IS&#10;    l_proc CONSTANT VARCHAR2(55) :&#61; &#39;PKG_VpdSupport.funcGetProbAreasList_NOCACHE&#39;;&#10;    --&#10;    l_array t_tab_ORGANISATIONS;&#10;BEGIN&#10;    SELECT DISTINCT AREA_ID&#10;    BULK COLLECT INTO l_array&#10;    FROM (&#10;           SELECT probation_area_id || &#39;:&#39; || EXTERNAL_PROVIDER.code AS AREA_ID&#10;           FROM organisation_offender, external_provider&#10;           WHERE ORGANISATION_OFFENDER.offender_ID &#61; p_offender_id&#10;             AND EXTERNAL_PROVIDER.external_provider_id &#61; ORGANISATION_OFFENDER.external_provider_id&#10;           UNION ALL&#10;           SELECT TO_CHAR(AREA_ID) FROM (&#10;             SELECT probation_area_id AS AREA_ID&#10;             FROM organisation_offender&#10;             WHERE offender_ID &#61; p_offender_id&#10;               AND external_provider_id IS NULL )&#10;         );&#10;    --&#10;    RETURN NVL(l_array, t_tab_ORGANISATIONS());&#10;END funcGetOffProbAreas_NOCACHE_1;&#10;--&#10;FUNCTION funcGetOffProbAreas(p_offender_id INTEGER, p_scn_number NUMBER DEFAULT NULL)&#10;RETURN t_tab_ORGANISATIONS&#10;IS&#10;    l_scn NUMBER;&#10;    l_tab t_tab_ORGANISATIONS;&#10;    --&#10;    PROCEDURE set_tab_off_prob_areas(p_offender_id INTEGER, p_tab_areas t_tab_ORGANISATIONS)&#10;    IS&#10;        lc_max_cache_size          CONSTANT INTEGER :&#61; 2048;&#10;        lc_cache_delete_batch_size CONSTANT INTEGER :&#61; 100;&#10;        l_offender_id_char         VARCHAR2(50);&#10;        --&#10;        PROCEDURE do_delete_old_cache&#10;        IS&#10;            l_cnt INTEGER :&#61; 0;&#10;            l_key VARCHAR2(50);&#10;        BEGIN&#10;            LOOP&#10;                EXIT WHEN l_cnt &gt; lc_cache_delete_batch_size;&#10;                --&#10;                l_key :&#61; g_tab_off_prob_areas.FIRST;&#10;                EXIT WHEN l_key IS NULL;&#10;                --&#10;                g_tab_off_prob_areas.DELETE(l_key);&#10;                l_cnt :&#61; l_cnt + 1;&#10;            END LOOP;&#10;            --&#10;            g_off_area_cache_INV_PART :&#61; g_off_area_cache_INV_PART + 1;&#10;        END do_delete_old_cache;&#10;    BEGIN&#10;        l_offender_id_char :&#61; TO_CHAR(p_offender_id);&#10;        IF NOT g_tab_off_prob_areas.EXISTS(l_offender_id_char) THEN&#10;            IF g_tab_off_prob_areas.COUNT &gt; lc_max_cache_size THEN&#10;                do_delete_old_cache;&#10;            END IF;&#10;        END IF;&#10;        g_tab_off_prob_areas(l_offender_id_char) :&#61; NVL(p_tab_areas, t_tab_ORGANISATIONS());&#10;    END set_tab_off_prob_areas;&#10;    --&#10;    FUNCTION get_tab_off_prob_areas(p_offender_id INTEGER) RETURN t_tab_ORGANISATIONS&#10;    IS&#10;        l_offender_id_char VARCHAR2(50);&#10;    BEGIN&#10;        l_offender_id_char :&#61; TO_CHAR(p_offender_id);&#10;        IF NOT g_tab_off_prob_areas.EXISTS(l_offender_id_char) THEN&#10;            raise_application_error(-20001, &#39;FATAL ERROR in PKG_VpdSupport.get_tab_off_prob_areas: the PLSQL cache element has not been found for OFFENDER_ID&#61;&#39; || l_offender_id_char);&#10;        END IF;&#10;        --&#10;        RETURN NVL(g_tab_off_prob_areas(l_offender_id_char), t_tab_ORGANISATIONS());&#10;    END get_tab_off_prob_areas;&#10;    --&#10;BEGIN&#10;    IF p_scn_number IS NULL THEN&#10;        l_scn :&#61; get_current_scn_number;&#10;    ELSE&#10;        l_scn :&#61; p_scn_number;&#10;    END IF;&#10;    --&#10;    IF l_scn &lt;&gt; NVL(g_scn_number, -1) THEN&#10;        g_scn_number :&#61; l_scn;&#10;        --&#10;        g_tab_off_prob_areas.DELETE;&#10;        g_off_area_cache_INV_FULL :&#61; g_off_area_cache_INV_FULL + 1;&#10;        --&#10;        g_off_area_cache_HITS   :&#61; 0;&#10;        g_off_area_cache_MISSES :&#61; 0;&#10;    END IF;&#10;    --&#10;    IF g_tab_off_prob_areas.EXISTS(TO_CHAR(p_offender_id)) THEN&#10;        g_off_area_cache_HITS :&#61; g_off_area_cache_HITS + 1;&#10;    ELSE&#10;        g_off_area_cache_MISSES :&#61; g_off_area_cache_MISSES + 1;&#10;        set_tab_off_prob_areas(p_offender_id, funcGetOffProbAreas_NOCACHE(p_offender_id));&#10;    END IF;&#10;    --&#10;    RETURN get_tab_off_prob_areas(p_offender_id);&#10;END funcGetOffProbAreas;&#10;--&#10;FUNCTION funcGetOffProbAreas_varray(p_offender_id INTEGER, p_scn_number NUMBER DEFAULT NULL) RETURN t_arr_ORGANISATIONS&#10;IS&#10;    l_tab_list t_tab_ORGANISATIONS;&#10;    l_arr_list t_tab_ORGANISATIONS;&#10;BEGIN&#10;    l_tab_list :&#61; funcGetOffProbAreas(p_offender_id, p_scn_number);&#10;    IF l_tab_list IS NOT EMPTY THEN&#10;        RETURN PKG_LstUtl.get_tab_2_varray(l_tab_list);&#10;    ELSE&#10;        RETURN NULL;&#10;    END IF;&#10;    RETURN NULL;&#10;END funcGetOffProbAreas_varray;&#10;&#10;--&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;--&#10;--&#10;-- CONTACT vpd policy predicate function&#10;--&#10;--&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;--&#10;&#10;FUNCTION funcContactPolicy(p_offender_id INTEGER, p_scn_number NUMBER DEFAULT NULL, p_nps_flag VARCHAR2 DEFAULT &#39;N&#39;) RETURN VARCHAR2&#10;IS&#10;    --&#10;    l_scn_current NUMBER;&#10;    l_scn_new     NUMBER;&#10;    --&#10;    l_offender_exists  VARCHAR2(1)  :&#61; &#39;N&#39;;&#10;    l_offender_id_char VARCHAR2(50) :&#61; TO_CHAR(p_offender_id);&#10;    --&#10;    l_cache_size      INTEGER :&#61; g_tab_contacts_off.COUNT;&#10;    lc_max_cache_size CONSTANT INTEGER :&#61; 30 * 1024;&#10;    --&#10;    l_user_areas t_tab_ORGANISATIONS :&#61; funcGetUserProbAreas( p_user_name&#61;&gt;SYS_CONTEXT(&#39;USERENV&#39;, &#39;CLIENT_IDENTIFIER&#39;), p_nps_flag&#61;&gt;p_nps_flag );&#10;    --&#10;    PROCEDURE do_flush_cache&#10;    IS&#10;    BEGIN&#10;        g_tab_cont_off_CNT_HITS :&#61; 0;&#10;        g_tab_cont_off_CNT_MISS :&#61; 0;&#10;        g_tab_contacts_off.DELETE;&#10;        --&#10;        IF l_cache_size &gt; 0 THEN&#10;            NULL;&#10;            --procDebug(&#39;funcContactPolicy: PLSQL cache (scn&#61;&#39; || l_scn_current || &#39;) (size&#61;&#39; || l_cache_size || &#39;) (hits&#61;&#39; || g_tab_cont_off_CNT_HITS || &#39;) (misses&#61;&#39; || g_tab_cont_off_CNT_MISS || &#39;)&#39;);&#10;        END IF;&#10;    END do_flush_cache;&#10;    --&#10;    PROCEDURE set_tab_contacts_off IS&#10;    BEGIN&#10;        BEGIN&#10;            SELECT &#39;Y&#39; INTO l_offender_exists&#10;            FROM offender&#10;            WHERE offender_id &#61; p_offender_id&#10;              AND&#10;                CASE WHEN ORGANISATIONS IS NOT NULL THEN CAST(ORGANISATIONS AS t_tab_ORGANISATIONS) ELSE funcGetOffProbAreas(p_offender_id&#61;&gt;offender_id, p_scn_number&#61;&gt;l_scn_current) END&#10;                MULTISET INTERSECT l_user_areas IS NOT EMPTY&#10;            ;&#10;        EXCEPTION WHEN NO_DATA_FOUND THEN&#10;            l_offender_exists :&#61; &#39;N&#39;;&#10;        END;&#10;        IF l_cache_size &gt; lc_max_cache_size THEN&#10;            do_flush_cache;&#10;        END IF;&#10;        g_tab_contacts_off(l_offender_id_char) :&#61; l_offender_exists;&#10;    END set_tab_contacts_off;&#10;    --&#10;BEGIN&#10;    l_scn_current :&#61; NVL(get_g_scn_number, -1);&#10;    l_scn_new     :&#61; NVL(p_scn_number, get_current_scn_number);&#10;    --&#10;    IF l_scn_current &lt;&gt; l_scn_new THEN&#10;        set_g_scn_number(l_scn_new);&#10;        do_flush_cache;&#10;    END IF;&#10;    --&#10;    IF g_tab_contacts_off.EXISTS(l_offender_id_char) THEN&#10;        g_tab_cont_off_CNT_HITS :&#61; g_tab_cont_off_CNT_HITS + 1;&#10;    ELSE&#10;        g_tab_cont_off_CNT_MISS :&#61; g_tab_cont_off_CNT_MISS + 1;&#10;        set_tab_contacts_off;&#10;    END IF;&#10;    --&#10;--    procDebug(&#39;funcContactPolicy: &#39; ||&#10;--        &#39;(offender_id&#61;&#39;     || l_offender_id_char || &#39;)&#39; ||&#10;--        &#39;(p_nps_flag&#61;&#39;      || p_nps_flag         || &#39;)&#39; ||&#10;--        &#39;(l_scn_current&#61;&#39;   || l_scn_current      || &#39;)&#39; ||&#10;--        &#39;(l_scn_new&#61;&#39;       || l_scn_new          || &#39;)&#39; ||&#10;--        &#39;(CURR_USER&#61;&#39;       || SYS_CONTEXT(&#39;USERENV&#39;, &#39;CURRENT_USER&#39;)      || &#39;)&#39; ||&#10;--        &#39;(CURR_IDENTIFIER&#61;&#39; || SYS_CONTEXT(&#39;USERENV&#39;, &#39;CLIENT_IDENTIFIER&#39;) || &#39;)&#39; ||&#10;--        &#39;(off_exists&#61;&#39;      || g_tab_contacts_off(l_offender_id_char)      || &#39;)&#39;&#10;--    );&#10;    --&#10;    RETURN g_tab_contacts_off(l_offender_id_char);&#10;END funcContactPolicy;&#10;&#10;-- Offender vpd policy WHERE clause&#10;FUNCTION funcOffenderPolicyPredicate(p_object_name VARCHAR2) RETURN VARCHAR2 IS&#10;BEGIN&#10;    RETURN&#10;        &#39;( &#39; ||&#10;        --&#10;        CASE WHEN SYS_CONTEXT(&#39;USERENV&#39;, &#39;CURRENT_SCHEMA&#39;) &#61; USER THEN&#10;            &#39;1&#61;1&#39;&#10;        ELSE&#10;            REPLACE(REPLACE(REPLACE(&#10;                PKG_Policy.funcOffenderPolicy(schema_name&#61;&gt;SYS_CONTEXT(&#39;USERENV&#39;, &#39;CURRENT_SCHEMA&#39;), object_name&#61;&gt;&#39;EVENT&#39;),&#10;                    &#39;ORGANISATIONS&#39;, p_object_name || &#39;.ORGANISATIONS&#39;),&#10;                    &#39;p_offender_id&#61;&gt;offender_id&#39;, &#39;p_offender_id&#61;&gt;&#39; || p_object_name || &#39;.offender_id&#39;),&#10;                    &#39;t_tab_&#39; || p_object_name || &#39;.ORGANISATIONS&#39;, &#39;t_tab_ORGANISATIONS&#39;)&#10;        END&#10;        --&#10;        || &#39; )&#39;;&#10;END funcOffenderPolicyPredicate;&#10;&#10;FUNCTION get_tab_cont_off_CNT_HITS RETURN INTEGER IS&#10;BEGIN&#10;    RETURN g_tab_cont_off_CNT_HITS;&#10;END get_tab_cont_off_CNT_HITS;&#10;&#10;FUNCTION get_tab_cont_off_CNT_MISS RETURN INTEGER IS&#10;BEGIN&#10;    RETURN g_tab_cont_off_CNT_MISS;&#10;END get_tab_cont_off_CNT_MISS;&#10;&#10;&#10;--&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;--&#10;-- SCN Functions                                                              --&#10;--&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;--&#10;&#10;FUNCTION get_current_scn_number RETURN NUMBER&#10;IS&#10;    l_scn NUMBER;&#10;BEGIN&#10;    --SELECT current_scn INTO l_scn FROM v$database;&#10;    l_scn :&#61; DBMS_FLASHBACK.get_system_change_number;&#10;    --&#10;    RETURN l_scn;&#10;END get_current_scn_number;&#10;--&#10;&#10;FUNCTION get_g_scn_number RETURN NUMBER IS&#10;BEGIN&#10;    RETURN g_scn_number;&#10;END get_g_scn_number;&#10;&#10;PROCEDURE set_g_scn_number(p_scn NUMBER) IS&#10;BEGIN&#10;    g_scn_number :&#61; p_scn;&#10;END set_g_scn_number;&#10;&#10;&#10;--&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;--&#10;-- PLSQL Cache Counters Functions                                             --&#10;--&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;--&#10;&#10;FUNCTION get_prob_area_counter RETURN INTEGER IS&#10;BEGIN&#10;    RETURN g_prob_area_counter;&#10;END get_prob_area_counter;&#10;--&#10;FUNCTION get_tab_off_prob_areas_CNT RETURN INTEGER IS&#10;BEGIN&#10;    RETURN NVL(g_tab_off_prob_areas.COUNT, 0);&#10;END get_tab_off_prob_areas_CNT;&#10;--&#10;FUNCTION get_off_area_cache_HITS RETURN INTEGER IS&#10;BEGIN&#10;    RETURN g_off_area_cache_HITS;&#10;END get_off_area_cache_HITS;&#10;--&#10;FUNCTION get_off_area_cache_MISSES RETURN INTEGER IS&#10;BEGIN&#10;    RETURN g_off_area_cache_MISSES;&#10;END get_off_area_cache_MISSES;&#10;--&#10;FUNCTION get_off_area_cache_INV_PART RETURN INTEGER IS&#10;BEGIN&#10;    RETURN g_off_area_cache_INV_PART;&#10;END get_off_area_cache_INV_PART;&#10;--&#10;FUNCTION get_off_area_cache_INV_FULL RETURN INTEGER IS&#10;BEGIN&#10;    RETURN g_off_area_cache_INV_FULL;&#10;END get_off_area_cache_INV_FULL;&#10;--&#10;--&#10;--&#10;--&#10;END pkg_VpdSupport;</textarea>
+                        </div>
+                    </div>
+                </section>
+            </div>
+            <!-- /.content-wrapper -->
+            <footer class="main-footer">
+                <div>
+                    <div class="pull-right hidden-xs">
+                        <a href="https://github.com/schemaspy/schemaspy" title="GitHub for SchemaSpy"><i class="fa fa-github-square fa-2x"></i></a>
+                        <a href="http://stackoverflow.com/questions/tagged/schemaspy" title="StackOverflow for SchemaSpy"><i class="fa fa-stack-overflow fa-2x"></i></a>
+                    </div>
+                    <strong>Generated by <a href="http://schemaspy.org/" class="logo-text"><i class="fa fa-database"></i> SchemaSpy 6.2.4</a></strong>
+                </div>
+                <!-- /.container -->
+            </footer>
+        </div>
+        <!-- ./wrapper -->
+
+        <!-- jQuery 2.2.3 -->
+        <script src="../bower/admin-lte/plugins/jQuery/jquery-2.2.3.min.js"></script>
+        <script src="../bower/admin-lte/plugins/jQueryUI/jquery-ui.min.js"></script>
+        <!-- Bootstrap 3.3.5 -->
+        <script src="../bower/admin-lte/bootstrap/js/bootstrap.min.js"></script>
+        <!-- DataTables -->
+        <script src="../bower/datatables.net/jquery.dataTables.min.js"></script>
+        <script src="../bower/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+        <script src="../bower/datatables.net-buttons/dataTables.buttons.min.js"></script>
+        <script src="../bower/datatables.net-buttons-bs/js/buttons.bootstrap.min.js"></script>
+        <script src="../bower/datatables.net-buttons/buttons.html5.min.js"></script>
+        <script src="../bower/datatables.net-buttons/buttons.print.min.js"></script>
+        <script src="../bower/datatables.net-buttons/buttons.colVis.min.js"></script>
+        <!-- SheetJS -->
+        <script src="../bower/js-xlsx/xlsx.full.min.js"></script>
+        <!-- pdfmake -->
+        <script src="../bower/pdfmake/pdfmake.min.js"></script>
+        <script src="../bower/pdfmake/vfs_fonts.js"></script>
+        <!-- SlimScroll -->
+        <script src="../bower/admin-lte/plugins/slimScroll/jquery.slimscroll.min.js"></script>
+        <!-- FastClick -->
+        <script src="../bower/admin-lte/plugins/fastclick/fastclick.js"></script>
+        <!-- Salvattore -->
+        <script src="../bower/salvattore/salvattore.min.js"></script>
+        <!-- AnchorJS -->
+        <script src="../bower/anchor-js/anchor.min.js"></script>
+        <!-- CodeMirror -->
+        <script src="../bower/codemirror/codemirror.js"></script>
+        <script src="../bower/codemirror/sql.js"></script>
+        <!-- AdminLTE App -->
+        <script src="../bower/admin-lte/dist/js/app.min.js"></script>
+        <script src="routine.js"></script>
+        <script src="../schemaSpy.js"></script>
+    </body>
+</html>

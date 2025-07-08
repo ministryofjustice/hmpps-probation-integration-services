@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>TSTNDA.DELIUS_APP_SCHEMA</title>
+        <!-- Tell the browser to be responsive to screen width -->
+        <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+        <link rel="icon" type="image/png" sizes="16x16" href="../favicon.png">
+        <!-- Bootstrap 3.3.5 -->
+        <link rel="stylesheet" href="../bower/admin-lte/bootstrap/css/bootstrap.min.css">
+        <!-- Font Awesome -->
+        <link rel="stylesheet" href="../bower/font-awesome/css/font-awesome.min.css">
+        <!-- Ionicons -->
+        <link rel="stylesheet" href="../bower/ionicons/css/ionicons.min.css">
+        <!-- DataTables -->
+        <link rel="stylesheet" href="../bower/datatables.net-bs/css/dataTables.bootstrap.min.css">
+        <link rel="stylesheet" href="../bower/datatables.net-buttons-bs/css/buttons.bootstrap.min.css">
+        <!-- Code Mirror -->
+        <link rel="stylesheet" href="../bower/codemirror/codemirror.css">
+        <!-- Fonts -->
+        <link href='../fonts/indieflower/indie-flower.css' rel='stylesheet' type='text/css'>
+        <link href='../fonts/source-sans-pro/source-sans-pro.css' rel='stylesheet' type='text/css'>
+
+        <!-- Theme style -->
+        <link rel="stylesheet" href="../bower/admin-lte/dist/css/AdminLTE.min.css">
+        <!-- Salvattore -->
+        <link rel="stylesheet" href="../bower/salvattore/salvattore.css">
+        <!-- AdminLTE Skins. Choose a skin from the css/skins
+           folder instead of downloading all of them to reduce the load. -->
+        <link rel="stylesheet" href="../bower/admin-lte/dist/css/skins/_all-skins.min.css">
+        <!-- SchemaSpy -->
+        <link rel="stylesheet" href="../schemaSpy.css">
+
+        <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+        <!--[if lt IE 9]>
+        <script src="../bower/html5shiv/html5shiv.min.js"></script>
+        <script src="../bower/respond/respond.min.js"></script>
+        <![endif]-->
+    </head>
+    <!-- ADD THE CLASS layout-top-nav TO REMOVE THE SIDEBAR. -->
+    <body class="hold-transition skin-blue layout-top-nav">
+        <div class="wrapper">
+            <header class="main-header">
+                <nav class="navbar navbar-static-top">
+                    <div class="container">
+                        <div class="navbar-header">
+                            <a href="../index.html" class="navbar-brand"><b>TSTNDA</b></a><span class="navbar-brand" style="padding-left: 0">.DELIUS_APP_SCHEMA</span>
+                            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse"><i class="fa fa-bars"></i></button>
+                        </div>
+
+                        <!-- Collect the nav links, forms, and other content for toggling -->
+                        <div class="collapse navbar-collapse pull-left" id="navbar-collapse">
+                            <ul class="nav navbar-nav">
+                                <li><a href="../index.html">Tables <span class="sr-only">(current)</span></a></li>
+                                <li><a href="../columns.html" title="All of the columns in the schema">Columns</a></li>
+                                <li><a href="../constraints.html" title="Useful for diagnosing error messages that just give constraint name or number">Constraints</a></li>
+                                <li><a href="../relationships.html" title="Diagram of table relationships">Relationships</a></li>
+                                <li><a href="../orphans.html" title="View of tables with neither parents nor children">Orphan&nbsp;Tables</a></li>
+                                <li><a href="../anomalies.html" title="Things that might not be quite right">Anomalies</a></li>
+                                <li><a href="../routines.html" title="Procedures and functions">Routines</a></li>
+                            </ul>
+                        </div>
+                        <!-- /.navbar-collapse -->
+                        <!-- Navbar Right Menu -->
+                    </div>
+                    <!-- /.container-fluid -->
+                </nav>
+            </header>
+            <!-- Main content -->
+            <!-- Full Width Column -->
+            <div class="content-wrapper">
+                <!-- Content Header (Page header) -->
+                <section class="content-header">
+                    <h1>DELIUS_APP_SCHEMA.DST13449SUPPORT</h1><br />
+                </section>
+                <!-- Main content -->
+                <section class="content">
+                    <div class="box box-primary">
+                        <div class="box-header with-border">
+                            <span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span>
+                            <h3 id="Columns" class="box-title">Parameters</h3>
+                            <div class="box-tools pull-right">
+                                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                            </div>
+                        </div>
+                        <div class="box-body">
+                            <table id="standard_table" class="table table-bordered table-striped dataTable" role="grid">
+                                <thead align='left'>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Type</th>
+                                    <th>Mode</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="box box-primary">
+                        <div class="box-header with-border">
+                            <i class="fa fa-file-code-o"></i>
+                            <h3 id="RoutineDefinition" class="box-title">Definition</h3>
+                            <div class="box-tools pull-right">
+                                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                            </div>
+                        </div>
+                        <div class="box-body">
+                            <textarea id="sql-script-codemirror" name="sql-script-codemirror" rows="" style="display: none;">PACKAGE BODY dst13449support AS&#10;&#10;FUNCTION constructRequest(&#10;    p_url    VARCHAR2,&#10;    p_method VARCHAR2,&#10;    p_user   VARCHAR2 DEFAULT NULL )&#10;RETURN UTL_HTTP.req IS&#10;    --&#10;    l_req  UTL_HTTP.req;&#10;    l_user VARCHAR2(100);&#10;    --&#10;BEGIN&#10;    --&#10;    l_user :&#61; NVL(p_user, SPGConfig.get_alfresco_user);&#10;    --&#10;    UTL_HTTP.set_response_error_check(ENABLE &#61;&gt; TRUE);&#10;    UTL_HTTP.set_detailed_excp_support(ENABLE &#61;&gt; TRUE);&#10;    --&#10;    l_req :&#61; UTL_HTTP.begin_request(p_url, p_method, UTL_HTTP.http_version_1_1);&#10;    --&#10;    UTL_HTTP.set_header(l_req, &#39;User_Agent&#39;, &#39;Mozilla/4.0&#39;);&#10;    UTL_HTTP.set_header(l_req, &#39;X-DocRepository-Real-Remote-User&#39;, &#39;nDelius&#39;);&#10;    UTL_HTTP.set_header(l_req, &#39;X-DocRepository-Remote-User&#39;, l_user);&#10;    --&#10;    RETURN l_req;&#10;    --&#10;END constructRequest;&#10;--&#10;FUNCTION Perform_Request(&#10;    x_req             IN OUT UTL_HTTP.req,&#10;    x_response_string OUT    VARCHAR2,&#10;    x_return_string   OUT    CLOB )&#10;RETURN VARCHAR2&#10;IS&#10;    --&#10;    l_resp          UTL_HTTP.resp;&#10;    l_buf           VARCHAR2(32767) :&#61; NULL;&#10;    l_buffer_size   NUMBER(10) :&#61; 512;&#10;    l_raw_data      RAW(512);&#10;    l_clob_response CLOB;&#10;    l_ret           VARCHAR2(10);&#10;    l_name          VARCHAR2(4000);&#10;    l_value         VARCHAR2(1023);&#10;    --&#10;    PROCEDURE clean_up IS&#10;    BEGIN&#10;        IF l_resp.private_hndl IS NOT NULL THEN&#10;            UTL_HTTP.end_response(r&#61;&gt;l_resp);&#10;        END IF;&#10;    END clean_up;&#10;    --&#10;BEGIN&#10;    UTL_HTTP.set_transfer_timeout(300);&#10;    --&#10;    UTL_HTTP.set_response_error_check(enable &#61;&gt; FALSE);&#10;    -- g_label :&#61; &#39;019005&#39;;&#10;    l_resp :&#61; UTL_HTTP.get_response(x_req);&#10;    -- process the response from the HTTP call&#10;    -- g_label :&#61; &#39;019010&#39;;&#10;    l_ret :&#61; l_resp.status_code;&#10;    -- info(&#39;Status code: &#39; || l_resp.status_code);&#10;    -- info(&#39;Reason phrase: &#39; || l_resp.reason_phrase);&#10;    --&#10;    -- g_label :&#61; &#39;019015&#39;;&#10;    l_buf :&#61; l_buf || &#39;Status Code [&#39; || l_resp.status_code || &#39;]  Status Phrase [&#39; ||  l_resp.reason_phrase || &#39;]&#39; || CHR(10);&#10;    FOR l_i IN 1..UTL_HTTP.get_header_count(r&#61;&gt;l_resp)&#10;    LOOP&#10;        -- g_label :&#61; &#39;019020&#39;;&#10;        UTL_HTTP.get_header(r&#61;&gt;l_resp, n&#61;&gt;l_i, name&#61;&gt;l_name, value&#61;&gt;l_value);&#10;        l_buf :&#61; l_buf || l_name || &#39;: &#39; || l_value || CHR(10);&#10;    END LOOP;&#10;    -- g_label :&#61; &#39;019025&#39;;&#10;    x_response_string :&#61; l_buf;&#10;    --&#10;    --g_label :&#61; &#39;019030&#39;;&#10;    BEGIN&#10;        LOOP&#10;            -- g_label :&#61; &#39;019035&#39;;&#10;            UTL_HTTP.read_raw(l_resp, l_raw_data, l_buffer_size);&#10;            l_clob_response :&#61; l_clob_response || UTL_RAW.cast_to_varchar2(l_raw_data);&#10;        END LOOP;&#10;    EXCEPTION WHEN UTL_HTTP.end_of_body THEN&#10;        NULL;&#10;    END;&#10;    --&#10;    x_return_string :&#61; l_clob_response;&#10;    -- g_label :&#61; &#39;019040&#39;;&#10;    clean_up;&#10;    --&#10;    RETURN l_ret;&#10;EXCEPTION&#10;    WHEN UTL_HTTP.request_failed THEN&#10;        x_response_string :&#61; &#39;Request Failed: &#39; || UTL_HTTP.get_detailed_sqlerrm;&#10;        -- error(x_response_string);&#10;        clean_up;&#10;        RETURN l_ret;&#10;    WHEN UTL_HTTP.http_server_error THEN&#10;        x_response_string :&#61; &#39;Server Error: &#39; || UTL_HTTP.get_detailed_sqlerrm;&#10;        -- error(x_response_string);&#10;        clean_up;&#10;        RETURN l_ret;&#10;    WHEN UTL_HTTP.http_client_error THEN&#10;        x_response_string:&#61; &#39;Client Error: &#39; || UTL_HTTP.get_detailed_sqlerrm;&#10;        -- error(x_response_string);&#10;        clean_up;&#10;        RETURN l_ret;&#10;    WHEN OTHERS THEN&#10;        x_return_string :&#61; UTL_HTTP.get_detailed_sqlerrm;&#10;        -- error(&#39;fetchDocument Error: &#39; || x_return_string);&#10;        clean_up;&#10;        --&#10;        RETURN &#39;500&#39;;&#10;END Perform_Request;&#10;--&#10;FUNCTION hardDeleteDocument(&#10;    docId_in           IN VARCHAR2,&#10;    responseString_out OUT VARCHAR2,&#10;    returnString_out   OUT CLOB )&#10;RETURN VARCHAR2&#10;IS&#10;    --&#10;    l_url     VARCHAR2(32767);&#10;    l_req     UTL_HTTP.req;&#10;    l_ret     VARCHAR2(200);&#10;    l_method  VARCHAR2(200) :&#61; &#39;DELETE&#39;;&#10;    l_docid   DOCUMENT.alfresco_document_id%TYPE;&#10;    --&#10;    l_return_string CLOB;&#10;    --&#10;    PROCEDURE clean_up IS&#10;    BEGIN&#10;        IF l_req.private_hndl IS NOT NULL THEN&#10;            UTL_HTTP.end_request(r &#61;&gt; l_req);&#10;        END IF;&#10;    END clean_up;&#10;    --&#10;BEGIN&#10;    --&#10;    l_docid :&#61; docId_in;&#10;    --&#10;    l_url :&#61; SPGCONFIG.get_alfresco_url || &#39;/deletehard/&#39; || l_docid;&#10;    --&#10;    l_req :&#61; constructRequest(l_url, l_method);&#10;    -- &#10;    l_ret :&#61; Perform_Request(l_req, responseString_out, returnString_out);&#10;    --&#10;    clean_up;&#10;    --&#10;    RETURN l_ret;&#10;EXCEPTION WHEN OTHERS THEN&#10;        returnString_out :&#61; UTL_HTTP.get_detailed_sqlerrm;&#10;        -- error(&#39;detailsDocument Error: &#39; || returnString_out);&#10;        clean_up;&#10;        --&#10;        RETURN &#39;500&#39;;&#10;END hardDeleteDocument;&#10;--&#10;FUNCTION hardDeleteDocumentContent(&#10;    p_alf_doc_id     VARCHAR2,&#10;    p_wait           NUMBER   DEFAULT NULL )&#10;RETURN alfresco_hard_delete_tab_TYP PIPELINED&#10;IS&#10;    --&#10;    l_status          VARCHAR2(10);&#10;    l_response_string CLOB;&#10;    l_return_string   CLOB;&#10;    --&#10;    l_docid           DOCUMENT.alfresco_document_id%TYPE;&#10;    l_rec             alfresco_hard_delete_row_typ;&#10;    l_obj             JSON_OBJECT_T;&#10;    --&#10;    L_WAIT            NUMBER :&#61; NVL(p_wait, -1);&#10;    --&#10;BEGIN&#10;    --&#10;    l_docid :&#61; p_alf_doc_id;&#10;    --&#10;    l_status :&#61;&#10;        hardDeleteDocument(&#10;            docId_in           &#61;&gt; l_docid,&#10;            responseString_out &#61;&gt; l_response_string,&#10;            returnString_out   &#61;&gt; l_return_string );&#10;    --&#10;    IF L_WAIT &gt; 0 THEN&#10;        -- DST-11269: a workaround for the ALF limiter&#10;        DBMS_LOCK.sleep(LEAST(L_WAIT, 30));&#10;    END IF;&#10;    --&#10;    IF l_status &#61; &#39;503&#39; OR &#10;       l_response_string LIKE &#39;%HTTP server error 503 - Service Temporarily Unavailable&#39;&#10;&#10;    THEN&#10;        DBMS_OUTPUT.put_line(&#39;ALF Server is unavailable: &#39; || &#39;[&#39; || l_status || &#39;][&#39; || l_return_string || &#39;][&#39; || l_response_string || &#39;] - documentUndelete&#39;);&#10;        RETURN;&#10;    END IF;&#10;    --&#10;    IF l_status &#61; &#39;200&#39; THEN&#10;        --&#10;        l_obj :&#61; JSON_OBJECT_T.parse(l_return_string);&#10;        --&#10;        l_rec.status            :&#61; /*00*/ l_obj.get_string(&#39;status&#39;);&#10;        l_rec.message           :&#61; /*01*/ l_obj.get_string(&#39;message&#39;);&#10;        --&#10;        PIPE ROW(l_rec);&#10;        --&#10;    END IF;&#10;    --&#10;    RETURN;&#10;    --&#10;END hardDeleteDocumentContent;&#10;--&#10;END dst13449support;</textarea>
+                        </div>
+                    </div>
+                </section>
+            </div>
+            <!-- /.content-wrapper -->
+            <footer class="main-footer">
+                <div>
+                    <div class="pull-right hidden-xs">
+                        <a href="https://github.com/schemaspy/schemaspy" title="GitHub for SchemaSpy"><i class="fa fa-github-square fa-2x"></i></a>
+                        <a href="http://stackoverflow.com/questions/tagged/schemaspy" title="StackOverflow for SchemaSpy"><i class="fa fa-stack-overflow fa-2x"></i></a>
+                    </div>
+                    <strong>Generated by <a href="http://schemaspy.org/" class="logo-text"><i class="fa fa-database"></i> SchemaSpy 6.2.4</a></strong>
+                </div>
+                <!-- /.container -->
+            </footer>
+        </div>
+        <!-- ./wrapper -->
+
+        <!-- jQuery 2.2.3 -->
+        <script src="../bower/admin-lte/plugins/jQuery/jquery-2.2.3.min.js"></script>
+        <script src="../bower/admin-lte/plugins/jQueryUI/jquery-ui.min.js"></script>
+        <!-- Bootstrap 3.3.5 -->
+        <script src="../bower/admin-lte/bootstrap/js/bootstrap.min.js"></script>
+        <!-- DataTables -->
+        <script src="../bower/datatables.net/jquery.dataTables.min.js"></script>
+        <script src="../bower/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+        <script src="../bower/datatables.net-buttons/dataTables.buttons.min.js"></script>
+        <script src="../bower/datatables.net-buttons-bs/js/buttons.bootstrap.min.js"></script>
+        <script src="../bower/datatables.net-buttons/buttons.html5.min.js"></script>
+        <script src="../bower/datatables.net-buttons/buttons.print.min.js"></script>
+        <script src="../bower/datatables.net-buttons/buttons.colVis.min.js"></script>
+        <!-- SheetJS -->
+        <script src="../bower/js-xlsx/xlsx.full.min.js"></script>
+        <!-- pdfmake -->
+        <script src="../bower/pdfmake/pdfmake.min.js"></script>
+        <script src="../bower/pdfmake/vfs_fonts.js"></script>
+        <!-- SlimScroll -->
+        <script src="../bower/admin-lte/plugins/slimScroll/jquery.slimscroll.min.js"></script>
+        <!-- FastClick -->
+        <script src="../bower/admin-lte/plugins/fastclick/fastclick.js"></script>
+        <!-- Salvattore -->
+        <script src="../bower/salvattore/salvattore.min.js"></script>
+        <!-- AnchorJS -->
+        <script src="../bower/anchor-js/anchor.min.js"></script>
+        <!-- CodeMirror -->
+        <script src="../bower/codemirror/codemirror.js"></script>
+        <script src="../bower/codemirror/sql.js"></script>
+        <!-- AdminLTE App -->
+        <script src="../bower/admin-lte/dist/js/app.min.js"></script>
+        <script src="routine.js"></script>
+        <script src="../schemaSpy.js"></script>
+    </body>
+</html>
