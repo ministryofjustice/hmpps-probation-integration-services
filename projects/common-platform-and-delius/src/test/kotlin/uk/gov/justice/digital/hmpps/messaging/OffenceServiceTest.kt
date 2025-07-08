@@ -79,24 +79,26 @@ internal class OffenceServiceTest {
             )
         )
 
-        val result = offenceService.findMainOffence(listOf(
-            HearingOffence(
-                id = "0",
-                offenceTitle = "Offence 1",
-                offenceCode = "TN42001",
-                wording = "Offence 1",
-                offenceLegislation = "Offence 1",
-                listingNumber = 0
-            ),
-            HearingOffence(
-                id = "1",
-                offenceTitle = "Offence 2",
-                offenceCode = "ZZ00120",
-                wording = "Offence 2",
-                offenceLegislation = "Offence 2",
-                listingNumber = 0
+        val result = offenceService.findMainOffence(
+            listOf(
+                HearingOffence(
+                    id = "0",
+                    offenceTitle = "Offence 1",
+                    offenceCode = "TN42001",
+                    wording = "Offence 1",
+                    offenceLegislation = "Offence 1",
+                    listingNumber = 0
+                ),
+                HearingOffence(
+                    id = "1",
+                    offenceTitle = "Offence 2",
+                    offenceCode = "ZZ00120",
+                    wording = "Offence 2",
+                    offenceLegislation = "Offence 2",
+                    listingNumber = 0
+                )
             )
-        ))
+        )
 
         assertThat(result!!.offenceCode, equalTo("ZZ00120"))
     }

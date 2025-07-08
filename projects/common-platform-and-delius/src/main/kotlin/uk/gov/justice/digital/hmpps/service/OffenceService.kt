@@ -29,7 +29,9 @@ class OffenceService(
             val homeOfficeCode = it.offenceCode?.let { code -> getOffenceHomeOfficeCodeByCJACode(code) }
 
             // If home office offence code is 222/22 ('Not Known') or CJA offence code suffix is 500 or above
-            if (homeOfficeCode == "22222" || (it.offenceCode?.takeLast(3)?.toIntOrNull()?.let { suffix -> suffix >= 500 } == true)) {
+            if (homeOfficeCode == "22222" || (it.offenceCode?.takeLast(3)?.toIntOrNull()
+                    ?.let { suffix -> suffix >= 500 } == true)
+            ) {
                 telemetryService.trackEvent(
                     "OffenceCodeIgnored", mapOf(
                         "offenceCode" to it.offenceCode,
