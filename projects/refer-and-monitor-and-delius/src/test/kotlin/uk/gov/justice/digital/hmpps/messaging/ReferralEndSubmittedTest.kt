@@ -13,6 +13,7 @@ import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.*
 import uk.gov.justice.digital.hmpps.detail.DomainEventDetailService
+import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException
 import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
 import uk.gov.justice.digital.hmpps.message.PersonIdentifier
 import uk.gov.justice.digital.hmpps.message.PersonReference
@@ -63,7 +64,7 @@ internal class ReferralEndSubmittedTest {
     }
 
     @Test
-    fun `no end date throws IllegalStateException`() {
+    fun `no end date is ignored`() {
         val event = HmppsDomainEvent(
             DomainEventType.ReferralEnded.name,
             1,
@@ -79,9 +80,9 @@ internal class ReferralEndSubmittedTest {
         whenever(detailService.getDetail<SentReferral>(anyOrNull(), anyOrNull())).thenReturn(referral)
 
         val res = referralEnd.referralEnded(event)
-        assertThat(res, IsInstanceOf(EventProcessingResult.Failure::class.java))
-        val failure = res as EventProcessingResult.Failure
-        assertThat(failure.exception, IsInstanceOf(IllegalStateException::class.java))
+        assertThat(res, IsInstanceOf(EventProcessingResult.Rejected::class.java))
+        val rejection = res as EventProcessingResult.Rejected
+        assertThat(rejection.exception, IsInstanceOf(IgnorableMessageException::class.java))
         verify(nsiService, never()).terminateNsi(any())
     }
 

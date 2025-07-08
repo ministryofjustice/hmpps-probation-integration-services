@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.integrations.delius
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.exception.ConflictException
+import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException.Companion.orIgnore
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.*
 import uk.gov.justice.digital.hmpps.messaging.OgrsScore
@@ -101,6 +102,6 @@ class RiskAssessmentService(
         if (!person.softDeleted) return person
         val newCrn = additionalIdentifierRepository.findLatestMergedToCrn(person.id)?.identifier
         return newCrn?.let { personRepository.getByCrn(it) }?.takeIf { !it.softDeleted }
-            ?: throw NotFoundException("Person", if (newCrn == null) "crn" else "mergedCrn", newCrn ?: crn)
+            .orIgnore { "Person with ${if (newCrn == null) "crn" else "mergedCrn"} of ${newCrn ?: crn} not found" }
     }
 }

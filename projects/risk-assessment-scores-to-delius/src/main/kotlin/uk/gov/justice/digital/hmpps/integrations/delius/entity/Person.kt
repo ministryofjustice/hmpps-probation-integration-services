@@ -4,6 +4,7 @@ import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.type.NumericBooleanConverter
 import org.springframework.data.jpa.repository.JpaRepository
+import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException.Companion.orIgnore
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import java.time.LocalDate
 
@@ -59,5 +60,4 @@ interface PersonRepository : JpaRepository<Person, Long> {
     fun findByCrn(crn: String): Person?
 }
 
-fun PersonRepository.getByCrn(crn: String) =
-    findByCrn(crn.uppercase()) ?: throw NotFoundException("Person", "crn", crn)
+fun PersonRepository.getByCrn(crn: String) = findByCrn(crn.uppercase()).orIgnore { "Person with crn of $crn not found" }

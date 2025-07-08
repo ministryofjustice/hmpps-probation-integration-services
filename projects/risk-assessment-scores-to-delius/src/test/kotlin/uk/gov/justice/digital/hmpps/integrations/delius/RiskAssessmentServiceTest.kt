@@ -12,6 +12,7 @@ import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import uk.gov.justice.digital.hmpps.data.generator.EventGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
+import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.AdditionalIdentifierRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.ContactRepository
@@ -57,7 +58,7 @@ class RiskAssessmentServiceTest {
         whenever(personRepository.findByCrn(crn))
             .thenReturn(null)
 
-        assertThrows<NotFoundException> {
+        assertThrows<IgnorableMessageException> {
             riskAssessmentService.addOrUpdateRiskAssessment(
                 crn,
                 1,

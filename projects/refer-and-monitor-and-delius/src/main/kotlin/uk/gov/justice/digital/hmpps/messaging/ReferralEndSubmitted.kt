@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonAlias
 import org.springframework.stereotype.Component
 import uk.gov.justice.digital.hmpps.config.security.nullIfNotFound
 import uk.gov.justice.digital.hmpps.detail.DomainEventDetailService
+import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException
+import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException.Companion.orIgnore
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
 import uk.gov.justice.digital.hmpps.messaging.DomainEventType.ReferralEnded
@@ -31,8 +33,7 @@ class ReferralEndSubmitted(
             event.referralUrn(),
             sentReferral.relevantSentenceId,
             sentReferral.sentAt,
-            sentReferral.endDate
-                ?: throw IllegalStateException("No End Date for Termination: ${event.referralUrn()} => ${event.personReference.findCrn()}"),
+            sentReferral.endDate.orIgnore { "No End Date for Termination: ${event.referralUrn()} => ${event.personReference.findCrn()}" },
             ReferralEndType.valueOf(event.deliveryState()),
             sentReferral.withdrawalCode?.toOutcome(sentReferral.withdrawalState),
             sentReferral.notes(event.referralUiUrl()),

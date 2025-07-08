@@ -39,6 +39,7 @@ on:
           - tier-to-delius-queue
           - unpaid-work-and-delius-queue
           - workforce-allocations-to-delius-queue
+          - accredited-programmes-and-delius-queue
           # ^ add new queues here
 
 jobs:

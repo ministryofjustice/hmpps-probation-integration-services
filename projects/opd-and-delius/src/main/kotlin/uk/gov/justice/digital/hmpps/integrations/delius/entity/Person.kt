@@ -6,6 +6,7 @@ import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.NumericBooleanConverter
 import org.springframework.data.jpa.repository.JpaRepository
 import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException
+import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException.Companion.orIgnore
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 
 @Immutable
@@ -66,7 +67,7 @@ interface PersonManagerRepository : JpaRepository<PersonManager, Long> {
 }
 
 fun PersonManagerRepository.getByCrnOrNoms(crn: String?, nomsId: String?) = when {
-    crn != null -> findByPersonCrn(crn) ?: throw NotFoundException("Manager for person", "crn", crn)
-    nomsId != null -> findByPersonNomsId(nomsId) ?: throw IgnorableMessageException("PersonNotFound")
+    crn != null -> findByPersonCrn(crn.uppercase()).orIgnore { "PersonNotFound" }
+    nomsId != null -> findByPersonNomsId(nomsId).orIgnore { "PersonNotFound" }
     else -> throw IllegalArgumentException("No CRN or NOMS number provided")
 }

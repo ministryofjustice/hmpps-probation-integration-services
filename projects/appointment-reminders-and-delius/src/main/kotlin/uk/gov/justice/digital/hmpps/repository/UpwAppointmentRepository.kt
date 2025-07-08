@@ -39,7 +39,7 @@ interface UpwAppointmentRepository : JpaRepository<UpwAppointment, Long> {
             join r_disposal_type on r_disposal_type.disposal_type_id = disposal.disposal_type_id
             join upw_details on upw_details.disposal_id = disposal.disposal_id and upw_details.soft_deleted = 0
             join upw_appointment on upw_appointment.upw_details_id = upw_details.upw_details_id and upw_appointment.soft_deleted = 0 and trunc(upw_appointment.appointment_date) = :date
-            join upw_project on upw_project.upw_project_id = upw_appointment.upw_project_id and upw_project.code not in :excludedProjectCodes
+            join upw_project on upw_project.upw_project_id = upw_appointment.upw_project_id and (:excludedProjectCodesCount = 0 or upw_project.code not in :excludedProjectCodes)
             join r_standard_reference_list upw_project_type on upw_project_type.standard_reference_list_id = upw_project.project_type_id and upw_project_type.code_value in ('ES','ICP','NP1','NP2','PIP','PIP2','PL','PSP','WH1')
             join probation_area on probation_area.probation_area_id = upw_project.probation_area_id and probation_area.code = :providerCode
             left join exclusion on exclusion.offender_id = offender.offender_id and exclusion_date < current_date and (exclusion_end_date is null or current_date < exclusion_end_date)
@@ -95,6 +95,7 @@ interface UpwAppointmentRepository : JpaRepository<UpwAppointment, Long> {
     fun getUnpaidWorkAppointments(
         date: LocalDate,
         providerCode: String,
-        excludedProjectCodes: List<String>
+        excludedProjectCodes: List<String>,
+        excludedProjectCodesCount: Int = excludedProjectCodes.count(),
     ): List<UnpaidWorkAppointment>
 }
