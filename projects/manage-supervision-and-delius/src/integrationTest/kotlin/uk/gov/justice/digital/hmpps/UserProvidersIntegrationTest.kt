@@ -57,6 +57,18 @@ class UserProvidersIntegrationTest {
         val defaultUserDetails1 =
             DefaultUserDetails(STAFF_USER_2.username, DEFAULT_PROVIDER.description, TEAM.description)
 
+        val users = listOf(
+            User(
+                STAFF_USER_1.username,
+                "${STAFF_USER_1.forename} ${STAFF_USER_1.surname} (${STAFF_USER_1.staff!!.role!!.description})"
+            ),
+            unallocatedUser,
+            User(
+                STAFF_USER_2.username,
+                "${STAFF_USER_2.forename} ${STAFF_USER_2.surname} (${STAFF_USER_2.staff!!.role!!.description})"
+            ),
+        )
+
         @JvmStatic
         fun providerRequests(): List<Arguments> = listOf(
             Arguments.of(
@@ -71,17 +83,7 @@ class UserProvidersIntegrationTest {
                         Team(DEFAULT_TEAM.description, DEFAULT_TEAM.code),
                         Team(OffenderManagerGenerator.TEAM.description, OffenderManagerGenerator.TEAM.code)
                     ),
-                    listOf(
-                        User(
-                            STAFF_USER_1.username,
-                            "${STAFF_USER_1.forename} ${STAFF_USER_1.surname} (${STAFF_USER_1.staff!!.role!!.description})"
-                        ),
-                        unallocatedUser,
-                        User(
-                            STAFF_USER_2.username,
-                            "${STAFF_USER_2.forename} ${STAFF_USER_2.surname} (${STAFF_USER_2.staff!!.role!!.description})"
-                        ),
-                    )
+                    users
                 )
             ),
             Arguments.of(
@@ -96,17 +98,7 @@ class UserProvidersIntegrationTest {
                         Team(DEFAULT_TEAM.description, DEFAULT_TEAM.code),
                         Team(OffenderManagerGenerator.TEAM.description, OffenderManagerGenerator.TEAM.code)
                     ),
-                    listOf(
-                        User(
-                            STAFF_USER_1.username,
-                            "${STAFF_USER_1.forename} ${STAFF_USER_1.surname} (${STAFF_USER_1.staff!!.role!!.description})"
-                        ),
-                        unallocatedUser,
-                        User(
-                            STAFF_USER_2.username,
-                            "${STAFF_USER_2.forename} ${STAFF_USER_2.surname} (${STAFF_USER_2.staff!!.role!!.description})"
-                        ),
-                    )
+                    users
                 )
             ),
             Arguments.of(
@@ -120,17 +112,7 @@ class UserProvidersIntegrationTest {
                         Team(DEFAULT_TEAM.description, DEFAULT_TEAM.code),
                         Team(OffenderManagerGenerator.TEAM.description, OffenderManagerGenerator.TEAM.code)
                     ),
-                    listOf(
-                        User(
-                            STAFF_USER_1.username,
-                            "${STAFF_USER_1.forename} ${STAFF_USER_1.surname} (${STAFF_USER_1.staff!!.role!!.description})"
-                        ),
-                        unallocatedUser,
-                        User(
-                            STAFF_USER_2.username,
-                            "${STAFF_USER_2.forename} ${STAFF_USER_2.surname} (${STAFF_USER_2.staff!!.role!!.description})"
-                        ),
-                    )
+                    users
                 )
             )
         )
