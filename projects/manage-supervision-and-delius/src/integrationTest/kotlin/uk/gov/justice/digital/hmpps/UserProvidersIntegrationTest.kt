@@ -112,7 +112,7 @@ class UserProvidersIntegrationTest {
                 )
             ),
             Arguments.of(
-                    "/user/bwayne/providers",
+                "/user/bwayne/providers",
                 UserProviderResponse(
                     defaultUserDetails1,
                     listOf(

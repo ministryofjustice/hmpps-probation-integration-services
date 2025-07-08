@@ -229,7 +229,6 @@ fun TeamRepository.getByUserAndProvider(
     return teams
 }
 
-
 @Immutable
 @Entity
 @Table(name = "probation_area")
