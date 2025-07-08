@@ -206,7 +206,7 @@ interface TeamRepository : JpaRepository<Team, Long> {
             ORDER BY UPPER(t.description)
         """
     )
-    fun findByUsernameAndProvider(username: String, providerCode: String): List<Team>
+    fun findTeamsByUsernameAndProviderCode(username: String, providerCode: String): List<Team>
 }
 
 fun TeamRepository.getTeam(teamCode: String) =
@@ -217,6 +217,18 @@ fun TeamRepository.getProvider(teamCode: String) =
 
 fun TeamRepository.getByTeamById(id: Long) =
     findTeamById(id) ?: throw NotFoundException("Team", "id", id)
+
+fun TeamRepository.getByUserAndProvider(
+    username: String,
+    providerCode: String
+): List<Team>? {
+    val teams = findTeamsByUsernameAndProviderCode(username, providerCode)
+    if (teams.isEmpty()) {
+        return null
+    }
+    return teams
+}
+
 
 @Immutable
 @Entity
