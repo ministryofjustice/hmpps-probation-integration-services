@@ -244,8 +244,10 @@ class UserService(
 
     fun getDefaultTeam(username: String, homeArea: String): Team? {
         val defaultTeamId = ldapTemplate.findPreferenceByUsername(username, "defaultTeam")?.toLongOrNull()
-        return defaultTeamId?.let { teamRepository.getByTeamById(it) }?.toTeam() ?:
-            teamRepository.getByUserAndProvider(username, homeArea)?.get(0)?.toTeam()
+        return defaultTeamId?.let { teamRepository.getByTeamById(it) }?.toTeam() ?: teamRepository.getByUserAndProvider(
+            username,
+            homeArea
+        )?.get(0)?.toTeam()
     }
 
     fun getUser(username: String) =

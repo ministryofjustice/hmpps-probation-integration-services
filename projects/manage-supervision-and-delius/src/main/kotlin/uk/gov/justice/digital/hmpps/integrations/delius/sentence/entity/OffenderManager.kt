@@ -238,7 +238,6 @@ fun StaffUserRepository.getUserAndTeamAssociation(username: String, teamCode: St
         "$username in team $teamCode"
     )
 
-
 interface UserTeam {
     val userId: Long
     val staffId: Long
