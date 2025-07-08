@@ -215,7 +215,7 @@ class UserService(
         val regionSearch = region ?: homeArea
 
         val defaultTeam = if (region == null && team == null) {
-            getDefaultTeamByLdap(username)
+            getDefaultTeam(username, homeArea)
         } else null
 
         val teams = teamRepository.findByProviderCode(regionSearch).map { it.toTeam() }
@@ -237,14 +237,17 @@ class UserService(
         providers: List<Provider>,
         defaultTeam: Team?
     ): DefaultUserDetails {
-        val team = defaultTeam ?: getDefaultTeamByLdap(username)
+        val team = defaultTeam ?: getDefaultTeam(username, homeArea)
 
         return DefaultUserDetails(username, providers.first { it.code == homeArea }.name, team?.description)
     }
 
-    fun getDefaultTeamByLdap(username: String): Team? {
+    fun getDefaultTeam(username: String, homeArea: String): Team? {
         val defaultTeamId = ldapTemplate.findPreferenceByUsername(username, "defaultTeam")?.toLongOrNull()
-        return defaultTeamId?.let { teamRepository.getByTeamById(it) }?.toTeam()
+        return defaultTeamId?.let { teamRepository.getByTeamById(it) }?.toTeam() ?: teamRepository.getByUserAndProvider(
+            username,
+            homeArea
+        )?.get(0)?.toTeam()
     }
 
     fun getUser(username: String) =

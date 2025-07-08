@@ -71,13 +71,14 @@ object OffenderManagerGenerator {
     val STAFF_USER_2 = StaffUser(IdGenerator.getAndIncrement(), STAFF_2, "bwayne", "bruce", surname = "wayne")
     val STAFF_USER_3 = StaffUser(IdGenerator.getAndIncrement(), STAFF_3, "ckent", "clark", surname = "kent")
     val STAFF_TEAM = ContactStaffTeam(StaffTeamLinkId(STAFF_1.id, TEAM))
+    val STAFF_TEAM_1 = ContactStaffTeam(StaffTeamLinkId(STAFF_2.id, TEAM))
 
     val PAU_USER_RECORD1 = ProbationAreaUser(ProbationAreaUserId(STAFF_USER_1, DEFAULT_PROVIDER))
     val PROVIDER_2 = generateProvider("W01", selectable = true)
     val PROVIDER_3 = generateProvider("A01", selectable = false)
     val PAU_USER_RECORD2 = ProbationAreaUser(ProbationAreaUserId(STAFF_USER_1, PROVIDER_2))
     val PAU_USER_RECORD3 = ProbationAreaUser(ProbationAreaUserId(STAFF_USER_1, PROVIDER_3))
-    val PAU_USER_RECORD4 = ProbationAreaUser(ProbationAreaUserId(STAFF_USER_2, PROVIDER_2))
+    val PAU_USER_RECORD4 = ProbationAreaUser(ProbationAreaUserId(STAFF_USER_2, DEFAULT_PROVIDER))
 
     val DEFAULT_LOCATION =
         Location(

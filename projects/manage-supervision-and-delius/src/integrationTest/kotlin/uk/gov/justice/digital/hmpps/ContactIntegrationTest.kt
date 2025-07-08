@@ -89,8 +89,8 @@ class ContactIntegrationTest {
         val contact2 =
             Contact(
                 "Bruce Wayne",
-                null,
-                null,
+                "bruce.wayne@moj.gov.uk",
+                "07321165777",
                 "Description of N01",
                 "Leicestershire All",
                 "OMU B",

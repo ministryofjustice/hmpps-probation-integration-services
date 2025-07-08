@@ -179,6 +179,7 @@ interface StaffUserRepository : JpaRepository<StaffUser, Long> {
             JOIN  Team t ON t.id = cst.id.team.id
             WHERE UPPER(u.username) = UPPER(:username)
             AND t.code = :teamCode
+            
         """
     )
     fun findUserAndTeamAssociation(username: String, teamCode: String): UserTeam?

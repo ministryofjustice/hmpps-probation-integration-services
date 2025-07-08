@@ -21,6 +21,7 @@ import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.DEFAULT_TEAM
 import uk.gov.justice.digital.hmpps.data.generator.OffenderManagerGenerator
 import uk.gov.justice.digital.hmpps.data.generator.OffenderManagerGenerator.PROVIDER_2
 import uk.gov.justice.digital.hmpps.data.generator.OffenderManagerGenerator.STAFF_USER_1
+import uk.gov.justice.digital.hmpps.data.generator.OffenderManagerGenerator.STAFF_USER_2
 import uk.gov.justice.digital.hmpps.data.generator.OffenderManagerGenerator.TEAM
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
@@ -53,6 +54,21 @@ class UserProvidersIntegrationTest {
         val defaultUserDetails =
             DefaultUserDetails(STAFF_USER_1.username, DEFAULT_PROVIDER.description, TEAM.description)
 
+        val defaultUserDetails1 =
+            DefaultUserDetails(STAFF_USER_2.username, DEFAULT_PROVIDER.description, TEAM.description)
+
+        val users = listOf(
+            User(
+                STAFF_USER_1.username,
+                "${STAFF_USER_1.forename} ${STAFF_USER_1.surname} (${STAFF_USER_1.staff!!.role!!.description})"
+            ),
+            unallocatedUser,
+            User(
+                STAFF_USER_2.username,
+                "${STAFF_USER_2.forename} ${STAFF_USER_2.surname} (${STAFF_USER_2.staff!!.role!!.description})"
+            ),
+        )
+
         @JvmStatic
         fun providerRequests(): List<Arguments> = listOf(
             Arguments.of(
@@ -67,13 +83,7 @@ class UserProvidersIntegrationTest {
                         Team(DEFAULT_TEAM.description, DEFAULT_TEAM.code),
                         Team(OffenderManagerGenerator.TEAM.description, OffenderManagerGenerator.TEAM.code)
                     ),
-                    listOf(
-                        User(
-                            STAFF_USER_1.username,
-                            "${STAFF_USER_1.forename} ${STAFF_USER_1.surname} (${STAFF_USER_1.staff!!.role!!.description})"
-                        ),
-                        unallocatedUser
-                    )
+                    users
                 )
             ),
             Arguments.of(
@@ -88,13 +98,21 @@ class UserProvidersIntegrationTest {
                         Team(DEFAULT_TEAM.description, DEFAULT_TEAM.code),
                         Team(OffenderManagerGenerator.TEAM.description, OffenderManagerGenerator.TEAM.code)
                     ),
+                    users
+                )
+            ),
+            Arguments.of(
+                "/user/bwayne/providers",
+                UserProviderResponse(
+                    defaultUserDetails1,
                     listOf(
-                        User(
-                            STAFF_USER_1.username,
-                            "${STAFF_USER_1.forename} ${STAFF_USER_1.surname} (${STAFF_USER_1.staff!!.role!!.description})"
-                        ),
-                        unallocatedUser
-                    )
+                        Provider(DEFAULT_PROVIDER.code, "Description of N01"),
+                    ),
+                    listOf(
+                        Team(DEFAULT_TEAM.description, DEFAULT_TEAM.code),
+                        Team(OffenderManagerGenerator.TEAM.description, OffenderManagerGenerator.TEAM.code)
+                    ),
+                    users
                 )
             )
         )
