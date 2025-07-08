@@ -1,0 +1,353 @@
+<!doctype html>
+<html lang="en" class="govuk-template no-js">
+  <head>
+    <meta content="IE=edge" http-equiv="X-UA-Compatible">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+
+    <title>Refer and Monitor and Delius - HMPPS Probation Integration Services</title>
+
+    <link href="../../stylesheets/manifest.css" rel="stylesheet" />
+
+    <link rel="canonical" href="https://ministryofjustice.github.io/hmpps-probation-integration-services/tech-docs/projects/refer-and-monitor-and-delius/about.html">
+      <link rel="icon" sizes="48x48" href="/images/favicon.ico">
+      <link rel="icon" sizes="any" href="/images/favicon.svg" type="image/svg+xml">
+
+      <meta name="twitter:card" content="summary" />
+      <meta name="twitter:domain" content="ministryofjustice.github.io" />
+      <meta name="twitter:image" content="https://ministryofjustice.github.io/hmpps-probation-integration-services/tech-docs/images/opengraph-image.png" />
+      <meta name="twitter:title" content="Refer and Monitor and Delius - HMPPS Probation Integration Services" />
+      <meta name="twitter:url" content="https://ministryofjustice.github.io/hmpps-probation-integration-services/tech-docs/projects/refer-and-monitor-and-delius/about.html" />
+
+      <meta property="og:image" content="https://ministryofjustice.github.io/hmpps-probation-integration-services/tech-docs/images/opengraph-image.png" />
+      <meta property="og:site_name" content="HMPPS Probation Integration Services" />
+      <meta property="og:title" content="Refer and Monitor and Delius" />
+      <meta property="og:type" content="object" />
+      <meta property="og:url" content="https://ministryofjustice.github.io/hmpps-probation-integration-services/tech-docs/projects/refer-and-monitor-and-delius/about.html" />
+
+    
+  </head>
+
+  <body class="govuk-template__body">
+    <script>document.body.className += ' js-enabled' + ('noModule' in HTMLScriptElement.prototype ? ' govuk-frontend-supported' : '');</script>
+
+    <div class="app-pane">
+      <div class="app-pane__header toc-open-disabled">
+        <a href="#content" class="govuk-skip-link" data-module="govuk-skip-link">Skip to main content</a>
+
+        <header class="govuk-header app-header" role="banner" data-module="govuk-header">
+  <div class="govuk-header__container govuk-header__container--full-width">
+    <div class="govuk-header__logo">
+      <a href="https://ministryofjustice.github.io/hmpps-probation-integration-services/tech-docs" class="govuk-header__link govuk-header__link--homepage">
+        <span class="govuk-header__product-name">
+          HMPPS Probation Integration
+        </span>
+      </a>
+    </div>
+    <div class="govuk-header__content">
+      <nav class="govuk-header__navigation govuk-header__navigation--end" aria-label="Menu">
+        <button type="button" class="govuk-header__menu-button govuk-js-header-toggle" aria-controls="navigation" hidden>Menu</button>
+        <ul id="navigation" class="govuk-header__navigation-list">
+            <li class="govuk-header__navigation-item">
+              <a class="govuk-header__link" href="https://github.com/ministryofjustice/hmpps-probation-integration-services#readme">GitHub</a>
+            </li>
+            <li class="govuk-header__navigation-item">
+              <a class="govuk-header__link" href="https://mojdt.slack.com/archives/C02HQ4M2YQN">Slack</a>
+            </li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+</header>
+
+      </div>
+
+        <div id="toc-heading" class="toc-show fixedsticky">
+          <button type="button" class="toc-show__label js-toc-show" aria-controls="toc">
+            Table of contents <span class="toc-show__icon"></span>
+          </button>
+        </div>
+
+      <div class="app-pane__body" data-module="in-page-navigation">
+          <div class="app-pane__toc">
+            <div class="toc" data-module="table-of-contents" tabindex="-1">
+              <div class="search" data-module="search" data-path-to-site-root="../../">
+  <form action="https://www.google.co.uk/search" method="get" role="search" class="search__form govuk-!-margin-bottom-4">
+    <input type="hidden" name="as_sitesearch" value="https://ministryofjustice.github.io/hmpps-probation-integration-services/tech-docs"/>
+    <label class="govuk-label search__label" for="search">
+      Search (via Google)
+    </label>
+    <input
+      type="search"
+      id="search" name="q"
+      class="govuk-input govuk-!-margin-bottom-0 search__input"
+      aria-controls="search-results"
+      placeholder="Search">
+    <button type="submit" class="search__button">Search</button>
+  </form>
+</div>
+
+              <button type="button" class="toc__close js-toc-close" aria-controls="toc" aria-label="Hide table of contents"></button>
+              <nav id="toc" class="js-toc-list toc__list" aria-labelledby="toc-heading">
+                      <ul>
+  <li>
+    <a href="#refer-and-monitor-and-delius"><span>Refer and Monitor and Delius</span></a>
+    <ul>
+      <li>
+        <a href="#business-need"><span>Business Need</span></a>
+      </li>
+      <li>
+        <a href="#data-dependencies"><span>Data Dependencies</span></a>
+        <ul>
+          <li>
+            <a href="#context-map"><span>Context Map</span></a>
+          </li>
+        </ul>
+      </li>
+      <li>
+        <a href="#workflows"><span>Workflows</span></a>
+        <ul>
+          <li>
+            <a href="#crs-referral-workflows"><span>CRS Referral Workflows</span></a>
+          </li>
+          <li>
+            <a href="#crs-appointment-workflows"><span>CRS Appointment Workflows</span></a>
+          </li>
+          <li>
+            <a href="#workflow-create-crs-appointment"><span>Workflow: Create CRS Appointment</span></a>
+          </li>
+          <li>
+            <a href="#workflow-crs-appointment-reschedule"><span>Workflow: CRS Appointment Reschedule</span></a>
+          </li>
+          <li>
+            <a href="#workflow-crs-appointment-outcome-and-feedback"><span>Workflow: CRS Appointment Outcome and Feedback</span></a>
+          </li>
+        </ul>
+      </li>
+      <li>
+        <a href="#interfaces"><span>Interfaces</span></a>
+        <ul>
+          <li>
+            <a href="#message-formats"><span>Message Formats</span></a>
+          </li>
+          <li>
+            <a href="#api-access-control"><span>API Access Control</span></a>
+          </li>
+        </ul>
+      </li>
+      <li>
+        <a href="#api-reference"><span>API Reference</span></a>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+
+              </nav>
+            </div>
+          </div>
+
+        <div class="app-pane__content toc-open-disabled" aria-label="Content">
+          <main id="content" class="technical-documentation" data-module="anchored-headings">
+            <h1 id="refer-and-monitor-and-delius">Refer and Monitor and Delius</h1>
+<p>Service that supports creating and managing the referral of a person on probation to a CRS intervention, by providing
+Delius information and listening to domain events to create Contacts and NSIs in Delius.</p>
+<h2 id="business-need">Business Need</h2>
+<p><em>Refer and Monitor an Intervention</em> has a tightly coupled relationship with <em>Delius</em> due to activity managed in both systems being important for workflows in the other. <em>Refer and Monitor an Intervention</em> depends on information managed in <em>Delius</em> for it&rsquo;s primary function of creating and managing CRS referrals. There is also a requirement to write information back to <em>Delius</em> when various activities are recorded in <em>Refer and Monitor an Intervention</em>. Where possible the interaction between the two services is managed asynchronously via domain events but there are workflows in <em>Refer and Monitor an Intervention</em> that have runtime dependency on successful creation of entities in <em>Delius</em>. In these cases the cross-service interaction is via synchronous API calls.</p>
+<h2 id="data-dependencies">Data Dependencies</h2>
+<p><em>Refer and Monitor an Intervention</em> depends on <em>Delius</em> data for background on the relevant <strong>Person on Probation</strong> and the specific <strong>Probation Case</strong> when making CRS referral. There is also a dependency on <strong>Probation Practitioner</strong> information and <strong>Probation Estate</strong> information when making CRS session appointments</p>
+<h3 id="context-map">Context Map</h3>
+<p><a href="../../images/randm-and-delius-dependencies-context-map.svg" rel="noopener noreferrer"><img src="../../images/randm-and-delius-dependencies-context-map.svg" alt="Context Map" /></a></p>
+<h2 id="workflows">Workflows</h2>
+<h3 id="crs-referral-workflows">CRS Referral Workflows</h3>
+<p>CRS referrals are tracked in <em>Delius</em> using an NSI. The request to create the <em>Delius</em> NSI is made as part of the referral creation process in <em>Refer and Monitor an Intervention</em>, and the NSI is linked to the referral by adding the <em>Refer and Monitor an Intervention</em> <code>REFERRAL.ID</code> to the <code>NSI.EXTERNAL_REFERENCE</code> field of the <em>Delius</em> database. The status of the NSI is updated as the CRS referral is progressed in <em>Refer and Monitor an Intervention</em>.</p>
+<h4 id="context-map-referrals">Context Map - Referrals</h4>
+<p><a href="../../images/randm-and-delius-referral-context-map.svg" rel="noopener noreferrer"><img src="../../images/randm-and-delius-referral-context-map.svg" alt="Context Map" /></a></p>
+<h4 id="workflow-create-crs-referral">Workflow: Create CRS Referral</h4>
+<p>Creation of the CRS referral is a synchronous integration between <em>Refer and Monitor an Intervention</em> and <em>Delius</em>. A CRS referral is created in <em>Refer and Monitor an Intervention</em>, which makes an API call to &lsquo;Refer and Monitor and Delius&rsquo; to create the referral NSI in <em>Delius</em>. If the process fails to create the Delius NSI the creation of the CRS referral in <em>Refer and Monitor an Intervention</em> is aborted.</p>
+<div class="table-container">
+        <table>
+          <tr>
+<th>Business Event</th>
+<th>API Endpoint</th>
+</tr><tr>
+<td>Create a CRS referral</td>
+<td>PUT /probation-case/{crn}/referrals</td>
+</tr>
+        </table>
+      </div><p><a href="../../images/randm-and-delius-workflow-create-crs-referral.svg" rel="noopener noreferrer"><img src="../../images/randm-and-delius-workflow-create-crs-referral.svg" alt="Workflow Map" /></a></p>
+<h4 id="workflow-end-crs-referral">Workflow: End CRS Referral</h4>
+<p>Ending a CRS referral in <em>Refer and Monitor an Intervention</em> triggers activity in <em>Delius</em> to update the linked NSI and add contacts. The information added to the probation case in <em>Delius</em> inform the probation practitioner that the referral has been ended in <em>Refer and Monitor an Intervention</em>.</p>
+<div class="table-container">
+        <table>
+          <tr>
+<th>Business Event</th>
+<th>HMPPS Domain Event Type</th>
+</tr><tr>
+<td>End a CRS referral</td>
+<td>intervention.referral.ended</td>
+</tr>
+        </table>
+      </div><p><a href="../../images/randm-and-delius-workflow-end-crs-referral.svg" rel="noopener noreferrer"><img src="../../images/randm-and-delius-workflow-end-crs-referral.svg" alt="Workflow Map" /></a></p>
+<h4 id="workflow-action-plan-interactions">Workflow: Action Plan Interactions</h4>
+<p>An action plan must be submitted by the CRS supplier in <em>Refer and Monitor an Intervention</em> for approval by the probation practitioner managing the case. On both submission and approval in <em>Refer and Monitor an Intervention</em> a domain event is raised and a <em>Delius</em> contact is added to communicate the action plan status to probation practitioners.</p>
+<div class="table-container">
+        <table>
+          <tr>
+<th>Business Event</th>
+<th>HMPPS Domain Event Type</th>
+</tr><tr>
+<td>Submit a CRS referral action plan</td>
+<td>intervention.action-plan.submitted</td>
+</tr><tr>
+<td>Approve a CRS referral action plan</td>
+<td>intervention.action-plan.approved</td>
+</tr>
+        </table>
+      </div><p><a href="../../images/randm-and-delius-workflow-action-plan.svg" rel="noopener noreferrer"><img src="../../images/randm-and-delius-workflow-action-plan.svg" alt="Workflow Map" /></a></p>
+<h3 id="crs-appointment-workflows">CRS Appointment Workflows</h3>
+<p>Creating CRS session appointments is a core function of <em>Refer and Monitor an Intervention</em>, however, the primary service for managing probation appointments is <em>Delius</em>. Appointments are therefore created in both systems and the <em>Delius</em> appointment contact is linked to the <em>Refer and Monitor an Intervention</em> session by adding the <code>APPOINTMENT.ID</code> to the <code>CONTACT.EXTERNAL_REFERENCE</code> table of the <em>Delius</em> database. The status of the CRS appointments is updated in <em>Delius</em> as the appointment sessions are delivered and recorded in <em>Refer and Monitor an Intervention</em>.</p>
+<h4 id="context-map-appointments">Context Map - Appointments</h4>
+<p><a href="../../images/randm-and-delius-appointment-context-map.svg" rel="noopener noreferrer"><img src="../../images/randm-and-delius-appointment-context-map.svg" alt="Context Map" /></a></p>
+<h3 id="workflow-create-crs-appointment">Workflow: Create CRS Appointment</h3>
+<p>Creating session appointments in <em>Refer and Monitor an Intervention</em> involves a synchronous API call to create the corresponding <em>Delius</em> appointment contact, with an appointment type, date, time and location. A successful API call will result in an appointment contact being created in <em>Delius</em>. Booking a session appointment relies on the date and time being available for the person on probation. Failure to create an appointment in <em>Delius</em> is a runtime exception in <em>Refer and Monitor an Intervention</em> and the appointment creation is aborted.</p>
+<div class="table-container">
+        <table>
+          <tr>
+<th>Business Event</th>
+<th>API Endpoint</th>
+</tr><tr>
+<td>Create a initial assessment appointment</td>
+<td>PUT /probation-case/{crn}/referrals/{referralId}/appointments</td>
+</tr><tr>
+<td>Create a delivery session appointment</td>
+<td>PUT /probation-case/{crn}/referrals/{referralId}/appointments</td>
+</tr>
+        </table>
+      </div><h3 id="workflow-crs-appointment-reschedule">Workflow: CRS Appointment Reschedule</h3>
+<p>Rescheduling a CRS appointment in <em>Refer and Monitor an Intervention</em> involves updating the linked appointment in <em>Delius</em> with an outcome and creating a new appointment for the new date and time. This is necessary to ensure source appointment data for downstream processes in <em>Delius</em> are maintained and the case recording is standardised. As this process involves multiple changes to <em>Delius</em> database structures and it is possible for the process to fail if the date and time are not available it is achieved using a single synchronous API call to the same endpoint for appointment creation. The inclusion of the details of the appointment being replaced identifies the API calls as a reschedule rather than an initial creation.</p>
+<div class="table-container">
+        <table>
+          <tr>
+<th>Business Event</th>
+<th>API Endpoint</th>
+</tr><tr>
+<td>Reschedule an appointment</td>
+<td>PUT /probation-case/{crn}/referrals/{referralId}/appointments</td>
+</tr>
+        </table>
+      </div><p><a href="../../images/randm-and-delius-workflow-appointment-reschedule.svg" rel="noopener noreferrer"><img src="../../images/randm-and-delius-workflow-appointment-reschedule.svg" alt="Workflow Map" /></a></p>
+<h3 id="workflow-crs-appointment-outcome-and-feedback">Workflow: CRS Appointment Outcome and Feedback</h3>
+<p>Session outcomes and feedback for CRS appointments are recorded in <em>Refer and Monitor an Intervention</em> by the CRS supplier. The session outcomes are recorded against the relevant <em>Delius</em> appointment contact, with the appropriate alerts to probation practitioners when activity should be brought to their attention.</p>
+<div class="table-container">
+        <table>
+          <tr>
+<th>Business Event</th>
+<th>HMPPS Domain Event Type</th>
+</tr><tr>
+<td>Submit initial appointment session outcome and feedback</td>
+<td>intervention.initial-assessment-appointment.session-feedback-submitted</td>
+</tr><tr>
+<td>Submit delivery session outcome and feedback</td>
+<td>intervention.session-appointment.session-feedback-submitted</td>
+</tr>
+        </table>
+      </div><p><a href="../../images/randm-and-delius-workflow-appointment-feedback.svg" rel="noopener noreferrer"><img src="../../images/randm-and-delius-workflow-appointment-feedback.svg" alt="Workflow Map" /></a></p>
+<h2 id="interfaces">Interfaces</h2>
+<h3 id="message-formats">Message Formats</h3>
+<p>The service responds to various HMPPS Domain Event message via the
+<a href="https://github.com/ministryofjustice/cloud-platform-environments/blob/main/namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-prod/resources/refer-and-monitor-and-delius-queue.tf">Refer and Monitor and Delius Queue</a>.
+The events are raised by the <a href="https://github.com/ministryofjustice/hmpps-interventions-service">HMPPS Refer and Monitor Service</a> to communicate important events in the CRS referrals process.</p>
+<p>Example <a href="https://github.com/ministryofjustice/hmpps-probation-integration-services/blob/main/projects/refer-and-monitor-and-delius/src/dev/resources/messages/">messages</a> are in the development source tree.</p>
+<p>Incoming messages are filtered on <code>eventType</code> by the <a href="https://github.com/ministryofjustice/cloud-platform-environments/blob/114fda2e35b6a6c8ee08c3a54317154dcde2c336/namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-prod/resources/refer-and-monitor-and-delius-queue.tf#L6-L12">SQS queue policy</a></p>
+<h3 id="api-access-control">API Access Control</h3>
+<p>API endpoints are secured by roles supplied by the <em>HMPPS Auth</em> client used in the requests</p>
+<div class="table-container">
+        <table>
+          <tr>
+<th>API Endpoint</th>
+<th>Required Role</th>
+</tr><tr>
+<td>All</td>
+<td>ROLE_CRS_REFERRAL</td>
+</tr>
+        </table>
+      </div><h2 id="api-reference">API Reference</h2>
+
+<ul>
+<li><a href="api-reference.html">API Reference</a></li>
+<li><a href="asyncapi-reference.html">AsyncAPI Reference</a></li>
+</ul>
+
+              <div data-module='page-expiry' data-last-reviewed-on="2025-09-24">
+    <div class='page-expiry--not-expired'>
+      This page was last reviewed on 24 June 2025.
+
+        It needs to be reviewed again on 24 September 2025
+        by the page owner <a href="https://mojdt.slack.com/messages/probation-integration-team">#probation-integration-team</a>
+        .
+    </div>
+
+    <div class='page-expiry--expired' hidden>
+      This page was set to be reviewed before 24 September 2025
+       by the page owner <a href="https://mojdt.slack.com/messages/probation-integration-team">#probation-integration-team</a>.
+      This might mean the content is out of date.
+    </div>
+  </div>
+
+          </main>
+
+          <aside>
+              <ul class="contribution-banner">
+                <li><a href="https://github.com/ministryofjustice/hmpps-probation-integration-services/blob/main/doc/tech-docs/source/projects/refer-and-monitor-and-delius/about.html.md.erb">View source</a></li>
+                <li><a href="https://github.com/ministryofjustice/hmpps-probation-integration-services/issues/new?body=Problem+with+%27Refer+and+Monitor+and+Delius%27+%28https%3A%2F%2Fministryofjustice.github.io%2Fhmpps-probation-integration-services%2Ftech-docs%2Fprojects%2Frefer-and-monitor-and-delius%2Fabout.html%29&amp;labels=bug&amp;title=Re%3A+%27Refer+and+Monitor+and+Delius%27">Report problem</a></li>
+                <li><a href="https://github.com/ministryofjustice/hmpps-probation-integration-services">GitHub Repo</a></li>
+              </ul>
+          </aside>
+
+          <footer class="govuk-footer app-footer" role="contentinfo">
+  <div class="govuk-footer__meta">
+    <div class="govuk-footer__meta-item govuk-footer__meta-item--grow">
+
+
+      <svg
+        aria-hidden="true"
+        focusable="false"
+        class="govuk-footer__licence-logo"
+        xmlns="http://www.w3.org/2000/svg"
+        viewbox="0 0 483.2 195.7"
+        height="17"
+        width="41"
+      >
+        <path
+          fill="currentColor"
+          d="M421.5 142.8V.1l-50.7 32.3v161.1h112.4v-50.7zm-122.3-9.6A47.12 47.12 0 0 1 221 97.8c0-26 21.1-47.1 47.1-47.1 16.7 0 31.4 8.7 39.7 21.8l42.7-27.2A97.63 97.63 0 0 0 268.1 0c-36.5 0-68.3 20.1-85.1 49.7A98 98 0 0 0 97.8 0C43.9 0 0 43.9 0 97.8s43.9 97.8 97.8 97.8c36.5 0 68.3-20.1 85.1-49.7a97.76 97.76 0 0 0 149.6 25.4l19.4 22.2h3v-87.8h-80l24.3 27.5zM97.8 145c-26 0-47.1-21.1-47.1-47.1s21.1-47.1 47.1-47.1 47.2 21 47.2 47S123.8 145 97.8 145"
+        />
+      </svg>
+      <span class="govuk-footer__licence-description">
+        All content is available under the
+        <a
+          class="govuk-footer__link"
+          href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/"
+          rel="license"
+        >Open Government Licence v3.0</a>, except where otherwise stated
+      </span>
+    </div>
+    <div class="govuk-footer__meta-item">
+      <a
+        class="govuk-footer__link govuk-footer__copyright-logo"
+        href="https://www.nationalarchives.gov.uk/information-management/re-using-public-sector-information/uk-government-licensing-framework/crown-copyright/"
+      >© Crown copyright</a>
+    </div>
+  </div>
+</footer>
+
+        </div>
+      </div>
+    </div>
+
+    
+    <script src="../../javascripts/govuk_frontend.js" type="module"></script>
+    <script src="../../javascripts/application.js"></script>
+  </body>
+</html>

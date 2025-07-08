@@ -1,0 +1,608 @@
+openapi: 3.1.0
+info:
+  title: API Reference
+  contact:
+    name: Probation Integration Team
+    url: https://mojdt.slack.com/archives/C02HQ4M2YQN
+    email: probation-integration-team@digital.justice.gov.uk
+  license:
+    name: MIT
+    url: https://github.com/ministryofjustice/hmpps-probation-integration-services/blob/main/LICENSE
+  version: "1.0"
+servers:
+- url: /
+security:
+- hmpps-auth-token: []
+paths:
+  /users/{username}/roles:
+    put:
+      tags:
+      - user-resource
+      operationId: addRole
+      parameters:
+      - name: username
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+    delete:
+      tags:
+      - user-resource
+      operationId: removeRole
+      parameters:
+      - name: username
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+  /staff:
+    post:
+      tags:
+      - staff-resource
+      operationId: findStaffForUsernames
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: string
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/StaffName"
+  /staff/byid/{id}/caseload/team-managed-offenders:
+    post:
+      tags:
+      - staff-resource
+      operationId: getManagedOffendersForTeam
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - name: page
+        in: query
+        required: true
+        schema:
+          $ref: "#/components/schemas/Pageable"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SearchRequest"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PagedModelManagedOffender"
+  /probation-case:
+    post:
+      tags:
+      - probation-case-resource
+      operationId: findCases
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: string
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ProbationCase"
+  /probation-case/responsible-community-manager:
+    post:
+      tags:
+      - probation-case-resource
+      operationId: findCommunityManagerEmails
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: string
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Manager"
+  /team/{teamCode}/caseload/managed-offenders:
+    get:
+      tags:
+      - team-resource
+      operationId: getManagedOffendersByTeam
+      parameters:
+      - name: teamCode
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ManagedOffender"
+  /staff/{username}:
+    get:
+      tags:
+      - staff-resource
+      operationId: findStaff
+      parameters:
+      - name: username
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Staff"
+  /staff/{staffCode}/caseload/managed-offenders:
+    get:
+      tags:
+      - staff-resource
+      operationId: getManagedOffenders
+      parameters:
+      - name: staffCode
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ManagedOffender"
+  /staff/{boroughCode}/pdu-head:
+    get:
+      tags:
+      - staff-resource
+      operationId: findPDUHead
+      parameters:
+      - name: boroughCode
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/PDUHead"
+  /staff/byid/{id}:
+    get:
+      tags:
+      - staff-resource
+      operationId: findStaff_1
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Staff"
+  /staff/byid/{id}/caseload/managed-offenders:
+    get:
+      tags:
+      - staff-resource
+      operationId: getManagedOffenders_1
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ManagedOffender"
+  /staff/bycode/{code}:
+    get:
+      tags:
+      - staff-resource
+      operationId: findStaffByCode
+      parameters:
+      - name: code
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Staff"
+  /probation-case/{crnOrNomisId}:
+    get:
+      tags:
+      - probation-case-resource
+      operationId: findCase
+      parameters:
+      - name: crnOrNomisId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProbationCase"
+  /probation-case/{crnOrNomisId}/responsible-community-manager:
+    get:
+      tags:
+      - probation-case-resource
+      operationId: findCommunityManager
+      parameters:
+      - name: crnOrNomisId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Manager"
+  /docs/asyncapi:
+    get:
+      tags:
+      - async-api-controller
+      operationId: asyncApi
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: string
+components:
+  schemas:
+    Name:
+      type: object
+      properties:
+        forename:
+          type: string
+        middleName:
+          type: string
+        surname:
+          type: string
+      required:
+      - forename
+      - surname
+    StaffName:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          $ref: "#/components/schemas/Name"
+        code:
+          type: string
+        username:
+          type: string
+      required:
+      - code
+      - id
+      - name
+    SearchRequest:
+      type: object
+      properties:
+        query:
+          type: string
+    Pageable:
+      type: object
+      properties:
+        page:
+          type: integer
+          format: int32
+          minimum: 0
+        size:
+          type: integer
+          format: int32
+          minimum: 1
+        sort:
+          type: array
+          items:
+            type: string
+    Borough:
+      type: object
+      properties:
+        code:
+          type: string
+        description:
+          type: string
+      required:
+      - code
+      - description
+    District:
+      type: object
+      properties:
+        code:
+          type: string
+        description:
+          type: string
+        borough:
+          $ref: "#/components/schemas/Borough"
+      required:
+      - borough
+      - code
+      - description
+    ManagedOffender:
+      type: object
+      properties:
+        crn:
+          type: string
+        nomisId:
+          type: string
+        name:
+          $ref: "#/components/schemas/Name"
+        allocationDate:
+          type: string
+          format: date
+        staff:
+          $ref: "#/components/schemas/Staff"
+        team:
+          $ref: "#/components/schemas/Team"
+      required:
+      - crn
+      - name
+      - staff
+    OfficeAddress:
+      type: object
+      properties:
+        officeName:
+          type: string
+        buildingName:
+          type: string
+        buildingNumber:
+          type: string
+        streetName:
+          type: string
+        district:
+          type: string
+        town:
+          type: string
+        county:
+          type: string
+        postcode:
+          type: string
+        ldu:
+          type: string
+        telephoneNumber:
+          type: string
+        from:
+          type: string
+          format: date
+        to:
+          type: string
+          format: date
+      required:
+      - from
+      - ldu
+      - officeName
+    PageMetadata:
+      type: object
+      properties:
+        size:
+          type: integer
+          format: int64
+        number:
+          type: integer
+          format: int64
+        totalElements:
+          type: integer
+          format: int64
+        totalPages:
+          type: integer
+          format: int64
+    PagedModelManagedOffender:
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: "#/components/schemas/ManagedOffender"
+        page:
+          $ref: "#/components/schemas/PageMetadata"
+    Provider:
+      type: object
+      properties:
+        code:
+          type: string
+        description:
+          type: string
+      required:
+      - code
+      - description
+    Staff:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        code:
+          type: string
+        name:
+          $ref: "#/components/schemas/Name"
+        teams:
+          type: array
+          items:
+            $ref: "#/components/schemas/Team"
+        provider:
+          $ref: "#/components/schemas/Provider"
+        username:
+          type: string
+        email:
+          type: string
+        telephoneNumber:
+          type: string
+        unallocated:
+          type: boolean
+      required:
+      - code
+      - id
+      - name
+      - provider
+      - teams
+      - unallocated
+    Team:
+      type: object
+      properties:
+        code:
+          type: string
+        description:
+          type: string
+        telephone:
+          type: string
+        emailAddress:
+          type: string
+        addresses:
+          type: array
+          items:
+            $ref: "#/components/schemas/OfficeAddress"
+        district:
+          $ref: "#/components/schemas/District"
+        borough:
+          $ref: "#/components/schemas/Borough"
+        startDate:
+          type: string
+          format: date
+        endDate:
+          type: string
+          format: date
+      required:
+      - borough
+      - code
+      - description
+      - district
+      - startDate
+    ProbationCase:
+      type: object
+      properties:
+        crn:
+          type: string
+        nomisId:
+          type: string
+        pncNumber:
+          type: string
+        croNumber:
+          type: string
+      required:
+      - crn
+    Manager:
+      type: object
+      properties:
+        case:
+          $ref: "#/components/schemas/ProbationCase"
+        id:
+          type: integer
+          format: int64
+        code:
+          type: string
+        name:
+          $ref: "#/components/schemas/Name"
+        provider:
+          $ref: "#/components/schemas/Provider"
+        team:
+          $ref: "#/components/schemas/Team"
+        username:
+          type: string
+        email:
+          type: string
+        telephoneNumber:
+          type: string
+        allocationDate:
+          type: string
+          format: date
+        unallocated:
+          type: boolean
+      required:
+      - case
+      - code
+      - id
+      - name
+      - provider
+      - team
+      - unallocated
+    PDUHead:
+      type: object
+      properties:
+        name:
+          $ref: "#/components/schemas/Name"
+        email:
+          type: string
+      required:
+      - name
+  securitySchemes:
+    hmpps-auth-token:
+      type: http
+      name: Authorization
+      in: header
+      scheme: bearer
+      bearerFormat: JWT

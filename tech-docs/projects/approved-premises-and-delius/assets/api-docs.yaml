@@ -1,0 +1,782 @@
+openapi: 3.1.0
+info:
+  title: API Reference
+  contact:
+    name: Probation Integration Team
+    url: https://mojdt.slack.com/archives/C02HQ4M2YQN
+    email: probation-integration-team@digital.justice.gov.uk
+  license:
+    name: MIT
+    url: https://github.com/ministryofjustice/hmpps-probation-integration-services/blob/main/LICENSE
+  version: "1.0"
+servers:
+- url: /
+security:
+- hmpps-auth-token: []
+paths:
+  /users/access:
+    get:
+      tags:
+      - user-controller
+      operationId: userAccessCheck
+      parameters:
+      - name: username
+        in: query
+        required: false
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: string
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserAccess"
+    post:
+      tags:
+      - user-controller
+      operationId: userAccessCheck_1
+      parameters:
+      - name: username
+        in: query
+        required: false
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: string
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserAccess"
+  /probation-cases/summaries:
+    get:
+      tags:
+      - case-controller
+      operationId: getCaseSummaries
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: string
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CaseSummaries"
+    post:
+      tags:
+      - case-controller
+      operationId: getCaseSummaries_1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: string
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CaseSummaries"
+  /teams/managingCase/{crn}:
+    get:
+      tags:
+      - team-controller
+      summary: List all teams involved in managing the probation case
+      description: "A probation case may be managed by staff members who\n       \
+        \     are associated with multiple teams in Delius. Approve Premises users\n\
+        \            need to view all applications that may be covered by direct colleagues\n\
+        \            in order to cover absence and other workload-related issues.\
+        \ Respond\n            with a list of every team code that covers the probation\
+        \ case identified\n            by the CRN to enable the Approved Premises\
+        \ service to present the\n            relevant list of Approved Premises applications\
+        \ to it's users.\n        "
+      operationId: getTeamsManagingCase
+      parameters:
+      - name: crn
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: staffCode
+        in: query
+        required: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TeamCodeResponse"
+  /staff:
+    get:
+      tags:
+      - staff-controller
+      summary: Get the staff details by code
+      operationId: getStaffByCode
+      parameters:
+      - name: code
+        in: query
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StaffDetail"
+  /staff/{userName}:
+    get:
+      tags:
+      - staff-controller
+      summary: Get the staff details by username
+      operationId: getStaffByUsername
+      parameters:
+      - name: userName
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StaffDetail"
+  /probation-cases/{id}/details:
+    get:
+      tags:
+      - case-controller
+      operationId: getCaseDetail
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CaseDetail"
+  /probation-case/{crn}/referrals:
+    get:
+      tags:
+      - referral-controller
+      operationId: findReferralsForCrn
+      parameters:
+      - name: crn
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExistingReferrals"
+  /probation-case/{crn}/referrals/{bookingId}:
+    get:
+      tags:
+      - referral-controller
+      operationId: findReferralDetails
+      parameters:
+      - name: crn
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: bookingId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ReferralDetail"
+  /documents/{crn}/{id}:
+    get:
+      tags:
+      - Documents
+      summary: Download document content
+      operationId: downloadDocument
+      parameters:
+      - name: crn
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StreamingResponseBody"
+  /documents/{crn}/all:
+    get:
+      tags:
+      - Documents
+      summary: List of documents held in Delius for the probation case
+      description: "List of documents available in Delius for the probation\n    \
+        \        case identified by the CRN provided in the request. Document list\n\
+        \            includes summary information on the type and purpose of document\
+        \ held.\n        "
+      operationId: findDocuments
+      parameters:
+      - name: crn
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/DocumentResponse"
+  /docs/asyncapi:
+    get:
+      tags:
+      - async-api-controller
+      operationId: asyncApi
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: string
+  /approved-premises/{code}/staff:
+    get:
+      tags:
+      - staff-controller
+      summary: List all members of staff that are keyworkers in the Approved Premises
+      description: "An Approved Premises is defined in Delius as part of reference\
+        \ data.\n            Probation staff members can be linked to an Approved\
+        \ Premises as either staff\n            members or keyworkers via the \"Approved\
+        \ Premises and Teams\" screen of the Delius\n            user interface. Keyworkers\
+        \ are defined via the \"Approved Premises and Key Workers\"\n            screen\
+        \ of the Delius user interface. Respond with a list of all members of staff\n\
+        \            defined as keyworkers for the Approved Premises identified by\
+        \ the requested code.\n            "
+      operationId: getStaff
+      parameters:
+      - name: code
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: keyWorker
+        in: query
+        required: false
+        schema:
+          type: boolean
+          default: false
+      - name: pageable
+        in: query
+        required: false
+        schema:
+          $ref: "#/components/schemas/Pageable"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PagedModelStaffResponse"
+components:
+  schemas:
+    CaseAccess:
+      type: object
+      properties:
+        crn:
+          type: string
+        userExcluded:
+          type: boolean
+        userRestricted:
+          type: boolean
+        exclusionMessage:
+          type: string
+        restrictionMessage:
+          type: string
+      required:
+      - crn
+      - userExcluded
+      - userRestricted
+    UserAccess:
+      type: object
+      properties:
+        access:
+          type: array
+          items:
+            $ref: "#/components/schemas/CaseAccess"
+      required:
+      - access
+    Borough:
+      type: object
+      properties:
+        code:
+          type: string
+        description:
+          type: string
+      required:
+      - code
+      - description
+    CaseSummaries:
+      type: object
+      properties:
+        cases:
+          type: array
+          items:
+            $ref: "#/components/schemas/CaseSummary"
+      required:
+      - cases
+    CaseSummary:
+      type: object
+      properties:
+        crn:
+          type: string
+        nomsId:
+          type: string
+        pnc:
+          type: string
+        name:
+          $ref: "#/components/schemas/Name"
+        dateOfBirth:
+          type: string
+          format: date
+        gender:
+          type: string
+        profile:
+          $ref: "#/components/schemas/Profile"
+        manager:
+          $ref: "#/components/schemas/Manager"
+        currentExclusion:
+          type: boolean
+        currentRestriction:
+          type: boolean
+      required:
+      - crn
+      - currentExclusion
+      - currentRestriction
+      - dateOfBirth
+      - manager
+      - name
+    Ldu:
+      type: object
+      properties:
+        code:
+          type: string
+        name:
+          type: string
+      required:
+      - code
+      - name
+    Manager:
+      type: object
+      properties:
+        team:
+          $ref: "#/components/schemas/Team"
+      required:
+      - team
+    Name:
+      type: object
+      properties:
+        forename:
+          type: string
+        surname:
+          type: string
+        middleNames:
+          type: array
+          items:
+            type: string
+      required:
+      - forename
+      - middleNames
+      - surname
+    Profile:
+      type: object
+      properties:
+        ethnicity:
+          type: string
+        genderIdentity:
+          type: string
+        nationality:
+          type: string
+        religion:
+          type: string
+    Team:
+      type: object
+      properties:
+        code:
+          type: string
+        name:
+          type: string
+        ldu:
+          $ref: "#/components/schemas/Ldu"
+        borough:
+          $ref: "#/components/schemas/Borough"
+        startDate:
+          type: string
+          format: date
+        endDate:
+          type: string
+          format: date
+      required:
+      - code
+      - ldu
+      - name
+      - startDate
+    TeamCodeResponse:
+      type: object
+      properties:
+        teamCodes:
+          type: array
+          items:
+            type: string
+      required:
+      - teamCodes
+    PersonName:
+      type: object
+      properties:
+        forename:
+          type: string
+        surname:
+          type: string
+        middleName:
+          type: string
+      required:
+      - forename
+      - surname
+    ProbationArea:
+      type: object
+      properties:
+        code:
+          type: string
+        description:
+          type: string
+      required:
+      - code
+      - description
+    StaffDetail:
+      type: object
+      properties:
+        email:
+          type: string
+        telephoneNumber:
+          type: string
+        teams:
+          type: array
+          items:
+            $ref: "#/components/schemas/Team"
+        probationArea:
+          $ref: "#/components/schemas/ProbationArea"
+        username:
+          type: string
+        name:
+          $ref: "#/components/schemas/PersonName"
+        code:
+          type: string
+        active:
+          type: boolean
+      required:
+      - active
+      - code
+      - name
+      - probationArea
+      - teams
+    CaseDetail:
+      type: object
+      properties:
+        case:
+          $ref: "#/components/schemas/CaseSummary"
+        offences:
+          type: array
+          items:
+            $ref: "#/components/schemas/Offence"
+        registrations:
+          type: array
+          items:
+            $ref: "#/components/schemas/Registration"
+        mappaDetail:
+          $ref: "#/components/schemas/MappaDetail"
+        careLeaver:
+          type: boolean
+        veteran:
+          type: boolean
+      required:
+      - careLeaver
+      - case
+      - offences
+      - registrations
+      - veteran
+    MappaDetail:
+      type: object
+      properties:
+        level:
+          type: integer
+          format: int32
+        levelDescription:
+          type: string
+        category:
+          type: integer
+          format: int32
+        categoryDescription:
+          type: string
+        startDate:
+          type: string
+          format: date
+        lastUpdated:
+          type: string
+          format: date-time
+      required:
+      - lastUpdated
+      - startDate
+    Offence:
+      type: object
+      properties:
+        id:
+          type: string
+        code:
+          type: string
+        description:
+          type: string
+        mainCategoryDescription:
+          type: string
+        subCategoryDescription:
+          type: string
+        date:
+          type: string
+          format: date
+        main:
+          type: boolean
+        eventId:
+          type: integer
+          format: int64
+        eventNumber:
+          type: string
+      required:
+      - code
+      - description
+      - eventId
+      - eventNumber
+      - id
+      - main
+      - mainCategoryDescription
+      - subCategoryDescription
+    Registration:
+      type: object
+      properties:
+        code:
+          type: string
+        description:
+          type: string
+        startDate:
+          type: string
+          format: date
+      required:
+      - code
+      - description
+      - startDate
+    ApReferral:
+      type: object
+      properties:
+        referralDate:
+          type: string
+          format: date
+        expectedArrivalDate:
+          type: string
+          format: date
+        expectedDepartureDate:
+          type: string
+          format: date
+        decisionDate:
+          type: string
+          format: date-time
+        approvedPremises:
+          $ref: "#/components/schemas/ApprovedPremises"
+      required:
+      - approvedPremises
+      - referralDate
+    ApprovedPremises:
+      type: object
+      properties:
+        description:
+          type: string
+      required:
+      - description
+    ExistingReferrals:
+      type: object
+      properties:
+        crn:
+          type: string
+        referrals:
+          type: array
+          items:
+            $ref: "#/components/schemas/ApReferral"
+      required:
+      - crn
+      - referrals
+    ReferralDetail:
+      type: object
+      properties:
+        referral:
+          $ref: "#/components/schemas/ApReferral"
+        arrivedAt:
+          type: string
+          format: date-time
+        departedAt:
+          type: string
+          format: date-time
+      required:
+      - referral
+    StreamingResponseBody: {}
+    DocumentResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        level:
+          type: string
+        eventNumber:
+          type: string
+        filename:
+          type: string
+        typeCode:
+          type: string
+        typeDescription:
+          type: string
+        dateSaved:
+          type: string
+          format: date-time
+        dateCreated:
+          type: string
+          format: date-time
+        description:
+          type: string
+      required:
+      - dateCreated
+      - dateSaved
+      - filename
+      - level
+      - typeCode
+      - typeDescription
+    Pageable:
+      type: object
+      properties:
+        page:
+          type: integer
+          format: int32
+          minimum: 0
+        size:
+          type: integer
+          format: int32
+          minimum: 1
+        sort:
+          type: array
+          items:
+            type: string
+    PageMetadata:
+      type: object
+      properties:
+        size:
+          type: integer
+          format: int64
+        number:
+          type: integer
+          format: int64
+        totalElements:
+          type: integer
+          format: int64
+        totalPages:
+          type: integer
+          format: int64
+    PagedModelStaffResponse:
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: "#/components/schemas/StaffResponse"
+        page:
+          $ref: "#/components/schemas/PageMetadata"
+    StaffGrade:
+      type: object
+      properties:
+        code:
+          type: string
+        description:
+          type: string
+      required:
+      - code
+      - description
+    StaffResponse:
+      type: object
+      properties:
+        code:
+          type: string
+        name:
+          $ref: "#/components/schemas/PersonName"
+        grade:
+          $ref: "#/components/schemas/StaffGrade"
+        keyWorker:
+          type: boolean
+      required:
+      - code
+      - keyWorker
+      - name
+  securitySchemes:
+    hmpps-auth-token:
+      type: http
+      name: Authorization
+      in: header
+      scheme: bearer
+      bearerFormat: JWT

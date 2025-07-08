@@ -1,0 +1,257 @@
+<!doctype html>
+<html lang="en" class="govuk-template no-js">
+  <head>
+    <meta content="IE=edge" http-equiv="X-UA-Compatible">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+
+    <title>Manage POM Cases and Delius - HMPPS Probation Integration Services</title>
+
+    <link href="../../stylesheets/manifest.css" rel="stylesheet" />
+
+    <link rel="canonical" href="https://ministryofjustice.github.io/hmpps-probation-integration-services/tech-docs/projects/manage-pom-cases-and-delius/about.html">
+      <link rel="icon" sizes="48x48" href="/images/favicon.ico">
+      <link rel="icon" sizes="any" href="/images/favicon.svg" type="image/svg+xml">
+
+      <meta name="twitter:card" content="summary" />
+      <meta name="twitter:domain" content="ministryofjustice.github.io" />
+      <meta name="twitter:image" content="https://ministryofjustice.github.io/hmpps-probation-integration-services/tech-docs/images/opengraph-image.png" />
+      <meta name="twitter:title" content="Manage POM Cases and Delius - HMPPS Probation Integration Services" />
+      <meta name="twitter:url" content="https://ministryofjustice.github.io/hmpps-probation-integration-services/tech-docs/projects/manage-pom-cases-and-delius/about.html" />
+
+      <meta property="og:image" content="https://ministryofjustice.github.io/hmpps-probation-integration-services/tech-docs/images/opengraph-image.png" />
+      <meta property="og:site_name" content="HMPPS Probation Integration Services" />
+      <meta property="og:title" content="Manage POM Cases and Delius" />
+      <meta property="og:type" content="object" />
+      <meta property="og:url" content="https://ministryofjustice.github.io/hmpps-probation-integration-services/tech-docs/projects/manage-pom-cases-and-delius/about.html" />
+
+    
+  </head>
+
+  <body class="govuk-template__body">
+    <script>document.body.className += ' js-enabled' + ('noModule' in HTMLScriptElement.prototype ? ' govuk-frontend-supported' : '');</script>
+
+    <div class="app-pane">
+      <div class="app-pane__header toc-open-disabled">
+        <a href="#content" class="govuk-skip-link" data-module="govuk-skip-link">Skip to main content</a>
+
+        <header class="govuk-header app-header" role="banner" data-module="govuk-header">
+  <div class="govuk-header__container govuk-header__container--full-width">
+    <div class="govuk-header__logo">
+      <a href="https://ministryofjustice.github.io/hmpps-probation-integration-services/tech-docs" class="govuk-header__link govuk-header__link--homepage">
+        <span class="govuk-header__product-name">
+          HMPPS Probation Integration
+        </span>
+      </a>
+    </div>
+    <div class="govuk-header__content">
+      <nav class="govuk-header__navigation govuk-header__navigation--end" aria-label="Menu">
+        <button type="button" class="govuk-header__menu-button govuk-js-header-toggle" aria-controls="navigation" hidden>Menu</button>
+        <ul id="navigation" class="govuk-header__navigation-list">
+            <li class="govuk-header__navigation-item">
+              <a class="govuk-header__link" href="https://github.com/ministryofjustice/hmpps-probation-integration-services#readme">GitHub</a>
+            </li>
+            <li class="govuk-header__navigation-item">
+              <a class="govuk-header__link" href="https://mojdt.slack.com/archives/C02HQ4M2YQN">Slack</a>
+            </li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+</header>
+
+      </div>
+
+        <div id="toc-heading" class="toc-show fixedsticky">
+          <button type="button" class="toc-show__label js-toc-show" aria-controls="toc">
+            Table of contents <span class="toc-show__icon"></span>
+          </button>
+        </div>
+
+      <div class="app-pane__body" data-module="in-page-navigation">
+          <div class="app-pane__toc">
+            <div class="toc" data-module="table-of-contents" tabindex="-1">
+              <div class="search" data-module="search" data-path-to-site-root="../../">
+  <form action="https://www.google.co.uk/search" method="get" role="search" class="search__form govuk-!-margin-bottom-4">
+    <input type="hidden" name="as_sitesearch" value="https://ministryofjustice.github.io/hmpps-probation-integration-services/tech-docs"/>
+    <label class="govuk-label search__label" for="search">
+      Search (via Google)
+    </label>
+    <input
+      type="search"
+      id="search" name="q"
+      class="govuk-input govuk-!-margin-bottom-0 search__input"
+      aria-controls="search-results"
+      placeholder="Search">
+    <button type="submit" class="search__button">Search</button>
+  </form>
+</div>
+
+              <button type="button" class="toc__close js-toc-close" aria-controls="toc" aria-label="Hide table of contents"></button>
+              <nav id="toc" class="js-toc-list toc__list" aria-labelledby="toc-heading">
+                      <ul>
+  <li>
+    <a href="#manage-pom-cases-and-delius"><span>Manage POM Cases and Delius</span></a>
+    <ul>
+      <li>
+        <a href="#business-need"><span>Business Need</span></a>
+      </li>
+      <li>
+        <a href="#context-map"><span>Context Map</span></a>
+      </li>
+      <li>
+        <a href="#interfaces"><span>Interfaces</span></a>
+        <ul>
+          <li>
+            <a href="#domain-event-triggers"><span>Domain Event Triggers</span></a>
+          </li>
+        </ul>
+      </li>
+      <li>
+        <a href="#workflows"><span>Workflows</span></a>
+        <ul>
+          <li>
+            <a href="#prison-offender-manager-handover-dates"><span>Prison Offender Manager Handover Dates</span></a>
+          </li>
+          <li>
+            <a href="#responsibility-change"><span>Responsibility Change</span></a>
+          </li>
+        </ul>
+      </li>
+      <li>
+        <a href="#delius-case-allocation"><span>Delius Case Allocation</span></a>
+      </li>
+      <li>
+        <a href="#api-reference"><span>API Reference</span></a>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+
+              </nav>
+            </div>
+          </div>
+
+        <div class="app-pane__content toc-open-disabled" aria-label="Content">
+          <main id="content" class="technical-documentation" data-module="anchored-headings">
+            <h1 id="manage-pom-cases-and-delius">Manage POM Cases and Delius</h1>
+<h2 id="business-need">Business Need</h2>
+<p>Service that manages data exchange between Delius and the &lsquo;Manage POM Cases&rsquo; service, which is part of the Offender Management in Custody (OMiC) model. Allocation of a Prison Offender Manager (POM) within &lsquo;Manage POM Cases&rsquo; uses information from the probation case stored in Delius. All Prison Offender Manager allocations and handover dates must be reflected in the Delius supervision record.</p>
+<h2 id="context-map">Context Map</h2>
+<p><a href="../../images/manage-pom-cases-and-delius-context-map.svg" rel="noopener noreferrer"><img src="../../images/manage-pom-cases-and-delius-context-map.svg" alt="Context Map" /></a></p>
+<h2 id="interfaces">Interfaces</h2>
+<p>The service manages three integration points between &lsquo;Manage POM Cases&rsquo; and Delius.</p>
+
+<ol>
+<li>Providing an API endpoint for probation case information held in Delius</li>
+<li>Consuming a domain event raised by &lsquo;Manage POM Cases&rsquo; when handover dates are changed</li>
+<li>Consuming a domain event raised by &lsquo;Manage POM Cases&rsquo; when POM allocation is updated</li>
+</ol>
+<p>The domain events are raised by the <a href="https://github.com/ministryofjustice/offender-management-allocation-manager">Manage POM Cases</a> service when significant changes are made to case allocation in custody.</p>
+<h3 id="domain-event-triggers">Domain Event Triggers</h3>
+<p>The service responds to an HMPPS Domain Event message via an
+<a href="https://github.com/ministryofjustice/cloud-platform-environments/blob/main/namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-prod/resources/manage-pom-cases-and-delius-queue.tf">SQS Queue</a>.</p>
+<p>Example <a href="https://github.com/ministryofjustice/hmpps-probation-integration-services/blob/main/projects/manage-pom-cases-and-delius/src/dev/resources/messages/">messages</a> are in the development source tree</p>
+<div class="table-container">
+        <table>
+          <tr>
+<th>Business Event</th>
+<th>Message Class</th>
+<th>Message Event Type / Filter</th>
+</tr><tr>
+<td>POM to COM handover of responsibility dates have changed</td>
+<td>HMPPS Domain Event</td>
+<td>offender-management.handover.changed</td>
+</tr><tr>
+<td>The POM allocated to the case has changed</td>
+<td>HMPPS Domain Event</td>
+<td>offender-management.pom.allocated</td>
+</tr>
+        </table>
+      </div><h2 id="workflows">Workflows</h2>
+<h3 id="prison-offender-manager-handover-dates">Prison Offender Manager Handover Dates</h3>
+<p><a href="../../images/manage-pom-cases-workflow-handover-dates.svg" rel="noopener noreferrer"><img src="../../images/manage-pom-cases-workflow-handover-dates.svg" alt="Handover Dates Workflow" /></a></p>
+<h3 id="responsibility-change">Responsibility Change</h3>
+<p><a href="../../images/manage-pom-cases-workflow-responsibility.svg" rel="noopener noreferrer"><img src="../../images/manage-pom-cases-workflow-responsibility.svg" alt="Responsibiliy Change Workflow" /></a></p>
+<h2 id="delius-case-allocation">Delius Case Allocation</h2>
+<p>Delius records details of POM allocations, COM allocations and handover dates for a probation case. It also has the concept of a &lsquo;Responsible Officer&rsquo; which is the member of staff currently responsible for the case. A case may have a number of POM and COM records in Delius, indicating the allocation history, however there can only be one Responsible Officer at any one time. This will be one of the currently active POM or COM. The integration service will update POM allocations and handover dates in Delius. It will not change the Responsible Officer in Delius unless the current responsible officer is the active POM and this is changed by the MPC allocation.</p>
+<h2 id="api-reference">API Reference</h2>
+
+<ul>
+<li><a href="api-reference.html">API Reference</a></li>
+<li><a href="asyncapi-reference.html">AsyncAPI Reference</a></li>
+</ul>
+
+              <div data-module='page-expiry' data-last-reviewed-on="2025-09-24">
+    <div class='page-expiry--not-expired'>
+      This page was last reviewed on 24 June 2025.
+
+        It needs to be reviewed again on 24 September 2025
+        by the page owner <a href="https://mojdt.slack.com/messages/probation-integration-team">#probation-integration-team</a>
+        .
+    </div>
+
+    <div class='page-expiry--expired' hidden>
+      This page was set to be reviewed before 24 September 2025
+       by the page owner <a href="https://mojdt.slack.com/messages/probation-integration-team">#probation-integration-team</a>.
+      This might mean the content is out of date.
+    </div>
+  </div>
+
+          </main>
+
+          <aside>
+              <ul class="contribution-banner">
+                <li><a href="https://github.com/ministryofjustice/hmpps-probation-integration-services/blob/main/doc/tech-docs/source/projects/manage-pom-cases-and-delius/about.html.md.erb">View source</a></li>
+                <li><a href="https://github.com/ministryofjustice/hmpps-probation-integration-services/issues/new?body=Problem+with+%27Manage+POM+Cases+and+Delius%27+%28https%3A%2F%2Fministryofjustice.github.io%2Fhmpps-probation-integration-services%2Ftech-docs%2Fprojects%2Fmanage-pom-cases-and-delius%2Fabout.html%29&amp;labels=bug&amp;title=Re%3A+%27Manage+POM+Cases+and+Delius%27">Report problem</a></li>
+                <li><a href="https://github.com/ministryofjustice/hmpps-probation-integration-services">GitHub Repo</a></li>
+              </ul>
+          </aside>
+
+          <footer class="govuk-footer app-footer" role="contentinfo">
+  <div class="govuk-footer__meta">
+    <div class="govuk-footer__meta-item govuk-footer__meta-item--grow">
+
+
+      <svg
+        aria-hidden="true"
+        focusable="false"
+        class="govuk-footer__licence-logo"
+        xmlns="http://www.w3.org/2000/svg"
+        viewbox="0 0 483.2 195.7"
+        height="17"
+        width="41"
+      >
+        <path
+          fill="currentColor"
+          d="M421.5 142.8V.1l-50.7 32.3v161.1h112.4v-50.7zm-122.3-9.6A47.12 47.12 0 0 1 221 97.8c0-26 21.1-47.1 47.1-47.1 16.7 0 31.4 8.7 39.7 21.8l42.7-27.2A97.63 97.63 0 0 0 268.1 0c-36.5 0-68.3 20.1-85.1 49.7A98 98 0 0 0 97.8 0C43.9 0 0 43.9 0 97.8s43.9 97.8 97.8 97.8c36.5 0 68.3-20.1 85.1-49.7a97.76 97.76 0 0 0 149.6 25.4l19.4 22.2h3v-87.8h-80l24.3 27.5zM97.8 145c-26 0-47.1-21.1-47.1-47.1s21.1-47.1 47.1-47.1 47.2 21 47.2 47S123.8 145 97.8 145"
+        />
+      </svg>
+      <span class="govuk-footer__licence-description">
+        All content is available under the
+        <a
+          class="govuk-footer__link"
+          href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/"
+          rel="license"
+        >Open Government Licence v3.0</a>, except where otherwise stated
+      </span>
+    </div>
+    <div class="govuk-footer__meta-item">
+      <a
+        class="govuk-footer__link govuk-footer__copyright-logo"
+        href="https://www.nationalarchives.gov.uk/information-management/re-using-public-sector-information/uk-government-licensing-framework/crown-copyright/"
+      >© Crown copyright</a>
+    </div>
+  </div>
+</footer>
+
+        </div>
+      </div>
+    </div>
+
+    
+    <script src="../../javascripts/govuk_frontend.js" type="module"></script>
+    <script src="../../javascripts/application.js"></script>
+  </body>
+</html>

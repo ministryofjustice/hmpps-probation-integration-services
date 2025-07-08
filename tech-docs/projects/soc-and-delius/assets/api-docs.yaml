@@ -1,0 +1,712 @@
+openapi: 3.1.0
+info:
+  title: API Reference
+  contact:
+    name: Probation Integration Team
+    url: https://mojdt.slack.com/archives/C02HQ4M2YQN
+    email: probation-integration-team@digital.justice.gov.uk
+  license:
+    name: MIT
+    url: https://github.com/ministryofjustice/hmpps-probation-integration-services/blob/main/LICENSE
+  version: "1.0"
+servers:
+- url: /
+security:
+- hmpps-auth-token: []
+paths:
+  /search/probation-cases:
+    post:
+      tags:
+      - search-controller
+      operationId: searchProbationCases
+      parameters:
+      - name: useSearch
+        in: query
+        required: false
+        schema:
+          type: boolean
+          default: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SearchRequest"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/OffenderDetail"
+  /search/probation-cases/crns:
+    post:
+      tags:
+      - search-controller
+      operationId: searchProbationCases_1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: string
+              uniqueItems: true
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/OffenderDetail"
+  /probation-area-history:
+    post:
+      tags:
+      - probation-areas-controller
+      operationId: probationAreas
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: string
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties:
+                  type: array
+                  items:
+                    $ref: "#/components/schemas/ProbationAreaHistory"
+  /court-appearances:
+    post:
+      tags:
+      - court-appearances-controller
+      description: "Get all court appearances from today onwards, for a list of up\
+        \ to 500 CRNs"
+      operationId: courtAppearances
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: string
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AllCourtAppearancesContainer"
+  /probation-areas:
+    get:
+      tags:
+      - probation-areas-controller
+      operationId: probationAreas_1
+      parameters:
+      - name: includeNonSelectable
+        in: query
+        description: Include (true) or exclude (false) any probation areas that are
+          not selectable
+        required: false
+        schema:
+          type: boolean
+          default: false
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProbationAreaContainer"
+  /detail/{value}:
+    get:
+      tags:
+      - detail-controller
+      operationId: convictions
+      parameters:
+      - name: value
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: type
+        in: query
+        required: false
+        schema:
+          type: string
+          default: CRN
+          enum:
+          - CRN
+          - NOMS
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Detail"
+  /court-appearances/{value}:
+    get:
+      tags:
+      - court-appearances-controller
+      operationId: courtAppearances_1
+      parameters:
+      - name: value
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: type
+        in: query
+        required: false
+        schema:
+          type: string
+          default: CRN
+          enum:
+          - CRN
+          - NOMS
+      - name: fromDate
+        in: query
+        required: false
+        schema:
+          type: string
+          format: date
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CourtAppearancesContainer"
+  /convictions/{value}:
+    get:
+      tags:
+      - conviction-controller
+      operationId: convictions_1
+      parameters:
+      - name: value
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: type
+        in: query
+        required: false
+        schema:
+          type: string
+          default: CRN
+          enum:
+          - CRN
+          - NOMS
+      - name: activeOnly
+        in: query
+        required: false
+        schema:
+          type: boolean
+          default: false
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ConvictionsContainer"
+components:
+  schemas:
+    SearchRequest:
+      type: object
+      properties:
+        firstName:
+          type: string
+        surname:
+          type: string
+        dateOfBirth:
+          type: string
+          format: date
+        pncNumber:
+          type: string
+        crn:
+          type: string
+        nomsNumber:
+          type: string
+    IDs:
+      type: object
+      properties:
+        crn:
+          type: string
+        nomsNumber:
+          type: string
+        pncNumber:
+          type: string
+      required:
+      - crn
+    KeyValue:
+      type: object
+      properties:
+        code:
+          type: string
+        description:
+          type: string
+    LocalDeliveryUnit:
+      type: object
+      properties:
+        code:
+          type: string
+        description:
+          type: string
+      required:
+      - code
+      - description
+    OffenderAlias:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        dateOfBirth:
+          type: string
+          format: date
+        firstName:
+          type: string
+        middleNames:
+          type: array
+          items:
+            type: string
+        surname:
+          type: string
+        gender:
+          type: string
+      required:
+      - firstName
+      - gender
+      - id
+      - middleNames
+      - surname
+    OffenderDetail:
+      type: object
+      properties:
+        firstName:
+          type: string
+        middleNames:
+          type: array
+          items:
+            type: string
+        surname:
+          type: string
+        dateOfBirth:
+          type: string
+          format: date
+        gender:
+          type: string
+        otherIds:
+          $ref: "#/components/schemas/IDs"
+        offenderProfile:
+          $ref: "#/components/schemas/OffenderProfile"
+        offenderAliases:
+          type: array
+          items:
+            $ref: "#/components/schemas/OffenderAlias"
+        offenderManagers:
+          type: array
+          items:
+            $ref: "#/components/schemas/OffenderManager"
+      required:
+      - otherIds
+    OffenderManager:
+      type: object
+      properties:
+        staff:
+          $ref: "#/components/schemas/StaffHuman"
+        team:
+          $ref: "#/components/schemas/SearchResponseTeam"
+        probationArea:
+          $ref: "#/components/schemas/ProbationArea"
+        active:
+          type: boolean
+    OffenderProfile:
+      type: object
+      properties:
+        ethnicity:
+          type: string
+        nationality:
+          type: string
+        religion:
+          type: string
+    ProbationArea:
+      type: object
+      properties:
+        code:
+          type: string
+        description:
+          type: string
+        localDeliveryUnits:
+          type: array
+          items:
+            $ref: "#/components/schemas/LocalDeliveryUnit"
+      required:
+      - code
+      - description
+      - localDeliveryUnits
+    SearchResponseTeam:
+      type: object
+      properties:
+        code:
+          type: string
+        description:
+          type: string
+        localDeliveryUnit:
+          $ref: "#/components/schemas/KeyValue"
+    StaffHuman:
+      type: object
+      properties:
+        code:
+          type: string
+        forenames:
+          type: string
+        surname:
+          type: string
+        unallocated:
+          type: boolean
+    CodeDescription:
+      type: object
+      properties:
+        code:
+          type: string
+        description:
+          type: string
+      required:
+      - code
+      - description
+    ProbationAreaHistory:
+      type: object
+      properties:
+        startDate:
+          type: string
+          format: date
+        endDate:
+          type: string
+          format: date
+        probationArea:
+          $ref: "#/components/schemas/CodeDescription"
+      required:
+      - probationArea
+      - startDate
+    AllCourtAppearancesContainer:
+      type: object
+      properties:
+        courtAppearances:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              $ref: "#/components/schemas/CourtAppearance"
+      required:
+      - courtAppearances
+    CourtAppearance:
+      type: object
+      properties:
+        appearanceDate:
+          type: string
+          format: date
+        type:
+          $ref: "#/components/schemas/Type"
+        courtCode:
+          type: string
+        courtName:
+          type: string
+        crn:
+          type: string
+        courtAppearanceId:
+          type: integer
+          format: int64
+        offenderId:
+          type: integer
+          format: int64
+      required:
+      - appearanceDate
+      - courtAppearanceId
+      - courtCode
+      - courtName
+      - crn
+      - offenderId
+      - type
+    Type:
+      type: object
+      properties:
+        code:
+          type: string
+        description:
+          type: string
+      required:
+      - code
+      - description
+    ProbationAreaContainer:
+      type: object
+      properties:
+        probationAreas:
+          type: array
+          items:
+            $ref: "#/components/schemas/ProbationArea"
+      required:
+      - probationAreas
+    Detail:
+      type: object
+      properties:
+        name:
+          $ref: "#/components/schemas/Name"
+        dateOfBirth:
+          type: string
+          format: date
+        crn:
+          type: string
+        nomisId:
+          type: string
+        pncNumber:
+          type: string
+        offenderManager:
+          $ref: "#/components/schemas/Manager"
+        activeProbationManagedSentence:
+          type: boolean
+        currentlyInPrison:
+          type: boolean
+        mainOffence:
+          type: string
+        profile:
+          $ref: "#/components/schemas/Profile"
+        keyDates:
+          type: array
+          items:
+            $ref: "#/components/schemas/KeyDate"
+        releaseDate:
+          type: string
+          format: date
+        releaseReason:
+          type: string
+        releaseLocation:
+          type: string
+        lastRecallDate:
+          type: string
+          format: date
+        recallReason:
+          type: string
+        nsiRecallDate:
+          type: string
+          format: date
+        nsiBreachDate:
+          type: string
+          format: date
+        offenderAliases:
+          type: array
+          items:
+            $ref: "#/components/schemas/OffenderAlias"
+      required:
+      - activeProbationManagedSentence
+      - crn
+      - currentlyInPrison
+      - dateOfBirth
+      - keyDates
+      - name
+      - offenderAliases
+      - offenderManager
+    KeyDate:
+      type: object
+      properties:
+        code:
+          type: string
+        description:
+          type: string
+        data:
+          type: string
+          format: date
+      required:
+      - code
+      - data
+      - description
+    Ldu:
+      type: object
+      properties:
+        code:
+          type: string
+        name:
+          type: string
+      required:
+      - code
+      - name
+    Manager:
+      type: object
+      properties:
+        name:
+          $ref: "#/components/schemas/Name"
+        team:
+          $ref: "#/components/schemas/Team"
+        provider:
+          $ref: "#/components/schemas/Provider"
+      required:
+      - name
+      - provider
+      - team
+    Name:
+      type: object
+      properties:
+        forename:
+          type: string
+        middleName:
+          type: string
+        surname:
+          type: string
+      required:
+      - forename
+      - surname
+    Profile:
+      type: object
+      properties:
+        nationality:
+          type: string
+        religion:
+          type: string
+    Provider:
+      type: object
+      properties:
+        code:
+          type: string
+        description:
+          type: string
+      required:
+      - code
+      - description
+    Team:
+      type: object
+      properties:
+        code:
+          type: string
+        localDeliveryUnit:
+          $ref: "#/components/schemas/Ldu"
+      required:
+      - code
+      - localDeliveryUnit
+    CourtAppearancesContainer:
+      type: object
+      properties:
+        courtAppearances:
+          type: array
+          items:
+            $ref: "#/components/schemas/CourtAppearance"
+      required:
+      - courtAppearances
+    Conviction:
+      type: object
+      properties:
+        convictionId:
+          type: integer
+          format: int64
+        convictionDate:
+          type: string
+          format: date
+        referralDate:
+          type: string
+          format: date
+        outcome:
+          type: string
+        latestCourtAppearanceOutcome:
+          type: string
+        offences:
+          type: array
+          items:
+            $ref: "#/components/schemas/Offence"
+        sentence:
+          $ref: "#/components/schemas/Sentence"
+        active:
+          type: boolean
+      required:
+      - active
+      - convictionId
+      - latestCourtAppearanceOutcome
+      - offences
+      - outcome
+      - referralDate
+    ConvictionsContainer:
+      type: object
+      properties:
+        convictions:
+          type: array
+          items:
+            $ref: "#/components/schemas/Conviction"
+      required:
+      - convictions
+    Custody:
+      type: object
+      properties:
+        bookingNumber:
+          type: string
+        status:
+          $ref: "#/components/schemas/CustodyStatus"
+        keyDates:
+          type: array
+          items:
+            $ref: "#/components/schemas/KeyDate"
+      required:
+      - keyDates
+      - status
+    CustodyStatus:
+      type: object
+      properties:
+        code:
+          type: string
+        description:
+          type: string
+      required:
+      - code
+      - description
+    Offence:
+      type: object
+      properties:
+        offenceId:
+          type: integer
+          format: int64
+        description:
+          type: string
+        mainCategoryDescription:
+          type: string
+        mainOffence:
+          type: boolean
+      required:
+      - description
+      - mainOffence
+      - offenceId
+    Sentence:
+      type: object
+      properties:
+        sentenceId:
+          type: integer
+          format: int64
+        startDate:
+          type: string
+          format: date
+        expectedEndDate:
+          type: string
+          format: date
+        custody:
+          $ref: "#/components/schemas/Custody"
+      required:
+      - sentenceId
+      - startDate
+  securitySchemes:
+    hmpps-auth-token:
+      type: http
+      name: Authorization
+      in: header
+      scheme: bearer
+      bearerFormat: JWT

@@ -1,0 +1,344 @@
+<!doctype html>
+<html lang="en" class="govuk-template no-js">
+  <head>
+    <meta content="IE=edge" http-equiv="X-UA-Compatible">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+
+    <title>Probation System Concepts - HMPPS Probation Integration Services</title>
+
+    <link href="stylesheets/manifest.css" rel="stylesheet" />
+
+    <link rel="canonical" href="https://ministryofjustice.github.io/hmpps-probation-integration-services/tech-docs/concepts.html">
+      <link rel="icon" sizes="48x48" href="/images/favicon.ico">
+      <link rel="icon" sizes="any" href="/images/favicon.svg" type="image/svg+xml">
+
+      <meta name="twitter:card" content="summary" />
+      <meta name="twitter:domain" content="ministryofjustice.github.io" />
+      <meta name="twitter:image" content="https://ministryofjustice.github.io/hmpps-probation-integration-services/tech-docs/images/opengraph-image.png" />
+      <meta name="twitter:title" content="Probation System Concepts - HMPPS Probation Integration Services" />
+      <meta name="twitter:url" content="https://ministryofjustice.github.io/hmpps-probation-integration-services/tech-docs/concepts.html" />
+
+      <meta property="og:image" content="https://ministryofjustice.github.io/hmpps-probation-integration-services/tech-docs/images/opengraph-image.png" />
+      <meta property="og:site_name" content="HMPPS Probation Integration Services" />
+      <meta property="og:title" content="Probation System Concepts" />
+      <meta property="og:type" content="object" />
+      <meta property="og:url" content="https://ministryofjustice.github.io/hmpps-probation-integration-services/tech-docs/concepts.html" />
+
+    
+  </head>
+
+  <body class="govuk-template__body">
+    <script>document.body.className += ' js-enabled' + ('noModule' in HTMLScriptElement.prototype ? ' govuk-frontend-supported' : '');</script>
+
+    <div class="app-pane">
+      <div class="app-pane__header toc-open-disabled">
+        <a href="#content" class="govuk-skip-link" data-module="govuk-skip-link">Skip to main content</a>
+
+        <header class="govuk-header app-header" role="banner" data-module="govuk-header">
+  <div class="govuk-header__container govuk-header__container--full-width">
+    <div class="govuk-header__logo">
+      <a href="https://ministryofjustice.github.io/hmpps-probation-integration-services/tech-docs" class="govuk-header__link govuk-header__link--homepage">
+        <span class="govuk-header__product-name">
+          HMPPS Probation Integration
+        </span>
+      </a>
+    </div>
+    <div class="govuk-header__content">
+      <nav class="govuk-header__navigation govuk-header__navigation--end" aria-label="Menu">
+        <button type="button" class="govuk-header__menu-button govuk-js-header-toggle" aria-controls="navigation" hidden>Menu</button>
+        <ul id="navigation" class="govuk-header__navigation-list">
+            <li class="govuk-header__navigation-item">
+              <a class="govuk-header__link" href="https://github.com/ministryofjustice/hmpps-probation-integration-services#readme">GitHub</a>
+            </li>
+            <li class="govuk-header__navigation-item">
+              <a class="govuk-header__link" href="https://mojdt.slack.com/archives/C02HQ4M2YQN">Slack</a>
+            </li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+</header>
+
+      </div>
+
+        <div id="toc-heading" class="toc-show fixedsticky">
+          <button type="button" class="toc-show__label js-toc-show" aria-controls="toc">
+            Table of contents <span class="toc-show__icon"></span>
+          </button>
+        </div>
+
+      <div class="app-pane__body" data-module="in-page-navigation">
+          <div class="app-pane__toc">
+            <div class="toc" data-module="table-of-contents" tabindex="-1">
+              <div class="search" data-module="search" data-path-to-site-root="./">
+  <form action="https://www.google.co.uk/search" method="get" role="search" class="search__form govuk-!-margin-bottom-4">
+    <input type="hidden" name="as_sitesearch" value="https://ministryofjustice.github.io/hmpps-probation-integration-services/tech-docs"/>
+    <label class="govuk-label search__label" for="search">
+      Search (via Google)
+    </label>
+    <input
+      type="search"
+      id="search" name="q"
+      class="govuk-input govuk-!-margin-bottom-0 search__input"
+      aria-controls="search-results"
+      placeholder="Search">
+    <button type="submit" class="search__button">Search</button>
+  </form>
+</div>
+
+              <button type="button" class="toc__close js-toc-close" aria-controls="toc" aria-label="Hide table of contents"></button>
+              <nav id="toc" class="js-toc-list toc__list" aria-labelledby="toc-heading">
+                      <ul>
+  <li>
+    <a href="#system-concepts"><span>System Concepts</span></a>
+    <ul>
+      <li>
+        <a href="#common-concepts"><span>Common Concepts</span></a>
+        <ul>
+          <li>
+            <a href="#person"><span>Person</span></a>
+          </li>
+        </ul>
+      </li>
+      <li>
+        <a href="#delius-concepts"><span>Delius Concepts</span></a>
+        <ul>
+          <li>
+            <a href="#event"><span>Event</span></a>
+          </li>
+          <li>
+            <a href="#disposal"><span>Disposal</span></a>
+          </li>
+          <li>
+            <a href="#contact"><span>Contact</span></a>
+          </li>
+          <li>
+            <a href="#documents"><span>Documents</span></a>
+          </li>
+          <li>
+            <a href="#addresses"><span>Addresses</span></a>
+          </li>
+          <li>
+            <a href="#non-statutory-intervention-nsi"><span>Non-Statutory Intervention (NSI)</span></a>
+          </li>
+          <li>
+            <a href="#community-offender-manager-com"><span>Community Offender Manager (COM)</span></a>
+          </li>
+          <li>
+            <a href="#prison-offender-manager-pom"><span>Prison Offender Manager (POM)</span></a>
+          </li>
+          <li>
+            <a href="#responsible-officer"><span>Responsible Officer</span></a>
+          </li>
+          <li>
+            <a href="#key-dates"><span>Key Dates</span></a>
+          </li>
+          <li>
+            <a href="#provider"><span>Provider</span></a>
+          </li>
+          <li>
+            <a href="#probation-delivery-unit-pdu"><span>Probation Delivery Unit (PDU)</span></a>
+          </li>
+          <li>
+            <a href="#local-admin-unit-lau"><span>Local Admin Unit (LAU)</span></a>
+          </li>
+          <li>
+            <a href="#team"><span>Team</span></a>
+          </li>
+          <li>
+            <a href="#limited-access"><span>Limited Access</span></a>
+          </li>
+        </ul>
+      </li>
+      <li>
+        <a href="#oasys-concepts"><span>OASys Concepts</span></a>
+        <ul>
+          <li>
+            <a href="#assessment"><span>Assessment</span></a>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+
+              </nav>
+            </div>
+          </div>
+
+        <div class="app-pane__content toc-open-disabled" aria-label="Content">
+          <main id="content" class="technical-documentation" data-module="anchored-headings">
+            <h1 id="system-concepts">System Concepts</h1>
+<p>Probation integration services support interactions between new HMPPS digital services and older probation systems involved in managing a probation case, namely Delius and OASys. To access case information managed in one of the older systems we provide read-only APIs over the Delius and OASys data. APIs are intended for use by one client, are tailored to the needs of that client and built in collaboration with the client team. Where possible the API is shaped and data named in terms of the client needs, which helps build a shared understanding of the data provided and indicates the limits of how it should be used. The data models and concepts of the Delius and OASys services do, however, have a significant influence on what can be provided and how it is presented.</p>
+<h2 id="common-concepts">Common Concepts</h2>
+<h3 id="person">Person</h3>
+<p>A person who is engaged with the probation service due to being accused or convicted of a crime.</p>
+<h2 id="delius-concepts">Delius Concepts</h2>
+<p>Probation concepts modelled in the Delius application</p>
+<h3 id="event">Event</h3>
+<p>The representation of the specific engagement between the probation service and a person. The Delius event associates a person with specific offences and any court appearances, disposals, requirements, licence conditions, NSIs and contacts associated with that offence. The event is also used to link other information such as risk assessments to the case.</p>
+<h3 id="disposal">Disposal</h3>
+<p>The outcome of a court case which includes and any community orders and custodial sentences. The disposal is linked to any licence conditions, requirements and unpaid work supervised by the probation service.</p>
+<h3 id="contact">Contact</h3>
+<p>A structure capturing an important action or activity related to the supervision. Contacts are used to log many different things and grouped together they provide a full history of a persons engagement with the probation service. Contacts are of a specific type, which indicates the activity being logged, and can have associated outcome and notes to help probation practitioners understand the context.</p>
+<p>Contacts can be marked with an alert flag, which indicates that the responsible probation practitioner should be informed immediately that the contact has been created.</p>
+<p>The Delius &lsquo;Contact List&rsquo; gives a consolidated view of all contacts. Examples of activities logged as contacts are probation processes, transfers of responsibility, risk assessments, details of interventions, appointments, custody information and case administration. Contacts cover many other areas in addition to these and are a primary method of recording information in Delius.</p>
+<h3 id="documents">Documents</h3>
+<p>Documents related to the probation case, such as court reports and case management documents.</p>
+<h3 id="addresses">Addresses</h3>
+<p>Important addresses related to a person, such as where they are currently living.</p>
+<h3 id="non-statutory-intervention-nsi">Non-Statutory Intervention (NSI)</h3>
+<p>A Delius-specific concept that allows the system to model a component of the probation supervision. An NSI may have a status, time span, outcome and can be linked to contacts which enables grouping of related information in Delius. NSIs are used extensively in the Delius application to model probation processes.</p>
+<h3 id="community-offender-manager-com">Community Offender Manager (COM)</h3>
+<p>The practitioner currently responsible for managing a particular case when the person is in the community.</p>
+<h3 id="prison-offender-manager-pom">Prison Offender Manager (POM)</h3>
+<p>The practitioner currently responsible for managing a particular case whilst the person is in custody.</p>
+<h3 id="responsible-officer">Responsible Officer</h3>
+<p>The practitioner, one of either the Prison Offender Manager or Community Offender Manager, who is currently responsible for managing the case.</p>
+<h3 id="key-dates">Key Dates</h3>
+<p>Important dates related to a person, such as date of release from prison and the end of supervision.</p>
+<h3 id="provider">Provider</h3>
+<p>A top-level division of the probation service in England and Wales. There are currently 12 geographical providers as
+well as some administrative providers. There are also a set of external providers, which are used for recording cases
+being transferred into and out of the probation service.</p>
+<p>Examples are &ldquo;London&rdquo; (geographical) or &ldquo;National Security Division&rdquo; (administrative).</p>
+
+<!--- The current list is (as of April 2024):
+
+| Code | Name                            | Type           |
+|------|---------------------------------|----------------|
+| N03  | Wales                           | Geographical   |
+| N07  | London                          | Geographical   |
+| N50  | Greater Manchester              | Geographical   |
+| N51  | North West Region               | Geographical   |
+| N52  | West Midlands Region            | Geographical   |
+| N53  | East Midlands Region            | Geographical   |
+| N54  | North East Region               | Geographical   |
+| N55  | Yorkshire and The Humber        | Geographical   |
+| N56  | East of England                 | Geographical   |
+| N57  | Kent Surrey Sussex Region       | Geographical   |
+| N58  | South West                      | Geographical   |
+| N59  | South Central                   | Geographical   |
+| ALL  | No Trust or Trust Unknown       | Administrative |
+| N40  | Central Projects Team           | Administrative |
+| N41  | National Responsibility Divison | Administrative |
+| N43  | National Security Division      | Administrative |
+| CRS  | Commissioned Rehab Services     | Administrative |
+| N21  | External - London               | External       |
+| N27  | External - Wales                | External       |
+| N28  | Ext - Greater Manchester        | External       |
+| N29  | Ext - North West Region         | External       |
+| N30  | Ext - West Midlands Region      | External       |
+| N31  | Ext - East Midlands Region      | External       |
+| N32  | Ext - North East Region         | External       |
+| N33  | Ext - Yorkshire and The Humber  | External       |
+| N34  | Ext - East of England           | External       |
+| N35  | Ext - Kent Surrey Sussex        | External       |
+| N36  | Ext - South West                | External       |
+| N37  | Ext - South Central             | External       |
+| XXX  | ZZ BAST Public Provider 1       | Testing        |
+ -->
+<h3 id="probation-delivery-unit-pdu">Probation Delivery Unit (PDU)</h3>
+<p>A further subdivision of a <a href="#provider">Provider</a>. Similarly, these can refer to geographical areas or administrative
+groupings.</p>
+<p>Examples are &ldquo;Doncaster&rdquo; (geographical), or &ldquo;Prison offender managers&rdquo; (administrative).</p>
+<p>Legacy services may refer to this as &ldquo;borough&rdquo;, but Probation Delivery Unit is the correct term to use.</p>
+<h3 id="local-admin-unit-lau">Local Admin Unit (LAU)</h3>
+<p>A further subdivision of a <a href="#probation-delivery-unit-pdu">Probation Delivery Unit</a>.</p>
+<p>Legacy services may refer to this as &ldquo;district&rdquo; or &ldquo;local delivery unit&rdquo;, but Local Admin Unit is the correct term to
+use.</p>
+<h3 id="team">Team</h3>
+<p>A practitioner can be a member of one or more teams.</p>
+<p>Each team is linked to a single <a href="#local-admin-unit-lau">Local Admin Unit</a>, and may also have a linked office location.</p>
+<h3 id="limited-access">Limited Access</h3>
+<p>Alongside role-based access control, access to specific cases in Delius can be controlled via <em>restrictions</em> and
+<em>exclusions</em>.</p>
+<h4 id="restriction">Restriction</h4>
+<p>Probation cases can be &ldquo;restricted&rdquo; to a specific subset of probation practitioners, so that only those practitioners
+can access the case details.</p>
+<p>Restrictions act as an <em>allow list</em>, and are commonly used for high-profile or sensitive cases that should not be
+accessible by everyone.</p>
+<h4 id="exclusion">Exclusion</h4>
+<p>Probation cases can also be &ldquo;excluded&rdquo; from a subset of probation practitioners, so that those practitioners
+specifically cannot access the case details.</p>
+<p>Exclusions act as a <em>deny list</em>, and are commonly used for cases where a practitioner may have a personal relationship
+with the person on probation.</p>
+<h2 id="oasys-concepts">OASys Concepts</h2>
+<p>Probation concepts as modelled in the OASys application</p>
+<h3 id="assessment">Assessment</h3>
+<p>An assessment of a person&rsquo;s risk to themselves and others.</p>
+
+              <div data-module='page-expiry' data-last-reviewed-on="2025-09-24">
+    <div class='page-expiry--not-expired'>
+      This page was last reviewed on 24 June 2025.
+
+        It needs to be reviewed again on 24 September 2025
+        by the page owner <a href="https://mojdt.slack.com/messages/probation-integration-team">#probation-integration-team</a>
+        .
+    </div>
+
+    <div class='page-expiry--expired' hidden>
+      This page was set to be reviewed before 24 September 2025
+       by the page owner <a href="https://mojdt.slack.com/messages/probation-integration-team">#probation-integration-team</a>.
+      This might mean the content is out of date.
+    </div>
+  </div>
+
+          </main>
+
+          <aside>
+              <ul class="contribution-banner">
+                <li><a href="https://github.com/ministryofjustice/hmpps-probation-integration-services/blob/main/doc/tech-docs/source/concepts.html.md.erb">View source</a></li>
+                <li><a href="https://github.com/ministryofjustice/hmpps-probation-integration-services/issues/new?body=Problem+with+%27Probation+System+Concepts%27+%28https%3A%2F%2Fministryofjustice.github.io%2Fhmpps-probation-integration-services%2Ftech-docs%2Fconcepts.html%29&amp;labels=bug&amp;title=Re%3A+%27Probation+System+Concepts%27">Report problem</a></li>
+                <li><a href="https://github.com/ministryofjustice/hmpps-probation-integration-services">GitHub Repo</a></li>
+              </ul>
+          </aside>
+
+          <footer class="govuk-footer app-footer" role="contentinfo">
+  <div class="govuk-footer__meta">
+    <div class="govuk-footer__meta-item govuk-footer__meta-item--grow">
+
+
+      <svg
+        aria-hidden="true"
+        focusable="false"
+        class="govuk-footer__licence-logo"
+        xmlns="http://www.w3.org/2000/svg"
+        viewbox="0 0 483.2 195.7"
+        height="17"
+        width="41"
+      >
+        <path
+          fill="currentColor"
+          d="M421.5 142.8V.1l-50.7 32.3v161.1h112.4v-50.7zm-122.3-9.6A47.12 47.12 0 0 1 221 97.8c0-26 21.1-47.1 47.1-47.1 16.7 0 31.4 8.7 39.7 21.8l42.7-27.2A97.63 97.63 0 0 0 268.1 0c-36.5 0-68.3 20.1-85.1 49.7A98 98 0 0 0 97.8 0C43.9 0 0 43.9 0 97.8s43.9 97.8 97.8 97.8c36.5 0 68.3-20.1 85.1-49.7a97.76 97.76 0 0 0 149.6 25.4l19.4 22.2h3v-87.8h-80l24.3 27.5zM97.8 145c-26 0-47.1-21.1-47.1-47.1s21.1-47.1 47.1-47.1 47.2 21 47.2 47S123.8 145 97.8 145"
+        />
+      </svg>
+      <span class="govuk-footer__licence-description">
+        All content is available under the
+        <a
+          class="govuk-footer__link"
+          href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/"
+          rel="license"
+        >Open Government Licence v3.0</a>, except where otherwise stated
+      </span>
+    </div>
+    <div class="govuk-footer__meta-item">
+      <a
+        class="govuk-footer__link govuk-footer__copyright-logo"
+        href="https://www.nationalarchives.gov.uk/information-management/re-using-public-sector-information/uk-government-licensing-framework/crown-copyright/"
+      >© Crown copyright</a>
+    </div>
+  </div>
+</footer>
+
+        </div>
+      </div>
+    </div>
+
+    
+    <script src="javascripts/govuk_frontend.js" type="module"></script>
+    <script src="javascripts/application.js"></script>
+  </body>
+</html>

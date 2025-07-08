@@ -1,0 +1,44 @@
+
+# API Reference
+
+The following documentation is also available in these formats:
+
+* [OpenAPI JSON](https://ministryofjustice.github.io/hmpps-probation-integration-services/tech-docs/projects/error/assets/api-docs.json)
+* [OpenAPI YAML](https://ministryofjustice.github.io/hmpps-probation-integration-services/tech-docs/projects/error/assets/api-docs.yaml)
+* [Swagger UI](https://error-dev.hmpps.service.justice.gov.uk/swagger-ui/index.html)
+
+<style>
+    .technical-documentation { max-width: 100% !important }
+    .tech-docs-swagger-container {
+        width: 100%;
+        max-width: 1460px;
+    }
+    .swagger-ui {
+        .topbar, h2.title, .info { display: none !important }
+    }
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/5.21.0/swagger-ui.min.css" integrity="sha384-LsDpRNGhFUPSrIpD/AR64esMNXnzf54YbHZCZR5BlijtWGvj5fl0SKnrFI2zcQRu" crossorigin="anonymous">
+
+<noscript>The documentation requires JavaScript to be enabled in order for it be displayed</noscript>
+
+## Swagger
+<div class="tech-docs-swagger-container"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/5.21.0/swagger-ui-bundle.min.js" integrity="sha384-B5ni49cKCfca47eeboXhhQGqpJIhb/ux4eTPPd3HrzESwL5js4FLnzqIEgU5gv3j" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/5.21.0/swagger-ui-standalone-preset.min.js" integrity="sha384-qB7VQ/ae87G17ofPIuOzdumKTMV1EvYLY9QQ+ODFrxUI1zYLzfwVAG7AJ+V77/BV" crossorigin="anonymous"></script>
+<script>
+    window.addEventListener("load", () => {
+        SwaggerUIBundle({
+            url: 'https://ministryofjustice.github.io/hmpps-probation-integration-services/tech-docs/projects/error/assets/api-docs.json',
+            dom_id: '.tech-docs-swagger-container',
+            presets: [
+                SwaggerUIBundle.presets.apis,
+                SwaggerUIStandalonePreset
+            ],
+            layout: "StandaloneLayout",
+            displayOperationId: false,
+            deepLinking: true,
+            tryItOutEnabled: false
+        })
+    });
+</script>

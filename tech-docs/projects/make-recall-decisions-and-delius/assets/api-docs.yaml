@@ -1,0 +1,956 @@
+openapi: 3.1.0
+info:
+  title: API Reference
+  contact:
+    name: Probation Integration Team
+    url: https://mojdt.slack.com/archives/C02HQ4M2YQN
+    email: probation-integration-team@digital.justice.gov.uk
+  license:
+    name: MIT
+    url: https://github.com/ministryofjustice/hmpps-probation-integration-services/blob/main/LICENSE
+  version: "1.0"
+servers:
+- url: /
+security:
+- hmpps-auth-token: []
+paths:
+  /case-summary/search:
+    post:
+      tags:
+      - Case Summary
+      operationId: findCaseByName
+      parameters:
+      - name: pageable
+        in: query
+        required: true
+        schema:
+          $ref: "#/components/schemas/Pageable"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Name"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PagedModelPersonalDetailsOverview"
+  /user/{username}:
+    get:
+      tags:
+      - Users
+      summary: User details
+      operationId: getUserDetails
+      parameters:
+      - name: username
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserDetails"
+  /user/{username}/access/{crn}:
+    get:
+      tags:
+      - Users
+      summary: Details of any restrictions or exclusions
+      description: "<p>Returns either an `exclusionMessage` or `restrictionMessage`\
+        \ if the user is not allowed to access the case. <p>This can happen if the\
+        \ user is *excluded* from viewing the case (e.g. a family member), or if the\
+        \ case has been *restricted* to a subset of users that the user is not a part\
+        \ of (e.g. high profile cases)."
+      operationId: checkUserAccess
+      parameters:
+      - name: username
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: crn
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "404":
+          description: "A case with the provided CRN does not exist in Delius. Note:\
+            \ this could be the result of a merge or a deletion."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserAccess"
+  /provider:
+    get:
+      tags:
+      - Providers
+      summary: List active providers
+      operationId: getProviders
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Provider"
+  /provider/{code}:
+    get:
+      tags:
+      - Providers
+      summary: Provider details by code
+      operationId: getProvider
+      parameters:
+      - name: code
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Provider"
+  /document/{crn}/{id}:
+    get:
+      tags:
+      - Documents
+      summary: Download document content
+      operationId: downloadDocument
+      parameters:
+      - name: crn
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StreamingResponseBody"
+  /docs/asyncapi:
+    get:
+      tags:
+      - async-api-controller
+      operationId: asyncApi
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: string
+  /case-summary/{crn}:
+    get:
+      tags:
+      - Case Summary
+      operationId: findCaseByCrn
+      parameters:
+      - name: crn
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PersonalDetailsOverview"
+  /case-summary/{crn}/recommendation-model:
+    get:
+      tags:
+      - Case Summary
+      summary: Case data required to populate the recommendation model
+      description: "This is used to populate the Recall Part A document template when\
+        \ a recommendation is made, and to refresh the case data when a recall decision\
+        \ is made later."
+      operationId: getRecommendationModel
+      parameters:
+      - name: crn
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RecommendationModel"
+  /case-summary/{crn}/personal-details:
+    get:
+      tags:
+      - Case Summary
+      summary: "Personal details including name, date of birth, address"
+      operationId: getPersonalDetails
+      parameters:
+      - name: crn
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PersonalDetails"
+  /case-summary/{crn}/overview:
+    get:
+      tags:
+      - Case Summary
+      summary: "Overview of the probation case including active events/convictions,\
+        \ register flags"
+      operationId: getOverview
+      parameters:
+      - name: crn
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Overview"
+  /case-summary/{crn}/mappa-and-rosh-history:
+    get:
+      tags:
+      - Case Summary
+      summary: Current MAPPA and historical RoSH registrations
+      description: "<p>This is intended to populate the MAPPA (Multi-agency public\
+        \ protection arrangements) and RoSH (Risk of Serious Harm) widgets.<p>Note\
+        \ that risk assessment information is generally held in OASys, and this endpoint\
+        \ only surfaces supplementary Delius registration/register details."
+      operationId: getMappaAndRoshHistory
+      parameters:
+      - name: crn
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MappaAndRoshHistory"
+  /case-summary/{crn}/licence-conditions:
+    get:
+      tags:
+      - Case Summary
+      summary: "Active events/convictions, with licence conditions"
+      description: Only returns active licence conditions that are associated with
+        active events/convictions
+      operationId: getLicenceConditions
+      parameters:
+      - name: crn
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LicenceConditions"
+  /case-summary/{crn}/contact-history:
+    get:
+      tags:
+      - Case Summary
+      summary: Contact history
+      description: "Returns matching historical records from the Delius contact log,\
+        \ including linked documents, and a summary showing the total number of contacts\
+        \ on the case grouped by type."
+      operationId: getContactHistory
+      parameters:
+      - name: crn
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: query
+        in: query
+        description: Search for contacts that contain the provided text. This currently
+          performs a simple substring match against the notes.
+        required: false
+        schema:
+          type: string
+      - name: from
+        in: query
+        description: Return only contacts that start after this date
+        required: false
+        schema:
+          type: string
+          format: date
+      - name: to
+        in: query
+        description: "Return only contacts that start before this date. Defaults to\
+          \ the current date. If provided, this value must be on or before the current\
+          \ date."
+        required: false
+        schema:
+          type: string
+          format: date
+      - name: type
+        in: query
+        description: Filter on contact type codes
+        required: false
+        schema:
+          type: array
+          default: []
+          items:
+            type: string
+      - name: includeSystemGenerated
+        in: query
+        description: Include (true) or exclude (false) any contact types that are
+          system-generated
+        required: false
+        schema:
+          type: boolean
+          default: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ContactHistory"
+  /ap-residence-plan-document/{crn}:
+    get:
+      tags:
+      - Documents
+      summary: Find latest approved premises residence plan document
+      operationId: findApprovedPremisesDocuments
+      parameters:
+      - name: crn
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Document"
+components:
+  schemas:
+    Name:
+      type: object
+      properties:
+        forename:
+          type: string
+        middleName:
+          type: string
+        surname:
+          type: string
+      required:
+      - forename
+      - surname
+    Pageable:
+      type: object
+      properties:
+        page:
+          type: integer
+          format: int32
+          minimum: 0
+        size:
+          type: integer
+          format: int32
+          minimum: 1
+        sort:
+          type: array
+          items:
+            type: string
+    Identifiers:
+      type: object
+      properties:
+        crn:
+          type: string
+        pncNumber:
+          type: string
+        croNumber:
+          type: string
+        nomsNumber:
+          type: string
+        bookingNumber:
+          type: string
+      required:
+      - crn
+    PageMetadata:
+      type: object
+      properties:
+        size:
+          type: integer
+          format: int64
+        number:
+          type: integer
+          format: int64
+        totalElements:
+          type: integer
+          format: int64
+        totalPages:
+          type: integer
+          format: int64
+    PagedModelPersonalDetailsOverview:
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: "#/components/schemas/PersonalDetailsOverview"
+        page:
+          $ref: "#/components/schemas/PageMetadata"
+    PersonalDetailsOverview:
+      type: object
+      properties:
+        name:
+          $ref: "#/components/schemas/Name"
+        identifiers:
+          $ref: "#/components/schemas/Identifiers"
+        dateOfBirth:
+          type: string
+          format: date
+        gender:
+          type: string
+        ethnicity:
+          type: string
+        primaryLanguage:
+          type: string
+      required:
+      - dateOfBirth
+      - gender
+      - identifiers
+      - name
+    Provider:
+      type: object
+      properties:
+        code:
+          type: string
+        name:
+          type: string
+      required:
+      - code
+      - name
+    UserDetails:
+      type: object
+      properties:
+        name:
+          $ref: "#/components/schemas/Name"
+        username:
+          type: string
+        email:
+          type: string
+        homeArea:
+          $ref: "#/components/schemas/Provider"
+        staffCode:
+          type: string
+      required:
+      - name
+      - username
+    UserAccess:
+      type: object
+      properties:
+        exclusionMessage:
+          type: string
+        restrictionMessage:
+          type: string
+        userExcluded:
+          type: boolean
+        userRestricted:
+          type: boolean
+      required:
+      - userExcluded
+      - userRestricted
+    StreamingResponseBody: {}
+    Address:
+      type: object
+      properties:
+        buildingName:
+          type: string
+        addressNumber:
+          type: string
+        streetName:
+          type: string
+        district:
+          type: string
+        town:
+          type: string
+        county:
+          type: string
+        postcode:
+          type: string
+        noFixedAbode:
+          type: boolean
+    Conviction:
+      type: object
+      properties:
+        number:
+          type: string
+        sentence:
+          $ref: "#/components/schemas/Sentence"
+        mainOffence:
+          $ref: "#/components/schemas/Offence"
+        additionalOffences:
+          type: array
+          items:
+            $ref: "#/components/schemas/Offence"
+      required:
+      - additionalOffences
+      - mainOffence
+      - number
+    ConvictionDetails:
+      type: object
+      properties:
+        number:
+          type: string
+        sentence:
+          $ref: "#/components/schemas/ExtendedSentence"
+        mainOffence:
+          $ref: "#/components/schemas/Offence"
+        additionalOffences:
+          type: array
+          items:
+            $ref: "#/components/schemas/Offence"
+      required:
+      - additionalOffences
+      - mainOffence
+      - number
+    ExtendedSentence:
+      type: object
+      properties:
+        description:
+          type: string
+        length:
+          type: integer
+          format: int64
+        lengthUnits:
+          type: string
+        secondLength:
+          type: integer
+          format: int64
+        secondLengthUnits:
+          type: string
+        isCustodial:
+          type: boolean
+        custodialStatusCode:
+          type: string
+        startDate:
+          type: string
+          format: date
+        licenceExpiryDate:
+          type: string
+          format: date
+        sentenceExpiryDate:
+          type: string
+          format: date
+      required:
+      - description
+      - isCustodial
+    Institution:
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+      required:
+      - description
+    Mappa:
+      type: object
+      properties:
+        category:
+          type: integer
+          format: int32
+        level:
+          type: integer
+          format: int32
+        startDate:
+          type: string
+          format: date
+      required:
+      - startDate
+    Offence:
+      type: object
+      properties:
+        date:
+          type: string
+          format: date
+        code:
+          type: string
+        description:
+          type: string
+      required:
+      - code
+      - description
+    RecommendationModel:
+      type: object
+      properties:
+        personalDetails:
+          $ref: "#/components/schemas/PersonalDetailsOverview"
+        mainAddress:
+          $ref: "#/components/schemas/Address"
+        lastRelease:
+          $ref: "#/components/schemas/Release"
+        lastReleasedFromInstitution:
+          $ref: "#/components/schemas/Institution"
+        mappa:
+          $ref: "#/components/schemas/Mappa"
+        activeConvictions:
+          type: array
+          items:
+            $ref: "#/components/schemas/Conviction"
+        activeCustodialConvictions:
+          type: array
+          items:
+            $ref: "#/components/schemas/ConvictionDetails"
+      required:
+      - activeConvictions
+      - activeCustodialConvictions
+      - personalDetails
+    Release:
+      type: object
+      properties:
+        releaseDate:
+          type: string
+          format: date
+        recallDate:
+          type: string
+          format: date
+      required:
+      - releaseDate
+    Sentence:
+      type: object
+      properties:
+        description:
+          type: string
+        length:
+          type: integer
+          format: int64
+        lengthUnits:
+          type: string
+        isCustodial:
+          type: boolean
+        custodialStatusCode:
+          type: string
+        licenceExpiryDate:
+          type: string
+          format: date
+        sentenceExpiryDate:
+          type: string
+          format: date
+      required:
+      - description
+      - isCustodial
+    Manager:
+      type: object
+      properties:
+        staffCode:
+          type: string
+        name:
+          $ref: "#/components/schemas/Name"
+        provider:
+          $ref: "#/components/schemas/Provider"
+        team:
+          $ref: "#/components/schemas/Team"
+      required:
+      - name
+      - provider
+      - staffCode
+      - team
+    PersonalDetails:
+      type: object
+      properties:
+        personalDetails:
+          $ref: "#/components/schemas/PersonalDetailsOverview"
+        mainAddress:
+          $ref: "#/components/schemas/Address"
+        communityManager:
+          $ref: "#/components/schemas/Manager"
+      required:
+      - personalDetails
+    Team:
+      type: object
+      properties:
+        code:
+          type: string
+        name:
+          type: string
+        localAdminUnit:
+          type: string
+        telephone:
+          type: string
+        email:
+          type: string
+      required:
+      - code
+      - localAdminUnit
+      - name
+    Overview:
+      type: object
+      properties:
+        personalDetails:
+          $ref: "#/components/schemas/PersonalDetailsOverview"
+        registerFlags:
+          type: array
+          items:
+            type: string
+        lastRelease:
+          $ref: "#/components/schemas/Release"
+        activeConvictions:
+          type: array
+          items:
+            $ref: "#/components/schemas/Conviction"
+      required:
+      - activeConvictions
+      - personalDetails
+      - registerFlags
+    MappaAndRoshHistory:
+      type: object
+      properties:
+        personalDetails:
+          $ref: "#/components/schemas/PersonalDetailsOverview"
+        mappa:
+          $ref: "#/components/schemas/Mappa"
+        roshHistory:
+          type: array
+          items:
+            $ref: "#/components/schemas/Rosh"
+      required:
+      - personalDetails
+      - roshHistory
+    Rosh:
+      type: object
+      properties:
+        active:
+          type: boolean
+        type:
+          type: string
+        typeDescription:
+          type: string
+        notes:
+          type: string
+        startDate:
+          type: string
+          format: date
+      required:
+      - active
+      - startDate
+      - type
+      - typeDescription
+    ConvictionWithLicenceConditions:
+      type: object
+      properties:
+        number:
+          type: string
+        sentence:
+          $ref: "#/components/schemas/Sentence"
+        mainOffence:
+          $ref: "#/components/schemas/Offence"
+        additionalOffences:
+          type: array
+          items:
+            $ref: "#/components/schemas/Offence"
+        licenceConditions:
+          type: array
+          items:
+            $ref: "#/components/schemas/LicenceCondition"
+      required:
+      - additionalOffences
+      - licenceConditions
+      - mainOffence
+      - number
+    LicenceCondition:
+      type: object
+      properties:
+        startDate:
+          type: string
+          format: date
+        mainCategory:
+          $ref: "#/components/schemas/LicenceConditionCategory"
+        subCategory:
+          $ref: "#/components/schemas/LicenceConditionCategory"
+        notes:
+          type: string
+      required:
+      - mainCategory
+      - startDate
+    LicenceConditionCategory:
+      type: object
+      properties:
+        code:
+          type: string
+        description:
+          type: string
+      required:
+      - code
+      - description
+    LicenceConditions:
+      type: object
+      properties:
+        personalDetails:
+          $ref: "#/components/schemas/PersonalDetailsOverview"
+        activeConvictions:
+          type: array
+          items:
+            $ref: "#/components/schemas/ConvictionWithLicenceConditions"
+      required:
+      - activeConvictions
+      - personalDetails
+    Contact:
+      type: object
+      properties:
+        description:
+          type: string
+        documents:
+          type: array
+          items:
+            $ref: "#/components/schemas/DocumentReference"
+        enforcementAction:
+          type: string
+        notes:
+          type: string
+        outcome:
+          type: string
+        sensitive:
+          type: boolean
+        startDateTime:
+          type: string
+          format: date-time
+        type:
+          $ref: "#/components/schemas/Type"
+      required:
+      - documents
+      - startDateTime
+      - type
+    ContactHistory:
+      type: object
+      properties:
+        personalDetails:
+          $ref: "#/components/schemas/PersonalDetailsOverview"
+        contacts:
+          type: array
+          items:
+            $ref: "#/components/schemas/Contact"
+        summary:
+          $ref: "#/components/schemas/ContactSummary"
+      required:
+      - contacts
+      - personalDetails
+      - summary
+    ContactSummary:
+      type: object
+      properties:
+        types:
+          type: array
+          items:
+            $ref: "#/components/schemas/ContactTypeSummary"
+        hits:
+          type: integer
+          format: int32
+        total:
+          type: integer
+          format: int32
+      required:
+      - hits
+      - total
+      - types
+    ContactTypeSummary:
+      type: object
+      properties:
+        code:
+          type: string
+        description:
+          type: string
+        total:
+          type: integer
+          format: int32
+      required:
+      - code
+      - description
+      - total
+    DocumentReference:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        lastUpdated:
+          type: string
+          format: date-time
+      required:
+      - id
+      - lastUpdated
+      - name
+    Type:
+      type: object
+      properties:
+        code:
+          type: string
+        description:
+          type: string
+        systemGenerated:
+          type: boolean
+      required:
+      - code
+      - description
+      - systemGenerated
+    Document:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        type:
+          type: string
+        author:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        lastUpdatedAt:
+          type: string
+          format: date-time
+      required:
+      - id
+      - name
+      - type
+  securitySchemes:
+    hmpps-auth-token:
+      type: http
+      name: Authorization
+      in: header
+      scheme: bearer
+      bearerFormat: JWT
