@@ -1,0 +1,56 @@
+{
+  "mappings": [
+    {
+      "request": {
+        "method": "GET",
+        "urlPath": "/manage-offences/offences/code/unique/AA00000"
+      },
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "bodyFileName": "manage-offences-offence.json"
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "urlPath": "/manage-offences/offences/code/unique/TN42001"
+      },
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "bodyFileName": "manage-offences-offence-TN42001.json"
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "urlPath": "/manage-offences/offences/code/unique/ZZ00120"
+      },
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "bodyFileName": "manage-offences-offence-ZZ00120.json"
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "urlPath": "/manage-offences/offences/code/unique/AA99999"
+      },
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "bodyFileName": "manage-offences-offence-AA99999.json"
+      }
+    }
+  ]
+}

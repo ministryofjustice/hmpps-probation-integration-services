@@ -58,6 +58,7 @@ s3.bucket.name: offence-priority-bucket
 
 integrations:
   probation-search.url: http://localhost:${wiremock.port}/probation-search
+  manage-offences.url: http://localhost:${wiremock.port}/manage-offences
 
 opensearch:
   uris: http://localhost:${wiremock.port}
