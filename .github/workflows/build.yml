@@ -44,6 +44,7 @@ jobs:
       fail-fast: false
       matrix:
         project:
+          - accredited-programmes-and-delius
           - accredited-programmes-and-oasys
           - appointment-reminders-and-delius
           - approved-premises-and-delius
@@ -63,6 +64,7 @@ jobs:
           - dps-and-delius
           - effective-proposal-framework-and-delius
           - external-api-and-delius
+          - find-and-refer-and-delius
           - hdc-licences-and-delius
           - hmpps-auth-and-delius
           - ims-and-delius
@@ -93,8 +95,6 @@ jobs:
           - tier-to-delius
           - unpaid-work-and-delius
           - workforce-allocations-to-delius
-          - find-and-refer-and-delius
-          - accredited-programmes-and-delius
           # ^ add new projects here
           # GitHub Actions doesn't support dynamic choices, we must add each project here to enable manual deployments
           # See https://github.com/community/community/discussions/11795
