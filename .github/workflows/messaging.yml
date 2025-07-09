@@ -19,6 +19,7 @@ on:
         type: choice
         required: true
         options:
+          - accredited-programmes-and-delius-queue
           - approved-premises-and-delius-queue
           - assessment-summary-and-delius-queue
           - breach-notice-and-delius-queue
@@ -39,7 +40,6 @@ on:
           - tier-to-delius-queue
           - unpaid-work-and-delius-queue
           - workforce-allocations-to-delius-queue
-          - accredited-programmes-and-delius-queue
           # ^ add new queues here
 
 jobs:
