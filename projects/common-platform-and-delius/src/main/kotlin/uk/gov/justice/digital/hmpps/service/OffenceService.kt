@@ -6,14 +6,14 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import software.amazon.awssdk.services.s3.S3Client
 import software.amazon.awssdk.services.s3.model.GetObjectRequest
+import uk.gov.justice.digital.hmpps.integrations.client.ManageOffencesClient
 import uk.gov.justice.digital.hmpps.integrations.client.OffencePriority
-import uk.gov.justice.digital.hmpps.integrations.delius.entity.DetailedOffenceRepository
 import uk.gov.justice.digital.hmpps.messaging.HearingOffence
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 
 @Service
 class OffenceService(
-    private val detailedOffenceRepository: DetailedOffenceRepository,
+    private val manageOffencesClient: ManageOffencesClient,
     private val telemetryService: TelemetryService,
     private val s3Client: S3Client,
     @Value("\${s3.bucket.name}") private val bucketName: String
@@ -21,7 +21,7 @@ class OffenceService(
     val priorityMap: Map<String, Int> by lazy { readOffencePrioritiesFromS3() }
 
     fun getOffenceHomeOfficeCodeByCJACode(cjaCode: String): String =
-        detailedOffenceRepository.findByCode(cjaCode)?.homeOfficeCode?.replace("/", "")
+        manageOffencesClient.getOffenceByCode(cjaCode).homeOfficeStatsCode?.replace("/", "")
             ?: throw IllegalArgumentException("No Home Office code found for CJA code $cjaCode")
 
     fun findMainOffence(remandedOffences: List<HearingOffence>): HearingOffence? {

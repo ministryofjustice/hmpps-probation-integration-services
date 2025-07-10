@@ -9,12 +9,13 @@ import org.springframework.web.client.RestClient
 import org.springframework.web.util.UriComponentsBuilder
 import uk.gov.justice.digital.hmpps.config.security.RetryInterceptor
 import uk.gov.justice.digital.hmpps.config.security.createClient
+import uk.gov.justice.digital.hmpps.integrations.client.ManageOffencesClient
 import uk.gov.justice.digital.hmpps.integrations.client.OsClient
 import java.net.http.HttpClient
 import java.time.Duration
 
 @Configuration
-class RestClientConfig {
+class RestClientConfig(private val oauth2Client: RestClient) {
 
     @Bean
     fun osPlacesRestClient(
@@ -36,4 +37,8 @@ class RestClientConfig {
     fun withTimeouts(connection: Duration, read: Duration) =
         JdkClientHttpRequestFactory(HttpClient.newBuilder().connectTimeout(connection).build())
             .also { it.setReadTimeout(read) }
+
+    @Bean
+    fun manageOffencesClient(@Value("\${integrations.manage-offences.url}") baseUrl: String): ManageOffencesClient =
+        createClient(oauth2Client.mutate().baseUrl(baseUrl).build())
 }

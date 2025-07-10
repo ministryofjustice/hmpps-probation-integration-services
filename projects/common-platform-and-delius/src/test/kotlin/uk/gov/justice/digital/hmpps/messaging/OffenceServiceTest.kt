@@ -13,8 +13,8 @@ import software.amazon.awssdk.core.ResponseInputStream
 import software.amazon.awssdk.services.s3.S3Client
 import software.amazon.awssdk.services.s3.model.GetObjectRequest
 import software.amazon.awssdk.services.s3.model.GetObjectResponse
-import uk.gov.justice.digital.hmpps.integrations.delius.entity.DetailedOffence
-import uk.gov.justice.digital.hmpps.integrations.delius.entity.DetailedOffenceRepository
+import uk.gov.justice.digital.hmpps.integrations.client.ManageOffencesClient
+import uk.gov.justice.digital.hmpps.integrations.client.Offence
 import uk.gov.justice.digital.hmpps.service.OffenceService
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import java.io.ByteArrayInputStream
@@ -24,7 +24,7 @@ import java.time.LocalDate
 internal class OffenceServiceTest {
 
     @Mock
-    lateinit var detailedOffenceRepository: DetailedOffenceRepository
+    lateinit var manageOffencesClient: ManageOffencesClient
 
     @Mock
     lateinit var telemetryService: TelemetryService
@@ -38,7 +38,7 @@ internal class OffenceServiceTest {
 
     @BeforeEach
     fun setUp() {
-        offenceService = OffenceService(detailedOffenceRepository, telemetryService, s3Client, bucketName)
+        offenceService = OffenceService(manageOffencesClient, telemetryService, s3Client, bucketName)
     }
 
     @Test
@@ -54,28 +54,22 @@ internal class OffenceServiceTest {
     fun `Main offence is set to the offence with the lowest priority`() {
         mockS3Client()
 
-        whenever(detailedOffenceRepository.findByCode("TN42001")).thenReturn(
-            DetailedOffence(
+        whenever(manageOffencesClient.getOffenceByCode("TN42001")).thenReturn(
+            Offence(
+                id = 0,
                 code = "TN42001",
                 description = "Offence 1",
                 startDate = LocalDate.now(),
-                endDate = null,
-                homeOfficeCode = "001/00",
-                homeOfficeDescription = "Offence 1",
-                legislation = null,
-                category = null
+                homeOfficeStatsCode = "001/00"
             )
         )
-        whenever(detailedOffenceRepository.findByCode("ZZ00120")).thenReturn(
-            DetailedOffence(
+        whenever(manageOffencesClient.getOffenceByCode("ZZ00120")).thenReturn(
+            Offence(
+                id = 1,
                 code = "ZZ00120",
                 description = "Offence 2",
                 startDate = LocalDate.now(),
-                endDate = null,
-                homeOfficeCode = "001/01",
-                homeOfficeDescription = "Offence 2",
-                legislation = null,
-                category = null
+                homeOfficeStatsCode = "001/01"
             )
         )
 
@@ -105,16 +99,13 @@ internal class OffenceServiceTest {
 
     @Test
     fun `Offences with home office code 22222 are ignored`() {
-        whenever(detailedOffenceRepository.findByCode("AA00000")).thenReturn(
-            DetailedOffence(
+        whenever(manageOffencesClient.getOffenceByCode("AA00000")).thenReturn(
+            Offence(
+                id = 0,
                 code = "AA00000",
                 description = "Test Code",
                 startDate = LocalDate.now(),
-                endDate = null,
-                homeOfficeCode = "222/22",
-                homeOfficeDescription = "UNKNOWN",
-                legislation = null,
-                category = null
+                homeOfficeStatsCode = "222/22"
             )
         )
 
@@ -143,16 +134,13 @@ internal class OffenceServiceTest {
 
     @Test
     fun `Offences with CJA code suffix greater 500 are ignored`() {
-        whenever(detailedOffenceRepository.findByCode("AA99999")).thenReturn(
-            DetailedOffence(
+        whenever(manageOffencesClient.getOffenceByCode("AA99999")).thenReturn(
+            Offence(
+                id = 0,
                 code = "AA99999",
                 description = "Test Code",
                 startDate = LocalDate.now(),
-                endDate = null,
-                homeOfficeCode = "001/00",
-                homeOfficeDescription = "UNKNOWN",
-                legislation = null,
-                category = null
+                homeOfficeStatsCode = "001/00"
             )
         )
 
