@@ -14,20 +14,6 @@ servers:
 security:
 - hmpps-auth-token: []
 paths:
-  /example/{inputId}:
-    get:
-      tags:
-      - api-controller
-      operationId: handle
-      parameters:
-      - name: inputId
-        in: path
-        required: true
-        schema:
-          type: string
-      responses:
-        "200":
-          description: OK
   /docs/asyncapi:
     get:
       tags:
@@ -40,7 +26,83 @@ paths:
             application/json:
               schema:
                 type: string
+  /case/{crn}/personal-details:
+    get:
+      tags:
+      - api-controller
+      operationId: getPersonalDetails
+      parameters:
+      - name: crn
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PersonalDetails"
 components:
+  schemas:
+    CodedValue:
+      type: object
+      properties:
+        code:
+          type: string
+        description:
+          type: string
+      required:
+      - code
+      - description
+    Name:
+      type: object
+      properties:
+        forename:
+          type: string
+        middleNames:
+          type: string
+        surname:
+          type: string
+      required:
+      - forename
+      - surname
+    PersonalDetails:
+      type: object
+      properties:
+        crn:
+          type: string
+        name:
+          $ref: "#/components/schemas/Name"
+        dateOfBirth:
+          type: string
+          format: date
+        age:
+          type: string
+        sex:
+          $ref: "#/components/schemas/CodedValue"
+        ethnicity:
+          $ref: "#/components/schemas/CodedValue"
+        probationPractitioner:
+          $ref: "#/components/schemas/ProbationPractitioner"
+        probationDeliveryUnit:
+          $ref: "#/components/schemas/CodedValue"
+      required:
+      - age
+      - crn
+      - dateOfBirth
+      - name
+      - sex
+    ProbationPractitioner:
+      type: object
+      properties:
+        name:
+          $ref: "#/components/schemas/Name"
+        email:
+          type: string
+      required:
+      - name
   securitySchemes:
     hmpps-auth-token:
       type: http
