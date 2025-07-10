@@ -7,18 +7,13 @@ import org.springframework.boot.context.event.ApplicationReadyEvent
 import org.springframework.context.ApplicationListener
 import org.springframework.stereotype.Component
 import org.springframework.transaction.support.TransactionTemplate
-import uk.gov.justice.digital.hmpps.data.generator.DataGenerator
-import uk.gov.justice.digital.hmpps.data.generator.LaoGenerator
-import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
-import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator
+import uk.gov.justice.digital.hmpps.data.generator.*
 import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator.AI_PREVIOUS_CRN
 import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator.RD_ADDRESS_STATUS
 import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator.RD_DISABILITY_CONDITION
 import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator.RD_DISABILITY_TYPE
 import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator.RD_NATIONALITY
 import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator.RD_RELIGION
-import uk.gov.justice.digital.hmpps.data.generator.RegistrationGenerator
-import uk.gov.justice.digital.hmpps.data.generator.UserGenerator
 import uk.gov.justice.digital.hmpps.model.Category
 import uk.gov.justice.digital.hmpps.model.Level
 import uk.gov.justice.digital.hmpps.user.AuditUserRepository
@@ -75,11 +70,17 @@ class DataLoader(
                 persist(DataGenerator.COURT_APPEARANCE_PLEA)
                 persist(DataGenerator.DISPOSAL_TYPE)
                 persist(DataGenerator.MONTHS)
+                persist(DataGenerator.LENGTH_UNIT_NA)
                 persist(DataGenerator.EVENT)
                 persist(DataGenerator.EVENT.disposal)
                 persist(DataGenerator.EVENT.mainOffence)
                 DataGenerator.EVENT.additionalOffences.forEach { persist(it) }
                 DataGenerator.EVENT.courtAppearances.forEach { persist(it) }
+                persist(DataGenerator.EVENT_NON_APP_LENGTH_UNIT)
+                persist(DataGenerator.EVENT_NON_APP_LENGTH_UNIT.disposal)
+                persist(DataGenerator.EVENT_NON_APP_LENGTH_UNIT.mainOffence)
+                DataGenerator.EVENT_NON_APP_LENGTH_UNIT.additionalOffences.forEach { persist(it) }
+                DataGenerator.EVENT_NON_APP_LENGTH_UNIT.courtAppearances.forEach { persist(it) }
                 persist(
                     RegistrationGenerator.generate(
                         RegistrationGenerator.MAPPA_TYPE,
