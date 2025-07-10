@@ -116,7 +116,7 @@ object DataGenerator {
         id = IdGenerator.getAndIncrement(),
         person = PERSON,
         number = "2",
-        convictionDate = LocalDate.of(2023, 1, 2),
+        convictionDate = LocalDate.of(2023, 1, 1),
         mainOffence = MainOffence(
             id = IdGenerator.getAndIncrement(),
             date = LocalDate.of(2022, 2, 3),

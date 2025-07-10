@@ -26,10 +26,10 @@ internal class SupervisionIntegrationTest : BaseIntegrationTest() {
             .perform(get("/case/${PERSON.crn}/supervisions").withToken())
             .andExpect(status().is2xxSuccessful)
             .andReturn().response.contentAsJson<SupervisionResponse>()
-        Assertions.assertEquals(response.mappaDetail?.startDate, start)
-        Assertions.assertEquals(response.mappaDetail?.reviewDate, review)
-        Assertions.assertEquals(response.supervisions[0].sentence?.lengthUnits?.name, "Months")
-        Assertions.assertEquals(response.supervisions[1].sentence?.lengthUnits, null)
+        Assertions.assertEquals(start, response.mappaDetail?.startDate)
+        Assertions.assertEquals(review, response.mappaDetail?.reviewDate)
+        Assertions.assertEquals("Months", response.supervisions[0].sentence?.lengthUnits?.name)
+        Assertions.assertEquals(null, response.supervisions[1].sentence?.lengthUnits)
     }
 
     @Test
