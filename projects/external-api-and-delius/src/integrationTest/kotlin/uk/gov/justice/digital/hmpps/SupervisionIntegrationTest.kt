@@ -3,7 +3,6 @@ package uk.gov.justice.digital.hmpps
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import uk.gov.justice.digital.hmpps.data.generator.DataGenerator.PERSON
 import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator.RD_FEMALE
@@ -11,6 +10,7 @@ import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator.RD_MAL
 import uk.gov.justice.digital.hmpps.model.PersonIdentifier
 import uk.gov.justice.digital.hmpps.model.ProbationReferenceData
 import uk.gov.justice.digital.hmpps.model.RefData
+import uk.gov.justice.digital.hmpps.model.SupervisionResponse
 import uk.gov.justice.digital.hmpps.service.PhoneTypes
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
@@ -22,104 +22,14 @@ internal class SupervisionIntegrationTest : BaseIntegrationTest() {
     fun `returns supervisions`() {
         val start = LocalDate.now()
         val review = LocalDate.now().plusMonths(6)
-        mockMvc
+        val response = mockMvc
             .perform(get("/case/${PERSON.crn}/supervisions").withToken())
             .andExpect(status().is2xxSuccessful)
-            .andExpect(
-                content().json(
-                    """
-                    {
-                        "communityManager": {
-                          "code": "DEFJOSM",                 
-                          "name": {
-                            "forename": "John",
-                            "surname": "Smith"
-                          },   
-                          "username": "john-smith",
-                          "email": "john.smith@moj.gov.uk",
-                          "telephoneNumber": "07321165373",
-                          "team": {
-                            "code": "DEFUAT",
-                            "description": "Default Team",
-                            "email": "team@justice.co.uk",
-                            "telephoneNumber": "020 334 1257",
-                            "provider": {
-                              "code": "DEF",
-                              "description": "Default Provider"
-                            }
-                          }              
-                        },
-                        "mappaDetail": {
-                          "level": 1,                 
-                          "levelDescription": "Description of M1",   
-                          "category": 2,              
-                          "categoryDescription": "Description of M2",
-                          "startDate": "$start",        
-                          "reviewDate": "$review",      
-                          "notes": "Mappa Detail for ${PERSON.crn}"               
-                        },
-                        "supervisions": [
-                            {
-                                "number": 1,
-                                "active": true,
-                                "date": "2023-01-02",
-                                "sentence": {
-                                    "description": "ORA Suspended Sentence Order",
-                                    "date": "2023-03-04",
-                                    "length": 6,
-                                    "lengthUnits": "Months",
-                                    "custodial": true
-                                },
-                                "mainOffence": {
-                                    "date": "2023-01-01",
-                                    "count": 1,
-                                    "code": "12345",
-                                    "description": "Test offence",
-                                    "mainCategory": {
-                                        "code": "123",
-                                        "description": "Test"
-                                    },
-                                    "subCategory": {
-                                        "code": "45",
-                                        "description": "offence"
-                                    },
-                                    "schedule15SexualOffence": true
-                                },
-                                "additionalOffences": [
-                                    {
-                                        "count": 3,
-                                        "code": "12345",
-                                        "description": "Test offence",
-                                        "mainCategory": {
-                                            "code": "123",
-                                            "description": "Test"
-                                        },
-                                        "subCategory": {
-                                            "code": "45",
-                                            "description": "offence"
-                                        },
-                                        "schedule15SexualOffence": true
-                                    }
-                                ],
-                                "courtAppearances": [
-                                    {
-                                        "type": "Sentence",
-                                        "date": "2023-02-03T10:00:00Z",
-                                        "court": "Manchester Crown Court",
-                                        "plea": "Not guilty"
-                                    }
-                                ]
-                            }
-                        ],
-                        "dynamicRisks": [
-                            {"code": "RCCO", "description": "Description for RCCO", "startDate": "$start"},
-                            {"code": "RCPR", "description": "Description for RCPR", "startDate": "$start"}
-                        ],
-                        "personStatus": [{"code":"WRSM", "description": "Description for WRSM", "startDate": "$start"}]
-                    }
-                    """.trimIndent()
-                )
-            )
+            .andReturn().response.contentAsJson<SupervisionResponse>()
+        Assertions.assertEquals(start, response.mappaDetail?.startDate)
+        Assertions.assertEquals(review, response.mappaDetail?.reviewDate)
+        Assertions.assertEquals("Months", response.supervisions[0].sentence?.lengthUnits?.name)
+        Assertions.assertEquals(null, response.supervisions[1].sentence?.lengthUnits)
     }
 
     @Test

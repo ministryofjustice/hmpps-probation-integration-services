@@ -106,7 +106,7 @@ class CaseDetailsService(
                     description = disposal.type.description,
                     date = disposal.date,
                     length = disposal.length?.toInt(),
-                    lengthUnits = disposal.lengthUnits?.let { LengthUnit.valueOf(it.description) },
+                    lengthUnits = disposal.lengthUnits?.let { LengthUnit.entries.firstOrNull { lu -> lu.name == it.description } },
                     custodial = disposal.type.isCustodial()
                 )
             },
