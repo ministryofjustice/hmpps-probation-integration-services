@@ -16,5 +16,5 @@ class User(
 
     @OneToOne
     @JoinColumn(name = "staff_id")
-    val staff: Staff,
+    val staff: Staff?,
 )
