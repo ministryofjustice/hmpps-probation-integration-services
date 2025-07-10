@@ -236,7 +236,7 @@ class SentenceAppointmentService(
         }
 
         appointmentRepository.findByExternalReference(createAppointment.urn)?.let {
-            throw ConflictException("Duplicate external reference ${createAppointment.urn}" )
+            throw ConflictException("Duplicate external reference ${createAppointment.urn}")
         }
     }
 
