@@ -1,10 +1,10 @@
-with next as (select offender_id
+with next as (select offender_id from (select offender_id
               from offender
               where soft_deleted = 0
                 and offender_id >= :sql_last_value + :batch_size
                 and exists (select 1 from event where event.offender_id = offender.offender_id and event.active_flag = 1 and event.soft_deleted = 0)
                 and (select count(*) from contact where contact.offender_id = offender.offender_id and contact.soft_deleted = 0) > 1000
-              order by offender_id fetch next 1 row only)
+              order by offender_id) where rownum = 1)
 select "json",
        "contactId",
        nvl((select offender_id from next), :sql_last_value + :batch_size) as "sql_next_value"
