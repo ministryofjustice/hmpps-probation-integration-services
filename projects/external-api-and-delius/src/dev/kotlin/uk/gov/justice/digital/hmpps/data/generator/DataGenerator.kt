@@ -60,6 +60,12 @@ object DataGenerator {
         description = "Months",
         dataset = DATASET_TYPE_OTHER
     )
+    val LENGTH_UNIT_NA = ReferenceData(
+        id = IdGenerator.getAndIncrement(),
+        code = "NA",
+        description = "Non applicable",
+        dataset = DATASET_TYPE_OTHER
+    )
 
     val EVENT: Event
 
@@ -104,5 +110,54 @@ object DataGenerator {
         EVENT.additionalOffences.forEach { it.set(AdditionalOffence::event, EVENT) }
         EVENT.courtAppearances.forEach { it.set(CourtAppearance::event, EVENT) }
         EVENT.disposal?.set(Disposal::event, EVENT)
+    }
+
+    val EVENT_NON_APP_LENGTH_UNIT: Event = Event(
+        id = IdGenerator.getAndIncrement(),
+        person = PERSON,
+        number = "2",
+        convictionDate = LocalDate.of(2023, 1, 1),
+        mainOffence = MainOffence(
+            id = IdGenerator.getAndIncrement(),
+            date = LocalDate.of(2022, 2, 3),
+            count = 1,
+            offence = OFFENCE
+        ),
+        additionalOffences = listOf(
+            AdditionalOffence(
+                id = IdGenerator.getAndIncrement(),
+                date = null,
+                count = 3,
+                offence = OFFENCE
+            )
+        ),
+        courtAppearances = listOf(
+            CourtAppearance(
+                id = IdGenerator.getAndIncrement(),
+                date = ZonedDateTime.of(LocalDate.of(2023, 2, 3), LocalTime.of(10, 0, 0), EuropeLondon),
+                court = COURT,
+                type = COURT_APPEARANCE_TYPE,
+                plea = COURT_APPEARANCE_PLEA
+            )
+        ),
+        disposal = Disposal(
+            id = IdGenerator.getAndIncrement(),
+            type = DISPOSAL_TYPE,
+            date = LocalDate.of(2023, 3, 4),
+            length = 6,
+            lengthUnits = LENGTH_UNIT_NA
+        )
+    )
+
+    init {
+        EVENT_NON_APP_LENGTH_UNIT.mainOffence.set(MainOffence::event, EVENT_NON_APP_LENGTH_UNIT)
+        EVENT_NON_APP_LENGTH_UNIT.additionalOffences.forEach {
+            it.set(
+                AdditionalOffence::event,
+                EVENT_NON_APP_LENGTH_UNIT
+            )
+        }
+        EVENT_NON_APP_LENGTH_UNIT.courtAppearances.forEach { it.set(CourtAppearance::event, EVENT_NON_APP_LENGTH_UNIT) }
+        EVENT_NON_APP_LENGTH_UNIT.disposal?.set(Disposal::event, EVENT_NON_APP_LENGTH_UNIT)
     }
 }
