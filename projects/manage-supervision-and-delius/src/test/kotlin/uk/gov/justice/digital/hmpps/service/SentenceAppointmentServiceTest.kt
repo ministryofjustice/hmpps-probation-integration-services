@@ -12,7 +12,6 @@ import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.Mockito.verifyNoMoreInteractions
 import org.mockito.junit.jupiter.MockitoExtension
-import org.mockito.kotlin.any
 import org.mockito.kotlin.verifyNoInteractions
 import org.mockito.kotlin.whenever
 import uk.gov.justice.digital.hmpps.api.model.appointment.CreateAppointment
@@ -28,8 +27,6 @@ import uk.gov.justice.digital.hmpps.integrations.delius.compliance.NsiRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.ContactType
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.RequirementRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.*
-import java.time.LocalDate
-import uk.gov.justice.digital.hmpps.data.generator.AppointmentGenerator
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
@@ -348,65 +345,6 @@ class SentenceAppointmentServiceTest {
         ).thenReturn(1)
 
         assertThrows<ConflictException> { service.createAppointment(PersonGenerator.PERSON_1.crn, appointment) }
-    }
-
-    @Test
-    fun `success create overlapping appointment`() {
-        val appointment = CreateAppointment(
-            user,
-            type = CreateAppointment.Type.HomeVisitToCaseNS.code,
-            start = ZonedDateTime.now().plusDays(1),
-            end = ZonedDateTime.now().plusDays(2),
-            numberOfAppointments = 3,
-            eventId = PersonGenerator.EVENT_1.id,
-            uuid = uuid,
-            createOverlappingAppointment = true
-        )
-
-        whenever(offenderManagerRepository.findByPersonCrnAndSoftDeletedIsFalseAndActiveIsTrue(PersonGenerator.PERSON_1.crn)).thenReturn(
-            OffenderManagerGenerator.OFFENDER_MANAGER_ACTIVE
-        )
-        whenever(staffUserRepository.findUserAndTeamAssociation(appointment.user.username, appointment.user.teamCode))
-            .thenReturn(UserTeamInfo(1, 2, 3, 4))
-
-        whenever(eventSentenceRepository.existsById(appointment.eventId!!)).thenReturn(true)
-
-        whenever(appointmentTypeRepository.findByCode(appointment.type)).thenReturn(
-            ContactType(
-                1,
-                appointment.type,
-                true,
-                "description",
-                locationRequired = "N"
-            )
-        )
-
-        whenever(
-            appointmentRepository.getClashCount(
-                OffenderManagerGenerator.OFFENDER_MANAGER_ACTIVE.person.id,
-                appointment.start.toLocalDate().format(DateTimeFormatter.ISO_LOCAL_DATE),
-                appointment.start.format(DateTimeFormatter.ISO_LOCAL_TIME.withZone(ZoneId.systemDefault())),
-                appointment.end.format(DateTimeFormatter.ISO_LOCAL_TIME.withZone(ZoneId.systemDefault()))
-            )
-        ).thenReturn(1)
-
-        whenever(appointmentRepository.saveAll<Appointment>(any()))
-            .thenReturn(
-                listOf(
-                    Appointment(
-                        PersonGenerator.OVERVIEW,
-                        AppointmentGenerator.APPOINTMENT_TYPES[0],
-                        LocalDate.now(),
-                        ZonedDateTime.now(),
-                        1234,
-                        3457,
-                        789,
-                        ZonedDateTime.now()
-                    )
-                )
-            )
-
-        service.createAppointment(PersonGenerator.PERSON_1.crn, appointment)
     }
 
     @Test

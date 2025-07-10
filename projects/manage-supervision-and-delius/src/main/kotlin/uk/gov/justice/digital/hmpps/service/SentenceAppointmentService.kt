@@ -134,7 +134,6 @@ class SentenceAppointmentService(
                             createAppointment.numberOfAppointments,
                             createAppointment.eventId,
                             if (i == 0) createAppointment.uuid else UUID.randomUUID(), //needs to be a unique value
-                            createAppointment.createOverlappingAppointment,
                             createAppointment.requirementId,
                             createAppointment.licenceConditionId,
                             createAppointment.nsiId,
@@ -162,7 +161,7 @@ class SentenceAppointmentService(
                 } else null
             }
 
-            if (!createAppointment.createOverlappingAppointment && overlappingAppointments.isNotEmpty()) {
+            if (overlappingAppointments.isNotEmpty()) {
                 throw ConflictException(
                     "Appointment(s) conflicts with an existing future appointment ${
                         objectMapper.writeValueAsString(
