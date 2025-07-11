@@ -1,58 +1,24 @@
 package uk.gov.justice.digital.hmpps
 
 import org.junit.jupiter.api.Test
-import org.mockito.Mockito.atLeastOnce
-import org.mockito.kotlin.verify
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
-import org.springframework.test.context.bean.override.mockito.MockitoBean
 import org.springframework.test.json.JsonCompareMode
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
-import uk.gov.justice.digital.hmpps.data.generator.MessageGenerator
-import uk.gov.justice.digital.hmpps.message.Notification
-import uk.gov.justice.digital.hmpps.messaging.HmppsChannelManager
-import uk.gov.justice.digital.hmpps.telemetry.TelemetryMessagingExtensions.notificationReceived
-import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
+import uk.gov.justice.digital.hmpps.data.TestData
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 import java.time.LocalDate
-import java.util.concurrent.TimeoutException
 
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = RANDOM_PORT)
-internal class IntegrationTest {
-    @Value("\${messaging.consumer.queue}")
-    lateinit var queueName: String
-
-    @Autowired
-    lateinit var channelManager: HmppsChannelManager
-
+internal class CaseControllerIntegrationTest {
     @Autowired
     lateinit var mockMvc: MockMvc
-
-    @MockitoBean
-    lateinit var telemetryService: TelemetryService
-
-    @Test
-    fun `message is logged to telemetry`() {
-        // Given a message
-        val notification = Notification(message = MessageGenerator.EXAMPLE)
-
-        // When it is received
-        try {
-            channelManager.getChannel(queueName).publishAndWait(notification)
-        } catch (_: TimeoutException) {
-            // Note: Remove this try/catch when the MessageListener logic has been implemented
-        }
-
-        // Then it is logged to telemetry
-        verify(telemetryService, atLeastOnce()).notificationReceived(notification)
-    }
 
     @Test
     fun `personal details 404`() {
@@ -64,13 +30,13 @@ internal class IntegrationTest {
     @Test
     fun `personal details success`() {
         mockMvc
-            .perform(get("/case/A000001/personal-details").withToken())
-            .andExpect(status().is2xxSuccessful)
+            .perform(get("/case/${TestData.PERSON.crn}/personal-details").withToken())
+            .andExpect(status().isOk)
             .andExpect(
                 content().json(
                     """
                     {
-                      "crn": "A000001",
+                      "crn": "${TestData.PERSON.crn}",
                       "name": {
                         "forename": "Forename",
                         "middleNames": "MiddleName",

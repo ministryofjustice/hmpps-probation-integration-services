@@ -14,6 +14,8 @@ object PersonGenerator {
         thirdName = null,
         surname = "Surname",
         dateOfBirth = LocalDate.now().minusYears(45).minusMonths(6),
+        exclusionMessage = "Exclusion message",
+        restrictionMessage = "Restriction message",
         gender = gender,
         ethnicity = ethnicity,
         manager = manager,

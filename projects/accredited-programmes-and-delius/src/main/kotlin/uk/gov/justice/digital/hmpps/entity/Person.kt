@@ -21,17 +21,23 @@ class Person(
     @Column(name = "first_name")
     val forename: String,
 
-    @Column(name = "second_name")
+    @Column
     val secondName: String?,
 
-    @Column(name = "third_name")
+    @Column
     val thirdName: String?,
 
-    @Column(name = "surname")
+    @Column
     val surname: String,
 
     @Column(name = "date_of_birth_date")
     val dateOfBirth: LocalDate,
+
+    @Column
+    val exclusionMessage: String?,
+
+    @Column
+    val restrictionMessage: String?,
 
     @ManyToOne
     @JoinColumn(name = "gender_id")
