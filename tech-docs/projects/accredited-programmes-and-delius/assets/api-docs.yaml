@@ -14,6 +14,32 @@ servers:
 security:
 - hmpps-auth-token: []
 paths:
+  /user/{username}/access:
+    post:
+      tags:
+      - Users
+      operationId: getLimitedAccess
+      parameters:
+      - name: username
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: string
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserAccess"
   /docs/asyncapi:
     get:
       tags:
@@ -29,7 +55,7 @@ paths:
   /case/{crn}/personal-details:
     get:
       tags:
-      - api-controller
+      - Cases
       operationId: getPersonalDetails
       parameters:
       - name: crn
@@ -46,6 +72,32 @@ paths:
                 $ref: "#/components/schemas/PersonalDetails"
 components:
   schemas:
+    CaseAccess:
+      type: object
+      properties:
+        crn:
+          type: string
+        userExcluded:
+          type: boolean
+        userRestricted:
+          type: boolean
+        exclusionMessage:
+          type: string
+        restrictionMessage:
+          type: string
+      required:
+      - crn
+      - userExcluded
+      - userRestricted
+    UserAccess:
+      type: object
+      properties:
+        access:
+          type: array
+          items:
+            $ref: "#/components/schemas/CaseAccess"
+      required:
+      - access
     CodedValue:
       type: object
       properties:
