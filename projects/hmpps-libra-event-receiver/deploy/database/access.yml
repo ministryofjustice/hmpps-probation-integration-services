@@ -1,0 +1,9 @@
+database:
+  access:
+    username_key: /hmpps-libra-event-receiver/db-username
+    password_key: /hmpps-libra-event-receiver/db-password
+
+  audit:
+    username: HmppsLibraEventReceiver
+    forename: Probation Integration # TODO change this to something meaningful for your service
+    surname: Service

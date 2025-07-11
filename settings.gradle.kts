@@ -1,6 +1,7 @@
 rootProject.name = "probation-integration-services"
 include(
     // ⌄ add new projects here
+    "hmpps-libra-event-receiver",
     "accredited-programmes-and-delius",
     "accredited-programmes-and-oasys",
     "appointment-reminders-and-delius",
