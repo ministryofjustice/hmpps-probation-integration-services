@@ -25,6 +25,7 @@ include(
     "find-and-refer-and-delius",
     "hdc-licences-and-delius",
     "hmpps-auth-and-delius",
+    "hmpps-libra-event-receiver",
     "ims-and-delius",
     "jitbit-and-delius",
     "justice-email-and-delius",
