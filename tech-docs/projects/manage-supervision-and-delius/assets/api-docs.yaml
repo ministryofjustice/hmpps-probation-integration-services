@@ -2284,8 +2284,6 @@ components:
         uuid:
           type: string
           format: uuid
-        createOverlappingAppointment:
-          type: boolean
         requirementId:
           type: integer
           format: int64
@@ -2305,7 +2303,6 @@ components:
         visorReport:
           type: boolean
       required:
-      - createOverlappingAppointment
       - end
       - interval
       - numberOfAppointments
