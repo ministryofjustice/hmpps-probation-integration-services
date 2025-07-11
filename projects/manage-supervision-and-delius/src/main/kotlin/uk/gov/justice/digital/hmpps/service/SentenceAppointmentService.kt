@@ -234,6 +234,10 @@ class SentenceAppointmentService(
         if (!contactType.offenderContact && (listOfNotNull(createAppointment.eventId) + appointmentIds).isEmpty()) {
             throw InvalidRequestException("Event id, licence id, requirement id or nsi id need to be provided for contact type ${createAppointment.type}")
         }
+
+        appointmentRepository.findByExternalReference(createAppointment.urn)?.let {
+            throw ConflictException("Duplicate external reference ${createAppointment.urn}")
+        }
     }
 
     private fun CreateAppointment.withManager(om: OffenderManager, staffAndTeam: UserTeam, location: Location?) =

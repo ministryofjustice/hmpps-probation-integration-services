@@ -18,6 +18,7 @@ import uk.gov.justice.digital.hmpps.api.model.appointment.CreateAppointment
 import uk.gov.justice.digital.hmpps.api.model.appointment.User
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
 import uk.gov.justice.digital.hmpps.client.BankHolidayClient
+import uk.gov.justice.digital.hmpps.data.generator.AppointmentGenerator.PERSON_APPOINTMENT
 import uk.gov.justice.digital.hmpps.data.generator.OffenderManagerGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.exception.ConflictException
@@ -380,6 +381,45 @@ class SentenceAppointmentServiceTest {
         assertThat(
             exception.message,
             equalTo("Event id, licence id, requirement id or nsi id need to be provided for contact type ${CreateAppointment.Type.HomeVisitToCaseNS.code}")
+        )
+    }
+
+    @Test
+    fun `duplicate uuid submitted`() {
+        val appointment = CreateAppointment(
+            user,
+            type = CreateAppointment.Type.HomeVisitToCaseNS.code,
+            start = ZonedDateTime.now().plusDays(1),
+            end = ZonedDateTime.now().plusDays(2),
+            interval = CreateAppointment.Interval.WEEK,
+            numberOfAppointments = 1,
+            uuid = UUID.fromString("7d26b633-f77c-4fcb-a37d-30f19a3be9f2"),
+        )
+
+        whenever(offenderManagerRepository.findByPersonCrnAndSoftDeletedIsFalseAndActiveIsTrue(PersonGenerator.PERSON_1.crn)).thenReturn(
+            OffenderManagerGenerator.OFFENDER_MANAGER_ACTIVE
+        )
+
+        whenever(appointmentTypeRepository.findByCode(appointment.type)).thenReturn(
+            ContactType(
+                1,
+                appointment.type,
+                true,
+                "description",
+                offenderContact = true,
+                locationRequired = "N"
+            )
+        )
+
+        whenever(appointmentRepository.findByExternalReference(appointment.urn)).thenReturn(PERSON_APPOINTMENT)
+
+        val exception = assertThrows<ConflictException> {
+            service.createAppointment(PersonGenerator.PERSON_1.crn, appointment)
+        }
+
+        assertThat(
+            exception.message,
+            equalTo("Duplicate external reference urn:uk:gov:hmpps:manage-supervision-service:appointment:${appointment.uuid}")
         )
     }
 

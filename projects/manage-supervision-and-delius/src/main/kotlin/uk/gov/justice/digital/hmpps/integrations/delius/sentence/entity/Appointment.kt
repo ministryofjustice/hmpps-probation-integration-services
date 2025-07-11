@@ -176,6 +176,12 @@ interface AppointmentRepository : JpaRepository<Appointment, Long> {
         startTime: String,
         endTime: String
     ): Int
+
+    fun findByExternalReference(externalReference: String): Appointment?
+}
+
+fun AppointmentRepository.getByExternalReference(externalReference: String): Appointment? {
+    return findByExternalReference(externalReference)
 }
 
 fun AppointmentRepository.appointmentClashes(
