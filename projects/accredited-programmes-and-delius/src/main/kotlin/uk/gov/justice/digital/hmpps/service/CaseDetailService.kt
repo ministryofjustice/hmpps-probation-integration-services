@@ -32,6 +32,7 @@ class CaseDetailService(
                         forename = staff.forename,
                         surname = staff.surname
                     ),
+                    code = staff.code,
                     email = staff.user?.let { ldapTemplate.findEmailByUsername(it.username) }
                 )
             },

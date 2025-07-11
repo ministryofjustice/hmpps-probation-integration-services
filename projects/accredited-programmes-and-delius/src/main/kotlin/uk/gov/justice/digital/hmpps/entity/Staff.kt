@@ -13,6 +13,9 @@ class Staff(
     @Column(name = "staff_id")
     val id: Long,
 
+    @Column(name = "officer_code", columnDefinition = "char(7)")
+    val code: String,
+
     val forename: String,
 
     val surname: String,

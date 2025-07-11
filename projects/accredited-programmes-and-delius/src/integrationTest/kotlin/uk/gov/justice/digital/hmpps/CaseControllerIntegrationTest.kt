@@ -57,6 +57,7 @@ internal class CaseControllerIntegrationTest {
                           "forename": "Forename",
                           "surname": "Surname"
                         },
+                        "code": "STAFF01",
                         "email": "test@example.com"
                       },
                       "probationDeliveryUnit": {
