@@ -2,6 +2,7 @@
 generic-service:
   productId: HMPPS518
   nameOverride: hmpps-libra-event-receiver
+  serviceAccountName: hmpps-libra-event-receiver
 
   image:
     repository: ghcr.io/ministryofjustice/hmpps-probation-integration-services/hmpps-libra-event-receiver
@@ -10,11 +11,6 @@ generic-service:
     tlsSecretName: hmpps-libra-event-receiver-cert
 
   namespace_secrets:
-    common:
-      SPRING_DATASOURCE_URL: DB_URL
-    hmpps-libra-event-receiver-database:
-      SPRING_DATASOURCE_USERNAME: DB_USERNAME
-      SPRING_DATASOURCE_PASSWORD: DB_PASSWORD
     hmpps-libra-event-receiver-sentry:
       SENTRY_DSN: SENTRY_DSN
 

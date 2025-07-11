@@ -33,6 +33,7 @@ on:
           - '["find-and-refer-and-delius"]'
           - '["hdc-licences-and-delius"]'
           - '["hmpps-auth-and-delius"]'
+          - '["hmpps-libra-event-receiver"]'
           - '["ims-and-delius"]'
           - '["jitbit-and-delius"]'
           - '["justice-email-and-delius"]'
@@ -62,7 +63,6 @@ on:
           - '["tier-to-delius"]'
           - '["unpaid-work-and-delius"]'
           - '["workforce-allocations-to-delius"]'
-          - '["hmpps-libra-event-receiver"]'
           # ^ add new projects here
           # GitHub Actions doesn't support dynamic choices, we must add each project here to enable manual deployments
           # See https://github.com/community/community/discussions/11795

@@ -22,7 +22,7 @@ internal class IntegrationTest {
     lateinit var telemetryService: TelemetryService
 
     @Test
-    fun `API call retuns a success response`() {
+    fun `API call returns a success response`() {
         mockMvc
             .perform(get("/example/123").withToken())
             .andExpect(status().is2xxSuccessful)
