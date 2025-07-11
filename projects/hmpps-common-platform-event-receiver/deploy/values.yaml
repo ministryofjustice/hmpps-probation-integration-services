@@ -1,0 +1,23 @@
+# Common values
+generic-service:
+  productId: HMPPS518
+  nameOverride: hmpps-common-platform-event-receiver
+
+  image:
+    repository: ghcr.io/ministryofjustice/hmpps-probation-integration-services/hmpps-common-platform-event-receiver
+
+  ingress:
+    tlsSecretName: hmpps-common-platform-event-receiver-cert
+
+  namespace_secrets:
+    common:
+      SPRING_DATASOURCE_URL: DB_URL
+    hmpps-common-platform-event-receiver-database:
+      SPRING_DATASOURCE_USERNAME: DB_USERNAME
+      SPRING_DATASOURCE_PASSWORD: DB_PASSWORD
+    hmpps-common-platform-event-receiver-sentry:
+      SENTRY_DSN: SENTRY_DSN
+
+generic-prometheus-alerts:
+  targetApplication: hmpps-common-platform-event-receiver
+

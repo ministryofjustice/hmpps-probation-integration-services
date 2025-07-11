@@ -1,0 +1,9 @@
+database:
+  access:
+    username_key: /hmpps-common-platform-event-receiver/db-username
+    password_key: /hmpps-common-platform-event-receiver/db-password
+
+  audit:
+    username: HmppsCommonPlatformEventReceiver
+    forename: Probation Integration # TODO change this to something meaningful for your service
+    surname: Service
