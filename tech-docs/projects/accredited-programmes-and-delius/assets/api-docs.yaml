@@ -151,9 +151,12 @@ components:
       properties:
         name:
           $ref: "#/components/schemas/Name"
+        code:
+          type: string
         email:
           type: string
       required:
+      - code
       - name
   securitySchemes:
     hmpps-auth-token:
