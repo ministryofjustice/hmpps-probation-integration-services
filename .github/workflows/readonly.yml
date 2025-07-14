@@ -227,7 +227,7 @@ jobs:
           - pic-and-probation-integration
     steps:
       - name: Send message to Slack
-        uses: slackapi/slack-github-action@b0fa283ad8fea605de13dc3f449259339835fc52 # v2.1.0
+        uses: slackapi/slack-github-action@91efab103c0de0a537f72a35f6b8cda0ee76bf0a # v2.1.1
         if: ${{ !contains(needs.*.result, 'failure') }}
         with:
           method: chat.postMessage
@@ -257,7 +257,7 @@ jobs:
             }
 
       - name: Send failure message to Slack
-        uses: slackapi/slack-github-action@b0fa283ad8fea605de13dc3f449259339835fc52 # v2.1.0
+        uses: slackapi/slack-github-action@91efab103c0de0a537f72a35f6b8cda0ee76bf0a # v2.1.1
         if: ${{ contains(needs.*.result, 'failure') && matrix.channel == 'probation-integration-notifications' }}
         with:
           method: chat.postMessage
