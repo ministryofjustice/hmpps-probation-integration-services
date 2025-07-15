@@ -11,9 +11,12 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
 import org.springframework.test.context.bean.override.mockito.MockitoBean
+import org.springframework.test.json.JsonCompareMode
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import uk.gov.justice.digital.hmpps.data.generator.ProviderGenerator
 import uk.gov.justice.digital.hmpps.data.generator.UserGenerator
 import uk.gov.justice.digital.hmpps.model.Provider
 import uk.gov.justice.digital.hmpps.model.ProviderResponse
@@ -103,5 +106,85 @@ internal class IntegrationTest {
         mockMvc.perform(get("/users/${UserGenerator.TEST_USER.username}/providers").withToken())
             .andExpect(status().isOk)
             .andExpectJson(ProviderResponse(listOf(Provider("N07", "London"))))
+    }
+
+    @Test
+    fun `retrieves data quality stats`() {
+        mockMvc.perform(get("/data-quality/${ProviderGenerator.LONDON.code}/stats").withToken())
+            .andExpect(status().isOk)
+            .andExpect(content().json("""{"missing":1,"invalid":2}""", JsonCompareMode.STRICT))
+    }
+
+    @Test
+    fun `retrieves cases with an invalid mobile number`() {
+        mockMvc.perform(get("/data-quality/${ProviderGenerator.LONDON.code}/invalid-mobile-numbers").withToken())
+            .andExpect(status().isOk)
+            .andExpect(
+                content().json(
+                    """
+                    {
+                      "content": [
+                        {
+                          "name": "Test Person",
+                          "crn": "A000004",
+                          "mobileNumber": "07000000004 invalid",
+                          "manager": {
+                            "name": "Test Staff",
+                            "email":"test@example.com"
+                          },
+                          "probationDeliveryUnit": "Croydon"
+                        },
+                        {
+                          "name": "Test Person",
+                          "crn": "A000005",
+                          "mobileNumber": "070000005",
+                          "manager": {
+                            "name": "Test Staff",
+                            "email":"test@example.com"
+                          },
+                          "probationDeliveryUnit": "Croydon"
+                        }
+                      ],
+                      "page": {
+                        "size": 10,
+                        "number": 0,
+                        "totalElements": 2,
+                        "totalPages": 1
+                      }
+                    }
+                    """.trimIndent(), JsonCompareMode.STRICT
+                )
+            )
+    }
+
+    @Test
+    fun `retrieves cases with a missing mobile number`() {
+        mockMvc.perform(get("/data-quality/${ProviderGenerator.LONDON.code}/missing-mobile-numbers").withToken())
+            .andExpect(status().isOk)
+            .andExpect(
+                content().json(
+                    """
+                    {
+                      "content": [
+                        {
+                          "name": "Test Person",
+                          "crn": "A000006",
+                          "manager": {
+                            "name": "Test Staff",
+                            "email":"test@example.com"
+                          },
+                          "probationDeliveryUnit": "Croydon"
+                        }
+                      ],
+                      "page": {
+                        "size": 10,
+                        "number": 0,
+                        "totalElements": 1,
+                        "totalPages": 1
+                      }
+                    }
+                    """.trimIndent(), JsonCompareMode.STRICT
+                )
+            )
     }
 }
