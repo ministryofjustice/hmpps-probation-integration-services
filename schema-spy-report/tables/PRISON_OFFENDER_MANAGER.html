@@ -575,16 +575,16 @@
                                     <td> ((ALLOCATION_DATE &lt;&#61; NVL(END_DATE, ALLOCATION_DATE))) </td>
                                 </tr>
                                 <tr>
+                                    <td>ACTIVE_FLAG_END_DATE_15186317</td>
+                                    <td> (ACTIVE_FLAG &#61; 0 AND END_DATE IS NOT NULL)&#10;OR (ACTIVE_FLAG &#61; 1 AND END_DATE IS NULL)&#10; </td>
+                                </tr>
+                                <tr>
                                     <td>TRUE_OR_FALSE_1988641336</td>
                                     <td>SOFT_DELETED IN (0, 1)</td>
                                 </tr>
                                 <tr>
                                     <td>TRUE_OR_FALSE_1484563887</td>
                                     <td>ACTIVE_FLAG IN (0, 1)</td>
-                                </tr>
-                                <tr>
-                                    <td>ACTIVE_FLAG_END_DATE_15186317</td>
-                                    <td> (ACTIVE_FLAG &#61; 0 AND END_DATE IS NOT NULL)&#10;OR (ACTIVE_FLAG &#61; 1 AND END_DATE IS NULL)&#10; </td>
                                 </tr>
                                 </tbody>
                             </table>
