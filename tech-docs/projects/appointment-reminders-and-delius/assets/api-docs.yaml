@@ -32,6 +32,70 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ProviderResponse"
+  /data-quality/{providerCode}/stats:
+    get:
+      tags:
+      - api-controller
+      operationId: getDataQualityStats
+      parameters:
+      - name: providerCode
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DataQualityStats"
+  /data-quality/{providerCode}/missing-mobile-numbers:
+    get:
+      tags:
+      - api-controller
+      operationId: getMissingMobileNumbers
+      parameters:
+      - name: providerCode
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: pageable
+        in: query
+        required: true
+        schema:
+          $ref: "#/components/schemas/Pageable"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PagedModelProbationCase"
+  /data-quality/{providerCode}/invalid-mobile-numbers:
+    get:
+      tags:
+      - api-controller
+      operationId: getInvalidMobileNumbers
+      parameters:
+      - name: providerCode
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: pageable
+        in: query
+        required: true
+        schema:
+          $ref: "#/components/schemas/Pageable"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PagedModelProbationCase"
 components:
   schemas:
     Provider:
@@ -53,6 +117,83 @@ components:
             $ref: "#/components/schemas/Provider"
       required:
       - providers
+    DataQualityStats:
+      type: object
+      properties:
+        missing:
+          type: integer
+          format: int32
+        invalid:
+          type: integer
+          format: int32
+      required:
+      - invalid
+      - missing
+    Pageable:
+      type: object
+      properties:
+        page:
+          type: integer
+          format: int32
+          minimum: 0
+        size:
+          type: integer
+          format: int32
+          minimum: 1
+        sort:
+          type: array
+          items:
+            type: string
+    Manager:
+      type: object
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+      required:
+      - name
+    PageMetadata:
+      type: object
+      properties:
+        size:
+          type: integer
+          format: int64
+        number:
+          type: integer
+          format: int64
+        totalElements:
+          type: integer
+          format: int64
+        totalPages:
+          type: integer
+          format: int64
+    PagedModelProbationCase:
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: "#/components/schemas/ProbationCase"
+        page:
+          $ref: "#/components/schemas/PageMetadata"
+    ProbationCase:
+      type: object
+      properties:
+        name:
+          type: string
+        crn:
+          type: string
+        mobileNumber:
+          type: string
+        manager:
+          $ref: "#/components/schemas/Manager"
+        probationDeliveryUnit:
+          type: string
+      required:
+      - crn
+      - name
+      - probationDeliveryUnit
   securitySchemes:
     hmpps-auth-token:
       type: http
