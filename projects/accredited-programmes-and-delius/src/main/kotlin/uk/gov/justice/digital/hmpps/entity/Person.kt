@@ -4,6 +4,7 @@ import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.NumericBooleanConverter
+import uk.gov.justice.digital.hmpps.entity.staff.Manager
 import java.time.LocalDate
 
 @Entity
@@ -48,7 +49,7 @@ class Person(
     val ethnicity: ReferenceData?,
 
     @OneToOne(mappedBy = "person")
-    var manager: Manager?,
+    val manager: Manager?,
 
     @Column(columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)

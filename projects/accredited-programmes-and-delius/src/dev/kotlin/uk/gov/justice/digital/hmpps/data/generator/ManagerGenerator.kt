@@ -1,9 +1,9 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
-import uk.gov.justice.digital.hmpps.entity.Manager
 import uk.gov.justice.digital.hmpps.entity.Person
-import uk.gov.justice.digital.hmpps.entity.Staff
-import uk.gov.justice.digital.hmpps.entity.Team
+import uk.gov.justice.digital.hmpps.entity.staff.Manager
+import uk.gov.justice.digital.hmpps.entity.staff.Staff
+import uk.gov.justice.digital.hmpps.entity.staff.Team
 
 object ManagerGenerator {
     fun generate(person: Person, staff: Staff, team: Team) = Manager(

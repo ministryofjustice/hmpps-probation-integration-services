@@ -1,9 +1,10 @@
-package uk.gov.justice.digital.hmpps.entity
+package uk.gov.justice.digital.hmpps.entity.staff
 
 import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.NumericBooleanConverter
+import uk.gov.justice.digital.hmpps.entity.Person
 
 @Entity
 @Immutable

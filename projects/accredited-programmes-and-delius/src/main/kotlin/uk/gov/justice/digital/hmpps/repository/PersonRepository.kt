@@ -5,6 +5,13 @@ import org.springframework.data.jpa.repository.JpaRepository
 import uk.gov.justice.digital.hmpps.entity.Person
 
 interface PersonRepository : JpaRepository<Person, Long> {
-    @EntityGraph(attributePaths = ["manager.staff.user", "manager.team.localAdminUnit.probationDeliveryUnit"])
+    @EntityGraph(
+        attributePaths = [
+            "gender",
+            "ethnicity",
+            "manager.staff.user",
+            "manager.team.localAdminUnit.probationDeliveryUnit"
+        ]
+    )
     fun findByCrn(crn: String): Person?
 }

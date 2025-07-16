@@ -4,15 +4,14 @@ import org.springframework.ldap.core.LdapTemplate
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.ldap.findEmailByUsername
-import uk.gov.justice.digital.hmpps.model.CodedValue
-import uk.gov.justice.digital.hmpps.model.Name
-import uk.gov.justice.digital.hmpps.model.PersonalDetails
-import uk.gov.justice.digital.hmpps.model.ProbationPractitioner
+import uk.gov.justice.digital.hmpps.model.*
+import uk.gov.justice.digital.hmpps.repository.EventRepository
 import uk.gov.justice.digital.hmpps.repository.PersonRepository
 
 @Service
 class CaseDetailService(
     private val personRepository: PersonRepository,
+    private val eventRepository: EventRepository,
     private val ldapTemplate: LdapTemplate,
 ) {
     fun getPersonalDetails(crn: String) = personRepository.findByCrn(crn)?.let { person ->
@@ -41,4 +40,28 @@ class CaseDetailService(
             }
         )
     } ?: throw NotFoundException("Person", "crn", crn)
+
+    fun getSentence(crn: String, eventNumber: String) =
+        eventRepository.findByPersonCrnAndNumber(crn, eventNumber)?.let { event ->
+            requireNotNull(event.disposal) { "Event is not sentenced" }
+            Sentence(
+                description = event.disposal.description(),
+                startDate = event.disposal.date,
+                expectedEndDate = event.disposal.expectedEndDate(),
+                licenceExpiryDate = event.disposal.custody?.licenceEndDate(),
+                postSentenceSupervisionEndDate = event.disposal.custody?.postSentenceSupervisionEndDate(),
+                twoThirdsSupervisionDate = event.disposal.custody?.probationResetDate() ?: event.twoThirdsDate(),
+                custodial = event.disposal.type.isCustodial(),
+                releaseType = event.disposal.custody?.mostRecentRelease()?.type?.description,
+                licenceConditions = event.disposal.licenceConditions.map {
+                    it.subCategory?.toCodedValue() ?: it.mainCategory.toCodedValue()
+                },
+                requirements = event.disposal.requirements.mapNotNull {
+                    it.subCategory?.toCodedValue() ?: it.mainCategory?.toCodedValue()
+                },
+                postSentenceSupervisionRequirements = event.disposal.custody?.postSentenceSupervisionRequirements?.map {
+                    it.subCategory?.toCodedValue() ?: it.mainCategory.toCodedValue()
+                } ?: emptyList(),
+            )
+        } ?: throw NotFoundException("Event for $crn", "number", eventNumber)
 }
