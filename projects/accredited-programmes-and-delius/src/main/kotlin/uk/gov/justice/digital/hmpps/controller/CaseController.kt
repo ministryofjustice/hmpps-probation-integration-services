@@ -12,5 +12,10 @@ import uk.gov.justice.digital.hmpps.service.CaseDetailService
 @PreAuthorize("hasRole('PROBATION_API__ACCREDITED_PROGRAMMES__CASE_DETAIL')")
 class CaseController(private val caseDetailService: CaseDetailService) {
     @GetMapping(value = ["/case/{crn}/personal-details"])
-    fun getPersonalDetails(@PathVariable crn: String) = caseDetailService.getPersonalDetails(crn)
+    fun getPersonalDetails(@PathVariable crn: String) =
+        caseDetailService.getPersonalDetails(crn)
+
+    @GetMapping(value = ["/case/{crn}/sentence/{eventNumber}"])
+    fun getSentence(@PathVariable crn: String, @PathVariable eventNumber: String) =
+        caseDetailService.getSentence(crn, eventNumber)
 }

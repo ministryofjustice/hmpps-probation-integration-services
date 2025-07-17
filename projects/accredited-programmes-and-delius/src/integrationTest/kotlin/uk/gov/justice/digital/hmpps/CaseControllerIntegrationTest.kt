@@ -70,4 +70,95 @@ internal class CaseControllerIntegrationTest {
                 )
             )
     }
+
+    @Test
+    fun `sentence not found`() {
+        mockMvc
+            .perform(get("/case/DOESNOTEXIST/sentence/1").withToken())
+            .andExpect(status().isNotFound)
+    }
+
+    @Test
+    fun `custodial sentence success`() {
+        mockMvc
+            .perform(get("/case/${TestData.PERSON.crn}/sentence/1").withToken())
+            .andExpect(status().isOk)
+            .andExpect(
+                content().json(
+                    """
+                    {
+                      "description": "ORA Adult Custody (inc PSS) (24 Months)",
+                      "startDate": "2000-01-01",
+                      "expectedEndDate": "2100-01-01",
+                      "licenceExpiryDate": "2050-01-01",
+                      "postSentenceSupervisionEndDate": "2100-01-01",
+                      "twoThirdsSupervisionDate": "2067-01-01",
+                      "custodial": true,
+                      "releaseType": "Released on Adult Licence",
+                      "licenceConditions": [
+                        {
+                          "code": "NLC8",
+                          "description": "Freedom of movement"
+                        },
+                        {
+                          "code": "TEST",
+                          "description": "To only attend specific places."
+                        }
+                      ],
+                      "requirements": [],
+                      "postSentenceSupervisionRequirements": [
+                        {
+                          "code": "S09",
+                          "description": "Drug Testing"
+                        },
+                        {
+                          "code": "TEST",
+                          "description": "Pass drug tests"
+                        }
+                      ]
+                    }
+                    """.trimIndent(),
+                    JsonCompareMode.STRICT,
+                )
+            )
+    }
+
+    @Test
+    fun `un-sentenced event`() {
+        mockMvc
+            .perform(get("/case/${TestData.PERSON.crn}/sentence/2").withToken())
+            .andExpect(status().isBadRequest)
+    }
+
+    @Test
+    fun `community sentence success`() {
+        mockMvc
+            .perform(get("/case/${TestData.PERSON.crn}/sentence/3").withToken())
+            .andExpect(status().isOk)
+            .andExpect(
+                content().json(
+                    """
+                    {
+                      "description": "ORA Community Order (6 Months)",
+                      "startDate": "2000-01-01",
+                      "expectedEndDate": "2100-01-01",
+                      "custodial": false,
+                      "licenceConditions": [],
+                      "requirements": [
+                        {
+                          "code": "H",
+                          "description": "Alcohol Treatment"
+                        },
+                        {
+                          "code": "ALCTRT",
+                          "description": "Alcohol Treatment"
+                        }
+                      ],
+                      "postSentenceSupervisionRequirements": []
+                    }
+                    """.trimIndent(),
+                    JsonCompareMode.STRICT,
+                )
+            )
+    }
 }
