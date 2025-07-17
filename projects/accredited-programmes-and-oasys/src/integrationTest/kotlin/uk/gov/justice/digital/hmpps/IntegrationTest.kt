@@ -51,6 +51,13 @@ internal class IntegrationTest {
     }
 
     @Test
+    fun `get timeline returns ok by CRN`() {
+        mockMvc
+            .perform(get("/assessments/timeline/T123456").withToken())
+            .andExpect(status().isOk)
+    }
+
+    @Test
     fun `get rosh full section returns correct response`() {
         val json = mockMvc
             .perform(get("/assessments/90123456/section/sectionroshfull").withToken())
@@ -175,6 +182,13 @@ internal class IntegrationTest {
                 )
             )
         )
+    }
+
+    @Test
+    fun `get pni for CRN`() {
+        mockMvc
+            .perform(get("/assessments/pni/P467261?community=false").withToken())
+            .andExpect(status().isOk)
     }
 
     @Test
