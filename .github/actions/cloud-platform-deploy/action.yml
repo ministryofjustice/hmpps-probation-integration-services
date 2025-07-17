@@ -35,6 +35,10 @@ inputs:
   gradle-cache-encryption-key:
     description: Gradle cache encryption key. Required for configuration caching.
     required: true
+  get-info-artifact:
+    description: Whether to get build info from an artifact from an earlier build step
+    default: 'true'
+    required: false
 
 runs:
   using: composite
@@ -54,14 +58,14 @@ runs:
         files: projects/${{ inputs.project }}/build.gradle.kts
 
     - name: Get build info
-      if: ${{ steps.gradle_file.outputs.files_exists == 'true' }}
+      if: inputs.get-info-artifact == 'true' && steps.gradle_file.outputs.files_exists == 'true'
       uses: actions/download-artifact@v4
       with:
         name: build-info-${{ inputs.project }}
         path: projects/${{ inputs.project }}
 
     - name: Get git info
-      if: ${{ steps.gradle_file.outputs.files_exists == 'true' }}
+      if: inputs.get-info-artifact == 'true' && steps.gradle_file.outputs.files_exists == 'true'
       uses: actions/download-artifact@v4
       with:
         name: git-info-${{ inputs.project }}

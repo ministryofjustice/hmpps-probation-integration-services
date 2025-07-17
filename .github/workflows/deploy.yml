@@ -147,6 +147,7 @@ jobs:
           ip-allowlists: ${{ vars.HMPPS_IP_ALLOWLIST_GROUPS_YAML }}
           gradle-cache-role: ${{ secrets.GRADLE_CACHE_S3_ROLE_TO_ASSUME }}
           gradle-cache-encryption-key: ${{ secrets.GRADLE_ENCRYPTION_KEY }}
+          get-info-artifact: ${{ github.event_name == 'workflow_dispatch' && 'false' || 'true' }} # No build artifact is available on manual deploy
 
       - uses: docker/login-action@v3
         if: ${{ steps.check_files.outputs.files_exists == 'true' && steps.enabled.outputs.enabled == 'true' }}
