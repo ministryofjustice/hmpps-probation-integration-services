@@ -34,6 +34,24 @@
     {
       "request": {
         "method": "GET",
+        "url": "/eor/oasys/ass/allasslist/prob/T123456/ALLOW",
+        "headers": {
+          "Authorization": {
+            "matches": "^Bearer oasys.token$"
+          }
+        }
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "timeline-A1234YZ.json",
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
         "url": "/eor/oasys/ass/sectionroshfull/ALLOW/90123456",
         "headers": {
           "Authorization": {
@@ -109,6 +127,24 @@
       "request": {
         "method": "GET",
         "url": "/eor/oasys/ass/pnildc/pris/A8746PN:N/ALLOW",
+        "headers": {
+          "Authorization": {
+            "matches": "^Bearer oasys.token$"
+          }
+        }
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "pni-calculation-success.json",
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "url": "/eor/oasys/ass/pnildc/prob/P467261:N/ALLOW",
         "headers": {
           "Authorization": {
             "matches": "^Bearer oasys.token$"

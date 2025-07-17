@@ -9,8 +9,8 @@ import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import java.math.BigDecimal
 
 interface OrdsClient {
-    @GetExchange("/ass/allasslist/pris/{nomsId}/ALLOW")
-    fun getTimeline(@PathVariable nomsId: String): Timeline
+    @GetExchange("/ass/allasslist/{idType}/{crnOrNomisId}/ALLOW")
+    fun getTimeline(@PathVariable idType: String, @PathVariable crnOrNomisId: String): Timeline
 
     @GetExchange("/ass/{name}/ALLOW/{id}")
     fun getSection(@PathVariable id: Long, @PathVariable name: String): ObjectNode
@@ -18,9 +18,10 @@ interface OrdsClient {
     @GetExchange("/ass/riskscrass/ALLOW/{id}")
     fun getAssessmentPredictors(@PathVariable id: Long): OasysRiskPredictors
 
-    @GetExchange("/ass/pnildc/pris/{nomsId}:{communityFlag}/ALLOW")
+    @GetExchange("/ass/pnildc/{idType}/{crnOrNomisId}:{communityFlag}/ALLOW")
     fun getPni(
-        @PathVariable nomsId: String,
+        @PathVariable idType: String,
+        @PathVariable crnOrNomisId: String,
         @PathVariable communityFlag: String
     ): PniResult
 }

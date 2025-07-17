@@ -13,31 +13,33 @@ import uk.gov.justice.digital.hmpps.integrations.oasys.getRiskPredictors
 
 @RestController
 @RequestMapping("assessments")
+@PreAuthorize("hasRole('PROBATION_API__ACCREDITED_PROGRAMMES__ASSESSMENT')")
 class AssessmentController(private val ordsClient: OrdsClient) {
-    @PreAuthorize("hasRole('PROBATION_API__ACCREDITED_PROGRAMMES__ASSESSMENT')")
-    @GetMapping("/timeline/{nomsId}")
-    fun getTimeline(@PathVariable nomsId: String): Timeline = ordsClient.getTimeline(nomsId)
+    @GetMapping("/timeline/{nomisIdOrCrn}")
+    fun getTimeline(@PathVariable nomisIdOrCrn: String): Timeline =
+        ordsClient.getTimeline(nomisIdOrCrn.idType(), nomisIdOrCrn)
 
-    @PreAuthorize("hasRole('PROBATION_API__ACCREDITED_PROGRAMMES__ASSESSMENT')")
     @GetMapping("/{id}/section/{name}")
     fun getSection(@PathVariable id: Long, @PathVariable name: String): JsonNode =
         ordsClient.getSection(id, name.lowercase()).asResponse()
 
-    @PreAuthorize("hasRole('PROBATION_API__ACCREDITED_PROGRAMMES__ASSESSMENT')")
     @GetMapping("/{id}/risk-predictors")
     fun getRiskPredictors(@PathVariable id: Long): RiskPrediction = ordsClient.getRiskPredictors(id)
 
-    @PreAuthorize("hasRole('PROBATION_API__ACCREDITED_PROGRAMMES__ASSESSMENT')")
-    @GetMapping("/pni/{nomsId}")
-    fun getPniCalculation(
-        @PathVariable nomsId: String,
-        @RequestParam community: Boolean
-    ): PniResponse = ordsClient.getPni(nomsId, if (community) "Y" else "N").asIntegrationModel()
+    @GetMapping("/pni/{nomisIdOrCrn}")
+    fun getPniCalculation(@PathVariable nomisIdOrCrn: String, @RequestParam community: Boolean): PniResponse =
+        ordsClient.getPni(nomisIdOrCrn.idType(), nomisIdOrCrn, if (community) "Y" else "N").asIntegrationModel()
 
     @ExceptionHandler
     fun handleNotFound(e: HttpClientErrorException) = ResponseEntity
         .status(e.statusCode)
         .body(ErrorResponse(status = e.statusCode.value(), message = e.message))
+
+    private fun String.idType() = when {
+        matches(Regex("^[A-Za-z][0-9]{4}[A-Za-z]{2}$")) -> "pris"
+        matches(Regex("^[A-Za-z][0-9]{6}$")) -> "prob"
+        else -> throw IllegalArgumentException("Invalid CRN or NOMIS ID: $this")
+    }
 }
 
 private fun ObjectNode.asResponse(): JsonNode {
