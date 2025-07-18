@@ -37,9 +37,6 @@ class Person(
     @OneToOne(mappedBy = "person")
     val manager: ManagerEntity?,
 
-    @OneToMany(mappedBy = "person")
-    val events: List<Event>,
-
     @Column(columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean = false,
