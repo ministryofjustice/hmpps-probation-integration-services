@@ -6,6 +6,7 @@ import uk.gov.justice.digital.hmpps.entity.ContactType
 import uk.gov.justice.digital.hmpps.entity.ReferenceData
 import uk.gov.justice.digital.hmpps.entity.sentence.*
 import uk.gov.justice.digital.hmpps.entity.sentence.custody.KeyDate
+import uk.gov.justice.digital.hmpps.entity.sentence.offence.OffenceEntity
 import uk.gov.justice.digital.hmpps.entity.staff.LocalAdminUnit
 import uk.gov.justice.digital.hmpps.entity.staff.ProbationDeliveryUnit
 import uk.gov.justice.digital.hmpps.entity.staff.Team
@@ -70,4 +71,11 @@ object TestData {
         RequirementGenerator.generate(COMMUNITY_SENTENCE, REQUIREMENT_MAIN_TYPE),
         RequirementGenerator.generate(COMMUNITY_SENTENCE, REQUIREMENT_MAIN_TYPE, REQUIREMENT_SUB_TYPE),
     )
+
+    val OFFENCES = listOf(
+        OffenceEntity(id(), "036", "Kidnapping", "02", "Hijacking"),
+        OffenceEntity(id(), "036", "Kidnapping", "03", "False Imprisonment")
+    )
+    val MAIN_OFFENCE = MainOffenceGenerator.generate(CUSTODIAL_EVENT, OFFENCES[0])
+    val ADDITIONAL_OFFENCE = AdditionalOffenceGenerator.generate(CUSTODIAL_EVENT, OFFENCES[1])
 }

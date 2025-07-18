@@ -161,4 +161,43 @@ internal class CaseControllerIntegrationTest {
                 )
             )
     }
+
+    @Test
+    fun `offences not found`() {
+        mockMvc
+            .perform(get("/case/DOESNOTEXIST/sentence/1/offences").withToken())
+            .andExpect(status().isNotFound)
+    }
+
+    @Test
+    fun `offences success`() {
+        mockMvc
+            .perform(get("/case/${TestData.PERSON.crn}/sentence/1/offences").withToken())
+            .andExpect(status().isOk)
+            .andExpect(
+                content().json(
+                    """
+                    {
+                      "mainOffence": {
+                        "date": "2000-01-01",
+                        "mainCategoryCode": "036",
+                        "mainCategoryDescription": "Kidnapping",
+                        "subCategoryCode": "02",
+                        "subCategoryDescription": "Hijacking"
+                      },
+                      "additionalOffences": [
+                        {
+                          "date": "2000-01-01",
+                          "mainCategoryCode": "036",
+                          "mainCategoryDescription": "Kidnapping",
+                          "subCategoryCode": "03",
+                          "subCategoryDescription": "False Imprisonment"
+                        }
+                      ]
+                    }
+                    """.trimIndent(),
+                    JsonCompareMode.STRICT,
+                )
+            )
+    }
 }
