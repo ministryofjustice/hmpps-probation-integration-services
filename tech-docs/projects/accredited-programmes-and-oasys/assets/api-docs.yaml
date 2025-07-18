@@ -57,13 +57,13 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/RiskPrediction"
-  /assessments/timeline/{nomsId}:
+  /assessments/timeline/{nomisIdOrCrn}:
     get:
       tags:
       - assessment-controller
       operationId: getTimeline
       parameters:
-      - name: nomsId
+      - name: nomisIdOrCrn
         in: path
         required: true
         schema:
@@ -75,13 +75,13 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Timeline"
-  /assessments/pni/{nomsId}:
+  /assessments/pni/{nomisIdOrCrn}:
     get:
       tags:
       - assessment-controller
       operationId: getPniCalculation
       parameters:
-      - name: nomsId
+      - name: nomisIdOrCrn
         in: path
         required: true
         schema:
