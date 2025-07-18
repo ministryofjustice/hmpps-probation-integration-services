@@ -53,7 +53,6 @@ class DataLoader(
             persist(person.manager?.team?.localAdminUnit)
             persist(person.manager?.team)
             persist(person.manager)
-            person.events.forEach { persist(it) }
         }
     }
 }

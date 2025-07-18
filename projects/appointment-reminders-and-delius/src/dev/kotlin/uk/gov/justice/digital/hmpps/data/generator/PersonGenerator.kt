@@ -1,7 +1,6 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
 import uk.gov.justice.digital.hmpps.data.generator.IdGenerator.id
-import uk.gov.justice.digital.hmpps.entity.Event
 import uk.gov.justice.digital.hmpps.entity.ManagerEntity
 import uk.gov.justice.digital.hmpps.entity.Person
 import uk.gov.justice.digital.hmpps.set
@@ -23,19 +22,8 @@ object PersonGenerator {
         surname = "Person",
         mobileNumber = mobileNumber,
         manager = null,
-        events = emptyList(),
         softDeleted = false
     ).also {
-        it.set(
-            "events", listOf(
-                Event(
-                    id = id(),
-                    person = it,
-                    active = true,
-                    softDeleted = false,
-                )
-            )
-        )
         it.set(
             "manager", ManagerEntity(
                 id = id(),

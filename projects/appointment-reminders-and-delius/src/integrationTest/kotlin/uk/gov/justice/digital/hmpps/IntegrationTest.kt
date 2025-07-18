@@ -109,10 +109,10 @@ internal class IntegrationTest {
     }
 
     @Test
-    fun `retrieves data quality stats`() {
-        mockMvc.perform(get("/data-quality/${ProviderGenerator.LONDON.code}/stats").withToken())
+    fun `retrieves count of cases with an invalid mobile number`() {
+        mockMvc.perform(get("/data-quality/${ProviderGenerator.LONDON.code}/invalid-mobile-numbers/count").withToken())
             .andExpect(status().isOk)
-            .andExpect(content().json("""{"missing":1,"invalid":2}""", JsonCompareMode.STRICT))
+            .andExpect(content().string("2"))
     }
 
     @Test
@@ -180,6 +180,48 @@ internal class IntegrationTest {
                         "size": 10,
                         "number": 0,
                         "totalElements": 1,
+                        "totalPages": 1
+                      }
+                    }
+                    """.trimIndent(), JsonCompareMode.STRICT
+                )
+            )
+    }
+
+    @Test
+    fun `retrieves cases with duplicate mobile numbers`() {
+        mockMvc.perform(get("/data-quality/${ProviderGenerator.LONDON.code}/duplicate-mobile-numbers").withToken())
+            .andExpect(status().isOk)
+            .andExpect(
+                content().json(
+                    """
+                    {
+                      "content": [
+                        {
+                          "name": "Test Person",
+                          "crn": "A000002",
+                          "mobileNumber": "07000000002",
+                          "manager": {
+                            "name": "Test Staff",
+                            "email": "test@example.com"
+                          },
+                          "probationDeliveryUnit": "Croydon"
+                        },
+                        {
+                          "name": "Test Person",
+                          "crn": "A000003",
+                          "mobileNumber": "07000000002",
+                          "manager": {
+                            "name": "Test Staff",
+                            "email": "test@example.com"
+                          },
+                          "probationDeliveryUnit": "Croydon"
+                        }
+                      ],
+                      "page": {
+                        "size": 10,
+                        "number": 0,
+                        "totalElements": 2,
                         "totalPages": 1
                       }
                     }
