@@ -43,6 +43,7 @@ import uk.gov.justice.digital.hmpps.telemetry.TelemetryMessagingExtensions.notif
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import java.io.ByteArrayInputStream
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.util.function.Function
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation::class)
@@ -406,7 +407,6 @@ internal class IntegrationTest {
         channelManager.getChannel(queueName).publishAndWait(notification)
 
         verify(eventService).insertEvent(any(), any(), any(), any(), any(), any())
-        verify(eventService, never()).insertCourtAppearance(any(), any(), any(), any(), any())
 
         verify(eventRepository).save(check<Event> {
             assertThat(it.person.forename, Matchers.equalTo("Example First Name"))
@@ -428,7 +428,7 @@ internal class IntegrationTest {
                 it.appearanceType.code,
                 Matchers.equalTo(ReferenceData.StandardRefDataCode.TRIAL_ADJOURNMENT_APPEARANCE.code)
             )
-            assertThat(it.appearanceDate, Matchers.equalTo(LocalDate.of(2024, 1, 1)))
+            assertThat(it.appearanceDate, Matchers.equalTo(LocalDateTime.of(2024, 1, 1, 12, 0)))
 
         })
         verify(contactRepository).save(check<Contact> {

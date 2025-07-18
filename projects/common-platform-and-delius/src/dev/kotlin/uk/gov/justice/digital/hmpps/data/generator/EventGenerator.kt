@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.data.generator
 
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.*
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.ZonedDateTime
 import java.util.*
 
@@ -84,7 +85,7 @@ object CourtAppearanceGenerator {
 
     fun generate(
         id: Long = IdGenerator.getAndIncrement(),
-        appearanceDate: LocalDate = LocalDate.now(),
+        appearanceDate: LocalDateTime = LocalDateTime.now(),
         event: Event,
         appearanceType: ReferenceData,
         court: Court,

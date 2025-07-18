@@ -7,7 +7,7 @@ import org.springframework.data.annotation.LastModifiedBy
 import org.springframework.data.annotation.LastModifiedDate
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import org.springframework.data.jpa.repository.JpaRepository
-import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.ZonedDateTime
 
 @Entity
@@ -22,7 +22,7 @@ class CourtAppearance(
     val id: Long? = null,
 
     @Column(name = "appearance_date")
-    val appearanceDate: LocalDate,
+    val appearanceDate: LocalDateTime,
 
     @Column(name = "court_notes", columnDefinition = "clob")
     val courtNotes: String? = null,

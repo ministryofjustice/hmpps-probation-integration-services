@@ -1,7 +1,6 @@
 package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.stereotype.Service
-import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.audit.service.AuditableService
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
 import uk.gov.justice.digital.hmpps.dto.InsertEventResult
@@ -95,8 +94,7 @@ class EventService(
             val initialCourtAppearance = courtAppearanceRepository.save(
                 CourtAppearance(
                     id = null,
-                    appearanceDate = sittingDay.toLocalDate(),
-                    courtNotes = hearingId, // TODO: Store in the courtAppearance.hearing_Id after PDM change
+                    appearanceDate = sittingDay.toLocalDateTime(),
                     event = savedEvent,
                     teamId = unallocatedTeam.id,
                     staffId = unallocatedStaff.id,
@@ -156,38 +154,5 @@ class EventService(
 
             audit["offenderId"] = savedEvent.person.id!!
             InsertEventResult(savedEvent, savedMainOffence, initialCourtAppearance, initialContact, savedOrderManager)
-        }
-
-    @Transactional
-    fun insertCourtAppearance(
-        event: Event,
-        courtCode: String,
-        sittingDay: ZonedDateTime,
-        caseUrn: String,
-        hearingId: String
-    ): CourtAppearance =
-        audit(BusinessInteractionCode.INSERT_COURT_APPEARANCE) { audit ->
-            val court = courtRepository.getByOuCode(courtCode)
-            val unallocatedTeam = teamRepository.findByCode(court.provider.code + "UAT")
-            val unallocatedStaff = staffRepository.findByCode(unallocatedTeam.code + "U")
-            val trialAdjournmentRefData = referenceDataRepository.trialAdjournmentAppearanceType()
-
-            val savedCourtAppearance = courtAppearanceRepository.save(
-                CourtAppearance(
-                    id = null,
-                    appearanceDate = sittingDay.toLocalDate(),
-                    courtNotes = hearingId, // TODO: Store in the courtAppearance.hearing_Id after PDM change
-                    event = event,
-                    teamId = unallocatedTeam.id,
-                    staffId = unallocatedStaff.id,
-                    softDeleted = false,
-                    court = court,
-                    appearanceType = trialAdjournmentRefData,
-                    person = event.person
-                )
-            )
-
-            audit["eventId"] = savedCourtAppearance.event.id!!
-            savedCourtAppearance
         }
 }
