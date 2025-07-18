@@ -22,7 +22,7 @@ class Event(
 
     @ManyToOne
     @JoinColumn(name = "offender_id")
-    val person: Person? = null,
+    val person: Person,
 
     @OneToOne(mappedBy = "event")
     val disposal: Disposal?,

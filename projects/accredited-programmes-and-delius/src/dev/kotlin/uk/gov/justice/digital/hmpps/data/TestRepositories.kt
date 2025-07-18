@@ -6,6 +6,9 @@ import uk.gov.justice.digital.hmpps.entity.sentence.*
 import uk.gov.justice.digital.hmpps.entity.sentence.custody.Custody
 import uk.gov.justice.digital.hmpps.entity.sentence.custody.KeyDate
 import uk.gov.justice.digital.hmpps.entity.sentence.custody.Release
+import uk.gov.justice.digital.hmpps.entity.sentence.offence.AdditionalOffence
+import uk.gov.justice.digital.hmpps.entity.sentence.offence.MainOffence
+import uk.gov.justice.digital.hmpps.entity.sentence.offence.OffenceEntity
 import uk.gov.justice.digital.hmpps.entity.staff.*
 
 interface ReferenceDataRepository : JpaRepository<ReferenceData, Long>
@@ -31,3 +34,6 @@ interface LicenceConditionMainCategoryRepository : JpaRepository<LicenceConditio
 interface LicenceConditionRepository : JpaRepository<LicenceCondition, Long>
 interface RequirementMainCategoryRepository : JpaRepository<RequirementMainCategory, Long>
 interface RequirementRepository : JpaRepository<Requirement, Long>
+interface OffenceEntityRepository : JpaRepository<OffenceEntity, Long>
+interface MainOffenceRepository : JpaRepository<MainOffence, Long>
+interface AdditionalOffenceRepository : JpaRepository<AdditionalOffence, Long>

@@ -6,6 +6,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.boot.context.event.ApplicationReadyEvent
 import org.springframework.context.ApplicationListener
 import org.springframework.stereotype.Component
+import uk.gov.justice.digital.hmpps.data.TestData.ADDITIONAL_OFFENCE
 import uk.gov.justice.digital.hmpps.data.TestData.ADULT_CUSTODY_TYPE
 import uk.gov.justice.digital.hmpps.data.TestData.ADULT_LICENCE
 import uk.gov.justice.digital.hmpps.data.TestData.COMMUNITY_EVENT
@@ -23,8 +24,10 @@ import uk.gov.justice.digital.hmpps.data.TestData.LED_KEY_DATE_TYPE
 import uk.gov.justice.digital.hmpps.data.TestData.LICENCE_CONDITIONS
 import uk.gov.justice.digital.hmpps.data.TestData.LICENCE_CONDITION_MAIN_TYPE
 import uk.gov.justice.digital.hmpps.data.TestData.LICENCE_CONDITION_SUB_TYPE
+import uk.gov.justice.digital.hmpps.data.TestData.MAIN_OFFENCE
 import uk.gov.justice.digital.hmpps.data.TestData.MANAGER
 import uk.gov.justice.digital.hmpps.data.TestData.MONTHS
+import uk.gov.justice.digital.hmpps.data.TestData.OFFENCES
 import uk.gov.justice.digital.hmpps.data.TestData.OTHER_CONTACT
 import uk.gov.justice.digital.hmpps.data.TestData.OTHER_CONTACT_TYPE
 import uk.gov.justice.digital.hmpps.data.TestData.PDU
@@ -81,6 +84,9 @@ class DataLoader(
     private val licenceConditionRepository: LicenceConditionRepository,
     private val requirementMainCategoryRepository: RequirementMainCategoryRepository,
     private val requirementRepository: RequirementRepository,
+    private val offenceRepository: OffenceEntityRepository,
+    private val mainOffenceRepository: MainOffenceRepository,
+    private val additionalOffenceRepository: AdditionalOffenceRepository,
 ) : ApplicationListener<ApplicationReadyEvent> {
     @PostConstruct
     fun saveAuditUser() {
@@ -130,5 +136,9 @@ class DataLoader(
         requirementMainCategoryRepository.save(REQUIREMENT_MAIN_TYPE)
         referenceDataRepository.save(REQUIREMENT_SUB_TYPE)
         requirementRepository.saveAll(REQUIREMENTS)
+        eventRepository.flush()
+        offenceRepository.saveAll(OFFENCES)
+        mainOffenceRepository.save(MAIN_OFFENCE)
+        additionalOffenceRepository.save(ADDITIONAL_OFFENCE)
     }
 }

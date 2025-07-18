@@ -18,4 +18,8 @@ class CaseController(private val caseDetailService: CaseDetailService) {
     @GetMapping(value = ["/case/{crn}/sentence/{eventNumber}"])
     fun getSentence(@PathVariable crn: String, @PathVariable eventNumber: String) =
         caseDetailService.getSentence(crn, eventNumber)
+
+    @GetMapping(value = ["/case/{crn}/sentence/{eventNumber}/offences"])
+    fun getOffences(@PathVariable crn: String, @PathVariable eventNumber: String) =
+        caseDetailService.getOffences(crn, eventNumber)
 }
