@@ -14,10 +14,36 @@ servers:
 security:
 - hmpps-auth-token: []
 paths:
+  /users/{username}/access:
+    post:
+      tags:
+      - user-controller
+      operationId: checkUserAccess
+      parameters:
+      - name: username
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: string
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserAccess"
   /users/{username}/providers:
     get:
       tags:
-      - api-controller
+      - user-controller
       operationId: getUserProviders
       parameters:
       - name: username
@@ -32,28 +58,10 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ProviderResponse"
-  /data-quality/{providerCode}/stats:
-    get:
-      tags:
-      - api-controller
-      operationId: getDataQualityStats
-      parameters:
-      - name: providerCode
-        in: path
-        required: true
-        schema:
-          type: string
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/DataQualityStats"
   /data-quality/{providerCode}/missing-mobile-numbers:
     get:
       tags:
-      - api-controller
+      - data-quality-controller
       operationId: getMissingMobileNumbers
       parameters:
       - name: providerCode
@@ -76,8 +84,49 @@ paths:
   /data-quality/{providerCode}/invalid-mobile-numbers:
     get:
       tags:
-      - api-controller
+      - data-quality-controller
       operationId: getInvalidMobileNumbers
+      parameters:
+      - name: providerCode
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: pageable
+        in: query
+        required: true
+        schema:
+          $ref: "#/components/schemas/Pageable"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PagedModelProbationCase"
+  /data-quality/{providerCode}/invalid-mobile-numbers/count:
+    get:
+      tags:
+      - data-quality-controller
+      operationId: getInvalidMobileNumbersCount
+      parameters:
+      - name: providerCode
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: string
+  /data-quality/{providerCode}/duplicate-mobile-numbers:
+    get:
+      tags:
+      - data-quality-controller
+      operationId: getDuplicateMobileNumbers
       parameters:
       - name: providerCode
         in: path
@@ -98,6 +147,32 @@ paths:
                 $ref: "#/components/schemas/PagedModelProbationCase"
 components:
   schemas:
+    CaseAccess:
+      type: object
+      properties:
+        crn:
+          type: string
+        userExcluded:
+          type: boolean
+        userRestricted:
+          type: boolean
+        exclusionMessage:
+          type: string
+        restrictionMessage:
+          type: string
+      required:
+      - crn
+      - userExcluded
+      - userRestricted
+    UserAccess:
+      type: object
+      properties:
+        access:
+          type: array
+          items:
+            $ref: "#/components/schemas/CaseAccess"
+      required:
+      - access
     Provider:
       type: object
       properties:
@@ -117,18 +192,6 @@ components:
             $ref: "#/components/schemas/Provider"
       required:
       - providers
-    DataQualityStats:
-      type: object
-      properties:
-        missing:
-          type: integer
-          format: int32
-        invalid:
-          type: integer
-          format: int32
-      required:
-      - invalid
-      - missing
     Pageable:
       type: object
       properties:

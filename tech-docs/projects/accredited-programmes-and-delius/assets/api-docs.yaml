@@ -75,6 +75,29 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Sentence"
+  /case/{crn}/sentence/{eventNumber}/offences:
+    get:
+      tags:
+      - Cases
+      operationId: getOffences
+      parameters:
+      - name: crn
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: eventNumber
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Offences"
   /case/{crn}/personal-details:
     get:
       tags:
@@ -173,6 +196,38 @@ components:
       - postSentenceSupervisionRequirements
       - requirements
       - startDate
+    Offence:
+      type: object
+      properties:
+        date:
+          type: string
+          format: date
+        mainCategoryCode:
+          type: string
+        mainCategoryDescription:
+          type: string
+        subCategoryCode:
+          type: string
+        subCategoryDescription:
+          type: string
+      required:
+      - date
+      - mainCategoryCode
+      - mainCategoryDescription
+      - subCategoryCode
+      - subCategoryDescription
+    Offences:
+      type: object
+      properties:
+        mainOffence:
+          $ref: "#/components/schemas/Offence"
+        additionalOffences:
+          type: array
+          items:
+            $ref: "#/components/schemas/Offence"
+      required:
+      - additionalOffences
+      - mainOffence
     Name:
       type: object
       properties:
