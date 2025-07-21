@@ -18,7 +18,7 @@ object PersonGenerator {
         exclusionMessage = "You are excluded from viewing this case",
         restrictionMessage = "You are restricted from viewing this case"
     )
-    val DEFAULT_2 = generate("A000002", "A0002DY")
+    val DEFAULT_2 = generate("A000003", "A0003DY")
 
     fun generate(
         crn: String,
