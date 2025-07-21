@@ -94,7 +94,7 @@ class ReferralService(
                 description = "Booking changed for ${details.premises.name}",
                 notes = listOfNotNull(
                     "The expected arrival and/or departure dates for the booking have changed.",
-                    "Previous: ${existing.referral.expectedArrivalDate.toDeliusDate()} to ${existing.referral.expectedDepartureDate.toDeliusDate()}",
+                    "Previous: ${existing.referral.expectedArrivalDate.toDeliusDate()}${existing.referral.expectedDepartureDate?.let { " to ${it.toDeliusDate()}" }}",
                     "Current: ${details.arrivalOn.toDeliusDate()} to ${details.departureOn.toDeliusDate()}",
                     "For more details, click here: ${details.applicationUrl}"
                 ).joinToString(System.lineSeparator() + System.lineSeparator())
