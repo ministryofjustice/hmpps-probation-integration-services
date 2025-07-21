@@ -14,6 +14,7 @@ object RegistrationGenerator {
     val MAPPA_TYPE = generateType(RegisterType.MAPPA_CODE)
     val CATEGORIES = Category.entries.map { generateReferenceData(it.name) }.associateBy { it.code }
     val LEVELS = Level.entries.map { generateReferenceData(it.name) }.associateBy { it.code }
+    val INVALID_MAPPA_LEVEL = generateReferenceData("L1", "Level 1")
 
     fun generateType(code: String, id: Long = IdGenerator.getAndIncrement()) =
         RegisterType(code, "Description for $code", id)

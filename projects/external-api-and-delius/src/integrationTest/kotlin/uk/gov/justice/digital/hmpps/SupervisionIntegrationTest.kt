@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import uk.gov.justice.digital.hmpps.data.generator.DataGenerator.PERSON
+import uk.gov.justice.digital.hmpps.data.generator.DataGenerator.PERSON_2
 import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator.RD_FEMALE
 import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator.RD_MALE
 import uk.gov.justice.digital.hmpps.model.PersonIdentifier
@@ -67,5 +68,14 @@ internal class SupervisionIntegrationTest : BaseIntegrationTest() {
                 RefData(PhoneTypes.MOBILE.name, PhoneTypes.MOBILE.description)
             )
         )
+    }
+
+    @Test
+    fun `returns no mappa level if invalid mappa level`() {
+        val response = mockMvc
+            .perform(get("/case/${PERSON_2.crn}/supervisions").withToken())
+            .andExpect(status().is2xxSuccessful)
+            .andReturn().response.contentAsJson<SupervisionResponse>()
+        Assertions.assertEquals(null, response.mappaDetail?.level)
     }
 }
