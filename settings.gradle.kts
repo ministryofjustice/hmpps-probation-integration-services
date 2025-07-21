@@ -81,16 +81,16 @@ dependencyResolutionManagement {
             library("asyncapi", "org.openfolder:kotlin-asyncapi-spring-web:3.1.1")
             library("aws-s3", "io.awspring.cloud:spring-cloud-aws-starter-s3:3.4.0")
             library("aws-autoconfigure", "io.awspring.cloud:spring-cloud-aws-autoconfigure:3.4.0")
-            library("aws-query-protocol", "software.amazon.awssdk:aws-query-protocol:2.31.78")
+            library("aws-query-protocol", "software.amazon.awssdk:aws-query-protocol:2.32.4")
             library("aws-sns", "io.awspring.cloud:spring-cloud-aws-starter-sns:3.4.0")
             library("aws-sqs", "io.awspring.cloud:spring-cloud-aws-starter-sqs:3.4.0")
             library("aws-starter", "io.awspring.cloud:spring-cloud-aws-starter:3.4.0")
-            library("aws-sts", "software.amazon.awssdk:sts:2.31.78")
+            library("aws-sts", "software.amazon.awssdk:sts:2.32.4")
             library("azure-app-insights", "com.microsoft.azure:applicationinsights-web:3.7.3")
-            library("azure-identity", "com.azure:azure-identity:1.16.2")
+            library("azure-identity", "com.azure:azure-identity:1.16.3")
             library("flipt", "io.flipt:flipt-client-java:1.1.0")
             library("html2md", "com.vladsch.flexmark:flexmark-html2md-converter:0.64.8")
-            library("microsoft-graph", "com.microsoft.graph:microsoft-graph:6.45.0")
+            library("microsoft-graph", "com.microsoft.graph:microsoft-graph:6.46.0")
             library("mockito-inline", "org.mockito:mockito-inline:5.2.0")
             library("mockito-kotlin", "org.mockito.kotlin:mockito-kotlin:5.4.0")
             library("notify", "uk.gov.service.notify:notifications-java-client:5.2.1-RELEASE")
@@ -98,7 +98,7 @@ dependencyResolutionManagement {
             library("opensearch-starter", "org.opensearch.client:spring-data-opensearch-starter:1.8.1")
             library(
                 "opentelemetry-annotations",
-                "io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:2.17.1"
+                "io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:2.18.0"
             )
             library("sentry", "io.sentry:sentry-spring-boot-starter-jakarta:8.17.0")
             library("springdoc", "org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.9")
@@ -116,8 +116,8 @@ dependencyResolutionManagement {
 }
 
 plugins {
-    id("com.gradle.develocity") version "4.0.2"
-    id("com.github.burrunan.s3-build-cache") version "1.9.2"
+    id("com.gradle.develocity") version "4.1"
+    id("com.github.burrunan.s3-build-cache") version "1.9.3"
 }
 
 develocity {
