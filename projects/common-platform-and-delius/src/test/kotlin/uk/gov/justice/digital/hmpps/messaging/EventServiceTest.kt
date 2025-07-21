@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.service
+package uk.gov.justice.digital.hmpps.messaging
 
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.core.IsEqual.equalTo
@@ -14,6 +14,8 @@ import org.mockito.kotlin.whenever
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
 import uk.gov.justice.digital.hmpps.data.generator.*
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.*
+import uk.gov.justice.digital.hmpps.service.EventService
+import uk.gov.justice.digital.hmpps.service.PersonService
 import java.time.ZonedDateTime
 
 @ExtendWith(MockitoExtension::class)
