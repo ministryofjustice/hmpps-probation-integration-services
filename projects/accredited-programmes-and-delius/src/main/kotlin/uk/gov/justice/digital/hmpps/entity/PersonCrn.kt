@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.entity.sentence.offence
+package uk.gov.justice.digital.hmpps.entity
 
 import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
@@ -9,7 +9,7 @@ import org.hibernate.type.NumericBooleanConverter
 @Immutable
 @Table(name = "offender")
 @SQLRestriction("soft_deleted = 0")
-class OffencePerson(
+class PersonCrn(
     @Id
     @Column(name = "offender_id")
     val id: Long,

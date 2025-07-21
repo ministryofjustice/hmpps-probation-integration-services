@@ -200,4 +200,34 @@ internal class CaseControllerIntegrationTest {
                 )
             )
     }
+
+    @Test
+    fun `registrations success`() {
+        mockMvc
+            .perform(get("/case/${TestData.PERSON.crn}/registrations").withToken())
+            .andExpect(status().isOk)
+            .andExpect(
+                content().json(
+                    """
+                    {
+                      "registrations": [
+                        {
+                          "type": {
+                            "code": "RVHR",
+                            "description": "Very High RoSH"
+                          },
+                          "category": {
+                            "code": "I3",
+                            "description": "IOM - Fixed"
+                          },
+                          "date": "2000-01-01",
+                          "nextReviewDate": "2000-06-01"
+                        }
+                      ]
+                    }
+                    """.trimIndent(),
+                    JsonCompareMode.STRICT,
+                )
+            )
+    }
 }

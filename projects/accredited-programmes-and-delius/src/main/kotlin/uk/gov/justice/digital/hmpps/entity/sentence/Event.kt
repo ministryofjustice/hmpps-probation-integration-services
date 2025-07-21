@@ -4,10 +4,10 @@ import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.NumericBooleanConverter
-import uk.gov.justice.digital.hmpps.entity.Contact
-import uk.gov.justice.digital.hmpps.entity.ContactType.Companion.LICENCE_SUPERVISION_TWO_THIRDS_POINT
-import uk.gov.justice.digital.hmpps.entity.ContactType.Companion.SUPERVISION_TWO_THIRDS_POINT
 import uk.gov.justice.digital.hmpps.entity.Person
+import uk.gov.justice.digital.hmpps.entity.contact.Contact
+import uk.gov.justice.digital.hmpps.entity.contact.ContactType.Companion.LICENCE_SUPERVISION_TWO_THIRDS_POINT
+import uk.gov.justice.digital.hmpps.entity.contact.ContactType.Companion.SUPERVISION_TWO_THIRDS_POINT
 
 @Entity
 @Immutable

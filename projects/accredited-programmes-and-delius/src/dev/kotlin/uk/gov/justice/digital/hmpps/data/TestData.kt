@@ -2,9 +2,14 @@ package uk.gov.justice.digital.hmpps.data
 
 import uk.gov.justice.digital.hmpps.data.generator.*
 import uk.gov.justice.digital.hmpps.data.generator.IdGenerator.id
-import uk.gov.justice.digital.hmpps.entity.ContactType
 import uk.gov.justice.digital.hmpps.entity.ReferenceData
-import uk.gov.justice.digital.hmpps.entity.sentence.*
+import uk.gov.justice.digital.hmpps.entity.contact.ContactType
+import uk.gov.justice.digital.hmpps.entity.registration.RegisterType
+import uk.gov.justice.digital.hmpps.entity.sentence.DisposalType
+import uk.gov.justice.digital.hmpps.entity.sentence.component.LicenceConditionMainCategory
+import uk.gov.justice.digital.hmpps.entity.sentence.component.PssRequirementMainCategory
+import uk.gov.justice.digital.hmpps.entity.sentence.component.PssRequirementSubCategory
+import uk.gov.justice.digital.hmpps.entity.sentence.component.RequirementMainCategory
 import uk.gov.justice.digital.hmpps.entity.sentence.custody.KeyDate
 import uk.gov.justice.digital.hmpps.entity.sentence.offence.OffenceEntity
 import uk.gov.justice.digital.hmpps.entity.staff.LocalAdminUnit
@@ -78,4 +83,8 @@ object TestData {
     )
     val MAIN_OFFENCE = MainOffenceGenerator.generate(CUSTODIAL_EVENT, OFFENCES[0])
     val ADDITIONAL_OFFENCE = AdditionalOffenceGenerator.generate(CUSTODIAL_EVENT, OFFENCES[1])
+
+    val REGISTER_TYPE = RegisterType(id(), "RVHR", "Very High RoSH")
+    val REGISTER_CATEGORY = ReferenceData(id(), "I3", "IOM - Fixed")
+    val REGISTRATION = RegistrationGenerator.generate(PERSON, REGISTER_TYPE, REGISTER_CATEGORY)
 }

@@ -8,6 +8,7 @@ import uk.gov.justice.digital.hmpps.model.*
 import uk.gov.justice.digital.hmpps.repository.EventRepository
 import uk.gov.justice.digital.hmpps.repository.OffenceRepository
 import uk.gov.justice.digital.hmpps.repository.PersonRepository
+import uk.gov.justice.digital.hmpps.repository.RegistrationRepository
 
 @Service
 class CaseDetailService(
@@ -15,6 +16,7 @@ class CaseDetailService(
     private val eventRepository: EventRepository,
     private val ldapTemplate: LdapTemplate,
     private val offenceRepository: OffenceRepository,
+    private val registrationRepository: RegistrationRepository,
 ) {
     fun getPersonalDetails(crn: String) = personRepository.findByCrn(crn)?.let { person ->
         PersonalDetails(
@@ -74,4 +76,15 @@ class CaseDetailService(
                 event.additionalOffences.map { it.offenceEntity.toOffence(it.date) },
             )
         } ?: throw NotFoundException("Event for $crn", "number", eventNumber)
+
+    fun getRegistrations(crn: String) = Registrations(
+        registrationRepository.findByPersonCrn(crn).map { registration ->
+            Registration(
+                type = CodedValue(registration.type.code, registration.type.description),
+                category = registration.category.toCodedValue(),
+                date = registration.date,
+                nextReviewDate = registration.nextReviewDate,
+            )
+        }
+    )
 }

@@ -5,7 +5,7 @@ import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.NumericBooleanConverter
 import uk.gov.justice.digital.hmpps.entity.sentence.Disposal
-import uk.gov.justice.digital.hmpps.entity.sentence.PssRequirement
+import uk.gov.justice.digital.hmpps.entity.sentence.component.PssRequirement
 
 @Entity
 @Immutable

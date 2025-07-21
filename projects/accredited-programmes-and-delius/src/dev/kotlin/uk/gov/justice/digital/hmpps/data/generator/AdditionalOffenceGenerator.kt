@@ -1,11 +1,11 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
 import uk.gov.justice.digital.hmpps.data.generator.IdGenerator.id
+import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.toCrn
 import uk.gov.justice.digital.hmpps.entity.sentence.Event
 import uk.gov.justice.digital.hmpps.entity.sentence.offence.AdditionalOffence
 import uk.gov.justice.digital.hmpps.entity.sentence.offence.OffenceEntity
 import uk.gov.justice.digital.hmpps.entity.sentence.offence.OffenceEvent
-import uk.gov.justice.digital.hmpps.entity.sentence.offence.OffencePerson
 import java.time.LocalDate
 
 object AdditionalOffenceGenerator {
@@ -16,7 +16,7 @@ object AdditionalOffenceGenerator {
             OffenceEvent(
                 id = id,
                 number = number,
-                person = OffencePerson(person.id, person.crn, person.softDeleted),
+                person = person.toCrn(),
                 mainOffence = listOf(),
                 additionalOffences = listOf(),
                 active = active,

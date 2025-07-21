@@ -1,8 +1,15 @@
 package uk.gov.justice.digital.hmpps.data
 
 import org.springframework.data.jpa.repository.JpaRepository
-import uk.gov.justice.digital.hmpps.entity.*
-import uk.gov.justice.digital.hmpps.entity.sentence.*
+import uk.gov.justice.digital.hmpps.entity.Exclusion
+import uk.gov.justice.digital.hmpps.entity.ReferenceData
+import uk.gov.justice.digital.hmpps.entity.Restriction
+import uk.gov.justice.digital.hmpps.entity.contact.Contact
+import uk.gov.justice.digital.hmpps.entity.contact.ContactType
+import uk.gov.justice.digital.hmpps.entity.registration.RegisterType
+import uk.gov.justice.digital.hmpps.entity.sentence.Disposal
+import uk.gov.justice.digital.hmpps.entity.sentence.DisposalType
+import uk.gov.justice.digital.hmpps.entity.sentence.component.*
 import uk.gov.justice.digital.hmpps.entity.sentence.custody.Custody
 import uk.gov.justice.digital.hmpps.entity.sentence.custody.KeyDate
 import uk.gov.justice.digital.hmpps.entity.sentence.custody.Release
@@ -37,3 +44,4 @@ interface RequirementRepository : JpaRepository<Requirement, Long>
 interface OffenceEntityRepository : JpaRepository<OffenceEntity, Long>
 interface MainOffenceRepository : JpaRepository<MainOffence, Long>
 interface AdditionalOffenceRepository : JpaRepository<AdditionalOffence, Long>
+interface RegisterTypeRepository : JpaRepository<RegisterType, Long>
