@@ -43,52 +43,60 @@ class Handler(
     private val eventRepository: EventRepository,
 ) : NotificationHandler<EmailMessage>, AuditableService(auditedInteractionService) {
     @Publish(messages = [Message(title = "email-message", payload = Schema(EmailMessage::class))])
-    override fun handle(notification: Notification<EmailMessage>) = try {
-        audit(ADD_CONTACT) { audit ->
-            telemetryService.notificationReceived(notification)
-            val message = notification.message
+    override fun handle(notification: Notification<EmailMessage>) {
+        telemetryService.notificationReceived(notification)
+        val message = notification.message
 
-            val crn = message.extractCrn()
-            val emailAddress =
-                message.fromEmailAddress.takeIf { it.endsWith("@justice.gov.uk") || it.endsWith("@digital.justice.gov.uk") }
-                    ?: throw IllegalArgumentException("Email address does not end with @justice.gov.uk or @digital.justice.gov.uk")
-            val person = personRepository.getByCrn(crn)
-            val event = message.findEvent(person.id)
-            val manager = personManagerRepository.getManager(person.id)
-            val staffId = findStaffIdForEmailAddress(emailAddress) ?: manager.staffId
-            val fullNotes = """
-            |This contact was created automatically from a forwarded email sent by ${message.fromEmailAddress} ${message.onAt}.
-            |Subject: ${message.subject}
-            |
-            |${htmlToMarkdownConverter.convert(message.bodyContent.withoutFooter())}
-            """.trimMargin()
-            val contact = contactRepository.save(
-                Contact(
-                    personId = person.id,
-                    externalReference = "urn:uk:gov:hmpps:justice-email:${message.id}",
-                    type = contactTypeRepository.getByCode(EMAIL),
-                    date = message.receivedDateTime,
-                    startTime = message.receivedDateTime,
-                    description = "Email - ${message.subject.replace(CRN_REGEX.toRegex(), "").trim()}".truncated(),
-                    notes = fullNotes,
-                    staffId = staffId,
-                    teamId = manager.teamId,
-                    providerId = manager.providerId,
-                    eventId = event?.id,
+        try {
+            audit(ADD_CONTACT) { audit ->
+                val crn = message.extractCrn()
+                val emailAddress =
+                    message.fromEmailAddress.takeIf { it.endsWith("@justice.gov.uk") || it.endsWith("@digital.justice.gov.uk") }
+                        ?: throw IllegalArgumentException("Email address does not end with @justice.gov.uk or @digital.justice.gov.uk")
+                val person = personRepository.getByCrn(crn)
+                val event = message.findEvent(person.id)
+                val manager = personManagerRepository.getManager(person.id)
+                val staffId = findStaffIdForEmailAddress(emailAddress) ?: manager.staffId
+                val fullNotes = """
+                |This contact was created automatically from a forwarded email sent by ${message.fromEmailAddress} ${message.onAt}.
+                |Subject: ${message.subject}
+                |
+                |${htmlToMarkdownConverter.convert(message.bodyContent.withoutFooter())}
+                """.trimMargin()
+                val contact = contactRepository.save(
+                    Contact(
+                        personId = person.id,
+                        externalReference = "urn:uk:gov:hmpps:justice-email:${message.id}",
+                        type = contactTypeRepository.getByCode(EMAIL),
+                        date = message.receivedDateTime,
+                        startTime = message.receivedDateTime,
+                        description = "Email - ${message.subject.replace(CRN_REGEX.toRegex(), "").trim()}".truncated(),
+                        notes = fullNotes,
+                        staffId = staffId,
+                        teamId = manager.teamId,
+                        providerId = manager.providerId,
+                        eventId = event?.id,
+                    )
                 )
-            )
-            audit["contactId"] = contact.id
+                audit["contactId"] = contact.id
 
+                telemetryService.trackEvent(
+                    "CreatedContact", mapOf(
+                        "crn" to crn,
+                        "staffId" to staffId.toString(),
+                        "contactId" to contact.id.toString(),
+                        "messageId" to message.id,
+                    )
+                )
+            }
+        } catch (e: IgnorableMessageException) {
             telemetryService.trackEvent(
-                "CreatedContact", mapOf(
-                    "crn" to crn,
-                    "staffId" to staffId.toString(),
-                    "contactId" to contact.id.toString(),
+                "EmailIgnored", mapOf(
+                    "reason" to e.message,
                     "messageId" to message.id,
                 )
             )
         }
-    } catch (_: IgnorableMessageException) {
     }
 
     private fun EmailMessage.extractCrn(): String {
@@ -133,7 +141,10 @@ class Handler(
         return when (matchingStaffIds.size) {
             0 -> null
             1 -> matchingStaffIds.single()
-            else -> error("Multiple staff records found for $emailAddress")
+            else -> throw IgnorableMessageException(
+                "Multiple staff records found for email address",
+                mapOf("staffIds" to matchingStaffIds.joinToString())
+            )
         }
     }
 

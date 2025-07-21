@@ -6,7 +6,10 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertDoesNotThrow
 import org.junit.jupiter.api.assertThrows
 import org.mockito.Mockito.atLeastOnce
-import org.mockito.kotlin.*
+import org.mockito.kotlin.any
+import org.mockito.kotlin.argumentCaptor
+import org.mockito.kotlin.eq
+import org.mockito.kotlin.verify
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.bean.override.mockito.MockitoBean
@@ -160,8 +163,8 @@ internal class IntegrationTest {
     @Test
     fun `error when multiple staff records have the same email address`() {
         val notification = Notification(get<EmailMessage>("multiple-staff"))
-        val exception = assertThrows<IllegalStateException> { handler.handle(notification) }
-        assertThat(exception.message, equalTo("Multiple staff records found for duplicate@justice.gov.uk"))
+        assertDoesNotThrow { handler.handle(notification) }
+        verify(telemetryService).trackEvent(eq("EmailIgnored"), any(), any())
     }
 
     @Test
