@@ -1,9 +1,8 @@
-package uk.gov.justice.digital.hmpps.utils.uk.gov.justice.digital.hmpps.utils
+package uk.gov.justice.digital.hmpps.utils
 
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.Test
-import uk.gov.justice.digital.hmpps.utils.SearchHelpers
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 

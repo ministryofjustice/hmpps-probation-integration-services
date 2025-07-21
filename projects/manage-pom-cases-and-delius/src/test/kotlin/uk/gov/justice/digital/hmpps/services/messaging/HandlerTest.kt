@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.messaging
+package uk.gov.justice.digital.hmpps.services.messaging
 
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
@@ -15,6 +15,8 @@ import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
 import uk.gov.justice.digital.hmpps.message.MessageAttributes
 import uk.gov.justice.digital.hmpps.message.Notification
 import uk.gov.justice.digital.hmpps.messaging.Notifier.Companion.BULK_HANDOVER_DATE_UPDATE
+import uk.gov.justice.digital.hmpps.messaging.PomCaseEventConverter
+import uk.gov.justice.digital.hmpps.messaging.PomCaseMessageHandler
 import uk.gov.justice.digital.hmpps.services.HandoverDatesChanged
 import uk.gov.justice.digital.hmpps.services.PomAllocated
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService

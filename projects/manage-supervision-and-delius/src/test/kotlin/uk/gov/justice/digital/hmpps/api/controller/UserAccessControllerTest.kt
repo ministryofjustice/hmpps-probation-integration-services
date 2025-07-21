@@ -13,7 +13,7 @@ import uk.gov.justice.digital.hmpps.service.UserAccessService
 import uk.gov.justice.digital.hmpps.service.UserService
 
 @ExtendWith(MockitoExtension::class)
-internal class UserControllerTest {
+internal class UserAccessControllerTest {
     @Mock
     lateinit var userAccessService: UserAccessService
 
