@@ -14,6 +14,7 @@ import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator.RD_DIS
 import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator.RD_DISABILITY_TYPE
 import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator.RD_NATIONALITY
 import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator.RD_RELIGION
+import uk.gov.justice.digital.hmpps.data.generator.RegistrationGenerator.INVALID_MAPPA_LEVEL
 import uk.gov.justice.digital.hmpps.model.Category
 import uk.gov.justice.digital.hmpps.model.Level
 import uk.gov.justice.digital.hmpps.user.AuditUserRepository
@@ -57,12 +58,15 @@ class DataLoader(
                 persist(RD_DISABILITY_TYPE)
                 persist(RD_DISABILITY_CONDITION)
                 persist(RD_ADDRESS_STATUS)
+                persist(RegistrationGenerator.INVALID_MAPPA_LEVEL)
                 persist(DataGenerator.DEFAULT_PROVIDER)
                 persist(DataGenerator.DEFAULT_TEAM)
                 persist(DataGenerator.JOHN_SMITH)
                 persist(DataGenerator.JS_USER)
                 persist(DataGenerator.PERSON)
+                persist(DataGenerator.PERSON_2)
                 persist(DataGenerator.PERSON_MANAGER)
+                persist(DataGenerator.PERSON_MANAGER_2)
                 persist(PersonGenerator.generateAddress(PersonGenerator.DEFAULT))
                 persist(DataGenerator.OFFENCE)
                 persist(DataGenerator.COURT)
@@ -88,6 +92,16 @@ class DataLoader(
                         RegistrationGenerator.LEVELS[Level.M1.name],
                         reviewDate = LocalDate.now().plusMonths(6),
                         notes = "Mappa Detail for ${DataGenerator.PERSON.crn}"
+                    )
+                )
+                persist(
+                    RegistrationGenerator.generate(
+                        RegistrationGenerator.MAPPA_TYPE,
+                        RegistrationGenerator.CATEGORIES[Category.M2.name],
+                        INVALID_MAPPA_LEVEL,
+                        person = DataGenerator.PERSON_2,
+                        reviewDate = LocalDate.now().plusMonths(6),
+                        notes = "Invalid mappa level ${DataGenerator.PERSON_2.crn}"
                     )
                 )
                 persist(PersonGenerator.EXCLUSION)

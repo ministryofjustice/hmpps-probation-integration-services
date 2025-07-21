@@ -16,8 +16,18 @@ object DataGenerator {
     val JS_USER = StaffUser(JOHN_SMITH, "john-smith", IdGenerator.getAndIncrement())
 
     val PERSON = PersonGenerator.DEFAULT
+    val PERSON_2 = PersonGenerator.DEFAULT_2
     val PERSON_MANAGER = PersonManager(
         PERSON,
+        DEFAULT_PROVIDER,
+        DEFAULT_TEAM,
+        JOHN_SMITH,
+        true,
+        IdGenerator.getAndIncrement()
+    )
+
+    val PERSON_MANAGER_2 = PersonManager(
+        PERSON_2,
         DEFAULT_PROVIDER,
         DEFAULT_TEAM,
         JOHN_SMITH,
