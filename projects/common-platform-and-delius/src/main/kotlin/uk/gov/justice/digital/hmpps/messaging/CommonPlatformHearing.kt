@@ -42,7 +42,11 @@ data class Defendant(
     val masterDefendantId: String? = null,
     val pncId: String? = null,
     val croNumber: String? = null,
-    val isYouth: Boolean? = null
+    val isYouth: Boolean? = null,
+    val isPncMissing: Boolean? = null,
+    val isCroMissing: Boolean? = null,
+    val isYouthMissing: Boolean? = null,
+    val cprUUID: String? = null
 )
 
 data class HearingOffence(
