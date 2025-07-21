@@ -37,6 +37,9 @@ import uk.gov.justice.digital.hmpps.data.TestData.PSS_END_DATE_KEY_DATE_TYPE
 import uk.gov.justice.digital.hmpps.data.TestData.PSS_MAIN_TYPE
 import uk.gov.justice.digital.hmpps.data.TestData.PSS_REQUIREMENTS
 import uk.gov.justice.digital.hmpps.data.TestData.PSS_SUB_TYPE
+import uk.gov.justice.digital.hmpps.data.TestData.REGISTER_CATEGORY
+import uk.gov.justice.digital.hmpps.data.TestData.REGISTER_TYPE
+import uk.gov.justice.digital.hmpps.data.TestData.REGISTRATION
 import uk.gov.justice.digital.hmpps.data.TestData.RELEASE
 import uk.gov.justice.digital.hmpps.data.TestData.REQUIREMENTS
 import uk.gov.justice.digital.hmpps.data.TestData.REQUIREMENT_MAIN_TYPE
@@ -52,6 +55,7 @@ import uk.gov.justice.digital.hmpps.data.TestData.USER_WITH_LIMITED_ACCESS
 import uk.gov.justice.digital.hmpps.data.generator.IdGenerator.id
 import uk.gov.justice.digital.hmpps.repository.EventRepository
 import uk.gov.justice.digital.hmpps.repository.PersonRepository
+import uk.gov.justice.digital.hmpps.repository.RegistrationRepository
 import uk.gov.justice.digital.hmpps.user.AuditUser
 import uk.gov.justice.digital.hmpps.user.AuditUserRepository
 
@@ -87,6 +91,8 @@ class DataLoader(
     private val offenceRepository: OffenceEntityRepository,
     private val mainOffenceRepository: MainOffenceRepository,
     private val additionalOffenceRepository: AdditionalOffenceRepository,
+    private val registerTypeRepository: RegisterTypeRepository,
+    private val registrationRepository: RegistrationRepository,
 ) : ApplicationListener<ApplicationReadyEvent> {
     @PostConstruct
     fun saveAuditUser() {
@@ -140,5 +146,8 @@ class DataLoader(
         offenceRepository.saveAll(OFFENCES)
         mainOffenceRepository.save(MAIN_OFFENCE)
         additionalOffenceRepository.save(ADDITIONAL_OFFENCE)
+        registerTypeRepository.save(REGISTER_TYPE)
+        referenceDataRepository.save(REGISTER_CATEGORY)
+        registrationRepository.save(REGISTRATION)
     }
 }

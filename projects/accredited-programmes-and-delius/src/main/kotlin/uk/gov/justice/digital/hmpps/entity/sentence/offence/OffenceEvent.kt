@@ -4,6 +4,7 @@ import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.NumericBooleanConverter
+import uk.gov.justice.digital.hmpps.entity.PersonCrn
 
 @Entity
 @Immutable
@@ -19,7 +20,7 @@ class OffenceEvent(
 
     @ManyToOne
     @JoinColumn(name = "offender_id")
-    val person: OffencePerson,
+    val person: PersonCrn,
 
     @OneToMany(mappedBy = "event")
     val mainOffence: List<MainOffence>,

@@ -5,6 +5,8 @@ import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.NumericBooleanConverter
 import uk.gov.justice.digital.hmpps.entity.ReferenceData
+import uk.gov.justice.digital.hmpps.entity.sentence.component.LicenceCondition
+import uk.gov.justice.digital.hmpps.entity.sentence.component.Requirement
 import uk.gov.justice.digital.hmpps.entity.sentence.custody.Custody
 import java.time.LocalDate
 

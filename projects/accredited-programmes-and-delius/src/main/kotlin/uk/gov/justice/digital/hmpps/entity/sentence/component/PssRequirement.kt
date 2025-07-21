@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.entity.sentence
+package uk.gov.justice.digital.hmpps.entity.sentence.component
 
 import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
