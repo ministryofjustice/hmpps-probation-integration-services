@@ -44,8 +44,8 @@ class Referral(
     val categoryId: Long,
     val referralGroupId: Long?,
 
-    val referringTeamId: Long,
-    val referringStaffId: Long,
+    val referringTeamId: Long?,
+    val referringStaffId: Long?,
     @Column(columnDefinition = "varchar2(400)")
     val reasonForReferral: String?,
     val referralSourceId: Long,
