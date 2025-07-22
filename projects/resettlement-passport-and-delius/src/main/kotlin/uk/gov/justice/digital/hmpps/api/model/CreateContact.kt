@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.api.model
 
 import io.swagger.v3.oas.annotations.media.Schema
+import jakarta.validation.Valid
 import jakarta.validation.constraints.NotBlank
 import java.time.ZonedDateTime
 
@@ -13,10 +14,10 @@ data class CreateContact(
     val type: CaseNoteType,
     val description: String?,
     val dateTime: ZonedDateTime,
-    @field:NotBlank
+    @NotBlank
     val notes: String,
 
-    @NotBlank
+    @Valid
     val author: Author
 ) {
     enum class CaseNoteType(val code: String) {
@@ -26,12 +27,12 @@ data class CreateContact(
 }
 
 data class Author(
-    @field:NotBlank
+    @NotBlank
     val prisonCode: String,
 
-    @field:NotBlank
+    @NotBlank
     val forename: String,
 
-    @field:NotBlank
+    @NotBlank
     val surname: String
 )
