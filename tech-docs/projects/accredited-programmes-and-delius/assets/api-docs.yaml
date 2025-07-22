@@ -98,6 +98,24 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Offences"
+  /case/{crn}/registrations:
+    get:
+      tags:
+      - Cases
+      operationId: getRegistrations
+      parameters:
+      - name: crn
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Registrations"
   /case/{crn}/personal-details:
     get:
       tags:
@@ -228,6 +246,32 @@ components:
       required:
       - additionalOffences
       - mainOffence
+    Registration:
+      type: object
+      properties:
+        type:
+          $ref: "#/components/schemas/CodedValue"
+        category:
+          $ref: "#/components/schemas/CodedValue"
+        date:
+          type: string
+          format: date
+        nextReviewDate:
+          type: string
+          format: date
+      required:
+      - category
+      - date
+      - type
+    Registrations:
+      type: object
+      properties:
+        registrations:
+          type: array
+          items:
+            $ref: "#/components/schemas/Registration"
+      required:
+      - registrations
     Name:
       type: object
       properties:
