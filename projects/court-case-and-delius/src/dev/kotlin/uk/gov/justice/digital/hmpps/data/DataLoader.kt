@@ -250,7 +250,7 @@ class DataLoader(
                 currentEvent.id,
                 DocumentType.CONVICTION_DOCUMENT.name,
                 "EVENT",
-                alfrescoId = "alfrescoId"
+                alfrescoId = "00000000-0000-0000-0000-000000000001"
             )
         )
 

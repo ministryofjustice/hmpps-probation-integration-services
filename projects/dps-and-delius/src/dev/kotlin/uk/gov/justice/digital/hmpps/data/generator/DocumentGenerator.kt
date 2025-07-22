@@ -2,10 +2,14 @@ package uk.gov.justice.digital.hmpps.data.generator
 
 import uk.gov.justice.digital.hmpps.entity.DocumentEntity
 import java.time.ZonedDateTime
-import java.util.UUID
+import java.util.*
 
 object DocumentGenerator {
-    val OFFENDER = generate("OFFENDER", primaryKeyId = PersonGenerator.DEFAULT.id, alfrescoId = "uuid1")
+    val OFFENDER = generate(
+        "OFFENDER",
+        primaryKeyId = PersonGenerator.DEFAULT.id,
+        alfrescoId = "00000000-0000-0000-0000-000000000001"
+    )
     val PREVIOUS_CONVICTIONS = generate("OFFENDER", "PREVIOUS_CONVICTION", primaryKeyId = PersonGenerator.DEFAULT.id)
     val EVENT = generate("EVENT", primaryKeyId = EventGenerator.EVENT.id)
     val CPS_PACK = generate("EVENT", "CPS_PACK", primaryKeyId = EventGenerator.EVENT.id)

@@ -54,7 +54,10 @@ internal class DocumentsIntegrationTest {
     fun `call download document by id`() {
         val crn = PersonGenerator.CURRENTLY_MANAGED.crn
 
-        mockMvc.perform(get("/probation-case/$crn/documents/alfrescoId").accept("application/octet-stream").withToken())
+        mockMvc.perform(
+            get("/probation-case/$crn/documents/00000000-0000-0000-0000-000000000001").accept("application/octet-stream")
+                .withToken()
+        )
             .andExpect(MockMvcResultMatchers.request().asyncStarted())
             .andDo(MvcResult::getAsyncResult)
             .andExpect(status().is2xxSuccessful)

@@ -124,7 +124,8 @@ class SentenceServiceTest {
             null,
             ReferenceData(1, "T", "Ended")
         )
-        val courtDocumentDetails = CourtDocs("A001", LocalDate.now(), "Pre Sentence Event")
+        val courtDocumentDetails =
+            CourtDocs("00000000-0000-0000-0000-000000000001", LocalDate.now(), "Pre Sentence Event")
 
         whenever(personRepository.findByCrn(PersonGenerator.OVERVIEW.crn)).thenReturn(PersonGenerator.OVERVIEW)
 
@@ -198,7 +199,7 @@ class SentenceServiceTest {
                         null
                     ),
                 ),
-                listOf(CourtDocument("A001", LocalDate.now(), "Pre Sentence Event")),
+                listOf(CourtDocument("00000000-0000-0000-0000-000000000001", LocalDate.now(), "Pre Sentence Event")),
                 "65 hours 36 minutes completed (of 70 hours)",
                 listOf()
             )

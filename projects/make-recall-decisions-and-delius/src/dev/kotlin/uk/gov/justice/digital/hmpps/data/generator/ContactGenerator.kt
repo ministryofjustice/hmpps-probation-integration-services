@@ -25,8 +25,8 @@ object ContactGenerator {
         generate(notes = "system-generated", LocalDate.now().minusDays(1), type = SYSTEM_GENERATED_TYPE)
     val WITH_DOCUMENTS = generate(notes = "documents", LocalDate.now().minusDays(2)).set(Contact::documents) {
         listOf(
-            generateContactDocument(it, "uuid1", "doc1"),
-            generateContactDocument(it, "uuid2", "doc2")
+            generateContactDocument(it, "00000000-0000-0000-0000-000000000001", "doc1"),
+            generateContactDocument(it, "00000000-0000-0000-0000-000000000002", "doc2")
         )
     }
     val AP_RESIDENCE_PLAN_PREPARED_CONTACT =

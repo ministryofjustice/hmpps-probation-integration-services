@@ -22,7 +22,10 @@ internal class DocIntegrationTest {
     @Test
     fun `document is downloaded`() {
         mockMvc
-            .perform(get("/documents/A000001/uuid1").accept("application/octet-stream").withToken())
+            .perform(
+                get("/documents/A000001/00000000-0000-0000-0000-000000000001").accept("application/octet-stream")
+                    .withToken()
+            )
             .andExpect(request().asyncStarted())
             .andDo(MvcResult::getAsyncResult)
             .andExpect(status().is2xxSuccessful)
@@ -42,13 +45,13 @@ internal class DocIntegrationTest {
         mockMvc
             .perform(get("/documents/${PersonGenerator.DEFAULT.crn}/all").withToken())
             .andExpect(status().isOk)
-            .andExpect(jsonPath("$[0].id", equalTo("uuid1")))
+            .andExpect(jsonPath("$[0].id", equalTo("00000000-0000-0000-0000-000000000001")))
             .andExpect(jsonPath("$[0].level", equalTo("Conviction")))
             .andExpect(jsonPath("$[0].eventNumber", equalTo("8")))
             .andExpect(jsonPath("$[0].filename", equalTo("test.doc")))
             .andExpect(jsonPath("$[0].typeCode", equalTo("CONVICTION_DOCUMENT")))
             .andExpect(jsonPath("$[0].typeDescription", equalTo("Sentence related")))
-            .andExpect(jsonPath("$[1].id", equalTo("uuid2")))
+            .andExpect(jsonPath("$[1].id", equalTo("00000000-0000-0000-0000-000000000002")))
             .andExpect(jsonPath("$[1].level", equalTo("Offender")))
             .andExpect(jsonPath("$[1].filename", equalTo("offender.doc")))
             .andExpect(jsonPath("$[1].typeCode", equalTo("OFFENDER_DOCUMENT")))

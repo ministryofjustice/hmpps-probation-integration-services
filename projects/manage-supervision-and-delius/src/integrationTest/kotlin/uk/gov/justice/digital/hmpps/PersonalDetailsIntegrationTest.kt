@@ -159,8 +159,8 @@ internal class PersonalDetailsIntegrationTest {
         assertThat(res.documents.size, equalTo(2))
         assertThat(res.documents[0].name, equalTo("induction.doc"))
         assertThat(res.documents[1].name, equalTo("other.doc"))
-        assertThat(res.documents[0].id, equalTo("A001"))
-        assertThat(res.documents[1].id, equalTo("A002"))
+        assertThat(res.documents[0].id, equalTo("00000000-0000-0000-0000-000000000001"))
+        assertThat(res.documents[1].id, equalTo("00000000-0000-0000-0000-000000000002"))
         assertThat(res.aliases[0].forename, equalTo(ALIAS_1.forename))
         assertThat(res.genderIdentity, equalTo("Test Gender Identity"))
         assertThat(res.selfDescribedGender, equalTo("Some gender description"))
@@ -202,7 +202,10 @@ internal class PersonalDetailsIntegrationTest {
 
     @Test
     fun `document can be downloaded`() {
-        mockMvc.perform(get("/personal-details/X000005/document/A001").accept("application/octet-stream").withToken())
+        mockMvc.perform(
+            get("/personal-details/X000005/document/00000000-0000-0000-0000-000000000001").accept("application/octet-stream")
+                .withToken()
+        )
             .andExpect(MockMvcResultMatchers.request().asyncStarted())
             .andDo(MvcResult::getAsyncResult)
             .andExpect(status().is2xxSuccessful)

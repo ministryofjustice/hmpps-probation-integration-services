@@ -18,7 +18,7 @@ object DocumentGenerator {
         createdAt = ZonedDateTime.now().minusDays(3),
         lastUpdatedUserId = AP_USER_2.userId,
         lastSaved = ZonedDateTime.now().minusDays(2),
-        alfrescoId = "uuidap1",
+        alfrescoId = "00000000-0000-0000-0000-000000000001",
         name = "ap_doc_1"
     )
 
@@ -27,7 +27,7 @@ object DocumentGenerator {
         createdAt = ZonedDateTime.now().minusDays(2),
         lastUpdatedUserId = AP_USER_1.userId,
         lastSaved = ZonedDateTime.now().minusDays(1),
-        alfrescoId = "uuidap2",
+        alfrescoId = "00000000-0000-0000-0000-000000000002",
         name = "ap_doc_2"
     )
 
@@ -36,7 +36,7 @@ object DocumentGenerator {
         createdAt = ZonedDateTime.now().minusDays(1),
         lastUpdatedUserId = AP_USER_3.userId,
         lastSaved = ZonedDateTime.now().minusDays(1),
-        alfrescoId = "uuidap3",
+        alfrescoId = "00000000-0000-0000-0000-000000000003",
         name = "ap_doc_3"
     )
 

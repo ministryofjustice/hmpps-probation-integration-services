@@ -81,7 +81,7 @@ internal class PersonalDetailsControllerTest {
     @Test
     fun `calls personal details service to download document`() {
         val crn = "X000005"
-        val alfrescoId = "A001"
+        val alfrescoId = "00000000-0000-0000-0000-000000000001"
         val expectedResponse = ResponseEntity<StreamingResponseBody>(HttpStatus.OK)
         whenever(personalDetailsService.downloadDocument(crn, alfrescoId)).thenReturn(expectedResponse)
         val res = controller.downloadDocument(crn, alfrescoId)
