@@ -20,6 +20,7 @@ import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.security.ServiceContext
 import java.net.http.HttpClient
 import java.time.Duration
+import java.util.*
 
 @Component
 @ConditionalOnProperty("integrations.alfresco.url")
@@ -54,8 +55,9 @@ class AlfrescoClient(
             }, false) ?: throw RuntimeException("Document text search failed")
     }
 
-    fun streamDocument(id: String, filename: String): ResponseEntity<StreamingResponseBody> =
-        getDocumentById(id).exchange({ _, res ->
+    fun streamDocument(id: String, filename: String): ResponseEntity<StreamingResponseBody> {
+        UUID.fromString(id) // validate input
+        return getDocumentById(id).exchange({ _, res ->
             when (res.statusCode) {
                 HttpStatus.OK -> ResponseEntity.ok()
                     .headers {
@@ -75,6 +77,7 @@ class AlfrescoClient(
                 else -> throw RuntimeException("Failed to download document. Alfresco responded with ${res.statusCode}.")
             }
         }, false) ?: throw NotFoundException("Document content", "alfrescoId", id)
+    }
 
     private fun HttpHeaders.copy(key: String, res: ConvertibleClientHttpResponse) {
         res.headers[key]?.also { this[key] = it }

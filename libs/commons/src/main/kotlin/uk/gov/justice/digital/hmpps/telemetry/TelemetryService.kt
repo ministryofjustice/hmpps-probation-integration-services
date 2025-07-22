@@ -5,6 +5,8 @@ import com.microsoft.applicationinsights.telemetry.TelemetryContext
 import org.slf4j.LoggerFactory
 import org.springframework.scheduling.annotation.Async
 import org.springframework.stereotype.Service
+import java.net.URLEncoder
+import java.nio.charset.Charset
 
 @Service
 class TelemetryService(private val telemetryClient: TelemetryClient = TelemetryClient()) {
@@ -18,7 +20,7 @@ class TelemetryService(private val telemetryClient: TelemetryClient = TelemetryC
         properties: Map<String, String?> = mapOf(),
         metrics: Map<String, Double?> = mapOf()
     ) {
-        log.debug("{} {} {}", name, properties, metrics)
+        log.debug("{} {} {}", URLEncoder.encode(name, Charset.defaultCharset()), properties, metrics)
         telemetryClient.trackEvent(
             name,
             properties.filterValues { it != null },
@@ -32,7 +34,7 @@ class TelemetryService(private val telemetryClient: TelemetryClient = TelemetryC
         properties: Map<String, String?> = mapOf(),
         metrics: Map<String, Double?> = mapOf()
     ) {
-        log.debug("{} {} {}", exception.message, properties, metrics)
+        log.debug("{} {} {}", URLEncoder.encode(exception.message, Charset.defaultCharset()), properties, metrics)
         telemetryClient.trackException(
             exception,
             properties.filterValues { it != null },
