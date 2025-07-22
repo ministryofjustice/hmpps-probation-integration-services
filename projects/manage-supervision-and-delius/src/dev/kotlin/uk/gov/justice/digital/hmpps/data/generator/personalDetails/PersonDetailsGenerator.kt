@@ -335,8 +335,10 @@ object PersonDetailsGenerator {
         null,
     )
 
-    val DOCUMENT_1 = generateDocument(PERSONAL_DETAILS.id, "A001", "induction.doc", "DOCUMENT")
-    val DOCUMENT_2 = generateDocument(PERSONAL_DETAILS.id, "A002", "other.doc", "DOCUMENT")
+    val DOCUMENT_1 =
+        generateDocument(PERSONAL_DETAILS.id, "00000000-0000-0000-0000-000000000001", "induction.doc", "DOCUMENT")
+    val DOCUMENT_2 =
+        generateDocument(PERSONAL_DETAILS.id, "00000000-0000-0000-0000-000000000002", "other.doc", "DOCUMENT")
 
     fun generateContactAddress(
         addressNumber: String,

@@ -12,8 +12,10 @@ import org.springframework.ldap.core.AttributesMapper
 import org.springframework.ldap.core.LdapTemplate
 import org.springframework.ldap.query.LdapQueryBuilder.query
 import org.springframework.test.annotation.DirtiesContext
+import org.springframework.test.json.JsonCompareMode
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 
@@ -36,6 +38,14 @@ internal class AuthenticationIntegrationTest {
     fun `failed authentication`() {
         mockMvc.perform(authenticate("""{"username": "test.user", "password": "incorrect"}"""))
             .andExpect(status().isUnauthorized)
+            .andExpect(
+                content().json(
+                    """{
+                      "status": 401,
+                      "message": "Authentication failure"
+                    }""".trimIndent(), JsonCompareMode.STRICT
+                )
+            )
     }
 
     @Test

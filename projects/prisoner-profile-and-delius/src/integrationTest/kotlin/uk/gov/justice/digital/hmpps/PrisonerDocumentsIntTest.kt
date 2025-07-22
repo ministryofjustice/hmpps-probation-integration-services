@@ -92,7 +92,9 @@ internal class PrisonerDocumentsIntTest {
 
     @Test
     fun `document can be downloaded`() {
-        mockMvc.perform(get("/document/uuid1").accept("application/octet-stream").withToken())
+        mockMvc.perform(
+            get("/document/00000000-0000-0000-0000-000000000001").accept("application/octet-stream").withToken()
+        )
             .andExpect(request().asyncStarted())
             .andDo(MvcResult::getAsyncResult)
             .andExpect(status().is2xxSuccessful)

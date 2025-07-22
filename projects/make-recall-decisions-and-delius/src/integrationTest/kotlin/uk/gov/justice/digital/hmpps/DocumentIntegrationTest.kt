@@ -23,7 +23,9 @@ internal class DocumentIntegrationTest {
 
     @Test
     fun `document is downloaded`() {
-        mockMvc.perform(get("/document/X000004/uuid1").accept("application/octet-stream").withToken())
+        mockMvc.perform(
+            get("/document/X000004/00000000-0000-0000-0000-000000000001").accept("application/octet-stream").withToken()
+        )
             .andExpect(request().asyncStarted())
             .andDo(MvcResult::getAsyncResult)
             .andExpect(status().is2xxSuccessful)
@@ -47,7 +49,7 @@ internal class DocumentIntegrationTest {
             .andReturn().response.contentAsJson<Document>()
 
         assertThat(res.author, equalTo("Steve Smith"))
-        assertThat(res.id, equalTo("uuidap3"))
+        assertThat(res.id, equalTo("00000000-0000-0000-0000-000000000003"))
         assertThat(res.name, equalTo("ap_doc_3"))
     }
 

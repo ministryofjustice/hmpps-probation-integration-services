@@ -6,6 +6,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.entity.ReferenceData
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.ZonedDateTime
+import java.util.*
 
 object DocumentEntityGenerator {
     val INSTITUTIONAL_REPORT_TYPE = ReferenceData("IR", "institutional report type", IdGenerator.getAndIncrement())
@@ -25,7 +26,7 @@ object DocumentEntityGenerator {
         primaryKeyId: Long?,
         type: String,
         tableName: String?,
-        alfrescoId: String = "anyid"
+        alfrescoId: String = UUID.randomUUID().toString(),
     ) =
         DocumentEntity(
             IdGenerator.getAndIncrement(),

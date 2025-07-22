@@ -126,7 +126,7 @@ internal class PersonalDetailsServiceTest {
     @Test
     fun `calls download document function`() {
         val crn = "X000005"
-        val alfrescoId = "A001"
+        val alfrescoId = "00000000-0000-0000-0000-000000000001"
         val expectedResponse = ResponseEntity<StreamingResponseBody>(HttpStatus.OK)
         whenever(
             documentRepository.findNameByPersonCrnAndAlfrescoId(

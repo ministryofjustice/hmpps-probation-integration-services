@@ -10,14 +10,14 @@ object DocumentGenerator {
         tableName = "EVENT",
         name = "test.doc",
         primaryKeyId = PersonGenerator.ANOTHER_EVENT.id,
-        alfrescoId = "uuid1"
+        alfrescoId = "00000000-0000-0000-0000-000000000001"
     )
 
     val PERSON = generate(
         tableName = "OFFENDER",
         name = "offender.doc",
         primaryKeyId = PersonGenerator.DEFAULT.id,
-        alfrescoId = "uuid2"
+        alfrescoId = "00000000-0000-0000-0000-000000000002"
     )
 
     val PREVIOUS_CONVICTIONS = generate("OFFENDER", "PREVIOUS_CONVICTION", primaryKeyId = PersonGenerator.DEFAULT.id)
