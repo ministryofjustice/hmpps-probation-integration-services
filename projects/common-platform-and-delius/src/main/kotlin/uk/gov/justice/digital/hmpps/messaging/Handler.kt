@@ -9,8 +9,7 @@ import org.springframework.stereotype.Component
 import uk.gov.justice.digital.hmpps.converter.NotificationConverter
 import uk.gov.justice.digital.hmpps.dto.InsertRemandDTO
 import uk.gov.justice.digital.hmpps.flags.FeatureFlags
-import uk.gov.justice.digital.hmpps.integrations.delius.PncNumber
-import uk.gov.justice.digital.hmpps.integrations.delius.ProbationMatchRequest
+import uk.gov.justice.digital.hmpps.integrations.client.CorePersonClient
 import uk.gov.justice.digital.hmpps.message.Notification
 import uk.gov.justice.digital.hmpps.service.OffenceService
 import uk.gov.justice.digital.hmpps.service.PersonService
@@ -31,6 +30,7 @@ class Handler(
     private val remandService: RemandService,
     private val openSearchClient: OpenSearchClient,
     private val offenceService: OffenceService,
+    private val corePerson: CorePersonClient,
     private val notifier: Notifier
 ) : NotificationHandler<CommonPlatformHearing> {
 
@@ -66,25 +66,21 @@ class Handler(
 
         defendants.forEach { defendant ->
 
-            val matchRequest = defendant.toProbationMatchRequest() ?: return@forEach
+            val matchedPerson = corePerson.findByDefendantId(defendant.id)
 
-            val matchedPersonResponse = personService.matchPerson(matchRequest)
-
-            if (matchedPersonResponse.matches.isNotEmpty()) {
+            if (matchedPerson.identifiers.crns.isNotEmpty()) {
                 telemetryService.trackEvent(
                     "ProbationSearchMatchDetected", mapOf(
                         "hearingId" to notification.message.hearing.id,
                         "defendantId" to defendant.id,
-                        "crns" to matchedPersonResponse.matches.joinToString(", ") { it.offender.otherIds.crn })
+                        "crns" to matchedPerson.identifiers.crns.joinToString(", ", prefix = "[", postfix = "]")
+                    )
                 )
                 return@forEach
             }
 
-            val dateOfBirth = defendant.personDefendant?.personDetails?.dateOfBirth
-                ?: throw IllegalArgumentException("Date of birth not found in message")
-
             // Under 10 years old validation
-            dateOfBirth.let {
+            matchedPerson.dateOfBirth?.also {
                 val age = Period.between(it, LocalDate.now()).years
                 require(age > 10) {
                     "Date of birth would indicate person is under ten years old: $it"
@@ -98,9 +94,8 @@ class Handler(
 
                 val mainOffence = offenceService.findMainOffence(remandedOffences) ?: return@forEach
 
-                val caseUrn =
-                    notification.message.hearing.prosecutionCases.find { it.defendants.contains(defendant) }?.prosecutionCaseIdentifier?.caseURN
-                        ?: return@forEach
+                val caseUrn = notification.message.hearing.prosecutionCases.find { it.defendants.contains(defendant) }
+                    ?.prosecutionCaseIdentifier?.caseURN ?: return@forEach
 
                 // Insert person and event
                 val insertRemandDTO = InsertRemandDTO(
@@ -123,27 +118,6 @@ class Handler(
                 )
             }
         }
-    }
-
-    fun Defendant.toProbationMatchRequest(): ProbationMatchRequest? {
-        val personDetails = this.personDefendant?.personDetails
-
-        val firstName = personDetails?.firstName
-        val lastName = personDetails?.lastName
-        val dateOfBirth = personDetails?.dateOfBirth
-
-        // Return null if any required fields are missing
-        if (firstName == null || lastName == null || dateOfBirth == null) {
-            return null
-        }
-
-        return ProbationMatchRequest(
-            firstName = firstName,
-            surname = lastName,
-            dateOfBirth = dateOfBirth,
-            pncNumber = PncNumber.from(this.pncId)?.matchValue(),
-            croNumber = this.croNumber
-        )
     }
 
     private fun insertPersonAndEvent(insertRemandDTO: InsertRemandDTO) {

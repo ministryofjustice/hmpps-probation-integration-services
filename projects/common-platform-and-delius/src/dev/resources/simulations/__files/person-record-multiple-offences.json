@@ -1,0 +1,21 @@
+{
+  "cprUUID": "b1786060-b200-4d04-a281-a066ffa4321b",
+  "firstName": "Example First Name",
+  "lastName": "Example Last Name",
+  "dateOfBirth": "2000-01-01",
+  "title": {
+    "code": "Mr",
+    "description": "Mr"
+  },
+  "sex": {
+    "code": "M",
+    "description": "Male"
+  },
+  "identifiers": {
+    "crns": [],
+    "defendantIds": [
+      "db63b0ce-b443-44e2-94f4-a2ef3216a695"
+    ]
+  }
+}
+

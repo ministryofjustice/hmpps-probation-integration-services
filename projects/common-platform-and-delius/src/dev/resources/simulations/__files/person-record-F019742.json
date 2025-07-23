@@ -1,0 +1,29 @@
+{
+  "cprUUID": "3e60c4e2-d122-4ab2-a3e0-9894a1daf0c6",
+  "firstName": "Example First Name",
+  "lastName": "Example Last Name",
+  "dateOfBirth": "2000-01-01",
+  "title": {
+    "code": "Mr",
+    "description": "Mr"
+  },
+  "sex": {
+    "code": "M",
+    "description": "Male"
+  },
+  "identifiers": {
+    "crns": [
+      "F019742"
+    ],
+    "defendantIds": [
+      "dd5ec519-12fb-4bde-a179-d062db7e6302"
+    ],
+    "pncs": [
+      "2000/0000000A"
+    ],
+    "cros": [
+      "000000/00A"
+    ]
+  }
+}
+

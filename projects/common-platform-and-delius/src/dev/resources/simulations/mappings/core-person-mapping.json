@@ -1,0 +1,43 @@
+{
+  "mappings": [
+    {
+      "request": {
+        "method": "GET",
+        "urlPath": "/core-person-record/person/commonplatform/dd5ec519-12fb-4bde-a179-d062db7e6302"
+      },
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "bodyFileName": "person-record-F019742.json"
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "urlPath": "/core-person-record/person/commonplatform/f3b3bdb3-10c4-48fe-a412-9924f47294d5"
+      },
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "bodyFileName": "person-record-no-crn.json"
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "urlPath": "/core-person-record/person/commonplatform/db63b0ce-b443-44e2-94f4-a2ef3216a695"
+      },
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "bodyFileName": "person-record-multiple-offences.json"
+      }
+    }
+  ]
+}

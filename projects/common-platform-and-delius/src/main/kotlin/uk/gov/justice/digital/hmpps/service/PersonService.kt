@@ -18,7 +18,6 @@ import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import java.time.Duration
 import java.time.LocalDate
 import java.time.LocalDateTime
-import kotlin.time.Duration.Companion.seconds
 
 @Service
 class PersonService(

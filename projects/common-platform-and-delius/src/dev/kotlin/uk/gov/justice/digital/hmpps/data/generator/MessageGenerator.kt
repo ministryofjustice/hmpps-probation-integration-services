@@ -5,6 +5,7 @@ import uk.gov.justice.digital.hmpps.resourceloader.ResourceLoader
 
 object MessageGenerator {
     val COMMON_PLATFORM_EVENT = ResourceLoader.message<CommonPlatformHearing>("common-platform-hearing")
+    val COMMON_PLATFORM_EVENT_WITH_CRN = ResourceLoader.message<CommonPlatformHearing>("common-platform-hearing-with-crn")
     val COMMON_PLATFORM_EVENT_DOB_ERROR =
         ResourceLoader.message<CommonPlatformHearing>("common-platform-hearing-dob-error")
     val COMMON_PLATFORM_EVENT_NO_CASES =
