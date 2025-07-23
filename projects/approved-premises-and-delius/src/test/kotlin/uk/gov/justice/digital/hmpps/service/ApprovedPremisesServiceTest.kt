@@ -14,6 +14,7 @@ import org.mockito.kotlin.anyOrNull
 import org.mockito.kotlin.check
 import org.mockito.kotlin.whenever
 import org.springframework.boot.context.event.ApplicationStartedEvent
+import uk.gov.justice.digital.hmpps.audit.service.OptimisationTables
 import uk.gov.justice.digital.hmpps.data.generator.*
 import uk.gov.justice.digital.hmpps.detail.DomainEventDetailService
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
@@ -141,6 +142,9 @@ internal class ApprovedPremisesServiceTest {
     @Mock
     lateinit var featureFlags: FeatureFlags
 
+    @Mock
+    lateinit var optimisationTables: OptimisationTables
+
     lateinit var addressService: AddressService
     lateinit var contactService: ContactService
     lateinit var nsiService: NsiService
@@ -191,7 +195,8 @@ internal class ApprovedPremisesServiceTest {
             contactService,
             referralService,
             referenceDataRepository,
-            eventRepository
+            eventRepository,
+            optimisationTables,
         )
         approvedPremisesService = ApprovedPremisesService(
             domainEventDetailService,

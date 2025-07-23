@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import uk.gov.justice.digital.hmpps.audit.service.OptimisationTables
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.BookingMade
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.PersonArrived
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.PersonDeparted
@@ -44,7 +45,8 @@ class NsiService(
     private val contactService: ContactService,
     private val referralService: ReferralService,
     private val referenceDataRepository: ReferenceDataRepository,
-    private val eventRepository: EventRepository
+    private val eventRepository: EventRepository,
+    private val optimisationTables: OptimisationTables,
 ) {
     fun preArrival(ap: ApprovedPremises, person: Person, details: BookingMade) {
         val existing = nsiRepository.findByPersonIdAndTypeCodeAndActualEndDateIsNull(
@@ -176,6 +178,7 @@ class NsiService(
         )
         nsi.referralContact(details.arrivedAt, staff, team)
         nsi.statusChangeContact(details.arrivedAt, staff, team)
+        optimisationTables.rebuild(person.id)
     }
 
     private fun Nsi.referralContact(date: ZonedDateTime, staff: Staff, team: Team) {
@@ -265,6 +268,7 @@ class NsiService(
         )
         nsi.referralContact(details.bookingMadeAt, staff, team)
         nsi.statusChangeContact(nsi.statusDate, staff, team)
+        optimisationTables.rebuild(person.id)
     }
 
     private fun PersonArrived.residencyRef() = EXT_REF_BOOKING_PREFIX + bookingId
