@@ -17,6 +17,9 @@ database:
       - ap_residence_id_seq
       - ap_preferred_id_seq
 
+    packages:
+      - pkg_triggersupport # for caseload rebuild
+
   audit:
     username: ApprovedPremisesAndDelius
     forename: Approved Premises
