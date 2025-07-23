@@ -12,6 +12,7 @@ import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator.AI_PRE
 import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator.RD_ADDRESS_STATUS
 import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator.RD_DISABILITY_CONDITION
 import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator.RD_DISABILITY_TYPE
+import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator.RD_ETHNICITY
 import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator.RD_NATIONALITY
 import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator.RD_RELIGION
 import uk.gov.justice.digital.hmpps.data.generator.RegistrationGenerator.INVALID_MAPPA_LEVEL
@@ -39,6 +40,8 @@ class DataLoader(
             with(entityManager) {
                 persist(ReferenceDataGenerator.DATASET_TYPE_OTHER)
                 persist(ReferenceDataGenerator.DATASET_TYPE_GENDER)
+                persist(ReferenceDataGenerator.DATASET_TYPE_ETHNICITY)
+                persist(ReferenceDataGenerator.DATASET_TYPE_ADDRESS_STATUS)
                 persist(ReferenceDataGenerator.RD_MALE)
                 persist(ReferenceDataGenerator.RD_FEMALE)
                 persist(RegistrationGenerator.CHILD_CONCERNS_TYPE)
@@ -58,7 +61,8 @@ class DataLoader(
                 persist(RD_DISABILITY_TYPE)
                 persist(RD_DISABILITY_CONDITION)
                 persist(RD_ADDRESS_STATUS)
-                persist(RegistrationGenerator.INVALID_MAPPA_LEVEL)
+                persist(RD_ETHNICITY)
+                persist(INVALID_MAPPA_LEVEL)
                 persist(DataGenerator.DEFAULT_PROVIDER)
                 persist(DataGenerator.DEFAULT_TEAM)
                 persist(DataGenerator.JOHN_SMITH)
