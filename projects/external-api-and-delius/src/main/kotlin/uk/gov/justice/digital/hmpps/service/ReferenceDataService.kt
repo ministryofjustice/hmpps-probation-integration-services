@@ -15,7 +15,10 @@ class ReferenceDataService(
         refData["PHONE_TYPE"] = PhoneTypes.entries.map { RefData(it.name, it.description) }.toMutableList()
         refData.putAll(
             registrationRepository.getReferenceData()
-                .groupByTo(LinkedHashMap(), { it.codeSet.trim() }, { RefData(it.code.trim(), it.description) })
+                .groupByTo(
+                    LinkedHashMap(),
+                    { it.codeSet.trim().replace(" ", "_") },
+                    { RefData(it.code.trim(), it.description) })
         )
         return ProbationReferenceData(refData)
     }

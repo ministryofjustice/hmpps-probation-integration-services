@@ -97,7 +97,7 @@ interface RegistrationRepository : JpaRepository<RegistrationEntity, Long> {
         select rdm.code_set_name as codeSet, rdl.code_value as code, rdl.code_description as description
         from r_standard_reference_list rdl join r_reference_data_master rdm 
         on rdm.reference_data_master_id = rdl.reference_data_master_id
-        where rdm.code_set_name in ('GENDER','ETHNICITY')
+        where rdm.code_set_name in ('GENDER','ETHNICITY','ADDRESS STATUS')
         union
         select 'REGISTER_TYPE' as set_name, rt.code, rt.description 
         from r_register_type rt
