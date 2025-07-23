@@ -47,7 +47,7 @@ internal class ReferenceDataIntegrationTest : BaseIntegrationTest() {
             )
         )
         Assertions.assertEquals(
-            response.probationReferenceData["ADDRESS_STATUS"],
+            response.probationReferenceData["ADDRESS_TYPE"],
             listOf(
                 RefData(RD_ADDRESS_STATUS.code, RD_ADDRESS_STATUS.description),
             )

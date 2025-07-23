@@ -94,7 +94,13 @@ interface RegistrationRepository : JpaRepository<RegistrationEntity, Long> {
 
     @Query(
         """
-        select rdm.code_set_name as codeSet, rdl.code_value as code, rdl.code_description as description
+        select 
+        case
+            when rdm.code_set_name = 'ADDRESS STATUS' then 'ADDRESS_TYPE'
+            else rdm.code_set_name
+        end as codeSet,
+        rdl.code_value as code, 
+        rdl.code_description as description
         from r_standard_reference_list rdl join r_reference_data_master rdm 
         on rdm.reference_data_master_id = rdl.reference_data_master_id
         where rdm.code_set_name in ('GENDER','ETHNICITY','ADDRESS STATUS')
