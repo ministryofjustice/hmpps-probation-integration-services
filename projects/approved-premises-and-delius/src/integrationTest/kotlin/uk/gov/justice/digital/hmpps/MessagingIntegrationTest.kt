@@ -125,7 +125,10 @@ internal class MessagingIntegrationTest {
             .single { it.person.crn == event.message.crn() && it.type.code == ContactTypeCode.APPLICATION_SUBMITTED.code }
         assertThat(contact.alert, equalTo(true))
         assertThat(contact.eventId, equalTo(PersonGenerator.EVENT.id))
-        assertThat(contact.externalReference, equalTo("$SERVICE_URN_BASE:application-submitted:68df9f6c-3fcb-4ec6-8fcf-96551cd9b080"))
+        assertThat(
+            contact.externalReference,
+            equalTo("$SERVICE_URN_BASE:application-submitted:68df9f6c-3fcb-4ec6-8fcf-96551cd9b080")
+        )
     }
 
     @Test
@@ -156,7 +159,10 @@ internal class MessagingIntegrationTest {
         )
         assertThat(contact.eventId, equalTo(PersonGenerator.EVENT.id))
         assertThat(contact.date, equalTo(LocalDate.of(2022, 11, 30)))
-        assertThat(contact.externalReference, equalTo("$SERVICE_URN_BASE:application-assessed:4e00113f-e46f-4a5f-93d3-4b60fed4cab0"))
+        assertThat(
+            contact.externalReference,
+            equalTo("$SERVICE_URN_BASE:application-assessed:4e00113f-e46f-4a5f-93d3-4b60fed4cab0")
+        )
     }
 
     @Test
@@ -194,7 +200,10 @@ internal class MessagingIntegrationTest {
         assertThat(contact.locationId, equalTo(OfficeLocationGenerator.DEFAULT.id))
         assertThat(contact.eventId, equalTo(PersonGenerator.EVENT.id))
         assertThat(contact.date, equalTo(LocalDate.of(2022, 11, 30)))
-        assertThat(contact.externalReference, equalTo("$SERVICE_URN_BASE:booking-made:14c80733-4b6d-4f35-b724-66955aac320c"))
+        assertThat(
+            contact.externalReference,
+            equalTo("$SERVICE_URN_BASE:booking-made:14c80733-4b6d-4f35-b724-66955aac320c")
+        )
 
         val referrals = referralRepository.findAll()
             .filter { it.personId == contact.person.id && it.createdByUserId == UserGenerator.AUDIT_USER.id && it.eventId == contact.eventId }
@@ -265,7 +274,10 @@ internal class MessagingIntegrationTest {
         assertThat(contact.outcome?.code, equalTo(ContactOutcome.AP_NON_ARRIVAL_PREFIX + "D"))
         assertThat(contact.eventId, equalTo(PersonGenerator.EVENT.id))
         assertThat(contact.date, equalTo(LocalDate.of(2022, 11, 30)))
-        assertThat(contact.externalReference, equalTo("$SERVICE_URN_BASE:person-not-arrived:14c80733-4b6d-4f35-b724-66955aac320c"))
+        assertThat(
+            contact.externalReference,
+            equalTo("$SERVICE_URN_BASE:person-not-arrived:14c80733-4b6d-4f35-b724-66955aac320c")
+        )
 
         val referral =
             referralRepository.findAll().first { it.personId == contact.person.id && it.nonArrivalDate != null }
@@ -305,7 +317,10 @@ internal class MessagingIntegrationTest {
         assertThat(alertContact.locationId, equalTo(OfficeLocationGenerator.DEFAULT.id))
         assertThat(alertContact.eventId, equalTo(PersonGenerator.EVENT.id))
         assertThat(alertContact.tableName, equalTo("APPROVED_PREMISES_RESIDENCE"))
-        assertThat(alertContact.externalReference, equalTo("$SERVICE_URN_BASE:person-arrived:14c80733-4b6d-4f35-b724-66955aac320c"))
+        assertThat(
+            alertContact.externalReference,
+            equalTo("$SERVICE_URN_BASE:person-arrived:14c80733-4b6d-4f35-b724-66955aac320c")
+        )
 
         // And a residence NSI is created
         nsiRepository.findAll()
@@ -457,7 +472,10 @@ internal class MessagingIntegrationTest {
         assertThat(departureContact.eventId, equalTo(PersonGenerator.EVENT.id))
         assertThat(departureContact.description, equalTo("Departed from Hope House"))
         assertThat(departureContact.date, equalTo(LocalDate.of(2023, 1, 16)))
-        assertThat(departureContact.externalReference, equalTo("$SERVICE_URN_BASE:person-departed:14c80733-4b6d-4f35-b724-66955aac320c"))
+        assertThat(
+            departureContact.externalReference,
+            equalTo("$SERVICE_URN_BASE:person-departed:14c80733-4b6d-4f35-b724-66955aac320c")
+        )
 
         nsiRepository.findByPersonIdAndExternalReference(
             departureContact.person.id,
@@ -543,7 +561,10 @@ internal class MessagingIntegrationTest {
         assertThat(contact.locationId, equalTo(OfficeLocationGenerator.DEFAULT.id))
         assertThat(contact.eventId, equalTo(PersonGenerator.EVENT.id))
         assertThat(contact.date, equalTo(LocalDate.of(2023, 7, 25)))
-        assertThat(contact.externalReference, equalTo("$SERVICE_URN_BASE:booking-changed:364145f9-0af8-488e-9901-b4c46cd9ba37:14c80733-4b6d-4f35-b724-66955aac320c"))
+        assertThat(
+            contact.externalReference,
+            equalTo("$SERVICE_URN_BASE:booking-changed:364145f9-0af8-488e-9901-b4c46cd9ba37:14c80733-4b6d-4f35-b724-66955aac320c")
+        )
     }
 
     @Test
@@ -600,7 +621,10 @@ internal class MessagingIntegrationTest {
         )
         assertThat(contact.eventId, equalTo(PersonGenerator.EVENT.id))
         assertThat(contact.date, equalTo(LocalDate.of(2023, 7, 24)))
-        assertThat(contact.externalReference, equalTo("$SERVICE_URN_BASE:application-withdrawn:484b8b5e-6c3b-4400-b200-425bbe410713"))
+        assertThat(
+            contact.externalReference,
+            equalTo("$SERVICE_URN_BASE:application-withdrawn:484b8b5e-6c3b-4400-b200-425bbe410713")
+        )
     }
 
     @Test
@@ -640,7 +664,10 @@ internal class MessagingIntegrationTest {
         assertNull(contact.outcome)
         assertThat(contact.eventId, equalTo(PersonGenerator.EVENT.id))
         assertThat(contact.date, equalTo(LocalDate.of(2023, 7, 25)))
-        assertThat(contact.externalReference, equalTo("$SERVICE_URN_BASE:booking-cancelled:14c80733-4b6d-4f35-b724-66955aac320c"))
+        assertThat(
+            contact.externalReference,
+            equalTo("$SERVICE_URN_BASE:booking-cancelled:14c80733-4b6d-4f35-b724-66955aac320c")
+        )
 
         val referral = referralRepository.findAll().firstOrNull {
             it.personId == contact.person.id && it.eventId == contact.eventId
