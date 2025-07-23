@@ -30,6 +30,7 @@ object EventDetailsGenerator {
         eventDetails = ApplicationAssessed(
             applicationId = UUID.randomUUID().toString(),
             applicationUrl = "https://example.com",
+            assessmentId = UUID.randomUUID().toString(),
             assessedAt = ZonedDateTime.now(),
             assessedBy = assessedBy,
             decision = Decision.ACCEPTED,

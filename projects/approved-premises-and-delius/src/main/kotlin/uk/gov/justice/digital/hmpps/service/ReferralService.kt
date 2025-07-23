@@ -71,7 +71,8 @@ class ReferralService(
                             To view details of the Approved Premises booking, click here: ${details.applicationUrl}
                             """.trimIndent(),
                         description = "Approved Premises Booking for ${details.premises.name}",
-                        locationCode = ap.locationCode()
+                        locationCode = ap.locationCode(),
+                        externalReference = details.externalReference()
                     ),
                     person = person,
                     eventId = event.id,
@@ -97,12 +98,13 @@ class ReferralService(
                     "Previous: ${existing.referral.expectedArrivalDate.toDeliusDate()}${existing.referral.expectedDepartureDate?.let { " to ${it.toDeliusDate()}" }}",
                     "Current: ${details.arrivalOn.toDeliusDate()} to ${details.departureOn.toDeliusDate()}",
                     "For more details, click here: ${details.applicationUrl}"
-                ).joinToString(System.lineSeparator() + System.lineSeparator())
+                ).joinToString(System.lineSeparator() + System.lineSeparator()),
+                externalReference = details.externalReference()
             ),
             person = person,
             eventId = existing.referral.eventId,
             staff = staffRepository.getByCode(details.changedBy.staffCode),
-            probationAreaCode = ap.probationArea.code
+            probationAreaCode = ap.probationArea.code,
         )
         existing.referral.apply {
             expectedArrivalDate = details.arrivalOn
@@ -143,7 +145,8 @@ class ReferralService(
                 notes = listOfNotNull(
                     details.cancellationReason,
                     "For more details, click here: ${details.applicationUrl}"
-                ).joinToString(System.lineSeparator() + System.lineSeparator())
+                ).joinToString(System.lineSeparator() + System.lineSeparator()),
+                externalReference = details.externalReference()
             ),
             person = person,
             eventId = referral?.eventId ?: eventRepository.getEvent(person.id, details.eventNumber).id,
@@ -168,7 +171,8 @@ class ReferralService(
                 notes = listOfNotNull(
                     details.notes,
                     "For more details, click here: ${details.applicationUrl}"
-                ).joinToString(System.lineSeparator() + System.lineSeparator())
+                ).joinToString(System.lineSeparator() + System.lineSeparator()),
+                externalReference = details.externalReference()
             ),
             person = person,
             eventId = referral.eventId,

@@ -47,44 +47,44 @@ class ContactService(
             nsiId,
             details.typeCode,
             details.date
-        )
-            ?: run {
-                val contactTeam = team ?: teamRepository.getUnallocatedTeam(probationAreaCode)
-                val type = contactTypeRepository.getByCode(details.typeCode)
-                val contact = contactRepository.save(
-                    Contact(
-                        date = details.cancellationRecordedAt ?: details.date.toLocalDate(),
-                        startTime = details.date,
-                        type = type,
-                        outcome = details.outcomeCode?.let { contactOutcomeRepository.findByCode(it) },
-                        locationId = details.locationCode?.let { officeLocationRepository.findByCode(it) }?.id,
-                        description = details.description,
-                        person = person,
-                        staff = staff,
-                        team = contactTeam,
-                        notes = details.notes,
-                        alert = details.createAlert,
-                        eventId = eventId,
-                        nsiId = nsiId,
-                        primaryKeyId = residenceId,
-                        tableName = residenceId?.let { "APPROVED_PREMISES_RESIDENCE" }
+        ) ?: run {
+            val contactTeam = team ?: teamRepository.getUnallocatedTeam(probationAreaCode)
+            val type = contactTypeRepository.getByCode(details.typeCode)
+            val contact = contactRepository.save(
+                Contact(
+                    date = details.cancellationRecordedAt ?: details.date.toLocalDate(),
+                    startTime = details.date,
+                    type = type,
+                    outcome = details.outcomeCode?.let { contactOutcomeRepository.findByCode(it) },
+                    locationId = details.locationCode?.let { officeLocationRepository.findByCode(it) }?.id,
+                    description = details.description,
+                    person = person,
+                    staff = staff,
+                    team = contactTeam,
+                    notes = details.notes,
+                    alert = details.createAlert,
+                    eventId = eventId,
+                    nsiId = nsiId,
+                    primaryKeyId = residenceId,
+                    tableName = residenceId?.let { "APPROVED_PREMISES_RESIDENCE" },
+                    externalReference = details.externalReference,
+                )
+            )
+            if (details.createAlert) {
+                val personManager = personManagerRepository.getActiveManager(person.id)
+                contactAlertRepository.save(
+                    ContactAlert(
+                        contactId = contact.id,
+                        typeId = contact.type.id,
+                        personId = person.id,
+                        personManagerId = personManager.id,
+                        staffId = personManager.staff.id,
+                        teamId = personManager.team.id
                     )
                 )
-                if (details.createAlert) {
-                    val personManager = personManagerRepository.getActiveManager(person.id)
-                    contactAlertRepository.save(
-                        ContactAlert(
-                            contactId = contact.id,
-                            typeId = contact.type.id,
-                            personId = person.id,
-                            personManagerId = personManager.id,
-                            staffId = personManager.staff.id,
-                            teamId = personManager.team.id
-                        )
-                    )
-                }
-                return contact
             }
+            return contact
+        }
     }
 }
 
@@ -97,4 +97,5 @@ data class ContactDetails(
     val description: String? = null,
     val createAlert: Boolean = true,
     val cancellationRecordedAt: LocalDate? = null,
+    val externalReference: String? = null,
 )

@@ -40,7 +40,8 @@ class ApprovedPremisesService(
                 date = details.submittedAt,
                 typeCode = APPLICATION_SUBMITTED.code,
                 description = "Approved Premises Application Submitted",
-                notes = details.notes
+                notes = details.notes,
+                externalReference = details.externalReference(),
             ),
             person = person,
             eventId = dEvent.id,
@@ -58,7 +59,8 @@ class ApprovedPremisesService(
                 date = details.assessedAt,
                 typeCode = APPLICATION_ASSESSED.code,
                 notes = details.notes,
-                description = "Approved Premises Application ${details.decision}"
+                description = "Approved Premises Application ${details.decision}",
+                externalReference = details.externalReference()
             ),
             person = person,
             eventId = dEvent.id,
@@ -78,7 +80,8 @@ class ApprovedPremisesService(
                 notes = listOfNotNull(
                     details.withdrawalReason,
                     "For more details, click here: ${details.applicationUrl}"
-                ).joinToString(System.lineSeparator() + System.lineSeparator())
+                ).joinToString(System.lineSeparator() + System.lineSeparator()),
+                externalReference = details.externalReference()
             ),
             person = person,
             eventId = dEvent.id,
@@ -98,7 +101,10 @@ class ApprovedPremisesService(
     }
 
     fun bookingChanged(event: HmppsDomainEvent) {
-        val details = detailService.getDetail<EventDetails<BookingChanged>>(event).eventDetails
+        val detailWrapper = detailService.getDetail<EventDetails<BookingChanged>>(event)
+        val details = detailWrapper.eventDetails.apply {
+            domainEventId = detailWrapper.id
+        }
         val ap = approvedPremisesRepository.getApprovedPremises(details.premises.legacyApCode)
         referralService.bookingChanged(event.crn(), details, ap)
     }

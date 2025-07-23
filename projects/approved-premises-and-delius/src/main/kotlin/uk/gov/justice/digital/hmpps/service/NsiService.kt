@@ -81,7 +81,8 @@ class NsiService(
                     notes = listOfNotNull(
                         details.notes,
                         "For more details, click here: ${details.applicationUrl}"
-                    ).joinToString(System.lineSeparator() + System.lineSeparator())
+                    ).joinToString(System.lineSeparator() + System.lineSeparator()),
+                    externalReference = details.externalReference()
                 ),
                 person = person,
                 eventId = event.id,
@@ -118,7 +119,8 @@ class NsiService(
                 outcomeCode = ContactOutcome.AP_DEPARTED_PREFIX + details.legacyReasonCode,
                 locationCode = ap.locationCode(),
                 notes = "For details, see the referral on the AP Service: ${details.applicationUrl}",
-                createAlert = false
+                createAlert = false,
+                externalReference = details.externalReference()
             ),
             person = person,
             eventId = eventRepository.getEvent(person.id, details.eventNumber).id,
