@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns="http://www.justice.gov.uk/magistrates/ack" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.justice.gov.uk/magistrates/ack" elementFormDefault="unqualified" attributeFormDefault="unqualified">
+	<xs:annotation>
+		<xs:documentation xml:lang="en">
+			CGI Libra Acknowledgement schema
+			
+			v0.1 - Daniel Deane - Initial Draft for L-R-4093-01 Libra to Court Store
+			v0.2 - Daniel Deane - qualified namespace
+			v0.3 - Daniel Deane - reuse for DMU with new namespace
+			v0.4 - Pankaj Parmar- MessageComment element added for Print Service PSS-249.
+			                      This optional as not needed for responses from the database tier.
+			v0.5 - Rebecca Baker- unqualified namespace 13/07/2016
+			
+		</xs:documentation>
+	</xs:annotation>
+	<!-- ======================================================================================================= -->
+	<xs:element name="Acknowledgement">
+		<xs:annotation>
+			<xs:documentation>Acknowledgement response</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="Ack" type="AckType">
+					<xs:annotation>
+						<xs:documentation>Represents a link to the Acknowledgement</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:complexType name="AckType">
+		<xs:annotation>
+			<xs:documentation>Represents a message acknowledgement response</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="MessageStatus" minOccurs="1" maxOccurs="1">
+				<xs:annotation>
+					<xs:documentation>Acknowledgement Status - The status will represent the detail of the responce depending on the request </xs:documentation>
+					<xs:documentation>Acknowledgement Status "DELIVERED" - confirmation of receipt when sending the request</xs:documentation>
+					<xs:documentation>Acknowledgement Status "PREVIEW RENDERED" - confirmation of an action required as a response to the request</xs:documentation>
+					<xs:documentation>Acknowledgement Status "PRINT RENDERED" - confirmation of an action required as a response to the request</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:minLength value="1"/>
+						<xs:maxLength value="22"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="MessageComment" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Acknowledgement Comment</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="TimeStamp" type="xs:dateTime" minOccurs="1">
+				<xs:annotation>
+					<xs:documentation>Acknowledgement time stamp</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+</xs:schema>

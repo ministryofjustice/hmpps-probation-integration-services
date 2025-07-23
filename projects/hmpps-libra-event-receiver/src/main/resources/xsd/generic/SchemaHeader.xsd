@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns="http://www.justice.gov.uk/magistrates/generic/SchemaHeader" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://www.justice.gov.uk/magistrates/generic/SchemaHeader" targetNamespace="http://www.justice.gov.uk/magistrates/generic/SchemaHeader" elementFormDefault="unqualified" attributeFormDefault="unqualified">
+	<xsd:annotation>
+		<xsd:documentation xml:lang="en">
+			CGI Libra SchemaHeader schema
+
+			0.1 - DD - 07/07/2015 - Initial draft DES-23
+
+		</xsd:documentation>
+	</xsd:annotation>
+	<!--================================-->
+	<!-- SCHEMA HEADER INFORMATION           -->
+	<!--================================-->
+	<xsd:complexType name="SchemaHeaderType">
+		<xsd:annotation>
+			<xsd:documentation>Schema Header Type - Standard Schema Header Elements imported across schemas</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="DateOfHearing" minOccurs="0" maxOccurs="1">
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:string">
+						<xsd:maxLength value="10"/>
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:element>
+			<xsd:element name="TimeOfHearing" minOccurs="0" maxOccurs="1">
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:string">
+						<xsd:maxLength value="5"/>
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:element>
+			<xsd:element name="CourtHouseName" minOccurs="0" maxOccurs="1">
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:string">
+						<xsd:maxLength value="50"/>
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+</xsd:schema>

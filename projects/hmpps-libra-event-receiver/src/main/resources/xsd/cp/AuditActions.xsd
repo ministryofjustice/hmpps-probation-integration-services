@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns="http://www.justice.gov.uk/magistrates/cp/AuditActions" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://www.justice.gov.uk/magistrates/cp/AuditActions" targetNamespace="http://www.justice.gov.uk/magistrates/cp/AuditActions" elementFormDefault="unqualified" attributeFormDefault="unqualified">
+	<xsd:annotation>
+		<xsd:documentation xml:lang="en">
+			CGI AppRegister AuditActions schema
+			
+			0.1 - MK - 09/12/2015 - Initial draft
+					
+		</xsd:documentation>
+	</xsd:annotation>
+	<!--======================-->
+	<!-- SIMPLE TYPES                    -->
+	<!--======================-->
+	<!-- No Global Simple Types defines -->
+	<!--======================-->
+	<!-- COMPLEX TYPES                 -->
+	<!--======================-->
+	<!--================================-->
+	<!-- Audit Actions           -->
+	<!--================================-->
+	<xsd:complexType name="AuditActionsType">
+		<xsd:sequence>
+			<xsd:element name="ChangedBy" type="xsd:string" nillable="false" minOccurs="1" maxOccurs="1"/>
+			<xsd:element name="ChangedDate" type="xsd:dateTime" minOccurs="1" maxOccurs="1"/>
+		</xsd:sequence>
+	</xsd:complexType>
+</xsd:schema>

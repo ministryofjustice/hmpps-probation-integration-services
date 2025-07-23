@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://www.justice.gov.uk/magistrates/generic/CSCI_Status" targetNamespace="http://www.justice.gov.uk/magistrates/generic/CSCI_Status" elementFormDefault="unqualified" attributeFormDefault="unqualified">
+	<xs:element name="MessageStatus">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="status" type="xs:string" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="code" type="xs:string" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="reason" type="xs:string" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="detail" type="xs:string" minOccurs="0" maxOccurs="1"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>

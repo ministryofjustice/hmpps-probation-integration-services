@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2011 rel. 3 (http://www.altova.com) by Deane (Logica) -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	xmlns:tns="http://www.justice.gov.uk/magistrates/cp/GatewayMessageSchema"
+	xmlns:cp-edrreq="http://www.justice.gov.uk/magistrates/external/ExternalDocumentRequest"
+
+	xmlns:ack="http://www.justice.gov.uk/magistrates/ack"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    targetNamespace="http://www.justice.gov.uk/magistrates/cp/GatewayMessageSchema"
+    elementFormDefault="unqualified" attributeFormDefault="unqualified">
+	<xs:annotation>
+		<xs:documentation xml:lang="en">
+			CGI  Gateway message schema
+
+			0.1 - PP - 02/11/2017 - Initial draft
+			0.2 - JB - 18/10/2019 - Added cp files
+		</xs:documentation>
+	</xs:annotation>
+
+	<xs:import namespace="http://www.justice.gov.uk/magistrates/external/ExternalDocumentRequest" schemaLocation="external/ExternalDocumentRequest.xsd"/>
+	<xs:import namespace="http://www.justice.gov.uk/magistrates/ack" schemaLocation="../generic/Acknowledgement/Acknowledgement.xsd"/>
+
+	<xs:element name="GatewayOperationType">
+		<xs:complexType>
+			<xs:choice>
+
+				<!--ACKNOWLEDGEMENT-->
+				<xs:element ref="ack:Acknowledgement"/>
+
+				<!-- EXTERNAL DOCUMENT -->
+				<xs:element ref="cp-edrreq:ExternalDocumentRequest"/>
+
+			</xs:choice>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>

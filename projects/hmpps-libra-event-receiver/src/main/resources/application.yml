@@ -2,6 +2,10 @@
 spring:
   jackson:
     default-property-inclusion: non_null
+    serialization:
+      WRITE_DATES_AS_TIMESTAMPS: false
+  webservices:
+    wsdl-locations=classpath:/xsd
   threads.virtual.enabled: true
 
 oauth2.roles:
@@ -16,6 +20,25 @@ management:
   endpoint.health.show-details: always
 
 info.productId: HMPPS518 # https://developer-portal.hmpps.service.justice.gov.uk/products/185
+
+aws:
+  region-name: eu-west-2
+
+soap:
+  ws-location-uri: /mirrorgateway/service/cpmgwextdocapi/
+  target-namespace: http://www.justice.gov.uk/magistrates/external/ExternalDocumentRequest
+  xsd-file-path: /app/ExternalDocumentRequest.xsd
+
+ws-sec:
+  keystore-file-path: /mnt/secrets/crime-portal-gateway-jks.key
+  request-encrypt-actions: "Signature Encrypt"
+  response-encrypt-actions: "Signature Encrypt"
+  response-signature-parts: "{Element}{http://www.w3.org/2003/05/soap-envelope}Body"
+  response-encryption-parts: "{Content}{http://www.justice.gov.uk/magistrates/ack}Acknowledgement"
+  encryption-sym-algorithm: "http://www.w3.org/2001/04/xmlenc#tripledes-cbc"
+
+included-court-codes: "B01BH,B01CE,B01CN,B01EF,B01GU,B01ND,B03DE,B10BD,B10JJ,B10JQ,B13HT,B14AV,B14ET,B14LO,B16BG,B16GB,B16HE,B17JA,B20BL,B20EB,B20EY,B20NP,B20OQ,B21DA,B21JI,B22GR,B22HM,B22KS,B22MZ,B23HS,B30PG,B31IT,B31JV,B32HX,B32UD,B33HU,B33II,B37HI,B40IM,B44BA,B47CL,B47OV,B54MW,B62DC,B62MV,B01MN"
+min-dummy-court-room: 50
 
 ---
 # Shared dev/test config

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://www.justice.gov.uk/magistrates/cp/CSCI" xmlns:msh="http://www.justice.gov.uk/magistrates/generic/CSCI_Header" xmlns:msb="http://www.justice.gov.uk/magistrates/cp/CSCI_Body" xmlns:mss="http://www.justice.gov.uk/magistrates/generic/CSCI_Status" targetNamespace="http://www.justice.gov.uk/magistrates/cp/CSCI" elementFormDefault="unqualified" attributeFormDefault="unqualified">
+	<xs:annotation>
+		<xs:documentation xml:lang="en">
+			CGI AppRegister CSCI schema
+
+			0.1 - DD - 19/05/2016 - Initial draft
+
+		</xs:documentation>
+	</xs:annotation>
+	<xs:import namespace="http://www.justice.gov.uk/magistrates/generic/CSCI_Header" schemaLocation="../generic/CSCI_Header.xsd"/>
+	<xs:import namespace="http://www.justice.gov.uk/magistrates/cp/CSCI_Body" schemaLocation="CSCI_Body.xsd"/>
+	<xs:import namespace="http://www.justice.gov.uk/magistrates/generic/CSCI_Status" schemaLocation="../generic/CSCI_Status.xsd"/>
+	<xs:element name="CSCI_Message_Type">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="msh:MessageHeader"/>
+				<xs:element ref="msb:MessageBody"/>
+				<xs:element ref="mss:MessageStatus" minOccurs="0"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>

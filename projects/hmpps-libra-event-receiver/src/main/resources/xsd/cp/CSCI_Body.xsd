@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://www.justice.gov.uk/magistrates/cp/CSCI_Body" xmlns:agw="http://www.justice.gov.uk/magistrates/cp/GatewayMessageSchema" targetNamespace="http://www.justice.gov.uk/magistrates/cp/CSCI_Body" elementFormDefault="unqualified" attributeFormDefault="unqualified">
+	<xs:annotation>
+		<xs:documentation xml:lang="en">
+			CGI CSCI Body schema
+			
+			0.1 - DD - 19/05/2016 - Initial draft
+											
+		</xs:documentation>
+	</xs:annotation>
+	<xs:import namespace="http://www.justice.gov.uk/magistrates/cp/GatewayMessageSchema" schemaLocation="GatewayMessageSchema.xsd"/>
+	<xs:element name="MessageBody" type="tns:MessageBodyType"/>
+	<xs:complexType name="MessageBodyType">
+		<xs:sequence>
+			<xs:element ref="agw:GatewayOperationType"/>
+		</xs:sequence>
+	</xs:complexType>
+</xs:schema>

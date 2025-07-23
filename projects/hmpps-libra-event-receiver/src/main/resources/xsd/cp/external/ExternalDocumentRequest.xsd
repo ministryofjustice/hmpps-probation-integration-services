@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns="http://www.justice.gov.uk/magistrates/external/ExternalDocumentRequest"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:tns="http://www.justice.gov.uk/magistrates/external/ExternalDocumentRequest"
+           targetNamespace="http://www.justice.gov.uk/magistrates/external/ExternalDocumentRequest"
+           elementFormDefault="unqualified" attributeFormDefault="unqualified">
+
+    <xs:annotation>
+        <xs:documentation xml:lang="en">
+
+            CGI IT UK Limited. A CGI Group Inc. Company
+            Registered Office: 250 Brook Drive,
+            Green Park, Re
+            ading RG2 6UA,
+            United Kingdom.
+
+            Registered in England and Wales - Number 947968
+
+            0.1 - PP - 02/02/2020 - Initial draft
+            0.2 - PP - 22/06/2020 - Updated to use StandardCourtList.xsd
+            0.3 - PP - 14/06/2020 - Remove ref to StandardCourtList.xsd for Data element
+
+        </xs:documentation>
+    </xs:annotation>
+    <xs:element name="ExternalDocumentRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="documents" type="tns:documents" minOccurs="1" maxOccurs="1"/>
+                <xs:element name="jsonData" type="xs:string" minOccurs="0" maxOccurs="1"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:complexType name="documents">
+        <xs:sequence>
+             <xs:any processContents="skip" minOccurs="1" maxOccurs="1"/>
+        </xs:sequence>
+    </xs:complexType>
+
+</xs:schema>
