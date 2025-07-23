@@ -136,20 +136,7 @@ internal class IntegrationTest {
     @Order(2)
     @Test
     fun `When a probation search match is detected no insert is performed`() {
-        personRepository.save(
-            generate(
-                crn = "F019742",
-                forename = "Example First Name",
-                surname = "Example Last Name",
-                dateOfBirth = LocalDate.of(2000, 1, 1),
-                pnc = "2000/0000000A",
-                cro = "000000/00A",
-                id = null
-            )
-        )
-        Mockito.reset(personRepository)
-
-        val notification = Notification(message = MessageGenerator.COMMON_PLATFORM_EVENT)
+        val notification = Notification(message = MessageGenerator.COMMON_PLATFORM_EVENT_WITH_CRN)
         channelManager.getChannel(queueName).publishAndWait(notification)
         thenNoRecordsAreInserted()
     }
@@ -516,7 +503,7 @@ internal class IntegrationTest {
                 pnc = "2025/0123456A",
                 cro = "123456/99A",
                 id = null,
-                defendantId = "00000000-0000-0000-0000-000000000000"
+                defendantId = "f3b3bdb3-10c4-48fe-a412-9924f47294d5"
             )
         )
         Mockito.reset(personRepository)

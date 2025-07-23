@@ -18,10 +18,9 @@ import uk.gov.justice.digital.hmpps.dto.InsertEventResult
 import uk.gov.justice.digital.hmpps.dto.InsertPersonResult
 import uk.gov.justice.digital.hmpps.dto.InsertRemandResult
 import uk.gov.justice.digital.hmpps.flags.FeatureFlags
-import uk.gov.justice.digital.hmpps.integrations.delius.IDs
-import uk.gov.justice.digital.hmpps.integrations.delius.OffenderDetail
-import uk.gov.justice.digital.hmpps.integrations.delius.OffenderMatch
-import uk.gov.justice.digital.hmpps.integrations.delius.ProbationMatchResponse
+import uk.gov.justice.digital.hmpps.integrations.client.CorePersonClient
+import uk.gov.justice.digital.hmpps.integrations.client.CorePersonRecord
+import uk.gov.justice.digital.hmpps.integrations.client.Identifiers
 import uk.gov.justice.digital.hmpps.message.Notification
 import uk.gov.justice.digital.hmpps.service.OffenceService
 import uk.gov.justice.digital.hmpps.service.PersonService
@@ -29,6 +28,7 @@ import uk.gov.justice.digital.hmpps.service.RemandService
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryMessagingExtensions.notificationReceived
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import java.time.LocalDate
+import java.util.*
 import java.util.function.Function
 
 @ExtendWith(MockitoExtension::class)
@@ -57,6 +57,9 @@ internal class HandlerTest {
     @Mock
     lateinit var notifier: Notifier
 
+    @Mock
+    lateinit var corePersonClient: CorePersonClient
+
     @InjectMocks
     lateinit var handler: Handler
 
@@ -64,7 +67,7 @@ internal class HandlerTest {
     fun `inserts records when probation search match is not found`() {
         personOnRemandIsSuccessfullyCreated()
 
-        probationSearchMatchNotFound()
+        corePersonHasNoCrn()
         featureFlagIsEnabled(true)
 
         val notification = Notification(message = MessageGenerator.COMMON_PLATFORM_EVENT)
@@ -75,7 +78,7 @@ internal class HandlerTest {
 
     @Test
     fun `does not insert person or address when match is found`() {
-        probationSearchMatchFound()
+        corePersonAlreadyHasCrn()
         val notification = Notification(message = MessageGenerator.COMMON_PLATFORM_EVENT)
         handler.handle(notification)
         verify(telemetryService).notificationReceived(notification)
@@ -92,6 +95,7 @@ internal class HandlerTest {
 
     @Test
     fun `When a defendant is missing name or dob then records are not inserted and probation-search is not performed`() {
+        corePersonHasNoCrn()
         val notification = Notification(message = MessageGenerator.COMMON_PLATFORM_EVENT_NULL_FIELDS)
         handler.handle(notification)
         verify(telemetryService).notificationReceived(notification)
@@ -101,7 +105,7 @@ internal class HandlerTest {
 
     @Test
     fun `Simulated person created logged when feature flag disabled`() {
-        probationSearchMatchNotFound()
+        corePersonHasNoCrn()
         featureFlagIsEnabled(false)
         val notification = Notification(message = MessageGenerator.COMMON_PLATFORM_EVENT)
         handler.handle(notification)
@@ -129,7 +133,7 @@ internal class HandlerTest {
 
     @Test
     fun `Messages with future hearing dates are flagged correctly in app insights`() {
-        probationSearchMatchFound()
+        corePersonAlreadyHasCrn()
         val notification = Notification(message = MessageGenerator.COMMON_PLATFORM_EVENT_FUTURE_HEARING_DATES)
         handler.handle(notification)
 
@@ -149,7 +153,7 @@ internal class HandlerTest {
     fun `domain event notifications sent when person record is created successfully`() {
         personOnRemandIsSuccessfullyCreated()
 
-        probationSearchMatchNotFound()
+        corePersonHasNoCrn()
         featureFlagIsEnabled(true)
 
         val notification = Notification(message = MessageGenerator.COMMON_PLATFORM_EVENT)
@@ -196,29 +200,21 @@ internal class HandlerTest {
         )
     }
 
-    private fun probationSearchMatchNotFound() {
-        whenever(personService.matchPerson(any())).thenReturn(
-            ProbationMatchResponse(
-                matches = emptyList(),
-                matchedBy = "NONE"
-            )
+    private fun corePersonHasNoCrn() {
+        val person = CorePersonRecord(
+            UUID.randomUUID().toString(),
+            "John", "Robert", "Smith",
+            LocalDate.now().minusYears(21),
+            Identifiers()
         )
+        whenever(corePersonClient.findByDefendantId(any())).thenReturn(person)
     }
 
-    private fun probationSearchMatchFound() {
-        val fakeMatchResponse = ProbationMatchResponse(
-            matches = listOf(
-                OffenderMatch(
-                    offender = OffenderDetail(
-                        otherIds = IDs(crn = "X123456", pncNumber = "00000000000Z"),
-                        firstName = "Name",
-                        surname = "Name",
-                        dateOfBirth = LocalDate.of(1980, 1, 1)
-                    )
-                )
-            ),
-            matchedBy = "ALL"
+    private fun corePersonAlreadyHasCrn() {
+        val person = CorePersonRecord(
+            UUID.randomUUID().toString(), "John", "Robert", "Smith", LocalDate.now().minusYears(21),
+            Identifiers(crns = listOf("X123456"))
         )
-        whenever(personService.matchPerson(any())).thenReturn(fakeMatchResponse)
+        whenever(corePersonClient.findByDefendantId(any())).thenReturn(person)
     }
 }

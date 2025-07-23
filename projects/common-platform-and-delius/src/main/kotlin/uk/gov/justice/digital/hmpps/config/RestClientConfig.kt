@@ -9,6 +9,7 @@ import org.springframework.web.client.RestClient
 import org.springframework.web.util.UriComponentsBuilder
 import uk.gov.justice.digital.hmpps.config.security.RetryInterceptor
 import uk.gov.justice.digital.hmpps.config.security.createClient
+import uk.gov.justice.digital.hmpps.integrations.client.CorePersonClient
 import uk.gov.justice.digital.hmpps.integrations.client.ManageOffencesClient
 import uk.gov.justice.digital.hmpps.integrations.client.OsClient
 import java.net.http.HttpClient
@@ -40,5 +41,9 @@ class RestClientConfig(private val oauth2Client: RestClient) {
 
     @Bean
     fun manageOffencesClient(@Value("\${integrations.manage-offences.url}") baseUrl: String): ManageOffencesClient =
+        createClient(oauth2Client.mutate().baseUrl(baseUrl).build())
+
+    @Bean
+    fun corePersonClient(@Value("\${integrations.core-person-record.url}") baseUrl: String): CorePersonClient =
         createClient(oauth2Client.mutate().baseUrl(baseUrl).build())
 }
