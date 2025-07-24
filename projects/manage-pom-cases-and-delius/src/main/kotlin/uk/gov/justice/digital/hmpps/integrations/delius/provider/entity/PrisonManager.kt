@@ -94,7 +94,7 @@ class PrisonManager(
 
     fun isUnallocated() = staff.code.endsWith("U")
 
-    fun responsibleOfficer(): ResponsibleOfficer? = responsibleOfficers.firstOrNull { it.endDate == null }
+    fun responsibleOfficer(): ResponsibleOfficer? = responsibleOfficers.firstOrNull { it.isActive() }
 
     fun makeResponsibleOfficer() {
         responsibleOfficers.add(ResponsibleOfficer(personId, this, date))
@@ -149,6 +149,8 @@ class ResponsibleOfficer(
     var lastUpdatedDatetime: ZonedDateTime = ZonedDateTime.now()
 
     var endDate: ZonedDateTime? = null
+
+    fun isActive() = endDate == null
 }
 
 interface PrisonManagerRepository : JpaRepository<PrisonManager, Long> {
@@ -178,4 +180,8 @@ interface PrisonManagerRepository : JpaRepository<PrisonManager, Long> {
         date: ZonedDateTime,
         pageable: Pageable = PageRequest.of(0, 1)
     ): List<PrisonManager>
+
+    fun findAllByDateGreaterThan(date: ZonedDateTime): List<PrisonManager>
 }
+
+interface ResponsibleOfficerRepository : JpaRepository<ResponsibleOfficer, Long>

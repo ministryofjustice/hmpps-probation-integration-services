@@ -26,10 +26,12 @@ import uk.gov.justice.digital.hmpps.entity.PrisonStaff
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactType
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.PrisonManagerRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.ResponsibleOfficerRepository
 import uk.gov.justice.digital.hmpps.messaging.HmppsChannelManager
 import uk.gov.justice.digital.hmpps.repository.PrisonStaffRepository
 import uk.gov.justice.digital.hmpps.resourceloader.ResourceLoader.notification
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
+import java.time.Duration
 import java.time.ZonedDateTime
 import kotlin.jvm.optionals.getOrNull
 
@@ -57,6 +59,9 @@ internal class AllocationMessagingIntegrationTest {
     @Autowired
     lateinit var contactRepository: ContactRepository
 
+    @Autowired
+    lateinit var responsibleOfficerRepository: ResponsibleOfficerRepository
+
     @Order(1)
     @Test
     fun `no change if not yet ready to allocate`() {
@@ -79,13 +84,17 @@ internal class AllocationMessagingIntegrationTest {
 
     @Order(2)
     @Test
-    fun `allocate first POM successfully`() {
+    fun `allocate POM successfully deleting future dated allocations`() {
+        // create future dated pom to be deleted and ro to be reassigned
+        prisonManagerRepository.save(ProviderGenerator.FUTURE_POM)
+        responsibleOfficerRepository.save(ProviderGenerator.FUTURE_RO)
+
         val notification = prepNotification(
             notification("new-allocation"),
             wireMockServer.port()
         )
 
-        channelManager.getChannel(queueName).publishAndWait(notification)
+        channelManager.getChannel(queueName).publishAndWait(notification, Duration.ofMinutes(15))
 
         val captor = argumentCaptor<PrisonStaff>()
         verify(staffRepository).save(captor.capture())
@@ -102,6 +111,9 @@ internal class AllocationMessagingIntegrationTest {
         val contacts = contactRepository.findAll().filter { it.personId == PersonGenerator.DEFAULT.id }
         assertThat(contacts.map { it.type.code }, hasItems(ContactType.Code.POM_AUTO_ALLOCATION.value))
 
+        assertNull(prisonManagerRepository.findByIdOrNull(ProviderGenerator.FUTURE_POM.id))
+        assertThat(prisonManager?.responsibleOfficers?.map { it.id }?.firstOrNull(), equalTo(ProviderGenerator.FUTURE_RO.id))
+
         verify(telemetryService).trackEvent(
             "PomAllocated",
             mapOf(
@@ -115,18 +127,15 @@ internal class AllocationMessagingIntegrationTest {
     @Order(3)
     @Test
     fun `reallocate POM successfully`() {
-        // add RO to existing pom to test RO behaviour
         val existingPom =
             prisonManagerRepository.findActiveManagerAtDate(PersonGenerator.DEFAULT.id, ZonedDateTime.now())!!
-        existingPom.makeResponsibleOfficer()
-        prisonManagerRepository.save(existingPom)
 
         val notification = prepNotification(
             notification("pom-reallocated"),
             wireMockServer.port()
         )
 
-        channelManager.getChannel(queueName).publishAndWait(notification)
+        channelManager.getChannel(queueName).publishAndWait(notification, Duration.ofMinutes(15))
 
         val captor = argumentCaptor<PrisonStaff>()
         verify(staffRepository).save(captor.capture())
@@ -177,7 +186,7 @@ internal class AllocationMessagingIntegrationTest {
             wireMockServer.port()
         )
 
-        channelManager.getChannel(queueName).publishAndWait(notification)
+        channelManager.getChannel(queueName).publishAndWait(notification, Duration.ofMinutes(15))
 
         verify(staffRepository, never()).save(any())
 
