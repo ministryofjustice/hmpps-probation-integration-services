@@ -81,6 +81,8 @@ class Contact(
     @Convert(converter = YesNoConverter::class)
     val alert: Boolean? = false,
 
+    var externalReference: String? = null,
+
     @CreatedDate
     @Column(nullable = false)
     var createdDatetime: ZonedDateTime = ZonedDateTime.now(),

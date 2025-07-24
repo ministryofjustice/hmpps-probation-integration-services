@@ -7,6 +7,12 @@ import java.time.LocalDate
 import java.time.ZonedDateTime
 import java.time.temporal.ChronoUnit
 
+const val SERVICE_URN_BASE = "urn:uk:gov:hmpps:approved-premises-service"
+
+interface ContactReferenceable {
+    fun externalReference(): String
+}
+
 data class EventDetails<T>(
     val id: String,
     val timestamp: ZonedDateTime,
@@ -22,11 +28,13 @@ data class ApplicationSubmitted(
     val submittedBy: SubmittedBy,
     @JsonAlias("deliusEventNumber")
     val eventNumber: String
-) {
+) : ContactReferenceable {
     val notes = """
         |An application for a placement in an Approved Premises has been made. The application will be assessed for suitability.
         |Details of the application can be found here: $applicationUrl
     """.trimMargin()
+
+    override fun externalReference() = "$SERVICE_URN_BASE:application-submitted:$applicationId"
 }
 
 data class SubmittedBy(
@@ -48,6 +56,7 @@ enum class Decision {
 data class ApplicationAssessed(
     val applicationId: String,
     val applicationUrl: String,
+    val assessmentId: String,
     val assessedAt: ZonedDateTime,
     val assessedBy: AssessedBy,
     val decision: Decision,
@@ -55,7 +64,7 @@ data class ApplicationAssessed(
     @JsonAlias("deliusEventNumber")
     val eventNumber: String,
     val arrivalDate: LocalDate?
-) {
+) : ContactReferenceable {
     val notes: String
         get() = when (decision) {
             Decision.ACCEPTED -> """
@@ -72,6 +81,8 @@ data class ApplicationAssessed(
 
     private fun additionalNotes() =
         arrivalDate?.let { "" } ?: " once a placement request has been received and approved"
+
+    override fun externalReference() = "$SERVICE_URN_BASE:application-assessed:$assessmentId"
 }
 
 data class AssessedBy(
@@ -87,7 +98,9 @@ data class ApplicationWithdrawn(
     val withdrawnAt: ZonedDateTime,
     val withdrawnBy: WithdrawnBy,
     val withdrawalReason: String
-)
+) : ContactReferenceable {
+    override fun externalReference() = "$SERVICE_URN_BASE:application-withdrawn:$applicationId"
+}
 
 data class WithdrawnBy(
     val staffMember: StaffMember,
@@ -112,10 +125,12 @@ data class BookingMade(
     private val releaseTypeString: String?,
     @JsonAlias("situation")
     private val situationString: String?
-) {
+) : ContactReferenceable {
     val bookingMadeAt: ZonedDateTime = createdAt.truncatedTo(ChronoUnit.SECONDS)
     val sentenceType: SentenceType = SentenceType.from(sentenceTypeString)
     val releaseType: ReleaseType = ReleaseType.from(situationString ?: releaseTypeString)
+
+    override fun externalReference() = "$SERVICE_URN_BASE:booking-made:$bookingId"
 }
 
 data class BookingChanged(
@@ -129,7 +144,14 @@ data class BookingChanged(
     val changedAt: ZonedDateTime,
     val arrivalOn: LocalDate,
     val departureOn: LocalDate
-)
+) : ContactReferenceable {
+    var domainEventId: String? = null
+
+    override fun externalReference(): String {
+        requireNotNull(domainEventId) { "domainEventId must be set before calling externalReference()" }
+        return "$SERVICE_URN_BASE:booking-changed:$domainEventId:$bookingId"
+    }
+}
 
 data class BookingCancelled(
     val bookingId: String,
@@ -142,7 +164,9 @@ data class BookingCancelled(
     val cancelledAtDate: LocalDate,
     val cancellationRecordedAt: ZonedDateTime,
     val cancellationReason: String
-)
+) : ContactReferenceable {
+    override fun externalReference() = "$SERVICE_URN_BASE:booking-cancelled:$bookingId"
+}
 
 data class BookedBy(
     val staffMember: StaffMember
@@ -160,7 +184,9 @@ data class PersonNotArrived(
     val reasonCode: String,
     @JsonAlias("deliusEventNumber")
     val eventNumber: String
-)
+) : ContactReferenceable {
+    override fun externalReference() = "$SERVICE_URN_BASE:person-not-arrived:$bookingId"
+}
 
 data class PersonArrived(
     val bookingId: String,
@@ -174,7 +200,9 @@ data class PersonArrived(
     val notes: String?,
     @JsonAlias("deliusEventNumber")
     val eventNumber: String
-)
+) : ContactReferenceable {
+    override fun externalReference() = "$SERVICE_URN_BASE:person-arrived:$bookingId"
+}
 
 data class PersonDeparted(
     val applicationId: String,
@@ -187,7 +215,9 @@ data class PersonDeparted(
     val destination: Destination,
     @JsonAlias("deliusEventNumber")
     val eventNumber: String
-)
+) : ContactReferenceable {
+    override fun externalReference() = "$SERVICE_URN_BASE:person-departed:$bookingId"
+}
 
 data class Destination(val moveOnCategory: MoveOnCategory)
 data class MoveOnCategory(@JsonAlias("legacyMoveOnCategoryCode") val legacyCode: String)
