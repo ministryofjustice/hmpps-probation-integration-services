@@ -81,7 +81,6 @@ class DataLoader(
         val staffMap = entityManagerDataLoader.loadData()
 
         staffRepository.save(ProviderGenerator.generateStaff("Test", "Test", "Test"))
-        staffRepository.save(ProviderGenerator.FUTURE_POM_STAFF)
 
         UserGenerator.DEFAULT_STAFF_USER = staffUserRepository.save(
             StaffUser(

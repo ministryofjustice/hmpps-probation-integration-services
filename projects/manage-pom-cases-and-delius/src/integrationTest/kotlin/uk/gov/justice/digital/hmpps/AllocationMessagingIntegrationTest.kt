@@ -25,8 +25,10 @@ import uk.gov.justice.digital.hmpps.data.generator.ProviderGenerator
 import uk.gov.justice.digital.hmpps.entity.PrisonStaff
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactType
+import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.PrisonManagerRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.ResponsibleOfficerRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.StaffRepository
 import uk.gov.justice.digital.hmpps.messaging.HmppsChannelManager
 import uk.gov.justice.digital.hmpps.repository.PrisonStaffRepository
 import uk.gov.justice.digital.hmpps.resourceloader.ResourceLoader.notification
@@ -51,13 +53,16 @@ internal class AllocationMessagingIntegrationTest {
     lateinit var telemetryService: TelemetryService
 
     @MockitoSpyBean
-    lateinit var staffRepository: PrisonStaffRepository
+    lateinit var prisonStaffRepository: PrisonStaffRepository
 
     @MockitoSpyBean
     lateinit var prisonManagerRepository: PrisonManagerRepository
 
     @Autowired
     lateinit var contactRepository: ContactRepository
+
+    @Autowired
+    lateinit var staffRepository: StaffRepository
 
     @Autowired
     lateinit var responsibleOfficerRepository: ResponsibleOfficerRepository
@@ -86,6 +91,7 @@ internal class AllocationMessagingIntegrationTest {
     @Test
     fun `allocate POM successfully deleting future dated allocations`() {
         // create future dated pom to be deleted and ro to be reassigned
+        staffRepository.save(ProviderGenerator.FUTURE_POM_STAFF)
         prisonManagerRepository.save(ProviderGenerator.FUTURE_POM)
         responsibleOfficerRepository.save(ProviderGenerator.FUTURE_RO)
 
@@ -97,7 +103,7 @@ internal class AllocationMessagingIntegrationTest {
         channelManager.getChannel(queueName).publishAndWait(notification, Duration.ofMinutes(15))
 
         val captor = argumentCaptor<PrisonStaff>()
-        verify(staffRepository).save(captor.capture())
+        verify(prisonStaffRepository).save(captor.capture())
         assertThat(captor.firstValue.forename, equalTo("John"))
         assertThat(captor.firstValue.surname, equalTo("Smith"))
 
@@ -138,7 +144,7 @@ internal class AllocationMessagingIntegrationTest {
         channelManager.getChannel(queueName).publishAndWait(notification, Duration.ofMinutes(15))
 
         val captor = argumentCaptor<PrisonStaff>()
-        verify(staffRepository).save(captor.capture())
+        verify(prisonStaffRepository).save(captor.capture())
         assertThat(captor.firstValue.forename, equalTo("James"))
         assertThat(captor.firstValue.surname, equalTo("Brown"))
 
@@ -188,7 +194,7 @@ internal class AllocationMessagingIntegrationTest {
 
         channelManager.getChannel(queueName).publishAndWait(notification, Duration.ofMinutes(15))
 
-        verify(staffRepository, never()).save(any())
+        verify(prisonStaffRepository, never()).save(any())
 
         val prisonManager =
             prisonManagerRepository.findActiveManagerAtDate(PersonGenerator.DEFAULT.id, ZonedDateTime.now())
