@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.services
 
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import org.springframework.web.client.HttpClientErrorException
 import uk.gov.justice.digital.hmpps.datetime.DeliusDateTimeFormatter
@@ -18,17 +19,38 @@ class PomAllocated(
     private val detailService: DomainEventDetailService,
     private val personRepository: PersonRepository,
     private val prisonManagerService: PrisonManagerService,
-    private val telemetryService: TelemetryService
+    private val telemetryService: TelemetryService,
+    @Value("\${mpc.handover.url}") private val mpcHandoverUrl: String,
 ) {
     fun process(event: HmppsDomainEvent) = try {
-        val pomAllocation = try {
-            detailService.getDetail<PomAllocation>(event)
-        } catch (e: HttpClientErrorException.NotFound) {
-            val error = e.getResponseBodyAs(ErrorResponse::class.java)
-            when (error?.message) {
-                "Not allocated" -> PomDeallocated
-                else -> PomNotAllocated
+        val pomAllocation = when (event.eventType) {
+            "offender-management.allocation.changed" -> {
+                try {
+                    detailService.getDetail<PomAllocation>(event)
+                } catch (e: HttpClientErrorException.NotFound) {
+                    val error = e.getResponseBodyAs(ErrorResponse::class.java)
+                    when (error?.message) {
+                        "Not allocated" -> PomDeallocated
+                        else -> PomNotAllocated
+                    }
+                }
             }
+
+            "probation-case.prison-identifier.added", "probation-case.prison-identifier.updated" -> {
+                event.personReference.findNomsNumber()?.let {
+                    try {
+                        detailService.getDetail<PomAllocation>("$mpcHandoverUrl/api/allocation/$it/primary_pom")
+                    } catch (e: HttpClientErrorException.NotFound) {
+                        val error = e.getResponseBodyAs(ErrorResponse::class.java)
+                        when (error?.message) {
+                            "Not allocated" -> PomDeallocated
+                            else -> PomNotAllocated
+                        }
+                    }
+                } ?: throw IgnorableMessageException("NOMS Number not found on ${event.eventType} event")
+            }
+
+            else -> throw NotImplementedError("Unexpected message type received: ${event.eventType}")
         }
 
         val nomsId = event.personReference.findNomsNumber()

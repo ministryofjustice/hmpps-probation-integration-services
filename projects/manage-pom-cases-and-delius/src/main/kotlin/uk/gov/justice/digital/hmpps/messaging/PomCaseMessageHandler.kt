@@ -56,6 +56,9 @@ class PomCaseMessageHandler(
 
                     "offender-management.allocation.changed" -> pomAllocated.process(message)
 
+                    "probation-case.prison-identifier.added", "probation-case.prison-identifier.updated" ->
+                        pomAllocated.process(message)
+
                     else -> throw NotImplementedError("Unhandled message type received: ${notification.eventType}")
                 }
 
