@@ -116,6 +116,32 @@
         "status": 404,
         "bodyFileName": "deallocation.json"
       }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "url": "/api/allocation/A0123BY/primary_pom"
+      },
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "bodyFileName": "new-allocation.json"
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "url": "/api/allocation/A1024BY/primary_pom"
+      },
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "bodyFileName": "pom-reallocated.json"
+      }
     }
   ]
 }
