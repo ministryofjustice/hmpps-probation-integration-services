@@ -104,4 +104,39 @@ internal class PrisonIdentifierUpdatedIntegrationTest {
             )
         )
     }
+
+    @Test
+    fun `no allocation created if person doesn't exist`() {
+        val notification = prepNotification(
+            notification("prison-identifier-added-not-found"),
+            wireMockServer.port()
+        )
+
+        channelManager.getChannel(queueName).publishAndWait(notification)
+
+        verify(telemetryService).trackEvent(
+            "PersonNotFound",
+            mapOf(
+                "nomsId" to "A0000BY"
+            )
+        )
+    }
+
+    @Test
+    fun `no allocation created if no response from mpc api`() {
+        val notification = prepNotification(
+            notification("prison-identifier-added-no-allocation"),
+            wireMockServer.port()
+        )
+
+        channelManager.getChannel(queueName).publishAndWait(notification)
+
+        verify(telemetryService).trackEvent(
+            "NotReadyToAllocate",
+            mapOf(
+                "nomsId" to "A1024BX",
+                "allocationDate" to "24/07/2025 10:00:00"
+            )
+        )
+    }
 }
