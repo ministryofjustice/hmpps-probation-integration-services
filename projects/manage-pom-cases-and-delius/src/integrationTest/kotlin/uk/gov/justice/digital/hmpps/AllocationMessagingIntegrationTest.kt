@@ -118,7 +118,10 @@ internal class AllocationMessagingIntegrationTest {
         assertThat(contacts.map { it.type.code }, hasItems(ContactType.Code.POM_AUTO_ALLOCATION.value))
 
         assertNull(prisonManagerRepository.findByIdOrNull(ProviderGenerator.FUTURE_POM.id))
-        assertThat(prisonManager?.responsibleOfficers?.map { it.id }?.firstOrNull(), equalTo(ProviderGenerator.FUTURE_RO.id))
+        assertThat(
+            prisonManager?.responsibleOfficers?.map { it.id }?.firstOrNull(),
+            equalTo(ProviderGenerator.FUTURE_RO.id)
+        )
 
         verify(telemetryService).trackEvent(
             "PomAllocated",
