@@ -61,6 +61,10 @@ internal class PomAllocatedTest {
 
         verify(prisonManagerService, never()).allocatePrisonManager(any(), any(), any())
         verify(prisonManagerService, never()).deallocatePrisonManager(any(), any())
-        verify(telemetryService).trackEvent("NOMS Number not found on ${event.eventType} event", mapOf("nomsId" to "Not Provided"), mapOf())
+        verify(telemetryService).trackEvent(
+            "NOMS Number not found on ${event.eventType} event",
+            mapOf("nomsId" to "Not Provided"),
+            mapOf()
+        )
     }
 }
