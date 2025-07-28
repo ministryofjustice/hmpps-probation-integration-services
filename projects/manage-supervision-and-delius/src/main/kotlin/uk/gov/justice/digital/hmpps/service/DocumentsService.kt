@@ -104,6 +104,7 @@ class DocumentsService(
             audit["offenderId"] = person.id
 
             val contact = contactRepository.getContact(id)
+
             val alfrescoDocument =
                 alfrescoUploadClient.addDocument(
                     populateBodyValues(

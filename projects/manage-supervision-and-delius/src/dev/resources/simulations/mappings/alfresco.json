@@ -3,18 +3,7 @@
     {
       "request": {
         "method": "POST",
-        "url": "/uploadnew",
-        "headers": {
-          "X-DocRepository-Remote-User": {
-            "equalTo": "N00"
-          },
-          "X-DocRepository-Real-Remote-User": {
-            "equalTo": "UnpaidWorkAndDelius"
-          },
-          "Authorization": {
-            "doesNotMatch": "^Bearer (.*)$"
-          }
-        },
+        "url": "/alfresco/uploadnew",
         "multipartPatterns": [
           {
             "matchingType": "ANY",
@@ -67,28 +56,17 @@
                 "contains": "DOCUMENT"
               }
             ]
-          },
-          {
-            "matchingType": "ANY",
-            "headers": {
-              "Content-Disposition": {
-                "contains": "name=\"entityId\""
-              }
-            },
-            "bodyPatterns": [
-              {
-                "contains": "1"
-              }
-            ]
           }
         ]
       },
       "response": {
+        "status": 201,
         "headers": {
           "Content-Type": "application/json"
         },
-        "status": 200,
-        "bodyFileName": "alfresco-upload-response.json"
+        "jsonBody": {
+          "ID": "00000000-0000-0000-0000-000000000001"
+        }
       }
     },
     {
