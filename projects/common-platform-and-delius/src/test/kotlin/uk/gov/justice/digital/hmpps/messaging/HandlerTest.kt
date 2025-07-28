@@ -202,7 +202,6 @@ internal class HandlerTest {
 
     private fun corePersonHasNoCrn() {
         val person = CorePersonRecord(
-            UUID.randomUUID().toString(),
             "John", "Robert", "Smith",
             LocalDate.now().minusYears(21),
             Identifiers()
@@ -212,7 +211,7 @@ internal class HandlerTest {
 
     private fun corePersonAlreadyHasCrn() {
         val person = CorePersonRecord(
-            UUID.randomUUID().toString(), "John", "Robert", "Smith", LocalDate.now().minusYears(21),
+            "John", "Robert", "Smith", LocalDate.now().minusYears(21),
             Identifiers(crns = listOf("X123456"))
         )
         whenever(corePersonClient.findByDefendantId(any())).thenReturn(person)
