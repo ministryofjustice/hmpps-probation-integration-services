@@ -14,7 +14,10 @@ import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
 import uk.gov.justice.digital.hmpps.alfresco.AlfrescoClient
 import uk.gov.justice.digital.hmpps.api.model.personalDetails.DocumentSearch
+import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
 import uk.gov.justice.digital.hmpps.data.generator.personalDetails.PersonDetailsGenerator.PERSONAL_DETAILS
+import uk.gov.justice.digital.hmpps.integrations.delius.alfresco.AlfrescoUploadClient
+import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.PersonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.DocumentEntity
 import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.DocumentsRepository
@@ -26,6 +29,9 @@ import java.time.LocalTime
 internal class DocumentsServiceTest {
 
     @Mock
+    lateinit var auditedInteractionService: AuditedInteractionService
+
+    @Mock
     lateinit var documentsRepository: DocumentsRepository
 
     @Mock
@@ -33,6 +39,12 @@ internal class DocumentsServiceTest {
 
     @Mock
     lateinit var alfrescoClient: AlfrescoClient
+
+    @Mock
+    lateinit var alfrescoUploadClient: AlfrescoUploadClient
+
+    @Mock
+    lateinit var contactRepository: ContactRepository
 
     @InjectMocks
     lateinit var service: DocumentsService

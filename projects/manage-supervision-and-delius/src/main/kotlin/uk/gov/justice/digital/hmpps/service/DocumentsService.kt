@@ -1,21 +1,33 @@
 package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.data.domain.Pageable
+import org.springframework.http.HttpEntity
+import org.springframework.http.MediaType
+import org.springframework.http.client.MultipartBodyBuilder
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
+import org.springframework.util.MultiValueMap
+import org.springframework.web.multipart.MultipartFile
 import uk.gov.justice.digital.hmpps.alfresco.AlfrescoClient
 import uk.gov.justice.digital.hmpps.api.model.personalDetails.*
-import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.PersonRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.getSummary
+import uk.gov.justice.digital.hmpps.audit.service.AuditableService
+import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
+import uk.gov.justice.digital.hmpps.integrations.delius.alfresco.AlfrescoUploadClient
+import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractionCode
+import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.DocumentEntity
 import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.DocumentsRepository
 import java.time.LocalTime
 
 @Service
 class DocumentsService(
+    auditedInteractionService: AuditedInteractionService,
     private val documentsRepository: DocumentsRepository,
     private val personRepository: PersonRepository,
     private val alfrescoClient: AlfrescoClient,
-) {
+    private val alfrescoUploadClient: AlfrescoUploadClient,
+    private val contactRepository: ContactRepository
+) : AuditableService(auditedInteractionService) {
 
     fun getDocuments(crn: String, pageable: Pageable, sortedBy: String): PersonDocuments {
         val summary = personRepository.getSummary(crn)
@@ -83,6 +95,45 @@ class DocumentsService(
             sortedBy = sortedBy,
             metadata = metadata
         )
+    }
+
+    @Transactional
+    fun addDocument(crn: String, id: Long, file: MultipartFile): String {
+        return audit(BusinessInteractionCode.UPLOAD_DOCUMENT) { audit ->
+            val person = personRepository.getPerson(crn)
+            audit["offenderId"] = person.id
+
+            val contact = contactRepository.getContact(id)
+            val alfrescoDocument =
+                alfrescoUploadClient.addDocument(
+                    populateBodyValues(
+                        crn,
+                        file.bytes,
+                        file.originalFilename!!,
+                        contact.id
+                    )
+                )
+
+            return@audit alfrescoDocument.id
+        }
+    }
+
+    private fun populateBodyValues(
+        crn: String,
+        file: ByteArray,
+        filename: String,
+        contactId: Long
+    ): MultiValueMap<String, HttpEntity<*>> {
+        val bodyBuilder = MultipartBodyBuilder()
+        bodyBuilder.part("CRN", crn, MediaType.TEXT_PLAIN)
+        bodyBuilder.part("entityId", contactId.toString(), MediaType.TEXT_PLAIN)
+        bodyBuilder.part("author", "Service,Manage my Supervision", MediaType.TEXT_PLAIN)
+        bodyBuilder.part("filedata", file, MediaType.APPLICATION_OCTET_STREAM)
+            .filename(filename)
+        bodyBuilder.part("docType", "DOCUMENT", MediaType.TEXT_PLAIN)
+        bodyBuilder.part("entityType", "CONTACT", MediaType.TEXT_PLAIN)
+
+        return bodyBuilder.build()
     }
 
     fun sortUsingSearchResults(

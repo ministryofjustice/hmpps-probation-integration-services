@@ -1,21 +1,116 @@
 {
-  "request": {
-    "method": "GET",
-    "urlPath": "/alfresco/fetch/00000000-0000-0000-0000-000000000001"
-  },
-  "response": {
-    "headers": {
-      "content-type": "application/msword;charset=UTF-8",
-      "content-length": "14812",
-      "content-disposition": "attachment; filename=\"doc1\"; filename*=UTF-8''doc1",
-      "accept-ranges": "bytes",
-      "content-range": "bytes 0-14811/14812",
-      "cache-control": "max-age=0,  must-revalidate",
-      "etag": "1699630109776",
-      "last-modified": "Fri, 10 Nov 2023 15:28:29 GMT",
-      "Custom-Alfresco-Header": "should be ignored"
+  "mappings": [
+    {
+      "request": {
+        "method": "POST",
+        "url": "/uploadnew",
+        "headers": {
+          "X-DocRepository-Remote-User": {
+            "equalTo": "N00"
+          },
+          "X-DocRepository-Real-Remote-User": {
+            "equalTo": "UnpaidWorkAndDelius"
+          },
+          "Authorization": {
+            "doesNotMatch": "^Bearer (.*)$"
+          }
+        },
+        "multipartPatterns": [
+          {
+            "matchingType": "ANY",
+            "headers": {
+              "Content-Disposition": {
+                "contains": "name=\"CRN\""
+              }
+            },
+            "bodyPatterns": [
+              {
+                "contains": "X000004"
+              }
+            ]
+          },
+          {
+            "matchingType": "ANY",
+            "headers": {
+              "Content-Disposition": {
+                "contains": "name=\"author\""
+              }
+            },
+            "bodyPatterns": [
+              {
+                "contains": "Service,Manage my Supervision"
+              }
+            ]
+          },
+          {
+            "matchingType": "ANY",
+            "headers": {
+              "Content-Disposition": {
+                "contains": "name=\"entityType\""
+              }
+            },
+            "bodyPatterns": [
+              {
+                "contains": "CONTACT"
+              }
+            ]
+          },
+          {
+            "matchingType": "ANY",
+            "headers": {
+              "Content-Disposition": {
+                "contains": "name=\"docType\""
+              }
+            },
+            "bodyPatterns": [
+              {
+                "contains": "DOCUMENT"
+              }
+            ]
+          },
+          {
+            "matchingType": "ANY",
+            "headers": {
+              "Content-Disposition": {
+                "contains": "name=\"entityId\""
+              }
+            },
+            "bodyPatterns": [
+              {
+                "contains": "1"
+              }
+            ]
+          }
+        ]
+      },
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "bodyFileName": "alfresco-upload-response.json"
+      }
     },
-    "status": 200,
-    "bodyFileName": "document.pdf"
-  }
+    {
+      "request": {
+        "method": "GET",
+        "urlPath": "/alfresco/fetch/00000000-0000-0000-0000-000000000001"
+      },
+      "response": {
+        "headers": {
+          "content-type": "application/msword;charset=UTF-8",
+          "content-length": "14812",
+          "content-disposition": "attachment; filename=\"doc1\"; filename*=UTF-8''doc1",
+          "accept-ranges": "bytes",
+          "content-range": "bytes 0-14811/14812",
+          "cache-control": "max-age=0,  must-revalidate",
+          "etag": "1699630109776",
+          "last-modified": "Fri, 10 Nov 2023 15:28:29 GMT",
+          "Custom-Alfresco-Header": "should be ignored"
+        },
+        "status": 200,
+        "bodyFileName": "document.pdf"
+      }
+    }
+  ]
 }
