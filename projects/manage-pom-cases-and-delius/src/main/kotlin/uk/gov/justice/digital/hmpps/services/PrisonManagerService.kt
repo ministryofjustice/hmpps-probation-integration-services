@@ -23,6 +23,7 @@ class PrisonManagerService(
     private val assignmentService: AssignmentService,
     private val staffRepository: StaffRepository,
     private val prisonManagerRepository: PrisonManagerRepository,
+    private val responsibleOfficerRepository: ResponsibleOfficerRepository,
     private val referenceDataRepository: ReferenceDataRepository,
     private val contactService: ContactService,
     private val personRepository: PersonRepository
@@ -45,12 +46,10 @@ class PrisonManagerService(
         )
         personRepository.findForUpdate(personId)
         val currentPom = prisonManagerRepository.findActiveManagerAtDate(personId, allocationDate)
-        val newEndDate = currentPom?.endDate
-            ?: prisonManagerRepository.findFirstManagerAfterDate(personId, allocationDate).firstOrNull()?.date
         val newPom = currentPom.changeTo(personId, allocationDate, probationArea, team, staff)
+        deleteFuturePrisonManagers(allocationDate, newPom)
         return newPom?.let { new ->
             currentPom?.let { old -> prisonManagerRepository.saveAndFlush(old) }
-            new.endDate = newEndDate
             new.emailAddress = allocation.manager.email
             prisonManagerRepository.save(new)
             PomAllocationResult.PomAllocated
@@ -64,11 +63,9 @@ class PrisonManagerService(
             val probationArea = currentPom.probationArea
             val team = teamRepository.getByCode(probationArea.code + Team.UNALLOCATED_SUFFIX)
             val staff = staffRepository.getByCode(team.code + "U")
-            val newEndDate = currentPom.endDate
-                ?: prisonManagerRepository.findFirstManagerAfterDate(personId, deallocationDate).firstOrNull()?.date
             val newPom = currentPom.changeTo(personId, deallocationDate, probationArea, team, staff.toPrisonStaff())!!
+            deleteFuturePrisonManagers(deallocationDate, newPom)
             prisonManagerRepository.saveAndFlush(currentPom)
-            newPom.endDate = newEndDate
             prisonManagerRepository.save(newPom)
             PomAllocationResult.PomDeallocated
         } else {
@@ -100,6 +97,22 @@ class PrisonManagerService(
         endDate?.let { "End Date: " + DeliusDateTimeFormatter.format(it) },
         "Allocation Reason: ${allocationReason.description}"
     ).joinToString(System.lineSeparator())
+
+    private fun deleteFuturePrisonManagers(allocationDate: ZonedDateTime, pom: PrisonManager?) {
+        val futurePoms = prisonManagerRepository.findAllByDateGreaterThan(allocationDate)
+        futurePoms.flatMap { it.responsibleOfficers }.forEach { ro ->
+            if (ro.isActive() && pom != null) {
+                ro.apply {
+                    pom.responsibleOfficers.add(this)
+                    prisonManager = pom
+                }
+            } else {
+                responsibleOfficerRepository.delete(ro)
+                null
+            }
+        }
+        prisonManagerRepository.deleteAll(futurePoms)
+    }
 
     private fun PrisonManager?.changeTo(
         personId: Long,
