@@ -92,7 +92,7 @@ dependencyResolutionManagement {
             library("html2md", "com.vladsch.flexmark:flexmark-html2md-converter:0.64.8")
             library("microsoft-graph", "com.microsoft.graph:microsoft-graph:6.47.0")
             library("mockito-inline", "org.mockito:mockito-inline:5.2.0")
-            library("mockito-kotlin", "org.mockito.kotlin:mockito-kotlin:5.4.0")
+            library("mockito-kotlin", "org.mockito.kotlin:mockito-kotlin:6.0.0")
             library("notify", "uk.gov.service.notify:notifications-java-client:5.2.1-RELEASE")
             library("opensearch", "org.opensearch.client:opensearch-java:3.2.0")
             library("opensearch-starter", "org.opensearch.client:spring-data-opensearch-starter:2.0.0")
