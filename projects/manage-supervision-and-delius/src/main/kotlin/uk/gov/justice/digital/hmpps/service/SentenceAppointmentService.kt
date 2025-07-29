@@ -242,11 +242,16 @@ class SentenceAppointmentService(
         }
     }
 
-    private fun CreateAppointment.withManager(userId: Long, om: OffenderManager, staffAndTeam: UserTeam, location: Location?) =
+    private fun CreateAppointment.withManager(
+        userId: Long,
+        om: OffenderManager,
+        staffAndTeam: UserTeam,
+        location: Location?
+    ) =
         Appointment(
             person = om.person,
             type = appointmentTypeRepository.getByCode(type),
-            date =start.toLocalDate(),
+            date = start.toLocalDate(),
             startTime = ZonedDateTime.of(LocalDate.EPOCH, start.toLocalTime(), EuropeLondon),
             teamId = staffAndTeam.teamId,
             staffId = staffAndTeam.staffId,

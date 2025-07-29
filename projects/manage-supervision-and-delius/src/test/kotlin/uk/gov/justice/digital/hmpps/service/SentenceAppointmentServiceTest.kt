@@ -101,7 +101,7 @@ class SentenceAppointmentServiceTest {
             OffenderManagerGenerator.OFFENDER_MANAGER_ACTIVE
         )
         val exception = assertThrows<InvalidRequestException> {
-            service.createAppointment(user.username,PersonGenerator.PERSON_1.crn, appointment)
+            service.createAppointment(user.username, PersonGenerator.PERSON_1.crn, appointment)
         }
 
         assertThat(
@@ -134,7 +134,7 @@ class SentenceAppointmentServiceTest {
             OffenderManagerGenerator.OFFENDER_MANAGER_ACTIVE
         )
         val exception = assertThrows<InvalidRequestException> {
-            service.createAppointment(user.username,PersonGenerator.PERSON_1.crn, appointment)
+            service.createAppointment(user.username, PersonGenerator.PERSON_1.crn, appointment)
         }
 
         assertThat(exception.message, equalTo("Appointment end time cannot be before start time"))
@@ -166,7 +166,7 @@ class SentenceAppointmentServiceTest {
         )
 
         val exception = assertThrows<InvalidRequestException> {
-            service.createAppointment(user.username,PersonGenerator.PERSON_1.crn, appointment)
+            service.createAppointment(user.username, PersonGenerator.PERSON_1.crn, appointment)
         }
 
         assertThat(exception.message, equalTo("Until cannot be before start time"))
@@ -197,7 +197,7 @@ class SentenceAppointmentServiceTest {
         )
         whenever(eventSentenceRepository.existsById(appointment.eventId!!)).thenReturn(false)
         val exception = assertThrows<NotFoundException> {
-            service.createAppointment(user.username,PersonGenerator.PERSON_1.crn, appointment)
+            service.createAppointment(user.username, PersonGenerator.PERSON_1.crn, appointment)
         }
 
         assertThat(exception.message, equalTo("Event with eventId of 1 not found"))
@@ -230,7 +230,7 @@ class SentenceAppointmentServiceTest {
         whenever(eventSentenceRepository.existsById(appointment.eventId!!)).thenReturn(true)
         whenever(requirementRepository.existsById(appointment.requirementId!!)).thenReturn(false)
         val exception = assertThrows<NotFoundException> {
-            service.createAppointment(user.username,PersonGenerator.PERSON_1.crn, appointment)
+            service.createAppointment(user.username, PersonGenerator.PERSON_1.crn, appointment)
         }
 
         assertThat(exception.message, equalTo("Requirement with requirementId of 2 not found"))
@@ -262,7 +262,7 @@ class SentenceAppointmentServiceTest {
         whenever(eventSentenceRepository.existsById(appointment.eventId!!)).thenReturn(true)
         whenever(licenceConditionRepository.existsById(appointment.licenceConditionId!!)).thenReturn(false)
         val exception = assertThrows<NotFoundException> {
-            service.createAppointment(user.username,PersonGenerator.PERSON_1.crn, appointment)
+            service.createAppointment(user.username, PersonGenerator.PERSON_1.crn, appointment)
         }
 
         assertThat(exception.message, equalTo("LicenceCondition with licenceConditionId of 3 not found"))
@@ -293,7 +293,7 @@ class SentenceAppointmentServiceTest {
         whenever(nsiRepository.existsById(appointment.nsiId!!)).thenReturn(false)
 
         val exception = assertThrows<NotFoundException> {
-            service.createAppointment(user.username,PersonGenerator.PERSON_1.crn, appointment)
+            service.createAppointment(user.username, PersonGenerator.PERSON_1.crn, appointment)
         }
 
         assertThat(exception.message, equalTo("Nsi with nsiId of 3 not found"))
@@ -345,7 +345,13 @@ class SentenceAppointmentServiceTest {
             )
         ).thenReturn(1)
 
-        assertThrows<ConflictException> { service.createAppointment(user.username,PersonGenerator.PERSON_1.crn, appointment) }
+        assertThrows<ConflictException> {
+            service.createAppointment(
+                user.username,
+                PersonGenerator.PERSON_1.crn,
+                appointment
+            )
+        }
     }
 
     @Test
@@ -375,7 +381,7 @@ class SentenceAppointmentServiceTest {
         )
 
         val exception = assertThrows<InvalidRequestException> {
-            service.createAppointment(user.username,PersonGenerator.PERSON_1.crn, appointment)
+            service.createAppointment(user.username, PersonGenerator.PERSON_1.crn, appointment)
         }
 
         assertThat(
@@ -414,7 +420,7 @@ class SentenceAppointmentServiceTest {
         whenever(appointmentRepository.findByExternalReference(appointment.urn)).thenReturn(PERSON_APPOINTMENT)
 
         val exception = assertThrows<ConflictException> {
-            service.createAppointment(user.username,PersonGenerator.PERSON_1.crn, appointment)
+            service.createAppointment(user.username, PersonGenerator.PERSON_1.crn, appointment)
         }
 
         assertThat(
@@ -431,7 +437,7 @@ class SentenceAppointmentServiceTest {
         )
 
         val exception = assertThrows<InvalidRequestException> {
-            service.createAppointment(user.username,PersonGenerator.PERSON_1.crn, appointment)
+            service.createAppointment(user.username, PersonGenerator.PERSON_1.crn, appointment)
         }
 
         assertThat(

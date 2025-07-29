@@ -29,7 +29,11 @@ class AppointmentController(
     @PostMapping("/{crn}")
     @WithDeliusUser
     @ResponseStatus(HttpStatus.CREATED)
-    fun createAppointment(auth: Authentication, @PathVariable crn: String, @Valid @RequestBody createAppointment: CreateAppointment) =
+    fun createAppointment(
+        auth: Authentication,
+        @PathVariable crn: String,
+        @Valid @RequestBody createAppointment: CreateAppointment
+    ) =
         sentenceAppointmentService.createAppointment(auth.name, crn, createAppointment)
 
     @PostMapping("/{crn}/check")
