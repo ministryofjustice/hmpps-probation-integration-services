@@ -19,6 +19,7 @@ import uk.gov.justice.digital.hmpps.api.model.appointment.CreateAppointment
 import uk.gov.justice.digital.hmpps.api.model.appointment.User
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.DEFAULT_PROVIDER
 import uk.gov.justice.digital.hmpps.data.generator.OffenderManagerGenerator.DEFAULT_LOCATION
+import uk.gov.justice.digital.hmpps.data.generator.OffenderManagerGenerator.PI_USER
 import uk.gov.justice.digital.hmpps.data.generator.OffenderManagerGenerator.STAFF_1
 import uk.gov.justice.digital.hmpps.data.generator.OffenderManagerGenerator.STAFF_USER_1
 import uk.gov.justice.digital.hmpps.data.generator.OffenderManagerGenerator.TEAM
@@ -144,7 +145,8 @@ class CreateAppointmentIntegrationTest {
         assertThat(appointment.startTime, isCloseTo(createAppointment.start))
         assertThat(appointment.externalReference, equalTo(createAppointment.urn))
         assertThat(appointment.eventId, equalTo(createAppointment.eventId))
-        assertThat(appointment.createdByUserId, equalTo(STAFF_USER_1.id))
+//        assertThat(appointment.lastUpdatedUserId, equalTo(PI_USER.id))
+        assertThat(appointment.createdByUserId, equalTo(PI_USER.id))
         assertThat(appointment.staffId, equalTo(STAFF_1.id))
         assertThat(appointment.probationAreaId, equalTo(DEFAULT_PROVIDER.id))
         assertThat(appointment.officeLocationId, equalTo(DEFAULT_LOCATION.id))

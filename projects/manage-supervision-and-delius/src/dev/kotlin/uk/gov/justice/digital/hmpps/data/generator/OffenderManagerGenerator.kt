@@ -70,6 +70,7 @@ object OffenderManagerGenerator {
     val STAFF_USER_1 = StaffUser(IdGenerator.getAndIncrement(), STAFF_1, "peter-parker", "peter", surname = "parker")
     val STAFF_USER_2 = StaffUser(IdGenerator.getAndIncrement(), STAFF_2, "bwayne", "bruce", surname = "wayne")
     val STAFF_USER_3 = StaffUser(IdGenerator.getAndIncrement(), STAFF_3, "ckent", "clark", surname = "kent")
+    val PI_USER = StaffUser(IdGenerator.getAndIncrement(), username = "probation-integration-dev", forename = "probation", surname = "integration-dev")
     val STAFF_TEAM = ContactStaffTeam(StaffTeamLinkId(STAFF_1.id, TEAM))
     val STAFF_TEAM_1 = ContactStaffTeam(StaffTeamLinkId(STAFF_2.id, TEAM))
 
