@@ -23,7 +23,7 @@ class NotifierTest {
 
     @BeforeEach
     fun setUp() {
-        notifier = Notifier(topicPublisher)
+        notifier = Notifier(topicPublisher, "http://domain-events-and-delius.test.gov.uk")
     }
 
     @Test

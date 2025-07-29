@@ -296,7 +296,7 @@ internal class IntegrationTest {
                     assertEquals("probation-case.engagement.created", event.eventType)
                     assertEquals("A probation case record for a person has been created in Delius", event.description)
                     Assertions.assertNotNull(event.personReference.findCrn())
-                    Assertions.assertNull(event.detailUrl)
+                    assertEquals("http://domain-events-and-delius.test.gov.uk/probation-case.engagement.created/${event.personReference.findCrn()}", event.detailUrl)
                     assertTrue(event.additionalInformation.isEmpty())
                 }
 

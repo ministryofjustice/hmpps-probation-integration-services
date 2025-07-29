@@ -145,11 +145,6 @@ class PersonService(
         return personRepository.getNextCrn()
     }
 
-    fun matchPerson(matchRequest: ProbationMatchRequest): ProbationMatchResponse {
-        val results = personRepository.findAll(matchRequest.toSpecification()).map { it.offenderMatch() }
-        return ProbationMatchResponse(results, if (results.isEmpty()) "NONE" else "ALL_SUPPLIED")
-    }
-
     fun personWithDefendantIdExists(defendantId: String) = personRepository.existsByDefendantId(defendantId)
 
     fun String.toDeliusGender() = ReferenceData.GenderCode.entries.find { it.commonPlatformValue == this }?.deliusValue
@@ -205,21 +200,4 @@ class PersonService(
             this.postcode?.trim()
         ).joinToString(", ")
     }
-
-    fun ProbationMatchRequest.toSpecification() = listOfNotNull(
-        matchesName(firstName, surname),
-        matchesDateOfBirth(dateOfBirth),
-        pncNumber?.let { matchesPnc(it) },
-        croNumber?.let { matchesCro(it) },
-    ).reduce { spec, current -> spec.and(current) }
-
-    fun Person.offenderMatch() = OffenderMatch(
-        OffenderDetail(
-            otherIds = IDs(crn = crn, pncNumber = pncNumber, croNumber = croNumber),
-            firstName = forename,
-            surname = surname,
-            dateOfBirth = dateOfBirth,
-            gender = gender.description
-        )
-    )
 }
