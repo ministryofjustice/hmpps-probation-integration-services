@@ -54,6 +54,10 @@ wiremock.enabled: true
 
 messaging.consumer.queue: message-queue
 
+domain-events:
+  detail-url:
+    base: http://domain-events-and-delius.test.gov.uk
+
 s3.bucket.name: offence-priority-bucket
 
 integrations:
