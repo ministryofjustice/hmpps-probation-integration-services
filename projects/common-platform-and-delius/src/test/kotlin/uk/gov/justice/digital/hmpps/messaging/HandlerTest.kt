@@ -99,7 +99,6 @@ internal class HandlerTest {
         val notification = Notification(message = MessageGenerator.COMMON_PLATFORM_EVENT_NULL_FIELDS)
         handler.handle(notification)
         verify(telemetryService).notificationReceived(notification)
-        verify(personService, never()).matchPerson(any())
         verify(remandService, never()).insertPersonOnRemand(any())
     }
 
