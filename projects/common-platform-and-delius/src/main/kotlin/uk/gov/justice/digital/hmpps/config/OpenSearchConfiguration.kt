@@ -1,7 +1,7 @@
 package uk.gov.justice.digital.hmpps.config
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import org.apache.http.HttpHost
+import org.apache.hc.core5.http.HttpHost
 import org.opensearch.client.RestClient
 import org.opensearch.client.RestHighLevelClient
 import org.opensearch.client.json.jackson.JacksonJsonpMapper
