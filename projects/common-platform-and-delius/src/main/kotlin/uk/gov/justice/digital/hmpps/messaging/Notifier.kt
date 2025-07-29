@@ -5,6 +5,7 @@ import com.asyncapi.kotlinasyncapi.annotation.channel.Channel
 import com.asyncapi.kotlinasyncapi.annotation.channel.Message
 import com.asyncapi.kotlinasyncapi.annotation.channel.Subscribe
 import org.springframework.beans.factory.annotation.Qualifier
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.Person
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonAddress
@@ -15,6 +16,7 @@ import uk.gov.justice.digital.hmpps.publisher.NotificationPublisher
 @Channel("hmpps-domain-events-topic")
 class Notifier(
     @Qualifier("topicPublisher") private val topicPublisher: NotificationPublisher,
+    @Value(value = $$"${domain-events.detail-url.base}") private val detailUrlBaseUrl: String,
 ) {
     @Subscribe(
         messages = [
@@ -29,6 +31,7 @@ class Notifier(
                     version = 1,
                     eventType = "probation-case.engagement.created",
                     description = "A probation case record for a person has been created in Delius",
+                    detailUrl = "$detailUrlBaseUrl/probation-case.engagement.created/${person.crn}",
                     personReference = PersonReference(
                         identifiers = listOf(
                             PersonIdentifier("CRN", person.crn),
