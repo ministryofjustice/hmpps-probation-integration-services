@@ -1,6 +1,9 @@
 package uk.gov.justice.digital.hmpps
 
+import org.hamcrest.MatcherAssert.assertThat
+import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertNull
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
@@ -51,6 +54,7 @@ class DocumentUploadIntegrationTest {
         )
 
         val savedContact = contactRepository.save(contactToSave)
+        assertNull(documentRepository.findByPrimaryKeyId(savedContact.id))
 
         val requestBuilder = multipart("/documents/${person.crn}/update/contact/{id}", savedContact.id)
             .file(multipartFile)
@@ -63,11 +67,17 @@ class DocumentUploadIntegrationTest {
         mockMvc.perform(requestBuilder.withToken())
             .andExpect(status().isOk)
 
-        //assert doc
         val doc = documentRepository.findByPrimaryKeyId(savedContact.id)
+        assertThat(doc?.alfrescoId, equalTo("00000000-0000-0000-0000-000000000001"))
+        assertThat(doc?.name, equalTo(document.name))
+        assertThat(doc?.personId, equalTo(person.id))
+        assertThat(doc?.primaryKeyId, equalTo(savedContact.id))
+        assertThat(doc?.type, equalTo("DOCUMENT"))
+
+
 
         contactRepository.delete(savedContact)
-        documentRepository.delete(doc)
+        documentRepository.delete(doc!!)
 
     }
 }

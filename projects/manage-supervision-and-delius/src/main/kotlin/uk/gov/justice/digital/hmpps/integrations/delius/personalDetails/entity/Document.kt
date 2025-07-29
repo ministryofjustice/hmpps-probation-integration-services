@@ -448,7 +448,7 @@ interface DocumentRepository : JpaRepository<Document, Long> {
     )
     fun getCourtDocuments(id: Long, eventNumber: String): List<CourtDocumentDetails>
 
-    fun findByPrimaryKeyId(id: Long): Document
+    fun findByPrimaryKeyId(id: Long): Document?
 }
 
 fun DocumentRepository.getDocument(crn: String, alfrescoId: String) =

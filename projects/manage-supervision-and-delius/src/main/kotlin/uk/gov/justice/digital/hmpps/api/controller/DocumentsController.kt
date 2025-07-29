@@ -57,7 +57,7 @@ class DocumentsController(private val documentsService: DocumentsService) {
     )
 
     @PatchMapping("/update/contact/{id}", consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
-    @Operation(summary = "add contact to an existing contact")
+    @Operation(summary = "add document to an existing contact")
     fun addDocumentToContact(
         @PathVariable crn: String,
         @PathVariable id: Long,
