@@ -5,7 +5,6 @@ import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.NumericBooleanConverter
 import org.hibernate.type.YesNoConverter
 import org.springframework.data.annotation.CreatedDate
-import org.springframework.data.annotation.LastModifiedBy
 import org.springframework.data.annotation.LastModifiedDate
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import org.springframework.data.jpa.repository.JpaRepository
@@ -49,7 +48,6 @@ class Appointment(
     val staffId: Long,
 
     @Column(name = "last_updated_user_id")
-    @LastModifiedBy
     var lastUpdatedUserId: Long,
 
     @Column(name = "contact_end_time")

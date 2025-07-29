@@ -145,7 +145,7 @@ class CreateAppointmentIntegrationTest {
         assertThat(appointment.startTime, isCloseTo(createAppointment.start))
         assertThat(appointment.externalReference, equalTo(createAppointment.urn))
         assertThat(appointment.eventId, equalTo(createAppointment.eventId))
-//        assertThat(appointment.lastUpdatedUserId, equalTo(PI_USER.id))
+        assertThat(appointment.lastUpdatedUserId, equalTo(PI_USER.id))
         assertThat(appointment.createdByUserId, equalTo(PI_USER.id))
         assertThat(appointment.staffId, equalTo(STAFF_1.id))
         assertThat(appointment.probationAreaId, equalTo(DEFAULT_PROVIDER.id))
