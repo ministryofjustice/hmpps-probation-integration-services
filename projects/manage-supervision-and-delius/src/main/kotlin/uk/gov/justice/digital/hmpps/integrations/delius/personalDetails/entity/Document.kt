@@ -7,6 +7,7 @@ import org.hibernate.type.NumericBooleanConverter
 import org.hibernate.type.YesNoConverter
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
+import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
@@ -23,8 +24,11 @@ import java.time.ZonedDateTime
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "table_name", discriminatorType = DiscriminatorType.STRING)
 @SQLRestriction("soft_deleted = 0")
+@EntityListeners(AuditingEntityListener::class)
+@SequenceGenerator(name = "document_id_generator", sequenceName = "document_id_seq", allocationSize = 1)
 abstract class Document {
     @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "document_id_generator")
     @Column(name = "document_id")
     open var id: Long = 0
 
@@ -443,6 +447,8 @@ interface DocumentRepository : JpaRepository<Document, Long> {
         """, nativeQuery = true
     )
     fun getCourtDocuments(id: Long, eventNumber: String): List<CourtDocumentDetails>
+
+    fun findByPrimaryKeyId(id: Long): Document
 }
 
 fun DocumentRepository.getDocument(crn: String, alfrescoId: String) =

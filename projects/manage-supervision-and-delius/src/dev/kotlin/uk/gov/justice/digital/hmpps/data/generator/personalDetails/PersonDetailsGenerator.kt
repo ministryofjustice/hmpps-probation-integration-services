@@ -447,7 +447,6 @@ object PersonDetailsGenerator {
         primaryKeyId: Long? = null
     ): PersonDocument {
         val doc = PersonDocument()
-        doc.id = IdGenerator.getAndIncrement()
         doc.createdAt = ZonedDateTime.now().minusDays(15)
         doc.lastUpdated = ZonedDateTime.now().minusDays(1)
         doc.alfrescoId = alfrescoId

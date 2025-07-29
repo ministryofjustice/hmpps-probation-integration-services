@@ -15,6 +15,7 @@ import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.generateCont
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.OVERVIEW
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.ContactRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.DocumentRepository
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 import java.time.LocalDateTime
 import java.time.ZonedDateTime
@@ -28,6 +29,9 @@ class DocumentUploadIntegrationTest {
 
     @Autowired
     internal lateinit var contactRepository: ContactRepository
+
+    @Autowired
+    internal lateinit var documentRepository: DocumentRepository
 
     @Test
     fun `update contact with document`() {
@@ -56,10 +60,14 @@ class DocumentUploadIntegrationTest {
                 request
             }
 
-        val response = mockMvc.perform(requestBuilder.withToken())
+        mockMvc.perform(requestBuilder.withToken())
             .andExpect(status().isOk)
 
+        //assert doc
+        val doc = documentRepository.findByPrimaryKeyId(savedContact.id)
+
         contactRepository.delete(savedContact)
+        documentRepository.delete(doc)
 
     }
 }

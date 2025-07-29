@@ -12,10 +12,13 @@ import uk.gov.justice.digital.hmpps.alfresco.AlfrescoClient
 import uk.gov.justice.digital.hmpps.api.model.personalDetails.*
 import uk.gov.justice.digital.hmpps.audit.service.AuditableService
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
+import uk.gov.justice.digital.hmpps.exception.InvalidRequestException
 import uk.gov.justice.digital.hmpps.integrations.delius.alfresco.AlfrescoUploadClient
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractionCode
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.*
+import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.ContactDocument
 import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.DocumentEntity
+import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.DocumentRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.DocumentsRepository
 import java.time.LocalTime
 
@@ -26,7 +29,8 @@ class DocumentsService(
     private val personRepository: PersonRepository,
     private val alfrescoClient: AlfrescoClient,
     private val alfrescoUploadClient: AlfrescoUploadClient,
-    private val contactRepository: ContactRepository
+    private val contactRepository: ContactRepository,
+    private val documentRepository: DocumentRepository
 ) : AuditableService(auditedInteractionService) {
 
     fun getDocuments(crn: String, pageable: Pageable, sortedBy: String): PersonDocuments {
@@ -98,24 +102,34 @@ class DocumentsService(
     }
 
     @Transactional
-    fun addDocument(crn: String, id: Long, file: MultipartFile): String {
-        return audit(BusinessInteractionCode.UPLOAD_DOCUMENT) { audit ->
+    fun addDocument(crn: String, id: Long, file: MultipartFile) {
+         audit(BusinessInteractionCode.UPLOAD_DOCUMENT) { audit ->
             val person = personRepository.getPerson(crn)
             audit["offenderId"] = person.id
 
             val contact = contactRepository.getContact(id)
+
+            val filename = file.originalFilename ?: throw InvalidRequestException("File name is missing")
 
             val alfrescoDocument =
                 alfrescoUploadClient.addDocument(
                     populateBodyValues(
                         crn,
                         file.bytes,
-                        file.originalFilename!!,
+                        filename,
                         contact.id
                     )
                 )
 
-            return@audit alfrescoDocument.id
+            val contactDocument = ContactDocument(contact)
+            contactDocument.alfrescoId = alfrescoDocument.id
+            contactDocument.name = filename
+            contactDocument.personId = person.id
+            contactDocument.primaryKeyId = contact.id
+            contactDocument.type = "DOCUMENT"
+
+            documentRepository.save(contactDocument)
+
         }
     }
 

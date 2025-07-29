@@ -20,6 +20,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.alfresco.AlfrescoUploadC
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.PersonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.DocumentEntity
+import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.DocumentRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.DocumentsRepository
 import uk.gov.justice.digital.hmpps.utils.Summary
 import java.time.LocalDateTime
@@ -45,6 +46,9 @@ internal class DocumentsServiceTest {
 
     @Mock
     lateinit var contactRepository: ContactRepository
+
+    @Mock
+    lateinit var documentRepository: DocumentRepository
 
     @InjectMocks
     lateinit var service: DocumentsService
