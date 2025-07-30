@@ -25,9 +25,7 @@ do
   DB_PW=$(echo $PROJECT_PW_STRING | sed 's/DB_PASSWORD=//g')
   CONN_STR="$DB_UN/$DB_PW$DB_URL"
 
-  SQL="select count(*) from offender o;/
-       select count(*) from alias a;/
-  "
+  SQL="select count(*) from offender o;"
 
   echo "$SQL" | sqlplus -s "$CONN_STR"
 
