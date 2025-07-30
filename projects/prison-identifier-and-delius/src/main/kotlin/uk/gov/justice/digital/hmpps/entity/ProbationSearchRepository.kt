@@ -8,6 +8,9 @@ import uk.gov.justice.digital.hmpps.utils.SearchHelpers.allLenientDateVariations
 import java.time.LocalDate
 
 interface ProbationSearchRepository : JpaRepository<Person, Long> {
+    @Query("select soundex(:name) from dual", nativeQuery = true)
+    fun getSoundex(name: String): String
+
     @Query(
         """
             select distinct p from Person p
@@ -27,9 +30,9 @@ interface ProbationSearchRepository : JpaRepository<Person, Long> {
                 and
                 (:activeSentence != true or (:activeSentence = true and p.currentDisposal = true ))
                 and
-                (:forename is null or (:forename is not null and lower(trim(p.forename)) = lower(trim(:forename))))
+                (:forename is null or p.firstNameSoundex = :forename)
                 and 
-                (:surname is null or (:surname is not null and lower(trim(p.surname)) = lower(trim(:surname))))
+                (:surname is null or p.surnameSoundex = :surname)
                 and 
                 (:dateOfBirth is null or (:dateOfBirth is not null and p.dateOfBirth = :dateOfBirth))
                 and exists (select 1 from OffenderManager om
@@ -67,9 +70,9 @@ interface ProbationSearchRepository : JpaRepository<Person, Long> {
                 and
                 (:activeSentence != true or (:activeSentence = true and p.currentDisposal = true ))
                 and
-                (:forename is null or (:forename is not null and lower(trim(a.forename)) = lower(trim(:forename))))
+                (:forename is null or a.firstNameSoundex = :forename)
                 and 
-                (:surname is null or (:surname is not null and lower(trim(a.surname)) = lower(trim(:surname))))
+                (:surname is null or a.surnameSoundex = :surname)
                 and 
                 (:dateOfBirth is null or (:dateOfBirth is not null and a.dateOfBirth = :dateOfBirth))
                 and exists (select 1 from OffenderManager om
@@ -176,17 +179,17 @@ interface ProbationSearchRepository : JpaRepository<Person, Long> {
             and
             (
                 (
-                    (:forename is null or (:forename is not null and lower(trim(a.forename)) = lower(trim(:forename))))
+                    (:forename is null or a.firstNameSoundex = :forename)
                     and 
-                    (:surname is null or (:surname is not null and lower(trim(a.surname)) = lower(trim(:surname))))
+                    (:surname is null or a.surnameSoundex = :surname)
                     and 
                     (:dateOfBirth is null or (:dateOfBirth is not null and a.dateOfBirth = :dateOfBirth))
                 )
                 or
                 (
-                    (:forename is null or (:forename is not null and lower(trim(p.forename)) = lower(trim(:forename))))
+                    (:forename is null or p.firstNameSoundex = :forename)
                     and 
-                    (:surname is null or (:surname is not null and lower(trim(p.surname)) = lower(trim(:surname))))
+                    (:surname is null or p.surnameSoundex = :surname)
                     and 
                     (:dateOfBirth is null or (:dateOfBirth is not null and p.dateOfBirth = :dateOfBirth))
                 )
@@ -212,7 +215,7 @@ interface ProbationSearchRepository : JpaRepository<Person, Long> {
             (:activeSentence != true or (:activeSentence = true and p.currentDisposal = true ))
             and
             (
-                (:surname is null or (:surname is not null and lower(trim(p.surname)) = lower(:surname)))
+                (:surname is null or p.surnameSoundex = :surname)
                 and 
                 (:dateOfBirth is null or (:dateOfBirth is not null and p.dateOfBirth = :dateOfBirth))
             )
@@ -236,9 +239,9 @@ interface ProbationSearchRepository : JpaRepository<Person, Long> {
             (:activeSentence != true or (:activeSentence = true and p.currentDisposal = true ))
             and
             (
-                (:forename is null or (:forename is not null and (lower(trim(p.forename)) = lower(trim(:forename)) or lower(trim(a.forename)) = lower(trim(:forename)))))
-                and
-                (:surname is null or (:surname is not null and lower(trim(p.surname)) = lower(trim(:surname))))
+                (:forename is null or p.firstNameSoundex = :forename or a.firstNameSoundex = :forename)
+                and 
+                (:surname is null or p.surnameSoundex = :surname)
                 and 
                 (p.dateOfBirth in (:dateOfBirths))
             )

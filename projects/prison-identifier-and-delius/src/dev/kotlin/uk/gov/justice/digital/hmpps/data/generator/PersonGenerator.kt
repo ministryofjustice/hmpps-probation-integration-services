@@ -25,14 +25,18 @@ object PersonGenerator {
         offenderId = PERSON_WITH_NOMS_DB.id,
         forename = "terry",
         surname = "brown",
-        dobString = "08/12/1962"
+        dobString = "08/12/1962",
+        surnameSoundex = "B650",
+        firstNameSoundex = "T600",
     )
 
     val PERSON_ALIAS_2 = generateAlias(
         offenderId = PERSON_WITH_NOMS_DB.id,
         forename = "arthur",
         surname = "askew",
-        dobString = "04/13/1969"
+        dobString = "04/13/1969",
+        surnameSoundex = "A200",
+        firstNameSoundex = "A636",
     )
 
     val OFFENDER_MANAGER = generateOffenderManager(personId = PERSON_WITH_NOMS_DB.id)
@@ -51,8 +55,9 @@ object PersonGenerator {
         niNumber: String? = null,
         mostRecentPrisonerNumber: String? = null,
         croNumber: String? = null,
-
-        ) = Person(
+        surnameSoundex: String = "S530",
+        firstNameSoundex: String = "B100",
+    ) = Person(
         id,
         crn,
         LocalDate.parse(dobString, DateTimeFormatter.ofPattern("MM/dd/yyyy")),
@@ -71,6 +76,8 @@ object PersonGenerator {
         pncNumber,
         gender,
         listOf(),
+        surnameSoundex,
+        firstNameSoundex,
         softDeleted = softDeleted
     )
 
@@ -79,13 +86,17 @@ object PersonGenerator {
         offenderId: Long,
         forename: String,
         surname: String,
-        dobString: String
+        dobString: String,
+        surnameSoundex: String,
+        firstNameSoundex: String,
     ) = Alias(
         id = id,
         offenderId = offenderId,
         forename = forename,
         surname = surname,
         dateOfBirth = LocalDate.parse(dobString, DateTimeFormatter.ofPattern("MM/dd/yyyy")),
+        surnameSoundex = surnameSoundex,
+        firstNameSoundex = firstNameSoundex,
         softDeleted = false,
     )
 
@@ -106,7 +117,6 @@ object PersonGenerator {
         personId: Long,
         softDeleted: Boolean = false,
         active: Boolean = true
-    ) =
-        OffenderManager(id, personId, softDeleted, active)
+    ) = OffenderManager(id, personId, softDeleted, active)
 }
 
