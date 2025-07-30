@@ -15,7 +15,6 @@ import uk.gov.justice.digital.hmpps.api.model.personalDetails.DocumentTextSearch
 import uk.gov.justice.digital.hmpps.exception.InvalidRequestException
 import uk.gov.justice.digital.hmpps.service.DocumentsService
 
-
 @RestController
 @Tag(name = "Documents")
 @RequestMapping("/documents/{crn}")
