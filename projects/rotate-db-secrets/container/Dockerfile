@@ -7,6 +7,7 @@ ENV LD_LIBRARY_PATH=/opt/oracle/instantclient_19_24:$LD_LIBRARY_PATH
 ENV PATH=/opt/oracle/instantclient_19_24:$PATH
 RUN apt update -y && \
     apt upgrade -y && \
+    apt-get install pwgen \
     apt install -y curl \
     libaio1 \
     unzip
