@@ -11,6 +11,7 @@ generic-service:
     INTEGRATIONS_PROBATION-SEARCH_URL: https://probation-offender-search-preprod.hmpps.service.justice.gov.uk
     INTEGRATIONS_MANAGE-OFFENCES_URL: https://manage-offences-api-preprod.hmpps.service.justice.gov.uk
     INTEGRATIONS_CORE_PERSON_RECORD_URL: https://hmpps-person-record-preprod.hmpps.service.justice.gov.uk
+    DOMAIN_EVENTS_DETAIL_URL_BASE: https://domain-events-and-delius-preprod.hmpps.service.justice.gov.uk
 
 generic-prometheus-alerts:
   businessHoursOnly: true

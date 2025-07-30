@@ -561,7 +561,7 @@ interface ContactRepository : JpaRepository<Contact, Long> {
     ): Page<Appointment>
 }
 
-fun ContactRepository.getContact(id: Long) = findById(id).orElseThrow {  NotFoundException("Person", "id", id) }
+fun ContactRepository.getContact(id: Long) = findById(id).orElseThrow { NotFoundException("Person", "id", id) }
 
 interface Appointment {
     val forename: String

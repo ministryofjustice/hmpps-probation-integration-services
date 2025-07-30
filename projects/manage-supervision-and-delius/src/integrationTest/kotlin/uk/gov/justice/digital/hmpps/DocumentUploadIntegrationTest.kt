@@ -80,6 +80,5 @@ class DocumentUploadIntegrationTest {
 
         contactRepository.delete(savedContact)
         documentRepository.delete(doc!!)
-
     }
 }

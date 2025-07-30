@@ -47,11 +47,10 @@ class PrisonManagerService(
         personRepository.findForUpdate(personId)
         val currentPom = prisonManagerRepository.findActiveManagerAtDate(personId, allocationDate)
         val newPom = currentPom.changeTo(personId, allocationDate, probationArea, team, staff)
-        deleteFuturePrisonManagers(allocationDate, newPom)
         return newPom?.let { new ->
             currentPom?.let { old -> prisonManagerRepository.saveAndFlush(old) }
             new.emailAddress = allocation.manager.email
-            prisonManagerRepository.save(new)
+            deleteFuturePrisonManagers(allocationDate, prisonManagerRepository.save(new))
             PomAllocationResult.PomAllocated
         } ?: PomAllocationResult.NoPomChange
     }
@@ -64,9 +63,8 @@ class PrisonManagerService(
             val team = teamRepository.getByCode(probationArea.code + Team.UNALLOCATED_SUFFIX)
             val staff = staffRepository.getByCode(team.code + "U")
             val newPom = currentPom.changeTo(personId, deallocationDate, probationArea, team, staff.toPrisonStaff())!!
-            deleteFuturePrisonManagers(deallocationDate, newPom)
             prisonManagerRepository.saveAndFlush(currentPom)
-            prisonManagerRepository.save(newPom)
+            deleteFuturePrisonManagers(deallocationDate, prisonManagerRepository.save(newPom))
             PomAllocationResult.PomDeallocated
         } else {
             PomAllocationResult.NoPomChange

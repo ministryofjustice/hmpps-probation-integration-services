@@ -16,7 +16,6 @@ import uk.gov.justice.digital.hmpps.aspect.WithDeliusUser
 import uk.gov.justice.digital.hmpps.exception.InvalidRequestException
 import uk.gov.justice.digital.hmpps.service.DocumentsService
 
-
 @RestController
 @Tag(name = "Documents")
 @RequestMapping("/documents/{crn}")

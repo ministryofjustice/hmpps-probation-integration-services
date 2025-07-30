@@ -10,7 +10,6 @@ interface CorePersonClient {
 }
 
 data class CorePersonRecord(
-    val cprUUID: String,
     val firstName: String,
     val middleNames: String?,
     val lastName: String,

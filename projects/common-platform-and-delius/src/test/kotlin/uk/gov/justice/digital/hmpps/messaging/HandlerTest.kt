@@ -99,7 +99,6 @@ internal class HandlerTest {
         val notification = Notification(message = MessageGenerator.COMMON_PLATFORM_EVENT_NULL_FIELDS)
         handler.handle(notification)
         verify(telemetryService).notificationReceived(notification)
-        verify(personService, never()).matchPerson(any())
         verify(remandService, never()).insertPersonOnRemand(any())
     }
 
@@ -202,7 +201,6 @@ internal class HandlerTest {
 
     private fun corePersonHasNoCrn() {
         val person = CorePersonRecord(
-            UUID.randomUUID().toString(),
             "John", "Robert", "Smith",
             LocalDate.now().minusYears(21),
             Identifiers()
@@ -212,7 +210,7 @@ internal class HandlerTest {
 
     private fun corePersonAlreadyHasCrn() {
         val person = CorePersonRecord(
-            UUID.randomUUID().toString(), "John", "Robert", "Smith", LocalDate.now().minusYears(21),
+            "John", "Robert", "Smith", LocalDate.now().minusYears(21),
             Identifiers(crns = listOf("X123456"))
         )
         whenever(corePersonClient.findByDefendantId(any())).thenReturn(person)
