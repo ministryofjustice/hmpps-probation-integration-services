@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
 import org.springframework.security.access.prepost.PreAuthorize
+import org.springframework.security.core.Authentication
 import org.springframework.web.bind.annotation.*
 import uk.gov.justice.digital.hmpps.api.model.appointment.CheckAppointment
 import uk.gov.justice.digital.hmpps.api.model.appointment.CreateAppointment
@@ -28,8 +29,12 @@ class AppointmentController(
     @PostMapping("/{crn}")
     @WithDeliusUser
     @ResponseStatus(HttpStatus.CREATED)
-    fun createAppointment(@PathVariable crn: String, @Valid @RequestBody createAppointment: CreateAppointment) =
-        sentenceAppointmentService.createAppointment(crn, createAppointment)
+    fun createAppointment(
+        auth: Authentication,
+        @PathVariable crn: String,
+        @Valid @RequestBody createAppointment: CreateAppointment
+    ) =
+        sentenceAppointmentService.createAppointment(auth.name, crn, createAppointment)
 
     @PostMapping("/{crn}/check")
     fun checkAppointment(@PathVariable crn: String, @RequestBody checkAppointment: CheckAppointment) =

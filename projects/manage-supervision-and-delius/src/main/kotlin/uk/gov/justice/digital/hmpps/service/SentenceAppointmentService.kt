@@ -89,6 +89,7 @@ class SentenceAppointmentService(
     }
 
     fun createAppointment(
+        username: String,
         crn: String,
         createAppointment: CreateAppointment
     ): AppointmentDetail {
@@ -171,7 +172,8 @@ class SentenceAppointmentService(
                 )
             }
 
-            val appointments = createAppointments.map { it.withManager(om, userAndTeam, location) }
+            val user = userService.getUser(username)
+            val appointments = createAppointments.map { it.withManager(user.id, om, userAndTeam, location) }
             val savedAppointments = appointmentRepository.saveAll(appointments)
             val createdAppointments = savedAppointments.map { CreatedAppointment(it.id) }
 
@@ -240,23 +242,28 @@ class SentenceAppointmentService(
         }
     }
 
-    private fun CreateAppointment.withManager(om: OffenderManager, staffAndTeam: UserTeam, location: Location?) =
+    private fun CreateAppointment.withManager(
+        userId: Long,
+        om: OffenderManager,
+        staffAndTeam: UserTeam,
+        location: Location?
+    ) =
         Appointment(
-            om.person,
-            appointmentTypeRepository.getByCode(type),
-            start.toLocalDate(),
-            ZonedDateTime.of(LocalDate.EPOCH, start.toLocalTime(), EuropeLondon),
+            person = om.person,
+            type = appointmentTypeRepository.getByCode(type),
+            date = start.toLocalDate(),
+            startTime = ZonedDateTime.of(LocalDate.EPOCH, start.toLocalTime(), EuropeLondon),
             teamId = staffAndTeam.teamId,
             staffId = staffAndTeam.staffId,
-            0,
-            end.let { ZonedDateTime.of(LocalDate.EPOCH, end.toLocalTime(), EuropeLondon) },
+            lastUpdatedUserId = userId,
+            endTime = end.let { ZonedDateTime.of(LocalDate.EPOCH, end.toLocalTime(), EuropeLondon) },
             probationAreaId = staffAndTeam.providerId,
-            urn,
+            externalReference = urn,
             eventId = eventId,
             rqmntId = requirementId,
             nsiId = nsiId,
             licConditionId = licenceConditionId,
-            createdByUserId = staffAndTeam.userId,
+            createdByUserId = userId,
             officeLocationId = location?.id,
             notes = notes,
             sensitive = sensitive,
