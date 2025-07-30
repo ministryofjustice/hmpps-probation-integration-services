@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
 import uk.gov.justice.digital.hmpps.api.model.personalDetails.DocumentSearch
 import uk.gov.justice.digital.hmpps.api.model.personalDetails.DocumentTextSearch
+import uk.gov.justice.digital.hmpps.aspect.WithDeliusUser
 import uk.gov.justice.digital.hmpps.exception.InvalidRequestException
 import uk.gov.justice.digital.hmpps.service.DocumentsService
 
@@ -60,6 +61,7 @@ class DocumentsController(private val documentsService: DocumentsService) {
 
     @PatchMapping("/update/contact/{id}", consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
     @Operation(summary = "add document to an existing contact")
+    @WithDeliusUser
     fun addDocumentToContact(
         auth: Authentication,
         @PathVariable crn: String,
