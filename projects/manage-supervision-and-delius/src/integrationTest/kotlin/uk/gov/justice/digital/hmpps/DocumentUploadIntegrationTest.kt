@@ -16,6 +16,7 @@ import org.springframework.util.ResourceUtils
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.APPT_CT_3
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.generateContact
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.OVERVIEW
+import uk.gov.justice.digital.hmpps.data.generator.OffenderManagerGenerator.PI_USER
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.DocumentRepository
@@ -45,7 +46,6 @@ class DocumentUploadIntegrationTest {
             "file", "document.pdf", "application/pdf", document.readBytes()
         )
 
-
         val contactToSave = generateContact(
             person,
             APPT_CT_3,
@@ -73,6 +73,8 @@ class DocumentUploadIntegrationTest {
         assertThat(doc?.personId, equalTo(person.id))
         assertThat(doc?.primaryKeyId, equalTo(savedContact.id))
         assertThat(doc?.type, equalTo("DOCUMENT"))
+        assertThat(doc?.lastUpdatedUserId, equalTo(PI_USER.id))
+        assertThat(doc?.createdByUserId, equalTo(PI_USER.id))
 
 
 

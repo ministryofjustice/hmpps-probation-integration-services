@@ -22,6 +22,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.PersonRe
 import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.DocumentEntity
 import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.DocumentRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.DocumentsRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.user.entity.UserRepository
 import uk.gov.justice.digital.hmpps.utils.Summary
 import java.time.LocalDateTime
 import java.time.LocalTime
@@ -49,6 +50,9 @@ internal class DocumentsServiceTest {
 
     @Mock
     lateinit var documentRepository: DocumentRepository
+
+    @Mock
+    lateinit var userRepository: UserRepository
 
     @InjectMocks
     lateinit var service: DocumentsService

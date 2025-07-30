@@ -7,12 +7,14 @@ import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
 import org.springframework.http.MediaType
 import org.springframework.security.access.prepost.PreAuthorize
+import org.springframework.security.core.Authentication
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
 import uk.gov.justice.digital.hmpps.api.model.personalDetails.DocumentSearch
 import uk.gov.justice.digital.hmpps.api.model.personalDetails.DocumentTextSearch
 import uk.gov.justice.digital.hmpps.exception.InvalidRequestException
 import uk.gov.justice.digital.hmpps.service.DocumentsService
+
 
 @RestController
 @Tag(name = "Documents")
@@ -59,10 +61,11 @@ class DocumentsController(private val documentsService: DocumentsService) {
     @PatchMapping("/update/contact/{id}", consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
     @Operation(summary = "add document to an existing contact")
     fun addDocumentToContact(
+        auth: Authentication,
         @PathVariable crn: String,
         @PathVariable id: Long,
         @RequestPart file: MultipartFile
-    ) = documentsService.addDocument(crn, id, file)
+    ) = documentsService.addDocument(auth.name, crn, id, file)
 
     private fun sort(sortString: String?): Sort {
         if (sortString == null) {

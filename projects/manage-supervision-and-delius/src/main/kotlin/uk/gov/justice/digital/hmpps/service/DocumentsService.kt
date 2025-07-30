@@ -20,6 +20,8 @@ import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.C
 import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.DocumentEntity
 import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.DocumentRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.DocumentsRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.user.entity.UserRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.user.entity.getUserByUsername
 import java.time.LocalTime
 
 @Service
@@ -30,7 +32,8 @@ class DocumentsService(
     private val alfrescoClient: AlfrescoClient,
     private val alfrescoUploadClient: AlfrescoUploadClient,
     private val contactRepository: ContactRepository,
-    private val documentRepository: DocumentRepository
+    private val documentRepository: DocumentRepository,
+    private val userRepository: UserRepository,
 ) : AuditableService(auditedInteractionService) {
 
     fun getDocuments(crn: String, pageable: Pageable, sortedBy: String): PersonDocuments {
@@ -102,8 +105,8 @@ class DocumentsService(
     }
 
     @Transactional
-    fun addDocument(crn: String, id: Long, file: MultipartFile) {
-         audit(BusinessInteractionCode.UPLOAD_DOCUMENT) { audit ->
+    fun addDocument(username: String, crn: String, id: Long, file: MultipartFile) {
+        audit(BusinessInteractionCode.UPLOAD_DOCUMENT) { audit ->
             val person = personRepository.getPerson(crn)
             audit["offenderId"] = person.id
 
@@ -121,15 +124,17 @@ class DocumentsService(
                     )
                 )
 
+            val user = userRepository.getUserByUsername(username)
             val contactDocument = ContactDocument(contact)
             contactDocument.alfrescoId = alfrescoDocument.id
             contactDocument.name = filename
             contactDocument.personId = person.id
             contactDocument.primaryKeyId = contact.id
             contactDocument.type = "DOCUMENT"
+            contactDocument.lastUpdatedUserId = user.id
+            contactDocument.createdByUserId = user.id
 
             documentRepository.save(contactDocument)
-
         }
     }
 
