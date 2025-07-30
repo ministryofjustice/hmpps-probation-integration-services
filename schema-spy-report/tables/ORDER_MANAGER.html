@@ -483,13 +483,13 @@
                                     <td>
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                             <tr>
-                                                <td title="ORDER_MANAGER.[TRUST_PROVIDER_FLAG, TRUST_PROVIDER_TEAM_ID] references ALL_TEAM.[TRUST_PROVIDER_FLAG, TRUST_PROVIDER_TEAM_ID] via SYS_C0021269"><a href='ALL_TEAM.html'>ALL_TEAM</a><span class='relatedKey'>.TRUST_PROVIDER_FLAG</span></td>
-                                                <td class="constraint detail">SYS_C0021269</td>
+                                                <td title="ORDER_MANAGER.[TRUST_PROVIDER_FLAG, STAFF_EMPLOYEE_ID] references OFFICER.[TRUST_PROVIDER_FLAG, STAFF_EMPLOYEE_ID] via SYS_C0021268"><a href='OFFICER.html'>OFFICER</a><span class='relatedKey'>.TRUST_PROVIDER_FLAG</span></td>
+                                                <td class="constraint detail">SYS_C0021268</td>
                                                 <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
-                                                <td title="ORDER_MANAGER.[TRUST_PROVIDER_FLAG, STAFF_EMPLOYEE_ID] references OFFICER.[TRUST_PROVIDER_FLAG, STAFF_EMPLOYEE_ID] via SYS_C0021268"><a href='OFFICER.html'>OFFICER</a><span class='relatedKey'>.TRUST_PROVIDER_FLAG</span></td>
-                                                <td class="constraint detail">SYS_C0021268</td>
+                                                <td title="ORDER_MANAGER.[TRUST_PROVIDER_FLAG, TRUST_PROVIDER_TEAM_ID] references ALL_TEAM.[TRUST_PROVIDER_FLAG, TRUST_PROVIDER_TEAM_ID] via SYS_C0021269"><a href='ALL_TEAM.html'>ALL_TEAM</a><span class='relatedKey'>.TRUST_PROVIDER_FLAG</span></td>
+                                                <td class="constraint detail">SYS_C0021269</td>
                                                 <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                         </table>
@@ -756,36 +756,36 @@
                                 </thead>
                                 <tbody>
                                 <tr>
-                                    <td>ORDER_MANAGER_XOR</td>
-                                    <td> (&#10;(PROVIDER_EMPLOYEE_ID IS NOT NULL  AND ALLOCATION_STAFF_ID IS NULL)&#10;OR&#10;(PROVIDER_EMPLOYEE_ID IS NULL  AND ALLOCATION_STAFF_ID IS NOT NULL)&#10;) </td>
-                                </tr>
-                                <tr>
-                                    <td>TRUE_OR_FALSE2</td>
-                                    <td>TRUST_PROVIDER_FLAG IN (0, 1)</td>
-                                </tr>
-                                <tr>
-                                    <td>ACTIVE_FLAG_END_DATE</td>
-                                    <td> (ACTIVE_FLAG &#61; 0 AND END_DATE IS NOT NULL)&#10;OR&#10;(ACTIVE_FLAG &#61; 1 AND END_DATE IS NULL)&#10; </td>
-                                </tr>
-                                <tr>
-                                    <td>TRUE_OR_FALSE</td>
-                                    <td>SOFT_DELETED IN (0, 1)</td>
+                                    <td>STAFF_OR_TEAM2</td>
+                                    <td> (&#10;STAFF_EMPLOYEE_ID &#61; ALLOCATION_STAFF_ID&#10;OR&#10;STAFF_EMPLOYEE_ID &#61; PROVIDER_EMPLOYEE_ID&#10;) </td>
                                 </tr>
                                 <tr>
                                     <td>MANAGEMENT_VALID_DATES</td>
                                     <td> (&#10;(ALLOCATION_DATE &lt;&#61; NVL(END_DATE, ALLOCATION_DATE))&#10;) </td>
                                 </tr>
                                 <tr>
-                                    <td>ORDER_MANAGER_TEAM_XOR</td>
-                                    <td> (&#10;(ALLOCATION_TEAM_ID IS NOT NULL AND PROVIDER_TEAM_ID IS NULL)&#10;OR&#10;(ALLOCATION_TEAM_ID IS NULL AND PROVIDER_TEAM_ID IS NOT NULL)&#10;) </td>
+                                    <td>TRUE_OR_FALSE</td>
+                                    <td>SOFT_DELETED IN (0, 1)</td>
                                 </tr>
                                 <tr>
-                                    <td>STAFF_OR_TEAM2</td>
-                                    <td> (&#10;STAFF_EMPLOYEE_ID &#61; ALLOCATION_STAFF_ID&#10;OR&#10;STAFF_EMPLOYEE_ID &#61; PROVIDER_EMPLOYEE_ID&#10;) </td>
+                                    <td>ACTIVE_FLAG_END_DATE</td>
+                                    <td> (ACTIVE_FLAG &#61; 0 AND END_DATE IS NOT NULL)&#10;OR&#10;(ACTIVE_FLAG &#61; 1 AND END_DATE IS NULL)&#10; </td>
                                 </tr>
                                 <tr>
                                     <td>TRUST_OR_PROVIDER2</td>
                                     <td> (&#10;TRUST_PROVIDER_TEAM_ID &#61; ALLOCATION_TEAM_ID&#10;OR&#10;TRUST_PROVIDER_TEAM_ID &#61; PROVIDER_TEAM_ID&#10;) </td>
+                                </tr>
+                                <tr>
+                                    <td>TRUE_OR_FALSE2</td>
+                                    <td>TRUST_PROVIDER_FLAG IN (0, 1)</td>
+                                </tr>
+                                <tr>
+                                    <td>ORDER_MANAGER_TEAM_XOR</td>
+                                    <td> (&#10;(ALLOCATION_TEAM_ID IS NOT NULL AND PROVIDER_TEAM_ID IS NULL)&#10;OR&#10;(ALLOCATION_TEAM_ID IS NULL AND PROVIDER_TEAM_ID IS NOT NULL)&#10;) </td>
+                                </tr>
+                                <tr>
+                                    <td>ORDER_MANAGER_XOR</td>
+                                    <td> (&#10;(PROVIDER_EMPLOYEE_ID IS NOT NULL  AND ALLOCATION_STAFF_ID IS NULL)&#10;OR&#10;(PROVIDER_EMPLOYEE_ID IS NULL  AND ALLOCATION_STAFF_ID IS NOT NULL)&#10;) </td>
                                 </tr>
                                 </tbody>
                             </table>
