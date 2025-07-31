@@ -58,16 +58,17 @@ class UnpaidWorkAppointmentsService(
     private fun findCrnsForMessagesAlreadySent(): List<String?> {
         val today = ZonedDateTime.now().truncatedTo(ChronoUnit.DAYS)
 
-        fun getPage(olderThan: String? = null) = notificationClient.getNotifications(null, "sms", null, olderThan).notifications
-            .filter { it.sentAt.isPresent }
+        fun getPage(olderThan: String? = null) =
+            notificationClient.getNotifications(null, "sms", null, olderThan).notifications
+                .filter { it.sentAt.isPresent }
 
         val alreadySentNotifications = generateSequence(getPage()) { page ->
             page.minByOrNull { it.sentAt.get() }
                 ?.takeIf { !it.sentAt.get().isBefore(today) }
                 ?.let { oldestMessage -> getPage(oldestMessage.id.toString()) }
         }
-        .flatten()
-        .filter { !it.sentAt.get().isBefore(today) }
+            .flatten()
+            .filter { !it.sentAt.get().isBefore(today) }
 
         return alreadySentNotifications.mapNotNull { it.reference.getOrNull() }.toList()
     }
