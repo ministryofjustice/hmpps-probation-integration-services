@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.data.generator
 
 import uk.gov.justice.digital.hmpps.service.entity.ProbationArea
 import uk.gov.justice.digital.hmpps.service.entity.Staff
+import uk.gov.justice.digital.hmpps.service.entity.StaffUser
 import uk.gov.justice.digital.hmpps.service.entity.Team
 
 object ProviderGenerator {
@@ -28,4 +29,7 @@ object ProviderGenerator {
         middleName: String? = null,
         id: Long = IdGenerator.getAndIncrement()
     ) = Staff(code, forename, surname, middleName, id)
+
+    fun generateStaffUser(username: String, staff: Staff, id: Long = IdGenerator.getAndIncrement()) =
+        StaffUser(username, staff, id)
 }
