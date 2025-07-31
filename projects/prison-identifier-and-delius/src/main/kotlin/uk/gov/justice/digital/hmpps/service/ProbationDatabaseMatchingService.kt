@@ -11,7 +11,6 @@ class ProbationDatabaseMatchingService(
     private val telemetryService: TelemetryService,
 ) {
     fun match(request: ProbationMatchRequest): ProbationMatchResponse {
-
         performSearch(searchRepository::fullSearch, request, "ALL_SUPPLIED")?.let { response -> return response }
         performSearch(
             searchRepository::fullSearchAlias,
