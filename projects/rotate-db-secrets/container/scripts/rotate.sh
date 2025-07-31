@@ -40,7 +40,6 @@ do
   # Switch to using local DB connection (via the bastion)
 
   CONN_STR="$DB_UN/$DB_PW$DB_URL_LOCAL"
-  echo "$CONN_STR"
 
   NEW_DB_PW=$(pwgen -N1 16)
   EXISTING_SECRET=$DB_PW
@@ -56,11 +55,9 @@ do
        SELECT d.PROFILE FROM DBA_USERS d where d.USERNAME = '$DB_UN';
        select count(*) from alias a;
   "
-  echo "$SQL" | sqlplus -s "$CONN_STR"
-
   echo "SQL Successful - updating secret for $PROJECT_NAME"
 
-  # When we are ready to run this for real use $NEW_DB_PW instead of $EXISTING_SECRET - remove -testing to update actual secret
+  # When we are ready to run this for real use $NEW_DB_PW instead of $EXISTING_SECRET - remove -testing prefix to update actual secret
   kubectl -n $NAMESPACE create secret generic "$PROJECT_NAME-database-testing" \
     --from-literal "DB_USERNAME=${PROJECT_NAME//-/_}" \
     --from-literal "DB_PASSWORD=$EXISTING_SECRET" \
