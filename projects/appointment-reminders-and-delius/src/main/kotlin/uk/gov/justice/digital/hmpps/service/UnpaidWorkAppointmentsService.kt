@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.logging.Logger.logger
 import uk.gov.justice.digital.hmpps.repository.UpwAppointmentRepository
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
-import uk.gov.service.notify.Notification
 import uk.gov.service.notify.NotificationClient
 import java.time.LocalDate
 import java.time.ZonedDateTime
@@ -58,31 +57,19 @@ class UnpaidWorkAppointmentsService(
 
     private fun findCrnsForMessagesAlreadySent(): List<String?> {
         val today = ZonedDateTime.now().truncatedTo(ChronoUnit.DAYS)
-        val alreadySentNotifications = mutableListOf<Notification>()
-        var oldestId: String? = null
 
-        while (true) {
-            val notifications = notificationClient.getNotifications(null, "sms", null, oldestId).notifications
-                .filter {
-                    it.sentAt.isPresent
-                }
+        fun getPage(olderThan: String? = null) = notificationClient.getNotifications(null, "sms", null, olderThan).notifications
+            .filter { it.sentAt.isPresent }
 
-            if (notifications.isEmpty()) break
-
-            alreadySentNotifications += notifications.filter {
-                it.sentAt.get().isAfter(today)
-            }
-
-            val oldestMessage = notifications.minByOrNull<Notification, ZonedDateTime> { it.sentAt.get() } ?: break
-
-            if (oldestMessage.sentAt.get().isBefore(today)) break
-
-            oldestId = oldestMessage.id.toString()
+        val alreadySentNotifications = generateSequence(getPage()) { page ->
+            page.minByOrNull { it.sentAt.get() }
+                ?.takeIf { !it.sentAt.get().isBefore(today) }
+                ?.let { oldestMessage -> getPage(oldestMessage.id.toString()) }
         }
+        .flatten()
+        .filter { !it.sentAt.get().isBefore(today) }
 
-        return alreadySentNotifications.map {
-            it.reference.getOrNull()
-        }
+        return alreadySentNotifications.mapNotNull { it.reference.getOrNull() }.toList()
     }
 
     companion object {
