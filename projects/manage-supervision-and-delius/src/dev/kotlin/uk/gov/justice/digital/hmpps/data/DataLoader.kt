@@ -119,6 +119,7 @@ class DataLoader(
             OffenderManagerGenerator.STAFF_USER_1,
             OffenderManagerGenerator.STAFF_USER_2,
             OffenderManagerGenerator.STAFF_USER_3,
+            OffenderManagerGenerator.PI_USER,
             OffenderManagerGenerator.STAFF_TEAM,
             OffenderManagerGenerator.STAFF_TEAM_1,
             OffenderManagerGenerator.RESPONSIBLE_OFFICER_OM_ACTIVE,

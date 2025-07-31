@@ -84,6 +84,12 @@ class Person(
     @OneToMany(mappedBy = "person", fetch = FetchType.EAGER)
     val events: List<Event>,
 
+    @Column
+    val surnameSoundex: String,
+
+    @Column
+    val firstNameSoundex: String,
+
     @Version
     @Column(name = "row_version", nullable = false)
     val version: Long = 0,
@@ -138,9 +144,13 @@ class Alias(
     val surname: String,
     @Column(name = "date_of_birth_date")
     val dateOfBirth: LocalDate,
+    @Column
+    val surnameSoundex: String,
+    @Column
+    val firstNameSoundex: String,
     @Column(name = "soft_deleted", columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)
-    val softDeleted: Boolean = false
+    val softDeleted: Boolean = false,
 )
 
 @Entity

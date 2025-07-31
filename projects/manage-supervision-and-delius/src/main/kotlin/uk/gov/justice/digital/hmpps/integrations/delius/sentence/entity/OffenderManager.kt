@@ -106,7 +106,7 @@ class StaffUser(
 
     @OneToOne
     @JoinColumn(name = "staff_id")
-    val staff: Staff?,
+    val staff: Staff? = null,
 
     @Column(name = "distinguished_name")
     val username: String,
