@@ -55,7 +55,7 @@ class UnpaidWorkAppointmentsService(
         }
     }
 
-    private fun findCrnsForMessagesAlreadySent(): List<String?> {
+    private fun findCrnsForMessagesAlreadySent(): List<String> {
         val today = ZonedDateTime.now().truncatedTo(ChronoUnit.DAYS)
 
         fun getPage(olderThan: String? = null) =
