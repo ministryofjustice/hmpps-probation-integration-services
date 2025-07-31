@@ -10,12 +10,7 @@ class ProbationDatabaseMatchingService(
     private val searchRepository: ProbationSearchRepository,
     private val telemetryService: TelemetryService,
 ) {
-    fun match(initialRequest: ProbationMatchRequest): ProbationMatchResponse {
-        val request = initialRequest.copy(
-            firstName = searchRepository.getSoundex(initialRequest.firstName),
-            surname = searchRepository.getSoundex(initialRequest.surname),
-        )
-
+    fun match(request: ProbationMatchRequest): ProbationMatchResponse {
         performSearch(searchRepository::fullSearch, request, "ALL_SUPPLIED")?.let { response -> return response }
         performSearch(
             searchRepository::fullSearchAlias,
