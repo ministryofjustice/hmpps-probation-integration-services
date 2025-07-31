@@ -37,7 +37,6 @@ object CourtReportGenerator {
         primaryKeyId: Long? = null
     ): CourtReportDocument {
         val doc = CourtReportDocument()
-        doc.id = IdGenerator.getAndIncrement()
         doc.createdAt = ZonedDateTime.now().minusDays(15)
         doc.lastUpdated = ZonedDateTime.now().minusDays(1)
         doc.alfrescoId = alfrescoId
@@ -56,7 +55,6 @@ object CourtReportGenerator {
         primaryKeyId: Long? = null
     ): EventDocument {
         val doc = EventDocument()
-        doc.id = IdGenerator.getAndIncrement()
         doc.lastUpdated = ZonedDateTime.now().minusDays(3)
         doc.alfrescoId = alfrescoId
         doc.name = name
