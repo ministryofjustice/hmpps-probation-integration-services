@@ -24,6 +24,7 @@ class ActivityController(private val activityService: ActivityService) {
         @PathVariable crn: String,
         @RequestBody searchRequest: PersonActivitySearchRequest,
         @RequestParam(required = false, defaultValue = "0") page: Int,
-        @RequestParam(required = false, defaultValue = "10") size: Int
-    ) = activityService.activitySearch(crn, searchRequest, PageRequest.of(page, size))
+        @RequestParam(required = false, defaultValue = "10") size: Int,
+        @RequestParam(required = false, defaultValue = "date,DESC") sort: String
+    ) = activityService.activitySearch(crn, searchRequest, PageRequest.of(page, size), sort)
 }
