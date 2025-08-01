@@ -24,7 +24,7 @@ object TestData {
     val ADULT_LICENCE = ReferenceData(id(), "ADL", "Released on Adult Licence")
     val PDU = ProbationDeliveryUnit(id(), "PDU1", "Test PDU")
     val LAU = LocalAdminUnit(id(), PDU)
-    val TEAM = Team(id(), LAU)
+    val TEAM = Team(id(), "Team1", "Test Team", LAU)
     val STAFF = StaffGenerator.generate()
     val PERSON = PersonGenerator.generate("A000001", GENDER, ETHNICITY)
     val MANAGER = ManagerGenerator.generate(PERSON, STAFF, TEAM)

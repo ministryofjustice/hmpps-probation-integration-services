@@ -60,6 +60,10 @@ internal class CaseControllerIntegrationTest {
                         "code": "STAFF01",
                         "email": "test@example.com"
                       },
+                      "team": {
+                        "code": "Team1",
+                        "description": "Test Team"
+                      },
                       "probationDeliveryUnit": {
                         "code": "PDU1",
                         "description": "Test PDU"
