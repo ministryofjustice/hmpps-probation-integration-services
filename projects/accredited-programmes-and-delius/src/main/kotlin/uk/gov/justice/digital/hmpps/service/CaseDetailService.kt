@@ -19,6 +19,7 @@ class CaseDetailService(
     private val registrationRepository: RegistrationRepository,
 ) {
     fun getPersonalDetails(crn: String) = personRepository.findByCrn(crn)?.let { person ->
+        checkNotNull(person.manager) { "Person does not have an active manager" }
         PersonalDetails(
             crn = person.crn,
             name = Name(
@@ -29,18 +30,19 @@ class CaseDetailService(
             dateOfBirth = person.dateOfBirth,
             sex = person.gender.toCodedValue(),
             ethnicity = person.ethnicity?.toCodedValue(),
-            probationPractitioner = person.manager?.staff?.let { staff ->
+            probationPractitioner = with(person.manager.staff) {
                 ProbationPractitioner(
                     name = Name(
-                        forename = staff.forename,
-                        surname = staff.surname
+                        forename = forename,
+                        surname = surname
                     ),
-                    code = staff.code,
-                    email = staff.user?.let { ldapTemplate.findEmailByUsername(it.username) }
+                    code = code,
+                    email = user?.let { ldapTemplate.findEmailByUsername(it.username) }
                 )
             },
-            probationDeliveryUnit = person.manager?.team?.localAdminUnit?.probationDeliveryUnit?.let { pdu ->
-                CodedValue(pdu.code, pdu.description)
+            team = with(person.manager.team) { CodedValue(code, description) },
+            probationDeliveryUnit = with(person.manager.team.localAdminUnit.probationDeliveryUnit) {
+                CodedValue(code, description)
             }
         )
     } ?: throw NotFoundException("Person", "crn", crn)
