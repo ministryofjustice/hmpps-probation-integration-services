@@ -50,7 +50,7 @@ class PrisonManagerService(
         return newPom?.let { new ->
             currentPom?.let { old -> prisonManagerRepository.saveAndFlush(old) }
             new.emailAddress = allocation.manager.email
-            deleteFuturePrisonManagers(allocationDate, prisonManagerRepository.save(new))
+            deleteFuturePrisonManagers(personId, allocationDate, prisonManagerRepository.save(new))
             PomAllocationResult.PomAllocated
         } ?: PomAllocationResult.NoPomChange
     }
@@ -64,7 +64,7 @@ class PrisonManagerService(
             val staff = staffRepository.getByCode(team.code + "U")
             val newPom = currentPom.changeTo(personId, deallocationDate, probationArea, team, staff.toPrisonStaff())!!
             prisonManagerRepository.saveAndFlush(currentPom)
-            deleteFuturePrisonManagers(deallocationDate, prisonManagerRepository.save(newPom))
+            deleteFuturePrisonManagers(personId, deallocationDate, prisonManagerRepository.save(newPom))
             PomAllocationResult.PomDeallocated
         } else {
             PomAllocationResult.NoPomChange
@@ -96,8 +96,8 @@ class PrisonManagerService(
         "Allocation Reason: ${allocationReason.description}"
     ).joinToString(System.lineSeparator())
 
-    private fun deleteFuturePrisonManagers(allocationDate: ZonedDateTime, pom: PrisonManager?) {
-        val futurePoms = prisonManagerRepository.findAllByDateGreaterThan(allocationDate)
+    private fun deleteFuturePrisonManagers(personId: Long, allocationDate: ZonedDateTime, pom: PrisonManager?) {
+        val futurePoms = prisonManagerRepository.findAllByPersonIdAndDateGreaterThan(personId, allocationDate)
         futurePoms.flatMap { it.responsibleOfficers }.forEach { ro ->
             if (ro.isActive() && pom != null) {
                 ro.apply {
