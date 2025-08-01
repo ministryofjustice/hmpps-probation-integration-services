@@ -201,7 +201,6 @@ object ContactGenerator {
         workInProgress: Boolean? = null
     ): ContactDocument {
         val doc = ContactDocument(contact)
-        doc.id = IdGenerator.getAndIncrement()
         doc.createdAt = ZonedDateTime.now(EuropeLondon).minusDays(16)
         doc.lastUpdated = ZonedDateTime.now(EuropeLondon).minusDays(1)
         doc.alfrescoId = alfrescoId

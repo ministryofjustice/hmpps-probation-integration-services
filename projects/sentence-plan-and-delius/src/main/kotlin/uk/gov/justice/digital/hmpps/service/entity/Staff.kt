@@ -1,10 +1,9 @@
 package uk.gov.justice.digital.hmpps.service.entity
 
-import jakarta.persistence.Column
-import jakarta.persistence.Entity
-import jakarta.persistence.Id
-import jakarta.persistence.Table
+import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
+import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.jpa.repository.Query
 
 @Immutable
 @Entity
@@ -25,4 +24,26 @@ class Staff(
     val id: Long
 ) {
     fun isUnallocated() = code.endsWith("U")
+}
+
+@Immutable
+@Entity
+@Table(name = "user_")
+class StaffUser(
+
+    @Column(name = "distinguished_name")
+    val username: String,
+
+    @OneToOne
+    @JoinColumn(name = "staff_id")
+    val staff: Staff?,
+
+    @Id
+    @Column(name = "user_id")
+    val id: Long,
+)
+
+interface StaffRepository : JpaRepository<Staff, Long> {
+    @Query("select s from StaffUser su join su.staff s where upper(su.username) = upper(:username)")
+    fun findByUsername(username: String): Staff?
 }
