@@ -54,7 +54,9 @@ class DataLoader(
             EventGenerator.UPW_APPOINTMENT_1,
             EventGenerator.UPW_APPOINTMENT_2,
             EventGenerator.RAR_CONTACT_1,
-            EventGenerator.RAR_CONTACT_2
+            EventGenerator.RAR_CONTACT_2,
+            CaseloadGenerator.generateCaseload(PersonGenerator.DEFAULT, ProviderGenerator.DEFAULT_STAFF),
+            ProviderGenerator.generateStaffUser("Default", ProviderGenerator.DEFAULT_STAFF)
         )
     }
 

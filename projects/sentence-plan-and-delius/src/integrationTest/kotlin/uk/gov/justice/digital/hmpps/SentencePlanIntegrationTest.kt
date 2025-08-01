@@ -71,6 +71,29 @@ internal class SentencePlanIntegrationTest {
             .andExpectJson(FirstAppointment(date))
     }
 
+    @Test
+    fun `successfully indicates when case is part of caseload`() {
+        mockMvc
+            .perform(get("/users/default/access/${PersonGenerator.DEFAULT.crn}").withToken())
+            .andExpect(status().is2xxSuccessful)
+            .andExpectJson(UserCaseloadIndicator(true))
+    }
+
+    @Test
+    fun `successfully indicates when case is not part of caseload`() {
+        mockMvc
+            .perform(get("/users/default/access/${PersonGenerator.NON_CUSTODIAL.crn}").withToken())
+            .andExpect(status().is2xxSuccessful)
+            .andExpectJson(UserCaseloadIndicator(false))
+    }
+
+    @Test
+    fun `not found if user or staff does not exist`() {
+        mockMvc
+            .perform(get("/users/non-existent/access/${PersonGenerator.DEFAULT.crn}").withToken())
+            .andExpect(status().isNotFound)
+    }
+
     private fun getDetailResponse(
         custody: Boolean = true, person: Person, disposal: Disposal,
         upwHoursOrdered: Int, upwMinutesCompleted: Int,
