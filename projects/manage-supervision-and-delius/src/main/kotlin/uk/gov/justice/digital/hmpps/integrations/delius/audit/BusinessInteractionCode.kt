@@ -7,4 +7,5 @@ enum class BusinessInteractionCode(override val code: String) : InteractionCode 
     INSERT_ADDRESS("OIBI029"),
     UPDATE_ADDRESS("OIBI032"),
     UPDATE_PERSON("OIBI027"),
+    UPLOAD_DOCUMENT("WPBI006")
 }
