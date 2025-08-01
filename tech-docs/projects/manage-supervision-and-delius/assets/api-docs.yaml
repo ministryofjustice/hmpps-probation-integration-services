@@ -336,6 +336,38 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/PersonActivitySearchResponse"
+  /documents/{crn}/update/contact/{id}:
+    patch:
+      tags:
+      - Documents
+      summary: add document to an existing contact
+      operationId: addDocumentToContact
+      parameters:
+      - name: crn
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+              required:
+              - file
+      responses:
+        "200":
+          description: OK
   /appointment:
     patch:
       tags:
