@@ -57,6 +57,7 @@ on:
           - '["refer-and-monitor-and-delius"]'
           - '["resettlement-passport-and-delius"]'
           - '["risk-assessment-scores-to-delius"]'
+          - '["rotate-db-secrets"]'
           - '["sentence-plan-and-delius"]'
           - '["sentence-plan-and-oasys"]'
           - '["soc-and-delius"]'

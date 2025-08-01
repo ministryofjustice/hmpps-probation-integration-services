@@ -129,6 +129,7 @@ jobs:
           - redrive-dead-letter-queues
           - feature-flags
           - monitor-cron-jobs
+          - rotate-db-secrets
     steps:
       - uses: actions/checkout@v4
 
