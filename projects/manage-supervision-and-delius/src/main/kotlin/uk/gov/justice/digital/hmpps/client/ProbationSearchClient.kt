@@ -11,7 +11,8 @@ interface ProbationSearchClient {
     fun contactSearch(
         @RequestBody body: ActivitySearchRequest,
         @RequestParam page: Int = 0,
-        @RequestParam size: Int = 10
+        @RequestParam size: Int = 10,
+        @RequestParam sort: String
     ): ContactSearchResponse
 }
 
