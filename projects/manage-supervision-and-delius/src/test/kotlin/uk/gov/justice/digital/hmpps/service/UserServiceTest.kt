@@ -9,11 +9,16 @@ import org.mockito.ArgumentMatchers.*
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
+import org.mockito.kotlin.any
 import org.mockito.kotlin.whenever
 import org.springframework.data.domain.PageImpl
+import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
 import org.springframework.ldap.core.AttributesMapper
 import org.springframework.ldap.core.LdapTemplate
+import uk.gov.justice.digital.hmpps.api.model.Name
+import uk.gov.justice.digital.hmpps.api.model.appointment.UserAppointment
+import uk.gov.justice.digital.hmpps.api.model.appointment.UserDiary
 import uk.gov.justice.digital.hmpps.api.model.user.DefaultUserDetails
 import uk.gov.justice.digital.hmpps.api.model.user.UserProviderResponse
 import uk.gov.justice.digital.hmpps.aspect.DeliusUserAspect
@@ -28,11 +33,15 @@ import uk.gov.justice.digital.hmpps.data.generator.OffenderManagerGenerator.PROV
 import uk.gov.justice.digital.hmpps.data.generator.OffenderManagerGenerator.STAFF_USER_1
 import uk.gov.justice.digital.hmpps.data.generator.OffenderManagerGenerator.TEAM_1
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.CASELOAD_PERSON_1
+import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
+import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.Appointment
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.StaffAndRole
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.StaffUserRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.user.entity.*
 import java.time.LocalDate
+import java.time.LocalTime
+import java.time.ZonedDateTime
 
 @ExtendWith(MockitoExtension::class)
 internal class UserServiceTest {
@@ -289,6 +298,49 @@ internal class UserServiceTest {
         assertEquals(expected, response)
     }
 
+    @Test
+    fun `get contacts without start time`() {
+        val pageable = PageRequest.of(0, 10)
+        val username = "user"
+        val testAppointment = TestAppointment(
+            _id = 1,
+            _forename = "forename",
+            _surname = "surname",
+            _dob = LocalDate.of(2000, 4, 1),
+            _crn = "X12345",
+            _contactDate = LocalDate.now(),
+            _contactDescription = "contact description",
+        )
+
+        whenever(userRepository.findUserByUsername(username)).thenReturn(USER)
+        whenever(contactRepository
+            .findSummaryOfAppointmentsWithoutOutcomesByUser(
+                anyLong(),
+                anyString(),
+                anyString(),
+                any<Pageable>()
+            )
+        ).thenReturn(PageImpl(listOf(testAppointment)))
+
+        val userAppointment = UserAppointment(
+            caseName = Name(
+                forename = testAppointment.forename,
+                middleName = "",
+                surname = testAppointment.surname
+            ),
+            id = testAppointment._id,
+            crn = testAppointment.crn,
+            dob = testAppointment._dob,
+            type = testAppointment._contactDescription,
+            startDateTime = ZonedDateTime.of(testAppointment._contactDate,
+                LocalTime.MIDNIGHT, EuropeLondon))
+        val expected = UserDiary(10, 0, 1, 1,listOf(userAppointment))
+
+        val response = service.getSummaryOfAppointmentsWithoutOutcomes(username, pageable)
+
+        assertEquals(expected, response)
+    }
+
     data class StaffRole(
         val _username: String,
         val _surname: String,
@@ -303,5 +355,51 @@ internal class UserServiceTest {
             get() = _forename
         override val role: String
             get() = _role
+    }
+
+    data class TestAppointment(
+        val _id: Long,
+        val _forename: String,
+        val _secondName: String? = null,
+        val _thirdName: String? = null,
+        val _surname: String,
+        val _dob: LocalDate,
+        val _crn: String,
+        val _location: String? = null,
+        val _contactDate: LocalDate,
+        val _contactStartTime: LocalTime? = null,
+        val _contactEndTime: LocalTime? = null,
+        val _totalSentences: Int? = null,
+        val _contactDescription: String,
+        val _sentenceDescription: String? = null,
+    ) : Appointment {
+        override val id: Long
+            get() = _id
+        override val forename: String
+            get() = _forename
+        override val secondName: String?
+            get() = _secondName
+        override val thirdName: String?
+            get() = _thirdName
+        override val surname: String
+            get() = _surname
+        override val dob: LocalDate
+            get() = _dob
+        override val crn: String
+            get() = _crn
+        override val location: String?
+            get() = _location
+        override val contactDate: LocalDate
+            get() = _contactDate
+        override val contactStartTime: LocalTime?
+            get() = _contactStartTime
+        override val contactEndTime: LocalTime?
+            get() = _contactEndTime
+        override val totalSentences: Int?
+            get() = _totalSentences
+        override val contactDescription: String
+            get() = _contactDescription
+        override val sentenceDescription: String?
+            get() = _sentenceDescription
     }
 }
