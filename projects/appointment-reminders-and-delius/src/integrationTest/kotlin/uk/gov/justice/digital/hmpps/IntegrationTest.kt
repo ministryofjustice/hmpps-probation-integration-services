@@ -2,10 +2,7 @@ package uk.gov.justice.digital.hmpps
 
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.mockito.kotlin.any
-import org.mockito.kotlin.eq
-import org.mockito.kotlin.verify
-import org.mockito.kotlin.whenever
+import org.mockito.kotlin.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
@@ -27,6 +24,8 @@ import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.andExpectJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 import uk.gov.service.notify.NotificationClient
+import uk.gov.service.notify.NotificationList
+import java.time.ZonedDateTime
 
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = RANDOM_PORT)
@@ -72,6 +71,19 @@ internal class IntegrationTest {
 
     @Test
     fun `sends messages to govuk notify`() {
+        whenever(notificationClient.getNotifications(isNull(), eq("sms"), isNull(), anyOrNull())).thenReturn(
+            NotificationList(
+                """
+                    {
+                      "notifications": [],
+                      "links": {
+                        "current": "current-url"
+                      }
+                    }
+                """.trimIndent()
+            )
+        )
+
         unpaidWorkAppointmentsService.sendUnpaidWorkAppointmentReminders("N56", listOf("template"), 3)
 
         verify(notificationClient).sendSms(
@@ -88,6 +100,80 @@ internal class IntegrationTest {
                 "providerCode" to "N56",
                 "templateIds" to "template",
                 "notificationIds" to "null"
+            )
+        )
+        verify(telemetryService).trackEvent(
+            "UnpaidWorkAppointmentReminderNotSent",
+            mapOf(
+                "crn" to "A000002",
+                "upwAppointmentIds" to "789",
+                "providerCode" to "N56",
+                "templateIds" to "template",
+            )
+        )
+    }
+
+    @Test
+    fun `do not send messages if one has already been sent for that crn today`() {
+        whenever(notificationClient.getNotifications(isNull(), eq("sms"), isNull(), anyOrNull())).thenReturn(
+            NotificationList(
+                """
+                    {
+                      "notifications": [
+                      {
+                        "id": "1dbd55a3-71d8-44ea-9168-e5e7b04217ce",
+                        "reference": "A000001",
+                        "phoneNumber": "07000000001",
+                        "type": "sms",
+                        "template": {
+                            "id": "2c15f36f-d2e4-480a-8330-42cf2ad73071",
+                            "version": 1,
+                            "uri": "template-uri"
+                        },
+                        "body": "Notification sent to 07000000001",
+                        "status": "sent",
+                        "created_at": "${ZonedDateTime.now()}",
+                        "sent_at": "${ZonedDateTime.now()}"
+                      },
+                      {
+                        "id": "72e13b0a-6579-4ea5-b4b5-afd432f672e4",
+                        "reference": "A000002",
+                        "phoneNumber": "07000000002",
+                        "type": "sms",
+                        "template": {
+                            "id": "2c15f36f-d2e4-480a-8330-42cf2ad73071",
+                            "version": 1,
+                            "uri": "template-uri"
+                        },
+                        "body": "Notification sent to 07000000002",
+                        "status": "sent",
+                        "created_at": "${ZonedDateTime.now().minusDays(1)}",
+                        "sent_at": "${ZonedDateTime.now().minusDays(1)}"
+                      }
+                      ],
+                      "links": {
+                        "current": "current-url"
+                      }
+                    }
+                """.trimIndent()
+            )
+        )
+
+        unpaidWorkAppointmentsService.sendUnpaidWorkAppointmentReminders("N56", listOf("template"), 3)
+
+        verify(notificationClient, never()).sendSms(
+            "template",
+            "07000000001",
+            mapOf("FirstName" to "Test", "NextWorkSession" to "01/01/2000"),
+            "A000001"
+        )
+        verify(telemetryService).trackEvent(
+            "UnpaidWorkAppointmentReminderNotSent",
+            mapOf(
+                "crn" to "A000001",
+                "upwAppointmentIds" to "123, 456",
+                "providerCode" to "N56",
+                "templateIds" to "template"
             )
         )
         verify(telemetryService).trackEvent(

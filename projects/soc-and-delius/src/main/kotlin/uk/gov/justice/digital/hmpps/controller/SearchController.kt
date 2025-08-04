@@ -14,10 +14,8 @@ import java.util.*
 class SearchController(private val search: ProbationCaseSearch) {
     @PreAuthorize("hasRole('PROBATION_API__SOC__CASE_DETAIL')")
     @PostMapping(value = ["/probation-cases"])
-    fun searchProbationCases(
-        @Valid @RequestBody request: SearchRequest,
-        @RequestParam(required = false, defaultValue = "true") useSearch: Boolean
-    ): List<OffenderDetail> = search.find(request, useSearch)
+    fun searchProbationCases(@Valid @RequestBody request: SearchRequest): List<OffenderDetail> =
+        search.find(request)
 
     @PreAuthorize("hasRole('PROBATION_API__SOC__CASE_DETAIL')")
     @PostMapping(value = ["/probation-cases/crns"])
