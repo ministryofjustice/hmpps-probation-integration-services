@@ -302,6 +302,8 @@ components:
           $ref: "#/components/schemas/CodedValue"
         probationPractitioner:
           $ref: "#/components/schemas/ProbationPractitioner"
+        team:
+          $ref: "#/components/schemas/CodedValue"
         probationDeliveryUnit:
           $ref: "#/components/schemas/CodedValue"
       required:
@@ -309,7 +311,10 @@ components:
       - crn
       - dateOfBirth
       - name
+      - probationDeliveryUnit
+      - probationPractitioner
       - sex
+      - team
     ProbationPractitioner:
       type: object
       properties:

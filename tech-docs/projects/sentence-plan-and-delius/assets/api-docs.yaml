@@ -14,11 +14,34 @@ servers:
 security:
 - hmpps-auth-token: []
 paths:
+  /users/{username}/access/{crn}:
+    get:
+      tags:
+      - user-controller
+      operationId: getCaseDetails
+      parameters:
+      - name: username
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: crn
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserCaseloadIndicator"
   /case-details/{crn}:
     get:
       tags:
       - case-details-controller
-      operationId: getCaseDetails
+      operationId: getCaseDetails_1
       parameters:
       - name: crn
         in: path
@@ -52,6 +75,13 @@ paths:
                 $ref: "#/components/schemas/FirstAppointment"
 components:
   schemas:
+    UserCaseloadIndicator:
+      type: object
+      properties:
+        inCaseload:
+          type: boolean
+      required:
+      - inCaseload
     CaseDetails:
       type: object
       properties:
