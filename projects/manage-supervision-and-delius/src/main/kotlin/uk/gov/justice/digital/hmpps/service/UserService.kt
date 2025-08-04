@@ -346,8 +346,13 @@ private fun AppointmentEntity.toUserAppointment() = UserAppointment(
     sentenceDescription,
     totalSentences?.let { if (it > 0) it - 1 else it },
     contactDescription,
-    if ( contactStartTime != null ) ZonedDateTime.of(LocalDateTime.of(contactDate, contactStartTime), EuropeLondon) else ZonedDateTime.of(contactDate,
-        LocalTime.MIDNIGHT, EuropeLondon),
+    if (contactStartTime != null) ZonedDateTime.of(
+        LocalDateTime.of(contactDate, contactStartTime),
+        EuropeLondon
+    ) else ZonedDateTime.of(
+        contactDate,
+        LocalTime.MIDNIGHT, EuropeLondon
+    ),
     if (contactEndTime != null) ZonedDateTime.of(
         LocalDateTime.of(contactDate, contactEndTime),
         EuropeLondon

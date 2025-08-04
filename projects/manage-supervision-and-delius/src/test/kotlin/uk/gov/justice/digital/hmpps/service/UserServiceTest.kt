@@ -313,13 +313,14 @@ internal class UserServiceTest {
         )
 
         whenever(userRepository.findUserByUsername(username)).thenReturn(USER)
-        whenever(contactRepository
-            .findSummaryOfAppointmentsWithoutOutcomesByUser(
-                anyLong(),
-                anyString(),
-                anyString(),
-                any<Pageable>()
-            )
+        whenever(
+            contactRepository
+                .findSummaryOfAppointmentsWithoutOutcomesByUser(
+                    anyLong(),
+                    anyString(),
+                    anyString(),
+                    any<Pageable>()
+                )
         ).thenReturn(PageImpl(listOf(testAppointment)))
 
         val userAppointment = UserAppointment(
@@ -332,9 +333,12 @@ internal class UserServiceTest {
             crn = testAppointment.crn,
             dob = testAppointment._dob,
             type = testAppointment._contactDescription,
-            startDateTime = ZonedDateTime.of(testAppointment._contactDate,
-                LocalTime.MIDNIGHT, EuropeLondon))
-        val expected = UserDiary(10, 0, 1, 1,listOf(userAppointment))
+            startDateTime = ZonedDateTime.of(
+                testAppointment._contactDate,
+                LocalTime.MIDNIGHT, EuropeLondon
+            )
+        )
+        val expected = UserDiary(10, 0, 1, 1, listOf(userAppointment))
 
         val response = service.getSummaryOfAppointmentsWithoutOutcomes(username, pageable)
 
