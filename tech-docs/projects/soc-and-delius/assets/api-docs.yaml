@@ -19,13 +19,6 @@ paths:
       tags:
       - search-controller
       operationId: searchProbationCases
-      parameters:
-      - name: useSearch
-        in: query
-        required: false
-        schema:
-          type: boolean
-          default: true
       requestBody:
         content:
           application/json:
