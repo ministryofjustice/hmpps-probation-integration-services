@@ -39,7 +39,7 @@ class Appointment(
     val date: LocalDate,
 
     @Column(name = "contact_start_time")
-    val startTime: ZonedDateTime,
+    val startTime: ZonedDateTime? = null,
 
     @Column(name = "team_id")
     val teamId: Long,

@@ -119,7 +119,7 @@ class AppointmentOutcomeIntegrationTest {
 
         assertThat(updatedAppointment.type.code, equalTo(createdAppointment.type.code))
         assertThat(updatedAppointment.date, equalTo(createdAppointment.date))
-        assertThat(updatedAppointment.startTime, isCloseTo(createdAppointment.startTime))
+        assertThat(updatedAppointment.startTime, isCloseTo(createdAppointment.startTime!!))
         assertThat(updatedAppointment.externalReference, equalTo(createdAppointment.externalReference))
         assertThat(updatedAppointment.eventId, equalTo(createdAppointment.eventId))
         assertThat(updatedAppointment.createdByUserId, equalTo(createdAppointment.createdByUserId))

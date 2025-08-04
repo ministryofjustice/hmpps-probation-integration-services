@@ -31,6 +31,7 @@ import uk.gov.justice.digital.hmpps.ldap.findByUsername
 import uk.gov.justice.digital.hmpps.ldap.findPreferenceByUsername
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.LocalTime
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.Appointment as AppointmentEntity
@@ -345,7 +346,13 @@ private fun AppointmentEntity.toUserAppointment() = UserAppointment(
     sentenceDescription,
     totalSentences?.let { if (it > 0) it - 1 else it },
     contactDescription,
-    ZonedDateTime.of(LocalDateTime.of(contactDate, contactStartTime), EuropeLondon),
+    if (contactStartTime != null) ZonedDateTime.of(
+        LocalDateTime.of(contactDate, contactStartTime),
+        EuropeLondon
+    ) else ZonedDateTime.of(
+        contactDate,
+        LocalTime.MIDNIGHT, EuropeLondon
+    ),
     if (contactEndTime != null) ZonedDateTime.of(
         LocalDateTime.of(contactDate, contactEndTime),
         EuropeLondon
