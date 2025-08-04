@@ -10,6 +10,10 @@ class Team(
     @Column(name = "team_id")
     val id: Long,
 
+    val code: String,
+
+    val description: String,
+
     @ManyToOne
     @JoinColumn(name = "district_id")
     val localAdminUnit: LocalAdminUnit,

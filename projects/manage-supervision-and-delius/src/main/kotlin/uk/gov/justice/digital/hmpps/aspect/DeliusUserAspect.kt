@@ -25,6 +25,8 @@ class DeliusUserAspect(
     private val httpServletRequest: HttpServletRequest
 ) {
 
+    // Wraps controller with db call pkg_vpd_ctx.set_client_identifier so that web application logged-in username is used
+    // when updating the user field in notes. Without this wrapper, service name is used in notes.
     @Before("@annotation(uk.gov.justice.digital.hmpps.aspect.WithDeliusUser)")
     fun beforeRequest() {
         getDeliusUsername()?.let { deliusUserName ->

@@ -10,6 +10,7 @@ data class PersonalDetails(
     val age: String = with(Period.between(dateOfBirth, LocalDate.now())) { "$years years, $months months" },
     val sex: CodedValue,
     val ethnicity: CodedValue?,
-    val probationPractitioner: ProbationPractitioner?,
-    val probationDeliveryUnit: CodedValue?,
+    val probationPractitioner: ProbationPractitioner,
+    val team: CodedValue,
+    val probationDeliveryUnit: CodedValue,
 )

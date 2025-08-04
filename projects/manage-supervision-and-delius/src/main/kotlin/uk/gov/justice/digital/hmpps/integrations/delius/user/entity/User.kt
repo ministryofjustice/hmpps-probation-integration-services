@@ -59,6 +59,9 @@ interface UserRepository : JpaRepository<User, Long> {
 fun UserRepository.getUser(username: String) =
     findByUsername(username) ?: throw NotFoundException("User", "username", username)
 
+fun UserRepository.getUserByUsername(username: String) =
+    findUserByUsername(username) ?: throw NotFoundException("User", "username", username)
+
 @Immutable
 @Entity
 @Table(name = "staff")

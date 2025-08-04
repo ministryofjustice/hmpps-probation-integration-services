@@ -14,16 +14,24 @@ import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
 import uk.gov.justice.digital.hmpps.alfresco.AlfrescoClient
 import uk.gov.justice.digital.hmpps.api.model.personalDetails.DocumentSearch
+import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
 import uk.gov.justice.digital.hmpps.data.generator.personalDetails.PersonDetailsGenerator.PERSONAL_DETAILS
+import uk.gov.justice.digital.hmpps.integrations.delius.alfresco.AlfrescoUploadClient
+import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.PersonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.DocumentEntity
+import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.DocumentRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.DocumentsRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.user.entity.UserRepository
 import uk.gov.justice.digital.hmpps.utils.Summary
 import java.time.LocalDateTime
 import java.time.LocalTime
 
 @ExtendWith(MockitoExtension::class)
 internal class DocumentsServiceTest {
+
+    @Mock
+    lateinit var auditedInteractionService: AuditedInteractionService
 
     @Mock
     lateinit var documentsRepository: DocumentsRepository
@@ -33,6 +41,18 @@ internal class DocumentsServiceTest {
 
     @Mock
     lateinit var alfrescoClient: AlfrescoClient
+
+    @Mock
+    lateinit var alfrescoUploadClient: AlfrescoUploadClient
+
+    @Mock
+    lateinit var contactRepository: ContactRepository
+
+    @Mock
+    lateinit var documentRepository: DocumentRepository
+
+    @Mock
+    lateinit var userRepository: UserRepository
 
     @InjectMocks
     lateinit var service: DocumentsService
