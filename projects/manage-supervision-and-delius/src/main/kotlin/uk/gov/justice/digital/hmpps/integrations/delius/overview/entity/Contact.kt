@@ -573,7 +573,7 @@ interface Appointment {
     val crn: String
     val location: String?
     val contactDate: LocalDate
-    val contactStartTime: LocalTime
+    val contactStartTime: LocalTime?
     val contactEndTime: LocalTime?
     val totalSentences: Int?
     val contactDescription: String
