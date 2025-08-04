@@ -51,9 +51,6 @@ spring:
   jpa.hibernate.ddl-auto: create-drop
 
 seed.database: true
-wiremock.enabled: true
-
-integrations.probation-search.url: http://localhost:${wiremock.port}
 
 logging.level:
   uk.gov.justice.digital.hmpps: DEBUG
