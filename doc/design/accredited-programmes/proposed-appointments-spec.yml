@@ -1,0 +1,730 @@
+openapi: 3.1.0
+info:
+  title: Accredited Programmes and Delius
+  contact:
+    name: Probation Integration Team
+    url: https://mojdt.slack.com/archives/C02HQ4M2YQN
+    email: probation-integration-team@digital.justice.gov.uk
+  license:
+    name: MIT
+    url: https://github.com/ministryofjustice/hmpps-probation-integration-services/blob/main/LICENSE
+  version: '1.0'
+servers:
+  - url: https://accredited-programmes-and-delius-dev.hmpps.service.justice.gov.uk
+security:
+  - hmpps-auth-token: [ ]
+paths:
+  /user/{username}/access:
+    post:
+      tags:
+        - Users
+      operationId: getLimitedAccess
+      parameters:
+        - name: username
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: string
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserAccess'
+  /case/{crn}/sentence/{eventNumber}:
+    get:
+      tags:
+        - Cases
+      operationId: getSentence
+      parameters:
+        - name: crn
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: eventNumber
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Sentence'
+  /case/{crn}/sentence/{eventNumber}/offences:
+    get:
+      tags:
+        - Cases
+      operationId: getOffences
+      parameters:
+        - name: crn
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: eventNumber
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Offences'
+  /case/{crn}/registrations:
+    get:
+      tags:
+        - Cases
+      operationId: getRegistrations
+      parameters:
+        - name: crn
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Registrations'
+  /case/{crn}/personal-details:
+    get:
+      tags:
+        - Cases
+      operationId: getPersonalDetails
+      parameters:
+        - name: crn
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PersonalDetails'
+
+  /case/{crn}/appointments:
+    get:
+      tags:
+        - Appointments
+      operationId: getAppointmentsForCrn
+      summary: Option 1
+      parameters:
+        - name: crn
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: fromDate
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: toDate
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: page
+          in: query
+          schema:
+            type: number
+            default: 1
+        - name: size
+          in: query
+          schema:
+            type: number
+            default: 10
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  page:
+                    type: object
+                    properties:
+                      number:
+                        type: integer
+                      size:
+                        type: integer
+                        examples:
+                          - 10
+                      totalPages:
+                        type: integer
+                        examples:
+                          - 2
+                      totalElements:
+                        type: integer
+                        examples:
+                          - 20
+                  content:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Appointment'
+  /staff/{staffCode}/appointments:
+    get:
+      tags:
+        - Appointments
+      operationId: getAppointmentsByStaff
+      summary: Option 1
+      parameters:
+        - name: staffCode
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: fromDate
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: toDate
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: page
+          in: query
+          schema:
+            type: number
+            default: 1
+        - name: size
+          in: query
+          schema:
+            type: number
+            default: 10
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  page:
+                    type: object
+                    properties:
+                      number:
+                        type: integer
+                      size:
+                        type: integer
+                        examples:
+                          - 10
+                      totalPages:
+                        type: integer
+                        examples:
+                          - 2
+                      totalElements:
+                        type: integer
+                        examples:
+                          - 20
+                  content:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Appointment'
+  /appointments:
+    get:
+      tags:
+        - Appointments
+      operationId: getAppointments
+      description: Either CRN or Username is required
+      summary: Option 2
+      parameters:
+        - name: crn
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: staffCode
+          description: Or username?
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: fromDate
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: toDate
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: page
+          in: query
+          schema:
+            type: number
+            default: 1
+        - name: size
+          in: query
+          schema:
+            type: number
+            default: 10
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  page:
+                    type: object
+                    properties:
+                      number:
+                        type: integer
+                      size:
+                        type: integer
+                        examples:
+                          - 10
+                      totalPages:
+                        type: integer
+                        examples:
+                          - 2
+                      totalElements:
+                        type: integer
+                        examples:
+                          - 20
+                  content:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Appointment'
+    post:
+      tags:
+        - Appointments
+      operationId: createAppointments
+      description: A bulk endpoint to create any number of appointments, potentially for multiple different attendees
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/Appointment'
+      responses:
+        201:
+          description: OK
+        400:
+          description: Bad request. For example, if one or more appointments clashes with an existing appointment, or if an appointment no longer exists. A list of errors will be returned.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AppointmentValidationFailure'
+        500:
+          description: Internal server error. Transaction will be rolled back and no appointments will be created.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: string
+                  userMessage:
+                    type: string
+                  developerMessage:
+                    type: string
+    put:
+      tags:
+        - Appointments
+      operationId: updateAppointments
+      description: A bulk endpoint to update any number of appointments, potentially for multiple different attendees. Only a subset of fields are editable, any additional fields will be ignored.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/UpdateAppointment'
+      responses:
+        200:
+          description: OK
+        400:
+          description: Bad request. For example, if one or more appointments clashes with an existing appointment, or if an appointment no longer exists. A list of errors will be returned.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AppointmentValidationFailure'
+        500:
+          description: Internal server error. Transaction will be rolled back and no appointments will be updated.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: string
+                  userMessage:
+                    type: string
+                  developerMessage:
+                    type: string
+    delete:
+      tags:
+        - Appointments
+      operationId: deleteAppointments
+      description: A bulk endpoint to delete any number of appointments by reference, potentially for multiple different attendees.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: string
+                examples:
+                  - a04efef9-27d9-4ba4-84f4-7eee5fddb34e
+      responses:
+        200:
+          description: OK
+        500:
+          description: Internal server error. Transaction will be rolled back and no appointments will be deleted.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: string
+                  userMessage:
+                    type: string
+                  developerMessage:
+                    type: string
+components:
+  schemas:
+    CaseAccess:
+      type: object
+      properties:
+        crn:
+          type: string
+        userExcluded:
+          type: boolean
+        userRestricted:
+          type: boolean
+        exclusionMessage:
+          type: string
+        restrictionMessage:
+          type: string
+      required:
+        - crn
+        - userExcluded
+        - userRestricted
+    UserAccess:
+      type: object
+      properties:
+        access:
+          type: array
+          items:
+            $ref: '#/components/schemas/CaseAccess'
+      required:
+        - access
+    CodedValue:
+      type: object
+      properties:
+        code:
+          type: string
+        description:
+          type: string
+      required:
+        - code
+        - description
+    Sentence:
+      type: object
+      properties:
+        description:
+          type: string
+        startDate:
+          type: string
+          format: date
+        expectedEndDate:
+          type: string
+          format: date
+        licenceExpiryDate:
+          type: string
+          format: date
+        postSentenceSupervisionEndDate:
+          type: string
+          format: date
+        twoThirdsSupervisionDate:
+          type: string
+          format: date
+        custodial:
+          type: boolean
+        releaseType:
+          type: string
+        licenceConditions:
+          type: array
+          items:
+            $ref: '#/components/schemas/CodedValue'
+        requirements:
+          type: array
+          items:
+            $ref: '#/components/schemas/CodedValue'
+        postSentenceSupervisionRequirements:
+          type: array
+          items:
+            $ref: '#/components/schemas/CodedValue'
+      required:
+        - custodial
+        - licenceConditions
+        - postSentenceSupervisionRequirements
+        - requirements
+        - startDate
+    Offence:
+      type: object
+      properties:
+        date:
+          type: string
+          format: date
+        mainCategoryCode:
+          type: string
+        mainCategoryDescription:
+          type: string
+        subCategoryCode:
+          type: string
+        subCategoryDescription:
+          type: string
+      required:
+        - date
+        - mainCategoryCode
+        - mainCategoryDescription
+        - subCategoryCode
+        - subCategoryDescription
+    Offences:
+      type: object
+      properties:
+        mainOffence:
+          $ref: '#/components/schemas/Offence'
+        additionalOffences:
+          type: array
+          items:
+            $ref: '#/components/schemas/Offence'
+      required:
+        - additionalOffences
+        - mainOffence
+    Registration:
+      type: object
+      properties:
+        type:
+          $ref: '#/components/schemas/CodedValue'
+        category:
+          $ref: '#/components/schemas/CodedValue'
+        date:
+          type: string
+          format: date
+        nextReviewDate:
+          type: string
+          format: date
+      required:
+        - category
+        - date
+        - type
+    Registrations:
+      type: object
+      properties:
+        registrations:
+          type: array
+          items:
+            $ref: '#/components/schemas/Registration'
+      required:
+        - registrations
+    Name:
+      type: object
+      properties:
+        forename:
+          type: string
+        middleNames:
+          type: string
+        surname:
+          type: string
+      required:
+        - forename
+        - surname
+    PersonalDetails:
+      type: object
+      properties:
+        crn:
+          type: string
+        name:
+          $ref: '#/components/schemas/Name'
+        dateOfBirth:
+          type: string
+          format: date
+        age:
+          type: string
+        sex:
+          $ref: '#/components/schemas/CodedValue'
+        ethnicity:
+          $ref: '#/components/schemas/CodedValue'
+        probationPractitioner:
+          $ref: '#/components/schemas/ProbationPractitioner'
+        probationDeliveryUnit:
+          $ref: '#/components/schemas/CodedValue'
+      required:
+        - age
+        - crn
+        - dateOfBirth
+        - name
+        - sex
+    ProbationPractitioner:
+      type: object
+      properties:
+        name:
+          $ref: '#/components/schemas/Name'
+        code:
+          type: string
+        email:
+          type: string
+      required:
+        - code
+        - name
+    Appointment:
+      type: object
+      required:
+        - crn
+        - reference
+        - date
+        - startTime
+        - endTime
+        - type
+        - staffCode
+        - teamCode
+      properties:
+        crn:
+          type: string
+          examples:
+            - A213456
+        reference:
+          type: string
+          examples:
+            - 000000-000000-0000000000-0000000
+            # urn:uk:gov:hmpps:accredited-programmes:appointment:{uuid}
+        requirementId:
+          type: integer
+        date:
+          type: string
+          format: date
+        startTime:
+          type: string
+          format: time
+        endTime:
+          type: string
+          format: time
+        type:
+          type: string
+          enum:
+            - Programme session
+        outcome:
+          type: string
+          enum:
+            - Attended and complied
+            - Failed to attend
+            - Failed to comply
+        locationCode:
+          type: string
+          examples:
+            - N07ABC
+        staffCode:
+          type: string
+          examples:
+            - N07A123
+        teamCode:
+          type: string
+          examples:
+            - N07ABC
+        notes:
+          type: string
+        sensitive:
+          type: boolean
+          default: false
+    UpdateAppointment:
+      type: object
+      required:
+        - crn
+        - reference
+        - date
+        - startTime
+        - endTime
+        - type
+        - staffCode
+        - teamCode
+      properties:
+        reference:
+          type: string
+          examples:
+            - a04efef9-27d9-4ba4-84f4-7eee5fddb34e
+            # urn:uk:gov:hmpps:accredited-programmes:appointment:{uuid}
+        date:
+          type: string
+          format: date
+        startTime:
+          type: string
+          format: time
+        endTime:
+          type: string
+          format: time
+        outcome:
+          type: string
+          enum:
+            - Attended and complied
+            - Failed to attend
+            - Failed to comply
+        locationCode:
+          type: string
+          examples:
+            - N07ABC
+        staffCode:
+          type: string
+          examples:
+            - N07A123
+        teamCode:
+          type: string
+          examples:
+            - N07ABC
+        notes:
+          type: string
+        sensitive:
+          type: boolean
+          default: false
+    AppointmentValidationFailure:
+      type: object
+      properties:
+        reference:
+          type: string
+          examples:
+            - a04efef9-27d9-4ba4-84f4-7eee5fddb34e
+            # urn:uk:gov:hmpps:accredited-programmes:appointment:{uuid}
+        errorMessage:
+          type: string
+  securitySchemes:
+    hmpps-auth-token:
+      type: http
+      name: Authorization
+      in: header
+      scheme: bearer
+      bearerFormat: JWT
