@@ -339,7 +339,6 @@ interface ContactRepository : JpaRepository<Contact, Long> {
             select c.*
             from contact c
             join r_contact_type ct on c.contact_type_id = ct.contact_type_id
-            left join r_contact_type_outcome cot on cot.contact_outcome_type_id = c.contact_outcome_type_id
             where c.offender_id = :personId and ct.attendance_contact = 'Y'
             and (to_char(c.contact_date, 'YYYY-MM-DD') > :dateNow
             or (to_char(c.contact_date, 'YYYY-MM-DD') = :dateNow and to_char(c.contact_start_time, 'HH24:MI') > :timeNow))
