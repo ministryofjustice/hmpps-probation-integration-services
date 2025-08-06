@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.service
 
+import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.api.model.Name
@@ -28,7 +29,7 @@ class ScheduleService(
     }
 
     @Transactional
-    fun getPersonUpcomingSchedule(crn: String): Schedule {
+    fun getPersonUpcomingSchedule(crn: String, pageable: PageRequest): Schedule {
         val summary = personRepository.getSummary(crn)
         val appointments = contactRepository.getUpComingAppointments(summary.id)
         return Schedule(

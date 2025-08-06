@@ -10,6 +10,7 @@ import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.any
 import org.mockito.kotlin.whenever
+import org.springframework.data.domain.PageRequest
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator
 import uk.gov.justice.digital.hmpps.data.generator.personalDetails.PersonDetailsGenerator.PERSONAL_DETAILS
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.ContactRepository
@@ -47,7 +48,7 @@ internal class ScheduleServiceTest {
         val expectedContacts = listOf(ContactGenerator.NEXT_APPT_CONTACT, ContactGenerator.FIRST_APPT_CONTACT)
         whenever(personRepository.findSummary(crn)).thenReturn(personSummary)
         whenever(contactRepository.findUpComingAppointments(any(), any(), any())).thenReturn(expectedContacts)
-        val res = service.getPersonUpcomingSchedule(crn)
+        val res = service.getPersonUpcomingSchedule(crn, PageRequest.of(0, 10))
         assertThat(
             res.personSummary, equalTo(PERSONAL_DETAILS.toSummary())
         )

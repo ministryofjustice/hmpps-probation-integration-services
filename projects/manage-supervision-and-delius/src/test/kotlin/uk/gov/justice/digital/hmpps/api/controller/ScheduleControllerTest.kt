@@ -9,6 +9,8 @@ import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.whenever
+import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Sort
 import uk.gov.justice.digital.hmpps.api.model.Name
 import uk.gov.justice.digital.hmpps.api.model.PersonSummary
 import uk.gov.justice.digital.hmpps.api.model.schedule.PersonAppointment
@@ -41,6 +43,7 @@ internal class ScheduleControllerTest {
     @Test
     fun `calls get get upcoming function `() {
         val crn = "X000005"
+        val pageable = PageRequest.of(0, 10, Sort.by(Sort.Direction.ASC, "contact_date", "contact_start_time"))
         val expectedResponse = Schedule(
             personSummary = personSummary,
             appointments = listOfNotNull(
@@ -48,8 +51,12 @@ internal class ScheduleControllerTest {
                 ContactGenerator.NEXT_APPT_CONTACT.toActivity()
             ),
         )
-        whenever(scheduleService.getPersonUpcomingSchedule(crn)).thenReturn(expectedResponse)
-        val res = controller.getUpcomingSchedule(crn)
+        whenever(scheduleService.getPersonUpcomingSchedule(crn, pageable)).thenReturn(expectedResponse)
+        val res = controller.getUpcomingSchedule(
+            crn,
+            page = 0,
+            size = 10
+        )
         assertThat(res, equalTo(expectedResponse))
     }
 
