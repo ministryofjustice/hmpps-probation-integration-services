@@ -25,5 +25,6 @@ class Handler(
     )
     override fun handle(notification: Notification<HmppsDomainEvent>) {
         telemetryService.notificationReceived(notification)
+        TODO("Not yet implemented")
     }
 }
