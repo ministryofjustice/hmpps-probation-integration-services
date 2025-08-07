@@ -17,7 +17,7 @@ class RsrScoreHistory(
     val personId: Long,
 
     @Column(name = "dynamic_rsr_score", columnDefinition = "number(5,2)")
-    val score: Double,
+    val score: Double?,
 
     @ManyToOne
     @JoinColumn(name = "reason_for_change_id")
