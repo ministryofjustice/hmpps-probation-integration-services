@@ -81,7 +81,12 @@ class PcstdIntegrationTest : PcstdIntegrationTestBase() {
         assertThat(custody.institution?.code, equalTo(InstitutionGenerator.DEFAULT.code))
         assertThat(custody.locationChangeDate!!, equalTo(notification.message.occurredAt.toLocalDate()))
 
-        verifyRecall(custody, notification.message.occurredAt, RecallReason.Code.NOTIFIED_BY_CUSTODIAL_ESTABLISHMENT, booking.movementReason!!)
+        verifyRecall(
+            custody,
+            notification.message.occurredAt,
+            RecallReason.Code.NOTIFIED_BY_CUSTODIAL_ESTABLISHMENT,
+            booking.movementReason!!
+        )
 
         verifyCustodyHistory(
             custody,
@@ -290,7 +295,12 @@ class PcstdIntegrationTest : PcstdIntegrationTestBase() {
         assertThat(custody.status.code, equalTo(CustodialStatusCode.RECALLED.code))
         assertThat(custody.statusChangeDate, equalTo(notification.message.occurredAt.toLocalDate()))
 
-        verifyRecall(custody, notification.message.occurredAt, RecallReason.Code.TRANSFER_TO_SECURE_HOSPITAL, booking.movementReason!!)
+        verifyRecall(
+            custody,
+            notification.message.occurredAt,
+            RecallReason.Code.TRANSFER_TO_SECURE_HOSPITAL,
+            booking.movementReason!!
+        )
 
         verifyCustodyHistory(
             custody,
@@ -378,7 +388,12 @@ class PcstdIntegrationTest : PcstdIntegrationTestBase() {
         assertThat(custody.status.code, equalTo(CustodialStatusCode.IN_CUSTODY.code))
         assertThat(custody.institution?.code, equalTo(InstitutionGenerator.DEFAULT.code))
 
-        verifyRecall(custody, notification.message.occurredAt, RecallReason.Code.END_OF_TEMPORARY_LICENCE, booking.movementReason!!)
+        verifyRecall(
+            custody,
+            notification.message.occurredAt,
+            RecallReason.Code.END_OF_TEMPORARY_LICENCE,
+            booking.movementReason!!
+        )
 
         verifyCustodyHistory(
             custody,
@@ -419,7 +434,12 @@ class PcstdIntegrationTest : PcstdIntegrationTestBase() {
         assertThat(custody.institution?.code, equalTo(InstitutionCode.OTHER_IRC.code))
         assertThat(custody.status.code, equalTo(CustodialStatusCode.RECALLED.code))
 
-        verifyRecall(custody, notification.message.occurredAt, RecallReason.Code.TRANSFER_TO_IRC, booking.movementReason!!)
+        verifyRecall(
+            custody,
+            notification.message.occurredAt,
+            RecallReason.Code.TRANSFER_TO_IRC,
+            booking.movementReason!!
+        )
 
         verifyCustodyHistory(
             custody,
@@ -501,7 +521,12 @@ class PcstdIntegrationTest : PcstdIntegrationTestBase() {
         val custody = getCustody(nomsNumber)
         assertFalse(custody.isInCustody())
 
-        verifyRelease(custody, notification.message.occurredAt, ReleaseTypeCode.END_CUSTODY_SUPERVISED_LICENCE, booking.movementReason!!)
+        verifyRelease(
+            custody,
+            notification.message.occurredAt,
+            ReleaseTypeCode.END_CUSTODY_SUPERVISED_LICENCE,
+            booking.movementReason!!
+        )
 
         verifyCustodyHistory(
             custody,
@@ -547,7 +572,12 @@ class PcstdIntegrationTest : PcstdIntegrationTestBase() {
         assertThat(custody.status.code, equalTo(CustodialStatusCode.RECALLED.code))
         assertThat(custody.statusChangeDate, equalTo(notification.message.occurredAt.toLocalDate()))
 
-        verifyRecall(custody, notification.message.occurredAt, RecallReason.Code.NOTIFIED_BY_CUSTODIAL_ESTABLISHMENT, booking.movementReason!!)
+        verifyRecall(
+            custody,
+            notification.message.occurredAt,
+            RecallReason.Code.NOTIFIED_BY_CUSTODIAL_ESTABLISHMENT,
+            booking.movementReason!!
+        )
 
         verifyCustodyHistory(
             custody,
@@ -739,7 +769,12 @@ class PcstdIntegrationTest : PcstdIntegrationTestBase() {
         val custody = getCustody(nomsNumber)
         assertFalse(custody.isInCustody())
 
-        verifyRelease(custody, notification.message.occurredAt, ReleaseTypeCode.HDC_ADULT_LICENCE, booking.movementReason!!)
+        verifyRelease(
+            custody,
+            notification.message.occurredAt,
+            ReleaseTypeCode.HDC_ADULT_LICENCE,
+            booking.movementReason!!
+        )
 
         verifyCustodyHistory(
             custody,

@@ -139,7 +139,12 @@ open class PcstdIntegrationTestBase {
     internal fun getPrisonManagers(nomsNumber: String) =
         prisonManagerRepository.findAll().filter { it.personId == getPersonId(nomsNumber) }
 
-    internal fun verifyRelease(custody: Custody, dateTime: ZonedDateTime, releaseType: ReleaseTypeCode, reasonCode: String) {
+    internal fun verifyRelease(
+        custody: Custody,
+        dateTime: ZonedDateTime,
+        releaseType: ReleaseTypeCode,
+        reasonCode: String
+    ) {
         val release = getReleases(custody).single()
         assertThat(
             release.date.withZoneSameInstant(EuropeLondon),
