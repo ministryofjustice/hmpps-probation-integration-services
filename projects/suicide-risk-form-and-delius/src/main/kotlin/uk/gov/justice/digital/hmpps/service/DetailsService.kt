@@ -14,7 +14,7 @@ class DetailsService(
     private val personRepository: PersonRepository
 ) {
     fun basicDetails(crn: String): BasicDetails {
-       val person = personRepository.getByCrn(crn)
+        val person = personRepository.getByCrn(crn)
 
         return BasicDetails(
             title = person.title?.description,
