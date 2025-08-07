@@ -139,22 +139,24 @@ open class PcstdIntegrationTestBase {
     internal fun getPrisonManagers(nomsNumber: String) =
         prisonManagerRepository.findAll().filter { it.personId == getPersonId(nomsNumber) }
 
-    internal fun verifyRelease(custody: Custody, dateTime: ZonedDateTime, releaseType: ReleaseTypeCode) {
+    internal fun verifyRelease(custody: Custody, dateTime: ZonedDateTime, releaseType: ReleaseTypeCode, reasonCode: String) {
         val release = getReleases(custody).single()
         assertThat(
             release.date.withZoneSameInstant(EuropeLondon),
             equalTo(dateTime.truncatedTo(ChronoUnit.DAYS))
         )
         assertThat(release.type.code, equalTo(releaseType.code))
+        assertThat(release.reasonCode, equalTo(reasonCode))
     }
 
-    internal fun verifyRecall(custody: Custody, dateTime: ZonedDateTime, rrc: RecallReason.Code) {
+    internal fun verifyRecall(custody: Custody, dateTime: ZonedDateTime, rrc: RecallReason.Code, reasonCode: String) {
         val recall = getRecalls(custody).single()
         assertThat(
             recall.date.withZoneSameInstant(EuropeLondon),
             equalTo(dateTime.truncatedTo(ChronoUnit.DAYS))
         )
         assertThat(recall.reason.code, equalTo(rrc.value))
+        assertThat(recall.reasonCode, equalTo(reasonCode))
     }
 
     internal fun verifyContact(custody: Custody, type: ContactType.Code) {
