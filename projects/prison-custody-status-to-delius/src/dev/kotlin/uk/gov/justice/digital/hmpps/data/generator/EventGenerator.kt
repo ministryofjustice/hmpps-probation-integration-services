@@ -98,7 +98,7 @@ object EventGenerator {
             date = recallDate,
             reason = ReferenceDataGenerator.RECALL_REASON[RecallReason.Code.NOTIFIED_BY_CUSTODIAL_ESTABLISHMENT]!!,
             release = release,
-            person = person
+            person = person,
         )
         release.recall = recall
         return event

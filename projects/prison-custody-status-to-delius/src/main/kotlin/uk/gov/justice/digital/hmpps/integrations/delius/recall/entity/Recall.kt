@@ -42,6 +42,9 @@ class Recall(
     @JoinColumn(name = "offender_id", nullable = false)
     val person: Person,
 
+    @Column("nomis_movement_reason_code")
+    var reasonCode: String? = null,
+
     @Column(nullable = false)
     val partitionAreaId: Long = 0,
 

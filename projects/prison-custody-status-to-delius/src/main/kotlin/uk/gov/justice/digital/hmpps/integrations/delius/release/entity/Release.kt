@@ -54,6 +54,9 @@ class Release(
     @OneToOne(mappedBy = "release")
     var recall: Recall? = null,
 
+    @Column("nomis_movement_reason_code")
+    var reasonCode: String? = null,
+
     @Column(nullable = false)
     val partitionAreaId: Long = 0,
 

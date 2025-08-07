@@ -45,7 +45,8 @@ class RecallAction(
                 date = prisonerMovement.occurredAt.truncatedTo(ChronoUnit.DAYS),
                 reason = recallReason,
                 release = custody.mostRecentRelease()!!,
-                person = person
+                person = person,
+                reasonCode = prisonerMovement.reason
             )
         )
 
