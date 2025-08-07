@@ -9,7 +9,7 @@ import uk.gov.justice.digital.hmpps.service.DetailsService
 
 @RestController
 class SuicideRiskFormController(private val detailsService: DetailsService) {
-    @PreAuthorize("hasRole('EXAMPLE')")
+    @PreAuthorize("hasRole('PROBATION_API__SUICIDE_RISK_FORM__CASE_DETAIL')")
     @GetMapping(value = ["/basic-details/{crn}"])
     fun getBasicDetails(@PathVariable crn: String): BasicDetails = detailsService.basicDetails(crn)
 }
