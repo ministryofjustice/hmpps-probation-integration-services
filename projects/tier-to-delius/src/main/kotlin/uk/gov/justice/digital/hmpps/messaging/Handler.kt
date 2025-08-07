@@ -8,9 +8,9 @@ import org.springframework.web.client.HttpClientErrorException
 import uk.gov.justice.digital.hmpps.converter.NotificationConverter
 import uk.gov.justice.digital.hmpps.detail.DomainEventDetailService
 import uk.gov.justice.digital.hmpps.integrations.tier.TierCalculation
-import uk.gov.justice.digital.hmpps.service.TierUpdateService
 import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
 import uk.gov.justice.digital.hmpps.message.Notification
+import uk.gov.justice.digital.hmpps.service.TierUpdateService
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryMessagingExtensions.notificationReceived
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 
@@ -29,7 +29,7 @@ class Handler(
         val detailUrl = requireNotNull(notification.message.detailUrl)
         val tierCalculation = try {
             detailService.getDetail<TierCalculation>(notification.message)
-        } catch (e: HttpClientErrorException.NotFound) {
+        } catch (_: HttpClientErrorException.NotFound) {
             telemetryService.trackEvent("TierCalculationNotFound", mapOf("crn" to crn, "detailUrl" to detailUrl))
             return
         }
