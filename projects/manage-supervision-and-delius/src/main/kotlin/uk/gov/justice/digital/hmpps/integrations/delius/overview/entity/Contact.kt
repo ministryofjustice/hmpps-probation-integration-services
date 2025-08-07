@@ -6,7 +6,9 @@ import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.NumericBooleanConverter
 import org.hibernate.type.YesNoConverter
 import org.springframework.data.domain.Page
+import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
+import org.springframework.data.domain.Sort
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.CrudRepository
@@ -339,11 +341,22 @@ interface ContactRepository : JpaRepository<Contact, Long> {
             select c.*
             from contact c
             join r_contact_type ct on c.contact_type_id = ct.contact_type_id
-            where c.offender_id = :personId and ct.attendance_contact = 'Y'
+            where c.offender_id = :personId 
+            and ct.attendance_contact = 'Y'
             and (to_char(c.contact_date, 'YYYY-MM-DD') > :dateNow
             or (to_char(c.contact_date, 'YYYY-MM-DD') = :dateNow and to_char(c.contact_start_time, 'HH24:MI') > :timeNow))
             and c.soft_deleted = 0
             order by c.contact_date, c.contact_start_time asc
+        """,
+        countQuery = """
+            select count(1)
+            from contact c
+            join r_contact_type ct on c.contact_type_id = ct.contact_type_id
+            where c.offender_id = :personId 
+            and ct.attendance_contact = 'Y'
+            and (to_char(c.contact_date, 'YYYY-MM-DD') > :dateNow
+            or (to_char(c.contact_date, 'YYYY-MM-DD') = :dateNow and to_char(c.contact_start_time, 'HH24:MI') > :timeNow))
+            and c.soft_deleted = 0            
         """,
         nativeQuery = true
     )
@@ -351,7 +364,28 @@ interface ContactRepository : JpaRepository<Contact, Long> {
         personId: Long,
         dateNow: String,
         timeNow: String,
-    ): List<Contact>
+        pageable: Pageable
+    ): Page<Contact>
+
+    @Query(
+        """
+            select c.*
+            from contact c
+            join r_contact_type ct on c.contact_type_id = ct.contact_type_id
+            where c.offender_id = :personId and ct.attendance_contact = 'Y'
+            and (to_char(c.contact_date, 'YYYY-MM-DD') > :dateNow
+            or (to_char(c.contact_date, 'YYYY-MM-DD') = :dateNow and to_char(c.contact_start_time, 'HH24:MI') > :timeNow))
+            and c.soft_deleted = 0
+            order by c.contact_date, c.contact_start_time asc
+            fetch first 1 row only
+        """,
+        nativeQuery = true
+    )
+    fun findFirstUpComingAppointment(
+        personId: Long,
+        dateNow: String,
+        timeNow: String
+    ): Contact?
 
     @Query(
         """
@@ -371,6 +405,37 @@ interface ContactRepository : JpaRepository<Contact, Long> {
         dateNow: String,
         timeNow: String
     ): List<Contact>
+
+    @Query(
+        """
+            select c.*
+            from contact c
+            join r_contact_type ct on c.contact_type_id = ct.contact_type_id
+            where c.offender_id = :personId 
+            and ct.attendance_contact = 'Y'
+            and (to_char(c.contact_date, 'YYYY-MM-DD') < :dateNow
+            or (to_char(c.contact_date, 'YYYY-MM-DD') = :dateNow and to_char(c.contact_start_time, 'HH24:MI') < :timeNow))
+            and c.soft_deleted = 0
+            order by c.contact_date, c.contact_start_time desc
+        """,
+        countQuery = """
+            select count(*)
+            from contact c
+            join r_contact_type ct on c.contact_type_id = ct.contact_type_id
+            where c.offender_id = :personId 
+            and ct.attendance_contact = 'Y'
+            and (to_char(c.contact_date, 'YYYY-MM-DD') < :dateNow
+            or (to_char(c.contact_date, 'YYYY-MM-DD') = :dateNow and to_char(c.contact_start_time, 'HH24:MI') < :timeNow))
+            and c.soft_deleted = 0            
+        """,
+        nativeQuery = true
+    )
+    fun findPageablePreviousAppointments(
+        personId: Long,
+        dateNow: String,
+        timeNow: String,
+        pageable: Pageable
+    ): Page<Contact>
 
     @Query(
         """
@@ -562,6 +627,9 @@ interface ContactRepository : JpaRepository<Contact, Long> {
 
 fun ContactRepository.getContact(id: Long) = findById(id).orElseThrow { NotFoundException("Person", "id", id) }
 
+fun ContactRepository.getFirstUpcomingAppointment(personId: Long, dateNow: String, timeNow: String) =
+    findFirstUpComingAppointment(personId, dateNow, timeNow)
+
 interface Appointment {
     val forename: String
     val secondName: String?
@@ -586,20 +654,22 @@ fun ContactRepository.firstAppointment(
     personId: Long,
     date: LocalDate = LocalDate.now(),
     startTime: ZonedDateTime = ZonedDateTime.now(EuropeLondon)
-): Contact? = findUpComingAppointments(
+): Contact? = getFirstUpcomingAppointment(
     personId,
     date.format(DateTimeFormatter.ISO_LOCAL_DATE),
     startTime.format(DateTimeFormatter.ISO_LOCAL_TIME.withZone(EuropeLondon))
-).firstOrNull()
+)
 
 fun ContactRepository.getUpComingAppointments(
     personId: Long,
+    pageable: Pageable,
     date: LocalDate = LocalDate.now(),
     startTime: ZonedDateTime = ZonedDateTime.now(EuropeLondon)
-): List<Contact> = findUpComingAppointments(
+): Page<Contact> = findUpComingAppointments(
     personId = personId,
     dateNow = date.format(DateTimeFormatter.ISO_LOCAL_DATE),
     timeNow = startTime.format(DateTimeFormatter.ISO_LOCAL_TIME.withZone(EuropeLondon)),
+    pageable
 )
 
 fun ContactRepository.getPreviousAppointments(
@@ -609,7 +679,19 @@ fun ContactRepository.getPreviousAppointments(
 ): List<Contact> = findPreviousAppointments(
     personId = personId,
     dateNow = date.format(DateTimeFormatter.ISO_LOCAL_DATE),
+    timeNow = startTime.format(DateTimeFormatter.ISO_LOCAL_TIME.withZone(EuropeLondon))
+)
+
+fun ContactRepository.getPageablePreviousAppointments(
+    personId: Long,
+    pageable: Pageable = PageRequest.of(0, 10, Sort.by(Sort.Direction.DESC, "contact_date", "contact_start_time")),
+    date: LocalDate = LocalDate.now(),
+    startTime: ZonedDateTime = ZonedDateTime.now(EuropeLondon)
+): Page<Contact> = findPageablePreviousAppointments(
+    personId = personId,
+    dateNow = date.format(DateTimeFormatter.ISO_LOCAL_DATE),
     timeNow = startTime.format(DateTimeFormatter.ISO_LOCAL_TIME.withZone(EuropeLondon)),
+    pageable
 )
 
 @Immutable

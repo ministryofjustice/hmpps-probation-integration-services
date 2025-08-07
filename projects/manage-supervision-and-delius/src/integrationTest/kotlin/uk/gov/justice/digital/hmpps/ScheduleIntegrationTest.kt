@@ -38,13 +38,13 @@ internal class ScheduleIntegrationTest {
             .andReturn().response.contentAsJson<Schedule>()
 
         assertThat(res.personSummary.crn, equalTo(person.crn))
-        assertThat(res.appointments[0].id, equalTo(ContactGenerator.FIRST_APPT_CONTACT.toActivity().id))
-        assertThat(res.appointments[0].type, equalTo(ContactGenerator.FIRST_APPT_CONTACT.toActivity().type))
+        assertThat(res.userSchedule.appointments[0].id, equalTo(ContactGenerator.FIRST_APPT_CONTACT.toActivity().id))
+        assertThat(res.userSchedule.appointments[0].type, equalTo(ContactGenerator.FIRST_APPT_CONTACT.toActivity().type))
         assertThat(
-            res.appointments[0].location?.officeName,
+            res.userSchedule.appointments[0].location?.officeName,
             equalTo(ContactGenerator.FIRST_APPT_CONTACT.toActivity().location?.officeName)
         )
-        assertThat(res.appointments[0].location?.postcode, equalTo("H34 7TH"))
+        assertThat(res.userSchedule.appointments[0].location?.postcode, equalTo("H34 7TH"))
     }
 
     @Test
@@ -56,16 +56,16 @@ internal class ScheduleIntegrationTest {
             .andExpect(status().isOk)
             .andReturn().response.contentAsJson<Schedule>()
         assertThat(res.personSummary.crn, equalTo(person.crn))
-        assertThat(res.appointments[1].id, equalTo(ContactGenerator.PREVIOUS_APPT_CONTACT_ABSENT.toActivity().id))
+        assertThat(res.userSchedule.appointments[1].id, equalTo(ContactGenerator.PREVIOUS_APPT_CONTACT_ABSENT.toActivity().id))
         assertThat(
-            res.appointments[1].type,
+            res.userSchedule.appointments[1].type,
             equalTo(ContactGenerator.PREVIOUS_APPT_CONTACT_ABSENT.toActivity().type)
         )
         assertThat(
-            res.appointments[1].location?.officeName,
+            res.userSchedule.appointments[1].location?.officeName,
             equalTo(ContactGenerator.PREVIOUS_APPT_CONTACT_ABSENT.toActivity().location?.officeName)
         )
-        assertThat(res.appointments[1].location?.postcode, equalTo("H34 7TH"))
+        assertThat(res.userSchedule.appointments[1].location?.postcode, equalTo("H34 7TH"))
     }
 
     @Test

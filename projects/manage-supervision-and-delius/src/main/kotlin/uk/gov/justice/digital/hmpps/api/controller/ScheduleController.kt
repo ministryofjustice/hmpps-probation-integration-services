@@ -28,7 +28,11 @@ class ScheduleController(private val scheduleService: ScheduleService) {
 
     @GetMapping("/previous")
     @Operation(summary = "Gets previous schedule information’ ")
-    fun getPreviousSchedule(@PathVariable crn: String) = scheduleService.getPersonPreviousSchedule(crn)
+    fun getPreviousSchedule(
+        @PathVariable crn: String,
+        @RequestParam(required = false, defaultValue = "0") page: Int,
+        @RequestParam(required = false, defaultValue = "10") size: Int
+    ) = scheduleService.getPersonPreviousSchedule(crn, PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "contact_date", "contact_start_time")))
 
     @GetMapping("/appointment/{contactId}")
     @Operation(summary = "Gets individual appointment information’ ")

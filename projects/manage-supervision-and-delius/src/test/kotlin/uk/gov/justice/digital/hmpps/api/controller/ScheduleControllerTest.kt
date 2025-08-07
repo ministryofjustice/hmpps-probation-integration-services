@@ -15,6 +15,7 @@ import uk.gov.justice.digital.hmpps.api.model.Name
 import uk.gov.justice.digital.hmpps.api.model.PersonSummary
 import uk.gov.justice.digital.hmpps.api.model.schedule.PersonAppointment
 import uk.gov.justice.digital.hmpps.api.model.schedule.Schedule
+import uk.gov.justice.digital.hmpps.api.model.schedule.UserSchedule
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator
 import uk.gov.justice.digital.hmpps.service.ScheduleService
 import uk.gov.justice.digital.hmpps.service.toActivity
@@ -46,10 +47,16 @@ internal class ScheduleControllerTest {
         val pageable = PageRequest.of(0, 10, Sort.by(Sort.Direction.ASC, "contact_date", "contact_start_time"))
         val expectedResponse = Schedule(
             personSummary = personSummary,
-            appointments = listOfNotNull(
-                ContactGenerator.FIRST_APPT_CONTACT.toActivity(),
-                ContactGenerator.NEXT_APPT_CONTACT.toActivity()
-            ),
+            UserSchedule(
+                1,
+                1,
+                2,
+                1,
+                appointments = listOfNotNull(
+                    ContactGenerator.FIRST_APPT_CONTACT.toActivity(),
+                    ContactGenerator.NEXT_APPT_CONTACT.toActivity()
+                )
+            )
         )
         whenever(scheduleService.getPersonUpcomingSchedule(crn, pageable)).thenReturn(expectedResponse)
         val res = controller.getUpcomingSchedule(
@@ -63,15 +70,24 @@ internal class ScheduleControllerTest {
     @Test
     fun `calls get get previous function `() {
         val crn = "X000005"
+        val pageable = PageRequest.of(0, 10, Sort.by(Sort.Direction.DESC, "contact_date", "contact_start_time"))
         val expectedResponse = Schedule(
             personSummary = personSummary,
+            UserSchedule(
+                1,
+                1,
+                2,
+                1,
             appointments = listOfNotNull(
                 ContactGenerator.PREVIOUS_APPT_CONTACT.toActivity(),
-                ContactGenerator.PREVIOUS_APPT_CONTACT_ABSENT.toActivity()
-            ),
+                ContactGenerator.PREVIOUS_APPT_CONTACT_ABSENT.toActivity())
+            )
         )
-        whenever(scheduleService.getPersonPreviousSchedule(crn)).thenReturn(expectedResponse)
-        val res = controller.getPreviousSchedule(crn)
+        whenever(scheduleService.getPersonPreviousSchedule(crn, pageable)).thenReturn(expectedResponse)
+        val res = controller.getPreviousSchedule(
+            crn,
+            page = 0,
+            size = 10)
         assertThat(res, equalTo(expectedResponse))
     }
 
