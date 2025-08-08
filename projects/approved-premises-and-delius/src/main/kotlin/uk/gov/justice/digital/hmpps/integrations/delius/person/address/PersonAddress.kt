@@ -21,7 +21,7 @@ class PersonAddress(
     val personId: Long,
     @ManyToOne
     @JoinColumn(name = "address_type_id")
-    val type: ReferenceData,
+    val type: ReferenceData?,
     @ManyToOne
     @JoinColumn(name = "address_status_id")
     var status: ReferenceData,
