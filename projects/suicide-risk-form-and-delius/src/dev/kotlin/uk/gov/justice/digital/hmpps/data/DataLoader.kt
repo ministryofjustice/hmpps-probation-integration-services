@@ -7,6 +7,7 @@ import org.springframework.boot.context.event.ApplicationReadyEvent
 import org.springframework.context.ApplicationListener
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
+import uk.gov.justice.digital.hmpps.data.generator.LimitedAccessGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.UserGenerator
 import uk.gov.justice.digital.hmpps.user.AuditUserRepository
@@ -29,5 +30,16 @@ class DataLoader(
         entityManager.persist(PersonGenerator.DEFAULT_ADDRESS_STATUS)
         entityManager.persist(PersonGenerator.DEFAULT_PERSON)
         entityManager.persist(PersonGenerator.DEFAULT_ADDRESS)
+
+        entityManager.persist(UserGenerator.LIMITED_ACCESS_USER)
+        entityManager.persist(UserGenerator.NON_LAO_USER)
+        entityManager.persist(PersonGenerator.RESTRICTION)
+        entityManager.persist(PersonGenerator.EXCLUSION)
+        entityManager.persist(PersonGenerator.RESTRICTION_EXCLUSION)
+        entityManager.flush()
+        entityManager.persist(LimitedAccessGenerator.RESTRICTION)
+        entityManager.persist(LimitedAccessGenerator.EXCLUSION)
+        entityManager.persist(LimitedAccessGenerator.BOTH_RESTRICTION)
+        entityManager.persist(LimitedAccessGenerator.BOTH_EXCLUSION)
     }
 }

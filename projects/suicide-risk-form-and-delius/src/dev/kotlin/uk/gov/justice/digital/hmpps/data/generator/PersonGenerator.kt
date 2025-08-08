@@ -15,6 +15,14 @@ object PersonGenerator {
     val END_DATED_ADDRESS =
         generatePersonAddress(DEFAULT_PERSON, DEFAULT_ADDRESS_STATUS, endDate = LocalDate.now().minusDays(1))
 
+    val EXCLUSION = generatePerson("E123456", exclusionMessage = "There is an exclusion on this person")
+    val RESTRICTION = generatePerson("R123456", restrictionMessage = "There is a restriction on this person")
+    val RESTRICTION_EXCLUSION = generatePerson(
+        "B123456",
+        exclusionMessage = "You are excluded from viewing this case",
+        restrictionMessage = "You are restricted from viewing this case"
+    )
+
     fun generatePerson(
         crn: String,
         id: Long = IdGenerator.getAndIncrement(),
@@ -25,7 +33,9 @@ object PersonGenerator {
         addresses: List<PersonAddress> = listOf(),
         dateOfBirth: LocalDate = LocalDate.now().minusYears(30L),
         prisonerNumber: String? = "1234AB",
-        softDeleted: Boolean = false
+        softDeleted: Boolean = false,
+        exclusionMessage: String? = null,
+        restrictionMessage: String? = null,
     ) = Person(
         crn = crn,
         id = id,
@@ -37,6 +47,8 @@ object PersonGenerator {
         dateOfBirth = dateOfBirth,
         prisonerNumber = prisonerNumber,
         softDeleted = softDeleted,
+        exclusionMessage = exclusionMessage,
+        restrictionMessage = restrictionMessage
     )
 
     fun generatePersonAddress(
