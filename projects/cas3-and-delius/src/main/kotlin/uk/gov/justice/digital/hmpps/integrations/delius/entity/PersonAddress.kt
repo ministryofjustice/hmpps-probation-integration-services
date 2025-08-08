@@ -26,7 +26,7 @@ class PersonAddress(
     val personId: Long,
     @ManyToOne
     @JoinColumn(name = "address_type_id")
-    val type: ReferenceData,
+    val type: ReferenceData?,
     @ManyToOne
     @JoinColumn(name = "address_status_id")
     var status: ReferenceData,
@@ -74,7 +74,7 @@ interface PersonAddressRepository : JpaRepository<PersonAddress, Long> {
         """
         select pa from PersonAddress pa
         join fetch pa.status
-        join fetch pa.type
+        left join fetch pa.type
         where pa.personId = :personId 
         and pa.softDeleted = false  
         and pa.endDate is null 

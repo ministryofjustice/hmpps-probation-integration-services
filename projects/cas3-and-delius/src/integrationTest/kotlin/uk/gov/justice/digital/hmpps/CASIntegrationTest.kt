@@ -181,7 +181,7 @@ internal class CASIntegrationTest {
         val address = addressRepository.findMainAddress(person!!.id)
 
         // And the address is updated (and whitespace is trimmed from address fields)
-        assertThat(address!!.type.code, equalTo("A17"))
+        assertThat(address!!.type!!.code, equalTo("A17"))
         assertThat(address.town, equalTo("Bimbly Town"))
         assertThat(address.streetName, equalTo("12 Church Street"))
         assertThat(address.county, equalTo("Bibbinghammcshireshire"))
