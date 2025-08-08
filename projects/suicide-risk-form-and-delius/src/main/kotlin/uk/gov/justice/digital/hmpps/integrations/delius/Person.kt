@@ -44,6 +44,9 @@ class Person(
     @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean = false,
 
+    val exclusionMessage: String?,
+    val restrictionMessage: String?,
+
     )
 
 fun Person.name() = Name(firstName, listOfNotNull(secondName, thirdName).joinToString(" "), surname)
