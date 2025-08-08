@@ -41,6 +41,5 @@ class DataLoader(
         entityManager.persist(LimitedAccessGenerator.EXCLUSION)
         entityManager.persist(LimitedAccessGenerator.BOTH_RESTRICTION)
         entityManager.persist(LimitedAccessGenerator.BOTH_EXCLUSION)
-
     }
 }
