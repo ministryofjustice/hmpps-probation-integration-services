@@ -14,6 +14,29 @@ servers:
 security:
 - hmpps-auth-token: []
 paths:
+  /users/{username}/access/{crn}:
+    get:
+      tags:
+      - user-access-controller
+      operationId: checkAccess
+      parameters:
+      - name: username
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: crn
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CaseAccess"
   /docs/asyncapi:
     get:
       tags:
@@ -46,6 +69,23 @@ paths:
                 $ref: "#/components/schemas/BasicDetails"
 components:
   schemas:
+    CaseAccess:
+      type: object
+      properties:
+        crn:
+          type: string
+        userExcluded:
+          type: boolean
+        userRestricted:
+          type: boolean
+        exclusionMessage:
+          type: string
+        restrictionMessage:
+          type: string
+      required:
+      - crn
+      - userExcluded
+      - userRestricted
     Address:
       type: object
       properties:
