@@ -40,7 +40,10 @@ internal class ScheduleIntegrationTest {
 
         assertThat(res.personSummary.crn, equalTo(person.crn))
         assertThat(res.personSchedule.appointments[0].id, equalTo(ContactGenerator.FIRST_APPT_CONTACT.toActivity().id))
-        assertThat(res.personSchedule.appointments[0].type, equalTo(ContactGenerator.FIRST_APPT_CONTACT.toActivity().type))
+        assertThat(
+            res.personSchedule.appointments[0].type,
+            equalTo(ContactGenerator.FIRST_APPT_CONTACT.toActivity().type)
+        )
         assertThat(
             res.personSchedule.appointments[0].location?.officeName,
             equalTo(ContactGenerator.FIRST_APPT_CONTACT.toActivity().location?.officeName)
@@ -56,7 +59,10 @@ internal class ScheduleIntegrationTest {
             .andExpect(status().isOk)
             .andReturn().response.contentAsJson<Schedule>()
         assertThat(res.personSummary.crn, equalTo(person.crn))
-        assertThat(res.personSchedule.appointments[3].id, equalTo(ContactGenerator.PREVIOUS_APPT_CONTACT_ABSENT.toActivity().id))
+        assertThat(
+            res.personSchedule.appointments[3].id,
+            equalTo(ContactGenerator.PREVIOUS_APPT_CONTACT_ABSENT.toActivity().id)
+        )
         assertThat(
             res.personSchedule.appointments[3].type,
             equalTo(ContactGenerator.PREVIOUS_APPT_CONTACT_ABSENT.toActivity().type)
