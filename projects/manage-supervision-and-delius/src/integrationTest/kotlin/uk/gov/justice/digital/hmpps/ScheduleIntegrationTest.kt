@@ -47,8 +47,14 @@ internal class ScheduleIntegrationTest {
         assertThat(res.personSchedule.page, equalTo(0))
         assertThat(res.personSchedule.totalPages, equalTo(totalPages))
         assertThat(res.personSchedule.appointments.size, equalTo(resultSize))
-        assertThat(res.personSchedule.appointments[element].id, equalTo(ContactGenerator.FIRST_APPT_CONTACT.toActivity().id))
-        assertThat(res.personSchedule.appointments[element].type, equalTo(ContactGenerator.FIRST_APPT_CONTACT.toActivity().type))
+        assertThat(
+            res.personSchedule.appointments[element].id,
+            equalTo(ContactGenerator.FIRST_APPT_CONTACT.toActivity().id)
+        )
+        assertThat(
+            res.personSchedule.appointments[element].type,
+            equalTo(ContactGenerator.FIRST_APPT_CONTACT.toActivity().type)
+        )
         assertThat(
             res.personSchedule.appointments[element].location?.officeName,
             equalTo(ContactGenerator.FIRST_APPT_CONTACT.toActivity().location?.officeName)
@@ -61,7 +67,13 @@ internal class ScheduleIntegrationTest {
         "previous,10,3,5,1",
         "previous?size=4,4,3,4,2"
     )
-    fun `previous schedule is returned`(uri: String, requestSize: Int, element: Int, totalResults: Int, totalPages: Int) {
+    fun `previous schedule is returned`(
+        uri: String,
+        requestSize: Int,
+        element: Int,
+        totalResults: Int,
+        totalPages: Int
+    ) {
         val person = OVERVIEW
         val res = mockMvc
             .perform(get("/schedule/${person.crn}/$uri").withToken())
@@ -72,7 +84,10 @@ internal class ScheduleIntegrationTest {
         assertThat(res.personSchedule.size, equalTo(requestSize))
         assertThat(res.personSchedule.appointments.size, equalTo(totalResults))
         assertThat(res.personSchedule.totalPages, equalTo(totalPages))
-        assertThat(res.personSchedule.appointments[element].id, equalTo(ContactGenerator.PREVIOUS_APPT_CONTACT_ABSENT.toActivity().id))
+        assertThat(
+            res.personSchedule.appointments[element].id,
+            equalTo(ContactGenerator.PREVIOUS_APPT_CONTACT_ABSENT.toActivity().id)
+        )
         assertThat(
             res.personSchedule.appointments[element].type,
             equalTo(ContactGenerator.PREVIOUS_APPT_CONTACT_ABSENT.toActivity().type)

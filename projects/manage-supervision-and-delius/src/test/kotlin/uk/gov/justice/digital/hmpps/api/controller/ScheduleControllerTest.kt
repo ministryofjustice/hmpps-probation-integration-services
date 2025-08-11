@@ -80,9 +80,10 @@ internal class ScheduleControllerTest {
                 1,
                 2,
                 1,
-            appointments = listOfNotNull(
-                ContactGenerator.PREVIOUS_APPT_CONTACT.toActivity(),
-                ContactGenerator.PREVIOUS_APPT_CONTACT_ABSENT.toActivity())
+                appointments = listOfNotNull(
+                    ContactGenerator.PREVIOUS_APPT_CONTACT.toActivity(),
+                    ContactGenerator.PREVIOUS_APPT_CONTACT_ABSENT.toActivity()
+                )
             )
         )
         whenever(scheduleService.getPersonPreviousSchedule(crn, pageable)).thenReturn(expectedResponse)
@@ -91,7 +92,8 @@ internal class ScheduleControllerTest {
             page = 0,
             size = 10,
             sortBy = "date",
-            ascending = false)
+            ascending = false
+        )
         assertThat(res, equalTo(expectedResponse))
     }
 
