@@ -21,7 +21,7 @@ class AddressService(
         personRepository.findForUpdate(person.id)
         val currentMain = personAddressRepository.findMainAddress(person.id)
         return currentMain
-            ?.takeIf { it.type.code == AddressTypeCode.CAS3.code }
+            ?.takeIf { it.type?.code == AddressTypeCode.CAS3.code }
             ?.apply {
                 val addressLines = details.premises.addressLines
                 buildingName = addressLines.buildingName?.trim()
@@ -48,7 +48,7 @@ class AddressService(
         personRepository.findForUpdate(person.id)
         val currentMain = personAddressRepository.findMainAddress(person.id)
         return currentMain?.also {
-            if (currentMain.type.code == AddressTypeCode.CAS3.code && currentMain.startDate <= endDate) {
+            if (currentMain.type?.code == AddressTypeCode.CAS3.code && currentMain.startDate <= endDate) {
                 val previousStatus = referenceDataRepository.previousAddressStatus()
                 currentMain.status = previousStatus
                 currentMain.endDate = endDate

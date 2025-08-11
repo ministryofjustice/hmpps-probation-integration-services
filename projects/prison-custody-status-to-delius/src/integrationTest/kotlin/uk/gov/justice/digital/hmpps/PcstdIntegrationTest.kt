@@ -18,6 +18,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.CustodyEventTypeCode
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.InstitutionCode
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.ReleaseTypeCode
+import uk.gov.justice.digital.hmpps.integrations.prison.Booking
 import uk.gov.justice.digital.hmpps.test.CustomMatchers.isCloseTo
 import java.time.ZonedDateTime
 
@@ -27,7 +28,8 @@ class PcstdIntegrationTest : PcstdIntegrationTestBase() {
     @Test
     fun `release a prisoner`() {
         val notification = NotificationGenerator.PRISONER_RELEASED
-        withBooking(BookingGenerator.RELEASED, BookingGenerator.RELEASED.lastMovement(notification.message.occurredAt))
+        val booking = BookingGenerator.RELEASED
+        withBooking(booking, booking.lastMovement(notification.message.occurredAt))
         val nomsNumber = notification.nomsId()
         assertTrue(getCustody(nomsNumber).isInCustody())
 
@@ -36,7 +38,7 @@ class PcstdIntegrationTest : PcstdIntegrationTestBase() {
         val custody = getCustody(nomsNumber)
         assertFalse(custody.isInCustody())
 
-        verifyRelease(custody, notification.message.occurredAt, ReleaseTypeCode.ADULT_LICENCE)
+        verifyRelease(custody, notification.message.occurredAt, ReleaseTypeCode.ADULT_LICENCE, booking.movementReason!!)
 
         verifyCustodyHistory(
             custody,
@@ -65,7 +67,8 @@ class PcstdIntegrationTest : PcstdIntegrationTestBase() {
     @Test
     fun `recall a prisoner`() {
         val notification = NotificationGenerator.PRISONER_RECEIVED
-        withBooking(BookingGenerator.RECEIVED, BookingGenerator.RECEIVED.lastMovement(notification.message.occurredAt))
+        val booking = BookingGenerator.RECEIVED
+        withBooking(booking, booking.lastMovement(notification.message.occurredAt))
         val nomsNumber = notification.nomsId()
         assertFalse(getCustody(nomsNumber).isInCustody())
 
@@ -78,7 +81,12 @@ class PcstdIntegrationTest : PcstdIntegrationTestBase() {
         assertThat(custody.institution?.code, equalTo(InstitutionGenerator.DEFAULT.code))
         assertThat(custody.locationChangeDate!!, equalTo(notification.message.occurredAt.toLocalDate()))
 
-        verifyRecall(custody, notification.message.occurredAt, RecallReason.Code.NOTIFIED_BY_CUSTODIAL_ESTABLISHMENT)
+        verifyRecall(
+            custody,
+            notification.message.occurredAt,
+            RecallReason.Code.NOTIFIED_BY_CUSTODIAL_ESTABLISHMENT,
+            booking.movementReason!!
+        )
 
         verifyCustodyHistory(
             custody,
@@ -270,9 +278,10 @@ class PcstdIntegrationTest : PcstdIntegrationTestBase() {
     @Test
     fun `hospital release when released on licence in delius`() {
         val notification = NotificationGenerator.PRISONER_HOSPITAL_RELEASED
+        val booking = BookingGenerator.HOSPITAL_RELEASE
         withBooking(
-            BookingGenerator.HOSPITAL_RELEASE,
-            BookingGenerator.HOSPITAL_RELEASE.lastMovement(notification.message.occurredAt)
+            booking,
+            booking.lastMovement(notification.message.occurredAt)
         )
         val nomsNumber = notification.nomsId()
         assertFalse(getCustody(nomsNumber).isInCustody())
@@ -286,7 +295,12 @@ class PcstdIntegrationTest : PcstdIntegrationTestBase() {
         assertThat(custody.status.code, equalTo(CustodialStatusCode.RECALLED.code))
         assertThat(custody.statusChangeDate, equalTo(notification.message.occurredAt.toLocalDate()))
 
-        verifyRecall(custody, notification.message.occurredAt, RecallReason.Code.TRANSFER_TO_SECURE_HOSPITAL)
+        verifyRecall(
+            custody,
+            notification.message.occurredAt,
+            RecallReason.Code.TRANSFER_TO_SECURE_HOSPITAL,
+            booking.movementReason!!
+        )
 
         verifyCustodyHistory(
             custody,
@@ -359,9 +373,10 @@ class PcstdIntegrationTest : PcstdIntegrationTestBase() {
     @Test
     fun `received into prison when on rotl`() {
         val notification = NotificationGenerator.PRISONER_ROTL_RETURN
+        val booking = BookingGenerator.ROTL_RETURN
         withBooking(
-            BookingGenerator.ROTL_RETURN,
-            BookingGenerator.ROTL_RETURN.lastMovement(notification.message.occurredAt)
+            booking,
+            booking.lastMovement(notification.message.occurredAt)
         )
         val nomsNumber = notification.nomsId()
         assertFalse(getCustody(nomsNumber).isInCustody())
@@ -373,7 +388,12 @@ class PcstdIntegrationTest : PcstdIntegrationTestBase() {
         assertThat(custody.status.code, equalTo(CustodialStatusCode.IN_CUSTODY.code))
         assertThat(custody.institution?.code, equalTo(InstitutionGenerator.DEFAULT.code))
 
-        verifyRecall(custody, notification.message.occurredAt, RecallReason.Code.END_OF_TEMPORARY_LICENCE)
+        verifyRecall(
+            custody,
+            notification.message.occurredAt,
+            RecallReason.Code.END_OF_TEMPORARY_LICENCE,
+            booking.movementReason!!
+        )
 
         verifyCustodyHistory(
             custody,
@@ -399,9 +419,10 @@ class PcstdIntegrationTest : PcstdIntegrationTestBase() {
     @Test
     fun `IRC release when released on licence in delius`() {
         val notification = NotificationGenerator.PRISONER_IRC_RELEASED
+        val booking = BookingGenerator.IRC_RELEASED
         withBooking(
-            BookingGenerator.IRC_RELEASED,
-            BookingGenerator.IRC_RELEASED.lastMovement(notification.message.occurredAt)
+            booking,
+            booking.lastMovement(notification.message.occurredAt)
         )
         val nomsNumber = notification.nomsId()
         assertFalse(getCustody(nomsNumber).isInCustody())
@@ -413,7 +434,12 @@ class PcstdIntegrationTest : PcstdIntegrationTestBase() {
         assertThat(custody.institution?.code, equalTo(InstitutionCode.OTHER_IRC.code))
         assertThat(custody.status.code, equalTo(CustodialStatusCode.RECALLED.code))
 
-        verifyRecall(custody, notification.message.occurredAt, RecallReason.Code.TRANSFER_TO_IRC)
+        verifyRecall(
+            custody,
+            notification.message.occurredAt,
+            RecallReason.Code.TRANSFER_TO_IRC,
+            booking.movementReason!!
+        )
 
         verifyCustodyHistory(
             custody,
@@ -482,9 +508,10 @@ class PcstdIntegrationTest : PcstdIntegrationTestBase() {
     @Test
     fun `release a ecsl prisoner with feature active`() {
         val notification = NotificationGenerator.PRISONER_RELEASED_ECSL_ACTIVE
+        val booking = BookingGenerator.ECSL_ACTIVE
         withBooking(
-            BookingGenerator.ECSL_ACTIVE,
-            BookingGenerator.ECSL_ACTIVE.lastMovement(notification.message.occurredAt)
+            booking,
+            booking.lastMovement(notification.message.occurredAt)
         )
         val nomsNumber = notification.nomsId()
         assertTrue(getCustody(nomsNumber).isInCustody())
@@ -494,7 +521,12 @@ class PcstdIntegrationTest : PcstdIntegrationTestBase() {
         val custody = getCustody(nomsNumber)
         assertFalse(custody.isInCustody())
 
-        verifyRelease(custody, notification.message.occurredAt, ReleaseTypeCode.END_CUSTODY_SUPERVISED_LICENCE)
+        verifyRelease(
+            custody,
+            notification.message.occurredAt,
+            ReleaseTypeCode.END_CUSTODY_SUPERVISED_LICENCE,
+            booking.movementReason!!
+        )
 
         verifyCustodyHistory(
             custody,
@@ -523,9 +555,10 @@ class PcstdIntegrationTest : PcstdIntegrationTestBase() {
     @Test
     fun `prisoner absconded - unlawfully at large`() {
         val notification = NotificationGenerator.PRISONER_ABSCONDED
+        val booking = BookingGenerator.ABSCONDED
         withBooking(
-            BookingGenerator.ABSCONDED,
-            BookingGenerator.ABSCONDED.lastMovement(notification.message.occurredAt)
+            booking,
+            booking.lastMovement(notification.message.occurredAt)
         )
         val nomsNumber = notification.nomsId()
         assertFalse(getCustody(nomsNumber).isInCustody())
@@ -539,7 +572,12 @@ class PcstdIntegrationTest : PcstdIntegrationTestBase() {
         assertThat(custody.status.code, equalTo(CustodialStatusCode.RECALLED.code))
         assertThat(custody.statusChangeDate, equalTo(notification.message.occurredAt.toLocalDate()))
 
-        verifyRecall(custody, notification.message.occurredAt, RecallReason.Code.NOTIFIED_BY_CUSTODIAL_ESTABLISHMENT)
+        verifyRecall(
+            custody,
+            notification.message.occurredAt,
+            RecallReason.Code.NOTIFIED_BY_CUSTODIAL_ESTABLISHMENT,
+            booking.movementReason!!
+        )
 
         verifyCustodyHistory(
             custody,
@@ -718,9 +756,10 @@ class PcstdIntegrationTest : PcstdIntegrationTestBase() {
         whenever(featureFlags.enabled("hdc-release-type")).thenReturn(true)
 
         val notification = NotificationGenerator.PRISONER_RELEASED_HDC
+        val booking = BookingGenerator.RELEASE_HDC
         withBooking(
-            BookingGenerator.RELEASE_HDC,
-            BookingGenerator.RELEASE_HDC.lastMovement(notification.message.occurredAt)
+            booking,
+            booking.lastMovement(notification.message.occurredAt)
         )
         val nomsNumber = notification.nomsId()
         assertTrue(getCustody(nomsNumber).isInCustody())
@@ -730,7 +769,12 @@ class PcstdIntegrationTest : PcstdIntegrationTestBase() {
         val custody = getCustody(nomsNumber)
         assertFalse(custody.isInCustody())
 
-        verifyRelease(custody, notification.message.occurredAt, ReleaseTypeCode.HDC_ADULT_LICENCE)
+        verifyRelease(
+            custody,
+            notification.message.occurredAt,
+            ReleaseTypeCode.HDC_ADULT_LICENCE,
+            booking.movementReason!!
+        )
 
         verifyCustodyHistory(
             custody,

@@ -31,7 +31,7 @@ class AddressService(
 
     fun endMainAddressOnDeparture(person: Person, endDate: LocalDate): PersonAddress? {
         return personAddressRepository.findMainAddress(person.id)
-            ?.takeIf { it.type.code == AddressTypeCode.APPROVED_PREMISES.code && it.startDate <= endDate }
+            ?.takeIf { it.type?.code == AddressTypeCode.APPROVED_PREMISES.code && it.startDate <= endDate }
             ?.also { it.endMainAddress(endDate) }
     }
 

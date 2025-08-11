@@ -49,7 +49,11 @@ internal class ScheduleServiceTest {
         val crn = "X000005"
         val expectedContacts = listOf(ContactGenerator.NEXT_APPT_CONTACT, ContactGenerator.FIRST_APPT_CONTACT)
         whenever(personRepository.findSummary(crn)).thenReturn(personSummary)
-        whenever(contactRepository.findUpComingAppointments(any(), any(), any(), any())).thenReturn(PageImpl(expectedContacts))
+        whenever(contactRepository.findUpComingAppointments(any(), any(), any(), any())).thenReturn(
+            PageImpl(
+                expectedContacts
+            )
+        )
         val res = service.getPersonUpcomingSchedule(crn, PageRequest.of(0, 10))
         assertThat(
             res.personSummary, equalTo(PERSONAL_DETAILS.toSummary())
@@ -76,8 +80,15 @@ internal class ScheduleServiceTest {
         val expectedContacts =
             listOf(ContactGenerator.PREVIOUS_APPT_CONTACT_ABSENT, ContactGenerator.PREVIOUS_APPT_CONTACT)
         whenever(personRepository.findSummary(crn)).thenReturn(personSummary)
-        whenever(contactRepository.findPageablePreviousAppointments(any(), any(), any(), any())).thenReturn(PageImpl(expectedContacts))
-        val res = service.getPersonPreviousSchedule(crn, PageRequest.of(0, 10, Sort.by(Sort.Direction.DESC, "contact_date", "contact_start_time")))
+        whenever(contactRepository.findPageablePreviousAppointments(any(), any(), any(), any())).thenReturn(
+            PageImpl(
+                expectedContacts
+            )
+        )
+        val res = service.getPersonPreviousSchedule(
+            crn,
+            PageRequest.of(0, 10, Sort.by(Sort.Direction.DESC, "contact_date", "contact_start_time"))
+        )
         assertThat(
             res.personSummary, equalTo(PERSONAL_DETAILS.toSummary())
         )

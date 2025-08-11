@@ -70,7 +70,8 @@ class ReleaseAction(
                     probationAreaId = hostRepository.findLeadHostProviderIdByInstitutionId(
                         institution.id.institutionId,
                         prisonerMovement.occurredAt
-                    )
+                    ),
+                    reasonCode = prisonerMovement.reason
                 )
             )
             val event = custody.disposal.event
