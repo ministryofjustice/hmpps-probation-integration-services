@@ -15,7 +15,7 @@ import uk.gov.justice.digital.hmpps.api.model.Name
 import uk.gov.justice.digital.hmpps.api.model.PersonSummary
 import uk.gov.justice.digital.hmpps.api.model.schedule.PersonAppointment
 import uk.gov.justice.digital.hmpps.api.model.schedule.Schedule
-import uk.gov.justice.digital.hmpps.api.model.schedule.UserSchedule
+import uk.gov.justice.digital.hmpps.api.model.schedule.PersonSchedule
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator
 import uk.gov.justice.digital.hmpps.service.ScheduleService
 import uk.gov.justice.digital.hmpps.service.toActivity
@@ -44,10 +44,10 @@ internal class ScheduleControllerTest {
     @Test
     fun `calls get get upcoming function `() {
         val crn = "X000005"
-        val pageable = PageRequest.of(0, 10, Sort.by(Sort.Direction.ASC, "contact_date", "contact_start_time"))
+        val pageable = PageRequest.of(0, 10, Sort.by(Sort.Direction.DESC, "contact_date", "contact_start_time"))
         val expectedResponse = Schedule(
             personSummary = personSummary,
-            UserSchedule(
+            PersonSchedule(
                 1,
                 1,
                 2,
@@ -62,7 +62,9 @@ internal class ScheduleControllerTest {
         val res = controller.getUpcomingSchedule(
             crn,
             page = 0,
-            size = 10
+            size = 10,
+            sortBy = "date",
+            ascending = false
         )
         assertThat(res, equalTo(expectedResponse))
     }
@@ -73,7 +75,7 @@ internal class ScheduleControllerTest {
         val pageable = PageRequest.of(0, 10, Sort.by(Sort.Direction.DESC, "contact_date", "contact_start_time"))
         val expectedResponse = Schedule(
             personSummary = personSummary,
-            UserSchedule(
+            PersonSchedule(
                 1,
                 1,
                 2,
@@ -87,7 +89,9 @@ internal class ScheduleControllerTest {
         val res = controller.getPreviousSchedule(
             crn,
             page = 0,
-            size = 10)
+            size = 10,
+            sortBy = "date",
+            ascending = false)
         assertThat(res, equalTo(expectedResponse))
     }
 

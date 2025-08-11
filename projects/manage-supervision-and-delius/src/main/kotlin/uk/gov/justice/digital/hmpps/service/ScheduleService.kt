@@ -5,11 +5,12 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.api.model.Name
 import uk.gov.justice.digital.hmpps.api.model.activity.Activity
+import uk.gov.justice.digital.hmpps.api.model.appointment.CreateAppointment
 import uk.gov.justice.digital.hmpps.api.model.personalDetails.Document
 import uk.gov.justice.digital.hmpps.api.model.schedule.OfficeAddress
 import uk.gov.justice.digital.hmpps.api.model.schedule.PersonAppointment
 import uk.gov.justice.digital.hmpps.api.model.schedule.Schedule
-import uk.gov.justice.digital.hmpps.api.model.schedule.UserSchedule
+import uk.gov.justice.digital.hmpps.api.model.schedule.PersonSchedule
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.ContactDocument
 
@@ -35,7 +36,7 @@ class ScheduleService(
         val appointments = contactRepository.getUpComingAppointments(summary.id, pageable)
         return Schedule(
             personSummary = summary.toPersonSummary(),
-            userSchedule = UserSchedule(
+            personSchedule = PersonSchedule(
                 pageable.pageSize,
                 pageable.pageNumber,
                 appointments.totalElements.toInt(),
@@ -52,7 +53,7 @@ class ScheduleService(
         val appointments = contactRepository.getPageablePreviousAppointments(summary.id, pageable)
         return Schedule(
             personSummary = summary.toPersonSummary(),
-            userSchedule = UserSchedule(
+            personSchedule = PersonSchedule(
                 pageable.pageSize,
                 pageable.pageNumber,
                 appointments.totalElements.toInt(),
@@ -110,6 +111,7 @@ fun Contact.toActivityOverview() = Activity(
     isCommunication = isCommunication(),
     description = description,
     outcome = outcome?.description,
+    deliusManaged = CreateAppointment.Type.entries.any { it.code == type.code }
 )
 
 fun Contact.toActivity(noteId: Int? = null) = Activity(
@@ -158,6 +160,7 @@ fun Contact.toActivity(noteId: Int? = null) = Activity(
     eventNumber = event?.eventNumber,
     description = description,
     outcome = outcome?.description,
+    deliusManaged = CreateAppointment.Type.entries.any { it.code == type.code }
 )
 
 fun ContactDocument.toDocument() = Document(id = alfrescoId, name = name, lastUpdated = lastUpdated)

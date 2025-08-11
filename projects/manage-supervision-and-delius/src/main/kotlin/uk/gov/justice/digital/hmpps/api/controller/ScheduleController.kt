@@ -24,15 +24,19 @@ class ScheduleController(private val scheduleService: ScheduleService) {
         @PathVariable crn: String,
         @RequestParam(required = false, defaultValue = "0") page: Int,
         @RequestParam(required = false, defaultValue = "10") size: Int,
-    ) = scheduleService.getPersonUpcomingSchedule(crn, PageRequest.of(page, size, Sort.by(Sort.Direction.ASC, "contact_date", "contact_start_time")))
+        @RequestParam(required = false, defaultValue = "date") sortBy: String,
+        @RequestParam(required = false, defaultValue = "true") ascending: Boolean
+    ) = scheduleService.getPersonUpcomingSchedule(crn, PageRequest.of(page, size, sort(sortBy, ascending)))
 
     @GetMapping("/previous")
     @Operation(summary = "Gets previous schedule information’ ")
     fun getPreviousSchedule(
         @PathVariable crn: String,
         @RequestParam(required = false, defaultValue = "0") page: Int,
-        @RequestParam(required = false, defaultValue = "10") size: Int
-    ) = scheduleService.getPersonPreviousSchedule(crn, PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "contact_date", "contact_start_time")))
+        @RequestParam(required = false, defaultValue = "10") size: Int,
+        @RequestParam(required = false, defaultValue = "date") sortBy: String,
+        @RequestParam(required = false, defaultValue = "false") ascending: Boolean
+    ) = scheduleService.getPersonPreviousSchedule(crn, PageRequest.of(page, size, sort(sortBy, ascending)))
 
     @GetMapping("/appointment/{contactId}")
     @Operation(summary = "Gets individual appointment information’ ")
@@ -43,4 +47,13 @@ class ScheduleController(private val scheduleService: ScheduleService) {
     @Operation(summary = "Gets individual appointment information’ ")
     fun getContactNote(@PathVariable crn: String, @PathVariable contactId: Long, @PathVariable noteId: Int) =
         scheduleService.getPersonAppointment(crn, contactId, noteId)
+}
+
+private fun sort(sortString: String, ascending: Boolean): Sort {
+    val direction = if (ascending) Sort.Direction.ASC else Sort.Direction.DESC
+    return when (sortString) {
+        "date" -> Sort.by(direction, "contact_date", "contact_start_time")
+        "appointment" -> Sort.by(direction, "description")
+        else -> Sort.by(direction, "contact_date", "contact_start_time")
+    }
 }

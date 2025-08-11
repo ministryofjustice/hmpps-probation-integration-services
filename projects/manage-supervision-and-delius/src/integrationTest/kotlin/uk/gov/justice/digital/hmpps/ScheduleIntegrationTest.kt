@@ -38,13 +38,17 @@ internal class ScheduleIntegrationTest {
             .andReturn().response.contentAsJson<Schedule>()
 
         assertThat(res.personSummary.crn, equalTo(person.crn))
-        assertThat(res.userSchedule.appointments[0].id, equalTo(ContactGenerator.FIRST_APPT_CONTACT.toActivity().id))
-        assertThat(res.userSchedule.appointments[0].type, equalTo(ContactGenerator.FIRST_APPT_CONTACT.toActivity().type))
+        assertThat(res.personSchedule.page, equalTo(0))
+        assertThat(res.personSchedule.size, equalTo(10))
+        assertThat(res.personSchedule.totalResults, equalTo(2))
+        assertThat(res.personSchedule.totalPages, equalTo(1))
+        assertThat(res.personSchedule.appointments[0].id, equalTo(ContactGenerator.FIRST_APPT_CONTACT.toActivity().id))
+        assertThat(res.personSchedule.appointments[0].type, equalTo(ContactGenerator.FIRST_APPT_CONTACT.toActivity().type))
         assertThat(
-            res.userSchedule.appointments[0].location?.officeName,
+            res.personSchedule.appointments[0].location?.officeName,
             equalTo(ContactGenerator.FIRST_APPT_CONTACT.toActivity().location?.officeName)
         )
-        assertThat(res.userSchedule.appointments[0].location?.postcode, equalTo("H34 7TH"))
+        assertThat(res.personSchedule.appointments[0].location?.postcode, equalTo("H34 7TH"))
     }
 
     @Test
@@ -56,16 +60,20 @@ internal class ScheduleIntegrationTest {
             .andExpect(status().isOk)
             .andReturn().response.contentAsJson<Schedule>()
         assertThat(res.personSummary.crn, equalTo(person.crn))
-        assertThat(res.userSchedule.appointments[1].id, equalTo(ContactGenerator.PREVIOUS_APPT_CONTACT_ABSENT.toActivity().id))
+        assertThat(res.personSchedule.page, equalTo(0))
+        assertThat(res.personSchedule.size, equalTo(10))
+        assertThat(res.personSchedule.totalResults, equalTo(5 ))
+        assertThat(res.personSchedule.totalPages, equalTo(1))
+        assertThat(res.personSchedule.appointments[3].id, equalTo(ContactGenerator.PREVIOUS_APPT_CONTACT_ABSENT.toActivity().id))
         assertThat(
-            res.userSchedule.appointments[1].type,
+            res.personSchedule.appointments[3].type,
             equalTo(ContactGenerator.PREVIOUS_APPT_CONTACT_ABSENT.toActivity().type)
         )
         assertThat(
-            res.userSchedule.appointments[1].location?.officeName,
+            res.personSchedule.appointments[3].location?.officeName,
             equalTo(ContactGenerator.PREVIOUS_APPT_CONTACT_ABSENT.toActivity().location?.officeName)
         )
-        assertThat(res.userSchedule.appointments[1].location?.postcode, equalTo("H34 7TH"))
+        assertThat(res.personSchedule.appointments[3].location?.postcode, equalTo("H34 7TH"))
     }
 
     @Test

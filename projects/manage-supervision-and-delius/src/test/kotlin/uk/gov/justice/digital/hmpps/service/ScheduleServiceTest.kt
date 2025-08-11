@@ -54,7 +54,7 @@ internal class ScheduleServiceTest {
         assertThat(
             res.personSummary, equalTo(PERSONAL_DETAILS.toSummary())
         )
-        assertThat(res.userSchedule.appointments, equalTo(expectedContacts.map { it.toActivity() }))
+        assertThat(res.personSchedule.appointments, equalTo(expectedContacts.map { it.toActivity() }))
     }
 
     @Test
@@ -81,6 +81,6 @@ internal class ScheduleServiceTest {
         assertThat(
             res.personSummary, equalTo(PERSONAL_DETAILS.toSummary())
         )
-        assertThat(res.userSchedule.appointments, equalTo(expectedContacts.map { it.toActivity() }))
+        assertThat(res.personSchedule.appointments, equalTo(expectedContacts.map { it.toActivity() }))
     }
 }
