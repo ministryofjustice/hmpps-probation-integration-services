@@ -3,6 +3,8 @@ package uk.gov.justice.digital.hmpps
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.CsvSource
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
@@ -28,52 +30,58 @@ internal class ScheduleIntegrationTest {
     @Autowired
     lateinit var mockMvc: MockMvc
 
-    @Test
-    fun `upcoming schedule is returned`() {
-
+    @ParameterizedTest
+    @CsvSource(
+        "upcoming,2,0,1",
+        "upcoming?size=1,1,0,2",
+        "upcoming?sortBy=appointment&ascending=false,2,1,1",
+    )
+    fun `upcoming schedule is returned`(uri: String, resultSize: Int, element: Int, totalPages: Int) {
         val person = OVERVIEW
         val res = mockMvc
-            .perform(get("/schedule/${person.crn}/upcoming").withToken())
+            .perform(get("/schedule/${person.crn}/$uri").withToken())
             .andExpect(status().isOk)
             .andReturn().response.contentAsJson<Schedule>()
 
         assertThat(res.personSummary.crn, equalTo(person.crn))
         assertThat(res.personSchedule.page, equalTo(0))
-        assertThat(res.personSchedule.size, equalTo(10))
-        assertThat(res.personSchedule.totalResults, equalTo(2))
-        assertThat(res.personSchedule.totalPages, equalTo(1))
-        assertThat(res.personSchedule.appointments[0].id, equalTo(ContactGenerator.FIRST_APPT_CONTACT.toActivity().id))
-        assertThat(res.personSchedule.appointments[0].type, equalTo(ContactGenerator.FIRST_APPT_CONTACT.toActivity().type))
+        assertThat(res.personSchedule.totalPages, equalTo(totalPages))
+        assertThat(res.personSchedule.appointments.size, equalTo(resultSize))
+        assertThat(res.personSchedule.appointments[element].id, equalTo(ContactGenerator.FIRST_APPT_CONTACT.toActivity().id))
+        assertThat(res.personSchedule.appointments[element].type, equalTo(ContactGenerator.FIRST_APPT_CONTACT.toActivity().type))
         assertThat(
-            res.personSchedule.appointments[0].location?.officeName,
+            res.personSchedule.appointments[element].location?.officeName,
             equalTo(ContactGenerator.FIRST_APPT_CONTACT.toActivity().location?.officeName)
         )
-        assertThat(res.personSchedule.appointments[0].location?.postcode, equalTo("H34 7TH"))
+        assertThat(res.personSchedule.appointments[element].location?.postcode, equalTo("H34 7TH"))
     }
 
-    @Test
-    fun `previous schedule is returned`() {
-
+    @ParameterizedTest
+    @CsvSource(
+        "previous,10,3,5,1",
+        "previous?size=4,4,3,4,2"
+    )
+    fun `previous schedule is returned`(uri: String, requestSize: Int, element: Int, totalResults: Int, totalPages: Int) {
         val person = OVERVIEW
         val res = mockMvc
-            .perform(get("/schedule/${person.crn}/previous").withToken())
+            .perform(get("/schedule/${person.crn}/$uri").withToken())
             .andExpect(status().isOk)
             .andReturn().response.contentAsJson<Schedule>()
         assertThat(res.personSummary.crn, equalTo(person.crn))
         assertThat(res.personSchedule.page, equalTo(0))
-        assertThat(res.personSchedule.size, equalTo(10))
-        assertThat(res.personSchedule.totalResults, equalTo(5 ))
-        assertThat(res.personSchedule.totalPages, equalTo(1))
-        assertThat(res.personSchedule.appointments[3].id, equalTo(ContactGenerator.PREVIOUS_APPT_CONTACT_ABSENT.toActivity().id))
+        assertThat(res.personSchedule.size, equalTo(requestSize))
+        assertThat(res.personSchedule.appointments.size, equalTo(totalResults))
+        assertThat(res.personSchedule.totalPages, equalTo(totalPages))
+        assertThat(res.personSchedule.appointments[element].id, equalTo(ContactGenerator.PREVIOUS_APPT_CONTACT_ABSENT.toActivity().id))
         assertThat(
-            res.personSchedule.appointments[3].type,
+            res.personSchedule.appointments[element].type,
             equalTo(ContactGenerator.PREVIOUS_APPT_CONTACT_ABSENT.toActivity().type)
         )
         assertThat(
-            res.personSchedule.appointments[3].location?.officeName,
+            res.personSchedule.appointments[element].location?.officeName,
             equalTo(ContactGenerator.PREVIOUS_APPT_CONTACT_ABSENT.toActivity().location?.officeName)
         )
-        assertThat(res.personSchedule.appointments[3].location?.postcode, equalTo("H34 7TH"))
+        assertThat(res.personSchedule.appointments[element].location?.postcode, equalTo("H34 7TH"))
     }
 
     @Test
