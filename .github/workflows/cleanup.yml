@@ -26,7 +26,7 @@ jobs:
         with:
           account: ministryofjustice
           image-names: hmpps-probation-integration-services/*
-          image-tags: "!test !test-prev !preprod !preprod-prev !prod !prod-prev"
+          image-tags: "!test !test-prev !preprod !preprod-prev !prod !prod-prev !latest"
           cut-off: 30d
           token: ${{ secrets.BOT_GITHUB_PACKAGES_TOKEN }}
 

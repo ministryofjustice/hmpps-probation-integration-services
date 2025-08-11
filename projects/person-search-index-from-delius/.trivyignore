@@ -1,23 +1,5 @@
-# rack: rubygem-rack: Local File Inclusion in Rack::Static
-# https://github.com/ministryofjustice/hmpps-probation-integration-services/issues/4783
-# Reason: Not serving static files
-# Package: rack:3.1.10
-CVE-2025-27610 exp:2025-08-01
-
-# Nokogiri updates packaged libxslt to v1.1.43 to resolve multiple CVEs
-# https://github.com/ministryofjustice/hmpps-probation-integration-services/issues/4833
+# Nokogiri patches vendored libxml2 to resolve multiple CVEs
+# https://github.com/ministryofjustice/hmpps-probation-integration-services/issues/5278
 # Reason: Not processing untrusted XML or HTML files
-# Package: nokogiri:1.17.2
-GHSA-mrxw-mxhj-p664 exp:2025-08-01
-
-# crypto/x509: Usage of ExtKeyUsageAny disables policy validation in crypto/x509
-# https://github.com/ministryofjustice/hmpps-probation-integration-services/issues/5122
-# Reason: Not verifying any certificate chains with policy graphs
-# Package: stdlib:v1.24.2
-CVE-2025-22874 exp:2025-08-01
-
-# rack: rubygem-rack: Rack Content-Disposition Denial of Service
-# https://github.com/ministryofjustice/hmpps-probation-integration-services/issues/5210
-# Reason: Not processing un-trusted HTTP requests
-# Package: rack:3.1.15
-CVE-2025-49007 exp:2025-08-01
+# Package: nokogiri (nokogiri-1.18.8-java.gemspec)
+GHSA-353f-x4gh-cqq8 exp:2025-11-01

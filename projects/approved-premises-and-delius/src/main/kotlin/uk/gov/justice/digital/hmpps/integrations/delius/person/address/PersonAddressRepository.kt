@@ -8,7 +8,7 @@ interface PersonAddressRepository : JpaRepository<PersonAddress, Long> {
         """
         select pa from PersonAddress pa
         join fetch pa.status
-        join fetch pa.type
+        left join fetch pa.type
         where pa.personId = :personId 
         and pa.softDeleted = false  
         and pa.endDate is null 

@@ -10,11 +10,7 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
-import uk.gov.justice.digital.hmpps.api.model.appointment.AppointmentType
-import uk.gov.justice.digital.hmpps.api.model.appointment.AppointmentTypeResponse
-import uk.gov.justice.digital.hmpps.api.model.appointment.ContactTypeAssociation
-import uk.gov.justice.digital.hmpps.api.model.appointment.CreateAppointment
-import uk.gov.justice.digital.hmpps.api.model.appointment.MinimalNsi
+import uk.gov.justice.digital.hmpps.api.model.appointment.*
 import uk.gov.justice.digital.hmpps.api.model.sentence.*
 import uk.gov.justice.digital.hmpps.api.model.user.Team
 import uk.gov.justice.digital.hmpps.api.model.user.TeamResponse
@@ -121,7 +117,7 @@ class AppointmentIntegrationTest {
 
         val types = mutableListOf<AppointmentType>()
         types.addAll(APPOINTMENT_TYPES.map { it.toAppointmentType() })
-        types.add(5, APPT_CT_3.toAppointmentType())
+        types.add(7, APPT_CT_3.toAppointmentType())
 
         val expected =
             AppointmentTypeResponse(types)
