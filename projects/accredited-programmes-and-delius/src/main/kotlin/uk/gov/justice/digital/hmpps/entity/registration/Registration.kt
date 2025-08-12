@@ -26,7 +26,7 @@ class Registration(
 
     @ManyToOne
     @JoinColumn(name = "register_category_id")
-    val category: ReferenceData,
+    val category: ReferenceData?,
 
     @Column(name = "registration_date")
     val date: LocalDate,
