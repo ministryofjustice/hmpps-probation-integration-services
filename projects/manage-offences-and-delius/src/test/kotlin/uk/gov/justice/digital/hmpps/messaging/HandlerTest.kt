@@ -56,6 +56,24 @@ internal class HandlerTest {
     }
 
     @Test
+    fun `non offences are ignored`() {
+        whenever(manageOffencesClient.getOffence(any()))
+            .thenReturn(offence(code = "CJ03005", homeOfficeCode = "598/00"))
+
+        handler.handle(Notification(ResourceLoader.event("offence-changed")))
+
+        verify(telemetryService).trackEvent(
+            "OffenceCodeIgnored",
+            mapOf(
+                "offenceCode" to "CJ03005",
+                "homeOfficeCode" to "59800",
+                "reason" to "Not an actual offence"
+            ),
+            mapOf()
+        )
+    }
+
+    @Test
     fun `home office codes of 22222 are ignored`() {
         whenever(manageOffencesClient.getOffence(any())).thenReturn(offence(homeOfficeCode = "222/22"))
 
