@@ -7,9 +7,7 @@ import org.springframework.boot.context.event.ApplicationReadyEvent
 import org.springframework.context.ApplicationListener
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
-import uk.gov.justice.digital.hmpps.data.generator.LimitedAccessGenerator
-import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
-import uk.gov.justice.digital.hmpps.data.generator.UserGenerator
+import uk.gov.justice.digital.hmpps.data.generator.*
 import uk.gov.justice.digital.hmpps.user.AuditUserRepository
 
 @Component
@@ -41,5 +39,15 @@ class DataLoader(
         entityManager.persist(LimitedAccessGenerator.EXCLUSION)
         entityManager.persist(LimitedAccessGenerator.BOTH_RESTRICTION)
         entityManager.persist(LimitedAccessGenerator.BOTH_EXCLUSION)
+
+        entityManager.persist(ReferenceDataGenerator.REGISTER_TYPE_FLAG_DATASET)
+        entityManager.persist(ReferenceDataGenerator.SAFEGUARDING_FLAG)
+        entityManager.persist(ReferenceDataGenerator.INFORMATION_FLAG)
+        entityManager.persist(ReferenceDataGenerator.REGISTER_LEVEL_DATASET)
+        entityManager.persist(ReferenceDataGenerator.HIGH_RISK_REGISTER_LEVEL)
+        entityManager.persist(RegistrationGenerator.SUICIDE_SELF_HARM_RISK_TYPE)
+        entityManager.persist(RegistrationGenerator.CONTACT_SUSPENDED_TYPE)
+        entityManager.flush()
+        entityManager.persist(RegistrationGenerator.SUICIDE_SELF_HARM_REGISTRATION)
     }
 }
