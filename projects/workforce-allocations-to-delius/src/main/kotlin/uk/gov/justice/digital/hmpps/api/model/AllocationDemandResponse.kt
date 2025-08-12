@@ -6,6 +6,7 @@ data class AllocationResponse(
     val crn: String,
     val name: Name,
     val event: Event,
+    val mostRecentAllocatedEvent: Event?,
     val sentence: Sentence?,
     val initialAppointment: InitialAppointment?,
     val court: NamedCourt,
