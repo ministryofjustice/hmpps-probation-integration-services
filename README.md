@@ -195,13 +195,13 @@ We run the end-to-end tests in GitHub Actions as part of the
 against a real dev/test environment with all dependencies.  Running the tests in a real environment gives us confidence 
 that all the integration points involved in the user journey are working correctly before we push changes to production.
 
-You can also run the end-to-end tests from your branch to get early feedback, by following the instructions here: [Manually running a workflow](https://docs.github.com/en/actions/managing-workflow-runs/manually-running-a-workflow).
-Note: this will deploy your dev code to the test and preprod environments.
+You can also run the end-to-end tests from your branch to get early feedback,
+by [manually running a workflow](https://docs.github.com/en/actions/managing-workflow-runs/manually-running-a-workflow):
 
-To access internal services from GitHub Actions, we use a repository-level [self-hosted runner](https://docs.github.com/en/actions/hosting-your-own-runners/about-self-hosted-runners)
-in MOJ Cloud Platform.
-See [06-github-actions-runner.yaml](https://github.com/ministryofjustice/cloud-platform-environments/blob/main/namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration/06-github-actions-runner.yaml).
-For more information on how this is implemented, see [PI-340](https://dsdmoj.atlassian.net/browse/PI-340).
+1. Deploy your code to dev/test from a
+   branch: [Deploy branch](https://github.com/ministryofjustice/hmpps-probation-integration-services/actions/workflows/deploy-branch.yml)
+2. Test your
+   project: [Run tests](https://github.com/ministryofjustice/hmpps-probation-integration-e2e-tests/actions/workflows/test-single-project.yml)
 
 # Feature flags
 
