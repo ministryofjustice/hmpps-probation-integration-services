@@ -21,5 +21,6 @@ class SuicideRiskFormController(
 
     @PreAuthorize("hasRole('PROBATION_API__SUICIDE_RISK_FORM__CASE_DETAIL')")
     @GetMapping(value = ["/information-page/{crn}"])
-    fun getInformationPage(@PathVariable crn: String): InformationPageResponse = registrationsService.informationPage(crn)
+    fun getInformationPage(@PathVariable crn: String): InformationPageResponse =
+        registrationsService.informationPage(crn)
 }

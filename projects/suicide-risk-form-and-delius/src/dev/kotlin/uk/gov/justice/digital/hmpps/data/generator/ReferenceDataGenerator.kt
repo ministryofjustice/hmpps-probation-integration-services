@@ -32,7 +32,6 @@ object ReferenceDataGenerator {
         id = IdGenerator.getAndIncrement()
     )
 
-
     fun generateDataset(code: String, id: Long = IdGenerator.getAndIncrement()) = Dataset(code, id)
 
     fun generateReferenceData(

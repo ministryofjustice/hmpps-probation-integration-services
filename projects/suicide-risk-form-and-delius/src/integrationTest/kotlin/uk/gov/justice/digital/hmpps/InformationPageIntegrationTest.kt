@@ -77,5 +77,4 @@ class InformationPageIntegrationTest {
 
         assertThat(response.registration.type.code).isNotEqualTo("PRC")
     }
-
 }

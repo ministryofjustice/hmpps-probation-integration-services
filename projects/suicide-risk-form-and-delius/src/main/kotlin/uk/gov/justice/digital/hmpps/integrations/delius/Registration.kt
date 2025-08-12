@@ -104,7 +104,7 @@ class Deregistration(
 
 fun RegisterType.codedDescription() = CodedDescription(code, description)
 
-interface RegistrationRepository: JpaRepository<Registration, Long> {
+interface RegistrationRepository : JpaRepository<Registration, Long> {
     @Query(
         "SELECT r FROM Registration r " +
             "WHERE r.person.crn = :crn " +
