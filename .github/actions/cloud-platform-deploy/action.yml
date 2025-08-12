@@ -59,14 +59,14 @@ runs:
 
     - name: Get build info
       if: inputs.get-info-artifact == 'true' && steps.gradle_file.outputs.files_exists == 'true'
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@v5
       with:
         name: build-info-${{ inputs.project }}
         path: projects/${{ inputs.project }}
 
     - name: Get git info
       if: inputs.get-info-artifact == 'true' && steps.gradle_file.outputs.files_exists == 'true'
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@v5
       with:
         name: git-info-${{ inputs.project }}
         path: projects/${{ inputs.project }}
