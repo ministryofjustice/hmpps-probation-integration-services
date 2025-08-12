@@ -4,17 +4,7 @@ import org.springframework.jdbc.core.RowMapper
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 import org.springframework.stereotype.Repository
-import uk.gov.justice.digital.hmpps.api.model.AllocationResponse
-import uk.gov.justice.digital.hmpps.api.model.CaseType
-import uk.gov.justice.digital.hmpps.api.model.Event
-import uk.gov.justice.digital.hmpps.api.model.InitialAppointment
-import uk.gov.justice.digital.hmpps.api.model.ManagementStatus
-import uk.gov.justice.digital.hmpps.api.model.Manager
-import uk.gov.justice.digital.hmpps.api.model.Name
-import uk.gov.justice.digital.hmpps.api.model.NamedCourt
-import uk.gov.justice.digital.hmpps.api.model.ProbationStatus
-import uk.gov.justice.digital.hmpps.api.model.Sentence
-import uk.gov.justice.digital.hmpps.api.model.StaffMember
+import uk.gov.justice.digital.hmpps.api.model.*
 import uk.gov.justice.digital.hmpps.security.ServiceContext
 import java.sql.Date
 
@@ -58,6 +48,21 @@ class AllocationDemandRepository(val jdbcTemplate: NamedParameterJdbcTemplate) {
                         rs.getString("team_code")
                     )
                 ),
+                rs.getString("allocated_event_number")?.let {
+                    Event(
+                        rs.getString("allocated_event_number"),
+                        Manager(
+                            rs.getString("allocated_event_staff_code"),
+                            Name(
+                                rs.getString("allocated_event_staff_forename"),
+                                rs.getString("allocated_event_staff_middle_name"),
+                                rs.getString("allocated_event_staff_surname")
+                            ),
+                            rs.getString("allocated_event_team_code"),
+                            gradeMap[rs.getString("allocated_event_staff_grade")]
+                        )
+                    )
+                },
                 if (sentenceDate == null) {
                     null
                 } else {
@@ -139,7 +144,18 @@ WITH ORIGIN_COURT AS (SELECT e.EVENT_ID,
             AND ct.CODE IN ('COAI', 'COVI', 'CODI', 'COHV')
             AND ia.SOFT_DELETED = 0
             AND iao.SOFT_DELETED = 0
-            AND iae.SOFT_DELETED = 0))
+            AND iae.SOFT_DELETED = 0)),
+    MOST_RECENT_ALLOCATED_EVENT AS (
+         SELECT ae.OFFENDER_ID, ae.EVENT_NUMBER, aes.OFFICER_CODE, aes.FORENAME, aes.FORENAME2, aes.SURNAME, aet.CODE, aesg.CODE_VALUE,
+                ROW_NUMBER() OVER (PARTITION BY ae.OFFENDER_ID ORDER BY aem.ALLOCATION_DATE DESC) ROW_NUM
+         FROM EVENT ae
+         JOIN ORDER_MANAGER aem ON aem.EVENT_ID = ae.EVENT_ID AND aem.SOFT_DELETED = 0 AND aem.ACTIVE_FLAG = 1
+         JOIN TEAM aet ON aet.TEAM_ID = aem.ALLOCATION_TEAM_ID
+         JOIN STAFF aes ON aes.STAFF_ID = aem.ALLOCATION_STAFF_ID
+         JOIN R_STANDARD_REFERENCE_LIST aesg ON aes.STAFF_GRADE_ID = aesg.STANDARD_REFERENCE_LIST_ID
+         WHERE ae.SOFT_DELETED = 0
+         AND aes.OFFICER_CODE NOT LIKE '%U'
+    )
 SELECT o.CRN                                                            crn,
        o.FIRST_NAME                                                     forename,
        o.SECOND_NAME                                                    middle_name,
@@ -237,7 +253,14 @@ SELECT o.CRN                                                            crn,
        ias.FORENAME2                                                    ias_middle_name,
        ias.SURNAME                                                      ias_surname,
        iasg.CODE_DESCRIPTION                                            ias_grade,
-       kd.KEY_DATE                                                      com_handover_date
+       kd.KEY_DATE                                                      com_handover_date,
+       ae.EVENT_NUMBER                                                  allocated_event_number,
+       ae.OFFICER_CODE                                                  allocated_event_staff_code,
+       ae.FORENAME                                                      allocated_event_staff_forename,
+       ae.FORENAME2                                                     allocated_event_staff_middle_name,
+       ae.SURNAME                                                       allocated_event_staff_surname,
+       ae.CODE_VALUE                                                    allocated_event_staff_grade,
+       ae.CODE                                                          allocated_event_team_code
 FROM OFFENDER o
          JOIN EVENT e ON e.OFFENDER_ID = o.OFFENDER_ID AND e.ACTIVE_FLAG = 1
          JOIN OFFENDER_MANAGER cm ON cm.OFFENDER_ID = o.OFFENDER_ID AND cm.ACTIVE_FLAG = 1
@@ -262,6 +285,7 @@ FROM OFFENDER o
          LEFT OUTER JOIN INITIAL_APPOINTMENT ia ON e.EVENT_ID = ia.EVENT_ID AND ia.ROW_NUM = 1
          LEFT OUTER JOIN STAFF ias ON ias.STAFF_ID = ia.STAFF_ID
          LEFT OUTER JOIN R_STANDARD_REFERENCE_LIST iasg ON ias.STAFF_GRADE_ID = iasg.STANDARD_REFERENCE_LIST_ID
+         LEFT OUTER JOIN MOST_RECENT_ALLOCATED_EVENT ae ON o.OFFENDER_ID = ae.OFFENDER_ID AND ae.ROW_NUM = 1
 WHERE (o.CRN, e.EVENT_NUMBER) IN (:values)
   AND o.SOFT_DELETED = 0
   AND e.SOFT_DELETED = 0

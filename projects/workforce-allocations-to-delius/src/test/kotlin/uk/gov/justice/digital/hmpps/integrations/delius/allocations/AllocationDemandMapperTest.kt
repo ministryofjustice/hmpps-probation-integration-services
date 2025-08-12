@@ -7,17 +7,7 @@ import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.whenever
-import uk.gov.justice.digital.hmpps.api.model.AllocationResponse
-import uk.gov.justice.digital.hmpps.api.model.CaseType
-import uk.gov.justice.digital.hmpps.api.model.Event
-import uk.gov.justice.digital.hmpps.api.model.InitialAppointment
-import uk.gov.justice.digital.hmpps.api.model.ManagementStatus
-import uk.gov.justice.digital.hmpps.api.model.Manager
-import uk.gov.justice.digital.hmpps.api.model.Name
-import uk.gov.justice.digital.hmpps.api.model.NamedCourt
-import uk.gov.justice.digital.hmpps.api.model.ProbationStatus
-import uk.gov.justice.digital.hmpps.api.model.Sentence
-import uk.gov.justice.digital.hmpps.api.model.StaffMember
+import uk.gov.justice.digital.hmpps.api.model.*
 import java.sql.Date
 import java.sql.ResultSet
 import java.time.LocalDate
@@ -37,6 +27,14 @@ class AllocationDemandMapperTest {
             Name("John", "William", "Smith"),
             Event(
                 "1",
+                Manager(
+                    "EM123",
+                    Name("Emma", "Jane", "Butane"),
+                    "T123"
+                )
+            ),
+            Event(
+                "2",
                 Manager(
                     "EM123",
                     Name("Emma", "Jane", "Butane"),
@@ -70,6 +68,13 @@ class AllocationDemandMapperTest {
         whenever(resultSet.getString("staff_middle_name")).thenReturn(expected.event.manager!!.name.middleName)
         whenever(resultSet.getString("staff_surname")).thenReturn(expected.event.manager!!.name.surname)
         whenever(resultSet.getString("team_code")).thenReturn(expected.event.manager!!.teamCode)
+        whenever(resultSet.getString("allocated_event_number")).thenReturn(expected.mostRecentAllocatedEvent!!.number)
+        whenever(resultSet.getString("allocated_event_staff_code")).thenReturn(expected.mostRecentAllocatedEvent!!.manager!!.code)
+        whenever(resultSet.getString("allocated_event_staff_forename")).thenReturn(expected.mostRecentAllocatedEvent!!.manager!!.name.forename)
+        whenever(resultSet.getString("allocated_event_staff_middle_name")).thenReturn(expected.mostRecentAllocatedEvent!!.manager!!.name.middleName)
+        whenever(resultSet.getString("allocated_event_staff_surname")).thenReturn(expected.mostRecentAllocatedEvent!!.manager!!.name.surname)
+        whenever(resultSet.getString("allocated_event_staff_grade")).thenReturn(expected.mostRecentAllocatedEvent!!.manager!!.grade)
+        whenever(resultSet.getString("allocated_event_team_code")).thenReturn(expected.mostRecentAllocatedEvent!!.manager!!.teamCode)
         whenever(resultSet.getString("sentence_type")).thenReturn(expected.sentence?.type)
         whenever(resultSet.getDate("sentence_date")).thenReturn(Date.valueOf(expected.sentence?.date))
         whenever(resultSet.getString("sentence_length_value")).thenReturn("3")
