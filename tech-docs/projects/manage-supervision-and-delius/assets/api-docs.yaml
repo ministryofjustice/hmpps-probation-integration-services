@@ -806,6 +806,32 @@ paths:
         required: true
         schema:
           type: string
+      - name: page
+        in: query
+        required: false
+        schema:
+          type: integer
+          format: int32
+          default: 0
+      - name: size
+        in: query
+        required: false
+        schema:
+          type: integer
+          format: int32
+          default: 10
+      - name: sortBy
+        in: query
+        required: false
+        schema:
+          type: string
+          default: date
+      - name: ascending
+        in: query
+        required: false
+        schema:
+          type: boolean
+          default: true
       responses:
         "200":
           description: OK
@@ -825,6 +851,32 @@ paths:
         required: true
         schema:
           type: string
+      - name: page
+        in: query
+        required: false
+        schema:
+          type: integer
+          format: int32
+          default: 0
+      - name: size
+        in: query
+        required: false
+        schema:
+          type: integer
+          format: int32
+          default: 10
+      - name: sortBy
+        in: query
+        required: false
+        schema:
+          type: string
+          default: date
+      - name: ascending
+        in: query
+        required: false
+        schema:
+          type: boolean
+          default: false
       responses:
         "200":
           description: OK
@@ -2521,7 +2573,10 @@ components:
           type: string
         outcome:
           type: string
+        deliusManaged:
+          type: boolean
       required:
+      - deliusManaged
       - documents
       - id
       - isAppointment
@@ -3249,17 +3304,40 @@ components:
       - currentContacts
       - name
       - previousContacts
-    Schedule:
+    PersonSchedule:
       type: object
       properties:
-        personSummary:
-          $ref: "#/components/schemas/PersonSummary"
+        size:
+          type: integer
+          format: int32
+        page:
+          type: integer
+          format: int32
+        totalResults:
+          type: integer
+          format: int32
+        totalPages:
+          type: integer
+          format: int32
         appointments:
           type: array
           items:
             $ref: "#/components/schemas/Activity"
       required:
       - appointments
+      - page
+      - size
+      - totalPages
+      - totalResults
+    Schedule:
+      type: object
+      properties:
+        personSummary:
+          $ref: "#/components/schemas/PersonSummary"
+        personSchedule:
+          $ref: "#/components/schemas/PersonSchedule"
+      required:
+      - personSchedule
       - personSummary
     PersonAppointment:
       type: object
