@@ -83,7 +83,7 @@ class CaseDetailService(
         registrationRepository.findByPersonCrn(crn).map { registration ->
             Registration(
                 type = CodedValue(registration.type.code, registration.type.description),
-                category = registration.category.toCodedValue(),
+                category = registration.category?.toCodedValue(),
                 date = registration.date,
                 nextReviewDate = registration.nextReviewDate,
             )
