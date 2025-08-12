@@ -50,7 +50,7 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ inputs.create_oauth_client }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Create issue for manual steps
         run: |
           gh issue create \
@@ -73,7 +73,7 @@ jobs:
           app-id: ${{ secrets.BOT_APP_ID }}
           private-key: ${{ secrets.BOT_APP_PRIVATE_KEY }}
 
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           ref: main
           token: ${{ steps.app-token.outputs.token }}
@@ -98,7 +98,7 @@ jobs:
           commit-message: ${{ inputs.issue_number }} Create initial project for ${{ inputs.project_name }}
           token: ${{ steps.app-token.outputs.token }}
 
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           ref: main
           path: hmpps-probation-integration-e2e-tests
@@ -135,7 +135,7 @@ jobs:
     outputs:
       project_slug: ${{ steps.project.outputs.slug }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Create project
         id: project
@@ -218,7 +218,7 @@ jobs:
         environment: [ "test", "preprod", "prod" ]
     environment: ${{ matrix.environment }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - uses: ./.github/actions/cloud-platform-auth
         with:
@@ -261,21 +261,21 @@ jobs:
           app-id: ${{ secrets.BOT_EXTERNAL_REPOS_APP_ID }}
           private-key: ${{ secrets.BOT_EXTERNAL_REPOS_APP_PRIVATE_KEY }}
 
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           path: cloud-platform-environments-dev
           repository: ministryofjustice/cloud-platform-environments
           token: ${{ steps.app-token.outputs.token }}
 
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           path: cloud-platform-environments-preprod
           repository: ministryofjustice/cloud-platform-environments
           token: ${{ steps.app-token.outputs.token }}
 
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           path: cloud-platform-environments-prod
           repository: ministryofjustice/cloud-platform-environments
@@ -357,21 +357,21 @@ jobs:
           app-id: ${{ secrets.BOT_EXTERNAL_REPOS_APP_ID }}
           private-key: ${{ secrets.BOT_EXTERNAL_REPOS_APP_PRIVATE_KEY }}
 
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           path: cloud-platform-environments-dev
           repository: ministryofjustice/cloud-platform-environments
           token: ${{ steps.app-token.outputs.token }}
 
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           path: cloud-platform-environments-preprod
           repository: ministryofjustice/cloud-platform-environments
           token: ${{ steps.app-token.outputs.token }}
 
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           path: cloud-platform-environments-prod
           repository: ministryofjustice/cloud-platform-environments

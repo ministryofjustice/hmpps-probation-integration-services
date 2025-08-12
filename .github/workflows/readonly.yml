@@ -60,7 +60,7 @@ jobs:
     outputs:
       projects: ${{ steps.kubectl.outputs.projects }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: ./.github/actions/cloud-platform-auth
         with:
           api: ${{ secrets.KUBE_ENV_API }}
@@ -87,7 +87,7 @@ jobs:
     environment: ${{ inputs.environment }}
     needs: get-projects
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: ./.github/actions/cloud-platform-auth
         with:
           api: ${{ secrets.KUBE_ENV_API }}
@@ -111,7 +111,7 @@ jobs:
       matrix:
         project: ${{ fromJson(needs.get-projects.outputs.projects) }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: ./.github/actions/cloud-platform-auth
         with:
           api: ${{ secrets.KUBE_ENV_API }}
@@ -142,7 +142,7 @@ jobs:
       matrix:
         project: ${{ fromJson(needs.get-projects.outputs.projects) }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: ./.github/actions/cloud-platform-auth
         with:
           api: ${{ secrets.KUBE_ENV_API }}
