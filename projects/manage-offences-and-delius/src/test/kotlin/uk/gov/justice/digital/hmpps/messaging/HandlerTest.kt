@@ -38,6 +38,24 @@ internal class HandlerTest {
     lateinit var handler: Handler
 
     @Test
+    fun `end dated offences are ignored`() {
+        whenever(manageOffencesClient.getOffence(any()))
+            .thenReturn(offence(code = "ED0100", endDate = LocalDate.now().minusDays(1)))
+
+        handler.handle(Notification(ResourceLoader.event("offence-changed")))
+
+        verify(telemetryService).trackEvent(
+            "OffenceCodeIgnored",
+            mapOf(
+                "offenceCode" to "ED0100",
+                "homeOfficeCode" to "09155",
+                "reason" to "Offence is expired"
+            ),
+            mapOf()
+        )
+    }
+
+    @Test
     fun `home office codes of 22222 are ignored`() {
         whenever(manageOffencesClient.getOffence(any())).thenReturn(offence(homeOfficeCode = "222/22"))
 
@@ -89,12 +107,14 @@ internal class HandlerTest {
         )
     }
 
-    private fun offence(code: String = "AB12345", homeOfficeCode: String = "091/55") = Offence(
-        code = code,
-        description = "some offence",
-        offenceType = COURT_CATEGORY.code,
-        startDate = LocalDate.now(),
-        homeOfficeStatsCode = homeOfficeCode,
-        homeOfficeDescription = "Some Offence Description",
-    )
+    private fun offence(code: String = "AB12345", homeOfficeCode: String = "091/55", endDate: LocalDate? = null) =
+        Offence(
+            code = code,
+            description = "some offence",
+            offenceType = COURT_CATEGORY.code,
+            startDate = LocalDate.now(),
+            homeOfficeStatsCode = homeOfficeCode,
+            homeOfficeDescription = "Some Offence Description",
+            endDate = endDate
+        )
 }
