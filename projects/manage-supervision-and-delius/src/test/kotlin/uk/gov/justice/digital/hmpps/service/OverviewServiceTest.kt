@@ -78,9 +78,7 @@ internal class OverviewServiceTest {
                 PersonGenerator.BREACH_PREVIOUS_ORDER_2
             )
         )
-        whenever(contactRepository.findUpComingAppointments(any(), any(), any())).thenReturn(
-            listOf(FIRST_APPT_CONTACT)
-        )
+        whenever(contactRepository.findFirstUpComingAppointment(any(), any(), any())).thenReturn(FIRST_APPT_CONTACT)
 
         whenever(riskFlagRepository.findActiveMappaRegistrationByOffenderId(any(), any())).thenReturn(Page.empty())
 
@@ -110,6 +108,7 @@ internal class OverviewServiceTest {
                 PersonGenerator.INACTIVE_EVENT_2
             )
         )
+
         val res = service.getOverview("X000004")
         assertThat(
             res.personalDetails.preferredName,

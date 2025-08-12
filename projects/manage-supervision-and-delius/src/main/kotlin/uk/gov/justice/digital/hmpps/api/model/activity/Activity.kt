@@ -7,7 +7,6 @@ import uk.gov.justice.digital.hmpps.api.model.sentence.NoteDetail
 import java.time.ZonedDateTime
 
 data class Activity(
-
     val id: Long,
     val eventNumber: String? = null,
     val type: String,
@@ -52,4 +51,5 @@ data class Activity(
     val lastUpdatedBy: Name,
     val description: String? = null,
     val outcome: String? = null,
+    val deliusManaged: Boolean
 )

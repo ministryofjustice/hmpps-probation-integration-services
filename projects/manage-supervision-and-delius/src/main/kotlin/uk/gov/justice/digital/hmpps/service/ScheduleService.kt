@@ -1,13 +1,16 @@
 package uk.gov.justice.digital.hmpps.service
 
+import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.api.model.Name
 import uk.gov.justice.digital.hmpps.api.model.activity.Activity
+import uk.gov.justice.digital.hmpps.api.model.appointment.CreateAppointment
 import uk.gov.justice.digital.hmpps.api.model.personalDetails.Document
 import uk.gov.justice.digital.hmpps.api.model.schedule.OfficeAddress
 import uk.gov.justice.digital.hmpps.api.model.schedule.PersonAppointment
 import uk.gov.justice.digital.hmpps.api.model.schedule.Schedule
+import uk.gov.justice.digital.hmpps.api.model.schedule.PersonSchedule
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.ContactDocument
 
@@ -28,21 +31,37 @@ class ScheduleService(
     }
 
     @Transactional
-    fun getPersonUpcomingSchedule(crn: String): Schedule {
+    fun getPersonUpcomingSchedule(crn: String, pageable: Pageable): Schedule {
         val summary = personRepository.getSummary(crn)
-        val appointments = contactRepository.getUpComingAppointments(summary.id)
+        val appointments = contactRepository.getUpComingAppointments(summary.id, pageable)
         return Schedule(
             personSummary = summary.toPersonSummary(),
-            appointments = appointments.map { it.toActivity() })
+            personSchedule = PersonSchedule(
+                pageable.pageSize,
+                pageable.pageNumber,
+                appointments.totalElements.toInt(),
+                appointments.totalPages,
+                appointments.content.map { it.toActivity() }
+
+            )
+        )
     }
 
     @Transactional
-    fun getPersonPreviousSchedule(crn: String): Schedule {
+    fun getPersonPreviousSchedule(crn: String, pageable: Pageable): Schedule {
         val summary = personRepository.getSummary(crn)
-        val appointments = contactRepository.getPreviousAppointments(summary.id)
+        val appointments = contactRepository.getPageablePreviousAppointments(summary.id, pageable)
         return Schedule(
             personSummary = summary.toPersonSummary(),
-            appointments = appointments.map { it.toActivity() })
+            personSchedule = PersonSchedule(
+                pageable.pageSize,
+                pageable.pageNumber,
+                appointments.totalElements.toInt(),
+                appointments.totalPages,
+                appointments.content.map { it.toActivity() }
+
+            )
+        )
     }
 }
 
@@ -92,6 +111,7 @@ fun Contact.toActivityOverview() = Activity(
     isCommunication = isCommunication(),
     description = description,
     outcome = outcome?.description,
+    deliusManaged = CreateAppointment.Type.entries.any { it.code == type.code }
 )
 
 fun Contact.toActivity(noteId: Int? = null) = Activity(
@@ -140,6 +160,7 @@ fun Contact.toActivity(noteId: Int? = null) = Activity(
     eventNumber = event?.eventNumber,
     description = description,
     outcome = outcome?.description,
+    deliusManaged = CreateAppointment.Type.entries.any { it.code == type.code }
 )
 
 fun ContactDocument.toDocument() = Document(id = alfrescoId, name = name, lastUpdated = lastUpdated)

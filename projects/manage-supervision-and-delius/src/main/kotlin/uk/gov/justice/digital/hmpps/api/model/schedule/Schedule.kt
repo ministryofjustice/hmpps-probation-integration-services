@@ -5,5 +5,13 @@ import uk.gov.justice.digital.hmpps.api.model.activity.Activity
 
 data class Schedule(
     val personSummary: PersonSummary,
-    val appointments: List<Activity>
-) 
+    val personSchedule: PersonSchedule
+)
+
+data class PersonSchedule(
+    val size: Int,
+    val page: Int,
+    val totalResults: Int,
+    val totalPages: Int,
+    val appointments: List<Activity>,
+)
