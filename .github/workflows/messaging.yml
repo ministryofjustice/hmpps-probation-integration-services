@@ -48,7 +48,7 @@ jobs:
     runs-on: ubuntu-latest
     environment: preprod
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Authenticate to MOJ Cloud Platform
         uses: ./.github/actions/cloud-platform-auth
@@ -60,7 +60,7 @@ jobs:
           token: ${{ secrets.KUBE_TOKEN }}
 
       - name: Checkout scripts repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           path: scripts
           repository: ministryofjustice/hmpps-probation-integration-scripts

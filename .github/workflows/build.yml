@@ -105,7 +105,7 @@ jobs:
       changes: ${{ steps.build.outputs.changes }}
       version: ${{ steps.build.outputs.version }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Build Gradle project
         uses: ./.github/actions/gradle-build
@@ -131,7 +131,7 @@ jobs:
           - feature-flags
           - monitor-cron-jobs
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Build Docker image
         uses: ./.github/actions/docker-build

@@ -81,7 +81,7 @@ jobs:
       projects: ${{ steps.output.outputs.projects }}
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - id: check-changes
         if: github.event_name == 'push'
         uses: ./.github/actions/check-changes
@@ -112,7 +112,7 @@ jobs:
       matrix:
         project: ${{ fromJson(needs.get-projects.outputs.projects) }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - uses: ./.github/actions/cloud-platform-auth
         with:
