@@ -8,6 +8,9 @@ data class IgnoredOffence(
 ) {
     companion object {
         val IGNORED_OFFENCES = listOf(
+            IgnoredOffence("Offence is expired") {
+                it.endDate != null
+            },
             IgnoredOffence("Home Office Code is 'Not Known'") {
                 it.homeOfficeCode == "22222"
             },

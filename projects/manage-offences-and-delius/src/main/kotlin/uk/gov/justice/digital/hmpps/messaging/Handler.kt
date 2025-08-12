@@ -3,7 +3,9 @@ package uk.gov.justice.digital.hmpps.messaging
 import com.asyncapi.kotlinasyncapi.annotation.channel.Channel
 import com.asyncapi.kotlinasyncapi.annotation.channel.Message
 import com.asyncapi.kotlinasyncapi.annotation.channel.Publish
+import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Component
+import org.springframework.web.client.RestClientResponseException
 import uk.gov.justice.digital.hmpps.client.ManageOffencesClient
 import uk.gov.justice.digital.hmpps.client.Offence
 import uk.gov.justice.digital.hmpps.config.IgnoredOffence.Companion.IGNORED_OFFENCES
@@ -26,7 +28,12 @@ class Handler(
     override fun handle(notification: Notification<HmppsDomainEvent>) {
         telemetryService.notificationReceived(notification)
 
-        val offence = manageOffencesClient.getOffence(notification.message.offenceCode)
+        val offence = try {
+            manageOffencesClient.getOffence(notification.message.offenceCode)
+        } catch (e: RestClientResponseException) {
+            if (e.statusCode == HttpStatus.NOT_FOUND) return
+            throw e
+        }
 
         IGNORED_OFFENCES.firstOrNull { it.matches(offence) }?.let {
             telemetryService.trackEvent("OffenceCodeIgnored", offence.telemetry + mapOf("reason" to it.reason))
