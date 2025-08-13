@@ -5,20 +5,22 @@ import java.time.LocalDate
 
 object MainOffenceGenerator {
     val DEFAULT =
-        generate(event = EventGenerator.DEFAULT, person = PersonGenerator.DEFAULT, offence = OffenceGenerator.DEFAULT)
+        generate(event = EventGenerator.DEFAULT, person = PersonGenerator.DEFAULT, offence = OffenceGenerator.DEFAULT, detailedOffence = DetailedOffenceGenerator.DEFAULT)
 
     fun generate(
         id: Long = IdGenerator.getAndIncrement(),
         event: Event,
         person: Person,
-        offence: Offence
+        offence: Offence,
+        detailedOffence: DetailedOffence? = null,
     ) = MainOffence(
         id = id,
         date = LocalDate.now(),
         count = 1,
         event = event,
         offence = offence,
-        person = person
+        person = person,
+        detailedOffence = detailedOffence
     )
 }
 

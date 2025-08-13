@@ -105,6 +105,9 @@ internal class IntegrationTest {
     lateinit var mainOffenceRepository: MainOffenceRepository
 
     @MockitoSpyBean
+    lateinit var additionalOffenceRepository: AdditionalOffenceRepository
+
+    @MockitoSpyBean
     lateinit var orderManagerRepository: OrderManagerRepository
 
     @MockitoSpyBean
@@ -393,10 +396,11 @@ internal class IntegrationTest {
 
     @Test
     fun `A hearing message with a remanded offence is received and an event is inserted`() {
+        mockS3Client()
         val notification = Notification(message = MessageGenerator.COMMON_PLATFORM_EVENT)
         channelManager.getChannel(queueName).publishAndWait(notification)
 
-        verify(eventService).insertEvent(any(), any(), any(), any(), any(), any())
+        verify(eventService).insertEvent(any(), any(), any(), any(), any(), any(), any())
 
         verify(eventRepository).save(check<Event> {
             assertThat(it.person.forename, Matchers.equalTo("Example First Name"))
@@ -410,6 +414,9 @@ internal class IntegrationTest {
             assertThat(it.person.surname, Matchers.equalTo("Example Last Name"))
             assertThat(it.offence.description, Matchers.equalTo("Murder"))
             Assertions.assertNotNull(it.offence)
+        })
+        verify(additionalOffenceRepository).saveAll(check<List<AdditionalOffence>> {
+            assertThat(it.first().offence.description, Matchers.equalTo("Second Offence"))
         })
         verify(courtAppearanceRepository).save(check<CourtAppearance> {
             assertThat(it.person.forename, Matchers.equalTo("Example First Name"))
@@ -532,8 +539,8 @@ internal class IntegrationTest {
     private fun mockS3Client() {
         val mockCsv = """
             ho_offence_code,offence_desc,priority,offence_type,max_custodial_sentence
-            00100,Test offence 1,60,Type,30
-            00101,Test offence 2,20,Type,240
+            00100,Test offence 1,20,Type,30
+            00101,Test offence 2,60,Type,240
             00102,Test offence 3,30,Type,100
         """.trimIndent()
         val inputStream = ByteArrayInputStream(mockCsv.toByteArray())
@@ -554,6 +561,7 @@ internal class IntegrationTest {
     @AfterEach
     fun cleanup() {
         courtAppearanceRepository.deleteAll()
+        additionalOffenceRepository.deleteAll()
         mainOffenceRepository.deleteAll()
         orderManagerRepository.deleteAll()
         eventRepository.deleteAll()

@@ -23,7 +23,8 @@ class RemandService(
             courtCode = insertRemandDTO.courtCode,
             sittingDay = insertRemandDTO.sittingDay,
             caseUrn = insertRemandDTO.caseUrn,
-            hearingId = insertRemandDTO.hearingId
+            hearingId = insertRemandDTO.hearingId,
+            additionalOffences = insertRemandDTO.additionalOffences,
         )
 
         return InsertRemandResult(insertPersonResult, insertEventResult)
