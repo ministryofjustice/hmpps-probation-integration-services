@@ -106,6 +106,10 @@ class Contact(
     @JoinColumn(name = "last_updated_user_id")
     val lastUpdatedUser: User,
 
+    @Column(name = "visor_contact")
+    @Convert(converter = YesNoConverter::class)
+    val isVisor: Boolean? = null,
+
     @Column(name = "soft_deleted", columnDefinition = "number", nullable = false)
     @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean = false,

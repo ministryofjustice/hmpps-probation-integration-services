@@ -53,7 +53,7 @@ class UserController(
         val qualifier = if (offenderBased)  "o." else ""
         return when (sortString) {
             "date" -> Sort.by(direction, "contact_date", "contact_start_time")
-            "name" -> Sort.by(direction, "surname")
+            "name" -> Sort.by(direction, "${qualifier}surname")
             "dob" -> Sort.by(direction, "${qualifier}date_of_birth_date")
             "appointment" -> Sort.by(direction, "contactDescription")
             "sentence" -> Sort.by(direction, "sentenceDescription")
