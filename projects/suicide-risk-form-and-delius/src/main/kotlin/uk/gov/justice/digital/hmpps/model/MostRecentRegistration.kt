@@ -13,5 +13,5 @@ data class MostRecentRegistration(
 )
 
 data class InformationPageResponse(
-    val registration: MostRecentRegistration
+    val registration: MostRecentRegistration?
 )

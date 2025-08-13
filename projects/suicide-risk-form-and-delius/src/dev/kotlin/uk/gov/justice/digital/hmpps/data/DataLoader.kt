@@ -29,6 +29,7 @@ class DataLoader(
         entityManager.persist(PersonGenerator.DEFAULT_PERSON)
         entityManager.persist(PersonGenerator.DEFAULT_ADDRESS)
 
+
         entityManager.persist(UserGenerator.LIMITED_ACCESS_USER)
         entityManager.persist(UserGenerator.NON_LAO_USER)
         entityManager.persist(PersonGenerator.RESTRICTION)
@@ -49,5 +50,7 @@ class DataLoader(
         entityManager.persist(RegistrationGenerator.CONTACT_SUSPENDED_TYPE)
         entityManager.flush()
         entityManager.persist(RegistrationGenerator.SUICIDE_SELF_HARM_REGISTRATION)
+        entityManager.persist(PersonGenerator.PERSON_NO_REGISTRATIONS)
+
     }
 }

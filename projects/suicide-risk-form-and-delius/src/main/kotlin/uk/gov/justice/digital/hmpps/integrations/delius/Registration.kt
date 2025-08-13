@@ -4,6 +4,8 @@ import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.NumericBooleanConverter
+import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import uk.gov.justice.digital.hmpps.model.CodedDescription
@@ -79,6 +81,7 @@ class RegisterType(
 @Immutable
 @Entity
 @Table(name = "deregistration")
+@SQLRestriction("soft_deleted = 0")
 class Deregistration(
     @Id
     @Column(name = "deregistration_id", nullable = false)
@@ -106,11 +109,15 @@ fun RegisterType.codedDescription() = CodedDescription(code, description)
 
 interface RegistrationRepository : JpaRepository<Registration, Long> {
     @Query(
-        "SELECT r FROM Registration r " +
-            "WHERE r.person.crn = :crn " +
-            "AND r.softDeleted = false " +
-            "AND r.type.code in ('ALSH', 'ALT7') " +
-            "ORDER BY r.date DESC"
+        """
+            SELECT r FROM Registration r
+            WHERE r.person.crn = :crn
+            AND r.softDeleted = false
+            AND r.type.code in ('ALSH', 'ALT7')
+            ORDER BY r.date DESC
+            """
     )
-    fun findLatestRelevantRegistrationForCrn(crn: String): Registration?
+    fun findLatestRelevantRegistrationForCrn(crn: String, pageable: Pageable = PageRequest.of(0, 1)): List<Registration>
 }
+
+fun RegistrationRepository.findLatestRegistration(crn: String) = findLatestRelevantRegistrationForCrn(crn).firstOrNull()

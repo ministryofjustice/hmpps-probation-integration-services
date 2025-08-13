@@ -57,10 +57,20 @@ class InformationPageIntegrationTest {
     }
 
     @Test
-    fun `no registrations for crn returns 404`() {
+    fun `non-existent crn returns 404`() {
         mockMvc
             .perform(get("/information-page/Z000001").withToken())
             .andExpect(status().isNotFound)
+    }
+
+    @Test
+    fun `crn with no registrations returns null`() {
+        val response = mockMvc
+            .perform(get("/information-page/A000002").withToken())
+            .andExpect(status().is2xxSuccessful)
+            .andReturn().response.contentAsJson<InformationPageResponse>()
+
+        assertThat(response.registration).isNull()
     }
 
     @Test
@@ -75,6 +85,6 @@ class InformationPageIntegrationTest {
             .andReturn().response.contentAsJson<InformationPageResponse>()
 
 
-        assertThat(response.registration.type.code).isNotEqualTo("PRC")
+        assertThat(response.registration!!.type.code).isNotEqualTo("PRC")
     }
 }
