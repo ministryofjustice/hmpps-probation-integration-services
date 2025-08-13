@@ -51,5 +51,6 @@ data class Activity(
     val lastUpdatedBy: Name,
     val description: String? = null,
     val outcome: String? = null,
-    val deliusManaged: Boolean
+    val deliusManaged: Boolean,
+    val isVisor: Boolean? = null,
 )

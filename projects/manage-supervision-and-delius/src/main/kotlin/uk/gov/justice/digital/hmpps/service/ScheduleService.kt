@@ -160,7 +160,8 @@ fun Contact.toActivity(noteId: Int? = null) = Activity(
     eventNumber = event?.eventNumber,
     description = description,
     outcome = outcome?.description,
-    deliusManaged = CreateAppointment.Type.entries.any { it.code == type.code }
+    deliusManaged = CreateAppointment.Type.entries.any { it.code == type.code },
+    isVisor = isVisor,
 )
 
 fun ContactDocument.toDocument() = Document(id = alfrescoId, name = name, lastUpdated = lastUpdated)
