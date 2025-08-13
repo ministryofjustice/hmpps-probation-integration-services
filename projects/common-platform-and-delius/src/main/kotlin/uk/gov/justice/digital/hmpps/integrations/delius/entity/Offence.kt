@@ -147,7 +147,7 @@ class DetailedOffence(
 @Entity
 @SQLRestriction("soft_deleted = 0")
 @EntityListeners(AuditingEntityListener::class)
-@SequenceGenerator(name = "additional_offence_id_seq", sequenceName = "additional_offence_id_seq", allocationSize = 1)
+@SequenceGenerator(name = "additional_offence_seq", sequenceName = "additional_offence_seq", allocationSize = 1)
 class AdditionalOffence(
 
     @ManyToOne
@@ -172,7 +172,7 @@ class AdditionalOffence(
     val softDeleted: Boolean = false,
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "additional_offence_id_seq")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "additional_offence_seq")
     @Column(name = "additional_offence_id")
     val id: Long? = null
 ) {
