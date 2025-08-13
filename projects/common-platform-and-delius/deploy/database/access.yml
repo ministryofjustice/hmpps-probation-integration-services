@@ -17,6 +17,8 @@ database:
       - additional_offence
     packages:
       - offender_support_api # for generating crn
+    sequences:
+      - additional_offence_seq
 
   audit:
     username: CommonPlatformAndDelius
