@@ -110,7 +110,7 @@
                             </div>
                         </div>
                         <div class="box-body">
-                            <textarea id="sql-script-codemirror" name="sql-script-codemirror" rows="" style="display: none;">TRIGGER offender_address_bu_cfo&#10;BEFORE UPDATE OF  offender_id, offender_address_id, building_name, address_number, street_name,&#10;                  district, town_city, county, postcode, start_date, no_fixed_abode,&#10;                  soft_deleted, address_status_id, last_updated_datetime&#10;ON offender_address FOR EACH ROW&#10;BEGIN&#10;  IF :OLD.last_updated_datetime &gt;&#61; :NEW.last_updated_datetime THEN&#10;    :NEW.last_updated_datetime :&#61; SYSDATE;&#10;  END IF;&#10;END offender_address_cfo;</textarea>
+                            <textarea id="sql-script-codemirror" name="sql-script-codemirror" rows="" style="display: none;">TRIGGER offender_address_bu_cfo&#10;BEFORE UPDATE OF  offender_id, offender_address_id, building_name, address_number, street_name,&#10;                  district, town_city, county, postcode, start_date, no_fixed_abode, &#10;                  soft_deleted, address_status_id, last_updated_datetime&#10;ON offender_address FOR EACH ROW&#10;BEGIN&#10;  IF :OLD.last_updated_datetime &gt;&#61; :NEW.last_updated_datetime THEN&#10;    :NEW.last_updated_datetime :&#61; SYSDATE;&#10;    :NEW.last_updated_user_id  :&#61; NVL(PKG_LOOKUPS.GetUserID(SYS_CONTEXT(&#39;USERENV&#39;, &#39;CLIENT_IDENTIFIER&#39;)), :OLD.last_updated_user_id);&#10;  END IF;&#10;END offender_address_cfo;</textarea>
                         </div>
                     </div>
                 </section>

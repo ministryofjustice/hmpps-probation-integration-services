@@ -110,7 +110,7 @@
                             </div>
                         </div>
                         <div class="box-body">
-                            <textarea id="sql-script-codemirror" name="sql-script-codemirror" rows="" style="display: none;">TRIGGER r_standard_reference_list_cfo&#10;BEFORE UPDATE OF code_value, code_description, standard_reference_list_id, reference_data_master_id&#10;ON r_standard_reference_list FOR EACH ROW&#10;BEGIN&#10;  IF :OLD.last_updated_datetime &gt;&#61; :NEW.last_updated_datetime THEN&#10;    :NEW.last_updated_datetime :&#61; SYSDATE;&#10;  END IF;&#10;END R_STANDARD_REFERENCE_LIST_CFO;</textarea>
+                            <textarea id="sql-script-codemirror" name="sql-script-codemirror" rows="" style="display: none;">TRIGGER r_standard_reference_list_cfo&#10;BEFORE UPDATE OF code_value, code_description, standard_reference_list_id, reference_data_master_id &#10;ON r_standard_reference_list FOR EACH ROW&#10;BEGIN&#10;  IF :OLD.last_updated_datetime &gt;&#61; :NEW.last_updated_datetime THEN&#10;    :NEW.last_updated_datetime :&#61; SYSDATE;&#10;    :NEW.last_updated_user_id  :&#61; NVL(PKG_LOOKUPS.GetUserID(SYS_CONTEXT(&#39;USERENV&#39;, &#39;CLIENT_IDENTIFIER&#39;)), :OLD.last_updated_user_id);&#10;  END IF;&#10;END R_STANDARD_REFERENCE_LIST_CFO;</textarea>
                         </div>
                     </div>
                 </section>

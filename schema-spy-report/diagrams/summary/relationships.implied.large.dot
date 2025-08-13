@@ -2310,6 +2310,17 @@ digraph "largeImpliedRelationshipsDiagram" {
     target="_top"
     tooltip="STAFF"
   ];
+  "DJR_MT" [
+   label=<
+    <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
+      <TR><TD COLSPAN="3"  BGCOLOR="#f5f5f5"><TABLE BORDER="0" CELLSPACING="0"><TR><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="43" HEIGHT="16"><B>DJR_MT</B></TD><TD ALIGN="RIGHT">[table]</TD></TR></TABLE></TD></TR>
+      <TR><TD PORT="elipses" COLSPAN="3" ALIGN="LEFT">...</TD></TR>
+      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">  </TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD></TR>
+    </TABLE>>
+    URL="tables/DJR_MT.html"
+    target="_top"
+    tooltip="DJR_MT"
+  ];
   "TEAM" [
    label=<
     <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
@@ -4025,6 +4036,9 @@ digraph "largeImpliedRelationshipsDiagram" {
   "DJR_CR":"STAFF_ID":w -> "STAFF":"STAFF_ID":e [arrowhead=none dir=back arrowtail=crowodot style=dashed];
   "DJR_CR":"TEAM_ID":w -> "TEAM":"TEAM_ID":e [arrowhead=none dir=back arrowtail=crowodot style=dashed];
   "DJR_CR":"TRANSFER_REASON_ID":w -> "R_TRANSFER_REASON":"TRANSFER_REASON_ID":e [arrowhead=none dir=back arrowtail=crowodot style=dashed];
+  "DJR_MT":"CREATED_BY_USER_ID":w -> "USER_":"USER_ID":e [arrowhead=none dir=back arrowtail=crowodot style=dashed];
+  "DJR_MT":"LAST_UPDATED_USER_ID":w -> "USER_":"USER_ID":e [arrowhead=none dir=back arrowtail=crowodot style=dashed];
+  "DJR_MT":"PARTITION_AREA_ID":w -> "PARTITION_AREA":"PARTITION_AREA_ID":e [arrowhead=none dir=back arrowtail=crowodot style=dashed];
   "DMS_BATCH":"DOCUMENT_CREATE_STATUS_ID":w -> "DMS_STATUS":"DMS_STATUS_ID":e [arrowhead=none dir=back arrowtail=crowodot];
   "DMS_BATCH":"FOLDER_CREATE_STATUS_ID":w -> "DMS_STATUS":"DMS_STATUS_ID":e [arrowhead=none dir=back arrowtail=crowodot];
   "DMS_DOCUMENT":"DMS_OFFENDER_ID":w -> "DMS_OFFENDER":"DMS_OFFENDER_ID":e [arrowhead=none dir=back arrowtail=crowodot];

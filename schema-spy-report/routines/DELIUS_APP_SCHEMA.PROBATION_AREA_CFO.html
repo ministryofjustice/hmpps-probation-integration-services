@@ -110,7 +110,7 @@
                             </div>
                         </div>
                         <div class="box-body">
-                            <textarea id="sql-script-codemirror" name="sql-script-codemirror" rows="" style="display: none;">TRIGGER probation_area_cfo&#10;BEFORE UPDATE OF probation_area_id, code, description, last_updated_datetime&#10;ON probation_area FOR EACH ROW&#10;BEGIN&#10;  IF :OLD.last_updated_datetime &gt;&#61; :NEW.last_updated_datetime THEN&#10;    :NEW.last_updated_datetime :&#61; SYSDATE;&#10;  END IF;&#10;END probation_area_cfo;</textarea>
+                            <textarea id="sql-script-codemirror" name="sql-script-codemirror" rows="" style="display: none;">TRIGGER probation_area_cfo&#10;BEFORE UPDATE OF probation_area_id, code, description, last_updated_datetime&#10;ON probation_area FOR EACH ROW&#10;BEGIN&#10;  IF :OLD.last_updated_datetime &gt;&#61; :NEW.last_updated_datetime THEN&#10;    :NEW.last_updated_datetime :&#61; SYSDATE;&#10;    :NEW.last_updated_user_id  :&#61; NVL(PKG_LOOKUPS.GetUserID(SYS_CONTEXT(&#39;USERENV&#39;, &#39;CLIENT_IDENTIFIER&#39;)), :OLD.last_updated_user_id);&#10;  END IF;&#10;END probation_area_cfo;</textarea>
                         </div>
                     </div>
                 </section>

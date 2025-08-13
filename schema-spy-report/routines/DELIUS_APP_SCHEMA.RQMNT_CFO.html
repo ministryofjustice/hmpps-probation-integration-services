@@ -110,7 +110,7 @@
                             </div>
                         </div>
                         <div class="box-body">
-                            <textarea id="sql-script-codemirror" name="sql-script-codemirror" rows="" style="display: none;">TRIGGER rqmnt_cfo&#10;BEFORE UPDATE OF  offender_id, disposal_id, rqmnt_id, start_date, commencement_date,&#10;                  termination_date, length, soft_deleted, rqmnt_termination_reason_id,&#10;                  rqmnt_type_main_category_id, rqmnt_type_sub_category_id,&#10;                  last_updated_datetime&#10;ON rqmnt FOR EACH ROW&#10;BEGIN&#10;  IF :OLD.last_updated_datetime &gt;&#61; :NEW.last_updated_datetime THEN&#10;    :NEW.last_updated_datetime :&#61; SYSDATE;&#10;  END IF;&#10;END rqmnt_cfo;</textarea>
+                            <textarea id="sql-script-codemirror" name="sql-script-codemirror" rows="" style="display: none;">TRIGGER rqmnt_cfo&#10;BEFORE UPDATE OF  offender_id, disposal_id, rqmnt_id, start_date, commencement_date,&#10;                  termination_date, length, soft_deleted, rqmnt_termination_reason_id,&#10;                  rqmnt_type_main_category_id, rqmnt_type_sub_category_id, &#10;                  last_updated_datetime&#10;ON rqmnt FOR EACH ROW&#10;BEGIN&#10;  IF :OLD.last_updated_datetime &gt;&#61; :NEW.last_updated_datetime THEN&#10;    :NEW.last_updated_datetime :&#61; SYSDATE;&#10;    :NEW.last_updated_user_id  :&#61; NVL(PKG_LOOKUPS.GetUserID(SYS_CONTEXT(&#39;USERENV&#39;, &#39;CLIENT_IDENTIFIER&#39;)), :OLD.last_updated_user_id);&#10;  END IF;&#10;END rqmnt_cfo;</textarea>
                         </div>
                     </div>
                 </section>
