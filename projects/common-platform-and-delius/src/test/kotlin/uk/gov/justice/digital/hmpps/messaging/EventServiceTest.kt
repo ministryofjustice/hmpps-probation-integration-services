@@ -31,6 +31,9 @@ internal class EventServiceTest {
     lateinit var mainOffenceRepository: MainOffenceRepository
 
     @Mock
+    lateinit var additionalOffenceRepository: AdditionalOffenceRepository
+
+    @Mock
     lateinit var contactRepository: ContactRepository
 
     @Mock
