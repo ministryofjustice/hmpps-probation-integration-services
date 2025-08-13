@@ -50,7 +50,7 @@ class UserController(
 
     private fun sort(sortString: String, ascending: Boolean, offenderBased: Boolean): Sort {
         val direction = if (ascending) Sort.Direction.ASC else Sort.Direction.DESC
-        val qualifier = if (offenderBased)  "o." else ""
+        val qualifier = if (offenderBased) "o." else ""
         return when (sortString) {
             "date" -> Sort.by(direction, "contact_date", "contact_start_time")
             "name" -> Sort.by(direction, "${qualifier}surname")
