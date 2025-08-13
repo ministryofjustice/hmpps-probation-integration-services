@@ -53,7 +53,7 @@ class UserController(
         return when (sortString) {
             "date" -> Sort.by(direction, "contact_date", "contact_start_time")
             "name" -> Sort.by(direction, "surname")
-            "dob" -> Sort.by(direction, "o.date_of_birth_date")
+            "dob" -> Sort.by(direction, "date_of_birth_date")
             "appointment" -> Sort.by(direction, "contactDescription")
             "sentence" -> Sort.by(direction, "sentenceDescription")
             else -> Sort.by(direction, "contact_date", "contact_start_time")
