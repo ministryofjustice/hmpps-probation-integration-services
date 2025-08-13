@@ -924,6 +924,8 @@ components:
           $ref: "#/components/schemas/Name"
         event:
           $ref: "#/components/schemas/Event"
+        mostRecentAllocatedEvent:
+          $ref: "#/components/schemas/Event"
         sentence:
           $ref: "#/components/schemas/Sentence"
         initialAppointment:

@@ -260,7 +260,6 @@ components:
           type: string
           format: date
       required:
-      - category
       - date
       - type
     Registrations:
