@@ -8,6 +8,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractio
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.*
 import uk.gov.justice.digital.hmpps.messaging.HearingOffence
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.ZonedDateTime
 
 @Service
@@ -15,6 +16,7 @@ class EventService(
     auditedInteractionService: AuditedInteractionService,
     private val eventRepository: EventRepository,
     private val mainOffenceRepository: MainOffenceRepository,
+    private val additionalOffenceRepository: AdditionalOffenceRepository,
     private val detailedOffenceRepository: DetailedOffenceRepository,
     private val offenceRepository: OffenceRepository,
     private val orderManagerRepository: OrderManagerRepository,
@@ -35,7 +37,8 @@ class EventService(
         courtCode: String,
         sittingDay: ZonedDateTime,
         caseUrn: String,
-        hearingId: String
+        hearingId: String,
+        additionalOffences: List<HearingOffence>
     ): InsertEventResult =
         audit(BusinessInteractionCode.INSERT_EVENT) { audit ->
 
@@ -52,14 +55,11 @@ class EventService(
                 )
             )
 
-            val hoOffenceCode =
-                hearingOffence.offenceCode?.let {
-                    detailedOffenceRepository.findByCode(it)?.homeOfficeCode?.replace(
-                        "/",
-                        ""
-                    )
-                }
-                    ?: throw IllegalArgumentException("Home Office Code cannot be null")
+            val detailedOffence = hearingOffence.offenceCode?.let { detailedOffenceRepository.findByCode(it) }
+            val hoOffenceCode = detailedOffence?.homeOfficeCode?.replace(
+                "/",
+                ""
+            ) ?: throw IllegalArgumentException("Home Office Code cannot be null")
 
             // Create the main offence record from the hearing message
             val savedMainOffence = mainOffenceRepository.save(
@@ -71,8 +71,15 @@ class EventService(
                     softDeleted = false,
                     count = 1, // TODO: Need to identify how offence count is used, in most cases appears to be 1
                     person = person,
+                    detailedOffence = detailedOffence,
                 )
             )
+
+            additionalOffences.mapNotNull { it.asAdditionalOffence(savedEvent) }
+                .takeIf { it.isNotEmpty() }
+                ?.also {
+                    additionalOffenceRepository.saveAll(it)
+                }
 
             val court = courtRepository.getByOuCode(courtCode)
             val courtAppearanceContactType = contactTypeRepository.getByCode(ContactTypeCode.COURT_APPEARANCE.code)
@@ -155,4 +162,18 @@ class EventService(
             audit["offenderId"] = savedEvent.person.id!!
             InsertEventResult(savedEvent, savedMainOffence, initialCourtAppearance, initialContact, savedOrderManager)
         }
+
+    private fun HearingOffence.asAdditionalOffence(event: Event): AdditionalOffence? {
+        val detailedOffence = offenceCode?.let { detailedOffenceRepository.findByCode(it) }
+        return detailedOffence?.homeOfficeCode?.replace("/", "")?.let {
+            val offence = offenceRepository.findOffence(it)
+            AdditionalOffence(
+                event,
+                offence,
+                LocalDateTime.now(),
+                detailedOffence,
+                1
+            )
+        }
+    }
 }

@@ -104,7 +104,8 @@ class Handler(
                     hearingOffence = mainOffence,
                     sittingDay = notification.message.hearing.hearingDays.first().sittingDay,
                     caseUrn = caseUrn,
-                    hearingId = notification.message.hearing.id
+                    hearingId = notification.message.hearing.id,
+                    remandedOffences.filter { it.offenceCode != mainOffence.offenceCode }
                 )
 
                 if (personService.personWithDefendantIdExists(defendant.id)) return

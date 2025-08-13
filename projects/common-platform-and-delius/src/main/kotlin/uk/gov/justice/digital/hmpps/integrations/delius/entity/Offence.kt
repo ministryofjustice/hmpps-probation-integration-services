@@ -2,6 +2,8 @@ package uk.gov.justice.digital.hmpps.integrations.delius.entity
 
 import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
+import org.hibernate.annotations.SQLRestriction
+import org.hibernate.type.NumericBooleanConverter
 import org.springframework.data.annotation.CreatedBy
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedBy
@@ -10,6 +12,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import org.springframework.data.jpa.repository.JpaRepository
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.ZonedDateTime
 
 @Entity
@@ -52,6 +55,10 @@ class MainOffence(
     val offence: Offence,
 
     @ManyToOne
+    @JoinColumn(name = "detailed_offence_id")
+    val detailedOffence: DetailedOffence?,
+
+    @ManyToOne
     @JoinColumn(name = "offender_id", nullable = false)
     val person: Person,
 
@@ -70,9 +77,6 @@ class MainOffence(
     @Column
     @LastModifiedDate
     var lastUpdatedDatetime: ZonedDateTime = ZonedDateTime.now(),
-
-    @Column
-    val detailedOffenceId: Long? = null,
 )
 
 @Entity
@@ -140,6 +144,51 @@ class DetailedOffence(
     var lastUpdatedDatetime: ZonedDateTime? = null
 )
 
+@Entity
+@SQLRestriction("soft_deleted = 0")
+@EntityListeners(AuditingEntityListener::class)
+@SequenceGenerator(name = "additional_offence_id_seq", sequenceName = "additional_offence_id_seq", allocationSize = 1)
+class AdditionalOffence(
+
+    @ManyToOne
+    @JoinColumn(name = "event_id")
+    val event: Event,
+
+    @JoinColumn(name = "offence_id")
+    @ManyToOne
+    val offence: Offence,
+
+    @Column(name = "offence_date")
+    val date: LocalDateTime?,
+
+    @ManyToOne
+    @JoinColumn(name = "detailed_offence_id")
+    val detailedOffence: DetailedOffence?,
+
+    val offenceCount: Long? = null,
+
+    @Column(columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
+    val softDeleted: Boolean = false,
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "additional_offence_id_seq")
+    @Column(name = "additional_offence_id")
+    val id: Long? = null
+) {
+    @CreatedBy
+    var createdByUserId: Long? = null
+
+    @CreatedDate
+    var createdDatetime: ZonedDateTime? = null
+
+    @LastModifiedBy
+    var lastUpdatedUserId: Long? = null
+
+    @LastModifiedDate
+    var lastUpdatedDatetime: ZonedDateTime? = null
+}
+
 interface MainOffenceRepository : JpaRepository<MainOffence, Long>
 
 interface OffenceRepository : JpaRepository<Offence, Long> {
@@ -152,3 +201,5 @@ fun OffenceRepository.findOffence(offenceCode: String) =
 interface DetailedOffenceRepository : JpaRepository<DetailedOffence, Long> {
     fun findByCode(code: String): DetailedOffence?
 }
+
+interface AdditionalOffenceRepository : JpaRepository<AdditionalOffence, Long>

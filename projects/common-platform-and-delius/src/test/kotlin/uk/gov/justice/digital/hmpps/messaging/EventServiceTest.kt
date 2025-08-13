@@ -31,6 +31,9 @@ internal class EventServiceTest {
     lateinit var mainOffenceRepository: MainOffenceRepository
 
     @Mock
+    lateinit var additionalOffenceRepository: AdditionalOffenceRepository
+
+    @Mock
     lateinit var contactRepository: ContactRepository
 
     @Mock
@@ -139,7 +142,8 @@ internal class EventServiceTest {
             )
         ).thenReturn(ReferenceDataGenerator.ORDER_MANAGER_INITIAL_ALLOCATION)
 
-        val result = eventService.insertEvent(hearingOffence, person, court.ouCode!!, sittingDay, caseUrn, hearing.id)
+        val result =
+            eventService.insertEvent(hearingOffence, person, court.ouCode!!, sittingDay, caseUrn, hearing.id, listOf())
 
         verify(eventRepository).save(any<Event>())
         verify(mainOffenceRepository).save(any<MainOffence>())

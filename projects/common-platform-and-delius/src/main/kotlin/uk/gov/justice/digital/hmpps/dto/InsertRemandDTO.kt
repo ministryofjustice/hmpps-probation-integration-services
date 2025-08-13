@@ -10,5 +10,6 @@ data class InsertRemandDTO(
     val hearingOffence: HearingOffence,
     val sittingDay: ZonedDateTime,
     val caseUrn: String,
-    val hearingId: String
+    val hearingId: String,
+    val additionalOffences: List<HearingOffence>
 )
