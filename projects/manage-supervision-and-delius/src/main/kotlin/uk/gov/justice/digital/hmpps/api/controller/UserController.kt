@@ -30,7 +30,7 @@ class UserController(
         @RequestParam(required = false, defaultValue = "10") size: Int,
         @RequestParam(required = false, defaultValue = "default") sortBy: String,
         @RequestParam(required = false, defaultValue = "true") ascending: Boolean
-    ) = userService.getUpcomingAppointments(username, PageRequest.of(page, size, sort(sortBy, ascending)))
+    ) = userService.getUpcomingAppointments(username, PageRequest.of(page, size, sort(sortBy, ascending, true)))
 
     @GetMapping("/schedule/no-outcome")
     @Operation(summary = "Gets passed appointments without an outcome for a user")
@@ -40,7 +40,7 @@ class UserController(
         @RequestParam(required = false, defaultValue = "10") size: Int,
         @RequestParam(required = false, defaultValue = "date") sortBy: String,
         @RequestParam(required = false, defaultValue = "true") ascending: Boolean
-    ) = userService.getAppointmentsWithoutOutcomes(username, PageRequest.of(page, size, sort(sortBy, ascending)))
+    ) = userService.getAppointmentsWithoutOutcomes(username, PageRequest.of(page, size, sort(sortBy, ascending, false)))
 
     @GetMapping("/appointments")
     @Operation(summary = "Gets passed appointments without an outcome for a user")
@@ -48,12 +48,13 @@ class UserController(
         @PathVariable username: String
     ) = userService.getAppointmentsForUser(username)
 
-    private fun sort(sortString: String, ascending: Boolean): Sort {
+    private fun sort(sortString: String, ascending: Boolean, offenderBased: Boolean): Sort {
         val direction = if (ascending) Sort.Direction.ASC else Sort.Direction.DESC
+        val qualifier = if (offenderBased)  "o." else ""
         return when (sortString) {
             "date" -> Sort.by(direction, "contact_date", "contact_start_time")
             "name" -> Sort.by(direction, "surname")
-            "dob" -> Sort.by(direction, "date_of_birth_date")
+            "dob" -> Sort.by(direction, "${qualifier}date_of_birth_date")
             "appointment" -> Sort.by(direction, "contactDescription")
             "sentence" -> Sort.by(direction, "sentenceDescription")
             else -> Sort.by(direction, "contact_date", "contact_start_time")
