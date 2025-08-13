@@ -18,7 +18,6 @@ class RegistrationsService(
         if (!personRepository.existsByCrn(crn))
             throw NotFoundException("Person with CRN $crn not found")
 
-
         val latestRegistration = registrationRepository.findLatestRegistration(crn)
             ?: return InformationPageResponse(registration = null)
 

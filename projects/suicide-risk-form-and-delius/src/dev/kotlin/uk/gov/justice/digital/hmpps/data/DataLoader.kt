@@ -51,6 +51,5 @@ class DataLoader(
         entityManager.flush()
         entityManager.persist(RegistrationGenerator.SUICIDE_SELF_HARM_REGISTRATION)
         entityManager.persist(PersonGenerator.PERSON_NO_REGISTRATIONS)
-
     }
 }
