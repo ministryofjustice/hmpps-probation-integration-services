@@ -12,14 +12,6 @@ inputs:
 runs:
   using: composite
   steps:
-    - uses: actions/checkout@v5
-
-    - name: Get environment details
-      uses: ./.github/actions/get-env-details
-      id: env
-      with:
-        environment: ${{ inputs.environment }}
-
     - name: Authenticate with MOJ Modernisation Platform AWS account
       uses: aws-actions/configure-aws-credentials@7474bc4690e29a8392af63c5b98e7449536d5c3a
       with:
