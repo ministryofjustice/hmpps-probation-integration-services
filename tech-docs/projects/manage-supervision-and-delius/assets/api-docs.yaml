@@ -2575,6 +2575,8 @@ components:
           type: string
         deliusManaged:
           type: boolean
+        isVisor:
+          type: boolean
       required:
       - deliusManaged
       - documents
