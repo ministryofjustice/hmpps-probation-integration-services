@@ -8,6 +8,7 @@ import java.time.ZonedDateTime
 data class Document(
     val id: String,
     val name: String,
+    val createdAt: ZonedDateTime?,
     val lastUpdated: ZonedDateTime?
 )
 

@@ -498,6 +498,6 @@ fun ContactAddress.toAddress() = uk.gov.justice.digital.hmpps.api.model.personal
     lastUpdatedBy = Name(forename = lastUpdatedUser.forename, surname = lastUpdatedUser.surname)
 )
 
-fun PersonDocument.toDocument() = Document(id = alfrescoId, name = name, lastUpdated = lastUpdated)
+fun PersonDocument.toDocument() = Document(id = alfrescoId, name = name, createdAt = createdAt, lastUpdated = lastUpdated)
 fun PersonSummaryEntity.toPersonSummary() =
     PersonSummary(Name(forename, secondName, surname), crn, id, pnc, noms, dateOfBirth)
