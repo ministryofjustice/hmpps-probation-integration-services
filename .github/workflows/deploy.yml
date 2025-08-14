@@ -27,6 +27,7 @@ on:
           - '["domain-events-and-delius"]'
           - '["dps-and-delius"]'
           - '["effective-proposal-framework-and-delius"]'
+          - '["esupervision-and-delius"]'
           - '["external-api-and-delius"]'
           - '["feature-flags"]'
           - '["find-and-refer-and-delius"]'
