@@ -9,8 +9,8 @@ import uk.gov.justice.digital.hmpps.api.model.appointment.CreateAppointment
 import uk.gov.justice.digital.hmpps.api.model.personalDetails.Document
 import uk.gov.justice.digital.hmpps.api.model.schedule.OfficeAddress
 import uk.gov.justice.digital.hmpps.api.model.schedule.PersonAppointment
-import uk.gov.justice.digital.hmpps.api.model.schedule.Schedule
 import uk.gov.justice.digital.hmpps.api.model.schedule.PersonSchedule
+import uk.gov.justice.digital.hmpps.api.model.schedule.Schedule
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.ContactDocument
 
@@ -164,4 +164,5 @@ fun Contact.toActivity(noteId: Int? = null) = Activity(
     isVisor = isVisor,
 )
 
-fun ContactDocument.toDocument() = Document(id = alfrescoId, name = name, lastUpdated = lastUpdated)
+fun ContactDocument.toDocument() =
+    Document(id = alfrescoId, name = name, createdAt = createdAt, lastUpdated = lastUpdated)
