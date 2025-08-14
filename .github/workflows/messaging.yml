@@ -27,6 +27,7 @@ on:
           - cas3-and-delius-queue
           - common-platform-and-delius-queue
           - custody-key-dates-and-delius-queue
+          - esupervision-and-delius-queue
           - make-recall-decisions-and-delius-queue
           - manage-offences-and-delius-queue
           - manage-pom-cases-and-delius-queue
@@ -41,7 +42,6 @@ on:
           - unpaid-work-and-delius-queue
           - workforce-allocations-to-delius-queue
           - suicide-risk-form-and-delius-queue
-          - esupervision-and-delius-queue
           # ^ add new queues here
 
 jobs:

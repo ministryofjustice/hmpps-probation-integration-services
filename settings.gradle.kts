@@ -1,9 +1,6 @@
 rootProject.name = "probation-integration-services"
 include(
     // ⌄ add new projects here
-    "esupervision-and-delius",
-    "suicide-risk-form-and-delius",
-    "hmpps-common-platform-event-receiver",
     "accredited-programmes-and-delius",
     "accredited-programmes-and-oasys",
     "appointment-reminders-and-delius",
@@ -23,11 +20,13 @@ include(
     "domain-events-and-delius",
     "dps-and-delius",
     "effective-proposal-framework-and-delius",
+    "esupervision-and-delius",
     "external-api-and-delius",
     "feature-flags",
     "find-and-refer-and-delius",
     "hdc-licences-and-delius",
     "hmpps-auth-and-delius",
+    "hmpps-common-platform-event-receiver",
     "hmpps-libra-event-receiver",
     "ims-and-delius",
     "jitbit-and-delius",
@@ -57,6 +56,7 @@ include(
     "sentence-plan-and-oasys",
     "soc-and-delius",
     "subject-access-requests-and-delius",
+    "suicide-risk-form-and-delius",
     "tier-to-delius",
     "unpaid-work-and-delius",
     "workforce-allocations-to-delius",

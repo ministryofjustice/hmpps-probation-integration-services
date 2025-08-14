@@ -14,6 +14,16 @@ spring:
         query.mutation_strategy.global_temporary:
             create_tables: false
             drop_tables: false
+  security.oauth2.client:
+    registration:
+      default:
+        provider: hmpps-auth
+        authorization-grant-type: client_credentials
+        client-id: ${oauth2.client-id}
+        client-secret: ${oauth2.client-secret}
+    provider:
+      hmpps-auth:
+        token-uri: http://localhost:${wiremock.port}/auth/oauth/token
   threads.virtual.enabled: true
 
 delius.db.username: EsupervisionAndDelius # Should match value in [deploy/database/access.yml].
@@ -39,6 +49,10 @@ spring:
 seed.database: true
 
 messaging.consumer.queue: message-queue
+
+oauth2:
+  client-id: esupervision-and-delius
+  client-secret: esupervision-and-delius
 
 logging.level:
   uk.gov.justice.digital.hmpps: DEBUG
