@@ -1,0 +1,26 @@
+# Common values
+generic-service:
+  productId: HMPPS518
+  nameOverride: esupervision-and-delius
+  serviceAccountName: esupervision-and-delius
+
+  image:
+    repository: ghcr.io/ministryofjustice/hmpps-probation-integration-services/esupervision-and-delius
+
+  ingress:
+    tlsSecretName: esupervision-and-delius-cert
+
+  namespace_secrets:
+    common:
+      SPRING_DATASOURCE_URL: DB_URL
+    esupervision-and-delius-database:
+      SPRING_DATASOURCE_USERNAME: DB_USERNAME
+      SPRING_DATASOURCE_PASSWORD: DB_PASSWORD
+    esupervision-and-delius-sentry:
+      SENTRY_DSN: SENTRY_DSN
+    esupervision-and-delius-queue:
+      MESSAGING_CONSUMER_QUEUE: QUEUE_NAME
+
+generic-prometheus-alerts:
+  targetApplication: esupervision-and-delius
+

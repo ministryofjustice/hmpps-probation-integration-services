@@ -1,0 +1,12 @@
+enabled: false # TODO set this to true when you're ready to deploy your service
+
+generic-service:
+  ingress:
+    host: esupervision-and-delius.hmpps.service.justice.gov.uk
+
+  env:
+    SENTRY_ENVIRONMENT: prod
+
+generic-prometheus-alerts:
+  sqsOldestAlertQueueNames:
+    - probation-integration-prod-esupervision-and-delius-queue
