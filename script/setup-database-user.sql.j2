@@ -1,0 +1,200 @@
+whenever sqlerror exit failure
+set feed off serveroutput on
+
+-- Macro for converting values list into SQL list of strings
+{% macro sql_list(items) -%}
+({% for t in items | default(['']) %}'{{ t | upper | replace("'", "''") }}'{% if not loop.last %}, {% endif %}{% endfor %} )
+{%- endmacro %}
+
+-- Create system user sequence if it does not exist
+declare
+    l_system_user_id_seq_exists number;
+begin
+    select 1
+    into l_system_user_id_seq_exists
+    from all_sequences
+    where sequence_owner = 'DELIUS_APP_SCHEMA'
+      and sequence_name = 'SYSTEM_USER_ID_SEQ';
+exception
+    when no_data_found then execute immediate 'create sequence delius_app_schema.system_user_id_seq start with 100000 minvalue 100000 maxvalue 9999999';
+end;
+/
+
+-- Create shared role if it does not exist
+declare
+    l_shared_rolename varchar2(255) := 'probation_integration_shared_role';
+    l_role_exists     integer;
+    cursor c_new_tables is select dba_tables.*
+                           from dba_tables
+                           left join dba_tab_privs granted_tables
+                                     on granted_tables.table_name = dba_tables.table_name and
+                                        granted_tables.grantee = upper(l_shared_rolename)
+                           where dba_tables.owner = 'DELIUS_APP_SCHEMA'
+                             and dba_tables.iot_type is null
+                             and dba_tables.table_name not like '%$%'
+                             and dba_tables.table_name not like 'Z%\_%' escape '\' and granted_tables.table_name is null;
+begin
+    -- Check if shared role exists
+    select count(*) into l_role_exists from dba_roles where role = upper(l_shared_rolename);
+    if l_role_exists = 0 then
+        execute immediate 'create role ' || l_shared_rolename;
+        dbms_output.put_line('created ' || l_shared_rolename || ' role.');
+
+        -- Grant default permissions to role
+        execute immediate 'grant create session to ' || l_shared_rolename;
+        execute immediate 'grant execute on delius_app_schema.pkg_vpd_ctx to ' || l_shared_rolename; -- for setting client id
+        execute immediate 'grant exempt access policy to ' || l_shared_rolename; -- disable vpd entirely
+    end if;
+
+    -- Grant read table permissions to shared role
+    for table_ in c_new_tables
+        loop
+            execute immediate 'grant select on delius_app_schema.' || table_.table_name || ' to ' || l_shared_rolename;
+            dbms_output.put_line('granted shared read privileges to table: ' || table_.table_name);
+        end loop;
+end;
+/
+
+declare
+    l_username          varchar2(255) := '{{ username }}';
+    l_password          varchar2(255) := '{{ password }}';
+    l_rolename          varchar2(255) := '{{ username }}_role';
+    l_shared_rolename   varchar2(255) := 'probation_integration_shared_role';
+    l_audit_create_user varchar2(255) := '{{ database.audit.create_user | default(true) }}';
+    l_audit_username    varchar2(255) := '{{ database.audit.username }}';
+    l_audit_forename    varchar2(255) := '{{ database.audit.forename }}';
+    l_audit_surname     varchar2(255) := '{{ database.audit.surname }}';
+    l_system_user_id    integer       := 4; -- 'Data Maintenance' user
+    l_user_exists       integer;
+    l_role_exists       integer;
+    l_sequence_exists   integer;
+    l_user_version      integer;
+begin
+
+    -- Create role
+    select count(*) into l_role_exists from dba_roles where role = upper(l_rolename);
+    if l_role_exists = 0 then
+        execute immediate 'create role ' || l_rolename;
+        dbms_output.put_line('created ' || l_rolename || ' role.');
+    end if;
+
+    -- Grant package permissions to role
+    for package in (select distinct object_name name
+                    from all_procedures
+                    where object_type = 'PACKAGE' and owner = 'DELIUS_APP_SCHEMA')
+        loop
+            if upper(package.name) in {{ sql_list(database.access.packages) }} then
+                -- Grant access to package
+                execute immediate 'grant execute on delius_app_schema.' || package.name || ' to ' || l_rolename;
+            end if;
+        end loop;
+    for package in (select table_name name
+                    from dba_tab_privs
+                    where grantee = upper(l_rolename) and type = 'PACKAGE' and privilege = 'EXECUTE')
+        loop
+            if upper(package.name) <> 'PKG_VPD_CTX' and upper(package.name) not in {{ sql_list(database.access.packages) }} then
+                -- Revoke access to package
+                execute immediate 'revoke execute on delius_app_schema.' || package.name || ' from ' || l_rolename;
+            end if;
+        end loop;
+
+    -- Grant table permissions to role
+    for table_ in (select (case when iot_type = 'IOT_OVERFLOW' then iot_name else table_name end) name
+                   from dba_tables
+                   where owner = 'DELIUS_APP_SCHEMA'
+                     and table_name not like '%$%'
+                     and table_name not like 'Z%\_%' escape '\')
+        loop
+            if upper(table_.name) in {{ sql_list(database.access.tables) }} then
+                -- Write access to table
+                execute immediate 'grant insert,update,delete on delius_app_schema.' || table_.name || ' to ' ||
+                                  l_rolename;
+                dbms_output.put_line('granted write privileges to table: ' || table_.name);
+
+                -- Read access to sequence
+                select count(*)
+                into l_sequence_exists
+                from dba_sequences
+                where sequence_name = upper(table_.name || '_id_seq')
+                  and sequence_owner = 'DELIUS_APP_SCHEMA';
+                if l_sequence_exists = 1 then
+                    execute immediate 'grant select on delius_app_schema.' || table_.name || '_id_seq to ' ||
+                                      l_rolename;
+                    dbms_output.put_line('granted read privileges to sequence: ' || table_.name || '_id_seq');
+                end if;
+            end if;
+        end loop;
+
+    -- Grant ad-hoc access to sequences that don't match table names
+    for sequence_ in (select sequence_name name
+                      from dba_sequences
+                      where upper(sequence_name) in {{ sql_list(database.access.sequences) }})
+        loop
+            execute immediate 'grant select on delius_app_schema.' || sequence_.name || ' to ' || l_rolename;
+            dbms_output.put_line('granted read privileges to sequence: ' || sequence_.name);
+        end loop;
+
+    -- Create Oracle user account
+    select count(*) into l_user_exists from dba_users where username = upper(l_username);
+    if l_user_exists = 0 then
+        execute immediate 'create user ' || l_username || ' default tablespace users';
+        dbms_output.put_line('created user ' || l_username);
+    end if;
+
+    -- Set password
+    execute immediate 'alter user ' || l_username || ' identified by "' || l_password || '" account unlock';
+
+    -- Enable session auditing
+    execute immediate 'audit create session by ' || l_username;
+
+    -- Set default schema
+    execute immediate 'create or replace trigger delius_app_schema.' || l_username || '_logon
+                        after logon on ' || l_username || '.schema
+                        begin
+                            execute immediate ''alter session set current_schema=delius_app_schema'';
+                        end;';
+
+    -- Grant roles to user account (shared and specific)
+    execute immediate 'grant ' || l_shared_rolename || ' to ' || l_username;
+    dbms_output.put_line('granted ' || l_shared_rolename || ' to ' || l_username);
+    execute immediate 'grant ' || l_rolename || ' to ' || l_username;
+    dbms_output.put_line('granted ' || l_rolename || ' to ' || l_username);
+
+    -- Create Delius user for auditing
+    if lower(l_audit_create_user) = 'true' then
+        merge into delius_app_schema.user_
+        using ( select l_audit_username as username, l_audit_forename as forename, l_audit_surname as surname
+                from dual ) input
+        on (upper(user_.distinguished_name) = upper(input.username))
+        when matched then
+            update
+            set forename              = input.forename,
+                surname               = input.surname,
+                row_version           = case when forename <> input.forename or surname <> input.surname
+                                                 then row_version + 1
+                                             else row_version end,
+                last_updated_datetime = case when forename <> input.forename or surname <> input.surname then sysdate
+                                             else last_updated_datetime end,
+                last_updated_user_id  = case when forename <> input.forename or surname <> input.surname
+                                                 then l_system_user_id else last_updated_user_id end
+        when not matched then
+            insert (user_id, distinguished_name, forename, surname, row_version, private, organisation_id,
+                    last_updated_user_id, last_updated_datetime, created_by_user_id, created_datetime)
+            values (delius_app_schema.system_user_id_seq.nextval, input.username, input.forename, input.surname, 0, 0,
+                    0, l_system_user_id, current_timestamp, l_system_user_id, current_timestamp);
+        select row_version
+        into l_user_version
+        from delius_app_schema.user_
+        where upper(user_.distinguished_name) = upper(l_audit_username);
+        dbms_output.put_line('audit user ' || l_audit_username || ' is at version ' || l_user_version);
+    end if;
+
+    -- Set VPD client id on logon, to link the Oracle user to the Delius user
+    execute immediate 'create or replace trigger delius_app_schema.' || l_username || '_set_client_id
+                        after logon on ' || l_username || '.schema
+                        begin
+                            pkg_vpd_ctx.set_client_identifier(username => ''' || l_audit_username || ''');
+                        end;';
+end;
+/
+exit
