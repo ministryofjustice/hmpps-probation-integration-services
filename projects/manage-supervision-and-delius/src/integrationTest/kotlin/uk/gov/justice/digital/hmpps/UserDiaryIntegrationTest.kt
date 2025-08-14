@@ -87,7 +87,7 @@ class UserDiaryIntegrationTest {
         "upcoming?sortBy=appointment, 2",
         "upcoming?sortBy=sentence, 2"
     )
-    fun `get upcoming appointments default sort ascending order`(uri: String, resultSize: Int) {
+    fun `get upcoming appointments sort ascending order`(uri: String, resultSize: Int) {
         val user = USER
 
         val response =
