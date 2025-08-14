@@ -1,0 +1,59 @@
+name: Setup database access (MOJ Modernisation Platform)
+description: Configure credentials and audit user in the Delius database
+
+inputs:
+  project:
+    description: Project
+  environment:
+    description: Environment
+  aws-account-id:
+    description: Modernisation Platform AWS Account ID
+
+runs:
+  using: composite
+  steps:
+    - uses: actions/checkout@v5
+
+    - name: Get environment details
+      uses: ./.github/actions/get-env-details
+      id: env
+      with:
+        environment: ${{ inputs.environment }}
+
+    - name: Authenticate with MOJ Modernisation Platform AWS account
+      uses: aws-actions/configure-aws-credentials@7474bc4690e29a8392af63c5b98e7449536d5c3a
+      with:
+        aws-region: eu-west-2
+        role-to-assume: arn:aws:iam::${{ inputs.aws-account-id }}:role/modernisation-platform-oidc-cicd
+        role-session-name: probation-integration-database-access-${{ github.run_number }}
+        role-duration-seconds: 1200
+
+    - name: Replace template vars in SQL script
+      shell: bash
+      run: |
+        pip install jinja2-cli
+        jinja2 \
+          -D "username=$(kubectl get secret '${{ inputs.project }}-database' -o json | jq -r '.data.DB_USERNAME | @base64d')" \
+          -D "password=$(kubectl get secret '${{ inputs.project }}-database' -o json | jq -r '.data.DB_PASSWORD | @base64d')" \
+          ./script/setup-database-user.sql.j2 \
+          ./projects/${{ inputs.project }}/deploy/database/access.yml \
+        > ./script/setup-database-user.sql
+
+    - name: Run SQL script
+      shell: bash
+      run: |
+        instance_id=$(aws ec2 describe-instances --filters 'Name=tag:database,Values=delius_primarydb' --query 'Reservations[0].Instances[].InstanceId' --output text)
+        command_id=$(
+          aws ssm send-command \
+            --document-name "AWS-RunShellScript" \
+            --parameters "commands='base64 -d <<<$(base64 -w0 ./script/setup-database-user.sql) | sudo -u oracle -i sqlplus -s / as sysdba'" \
+            --instance-ids "$instance_id" \
+          | jq -r '.Command.CommandId'
+        )
+
+        echo "Started command with id=$command_id"
+        echo "To view the logs, first log in to https://moj.awsapps.com/start then open https://eu-west-2.console.aws.amazon.com/systems-manager/run-command/$command_id"
+        echo "Waiting for command to complete..."
+        aws ssm wait command-executed --command-id "$command_id" --instance-id "$instance_id"
+        echo "Completed with status: $(aws ssm get-command-invocation --command-id "$command_id" --instance-id "$instance_id" --query "Status" --output text)"
+        exit $(aws ssm get-command-invocation --command-id "$command_id" --instance-id "$instance_id" --query "ResponseCode" --output text)
