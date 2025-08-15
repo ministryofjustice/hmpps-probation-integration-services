@@ -9,6 +9,8 @@ import java.time.LocalDate
 object PersonGenerator {
 
     val DEFAULT_PERSON = generatePerson(crn = "A000001")
+    val PERSON_NO_REGISTRATIONS = generatePerson(crn = "A000002")
+
     val DS_ADDRESS_STATUS = ReferenceDataGenerator.generateDataset(Dataset.ADDRESS_STATUS)
     val DEFAULT_ADDRESS_STATUS = ReferenceDataGenerator.generateReferenceData(DS_ADDRESS_STATUS, "ADS1")
     val DEFAULT_ADDRESS = generatePersonAddress(DEFAULT_PERSON, DEFAULT_ADDRESS_STATUS)
