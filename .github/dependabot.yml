@@ -7,6 +7,8 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
+    cooldown:
+      default-days: 7
     groups:
       minor:
         update-types:
@@ -16,9 +18,13 @@ updates:
           - "*"
 
   - package-ecosystem: "github-actions"
-    directory: "/"
+    directories:
+      - "/"
+      - "/.github/actions/*/"
     schedule:
       interval: "weekly"
+    cooldown:
+      default-days: 7
     groups:
       minor:
         update-types:
@@ -26,81 +32,6 @@ updates:
           - "patch"
         patterns:
           - "*"
-
-  - package-ecosystem: "github-actions"
-    directory: "/.github/actions/analyse"
-    schedule:
-      interval: "weekly"
-
-  - package-ecosystem: "github-actions"
-    directory: "/.github/actions/app-insights-to-slack"
-    schedule:
-      interval: "weekly"
-
-  - package-ecosystem: "github-actions"
-    directory: "/.github/actions/dependabot-automerge"
-    schedule:
-      interval: "weekly"
-
-  - package-ecosystem: "github-actions"
-    directory: "/.github/actions/check-changes"
-    schedule:
-      interval: "weekly"
-
-  - package-ecosystem: "github-actions"
-    directory: "/.github/actions/cloud-platform-auth"
-    schedule:
-      interval: "weekly"
-
-  - package-ecosystem: "github-actions"
-    directory: "/.github/actions/cloud-platform-deploy"
-    schedule:
-      interval: "weekly"
-
-  - package-ecosystem: "github-actions"
-    directory: "/.github/actions/create-signed-pull-request"
-    schedule:
-      interval: "weekly"
-
-  - package-ecosystem: "github-actions"
-    directory: "/.github/actions/docker-build"
-    schedule:
-      interval: "weekly"
-
-  - package-ecosystem: "github-actions"
-    directory: "/.github/actions/format-code"
-    schedule:
-      interval: "weekly"
-
-  - package-ecosystem: "github-actions"
-    directory: "/.github/actions/get-build-info"
-    schedule:
-      interval: "weekly"
-
-  - package-ecosystem: "github-actions"
-    directory: "/.github/actions/get-env-details"
-    schedule:
-      interval: "weekly"
-
-  - package-ecosystem: "github-actions"
-    directory: "/.github/actions/gradle-build"
-    schedule:
-      interval: "weekly"
-
-  - package-ecosystem: "github-actions"
-    directory: "/.github/actions/merge-changes"
-    schedule:
-      interval: "weekly"
-
-  - package-ecosystem: "github-actions"
-    directory: "/.github/actions/render-project-template"
-    schedule:
-      interval: "weekly"
-
-  - package-ecosystem: "github-actions"
-    directory: "/.github/actions/setup-gradle"
-    schedule:
-      interval: "weekly"
 
   - package-ecosystem: "terraform"
     directory: "/templates"
@@ -108,22 +39,8 @@ updates:
       interval: "weekly"
 
   - package-ecosystem: "docker"
-    directory: "/projects/person-search-index-from-delius/container"
-    schedule:
-      interval: "weekly"
-
-  - package-ecosystem: "docker"
-    directory: "/projects/redrive-dead-letter-queues/container"
-    schedule:
-      interval: "weekly"
-
-  - package-ecosystem: "docker"
-    directory: "/projects/feature-flags/container"
-    schedule:
-      interval: "weekly"
-
-  - package-ecosystem: "docker"
-    directory: "/projects/monitor-cron-jobs/container"
+    directories:
+      - "/projects/*/container"
     schedule:
       interval: "weekly"
 
