@@ -5,4 +5,6 @@ data class AdditionalSentence(
     val amount: Long?,
     val notes: String?,
     val description: String,
+    val sentenceNotes: List<NoteDetail>? = null,
+    val sentenceNote: NoteDetail? = null,
 )

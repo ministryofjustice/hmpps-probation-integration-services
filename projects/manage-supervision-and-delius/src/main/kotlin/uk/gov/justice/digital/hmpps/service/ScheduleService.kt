@@ -7,20 +7,24 @@ import uk.gov.justice.digital.hmpps.api.model.Name
 import uk.gov.justice.digital.hmpps.api.model.activity.Activity
 import uk.gov.justice.digital.hmpps.api.model.appointment.CreateAppointment
 import uk.gov.justice.digital.hmpps.api.model.personalDetails.Document
-import uk.gov.justice.digital.hmpps.api.model.schedule.OfficeAddress
-import uk.gov.justice.digital.hmpps.api.model.schedule.PersonAppointment
-import uk.gov.justice.digital.hmpps.api.model.schedule.PersonSchedule
-import uk.gov.justice.digital.hmpps.api.model.schedule.Schedule
+import uk.gov.justice.digital.hmpps.api.model.schedule.*
+import uk.gov.justice.digital.hmpps.api.model.user.PersonManager
+import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.ContactDocument
+import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.OffenderManager
+import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.OffenderManagerRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.getByCrn
+import java.time.ZonedDateTime
 
+@Transactional
 @Service
 class ScheduleService(
     private val personRepository: PersonRepository,
-    private val contactRepository: ContactRepository
+    private val contactRepository: ContactRepository,
+    private val comRepository: OffenderManagerRepository,
 ) {
 
-    @Transactional
     fun getPersonAppointment(crn: String, contactId: Long, noteId: Int? = null): PersonAppointment {
         val summary = personRepository.getSummary(crn)
         val contact = contactRepository.getContact(summary.id, contactId)
@@ -30,7 +34,6 @@ class ScheduleService(
         )
     }
 
-    @Transactional
     fun getPersonUpcomingSchedule(crn: String, pageable: Pageable): Schedule {
         val summary = personRepository.getSummary(crn)
         val appointments = contactRepository.getUpComingAppointments(summary.id, pageable)
@@ -47,7 +50,6 @@ class ScheduleService(
         )
     }
 
-    @Transactional
     fun getPersonPreviousSchedule(crn: String, pageable: Pageable): Schedule {
         val summary = personRepository.getSummary(crn)
         val appointments = contactRepository.getPageablePreviousAppointments(summary.id, pageable)
@@ -61,6 +63,23 @@ class ScheduleService(
                 appointments.content.map { it.toActivity() }
 
             )
+        )
+    }
+
+    fun getNextComAppointment(crn: String, contactId: Long, username: String): NextAppointment? {
+        val com = comRepository.getByCrn(crn)
+        val initialAppointment = contactRepository.getContact(com.person.id, contactId)
+        val initialDateTime = ZonedDateTime.of(
+            initialAppointment.date,
+            initialAppointment.startTime?.toLocalTime() ?: initialAppointment.date.atStartOfDay().toLocalTime(),
+            EuropeLondon
+        )
+        val dateTime = maxOf(ZonedDateTime.now(EuropeLondon), initialDateTime)
+        val nextAppointment = contactRepository.firstAppointment(com.person.id, dateTime.toLocalDate(), dateTime)
+        return NextAppointment(
+            nextAppointment?.toActivity(),
+            com.asPersonManager(),
+            username == com.staff.user?.username
         )
     }
 }
@@ -166,3 +185,7 @@ fun Contact.toActivity(noteId: Int? = null) = Activity(
 
 fun ContactDocument.toDocument() =
     Document(id = alfrescoId, name = name, createdAt = createdAt, lastUpdated = lastUpdated)
+
+fun OffenderManager.asPersonManager(): PersonManager = with(staff) {
+    PersonManager(Name(forename, null, surname))
+}

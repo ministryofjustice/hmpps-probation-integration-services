@@ -17,6 +17,7 @@ import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator
 import uk.gov.justice.digital.hmpps.data.generator.personalDetails.PersonDetailsGenerator.PERSONAL_DETAILS
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.PersonRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.OffenderManagerRepository
 import uk.gov.justice.digital.hmpps.utils.Summary
 
 @ExtendWith(MockitoExtension::class)
@@ -27,6 +28,9 @@ internal class ScheduleServiceTest {
 
     @Mock
     lateinit var contactRepository: ContactRepository
+
+    @Mock
+    lateinit var offenderManagerRepository: OffenderManagerRepository
 
     @InjectMocks
     lateinit var service: ScheduleService

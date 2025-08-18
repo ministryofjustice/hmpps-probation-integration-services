@@ -47,6 +47,11 @@ class ScheduleController(private val scheduleService: ScheduleService) {
     @Operation(summary = "Gets individual appointment information’ ")
     fun getContactNote(@PathVariable crn: String, @PathVariable contactId: Long, @PathVariable noteId: Int) =
         scheduleService.getPersonAppointment(crn, contactId, noteId)
+
+    @GetMapping("/next-appointment")
+    @Operation(summary = "Gets the next appointment in the future and after the date of the passed in contact")
+    fun getContactNote(@PathVariable crn: String, @RequestParam contactId: Long, @RequestParam username: String) =
+        scheduleService.getNextComAppointment(crn, contactId, username)
 }
 
 private fun sort(sortString: String, ascending: Boolean): Sort {
