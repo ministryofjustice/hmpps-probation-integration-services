@@ -147,7 +147,7 @@ class SentenceServiceTest {
         )
 
         whenever(requirementRepository.sumTotalUnpaidWorkHoursByDisposal(event.disposal!!.id)).thenReturn(70)
-        whenever(upwAppointmentRepository.calculateUnpaidTimeWorked(event.disposal!!.id)).thenReturn(3936)
+        whenever(upwAppointmentRepository.calculateUnpaidTimeWorked(event.disposal.id)).thenReturn(3936)
 
         whenever(requirementService.getRar(requirement1.disposal!!.id, requirement1.mainCategory!!.code)).thenReturn(
             null
@@ -174,7 +174,13 @@ class SentenceServiceTest {
                     null,
                     listOf(
                         AdditionalSentence(3, null, null, "Disqualified from Driving"),
-                        AdditionalSentence(null, 500, "fine notes", "Fine")
+                        AdditionalSentence(
+                            null,
+                            500,
+                            "fine notes",
+                            "Fine",
+                            listOf(NoteDetail(0, note = "fine notes", hasNoteBeenTruncated = false))
+                        )
                     )
                 ),
                 Order(

@@ -53,6 +53,8 @@ fun Person.name() = Name(firstName, listOfNotNull(secondName, thirdName).joinToS
 
 interface PersonRepository : JpaRepository<Person, Long> {
     fun findByCrn(crn: String): Person?
+
+    fun existsByCrn(crn: String): Boolean
 }
 
 fun PersonRepository.getByCrn(crn: String): Person =

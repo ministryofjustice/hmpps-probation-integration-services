@@ -152,7 +152,7 @@ class SentenceService(
     )
 
     fun ExtraSentence.toAdditionalSentence(): AdditionalSentence =
-        AdditionalSentence(length, amount, notes, type.description, sentenceNotes = formatNote(notes, true))
+        AdditionalSentence(length, amount, notes, type.description, sentenceNotes = notes?.let { formatNote(it, true) })
 
     fun Disposal.toOrder(): Order {
         val sentence = custodyRepository.findAllByDisposalId(id).firstOrNull()
