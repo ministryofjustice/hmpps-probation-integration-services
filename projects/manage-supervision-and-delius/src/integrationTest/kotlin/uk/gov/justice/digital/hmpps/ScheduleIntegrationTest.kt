@@ -12,9 +12,12 @@ import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDO
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import uk.gov.justice.digital.hmpps.api.model.Name
+import uk.gov.justice.digital.hmpps.api.model.schedule.NextAppointment
 import uk.gov.justice.digital.hmpps.api.model.schedule.PersonAppointment
 import uk.gov.justice.digital.hmpps.api.model.schedule.Schedule
 import uk.gov.justice.digital.hmpps.api.model.sentence.NoteDetail
+import uk.gov.justice.digital.hmpps.api.model.user.PersonManager
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator
 import uk.gov.justice.digital.hmpps.data.generator.LicenceConditionGenerator.LONG_NOTE
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.OVERVIEW
@@ -170,5 +173,20 @@ internal class ScheduleIntegrationTest {
         assertThat(res.appointment.description, equalTo("previous appointment"))
         assertThat(res.appointment.outcome, equalTo("Acceptable"))
         assertThat(res.appointment.appointmentNote, equalTo(expectedNote))
+    }
+
+    @Test
+    fun `next appointment is returned`() {
+        val person = OVERVIEW
+        val id = ContactGenerator.PREVIOUS_APPT_CONTACT_ABSENT.id
+        val username = "peter-parker"
+        val res = mockMvc
+            .perform(get("/schedule/${person.crn}/next-appointment?contactId=$id&username=$username").withToken())
+            .andExpect(status().isOk)
+            .andReturn().response.contentAsJson<NextAppointment>()
+
+        assertThat(res.appointment?.type, equalTo("Initial Appointment on Doorstep (NS)"))
+        assertThat(res.usernameIsCom, equalTo(true))
+        assertThat(res.personManager, equalTo(PersonManager(Name("Peter", null, "Parker"))))
     }
 }
