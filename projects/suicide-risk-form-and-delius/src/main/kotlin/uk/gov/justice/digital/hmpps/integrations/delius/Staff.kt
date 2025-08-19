@@ -20,11 +20,13 @@ class Staff(
     @JoinColumn(name = "title_id")
     val title: ReferenceData? = null,
 
+    @Column(name = "forename")
     val firstName: String,
 
     @Column(name = "forename2")
     val middleName: String?,
 
+    @Column(name = "surname")
     val surname: String,
 
     @OneToOne(mappedBy = "staff")

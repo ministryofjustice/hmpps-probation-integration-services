@@ -4,6 +4,7 @@ import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.NumericBooleanConverter
+import org.hibernate.type.YesNoConverter
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.repository.JpaRepository
@@ -40,8 +41,8 @@ class Registration(
     @Column(name = "registration_notes", columnDefinition = "clob")
     val notes: String?,
 
-    @Column(name = "document_linked", columnDefinition = "number")
-    @Convert(converter = NumericBooleanConverter::class)
+    @Column(name = "document_linked", columnDefinition = "char")
+    @Convert(converter = YesNoConverter::class)
     val documentLinked: Boolean,
 
     @Column(name = "deregistered", columnDefinition = "number")
