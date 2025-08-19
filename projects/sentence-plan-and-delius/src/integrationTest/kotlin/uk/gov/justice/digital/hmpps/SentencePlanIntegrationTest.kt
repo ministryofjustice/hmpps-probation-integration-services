@@ -76,7 +76,7 @@ internal class SentencePlanIntegrationTest {
         mockMvc
             .perform(get("/users/default/access/${PersonGenerator.DEFAULT.crn}").withToken())
             .andExpect(status().is2xxSuccessful)
-            .andExpectJson(UserCaseloadIndicator(true))
+            .andExpectJson(UserCaseloadIndicator(true, false, false, null, null))
     }
 
     @Test
@@ -84,7 +84,7 @@ internal class SentencePlanIntegrationTest {
         mockMvc
             .perform(get("/users/default/access/${PersonGenerator.NON_CUSTODIAL.crn}").withToken())
             .andExpect(status().is2xxSuccessful)
-            .andExpectJson(UserCaseloadIndicator(false))
+            .andExpectJson(UserCaseloadIndicator(false, true, false, "Exclusion Applied", null))
     }
 
     @Test

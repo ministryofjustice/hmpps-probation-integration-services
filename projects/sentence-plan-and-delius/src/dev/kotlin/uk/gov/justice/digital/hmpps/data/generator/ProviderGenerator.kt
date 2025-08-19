@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
+import uk.gov.justice.digital.hmpps.entity.LimitedAccessUser
 import uk.gov.justice.digital.hmpps.service.entity.ProbationArea
 import uk.gov.justice.digital.hmpps.service.entity.Staff
 import uk.gov.justice.digital.hmpps.service.entity.StaffUser
@@ -33,3 +34,5 @@ object ProviderGenerator {
     fun generateStaffUser(username: String, staff: Staff, id: Long = IdGenerator.getAndIncrement()) =
         StaffUser(username, staff, id)
 }
+
+fun StaffUser.asLimitedAccessUser() = LimitedAccessUser(username, id)
