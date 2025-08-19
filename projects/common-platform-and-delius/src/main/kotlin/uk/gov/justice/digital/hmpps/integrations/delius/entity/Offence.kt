@@ -187,6 +187,13 @@ class AdditionalOffence(
 
     @LastModifiedDate
     var lastUpdatedDatetime: ZonedDateTime? = null
+
+    @Version
+    @Column(name = "row_version", nullable = false)
+    val version: Long = 0
+
+    @Column
+    val partitionAreaId: Long = 0
 }
 
 interface MainOffenceRepository : JpaRepository<MainOffence, Long>
