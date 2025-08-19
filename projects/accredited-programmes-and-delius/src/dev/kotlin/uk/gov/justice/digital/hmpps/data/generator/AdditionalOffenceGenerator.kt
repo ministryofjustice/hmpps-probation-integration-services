@@ -23,7 +23,7 @@ object AdditionalOffenceGenerator {
                 softDeleted = softDeleted
             )
         },
-        offenceEntity = offence,
+        offence = offence,
         softDeleted = false
     )
 }
