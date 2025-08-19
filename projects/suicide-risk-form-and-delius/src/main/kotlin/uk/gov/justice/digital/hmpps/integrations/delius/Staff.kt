@@ -33,7 +33,6 @@ class Staff(
 
 fun Staff.name() = Name(firstName, middleName, surname)
 
-
 interface StaffRepository : JpaRepository<Staff, Long> {
     fun findByUserUsername(username: String): Staff?
 }

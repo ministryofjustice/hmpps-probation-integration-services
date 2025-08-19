@@ -16,5 +16,4 @@ object OfficeLocationGenerator {
         endDate = null,
         provider = ProviderGenerator.N00
     )
-
 }
