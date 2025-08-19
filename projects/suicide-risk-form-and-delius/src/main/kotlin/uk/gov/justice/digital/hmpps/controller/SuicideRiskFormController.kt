@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RestController
 import uk.gov.justice.digital.hmpps.model.BasicDetails
 import uk.gov.justice.digital.hmpps.model.InformationPageResponse
+import uk.gov.justice.digital.hmpps.model.SignAndSendResponse
 import uk.gov.justice.digital.hmpps.service.DetailsService
 import uk.gov.justice.digital.hmpps.service.RegistrationsService
 
@@ -23,4 +24,8 @@ class SuicideRiskFormController(
     @GetMapping(value = ["/information-page/{crn}"])
     fun getInformationPage(@PathVariable crn: String): InformationPageResponse =
         registrationsService.informationPage(crn)
+
+    @PreAuthorize("hasRole('PROBATION_API__SUICIDE_RISK_FORM__CASE_DETAIL')")
+    @GetMapping(value = ["/sign-and-send/{username}"])
+    fun getSignAndSend(@PathVariable username: String): SignAndSendResponse = detailsService.signAndSend(username)
 }

@@ -29,9 +29,11 @@ class DataLoader(
         entityManager.persist(PersonGenerator.DEFAULT_PERSON)
         entityManager.persist(PersonGenerator.DEFAULT_ADDRESS)
 
-
+        entityManager.persist(ProviderGenerator.N00)
+        entityManager.persist(StaffGenerator.DEFAULT)
         entityManager.persist(UserGenerator.LIMITED_ACCESS_USER)
         entityManager.persist(UserGenerator.NON_LAO_USER)
+        entityManager.persist(UserGenerator.DEFAULT)
         entityManager.persist(PersonGenerator.RESTRICTION)
         entityManager.persist(PersonGenerator.EXCLUSION)
         entityManager.persist(PersonGenerator.RESTRICTION_EXCLUSION)
@@ -51,5 +53,6 @@ class DataLoader(
         entityManager.flush()
         entityManager.persist(RegistrationGenerator.SUICIDE_SELF_HARM_REGISTRATION)
         entityManager.persist(PersonGenerator.PERSON_NO_REGISTRATIONS)
+        entityManager.persist(OfficeLocationGenerator.DEFAULT)
     }
 }
