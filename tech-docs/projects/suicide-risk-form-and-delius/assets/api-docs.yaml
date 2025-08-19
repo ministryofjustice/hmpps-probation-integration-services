@@ -37,6 +37,24 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/CaseAccess"
+  /information-page/{crn}:
+    get:
+      tags:
+      - suicide-risk-form-controller
+      operationId: getInformationPage
+      parameters:
+      - name: crn
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InformationPageResponse"
   /docs/asyncapi:
     get:
       tags:
@@ -86,6 +104,47 @@ components:
       - crn
       - userExcluded
       - userRestricted
+    CodedDescription:
+      type: object
+      properties:
+        code:
+          type: string
+        description:
+          type: string
+      required:
+      - code
+      - description
+    InformationPageResponse:
+      type: object
+      properties:
+        registration:
+          $ref: "#/components/schemas/MostRecentRegistration"
+    MostRecentRegistration:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        type:
+          $ref: "#/components/schemas/CodedDescription"
+        startDate:
+          type: string
+          format: date
+        endDate:
+          type: string
+          format: date
+        notes:
+          type: string
+        documentsLinked:
+          type: boolean
+        deregistered:
+          type: boolean
+      required:
+      - deregistered
+      - documentsLinked
+      - id
+      - startDate
+      - type
     Address:
       type: object
       properties:

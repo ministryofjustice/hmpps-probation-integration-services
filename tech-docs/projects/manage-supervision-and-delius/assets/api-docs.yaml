@@ -884,6 +884,37 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Schedule"
+  /schedule/{crn}/next-appointment:
+    get:
+      tags:
+      - Schedule
+      summary: Gets the next appointment in the future and after the date of the passed
+        in contact
+      operationId: getContactNote
+      parameters:
+      - name: crn
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: contactId
+        in: query
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - name: username
+        in: query
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NextAppointment"
   /schedule/{crn}/appointment/{contactId}:
     get:
       tags:
@@ -914,7 +945,7 @@ paths:
       tags:
       - Schedule
       summary: 'Gets individual appointment information’ '
-      operationId: getContactNote
+      operationId: getContactNote_1
       parameters:
       - name: crn
         in: path
@@ -2963,6 +2994,12 @@ components:
           type: string
         description:
           type: string
+        sentenceNotes:
+          type: array
+          items:
+            $ref: "#/components/schemas/NoteDetail"
+        sentenceNote:
+          $ref: "#/components/schemas/NoteDetail"
       required:
       - description
     Conviction:
@@ -3344,6 +3381,25 @@ components:
       required:
       - personSchedule
       - personSummary
+    NextAppointment:
+      type: object
+      properties:
+        appointment:
+          $ref: "#/components/schemas/Activity"
+        personManager:
+          $ref: "#/components/schemas/PersonManager"
+        usernameIsCom:
+          type: boolean
+      required:
+      - personManager
+      - usernameIsCom
+    PersonManager:
+      type: object
+      properties:
+        name:
+          $ref: "#/components/schemas/Name"
+      required:
+      - name
     PersonAppointment:
       type: object
       properties:
