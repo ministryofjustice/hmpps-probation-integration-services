@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.entity.staff
 
 import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
+import uk.gov.justice.digital.hmpps.model.CodedValue
 
 @Entity
 @Immutable
@@ -18,4 +19,14 @@ class Team(
     @ManyToOne
     @JoinColumn(name = "district_id")
     val localAdminUnit: LocalAdminUnit,
-)
+
+    @ManyToMany
+    @JoinTable(
+        name = "team_office_location",
+        joinColumns = [JoinColumn(name = "team_id")],
+        inverseJoinColumns = [JoinColumn(name = "office_location_id")]
+    )
+    val officeLocations: List<OfficeLocation>,
+) {
+    fun toCodedValue() = CodedValue(code, description)
+}

@@ -26,4 +26,8 @@ class CaseController(private val caseDetailService: CaseDetailService) {
     @GetMapping(value = ["/case/{crn}/registrations"])
     fun getRegistrations(@PathVariable crn: String) =
         caseDetailService.getRegistrations(crn)
+
+    @GetMapping(value = ["/case/{crn}/requirement/{id}"])
+    fun getRequirement(@PathVariable crn: String, @PathVariable id: Long) =
+        caseDetailService.getRequirement(id)
 }
