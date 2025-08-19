@@ -56,8 +56,7 @@ if grep -q 'contact-semantic' <<<"$PIPELINES_ENABLED"; then
   /scripts/setup-index.sh -i "$CONTACT_SEMANTIC_INDEX_PREFIX" \
     -p /pipelines/contact-semantic/index/ingest-pipeline.json \
     -s /pipelines/contact-semantic/index/search-pipeline.json \
-    -t /pipelines/contact-semantic/index/index-template-semantic.json \
-    -y /pipelines/contact-semantic/index/index-state-management-policy.json
+    -t /pipelines/contact-semantic/index/index-template-semantic.json
 
   /scripts/setup-index.sh -i "$CONTACT_SEMANTIC_BLOCK_INDEX_PREFIX" \
     -p /pipelines/contact-semantic/index/contact-semantic-block-pipeline.json \
