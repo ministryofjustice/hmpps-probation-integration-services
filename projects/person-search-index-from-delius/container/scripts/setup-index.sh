@@ -14,7 +14,7 @@ function help {
 
 export SEARCH_URL="${SEARCH_INDEX_HOST}"
 
-while getopts h:i:p:s:t:u:y: FLAG; do
+while getopts h:i:p:s:t:u: FLAG; do
   case $FLAG in
   h) help ;;
   i) export INDEX_PREFIX="${OPTARG}" ;;
@@ -22,7 +22,6 @@ while getopts h:i:p:s:t:u:y: FLAG; do
   s) export SEARCH_PIPELINE_FILENAME="${OPTARG}" ;;
   t) export TEMPLATE_FILENAME="${OPTARG}" ;;
   u) export SEARCH_URL="$OPTARG" ;;
-  y) export POLICY_FILENAME="${OPTARG}" ;;
   \?) #unrecognized option - show help
     echo -e \\n"Option not allowed."
     help
