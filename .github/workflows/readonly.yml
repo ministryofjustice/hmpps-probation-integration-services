@@ -223,6 +223,7 @@ jobs:
           - topic-pi-workforce-allocation
           - pf-soc-probation-integration-tmp
           - topic-pi-cas123
+          - cas-events
           - topic-cvl-delius-integration
           - pic-and-probation-integration
     steps:
