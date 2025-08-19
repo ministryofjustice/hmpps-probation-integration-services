@@ -76,6 +76,7 @@ class CaseDetailService(
             )
         }
     )
+
     fun getRequirement(id: Long) = requirementManagerRepository.findByRequirementId(id)?.let { manager ->
         Requirement(
             manager = Manager(
