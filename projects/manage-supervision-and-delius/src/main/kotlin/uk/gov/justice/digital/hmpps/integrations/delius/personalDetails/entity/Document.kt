@@ -68,6 +68,9 @@ abstract class Document {
 
     @Column(columnDefinition = "number")
     open var softDeleted: Boolean = false
+
+    @Convert(converter = YesNoConverter::class)
+    open var status: Boolean = true
 }
 
 @Entity
