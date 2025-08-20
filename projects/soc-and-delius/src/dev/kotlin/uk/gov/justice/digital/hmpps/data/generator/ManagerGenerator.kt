@@ -74,5 +74,5 @@ object ManagerGenerator {
         description: String = "Team $code",
         district: District,
         id: Long = IdGenerator.getAndIncrement()
-    ) = ManagerHistoryTeam(code, description, district,  district.borough.probationArea.id, id)
+    ) = ManagerHistoryTeam(code, description, district, district.borough.probationArea.id, id)
 }

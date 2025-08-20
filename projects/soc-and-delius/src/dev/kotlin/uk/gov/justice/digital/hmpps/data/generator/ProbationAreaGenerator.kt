@@ -45,7 +45,7 @@ object ProbationAreaGenerator {
         IdGenerator.getAndIncrement(),
         NON_SELECTABLE_PA,
         "N03",
-         "Borough N03"
+        "Borough N03"
     )
     val NON_SELECTABLE_LDU = District(
         true,
