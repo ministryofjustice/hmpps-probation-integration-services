@@ -98,6 +98,30 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Offences"
+  /case/{crn}/requirement/{id}:
+    get:
+      tags:
+      - Cases
+      operationId: getRequirement
+      parameters:
+      - name: crn
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Requirement"
   /case/{crn}/registrations:
     get:
       tags:
@@ -246,6 +270,55 @@ components:
       required:
       - additionalOffences
       - mainOffence
+    Manager:
+      type: object
+      properties:
+        staff:
+          $ref: "#/components/schemas/ProbationPractitioner"
+        team:
+          $ref: "#/components/schemas/CodedValue"
+        probationDeliveryUnit:
+          $ref: "#/components/schemas/CodedValue"
+        officeLocations:
+          type: array
+          items:
+            $ref: "#/components/schemas/CodedValue"
+      required:
+      - officeLocations
+      - probationDeliveryUnit
+      - staff
+      - team
+    Name:
+      type: object
+      properties:
+        forename:
+          type: string
+        middleNames:
+          type: string
+        surname:
+          type: string
+      required:
+      - forename
+      - surname
+    ProbationPractitioner:
+      type: object
+      properties:
+        name:
+          $ref: "#/components/schemas/Name"
+        code:
+          type: string
+        email:
+          type: string
+      required:
+      - code
+      - name
+    Requirement:
+      type: object
+      properties:
+        manager:
+          $ref: "#/components/schemas/Manager"
+      required:
+      - manager
     Registration:
       type: object
       properties:
@@ -271,18 +344,6 @@ components:
             $ref: "#/components/schemas/Registration"
       required:
       - registrations
-    Name:
-      type: object
-      properties:
-        forename:
-          type: string
-        middleNames:
-          type: string
-        surname:
-          type: string
-      required:
-      - forename
-      - surname
     PersonalDetails:
       type: object
       properties:
@@ -314,18 +375,6 @@ components:
       - probationPractitioner
       - sex
       - team
-    ProbationPractitioner:
-      type: object
-      properties:
-        name:
-          $ref: "#/components/schemas/Name"
-        code:
-          type: string
-        email:
-          type: string
-      required:
-      - code
-      - name
   securitySchemes:
     hmpps-auth-token:
       type: http

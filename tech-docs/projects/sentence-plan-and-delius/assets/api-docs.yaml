@@ -80,8 +80,21 @@ components:
       properties:
         inCaseload:
           type: boolean
+        userExcluded:
+          type: boolean
+        userRestricted:
+          type: boolean
+        exclusionMessage:
+          type: string
+        restrictionMessage:
+          type: string
+        canAccess:
+          type: boolean
       required:
+      - canAccess
       - inCaseload
+      - userExcluded
+      - userRestricted
     CaseDetails:
       type: object
       properties:
