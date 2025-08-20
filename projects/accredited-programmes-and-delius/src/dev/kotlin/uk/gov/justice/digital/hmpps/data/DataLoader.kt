@@ -28,6 +28,7 @@ import uk.gov.justice.digital.hmpps.data.TestData.MAIN_OFFENCE
 import uk.gov.justice.digital.hmpps.data.TestData.MANAGER
 import uk.gov.justice.digital.hmpps.data.TestData.MONTHS
 import uk.gov.justice.digital.hmpps.data.TestData.OFFENCES
+import uk.gov.justice.digital.hmpps.data.TestData.OFFICE_LOCATION
 import uk.gov.justice.digital.hmpps.data.TestData.OTHER_CONTACT
 import uk.gov.justice.digital.hmpps.data.TestData.OTHER_CONTACT_TYPE
 import uk.gov.justice.digital.hmpps.data.TestData.PDU
@@ -43,6 +44,7 @@ import uk.gov.justice.digital.hmpps.data.TestData.REGISTRATION
 import uk.gov.justice.digital.hmpps.data.TestData.RELEASE
 import uk.gov.justice.digital.hmpps.data.TestData.REQUIREMENTS
 import uk.gov.justice.digital.hmpps.data.TestData.REQUIREMENT_MAIN_TYPE
+import uk.gov.justice.digital.hmpps.data.TestData.REQUIREMENT_MANAGERS
 import uk.gov.justice.digital.hmpps.data.TestData.REQUIREMENT_SUB_TYPE
 import uk.gov.justice.digital.hmpps.data.TestData.RESTRICTION
 import uk.gov.justice.digital.hmpps.data.TestData.STAFF
@@ -56,6 +58,7 @@ import uk.gov.justice.digital.hmpps.data.generator.IdGenerator.id
 import uk.gov.justice.digital.hmpps.repository.EventRepository
 import uk.gov.justice.digital.hmpps.repository.PersonRepository
 import uk.gov.justice.digital.hmpps.repository.RegistrationRepository
+import uk.gov.justice.digital.hmpps.repository.RequirementManagerRepository
 import uk.gov.justice.digital.hmpps.user.AuditUser
 import uk.gov.justice.digital.hmpps.user.AuditUserRepository
 
@@ -88,11 +91,13 @@ class DataLoader(
     private val licenceConditionRepository: LicenceConditionRepository,
     private val requirementMainCategoryRepository: RequirementMainCategoryRepository,
     private val requirementRepository: RequirementRepository,
+    private val requirementManagerRepository: RequirementManagerRepository,
     private val offenceRepository: OffenceEntityRepository,
     private val mainOffenceRepository: MainOffenceRepository,
     private val additionalOffenceRepository: AdditionalOffenceRepository,
     private val registerTypeRepository: RegisterTypeRepository,
     private val registrationRepository: RegistrationRepository,
+    private val officeLocationRepository: OfficeLocationRepository,
 ) : ApplicationListener<ApplicationReadyEvent> {
     @PostConstruct
     fun saveAuditUser() {
@@ -107,6 +112,7 @@ class DataLoader(
         referenceDataRepository.save(ADULT_LICENCE)
         probationDeliveryUnitRepository.save(PDU)
         localAdminUnitRepository.save(LAU)
+        officeLocationRepository.save(OFFICE_LOCATION)
         teamRepository.save(TEAM)
         staffRepository.save(STAFF)
         personRepository.save(PERSON)
@@ -142,6 +148,7 @@ class DataLoader(
         requirementMainCategoryRepository.save(REQUIREMENT_MAIN_TYPE)
         referenceDataRepository.save(REQUIREMENT_SUB_TYPE)
         requirementRepository.saveAll(REQUIREMENTS)
+        requirementManagerRepository.saveAll(REQUIREMENT_MANAGERS)
         eventRepository.flush()
         offenceRepository.saveAll(OFFENCES)
         mainOffenceRepository.save(MAIN_OFFENCE)

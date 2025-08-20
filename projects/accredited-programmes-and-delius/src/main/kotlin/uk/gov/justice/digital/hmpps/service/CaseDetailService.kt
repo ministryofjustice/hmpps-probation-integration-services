@@ -5,10 +5,7 @@ import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.ldap.findEmailByUsername
 import uk.gov.justice.digital.hmpps.model.*
-import uk.gov.justice.digital.hmpps.repository.EventRepository
-import uk.gov.justice.digital.hmpps.repository.OffenceRepository
-import uk.gov.justice.digital.hmpps.repository.PersonRepository
-import uk.gov.justice.digital.hmpps.repository.RegistrationRepository
+import uk.gov.justice.digital.hmpps.repository.*
 
 @Service
 class CaseDetailService(
@@ -17,6 +14,7 @@ class CaseDetailService(
     private val ldapTemplate: LdapTemplate,
     private val offenceRepository: OffenceRepository,
     private val registrationRepository: RegistrationRepository,
+    private val requirementManagerRepository: RequirementManagerRepository,
 ) {
     fun getPersonalDetails(crn: String) = personRepository.findByCrn(crn)?.let { person ->
         checkNotNull(person.manager) { "Person does not have an active manager" }
@@ -30,20 +28,9 @@ class CaseDetailService(
             dateOfBirth = person.dateOfBirth,
             sex = person.gender.toCodedValue(),
             ethnicity = person.ethnicity?.toCodedValue(),
-            probationPractitioner = with(person.manager.staff) {
-                ProbationPractitioner(
-                    name = Name(
-                        forename = forename,
-                        surname = surname
-                    ),
-                    code = code,
-                    email = user?.let { ldapTemplate.findEmailByUsername(it.username) }
-                )
-            },
-            team = with(person.manager.team) { CodedValue(code, description) },
-            probationDeliveryUnit = with(person.manager.team.localAdminUnit.probationDeliveryUnit) {
-                CodedValue(code, description)
-            }
+            probationPractitioner = person.manager.staff.toProbationPractitioner { ldapTemplate.findEmailByUsername(it.username) },
+            team = person.manager.team.toCodedValue(),
+            probationDeliveryUnit = person.manager.team.localAdminUnit.probationDeliveryUnit.toCodedValue()
         )
     } ?: throw NotFoundException("Person", "crn", crn)
 
@@ -75,7 +62,7 @@ class CaseDetailService(
         offenceRepository.findByPersonCrnAndNumber(crn, eventNumber)?.let { event ->
             Offences(
                 event.mainOffence.map { it.offence.toOffence(it.date) }.single(),
-                event.additionalOffences.map { it.offenceEntity.toOffence(it.date) },
+                event.additionalOffences.map { it.offence.toOffence(it.date) },
             )
         } ?: throw NotFoundException("Event for $crn", "number", eventNumber)
 
@@ -89,4 +76,15 @@ class CaseDetailService(
             )
         }
     )
+
+    fun getRequirement(id: Long) = requirementManagerRepository.findByRequirementId(id)?.let { manager ->
+        Requirement(
+            manager = Manager(
+                staff = manager.staff.toProbationPractitioner { ldapTemplate.findEmailByUsername(it.username) },
+                team = manager.team.toCodedValue(),
+                probationDeliveryUnit = manager.team.localAdminUnit.probationDeliveryUnit.toCodedValue(),
+                officeLocations = manager.team.officeLocations.map { it.toCodedValue() }
+            )
+        )
+    } ?: throw NotFoundException("Requirement", "id", id)
 }

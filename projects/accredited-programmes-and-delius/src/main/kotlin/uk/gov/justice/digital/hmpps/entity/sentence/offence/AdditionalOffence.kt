@@ -23,7 +23,7 @@ class AdditionalOffence(
 
     @JoinColumn(name = "offence_id")
     @ManyToOne
-    val offenceEntity: OffenceEntity,
+    val offence: OffenceEntity,
 
     @Column(columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)

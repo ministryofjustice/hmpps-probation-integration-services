@@ -6,13 +6,11 @@ import uk.gov.justice.digital.hmpps.entity.ReferenceData
 import uk.gov.justice.digital.hmpps.entity.contact.ContactType
 import uk.gov.justice.digital.hmpps.entity.registration.RegisterType
 import uk.gov.justice.digital.hmpps.entity.sentence.DisposalType
-import uk.gov.justice.digital.hmpps.entity.sentence.component.LicenceConditionMainCategory
-import uk.gov.justice.digital.hmpps.entity.sentence.component.PssRequirementMainCategory
-import uk.gov.justice.digital.hmpps.entity.sentence.component.PssRequirementSubCategory
-import uk.gov.justice.digital.hmpps.entity.sentence.component.RequirementMainCategory
+import uk.gov.justice.digital.hmpps.entity.sentence.component.*
 import uk.gov.justice.digital.hmpps.entity.sentence.custody.KeyDate
 import uk.gov.justice.digital.hmpps.entity.sentence.offence.OffenceEntity
 import uk.gov.justice.digital.hmpps.entity.staff.LocalAdminUnit
+import uk.gov.justice.digital.hmpps.entity.staff.OfficeLocation
 import uk.gov.justice.digital.hmpps.entity.staff.ProbationDeliveryUnit
 import uk.gov.justice.digital.hmpps.entity.staff.Team
 import java.time.LocalDate
@@ -24,7 +22,8 @@ object TestData {
     val ADULT_LICENCE = ReferenceData(id(), "ADL", "Released on Adult Licence")
     val PDU = ProbationDeliveryUnit(id(), "PDU1", "Test PDU")
     val LAU = LocalAdminUnit(id(), PDU)
-    val TEAM = Team(id(), "TEAM01", "Test Team", LAU)
+    val OFFICE_LOCATION = OfficeLocation(id(), "OFFICE1", "Test Office Location")
+    val TEAM = Team(id(), "TEAM01", "Test Team", LAU, listOf(OFFICE_LOCATION))
     val STAFF = StaffGenerator.generate()
     val PERSON = PersonGenerator.generate("A000001", GENDER, ETHNICITY)
     val MANAGER = ManagerGenerator.generate(PERSON, STAFF, TEAM)
@@ -76,6 +75,7 @@ object TestData {
         RequirementGenerator.generate(COMMUNITY_SENTENCE, REQUIREMENT_MAIN_TYPE),
         RequirementGenerator.generate(COMMUNITY_SENTENCE, REQUIREMENT_MAIN_TYPE, REQUIREMENT_SUB_TYPE),
     )
+    val REQUIREMENT_MANAGERS = REQUIREMENTS.map { RequirementManager(id(), it.id, STAFF, TEAM) }
 
     val OFFENCES = listOf(
         OffenceEntity(id(), "036", "Kidnapping", "02", "Hijacking"),

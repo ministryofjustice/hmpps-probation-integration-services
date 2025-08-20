@@ -48,6 +48,9 @@ class Person(
     @JoinColumn(name = "current_tier")
     val tier: ReferenceData?,
 
+    val exclusionMessage: String? = null,
+    val restrictionMessage: String? = null,
+
     @Column(columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean = false

@@ -56,8 +56,10 @@ class DataLoader(
             EventGenerator.RAR_CONTACT_1,
             EventGenerator.RAR_CONTACT_2,
             CaseloadGenerator.generateCaseload(PersonGenerator.DEFAULT, ProviderGenerator.DEFAULT_STAFF),
-            ProviderGenerator.generateStaffUser("Default", ProviderGenerator.DEFAULT_STAFF)
         )
+        val defaultUser = em.merge(ProviderGenerator.generateStaffUser("Default", ProviderGenerator.DEFAULT_STAFF))
+        em.flush()
+        em.merge(PersonGenerator.generateExclusion(PersonGenerator.NON_CUSTODIAL, defaultUser))
     }
 
     fun EntityManager.saveAll(vararg any: Any) = any.forEach { persist(it) }

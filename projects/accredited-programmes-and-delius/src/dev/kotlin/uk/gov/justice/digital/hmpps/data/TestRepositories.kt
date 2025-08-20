@@ -45,3 +45,4 @@ interface OffenceEntityRepository : JpaRepository<OffenceEntity, Long>
 interface MainOffenceRepository : JpaRepository<MainOffence, Long>
 interface AdditionalOffenceRepository : JpaRepository<AdditionalOffence, Long>
 interface RegisterTypeRepository : JpaRepository<RegisterType, Long>
+interface OfficeLocationRepository : JpaRepository<OfficeLocation, Long>
