@@ -62,7 +62,7 @@ class DeliusServiceTest {
     @InjectMocks
     lateinit var deliusService: DeliusService
 
-    private val caseNote = CaseNoteGenerator.EXISTING
+    private val caseNote = CaseNoteGenerator.EXISTING.copy(offender = OffenderGenerator.DEFAULT)
     private val caseNoteNomisType = CaseNoteNomisTypeGenerator.NEG
     private val nomisCaseNote = PrisonCaseNoteGenerator.EXISTING_IN_BOTH
     private var deliusCaseNote = nomisCaseNote.toDeliusCaseNote()

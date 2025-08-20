@@ -13,6 +13,7 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.ArgumentMatchers.anyMap
 import org.mockito.kotlin.atLeastOnce
 import org.mockito.kotlin.eq
+import org.mockito.kotlin.isNull
 import org.mockito.kotlin.never
 import org.mockito.kotlin.verify
 import org.springframework.beans.factory.annotation.Autowired
@@ -24,6 +25,7 @@ import org.testcontainers.shaded.org.bouncycastle.oer.its.ieee1609dot2dot1.Addit
 import uk.gov.justice.digital.hmpps.audit.repository.AuditedInteractionRepository
 import uk.gov.justice.digital.hmpps.data.generator.*
 import uk.gov.justice.digital.hmpps.datetime.DeliusDateTimeFormatter
+import uk.gov.justice.digital.hmpps.integrations.delius.entity.CaseNoteType.Companion.OTHER_INFORMATION
 import uk.gov.justice.digital.hmpps.integrations.delius.model.CaseNoteHeader
 import uk.gov.justice.digital.hmpps.integrations.delius.model.DeliusCaseNote
 import uk.gov.justice.digital.hmpps.integrations.delius.repository.CaseNoteRepository
@@ -71,18 +73,19 @@ class CaseNotesIntegrationTest {
 
     @Order(1)
     @Test
-    fun `update an existing case note succesfully`() {
+    fun `update an existing case note attached to the wrong offender`() {
         val nomisCaseNote = PrisonCaseNoteGenerator.EXISTING_IN_BOTH
 
         channelManager.getChannel(queueName).publishAndWait(
             prepNotification(CaseNoteMessageGenerator.EXISTS_IN_DELIUS, wireMockserver.port())
         )
 
+        // case note assigned to correct person
         val saved =
-            caseNoteRepository.findByExternalReference("${DeliusCaseNote.CASE_NOTE_URN_PREFIX}${nomisCaseNote.id}")
-
+            caseNoteRepository.findByExternalReference("${DeliusCaseNote.CASE_NOTE_URN_PREFIX}${nomisCaseNote.id}")!!
+        assertThat(saved.offender.id, equalTo(OffenderGenerator.DEFAULT.id))
         assertThat(
-            saved?.notes,
+            saved.notes,
             stringContainsInOrder(
                 nomisCaseNote.type,
                 nomisCaseNote.subType,
@@ -93,11 +96,15 @@ class CaseNotesIntegrationTest {
             )
         )
 
-        verify(telemetryService).trackEvent(eq(CASE_NOTE_MERGED), anyMap(), anyMap())
+        // Data cleanse contact created on previous person
+        val prevContacts = caseNoteRepository.findAll().filter { it.offender.id == OffenderGenerator.PREVIOUS.id }
+        assertThat(prevContacts, hasSize(1))
+        val dcc = prevContacts.single()
+        assertThat(dcc.externalReference, equalTo(null))
+        assertThat(dcc.type.code, equalTo(OTHER_INFORMATION))
+        assertThat(dcc.notes, containsString("case notes from Prison associated with a NOMS number that had been mistakenly associated with this case record were removed"))
 
-        verify(air, atLeastOnce()).save(any())
-        val savedAudits = air.findAll()
-        assertThat(savedAudits.size, greaterThan(0))
+        verify(telemetryService).trackEvent(eq(CASE_NOTE_MERGED), anyMap(), anyMap())
     }
 
     @Order(2)

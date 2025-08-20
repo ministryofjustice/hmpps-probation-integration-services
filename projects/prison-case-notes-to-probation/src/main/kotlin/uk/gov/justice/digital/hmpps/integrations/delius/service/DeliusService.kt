@@ -11,7 +11,7 @@ import uk.gov.justice.digital.hmpps.audit.entity.AuditedInteraction.Outcome.SUCC
 import uk.gov.justice.digital.hmpps.audit.repository.AuditedInteractionRepository
 import uk.gov.justice.digital.hmpps.audit.repository.BusinessInteractionRepository
 import uk.gov.justice.digital.hmpps.audit.repository.getByCode
-import uk.gov.justice.digital.hmpps.exceptions.OffenderNotFoundException
+import uk.gov.justice.digital.hmpps.datetime.toDeliusDateTime
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractionCode.CASE_NOTES_MERGE
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.CaseNote
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.CaseNoteType
@@ -44,9 +44,12 @@ class DeliusService(
                 ?: caseNote.header.legacyId?.let { caseNoteRepository.findByNomisId(it) }
 
             ActiveAlert, InactiveAlert -> caseNoteRepository.findByExternalReference(caseNote.urn)
-        }?.takeIf {
-            //get a case note and need to ensure the noms id matches the delius noms id
-            it.offender.nomsId == caseNote.header.nomisId
+        }?.let {
+            if (it.offender.nomsId == caseNote.header.nomisId) it
+            else {
+                caseNoteRepository.save(it.dataCleanseContact())
+                caseNoteRepository.save(caseNote.newEntity().copy(id = it.id, version = it.version))
+            }
         }
 
         return (if (existing == null) caseNote.newEntity() else existing.updateFrom(caseNote))
@@ -95,8 +98,7 @@ class DeliusService(
     }
 
     private fun DeliusCaseNote.newEntity(): CaseNote {
-        val offender = offenderRepository.findByNomsIdAndSoftDeletedIsFalse(header.nomisId)
-            ?: throw OffenderNotFoundException(header.nomisId)
+        val offender = offenderRepository.getByNomsId(header.nomisId)
 
         val relatedIds = relatedService.findRelatedCaseNoteIds(offender.id, body.typeLookup())
 
@@ -124,6 +126,29 @@ class DeliusService(
             externalReference = urn,
             createdDateTime = body.systemTimestamp,
             lastModifiedDateTime = body.systemTimestamp,
+        )
+    }
+
+    private fun CaseNote.dataCleanseContact(): CaseNote {
+        val caseNoteType = caseNoteTypeRepository.getByCode(CaseNoteType.OTHER_INFORMATION)
+        val now = ZonedDateTime.now()
+        return CaseNote(
+            offender = offender,
+            eventId = eventId,
+            nsiId = nsiId,
+            type = caseNoteType,
+            description = "Data Cleanse",
+            notes = "On ${now.toDeliusDateTime()} case notes from Prison associated with a NOMS number that had been mistakenly associated with this case record were removed.",
+            date = now,
+            startTime = now,
+            isSensitive = caseNoteType.isSensitive,
+            probationAreaId = probationAreaId,
+            teamId = teamId,
+            staffId = staffId,
+            staffEmployeeId = staffEmployeeId,
+            externalReference = null,
+            createdDateTime = now,
+            lastModifiedDateTime = now,
         )
     }
 
