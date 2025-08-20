@@ -102,7 +102,10 @@ class CaseNotesIntegrationTest {
         val dcc = prevContacts.single()
         assertThat(dcc.externalReference, equalTo(null))
         assertThat(dcc.type.code, equalTo(OTHER_INFORMATION))
-        assertThat(dcc.notes, containsString("case notes from Prison associated with a NOMS number that had been mistakenly associated with this case record were removed"))
+        assertThat(
+            dcc.notes,
+            containsString("case notes from Prison associated with a NOMS number that had been mistakenly associated with this case record were removed")
+        )
 
         verify(telemetryService).trackEvent(eq(CASE_NOTE_MERGED), anyMap(), anyMap())
     }
