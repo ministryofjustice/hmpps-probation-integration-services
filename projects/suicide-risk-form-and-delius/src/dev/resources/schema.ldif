@@ -1,0 +1,23 @@
+dn: ou=Users,dc=moj,dc=com
+objectclass: top
+objectclass: organizationalUnit
+ou: Users
+
+dn: cn=officer,ou=Users,dc=moj,dc=com
+cn: officer
+objectclass: NDUser
+objectclass: inetOrgPerson
+objectclass: top
+givenName: Probation
+sn: Officer
+userHomeArea: N00
+userSector: public
+mail: officer@example.com
+telephoneNumber: 01234567890
+userPassword: secret
+
+dn: cn=UserPreferences,cn=officer,ou=Users,dc=moj,dc=com
+objectclass: top
+objectclass: UserPreferences
+cn: UserPreferences
+replyAddress: 1
