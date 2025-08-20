@@ -122,7 +122,7 @@ digraph "oneDegreeRelationshipsDiagramImplied" {
   "MAIN_OFFENCE":"EVENT_ID":w -> "EVENT":"EVENT_ID":e [arrowhead=none dir=back arrowtail=crowodot];
   "MAIN_OFFENCE":"OFFENDER_ID":w -> "OFFENDER":"OFFENDER_ID":e [arrowhead=none dir=back arrowtail=crowodot];
   "MAIN_OFFENCE":"PARTITION_AREA_ID":w -> "PARTITION_AREA":"PARTITION_AREA_ID.type":e [arrowhead=none dir=back arrowtail=crowodot];
-  "MANAGEMENT_TIER":"OFFENDER_ID":w -> "OFFENDER":"OFFENDER_ID":e [arrowhead=none dir=back arrowtail=crowodot];
+  "MANAGEMENT_TIER":"OFFENDER_ID":w -> "OFFENDER":"OFFENDER_ID":e [arrowhead=none dir=back arrowtail=teeodot];
   "MANAGEMENT_TIER":"PARTITION_AREA_ID":w -> "PARTITION_AREA":"PARTITION_AREA_ID.type":e [arrowhead=none dir=back arrowtail=crowodot];
   "NSI_MANAGER":"NSI_TRANSFER_ID":w -> "NSI_TRANSFER":"NSI_TRANSFER_ID":e [arrowhead=none dir=back arrowtail=crowodot];
   "NSI_MANAGER":"PARTITION_AREA_ID":w -> "PARTITION_AREA":"PARTITION_AREA_ID.type":e [arrowhead=none dir=back arrowtail=crowodot];
@@ -1476,7 +1476,7 @@ digraph "oneDegreeRelationshipsDiagramImplied" {
       <TR><TD PORT="MEDICAL_CONDITION_ID" COLSPAN="3" BGCOLOR="#ffffff" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"><IMG SRC="../../images/foreignKeys.png"/></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="212" HEIGHT="16">MEDICAL_CONDITION_ID</TD></TR></TABLE></TD></TR>
       <TR><TD PORT="DEFENDANT_ID" COLSPAN="3" BGCOLOR="#ffffff" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="212" HEIGHT="16">DEFENDANT_ID</TD></TR></TABLE></TD></TR>
       <TR><TD PORT="elipses" COLSPAN="3" ALIGN="LEFT">...</TD></TR>
-      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 18</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">99 &gt;</TD></TR>
+      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 18</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">100 &gt;</TD></TR>
     </TABLE>>
     URL="OFFENDER.html"
     target="_top"
