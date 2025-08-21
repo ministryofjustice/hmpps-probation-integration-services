@@ -15,6 +15,7 @@ class CaseDetailService(
     private val offenceRepository: OffenceRepository,
     private val registrationRepository: RegistrationRepository,
     private val requirementManagerRepository: RequirementManagerRepository,
+    private val licenceConditionManagerRepository: LicenceConditionManagerRepository,
 ) {
     fun getPersonalDetails(crn: String) = personRepository.findByCrn(crn)?.let { person ->
         checkNotNull(person.manager) { "Person does not have an active manager" }
@@ -87,4 +88,16 @@ class CaseDetailService(
             )
         )
     } ?: throw NotFoundException("Requirement", "id", id)
+
+    fun getLicenceCondition(id: Long) =
+        licenceConditionManagerRepository.findByLicenceConditionId(id)?.let { manager ->
+            LicenceCondition(
+                Manager(
+                    staff = manager.staff.toProbationPractitioner { ldapTemplate.findEmailByUsername(it.username) },
+                    team = manager.team.toCodedValue(),
+                    probationDeliveryUnit = manager.team.localAdminUnit.probationDeliveryUnit.toCodedValue(),
+                    officeLocations = manager.team.officeLocations.map { it.toCodedValue() }
+                )
+            )
+        } ?: throw NotFoundException("LicenceCondition", "id", id)
 }

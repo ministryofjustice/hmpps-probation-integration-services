@@ -23,6 +23,7 @@ import uk.gov.justice.digital.hmpps.data.TestData.LED_DATE
 import uk.gov.justice.digital.hmpps.data.TestData.LED_KEY_DATE_TYPE
 import uk.gov.justice.digital.hmpps.data.TestData.LICENCE_CONDITIONS
 import uk.gov.justice.digital.hmpps.data.TestData.LICENCE_CONDITION_MAIN_TYPE
+import uk.gov.justice.digital.hmpps.data.TestData.LICENCE_CONDITION_MANAGERS
 import uk.gov.justice.digital.hmpps.data.TestData.LICENCE_CONDITION_SUB_TYPE
 import uk.gov.justice.digital.hmpps.data.TestData.MAIN_OFFENCE
 import uk.gov.justice.digital.hmpps.data.TestData.MANAGER
@@ -55,10 +56,7 @@ import uk.gov.justice.digital.hmpps.data.TestData.UNSENTENCED_EVENT
 import uk.gov.justice.digital.hmpps.data.TestData.USER
 import uk.gov.justice.digital.hmpps.data.TestData.USER_WITH_LIMITED_ACCESS
 import uk.gov.justice.digital.hmpps.data.generator.IdGenerator.id
-import uk.gov.justice.digital.hmpps.repository.EventRepository
-import uk.gov.justice.digital.hmpps.repository.PersonRepository
-import uk.gov.justice.digital.hmpps.repository.RegistrationRepository
-import uk.gov.justice.digital.hmpps.repository.RequirementManagerRepository
+import uk.gov.justice.digital.hmpps.repository.*
 import uk.gov.justice.digital.hmpps.user.AuditUser
 import uk.gov.justice.digital.hmpps.user.AuditUserRepository
 
@@ -89,6 +87,7 @@ class DataLoader(
     private val pssRequirementRepository: PssRequirementRepository,
     private val licenceConditionMainCategoryRepository: LicenceConditionMainCategoryRepository,
     private val licenceConditionRepository: LicenceConditionRepository,
+    private val licenceConditionManagerRepository: LicenceConditionManagerRepository,
     private val requirementMainCategoryRepository: RequirementMainCategoryRepository,
     private val requirementRepository: RequirementRepository,
     private val requirementManagerRepository: RequirementManagerRepository,
@@ -98,6 +97,7 @@ class DataLoader(
     private val registerTypeRepository: RegisterTypeRepository,
     private val registrationRepository: RegistrationRepository,
     private val officeLocationRepository: OfficeLocationRepository,
+    conditionManagerRepository: LicenceConditionManagerRepository,
 ) : ApplicationListener<ApplicationReadyEvent> {
     @PostConstruct
     fun saveAuditUser() {
@@ -145,6 +145,7 @@ class DataLoader(
         licenceConditionMainCategoryRepository.save(LICENCE_CONDITION_MAIN_TYPE)
         referenceDataRepository.save(LICENCE_CONDITION_SUB_TYPE)
         licenceConditionRepository.saveAll(LICENCE_CONDITIONS)
+        licenceConditionManagerRepository.saveAll(LICENCE_CONDITION_MANAGERS)
         requirementMainCategoryRepository.save(REQUIREMENT_MAIN_TYPE)
         referenceDataRepository.save(REQUIREMENT_SUB_TYPE)
         requirementRepository.saveAll(REQUIREMENTS)
