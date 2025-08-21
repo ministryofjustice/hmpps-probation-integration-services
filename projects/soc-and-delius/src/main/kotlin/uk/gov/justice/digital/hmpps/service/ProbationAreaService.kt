@@ -35,7 +35,7 @@ class ProbationAreaService(
             .mapValues { (_, v) -> v.mergeOverlapping().sortedBy { it.startDate } }
             .toMap()
 
-    private fun List<ManagerHistory>.mergeOverlapping() = groupBy { it.team.district.borough.probationArea.code }.values
+    private fun List<ManagerHistory>.mergeOverlapping() = groupBy { it.team.district.code }.values
         .flatMap { rows ->
             rows.sortedBy { it.allocationDate }
                 .fold(emptyList<ProbationAreaHistory>()) { merged, next ->
