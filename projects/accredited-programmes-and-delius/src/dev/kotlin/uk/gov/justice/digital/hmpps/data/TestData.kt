@@ -69,6 +69,9 @@ object TestData {
         LicenceConditionGenerator.generate(CUSTODIAL_SENTENCE, LICENCE_CONDITION_MAIN_TYPE),
         LicenceConditionGenerator.generate(CUSTODIAL_SENTENCE, LICENCE_CONDITION_MAIN_TYPE, LICENCE_CONDITION_SUB_TYPE),
     )
+    val LICENCE_CONDITION_MANAGERS =
+        LICENCE_CONDITIONS.map { LicenceConditionManager(it.id, TEAM, STAFF, true, false, id()) }
+
     val REQUIREMENT_MAIN_TYPE = RequirementMainCategory(id(), "H", "Alcohol Treatment")
     val REQUIREMENT_SUB_TYPE = ReferenceData(id(), "ALCTRT", "Alcohol Treatment")
     val REQUIREMENTS = listOf(
