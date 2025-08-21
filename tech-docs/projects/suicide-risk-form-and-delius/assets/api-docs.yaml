@@ -37,6 +37,24 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/CaseAccess"
+  /sign-and-send/{username}:
+    get:
+      tags:
+      - suicide-risk-form-controller
+      operationId: getSignAndSend
+      parameters:
+      - name: username
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SignAndSendResponse"
   /information-page/{crn}:
     get:
       tags:
@@ -104,6 +122,62 @@ components:
       - crn
       - userExcluded
       - userRestricted
+    Name:
+      type: object
+      properties:
+        forename:
+          type: string
+        middleName:
+          type: string
+        surname:
+          type: string
+      required:
+      - forename
+      - surname
+    OfficeAddress:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        status:
+          type: string
+        officeDescription:
+          type: string
+        buildingName:
+          type: string
+        buildingNumber:
+          type: string
+        streetName:
+          type: string
+        townCity:
+          type: string
+        district:
+          type: string
+        county:
+          type: string
+        postcode:
+          type: string
+      required:
+      - id
+    SignAndSendResponse:
+      type: object
+      properties:
+        title:
+          type: string
+        name:
+          $ref: "#/components/schemas/Name"
+        telephoneNumber:
+          type: string
+        emailAddress:
+          type: string
+        addresses:
+          type: array
+          items:
+            $ref: "#/components/schemas/OfficeAddress"
+      required:
+      - addresses
+      - name
     CodedDescription:
       type: object
       properties:
@@ -189,18 +263,6 @@ components:
       - addresses
       - dateOfBirth
       - name
-    Name:
-      type: object
-      properties:
-        forename:
-          type: string
-        middleName:
-          type: string
-        surname:
-          type: string
-      required:
-      - forename
-      - surname
   securitySchemes:
     hmpps-auth-token:
       type: http
