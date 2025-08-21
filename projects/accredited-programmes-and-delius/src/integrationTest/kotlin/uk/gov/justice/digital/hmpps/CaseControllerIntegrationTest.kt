@@ -274,4 +274,44 @@ internal class CaseControllerIntegrationTest {
                 )
             )
     }
+
+    @Test
+    fun `licence condition success`() {
+        mockMvc
+            .perform(get("/case/${TestData.PERSON.crn}/licence-conditions/${TestData.LICENCE_CONDITIONS.first().id}").withToken())
+            .andExpect(status().isOk)
+            .andExpect(
+                content().json(
+                    """
+                    {
+                      "manager": {
+                        "staff": {
+                          "name": {
+                            "forename": "Forename",
+                            "surname": "Surname"
+                          },
+                          "code": "STAFF01",
+                          "email": "test@example.com"
+                        },
+                        "team": {
+                          "code": "TEAM01",
+                          "description": "Test Team"
+                        },
+                        "probationDeliveryUnit": {
+                          "code": "PDU1",
+                          "description": "Test PDU"
+                        },
+                        "officeLocations": [
+                          {
+                            "code": "OFFICE1",
+                            "description": "Test Office Location"
+                          }
+                        ]
+                      }
+                    }
+                    """.trimIndent(),
+                    JsonCompareMode.STRICT,
+                )
+            )
+    }
 }
