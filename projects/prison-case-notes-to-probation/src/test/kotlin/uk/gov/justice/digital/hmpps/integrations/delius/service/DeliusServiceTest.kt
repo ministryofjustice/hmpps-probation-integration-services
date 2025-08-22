@@ -22,10 +22,12 @@ import uk.gov.justice.digital.hmpps.exceptions.OffenderNotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.CaseNote
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.CaseNoteNomisType
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.CaseNoteType
+import uk.gov.justice.digital.hmpps.integrations.delius.entity.OffenderManager
 import uk.gov.justice.digital.hmpps.integrations.delius.model.CaseNoteRelatedIds
 import uk.gov.justice.digital.hmpps.integrations.delius.repository.CaseNoteNomisTypeRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.repository.CaseNoteRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.repository.CaseNoteTypeRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.repository.OffenderManagerRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.repository.OffenderRepository
 import uk.gov.justice.digital.hmpps.integrations.prison.toDeliusCaseNote
 import uk.gov.justice.digital.hmpps.service.AssignmentService
@@ -59,10 +61,13 @@ class DeliusServiceTest {
     @Mock
     lateinit var caseNoteRelatedService: CaseNoteRelatedService
 
+    @Mock
+    lateinit var offenderManagerRepository: OffenderManagerRepository
+
     @InjectMocks
     lateinit var deliusService: DeliusService
 
-    private val caseNote = CaseNoteGenerator.EXISTING
+    private val caseNote = CaseNoteGenerator.EXISTING.copy(offender = OffenderGenerator.DEFAULT)
     private val caseNoteNomisType = CaseNoteNomisTypeGenerator.NEG
     private val nomisCaseNote = PrisonCaseNoteGenerator.EXISTING_IN_BOTH
     private var deliusCaseNote = nomisCaseNote.toDeliusCaseNote()

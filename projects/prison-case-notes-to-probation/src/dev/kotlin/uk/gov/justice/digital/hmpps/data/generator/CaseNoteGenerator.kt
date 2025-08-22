@@ -3,12 +3,13 @@ package uk.gov.justice.digital.hmpps.data.generator
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.CaseNote
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.CaseNoteType
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.Offender
+import uk.gov.justice.digital.hmpps.integrations.delius.model.DeliusCaseNote
 import java.time.ZonedDateTime
 import kotlin.random.Random
 
 object CaseNoteGenerator {
     var EXISTING = generate(
-        EventGenerator.EXISTING_EVENT_ID,
+        offender = OffenderGenerator.PREVIOUS,
         notes = """
             NEG IEP_WARN
             This is an existing case note
@@ -16,7 +17,8 @@ object CaseNoteGenerator {
             Some Additional Text
         """.trimIndent(),
         startDateTime = ZonedDateTime.parse("2022-07-20T11:24:10+00:00"),
-        lastModifiedDateTime = ZonedDateTime.parse("2022-07-20T11:24:10+00:00")
+        lastModifiedDateTime = ZonedDateTime.parse("2022-07-20T11:24:10+00:00"),
+        externalReference = DeliusCaseNote.CASE_NOTE_URN_PREFIX + "0ec15f8b-6b57-471f-b02a-c89169a6a3e5"
     )
 
     fun generate(
@@ -32,7 +34,8 @@ object CaseNoteGenerator {
         staffId: Long = StaffGenerator.DEFAULT.id,
         startDateTime: ZonedDateTime = ZonedDateTime.now(),
         createdDateTime: ZonedDateTime = ZonedDateTime.now(),
-        lastModifiedDateTime: ZonedDateTime = ZonedDateTime.now()
+        lastModifiedDateTime: ZonedDateTime = ZonedDateTime.now(),
+        externalReference: String? = null,
     ): CaseNote {
         return CaseNote(
             offender,
@@ -49,7 +52,8 @@ object CaseNoteGenerator {
             teamId,
             probationAreaId,
             createdDateTime = createdDateTime,
-            lastModifiedDateTime = lastModifiedDateTime
+            lastModifiedDateTime = lastModifiedDateTime,
+            externalReference = externalReference,
         )
     }
 }

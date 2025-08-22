@@ -6,6 +6,7 @@ import uk.gov.justice.digital.hmpps.datetime.DeliusDateFormatter
 import uk.gov.justice.digital.hmpps.datetime.DeliusDateTimeFormatter
 import uk.gov.justice.digital.hmpps.detail.DomainEventDetailService
 import uk.gov.justice.digital.hmpps.exceptions.OffenderNotFoundException
+import uk.gov.justice.digital.hmpps.integrations.delius.model.MergeResult
 import uk.gov.justice.digital.hmpps.integrations.delius.model.properties
 import uk.gov.justice.digital.hmpps.integrations.delius.service.DeliusService
 import uk.gov.justice.digital.hmpps.integrations.prison.Alert
@@ -32,6 +33,9 @@ class PrisonerAlert(
 
         try {
             val result = deliusService.mergeCaseNote(alert.toDeliusCaseNote())
+            if (result is MergeResult.Success && result.action is MergeResult.Action.Moved) {
+                deliusService.createDataCleanseContact(setOf(result.action.from))
+            }
             telemetryService.trackEvent("AlertMerged", alert.properties() + result.properties())
         } catch (e: Exception) {
             telemetryService.trackEvent(

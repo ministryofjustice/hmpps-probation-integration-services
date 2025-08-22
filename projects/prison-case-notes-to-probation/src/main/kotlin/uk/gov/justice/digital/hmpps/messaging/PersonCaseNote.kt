@@ -5,6 +5,7 @@ import org.springframework.web.client.HttpClientErrorException
 import uk.gov.justice.digital.hmpps.datetime.DeliusDateTimeFormatter
 import uk.gov.justice.digital.hmpps.detail.DomainEventDetailService
 import uk.gov.justice.digital.hmpps.exceptions.OffenderNotFoundException
+import uk.gov.justice.digital.hmpps.integrations.delius.model.MergeResult
 import uk.gov.justice.digital.hmpps.integrations.delius.model.properties
 import uk.gov.justice.digital.hmpps.integrations.delius.service.DeliusService
 import uk.gov.justice.digital.hmpps.integrations.prison.PrisonCaseNote
@@ -36,6 +37,9 @@ class PersonCaseNote(
 
         try {
             val result = deliusService.mergeCaseNote(prisonCaseNote.toDeliusCaseNote())
+            if (result is MergeResult.Success && result.action is MergeResult.Action.Moved) {
+                deliusService.createDataCleanseContact(setOf(result.action.from))
+            }
             telemetryService.trackEvent("CaseNoteMerged", prisonCaseNote.properties() + result.properties())
         } catch (e: Exception) {
             telemetryService.trackEvent(

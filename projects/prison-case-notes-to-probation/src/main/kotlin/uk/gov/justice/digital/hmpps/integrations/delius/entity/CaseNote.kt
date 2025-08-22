@@ -136,6 +136,7 @@ class CaseNoteType(
 ) {
     companion object {
         const val DEFAULT_CODE = "NOMISD"
+        const val OTHER_INFORMATION = "CIZZ"
     }
 }
 
