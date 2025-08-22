@@ -26,7 +26,7 @@ class Requirement(
 
     @ManyToOne
     @JoinColumn(name = "disposal_id")
-    val disposal: Disposal?,
+    val disposal: Disposal,
 
     @Column(name = "active_flag", columnDefinition = "number", nullable = false)
     @Convert(converter = NumericBooleanConverter::class)

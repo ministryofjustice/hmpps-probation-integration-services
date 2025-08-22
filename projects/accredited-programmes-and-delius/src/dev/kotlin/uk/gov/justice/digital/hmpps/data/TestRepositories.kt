@@ -4,7 +4,6 @@ import org.springframework.data.jpa.repository.JpaRepository
 import uk.gov.justice.digital.hmpps.entity.Exclusion
 import uk.gov.justice.digital.hmpps.entity.ReferenceData
 import uk.gov.justice.digital.hmpps.entity.Restriction
-import uk.gov.justice.digital.hmpps.entity.contact.Contact
 import uk.gov.justice.digital.hmpps.entity.contact.ContactType
 import uk.gov.justice.digital.hmpps.entity.registration.RegisterType
 import uk.gov.justice.digital.hmpps.entity.sentence.Disposal
@@ -19,6 +18,7 @@ import uk.gov.justice.digital.hmpps.entity.sentence.offence.OffenceEntity
 import uk.gov.justice.digital.hmpps.entity.staff.*
 
 interface ReferenceDataRepository : JpaRepository<ReferenceData, Long>
+interface ProviderRepository : JpaRepository<Provider, Long>
 interface ProbationDeliveryUnitRepository : JpaRepository<ProbationDeliveryUnit, Long>
 interface LocalAdminUnitRepository : JpaRepository<LocalAdminUnit, Long>
 interface TeamRepository : JpaRepository<Team, Long>
@@ -32,7 +32,6 @@ interface DisposalRepository : JpaRepository<Disposal, Long>
 interface CustodyRepository : JpaRepository<Custody, Long>
 interface ReleaseRepository : JpaRepository<Release, Long>
 interface ContactTypeRepository : JpaRepository<ContactType, Long>
-interface ContactRepository : JpaRepository<Contact, Long>
 interface KeyDateRepository : JpaRepository<KeyDate, Long>
 interface PssRequirementMainCategoryRepository : JpaRepository<PssRequirementMainCategory, Long>
 interface PssRequirementSubCategoryRepository : JpaRepository<PssRequirementSubCategory, Long>
