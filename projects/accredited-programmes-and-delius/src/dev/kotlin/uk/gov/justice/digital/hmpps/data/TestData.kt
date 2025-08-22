@@ -1,7 +1,10 @@
 package uk.gov.justice.digital.hmpps.data
 
 import uk.gov.justice.digital.hmpps.data.generator.*
+import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.contact
+import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.generateAppointment
 import uk.gov.justice.digital.hmpps.data.generator.IdGenerator.id
+import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.entity.ReferenceData
 import uk.gov.justice.digital.hmpps.entity.contact.ContactType
 import uk.gov.justice.digital.hmpps.entity.registration.RegisterType
@@ -9,10 +12,8 @@ import uk.gov.justice.digital.hmpps.entity.sentence.DisposalType
 import uk.gov.justice.digital.hmpps.entity.sentence.component.*
 import uk.gov.justice.digital.hmpps.entity.sentence.custody.KeyDate
 import uk.gov.justice.digital.hmpps.entity.sentence.offence.OffenceEntity
-import uk.gov.justice.digital.hmpps.entity.staff.LocalAdminUnit
-import uk.gov.justice.digital.hmpps.entity.staff.OfficeLocation
-import uk.gov.justice.digital.hmpps.entity.staff.ProbationDeliveryUnit
-import uk.gov.justice.digital.hmpps.entity.staff.Team
+import uk.gov.justice.digital.hmpps.entity.staff.*
+import java.time.Instant.ofEpochSecond
 import java.time.LocalDate
 
 object TestData {
@@ -20,6 +21,7 @@ object TestData {
     val ETHNICITY = ReferenceData(id(), "A9", "Asian or Asian British: Other")
     val MONTHS = ReferenceData(id(), "M", "Months")
     val ADULT_LICENCE = ReferenceData(id(), "ADL", "Released on Adult Licence")
+    val PROVIDER = Provider(id(), "PA1", "Test Provider")
     val PDU = ProbationDeliveryUnit(id(), "PDU1", "Test PDU")
     val LAU = LocalAdminUnit(id(), PDU)
     val OFFICE_LOCATION = OfficeLocation(id(), "OFFICE1", "Test Office Location")
@@ -47,14 +49,13 @@ object TestData {
     val TWO_THIRDS_CONTACT_TYPE = ContactType(id(), ContactType.SUPERVISION_TWO_THIRDS_POINT)
     val OTHER_CONTACT_TYPE = ContactType(id(), "OTHER")
     val TWO_THIRDS_CONTACT =
-        ContactGenerator.generate(CUSTODIAL_EVENT, TWO_THIRDS_CONTACT_TYPE, LocalDate.of(2067, 1, 1))
-    val OTHER_CONTACT = ContactGenerator.generate(CUSTODIAL_EVENT, OTHER_CONTACT_TYPE, LocalDate.of(2000, 1, 1))
+        CUSTODIAL_EVENT.contact(TWO_THIRDS_CONTACT_TYPE, LocalDate.of(2067, 1, 1), STAFF, TEAM, PROVIDER)
+    val OTHER_CONTACT = CUSTODIAL_EVENT.contact(OTHER_CONTACT_TYPE, LocalDate.of(2000, 1, 1), STAFF, TEAM, PROVIDER)
 
     val PSS_END_DATE_KEY_DATE_TYPE =
         ReferenceData(id(), KeyDate.POST_SENTENCE_SUPERVISION_END_DATE, "Post-sentence supervision end date")
     val PSS_END_DATE = KeyDateGenerator.generate(CUSTODY, PSS_END_DATE_KEY_DATE_TYPE, LocalDate.of(2100, 1, 1))
-    val LED_KEY_DATE_TYPE =
-        ReferenceData(id(), KeyDate.LICENCE_EXPIRY_DATE, "Post-sentence supervision end date")
+    val LED_KEY_DATE_TYPE = ReferenceData(id(), KeyDate.LICENCE_EXPIRY_DATE, "Licence expiry date")
     val LED_DATE = KeyDateGenerator.generate(CUSTODY, LED_KEY_DATE_TYPE, LocalDate.of(2050, 1, 1))
 
     val PSS_MAIN_TYPE = PssRequirementMainCategory(id(), "S09", "Drug Testing")
@@ -90,4 +91,19 @@ object TestData {
     val REGISTER_TYPE = RegisterType(id(), "RVHR", "Very High RoSH")
     val REGISTER_CATEGORY = ReferenceData(id(), "I3", "IOM - Fixed")
     val REGISTRATION = RegistrationGenerator.generate(PERSON, REGISTER_TYPE, REGISTER_CATEGORY)
+
+    val APPOINTMENT_CONTACT_TYPE = ContactType(id(), ContactType.IAPS_APPOINTMENT)
+    val APPOINTMENTS = REQUIREMENTS.map {
+        it.generateAppointment(
+            APPOINTMENT_CONTACT_TYPE,
+            LocalDate.of(2030, 1, 1), ofEpochSecond(0).atZone(EuropeLondon), ofEpochSecond(3600).atZone(EuropeLondon),
+            STAFF, TEAM, PROVIDER
+        )
+    } + LICENCE_CONDITIONS.map {
+        it.generateAppointment(
+            APPOINTMENT_CONTACT_TYPE,
+            LocalDate.of(2030, 1, 1), ofEpochSecond(0).atZone(EuropeLondon), ofEpochSecond(3600).atZone(EuropeLondon),
+            STAFF, TEAM, PROVIDER
+        )
+    }
 }
