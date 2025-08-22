@@ -90,7 +90,7 @@ class DocumentService(
         part("CRN", person.crn, MediaType.TEXT_PLAIN)
         part("fileName", name, MediaType.TEXT_PLAIN)
         part("filedata", file, MediaType.APPLICATION_OCTET_STREAM).filename(name)
-        part("author", "Service,Breach Notice", MediaType.TEXT_PLAIN)
+        part("author", "Service,Suicide Risk Form", MediaType.TEXT_PLAIN)
         part("docType", "DOCUMENT", MediaType.TEXT_PLAIN)
         //entityType in Alfresco does not always correspond exactly to tableName in Delius.
         // See https://github.com/ministryofjustice/delius/blob/0087df0cb1dd5305fb44f89f4bf78dfc6b3916f6/NDelius-lib/src/main/java/uk/co/bconline/ndelius/util/iwp/MetadataMapper.java#L18-L39
