@@ -97,6 +97,15 @@ class DataLoader(
             ManagerGenerator.PROBATION_AREA_1,
             ManagerGenerator.PROBATION_AREA_2,
             ManagerGenerator.PROBATION_AREA_3,
+            ManagerGenerator.PDU_1,
+            ManagerGenerator.PDU_2,
+            ManagerGenerator.PDU_3,
+            ManagerGenerator.LAU_1,
+            ManagerGenerator.LAU_2,
+            ManagerGenerator.LAU_3,
+            ManagerGenerator.TEAM_1,
+            ManagerGenerator.TEAM_2,
+            ManagerGenerator.TEAM_3,
             *ManagerGenerator.PERSON_MANAGERS.toTypedArray(),
         )
 

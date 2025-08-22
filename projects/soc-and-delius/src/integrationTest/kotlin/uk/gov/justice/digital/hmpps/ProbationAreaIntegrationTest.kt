@@ -13,6 +13,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import uk.gov.justice.digital.hmpps.data.generator.ManagerGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ProbationAreaGenerator
+import uk.gov.justice.digital.hmpps.entity.ManagerHistory
 import uk.gov.justice.digital.hmpps.model.LocalDeliveryUnit
 import uk.gov.justice.digital.hmpps.model.ProbationArea
 import uk.gov.justice.digital.hmpps.model.ProbationAreaContainer
@@ -35,7 +36,7 @@ internal class ProbationAreaIntegrationTest {
     }
 
     @Test
-    fun `API call including non selectable retuns a success response`() {
+    fun `API call including non selectable returns a success response`() {
         mockMvc
             .perform(get("/probation-areas?includeNonSelectable=true").withToken())
             .andExpect(status().is2xxSuccessful)
@@ -55,41 +56,81 @@ internal class ProbationAreaIntegrationTest {
                         {
                           "startDate": "2000-01-01",
                           "endDate": "2002-01-01",
-                          "probationArea": {
-                            "code": "M01",
-                            "description": "Area 1"
+                          "localAdminUnit": {
+                            "code": "LA1",
+                            "description": "Admin Unit of LA1",
+                            "probationDeliveryUnit": {
+                              "code": "PD1",
+                              "description": "Delivery Unit of PD1",
+                              "probationArea": {
+                                "code": "M01",
+                                "description": "Area 1"
+                              }
+                            }
                           }
                         },
                         {
                           "startDate": "2001-01-01",
                           "endDate": "2003-01-01",
-                          "probationArea": {
-                            "code": "M02",
-                            "description": "Area 2"
+                          "localAdminUnit": {
+                            "code": "LA2",
+                            "description": "Admin Unit of LA2",
+                            "probationDeliveryUnit": {
+                              "code": "PD2",
+                              "description": "Delivery Unit of PD2",
+                              "probationArea": {
+                                "code": "M02",
+                                "description": "Area 2"
+                              }
+                            }
                           }
                         },
                         {
                           "startDate": "2002-01-01",
-                          "probationArea": {
-                            "code": "M03",
-                            "description": "Area 3"
+                          "localAdminUnit": {
+                            "code": "LA3",
+                            "description": "Admin Unit of LA3",
+                            "probationDeliveryUnit": {
+                              "code": "PD3",
+                              "description": "Delivery Unit of PD3",
+                              "probationArea": {
+                                "code": "M03",
+                                "description": "Area 3"
+                              }
+                            }
                           }
                         },
                         {
                           "startDate": "2005-01-01",
                           "endDate": "2007-01-01",
-                          "probationArea": {
-                            "code": "M01",
-                            "description": "Area 1"
+                          "localAdminUnit": {
+                            "code": "LA1",
+                            "description": "Admin Unit of LA1",
+                            "probationDeliveryUnit": {
+                              "code": "PD1",
+                              "description": "Delivery Unit of PD1",
+                              "probationArea": {
+                                "code": "M01",
+                                "description": "Area 1"
+                              }
+                            }
                           }
                         }
                       ],
                       "MH00002": [
                         {
                           "startDate": "2025-05-15",
-                          "probationArea": {
-                            "code": "M01",
-                            "description": "Area 1"
+                          "localAdminUnit": {
+                            "code": "LA1",
+                            "description": "Admin Unit of LA1",
+                            "probationDeliveryUnit": {
+                              "code": "PD1",
+                              "description": "Delivery Unit of PD1",
+                              "probationArea": {
+                                "code": "M01",
+                                "description": "Area 1"
+                              }
+                            }
                           }
                         }
                       ]
@@ -122,6 +163,36 @@ internal class ProbationAreaIntegrationTest {
                         ProbationAreaGenerator.DEFAULT_LDU2.description
                     )
                 )
+            ),
+            ProbationArea(
+                ManagerGenerator.PROBATION_AREA_1.code,
+                ManagerGenerator.PROBATION_AREA_1.description,
+                listOf(
+                    LocalDeliveryUnit(
+                        ManagerGenerator.LAU_1.code,
+                        ManagerGenerator.LAU_1.description
+                    )
+                )
+            ),
+            ProbationArea(
+                ManagerGenerator.PROBATION_AREA_2.code,
+                ManagerGenerator.PROBATION_AREA_2.description,
+                listOf(
+                    LocalDeliveryUnit(
+                        ManagerGenerator.LAU_2.code,
+                        ManagerGenerator.LAU_2.description
+                    )
+                )
+            ),
+            ProbationArea(
+                ManagerGenerator.PROBATION_AREA_3.code,
+                ManagerGenerator.PROBATION_AREA_3.description,
+                listOf(
+                    LocalDeliveryUnit(
+                        ManagerGenerator.LAU_3.code,
+                        ManagerGenerator.LAU_3.description
+                    )
+                )
             )
         )
     )
@@ -149,6 +220,36 @@ internal class ProbationAreaIntegrationTest {
                     LocalDeliveryUnit(
                         ProbationAreaGenerator.NON_SELECTABLE_LDU.code,
                         ProbationAreaGenerator.NON_SELECTABLE_LDU.description
+                    )
+                )
+            ),
+            ProbationArea(
+                ManagerGenerator.PROBATION_AREA_1.code,
+                ManagerGenerator.PROBATION_AREA_1.description,
+                listOf(
+                    LocalDeliveryUnit(
+                        ManagerGenerator.LAU_1.code,
+                        ManagerGenerator.LAU_1.description
+                    )
+                )
+            ),
+            ProbationArea(
+                ManagerGenerator.PROBATION_AREA_2.code,
+                ManagerGenerator.PROBATION_AREA_2.description,
+                listOf(
+                    LocalDeliveryUnit(
+                        ManagerGenerator.LAU_2.code,
+                        ManagerGenerator.LAU_2.description
+                    )
+                )
+            ),
+            ProbationArea(
+                ManagerGenerator.PROBATION_AREA_3.code,
+                ManagerGenerator.PROBATION_AREA_3.description,
+                listOf(
+                    LocalDeliveryUnit(
+                        ManagerGenerator.LAU_3.code,
+                        ManagerGenerator.LAU_3.description
                     )
                 )
             )

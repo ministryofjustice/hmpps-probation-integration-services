@@ -16,7 +16,8 @@ object ProbationAreaGenerator {
         true,
         IdGenerator.getAndIncrement(),
         DEFAULT_PA,
-        "N02"
+        "N02",
+        "Borough N02"
     )
     val DEFAULT_LDU = District(
         true,
@@ -43,7 +44,8 @@ object ProbationAreaGenerator {
         true,
         IdGenerator.getAndIncrement(),
         NON_SELECTABLE_PA,
-        "N03"
+        "N03",
+        "Borough N03"
     )
     val NON_SELECTABLE_LDU = District(
         true,
@@ -52,4 +54,27 @@ object ProbationAreaGenerator {
         NON_SELECTABLE_BOROUGH,
         IdGenerator.getAndIncrement()
     )
+
+    fun generateProbationArea(
+        code: String,
+        description: String = "Area of $code",
+        selectable: Boolean = true,
+        id: Long = IdGenerator.getAndIncrement()
+    ) = ProbationAreaEntity(selectable, description, code, null, id)
+
+    fun generatePdu(
+        code: String,
+        description: String = "Delivery Unit of $code",
+        area: ProbationAreaEntity,
+        selectable: Boolean = true,
+        id: Long = IdGenerator.getAndIncrement()
+    ) = Borough(selectable, id, area, code, description)
+
+    fun generateLau(
+        code: String,
+        description: String = "Admin Unit of $code",
+        pdu: Borough,
+        selectable: Boolean = true,
+        id: Long = IdGenerator.getAndIncrement()
+    ) = District(selectable, code, description, pdu, id)
 }
