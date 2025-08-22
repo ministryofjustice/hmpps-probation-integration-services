@@ -25,6 +25,7 @@ data class Team(
     val addresses: List<OfficeAddress>?,
     val district: District,
     val borough: Borough,
+    val provider: Provider,
     val startDate: LocalDate,
     val endDate: LocalDate?
 )
