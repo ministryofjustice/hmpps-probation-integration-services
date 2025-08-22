@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.api.model.Name
 import uk.gov.justice.digital.hmpps.api.model.activity.Activity
+import uk.gov.justice.digital.hmpps.api.model.activity.Component
 import uk.gov.justice.digital.hmpps.api.model.appointment.CreateAppointment
 import uk.gov.justice.digital.hmpps.api.model.personalDetails.Document
 import uk.gov.justice.digital.hmpps.api.model.schedule.*
@@ -12,6 +13,7 @@ import uk.gov.justice.digital.hmpps.api.model.user.PersonManager
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.ContactDocument
+import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.LicenceCondition
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.OffenderManager
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.OffenderManagerRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.getByCrn
@@ -181,6 +183,7 @@ fun Contact.toActivity(noteId: Int? = null) = Activity(
     outcome = outcome?.description,
     deliusManaged = CreateAppointment.Type.entries.any { it.code == type.code },
     isVisor = isVisor,
+    component = requirement?.asComponent() ?: licenceCondition?.asComponent()
 )
 
 fun ContactDocument.toDocument() =
@@ -189,3 +192,8 @@ fun ContactDocument.toDocument() =
 fun OffenderManager.asPersonManager(): PersonManager = with(staff) {
     PersonManager(Name(forename, null, surname))
 }
+
+fun Requirement.asComponent() =
+    Component(id, mainCategory?.description ?: "", Component.Type.REQUIREMENT)
+
+fun LicenceCondition.asComponent() = Component(id, mainCategory.description, Component.Type.LICENCE_CONDITION)

@@ -9,6 +9,7 @@ import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.ContactDocument
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.ReferenceData
+import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.LicenceCondition
 import uk.gov.justice.digital.hmpps.integrations.delius.user.entity.*
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -149,7 +150,8 @@ object ContactGenerator {
         OVERVIEW,
         APPT_CT_3,
         ZonedDateTime.of(LocalDateTime.now(EuropeLondon).plusHours(3), EuropeLondon),
-        description = "next appointment"
+        description = "next appointment",
+        licenceCondition = LicenceConditionGenerator.LC_WITH_NOTES
     )
 
     val PREVIOUS_COMMUNICATION_CONTACT = generateContact(
@@ -235,7 +237,8 @@ object ContactGenerator {
         startTime: ZonedDateTime? = ZonedDateTime.of(LocalDate.EPOCH, startDateTime.toLocalTime(), startDateTime.zone),
         event: Event = PersonGenerator.EVENT_1,
         outcome: ContactOutcome? = null,
-        description: String? = null
+        description: String? = null,
+        licenceCondition: LicenceCondition? = null,
     ) = Contact(
         id = IdGenerator.getAndIncrement(),
         personId = person.id,
@@ -255,7 +258,8 @@ object ContactGenerator {
         action = action,
         event = event,
         outcome = outcome,
-        description = description
+        description = description,
+        licenceCondition = licenceCondition,
     )
 
     fun generateOutcome(code: String, description: String, attendance: Boolean, acceptable: Boolean) =

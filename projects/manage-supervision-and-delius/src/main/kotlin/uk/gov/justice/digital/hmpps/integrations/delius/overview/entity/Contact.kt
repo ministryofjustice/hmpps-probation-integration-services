@@ -12,6 +12,7 @@ import org.springframework.data.domain.Sort
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.CrudRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.LicenceCondition as LicenceConditionEntity
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.ContactDocument
@@ -87,6 +88,10 @@ class Contact(
     @ManyToOne
     @JoinColumn(name = "rqmnt_id")
     val requirement: Requirement? = null,
+
+    @ManyToOne
+    @JoinColumn(name = "lic_condition_id")
+    val licenceCondition: LicenceConditionEntity? = null,
 
     @ManyToOne
     @JoinColumn(name = "staff_id")

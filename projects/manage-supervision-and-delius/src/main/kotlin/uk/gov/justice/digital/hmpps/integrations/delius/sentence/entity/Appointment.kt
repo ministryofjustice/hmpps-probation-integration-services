@@ -66,6 +66,7 @@ class Appointment(
     @Column(name = "rqmnt_id")
     val rqmntId: Long? = null,
 
+    @Column(name = "lic_condition_id")
     val licConditionId: Long? = null,
 
     val nsiId: Long? = null,

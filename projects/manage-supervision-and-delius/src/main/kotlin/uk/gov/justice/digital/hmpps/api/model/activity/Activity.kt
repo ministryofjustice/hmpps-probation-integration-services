@@ -53,4 +53,11 @@ data class Activity(
     val outcome: String? = null,
     val deliusManaged: Boolean,
     val isVisor: Boolean? = null,
+    val component: Component? = null,
 )
+
+data class Component(val id: Long, val description: String, val type: Type) {
+    enum class Type {
+        LICENCE_CONDITION, REQUIREMENT
+    }
+}
