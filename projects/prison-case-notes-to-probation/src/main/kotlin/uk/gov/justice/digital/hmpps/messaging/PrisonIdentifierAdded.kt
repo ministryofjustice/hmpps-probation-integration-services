@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.integrations.delius.model.MergeResult
 import uk.gov.justice.digital.hmpps.integrations.delius.model.MergeResult.Action.Created
+import uk.gov.justice.digital.hmpps.integrations.delius.model.MergeResult.Action.Updated
 import uk.gov.justice.digital.hmpps.integrations.delius.model.MergeResult.Failure
 import uk.gov.justice.digital.hmpps.integrations.delius.model.MergeResult.Success
 import uk.gov.justice.digital.hmpps.integrations.delius.service.DeliusService
@@ -52,21 +53,33 @@ class PrisonIdentifierAdded(
             }
         }
 
-        val results = cnResults + alertResults
+        val results: List<MergeResult> = cnResults + alertResults
         val success = results.firstOrNull { it is Success } as Success?
 
-        val (cnCreated, cnUpdated) = cnResults.filterIsInstance<Success>().partition { it.action == Created }
-        val (alertCreated, alertUpdated) = alertResults.filterIsInstance<Success>().partition { it.action == Created }
+        val cnResultMap = cnResults.filterIsInstance<Success>().groupBy { it.action.name }
+        val alertResultMap = alertResults.filterIsInstance<Success>().groupBy { it.action.name }
+
+        try {
+            val moved = results
+                .filterIsInstance<Success>().map { it.action }
+                .filterIsInstance<MergeResult.Action.Moved>()
+                .map { it.from }.toSet()
+            deliusService.createDataCleanseContact(moved)
+        } catch (e: Exception) {
+            telemetryService.trackEvent("DataCleanseNotificationFailure", mapOf("reason" to e.message))
+        }
 
         telemetryService.trackEvent(
             "CaseNotesMigrated", listOfNotNull(
                 "nomsId" to nomsId,
                 success?.crn?.let { "crn" to it },
                 "cause" to event.eventType,
-                "caseNotesCreated" to cnCreated.size.toString(),
-                "caseNotesUpdated" to cnUpdated.size.toString(),
-                "alertsCreated" to alertCreated.size.toString(),
-                "alertsUpdated" to alertUpdated.size.toString()
+                cnResultMap[Created.name]?.let { "caseNotesCreated" to it.size.toString() },
+                cnResultMap[Updated.name]?.let { "caseNotesUpdated" to it.size.toString() },
+                cnResultMap["Moved"]?.let { "caseNotesMoved" to it.size.toString() },
+                alertResultMap[Created.name]?.let { "alertsCreated" to it.size.toString() },
+                alertResultMap[Updated.name]?.let { "alertsUpdated" to it.size.toString() },
+                alertResultMap["Moved"]?.let { "alertsMoved" to it.size.toString() },
             ).toMap()
         )
 

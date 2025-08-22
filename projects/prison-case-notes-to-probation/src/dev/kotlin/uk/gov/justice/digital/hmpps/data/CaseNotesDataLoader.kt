@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component
 import uk.gov.justice.digital.hmpps.audit.repository.BusinessInteractionRepository
 import uk.gov.justice.digital.hmpps.data.generator.*
 import uk.gov.justice.digital.hmpps.data.repository.*
+import uk.gov.justice.digital.hmpps.integrations.delius.entity.OffenderManager
 import uk.gov.justice.digital.hmpps.integrations.delius.repository.*
 import uk.gov.justice.digital.hmpps.user.AuditUserRepository
 
@@ -30,6 +31,7 @@ class CaseNotesDataLoader(
     private val nsiTypeRepository: NsiTypeRepository,
     private val nomisTypeNsiTypeRepository: NomisTypeNsiTypeRepository,
     private val nsiRepository: NsiRepository,
+    private val offenderManagerRepository: OffenderManagerRepository,
 ) : ApplicationListener<ApplicationReadyEvent> {
 
     @PostConstruct
@@ -54,6 +56,17 @@ class CaseNotesDataLoader(
 
         offenderRepository.save(OffenderGenerator.DEFAULT)
         offenderRepository.save(OffenderGenerator.PREVIOUS)
+        offenderManagerRepository.save(
+            OffenderManager(
+                OffenderGenerator.PREVIOUS,
+                StaffGenerator.DEFAULT,
+                TeamGenerator.DEFAULT,
+                ProbationAreaGenerator.DEFAULT,
+                true,
+                false,
+                IdGenerator.getAndIncrement()
+            )
+        )
         offenderRepository.save(OffenderGenerator.NEW_IDENTIFIER)
 
         eventRepository.save(EventGenerator.CUSTODIAL_EVENT)

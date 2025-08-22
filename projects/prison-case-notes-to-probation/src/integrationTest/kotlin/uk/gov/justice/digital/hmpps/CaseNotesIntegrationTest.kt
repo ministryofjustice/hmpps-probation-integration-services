@@ -220,9 +220,7 @@ class CaseNotesIntegrationTest {
                     "crn" to "N123456",
                     "cause" to "probation-case.prison-identifier.added",
                     "caseNotesCreated" to "4",
-                    "caseNotesUpdated" to "0",
                     "alertsCreated" to "1",
-                    "alertsUpdated" to "0"
                 )
             ),
             anyMap()
