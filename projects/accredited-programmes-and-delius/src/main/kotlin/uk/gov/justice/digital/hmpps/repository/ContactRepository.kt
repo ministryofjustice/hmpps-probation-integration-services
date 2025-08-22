@@ -10,7 +10,7 @@ interface ContactRepository : JpaRepository<Contact, Long> {
     @Query(
         """
         select c from Contact c
-        where c.type.code in ('${ContactType.IAPS_APPOINTMENT}')
+        where c.type.code = '${ContactType.APPOINTMENT}'
         and (c.requirement.id in :requirementIds or c.licenceCondition.id in :licenceConditionIds)
         and c.date >= :fromDate and c.date <= :toDate
         """

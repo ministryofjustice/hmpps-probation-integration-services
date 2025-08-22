@@ -92,7 +92,7 @@ object TestData {
     val REGISTER_CATEGORY = ReferenceData(id(), "I3", "IOM - Fixed")
     val REGISTRATION = RegistrationGenerator.generate(PERSON, REGISTER_TYPE, REGISTER_CATEGORY)
 
-    val APPOINTMENT_CONTACT_TYPE = ContactType(id(), ContactType.IAPS_APPOINTMENT)
+    val APPOINTMENT_CONTACT_TYPE = ContactType(id(), ContactType.APPOINTMENT)
     val APPOINTMENTS = REQUIREMENTS.map {
         it.generateAppointment(
             APPOINTMENT_CONTACT_TYPE,
