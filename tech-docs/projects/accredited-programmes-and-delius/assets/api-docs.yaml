@@ -158,6 +158,30 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/PersonalDetails"
+  /case/{crn}/licence-conditions/{id}:
+    get:
+      tags:
+      - Cases
+      operationId: getLicenceCondition
+      parameters:
+      - name: crn
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LicenceCondition"
 components:
   schemas:
     CaseAccess:
@@ -375,6 +399,13 @@ components:
       - probationPractitioner
       - sex
       - team
+    LicenceCondition:
+      type: object
+      properties:
+        manager:
+          $ref: "#/components/schemas/Manager"
+      required:
+      - manager
   securitySchemes:
     hmpps-auth-token:
       type: http
