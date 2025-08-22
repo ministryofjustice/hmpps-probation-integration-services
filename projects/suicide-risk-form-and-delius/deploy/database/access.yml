@@ -2,6 +2,16 @@ database:
   access:
     username_key: /suicide-risk-form-and-delius/db-username
     password_key: /suicide-risk-form-and-delius/db-password
+    tables:
+      - audited_interaction
+      - document
+      - address_assessment
+      - assessment
+      - contact
+      - nsi
+      - referral
+      - registration
+      - upw_appointment
 
   audit:
     username: SuicideRiskFormAndDelius

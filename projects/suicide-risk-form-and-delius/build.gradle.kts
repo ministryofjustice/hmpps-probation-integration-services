@@ -7,6 +7,7 @@ dependencies {
     implementation(project(":libs:commons"))
     implementation(project(":libs:limited-access"))
     implementation(project(":libs:messaging"))
+    implementation(project(":libs:document-management"))
     implementation(project(":libs:oauth-client"))
     implementation(project(":libs:oauth-server"))
 

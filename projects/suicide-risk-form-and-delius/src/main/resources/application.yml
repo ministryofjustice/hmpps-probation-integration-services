@@ -64,9 +64,7 @@ wiremock.enabled: true
 messaging.consumer.queue: message-queue
 messaging.consumer.detail.urls: http://localhost:${wiremock.port}
 
-integrations:
-  example:
-    url: http://localhost:${wiremock.port}/example
+integrations.alfresco.url: http://localhost:${wiremock.port}/alfresco
 
 oauth2:
   client-id: suicide-risk-form-and-delius
