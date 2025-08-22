@@ -81,6 +81,8 @@ class Borough(
     @Column(name = "code")
     val code: String,
 
+    val description: String,
+
     @OneToMany(mappedBy = "borough")
     val districts: List<District> = listOf()
 
