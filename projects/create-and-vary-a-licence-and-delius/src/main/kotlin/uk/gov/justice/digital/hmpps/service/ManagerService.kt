@@ -61,6 +61,7 @@ fun Team.asTeam() = uk.gov.justice.digital.hmpps.api.model.Team(
     addresses.mapNotNull(OfficeLocation::asTeamAddress),
     district.asDistrict(),
     district.borough.asBorough(),
+    district.borough.provider.asProvider(),
     startDate,
     endDate
 )

@@ -53,11 +53,11 @@ class PersonManager(
 
 interface PersonManagerRepository : JpaRepository<PersonManager, Long> {
     @Query("select pm from PersonManager pm where pm.person.crn = :crnOrNomisId or pm.person.nomsNumber = :crnOrNomisId")
-    @EntityGraph(attributePaths = ["person", "provider", "team.district.borough", "team.addresses", "staff.user"])
+    @EntityGraph(attributePaths = ["person", "provider", "team.district.borough.provider", "team.addresses", "staff.user"])
     fun findByPersonCrnOrPersonNomsNumber(crnOrNomisId: String): PersonManager?
 
     @Query("select pm from PersonManager pm where pm.person.crn in :crnsOrNomisIds or pm.person.nomsNumber in :crnsOrNomisIds")
-    @EntityGraph(attributePaths = ["person", "provider", "team.district.borough", "team.addresses", "staff.user"])
+    @EntityGraph(attributePaths = ["person", "provider", "team.district.borough.provider", "team.addresses", "staff.user"])
     fun findByPersonCrnInOrPersonNomsNumberIn(crnsOrNomisIds: List<String>): List<PersonManager>
 }
 
