@@ -383,6 +383,32 @@ components:
       required:
       - code
       - description
+    HistoryLau:
+      type: object
+      properties:
+        code:
+          type: string
+        description:
+          type: string
+        probationDeliveryUnit:
+          $ref: "#/components/schemas/HistoryPdu"
+      required:
+      - code
+      - description
+      - probationDeliveryUnit
+    HistoryPdu:
+      type: object
+      properties:
+        code:
+          type: string
+        description:
+          type: string
+        probationArea:
+          $ref: "#/components/schemas/CodeDescription"
+      required:
+      - code
+      - description
+      - probationArea
     ProbationAreaHistory:
       type: object
       properties:
@@ -392,10 +418,10 @@ components:
         endDate:
           type: string
           format: date
-        probationArea:
-          $ref: "#/components/schemas/CodeDescription"
+        localAdminUnit:
+          $ref: "#/components/schemas/HistoryLau"
       required:
-      - probationArea
+      - localAdminUnit
       - startDate
     AllCourtAppearancesContainer:
       type: object

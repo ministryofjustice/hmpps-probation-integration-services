@@ -530,6 +530,8 @@ components:
           $ref: "#/components/schemas/District"
         borough:
           $ref: "#/components/schemas/Borough"
+        provider:
+          $ref: "#/components/schemas/Provider"
         startDate:
           type: string
           format: date
@@ -541,6 +543,7 @@ components:
       - code
       - description
       - district
+      - provider
       - startDate
     ProbationCase:
       type: object
