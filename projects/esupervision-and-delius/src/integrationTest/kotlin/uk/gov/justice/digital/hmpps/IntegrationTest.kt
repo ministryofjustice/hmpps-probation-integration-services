@@ -31,7 +31,8 @@ internal class IntegrationTest {
     @Test
     fun `esupervision received contact created`() {
         val message = MessageGenerator.RECEIVED_A000001
-        val notification = Notification(message = message, attributes = MessageAttributes(eventType = message.eventType))
+        val notification =
+            Notification(message = message, attributes = MessageAttributes(eventType = message.eventType))
         channelManager.getChannel(queueName).publishAndWait(notification)
 
         val contact = contactRepository.findAll().single {
@@ -51,7 +52,8 @@ internal class IntegrationTest {
     @Test
     fun `esupervision expired contact created`() {
         val message = MessageGenerator.EXPIRED_A000001
-        val notification = Notification(message = message, attributes = MessageAttributes(eventType = message.eventType))
+        val notification =
+            Notification(message = message, attributes = MessageAttributes(eventType = message.eventType))
         channelManager.getChannel(queueName).publishAndWait(notification)
 
         val contact = contactRepository.findAll().single {
