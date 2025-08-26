@@ -1,5 +1,7 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
+import uk.gov.justice.digital.hmpps.integrations.delius.ContactOutcome
+import uk.gov.justice.digital.hmpps.integrations.delius.ContactType
 import uk.gov.justice.digital.hmpps.integrations.delius.Dataset
 import uk.gov.justice.digital.hmpps.integrations.delius.ReferenceData
 
@@ -32,6 +34,9 @@ object ReferenceDataGenerator {
         id = IdGenerator.getAndIncrement()
     )
 
+    val APPOINTMENT_CONTACT_TYPE = generateContactType("APPT1", attendanceContact = true)
+    val APPOINTMENT_OUTCOME = generateContactOutcome("AOUT")
+
     fun generateDataset(code: String, id: Long = IdGenerator.getAndIncrement()) = Dataset(code, id)
 
     fun generateReferenceData(
@@ -46,5 +51,29 @@ object ReferenceDataGenerator {
         description = description,
         dataset = dataset,
         selectable = selectable
+    )
+
+    fun generateContactType(
+        code: String,
+        id: Long = IdGenerator.getAndIncrement(),
+        description: String = "Description of $code",
+        attendanceContact: Boolean = false,
+    ) = ContactType(
+        id = id,
+        code = code,
+        description = description,
+        attendanceContact = attendanceContact
+    )
+
+    fun generateContactOutcome(
+        code: String,
+        id: Long = IdGenerator.getAndIncrement(),
+        description: String = "Description of $code",
+        enforceable: Boolean = false,
+    ) = ContactOutcome(
+        id = id,
+        code = code,
+        description = description,
+        enforceable = enforceable
     )
 }
