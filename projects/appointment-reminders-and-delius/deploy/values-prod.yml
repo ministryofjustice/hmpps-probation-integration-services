@@ -25,6 +25,10 @@ jobs:
       apiKeySecret: N07_API_KEY
       templates:
         - 2a1fac8c-5ce5-4702-9165-0dc56fd8f103
+    kent-surrey-sussex:
+      apiKeySecret: N57_API_KEY
+      templates:
+        - a7c9be1e-1050-4d44-bf5f-77c19e00f5e2
     wales:
       apiKeySecret: N03_API_KEY
       templates:
