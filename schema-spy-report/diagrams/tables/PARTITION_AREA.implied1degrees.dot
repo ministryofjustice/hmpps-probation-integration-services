@@ -122,7 +122,7 @@ digraph "oneDegreeRelationshipsDiagramImplied" {
   "MAIN_OFFENCE":"EVENT_ID":w -> "EVENT":"EVENT_ID":e [arrowhead=none dir=back arrowtail=crowodot];
   "MAIN_OFFENCE":"OFFENDER_ID":w -> "OFFENDER":"OFFENDER_ID":e [arrowhead=none dir=back arrowtail=crowodot];
   "MAIN_OFFENCE":"PARTITION_AREA_ID":w -> "PARTITION_AREA":"PARTITION_AREA_ID.type":e [arrowhead=none dir=back arrowtail=crowodot];
-  "MANAGEMENT_TIER":"OFFENDER_ID":w -> "OFFENDER":"OFFENDER_ID":e [arrowhead=none dir=back arrowtail=teeodot];
+  "MANAGEMENT_TIER":"OFFENDER_ID":w -> "OFFENDER":"OFFENDER_ID":e [arrowhead=none dir=back arrowtail=crowodot];
   "MANAGEMENT_TIER":"PARTITION_AREA_ID":w -> "PARTITION_AREA":"PARTITION_AREA_ID.type":e [arrowhead=none dir=back arrowtail=crowodot];
   "NSI_MANAGER":"NSI_TRANSFER_ID":w -> "NSI_TRANSFER":"NSI_TRANSFER_ID":e [arrowhead=none dir=back arrowtail=crowodot];
   "NSI_MANAGER":"PARTITION_AREA_ID":w -> "PARTITION_AREA":"PARTITION_AREA_ID.type":e [arrowhead=none dir=back arrowtail=crowodot];

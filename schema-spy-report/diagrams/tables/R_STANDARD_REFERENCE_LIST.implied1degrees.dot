@@ -281,7 +281,7 @@ digraph "oneDegreeRelationshipsDiagramImplied" {
   "LOST_BEDS":"REASON_FOR_LOSS_ID":w -> "R_STANDARD_REFERENCE_LIST":"STANDARD_REFERENCE_LIST_ID.type":e [arrowhead=none dir=back arrowtail=crowodot];
   "MANAGEMENT_TIER":"CREATED_BY_USER_ID":w -> "USER_":"USER_ID":e [arrowhead=none dir=back arrowtail=crowodot style=dashed];
   "MANAGEMENT_TIER":"LAST_UPDATED_USER_ID":w -> "USER_":"USER_ID":e [arrowhead=none dir=back arrowtail=crowodot style=dashed];
-  "MANAGEMENT_TIER":"OFFENDER_ID":w -> "OFFENDER":"OFFENDER_ID":e [arrowhead=none dir=back arrowtail=teeodot];
+  "MANAGEMENT_TIER":"OFFENDER_ID":w -> "OFFENDER":"OFFENDER_ID":e [arrowhead=none dir=back arrowtail=crowodot];
   "MANAGEMENT_TIER":"TIER_CHANGE_REASON_ID":w -> "R_STANDARD_REFERENCE_LIST":"STANDARD_REFERENCE_LIST_ID.type":e [arrowhead=none dir=back arrowtail=crowodot];
   "MANAGEMENT_TIER":"TIER_ID":w -> "R_STANDARD_REFERENCE_LIST":"STANDARD_REFERENCE_LIST_ID.type":e [arrowhead=none dir=back arrowtail=crowodot];
   "MANAGEMENT_TIER_EVENT":"CREATED_BY_USER_ID":w -> "USER_":"USER_ID":e [arrowhead=none dir=back arrowtail=crowodot style=dashed];
