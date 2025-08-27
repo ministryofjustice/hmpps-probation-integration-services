@@ -2611,6 +2611,8 @@ components:
           type: boolean
         isVisor:
           type: boolean
+        component:
+          $ref: "#/components/schemas/Component"
       required:
       - deliusManaged
       - documents
@@ -2627,6 +2629,23 @@ components:
       - rescheduledPop
       - rescheduledStaff
       - startDateTime
+      - type
+    Component:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        description:
+          type: string
+        type:
+          type: string
+          enum:
+          - LICENCE_CONDITION
+          - REQUIREMENT
+      required:
+      - description
+      - id
       - type
     OfficeAddress:
       type: object
