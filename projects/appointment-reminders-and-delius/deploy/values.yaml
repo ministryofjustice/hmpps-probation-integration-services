@@ -55,6 +55,14 @@ jobs:
       schedule: '0 18 * * *' # 6pm every day
       daysInAdvance: 1
 
+    kent-surrey-sussex:
+      provider:
+        code: N57
+        name: 'Kent, Surrey and Sussex'
+      apiKeySecret: API_KEY
+      schedule: '0 18 * * *' # 6pm every day
+      daysInAdvance: 1
+
     wales:
       provider:
         code: N03
