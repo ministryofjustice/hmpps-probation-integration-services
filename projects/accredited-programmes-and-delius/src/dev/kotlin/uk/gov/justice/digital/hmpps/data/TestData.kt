@@ -97,8 +97,8 @@ object TestData {
         r.generateAppointment(
             APPOINTMENT_CONTACT_TYPE,
             LocalDate.of(2030, 1, 1 + idx),
-            ofEpochSecond(idx * 5L).atZone(EuropeLondon),
-            ofEpochSecond(idx * 10L).atZone(EuropeLondon),
+            null,
+            null,
             STAFF,
             TEAM,
             PROVIDER
@@ -107,8 +107,8 @@ object TestData {
         lc.generateAppointment(
             APPOINTMENT_CONTACT_TYPE,
             LocalDate.of(2030, 1, 1 + idx),
-            ofEpochSecond(idx * 20L).atZone(EuropeLondon),
-            ofEpochSecond(idx * 30L).atZone(EuropeLondon),
+            null,
+            null,
             STAFF,
             TEAM,
             PROVIDER

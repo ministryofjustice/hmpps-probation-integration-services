@@ -108,8 +108,6 @@ internal class AppointmentControllerIntegrationTest {
                               "reference": "${TestData.APPOINTMENTS[0].externalReference?.takeLast(36)}",
                               "requirementId": ${TestData.REQUIREMENTS[0].id},
                               "date": "${TestData.APPOINTMENTS[0].date}",
-                              "startTime": "${ZonedDateTimeDeserializer.formatter.format(TestData.APPOINTMENTS[0].startTime).substring(0, 25)}",
-                              "endTime": "${ZonedDateTimeDeserializer.formatter.format(TestData.APPOINTMENTS[0].endTime).substring(0, 25)}",
                               "staff": {
                                 "name": {
                                   "forename": "Forename",
@@ -129,8 +127,6 @@ internal class AppointmentControllerIntegrationTest {
                               "reference": "${TestData.APPOINTMENTS[2].externalReference?.takeLast(36)}",
                               "licenceConditionId": ${TestData.LICENCE_CONDITIONS[0].id},
                               "date": "${TestData.APPOINTMENTS[2].date}",
-                              "startTime": "${ZonedDateTimeDeserializer.formatter.format(TestData.APPOINTMENTS[2].startTime).substring(0, 25)}",
-                              "endTime": "${ZonedDateTimeDeserializer.formatter.format(TestData.APPOINTMENTS[2].endTime).substring(0, 25)}",
                               "staff": {
                                 "name": {
                                   "forename": "Forename",
@@ -150,8 +146,6 @@ internal class AppointmentControllerIntegrationTest {
                               "reference": "${TestData.APPOINTMENTS[1].externalReference?.takeLast(36)}",
                               "requirementId": ${TestData.REQUIREMENTS[1].id},
                               "date": "${TestData.APPOINTMENTS[1].date}",
-                              "startTime": "${ZonedDateTimeDeserializer.formatter.format(TestData.APPOINTMENTS[1].startTime).substring(0, 25)}",
-                              "endTime": "${ZonedDateTimeDeserializer.formatter.format(TestData.APPOINTMENTS[1].endTime).substring(0, 25)}",
                               "staff": {
                                 "name": {
                                   "forename": "Forename",
@@ -171,8 +165,6 @@ internal class AppointmentControllerIntegrationTest {
                               "reference": "${TestData.APPOINTMENTS[3].externalReference?.takeLast(36)}",
                               "licenceConditionId": ${TestData.LICENCE_CONDITIONS[1].id},
                               "date": "${TestData.APPOINTMENTS[3].date}",
-                              "startTime": "${ZonedDateTimeDeserializer.formatter.format(TestData.APPOINTMENTS[3].startTime).substring(0, 25)}",
-                              "endTime": "${ZonedDateTimeDeserializer.formatter.format(TestData.APPOINTMENTS[3].endTime).substring(0, 25)}",
                               "staff": {
                                 "name": {
                                   "forename": "Forename",
