@@ -13,12 +13,14 @@ import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import uk.gov.justice.digital.hmpps.api.model.Name
+import uk.gov.justice.digital.hmpps.api.model.activity.Component
 import uk.gov.justice.digital.hmpps.api.model.schedule.NextAppointment
 import uk.gov.justice.digital.hmpps.api.model.schedule.PersonAppointment
 import uk.gov.justice.digital.hmpps.api.model.schedule.Schedule
 import uk.gov.justice.digital.hmpps.api.model.sentence.NoteDetail
 import uk.gov.justice.digital.hmpps.api.model.user.PersonManager
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator
+import uk.gov.justice.digital.hmpps.data.generator.LicenceConditionGenerator
 import uk.gov.justice.digital.hmpps.data.generator.LicenceConditionGenerator.LONG_NOTE
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.OVERVIEW
 import uk.gov.justice.digital.hmpps.service.toActivity
@@ -136,6 +138,11 @@ internal class ScheduleIntegrationTest {
         assertThat(res.appointment.documents.size, equalTo(expectedAppointment.documents.size))
         assertThat(res.appointment.location?.postcode, equalTo("H34 7TH"))
         assertThat(res.appointment.description, equalTo(expectedAppointment.description))
+        val lc = LicenceConditionGenerator.LC_WITH_NOTES
+        assertThat(
+            res.appointment.component,
+            equalTo(Component(lc.id, lc.mainCategory.description, Component.Type.LICENCE_CONDITION))
+        )
     }
 
     @Test

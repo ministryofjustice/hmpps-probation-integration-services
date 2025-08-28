@@ -1,0 +1,17 @@
+{
+  "eventType": "esupervision.check-in.expired",
+  "version": 1,
+  "description": "An e-Supervision remote check-in was expired",
+  "occurredAt": "2025-08-26T09:30:00+01:00",
+  "additionalInformation": {
+    "checkInUrl": "https://esupervision/check-in/expired"
+  },
+  "personReference": {
+    "identifiers": [
+      {
+        "type": "CRN",
+        "value": "A000001"
+      }
+    ]
+  }
+}

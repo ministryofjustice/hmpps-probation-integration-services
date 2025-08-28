@@ -40,7 +40,7 @@ class AppointmentOutcomeIntegrationTest {
     @Autowired
     internal lateinit var mockMvc: MockMvc
 
-    val outcome = Outcome(123, "ATTC", "N")
+    val outcome = Outcome(123, true, "Some notes", false)
 
     @Test
     fun `unauthorized status returned`() {
@@ -65,30 +65,6 @@ class AppointmentOutcomeIntegrationTest {
     }
 
     @Test
-    fun `when an appointment outcome does not exist returns a 404 response`() {
-        val response = createAppointment()
-
-        val expectedContactType =
-            APPOINTMENT_TYPES.firstOrNull { type -> type.code == CreateAppointment.Type.PlannedOfficeVisitNS.code }
-
-        mockMvc
-            .perform(
-                MockMvcRequestBuilders.patch("/appointment")
-                    .withToken()
-                    .withJson(Outcome(response.appointments[0].id, "ABC", "Y"))
-            )
-            .andExpect(MockMvcResultMatchers.status().isNotFound)
-            .andExpect(
-                jsonPath(
-                    "$.message",
-                    equalTo("ContactTypeOutcome with contact_type_id ${expectedContactType?.id} and outcome code of ABC not found")
-                )
-            )
-
-        appointmentRepository.deleteById(response.appointments[0].id)
-    }
-
-    @Test
     fun `outcome updated`() {
         val response = createAppointment()
         val createdAppointment = appointmentRepository.findById(response.appointments[0].id).get()
@@ -99,7 +75,7 @@ class AppointmentOutcomeIntegrationTest {
         assertNull(createdAppointment.outcomeId)
         assertNull(createdAppointment.sensitive)
 
-        val request = Outcome(response.appointments[0].id, "ATTC", "Y", notes = "my notes")
+        val request = Outcome(response.appointments[0].id, true, "my notes", true)
 
         mockMvc
             .perform(
@@ -115,7 +91,7 @@ class AppointmentOutcomeIntegrationTest {
         assertEquals("Y", updatedAppointment.complied)
         assertEquals(request.notes, updatedAppointment.notes)
         assertEquals(ATTENDED_COMPLIED.id, updatedAppointment.outcomeId)
-        assertFalse(updatedAppointment.sensitive!!)
+        assertTrue(updatedAppointment.sensitive!!)
 
         assertThat(updatedAppointment.type.code, equalTo(createdAppointment.type.code))
         assertThat(updatedAppointment.date, equalTo(createdAppointment.date))

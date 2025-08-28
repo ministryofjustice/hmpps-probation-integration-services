@@ -1,0 +1,19 @@
+{
+  "eventType": "probation-case.suicide-risk-form.deleted",
+  "version": 1,
+  "description": "Suicide Risk Form event",
+  "detailUrl": "http://localhost:{wiremock.port}/suicide-risk-form/pdf/00000000-0000-0000-0000-000000000002",
+  "occurredAt": "2025-08-20T16:00:00.000000000+01:00",
+  "additionalInformation": {
+    "suicideRiskFormId": "00000000-0000-0000-0000-000000000002",
+    "username": "officer"
+  },
+  "personReference": {
+    "identifiers": [
+      {
+        "type": "CRN",
+        "value": "A000001"
+      }
+    ]
+  }
+}
