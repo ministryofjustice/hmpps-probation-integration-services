@@ -32,7 +32,8 @@ class AppointmentService(
                         notes = it.notes,
                         sensitive = it.sensitive
                     )
-                }.groupBy { it.crn }
+                }.sortedWith(compareBy({ it.crn }, { it.date }, { it.startTime?.toLocalTime() }))
+                .groupBy { it.crn }
         )
     }
 }

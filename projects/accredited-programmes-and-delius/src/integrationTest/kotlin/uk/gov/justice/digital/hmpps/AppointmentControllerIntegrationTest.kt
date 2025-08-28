@@ -11,6 +11,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import uk.gov.justice.digital.hmpps.data.TestData
+import uk.gov.justice.digital.hmpps.datetime.ZonedDateTimeDeserializer
 import uk.gov.justice.digital.hmpps.model.GetAppointmentsRequest
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
@@ -106,30 +107,9 @@ internal class AppointmentControllerIntegrationTest {
                               "crn": "A000001",
                               "reference": "${TestData.APPOINTMENTS[0].externalReference?.takeLast(36)}",
                               "requirementId": ${TestData.REQUIREMENTS[0].id},
-                              "date": "2030-01-01",
-                              "startTime": "1970-01-01T01:00:00+01:00",
-                              "endTime": "1970-01-01T02:00:00+01:00",
-                              "staff": {
-                                "name": {
-                                  "forename": "Forename",
-                                  "surname": "Surname"
-                                },
-                                "code": "STAFF01"
-                              },
-                              "team": {
-                                "code": "TEAM01",
-                                "description": "Test Team"
-                              },
-                              "notes": "Some appointment notes",
-                              "sensitive": false
-                            },
-                            {
-                              "crn": "A000001",
-                              "reference": "${TestData.APPOINTMENTS[1].externalReference?.takeLast(36)}",
-                              "requirementId": ${TestData.REQUIREMENTS[1].id},
-                              "date": "2030-01-01",
-                              "startTime": "1970-01-01T01:00:00+01:00",
-                              "endTime": "1970-01-01T02:00:00+01:00",
+                              "date": "${TestData.APPOINTMENTS[0].date}",
+                              "startTime": "${ZonedDateTimeDeserializer.formatter.format(TestData.APPOINTMENTS[0].startTime).substring(0, 25)}",
+                              "endTime": "${ZonedDateTimeDeserializer.formatter.format(TestData.APPOINTMENTS[0].endTime).substring(0, 25)}",
                               "staff": {
                                 "name": {
                                   "forename": "Forename",
@@ -148,9 +128,30 @@ internal class AppointmentControllerIntegrationTest {
                               "crn": "A000001",
                               "reference": "${TestData.APPOINTMENTS[2].externalReference?.takeLast(36)}",
                               "licenceConditionId": ${TestData.LICENCE_CONDITIONS[0].id},
-                              "date": "2030-01-01",
-                              "startTime": "1970-01-01T01:00:00+01:00",
-                              "endTime": "1970-01-01T02:00:00+01:00",
+                              "date": "${TestData.APPOINTMENTS[2].date}",
+                              "startTime": "${ZonedDateTimeDeserializer.formatter.format(TestData.APPOINTMENTS[2].startTime).substring(0, 25)}",
+                              "endTime": "${ZonedDateTimeDeserializer.formatter.format(TestData.APPOINTMENTS[2].endTime).substring(0, 25)}",
+                              "staff": {
+                                "name": {
+                                  "forename": "Forename",
+                                  "surname": "Surname"
+                                },
+                                "code": "STAFF01"
+                              },
+                              "team": {
+                                "code": "TEAM01",
+                                "description": "Test Team"
+                              },
+                              "notes": "Some appointment notes",
+                              "sensitive": false
+                            },
+                            {
+                              "crn": "A000001",
+                              "reference": "${TestData.APPOINTMENTS[1].externalReference?.takeLast(36)}",
+                              "requirementId": ${TestData.REQUIREMENTS[1].id},
+                              "date": "${TestData.APPOINTMENTS[1].date}",
+                              "startTime": "${ZonedDateTimeDeserializer.formatter.format(TestData.APPOINTMENTS[1].startTime).substring(0, 25)}",
+                              "endTime": "${ZonedDateTimeDeserializer.formatter.format(TestData.APPOINTMENTS[1].endTime).substring(0, 25)}",
                               "staff": {
                                 "name": {
                                   "forename": "Forename",
@@ -169,9 +170,9 @@ internal class AppointmentControllerIntegrationTest {
                               "crn": "A000001",
                               "reference": "${TestData.APPOINTMENTS[3].externalReference?.takeLast(36)}",
                               "licenceConditionId": ${TestData.LICENCE_CONDITIONS[1].id},
-                              "date": "2030-01-01",
-                              "startTime": "1970-01-01T01:00:00+01:00",
-                              "endTime": "1970-01-01T02:00:00+01:00",
+                              "date": "${TestData.APPOINTMENTS[3].date}",
+                              "startTime": "${ZonedDateTimeDeserializer.formatter.format(TestData.APPOINTMENTS[3].startTime).substring(0, 25)}",
+                              "endTime": "${ZonedDateTimeDeserializer.formatter.format(TestData.APPOINTMENTS[3].endTime).substring(0, 25)}",
                               "staff": {
                                 "name": {
                                   "forename": "Forename",

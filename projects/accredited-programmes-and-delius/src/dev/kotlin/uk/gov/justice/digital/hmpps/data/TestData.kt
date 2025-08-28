@@ -93,17 +93,25 @@ object TestData {
     val REGISTRATION = RegistrationGenerator.generate(PERSON, REGISTER_TYPE, REGISTER_CATEGORY)
 
     val APPOINTMENT_CONTACT_TYPE = ContactType(id(), ContactType.APPOINTMENT)
-    val APPOINTMENTS = REQUIREMENTS.map {
-        it.generateAppointment(
+    val APPOINTMENTS = REQUIREMENTS.mapIndexed { idx, r ->
+        r.generateAppointment(
             APPOINTMENT_CONTACT_TYPE,
-            LocalDate.of(2030, 1, 1), ofEpochSecond(0).atZone(EuropeLondon), ofEpochSecond(3600).atZone(EuropeLondon),
-            STAFF, TEAM, PROVIDER
+            LocalDate.of(2030, 1, 1 + idx),
+            ofEpochSecond(idx * 5L).atZone(EuropeLondon),
+            ofEpochSecond(idx * 10L).atZone(EuropeLondon),
+            STAFF,
+            TEAM,
+            PROVIDER
         )
-    } + LICENCE_CONDITIONS.map {
-        it.generateAppointment(
+    } + LICENCE_CONDITIONS.mapIndexed { idx, lc ->
+        lc.generateAppointment(
             APPOINTMENT_CONTACT_TYPE,
-            LocalDate.of(2030, 1, 1), ofEpochSecond(0).atZone(EuropeLondon), ofEpochSecond(3600).atZone(EuropeLondon),
-            STAFF, TEAM, PROVIDER
+            LocalDate.of(2030, 1, 1 + idx),
+            ofEpochSecond(idx * 20L).atZone(EuropeLondon),
+            ofEpochSecond(idx * 30L).atZone(EuropeLondon),
+            STAFF,
+            TEAM,
+            PROVIDER
         )
     }
 }
