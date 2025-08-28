@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.controller
 
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
+import jakarta.validation.Valid
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
@@ -15,6 +16,6 @@ import uk.gov.justice.digital.hmpps.service.AppointmentService
 class AppointmentController(private val appointmentService: AppointmentService) {
     @Operation(summary = "Get all accredited programmes appointments for a given group of cases within the provided data range")
     @PostMapping(value = ["/appointments/search"])
-    fun searchAppointments(@RequestBody request: GetAppointmentsRequest) =
+    fun searchAppointments(@Valid @RequestBody request: GetAppointmentsRequest) =
         appointmentService.getAppointments(request)
 }

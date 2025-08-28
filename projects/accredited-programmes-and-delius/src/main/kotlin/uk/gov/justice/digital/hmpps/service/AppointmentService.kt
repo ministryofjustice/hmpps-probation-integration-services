@@ -9,7 +9,10 @@ class AppointmentService(
     private val contactRepository: ContactRepository,
 ) {
     fun getAppointments(request: GetAppointmentsRequest) = with(request) {
-        if (toDate < fromDate) throw IllegalArgumentException("toDate cannot be before fromDate")
+        require(toDate >= fromDate) { "toDate cannot be before fromDate" }
+        require(requirementIds.isNotEmpty() || licenceConditionIds.isNotEmpty()) {
+            "at least one requirementId or licenceConditionId must be provided"
+        }
 
         GetAppointmentsResponse(
             contactRepository.findAllByComponentIdInDateRange(requirementIds, licenceConditionIds, fromDate, toDate)
@@ -29,7 +32,7 @@ class AppointmentService(
                         notes = it.notes,
                         sensitive = it.sensitive
                     )
-                }
+                }.groupBy { it.crn }
         )
     }
 }

@@ -23,6 +23,66 @@ internal class AppointmentControllerIntegrationTest {
     lateinit var mockMvc: MockMvc
 
     @Test
+    fun `exception when end date before start date`() {
+        mockMvc
+            .perform(
+                post("/appointments/search").withToken().withJson(
+                    GetAppointmentsRequest(
+                        requirementIds = listOf(1L),
+                        licenceConditionIds = listOf(2L),
+                        fromDate = LocalDate.of(2030, 12, 31),
+                        toDate = LocalDate.of(2030, 12, 1),
+                    )
+                )
+            ).andExpect(status().isBadRequest)
+    }
+
+    @Test
+    fun `exception when no requirement or licence condition ids provided`() {
+        mockMvc
+            .perform(
+                post("/appointments/search").withToken().withJson(
+                    GetAppointmentsRequest(
+                        requirementIds = emptyList(),
+                        licenceConditionIds = emptyList(),
+                        fromDate = LocalDate.of(2030, 1, 1),
+                        toDate = LocalDate.of(2030, 12, 31),
+                    )
+                )
+            ).andExpect(status().isBadRequest)
+    }
+
+    @Test
+    fun `exception when providing over 500 requirement ids`() {
+        mockMvc
+            .perform(
+                post("/appointments/search").withToken().withJson(
+                    GetAppointmentsRequest(
+                        requirementIds = (1..1001).map { it.toLong() },
+                        licenceConditionIds = emptyList(),
+                        fromDate = LocalDate.of(2030, 1, 1),
+                        toDate = LocalDate.of(2030, 12, 31),
+                    )
+                )
+            ).andExpect(status().isBadRequest)
+    }
+
+    @Test
+    fun `exception when providing over 500 licence condition ids`() {
+        mockMvc
+            .perform(
+                post("/appointments/search").withToken().withJson(
+                    GetAppointmentsRequest(
+                        requirementIds = emptyList(),
+                        licenceConditionIds = (1..1001).map { it.toLong() },
+                        fromDate = LocalDate.of(2030, 1, 1),
+                        toDate = LocalDate.of(2030, 12, 31),
+                    )
+                )
+            ).andExpect(status().isBadRequest)
+    }
+
+    @Test
     fun `get appointments success`() {
         mockMvc
             .perform(
@@ -40,92 +100,94 @@ internal class AppointmentControllerIntegrationTest {
                 content().json(
                     """
                     {
-                      "content": [
-                        {
-                          "crn": "A000001",
-                          "reference": "${TestData.APPOINTMENTS[0].externalReference?.takeLast(36)}",
-                          "requirementId": ${TestData.REQUIREMENTS[0].id},
-                          "date": "2030-01-01",
-                          "startTime": "1970-01-01T01:00:00+01:00",
-                          "endTime": "1970-01-01T02:00:00+01:00",
-                          "staff": {
-                            "name": {
-                              "forename": "Forename",
-                              "surname": "Surname"
+                      "content": {
+                        "A000001": [
+                            {
+                              "crn": "A000001",
+                              "reference": "${TestData.APPOINTMENTS[0].externalReference?.takeLast(36)}",
+                              "requirementId": ${TestData.REQUIREMENTS[0].id},
+                              "date": "2030-01-01",
+                              "startTime": "1970-01-01T01:00:00+01:00",
+                              "endTime": "1970-01-01T02:00:00+01:00",
+                              "staff": {
+                                "name": {
+                                  "forename": "Forename",
+                                  "surname": "Surname"
+                                },
+                                "code": "STAFF01"
+                              },
+                              "team": {
+                                "code": "TEAM01",
+                                "description": "Test Team"
+                              },
+                              "notes": "Some appointment notes",
+                              "sensitive": false
                             },
-                            "code": "STAFF01"
-                          },
-                          "team": {
-                            "code": "TEAM01",
-                            "description": "Test Team"
-                          },
-                          "notes": "Some appointment notes",
-                          "sensitive": false
-                        },
-                        {
-                          "crn": "A000001",
-                          "reference": "${TestData.APPOINTMENTS[1].externalReference?.takeLast(36)}",
-                          "requirementId": ${TestData.REQUIREMENTS[1].id},
-                          "date": "2030-01-01",
-                          "startTime": "1970-01-01T01:00:00+01:00",
-                          "endTime": "1970-01-01T02:00:00+01:00",
-                          "staff": {
-                            "name": {
-                              "forename": "Forename",
-                              "surname": "Surname"
+                            {
+                              "crn": "A000001",
+                              "reference": "${TestData.APPOINTMENTS[1].externalReference?.takeLast(36)}",
+                              "requirementId": ${TestData.REQUIREMENTS[1].id},
+                              "date": "2030-01-01",
+                              "startTime": "1970-01-01T01:00:00+01:00",
+                              "endTime": "1970-01-01T02:00:00+01:00",
+                              "staff": {
+                                "name": {
+                                  "forename": "Forename",
+                                  "surname": "Surname"
+                                },
+                                "code": "STAFF01"
+                              },
+                              "team": {
+                                "code": "TEAM01",
+                                "description": "Test Team"
+                              },
+                              "notes": "Some appointment notes",
+                              "sensitive": false
                             },
-                            "code": "STAFF01"
-                          },
-                          "team": {
-                            "code": "TEAM01",
-                            "description": "Test Team"
-                          },
-                          "notes": "Some appointment notes",
-                          "sensitive": false
-                        },
-                        {
-                          "crn": "A000001",
-                          "reference": "${TestData.APPOINTMENTS[2].externalReference?.takeLast(36)}",
-                          "licenceConditionId": ${TestData.LICENCE_CONDITIONS[0].id},
-                          "date": "2030-01-01",
-                          "startTime": "1970-01-01T01:00:00+01:00",
-                          "endTime": "1970-01-01T02:00:00+01:00",
-                          "staff": {
-                            "name": {
-                              "forename": "Forename",
-                              "surname": "Surname"
+                            {
+                              "crn": "A000001",
+                              "reference": "${TestData.APPOINTMENTS[2].externalReference?.takeLast(36)}",
+                              "licenceConditionId": ${TestData.LICENCE_CONDITIONS[0].id},
+                              "date": "2030-01-01",
+                              "startTime": "1970-01-01T01:00:00+01:00",
+                              "endTime": "1970-01-01T02:00:00+01:00",
+                              "staff": {
+                                "name": {
+                                  "forename": "Forename",
+                                  "surname": "Surname"
+                                },
+                                "code": "STAFF01"
+                              },
+                              "team": {
+                                "code": "TEAM01",
+                                "description": "Test Team"
+                              },
+                              "notes": "Some appointment notes",
+                              "sensitive": false
                             },
-                            "code": "STAFF01"
-                          },
-                          "team": {
-                            "code": "TEAM01",
-                            "description": "Test Team"
-                          },
-                          "notes": "Some appointment notes",
-                          "sensitive": false
-                        },
-                        {
-                          "crn": "A000001",
-                          "reference": "${TestData.APPOINTMENTS[3].externalReference?.takeLast(36)}",
-                          "licenceConditionId": ${TestData.LICENCE_CONDITIONS[1].id},
-                          "date": "2030-01-01",
-                          "startTime": "1970-01-01T01:00:00+01:00",
-                          "endTime": "1970-01-01T02:00:00+01:00",
-                          "staff": {
-                            "name": {
-                              "forename": "Forename",
-                              "surname": "Surname"
-                            },
-                            "code": "STAFF01"
-                          },
-                          "team": {
-                            "code": "TEAM01",
-                            "description": "Test Team"
-                          },
-                          "notes": "Some appointment notes",
-                          "sensitive": false
-                        }
-                      ]
+                            {
+                              "crn": "A000001",
+                              "reference": "${TestData.APPOINTMENTS[3].externalReference?.takeLast(36)}",
+                              "licenceConditionId": ${TestData.LICENCE_CONDITIONS[1].id},
+                              "date": "2030-01-01",
+                              "startTime": "1970-01-01T01:00:00+01:00",
+                              "endTime": "1970-01-01T02:00:00+01:00",
+                              "staff": {
+                                "name": {
+                                  "forename": "Forename",
+                                  "surname": "Surname"
+                                },
+                                "code": "STAFF01"
+                              },
+                              "team": {
+                                "code": "TEAM01",
+                                "description": "Test Team"
+                              },
+                              "notes": "Some appointment notes",
+                              "sensitive": false
+                            }
+                        ]
+                      }
                     }
                     """.trimIndent(),
                     JsonCompareMode.STRICT,
