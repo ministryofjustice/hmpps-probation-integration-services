@@ -16,5 +16,3 @@ data class EnforceableContact(
     val outcome: CodedDescription,
     val notes: String?,
 )
-
-data class Requirement(val id: Long, val type: CodedDescription, val subType: CodedDescription?)
