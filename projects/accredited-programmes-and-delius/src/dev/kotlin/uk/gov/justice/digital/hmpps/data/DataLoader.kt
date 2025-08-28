@@ -9,6 +9,8 @@ import org.springframework.stereotype.Component
 import uk.gov.justice.digital.hmpps.data.TestData.ADDITIONAL_OFFENCE
 import uk.gov.justice.digital.hmpps.data.TestData.ADULT_CUSTODY_TYPE
 import uk.gov.justice.digital.hmpps.data.TestData.ADULT_LICENCE
+import uk.gov.justice.digital.hmpps.data.TestData.APPOINTMENTS
+import uk.gov.justice.digital.hmpps.data.TestData.APPOINTMENT_CONTACT_TYPE
 import uk.gov.justice.digital.hmpps.data.TestData.COMMUNITY_EVENT
 import uk.gov.justice.digital.hmpps.data.TestData.COMMUNITY_ORDER_TYPE
 import uk.gov.justice.digital.hmpps.data.TestData.COMMUNITY_SENTENCE
@@ -34,6 +36,7 @@ import uk.gov.justice.digital.hmpps.data.TestData.OTHER_CONTACT
 import uk.gov.justice.digital.hmpps.data.TestData.OTHER_CONTACT_TYPE
 import uk.gov.justice.digital.hmpps.data.TestData.PDU
 import uk.gov.justice.digital.hmpps.data.TestData.PERSON
+import uk.gov.justice.digital.hmpps.data.TestData.PROVIDER
 import uk.gov.justice.digital.hmpps.data.TestData.PSS_END_DATE
 import uk.gov.justice.digital.hmpps.data.TestData.PSS_END_DATE_KEY_DATE_TYPE
 import uk.gov.justice.digital.hmpps.data.TestData.PSS_MAIN_TYPE
@@ -97,7 +100,8 @@ class DataLoader(
     private val registerTypeRepository: RegisterTypeRepository,
     private val registrationRepository: RegistrationRepository,
     private val officeLocationRepository: OfficeLocationRepository,
-    conditionManagerRepository: LicenceConditionManagerRepository,
+    private val conditionManagerRepository: LicenceConditionManagerRepository,
+    private val providerRepository: ProviderRepository,
 ) : ApplicationListener<ApplicationReadyEvent> {
     @PostConstruct
     fun saveAuditUser() {
@@ -110,6 +114,7 @@ class DataLoader(
         referenceDataRepository.save(ETHNICITY)
         referenceDataRepository.save(MONTHS)
         referenceDataRepository.save(ADULT_LICENCE)
+        providerRepository.save(PROVIDER)
         probationDeliveryUnitRepository.save(PDU)
         localAdminUnitRepository.save(LAU)
         officeLocationRepository.save(OFFICE_LOCATION)
@@ -133,8 +138,7 @@ class DataLoader(
         releaseRepository.save(RELEASE)
         contactTypeRepository.save(TWO_THIRDS_CONTACT_TYPE)
         contactTypeRepository.save(OTHER_CONTACT_TYPE)
-        contactRepository.save(TWO_THIRDS_CONTACT)
-        contactRepository.save(OTHER_CONTACT)
+        contactTypeRepository.save(APPOINTMENT_CONTACT_TYPE)
         referenceDataRepository.save(PSS_END_DATE_KEY_DATE_TYPE)
         keyDateRepository.save(PSS_END_DATE)
         referenceDataRepository.save(LED_KEY_DATE_TYPE)
@@ -157,5 +161,8 @@ class DataLoader(
         registerTypeRepository.save(REGISTER_TYPE)
         referenceDataRepository.save(REGISTER_CATEGORY)
         registrationRepository.save(REGISTRATION)
+        contactRepository.save(TWO_THIRDS_CONTACT)
+        contactRepository.save(OTHER_CONTACT)
+        contactRepository.saveAll(APPOINTMENTS)
     }
 }
