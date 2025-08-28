@@ -17,15 +17,19 @@ class AppointmentOutcomeService(
         val appointment = appointmentRepository.findById(outcome.id)
             .orElseThrow { throw NotFoundException("Appointment", "id", outcome.id) }
 
-        val contactTypeOutcome =
-            contactTypeOutcomeRepository.getByTypeIdAndOutcomeCode(appointment.type.id, outcome.code)
 
         appointment.apply {
-            attended = outcome.attended
-            complied = if (contactTypeOutcome.outcome.outcomeCompliantAcceptable!!) "Y" else "N"
+            if (outcome.outcomeRecorded) {
+                val contactTypeOutcome =
+                    contactTypeOutcomeRepository.getByTypeIdAndOutcomeCode(appointment.type.id, "ATTC")
+                attended = "Y"
+                complied = "Y"
+                outcomeId = contactTypeOutcome.outcome.id
+            }
             notes = listOfNotNull(notes, outcome.notes).joinToString(System.lineSeparator())
-            outcomeId = contactTypeOutcome.outcome.id
-            sensitive = outcome.sensitive
+            if (outcome.sensitive && (sensitive != true)) {
+                sensitive = true
+            }
         }
 
         appointmentRepository.save(appointment)
