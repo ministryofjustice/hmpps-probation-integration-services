@@ -46,7 +46,7 @@ internal class IntegrationTest {
         assertThat(contact.staff.id).isEqualTo(ProviderGenerator.DEFAULT_STAFF.id)
         assertThat(contact.alert).isEqualTo(true)
         assertThat(contact.isSensitive).isEqualTo(false)
-        assertThat(contact.notes).isEqualTo("For more information please visit https://esupervision/check-in/received")
+        assertThat(contact.notes).isEqualTo("Please follow this link to review the check-in in the E-supervision portal: https://esupervision/check-in/received")
     }
 
     @Test
@@ -67,6 +67,6 @@ internal class IntegrationTest {
         assertThat(contact.staff.id).isEqualTo(ProviderGenerator.DEFAULT_STAFF.id)
         assertThat(contact.alert).isEqualTo(true)
         assertThat(contact.isSensitive).isEqualTo(false)
-        assertThat(contact.notes).isEqualTo("For more information please visit https://esupervision/check-in/expired")
+        assertThat(contact.notes).isEqualTo("Please follow this link to review the check-in in the E-supervision portal: https://esupervision/check-in/expired")
     }
 }

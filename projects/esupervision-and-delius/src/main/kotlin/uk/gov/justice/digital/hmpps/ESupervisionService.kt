@@ -40,7 +40,7 @@ class ESupervisionService(
         com.team,
         com.staff,
         description(),
-        "For more information please visit ${checkInUrl()}",
+        "Please follow this link to review the check-in in the E-supervision portal: ${checkInUrl()}",
         false,
         0
     )
