@@ -253,6 +253,7 @@ object ContactGenerator {
         requirement = requirement,
         lastUpdated = ZonedDateTime.now().minusDays(1),
         lastUpdatedUser = USER,
+        team = DEFAULT_TEAM,
         staff = DEFAULT_STAFF,
         location = LOCATION_BRK_1,
         notes = notes,
@@ -365,6 +366,5 @@ fun generateStaff(
     surname: String,
     caseload: List<Caseload>,
     id: Long = IdGenerator.getAndIncrement()
-) =
-    Staff(code, forename, surname, DEFAULT_PROVIDER, caseload, emptyList(), id)
+) = Staff(code, forename, surname, DEFAULT_PROVIDER, caseload, emptyList(), null, id)
 

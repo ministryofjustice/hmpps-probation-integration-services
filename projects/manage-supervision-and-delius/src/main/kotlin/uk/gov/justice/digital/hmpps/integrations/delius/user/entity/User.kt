@@ -25,7 +25,7 @@ class User(
     @Column(name = "user_id")
     val id: Long,
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne
     @JoinColumn(name = "staff_id")
     val staff: Staff? = null,
 
@@ -90,6 +90,9 @@ class Staff(
         inverseJoinColumns = [JoinColumn(name = "team_id")]
     )
     val teams: List<Team>,
+
+    @OneToOne(mappedBy = "staff")
+    val user: User? = null,
 
     @Id
     @Column(name = "staff_id")

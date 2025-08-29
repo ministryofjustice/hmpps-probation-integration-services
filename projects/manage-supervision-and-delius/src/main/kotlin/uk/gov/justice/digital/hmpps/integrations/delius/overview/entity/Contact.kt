@@ -19,6 +19,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.C
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.ReferenceData
 import uk.gov.justice.digital.hmpps.integrations.delius.user.entity.Provider
 import uk.gov.justice.digital.hmpps.integrations.delius.user.entity.Staff
+import uk.gov.justice.digital.hmpps.integrations.delius.user.entity.Team
 import uk.gov.justice.digital.hmpps.integrations.delius.user.entity.User
 import java.io.Serializable
 import java.time.LocalDate
@@ -93,6 +94,10 @@ class Contact(
     @ManyToOne
     @JoinColumn(name = "lic_condition_id")
     val licenceCondition: LicenceConditionEntity? = null,
+
+    @ManyToOne
+    @JoinColumn(name = "team_id")
+    val team: Team? = null,
 
     @ManyToOne
     @JoinColumn(name = "staff_id")

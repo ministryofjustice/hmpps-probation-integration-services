@@ -12,10 +12,7 @@ data class OfficeAddress(
     val postcode: String?,
     val ldu: String,
     val telephoneNumber: String?,
-    val providerCode: String
 ) {
-    val teamCode: String = "${providerCode}AAT"
-
     companion object {
         fun from(
             code: String,
@@ -29,7 +26,6 @@ data class OfficeAddress(
             postcode: String?,
             ldu: String,
             telephoneNumber: String?,
-            providerCode: String
         ): OfficeAddress? =
             if (
                 officeName == null && buildingName == null && buildingNumber == null && streetName == null &&
@@ -49,7 +45,6 @@ data class OfficeAddress(
                     postcode,
                     ldu,
                     telephoneNumber,
-                    providerCode,
                 )
             }
     }
