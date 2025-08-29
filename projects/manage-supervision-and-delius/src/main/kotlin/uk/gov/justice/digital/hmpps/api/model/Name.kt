@@ -9,3 +9,5 @@ data class Name(
 )
 
 fun Person.name() = Name(forename, listOfNotNull(secondName, thirdName).joinToString(" "), surname)
+
+data class Manager(val code: String, val name: Name)

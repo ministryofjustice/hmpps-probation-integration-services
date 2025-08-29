@@ -17,6 +17,7 @@ import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.ContactDocument
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.ReferenceData
+import uk.gov.justice.digital.hmpps.integrations.delius.user.entity.Provider
 import uk.gov.justice.digital.hmpps.integrations.delius.user.entity.Staff
 import uk.gov.justice.digital.hmpps.integrations.delius.user.entity.User
 import java.io.Serializable
@@ -720,6 +721,10 @@ class OfficeLocation(
     @JoinColumn(name = "district_id")
     @ManyToOne
     val ldu: District,
+
+    @ManyToOne
+    @JoinColumn(name = "probation_area_id")
+    val provider: Provider,
 
     @Id
     @Column(name = "office_location_id")

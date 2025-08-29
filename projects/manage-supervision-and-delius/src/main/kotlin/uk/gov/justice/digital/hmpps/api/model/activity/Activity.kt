@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.api.model.activity
 
+import uk.gov.justice.digital.hmpps.api.model.Manager
 import uk.gov.justice.digital.hmpps.api.model.Name
 import uk.gov.justice.digital.hmpps.api.model.personalDetails.Document
 import uk.gov.justice.digital.hmpps.api.model.schedule.OfficeAddress
@@ -18,7 +19,7 @@ data class Activity(
     val isSensitive: Boolean?,
     val hasOutcome: Boolean?,
     val wasAbsent: Boolean?,
-    val officerName: Name? = null,
+    val officer: Manager? = null,
     val isInitial: Boolean,
     val isNationalStandard: Boolean,
     var location: OfficeAddress? = null,
@@ -53,7 +54,9 @@ data class Activity(
     val outcome: String? = null,
     val deliusManaged: Boolean,
     val isVisor: Boolean? = null,
+    val eventId: Long? = null,
     val component: Component? = null,
+    val nsiId: Long? = null,
 )
 
 data class Component(val id: Long, val description: String, val type: Type) {
