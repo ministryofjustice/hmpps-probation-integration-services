@@ -40,6 +40,26 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/UserAccess"
+  /appointments/search:
+    post:
+      tags:
+      - Appointments
+      summary: Get all accredited programmes appointments for a given group of cases
+        within the provided data range
+      operationId: searchAppointments
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GetAppointmentsRequest"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetAppointmentsResponse"
   /docs/asyncapi:
     get:
       tags:
@@ -210,6 +230,88 @@ components:
             $ref: "#/components/schemas/CaseAccess"
       required:
       - access
+    GetAppointmentsRequest:
+      type: object
+      properties:
+        requirementIds:
+          type: array
+          items:
+            type: integer
+            format: int64
+          maxItems: 500
+          minItems: 0
+        licenceConditionIds:
+          type: array
+          items:
+            type: integer
+            format: int64
+          maxItems: 500
+          minItems: 0
+        fromDate:
+          type: string
+          format: date
+        toDate:
+          type: string
+          format: date
+      required:
+      - fromDate
+      - licenceConditionIds
+      - requirementIds
+      - toDate
+    AppointmentOutcome:
+      type: object
+      properties:
+        code:
+          type: string
+        description:
+          type: string
+        attended:
+          type: boolean
+        complied:
+          type: boolean
+      required:
+      - code
+      - description
+    AppointmentResponse:
+      type: object
+      properties:
+        crn:
+          type: string
+        reference:
+          type: string
+        requirementId:
+          type: integer
+          format: int64
+        licenceConditionId:
+          type: integer
+          format: int64
+        date:
+          type: string
+          format: date
+        startTime:
+          type: string
+          format: date-time
+        endTime:
+          type: string
+          format: date-time
+        outcome:
+          $ref: "#/components/schemas/AppointmentOutcome"
+        location:
+          $ref: "#/components/schemas/CodedValue"
+        staff:
+          $ref: "#/components/schemas/ProbationPractitioner"
+        team:
+          $ref: "#/components/schemas/CodedValue"
+        notes:
+          type: string
+        sensitive:
+          type: boolean
+      required:
+      - crn
+      - date
+      - sensitive
+      - staff
+      - team
     CodedValue:
       type: object
       properties:
@@ -220,6 +322,41 @@ components:
       required:
       - code
       - description
+    GetAppointmentsResponse:
+      type: object
+      properties:
+        content:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              $ref: "#/components/schemas/AppointmentResponse"
+      required:
+      - content
+    Name:
+      type: object
+      properties:
+        forename:
+          type: string
+        middleNames:
+          type: string
+        surname:
+          type: string
+      required:
+      - forename
+      - surname
+    ProbationPractitioner:
+      type: object
+      properties:
+        name:
+          $ref: "#/components/schemas/Name"
+        code:
+          type: string
+        email:
+          type: string
+      required:
+      - code
+      - name
     Sentence:
       type: object
       properties:
@@ -312,30 +449,6 @@ components:
       - probationDeliveryUnit
       - staff
       - team
-    Name:
-      type: object
-      properties:
-        forename:
-          type: string
-        middleNames:
-          type: string
-        surname:
-          type: string
-      required:
-      - forename
-      - surname
-    ProbationPractitioner:
-      type: object
-      properties:
-        name:
-          $ref: "#/components/schemas/Name"
-        code:
-          type: string
-        email:
-          type: string
-      required:
-      - code
-      - name
     Requirement:
       type: object
       properties:

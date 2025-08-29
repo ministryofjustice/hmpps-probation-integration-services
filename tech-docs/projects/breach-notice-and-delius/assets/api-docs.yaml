@@ -85,6 +85,25 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/CaseAccess"
+  /requirements/{breachNoticeId}:
+    get:
+      tags:
+      - requirements-controller
+      operationId: getWarningDetails_1
+      parameters:
+      - name: breachNoticeId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RequirementResponse"
   /next-appointment-details/{crn}:
     get:
       tags:
@@ -270,6 +289,15 @@ components:
       - crn
       - userExcluded
       - userRestricted
+    RequirementResponse:
+      type: object
+      properties:
+        requirements:
+          type: array
+          items:
+            $ref: "#/components/schemas/Requirement"
+      required:
+      - requirements
     Appointment:
       type: object
       properties:

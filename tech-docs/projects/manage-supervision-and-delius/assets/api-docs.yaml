@@ -2706,18 +2706,16 @@ components:
         id:
           type: integer
           format: int64
-        code:
-          type: string
-        attended:
-          type: string
-        sensitive:
+        outcomeRecorded:
           type: boolean
         notes:
           type: string
+        sensitive:
+          type: boolean
       required:
-      - attended
-      - code
       - id
+      - outcomeRecorded
+      - sensitive
     UserDetails:
       type: object
       properties:
