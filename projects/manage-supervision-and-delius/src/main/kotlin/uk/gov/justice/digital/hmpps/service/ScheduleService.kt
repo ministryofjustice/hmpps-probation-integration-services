@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.service
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import uk.gov.justice.digital.hmpps.api.model.Manager
 import uk.gov.justice.digital.hmpps.api.model.Name
 import uk.gov.justice.digital.hmpps.api.model.activity.Activity
 import uk.gov.justice.digital.hmpps.api.model.activity.Component
@@ -87,6 +88,7 @@ class ScheduleService(
 }
 
 fun OfficeLocation.toOfficeAddress() = OfficeAddress.from(
+    code = code,
     officeName = description,
     buildingName = buildingName,
     buildingNumber = buildingNumber,
@@ -96,7 +98,8 @@ fun OfficeLocation.toOfficeAddress() = OfficeAddress.from(
     county = county,
     ldu = ldu.description,
     postcode = postcode,
-    telephoneNumber = telephoneNumber
+    telephoneNumber = telephoneNumber,
+    providerCode = provider.code,
 )
 
 fun Contact.toActivityOverview() = Activity(
@@ -157,7 +160,7 @@ fun Contact.toActivity(noteId: Int? = null) = Activity(
     appointmentNotes = if (noteId == null) formatNote(notes, true) else null,
     appointmentNote = if (noteId != null) formatNote(notes, false).elementAtOrNull(noteId) else null,
     location = location?.toOfficeAddress(),
-    officerName = staff?.forename?.let { Name(forename = it, surname = staff.surname) },
+    officer = staff?.let { Manager(it.code, Name(forename = it.forename, surname = it.surname)) },
     isRarRelated = requirement?.mainCategory?.code == "F",
     rarCategory = requirement?.mainCategory?.description,
     rarToolKit = requirement?.mainCategory?.description,
@@ -183,7 +186,9 @@ fun Contact.toActivity(noteId: Int? = null) = Activity(
     outcome = outcome?.description,
     deliusManaged = CreateAppointment.Type.entries.any { it.code == type.code },
     isVisor = isVisor,
-    component = requirement?.asComponent() ?: licenceCondition?.asComponent()
+    eventId = event?.id,
+    component = requirement?.asComponent() ?: licenceCondition?.asComponent(),
+    nsiId = nsiId,
 )
 
 fun ContactDocument.toDocument() =

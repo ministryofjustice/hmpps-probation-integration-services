@@ -28,7 +28,8 @@ object ContactGenerator {
         district = "District 1",
         town = "Hearth",
         postcode = "H34 7TH",
-        ldu = DEFAULT_DISTRICT
+        ldu = DEFAULT_DISTRICT,
+        provider = DEFAULT_PROVIDER,
     )
 
     val DEFAULT_STAFF = generateStaff("N01BDT1", "John", "Smith", emptyList())
@@ -302,6 +303,7 @@ object ContactGenerator {
         startDate: LocalDate = LocalDate.now(),
         endDate: LocalDate? = null,
         ldu: District,
+        provider: Provider,
         id: Long = IdGenerator.getAndIncrement()
     ) = OfficeLocation(
         code,
@@ -317,6 +319,7 @@ object ContactGenerator {
         startDate,
         endDate,
         ldu,
+        provider,
         id
     )
 }
