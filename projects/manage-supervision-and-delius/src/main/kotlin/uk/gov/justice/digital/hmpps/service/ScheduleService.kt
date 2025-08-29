@@ -159,7 +159,15 @@ fun Contact.toActivity(noteId: Int? = null) = Activity(
     appointmentNotes = if (noteId == null) formatNote(notes, true) else null,
     appointmentNote = if (noteId != null) formatNote(notes, false).elementAtOrNull(noteId) else null,
     location = location?.toOfficeAddress(),
-    officer = staff?.let { Manager(it.code, Name(forename = it.forename, surname = it.surname), team!!.code, team.provider.code, it.user?.username) },
+    officer = staff?.let {
+        Manager(
+            it.code,
+            Name(forename = it.forename, surname = it.surname),
+            team!!.code,
+            team.provider.code,
+            it.user?.username
+        )
+    },
     isRarRelated = requirement?.mainCategory?.code == "F",
     rarCategory = requirement?.mainCategory?.description,
     rarToolKit = requirement?.mainCategory?.description,
