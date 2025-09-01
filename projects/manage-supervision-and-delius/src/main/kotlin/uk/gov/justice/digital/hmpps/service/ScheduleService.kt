@@ -134,7 +134,7 @@ fun Contact.toActivityOverview() = Activity(
     isCommunication = isCommunication(),
     description = description,
     outcome = outcome?.description,
-    deliusManaged = CreateAppointment.Type.entries.any { it.code == type.code }
+    deliusManaged = !CreateAppointment.Type.entries.any { it.code == type.code }
 )
 
 fun Contact.toActivity(noteId: Int? = null) = Activity(
@@ -191,7 +191,7 @@ fun Contact.toActivity(noteId: Int? = null) = Activity(
     eventNumber = event?.eventNumber,
     description = description,
     outcome = outcome?.description,
-    deliusManaged = CreateAppointment.Type.entries.any { it.code == type.code },
+    deliusManaged = !CreateAppointment.Type.entries.any { it.code == type.code },
     isVisor = isVisor,
     eventId = event?.id,
     component = requirement?.asComponent() ?: licenceCondition?.asComponent(),
