@@ -2538,8 +2538,8 @@ components:
           type: boolean
         wasAbsent:
           type: boolean
-        officerName:
-          $ref: "#/components/schemas/Name"
+        officer:
+          $ref: "#/components/schemas/Manager"
         isInitial:
           type: boolean
         isNationalStandard:
@@ -2611,8 +2611,14 @@ components:
           type: boolean
         isVisor:
           type: boolean
+        eventId:
+          type: integer
+          format: int64
         component:
           $ref: "#/components/schemas/Component"
+        nsiId:
+          type: integer
+          format: int64
       required:
       - deliusManaged
       - documents
@@ -2647,9 +2653,29 @@ components:
       - description
       - id
       - type
+    Manager:
+      type: object
+      properties:
+        code:
+          type: string
+        name:
+          $ref: "#/components/schemas/Name"
+        teamCode:
+          type: string
+        providerCode:
+          type: string
+        username:
+          type: string
+      required:
+      - code
+      - name
+      - providerCode
+      - teamCode
     OfficeAddress:
       type: object
       properties:
+        code:
+          type: string
         officeName:
           type: string
         buildingName:
@@ -2671,6 +2697,7 @@ components:
         telephoneNumber:
           type: string
       required:
+      - code
       - ldu
     PersonActivitySearchResponse:
       type: object
