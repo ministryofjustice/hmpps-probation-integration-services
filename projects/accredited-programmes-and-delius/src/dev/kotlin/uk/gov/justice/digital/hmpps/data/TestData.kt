@@ -4,8 +4,8 @@ import uk.gov.justice.digital.hmpps.data.generator.*
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.contact
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.generateAppointment
 import uk.gov.justice.digital.hmpps.data.generator.IdGenerator.id
-import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.entity.ReferenceData
+import uk.gov.justice.digital.hmpps.entity.contact.ContactOutcome
 import uk.gov.justice.digital.hmpps.entity.contact.ContactType
 import uk.gov.justice.digital.hmpps.entity.registration.RegisterType
 import uk.gov.justice.digital.hmpps.entity.sentence.DisposalType
@@ -13,7 +13,6 @@ import uk.gov.justice.digital.hmpps.entity.sentence.component.*
 import uk.gov.justice.digital.hmpps.entity.sentence.custody.KeyDate
 import uk.gov.justice.digital.hmpps.entity.sentence.offence.OffenceEntity
 import uk.gov.justice.digital.hmpps.entity.staff.*
-import java.time.Instant.ofEpochSecond
 import java.time.LocalDate
 
 object TestData {
@@ -25,9 +24,10 @@ object TestData {
     val PDU = ProbationDeliveryUnit(id(), "PDU1", "Test PDU")
     val LAU = LocalAdminUnit(id(), PDU)
     val OFFICE_LOCATION = OfficeLocation(id(), "OFFICE1", "Test Office Location")
-    val TEAM = Team(id(), "TEAM01", "Test Team", LAU, listOf(OFFICE_LOCATION))
+    val TEAM = Team(id(), "TEAM01", "Test Team", LAU, listOf(OFFICE_LOCATION), PROVIDER)
     val STAFF = StaffGenerator.generate()
     val PERSON = PersonGenerator.generate("A000001", GENDER, ETHNICITY)
+    val CA_PERSON = PersonGenerator.generate("A000002", GENDER, ETHNICITY)
     val MANAGER = ManagerGenerator.generate(PERSON, STAFF, TEAM)
     val USER = UserGenerator.generate("TestUser", STAFF)
     val USER_WITH_LIMITED_ACCESS = UserGenerator.generate("TestUserWithLimitedAccess")
@@ -45,12 +45,16 @@ object TestData {
     val COMMUNITY_ORDER_TYPE = DisposalType(id(), "ORA Community Order", "SP")
     val COMMUNITY_EVENT = EventGenerator.generate(PERSON, 3)
     val COMMUNITY_SENTENCE = DisposalGenerator.generate(COMMUNITY_EVENT, COMMUNITY_ORDER_TYPE, 6, MONTHS)
+    val CA_COMMUNITY_EVENT = EventGenerator.generate(CA_PERSON, 1)
+    val CA_COMMUNITY_SENTENCE = DisposalGenerator.generate(CA_COMMUNITY_EVENT, COMMUNITY_ORDER_TYPE, 6, MONTHS)
 
     val TWO_THIRDS_CONTACT_TYPE = ContactType(id(), ContactType.SUPERVISION_TWO_THIRDS_POINT)
     val OTHER_CONTACT_TYPE = ContactType(id(), "OTHER")
     val TWO_THIRDS_CONTACT =
         CUSTODIAL_EVENT.contact(TWO_THIRDS_CONTACT_TYPE, LocalDate.of(2067, 1, 1), STAFF, TEAM, PROVIDER)
     val OTHER_CONTACT = CUSTODIAL_EVENT.contact(OTHER_CONTACT_TYPE, LocalDate.of(2000, 1, 1), STAFF, TEAM, PROVIDER)
+
+    val ATTENDED_COMPLIED = ContactOutcome(id(), "ATTC", "Attended and Complied")
 
     val PSS_END_DATE_KEY_DATE_TYPE =
         ReferenceData(id(), KeyDate.POST_SENTENCE_SUPERVISION_END_DATE, "Post-sentence supervision end date")
@@ -78,6 +82,7 @@ object TestData {
     val REQUIREMENTS = listOf(
         RequirementGenerator.generate(COMMUNITY_SENTENCE, REQUIREMENT_MAIN_TYPE),
         RequirementGenerator.generate(COMMUNITY_SENTENCE, REQUIREMENT_MAIN_TYPE, REQUIREMENT_SUB_TYPE),
+        RequirementGenerator.generate(CA_COMMUNITY_SENTENCE, REQUIREMENT_MAIN_TYPE, REQUIREMENT_SUB_TYPE),
     )
     val REQUIREMENT_MANAGERS = REQUIREMENTS.map { RequirementManager(id(), it.id, STAFF, TEAM) }
 
@@ -93,7 +98,7 @@ object TestData {
     val REGISTRATION = RegistrationGenerator.generate(PERSON, REGISTER_TYPE, REGISTER_CATEGORY)
 
     val APPOINTMENT_CONTACT_TYPE = ContactType(id(), ContactType.APPOINTMENT)
-    val APPOINTMENTS = REQUIREMENTS.mapIndexed { idx, r ->
+    val APPOINTMENTS = REQUIREMENTS.take(2).mapIndexed { idx, r ->
         r.generateAppointment(
             APPOINTMENT_CONTACT_TYPE,
             LocalDate.of(2030, 1, 1 + idx),
@@ -103,7 +108,7 @@ object TestData {
             TEAM,
             PROVIDER
         )
-    } + LICENCE_CONDITIONS.mapIndexed { idx, lc ->
+    } + LICENCE_CONDITIONS.take(2).mapIndexed { idx, lc ->
         lc.generateAppointment(
             APPOINTMENT_CONTACT_TYPE,
             LocalDate.of(2030, 1, 1 + idx),

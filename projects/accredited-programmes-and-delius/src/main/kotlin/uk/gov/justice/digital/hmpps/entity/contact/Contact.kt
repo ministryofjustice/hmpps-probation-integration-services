@@ -106,7 +106,7 @@ class Contact(
 
     @Column(columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)
-    val softDeleted: Boolean = false,
+    var softDeleted: Boolean = false,
 
     // The following fields are not used, but must be set:
     val partitionAreaId: Long = 0,
@@ -116,4 +116,8 @@ class Contact(
     @Column(columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)
     val trustProviderFlag: Boolean = false,
-)
+) {
+    companion object {
+        const val REFERENCE_PREFIX = "urn:uk:gov:accredited-programmes:appointment:"
+    }
+}
