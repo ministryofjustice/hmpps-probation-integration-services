@@ -44,6 +44,17 @@ class AppointmentService(
         contactRepository.saveAll(request.appointments.map { it.asEntity() })
     }
 
+    fun update(request: UpdateAppointmentsRequest) {
+        val existing = request.appointments.chunked(500)
+            .map { list ->
+                contactRepository.findByExternalReferenceIn(list.map { "${Contact.REFERENCE_PREFIX}${it.reference}" }
+                    .toSet())
+            }.flatten()
+        existing.forEach { c ->
+            request.findByReference(c.externalReference!!)?.also { c.update(it) }
+        }
+    }
+
     fun delete(request: DeleteAppointmentsRequest) {
         request.appointments.map { "${Contact.REFERENCE_PREFIX}${it.reference}" }.toSet()
             .chunked(500)
@@ -78,6 +89,20 @@ class AppointmentService(
     private fun getComponent(requirementId: Long?, licenceConditionId: Long?): Pair<Requirement?, LicenceCondition?> {
         return (requirementId?.let { requirementRepository.findByIdOrNull(it) } to
             licenceConditionId?.let { licenceConditionRepository.findByIdOrNull(it) })
+    }
+
+    private fun Contact.update(request: UpdateAppointmentRequest) = apply {
+        val newTeam = if (request.team.code == team.code) team else teamRepository.getByCode(request.team.code)
+        date = request.date
+        startTime = ZonedDateTime.of(date, request.startTime, EuropeLondon)
+        endTime = ZonedDateTime.of(date, request.endTime, EuropeLondon)
+        provider = newTeam.provider
+        team = newTeam
+        staff = staffRepository.getByCode(request.staff.code)
+        location = request.location?.code?.let { officeLocationRepository.getByCode(it) }
+        sensitive = sensitive || request.sensitive
+        outcome = request.outcome?.code?.let { contactOutcomeRepository.getByCode(it) }
+        request.notes?.also { appendNotes(it) }
     }
 }
 

@@ -51,13 +51,13 @@ class Contact(
     val licenceCondition: LicenceCondition? = null,
 
     @Column(name = "contact_date")
-    val date: LocalDate,
+    var date: LocalDate,
 
     @Column(name = "contact_start_time")
-    val startTime: ZonedDateTime? = null,
+    var startTime: ZonedDateTime? = null,
 
     @Column(name = "contact_end_time")
-    val endTime: ZonedDateTime? = null,
+    var endTime: ZonedDateTime? = null,
 
     @ManyToOne
     @JoinColumn(name = "contact_type_id")
@@ -65,32 +65,31 @@ class Contact(
 
     @ManyToOne
     @JoinColumn(name = "contact_outcome_type_id")
-    val outcome: ContactOutcome? = null,
+    var outcome: ContactOutcome? = null,
 
     @ManyToOne
     @JoinColumn(name = "office_location_id")
-    val location: OfficeLocation? = null,
+    var location: OfficeLocation? = null,
 
     @ManyToOne
     @JoinColumn(name = "staff_id")
-    val staff: Staff,
+    var staff: Staff,
 
     @ManyToOne
     @JoinColumn(name = "team_id")
-    val team: Team,
+    var team: Team,
 
     @ManyToOne
     @JoinColumn(name = "probation_area_id")
-    val provider: Provider,
+    var provider: Provider,
 
-    @Lob
-    val notes: String?,
+    notes: String?,
 
     @Column
     val externalReference: String?,
 
     @Convert(converter = YesNoConverter::class)
-    val sensitive: Boolean,
+    var sensitive: Boolean,
 
     @CreatedDate
     var createdDatetime: ZonedDateTime = ZonedDateTime.now(),
@@ -117,6 +116,14 @@ class Contact(
     @Convert(converter = NumericBooleanConverter::class)
     val trustProviderFlag: Boolean = false,
 ) {
+    @Lob
+    var notes: String? = notes
+        private set
+
+    fun appendNotes(extraNotes: String) {
+        notes = notes + System.lineSeparator() + System.lineSeparator() + extraNotes
+    }
+
     companion object {
         const val REFERENCE_PREFIX = "urn:uk:gov:accredited-programmes:appointment:"
     }
