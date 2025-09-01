@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*
 import uk.gov.justice.digital.hmpps.model.CreateAppointmentsRequest
 import uk.gov.justice.digital.hmpps.model.DeleteAppointmentsRequest
 import uk.gov.justice.digital.hmpps.model.GetAppointmentsRequest
+import uk.gov.justice.digital.hmpps.model.UpdateAppointmentsRequest
 import uk.gov.justice.digital.hmpps.service.AppointmentService
 
 @RestController
@@ -25,6 +26,12 @@ class AppointmentController(private val appointmentService: AppointmentService) 
     @ResponseStatus(HttpStatus.CREATED)
     fun createAppointments(@Valid @RequestBody request: CreateAppointmentsRequest) {
         appointmentService.create(request)
+    }
+
+    @PutMapping
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    fun updateAppointments(@Valid @RequestBody request: UpdateAppointmentsRequest) {
+        appointmentService.update(request)
     }
 
     @DeleteMapping
