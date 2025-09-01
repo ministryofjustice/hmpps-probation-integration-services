@@ -116,4 +116,8 @@ class Contact(
     @Column(columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)
     val trustProviderFlag: Boolean = false,
-)
+) {
+    companion object {
+        const val REFERENCE_PREFIX = "urn:uk:gov:accredited-programmes:appointment:"
+    }
+}

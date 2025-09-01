@@ -11,6 +11,10 @@ import uk.gov.justice.digital.hmpps.data.TestData.ADULT_CUSTODY_TYPE
 import uk.gov.justice.digital.hmpps.data.TestData.ADULT_LICENCE
 import uk.gov.justice.digital.hmpps.data.TestData.APPOINTMENTS
 import uk.gov.justice.digital.hmpps.data.TestData.APPOINTMENT_CONTACT_TYPE
+import uk.gov.justice.digital.hmpps.data.TestData.ATTENDED_COMPLIED
+import uk.gov.justice.digital.hmpps.data.TestData.CA_COMMUNITY_EVENT
+import uk.gov.justice.digital.hmpps.data.TestData.CA_COMMUNITY_SENTENCE
+import uk.gov.justice.digital.hmpps.data.TestData.CA_PERSON
 import uk.gov.justice.digital.hmpps.data.TestData.COMMUNITY_EVENT
 import uk.gov.justice.digital.hmpps.data.TestData.COMMUNITY_ORDER_TYPE
 import uk.gov.justice.digital.hmpps.data.TestData.COMMUNITY_SENTENCE
@@ -83,6 +87,7 @@ class DataLoader(
     private val custodyRepository: CustodyRepository,
     private val releaseRepository: ReleaseRepository,
     private val contactTypeRepository: ContactTypeRepository,
+    private val contactOutcomeRepository: ContactOutcomeRepository,
     private val contactRepository: ContactRepository,
     private val keyDateRepository: KeyDateRepository,
     private val pssRequirementMainCategoryRepository: PssRequirementMainCategoryRepository,
@@ -100,7 +105,6 @@ class DataLoader(
     private val registerTypeRepository: RegisterTypeRepository,
     private val registrationRepository: RegistrationRepository,
     private val officeLocationRepository: OfficeLocationRepository,
-    private val conditionManagerRepository: LicenceConditionManagerRepository,
     private val providerRepository: ProviderRepository,
 ) : ApplicationListener<ApplicationReadyEvent> {
     @PostConstruct
@@ -121,6 +125,7 @@ class DataLoader(
         teamRepository.save(TEAM)
         staffRepository.save(STAFF)
         personRepository.save(PERSON)
+        personRepository.save(CA_PERSON)
         managerRepository.save(MANAGER)
         userRepository.save(USER)
         userRepository.save(USER_WITH_LIMITED_ACCESS)
@@ -130,15 +135,18 @@ class DataLoader(
         eventRepository.save(CUSTODIAL_EVENT)
         eventRepository.save(UNSENTENCED_EVENT)
         eventRepository.save(COMMUNITY_EVENT)
+        eventRepository.save(CA_COMMUNITY_EVENT)
         disposalTypeRepository.save(ADULT_CUSTODY_TYPE)
         disposalRepository.save(CUSTODIAL_SENTENCE)
         disposalTypeRepository.save(COMMUNITY_ORDER_TYPE)
         disposalRepository.save(COMMUNITY_SENTENCE)
+        disposalRepository.save(CA_COMMUNITY_SENTENCE)
         custodyRepository.save(CUSTODY)
         releaseRepository.save(RELEASE)
         contactTypeRepository.save(TWO_THIRDS_CONTACT_TYPE)
         contactTypeRepository.save(OTHER_CONTACT_TYPE)
         contactTypeRepository.save(APPOINTMENT_CONTACT_TYPE)
+        contactOutcomeRepository.save(ATTENDED_COMPLIED)
         referenceDataRepository.save(PSS_END_DATE_KEY_DATE_TYPE)
         keyDateRepository.save(PSS_END_DATE)
         referenceDataRepository.save(LED_KEY_DATE_TYPE)

@@ -27,6 +27,10 @@ class Team(
         inverseJoinColumns = [JoinColumn(name = "office_location_id")]
     )
     val officeLocations: List<OfficeLocation>,
+
+    @ManyToOne
+    @JoinColumn(name = "probation_area_id")
+    val provider: Provider,
 ) {
     fun toCodedValue() = CodedValue(code, description)
 }
