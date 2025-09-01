@@ -54,6 +54,8 @@ internal class ScheduleIntegrationTest {
             equalTo(ContactGenerator.FIRST_APPT_CONTACT.toActivity().location?.officeName)
         )
         assertThat(res.personSchedule.appointments[0].location?.postcode, equalTo("H34 7TH"))
+
+        assertThat(res.personSchedule.appointments[0].deliusManaged, equalTo(true))
     }
 
     @Test
