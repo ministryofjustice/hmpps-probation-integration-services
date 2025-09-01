@@ -28,7 +28,7 @@ interface ContactRepository : JpaRepository<Contact, Long> {
     fun findByExternalReference(externalReference: String): Contact?
 
     @Modifying
-    @Query("update Contact c set c.softDeleted = true WHERE c.externalReference in :externalReferences")
+    @Query("update Contact c set c.softDeleted = true where c.externalReference in :externalReferences")
     fun softDeleteByExternalReferenceIn(externalReferences: Set<String>)
 }
 

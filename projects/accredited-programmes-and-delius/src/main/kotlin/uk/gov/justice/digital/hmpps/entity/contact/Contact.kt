@@ -106,7 +106,7 @@ class Contact(
 
     @Column(columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)
-    var softDeleted: Boolean = false,
+    val softDeleted: Boolean = false,
 
     // The following fields are not used, but must be set:
     val partitionAreaId: Long = 0,
