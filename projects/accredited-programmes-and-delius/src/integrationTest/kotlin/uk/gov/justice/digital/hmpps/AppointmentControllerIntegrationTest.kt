@@ -240,7 +240,7 @@ internal class AppointmentControllerIntegrationTest {
 
     @Test
     fun `can delete an appointment`() {
-        val existing = contactRepository.findAll().first { it.externalReference != null  }
+        val existing = contactRepository.findAll().first { it.externalReference != null }
         val appointmentReference = UUID.fromString(existing.externalReference!!.takeLast(36))
 
         mockMvc
