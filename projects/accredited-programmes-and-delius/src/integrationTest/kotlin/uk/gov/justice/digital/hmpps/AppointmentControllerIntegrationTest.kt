@@ -383,20 +383,22 @@ internal class AppointmentControllerIntegrationTest {
         mockMvc
             .perform(
                 put("/appointments").withToken().withJson(
-                    UpdateAppointmentsRequest(listOf(
-                        UpdateAppointmentRequest(
-                            appointmentReference,
-                            date  = LocalDate.now(),
-                            startTime = LocalTime.now(),
-                            endTime = LocalTime.now().plusMinutes(30),
-                            sensitive = true,
-                            outcome = RequestCode("ATTC"),
-                            location = RequestCode("OFFICE1"),
-                            team = RequestCode("TEAM01"),
-                            staff = RequestCode("STAFF01"),
-                            notes = "Some appended notes"
+                    UpdateAppointmentsRequest(
+                        listOf(
+                            UpdateAppointmentRequest(
+                                appointmentReference,
+                                date = LocalDate.now(),
+                                startTime = LocalTime.now(),
+                                endTime = LocalTime.now().plusMinutes(30),
+                                sensitive = true,
+                                outcome = RequestCode("ATTC"),
+                                location = RequestCode("OFFICE1"),
+                                team = RequestCode("TEAM01"),
+                                staff = RequestCode("STAFF01"),
+                                notes = "Some appended notes"
+                            )
                         )
-                    ))
+                    )
                 )
             )
             .andExpect(status().isNoContent)
