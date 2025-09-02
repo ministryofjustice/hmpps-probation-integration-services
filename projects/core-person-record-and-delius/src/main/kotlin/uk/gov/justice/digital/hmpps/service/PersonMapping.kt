@@ -18,6 +18,7 @@ fun Person.detail(
     title = title?.asCodeDescription(),
     gender = gender?.asCodeDescription(),
     nationality = nationality?.asCodeDescription(),
+    secondNationality = secondNationality?.asCodeDescription(),
     ethnicity = ethnicity?.asCodeDescription(),
     ethnicityDescription = ethnicityDescription,
     contactDetails = contactDetails(),

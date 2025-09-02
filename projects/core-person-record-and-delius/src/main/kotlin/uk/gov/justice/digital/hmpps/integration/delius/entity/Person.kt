@@ -71,6 +71,10 @@ data class Person(
     val nationality: ReferenceData?,
 
     @ManyToOne
+    @JoinColumn(name = "second_nationality_id")
+    val secondNationality: ReferenceData?,
+
+    @ManyToOne
     @JoinColumn(name = "ethnicity_id")
     val ethnicity: ReferenceData?,
 

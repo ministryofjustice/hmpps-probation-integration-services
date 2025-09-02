@@ -9,6 +9,7 @@ data class PersonDetail(
     val title: CodeDescription?,
     val gender: CodeDescription?,
     val nationality: CodeDescription?,
+    val secondNationality: CodeDescription?,
     val ethnicity: CodeDescription?,
     val ethnicityDescription: String?,
     val contactDetails: ContactDetails?,
