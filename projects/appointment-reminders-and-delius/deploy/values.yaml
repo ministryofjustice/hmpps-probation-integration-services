@@ -63,6 +63,14 @@ jobs:
       schedule: '0 18 * * *' # 6pm every day
       daysInAdvance: 1
 
+    south-central:
+      provider:
+        code: N59
+        name: 'South Central'
+      apiKeySecret: API_KEY
+      schedule: '0 18 * * *' # 6pm every day
+      daysInAdvance: 1
+
     wales:
       provider:
         code: N03

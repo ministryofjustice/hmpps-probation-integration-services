@@ -29,6 +29,10 @@ jobs:
       apiKeySecret: N57_API_KEY
       templates:
         - a7c9be1e-1050-4d44-bf5f-77c19e00f5e2
+    south-central:
+      apiKeySecret: N59_API_KEY
+      templates:
+        - e4fedc8b-b9de-4e05-ba20-0c052022625a
     wales:
       apiKeySecret: N03_API_KEY
       templates:
