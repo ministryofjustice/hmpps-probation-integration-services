@@ -14,6 +14,46 @@ servers:
 security:
 - hmpps-auth-token: []
 paths:
+  /appointments:
+    put:
+      tags:
+      - Appointments
+      operationId: updateAppointments
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateAppointmentsRequest"
+        required: true
+      responses:
+        "204":
+          description: No Content
+    post:
+      tags:
+      - Appointments
+      operationId: createAppointments
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateAppointmentsRequest"
+        required: true
+      responses:
+        "201":
+          description: Created
+    delete:
+      tags:
+      - Appointments
+      operationId: deleteAppointments
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DeleteAppointmentsRequest"
+        required: true
+      responses:
+        "204":
+          description: No Content
   /user/{username}/access:
     post:
       tags:
@@ -204,6 +244,56 @@ paths:
                 $ref: "#/components/schemas/LicenceCondition"
 components:
   schemas:
+    RequestCode:
+      type: object
+      properties:
+        code:
+          type: string
+      required:
+      - code
+    UpdateAppointmentRequest:
+      type: object
+      properties:
+        reference:
+          type: string
+          format: uuid
+        date:
+          type: string
+          format: date
+        startTime:
+          type: string
+        endTime:
+          type: string
+        outcome:
+          $ref: "#/components/schemas/RequestCode"
+        location:
+          $ref: "#/components/schemas/RequestCode"
+        staff:
+          $ref: "#/components/schemas/RequestCode"
+        team:
+          $ref: "#/components/schemas/RequestCode"
+        notes:
+          type: string
+        sensitive:
+          type: boolean
+      required:
+      - date
+      - endTime
+      - reference
+      - sensitive
+      - staff
+      - startTime
+      - team
+    UpdateAppointmentsRequest:
+      type: object
+      properties:
+        appointments:
+          type: array
+          items:
+            $ref: "#/components/schemas/UpdateAppointmentRequest"
+          minItems: 1
+      required:
+      - appointments
     CaseAccess:
       type: object
       properties:
@@ -230,6 +320,55 @@ components:
             $ref: "#/components/schemas/CaseAccess"
       required:
       - access
+    CreateAppointmentRequest:
+      type: object
+      properties:
+        reference:
+          type: string
+          format: uuid
+        requirementId:
+          type: integer
+          format: int64
+        licenceConditionId:
+          type: integer
+          format: int64
+        date:
+          type: string
+          format: date
+        startTime:
+          type: string
+        endTime:
+          type: string
+        outcome:
+          $ref: "#/components/schemas/RequestCode"
+        location:
+          $ref: "#/components/schemas/RequestCode"
+        staff:
+          $ref: "#/components/schemas/RequestCode"
+        team:
+          $ref: "#/components/schemas/RequestCode"
+        notes:
+          type: string
+        sensitive:
+          type: boolean
+      required:
+      - date
+      - endTime
+      - reference
+      - sensitive
+      - staff
+      - startTime
+      - team
+    CreateAppointmentsRequest:
+      type: object
+      properties:
+        appointments:
+          type: array
+          items:
+            $ref: "#/components/schemas/CreateAppointmentRequest"
+          minItems: 1
+      required:
+      - appointments
     GetAppointmentsRequest:
       type: object
       properties:
@@ -519,6 +658,24 @@ components:
           $ref: "#/components/schemas/Manager"
       required:
       - manager
+    AppointmentReference:
+      type: object
+      properties:
+        reference:
+          type: string
+          format: uuid
+      required:
+      - reference
+    DeleteAppointmentsRequest:
+      type: object
+      properties:
+        appointments:
+          type: array
+          items:
+            $ref: "#/components/schemas/AppointmentReference"
+          minItems: 1
+      required:
+      - appointments
   securitySchemes:
     hmpps-auth-token:
       type: http
