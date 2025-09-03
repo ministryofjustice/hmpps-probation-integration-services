@@ -226,7 +226,7 @@ digraph "oneDegreeRelationshipsDiagram" {
   "LIC_CONDITION_TRANSFER":"WITHDRAWAL_REASON_ID":w -> "R_STANDARD_REFERENCE_LIST":"STANDARD_REFERENCE_LIST_ID.type":e [arrowhead=none dir=back arrowtail=crowodot];
   "LOST_BEDS":"APPROVED_PREMISES_ID":w -> "R_APPROVED_PREMISES":"APPROVED_PREMISES_ID":e [arrowhead=none dir=back arrowtail=crowodot];
   "LOST_BEDS":"REASON_FOR_LOSS_ID":w -> "R_STANDARD_REFERENCE_LIST":"STANDARD_REFERENCE_LIST_ID.type":e [arrowhead=none dir=back arrowtail=crowodot];
-  "MANAGEMENT_TIER":"OFFENDER_ID":w -> "OFFENDER":"OFFENDER_ID":e [arrowhead=none dir=back arrowtail=crowodot];
+  "MANAGEMENT_TIER":"OFFENDER_ID":w -> "OFFENDER":"OFFENDER_ID":e [arrowhead=none dir=back arrowtail=teeodot];
   "MANAGEMENT_TIER":"TIER_CHANGE_REASON_ID":w -> "R_STANDARD_REFERENCE_LIST":"STANDARD_REFERENCE_LIST_ID.type":e [arrowhead=none dir=back arrowtail=crowodot];
   "MANAGEMENT_TIER":"TIER_ID":w -> "R_STANDARD_REFERENCE_LIST":"STANDARD_REFERENCE_LIST_ID.type":e [arrowhead=none dir=back arrowtail=crowodot];
   "MANAGEMENT_TIER_EVENT":"OFFENDER_ID":w -> "OFFENDER":"OFFENDER_ID":e [arrowhead=none dir=back arrowtail=crowodot];

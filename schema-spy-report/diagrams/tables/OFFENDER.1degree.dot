@@ -216,7 +216,7 @@ digraph "oneDegreeRelationshipsDiagram" {
   "MAIN_OFFENCE":"EVENT_ID":w -> "EVENT":"EVENT_ID":e [arrowhead=none dir=back arrowtail=crowodot];
   "MAIN_OFFENCE":"OFFENDER_ID":w -> "OFFENDER":"OFFENDER_ID.type":e [arrowhead=none dir=back arrowtail=crowodot];
   "MAIN_OFFENCE":"PARTITION_AREA_ID":w -> "PARTITION_AREA":"PARTITION_AREA_ID":e [arrowhead=none dir=back arrowtail=crowodot];
-  "MANAGEMENT_TIER":"OFFENDER_ID":w -> "OFFENDER":"OFFENDER_ID.type":e [arrowhead=none dir=back arrowtail=crowodot];
+  "MANAGEMENT_TIER":"OFFENDER_ID":w -> "OFFENDER":"OFFENDER_ID.type":e [arrowhead=none dir=back arrowtail=teeodot];
   "MANAGEMENT_TIER":"PARTITION_AREA_ID":w -> "PARTITION_AREA":"PARTITION_AREA_ID":e [arrowhead=none dir=back arrowtail=crowodot];
   "MANAGEMENT_TIER":"TIER_CHANGE_REASON_ID":w -> "R_STANDARD_REFERENCE_LIST":"STANDARD_REFERENCE_LIST_ID":e [arrowhead=none dir=back arrowtail=crowodot];
   "MANAGEMENT_TIER":"TIER_ID":w -> "R_STANDARD_REFERENCE_LIST":"STANDARD_REFERENCE_LIST_ID":e [arrowhead=none dir=back arrowtail=crowodot];
