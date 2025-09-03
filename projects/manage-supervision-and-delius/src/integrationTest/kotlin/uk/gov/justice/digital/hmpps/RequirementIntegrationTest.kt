@@ -63,7 +63,7 @@ class RequirementIntegrationTest {
                 REQUIREMENT.id,
                 "F",
                 LocalDate.now().minusDays(1),
-                LocalDate.now(),
+                LocalDate.now().minusDays(7),
                 LocalDate.now().minusDays(2),
                 LocalDate.now().minusDays(3),
                 null,
@@ -71,7 +71,8 @@ class RequirementIntegrationTest {
                 12,
                 "Days",
                 requirementNote = NoteDetail(0, note = "my notes"),
-                rar = Rar(completed = 1, scheduled = 1, nsiCompleted = 0, totalDays = 2)
+                rar = Rar(completed = 1, scheduled = 1, nsiCompleted = 0, totalDays = 2),
+                active = true
             )
         )
 

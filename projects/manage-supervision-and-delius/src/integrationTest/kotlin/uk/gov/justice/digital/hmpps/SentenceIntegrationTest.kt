@@ -122,24 +122,10 @@ class SentenceIntegrationTest {
                 ),
                 listOf(
                     Requirement(
-                        REQUIREMENT.id,
-                        "F",
-                        LocalDate.now().minusDays(1),
-                        LocalDate.now(),
-                        LocalDate.now().minusDays(2),
-                        LocalDate.now().minusDays(3),
-                        null,
-                        "2 of 12 RAR days completed",
-                        12,
-                        "Days",
-                        listOf(NoteDetail(0, note = "my notes", hasNoteBeenTruncated = false)),
-                        rar = Rar(completed = 1, scheduled = 1, nsiCompleted = 0, totalDays = 2)
-                    ),
-                    Requirement(
                         REQUIREMENT_UNPAID_WORK.id,
                         "W",
                         LocalDate.now().minusDays(1),
-                        LocalDate.now(),
+                        LocalDate.now().minusDays(3),
                         LocalDate.now().minusDays(2),
                         LocalDate.now().minusDays(3),
                         null,
@@ -147,8 +133,24 @@ class SentenceIntegrationTest {
                         12,
                         "Days",
                         listOf(NoteDetail(0, note = "my notes", hasNoteBeenTruncated = false)),
-                        null
-                    )
+                        null,
+                        active = true
+                    ),
+                    Requirement(
+                        REQUIREMENT.id,
+                        "F",
+                        LocalDate.now().minusDays(1),
+                        LocalDate.now().minusDays(7),
+                        LocalDate.now().minusDays(2),
+                        LocalDate.now().minusDays(3),
+                        null,
+                        "2 of 12 RAR days completed",
+                        12,
+                        "Days",
+                        listOf(NoteDetail(0, note = "my notes", hasNoteBeenTruncated = false)),
+                        rar = Rar(completed = 1, scheduled = 1, nsiCompleted = 0, totalDays = 2),
+                        active = true
+                    ),
                 ),
                 listOf(
                     CourtDocument(COURT_DOCUMENT.alfrescoId, LocalDate.now().minusDays(1), "court report"),
@@ -156,12 +158,6 @@ class SentenceIntegrationTest {
                 ),
                 "3 minutes completed (of 12 hours)",
                 listOf(
-                    LicenceCondition(
-                        LC_WITHOUT_NOTES.id,
-                        LIC_COND_MAIN_CAT.description,
-                        imposedReleasedDate = LocalDate.now().minusDays(14),
-                        licenceConditionNotes = listOf()
-                    ),
                     LicenceCondition(
                         LC_WITH_NOTES.id,
                         LIC_COND_MAIN_CAT.description,
@@ -178,7 +174,7 @@ class SentenceIntegrationTest {
                                         probation officer says you can. You will need to wear an electronic tag all the time so
                                         we can check this.
                                     """.trimIndent(),
-                                false
+                                false,
                             ),
                             NoteDetail(
                                 1,
@@ -189,7 +185,8 @@ class SentenceIntegrationTest {
                                     """.trimIndent(),
                                 true
                             )
-                        )
+                        ),
+                        active = true
                     ),
                     LicenceCondition(
                         LC_WITH_NOTES_WITHOUT_ADDED_BY.id,
@@ -203,7 +200,8 @@ class SentenceIntegrationTest {
                                 note = "He shall not contact or associate with Peter Jones without the prior approval of the supervising officer;",
                                 hasNoteBeenTruncated = false
                             )
-                        )
+                        ),
+                        active = true
                     ),
                     LicenceCondition(
                         LC_WITH_1500_CHAR_NOTE.id,
@@ -230,8 +228,16 @@ class SentenceIntegrationTest {
                                     """.trimIndent(),
                                 false
                             )
-                        )
-                    )
+                        ),
+                        active = true
+                    ),
+                    LicenceCondition(
+                        LC_WITHOUT_NOTES.id,
+                        LIC_COND_MAIN_CAT.description,
+                        imposedReleasedDate = LocalDate.now().minusDays(14),
+                        licenceConditionNotes = listOf(),
+                        active = true
+                    ),
                 )
             )
         )

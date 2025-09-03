@@ -3,7 +3,6 @@ package uk.gov.justice.digital.hmpps.service
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.api.model.appointment.*
 import uk.gov.justice.digital.hmpps.api.model.sentence.MinimalOrder
-import uk.gov.justice.digital.hmpps.api.model.sentence.MinimalRequirement
 import uk.gov.justice.digital.hmpps.api.model.sentence.MinimalSentence
 import uk.gov.justice.digital.hmpps.api.model.sentence.ProviderOfficeLocation
 import uk.gov.justice.digital.hmpps.api.model.user.Team
@@ -86,16 +85,9 @@ class AppointmentService(
                     it.toMinimalLicenceCondition()
                 }
             } ?: emptyList(),
-            requirements = requirementRepository.getRequirements(id, eventNumber).filter { it.active }
-                .map { it.toMinimalRequirement() },
-        )
-    }
-
-    fun Requirement.toMinimalRequirement(): MinimalRequirement {
-        val rar = requirementService.getRar(disposal!!.id, mainCategory!!.code)
-        return MinimalRequirement(
-            id,
-            populateRequirementDescription(mainCategory.description, subCategory?.description, length, rar)
+            requirements = requirementRepository.getRequirements(id, eventNumber).filter { it.active }.asMinimals {
+                requirementService.getRar(it.disposal!!.id, it.mainCategory!!.code)
+            }
         )
     }
 

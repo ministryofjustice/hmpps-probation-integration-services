@@ -202,7 +202,8 @@ class SentenceServiceTest {
                         requirement2.length,
                         null,
                         listOf(NoteDetail(0, note = requirement2.notes!!, hasNoteBeenTruncated = false)),
-                        null
+                        null,
+                        active = true
                     ),
                 ),
                 listOf(CourtDocument("00000000-0000-0000-0000-000000000001", LocalDate.now(), "Pre Sentence Event")),
@@ -315,7 +316,8 @@ class SentenceServiceTest {
             requirement1.length,
             requirement1.mainCategory!!.unitDetails!!.description,
             listOf(NoteDetail(0, note = requirement1.notes!!, hasNoteBeenTruncated = false)),
-            null
+            null,
+            active = true
         )
 
         assertEquals(expected, response.sentence!!.requirements!![0])
@@ -388,7 +390,8 @@ class SentenceServiceTest {
             requirement1.length,
             requirement1.mainCategory!!.unitDetails!!.description,
             listOf(NoteDetail(0, note = requirement1.notes!!, hasNoteBeenTruncated = false)),
-            null
+            null,
+            active = true
         )
 
         assertEquals(expected, response.sentence!!.requirements!![0])
