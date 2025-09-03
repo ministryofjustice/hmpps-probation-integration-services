@@ -176,6 +176,8 @@ components:
           $ref: "#/components/schemas/CodeDescription"
         nationality:
           $ref: "#/components/schemas/CodeDescription"
+        secondNationality:
+          $ref: "#/components/schemas/CodeDescription"
         ethnicity:
           $ref: "#/components/schemas/CodeDescription"
         ethnicityDescription:
