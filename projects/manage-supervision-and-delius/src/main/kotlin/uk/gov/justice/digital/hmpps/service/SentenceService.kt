@@ -12,6 +12,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.C
 import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.DocumentRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.LengthUnit
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.*
+import uk.gov.justice.digital.hmpps.service.lcSort
 import java.time.Duration
 import java.time.LocalDate
 import kotlin.time.toKotlinDuration
@@ -92,12 +93,11 @@ class SentenceService(
             eventNumber,
             disposal?.toMinimalOrder(),
             licenceConditions = disposal?.let {
-                licenceConditionRepository.findAllByDisposalId(disposal.id).map {
-                    it.toMinimalLicenceCondition()
-                }
+                licenceConditionRepository.findAllByDisposalId(disposal.id).asMinimals()
             } ?: emptyList(),
-            requirements = requirementRepository.getRequirements(id, eventNumber)
-                .map { it.toMinimalRequirement() },
+            requirements = requirementRepository.getRequirements(id, eventNumber).asMinimals {
+                requirementService.getRar(it.disposal!!.id, it.mainCategory!!.code)
+            }
         )
 
     fun Event.toSentence(): Sentence {
@@ -108,14 +108,11 @@ class SentenceService(
             toOffenceDetails(),
             toConviction(courtAppearance, additionalSentences),
             order = disposal?.toOrder(),
-            requirements = requirementRepository.getRequirements(id, eventNumber)
-                .map { it.toRequirement() },
+            requirements = requirementRepository.getRequirements(id, eventNumber).rSort().map { it.toRequirement() },
             courtDocuments = documentRepository.getCourtDocuments(id, eventNumber).map { it.toCourtDocument() },
             unpaidWorkProgress = disposal?.id?.let { getUnpaidWorkTime(it) },
             licenceConditions = disposal?.let {
-                licenceConditionRepository.findAllByDisposalId(disposal.id).map {
-                    it.toLicenceCondition()
-                }
+                licenceConditionRepository.findAllByDisposalId(disposal.id).lcSort().map { it.toLicenceCondition() }
             } ?: emptyList()
         )
     }
@@ -180,18 +177,11 @@ class SentenceService(
             length,
             mainCategory.unitDetails?.description,
             toRequirementNote(true),
-            rar = rar
+            rar = rar,
+            active = active,
         )
 
         return requirement
-    }
-
-    fun RequirementEntity.toMinimalRequirement(): MinimalRequirement {
-        val rar = requirementService.getRar(disposal!!.id, mainCategory!!.code)
-        return MinimalRequirement(
-            id,
-            populateRequirementDescription(mainCategory.description, subCategory?.description, length, rar)
-        )
     }
 
     fun getUnpaidWorkTime(disposalId: Long): String? {

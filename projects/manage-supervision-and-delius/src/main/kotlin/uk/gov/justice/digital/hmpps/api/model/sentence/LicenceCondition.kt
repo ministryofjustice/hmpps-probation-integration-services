@@ -10,7 +10,8 @@ data class LicenceCondition(
     val imposedReleasedDate: LocalDate,
     val actualStartDate: LocalDate? = null,
     val licenceConditionNotes: List<NoteDetail>? = null,
-    val licenceConditionNote: NoteDetail? = null
+    val licenceConditionNote: NoteDetail? = null,
+    val active: Boolean,
 )
 
 data class LicenceConditionNoteDetail(
@@ -20,5 +21,6 @@ data class LicenceConditionNoteDetail(
 
 data class MinimalLicenceCondition(
     val id: Long,
-    val mainDescription: String
+    val mainDescription: String,
+    val active: Boolean,
 )

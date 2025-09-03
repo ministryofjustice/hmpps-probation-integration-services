@@ -169,7 +169,8 @@ object PersonGenerator {
         ACTIVE_ORDER,
         subCategory = MAIN_CAT_F_TYPE,
         mainCategory = MAIN_CAT_F,
-        terminationDetails = null
+        terminationDetails = null,
+        startDate = LocalDate.now().minusDays(7),
     )
 
     val MAIN_CAT_W_TYPE = ReferenceData(IdGenerator.getAndIncrement(), "W02", "Intensive")
@@ -178,7 +179,8 @@ object PersonGenerator {
         ACTIVE_ORDER,
         subCategory = MAIN_CAT_W_TYPE,
         mainCategory = MAIN_CAT_W,
-        terminationDetails = null
+        terminationDetails = null,
+        startDate = LocalDate.now().minusDays(3),
     )
 
     val REQUIREMENT_CONTACT_1 = ContactGenerator.generateContact(

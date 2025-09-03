@@ -66,7 +66,8 @@ class LicenceConditionIntegrationTest {
                 LIC_COND_MAIN_CAT.description,
                 LIC_COND_SUB_CAT.description,
                 LocalDate.now().minusDays(7),
-                LocalDate.now()
+                LocalDate.now(),
+                active = true
             )
         )
 
@@ -98,7 +99,8 @@ class LicenceConditionIntegrationTest {
                     """
                    ${LicenceConditionGenerator.LONG_NOTE}
                 """.trimIndent()
-                )
+                ),
+                active = true
             )
         )
 

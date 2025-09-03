@@ -33,7 +33,8 @@ fun EntityLicenceCondition.toLicenceCondition() =
         subCategory?.description,
         imposedReleasedDate,
         actualStartDate,
-        toLicenceConditionNote(true)
+        toLicenceConditionNote(true),
+        active = active,
     )
 
 fun EntityLicenceCondition.toLicenceConditionSingleNote(noteId: Int, truncateNote: Boolean) =
@@ -43,7 +44,8 @@ fun EntityLicenceCondition.toLicenceConditionSingleNote(noteId: Int, truncateNot
         subCategory?.description,
         imposedReleasedDate,
         actualStartDate,
-        licenceConditionNote = toLicenceConditionNote(truncateNote).elementAtOrNull(noteId)
+        licenceConditionNote = toLicenceConditionNote(truncateNote).elementAtOrNull(noteId),
+        active = active,
     )
 
 fun EntityLicenceCondition.toLicenceConditionNote(truncateNote: Boolean): List<NoteDetail> {
@@ -51,4 +53,4 @@ fun EntityLicenceCondition.toLicenceConditionNote(truncateNote: Boolean): List<N
     return formatNote(notes, truncateNote)
 }
 
-fun EntityLicenceCondition.toMinimalLicenceCondition() = MinimalLicenceCondition(id, mainCategory.description)
+fun EntityLicenceCondition.toMinimalLicenceCondition() = MinimalLicenceCondition(id, mainCategory.description, active)
