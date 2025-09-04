@@ -21,8 +21,8 @@ import java.time.Period
 import java.time.ZonedDateTime
 
 @Component
-@Channel("common-platform-and-delius-queue")
-class Handler(
+@Channel("common-platform-and-delius-fifo-queue")
+class FIFOHandler(
     override val converter: NotificationConverter<CommonPlatformHearing>,
     private val telemetryService: TelemetryService,
     private val personService: PersonService,

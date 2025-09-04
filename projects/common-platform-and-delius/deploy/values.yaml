@@ -25,6 +25,8 @@ generic-service:
     common-platform-and-delius-sentry:
       SENTRY_DSN: SENTRY_DSN
     common-platform-and-delius-queue:
+      MESSAGING_CONSUMER_COURT-MESSAGE-QUEUE: QUEUE_NAME
+    common-platform-and-delius-fifo-queue:
       MESSAGING_CONSUMER_QUEUE: QUEUE_NAME
     hmpps-domain-events-topic:
       MESSAGING_PRODUCER_TOPIC: topic_arn
