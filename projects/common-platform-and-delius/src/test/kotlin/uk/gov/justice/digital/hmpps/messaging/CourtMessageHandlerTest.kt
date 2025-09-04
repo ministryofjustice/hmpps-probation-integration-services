@@ -52,9 +52,11 @@ internal class CourtMessageHandlerTest {
     @Test
     fun `message with multiple defendants is split into multiple messages`() {
         val notification = Notification(message = MessageGenerator.COMMON_PLATFORM_EVENT_MULTIPLE_DEFENDANTS)
-        val incomingMessage = Optional.of(MessageBuilder.createMessage(
-            MockMvcExtensions.objectMapper.writeValueAsString(notification),
-            MessageHeaders(mapOf()))
+        val incomingMessage = Optional.of(
+            MessageBuilder.createMessage(
+                MockMvcExtensions.objectMapper.writeValueAsString(notification),
+                MessageHeaders(mapOf())
+            )
         )
 
         whenever(sqsTemplate.receive(any<String>(), any<Class<String>>()))
@@ -64,15 +66,16 @@ internal class CourtMessageHandlerTest {
         handler.handle()
 
         verify(sqsTemplate, Mockito.times(2)).send(any(), any<Message<String>>())
-
     }
 
     @Test
     fun `message with multiple defendants output only contains single defendant`() {
         val notification = Notification(message = MessageGenerator.COMMON_PLATFORM_EVENT_MULTIPLE_DEFENDANTS)
-        val incomingMessage = Optional.of(MessageBuilder.createMessage(
-            MockMvcExtensions.objectMapper.writeValueAsString(notification),
-            MessageHeaders(mapOf()))
+        val incomingMessage = Optional.of(
+            MessageBuilder.createMessage(
+                MockMvcExtensions.objectMapper.writeValueAsString(notification),
+                MessageHeaders(mapOf())
+            )
         )
 
         whenever(sqsTemplate.receive(any<String>(), any<Class<String>>()))
@@ -84,11 +87,13 @@ internal class CourtMessageHandlerTest {
         val captor = argumentCaptor<Message<String>>()
         verify(sqsTemplate, times(2)).send(eq("send-queue"), captor.capture())
 
-        val output = MockMvcExtensions.objectMapper.readValue(captor.firstValue.payload, Notification::class.java) as Notification<String>
+        val output = MockMvcExtensions.objectMapper.readValue(
+            captor.firstValue.payload,
+            Notification::class.java
+        ) as Notification<String>
         val outputHearing = MockMvcExtensions.objectMapper.readValue(output.message, CommonPlatformHearing::class.java)
 
         assertThat(outputHearing.hearing.prosecutionCases.size, equalTo(1))
         assertThat(outputHearing.hearing.prosecutionCases[0].defendants.size, equalTo(1))
     }
-
 }
