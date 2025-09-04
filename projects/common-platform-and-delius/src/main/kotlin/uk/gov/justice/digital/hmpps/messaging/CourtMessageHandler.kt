@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.messaging
 
 import com.asyncapi.kotlinasyncapi.annotation.channel.Channel
+import com.fasterxml.jackson.databind.ObjectMapper
 import io.awspring.cloud.sqs.listener.SqsHeaders
 import io.awspring.cloud.sqs.operations.SqsTemplate
 import org.springframework.beans.factory.annotation.Value
@@ -21,6 +22,7 @@ class CourtMessageHandler(
     private val converter: NotificationConverter<CommonPlatformHearing>,
     private val telemetryService: TelemetryService,
     private val sqsTemplate: SqsTemplate,
+    private val objectMapper: ObjectMapper,
     @Value("\${messaging.consumer.court-message-queue}") private val receiveQueue: String,
     @Value("\${messaging.consumer.queue}") private val sendQueue: String
 ) {
@@ -42,8 +44,12 @@ class CourtMessageHandler(
                     val cprUuid = defendant.cprUUID
                     val newCase = case.copy(defendants = listOf(defendant))
                     val newHearing = hearing.copy(prosecutionCases = listOf(newCase))
+                    val newNotification = Notification(
+                        message = objectMapper.writeValueAsString(newHearing),
+                        attributes = notification.attributes
+                    )
                     val outgoingMessage = MessageBuilder.createMessage(
-                        newHearing,
+                        objectMapper.writeValueAsString(newNotification),
                         MessageHeaders(mapOf(SqsHeaders.MessageSystemAttributes.SQS_MESSAGE_GROUP_ID_HEADER to cprUuid))
                     )
                     sqsTemplate.send(sendQueue, outgoingMessage)
