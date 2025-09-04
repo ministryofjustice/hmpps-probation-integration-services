@@ -22,7 +22,7 @@ class CourtMessageHandler(
     private val telemetryService: TelemetryService,
     private val sqsTemplate: SqsTemplate,
     @Value("\${messaging.consumer.court-message-queue}") private val receiveQueue: String,
-    @Value("\${messaging.producer.queue}") private val sendQueue: String
+    @Value("\${messaging.consumer.queue}") private val sendQueue: String
 ) {
     @Scheduled(fixedDelayString = "\${common-platform.queue.poller.fixed-delay:1000}")
     fun handle() {
