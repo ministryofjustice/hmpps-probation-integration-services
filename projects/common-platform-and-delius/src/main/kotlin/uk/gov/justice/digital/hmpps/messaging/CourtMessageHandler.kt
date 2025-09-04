@@ -30,13 +30,14 @@ class CourtMessageHandler(
     fun handle() {
         sqsTemplate.receive(receiveQueue, String::class.java).ifPresent { receivedMessage ->
 
+            val notification: Notification<CommonPlatformHearing> = converter.fromMessage(receivedMessage.payload)!!
+
             telemetryService.trackEvent(
-                "CourtMessageHandlerDebug", mapOf(
-                    "payload" to receivedMessage.payload
+                "CourtMessageHandlerReceived", mapOf(
+                    "hearingId" to notification.message.hearing.id
                 )
             )
 
-            val notification: Notification<CommonPlatformHearing> = converter.fromMessage(receivedMessage.payload)!!
             val hearing = notification.message.hearing
             hearing.prosecutionCases
                 .flatMap { case -> case.defendants.map { defendant -> case to defendant } }
