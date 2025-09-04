@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.messaging
 import com.asyncapi.kotlinasyncapi.annotation.channel.Channel
 import io.awspring.cloud.sqs.listener.SqsHeaders
 import io.awspring.cloud.sqs.operations.SqsTemplate
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Conditional
 import org.springframework.messaging.MessageHeaders
 import org.springframework.messaging.support.MessageBuilder
@@ -19,11 +20,13 @@ import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 class CourtMessageHandler(
     private val converter: NotificationConverter<CommonPlatformHearing>,
     private val telemetryService: TelemetryService,
-    private val sqsTemplate: SqsTemplate
+    private val sqsTemplate: SqsTemplate,
+    @Value("\${messaging.consumer.court-message-queue}") private val receiveQueue: String,
+    @Value("\${messaging.producer.queue}") private val sendQueue: String
 ) {
     @Scheduled(fixedDelayString = "\${common-platform.queue.poller.fixed-delay:1000}")
     fun handle() {
-        sqsTemplate.receive("common-platform-and-delius-queue", String::class.java).ifPresent { receivedMessage ->
+        sqsTemplate.receive(receiveQueue, String::class.java).ifPresent { receivedMessage ->
 
             telemetryService.trackEvent(
                 "CourtMessageHandlerDebug", mapOf(
@@ -43,7 +46,7 @@ class CourtMessageHandler(
                         newHearing,
                         MessageHeaders(mapOf(SqsHeaders.MessageSystemAttributes.SQS_MESSAGE_GROUP_ID_HEADER to cprUuid))
                     )
-                    sqsTemplate.send("common-platform-and-delius-fifo-queue", outgoingMessage)
+                    sqsTemplate.send(sendQueue, outgoingMessage)
 
                     telemetryService.trackEvent(
                         "CourtMessageHandlerSentToFIFO", mapOf(
