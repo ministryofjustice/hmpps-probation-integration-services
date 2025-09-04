@@ -28,6 +28,7 @@ generic-service:
       MESSAGING_CONSUMER_COURT-MESSAGE-QUEUE: QUEUE_NAME
     common-platform-and-delius-fifo-queue:
       MESSAGING_CONSUMER_QUEUE: QUEUE_NAME
+      MESSAGING_PRODUCER_QUEUE: QUEUE_NAME
     hmpps-domain-events-topic:
       MESSAGING_PRODUCER_TOPIC: topic_arn
     common-platform-and-delius-os-places:
