@@ -45,7 +45,7 @@ class CourtMessageHandler(
                     val newCase = case.copy(defendants = listOf(defendant))
                     val newHearing = hearing.copy(prosecutionCases = listOf(newCase))
                     val newNotification = Notification(
-                        message = objectMapper.writeValueAsString(newHearing),
+                        message = objectMapper.writeValueAsString(CommonPlatformHearing(newHearing)),
                         attributes = notification.attributes
                     )
                     val outgoingMessage = MessageBuilder.createMessage(
