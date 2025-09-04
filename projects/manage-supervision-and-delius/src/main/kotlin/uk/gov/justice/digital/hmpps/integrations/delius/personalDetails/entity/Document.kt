@@ -71,6 +71,8 @@ abstract class Document {
 
     @Convert(converter = YesNoConverter::class)
     open var status: Boolean = true
+
+    open var partitionAreaId: Long = 0
 }
 
 @Entity
