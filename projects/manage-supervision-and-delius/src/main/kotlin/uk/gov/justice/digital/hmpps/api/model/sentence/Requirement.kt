@@ -17,12 +17,14 @@ data class Requirement(
     val lengthUnitValue: String?,
     val requirementNotes: List<NoteDetail>? = null,
     val requirementNote: NoteDetail? = null,
-    val rar: Rar? = null
+    val rar: Rar? = null,
+    val active: Boolean,
 )
 
 data class MinimalRequirement(
     val id: Long,
-    val description: String
+    val description: String,
+    val active: Boolean,
 )
 
 data class RequirementNoteDetail(

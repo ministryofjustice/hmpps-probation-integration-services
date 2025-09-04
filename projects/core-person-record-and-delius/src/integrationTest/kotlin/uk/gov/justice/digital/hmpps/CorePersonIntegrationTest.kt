@@ -83,6 +83,10 @@ internal class CorePersonIntegrationTest {
                         "code": "NAT",
                         "description": "Description of NAT"
                       },
+                      "secondNationality": {
+                        "code": "NAT",
+                        "description": "Description of NAT"
+                      },
                       "ethnicity": {
                         "code": "ETH",
                         "description": "Description of ETH"

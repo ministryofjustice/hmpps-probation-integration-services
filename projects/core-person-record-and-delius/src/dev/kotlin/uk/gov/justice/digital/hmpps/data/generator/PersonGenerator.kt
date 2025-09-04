@@ -8,6 +8,7 @@ object PersonGenerator {
     val ETHNICITY = generateReferenceData("ETH")
     val GENDER = generateReferenceData("GEN")
     val NATIONALITY = generateReferenceData("NAT")
+    val SECOND_NATIONALITY = NATIONALITY
     val TITLE = generateReferenceData("TIT")
     val PREVIOUS_ADDRESS = generateReferenceData("P", "Previous Address")
     val MAIN_ADDRESS = generateReferenceData("M", "Main Address")
@@ -34,6 +35,7 @@ object PersonGenerator {
         title = TITLE,
         gender = GENDER,
         nationality = NATIONALITY,
+        secondNationality = SECOND_NATIONALITY,
         ethnicity = ETHNICITY,
         ethnicityDescription = "Description of ethnicity",
         exclusionMessage = "This case is excluded because ...",
@@ -112,6 +114,7 @@ object PersonGenerator {
         title: ReferenceData? = null,
         gender: ReferenceData? = null,
         nationality: ReferenceData? = null,
+        secondNationality: ReferenceData? = null,
         ethnicity: ReferenceData? = null,
         ethnicityDescription: String? = null,
         exclusionMessage: String? = null,
@@ -138,6 +141,7 @@ object PersonGenerator {
         title = title,
         gender = gender,
         nationality = nationality,
+        secondNationality = secondNationality,
         ethnicity = ethnicity,
         ethnicityDescription = ethnicityDescription,
         exclusionMessage = exclusionMessage,

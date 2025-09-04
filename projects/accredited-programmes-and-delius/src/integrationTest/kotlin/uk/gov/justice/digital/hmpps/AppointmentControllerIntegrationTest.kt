@@ -10,6 +10,7 @@ import org.springframework.test.json.JsonCompareMode
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import uk.gov.justice.digital.hmpps.data.TestData
@@ -355,6 +356,66 @@ internal class AppointmentControllerIntegrationTest {
             assertThat(team.code).isEqualTo("TEAM01")
             assertThat(staff.code).isEqualTo("STAFF01")
             assertThat(requirement?.id).isEqualTo(REQUIREMENTS[2].id)
+        }
+    }
+
+    @Test
+    fun `can update an appointment`() {
+        val existing = contactRepository.save(
+            Contact(
+                id = 0,
+                person = CA_PERSON.toCrn(),
+                event = CA_COMMUNITY_EVENT,
+                date = LocalDate.now().minusDays(7),
+                startTime = ZonedDateTime.now().minusDays(7),
+                endTime = ZonedDateTime.now().minusDays(7).plusMinutes(30),
+                type = TestData.APPOINTMENT_CONTACT_TYPE,
+                staff = TestData.STAFF,
+                team = TestData.TEAM,
+                provider = TestData.PROVIDER,
+                notes = "Some notes",
+                externalReference = "${Contact.REFERENCE_PREFIX}${UUID.randomUUID()}",
+                sensitive = false,
+            )
+        )
+        val appointmentReference = UUID.fromString(existing.externalReference!!.takeLast(36))
+
+        mockMvc
+            .perform(
+                put("/appointments").withToken().withJson(
+                    UpdateAppointmentsRequest(
+                        listOf(
+                            UpdateAppointmentRequest(
+                                appointmentReference,
+                                date = LocalDate.now(),
+                                startTime = LocalTime.now(),
+                                endTime = LocalTime.now().plusMinutes(30),
+                                sensitive = true,
+                                outcome = RequestCode("ATTC"),
+                                location = RequestCode("OFFICE1"),
+                                team = RequestCode("TEAM01"),
+                                staff = RequestCode("STAFF01"),
+                                notes = "Some appended notes"
+                            )
+                        )
+                    )
+                )
+            )
+            .andExpect(status().isNoContent)
+
+        val appointment = contactRepository.findByExternalReference(existing.externalReference!!)
+        assertThat(appointment).isNotNull
+        with(appointment!!) {
+            assertThat(date).isEqualTo(LocalDate.now())
+            assertThat(sensitive).isTrue
+            assertThat(notes).isEqualTo(
+                """
+                |Some notes
+                |
+                |Some appended notes
+                """.trimMargin()
+            )
+            assertThat(outcome?.code).isEqualTo("ATTC")
         }
     }
 

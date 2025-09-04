@@ -26,7 +26,10 @@ jobs:
         - cd713c1b-1b27-45a0-b493-37a34666635a
     kent-surrey-sussex:
       templates:
-        - a7c9be1e-1050-4d44-bf5f-77c19e00f5e2
+        - cd713c1b-1b27-45a0-b493-37a34666635a
+    south-central:
+      templates:
+        - cd713c1b-1b27-45a0-b493-37a34666635a
     wales:
       templates:
         - cd713c1b-1b27-45a0-b493-37a34666635a # English

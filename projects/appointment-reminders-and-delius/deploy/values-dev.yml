@@ -31,7 +31,11 @@ jobs:
     kent-surrey-sussex:
       schedule: '0 10 * * 1-5' # 10am Monday to Friday
       templates:
-        - a7c9be1e-1050-4d44-bf5f-77c19e00f5e2
+        - 9405e109-1dcf-4df1-8788-5ec9b72db8a0
+    south-central:
+      schedule: '0 10 * * 1-5' # 10am Monday to Friday
+      templates:
+        - 9405e109-1dcf-4df1-8788-5ec9b72db8a0
     wales:
       schedule: '0 10 * * 1-5' # 10am Monday to Friday
       templates:

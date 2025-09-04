@@ -129,7 +129,6 @@ fun StaffRepository.getStaff(staffCode: String) =
 @Entity
 @Immutable
 @Table(name = "team")
-@SQLRestriction("start_date <= current_date and (end_date is null or end_date > current_date)")
 class Team(
     @Id
     @Column(name = "team_id")
@@ -190,10 +189,12 @@ interface TeamRepository : JpaRepository<Team, Long> {
 
     @Query(
         """
-            SELECT t
-            FROM Team t
-            WHERE t.provider.code = :code
-            ORDER BY UPPER(t.description) 
+            select t
+            from Team t
+            where t.provider.code = :code
+            and t.startDate <= current_date
+            and (t.endDate is null or t.endDate > current_date)
+            order by UPPER(t.description) 
         """
     )
     fun findByProviderCode(code: String): List<Team>
@@ -202,14 +203,16 @@ interface TeamRepository : JpaRepository<Team, Long> {
 
     @Query(
         """
-            SELECT t
-            FROM Team t
-            JOIN ContactStaffTeam cst on cst.id.team.id = t.id
-            JOIN contact_staff cs on cs.id = cst.id.staffId
-            JOIN cs.user u
-            WHERE t.provider.code = :providerCode
-            AND UPPER(u.username) = UPPER(:username)
-            ORDER BY UPPER(t.description)
+            select t
+            from Team t
+            join ContactStaffTeam cst on cst.id.team.id = t.id
+            join contact_staff cs on cs.id = cst.id.staffId
+            join cs.user u
+            where t.provider.code = :providerCode
+            and t.startDate <= current_date
+            and (t.endDate is null or t.endDate > current_date)
+            and UPPER(u.username) = UPPER(:username)
+            order by UPPER(t.description)
         """
     )
     fun findTeamsByUsernameAndProviderCode(username: String, providerCode: String): List<Team>

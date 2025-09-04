@@ -41,7 +41,8 @@ class RequirementService(
             length,
             mainCategory.unitDetails?.description,
             requirementNote = toRequirementNote(false).elementAtOrNull(noteId),
-            rar = rar
+            rar = rar,
+            active = active,
         )
 
         return requirement
