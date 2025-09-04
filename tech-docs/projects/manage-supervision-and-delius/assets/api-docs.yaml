@@ -2947,7 +2947,10 @@ components:
           format: int64
         mainDescription:
           type: string
+        active:
+          type: boolean
       required:
+      - active
       - id
       - mainDescription
     MinimalNsi:
@@ -2982,7 +2985,10 @@ components:
           format: int64
         description:
           type: string
+        active:
+          type: boolean
       required:
+      - active
       - description
       - id
     MinimalSentence:
@@ -3096,7 +3102,10 @@ components:
             $ref: "#/components/schemas/NoteDetail"
         licenceConditionNote:
           $ref: "#/components/schemas/NoteDetail"
+        active:
+          type: boolean
       required:
+      - active
       - id
       - imposedReleasedDate
       - mainDescription
@@ -3216,7 +3225,10 @@ components:
           $ref: "#/components/schemas/NoteDetail"
         rar:
           $ref: "#/components/schemas/Rar"
+        active:
+          type: boolean
       required:
+      - active
       - actualStartDate
       - code
       - description
