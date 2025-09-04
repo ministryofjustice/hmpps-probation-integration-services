@@ -54,7 +54,6 @@ wiremock.enabled: true
 
 messaging.consumer.queue: message-queue
 messaging.consumer.court-message-queue: court-message-queue
-messaging.producer.queue: producer-message-queue
 
 domain-events:
   detail-url:
