@@ -23,7 +23,7 @@ object TestData {
     val PROVIDER = Provider(id(), "PA1", "Test Provider")
     val PDU = ProbationDeliveryUnit(id(), "PDU1", "Test PDU", PROVIDER.id, true)
     val LAU = LocalAdminUnit(id(), PDU, true)
-    val OFFICE_LOCATION = OfficeLocation(id(), "OFFICE1", "Test Office Location", null,LAU)
+    val OFFICE_LOCATION = OfficeLocation(id(), "OFFICE1", "Test Office Location", null, LAU)
     val TEAM = Team(id(), "TEAM01", "Test Team", LAU, listOf(OFFICE_LOCATION), PROVIDER)
     val STAFF = StaffGenerator.generate()
     val PERSON = PersonGenerator.generate("A000001", GENDER, ETHNICITY)
