@@ -53,6 +53,7 @@ seed.database: true
 wiremock.enabled: true
 
 messaging.consumer.queue: message-queue
+messaging.consumer.court-message-queue: court-message-queue
 
 domain-events:
   detail-url:
