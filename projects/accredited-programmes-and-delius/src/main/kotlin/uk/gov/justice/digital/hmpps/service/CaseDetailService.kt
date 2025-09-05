@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.ldap.core.LdapTemplate
 import org.springframework.stereotype.Service
+import uk.gov.justice.digital.hmpps.entity.staff.Team
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.ldap.findEmailByUsername
 import uk.gov.justice.digital.hmpps.model.*
@@ -16,6 +17,7 @@ class CaseDetailService(
     private val registrationRepository: RegistrationRepository,
     private val requirementManagerRepository: RequirementManagerRepository,
     private val licenceConditionManagerRepository: LicenceConditionManagerRepository,
+    private val officeLocationRepository: OfficeLocationRepository,
 ) {
     fun getPersonalDetails(crn: String) = personRepository.findByCrn(crn)?.let { person ->
         checkNotNull(person.manager) { "Person does not have an active manager" }
@@ -85,7 +87,8 @@ class CaseDetailService(
                 team = manager.team.toCodedValue(),
                 probationDeliveryUnit = manager.team.localAdminUnit.probationDeliveryUnit.toCodedValue(),
                 officeLocations = manager.team.officeLocations.map { it.toCodedValue() }
-            )
+            ),
+            probationDeliveryUnits = manager.team.pduOfficeLocations()
         )
     } ?: throw NotFoundException("Requirement", "id", id)
 
@@ -97,7 +100,13 @@ class CaseDetailService(
                     team = manager.team.toCodedValue(),
                     probationDeliveryUnit = manager.team.localAdminUnit.probationDeliveryUnit.toCodedValue(),
                     officeLocations = manager.team.officeLocations.map { it.toCodedValue() }
-                )
+                ),
+                probationDeliveryUnits = manager.team.pduOfficeLocations()
             )
         } ?: throw NotFoundException("LicenceCondition", "id", id)
+
+    private fun Team.pduOfficeLocations() =
+        officeLocationRepository.findByRegionId(localAdminUnit.probationDeliveryUnit.regionId)
+            .groupBy { it.localAdminUnit.probationDeliveryUnit.toCodedValue() }
+            .map { (key, value) -> PduOfficeLocations(key.code, key.description, value.map { it.toCodedValue() }) }
 }

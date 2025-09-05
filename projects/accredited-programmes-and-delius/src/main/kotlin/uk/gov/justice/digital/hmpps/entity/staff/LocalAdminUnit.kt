@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.entity.staff
 
 import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
+import org.hibernate.type.YesNoConverter
 
 @Entity
 @Immutable
@@ -14,4 +15,7 @@ class LocalAdminUnit(
     @ManyToOne
     @JoinColumn(name = "borough_id")
     val probationDeliveryUnit: ProbationDeliveryUnit,
+
+    @Convert(converter = YesNoConverter::class)
+    val selectable: Boolean,
 )

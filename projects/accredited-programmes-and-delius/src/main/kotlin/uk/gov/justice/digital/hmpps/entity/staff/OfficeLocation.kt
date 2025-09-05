@@ -1,8 +1,6 @@
 package uk.gov.justice.digital.hmpps.entity.staff
 
-import jakarta.persistence.Column
-import jakarta.persistence.Entity
-import jakarta.persistence.Id
+import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
 import uk.gov.justice.digital.hmpps.model.CodedValue
@@ -19,6 +17,10 @@ class OfficeLocation(
     val code: String,
     val description: String,
     val endDate: LocalDate? = null,
+
+    @ManyToOne
+    @JoinColumn(name = "district_id")
+    val localAdminUnit: LocalAdminUnit,
 ) {
     fun toCodedValue() = CodedValue(code, description)
 }
