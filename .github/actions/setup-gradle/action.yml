@@ -35,8 +35,8 @@ runs:
     - uses: gradle/actions/setup-gradle@v4
       with:
         add-job-summary: 'on-failure'
-        #cache-encryption-key: ${{ env.GRADLE_ENCRYPTION_KEY }} # TODO re-enable this following upgrade to Gradle 9.x and check configuration cache can be re-used.
-        cache-read-only: ${{ github.ref_name != 'main' }}
+        cache-encryption-key: ${{ env.GRADLE_ENCRYPTION_KEY }}
+        cache-read-only: ${{ github.ref_name != 'gradlew-update-9.0.0' }}
         gradle-home-cache-excludes: |
           caches
           notifications
