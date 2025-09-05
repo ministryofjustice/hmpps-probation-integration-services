@@ -267,7 +267,19 @@ internal class CaseControllerIntegrationTest {
                             "description": "Test Office Location"
                           }
                         ]
-                      }
+                      },
+                      "probationDeliveryUnits": [
+                        {
+                          "code": "PDU1",
+                          "description": "Test PDU",
+                          "officeLocations": [
+                            {
+                              "code": "OFFICE1",
+                              "description": "Test Office Location"
+                            }
+                          ]
+                        }
+                      ]
                     }
                     """.trimIndent(),
                     JsonCompareMode.STRICT,
@@ -307,7 +319,19 @@ internal class CaseControllerIntegrationTest {
                             "description": "Test Office Location"
                           }
                         ]
-                      }
+                      },
+                      "probationDeliveryUnits": [
+                        {
+                          "code": "PDU1",
+                          "description": "Test PDU",
+                          "officeLocations": [
+                            {
+                              "code": "OFFICE1",
+                              "description": "Test Office Location"
+                            }
+                          ]
+                        }
+                      ]
                     }
                     """.trimIndent(),
                     JsonCompareMode.STRICT,
