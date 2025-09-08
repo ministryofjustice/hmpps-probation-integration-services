@@ -588,13 +588,33 @@ components:
       - probationDeliveryUnit
       - staff
       - team
+    PduOfficeLocations:
+      type: object
+      properties:
+        code:
+          type: string
+        description:
+          type: string
+        officeLocations:
+          type: array
+          items:
+            $ref: "#/components/schemas/CodedValue"
+      required:
+      - code
+      - description
+      - officeLocations
     Requirement:
       type: object
       properties:
         manager:
           $ref: "#/components/schemas/Manager"
+        probationDeliveryUnits:
+          type: array
+          items:
+            $ref: "#/components/schemas/PduOfficeLocations"
       required:
       - manager
+      - probationDeliveryUnits
     Registration:
       type: object
       properties:
@@ -656,8 +676,13 @@ components:
       properties:
         manager:
           $ref: "#/components/schemas/Manager"
+        probationDeliveryUnits:
+          type: array
+          items:
+            $ref: "#/components/schemas/PduOfficeLocations"
       required:
       - manager
+      - probationDeliveryUnits
     AppointmentReference:
       type: object
       properties:
