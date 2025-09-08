@@ -11,9 +11,9 @@ plugins {
     kotlin("jvm") version "2.2.10"
     kotlin("plugin.spring") version "2.2.10" apply false
     kotlin("plugin.jpa") version "2.2.10" apply false
-    id("org.springframework.boot") version "3.5.4" apply false
+    id("org.springframework.boot") version "3.5.5" apply false
     id("io.spring.dependency-management") version "1.1.7" apply false
-    id("com.gorylenko.gradle-git-properties") version "2.5.2" apply false
+    id("com.gorylenko.gradle-git-properties") version "2.5.3" apply false
     id("com.google.cloud.tools.jib") apply false
     id("base")
     id("org.sonarqube")
