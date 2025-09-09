@@ -3,6 +3,7 @@ database:
     username_key: /esupervision-and-delius/db-username
     password_key: /esupervision-and-delius/db-password
     tables:
+      - audited_interaction
       - contact
 
   audit:
