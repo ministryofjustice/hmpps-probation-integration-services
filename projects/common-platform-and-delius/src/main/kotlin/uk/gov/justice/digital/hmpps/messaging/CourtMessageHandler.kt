@@ -4,6 +4,10 @@ import com.asyncapi.kotlinasyncapi.annotation.channel.Channel
 import com.fasterxml.jackson.databind.ObjectMapper
 import io.awspring.cloud.sqs.listener.SqsHeaders
 import io.awspring.cloud.sqs.operations.SqsTemplate
+import io.sentry.Sentry
+import io.sentry.SentryEvent
+import io.sentry.SentryLevel
+import io.sentry.protocol.Message
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Conditional
 import org.springframework.messaging.MessageHeaders
@@ -14,6 +18,7 @@ import uk.gov.justice.digital.hmpps.config.AwsCondition
 import uk.gov.justice.digital.hmpps.converter.NotificationConverter
 import uk.gov.justice.digital.hmpps.message.Notification
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
+import java.time.LocalDateTime
 
 @Component
 @Conditional(AwsCondition::class)
@@ -26,9 +31,13 @@ class CourtMessageHandler(
     @Value("\${messaging.consumer.court-message-queue}") private val receiveQueue: String,
     @Value("\${messaging.consumer.queue}") private val sendQueue: String
 ) {
+
+    private var lastReceivedMessageTime: LocalDateTime? = null
+
     @Scheduled(fixedDelayString = "\${common-platform.queue.poller.fixed-delay:1000}")
     fun handle() {
         sqsTemplate.receive(receiveQueue, String::class.java).ifPresent { receivedMessage ->
+            lastReceivedMessageTime = LocalDateTime.now()
 
             val notification: Notification<CommonPlatformHearing> = converter.fromMessage(receivedMessage.payload)!!
 
@@ -62,6 +71,23 @@ class CourtMessageHandler(
                         )
                     )
                 }
+        }
+    }
+
+    @Scheduled(fixedDelayString = "\${common-platform.queue.message-inactivity-time:3600000}")
+    fun checkMessageInactivity() {
+        val now = LocalDateTime.now()
+
+        // 7 am to 6pm, Monday to Friday
+        val inBusinessHours = now.hour in 7..18 && now.dayOfWeek.value in 1..5
+
+        if (inBusinessHours && (lastReceivedMessageTime == null || lastReceivedMessageTime!!.isBefore(now.minusHours(1)))) {
+            val event = SentryEvent()
+            val message = Message()
+            message.message = "No common platform messages received in the last hour"
+            event.message = message
+            event.level = SentryLevel.WARNING
+            Sentry.captureEvent(event)
         }
     }
 }

@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.messaging
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import io.awspring.cloud.sqs.operations.SqsTemplate
+import io.sentry.Sentry
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.BeforeEach
@@ -9,6 +10,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.Mock
 import org.mockito.Mockito
+import org.mockito.Mockito.mockStatic
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.*
 import org.springframework.messaging.Message
@@ -17,8 +19,10 @@ import org.springframework.messaging.support.MessageBuilder
 import uk.gov.justice.digital.hmpps.converter.NotificationConverter
 import uk.gov.justice.digital.hmpps.data.generator.MessageGenerator
 import uk.gov.justice.digital.hmpps.message.Notification
+import uk.gov.justice.digital.hmpps.set
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions
+import java.time.LocalDateTime
 import java.util.*
 
 @ExtendWith(MockitoExtension::class)
@@ -95,5 +99,50 @@ internal class CourtMessageHandlerTest {
 
         assertThat(outputHearing.hearing.prosecutionCases.size, equalTo(1))
         assertThat(outputHearing.hearing.prosecutionCases[0].defendants.size, equalTo(1))
+    }
+
+    @Test
+    fun `should send sentry alert if last message received over an hour ago`() {
+        mockStatic(Sentry::class.java).use {
+            val now = LocalDateTime.now()
+            handler.set("lastReceivedMessageTime", now.minusHours(2))
+
+            handler.checkMessageInactivity()
+
+            it.verify { Sentry.captureEvent(any()) }
+        }
+    }
+
+    @Test
+    fun `should not send sentry alert if last message was less than an hour ago`() {
+        mockStatic(Sentry::class.java).use {
+            val now = LocalDateTime.now()
+            handler.set("lastReceivedMessageTime", now.minusMinutes(30))
+
+            handler.checkMessageInactivity()
+
+            it.verify({ Sentry.captureEvent(any()) },
+                times(0))
+        }
+    }
+
+    @Test
+    fun `should not send alert outside business hours`() {
+        val localDateTimeMock = mockStatic(LocalDateTime::class.java, Mockito.CALLS_REAL_METHODS)
+        val date = LocalDateTime.of(2025, 9, 7, 3, 0)
+
+        mockStatic(Sentry::class.java).use {
+            localDateTimeMock.`when`<LocalDateTime> { LocalDateTime.now() }
+                .thenReturn(date)
+
+            val now = LocalDateTime.now()
+            handler.set("lastReceivedMessageTime", now.minusHours(2))
+
+            handler.checkMessageInactivity()
+            it.verify({ Sentry.captureEvent(any()) },
+                times(0))
+        }
+
+        localDateTimeMock.close()
     }
 }
