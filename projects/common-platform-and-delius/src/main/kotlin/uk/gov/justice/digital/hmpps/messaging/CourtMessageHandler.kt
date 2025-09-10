@@ -29,7 +29,9 @@ class CourtMessageHandler(
     private val sqsTemplate: SqsTemplate,
     private val objectMapper: ObjectMapper,
     @Value("\${messaging.consumer.court-message-queue}") private val receiveQueue: String,
-    @Value("\${messaging.consumer.queue}") private val sendQueue: String
+    @Value("\${messaging.consumer.queue}") private val sendQueue: String,
+    @Value("\${common-platform.queue.working-hours:7-18}") private val workingHours: String,
+    @Value("\${common-platform.queue.working-days:1-5}") private val workingDays: String
 ) {
 
     private var lastReceivedMessageTime: LocalDateTime? = null
@@ -74,12 +76,13 @@ class CourtMessageHandler(
         }
     }
 
-    @Scheduled(fixedDelayString = "\${common-platform.queue.message-inactivity-time:3600000}")
+    @Scheduled(fixedDelayString = "\${common-platform.queue.message-inactivity-time:1800000}")
     fun checkMessageInactivity() {
         val now = LocalDateTime.now()
 
-        // 7 am to 6pm, Monday to Friday
-        val inBusinessHours = now.hour in 7..18 && now.dayOfWeek.value in 1..5
+        val (startHour, endHour) = workingHours.split("-").map { it.toInt() }
+        val (startDay, endDay) = workingDays.split("-").map { it.toInt() }
+        val inBusinessHours = now.hour in startHour..endHour && now.dayOfWeek.value in startDay..endDay
 
         if (inBusinessHours && (lastReceivedMessageTime == null || lastReceivedMessageTime!!.isBefore(now.minusHours(1)))) {
             val event = SentryEvent()
