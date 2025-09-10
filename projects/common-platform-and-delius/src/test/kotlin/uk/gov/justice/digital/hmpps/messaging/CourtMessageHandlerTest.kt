@@ -124,8 +124,10 @@ internal class CourtMessageHandlerTest {
 
             handler.checkMessageInactivity()
 
-            it.verify({ Sentry.captureEvent(any()) },
-                times(0))
+            it.verify(
+                { Sentry.captureEvent(any()) },
+                times(0)
+            )
         }
     }
 
@@ -142,8 +144,10 @@ internal class CourtMessageHandlerTest {
             handler.set("lastReceivedMessageTime", now.minusHours(2))
 
             handler.checkMessageInactivity()
-            it.verify({ Sentry.captureEvent(any()) },
-                times(0))
+            it.verify(
+                { Sentry.captureEvent(any()) },
+                times(0)
+            )
         }
 
         localDateTimeMock.close()

@@ -85,7 +85,12 @@ class CourtMessageHandler(
         val (startDay, endDay) = workingDays.split("-").map { it.toInt() }
         val inBusinessHours = now.hour in startHour..endHour && now.dayOfWeek.value in startDay..endDay
 
-        if (inBusinessHours && (lastReceivedMessageTime == null || lastReceivedMessageTime!!.isBefore(now.minusMinutes(messageInactivityMinutes)))) {
+        if (inBusinessHours && (lastReceivedMessageTime == null || lastReceivedMessageTime!!.isBefore(
+                now.minusMinutes(
+                    messageInactivityMinutes
+                )
+            ))
+        ) {
             val event = SentryEvent()
             val message = Message()
             message.message = "No common platform messages received in the last hour"
