@@ -10,6 +10,7 @@ import uk.gov.justice.digital.hmpps.entity.contact.Contact
 import uk.gov.justice.digital.hmpps.entity.contact.ContactType
 import uk.gov.justice.digital.hmpps.entity.sentence.component.LicenceCondition
 import uk.gov.justice.digital.hmpps.entity.sentence.component.Requirement
+import uk.gov.justice.digital.hmpps.integration.StatusInfo
 import uk.gov.justice.digital.hmpps.model.*
 import uk.gov.justice.digital.hmpps.repository.*
 import java.time.ZonedDateTime
@@ -61,7 +62,37 @@ class AppointmentService(
             .forEach { contactRepository.softDeleteByExternalReferenceIn(it.toSet()) }
     }
 
-    fun CreateAppointmentRequest.asEntity(): Contact {
+    fun statusChanged(crn: String, occurredAt: ZonedDateTime, info: StatusInfo) {
+        contactRepository.save(info.asEntity(crn, occurredAt))
+    }
+
+    private fun StatusInfo.asEntity(crn: String, occurredAt: ZonedDateTime): Contact {
+        val (requirement, licenceCondition) = when (sourcedFromEntityType) {
+            StatusInfo.EntityType.LICENCE_CONDITION -> getComponent(null, sourcedFromEntityId)
+            StatusInfo.EntityType.REQUIREMENT -> getComponent(sourcedFromEntityId, null)
+        }
+        val event = requirement?.disposal?.event ?: licenceCondition?.disposal?.event
+        requireNotNull(event) { "Appointment component not found" }
+        check(crn == event.person.crn) { "CRN and component do not match"}
+        val manager = requireNotNull(event.person.manager) { "Person manager not found" }
+        return Contact(
+            person = event.person.asPersonCrn(),
+            event = event,
+            requirement = requirement,
+            licenceCondition = licenceCondition,
+            date = occurredAt.toLocalDate(),
+            startTime = occurredAt,
+            notes = null,
+            sensitive = false,
+            provider = manager.team.provider,
+            team = manager.team,
+            staff = manager.staff,
+            type = contactTypeRepository.getByCode(newStatus.contactTypeCode),
+            externalReference = null
+        )
+    }
+
+    private fun CreateAppointmentRequest.asEntity(): Contact {
         val (requirement, licenceCondition) = getComponent(requirementId, licenceConditionId)
         val event = requirement?.disposal?.event ?: licenceCondition?.disposal?.event
         requireNotNull(event) { "Appointment component not found for $reference" }
