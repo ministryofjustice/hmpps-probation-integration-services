@@ -73,7 +73,7 @@ class AppointmentService(
         }
         val event = requirement?.disposal?.event ?: licenceCondition?.disposal?.event
         requireNotNull(event) { "Appointment component not found" }
-        check(crn == event.person.crn) { "CRN and component do not match"}
+        check(crn == event.person.crn) { "CRN and component do not match" }
         val manager = requireNotNull(event.person.manager) { "Person manager not found" }
         return Contact(
             person = event.person.asPersonCrn(),
