@@ -50,6 +50,7 @@ internal class CourtMessageHandlerTest {
             MockMvcExtensions.objectMapper,
             "receive-queue",
             "send-queue",
+            60,
             "7-18",
             "1-5"
         )

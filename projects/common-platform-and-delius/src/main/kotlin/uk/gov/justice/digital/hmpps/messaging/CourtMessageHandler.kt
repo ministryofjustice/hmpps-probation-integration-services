@@ -30,6 +30,7 @@ class CourtMessageHandler(
     private val objectMapper: ObjectMapper,
     @Value("\${messaging.consumer.court-message-queue}") private val receiveQueue: String,
     @Value("\${messaging.consumer.queue}") private val sendQueue: String,
+    @Value("\${common-platform.queue.message-inactivity-minutes:60}") private val messageInactivityMinutes: Long,
     @Value("\${common-platform.queue.working-hours:7-18}") private val workingHours: String,
     @Value("\${common-platform.queue.working-days:1-5}") private val workingDays: String
 ) {
@@ -76,7 +77,7 @@ class CourtMessageHandler(
         }
     }
 
-    @Scheduled(fixedDelayString = "\${common-platform.queue.message-inactivity-time:1800000}")
+    @Scheduled(fixedDelayString = "#{common-platform.queue.message-inactivity-minutes * 60000}")
     fun checkMessageInactivity() {
         val now = LocalDateTime.now()
 
@@ -84,7 +85,7 @@ class CourtMessageHandler(
         val (startDay, endDay) = workingDays.split("-").map { it.toInt() }
         val inBusinessHours = now.hour in startHour..endHour && now.dayOfWeek.value in startDay..endDay
 
-        if (inBusinessHours && (lastReceivedMessageTime == null || lastReceivedMessageTime!!.isBefore(now.minusHours(1)))) {
+        if (inBusinessHours && (lastReceivedMessageTime == null || lastReceivedMessageTime!!.isBefore(now.minusMinutes(messageInactivityMinutes)))) {
             val event = SentryEvent()
             val message = Message()
             message.message = "No common platform messages received in the last hour"
