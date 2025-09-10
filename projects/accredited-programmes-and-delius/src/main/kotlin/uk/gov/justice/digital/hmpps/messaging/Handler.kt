@@ -22,7 +22,7 @@ class Handler(
     override fun handle(notification: Notification<HmppsDomainEvent>) {
         telemetryService.notificationReceived(notification)
         when (notification.eventType) {
-            REFERRAL_STATUS_CHANGED -> rsc.handle(notification.message)
+            REFERRAL_STATUS_CHANGED -> rsc.handle(notification.id, notification.message)
         }
     }
 

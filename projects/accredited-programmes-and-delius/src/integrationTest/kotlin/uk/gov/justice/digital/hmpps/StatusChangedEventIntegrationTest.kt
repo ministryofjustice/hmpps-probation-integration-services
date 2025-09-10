@@ -41,6 +41,7 @@ class StatusChangedEventIntegrationTest {
         assertThat(contact).isNotNull
         assertThat(contact!!.licenceCondition?.id).isEqualTo(TestData.LICENCE_CONDITIONS.first().id)
         assertThat(contact.notes).isEqualTo("Some notes about the breach of the LC")
+        assertThat(contact.externalReference).isNotNull
     }
 
     @Test
@@ -56,5 +57,6 @@ class StatusChangedEventIntegrationTest {
         assertThat(contact).isNotNull
         assertThat(contact!!.requirement?.id).isEqualTo(TestData.REQUIREMENTS.first().id)
         assertThat(contact.notes).isEqualTo("Some notes about the being on the programme")
+        assertThat(contact.externalReference).isNotNull
     }
 }

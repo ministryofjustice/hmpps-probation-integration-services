@@ -14,6 +14,7 @@ import uk.gov.justice.digital.hmpps.integration.StatusInfo
 import uk.gov.justice.digital.hmpps.model.*
 import uk.gov.justice.digital.hmpps.repository.*
 import java.time.ZonedDateTime
+import java.util.*
 
 @Transactional
 @Service
@@ -62,11 +63,11 @@ class AppointmentService(
             .forEach { contactRepository.softDeleteByExternalReferenceIn(it.toSet()) }
     }
 
-    fun statusChanged(crn: String, occurredAt: ZonedDateTime, info: StatusInfo) {
-        contactRepository.save(info.asEntity(crn, occurredAt))
+    fun statusChanged(messageId: UUID, crn: String, occurredAt: ZonedDateTime, info: StatusInfo) {
+        contactRepository.save(info.asEntity(messageId, crn, occurredAt))
     }
 
-    private fun StatusInfo.asEntity(crn: String, occurredAt: ZonedDateTime): Contact {
+    private fun StatusInfo.asEntity(messageId: UUID, crn: String, occurredAt: ZonedDateTime): Contact {
         val (requirement, licenceCondition) = when (sourcedFromEntityType) {
             StatusInfo.EntityType.LICENCE_CONDITION -> getComponent(null, sourcedFromEntityId)
             StatusInfo.EntityType.REQUIREMENT -> getComponent(sourcedFromEntityId, null)
@@ -88,7 +89,7 @@ class AppointmentService(
             team = manager.team,
             staff = manager.staff,
             type = contactTypeRepository.getByCode(newStatus.contactTypeCode),
-            externalReference = null
+            externalReference = "urn:uk:gov:hmpps:accredited-programmes-service:$messageId"
         )
     }
 
