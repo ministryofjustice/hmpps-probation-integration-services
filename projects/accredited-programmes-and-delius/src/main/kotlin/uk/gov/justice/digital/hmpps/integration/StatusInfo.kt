@@ -1,13 +1,5 @@
 package uk.gov.justice.digital.hmpps.integration
 
-import org.springframework.web.service.annotation.GetExchange
-import java.net.URI
-
-interface AccreditedProgrammesClient {
-    @GetExchange
-    fun getStatusInfo(uri: URI): StatusInfo
-}
-
 data class StatusInfo(
     val newStatus: Status,
     val sourcedFromEntityType: EntityType,
