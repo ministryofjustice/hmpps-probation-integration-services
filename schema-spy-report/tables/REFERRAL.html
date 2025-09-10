@@ -813,10 +813,6 @@
                                 </thead>
                                 <tbody>
                                 <tr>
-                                    <td>REFERRAL_TEAM_XOR_PROVIDER_TEA</td>
-                                    <td> (&#10;(REF_TO_TEAM_ID IS NOT NULL AND REF_TO_PROVIDER_TEAM_ID IS NULL)&#10;OR&#10;(REF_TO_TEAM_ID IS NULL AND REF_TO_PROVIDER_TEAM_ID IS NOT NULL)&#10;) </td>
-                                </tr>
-                                <tr>
                                     <td>TRUE_OR_FALSE33</td>
                                     <td>SOFT_DELETED IN (0, 1)</td>
                                 </tr>
@@ -827,6 +823,10 @@
                                 <tr>
                                     <td>REFERRAL_STAFF_XOR_PROVIDER_EM</td>
                                     <td> (&#10;(REF_TO_PROVIDER_EMPLOYEE_ID IS NOT NULL  AND REF_TO_STAFF_ID IS NULL)&#10;OR&#10;(REF_TO_PROVIDER_EMPLOYEE_ID IS NULL  AND REF_TO_STAFF_ID IS NOT NULL)&#10;) </td>
+                                </tr>
+                                <tr>
+                                    <td>REFERRAL_TEAM_XOR_PROVIDER_TEA</td>
+                                    <td> (&#10;(REF_TO_TEAM_ID IS NOT NULL AND REF_TO_PROVIDER_TEAM_ID IS NULL)&#10;OR&#10;(REF_TO_TEAM_ID IS NULL AND REF_TO_PROVIDER_TEAM_ID IS NOT NULL)&#10;) </td>
                                 </tr>
                                 <tr>
                                     <td>YES_OR_NO_ONLY27</td>
