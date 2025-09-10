@@ -56,6 +56,7 @@ import uk.gov.justice.digital.hmpps.data.TestData.REQUIREMENT_MANAGERS
 import uk.gov.justice.digital.hmpps.data.TestData.REQUIREMENT_SUB_TYPE
 import uk.gov.justice.digital.hmpps.data.TestData.RESTRICTION
 import uk.gov.justice.digital.hmpps.data.TestData.STAFF
+import uk.gov.justice.digital.hmpps.data.TestData.STATUS_CONTACT_TYPES
 import uk.gov.justice.digital.hmpps.data.TestData.TEAM
 import uk.gov.justice.digital.hmpps.data.TestData.TWO_THIRDS_CONTACT
 import uk.gov.justice.digital.hmpps.data.TestData.TWO_THIRDS_CONTACT_TYPE
@@ -146,6 +147,7 @@ class DataLoader(
         contactTypeRepository.save(TWO_THIRDS_CONTACT_TYPE)
         contactTypeRepository.save(OTHER_CONTACT_TYPE)
         contactTypeRepository.save(APPOINTMENT_CONTACT_TYPE)
+        contactTypeRepository.saveAll(STATUS_CONTACT_TYPES)
         contactOutcomeRepository.save(ATTENDED_COMPLIED)
         referenceDataRepository.save(PSS_END_DATE_KEY_DATE_TYPE)
         keyDateRepository.save(PSS_END_DATE)

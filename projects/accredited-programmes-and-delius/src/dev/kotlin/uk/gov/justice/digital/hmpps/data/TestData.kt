@@ -13,6 +13,7 @@ import uk.gov.justice.digital.hmpps.entity.sentence.component.*
 import uk.gov.justice.digital.hmpps.entity.sentence.custody.KeyDate
 import uk.gov.justice.digital.hmpps.entity.sentence.offence.OffenceEntity
 import uk.gov.justice.digital.hmpps.entity.staff.*
+import uk.gov.justice.digital.hmpps.integration.StatusInfo
 import java.time.LocalDate
 
 object TestData {
@@ -98,6 +99,10 @@ object TestData {
     val REGISTRATION = RegistrationGenerator.generate(PERSON, REGISTER_TYPE, REGISTER_CATEGORY)
 
     val APPOINTMENT_CONTACT_TYPE = ContactType(id(), ContactType.APPOINTMENT)
+    val STATUS_CONTACT_TYPES = StatusInfo.Status.entries.map {
+        ContactType(id(), it.contactTypeCode)
+    }
+
     val APPOINTMENTS = REQUIREMENTS.take(2).mapIndexed { idx, r ->
         r.generateAppointment(
             APPOINTMENT_CONTACT_TYPE,
