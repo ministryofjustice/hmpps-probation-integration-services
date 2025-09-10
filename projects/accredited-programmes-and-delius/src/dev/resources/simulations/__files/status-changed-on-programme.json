@@ -1,5 +1,6 @@
 {
   "newStatus": "ON_PROGRAMME",
   "sourcedFromEntityType": "REQUIREMENT",
-  "sourcedFromEntityId": 49
+  "sourcedFromEntityId": 49,
+  "notes": "Some notes about the being on the programme"
 }

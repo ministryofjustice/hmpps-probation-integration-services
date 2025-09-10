@@ -39,7 +39,8 @@ class StatusChangedEventIntegrationTest {
             it.person.id == TestData.PERSON.id && it.type.code == StatusInfo.Status.BREACH.contactTypeCode
         }
         assertThat(contact).isNotNull
-        assertThat(contact?.licenceCondition?.id).isEqualTo(TestData.LICENCE_CONDITIONS.first().id)
+        assertThat(contact!!.licenceCondition?.id).isEqualTo(TestData.LICENCE_CONDITIONS.first().id)
+        assertThat(contact.notes).isEqualTo("Some notes about the breach of the LC")
     }
 
     @Test
@@ -53,6 +54,7 @@ class StatusChangedEventIntegrationTest {
             it.person.id == TestData.PERSON.id && it.type.code == StatusInfo.Status.ON_PROGRAMME.contactTypeCode
         }
         assertThat(contact).isNotNull
-        assertThat(contact?.requirement?.id).isEqualTo(TestData.REQUIREMENTS.first().id)
+        assertThat(contact!!.requirement?.id).isEqualTo(TestData.REQUIREMENTS.first().id)
+        assertThat(contact.notes).isEqualTo("Some notes about the being on the programme")
     }
 }

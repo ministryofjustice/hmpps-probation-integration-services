@@ -82,7 +82,7 @@ class AppointmentService(
             licenceCondition = licenceCondition,
             date = occurredAt.toLocalDate(),
             startTime = occurredAt,
-            notes = null,
+            notes = notes,
             sensitive = false,
             provider = manager.team.provider,
             team = manager.team,
