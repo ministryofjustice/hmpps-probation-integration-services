@@ -126,7 +126,6 @@ internal class IntegrationTest {
     @MockitoSpyBean
     lateinit var corePersonClient: CorePersonClient
 
-
     @BeforeEach
     fun setup() {
         doReturn("A111111").whenever(personService).generateCrn()
