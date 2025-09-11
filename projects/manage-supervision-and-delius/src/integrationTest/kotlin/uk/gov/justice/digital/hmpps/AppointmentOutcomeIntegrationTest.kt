@@ -4,10 +4,6 @@ import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
-import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
@@ -16,13 +12,12 @@ import uk.gov.justice.digital.hmpps.api.model.appointment.AppointmentDetail
 import uk.gov.justice.digital.hmpps.api.model.appointment.CreateAppointment
 import uk.gov.justice.digital.hmpps.api.model.appointment.Outcome
 import uk.gov.justice.digital.hmpps.api.model.appointment.User
-import uk.gov.justice.digital.hmpps.data.generator.AppointmentGenerator.APPOINTMENT_TYPES
 import uk.gov.justice.digital.hmpps.data.generator.AppointmentGenerator.ATTENDED_COMPLIED
 import uk.gov.justice.digital.hmpps.data.generator.OffenderManagerGenerator.DEFAULT_LOCATION
-import uk.gov.justice.digital.hmpps.data.generator.OffenderManagerGenerator.TEAM
+import uk.gov.justice.digital.hmpps.data.generator.OffenderManagerGenerator.PI_USER
 import uk.gov.justice.digital.hmpps.data.generator.OffenderManagerGenerator.STAFF_USER_1
+import uk.gov.justice.digital.hmpps.data.generator.OffenderManagerGenerator.TEAM
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
-import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.AppointmentRepository
 import uk.gov.justice.digital.hmpps.test.CustomMatchers.isCloseTo
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withJson
@@ -30,16 +25,7 @@ import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 import java.time.ZonedDateTime
 import java.util.*
 
-@AutoConfigureMockMvc
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class AppointmentOutcomeIntegrationTest {
-
-    @Autowired
-    internal lateinit var appointmentRepository: AppointmentRepository
-
-    @Autowired
-    internal lateinit var mockMvc: MockMvc
-
+class AppointmentOutcomeIntegrationTest : IntegrationTestBase() {
     val outcome = Outcome(123, true, "Some notes", false)
 
     @Test
@@ -57,7 +43,7 @@ class AppointmentOutcomeIntegrationTest {
         mockMvc
             .perform(
                 MockMvcRequestBuilders.patch("/appointment")
-                    .withToken()
+                    .withUserToken(PI_USER.username)
                     .withJson(outcome)
             )
             .andExpect(MockMvcResultMatchers.status().isNotFound)
@@ -80,7 +66,7 @@ class AppointmentOutcomeIntegrationTest {
         mockMvc
             .perform(
                 MockMvcRequestBuilders.patch("/appointment")
-                    .withToken()
+                    .withUserToken(PI_USER.username)
                     .withJson(request)
             )
             .andExpect(MockMvcResultMatchers.status().isOk)
@@ -108,7 +94,7 @@ class AppointmentOutcomeIntegrationTest {
 
     private fun createAppointment() = mockMvc.perform(
         post("/appointment/${PersonGenerator.PERSON_1.crn}")
-            .withToken()
+            .withUserToken(PI_USER.username)
             .withJson(
                 CreateAppointment(
                     User(STAFF_USER_1.username, TEAM.code, locationCode = DEFAULT_LOCATION.code),

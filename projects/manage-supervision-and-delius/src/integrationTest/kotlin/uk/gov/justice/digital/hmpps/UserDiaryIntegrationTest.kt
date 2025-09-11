@@ -5,10 +5,6 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.CsvSource
 import org.junit.jupiter.params.provider.ValueSource
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
-import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 import uk.gov.justice.digital.hmpps.api.model.Name
@@ -21,11 +17,7 @@ import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.REQUIREMENT_C
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 
-@AutoConfigureMockMvc
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class UserDiaryIntegrationTest {
-    @Autowired
-    lateinit var mockMvc: MockMvc
+class UserDiaryIntegrationTest: IntegrationTestBase() {
 
     @ParameterizedTest
     @ValueSource(strings = ["upcoming", "no-outcome"])
