@@ -9,7 +9,8 @@ import org.springframework.stereotype.Component
 import uk.gov.justice.digital.hmpps.converter.NotificationConverter
 import uk.gov.justice.digital.hmpps.dto.InsertRemandDTO
 import uk.gov.justice.digital.hmpps.flags.FeatureFlags
-import uk.gov.justice.digital.hmpps.integrations.client.CorePersonClient
+import uk.gov.justice.digital.hmpps.integrations.client.*
+import uk.gov.justice.digital.hmpps.integrations.client.Address
 import uk.gov.justice.digital.hmpps.message.Notification
 import uk.gov.justice.digital.hmpps.service.OffenceService
 import uk.gov.justice.digital.hmpps.service.PersonService
@@ -127,7 +128,7 @@ class FIFOHandler(
         telemetryService.trackEvent(
             "PersonCreated", mapOf(
                 "hearingId" to insertRemandDTO.hearingId,
-                "defendantId" to insertRemandDTO.hearingId,
+                "defendantId" to insertRemandDTO.defendant.id,
                 "CRN" to insertRemandResult.insertPersonResult.person.crn,
                 "personId" to insertRemandResult.insertPersonResult.person.id.toString(),
                 "personManagerId" to insertRemandResult.insertPersonResult.personManager.id.toString(),
@@ -138,7 +139,7 @@ class FIFOHandler(
 
         telemetryService.trackEvent(
             "EventCreated", mapOf(
-                "hearingId" to insertRemandDTO.defendant.id,
+                "hearingId" to insertRemandDTO.hearingId,
                 "eventId" to insertRemandResult.insertEventResult.event.id.toString(),
                 "eventNumber" to insertRemandResult.insertEventResult.event.number,
                 "CRN" to insertRemandResult.insertEventResult.event.person.crn,
@@ -149,6 +150,47 @@ class FIFOHandler(
                 "contactId" to insertRemandResult.insertEventResult.contact.id.toString()
             )
         )
+
+        val cprRequest = CreateCorePersonRequest(
+            name = Name(
+                firstName = insertRemandResult.insertPersonResult.person.forename,
+                middleNames = insertRemandResult.insertPersonResult.person.secondName,
+                lastName = insertRemandResult.insertPersonResult.person.surname
+            ),
+            title = null,
+            dateOfBirth = insertRemandResult.insertPersonResult.person.dateOfBirth,
+            gender = CodeValue(code = insertRemandResult.insertPersonResult.person.gender.code),
+            nationality = null,
+            identifiers = NewIdentifiers(
+                crn = insertRemandResult.insertPersonResult.person.crn,
+                pnc = insertRemandResult.insertPersonResult.person.pncNumber,
+                cro = insertRemandResult.insertPersonResult.person.croNumber
+            ),
+            addresses = listOf(
+                Address(
+                    fullAddress = listOfNotNull(
+                        insertRemandResult.insertPersonResult.address?.buildingName,
+                        insertRemandResult.insertPersonResult.address?.addressNumber,
+                        insertRemandResult.insertPersonResult.address?.streetName,
+                        insertRemandResult.insertPersonResult.address?.district,
+                        insertRemandResult.insertPersonResult.address?.town,
+                        insertRemandResult.insertPersonResult.address?.county
+                    ).joinToString(", "),
+                    postcode = insertRemandResult.insertPersonResult.address?.postcode,
+                    startDate = LocalDate.now(),
+                    endDate = null,
+                    noFixedAbode = insertRemandResult.insertPersonResult.address?.noFixedAbode ?: false
+                ),
+            ),
+            sentences = listOf(
+                Sentence(
+                    date = insertRemandResult.insertEventResult.courtAppearance.appearanceDate.toLocalDate()
+                )
+            )
+        )
+
+        corePerson.createPersonRecord(insertRemandDTO.defendant.id, cprRequest)
+
 
         notifier.caseCreated(insertRemandResult.insertPersonResult.person)
         insertRemandResult.insertPersonResult.address?.let { notifier.addressCreated(it) }
