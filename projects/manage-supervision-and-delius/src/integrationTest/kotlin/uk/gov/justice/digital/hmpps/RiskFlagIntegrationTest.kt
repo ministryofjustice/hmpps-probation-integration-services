@@ -24,7 +24,7 @@ import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 import java.time.LocalDate
 
-class RiskFlagIntegrationTest: IntegrationTestBase() {
+class RiskFlagIntegrationTest : IntegrationTestBase() {
 
     @Test
     fun `all risk flags are returned`() {

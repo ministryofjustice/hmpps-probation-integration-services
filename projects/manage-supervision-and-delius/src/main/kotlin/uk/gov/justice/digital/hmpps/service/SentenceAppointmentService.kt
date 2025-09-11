@@ -246,22 +246,22 @@ class SentenceAppointmentService(
         staffAndTeam: UserTeam,
         location: Location?
     ) = Appointment(
-            person = om.person,
-            type = appointmentTypeRepository.getByCode(type),
-            date = start.toLocalDate(),
-            startTime = ZonedDateTime.of(LocalDate.EPOCH, start.toLocalTime(), EuropeLondon),
-            teamId = staffAndTeam.teamId,
-            staffId = staffAndTeam.staffId,
-            endTime = end.let { ZonedDateTime.of(LocalDate.EPOCH, end.toLocalTime(), EuropeLondon) },
-            probationAreaId = staffAndTeam.providerId,
-            externalReference = urn,
-            eventId = eventId,
-            rqmntId = requirementId,
-            nsiId = nsiId,
-            licConditionId = licenceConditionId,
-            officeLocationId = location?.id,
-            notes = notes,
-            sensitive = sensitive,
-            visorContact = visorReport
-        )
+        person = om.person,
+        type = appointmentTypeRepository.getByCode(type),
+        date = start.toLocalDate(),
+        startTime = ZonedDateTime.of(LocalDate.EPOCH, start.toLocalTime(), EuropeLondon),
+        teamId = staffAndTeam.teamId,
+        staffId = staffAndTeam.staffId,
+        endTime = end.let { ZonedDateTime.of(LocalDate.EPOCH, end.toLocalTime(), EuropeLondon) },
+        probationAreaId = staffAndTeam.providerId,
+        externalReference = urn,
+        eventId = eventId,
+        rqmntId = requirementId,
+        nsiId = nsiId,
+        licConditionId = licenceConditionId,
+        officeLocationId = location?.id,
+        notes = notes,
+        sensitive = sensitive,
+        visorContact = visorReport
+    )
 }

@@ -15,7 +15,7 @@ import uk.gov.justice.digital.hmpps.data.generator.OffenderManagerGenerator.STAF
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 
-class UserLocationIntegrationTest: IntegrationTestBase() {
+class UserLocationIntegrationTest : IntegrationTestBase() {
 
     @Test
     fun `unauthorized status returned`() {

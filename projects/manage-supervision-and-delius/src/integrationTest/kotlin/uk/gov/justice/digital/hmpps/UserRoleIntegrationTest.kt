@@ -8,7 +8,7 @@ import uk.gov.justice.digital.hmpps.api.model.user.UserDetails
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 
-class UserRoleIntegrationTest: IntegrationTestBase() {
+class UserRoleIntegrationTest : IntegrationTestBase() {
 
     @Test
     fun `unauthorized status returned`() {

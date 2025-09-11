@@ -13,7 +13,7 @@ import uk.gov.justice.digital.hmpps.data.generator.personalDetails.PersonDetails
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 
-class OffenceIntegrationTest: IntegrationTestBase() {
+class OffenceIntegrationTest : IntegrationTestBase() {
 
     @Test
     fun `unauthorized status returned`() {

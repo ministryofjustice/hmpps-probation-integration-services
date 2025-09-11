@@ -22,7 +22,7 @@ import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 
-class UserIntegrationTest: IntegrationTestBase() {
+class UserIntegrationTest : IntegrationTestBase() {
 
     @Test
     fun `all caseload activity is for a user`() {

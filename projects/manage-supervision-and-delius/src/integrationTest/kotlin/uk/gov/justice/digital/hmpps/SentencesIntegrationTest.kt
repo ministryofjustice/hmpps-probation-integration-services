@@ -21,7 +21,7 @@ import uk.gov.justice.digital.hmpps.service.toSummary
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 
-class SentencesIntegrationTest: IntegrationTestBase() {
+class SentencesIntegrationTest : IntegrationTestBase() {
 
     @Test
     fun `unauthorized status returned`() {

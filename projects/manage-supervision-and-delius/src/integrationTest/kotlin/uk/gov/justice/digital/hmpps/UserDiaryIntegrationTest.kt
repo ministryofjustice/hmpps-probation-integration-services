@@ -17,7 +17,7 @@ import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.REQUIREMENT_C
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 
-class UserDiaryIntegrationTest: IntegrationTestBase() {
+class UserDiaryIntegrationTest : IntegrationTestBase() {
 
     @ParameterizedTest
     @ValueSource(strings = ["upcoming", "no-outcome"])

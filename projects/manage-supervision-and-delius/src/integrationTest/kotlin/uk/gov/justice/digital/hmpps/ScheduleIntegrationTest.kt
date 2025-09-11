@@ -24,7 +24,7 @@ import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 import java.time.LocalDate
 
-class ScheduleIntegrationTest: IntegrationTestBase() {
+class ScheduleIntegrationTest : IntegrationTestBase() {
 
     @Test
     fun `upcoming schedule is returned`() {
