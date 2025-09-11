@@ -19,7 +19,7 @@ import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.PROVISIONS
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 
-class OverviewIntegrationTest: IntegrationTestBase() {
+class OverviewIntegrationTest : IntegrationTestBase() {
 
     @Test
     fun `overview details are returned`() {

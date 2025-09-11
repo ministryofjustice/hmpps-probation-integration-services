@@ -14,7 +14,7 @@ import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 import java.time.LocalDate
 
-class ContactIntegrationTest: IntegrationTestBase() {
+class ContactIntegrationTest : IntegrationTestBase() {
 
     @Test
     fun `unauthorized status returned`() {

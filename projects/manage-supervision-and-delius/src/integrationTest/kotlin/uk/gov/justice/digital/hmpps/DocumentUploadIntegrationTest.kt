@@ -17,7 +17,7 @@ import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 import java.time.LocalDateTime
 import java.time.ZonedDateTime
 
-class DocumentUploadIntegrationTest: IntegrationTestBase() {
+class DocumentUploadIntegrationTest : IntegrationTestBase() {
 
     @Test
     fun `update contact with document`() {

@@ -18,7 +18,7 @@ import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 
-internal class LaoCaseloadIntegrationTest: IntegrationTestBase() {
+internal class LaoCaseloadIntegrationTest : IntegrationTestBase() {
 
     @Test
     fun `all caseload activity for an lao user`() {

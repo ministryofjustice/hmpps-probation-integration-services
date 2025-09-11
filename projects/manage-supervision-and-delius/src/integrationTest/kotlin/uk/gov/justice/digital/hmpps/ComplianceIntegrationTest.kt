@@ -13,7 +13,7 @@ import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.TERMINATION_R
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 
-class ComplianceIntegrationTest: IntegrationTestBase() {
+class ComplianceIntegrationTest : IntegrationTestBase() {
 
     @Test
     fun `compliance details are returned`() {

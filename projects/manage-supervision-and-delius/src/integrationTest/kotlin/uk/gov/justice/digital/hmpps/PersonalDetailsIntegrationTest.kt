@@ -64,7 +64,7 @@ import java.time.Duration
 import java.time.LocalDate
 import java.util.*
 
-class PersonalDetailsIntegrationTest: IntegrationTestBase() {
+class PersonalDetailsIntegrationTest : IntegrationTestBase() {
 
     private var jdbcTemplate: JdbcTemplate = Mockito.mock(JdbcTemplate::class.java)
     private var namedParameterJdbcTemplate: NamedParameterJdbcTemplate =

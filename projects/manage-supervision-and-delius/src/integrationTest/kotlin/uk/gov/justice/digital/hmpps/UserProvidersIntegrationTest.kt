@@ -22,7 +22,7 @@ import uk.gov.justice.digital.hmpps.data.generator.OffenderManagerGenerator.TEAM
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 
-class UserProvidersIntegrationTest: IntegrationTestBase() {
+class UserProvidersIntegrationTest : IntegrationTestBase() {
 
     @Test
     fun `unauthorized status returned`() {

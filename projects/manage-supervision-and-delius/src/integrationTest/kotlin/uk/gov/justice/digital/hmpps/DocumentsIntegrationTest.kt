@@ -18,7 +18,7 @@ import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 import java.time.LocalDateTime
 
-class DocumentsIntegrationTest: IntegrationTestBase() {
+class DocumentsIntegrationTest : IntegrationTestBase() {
 
     @Test
     fun `find all documents with default sort and page`() {
