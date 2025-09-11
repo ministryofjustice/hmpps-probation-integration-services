@@ -191,6 +191,13 @@ class FIFOHandler(
 
         corePerson.createPersonRecord(insertRemandDTO.defendant.id, cprRequest)
 
+        telemetryService.trackEvent(
+            "CPRRecordCreated", mapOf(
+                "hearingId" to insertRemandDTO.hearingId,
+                "defendantId" to insertRemandDTO.defendant.id,
+                "CRN" to insertRemandResult.insertPersonResult.person.crn
+            )
+        )
 
         notifier.caseCreated(insertRemandResult.insertPersonResult.person)
         insertRemandResult.insertPersonResult.address?.let { notifier.addressCreated(it) }
