@@ -39,9 +39,6 @@ internal class IntegrationTest {
     private lateinit var telemetryService: TelemetryService
 
     @Autowired
-    private lateinit var handler: NotificationHandler<HmppsDomainEvent>
-
-    @Autowired
     private lateinit var ogrsAssessmentRepository: OGRSAssessmentRepository
 
     @Autowired
