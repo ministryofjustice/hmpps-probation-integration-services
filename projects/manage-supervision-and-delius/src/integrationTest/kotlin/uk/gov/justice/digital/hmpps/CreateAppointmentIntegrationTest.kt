@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps
 
+import jdk.javadoc.internal.doclets.formats.html.markup.HtmlStyle
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.Assertions.assertNotEquals
@@ -7,10 +8,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
-import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.test.web.servlet.MockMvc
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
@@ -18,34 +16,23 @@ import uk.gov.justice.digital.hmpps.api.model.appointment.AppointmentDetail
 import uk.gov.justice.digital.hmpps.api.model.appointment.CreateAppointment
 import uk.gov.justice.digital.hmpps.api.model.appointment.User
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.DEFAULT_PROVIDER
+import uk.gov.justice.digital.hmpps.data.generator.IdGenerator
 import uk.gov.justice.digital.hmpps.data.generator.OffenderManagerGenerator.DEFAULT_LOCATION
 import uk.gov.justice.digital.hmpps.data.generator.OffenderManagerGenerator.PI_USER
 import uk.gov.justice.digital.hmpps.data.generator.OffenderManagerGenerator.STAFF_1
 import uk.gov.justice.digital.hmpps.data.generator.OffenderManagerGenerator.STAFF_USER_1
 import uk.gov.justice.digital.hmpps.data.generator.OffenderManagerGenerator.TEAM
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
-import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.AppointmentRepository
 import uk.gov.justice.digital.hmpps.test.CustomMatchers.isCloseTo
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
+import uk.gov.justice.digital.hmpps.user.AuditUser
 import java.time.LocalDate
 import java.time.ZonedDateTime
 import java.util.*
 
-@AutoConfigureMockMvc
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class CreateAppointmentIntegrationTest {
-
-    @Autowired
-    internal lateinit var mockMvc: MockMvc
-
-    @Autowired
-    internal lateinit var appointmentRepository: AppointmentRepository
-
-    private val user = User(STAFF_USER_1.username, TEAM.code)
-
-    private val person = PersonGenerator.PERSON_1
+class CreateAppointmentIntegrationTest : IntegrationTestBase() {
 
     @Test
     fun `unauthorized status returned`() {
@@ -100,7 +87,7 @@ class CreateAppointmentIntegrationTest {
     fun `number of appointments set to 0`() {
         mockMvc.perform(
             post("/appointment/${PersonGenerator.PERSON_1.crn}")
-                .withToken()
+                .withUserToken(PI_USER.username)
                 .withJson(
                     CreateAppointment(
                         user,
@@ -125,14 +112,12 @@ class CreateAppointmentIntegrationTest {
 
     @ParameterizedTest
     @MethodSource("createAppointment")
-    fun `create a new appointment without notes`(
-        createAppointment: CreateAppointment,
-        notes: String?,
-        sensitive: Boolean?
-    ) {
+    fun `create a new appointment without notes`(createAppointment: CreateAppointment) {
+        val user = PI_USER
+
         val response = mockMvc.perform(
-            post("/appointment/${person.crn}")
-                .withToken()
+            post("/appointment/${PersonGenerator.PERSON_1.crn}")
+                .withUserToken(user.username)
                 .withJson(createAppointment)
         )
             .andExpect(MockMvcResultMatchers.status().isCreated)
@@ -145,25 +130,25 @@ class CreateAppointmentIntegrationTest {
         assertThat(appointment.startTime, isCloseTo(createAppointment.start))
         assertThat(appointment.externalReference, equalTo(createAppointment.urn))
         assertThat(appointment.eventId, equalTo(createAppointment.eventId))
-        assertThat(appointment.lastUpdatedUserId, equalTo(PI_USER.id))
-        assertThat(appointment.createdByUserId, equalTo(PI_USER.id))
         assertThat(appointment.staffId, equalTo(STAFF_1.id))
         assertThat(appointment.probationAreaId, equalTo(DEFAULT_PROVIDER.id))
         assertThat(appointment.officeLocationId, equalTo(DEFAULT_LOCATION.id))
         assertThat(appointment.nsiId, equalTo(createAppointment.nsiId))
-        assertThat(appointment.notes, equalTo(notes))
-        assertThat(appointment.sensitive, equalTo(sensitive))
+        assertThat(appointment.notes, equalTo(createAppointment.notes))
+        assertThat(appointment.sensitive, equalTo(createAppointment.sensitive))
 
+        assertThat(appointment.createdByUserId, equalTo(user.id))
+        assertThat(appointment.lastUpdatedUserId, equalTo(user.id))
 
-        appointmentRepository.delete(appointment)
+        appointmentRepository.deleteById(appointment.id)
     }
 
     @ParameterizedTest
     @MethodSource("createMultipleAppointments")
     fun `create multiple appointments`(createAppointment: CreateAppointment) {
         val response = mockMvc.perform(
-            post("/appointment/${person.crn}")
-                .withToken()
+            post("/appointment/${PersonGenerator.PERSON_1.crn}")
+                .withUserToken(PI_USER.username)
                 .withJson(createAppointment)
         )
             .andExpect(MockMvcResultMatchers.status().isCreated)
@@ -205,7 +190,7 @@ class CreateAppointmentIntegrationTest {
                     end = ZonedDateTime.now().plusDays(1).plusHours(1),
                     eventId = PersonGenerator.EVENT_1.id,
                     uuid = UUID.randomUUID()
-                ), null, null
+                )
             ),
             Arguments.of(
                 CreateAppointment(
@@ -217,7 +202,7 @@ class CreateAppointmentIntegrationTest {
                     eventId = PersonGenerator.EVENT_1.id,
                     notes = "Some Notes",
                     uuid = UUID.randomUUID()
-                ), "Some Notes", null
+                )
             ),
             Arguments.of(
                 CreateAppointment(
@@ -229,7 +214,7 @@ class CreateAppointmentIntegrationTest {
                     notes = "Some Notes",
                     sensitive = true,
                     uuid = UUID.randomUUID()
-                ), "Some Notes", true
+                )
             )
         )
 

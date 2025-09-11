@@ -31,7 +31,14 @@ object AppointmentGenerator {
         offenderContact: Boolean = false,
         locationRequired: String,
         id: Long = IdGenerator.getAndIncrement()
-    ) = ContactType(IdGenerator.getAndIncrement(), code, true, description, locationRequired = locationRequired)
+    ) = ContactType(
+        id,
+        code,
+        attendanceType,
+        description,
+        locationRequired = locationRequired,
+        offenderContact = offenderContact
+    )
 
     val ATTENDED_COMPLIED = generateOutcome("ATTC", "Attended - Complied", true, true)
 
@@ -53,15 +60,16 @@ object AppointmentGenerator {
             startTime = start,
             teamId = teamId,
             staffId = staffId,
-            lastUpdatedUserId = USER.id,
             endTime = end,
             externalReference = "externalReference",
             description = "Description",
             softDeleted = false,
-            version = 0L,
             notes = "Notes",
             sensitive = false,
-        )
+        ).apply {
+            createdByUserId = USER.id
+            lastUpdatedUserId = USER.id
+        }
 
     fun generateContactTypeOutcome(
         contactTypeId: Long,

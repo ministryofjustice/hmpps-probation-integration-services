@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.api.model.Name
 import uk.gov.justice.digital.hmpps.api.model.appointment.*
+import uk.gov.justice.digital.hmpps.aspect.UserContext
 import uk.gov.justice.digital.hmpps.audit.service.AuditableService
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
 import uk.gov.justice.digital.hmpps.client.BankHolidayClient
@@ -89,11 +90,10 @@ class SentenceAppointmentService(
     }
 
     fun createAppointment(
-        username: String,
         crn: String,
         createAppointment: CreateAppointment
     ): AppointmentDetail {
-        return audit(BusinessInteractionCode.ADD_CONTACT) { audit ->
+        return audit(BusinessInteractionCode.ADD_CONTACT, username = UserContext.get()?.username) { audit ->
             val om = offenderManagerRepository.getByCrn(crn)
             audit["offenderId"] = om.person.id
 
@@ -172,8 +172,7 @@ class SentenceAppointmentService(
                 )
             }
 
-            val user = userService.getUser(username)
-            val appointments = createAppointments.map { it.withManager(user.id, om, userAndTeam, location) }
+            val appointments = createAppointments.map { it.withManager(om, userAndTeam, location) }
             val savedAppointments = appointmentRepository.saveAll(appointments)
             val createdAppointments = savedAppointments.map { CreatedAppointment(it.id) }
 
@@ -243,30 +242,26 @@ class SentenceAppointmentService(
     }
 
     private fun CreateAppointment.withManager(
-        userId: Long,
         om: OffenderManager,
         staffAndTeam: UserTeam,
         location: Location?
-    ) =
-        Appointment(
-            person = om.person,
-            type = appointmentTypeRepository.getByCode(type),
-            date = start.toLocalDate(),
-            startTime = ZonedDateTime.of(LocalDate.EPOCH, start.toLocalTime(), EuropeLondon),
-            teamId = staffAndTeam.teamId,
-            staffId = staffAndTeam.staffId,
-            lastUpdatedUserId = userId,
-            endTime = end.let { ZonedDateTime.of(LocalDate.EPOCH, end.toLocalTime(), EuropeLondon) },
-            probationAreaId = staffAndTeam.providerId,
-            externalReference = urn,
-            eventId = eventId,
-            rqmntId = requirementId,
-            nsiId = nsiId,
-            licConditionId = licenceConditionId,
-            createdByUserId = userId,
-            officeLocationId = location?.id,
-            notes = notes,
-            sensitive = sensitive,
-            visorContact = visorReport
-        )
+    ) = Appointment(
+        person = om.person,
+        type = appointmentTypeRepository.getByCode(type),
+        date = start.toLocalDate(),
+        startTime = ZonedDateTime.of(LocalDate.EPOCH, start.toLocalTime(), EuropeLondon),
+        teamId = staffAndTeam.teamId,
+        staffId = staffAndTeam.staffId,
+        endTime = end.let { ZonedDateTime.of(LocalDate.EPOCH, end.toLocalTime(), EuropeLondon) },
+        probationAreaId = staffAndTeam.providerId,
+        externalReference = urn,
+        eventId = eventId,
+        rqmntId = requirementId,
+        nsiId = nsiId,
+        licConditionId = licenceConditionId,
+        officeLocationId = location?.id,
+        notes = notes,
+        sensitive = sensitive,
+        visorContact = visorReport
+    )
 }
