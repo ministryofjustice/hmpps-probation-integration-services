@@ -48,6 +48,9 @@ management:
     exposure.include: [ "health", "info" ]
   endpoint.health.show-details: always
 
+service:
+  use-delius-user: true
+
 info.productId: HMPPS518 # https://developer-portal.hmpps.service.justice.gov.uk/products/probation-integration-services-1
 
 ---
