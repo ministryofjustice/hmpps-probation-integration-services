@@ -28,6 +28,7 @@ import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
 import uk.gov.justice.digital.hmpps.data.generator.MessageGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.generate
 import uk.gov.justice.digital.hmpps.flags.FeatureFlags
+import uk.gov.justice.digital.hmpps.integrations.client.CorePersonClient
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractionCode
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonAddress
@@ -121,6 +122,9 @@ internal class IntegrationTest {
 
     @MockitoBean
     lateinit var s3Client: S3Client
+
+    @MockitoSpyBean
+    lateinit var corePersonClient: CorePersonClient
 
     @BeforeEach
     fun setup() {
@@ -521,6 +525,23 @@ internal class IntegrationTest {
         val notification = Notification(message = MessageGenerator.COMMON_PLATFORM_EVENT)
         channelManager.getChannel(queueName).publishAndWait(notification)
         thenNoRecordsAreInserted()
+    }
+
+    @Test
+    fun `Defendant and CRN is submitted to CPR after creation`() {
+        val notification = Notification(message = MessageGenerator.COMMON_PLATFORM_EVENT)
+        channelManager.getChannel(queueName).publishAndWait(notification)
+
+        verify(corePersonClient).createPersonRecord(eq("f3b3bdb3-10c4-48fe-a412-9924f47294d5"), any())
+
+        verify(telemetryService, atLeastOnce()).trackEvent(
+            "CPRRecordCreated",
+            mapOf(
+                "hearingId" to "00000000-0000-0000-0000-000000000000",
+                "defendantId" to "f3b3bdb3-10c4-48fe-a412-9924f47294d5",
+                "CRN" to "A111111"
+            )
+        )
     }
 
     private fun thenNoRecordsAreInserted() {
