@@ -12,13 +12,15 @@ class RequirementService(
     private val disposalRepository: DisposalRepository,
     private val requirementRepository: RequirementRepository,
     private val pssRequirementRepository: PssRequirementRepository,
+    private val referenceDataRepository: ReferenceDataRepository,
 ) {
     fun getRequirements(breachNoticeId: UUID): RequirementResponse {
         val eventId = documentRepository.eventId(breachNoticeUrn(breachNoticeId))
         val disposal = requireNotNull(disposalRepository.getByEventId(eventId)) { "Event is not sentenced" }
         return RequirementResponse(
             requirementRepository.findAllByDisposalId(disposal.id).map { it.toModel() } +
-                pssRequirementRepository.findAllByCustodyDisposalId(disposal.id).map { it.toModel() }
+                pssRequirementRepository.findAllByCustodyDisposalId(disposal.id).map { it.toModel() },
+            referenceDataRepository.findByDatasetCodeAndSelectableTrue(Dataset.BREACH_REASON).codedDescriptions()
         )
     }
 }
