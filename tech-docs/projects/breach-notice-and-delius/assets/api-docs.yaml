@@ -240,6 +240,19 @@ components:
       - id
       - outcome
       - type
+    Requirement:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        type:
+          $ref: "#/components/schemas/CodedDescription"
+        subType:
+          $ref: "#/components/schemas/CodedDescription"
+      required:
+      - id
+      - type
     WarningDetails:
       type: object
       properties:
@@ -251,9 +264,14 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/EnforceableContact"
+        requirements:
+          type: array
+          items:
+            $ref: "#/components/schemas/Requirement"
       required:
       - breachReasons
       - enforceableContacts
+      - requirements
     CaseAccess:
       type: object
       properties:
@@ -271,19 +289,6 @@ components:
       - crn
       - userExcluded
       - userRestricted
-    Requirement:
-      type: object
-      properties:
-        id:
-          type: integer
-          format: int64
-        type:
-          $ref: "#/components/schemas/CodedDescription"
-        subType:
-          $ref: "#/components/schemas/CodedDescription"
-      required:
-      - id
-      - type
     RequirementResponse:
       type: object
       properties:
