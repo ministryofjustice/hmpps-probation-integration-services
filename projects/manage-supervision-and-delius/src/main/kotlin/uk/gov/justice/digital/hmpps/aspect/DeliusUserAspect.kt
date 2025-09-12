@@ -32,13 +32,13 @@ class DeliusUserAspect(
     @Before("@annotation(uk.gov.justice.digital.hmpps.aspect.WithDeliusUser)")
     fun beforeRequest() {
         getDeliusUsername()?.let { deliusUserName ->
-            aur.findUserByUsername(deliusUserName)?.also {
-                userContext.set(UserContext(it.username, it.id))
-            }
             namedParameterJdbcTemplate.update(
                 "call pkg_vpd_ctx.set_client_identifier(:dbName)",
                 MapSqlParameterSource().addValue("dbName", deliusUserName)
             )
+            aur.findUserByUsername(deliusUserName)?.also {
+                userContext.set(UserContext(it.username, it.id))
+            }
         }
     }
 
