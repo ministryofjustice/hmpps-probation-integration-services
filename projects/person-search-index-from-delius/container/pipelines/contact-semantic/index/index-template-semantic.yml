@@ -7,7 +7,7 @@ template:
     index.search.default_pipeline: contact-semantic-search-search-pipeline
     index.knn: true
     index.knn.derived_source.enabled: true
-    index.number_of_shards: 36
+    index.number_of_shards: 12
     index.number_of_replicas: 1
     index.analyze.max_token_count: 100000
     index.mapping.ignore_malformed: true
