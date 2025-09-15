@@ -70,9 +70,9 @@ runs:
         old: ${{ steps.remote.outputs.digest }}
       shell: bash
 
-    - name: Build Docker images
+    - name: Push Docker images
       uses: docker/build-push-action@v6
-      if: (steps.check-changes.outputs.projects != '[]' && inputs.push) || inputs.force
+      if: (steps.check-changes.outputs.projects != '[]' && inputs.push == 'true') || inputs.force == 'true'
       with:
         cache-from: type=gha
         cache-to: type=gha,mode=max
