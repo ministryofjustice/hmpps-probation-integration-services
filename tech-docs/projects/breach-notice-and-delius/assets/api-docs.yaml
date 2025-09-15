@@ -296,7 +296,12 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/Requirement"
+        breachReasons:
+          type: array
+          items:
+            $ref: "#/components/schemas/CodedDescription"
       required:
+      - breachReasons
       - requirements
     Appointment:
       type: object
