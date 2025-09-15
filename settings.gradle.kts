@@ -80,14 +80,14 @@ rootProject.allChildren()
 dependencyResolutionManagement {
     versionCatalogs {
         create("libs") {
-            library("asyncapi", "org.openfolder:kotlin-asyncapi-spring-web:3.1.1")
+            library("asyncapi", "org.openfolder:kotlin-asyncapi-spring-web:3.1.2")
             library("aws-s3", "io.awspring.cloud:spring-cloud-aws-starter-s3:3.4.0")
             library("aws-autoconfigure", "io.awspring.cloud:spring-cloud-aws-autoconfigure:3.4.0")
-            library("aws-query-protocol", "software.amazon.awssdk:aws-query-protocol:2.33.0")
+            library("aws-query-protocol", "software.amazon.awssdk:aws-query-protocol:2.33.4")
             library("aws-sns", "io.awspring.cloud:spring-cloud-aws-starter-sns:3.4.0")
             library("aws-sqs", "io.awspring.cloud:spring-cloud-aws-starter-sqs:3.4.0")
             library("aws-starter", "io.awspring.cloud:spring-cloud-aws-starter:3.4.0")
-            library("aws-sts", "software.amazon.awssdk:sts:2.33.0")
+            library("aws-sts", "software.amazon.awssdk:sts:2.33.4")
             library("azure-app-insights", "com.microsoft.azure:applicationinsights-web:3.7.4")
             library("azure-identity", "com.azure:azure-identity:1.17.0")
             library("flipt", "io.flipt:flipt-client-java:1.1.1")
@@ -102,8 +102,8 @@ dependencyResolutionManagement {
                 "opentelemetry-annotations",
                 "io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:2.19.0"
             )
-            library("sentry", "io.sentry:sentry-spring-boot-starter-jakarta:8.20.0")
-            library("springdoc", "org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.11")
+            library("sentry", "io.sentry:sentry-spring-boot-starter-jakarta:8.21.0")
+            library("springdoc", "org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.13")
             library("wiremock", "org.wiremock:wiremock-standalone:3.13.1")
 
             bundle(
