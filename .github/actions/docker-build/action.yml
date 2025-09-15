@@ -32,20 +32,16 @@ runs:
         echo "VERSION=$version" | tee -a "$GITHUB_ENV"
         echo "version=$version" | tee -a "$GITHUB_OUTPUT"
 
-    - name: Check for changes
-      id: check-changes
-      uses: ./.github/actions/check-changes
-      with:
-        filters: |
-          projects:
-            - 'projects/${{ inputs.project }}/**'
+    - name: Get current image digest
+      id: remote
+      run: |
+        pull_token=$(curl -fsS 'https://ghcr.io/token?service=ghcr.io&scope=repository:ministryofjustice/hmpps-probation-integration-services/${{ inputs.project }}:pull' | jq -r '.token')
+        echo "digest=$(curl -fsSI -H "Authorization: Bearer $pull_token" "https://ghcr.io/v2/ministryofjustice/hmpps-probation-integration-services/${{ inputs.project }}/manifests/latest" | awk -F': ' '/docker-content-digest/ {print $2}' | tr -d '\r')" | tee -a $GITHUB_OUTPUT
+      shell: bash
 
     - uses: docker/setup-qemu-action@v3
-      if: contains(fromJSON(steps.check-changes.outputs.projects), inputs.project) || inputs.force == 'true'
     - uses: docker/setup-buildx-action@v3
-      if: contains(fromJSON(steps.check-changes.outputs.projects), inputs.project) || inputs.force == 'true'
     - uses: docker/login-action@v3
-      if: contains(fromJSON(steps.check-changes.outputs.projects), inputs.project) || inputs.force == 'true'
       with:
         registry: ghcr.io
         username: ${{ github.actor }}
@@ -53,7 +49,30 @@ runs:
 
     - name: Build Docker images
       uses: docker/build-push-action@v6
-      if: contains(fromJSON(steps.check-changes.outputs.projects), inputs.project) || inputs.force == 'true'
+      id: build
+      with:
+        cache-from: type=gha
+        cache-to: type=gha,mode=max
+        context: projects/${{ inputs.project }}/container
+        pull: true
+        load: true
+        push: false
+        provenance: false
+        tags: |
+          ghcr.io/ministryofjustice/hmpps-probation-integration-services/${{ inputs.project }}:latest
+
+    - name: Check for changes
+      id: check-changes
+      run: |
+        if [ "$old" = "$new" ]; then echo 'projects=[]'; else echo 'projects=["${{ inputs.project }}"]'; fi | tee -a "$GITHUB_OUTPUT"
+      env:
+        new: ${{ steps.build.outputs.digest }}
+        old: ${{ steps.remote.outputs.digest }}
+      shell: bash
+
+    - name: Push Docker images
+      uses: docker/build-push-action@v6
+      if: (steps.check-changes.outputs.projects != '[]' && inputs.push == 'true') || inputs.force == 'true'
       with:
         cache-from: type=gha
         cache-to: type=gha,mode=max
@@ -65,7 +84,12 @@ runs:
           ghcr.io/ministryofjustice/hmpps-probation-integration-services/${{ inputs.project }}:${{ steps.version.outputs.version }}
 
     - name: Output changes
+      if: inputs.force != 'true'
       run: echo '${{ steps.check-changes.outputs.projects }}' > ${{ inputs.project }}-changes.json
+      shell: bash
+    - name: Force output changes
+      if: inputs.force == 'true'
+      run: echo '["${{ inputs.project }}"]' > ${{ inputs.project }}-changes.json
       shell: bash
     - name: Store changes
       uses: actions/upload-artifact@v4
