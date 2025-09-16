@@ -45,6 +45,7 @@ data class SearchResponseTeam(
     val code: String? = null,
     val description: String? = null,
     val localDeliveryUnit: KeyValue? = null,
+    val district: KeyValue? = null,
 )
 
 data class KeyValue(
