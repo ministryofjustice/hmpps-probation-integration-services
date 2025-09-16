@@ -176,12 +176,13 @@ begin
                 last_updated_datetime = case when forename <> input.forename or surname <> input.surname then sysdate
                                              else last_updated_datetime end,
                 last_updated_user_id  = case when forename <> input.forename or surname <> input.surname
-                                                 then l_system_user_id else last_updated_user_id end
+                                                 then l_system_user_id else last_updated_user_id end,
+                system_user           = 1
         when not matched then
             insert (user_id, distinguished_name, forename, surname, row_version, private, organisation_id,
-                    last_updated_user_id, last_updated_datetime, created_by_user_id, created_datetime)
+                    last_updated_user_id, last_updated_datetime, created_by_user_id, created_datetime, system_user)
             values (delius_app_schema.system_user_id_seq.nextval, input.username, input.forename, input.surname, 0, 0,
-                    0, l_system_user_id, current_timestamp, l_system_user_id, current_timestamp);
+                    0, l_system_user_id, current_timestamp, l_system_user_id, current_timestamp, 1);
         select row_version
         into l_user_version
         from delius_app_schema.user_
