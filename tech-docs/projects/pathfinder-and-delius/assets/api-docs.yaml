@@ -390,7 +390,6 @@ components:
       required:
       - code
       - description
-      - localDeliveryUnits
     SearchResponseTeam:
       type: object
       properties:
