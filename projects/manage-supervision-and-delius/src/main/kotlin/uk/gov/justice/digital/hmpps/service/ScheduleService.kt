@@ -82,7 +82,7 @@ class ScheduleService(
         return NextAppointment(
             nextAppointment?.toActivity(),
             com.asPersonManager(),
-            username == com.staff.user?.username
+            username.equals(com.staff.user?.username, ignoreCase = true)
         )
     }
 }
