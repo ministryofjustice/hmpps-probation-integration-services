@@ -399,6 +399,8 @@ components:
           type: string
         localDeliveryUnit:
           $ref: "#/components/schemas/KeyValue"
+        district:
+          $ref: "#/components/schemas/KeyValue"
     StaffHuman:
       type: object
       properties:
