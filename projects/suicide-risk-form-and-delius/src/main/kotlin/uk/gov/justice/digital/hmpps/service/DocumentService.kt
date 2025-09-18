@@ -16,6 +16,9 @@ import uk.gov.justice.digital.hmpps.integrations.delius.DocumentRepository
 import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
 import uk.gov.justice.digital.hmpps.messaging.suicideRiskFormId
 import uk.gov.justice.digital.hmpps.messaging.username
+import uk.gov.justice.digital.hmpps.model.ContactDocumentDetails
+import uk.gov.justice.digital.hmpps.model.ContactDocumentItem
+import uk.gov.justice.digital.hmpps.model.ContactDocumentResponse
 import uk.gov.justice.digital.hmpps.user.AuditUserService
 import java.time.ZonedDateTime
 import java.util.*
@@ -51,6 +54,27 @@ class DocumentService(
         updateParent(document)
         alfrescoUploadClient.release(document.alfrescoId)
         alfrescoUploadClient.delete(document.alfrescoId)
+    }
+
+    fun listDocumentsForContacts(contactIds: List<Long>): ContactDocumentResponse {
+        val contactDocs = contactIds.map {
+            val documents = documentRepository.findByTableNameAndPrimaryKeyId("CONTACT", it)
+
+            ContactDocumentItem(
+                id = it,
+                documents = documents.map { doc ->
+                    ContactDocumentDetails(
+                        id = doc.id,
+                        name = doc.name,
+                        lastUpdated = doc.lastSaved
+                    )
+                }
+            )
+        }
+
+        return ContactDocumentResponse(
+            content = contactDocs
+        )
     }
 
     private fun getDocument(event: HmppsDomainEvent, audit: AuditedInteraction.Parameters): Document {
