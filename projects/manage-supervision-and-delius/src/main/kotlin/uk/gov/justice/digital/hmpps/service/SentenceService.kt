@@ -12,7 +12,6 @@ import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.C
 import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.DocumentRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.LengthUnit
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.*
-import uk.gov.justice.digital.hmpps.service.lcSort
 import java.time.Duration
 import java.time.LocalDate
 import kotlin.time.toKotlinDuration
@@ -33,7 +32,7 @@ class SentenceService(
     private val custodyRepository: CustodyRepository,
     private val requirementService: RequirementService
 ) {
-    fun getEvents(crn: String, eventNumber: String?): SentenceOverview {
+    fun getEvents(crn: String, eventNumber: String?, includeRarRequirements: Boolean): SentenceOverview {
         val person = personRepository.getPerson(crn)
         val activeEvents = getActiveSentences(person.id)
 
@@ -45,7 +44,7 @@ class SentenceService(
                     null -> true
                     else -> eventNumber == it.eventNumber
                 }
-            }?.toSentence()
+            }?.toSentence(includeRarRequirements)
         )
     }
 
@@ -100,7 +99,7 @@ class SentenceService(
             }
         )
 
-    fun Event.toSentence(): Sentence {
+    fun Event.toSentence(includeRarRequirements: Boolean): Sentence {
         val courtAppearance = courtAppearanceRepository.getFirstCourtAppearanceByEventIdOrderByDate(id)
         val additionalSentences = additionalSentenceRepository.getAllByEventId(id)
 
@@ -108,7 +107,8 @@ class SentenceService(
             toOffenceDetails(),
             toConviction(courtAppearance, additionalSentences),
             order = disposal?.toOrder(),
-            requirements = requirementRepository.getRequirements(id, eventNumber).rSort().map { it.toRequirement() },
+            requirements = requirementRepository.getRequirements(id, eventNumber, includeRarRequirements).rSort()
+                .map { it.toRequirement() },
             courtDocuments = documentRepository.getCourtDocuments(id, eventNumber).map { it.toCourtDocument() },
             unpaidWorkProgress = disposal?.id?.let { getUnpaidWorkTime(it) },
             licenceConditions = disposal?.let {

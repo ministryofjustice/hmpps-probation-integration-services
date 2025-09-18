@@ -151,10 +151,11 @@ interface RequirementRepository : JpaRepository<Requirement, Long> {
             LEFT JOIN m.unitDetails ud
             WHERE e.id = :id
             AND e.eventNumber = :eventNumber
+            AND (:includeRar = true OR m.code <> 'F')
             ORDER BY m.description
         """
     )
-    fun getRequirements(id: Long, eventNumber: String): List<Requirement>
+    fun getRequirements(id: Long, eventNumber: String, includeRar: Boolean = true): List<Requirement>
 
     @Query(
         """
