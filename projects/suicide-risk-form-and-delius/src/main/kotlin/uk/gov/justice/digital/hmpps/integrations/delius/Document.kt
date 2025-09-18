@@ -60,4 +60,6 @@ interface DocumentRepository : JpaRepository<Document, Long> {
     fun findByExternalReference(urn: String): Document?
 
     fun existsByTableNameAndPrimaryKeyIdAndIdNot(tableName: String, primaryKeyId: Long, id: Long): Boolean
+
+    fun findByTableNameAndPrimaryKeyIdIn(tableName: String, primaryKeyId: List<Long>): List<Document>
 }
