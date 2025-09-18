@@ -5,8 +5,9 @@ database:
     tables:
       - audited_interaction
       - contact
+      - contact_alert
 
   audit:
     username: EsupervisionAndDelius
-    forename: E-Supervision and Delius
+    forename: Online Check In
     surname: Service
