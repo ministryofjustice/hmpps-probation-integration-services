@@ -5,7 +5,6 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.test.context.bean.override.mockito.MockitoBean
 import uk.gov.justice.digital.hmpps.data.generator.MessageGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ProviderGenerator
@@ -14,8 +13,6 @@ import uk.gov.justice.digital.hmpps.integrations.delius.ContactType
 import uk.gov.justice.digital.hmpps.message.MessageAttributes
 import uk.gov.justice.digital.hmpps.message.Notification
 import uk.gov.justice.digital.hmpps.messaging.HmppsChannelManager
-import uk.gov.justice.digital.hmpps.messaging.description
-import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 
 @SpringBootTest
 internal class IntegrationTest {
@@ -36,7 +33,7 @@ internal class IntegrationTest {
         channelManager.getChannel(queueName).publishAndWait(notification)
 
         val contact = contactRepository.findAll().single {
-            it.person.id == PersonGenerator.DEFAULT_PERSON.id && it.description == "E Supervision Check-In Completed"
+            it.person.id == PersonGenerator.DEFAULT_PERSON.id && it.description == "Online check in completed"
         }
         assertThat(contact.type.code).isEqualTo(ContactType.E_SUPERVISION_CHECK_IN)
         assertThat(contact.date).isEqualTo(notification.message.occurredAt.toLocalDate())
@@ -46,7 +43,7 @@ internal class IntegrationTest {
         assertThat(contact.staff.id).isEqualTo(ProviderGenerator.DEFAULT_STAFF.id)
         assertThat(contact.alert).isEqualTo(true)
         assertThat(contact.isSensitive).isEqualTo(false)
-        assertThat(contact.notes).isEqualTo("Please follow this link to review the check-in in the E-supervision portal: https://esupervision/check-in/received")
+        assertThat(contact.notes).isEqualTo("Review the online check in using the manage probation check ins service: https://esupervision/check-in/received")
     }
 
     @Test
@@ -57,7 +54,7 @@ internal class IntegrationTest {
         channelManager.getChannel(queueName).publishAndWait(notification)
 
         val contact = contactRepository.findAll().single {
-            it.person.id == PersonGenerator.DEFAULT_PERSON.id && it.description == "E Supervision 72 hours lapsed"
+            it.person.id == PersonGenerator.DEFAULT_PERSON.id && it.description == "Online check in 72 hours lapsed"
         }
         assertThat(contact.type.code).isEqualTo(ContactType.E_SUPERVISION_CHECK_IN)
         assertThat(contact.date).isEqualTo(notification.message.occurredAt.toLocalDate())
@@ -67,6 +64,6 @@ internal class IntegrationTest {
         assertThat(contact.staff.id).isEqualTo(ProviderGenerator.DEFAULT_STAFF.id)
         assertThat(contact.alert).isEqualTo(true)
         assertThat(contact.isSensitive).isEqualTo(false)
-        assertThat(contact.notes).isEqualTo("Please follow this link to review the check-in in the E-supervision portal: https://esupervision/check-in/expired")
+        assertThat(contact.notes).isEqualTo("Review the online check in using the manage probation check ins service: https://esupervision/check-in/expired")
     }
 }
