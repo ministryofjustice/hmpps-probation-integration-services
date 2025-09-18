@@ -8,7 +8,9 @@ import uk.gov.justice.digital.hmpps.integrations.delius.*
 import uk.gov.justice.digital.hmpps.ldap.findByUsername
 import uk.gov.justice.digital.hmpps.ldap.findPreferenceByUsername
 import uk.gov.justice.digital.hmpps.model.BasicDetails
+import uk.gov.justice.digital.hmpps.model.DocumentCrn
 import uk.gov.justice.digital.hmpps.model.SignAndSendResponse
+import java.util.*
 
 @Service
 @Transactional(readOnly = true)
@@ -17,6 +19,7 @@ class DetailsService(
     private val staffRepository: StaffRepository,
     private val officeLocationRepository: OfficeLocationRepository,
     private val ldapTemplate: LdapTemplate,
+    private val documentRepository: DocumentRepository
 ) {
     fun basicDetails(crn: String): BasicDetails {
         val person = personRepository.getByCrn(crn)
@@ -52,4 +55,9 @@ class DetailsService(
             },
         )
     }
+
+    fun crnFor(suicideRiskFormId: UUID): DocumentCrn =
+        documentRepository.findByExternalReference(Document.suicideRiskFormUrn(suicideRiskFormId))
+            ?.let { DocumentCrn(it.person.crn) }
+            ?: throw NotFoundException("SuicideRiskForm", "id", suicideRiskFormId)
 }

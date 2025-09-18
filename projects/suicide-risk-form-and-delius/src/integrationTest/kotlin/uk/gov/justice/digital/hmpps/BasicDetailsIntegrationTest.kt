@@ -10,16 +10,14 @@ import org.springframework.ldap.core.LdapTemplate
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import uk.gov.justice.digital.hmpps.data.generator.DocumentGenerator
 import uk.gov.justice.digital.hmpps.data.generator.OfficeLocationGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.UserGenerator
 import uk.gov.justice.digital.hmpps.integrations.delius.LdapUser
 import uk.gov.justice.digital.hmpps.integrations.delius.toAddress
 import uk.gov.justice.digital.hmpps.ldap.findByUsername
-import uk.gov.justice.digital.hmpps.model.BasicDetails
-import uk.gov.justice.digital.hmpps.model.Name
-import uk.gov.justice.digital.hmpps.model.OfficeAddress
-import uk.gov.justice.digital.hmpps.model.SignAndSendResponse
+import uk.gov.justice.digital.hmpps.model.*
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 
@@ -98,5 +96,17 @@ class BasicDetailsIntegrationTest {
                 )
             )
         )
+    }
+
+    @Test
+    fun `can retrieve crn from suicide risk form id successfully`() {
+        val person = PersonGenerator.DEFAULT_PERSON
+        val srfId = DocumentGenerator.SUICIDE_RISK_FORM_ID
+        val response = mockMvc
+            .perform(get("/case/$srfId").withToken())
+            .andExpect(status().is2xxSuccessful)
+            .andReturn().response.contentAsJson<DocumentCrn>()
+
+        assertThat(response.crn).isEqualTo(person.crn)
     }
 }
