@@ -57,20 +57,22 @@ class DocumentService(
     }
 
     fun listDocumentsForContacts(contactIds: List<Long>): ContactDocumentResponse {
-        val contactDocs = contactIds.map {
-            val documents = documentRepository.findByTableNameAndPrimaryKeyId("CONTACT", it)
+        val contactsToDocs = documentRepository.findByTableNameAndPrimaryKeyIdIn("CONTACT", contactIds)
+            .groupBy { it.primaryKeyId }
 
-            ContactDocumentItem(
-                id = it,
-                documents = documents.map { doc ->
-                    ContactDocumentDetails(
-                        id = doc.id,
-                        name = doc.name,
-                        lastUpdated = doc.lastSaved
-                    )
-                }
-            )
-        }
+        val contactDocs = contactIds
+            .map {
+                ContactDocumentItem(
+                    id = it,
+                    documents = contactsToDocs[it]?.map { doc ->
+                        ContactDocumentDetails(
+                            id = doc.id,
+                            name = doc.name,
+                            lastUpdated = doc.lastSaved
+                        )
+                    } ?: emptyList()
+                )
+            }
 
         return ContactDocumentResponse(
             content = contactDocs
