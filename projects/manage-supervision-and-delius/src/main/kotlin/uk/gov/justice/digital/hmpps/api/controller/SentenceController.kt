@@ -24,7 +24,8 @@ class SentenceController(
     fun getOverview(
         @PathVariable crn: String,
         @RequestParam(required = false) number: String?,
-    ) = sentenceService.getEvents(crn, number)
+        @RequestParam(required = false, defaultValue = "true") includeRarRequirements: Boolean = true,
+    ) = sentenceService.getEvents(crn, number, includeRarRequirements)
 
     @GetMapping("/probation-history")
     @Operation(summary = "Display probation history")
