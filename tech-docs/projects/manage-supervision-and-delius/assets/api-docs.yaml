@@ -620,6 +620,12 @@ paths:
         required: false
         schema:
           type: string
+      - name: includeRarRequirements
+        in: query
+        required: false
+        schema:
+          type: boolean
+          default: true
       responses:
         "200":
           description: OK
