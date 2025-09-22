@@ -1,4 +1,4 @@
-FROM public.ecr.aws/aws-cli/aws-cli:2.30.1
+FROM public.ecr.aws/aws-cli/aws-cli:2.30.6
 
 USER root
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
