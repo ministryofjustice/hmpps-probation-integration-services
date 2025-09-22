@@ -18,5 +18,6 @@ class SentencesController(private val sentenceService: SentenceService) {
     fun getOverview(
         @PathVariable crn: String,
         @RequestParam(required = false) number: String?,
-    ) = sentenceService.getActiveSentences(crn)
+        @RequestParam(required = false, defaultValue = "true") includeRarRequirements: Boolean = true
+    ) = sentenceService.getActiveSentences(crn, includeRarRequirements)
 }
