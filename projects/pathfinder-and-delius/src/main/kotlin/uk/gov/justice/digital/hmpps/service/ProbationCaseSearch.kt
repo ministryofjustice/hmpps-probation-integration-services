@@ -78,6 +78,7 @@ private fun PersonManager.asOffenderManager() = OffenderManager(
         KeyValue(team.district.code, team.district.description)
     ),
     probationArea = ProbationArea(probationArea.code, probationArea.description, listOf()),
+    active = active,
 )
 
 private fun PersonAlias.asProbationAlias() = OffenderAlias(
