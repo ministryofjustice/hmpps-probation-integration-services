@@ -48,13 +48,13 @@ class SentenceService(
         )
     }
 
-    fun getActiveSentences(crn: String): MinimalSentenceOverview {
+    fun getActiveSentences(crn: String, includeRarRequirements: Boolean): MinimalSentenceOverview {
         val person = personRepository.getPerson(crn)
         val activeEvents = getActiveSentences(person.id)
 
         return MinimalSentenceOverview(
             personSummary = person.toSummary(),
-            activeEvents.map { it.toMinimalSentence() }
+            activeEvents.map { it.toMinimalSentence(includeRarRequirements) }
         )
     }
 
@@ -86,7 +86,7 @@ class SentenceService(
         disposal?.type?.description ?: "Pre-Sentence"
     )
 
-    fun Event.toMinimalSentence(): MinimalSentence =
+    fun Event.toMinimalSentence(includeRarRequirements: Boolean): MinimalSentence =
         MinimalSentence(
             id,
             eventNumber,
@@ -94,7 +94,7 @@ class SentenceService(
             licenceConditions = disposal?.let {
                 licenceConditionRepository.findAllByDisposalId(disposal.id).asMinimals()
             } ?: emptyList(),
-            requirements = requirementRepository.getRequirements(id, eventNumber).asMinimals {
+            requirements = requirementRepository.getRequirements(id, eventNumber, includeRarRequirements).asMinimals {
                 requirementService.getRar(it.disposal!!.id, it.mainCategory!!.code)
             }
         )
