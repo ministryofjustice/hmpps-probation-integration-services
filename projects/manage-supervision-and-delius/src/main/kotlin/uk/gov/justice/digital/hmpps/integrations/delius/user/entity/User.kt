@@ -353,7 +353,7 @@ data class LatestSentence(
                 c.offender_id
                 from contact c
                 join r_contact_type ct on c.contact_type_id = ct.contact_type_id and ct.attendance_contact = 'Y'
-                where c.CONTACT_START_TIME is not null
+                where c.contact_date is not null and c.contact_start_time is not null
                 and c.soft_deleted = 0
             ) q
             where appointment_datetime > current_timestamp
@@ -397,14 +397,14 @@ data class NextAppointment(
             from
             (
                 select 
-                to_timestamp(to_char(c.contact_date, 'yyyy-mm-dd') || ' ' || to_char(c.contact_start_time, 'hh24:mi:ss'), 'yyyy-mm-dd hh24:mi:ss') as appointment_datetime,
+                to_timestamp(to_char(c.contact_date, 'yyyy-mm-dd') || ' ' || to_char(c.CONTACT_START_TIME, 'hh24:mi:ss'), 'yyyy-mm-dd hh24:mi:ss') as appointment_datetime,
                 c.contact_id, 
                 c.contact_type_id,
                 c.staff_id,
                 c.offender_id
                 from contact c
                 join r_contact_type ct on c.contact_type_id = ct.contact_type_id and ct.attendance_contact = 'Y'
-                where c.CONTACT_START_TIME is not null
+                where c.contact_date is not null and c.contact_start_time is not null
                 and c.soft_deleted = 0
             ) q
             where appointment_datetime < current_timestamp
