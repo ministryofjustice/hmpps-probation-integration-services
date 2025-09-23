@@ -346,7 +346,7 @@ data class LatestSentence(
             from
             (
                 select 
-                to_timestamp(to_char(c.CONTACT_DATE, 'yyyy-mm-dd') || ' ' || to_char(c.CONTACT_START_TIME, 'hh24:mi:ss'), 'yyyy-mm-dd hh24:mi:ss') as appointment_datetime,
+                to_date(to_char(c.CONTACT_DATE, 'yyyy-mm-dd') || ' ' || to_char(c.CONTACT_START_TIME, 'hh24:mi:ss'), 'yyyy-mm-dd hh24:mi:ss') as appointment_datetime,
                 c.contact_id, 
                 c.contact_type_id,
                 c.staff_id,
@@ -356,7 +356,7 @@ data class LatestSentence(
                 where c.contact_date is not null and c.contact_start_time is not null
                 and c.soft_deleted = 0
             ) q
-            where appointment_datetime > current_timestamp
+            where appointment_datetime > current_date
         )
         where row_num = 1
     """
@@ -397,7 +397,7 @@ data class NextAppointment(
             from
             (
                 select 
-                to_timestamp(to_char(c.contact_date, 'yyyy-mm-dd') || ' ' || to_char(c.CONTACT_START_TIME, 'hh24:mi:ss'), 'yyyy-mm-dd hh24:mi:ss') as appointment_datetime,
+                to_date(to_char(c.contact_date, 'yyyy-mm-dd') || ' ' || to_char(c.CONTACT_START_TIME, 'hh24:mi:ss'), 'yyyy-mm-dd hh24:mi:ss') as appointment_datetime,
                 c.contact_id, 
                 c.contact_type_id,
                 c.staff_id,
@@ -407,7 +407,7 @@ data class NextAppointment(
                 where c.contact_date is not null and c.contact_start_time is not null
                 and c.soft_deleted = 0
             ) q
-            where appointment_datetime < current_timestamp
+            where appointment_datetime < current_date
         )
         where row_num = 1
     """
