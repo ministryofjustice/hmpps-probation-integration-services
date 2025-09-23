@@ -28,6 +28,8 @@ import uk.gov.justice.digital.hmpps.integrations.tier.TierCalculation
 import uk.gov.justice.digital.hmpps.messaging.telemetryProperties
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import java.time.ZonedDateTime
+import java.time.temporal.ChronoUnit
+import java.time.temporal.ChronoUnit.MILLIS
 
 @Service
 class TierUpdateService(
@@ -57,7 +59,7 @@ class TierUpdateService(
             return telemetryService.trackEvent("UnchangedTierIgnored", tierCalculation.telemetryProperties(crn))
         }
 
-        if (latestTier != null && !latestTier.id.dateChanged.isBefore(tierCalculation.calculationDate)) {
+        if (latestTier != null && !latestTier.id.dateChanged.isBefore(tierCalculation.calculationDate.truncatedTo(MILLIS))) {
             return telemetryService.trackEvent("OutOfOrderMessageIgnored", tierCalculation.telemetryProperties(crn))
         }
 
@@ -84,7 +86,7 @@ class TierUpdateService(
                 id = ManagementTierId(
                     personId = person.id,
                     tierId = tier.id,
-                    dateChanged = calculationDate
+                    dateChanged = calculationDate.truncatedTo(MILLIS),
                 ),
                 tierChangeReasonId = changeReason.id
             )
