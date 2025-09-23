@@ -43,7 +43,7 @@ class Registration(
 
     @Column(name = "document_linked", columnDefinition = "char")
     @Convert(converter = YesNoConverter::class)
-    val documentLinked: Boolean,
+    val documentLinked: Boolean?,
 
     @Column(name = "deregistered", columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)
