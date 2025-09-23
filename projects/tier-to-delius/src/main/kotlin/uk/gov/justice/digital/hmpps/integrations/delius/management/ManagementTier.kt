@@ -19,24 +19,25 @@ data class ManagementTier(
     @Column
     val tierChangeReasonId: Long,
 
-    @Column
-    val partitionAreaId: Long = 0L,
-
     @Column(columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)
-    val softDeleted: Boolean = false,
+    val softDeleted: Boolean = false
+) {
+    @Column
+    @Version
+    val rowVersion: Long = 0L
 
     @Column
-    val rowVersion: Long = 0L,
+    val partitionAreaId: Long = 0L
 
     @Column(nullable = false, updatable = false)
     @CreatedBy
-    var createdByUserId: Long = 0,
+    var createdByUserId: Long = 0
 
     @Column(nullable = false)
     @LastModifiedBy
     var lastUpdatedUserId: Long = 0
-)
+}
 
 @Entity
 @Table(name = "management_tier")
@@ -51,24 +52,25 @@ data class ManagementTierWithEndDate(
     @Column
     val endDate: ZonedDateTime,
 
-    @Column
-    val partitionAreaId: Long = 0L,
-
     @Column(columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean = false,
+) {
+    @Column
+    @Version
+    val rowVersion: Long = 0L
 
     @Column
-    val rowVersion: Long = 0L,
+    val partitionAreaId: Long = 0L
 
     @Column(nullable = false, updatable = false)
     @CreatedBy
-    var createdByUserId: Long = 0,
+    var createdByUserId: Long = 0
 
     @Column(nullable = false)
     @LastModifiedBy
     var lastUpdatedUserId: Long = 0
-)
+}
 
 @Immutable
 @Embeddable
