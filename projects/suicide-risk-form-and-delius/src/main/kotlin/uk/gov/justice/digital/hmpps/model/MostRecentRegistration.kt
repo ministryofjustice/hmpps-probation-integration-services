@@ -8,7 +8,7 @@ data class MostRecentRegistration(
     val startDate: LocalDate,
     val endDate: LocalDate?,
     val notes: String?,
-    val documentsLinked: Boolean,
+    val documentsLinked: Boolean?,
     val deregistered: Boolean
 )
 
