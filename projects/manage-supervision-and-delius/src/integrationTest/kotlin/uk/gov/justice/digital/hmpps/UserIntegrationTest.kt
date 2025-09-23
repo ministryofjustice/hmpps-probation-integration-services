@@ -189,14 +189,14 @@ class UserIntegrationTest : IntegrationTestBase() {
         val res = mockMvc
             .perform(
                 post("/caseload/user/${user.username}/search").withToken()
-                    .withJson(UserSearchFilter(nameOrCrn = null, nextContactCode = "CODI", sentenceCode = null))
+                    .withJson(UserSearchFilter(nameOrCrn = null, nextContactCode = "C089", sentenceCode = null))
             )
             .andExpect(status().isOk)
             .andReturn().response.contentAsJson<StaffCaseload>()
 
         assertThat(res.caseload.size, equalTo(1))
         assertThat(res.caseload[0].crn, equalTo("X000004"))
-        assertThat(res.caseload[0].nextAppointment?.description, equalTo("Initial Appointment on Doorstep (NS)"))
+        assertThat(res.caseload[0].nextAppointment?.description, equalTo("Alcohol Key Worker Session (NS)"))
     }
 
     @Test
