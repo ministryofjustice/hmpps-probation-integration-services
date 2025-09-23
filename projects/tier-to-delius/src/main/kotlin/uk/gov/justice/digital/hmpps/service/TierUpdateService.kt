@@ -59,7 +59,7 @@ class TierUpdateService(
             return telemetryService.trackEvent("UnchangedTierIgnored", tierCalculation.telemetryProperties(crn))
         }
 
-        if (latestTier != null && !latestTier.id.dateChanged.isBefore(tierCalculation.calculationDate.truncatedTo(MILLIS))) {
+        if (latestTier != null && !latestTier.id.dateChanged.isBefore(tierCalculation.calculationDate)) {
             return telemetryService.trackEvent("OutOfOrderMessageIgnored", tierCalculation.telemetryProperties(crn))
         }
 
@@ -86,7 +86,7 @@ class TierUpdateService(
                 id = ManagementTierId(
                     personId = person.id,
                     tierId = tier.id,
-                    dateChanged = calculationDate.truncatedTo(MILLIS),
+                    dateChanged = calculationDate,
                 ),
                 tierChangeReasonId = changeReason.id
             )
