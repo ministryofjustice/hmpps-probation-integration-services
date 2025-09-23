@@ -57,7 +57,7 @@ class TierUpdateService(
             return telemetryService.trackEvent("UnchangedTierIgnored", tierCalculation.telemetryProperties(crn))
         }
 
-        if (latestTier != null && latestTier.id.dateChanged > tierCalculation.calculationDate) {
+        if (latestTier != null && !latestTier.id.dateChanged.isBefore(tierCalculation.calculationDate)) {
             return telemetryService.trackEvent("OutOfOrderMessageIgnored", tierCalculation.telemetryProperties(crn))
         }
 
