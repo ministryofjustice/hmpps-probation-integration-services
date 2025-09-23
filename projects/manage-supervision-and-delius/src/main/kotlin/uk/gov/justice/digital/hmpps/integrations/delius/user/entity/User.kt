@@ -356,7 +356,7 @@ data class LatestSentence(
                 where c.contact_date is not null and c.contact_start_time is not null
                 and c.soft_deleted = 0
             ) q
-            where appointment_datetime > current_date
+            where appointment_datetime > sysdate
         )
         where row_num = 1
     """
@@ -407,7 +407,7 @@ data class NextAppointment(
                 where c.contact_date is not null and c.contact_start_time is not null
                 and c.soft_deleted = 0
             ) q
-            where appointment_datetime < current_date
+            where appointment_datetime < sysdate
         )
         where row_num = 1
     """
