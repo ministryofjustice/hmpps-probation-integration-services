@@ -30,6 +30,7 @@ object AppointmentGenerator {
         attendanceType: Boolean,
         offenderContact: Boolean = false,
         locationRequired: String,
+        editable: Boolean = true,
         id: Long = IdGenerator.getAndIncrement()
     ) = ContactType(
         id,
@@ -37,7 +38,8 @@ object AppointmentGenerator {
         attendanceType,
         description,
         locationRequired = locationRequired,
-        offenderContact = offenderContact
+        offenderContact = offenderContact,
+        editable = editable,
     )
 
     val ATTENDED_COMPLIED = generateOutcome("ATTC", "Attended - Complied", true, true)
