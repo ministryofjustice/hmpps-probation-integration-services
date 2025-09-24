@@ -173,6 +173,7 @@ class Contact(
     @Lob
     var notes: String? = notes
         private set
+
     fun appendNotes(additionalNotes: String) {
         notes = notes?.plus(System.lineSeparator() + additionalNotes) ?: additionalNotes
     }
