@@ -291,7 +291,6 @@ components:
           type: boolean
       required:
       - deregistered
-      - documentsLinked
       - id
       - startDate
       - type
