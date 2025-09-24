@@ -92,7 +92,7 @@ class AlertContactIntegrationTest : IntegrationTestBase() {
     @Test
     fun `unauthorized status returned when clearing alerts without a token`() {
         mockMvc
-            .perform(MockMvcRequestBuilders.get("/alerts"))
+            .perform(MockMvcRequestBuilders.put("/alerts"))
             .andExpect(MockMvcResultMatchers.status().isUnauthorized)
     }
 
