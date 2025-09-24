@@ -733,6 +733,10 @@
                                 </thead>
                                 <tbody>
                                 <tr>
+                                    <td>OFFENDER_MANAGER_TEAM_XOR3</td>
+                                    <td> (&#10;(TEAM_ID IS NOT NULL AND PROVIDER_TEAM_ID IS NULL)&#10;OR&#10;(TEAM_ID IS NULL AND PROVIDER_TEAM_ID IS NOT NULL)&#10;) </td>
+                                </tr>
+                                <tr>
                                     <td>PROVIDER_EMPLOYEE_OR_STAFF3</td>
                                     <td> (&#10;(PROVIDER_EMPLOYEE_ID IS NOT NULL  AND STAFF_ID IS NULL)&#10;OR&#10;(PROVIDER_EMPLOYEE_ID IS NULL  AND STAFF_ID IS NOT NULL)&#10;) </td>
                                 </tr>
@@ -743,10 +747,6 @@
                                 <tr>
                                     <td>YES_OR_NO_404</td>
                                     <td>WORKED_INTENSIVELY IN (&#39;Y&#39;,&#39;N&#39;)</td>
-                                </tr>
-                                <tr>
-                                    <td>OFFENDER_MANAGER_TEAM_XOR3</td>
-                                    <td> (&#10;(TEAM_ID IS NOT NULL AND PROVIDER_TEAM_ID IS NULL)&#10;OR&#10;(TEAM_ID IS NULL AND PROVIDER_TEAM_ID IS NOT NULL)&#10;) </td>
                                 </tr>
                                 </tbody>
                             </table>
