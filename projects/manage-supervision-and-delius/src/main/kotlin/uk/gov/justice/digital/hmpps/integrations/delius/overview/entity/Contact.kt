@@ -27,7 +27,6 @@ import java.time.LocalTime
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 
-@Immutable
 @Entity
 @Table(name = "contact")
 @SQLRestriction("soft_deleted = 0")
@@ -81,8 +80,7 @@ class Contact(
     @JoinColumn(name = "latest_enforcement_action_id", referencedColumnName = "enforcement_action_id")
     val action: EnforcementAction? = null,
 
-    @Lob
-    val notes: String?,
+    notes: String?,
 
     val nsiId: Long? = null,
 
@@ -124,7 +122,7 @@ class Contact(
 
     @Convert(converter = YesNoConverter::class)
     @Column(name = "alert_active")
-    val alert: Boolean? = false,
+    var alert: Boolean? = false,
 
     @Column(name = "soft_deleted", columnDefinition = "number", nullable = false)
     @Convert(converter = NumericBooleanConverter::class)
@@ -171,6 +169,13 @@ class Contact(
     fun isPhoneCallToPop(): Boolean = type.code == ContactTypeCode.PHONE_CONTACT_TO_POP.value
     fun isCommunication(): Boolean =
         type.categories.map { it.id.category.code }.contains(ContactCategoryCode.COMMUNICATION_CONTACT.value)
+
+    @Lob
+    var notes: String? = notes
+        private set
+    fun appendNotes(additionalNotes: String) {
+        notes = notes?.plus(System.lineSeparator() + additionalNotes) ?: additionalNotes
+    }
 }
 
 @Immutable
@@ -214,7 +219,7 @@ class ContactType(
     val locationRequired: String,
 
     @Convert(converter = YesNoConverter::class)
-    val editable: Boolean,
+    val editable: Boolean?,
 )
 
 interface ContactTypeRepository : CrudRepository<ContactType, Long> {
