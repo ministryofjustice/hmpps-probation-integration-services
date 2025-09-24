@@ -332,7 +332,8 @@ class SentenceAppointmentServiceTest {
                 appointment.type,
                 true,
                 "description",
-                locationRequired = "N"
+                locationRequired = "N",
+                editable = true
             )
         )
 
@@ -372,7 +373,8 @@ class SentenceAppointmentServiceTest {
                 appointment.type,
                 true,
                 "description",
-                locationRequired = "N"
+                locationRequired = "N",
+                editable = true
             )
         )
 
@@ -409,7 +411,8 @@ class SentenceAppointmentServiceTest {
                 true,
                 "description",
                 offenderContact = true,
-                locationRequired = "N"
+                locationRequired = "N",
+                editable = true
             )
         )
 

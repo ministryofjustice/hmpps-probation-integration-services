@@ -85,7 +85,8 @@ object ContactGenerator {
         false,
         "Non attendance contact type",
         systemGenerated = true,
-        locationRequired = "N"
+        locationRequired = "N",
+        editable = false,
     )
     val APPT_CT_2 = generateContactType(
         "CODI",
@@ -240,9 +241,12 @@ object ContactGenerator {
         outcome: ContactOutcome? = null,
         description: String? = null,
         licenceCondition: LicenceCondition? = null,
+        alert: Boolean = false,
+        team: Team = DEFAULT_TEAM,
+        staff: Staff = DEFAULT_STAFF,
     ) = Contact(
         id = IdGenerator.getAndIncrement(),
-        personId = person.id,
+        person = person,
         type = contactType,
         date = startDateTime.toLocalDate(),
         startTime = startTime,
@@ -253,8 +257,8 @@ object ContactGenerator {
         requirement = requirement,
         lastUpdated = ZonedDateTime.now().minusDays(1),
         lastUpdatedUser = USER,
-        team = DEFAULT_TEAM,
-        staff = DEFAULT_STAFF,
+        team = team,
+        staff = staff,
         location = LOCATION_BRK_1,
         notes = notes,
         action = action,
@@ -262,6 +266,7 @@ object ContactGenerator {
         outcome = outcome,
         description = description,
         licenceCondition = licenceCondition,
+        alert = alert
     )
 
     fun generateOutcome(code: String, description: String, attendance: Boolean, acceptable: Boolean) =
@@ -274,18 +279,19 @@ object ContactGenerator {
         systemGenerated: Boolean = false,
         contactOutcomeFlag: Boolean = false,
         offenderContact: Boolean = false,
+        editable: Boolean = true,
         locationRequired: String,
-    ) =
-        ContactType(
-            IdGenerator.getAndIncrement(),
-            code,
-            attendance,
-            description,
-            systemGenerated = systemGenerated,
-            contactOutcomeFlag = contactOutcomeFlag,
-            offenderContact = offenderContact,
-            locationRequired = locationRequired
-        )
+    ) = ContactType(
+        IdGenerator.getAndIncrement(),
+        code,
+        attendance,
+        description,
+        systemGenerated = systemGenerated,
+        contactOutcomeFlag = contactOutcomeFlag,
+        offenderContact = offenderContact,
+        locationRequired = locationRequired,
+        editable = editable
+    )
 
     private fun generateContactCategory(contactType: ContactType, contactCategory: ReferenceData) =
         ContactCategory(id = ContactCategoryId(contactType.id, category = contactCategory))

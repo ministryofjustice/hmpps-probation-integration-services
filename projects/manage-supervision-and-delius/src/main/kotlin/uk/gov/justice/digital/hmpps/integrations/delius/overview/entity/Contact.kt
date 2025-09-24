@@ -36,8 +36,9 @@ class Contact(
     @Column(name = "contact_id")
     val id: Long = 0,
 
-    @Column(name = "offender_id")
-    val personId: Long,
+    @ManyToOne
+    @JoinColumn(name = "offender_id")
+    val person: Person,
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "event_id")
@@ -120,6 +121,10 @@ class Contact(
     @Column(name = "visor_contact")
     @Convert(converter = YesNoConverter::class)
     val isVisor: Boolean? = null,
+
+    @Convert(converter = YesNoConverter::class)
+    @Column(name = "alert_active")
+    val alert: Boolean? = false,
 
     @Column(name = "soft_deleted", columnDefinition = "number", nullable = false)
     @Convert(converter = NumericBooleanConverter::class)
@@ -206,7 +211,10 @@ class ContactType(
     val offenderContact: Boolean = false,
 
     @Column(name = "contact_location_flag", columnDefinition = "char(1)")
-    val locationRequired: String
+    val locationRequired: String,
+
+    @Convert(converter = YesNoConverter::class)
+    val editable: Boolean,
 )
 
 interface ContactTypeRepository : CrudRepository<ContactType, Long> {
@@ -335,7 +343,7 @@ interface ContactRepository : JpaRepository<Contact, Long> {
         left join fetch e.mainOffence mo
         left join fetch mo.offence moo
         left join fetch rqmnt.subCategory rsc
-        where c.personId = :personId
+        where c.person.id = :personId
         order by c.date desc, c.startTime desc 
     """
     )
@@ -632,6 +640,16 @@ interface ContactRepository : JpaRepository<Contact, Long> {
         timeNow: String,
         pageable: Pageable
     ): Page<Appointment>
+
+    @Query(
+        """
+            SELECT c from Contact c
+            join fetch c.person p
+            join OffenderManager com on p.id = com.person.id and com.active = true and com.softDeleted = false
+            where c.alert = true and com.staff.user.username = :username
+        """
+    )
+    fun findAllUserAlerts(username: String, pageable: Pageable): Page<Contact>
 }
 
 fun ContactRepository.getContact(id: Long) = findById(id).orElseThrow { NotFoundException("Contact", "id", id) }
