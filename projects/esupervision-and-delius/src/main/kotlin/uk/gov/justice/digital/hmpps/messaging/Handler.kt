@@ -44,7 +44,7 @@ class Handler(
 
 fun HmppsDomainEvent.description() = when (eventType) {
     CHECK_IN_RECEIVED -> "Online check in completed"
-    CHECK_IN_EXPIRED -> "Online check in 72 hours lapsed"
+    CHECK_IN_EXPIRED -> "Check in has not been submitted on time"
     else -> throw IllegalArgumentException("Unexpected event type: $eventType")
 }
 

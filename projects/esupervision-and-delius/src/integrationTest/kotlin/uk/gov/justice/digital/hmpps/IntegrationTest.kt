@@ -54,7 +54,7 @@ internal class IntegrationTest {
         channelManager.getChannel(queueName).publishAndWait(notification)
 
         val contact = contactRepository.findAll().single {
-            it.person.id == PersonGenerator.DEFAULT_PERSON.id && it.description == "Online check in 72 hours lapsed"
+            it.person.id == PersonGenerator.DEFAULT_PERSON.id && it.description == "Check in has not been submitted on time"
         }
         assertThat(contact.type.code).isEqualTo(ContactType.E_SUPERVISION_CHECK_IN)
         assertThat(contact.date).isEqualTo(notification.message.occurredAt.toLocalDate())
