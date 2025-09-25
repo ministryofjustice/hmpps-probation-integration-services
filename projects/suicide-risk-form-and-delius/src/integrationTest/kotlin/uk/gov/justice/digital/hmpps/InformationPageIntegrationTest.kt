@@ -49,7 +49,7 @@ class InformationPageIntegrationTest {
                     startDate = registration.date,
                     endDate = null,
                     notes = registration.notes,
-                    documentsLinked = registration.documentLinked,
+                    documentsLinked = registration.documentLinked!!,
                     deregistered = registration.deregistered
                 )
             )

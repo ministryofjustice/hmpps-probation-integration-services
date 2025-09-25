@@ -28,7 +28,7 @@ class RegistrationsService(
                 startDate = latestRegistration.date,
                 endDate = latestRegistration.deregistrations.minOfOrNull { it.deRegistrationDate },
                 notes = latestRegistration.notes,
-                documentsLinked = latestRegistration.documentLinked,
+                documentsLinked = latestRegistration.documentLinked ?: false,
                 deregistered = latestRegistration.deregistered
             )
         )
