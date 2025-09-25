@@ -43,7 +43,7 @@ class CheckInService(
         team = com.team,
         staff = com.staff,
         description = description(),
-        notes = "Review the online check in using the manage probation check ins service: ${checkInUrl()}",
+        notes = description() + System.lineSeparator() + "Review the online check in using the manage probation check ins service: ${checkInUrl()}",
         softDeleted = false,
         id = 0
     )
