@@ -5,6 +5,7 @@ template:
   settings:
     default_pipeline: contact-semantic-search-pipeline
     index.search.default_pipeline: contact-semantic-search-search-pipeline
+    index.search.concurrent_segment_search.mode: auto
     index.knn: true
     index.knn.derived_source.enabled: true
     index.number_of_shards: 12
