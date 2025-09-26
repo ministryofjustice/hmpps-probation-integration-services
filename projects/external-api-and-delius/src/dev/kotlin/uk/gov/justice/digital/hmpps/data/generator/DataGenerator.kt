@@ -10,8 +10,10 @@ import java.time.ZonedDateTime
 
 object DataGenerator {
     val DEFAULT_PROVIDER = Provider("DEF", "Default Provider", IdGenerator.getAndIncrement())
+    val DEFAULT_PDU = Pdu(DEFAULT_PROVIDER, "DEFPDU", "Default PDU", IdGenerator.getAndIncrement())
+    val DEFAULT_LAU = Lau(DEFAULT_PDU, "DEFLAU", "Default Lau", IdGenerator.getAndIncrement())
     val DEFAULT_TEAM =
-        Team("DEFUAT", "Default Team", "020 334 1257", "team@justice.co.uk", IdGenerator.getAndIncrement())
+        Team("DEFUAT", "Default Team", "020 334 1257", "team@justice.co.uk", DEFAULT_LAU, IdGenerator.getAndIncrement())
     val JOHN_SMITH = Staff("DEFJOSM", "John", "Smith", null, IdGenerator.getAndIncrement())
     val JS_USER = StaffUser(JOHN_SMITH, "john-smith", IdGenerator.getAndIncrement())
 
