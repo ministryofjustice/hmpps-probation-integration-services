@@ -8,6 +8,9 @@ import org.springframework.context.ApplicationListener
 import org.springframework.stereotype.Component
 import org.springframework.transaction.support.TransactionTemplate
 import uk.gov.justice.digital.hmpps.data.generator.*
+import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.CONTACT
+import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.CONTACT_OUTCOME_TYPE
+import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.CONTACT_TYPE
 import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator.AI_PREVIOUS_CRN
 import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator.RD_ADDRESS_STATUS
 import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator.RD_DISABILITY_CONDITION
@@ -64,6 +67,8 @@ class DataLoader(
                 persist(RD_ETHNICITY)
                 persist(INVALID_MAPPA_LEVEL)
                 persist(DataGenerator.DEFAULT_PROVIDER)
+                persist(DataGenerator.DEFAULT_PDU)
+                persist(DataGenerator.DEFAULT_LAU)
                 persist(DataGenerator.DEFAULT_TEAM)
                 persist(DataGenerator.JOHN_SMITH)
                 persist(DataGenerator.JS_USER)
@@ -114,6 +119,7 @@ class DataLoader(
             }
         }
         loadLaoData()
+        loadContactData()
     }
 
     private fun loadLaoData() {
@@ -123,6 +129,16 @@ class DataLoader(
                 merge(LaoGenerator.RESTRICTION)
                 merge(LaoGenerator.BOTH_EXCLUSION)
                 merge(LaoGenerator.BOTH_RESTRICTION)
+            }
+        }
+    }
+
+    private fun loadContactData() {
+        transactionTemplate.execute {
+            with(entityManager) {
+                merge(CONTACT_TYPE)
+                merge(CONTACT_OUTCOME_TYPE)
+                merge(CONTACT)
             }
         }
     }
