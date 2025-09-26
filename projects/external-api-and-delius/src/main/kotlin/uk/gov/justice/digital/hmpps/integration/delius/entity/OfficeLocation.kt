@@ -1,14 +1,15 @@
 package uk.gov.justice.digital.hmpps.integration.delius.entity
 
-import jakarta.persistence.*
+import jakarta.persistence.Column
+import jakarta.persistence.Entity
+import jakarta.persistence.Id
+import jakarta.persistence.Table
 import org.hibernate.annotations.Immutable
-import org.hibernate.annotations.SQLRestriction
 import java.time.LocalDate
 
 @Immutable
 @Entity
 @Table(name = "office_location")
-@SQLRestriction("end_date is null or end_date > current_date")
 class OfficeLocation(
     @Column(columnDefinition = "char(7)")
     val code: String,
