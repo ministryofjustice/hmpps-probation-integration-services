@@ -4,7 +4,7 @@ import org.springframework.ldap.odm.annotations.Attribute
 import org.springframework.ldap.odm.annotations.DnAttribute
 import org.springframework.ldap.odm.annotations.Entry
 import org.springframework.ldap.odm.annotations.Id
-import uk.gov.justice.digital.hmpps.model.Name
+import javax.naming.Name
 
 @Entry(objectClasses = ["inetOrgPerson", "top"])
 class LdapUser(
@@ -31,4 +31,4 @@ class LdapUser(
     val userHomeArea: String?
 )
 
-fun LdapUser.name() = Name(firstName, null, surname)
+fun LdapUser.name() = uk.gov.justice.digital.hmpps.model.Name(firstName, null, surname)
