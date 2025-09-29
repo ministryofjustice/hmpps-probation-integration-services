@@ -1,6 +1,5 @@
 package uk.gov.justice.digital.hmpps.model
 
-import java.time.LocalDate
 import java.time.ZonedDateTime
 
 data class ContactLogged(
@@ -30,3 +29,5 @@ data class OfficerTeam(
 )
 
 data class OfficerPdu(val code: String, val description: String, val provider: Provider)
+
+data class ContactsLogged(val content: List<ContactLogged>, val totalPages: Int, val totalResults: Long)

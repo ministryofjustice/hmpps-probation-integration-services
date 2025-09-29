@@ -42,6 +42,8 @@ class RegistrationEntity(
     @Convert(converter = NumericBooleanConverter::class)
     val deRegistered: Boolean,
 
+    val contactId: Long?,
+
     @Column(name = "soft_deleted", columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean,

@@ -28,9 +28,22 @@ object RegistrationGenerator {
         notes: String? = null,
         person: Person = DataGenerator.PERSON,
         deRegistered: Boolean = false,
+        contactId: Long? = null,
         softDeleted: Boolean = false,
         id: Long = IdGenerator.getAndIncrement()
-    ) = RegistrationEntity(person.id, type, category, level, date, reviewDate, notes, deRegistered, softDeleted, id)
+    ) = RegistrationEntity(
+        person.id,
+        type,
+        category,
+        level,
+        date,
+        reviewDate,
+        notes,
+        deRegistered,
+        contactId,
+        softDeleted,
+        id
+    )
 
     fun generateReferenceData(
         code: String,

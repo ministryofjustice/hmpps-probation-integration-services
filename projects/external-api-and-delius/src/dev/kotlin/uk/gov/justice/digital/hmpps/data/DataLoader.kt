@@ -11,6 +11,7 @@ import uk.gov.justice.digital.hmpps.data.generator.*
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.CONTACT
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.CONTACT_OUTCOME_TYPE
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.CONTACT_TYPE
+import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.MAPPA_CONTACT
 import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator.AI_PREVIOUS_CRN
 import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator.RD_ADDRESS_STATUS
 import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator.RD_DISABILITY_CONDITION
@@ -94,13 +95,18 @@ class DataLoader(
                 persist(DataGenerator.EVENT_NON_APP_LENGTH_UNIT.mainOffence)
                 DataGenerator.EVENT_NON_APP_LENGTH_UNIT.additionalOffences.forEach { persist(it) }
                 DataGenerator.EVENT_NON_APP_LENGTH_UNIT.courtAppearances.forEach { persist(it) }
+                merge(CONTACT_TYPE)
+                merge(CONTACT_OUTCOME_TYPE)
+                merge(CONTACT)
+                merge(MAPPA_CONTACT)
                 persist(
                     RegistrationGenerator.generate(
                         RegistrationGenerator.MAPPA_TYPE,
                         RegistrationGenerator.CATEGORIES[Category.M2.name],
                         RegistrationGenerator.LEVELS[Level.M1.name],
                         reviewDate = LocalDate.now().plusMonths(6),
-                        notes = "Mappa Detail for ${DataGenerator.PERSON.crn}"
+                        notes = "Mappa Detail for ${DataGenerator.PERSON.crn}",
+                        contactId = MAPPA_CONTACT.id
                     )
                 )
                 persist(
@@ -119,7 +125,6 @@ class DataLoader(
             }
         }
         loadLaoData()
-        loadContactData()
     }
 
     private fun loadLaoData() {
@@ -129,16 +134,6 @@ class DataLoader(
                 merge(LaoGenerator.RESTRICTION)
                 merge(LaoGenerator.BOTH_EXCLUSION)
                 merge(LaoGenerator.BOTH_RESTRICTION)
-            }
-        }
-    }
-
-    private fun loadContactData() {
-        transactionTemplate.execute {
-            with(entityManager) {
-                merge(CONTACT_TYPE)
-                merge(CONTACT_OUTCOME_TYPE)
-                merge(CONTACT)
             }
         }
     }
