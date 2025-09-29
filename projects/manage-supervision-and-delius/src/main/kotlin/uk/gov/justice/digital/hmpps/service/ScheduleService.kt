@@ -134,7 +134,7 @@ fun Contact.toActivityOverview() = Activity(
     isCommunication = isCommunication(),
     description = description,
     outcome = outcome?.description,
-    deliusManaged = CreateAppointment.Type.entries.none { it.code == type.code }
+    deliusManaged = CreateAppointment.Type.entries.none { it.code == type.code } || complied == false || requirement?.mainCategory?.code == "F",
 )
 
 fun Contact.toActivity(noteId: Int? = null) = Activity(

@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.api.model.appointment
 
 import uk.gov.justice.digital.hmpps.api.model.Name
+import uk.gov.justice.digital.hmpps.api.model.appointment.CreateAppointment
 import java.time.LocalDate
 import java.time.ZonedDateTime
 
@@ -30,6 +31,7 @@ data class UserAppointment(
     val type: String,
     val startDateTime: ZonedDateTime,
     val endDateTime: ZonedDateTime? = null,
-    val location: String? = null
+    val location: String? = null,
+    val deliusManaged: Boolean
 )
 
