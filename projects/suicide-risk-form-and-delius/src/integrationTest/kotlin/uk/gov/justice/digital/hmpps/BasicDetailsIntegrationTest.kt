@@ -72,11 +72,10 @@ class BasicDetailsIntegrationTest {
 
         assertThat(response).isEqualTo(
             SignAndSendResponse(
-                title = staff.title?.code,
                 name = Name(
-                    staff.firstName,
-                    staff.middleName,
-                    staff.surname
+                    ldapUser.firstName,
+                    null,
+                    ldapUser.surname
                 ),
                 telephoneNumber = ldapUser.telephoneNumber,
                 emailAddress = ldapUser.email,

@@ -40,14 +40,11 @@ class DetailsService(
             throw IllegalArgumentException("No home area found for $username")
         }
 
-        val staff = staffRepository.findByUserUsername(username)
-            ?: throw IllegalArgumentException("No staff record found for $username")
         val defaultReplyAddress = ldapTemplate.findPreferenceByUsername(username, "replyAddress")?.toLongOrNull()
         val officeLocations = officeLocationRepository.findAllByProviderCode(ldapUser.userHomeArea)
 
         return SignAndSendResponse(
-            title = staff.title?.code,
-            name = staff.name(),
+            name = ldapUser.name(),
             telephoneNumber = ldapUser.telephoneNumber,
             emailAddress = ldapUser.email,
             addresses = officeLocations.map {
