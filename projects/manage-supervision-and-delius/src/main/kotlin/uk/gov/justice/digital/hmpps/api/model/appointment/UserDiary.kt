@@ -30,6 +30,7 @@ data class UserAppointment(
     val type: String,
     val startDateTime: ZonedDateTime,
     val endDateTime: ZonedDateTime? = null,
-    val location: String? = null
+    val location: String? = null,
+    val deliusManaged: Boolean
 )
 

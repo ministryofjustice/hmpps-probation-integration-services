@@ -310,6 +310,7 @@ internal class UserServiceTest {
             _crn = "X12345",
             _contactDate = LocalDate.now(),
             _contactDescription = "contact description",
+            _typeCode = "ANCT"
         )
 
         whenever(userRepository.findUserByUsername(username)).thenReturn(USER)
@@ -336,7 +337,8 @@ internal class UserServiceTest {
             startDateTime = ZonedDateTime.of(
                 testAppointment._contactDate,
                 LocalTime.MIDNIGHT, EuropeLondon
-            )
+            ),
+            deliusManaged = true
         )
         val expected = UserDiary(10, 0, 1, 1, listOf(userAppointment))
 
@@ -375,6 +377,7 @@ internal class UserServiceTest {
         val _contactEndTime: LocalTime? = null,
         val _totalSentences: Int? = null,
         val _contactDescription: String,
+        val _typeCode: String,
         val _sentenceDescription: String? = null,
     ) : Appointment {
         override val id: Long
@@ -405,5 +408,11 @@ internal class UserServiceTest {
             get() = _contactDescription
         override val sentenceDescription: String?
             get() = _sentenceDescription
+        override val typeCode: String
+            get() = _typeCode
+        override val complied: Boolean?
+            get() = null
+        override val rqmntMainCatCode: String?
+            get() = null
     }
 }
