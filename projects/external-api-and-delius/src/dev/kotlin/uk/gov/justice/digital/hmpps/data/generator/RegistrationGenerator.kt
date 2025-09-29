@@ -28,7 +28,6 @@ object RegistrationGenerator {
         notes: String? = null,
         person: Person = DataGenerator.PERSON,
         deRegistered: Boolean = false,
-        contactId: Long? = null,
         softDeleted: Boolean = false,
         id: Long = IdGenerator.getAndIncrement()
     ) = RegistrationEntity(
@@ -40,7 +39,6 @@ object RegistrationGenerator {
         reviewDate,
         notes,
         deRegistered,
-        contactId,
         softDeleted,
         id
     )

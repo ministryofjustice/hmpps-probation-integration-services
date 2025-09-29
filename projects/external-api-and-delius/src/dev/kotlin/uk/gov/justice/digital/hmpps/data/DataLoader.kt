@@ -106,7 +106,6 @@ class DataLoader(
                         RegistrationGenerator.LEVELS[Level.M1.name],
                         reviewDate = LocalDate.now().plusMonths(6),
                         notes = "Mappa Detail for ${DataGenerator.PERSON.crn}",
-                        contactId = MAPPA_CONTACT.id
                     )
                 )
                 persist(

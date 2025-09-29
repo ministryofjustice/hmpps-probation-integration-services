@@ -110,14 +110,14 @@ interface ContactRepository : JpaRepository<Contact, Long> {
     @Query(
         """
         select c from Contact c
-        join RegistrationEntity r on r.contactId = c.id
+        join RegistrationEntity r on r.personId = c.person.id
         where c.person.crn = :crn 
         and r.type.code = 'MAPP' 
         and r.category.code in :mappaCategories
         and (c.visorContact = true or c.visorExported = true)
     """
     )
-    fun findMappaContacts(crn: String, mappaCategories: Set<String>, pageable: Pageable): Page<Contact>
+    fun findVisorContacts(crn: String, mappaCategories: Set<String>, pageable: Pageable): Page<Contact>
 }
 
 fun ContactRepository.getContact(crn: String, id: Long): Contact =

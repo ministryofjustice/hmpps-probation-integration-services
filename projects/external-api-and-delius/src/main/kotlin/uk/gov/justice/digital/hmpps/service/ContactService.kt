@@ -20,8 +20,8 @@ class ContactService(private val contactRepository: ContactRepository) {
     fun getById(crn: String, contactId: Long): ContactLogged =
         contactRepository.getContact(crn, contactId).asContactLogged()
 
-    fun getMappaContacts(crn: String, mappaCategories: List<Int>, pageable: Pageable): ContactsLogged {
-        return contactRepository.findMappaContacts(
+    fun getVisorContacts(crn: String, mappaCategories: List<Int>, pageable: Pageable): ContactsLogged {
+        return contactRepository.findVisorContacts(
             crn,
             (mappaCategories.mapNotNull { fromNumber(it)?.name }.takeIf { it.isNotEmpty() }
                 ?: entries.map { it.name }).toSet(),

@@ -22,10 +22,10 @@ class ContactsController(private val contactService: ContactService) {
         contactService.getById(crn, contactId)
 
     @GetMapping
-    fun getMappaContacts(
+    fun getVisorContacts(
         @PathVariable crn: String,
         @RequestParam mappaCategories: List<Int>,
         @RequestParam(required = false, defaultValue = "0") page: Int,
         @RequestParam(required = false, defaultValue = "10") size: Int,
-    ): ContactsLogged = contactService.getMappaContacts(crn, mappaCategories, PageRequest.of(page, size))
+    ): ContactsLogged = contactService.getVisorContacts(crn, mappaCategories, PageRequest.of(page, size))
 }
