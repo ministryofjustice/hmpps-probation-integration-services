@@ -34,7 +34,8 @@ data class CreateAppointment(
         InitialAppointmentInOfficeNS("COAI"),
         HomeVisitToCaseNS("CHVS"),
         ThreeWayMeetingNS("C084"),
-        PlannedDoorstepContactNS("CODC")
+        PlannedDoorstepContactNS("CODC"),
+        InterviewForReportOther("COSR")
     }
 
     enum class Interval(val value: Int) {

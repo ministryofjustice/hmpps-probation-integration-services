@@ -30,7 +30,18 @@ object RegistrationGenerator {
         deRegistered: Boolean = false,
         softDeleted: Boolean = false,
         id: Long = IdGenerator.getAndIncrement()
-    ) = RegistrationEntity(person.id, type, category, level, date, reviewDate, notes, deRegistered, softDeleted, id)
+    ) = RegistrationEntity(
+        person.id,
+        type,
+        category,
+        level,
+        date,
+        reviewDate,
+        notes,
+        deRegistered,
+        softDeleted,
+        id
+    )
 
     fun generateReferenceData(
         code: String,

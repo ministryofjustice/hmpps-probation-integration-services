@@ -1,7 +1,6 @@
 package uk.gov.justice.digital.hmpps.api.model.appointment
 
 import uk.gov.justice.digital.hmpps.api.model.Name
-import uk.gov.justice.digital.hmpps.api.model.appointment.CreateAppointment
 import java.time.LocalDate
 import java.time.ZonedDateTime
 
