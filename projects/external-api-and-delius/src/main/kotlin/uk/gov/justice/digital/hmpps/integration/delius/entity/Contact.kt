@@ -4,10 +4,13 @@ import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.NumericBooleanConverter
+import org.hibernate.type.YesNoConverter
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedDate
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.repository.JpaRepository
-import org.springframework.data.repository.findByIdOrNull
+import org.springframework.data.jpa.repository.Query
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import java.time.LocalDate
 import java.time.ZonedDateTime
@@ -54,6 +57,12 @@ class Contact(
     @Column
     val notes: String?,
 
+    @Convert(converter = YesNoConverter::class)
+    var visorContact: Boolean?,
+
+    @Convert(converter = YesNoConverter::class)
+    val visorExported: Boolean?,
+
     @Column(nullable = false, columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean,
@@ -95,6 +104,21 @@ class ContactOutcome(
     val id: Long
 )
 
-interface ContactRepository : JpaRepository<Contact, Long>
+interface ContactRepository : JpaRepository<Contact, Long> {
+    fun findByPersonCrnAndId(crn: String, contactId: Long): Contact?
 
-fun ContactRepository.getContact(id: Long): Contact = findByIdOrNull(id) ?: throw NotFoundException("Contact", "id", id)
+    @Query(
+        """
+        select c from Contact c
+        join RegistrationEntity r on r.personId = c.person.id
+        where c.person.crn = :crn 
+        and r.type.code = 'MAPP' 
+        and r.category.code in :mappaCategories
+        and (c.visorContact = true or c.visorExported = true)
+    """
+    )
+    fun findVisorContacts(crn: String, mappaCategories: Set<String>, pageable: Pageable): Page<Contact>
+}
+
+fun ContactRepository.getContact(crn: String, id: Long): Contact =
+    findByPersonCrnAndId(crn, id) ?: throw NotFoundException("Contact", "id", id)

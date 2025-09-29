@@ -10,6 +10,7 @@ object ContactGenerator {
     val CONTACT_TYPE = ContactType("CNT01", "Contact Type 1", IdGenerator.getAndIncrement())
     val CONTACT_OUTCOME_TYPE = ContactOutcome("CNO01", "Contact Outcome 1", IdGenerator.getAndIncrement())
     val CONTACT = generateContact()
+    val MAPPA_CONTACT = generateContact(outcome = null, visorExported = true, description = "Mappa Contact")
 
     fun generateContact(
         person: Person = PersonGenerator.DEFAULT,
@@ -22,6 +23,8 @@ object ContactGenerator {
         outcome: ContactOutcome? = CONTACT_OUTCOME_TYPE,
         description: String? = "Description override",
         notes: String? = "Some notes about the contact",
+        visorContact: Boolean? = null,
+        visorExported: Boolean? = null,
         softDeleted: Boolean = false,
         createdDateTime: ZonedDateTime = ZonedDateTime.now(),
         lastUpdatedDateTime: ZonedDateTime = ZonedDateTime.now(),
@@ -37,6 +40,8 @@ object ContactGenerator {
         outcome,
         description,
         notes,
+        visorContact,
+        visorExported,
         softDeleted,
         createdDateTime,
         lastUpdatedDateTime,

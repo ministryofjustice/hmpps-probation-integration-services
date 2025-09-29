@@ -7,6 +7,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.CONTACT_OUTCOME_TYPE
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.CONTACT_TYPE
+import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.MAPPA_CONTACT
 import uk.gov.justice.digital.hmpps.data.generator.DataGenerator.DEFAULT_PDU
 import uk.gov.justice.digital.hmpps.data.generator.DataGenerator.DEFAULT_PROVIDER
 import uk.gov.justice.digital.hmpps.data.generator.DataGenerator.DEFAULT_TEAM
@@ -41,5 +42,28 @@ internal class ContactIntegrationTest : BaseIntegrationTest() {
                 )
             )
         )
+    }
+
+    @Test
+    fun `can retrieve visor contacts when mappa category matches`() {
+        val response = mockMvc
+            .perform(get("/case/${PersonGenerator.DEFAULT.crn}/contacts?mappaCategories=2").withToken())
+            .andExpect(status().is2xxSuccessful)
+            .andReturn().response.contentAsJson<ContactsLogged>()
+
+        assertThat(response.totalPages).isEqualTo(1)
+        assertThat(response.totalResults).isEqualTo(1)
+        assertThat(response.content.first().description).isEqualTo(MAPPA_CONTACT.description)
+    }
+
+    @Test
+    fun `no contacts when mappa category does not match`() {
+        val response = mockMvc
+            .perform(get("/case/${PersonGenerator.DEFAULT.crn}/contacts?mappaCategories=4").withToken())
+            .andExpect(status().is2xxSuccessful)
+            .andReturn().response.contentAsJson<ContactsLogged>()
+
+        assertThat(response.totalPages).isEqualTo(0)
+        assertThat(response.totalResults).isEqualTo(0)
     }
 }
