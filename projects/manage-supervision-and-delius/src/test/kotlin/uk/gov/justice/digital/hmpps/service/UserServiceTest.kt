@@ -410,7 +410,7 @@ internal class UserServiceTest {
             get() = _sentenceDescription
         override val typeCode: String
             get() = _typeCode
-        override val complied: Boolean?
+        override val complied: Int?
             get() = null
         override val rqmntMainCatCode: String?
             get() = null
