@@ -2864,9 +2864,12 @@ components:
           format: date-time
         location:
           type: string
+        deliusManaged:
+          type: boolean
       required:
       - caseName
       - crn
+      - deliusManaged
       - dob
       - id
       - startDateTime
