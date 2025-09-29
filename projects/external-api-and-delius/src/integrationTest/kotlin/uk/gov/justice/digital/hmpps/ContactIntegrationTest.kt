@@ -45,7 +45,7 @@ internal class ContactIntegrationTest : BaseIntegrationTest() {
     }
 
     @Test
-    fun `can retrieve mappa contacts`() {
+    fun `can retrieve visor contacts when mappa category matches`() {
         val response = mockMvc
             .perform(get("/case/${PersonGenerator.DEFAULT.crn}/contacts?mappaCategories=2").withToken())
             .andExpect(status().is2xxSuccessful)
@@ -54,5 +54,16 @@ internal class ContactIntegrationTest : BaseIntegrationTest() {
         assertThat(response.totalPages).isEqualTo(1)
         assertThat(response.totalResults).isEqualTo(1)
         assertThat(response.content.first().description).isEqualTo(MAPPA_CONTACT.description)
+    }
+
+    @Test
+    fun `no contacts when mappa category does not match`() {
+        val response = mockMvc
+            .perform(get("/case/${PersonGenerator.DEFAULT.crn}/contacts?mappaCategories=4").withToken())
+            .andExpect(status().is2xxSuccessful)
+            .andReturn().response.contentAsJson<ContactsLogged>()
+
+        assertThat(response.totalPages).isEqualTo(0)
+        assertThat(response.totalResults).isEqualTo(0)
     }
 }
