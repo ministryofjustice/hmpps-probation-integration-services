@@ -15,6 +15,12 @@ class LdapUser(
     @DnAttribute(value = "cn", index = 0)
     val username: String,
 
+    @Attribute(name = "givenName")
+    val firstName: String,
+
+    @Attribute(name = "sn")
+    val surname: String,
+
     @Attribute(name = "mail")
     val email: String?,
 
@@ -24,3 +30,5 @@ class LdapUser(
     @Attribute(name = "userHomeArea")
     val userHomeArea: String?
 )
+
+fun LdapUser.name() = uk.gov.justice.digital.hmpps.model.Name(firstName, null, surname)

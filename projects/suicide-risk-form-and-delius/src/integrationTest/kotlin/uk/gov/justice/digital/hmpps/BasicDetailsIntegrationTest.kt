@@ -61,7 +61,6 @@ class BasicDetailsIntegrationTest {
     @Test
     fun `can retrieve user details for sign and send endpoint`() {
         val user = UserGenerator.DEFAULT
-        val staff = user.staff!!
         val ldapUser = ldapTemplate.findByUsername<LdapUser>(user.username)!!
         val officeLocation = OfficeLocationGenerator.DEFAULT
 
@@ -72,11 +71,10 @@ class BasicDetailsIntegrationTest {
 
         assertThat(response).isEqualTo(
             SignAndSendResponse(
-                title = staff.title?.code,
                 name = Name(
-                    staff.firstName,
-                    staff.middleName,
-                    staff.surname
+                    ldapUser.firstName,
+                    null,
+                    ldapUser.surname
                 ),
                 telephoneNumber = ldapUser.telephoneNumber,
                 emailAddress = ldapUser.email,
