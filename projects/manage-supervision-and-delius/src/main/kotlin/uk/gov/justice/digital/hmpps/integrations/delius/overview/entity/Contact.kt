@@ -476,8 +476,8 @@ interface ContactRepository : JpaRepository<Contact, Long> {
                         total_sentences,
                         rct.description AS contactDescription,
                         rct.code as typeCode,
-                        c.complied = 'Y',
-                        rtmc.code,
+                        case when c.complied = 'Y' then 1 else 0 end as complied,
+                        rtmc.code as rqmntMainCatCode,
                         NVL(rdt.description, latest_sentence_description)  AS sentenceDescription
                 FROM contact c 
                 JOIN r_contact_type rct ON rct.contact_type_id = c.contact_type_id 
@@ -554,8 +554,8 @@ interface ContactRepository : JpaRepository<Contact, Long> {
                          AND e.soft_deleted = 0) as totalSentences,
                     rct.description AS contactDescription,
                     rct.code as typeCode,
-                    c.complied = 'Y',
-                    rtmc.code,
+                    case when c.complied = 'Y' then 1 else 0 end as complied,
+                    rtmc.code as rqmntMainCatCode,
                     CASE WHEN d.disposal_id IS NOT NULL 
                     THEN 
                         rdt.description
@@ -623,8 +623,8 @@ interface ContactRepository : JpaRepository<Contact, Long> {
                 c.contact_end_time AS contact_end_time,                                 
                 rct.description AS contactDescription,
                 rct.code as typeCode,
-                c.complied = 'Y',
-                rtmc.code
+                case when c.complied = 'Y' then 1 else 0 end as complied,
+                rtmc.code as rqmntMainCatCode
         FROM offender o
         JOIN caseload cl ON o.offender_id = cl.offender_id AND (cl.role_code = 'OM')
         JOIN contact c ON c.offender_id = o.offender_id AND c.staff_id = :staffId
@@ -694,7 +694,7 @@ interface Appointment {
     val contactDescription: String
     val sentenceDescription: String?
     val typeCode: String
-    val complied: Boolean?
+    val complied: Int?
     val rqmntMainCatCode: String?
 }
 

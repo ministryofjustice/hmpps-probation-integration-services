@@ -360,7 +360,7 @@ private fun AppointmentEntity.toUserAppointment() = UserAppointment(
         EuropeLondon
     ) else null,
     location,
-    CreateAppointment.Type.entries.none { it.code == typeCode } || complied == false || rqmntMainCatCode == "F",
+    CreateAppointment.Type.entries.none { it.code == typeCode } || complied == 0 || rqmntMainCatCode == "F",
 )
 
 fun ProbationAreaUser.toProvider() = Provider(id.provider.code, id.provider.description)
