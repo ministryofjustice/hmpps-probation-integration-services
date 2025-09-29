@@ -18,6 +18,8 @@ tags:
   description: Requires PROBATION_API__HMPPS_API__CASE_DETAIL
 - name: Case Details
   description: Requires PROBATION_API__HMPPS_API__CASE_DETAIL
+- name: Contacts
+  description: Requires PROBATION_API__HMPPS_API__CASE_DETAIL
 paths:
   /probation-cases/access:
     get:
@@ -167,6 +169,30 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/SupervisionResponse"
+  /case/{crn}/contacts/{contactId}:
+    get:
+      tags:
+      - Contacts
+      operationId: getContact
+      parameters:
+      - name: crn
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: contactId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ContactLogged"
   /case/{crn}/addresses:
     get:
       tags:
@@ -688,6 +714,83 @@ components:
       - code
       - description
       - provider
+    ContactLogged:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        crn:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        contactDate:
+          type: string
+          format: date-time
+        type:
+          $ref: "#/components/schemas/CodedValue"
+        description:
+          type: string
+        location:
+          $ref: "#/components/schemas/CodedValue"
+        outcome:
+          $ref: "#/components/schemas/CodedValue"
+        officer:
+          $ref: "#/components/schemas/Officer"
+        notes:
+          type: string
+      required:
+      - contactDate
+      - createdAt
+      - crn
+      - description
+      - id
+      - officer
+      - type
+      - updatedAt
+    Officer:
+      type: object
+      properties:
+        code:
+          type: string
+        name:
+          $ref: "#/components/schemas/Name"
+        team:
+          $ref: "#/components/schemas/OfficerTeam"
+      required:
+      - code
+      - name
+      - team
+    OfficerPdu:
+      type: object
+      properties:
+        code:
+          type: string
+        description:
+          type: string
+        provider:
+          $ref: "#/components/schemas/Provider"
+      required:
+      - code
+      - description
+      - provider
+    OfficerTeam:
+      type: object
+      properties:
+        code:
+          type: string
+        description:
+          type: string
+        pdu:
+          $ref: "#/components/schemas/OfficerPdu"
+      required:
+      - code
+      - description
+      - pdu
     AddressWrapper:
       type: object
       properties:
