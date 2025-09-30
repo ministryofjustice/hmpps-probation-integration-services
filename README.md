@@ -214,9 +214,9 @@ You'll need to be in the `ministryofjustice` organisation to access it.
 To add a feature flag to your code:
 
 1. Create a new boolean flag in
-   the [dev](https://feature-flags-dev.hmpps.service.justice.gov.uk), [preprod](https://feature-flags-preprod.hmpps.service.justice.gov.uk),
-   and [prod](https://feature-flags.hmpps.service.justice.gov.uk) dashboards.
-2. Update your code to inject the `FeatureFlags` service, and call `enabled("<key>")`. Example:
+   the [dev](https://feature-toggles-dev.hmpps.service.justice.gov.uk), [preprod](https://feature-toggles-preprod.hmpps.service.justice.gov.uk),
+   and [prod](https://feature-toggles.hmpps.service.justice.gov.uk) dashboards.
+2. Update your code to inject the `FeatureFlags` service, and call `enabled("<key>")`. Example:§
 
 ```kotlin
 @Service
