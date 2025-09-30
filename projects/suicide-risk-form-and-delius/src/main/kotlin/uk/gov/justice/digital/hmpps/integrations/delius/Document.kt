@@ -52,7 +52,7 @@ class Document(
 ) {
     companion object {
         fun suicideRiskFormUrn(uuid: UUID): String =
-            "urn:hmpps:suicide-risk-form:$uuid"
+            "urn:hmpps:suicide-risk:$uuid"
     }
 }
 
