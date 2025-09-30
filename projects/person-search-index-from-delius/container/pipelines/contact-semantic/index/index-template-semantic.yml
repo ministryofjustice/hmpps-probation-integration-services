@@ -1216,8 +1216,6 @@ template:
           only_on_same_position: true
 
   mappings:
-    _routing:
-      required: true # CRN must be provided for routing, so that contacts for the same CRN are stored together on the same shard
     properties:
       crn:
         type: keyword
