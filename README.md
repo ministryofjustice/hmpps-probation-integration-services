@@ -208,7 +208,7 @@ by [manually running a workflow](https://docs.github.com/en/actions/managing-wor
 This project uses [Flipt](https://www.flipt.io/) to control the availability of certain features.
 Feature flags allow us to turn on or off parts of a service in production, decoupling "releases" from "deployments".
 
-Feature flags are managed in the [Flipt dashboard](https://feature-flags.hmpps.service.justice.gov.uk).
+Feature flags are managed in the [Flipt dashboard](https://feature-toggles.hmpps.service.justice.gov.uk).
 You'll need to be in the `ministryofjustice` organisation to access it.
 
 To add a feature flag to your code:
