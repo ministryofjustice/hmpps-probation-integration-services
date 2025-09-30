@@ -36,7 +36,7 @@ generic-service:
   namespace_secrets:
     common:
       APPLICATIONINSIGHTS_CONNECTION_STRING: APPLICATIONINSIGHTS_CONNECTION_STRING
-    flipt-bootstrap-token:
+    flipt:
       FLIPT_URL: URL
       FLIPT_TOKEN: TOKEN
 
