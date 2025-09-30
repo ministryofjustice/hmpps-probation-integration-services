@@ -68,7 +68,8 @@ class DocumentService(
                         ContactDocumentDetails(
                             id = doc.id,
                             name = doc.name,
-                            lastUpdated = doc.lastSaved
+                            lastUpdated = doc.lastSaved,
+                            alfrescoId = doc.alfrescoId
                         )
                     } ?: emptyList()
                 )

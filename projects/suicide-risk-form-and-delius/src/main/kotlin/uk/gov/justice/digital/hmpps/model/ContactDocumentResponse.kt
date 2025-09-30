@@ -14,5 +14,6 @@ data class ContactDocumentItem(
 data class ContactDocumentDetails(
     val id: Long,
     val name: String,
-    val lastUpdated: ZonedDateTime?
+    val lastUpdated: ZonedDateTime?,
+    val alfrescoId: String
 )

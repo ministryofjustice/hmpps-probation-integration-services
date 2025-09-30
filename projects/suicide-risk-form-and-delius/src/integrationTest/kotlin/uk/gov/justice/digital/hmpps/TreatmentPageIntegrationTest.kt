@@ -56,6 +56,7 @@ class TreatmentPageIntegrationTest {
         assert(response.content[0].id == contact.id)
         assert(response.content[0].documents.size == 1)
         assert(response.content[0].documents[0].name == "test1.doc")
+        assert(response.content[0].documents[0].alfrescoId == document.alfrescoId)
     }
 
     @Test
