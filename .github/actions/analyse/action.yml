@@ -54,7 +54,7 @@ runs:
 
     - name: Sonar analysis
       if: github.actor != 'dependabot[bot]'
-      run: ./gradlew sonar -Dsonar.projectVersion="$VERSION"
+      run: ./gradlew sonar -Dsonar.projectVersion="$VERSION" --no-configuration-cache
       shell: bash
       env:
         SONAR_TOKEN: ${{ inputs.sonar-token }}
