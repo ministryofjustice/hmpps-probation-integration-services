@@ -51,8 +51,8 @@ runs:
       uses: docker/build-push-action@v6
       id: build
       with:
-        cache-from: type=gha
-        cache-to: type=gha,mode=max
+        cache-from: type=gha,scope=${{ inputs.project }}
+        cache-to: type=gha,mode=max,scope=${{ inputs.project }}
         context: "{{defaultContext}}:projects/${{ inputs.project }}/container"
         pull: true
         load: true
@@ -78,8 +78,8 @@ runs:
       uses: docker/build-push-action@v6
       if: (steps.check-changes.outputs.projects != '[]' && inputs.push == 'true') || inputs.force == 'true'
       with:
-        cache-from: type=gha
-        cache-to: type=gha,mode=max
+        cache-from: type=gha,scope=${{ inputs.project }}
+        cache-to: type=gha,mode=max,scope=${{ inputs.project }}
         context: "{{defaultContext}}:projects/${{ inputs.project }}/container"
         push: ${{ inputs.push }}
         provenance: false
