@@ -1246,6 +1246,8 @@ template:
             method:
               name: hnsw
               engine: lucene
+          crn:
+            type: keyword
       notes:
         type: text
         analyzer: probation_text_analyzer
