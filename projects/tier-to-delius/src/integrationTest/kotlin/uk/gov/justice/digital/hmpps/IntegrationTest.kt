@@ -8,7 +8,6 @@ import org.junit.jupiter.api.Order
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestMethodOrder
 import org.mockito.kotlin.verify
-import org.mockito.kotlin.whenever
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.context.SpringBootTest
@@ -17,7 +16,6 @@ import uk.gov.justice.digital.hmpps.data.repository.ContactDevRepository
 import uk.gov.justice.digital.hmpps.data.repository.ManagementTierDevRepository
 import uk.gov.justice.digital.hmpps.data.repository.ManagementTierWithEndDateDevRepository
 import uk.gov.justice.digital.hmpps.datetime.ZonedDateTimeDeserializer
-import uk.gov.justice.digital.hmpps.flags.FeatureFlags
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.ContactTypeCode
 import uk.gov.justice.digital.hmpps.integrations.delius.person.PersonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceDataRepository
@@ -56,9 +54,6 @@ internal class IntegrationTest {
     @MockitoBean
     private lateinit var telemetryService: TelemetryService
 
-    @MockitoBean
-    private lateinit var featureFlags: FeatureFlags
-
     @Test
     @Order(1)
     fun `updates a tier`() {
@@ -92,7 +87,6 @@ internal class IntegrationTest {
     @Test
     @Order(2)
     fun `end-dates previous tier`() {
-        whenever(featureFlags.enabled("tier-end-date")).thenReturn(true)
 
         val notification = prepMessage("tier-update", wireMockServer.port())
 

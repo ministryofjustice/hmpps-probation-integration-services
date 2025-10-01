@@ -55,7 +55,6 @@ internal class ProbationMatchingIntegrationTest {
     @BeforeEach
     fun setUp() {
         whenever(featureFlags.enabled("prison-identifiers-use-db-search")).thenReturn(false)
-        whenever(featureFlags.enabled("prison-identifiers-compare-with-db-search")).thenReturn(false)
     }
 
     @Test
