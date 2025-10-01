@@ -19,5 +19,6 @@ class UserController(private val userAccessService: UserAccessService, private v
     ) = userAccessService.userAccessFor(username, crns)
 
     @GetMapping("/user/{username}/teams")
-    fun getUserRegionInformation(@PathVariable username: String): UserTeams = UserTeams(teamService.findUserTeams(username))
+    fun getUserRegionInformation(@PathVariable username: String): UserTeams =
+        UserTeams(teamService.findUserTeams(username))
 }
