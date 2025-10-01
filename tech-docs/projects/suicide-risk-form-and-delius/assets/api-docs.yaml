@@ -156,7 +156,10 @@ components:
         lastUpdated:
           type: string
           format: date-time
+        alfrescoId:
+          type: string
       required:
+      - alfrescoId
       - id
       - name
     ContactDocumentItem:
