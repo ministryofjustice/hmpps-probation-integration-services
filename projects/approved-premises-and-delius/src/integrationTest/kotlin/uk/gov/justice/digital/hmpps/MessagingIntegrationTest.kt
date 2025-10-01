@@ -12,17 +12,14 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestMethodOrder
 import org.mockito.Mockito.verify
 import org.mockito.kotlin.times
-import org.mockito.kotlin.whenever
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
 import org.springframework.test.context.bean.override.mockito.MockitoBean
-import uk.gov.justice.digital.hmpps.config.FeatureFlagName
 import uk.gov.justice.digital.hmpps.data.generator.*
 import uk.gov.justice.digital.hmpps.data.generator.AddressGenerator.PERSON_ADDRESS_ID
-import uk.gov.justice.digital.hmpps.flags.FeatureFlags
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.EventDetails
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.PersonArrived
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.PersonDeparted
@@ -98,9 +95,6 @@ internal class MessagingIntegrationTest {
     @Autowired
     private lateinit var nsiManagerRepository: NsiManagerRepository
 
-    @MockitoBean
-    private lateinit var featureFlags: FeatureFlags
-
     @BeforeEach
     fun clearTopic() {
         val topic = channelManager.getChannel(topicName)
@@ -168,7 +162,6 @@ internal class MessagingIntegrationTest {
     @Test
     @Order(1)
     fun `booking made creates referral, nsi and contact`() {
-        whenever(featureFlags.enabled(FeatureFlagName.PRE_ARRIVAL_NSI)).thenReturn(true)
         // Given a booking-made event
         val event = prepEvent("booking-made", wireMockServer.port())
 
