@@ -92,7 +92,7 @@ class ApprovedPremisesService(
         val ap = approvedPremisesRepository.getApprovedPremises(details.premises.legacyApCode)
         val person = personRepository.getByCrn(event.crn())
         referralService.bookingMade(person, details, ap)
-            nsiService.preArrival(ap, person, details)
+        nsiService.preArrival(ap, person, details)
     }
 
     fun bookingChanged(event: HmppsDomainEvent) {
