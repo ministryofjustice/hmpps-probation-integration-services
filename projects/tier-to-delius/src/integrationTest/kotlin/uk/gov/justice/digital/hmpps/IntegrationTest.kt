@@ -92,7 +92,6 @@ internal class IntegrationTest {
     @Test
     @Order(2)
     fun `end-dates previous tier`() {
-        whenever(featureFlags.enabled("tier-end-date")).thenReturn(true)
 
         val notification = prepMessage("tier-update", wireMockServer.port())
 
