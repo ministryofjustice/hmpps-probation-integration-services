@@ -53,13 +53,13 @@ runs:
       with:
         cache-from: type=gha
         cache-to: type=gha,mode=max
+        context: "{{defaultContext}}:projects/${{ inputs.project }}/container"
         pull: true
         load: true
         push: false
         provenance: false
         tags: |
           ghcr.io/ministryofjustice/hmpps-probation-integration-services/${{ inputs.project }}:latest
-      working-directory: projects/${{ inputs.project }}/container
       env:
         SOURCE_DATE_EPOCH: 0
 
@@ -80,12 +80,12 @@ runs:
       with:
         cache-from: type=gha
         cache-to: type=gha,mode=max
+        context: "{{defaultContext}}:projects/${{ inputs.project }}/container"
         push: ${{ inputs.push }}
         provenance: false
         tags: |
           ghcr.io/ministryofjustice/hmpps-probation-integration-services/${{ inputs.project }}:latest
           ghcr.io/ministryofjustice/hmpps-probation-integration-services/${{ inputs.project }}:${{ steps.version.outputs.version }}
-      working-directory: projects/${{ inputs.project }}/container
       env:
         SOURCE_DATE_EPOCH: 0
 
