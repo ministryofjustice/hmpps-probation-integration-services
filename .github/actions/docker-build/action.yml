@@ -51,9 +51,9 @@ runs:
       uses: docker/build-push-action@v6
       id: build
       with:
-        cache-from: type=gha
-        cache-to: type=gha,mode=max
-        context: projects/${{ inputs.project }}/container
+        cache-from: type=gha,scope=${{ inputs.project }}
+        cache-to: type=gha,mode=max,scope=${{ inputs.project }}
+        context: "{{defaultContext}}:projects/${{ inputs.project }}/container"
         pull: true
         load: true
         push: false
@@ -66,6 +66,8 @@ runs:
     - name: Check for changes
       id: check-changes
       run: |
+        echo "old: $old"
+        echo "new: $new"
         if [ "$old" = "$new" ]; then echo 'projects=[]'; else echo 'projects=["${{ inputs.project }}"]'; fi | tee -a "$GITHUB_OUTPUT"
       env:
         new: ${{ steps.build.outputs.digest }}
@@ -76,9 +78,9 @@ runs:
       uses: docker/build-push-action@v6
       if: (steps.check-changes.outputs.projects != '[]' && inputs.push == 'true') || inputs.force == 'true'
       with:
-        cache-from: type=gha
-        cache-to: type=gha,mode=max
-        context: projects/${{ inputs.project }}/container
+        cache-from: type=gha,scope=${{ inputs.project }}
+        cache-to: type=gha,mode=max,scope=${{ inputs.project }}
+        context: "{{defaultContext}}:projects/${{ inputs.project }}/container"
         push: ${{ inputs.push }}
         provenance: false
         tags: |
