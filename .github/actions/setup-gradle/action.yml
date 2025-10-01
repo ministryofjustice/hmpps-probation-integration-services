@@ -35,12 +35,11 @@ runs:
     - uses: gradle/actions/setup-gradle@v4
       with:
         add-job-summary: 'on-failure'
-        cache-encryption-key: ${{ env.GRADLE_ENCRYPTION_KEY }}
-        cache-read-only: false
-        #        TODO re-enable cache-read-only: ${{ github.ref_name != 'main' }}
-    #        gradle-home-cache-excludes: |
-    #          caches
-    #          notifications
+        #cache-encryption-key: ${{ env.GRADLE_ENCRYPTION_KEY }} # TODO configuration cache doesn't work with s3-build-cache yet, as of Oct 2025. See https://github.com/burrunan/gradle-s3-build-cache/issues/21
+        cache-read-only: ${{ github.ref_name != 'main' }}
+        gradle-home-cache-excludes: |
+          caches
+          notifications
 
     - name: Manually cache buildSrc output # workaround for https://github.com/gradle/actions/issues/21
       uses: actions/cache@v4
