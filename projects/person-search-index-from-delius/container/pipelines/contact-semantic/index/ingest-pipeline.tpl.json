@@ -45,6 +45,13 @@
       }
     },
     {
+      "script": {
+        "tag": "Duplicate CRN into nested embedding vector to enable efficient filtered K-NN search",
+        "lang": "painless",
+        "source": "if (ctx.containsKey('textEmbedding') && ctx.containsKey('crn')) { def crn = ctx.crn; def out = []; for (def e : ctx.textEmbedding) { if (e instanceof Map) { e.crn = crn; out.add(e); } } ctx.textEmbedding = out; }"
+      }
+    },
+    {
       "remove": {
         "field": "textChunks"
       }

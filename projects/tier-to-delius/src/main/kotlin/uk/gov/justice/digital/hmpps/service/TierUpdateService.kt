@@ -5,7 +5,6 @@ import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.audit.service.OptimisationTables
 import uk.gov.justice.digital.hmpps.datetime.DeliusDateTimeFormatter
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
-import uk.gov.justice.digital.hmpps.flags.FeatureFlags
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.Contact
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.ContactTypeCode
@@ -41,7 +40,6 @@ class TierUpdateService(
     private val contactTypeRepository: ContactTypeRepository,
     private val telemetryService: TelemetryService,
     private val optimisationTables: OptimisationTables,
-    private val featureFlags: FeatureFlags,
 ) {
     @Transactional
     fun updateTier(crn: String, tierCalculation: TierCalculation) {
@@ -57,7 +55,7 @@ class TierUpdateService(
             return telemetryService.trackEvent("UnchangedTierIgnored", tierCalculation.telemetryProperties(crn))
         }
 
-        if (latestTier != null && latestTier.id.dateChanged > tierCalculation.calculationDate) {
+        if (latestTier != null && !latestTier.id.dateChanged.isBefore(tierCalculation.calculationDate)) {
             return telemetryService.trackEvent("OutOfOrderMessageIgnored", tierCalculation.telemetryProperties(crn))
         }
 
@@ -68,9 +66,7 @@ class TierUpdateService(
     }
 
     private fun endTier(latestTier: ManagementTier?, calculationDate: ZonedDateTime) {
-        if (latestTier != null && featureFlags.enabled("tier-end-date")) {
-            managementTierWithEndDateRepository.setEndDate(latestTier.id, calculationDate)
-        }
+        latestTier?.also { managementTierWithEndDateRepository.setEndDate(it.id, calculationDate) }
     }
 
     private fun createTier(
@@ -84,7 +80,7 @@ class TierUpdateService(
                 id = ManagementTierId(
                     personId = person.id,
                     tierId = tier.id,
-                    dateChanged = calculationDate
+                    dateChanged = calculationDate,
                 ),
                 tierChangeReasonId = changeReason.id
             )

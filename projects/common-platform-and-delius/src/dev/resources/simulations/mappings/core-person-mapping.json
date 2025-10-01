@@ -38,6 +38,15 @@
         "status": 200,
         "bodyFileName": "person-record-multiple-offences.json"
       }
+    },
+    {
+      "request": {
+        "method": "PUT",
+        "urlPath": "/core-person-record/person/probation/f3b3bdb3-10c4-48fe-a412-9924f47294d5"
+      },
+      "response": {
+        "status": 200
+      }
     }
   ]
 }

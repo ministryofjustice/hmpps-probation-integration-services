@@ -20,6 +20,8 @@ class WarningService(
     private val documentRepository: DocumentRepository,
     private val disposalRepository: DisposalRepository,
     private val contactRepository: ContactRepository,
+    private val requirementRepository: RequirementRepository,
+    private val pssRequirementRepository: PssRequirementRepository,
 ) {
     fun getWarningTypes(crn: String, breachNoticeId: UUID): WarningTypesResponse {
         val disposal = crn.disposalForEvent(documentRepository.eventId(breachNoticeUrn(breachNoticeId)))
@@ -36,9 +38,12 @@ class WarningService(
         val breachReasons = rdRepository.findByDatasetCodeAndSelectableTrue(Dataset.BREACH_REASON)
         val disposal = crn.disposalForEvent(documentRepository.eventId(breachNoticeUrn(breachNoticeId)))
         val enforceableContacts = contactRepository.findEnforceableContacts(disposal.event.id)
+        val requirements = requirementRepository.findAllByDisposalId(disposal.id).map { it.toModel() } +
+            pssRequirementRepository.findAllByCustodyDisposalId(disposal.id).map { it.toModel() }
         return WarningDetails(
             breachReasons = breachReasons.codedDescriptions(),
             enforceableContacts = enforceableContacts.map(Contact::toEnforceableContact),
+            requirements = requirements
         )
     }
 

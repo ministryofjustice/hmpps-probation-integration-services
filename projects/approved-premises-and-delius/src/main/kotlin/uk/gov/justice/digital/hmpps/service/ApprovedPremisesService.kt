@@ -1,9 +1,7 @@
 package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.stereotype.Service
-import uk.gov.justice.digital.hmpps.config.FeatureFlagName
 import uk.gov.justice.digital.hmpps.detail.DomainEventDetailService
-import uk.gov.justice.digital.hmpps.flags.FeatureFlags
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.*
 import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.ApprovedPremisesRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.getApprovedPremises
@@ -29,7 +27,6 @@ class ApprovedPremisesService(
     private val nsiService: NsiService,
     private val referralService: ReferralService,
     private val notifier: Notifier,
-    private val featureFlags: FeatureFlags,
 ) {
     fun applicationSubmitted(event: HmppsDomainEvent) {
         val details = detailService.getDetail<EventDetails<ApplicationSubmitted>>(event).eventDetails
@@ -95,9 +92,7 @@ class ApprovedPremisesService(
         val ap = approvedPremisesRepository.getApprovedPremises(details.premises.legacyApCode)
         val person = personRepository.getByCrn(event.crn())
         referralService.bookingMade(person, details, ap)
-        if (featureFlags.enabled(FeatureFlagName.PRE_ARRIVAL_NSI)) {
-            nsiService.preArrival(ap, person, details)
-        }
+        nsiService.preArrival(ap, person, details)
     }
 
     fun bookingChanged(event: HmppsDomainEvent) {

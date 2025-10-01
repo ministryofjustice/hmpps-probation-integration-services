@@ -1,12 +1,14 @@
 package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.api.model.appointment.Outcome
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.AppointmentRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.ContactTypeOutcomeRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.getByTypeIdAndOutcomeCode
 
+@Transactional
 @Service
 class AppointmentOutcomeService(
     private val appointmentRepository: AppointmentRepository,
@@ -31,7 +33,5 @@ class AppointmentOutcomeService(
                 sensitive = true
             }
         }
-
-        appointmentRepository.save(appointment)
     }
 }

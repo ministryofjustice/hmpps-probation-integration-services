@@ -71,6 +71,7 @@ internal class WarningIntegrationTest : BaseIntegrationTest() {
                 breachReasons = WarningGenerator.BREACH_REASONS.filter { it.selectable }.codedDescriptions(),
                 enforceableContacts = (ENFORCEABLE_CONTACTS + ENFORCEABLE_CONTACTS_UNPAID).sortedBy { it.date }
                     .map { it.toEnforceableContact() },
+                requirements = requirements.map { it.toModel() }
             ),
         )
         assertThat(response.enforceableContacts.firstOrNull()).isNotNull()
@@ -88,6 +89,7 @@ internal class WarningIntegrationTest : BaseIntegrationTest() {
             WarningDetails(
                 breachReasons = WarningGenerator.BREACH_REASONS.filter { it.selectable }.codedDescriptions(),
                 enforceableContacts = listOf(PSS_ENFORCEABLE_CONTACT.toEnforceableContact()),
+                requirements = listOf(PSS_REQUIREMENT.toModel())
             ),
         )
     }

@@ -151,6 +151,19 @@ interface PersonRepository : JpaRepository<Person, Long> {
         """, nativeQuery = true
     )
     fun findSummary(crn: String): PersonSummaryEntity?
+
+    @Query(
+        """
+            select p.crn as crn, com.active as userIsCom from OffenderManager com join com.person p
+            where com.staff.user.username = :username and p.crn in :crns and com.active = true and com.softDeleted = false
+        """
+    )
+    fun userIsCom(username: String, crns: Set<String>): List<ComConfirmation>
+}
+
+interface ComConfirmation {
+    val crn: String
+    val userIsCom: Boolean
 }
 
 fun PersonRepository.getPerson(crn: String) = findByCrn(crn) ?: throw NotFoundException("Person", "crn", crn)

@@ -1,6 +1,5 @@
 package uk.gov.justice.digital.hmpps
 
-import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock.aResponse
 import com.github.tomakehurst.wiremock.client.WireMock.get
 import com.github.tomakehurst.wiremock.common.ContentTypes.APPLICATION_JSON
@@ -12,11 +11,7 @@ import org.junit.jupiter.api.Named.named
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
-import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.HttpHeaders
-import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
@@ -24,10 +19,8 @@ import uk.gov.justice.digital.hmpps.api.model.Name
 import uk.gov.justice.digital.hmpps.api.model.appointment.AppointmentCheck
 import uk.gov.justice.digital.hmpps.api.model.appointment.AppointmentChecks
 import uk.gov.justice.digital.hmpps.api.model.appointment.CheckAppointment
-import uk.gov.justice.digital.hmpps.api.model.appointment.User
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.USER
 import uk.gov.justice.digital.hmpps.data.generator.OffenderManagerGenerator.STAFF_USER_1
-import uk.gov.justice.digital.hmpps.data.generator.OffenderManagerGenerator.TEAM
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
@@ -38,19 +31,7 @@ import java.time.Duration
 import java.time.ZonedDateTime
 import java.util.*
 
-@AutoConfigureMockMvc
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class CheckAppointmentIntegrationTest {
-
-    @Autowired
-    internal lateinit var mockMvc: MockMvc
-
-    @Autowired
-    lateinit var wireMockServer: WireMockServer
-
-    private val user = User(STAFF_USER_1.username, TEAM.code)
-
-    private val person = PersonGenerator.PERSON_1
+class CheckAppointmentIntegrationTest : IntegrationTestBase() {
 
     companion object {
         @JvmStatic
@@ -270,7 +251,7 @@ class CheckAppointmentIntegrationTest {
         }
 
         val response = mockMvc.perform(
-            post("/appointment/${person.crn}/check")
+            post("/appointment/${PersonGenerator.PERSON_1.crn}/check")
                 .withUserToken(username)
                 .withJson(CheckAppointment(start, end))
         ).andExpect(status().isOk).andReturn().response.contentAsJson<AppointmentChecks>()

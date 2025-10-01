@@ -73,7 +73,6 @@ class ProbationMatchingService(
         // Get matching probation records
 
         val useDbSearch = featureFlags.enabled("prison-identifiers-use-db-search")
-        val compareApiWithDbSearch = featureFlags.enabled("prison-identifiers-compare-with-db-search")
 
         val matchResponse = if (useDbSearch) {
             databaseMatchingService.match(ProbationMatchRequest(prisoner))
@@ -81,7 +80,7 @@ class ProbationMatchingService(
             probationSearchClient.match(ProbationMatchRequest(prisoner))
         }
 
-        if (compareApiWithDbSearch && !useDbSearch) {
+        if (!useDbSearch) {
             databaseMatchingService.performCompare(ProbationMatchRequest(prisoner), matchResponse)
         }
 

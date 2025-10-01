@@ -82,7 +82,7 @@ class ScheduleService(
         return NextAppointment(
             nextAppointment?.toActivity(),
             com.asPersonManager(),
-            username == com.staff.user?.username
+            username.equals(com.staff.user?.username, ignoreCase = true)
         )
     }
 }
@@ -134,7 +134,7 @@ fun Contact.toActivityOverview() = Activity(
     isCommunication = isCommunication(),
     description = description,
     outcome = outcome?.description,
-    deliusManaged = CreateAppointment.Type.entries.none { it.code == type.code }
+    deliusManaged = CreateAppointment.Type.entries.none { it.code == type.code } || complied == false || requirement?.mainCategory?.code == "F",
 )
 
 fun Contact.toActivity(noteId: Int? = null) = Activity(
@@ -191,7 +191,7 @@ fun Contact.toActivity(noteId: Int? = null) = Activity(
     eventNumber = event?.eventNumber,
     description = description,
     outcome = outcome?.description,
-    deliusManaged = CreateAppointment.Type.entries.none { it.code == type.code },
+    deliusManaged = CreateAppointment.Type.entries.none { it.code == type.code } || complied == false || requirement?.mainCategory?.code == "F",
     isVisor = isVisor,
     eventId = event?.id,
     component = requirement?.asComponent() ?: licenceCondition?.asComponent(),

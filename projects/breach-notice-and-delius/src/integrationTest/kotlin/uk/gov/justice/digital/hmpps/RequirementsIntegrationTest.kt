@@ -8,6 +8,8 @@ import uk.gov.justice.digital.hmpps.data.generator.DocumentGenerator.BREACH_NOTI
 import uk.gov.justice.digital.hmpps.data.generator.DocumentGenerator.PSS_BREACH_NOTICE_ID
 import uk.gov.justice.digital.hmpps.data.generator.EventGenerator.DEFAULT_DISPOSAL
 import uk.gov.justice.digital.hmpps.data.generator.EventGenerator.PSS_REQUIREMENT
+import uk.gov.justice.digital.hmpps.data.generator.WarningGenerator
+import uk.gov.justice.digital.hmpps.integrations.delius.codedDescription
 import uk.gov.justice.digital.hmpps.model.RequirementResponse
 import uk.gov.justice.digital.hmpps.service.toModel
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
@@ -24,7 +26,9 @@ internal class RequirementsIntegrationTest : BaseIntegrationTest() {
 
         val requirements = requirementRepository.findAllByDisposalId(DEFAULT_DISPOSAL.id)
         assertThat(requirements).isNotEmpty
-        assertThat(response).isEqualTo(RequirementResponse(requirements = requirements.map { it.toModel() }))
+        assertThat(response.requirements).isEqualTo(requirements.map { it.toModel() })
+        assertThat(response.breachReasons)
+            .isEqualTo(WarningGenerator.BREACH_REASONS.filter { it.selectable }.map { it.codedDescription() })
     }
 
     @Test
@@ -34,6 +38,8 @@ internal class RequirementsIntegrationTest : BaseIntegrationTest() {
             .andExpect(status().is2xxSuccessful)
             .andReturn().response.contentAsJson<RequirementResponse>()
 
-        assertThat(response).isEqualTo(RequirementResponse(requirements = listOf(PSS_REQUIREMENT.toModel())))
+        assertThat(response.requirements).isEqualTo(listOf(PSS_REQUIREMENT.toModel()))
+        assertThat(response.breachReasons)
+            .isEqualTo(WarningGenerator.BREACH_REASONS.filter { it.selectable }.map { it.codedDescription() })
     }
 }

@@ -12,7 +12,6 @@ import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.C
 import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.DocumentRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.LengthUnit
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.*
-import uk.gov.justice.digital.hmpps.service.lcSort
 import java.time.Duration
 import java.time.LocalDate
 import kotlin.time.toKotlinDuration
@@ -33,7 +32,7 @@ class SentenceService(
     private val custodyRepository: CustodyRepository,
     private val requirementService: RequirementService
 ) {
-    fun getEvents(crn: String, eventNumber: String?): SentenceOverview {
+    fun getEvents(crn: String, eventNumber: String?, includeRarRequirements: Boolean): SentenceOverview {
         val person = personRepository.getPerson(crn)
         val activeEvents = getActiveSentences(person.id)
 
@@ -45,17 +44,17 @@ class SentenceService(
                     null -> true
                     else -> eventNumber == it.eventNumber
                 }
-            }?.toSentence()
+            }?.toSentence(includeRarRequirements)
         )
     }
 
-    fun getActiveSentences(crn: String): MinimalSentenceOverview {
+    fun getActiveSentences(crn: String, includeRarRequirements: Boolean): MinimalSentenceOverview {
         val person = personRepository.getPerson(crn)
         val activeEvents = getActiveSentences(person.id)
 
         return MinimalSentenceOverview(
             personSummary = person.toSummary(),
-            activeEvents.map { it.toMinimalSentence() }
+            activeEvents.map { it.toMinimalSentence(includeRarRequirements) }
         )
     }
 
@@ -87,7 +86,7 @@ class SentenceService(
         disposal?.type?.description ?: "Pre-Sentence"
     )
 
-    fun Event.toMinimalSentence(): MinimalSentence =
+    fun Event.toMinimalSentence(includeRarRequirements: Boolean): MinimalSentence =
         MinimalSentence(
             id,
             eventNumber,
@@ -95,12 +94,12 @@ class SentenceService(
             licenceConditions = disposal?.let {
                 licenceConditionRepository.findAllByDisposalId(disposal.id).asMinimals()
             } ?: emptyList(),
-            requirements = requirementRepository.getRequirements(id, eventNumber).asMinimals {
+            requirements = requirementRepository.getRequirements(id, eventNumber, includeRarRequirements).asMinimals {
                 requirementService.getRar(it.disposal!!.id, it.mainCategory!!.code)
             }
         )
 
-    fun Event.toSentence(): Sentence {
+    fun Event.toSentence(includeRarRequirements: Boolean): Sentence {
         val courtAppearance = courtAppearanceRepository.getFirstCourtAppearanceByEventIdOrderByDate(id)
         val additionalSentences = additionalSentenceRepository.getAllByEventId(id)
 
@@ -108,7 +107,8 @@ class SentenceService(
             toOffenceDetails(),
             toConviction(courtAppearance, additionalSentences),
             order = disposal?.toOrder(),
-            requirements = requirementRepository.getRequirements(id, eventNumber).rSort().map { it.toRequirement() },
+            requirements = requirementRepository.getRequirements(id, eventNumber, includeRarRequirements).rSort()
+                .map { it.toRequirement() },
             courtDocuments = documentRepository.getCourtDocuments(id, eventNumber).map { it.toCourtDocument() },
             unpaidWorkProgress = disposal?.id?.let { getUnpaidWorkTime(it) },
             licenceConditions = disposal?.let {

@@ -208,15 +208,15 @@ by [manually running a workflow](https://docs.github.com/en/actions/managing-wor
 This project uses [Flipt](https://www.flipt.io/) to control the availability of certain features.
 Feature flags allow us to turn on or off parts of a service in production, decoupling "releases" from "deployments".
 
-Feature flags are managed in the [Flipt dashboard](https://feature-flags.hmpps.service.justice.gov.uk).
+Feature flags are managed in the [Flipt dashboard](https://feature-toggles.hmpps.service.justice.gov.uk).
 You'll need to be in the `ministryofjustice` organisation to access it.
 
 To add a feature flag to your code:
 
 1. Create a new boolean flag in
-   the [dev](https://feature-flags-dev.hmpps.service.justice.gov.uk), [preprod](https://feature-flags-preprod.hmpps.service.justice.gov.uk),
-   and [prod](https://feature-flags.hmpps.service.justice.gov.uk) dashboards.
-2. Update your code to inject the `FeatureFlags` service, and call `enabled("<key>")`. Example:
+   the [dev](https://feature-toggles-dev.hmpps.service.justice.gov.uk), [preprod](https://feature-toggles-preprod.hmpps.service.justice.gov.uk),
+   and [prod](https://feature-toggles.hmpps.service.justice.gov.uk) dashboards.
+2. Update your code to inject the `FeatureFlags` service, and call `enabled("<key>")`. Example:§
 
 ```kotlin
 @Service

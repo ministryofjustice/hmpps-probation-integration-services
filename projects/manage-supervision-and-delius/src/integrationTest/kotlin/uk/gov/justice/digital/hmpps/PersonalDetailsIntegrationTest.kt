@@ -14,14 +14,10 @@ import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
-import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
 import org.springframework.http.HttpHeaders
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
-import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.MvcResult
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
@@ -68,30 +64,11 @@ import java.time.Duration
 import java.time.LocalDate
 import java.util.*
 
-@AutoConfigureMockMvc
-@SpringBootTest(webEnvironment = RANDOM_PORT)
-internal class PersonalDetailsIntegrationTest {
-    @Autowired
-    lateinit var mockMvc: MockMvc
+class PersonalDetailsIntegrationTest : IntegrationTestBase() {
 
     private var jdbcTemplate: JdbcTemplate = Mockito.mock(JdbcTemplate::class.java)
     private var namedParameterJdbcTemplate: NamedParameterJdbcTemplate =
         Mockito.mock(NamedParameterJdbcTemplate::class.java)
-
-    @Autowired
-    lateinit var deliusUserAspect: DeliusUserAspect
-
-    @Value("\${messaging.producer.topic}")
-    lateinit var topicName: String
-
-    @Autowired
-    lateinit var auditedInteractionRepository: AuditedInteractionRepository
-
-    @Autowired
-    lateinit var businessInteractionRepository: BusinessInteractionRepository
-
-    @Autowired
-    lateinit var channelManager: HmppsChannelManager
 
     lateinit var deliusToken: String
 

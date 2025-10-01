@@ -61,7 +61,6 @@ internal class DatabaseProbationMatchingIntegrationTest {
     @BeforeEach
     fun setUp() {
         whenever(featureFlags.enabled("prison-identifiers-use-db-search")).thenReturn(true)
-        whenever(featureFlags.enabled("prison-identifiers-compare-with-db-search")).thenReturn(false)
     }
 
     @Test
@@ -338,7 +337,6 @@ internal class DatabaseProbationMatchingIntegrationTest {
     fun `prisoner received updated identifiers compare with api response`() {
 
         whenever(featureFlags.enabled("prison-identifiers-use-db-search")).thenReturn(false)
-        whenever(featureFlags.enabled("prison-identifiers-compare-with-db-search")).thenReturn(true)
 
         withMatchResponse("probation-search-single-result-db-difference.json")
         withJsonResponse(

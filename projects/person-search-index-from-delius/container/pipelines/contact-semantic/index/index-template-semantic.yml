@@ -5,8 +5,10 @@ template:
   settings:
     default_pipeline: contact-semantic-search-pipeline
     index.search.default_pipeline: contact-semantic-search-search-pipeline
+    index.search.concurrent_segment_search.mode: auto
     index.knn: true
-    index.number_of_shards: 120
+    index.knn.derived_source.enabled: true
+    index.number_of_shards: 12
     index.number_of_replicas: 1
     index.analyze.max_token_count: 100000
     index.mapping.ignore_malformed: true
@@ -1214,8 +1216,6 @@ template:
           only_on_same_position: true
 
   mappings:
-    _routing:
-      required: true # CRN must be provided for routing, so that contacts for the same CRN are stored together on the same shard
     properties:
       crn:
         type: keyword
@@ -1226,7 +1226,6 @@ template:
       date:
         type: text
         analyzer: probation_text_analyzer
-        copy_to: notes
         fields:
           date:
             type: date
@@ -1247,6 +1246,8 @@ template:
             method:
               name: hnsw
               engine: lucene
+          crn:
+            type: keyword
       notes:
         type: text
         analyzer: probation_text_analyzer
@@ -1255,42 +1256,50 @@ template:
         type: text
         analyzer: probation_text_analyzer
         boost: 4
-      outcome:
+      typeCode:
         type: text
         analyzer: probation_text_analyzer
-        store: true
+        fields:
+          keyword:
+            type: keyword
+      typeDescription:
+        type: text
+        analyzer: probation_text_analyzer
+        boost: 3
+        fields:
+          keyword:
+            type: keyword
+      typeShortDescription:
+        type: text
+        analyzer: probation_text_analyzer
+        fields:
+          keyword:
+            type: keyword
+      outcomeCode:
+        type: text
+        analyzer: probation_text_analyzer
+        fields:
+          keyword:
+            type: keyword
+      outcomeDescription:
+        type: text
+        analyzer: probation_text_analyzer
         boost: 2
         fields:
           keyword:
             type: keyword
-      type:
+      attended:
         type: text
         analyzer: probation_text_analyzer
-        store: true
         fields:
           keyword:
             type: keyword
-      typeCode:
-        type: keyword
-        copy_to: type
-      typeDescription:
-        type: keyword
-        copy_to: type
-      typeShortDescription:
-        type: keyword
-        copy_to: type
-      outcomeCode:
-        type: keyword
-        copy_to: outcome
-      outcomeDescription:
-        type: keyword
-        copy_to: outcome
-      attended:
-        type: keyword
-        copy_to: outcome
       complied:
-        type: keyword
-        copy_to: outcome
+        type: text
+        analyzer: probation_text_analyzer
+        fields:
+          keyword:
+            type: keyword
       lastUpdatedDateTime:
         type: date
       rowVersion:

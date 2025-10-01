@@ -27,7 +27,6 @@ import java.time.LocalTime
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 
-@Immutable
 @Entity
 @Table(name = "contact")
 @SQLRestriction("soft_deleted = 0")
@@ -36,8 +35,9 @@ class Contact(
     @Column(name = "contact_id")
     val id: Long = 0,
 
-    @Column(name = "offender_id")
-    val personId: Long,
+    @ManyToOne
+    @JoinColumn(name = "offender_id")
+    val person: Person,
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "event_id")
@@ -80,8 +80,7 @@ class Contact(
     @JoinColumn(name = "latest_enforcement_action_id", referencedColumnName = "enforcement_action_id")
     val action: EnforcementAction? = null,
 
-    @Lob
-    val notes: String?,
+    notes: String?,
 
     val nsiId: Long? = null,
 
@@ -120,6 +119,10 @@ class Contact(
     @Column(name = "visor_contact")
     @Convert(converter = YesNoConverter::class)
     val isVisor: Boolean? = null,
+
+    @Convert(converter = YesNoConverter::class)
+    @Column(name = "alert_active")
+    var alert: Boolean? = false,
 
     @Column(name = "soft_deleted", columnDefinition = "number", nullable = false)
     @Convert(converter = NumericBooleanConverter::class)
@@ -166,6 +169,14 @@ class Contact(
     fun isPhoneCallToPop(): Boolean = type.code == ContactTypeCode.PHONE_CONTACT_TO_POP.value
     fun isCommunication(): Boolean =
         type.categories.map { it.id.category.code }.contains(ContactCategoryCode.COMMUNICATION_CONTACT.value)
+
+    @Lob
+    var notes: String? = notes
+        private set
+
+    fun appendNotes(additionalNotes: String) {
+        notes = notes?.plus(System.lineSeparator() + additionalNotes) ?: additionalNotes
+    }
 }
 
 @Immutable
@@ -206,7 +217,10 @@ class ContactType(
     val offenderContact: Boolean = false,
 
     @Column(name = "contact_location_flag", columnDefinition = "char(1)")
-    val locationRequired: String
+    val locationRequired: String,
+
+    @Convert(converter = YesNoConverter::class)
+    val editable: Boolean?,
 )
 
 interface ContactTypeRepository : CrudRepository<ContactType, Long> {
@@ -335,7 +349,7 @@ interface ContactRepository : JpaRepository<Contact, Long> {
         left join fetch e.mainOffence mo
         left join fetch mo.offence moo
         left join fetch rqmnt.subCategory rsc
-        where c.personId = :personId
+        where c.person.id = :personId
         order by c.date desc, c.startTime desc 
     """
     )
@@ -385,7 +399,7 @@ interface ContactRepository : JpaRepository<Contact, Long> {
             where c.offender_id = :personId and ct.attendance_contact = 'Y'
             and (to_char(c.contact_date, 'YYYY-MM-DD') > :dateNow
             or (to_char(c.contact_date, 'YYYY-MM-DD') = :dateNow and to_char(c.contact_start_time, 'HH24:MI') > :timeNow))
-            and c.soft_deleted = 0
+            and c.contact_outcome_type_id is null and c.soft_deleted = 0
             order by c.contact_date, c.contact_start_time asc
             fetch first 1 row only
         """,
@@ -461,6 +475,9 @@ interface ContactRepository : JpaRepository<Contact, Long> {
                         c.contact_end_time AS contact_end_time,
                         total_sentences,
                         rct.description AS contactDescription,
+                        rct.code as typeCode,
+                        case when c.complied = 'Y' then 1 else 0 end as complied,
+                        rtmc.code as rqmntMainCatCode,
                         NVL(rdt.description, latest_sentence_description)  AS sentenceDescription
                 FROM contact c 
                 JOIN r_contact_type rct ON rct.contact_type_id = c.contact_type_id 
@@ -471,6 +488,8 @@ interface ContactRepository : JpaRepository<Contact, Long> {
                 LEFT JOIN event e ON e.event_id = c.event_id AND (e.soft_deleted = 0) 
                 LEFT JOIN disposal d ON e.event_id = d.event_id 
                 LEFT JOIN r_disposal_type rdt ON rdt.disposal_type_id = d.disposal_type_id 
+                left join rqmnt r on r.rqmnt_id = c.rqmnt_id
+                left join r_rqmnt_type_main_category rtmc on rtmc.rqmnt_type_main_category_id = r.rqmnt_type_main_category_id
                 LEFT JOIN ( 
                         SELECT sub.* 
                         FROM
@@ -534,6 +553,9 @@ interface ContactRepository : JpaRepository<Contact, Long> {
                          AND e.active_flag = 1
                          AND e.soft_deleted = 0) as totalSentences,
                     rct.description AS contactDescription,
+                    rct.code as typeCode,
+                    case when c.complied = 'Y' then 1 else 0 end as complied,
+                    rtmc.code as rqmntMainCatCode,
                     CASE WHEN d.disposal_id IS NOT NULL 
                     THEN 
                         rdt.description
@@ -553,6 +575,8 @@ interface ContactRepository : JpaRepository<Contact, Long> {
             LEFT JOIN event e ON e.event_id = c.event_id AND e.ACTIVE_FLAG = 1 AND e.soft_deleted = 0
             LEFT JOIN disposal d ON d.event_id = e.event_id
             LEFT JOIN r_disposal_type rdt ON rdt.disposal_type_id = d.disposal_type_id
+            left join rqmnt r on r.rqmnt_id = c.rqmnt_id
+            left join r_rqmnt_type_main_category rtmc on rtmc.rqmnt_type_main_category_id = r.rqmnt_type_main_category_id
             WHERE (c.soft_deleted = 0) 
             AND s.staff_id = :staffId 
             AND rct.attendance_contact = 'Y'  
@@ -597,11 +621,16 @@ interface ContactRepository : JpaRepository<Contact, Long> {
                 c.contact_date AS contact_date, 
                 c.contact_start_time AS contact_start_time, 
                 c.contact_end_time AS contact_end_time,                                 
-                rct.description AS contactDescription
+                rct.description AS contactDescription,
+                rct.code as typeCode,
+                case when c.complied = 'Y' then 1 else 0 end as complied,
+                rtmc.code as rqmntMainCatCode
         FROM offender o
         JOIN caseload cl ON o.offender_id = cl.offender_id AND (cl.role_code = 'OM')
         JOIN contact c ON c.offender_id = o.offender_id AND c.staff_id = :staffId
         JOIN r_contact_type rct ON rct.contact_type_id = c.contact_type_id
+        left join rqmnt r on r.rqmnt_id = c.rqmnt_id
+        left join r_rqmnt_type_main_category rtmc on rtmc.rqmnt_type_main_category_id = r.rqmnt_type_main_category_id
         WHERE cl.staff_employee_id = :staffId
         AND rct.attendance_contact = 'Y'  
         AND rct.contact_outcome_flag = 'Y'
@@ -632,6 +661,16 @@ interface ContactRepository : JpaRepository<Contact, Long> {
         timeNow: String,
         pageable: Pageable
     ): Page<Appointment>
+
+    @Query(
+        """
+            SELECT c from Contact c
+            join fetch c.person p
+            join OffenderManager com on p.id = com.person.id and com.active = true and com.softDeleted = false
+            where c.alert = true and com.staff.user.username = :username
+        """
+    )
+    fun findAllUserAlerts(username: String, pageable: Pageable): Page<Contact>
 }
 
 fun ContactRepository.getContact(id: Long) = findById(id).orElseThrow { NotFoundException("Contact", "id", id) }
@@ -654,6 +693,9 @@ interface Appointment {
     val totalSentences: Int?
     val contactDescription: String
     val sentenceDescription: String?
+    val typeCode: String
+    val complied: Int?
+    val rqmntMainCatCode: String?
 }
 
 fun ContactRepository.getContact(personId: Long, contactId: Long): Contact =

@@ -4,6 +4,7 @@ import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort
+import org.springframework.data.util.TypeUtils.type
 import org.springframework.ldap.core.AttributesMapper
 import org.springframework.ldap.core.LdapTemplate
 import org.springframework.ldap.query.LdapQueryBuilder.query
@@ -11,6 +12,7 @@ import org.springframework.ldap.query.SearchScope
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.api.model.Name
+import uk.gov.justice.digital.hmpps.api.model.appointment.CreateAppointment
 import uk.gov.justice.digital.hmpps.api.model.appointment.UserAppointment
 import uk.gov.justice.digital.hmpps.api.model.appointment.UserAppointments
 import uk.gov.justice.digital.hmpps.api.model.appointment.UserDiary
@@ -357,7 +359,8 @@ private fun AppointmentEntity.toUserAppointment() = UserAppointment(
         LocalDateTime.of(contactDate, contactEndTime),
         EuropeLondon
     ) else null,
-    location
+    location,
+    CreateAppointment.Type.entries.none { it.code == typeCode } || complied == 0 || rqmntMainCatCode == "F",
 )
 
 fun ProbationAreaUser.toProvider() = Provider(id.provider.code, id.provider.description)

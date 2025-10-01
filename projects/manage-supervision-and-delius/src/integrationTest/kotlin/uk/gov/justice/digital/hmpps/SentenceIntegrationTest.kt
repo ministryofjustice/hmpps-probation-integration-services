@@ -1,13 +1,11 @@
 package uk.gov.justice.digital.hmpps
 
+import org.hamcrest.Matchers.*
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
-import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import uk.gov.justice.digital.hmpps.api.model.overview.Order
 import uk.gov.justice.digital.hmpps.api.model.overview.Rar
 import uk.gov.justice.digital.hmpps.api.model.sentence.*
@@ -30,17 +28,13 @@ import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 import java.time.LocalDate
 
-@AutoConfigureMockMvc
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class SentenceIntegrationTest {
-    @Autowired
-    lateinit var mockMvc: MockMvc
+class SentenceIntegrationTest : IntegrationTestBase() {
 
     @Test
     fun `no active sentences`() {
         val response = mockMvc
-            .perform(MockMvcRequestBuilders.get("/sentence/${PersonDetailsGenerator.PERSONAL_DETAILS.crn}").withToken())
-            .andExpect(MockMvcResultMatchers.status().isOk)
+            .perform(get("/sentence/${PersonDetailsGenerator.PERSONAL_DETAILS.crn}").withToken())
+            .andExpect(status().isOk)
             .andReturn().response.contentAsJson<SentenceOverview>()
 
         val expected = SentenceOverview(
@@ -53,8 +47,8 @@ class SentenceIntegrationTest {
     @Test
     fun `get latest active sentence`() {
         val response = mockMvc
-            .perform(MockMvcRequestBuilders.get("/sentence/${PersonGenerator.OVERVIEW.crn}").withToken())
-            .andExpect(MockMvcResultMatchers.status().isOk)
+            .perform(get("/sentence/${PersonGenerator.OVERVIEW.crn}").withToken())
+            .andExpect(status().isOk)
             .andReturn().response.contentAsJson<SentenceOverview>()
 
         val expected = SentenceOverview(
@@ -86,8 +80,8 @@ class SentenceIntegrationTest {
     @Test
     fun `get active sentence by event number`() {
         val response = mockMvc
-            .perform(MockMvcRequestBuilders.get("/sentence/${PersonGenerator.OVERVIEW.crn}?number=7654321").withToken())
-            .andExpect(MockMvcResultMatchers.status().isOk)
+            .perform(get("/sentence/${PersonGenerator.OVERVIEW.crn}?number=7654321").withToken())
+            .andExpect(status().isOk)
             .andReturn().response.contentAsJson<SentenceOverview>()
 
         val expected = SentenceOverview(
@@ -246,9 +240,18 @@ class SentenceIntegrationTest {
     }
 
     @Test
+    fun `exclude rar requirements`() {
+        mockMvc
+            .perform(get("/sentence/${PersonGenerator.OVERVIEW.crn}?number=7654321&includeRarRequirements=false").withToken())
+            .andExpect(status().isOk)
+            .andExpect(jsonPath("$.sentence.requirements.length()", equalTo(1)))
+            .andExpect(jsonPath("$.sentence.requirements[*].code", not(contains("F"))))
+    }
+
+    @Test
     fun `unauthorized status returned`() {
         mockMvc
-            .perform(MockMvcRequestBuilders.get("/sentence/X123456"))
-            .andExpect(MockMvcResultMatchers.status().isUnauthorized)
+            .perform(get("/sentence/X123456"))
+            .andExpect(status().isUnauthorized)
     }
 }

@@ -48,6 +48,9 @@ management:
     exposure.include: [ "health", "info" ]
   endpoint.health.show-details: always
 
+service:
+  use-delius-user: true
+
 info.productId: HMPPS518 # https://developer-portal.hmpps.service.justice.gov.uk/products/probation-integration-services-1
 
 ---
@@ -58,6 +61,7 @@ server.shutdown: immediate
 spring:
   datasource.url: jdbc:h2:file:./dev;MODE=Oracle;DEFAULT_NULL_ORDERING=HIGH;AUTO_SERVER=true;AUTO_SERVER_PORT=9092
   jpa.hibernate.ddl-auto: create-drop
+  sql.init.data-locations: classpath:db/h2.sql
   ldap.embedded:
     base-dn: ${spring.ldap.base}
     validation.enabled: false
@@ -86,12 +90,6 @@ logging.level:
 ---
 spring.config.activate.on-profile: integration-test
 spring.datasource.url: jdbc:h2:mem:./test;MODE=Oracle
-
----
-spring.config.activate.on-profile: oracle
-spring:
-  datasource.url: 'jdbc:tc:oracle:slim-faststart:///XEPDB1'
-  jpa.hibernate.ddl-auto: create
 
 ---
 spring.config.activate.on-profile: delius-db

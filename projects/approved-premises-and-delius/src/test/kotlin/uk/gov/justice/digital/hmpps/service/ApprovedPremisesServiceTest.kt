@@ -18,7 +18,6 @@ import uk.gov.justice.digital.hmpps.audit.service.OptimisationTables
 import uk.gov.justice.digital.hmpps.data.generator.*
 import uk.gov.justice.digital.hmpps.detail.DomainEventDetailService
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
-import uk.gov.justice.digital.hmpps.flags.FeatureFlags
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.*
 import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.ApprovedPremisesRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.entity.ApprovedPremises
@@ -140,9 +139,6 @@ internal class ApprovedPremisesServiceTest {
     lateinit var notifier: Notifier
 
     @Mock
-    lateinit var featureFlags: FeatureFlags
-
-    @Mock
     lateinit var optimisationTables: OptimisationTables
 
     lateinit var addressService: AddressService
@@ -208,7 +204,6 @@ internal class ApprovedPremisesServiceTest {
             nsiService,
             referralService,
             notifier,
-            featureFlags
         )
     }
 

@@ -28,7 +28,6 @@ generic-service:
 
   env:
     AWS_REGION: eu-west-2
-    FLIPT_URL: http://feature-flags
     JDK_JAVA_OPTIONS: "-javaagent:/agent/agent.jar -Xmx512m -XX:+UseG1GC"
     SENTRY_TRACES_SAMPLE_RATE: '0.05'
     SPRING_DATASOURCE_HIKARI_MAXIMUMPOOLSIZE: 10
@@ -37,7 +36,8 @@ generic-service:
   namespace_secrets:
     common:
       APPLICATIONINSIGHTS_CONNECTION_STRING: APPLICATIONINSIGHTS_CONNECTION_STRING
-    flipt-bootstrap-token:
+    flipt:
+      FLIPT_URL: URL
       FLIPT_TOKEN: TOKEN
 
   allowlist:

@@ -4,7 +4,9 @@ import jakarta.persistence.*
 import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.NumericBooleanConverter
 import org.hibernate.type.YesNoConverter
+import org.springframework.data.annotation.CreatedBy
 import org.springframework.data.annotation.CreatedDate
+import org.springframework.data.annotation.LastModifiedBy
 import org.springframework.data.annotation.LastModifiedDate
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import org.springframework.data.jpa.repository.JpaRepository
@@ -47,9 +49,6 @@ class Appointment(
     @Column(name = "staff_id")
     val staffId: Long,
 
-    @Column(name = "last_updated_user_id")
-    var lastUpdatedUserId: Long,
-
     @Column(name = "contact_end_time")
     val endTime: ZonedDateTime?,
 
@@ -74,13 +73,6 @@ class Appointment(
     @Column(name = "soft_deleted", columnDefinition = "number", nullable = false)
     @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean = false,
-
-    @Version
-    @Column(name = "row_version")
-    val version: Long = 0,
-
-    @Column(name = "created_by_user_id")
-    val createdByUserId: Long? = null,
 
     @Column(name = "office_location_id")
     val officeLocationId: Long? = null,
@@ -119,6 +111,18 @@ class Appointment(
     @LastModifiedDate
     @Column(name = "last_updated_datetime")
     var lastUpdatedDateTime: ZonedDateTime = ZonedDateTime.now()
+
+    @Version
+    @Column(name = "row_version")
+    val version: Long = 0
+
+    @CreatedBy
+    @Column(name = "created_by_user_id")
+    var createdByUserId: Long? = null
+
+    @LastModifiedBy
+    @Column(name = "last_updated_user_id")
+    var lastUpdatedUserId: Long? = null
 }
 
 interface StaffAppointment {
