@@ -33,7 +33,8 @@ class CaseDetailService(
             ethnicity = person.ethnicity?.toCodedValue(),
             probationPractitioner = person.manager.staff.toProbationPractitioner { ldapTemplate.findEmailByUsername(it.username) },
             team = person.manager.team.toCodedValue(),
-            probationDeliveryUnit = person.manager.team.localAdminUnit.probationDeliveryUnit.toCodedValue()
+            probationDeliveryUnit = person.manager.team.localAdminUnit.probationDeliveryUnit.toCodedValue(),
+            region = with(person.manager.team.provider) { CodedValue(code, description) }
         )
     } ?: throw NotFoundException("Person", "crn", crn)
 

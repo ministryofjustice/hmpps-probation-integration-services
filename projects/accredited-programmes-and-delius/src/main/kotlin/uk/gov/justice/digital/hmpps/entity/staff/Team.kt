@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.entity.staff
 import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import uk.gov.justice.digital.hmpps.model.CodedValue
+import java.time.LocalDate
 
 @Entity
 @Immutable
@@ -31,6 +32,8 @@ class Team(
     @ManyToOne
     @JoinColumn(name = "probation_area_id")
     val provider: Provider,
+
+    val endDate: LocalDate?,
 ) {
     fun toCodedValue() = CodedValue(code, description)
 }
