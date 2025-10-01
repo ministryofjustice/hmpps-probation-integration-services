@@ -105,10 +105,6 @@ function wait_for_indexing_to_complete() {
   COUNT=$(curl_json "${SEARCH_URL}/${STANDBY_INDEX}/_count" | jq '.count')
   echo "Indexing is complete. The $STANDBY_INDEX index now has $COUNT documents"
 
-  echo 'Merging segments to improve search performance ...'
-  curl_json --no-fail -XPOST "${SEARCH_URL}/${STANDBY_INDEX}/_forcemerge?max_num_segments=10"
-  echo 'Waiting for merge tasks to complete, this might take a while ...'
-  sleep 60; until [ "$(curl --silent --show-error "${SEARCH_URL}/_cat/tasks?actions=*forcemerge*" | wc -l)" = '0' ]; do sleep 60; done
   echo 'Resetting replica count and refresh interval ...'
   curl_json -XPUT "${SEARCH_URL}/${STANDBY_INDEX}/_settings" --data '{"index": {"number_of_replicas": 1, "refresh_interval": "1s"}}'
   echo 'Waiting for replication to complete and cluster status to turn green ...'
