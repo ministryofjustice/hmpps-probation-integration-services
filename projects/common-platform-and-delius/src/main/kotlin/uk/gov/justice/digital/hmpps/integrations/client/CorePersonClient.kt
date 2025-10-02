@@ -13,7 +13,10 @@ interface CorePersonClient {
     fun findByDefendantId(@PathVariable defendantId: String): CorePersonRecord
 
     @PutExchange(value = "/person/probation/{defendantId}")
-    fun createPersonRecord(@PathVariable defendantId: String, @RequestBody person: CreateCorePersonRequest): ResponseEntity<Void>
+    fun createPersonRecord(
+        @PathVariable defendantId: String,
+        @RequestBody person: CreateCorePersonRequest
+    ): ResponseEntity<Void>
 }
 
 data class CorePersonRecord(
