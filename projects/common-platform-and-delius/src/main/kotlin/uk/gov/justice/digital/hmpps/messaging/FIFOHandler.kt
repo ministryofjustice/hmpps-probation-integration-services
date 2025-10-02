@@ -12,11 +12,13 @@ import uk.gov.justice.digital.hmpps.flags.FeatureFlags
 import uk.gov.justice.digital.hmpps.integrations.client.*
 import uk.gov.justice.digital.hmpps.integrations.client.Address
 import uk.gov.justice.digital.hmpps.message.Notification
+import uk.gov.justice.digital.hmpps.retry.retry
 import uk.gov.justice.digital.hmpps.service.OffenceService
 import uk.gov.justice.digital.hmpps.service.PersonService
 import uk.gov.justice.digital.hmpps.service.RemandService
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryMessagingExtensions.notificationReceived
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
+import java.time.Duration
 import java.time.LocalDate
 import java.time.Period
 import java.time.ZonedDateTime
@@ -189,7 +191,9 @@ class FIFOHandler(
             )
         )
 
-        val cprResponse = corePerson.createPersonRecord(insertRemandDTO.defendant.id, cprRequest)
+        val cprResponse = retry(3, delay = Duration.ofSeconds(1)) {
+             corePerson.createPersonRecord(insertRemandDTO.defendant.id, cprRequest)
+        }
 
         if (cprResponse.statusCode.is2xxSuccessful) {
             telemetryService.trackEvent(
