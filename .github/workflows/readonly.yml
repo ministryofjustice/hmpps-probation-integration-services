@@ -152,7 +152,7 @@ jobs:
           token: ${{ secrets.KUBE_TOKEN }}
 
       - name: Block updates
-        if: inputs.action == 'enable' && matrix.project != 'hmpps-auth-and-delius' && matrix.project != 'probation-search-and-delius' && matrix.project != 'feature-flags' # Note: hmpps-auth is excluded here to continue allowing 'POST /authenticate' requests, which are read-only
+        if: inputs.action == 'enable' && matrix.project != 'hmpps-auth-and-delius' && matrix.project != 'probation-search-and-delius' # Note: hmpps-auth is excluded here to continue allowing 'POST /authenticate' requests, which are read-only
         uses: nick-fields/retry@ce71cc2ab81d554ebbe88c79ab5975992d79ba08 # v3.0.2
         with:
           max_attempts: 3 # Patching ingresses intermittently fails on MOJ Cloud Platform, so we retry this step
@@ -174,7 +174,7 @@ jobs:
           | kubectl apply -f -
 
       - name: Unblock updates
-        if: inputs.action == 'disable' && matrix.project != 'hmpps-auth-and-delius' && matrix.project != 'probation-search-and-delius' && matrix.project != 'feature-flags'
+        if: inputs.action == 'disable' && matrix.project != 'hmpps-auth-and-delius' && matrix.project != 'probation-search-and-delius'
         uses: nick-fields/retry@ce71cc2ab81d554ebbe88c79ab5975992d79ba08 # v3.0.2
         with:
           max_attempts: 3 # Patching ingresses intermittently fails on MOJ Cloud Platform, so we retry this step

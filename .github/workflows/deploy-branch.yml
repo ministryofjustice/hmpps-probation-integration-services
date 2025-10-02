@@ -28,7 +28,6 @@ on:
           - effective-proposal-framework-and-delius
           - esupervision-and-delius
           - external-api-and-delius
-          - feature-flags
           - find-and-refer-and-delius
           - hdc-licences-and-delius
           - hmpps-auth-and-delius
