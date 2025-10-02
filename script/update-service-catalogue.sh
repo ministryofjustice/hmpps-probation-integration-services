@@ -21,7 +21,7 @@ echo "$component" | jq
 ENVIRONMENTS=${ENVIRONMENTS:-[]}
 for env in dev preprod prod; do
   env_id=$(echo "$component" | jq -r '.data[0].environments | select(.name == $env) | .documentId' --arg env "$env")
-  namespace_id=$(curl -fsS -H "Authorization: Bearer $SERVICE_CATALOGUE_API_KEY" "$api_url/namespaces?filters\[name\]=hmpps-probation-integration-services-$env" | jq '.data[0].documentId')
+  namespace_id=$(curl -fsS -H "Authorization: Bearer $SERVICE_CATALOGUE_API_KEY" "$api_url/namespaces?filters\[name\]=hmpps-probation-integration-services-$env" | jq -r '.data[0].documentId')
   if [ -n "$env_id" ]; then ENVIRONMENTS=$(echo "$ENVIRONMENTS" | jq -r 'map(select(.name == $env) += {"id": $env_id})' --arg env "$env" --arg env_id "$env_id"); fi
   if [ -n "$namespace_id" ]; then ENVIRONMENTS=$(echo "$ENVIRONMENTS" | jq -r 'map(select(.name == $env) += {"ns": $namespace_id})' --arg env "$env" --arg namespace_id "$namespace_id"); fi
 done
