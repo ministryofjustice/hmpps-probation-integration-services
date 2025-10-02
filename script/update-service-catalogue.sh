@@ -15,6 +15,8 @@ product_code="HMPPS518"
 product_id=$(curl -fsS -H "Authorization: Bearer $SERVICE_CATALOGUE_API_KEY" "$api_url/products?filters\[p_id\]=$product_code" | jq -r '.data[0].id // ""')
 component=$(curl -fsS -H "Authorization: Bearer $SERVICE_CATALOGUE_API_KEY" "$api_url/components?filters\[name\]=$PROJECT_NAME")
 
+echo "$component" | jq
+
 # Get ids for existing environments
 ENVIRONMENTS=${ENVIRONMENTS:-[]}
 for env in dev preprod prod; do
