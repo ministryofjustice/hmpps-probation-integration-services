@@ -26,7 +26,6 @@ import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.ContactType
 import uk.gov.justice.digital.hmpps.integrations.delius.management.ManagementTier
 import uk.gov.justice.digital.hmpps.integrations.delius.management.ManagementTierId
 import uk.gov.justice.digital.hmpps.integrations.delius.management.ManagementTierRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.management.ManagementTierWithEndDateRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.Person
 import uk.gov.justice.digital.hmpps.integrations.delius.person.PersonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceDataRepository
@@ -48,9 +47,6 @@ internal class TierServiceTest {
 
     @Mock
     lateinit var managementTierRepository: ManagementTierRepository
-
-    @Mock
-    lateinit var managementTierWithEndDatRepository: ManagementTierWithEndDateRepository
 
     @Mock
     lateinit var contactRepository: ContactRepository
@@ -150,11 +146,12 @@ internal class TierServiceTest {
             .thenReturn(updatedTierScore)
         whenever(referenceDataRepository.findByCodeAndSetName("ATS", ReferenceDataSetGenerator.TIER_CHANGE_REASON.name))
             .thenReturn(changeReason)
-        whenever(managementTierRepository.findFirstByIdPersonIdOrderByIdDateChangedDesc(person.id))
+        whenever(managementTierRepository.findByIdPersonIdAndEndDateIsNull(person.id))
             .thenReturn(
                 ManagementTier(
                     id = ManagementTierId(person.id, tierScore.id, currentTierDate),
-                    tierChangeReasonId = changeReason.id
+                    tierChangeReasonId = changeReason.id,
+                    null,
                 )
             )
 
@@ -180,11 +177,12 @@ internal class TierServiceTest {
             .thenReturn(updatedTierScore)
         whenever(referenceDataRepository.findByCodeAndSetName("ATS", ReferenceDataSetGenerator.TIER_CHANGE_REASON.name))
             .thenReturn(changeReason)
-        whenever(managementTierRepository.findFirstByIdPersonIdOrderByIdDateChangedDesc(person.id))
+        whenever(managementTierRepository.findByIdPersonIdAndEndDateIsNull(person.id))
             .thenReturn(
                 ManagementTier(
                     id = ManagementTierId(person.id, tierScore.id, currentTierDate),
-                    tierChangeReasonId = changeReason.id
+                    tierChangeReasonId = changeReason.id,
+                    null,
                 )
             )
         whenever(staffRepository.findByCode(StaffGenerator.DEFAULT.code)).thenReturn(StaffGenerator.DEFAULT)
