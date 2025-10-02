@@ -100,6 +100,24 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/GetAppointmentsResponse"
+  /user/{username}/teams:
+    get:
+      tags:
+      - Users
+      operationId: getUserRegionInformation
+      parameters:
+      - name: username
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserTeams"
   /docs/asyncapi:
     get:
       tags:
@@ -496,6 +514,31 @@ components:
       required:
       - code
       - name
+    UserTeam:
+      type: object
+      properties:
+        code:
+          type: string
+        description:
+          type: string
+        pdu:
+          $ref: "#/components/schemas/CodedValue"
+        region:
+          $ref: "#/components/schemas/CodedValue"
+      required:
+      - code
+      - description
+      - pdu
+      - region
+    UserTeams:
+      type: object
+      properties:
+        teams:
+          type: array
+          items:
+            $ref: "#/components/schemas/UserTeam"
+      required:
+      - teams
     Sentence:
       type: object
       properties:
@@ -662,6 +705,8 @@ components:
           $ref: "#/components/schemas/CodedValue"
         probationDeliveryUnit:
           $ref: "#/components/schemas/CodedValue"
+        region:
+          $ref: "#/components/schemas/CodedValue"
       required:
       - age
       - crn
@@ -669,6 +714,7 @@ components:
       - name
       - probationDeliveryUnit
       - probationPractitioner
+      - region
       - sex
       - team
     LicenceCondition:
