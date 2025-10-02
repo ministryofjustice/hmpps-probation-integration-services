@@ -38,7 +38,8 @@ data=$(jq -n '{"data": $ARGS.named}' \
     --argjson jira_project_keys '["PI"]'
 )
 
-component_id=$(echo "$component" | jq -r '.data[0].id // ""')
+component_id=$(echo "$component" | jq -r '.data[0].documentId // ""')
+echo "$data" | jq
 if [ -z "$component_id" ]; then
     echo "Adding component $PROJECT_NAME to hmpps-service-catalogue"
     curl -XPOST -f -H "Authorization: Bearer $SERVICE_CATALOGUE_API_KEY" "$api_url/components" --json "$data"
