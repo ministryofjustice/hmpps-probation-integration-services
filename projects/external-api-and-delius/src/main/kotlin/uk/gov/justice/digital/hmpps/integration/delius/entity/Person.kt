@@ -128,19 +128,22 @@ interface PersonRepository : JpaRepository<Person, Long>, JpaSpecificationExecut
     @Query("select p.crn from Person p where p.nomsId = :nomsId and p.softDeleted = false")
     fun findByNomsId(nomsId: String): String?
 
-    @Query("""
+    @Query(
+        """
         select p from Person p 
         where exists (select 1 from RegistrationEntity r where r.personId = p.id
         and r.type.code = 'MAPP' and r.category.code in :mappaCategories)
         and p.crn = :crn
-    """)
+    """
+    )
     fun findPersonInMappaCategory(crn: String, mappaCategories: Set<String>): Person?
 
     fun existsByCrn(crn: String): Boolean
 }
 
 fun PersonRepository.getMappaPersonInMappaCategory(crn: String, mappaCategories: Set<String>) =
-    findPersonInMappaCategory(crn, mappaCategories)  ?: throw NotFoundException("Person with mappa cat in $mappaCategories", "crn", crn)
+    findPersonInMappaCategory(crn, mappaCategories)
+        ?: throw NotFoundException("Person with mappa cat in $mappaCategories", "crn", crn)
 
 fun PersonRepository.getCrn(nomsId: String) =
     findByNomsId(nomsId) ?: throw NotFoundException("Person", "nomsId", nomsId)

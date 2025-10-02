@@ -21,7 +21,8 @@ class ContactsController(private val contactService: ContactService) {
     fun getContact(
         @PathVariable crn: String,
         @PathVariable contactId: Long,
-        @RequestParam mappaCategories: List<Int>): ContactLogged =
+        @RequestParam mappaCategories: List<Int>
+    ): ContactLogged =
         contactService.getById(crn, contactId, mappaCategories)
 
     @GetMapping
