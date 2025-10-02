@@ -5,6 +5,7 @@ import com.asyncapi.kotlinasyncapi.annotation.channel.Message
 import com.asyncapi.kotlinasyncapi.annotation.channel.Publish
 import org.springframework.stereotype.Component
 import uk.gov.justice.digital.hmpps.converter.NotificationConverter
+import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException
 import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
 import uk.gov.justice.digital.hmpps.message.Notification
 import uk.gov.justice.digital.hmpps.messaging.Handler.Companion.CHECK_IN_EXPIRED
@@ -22,13 +23,21 @@ class Handler(
     @Publish(messages = [Message(title = CHECK_IN_RECEIVED), Message(title = CHECK_IN_EXPIRED)])
     override fun handle(notification: Notification<HmppsDomainEvent>) {
         when (notification.eventType) {
-            CHECK_IN_RECEIVED, CHECK_IN_EXPIRED -> {
+            CHECK_IN_RECEIVED, CHECK_IN_EXPIRED -> try {
                 checkInService.handle(notification.message)
                 telemetryService.trackEvent(
                     "CheckInEventReceived", mapOf(
                         "eventType" to notification.eventType,
                         "crn" to notification.message.personReference.findCrn(),
                     )
+                )
+            } catch (ie: IgnorableMessageException) {
+                telemetryService.trackEvent(
+                    "CheckInEventIgnored",
+                    mapOf(
+                        "eventType" to notification.eventType,
+                        "crn" to notification.message.personReference.findCrn(),
+                    ) + ie.additionalProperties
                 )
             }
 
