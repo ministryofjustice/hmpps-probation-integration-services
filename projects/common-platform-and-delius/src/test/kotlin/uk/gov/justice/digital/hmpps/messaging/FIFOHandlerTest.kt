@@ -12,6 +12,7 @@ import org.mockito.kotlin.*
 import org.opensearch.client.opensearch.OpenSearchClient
 import org.opensearch.client.opensearch.core.IndexRequest
 import org.opensearch.client.util.ObjectBuilder
+import org.springframework.http.ResponseEntity
 import uk.gov.justice.digital.hmpps.converter.NotificationConverter
 import uk.gov.justice.digital.hmpps.data.generator.*
 import uk.gov.justice.digital.hmpps.dto.InsertEventResult
@@ -68,6 +69,7 @@ internal class FIFOHandlerTest {
 
         corePersonHasNoCrn()
         featureFlagIsEnabled(true)
+        whenever(corePersonClient.createPersonRecord(any(), any())).thenReturn(ResponseEntity.status(500).build())
 
         val notification = Notification(message = MessageGenerator.COMMON_PLATFORM_EVENT)
         handler.handle(notification)
@@ -153,6 +155,7 @@ internal class FIFOHandlerTest {
 
         corePersonHasNoCrn()
         featureFlagIsEnabled(true)
+        whenever(corePersonClient.createPersonRecord(any(), any())).thenReturn(ResponseEntity.status(500).build())
 
         val notification = Notification(message = MessageGenerator.COMMON_PLATFORM_EVENT)
         handler.handle(notification)

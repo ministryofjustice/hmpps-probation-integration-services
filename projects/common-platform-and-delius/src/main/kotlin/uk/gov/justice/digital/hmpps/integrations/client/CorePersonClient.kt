@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.integrations.client
 
 import com.fasterxml.jackson.annotation.JsonProperty
+import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.service.annotation.GetExchange
@@ -12,7 +13,10 @@ interface CorePersonClient {
     fun findByDefendantId(@PathVariable defendantId: String): CorePersonRecord
 
     @PutExchange(value = "/person/probation/{defendantId}")
-    fun createPersonRecord(@PathVariable defendantId: String, @RequestBody person: CreateCorePersonRequest)
+    fun createPersonRecord(
+        @PathVariable defendantId: String,
+        @RequestBody person: CreateCorePersonRequest
+    ): ResponseEntity<Void>
 }
 
 data class CorePersonRecord(
