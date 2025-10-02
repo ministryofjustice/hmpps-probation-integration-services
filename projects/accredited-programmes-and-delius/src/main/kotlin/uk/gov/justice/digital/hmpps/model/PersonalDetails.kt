@@ -13,4 +13,5 @@ data class PersonalDetails(
     val probationPractitioner: ProbationPractitioner,
     val team: CodedValue,
     val probationDeliveryUnit: CodedValue,
+    val region: CodedValue,
 )

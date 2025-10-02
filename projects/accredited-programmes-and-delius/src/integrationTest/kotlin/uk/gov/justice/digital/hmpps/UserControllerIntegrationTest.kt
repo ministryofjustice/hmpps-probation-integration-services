@@ -7,6 +7,7 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
 import org.springframework.test.json.JsonCompareMode
 import org.springframework.test.web.servlet.MockMvc
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
@@ -69,6 +70,20 @@ internal class UserControllerIntegrationTest {
                         }
                       ]
                     }
+                    """.trimIndent(), JsonCompareMode.STRICT
+                )
+            )
+    }
+
+    @Test
+    fun `get user team`() {
+        mockMvc
+            .perform(get("/user/${TestData.USER.username}/teams").withToken())
+            .andExpect(status().isOk)
+            .andExpect(
+                content().json(
+                    """
+                    { "teams": [{"code":"TEAM01","description":"Test Team","pdu":{"code":"PDU1","description":"Test PDU"},"region":{"code":"PA1","description":"Test Provider"}}] }
                     """.trimIndent(), JsonCompareMode.STRICT
                 )
             )

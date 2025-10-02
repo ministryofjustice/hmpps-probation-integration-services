@@ -67,6 +67,10 @@ internal class CaseControllerIntegrationTest {
                       "probationDeliveryUnit": {
                         "code": "PDU1",
                         "description": "Test PDU"
+                      },
+                      "region": {
+                        "code": "PA1",
+                        "description": "Test Provider"
                       }
                     }
                     """.trimIndent(),
