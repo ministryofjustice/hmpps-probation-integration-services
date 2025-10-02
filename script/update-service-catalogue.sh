@@ -34,7 +34,7 @@ data=$(jq -n '{"data": $ARGS.named}' \
     --arg part_of_monorepo true \
     --arg path_to_project "projects/$PROJECT_NAME" \
     --arg path_to_helm_dir "projects/$PROJECT_NAME/deploy" \
-    --argjson environments "$ENVIRONMENTS" \
+    --argjson envs "$ENVIRONMENTS" \
     --argjson jira_project_keys '["PI"]'
 )
 
