@@ -192,7 +192,7 @@ class FIFOHandler(
         )
 
         val cprResponse = retry(3, delay = Duration.ofSeconds(1)) {
-             corePerson.createPersonRecord(insertRemandDTO.defendant.id, cprRequest)
+            corePerson.createPersonRecord(insertRemandDTO.defendant.id, cprRequest)
         }
 
         if (cprResponse.statusCode.is2xxSuccessful) {
