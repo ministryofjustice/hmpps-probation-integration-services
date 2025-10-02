@@ -14,7 +14,6 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.bean.override.mockito.MockitoBean
 import uk.gov.justice.digital.hmpps.data.repository.ContactDevRepository
 import uk.gov.justice.digital.hmpps.data.repository.ManagementTierDevRepository
-import uk.gov.justice.digital.hmpps.data.repository.ManagementTierWithEndDateDevRepository
 import uk.gov.justice.digital.hmpps.datetime.ZonedDateTimeDeserializer
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.ContactTypeCode
 import uk.gov.justice.digital.hmpps.integrations.delius.person.PersonRepository
@@ -41,9 +40,6 @@ internal class IntegrationTest {
 
     @Autowired
     private lateinit var managementTierDevRepository: ManagementTierDevRepository
-
-    @Autowired
-    private lateinit var managementTierWithEndDateDevRepository: ManagementTierWithEndDateDevRepository
 
     @Autowired
     private lateinit var contactDevRepository: ContactDevRepository
@@ -96,9 +92,9 @@ internal class IntegrationTest {
         val person = personRepository.findByCrnAndSoftDeletedIsFalse(notification.message.personReference.findCrn()!!)!!
         assertThat(person.currentTier, equalTo(expectedTier.id))
 
-        val managementTiers = managementTierWithEndDateDevRepository.findAllByIdPersonIdOrderByIdDateChanged(person.id)
+        val managementTiers = managementTierDevRepository.findAllByIdPersonIdOrderByIdDateChanged(person.id)
         assertThat(
-            managementTiers.first().endDate.toEpochSecond(),
+            managementTiers.first().endDate!!.toEpochSecond(),
             equalTo(ZonedDateTime.parse("2021-04-24T18:25:43.511Z").toEpochSecond())
         )
     }

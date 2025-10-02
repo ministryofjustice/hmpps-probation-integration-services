@@ -12,49 +12,19 @@ import java.time.ZonedDateTime
 @Entity
 @Table(name = "management_tier")
 @EntityListeners(AuditingEntityListener::class)
-data class ManagementTier(
+class ManagementTier(
     @EmbeddedId
     val id: ManagementTierId,
 
     @Column
     val tierChangeReasonId: Long,
+
+    @Column
+    var endDate: ZonedDateTime?,
 
     @Column(columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean = false
-) {
-    @Column
-    @Version
-    val rowVersion: Long = 0L
-
-    @Column
-    val partitionAreaId: Long = 0L
-
-    @Column(nullable = false, updatable = false)
-    @CreatedBy
-    var createdByUserId: Long = 0
-
-    @Column(nullable = false)
-    @LastModifiedBy
-    var lastUpdatedUserId: Long = 0
-}
-
-@Entity
-@Table(name = "management_tier")
-@EntityListeners(AuditingEntityListener::class)
-data class ManagementTierWithEndDate(
-    @EmbeddedId
-    val id: ManagementTierId,
-
-    @Column
-    val tierChangeReasonId: Long,
-
-    @Column
-    val endDate: ZonedDateTime,
-
-    @Column(columnDefinition = "number")
-    @Convert(converter = NumericBooleanConverter::class)
-    val softDeleted: Boolean = false,
 ) {
     @Column
     @Version
