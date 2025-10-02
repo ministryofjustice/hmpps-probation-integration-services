@@ -4,6 +4,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import uk.gov.justice.digital.hmpps.advice.ErrorResponse
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.CONTACT_OUTCOME_TYPE
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.CONTACT_TYPE
@@ -19,9 +20,9 @@ import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 
 internal class ContactIntegrationTest : BaseIntegrationTest() {
     @Test
-    fun `can retrieve contact by id`() {
+    fun `can retrieve contact by id when mappa category matches`() {
         val response = mockMvc
-            .perform(get("/case/${PersonGenerator.DEFAULT.crn}/contacts/${ContactGenerator.CONTACT.id}").withToken())
+            .perform(get("/case/${PersonGenerator.DEFAULT.crn}/contacts/${ContactGenerator.CONTACT.id}?mappaCategories=2").withToken())
             .andExpect(status().is2xxSuccessful)
             .andReturn().response.contentAsJson<ContactLogged>()
 
@@ -45,6 +46,17 @@ internal class ContactIntegrationTest : BaseIntegrationTest() {
     }
 
     @Test
+    fun `no contact when mappa category does not match`() {
+        val response = mockMvc
+            .perform(get("/case/${PersonGenerator.DEFAULT.crn}/contacts/${ContactGenerator.CONTACT.id}?mappaCategories=1").withToken())
+            .andExpect(status().isNotFound)
+            .andReturn().response.contentAsJson<ErrorResponse>()
+
+        assertThat(response.status).isEqualTo(404)
+        assertThat(response.message).isEqualTo("Person with mappa cat in [M1] with crn of A000001 not found")
+    }
+
+    @Test
     fun `can retrieve visor contacts when mappa category matches`() {
         val response = mockMvc
             .perform(get("/case/${PersonGenerator.DEFAULT.crn}/contacts?mappaCategories=2").withToken())
@@ -60,10 +72,10 @@ internal class ContactIntegrationTest : BaseIntegrationTest() {
     fun `no contacts when mappa category does not match`() {
         val response = mockMvc
             .perform(get("/case/${PersonGenerator.DEFAULT.crn}/contacts?mappaCategories=4").withToken())
-            .andExpect(status().is2xxSuccessful)
-            .andReturn().response.contentAsJson<ContactsLogged>()
+            .andExpect(status().isNotFound)
+            .andReturn().response.contentAsJson<ErrorResponse>()
 
-        assertThat(response.totalPages).isEqualTo(0)
-        assertThat(response.totalResults).isEqualTo(0)
+        assertThat(response.status).isEqualTo(404)
+        assertThat(response.message).isEqualTo("Person with mappa cat in [M4] with crn of A000001 not found")
     }
 }

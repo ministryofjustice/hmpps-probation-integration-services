@@ -18,8 +18,12 @@ import uk.gov.justice.digital.hmpps.service.ContactService
 @Tag(name = "Contacts", description = "Requires PROBATION_API__HMPPS_API__CASE_DETAIL")
 class ContactsController(private val contactService: ContactService) {
     @GetMapping("/{contactId}")
-    fun getContact(@PathVariable crn: String, @PathVariable contactId: Long): ContactLogged =
-        contactService.getById(crn, contactId)
+    fun getContact(
+        @PathVariable crn: String,
+        @PathVariable contactId: Long,
+        @RequestParam mappaCategories: List<Int>
+    ): ContactLogged =
+        contactService.getById(crn, contactId, mappaCategories)
 
     @GetMapping
     fun getVisorContacts(
