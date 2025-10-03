@@ -57,7 +57,10 @@ class TierUpdateService(
             return telemetryService.trackEvent("OutOfOrderMessageIgnored", tierCalculation.telemetryProperties(crn))
         }
 
-        latestTier?.endDate = tierCalculation.calculationDate
+        latestTier?.also {
+            it.endDate = tierCalculation.calculationDate
+            managementTierRepository.saveAndFlush(it)
+        }
         createTier(person, tier, tierCalculation.calculationDate, changeReason)
         createContact(person, tier, tierCalculation.calculationDate, changeReason)
         updatePerson(person, tier)
