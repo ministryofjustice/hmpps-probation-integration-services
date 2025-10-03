@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.messaging
 
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
+import uk.gov.justice.digital.hmpps.exceptions.OffenderNotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.model.MergeResult
 import uk.gov.justice.digital.hmpps.integrations.delius.model.MergeResult.Action.Created
 import uk.gov.justice.digital.hmpps.integrations.delius.model.MergeResult.Action.Updated
@@ -29,7 +30,7 @@ class PrisonIdentifierAdded(
 
         val nomsId = checkNotNull(event.personReference.findNomsNumber()) {
             "NomsNumber not found for ${event.eventType}"
-        }
+        }.uppercase()
         val uri = URI.create("$caseNotesBaseUrl/search/case-notes/$nomsId")
         val caseNotes = caseNotesApi.searchCaseNotes(uri, SearchCaseNotes(forSearchRequest())).content
             .filter { cn -> PrisonCaseNoteFilters.filters.none { it.predicate.invoke(cn) } }
@@ -83,6 +84,7 @@ class PrisonIdentifierAdded(
             ).toMap()
         )
 
-        results.filterIsInstance<Failure>().firstOrNull()?.let { throw it.exception }
+        results.filterIsInstance<Failure>().firstOrNull { it.exception !is OffenderNotFoundException }
+            ?.let { throw it.exception }
     }
 }
