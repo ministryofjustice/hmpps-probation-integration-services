@@ -5,5 +5,6 @@ data class AppointmentDetail(
 )
 
 data class CreatedAppointment(
-    val id: Long
+    val id: Long,
+    val externalReference: String?
 )

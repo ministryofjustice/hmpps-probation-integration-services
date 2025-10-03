@@ -124,6 +124,7 @@ class CreateAppointmentIntegrationTest : IntegrationTestBase() {
             .andReturn().response.contentAsJson<AppointmentDetail>()
 
         val appointment = appointmentRepository.findById(response.appointments[0].id).get()
+        assertThat(response.appointments.all { it.externalReference != null }, equalTo(true))
 
         assertThat(appointment.type.code, equalTo(createAppointment.type))
         assertThat(appointment.date, equalTo(createAppointment.start.toLocalDate()))
@@ -157,6 +158,7 @@ class CreateAppointmentIntegrationTest : IntegrationTestBase() {
         val appointments = appointmentRepository.findAllById(response.appointments.map { it.id })
 
         assertThat(appointments.size, equalTo(3))
+        assertThat(response.appointments.all { it.externalReference != null }, equalTo(true))
 
         assertThat(appointments[0].date, equalTo(LocalDate.now()))
         assertThat(
