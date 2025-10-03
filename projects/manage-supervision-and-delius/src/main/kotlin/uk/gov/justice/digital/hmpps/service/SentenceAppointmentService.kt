@@ -174,7 +174,7 @@ class SentenceAppointmentService(
 
             val appointments = createAppointments.map { it.withManager(om, userAndTeam, location) }
             val savedAppointments = appointmentRepository.saveAll(appointments)
-            val createdAppointments = savedAppointments.map { CreatedAppointment(it.id) }
+            val createdAppointments = savedAppointments.map { CreatedAppointment(it.id, it.externalReference) }
 
             audit["contactId"] = createdAppointments.joinToString { it.id.toString() }
 
