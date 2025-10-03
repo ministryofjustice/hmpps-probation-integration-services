@@ -11,7 +11,8 @@ object AddressGenerator {
         addressNumber = "12",
         streetName = "Tulip Drive",
         town = "Some Place",
-        postcode = "MB01 3TD"
+        postcode = "MB01 3TD",
+        startDate = LocalDate.of(2022, 11, 29)
     )
 
     var PERSON_ADDRESS_ID: Long? = null
@@ -21,7 +22,8 @@ object AddressGenerator {
         addressNumber = "12",
         streetName = "Tulip Drive",
         town = "Some Place",
-        postcode = "MB01 3TD"
+        postcode = "MB01 3TD",
+        startDate = LocalDate.of(2022, 11, 29)
     )
 
     var INACTIVE_PERSON_ADDRESS_ID: Long? = null
