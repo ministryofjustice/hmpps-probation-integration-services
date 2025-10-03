@@ -72,21 +72,29 @@ internal class UserAccessServiceTest {
         listOf(
             object : PersonAccess {
                 override val crn = "E123456"
+                override val excluded = true
+                override val restricted = false
                 override val exclusionMessage = "This person has an exclusion"
                 override val restrictionMessage = null
             },
             object : PersonAccess {
                 override val crn = "R123456"
+                override val excluded = false
+                override val restricted = true
                 override val exclusionMessage = null
                 override val restrictionMessage = "This person has a restriction"
             },
             object : PersonAccess {
                 override val crn = "B123456"
+                override val excluded = true
+                override val restricted = true
                 override val exclusionMessage = "This person has an exclusion"
                 override val restrictionMessage = "This person has a restriction"
             },
             object : PersonAccess {
                 override val crn = "N123456"
+                override val excluded = false
+                override val restricted = false
                 override val exclusionMessage = null
                 override val restrictionMessage = null
             }
