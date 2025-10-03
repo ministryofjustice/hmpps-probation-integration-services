@@ -2,12 +2,12 @@
 set -euo pipefail
 eval "$(sentry-cli bash-hook --no-environ)"
 
-queue_urls=$(aws sqs list-queues --queue-name-prefix "$QUEUE_NAME_PREFIX" | jq -r '.QueueUrls[] | select(endswith("-dlq"))')
+queue_urls=$(aws sqs list-queues --queue-name-prefix "$QUEUE_NAME_PREFIX" | jq -r '.QueueUrls[] | select(endswith("-dlq") or endswith("dlq.fifo")')
 
 queue_stats_json='{}' # Example: {"dev": {"queue1": 1, "queue2": 2, "queue3": 3}, "preprod": {"queue1": 1}}
 for queue_url in $queue_urls; do
   count=$(aws sqs get-queue-attributes --queue-url "$queue_url" --attribute-names ApproximateNumberOfMessages --query 'Attributes.ApproximateNumberOfMessages' --output text)
-  queue_name=$(basename "$queue_url" | sed "s/$QUEUE_NAME_PREFIX-//;s/-dlq//")
+  queue_name=$(basename "$queue_url" | sed "s/$QUEUE_NAME_PREFIX-//;s/-dlq//;s/\.fifo//")
   environment_name=$(echo "$queue_name" | cut -d'-' -f1)
   service_name=$(echo "$queue_name" | cut -d'-' -f2-)
 
