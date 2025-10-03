@@ -611,33 +611,52 @@ interface ContactRepository : JpaRepository<Contact, Long> {
 
     @Query(
         """
-        SELECT  o.first_name AS forename, 
-                o.second_name AS secondName, 
-                o.third_name AS thirdName, 
-                o.surname AS surname, 
-                o.date_of_birth_date AS dob,
-                c.contact_id AS id,
-                o.crn AS crn,
-                c.contact_date AS contact_date, 
-                c.contact_start_time AS contact_start_time, 
-                c.contact_end_time AS contact_end_time,                                 
-                rct.description AS contactDescription,
-                rct.code as typeCode,
-                case when c.complied = 'Y' then 1 else 0 end as complied,
-                rtmc.code as rqmntMainCatCode
-        FROM offender o
-        JOIN caseload cl ON o.offender_id = cl.offender_id AND (cl.role_code = 'OM')
-        JOIN contact c ON c.offender_id = o.offender_id AND c.staff_id = :staffId
-        JOIN r_contact_type rct ON rct.contact_type_id = c.contact_type_id
-        left join rqmnt r on r.rqmnt_id = c.rqmnt_id
-        left join r_rqmnt_type_main_category rtmc on rtmc.rqmnt_type_main_category_id = r.rqmnt_type_main_category_id
-        WHERE cl.staff_employee_id = :staffId
-        AND rct.attendance_contact = 'Y'  
-        AND rct.contact_outcome_flag = 'Y'
-        AND c.contact_outcome_type_id IS NULL 
-        AND c.soft_deleted = 0
-        AND (to_char(c.contact_date,'YYYY-MM-DD') < :dateNow
-        OR (to_char(c.contact_date,'YYYY-MM-DD') = :dateNow AND to_char(c.contact_start_time,'HH24:MI') < :timeNow))    
+        with appt as ( select o.first_name,
+                    o.second_name,
+                    o.third_name,
+                    o.surname,
+                    o.date_of_birth_date,
+                    c.contact_id,
+                    o.crn,
+                    c.contact_date,
+                    c.contact_start_time,
+                    c.contact_end_time,
+                    rct.description,
+                    rct.code,
+                    c.rqmnt_id,
+                    case when c.complied = 'Y' then 1 else 0 end as complied
+             from offender o
+             join caseload cl on o.offender_id = cl.offender_id and (cl.role_code = 'OM')
+             join contact c on c.offender_id = o.offender_id and c.staff_id = :staffId
+             join r_contact_type rct on rct.contact_type_id = c.contact_type_id
+             where cl.staff_employee_id = :staffId
+               and rct.attendance_contact = 'Y'
+               and rct.contact_outcome_flag = 'Y'
+               and c.contact_outcome_type_id is null
+               and c.soft_deleted = 0
+               and (to_char(c.contact_date, 'YYYY-MM-DD') < :dateNow or
+                    (to_char(c.contact_date, 'YYYY-MM-DD') = :dateNow and
+                     to_char(c.contact_start_time, 'HH24:MI') < :timeNow)) ),
+         rq as ( select r.rqmnt_id, rtmc.code
+                 from rqmnt r
+                 left join r_rqmnt_type_main_category rtmc
+                           on rtmc.rqmnt_type_main_category_id = r.rqmnt_type_main_category_id )
+        select appt.first_name         as forename,
+               appt.second_name        as secondname,
+               appt.third_name         as thirdname,
+               appt.surname            as surname,
+               appt.date_of_birth_date as dob,
+               appt.contact_id         as id,
+               appt.crn                as crn,
+               appt.contact_date       as contact_date,
+               appt.contact_start_time as contact_start_time,
+               appt.contact_end_time   as contact_end_time,
+               appt.description        as contactdescription,
+               appt.code               as typecode,
+               appt.complied           as complied,
+               appt.code               as rqmntmaincatcode
+        from appt
+        left join rq on appt.rqmnt_id = rq.rqmnt_id   
     """,
         countQuery = """
         SELECT COUNT(1)

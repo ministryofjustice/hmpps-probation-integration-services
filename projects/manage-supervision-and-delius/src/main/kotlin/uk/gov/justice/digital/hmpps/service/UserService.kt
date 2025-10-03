@@ -4,7 +4,6 @@ import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort
-import org.springframework.data.util.TypeUtils.type
 import org.springframework.ldap.core.AttributesMapper
 import org.springframework.ldap.core.LdapTemplate
 import org.springframework.ldap.query.LdapQueryBuilder.query
@@ -154,7 +153,7 @@ class UserService(
         // data in sql cache to speed up contactRepository.findAppointmentsWithoutOutcomesByUser
         getSummaryOfAppointmentsWithoutOutcomes(
             username,
-            PageRequest.of(0, 5).withSort(Sort.by(Sort.Direction.ASC, "c.contact_date", "c.contact_start_time"))
+            PageRequest.of(0, 5).withSort(Sort.by(Sort.Direction.ASC, "contact_date", "contact_start_time"))
         )
 
         return user.staff?.let {
@@ -195,7 +194,7 @@ class UserService(
             )
             val appointmentsWithoutOutcomes = getSummaryOfAppointmentsWithoutOutcomes(
                 username,
-                pageRequest.withSort(Sort.by(Sort.Direction.ASC, "c.contact_date", "c.contact_start_time"))
+                pageRequest.withSort(Sort.by(Sort.Direction.ASC, "contact_date", "contact_start_time"))
             )
 
             UserAppointments(
