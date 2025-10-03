@@ -35,6 +35,7 @@ class PersonAddress(
     val district: String?,
     val county: String?,
     val postcode: String?,
+    val startDate: LocalDate?,
     val endDate: LocalDate?,
 
     @Column(columnDefinition = "number")
@@ -52,4 +53,5 @@ fun PersonAddress.toAddress() = Address(
     district,
     county,
     postcode,
+    startDate
 )

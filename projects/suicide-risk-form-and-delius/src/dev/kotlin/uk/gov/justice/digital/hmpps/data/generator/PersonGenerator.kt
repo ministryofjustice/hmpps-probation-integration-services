@@ -63,6 +63,7 @@ object PersonGenerator {
         district: String? = "District",
         county: String? = "County",
         postcode: String? = "PO57 0DE",
+        startDate: LocalDate? = LocalDate.now().minusDays(7),
         endDate: LocalDate? = null,
         softDeleted: Boolean = false,
         id: Long = IdGenerator.getAndIncrement()
@@ -77,6 +78,7 @@ object PersonGenerator {
         district,
         county,
         postcode,
+        startDate,
         endDate,
         softDeleted
     )
