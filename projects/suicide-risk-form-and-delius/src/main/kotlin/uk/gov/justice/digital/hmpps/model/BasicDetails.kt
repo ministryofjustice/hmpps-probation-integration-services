@@ -25,5 +25,6 @@ data class Address(
     val townCity: String?,
     val district: String?,
     val county: String?,
-    val postcode: String?
+    val postcode: String?,
+    val startDate: LocalDate?
 )
