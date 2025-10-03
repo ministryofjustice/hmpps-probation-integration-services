@@ -84,6 +84,7 @@ class PrisonIdentifierAdded(
             ).toMap()
         )
 
-        results.filterIsInstance<Failure>().firstOrNull{ it.exception !is OffenderNotFoundException }?.let { throw it.exception }
+        results.filterIsInstance<Failure>().firstOrNull { it.exception !is OffenderNotFoundException }
+            ?.let { throw it.exception }
     }
 }
