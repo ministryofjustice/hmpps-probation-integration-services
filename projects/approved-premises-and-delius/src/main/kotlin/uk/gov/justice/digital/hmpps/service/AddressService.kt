@@ -22,11 +22,12 @@ class AddressService(
         person: Person,
         details: PersonArrived,
         ap: ApprovedPremises
-    ): Pair<PersonAddress?, PersonAddress> {
+    ): Pair<PersonAddress?, PersonAddress>? {
         val previous = personAddressRepository.findMainAddress(person.id)
-            ?.also { it.endMainAddress(maxOf(details.arrivedAt.toLocalDate(), it.startDate)) }
-        val current = personAddressRepository.save(ap.toAddress(person, details))
-        return previous to current
+        return if (previous?.startDate?.isAfter(details.arrivedAt.toLocalDate()) != false) {
+            previous?.endMainAddress(details.arrivedAt.toLocalDate())
+            previous to personAddressRepository.save(ap.toAddress(person, details))
+        } else null
     }
 
     fun endMainAddressOnDeparture(person: Person, endDate: LocalDate): PersonAddress? {
