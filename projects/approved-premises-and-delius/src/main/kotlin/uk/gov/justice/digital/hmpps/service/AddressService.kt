@@ -24,7 +24,7 @@ class AddressService(
         ap: ApprovedPremises
     ): Pair<PersonAddress?, PersonAddress> {
         val previous = personAddressRepository.findMainAddress(person.id)
-            ?.also { it.endMainAddress(details.arrivedAt.toLocalDate()) }
+            ?.also { it.endMainAddress(maxOf(details.arrivedAt.toLocalDate(), it.startDate)) }
         val current = personAddressRepository.save(ap.toAddress(person, details))
         return previous to current
     }
