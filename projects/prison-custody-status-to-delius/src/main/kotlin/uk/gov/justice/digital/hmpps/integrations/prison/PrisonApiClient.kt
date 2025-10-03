@@ -88,7 +88,7 @@ data class Movement(
     val toAgency: String?,
     val movementType: String,
     @JsonAlias("movementReasonCode")
-    val movementReason: String,
+    val movementReason: String?,
     val movementDate: LocalDate,
     val movementTime: LocalTime
 )

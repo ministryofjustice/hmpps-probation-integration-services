@@ -56,7 +56,9 @@ class Handler(
             val movement = when (eventType) {
                 IdentifierAdded, IdentifierUpdated, PrisonerReceived, PrisonerReleased -> {
                     val booking = prisonApiClient.bookingFromNomsId(nomsId)
-                    val movement = prisonApiClient.getLatestMovement(listOf(nomsId)).firstOrNull()
+                    val movement = prisonApiClient.getLatestMovement(listOf(nomsId)).firstOrNull {
+                        it.movementReason != null
+                    }
                     movement?.let { booking.prisonerMovement(it) }
                 }
 
@@ -158,7 +160,7 @@ fun Booking.prisonerMovement(movement: Movement): PrisonerMovement {
             mapOf(
                 "nomsNumber" to personReference,
                 "movementType" to movement.movementType,
-                "movementReason" to movement.movementReason,
+                "movementReason" to (movement.movementReason ?: ""),
                 "inOutStatus" to inOutStatus!!.name,
                 "prisonId" to (agencyId ?: "")
             )
@@ -170,7 +172,7 @@ fun Booking.prisonerMovement(movement: Movement): PrisonerMovement {
             movement.fromAgency,
             movement.toAgency ?: throw IgnorableMessageException("TemporaryAbsenceNoAgency"),
             PrisonerMovement.Type.valueOf(reason),
-            movement.movementReason,
+            requireNotNull(movement.movementReason),
             dateTime
         )
 
@@ -179,7 +181,7 @@ fun Booking.prisonerMovement(movement: Movement): PrisonerMovement {
             movement.fromAgency ?: throw IgnorableMessageException("TemporaryAbsenceNoAgency"),
             movement.toAgency,
             PrisonerMovement.Type.valueOf(reason),
-            movement.movementReason,
+            requireNotNull(movement.movementReason),
             dateTime
         )
 
