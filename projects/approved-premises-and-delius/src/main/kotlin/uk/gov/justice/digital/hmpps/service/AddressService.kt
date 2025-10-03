@@ -24,7 +24,7 @@ class AddressService(
         ap: ApprovedPremises
     ): Pair<PersonAddress?, PersonAddress>? {
         val previous = personAddressRepository.findMainAddress(person.id)
-        return if (previous?.startDate?.isAfter(details.arrivedAt.toLocalDate()) != false) {
+        return if (previous?.startDate?.isBefore(details.arrivedAt.toLocalDate()) != false) {
             previous?.endMainAddress(details.arrivedAt.toLocalDate())
             previous to personAddressRepository.save(ap.toAddress(person, details))
         } else null
