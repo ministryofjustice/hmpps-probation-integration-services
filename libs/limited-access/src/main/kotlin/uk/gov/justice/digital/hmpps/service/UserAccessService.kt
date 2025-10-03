@@ -3,8 +3,6 @@ package uk.gov.justice.digital.hmpps.service
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.entity.PersonAccess
 import uk.gov.justice.digital.hmpps.entity.UserAccessRepository
-import uk.gov.justice.digital.hmpps.entity.isExcluded
-import uk.gov.justice.digital.hmpps.entity.isRestricted
 
 @Service
 class UserAccessService(private val uar: UserAccessRepository) {
@@ -30,10 +28,10 @@ class UserAccessService(private val uar: UserAccessRepository) {
         } else {
             CaseAccess(
                 crn,
-                any { it.isExcluded() },
-                any { it.isRestricted() },
-                firstOrNull { it.isExcluded() }?.exclusionMessage,
-                firstOrNull { it.isRestricted() }?.restrictionMessage
+                any { it.excluded },
+                any { it.restricted },
+                firstOrNull { it.excluded }?.exclusionMessage,
+                firstOrNull { it.restricted }?.restrictionMessage
             )
         }
     }
