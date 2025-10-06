@@ -15,6 +15,9 @@ generic-prometheus-alerts:
 
 jobs:
   unpaid-work-appointment-reminders:
+    east-midlands:
+      templates:
+        - cd713c1b-1b27-45a0-b493-37a34666635a
     east-of-england:
       templates:
         - cd713c1b-1b27-45a0-b493-37a34666635a
@@ -27,7 +30,16 @@ jobs:
     kent-surrey-sussex:
       templates:
         - cd713c1b-1b27-45a0-b493-37a34666635a
+    north-east:
+      templates:
+        - cd713c1b-1b27-45a0-b493-37a34666635a
+    north-west:
+      templates:
+        - cd713c1b-1b27-45a0-b493-37a34666635a
     south-central:
+      templates:
+        - cd713c1b-1b27-45a0-b493-37a34666635a
+    south-west:
       templates:
         - cd713c1b-1b27-45a0-b493-37a34666635a
     wales:

@@ -26,6 +26,14 @@ generic-prometheus-alerts:
 
 jobs:
   unpaid-work-appointment-reminders:
+    east-midlands:
+      provider:
+        code: N53
+        name: 'East Midlands'
+      apiKeySecret: API_KEY
+      schedule: '0 18 * * *' # 6pm every day
+      daysInAdvance: 1
+
     east-of-england:
       provider:
         code: N56
@@ -63,10 +71,34 @@ jobs:
       schedule: '0 18 * * *' # 6pm every day
       daysInAdvance: 1
 
+    north-east:
+      provider:
+        code: N54
+        name: 'North East'
+      apiKeySecret: API_KEY
+      schedule: '0 18 * * *' # 6pm every day
+      daysInAdvance: 1
+
+    north-west:
+      provider:
+        code: N51
+        name: 'North West'
+      apiKeySecret: API_KEY
+      schedule: '0 18 * * *' # 6pm every day
+      daysInAdvance: 1
+
     south-central:
       provider:
         code: N59
         name: 'South Central'
+      apiKeySecret: API_KEY
+      schedule: '0 18 * * *' # 6pm every day
+      daysInAdvance: 1
+
+    south-west:
+      provider:
+        code: N58
+        name: 'South West'
       apiKeySecret: API_KEY
       schedule: '0 18 * * *' # 6pm every day
       daysInAdvance: 1
