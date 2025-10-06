@@ -325,6 +325,9 @@ components:
           type: string
         postcode:
           type: string
+        startDate:
+          type: string
+          format: date
       required:
       - id
     BasicDetails:

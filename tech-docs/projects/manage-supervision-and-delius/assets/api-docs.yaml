@@ -2521,6 +2521,8 @@ components:
         id:
           type: integer
           format: int64
+        externalReference:
+          type: string
       required:
       - id
     CheckAppointment:
