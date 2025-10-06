@@ -33,7 +33,9 @@ runs:
     - name: Use provided token
       if: inputs.token != 'github'
       shell: bash
-      run: echo "token=${{ inputs.token }}" >> $GITHUB_ENV
+      run: echo "token=${token}" >> $GITHUB_ENV
+      env:
+        token: ${{ inputs.token }}
 
     - name: Checkout pull request
       uses: actions/checkout@v5
