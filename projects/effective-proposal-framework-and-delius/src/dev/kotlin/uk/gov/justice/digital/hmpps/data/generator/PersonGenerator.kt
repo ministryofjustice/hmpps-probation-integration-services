@@ -32,6 +32,8 @@ object PersonGenerator {
         "Banner",
         currentExclusion,
         currentRestriction,
+        "This case is excluded!",
+        null,
         rsrScore,
         softDeleted
     )
