@@ -476,7 +476,7 @@ interface ContactRepository : JpaRepository<Contact, Long> {
                         total_sentences,
                         rct.description AS contactDescription,
                         rct.code as typeCode,
-                        case when c.complied = 'Y' then 1 else 0 end as complied,
+                        case when c.complied = 'N' then 0 else 1 end as complied,
                         rtmc.code as rqmntMainCatCode,
                         NVL(rdt.description, latest_sentence_description)  AS sentenceDescription
                 FROM contact c 
@@ -554,7 +554,7 @@ interface ContactRepository : JpaRepository<Contact, Long> {
                          AND e.soft_deleted = 0) as totalSentences,
                     rct.description AS contactDescription,
                     rct.code as typeCode,
-                    case when c.complied = 'Y' then 1 else 0 end as complied,
+                    case when c.complied = 'N' then 0 else 1 end as complied,
                     rtmc.code as rqmntMainCatCode,
                     CASE WHEN d.disposal_id IS NOT NULL 
                     THEN 
@@ -624,7 +624,7 @@ interface ContactRepository : JpaRepository<Contact, Long> {
                     rct.description,
                     rct.code,
                     c.rqmnt_id,
-                    case when c.complied = 'Y' then 1 else 0 end as complied
+                    case when c.complied = 'N' then 0 else 1 end as complied
              from offender o
              join caseload cl on o.offender_id = cl.offender_id and (cl.role_code = 'OM')
              join contact c on c.offender_id = o.offender_id and c.staff_id = :staffId
