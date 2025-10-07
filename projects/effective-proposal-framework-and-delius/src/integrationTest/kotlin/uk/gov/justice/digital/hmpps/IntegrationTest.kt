@@ -111,11 +111,13 @@ internal class IntegrationTest {
         fun limitedAccess() = listOf(
             Arguments.of(
                 PersonGenerator.EXCLUDED,
-                LimitedAccessDetail(listOf(LimitedAccess.ExcludedFrom("john.smith@moj.gov.uk")), emptyList())
+                LimitedAccessDetail(
+                    listOf(LimitedAccess.ExcludedFrom("john.smith@moj.gov.uk", "This case is excluded!")), emptyList()
+                )
             ),
             Arguments.of(
                 PersonGenerator.RESTRICTED,
-                LimitedAccessDetail(emptyList(), listOf(LimitedAccess.RestrictedTo("john.smith@moj.gov.uk")))
+                LimitedAccessDetail(emptyList(), listOf(LimitedAccess.RestrictedTo("john.smith@moj.gov.uk", null)))
             ),
         )
     }
