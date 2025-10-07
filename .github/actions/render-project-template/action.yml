@@ -31,7 +31,7 @@ runs:
         find templates/projects/$project_template -type f -exec sed -i 's/$SERVICE_BOOTSTRAP_DATE/'"$(date '+%Y-%m-%d')"'/g' {} \;
         cp -R templates/projects/$project_template projects/$project_name
         mv projects/${project_name}/tech-docs doc/tech-docs/source/projects/$project_name
-        sed -i '/add new projects here/a \    "$project_name",' settings.gradle.kts
+        sed -i '/add new projects here/a \    '"$project_name"',' settings.gradle.kts
         sed -i '/add new projects here/i \          - '"'"'["$project_name"]'"'"'' .github/workflows/access.yml
         sed -i '/add new projects here/i \          - '"'"'["$project_name"]'"'"'' .github/workflows/deploy.yml
         sed -i '/add new projects here/i \          - '"'"'["$project_name"]'"'"'' .github/workflows/service-catalogue.yml

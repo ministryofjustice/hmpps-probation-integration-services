@@ -47,10 +47,11 @@ jobs:
           private-key: ${{ secrets.BOT_APP_PRIVATE_KEY }}
 
       - if: inputs.environment != 'prod' && inputs.action == 'disable'
-        run: jq -n "$reviewers" | gh api -XPUT '/repos/ministryofjustice/hmpps-probation-integration-services/environments/${{ inputs.environment }}' --input -
+        run: jq -n "$reviewers" | gh api -XPUT '/repos/ministryofjustice/hmpps-probation-integration-services/environments/'"$environment"'' --input -
         env:
           reviewers: '{"reviewers":[]}'
           GH_TOKEN: ${{ steps.app-token.outputs.token }}
+          environment: ${{ inputs.environment }}
 
   get-projects:
     name: Get projects
@@ -200,10 +201,11 @@ jobs:
           private-key: ${{ secrets.BOT_APP_PRIVATE_KEY }}
 
       - if: inputs.environment != 'prod' && inputs.action == 'enable'
-        run: jq -n "$reviewers" | gh api -XPUT '/repos/ministryofjustice/hmpps-probation-integration-services/environments/${{ inputs.environment }}' --input -
+        run: jq -n "$reviewers" | gh api -XPUT '/repos/ministryofjustice/hmpps-probation-integration-services/environments/'"$environment"'' --input -
         env:
           reviewers: '{"reviewers":[{"type":"Team","id":5521382}]}'
           GH_TOKEN: ${{ steps.app-token.outputs.token }}
+          environment: ${{ inputs.environment }}
 
   notify:
     if: always() && !cancelled()

@@ -54,13 +54,15 @@ jobs:
       - name: Create issue for manual steps
         run: |
           gh issue create \
-            --title "${{ inputs.issue_number }} Request HMPPS Auth client for ${{ inputs.project_name }}" \
+            --title "$issue_number Request HMPPS Auth client for $project_name" \
             --body '
           - [ ] Clone Jira ticket: [HAAR-1662](https://dsdmoj.atlassian.net/browse/HAAR-1662)
           - [ ] Raise in Slack: [#hmpps-auth-audit-registers](https://mojdt.slack.com/archives/C02S71KUBED)' \
             --label bootstrap
         env:
           GITHUB_TOKEN: ${{ github.token }}
+          issue_number: ${{ inputs.issue_number }}
+          project_name: ${{ inputs.project_name }}
 
   project-setup:
     if: ${{ inputs.project_template != 'No template - I want to create the project from scratch' }}
@@ -106,7 +108,9 @@ jobs:
           token: ${{ steps.app-token.outputs.token }}
 
       - name: Update e2e test repo
-        run: sed -i '/add new projects here/i \          - '"'"'["${{ inputs.project_name }}"]'"'"'' hmpps-probation-integration-e2e-tests/.github/workflows/test-single-project.yml
+        run: sed -i '/add new projects here/i \          - '"'"'["$project_name"]'"'"'' hmpps-probation-integration-e2e-tests/.github/workflows/test-single-project.yml
+        env:
+          project_name: ${{ inputs.project_name }}
 
       - name: Create pull request
         id: e2e-pr
@@ -121,13 +125,15 @@ jobs:
       - name: Create issue for manual steps
         run: |
           gh issue create \
-            --title "${{ inputs.issue_number }} Complete project setup for ${{ inputs.project_name }}" \
+            --title "$issue_number Complete project setup for $project_name" \
             --body '
           - [ ] Merge project pull request: ${{ steps.pr.outputs.pull-request-url }}
           - [ ] Merge e2e tests pull request: ${{ steps.e2e-pr.outputs.pull-request-url }}' \
             --label bootstrap
         env:
           GITHUB_TOKEN: ${{ github.token }}
+          issue_number: ${{ inputs.issue_number }}
+          project_name: ${{ inputs. project_name }}
 
   sentry-setup:
     runs-on: ubuntu-latest
@@ -142,10 +148,11 @@ jobs:
         run: |
           response=$(curl https://sentry.io/api/0/teams/ministryofjustice/probation-integration/projects/ --fail \
             -H "Authorization: Bearer $SENTRY_AUTH_TOKEN" \
-            -H 'Content-Type: application/json' --data '{"name":"${{ inputs.project_name }}"}')
+            -H 'Content-Type: application/json' --data '{"name":"$project_name"}')
           echo "slug=$(echo "$response" | jq -r '.slug')" | tee -a "$GITHUB_OUTPUT"
         env:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          project_name: ${{ inputs.project_name }}
 
       - name: Set platform to Kotlin
         run: |
@@ -252,7 +259,9 @@ jobs:
     if: ${{ inputs.create_queue }}
     steps:
       - id: project_name
-        run: echo "with_underscores_uppercase=$(echo '${{ inputs.project_name }}' | sed 's/-/_/g' | tr '[:lower:]' '[:upper:]')" | tee -a "$GITHUB_OUTPUT"
+        run: echo "with_underscores_uppercase=$(echo $project_name | sed 's/-/_/g' | tr '[:lower:]' '[:upper:]')" | tee -a "$GITHUB_OUTPUT"
+        env:
+          project_name: ${{ inputs.project_name }}
 
       - uses: actions/create-github-app-token@v2
         id: app-token
@@ -283,18 +292,22 @@ jobs:
 
       - name: Render Terraform queue template
         run: |
-          sed 's/SERVICE_NAME_UPPERCASE/${{ steps.project_name.outputs.with_underscores_uppercase }}/g;s/SERVICE_NAME/${{ inputs.project_name }}/g' templates/sqs.tf > 'cloud-platform-environments-dev/namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-dev/resources/${{ inputs.project_name }}-queue.tf'
-          sed 's/SERVICE_NAME_UPPERCASE/${{ steps.project_name.outputs.with_underscores_uppercase }}/g;s/SERVICE_NAME/${{ inputs.project_name }}/g' templates/sqs.tf > 'cloud-platform-environments-preprod/namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-preprod/resources/${{ inputs.project_name }}-queue.tf'
-          sed 's/SERVICE_NAME_UPPERCASE/${{ steps.project_name.outputs.with_underscores_uppercase }}/g;s/SERVICE_NAME/${{ inputs.project_name }}/g' templates/sqs.tf > 'cloud-platform-environments-prod/namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-prod/resources/${{ inputs.project_name }}-queue.tf'
+          sed 's/SERVICE_NAME_UPPERCASE/${{ steps.project_name.outputs.with_underscores_uppercase }}/g;s/SERVICE_NAME/'"$project_name"'/g' templates/sqs.tf > 'cloud-platform-environments-dev/namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-dev/resources/'"$project_name"'-queue.tf'
+          sed 's/SERVICE_NAME_UPPERCASE/${{ steps.project_name.outputs.with_underscores_uppercase }}/g;s/SERVICE_NAME/'"$project_name"'/g' templates/sqs.tf > 'cloud-platform-environments-preprod/namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-preprod/resources/'"$project_name"'-queue.tf'
+          sed 's/SERVICE_NAME_UPPERCASE/${{ steps.project_name.outputs.with_underscores_uppercase }}/g;s/SERVICE_NAME/'"$project_name"'/g' templates/sqs.tf > 'cloud-platform-environments-prod/namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-prod/resources/'"$project_name"'-queue.tf'
+        env:
+          project_name: ${{ inputs.project_name }}
 
       - name: Update IAM access to queues
         run: |
-          sed -i '/queue = \[/a \      module.${{ inputs.project_name }}-queue.sqs_arn,' 'cloud-platform-environments-dev/namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-dev/resources/iam.tf'
-          sed -i '/queue = \[/a \      module.${{ inputs.project_name }}-queue.sqs_arn,' 'cloud-platform-environments-preprod/namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-preprod/resources/iam.tf'
-          sed -i '/queue = \[/a \      module.${{ inputs.project_name }}-queue.sqs_arn,' 'cloud-platform-environments-prod/namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-prod/resources/iam.tf'
-          sed -i '/dlq = \[/a \      module.${{ inputs.project_name }}-dlq.sqs_arn,' 'cloud-platform-environments-dev/namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-dev/resources/iam.tf'
-          sed -i '/dlq = \[/a \      module.${{ inputs.project_name }}-dlq.sqs_arn,' 'cloud-platform-environments-preprod/namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-preprod/resources/iam.tf'
-          sed -i '/dlq = \[/a \      module.${{ inputs.project_name }}-dlq.sqs_arn,' 'cloud-platform-environments-prod/namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-prod/resources/iam.tf'
+          sed -i '/queue = \[/a \      module.'"$project_name"'-queue.sqs_arn,' 'cloud-platform-environments-dev/namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-dev/resources/iam.tf'
+          sed -i '/queue = \[/a \      module.'"$project_name"'-queue.sqs_arn,' 'cloud-platform-environments-preprod/namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-preprod/resources/iam.tf'
+          sed -i '/queue = \[/a \      module.'"$project_name"'-queue.sqs_arn,' 'cloud-platform-environments-prod/namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-prod/resources/iam.tf'
+          sed -i '/dlq = \[/a \      module.'"$project_name"'-dlq.sqs_arn,' 'cloud-platform-environments-dev/namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-dev/resources/iam.tf'
+          sed -i '/dlq = \[/a \      module.'"$project_name"'-dlq.sqs_arn,' 'cloud-platform-environments-preprod/namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-preprod/resources/iam.tf'
+          sed -i '/dlq = \[/a \      module.'"$project_name"'-dlq.sqs_arn,' 'cloud-platform-environments-prod/namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-prod/resources/iam.tf'
+        env:
+          project_name: ${{ inputs.project_name }}
 
       - name: Create dev pull request
         id: dev-pr
@@ -329,26 +342,30 @@ jobs:
       - name: Create issue for manual steps
         run: |
           gh issue create \
-            --title '${{ inputs.issue_number }} Complete queue setup for ${{ inputs.project_name }}' \
-            --body '
-          - [ ] Enter the event types the service will consume into the filter_policy for dev: [Edit file](https://github.com/ministryofjustice/cloud-platform-environments/edit/${{ inputs.issue_number }}-create-${{ inputs.project_name }}-queue-dev/namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-dev/resources/${{ inputs.project_name }}-queue.tf)
-          - [ ] Enter the event types the service will consume into the filter_policy for preprod: [Edit file](https://github.com/ministryofjustice/cloud-platform-environments/edit/${{ inputs.issue_number }}-create-${{ inputs.project_name }}-queue-preprod/namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-preprod/resources/${{ inputs.project_name }}-queue.tf)
-          - [ ] Enter the event types the service will consume into the filter_policy for prod: [Edit file](https://github.com/ministryofjustice/cloud-platform-environments/edit/${{ inputs.issue_number }}-create-${{ inputs.project_name }}-queue-prod/namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-prod/resources/${{ inputs.project_name }}-queue.tf)
+            --title "$issue_number Complete queue setup for $project_name" \
+            --body "
+          - [ ] Enter the event types the service will consume into the filter_policy for dev: [Edit file](https://github.com/ministryofjustice/cloud-platform-environments/edit/${issue_number}-create-${project_name}-queue-dev/namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-dev/resources/${project_name}-queue.tf)
+          - [ ] Enter the event types the service will consume into the filter_policy for preprod: [Edit file](https://github.com/ministryofjustice/cloud-platform-environments/edit/${issue_number}-create-${project_name}-queue-preprod/namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-preprod/resources/${project_name}-queue.tf)
+          - [ ] Enter the event types the service will consume into the filter_policy for prod: [Edit file](https://github.com/ministryofjustice/cloud-platform-environments/edit/${issue_number}-create-${project_name}-queue-prod/namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-prod/resources/${project_name}-queue.tf)
           - [ ] Request approval in [#ask-cloud-platform](https://mojdt.slack.com/archives/C57UPMZLY)
           > ${{ steps.dev-pr.outputs.pull-request-url }}
           > ${{ steps.preprod-pr.outputs.pull-request-url }}
           > ${{ steps.prod-pr.outputs.pull-request-url }}
-          - [ ] Merge the pull requests' \
+          - [ ] Merge the pull requests" \
             --label bootstrap
         env:
           GITHUB_TOKEN: ${{ github.token }}
+          issue_number: ${{ inputs.issue_number }}
+          project_name: ${{ inputs.project_name }}
 
   infra-setup:
     runs-on: ubuntu-latest
     if: ${{ inputs.create_infra }}
     steps:
       - id: project_name
-        run: echo "hash=$(echo -n '${{ inputs.project_name }}' | sha1sum | head -c 8)" | tee -a "$GITHUB_OUTPUT"
+        run: echo "hash=$(echo -n $project_name | sha1sum | head -c 8)" | tee -a "$GITHUB_OUTPUT"
+        env:
+          project_name: ${{ inputs.project_name }}
 
       - uses: actions/create-github-app-token@v2
         id: app-token
@@ -378,13 +395,17 @@ jobs:
           token: ${{ steps.app-token.outputs.token }}
 
       - name: Add Pingdom check
-        run: sed -i '/add new projects here/i \    "${{ inputs.project_name }}",' 'cloud-platform-environments-prod/namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-prod/resources/pingdom.tf'
+        run: sed -i '/add new projects here/i \    "$project_name",' 'cloud-platform-environments-prod/namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-prod/resources/pingdom.tf'
+        env:
+          project_name: ${{ inputs.project_name }}
 
       - name: Render certificate templates
         run: |
-          sed 's/$SERVICE_NAME/${{ inputs.project_name }}/g;s/$SERVICE_URL/${{ inputs.project_name }}-dev.hmpps.service.justice.gov.uk/g;s/$SERVICE_SHORT_URL/${{ steps.project_name.outputs.hash }}-dev.hmpps.service.justice.gov.uk/g;s/$ENV/dev/g' templates/certificate.yml >> 'cloud-platform-environments-dev/namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-dev/05-certificates.yml'
-          sed 's/$SERVICE_NAME/${{ inputs.project_name }}/g;s/$SERVICE_URL/${{ inputs.project_name }}-preprod.hmpps.service.justice.gov.uk/g;s/$SERVICE_SHORT_URL/${{ steps.project_name.outputs.hash }}-preprod.hmpps.service.justice.gov.uk/g;s/$ENV/preprod/g' templates/certificate.yml >> 'cloud-platform-environments-preprod/namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-preprod/05-certificates.yml'
-          sed 's/$SERVICE_NAME/${{ inputs.project_name }}/g;s/$SERVICE_URL/${{ inputs.project_name }}.hmpps.service.justice.gov.uk/g;s/$SERVICE_SHORT_URL/${{ steps.project_name.outputs.hash }}.hmpps.service.justice.gov.uk/g;s/$ENV/prod/g' templates/certificate.yml >> 'cloud-platform-environments-prod/namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-prod/05-certificates.yml'
+          sed 's/$SERVICE_NAME/${project_name}/g;s/$SERVICE_URL/${project_name}-dev.hmpps.service.justice.gov.uk/g;s/$SERVICE_SHORT_URL/${{ steps.project_name.outputs.hash }}-dev.hmpps.service.justice.gov.uk/g;s/$ENV/dev/g' templates/certificate.yml >> 'cloud-platform-environments-dev/namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-dev/05-certificates.yml'
+          sed 's/$SERVICE_NAME/${project_name}/g;s/$SERVICE_URL/${project_name}-preprod.hmpps.service.justice.gov.uk/g;s/$SERVICE_SHORT_URL/${{ steps.project_name.outputs.hash }}-preprod.hmpps.service.justice.gov.uk/g;s/$ENV/preprod/g' templates/certificate.yml >> 'cloud-platform-environments-preprod/namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-preprod/05-certificates.yml'
+          sed 's/$SERVICE_NAME/${project_name}/g;s/$SERVICE_URL/${project_name}.hmpps.service.justice.gov.uk/g;s/$SERVICE_SHORT_URL/${{ steps.project_name.outputs.hash }}.hmpps.service.justice.gov.uk/g;s/$ENV/prod/g' templates/certificate.yml >> 'cloud-platform-environments-prod/namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-prod/05-certificates.yml'
+        env:
+          project_name: ${{ inputs.project_name }}
 
       - name: Create dev pull request
         id: dev-pr
@@ -419,7 +440,7 @@ jobs:
       - name: Create issue for manual steps
         run: |
           gh issue create \
-            --title '${{ inputs.issue_number }} Complete infrastructure setup for ${{ inputs.project_name }}' \
+            --title "$issue_number Complete infrastructure setup for $project_name" \
             --body '
           - [ ] Request approval in [#ask-cloud-platform](https://mojdt.slack.com/archives/C57UPMZLY) for the following pull requests
           > ${{ steps.dev-pr.outputs.pull-request-url }}
@@ -429,3 +450,4 @@ jobs:
             --label bootstrap
         env:
           GITHUB_TOKEN: ${{ github.token }}
+          issue_number: ${{ inputs.issue_number }}
