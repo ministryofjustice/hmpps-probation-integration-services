@@ -65,14 +65,17 @@ internal class UpdateLocationActionTest {
 
     @ParameterizedTest
     @MethodSource("noChangeMovements")
-    fun `no changes made when location is correct`(custody: Custody, prisonerMovement: PrisonerMovement) {
+    fun `no changes made when location is correct`(custody: Custody, prisonerMovement: PrisonerMovement, requiresUpdatedCustody: Boolean) {
         if (prisonerMovement.isAbsconded()) {
             whenever(institutionRepository.findByNomisCdeCode(InstitutionGenerator.DEFAULT.nomisCdeCode!!))
                 .thenReturn(InstitutionGenerator.DEFAULT)
             whenever(institutionRepository.findByCode(InstitutionCode.UNLAWFULLY_AT_LARGE.code))
                 .thenReturn(InstitutionGenerator.STANDARD_INSTITUTIONS[InstitutionCode.UNLAWFULLY_AT_LARGE])
         }
-        whenever(custodyRepository.findById(custody.id)).thenReturn(Optional.of(custody))
+
+        if (requiresUpdatedCustody) {
+            whenever(custodyRepository.findById(custody.id)).thenReturn(Optional.of(custody))
+        }
 
         val res = action.accept(PrisonerMovementContext(prisonerMovement, custody))
         assertInstanceOf(ActionResult.Ignored::class.java, res)
@@ -206,10 +209,10 @@ internal class UpdateLocationActionTest {
 
         @JvmStatic
         fun noChangeMovements() = listOf(
-            Arguments.of(custody(), received),
-            Arguments.of(released(), released),
-            Arguments.of(absconded(), released.copy(type = RELEASED, reason = "UAL")),
-            Arguments.of(absconded(), released.copy(type = RELEASED, reason = "UAL_ECL"))
+            Arguments.of(custody(), received, false),
+            Arguments.of(released(), released, false),
+            Arguments.of(absconded(), released.copy(type = RELEASED, reason = "UAL"), true),
+            Arguments.of(absconded(), released.copy(type = RELEASED, reason = "UAL_ECL"), true)
         )
 
         private fun custody(): Custody {
