@@ -112,12 +112,20 @@ internal class IntegrationTest {
             Arguments.of(
                 PersonGenerator.EXCLUDED,
                 LimitedAccessDetail(
-                    listOf(LimitedAccess.ExcludedFrom("john.smith@moj.gov.uk", "This case is excluded!")), emptyList()
+                    excludedFrom = listOf(LimitedAccess.ExcludedFrom("john.smith@moj.gov.uk")),
+                    exclusionMessage = "This case is excluded!",
+                    restrictedTo = emptyList(),
+                    restrictionMessage = null,
                 )
             ),
             Arguments.of(
                 PersonGenerator.RESTRICTED,
-                LimitedAccessDetail(emptyList(), listOf(LimitedAccess.RestrictedTo("john.smith@moj.gov.uk", null)))
+                LimitedAccessDetail(
+                    excludedFrom = emptyList(),
+                    exclusionMessage = null,
+                    restrictedTo = listOf(LimitedAccess.RestrictedTo("john.smith@moj.gov.uk")),
+                    restrictionMessage = null,
+                )
             ),
         )
     }

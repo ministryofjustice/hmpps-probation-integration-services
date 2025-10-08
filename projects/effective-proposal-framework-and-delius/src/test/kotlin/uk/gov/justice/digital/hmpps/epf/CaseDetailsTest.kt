@@ -25,7 +25,7 @@ internal class CaseDetailsTest {
             Provider("N00", "London"),
             null,
             null,
-            LimitedAccessDetail(emptyList(), emptyList())
+            LimitedAccessDetail(emptyList(), null, emptyList(), null)
         )
 
         private fun CaseDetails.withReleaseDate(releaseDate: LocalDate) =
