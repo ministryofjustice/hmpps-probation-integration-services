@@ -17,6 +17,7 @@ import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException
 import uk.gov.justice.digital.hmpps.flags.FeatureFlags
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactService
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.entity.Custody
+import uk.gov.justice.digital.hmpps.integrations.delius.custody.entity.CustodyRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.event.EventService
 import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.DisposalType
 import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.EventRepository
@@ -33,9 +34,11 @@ import uk.gov.justice.digital.hmpps.messaging.ActionResult
 import uk.gov.justice.digital.hmpps.messaging.PrisonerMovement
 import uk.gov.justice.digital.hmpps.messaging.PrisonerMovementContext
 import java.time.ZonedDateTime
+import java.util.Optional
 
 @ExtendWith(MockitoExtension::class)
 internal class ReleaseActionTest {
+
     @Mock
     internal lateinit var referenceDataRepository: ReferenceDataRepository
 
@@ -82,6 +85,7 @@ internal class ReleaseActionTest {
     @MethodSource("nonReleasableStatuses")
     fun `unable to release if not in releasable state`(statusCode: CustodialStatusCode) {
         val event = EventGenerator.custodialEvent(PersonGenerator.RELEASABLE, InstitutionGenerator.DEFAULT, statusCode)
+        val custody = event.disposal!!.custody!!
         val prisonerMovement = PrisonerMovement.Released(
             event.person.nomsNumber,
             InstitutionGenerator.DEFAULT.nomisCdeCode!!,
@@ -108,6 +112,7 @@ internal class ReleaseActionTest {
             CustodialStatusCode.IN_CUSTODY,
             disposalCode = DisposalType.Code.COMMITTAL_PSSR_BREACH.value
         ).withManager()
+        val custody = event.disposal!!.custody!!
         val prisonerMovement = PrisonerMovement.Released(
             event.person.nomsNumber,
             InstitutionGenerator.DEFAULT.nomisCdeCode!!,
@@ -131,6 +136,7 @@ internal class ReleaseActionTest {
     fun `uses delius institution if not provided or not found`() {
         val event =
             EventGenerator.custodialEvent(PersonGenerator.RELEASABLE, InstitutionGenerator.DEFAULT).withManager()
+        val custody = event.disposal!!.custody!!
         val prisonerMovement = PrisonerMovement.Released(
             event.person.nomsNumber,
             "NonExistent",
@@ -183,6 +189,7 @@ internal class ReleaseActionTest {
     fun `can create release even if no custody institution set`() {
         val event =
             EventGenerator.custodialEvent(PersonGenerator.RELEASABLE, null).withManager()
+        val custody = event.disposal!!.custody!!
         val prisonerMovement = PrisonerMovement.Released(
             event.person.nomsNumber,
             "UNK",
