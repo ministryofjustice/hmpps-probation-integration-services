@@ -4,6 +4,7 @@ import jakarta.persistence.EntityManager
 import org.springframework.http.MediaType
 import org.springframework.http.client.MultipartBodyBuilder
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.audit.BusinessInteractionCode
 import uk.gov.justice.digital.hmpps.audit.entity.AuditedInteraction
 import uk.gov.justice.digital.hmpps.audit.service.AuditableService
@@ -45,6 +46,7 @@ class DocumentService(
         documentRepository.save(document)
     }
 
+    @Transactional
     fun deleteDocument(event: HmppsDomainEvent) = audit(BusinessInteractionCode.DELETE_DOCUMENT) {
         val document = getDocument(event, it)
         documentRepository.delete(document)

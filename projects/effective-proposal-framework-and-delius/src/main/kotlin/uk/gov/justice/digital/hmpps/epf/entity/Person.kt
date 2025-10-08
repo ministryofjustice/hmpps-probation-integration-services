@@ -51,6 +51,12 @@ class Person(
     @Convert(converter = NumericBooleanConverter::class)
     val currentRestriction: Boolean,
 
+    @Column
+    val exclusionMessage: String? = null,
+
+    @Column
+    val restrictionMessage: String? = null,
+
     @Column(name = "dynamic_rsr_score", columnDefinition = "number(5,2)")
     val dynamicRsrScore: Double?,
 

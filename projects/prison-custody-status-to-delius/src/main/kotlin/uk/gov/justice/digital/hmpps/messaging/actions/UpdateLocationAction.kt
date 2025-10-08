@@ -1,6 +1,8 @@
 package uk.gov.justice.digital.hmpps.messaging.actions
 
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Component
+import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.datetime.DeliusDateTimeFormatter
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactDetail
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactService
@@ -38,15 +40,15 @@ class UpdateLocationAction(
 
     override val name: String = "UpdateLocation"
 
+    @Transactional
     override fun accept(context: PrisonerMovementContext): ActionResult {
-        val (prisonerMovement, custody) = context
-
-        val result = checkPreconditions(prisonerMovement, custody)
+        val (prisonerMovement, original) = context
+        val result = checkPreconditions(prisonerMovement, original)
         if (result != null) return result
 
         val institution = when (prisonerMovement) {
             is PrisonerMovement.Received -> institutionRepository.getByNomisCdeCode(prisonerMovement.toPrisonId)
-            is PrisonerMovement.Released -> prisonerMovement.releaseLocation(custody)
+            is PrisonerMovement.Released -> prisonerMovement.releaseLocation(original)
         }
 
         // do this before updating location so that we have access to previous institution
@@ -56,6 +58,7 @@ class UpdateLocationAction(
         }
 
         return institution?.let { inst ->
+            val custody = checkNotNull(custodyRepository.findByIdOrNull(original.id))
             custody.updateLocationAt(inst, prisonerMovement.occurredAt) {
                 referenceDataRepository.getCustodyEventType(CustodyEventTypeCode.LOCATION_CHANGE.code)
             }?.let { history ->

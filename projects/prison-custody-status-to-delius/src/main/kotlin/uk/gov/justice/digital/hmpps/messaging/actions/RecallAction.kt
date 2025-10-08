@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.messaging.actions
 
 import org.springframework.stereotype.Component
+import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactDetail
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactService
@@ -19,7 +20,7 @@ class RecallAction(
     private val recallReasonRepository: RecallReasonRepository,
     private val recallRepository: RecallRepository,
     private val licenceConditionService: LicenceConditionService,
-    private val contactService: ContactService
+    private val contactService: ContactService,
 ) : PrisonerMovementAction {
 
     private val eotlRecallContactNotes = """${System.lineSeparator()}
@@ -30,6 +31,7 @@ class RecallAction(
     override val name: String
         get() = "Recall"
 
+    @Transactional
     override fun accept(context: PrisonerMovementContext): ActionResult {
         val (prisonerMovement, custody) = context
         checkPreconditions(prisonerMovement, custody)

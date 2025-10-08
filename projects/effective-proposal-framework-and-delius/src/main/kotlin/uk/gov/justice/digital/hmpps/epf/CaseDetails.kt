@@ -43,9 +43,10 @@ data class LimitedAccessDetail(
 
 sealed interface LimitedAccess {
     val email: String
+    val message: String?
 
-    data class RestrictedTo(override val email: String) : LimitedAccess
-    data class ExcludedFrom(override val email: String) : LimitedAccess
+    data class RestrictedTo(override val email: String, override val message: String?) : LimitedAccess
+    data class ExcludedFrom(override val email: String, override val message: String?) : LimitedAccess
 }
 
 fun Person.name() = Name(forename, listOfNotNull(secondName, thirdName).joinToString(" "), surname)

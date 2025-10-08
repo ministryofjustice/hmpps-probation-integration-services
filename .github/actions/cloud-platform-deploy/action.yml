@@ -80,16 +80,14 @@ runs:
         namespace: ${{ inputs.namespace }}
         token: ${{ inputs.token }}
 
+    - name: Install Helm
+      uses: azure/setup-helm@1a275c3b69536ee54be43f2070a358922e12c8d4
+
     - name: Deploy
       shell: bash
       run: |
         yq -i ".appVersion = \"${VERSION}\"" "projects/${PROJECT}/deploy/Chart.yaml"
-
-        echo '::group::Install Helm dependencies'
-        eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
-        brew install helm
         helm dependency update "projects/${PROJECT}/deploy"
-        echo '::endgroup::'
 
         set +o pipefail
         for attempt in $(seq 1 $MAX_ATTEMPTS); do

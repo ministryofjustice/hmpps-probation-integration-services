@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.bean.override.mockito.MockitoBean
+import org.springframework.transaction.support.TransactionTemplate
 import uk.gov.justice.digital.hmpps.data.generator.InstitutionGenerator
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.flags.FeatureFlags
@@ -89,6 +90,9 @@ open class PcstdIntegrationTestBase {
     @MockitoBean
     internal lateinit var featureFlags: FeatureFlags
 
+    @Autowired
+    internal lateinit var transaction: TransactionTemplate
+
     internal fun withBooking(booking: Booking, lastMovement: Movement = booking.lastMovement()) {
         wireMockServer.stubFor(
             WireMock.get(WireMock.urlPathEqualTo("/api/bookings/offenderNo/${booking.personReference}"))
@@ -121,8 +125,13 @@ open class PcstdIntegrationTestBase {
     internal fun getPersonId(nomsNumber: String) =
         personRepository.findByNomsNumberAndSoftDeletedIsFalse(nomsNumber).single().id
 
-    internal fun getCustody(nomsNumber: String) =
-        eventRepository.findActiveCustodialEvents(getPersonId(nomsNumber)).single().disposal!!.custody!!
+    internal fun getCustody(nomsNumber: String) = transaction.execute {
+        eventRepository.findActiveCustodialEvents(getPersonId(nomsNumber)).single().disposal!!.custody!!.apply {
+            // fetch releases and managers inside a transaction
+            mostRecentRelease()
+            disposal.event.manager()
+        }
+    }!!
 
     internal fun getCustodyHistory(custody: Custody) =
         custodyHistoryRepository.findAll().filter { it.custody.id == custody.id }
