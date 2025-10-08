@@ -115,6 +115,8 @@ components:
       properties:
         email:
           type: string
+        message:
+          type: string
       required:
       - email
     LimitedAccessDetail:
@@ -157,6 +159,8 @@ components:
       type: object
       properties:
         email:
+          type: string
+        message:
           type: string
       required:
       - email
