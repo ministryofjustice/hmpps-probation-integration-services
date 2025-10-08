@@ -65,7 +65,11 @@ internal class UpdateLocationActionTest {
 
     @ParameterizedTest
     @MethodSource("noChangeMovements")
-    fun `no changes made when location is correct`(custody: Custody, prisonerMovement: PrisonerMovement, requiresUpdatedCustody: Boolean) {
+    fun `no changes made when location is correct`(
+        custody: Custody,
+        prisonerMovement: PrisonerMovement,
+        requiresUpdatedCustody: Boolean
+    ) {
         if (prisonerMovement.isAbsconded()) {
             whenever(institutionRepository.findByNomisCdeCode(InstitutionGenerator.DEFAULT.nomisCdeCode!!))
                 .thenReturn(InstitutionGenerator.DEFAULT)
