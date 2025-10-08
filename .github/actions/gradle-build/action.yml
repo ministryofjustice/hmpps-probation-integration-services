@@ -45,7 +45,7 @@ runs:
 
     - name: Build
       shell: bash
-      run: ./gradlew ${project}:check
+      run: ./gradlew "${PROJECT}:check"
       env:
         SPRING_PROFILES_ACTIVE: oracle
         PROJECT: ${{ inputs.project }}
@@ -70,7 +70,7 @@ runs:
 
     - name: Output changes
       shell: bash
-      run: echo '${{ steps.check-changes.outputs.projects }}' > ${project}-changes.json
+      run: echo '${{ steps.check-changes.outputs.projects }}' > "${PROJECT}-changes.json"
       env:
         PROJECT: ${{ inputs.project }}
 
