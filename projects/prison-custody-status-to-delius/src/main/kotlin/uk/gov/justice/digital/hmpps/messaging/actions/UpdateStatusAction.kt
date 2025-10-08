@@ -1,6 +1,8 @@
 package uk.gov.justice.digital.hmpps.messaging.actions
 
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Component
+import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceData
@@ -19,13 +21,14 @@ class UpdateStatusAction(
     private val custodyHistoryRepository: CustodyHistoryRepository
 ) : PrisonerMovementAction {
     override val name: String = "UpdateStatus"
+
+    @Transactional
     override fun accept(context: PrisonerMovementContext): ActionResult {
         val (prisonerMovement, custody) = context
-
         val result = checkPreconditions(prisonerMovement, custody)
         if (result != null) return result
 
-        return when (context.prisonerMovement) {
+        return when (prisonerMovement) {
             is PrisonerMovement.Received -> inboundStatusChange(context)
             is PrisonerMovement.Released -> outboundStatusChange(context)
         }
@@ -34,7 +37,7 @@ class UpdateStatusAction(
     private fun inboundStatusChange(context: PrisonerMovementContext): ActionResult {
         val (prisonerMovement, custody) = context
         val detail = if (custody.canBeRecalled()) "Recall added in custody " else "In custody "
-        return updateStatus(custody, CustodialStatusCode.IN_CUSTODY, prisonerMovement, detail)
+        return updateStatus(custody.id, CustodialStatusCode.IN_CUSTODY, prisonerMovement, detail)
     }
 
     private fun outboundStatusChange(context: PrisonerMovementContext): ActionResult {
@@ -49,7 +52,7 @@ class UpdateStatusAction(
             prisonerMovement.isAbsconded() -> "Recall added unlawfully at large "
             else -> "Released on Licence"
         }
-        return updateStatus(custody, statusCode, prisonerMovement, detail)
+        return updateStatus(custody.id, statusCode, prisonerMovement, detail)
     }
 
     private fun Custody.nextStatus() = when {
@@ -59,21 +62,24 @@ class UpdateStatusAction(
     }
 
     private fun updateStatus(
-        custody: Custody,
+        custodyId: Long,
         status: CustodialStatusCode,
         prisonerMovement: PrisonerMovement,
         detail: String
-    ): ActionResult = if (status.code == custody.status.code) {
-        ActionResult.Ignored("PrisonerStatusCorrect", prisonerMovement.telemetryProperties())
-    } else {
-        val history = custody.updateStatusAt(
-            referenceDataRepository.getCustodialStatus(status.code),
-            prisonerMovement.occurredAt,
-            detail
-        ) { referenceDataRepository.getCustodyEventType(CustodyEventTypeCode.STATUS_CHANGE.code) }
-        custodyRepository.save(custody)
-        custodyHistoryRepository.save(history)
-        ActionResult.Success(ActionResult.Type.StatusUpdated, prisonerMovement.telemetryProperties())
+    ): ActionResult {
+        val custody = checkNotNull(custodyRepository.findByIdOrNull(custodyId))
+        return if (status.code == custody.status.code) {
+            ActionResult.Ignored("PrisonerStatusCorrect", prisonerMovement.telemetryProperties())
+        } else {
+            val history = custody.updateStatusAt(
+                referenceDataRepository.getCustodialStatus(status.code),
+                prisonerMovement.occurredAt,
+                detail
+            ) { referenceDataRepository.getCustodyEventType(CustodyEventTypeCode.STATUS_CHANGE.code) }
+            custodyRepository.save(custody)
+            custodyHistoryRepository.save(history)
+            ActionResult.Success(ActionResult.Type.StatusUpdated, prisonerMovement.telemetryProperties())
+        }
     }
 
     private fun checkPreconditions(movement: PrisonerMovement, custody: Custody) = if (

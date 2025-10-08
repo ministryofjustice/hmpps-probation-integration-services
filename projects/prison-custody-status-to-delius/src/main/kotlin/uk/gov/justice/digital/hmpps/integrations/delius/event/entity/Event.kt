@@ -47,12 +47,15 @@ interface EventRepository : JpaRepository<Event, Long> {
     @Query(
         """
         select e from Event e
-        where e.person.id = :personId 
-        and e.person.softDeleted = false
-        and e.disposal.type.sentenceType in ('NC', 'SC')
-        and e.disposal.active = true and e.active = true
-        and e.disposal.softDeleted = false and e.softDeleted = false
-        and e.disposal.custody.status.code not in ('AT', 'T')
+        join fetch e.person p
+        join fetch e.disposal d
+        join fetch d.custody c
+        where p.id = :personId 
+        and p.softDeleted = false
+        and d.type.sentenceType in ('NC', 'SC')
+        and d.active = true and e.active = true
+        and d.softDeleted = false and e.softDeleted = false
+        and c.status.code not in ('AT', 'T')
         """
     )
     fun findActiveCustodialEvents(personId: Long): List<Event>

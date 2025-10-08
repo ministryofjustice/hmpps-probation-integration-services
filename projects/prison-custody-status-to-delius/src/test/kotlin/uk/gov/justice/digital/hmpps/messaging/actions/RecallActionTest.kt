@@ -18,6 +18,7 @@ import org.mockito.kotlin.argumentCaptor
 import org.mockito.kotlin.doAnswer
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
+import org.springframework.data.repository.findByIdOrNull
 import uk.gov.justice.digital.hmpps.data.generator.EventGenerator
 import uk.gov.justice.digital.hmpps.data.generator.InstitutionGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
@@ -26,6 +27,7 @@ import uk.gov.justice.digital.hmpps.data.generator.withManager
 import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactService
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.entity.Custody
+import uk.gov.justice.digital.hmpps.integrations.delius.custody.entity.CustodyRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.licencecondition.LicenceConditionService
 import uk.gov.justice.digital.hmpps.integrations.delius.recall.entity.Recall
 import uk.gov.justice.digital.hmpps.integrations.delius.recall.entity.RecallReason
@@ -37,9 +39,11 @@ import uk.gov.justice.digital.hmpps.messaging.ActionResult
 import uk.gov.justice.digital.hmpps.messaging.PrisonerMovement
 import uk.gov.justice.digital.hmpps.messaging.PrisonerMovementContext
 import java.time.ZonedDateTime
+import java.util.Optional
 
 @ExtendWith(MockitoExtension::class)
 internal class RecallActionTest {
+
     @Mock
     internal lateinit var recallReasonRepository: RecallReasonRepository
 
@@ -66,6 +70,7 @@ internal class RecallActionTest {
             "",
             ZonedDateTime.now()
         )
+
         val ex = assertThrows<IgnorableMessageException> {
             action.accept(PrisonerMovementContext(prisonerMovement, custody))
         }

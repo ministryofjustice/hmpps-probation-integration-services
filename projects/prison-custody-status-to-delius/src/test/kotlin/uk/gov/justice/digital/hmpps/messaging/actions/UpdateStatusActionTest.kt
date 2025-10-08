@@ -30,6 +30,7 @@ import uk.gov.justice.digital.hmpps.messaging.ActionResult
 import uk.gov.justice.digital.hmpps.messaging.PrisonerMovement
 import uk.gov.justice.digital.hmpps.messaging.PrisonerMovementContext
 import java.time.ZonedDateTime
+import java.util.Optional
 
 @ExtendWith(MockitoExtension::class)
 internal class UpdateStatusActionTest {
@@ -84,6 +85,7 @@ internal class UpdateStatusActionTest {
             person,
             InstitutionGenerator.STANDARD_INSTITUTIONS[InstitutionCode.IN_COMMUNITY]
         ).disposal!!.custody!!
+        whenever(custodyRepository.findById(custody.id)).thenReturn(Optional.of(custody))
         val prisonerMovement = PrisonerMovement.Released(
             custody.disposal.event.person.nomsNumber,
             InstitutionGenerator.DEFAULT.nomisCdeCode!!,

@@ -16,6 +16,8 @@ import org.mockito.kotlin.any
 import org.mockito.kotlin.eq
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
+import org.springframework.data.repository.findByIdOrNull
+import org.testcontainers.shaded.org.bouncycastle.oer.its.ieee1609dot2dot1.AdditionalParams.original
 import uk.gov.justice.digital.hmpps.data.generator.*
 import uk.gov.justice.digital.hmpps.data.generator.EventGenerator.custodialEvent
 import uk.gov.justice.digital.hmpps.data.generator.EventGenerator.previouslyReleasedEvent
@@ -35,6 +37,7 @@ import uk.gov.justice.digital.hmpps.messaging.PrisonerMovement.Type.RELEASED
 import uk.gov.justice.digital.hmpps.messaging.PrisonerMovement.Type.TRANSFERRED
 import uk.gov.justice.digital.hmpps.messaging.PrisonerMovementContext
 import java.time.ZonedDateTime
+import java.util.Optional
 
 @ExtendWith(MockitoExtension::class)
 internal class UpdateLocationActionTest {
@@ -62,12 +65,20 @@ internal class UpdateLocationActionTest {
 
     @ParameterizedTest
     @MethodSource("noChangeMovements")
-    fun `no changes made when location is correct`(custody: Custody, prisonerMovement: PrisonerMovement) {
+    fun `no changes made when location is correct`(
+        custody: Custody,
+        prisonerMovement: PrisonerMovement,
+        requiresUpdatedCustody: Boolean
+    ) {
         if (prisonerMovement.isAbsconded()) {
             whenever(institutionRepository.findByNomisCdeCode(InstitutionGenerator.DEFAULT.nomisCdeCode!!))
                 .thenReturn(InstitutionGenerator.DEFAULT)
             whenever(institutionRepository.findByCode(InstitutionCode.UNLAWFULLY_AT_LARGE.code))
                 .thenReturn(InstitutionGenerator.STANDARD_INSTITUTIONS[InstitutionCode.UNLAWFULLY_AT_LARGE])
+        }
+
+        if (requiresUpdatedCustody) {
+            whenever(custodyRepository.findById(custody.id)).thenReturn(Optional.of(custody))
         }
 
         val res = action.accept(PrisonerMovementContext(prisonerMovement, custody))
@@ -86,8 +97,10 @@ internal class UpdateLocationActionTest {
                 "CUSTODY EVENT TYPE"
             )
         ).thenReturn(ReferenceDataGenerator.CUSTODY_EVENT_TYPE[CustodyEventTypeCode.LOCATION_CHANGE])
+        val custody = custody()
+        whenever(custodyRepository.findById(custody.id)).thenReturn(Optional.of(custody))
 
-        val res = action.accept(PrisonerMovementContext(received.copy(toPrisonId = "SWI"), custody()))
+        val res = action.accept(PrisonerMovementContext(received.copy(toPrisonId = "SWI"), custody))
         assertThat(res, instanceOf(ActionResult.Success::class.java))
         val success = res as ActionResult.Success
         assertThat(success.type, equalTo(ActionResult.Type.LocationUpdated))
@@ -106,7 +119,10 @@ internal class UpdateLocationActionTest {
             )
         ).thenReturn(ReferenceDataGenerator.CUSTODY_EVENT_TYPE[CustodyEventTypeCode.LOCATION_CHANGE])
 
-        val res = action.accept(PrisonerMovementContext(released, custody()))
+        val custody = custody()
+        whenever(custodyRepository.findById(custody.id)).thenReturn(Optional.of(custody))
+
+        val res = action.accept(PrisonerMovementContext(released, custody))
         assertThat(res, instanceOf(ActionResult.Success::class.java))
         val success = res as ActionResult.Success
         assertThat(success.type, equalTo(ActionResult.Type.LocationUpdated))
@@ -197,10 +213,10 @@ internal class UpdateLocationActionTest {
 
         @JvmStatic
         fun noChangeMovements() = listOf(
-            Arguments.of(custody(), received),
-            Arguments.of(released(), released),
-            Arguments.of(absconded(), released.copy(type = RELEASED, reason = "UAL")),
-            Arguments.of(absconded(), released.copy(type = RELEASED, reason = "UAL_ECL"))
+            Arguments.of(custody(), received, false),
+            Arguments.of(released(), released, false),
+            Arguments.of(absconded(), released.copy(type = RELEASED, reason = "UAL"), true),
+            Arguments.of(absconded(), released.copy(type = RELEASED, reason = "UAL_ECL"), true)
         )
 
         private fun custody(): Custody {

@@ -1,12 +1,15 @@
 package uk.gov.justice.digital.hmpps.messaging.actions
 
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Component
+import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException
 import uk.gov.justice.digital.hmpps.flags.FeatureFlags
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactDetail
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactService
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactType
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.entity.Custody
+import uk.gov.justice.digital.hmpps.integrations.delius.custody.entity.CustodyRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.entity.canBeReleased
 import uk.gov.justice.digital.hmpps.integrations.delius.event.EventService
 import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.DisposalType.Code.COMMITTAL_PSSR_BREACH
@@ -37,6 +40,7 @@ class ReleaseAction(
     override val name: String
         get() = "Release"
 
+    @Transactional
     override fun accept(context: PrisonerMovementContext): ActionResult {
         val (prisonerMovement, custody) = context
         checkPreConditions(prisonerMovement, custody)
