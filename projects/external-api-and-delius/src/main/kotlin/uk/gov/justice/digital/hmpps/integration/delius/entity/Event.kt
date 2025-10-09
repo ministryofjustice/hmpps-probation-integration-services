@@ -71,6 +71,9 @@ data class Disposal(
     @JoinColumn(name = "entry_length_units_id")
     val lengthUnits: ReferenceData?,
 
+    @OneToOne(mappedBy = "disposal")
+    val custody: Custody? = null,
+
     @Column(name = "active_flag", columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)
     val active: Boolean = true,

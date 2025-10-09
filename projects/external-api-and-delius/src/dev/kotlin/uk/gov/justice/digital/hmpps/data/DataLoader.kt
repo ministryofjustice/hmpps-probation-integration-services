@@ -12,6 +12,8 @@ import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.CONTACT
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.CONTACT_OUTCOME_TYPE
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.CONTACT_TYPE
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.MAPPA_CONTACT
+import uk.gov.justice.digital.hmpps.data.generator.DataGenerator.JS_USER
+import uk.gov.justice.digital.hmpps.data.generator.LaoGenerator.generateRestriction
 import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator.AI_PREVIOUS_CRN
 import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator.RD_ADDRESS_STATUS
 import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator.RD_DISABILITY_CONDITION
@@ -20,10 +22,17 @@ import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator.RD_ETH
 import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator.RD_NATIONALITY
 import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator.RD_RELIGION
 import uk.gov.justice.digital.hmpps.data.generator.RegistrationGenerator.INVALID_MAPPA_LEVEL
+import uk.gov.justice.digital.hmpps.data.generator.SentenceGenerator.RELEASED_COURT_APPEARANCE
+import uk.gov.justice.digital.hmpps.data.generator.SentenceGenerator.RELEASED_CUSTODY
+import uk.gov.justice.digital.hmpps.data.generator.SentenceGenerator.RELEASED_EVENT
+import uk.gov.justice.digital.hmpps.data.generator.SentenceGenerator.RELEASED_SENTENCE
+import uk.gov.justice.digital.hmpps.integration.delius.entity.Person
 import uk.gov.justice.digital.hmpps.model.Category
 import uk.gov.justice.digital.hmpps.model.Level
+import uk.gov.justice.digital.hmpps.user.AuditUser
 import uk.gov.justice.digital.hmpps.user.AuditUserRepository
 import java.time.LocalDate
+import java.time.LocalDateTime
 
 @Component
 @ConditionalOnProperty("seed.database")
@@ -119,8 +128,25 @@ class DataLoader(
                     )
                 )
                 persist(PersonGenerator.EXCLUSION)
+                persist(DataGenerator.EXCLUSION_PERSON_MANAGER)
                 persist(PersonGenerator.RESTRICTION)
+                persist(DataGenerator.RESTRICTION_PERSON_MANAGER)
                 persist(PersonGenerator.RESTRICTION_EXCLUSION)
+                persist(PersonGenerator.WITH_RELEASE_DATE)
+                persist(PersonGenerator.generateManager(PersonGenerator.WITH_RELEASE_DATE))
+                persist(ReferenceDataGenerator.DATASET_TYPE_KEY_DATE)
+                persist(SentenceGenerator.RELEASE_DATE_TYPE)
+                persist(RELEASED_EVENT.mainOffence)
+                persist(RELEASED_EVENT)
+                persist(RELEASED_COURT_APPEARANCE)
+                persist(RELEASED_SENTENCE)
+                persist(RELEASED_CUSTODY)
+                persist(SentenceGenerator.RELEASE_DATE)
+
+                generateCustodialEvent(PersonGenerator.EXCLUSION)
+                generateCustodialEvent(PersonGenerator.RESTRICTION)
+
+                persist(SentenceGenerator.generateOgrsAssessment(LocalDate.now(), 3))
             }
         }
         loadLaoData()
@@ -133,7 +159,20 @@ class DataLoader(
                 merge(LaoGenerator.RESTRICTION)
                 merge(LaoGenerator.BOTH_EXCLUSION)
                 merge(LaoGenerator.BOTH_RESTRICTION)
+                merge(
+                    generateRestriction(
+                        PersonGenerator.RESTRICTION,
+                        user = AuditUser(JS_USER.id, JS_USER.username),
+                        endDateTime = LocalDateTime.now().plusDays(1)
+                    )
+                )
             }
         }
+    }
+
+    private fun generateCustodialEvent(person: Person) {
+        val event = entityManager.merge(SentenceGenerator.generateEvent(person))
+        val disposal = entityManager.merge(SentenceGenerator.generateSentence(event))
+        entityManager.merge(SentenceGenerator.generateCustody(disposal))
     }
 }

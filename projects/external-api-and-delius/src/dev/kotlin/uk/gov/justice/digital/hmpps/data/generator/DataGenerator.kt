@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.data.generator
 import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator.DATASET_TYPE_OTHER
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.integration.delius.entity.*
+import uk.gov.justice.digital.hmpps.model.LimitedAccess
 import uk.gov.justice.digital.hmpps.set
 import java.time.LocalDate
 import java.time.LocalTime
@@ -36,6 +37,9 @@ object DataGenerator {
         true,
         IdGenerator.getAndIncrement()
     )
+
+    val EXCLUSION_PERSON_MANAGER = PersonGenerator.generateManager(PersonGenerator.EXCLUSION)
+    val RESTRICTION_PERSON_MANAGER = PersonGenerator.generateManager(PersonGenerator.RESTRICTION)
 
     val OFFENCE = Offence(
         id = IdGenerator.getAndIncrement(),

@@ -1,24 +1,26 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
+import uk.gov.justice.digital.hmpps.data.generator.DataGenerator.DEFAULT_PROVIDER
+import uk.gov.justice.digital.hmpps.data.generator.DataGenerator.DEFAULT_TEAM
+import uk.gov.justice.digital.hmpps.data.generator.DataGenerator.JOHN_SMITH
 import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator.RD_ADDRESS_STATUS
 import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator.RD_MALE
 import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator.RD_NATIONALITY
 import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator.RD_RELIGION
-import uk.gov.justice.digital.hmpps.integration.delius.entity.Person
-import uk.gov.justice.digital.hmpps.integration.delius.entity.PersonAddress
-import uk.gov.justice.digital.hmpps.integration.delius.entity.ReferenceData
+import uk.gov.justice.digital.hmpps.integration.delius.entity.*
 import java.time.LocalDate
 
 object PersonGenerator {
     val DEFAULT = generate("A000001", "A0001DY")
-    val EXCLUSION = generate("E123456", exclusionMessage = "There is an exclusion on this person")
-    val RESTRICTION = generate("R123456", restrictionMessage = "There is a restriction on this person")
+    val EXCLUSION = generate("E123456", currentExclusion = true, exclusionMessage = "There is an exclusion on this person")
+    val RESTRICTION = generate("R123456", currentRestriction = true, restrictionMessage = "There is a restriction on this person")
     val RESTRICTION_EXCLUSION = generate(
         "B123456",
         exclusionMessage = "You are excluded from viewing this case",
         restrictionMessage = "You are restricted from viewing this case"
     )
     val DEFAULT_2 = generate("A000003", "A0003DY")
+    val WITH_RELEASE_DATE = generate("F123456")
 
     fun generate(
         crn: String,
@@ -43,6 +45,7 @@ object PersonGenerator {
         mobileNumber: String? = null,
         emailAddress: String? = null,
         currentDisposal: Boolean = true,
+        rsrScore: Double? = 10.1,
         softDeleted: Boolean = false,
         id: Long = IdGenerator.getAndIncrement(),
     ) = Person(
@@ -71,6 +74,7 @@ object PersonGenerator {
         listOf(),
         listOf(),
         currentDisposal,
+        rsrScore,
         softDeleted,
         id
     )
@@ -106,6 +110,22 @@ object PersonGenerator {
         endDate,
         notes,
         softDeleted,
+        id
+    )
+
+    fun generateManager(
+        person: Person,
+        provider: Provider = DEFAULT_PROVIDER,
+        team: Team = DEFAULT_TEAM,
+        staff: Staff = JOHN_SMITH,
+        active: Boolean = true,
+        id: Long = IdGenerator.getAndIncrement(),
+    ) = PersonManager(
+        person,
+        provider,
+        team,
+        staff,
+        active,
         id
     )
 }
