@@ -13,6 +13,7 @@ data class PersonDetail(
     val ethnicity: CodeDescription?,
     val ethnicityDescription: String?,
     val contactDetails: ContactDetails?,
+    val sexualOrientation: CodeDescription?,
     val aliases: List<Alias>,
     val addresses: List<Address>,
     val excludedFrom: LimitedAccess?,

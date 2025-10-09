@@ -22,6 +22,7 @@ fun Person.detail(
     ethnicity = ethnicity?.asCodeDescription(),
     ethnicityDescription = ethnicityDescription,
     contactDetails = contactDetails(),
+    sexualOrientation = sexualOrientation?.asCodeDescription(),
     aliases = aliases,
     addresses = addresses,
     excludedFrom = exclusions,

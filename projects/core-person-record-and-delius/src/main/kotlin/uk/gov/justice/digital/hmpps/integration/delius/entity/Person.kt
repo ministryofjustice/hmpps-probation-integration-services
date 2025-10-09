@@ -78,6 +78,10 @@ data class Person(
     @JoinColumn(name = "ethnicity_id")
     val ethnicity: ReferenceData?,
 
+    @ManyToOne
+    @JoinColumn(name = "sexual_orientation_id")
+    val sexualOrientation: ReferenceData?,
+
     val ethnicityDescription: String?,
     val exclusionMessage: String?,
     val restrictionMessage: String?,

@@ -12,6 +12,7 @@ object PersonGenerator {
     val TITLE = generateReferenceData("TIT")
     val PREVIOUS_ADDRESS = generateReferenceData("P", "Previous Address")
     val MAIN_ADDRESS = generateReferenceData("M", "Main Address")
+    val SEXUAL_ORIENTATION = generateReferenceData("SEO")
 
     val MIN_PERSON =
         generatePerson("M123456", firstname = "Isabelle", surname = "Necessary", dob = LocalDate.of(1990, 3, 5))
@@ -38,6 +39,7 @@ object PersonGenerator {
         secondNationality = SECOND_NATIONALITY,
         ethnicity = ETHNICITY,
         ethnicityDescription = "Description of ethnicity",
+        sexualOrientation = SEXUAL_ORIENTATION,
         exclusionMessage = "This case is excluded because ...",
         restrictionMessage = "This case is restricted because ..."
     )
@@ -119,6 +121,7 @@ object PersonGenerator {
         ethnicityDescription: String? = null,
         exclusionMessage: String? = null,
         restrictionMessage: String? = null,
+        sexualOrientation: ReferenceData? = null,
         softDeleted: Boolean = false,
         id: Long = IdGenerator.getAndIncrement()
     ) = Person(
@@ -146,6 +149,7 @@ object PersonGenerator {
         ethnicityDescription = ethnicityDescription,
         exclusionMessage = exclusionMessage,
         restrictionMessage = restrictionMessage,
+        sexualOrientation = sexualOrientation,
         softDeleted = softDeleted,
         id = id,
     )

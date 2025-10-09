@@ -32,6 +32,7 @@ class DataLoader(
             PersonGenerator.NATIONALITY,
             PersonGenerator.MAIN_ADDRESS,
             PersonGenerator.PREVIOUS_ADDRESS,
+            PersonGenerator.SEXUAL_ORIENTATION,
             PersonGenerator.MIN_PERSON,
             PersonGenerator.FULL_PERSON,
             *PersonGenerator.FULL_PERSON_ALIASES.toTypedArray(),
