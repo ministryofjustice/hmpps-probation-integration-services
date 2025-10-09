@@ -155,9 +155,9 @@ class FIFOHandler(
 
         val cprRequest = CreateCorePersonRequest(
             name = Name(
-                firstName = insertRemandResult.insertPersonResult.person.forename,
-                middleNames = insertRemandResult.insertPersonResult.person.secondName,
-                lastName = insertRemandResult.insertPersonResult.person.surname
+                forename = insertRemandResult.insertPersonResult.person.forename,
+                middleName = insertRemandResult.insertPersonResult.person.secondName,
+                surname = insertRemandResult.insertPersonResult.person.surname
             ),
             title = null,
             dateOfBirth = insertRemandResult.insertPersonResult.person.dateOfBirth,
@@ -182,13 +182,9 @@ class FIFOHandler(
                     startDate = LocalDate.now(),
                     endDate = null,
                     noFixedAbode = insertRemandResult.insertPersonResult.address?.noFixedAbode ?: false
-                ),
-            ),
-            sentences = listOf(
-                Sentence(
-                    date = insertRemandResult.insertEventResult.courtAppearance.appearanceDate.toLocalDate()
                 )
-            )
+            ),
+            sentences = emptyList()
         )
 
         val cprResponse = retry(3, delay = Duration.ofSeconds(1)) {

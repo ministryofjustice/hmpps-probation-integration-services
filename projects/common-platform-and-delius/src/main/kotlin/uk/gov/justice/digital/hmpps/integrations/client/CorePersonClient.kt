@@ -51,9 +51,9 @@ data class CodeValue(
 )
 
 data class Name(
-    val firstName: String,
-    val middleNames: String?,
-    val lastName: String
+    val forename: String,
+    val middleName: String?,
+    val surname: String
 )
 
 data class NewIdentifiers(
