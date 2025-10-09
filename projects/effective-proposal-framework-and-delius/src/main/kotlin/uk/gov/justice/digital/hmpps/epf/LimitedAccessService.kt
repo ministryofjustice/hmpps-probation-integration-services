@@ -24,7 +24,7 @@ class LimitedAccessService(
             excludedFrom = excludedFrom,
             exclusionMessage = person.exclusionMessage.takeIf { excludedFrom.isNotEmpty() },
             restrictedTo = restrictedTo,
-            restrictionMessage = person.restrictionMessage.takeIf { excludedFrom.isNotEmpty() },
+            restrictionMessage = person.restrictionMessage.takeIf { restrictedTo.isNotEmpty() },
         )
     }
 }
