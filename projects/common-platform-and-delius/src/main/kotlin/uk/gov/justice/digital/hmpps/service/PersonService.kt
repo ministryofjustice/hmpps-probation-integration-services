@@ -6,7 +6,7 @@ import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
 import uk.gov.justice.digital.hmpps.dto.InsertPersonResult
 import uk.gov.justice.digital.hmpps.integrations.client.OsClient
 import uk.gov.justice.digital.hmpps.integrations.client.OsPlacesResponse
-import uk.gov.justice.digital.hmpps.integrations.delius.*
+import uk.gov.justice.digital.hmpps.integrations.delius.PncNumber
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractionCode
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonAddress
@@ -164,6 +164,7 @@ class PersonService(
             secondName = personDetails.middleName,
             telephoneNumber = personDetails.contact?.home,
             mobileNumber = personDetails.contact?.mobile,
+            email = personDetails.contact?.email,
             surname = personDetails.lastName!!,
             dateOfBirth = personDetails.dateOfBirth!!,
             gender = referenceDataRepository.findByCodeAndDatasetCode(genderCode, DatasetCode.GENDER)!!,
