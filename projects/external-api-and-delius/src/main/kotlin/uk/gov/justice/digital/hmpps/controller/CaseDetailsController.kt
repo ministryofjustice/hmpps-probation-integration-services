@@ -22,6 +22,7 @@ class CaseDetailsController(
     @GetMapping(value = ["/case/{crn}/addresses"])
     fun addresses(@PathVariable crn: String) = caseDetailsService.getAddresses(crn)
 
+    @PreAuthorize("hasAnyRole('PROBATION_API__HMPPS_API__CASE_DETAIL','PROBATION_API__EPF__CASE_DETAIL')")
     @GetMapping(value = ["/case-details/{crn}/{eventNumber}"])
     @Operation(summary = "Probation case information for the Effective Proposals Framework service")
     fun getCaseDetails(
