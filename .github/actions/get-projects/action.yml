@@ -1,0 +1,35 @@
+name: Parse projects input
+description: Accept a list of one or more projects, the string "All", or the string "Changed", and output a JSON array of project names
+
+inputs:
+  projects:
+    description: Projects string
+    required: true
+  change-filters:
+    description: Path patterns to use for matching changes
+    required: false
+
+outputs:
+  projects:
+    description: A JSON array of project names
+    value: ${{ steps.check-changes.outputs.projects || steps.parse.outputs.projects }}
+
+runs:
+  using: "composite"
+  steps:
+    - uses: actions/checkout@v5
+
+    - name: Output changed projects
+      id: check-changes
+      if: inputs.projects == 'Changed'
+      uses: ./.github/actions/check-changes
+      with:
+        filters: ${{ inputs.change-filters }}
+
+    - name: Parse and map project list
+      id: parse
+      if: inputs.projects != 'Changed'
+      run: ./.github/actions/get-projects/parse-projects.sh
+      env:
+        INPUT: ${{ inputs.projects }}
+      shell: bash

@@ -1,4 +1,4 @@
-name: Deploy branch
+name: Deploy version
 
 on:
   workflow_dispatch:
@@ -77,6 +77,10 @@ on:
           - test
           - preprod
           - prod
+      version:
+        description: The image version to deploy
+        type: string
+        required: true
 
 permissions:
   contents: read
@@ -84,46 +88,9 @@ permissions:
   packages: write
 
 jobs:
-  build:
-    name: Build
-    runs-on: ubuntu-latest
-    outputs:
-      version: ${{ steps.gradle.outputs.version || steps.docker.outputs.version }}
-    steps:
-      - uses: actions/checkout@v5
-
-      - name: Check project type
-        id: check-project
-        run: |
-          echo "gradle=$([ -f "projects/$project/build.gradle.kts" ] && echo 'true' || echo 'false')" | tee -a $GITHUB_OUTPUT
-          echo "docker=$([ -f "projects/$project/container/Dockerfile" ] && echo 'true' || echo 'false')" | tee -a $GITHUB_OUTPUT
-        env:
-          project: ${{ inputs.project }}
-
-      - name: Build Gradle project
-        id: gradle
-        if: steps.check-project.outputs.gradle == 'true'
-        uses: ./.github/actions/gradle-build
-        with:
-          project: ${{ inputs.project }}
-          push: true
-          force: true
-          gradle-cache-role: ${{ secrets.GRADLE_CACHE_S3_ROLE_TO_ASSUME }}
-          gradle-cache-encryption-key: ${{ secrets.GRADLE_ENCRYPTION_KEY }}
-
-      - name: Build Docker project
-        id: docker
-        if: steps.check-project.outputs.docker == 'true'
-        uses: ./.github/actions/docker-build
-        with:
-          project: ${{ inputs.project }}
-          push: true
-          force: true
-
   deploy:
     name: Deploy
     uses: ./.github/workflows/deploy.yml
-    needs: build
     with:
       projects: '["${{ inputs.project }}"]'
       environment: ${{ inputs.environment }}
