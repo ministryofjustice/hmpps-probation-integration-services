@@ -52,7 +52,8 @@ fun uk.gov.justice.digital.hmpps.integration.delius.entity.Alias.asModel() = Ali
         listOfNotNull(secondName, thirdName).ifEmpty { null }?.joinToString(" "),
         surname
     ),
-    dateOfBirth
+    dateOfBirth,
+    gender?.asCodeDescription(),
 )
 
 fun Disposal.asModel() = Sentence(

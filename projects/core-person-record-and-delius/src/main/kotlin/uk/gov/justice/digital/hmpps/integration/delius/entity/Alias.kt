@@ -1,6 +1,8 @@
 package uk.gov.justice.digital.hmpps.integration.delius.entity
 
 import jakarta.persistence.*
+import org.hibernate.annotations.Fetch
+import org.hibernate.annotations.FetchMode
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.NumericBooleanConverter
@@ -23,9 +25,12 @@ class Alias(
     @Column(name = "soft_deleted", columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean,
+    @ManyToOne
+    @JoinColumn(name = "gender_id")
+    val gender: ReferenceData?,
     @Id
     @Column(name = "alias_id")
-    val id: Long
+    val id: Long,
 )
 
 interface AliasRepository : JpaRepository<Alias, Long> {
