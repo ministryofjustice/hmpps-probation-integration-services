@@ -1,8 +1,6 @@
 package uk.gov.justice.digital.hmpps.integration.delius.entity
 
 import jakarta.persistence.*
-import org.hibernate.annotations.Fetch
-import org.hibernate.annotations.FetchMode
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.NumericBooleanConverter
