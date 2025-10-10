@@ -55,11 +55,25 @@ begin
 end;
 /
 
+-- Create shared user profile if it does not exist, with password rollover time of 1h
+declare
+    l_profile_name   varchar2(255) := 'probation_integration_user_profile';
+    l_profile_exists integer;
+begin
+    select count(*) into l_profile_exists from dba_profiles where profile = upper(l_profile_name);
+    if l_profile_exists = 0 then
+        execute immediate 'create profile ' || l_profile_name || ' limit password_rollover_time 1/24'; -- 1 hour
+        dbms_output.put_line('created ' || l_profile_name || ' profile.');
+    end if;
+end;
+/
+
 declare
     l_username          varchar2(255) := '{{ username }}';
     l_password          varchar2(255) := '{{ password }}';
     l_rolename          varchar2(255) := '{{ username }}_role';
     l_shared_rolename   varchar2(255) := 'probation_integration_shared_role';
+    l_profile_name      varchar2(255) := 'probation_integration_user_profile';
     l_audit_create_user varchar2(255) := '{{ database.audit.create_user | default(true) }}';
     l_audit_username    varchar2(255) := '{{ database.audit.username }}';
     l_audit_forename    varchar2(255) := '{{ database.audit.forename }}';
@@ -143,6 +157,9 @@ begin
 
     -- Set password
     execute immediate 'alter user ' || l_username || ' identified by "' || l_password || '" account unlock';
+
+    -- Set profile to enable gradual password rollover
+    execute immediate 'alter user ' || l_username || ' profile ' || l_profile_name;
 
     -- Enable session auditing
     execute immediate 'audit create session by ' || l_username;

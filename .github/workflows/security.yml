@@ -19,13 +19,9 @@ permissions:
 
 jobs:
   get-projects:
-    runs-on: ubuntu-latest
-    outputs:
-      projects: ${{ steps.get-projects.outputs.projects }}
-    steps:
-      - uses: actions/checkout@v5
-      - id: get-projects
-        run: echo "projects=$(find projects -mindepth 1 -maxdepth 1 -printf "%f\n" | jq --raw-input . | jq --slurp --compact-output .)" | tee -a "$GITHUB_OUTPUT"
+    uses: ./.github/workflows/get-projects.yml
+    with:
+      projects: All
 
   trivy-scan:
     runs-on: ubuntu-latest
@@ -34,7 +30,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        project: ${{ fromJson(needs.get-projects.outputs.projects) }}
+        project: ${{ fromJSON(needs.get-projects.outputs.projects) }}
     steps:
       - uses: actions/checkout@v5
 
