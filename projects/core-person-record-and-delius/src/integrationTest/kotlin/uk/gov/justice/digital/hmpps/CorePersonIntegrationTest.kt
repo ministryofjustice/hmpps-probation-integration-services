@@ -107,7 +107,11 @@ internal class CorePersonIntegrationTest {
                             "forename": "Freddy",
                             "surname": "Banter"
                           },
-                          "dateOfBirth": "1974-02-17"
+                          "dateOfBirth": "1974-02-17",
+                          "gender": {
+                            "code": "GEN",
+                            "description": "Description of GEN"
+                          }
                         }
                       ],
                       "addresses": [
