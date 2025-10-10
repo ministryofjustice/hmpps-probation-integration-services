@@ -115,8 +115,6 @@ components:
       properties:
         email:
           type: string
-        message:
-          type: string
       required:
       - email
     LimitedAccessDetail:
@@ -126,10 +124,14 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/ExcludedFrom"
+        exclusionMessage:
+          type: string
         restrictedTo:
           type: array
           items:
             $ref: "#/components/schemas/RestrictedTo"
+        restrictionMessage:
+          type: string
       required:
       - excludedFrom
       - restrictedTo
@@ -159,8 +161,6 @@ components:
       type: object
       properties:
         email:
-          type: string
-        message:
           type: string
       required:
       - email

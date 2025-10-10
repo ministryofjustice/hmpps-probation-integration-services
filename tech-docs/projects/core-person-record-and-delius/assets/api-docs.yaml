@@ -184,6 +184,8 @@ components:
           type: string
         contactDetails:
           $ref: "#/components/schemas/ContactDetails"
+        sexualOrientation:
+          $ref: "#/components/schemas/CodeDescription"
         aliases:
           type: array
           items:
