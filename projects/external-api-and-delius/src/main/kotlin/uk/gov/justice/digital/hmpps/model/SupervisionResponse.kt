@@ -19,7 +19,7 @@ data class Manager(
     val allocated = !code.endsWith("U")
 }
 
-data class Name(val forename: String, val surname: String)
+data class Name(val forename: String, val surname: String, val middleName: String? = null)
 data class Team(
     val code: String,
     val description: String,

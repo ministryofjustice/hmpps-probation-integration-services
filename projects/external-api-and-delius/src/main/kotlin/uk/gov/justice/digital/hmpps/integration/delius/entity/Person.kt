@@ -104,6 +104,9 @@ data class Person(
     @Convert(converter = NumericBooleanConverter::class)
     val currentDisposal: Boolean,
 
+    @Column(name = "dynamic_rsr_score", columnDefinition = "number(5,2)")
+    val dynamicRsrScore: Double?,
+
     @Column(columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean,
@@ -153,7 +156,7 @@ fun matchesPerson(firstName: String?, surname: String?, dateOfBirth: LocalDate?)
         val toMatch = listOfNotNull(
             firstName?.lowercase()?.let { cb.equal(cb.lower(person[FORENAME]), it) },
             surname?.lowercase()?.let { cb.equal(cb.lower(person[SURNAME]), it) },
-            dateOfBirth?.let { cb.equal(person.get<LocalDate>(PersonAlias.DOB), it) }
+            dateOfBirth?.let { cb.equal(person.get<LocalDate>(Person.DOB), it) }
         )
         cb.and(*toMatch.toTypedArray())
     }
