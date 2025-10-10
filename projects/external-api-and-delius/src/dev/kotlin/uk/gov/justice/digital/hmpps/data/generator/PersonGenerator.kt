@@ -12,8 +12,10 @@ import java.time.LocalDate
 
 object PersonGenerator {
     val DEFAULT = generate("A000001", "A0001DY")
-    val EXCLUSION = generate("E123456", currentExclusion = true, exclusionMessage = "There is an exclusion on this person")
-    val RESTRICTION = generate("R123456", currentRestriction = true, restrictionMessage = "There is a restriction on this person")
+    val EXCLUSION =
+        generate("E123456", currentExclusion = true, exclusionMessage = "There is an exclusion on this person")
+    val RESTRICTION =
+        generate("R123456", currentRestriction = true, restrictionMessage = "There is a restriction on this person")
     val RESTRICTION_EXCLUSION = generate(
         "B123456",
         exclusionMessage = "You are excluded from viewing this case",

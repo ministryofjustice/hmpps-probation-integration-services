@@ -63,6 +63,6 @@ class PrisonManager(
     val id: Long,
 )
 
-interface ResponsibleOfficerRepository: JpaRepository<ResponsibleOfficer, Long> {
+interface ResponsibleOfficerRepository : JpaRepository<ResponsibleOfficer, Long> {
     fun findByPersonCrn(crn: String): ResponsibleOfficer?
 }

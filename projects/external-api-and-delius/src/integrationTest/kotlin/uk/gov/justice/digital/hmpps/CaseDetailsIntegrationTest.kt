@@ -26,7 +26,7 @@ import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = RANDOM_PORT)
-internal class CaseDetailsIntegrationTest: BaseIntegrationTest() {
+internal class CaseDetailsIntegrationTest : BaseIntegrationTest() {
     @Test
     fun `can retrieve basic case details`() {
         val person = PersonGenerator.DEFAULT
