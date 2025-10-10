@@ -94,5 +94,5 @@ jobs:
     with:
       projects: '["${{ inputs.project }}"]'
       environment: ${{ inputs.environment }}
-      version: ${{ needs.build.outputs.version }}
+      version: ${{ inputs.version }}
     secrets: inherit
