@@ -37,7 +37,7 @@ class ResponsibleOfficer(
     @Column(name = "responsible_officer_id")
     val id: Long,
 ) {
-    fun provider(): Provider = listOfNotNull(communityManager?.provider, prisonManager?.provider).first()
+    fun provider(): Provider? = listOfNotNull(communityManager?.provider, prisonManager?.provider).firstOrNull()
 }
 
 @Immutable
