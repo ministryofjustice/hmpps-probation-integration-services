@@ -259,6 +259,31 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/AddressWrapper"
+  /case-details/{crn}/{eventNumber}:
+    get:
+      tags:
+      - Case Details
+      summary: Probation case information for the Effective Proposals Framework service
+      operationId: getCaseDetails
+      parameters:
+      - name: crn
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: eventNumber
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int32
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CaseDetails"
 components:
   schemas:
     CrnRequest:
@@ -602,6 +627,8 @@ components:
           type: string
         surname:
           type: string
+        middleName:
+          type: string
       required:
       - forename
       - surname
@@ -904,6 +931,109 @@ components:
             $ref: "#/components/schemas/CaseAddress"
       required:
       - addresses
+    Appearance:
+      type: object
+      properties:
+        date:
+          type: string
+          format: date
+        court:
+          $ref: "#/components/schemas/Court"
+      required:
+      - court
+      - date
+    CaseDetails:
+      type: object
+      properties:
+        nomsId:
+          type: string
+        name:
+          $ref: "#/components/schemas/Name"
+        dateOfBirth:
+          type: string
+          format: date
+        gender:
+          type: string
+        courtAppearance:
+          $ref: "#/components/schemas/Appearance"
+        sentence:
+          $ref: "#/components/schemas/SentenceSummary"
+        responsibleProvider:
+          $ref: "#/components/schemas/ResponsibleProvider"
+        ogrsScore:
+          type: integer
+          format: int64
+        rsrScore:
+          type: number
+          format: double
+        limitedAccess:
+          $ref: "#/components/schemas/LimitedAccessDetail"
+        age:
+          type: integer
+          format: int64
+        ageAtRelease:
+          type: integer
+          format: int64
+      required:
+      - age
+      - dateOfBirth
+      - gender
+      - name
+    Court:
+      type: object
+      properties:
+        name:
+          type: string
+      required:
+      - name
+    ExcludedFrom:
+      type: object
+      properties:
+        email:
+          type: string
+      required:
+      - email
+    LimitedAccessDetail:
+      type: object
+      properties:
+        excludedFrom:
+          type: array
+          items:
+            $ref: "#/components/schemas/ExcludedFrom"
+        exclusionMessage:
+          type: string
+        restrictedTo:
+          type: array
+          items:
+            $ref: "#/components/schemas/RestrictedTo"
+        restrictionMessage:
+          type: string
+      required:
+      - excludedFrom
+      - restrictedTo
+    ResponsibleProvider:
+      type: object
+      properties:
+        code:
+          type: string
+        name:
+          type: string
+      required:
+      - code
+      - name
+    RestrictedTo:
+      type: object
+      properties:
+        email:
+          type: string
+      required:
+      - email
+    SentenceSummary:
+      type: object
+      properties:
+        expectedReleaseDate:
+          type: string
+          format: date
   securitySchemes:
     hmpps-auth-token:
       type: http
