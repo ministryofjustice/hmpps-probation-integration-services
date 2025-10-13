@@ -52,7 +52,7 @@ data class ContactDetails(val telephone: String?, val mobile: String?, val email
 
 data class CodeDescription(val code: String, val description: String)
 
-data class Alias(val name: Name, val dateOfBirth: LocalDate)
+data class Alias(val name: Name, val dateOfBirth: LocalDate, val gender: CodeDescription?)
 
 data class Address(
     val fullAddress: String,

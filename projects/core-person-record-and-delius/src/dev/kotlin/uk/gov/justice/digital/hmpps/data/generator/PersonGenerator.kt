@@ -46,7 +46,13 @@ object PersonGenerator {
 
     val FULL_PERSON_ALIASES = listOf(
         generateAlias(
-            FULL_PERSON.id, "Freddy", null, null, "Banter", LocalDate.of(1974, 2, 17)
+            FULL_PERSON.id,
+            "Freddy",
+            null,
+            null,
+            "Banter",
+            LocalDate.of(1974, 2, 17),
+            gender = GENDER
         )
     )
 
@@ -162,8 +168,9 @@ object PersonGenerator {
         surname: String,
         dateOfBirth: LocalDate,
         softDeleted: Boolean = false,
-        id: Long = IdGenerator.getAndIncrement()
-    ) = Alias(personId, firstName, secondName, thirdName, surname, dateOfBirth, softDeleted, id)
+        gender: ReferenceData? = null,
+        id: Long = IdGenerator.getAndIncrement(),
+    ) = Alias(personId, firstName, secondName, thirdName, surname, dateOfBirth, softDeleted, gender, id)
 
     fun generateAddress(
         personId: Long,
