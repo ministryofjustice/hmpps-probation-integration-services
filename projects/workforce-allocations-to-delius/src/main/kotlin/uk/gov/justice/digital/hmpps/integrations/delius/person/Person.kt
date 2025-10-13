@@ -4,6 +4,7 @@ import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.NumericBooleanConverter
+import java.time.LocalDate
 
 @Immutable
 @Entity
@@ -32,6 +33,9 @@ class Person(
 
     @Column(name = "surname", length = 35)
     val surname: String,
+
+    @Column(name = "date_of_birth_date")
+    val dateOfBirth: LocalDate,
 
     @Column(updatable = false, columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)
