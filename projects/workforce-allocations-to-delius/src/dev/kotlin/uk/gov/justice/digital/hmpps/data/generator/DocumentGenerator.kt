@@ -1,15 +1,11 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
 import uk.gov.justice.digital.hmpps.integrations.delius.caseview.CaseViewEvent
-import uk.gov.justice.digital.hmpps.integrations.delius.document.entity.CourtReport
-import uk.gov.justice.digital.hmpps.integrations.delius.document.entity.CourtReportDocument
-import uk.gov.justice.digital.hmpps.integrations.delius.document.entity.DocEvent
-import uk.gov.justice.digital.hmpps.integrations.delius.document.entity.DocumentType
-import uk.gov.justice.digital.hmpps.integrations.delius.document.entity.EventDocument
-import uk.gov.justice.digital.hmpps.integrations.delius.document.entity.OffenderDocument
+import uk.gov.justice.digital.hmpps.integrations.delius.document.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.person.Person
+import java.time.LocalDate
 import java.time.ZonedDateTime
-import java.util.UUID
+import java.util.*
 
 object DocumentGenerator {
     val COURT_REPORT = generateCourtReportDoc()
@@ -64,5 +60,12 @@ object DocumentGenerator {
     }
 
     private fun CaseViewEvent.toDocEvent() =
-        DocEvent(id, Person(personId, "", null, "", surname = ""), true, number, null, null)
+        DocEvent(
+            id,
+            Person(personId, "", null, "", surname = "", dateOfBirth = LocalDate.now().minusYears(19)),
+            true,
+            number,
+            null,
+            null
+        )
 }

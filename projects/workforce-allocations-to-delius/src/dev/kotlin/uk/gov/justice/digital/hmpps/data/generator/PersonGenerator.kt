@@ -24,6 +24,7 @@ object PersonGenerator {
         nomsId: String? = null,
         exclusionMessage: String? = null,
         restrictionMessage: String? = null,
+        dateOfBirth: LocalDate = LocalDate.now().minusYears(27),
         id: Long = IdGenerator.getAndIncrement()
     ) = Person(
         id = id,
@@ -33,7 +34,8 @@ object PersonGenerator {
         secondName = "Test",
         surname = "Test",
         exclusionMessage = exclusionMessage,
-        restrictionMessage = restrictionMessage
+        restrictionMessage = restrictionMessage,
+        dateOfBirth = dateOfBirth,
     )
 
     fun forCaseView(
