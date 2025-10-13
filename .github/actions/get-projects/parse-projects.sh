@@ -11,8 +11,8 @@ elif jq <<< "$INPUT" &>/dev/null; then output="$INPUT"
 # Wrap in JSON array
 else output="$(jq --compact-output -n --arg INPUT "$INPUT" '[$INPUT]')"; fi
 
-# Filter to existing projects
-output="$(jq --compact-output -n --argjson A "$output" --argjson B "$all_projects" '$A - ($A - $B)')"
+# Filter to existing projects and sort alphabetically
+output="$(jq --compact-output -n --argjson A "$output" --argjson B "$all_projects" '$A - ($A - $B) | sort')"
 
 # Output
 echo "projects=$output" | tee -a "$GITHUB_OUTPUT"
