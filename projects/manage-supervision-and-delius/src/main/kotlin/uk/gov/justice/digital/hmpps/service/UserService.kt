@@ -108,7 +108,7 @@ class UserService(
                 .map { KeyPair(it.code.trim(), it.description) }
         val contactTypes =
             caseloadRepository.findContactTypesForStaff(user.staff.id).map { KeyPair(it.code.trim(), it.description) }
-        val userAccess = userAccessService.userAccessFor(username,caseload.content.map { it.person.crn })
+        val userAccess = userAccessService.userAccessFor(username, caseload.content.map { it.person.crn })
 
         return StaffCaseload(
             totalElements = caseload.totalElements.toInt(),
