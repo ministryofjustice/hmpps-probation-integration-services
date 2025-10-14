@@ -11,6 +11,7 @@ import uk.gov.justice.digital.hmpps.dto.InsertRemandDTO
 import uk.gov.justice.digital.hmpps.flags.FeatureFlags
 import uk.gov.justice.digital.hmpps.integrations.client.*
 import uk.gov.justice.digital.hmpps.integrations.client.Address
+import uk.gov.justice.digital.hmpps.integrations.client.ContactDetails
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.ReferenceData
 import uk.gov.justice.digital.hmpps.message.Notification
 import uk.gov.justice.digital.hmpps.retry.retry
@@ -170,6 +171,11 @@ class FIFOHandler(
                 crn = insertRemandResult.insertPersonResult.person.crn,
                 pnc = insertRemandResult.insertPersonResult.person.pncNumber,
                 cro = insertRemandResult.insertPersonResult.person.croNumber
+            ),
+            contactDetails = ContactDetails(
+                telephone = insertRemandResult.insertPersonResult.person.telephoneNumber,
+                mobile = insertRemandResult.insertPersonResult.person.mobileNumber,
+                email = insertRemandResult.insertPersonResult.person.email
             ),
             addresses = listOf(
                 Address(

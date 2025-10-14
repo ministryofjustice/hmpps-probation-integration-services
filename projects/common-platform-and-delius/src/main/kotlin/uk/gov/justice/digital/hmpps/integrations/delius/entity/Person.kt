@@ -71,6 +71,9 @@ class Person(
     @Column(name = "mobile_number")
     val mobileNumber: String? = null,
 
+    @Column(name = "e_mail_address")
+    val email: String? = null,
+
     @Column(columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean = false,

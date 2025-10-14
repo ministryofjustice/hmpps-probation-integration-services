@@ -170,6 +170,7 @@ class PersonService(
             secondName = personDetails.middleName,
             telephoneNumber = personDetails.contact?.home,
             mobileNumber = personDetails.contact?.mobile,
+            email = personDetails.contact?.email,
             surname = personDetails.lastName!!,
             dateOfBirth = personDetails.dateOfBirth!!,
             gender = referenceDataRepository.findByCodeAndDatasetCode(genderCode, DatasetCode.GENDER)!!,

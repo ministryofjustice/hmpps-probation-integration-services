@@ -40,6 +40,7 @@ data class CreateCorePersonRequest(
     val name: Name,
     val dateOfBirth: LocalDate,
     val identifiers: NewIdentifiers,
+    val contactDetails: ContactDetails,
     val addresses: List<Address>,
     val sentences: List<Sentence>,
     val nationality: CodeValue?,
@@ -65,6 +66,12 @@ data class NewIdentifiers(
     val prisonerNumber: String? = null,
     @JsonProperty("ni")
     val nationalInsuranceNumber: String? = null,
+)
+
+data class ContactDetails(
+    val telephone: String? = null,
+    val mobile: String? = null,
+    val email: String? = null
 )
 
 data class Address(
