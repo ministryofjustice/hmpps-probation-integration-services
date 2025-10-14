@@ -28,5 +28,4 @@ object MessageGenerator {
     val COMMON_PLATFORM_EVENT_MULTIPLE_DEFENDANTS =
         ResourceLoader.message<CommonPlatformHearing>("common-platform-hearing-multiple-defendants")
     val COMMON_PLATFORM_EVENT_CPR = ResourceLoader.message<CommonPlatformHearing>("common-platform-hearing-cpr")
-
 }

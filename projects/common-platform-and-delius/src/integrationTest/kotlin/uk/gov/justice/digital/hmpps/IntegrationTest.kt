@@ -552,7 +552,9 @@ internal class IntegrationTest {
 
         wireMockServer.verify(
             putRequestedFor(urlPathEqualTo("/core-person-record/person/probation/f3b3bdb3-10c4-48fe-a412-9924f47294d5"))
-                .withRequestBody(equalToJson("""
+                .withRequestBody(
+                    equalToJson(
+                        """
                 {
                   "name": {
                     "forename": "Example First Name",
@@ -585,7 +587,10 @@ internal class IntegrationTest {
                     "code": "M"
                   }
                 }
-                """.trimIndent())))
+                """.trimIndent()
+                    )
+                )
+        )
     }
 
     private fun thenNoRecordsAreInserted() {
