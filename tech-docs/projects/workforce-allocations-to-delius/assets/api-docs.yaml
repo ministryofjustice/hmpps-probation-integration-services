@@ -359,6 +359,25 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Person"
+  /person/{crn}/reallocation-details:
+    get:
+      tags:
+      - person-resource
+      summary: Information about the person on probation to allow reallocation
+      operationId: findPerson_1
+      parameters:
+      - name: crn
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ReallocationDetails"
   /person/{crn}/limited-access/all:
     get:
       tags:
@@ -1244,6 +1263,26 @@ components:
       - crn
       - name
       - type
+    ReallocationDetails:
+      type: object
+      properties:
+        crn:
+          type: string
+        name:
+          $ref: "#/components/schemas/Name"
+        dateOfBirth:
+          type: string
+          format: date
+        manager:
+          $ref: "#/components/schemas/Manager"
+        hasActiveOrder:
+          type: boolean
+      required:
+      - crn
+      - dateOfBirth
+      - hasActiveOrder
+      - manager
+      - name
     DocumentEvent:
       type: object
       properties:
