@@ -12,7 +12,6 @@ import uk.gov.justice.digital.hmpps.flags.FeatureFlags
 import uk.gov.justice.digital.hmpps.integrations.client.*
 import uk.gov.justice.digital.hmpps.integrations.client.Address
 import uk.gov.justice.digital.hmpps.integrations.client.ContactDetails
-import uk.gov.justice.digital.hmpps.integrations.delius.entity.ReferenceData
 import uk.gov.justice.digital.hmpps.message.Notification
 import uk.gov.justice.digital.hmpps.retry.retry
 import uk.gov.justice.digital.hmpps.service.OffenceService
@@ -220,8 +219,4 @@ class FIFOHandler(
         notifier.caseCreated(insertRemandResult.insertPersonResult.person)
         insertRemandResult.insertPersonResult.address?.let { notifier.addressCreated(it) }
     }
-
-    fun String.toCommonPlatformNationalityCode() =
-        ReferenceData.NationalityCode.entries.find { it.name == this }?.commonPlatformValue
-            ?: throw IllegalStateException("Nationality Code not found: $this")
 }

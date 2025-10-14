@@ -4,7 +4,9 @@ import uk.gov.justice.digital.hmpps.data.generator.DatasetGenerator.ADDRESS_STAT
 import uk.gov.justice.digital.hmpps.data.generator.DatasetGenerator.ADDRESS_TYPE
 import uk.gov.justice.digital.hmpps.data.generator.DatasetGenerator.COURT_APPEARANCE_OUTCOME
 import uk.gov.justice.digital.hmpps.data.generator.DatasetGenerator.COURT_APPEARANCE_TYPE
+import uk.gov.justice.digital.hmpps.data.generator.DatasetGenerator.ETHNICITY
 import uk.gov.justice.digital.hmpps.data.generator.DatasetGenerator.GENDER
+import uk.gov.justice.digital.hmpps.data.generator.DatasetGenerator.NATIONALITY
 import uk.gov.justice.digital.hmpps.data.generator.DatasetGenerator.OM_ALLOCATION_REASON
 import uk.gov.justice.digital.hmpps.data.generator.DatasetGenerator.ORDER_ALLOCATION_REASON
 import uk.gov.justice.digital.hmpps.data.generator.DatasetGenerator.PLEA
@@ -49,6 +51,16 @@ object ReferenceDataGenerator {
         REMAND_STATUS.id,
         "Remanded in custody"
     )
+    val BRITISH_NATIONALITY = generate(
+        ReferenceData.NationalityCode.BRIT.name,
+        NATIONALITY.id,
+        "British"
+    )
+    val WHITE_BRITISH_ETHNICITY = generate(
+        ReferenceData.EthnicityCode.W1.name,
+        ETHNICITY.id,
+        "White: British/English/Welsh/Scottish/Northern Irish"
+    )
 
     fun generate(
         code: String,
@@ -69,6 +81,8 @@ object DatasetGenerator {
     val REMAND_STATUS = ALL_DATASETS[DatasetCode.REMAND_STATUS]!!
     val PLEA = ALL_DATASETS[DatasetCode.PLEA]!!
     val COURT_APPEARANCE_OUTCOME = ALL_DATASETS[DatasetCode.COURT_APPEARANCE_OUTCOME]!!
+    val NATIONALITY = ALL_DATASETS[DatasetCode.NATIONALITY]!!
+    val ETHNICITY = ALL_DATASETS[DatasetCode.ETHNICITY]!!
 }
 
 object TransferReasonGenerator {
