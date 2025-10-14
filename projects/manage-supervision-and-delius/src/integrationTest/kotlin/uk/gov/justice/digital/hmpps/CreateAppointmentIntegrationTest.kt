@@ -1,6 +1,5 @@
 package uk.gov.justice.digital.hmpps
 
-import jdk.javadoc.internal.doclets.formats.html.markup.HtmlStyle
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.Assertions.assertNotEquals
@@ -8,7 +7,6 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
-import org.springframework.data.repository.findByIdOrNull
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
@@ -16,7 +14,6 @@ import uk.gov.justice.digital.hmpps.api.model.appointment.AppointmentDetail
 import uk.gov.justice.digital.hmpps.api.model.appointment.CreateAppointment
 import uk.gov.justice.digital.hmpps.api.model.appointment.User
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.DEFAULT_PROVIDER
-import uk.gov.justice.digital.hmpps.data.generator.IdGenerator
 import uk.gov.justice.digital.hmpps.data.generator.OffenderManagerGenerator.DEFAULT_LOCATION
 import uk.gov.justice.digital.hmpps.data.generator.OffenderManagerGenerator.PI_USER
 import uk.gov.justice.digital.hmpps.data.generator.OffenderManagerGenerator.STAFF_1
@@ -27,7 +24,6 @@ import uk.gov.justice.digital.hmpps.test.CustomMatchers.isCloseTo
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
-import uk.gov.justice.digital.hmpps.user.AuditUser
 import java.time.LocalDate
 import java.time.ZonedDateTime
 import java.util.*
@@ -144,40 +140,40 @@ class CreateAppointmentIntegrationTest : IntegrationTestBase() {
         appointmentRepository.deleteById(appointment.id)
     }
 
-//    @ParameterizedTest
-//    @MethodSource("createMultipleAppointments")
-//    fun `create multiple appointments`(createAppointment: CreateAppointment) {
-//        val response = mockMvc.perform(
-//            post("/appointment/${PersonGenerator.PERSON_1.crn}")
-//                .withUserToken("DeliusUser")
-//                .withJson(createAppointment)
-//        )
-//            .andExpect(MockMvcResultMatchers.status().isCreated)
-//            .andReturn().response.contentAsJson<AppointmentDetail>()
-//
-//        val appointments = appointmentRepository.findAllById(response.appointments.map { it.id })
-//
-//        assertThat(appointments.size, equalTo(createAppointment.numberOfAppointments))
-//        assertThat(response.appointments.all { it.externalReference != null }, equalTo(true))
-//
-//        assertThat(appointments[0].date, equalTo(LocalDate.now()))
-//        assertThat(
-//            appointments[1].date,
-//            equalTo(LocalDate.now().plusDays(createAppointment.interval.value.toLong() * 1))
-//        )
-//        assertThat(
-//            appointments[2].date,
-//            equalTo(LocalDate.now().plusDays(createAppointment.interval.value.toLong() * 2))
-//        )
-//
-//        //check for unique external reference
-//        val externalRef = "urn:uk:gov:hmpps:manage-supervision-service:appointment:${createAppointment.uuid}"
-//        assertThat(appointments[0].externalReference, equalTo(externalRef))
-//        assertNotEquals(externalRef, appointments[1].externalReference)
-//        assertNotEquals(externalRef, appointments[2].externalReference)
-//
-//        appointmentRepository.deleteAll(appointments)
-//    }
+    @ParameterizedTest
+    @MethodSource("createMultipleAppointments")
+    fun `create multiple appointments`(createAppointment: CreateAppointment) {
+        val response = mockMvc.perform(
+            post("/appointment/${PersonGenerator.PERSON_1.crn}")
+                .withUserToken("DeliusUser")
+                .withJson(createAppointment)
+        )
+            .andExpect(MockMvcResultMatchers.status().isCreated)
+            .andReturn().response.contentAsJson<AppointmentDetail>()
+
+        val appointments = appointmentRepository.findAllById(response.appointments.map { it.id })
+
+        assertThat(appointments.size, equalTo(3))
+        assertThat(response.appointments.all { it.externalReference != null }, equalTo(true))
+
+        assertThat(appointments[0].date, equalTo(LocalDate.now()))
+        assertThat(
+            appointments[1].date,
+            equalTo(LocalDate.now().plusDays(createAppointment.interval.value.toLong() * 1))
+        )
+        assertThat(
+            appointments[2].date,
+            equalTo(LocalDate.now().plusDays(createAppointment.interval.value.toLong() * 2))
+        )
+
+        //check for unique external reference
+        val externalRef = "urn:uk:gov:hmpps:manage-supervision-service:appointment:${createAppointment.uuid}"
+        assertThat(appointments[0].externalReference, equalTo(externalRef))
+        assertNotEquals(externalRef, appointments[1].externalReference)
+        assertNotEquals(externalRef, appointments[2].externalReference)
+
+        appointmentRepository.deleteAll(appointments)
+    }
 
     companion object {
         private val user = User(STAFF_USER_1.username, TEAM.code, DEFAULT_LOCATION.code)
@@ -222,7 +218,7 @@ class CreateAppointmentIntegrationTest : IntegrationTestBase() {
 
         @JvmStatic
         fun createMultipleAppointments() = listOf(
-            Arguments.of(CreateAppointment(
+            CreateAppointment(
                 user,
                 type = CreateAppointment.Type.HomeVisitToCaseNS.code,
                 start = ZonedDateTime.now(),
@@ -230,8 +226,8 @@ class CreateAppointmentIntegrationTest : IntegrationTestBase() {
                 numberOfAppointments = 3,
                 eventId = PersonGenerator.EVENT_1.id,
                 uuid = UUID.randomUUID()
-            )),
-            Arguments.of(CreateAppointment(
+            ),
+            CreateAppointment(
                 user,
                 type = CreateAppointment.Type.HomeVisitToCaseNS.code,
                 start = ZonedDateTime.now(),
@@ -239,17 +235,16 @@ class CreateAppointmentIntegrationTest : IntegrationTestBase() {
                 until = ZonedDateTime.now().plusDays(2),
                 eventId = PersonGenerator.EVENT_1.id,
                 uuid = UUID.randomUUID()
-            )),
-            Arguments.of(CreateAppointment(
+            ), CreateAppointment(
                 user,
                 CreateAppointment.Type.HomeVisitToCaseNS.code,
                 start = ZonedDateTime.now(),
                 end = ZonedDateTime.now().plusHours(2),
-                until = ZonedDateTime.now().plusDays(14),
+                until = ZonedDateTime.now().plusDays(15),
                 interval = CreateAppointment.Interval.WEEK,
                 eventId = PersonGenerator.EVENT_1.id,
                 uuid = UUID.randomUUID()
-            ))
+            )
         )
     }
 }

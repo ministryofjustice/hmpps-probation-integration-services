@@ -23,6 +23,7 @@ import java.time.DayOfWeek
 import java.time.Duration
 import java.time.LocalDate
 import java.time.ZonedDateTime
+import java.time.temporal.ChronoUnit
 import java.util.*
 
 @Service
@@ -117,11 +118,7 @@ class SentenceAppointmentService(
 
             createAppointment.let {
                 val numberOfAppointments = createAppointment.until?.let {
-                    val duration = Duration.between(
-                        createAppointment.start.toLocalDateTime(),
-                        it.toLocalDateTime()
-                    ).toDays()
-
+                    val duration = ChronoUnit.DAYS.between(createAppointment.start, it)
                     (duration / createAppointment.interval.value).toInt() + 1
                 } ?: createAppointment.numberOfAppointments
 
