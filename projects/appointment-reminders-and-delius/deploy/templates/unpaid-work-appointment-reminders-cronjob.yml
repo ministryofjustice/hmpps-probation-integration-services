@@ -47,14 +47,11 @@ spec:
                       optional: true
                 - name: MESSAGING_CONSUMER_ENABLED
                   value: "false"
-                - name: JOBS_UNPAID-WORK-APPOINTMENT-REMINDERS_ENABLED
-                  value: "true"
-                - name: JOBS_UNPAID-WORK-APPOINTMENT-REMINDERS_PROVIDER_CODE
-                  value: "{{ $config.provider.code }}"
-                - name: JOBS_UNPAID-WORK-APPOINTMENT-REMINDERS_TEMPLATES
-                  value: "{{ $config.templates | join "," }}"
-                - name: JOBS_UNPAID-WORK-APPOINTMENT-REMINDERS_DAYS-IN-ADVANCE
-                  value: "{{ $config.daysInAdvance }}"
+                - name: JOB_NAME
+                  value: "unpaid-work-appointment-reminders"
+                - name: SPRING_APPLICATION_JSON
+                  value: |-
+                    {{ mustToJson (dict "job" $config) }}
                 - name: JOBS_UNPAID-WORK-APPOINTMENT-REMINDERS_EXCLUDED-PROJECT-CODES
                   value: "{{ $config.excludedProjectCodes | join "," }}"
           restartPolicy: Never

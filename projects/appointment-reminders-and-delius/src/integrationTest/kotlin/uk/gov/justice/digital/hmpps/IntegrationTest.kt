@@ -13,6 +13,8 @@ import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import uk.gov.justice.digital.hmpps.config.JobConfig
+import uk.gov.justice.digital.hmpps.config.TrialConfig
 import uk.gov.justice.digital.hmpps.data.generator.ProviderGenerator
 import uk.gov.justice.digital.hmpps.data.generator.UserGenerator
 import uk.gov.justice.digital.hmpps.model.Provider
@@ -36,6 +38,9 @@ internal class IntegrationTest {
     @Autowired
     lateinit var unpaidWorkAppointmentsService: UnpaidWorkAppointmentsService
 
+    @Autowired
+    lateinit var jobConfig: JobConfig
+
     @MockitoBean
     lateinit var upwAppointmentRepository: UpwAppointmentRepository
 
@@ -47,44 +52,30 @@ internal class IntegrationTest {
 
     @BeforeEach
     fun setup() {
-        whenever(upwAppointmentRepository.getUnpaidWorkAppointments(any(), eq("N56"), any(), any())).thenReturn(
-            listOf(
-                object : UnpaidWorkAppointment {
-                    override val firstName = "Test"
-                    override val mobileNumber = "07000000001"
-                    override val appointmentDate = "01/01/2000"
-                    override val crn = "A000001"
-                    override val eventNumbers = "1"
-                    override val upwAppointmentIds = "123, 456"
-                },
-                object : UnpaidWorkAppointment {
-                    override val firstName = "Test"
-                    override val mobileNumber = "07000000002"
-                    override val appointmentDate = "01/01/2000"
-                    override val crn = "A000002"
-                    override val eventNumbers = "1"
-                    override val upwAppointmentIds = "789"
+        whenever(upwAppointmentRepository.getUnpaidWorkAppointments(any(), eq("N07"), any(), any(), any(), any()))
+            .thenAnswer { invocation ->
+                (1..9).map { num ->
+                    object : UnpaidWorkAppointment {
+                        override val firstName = "Test"
+                        override val mobileNumber = "0700000000$num"
+                        override val appointmentDate = "01/01/2000"
+                        override val crn = "A00000$num"
+                        override val eventNumbers = "1"
+                        override val upwAppointmentIds = num.toString()
+                    }
+                }.filter {
+                    val excludedCrns = invocation.getArgument<List<String>>(4)
+                    excludedCrns == null || it.crn !in excludedCrns
                 }
-            )
-        )
+            }
+
+        whenever(notificationClient.getNotifications(isNull(), eq("sms"), isNull(), anyOrNull())) // language=json
+            .thenReturn(NotificationList("""{"notifications": [], "links": {"current": "current-url"}}"""))
     }
 
     @Test
     fun `sends messages to govuk notify`() {
-        whenever(notificationClient.getNotifications(isNull(), eq("sms"), isNull(), anyOrNull())).thenReturn(
-            NotificationList(
-                """
-                    {
-                      "notifications": [],
-                      "links": {
-                        "current": "current-url"
-                      }
-                    }
-                """.trimIndent()
-            )
-        )
-
-        unpaidWorkAppointmentsService.sendUnpaidWorkAppointmentReminders("N56", listOf("template"), 3)
+        unpaidWorkAppointmentsService.sendUnpaidWorkAppointmentReminders(jobConfig)
 
         verify(notificationClient).sendSms(
             "template",
@@ -96,27 +87,36 @@ internal class IntegrationTest {
             "UnpaidWorkAppointmentReminderSent",
             mapOf(
                 "crn" to "A000001",
-                "upwAppointmentIds" to "123, 456",
-                "providerCode" to "N56",
+                "upwAppointmentIds" to "1",
+                "providerCode" to "N07",
                 "templateIds" to "template",
                 "notificationIds" to "null"
             )
         )
-        verify(telemetryService).trackEvent(
-            "UnpaidWorkAppointmentReminderNotSent",
-            mapOf(
-                "crn" to "A000002",
-                "upwAppointmentIds" to "789",
-                "providerCode" to "N56",
-                "templateIds" to "template",
-            )
+    }
+
+    @Test
+    fun `distributes CRNs among trial templates`() {
+        val config = jobConfig.copy(
+            trials = listOf(TrialConfig(listOf("trial1")), TrialConfig(listOf("trial2")), TrialConfig(listOf("trial3")))
         )
+        unpaidWorkAppointmentsService.sendUnpaidWorkAppointmentReminders(config)
+
+        // All templates are used
+        verify(notificationClient, atLeastOnce()).sendSms(eq("template"), any(), any(), any())
+        verify(notificationClient, atLeastOnce()).sendSms(eq("trial1"), any(), any(), any())
+        verify(notificationClient, atLeastOnce()).sendSms(eq("trial2"), any(), any(), any())
+        verify(notificationClient, atLeastOnce()).sendSms(eq("trial3"), any(), any(), any())
+
+        // Assigned template is fixed (does not change between test runs)
+        verify(notificationClient).sendSms(eq("trial1"), any(), any(), eq("A000001"))
     }
 
     @Test
     fun `do not send messages if one has already been sent for that crn today`() {
         whenever(notificationClient.getNotifications(isNull(), eq("sms"), isNull(), anyOrNull())).thenReturn(
             NotificationList(
+                // language=json
                 """
                     {
                       "notifications": [
@@ -159,31 +159,13 @@ internal class IntegrationTest {
             )
         )
 
-        unpaidWorkAppointmentsService.sendUnpaidWorkAppointmentReminders("N56", listOf("template"), 3)
+        unpaidWorkAppointmentsService.sendUnpaidWorkAppointmentReminders(jobConfig)
 
         verify(notificationClient, never()).sendSms(
             "template",
             "07000000001",
             mapOf("FirstName" to "Test", "NextWorkSession" to "01/01/2000"),
             "A000001"
-        )
-        verify(telemetryService).trackEvent(
-            "UnpaidWorkAppointmentReminderNotSent",
-            mapOf(
-                "crn" to "A000001",
-                "upwAppointmentIds" to "123, 456",
-                "providerCode" to "N56",
-                "templateIds" to "template"
-            )
-        )
-        verify(telemetryService).trackEvent(
-            "UnpaidWorkAppointmentReminderNotSent",
-            mapOf(
-                "crn" to "A000002",
-                "upwAppointmentIds" to "789",
-                "providerCode" to "N56",
-                "templateIds" to "template",
-            )
         )
     }
 
