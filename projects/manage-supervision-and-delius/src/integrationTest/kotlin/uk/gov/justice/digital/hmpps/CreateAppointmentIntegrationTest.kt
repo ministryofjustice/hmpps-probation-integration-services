@@ -149,7 +149,7 @@ class CreateAppointmentIntegrationTest : IntegrationTestBase() {
     fun `create multiple appointments`(createAppointment: CreateAppointment) {
         val response = mockMvc.perform(
             post("/appointment/${PersonGenerator.PERSON_1.crn}")
-                .withUserToken(PI_USER.username)
+                .withUserToken("DeliusUser")
                 .withJson(createAppointment)
         )
             .andExpect(MockMvcResultMatchers.status().isCreated)
