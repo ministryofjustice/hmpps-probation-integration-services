@@ -11,6 +11,7 @@ import uk.gov.justice.digital.hmpps.dto.InsertRemandDTO
 import uk.gov.justice.digital.hmpps.flags.FeatureFlags
 import uk.gov.justice.digital.hmpps.integrations.client.*
 import uk.gov.justice.digital.hmpps.integrations.client.Address
+import uk.gov.justice.digital.hmpps.integrations.delius.entity.ReferenceData
 import uk.gov.justice.digital.hmpps.message.Notification
 import uk.gov.justice.digital.hmpps.retry.retry
 import uk.gov.justice.digital.hmpps.service.OffenceService
@@ -162,7 +163,9 @@ class FIFOHandler(
             title = null,
             dateOfBirth = insertRemandResult.insertPersonResult.person.dateOfBirth,
             gender = CodeValue(code = insertRemandResult.insertPersonResult.person.gender.code),
-            nationality = null,
+            nationality = insertRemandResult.insertPersonResult.person.nationality?.code?.let { CodeValue(it) },
+            secondNationality = insertRemandResult.insertPersonResult.person.secondNationality?.code?.let { CodeValue(it) },
+            ethnicity = insertRemandResult.insertPersonResult.person.ethnicity?.code?.let { CodeValue(it) },
             identifiers = NewIdentifiers(
                 crn = insertRemandResult.insertPersonResult.person.crn,
                 pnc = insertRemandResult.insertPersonResult.person.pncNumber,
@@ -211,4 +214,7 @@ class FIFOHandler(
         notifier.caseCreated(insertRemandResult.insertPersonResult.person)
         insertRemandResult.insertPersonResult.address?.let { notifier.addressCreated(it) }
     }
+
+    fun String.toCommonPlatformNationalityCode() = ReferenceData.NationalityCode.entries.find { it.name == this }?.commonPlatformValue
+        ?: throw IllegalStateException("Nationality Code not found: $this")
 }
