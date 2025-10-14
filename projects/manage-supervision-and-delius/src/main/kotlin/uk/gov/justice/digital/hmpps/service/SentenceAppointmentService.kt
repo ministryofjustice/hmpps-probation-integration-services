@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.service
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.api.model.Name
 import uk.gov.justice.digital.hmpps.api.model.appointment.*
 import uk.gov.justice.digital.hmpps.aspect.UserContext
@@ -89,6 +90,7 @@ class SentenceAppointmentService(
         )
     }
 
+    @Transactional
     fun createAppointment(
         crn: String,
         createAppointment: CreateAppointment
