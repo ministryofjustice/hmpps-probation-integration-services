@@ -221,6 +221,7 @@ class FIFOHandler(
         insertRemandResult.insertPersonResult.address?.let { notifier.addressCreated(it) }
     }
 
-    fun String.toCommonPlatformNationalityCode() = ReferenceData.NationalityCode.entries.find { it.name == this }?.commonPlatformValue
-        ?: throw IllegalStateException("Nationality Code not found: $this")
+    fun String.toCommonPlatformNationalityCode() =
+        ReferenceData.NationalityCode.entries.find { it.name == this }?.commonPlatformValue
+            ?: throw IllegalStateException("Nationality Code not found: $this")
 }
