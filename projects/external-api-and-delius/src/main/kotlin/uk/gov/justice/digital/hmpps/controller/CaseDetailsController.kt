@@ -32,5 +32,6 @@ class CaseDetailsController(
     ): CaseDetails = caseDetailsService.getCaseDetails(crn, eventNumber)
 
     @GetMapping(value = ["/case/{crn}/access-limitations"])
-    fun accessLimitations(@PathVariable crn: String): LimitedAccessDetail = caseDetailsService.getLimitedAccessDetail(crn)
+    fun accessLimitations(@PathVariable crn: String): LimitedAccessDetail =
+        caseDetailsService.getLimitedAccessDetail(crn)
 }
