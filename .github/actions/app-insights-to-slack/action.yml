@@ -108,63 +108,71 @@ runs:
       if: fromJson(steps.search.outputs.result).tables[0].rows[0] != null
       shell: bash
       run: |
-        echo "result=$(echo "$search_result" | jq -rc '.tables[0].rows |
-          {
-            "channel": "$slack_channel",
-            "unfurl_links": false,
-            "unfurl_media": false,
-            "text": "Probation Integration Report",
-            "blocks": ([
-              {
-                "type": "header",
-                "text": {
-                  "type": "plain_text",
-                  "text": ":information_source: $title"
+        echo "result=$(echo "$search_result" | jq -rc \
+        --arg slack_channel "$slack_channel" \
+        --arg title "$title" \
+        --arg summary "$summary" \
+        --arg column1_header "$column1_header" \
+        --arg column2_header "$column2_header" \
+        --arg app_insights_subscription_id "$app_insights_subscription_id" \
+        '
+        .tables[0].rows |
+        {
+          "channel": $slack_channel,
+          "unfurl_links": false,
+          "unfurl_media": false,
+          "text": "Probation Integration Report",
+          "blocks": ([
+            {
+              "type": "header",
+              "text": {
+                "type": "plain_text",
+                "text": ":information_source: \($title)"
+              }
+            },
+            {
+              "type": "section",
+              "text": {
+                "type": "mrkdwn",
+                "text": $summary
+              },
+              "fields": [
+                {
+                  "type": "mrkdwn",
+                  "text": "*\($column1_header)*"
+                },
+                {
+                  "type": "mrkdwn",
+                  "text": "*\($column2_header)*"
                 }
+              ]
+            }
+          ] +
+          (. | [_nwise(5)] | map({
+            "type": "section",
+            "fields": (. | map([
+              {
+                "type": "plain_text",
+                "text": .[0]
               },
               {
-                "type": "section",
-                "text": {
+                "type": "mrkdwn",
+                "text": (.[1] + " (<https://portal.azure.com/#blade/AppInsightsExtension/DetailsV2Blade/DataModel/%7B%22eventId%22:%22" + .[2] + "%22,%22timestamp%22:%22" + .[3] + "%22%7D/ComponentId/%7B%22Name%22:%22nomisapi-prod%22,%22ResourceGroup%22:%22nomisapi-prod-rg%22,%22SubscriptionId%22:%22\($app_insights_subscription_id)%22%7D|Details>).")
+              }
+            ]) | flatten)
+          })) +
+          [
+            {
+              "type": "context",
+              "elements": [
+                {
                   "type": "mrkdwn",
-                  "text": "$summary"
-                },
-                "fields": [
-                  {
-                    "type": "mrkdwn",
-                    "text": "*${column1_header}*"
-                  },
-                  {
-                    "type": "mrkdwn",
-                    "text": "*${column2_header}*"
-                  }
-                ]
-              }
-            ] +
-            (. | [_nwise(5)] | map({
-              "type": "section",
-              "fields": (. | map([
-                {
-                  type: "plain_text",
-                  text: .[0]
-                },
-                {
-                  type: "mrkdwn",
-                  text: (.[1] + " (<https://portal.azure.com/#blade/AppInsightsExtension/DetailsV2Blade/DataModel/%7B%22eventId%22:%22" + .[2] + "%22,%22timestamp%22:%22" + .[3] + "%22%7D/ComponentId/%7B%22Name%22:%22nomisapi-prod%22,%22ResourceGroup%22:%22nomisapi-prod-rg%22,%22SubscriptionId%22:%22${app_insights_subscription_id}%22%7D|Details>).")
+                  "text": ">This report was generated automatically. For more information, contact the <https://moj.enterprise.slack.com/archives/C02HQ4M2YQN|probation integration team>."
                 }
-              ]) | flatten)
-            })) +
-            [
-              {
-                "type": "context",
-                "elements": [
-                  {
-                    "type": "mrkdwn",
-                    "text": ">This report was generated automatically. For more information, contact the <https://moj.enterprise.slack.com/archives/C02HQ4M2YQN|probation integration team>."
-                  }
-                ]
-              }
-            ])
-          }')" | tee -a "$GITHUB_OUTPUT"
+              ]
+            }
+          ])
+        }')" | tee -a "$GITHUB_OUTPUT"
       env:
         search_result: ${{ steps.search.outputs.result }}
         slack_channel: ${{ inputs.slack_channel }}
