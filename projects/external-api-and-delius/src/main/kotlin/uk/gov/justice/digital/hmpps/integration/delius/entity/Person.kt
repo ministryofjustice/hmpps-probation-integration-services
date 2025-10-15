@@ -142,6 +142,8 @@ interface PersonRepository : JpaRepository<Person, Long>, JpaSpecificationExecut
     fun findPersonInMappaCategory(crn: String, mappaCategories: Set<String>): Person?
 
     fun existsByCrn(crn: String): Boolean
+
+    fun findByCrn(crn: String): Person?
 }
 
 fun PersonRepository.getMappaPersonInMappaCategory(crn: String, mappaCategories: Set<String>) =
@@ -150,6 +152,9 @@ fun PersonRepository.getMappaPersonInMappaCategory(crn: String, mappaCategories:
 
 fun PersonRepository.getCrn(nomsId: String) =
     findByNomsId(nomsId) ?: throw NotFoundException("Person", "nomsId", nomsId)
+
+fun PersonRepository.getByCrn(crn: String): Person =
+    findByCrn(crn) ?: throw NotFoundException("Person", "crn", crn)
 
 fun matchesPerson(firstName: String?, surname: String?, dateOfBirth: LocalDate?) =
     Specification<Person> { person, _, cb ->
