@@ -510,13 +510,13 @@
                                     <td>
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                             <tr>
-                                                <td title="REPORT_MANAGER.[TRUST_PROVIDER_FLAG, STAFF_EMPLOYEE_ID] references OFFICER.[TRUST_PROVIDER_FLAG, STAFF_EMPLOYEE_ID] via SYS_C0021246"><a href='OFFICER.html'>OFFICER</a><span class='relatedKey'>.TRUST_PROVIDER_FLAG</span></td>
-                                                <td class="constraint detail">SYS_C0021246</td>
+                                                <td title="REPORT_MANAGER.[TRUST_PROVIDER_FLAG, TRUST_PROVIDER_TEAM_ID] references ALL_TEAM.[TRUST_PROVIDER_FLAG, TRUST_PROVIDER_TEAM_ID] via SYS_C0021247"><a href='ALL_TEAM.html'>ALL_TEAM</a><span class='relatedKey'>.TRUST_PROVIDER_FLAG</span></td>
+                                                <td class="constraint detail">SYS_C0021247</td>
                                                 <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
-                                                <td title="REPORT_MANAGER.[TRUST_PROVIDER_FLAG, TRUST_PROVIDER_TEAM_ID] references ALL_TEAM.[TRUST_PROVIDER_FLAG, TRUST_PROVIDER_TEAM_ID] via SYS_C0021247"><a href='ALL_TEAM.html'>ALL_TEAM</a><span class='relatedKey'>.TRUST_PROVIDER_FLAG</span></td>
-                                                <td class="constraint detail">SYS_C0021247</td>
+                                                <td title="REPORT_MANAGER.[TRUST_PROVIDER_FLAG, STAFF_EMPLOYEE_ID] references OFFICER.[TRUST_PROVIDER_FLAG, STAFF_EMPLOYEE_ID] via SYS_C0021246"><a href='OFFICER.html'>OFFICER</a><span class='relatedKey'>.TRUST_PROVIDER_FLAG</span></td>
+                                                <td class="constraint detail">SYS_C0021246</td>
                                                 <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                         </table>
@@ -873,14 +873,6 @@
                                 </thead>
                                 <tbody>
                                 <tr>
-                                    <td>STAFF_OR_TEAM</td>
-                                    <td> (&#10;STAFF_EMPLOYEE_ID &#61; STAFF_ID&#10;OR&#10;STAFF_EMPLOYEE_ID &#61; PROVIDER_EMPLOYEE_ID&#10;) </td>
-                                </tr>
-                                <tr>
-                                    <td>REPORT_MANAGER_XOR</td>
-                                    <td> (&#10;(PROVIDER_EMPLOYEE_ID IS NOT NULL  AND STAFF_ID IS NULL)&#10;OR&#10;(PROVIDER_EMPLOYEE_ID IS NULL  AND STAFF_ID IS NOT NULL)&#10;) </td>
-                                </tr>
-                                <tr>
                                     <td>ACTIVE_FLAG_END_DATE1</td>
                                     <td> (ACTIVE_FLAG &#61; 0 AND END_DATE IS NOT NULL)&#10;OR&#10;(ACTIVE_FLAG &#61; 1 AND END_DATE IS NULL)&#10; </td>
                                 </tr>
@@ -889,16 +881,12 @@
                                     <td> (&#10;(ALLOCATION_DATE &lt;&#61; NVL(END_DATE, ALLOCATION_DATE))&#10;) </td>
                                 </tr>
                                 <tr>
-                                    <td>REPORT_MANAGER_TEAM_XOR</td>
-                                    <td> (&#10;(TEAM_ID IS NOT NULL AND PROVIDER_TEAM_ID IS NULL)&#10;OR&#10;(TEAM_ID IS NULL AND PROVIDER_TEAM_ID IS NOT NULL)&#10;) </td>
+                                    <td>REPORT_MANAGER_XOR</td>
+                                    <td> (&#10;(PROVIDER_EMPLOYEE_ID IS NOT NULL  AND STAFF_ID IS NULL)&#10;OR&#10;(PROVIDER_EMPLOYEE_ID IS NULL  AND STAFF_ID IS NOT NULL)&#10;) </td>
                                 </tr>
                                 <tr>
                                     <td>TRUST_OR_PROVIDER</td>
                                     <td> (&#10;TRUST_PROVIDER_TEAM_ID &#61; TEAM_ID&#10;OR&#10;TRUST_PROVIDER_TEAM_ID &#61; PROVIDER_TEAM_ID&#10;) </td>
-                                </tr>
-                                <tr>
-                                    <td>REPORT_MANAGER_REPORT_TYPE</td>
-                                    <td> (&#10;(COURT_REPORT_ID IS NOT NULL AND INSTITUTIONAL_REPORT_ID IS NULL)&#10;OR&#10;(COURT_REPORT_ID IS NULL AND INSTITUTIONAL_REPORT_ID IS NOT NULL)&#10;) </td>
                                 </tr>
                                 <tr>
                                     <td>TRUE_OR_FALSE3</td>
@@ -907,6 +895,18 @@
                                 <tr>
                                     <td>TRUE_OR_FALSE5</td>
                                     <td>TRUST_PROVIDER_FLAG IN (0, 1)</td>
+                                </tr>
+                                <tr>
+                                    <td>REPORT_MANAGER_REPORT_TYPE</td>
+                                    <td> (&#10;(COURT_REPORT_ID IS NOT NULL AND INSTITUTIONAL_REPORT_ID IS NULL)&#10;OR&#10;(COURT_REPORT_ID IS NULL AND INSTITUTIONAL_REPORT_ID IS NOT NULL)&#10;) </td>
+                                </tr>
+                                <tr>
+                                    <td>STAFF_OR_TEAM</td>
+                                    <td> (&#10;STAFF_EMPLOYEE_ID &#61; STAFF_ID&#10;OR&#10;STAFF_EMPLOYEE_ID &#61; PROVIDER_EMPLOYEE_ID&#10;) </td>
+                                </tr>
+                                <tr>
+                                    <td>REPORT_MANAGER_TEAM_XOR</td>
+                                    <td> (&#10;(TEAM_ID IS NOT NULL AND PROVIDER_TEAM_ID IS NULL)&#10;OR&#10;(TEAM_ID IS NULL AND PROVIDER_TEAM_ID IS NOT NULL)&#10;) </td>
                                 </tr>
                                 </tbody>
                             </table>

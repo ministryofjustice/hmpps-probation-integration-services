@@ -471,6 +471,50 @@
                                     </td>
                                     <td></td>
                                 </tr>
+                                <tr>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="REGISTER_LEVEL_ID">REGISTER_LEVEL_ID</span></td>
+                                    <td>NUMBER</td>
+                                    <td>38</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                            <tr>
+                                                <td title="REGISTRATION_REVIEW.REGISTER_LEVEL_ID references R_STANDARD_REFERENCE_LIST.STANDARD_REFERENCE_LIST_ID via R_1432"><a href='R_STANDARD_REFERENCE_LIST.html'>R_STANDARD_REFERENCE_LIST</a><span class='relatedKey'>.STANDARD_REFERENCE_LIST_ID</span></td>
+                                                <td class="constraint detail">R_1432</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="REGISTER_CATEGORY_ID">REGISTER_CATEGORY_ID</span></td>
+                                    <td>NUMBER</td>
+                                    <td>38</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                            <tr>
+                                                <td title="REGISTRATION_REVIEW.REGISTER_CATEGORY_ID references R_STANDARD_REFERENCE_LIST.STANDARD_REFERENCE_LIST_ID via R_1433"><a href='R_STANDARD_REFERENCE_LIST.html'>R_STANDARD_REFERENCE_LIST</a><span class='relatedKey'>.STANDARD_REFERENCE_LIST_ID</span></td>
+                                                <td class="constraint detail">R_1433</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
                                 </tbody>
                             </table>
                         </div>
@@ -506,6 +550,18 @@
                                     <td>Primary key</td>
                                     <td><span title='Ascending'>Asc</span></td>
                                     <td>REGISTRATION_REVIEW_ID</td>
+                                </tr>
+                                <tr>
+                                    <td title='Indexed'>XI10REGISTRATION_REVIEW</td>
+                                    <td>Performance</td>
+                                    <td><span title='Ascending'>Asc</span></td>
+                                    <td>REGISTER_LEVEL_ID</td>
+                                </tr>
+                                <tr>
+                                    <td title='Indexed'>XI11REGISTRATION_REVIEW</td>
+                                    <td>Performance</td>
+                                    <td><span title='Ascending'>Asc</span></td>
+                                    <td>REGISTER_CATEGORY_ID</td>
                                 </tr>
                                 <tr>
                                     <td title='Indexed'>XIF1REGISTRATION_REVIEW</td>
@@ -578,12 +634,12 @@
                                 </thead>
                                 <tbody>
                                 <tr>
-                                    <td>TRUE_OR_FALSE75</td>
-                                    <td>SOFT_DELETED IN (0, 1)</td>
-                                </tr>
-                                <tr>
                                     <td>YES_OR_NO_422</td>
                                     <td>COMPLETED IN (&#39;Y&#39;,&#39;N&#39;)</td>
+                                </tr>
+                                <tr>
+                                    <td>TRUE_OR_FALSE75</td>
+                                    <td>SOFT_DELETED IN (0, 1)</td>
                                 </tr>
                                 </tbody>
                             </table>
@@ -608,26 +664,28 @@
                                 <div class="tab-content no-padding">
                                     <div class="chart tab-pane active" id="oneDegreeImg-chart" style="position: relative; overflow-x:auto;">
                                         <map id="oneDegreeRelationshipsDiagram" name="oneDegreeRelationshipsDiagram">
-<area shape="rect" id="node1" href="CONTACT.html" target="_top" title="CONTACT" alt="" coords="649,976,972,2237">
-<area shape="rect" id="node2" href="OFFENDER.html" target="_top" title="OFFENDER" alt="" coords="273,70,605,1361">
-<area shape="rect" id="node3" href="PARTITION_AREA.html" target="_top" title="PARTITION_AREA" alt="" coords="5,1294,229,1441">
-<area shape="rect" id="node4" href="STAFF.html" target="_top" title="STAFF" alt="" coords="312,1748,567,2188">
-<area shape="rect" id="node5" href="TEAM.html" target="_top" title="TEAM" alt="" coords="295,1378,583,1730">
-<area shape="rect" id="node6" href="REGISTRATION.html" target="_top" title="REGISTRATION" alt="" coords="1016,358,1272,886">
-<area shape="rect" id="node7" href="REGISTRATION_REVIEW.html" target="_top" title="REGISTRATION_REVIEW" alt="" coords="1316,1833,1759,2460">
+<area shape="rect" id="node1" href="CONTACT.html" target="_top" title="CONTACT" alt="" coords="744,142,1067,1403">
+<area shape="rect" id="node2" href="OFFENDER.html" target="_top" title="OFFENDER" alt="" coords="368,134,700,1425">
+<area shape="rect" id="node3" href="PARTITION_AREA.html" target="_top" title="PARTITION_AREA" alt="" coords="53,41,277,187">
+<area shape="rect" id="node4" href="STAFF.html" target="_top" title="STAFF" alt="" coords="407,1442,661,1882">
+<area shape="rect" id="node5" href="TEAM.html" target="_top" title="TEAM" alt="" coords="390,2115,678,2467">
+<area shape="rect" id="node6" href="R_STANDARD_REFERENCE_LIST.html" target="_top" title="R_STANDARD_REFERENCE_LIST" alt="" coords="5,1161,324,1425">
+<area shape="rect" id="node7" href="REGISTRATION.html" target="_top" title="REGISTRATION" alt="" coords="1111,1259,1413,1846">
+<area shape="rect" id="node8" href="REGISTRATION_REVIEW.html" target="_top" title="REGISTRATION_REVIEW" alt="" coords="1457,1321,1900,2006">
 </map>
                                         <a name='diagram'><img id="oneDegreeImg" src="../diagrams/tables/REGISTRATION_REVIEW.1degree.png" usemap="#oneDegreeRelationshipsDiagram" class="diagram" border="0" align="left"></a>
                                     </div>
                                     <div class="chart tab-pane " id="oneimpliedDegreeImg-chart" style="position: relative; overflow-x:auto;">
                                         <map id="oneDegreeRelationshipsDiagramImplied" name="oneDegreeRelationshipsDiagramImplied">
-<area shape="rect" id="node1" href="CONTACT.html" target="_top" title="CONTACT" alt="" coords="1088,612,1410,1873">
-<area shape="rect" id="node2" href="USER_.html" target="_top" title="USER_" alt="" coords="320,1096,668,1418">
-<area shape="rect" id="node3" href="OFFENDER.html" target="_top" title="OFFENDER" alt="" coords="712,333,1044,1624">
-<area shape="rect" id="node4" href="PARTITION_AREA.html" target="_top" title="PARTITION_AREA" alt="" coords="382,261,606,408">
-<area shape="rect" id="node5" href="STAFF.html" target="_top" title="STAFF" alt="" coords="21,524,276,964">
-<area shape="rect" id="node6" href="TEAM.html" target="_top" title="TEAM" alt="" coords="734,1641,1022,1993">
-<area shape="rect" id="node7" href="REGISTRATION.html" target="_top" title="REGISTRATION" alt="" coords="1454,110,1710,638">
-<area shape="rect" id="node8" href="REGISTRATION_REVIEW.html" target="_top" title="REGISTRATION_REVIEW" alt="" coords="1754,1232,2197,1858">
+<area shape="rect" id="node1" href="CONTACT.html" target="_top" title="CONTACT" alt="" coords="1456,828,1778,2089">
+<area shape="rect" id="node2" href="USER_.html" target="_top" title="USER_" alt="" coords="688,1848,1036,2171">
+<area shape="rect" id="node3" href="OFFENDER.html" target="_top" title="OFFENDER" alt="" coords="1080,249,1412,1540">
+<area shape="rect" id="node4" href="PARTITION_AREA.html" target="_top" title="PARTITION_AREA" alt="" coords="750,157,974,304">
+<area shape="rect" id="node5" href="STAFF.html" target="_top" title="STAFF" alt="" coords="389,1553,644,1993">
+<area shape="rect" id="node6" href="TEAM.html" target="_top" title="TEAM" alt="" coords="1102,1701,1390,2053">
+<area shape="rect" id="node7" href="R_STANDARD_REFERENCE_LIST.html" target="_top" title="R_STANDARD_REFERENCE_LIST" alt="" coords="26,948,345,1212">
+<area shape="rect" id="node8" href="REGISTRATION.html" target="_top" title="REGISTRATION" alt="" coords="1822,116,2125,703">
+<area shape="rect" id="node9" href="REGISTRATION_REVIEW.html" target="_top" title="REGISTRATION_REVIEW" alt="" coords="2169,1112,2612,1797">
 </map>
                                         <a name='diagram'><img id="oneimpliedDegreeImg" src="../diagrams/tables/REGISTRATION_REVIEW.implied1degrees.png" usemap="#oneDegreeRelationshipsDiagramImplied" class="diagram" border="0" align="left"></a>
                                     </div>

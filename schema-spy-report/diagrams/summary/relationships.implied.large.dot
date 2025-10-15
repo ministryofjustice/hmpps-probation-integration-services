@@ -93,7 +93,7 @@ digraph "largeImpliedRelationshipsDiagram" {
     <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
       <TR><TD COLSPAN="3"  BGCOLOR="#f5f5f5"><TABLE BORDER="0" CELLSPACING="0"><TR><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="101" HEIGHT="16"><B>R_REGISTER_TYPE</B></TD><TD ALIGN="RIGHT">[table]</TD></TR></TABLE></TD></TR>
       <TR><TD PORT="elipses" COLSPAN="3" ALIGN="LEFT">...</TD></TR>
-      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 6</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">6 &gt;</TD></TR>
+      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 6</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">9 &gt;</TD></TR>
     </TABLE>>
     URL="tables/R_REGISTER_TYPE.html"
     target="_top"
@@ -500,7 +500,7 @@ digraph "largeImpliedRelationshipsDiagram" {
     <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
       <TR><TD COLSPAN="3"  BGCOLOR="#f5f5f5"><TABLE BORDER="0" CELLSPACING="0"><TR><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="179" HEIGHT="16"><B>R_STANDARD_REFERENCE_LIST</B></TD><TD ALIGN="RIGHT">[table]</TD></TR></TABLE></TD></TR>
       <TR><TD PORT="elipses" COLSPAN="3" ALIGN="LEFT">...</TD></TR>
-      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 1</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">319 &gt;</TD></TR>
+      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 1</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">325 &gt;</TD></TR>
     </TABLE>>
     URL="tables/R_STANDARD_REFERENCE_LIST.html"
     target="_top"
@@ -891,6 +891,17 @@ digraph "largeImpliedRelationshipsDiagram" {
     target="_top"
     tooltip="R_RQMNT_TYPE"
   ];
+  "RECENT_FTS_TERM" [
+   label=<
+    <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
+      <TR><TD COLSPAN="3"  BGCOLOR="#f5f5f5"><TABLE BORDER="0" CELLSPACING="0"><TR><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="108" HEIGHT="16"><B>RECENT_FTS_TERM</B></TD><TD ALIGN="RIGHT">[table]</TD></TR></TABLE></TD></TR>
+      <TR><TD PORT="elipses" COLSPAN="3" ALIGN="LEFT">...</TD></TR>
+      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 1</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD></TR>
+    </TABLE>>
+    URL="tables/RECENT_FTS_TERM.html"
+    target="_top"
+    tooltip="RECENT_FTS_TERM"
+  ];
   "R_NSI_TYPE_STATUS" [
    label=<
     <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
@@ -1006,7 +1017,7 @@ digraph "largeImpliedRelationshipsDiagram" {
     <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
       <TR><TD COLSPAN="3"  BGCOLOR="#f5f5f5"><TABLE BORDER="0" CELLSPACING="0"><TR><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="87" HEIGHT="16"><B>REGISTRATION</B></TD><TD ALIGN="RIGHT">[table]</TD></TR></TABLE></TD></TR>
       <TR><TD PORT="elipses" COLSPAN="3" ALIGN="LEFT">...</TD></TR>
-      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 9</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">2 &gt;</TD></TR>
+      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 11</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">2 &gt;</TD></TR>
     </TABLE>>
     URL="tables/REGISTRATION.html"
     target="_top"
@@ -1028,7 +1039,7 @@ digraph "largeImpliedRelationshipsDiagram" {
     <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
       <TR><TD COLSPAN="3"  BGCOLOR="#f5f5f5"><TABLE BORDER="0" CELLSPACING="0"><TR><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="35" HEIGHT="16"><B>USER_</B></TD><TD ALIGN="RIGHT">[table]</TD></TR></TABLE></TD></TR>
       <TR><TD PORT="elipses" COLSPAN="3" ALIGN="LEFT">...</TD></TR>
-      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 5</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">11 &gt;</TD></TR>
+      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 5</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">12 &gt;</TD></TR>
     </TABLE>>
     URL="tables/USER_.html"
     target="_top"
@@ -1617,6 +1628,17 @@ digraph "largeImpliedRelationshipsDiagram" {
     target="_top"
     tooltip="CASE_ALLOCATION"
   ];
+  "R_REGISTER_TYPE_ALT_REG_TYPE" [
+   label=<
+    <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
+      <TR><TD COLSPAN="3"  BGCOLOR="#f5f5f5"><TABLE BORDER="0" CELLSPACING="0"><TR><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="190" HEIGHT="16"><B>R_REGISTER_TYPE_ALT_REG_TYPE</B></TD><TD ALIGN="RIGHT">[table]</TD></TR></TABLE></TD></TR>
+      <TR><TD PORT="elipses" COLSPAN="3" ALIGN="LEFT">...</TD></TR>
+      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 2</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD></TR>
+    </TABLE>>
+    URL="tables/R_REGISTER_TYPE_ALT_REG_TYPE.html"
+    target="_top"
+    tooltip="R_REGISTER_TYPE_ALT_REG_TYPE"
+  ];
   "OFFENDER_CRC_EXPORT" [
    label=<
     <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
@@ -1897,7 +1919,7 @@ digraph "largeImpliedRelationshipsDiagram" {
     <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
       <TR><TD COLSPAN="3"  BGCOLOR="#f5f5f5"><TABLE BORDER="0" CELLSPACING="0"><TR><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="136" HEIGHT="16"><B>REGISTRATION_REVIEW</B></TD><TD ALIGN="RIGHT">[table]</TD></TR></TABLE></TD></TR>
       <TR><TD PORT="elipses" COLSPAN="3" ALIGN="LEFT">...</TD></TR>
-      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 6</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD></TR>
+      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 8</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD></TR>
     </TABLE>>
     URL="tables/REGISTRATION_REVIEW.html"
     target="_top"
@@ -3332,6 +3354,17 @@ digraph "largeImpliedRelationshipsDiagram" {
     URL="tables/REJECTED_TRANSFER_DIARY.html"
     target="_top"
     tooltip="REJECTED_TRANSFER_DIARY"
+  ];
+  "R_REGISTER_REVIEW_PERIOD" [
+   label=<
+    <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
+      <TR><TD COLSPAN="3"  BGCOLOR="#f5f5f5"><TABLE BORDER="0" CELLSPACING="0"><TR><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="167" HEIGHT="16"><B>R_REGISTER_REVIEW_PERIOD</B></TD><TD ALIGN="RIGHT">[table]</TD></TR></TABLE></TD></TR>
+      <TR><TD PORT="elipses" COLSPAN="3" ALIGN="LEFT">...</TD></TR>
+      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 3</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD></TR>
+    </TABLE>>
+    URL="tables/R_REGISTER_REVIEW_PERIOD.html"
+    target="_top"
+    tooltip="R_REGISTER_REVIEW_PERIOD"
   ];
   "SPG_ERROR_LOG" [
    label=<
@@ -4818,6 +4851,11 @@ digraph "largeImpliedRelationshipsDiagram" {
   "R_REFERRAL_TYPE":"CONTACT_TYPE_ID":w -> "R_CONTACT_TYPE":"CONTACT_TYPE_ID":e [arrowhead=none dir=back arrowtail=crowodot];
   "R_REFERRAL_TYPE":"CREATED_BY_USER_ID":w -> "USER_":"USER_ID":e [arrowhead=none dir=back arrowtail=crowodot style=dashed];
   "R_REFERRAL_TYPE":"LAST_UPDATED_USER_ID":w -> "USER_":"USER_ID":e [arrowhead=none dir=back arrowtail=crowodot style=dashed];
+  "R_REGISTER_REVIEW_PERIOD":"CREATED_BY_USER_ID":w -> "USER_":"USER_ID":e [arrowhead=none dir=back arrowtail=crowodot style=dashed];
+  "R_REGISTER_REVIEW_PERIOD":"LAST_UPDATED_USER_ID":w -> "USER_":"USER_ID":e [arrowhead=none dir=back arrowtail=crowodot style=dashed];
+  "R_REGISTER_REVIEW_PERIOD":"LEVEL_ID":w -> "R_STANDARD_REFERENCE_LIST":"STANDARD_REFERENCE_LIST_ID":e [arrowhead=none dir=back arrowtail=crowodot];
+  "R_REGISTER_REVIEW_PERIOD":"REGISTER_TYPE_ID":w -> "R_REGISTER_TYPE":"REGISTER_TYPE_ID":e [arrowhead=none dir=back arrowtail=crowodot];
+  "R_REGISTER_REVIEW_PERIOD":"REVIEW_UNITS_ID":w -> "R_STANDARD_REFERENCE_LIST":"STANDARD_REFERENCE_LIST_ID":e [arrowhead=none dir=back arrowtail=crowodot];
   "R_REGISTER_TYPE":"CREATED_BY_USER_ID":w -> "USER_":"USER_ID":e [arrowhead=none dir=back arrowtail=crowodot style=dashed];
   "R_REGISTER_TYPE":"DELETED_CONTACT_TYPE_ID":w -> "R_CONTACT_TYPE":"CONTACT_TYPE_ID":e [arrowhead=none dir=back arrowtail=crowodot];
   "R_REGISTER_TYPE":"DEREGISTRATION_CONTACT_TYPE_ID":w -> "R_CONTACT_TYPE":"CONTACT_TYPE_ID":e [arrowhead=none dir=back arrowtail=crowodot];
@@ -4826,6 +4864,8 @@ digraph "largeImpliedRelationshipsDiagram" {
   "R_REGISTER_TYPE":"REGISTER_TYPE_SECTOR_ID":w -> "R_STANDARD_REFERENCE_LIST":"STANDARD_REFERENCE_LIST_ID":e [arrowhead=none dir=back arrowtail=crowodot];
   "R_REGISTER_TYPE":"REGISTRATION_CONTACT_TYPE_ID":w -> "R_CONTACT_TYPE":"CONTACT_TYPE_ID":e [arrowhead=none dir=back arrowtail=crowodot];
   "R_REGISTER_TYPE":"REVIEW_CONTACT_TYPE_ID":w -> "R_CONTACT_TYPE":"CONTACT_TYPE_ID":e [arrowhead=none dir=back arrowtail=crowodot];
+  "R_REGISTER_TYPE_ALT_REG_TYPE":"REGISTER_TYPE_ALT_ID":w -> "R_REGISTER_TYPE":"REGISTER_TYPE_ID":e [arrowhead=none dir=back arrowtail=crowodot];
+  "R_REGISTER_TYPE_ALT_REG_TYPE":"REGISTER_TYPE_ID":w -> "R_REGISTER_TYPE":"REGISTER_TYPE_ID":e [arrowhead=none dir=back arrowtail=crowodot];
   "R_REGISTER_TYPE_CATEGORY":"REGISTER_CATEGORY_ID":w -> "R_STANDARD_REFERENCE_LIST":"STANDARD_REFERENCE_LIST_ID":e [arrowhead=none dir=back arrowtail=crowodot];
   "R_REGISTER_TYPE_CATEGORY":"REGISTER_TYPE_ID":w -> "R_REGISTER_TYPE":"REGISTER_TYPE_ID":e [arrowhead=none dir=back arrowtail=crowodot];
   "R_REGISTER_TYPE_DUP_GRP":"REGISTER_GROUP_ID":w -> "R_REGISTER_DUPLICATE_GROUP":"REGISTER_GROUP_ID":e [arrowhead=none dir=back arrowtail=crowodot];
@@ -4875,6 +4915,7 @@ digraph "largeImpliedRelationshipsDiagram" {
   "RECALL":"PARTITION_AREA_ID":w -> "PARTITION_AREA":"PARTITION_AREA_ID":e [arrowhead=none dir=back arrowtail=crowodot];
   "RECALL":"RECALL_REASON_ID":w -> "R_RECALL_REASON":"RECALL_REASON_ID":e [arrowhead=none dir=back arrowtail=crowodot];
   "RECALL":"RELEASE_ID":w -> "RELEASE":"RELEASE_ID":e [arrowhead=none dir=back arrowtail=crowodot];
+  "RECENT_FTS_TERM":"USER_ID":w -> "USER_":"USER_ID":e [arrowhead=none dir=back arrowtail=crowodot];
   "REFERRAL":"CONTACT_EA_ID":w -> "R_ENFORCEMENT_ACTION":"ENFORCEMENT_ACTION_ID":e [arrowhead=none dir=back arrowtail=crowodot];
   "REFERRAL":"CONTACT_OUTCOME_TYPE_ID":w -> "R_CONTACT_OUTCOME_TYPE":"CONTACT_OUTCOME_TYPE_ID":e [arrowhead=none dir=back arrowtail=crowodot];
   "REFERRAL":"CREATED_BY_USER_ID":w -> "USER_":"USER_ID":e [arrowhead=none dir=back arrowtail=crowodot style=dashed];
@@ -4892,6 +4933,8 @@ digraph "largeImpliedRelationshipsDiagram" {
   "REFERRAL":"TREATMENT_AIM_ID":w -> "R_STANDARD_REFERENCE_LIST":"STANDARD_REFERENCE_LIST_ID":e [arrowhead=none dir=back arrowtail=crowodot];
   "REGISTRATION":"CONTACT_ID":w -> "CONTACT":"CONTACT_ID":e [arrowhead=none dir=back arrowtail=crowodot];
   "REGISTRATION":"CREATED_BY_USER_ID":w -> "USER_":"USER_ID":e [arrowhead=none dir=back arrowtail=crowodot style=dashed];
+  "REGISTRATION":"INITIAL_REGISTER_CATEGORY_ID":w -> "R_STANDARD_REFERENCE_LIST":"STANDARD_REFERENCE_LIST_ID":e [arrowhead=none dir=back arrowtail=crowodot];
+  "REGISTRATION":"INITIAL_REGISTER_LEVEL_ID":w -> "R_STANDARD_REFERENCE_LIST":"STANDARD_REFERENCE_LIST_ID":e [arrowhead=none dir=back arrowtail=crowodot];
   "REGISTRATION":"LAST_UPDATED_USER_ID":w -> "USER_":"USER_ID":e [arrowhead=none dir=back arrowtail=crowodot style=dashed];
   "REGISTRATION":"OFFENDER_ID":w -> "OFFENDER":"OFFENDER_ID":e [arrowhead=none dir=back arrowtail=crowodot];
   "REGISTRATION":"PARTITION_AREA_ID":w -> "PARTITION_AREA":"PARTITION_AREA_ID":e [arrowhead=none dir=back arrowtail=crowodot];
@@ -4914,6 +4957,8 @@ digraph "largeImpliedRelationshipsDiagram" {
   "REGISTRATION_REVIEW":"LAST_UPDATED_USER_ID":w -> "USER_":"USER_ID":e [arrowhead=none dir=back arrowtail=crowodot style=dashed];
   "REGISTRATION_REVIEW":"OFFENDER_ID":w -> "OFFENDER":"OFFENDER_ID":e [arrowhead=none dir=back arrowtail=crowodot];
   "REGISTRATION_REVIEW":"PARTITION_AREA_ID":w -> "PARTITION_AREA":"PARTITION_AREA_ID":e [arrowhead=none dir=back arrowtail=crowodot];
+  "REGISTRATION_REVIEW":"REGISTER_CATEGORY_ID":w -> "R_STANDARD_REFERENCE_LIST":"STANDARD_REFERENCE_LIST_ID":e [arrowhead=none dir=back arrowtail=crowodot];
+  "REGISTRATION_REVIEW":"REGISTER_LEVEL_ID":w -> "R_STANDARD_REFERENCE_LIST":"STANDARD_REFERENCE_LIST_ID":e [arrowhead=none dir=back arrowtail=crowodot];
   "REGISTRATION_REVIEW":"REGISTRATION_ID":w -> "REGISTRATION":"REGISTRATION_ID":e [arrowhead=none dir=back arrowtail=crowodot];
   "REGISTRATION_REVIEW":"REVIEWING_STAFF_ID":w -> "STAFF":"STAFF_ID":e [arrowhead=none dir=back arrowtail=crowodot];
   "REGISTRATION_REVIEW":"REVIEWING_TEAM_ID":w -> "TEAM":"TEAM_ID":e [arrowhead=none dir=back arrowtail=crowodot];
