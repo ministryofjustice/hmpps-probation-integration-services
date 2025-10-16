@@ -39,6 +39,21 @@ class LdapTemplateExtensionsTest {
     }
 
     @Test
+    fun `find by username returns null if not found`() {
+        whenever(ldapTemplate.find(any(), eq(LdapUser::class.java))).thenReturn(emptyList())
+        val user = ldapTemplate.findByUsername<LdapUser>("test")
+        assertThat(user, nullValue())
+    }
+
+    @Test
+    fun `find by username returns null if multiple found`() {
+        whenever(ldapTemplate.find(any(), eq(LdapUser::class.java)))
+            .thenReturn(List(2) { LdapUser(LdapName("cn=test"), "test", "test@example.com") })
+        val user = ldapTemplate.findByUsername<LdapUser>("test")
+        assertThat(user, nullValue())
+    }
+
+    @Test
     fun `find email by username`() {
         whenever(ldapTemplate.search(any(), any<AttributesMapper<String?>>()))
             .thenReturn(listOf("test@example.com"))
@@ -46,6 +61,25 @@ class LdapTemplateExtensionsTest {
         val email = ldapTemplate.findEmailByUsername("test")
 
         assertThat(email, equalTo("test@example.com"))
+    }
+
+    @Test
+    fun `find preference by username`() {
+        whenever(ldapTemplate.search(any(), any<AttributesMapper<String?>>()))
+            .thenReturn(listOf("test preference"))
+
+        val preference = ldapTemplate.findPreferenceByUsername("test", "attribute")
+
+        assertThat(preference, equalTo("test preference"))
+    }
+
+    @Test
+    fun `find preference by username throws not found`() {
+        whenever(ldapTemplate.search(any(), any<AttributesMapper<String?>>()))
+            .thenThrow(NameNotFoundException("not found"))
+
+        assertThrows<NotFoundException> { ldapTemplate.findPreferenceByUsername("test", "attribute") }
+            .also { assertThat(it.message, equalTo("User preferences with username of test not found")) }
     }
 
     @Test
