@@ -7,24 +7,15 @@ import org.hibernate.type.NumericBooleanConverter
 
 @Entity
 @Immutable
-@Table(name = "offender_manager")
-@SQLRestriction("active_flag = 1 and soft_deleted = 0")
-class ManagerEntity(
+@SQLRestriction("soft_deleted = 0 and active_flag = 1")
+class Event(
     @Id
-    @Column(name = "offender_manager_id")
+    @Column(name = "event_id")
     val id: Long,
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "offender_id")
     val person: Person,
-
-    @ManyToOne
-    @JoinColumn(name = "allocation_staff_id")
-    val staff: Staff,
-
-    @ManyToOne
-    @JoinColumn(name = "team_id")
-    val team: Team,
 
     @Column(name = "active_flag", columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)
@@ -32,5 +23,5 @@ class ManagerEntity(
 
     @Column(columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)
-    val softDeleted: Boolean = false,
+    val softDeleted: Boolean = false
 )
