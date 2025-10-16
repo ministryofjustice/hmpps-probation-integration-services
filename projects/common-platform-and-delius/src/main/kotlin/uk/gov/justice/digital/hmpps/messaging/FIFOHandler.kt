@@ -164,7 +164,11 @@ class FIFOHandler(
             dateOfBirth = insertRemandResult.insertPersonResult.person.dateOfBirth,
             gender = CodeValue(code = insertRemandResult.insertPersonResult.person.gender.code),
             nationality = insertRemandResult.insertPersonResult.person.nationality?.code?.let { CodeValue(it) },
-            secondaryNationality = insertRemandResult.insertPersonResult.person.secondNationality?.code?.let { CodeValue(it) },
+            secondaryNationality = insertRemandResult.insertPersonResult.person.secondNationality?.code?.let {
+                CodeValue(
+                    it
+                )
+            },
             ethnicity = insertRemandResult.insertPersonResult.person.ethnicity?.code?.let { CodeValue(it) },
             identifiers = NewIdentifiers(
                 crn = insertRemandResult.insertPersonResult.person.crn,
