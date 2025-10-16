@@ -558,6 +558,7 @@ internal class IntegrationTest {
                 {
                   "name": {
                     "forename": "Example First Name",
+                    "middleName" : "Example Middle Name",
                     "surname": "Example Last Name"
                   },
                   "dateOfBirth": "2000-01-01",
@@ -573,16 +574,56 @@ internal class IntegrationTest {
                   "addresses": [{
                     "fullAddress": ", 123, Test Street, Test, Test",
                     "postcode": "AB1 2CD",
-                    "startDate": "2025-10-14",
+                    "startDate": "${LocalDate.now()}",
                     "noFixedAbode": false
                   }],
                   "sentences": [],
                   "nationality": {
                     "code": "BRIT"
                   },
+                  "secondaryNationality": {
+                    "code": "FREN"
+                  },
                   "ethnicity": {
                     "code": "W1"
                   },
+                  "gender": {
+                    "code": "M"
+                  }
+                }
+                """.trimIndent()
+                    )
+                )
+        )
+    }
+
+    @Test
+    fun `Missing values are excluded from CPR PUT request, not sent as null`() {
+        mockS3Client()
+        val notification = Notification(message = MessageGenerator.COMMON_PLATFORM_EVENT_MINIMAL)
+        channelManager.getChannel(queueName).publishAndWait(notification)
+
+        wireMockServer.verify(
+            putRequestedFor(urlPathEqualTo("/core-person-record/person/probation/f3b3bdb3-10c4-48fe-a412-9924f47294d5"))
+                .withRequestBody(
+                    equalToJson(
+                        """
+                {
+                  "name": {
+                    "forename": "Example First Name",
+                    "surname": "Example Last Name"
+                  },
+                  "dateOfBirth": "2000-01-01",
+                  "identifiers": {
+                    "crn": "A111111"
+                  },
+                  "contactDetails": {},
+                  "addresses": [{
+                    "fullAddress": "",
+                    "startDate": "${LocalDate.now()}",
+                    "noFixedAbode": false
+                  }],
+                  "sentences": [],
                   "gender": {
                     "code": "M"
                   }

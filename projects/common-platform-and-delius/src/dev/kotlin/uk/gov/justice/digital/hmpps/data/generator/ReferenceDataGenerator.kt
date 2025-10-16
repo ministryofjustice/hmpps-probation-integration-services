@@ -56,6 +56,11 @@ object ReferenceDataGenerator {
         NATIONALITY.id,
         "British"
     )
+    val FRENCH_NATIONALITY = generate(
+        ReferenceData.NationalityCode.FREN.name,
+        NATIONALITY.id,
+        "French"
+    )
     val WHITE_BRITISH_ETHNICITY = generate(
         ReferenceData.EthnicityCode.W1.name,
         ETHNICITY.id,

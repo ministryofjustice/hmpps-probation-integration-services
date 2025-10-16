@@ -51,6 +51,7 @@ class DataLoader(
             persist(ReferenceDataGenerator.REMANDED_IN_CUSTODY_OUTCOME)
             persist(ReferenceDataGenerator.REMANDED_IN_CUSTODY_STATUS)
             persist(ReferenceDataGenerator.BRITISH_NATIONALITY)
+            persist(ReferenceDataGenerator.FRENCH_NATIONALITY)
             persist(ReferenceDataGenerator.WHITE_BRITISH_ETHNICITY)
             persist(TransferReasonGenerator.CASE_ORDER)
             persist(ProviderGenerator.DEFAULT)
