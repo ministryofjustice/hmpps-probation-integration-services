@@ -259,6 +259,24 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/AddressWrapper"
+  /case/{crn}/access-limitations:
+    get:
+      tags:
+      - Case Details
+      operationId: accessLimitations
+      parameters:
+      - name: crn
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LimitedAccessDetail"
   /case-details/{crn}/{eventNumber}:
     get:
       tags:
@@ -931,6 +949,38 @@ components:
             $ref: "#/components/schemas/CaseAddress"
       required:
       - addresses
+    ExcludedFrom:
+      type: object
+      properties:
+        email:
+          type: string
+      required:
+      - email
+    LimitedAccessDetail:
+      type: object
+      properties:
+        excludedFrom:
+          type: array
+          items:
+            $ref: "#/components/schemas/ExcludedFrom"
+        exclusionMessage:
+          type: string
+        restrictedTo:
+          type: array
+          items:
+            $ref: "#/components/schemas/RestrictedTo"
+        restrictionMessage:
+          type: string
+      required:
+      - excludedFrom
+      - restrictedTo
+    RestrictedTo:
+      type: object
+      properties:
+        email:
+          type: string
+      required:
+      - email
     Appearance:
       type: object
       properties:
@@ -986,31 +1036,6 @@ components:
           type: string
       required:
       - name
-    ExcludedFrom:
-      type: object
-      properties:
-        email:
-          type: string
-      required:
-      - email
-    LimitedAccessDetail:
-      type: object
-      properties:
-        excludedFrom:
-          type: array
-          items:
-            $ref: "#/components/schemas/ExcludedFrom"
-        exclusionMessage:
-          type: string
-        restrictedTo:
-          type: array
-          items:
-            $ref: "#/components/schemas/RestrictedTo"
-        restrictionMessage:
-          type: string
-      required:
-      - excludedFrom
-      - restrictedTo
     ResponsibleProvider:
       type: object
       properties:
@@ -1021,13 +1046,6 @@ components:
       required:
       - code
       - name
-    RestrictedTo:
-      type: object
-      properties:
-        email:
-          type: string
-      required:
-      - email
     SentenceSummary:
       type: object
       properties:
