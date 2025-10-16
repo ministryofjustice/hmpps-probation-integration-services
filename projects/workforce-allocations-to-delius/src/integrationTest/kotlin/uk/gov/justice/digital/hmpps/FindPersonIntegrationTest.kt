@@ -10,10 +10,10 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
-import uk.gov.justice.digital.hmpps.api.model.CaseType
-import uk.gov.justice.digital.hmpps.api.model.Person
-import uk.gov.justice.digital.hmpps.api.model.name
+import uk.gov.justice.digital.hmpps.api.model.*
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
+import uk.gov.justice.digital.hmpps.data.generator.PersonManagerGenerator
+import uk.gov.justice.digital.hmpps.data.generator.TeamGenerator
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.andExpectJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 
@@ -44,6 +44,20 @@ class FindPersonIntegrationTest {
         mockMvc.perform(get("/person/$value?type=$type").withToken())
             .andExpect(status().is2xxSuccessful)
             .andExpectJson(Person(wanted.crn, wanted.name(), CaseType.CUSTODY))
+    }
+
+    @Test
+    fun `find reallocation details`() {
+        val person = PersonGenerator.DEFAULT
+        mockMvc.perform(get("/person/${person.crn}/reallocation-details").withToken())
+            .andExpect(status().is2xxSuccessful)
+            .andExpectJson(
+                ReallocationDetails(
+                    person.crn, person.name(), person.dateOfBirth, PersonManagerGenerator.DEFAULT.staff.toManager(
+                        TeamGenerator.DEFAULT.code
+                    ), true
+                )
+            )
     }
 
     companion object {

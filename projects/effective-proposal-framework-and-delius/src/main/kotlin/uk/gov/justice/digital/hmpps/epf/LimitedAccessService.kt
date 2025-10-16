@@ -13,17 +13,18 @@ class LimitedAccessService(
     private val restrictionRepository: RestrictionRepository,
     private val ldap: LdapTemplate,
 ) {
-    fun getLimitedAccessDetails(person: Person) = LimitedAccessDetail(
-        excludedFrom = exclusionRepository.findActiveExclusions(person.id).map {
-            LimitedAccess.ExcludedFrom(
-                email = ldap.findEmailByUsername(it.user.username) ?: "Unknown",
-                message = person.exclusionMessage
-            )
-        },
-        restrictedTo = restrictionRepository.findActiveRestrictions(person.id).map {
-            LimitedAccess.RestrictedTo(
-                email = ldap.findEmailByUsername(it.user.username) ?: "Unknown",
-                message = person.restrictionMessage
-            )
-        })
+    fun getLimitedAccessDetails(person: Person): LimitedAccessDetail {
+        val excludedFrom = exclusionRepository.findActiveExclusions(person.id).map {
+            LimitedAccess.ExcludedFrom(email = ldap.findEmailByUsername(it.user.username) ?: "Unknown")
+        }
+        val restrictedTo = restrictionRepository.findActiveRestrictions(person.id).map {
+            LimitedAccess.RestrictedTo(email = ldap.findEmailByUsername(it.user.username) ?: "Unknown")
+        }
+        return LimitedAccessDetail(
+            excludedFrom = excludedFrom,
+            exclusionMessage = person.exclusionMessage.takeIf { excludedFrom.isNotEmpty() },
+            restrictedTo = restrictedTo,
+            restrictionMessage = person.restrictionMessage.takeIf { restrictedTo.isNotEmpty() },
+        )
+    }
 }

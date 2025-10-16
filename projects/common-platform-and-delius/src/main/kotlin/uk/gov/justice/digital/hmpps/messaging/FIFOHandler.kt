@@ -11,6 +11,7 @@ import uk.gov.justice.digital.hmpps.dto.InsertRemandDTO
 import uk.gov.justice.digital.hmpps.flags.FeatureFlags
 import uk.gov.justice.digital.hmpps.integrations.client.*
 import uk.gov.justice.digital.hmpps.integrations.client.Address
+import uk.gov.justice.digital.hmpps.integrations.client.ContactDetails
 import uk.gov.justice.digital.hmpps.message.Notification
 import uk.gov.justice.digital.hmpps.retry.retry
 import uk.gov.justice.digital.hmpps.service.OffenceService
@@ -155,9 +156,9 @@ class FIFOHandler(
 
         val cprRequest = CreateCorePersonRequest(
             name = Name(
-                firstName = insertRemandResult.insertPersonResult.person.forename,
-                middleNames = insertRemandResult.insertPersonResult.person.secondName,
-                lastName = insertRemandResult.insertPersonResult.person.surname
+                forename = insertRemandResult.insertPersonResult.person.forename,
+                middleName = insertRemandResult.insertPersonResult.person.secondName,
+                surname = insertRemandResult.insertPersonResult.person.surname
             ),
             title = null,
             dateOfBirth = insertRemandResult.insertPersonResult.person.dateOfBirth,
@@ -167,6 +168,11 @@ class FIFOHandler(
                 crn = insertRemandResult.insertPersonResult.person.crn,
                 pnc = insertRemandResult.insertPersonResult.person.pncNumber,
                 cro = insertRemandResult.insertPersonResult.person.croNumber
+            ),
+            contactDetails = ContactDetails(
+                telephone = insertRemandResult.insertPersonResult.person.telephoneNumber,
+                mobile = insertRemandResult.insertPersonResult.person.mobileNumber,
+                email = insertRemandResult.insertPersonResult.person.email
             ),
             addresses = listOf(
                 Address(
@@ -182,13 +188,9 @@ class FIFOHandler(
                     startDate = LocalDate.now(),
                     endDate = null,
                     noFixedAbode = insertRemandResult.insertPersonResult.address?.noFixedAbode ?: false
-                ),
-            ),
-            sentences = listOf(
-                Sentence(
-                    date = insertRemandResult.insertEventResult.courtAppearance.appearanceDate.toLocalDate()
                 )
-            )
+            ),
+            sentences = emptyList()
         )
 
         val cprResponse = retry(3, delay = Duration.ofSeconds(1)) {

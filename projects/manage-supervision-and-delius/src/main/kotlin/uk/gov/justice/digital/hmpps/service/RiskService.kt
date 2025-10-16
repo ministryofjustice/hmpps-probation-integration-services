@@ -52,7 +52,7 @@ class RiskService(
             riskFlags = riskFlags
                 .filter { !it.deRegistered }
                 .map { it.toRiskFlag() }
-                .sortedWith(compareByDescending<RiskFlag> { it.level.severity }.thenBy { it.description }
+                .sortedWith(compareByDescending<RiskFlag> { it.level?.severity }.thenBy { it.description }
                     .thenBy { it.createdDate }),
             removedRiskFlags = riskFlags.filter { it.deRegistered }.map { it.toRiskFlag() }
         )

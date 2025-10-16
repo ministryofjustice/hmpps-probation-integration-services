@@ -38,15 +38,16 @@ data class Provider(val code: String, val name: String)
 
 data class LimitedAccessDetail(
     val excludedFrom: List<LimitedAccess.ExcludedFrom>,
-    val restrictedTo: List<LimitedAccess.RestrictedTo>
+    val exclusionMessage: String?,
+    val restrictedTo: List<LimitedAccess.RestrictedTo>,
+    val restrictionMessage: String?,
 )
 
 sealed interface LimitedAccess {
     val email: String
-    val message: String?
 
-    data class RestrictedTo(override val email: String, override val message: String?) : LimitedAccess
-    data class ExcludedFrom(override val email: String, override val message: String?) : LimitedAccess
+    data class RestrictedTo(override val email: String) : LimitedAccess
+    data class ExcludedFrom(override val email: String) : LimitedAccess
 }
 
 fun Person.name() = Name(forename, listOfNotNull(secondName, thirdName).joinToString(" "), surname)

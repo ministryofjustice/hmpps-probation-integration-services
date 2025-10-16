@@ -22,6 +22,7 @@ fun Person.detail(
     ethnicity = ethnicity?.asCodeDescription(),
     ethnicityDescription = ethnicityDescription,
     contactDetails = contactDetails(),
+    sexualOrientation = sexualOrientation?.asCodeDescription(),
     aliases = aliases,
     addresses = addresses,
     excludedFrom = exclusions,
@@ -51,7 +52,8 @@ fun uk.gov.justice.digital.hmpps.integration.delius.entity.Alias.asModel() = Ali
         listOfNotNull(secondName, thirdName).ifEmpty { null }?.joinToString(" "),
         surname
     ),
-    dateOfBirth
+    dateOfBirth,
+    gender?.asCodeDescription(),
 )
 
 fun Disposal.asModel() = Sentence(

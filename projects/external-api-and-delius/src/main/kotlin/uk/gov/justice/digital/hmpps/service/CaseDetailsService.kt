@@ -2,10 +2,13 @@ package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.ldap.core.LdapTemplate
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.integration.delius.EventRepository
 import uk.gov.justice.digital.hmpps.integration.delius.entity.*
+import uk.gov.justice.digital.hmpps.integration.delius.getEvent
 import uk.gov.justice.digital.hmpps.ldap.findByUsername
 import uk.gov.justice.digital.hmpps.model.*
+import uk.gov.justice.digital.hmpps.model.Court
 import uk.gov.justice.digital.hmpps.model.CourtAppearance
 import uk.gov.justice.digital.hmpps.model.Offence
 import uk.gov.justice.digital.hmpps.model.Provider
@@ -14,11 +17,16 @@ import uk.gov.justice.digital.hmpps.model.Team
 @Service
 class CaseDetailsService(
     private val comRepository: PersonManagerRepository,
+    private val responsibleOfficerRepository: ResponsibleOfficerRepository,
     private val personAddressRepository: PersonAddressRepository,
     private val registrationRepository: RegistrationRepository,
     private val eventRepository: EventRepository,
+    private val courtAppearanceRepository: CourtAppearanceRepository,
+    private val keyDateRepository: KeyDateRepository,
     private val personRepository: PersonRepository,
-    private val ldapTemplate: LdapTemplate
+    private val ogrsAssessmentRepository: OgrsAssessmentRepository,
+    private val ldapTemplate: LdapTemplate,
+    private val limitedAccess: LimitedAccessService
 ) {
     fun getAddresses(crn: String): AddressWrapper {
         val addresses = personAddressRepository.findAllByPersonCrn(crn)
@@ -34,6 +42,32 @@ class CaseDetailsService(
                 .toDynamicRiskRegistrationResponse(),
             personStatus = registrationRepository.findPersonStatusRegistrations(person.id)
                 .toPersonStatusRegistrationResponse(),
+        )
+    }
+
+    fun getLimitedAccessDetail(crn: String): LimitedAccessDetail = personRepository.getByCrn(crn).limitedAccessDetail()
+
+    @Transactional(readOnly = true)
+    fun getCaseDetails(crn: String, eventNumber: Int): CaseDetails {
+        val responsibleOfficer = responsibleOfficerRepository.findByPersonCrn(crn)
+        val com = responsibleOfficer?.communityManager ?: comRepository.getForCrn(crn)
+        val person = responsibleOfficer?.person ?: com.person
+        val provider = responsibleOfficer?.provider() ?: com.provider
+        val event = eventRepository.getEvent(person.crn, eventNumber.toString())
+        val appearance = courtAppearanceRepository.findByEventIdOrderByDateDesc(event.id)
+        val erd = event.disposal?.custody?.let { keyDateRepository.getExpectedReleaseDate(it.id) }
+        val ogrsScore = ogrsAssessmentRepository.findFirstByEventIdOrderByAssessmentDateDesc(event.id)?.score
+        return CaseDetails(
+            person.nomsId,
+            person.name(),
+            person.dateOfBirth,
+            person.gender.description,
+            appearance?.let { Appearance(it.date.toLocalDate(), Court(it.court.name)) },
+            erd?.let { SentenceSummary(it.date) },
+            ResponsibleProvider(provider.code, provider.description),
+            ogrsScore,
+            person.dynamicRsrScore,
+            if (person.currentExclusion == true || person.currentRestriction == true) person.limitedAccessDetail() else null
         )
     }
 
@@ -122,6 +156,8 @@ class CaseDetailsService(
             }
         )
     }
+
+    private fun Person.limitedAccessDetail(): LimitedAccessDetail = limitedAccess.getLimitedAccessDetails(this)
 }
 
 private fun PersonAddress.asCaseAddress() = CaseAddress(

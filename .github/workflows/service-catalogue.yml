@@ -9,63 +9,62 @@ on:
         type: choice
         required: true
         options:
-          - 'All'
-          - '["accredited-programmes-and-delius"]'
-          - '["accredited-programmes-and-oasys"]'
-          - '["appointment-reminders-and-delius"]'
-          - '["approved-premises-and-delius"]'
-          - '["approved-premises-and-oasys"]'
-          - '["arns-and-delius"]'
-          - '["assess-for-early-release-and-delius"]'
-          - '["assessment-summary-and-delius"]'
-          - '["breach-notice-and-delius"]'
-          - '["cas2-and-delius"]'
-          - '["cas3-and-delius"]'
-          - '["common-platform-and-delius"]'
-          - '["core-person-record-and-delius"]'
-          - '["court-case-and-delius"]'
-          - '["create-and-vary-a-licence-and-delius"]'
-          - '["custody-key-dates-and-delius"]'
-          - '["domain-events-and-delius"]'
-          - '["dps-and-delius"]'
-          - '["effective-proposal-framework-and-delius"]'
-          - '["esupervision-and-delius"]'
-          - '["external-api-and-delius"]'
-          - '["find-and-refer-and-delius"]'
-          - '["hdc-licences-and-delius"]'
-          - '["hmpps-auth-and-delius"]'
-          - '["hmpps-libra-event-receiver"]'
-          - '["ims-and-delius"]'
-          - '["jitbit-and-delius"]'
-          - '["justice-email-and-delius"]'
-          - '["make-recall-decisions-and-delius"]'
-          - '["manage-offences-and-delius"]'
-          - '["manage-pom-cases-and-delius"]'
-          - '["manage-supervision-and-delius"]'
-          - '["oasys-and-delius"]'
-          - '["offender-events-and-delius"]'
-          - '["opd-and-delius"]'
-          - '["pathfinder-and-delius"]'
-          - '["person-search-index-from-delius"]'
-          - '["pre-sentence-reports-to-delius"]'
-          - '["prison-case-notes-to-probation"]'
-          - '["prison-custody-status-to-delius"]'
-          - '["prison-education-and-delius"]'
-          - '["prison-identifier-and-delius"]'
-          - '["prisoner-profile-and-delius"]'
-          - '["probation-search-and-delius"]'
-          - '["refer-and-monitor-and-delius"]'
-          - '["resettlement-passport-and-delius"]'
-          - '["risk-assessment-scores-to-delius"]'
-          - '["sentence-plan-and-delius"]'
-          - '["sentence-plan-and-oasys"]'
-          - '["soc-and-delius"]'
-          - '["subject-access-requests-and-delius"]'
-          - '["tier-to-delius"]'
-          - '["unpaid-work-and-delius"]'
-          - '["workforce-allocations-to-delius"]'
-          - '["hmpps-common-platform-event-receiver"]'
-          - '["suicide-risk-form-and-delius"]'
+          - All
+          - accredited-programmes-and-delius
+          - accredited-programmes-and-oasys
+          - appointment-reminders-and-delius
+          - approved-premises-and-delius
+          - approved-premises-and-oasys
+          - arns-and-delius
+          - assess-for-early-release-and-delius
+          - assessment-summary-and-delius
+          - breach-notice-and-delius
+          - cas2-and-delius
+          - cas3-and-delius
+          - common-platform-and-delius
+          - core-person-record-and-delius
+          - court-case-and-delius
+          - create-and-vary-a-licence-and-delius
+          - custody-key-dates-and-delius
+          - domain-events-and-delius
+          - dps-and-delius
+          - effective-proposal-framework-and-delius
+          - esupervision-and-delius
+          - external-api-and-delius
+          - find-and-refer-and-delius
+          - hdc-licences-and-delius
+          - hmpps-auth-and-delius
+          - hmpps-common-platform-event-receiver
+          - ims-and-delius
+          - jitbit-and-delius
+          - justice-email-and-delius
+          - make-recall-decisions-and-delius
+          - manage-offences-and-delius
+          - manage-pom-cases-and-delius
+          - manage-supervision-and-delius
+          - oasys-and-delius
+          - offender-events-and-delius
+          - opd-and-delius
+          - pathfinder-and-delius
+          - person-search-index-from-delius
+          - pre-sentence-reports-to-delius
+          - prison-case-notes-to-probation
+          - prison-custody-status-to-delius
+          - prison-education-and-delius
+          - prison-identifier-and-delius
+          - prisoner-profile-and-delius
+          - probation-search-and-delius
+          - refer-and-monitor-and-delius
+          - resettlement-passport-and-delius
+          - risk-assessment-scores-to-delius
+          - sentence-plan-and-delius
+          - sentence-plan-and-oasys
+          - soc-and-delius
+          - subject-access-requests-and-delius
+          - suicide-risk-form-and-delius
+          - tier-to-delius
+          - unpaid-work-and-delius
+          - workforce-allocations-to-delius
           # ^ add new projects here
           # GitHub Actions doesn't support dynamic choices, we must add each project here to enable manual deployments
           # See https://github.com/community/community/discussions/11795
@@ -78,34 +77,13 @@ on:
 
 jobs:
   get-projects:
-    outputs:
-      projects: ${{ steps.output.outputs.projects }}
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v5
-      - id: check-changes
-        if: github.event_name == 'push'
-        uses: ./.github/actions/check-changes
-        with:
-          filters: |
-            projects:
-              - 'projects/**/deploy/**'
-              - 'projects/**/README.md'
-      - name: Get projects - changed
-        if: github.event_name == 'push'
-        run: echo "projects=$PROJECTS" | tee -a "$GITHUB_ENV"
-        env:
-          PROJECTS: ${{ steps.check-changes.outputs.projects }}
-      - name: Get projects - all
-        if: github.event_name == 'workflow_dispatch' && inputs.projects == 'All'
-        run: echo "projects=$(find projects -mindepth 1 -maxdepth 1 -printf "%f\n" | jq --raw-input . | jq --slurp --compact-output .)" | tee -a "$GITHUB_ENV"
-      - name: Get projects - selected
-        if: github.event_name == 'workflow_dispatch' && inputs.projects != 'All'
-        run: echo "projects=$inputs_projects" | tee -a "$GITHUB_ENV"
-        env:
-          input_projects: ${{ inputs.projects }}
-      - id: output
-        run: echo 'projects=${{ env.projects }}' | tee -a "$GITHUB_OUTPUT"
+    uses: ./.github/workflows/get-projects.yml
+    with:
+      projects: ${{ inputs.projects || 'Changed' }}
+      change-filters: |
+        projects:
+          - 'projects/**/deploy/**'
+          - 'projects/**/README.md'
 
   update-catalogue:
     runs-on: ubuntu-latest
@@ -113,7 +91,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        project: ${{ fromJson(needs.get-projects.outputs.projects) }}
+        project: ${{ fromJSON(needs.get-projects.outputs.projects) }}
     steps:
       - uses: actions/checkout@v5
 

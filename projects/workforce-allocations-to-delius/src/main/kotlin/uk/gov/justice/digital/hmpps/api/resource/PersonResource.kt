@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import uk.gov.justice.digital.hmpps.api.model.Person
+import uk.gov.justice.digital.hmpps.api.model.ReallocationDetails
 import uk.gov.justice.digital.hmpps.service.PersonService
 
 @RestController
@@ -27,6 +28,11 @@ class PersonResource(private val personService: PersonService) {
         @PathVariable value: String,
         @RequestParam(required = false, defaultValue = "CRN") type: IdentifierType
     ): Person = personService.findByIdentifier(value, type)
+
+    @PreAuthorize("hasRole('PROBATION_API__WORKFORCE_ALLOCATIONS__CASE_DETAIL')")
+    @Operation(summary = "Information about the person on probation to allow reallocation")
+    @GetMapping("/{crn}/reallocation-details")
+    fun findPerson(@PathVariable crn: String): ReallocationDetails = personService.reallocationDetails(crn)
 }
 
 enum class IdentifierType {

@@ -33,10 +33,11 @@ runs:
         mv projects/${project_name}/tech-docs doc/tech-docs/source/projects/$project_name
         sed -i '/add new projects here/a \    '"\"$project_name\""',' settings.gradle.kts
         sed -i '/add new projects here/i \          - '"'"'["$project_name"]'"'"'' .github/workflows/access.yml
-        sed -i '/add new projects here/i \          - '"'"'["$project_name"]'"'"'' .github/workflows/deploy.yml
-        sed -i '/add new projects here/i \          - '"'"'["$project_name"]'"'"'' .github/workflows/service-catalogue.yml
         sed -i '/add new projects here/i \          - '"$project_name" .github/workflows/build.yml
         sed -i '/add new projects here/i \          - '"$project_name" .github/workflows/deploy-branch.yml
+        sed -i '/add new projects here/i \          - '"$project_name" .github/workflows/deploy-version.yml
+        sed -i '/add new projects here/i \          - '"$project_name" .github/workflows/rotate-secrets.yml
+        sed -i '/add new projects here/i \          - '"'"'["$project_name"]'"'"'' .github/workflows/service-catalogue.yml
         sed -i '/add new projects here/i \* [${{ steps.project_name.outputs.title_case }}](projects/'"${project_name}"'/about.html)' doc/tech-docs/source/index.html.md.erb
         sed 's/$SERVICE_NAME/'"${project_name}"'/g' templates/runConfiguration.xml > ".idea/runConfigurations/${project_name}.run.xml"
       env:

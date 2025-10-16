@@ -12,6 +12,7 @@ object PersonGenerator {
     val TITLE = generateReferenceData("TIT")
     val PREVIOUS_ADDRESS = generateReferenceData("P", "Previous Address")
     val MAIN_ADDRESS = generateReferenceData("M", "Main Address")
+    val SEXUAL_ORIENTATION = generateReferenceData("SEO")
 
     val MIN_PERSON =
         generatePerson("M123456", firstname = "Isabelle", surname = "Necessary", dob = LocalDate.of(1990, 3, 5))
@@ -38,13 +39,20 @@ object PersonGenerator {
         secondNationality = SECOND_NATIONALITY,
         ethnicity = ETHNICITY,
         ethnicityDescription = "Description of ethnicity",
+        sexualOrientation = SEXUAL_ORIENTATION,
         exclusionMessage = "This case is excluded because ...",
         restrictionMessage = "This case is restricted because ..."
     )
 
     val FULL_PERSON_ALIASES = listOf(
         generateAlias(
-            FULL_PERSON.id, "Freddy", null, null, "Banter", LocalDate.of(1974, 2, 17)
+            FULL_PERSON.id,
+            "Freddy",
+            null,
+            null,
+            "Banter",
+            LocalDate.of(1974, 2, 17),
+            gender = GENDER
         )
     )
 
@@ -119,6 +127,7 @@ object PersonGenerator {
         ethnicityDescription: String? = null,
         exclusionMessage: String? = null,
         restrictionMessage: String? = null,
+        sexualOrientation: ReferenceData? = null,
         softDeleted: Boolean = false,
         id: Long = IdGenerator.getAndIncrement()
     ) = Person(
@@ -146,6 +155,7 @@ object PersonGenerator {
         ethnicityDescription = ethnicityDescription,
         exclusionMessage = exclusionMessage,
         restrictionMessage = restrictionMessage,
+        sexualOrientation = sexualOrientation,
         softDeleted = softDeleted,
         id = id,
     )
@@ -158,8 +168,9 @@ object PersonGenerator {
         surname: String,
         dateOfBirth: LocalDate,
         softDeleted: Boolean = false,
-        id: Long = IdGenerator.getAndIncrement()
-    ) = Alias(personId, firstName, secondName, thirdName, surname, dateOfBirth, softDeleted, id)
+        gender: ReferenceData? = null,
+        id: Long = IdGenerator.getAndIncrement(),
+    ) = Alias(personId, firstName, secondName, thirdName, surname, dateOfBirth, softDeleted, gender, id)
 
     fun generateAddress(
         personId: Long,

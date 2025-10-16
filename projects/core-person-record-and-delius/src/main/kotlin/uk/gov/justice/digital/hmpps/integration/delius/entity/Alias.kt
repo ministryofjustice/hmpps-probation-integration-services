@@ -23,9 +23,12 @@ class Alias(
     @Column(name = "soft_deleted", columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean,
+    @ManyToOne
+    @JoinColumn(name = "gender_id")
+    val gender: ReferenceData?,
     @Id
     @Column(name = "alias_id")
-    val id: Long
+    val id: Long,
 )
 
 interface AliasRepository : JpaRepository<Alias, Long> {

@@ -1,0 +1,98 @@
+name: Deploy version
+
+on:
+  workflow_dispatch:
+    inputs:
+      project:
+        description: Project
+        type: choice
+        required: true
+        options:
+          - accredited-programmes-and-delius
+          - accredited-programmes-and-oasys
+          - appointment-reminders-and-delius
+          - approved-premises-and-delius
+          - approved-premises-and-oasys
+          - arns-and-delius
+          - assess-for-early-release-and-delius
+          - assessment-summary-and-delius
+          - breach-notice-and-delius
+          - cas2-and-delius
+          - cas3-and-delius
+          - common-platform-and-delius
+          - core-person-record-and-delius
+          - court-case-and-delius
+          - create-and-vary-a-licence-and-delius
+          - custody-key-dates-and-delius
+          - domain-events-and-delius
+          - dps-and-delius
+          - effective-proposal-framework-and-delius
+          - esupervision-and-delius
+          - external-api-and-delius
+          - find-and-refer-and-delius
+          - hdc-licences-and-delius
+          - hmpps-auth-and-delius
+          - hmpps-common-platform-event-receiver
+          - hmpps-libra-event-receiver
+          - ims-and-delius
+          - jitbit-and-delius
+          - justice-email-and-delius
+          - make-recall-decisions-and-delius
+          - manage-offences-and-delius
+          - manage-pom-cases-and-delius
+          - manage-supervision-and-delius
+          - monitor-cron-jobs
+          - oasys-and-delius
+          - offender-events-and-delius
+          - opd-and-delius
+          - pathfinder-and-delius
+          - person-search-index-from-delius
+          - pre-sentence-reports-to-delius
+          - prison-case-notes-to-probation
+          - prison-custody-status-to-delius
+          - prison-education-and-delius
+          - prison-identifier-and-delius
+          - prisoner-profile-and-delius
+          - probation-search-and-delius
+          - redrive-dead-letter-queues
+          - refer-and-monitor-and-delius
+          - resettlement-passport-and-delius
+          - risk-assessment-scores-to-delius
+          - sentence-plan-and-delius
+          - sentence-plan-and-oasys
+          - soc-and-delius
+          - subject-access-requests-and-delius
+          - suicide-risk-form-and-delius
+          - tier-to-delius
+          - unpaid-work-and-delius
+          - workforce-allocations-to-delius
+          # ^ add new projects here
+          # GitHub Actions doesn't support dynamic choices, we must add each project here to enable manual deployments
+          # See https://github.com/community/community/discussions/11795
+      environment:
+        description: Environment
+        type: choice
+        required: true
+        options:
+          - test
+          - preprod
+          - prod
+      version:
+        description: The image version to deploy
+        type: string
+        required: true
+
+permissions:
+  contents: read
+  id-token: write
+  packages: write
+
+jobs:
+  deploy:
+    name: Deploy
+    uses: ./.github/workflows/deploy.yml
+    with:
+      projects: '["${{ inputs.project }}"]'
+      environment: ${{ inputs.environment }}
+      version: ${{ inputs.version }}
+    secrets: inherit

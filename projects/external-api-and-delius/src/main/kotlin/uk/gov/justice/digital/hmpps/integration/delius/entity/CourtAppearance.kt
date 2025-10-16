@@ -4,6 +4,9 @@ import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.NumericBooleanConverter
+import org.springframework.data.domain.PageRequest
+import org.springframework.data.jpa.repository.EntityGraph
+import org.springframework.data.jpa.repository.JpaRepository
 import java.time.ZonedDateTime
 
 @Entity
@@ -48,3 +51,12 @@ data class Court(
     @Column(name = "court_name")
     val name: String
 )
+
+interface CourtAppearanceRepository : JpaRepository<CourtAppearance, Long> {
+
+    @EntityGraph(attributePaths = ["court"])
+    fun findByEventIdOrderByDateDesc(
+        eventId: Long,
+        page: PageRequest = PageRequest.of(0, 1)
+    ): CourtAppearance?
+}

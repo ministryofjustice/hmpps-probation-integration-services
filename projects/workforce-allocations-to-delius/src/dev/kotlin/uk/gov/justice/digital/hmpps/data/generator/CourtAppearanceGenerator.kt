@@ -31,5 +31,6 @@ object CourtAppearanceGenerator {
     }
 
     private fun CaseViewEvent.asEvent() = Event(id, number, PersonGenerator.CASE_VIEW.asPerson(), active, softDeleted)
-    private fun CaseViewPerson.asPerson() = Person(id, crn, null, forename, secondName, thirdName, surname, softDeleted)
+    private fun CaseViewPerson.asPerson() =
+        Person(id, crn, null, forename, secondName, thirdName, surname, LocalDate.now().minusYears(35), softDeleted)
 }

@@ -75,6 +75,10 @@ internal class CorePersonIntegrationTest {
                         "code": "TIT",
                         "description": "Description of TIT"
                       },
+                      "sexualOrientation": {
+                        "code": "SEO",
+                        "description": "Description of SEO"
+                      },
                       "gender": {
                         "code": "GEN",
                         "description": "Description of GEN"
@@ -103,7 +107,11 @@ internal class CorePersonIntegrationTest {
                             "forename": "Freddy",
                             "surname": "Banter"
                           },
-                          "dateOfBirth": "1974-02-17"
+                          "dateOfBirth": "1974-02-17",
+                          "gender": {
+                            "code": "GEN",
+                            "description": "Description of GEN"
+                          }
                         }
                       ],
                       "addresses": [
