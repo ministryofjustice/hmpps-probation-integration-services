@@ -8,7 +8,7 @@ import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.ContactOutcome
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.ContactType
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.Person
-import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.Appointment
+import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.SentenceAppointment
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.ContactTypeOutcome
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.ContactTypeOutcomeId
 import java.time.ZonedDateTime
@@ -55,7 +55,7 @@ object AppointmentGenerator {
     )
 
     fun generateAppointment(person: Person, staffId: Long, teamId: Long, start: ZonedDateTime, end: ZonedDateTime) =
-        Appointment(
+        SentenceAppointment(
             person = person,
             type = APPOINTMENT_TYPES[0],
             date = start.toLocalDate(),
