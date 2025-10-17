@@ -672,7 +672,7 @@ class PersonalDetailsIntegrationTest : IntegrationTestBase() {
     fun `when address update request does not have a start date`() {
         val request = PersonAddressEditRequest()
         val res = mockMvc.perform(
-            post("/personal-details/X000001/address").withToken()
+            post("/personal-details/X000001/address").withDeliusUserToken("DeliusUser")
                 .withJson(request)
         )
             .andExpect(status().isBadRequest)
@@ -685,7 +685,7 @@ class PersonalDetailsIntegrationTest : IntegrationTestBase() {
     fun `when address update request has a start date later than today`() {
         val request = PersonAddressEditRequest(startDate = LocalDate.now().plusDays(1))
         val res = mockMvc.perform(
-            post("/personal-details/X000001/address").withToken()
+            post("/personal-details/X000001/address").withDeliusUserToken("DeliusUser")
                 .withJson(request)
         )
             .andExpect(status().isBadRequest)
@@ -698,7 +698,7 @@ class PersonalDetailsIntegrationTest : IntegrationTestBase() {
     fun `when address update request has an date later than today`() {
         val request = PersonAddressEditRequest(startDate = LocalDate.now(), endDate = LocalDate.now().plusDays(1))
         val res = mockMvc.perform(
-            post("/personal-details/X000001/address").withToken()
+            post("/personal-details/X000001/address").withDeliusUserToken("DeliusUser")
                 .withJson(request)
         )
             .andExpect(status().isBadRequest)
@@ -714,7 +714,7 @@ class PersonalDetailsIntegrationTest : IntegrationTestBase() {
             streetName = "U".repeat(100)
         )
         val res = mockMvc.perform(
-            post("/personal-details/X000001/address").withToken()
+            post("/personal-details/X000001/address").withDeliusUserToken("DeliusUser")
                 .withJson(request)
         )
             .andExpect(status().isBadRequest)
@@ -732,7 +732,7 @@ class PersonalDetailsIntegrationTest : IntegrationTestBase() {
             emailAddress = "X".repeat(256)
         )
         val res = mockMvc.perform(
-            post("/personal-details/X000001/contact").withToken()
+            post("/personal-details/X000001/contact").withDeliusUserToken("DeliusUser")
                 .withJson(request)
         )
             .andExpect(status().isBadRequest)

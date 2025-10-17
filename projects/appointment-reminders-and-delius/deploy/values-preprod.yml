@@ -21,6 +21,15 @@ jobs:
     east-of-england:
       templates:
         - cd713c1b-1b27-45a0-b493-37a34666635a
+      trials:
+        - templates:
+            - b73f97ce-dd20-45bb-9d45-821392762122
+        - templates:
+            - d176bd7b-008e-49c4-a948-0f95ba739026
+        - templates:
+            - 131f4ccd-e2cf-46c6-bb69-f2bcf625b316
+        - templates:
+            - eaedba0b-9bd0-4c25-84ac-bc7f8b0deabb
     greater-manchester:
       templates:
         - cd713c1b-1b27-45a0-b493-37a34666635a
@@ -49,3 +58,12 @@ jobs:
     west-midlands:
       templates:
         - cd713c1b-1b27-45a0-b493-37a34666635a
+      trials:
+        - templates:
+            - b73f97ce-dd20-45bb-9d45-821392762122
+        - templates:
+            - d176bd7b-008e-49c4-a948-0f95ba739026
+        - templates:
+            - 131f4ccd-e2cf-46c6-bb69-f2bcf625b316
+        - templates:
+            - eaedba0b-9bd0-4c25-84ac-bc7f8b0deabb

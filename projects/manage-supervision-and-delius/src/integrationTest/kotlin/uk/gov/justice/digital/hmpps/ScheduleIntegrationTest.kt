@@ -30,7 +30,7 @@ class ScheduleIntegrationTest : IntegrationTestBase() {
     fun `upcoming schedule is returned`() {
         val person = OVERVIEW
         val res = mockMvc
-            .perform(get("/schedule/${person.crn}/upcoming").withToken())
+            .perform(get("/schedule/${person.crn}/upcoming").withDeliusUserToken("DeliusUser"))
             .andExpect(status().isOk)
             .andReturn().response.contentAsJson<Schedule>()
 
@@ -53,7 +53,7 @@ class ScheduleIntegrationTest : IntegrationTestBase() {
     fun `previous schedule is returned`() {
         val person = OVERVIEW
         val res = mockMvc
-            .perform(get("/schedule/${person.crn}/previous").withToken())
+            .perform(get("/schedule/${person.crn}/previous").withDeliusUserToken("DeliusUser"))
             .andExpect(status().isOk)
             .andReturn().response.contentAsJson<Schedule>()
         assertThat(res.personSummary.crn, equalTo(person.crn))
@@ -83,7 +83,7 @@ class ScheduleIntegrationTest : IntegrationTestBase() {
     fun `schedule pagination`(uri: String, requestSize: Int, totalPages: Int, totalResults: Int) {
         val person = OVERVIEW
         val res = mockMvc
-            .perform(get("/schedule/${person.crn}/$uri").withToken())
+            .perform(get("/schedule/${person.crn}/$uri").withDeliusUserToken("DeliusUser"))
             .andExpect(status().isOk)
             .andReturn().response.contentAsJson<Schedule>()
 
@@ -97,14 +97,14 @@ class ScheduleIntegrationTest : IntegrationTestBase() {
     @Test
     fun `previous schedule not found status returned`() {
         mockMvc
-            .perform(get("/schedule/X123456/previous").withToken())
+            .perform(get("/schedule/X123456/previous").withDeliusUserToken("DeliusUser"))
             .andExpect(status().isNotFound)
     }
 
     @Test
     fun `Upcomimg schedule not found status returned`() {
         mockMvc
-            .perform(get("/schedule/X123456/upcoming").withToken())
+            .perform(get("/schedule/X123456/upcoming").withDeliusUserToken("DeliusUser"))
             .andExpect(status().isNotFound)
     }
 
@@ -114,7 +114,7 @@ class ScheduleIntegrationTest : IntegrationTestBase() {
         val person = OVERVIEW
         val id = ContactGenerator.NEXT_APPT_CONTACT.id
         val res = mockMvc
-            .perform(get("/schedule/${person.crn}/appointment/${id}").withToken())
+            .perform(get("/schedule/${person.crn}/appointment/${id}").withDeliusUserToken("DeliusUser"))
             .andExpect(status().isOk)
             .andReturn().response.contentAsJson<PersonAppointment>()
         val expectedDocs =
