@@ -1,6 +1,5 @@
 package uk.gov.justice.digital.hmpps
 
-import jdk.javadoc.internal.doclets.formats.html.markup.HtmlStyle
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.Assertions.assertNotEquals
@@ -8,7 +7,6 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
-import org.springframework.data.repository.findByIdOrNull
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
@@ -16,7 +14,6 @@ import uk.gov.justice.digital.hmpps.api.model.appointment.AppointmentDetail
 import uk.gov.justice.digital.hmpps.api.model.appointment.CreateAppointment
 import uk.gov.justice.digital.hmpps.api.model.appointment.User
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.DEFAULT_PROVIDER
-import uk.gov.justice.digital.hmpps.data.generator.IdGenerator
 import uk.gov.justice.digital.hmpps.data.generator.OffenderManagerGenerator.DEFAULT_LOCATION
 import uk.gov.justice.digital.hmpps.data.generator.OffenderManagerGenerator.PI_USER
 import uk.gov.justice.digital.hmpps.data.generator.OffenderManagerGenerator.STAFF_1
@@ -27,7 +24,6 @@ import uk.gov.justice.digital.hmpps.test.CustomMatchers.isCloseTo
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
-import uk.gov.justice.digital.hmpps.user.AuditUser
 import java.time.LocalDate
 import java.time.ZonedDateTime
 import java.util.*
@@ -149,7 +145,7 @@ class CreateAppointmentIntegrationTest : IntegrationTestBase() {
     fun `create multiple appointments`(createAppointment: CreateAppointment) {
         val response = mockMvc.perform(
             post("/appointment/${PersonGenerator.PERSON_1.crn}")
-                .withUserToken(PI_USER.username)
+                .withUserToken("DeliusUser")
                 .withJson(createAppointment)
         )
             .andExpect(MockMvcResultMatchers.status().isCreated)
@@ -239,13 +235,12 @@ class CreateAppointmentIntegrationTest : IntegrationTestBase() {
                 until = ZonedDateTime.now().plusDays(2),
                 eventId = PersonGenerator.EVENT_1.id,
                 uuid = UUID.randomUUID()
-            ),
-            CreateAppointment(
+            ), CreateAppointment(
                 user,
                 CreateAppointment.Type.HomeVisitToCaseNS.code,
                 start = ZonedDateTime.now(),
                 end = ZonedDateTime.now().plusHours(2),
-                until = ZonedDateTime.now().plusDays(14),
+                until = ZonedDateTime.now().plusDays(15),
                 interval = CreateAppointment.Interval.WEEK,
                 eventId = PersonGenerator.EVENT_1.id,
                 uuid = UUID.randomUUID()

@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.service
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.api.model.Name
 import uk.gov.justice.digital.hmpps.api.model.appointment.*
 import uk.gov.justice.digital.hmpps.aspect.UserContext
@@ -22,6 +23,7 @@ import java.time.DayOfWeek
 import java.time.Duration
 import java.time.LocalDate
 import java.time.ZonedDateTime
+import java.time.temporal.ChronoUnit
 import java.util.*
 
 @Service
@@ -89,6 +91,7 @@ class SentenceAppointmentService(
         )
     }
 
+    @Transactional
     fun createAppointment(
         crn: String,
         createAppointment: CreateAppointment
@@ -115,11 +118,7 @@ class SentenceAppointmentService(
 
             createAppointment.let {
                 val numberOfAppointments = createAppointment.until?.let {
-                    val duration = Duration.between(
-                        createAppointment.start.toLocalDateTime(),
-                        it.toLocalDateTime()
-                    ).toDays()
-
+                    val duration = ChronoUnit.DAYS.between(createAppointment.start, it)
                     (duration / createAppointment.interval.value).toInt() + 1
                 } ?: createAppointment.numberOfAppointments
 

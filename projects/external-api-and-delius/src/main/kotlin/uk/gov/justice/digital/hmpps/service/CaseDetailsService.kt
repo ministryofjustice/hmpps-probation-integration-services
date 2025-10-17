@@ -45,6 +45,8 @@ class CaseDetailsService(
         )
     }
 
+    fun getLimitedAccessDetail(crn: String): LimitedAccessDetail = personRepository.getByCrn(crn).limitedAccessDetail()
+
     @Transactional(readOnly = true)
     fun getCaseDetails(crn: String, eventNumber: Int): CaseDetails {
         val responsibleOfficer = responsibleOfficerRepository.findByPersonCrn(crn)
