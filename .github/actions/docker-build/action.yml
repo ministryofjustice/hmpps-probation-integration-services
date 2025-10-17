@@ -35,9 +35,11 @@ runs:
     - name: Get current image digest
       id: remote
       run: |
-        pull_token=$(curl -fsS 'https://ghcr.io/token?service=ghcr.io&scope=repository:ministryofjustice/hmpps-probation-integration-services/${{ inputs.project }}:pull' | jq -r '.token')
-        echo "digest=$(curl -fsSI -H "Authorization: Bearer $pull_token" "https://ghcr.io/v2/ministryofjustice/hmpps-probation-integration-services/${{ inputs.project }}/manifests/latest" | awk -F': ' '/docker-content-digest/ {print $2}' | tr -d '\r')" | tee -a $GITHUB_OUTPUT
+        pull_token=$(curl -fsS 'https://ghcr.io/token?service=ghcr.io&scope=repository:ministryofjustice/hmpps-probation-integration-services/'"${project}"':pull' | jq -r '.token')
+        echo "digest=$(curl -fsSI -H "Authorization: Bearer $pull_token" "https://ghcr.io/v2/ministryofjustice/hmpps-probation-integration-services/${project}/manifests/latest" | awk -F': ' '/docker-content-digest/ {print $2}' | tr -d '\r')" | tee -a $GITHUB_OUTPUT
       shell: bash
+      env:
+        project: ${{ inputs.project }}
 
     - uses: docker/setup-qemu-action@v3
     - uses: docker/setup-buildx-action@v3
@@ -68,10 +70,11 @@ runs:
       run: |
         echo "old: $old"
         echo "new: $new"
-        if [ "$old" = "$new" ]; then echo 'projects=[]'; else echo 'projects=["${{ inputs.project }}"]'; fi | tee -a "$GITHUB_OUTPUT"
+        if [ "$old" = "$new" ]; then echo 'projects=[]'; else echo 'projects=["'"${project}"'"]'; fi | tee -a "$GITHUB_OUTPUT"
       env:
         new: ${{ steps.build.outputs.digest }}
         old: ${{ steps.remote.outputs.digest }}
+        project: ${{ inputs.project }}
       shell: bash
 
     - name: Push Docker images
@@ -91,12 +94,16 @@ runs:
 
     - name: Output changes
       if: inputs.force != 'true'
-      run: echo '${{ steps.check-changes.outputs.projects }}' > ${{ inputs.project }}-changes.json
+      run: echo '${{ steps.check-changes.outputs.projects }}' > "${project}-changes.json"
       shell: bash
+      env:
+        project: ${{ inputs.project }}
     - name: Force output changes
       if: inputs.force == 'true'
-      run: echo '["${{ inputs.project }}"]' > ${{ inputs.project }}-changes.json
+      run: echo '["'"${project}"'"]' > "${project}-changes.json"
       shell: bash
+      env:
+        project: ${{ inputs.project }}
     - name: Store changes
       uses: actions/upload-artifact@v4
       with:

@@ -17,12 +17,13 @@ runs:
     - name: Get build info
       run: |
         echo '::group::Generate build info'
-        ./gradlew ${{ inputs.project }}:buildInfo ${{ inputs.project }}:gitInfo
-        sed -i "s/build.version=.*/build.version=$VERSION/" projects/${{ inputs.project }}/build-info.properties
+        ./gradlew "${PROJECT}:buildInfo" "${PROJECT}:gitInfo"
+        sed -i "s/build.version=.*/build.version=$VERSION/" "projects/${PROJECT}/build-info.properties"
         echo '::endgroup::'
       shell: bash
       env:
         VERSION: ${{ inputs.version }}
+        PROJECT: ${{ inputs.project }}
 
     - name: Store build info
       uses: actions/upload-artifact@v4

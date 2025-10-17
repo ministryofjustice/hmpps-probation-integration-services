@@ -16,30 +16,37 @@ runs:
     - id: project_name
       shell: bash
       run: |
-        echo "camel_case=$(echo '${{ inputs.project_name }}' | sed -E 's/-(.)/\U\1/g;s/^(.)/\U\1/')" | tee -a "$GITHUB_OUTPUT"
-        echo "title_case=$(echo '${{ inputs.project_name }}' | tr '-' ' ' | sed -E 's/ (.)/ \U\1/g;s/^(.)/\U\1/')" | tee -a "$GITHUB_OUTPUT"
-        echo "underscore=$(echo '${{ inputs.project_name }}' | tr '-' '_')" | tee -a "$GITHUB_OUTPUT"
+        echo "camel_case=$(echo $project_name | sed -E 's/-(.)/\U\1/g;s/^(.)/\U\1/')" | tee -a "$GITHUB_OUTPUT"
+        echo "title_case=$(echo $project_name | tr '-' ' ' | sed -E 's/ (.)/ \U\1/g;s/^(.)/\U\1/')" | tee -a "$GITHUB_OUTPUT"
+        echo "underscore=$(echo $project_name | tr '-' '_')" | tee -a "$GITHUB_OUTPUT"
+      env:
+        project_name: ${{ inputs.project_name }}
 
     - name: Render project template
       shell: bash
       run: |
-        find templates/projects/${{ inputs.project_template }} -type f -exec sed -i 's/$SERVICE_NAME_CAMELCASE/${{ steps.project_name.outputs.camel_case }}/g' {} \;
-        find templates/projects/${{ inputs.project_template }} -type f -exec sed -i 's/$SERVICE_NAME_TITLECASE/${{ steps.project_name.outputs.title_case }}/g' {} \;
-        find templates/projects/${{ inputs.project_template }} -type f -exec sed -i 's/$SERVICE_NAME/${{ inputs.project_name }}/g' {} \;
-        find templates/projects/${{ inputs.project_template }} -type f -exec sed -i 's/$SERVICE_BOOTSTRAP_DATE/'"$(date '+%Y-%m-%d')"'/g' {} \;
-        cp -R templates/projects/${{ inputs.project_template }} projects/${{ inputs.project_name }}
-        mv projects/${{ inputs.project_name }}/tech-docs doc/tech-docs/source/projects/${{ inputs.project_name }}
-        sed -i '/add new projects here/a \    "${{ inputs.project_name }}",' settings.gradle.kts
-        sed -i '/add new projects here/i \          - ${{ inputs.project_name }}' .github/workflows/access.yml
-        sed -i '/add new projects here/i \          - ${{ inputs.project_name }}' .github/workflows/build.yml
-        sed -i '/add new projects here/i \          - ${{ inputs.project_name }}' .github/workflows/deploy-branch.yml
-        sed -i '/add new projects here/i \          - ${{ inputs.project_name }}' .github/workflows/deploy-version.yml
-        sed -i '/add new projects here/i \          - ${{ inputs.project_name }}' .github/workflows/rotate-secrets.yml
-        sed -i '/add new projects here/i \          - ${{ inputs.project_name }}' .github/workflows/service-catalogue.yml
-        sed -i '/add new projects here/i \* [${{ steps.project_name.outputs.title_case }}](projects/${{ inputs.project_name }}/about.html)' doc/tech-docs/source/index.html.md.erb
-        sed 's/$SERVICE_NAME/${{ inputs.project_name }}/g' templates/runConfiguration.xml > '.idea/runConfigurations/${{ inputs.project_name }}.run.xml'
+        find "templates/projects/$project_template" -type f -exec sed -i 's/$SERVICE_NAME_CAMELCASE/${{ steps.project_name.outputs.camel_case }}/g' {} \;
+        find "templates/projects/$project_template" -type f -exec sed -i 's/$SERVICE_NAME_TITLECASE/${{ steps.project_name.outputs.title_case }}/g' {} \;
+        find "templates/projects/$project_template" -type f -exec sed -i 's/$SERVICE_NAME/'"${project_name}"'/g' {} \;
+        find "templates/projects/$project_template" -type f -exec sed -i 's/$SERVICE_BOOTSTRAP_DATE/'"$(date '+%Y-%m-%d')"'/g' {} \;
+        cp -R "templates/projects/$project_template" "projects/$project_name"
+        mv "projects/${project_name}/tech-docs" "doc/tech-docs/source/projects/$project_name"
+        sed -i '/add new projects here/a \    "'"$project_name"'",' settings.gradle.kts
+        sed -i '/add new projects here/i \          - '"'"'["$project_name"]'"'"'' .github/workflows/access.yml
+        sed -i '/add new projects here/i \          - '"$project_name" .github/workflows/build.yml
+        sed -i '/add new projects here/i \          - '"$project_name" .github/workflows/deploy-branch.yml
+        sed -i '/add new projects here/i \          - '"$project_name" .github/workflows/deploy-version.yml
+        sed -i '/add new projects here/i \          - '"$project_name" .github/workflows/rotate-secrets.yml
+        sed -i '/add new projects here/i \          - '"'"'["$project_name"]'"'"'' .github/workflows/service-catalogue.yml
+        sed -i '/add new projects here/i \* [${{ steps.project_name.outputs.title_case }}](projects/'"${project_name}"'/about.html)' doc/tech-docs/source/index.html.md.erb
+        sed 's/$SERVICE_NAME/'"${project_name}"'/g' templates/runConfiguration.xml > ".idea/runConfigurations/${project_name}.run.xml"
+      env:
+        project_template: ${{ inputs.project_template }}
+        project_name: ${{ inputs.project_name }}
 
     - name: Render queue-specific files
       if: startsWith(inputs.project_template, 'message-listener')
       shell: bash
-      run: sed -i '/add new queues here/i \          - ${{ inputs.project_name }}-queue' .github/workflows/messaging.yml
+      run: sed -i '/add new queues here/i \          - '"${project_name}"'-queue' .github/workflows/messaging.yml
+      env:
+        project_name: ${{ inputs.project_name }}
