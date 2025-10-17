@@ -19,6 +19,8 @@ spring:
     base: ou=Users,dc=moj,dc=com
     base-environment:
       java.naming.ldap.derefAliases: never
+  data.rest.max-page-size: 100000
+  data.web.pageable.max-page-size: 100000
 
 oauth2.roles:
   - PROBATION_API__REMINDERS__UPW_APPOINTMENTS
@@ -60,6 +62,15 @@ spring.config.activate.on-profile: integration-test
 spring.datasource.url: jdbc:h2:mem:./test;MODE=Oracle;DEFAULT_NULL_ORDERING=HIGH
 
 jobs.unpaid-work-appointment-reminders.excluded-crns: "A000002,B000002"
+
+job:
+  name: test
+  daysInAdvance: 3
+  provider:
+    code: N07
+    name: London
+  templates:
+    - template
 
 ---
 spring.config.activate.on-profile: oracle

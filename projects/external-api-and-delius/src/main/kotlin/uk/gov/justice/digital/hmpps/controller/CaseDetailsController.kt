@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RestController
 import uk.gov.justice.digital.hmpps.model.CaseDetails
+import uk.gov.justice.digital.hmpps.model.LimitedAccessDetail
 import uk.gov.justice.digital.hmpps.service.CaseDetailsService
 
 @RestController
@@ -29,4 +30,8 @@ class CaseDetailsController(
         @PathVariable("crn") crn: String,
         @PathVariable("eventNumber") eventNumber: Int
     ): CaseDetails = caseDetailsService.getCaseDetails(crn, eventNumber)
+
+    @GetMapping(value = ["/case/{crn}/access-limitations"])
+    fun accessLimitations(@PathVariable crn: String): LimitedAccessDetail =
+        caseDetailsService.getLimitedAccessDetail(crn)
 }

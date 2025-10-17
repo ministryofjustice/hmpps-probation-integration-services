@@ -42,6 +42,7 @@ class DataLoader(
             savePerson(PersonGenerator.PERSON4)
             savePerson(PersonGenerator.PERSON5)
             savePerson(PersonGenerator.PERSON6)
+            savePerson(PersonGenerator.PERSON7)
         }
     }
 
@@ -53,6 +54,7 @@ class DataLoader(
             persist(person.manager?.team?.localAdminUnit)
             persist(person.manager?.team)
             persist(person.manager)
+            person.events.forEach(::persist)
         }
     }
 }

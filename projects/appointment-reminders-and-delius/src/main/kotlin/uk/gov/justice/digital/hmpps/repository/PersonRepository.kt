@@ -18,6 +18,7 @@ interface PersonRepository : JpaRepository<Person, Long> {
         join fetch p.manager.staff
         left join fetch p.manager.staff.user
         where pa.code = :providerCode
+        and p.events is not empty
         and not (
             replace(p.mobileNumber, ' ', '') like '07%' 
             and length(replace(p.mobileNumber, ' ', '')) = 11 
@@ -41,6 +42,7 @@ interface PersonRepository : JpaRepository<Person, Long> {
         join fetch p.manager.staff
         left join fetch p.manager.staff.user
         where pa.code = :providerCode
+        and p.events is not empty
         and p.mobileNumber is null
         """
     )
@@ -61,6 +63,7 @@ interface PersonRepository : JpaRepository<Person, Long> {
         join fetch p.manager.staff
         left join fetch p.manager.staff.user
         where pa.code = :providerCode
+          and p.events is not empty
           and p.mobileNumber is not null
           and replace(p.mobileNumber, ' ', '') in (
             select replace(p2.mobileNumber, ' ', '')
@@ -93,6 +96,13 @@ interface PersonRepository : JpaRepository<Person, Long> {
           where offender.soft_deleted = 0
             and offender.mobile_number is not null
             and probation_area.code = :providerCode
+            and exists (
+              select 1
+              from event
+              where event.offender_id = offender.offender_id
+                and event.active_flag = 1
+                and event.soft_deleted = 0
+            )
             and not (
                   replace(offender.mobile_number, ' ', '') like '07%'
               and length(replace(offender.mobile_number, ' ', '')) = 11
