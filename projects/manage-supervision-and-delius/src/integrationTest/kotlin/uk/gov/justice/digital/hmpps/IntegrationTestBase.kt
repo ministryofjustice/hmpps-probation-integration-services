@@ -10,13 +10,11 @@ import org.springframework.test.web.servlet.MockMvc
 import uk.gov.justice.digital.hmpps.aspect.DeliusUserAspect
 import uk.gov.justice.digital.hmpps.audit.repository.AuditedInteractionRepository
 import uk.gov.justice.digital.hmpps.audit.repository.BusinessInteractionRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.appointment.AppointmentRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.ContactRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.PersonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.DocumentRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.AppointmentRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.user.entity.UserRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.SentenceAppointmentRepository
 import uk.gov.justice.digital.hmpps.messaging.HmppsChannelManager
-import uk.gov.justice.digital.hmpps.user.AuditUserRepository
 
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = RANDOM_PORT)
@@ -26,6 +24,9 @@ open class IntegrationTestBase {
 
     @Autowired
     protected lateinit var wireMockServer: WireMockServer
+
+    @Autowired
+    protected lateinit var sentenceAppointmentRepository: SentenceAppointmentRepository
 
     @Autowired
     protected lateinit var appointmentRepository: AppointmentRepository

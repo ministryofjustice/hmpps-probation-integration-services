@@ -20,7 +20,6 @@ import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.Requirem
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.*
 import uk.gov.justice.digital.hmpps.utils.AppointmentTimeHelper
 import java.time.DayOfWeek
-import java.time.Duration
 import java.time.LocalDate
 import java.time.ZonedDateTime
 import java.time.temporal.ChronoUnit
@@ -29,7 +28,7 @@ import java.util.*
 @Service
 class SentenceAppointmentService(
     auditedInteractionService: AuditedInteractionService,
-    private val appointmentRepository: AppointmentRepository,
+    private val sentenceAppointmentRepository: SentenceAppointmentRepository,
     private val appointmentTypeRepository: AppointmentTypeRepository,
     private val offenderManagerRepository: OffenderManagerRepository,
     private val eventSentenceRepository: EventSentenceRepository,
@@ -49,7 +48,7 @@ class SentenceAppointmentService(
         end: ZonedDateTime
     ): Pair<List<StaffAppointment>, List<StaffAppointment>> {
         val withinHourOf = 1L
-        val overlaps = appointmentRepository.staffAppointmentClashes(
+        val overlaps = sentenceAppointmentRepository.staffAppointmentClashes(
             personId,
             start.toLocalDate(),
             start.minusHours(withinHourOf),
@@ -147,7 +146,7 @@ class SentenceAppointmentService(
             }
 
             val overlappingAppointments = createAppointments.mapNotNull {
-                if (it.start.isAfter(ZonedDateTime.now()) && appointmentRepository.appointmentClashes(
+                if (it.start.isAfter(ZonedDateTime.now()) && sentenceAppointmentRepository.appointmentClashes(
                         om.person.id,
                         it.start.toLocalDate(),
                         it.start,
@@ -172,7 +171,7 @@ class SentenceAppointmentService(
             }
 
             val appointments = createAppointments.map { it.withManager(om, userAndTeam, location) }
-            val savedAppointments = appointmentRepository.saveAll(appointments)
+            val savedAppointments = sentenceAppointmentRepository.saveAll(appointments)
             val createdAppointments = savedAppointments.map { CreatedAppointment(it.id, it.externalReference) }
 
             audit["contactId"] = createdAppointments.joinToString { it.id.toString() }
@@ -235,7 +234,7 @@ class SentenceAppointmentService(
             throw InvalidRequestException("Event id, licence id, requirement id or nsi id need to be provided for contact type ${createAppointment.type}")
         }
 
-        appointmentRepository.findByExternalReference(createAppointment.urn)?.let {
+        sentenceAppointmentRepository.findByExternalReference(createAppointment.urn)?.let {
             throw ConflictException("Duplicate external reference ${createAppointment.urn}")
         }
     }
@@ -244,7 +243,7 @@ class SentenceAppointmentService(
         om: OffenderManager,
         staffAndTeam: UserTeam,
         location: Location?
-    ) = Appointment(
+    ) = SentenceAppointment(
         person = om.person,
         type = appointmentTypeRepository.getByCode(type),
         date = start.toLocalDate(),

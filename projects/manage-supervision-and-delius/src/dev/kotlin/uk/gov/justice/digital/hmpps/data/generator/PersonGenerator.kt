@@ -244,37 +244,42 @@ object PersonGenerator {
     val DEREGISTRATION_1 = generateDeRegistration(REGISTRATION_3, LocalDate.now().minusDays(1), deRegistrationRiskNotes)
 
     val PERSON_1 =
-        generateCaseloadPerson(OVERVIEW.id, OVERVIEW.crn, OVERVIEW.forename, OVERVIEW.secondName, OVERVIEW.surname)
+        generateCaseloadPerson(OVERVIEW.crn, OVERVIEW.forename, OVERVIEW.surname, OVERVIEW.secondName, OVERVIEW.id)
     val PERSON_2 = generateCaseloadPerson(
-        PersonDetailsGenerator.PERSONAL_DETAILS.id,
         PersonDetailsGenerator.PERSONAL_DETAILS.crn,
         PersonDetailsGenerator.PERSONAL_DETAILS.forename,
+        PersonDetailsGenerator.PERSONAL_DETAILS.surname,
         PersonDetailsGenerator.PERSONAL_DETAILS.secondName,
-        PersonDetailsGenerator.PERSONAL_DETAILS.surname
+        PersonDetailsGenerator.PERSONAL_DETAILS.id
     )
+
+    val RESCHEDULED_PERSON_1 = generateOverview("R345678", "App1", "Rescheduled")
+    val RESCHEDULED_PERSON_2 = generateOverview("R345679", "App2", "Rescheduled")
+    val RECREATE_APPT_PERSON_1 = generateOverview("R456789", "App1", "Recreated")
+    val RECREATE_APPT_PERSON_2 = generateOverview("R456790", "App2", "Recreated")
 
     val CL_EXCLUDED =
         generateCaseloadPerson(
-            PersonDetailsGenerator.EXCLUSION.id,
             PersonDetailsGenerator.EXCLUSION.crn,
             PersonDetailsGenerator.EXCLUSION.forename,
+            PersonDetailsGenerator.EXCLUSION.surname,
             PersonDetailsGenerator.EXCLUSION.secondName,
-            PersonDetailsGenerator.EXCLUSION.surname
+            PersonDetailsGenerator.EXCLUSION.id
         )
     val CL_RESTRICTED = generateCaseloadPerson(
-        PersonDetailsGenerator.RESTRICTION.id,
         PersonDetailsGenerator.RESTRICTION.crn,
         PersonDetailsGenerator.RESTRICTION.forename,
+        PersonDetailsGenerator.RESTRICTION.surname,
         PersonDetailsGenerator.RESTRICTION.secondName,
-        PersonDetailsGenerator.RESTRICTION.surname
+        PersonDetailsGenerator.RESTRICTION.id
     )
 
     val CL_RESTRICTED_EXCLUDED = generateCaseloadPerson(
-        PersonDetailsGenerator.RESTRICTION_EXCLUSION.id,
         PersonDetailsGenerator.RESTRICTION_EXCLUSION.crn,
         PersonDetailsGenerator.RESTRICTION_EXCLUSION.forename,
+        PersonDetailsGenerator.RESTRICTION_EXCLUSION.surname,
         PersonDetailsGenerator.RESTRICTION_EXCLUSION.secondName,
-        PersonDetailsGenerator.RESTRICTION_EXCLUSION.surname
+        PersonDetailsGenerator.RESTRICTION_EXCLUSION.id
     )
 
     val CASELOAD_PERSON_1 = generateCaseload(PERSON_1, DEFAULT_STAFF, ContactGenerator.DEFAULT_TEAM)
@@ -615,14 +620,19 @@ object PersonGenerator {
             roleCode = "OM"
         )
 
-    fun generateCaseloadPerson(id: Long, crn: String, forename: String, middleName: String?, surname: String) =
-        CaseloadPerson(
-            id = id,
-            crn = crn,
-            forename = forename,
-            secondName = middleName,
-            dateOfBirth = LocalDate.now().minusYears(50),
-            surname = surname
-        )
+    fun generateCaseloadPerson(
+        crn: String,
+        forename: String,
+        surname: String,
+        middleName: String? = null,
+        id: Long = IdGenerator.getAndIncrement()
+    ) = CaseloadPerson(
+        id = id,
+        crn = crn,
+        forename = forename,
+        secondName = middleName,
+        dateOfBirth = LocalDate.now().minusYears(50),
+        surname = surname
+    )
 }
 

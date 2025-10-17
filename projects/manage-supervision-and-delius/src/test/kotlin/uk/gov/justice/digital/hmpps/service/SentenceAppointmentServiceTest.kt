@@ -40,7 +40,7 @@ class SentenceAppointmentServiceTest {
     lateinit var auditedInteractionService: AuditedInteractionService
 
     @Mock
-    lateinit var appointmentRepository: AppointmentRepository
+    lateinit var sentenceAppointmentRepository: SentenceAppointmentRepository
 
     @Mock
     lateinit var appointmentTypeRepository: AppointmentTypeRepository
@@ -113,7 +113,7 @@ class SentenceAppointmentServiceTest {
         verifyNoInteractions(eventSentenceRepository)
         verifyNoInteractions(licenceConditionRepository)
         verifyNoInteractions(requirementRepository)
-        verifyNoInteractions(appointmentRepository)
+        verifyNoInteractions(sentenceAppointmentRepository)
         verifyNoInteractions(appointmentTypeRepository)
     }
 
@@ -143,7 +143,7 @@ class SentenceAppointmentServiceTest {
         verifyNoInteractions(eventSentenceRepository)
         verifyNoInteractions(licenceConditionRepository)
         verifyNoInteractions(requirementRepository)
-        verifyNoInteractions(appointmentRepository)
+        verifyNoInteractions(sentenceAppointmentRepository)
         verifyNoInteractions(appointmentTypeRepository)
     }
 
@@ -175,7 +175,7 @@ class SentenceAppointmentServiceTest {
         verifyNoInteractions(eventSentenceRepository)
         verifyNoInteractions(licenceConditionRepository)
         verifyNoInteractions(requirementRepository)
-        verifyNoInteractions(appointmentRepository)
+        verifyNoInteractions(sentenceAppointmentRepository)
         verifyNoInteractions(appointmentTypeRepository)
     }
 
@@ -206,7 +206,7 @@ class SentenceAppointmentServiceTest {
         verifyNoMoreInteractions(eventSentenceRepository)
         verifyNoInteractions(licenceConditionRepository)
         verifyNoInteractions(requirementRepository)
-        verifyNoInteractions(appointmentRepository)
+        verifyNoInteractions(sentenceAppointmentRepository)
         verifyNoInteractions(appointmentTypeRepository)
     }
 
@@ -239,7 +239,7 @@ class SentenceAppointmentServiceTest {
         verifyNoMoreInteractions(eventSentenceRepository)
         verifyNoMoreInteractions(requirementRepository)
         verifyNoInteractions(licenceConditionRepository)
-        verifyNoInteractions(appointmentRepository)
+        verifyNoInteractions(sentenceAppointmentRepository)
         verifyNoInteractions(appointmentTypeRepository)
     }
 
@@ -271,7 +271,7 @@ class SentenceAppointmentServiceTest {
         verifyNoMoreInteractions(eventSentenceRepository)
         verifyNoMoreInteractions(licenceConditionRepository)
         verifyNoInteractions(requirementRepository)
-        verifyNoInteractions(appointmentRepository)
+        verifyNoInteractions(sentenceAppointmentRepository)
         verifyNoInteractions(appointmentTypeRepository)
     }
 
@@ -302,7 +302,7 @@ class SentenceAppointmentServiceTest {
         verifyNoMoreInteractions(eventSentenceRepository)
         verifyNoMoreInteractions(licenceConditionRepository)
         verifyNoInteractions(requirementRepository)
-        verifyNoInteractions(appointmentRepository)
+        verifyNoInteractions(sentenceAppointmentRepository)
         verifyNoInteractions(appointmentTypeRepository)
     }
 
@@ -338,7 +338,7 @@ class SentenceAppointmentServiceTest {
         )
 
         whenever(
-            appointmentRepository.getClashCount(
+            sentenceAppointmentRepository.getClashCount(
                 OffenderManagerGenerator.OFFENDER_MANAGER_ACTIVE.person.id,
                 appointment.start.toLocalDate().format(DateTimeFormatter.ISO_LOCAL_DATE),
                 appointment.start.format(DateTimeFormatter.ISO_LOCAL_TIME.withZone(ZoneId.systemDefault())),
@@ -416,7 +416,7 @@ class SentenceAppointmentServiceTest {
             )
         )
 
-        whenever(appointmentRepository.findByExternalReference(appointment.urn)).thenReturn(PERSON_APPOINTMENT)
+        whenever(sentenceAppointmentRepository.findByExternalReference(appointment.urn)).thenReturn(PERSON_APPOINTMENT)
 
         val exception = assertThrows<ConflictException> {
             service.createAppointment(PersonGenerator.PERSON_1.crn, appointment)

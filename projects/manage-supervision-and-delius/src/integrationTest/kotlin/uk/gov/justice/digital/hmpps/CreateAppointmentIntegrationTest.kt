@@ -119,7 +119,7 @@ class CreateAppointmentIntegrationTest : IntegrationTestBase() {
             .andExpect(MockMvcResultMatchers.status().isCreated)
             .andReturn().response.contentAsJson<AppointmentDetail>()
 
-        val appointment = appointmentRepository.findById(response.appointments[0].id).get()
+        val appointment = sentenceAppointmentRepository.findById(response.appointments[0].id).get()
         assertThat(response.appointments.all { it.externalReference != null }, equalTo(true))
 
         assertThat(appointment.type.code, equalTo(createAppointment.type))
@@ -137,7 +137,7 @@ class CreateAppointmentIntegrationTest : IntegrationTestBase() {
         assertThat(appointment.createdByUserId, equalTo(user.id))
         assertThat(appointment.lastUpdatedUserId, equalTo(user.id))
 
-        appointmentRepository.deleteById(appointment.id)
+        sentenceAppointmentRepository.deleteById(appointment.id)
     }
 
     @ParameterizedTest
@@ -151,7 +151,7 @@ class CreateAppointmentIntegrationTest : IntegrationTestBase() {
             .andExpect(MockMvcResultMatchers.status().isCreated)
             .andReturn().response.contentAsJson<AppointmentDetail>()
 
-        val appointments = appointmentRepository.findAllById(response.appointments.map { it.id })
+        val appointments = sentenceAppointmentRepository.findAllById(response.appointments.map { it.id })
 
         assertThat(appointments.size, equalTo(3))
         assertThat(response.appointments.all { it.externalReference != null }, equalTo(true))
@@ -172,7 +172,7 @@ class CreateAppointmentIntegrationTest : IntegrationTestBase() {
         assertNotEquals(externalRef, appointments[1].externalReference)
         assertNotEquals(externalRef, appointments[2].externalReference)
 
-        appointmentRepository.deleteAll(appointments)
+        sentenceAppointmentRepository.deleteAll(appointments)
     }
 
     companion object {

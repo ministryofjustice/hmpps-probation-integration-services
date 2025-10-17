@@ -29,7 +29,7 @@ object OffenderManagerGenerator {
         IdGenerator.getAndIncrement(),
         DISTRICT,
         DEFAULT_PROVIDER,
-        "T1",
+        "N01TE1",
         "team1",
         startDate = LocalDate.now().minusDays(3),
         endDate = LocalDate.now().minusDays(1)
