@@ -1,8 +1,10 @@
 package uk.gov.justice.digital.hmpps.service
 
 import io.sentry.Sentry
+import org.apache.commons.codec.digest.MurmurHash3
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
+import uk.gov.justice.digital.hmpps.config.JobConfig
 import uk.gov.justice.digital.hmpps.logging.Logger.logger
 import uk.gov.justice.digital.hmpps.repository.UpwAppointmentRepository
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
@@ -20,39 +22,56 @@ class UnpaidWorkAppointmentsService(
     @Value("\${jobs.unpaid-work-appointment-reminders.excluded-crns:}") private val excludedCrns: List<String>,
     @Value("\${jobs.unpaid-work-appointment-reminders.excluded-project-codes:}") private val excludedProjectCodes: List<String>,
 ) {
-    fun sendUnpaidWorkAppointmentReminders(providerCode: String, templateIds: List<String>, daysInAdvance: Long) {
+    fun sendUnpaidWorkAppointmentReminders(config: JobConfig) {
         val alreadySentCrns = findCrnsForMessagesAlreadySent()
 
         upwAppointmentRepository.getUnpaidWorkAppointments(
-            LocalDate.now().plusDays(daysInAdvance),
-            providerCode,
-            excludedProjectCodes
+            date = LocalDate.now().plusDays(config.daysInAdvance.toLong()),
+            providerCode = config.provider.code,
+            excludedProjectCodes = excludedProjectCodes,
+            excludedCrns = excludedCrns + alreadySentCrns
         ).forEach {
             val telemetryProperties = mapOf(
                 "crn" to it.crn,
-                "providerCode" to providerCode,
-                "templateIds" to templateIds.joinToString(),
+                "providerCode" to config.provider.code,
                 "upwAppointmentIds" to it.upwAppointmentIds,
             )
-            if (it.crn !in excludedCrns && it.crn !in alreadySentCrns) {
-                val responses = templateIds.map { templateId ->
-                    log.info("Sending SMS template $templateId to ${it.mobileNumber}")
-                    val templateValues = mapOf("FirstName" to it.firstName, "NextWorkSession" to it.appointmentDate)
-                    try {
-                        notificationClient.sendSms(templateId, it.mobileNumber, templateValues, it.crn)
-                    } catch (e: Exception) {
-                        telemetryService.trackEvent("UnpaidWorkAppointmentReminderFailure", telemetryProperties)
-                        telemetryService.trackException(e, telemetryProperties)
-                        Sentry.captureException(e)
-                        return@forEach
-                    }
-                }
-                telemetryService.trackEvent(
-                    "UnpaidWorkAppointmentReminderSent",
-                    telemetryProperties + mapOf("notificationIds" to responses.joinToString { response -> response?.notificationId.toString() })
+            val templates = config.getTemplatesFor(it.crn)
+            val responses = templates.map { templateId ->
+                log.info("Sending SMS template $templateId to ${it.mobileNumber}")
+                val templateValues = mapOf(
+                    "FirstName" to it.firstName,
+                    "NextWorkSession" to it.appointmentDate
                 )
-            } else telemetryService.trackEvent("UnpaidWorkAppointmentReminderNotSent", telemetryProperties)
+                try {
+                    notificationClient.sendSms(templateId, it.mobileNumber, templateValues, it.crn)
+                } catch (e: Exception) {
+                    telemetryService.trackEvent("UnpaidWorkAppointmentReminderFailure", telemetryProperties)
+                    telemetryService.trackException(e, telemetryProperties)
+                    Sentry.captureException(e)
+                    return@forEach
+                }
+            }
+            telemetryService.trackEvent(
+                "UnpaidWorkAppointmentReminderSent",
+                telemetryProperties + mapOf(
+                    "templateIds" to templates.joinToString(),
+                    "notificationIds" to responses.joinToString { response -> response?.notificationId.toString() }
+                )
+            )
         }
+    }
+
+    /**
+     * Selects the appropriate templates to use for a given CRN, based on the configured trials.
+     * A consistent hashing algorithm is used to ensure that the same CRN always gets the same template(s).
+     */
+    private fun JobConfig.getTemplatesFor(crn: String): List<String> {
+        if (trials.isEmpty()) return templates
+        val hash = MurmurHash3.hash32x86(crn.toByteArray())
+        val buckets = listOf(templates) + trials.map { it.templates }
+        val bucket = buckets[Integer.remainderUnsigned(hash, buckets.size)]
+        return bucket.ifEmpty { templates } // If a trial is removed, fall back to default templates
     }
 
     private fun findCrnsForMessagesAlreadySent(): List<String> {
