@@ -45,7 +45,15 @@ class AppointmentLocation(
     @Id
     @Column(name = "office_location_id")
     val id: Long
-)
+) {
+    fun appointmentNotes(from: AppointmentLocation?): String? =
+        if (code != from?.code) {
+            val setOrChanged = from?.let {
+                "changed from ${it.description}"
+            } ?: "set"
+            "Location $setOrChanged to $description"
+        } else null
+}
 
 @Immutable
 @Entity

@@ -32,7 +32,5 @@ class AppointmentsController(
     fun recreateAppointment(
         @PathVariable id: Long,
         @Valid @RequestBody request: RecreateAppointmentRequest
-    ) {
-        recreateAppointment.recreate(id, request)
-    }
+    ) = recreateAppointment.recreate(id, request)
 }

@@ -61,9 +61,9 @@ class Appointment(
 
     sensitive: Boolean?,
 
-    @ManyToOne
-    @JoinColumn(name = "contact_outcome_type_id")
-    var outcome: AppointmentOutcome?,
+    rarActivity: Boolean?,
+
+    outcome: AppointmentOutcome?,
 
     @Column(name = "soft_deleted", columnDefinition = "number", nullable = false)
     @Convert(converter = NumericBooleanConverter::class)
@@ -96,15 +96,24 @@ class Appointment(
     @Column(name = "last_updated_user_id")
     var lastUpdatedUserId: Long? = null
 
+    @ManyToOne
+    @JoinColumn(name = "contact_outcome_type_id")
+    var outcome: AppointmentOutcome? = outcome
+        private set
+
+    @Column(name = "rar_activity", length = 1)
+    @Convert(converter = YesNoConverter::class)
+    var rarActivity: Boolean? = rarActivity
+        private set
+
     @Lob
     var notes: String? = notes
         private set
 
-    fun appendNotes(parts: List<String>) {
+    fun appendNotes(parts: List<String>) =
         appendNotes(*parts.toTypedArray())
-    }
 
-    fun appendNotes(vararg extraNotes: String) {
+    fun appendNotes(vararg extraNotes: String) = apply {
         val lineBreak = System.lineSeparator() + System.lineSeparator()
         val appendable = extraNotes.filter { !it.isBlank() }
         if (appendable.isNotEmpty()) {
@@ -120,6 +129,14 @@ class Appointment(
 
     fun amendmentSensitive(sensitive: Boolean) {
         this.sensitive = this.sensitive == true || sensitive
+    }
+
+    fun applyOutcome(outcome: AppointmentOutcome) = apply {
+        this.outcome = outcome
+        if (outcome.attendance != true) {
+            rarActivity = false
+        }
+        // TODO handle non-compliant outcomes - current use case only includes compliant reschedule outcome
     }
 
     fun isInTheFuture(): Boolean {
@@ -151,10 +168,31 @@ class AppointmentType(
 class AppointmentOutcome(
     val code: String,
     val description: String,
+
+    @Column(name = "outcome_attendance")
+    @Convert(converter = YesNoConverter::class)
+    val attendance: Boolean? = null,
+
+    @Column(name = "outcome_compliant_acceptable")
+    @Convert(converter = YesNoConverter::class)
+    val acceptable: Boolean? = null,
+
     @Id
     @Column(name = "contact_outcome_type_id")
     val id: Long,
-)
+) {
+    enum class Code(val value: String) {
+        RESCHEDULED_SERVICE("RSSR"),
+        RESCHEDULED_POP("RSOF"),
+    }
+}
+
+interface AppointmentOutcomeRepository : JpaRepository<AppointmentOutcome, Long> {
+    fun findByCode(code: String): AppointmentOutcome?
+}
+
+fun AppointmentOutcomeRepository.getByCode(code: String): AppointmentOutcome =
+    findByCode(code) ?: throw NotFoundException("Outcome", "code", code)
 
 interface AppointmentRepository : JpaRepository<Appointment, Long> {
     @Query(

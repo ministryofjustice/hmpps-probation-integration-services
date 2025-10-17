@@ -37,6 +37,8 @@ class DataLoader(
         }
         entityManager.persistAll(
             AppointmentGenerator.ATTENDED_COMPLIED,
+            AppointmentGenerator.POP_RESCHEDULED_OUTCOME,
+            AppointmentGenerator.SERVICE_RESCHEDULED_OUTCOME,
             *AppointmentGenerator.APPOINTMENT_TYPES.toTypedArray(),
             *AppointmentGenerator.CONTACT_TYPE_OUTCOMES.toTypedArray(),
             ContactGenerator.DEFAULT_PROVIDER,
@@ -302,7 +304,9 @@ class DataLoader(
 
         entityManager.persistAll(
             PersonGenerator.RESCHEDULED_PERSON_1,
-            PersonGenerator.RESCHEDULED_PERSON_2
+            PersonGenerator.RESCHEDULED_PERSON_2,
+            PersonGenerator.RECREATE_APPT_PERSON_1,
+            PersonGenerator.RECREATE_APPT_PERSON_2,
         )
     }
 

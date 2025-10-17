@@ -6,6 +6,7 @@ import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.DEFAULT_TEAM
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.USER
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.generateOutcome
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
+import uk.gov.justice.digital.hmpps.integrations.delius.appointment.AppointmentOutcome
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.ContactOutcome
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.ContactType
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.Person
@@ -44,6 +45,8 @@ object AppointmentGenerator {
     )
 
     val ATTENDED_COMPLIED = generateOutcome("ATTC", "Attended - Complied", true, true)
+    val POP_RESCHEDULED_OUTCOME = generateOutcome(AppointmentOutcome.Code.RESCHEDULED_POP.value, "Rescheduled - PoP Request", false, true)
+    val SERVICE_RESCHEDULED_OUTCOME = generateOutcome(AppointmentOutcome.Code.RESCHEDULED_SERVICE.value, "Rescheduled - Service Request", false, true)
 
     val CONTACT_TYPE_OUTCOMES = APPOINTMENT_TYPES.map {
         generateContactTypeOutcome(it.id, ATTENDED_COMPLIED.id, it, ATTENDED_COMPLIED)
@@ -65,6 +68,7 @@ object AppointmentGenerator {
         locationId: Long? = null,
         notes: String? = "Notes",
         sensitive: Boolean? = false,
+        outcome: ContactOutcome? = null,
     ) = SentenceAppointment(
         person = person,
         type = APPOINTMENT_TYPES[0],
@@ -79,6 +83,7 @@ object AppointmentGenerator {
         softDeleted = false,
         notes = notes,
         sensitive = sensitive,
+        outcomeId = outcome?.id
     ).apply {
         createdByUserId = USER.id
         lastUpdatedUserId = USER.id

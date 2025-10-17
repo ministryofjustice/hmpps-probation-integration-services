@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.api.model.appointment
 import java.time.LocalDate
 import java.time.LocalTime
 
+@FutureAppointment
 @ValidAppointment
 data class RescheduleAppointmentRequest(
     override val date: LocalDate,
@@ -15,6 +16,7 @@ data class RescheduleAppointmentRequest(
     val sensitive: Boolean?,
 ) : AppointmentRequest
 
+@FutureAppointment
 @ValidAppointment
 data class RecreateAppointmentRequest(
     override val date: LocalDate,
@@ -25,5 +27,11 @@ data class RecreateAppointmentRequest(
     val locationCode: String?,
     val notes: String?,
     val sensitive: Boolean?,
-    val outcome: Nothing = TODO()
-) : AppointmentRequest
+    val requestedBy: RequestedBy
+) : AppointmentRequest {
+    enum class RequestedBy {
+        POP, SERVICE
+    }
+}
+
+data class RecreatedAppointment(val id: Long)

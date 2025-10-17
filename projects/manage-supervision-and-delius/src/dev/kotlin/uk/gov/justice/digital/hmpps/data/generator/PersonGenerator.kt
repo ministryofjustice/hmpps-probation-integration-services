@@ -255,6 +255,8 @@ object PersonGenerator {
 
     val RESCHEDULED_PERSON_1 = generateOverview("R345678", "App1", "Rescheduled")
     val RESCHEDULED_PERSON_2 = generateOverview("R345679", "App2", "Rescheduled")
+    val RECREATE_APPT_PERSON_1 = generateOverview("R456789", "App1", "Recreated")
+    val RECREATE_APPT_PERSON_2 = generateOverview("R456790", "App2", "Recreated")
 
     val CL_EXCLUDED =
         generateCaseloadPerson(
