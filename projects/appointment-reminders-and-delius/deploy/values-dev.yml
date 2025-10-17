@@ -24,6 +24,15 @@ jobs:
       schedule: '0 10 * * 1-5' # 10am Monday to Friday
       templates:
         - 9405e109-1dcf-4df1-8788-5ec9b72db8a0
+      trials:
+        - templates:
+            - f641026c-ee41-4683-ae0f-282c8b7fbf52
+        - templates:
+            - 4eacbd69-9c2b-4e16-9f88-b5a470ea40c7
+        - templates:
+            - 66b3e9a5-fa46-4680-832b-6e05dac45cf5
+        - templates:
+            - 97e63be8-ad8b-4b3f-b7aa-e6f23809c7f7
     greater-manchester:
       schedule: '0 10 * * 1-5' # 10am Monday to Friday
       templates:

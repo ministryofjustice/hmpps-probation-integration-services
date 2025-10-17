@@ -1,7 +1,7 @@
 package uk.gov.justice.digital.hmpps.ldap
 
 import org.hamcrest.MatcherAssert.assertThat
-import org.hamcrest.Matchers.equalTo
+import org.hamcrest.Matchers.*
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
@@ -9,10 +9,7 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.ArgumentMatchers.eq
 import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
-import org.mockito.kotlin.anyOrNull
-import org.mockito.kotlin.check
-import org.mockito.kotlin.verify
-import org.mockito.kotlin.whenever
+import org.mockito.kotlin.*
 import org.springframework.ldap.NameNotFoundException
 import org.springframework.ldap.core.AttributesMapper
 import org.springframework.ldap.core.DirContextOperations
@@ -42,6 +39,21 @@ class LdapTemplateExtensionsTest {
     }
 
     @Test
+    fun `find by username returns null if not found`() {
+        whenever(ldapTemplate.find(any(), eq(LdapUser::class.java))).thenReturn(emptyList())
+        val user = ldapTemplate.findByUsername<LdapUser>("test")
+        assertThat(user, nullValue())
+    }
+
+    @Test
+    fun `find by username returns null if multiple found`() {
+        whenever(ldapTemplate.find(any(), eq(LdapUser::class.java)))
+            .thenReturn(List(2) { LdapUser(LdapName("cn=test"), "test", "test@example.com") })
+        val user = ldapTemplate.findByUsername<LdapUser>("test")
+        assertThat(user, nullValue())
+    }
+
+    @Test
     fun `find email by username`() {
         whenever(ldapTemplate.search(any(), any<AttributesMapper<String?>>()))
             .thenReturn(listOf("test@example.com"))
@@ -49,6 +61,25 @@ class LdapTemplateExtensionsTest {
         val email = ldapTemplate.findEmailByUsername("test")
 
         assertThat(email, equalTo("test@example.com"))
+    }
+
+    @Test
+    fun `find preference by username`() {
+        whenever(ldapTemplate.search(any(), any<AttributesMapper<String?>>()))
+            .thenReturn(listOf("test preference"))
+
+        val preference = ldapTemplate.findPreferenceByUsername("test", "attribute")
+
+        assertThat(preference, equalTo("test preference"))
+    }
+
+    @Test
+    fun `find preference by username throws not found`() {
+        whenever(ldapTemplate.search(any(), any<AttributesMapper<String?>>()))
+            .thenThrow(NameNotFoundException("not found"))
+
+        assertThrows<NotFoundException> { ldapTemplate.findPreferenceByUsername("test", "attribute") }
+            .also { assertThat(it.message, equalTo("User preferences with username of test not found")) }
     }
 
     @Test
@@ -180,5 +211,45 @@ class LdapTemplateExtensionsTest {
                 }
             )
         }
+    }
+
+    @Test
+    fun `find emails by usernames`() {
+        whenever(ldapTemplate.search(any(), any<AttributesMapper<Pair<String?, String?>>>())).thenReturn(
+            listOf(
+                "user1" to "user1@example.com",
+                "user2" to "user2@example.com",
+                "user3" to null,
+                null to null,
+            )
+        )
+
+        val emails = ldapTemplate.findEmailByUsernames(listOf("user1", "user2", "user3"))
+
+        assertThat(
+            emails, equalTo(
+                mapOf(
+                    "user1" to "user1@example.com",
+                    "user2" to "user2@example.com",
+                    "user3" to null
+                )
+            )
+        )
+    }
+
+    @Test
+    fun `searches are split into chunks of 500`() {
+        var i = 0
+        val usernames = (1..9999).map { "TEST$it" }
+        whenever(ldapTemplate.search(any(), any<AttributesMapper<Pair<String?, String?>>>())).thenAnswer {
+            (1..500).map { "TEST${500 * i + it}" }.map { username -> username to "$username@example.com" }.also { i++ }
+        }
+
+        val emails = ldapTemplate.findEmailByUsernames(usernames)
+
+        verify(ldapTemplate, times(20)).search(any(), any<AttributesMapper<Pair<String?, String?>>>())
+        assertThat(emails.keys, hasSize(10000))
+        assertThat(emails, hasEntry("TEST1", "TEST1@example.com"))
+        assertThat(emails, hasEntry("TEST9999", "TEST9999@example.com"))
     }
 }

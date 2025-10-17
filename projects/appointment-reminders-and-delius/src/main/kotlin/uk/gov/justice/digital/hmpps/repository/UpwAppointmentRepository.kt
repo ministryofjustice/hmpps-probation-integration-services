@@ -48,6 +48,8 @@ interface UpwAppointmentRepository : JpaRepository<UpwAppointment, Long> {
             where formatted_mobile_number like '07%' and length(formatted_mobile_number) = 11 and validate_conversion(formatted_mobile_number as number) = 1
             -- sms is allowed
             and (allow_sms is null or allow_sms = 'Y')
+            -- crn is not excluded
+            and (:excludedCrnsCount = 0 or crn not in :excludedCrns)
             -- no access limitations
             and restriction_id is null and exclusion_id is null
             -- appointment does not have an outcome
@@ -97,5 +99,7 @@ interface UpwAppointmentRepository : JpaRepository<UpwAppointment, Long> {
         providerCode: String,
         excludedProjectCodes: List<String>,
         excludedProjectCodesCount: Int = excludedProjectCodes.count(),
+        excludedCrns: List<String>,
+        excludedCrnsCount: Int = excludedCrns.count(),
     ): List<UnpaidWorkAppointment>
 }
