@@ -1,7 +1,6 @@
 package uk.gov.justice.digital.hmpps
 
 import com.github.tomakehurst.wiremock.WireMockServer
-import jakarta.persistence.EntityManager
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
@@ -15,7 +14,6 @@ import uk.gov.justice.digital.hmpps.integrations.delius.appointment.AppointmentR
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.DocumentRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.SentenceAppointmentRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.user.entity.UserRepository
 import uk.gov.justice.digital.hmpps.messaging.HmppsChannelManager
 
 @AutoConfigureMockMvc
@@ -26,9 +24,6 @@ open class IntegrationTestBase {
 
     @Autowired
     protected lateinit var wireMockServer: WireMockServer
-
-    @Autowired
-    protected lateinit var entityManager: EntityManager
 
     @Autowired
     protected lateinit var sentenceAppointmentRepository: SentenceAppointmentRepository
