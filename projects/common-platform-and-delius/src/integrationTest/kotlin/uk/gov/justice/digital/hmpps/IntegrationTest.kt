@@ -544,6 +544,96 @@ internal class IntegrationTest {
         )
     }
 
+    @Test
+    fun `Correct data submitted to CPR PUT endpoint`() {
+        mockS3Client()
+        val notification = Notification(message = MessageGenerator.COMMON_PLATFORM_EVENT_CPR)
+        channelManager.getChannel(queueName).publishAndWait(notification)
+
+        wireMockServer.verify(
+            putRequestedFor(urlPathEqualTo("/core-person-record/person/probation/f3b3bdb3-10c4-48fe-a412-9924f47294d5"))
+                .withRequestBody(
+                    equalToJson(
+                        """
+                {
+                  "name": {
+                    "forename": "Example First Name",
+                    "middleName" : "Example Middle Name",
+                    "surname": "Example Last Name"
+                  },
+                  "dateOfBirth": "2000-01-01",
+                  "identifiers": {
+                    "crn": "A111111",
+                    "pnc": "2000/0000000A",
+                    "cro": "000000/00A"
+                  },
+                  "contactDetails": {
+                    "telephone": "01234567890",
+                    "mobile": "07000000000"
+                  },
+                  "addresses": [{
+                    "fullAddress": ", 123, Test Street, Test, Test",
+                    "postcode": "AB1 2CD",
+                    "startDate": "${LocalDate.now()}",
+                    "noFixedAbode": false
+                  }],
+                  "sentences": [],
+                  "nationality": {
+                    "code": "BRIT"
+                  },
+                  "secondaryNationality": {
+                    "code": "FREN"
+                  },
+                  "ethnicity": {
+                    "code": "W1"
+                  },
+                  "gender": {
+                    "code": "M"
+                  }
+                }
+                """.trimIndent()
+                    )
+                )
+        )
+    }
+
+    @Test
+    fun `Missing values are excluded from CPR PUT request, not sent as null`() {
+        mockS3Client()
+        val notification = Notification(message = MessageGenerator.COMMON_PLATFORM_EVENT_MINIMAL)
+        channelManager.getChannel(queueName).publishAndWait(notification)
+
+        wireMockServer.verify(
+            putRequestedFor(urlPathEqualTo("/core-person-record/person/probation/f3b3bdb3-10c4-48fe-a412-9924f47294d5"))
+                .withRequestBody(
+                    equalToJson(
+                        """
+                {
+                  "name": {
+                    "forename": "Example First Name",
+                    "surname": "Example Last Name"
+                  },
+                  "dateOfBirth": "2000-01-01",
+                  "identifiers": {
+                    "crn": "A111111"
+                  },
+                  "contactDetails": {},
+                  "addresses": [{
+                    "fullAddress": "",
+                    "startDate": "${LocalDate.now()}",
+                    "noFixedAbode": false
+                  }],
+                  "sentences": [],
+                  "gender": {
+                    "code": "M"
+                  }
+                }
+                """.trimIndent()
+                    )
+                )
+        )
+    }
+
     private fun thenNoRecordsAreInserted() {
         verify(orderManagerRepository, never()).save(any())
         verify(courtAppearanceRepository, never()).save(any())

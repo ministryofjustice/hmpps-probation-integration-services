@@ -95,7 +95,9 @@ data class PersonDetails(
     val dateOfBirth: LocalDate? = null,
     val address: Address? = null,
     val contact: ContactDetails? = null,
-    val ethnicity: Ethnicity? = null
+    val ethnicity: Ethnicity? = null,
+    val nationalityCode: String? = null,
+    val additionalNationalityCode: String? = null
 )
 
 data class Address(
@@ -122,7 +124,8 @@ data class HearingType(
 
 data class Ethnicity(
     val observedEthnicityDescription: String? = null,
-    val selfDefinedEthnicityDescription: String? = null
+    val selfDefinedEthnicityDescription: String? = null,
+    val selfDefinedEthnicityCode: String? = null
 )
 
 data class CourtCentre(

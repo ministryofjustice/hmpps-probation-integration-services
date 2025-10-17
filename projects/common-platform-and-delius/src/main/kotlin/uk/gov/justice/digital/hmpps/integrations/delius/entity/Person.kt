@@ -99,6 +99,18 @@ class Person(
     @Column(name = "DEFENDANT_ID")
     var defendantId: String? = null,
 
+    @ManyToOne
+    @JoinColumn(name = "NATIONALITY_ID")
+    var nationality: ReferenceData? = null,
+
+    @ManyToOne
+    @JoinColumn(name = "SECOND_NATIONALITY_ID")
+    var secondNationality: ReferenceData? = null,
+
+    @ManyToOne
+    @JoinColumn(name = "ETHNICITY_ID")
+    var ethnicity: ReferenceData? = null,
+
     @Column
     @Version
     val rowVersion: Long = 0L,

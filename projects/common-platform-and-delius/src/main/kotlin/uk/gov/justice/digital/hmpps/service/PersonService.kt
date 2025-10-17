@@ -150,10 +150,17 @@ class PersonService(
     fun String.toDeliusGender() = ReferenceData.GenderCode.entries.find { it.commonPlatformValue == this }?.deliusValue
         ?: throw IllegalStateException("Gender not found: $this")
 
+    fun String.toDeliusNationalityCode() =
+        ReferenceData.NationalityCode.entries.find { it.commonPlatformValue == this }?.name
+            ?: throw IllegalStateException("Nationality Code not found: $this")
+
     fun Defendant.toPerson(): Person {
         val personDetails = personDefendant?.personDetails ?: throw IllegalArgumentException("No person found")
         val genderCode = personDetails.gender?.toDeliusGender() ?: throw IllegalArgumentException("Gender not found")
         val pncNumber = PncNumber.from(this.pncId)?.matchValue()
+        val nationalityCode = personDetails.nationalityCode?.toDeliusNationalityCode()
+        val secondNationalityCode = personDetails.additionalNationalityCode?.toDeliusNationalityCode()
+        val ethnicityCode = personDetails.ethnicity?.selfDefinedEthnicityCode
 
         return Person(
             id = null,
@@ -173,6 +180,24 @@ class PersonService(
             middleNameSoundex = personDetails.middleName?.let { personRepository.getSoundex(it) },
             firstNameSoundex = personRepository.getSoundex(personDetails.firstName),
             defendantId = id,
+            nationality = nationalityCode?.let {
+                referenceDataRepository.findByCodeAndDatasetCode(
+                    nationalityCode,
+                    DatasetCode.NATIONALITY
+                )
+            },
+            secondNationality = secondNationalityCode?.let {
+                referenceDataRepository.findByCodeAndDatasetCode(
+                    secondNationalityCode,
+                    DatasetCode.NATIONALITY
+                )
+            },
+            ethnicity = ethnicityCode?.let {
+                referenceDataRepository.findByCodeAndDatasetCode(
+                    ethnicityCode,
+                    DatasetCode.ETHNICITY
+                )
+            },
             notes = "This case record was initially created using information from HMCTS Common Platform."
         )
     }
