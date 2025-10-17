@@ -93,7 +93,8 @@ class RecreateAppointmentIntegrationTest : IntegrationTestBase() {
         val person = PersonGenerator.RECREATE_APPT_PERSON_1
         val start = ZonedDateTime.now().plusDays(2)
         val end = ZonedDateTime.now().plusDays(2).plusMinutes(30)
-        val appointment = sentenceAppointmentRepository.save(AppointmentGenerator.generateAppointment(person, start, end))
+        val appointment =
+            sentenceAppointmentRepository.save(AppointmentGenerator.generateAppointment(person, start, end))
         val request = recreateRequest(
             date = appointment.date,
             startTime = start.toLocalTime(),
@@ -312,5 +313,15 @@ class RecreateAppointmentIntegrationTest : IntegrationTestBase() {
         notes: String? = null,
         sensitive: Boolean? = null,
         requestedBy: RecreateAppointmentRequest.RequestedBy = RecreateAppointmentRequest.RequestedBy.SERVICE
-    ) = RecreateAppointmentRequest(date, startTime, endTime, staffCode, teamCode, locationCode, notes, sensitive, requestedBy)
+    ) = RecreateAppointmentRequest(
+        date,
+        startTime,
+        endTime,
+        staffCode,
+        teamCode,
+        locationCode,
+        notes,
+        sensitive,
+        requestedBy
+    )
 }

@@ -45,8 +45,10 @@ object AppointmentGenerator {
     )
 
     val ATTENDED_COMPLIED = generateOutcome("ATTC", "Attended - Complied", true, true)
-    val POP_RESCHEDULED_OUTCOME = generateOutcome(AppointmentOutcome.Code.RESCHEDULED_POP.value, "Rescheduled - PoP Request", false, true)
-    val SERVICE_RESCHEDULED_OUTCOME = generateOutcome(AppointmentOutcome.Code.RESCHEDULED_SERVICE.value, "Rescheduled - Service Request", false, true)
+    val POP_RESCHEDULED_OUTCOME =
+        generateOutcome(AppointmentOutcome.Code.RESCHEDULED_POP.value, "Rescheduled - PoP Request", false, true)
+    val SERVICE_RESCHEDULED_OUTCOME =
+        generateOutcome(AppointmentOutcome.Code.RESCHEDULED_SERVICE.value, "Rescheduled - Service Request", false, true)
 
     val CONTACT_TYPE_OUTCOMES = APPOINTMENT_TYPES.map {
         generateContactTypeOutcome(it.id, ATTENDED_COMPLIED.id, it, ATTENDED_COMPLIED)

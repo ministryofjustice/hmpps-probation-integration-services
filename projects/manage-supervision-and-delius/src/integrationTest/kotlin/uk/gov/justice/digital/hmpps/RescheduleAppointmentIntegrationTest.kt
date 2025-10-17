@@ -23,7 +23,8 @@ class RescheduleAppointmentIntegrationTest : IntegrationTestBase() {
 
     @Test
     fun `end time must be after start time`() {
-        val request = rescheduleRequest(startTime = LocalTime.now().plusHours(1), endTime = LocalTime.now().minusHours(1))
+        val request =
+            rescheduleRequest(startTime = LocalTime.now().plusHours(1), endTime = LocalTime.now().minusHours(1))
         mockMvc
             .perform(
                 MockMvcRequestBuilders.put("/appointments/${IdGenerator.getAndIncrement()}/reschedule")
@@ -85,7 +86,8 @@ class RescheduleAppointmentIntegrationTest : IntegrationTestBase() {
         val person = PersonGenerator.RESCHEDULED_PERSON_1
         val start = ZonedDateTime.now().plusDays(2)
         val end = ZonedDateTime.now().plusDays(2).plusMinutes(30)
-        val appointment = sentenceAppointmentRepository.save(AppointmentGenerator.generateAppointment(person, start, end))
+        val appointment =
+            sentenceAppointmentRepository.save(AppointmentGenerator.generateAppointment(person, start, end))
         val request = rescheduleRequest(
             date = appointment.date,
             startTime = start.toLocalTime(),
