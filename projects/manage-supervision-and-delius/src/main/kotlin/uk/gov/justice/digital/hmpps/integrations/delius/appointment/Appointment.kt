@@ -5,6 +5,10 @@ import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.NumericBooleanConverter
 import org.hibernate.type.YesNoConverter
+import org.springframework.data.annotation.CreatedBy
+import org.springframework.data.annotation.CreatedDate
+import org.springframework.data.annotation.LastModifiedBy
+import org.springframework.data.annotation.LastModifiedDate
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
@@ -70,9 +74,35 @@ class Appointment(
     @Column(name = "contact_id")
     val id: Long = 0
 ) {
+    var partitionAreaId: Long = 0
+
+    @Version
+    @Column(name = "row_version")
+    val version: Long = 0
+
+    @CreatedDate
+    @Column(name = "created_datetime")
+    var createdDateTime: ZonedDateTime = ZonedDateTime.now()
+
+    @LastModifiedDate
+    @Column(name = "last_updated_datetime")
+    var lastUpdatedDateTime: ZonedDateTime = ZonedDateTime.now()
+
+    @CreatedBy
+    @Column(name = "created_by_user_id")
+    var createdByUserId: Long? = null
+
+    @LastModifiedBy
+    @Column(name = "last_updated_user_id")
+    var lastUpdatedUserId: Long? = null
+
     @Lob
     var notes: String? = notes
         private set
+
+    fun appendNotes(parts: List<String>) {
+        appendNotes(*parts.toTypedArray())
+    }
 
     fun appendNotes(vararg extraNotes: String) {
         val lineBreak = System.lineSeparator() + System.lineSeparator()

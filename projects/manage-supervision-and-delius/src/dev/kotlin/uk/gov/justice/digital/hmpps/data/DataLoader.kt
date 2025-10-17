@@ -299,6 +299,11 @@ class DataLoader(
         entityManager.persist(LimitedAccessGenerator.BOTH_RESTRICTION)
 
         sentenceAppointmentRepository.saveAndFlush(AppointmentGenerator.PERSON_APPOINTMENT)
+
+        entityManager.persistAll(
+            PersonGenerator.RESCHEDULED_PERSON_1,
+            PersonGenerator.RESCHEDULED_PERSON_2
+        )
     }
 
     private fun EntityManager.persistAll(vararg entities: Any) {

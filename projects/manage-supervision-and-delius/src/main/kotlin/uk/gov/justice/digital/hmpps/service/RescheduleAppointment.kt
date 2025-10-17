@@ -18,7 +18,7 @@ class RescheduleAppointment(
     @Transactional
     fun reschedule(id: Long, request: RescheduleAppointmentRequest) {
         val appointment = appointmentRepository.getAppointment(id)
-        require(appointment.isInTheFuture()) { "Appointment must be in the future to reschedule" }
+        require(appointment.isInTheFuture() && appointment.outcome == null) { "Appointment must be in the future without an outcome to reschedule" }
         require(
             request.changesDateOrTime(
                 appointment.date,
@@ -54,7 +54,7 @@ class RescheduleAppointment(
             date = request.date
             startTime = ZonedDateTime.of(date, request.startTime, EuropeLondon)
             endTime = ZonedDateTime.of(date, request.endTime, EuropeLondon)
-            locationNotes?.also { appendNotes(it) }
+            appendNotes(listOfNotNull(locationNotes, request.notes))
             newStaff?.also { staff = it }
             newTeam?.also { team = it }
             newLocation?.also { location = it }

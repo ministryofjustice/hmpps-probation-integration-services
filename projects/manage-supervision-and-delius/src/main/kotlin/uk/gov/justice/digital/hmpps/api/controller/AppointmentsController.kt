@@ -11,7 +11,7 @@ import uk.gov.justice.digital.hmpps.service.RecreateAppointment
 import uk.gov.justice.digital.hmpps.service.RescheduleAppointment
 
 @RestController
-@Tag(name = "Sentence")
+@Tag(name = "Appointments")
 @RequestMapping("/appointments")
 @PreAuthorize("hasRole('PROBATION_API__MANAGE_A_SUPERVISION__CASE_DETAIL')")
 class AppointmentsController(
