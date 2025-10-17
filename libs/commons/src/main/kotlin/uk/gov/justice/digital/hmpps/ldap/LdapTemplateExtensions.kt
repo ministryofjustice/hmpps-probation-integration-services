@@ -7,6 +7,9 @@ import org.springframework.ldap.NameAlreadyBoundException
 import org.springframework.ldap.NameNotFoundException
 import org.springframework.ldap.core.AttributesMapper
 import org.springframework.ldap.core.LdapTemplate
+import org.springframework.ldap.filter.AndFilter
+import org.springframework.ldap.filter.EqualsFilter
+import org.springframework.ldap.filter.OrFilter
 import org.springframework.ldap.query.LdapQuery
 import org.springframework.ldap.query.LdapQueryBuilder
 import org.springframework.ldap.query.LdapQueryBuilder.query
@@ -18,6 +21,9 @@ import javax.naming.directory.Attributes
 import javax.naming.directory.BasicAttribute
 import javax.naming.directory.BasicAttributes
 
+val LdapTemplate.LDAP_MAX_RESULTS_PER_QUERY: Int
+    get() = 500
+
 fun LdapQueryBuilder.byUsername(username: String): LdapQuery =
     searchScope(SearchScope.ONELEVEL).where("cn").`is`(username)
 
@@ -27,6 +33,9 @@ inline fun <reified T> LdapTemplate.findByUsername(@SpanAttribute username: Stri
 
 @WithSpan
 fun LdapTemplate.findEmailByUsername(@SpanAttribute username: String) = findAttributeByUsername(username, "mail")
+
+@WithSpan
+fun LdapTemplate.findEmailByUsernames(usernames: List<String>) = findAttributeByUsernames(usernames, "mail")
 
 @WithSpan
 fun LdapTemplate.findAttributeByUsername(@SpanAttribute username: String, @SpanAttribute attribute: String) = try {
@@ -42,6 +51,25 @@ fun LdapTemplate.findAttributeByUsername(@SpanAttribute username: String, @SpanA
 } catch (_: NameNotFoundException) {
     throw NotFoundException("User", "username", username)
 }
+
+@WithSpan
+fun LdapTemplate.findAttributeByUsernames(usernames: List<String>, @SpanAttribute attribute: String) =
+    usernames.asSequence()
+        .distinct()
+        .chunked(LDAP_MAX_RESULTS_PER_QUERY)
+        .flatMap { usernames ->
+            val filter = AndFilter()
+                .and(EqualsFilter("objectclass", "inetOrgPerson"))
+                .and(EqualsFilter("objectclass", "top"))
+                .and(usernames.map { username -> EqualsFilter("cn", username) }.fold(OrFilter()) { a, b -> a.or(b) })
+            val query = query()
+                .attributes("cn", attribute)
+                .searchScope(SearchScope.ONELEVEL)
+                .filter(filter)
+            search(query, AttributesMapper { it["cn"]?.get()?.toString() to it[attribute]?.get()?.toString() })
+        }
+        .filter { it.first != null }
+        .associate { it.first!! to it.second }
 
 @WithSpan
 fun LdapTemplate.findPreferenceByUsername(@SpanAttribute username: String, @SpanAttribute attribute: String) = try {

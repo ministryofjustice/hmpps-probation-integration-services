@@ -51,6 +51,17 @@ internal class CaseDetailsIntegrationTest : BaseIntegrationTest() {
         assertThat(response.limitedAccess, equalTo(lad))
     }
 
+    @ParameterizedTest
+    @MethodSource("limitedAccess")
+    fun `LAO info for a Restricted Or Excluded`(person: Person, lad: LimitedAccessDetail) {
+        val response = mockMvc
+            .perform(get("/case/${person.crn}/access-limitations").withToken())
+            .andExpect(status().isOk)
+            .andReturn().response.contentAsJson<LimitedAccessDetail>()
+
+        assertThat(response, equalTo(lad))
+    }
+
     @Test
     fun `release details are correctly displayed`() {
         val person = PersonGenerator.WITH_RELEASE_DATE

@@ -42,6 +42,7 @@ on:
           - unpaid-work-and-delius-queue
           - workforce-allocations-to-delius-queue
           - suicide-risk-form-and-delius-queue
+          - community-payback-and-delius-queue
           # ^ add new queues here
 
 jobs:
