@@ -83,11 +83,11 @@ dependencyResolutionManagement {
             library("asyncapi", "org.openfolder:kotlin-asyncapi-spring-web:3.1.2")
             library("aws-s3", "io.awspring.cloud:spring-cloud-aws-starter-s3:3.4.0")
             library("aws-autoconfigure", "io.awspring.cloud:spring-cloud-aws-autoconfigure:3.4.0")
-            library("aws-query-protocol", "software.amazon.awssdk:aws-query-protocol:2.35.1")
+            library("aws-query-protocol", "software.amazon.awssdk:aws-query-protocol:2.35.5")
             library("aws-sns", "io.awspring.cloud:spring-cloud-aws-starter-sns:3.4.0")
             library("aws-sqs", "io.awspring.cloud:spring-cloud-aws-starter-sqs:3.4.0")
             library("aws-starter", "io.awspring.cloud:spring-cloud-aws-starter:3.4.0")
-            library("aws-sts", "software.amazon.awssdk:sts:2.35.1")
+            library("aws-sts", "software.amazon.awssdk:sts:2.35.5")
             library("azure-app-insights", "com.microsoft.azure:applicationinsights-web:3.7.5")
             library("azure-identity", "com.azure:azure-identity:1.18.0")
             library("flipt", "io.flipt:flipt-client-java:1.1.2")
@@ -102,7 +102,7 @@ dependencyResolutionManagement {
                 "opentelemetry-annotations",
                 "io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:2.20.1"
             )
-            library("sentry", "io.sentry:sentry-spring-boot-starter-jakarta:8.22.0")
+            library("sentry", "io.sentry:sentry-spring-boot-starter-jakarta:8.23.0")
             library("springdoc", "org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.13")
             library("wiremock", "org.wiremock:wiremock-standalone:3.13.1")
 
@@ -118,7 +118,7 @@ dependencyResolutionManagement {
 }
 
 plugins {
-    id("com.gradle.develocity") version "4.2.1"
+    id("com.gradle.develocity") version "4.2.2"
     id("com.github.burrunan.s3-build-cache") version "1.9.4"
 }
 
