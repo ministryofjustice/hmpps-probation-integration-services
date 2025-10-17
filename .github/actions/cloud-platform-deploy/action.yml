@@ -92,7 +92,7 @@ runs:
         set +o pipefail
         for attempt in $(seq 1 $MAX_ATTEMPTS); do
           echo "::group::Helm upgrade (attempt $attempt)"
-          exec helm upgrade '${PROJECT}' 'projects/${PROJECT}/deploy' \
+          exec helm upgrade "${PROJECT}" "projects/${PROJECT}/deploy" \
             --atomic \
             --history-max 10 \
             --force \

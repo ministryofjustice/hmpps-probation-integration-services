@@ -17,8 +17,8 @@ runs:
     - name: Get build info
       run: |
         echo '::group::Generate build info'
-        ./gradlew ${PROJECT}:buildInfo ${PROJECT}:gitInfo
-        sed -i "s/build.version=.*/build.version=$VERSION/" projects/${PROJECT}/build-info.properties
+        ./gradlew "${PROJECT}:buildInfo" "${PROJECT}:gitInfo"
+        sed -i "s/build.version=.*/build.version=$VERSION/" "projects/${PROJECT}/build-info.properties"
         echo '::endgroup::'
       shell: bash
       env:

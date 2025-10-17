@@ -25,13 +25,13 @@ runs:
     - name: Render project template
       shell: bash
       run: |
-        find templates/projects/$project_template -type f -exec sed -i 's/$SERVICE_NAME_CAMELCASE/${{ steps.project_name.outputs.camel_case }}/g' {} \;
-        find templates/projects/$project_template -type f -exec sed -i 's/$SERVICE_NAME_TITLECASE/${{ steps.project_name.outputs.title_case }}/g' {} \;
-        find templates/projects/$project_template -type f -exec sed -i 's/$SERVICE_NAME/'"${project_name}"'/g' {} \;
-        find templates/projects/$project_template -type f -exec sed -i 's/$SERVICE_BOOTSTRAP_DATE/'"$(date '+%Y-%m-%d')"'/g' {} \;
-        cp -R templates/projects/$project_template projects/$project_name
-        mv projects/${project_name}/tech-docs doc/tech-docs/source/projects/$project_name
-        sed -i '/add new projects here/a \    '"\"$project_name\""',' settings.gradle.kts
+        find "templates/projects/$project_template" -type f -exec sed -i 's/$SERVICE_NAME_CAMELCASE/${{ steps.project_name.outputs.camel_case }}/g' {} \;
+        find "templates/projects/$project_template" -type f -exec sed -i 's/$SERVICE_NAME_TITLECASE/${{ steps.project_name.outputs.title_case }}/g' {} \;
+        find "templates/projects/$project_template" -type f -exec sed -i 's/$SERVICE_NAME/'"${project_name}"'/g' {} \;
+        find "templates/projects/$project_template" -type f -exec sed -i 's/$SERVICE_BOOTSTRAP_DATE/'"$(date '+%Y-%m-%d')"'/g' {} \;
+        cp -R "templates/projects/$project_template" "projects/$project_name"
+        mv "projects/${project_name}/tech-docs" "doc/tech-docs/source/projects/$project_name"
+        sed -i '/add new projects here/a \    "'"$project_name"'",' settings.gradle.kts
         sed -i '/add new projects here/i \          - '"'"'["$project_name"]'"'"'' .github/workflows/access.yml
         sed -i '/add new projects here/i \          - '"$project_name" .github/workflows/build.yml
         sed -i '/add new projects here/i \          - '"$project_name" .github/workflows/deploy-branch.yml

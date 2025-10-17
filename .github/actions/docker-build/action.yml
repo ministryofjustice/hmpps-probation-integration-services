@@ -94,13 +94,13 @@ runs:
 
     - name: Output changes
       if: inputs.force != 'true'
-      run: echo '${{ steps.check-changes.outputs.projects }}' > ${project}-changes.json
+      run: echo '${{ steps.check-changes.outputs.projects }}' > "${project}-changes.json"
       shell: bash
       env:
         project: ${{ inputs.project }}
     - name: Force output changes
       if: inputs.force == 'true'
-      run: echo '["'"${project}"'"]' > ${project}-changes.json
+      run: echo '["'"${project}"'"]' > "${project}-changes.json"
       shell: bash
       env:
         project: ${{ inputs.project }}
