@@ -93,11 +93,23 @@ class Person(
     @Column(name = "current_remand_status")
     var remandStatus: String? = null,
 
-    @Column(name = "OFFENDER_DETAILS", columnDefinition = "clob")
+    @Column(name = "offender_details", columnDefinition = "clob")
     var notes: String? = null,
 
-    @Column(name = "DEFENDANT_ID")
+    @Column(name = "defendant_id")
     var defendantId: String? = null,
+
+    @ManyToOne
+    @JoinColumn(name = "nationality_id")
+    var nationality: ReferenceData? = null,
+
+    @ManyToOne
+    @JoinColumn(name = "second_nationality_id")
+    var secondNationality: ReferenceData? = null,
+
+    @ManyToOne
+    @JoinColumn(name = "ethnicity_id")
+    var ethnicity: ReferenceData? = null,
 
     @Column
     @Version

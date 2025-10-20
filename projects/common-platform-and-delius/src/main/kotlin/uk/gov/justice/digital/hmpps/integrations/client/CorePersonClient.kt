@@ -43,7 +43,9 @@ data class CreateCorePersonRequest(
     val contactDetails: ContactDetails,
     val addresses: List<Address>,
     val sentences: List<Sentence>,
-    val nationality: String?,
+    val nationality: CodeValue?,
+    val secondaryNationality: CodeValue?,
+    val ethnicity: CodeValue?,
     val gender: CodeValue
 )
 
