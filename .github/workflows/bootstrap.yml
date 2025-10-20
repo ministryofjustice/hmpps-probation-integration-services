@@ -148,7 +148,7 @@ jobs:
         run: |
           response=$(curl https://sentry.io/api/0/teams/ministryofjustice/probation-integration/projects/ --fail \
             -H "Authorization: Bearer $SENTRY_AUTH_TOKEN" \
-            -H 'Content-Type: application/json' --data '{"name":"$project_name"}')
+            -H 'Content-Type: application/json' --data '{"name":"'"$project_name"'"}')
           echo "slug=$(echo "$response" | jq -r '.slug')" | tee -a "$GITHUB_OUTPUT"
         env:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
@@ -259,7 +259,7 @@ jobs:
     if: ${{ inputs.create_queue }}
     steps:
       - id: project_name
-        run: echo "with_underscores_uppercase=$(echo $project_name | sed 's/-/_/g' | tr '[:lower:]' '[:upper:]')" | tee -a "$GITHUB_OUTPUT"
+        run: echo "with_underscores_uppercase=$(echo "$project_name" | sed 's/-/_/g' | tr '[:lower:]' '[:upper:]')" | tee -a "$GITHUB_OUTPUT"
         env:
           project_name: ${{ inputs.project_name }}
 
@@ -395,15 +395,15 @@ jobs:
           token: ${{ steps.app-token.outputs.token }}
 
       - name: Add Pingdom check
-        run: sed -i '/add new projects here/i \    "$project_name",' 'cloud-platform-environments-prod/namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-prod/resources/pingdom.tf'
+        run: sed -i '/add new projects here/i \    "'$project_name'",' 'cloud-platform-environments-prod/namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-prod/resources/pingdom.tf'
         env:
           project_name: ${{ inputs.project_name }}
 
       - name: Render certificate templates
         run: |
-          sed 's/$SERVICE_NAME/${project_name}/g;s/$SERVICE_URL/${project_name}-dev.hmpps.service.justice.gov.uk/g;s/$SERVICE_SHORT_URL/${{ steps.project_name.outputs.hash }}-dev.hmpps.service.justice.gov.uk/g;s/$ENV/dev/g' templates/certificate.yml >> 'cloud-platform-environments-dev/namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-dev/05-certificates.yml'
-          sed 's/$SERVICE_NAME/${project_name}/g;s/$SERVICE_URL/${project_name}-preprod.hmpps.service.justice.gov.uk/g;s/$SERVICE_SHORT_URL/${{ steps.project_name.outputs.hash }}-preprod.hmpps.service.justice.gov.uk/g;s/$ENV/preprod/g' templates/certificate.yml >> 'cloud-platform-environments-preprod/namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-preprod/05-certificates.yml'
-          sed 's/$SERVICE_NAME/${project_name}/g;s/$SERVICE_URL/${project_name}.hmpps.service.justice.gov.uk/g;s/$SERVICE_SHORT_URL/${{ steps.project_name.outputs.hash }}.hmpps.service.justice.gov.uk/g;s/$ENV/prod/g' templates/certificate.yml >> 'cloud-platform-environments-prod/namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-prod/05-certificates.yml'
+          sed 's/$SERVICE_NAME/'${project_name}'/g;s/$SERVICE_URL/'${project_name}'-dev.hmpps.service.justice.gov.uk/g;s/$SERVICE_SHORT_URL/${{ steps.project_name.outputs.hash }}-dev.hmpps.service.justice.gov.uk/g;s/$ENV/dev/g' templates/certificate.yml >> 'cloud-platform-environments-dev/namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-dev/05-certificates.yml'
+          sed 's/$SERVICE_NAME/'${project_name}'/g;s/$SERVICE_URL/'${project_name}'-preprod.hmpps.service.justice.gov.uk/g;s/$SERVICE_SHORT_URL/${{ steps.project_name.outputs.hash }}-preprod.hmpps.service.justice.gov.uk/g;s/$ENV/preprod/g' templates/certificate.yml >> 'cloud-platform-environments-preprod/namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-preprod/05-certificates.yml'
+          sed 's/$SERVICE_NAME/'${project_name}'/g;s/$SERVICE_URL/'${project_name}'.hmpps.service.justice.gov.uk/g;s/$SERVICE_SHORT_URL/${{ steps.project_name.outputs.hash }}.hmpps.service.justice.gov.uk/g;s/$ENV/prod/g' templates/certificate.yml >> 'cloud-platform-environments-prod/namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-prod/05-certificates.yml'
         env:
           project_name: ${{ inputs.project_name }}
 
