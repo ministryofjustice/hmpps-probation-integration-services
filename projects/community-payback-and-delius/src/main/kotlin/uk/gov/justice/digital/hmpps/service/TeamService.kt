@@ -2,8 +2,8 @@ package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.integrations.delius.TeamRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.toCodeDescription
 import uk.gov.justice.digital.hmpps.model.TeamsResponse
-import uk.gov.justice.digital.hmpps.model.toTeamDTO
 
 @Service
 class TeamService(
@@ -12,6 +12,6 @@ class TeamService(
     fun getUnpaidWorkTeams(providerCode: String): TeamsResponse {
         val teams = teamRepository.findUnpaidWorkTeamsByProviderCode(providerCode)
 
-        return TeamsResponse(teams = teams.map { it.toTeamDTO() })
+        return TeamsResponse(teams = teams.map { it.toCodeDescription() })
     }
 }

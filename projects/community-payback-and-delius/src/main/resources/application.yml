@@ -27,7 +27,7 @@ spring:
   threads.virtual.enabled: true
 
 oauth2.roles:
-  - EXAMPLE
+  - PROBATION_API__COMMUNITY_PAYBACK__CASE_DETAIL
 
 springdoc.default-produces-media-type: application/json
 

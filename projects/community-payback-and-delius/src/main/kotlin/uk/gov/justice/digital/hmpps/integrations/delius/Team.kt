@@ -5,6 +5,7 @@ import org.hibernate.annotations.Immutable
 import org.hibernate.type.YesNoConverter
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
+import uk.gov.justice.digital.hmpps.model.CodeDescription
 import java.time.LocalDate
 
 @Immutable
@@ -49,3 +50,8 @@ interface TeamRepository : JpaRepository<Team, Long> {
     )
     fun findUnpaidWorkTeamsByProviderCode(code: String): List<Team>
 }
+
+fun Team.toCodeDescription() = CodeDescription(
+    code = this.code,
+    description = this.description
+)
