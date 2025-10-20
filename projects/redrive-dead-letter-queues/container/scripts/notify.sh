@@ -103,7 +103,7 @@ curl -H "Authorization: Bearer $SLACK_TOKEN" --json "$(echo "$queue_stats_json" 
             "type": "plain_text",
             "text": ":prometheus: Prometheus"
           },
-          "url": "https://prometheus.live.cloud-platform.service.justice.gov.uk/graph?g0.expr=(sum%20by%20(queue_name)%20(aws_sqs_approximate_number_of_messages_visible_maximum%7Bqueue_name%3D~%22.*probation-integration-.*-dlq%22%7D%20offset%205m)%20%3E%200)&g0.tab=0&g0.display_mode=lines&g0.show_exemplars=0&g0.range_input=1d"
+          "url": "https://prometheus.live.cloud-platform.service.justice.gov.uk/graph?g0.expr=(sum%20by%20(queue_name)%20(aws_sqs_approximate_number_of_messages_visible_maximum%7Bqueue_name%3D~%22.*probation-integration-.*-dlq(%3F%3A%5C%5C.fifo)%3F%22%7D%20offset%205m)%20%3E%200)&g0.tab=0&g0.display_mode=lines&g0.show_exemplars=0&g0.range_input=1d"
         },
         {
           "type": "button",
