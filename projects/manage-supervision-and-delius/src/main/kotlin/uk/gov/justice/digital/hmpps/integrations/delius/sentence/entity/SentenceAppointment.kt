@@ -28,7 +28,7 @@ import java.time.format.DateTimeFormatter
 @Table(name = "contact")
 @SequenceGenerator(name = "contact_id_generator", sequenceName = "contact_id_seq", allocationSize = 1)
 @SQLRestriction("soft_deleted = 0")
-class Appointment(
+class SentenceAppointment(
     @ManyToOne
     @JoinColumn(name = "offender_id")
     val person: Person,
@@ -52,6 +52,7 @@ class Appointment(
     @Column(name = "contact_end_time")
     val endTime: ZonedDateTime?,
 
+    @Column(name = "probation_area_id")
     val probationAreaId: Long? = null,
 
     val externalReference: String? = null,
@@ -133,7 +134,7 @@ interface StaffAppointment {
     val surname: String
 }
 
-interface AppointmentRepository : JpaRepository<Appointment, Long> {
+interface SentenceAppointmentRepository : JpaRepository<SentenceAppointment, Long> {
 
     @Query(
         """
@@ -180,14 +181,10 @@ interface AppointmentRepository : JpaRepository<Appointment, Long> {
         endTime: String
     ): Int
 
-    fun findByExternalReference(externalReference: String): Appointment?
+    fun findByExternalReference(externalReference: String): SentenceAppointment?
 }
 
-fun AppointmentRepository.getByExternalReference(externalReference: String): Appointment? {
-    return findByExternalReference(externalReference)
-}
-
-fun AppointmentRepository.appointmentClashes(
+fun SentenceAppointmentRepository.appointmentClashes(
     personId: Long,
     date: LocalDate,
     startTime: ZonedDateTime,
@@ -199,7 +196,7 @@ fun AppointmentRepository.appointmentClashes(
     endTime.format(DateTimeFormatter.ISO_LOCAL_TIME.withZone(ZoneId.systemDefault()))
 ) > 0
 
-fun AppointmentRepository.staffAppointmentClashes(
+fun SentenceAppointmentRepository.staffAppointmentClashes(
     personId: Long,
     date: LocalDate,
     startTime: ZonedDateTime,
