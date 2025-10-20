@@ -1,0 +1,29 @@
+# Common values
+generic-service:
+  productId: HMPPS518
+  nameOverride: community-payback-and-delius
+  serviceAccountName: community-payback-and-delius
+
+  image:
+    repository: ghcr.io/ministryofjustice/hmpps-probation-integration-services/community-payback-and-delius
+
+  ingress:
+    tlsSecretName: community-payback-and-delius-cert
+
+  namespace_secrets:
+    common:
+      SPRING_DATASOURCE_URL: DB_URL
+    community-payback-and-delius-client-credentials:
+      OAUTH2_CLIENT-ID: CLIENT_ID
+      OAUTH2_CLIENT-SECRET: CLIENT_SECRET
+    community-payback-and-delius-database:
+      SPRING_DATASOURCE_USERNAME: DB_USERNAME
+      SPRING_DATASOURCE_PASSWORD: DB_PASSWORD
+    community-payback-and-delius-sentry:
+      SENTRY_DSN: SENTRY_DSN
+    community-payback-and-delius-queue:
+      MESSAGING_CONSUMER_QUEUE: QUEUE_NAME
+
+generic-prometheus-alerts:
+  targetApplication: community-payback-and-delius
+

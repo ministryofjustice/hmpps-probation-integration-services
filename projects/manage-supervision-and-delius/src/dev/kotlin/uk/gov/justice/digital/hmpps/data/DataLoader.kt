@@ -12,7 +12,7 @@ import uk.gov.justice.digital.hmpps.data.generator.*
 import uk.gov.justice.digital.hmpps.data.generator.CourtAppearanceGenerator.COURT_APPEARANCE
 import uk.gov.justice.digital.hmpps.data.generator.personalDetails.PersonDetailsGenerator
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractionCode
-import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.AppointmentRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.SentenceAppointmentRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.user.entity.UserRepository
 import java.time.ZonedDateTime
 
@@ -21,7 +21,7 @@ import java.time.ZonedDateTime
 class DataLoader(
     private val entityManager: EntityManager,
     private val userRepository: UserRepository,
-    private val appointmentRepository: AppointmentRepository
+    private val sentenceAppointmentRepository: SentenceAppointmentRepository
 ) : ApplicationListener<ApplicationReadyEvent> {
 
     @PostConstruct
@@ -37,6 +37,8 @@ class DataLoader(
         }
         entityManager.persistAll(
             AppointmentGenerator.ATTENDED_COMPLIED,
+            AppointmentGenerator.POP_RESCHEDULED_OUTCOME,
+            AppointmentGenerator.SERVICE_RESCHEDULED_OUTCOME,
             *AppointmentGenerator.APPOINTMENT_TYPES.toTypedArray(),
             *AppointmentGenerator.CONTACT_TYPE_OUTCOMES.toTypedArray(),
             ContactGenerator.DEFAULT_PROVIDER,
@@ -298,7 +300,14 @@ class DataLoader(
         entityManager.persist(LimitedAccessGenerator.BOTH_EXCLUSION)
         entityManager.persist(LimitedAccessGenerator.BOTH_RESTRICTION)
 
-        appointmentRepository.saveAndFlush(AppointmentGenerator.PERSON_APPOINTMENT)
+        sentenceAppointmentRepository.saveAndFlush(AppointmentGenerator.PERSON_APPOINTMENT)
+
+        entityManager.persistAll(
+            PersonGenerator.RESCHEDULED_PERSON_1,
+            PersonGenerator.RESCHEDULED_PERSON_2,
+            PersonGenerator.RECREATE_APPT_PERSON_1,
+            PersonGenerator.RECREATE_APPT_PERSON_2,
+        )
     }
 
     private fun EntityManager.persistAll(vararg entities: Any) {

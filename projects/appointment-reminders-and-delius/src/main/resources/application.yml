@@ -19,6 +19,8 @@ spring:
     base: ou=Users,dc=moj,dc=com
     base-environment:
       java.naming.ldap.derefAliases: never
+  data.rest.max-page-size: 100000
+  data.web.pageable.max-page-size: 100000
 
 oauth2.roles:
   - PROBATION_API__REMINDERS__UPW_APPOINTMENTS

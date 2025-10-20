@@ -21,7 +21,6 @@ import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.test.CustomMatchers.isCloseTo
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withJson
-import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 import java.time.ZonedDateTime
 import java.util.*
 
@@ -53,7 +52,7 @@ class AppointmentOutcomeIntegrationTest : IntegrationTestBase() {
     @Test
     fun `outcome updated`() {
         val response = createAppointment()
-        val createdAppointment = appointmentRepository.findById(response.appointments[0].id).get()
+        val createdAppointment = sentenceAppointmentRepository.findById(response.appointments[0].id).get()
 
         assertNull(createdAppointment.attended)
         assertNull(createdAppointment.complied)
@@ -71,7 +70,7 @@ class AppointmentOutcomeIntegrationTest : IntegrationTestBase() {
             )
             .andExpect(MockMvcResultMatchers.status().isOk)
 
-        val updatedAppointment = appointmentRepository.findById(response.appointments[0].id).get()
+        val updatedAppointment = sentenceAppointmentRepository.findById(response.appointments[0].id).get()
 
         assertEquals("Y", updatedAppointment.attended)
         assertEquals("Y", updatedAppointment.complied)
@@ -89,7 +88,7 @@ class AppointmentOutcomeIntegrationTest : IntegrationTestBase() {
         assertThat(updatedAppointment.probationAreaId, equalTo(createdAppointment.probationAreaId))
         assertThat(updatedAppointment.officeLocationId, equalTo(createdAppointment.officeLocationId))
 
-        appointmentRepository.delete(updatedAppointment)
+        sentenceAppointmentRepository.delete(updatedAppointment)
     }
 
     private fun createAppointment() = mockMvc.perform(
