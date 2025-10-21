@@ -27,7 +27,7 @@ class ProbationAreaUserId(
 
 interface ProbationAreaUserRepository : JpaRepository<ProbationAreaUser, Long> {
     @Query(
-    """
+        """
         select pau from ProbationAreaUser pau 
         join fetch pau.id.provider 
         where upper(pau.id.user.username) = upper(:username) 

@@ -11,7 +11,7 @@ import org.springframework.data.jpa.repository.Query
 @Entity
 @Immutable
 @Table(name = "user_")
-class User (
+class User(
     @Id
     @Column(name = "user_id")
     val id: Long,
