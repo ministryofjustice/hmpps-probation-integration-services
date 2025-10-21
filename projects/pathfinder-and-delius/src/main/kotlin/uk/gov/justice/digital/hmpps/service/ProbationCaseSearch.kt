@@ -71,7 +71,7 @@ private fun DetailPerson.toProbationCase(includeAliases: Boolean) = OffenderDeta
     mappa = mappaRegistrations.firstOrNull()?.asMappaDetails()
 )
 
-private fun Registration.asMappaDetails() = MappaDetails(
+fun Registration.asMappaDetails() = MappaDetails(
     level = when (level?.code) {
         "M1" -> 1; "M2" -> 2; "M3" -> 3; else -> 0
     },
