@@ -14,13 +14,13 @@ servers:
 security:
 - hmpps-auth-token: []
 paths:
-  /example/{inputId}:
+  /providers/{code}/teams:
     get:
       tags:
-      - api-controller
-      operationId: handle
+      - providers-controller
+      operationId: getTeams
       parameters:
-      - name: inputId
+      - name: code
         in: path
         required: true
         schema:
@@ -28,6 +28,10 @@ paths:
       responses:
         "200":
           description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TeamsResponse"
   /docs/asyncapi:
     get:
       tags:
@@ -41,6 +45,26 @@ paths:
               schema:
                 type: string
 components:
+  schemas:
+    CodeDescription:
+      type: object
+      properties:
+        code:
+          type: string
+        description:
+          type: string
+      required:
+      - code
+      - description
+    TeamsResponse:
+      type: object
+      properties:
+        teams:
+          type: array
+          items:
+            $ref: "#/components/schemas/CodeDescription"
+      required:
+      - teams
   securitySchemes:
     hmpps-auth-token:
       type: http

@@ -14,6 +14,52 @@ servers:
 security:
 - hmpps-auth-token: []
 paths:
+  /appointments/{id}/reschedule:
+    put:
+      tags:
+      - Appointments
+      operationId: rescheduleAppointment
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RescheduleAppointmentRequest"
+        required: true
+      responses:
+        "200":
+          description: OK
+  /appointments/{id}/recreate:
+    put:
+      tags:
+      - Appointments
+      operationId: recreateAppointment
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RecreateAppointmentRequest"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RecreatedAppointment"
   /alerts:
     get:
       tags:
@@ -1752,6 +1798,68 @@ paths:
                 $ref: "#/components/schemas/ProviderOfficeLocation"
 components:
   schemas:
+    RescheduleAppointmentRequest:
+      type: object
+      properties:
+        date:
+          type: string
+          format: date
+        startTime:
+          type: string
+        endTime:
+          type: string
+        staffCode:
+          type: string
+        teamCode:
+          type: string
+        locationCode:
+          type: string
+        notes:
+          type: string
+        sensitive:
+          type: boolean
+      required:
+      - date
+      - endTime
+      - startTime
+    RecreateAppointmentRequest:
+      type: object
+      properties:
+        date:
+          type: string
+          format: date
+        startTime:
+          type: string
+        endTime:
+          type: string
+        staffCode:
+          type: string
+        teamCode:
+          type: string
+        locationCode:
+          type: string
+        notes:
+          type: string
+        sensitive:
+          type: boolean
+        requestedBy:
+          type: string
+          enum:
+          - POP
+          - SERVICE
+      required:
+      - date
+      - endTime
+      - requestedBy
+      - startTime
+    RecreatedAppointment:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+      required:
+      - id
     ClearAlerts:
       type: object
       properties:
