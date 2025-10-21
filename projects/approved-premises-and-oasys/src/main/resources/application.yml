@@ -14,7 +14,6 @@ spring:
     provider:
       ords-oasys-auth:
         token-uri: http://localhost:${wiremock.port}/eor/oasys/oauth/token
-  threads.virtual.enabled: true
 
 oauth2.roles:
   - PROBATION_API__APPROVED_PREMISES__ASSESSMENTS
