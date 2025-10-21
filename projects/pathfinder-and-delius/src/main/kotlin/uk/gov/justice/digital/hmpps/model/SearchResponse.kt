@@ -5,7 +5,7 @@ import java.time.LocalDate
 // Using probation offender search model as fields used in csv reports so need to match existing schema
 data class OffenderDetail(
     val firstName: String? = null,
-    val middleNames: List<String>? = null,
+    val middleNames: List<String>? = emptyList(),
     val surname: String? = null,
     val dateOfBirth: LocalDate? = null,
     val gender: String? = null,
@@ -13,6 +13,7 @@ data class OffenderDetail(
     val offenderProfile: OffenderProfile? = null,
     val offenderAliases: List<OffenderAlias>? = null,
     val offenderManagers: List<OffenderManager>? = null,
+    val mappa: MappaDetails? = null,
 )
 
 data class IDs(
@@ -44,11 +45,23 @@ data class StaffHuman(
 data class SearchResponseTeam(
     val code: String? = null,
     val description: String? = null,
-    val localDeliveryUnit: KeyValue? = null,
     val district: KeyValue? = null,
 )
 
 data class KeyValue(
     val code: String? = null,
     val description: String? = null,
+)
+
+data class MappaDetails(
+    val level: Int? = null,
+    val levelDescription: String? = null,
+    val category: Int? = null,
+    val categoryDescription: String? = null,
+    val startDate: LocalDate? = null,
+    val reviewDate: LocalDate? = null,
+    val team: KeyValue? = null,
+    val officer: StaffHuman? = null,
+    val probationArea: KeyValue? = null,
+    val notes: String? = null,
 )

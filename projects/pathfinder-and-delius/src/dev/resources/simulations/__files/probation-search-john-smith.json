@@ -24,12 +24,12 @@
         "team": {
           "code": "LNDMCD",
           "description": "Description of LNCMCD",
-          "localDeliveryUnit" : {
+          "district": {
             "code": "KK",
             "description": "Kings Cross"
           }
         },
-        "probationArea" : {
+        "probationArea": {
           "code": "LDN",
           "description": "London",
           "localDeliveryUnits": []
@@ -37,6 +37,29 @@
         "active": true
       }
     ],
+    "mappa": {
+      "level": 1,
+      "levelDescription": "MAPPA Level 1",
+      "category": 4,
+      "categoryDescription": "MAPPA Category 4",
+      "startDate": "2024-12-31",
+      "reviewDate": "2026-12-31",
+      "team": {
+        "code": "LNDMCD",
+        "description": "Description of LNCMCD"
+      },
+      "officer": {
+        "code": "LNDMCDS",
+        "forenames": "Simon",
+        "surname": "Smith",
+        "unallocated": false
+      },
+      "probationArea": {
+        "code": "LDN",
+        "description": "London"
+      },
+      "notes": "Some notes"
+    },
     "offenderAliases": [],
     "currentRestriction": false,
     "currentExclusion": false,
@@ -67,12 +90,12 @@
         "team": {
           "code": "LNDMCD",
           "description": "Description of LNCMCD",
-          "localDeliveryUnit" : {
+          "district": {
             "code": "KK",
             "description": "Kings Cross"
           }
         },
-        "probationArea" : {
+        "probationArea": {
           "code": "LDN",
           "description": "London",
           "localDeliveryUnits": []

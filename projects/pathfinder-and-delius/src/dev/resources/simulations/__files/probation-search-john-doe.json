@@ -25,12 +25,12 @@
         "team": {
           "code": "LNDMCD",
           "description": "Description of LNCMCD",
-          "localDeliveryUnit" : {
+          "district": {
             "code": "KK",
             "description": "Kings Cross"
           }
         },
-        "probationArea" : {
+        "probationArea": {
           "code": "LDN",
           "description": "London",
           "localDeliveryUnits": []

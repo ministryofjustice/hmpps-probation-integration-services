@@ -1,8 +1,14 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
 import uk.gov.justice.digital.hmpps.data.generator.DetailsGenerator.MALE
+import uk.gov.justice.digital.hmpps.data.generator.DetailsGenerator.STAFF
+import uk.gov.justice.digital.hmpps.data.generator.DetailsGenerator.TEAM
 import uk.gov.justice.digital.hmpps.data.generator.DetailsGenerator.generatePerson
+import uk.gov.justice.digital.hmpps.data.generator.IdGenerator.id
 import uk.gov.justice.digital.hmpps.entity.PersonAlias
+import uk.gov.justice.digital.hmpps.entity.ReferenceData
+import uk.gov.justice.digital.hmpps.entity.RegisterType
+import uk.gov.justice.digital.hmpps.entity.Registration
 import java.time.LocalDate
 
 object SearchGenerator {
@@ -23,5 +29,31 @@ object SearchGenerator {
         MALE,
         false,
         IdGenerator.getAndIncrement(),
+    )
+
+    val REGISTRATION_1 = Registration(
+        id = id(),
+        person = JOHN_SMITH_1,
+        type = RegisterType(id(), "TYPE1", "Registration type"),
+        category = null,
+        level = null,
+        team = TEAM,
+        staff = STAFF,
+        date = LocalDate.of(2024, 12, 31),
+        nextReviewDate = LocalDate.of(2026, 12, 31),
+        notes = "Some notes"
+    )
+
+    val REGISTRATION_2 = Registration(
+        id = id(),
+        person = JOHN_SMITH_1,
+        type = RegisterType(id(), "MAPP", "MAPPA type"),
+        level = ReferenceData(id(), "M1", "MAPPA Level 1"),
+        category = ReferenceData(id(), "M4", "MAPPA Category 4"),
+        team = TEAM,
+        staff = STAFF,
+        date = LocalDate.of(2024, 12, 31),
+        nextReviewDate = LocalDate.of(2026, 12, 31),
+        notes = "Some notes"
     )
 }
