@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.config.security
 
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.core.task.SimpleAsyncTaskExecutor
 import org.springframework.http.client.JdkClientHttpRequestFactory
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientManager
 import org.springframework.web.client.HttpClientErrorException
@@ -26,8 +27,12 @@ class HmppsAuthClientConfig(
 }
 
 fun withTimeouts(connection: Duration, read: Duration) =
-    JdkClientHttpRequestFactory(HttpClient.newBuilder().connectTimeout(connection).build())
-        .also { it.setReadTimeout(read) }
+    JdkClientHttpRequestFactory(
+        HttpClient.newBuilder()
+            .connectTimeout(connection)
+            .executor(SimpleAsyncTaskExecutor().apply { concurrencyLimit = 80 })
+            .build()
+    ).also { it.setReadTimeout(read) }
 
 inline fun <reified T> createClient(client: RestClient): T {
     return HttpServiceProxyFactory.builderFor(RestClientAdapter.create(client)).build()

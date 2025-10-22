@@ -6,12 +6,14 @@ import com.asyncapi.kotlinasyncapi.annotation.channel.Publish
 import org.springframework.stereotype.Component
 import uk.gov.justice.digital.hmpps.converter.NotificationConverter
 import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException
+import uk.gov.justice.digital.hmpps.logging.LazyLogger.logger
 import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
 import uk.gov.justice.digital.hmpps.message.Notification
 import uk.gov.justice.digital.hmpps.messaging.Handler.Companion.CHECK_IN_EXPIRED
 import uk.gov.justice.digital.hmpps.messaging.Handler.Companion.CHECK_IN_RECEIVED
 import uk.gov.justice.digital.hmpps.service.CheckInService
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
+import java.util.concurrent.TimeUnit
 
 @Component
 @Channel("esupervision-and-delius-queue")
@@ -20,8 +22,11 @@ class Handler(
     val checkInService: CheckInService,
     val telemetryService: TelemetryService,
 ) : NotificationHandler<HmppsDomainEvent> {
+    private val log = logger().value
+
     @Publish(messages = [Message(title = CHECK_IN_RECEIVED), Message(title = CHECK_IN_EXPIRED)])
-    override fun handle(notification: Notification<HmppsDomainEvent>) {
+    override fun handle(notification: Notification<HmppsDomainEvent>) = try {
+        log.info("Receiving ${notification.eventType} => ${notification.id}")
         when (notification.eventType) {
             CHECK_IN_RECEIVED, CHECK_IN_EXPIRED -> try {
                 checkInService.handle(notification.message)
@@ -41,8 +46,15 @@ class Handler(
                 )
             }
 
-            else -> throw IllegalArgumentException("Unexpected event type: ${notification.eventType}")
+            else -> {
+                log.info("Processing ${notification.eventType} => ${notification.id}")
+                TimeUnit.SECONDS.sleep(5)
+            }
         }
+        log.info("Returning ${notification.eventType} => ${notification.id}")
+    } catch (e: Exception) {
+        log.error("Error during handling of ${notification.eventType} => ${notification.id}")
+        throw e
     }
 
     companion object {
