@@ -92,6 +92,12 @@ class DataLoader(
             SearchGenerator.JOHN_SMITH_1_ALIAS,
             SearchGenerator.JOHN_SMITH_2,
             generatePersonManager(SearchGenerator.JOHN_SMITH_2),
+            SearchGenerator.REGISTRATION_1.type,
+            SearchGenerator.REGISTRATION_1,
+            SearchGenerator.REGISTRATION_2.type,
+            SearchGenerator.REGISTRATION_2.category!!,
+            SearchGenerator.REGISTRATION_2.level!!,
+            SearchGenerator.REGISTRATION_2,
         )
 
         em.createNativeQuery(

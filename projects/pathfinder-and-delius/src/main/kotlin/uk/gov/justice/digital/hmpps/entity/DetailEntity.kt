@@ -16,6 +16,7 @@ import uk.gov.justice.digital.hmpps.entity.DetailPerson.Companion.NOMS
 import uk.gov.justice.digital.hmpps.entity.DetailPerson.Companion.PNC
 import uk.gov.justice.digital.hmpps.entity.DetailPerson.Companion.SURNAME
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
+import uk.gov.justice.digital.hmpps.model.StaffHuman
 import java.time.LocalDate
 
 @Immutable
@@ -57,6 +58,10 @@ class DetailPerson(
 
     @OneToMany(mappedBy = "person")
     val offenderAliases: List<PersonAlias>,
+
+    @OneToMany(mappedBy = "person")
+    @SQLRestriction("register_type_id = (select rt.register_type_id from r_register_type rt where rt.code = '${RegisterType.MAPPA_TYPE}')")
+    val mappaRegistrations: List<Registration>,
 
     @Column(name = "date_of_birth_date")
     val dateOfBirth: LocalDate,
@@ -140,6 +145,7 @@ class DetailStaff(
     val id: Long
 ) {
     fun unallocated(): Boolean = code.endsWith("U")
+    fun toStaffHuman(): StaffHuman = StaffHuman(code, forename, surname, unallocated())
 }
 
 @Entity
@@ -238,6 +244,74 @@ class PersonAlias(
     @Column(name = "alias_id")
     val aliasID: Long,
 )
+
+@Entity
+@Immutable
+@SQLRestriction("soft_deleted = 0 and deregistered = 0")
+class Registration(
+    @Id
+    @Column(name = "registration_id")
+    val id: Long,
+
+    @ManyToOne
+    @JoinColumn(name = "offender_id")
+    val person: DetailPerson,
+
+    @ManyToOne
+    @JoinColumn(name = "register_type_id")
+    val type: RegisterType,
+
+    @ManyToOne
+    @JoinColumn(name = "register_category_id")
+    val category: ReferenceData?,
+
+    @ManyToOne
+    @JoinColumn(name = "register_level_id")
+    val level: ReferenceData?,
+
+    @ManyToOne
+    @JoinColumn(name = "registering_team_id")
+    val team: Team,
+
+    @ManyToOne
+    @JoinColumn(name = "registering_staff_id")
+    val staff: DetailStaff,
+
+    val nextReviewDate: LocalDate?,
+
+    @Column(name = "registration_notes", columnDefinition = "clob")
+    val notes: String?,
+
+    @Column(name = "registration_date")
+    val date: LocalDate,
+
+    @Column(name = "soft_deleted", columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
+    val softDeleted: Boolean = false,
+
+    @Column(columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
+    val deregistered: Boolean = false
+)
+
+@Immutable
+@Entity
+@Table(name = "r_register_type")
+class RegisterType(
+    @Id
+    @Column(name = "register_type_id")
+    val id: Long,
+
+    @Column
+    val code: String,
+
+    @Column
+    val description: String
+) {
+    companion object {
+        const val MAPPA_TYPE = "MAPP"
+    }
+}
 
 interface DetailRepository : JpaRepository<DetailPerson, Long>, JpaSpecificationExecutor<DetailPerson> {
     @EntityGraph(

@@ -60,22 +60,40 @@ private fun SearchRequest.asSpecification(): Specification<DetailPerson> = listO
 
 private fun DetailPerson.toProbationCase(includeAliases: Boolean) = OffenderDetail(
     firstName = forename,
+    middleNames = listOfNotNull(secondName, thirdName),
     surname = surname,
     dateOfBirth = dateOfBirth,
     gender = gender.description,
     otherIds = IDs(crn, nomsNumber, pncNumber),
     offenderProfile = OffenderProfile(ethnicity?.description, nationality?.description, religion?.description),
     offenderManagers = personManager.map { it.asOffenderManager() },
-    offenderAliases = if (includeAliases) offenderAliases.map { it.asProbationAlias() } else emptyList()
+    offenderAliases = if (includeAliases) offenderAliases.map { it.asProbationAlias() } else emptyList(),
+    mappa = mappaRegistrations.firstOrNull()?.asMappaDetails()
+)
+
+fun Registration.asMappaDetails() = MappaDetails(
+    level = when (level?.code) {
+        "M1" -> 1; "M2" -> 2; "M3" -> 3; else -> 0
+    },
+    levelDescription = level?.description ?: "Missing Level",
+    category = when (category?.code) {
+        "M1" -> 1; "M2" -> 2; "M3" -> 3; "M4" -> 4; else -> 0
+    },
+    categoryDescription = category?.description ?: "Missing category",
+    startDate = date,
+    reviewDate = nextReviewDate,
+    team = KeyValue(team.code, team.description),
+    officer = staff.toStaffHuman(),
+    probationArea = KeyValue(team.probationArea.code, team.probationArea.description),
+    notes = notes
 )
 
 private fun PersonManager.asOffenderManager() = OffenderManager(
-    staff = StaffHuman(staff.code, staff.forename, staff.surname, staff.unallocated()),
+    staff = staff.toStaffHuman(),
     team = SearchResponseTeam(
         team.code,
         team.description,
         KeyValue(team.district.code, team.district.description),
-        KeyValue(team.district.code, team.district.description)
     ),
     probationArea = ProbationArea(probationArea.code, probationArea.description, listOf()),
     active = active,

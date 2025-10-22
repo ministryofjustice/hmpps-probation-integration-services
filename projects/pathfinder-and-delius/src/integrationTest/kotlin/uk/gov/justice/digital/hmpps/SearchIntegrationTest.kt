@@ -5,8 +5,10 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
+import org.springframework.test.json.JsonCompareMode
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import uk.gov.justice.digital.hmpps.data.generator.DetailsGenerator
 import uk.gov.justice.digital.hmpps.data.generator.SearchGenerator
@@ -15,16 +17,7 @@ import uk.gov.justice.digital.hmpps.data.generator.SearchGenerator.JOHN_SMITH_1_
 import uk.gov.justice.digital.hmpps.data.generator.SearchGenerator.JOHN_SMITH_2
 import uk.gov.justice.digital.hmpps.entity.DetailPerson
 import uk.gov.justice.digital.hmpps.entity.PersonAlias
-import uk.gov.justice.digital.hmpps.model.IDs
-import uk.gov.justice.digital.hmpps.model.KeyValue
-import uk.gov.justice.digital.hmpps.model.OffenderAlias
-import uk.gov.justice.digital.hmpps.model.OffenderDetail
-import uk.gov.justice.digital.hmpps.model.OffenderManager
-import uk.gov.justice.digital.hmpps.model.OffenderProfile
-import uk.gov.justice.digital.hmpps.model.ProbationArea
-import uk.gov.justice.digital.hmpps.model.SearchRequest
-import uk.gov.justice.digital.hmpps.model.SearchResponseTeam
-import uk.gov.justice.digital.hmpps.model.StaffHuman
+import uk.gov.justice.digital.hmpps.model.*
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.andExpectJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
@@ -53,31 +46,183 @@ class SearchIntegrationTest {
             person.crn,
             person.nomsNumber
         )
+        val expectedJson = /* language=json */ """
+        [
+          {
+            "firstName": "John",
+            "middleNames": [],
+            "surname": "Doe",
+            "dateOfBirth": "1998-02-23",
+            "gender": "MALE",
+            "otherIds": {
+              "crn": "S123456",
+              "nomsNumber": "S3477CH",
+              "pncNumber": "1964/8284523P"
+            },
+            "offenderProfile": {
+              "nationality": "BRITISH",
+              "religion": "Jedi"
+            },
+            "offenderAliases": [],
+            "offenderManagers": [
+              {
+                "staff": {
+                  "code": "LNDMCDS",
+                  "forenames": "Simon",
+                  "surname": "Smith",
+                  "unallocated": false
+                },
+                "team": {
+                  "code": "LNDMCD",
+                  "description": "Description of LNCMCD",
+                  "district": {
+                    "code": "KK",
+                    "description": "Kings Cross"
+                  }
+                },
+                "probationArea": {
+                  "code": "LDN",
+                  "description": "London",
+                  "localDeliveryUnits": []
+                },
+                "active": true
+              }
+            ]
+          }
+        ]
+        """.trimIndent()
 
         mockMvc
             .perform(post("/search/probation-cases").withToken().withJson(request))
             .andExpect(status().is2xxSuccessful)
-            .andExpectJson(listOf(person.asProbationCase()))
+            .andExpect(content().json(expectedJson, JsonCompareMode.STRICT))
 
         mockMvc
             .perform(post("/search/probation-cases?useSearch=false").withToken().withJson(request))
             .andExpect(status().is2xxSuccessful)
-            .andExpectJson(listOf(person.asProbationCase()))
+            .andExpect(content().json(expectedJson, JsonCompareMode.STRICT))
     }
 
     @Test
     fun `can find all matching names`() {
         val request = SearchRequest("John", "Smith")
+        val expectedJson = /* language=json */ """
+        [
+          {
+            "firstName": "John",
+            "middleNames": [],
+            "surname": "Smith",
+            "dateOfBirth": "1998-01-01",
+            "gender": "MALE",
+            "otherIds": {
+              "crn": "S223456",
+              "nomsNumber": "S3478CH"
+            },
+            "offenderProfile": {
+              "nationality": "BRITISH",
+              "religion": "Jedi"
+            },
+            "offenderAliases": [],
+            "offenderManagers": [
+              {
+                "staff": {
+                  "code": "LNDMCDS",
+                  "forenames": "Simon",
+                  "surname": "Smith",
+                  "unallocated": false
+                },
+                "team": {
+                  "code": "LNDMCD",
+                  "description": "Description of LNCMCD",
+                  "district": {
+                    "code": "KK",
+                    "description": "Kings Cross"
+                  }
+                },
+                "probationArea": {
+                  "code": "LDN",
+                  "description": "London",
+                  "localDeliveryUnits": []
+                },
+                "active": true
+              }
+            ],
+            "mappa": {
+              "level": 1,
+              "levelDescription": "MAPPA Level 1",
+              "category": 4,
+              "categoryDescription": "MAPPA Category 4",
+              "startDate": "2024-12-31",
+              "reviewDate": "2026-12-31",
+              "team": {
+                "code": "LNDMCD",
+                "description": "Description of LNCMCD"
+              },
+              "officer": {
+                "code": "LNDMCDS",
+                "forenames": "Simon",
+                "surname": "Smith",
+                "unallocated": false
+              },
+              "probationArea": {
+                "code": "LDN",
+                "description": "London"
+              },
+              "notes": "Some notes"
+            }
+          },
+          {
+            "firstName": "John",
+            "middleNames": [],
+            "surname": "Smith",
+            "dateOfBirth": "1998-12-12",
+            "gender": "MALE",
+            "otherIds": {
+              "crn": "S223457",
+              "nomsNumber": "S3479CH"
+            },
+            "offenderProfile": {
+              "nationality": "BRITISH",
+              "religion": "Jedi"
+            },
+            "offenderAliases": [],
+            "offenderManagers": [
+              {
+                "staff": {
+                  "code": "LNDMCDS",
+                  "forenames": "Simon",
+                  "surname": "Smith",
+                  "unallocated": false
+                },
+                "team": {
+                  "code": "LNDMCD",
+                  "description": "Description of LNCMCD",
+                  "district": {
+                    "code": "KK",
+                    "description": "Kings Cross"
+                  }
+                },
+                "probationArea": {
+                  "code": "LDN",
+                  "description": "London",
+                  "localDeliveryUnits": []
+                },
+                "active": true
+              }
+            ]
+          }
+        ]
+        """.trimIndent()
 
         mockMvc
             .perform(post("/search/probation-cases").withToken().withJson(request))
             .andExpect(status().is2xxSuccessful)
-            .andExpectJson(listOf(JOHN_SMITH_1.asProbationCase(), JOHN_SMITH_2.asProbationCase()))
+            .andExpect(content().json(expectedJson, JsonCompareMode.STRICT))
 
         mockMvc
             .perform(post("/search/probation-cases?useSearch=false").withToken().withJson(request))
             .andExpect(status().is2xxSuccessful)
-            .andExpectJson(listOf(JOHN_SMITH_1.asProbationCase(), JOHN_SMITH_2.asProbationCase()))
+            .andExpect(content().json(expectedJson, JsonCompareMode.STRICT))
     }
 
     @Test
