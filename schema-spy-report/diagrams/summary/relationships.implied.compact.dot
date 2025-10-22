@@ -500,7 +500,7 @@ digraph "compactImpliedRelationshipsDiagram" {
     <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
       <TR><TD COLSPAN="3"  BGCOLOR="#f5f5f5"><TABLE BORDER="0" CELLSPACING="0"><TR><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="179" HEIGHT="16"><B>R_STANDARD_REFERENCE_LIST</B></TD><TD ALIGN="RIGHT">[table]</TD></TR></TABLE></TD></TR>
       <TR><TD PORT="elipses" COLSPAN="3" ALIGN="LEFT">...</TD></TR>
-      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 1</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">325 &gt;</TD></TR>
+      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 1</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">327 &gt;</TD></TR>
     </TABLE>>
     URL="tables/R_STANDARD_REFERENCE_LIST.html"
     target="_top"
@@ -1017,7 +1017,7 @@ digraph "compactImpliedRelationshipsDiagram" {
     <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
       <TR><TD COLSPAN="3"  BGCOLOR="#f5f5f5"><TABLE BORDER="0" CELLSPACING="0"><TR><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="87" HEIGHT="16"><B>REGISTRATION</B></TD><TD ALIGN="RIGHT">[table]</TD></TR></TABLE></TD></TR>
       <TR><TD PORT="elipses" COLSPAN="3" ALIGN="LEFT">...</TD></TR>
-      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 11</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">2 &gt;</TD></TR>
+      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 11</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">3 &gt;</TD></TR>
     </TABLE>>
     URL="tables/REGISTRATION.html"
     target="_top"
@@ -1275,17 +1275,6 @@ digraph "compactImpliedRelationshipsDiagram" {
     URL="tables/SPG_SEARCH_OFFENDER.html"
     target="_top"
     tooltip="SPG_SEARCH_OFFENDER"
-  ];
-  "DOC_MIGRATION_QUEUE_TAB" [
-   label=<
-    <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
-      <TR><TD COLSPAN="3"  BGCOLOR="#f5f5f5"><TABLE BORDER="0" CELLSPACING="0"><TR><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="175" HEIGHT="16"><B>DOC_MIGRATION_QUEUE_TAB</B></TD><TD ALIGN="RIGHT">[table]</TD></TR></TABLE></TD></TR>
-      <TR><TD PORT="elipses" COLSPAN="3" ALIGN="LEFT">...</TD></TR>
-      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">  </TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD></TR>
-    </TABLE>>
-    URL="tables/DOC_MIGRATION_QUEUE_TAB.html"
-    target="_top"
-    tooltip="DOC_MIGRATION_QUEUE_TAB"
   ];
   "MIGRATED_DATA_HISTORY" [
    label=<
@@ -2387,17 +2376,6 @@ digraph "compactImpliedRelationshipsDiagram" {
     target="_top"
     tooltip="SPG_MESSAGE_LOG"
   ];
-  "AQ$_DOC_MIGRATION_QUEUE_TAB_L" [
-   label=<
-    <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
-      <TR><TD COLSPAN="3"  BGCOLOR="#f5f5f5"><TABLE BORDER="0" CELLSPACING="0"><TR><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="217" HEIGHT="16"><B>AQ$_DOC_MIGRATION_QUEUE_TAB_L</B></TD><TD ALIGN="RIGHT">[table]</TD></TR></TABLE></TD></TR>
-      <TR><TD PORT="elipses" COLSPAN="3" ALIGN="LEFT">...</TD></TR>
-      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">  </TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD></TR>
-    </TABLE>>
-    URL="tables/AQ__DOC_MIGRATION_QUEUE_TAB_L_6d3d93b1.html"
-    target="_top"
-    tooltip="AQ$_DOC_MIGRATION_QUEUE_TAB_L"
-  ];
   "DRUGS_TEST" [
    label=<
     <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
@@ -2419,17 +2397,6 @@ digraph "compactImpliedRelationshipsDiagram" {
     URL="tables/INFORMATION_TEXT.html"
     target="_top"
     tooltip="INFORMATION_TEXT"
-  ];
-  "AQ$_DOC_MIGRATION_QUEUE_TAB_H" [
-   label=<
-    <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
-      <TR><TD COLSPAN="3"  BGCOLOR="#f5f5f5"><TABLE BORDER="0" CELLSPACING="0"><TR><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="219" HEIGHT="16"><B>AQ$_DOC_MIGRATION_QUEUE_TAB_H</B></TD><TD ALIGN="RIGHT">[table]</TD></TR></TABLE></TD></TR>
-      <TR><TD PORT="elipses" COLSPAN="3" ALIGN="LEFT">...</TD></TR>
-      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">  </TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD></TR>
-    </TABLE>>
-    URL="tables/AQ__DOC_MIGRATION_QUEUE_TAB_H_6d3d93ad.html"
-    target="_top"
-    tooltip="AQ$_DOC_MIGRATION_QUEUE_TAB_H"
   ];
   "DISPOSAL_TYPE_LIC_COND_TYPE" [
    label=<
@@ -3322,6 +3289,17 @@ digraph "compactImpliedRelationshipsDiagram" {
     target="_top"
     tooltip="DSS_SEARCH_REQUEST"
   ];
+  "REG_CATEGORY_LEVEL_HISTORY" [
+   label=<
+    <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
+      <TR><TD COLSPAN="3"  BGCOLOR="#f5f5f5"><TABLE BORDER="0" CELLSPACING="0"><TR><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="187" HEIGHT="16"><B>REG_CATEGORY_LEVEL_HISTORY</B></TD><TD ALIGN="RIGHT">[table]</TD></TR></TABLE></TD></TR>
+      <TR><TD PORT="elipses" COLSPAN="3" ALIGN="LEFT">...</TD></TR>
+      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 3</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD></TR>
+    </TABLE>>
+    URL="tables/REG_CATEGORY_LEVEL_HISTORY.html"
+    target="_top"
+    tooltip="REG_CATEGORY_LEVEL_HISTORY"
+  ];
   "R_LINKED_LIST" [
    label=<
     <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
@@ -3793,8 +3771,6 @@ digraph "compactImpliedRelationshipsDiagram" {
   "APPROVED_PREMISES_RESIDENCE":"MOVE_ON_CATEGORY_ID":w -> "R_MOVE_ON_CATEGORY":"MOVE_ON_CATEGORY_ID":e [arrowhead=none dir=back arrowtail=crowodot];
   "APPROVED_PREMISES_RESIDENCE":"OFFENDER_ID":w -> "OFFENDER":"OFFENDER_ID":e [arrowhead=none dir=back arrowtail=crowodot];
   "APPROVED_PREMISES_RESIDENCE":"PARTITION_AREA_ID":w -> "PARTITION_AREA":"PARTITION_AREA_ID":e [arrowhead=none dir=back arrowtail=crowodot];
-  "AQ$_DOC_MIGRATION_QUEUE_TAB_H":"PROPAGATED_MSGID":w -> "DOC_MIGRATION_QUEUE_TAB":"MSGID":e [arrowhead=none dir=back arrowtail=crowodot style=dashed];
-  "AQ$_DOC_MIGRATION_QUEUE_TAB_L":"MSGID":w -> "DOC_MIGRATION_QUEUE_TAB":"MSGID":e [arrowhead=none dir=back arrowtail=crowodot style=dashed];
   "ARMED_SERVICE":"CREATED_BY_USER_ID":w -> "USER_":"USER_ID":e [arrowhead=none dir=back arrowtail=crowodot style=dashed];
   "ARMED_SERVICE":"EQUALITY_ID":w -> "EQUALITY":"EQUALITY_ID":e [arrowhead=none dir=back arrowtail=crowodot];
   "ARMED_SERVICE":"FOREIGN_SERVICE_NATIONALITY_ID":w -> "R_STANDARD_REFERENCE_LIST":"STANDARD_REFERENCE_LIST_ID":e [arrowhead=none dir=back arrowtail=crowodot];
@@ -4931,6 +4907,11 @@ digraph "compactImpliedRelationshipsDiagram" {
   "REFERRAL":"REFERRAL_SOURCE_ID":w -> "R_REFERRAL_SOURCE":"REFERRAL_SOURCE_ID":e [arrowhead=none dir=back arrowtail=crowodot];
   "REFERRAL":"REFERRAL_TYPE_ID":w -> "R_REFERRAL_TYPE":"REFERRAL_TYPE_ID":e [arrowhead=none dir=back arrowtail=crowodot];
   "REFERRAL":"TREATMENT_AIM_ID":w -> "R_STANDARD_REFERENCE_LIST":"STANDARD_REFERENCE_LIST_ID":e [arrowhead=none dir=back arrowtail=crowodot];
+  "REG_CATEGORY_LEVEL_HISTORY":"CREATED_BY_USER_ID":w -> "USER_":"USER_ID":e [arrowhead=none dir=back arrowtail=crowodot style=dashed];
+  "REG_CATEGORY_LEVEL_HISTORY":"LAST_UPDATED_USER_ID":w -> "USER_":"USER_ID":e [arrowhead=none dir=back arrowtail=crowodot style=dashed];
+  "REG_CATEGORY_LEVEL_HISTORY":"REGISTER_CATEGORY_ID":w -> "R_STANDARD_REFERENCE_LIST":"STANDARD_REFERENCE_LIST_ID":e [arrowhead=none dir=back arrowtail=crowodot];
+  "REG_CATEGORY_LEVEL_HISTORY":"REGISTER_LEVEL_ID":w -> "R_STANDARD_REFERENCE_LIST":"STANDARD_REFERENCE_LIST_ID":e [arrowhead=none dir=back arrowtail=crowodot];
+  "REG_CATEGORY_LEVEL_HISTORY":"REGISTRATION_ID":w -> "REGISTRATION":"REGISTRATION_ID":e [arrowhead=none dir=back arrowtail=teeodot];
   "REGISTRATION":"CONTACT_ID":w -> "CONTACT":"CONTACT_ID":e [arrowhead=none dir=back arrowtail=crowodot];
   "REGISTRATION":"CREATED_BY_USER_ID":w -> "USER_":"USER_ID":e [arrowhead=none dir=back arrowtail=crowodot style=dashed];
   "REGISTRATION":"INITIAL_REGISTER_CATEGORY_ID":w -> "R_STANDARD_REFERENCE_LIST":"STANDARD_REFERENCE_LIST_ID":e [arrowhead=none dir=back arrowtail=crowodot];

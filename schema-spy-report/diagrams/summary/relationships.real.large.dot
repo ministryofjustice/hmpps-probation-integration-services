@@ -456,7 +456,7 @@ digraph "largeRelationshipsDiagram" {
     <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
       <TR><TD COLSPAN="3"  BGCOLOR="#f5f5f5"><TABLE BORDER="0" CELLSPACING="0"><TR><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="179" HEIGHT="16"><B>R_STANDARD_REFERENCE_LIST</B></TD><TD ALIGN="RIGHT">[table]</TD></TR></TABLE></TD></TR>
       <TR><TD PORT="elipses" COLSPAN="3" ALIGN="LEFT">...</TD></TR>
-      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 1</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">325 &gt;</TD></TR>
+      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 1</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">327 &gt;</TD></TR>
     </TABLE>>
     URL="tables/R_STANDARD_REFERENCE_LIST.html"
     target="_top"
@@ -918,7 +918,7 @@ digraph "largeRelationshipsDiagram" {
     <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
       <TR><TD COLSPAN="3"  BGCOLOR="#f5f5f5"><TABLE BORDER="0" CELLSPACING="0"><TR><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="87" HEIGHT="16"><B>REGISTRATION</B></TD><TD ALIGN="RIGHT">[table]</TD></TR></TABLE></TD></TR>
       <TR><TD PORT="elipses" COLSPAN="3" ALIGN="LEFT">...</TD></TR>
-      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 11</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">2 &gt;</TD></TR>
+      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 11</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">3 &gt;</TD></TR>
     </TABLE>>
     URL="tables/REGISTRATION.html"
     target="_top"
@@ -2893,6 +2893,17 @@ digraph "largeRelationshipsDiagram" {
     target="_top"
     tooltip="DSS_SEARCH_REQUEST"
   ];
+  "REG_CATEGORY_LEVEL_HISTORY" [
+   label=<
+    <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
+      <TR><TD COLSPAN="3"  BGCOLOR="#f5f5f5"><TABLE BORDER="0" CELLSPACING="0"><TR><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="187" HEIGHT="16"><B>REG_CATEGORY_LEVEL_HISTORY</B></TD><TD ALIGN="RIGHT">[table]</TD></TR></TABLE></TD></TR>
+      <TR><TD PORT="elipses" COLSPAN="3" ALIGN="LEFT">...</TD></TR>
+      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 3</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD></TR>
+    </TABLE>>
+    URL="tables/REG_CATEGORY_LEVEL_HISTORY.html"
+    target="_top"
+    tooltip="REG_CATEGORY_LEVEL_HISTORY"
+  ];
   "R_LINKED_LIST" [
    label=<
     <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
@@ -4155,6 +4166,9 @@ digraph "largeRelationshipsDiagram" {
   "REFERRAL":"REFERRAL_SOURCE_ID":w -> "R_REFERRAL_SOURCE":"REFERRAL_SOURCE_ID":e [arrowhead=none dir=back arrowtail=crowodot];
   "REFERRAL":"REFERRAL_TYPE_ID":w -> "R_REFERRAL_TYPE":"REFERRAL_TYPE_ID":e [arrowhead=none dir=back arrowtail=crowodot];
   "REFERRAL":"TREATMENT_AIM_ID":w -> "R_STANDARD_REFERENCE_LIST":"STANDARD_REFERENCE_LIST_ID":e [arrowhead=none dir=back arrowtail=crowodot];
+  "REG_CATEGORY_LEVEL_HISTORY":"REGISTER_CATEGORY_ID":w -> "R_STANDARD_REFERENCE_LIST":"STANDARD_REFERENCE_LIST_ID":e [arrowhead=none dir=back arrowtail=crowodot];
+  "REG_CATEGORY_LEVEL_HISTORY":"REGISTER_LEVEL_ID":w -> "R_STANDARD_REFERENCE_LIST":"STANDARD_REFERENCE_LIST_ID":e [arrowhead=none dir=back arrowtail=crowodot];
+  "REG_CATEGORY_LEVEL_HISTORY":"REGISTRATION_ID":w -> "REGISTRATION":"REGISTRATION_ID":e [arrowhead=none dir=back arrowtail=teeodot];
   "REGISTRATION":"CONTACT_ID":w -> "CONTACT":"CONTACT_ID":e [arrowhead=none dir=back arrowtail=crowodot];
   "REGISTRATION":"INITIAL_REGISTER_CATEGORY_ID":w -> "R_STANDARD_REFERENCE_LIST":"STANDARD_REFERENCE_LIST_ID":e [arrowhead=none dir=back arrowtail=crowodot];
   "REGISTRATION":"INITIAL_REGISTER_LEVEL_ID":w -> "R_STANDARD_REFERENCE_LIST":"STANDARD_REFERENCE_LIST_ID":e [arrowhead=none dir=back arrowtail=crowodot];

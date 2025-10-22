@@ -80,7 +80,7 @@
                     <div class="box box-primary">
                         <div class="box-header with-border">
                             <i class="ion ion-key"></i>
-                            <h3 class="box-title">1175 Foreign Key Constraints</h3>
+                            <h3 class="box-title">1178 Foreign Key Constraints</h3>
                             <div class="box-tools pull-right">
                                 <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
                                 <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
@@ -18788,6 +18788,60 @@
                                         <td><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>Restrict delete</span></td>
                                     </tr>
                                     <tr>
+                                        <td>R_1438</td>
+                                        <td>
+                                            <table border='0' cellspacing='0' cellpadding='0'>
+                                                <tr>
+                                                    <td><a href='tables/REG_CATEGORY_LEVEL_HISTORY.html'>REG_CATEGORY_LEVEL_HISTORY</a><span>.REGISTER_LEVEL_ID</span></td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                        <td>
+                                            <table border='0' cellspacing='0' cellpadding='0'>
+                                                <tr>
+                                                    <td><a href='tables/R_STANDARD_REFERENCE_LIST.html'>R_STANDARD_REFERENCE_LIST</a><span>.STANDARD_REFERENCE_LIST_ID</span></td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                        <td><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>Restrict delete</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>R_1437</td>
+                                        <td>
+                                            <table border='0' cellspacing='0' cellpadding='0'>
+                                                <tr>
+                                                    <td><a href='tables/REG_CATEGORY_LEVEL_HISTORY.html'>REG_CATEGORY_LEVEL_HISTORY</a><span>.REGISTER_CATEGORY_ID</span></td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                        <td>
+                                            <table border='0' cellspacing='0' cellpadding='0'>
+                                                <tr>
+                                                    <td><a href='tables/R_STANDARD_REFERENCE_LIST.html'>R_STANDARD_REFERENCE_LIST</a><span>.STANDARD_REFERENCE_LIST_ID</span></td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                        <td><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>Restrict delete</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>R_1436</td>
+                                        <td>
+                                            <table border='0' cellspacing='0' cellpadding='0'>
+                                                <tr>
+                                                    <td><a href='tables/REG_CATEGORY_LEVEL_HISTORY.html'>REG_CATEGORY_LEVEL_HISTORY</a><span>.REGISTRATION_ID</span></td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                        <td>
+                                            <table border='0' cellspacing='0' cellpadding='0'>
+                                                <tr>
+                                                    <td><a href='tables/REGISTRATION.html'>REGISTRATION</a><span>.REGISTRATION_ID</span></td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                        <td><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>Restrict delete</span></td>
+                                    </tr>
+                                    <tr>
                                         <td>SYS_C0021047</td>
                                         <td>
                                             <table border='0' cellspacing='0' cellpadding='0'>
@@ -21705,6 +21759,11 @@
                                         <td>ALT_REGISTER IN (&#39;Y&#39;,&#39;N&#39;)</td>
                                     </tr>
                                     <tr>
+                                        <td><a href='tables/R_REGISTER_TYPE.html'>R_REGISTER_TYPE</a></td>
+                                        <td>YES_OR_NO_ONLY_839933589</td>
+                                        <td>MAPPA_UPDATES IN (&#39;Y&#39;,&#39;N&#39;)</td>
+                                    </tr>
+                                    <tr>
                                         <td><a href='tables/R_FCDO_COUNTRY.html'>R_FCDO_COUNTRY</a></td>
                                         <td>YES_OR_NO_ONLY_659158476</td>
                                         <td>SELECTABLE IN (&#39;Y&#39;,&#39;N&#39;)</td>
@@ -23948,6 +24007,16 @@
                                         <td><a href='tables/DSS_SEARCH_REQUEST.html'>DSS_SEARCH_REQUEST</a></td>
                                         <td>YES_OR_NO_ONLY_758402564</td>
                                         <td>DSS_SEARCH_EXCESS IN (&#39;Y&#39;,&#39;N&#39;)</td>
+                                    </tr>
+                                    <tr>
+                                        <td><a href='tables/REG_CATEGORY_LEVEL_HISTORY.html'>REG_CATEGORY_LEVEL_HISTORY</a></td>
+                                        <td>REG_CAT_LEVEL_HIS_START_LT_END_1583432801</td>
+                                        <td>(&#10;(START_DATE &lt;&#61; END_DATE) OR (END_DATE IS NULL)             )</td>
+                                    </tr>
+                                    <tr>
+                                        <td><a href='tables/REG_CATEGORY_LEVEL_HISTORY.html'>REG_CATEGORY_LEVEL_HISTORY</a></td>
+                                        <td>TRUE_OR_FALSE_1226704867</td>
+                                        <td>SOFT_DELETED IN (0, 1)</td>
                                     </tr>
                                     <tr>
                                         <td><a href='tables/DOMAIN_EVENT.html'>DOMAIN_EVENT</a></td>
