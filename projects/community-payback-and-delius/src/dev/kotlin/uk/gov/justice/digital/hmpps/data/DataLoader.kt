@@ -26,13 +26,23 @@ class DataLoader(
 
     @Transactional
     override fun onApplicationEvent(are: ApplicationReadyEvent) {
+        loadUsers()
         loadProviders()
         loadTeams()
+    }
+
+    fun loadUsers() {
+        entityManager.persist(UserGenerator.DEFAULT_USER)
     }
 
     fun loadProviders() {
         entityManager.persist(ProviderGenerator.DEFAULT_PROVIDER)
         entityManager.persist(ProviderGenerator.SECOND_PROVIDER)
+        entityManager.persist(ProviderGenerator.UNSELECTABLE_PROVIDER)
+
+        entityManager.persist(ProviderGenerator.DEFAULT_PROBATION_AREA_USER)
+        entityManager.persist(ProviderGenerator.SECOND_DEFAULT_PROBATION_AREA_USER)
+        entityManager.persist(ProviderGenerator.DEFAULT_USER_UNSELECTABLE_PROBATION_AREA)
     }
 
     fun loadTeams() {
