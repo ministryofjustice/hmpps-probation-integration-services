@@ -301,6 +301,33 @@ components:
       required:
       - code
       - description
+    MappaDetails:
+      type: object
+      properties:
+        level:
+          type: integer
+          format: int32
+        levelDescription:
+          type: string
+        category:
+          type: integer
+          format: int32
+        categoryDescription:
+          type: string
+        startDate:
+          type: string
+          format: date
+        reviewDate:
+          type: string
+          format: date
+        team:
+          $ref: "#/components/schemas/KeyValue"
+        officer:
+          $ref: "#/components/schemas/StaffHuman"
+        probationArea:
+          $ref: "#/components/schemas/KeyValue"
+        notes:
+          type: string
     OffenderAlias:
       type: object
       properties:
@@ -354,6 +381,8 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/OffenderManager"
+        mappa:
+          $ref: "#/components/schemas/MappaDetails"
       required:
       - otherIds
     OffenderManager:
@@ -397,8 +426,6 @@ components:
           type: string
         description:
           type: string
-        localDeliveryUnit:
-          $ref: "#/components/schemas/KeyValue"
         district:
           $ref: "#/components/schemas/KeyValue"
     StaffHuman:

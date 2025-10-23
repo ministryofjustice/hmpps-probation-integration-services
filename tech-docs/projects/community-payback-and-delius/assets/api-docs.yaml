@@ -14,6 +14,24 @@ servers:
 security:
 - hmpps-auth-token: []
 paths:
+  /providers:
+    get:
+      tags:
+      - providers-controller
+      operationId: getProviders
+      parameters:
+      - name: username
+        in: query
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProvidersResponse"
   /providers/{code}/teams:
     get:
       tags:
@@ -56,6 +74,15 @@ components:
       required:
       - code
       - description
+    ProvidersResponse:
+      type: object
+      properties:
+        providers:
+          type: array
+          items:
+            $ref: "#/components/schemas/CodeDescription"
+      required:
+      - providers
     TeamsResponse:
       type: object
       properties:
