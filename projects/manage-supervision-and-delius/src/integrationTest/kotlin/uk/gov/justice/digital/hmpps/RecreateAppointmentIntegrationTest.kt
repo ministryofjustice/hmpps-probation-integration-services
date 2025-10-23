@@ -17,6 +17,7 @@ import uk.gov.justice.digital.hmpps.data.generator.OffenderManagerGenerator.PI_U
 import uk.gov.justice.digital.hmpps.data.generator.OffenderManagerGenerator.TEAM_1
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
+import uk.gov.justice.digital.hmpps.integrations.delius.appointment.Appointment
 import uk.gov.justice.digital.hmpps.integrations.delius.appointment.getAppointment
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.andExpectJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
@@ -25,6 +26,7 @@ import java.time.LocalDate
 import java.time.LocalTime
 import java.time.ZoneOffset.UTC
 import java.time.ZonedDateTime
+import java.util.UUID
 
 class RecreateAppointmentIntegrationTest : IntegrationTestBase() {
 
@@ -177,6 +179,8 @@ class RecreateAppointmentIntegrationTest : IntegrationTestBase() {
             |${request.notes}
         """.trimMargin()
         )
+        assertThat(recreated.externalReference).isEqualTo(Appointment.URN_PREFIX + request.uuid)
+        assertThat(appointment.externalReference).isEqualTo(Appointment.URN_PREFIX + request.uuid)
     }
 
     @Test
@@ -222,6 +226,8 @@ class RecreateAppointmentIntegrationTest : IntegrationTestBase() {
             |${request.notes}
         """.trimMargin()
         )
+        assertThat(recreated.externalReference).isEqualTo(Appointment.URN_PREFIX + request.uuid)
+        assertThat(appointment.externalReference).isEqualTo(Appointment.URN_PREFIX + request.uuid)
     }
 
     @Test
@@ -261,11 +267,13 @@ class RecreateAppointmentIntegrationTest : IntegrationTestBase() {
             |${request.notes}
         """.trimMargin()
         )
+        assertThat(recreated.externalReference).isEqualTo(Appointment.URN_PREFIX + request.uuid)
+        assertThat(appointment.externalReference).isEqualTo(Appointment.URN_PREFIX + request.uuid)
     }
 
     @Test
     fun `recreate with non sensitive notes from a sensitive appointment`() {
-        val person = PersonGenerator.RESCHEDULED_PERSON_2
+        val person = PersonGenerator.RECREATE_APPT_PERSON_2
         val original = sentenceAppointmentRepository.save(
             AppointmentGenerator.generateAppointment(
                 person,
@@ -301,6 +309,8 @@ class RecreateAppointmentIntegrationTest : IntegrationTestBase() {
             |${request.notes}
         """.trimMargin()
         )
+        assertThat(recreated.externalReference).isEqualTo(Appointment.URN_PREFIX + request.uuid)
+        assertThat(appointment.externalReference).isEqualTo(Appointment.URN_PREFIX + request.uuid)
     }
 
     private fun recreateRequest(
@@ -312,7 +322,8 @@ class RecreateAppointmentIntegrationTest : IntegrationTestBase() {
         locationCode: String? = null,
         notes: String? = null,
         sensitive: Boolean? = null,
-        requestedBy: RecreateAppointmentRequest.RequestedBy = RecreateAppointmentRequest.RequestedBy.SERVICE
+        requestedBy: RecreateAppointmentRequest.RequestedBy = RecreateAppointmentRequest.RequestedBy.SERVICE,
+        uuid: UUID? = UUID.randomUUID(),
     ) = RecreateAppointmentRequest(
         date,
         startTime,
@@ -322,6 +333,7 @@ class RecreateAppointmentIntegrationTest : IntegrationTestBase() {
         locationCode,
         notes,
         sensitive,
-        requestedBy
+        requestedBy,
+        uuid
     )
 }

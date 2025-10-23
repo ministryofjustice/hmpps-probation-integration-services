@@ -16,6 +16,7 @@ data class UserProviderResponse(
 
 data class DefaultUserDetails(
     val username: String,
+    val staffCode: String,
     val homeArea: String,
     val team: String?
 )

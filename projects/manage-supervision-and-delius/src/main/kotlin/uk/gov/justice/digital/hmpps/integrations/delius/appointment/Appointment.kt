@@ -65,6 +65,8 @@ class Appointment(
 
     outcome: AppointmentOutcome?,
 
+    val externalReference: String?,
+
     @Column(name = "soft_deleted", columnDefinition = "number", nullable = false)
     @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean,
@@ -143,6 +145,10 @@ class Appointment(
         val today = LocalDate.now()
         return date.isAfter(today) ||
             (date.isEqual(today) && startTime.toLocalTime().isAfter(LocalTime.now()))
+    }
+
+    companion object {
+        const val URN_PREFIX = "urn:uk:gov:hmpps:manage-supervision-service:appointment:"
     }
 }
 
