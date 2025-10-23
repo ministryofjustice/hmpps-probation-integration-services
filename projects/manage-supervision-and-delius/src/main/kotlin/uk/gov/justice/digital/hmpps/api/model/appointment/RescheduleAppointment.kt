@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.api.model.appointment
 
 import java.time.LocalDate
 import java.time.LocalTime
+import java.util.UUID
 
 @FutureAppointment
 @ValidAppointment
@@ -27,11 +28,12 @@ data class RecreateAppointmentRequest(
     val locationCode: String?,
     val notes: String?,
     val sensitive: Boolean?,
-    val requestedBy: RequestedBy
+    val requestedBy: RequestedBy,
+    val uuid: UUID?,
 ) : AppointmentRequest {
     enum class RequestedBy {
         POP, SERVICE
     }
 }
 
-data class RecreatedAppointment(val id: Long)
+data class RecreatedAppointment(val id: Long, val externalReference: String)

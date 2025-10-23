@@ -45,6 +45,7 @@ object OffenderManagerGenerator {
     val STAFF_ROLE = ReferenceData(IdGenerator.getAndIncrement(), "PS1", "PS Other")
     val STAFF_1 = Staff(
         IdGenerator.getAndIncrement(),
+        "N01PEPA",
         "Peter",
         "Parker",
         DEFAULT_PROVIDER,
@@ -53,6 +54,7 @@ object OffenderManagerGenerator {
     )
     val STAFF_2 = Staff(
         IdGenerator.getAndIncrement(),
+        "N01BRWA",
         "Bruce",
         "Wayne",
         DEFAULT_PROVIDER,
@@ -61,6 +63,7 @@ object OffenderManagerGenerator {
     )
     val STAFF_3 = Staff(
         IdGenerator.getAndIncrement(),
+        "N01CLKE",
         "Clark",
         "Kent",
         DEFAULT_PROVIDER,

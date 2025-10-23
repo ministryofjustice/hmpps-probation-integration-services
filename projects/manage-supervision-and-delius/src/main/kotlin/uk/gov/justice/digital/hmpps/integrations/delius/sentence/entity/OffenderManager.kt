@@ -75,6 +75,9 @@ class Staff(
     @Column(name = "staff_id")
     val id: Long,
 
+    @Column(name = "officer_code", columnDefinition = "char(7)")
+    val code: String,
+
     val forename: String,
     val surname: String,
 
@@ -200,8 +203,9 @@ interface StaffUserRepository : JpaRepository<StaffUser, Long> {
 
     @Query(
         """
-            SELECT username, surname, forename, role FROM (
+            SELECT code, username, surname, forename, role FROM (
             SELECT  u.DISTINGUISHED_NAME as username, 
+                    s.officer_code as code,
                     u.surname as surname, 
                     u.forename as forename, 
                     rsrl.CODE_DESCRIPTION as role
@@ -214,7 +218,7 @@ interface StaffUserRepository : JpaRepository<StaffUser, Long> {
             AND (s.END_DATE IS NULL OR s.END_DATE > CURRENT_DATE)
             AND t.CODE = :teamCode
             UNION
-            SELECT 'Unallocated', 'Unallocated', 'Unallocated', 'Unallocated'
+            SELECT 'Unallocated', 'Unallocated', 'Unallocated', 'Unallocated', 'Unallocated'
             FROM dual)
             ORDER BY Upper(surname)
           """, nativeQuery = true
@@ -224,6 +228,7 @@ interface StaffUserRepository : JpaRepository<StaffUser, Long> {
 
 interface StaffAndRole {
     val username: String
+    val code: String
     val surname: String
     val forename: String
     val role: String

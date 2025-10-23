@@ -25,7 +25,9 @@ import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.LdapUser
+import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.StaffUser
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.StaffUserRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.getUser
 import uk.gov.justice.digital.hmpps.integrations.delius.user.entity.*
 import uk.gov.justice.digital.hmpps.ldap.findAttributeByUsername
 import uk.gov.justice.digital.hmpps.ldap.findByUsername
@@ -224,9 +226,10 @@ class UserService(
 
         val teamSearch = team ?: defaultTeam?.code ?: teams.first().code
         val users = staffUserRepository.findStaffByTeam(teamSearch).map { it.toUser() }
+        val defaultUser = staffUserRepository.getUser(username)
 
         return UserProviderResponse(
-            getDefaultUserDetails(username, homeArea, providers, defaultTeam),
+            getDefaultUserDetails(defaultUser, homeArea, providers, defaultTeam),
             providers,
             teams,
             users
@@ -234,14 +237,14 @@ class UserService(
     }
 
     fun getDefaultUserDetails(
-        username: String,
+        default: StaffUser,
         homeArea: String,
         providers: List<Provider>,
         defaultTeam: Team?
     ): DefaultUserDetails {
-        val team = defaultTeam ?: getDefaultTeam(username, homeArea)
+        val team = defaultTeam ?: getDefaultTeam(default.username, homeArea)
 
-        return DefaultUserDetails(username, providers.first { it.code == homeArea }.name, team?.description)
+        return DefaultUserDetails(default.username, default.staff!!.code, providers.first { it.code == homeArea }.name, team?.description)
     }
 
     fun getDefaultTeam(username: String, homeArea: String): Team? {

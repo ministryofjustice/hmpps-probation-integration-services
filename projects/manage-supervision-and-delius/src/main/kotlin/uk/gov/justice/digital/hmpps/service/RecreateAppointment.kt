@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.api.model.appointment.RecreateAppointmentRequest
 import uk.gov.justice.digital.hmpps.api.model.appointment.RecreateAppointmentRequest.RequestedBy.POP
 import uk.gov.justice.digital.hmpps.api.model.appointment.RecreateAppointmentRequest.RequestedBy.SERVICE
@@ -8,6 +9,7 @@ import uk.gov.justice.digital.hmpps.api.model.appointment.RecreatedAppointment
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.exception.ConflictException
 import uk.gov.justice.digital.hmpps.integrations.delius.appointment.*
+import uk.gov.justice.digital.hmpps.integrations.delius.appointment.Appointment.Companion.URN_PREFIX
 import java.time.ZonedDateTime
 
 @Service
@@ -18,6 +20,7 @@ class RecreateAppointment(
     private val teamRepository: AppointmentTeamRepository,
     private val locationRepository: AppointmentLocationRepository,
 ) {
+    @Transactional
     fun recreate(id: Long, request: RecreateAppointmentRequest): RecreatedAppointment {
         val original = appointmentRepository.getAppointment(id)
         require(original.outcome == null) { "Appointment with an outcome cannot be recreated" }
@@ -47,7 +50,7 @@ class RecreateAppointment(
                 SERVICE -> outcomeRepository.getByCode(AppointmentOutcome.Code.RESCHEDULED_SERVICE.value)
             }
         )
-        return RecreatedAppointment(newAppointment.id)
+        return RecreatedAppointment(newAppointment.id, requireNotNull(newAppointment.externalReference))
     }
 
     private fun Appointment.recreateWith(request: RecreateAppointmentRequest): Appointment {
@@ -67,12 +70,13 @@ class RecreateAppointment(
             location = location,
             date = request.date,
             startTime = ZonedDateTime.of(request.date, request.startTime, EuropeLondon),
-            endTime = ZonedDateTime.of(request.date, request.startTime, EuropeLondon),
+            endTime = ZonedDateTime.of(request.date, request.endTime, EuropeLondon),
             provider = team.provider,
             outcome = null,
             rarActivity = rarActivity,
             notes = notes,
             sensitive = sensitive == true || request.sensitive == true,
+            externalReference = request.uuid?.let { URN_PREFIX + it },
             softDeleted = false
         ).appendNotes(listOfNotNull(locationNotes, request.notes))
     }
