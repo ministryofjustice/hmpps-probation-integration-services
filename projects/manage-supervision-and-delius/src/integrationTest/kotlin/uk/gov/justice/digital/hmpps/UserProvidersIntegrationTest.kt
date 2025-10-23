@@ -43,10 +43,20 @@ class UserProvidersIntegrationTest : IntegrationTestBase() {
 
     companion object {
         val defaultUserDetails =
-            DefaultUserDetails(STAFF_USER_1.username, STAFF_USER_1.staff!!.code, DEFAULT_PROVIDER.description, TEAM.description)
+            DefaultUserDetails(
+                STAFF_USER_1.username,
+                STAFF_USER_1.staff!!.code,
+                DEFAULT_PROVIDER.description,
+                TEAM.description
+            )
 
         val defaultUserDetails1 =
-            DefaultUserDetails(STAFF_USER_2.username, STAFF_USER_2.staff!!.code, DEFAULT_PROVIDER.description, TEAM.description)
+            DefaultUserDetails(
+                STAFF_USER_2.username,
+                STAFF_USER_2.staff!!.code,
+                DEFAULT_PROVIDER.description,
+                TEAM.description
+            )
 
         val users = listOf(
             User(
@@ -112,4 +122,4 @@ class UserProvidersIntegrationTest : IntegrationTestBase() {
     }
 }
 
-val unallocatedUser = User("Unallocated","Unallocated", "Unallocated")
+val unallocatedUser = User("Unallocated", "Unallocated", "Unallocated")

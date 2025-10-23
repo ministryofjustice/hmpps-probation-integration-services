@@ -244,7 +244,12 @@ class UserService(
     ): DefaultUserDetails {
         val team = defaultTeam ?: getDefaultTeam(default.username, homeArea)
 
-        return DefaultUserDetails(default.username, default.staff!!.code, providers.first { it.code == homeArea }.name, team?.description)
+        return DefaultUserDetails(
+            default.username,
+            default.staff!!.code,
+            providers.first { it.code == homeArea }.name,
+            team?.description
+        )
     }
 
     fun getDefaultTeam(username: String, homeArea: String): Team? {
