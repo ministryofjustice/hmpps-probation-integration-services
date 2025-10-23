@@ -3,27 +3,33 @@
     {
       "request": {
         "method": "GET",
-        "urlPath": "/accredited-programmes-api/status-breach"
+        "urlPathPattern": "/accredited-programmes-api/status-breach/(.*)"
       },
       "response": {
         "headers": {
           "Content-Type": "application/json"
         },
         "status": 200,
-        "bodyFileName": "status-changed-breach.json"
+        "body": "{\"newStatus\": \"BREACH\", \"sourcedFromEntityType\": \"LICENCE_CONDITION\", \"sourcedFromEntityId\": {{request.path.[2]}}, \"notes\": \"Some notes about the breach of the LC\"}",
+        "transformers": [
+          "response-template"
+        ]
       }
     },
     {
       "request": {
         "method": "GET",
-        "urlPath": "/accredited-programmes-api/status-on-programme"
+        "urlPathPattern": "/accredited-programmes-api/status-on-programme/(.*)"
       },
       "response": {
         "headers": {
           "Content-Type": "application/json"
         },
         "status": 200,
-        "bodyFileName": "status-changed-on-programme.json"
+        "body": "{\"newStatus\": \"ON_PROGRAMME\", \"sourcedFromEntityType\": \"REQUIREMENT\", \"sourcedFromEntityId\": {{request.path.[2]}}, \"notes\": \"Some notes about the being on the programme\"}",
+        "transformers": [
+          "response-template"
+        ]
       }
     }
   ]

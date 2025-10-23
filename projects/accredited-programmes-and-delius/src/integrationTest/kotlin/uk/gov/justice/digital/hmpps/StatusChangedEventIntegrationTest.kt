@@ -15,25 +15,26 @@ import uk.gov.justice.digital.hmpps.repository.ContactRepository
 
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = RANDOM_PORT)
-class StatusChangedEventIntegrationTest {
-    @Value("\${messaging.consumer.queue}")
-    lateinit var queueName: String
-
-    @Autowired
-    lateinit var channelManager: HmppsChannelManager
-
-    @Autowired
-    lateinit var wireMockServer: WireMockServer
-
-    @Autowired
-    lateinit var contactRepository: ContactRepository
+class StatusChangedEventIntegrationTest(
+    @Value("\${messaging.consumer.queue}") private val queueName: String,
+    @Autowired private val channelManager: HmppsChannelManager,
+    @Autowired private val wireMockServer: WireMockServer,
+    @Autowired private val contactRepository: ContactRepository,
+) {
 
     @Test
     fun `breach status contact created`() {
         val eventName = "status-changed-breach"
         val event = prepMessage(eventName, wireMockServer.port())
 
-        channelManager.getChannel(queueName).publishAndWait(event)
+
+        channelManager.getChannel(queueName).publishAndWait(
+            event.copy(
+                message = event.message.copy(
+                    detailUrl = event.message.detailUrl?.replace(":id", "${TestData.LICENCE_CONDITIONS.first().id}")
+                )
+            )
+        )
 
         val contact = contactRepository.findAll().firstOrNull {
             it.person.id == TestData.PERSON.id && it.type.code == StatusInfo.Status.BREACH.contactTypeCode
@@ -49,7 +50,13 @@ class StatusChangedEventIntegrationTest {
         val eventName = "status-changed-on-programme"
         val event = prepMessage(eventName, wireMockServer.port())
 
-        channelManager.getChannel(queueName).publishAndWait(event)
+        channelManager.getChannel(queueName).publishAndWait(
+            event.copy(
+                message = event.message.copy(
+                    detailUrl = event.message.detailUrl?.replace(":id", "${TestData.REQUIREMENTS.first().id}")
+                )
+            )
+        )
 
         val contact = contactRepository.findAll().firstOrNull {
             it.person.id == TestData.PERSON.id && it.type.code == StatusInfo.Status.ON_PROGRAMME.contactTypeCode

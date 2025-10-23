@@ -1,16 +1,15 @@
 package uk.gov.justice.digital.hmpps.entity.sentence
 
 import jakarta.persistence.*
-import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.NumericBooleanConverter
 import uk.gov.justice.digital.hmpps.entity.Person
 import uk.gov.justice.digital.hmpps.entity.contact.Contact
 import uk.gov.justice.digital.hmpps.entity.contact.ContactType.Companion.LICENCE_SUPERVISION_TWO_THIRDS_POINT
 import uk.gov.justice.digital.hmpps.entity.contact.ContactType.Companion.SUPERVISION_TWO_THIRDS_POINT
+import java.time.LocalDate
 
 @Entity
-@Immutable
 @SQLRestriction("active_flag = 1 and soft_deleted = 0")
 class Event(
     @Id
@@ -19,6 +18,9 @@ class Event(
 
     @Column(name = "event_number")
     val number: String,
+
+    var ftcCount: Long,
+    val breachEnd: LocalDate?,
 
     @ManyToOne
     @JoinColumn(name = "offender_id")
@@ -33,11 +35,11 @@ class Event(
 
     @Column(name = "active_flag", columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)
-    val active: Boolean,
+    val active: Boolean = true,
 
     @Column(columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)
-    val softDeleted: Boolean,
+    val softDeleted: Boolean = false,
 ) {
     fun twoThirdsDate() = twoThirdsContacts.maxOfOrNull { it.date }
 }
