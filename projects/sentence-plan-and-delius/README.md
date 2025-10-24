@@ -19,6 +19,7 @@ This depends on Delius for up-to-date information on the sentence plan.
 API endpoints are secured by roles supplied by the HMPPS Auth client used in
 the requests
 
-| API Endpoint        | Required Role                               |
-| ------------------- | ------------------------------------------- |
-| /case-details/{crn} | PROBATION_API_\_SENTENCE_PLAN_\_CASE_DETAIL |
+| API Endpoint                  | Required Role                               |
+|-------------------------------|---------------------------------------------|
+| /case-details/{crn}           | PROBATION_API_\_SENTENCE_PLAN_\_CASE_DETAIL |
+| /user/{username}/access/{crn} | PROBATION_API_\_SENTENCE_PLAN_\_CASE_DETAIL |
