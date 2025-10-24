@@ -21,8 +21,10 @@ import uk.gov.justice.digital.hmpps.data.TestData.COMMUNITY_SENTENCE
 import uk.gov.justice.digital.hmpps.data.TestData.CUSTODIAL_EVENT
 import uk.gov.justice.digital.hmpps.data.TestData.CUSTODIAL_SENTENCE
 import uk.gov.justice.digital.hmpps.data.TestData.CUSTODY
+import uk.gov.justice.digital.hmpps.data.TestData.ENFORCEMENT_REVIEW_CONTACT_TYPE
 import uk.gov.justice.digital.hmpps.data.TestData.ETHNICITY
 import uk.gov.justice.digital.hmpps.data.TestData.EXCLUSION
+import uk.gov.justice.digital.hmpps.data.TestData.FAILED_TO_COMPLY
 import uk.gov.justice.digital.hmpps.data.TestData.GENDER
 import uk.gov.justice.digital.hmpps.data.TestData.LAU
 import uk.gov.justice.digital.hmpps.data.TestData.LED_DATE
@@ -46,6 +48,8 @@ import uk.gov.justice.digital.hmpps.data.TestData.PSS_END_DATE_KEY_DATE_TYPE
 import uk.gov.justice.digital.hmpps.data.TestData.PSS_MAIN_TYPE
 import uk.gov.justice.digital.hmpps.data.TestData.PSS_REQUIREMENTS
 import uk.gov.justice.digital.hmpps.data.TestData.PSS_SUB_TYPE
+import uk.gov.justice.digital.hmpps.data.TestData.REFER_TO_MANAGER_ACTION
+import uk.gov.justice.digital.hmpps.data.TestData.REFER_TO_MANAGER_CONTACT_TYPE
 import uk.gov.justice.digital.hmpps.data.TestData.REGISTER_CATEGORY
 import uk.gov.justice.digital.hmpps.data.TestData.REGISTER_TYPE
 import uk.gov.justice.digital.hmpps.data.TestData.REGISTRATION
@@ -107,6 +111,7 @@ class DataLoader(
     private val registrationRepository: RegistrationRepository,
     private val officeLocationRepository: OfficeLocationRepository,
     private val providerRepository: ProviderRepository,
+    private val enforcementActionRepository: EnforcementActionRepository,
 ) : ApplicationListener<ApplicationReadyEvent> {
     @PostConstruct
     fun saveAuditUser() {
@@ -147,8 +152,12 @@ class DataLoader(
         contactTypeRepository.save(TWO_THIRDS_CONTACT_TYPE)
         contactTypeRepository.save(OTHER_CONTACT_TYPE)
         contactTypeRepository.save(APPOINTMENT_CONTACT_TYPE)
+        contactTypeRepository.save(REFER_TO_MANAGER_CONTACT_TYPE)
+        contactTypeRepository.save(ENFORCEMENT_REVIEW_CONTACT_TYPE)
         contactTypeRepository.saveAll(STATUS_CONTACT_TYPES)
         contactOutcomeRepository.save(ATTENDED_COMPLIED)
+        contactOutcomeRepository.save(FAILED_TO_COMPLY)
+        enforcementActionRepository.save(REFER_TO_MANAGER_ACTION)
         referenceDataRepository.save(PSS_END_DATE_KEY_DATE_TYPE)
         keyDateRepository.save(PSS_END_DATE)
         referenceDataRepository.save(LED_KEY_DATE_TYPE)

@@ -41,11 +41,11 @@ object ContactGenerator {
     fun Requirement.generateAppointment(
         type: ContactType,
         date: LocalDate,
-        startTime: ZonedDateTime? = null,
-        endTime: ZonedDateTime? = null,
         staff: Staff,
         team: Team,
         provider: Provider,
+        startTime: ZonedDateTime? = null,
+        endTime: ZonedDateTime? = null,
     ) = Contact(
         id = 0,
         person = disposal.event.person.toCrn(),
@@ -65,11 +65,11 @@ object ContactGenerator {
     fun LicenceCondition.generateAppointment(
         type: ContactType,
         date: LocalDate,
-        startTime: ZonedDateTime? = null,
-        endTime: ZonedDateTime? = null,
         staff: Staff,
         team: Team,
         provider: Provider,
+        startTime: ZonedDateTime? = null,
+        endTime: ZonedDateTime? = null,
     ) = Contact(
         id = 0,
         person = disposal.event.person.toCrn(),

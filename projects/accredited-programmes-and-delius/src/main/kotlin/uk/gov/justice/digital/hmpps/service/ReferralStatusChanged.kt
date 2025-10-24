@@ -4,7 +4,7 @@ import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.detail.DomainEventDetailService
 import uk.gov.justice.digital.hmpps.integration.StatusInfo
 import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
-import java.util.UUID
+import java.util.*
 
 @Service
 class ReferralStatusChanged(
@@ -12,14 +12,12 @@ class ReferralStatusChanged(
     private val appointmentService: AppointmentService,
 ) {
     fun handle(messageId: UUID, domainEvent: HmppsDomainEvent) {
-        domainEvent.detailUrl?.let {
-            detailService.getDetail<StatusInfo>(domainEvent)
-        }?.also {
+        detailService.getDetail<StatusInfo>(domainEvent.detailUrl).also { detail ->
             appointmentService.statusChanged(
                 messageId,
                 requireNotNull(domainEvent.personReference.findCrn()),
                 domainEvent.occurredAt,
-                it
+                detail
             )
         }
     }

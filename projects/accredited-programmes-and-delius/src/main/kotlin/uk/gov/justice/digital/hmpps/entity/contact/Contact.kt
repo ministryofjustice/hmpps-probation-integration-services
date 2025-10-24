@@ -67,6 +67,21 @@ class Contact(
     @JoinColumn(name = "contact_outcome_type_id")
     var outcome: ContactOutcome? = null,
 
+    @Convert(converter = YesNoConverter::class)
+    var attended: Boolean? = null,
+
+    @Convert(converter = YesNoConverter::class)
+    var complied: Boolean? = null,
+
+    @Column(columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
+    var enforcement: Boolean? = null,
+
+    @Column(name = "latest_enforcement_action_id")
+    var enforcementActionId: Long? = null,
+
+    val linkedContactId: Long? = null,
+
     @ManyToOne
     @JoinColumn(name = "office_location_id")
     var location: OfficeLocation? = null,
@@ -83,13 +98,13 @@ class Contact(
     @JoinColumn(name = "probation_area_id")
     var provider: Provider,
 
-    notes: String?,
+    notes: String? = null,
 
     @Column
-    val externalReference: String?,
+    val externalReference: String? = null,
 
     @Convert(converter = YesNoConverter::class)
-    var sensitive: Boolean,
+    var sensitive: Boolean = false,
 
     @CreatedDate
     var createdDatetime: ZonedDateTime = ZonedDateTime.now(),

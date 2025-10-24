@@ -12,6 +12,7 @@ import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
 import org.springframework.mock.web.MockHttpServletResponse
 import org.springframework.test.json.JsonCompareMode
+import org.springframework.test.web.servlet.MockHttpServletRequestDsl
 import org.springframework.test.web.servlet.ResultActions
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
@@ -35,6 +36,16 @@ object MockMvcExtensions {
     fun MockHttpServletRequestBuilder.withJson(jsonBody: Any) =
         this.contentType(MediaType.APPLICATION_JSON)
             .content(objectMapper.writeValueAsString(jsonBody))
+
+    var MockHttpServletRequestDsl.json
+        get(): Any = NotImplementedError()
+        set(jsonBody) {
+            contentType = MediaType.APPLICATION_JSON
+            content = objectMapper.writeValueAsString(jsonBody)
+        }
+
+    fun MockHttpServletRequestDsl.withToken() =
+        header(HttpHeaders.AUTHORIZATION, "Bearer ${TokenHelper.TOKEN}")
 
     inline fun <reified T> MockHttpServletResponse.contentAsJson(): T = objectMapper.readValue<T>(this.contentAsString)
 

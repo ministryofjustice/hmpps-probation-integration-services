@@ -14,7 +14,8 @@ class DisposalType(
     @Column(name = "disposal_type_id")
     val id: Long,
     val description: String,
-    val sentenceType: String
+    val sentenceType: String,
+    val ftcLimit: Long?,
 ) {
     fun isCustodial() = sentenceType in listOf("NC", "SC")
 }
