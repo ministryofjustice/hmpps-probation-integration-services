@@ -67,12 +67,13 @@ runs:
     - name: Search app insights
       id: search
       run: |
-        if [[ "${{ inputs.summarise_count_by }}" != "none"  ]]; then _query=$countQuery; else _query=$query; fi
+        if [[ "$summarise_count_by" != "none"  ]]; then _query=$countQuery; else _query=$query; fi
         echo "result=$(curl -fsSL -H "x-api-key: $key" --data-urlencode "query=$_query" --get "$url")" | tee -a "$GITHUB_OUTPUT"
       shell: bash
       env:
         url: https://api.applicationinsights.io/v1/apps/${{ inputs.app_insights_guid }}/query
         key: ${{ inputs.app_insights_key }}
+        summarise_count_by: ${{ inputs.summarise_count_by }}
         query: |
           customEvents
           | where timestamp between (${{ inputs.time_range }})
@@ -107,65 +108,79 @@ runs:
       if: fromJson(steps.search.outputs.result).tables[0].rows[0] != null
       shell: bash
       run: |
-        echo "result=$(echo "$search_result" | jq -rc '.tables[0].rows |
-          {
-            "channel": "${{ inputs.slack_channel }}",
-            "unfurl_links": false,
-            "unfurl_media": false,
-            "text": "Probation Integration Report",
-            "blocks": ([
-              {
-                "type": "header",
-                "text": {
-                  "type": "plain_text",
-                  "text": ":information_source: ${{ inputs.title }}"
+        echo "result=$(echo "$search_result" | jq -rc \
+        --arg slack_channel "$slack_channel" \
+        --arg title "$title" \
+        --arg summary "$summary" \
+        --arg column1_header "$column1_header" \
+        --arg column2_header "$column2_header" \
+        --arg app_insights_subscription_id "$app_insights_subscription_id" \
+        '
+        .tables[0].rows |
+        {
+          "channel": $slack_channel,
+          "unfurl_links": false,
+          "unfurl_media": false,
+          "text": "Probation Integration Report",
+          "blocks": ([
+            {
+              "type": "header",
+              "text": {
+                "type": "plain_text",
+                "text": ":information_source: \($title)"
+              }
+            },
+            {
+              "type": "section",
+              "text": {
+                "type": "mrkdwn",
+                "text": $summary
+              },
+              "fields": [
+                {
+                  "type": "mrkdwn",
+                  "text": "*\($column1_header)*"
+                },
+                {
+                  "type": "mrkdwn",
+                  "text": "*\($column2_header)*"
                 }
+              ]
+            }
+          ] +
+          (. | [_nwise(5)] | map({
+            "type": "section",
+            "fields": (. | map([
+              {
+                "type": "plain_text",
+                "text": .[0]
               },
               {
-                "type": "section",
-                "text": {
+                "type": "mrkdwn",
+                "text": (.[1] + " (<https://portal.azure.com/#blade/AppInsightsExtension/DetailsV2Blade/DataModel/%7B%22eventId%22:%22" + .[2] + "%22,%22timestamp%22:%22" + .[3] + "%22%7D/ComponentId/%7B%22Name%22:%22nomisapi-prod%22,%22ResourceGroup%22:%22nomisapi-prod-rg%22,%22SubscriptionId%22:%22\($app_insights_subscription_id)%22%7D|Details>).")
+              }
+            ]) | flatten)
+          })) +
+          [
+            {
+              "type": "context",
+              "elements": [
+                {
                   "type": "mrkdwn",
-                  "text": "${{ inputs.summary }}"
-                },
-                "fields": [
-                  {
-                    "type": "mrkdwn",
-                    "text": "*${{ inputs.column1_header }}*"
-                  },
-                  {
-                    "type": "mrkdwn",
-                    "text": "*${{ inputs.column2_header }}*"
-                  }
-                ]
-              }
-            ] +
-            (. | [_nwise(5)] | map({
-              "type": "section",
-              "fields": (. | map([
-                {
-                  type: "plain_text",
-                  text: .[0]
-                },
-                {
-                  type: "mrkdwn",
-                  text: (.[1] + " (<https://portal.azure.com/#blade/AppInsightsExtension/DetailsV2Blade/DataModel/%7B%22eventId%22:%22" + .[2] + "%22,%22timestamp%22:%22" + .[3] + "%22%7D/ComponentId/%7B%22Name%22:%22nomisapi-prod%22,%22ResourceGroup%22:%22nomisapi-prod-rg%22,%22SubscriptionId%22:%22${{ inputs.app_insights_subscription_id }}%22%7D|Details>).")
+                  "text": ">This report was generated automatically. For more information, contact the <https://moj.enterprise.slack.com/archives/C02HQ4M2YQN|probation integration team>."
                 }
-              ]) | flatten)
-            })) +
-            [
-              {
-                "type": "context",
-                "elements": [
-                  {
-                    "type": "mrkdwn",
-                    "text": ">This report was generated automatically. For more information, contact the <https://moj.enterprise.slack.com/archives/C02HQ4M2YQN|probation integration team>."
-                  }
-                ]
-              }
-            ])
-          }')" | tee -a "$GITHUB_OUTPUT"
+              ]
+            }
+          ])
+        }')" | tee -a "$GITHUB_OUTPUT"
       env:
         search_result: ${{ steps.search.outputs.result }}
+        slack_channel: ${{ inputs.slack_channel }}
+        title: ${{ inputs.title }}
+        summary: ${{ inputs.summary }}
+        column1_header: ${{ inputs.column1_header }}
+        column2_header: ${{ inputs.column2_header }}
+        app_insights_subscription_id: ${{ inputs.app_insights_subscription_id }}
 
     - name: Send message to Slack
       id: send

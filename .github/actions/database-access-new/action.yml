@@ -25,11 +25,13 @@ runs:
       run: |
         pip install jinja2-cli
         jinja2 \
-          -D "username=$(kubectl get secret '${{ inputs.project }}-database' -o json | jq -r '.data.DB_USERNAME | @base64d')" \
-          -D "password=$(kubectl get secret '${{ inputs.project }}-database' -o json | jq -r '.data.DB_PASSWORD | @base64d')" \
+          -D "username=$(kubectl get secret "${project}-database" -o json | jq -r '.data.DB_USERNAME | @base64d')" \
+          -D "password=$(kubectl get secret "${project}-database" -o json | jq -r '.data.DB_PASSWORD | @base64d')" \
           ./script/setup-database-user.sql.j2 \
-          ./projects/${{ inputs.project }}/deploy/database/access.yml \
+          "./projects/${project}/deploy/database/access.yml" \
         > ./script/setup-database-user.sql
+      env:
+        project: ${{ inputs.project }}
 
     - name: Run SQL script
       shell: bash

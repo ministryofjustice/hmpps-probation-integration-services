@@ -86,28 +86,28 @@ runs:
     - name: Deploy
       shell: bash
       run: |
-        yq -i ".appVersion = \"${{ inputs.version }}\"" "projects/${{ inputs.project }}/deploy/Chart.yaml"
-        helm dependency update "projects/${{ inputs.project }}/deploy"
+        yq -i ".appVersion = \"${VERSION}\"" "projects/${PROJECT}/deploy/Chart.yaml"
+        helm dependency update "projects/${PROJECT}/deploy"
 
         set +o pipefail
         for attempt in $(seq 1 $MAX_ATTEMPTS); do
           echo "::group::Helm upgrade (attempt $attempt)"
-          exec helm upgrade '${{ inputs.project }}' 'projects/${{ inputs.project }}/deploy' \
+          exec helm upgrade "${PROJECT}" "projects/${PROJECT}/deploy" \
             --atomic \
             --history-max 10 \
             --force \
             --install \
             --reset-values \
-            --set 'version=${{ inputs.version }}' \
-            --set 'generic-service.image.tag=${{ inputs.version }}' \
-            --set 'generic-service.env.VERSION=${{ inputs.version }}' \
+            --set "version=${VERSION}" \
+            --set "generic-service.image.tag=${VERSION}" \
+            --set "generic-service.env.VERSION=${VERSION}" \
             --set "generic-service.env.BUILD_INFO=$([ -r "$BUILD_INFO" ] && cat "$BUILD_INFO" | base64 -w0 || echo)" \
             --set "generic-service.env.GIT_INFO=$([ -r "$GIT_INFO" ] && cat "$GIT_INFO" | base64 -w0 || echo)" \
             --timeout 10m \
             --values <(echo "$IP_ALLOWLISTS" | base64 -d) \
             --values templates/helm-defaults.yml \
-            --values 'projects/${{ inputs.project }}/deploy/values.yaml' \
-            --values 'projects/${{ inputs.project }}/deploy/${{ steps.env.outputs.values-file }}' \
+            --values "projects/${PROJECT}/deploy/values.yaml" \
+            --values "projects/${PROJECT}/deploy/${{ steps.env.outputs.values-file }}" \
             --wait 2>&1 | tee "helm-$attempt.log"
           exit_code=${PIPESTATUS[0]}
           echo "Exit code: $exit_code" 
@@ -122,3 +122,5 @@ runs:
         GIT_INFO: projects/${{ inputs.project }}/git.properties
         IP_ALLOWLISTS: ${{ inputs.ip-allowlists }}
         MAX_ATTEMPTS: '3'
+        VERSION: ${{ inputs.version }}
+        PROJECT: ${{ inputs.project }}
