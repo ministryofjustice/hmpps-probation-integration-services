@@ -1847,6 +1847,9 @@ components:
           enum:
           - POP
           - SERVICE
+        uuid:
+          type: string
+          format: uuid
       required:
       - date
       - endTime
@@ -1858,7 +1861,10 @@ components:
         id:
           type: integer
           format: int64
+        externalReference:
+          type: string
       required:
+      - externalReference
       - id
     ClearAlerts:
       type: object
@@ -3014,12 +3020,15 @@ components:
       properties:
         username:
           type: string
+        staffCode:
+          type: string
         homeArea:
           type: string
         team:
           type: string
       required:
       - homeArea
+      - staffCode
       - username
     Provider:
       type: object
