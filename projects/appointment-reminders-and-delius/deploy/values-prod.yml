@@ -58,3 +58,7 @@ jobs:
       apiKeySecret: N52_API_KEY
       templates:
         - a2134b29-27a5-4b1d-b043-aeb079c1088d
+    yorkshire-humber:
+      apiKeySecret: N55_API_KEY
+      templates:
+        - fd90ef8c-08bd-4be6-8512-9fe480028b1f

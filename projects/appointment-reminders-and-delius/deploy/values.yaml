@@ -118,3 +118,11 @@ jobs:
       apiKeySecret: API_KEY
       schedule: '0 18 * * *' # 6pm every day
       daysInAdvance: 1
+
+    yorkshire-humber:
+      provider:
+        code: N55
+        name: Yorkshire and The Humber
+      apiKeySecret: API_KEY
+      schedule: '0 18 * * *' # 6pm every day
+      daysInAdvance: 1
