@@ -4,7 +4,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-security")
 
     api("org.springframework.boot:spring-boot-starter-oauth2-client")
-    api("org.eclipse.jetty:jetty-client:12.1.3")
+    api("org.eclipse.jetty:jetty-client")
 }
 
 configure<uk.gov.justice.digital.hmpps.extensions.ClassPathExtension> {
