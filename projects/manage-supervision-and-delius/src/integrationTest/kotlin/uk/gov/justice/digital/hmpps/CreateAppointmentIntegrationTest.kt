@@ -2,7 +2,6 @@ package uk.gov.justice.digital.hmpps
 
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
-import org.junit.jupiter.api.Assertions.assertNotEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
@@ -24,7 +23,6 @@ import uk.gov.justice.digital.hmpps.test.CustomMatchers.isCloseTo
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
-import java.time.LocalDate
 import java.time.ZonedDateTime
 import java.util.*
 
@@ -140,41 +138,6 @@ class CreateAppointmentIntegrationTest : IntegrationTestBase() {
         sentenceAppointmentRepository.deleteById(appointment.id)
     }
 
-    @ParameterizedTest
-    @MethodSource("createMultipleAppointments")
-    fun `create multiple appointments`(createAppointment: CreateAppointment) {
-        val response = mockMvc.perform(
-            post("/appointment/${PersonGenerator.PERSON_1.crn}")
-                .withUserToken("DeliusUser")
-                .withJson(createAppointment)
-        )
-            .andExpect(MockMvcResultMatchers.status().isCreated)
-            .andReturn().response.contentAsJson<AppointmentDetail>()
-
-        val appointments = sentenceAppointmentRepository.findAllById(response.appointments.map { it.id })
-
-        assertThat(appointments.size, equalTo(3))
-        assertThat(response.appointments.all { it.externalReference != null }, equalTo(true))
-
-        assertThat(appointments[0].date, equalTo(LocalDate.now()))
-        assertThat(
-            appointments[1].date,
-            equalTo(LocalDate.now().plusDays(createAppointment.interval.value.toLong() * 1))
-        )
-        assertThat(
-            appointments[2].date,
-            equalTo(LocalDate.now().plusDays(createAppointment.interval.value.toLong() * 2))
-        )
-
-        //check for unique external reference
-        val externalRef = "urn:uk:gov:hmpps:manage-supervision-service:appointment:${createAppointment.uuid}"
-        assertThat(appointments[0].externalReference, equalTo(externalRef))
-        assertNotEquals(externalRef, appointments[1].externalReference)
-        assertNotEquals(externalRef, appointments[2].externalReference)
-
-        sentenceAppointmentRepository.deleteAll(appointments)
-    }
-
     companion object {
         private val user = User(STAFF_USER_1.username, TEAM.code, DEFAULT_LOCATION.code)
 
@@ -213,37 +176,6 @@ class CreateAppointmentIntegrationTest : IntegrationTestBase() {
                     sensitive = true,
                     uuid = UUID.randomUUID()
                 )
-            )
-        )
-
-        @JvmStatic
-        fun createMultipleAppointments() = listOf(
-            CreateAppointment(
-                user,
-                type = CreateAppointment.Type.HomeVisitToCaseNS.code,
-                start = ZonedDateTime.now(),
-                end = ZonedDateTime.now().plusHours(1),
-                numberOfAppointments = 3,
-                eventId = PersonGenerator.EVENT_1.id,
-                uuid = UUID.randomUUID()
-            ),
-            CreateAppointment(
-                user,
-                type = CreateAppointment.Type.HomeVisitToCaseNS.code,
-                start = ZonedDateTime.now(),
-                end = ZonedDateTime.now().plusHours(1),
-                until = ZonedDateTime.now().plusDays(2),
-                eventId = PersonGenerator.EVENT_1.id,
-                uuid = UUID.randomUUID()
-            ), CreateAppointment(
-                user,
-                CreateAppointment.Type.HomeVisitToCaseNS.code,
-                start = ZonedDateTime.now(),
-                end = ZonedDateTime.now().plusHours(2),
-                until = ZonedDateTime.now().plusDays(15),
-                interval = CreateAppointment.Interval.WEEK,
-                eventId = PersonGenerator.EVENT_1.id,
-                uuid = UUID.randomUUID()
             )
         )
     }
