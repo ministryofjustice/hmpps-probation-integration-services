@@ -102,7 +102,7 @@
         <a href="#data-dependencies"><span>Data dependencies</span></a>
         <ul>
           <li>
-            <a href="#context-map-probation-search-data"><span>Context Map - Probation Search data</span></a>
+            <a href="#context-map"><span>Context Map</span></a>
           </li>
         </ul>
       </li>
@@ -126,10 +126,10 @@
             <h1 id="arns-and-delius">ARNS and Delius</h1>
 <p>This integration service provides an API to get the limitations (exclusions and restrictions) for a user.</p>
 <h2 id="business-need">Business need</h2>
-<p>Provides a background person on probation information to the client.</p>
+<p>To allow the Assess Risks and Needs (ARNS) service to prevent unauthorised access to a probation case.</p>
 <h2 id="data-dependencies">Data dependencies</h2>
 <p>This depends on Delius for up-to-date information on the restrictions and exclusions applied to a user.</p>
-<h3 id="context-map-probation-search-data">Context Map - Probation Search data</h3>
+<h3 id="context-map">Context Map</h3>
 <p><img src="../../images/arns-and-delius-context-map.svg" alt="" /></p>
 <h2 id="api-access-control">API Access Control</h2>
 <p>API endpoints are secured by roles supplied by the HMPPS Auth client used in
@@ -140,7 +140,7 @@ the requests</p>
 <th>API Endpoint</th>
 <th>Required Role</th>
 </tr><tr>
-<td>/users</td>
+<td>/users/access</td>
 <td>PROBATION_API__ARNS__USER_ACCESS</td>
 </tr>
         </table>
@@ -150,17 +150,17 @@ the requests</p>
 <li><a href="api-reference.html">API Reference</a></li>
 </ul>
 
-              <div data-module='page-expiry' data-last-reviewed-on="2025-10-24">
+              <div data-module='page-expiry' data-last-reviewed-on="2026-01-24">
     <div class='page-expiry--not-expired'>
-      This page was last reviewed on 24 June 2025.
+      This page was last reviewed on 24 October 2025.
 
-        It needs to be reviewed again on 24 October 2025
+        It needs to be reviewed again on 24 January 2026
         by the page owner <a href="https://mojdt.slack.com/messages/probation-integration-team">#probation-integration-team</a>
         .
     </div>
 
     <div class='page-expiry--expired' hidden>
-      This page was set to be reviewed before 24 October 2025
+      This page was set to be reviewed before 24 January 2026
        by the page owner <a href="https://mojdt.slack.com/messages/probation-integration-team">#probation-integration-team</a>.
       This might mean the content is out of date.
     </div>

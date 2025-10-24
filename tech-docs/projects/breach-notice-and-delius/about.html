@@ -93,8 +93,25 @@
               <nav id="toc" class="js-toc-list toc__list" aria-labelledby="toc-heading">
                       <ul>
   <li>
-    <a href="#breach-notice-and-delius"><span>breach-notice-and-delius</span></a>
+    <a href="#breach-notice-and-delius"><span>Breach Notice and Delius</span></a>
     <ul>
+      <li>
+        <a href="#business-need"><span>Business Need</span></a>
+      </li>
+      <li>
+        <a href="#context-map"><span>Context Map</span></a>
+      </li>
+      <li>
+        <a href="#interfaces"><span>Interfaces</span></a>
+        <ul>
+          <li>
+            <a href="#message-formats"><span>Message Formats</span></a>
+          </li>
+        </ul>
+      </li>
+      <li>
+        <a href="#event-triggers"><span>Event Triggers</span></a>
+      </li>
       <li>
         <a href="#api-reference"><span>API Reference</span></a>
       </li>
@@ -109,26 +126,54 @@
 
         <div class="app-pane__content toc-open-disabled" aria-label="Content">
           <main id="content" class="technical-documentation" data-module="anchored-headings">
-            <h1 id="breach-notice-and-delius">breach-notice-and-delius</h1>
-<p>// TODO Describe the service</p>
-<h2 id="api-reference">API Reference</h2>
+            <h1 id="breach-notice-and-delius">Breach Notice and Delius</h1>
+<p>The <a href="https://github.com/ministryofjustice/hmpps-breach-notice-ui">HMPPS Breach Notice service</a> enables probation
+practitioners to create breach notice letters for offenders who have failed to comply with the requirements of their
+community order.</p>
+<h2 id="business-need">Business Need</h2>
+<p>This integration service provides an API for read-only access to case data from Delius, to reduce the need for re-keying
+in the Breach Notice service.</p>
+<p>It also accepts inbound events when a breach notice is created or deleted, to copy a snapshot of the document into
+Delius and Alfresco.</p>
+<h2 id="context-map">Context Map</h2>
+<p><a href="../../images/breach-notice-and-delius-context-map.svg" rel="noopener noreferrer"><img src="../../images/breach-notice-and-delius-context-map.svg" alt="Context Map" /></a></p>
+<h2 id="interfaces">Interfaces</h2>
+<h3 id="message-formats">Message Formats</h3>
+<p>The service responds to HMPPS Offender Event messages via an
+<a href="https://github.com/ministryofjustice/cloud-platform-environments/blob/main/namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-prod/resources/breach-notice-and-delius-queue.tf">SQS Queue</a>.</p>
+<p>Example <a href="https://github.com/ministryofjustice/hmpps-probation-integration-services/blob/main/projects/breach-notice-and-delius/src/dev/resources/messages/">messages</a> are in the development source tree</p>
+<h2 id="event-triggers">Event Triggers</h2>
+<div class="table-container">
+        <table>
+          <tr>
+<th>Business Event</th>
+<th>Message Event Type / Filter</th>
+</tr><tr>
+<td>Breach notice completed</td>
+<td>probation-case.breach-notice.created</td>
+</tr><tr>
+<td>Breach notice deleted</td>
+<td>probation-case.breach-notice.deleted</td>
+</tr>
+        </table>
+      </div><h2 id="api-reference">API Reference</h2>
 
 <ul>
 <li><a href="api-reference.html">API Reference</a></li>
 <li><a href="asyncapi-reference.html">AsyncAPI Reference</a></li>
 </ul>
 
-              <div data-module='page-expiry' data-last-reviewed-on="2025-10-24">
+              <div data-module='page-expiry' data-last-reviewed-on="2026-01-24">
     <div class='page-expiry--not-expired'>
-      This page was last reviewed on 24 June 2025.
+      This page was last reviewed on 24 October 2025.
 
-        It needs to be reviewed again on 24 October 2025
+        It needs to be reviewed again on 24 January 2026
         by the page owner <a href="https://mojdt.slack.com/messages/probation-integration-team">#probation-integration-team</a>
         .
     </div>
 
     <div class='page-expiry--expired' hidden>
-      This page was set to be reviewed before 24 October 2025
+      This page was set to be reviewed before 24 January 2026
        by the page owner <a href="https://mojdt.slack.com/messages/probation-integration-team">#probation-integration-team</a>.
       This might mean the content is out of date.
     </div>

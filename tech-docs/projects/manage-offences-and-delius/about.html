@@ -102,6 +102,9 @@
         <a href="#context-map"><span>Context Map</span></a>
       </li>
       <li>
+        <a href="#ignored-offence-codes"><span>Ignored Offence Codes</span></a>
+      </li>
+      <li>
         <a href="#interfaces"><span>Interfaces</span></a>
         <ul>
           <li>
@@ -125,14 +128,30 @@
           <main id="content" class="technical-documentation" data-module="anchored-headings">
             <h1 id="manage-offences-and-delius">Manage Offences and Delius</h1>
 <h2 id="business-need">Business Need</h2>
-<p>Inbound service that responds to events raised by the HMPPS Manage Offences service when there are changes to the set of <a href="https://criminaljusticehub.org.uk/jargon-buster/cjs-offence-code">CJS Offence Codes</a> managed by that service. Any changes to the set of offence codes is reflected in the Delius database. This ensures that Delius is up-to-date with the common set of offence codes used across HMPPS Digital services.</p>
+<p>Inbound service that responds to events raised by the HMPPS Manage Offences service when there are changes to the set of
+<a href="https://criminaljusticehub.org.uk/jargon-buster/cjs-offence-code">CJS Offence Codes</a> managed by that service. Any
+changes to the set of offence codes is reflected in the Delius database. This ensures that Delius is up-to-date with
+the common set of offence codes used across HMPPS Digital services.</p>
 <h2 id="context-map">Context Map</h2>
 <p><a href="../../images/manage-offences-and-delius-context-map.svg" rel="noopener noreferrer"><img src="../../images/manage-offences-and-delius-context-map.svg" alt="Context Map" /></a></p>
+<h2 id="ignored-offence-codes">Ignored Offence Codes</h2>
+<p>Certain offence codes are not replicated into Delius, as they correspond to court processes rather than actual offences.
+At the time of writing, these are:</p>
+
+<ul>
+<li>Offences that have expired (i.e. have an end date in the past)</li>
+<li>Home office codes of <code>222/22</code></li>
+<li>Home office code prefixes of <code>598/*</code></li>
+<li>CJS code suffixes of <code>500</code> or above</li>
+</ul>
+<p>For the up-to-date list of ignored offence codes,
+see <a href="https://github.com/ministryofjustice/hmpps-probation-integration-services/blob/main/projects/manage-offences-and-delius/src/main/kotlin/uk/gov/justice/digital/hmpps/config/IgnoredOffences.kt">IgnoredOffences.kt</a>.</p>
 <h2 id="interfaces">Interfaces</h2>
 <h3 id="message-formats">Message Formats</h3>
 <p>The service responds to an HMPPS Domain Event message via an
 <a href="https://github.com/ministryofjustice/cloud-platform-environments/blob/main/namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-prod/resources/manage-offences-and-delius-queue.tf">SQS Queue</a>.
-The events are raised by the <a href="https://github.com/ministryofjustice/hmpps-manage-offences-api">Manage Offences API</a> when a CJS offence code is either created or updated.</p>
+The events are raised by the <a href="https://github.com/ministryofjustice/hmpps-manage-offences-api">Manage Offences API</a> when
+a CJS offence code is either created or updated.</p>
 <div class="table-container">
         <table>
           <tr>
@@ -151,17 +170,17 @@ The events are raised by the <a href="https://github.com/ministryofjustice/hmpps
 <li><a href="asyncapi-reference.html">AsyncAPI Reference</a></li>
 </ul>
 
-              <div data-module='page-expiry' data-last-reviewed-on="2025-10-24">
+              <div data-module='page-expiry' data-last-reviewed-on="2026-01-24">
     <div class='page-expiry--not-expired'>
-      This page was last reviewed on 24 June 2025.
+      This page was last reviewed on 24 October 2025.
 
-        It needs to be reviewed again on 24 October 2025
+        It needs to be reviewed again on 24 January 2026
         by the page owner <a href="https://mojdt.slack.com/messages/probation-integration-team">#probation-integration-team</a>
         .
     </div>
 
     <div class='page-expiry--expired' hidden>
-      This page was set to be reviewed before 24 October 2025
+      This page was set to be reviewed before 24 January 2026
        by the page owner <a href="https://mojdt.slack.com/messages/probation-integration-team">#probation-integration-team</a>.
       This might mean the content is out of date.
     </div>
