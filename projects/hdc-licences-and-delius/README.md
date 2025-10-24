@@ -28,3 +28,4 @@ API endpoints are secured by roles supplied by the HMPPS Auth client used in the
 | GET /staff/*          | PROBATION\_API_\_HDC_\_STAFF            |
 | GET /providers/*      | PROBATION\_API_\_HDC_\_STAFF            |
 | GET /case/*           | PROBATION\_API_\_HDC_\_STAFF            |
+| GET /nomsNumbers      | PROBATION\_API_\_HDC_\_CASE_DETAIL      |
