@@ -9,7 +9,6 @@ import uk.gov.justice.digital.hmpps.aspect.UserContext
 import uk.gov.justice.digital.hmpps.audit.service.AuditableService
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
 import uk.gov.justice.digital.hmpps.client.BankHolidayClient
-import uk.gov.justice.digital.hmpps.datetime.DeliusDateTimeFormatter
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.exception.ConflictException
 import uk.gov.justice.digital.hmpps.exception.InvalidRequestException
@@ -22,8 +21,6 @@ import uk.gov.justice.digital.hmpps.utils.AppointmentTimeHelper
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.ZonedDateTime
-import java.time.temporal.ChronoUnit
-import java.util.*
 
 @Service
 class SentenceAppointmentService(
@@ -113,70 +110,11 @@ class SentenceAppointmentService(
                 )
             }
 
-            val createAppointments: ArrayList<CreateAppointment> = arrayListOf()
+            val saved = sentenceAppointmentRepository.save(createAppointment.withManager(om, userAndTeam, location))
 
-            createAppointment.let {
-                val numberOfAppointments = createAppointment.until?.let {
-                    val duration = ChronoUnit.DAYS.between(createAppointment.start, it)
-                    (duration / createAppointment.interval.value).toInt() + 1
-                } ?: createAppointment.numberOfAppointments
+            audit["contactId"] = saved.id
 
-                for (i in 0 until numberOfAppointments) {
-                    val interval = createAppointment.interval.value * i
-                    createAppointments.add(
-                        CreateAppointment(
-                            createAppointment.user,
-                            createAppointment.type,
-                            createAppointment.start.plusDays(interval.toLong()),
-                            createAppointment.end.plusDays(interval.toLong()),
-                            createAppointment.interval,
-                            createAppointment.numberOfAppointments,
-                            createAppointment.eventId,
-                            if (i == 0) createAppointment.uuid else UUID.randomUUID(), //needs to be a unique value
-                            createAppointment.requirementId,
-                            createAppointment.licenceConditionId,
-                            createAppointment.nsiId,
-                            createAppointment.until,
-                            createAppointment.notes,
-                            createAppointment.sensitive,
-                            createAppointment.visorReport,
-                        )
-                    )
-                }
-            }
-
-            val overlappingAppointments = createAppointments.mapNotNull {
-                if (it.start.isAfter(ZonedDateTime.now()) && sentenceAppointmentRepository.appointmentClashes(
-                        om.person.id,
-                        it.start.toLocalDate(),
-                        it.start,
-                        it.end
-                    )
-                ) {
-                    OverlappingAppointment(
-                        it.start.toLocalDateTime().format(DeliusDateTimeFormatter).dropLast(3),
-                        it.end.toLocalDateTime().format(DeliusDateTimeFormatter).dropLast(3)
-                    )
-                } else null
-            }
-
-            if (overlappingAppointments.isNotEmpty()) {
-                throw ConflictException(
-                    "Appointment(s) conflicts with an existing future appointment ${
-                        objectMapper.writeValueAsString(
-                            overlappingAppointments
-                        )
-                    }"
-                )
-            }
-
-            val appointments = createAppointments.map { it.withManager(om, userAndTeam, location) }
-            val savedAppointments = sentenceAppointmentRepository.saveAll(appointments)
-            val createdAppointments = savedAppointments.map { CreatedAppointment(it.id, it.externalReference) }
-
-            audit["contactId"] = createdAppointments.joinToString { it.id.toString() }
-
-            return@audit AppointmentDetail(createdAppointments)
+            return@audit AppointmentDetail(listOf(CreatedAppointment(saved.id, saved.externalReference)))
         }
     }
 
