@@ -1,5 +1,8 @@
 # Pre-Sentence Reports to Delius
 
+> :memo: This project is not currently in-use. It will be redeveloped in future to support the new Pre-Sentence Report
+> Service being developed by the Probation in Court team.
+
 Service that supports integration between the [Pre-Sentence Service](https://github.com/ministryofjustice/pre-sentence-service)
 and [Delius](https://github.com/ministryofjustice/delius). The workflow for a
 pre-sentence report involves initiating a report in Delius, completing the

@@ -11,6 +11,7 @@ APIs are available to enable read-only access to the following data:
 
 The API also supports the following tasks:
 
+* Finding a person on probation by name or identifiers
 * Management of roles
 
 ## Business need
@@ -29,10 +30,11 @@ This service provides read-only access to data stored in Delius for a **Person o
 API endpoints are secured by roles supplied by the HMPPS Auth client used in
 the requests
 
-| API Endpoint                       | Required Role                                |
-| ---------------------------------- | -------------------------------------------- |
-| /convictions/{value}               | PROBATION_API_\_PATHFINDER_\_CASE_DETAIL     |
-| /court-appearances                 | PROBATION_API_\_PATHFINDER_\_CASE_DETAIL     |
-| /detail/{value}                    | PROBATION_API_\_PATHFINDER_\_CASE_DETAIL     |
-| /probation-areas                   | PROBATION_API_\_PATHFINDER_\_CASE_DETAIL     |
-| /users/{username}/roles/{roleName} | PROBATION_API_\_PATHFINDER_\_USER_ROLES_\_RW |
+| API Endpoint                       | Required Role                               |
+|------------------------------------|---------------------------------------------|
+| /convictions/{value}               | PROBATION_API_\_PATHFINDER_\_CASE_DETAIL    |
+| /court-appearances                 | PROBATION_API_\_PATHFINDER_\_CASE_DETAIL    |
+| /detail/{value}                    | PROBATION_API_\_PATHFINDER_\_CASE_DETAIL    |
+| /probation-areas                   | PROBATION_API_\_PATHFINDER_\_CASE_DETAIL    |
+| /search/probation-cases/*          | PROBATION_API_\_PATHFINDER_\_CASE_DETAIL    |
+| /users/{username}/roles/{roleName} | PROBATION_API_\_PATHFINDER_\_USER_ROLES__RW |
