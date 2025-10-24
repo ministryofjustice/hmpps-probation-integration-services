@@ -67,3 +67,6 @@ jobs:
             - 131f4ccd-e2cf-46c6-bb69-f2bcf625b316
         - templates:
             - eaedba0b-9bd0-4c25-84ac-bc7f8b0deabb
+    yorkshire-humber:
+      templates:
+        - cd713c1b-1b27-45a0-b493-37a34666635a
