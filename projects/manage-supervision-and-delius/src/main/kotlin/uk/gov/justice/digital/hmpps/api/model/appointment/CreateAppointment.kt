@@ -1,7 +1,7 @@
 package uk.gov.justice.digital.hmpps.api.model.appointment
 
 import com.fasterxml.jackson.annotation.JsonIgnore
-import jakarta.validation.constraints.Positive
+import uk.gov.justice.digital.hmpps.integrations.delius.appointment.Appointment.Companion.URN_PREFIX
 import java.time.ZonedDateTime
 import java.util.*
 
@@ -10,9 +10,6 @@ data class CreateAppointment(
     val type: String,
     val start: ZonedDateTime,
     val end: ZonedDateTime,
-    val interval: Interval = Interval.DAY,
-    @field:Positive(message = "number of appointments must be greater than or equal to 1")
-    val numberOfAppointments: Int = 1,
     val eventId: Long? = null,
     val uuid: UUID,
     val requirementId: Long? = null,
@@ -43,10 +40,6 @@ data class CreateAppointment(
         WEEK(7),
         FORTNIGHT(14),
         FOUR_WEEKS(28)
-    }
-
-    companion object {
-        const val URN_PREFIX = "urn:uk:gov:hmpps:manage-supervision-service:appointment:"
     }
 }
 

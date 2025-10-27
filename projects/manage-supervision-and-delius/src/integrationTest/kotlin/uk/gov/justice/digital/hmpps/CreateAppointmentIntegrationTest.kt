@@ -46,8 +46,6 @@ class CreateAppointmentIntegrationTest : IntegrationTestBase() {
                         type = CreateAppointment.Type.HomeVisitToCaseNS.code,
                         start = ZonedDateTime.now().plusDays(1),
                         end = ZonedDateTime.now().plusDays(2),
-                        interval = CreateAppointment.Interval.DAY,
-                        numberOfAppointments = 1,
                         eventId = 1,
                         uuid = UUID.randomUUID()
                     )
@@ -66,8 +64,6 @@ class CreateAppointmentIntegrationTest : IntegrationTestBase() {
                         type = CreateAppointment.Type.InitialAppointmentInOfficeNS.code,
                         start = ZonedDateTime.now().plusDays(2),
                         end = ZonedDateTime.now().plusDays(1),
-                        interval = CreateAppointment.Interval.DAY,
-                        numberOfAppointments = 1,
                         eventId = PersonGenerator.EVENT_1.id,
                         uuid = UUID.randomUUID()
                     )
@@ -75,33 +71,6 @@ class CreateAppointmentIntegrationTest : IntegrationTestBase() {
         )
             .andExpect(MockMvcResultMatchers.status().isBadRequest)
             .andExpect(jsonPath("$.message", equalTo("Appointment end time cannot be before start time")))
-    }
-
-    @Test
-    fun `number of appointments set to 0`() {
-        mockMvc.perform(
-            post("/appointment/${PersonGenerator.PERSON_1.crn}")
-                .withUserToken(PI_USER.username)
-                .withJson(
-                    CreateAppointment(
-                        user,
-                        type = CreateAppointment.Type.InitialAppointmentInOfficeNS.code,
-                        start = ZonedDateTime.now().plusDays(1),
-                        end = ZonedDateTime.now().plusDays(1).plusHours(1),
-                        interval = CreateAppointment.Interval.DAY,
-                        numberOfAppointments = 0,
-                        eventId = PersonGenerator.EVENT_1.id,
-                        uuid = UUID.randomUUID()
-                    )
-                )
-        )
-            .andExpect(MockMvcResultMatchers.status().isBadRequest)
-            .andExpect(
-                jsonPath(
-                    "$.fields[0].message",
-                    equalTo("number of appointments must be greater than or equal to 1")
-                )
-            )
     }
 
     @ParameterizedTest
@@ -159,7 +128,6 @@ class CreateAppointmentIntegrationTest : IntegrationTestBase() {
                     type = CreateAppointment.Type.InitialAppointmentInOfficeNS.code,
                     start = ZonedDateTime.now().plusDays(1),
                     end = ZonedDateTime.now().plusDays(1).plusHours(1),
-                    interval = CreateAppointment.Interval.DAY,
                     eventId = PersonGenerator.EVENT_1.id,
                     notes = "Some Notes",
                     uuid = UUID.randomUUID()
@@ -171,7 +139,6 @@ class CreateAppointmentIntegrationTest : IntegrationTestBase() {
                     type = CreateAppointment.Type.PlannedDoorstepContactNS.code,
                     start = ZonedDateTime.now().plusDays(1),
                     end = ZonedDateTime.now().plusDays(1).plusHours(1),
-                    interval = CreateAppointment.Interval.DAY,
                     notes = "Some Notes",
                     sensitive = true,
                     uuid = UUID.randomUUID()
