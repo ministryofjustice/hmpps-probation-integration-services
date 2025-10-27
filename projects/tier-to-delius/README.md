@@ -24,10 +24,18 @@ Incoming messages are filtered on `eventType` by the [SQS queue policy](https://
 |-------------------------------------|--------------------|-----------------------------|
 | Updated Management Tier Calculation | HMPPS Domain Event | tier.calculation.complete   |
 
+## Scheduled job
+
+A weekly job in the [HMPPS Tier](https://github.com/ministryofjustice/hmpps-tier) service triggers a recalculation of
+all active cases, using the `/probation-cases` API endpoint.
+
 ## Authorisation
 
 API endpoints are secured by roles supplied by the HMPPS Auth client used in the requests
 
-| API Endpoint        | Required Role     |
-|---------------------|-------------------|
-| /tier-details/{crn} | ROLE_TIER_DETAILS |
+| API Endpoint        | Required Role                      |
+|---------------------|------------------------------------|
+| /tier-details/{crn} | PROBATION_API_\_TIER_\_CASE_DETAIL |
+| /users/*            | PROBATION_API_\_TIER_\_CASE_DETAIL |
+| /person/{crn}       | PROBATION_API_\_TIER_\_CASE_DETAIL |
+| /probation-cases    | PROBATION_API_\_TIER_\_CASE_DETAIL |
