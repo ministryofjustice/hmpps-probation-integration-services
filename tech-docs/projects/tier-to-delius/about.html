@@ -110,6 +110,9 @@
         <a href="#event-triggers"><span>Event Triggers</span></a>
       </li>
       <li>
+        <a href="#scheduled-job"><span>Scheduled job</span></a>
+      </li>
+      <li>
         <a href="#authorisation"><span>Authorisation</span></a>
       </li>
       <li>
@@ -150,7 +153,10 @@ The events are raised by the <a href="https://github.com/ministryofjustice/hmpps
 <td>tier.calculation.complete</td>
 </tr>
         </table>
-      </div><h2 id="authorisation">Authorisation</h2>
+      </div><h2 id="scheduled-job">Scheduled job</h2>
+<p>A weekly job in the <a href="https://github.com/ministryofjustice/hmpps-tier">HMPPS Tier</a> service triggers a recalculation of
+all active cases, using the <code>/probation-cases</code> API endpoint.</p>
+<h2 id="authorisation">Authorisation</h2>
 <p>API endpoints are secured by roles supplied by the HMPPS Auth client used in the requests</p>
 <div class="table-container">
         <table>
@@ -159,7 +165,16 @@ The events are raised by the <a href="https://github.com/ministryofjustice/hmpps
 <th>Required Role</th>
 </tr><tr>
 <td>/tier-details/{crn}</td>
-<td>ROLE_TIER_DETAILS</td>
+<td>PROBATION_API__TIER__CASE_DETAIL</td>
+</tr><tr>
+<td>/users/*</td>
+<td>PROBATION_API__TIER__CASE_DETAIL</td>
+</tr><tr>
+<td>/person/{crn}</td>
+<td>PROBATION_API__TIER__CASE_DETAIL</td>
+</tr><tr>
+<td>/probation-cases</td>
+<td>PROBATION_API__TIER__CASE_DETAIL</td>
 </tr>
         </table>
       </div><h2 id="api-reference">API Reference</h2>

@@ -2566,16 +2566,6 @@ components:
         end:
           type: string
           format: date-time
-        interval:
-          type: string
-          enum:
-          - DAY
-          - WEEK
-          - FORTNIGHT
-          - FOUR_WEEKS
-        numberOfAppointments:
-          type: integer
-          format: int32
         eventId:
           type: integer
           format: int64
@@ -2602,8 +2592,6 @@ components:
           type: boolean
       required:
       - end
-      - interval
-      - numberOfAppointments
       - start
       - type
       - user

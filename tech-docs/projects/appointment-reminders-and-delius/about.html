@@ -104,9 +104,6 @@
           <li>
             <a href="#sending-sms-reminders-based-on-delius-data"><span>Sending SMS Reminders Based on Delius Data</span></a>
           </li>
-          <li>
-            <a href="#downloading-csv-data"><span>Downloading CSV Data</span></a>
-          </li>
         </ul>
       </li>
       <li>
@@ -147,14 +144,12 @@
 <h3 id="sending-sms-reminders-based-on-delius-data">Sending SMS Reminders Based on Delius Data</h3>
 <p>The service will send appointment reminders to people on probation by combining the data in <em>Delius</em> and the <a href="https://www.notifications.service.gov.uk/">GOV.UK Notify</a> service. Data is gathered from Delius, validated and templated SMS messages are sent using the GOV.UK Notify API.</p>
 <p><a href="../../images/east-of-england-upw-reminders.svg" rel="noopener noreferrer"><img src="../../images/east-of-england-upw-reminders.svg" alt="Workflow Map" /></a></p>
-<h3 id="downloading-csv-data">Downloading CSV Data</h3>
-<p>A CSV file of the appointment reminders that the service will send on a particular day can be accessed via an API endpoint</p>
 <h2 id="interfaces">Interfaces</h2>
 <h3 id="scheduled-job">Scheduled Job</h3>
 
 <ul>
 <li>SMS messages are send via a scheduled job</li>
-<li>Telemetry is send to Application Insights for each SMS message sent</li>
+<li>Telemetry is sent to Application Insights for each SMS message sent</li>
 </ul>
 <h3 id="api-access-control">API Access Control</h3>
 <p>API endpoints are secured by roles supplied by the HMPPS Auth client used in
@@ -165,8 +160,11 @@ the requests</p>
 <th>API Endpoint</th>
 <th>Required Role</th>
 </tr><tr>
-<td>/upw-appointments.csv</td>
-<td>PROBATION_API__REMINDERS__UPW_APPOINTMENTS</td>
+<td>/data-quality/*</td>
+<td>PROBATION_API__REMINDERS__CASE_DETAILS</td>
+</tr><tr>
+<td>/users/*</td>
+<td>PROBATION_API__REMINDERS__USER_DETAILS</td>
 </tr>
         </table>
       </div><h2 id="api-reference">API Reference</h2>

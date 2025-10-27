@@ -93,10 +93,18 @@
               <nav id="toc" class="js-toc-list toc__list" aria-labelledby="toc-heading">
                       <ul>
   <li>
-    <a href="#offender-events-and-delius"><span>offender-events-and-delius</span></a>
+    <a href="#offender-events-and-delius"><span>Offender Events and Delius</span></a>
     <ul>
       <li>
-        <a href="#dev-instructions"><span>Dev Instructions</span></a>
+        <a href="#data-dependencies"><span>Data dependencies</span></a>
+        <ul>
+          <li>
+            <a href="#context-map-domain-event-data"><span>Context map - Domain Event Data</span></a>
+          </li>
+        </ul>
+      </li>
+      <li>
+        <a href="#development"><span>Development</span></a>
         <ul>
           <li>
             <a href="#using-localstack"><span>Using LocalStack</span></a>
@@ -114,20 +122,86 @@
 
         <div class="app-pane__content toc-open-disabled" aria-label="Content">
           <main id="content" class="technical-documentation" data-module="anchored-headings">
-            <h1 id="offender-events-and-delius">offender-events-and-delius</h1>
-<p>Outbound Service sending offender events based on changes in National Delius.</p>
-<h2 id="dev-instructions">Dev Instructions</h2>
-<p>By default, offender-events will use the ActiveMQ (JMS) queue to send messages for development. 
-This means just starting the application using the dev class path is sufficient to run the database (H2) and outbound message queue.</p>
+            <h1 id="offender-events-and-delius">Offender Events and Delius</h1>
+<p>Outbound Service that sends data events based on changes in the National Delius database. Changes are detected by
+polling the OFFENDER_DELTA table, which is populated by database triggers on the relevant tables.</p>
+<p>The supported data events are:</p>
+<div class="table-container">
+        <table>
+          <tr>
+<th>Message event type</th>
+<th>Description</th>
+</tr><tr>
+<td>CONTACT_CHANGED</td>
+<td>An insert or update to the CONTACT table</td>
+</tr><tr>
+<td>CONTACT_DELETED</td>
+<td>A deletion from the CONTACT table</td>
+</tr><tr>
+<td>CONVICTION_CHANGED</td>
+<td>A change to the EVENT table</td>
+</tr><tr>
+<td>COURT_APPEARANCE_CHANGED</td>
+<td>A change to the COURT_APPEARANCE table</td>
+</tr><tr>
+<td>OFFENDER_ADDRESS_CHANGED</td>
+<td>A change to the OFFENDER_ADDRESS table</td>
+</tr><tr>
+<td>OFFENDER_ALIAS_CHANGED</td>
+<td>A change to the ALIAS table</td>
+</tr><tr>
+<td>OFFENDER_CHANGED</td>
+<td>A change to the ALIAS, OFFENDER, OFFENDER_MANAGER, OFFENDER_ADDRESS or OFFICER tables</td>
+</tr><tr>
+<td>OFFENDER_DETAILS_CHANGED</td>
+<td>A change to the OFFENDER table</td>
+</tr><tr>
+<td>OFFENDER_MANAGER_CHANGED</td>
+<td>A change to the OFFENDER_MANAGER table</td>
+</tr><tr>
+<td>OFFENDER_OFFICER_CHANGED</td>
+<td>A change to the OFFICER table</td>
+</tr><tr>
+<td>OFFENDER_OGRS_ASSESSMENT_CHANGED</td>
+<td>A change to the OGRS_ASSESSMENT table</td>
+</tr><tr>
+<td>OFFENDER_REGISTRATION_CHANGED</td>
+<td>An insert or update to the REGISTRATION table</td>
+</tr><tr>
+<td>OFFENDER_REGISTRATION_DELETED</td>
+<td>A deletion from the REGISTRATION table</td>
+</tr><tr>
+<td>OFFENDER_REGISTRATION_DEREGISTERED</td>
+<td>A change to the DEREGISTRATION table</td>
+</tr><tr>
+<td>ORDER_MANAGER_CHANGED</td>
+<td>A change to the ORDER_MANAGER table</td>
+</tr><tr>
+<td>SENTENCE_CHANGED</td>
+<td>A change to the DISPOSAL table</td>
+</tr><tr>
+<td>SENTENCE_ORDER_REQUIREMENT_CHANGED</td>
+<td>A change to the RQMNT table</td>
+</tr>
+        </table>
+      </div><p>See <a href="src/main/kotlin/uk/gov/justice/digital/hmpps/integrations/delius/OffenderDeltaPoller.kt">OffenderDeltaPoller.kt</a>
+for the up-to-date mapping.</p>
+<h2 id="data-dependencies">Data dependencies</h2>
+<p>Delius for retrieving batches of changes waiting to be processed.</p>
+<h3 id="context-map-domain-event-data">Context map - Domain Event Data</h3>
+<p><img src="../../images/domain-events-context-map.svg" alt="" /></p>
+<h2 id="development">Development</h2>
+<p>By default, offender-events will use the internal queue to send messages for development.
+This means just starting the application using the dev class path is sufficient to run the database (H2) and outbound
+message queue.</p>
 <h3 id="using-localstack">Using LocalStack</h3>
 <p>If desired, the app can be connected to a localstack instance to reflect the AWS SNS topic.</p>
 <p>Use the docker-compose file provided with the project to start up localstack services in a container</p>
 <div class="highlight"><pre class="highlight shell" tabindex="0"><code>docker-compose up <span class="nt">-d</span>
-</code></pre></div><p>For the following connect to the shell of the container 
-<code>shell
-docker exec -it localstack /bin/bash
-</code></p>
-<p>It will be necessary to configure the aws cli before use. The values are not validated so any access key id or access secret can be used.</p>
+</code></pre></div><p>For the following connect to the shell of the container</p>
+<div class="highlight"><pre class="highlight shell" tabindex="0"><code>docker <span class="nb">exec</span> <span class="nt">-it</span> localstack /bin/bash
+</code></pre></div><p>It will be necessary to configure the aws cli before use. The values are not validated so any access key id or access
+secret can be used.</p>
 <div class="highlight"><pre class="highlight shell" tabindex="0"><code>aws configure
 </code></pre></div><h4 id="create-the-topic">Create the topic:</h4>
 <div class="highlight"><pre class="highlight shell" tabindex="0"><code>aws <span class="nt">--endpoint-url</span><span class="o">=</span>http://localhost:4566 sns create-topic <span class="nt">--name</span> offender-events <span class="nt">--region</span> eu-west-2
@@ -147,17 +221,17 @@ docker exec -it localstack /bin/bash
 <span class="nv">CLOUD_AWS_SQS_REGION</span><span class="o">=</span>eu-west-2 <span class="c"># for localstack only - not required in AWS</span>
 <span class="nv">CLOUD_AWS_SQS_ENDPOINT</span><span class="o">=</span>http://localhost:4566 <span class="c"># for localstack only - not required in AWS</span>
 </code></pre></div>
-              <div data-module='page-expiry' data-last-reviewed-on="2025-10-24">
+              <div data-module='page-expiry' data-last-reviewed-on="2026-01-27">
     <div class='page-expiry--not-expired'>
-      This page was last reviewed on 24 June 2025.
+      This page was last reviewed on 27 October 2025.
 
-        It needs to be reviewed again on 24 October 2025
+        It needs to be reviewed again on 27 January 2026
         by the page owner <a href="https://mojdt.slack.com/messages/probation-integration-team">#probation-integration-team</a>
         .
     </div>
 
     <div class='page-expiry--expired' hidden>
-      This page was set to be reviewed before 24 October 2025
+      This page was set to be reviewed before 27 January 2026
        by the page owner <a href="https://mojdt.slack.com/messages/probation-integration-team">#probation-integration-team</a>.
       This might mean the content is out of date.
     </div>

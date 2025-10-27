@@ -32,6 +32,29 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ProvidersResponse"
+  /providers/{providerCode}/teams/{teamCode}/supervisors:
+    get:
+      tags:
+      - providers-controller
+      operationId: getSupervisors
+      parameters:
+      - name: providerCode
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: teamCode
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SupervisorsResponse"
   /providers/{code}/teams:
     get:
       tags:
@@ -83,6 +106,39 @@ components:
             $ref: "#/components/schemas/CodeDescription"
       required:
       - providers
+    Name:
+      type: object
+      properties:
+        forename:
+          type: string
+        middleName:
+          type: string
+        surname:
+          type: string
+      required:
+      - forename
+      - surname
+    Supervisor:
+      type: object
+      properties:
+        name:
+          $ref: "#/components/schemas/Name"
+        code:
+          type: string
+        grade:
+          $ref: "#/components/schemas/CodeDescription"
+      required:
+      - code
+      - name
+    SupervisorsResponse:
+      type: object
+      properties:
+        supervisors:
+          type: array
+          items:
+            $ref: "#/components/schemas/Supervisor"
+      required:
+      - supervisors
     TeamsResponse:
       type: object
       properties:

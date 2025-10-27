@@ -369,6 +369,11 @@ components:
           type: string
         sensitive:
           type: boolean
+        type:
+          type: string
+          enum:
+          - PROGRAMME_ATTENDANCE
+          - THREE_WAY_MEETING
       required:
       - date
       - endTime
@@ -377,6 +382,7 @@ components:
       - staff
       - startTime
       - team
+      - type
     CreateAppointmentsRequest:
       type: object
       properties:
