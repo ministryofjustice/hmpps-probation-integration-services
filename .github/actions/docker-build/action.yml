@@ -65,15 +65,34 @@ runs:
       env:
         SOURCE_DATE_EPOCH: 0
 
-    - name: Check for changes
+    - name: Check for changes to deploy files
+      id: deploy-changes
+      uses: ./.github/actions/check-changes
+      with:
+        filters: |
+          projects:
+            projects/${{ inputs.project }}/deploy/**
+          commons:
+            templates/helm-defaults.yml
+
+    - name: Check for changes to image digests
       id: check-changes
       run: |
-        echo "old: $old"
-        echo "new: $new"
-        if [ "$old" = "$new" ]; then echo 'projects=[]'; else echo 'projects=["'"${project}"'"]'; fi | tee -a "$GITHUB_OUTPUT"
+        echo "old digest: $old"
+        echo "new digest: $new"
+        if [ "$old" = "$new" ]; then digest_changed_projects='[]'; else echo digest_changed_projects='["'"${project}"'"]'; fi
+
+        # merge changes from deploy files and digest changes
+        echo "projects=$(jq -c -n \
+          --argjson a "$deploy_changed_projects" \
+          --argjson b "$digest_changed_projects" \
+          --arg project "$project" \
+          'if (($a + $b) | unique | any(. == $project)) then [$project] else [] end'
+        )" | tee -a "$GITHUB_OUTPUT"
       env:
         new: ${{ steps.build.outputs.digest }}
         old: ${{ steps.remote.outputs.digest }}
+        deploy_changed_projects: ${{ steps.deploy-changes.outputs.projects }}
         project: ${{ inputs.project }}
       shell: bash
 
