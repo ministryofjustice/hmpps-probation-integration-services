@@ -98,6 +98,7 @@ class DocumentService(
         // See https://github.com/ministryofjustice/delius/blob/0087df0cb1dd5305fb44f89f4bf78dfc6b3916f6/NDelius-lib/src/main/java/uk/co/bconline/ndelius/util/iwp/MetadataMapper.java#L18-L39
         part("entityType", populateEntityType(tableName), MediaType.TEXT_PLAIN)
         part("entityId", primaryKeyId.toString(), MediaType.TEXT_PLAIN)
+        part("locked", "true", MediaType.TEXT_PLAIN)
     }.build()
 
     private fun ByteArray.isPdf() = take(4).toByteArray().contentEquals("%PDF".toByteArray())
