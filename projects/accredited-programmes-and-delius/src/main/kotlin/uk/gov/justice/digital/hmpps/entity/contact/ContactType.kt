@@ -20,6 +20,7 @@ class ContactType(
 ) {
     companion object {
         const val APPOINTMENT = "CAPY"
+        const val THREE_WAY_MEETING = "CAPZ"
         const val SUPERVISION_TWO_THIRDS_POINT = "PRST02"
         const val LICENCE_SUPERVISION_TWO_THIRDS_POINT = "PRST03"
         const val REVIEW_ENFORCEMENT_STATUS = "ARWS"

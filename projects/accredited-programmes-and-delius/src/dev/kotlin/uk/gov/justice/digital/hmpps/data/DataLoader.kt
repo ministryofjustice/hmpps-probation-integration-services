@@ -62,6 +62,7 @@ import uk.gov.justice.digital.hmpps.data.TestData.RESTRICTION
 import uk.gov.justice.digital.hmpps.data.TestData.STAFF
 import uk.gov.justice.digital.hmpps.data.TestData.STATUS_CONTACT_TYPES
 import uk.gov.justice.digital.hmpps.data.TestData.TEAM
+import uk.gov.justice.digital.hmpps.data.TestData.THREE_WAY_MEETING_TYPE
 import uk.gov.justice.digital.hmpps.data.TestData.TWO_THIRDS_CONTACT
 import uk.gov.justice.digital.hmpps.data.TestData.TWO_THIRDS_CONTACT_TYPE
 import uk.gov.justice.digital.hmpps.data.TestData.UNSENTENCED_EVENT
@@ -152,6 +153,7 @@ class DataLoader(
         contactTypeRepository.save(TWO_THIRDS_CONTACT_TYPE)
         contactTypeRepository.save(OTHER_CONTACT_TYPE)
         contactTypeRepository.save(APPOINTMENT_CONTACT_TYPE)
+        contactTypeRepository.save(THREE_WAY_MEETING_TYPE)
         contactTypeRepository.save(REFER_TO_MANAGER_CONTACT_TYPE)
         contactTypeRepository.save(ENFORCEMENT_REVIEW_CONTACT_TYPE)
         contactTypeRepository.saveAll(STATUS_CONTACT_TYPES)

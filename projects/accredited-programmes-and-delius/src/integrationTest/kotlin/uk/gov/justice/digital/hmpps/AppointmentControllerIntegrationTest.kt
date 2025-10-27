@@ -2,6 +2,8 @@ package uk.gov.justice.digital.hmpps
 
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.EnumSource
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
@@ -346,6 +348,43 @@ internal class AppointmentControllerIntegrationTest(
         }
     }
 
+    @ParameterizedTest
+    @EnumSource(CreateAppointmentRequest.Type::class)
+    fun `can create an appointment`(type: CreateAppointmentRequest.Type) {
+        val appointmentReference = UUID.randomUUID()
+        mockMvc.post("/appointments") {
+            withToken()
+            json = CreateAppointmentsRequest(
+                listOf(
+                    CreateAppointmentRequest(
+                        appointmentReference,
+                        REQUIREMENTS[2].id,
+                        null,
+                        LocalDate.now().minusDays(7),
+                        LocalTime.now(),
+                        LocalTime.now().plusMinutes(30),
+                        RequestCode("ATTC"),
+                        RequestCode("OFFICE1"),
+                        RequestCode("STAFF01"),
+                        RequestCode("TEAM01"),
+                        "Some notes about the appointment and type",
+                        true,
+                        type = type
+                    )
+                )
+            )
+        }.andExpect { status { isCreated() } }
+
+        val appointment = contactRepository.findByExternalReference("${Contact.REFERENCE_PREFIX}$appointmentReference")
+        assertThat(appointment).isNotNull
+        with(appointment!!) {
+            assertThat(date).isEqualTo(LocalDate.now().minusDays(7))
+            assertThat(sensitive).isTrue
+            assertThat(notes).isEqualTo("Some notes about the appointment and type")
+            assertThat(this.type.code).isEqualTo(type.code)
+        }
+    }
+
     @Test
     fun `can update an appointment`() {
         val (existing, appointmentReference) = givenExistingContact()
@@ -389,7 +428,7 @@ internal class AppointmentControllerIntegrationTest(
     @Test
     fun `logging a non-complied outcome increments failure to comply count`() {
         val (existing1, appointmentReference1) = givenExistingContact()
-        val (existing2, appointmentReference2) = givenExistingContact()
+        val (_, appointmentReference2) = givenExistingContact()
 
         listOf(appointmentReference1, appointmentReference2).forEachIndexed { index, reference ->
             mockMvc.put("/appointments") {
