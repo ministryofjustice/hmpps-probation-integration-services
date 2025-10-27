@@ -71,5 +71,6 @@ jobs:
       templates:
         - 9405e109-1dcf-4df1-8788-5ec9b72db8a0
     yorkshire-humber:
+      schedule: '0 10 * * 1-5' # 10am Monday to Friday
       templates:
         - 9405e109-1dcf-4df1-8788-5ec9b72db8a0
