@@ -2,7 +2,7 @@ package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
-import uk.gov.justice.digital.hmpps.integrations.delius.*
+import uk.gov.justice.digital.hmpps.integrations.delius.entity.*
 import uk.gov.justice.digital.hmpps.model.ProvidersResponse
 import uk.gov.justice.digital.hmpps.model.SupervisorsResponse
 import uk.gov.justice.digital.hmpps.model.TeamsResponse
