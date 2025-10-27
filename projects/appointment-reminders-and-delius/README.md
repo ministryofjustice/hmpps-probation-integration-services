@@ -16,22 +16,19 @@ The service will send appointment reminders to people on probation by combining 
 
 ![Workflow Map](../../doc/tech-docs/source/images/east-of-england-upw-reminders.svg)
 
-### Downloading CSV Data
-
-A CSV file of the appointment reminders that the service will send on a particular day can be accessed via an API endpoint
-
 ## Interfaces
 
 ### Scheduled Job
 
 - SMS messages are send via a scheduled job
-- Telemetry is send to Application Insights for each SMS message sent
+- Telemetry is sent to Application Insights for each SMS message sent
 
 ### API Access Control
 
 API endpoints are secured by roles supplied by the HMPPS Auth client used in
 the requests
 
-| API Endpoint          | Required Role                                    |
-|-----------------------|--------------------------------------------------|
-| /upw-appointments.csv | PROBATION\_API\_\_REMINDERS\_\_UPW\_APPOINTMENTS |
+| API Endpoint    | Required Role                            |
+|-----------------|------------------------------------------|
+| /data-quality/* | PROBATION_API_\_REMINDERS_\_CASE_DETAILS |
+| /users/*        | PROBATION_API_\_REMINDERS_\_USER_DETAILS |
