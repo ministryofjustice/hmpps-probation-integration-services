@@ -78,16 +78,16 @@ rootProject.allChildren()
 dependencyResolutionManagement {
     versionCatalogs {
         create("libs") {
-            library("asyncapi", "org.openfolder:kotlin-asyncapi-spring-web:3.1.2")
+            library("asyncapi", "org.openfolder:kotlin-asyncapi-spring-web:3.1.3")
             library("aws-s3", "io.awspring.cloud:spring-cloud-aws-starter-s3:3.4.0")
             library("aws-autoconfigure", "io.awspring.cloud:spring-cloud-aws-autoconfigure:3.4.0")
-            library("aws-query-protocol", "software.amazon.awssdk:aws-query-protocol:2.35.5")
+            library("aws-query-protocol", "software.amazon.awssdk:aws-query-protocol:2.35.10")
             library("aws-sns", "io.awspring.cloud:spring-cloud-aws-starter-sns:3.4.0")
             library("aws-sqs", "io.awspring.cloud:spring-cloud-aws-starter-sqs:3.4.0")
             library("aws-starter", "io.awspring.cloud:spring-cloud-aws-starter:3.4.0")
-            library("aws-sts", "software.amazon.awssdk:sts:2.35.5")
+            library("aws-sts", "software.amazon.awssdk:sts:2.35.10")
             library("azure-app-insights", "com.microsoft.azure:applicationinsights-web:3.7.5")
-            library("azure-identity", "com.azure:azure-identity:1.18.0")
+            library("azure-identity", "com.azure:azure-identity:1.18.1")
             library("flipt", "io.flipt:flipt-client-java:1.1.2")
             library("html2md", "com.vladsch.flexmark:flexmark-html2md-converter:0.64.8")
             library("microsoft-graph", "com.microsoft.graph:microsoft-graph:6.54.0")
@@ -98,7 +98,7 @@ dependencyResolutionManagement {
             library("opensearch-starter", "org.opensearch.client:spring-data-opensearch-starter:2.0.2")
             library(
                 "opentelemetry-annotations",
-                "io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:2.20.1"
+                "io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:2.21.0"
             )
             library("sentry", "io.sentry:sentry-spring-boot-starter-jakarta:8.23.0")
             library("springdoc", "org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.13")
