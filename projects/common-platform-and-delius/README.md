@@ -8,7 +8,7 @@ This service depends on:
 
 * Delius to store the data for the defendant
 * Search index to store the Court messages
-* Search index to check if the defendant is already known
+* HMPPS Core Person Record to check if the defendant is already known
 
 ### Context Map - Common Platform Data
 
