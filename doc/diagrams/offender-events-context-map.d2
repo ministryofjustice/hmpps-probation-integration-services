@@ -1,0 +1,24 @@
+
+style { ...@common/style.style }
+vars { ...@common/style.vars }
+** { ...@common/style.all-style }
+
+context-delius: Delius Context {
+  entities: Entities {
+    delta: Offender Delta {
+      table: Source table
+      key: Primary key
+    }
+  }
+}
+
+context-notification: Notification Context {
+  entities: Entities {
+    notification: Notification {
+      eventType: Event type
+      sourceId: Source ID
+    }
+  }
+}
+
+context-delius--context-notification.interface: Upstream\n\n\nDownstream
