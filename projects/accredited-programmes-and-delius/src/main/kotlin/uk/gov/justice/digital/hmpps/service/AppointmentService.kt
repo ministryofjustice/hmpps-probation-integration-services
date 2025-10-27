@@ -114,7 +114,7 @@ class AppointmentService(
             team = team,
             staff = staffRepository.getByCode(staff.code),
             location = location?.code?.let { officeLocationRepository.getByCode(it) },
-            type = contactTypeRepository.getByCode(ContactType.APPOINTMENT),
+            type = contactTypeRepository.getByCode(type.code),
             externalReference = "${Contact.REFERENCE_PREFIX}$reference",
             outcome = outcome?.code?.let { contactOutcomeRepository.getByCode(it) },
         )

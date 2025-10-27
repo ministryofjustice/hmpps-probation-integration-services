@@ -104,6 +104,7 @@ object TestData {
 
     val APPOINTMENT_CONTACT_TYPE = ContactType(id(), ContactType.APPOINTMENT, true)
     val STATUS_CONTACT_TYPES = StatusInfo.Status.entries.map { ContactType(id(), it.contactTypeCode, false) }
+    val THREE_WAY_MEETING_TYPE = ContactType(id(), ContactType.THREE_WAY_MEETING, false)
 
     val APPOINTMENTS = REQUIREMENTS.take(2).mapIndexed { idx, r ->
         r.generateAppointment(APPOINTMENT_CONTACT_TYPE, LocalDate.of(2030, 1, 1 + idx), STAFF, TEAM, PROVIDER)
