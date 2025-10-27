@@ -8,6 +8,7 @@ import org.springframework.context.ApplicationListener
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.data.generator.ProviderGenerator
+import uk.gov.justice.digital.hmpps.data.generator.StaffGenerator
 import uk.gov.justice.digital.hmpps.data.generator.TeamGenerator
 import uk.gov.justice.digital.hmpps.data.generator.UserGenerator
 import uk.gov.justice.digital.hmpps.user.AuditUserRepository
@@ -29,6 +30,7 @@ class DataLoader(
         loadUsers()
         loadProviders()
         loadTeams()
+        loadStaff()
     }
 
     fun loadUsers() {
@@ -51,5 +53,10 @@ class DataLoader(
         entityManager.persist(TeamGenerator.NON_UPW_TEAM)
         entityManager.persist(TeamGenerator.END_DATED_TEAM)
         entityManager.persist(TeamGenerator.OTHER_PROVIDER_TEAM)
+    }
+
+    fun loadStaff() {
+        entityManager.persist(StaffGenerator.DEFAULT_STAFF)
+        entityManager.persist(StaffGenerator.SECOND_STAFF)
     }
 }

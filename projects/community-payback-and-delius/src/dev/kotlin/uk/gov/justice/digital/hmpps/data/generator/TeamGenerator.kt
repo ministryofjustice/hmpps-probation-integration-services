@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
 import uk.gov.justice.digital.hmpps.integrations.delius.Provider
+import uk.gov.justice.digital.hmpps.integrations.delius.Staff
 import uk.gov.justice.digital.hmpps.integrations.delius.Team
 import java.time.LocalDate
 
@@ -45,6 +46,7 @@ object TeamGenerator {
         provider: Provider,
         upwTeam: Boolean,
         startDate: LocalDate = LocalDate.now().minusDays(1),
-        endDate: LocalDate? = null
-    ) = Team(id, code, description, provider, upwTeam, startDate, endDate)
+        endDate: LocalDate? = null,
+        staff: List<Staff> = emptyList()
+    ) = Team(id, code, description, provider, upwTeam, startDate, endDate, staff)
 }

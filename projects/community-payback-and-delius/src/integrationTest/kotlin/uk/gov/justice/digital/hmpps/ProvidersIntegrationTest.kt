@@ -10,6 +10,7 @@ import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import uk.gov.justice.digital.hmpps.model.ProvidersResponse
+import uk.gov.justice.digital.hmpps.model.SupervisorsResponse
 import uk.gov.justice.digital.hmpps.model.TeamsResponse
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
@@ -54,9 +55,19 @@ class ProvidersIntegrationTest {
     }
 
     @Test
-    fun `404 returned when user doesn't exist`() {
+    fun `404 returned when trying to get providers but user doesn't exist`() {
         mockMvc
             .perform(get("/providers?username=NonExistentUser").withToken())
             .andExpect(status().isNotFound)
+    }
+
+    @Test
+    fun `can retrieve all upw supervisors for provider and team`() {
+        val response = mockMvc
+            .perform(get("/providers/N01/teams/N01UPW/supervisors").withToken())
+            .andExpect(status().is2xxSuccessful)
+            .andReturn().response.contentAsJson<SupervisorsResponse>()
+
+        assertThat(response.supervisors.size).isEqualTo(2)
     }
 }

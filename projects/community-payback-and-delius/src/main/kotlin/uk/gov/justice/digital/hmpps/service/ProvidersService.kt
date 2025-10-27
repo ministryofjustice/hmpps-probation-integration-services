@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.*
 import uk.gov.justice.digital.hmpps.model.ProvidersResponse
+import uk.gov.justice.digital.hmpps.model.SupervisorsResponse
 import uk.gov.justice.digital.hmpps.model.TeamsResponse
 
 @Service
@@ -25,5 +26,11 @@ class ProvidersService(
         val teams = teamRepository.findUnpaidWorkTeamsByProviderCode(providerCode)
 
         return TeamsResponse(teams = teams.map { it.toCodeDescription() })
+    }
+
+    fun getSupervisorsForTeam(teamCode: String): SupervisorsResponse {
+        val staff = teamRepository.findStaffByTeamCode(teamCode)
+
+        return SupervisorsResponse(supervisors = staff.map { it.toSupervisor() })
     }
 }

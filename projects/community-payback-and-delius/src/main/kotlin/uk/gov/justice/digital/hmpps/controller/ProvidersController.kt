@@ -15,4 +15,8 @@ class ProvidersController(
 
     @GetMapping(value = ["/{code}/teams"])
     fun getTeams(@PathVariable code: String) = providersService.getUnpaidWorkTeams(code)
+
+    @GetMapping(value = ["/{providerCode}/teams/{teamCode}/supervisors"])
+    fun getSupervisors(@PathVariable providerCode: String, @PathVariable teamCode: String) =
+        providersService.getSupervisorsForTeam(teamCode)
 }

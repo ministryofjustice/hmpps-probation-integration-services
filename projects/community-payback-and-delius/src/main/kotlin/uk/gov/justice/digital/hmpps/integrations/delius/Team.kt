@@ -35,6 +35,14 @@ class Team(
 
     @Column(name = "end_date")
     val endDate: LocalDate?,
+
+    @ManyToMany
+    @JoinTable(
+        name = "staff_team",
+        joinColumns = [JoinColumn(name = "team_id")],
+        inverseJoinColumns = [JoinColumn(name = "staff_id")]
+    )
+    val staff: List<Staff>,
 )
 
 interface TeamRepository : JpaRepository<Team, Long> {
@@ -49,6 +57,18 @@ interface TeamRepository : JpaRepository<Team, Long> {
         """
     )
     fun findUnpaidWorkTeamsByProviderCode(code: String): List<Team>
+
+    @Query(
+        """
+        select s
+        from Team t
+        join t.staff s
+        where t.code = :teamCode
+          and s.startDate <= current_date
+          and (s.endDate is null or s.endDate > current_date)
+      """
+    )
+    fun findStaffByTeamCode(teamCode: String): List<Staff>
 }
 
 fun Team.toCodeDescription() = CodeDescription(
