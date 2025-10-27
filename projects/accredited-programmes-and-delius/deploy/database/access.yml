@@ -5,6 +5,7 @@ database:
     tables:
       - audited_interaction
       - contact
+      - enforcement
 
   audit:
     username: AccreditedProgrammesAndDelius
