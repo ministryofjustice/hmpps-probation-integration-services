@@ -110,6 +110,6 @@ Incoming messages are filtered on `eventType` by the [SQS queue policy](https://
 
 API endpoints are secured by roles supplied by the _HMPPS Auth_ client used in the requests
 
-| API Endpoint | Required Role       |
-|--------------|---------------------|
-| All          | ROLE\_CRS\_REFERRAL |
+| API Endpoint | Required Role                                             |
+|--------------|-----------------------------------------------------------|
+| All          | ROLE_PROBATION_API_\_REFER_AND_MONITOR_\_CASE_DETAIL_\_RW |

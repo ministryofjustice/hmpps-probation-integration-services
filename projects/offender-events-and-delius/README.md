@@ -1,11 +1,46 @@
-# offender-events-and-delius
+# Offender Events and Delius
 
-Outbound Service sending offender events based on changes in National Delius.
+Outbound Service that sends data events based on changes in the National Delius database. Changes are detected by
+polling the OFFENDER_DELTA table, which is populated by database triggers on the relevant tables.
 
-## Dev Instructions
+The supported data events are:
 
-By default, offender-events will use the ActiveMQ (JMS) queue to send messages for development. 
-This means just starting the application using the dev class path is sufficient to run the database (H2) and outbound message queue.
+| Message event type                 | Description                                                                           |
+|------------------------------------|---------------------------------------------------------------------------------------|
+| CONTACT_CHANGED                    | An insert or update to the CONTACT table                                              | 
+| CONTACT_DELETED                    | A deletion from the CONTACT table                                                     | 
+| CONVICTION_CHANGED                 | A change to the EVENT table                                                           | 
+| COURT_APPEARANCE_CHANGED           | A change to the COURT_APPEARANCE table                                                | 
+| OFFENDER_ADDRESS_CHANGED           | A change to the OFFENDER_ADDRESS table                                                | 
+| OFFENDER_ALIAS_CHANGED             | A change to the ALIAS table                                                           | 
+| OFFENDER_CHANGED                   | A change to the ALIAS, OFFENDER, OFFENDER_MANAGER, OFFENDER_ADDRESS or OFFICER tables | 
+| OFFENDER_DETAILS_CHANGED           | A change to the OFFENDER table                                                        | 
+| OFFENDER_MANAGER_CHANGED           | A change to the OFFENDER_MANAGER table                                                | 
+| OFFENDER_OFFICER_CHANGED           | A change to the OFFICER table                                                         | 
+| OFFENDER_OGRS_ASSESSMENT_CHANGED   | A change to the OGRS_ASSESSMENT table                                                 | 
+| OFFENDER_REGISTRATION_CHANGED      | An insert or update to the REGISTRATION table                                         | 
+| OFFENDER_REGISTRATION_DELETED      | A deletion from the REGISTRATION table                                                | 
+| OFFENDER_REGISTRATION_DEREGISTERED | A change to the DEREGISTRATION table                                                  | 
+| ORDER_MANAGER_CHANGED              | A change to the ORDER_MANAGER table                                                   | 
+| SENTENCE_CHANGED                   | A change to the DISPOSAL table                                                        | 
+| SENTENCE_ORDER_REQUIREMENT_CHANGED | A change to the RQMNT table                                                           | 
+
+See [OffenderDeltaPoller.kt](src/main/kotlin/uk/gov/justice/digital/hmpps/integrations/delius/OffenderDeltaPoller.kt)
+for the up-to-date mapping.
+
+## Data dependencies
+
+Delius for retrieving batches of changes waiting to be processed.
+
+### Context map - Domain Event Data
+
+![](../../doc/tech-docs/source/images/domain-events-context-map.svg)
+
+## Development
+
+By default, offender-events will use the internal queue to send messages for development.
+This means just starting the application using the dev class path is sufficient to run the database (H2) and outbound
+message queue.
 
 ### Using LocalStack
 
@@ -17,18 +52,20 @@ Use the docker-compose file provided with the project to start up localstack ser
 docker-compose up -d
 ```
 
-For the following connect to the shell of the container 
+For the following connect to the shell of the container
+
 ```shell
 docker exec -it localstack /bin/bash
 ```
 
-It will be necessary to configure the aws cli before use. The values are not validated so any access key id or access secret can be used.
+It will be necessary to configure the aws cli before use. The values are not validated so any access key id or access
+secret can be used.
 
 ```shell
 aws configure
 ```
 
-#### Create the topic: 
+#### Create the topic:
 
 ```shell
 aws --endpoint-url=http://localhost:4566 sns create-topic --name offender-events --region eu-west-2
