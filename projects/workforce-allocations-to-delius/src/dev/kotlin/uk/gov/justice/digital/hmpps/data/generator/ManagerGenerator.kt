@@ -18,6 +18,7 @@ interface ManagerGenerator {
         team: Team = TeamGenerator.DEFAULT,
         staff: Staff = StaffGenerator.DEFAULT,
         dateTime: ZonedDateTime = START_DATE_TIME,
+        endDateTime: ZonedDateTime? = null,
         createdDateTime: ZonedDateTime = ZonedDateTime.now(),
         lastModifiedDateTime: ZonedDateTime = ZonedDateTime.now(),
         createdUserId: Long = UserGenerator.AUDIT_USER.id,
@@ -30,6 +31,7 @@ interface ManagerGenerator {
         trustProviderTeam = team
         staffEmployee = staff
         startDate = dateTime
+        endDate = endDateTime
         this.createdDateTime = createdDateTime
         this.lastModifiedDateTime = lastModifiedDateTime
         this.createdUserId = createdUserId

@@ -129,7 +129,7 @@ class AllocateEventIntegrationTest {
             "get-event-allocation-body",
             firstOm,
             event,
-            1,
+            3,
             StaffGenerator.STAFF_WITH_USER.id,
         )
 

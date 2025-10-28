@@ -6,6 +6,9 @@ import org.springframework.data.jpa.repository.Query
 import uk.gov.justice.digital.hmpps.api.model.CaseType
 import uk.gov.justice.digital.hmpps.api.model.ManagementStatus
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.ZonedDateTime
 
 const val DISPOSAL_SQL = """
     select o.crn, d.active_flag * e.active_flag as active_flag, s.officer_code
@@ -119,6 +122,39 @@ interface PersonRepository : JpaRepository<Person, Long> {
     """
     )
     fun countAccreditedProgrammeRequirements(personId: Long): Int
+
+    @Query("""
+        select o.crn, max(allocation.allocation_date) as allocatedAt
+        from ( select offender.offender_id,
+                      event.event_number,
+                      order_manager.event_id,
+                      order_manager.allocation_date,
+                      order_manager.allocation_staff_id,
+                      created_by.distinguished_name                                           as created_by,
+                      lag(order_manager.allocation_staff_id)
+                          over (partition by order_manager.event_id order by allocation_date) as prev_staff_id
+               from order_manager
+               join event on event.event_id = order_manager.event_id and event.soft_deleted = 0
+               join disposal on disposal.event_id = event.event_id and disposal.soft_deleted = 0
+               join r_disposal_type on r_disposal_type.disposal_type_id = disposal.disposal_type_id
+               join offender on offender.offender_id = event.offender_id and offender.soft_deleted = 0
+               join user_ created_by on created_by.user_id = order_manager.created_by_user_id
+               where order_manager.soft_deleted = 0
+                 and offender.crn in (:crns) ) allocation
+        join offender o on o.offender_id = allocation.offender_id
+        join staff init on init.staff_id = allocation.allocation_staff_id
+        join staff prev on prev.staff_id = allocation.prev_staff_id
+        where prev.officer_code like '%U'
+          and init.officer_code not like '%U'
+          and allocation.created_by = 'HMPPSAllocations'
+        group by o.crn
+    """, nativeQuery = true)
+    fun findMostRecentInitialAllocations(crns: Set<String>): List<MostRecentInitialAllocation>
+}
+
+interface MostRecentInitialAllocation {
+    val crn: String
+    val allocatedAt: LocalDate?
 }
 
 fun PersonRepository.getCaseType(crn: String) = findCaseType(crn) ?: CaseType.UNKNOWN

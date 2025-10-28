@@ -1,5 +1,7 @@
 package uk.gov.justice.digital.hmpps.api.model
 
+import java.time.LocalDate
+
 data class ActiveCasesResponse(
     val code: String,
     val name: Name,
@@ -11,5 +13,6 @@ data class ActiveCasesResponse(
 data class Case(
     val crn: String,
     val name: Name,
-    val type: String
+    val type: String,
+    val initialAllocationDate: LocalDate?
 )

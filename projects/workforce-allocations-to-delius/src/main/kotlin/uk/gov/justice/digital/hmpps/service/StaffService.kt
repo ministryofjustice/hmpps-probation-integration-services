@@ -34,11 +34,13 @@ class StaffService(
 
     fun getActiveCases(code: String, crns: List<String>): ActiveCasesResponse {
         val staff = staffRepository.getWithUserByCode(code)
+        val initialAllocationDates = personRepository.findMostRecentInitialAllocations(crns.toSet()).associate { it.crn to it.allocatedAt }
         val cases = personRepository.findAllByCrnAndSoftDeletedFalse(crns).map {
             Case(
                 it.crn,
                 it.name(),
-                personRepository.getCaseType(it.crn).name
+                personRepository.getCaseType(it.crn).name,
+                initialAllocationDates[it.crn]
             )
         }
         return ActiveCasesResponse(
