@@ -25,7 +25,9 @@ _Approved Premises (CAS1)_ depends on _Delius_ data for background on the releva
 
 Approved Premises domain events are raised in real time as approved premises
 referrals are processed. The progressive stages of a referral are raised as
-separate events.
+separate events. The service consumes those events and updates Delius with
+contacts, referrals, NSIs, residence records and person address changes. It
+also emits probation-case domain events for person and address changes.
 
 ### Approved Premises Referral Application Workflows
 
@@ -68,6 +70,14 @@ _Approved Premises (CAS1)_ bookings are reflected in _Delius_ via the entries in
 
 ![Workflow Map](../../doc/tech-docs/source/images/approved-premises-and-delius-workflow-booking-cancelled.svg)
 
+### Approved Premises Arrival and Departure Workflows
+
+| Business Event                                              | HMPPS Domain Event Type              |
+|-------------------------------------------------------------|--------------------------------------|
+| A person arrives at an approved premises                    | approved-premises.person.arrived     |
+| A person did not arrive as expected at an approved premises | approved-premises.person.not-arrived |
+| A person departs an approved premises                       | approved-premises.person.departed    |
+
 ## Interfaces
 
 ### Message Formats
@@ -81,12 +91,7 @@ Example [messages](./src/dev/resources/messages/) are in the development source 
 
 Incoming messages are filtered on `eventType` by the [SQS queue policy](https://github.com/ministryofjustice/cloud-platform-environments/blob/cc44e15d883b04d1caf5663eec6025674dc10eb5/namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-prod/resources/approved-premises-and-delius-queue.tf#L5-L14)
 
-## Authorisation
+## API Access Control
 
-API endpoints are secured by roles supplied by the HMPPS Auth client used in
-the requests
-
-| API Endpoint                    | Required Role                   |
-|---------------------------------|---------------------------------|
-| /approved-premises/{code}/staff | ROLE\_APPROVED\_PREMISES\_STAFF |
-| /teams/managingCase/{crn}       | ROLE\_APPROVED\_PREMISES\_STAFF |
+API endpoints are secured by the `PROBATION_API__APPROVED_PREMISES__CASE_DETAIL` role supplied by the HMPPS Auth client
+used in the requests

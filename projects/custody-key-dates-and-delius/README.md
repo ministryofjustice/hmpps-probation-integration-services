@@ -40,3 +40,4 @@ Prison API provides a set of dates recorded in NOMIS that are recorded in the Th
 - Expected Release Date
 - Home Detention Curfew Eligibility Date
 - Post Sentence Supervision End Date
+- Probation Reset Suspension Date (derived as two-thirds of community supervision length for determinate sentences)

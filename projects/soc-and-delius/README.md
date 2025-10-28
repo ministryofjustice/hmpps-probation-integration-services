@@ -27,9 +27,10 @@ This service provides read-only access to data stored in Delius for a **Person o
 API endpoints are secured by roles supplied by the HMPPS Auth client used in
 the requests
 
-| API Endpoint         | Required Role                     |
-| -------------------- | --------------------------------- |
-| /convictions/{value} | PROBATION_API_\_SOC_\_CASE_DETAIL |
-| /court-appearances   | PROBATION_API_\_SOC_\_CASE_DETAIL |
-| /detail/{value}      | PROBATION_API_\_SOC_\_CASE_DETAIL |
-| /probation-areas     | PROBATION_API_\_SOC_\_CASE_DETAIL |
+| API Endpoint            | Required Role                     |
+|-------------------------|-----------------------------------|
+| /convictions/{value}    | PROBATION_API_\_SOC_\_CASE_DETAIL |
+| /court-appearances      | PROBATION_API_\_SOC_\_CASE_DETAIL |
+| /detail/{value}         | PROBATION_API_\_SOC_\_CASE_DETAIL |
+| /probation-areas        | PROBATION_API_\_SOC_\_CASE_DETAIL |
+| /probation-area-history | PROBATION_API_\_SOC_\_CASE_DETAIL |

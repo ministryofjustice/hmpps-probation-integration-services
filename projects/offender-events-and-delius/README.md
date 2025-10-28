@@ -25,7 +25,7 @@ The supported data events are:
 | SENTENCE_CHANGED                   | A change to the DISPOSAL table                                                        | 
 | SENTENCE_ORDER_REQUIREMENT_CHANGED | A change to the RQMNT table                                                           | 
 
-See [OffenderDeltaPoller.kt](src/main/kotlin/uk/gov/justice/digital/hmpps/integrations/delius/OffenderDeltaPoller.kt)
+See [OffenderDeltaService.kt](https://github.com/ministryofjustice/hmpps-probation-integration-services/blob/main/projects/offender-events-and-delius/src/main/kotlin/uk/gov/justice/digital/hmpps/integrations/delius/offender/OffenderDeltaService.kt)
 for the up-to-date mapping.
 
 ## Data dependencies

@@ -1,0 +1,24 @@
+style { ...@common/style.style }
+vars { ...@common/style.vars }
+** { ...@common/style.all-style }
+
+context-jitbit: Jitbit Context {
+  entities: Entities {
+    person: Probation Case Details
+  }
+}
+
+context-delius: Delius Context {
+
+  interface: Jitbit and Delius {
+    type: Anti-Corruption\nLayer
+  }
+
+  entities: Entities {
+    person: Person on Probation
+    lao: Access Limitations
+  }
+}
+
+context-jitbit--context-delius.interface: Upstream\n\n\nDownstream
+
