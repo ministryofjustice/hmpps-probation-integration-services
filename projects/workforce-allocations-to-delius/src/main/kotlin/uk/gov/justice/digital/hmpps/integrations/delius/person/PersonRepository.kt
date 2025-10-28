@@ -123,7 +123,8 @@ interface PersonRepository : JpaRepository<Person, Long> {
     )
     fun countAccreditedProgrammeRequirements(personId: Long): Int
 
-    @Query("""
+    @Query(
+        """
         select o.crn, max(allocation.allocation_date) as allocatedAt
         from ( select offender.offender_id,
                       event.event_number,
@@ -148,7 +149,8 @@ interface PersonRepository : JpaRepository<Person, Long> {
           and init.officer_code not like '%U'
           and allocation.created_by = 'HMPPSAllocations'
         group by o.crn
-    """, nativeQuery = true)
+    """, nativeQuery = true
+    )
     fun findMostRecentInitialAllocations(crns: Set<String>): List<MostRecentInitialAllocation>
 }
 

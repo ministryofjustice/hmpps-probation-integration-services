@@ -43,8 +43,19 @@ class ExistingAllocationsDataLoader(
         staffWithTeamsRepository.save(StaffGenerator.END_DATED_STAFF_WITH_TEAM)
         staffWithTeamUserRepository.save(StaffGenerator.STAFF_WITH_TEAM_AND_USER)
         staffWithTeamUserRepository.save(StaffGenerator.END_DATED_STAFF_WITH_USER)
-        val previous = orderManagerRepository.save(generate(staff = StaffGenerator.ALLOCATED, startDateTime = ManagerGenerator.START_DATE_TIME.minusDays(7), endDateTime = DEFAULT.startDate))
-        orderManagerRepository.save(generate(startDateTime = ManagerGenerator.START_DATE_TIME.minusDays(14), endDateTime = previous.startDate))
+        val previous = orderManagerRepository.save(
+            generate(
+                staff = StaffGenerator.ALLOCATED,
+                startDateTime = ManagerGenerator.START_DATE_TIME.minusDays(7),
+                endDateTime = DEFAULT.startDate
+            )
+        )
+        orderManagerRepository.save(
+            generate(
+                startDateTime = ManagerGenerator.START_DATE_TIME.minusDays(14),
+                endDateTime = previous.startDate
+            )
+        )
     }
 }
 
