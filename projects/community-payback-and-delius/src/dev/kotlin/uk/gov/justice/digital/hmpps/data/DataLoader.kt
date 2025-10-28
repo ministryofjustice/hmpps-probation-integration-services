@@ -7,10 +7,7 @@ import org.springframework.boot.context.event.ApplicationReadyEvent
 import org.springframework.context.ApplicationListener
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
-import uk.gov.justice.digital.hmpps.data.generator.ProviderGenerator
-import uk.gov.justice.digital.hmpps.data.generator.StaffGenerator
-import uk.gov.justice.digital.hmpps.data.generator.TeamGenerator
-import uk.gov.justice.digital.hmpps.data.generator.UserGenerator
+import uk.gov.justice.digital.hmpps.data.generator.*
 import uk.gov.justice.digital.hmpps.user.AuditUserRepository
 
 @Component
@@ -31,6 +28,7 @@ class DataLoader(
         loadProviders()
         loadTeams()
         loadStaff()
+        loadReferenceData()
     }
 
     fun loadUsers() {
@@ -58,5 +56,12 @@ class DataLoader(
     fun loadStaff() {
         entityManager.persist(StaffGenerator.DEFAULT_STAFF)
         entityManager.persist(StaffGenerator.SECOND_STAFF)
+    }
+
+    fun loadReferenceData() {
+        entityManager.persist(DatasetGenerator.UPW_PROJECT_TYPE_DATASET)
+        entityManager.persist(ReferenceDataGenerator.GROUP_PLACEMENT_PROJECT_TYPE)
+        entityManager.persist(ReferenceDataGenerator.INDIVIDUAL_PLACEMENT_PROJECT_TYPE)
+        entityManager.persist(ReferenceDataGenerator.INACTIVE_PROJECT_TYPE)
     }
 }
