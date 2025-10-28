@@ -31,15 +31,17 @@ if [ -z "$REINDEXING_TIMEOUT" ]; then help 'Missing -t'; fi
 
 function stop_logstash() {
   exit_code=$?
+  echo 'Waiting for Logstash process...'
+  timeout 30 sh -c 'until pgrep java; do sleep 1; done'
   echo 'Printing final stats...'
   curl --silent --show-error localhost:9600/_node/stats || echo 'Unable to print stats, is Logstash running?'
   if [ "$exit_code" = '0' ] && pgrep java; then
-    echo 'Gracefully stopping Logstash process...'
+    echo 'Completed successfully. Gracefully stopping Logstash process...'
     pgrep java | xargs -n1 kill -TERM
   else
-    echo 'Killing pod...'
+    echo "Failed with exit code $exit_code. Killing Logstash process..."
     _sentry_err_trap "${BASH_COMMAND:-unknown}" "$exit_code"
-    kill -KILL 1
+    pgrep java | xargs -n1 kill -KILL
   fi
   exit "$exit_code"
 }
