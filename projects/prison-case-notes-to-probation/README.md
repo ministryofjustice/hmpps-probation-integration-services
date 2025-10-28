@@ -1,12 +1,13 @@
 # Prison Case Notes to Probation
 
-Inbound service that responds to case note creation events, calls the [Offender
+Inbound service that responds to case note and prison alert creation events, calls the [Offender
 Case Notes Service](https://github.com/ministryofjustice/offender-case-notes)
+the [Prison Alerts Service](https://github.com/ministryofjustice/hmpps-alerts-api) respectively,
 and adds the relevant information to the Delius case history as a contact.
 
 ## Probation Business Need
 
-Prison case notes are displayed as contacts in the NDelius contact log and
+Prison case notes and alerts are displayed as contacts in the NDelius contact log and
 used by probation practitioners as part of the probation case history
 
 ## Context Map
@@ -24,13 +25,19 @@ service
 
 Example [messages](./src/dev/resources/messages/) are in the development source tree
 
-Incoming messages are filtered on `eventType` by the [SQS queue policy](https://github.com/ministryofjustice/cloud-platform-environments/blob/c2eec283010d0dca11be3195ef83f89a34e437d7/namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-dev/resources/prison-case-notes-to-probation-queue.tf#L6-L28)
+Incoming messages are filtered on `eventType` by
+the [SQS queue policy](https://github.com/ministryofjustice/cloud-platform-environments/blob/main/namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-dev/resources/prison-case-notes-to-probation-queue.tf)
 
 ### Case Note Details
 
 The service uses the case note id contained in the message and a known URL for
 the [Offender Case Notes Service](https://github.com/ministryofjustice/offender-case-notes)
 to request the specific case note details.
+
+### Alert Details
+
+The service uses the `detailUrl` contained in the message to request the specific
+alert details from the [Prison Alerts Service](https://github.com/ministryofjustice/hmpps-alerts-api).
 
 ### Person Matching
 
@@ -46,16 +53,17 @@ events raised when there are changes to the NOMIS database tables. As a result
 of this the case notes do not necessarily map to a single business activity.
 The events we respond to are roughly raised in the following circumstances:
 
-| Business Event                   | Message Class         | Message Event Type / Filter |
-|----------------------------------|-----------------------|-----------------------------|
-| Person Released from Institution | Prison Offender Event | "PRISON-RELEASE"            |
-| Person Transferred               | Prison Offender Event | "TRANSFER-FROMTOL"          |
-| General Observations             | Prison Offender Event | "GEN-OSE"                   |
-| Alerts Active                    | Prison Offender Event | "ALERT-ACTIVE"              |
-| Alerts Inactive                  | Prison Offender Event | "ALERT-INACTIVE"            |
-| All OMiC Events                  | Prison Offender Event | { prefix = "OMIC" }         |
-| All OMiC OPD Events              | Prison Offender Event | { prefix = "OMIC_OPD" }     |
-| Keyworking Events                | Prison Offender Event | { prefix = "KA" }           |
+| Business Event                      | Message Class      | Message Event Type / Filter              | Case note type filter   |
+|-------------------------------------|--------------------|------------------------------------------|-------------------------|
+| NOMIS ID linked to a probation case | HMPPS Domain Event | "probation-case.prison-identifier.added" | All below types         |
+| Person Released from Institution    | HMPPS Domain Event | "person.case-note.created"/"updated"     | "PRISON-RELEASE"        |
+| Person Transferred                  | HMPPS Domain Event | "person.case-note.created"/"updated"     | "TRANSFER-FROMTOL"      |
+| General Observations                | HMPPS Domain Event | "person.case-note.created"/"updated"     | "GEN-OSE"               |
+| Alerts Active                       | HMPPS Domain Event | "person.alert.created"/"updated"         | "ALERT-ACTIVE"          |
+| Alerts Inactive                     | HMPPS Domain Event | "person.alert.inactive"                  | "ALERT-INACTIVE"        |
+| All OMiC Events                     | HMPPS Domain Event | "person.case-note.created"/"updated"     | { prefix = "OMIC" }     |
+| All OMiC OPD Events                 | HMPPS Domain Event | "person.case-note.created"/"updated"     | { prefix = "OMIC_OPD" } |
+| Keyworking Events                   | HMPPS Domain Event | "person.case-note.created"/"updated"     | { prefix = "KA" }       |
 
 ## HMPPS Technical Environment
 
