@@ -115,6 +115,9 @@
           <li>
             <a href="#approved-premises-booking-workflows"><span>Approved Premises Booking Workflows</span></a>
           </li>
+          <li>
+            <a href="#approved-premises-arrival-and-departure-workflows"><span>Approved Premises Arrival and Departure Workflows</span></a>
+          </li>
         </ul>
       </li>
       <li>
@@ -126,7 +129,7 @@
         </ul>
       </li>
       <li>
-        <a href="#authorisation"><span>Authorisation</span></a>
+        <a href="#api-access-control"><span>API Access Control</span></a>
       </li>
       <li>
         <a href="#api-reference"><span>API Reference</span></a>
@@ -160,7 +163,9 @@ service when interacting with the probation case via Delius.</p>
 <h2 id="workflows">Workflows</h2>
 <p>Approved Premises domain events are raised in real time as approved premises
 referrals are processed. The progressive stages of a referral are raised as
-separate events.</p>
+separate events. The service consumes those events and updates Delius with
+contacts, referrals, NSIs, residence records and person address changes. It
+also emits probation-case domain events for person and address changes.</p>
 <h3 id="approved-premises-referral-application-workflows">Approved Premises Referral Application Workflows</h3>
 <p><em>Approved Premises (CAS1)</em> referral activity is reflected in <em>Delius</em> via simple notification contacts, intended to log updates to the case and inform probation practitioners of changes.</p>
 <div class="table-container">
@@ -218,7 +223,24 @@ separate events.</p>
 </tr>
         </table>
       </div><p><a href="../../images/approved-premises-and-delius-workflow-booking-cancelled.svg" rel="noopener noreferrer"><img src="../../images/approved-premises-and-delius-workflow-booking-cancelled.svg" alt="Workflow Map" /></a></p>
-<h2 id="interfaces">Interfaces</h2>
+<h3 id="approved-premises-arrival-and-departure-workflows">Approved Premises Arrival and Departure Workflows</h3>
+<div class="table-container">
+        <table>
+          <tr>
+<th>Business Event</th>
+<th>HMPPS Domain Event Type</th>
+</tr><tr>
+<td>A person arrives at an approved premises</td>
+<td>approved-premises.person.arrived</td>
+</tr><tr>
+<td>A person did not arrive as expected at an approved premises</td>
+<td>approved-premises.person.not-arrived</td>
+</tr><tr>
+<td>A person departs an approved premises</td>
+<td>approved-premises.person.departed</td>
+</tr>
+        </table>
+      </div><h2 id="interfaces">Interfaces</h2>
 <h3 id="message-formats">Message Formats</h3>
 <p>The service responds to various HMPPS Domain Event message via the
 <a href="https://github.com/ministryofjustice/cloud-platform-environments/blob/main/namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-prod/resources/approved-premises-and-delius-queue.tf">Approved Premises and Delius Queue</a>.
@@ -226,40 +248,27 @@ The events are raised by the <a href="https://github.com/ministryofjustice/hmpps
 to communicate important events in the approved premises referrals process.</p>
 <p>Example <a href="https://github.com/ministryofjustice/hmpps-probation-integration-services/blob/main/projects/approved-premises-and-delius/src/dev/resources/messages/">messages</a> are in the development source tree.</p>
 <p>Incoming messages are filtered on <code>eventType</code> by the <a href="https://github.com/ministryofjustice/cloud-platform-environments/blob/cc44e15d883b04d1caf5663eec6025674dc10eb5/namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-prod/resources/approved-premises-and-delius-queue.tf#L5-L14">SQS queue policy</a></p>
-<h2 id="authorisation">Authorisation</h2>
-<p>API endpoints are secured by roles supplied by the HMPPS Auth client used in
-the requests</p>
-<div class="table-container">
-        <table>
-          <tr>
-<th>API Endpoint</th>
-<th>Required Role</th>
-</tr><tr>
-<td>/approved-premises/{code}/staff</td>
-<td>ROLE_APPROVED_PREMISES_STAFF</td>
-</tr><tr>
-<td>/teams/managingCase/{crn}</td>
-<td>ROLE_APPROVED_PREMISES_STAFF</td>
-</tr>
-        </table>
-      </div><h2 id="api-reference">API Reference</h2>
+<h2 id="api-access-control">API Access Control</h2>
+<p>API endpoints are secured by the <code>PROBATION_API__APPROVED_PREMISES__CASE_DETAIL</code> role supplied by the HMPPS Auth client
+used in the requests</p>
+<h2 id="api-reference">API Reference</h2>
 
 <ul>
 <li><a href="api-reference.html">API Reference</a></li>
 <li><a href="asyncapi-reference.html">AsyncAPI Reference</a></li>
 </ul>
 
-              <div data-module='page-expiry' data-last-reviewed-on="2025-10-24">
+              <div data-module='page-expiry' data-last-reviewed-on="2026-01-28">
     <div class='page-expiry--not-expired'>
-      This page was last reviewed on 24 June 2025.
+      This page was last reviewed on 28 October 2025.
 
-        It needs to be reviewed again on 24 October 2025
+        It needs to be reviewed again on 28 January 2026
         by the page owner <a href="https://mojdt.slack.com/messages/probation-integration-team">#probation-integration-team</a>
         .
     </div>
 
     <div class='page-expiry--expired' hidden>
-      This page was set to be reviewed before 24 October 2025
+      This page was set to be reviewed before 28 January 2026
        by the page owner <a href="https://mojdt.slack.com/messages/probation-integration-team">#probation-integration-team</a>.
       This might mean the content is out of date.
     </div>

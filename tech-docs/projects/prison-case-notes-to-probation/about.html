@@ -111,6 +111,9 @@
             <a href="#case-note-details"><span>Case Note Details</span></a>
           </li>
           <li>
+            <a href="#alert-details"><span>Alert Details</span></a>
+          </li>
+          <li>
             <a href="#person-matching"><span>Person Matching</span></a>
           </li>
         </ul>
@@ -136,11 +139,12 @@
         <div class="app-pane__content toc-open-disabled" aria-label="Content">
           <main id="content" class="technical-documentation" data-module="anchored-headings">
             <h1 id="prison-case-notes-to-probation">Prison Case Notes to Probation</h1>
-<p>Inbound service that responds to case note creation events, calls the <a href="https://github.com/ministryofjustice/offender-case-notes">Offender
+<p>Inbound service that responds to case note and prison alert creation events, calls the <a href="https://github.com/ministryofjustice/offender-case-notes">Offender
 Case Notes Service</a>
+the <a href="https://github.com/ministryofjustice/hmpps-alerts-api">Prison Alerts Service</a> respectively,
 and adds the relevant information to the Delius case history as a contact.</p>
 <h2 id="probation-business-need">Probation Business Need</h2>
-<p>Prison case notes are displayed as contacts in the NDelius contact log and
+<p>Prison case notes and alerts are displayed as contacts in the NDelius contact log and
 used by probation practitioners as part of the probation case history</p>
 <h2 id="context-map">Context Map</h2>
 <p><a href="../../images/prison-case-notes-to-probation-context-map.svg" rel="noopener noreferrer"><img src="../../images/prison-case-notes-to-probation-context-map.svg" alt="Context Map" /></a></p>
@@ -151,11 +155,15 @@ used by probation practitioners as part of the probation case history</p>
 which are raised by the <a href="https://github.com/ministryofjustice/prison-offender-events">Prison Offender Events</a>
 service</p>
 <p>Example <a href="https://github.com/ministryofjustice/hmpps-probation-integration-services/blob/main/projects/prison-case-notes-to-probation/src/dev/resources/messages/">messages</a> are in the development source tree</p>
-<p>Incoming messages are filtered on <code>eventType</code> by the <a href="https://github.com/ministryofjustice/cloud-platform-environments/blob/c2eec283010d0dca11be3195ef83f89a34e437d7/namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-dev/resources/prison-case-notes-to-probation-queue.tf#L6-L28">SQS queue policy</a></p>
+<p>Incoming messages are filtered on <code>eventType</code> by
+the <a href="https://github.com/ministryofjustice/cloud-platform-environments/blob/main/namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-dev/resources/prison-case-notes-to-probation-queue.tf">SQS queue policy</a></p>
 <h3 id="case-note-details">Case Note Details</h3>
 <p>The service uses the case note id contained in the message and a known URL for
 the <a href="https://github.com/ministryofjustice/offender-case-notes">Offender Case Notes Service</a>
 to request the specific case note details.</p>
+<h3 id="alert-details">Alert Details</h3>
+<p>The service uses the <code>detailUrl</code> contained in the message to request the specific
+alert details from the <a href="https://github.com/ministryofjustice/hmpps-alerts-api">Prison Alerts Service</a>.</p>
 <h3 id="person-matching">Person Matching</h3>
 <p>Person records are matched across NOMIS and Delius using the NOMS number. This
 relies on the NOMS number being set in Delius which happens as part of the
@@ -172,37 +180,51 @@ The events we respond to are roughly raised in the following circumstances:</p>
 <th>Business Event</th>
 <th>Message Class</th>
 <th>Message Event Type / Filter</th>
+<th>Case note type filter</th>
+</tr><tr>
+<td>NOMIS ID linked to a probation case</td>
+<td>HMPPS Domain Event</td>
+<td>&ldquo;probation-case.prison-identifier.added&rdquo;</td>
+<td>All below types</td>
 </tr><tr>
 <td>Person Released from Institution</td>
-<td>Prison Offender Event</td>
+<td>HMPPS Domain Event</td>
+<td>&ldquo;person.case-note.created&rdquo;/&ldquo;updated&rdquo;</td>
 <td>&ldquo;PRISON-RELEASE&rdquo;</td>
 </tr><tr>
 <td>Person Transferred</td>
-<td>Prison Offender Event</td>
+<td>HMPPS Domain Event</td>
+<td>&ldquo;person.case-note.created&rdquo;/&ldquo;updated&rdquo;</td>
 <td>&ldquo;TRANSFER-FROMTOL&rdquo;</td>
 </tr><tr>
 <td>General Observations</td>
-<td>Prison Offender Event</td>
+<td>HMPPS Domain Event</td>
+<td>&ldquo;person.case-note.created&rdquo;/&ldquo;updated&rdquo;</td>
 <td>&ldquo;GEN-OSE&rdquo;</td>
 </tr><tr>
 <td>Alerts Active</td>
-<td>Prison Offender Event</td>
+<td>HMPPS Domain Event</td>
+<td>&ldquo;person.alert.created&rdquo;/&ldquo;updated&rdquo;</td>
 <td>&ldquo;ALERT-ACTIVE&rdquo;</td>
 </tr><tr>
 <td>Alerts Inactive</td>
-<td>Prison Offender Event</td>
+<td>HMPPS Domain Event</td>
+<td>&ldquo;person.alert.inactive&rdquo;</td>
 <td>&ldquo;ALERT-INACTIVE&rdquo;</td>
 </tr><tr>
 <td>All OMiC Events</td>
-<td>Prison Offender Event</td>
+<td>HMPPS Domain Event</td>
+<td>&ldquo;person.case-note.created&rdquo;/&ldquo;updated&rdquo;</td>
 <td>{ prefix = &ldquo;OMIC&rdquo; }</td>
 </tr><tr>
 <td>All OMiC OPD Events</td>
-<td>Prison Offender Event</td>
+<td>HMPPS Domain Event</td>
+<td>&ldquo;person.case-note.created&rdquo;/&ldquo;updated&rdquo;</td>
 <td>{ prefix = &ldquo;OMIC_OPD&rdquo; }</td>
 </tr><tr>
 <td>Keyworking Events</td>
-<td>Prison Offender Event</td>
+<td>HMPPS Domain Event</td>
+<td>&ldquo;person.case-note.created&rdquo;/&ldquo;updated&rdquo;</td>
 <td>{ prefix = &ldquo;KA&rdquo; }</td>
 </tr>
         </table>
@@ -217,17 +239,17 @@ endpoint (<code>PUT /secure/nomisCaseNotes/{nomisId}/{caseNotesId}</code>) that 
 <li><a href="asyncapi-reference.html">AsyncAPI Reference</a></li>
 </ul>
 
-              <div data-module='page-expiry' data-last-reviewed-on="2025-10-24">
+              <div data-module='page-expiry' data-last-reviewed-on="2026-01-28">
     <div class='page-expiry--not-expired'>
-      This page was last reviewed on 24 June 2025.
+      This page was last reviewed on 28 October 2025.
 
-        It needs to be reviewed again on 24 October 2025
+        It needs to be reviewed again on 28 January 2026
         by the page owner <a href="https://mojdt.slack.com/messages/probation-integration-team">#probation-integration-team</a>
         .
     </div>
 
     <div class='page-expiry--expired' hidden>
-      This page was set to be reviewed before 24 October 2025
+      This page was set to be reviewed before 28 January 2026
        by the page owner <a href="https://mojdt.slack.com/messages/probation-integration-team">#probation-integration-team</a>.
       This might mean the content is out of date.
     </div>

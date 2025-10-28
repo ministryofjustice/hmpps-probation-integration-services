@@ -93,8 +93,20 @@
               <nav id="toc" class="js-toc-list toc__list" aria-labelledby="toc-heading">
                       <ul>
   <li>
-    <a href="#jitbit-and-delius"><span>jitbit-and-delius</span></a>
+    <a href="#jitbit-and-delius"><span>Jitbit and Delius</span></a>
     <ul>
+      <li>
+        <a href="#business-need"><span>Business Need</span></a>
+      </li>
+      <li>
+        <a href="#data-dependencies"><span>Data Dependencies</span></a>
+      </li>
+      <li>
+        <a href="#context-map"><span>Context Map</span></a>
+      </li>
+      <li>
+        <a href="#api-access-control"><span>API Access Control</span></a>
+      </li>
       <li>
         <a href="#api-reference"><span>API Reference</span></a>
       </li>
@@ -109,25 +121,55 @@
 
         <div class="app-pane__content toc-open-disabled" aria-label="Content">
           <main id="content" class="technical-documentation" data-module="anchored-headings">
-            <h1 id="jitbit-and-delius">jitbit-and-delius</h1>
-<p>// TODO Describe the service</p>
-<h2 id="api-reference">API Reference</h2>
+            <h1 id="jitbit-and-delius">Jitbit and Delius</h1>
+<p>Read-only integration exposing basic probation case details to the Jitbit ticketing system.</p>
+<h2 id="business-need">Business Need</h2>
+
+<ul>
+<li>Allow the Jitbit ticketing system to look up probation case information to reduce staff needing to check multiple
+systems.</li>
+<li>Enforce Limited Access (LAO) restrictions so protected cases are not exposed in Jitbit.</li>
+</ul>
+<h2 id="data-dependencies">Data Dependencies</h2>
+
+<ul>
+<li>Delius is currently the source of truth for case and person details (name, date of birth, addresses).</li>
+<li>HMPPS Auth provides user/role based access control used to secure the API.</li>
+</ul>
+<h2 id="context-map">Context Map</h2>
+<p><a href="../../images/jitbit-and-delius-context-map.svg" rel="noopener noreferrer"><img src="../../images/jitbit-and-delius-context-map.svg" alt="Context Map" /></a></p>
+<h2 id="api-access-control">API Access Control</h2>
+<p>All endpoints are secured by a HMPPS Auth role required by the Jitbit client.</p>
+<div class="table-container">
+        <table>
+          <tr>
+<th>API Endpoint</th>
+<th>Required Role</th>
+</tr><tr>
+<td>GET /case/{crn}</td>
+<td>PROBATION_API__JITBIT__CASE_DETAIL</td>
+</tr><tr>
+<td>GET /case/{crn}/access</td>
+<td>PROBATION_API__JITBIT__CASE_DETAIL</td>
+</tr>
+        </table>
+      </div><h2 id="api-reference">API Reference</h2>
 
 <ul>
 <li><a href="api-reference.html">API Reference</a></li>
 </ul>
 
-              <div data-module='page-expiry' data-last-reviewed-on="2025-10-24">
+              <div data-module='page-expiry' data-last-reviewed-on="2026-01-28">
     <div class='page-expiry--not-expired'>
-      This page was last reviewed on 24 June 2025.
+      This page was last reviewed on 28 October 2025.
 
-        It needs to be reviewed again on 24 October 2025
+        It needs to be reviewed again on 28 January 2026
         by the page owner <a href="https://mojdt.slack.com/messages/probation-integration-team">#probation-integration-team</a>
         .
     </div>
 
     <div class='page-expiry--expired' hidden>
-      This page was set to be reviewed before 24 October 2025
+      This page was set to be reviewed before 28 January 2026
        by the page owner <a href="https://mojdt.slack.com/messages/probation-integration-team">#probation-integration-team</a>.
       This might mean the content is out of date.
     </div>

@@ -103,6 +103,14 @@
       </li>
       <li>
         <a href="#context-map-interfaces"><span>Context Map / Interfaces</span></a>
+        <ul>
+          <li>
+            <a href="#people-on-probation"><span>People on probation</span></a>
+          </li>
+          <li>
+            <a href="#contacts"><span>Contacts</span></a>
+          </li>
+        </ul>
       </li>
       <li>
         <a href="#processing-pipeline"><span>Processing Pipeline</span></a>
@@ -125,38 +133,64 @@
         <div class="app-pane__content toc-open-disabled" aria-label="Content">
           <main id="content" class="technical-documentation" data-module="anchored-headings">
             <h1 id="person-search-index-from-delius">Person Search Index From Delius</h1>
-<p>Outbound service that sends details of people on probation held in the Delius
-database to an indexing process. The resulting index supports searching and
-matching details of people on probation and makes up the core of the
-<a href="https://github.com/ministryofjustice/probation-offender-search">Probation Offender Search</a>
-service. The service is based on an instance of <a href="https://www.elastic.co/logstash/">Logstash</a></p>
+<p>Outbound service, based on <a href="https://www.elastic.co/logstash/">Logstash</a>, that sends details of people on probation held
+in the Delius database to <a href="https://opensearch.org/">OpenSearch</a>. The resulting OpenSearch index supports searching and
+matching details of people on probation and their contact records. This makes up the core of
+the <a href="https://github.com/ministryofjustice/probation-offender-search">Probation Offender Search</a> service.</p>
 <h2 id="hmpps-business-need">HMPPS Business Need</h2>
-<p>Searching and matching records held on people on probation is needed by
-multiple systems within HMPPS. This service provides full and incremental
-indexing to ensure that we provide search and match capability for people on
-probation using an up-to-date dataset. The index is refreshed on a
-<a href="https://github.com/ministryofjustice/hmpps-probation-integration-services/blob/main/projects/person-search-index-from-delius/deploy/values-prod.yml#L5">daily schedule</a>
+<p>Searching and matching people on probation is needed by multiple systems within HMPPS. This service provides full and
+incremental indexing to ensure that we provide search and match capability for people on probation using an up-to-date
+dataset. The index is refreshed on
+a <a href="https://github.com/ministryofjustice/hmpps-probation-integration-services/blob/16757132877e6b2fc407179f0ac3a7eb7b7d9637/projects/person-search-index-from-delius/deploy/values-prod.yml#L22">daily schedule</a>
+and incrementally updated during the working day based on Delius data events.</p>
+<p>Searching for contacts is needed by the NDelius system to support the &ldquo;Free Text Search&rdquo; screen.
+This screen allows probation practitioners to find relevant case history records based on given keywords or semantic
+similarity. The index is refreshed on a
+<a href="https://github.com/ministryofjustice/hmpps-probation-integration-services/blob/16757132877e6b2fc407179f0ac3a7eb7b7d9637/projects/person-search-index-from-delius/deploy/values-prod.yml#L23-L24">weekly schedule</a>
 and incrementally updated during the working day based on Delius data events.</p>
 <h2 id="hmpps-domain-mapping">HMPPS Domain Mapping</h2>
-<p>The person search index contains the elements of <strong>Core Person Record</strong> that
-are currently stored in the Delius database. This includes information on
-their relationship with the probation service (<strong>Person OMiC/POM/COM</strong>), the
-<strong>Person Location</strong> and overview data on the person&rsquo;s <strong>Sentence/Offence</strong></p>
+<p>The person search index contains the elements of <strong>Core Person Record</strong> that are currently stored in the Delius
+database. This includes information on their relationship with the probation service (<strong>Person OMiC/POM/COM</strong>), the*
+<em>Person Location</em>* and overview data on the person&rsquo;s <strong>Sentence/Offence</strong>.</p>
+<p>The contact index contains data that spans across multiple HMPPS domains, due to the nature of how contacts are used in
+Delius. For example - contacts are used for supervision appointments, drug tests, unpaid work.
+See <a href="https://ministryofjustice.github.io/hmpps-probation-integration-services/tech-docs/concepts.html#contact">Concepts#Contact</a>.</p>
 <h2 id="context-map-interfaces">Context Map / Interfaces</h2>
-<p>The service takes data from the Delius database and converts to the document
-format that forms the &lsquo;offender&rsquo; response of both <a href="https://github.com/ministryofjustice/probation-offender-search">Probation Offender Search</a>
-and <a href="https://github.com/ministryofjustice/community-api">Community API</a>. This
-document format is the de-facto representation of the person on probation as
-used by HMPPS Digital services. The data format can be seen in the response
-definitions of <a href="https://probation-offender-search-dev.hmpps.service.justice.gov.uk/swagger-ui/index.html#/offender-search/search">Probation Offender Search</a></p>
-<p>The mappings between the indexed document data format and the Delius database
-fields are within the <a href="https://github.com/ministryofjustice/hmpps-probation-integration-services/blob/f014e0319e67859182415bd7cecfd948e8d76135/projects/person-search-index-from-delius/container/statement.sql">Delius database query</a>
-that forms the core of the indexing process.</p>
-<p>The search and match functionality of Probation Offender Search is determined
-by the <a href="https://github.com/ministryofjustice/hmpps-probation-integration-services/blob/main/projects/person-search-index-from-delius/container/pipelines/person/index/person-search-template.json">index template</a>
-and the <a href="https://github.com/ministryofjustice/hmpps-probation-integration-services/blob/main/projects/person-search-index-from-delius/container/pipelines/person/index/person-search-pipeline.json">indexing pipeline</a>
-which together define the pre-processing and field analysis that result in a
-searchable index.</p>
+<h3 id="people-on-probation">People on probation</h3>
+<p>The service takes data from the Delius database and converts to the document format that forms the &lsquo;offender&rsquo; response
+of <a href="https://github.com/ministryofjustice/probation-offender-search">Probation Offender Search</a>. This document format is
+the de-facto representation of the person on probation as used by HMPPS Digital services. The data format can be seen in
+the response definitions
+of <a href="https://probation-offender-search-dev.hmpps.service.justice.gov.uk/swagger-ui/index.html#/offender-search/search">Probation Offender Search</a>
+The mappings between the indexed document data format and the Delius database fields are within
+the <a href="https://github.com/ministryofjustice/hmpps-probation-integration-services/blob/f014e0319e67859182415bd7cecfd948e8d76135/projects/person-search-index-from-delius/container/statement.sql">Delius database query</a>
+that forms the core of the indexing process. The search and match functionality of Probation Offender Search is
+determined by
+the <a href="https://github.com/ministryofjustice/hmpps-probation-integration-services/blob/main/projects/person-search-index-from-delius/container/pipelines/person/index/person-search-template.json">index template</a>
+and
+the <a href="https://github.com/ministryofjustice/hmpps-probation-integration-services/blob/main/projects/person-search-index-from-delius/container/pipelines/person/index/person-search-pipeline.json">indexing pipeline</a>
+which together define the pre-processing and field analysis that result in a searchable index.</p>
+<h3 id="contacts">Contacts</h3>
+<p>The service takes data from the Delius database and converts to the document format that forms the &lsquo;contact&rsquo; response
+of <a href="https://github.com/ministryofjustice/probation-offender-search">Probation Offender Search</a> by
+the <a href="https://github.com/ministryofjustice/hmpps-probation-integration-services/blob/main/projects/person-search-index-from-delius/container/pipelines/contact-semantic/statement.sql">Delius database query</a>
+and the
+Logstash <a href="https://github.com/ministryofjustice/hmpps-probation-integration-services/blob/main/projects/person-search-index-from-delius/container/pipelines/contact-semantic/logstash-full-load.conf">full-load</a>
+and <a href="https://github.com/ministryofjustice/hmpps-probation-integration-services/blob/main/projects/person-search-index-from-delius/container/pipelines/contact-semantic/logstash-incremental.conf">incremental</a>
+pipelines.</p>
+<p>Data is ingested in two formats - as lexical keywords, and as vector embeddings (generated by a language model). This
+enables
+a hybrid lexical/keyword and semantic search over the contact list.
+See <a href="https://aws.amazon.com/blogs/big-data/hybrid-search-with-amazon-opensearch-service/">Hybrid Search with Amazon OpenSearch Service</a>.</p>
+<p>The ingestion and search functionality is defined by the following OpenSearch configuration files:</p>
+
+<ul>
+<li><a href="https://github.com/ministryofjustice/hmpps-probation-integration-services/blob/main/projects/person-search-index-from-delius/container/pipelines/contact-semantic/index/index-template-semantic.yml">index template</a></li>
+<li><a href="https://github.com/ministryofjustice/hmpps-probation-integration-services/blob/main/projects/person-search-index-from-delius/container/pipelines/contact-semantic/index/ingest-pipeline.tpl.json">ingest pipeline</a></li>
+<li><a href="https://github.com/ministryofjustice/hmpps-probation-integration-services/blob/main/projects/person-search-index-from-delius/container/pipelines/contact-semantic/index/search-pipeline.tpl.json">search pipeline</a></li>
+<li><a href="https://github.com/ministryofjustice/hmpps-probation-integration-services/blob/main/projects/person-search-index-from-delius/container/pipelines/contact-semantic/index/sagemaker-connector.json">SageMaker connector</a></li>
+<li><a href="https://github.com/ministryofjustice/modernisation-platform-environments/blob/main/terraform/environments/analytical-platform-compute/sagemaker-ai/sagemaker-probation-search.tf">SageMaker endpoint configuration</a></li>
+</ul>
 <h2 id="processing-pipeline">Processing Pipeline</h2>
 <p><a href="../../images/person-search-index-from-delius-pipeline.png" rel="noopener noreferrer"><img src="../../images/person-search-index-from-delius-pipeline.png" alt="Processing Pipeline" /></a></p>
 <h2 id="downstream-business-functionality">Downstream Business Functionality</h2>
@@ -165,21 +199,23 @@ searchable index.</p>
 <li>Search of people on probation in HMPPS Digital services including NDelius</li>
 <li>Matching of people within HMPPS Digital services</li>
 <li>Matching of people to determine links between prison and probation systems</li>
+<li>Semantic search of contact list for a person on probation in NDelius</li>
 </ul>
 <h2 id="relevant-hmpps-domain-data-events">Relevant HMPPS Domain/Data Events</h2>
-<p>Incremental indexing is supported by <a href="https://github.com/ministryofjustice/hmpps-probation-integration-services/blob/main/projects/offender-events-and-delius/README.md">Probation Data Events</a></p>
+<p>Incremental indexing is supported
+by <a href="https://github.com/ministryofjustice/hmpps-probation-integration-services/blob/main/projects/offender-events-and-delius/README.md">Probation Data Events</a></p>
 
-              <div data-module='page-expiry' data-last-reviewed-on="2025-10-24">
+              <div data-module='page-expiry' data-last-reviewed-on="2026-01-28">
     <div class='page-expiry--not-expired'>
-      This page was last reviewed on 24 June 2025.
+      This page was last reviewed on 28 October 2025.
 
-        It needs to be reviewed again on 24 October 2025
+        It needs to be reviewed again on 28 January 2026
         by the page owner <a href="https://mojdt.slack.com/messages/probation-integration-team">#probation-integration-team</a>
         .
     </div>
 
     <div class='page-expiry--expired' hidden>
-      This page was set to be reviewed before 24 October 2025
+      This page was set to be reviewed before 28 January 2026
        by the page owner <a href="https://mojdt.slack.com/messages/probation-integration-team">#probation-integration-team</a>.
       This might mean the content is out of date.
     </div>
