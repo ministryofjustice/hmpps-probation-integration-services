@@ -4,8 +4,8 @@ Read-only integration exposing basic probation case details to the Jitbit ticket
 
 ## Business Need
 
-- Allow the Jitbit support/ticketing system to look up probation case information to reduce staff needing to check
-  multiple systems.
+- Allow the Jitbit ticketing system to look up probation case information to reduce staff needing to check multiple
+  systems.
 - Enforce Limited Access (LAO) restrictions so protected cases are not exposed in Jitbit.
 
 ## Data Dependencies
