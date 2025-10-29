@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query
 import uk.gov.justice.digital.hmpps.api.model.CaseType
 import uk.gov.justice.digital.hmpps.api.model.ManagementStatus
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
+import uk.gov.justice.digital.hmpps.security.ServiceContext
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.ZonedDateTime
@@ -147,11 +148,11 @@ interface PersonRepository : JpaRepository<Person, Long> {
         join staff prev on prev.staff_id = allocation.prev_staff_id
         where prev.officer_code like '%U'
           and init.officer_code not like '%U'
-          and allocation.created_by = 'HMPPSAllocations'
+          and allocation.created_by = :dbUsername
         group by o.crn
     """, nativeQuery = true
     )
-    fun findMostRecentInitialAllocations(crns: Set<String>): List<MostRecentInitialAllocation>
+    fun findMostRecentInitialAllocations(crns: Set<String>, dbUsername: String): List<MostRecentInitialAllocation>
 }
 
 interface MostRecentInitialAllocation {

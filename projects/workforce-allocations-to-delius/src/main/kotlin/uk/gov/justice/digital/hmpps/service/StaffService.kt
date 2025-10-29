@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.service
 
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.security.access.AccessDeniedException
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.api.model.*
@@ -17,7 +18,8 @@ class StaffService(
     private val staffRepository: StaffRepository,
     private val staffWithTeamsRepository: StaffWithTeamsRepository,
     private val ldapService: LdapService,
-    private val personRepository: PersonRepository
+    private val personRepository: PersonRepository,
+    @Value($$"${delius.db.username}") private val dbUsername: String,
 ) {
     fun getOfficerView(code: String): OfficerView {
         val staff = staffRepository.getWithUserByCode(code)
@@ -35,7 +37,7 @@ class StaffService(
     fun getActiveCases(code: String, crns: List<String>): ActiveCasesResponse {
         val staff = staffRepository.getWithUserByCode(code)
         val initialAllocationDates =
-            personRepository.findMostRecentInitialAllocations(crns.toSet()).associate { it.crn to it.allocatedAt }
+            personRepository.findMostRecentInitialAllocations(crns.toSet(), dbUsername).associate { it.crn to it.allocatedAt }
         val cases = personRepository.findAllByCrnAndSoftDeletedFalse(crns).map {
             Case(
                 it.crn,
