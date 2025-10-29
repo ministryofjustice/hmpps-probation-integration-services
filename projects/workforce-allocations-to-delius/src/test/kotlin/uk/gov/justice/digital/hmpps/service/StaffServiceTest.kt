@@ -38,7 +38,8 @@ class StaffServiceTest {
 
     @BeforeEach
     fun setUp() {
-        staffService = StaffService(staffRepository, staffWithTeamsRepository, ldapService, personRepository, AUDIT_USER.username)
+        staffService =
+            StaffService(staffRepository, staffWithTeamsRepository, ldapService, personRepository, AUDIT_USER.username)
     }
 
     @Test
