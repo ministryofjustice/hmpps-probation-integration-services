@@ -804,6 +804,9 @@ components:
           $ref: "#/components/schemas/Name"
         type:
           type: string
+        initialAllocationDate:
+          type: string
+          format: date
       required:
       - crn
       - name
