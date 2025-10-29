@@ -2,16 +2,18 @@ package uk.gov.justice.digital.hmpps.service
 
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
-import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.whenever
 import uk.gov.justice.digital.hmpps.api.model.CaseType
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.StaffGenerator
+import uk.gov.justice.digital.hmpps.data.generator.UserGenerator
+import uk.gov.justice.digital.hmpps.data.generator.UserGenerator.AUDIT_USER
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.person.PersonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.StaffRepository
@@ -32,8 +34,13 @@ class StaffServiceTest {
     @Mock
     lateinit var personRepository: PersonRepository
 
-    @InjectMocks
     lateinit var staffService: StaffService
+
+    @BeforeEach
+    fun setUp() {
+        staffService =
+            StaffService(staffRepository, staffWithTeamsRepository, ldapService, personRepository, AUDIT_USER.username)
+    }
 
     @Test
     fun `officer view staff not found`() {

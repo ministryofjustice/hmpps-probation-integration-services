@@ -32,10 +32,9 @@ object OrderManagerGenerator {
         eventId = EventGenerator.HAS_INITIAL_ALLOCATION.id,
         team = with(TeamGenerator.TEAM_IN_LAU) {
             Team(id, code, district.borough.probationArea.id, description, endDate)
-        }
-    ).also {
-        it.endDate = ManagerGenerator.START_DATE_TIME
-    }
+        },
+        endDateTime = ManagerGenerator.START_DATE_TIME
+    )
 
     fun generate(
         eventId: Long = EventGenerator.DEFAULT.id,
@@ -44,6 +43,7 @@ object OrderManagerGenerator {
         team: Team = TeamGenerator.DEFAULT,
         staff: Staff = StaffGenerator.DEFAULT,
         startDateTime: ZonedDateTime = ZonedDateTime.now(),
+        endDateTime: ZonedDateTime? = null,
         createdDateTime: ZonedDateTime = ZonedDateTime.now(),
         lastModifiedDateTime: ZonedDateTime = ZonedDateTime.now(),
         createdUserId: Long = UserGenerator.AUDIT_USER.id,
@@ -57,6 +57,7 @@ object OrderManagerGenerator {
         team,
         staff,
         startDateTime,
+        endDateTime,
         createdDateTime,
         lastModifiedDateTime,
         createdUserId,

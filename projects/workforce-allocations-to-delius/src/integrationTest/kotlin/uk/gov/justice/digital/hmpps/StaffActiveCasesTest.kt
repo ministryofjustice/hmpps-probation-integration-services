@@ -38,5 +38,6 @@ class StaffActiveCasesTest {
             .andExpect(jsonPath("$.cases[0].name.forename").value(person.forename))
             .andExpect(jsonPath("$.cases[0].name.surname").value(person.surname))
             .andExpect(jsonPath("$.cases[0].type").value("CUSTODY"))
+            .andExpect(jsonPath("$.cases[0].initialAllocationDate").value("2022-06-24"))
     }
 }
