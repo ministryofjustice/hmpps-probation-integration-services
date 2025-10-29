@@ -81,7 +81,7 @@ runs:
       run: |
         echo "old digest: $old"
         echo "new digest: $new"
-        if [ "$old" = "$new" ]; then digest_changed_projects='[]'; else echo digest_changed_projects='["'"${project}"'"]'; fi
+        if [ "$old" = "$new" ]; then digest_changed_projects='[]'; else digest_changed_projects='["'"${project}"'"]'; fi
 
         # merge changes from deploy files and digest changes
         echo "projects=$(jq -c -n \
