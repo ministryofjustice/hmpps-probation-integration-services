@@ -53,6 +53,7 @@ runs:
       uses: docker/build-push-action@v6
       id: build
       with:
+        labels: GIT_BRANCH=${{ github.ref_name }}
         cache-from: type=gha,scope=${{ inputs.project }}
         cache-to: type=gha,mode=max,scope=${{ inputs.project }}
         context: "{{defaultContext}}:projects/${{ inputs.project }}/container"
@@ -80,7 +81,7 @@ runs:
       run: |
         echo "old digest: $old"
         echo "new digest: $new"
-        if [ "$old" = "$new" ]; then digest_changed_projects='[]'; else echo digest_changed_projects='["'"${project}"'"]'; fi
+        if [ "$old" = "$new" ]; then digest_changed_projects='[]'; else digest_changed_projects='["'"${project}"'"]'; fi
 
         # merge changes from deploy files and digest changes
         echo "projects=$(jq -c -n \
@@ -100,6 +101,7 @@ runs:
       uses: docker/build-push-action@v6
       if: (steps.check-changes.outputs.projects != '[]' && inputs.push == 'true') || inputs.force == 'true'
       with:
+        labels: GIT_BRANCH=${{ github.ref_name }}
         cache-from: type=gha,scope=${{ inputs.project }}
         cache-to: type=gha,mode=max,scope=${{ inputs.project }}
         context: "{{defaultContext}}:projects/${{ inputs.project }}/container"
