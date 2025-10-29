@@ -53,6 +53,7 @@ runs:
       uses: docker/build-push-action@v6
       id: build
       with:
+        labels: GIT_BRANCH=${{ github.ref_name }}
         cache-from: type=gha,scope=${{ inputs.project }}
         cache-to: type=gha,mode=max,scope=${{ inputs.project }}
         context: "{{defaultContext}}:projects/${{ inputs.project }}/container"
@@ -100,6 +101,7 @@ runs:
       uses: docker/build-push-action@v6
       if: (steps.check-changes.outputs.projects != '[]' && inputs.push == 'true') || inputs.force == 'true'
       with:
+        labels: GIT_BRANCH=${{ github.ref_name }}
         cache-from: type=gha,scope=${{ inputs.project }}
         cache-to: type=gha,mode=max,scope=${{ inputs.project }}
         context: "{{defaultContext}}:projects/${{ inputs.project }}/container"
