@@ -246,7 +246,7 @@ class UserService(
 
         return DefaultUserDetails(
             default.username,
-            default.staff!!.code,
+            default.staff?.code,
             providers.first { it.code == homeArea }.name,
             team?.description
         )
