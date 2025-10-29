@@ -1,33 +1,23 @@
 package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.stereotype.Service
-import uk.gov.justice.digital.hmpps.api.model.CaseView
-import uk.gov.justice.digital.hmpps.api.model.CvAddress
-import uk.gov.justice.digital.hmpps.api.model.CvDocument
-import uk.gov.justice.digital.hmpps.api.model.CvOffence
-import uk.gov.justice.digital.hmpps.api.model.CvRequirement
-import uk.gov.justice.digital.hmpps.api.model.CvSentence
-import uk.gov.justice.digital.hmpps.api.model.Name
+import uk.gov.justice.digital.hmpps.api.model.*
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
-import uk.gov.justice.digital.hmpps.integrations.delius.caseview.CaseViewAdditionalOffence
-import uk.gov.justice.digital.hmpps.integrations.delius.caseview.CaseViewAdditionalOffenceRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.caseview.CaseViewPerson
-import uk.gov.justice.digital.hmpps.integrations.delius.caseview.CaseViewPersonAddress
-import uk.gov.justice.digital.hmpps.integrations.delius.caseview.CaseViewPersonRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.caseview.CaseViewRequirement
-import uk.gov.justice.digital.hmpps.integrations.delius.caseview.CaseViewRequirementRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.caseview.SentenceSummary
-import uk.gov.justice.digital.hmpps.integrations.delius.caseview.getByCrn
+import uk.gov.justice.digital.hmpps.integrations.delius.caseview.*
+import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.document.DocumentRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.document.entity.Document
 import uk.gov.justice.digital.hmpps.integrations.delius.document.entity.DocumentType
+import uk.gov.justice.digital.hmpps.integrations.delius.event.EventRepository
 
 @Service
 class CaseViewService(
-    val personRepository: CaseViewPersonRepository,
-    val additionalOffenceRepository: CaseViewAdditionalOffenceRepository,
-    val requirementRepository: CaseViewRequirementRepository,
-    val documentRepository: DocumentRepository
+    private val personRepository: CaseViewPersonRepository,
+    private val eventRepository: EventRepository,
+    private val additionalOffenceRepository: CaseViewAdditionalOffenceRepository,
+    private val requirementRepository: CaseViewRequirementRepository,
+    private val contactRepository: ContactRepository,
+    private val documentRepository: DocumentRepository
 ) {
     fun caseView(crn: String, eventNumber: String): CaseView {
         val person = personRepository.getByCrn(crn)
@@ -52,6 +42,35 @@ class CaseViewService(
             cpsPack?.toCvDocument(),
             preCon?.toCvDocument(),
             courtReport?.toCvDocument()
+        )
+    }
+
+    fun reallocationCaseView(crn: String): ReallocationCaseView {
+        val person = personRepository.getByCrn(crn)
+        val address = personRepository.findMainAddress(person.id)
+        val events = eventRepository.getActiveOrders(person.id).map {
+            val sentence = personRepository.findSentenceSummary(person.id, it.number)
+            val additionalOffences = additionalOffenceRepository.findAllByEventId(it.id)
+            val requirements = requirementRepository.findAllByDisposalEventId(it.id)
+            ReallocationCaseView.ActiveEvent(
+                it.number,
+                it.failureToComplyCount ?: 0,
+                listOfNotNull(it.referralDate, it.breachEnd, sentence?.startDate).max(),
+                sentence?.toCvSentence(),
+                listOfNotNull(sentence?.mainOffence()) + additionalOffences.map { o -> o.toCvOffence() },
+                requirements.map { r -> r.toCvRequirement() },
+            )
+        }
+        val nextAppointmentDate = contactRepository.getNextAppointmentDate(person.id)
+
+        return ReallocationCaseView(
+            person.name(),
+            person.dateOfBirth,
+            person.gender?.description,
+            person.pncNumber,
+            address?.toCvAddress(),
+            nextAppointmentDate,
+            events
         )
     }
 

@@ -81,5 +81,9 @@ class ContactType(
 
     @Column(name = "sensitive_contact")
     @Convert(converter = YesNoConverter::class)
-    val isSensitive: Boolean
+    val isSensitive: Boolean,
+
+    @Column(name = "attendance_contact")
+    @Convert(converter = YesNoConverter::class)
+    val attendanceContact: Boolean,
 )
