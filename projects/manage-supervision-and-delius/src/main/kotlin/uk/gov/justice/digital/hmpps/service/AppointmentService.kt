@@ -8,6 +8,7 @@ import uk.gov.justice.digital.hmpps.api.model.sentence.ProviderOfficeLocation
 import uk.gov.justice.digital.hmpps.api.model.user.Team
 import uk.gov.justice.digital.hmpps.api.model.user.TeamResponse
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
+import uk.gov.justice.digital.hmpps.integrations.delius.appointment.AppointmentRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.compliance.Nsi
 import uk.gov.justice.digital.hmpps.integrations.delius.compliance.NsiRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.*
@@ -27,7 +28,8 @@ class AppointmentService(
     private val requirementRepository: RequirementRepository,
     private val teamRepository: TeamRepository,
     private val nsiRepository: NsiRepository,
-    private val locationRepository: LocationRepository
+    private val locationRepository: LocationRepository,
+    private val appointmentRepository: AppointmentRepository,
 ) {
 
     fun getProbationRecordsByContactType(crn: String, code: String): ContactTypeAssociation {
@@ -92,6 +94,18 @@ class AppointmentService(
     }
 
     fun Nsi.toMinimalNsi() = MinimalNsi(id, type.description + (subType?.let { " (${it.description})" } ?: ""))
+
+    fun findOverdueOutcomes(crn: String): OverdueOutcomeAppointments =
+        appointmentRepository.findOverdueOutcomes(crn).map {
+            OverdueOutcome(
+                it.id,
+                it.externalReference,
+                OverdueOutcome.Type(it.type.code, it.type.description),
+                it.date,
+                it.startTime.toLocalTime(),
+                it.endTime.toLocalTime()
+            )
+        }.let(::OverdueOutcomeAppointments)
 }
 
 fun ContactTypeEntity.toAppointmentType() = AppointmentType(code, description, offenderContact, locationRequired == "Y")
