@@ -13,7 +13,9 @@ class GetProbationPractitioner(private val ppRepository: OffenderManagerReposito
 
 private fun OffenderManager.asProbationPractitioner(): ProbationPractitioner = ProbationPractitioner(
     staff.code,
+    ProbationPractitioner.Name(staff.forename, staff.surname),
     ProbationPractitioner.Provider(provider.code, provider.description),
     ProbationPractitioner.Team(team.code, team.description),
+    staff.isUnallocated(),
     staff.user?.username
 )

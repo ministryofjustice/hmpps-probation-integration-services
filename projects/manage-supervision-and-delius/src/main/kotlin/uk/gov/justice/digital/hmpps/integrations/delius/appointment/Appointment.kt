@@ -224,7 +224,8 @@ interface AppointmentRepository : JpaRepository<Appointment, Long> {
         appointmentId: Long?,
     ): Int
 
-    @Query("""
+    @Query(
+        """
         select a from Appointment a
         where a.person.crn = :crn
         and a.type.attendanceContact = true
@@ -232,7 +233,8 @@ interface AppointmentRepository : JpaRepository<Appointment, Long> {
         and (
             a.date < current_date or (a.date = current_date and to_char(a.endTime, 'HH24:MI') < to_char(current_timestamp, 'HH24:MI'))
         )
-    """)
+    """
+    )
     fun findOverdueOutcomes(crn: String): List<Appointment>
 }
 

@@ -25,8 +25,10 @@ class GetProbationPractitionerTest : IntegrationTestBase() {
             equalTo(
                 ProbationPractitioner(
                     "N01PEPA",
+                    ProbationPractitioner.Name("Peter", "Parker"),
                     ProbationPractitioner.Provider("N01", "Description of N01"),
                     ProbationPractitioner.Team("N07T02", "OMU B"),
+                    false,
                     "peter-parker"
                 )
             )

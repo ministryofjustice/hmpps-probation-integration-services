@@ -97,7 +97,9 @@ class Staff(
 
     @Column(name = "end_date")
     val endDate: LocalDate? = null
-)
+) {
+    fun isUnallocated(): Boolean = code.endsWith("U")
+}
 
 @Entity
 @Immutable
