@@ -127,7 +127,7 @@ class EnforcementAction(
     "outcomeCount",
     "enforcementActionCount"
 )
-interface UnpaidWorkSession{
+interface UnpaidWorkSession {
     val projectId: Long
     val projectName: String
     val projectCode: String
@@ -162,7 +162,6 @@ fun UnpaidWorkSession.toDto() = UnpaidWorkSessionDto(
     outcomeCount,
     enforcementActionCount
 )
-
 
 interface UnpaidWorkAppointmentRepository : JpaRepository<UpwAppointment, Long> {
     @Query(

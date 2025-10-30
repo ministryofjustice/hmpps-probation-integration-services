@@ -30,8 +30,8 @@ object UPWGenerator {
     val SECOND_UPW_DETAILS = generateUpwDetails(disposalId = SECOND_DISPOSAL.id)
     val THIRD_UPW_DETAILS = generateUpwDetails(disposalId = SECOND_DISPOSAL.id)
 
-
-    val DEFAULT_CONTACT = generateContact(latestEnforcementActionId = ReferenceDataGenerator.DEFAULT_ENFORCEMENT_ACTION.id)
+    val DEFAULT_CONTACT =
+        generateContact(latestEnforcementActionId = ReferenceDataGenerator.DEFAULT_ENFORCEMENT_ACTION.id)
     val CONTACT_NO_ENFORCEMENT = generateContact(latestEnforcementActionId = null)
 
     val DEFAULT_UPW_APPOINTMENT = generateUpwAppointment(
@@ -113,6 +113,8 @@ object UPWGenerator {
         upwDetailsId: Long,
         contactId: Long,
         contactOutcomeTypeId: Long?
-    ) = UpwAppointment(id, attended, complied, softDeleted, startTime, endTime, appointmentDate,
-        upwProjectId, upwDetailsId, contactId, contactOutcomeTypeId)
+    ) = UpwAppointment(
+        id, attended, complied, softDeleted, startTime, endTime, appointmentDate,
+        upwProjectId, upwDetailsId, contactId, contactOutcomeTypeId
+    )
 }

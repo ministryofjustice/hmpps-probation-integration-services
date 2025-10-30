@@ -76,7 +76,13 @@ class ProvidersIntegrationTest {
     @Test
     fun `can retrieve all upw sessions for provider and team`() {
         val response = mockMvc
-            .perform(get("/providers/N01/teams/N01UPW/sessions?startDate=${LocalDate.now().minusDays(3)}&endDate=${LocalDate.now().plusDays(3)}").withToken())
+            .perform(
+                get(
+                    "/providers/N01/teams/N01UPW/sessions?startDate=${
+                        LocalDate.now().minusDays(3)
+                    }&endDate=${LocalDate.now().plusDays(3)}"
+                ).withToken()
+            )
             .andExpect(status().is2xxSuccessful)
             .andReturn().response.contentAsJson<List<UnpaidWorkSessionDto>>()
 
