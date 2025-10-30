@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.Dataset
+import uk.gov.justice.digital.hmpps.integrations.delius.entity.EnforcementAction
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.ReferenceData
 
 object ReferenceDataGenerator {
@@ -20,6 +21,9 @@ object ReferenceDataGenerator {
         datasetId = DatasetGenerator.UPW_PROJECT_TYPE_DATASET.id,
         selectable = false
     )
+    val DEFAULT_ENFORCEMENT_ACTION = generateEnforcementAction(
+        outstandingContactAction = true
+    )
 
     fun generateReferenceData(
         id: Long = IdGenerator.getAndIncrement(),
@@ -28,6 +32,11 @@ object ReferenceDataGenerator {
         datasetId: Long,
         selectable: Boolean = true
     ) = ReferenceData(id, code, description, datasetId, selectable)
+
+    fun generateEnforcementAction(
+        id: Long = IdGenerator.getAndIncrement(),
+        outstandingContactAction: Boolean
+    ) = EnforcementAction(id, outstandingContactAction)
 }
 
 object DatasetGenerator {
