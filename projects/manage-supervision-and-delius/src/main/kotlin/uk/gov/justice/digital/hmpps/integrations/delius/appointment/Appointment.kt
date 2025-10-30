@@ -159,6 +159,8 @@ class AppointmentType(
     @Column
     val code: String,
 
+    val description: String,
+
     @Column(name = "attendance_contact")
     @Convert(converter = YesNoConverter::class)
     val attendanceContact: Boolean,
@@ -221,6 +223,19 @@ interface AppointmentRepository : JpaRepository<Appointment, Long> {
         endTime: LocalTime,
         appointmentId: Long?,
     ): Int
+
+    @Query(
+        """
+        select a from Appointment a
+        where a.person.crn = :crn
+        and a.type.attendanceContact = true
+        and a.outcome is null
+        and (
+            a.date < current_date or (a.date = current_date and to_char(a.endTime, 'HH24:MI') < to_char(current_timestamp, 'HH24:MI'))
+        )
+    """
+    )
+    fun findOverdueOutcomes(crn: String): List<Appointment>
 }
 
 fun AppointmentRepository.getAppointment(id: Long) =
