@@ -67,6 +67,15 @@ interface EventRepository : JpaRepository<Event, Long> {
         """
     )
     fun countActiveOrders(personId: Long): Int
+
+    @Query(
+        """
+        select e from Event e
+        join e.person p
+        where p.id = :personId and e.active = true and e.softDeleted = false        
+        """
+    )
+    fun getActiveOrders(personId: Long): List<Event>
 }
 
 fun EventRepository.getByPersonCrnAndNumber(crn: String, number: String) =

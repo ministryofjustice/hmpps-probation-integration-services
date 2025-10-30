@@ -153,7 +153,7 @@ class AllocationDemandIntegrationTest {
             .andExpect(jsonPath("$.allocatingStaff.code").value(loggedInStaff.code))
             .andExpect(
                 jsonPath("$.initialAppointment.date").value(
-                    LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE)
+                    LocalDate.now().plusDays(1).format(DateTimeFormatter.ISO_LOCAL_DATE)
                 )
             )
             .andExpect(jsonPath("$.sentence.description").value("Case View Sentence Type"))

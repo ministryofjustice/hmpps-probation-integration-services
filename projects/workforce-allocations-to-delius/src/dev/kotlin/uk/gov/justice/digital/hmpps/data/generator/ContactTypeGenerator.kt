@@ -8,7 +8,8 @@ object ContactTypeGenerator {
     val ORDER_SUPERVISOR_TRANSFER = generate(ContactTypeCode.ORDER_SUPERVISOR_TRANSFER.value)
     val RESPONSIBLE_OFFICER_CHANGE = generate(ContactTypeCode.RESPONSIBLE_OFFICER_CHANGE.value)
     val SENTENCE_COMPONENT_TRANSFER = generate(ContactTypeCode.SENTENCE_COMPONENT_TRANSFER.value)
-    val INITIAL_APPOINTMENT_IN_OFFICE = generate(ContactTypeCode.INITIAL_APPOINTMENT_IN_OFFICE.value)
+    val INITIAL_APPOINTMENT_IN_OFFICE =
+        generate(ContactTypeCode.INITIAL_APPOINTMENT_IN_OFFICE.value, attendanceContact = true)
     val INITIAL_APPOINTMENT_ON_DOORSTEP = generate(ContactTypeCode.INITIAL_APPOINTMENT_ON_DOORSTEP.value)
     val INITIAL_APPOINTMENT_HOME_VISIT = generate(ContactTypeCode.INITIAL_APPOINTMENT_HOME_VISIT.value)
     val INITIAL_APPOINTMENT_BY_VIDEO = generate(ContactTypeCode.INITIAL_APPOINTMENT_BY_VIDEO.value)
@@ -17,10 +18,12 @@ object ContactTypeGenerator {
     fun generate(
         code: String,
         id: Long = IdGenerator.getAndIncrement(),
-        isSensitive: Boolean = false
+        isSensitive: Boolean = false,
+        attendanceContact: Boolean = false,
     ) = ContactType(
         id,
         code,
-        isSensitive
+        isSensitive,
+        attendanceContact,
     )
 }

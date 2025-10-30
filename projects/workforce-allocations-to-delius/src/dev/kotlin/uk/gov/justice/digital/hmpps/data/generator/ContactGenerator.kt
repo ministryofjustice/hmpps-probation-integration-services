@@ -11,7 +11,8 @@ object ContactGenerator {
         EventGenerator.DEFAULT.id,
         TeamGenerator.DEFAULT.id,
         StaffGenerator.DEFAULT.id,
-        ProviderGenerator.DEFAULT.id
+        ProviderGenerator.DEFAULT.id,
+        ZonedDateTime.now().plusDays(2)
     )
 
     val INITIAL_APPOINTMENT_CASE_VIEW = generate(
@@ -20,7 +21,8 @@ object ContactGenerator {
         EventGenerator.CASE_VIEW.id,
         TeamGenerator.DEFAULT.id,
         StaffGenerator.DEFAULT.id,
-        ProviderGenerator.DEFAULT.id
+        ProviderGenerator.DEFAULT.id,
+        ZonedDateTime.now().plusDays(1)
     )
 
     fun generate(

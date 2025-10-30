@@ -43,6 +43,12 @@ class CaseViewEvent(
     @Column(name = "event_number", nullable = false)
     val number: String,
 
+    @Column(name = "ftc_count", nullable = false)
+    val failureToComplyCount: Int,
+
+    @Column(name = "breach_end")
+    val breachEnd: LocalDate?,
+
     @Column(name = "active_flag", columnDefinition = "number", nullable = false)
     @Convert(converter = NumericBooleanConverter::class)
     val active: Boolean,

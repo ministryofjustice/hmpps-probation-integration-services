@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController
 import uk.gov.justice.digital.hmpps.service.CaseViewService
 
 @RestController
-@RequestMapping("/allocation-demand")
+@RequestMapping
 class CaseViewResource(val service: CaseViewService) {
     @PreAuthorize("hasRole('PROBATION_API__WORKFORCE_ALLOCATIONS__CASE_DETAIL')")
     @Operation(
@@ -22,6 +22,10 @@ class CaseViewResource(val service: CaseViewService) {
             when allocating to a probation practitioner
         """
     )
-    @GetMapping("/{crn}/{eventNumber}/case-view")
+    @GetMapping("/allocation-demand/{crn}/{eventNumber}/case-view")
     fun caseView(@PathVariable crn: String, @PathVariable eventNumber: String) = service.caseView(crn, eventNumber)
+
+    @PreAuthorize("hasRole('PROBATION_API__WORKFORCE_ALLOCATIONS__CASE_DETAIL')")
+    @GetMapping("/reallocation/{crn}/case-view")
+    fun reallocationCaseView(@PathVariable crn: String) = service.reallocationCaseView(crn)
 }

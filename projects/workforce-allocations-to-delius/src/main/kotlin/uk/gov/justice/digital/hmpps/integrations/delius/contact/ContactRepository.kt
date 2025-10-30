@@ -31,6 +31,19 @@ interface ContactRepository : JpaRepository<Contact, Long> {
         ),
         page: PageRequest = PageRequest.of(0, 1)
     ): InitialAppointmentData?
+
+    @Query(
+        """
+        select c.date
+        from Contact c
+        where c.personId = :personId
+        and c.type.attendanceContact = true
+        and c.softDeleted = false
+        and c.date > current_date
+        order by c.date, c.startTime
+        """
+    )
+    fun getNextAppointmentDate(personId: Long): LocalDate?
 }
 
 interface InitialAppointmentData {
