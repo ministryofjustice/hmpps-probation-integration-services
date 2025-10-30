@@ -3016,7 +3016,6 @@ components:
           type: string
       required:
       - homeArea
-      - staffCode
       - username
     Provider:
       type: object
