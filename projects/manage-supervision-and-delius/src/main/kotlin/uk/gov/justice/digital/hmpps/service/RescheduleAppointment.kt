@@ -22,8 +22,8 @@ class RescheduleAppointment(
         require(
             request.changesDateOrTime(
                 appointment.date,
-                appointment.startTime.toLocalTime(),
-                appointment.endTime.toLocalTime()
+                appointment.startTime?.toLocalTime(),
+                appointment.endTime?.toLocalTime()
             )
         ) { "Appointment date or time must change to be rescheduled" }
 

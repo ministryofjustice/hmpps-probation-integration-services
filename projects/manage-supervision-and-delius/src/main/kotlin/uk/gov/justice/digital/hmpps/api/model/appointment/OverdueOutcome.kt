@@ -10,8 +10,8 @@ data class OverdueOutcome(
     val externalReference: String?,
     val type: Type,
     val date: LocalDate,
-    val start: LocalTime,
-    val end: LocalTime,
+    val start: LocalTime?,
+    val end: LocalTime?,
 ) {
     data class Type(val code: String, val description: String)
 }

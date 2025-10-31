@@ -13,13 +13,14 @@ interface AppointmentRequest {
     val startTime: LocalTime
     val endTime: LocalTime
 
-    fun changesDateOrTime(date: LocalDate, startTime: LocalTime, endTime: LocalTime): Boolean {
+    fun changesDateOrTime(date: LocalDate, startTime: LocalTime?, endTime: LocalTime?): Boolean {
         return !this.date.isEqual(date) ||
-            this.startTime.truncatedTo(SECONDS).isDifferentTo(startTime.truncatedTo(SECONDS)) ||
-            this.endTime.truncatedTo(SECONDS).isDifferentTo(endTime.truncatedTo(SECONDS))
+            this.startTime.truncatedTo(SECONDS).isDifferentTo(startTime?.truncatedTo(SECONDS)) ||
+            this.endTime.truncatedTo(SECONDS).isDifferentTo(endTime?.truncatedTo(SECONDS))
     }
 
-    private fun LocalTime.isDifferentTo(other: LocalTime) = this.isBefore(other) || this.isAfter(other)
+    private fun LocalTime.isDifferentTo(other: LocalTime?) =
+        other == null || this.isBefore(other) || this.isAfter(other)
 }
 
 @Target(AnnotationTarget.CLASS)
