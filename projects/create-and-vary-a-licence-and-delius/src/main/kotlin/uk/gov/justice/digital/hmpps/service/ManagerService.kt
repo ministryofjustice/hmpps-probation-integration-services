@@ -20,13 +20,26 @@ class ManagerService(
     private val ldapTemplate: LdapTemplate,
     private val personManagerRepository: PersonManagerRepository
 ) {
-    fun findCommunityManager(crnOrNomisId: String): Manager =
-        personManagerRepository.findByPersonCrnOrPersonNomsNumber(crnOrNomisId)?.withLdapDetails()?.asManager()
+    fun findCommunityManager(crnOrNomisId: String, includeEmail: Boolean): Manager {
+        val manager = personManagerRepository.findByPersonCrnOrPersonNomsNumber(crnOrNomisId)
+        val com = if (includeEmail) {
+            manager?.withLdapDetails()
+        } else {
+            manager
+        }
+        return com?.asManager()
             ?: throw NotFoundException("CommunityManager", "CRN or NOMIS id", crnOrNomisId)
+    }
 
-    fun findCommunityManagers(crnsOrNomisIds: List<String>): List<Manager> =
-        personManagerRepository.findByPersonCrnInOrPersonNomsNumberIn(crnsOrNomisIds)
-            .map { it.withLdapDetails().asManager() }
+    fun findCommunityManagers(crnsOrNomisIds: List<String>, includeEmail: Boolean): List<Manager> {
+        val managers = personManagerRepository.findByPersonCrnInOrPersonNomsNumberIn(crnsOrNomisIds)
+        val coms = if (includeEmail) {
+            managers.map { it.withLdapDetails() }
+        } else {
+            managers
+        }
+        return coms.map { it.withLdapDetails().asManager() }
+    }
 
     private fun PersonManager.withLdapDetails() = apply {
         staff.user?.apply {

@@ -27,10 +27,14 @@ class ProbationCaseResource(
             .map { ProbationCase(it.crn, it.nomsNumber, it.pncNumber, it.croNumber) }
 
     @GetMapping("{crnOrNomisId}/responsible-community-manager")
-    fun findCommunityManager(@PathVariable crnOrNomisId: String): Manager =
-        responsibleManagerService.findCommunityManager(crnOrNomisId)
+    fun findCommunityManager(
+        @PathVariable crnOrNomisId: String,
+        @RequestParam(required = false, defaultValue = "true") includeEmail: Boolean
+    ): Manager = responsibleManagerService.findCommunityManager(crnOrNomisId, includeEmail)
 
     @PostMapping("/responsible-community-manager")
-    fun findCommunityManagerEmails(@RequestBody crnsOrNomisIds: List<String>): List<Manager> =
-        responsibleManagerService.findCommunityManagers(crnsOrNomisIds)
+    fun findCommunityManagerEmails(
+        @RequestBody crnsOrNomisIds: List<String>,
+        @RequestParam(required = false, defaultValue = "true") includeEmail: Boolean
+    ): List<Manager> = responsibleManagerService.findCommunityManagers(crnsOrNomisIds, includeEmail)
 }
