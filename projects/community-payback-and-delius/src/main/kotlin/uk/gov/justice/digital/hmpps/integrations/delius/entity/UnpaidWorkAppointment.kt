@@ -202,7 +202,7 @@ interface UnpaidWorkAppointmentRepository : JpaRepository<UpwAppointment, Long> 
                 left join r_enforcement_action enf 
                        on enf.enforcement_action_id = c.latest_enforcement_action_id 
             group by uwp.upw_project_id, uwp.upw_project_name, uwp.upw_project_code, uwa.start_time, uwa.end_time, uwa.appointment_date
-            order by uwa.appointment_date asc, uwp.upw_project_name;
+            order by uwa.appointment_date asc, uwp.upw_project_name
         """, nativeQuery = true
     )
     fun getUnpaidWorkSessionDetails(teamId: Long, startDate: LocalDate, endDate: LocalDate): List<UnpaidWorkSession>
