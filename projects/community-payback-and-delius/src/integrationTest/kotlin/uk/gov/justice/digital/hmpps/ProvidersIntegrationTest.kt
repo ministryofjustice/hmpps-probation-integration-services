@@ -9,11 +9,13 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import uk.gov.justice.digital.hmpps.integrations.delius.entity.UnpaidWorkSessionDto
 import uk.gov.justice.digital.hmpps.model.ProvidersResponse
 import uk.gov.justice.digital.hmpps.model.SupervisorsResponse
 import uk.gov.justice.digital.hmpps.model.TeamsResponse
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
+import java.time.LocalDate
 
 @AutoConfigureMockMvc
 @SpringBootTest
@@ -69,5 +71,21 @@ class ProvidersIntegrationTest {
             .andReturn().response.contentAsJson<SupervisorsResponse>()
 
         assertThat(response.supervisors.size).isEqualTo(2)
+    }
+
+    @Test
+    fun `can retrieve all upw sessions for provider and team`() {
+        val response = mockMvc
+            .perform(
+                get(
+                    "/providers/N01/teams/N01UPW/sessions?startDate=${
+                        LocalDate.now().minusDays(3)
+                    }&endDate=${LocalDate.now().plusDays(3)}"
+                ).withToken()
+            )
+            .andExpect(status().is2xxSuccessful)
+            .andReturn().response.contentAsJson<List<UnpaidWorkSessionDto>>()
+
+        assertThat(response.size).isEqualTo(3)
     }
 }

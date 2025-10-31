@@ -29,6 +29,7 @@ class DataLoader(
         loadTeams()
         loadStaff()
         loadReferenceData()
+        loadUnpaidWorkData()
     }
 
     fun loadUsers() {
@@ -63,5 +64,24 @@ class DataLoader(
         entityManager.persist(ReferenceDataGenerator.GROUP_PLACEMENT_PROJECT_TYPE)
         entityManager.persist(ReferenceDataGenerator.INDIVIDUAL_PLACEMENT_PROJECT_TYPE)
         entityManager.persist(ReferenceDataGenerator.INACTIVE_PROJECT_TYPE)
+        entityManager.persist(ReferenceDataGenerator.DEFAULT_ENFORCEMENT_ACTION)
+    }
+
+    fun loadUnpaidWorkData() {
+        entityManager.persist(UPWGenerator.DEFAULT_UPW_PROJECT)
+        entityManager.persist(UPWGenerator.SECOND_UPW_PROJECT)
+        entityManager.persist(UPWGenerator.DEFAULT_UPW_PROJECT_AVAILABILITY)
+        entityManager.persist(UPWGenerator.SECOND_UPW_PROJECT_AVAILABILITY)
+        entityManager.persist(UPWGenerator.DEFAULT_DISPOSAL)
+        entityManager.persist(UPWGenerator.SECOND_DISPOSAL)
+        entityManager.persist(UPWGenerator.DEFAULT_UPW_DETAILS)
+        entityManager.persist(UPWGenerator.SECOND_UPW_DETAILS)
+        entityManager.persist(UPWGenerator.THIRD_UPW_DETAILS)
+        entityManager.persist(UPWGenerator.DEFAULT_CONTACT)
+        entityManager.persist(UPWGenerator.CONTACT_NO_ENFORCEMENT)
+        entityManager.persist(UPWGenerator.DEFAULT_UPW_APPOINTMENT)
+        entityManager.persist(UPWGenerator.UPW_APPOINTMENT_NO_ENFORCEMENT)
+        entityManager.persist(UPWGenerator.UPW_APPOINTMENT_NO_OUTCOME)
+        entityManager.persist(UPWGenerator.SECOND_UPW_APPOINTMENT_OUTCOME_NO_ENFORCEMENT)
     }
 }
