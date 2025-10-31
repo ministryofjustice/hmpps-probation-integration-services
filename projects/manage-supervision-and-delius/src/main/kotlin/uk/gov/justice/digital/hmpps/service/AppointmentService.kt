@@ -102,8 +102,8 @@ class AppointmentService(
                 it.externalReference,
                 OverdueOutcome.Type(it.type.code, it.type.description),
                 it.date,
-                it.startTime.toLocalTime(),
-                it.endTime.toLocalTime()
+                it.startTime?.toLocalTime(),
+                it.endTime?.toLocalTime()
             )
         }.let(::OverdueOutcomeAppointments)
 }

@@ -36,10 +36,10 @@ class Appointment(
     var date: LocalDate,
 
     @Column(name = "contact_start_time")
-    var startTime: ZonedDateTime,
+    var startTime: ZonedDateTime?,
 
     @Column(name = "contact_end_time")
-    var endTime: ZonedDateTime,
+    var endTime: ZonedDateTime?,
 
     @ManyToOne
     @JoinColumn(name = "team_id")
@@ -144,7 +144,7 @@ class Appointment(
     fun isInTheFuture(): Boolean {
         val today = LocalDate.now()
         return date.isAfter(today) ||
-            (date.isEqual(today) && startTime.toLocalTime().isAfter(LocalTime.now()))
+            (date.isEqual(today) && startTime?.toLocalTime()?.isAfter(LocalTime.now()) == true)
     }
 
     companion object {

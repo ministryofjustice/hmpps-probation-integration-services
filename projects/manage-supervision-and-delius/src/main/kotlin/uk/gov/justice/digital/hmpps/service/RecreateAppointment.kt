@@ -27,8 +27,8 @@ class RecreateAppointment(
         require(
             request.changesDateOrTime(
                 original.date,
-                original.startTime.toLocalTime(),
-                original.endTime.toLocalTime()
+                original.startTime?.toLocalTime(),
+                original.endTime?.toLocalTime()
             )
         ) { "Appointment date or time must change to be recreated" }
 
