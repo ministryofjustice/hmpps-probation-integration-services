@@ -1702,6 +1702,42 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/TeamStaff"
+  /case/{crn}/probation-practitioner:
+    get:
+      tags:
+      - Case Detail
+      operationId: findPractitionerFor
+      parameters:
+      - name: crn
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProbationPractitioner"
+  /appointment/{crn}/overdue-outcomes:
+    get:
+      tags:
+      - Sentence
+      operationId: findOverdueOutcomes
+      parameters:
+      - name: crn
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OverdueOutcomeAppointments"
   /appointment/{crn}/contact-type/{code}:
     get:
       tags:
@@ -4232,6 +4268,69 @@ components:
             $ref: "#/components/schemas/Staff"
       required:
       - staff
+    ProbationPractitioner:
+      type: object
+      properties:
+        code:
+          type: string
+        name:
+          $ref: "#/components/schemas/Name"
+        provider:
+          $ref: "#/components/schemas/Provider"
+        team:
+          $ref: "#/components/schemas/Team"
+        unallocated:
+          type: boolean
+        username:
+          type: string
+      required:
+      - code
+      - name
+      - provider
+      - team
+      - unallocated
+    OverdueOutcome:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        externalReference:
+          type: string
+        type:
+          $ref: "#/components/schemas/Type"
+        date:
+          type: string
+          format: date
+        start:
+          type: string
+        end:
+          type: string
+      required:
+      - date
+      - end
+      - id
+      - start
+      - type
+    OverdueOutcomeAppointments:
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: "#/components/schemas/OverdueOutcome"
+      required:
+      - content
+    Type:
+      type: object
+      properties:
+        code:
+          type: string
+        description:
+          type: string
+      required:
+      - code
+      - description
     ContactTypeAssociation:
       type: object
       properties:

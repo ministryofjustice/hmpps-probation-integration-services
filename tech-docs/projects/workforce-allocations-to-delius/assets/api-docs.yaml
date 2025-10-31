@@ -315,6 +315,24 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/RiskSummary"
+  /reallocation/{crn}/case-view:
+    get:
+      tags:
+      - case-view-resource
+      operationId: reallocationCaseView
+      parameters:
+      - name: crn
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ReallocationCaseView"
   /probation-estate:
     get:
       tags:
@@ -1184,6 +1202,129 @@ components:
           $ref: "#/components/schemas/RiskItem"
         publicProtection:
           $ref: "#/components/schemas/RiskItem"
+    ActiveEvent:
+      type: object
+      properties:
+        number:
+          type: string
+        failureToComplyCount:
+          type: integer
+          format: int32
+        failureToComplyStartDate:
+          type: string
+          format: date
+        sentence:
+          $ref: "#/components/schemas/CvSentence"
+        offences:
+          type: array
+          items:
+            $ref: "#/components/schemas/CvOffence"
+        requirements:
+          type: array
+          items:
+            $ref: "#/components/schemas/CvRequirement"
+      required:
+      - failureToComplyCount
+      - failureToComplyStartDate
+      - number
+      - offences
+      - requirements
+    CvAddress:
+      type: object
+      properties:
+        buildingName:
+          type: string
+        addressNumber:
+          type: string
+        streetName:
+          type: string
+        town:
+          type: string
+        county:
+          type: string
+        postcode:
+          type: string
+        noFixedAbode:
+          type: boolean
+        typeVerified:
+          type: boolean
+        typeDescription:
+          type: string
+        startDate:
+          type: string
+          format: date
+      required:
+      - noFixedAbode
+      - startDate
+      - typeVerified
+    CvOffence:
+      type: object
+      properties:
+        mainCategory:
+          type: string
+        subCategory:
+          type: string
+        mainOffence:
+          type: boolean
+      required:
+      - mainCategory
+      - mainOffence
+      - subCategory
+    CvRequirement:
+      type: object
+      properties:
+        mainCategory:
+          type: string
+        subCategory:
+          type: string
+        length:
+          type: string
+      required:
+      - length
+      - mainCategory
+    CvSentence:
+      type: object
+      properties:
+        description:
+          type: string
+        startDate:
+          type: string
+          format: date
+        length:
+          type: string
+        endDate:
+          type: string
+          format: date
+      required:
+      - description
+      - endDate
+      - length
+      - startDate
+    ReallocationCaseView:
+      type: object
+      properties:
+        name:
+          $ref: "#/components/schemas/Name"
+        dateOfBirth:
+          type: string
+          format: date
+        gender:
+          type: string
+        pncNumber:
+          type: string
+        mainAddress:
+          $ref: "#/components/schemas/CvAddress"
+        nextAppointmentDate:
+          type: string
+          format: date
+        activeEvents:
+          type: array
+          items:
+            $ref: "#/components/schemas/ActiveEvent"
+      required:
+      - activeEvents
+      - dateOfBirth
+      - name
     LocalAdminUnitWithTeams:
       type: object
       properties:
@@ -1463,34 +1604,6 @@ components:
       - offences
       - requirements
       - sentence
-    CvAddress:
-      type: object
-      properties:
-        buildingName:
-          type: string
-        addressNumber:
-          type: string
-        streetName:
-          type: string
-        town:
-          type: string
-        county:
-          type: string
-        postcode:
-          type: string
-        noFixedAbode:
-          type: boolean
-        typeVerified:
-          type: boolean
-        typeDescription:
-          type: string
-        startDate:
-          type: string
-          format: date
-      required:
-      - noFixedAbode
-      - startDate
-      - typeVerified
     CvDocument:
       type: object
       properties:
@@ -1507,49 +1620,6 @@ components:
       - dateCreated
       - documentId
       - documentName
-    CvOffence:
-      type: object
-      properties:
-        mainCategory:
-          type: string
-        subCategory:
-          type: string
-        mainOffence:
-          type: boolean
-      required:
-      - mainCategory
-      - mainOffence
-      - subCategory
-    CvRequirement:
-      type: object
-      properties:
-        mainCategory:
-          type: string
-        subCategory:
-          type: string
-        length:
-          type: string
-      required:
-      - length
-      - mainCategory
-    CvSentence:
-      type: object
-      properties:
-        description:
-          type: string
-        startDate:
-          type: string
-          format: date
-        length:
-          type: string
-        endDate:
-          type: string
-          format: date
-      required:
-      - description
-      - endDate
-      - length
-      - startDate
     AllocationDemandSentence:
       type: object
       properties:
@@ -1661,19 +1731,6 @@ components:
       required:
       - lastUpdatedDate
       - score
-    ActiveEvent:
-      type: object
-      properties:
-        eventNumber:
-          type: string
-        teamCode:
-          type: string
-        providerCode:
-          type: string
-      required:
-      - eventNumber
-      - providerCode
-      - teamCode
     UnallocatedEventsResponse:
       type: object
       properties:
