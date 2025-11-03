@@ -16,6 +16,7 @@ import uk.gov.justice.digital.hmpps.data.generator.CourtGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.ACTIVE_ORDER
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.REQUIREMENT
+import uk.gov.justice.digital.hmpps.integrations.delius.compliance.NsiRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.PersonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.RequirementMainCategory
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.RequirementRepository
@@ -61,6 +62,9 @@ class SentenceServiceTest {
 
     @Mock
     lateinit var requirementService: RequirementService
+
+    @Mock
+    lateinit var nsiRepository: NsiRepository
 
     @InjectMocks
     lateinit var service: SentenceService

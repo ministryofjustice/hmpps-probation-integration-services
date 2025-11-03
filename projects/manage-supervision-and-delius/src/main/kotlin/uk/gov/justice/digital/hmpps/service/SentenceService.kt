@@ -7,6 +7,8 @@ import uk.gov.justice.digital.hmpps.api.model.sentence.AdditionalSentence
 import uk.gov.justice.digital.hmpps.api.model.sentence.Offence
 import uk.gov.justice.digital.hmpps.api.model.sentence.Requirement
 import uk.gov.justice.digital.hmpps.datetime.DeliusDateFormatter
+import uk.gov.justice.digital.hmpps.integrations.delius.compliance.NsiRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.compliance.countBreaches
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.CourtDocumentDetails
 import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.DocumentRepository
@@ -30,7 +32,8 @@ class SentenceService(
     private val upwAppointmentRepository: UpwAppointmentRepository,
     private val licenceConditionRepository: LicenceConditionRepository,
     private val custodyRepository: CustodyRepository,
-    private val requirementService: RequirementService
+    private val requirementService: RequirementService,
+    private val nsiRepository: NsiRepository,
 ) {
     fun getEvents(crn: String, eventNumber: String?, includeRarRequirements: Boolean): SentenceOverview {
         val person = personRepository.getPerson(crn)
@@ -69,7 +72,7 @@ class SentenceService(
             ProbationHistory(
                 inactiveEvents.count(),
                 getMostRecentTerminatedDateFromInactiveEvents(inactiveEvents),
-                inactiveEvents.count { it.inBreach },
+                nsiRepository.countBreaches(person.id),
                 offenderManagerRepository.countOffenderManagersByPersonAndActiveIsFalse(person)
             )
         )
