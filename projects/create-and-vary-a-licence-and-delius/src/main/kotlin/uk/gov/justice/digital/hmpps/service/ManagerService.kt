@@ -38,7 +38,7 @@ class ManagerService(
         } else {
             managers
         }
-        return coms.map { it.withLdapDetails().asManager() }
+        return coms.map { it.asManager() }
     }
 
     private fun PersonManager.withLdapDetails() = apply {
