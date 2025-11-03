@@ -4308,9 +4308,7 @@ components:
           type: string
       required:
       - date
-      - end
       - id
-      - start
       - type
     OverdueOutcomeAppointments:
       type: object

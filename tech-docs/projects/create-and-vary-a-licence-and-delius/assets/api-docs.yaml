@@ -119,6 +119,13 @@ paths:
       tags:
       - probation-case-resource
       operationId: findCommunityManagerEmails
+      parameters:
+      - name: includeEmail
+        in: query
+        required: false
+        schema:
+          type: boolean
+          default: true
       requestBody:
         content:
           application/json:
@@ -301,6 +308,12 @@ paths:
         required: true
         schema:
           type: string
+      - name: includeEmail
+        in: query
+        required: false
+        schema:
+          type: boolean
+          default: true
       responses:
         "200":
           description: OK

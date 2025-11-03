@@ -69,6 +69,43 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/SupervisorsResponse"
+  /providers/{providerCode}/teams/{teamCode}/sessions:
+    get:
+      tags:
+      - providers-controller
+      operationId: getSessions
+      parameters:
+      - name: providerCode
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: teamCode
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: startDate
+        in: query
+        required: true
+        schema:
+          type: string
+          format: date
+      - name: endDate
+        in: query
+        required: true
+        schema:
+          type: string
+          format: date
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/UnpaidWorkSessionDto"
   /providers/{code}/teams:
     get:
       tags:
@@ -153,6 +190,42 @@ components:
             $ref: "#/components/schemas/Supervisor"
       required:
       - supervisors
+    UnpaidWorkSessionDto:
+      type: object
+      properties:
+        projectId:
+          type: integer
+          format: int64
+        projectName:
+          type: string
+        projectCode:
+          type: string
+        startTime:
+          type: string
+        endTime:
+          type: string
+        appointmentDate:
+          type: string
+          format: date
+        allocatedCount:
+          type: integer
+          format: int64
+        outcomeCount:
+          type: integer
+          format: int64
+        enforcementActionCount:
+          type: integer
+          format: int64
+      required:
+      - allocatedCount
+      - appointmentDate
+      - endTime
+      - enforcementActionCount
+      - outcomeCount
+      - projectCode
+      - projectId
+      - projectName
+      - startTime
     TeamsResponse:
       type: object
       properties:
