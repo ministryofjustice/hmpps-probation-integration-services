@@ -320,7 +320,8 @@ object PersonGenerator {
             mainOffence = mainOffence,
             notes = notes,
             additionalOffences = additionalOffences,
-            dateCreated = ZonedDateTime.now()
+            dateCreated = ZonedDateTime.now(),
+            lastUpdatedDateTime = ZonedDateTime.now(),
         )
 
     val DISABILITIES: List<Disability> = listOf(

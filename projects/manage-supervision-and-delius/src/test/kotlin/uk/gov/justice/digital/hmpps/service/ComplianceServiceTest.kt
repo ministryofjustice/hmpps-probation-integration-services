@@ -78,7 +78,8 @@ internal class ComplianceServiceTest {
                 convictionDate = LocalDate.now(),
                 inBreach = false,
                 notes = "",
-                dateCreated = ZonedDateTime.now()
+                dateCreated = ZonedDateTime.now(),
+                lastUpdatedDateTime = ZonedDateTime.now(),
             ),
             Event(
                 id = BREACH_PREVIOUS_ORDER_2.eventId ?: 0,
@@ -90,7 +91,8 @@ internal class ComplianceServiceTest {
                 convictionDate = LocalDate.now(),
                 inBreach = false,
                 notes = "",
-                dateCreated = ZonedDateTime.now()
+                dateCreated = ZonedDateTime.now(),
+                lastUpdatedDateTime = ZonedDateTime.now(),
             ),
             Event(
                 id = 3,
@@ -103,7 +105,8 @@ internal class ComplianceServiceTest {
                 convictionDate = LocalDate.now(),
                 inBreach = false,
                 notes = "",
-                dateCreated = ZonedDateTime.now()
+                dateCreated = ZonedDateTime.now(),
+                lastUpdatedDateTime = ZonedDateTime.now(),
             ),
             Event(
                 id = 4,
@@ -116,7 +119,8 @@ internal class ComplianceServiceTest {
                 convictionDate = LocalDate.now(),
                 inBreach = false,
                 notes = "",
-                dateCreated = ZonedDateTime.now()
+                dateCreated = ZonedDateTime.now(),
+                lastUpdatedDateTime = ZonedDateTime.now(),
             ),
         )
 
@@ -163,7 +167,8 @@ internal class ComplianceServiceTest {
                 convictionDate = LocalDate.now(),
                 inBreach = false,
                 notes = "",
-                dateCreated = ZonedDateTime.now()
+                dateCreated = ZonedDateTime.now(),
+                lastUpdatedDateTime = ZonedDateTime.now(),
             ),
             Event(
                 id = 4,
@@ -176,7 +181,8 @@ internal class ComplianceServiceTest {
                 convictionDate = LocalDate.now(),
                 inBreach = false,
                 notes = "",
-                dateCreated = ZonedDateTime.now()
+                dateCreated = ZonedDateTime.now(),
+                lastUpdatedDateTime = ZonedDateTime.now(),
             ),
         )
 

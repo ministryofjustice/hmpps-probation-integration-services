@@ -59,6 +59,9 @@ class Event(
 
     @Column(name = "created_datetime")
     val dateCreated: ZonedDateTime,
+
+    @Column(name = "last_updated_datetime")
+    val lastUpdatedDateTime: ZonedDateTime
 ) {
     fun isInactiveEvent(): Boolean = !active || disposal?.active == false
 }
