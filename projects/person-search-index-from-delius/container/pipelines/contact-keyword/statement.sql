@@ -17,8 +17,8 @@ from (with page as (select * from contact where :contact_id = 0
                      'endTime' value to_char(contact.contact_end_time, 'HH24:MI:SS'),
                      'description' value contact.description,
                      'notes' value contact.notes,
-                     'attended' value decode(contact.attended, 'Y', 'attended', 'N', 'fta', null),
-                     'complied' value decode(contact.complied, 'Y', 'complied', 'N', 'ftc', null),
+                     'attended' value case when r_contact_type.attendance_contact = 'Y' then decode(contact.attended, 'Y', 'attended', 'N', 'fta', null) end,
+                     'complied' value case when r_contact_type.attendance_contact = 'Y' then decode(contact.complied, 'Y', 'complied', 'N', 'ftc', null) end,
                      'startDateTime' value decode(contact.contact_start_time, null, to_char(contact.contact_date, 'yyyy-mm-dd') || 'T00:00:00', to_char(contact.contact_date, 'yyyy-mm-dd') || 'T' || to_char(contact.contact_start_time, 'hh24:mi:ss')),
                      'endDateTime' value  decode(contact.contact_end_time, null, null, to_char(contact.contact_date, 'yyyy-mm-dd') || 'T' || to_char(contact.contact_end_time, 'hh24:mi:ss')),
                      'requiresOutcome' value case when exists (select cto.contact_outcome_type_id
