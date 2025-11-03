@@ -12,6 +12,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.compliance.Nsi
 import uk.gov.justice.digital.hmpps.integrations.delius.compliance.NsiRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.compliance.getAllBreaches
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.*
+import java.time.LocalDate
 
 @Service
 class ComplianceService(
@@ -32,7 +33,10 @@ class ComplianceService(
         val allActiveSentenceActivity =
             activityService.getPersonSentenceActivity(summary.id, currentSentences.map { it.id })
         val allBreaches = nsiRepository.getAllBreaches(summary.id)
-        val previousOrders = events.filter { it.isInactiveEvent() }
+        val previousOrders = events.filter {
+            val endDate = listOfNotNull(it.disposal?.terminationDate, it.lastUpdatedDateTime.toLocalDate()).max()
+            it.isInactiveEvent() && endDate.isAfter(LocalDate.now().minusYears(2))
+        }
 
         fun breachesForSentence(eventId: Long) = allBreaches.filter { (it.eventId == eventId) }
         fun activeBreachCountForSentence(eventId: Long) =
