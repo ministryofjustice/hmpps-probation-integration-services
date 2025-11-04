@@ -142,7 +142,7 @@ fun Contact.toActivity(noteId: Int? = null) = Activity(
     type = type.description,
     isNationalStandard = type.nationalStandardsContact,
     isSensitive = sensitive,
-    didTheyComply = complied,
+    didTheyComply = if (type.attendanceContact) { complied } else null,
     acceptableAbsence = outcome?.outcomeAttendance == false && outcome.outcomeCompliantAcceptable == true,
     acceptableAbsenceReason = if (outcome?.outcomeAttendance == false && outcome.outcomeCompliantAcceptable == true)
         outcome.description else null,
