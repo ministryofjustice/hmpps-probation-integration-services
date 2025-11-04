@@ -26,13 +26,13 @@ runs:
         PROJECT: ${{ inputs.project }}
 
     - name: Store build info
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v5
       with:
         name: build-info-${{ inputs.project }}
         path: projects/${{ inputs.project }}/build-info.properties
 
     - name: Store git info
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v5
       with:
         name: git-info-${{ inputs.project }}
         path: projects/${{ inputs.project }}/git.properties
