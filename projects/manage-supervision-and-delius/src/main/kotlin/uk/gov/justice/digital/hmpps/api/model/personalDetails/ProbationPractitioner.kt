@@ -9,6 +9,6 @@ data class ProbationPractitioner(
     val username: String?
 ) {
     data class Name(val forename: String, val surname: String)
-    data class Provider(val code: String, val description: String)
+    data class Provider(val code: String, val name: String)
     data class Team(val code: String, val description: String)
 }
