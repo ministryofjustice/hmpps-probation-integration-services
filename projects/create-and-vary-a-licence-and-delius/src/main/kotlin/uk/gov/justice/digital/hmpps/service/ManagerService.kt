@@ -14,6 +14,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Staff
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Team
 import uk.gov.justice.digital.hmpps.integrations.delius.user.entity.LdapUser
 import uk.gov.justice.digital.hmpps.ldap.findByUsername
+import uk.gov.justice.digital.hmpps.ldap.findByUsernames
 
 @Service
 class ManagerService(
@@ -23,7 +24,8 @@ class ManagerService(
     fun findCommunityManager(crnOrNomisId: String, includeEmail: Boolean): Manager {
         val manager = personManagerRepository.findByPersonCrnOrPersonNomsNumber(crnOrNomisId)
         val com = if (includeEmail) {
-            manager?.withLdapDetails()
+            val ldap = manager?.staff?.user?.let { ldapTemplate.findByUsername<LdapUser>(it.username) }
+            manager?.withLdapDetails { _ -> ldap }
         } else {
             manager
         }
@@ -34,16 +36,19 @@ class ManagerService(
     fun findCommunityManagers(crnsOrNomisIds: List<String>, includeEmail: Boolean): List<Manager> {
         val managers = personManagerRepository.findByPersonCrnInOrPersonNomsNumberIn(crnsOrNomisIds)
         val coms = if (includeEmail) {
-            managers.map { it.withLdapDetails() }
+            val ldap = managers.mapNotNull { it.staff.user?.username }.let {
+                ldapTemplate.findByUsernames<LdapUser>(it)
+            }.associateBy { it.username }
+            managers.map { it.withLdapDetails(ldap::get) }
         } else {
             managers
         }
         return coms.map { it.asManager() }
     }
 
-    private fun PersonManager.withLdapDetails() = apply {
+    private fun PersonManager.withLdapDetails(ldapProvider: (String) -> LdapUser?) = apply {
         staff.user?.apply {
-            val ldapUser = ldapTemplate.findByUsername<LdapUser>(username)
+            val ldapUser = ldapProvider(username)
             email = ldapUser?.email
             telephoneNumber = ldapUser?.telephoneNumber
         }

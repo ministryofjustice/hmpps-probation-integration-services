@@ -21,7 +21,7 @@ import javax.naming.directory.Attributes
 import javax.naming.directory.BasicAttribute
 import javax.naming.directory.BasicAttributes
 
-val LdapTemplate.LDAP_MAX_RESULTS_PER_QUERY: Int
+val LDAP_MAX_RESULTS_PER_QUERY: Int
     get() = 500
 
 fun LdapQueryBuilder.byUsername(username: String): LdapQuery =
@@ -52,24 +52,37 @@ fun LdapTemplate.findAttributeByUsername(@SpanAttribute username: String, @SpanA
     throw NotFoundException("User", "username", username)
 }
 
+fun List<String>.filter(): AndFilter = AndFilter()
+    .and(EqualsFilter("objectclass", "inetOrgPerson"))
+    .and(EqualsFilter("objectclass", "top"))
+    .and(map { username -> EqualsFilter("cn", username) }.fold(OrFilter()) { a, b -> a.or(b) })
+
 @WithSpan
 fun LdapTemplate.findAttributeByUsernames(usernames: List<String>, @SpanAttribute attribute: String) =
     usernames.asSequence()
         .distinct()
         .chunked(LDAP_MAX_RESULTS_PER_QUERY)
         .flatMap { usernames ->
-            val filter = AndFilter()
-                .and(EqualsFilter("objectclass", "inetOrgPerson"))
-                .and(EqualsFilter("objectclass", "top"))
-                .and(usernames.map { username -> EqualsFilter("cn", username) }.fold(OrFilter()) { a, b -> a.or(b) })
             val query = query()
                 .attributes("cn", attribute)
                 .searchScope(SearchScope.ONELEVEL)
-                .filter(filter)
+                .filter(usernames.filter())
             search(query, AttributesMapper { it["cn"]?.get()?.toString() to it[attribute]?.get()?.toString() })
         }
         .filter { it.first != null }
         .associate { it.first!! to it.second }
+
+@WithSpan
+inline fun <reified T> LdapTemplate.findByUsernames(usernames: List<String>): List<T> =
+    usernames.asSequence()
+        .distinct()
+        .chunked(LDAP_MAX_RESULTS_PER_QUERY)
+        .flatMap { usernames ->
+            val query = query()
+                .searchScope(SearchScope.ONELEVEL)
+                .filter(usernames.filter())
+            find(query, T::class.java)
+        }.toList()
 
 @WithSpan
 fun LdapTemplate.findPreferenceByUsername(@SpanAttribute username: String, @SpanAttribute attribute: String) = try {
