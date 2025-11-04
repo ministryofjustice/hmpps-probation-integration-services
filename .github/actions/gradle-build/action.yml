@@ -75,13 +75,13 @@ runs:
         PROJECT: ${{ inputs.project }}
 
     - name: Store changes
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v5
       with:
         name: changes-${{ inputs.project }}
         path: ${{ inputs.project }}-changes.json
 
     - name: Store test artifacts
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v5
       with:
         name: test-results-${{ inputs.project }}
         path: |
