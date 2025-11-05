@@ -25,6 +25,7 @@ class DataLoader(
     @Transactional
     override fun onApplicationEvent(are: ApplicationReadyEvent) {
         loadUsers()
+        loadPeople()
         loadProviders()
         loadTeams()
         loadStaff()
@@ -34,6 +35,10 @@ class DataLoader(
 
     fun loadUsers() {
         entityManager.persist(UserGenerator.DEFAULT_USER)
+    }
+
+    fun loadPeople() {
+        entityManager.persist(PersonGenerator.DEFAULT_PERSON)
     }
 
     fun loadProviders() {
@@ -61,13 +66,24 @@ class DataLoader(
 
     fun loadReferenceData() {
         entityManager.persist(DatasetGenerator.UPW_PROJECT_TYPE_DATASET)
+        entityManager.persist(DatasetGenerator.UPW_WORK_QUALITY_DATASET)
+        entityManager.persist(DatasetGenerator.UPW_BEHAVIOUR_DATASET)
         entityManager.persist(ReferenceDataGenerator.GROUP_PLACEMENT_PROJECT_TYPE)
         entityManager.persist(ReferenceDataGenerator.INDIVIDUAL_PLACEMENT_PROJECT_TYPE)
         entityManager.persist(ReferenceDataGenerator.INACTIVE_PROJECT_TYPE)
         entityManager.persist(ReferenceDataGenerator.DEFAULT_ENFORCEMENT_ACTION)
+        entityManager.persist(ReferenceDataGenerator.ATTENDED_COMPLIED_CONTACT_OUTCOME)
+        entityManager.persist(ReferenceDataGenerator.FAILED_TO_ATTEND_CONTACT_OUTCOME)
+        entityManager.persist(ReferenceDataGenerator.EXCELLENT_WORK_QUALITY)
+        entityManager.persist(ReferenceDataGenerator.UNSATISFACTORY_WORK_QUALITY)
+        entityManager.persist(ReferenceDataGenerator.EXCELLENT_BEHAVIOUR)
+        entityManager.persist(ReferenceDataGenerator.UNSATISFACTORY_BEHAVIOUR)
+
     }
 
     fun loadUnpaidWorkData() {
+        entityManager.persist(UPWGenerator.DEFAULT_ADDRESS)
+        entityManager.persist(UPWGenerator.DEFAULT_OFFICE_LOCATION)
         entityManager.persist(UPWGenerator.DEFAULT_UPW_PROJECT)
         entityManager.persist(UPWGenerator.SECOND_UPW_PROJECT)
         entityManager.persist(UPWGenerator.DEFAULT_UPW_PROJECT_AVAILABILITY)

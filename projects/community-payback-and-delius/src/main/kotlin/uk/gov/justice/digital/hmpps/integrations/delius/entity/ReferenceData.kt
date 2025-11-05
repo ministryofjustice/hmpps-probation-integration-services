@@ -41,8 +41,25 @@ class Dataset(
 ) {
     companion object {
         const val UPW_PROJECT_TYPE = "UPW PROJECT TYPE"
+        const val UPW_WORK_QUALITY = "UPW WORK QUALITY"
+        const val UPW_BEHAVIOUR = "UPW BEHAVIOUR"
     }
 }
+
+@Immutable
+@Entity
+@Table(name = "r_contact_outcome_type")
+class ContactOutcome(
+    @Id
+    @Column(name = "contact_outcome_type_id")
+    val id: Long,
+
+    @Column(name = "code")
+    val code: String,
+
+    @Column(name = "description")
+    val description: String
+)
 
 interface ReferenceDataRepository : JpaRepository<ReferenceData, Long> {
     @Query(
