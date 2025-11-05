@@ -68,7 +68,7 @@ class ProbationMatchingService(
         val sentenceDate = prisonApiClient.getSentenceTerms(booking.bookingId).latestPrimarySentenceStartDate()
             ?: return Ignored("No sentence start date")
         val identifiers = PrisonIdentifiers(nomsNumber, booking.bookingNo)
-        val prisoner = prisonApiClient.getPrisoners(nomsNumber).single()
+        val prisoner = prisonApiClient.getPrisoners(nomsNumber).first()
 
         // Get matching probation records
 
