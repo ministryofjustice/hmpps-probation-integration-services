@@ -35,7 +35,12 @@ class AppointmentsIntegrationTest {
             .andExpect(status().is2xxSuccessful)
             .andReturn().response.contentAsJson<AppointmentResponse>()
 
-        assertThat(response.version).isEqualTo(UUID(UPWGenerator.DEFAULT_UPW_APPOINTMENT.rowVersion, UPWGenerator.DEFAULT_CONTACT.rowVersion))
+        assertThat(response.version).isEqualTo(
+            UUID(
+                UPWGenerator.DEFAULT_UPW_APPOINTMENT.rowVersion,
+                UPWGenerator.DEFAULT_CONTACT.rowVersion
+            )
+        )
         assertThat(response.project.name).isEqualTo("Default UPW Project")
         assertThat(response.case.crn).isEqualTo(PersonGenerator.DEFAULT_PERSON.crn)
         assertThat(response.penaltyHours).isEqualTo("01:00")

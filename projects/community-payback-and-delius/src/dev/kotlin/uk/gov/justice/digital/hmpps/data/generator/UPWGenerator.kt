@@ -190,9 +190,30 @@ object UPWGenerator {
         createdDatetime: ZonedDateTime = ZonedDateTime.now(),
         lastUpdatedDatetime: ZonedDateTime = ZonedDateTime.now()
     ) = UpwAppointment(
-        id, attended, complied, softDeleted, startTime, endTime, appointmentDate,
-        upwProjectId, upwDetailsId, pickupLocation, pickupTime, penaltyTime, contact, contactOutcomeTypeId,
-        person, staff, team, hiVisWorn, workedIntensively, workQuality, behaviour, rowVersion, createdDatetime, lastUpdatedDatetime
+        id,
+        attended,
+        complied,
+        softDeleted,
+        startTime,
+        endTime,
+        appointmentDate,
+        upwProjectId,
+        upwDetailsId,
+        pickupLocation,
+        pickupTime,
+        penaltyTime,
+        contact,
+        contactOutcomeTypeId,
+        person,
+        staff,
+        team,
+        hiVisWorn,
+        workedIntensively,
+        workQuality,
+        behaviour,
+        rowVersion,
+        createdDatetime,
+        lastUpdatedDatetime
     )
 
     fun generateAddress(

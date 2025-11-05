@@ -10,6 +10,7 @@ object PersonGenerator {
         surname = "Person",
         dateOfBirth = LocalDate.of(1990, 6, 10)
     )
+
     fun generatePerson(
         crn: String,
         forename: String,

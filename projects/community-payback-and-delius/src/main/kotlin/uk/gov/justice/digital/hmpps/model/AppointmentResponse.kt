@@ -33,7 +33,6 @@ data class AppointmentResponse(
     val alertActive: Boolean?
 )
 
-
 data class AppointmentResponseProject(
     val name: String,
     val code: String,

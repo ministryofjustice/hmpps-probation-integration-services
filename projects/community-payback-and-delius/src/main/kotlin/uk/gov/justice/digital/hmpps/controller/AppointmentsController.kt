@@ -11,6 +11,8 @@ class AppointmentsController(
     private val appointmentsService: AppointmentsService
 ) {
     @GetMapping(value = ["/{projectCode}/appointments/{appointmentId}"])
-    fun getAppointment(@PathVariable projectCode: String, @PathVariable appointmentId: Long,
-        @RequestParam username: String) = appointmentsService.getAppointment(projectCode, appointmentId, username)
+    fun getAppointment(
+        @PathVariable projectCode: String, @PathVariable appointmentId: Long,
+        @RequestParam username: String
+    ) = appointmentsService.getAppointment(projectCode, appointmentId, username)
 }

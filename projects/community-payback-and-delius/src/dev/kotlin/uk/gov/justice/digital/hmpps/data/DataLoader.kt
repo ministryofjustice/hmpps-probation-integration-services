@@ -78,7 +78,6 @@ class DataLoader(
         entityManager.persist(ReferenceDataGenerator.UNSATISFACTORY_WORK_QUALITY)
         entityManager.persist(ReferenceDataGenerator.EXCELLENT_BEHAVIOUR)
         entityManager.persist(ReferenceDataGenerator.UNSATISFACTORY_BEHAVIOUR)
-
     }
 
     fun loadUnpaidWorkData() {

@@ -34,7 +34,7 @@ object ReferenceDataGenerator {
         datasetId = DatasetGenerator.UPW_WORK_QUALITY_DATASET.id,
         selectable = true
     )
-    val EXCELLENT_BEHAVIOUR= generateReferenceData(
+    val EXCELLENT_BEHAVIOUR = generateReferenceData(
         code = "EX",
         description = "Excellent",
         datasetId = DatasetGenerator.UPW_BEHAVIOUR_DATASET.id,
