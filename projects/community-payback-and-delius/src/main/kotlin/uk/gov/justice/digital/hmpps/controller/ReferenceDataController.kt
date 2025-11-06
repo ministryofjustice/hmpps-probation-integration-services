@@ -14,4 +14,7 @@ class ReferenceDataController(
 ) {
     @GetMapping(value = ["/project-types"])
     fun getProjectTypes() = referenceDataService.getProjectTypes()
+
+    @GetMapping("/unpaid-work-appointment-outcomes")
+    fun getUnpaidWorkAppointmentOutcomes() = referenceDataService.getUpwAppointmentOutcomes()
 }

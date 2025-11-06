@@ -1,9 +1,6 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
-import uk.gov.justice.digital.hmpps.integrations.delius.entity.ContactOutcome
-import uk.gov.justice.digital.hmpps.integrations.delius.entity.Dataset
-import uk.gov.justice.digital.hmpps.integrations.delius.entity.EnforcementAction
-import uk.gov.justice.digital.hmpps.integrations.delius.entity.ReferenceData
+import uk.gov.justice.digital.hmpps.integrations.delius.entity.*
 
 object ReferenceDataGenerator {
     val GROUP_PLACEMENT_PROJECT_TYPE = generateReferenceData(
@@ -52,6 +49,9 @@ object ReferenceDataGenerator {
         responseByPeriod = 7L,
         outstandingContactAction = true
     )
+
+
+    val UPW_APPOINTMENT_TYPE = generateContactType(ContactType.Code.UNPAID_WORK_APPOINTMENT.value)
     val ATTENDED_COMPLIED_CONTACT_OUTCOME = generateContactOutcome(
         code = "A",
         description = "Attended - Complied"
@@ -77,11 +77,16 @@ object ReferenceDataGenerator {
         outstandingContactAction: Boolean
     ) = EnforcementAction(id, code, description, responseByPeriod, outstandingContactAction)
 
-    fun generateContactOutcome(
+    fun generateContactType(
+        code: String,
         id: Long = IdGenerator.getAndIncrement(),
+    ) = ContactType(code, id)
+
+    fun generateContactOutcome(
         code: String,
         description: String,
-    ) = ContactOutcome(id, code, description)
+        id: Long = IdGenerator.getAndIncrement(),
+    ) = ContactOutcome(code, description, id)
 }
 
 object DatasetGenerator {
