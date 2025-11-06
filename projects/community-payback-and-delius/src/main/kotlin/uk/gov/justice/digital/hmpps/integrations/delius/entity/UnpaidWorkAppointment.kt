@@ -184,7 +184,7 @@ class Contact(
     val sensitive: Boolean?,
 
     @Convert(converter = YesNoConverter::class)
-    val alertsActive: Boolean?,
+    val alertActive: Boolean?,
 
     @Version
     val rowVersion: Long

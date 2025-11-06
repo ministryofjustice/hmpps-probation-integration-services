@@ -86,7 +86,7 @@ class AppointmentsService(
             notes = appointment.contact.notes,
             updatedAt = appointment.lastUpdatedDatetime,
             sensitive = appointment.contact.sensitive,
-            alertActive = appointment.contact.alertsActive
+            alertActive = appointment.contact.alertActive
         )
     }
 
