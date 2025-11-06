@@ -50,7 +50,6 @@ object ReferenceDataGenerator {
         outstandingContactAction = true
     )
 
-
     val UPW_APPOINTMENT_TYPE = generateContactType(ContactType.Code.UNPAID_WORK_APPOINTMENT.value)
     val ATTENDED_COMPLIED_CONTACT_OUTCOME = generateContactOutcome(
         code = "A",
