@@ -5,10 +5,13 @@ import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.type.NumericBooleanConverter
 import org.hibernate.type.YesNoConverter
+import org.springframework.data.annotation.CreatedDate
+import org.springframework.data.annotation.LastModifiedDate
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import java.time.LocalDate
 import java.time.LocalTime
+import java.time.ZonedDateTime
 
 @Entity
 @Table(name = "upw_appointment")
@@ -38,10 +41,67 @@ class UpwAppointment(
 
     val upwDetailsId: Long,
 
-    val contactId: Long,
+    @ManyToOne
+    @JoinColumn(name = "pick_up_location_id")
+    val pickUpLocation: OfficeLocation,
 
-    val contactOutcomeTypeId: Long?
+    val pickUpTime: LocalTime?,
+
+    val penaltyTime: Long?, // In minutes
+
+    @ManyToOne
+    @JoinColumn(name = "contact_id")
+    val contact: Contact,
+
+    val contactOutcomeTypeId: Long?,
+
+    @ManyToOne
+    @JoinColumn(name = "offender_id")
+    val person: Person,
+
+    @ManyToOne
+    @JoinColumn(name = "staff_id")
+    val staff: Staff,
+
+    @ManyToOne
+    @JoinColumn(name = "team_id")
+    val team: Team,
+
+    @Convert(converter = YesNoConverter::class)
+    @Column(name = "high_visibility_vest")
+    val hiVisWorn: Boolean,
+
+    @Convert(converter = YesNoConverter::class)
+    @Column(name = "intensive")
+    val workedIntensively: Boolean,
+
+    @ManyToOne
+    @JoinColumn(name = "work_quality_id")
+    val workQuality: ReferenceData?,
+
+    @ManyToOne
+    @JoinColumn(name = "behaviour_id")
+    val behaviour: ReferenceData?,
+
+    @Version
+    val rowVersion: Long,
+
+    @CreatedDate
+    var createdDatetime: ZonedDateTime = ZonedDateTime.now(),
+
+    @LastModifiedDate
+    var lastUpdatedDatetime: ZonedDateTime = ZonedDateTime.now()
 )
+
+enum class WorkQuality(val value: String) {
+    EX("EXCELLENT"), GD("GOOD"), NA("NOT_APPLICABLE"), PR("POOR"),
+    ST("SATISFACTORY"), US("UNSATISFACTORY")
+}
+
+enum class Behaviour(val value: String) {
+    EX("EXCELLENT"), GD("GOOD"), NA("NOT_APPLICABLE"), PR("POOR"),
+    SA("SATISFACTORY"), UN("UNSATISFACTORY")
+}
 
 @Entity
 @Table(name = "upw_project")
@@ -55,7 +115,15 @@ class UpwProject(
 
     val code: String,
 
-    val teamId: Long
+    val teamId: Long,
+
+    @ManyToOne
+    @JoinColumn(name = "placement_address_id")
+    val placementAddress: Address?,
+
+    @ManyToOne
+    @JoinColumn(name = "project_type_id")
+    val projectType: ReferenceData
 )
 
 @Entity
@@ -101,7 +169,25 @@ class Contact(
     @Column(name = "contact_id")
     val id: Long,
 
-    val latestEnforcementActionId: Long?
+    @ManyToOne
+    @JoinColumn(name = "contact_outcome_type_id")
+    val contactOutcome: ContactOutcome?,
+
+    @ManyToOne
+    @JoinColumn(name = "latest_enforcement_action_id")
+    val latestEnforcementAction: EnforcementAction?,
+
+    @Lob
+    val notes: String?,
+
+    @Convert(converter = YesNoConverter::class)
+    val sensitive: Boolean?,
+
+    @Convert(converter = YesNoConverter::class)
+    val alertsActive: Boolean?,
+
+    @Version
+    val rowVersion: Long
 )
 
 @Entity
@@ -111,6 +197,12 @@ class EnforcementAction(
     @Id
     @Column(name = "enforcement_action_id")
     val id: Long,
+
+    val code: String,
+
+    val description: String,
+
+    val responseByPeriod: Long,
 
     @Convert(converter = YesNoConverter::class)
     val outstandingContactAction: Boolean
@@ -206,4 +298,10 @@ interface UnpaidWorkAppointmentRepository : JpaRepository<UpwAppointment, Long> 
         """, nativeQuery = true
     )
     fun getUnpaidWorkSessionDetails(teamId: Long, startDate: LocalDate, endDate: LocalDate): List<UnpaidWorkSession>
+
+    fun getUpwAppointmentById(appointmentId: Long): UpwAppointment
+}
+
+interface UnpaidWorkProjectRepository : JpaRepository<UpwProject, Long> {
+    fun getUpwProjectByCode(projectCode: String): UpwProject
 }
