@@ -12,10 +12,11 @@ object PersonGenerator {
     )
 
     fun generatePerson(
+        id: Long = IdGenerator.getAndIncrement(),
         crn: String,
         forename: String,
         secondName: String? = null,
         surname: String,
         dateOfBirth: LocalDate
-    ) = Person(null, crn, forename, secondName, surname, dateOfBirth)
+    ) = Person(id, crn, forename, secondName, surname, dateOfBirth)
 }

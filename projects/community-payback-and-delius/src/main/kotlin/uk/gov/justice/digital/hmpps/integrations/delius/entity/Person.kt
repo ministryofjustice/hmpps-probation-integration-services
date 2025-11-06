@@ -11,7 +11,6 @@ import java.time.LocalDate
 class Person(
     @Id
     @Column(name = "offender_id")
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "offender_id_seq")
     val id: Long? = null,
 
     @Column(columnDefinition = "char(7)")
