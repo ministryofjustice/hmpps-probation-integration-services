@@ -22,7 +22,7 @@ jobs:
 
       - name: List packages
         id: list-packages
-        run: echo "image-names=$(gh api --paginate '/orgs/ministryofjustice/packages?package_type=container' -q '.[] | .name + " " + .repository.name' | grep hmpps-probation-integration-services | cut -d ' ' -f 1)" | tee -a $GITHUB_OUTPUT
+        run: echo "image-names=$(gh api --paginate '/orgs/ministryofjustice/packages?package_type=container' -q '.[] | .name' | grep '^hmpps-probation-integration-services/')" | tee -a $GITHUB_OUTPUT
         env:
           GH_TOKEN: ${{ github.token }}
 
