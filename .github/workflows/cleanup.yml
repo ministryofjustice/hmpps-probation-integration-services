@@ -7,17 +7,25 @@ on:
     - cron: "30 5 * * MON-FRI" # Every weekday at 05:30 UTC
   workflow_dispatch:
 
+env:
+  image_names: |
+
+
 jobs:
   delete-images:
     runs-on: ubuntu-latest
     permissions:
       packages: read
     steps:
-      - name: List packages
-        id: list-packages
-        run: echo "image-names=$(gh api --paginate '/orgs/ministryofjustice/packages?package_type=container' -q '.[] | .name' | grep '^hmpps-probation-integration-services/')" | tee -a $GITHUB_OUTPUT
+      - uses: actions/checkout@v5
+      - uses: ./.github/actions/get-projects
+        id: get-projects
+        with:
+          projects: All
+      - id: image-names
+        run: echo "image-names=$(jq -r '. | map(. | ("hmpps-probation-integration-services/" + .))[]' <<< "$projects_json")" | tee -a $GITHUB_OUTPUT
         env:
-          GH_TOKEN: ${{ github.token }}
+          projects_json: ${{ steps.get-projects.outputs.projects }}
 
       - uses: actions/create-github-app-token@v2
         id: app-token
@@ -31,7 +39,7 @@ jobs:
         with:
           account: ministryofjustice
           image-names: |
-            ${{ steps.list-packages.outputs.image-names }}
+            ${{ steps.image-names.outputs.image-names }}
           cut-off: 1w
           keep-n-most-recent: 1
           tag-selection: untagged
@@ -42,7 +50,7 @@ jobs:
         with:
           account: ministryofjustice
           image-names: |
-            ${{ steps.list-packages.outputs.image-names }}
+            ${{ steps.image-names.outputs.image-names }}
           image-tags: "!test !test-prev !preprod !preprod-prev !prod !prod-prev !latest"
           cut-off: 30d
           token: ${{ steps.app-token.outputs.token }}
