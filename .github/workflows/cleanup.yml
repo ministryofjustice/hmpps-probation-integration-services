@@ -23,7 +23,7 @@ jobs:
         with:
           projects: All
       - id: image-names
-        run: echo "image-names=$(jq -r '. | map(. | ("hmpps-probation-integration-services/" + .))[]' <<< "$projects_json")" | tee -a $GITHUB_OUTPUT
+        run: echo "image-names=$(jq -r '. | map(. | ("hmpps-probation-integration-services/" + .))[]' <<< "$projects_json")" | tr '\n' ' ' | tee -a $GITHUB_OUTPUT
         env:
           projects_json: ${{ steps.get-projects.outputs.projects }}
 
