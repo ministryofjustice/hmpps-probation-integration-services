@@ -319,6 +319,10 @@ class Location(
     val startDate: LocalDate,
 
     val endDate: LocalDate? = null,
+
+    @ManyToOne
+    @JoinColumn(name = "probation_area_id")
+    val provider: Provider,
 )
 
 interface LocationRepository : JpaRepository<Location, Long> {

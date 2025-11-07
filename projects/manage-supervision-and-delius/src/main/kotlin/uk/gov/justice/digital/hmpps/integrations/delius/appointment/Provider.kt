@@ -4,6 +4,7 @@ import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.springframework.data.jpa.repository.JpaRepository
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
+import java.time.LocalDate
 
 @Immutable
 @Entity
@@ -42,6 +43,12 @@ class AppointmentLocation(
     val code: String,
     val description: String,
 
+    val endDate: LocalDate?,
+
+    @ManyToOne
+    @JoinColumn(name = "probation_area_id")
+    val provider: AppointmentProvider,
+
     @Id
     @Column(name = "office_location_id")
     val id: Long
@@ -75,11 +82,11 @@ fun AppointmentTeamRepository.getByCode(code: String): AppointmentTeam =
     findByCode(code) ?: throw NotFoundException("Team", "code", code)
 
 interface AppointmentLocationRepository : JpaRepository<AppointmentLocation, Long> {
-    fun findByCode(code: String): AppointmentLocation?
+    fun findByCodeAndProviderCodeAndEndDateIsNull(code: String, providerCode: String): AppointmentLocation?
 }
 
-fun AppointmentLocationRepository.getByCode(code: String): AppointmentLocation =
-    findByCode(code) ?: throw NotFoundException("Location", "code", code)
+fun AppointmentLocationRepository.getByCode(providerCode: String, code: String): AppointmentLocation =
+    findByCodeAndProviderCodeAndEndDateIsNull(code, providerCode) ?: throw NotFoundException("Location", "code", code)
 
 interface AppointmentStaffRepository : JpaRepository<AppointmentStaff, Long> {
     fun findByCode(code: String): AppointmentStaff?
