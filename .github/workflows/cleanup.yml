@@ -18,11 +18,17 @@ jobs:
           app-id: ${{ secrets.BOT_APP_ID }}
           private-key: ${{ secrets.BOT_APP_PRIVATE_KEY }}
 
+      - name: List packages
+        id: list-packages
+        run: |
+          echo "image-names=$(gh api --paginate '/orgs/ministryofjustice/packages?package_type=container' -q '.[] | .name + " " + .repository.name' | grep hmpps-probation-integration-services | cut -d ' ' -f 1)" | tee -a $GITHUB_OUTPUT
+
       - name: Delete untagged images older than 1 week
         uses: snok/container-retention-policy@3b0972b2276b171b212f8c4efbca59ebba26eceb # v3.0.1
         with:
           account: ministryofjustice
-          image-names: hmpps-probation-integration-services/*
+          image-names: |
+            ${{ steps.list-packages.outputs.image-names }}
           cut-off: 1w
           keep-n-most-recent: 1
           tag-selection: untagged
@@ -32,7 +38,8 @@ jobs:
         uses: snok/container-retention-policy@3b0972b2276b171b212f8c4efbca59ebba26eceb # v3.0.1
         with:
           account: ministryofjustice
-          image-names: hmpps-probation-integration-services/*
+          image-names: |
+            ${{ steps.list-packages.outputs.image-names }}
           image-tags: "!test !test-prev !preprod !preprod-prev !prod !prod-prev !latest"
           cut-off: 30d
           token: ${{ steps.app-token.outputs.token }}
