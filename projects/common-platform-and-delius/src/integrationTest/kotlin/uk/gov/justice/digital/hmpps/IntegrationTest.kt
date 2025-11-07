@@ -10,9 +10,6 @@ import org.mockito.Mockito
 import org.mockito.Mockito.anyString
 import org.mockito.Mockito.atLeastOnce
 import org.mockito.kotlin.*
-import org.opensearch.client.opensearch.OpenSearchClient
-import org.opensearch.client.opensearch.core.IndexRequest
-import org.opensearch.client.util.ObjectBuilder
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
@@ -114,9 +111,6 @@ internal class IntegrationTest {
     @MockitoSpyBean
     lateinit var eventService: EventService
 
-    @MockitoBean
-    lateinit var openSearchClient: OpenSearchClient
-
     @MockitoSpyBean
     lateinit var offenceService: OffenceService
 
@@ -130,14 +124,6 @@ internal class IntegrationTest {
     fun setup() {
         doReturn("A111111").whenever(personService).generateCrn()
         whenever(featureFlags.enabled("common-platform-record-creation-toggle")).thenReturn(true)
-    }
-
-    @Test
-    fun `Message is logged to telemetry and opensearch`() {
-        val notification = Notification(message = MessageGenerator.COMMON_PLATFORM_EVENT)
-        channelManager.getChannel(queueName).publishAndWait(notification)
-        verify(telemetryService, atLeastOnce()).notificationReceived(notification)
-        verify(openSearchClient).index(any<Function<IndexRequest.Builder<CommonPlatformHearing>, ObjectBuilder<IndexRequest<CommonPlatformHearing>>>>())
     }
 
     @Order(2)

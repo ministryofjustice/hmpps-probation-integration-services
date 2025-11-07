@@ -4,7 +4,6 @@ import com.asyncapi.kotlinasyncapi.annotation.Schema
 import com.asyncapi.kotlinasyncapi.annotation.channel.Channel
 import com.asyncapi.kotlinasyncapi.annotation.channel.Message
 import com.asyncapi.kotlinasyncapi.annotation.channel.Publish
-import org.opensearch.client.opensearch.OpenSearchClient
 import org.springframework.stereotype.Component
 import uk.gov.justice.digital.hmpps.converter.NotificationConverter
 import uk.gov.justice.digital.hmpps.dto.InsertRemandDTO
@@ -32,7 +31,6 @@ class FIFOHandler(
     private val personService: PersonService,
     private val featureFlags: FeatureFlags,
     private val remandService: RemandService,
-    private val openSearchClient: OpenSearchClient,
     private val offenceService: OffenceService,
     private val corePerson: CorePersonClient,
     private val notifier: Notifier
@@ -41,10 +39,6 @@ class FIFOHandler(
     @Publish(messages = [Message(title = "COMMON_PLATFORM_HEARING", payload = Schema(CommonPlatformHearing::class))])
     override fun handle(notification: Notification<CommonPlatformHearing>) {
         telemetryService.notificationReceived(notification)
-
-        openSearchClient.index {
-            it.index("court_messages").document(notification.message).id(notification.id.toString())
-        }
 
         // Filter hearing message for defendants containing a judicial result label of 'Remanded in custody'
         val defendants = notification.message.hearing.prosecutionCases.flatMap { it.defendants }.filter { defendant ->
