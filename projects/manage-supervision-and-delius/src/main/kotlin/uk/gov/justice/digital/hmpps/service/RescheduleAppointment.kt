@@ -40,7 +40,8 @@ class RescheduleAppointment(
 
         val newStaff = request.staffCode?.let { staffRepository.getByCode(it) }
         val newTeam = request.teamCode?.let { teamRepository.getByCode(it) }
-        val newLocation = request.locationCode?.let { locationRepository.getByCode((newTeam?: appointment.team).provider.code, it) }
+        val newLocation =
+            request.locationCode?.let { locationRepository.getByCode((newTeam ?: appointment.team).provider.code, it) }
         val locationNotes = newLocation?.let { new ->
             if (new.code != appointment.location?.code) {
                 val setOrChanged = appointment.location?.let {
