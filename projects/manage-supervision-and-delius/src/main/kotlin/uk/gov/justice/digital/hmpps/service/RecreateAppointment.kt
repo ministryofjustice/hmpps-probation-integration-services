@@ -54,9 +54,10 @@ class RecreateAppointment(
     }
 
     private fun Appointment.recreateWith(request: RecreateAppointmentRequest): Appointment {
+        val team = request.teamCode?.let { teamRepository.getByCode(it) } ?: team
         val (location, locationNotes) = request.locationCode?.let { locationCode ->
             if (locationCode != location?.code) {
-                val newLocation = locationRepository.getByCode(locationCode)
+                val newLocation = locationRepository.getByCode(team.provider.code, locationCode)
                 val notes = newLocation.appointmentNotes(location)
                 newLocation to notes
             } else null
@@ -66,7 +67,7 @@ class RecreateAppointment(
             person = person,
             type = type,
             staff = request.staffCode?.let { staffRepository.getByCode(it) } ?: staff,
-            team = request.teamCode?.let { teamRepository.getByCode(it) } ?: team,
+            team = team,
             location = location,
             date = request.date,
             startTime = ZonedDateTime.of(request.date, request.startTime, EuropeLondon),

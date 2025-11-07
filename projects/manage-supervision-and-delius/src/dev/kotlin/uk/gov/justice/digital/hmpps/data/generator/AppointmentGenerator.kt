@@ -1,12 +1,14 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
 import uk.gov.justice.digital.hmpps.api.model.appointment.CreateAppointment
+import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.DEFAULT_PROVIDER
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.DEFAULT_STAFF
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.DEFAULT_TEAM
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.USER
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.generateOutcome
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.integrations.delius.appointment.AppointmentOutcome
+import uk.gov.justice.digital.hmpps.integrations.delius.appointment.AppointmentProvider
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.ContactOutcome
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.ContactType
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.Person
@@ -85,7 +87,8 @@ object AppointmentGenerator {
         softDeleted = false,
         notes = notes,
         sensitive = sensitive,
-        outcomeId = outcome?.id
+        outcomeId = outcome?.id,
+        probationAreaId = DEFAULT_PROVIDER.id
     ).apply {
         createdByUserId = USER.id
         lastUpdatedUserId = USER.id

@@ -100,7 +100,8 @@ object OffenderManagerGenerator {
             "Birmingham",
             "West Midlands",
             "B20 3BA",
-            startDate = LocalDate.now().minusDays(1)
+            startDate = LocalDate.now().minusDays(1),
+            provider = DEFAULT_PROVIDER
         )
 
     val TEAM_OFFICE = TeamOfficeLink(TeamOfficeLinkId(TEAM.id, DEFAULT_LOCATION))
