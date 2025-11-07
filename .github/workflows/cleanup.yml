@@ -13,18 +13,18 @@ jobs:
     permissions:
       packages: read
     steps:
+      - name: List packages
+        id: list-packages
+        run: echo "image-names=$(gh api --paginate '/orgs/ministryofjustice/packages?package_type=container' -q '.[] | .name' | grep '^hmpps-probation-integration-services/')" | tee -a $GITHUB_OUTPUT
+        env:
+          GH_TOKEN: ${{ github.token }}
+
       - uses: actions/create-github-app-token@v2
         id: app-token
         with:
           repositories: hmpps-probation-integration-services
           app-id: ${{ secrets.BOT_APP_ID }}
           private-key: ${{ secrets.BOT_APP_PRIVATE_KEY }}
-
-      - name: List packages
-        id: list-packages
-        run: echo "image-names=$(gh api --paginate '/orgs/ministryofjustice/packages?package_type=container' -q '.[] | .name' | grep '^hmpps-probation-integration-services/')" | tee -a $GITHUB_OUTPUT
-        env:
-          GH_TOKEN: ${{ github.token }}
 
       - name: Delete untagged images older than 1 week
         uses: snok/container-retention-policy@3b0972b2276b171b212f8c4efbca59ebba26eceb # v3.0.1
