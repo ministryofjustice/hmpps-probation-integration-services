@@ -23,4 +23,3 @@ reindexing:
   contact_semantic_schedule: 0 18 * * 5
   contact_semantic_schedule_suspended: false
   sentry_environment: preprod
-
