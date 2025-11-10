@@ -19,7 +19,10 @@ class GetRegionWIthMembersIntegrationTest(
     fun `can find region members`() {
         mockMvc.get("/regions/${PROVIDER.code}/members") { withToken() }
             .andExpect { status { isOk() } }
-            .andExpect { content { json("""
+            .andExpect {
+                content {
+                    json(
+                        """
                 {
                   "code": "PA1",
                   "description": "Test Provider",
@@ -84,6 +87,9 @@ class GetRegionWIthMembersIntegrationTest(
                     }
                   ]
                 }
-            """.trimIndent()) } }
+            """.trimIndent()
+                    )
+                }
+            }
     }
 }
