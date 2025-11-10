@@ -27,6 +27,7 @@ import uk.gov.justice.digital.hmpps.data.TestData.EXCLUSION
 import uk.gov.justice.digital.hmpps.data.TestData.FAILED_TO_COMPLY
 import uk.gov.justice.digital.hmpps.data.TestData.GENDER
 import uk.gov.justice.digital.hmpps.data.TestData.LAU
+import uk.gov.justice.digital.hmpps.data.TestData.LAU_2
 import uk.gov.justice.digital.hmpps.data.TestData.LED_DATE
 import uk.gov.justice.digital.hmpps.data.TestData.LED_KEY_DATE_TYPE
 import uk.gov.justice.digital.hmpps.data.TestData.LICENCE_CONDITIONS
@@ -41,6 +42,7 @@ import uk.gov.justice.digital.hmpps.data.TestData.OFFICE_LOCATION
 import uk.gov.justice.digital.hmpps.data.TestData.OTHER_CONTACT
 import uk.gov.justice.digital.hmpps.data.TestData.OTHER_CONTACT_TYPE
 import uk.gov.justice.digital.hmpps.data.TestData.PDU
+import uk.gov.justice.digital.hmpps.data.TestData.PDU_2
 import uk.gov.justice.digital.hmpps.data.TestData.PERSON
 import uk.gov.justice.digital.hmpps.data.TestData.PROVIDER
 import uk.gov.justice.digital.hmpps.data.TestData.PSS_END_DATE
@@ -60,8 +62,13 @@ import uk.gov.justice.digital.hmpps.data.TestData.REQUIREMENT_MANAGERS
 import uk.gov.justice.digital.hmpps.data.TestData.REQUIREMENT_SUB_TYPE
 import uk.gov.justice.digital.hmpps.data.TestData.RESTRICTION
 import uk.gov.justice.digital.hmpps.data.TestData.STAFF
+import uk.gov.justice.digital.hmpps.data.TestData.STAFF_2
+import uk.gov.justice.digital.hmpps.data.TestData.STAFF_3
+import uk.gov.justice.digital.hmpps.data.TestData.STAFF_4
 import uk.gov.justice.digital.hmpps.data.TestData.STATUS_CONTACT_TYPES
 import uk.gov.justice.digital.hmpps.data.TestData.TEAM
+import uk.gov.justice.digital.hmpps.data.TestData.TEAM_2
+import uk.gov.justice.digital.hmpps.data.TestData.TEAM_3
 import uk.gov.justice.digital.hmpps.data.TestData.THREE_WAY_MEETING_TYPE
 import uk.gov.justice.digital.hmpps.data.TestData.TWO_THIRDS_CONTACT
 import uk.gov.justice.digital.hmpps.data.TestData.TWO_THIRDS_CONTACT_TYPE
@@ -127,10 +134,17 @@ class DataLoader(
         referenceDataRepository.save(ADULT_LICENCE)
         providerRepository.save(PROVIDER)
         probationDeliveryUnitRepository.save(PDU)
+        probationDeliveryUnitRepository.save(PDU_2)
         localAdminUnitRepository.save(LAU)
+        localAdminUnitRepository.save(LAU_2)
         officeLocationRepository.save(OFFICE_LOCATION)
         teamRepository.save(TEAM)
+        teamRepository.save(TEAM_2)
+        teamRepository.save(TEAM_3)
         staffRepository.save(STAFF)
+        staffRepository.save(STAFF_2)
+        staffRepository.save(STAFF_3)
+        staffRepository.save(STAFF_4)
         personRepository.save(PERSON)
         personRepository.save(CA_PERSON)
         managerRepository.save(MANAGER)
