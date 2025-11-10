@@ -33,8 +33,6 @@ generic-service:
       MESSAGING_PRODUCER_TOPIC: topic_arn
     common-platform-and-delius-os-places:
       OS-PLACES_API_KEY: API_KEY
-    common-platform-and-delius-opensearch:
-      OPENSEARCH_URIS: "url"
     common-platform-and-delius-s3-bucket:
       S3_BUCKET_NAME: bucket_name
 
