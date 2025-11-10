@@ -322,6 +322,7 @@ class RecreateAppointmentIntegrationTest : IntegrationTestBase() {
         locationCode: String? = null,
         notes: String? = null,
         sensitive: Boolean? = null,
+        sendToVisor: Boolean? = null,
         requestedBy: RecreateAppointmentRequest.RequestedBy = RecreateAppointmentRequest.RequestedBy.SERVICE,
         uuid: UUID? = UUID.randomUUID(),
     ) = RecreateAppointmentRequest(
@@ -333,6 +334,7 @@ class RecreateAppointmentIntegrationTest : IntegrationTestBase() {
         locationCode,
         notes,
         sensitive,
+        sendToVisor,
         requestedBy,
         uuid
     )
