@@ -92,10 +92,17 @@ class AppointmentsService(
         )
     }
 
-    fun getSession(projectCode: String, date: LocalDate, startTime: LocalTime, endTime: LocalTime, username: String): SessionResponse {
+    fun getSession(
+        projectCode: String,
+        date: LocalDate,
+        startTime: LocalTime,
+        endTime: LocalTime,
+        username: String
+    ): SessionResponse {
         val project = unpaidWorkProjectRepository.getUpwProjectByCode(projectCode)
         val appointments = unpaidWorkAppointmentRepository.getUpwAppointmentsByAppointmentDateAndStartTimeAndEndTime(
-            date, startTime, endTime)
+            date, startTime, endTime
+        )
 
         val appointmentSummaries = appointments.map {
             val minutes = unpaidWorkAppointmentRepository.getUpwRequiredAndCompletedMinutes(it.upwDetailsId)

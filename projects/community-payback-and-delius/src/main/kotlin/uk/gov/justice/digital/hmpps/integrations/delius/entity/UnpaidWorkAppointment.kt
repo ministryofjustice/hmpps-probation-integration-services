@@ -373,10 +373,13 @@ interface UnpaidWorkAppointmentRepository : JpaRepository<UpwAppointment, Long> 
 
     fun getUpwAppointmentById(appointmentId: Long): UpwAppointment
 
-    fun getUpwAppointmentsByAppointmentDateAndStartTimeAndEndTime(appointmentDate: LocalDate,
-        startTime: LocalTime, endTime: LocalTime): List<UpwAppointment>
+    fun getUpwAppointmentsByAppointmentDateAndStartTimeAndEndTime(
+        appointmentDate: LocalDate,
+        startTime: LocalTime, endTime: LocalTime
+    ): List<UpwAppointment>
 
-    @Query("""
+    @Query(
+        """
         SELECT
             CASE
                 WHEN r_disposal_type.pre_cja2003 = 'Y' THEN disposal.length * 60
@@ -397,7 +400,8 @@ interface UnpaidWorkAppointmentRepository : JpaRepository<UpwAppointment, Long> 
              ON r_disposal_type.disposal_type_id = disposal.disposal_type_id
         WHERE upw_details.soft_deleted = 0
           AND upw_details.upw_details_id = :upwDetailsId;
-    """, nativeQuery = true)
+    """, nativeQuery = true
+    )
     fun getUpwRequiredAndCompletedMinutes(upwDetailsId: Long): UpwMinutesDto
 }
 

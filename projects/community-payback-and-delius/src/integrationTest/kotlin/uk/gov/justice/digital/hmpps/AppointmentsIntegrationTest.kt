@@ -55,8 +55,13 @@ class AppointmentsIntegrationTest {
     @Test
     fun `can retrieve single session details`() {
         val response = mockMvc
-            .perform(get(
-                "/projects/N01DEFAULT/appointments?date=${LocalDate.now().plusDays(1)}&startTime=12:00&endTime=14:00&username=DefaultUser").withToken())
+            .perform(
+                get(
+                    "/projects/N01DEFAULT/appointments?date=${
+                        LocalDate.now().plusDays(1)
+                    }&startTime=12:00&endTime=14:00&username=DefaultUser"
+                ).withToken()
+            )
             .andExpect(status().is2xxSuccessful)
             .andReturn().response.contentAsJson<SessionResponse>()
 
