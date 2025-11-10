@@ -1878,6 +1878,8 @@ components:
           type: string
         sensitive:
           type: boolean
+        sendToVisor:
+          type: boolean
         requestedBy:
           type: string
           enum:

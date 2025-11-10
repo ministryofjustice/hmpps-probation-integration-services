@@ -118,6 +118,24 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/UserTeams"
+  /regions/{code}/members:
+    get:
+      tags:
+      - region-controller
+      operationId: getRegionMembers
+      parameters:
+      - name: code
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RegionWithMembers"
   /docs/asyncapi:
     get:
       tags:
@@ -501,9 +519,9 @@ components:
       properties:
         forename:
           type: string
-        middleNames:
-          type: string
         surname:
+          type: string
+        middleNames:
           type: string
       required:
       - forename
@@ -545,6 +563,61 @@ components:
             $ref: "#/components/schemas/UserTeam"
       required:
       - teams
+    Member:
+      type: object
+      properties:
+        code:
+          type: string
+        name:
+          $ref: "#/components/schemas/Name"
+      required:
+      - code
+      - name
+    Pdu:
+      type: object
+      properties:
+        code:
+          type: string
+        description:
+          type: string
+        team:
+          type: array
+          items:
+            $ref: "#/components/schemas/Team"
+      required:
+      - code
+      - description
+      - team
+    RegionWithMembers:
+      type: object
+      properties:
+        code:
+          type: string
+        description:
+          type: string
+        pdus:
+          type: array
+          items:
+            $ref: "#/components/schemas/Pdu"
+      required:
+      - code
+      - description
+      - pdus
+    Team:
+      type: object
+      properties:
+        code:
+          type: string
+        description:
+          type: string
+        members:
+          type: array
+          items:
+            $ref: "#/components/schemas/Member"
+      required:
+      - code
+      - description
+      - members
     Sentence:
       type: object
       properties:
