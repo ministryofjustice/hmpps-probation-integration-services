@@ -25,8 +25,8 @@ class CaseDetailService(
             crn = person.crn,
             name = Name(
                 forename = person.forename,
-                middleNames = listOfNotNull(person.secondName, person.thirdName).joinToString(" "),
-                surname = person.surname
+                surname = person.surname,
+                middleNames = listOfNotNull(person.secondName, person.thirdName).joinToString(" ")
             ),
             dateOfBirth = person.dateOfBirth,
             sex = person.gender.toCodedValue(),

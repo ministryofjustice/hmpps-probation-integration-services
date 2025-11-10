@@ -1,15 +1,10 @@
 package uk.gov.justice.digital.hmpps.entity.staff
 
-import jakarta.persistence.Column
-import jakarta.persistence.Entity
-import jakarta.persistence.Id
-import jakarta.persistence.JoinColumn
-import jakarta.persistence.JoinTable
-import jakarta.persistence.ManyToMany
-import jakarta.persistence.OneToOne
+import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import uk.gov.justice.digital.hmpps.model.Name
 import uk.gov.justice.digital.hmpps.model.ProbationPractitioner
+import java.time.LocalDate
 
 @Entity
 @Immutable
@@ -35,7 +30,9 @@ class Staff(
         inverseJoinColumns = [JoinColumn(name = "team_id")]
     )
     val teams: List<Team>,
+
+    val endDate: LocalDate?,
 ) {
     fun toProbationPractitioner(getEmailAddress: (u: User) -> String?) =
-        ProbationPractitioner(Name(forename, null, surname), code, user?.let { getEmailAddress(user) })
+        ProbationPractitioner(Name(forename, surname), code, user?.let { getEmailAddress(user) })
 }
