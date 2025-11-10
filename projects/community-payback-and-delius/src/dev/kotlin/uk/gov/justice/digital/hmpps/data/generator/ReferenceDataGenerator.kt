@@ -60,6 +60,17 @@ object ReferenceDataGenerator {
         description = "Failed to Attend"
     )
 
+    val UPW_RQMNT_MAIN_CATEGORY = generateRequirementMainCategory(
+        code = "W",
+        description = "Unpaid Work"
+    )
+
+    val DEFAULT_DISPOSAL_TYPE = generateDisposalType(
+        code = "100",
+        description = "Community Order",
+        preCja2003 = false
+    )
+
     fun generateReferenceData(
         id: Long = IdGenerator.getAndIncrement(),
         code: String,
@@ -86,6 +97,19 @@ object ReferenceDataGenerator {
         description: String,
         id: Long = IdGenerator.getAndIncrement(),
     ) = ContactOutcome(code, description, id)
+
+    fun generateRequirementMainCategory(
+        id: Long = IdGenerator.getAndIncrement(),
+        code: String,
+        description: String,
+    ) = RequirementMainCategory(id, code, description)
+
+    fun generateDisposalType(
+        id: Long = IdGenerator.getAndIncrement(),
+        code: String,
+        description: String,
+        preCja2003: Boolean = false
+    ) = DisposalType(id, code, description, preCja2003)
 }
 
 object DatasetGenerator {

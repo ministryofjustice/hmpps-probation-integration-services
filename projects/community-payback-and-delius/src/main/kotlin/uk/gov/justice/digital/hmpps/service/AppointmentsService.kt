@@ -6,6 +6,8 @@ import uk.gov.justice.digital.hmpps.integrations.delius.entity.UnpaidWorkAppoint
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.UnpaidWorkProjectRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.WorkQuality
 import uk.gov.justice.digital.hmpps.model.*
+import java.time.LocalDate
+import java.time.LocalTime
 import java.util.*
 
 @Service
@@ -87,6 +89,49 @@ class AppointmentsService(
             updatedAt = appointment.lastUpdatedDatetime,
             sensitive = appointment.contact.sensitive,
             alertActive = appointment.contact.alertActive
+        )
+    }
+
+    fun getSession(projectCode: String, date: LocalDate, startTime: LocalTime, endTime: LocalTime, username: String): SessionResponse {
+        val project = unpaidWorkProjectRepository.getUpwProjectByCode(projectCode)
+        val appointments = unpaidWorkAppointmentRepository.getUpwAppointmentsByAppointmentDateAndStartTimeAndEndTime(
+            date, startTime, endTime)
+
+        val appointmentSummaries = appointments.map {
+            val minutes = unpaidWorkAppointmentRepository.getUpwRequiredAndCompletedMinutes(it.upwDetailsId)
+
+            SessionResponseAppointmentSummary(
+                id = it.id,
+                case = AppointmentResponseCase(
+                    crn = it.person.crn,
+                    name = AppointmentResponseName(
+                        forename = it.person.forename,
+                        surname = it.person.surname,
+                        middleNames = it.person.secondName?.let { names -> listOf(names) } ?: emptyList()
+                    ),
+                    dateOfBirth = it.person.dateOfBirth,
+                    currentExclusion = it.person.currentExclusion,
+                    exclusionMessage = it.person.exclusionMessage,
+                    currentRestriction = it.person.currentRestriction,
+                    restrictionMessage = it.person.restrictionMessage,
+                ),
+                outcome = it.contact.contactOutcome?.let { contactOutcome ->
+                    CodeDescription(
+                        contactOutcome.code,
+                        contactOutcome.description,
+                    )
+                },
+                requirementProgress = minutes,
+            )
+        }
+
+        return SessionResponse(
+            project = AppointmentResponseProject(
+                name = project.name,
+                code = project.code,
+                location = project.placementAddress?.toAppointmentResponseAddress()
+            ),
+            appointmentSummaries = appointmentSummaries
         )
     }
 

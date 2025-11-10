@@ -41,8 +41,8 @@ object UPWGenerator {
         upwProjectId = SECOND_UPW_PROJECT.id
     )
 
-    val DEFAULT_DISPOSAL = generateDisposal()
-    val SECOND_DISPOSAL = generateDisposal()
+    val DEFAULT_DISPOSAL = generateDisposal(length = 12, disposalType = ReferenceDataGenerator.DEFAULT_DISPOSAL_TYPE)
+    val SECOND_DISPOSAL = generateDisposal(length = 12, disposalType = ReferenceDataGenerator.DEFAULT_DISPOSAL_TYPE)
 
     val DEFAULT_UPW_DETAILS = generateUpwDetails(disposalId = DEFAULT_DISPOSAL.id)
     val SECOND_UPW_DETAILS = generateUpwDetails(disposalId = SECOND_DISPOSAL.id)
@@ -73,7 +73,8 @@ object UPWGenerator {
         staff = StaffGenerator.DEFAULT_STAFF,
         team = TeamGenerator.DEFAULT_UPW_TEAM,
         workQuality = ReferenceDataGenerator.EXCELLENT_WORK_QUALITY,
-        behaviour = ReferenceDataGenerator.EXCELLENT_BEHAVIOUR
+        behaviour = ReferenceDataGenerator.EXCELLENT_BEHAVIOUR,
+        minutesCredited = 30L
     )
 
     val UPW_APPOINTMENT_NO_ENFORCEMENT = generateUpwAppointment(
@@ -91,7 +92,8 @@ object UPWGenerator {
         staff = StaffGenerator.DEFAULT_STAFF,
         team = TeamGenerator.DEFAULT_UPW_TEAM,
         workQuality = ReferenceDataGenerator.EXCELLENT_WORK_QUALITY,
-        behaviour = ReferenceDataGenerator.EXCELLENT_BEHAVIOUR
+        behaviour = ReferenceDataGenerator.EXCELLENT_BEHAVIOUR,
+        minutesCredited = 60L,
     )
 
     val UPW_APPOINTMENT_NO_OUTCOME = generateUpwAppointment(
@@ -109,7 +111,8 @@ object UPWGenerator {
         staff = StaffGenerator.DEFAULT_STAFF,
         team = TeamGenerator.DEFAULT_UPW_TEAM,
         workQuality = null,
-        behaviour = null
+        behaviour = null,
+        minutesCredited = 0L
     )
 
     val SECOND_UPW_APPOINTMENT_OUTCOME_NO_ENFORCEMENT = generateUpwAppointment(
@@ -123,11 +126,17 @@ object UPWGenerator {
         pickupLocation = DEFAULT_OFFICE_LOCATION,
         pickupTime = LocalTime.of(9, 0),
         penaltyTime = null,
-        person = PersonGenerator.DEFAULT_PERSON,
+        person = PersonGenerator.SECOND_PERSON,
         staff = StaffGenerator.DEFAULT_STAFF,
         team = TeamGenerator.DEFAULT_UPW_TEAM,
         workQuality = ReferenceDataGenerator.UNSATISFACTORY_WORK_QUALITY,
-        behaviour = ReferenceDataGenerator.UNSATISFACTORY_BEHAVIOUR
+        behaviour = ReferenceDataGenerator.UNSATISFACTORY_BEHAVIOUR,
+        minutesCredited = 10L
+    )
+
+    val DEFAULT_RQMNT = generateRequirement(
+        length = 120,
+        disposal = SECOND_DISPOSAL
     )
 
     fun generateUpwProject(
@@ -146,13 +155,16 @@ object UPWGenerator {
 
     fun generateDisposal(
         id: Long = IdGenerator.getAndIncrement(),
-        softDeleted: Boolean = false
-    ) = Disposal(id, softDeleted)
+        length: Long,
+        softDeleted: Boolean = false,
+        disposalType: DisposalType
+    ) = Disposal(id, length, softDeleted, disposalType)
 
     fun generateUpwDetails(
         id: Long = IdGenerator.getAndIncrement(),
-        disposalId: Long
-    ) = UpwDetails(id, disposalId)
+        disposalId: Long,
+        softDeleted: Boolean = false
+    ) = UpwDetails(id, disposalId, softDeleted)
 
     fun generateContact(
         id: Long = IdGenerator.getAndIncrement(),
@@ -186,6 +198,7 @@ object UPWGenerator {
         workedIntensively: Boolean = false,
         workQuality: ReferenceData?,
         behaviour: ReferenceData?,
+        minutesCredited: Long?,
         rowVersion: Long = 1,
         createdDatetime: ZonedDateTime = ZonedDateTime.now(),
         lastUpdatedDatetime: ZonedDateTime = ZonedDateTime.now()
@@ -211,6 +224,7 @@ object UPWGenerator {
         workedIntensively,
         workQuality,
         behaviour,
+        minutesCredited,
         rowVersion,
         createdDatetime,
         lastUpdatedDatetime
@@ -235,4 +249,12 @@ object UPWGenerator {
         county: String? = null,
         postcode: String? = null
     ) = OfficeLocation(id, buildingName, addressNumber, streetName, town, county, postcode)
+
+    fun generateRequirement(
+        id: Long = IdGenerator.getAndIncrement(),
+        requirementMainCategory: RequirementMainCategory? = ReferenceDataGenerator.UPW_RQMNT_MAIN_CATEGORY,
+        length: Long,
+        disposal: Disposal,
+        softDeleted: Boolean = false
+    ) = Requirement(id, requirementMainCategory, length, disposal, softDeleted)
 }

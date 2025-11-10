@@ -9,6 +9,7 @@ import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedDate
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
+import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.ZonedDateTime
@@ -83,6 +84,8 @@ class UpwAppointment(
     @JoinColumn(name = "behaviour_id")
     val behaviour: ReferenceData?,
 
+    val minutesCredited: Long? = null,
+
     @Version
     val rowVersion: Long,
 
@@ -145,7 +148,11 @@ class UpwDetails(
     @Column(name = "upw_details_id")
     val id: Long,
 
-    val disposalId: Long
+    val disposalId: Long,
+
+    @Column(columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
+    val softDeleted: Boolean = false
 )
 
 @Entity
@@ -156,9 +163,32 @@ class Disposal(
     @Column(name = "disposal_id")
     val id: Long,
 
+    val length: Long,
+
     @Column(columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean = false,
+
+    @ManyToOne
+    @JoinColumn(name = "disposal_type_id")
+    val disposalType: DisposalType,
+)
+
+@Entity
+@Immutable
+@Table(name = "r_disposal_type")
+class DisposalType(
+    @Id
+    @Column(name = "disposal_type_id")
+    val id: Long,
+
+    val code: String,
+
+    val description: String,
+
+    @Column(name = "pre_cja2003")
+    @Convert(converter = YesNoConverter::class)
+    val preCja2003: Boolean = false
 )
 
 @Entity
@@ -208,6 +238,43 @@ class EnforcementAction(
     val outstandingContactAction: Boolean
 )
 
+@Entity
+@Table(name = "rqmnt")
+@Immutable
+class Requirement(
+    @Id
+    @Column(name = "rqmnt_id", nullable = false)
+    val id: Long,
+
+    @ManyToOne
+    @JoinColumn(name = "rqmnt_type_main_category_id")
+    val requirementMainCategory: RequirementMainCategory?,
+
+    @Column(name = "length")
+    val length: Long? = null,
+
+    @ManyToOne
+    @JoinColumn(name = "disposal_id")
+    val disposal: Disposal,
+
+    @Column(columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
+    val softDeleted: Boolean
+)
+
+@Immutable
+@Entity
+@Table(name = "r_rqmnt_type_main_category")
+class RequirementMainCategory(
+    @Id
+    @Column(name = "rqmnt_type_main_category_id")
+    val id: Long,
+
+    val code: String,
+
+    val description: String,
+)
+
 @JsonPropertyOrder(
     "projectId",
     "projectName",
@@ -241,6 +308,11 @@ data class UnpaidWorkSessionDto(
     val allocatedCount: Long,
     val outcomeCount: Long,
     val enforcementActionCount: Long
+)
+
+data class UpwMinutesDto(
+    val requiredMinutes: BigDecimal,
+    val completedMinutes: BigDecimal
 )
 
 fun UnpaidWorkSession.toDto() = UnpaidWorkSessionDto(
@@ -300,6 +372,33 @@ interface UnpaidWorkAppointmentRepository : JpaRepository<UpwAppointment, Long> 
     fun getUnpaidWorkSessionDetails(teamId: Long, startDate: LocalDate, endDate: LocalDate): List<UnpaidWorkSession>
 
     fun getUpwAppointmentById(appointmentId: Long): UpwAppointment
+
+    fun getUpwAppointmentsByAppointmentDateAndStartTimeAndEndTime(appointmentDate: LocalDate,
+        startTime: LocalTime, endTime: LocalTime): List<UpwAppointment>
+
+    @Query("""
+        SELECT
+            CASE
+                WHEN r_disposal_type.pre_cja2003 = 'Y' THEN disposal.length * 60
+                ELSE COALESCE(
+                        (SELECT SUM(rqmnt.length) * 60 FROM rqmnt rqmnt
+                         JOIN r_rqmnt_type_main_category ON r_rqmnt_type_main_category.rqmnt_type_main_category_id = rqmnt.rqmnt_type_main_category_id AND r_rqmnt_type_main_category.code = 'W'
+                         WHERE rqmnt.disposal_id = disposal.disposal_id AND rqmnt.soft_deleted = 0),
+                        0)
+                END AS "requiredMinutes",
+            COALESCE(
+                    (SELECT SUM(appts.minutes_credited) FROM upw_appointment appts WHERE appts.upw_details_id = upw_details.upw_details_id AND appts.soft_deleted = 0),
+                    0)
+                AS "completedMinutes"
+        FROM upw_details
+        JOIN disposal
+             ON disposal.disposal_id = upw_details.disposal_id
+        JOIN r_disposal_type
+             ON r_disposal_type.disposal_type_id = disposal.disposal_type_id
+        WHERE upw_details.soft_deleted = 0
+          AND upw_details.upw_details_id = :upwDetailsId;
+    """, nativeQuery = true)
+    fun getUpwRequiredAndCompletedMinutes(upwDetailsId: Long): UpwMinutesDto
 }
 
 interface UnpaidWorkProjectRepository : JpaRepository<UpwProject, Long> {

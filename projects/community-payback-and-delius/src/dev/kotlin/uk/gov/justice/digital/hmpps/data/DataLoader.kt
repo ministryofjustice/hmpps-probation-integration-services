@@ -40,6 +40,7 @@ class DataLoader(
 
     fun loadPeople() {
         entityManager.persist(PersonGenerator.DEFAULT_PERSON)
+        entityManager.persist(PersonGenerator.SECOND_PERSON)
     }
 
     fun loadProviders() {
@@ -86,6 +87,8 @@ class DataLoader(
         entityManager.persist(ReferenceDataGenerator.UNSATISFACTORY_WORK_QUALITY)
         entityManager.persist(ReferenceDataGenerator.EXCELLENT_BEHAVIOUR)
         entityManager.persist(ReferenceDataGenerator.UNSATISFACTORY_BEHAVIOUR)
+        entityManager.persist(ReferenceDataGenerator.UPW_RQMNT_MAIN_CATEGORY)
+        entityManager.persist(ReferenceDataGenerator.DEFAULT_DISPOSAL_TYPE)
     }
 
     fun loadUnpaidWorkData() {
@@ -106,5 +109,6 @@ class DataLoader(
         entityManager.persist(UPWGenerator.UPW_APPOINTMENT_NO_ENFORCEMENT)
         entityManager.persist(UPWGenerator.UPW_APPOINTMENT_NO_OUTCOME)
         entityManager.persist(UPWGenerator.SECOND_UPW_APPOINTMENT_OUTCOME_NO_ENFORCEMENT)
+        entityManager.persist(UPWGenerator.DEFAULT_RQMNT)
     }
 }
