@@ -77,6 +77,7 @@ class RecreateAppointment(
             rarActivity = rarActivity,
             notes = notes,
             sensitive = sensitive == true || request.sensitive == true,
+            sendToVisor = request.sendToVisor,
             externalReference = request.uuid?.let { URN_PREFIX + it },
             softDeleted = false
         ).appendNotes(listOfNotNull(locationNotes, request.notes))

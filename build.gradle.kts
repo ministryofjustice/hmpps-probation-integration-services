@@ -23,7 +23,7 @@ plugins {
 val agentDeps: Configuration by configurations.creating
 
 dependencies {
-    agentDeps("com.microsoft.azure:applicationinsights-agent:3.7.5")
+    agentDeps("com.microsoft.azure:applicationinsights-agent:3.7.6")
 }
 
 project.tasks.register<Copy>("copyAgent") {

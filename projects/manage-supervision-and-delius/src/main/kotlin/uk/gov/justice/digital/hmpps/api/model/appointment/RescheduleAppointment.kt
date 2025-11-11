@@ -28,6 +28,7 @@ data class RecreateAppointmentRequest(
     val locationCode: String?,
     val notes: String?,
     val sensitive: Boolean?,
+    val sendToVisor: Boolean?,
     val requestedBy: RequestedBy,
     val uuid: UUID?,
 ) : AppointmentRequest {

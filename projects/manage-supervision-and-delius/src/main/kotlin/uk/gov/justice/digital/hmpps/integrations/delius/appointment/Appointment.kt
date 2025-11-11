@@ -65,6 +65,8 @@ class Appointment(
 
     outcome: AppointmentOutcome?,
 
+    sendToVisor: Boolean?,
+
     val externalReference: String?,
 
     @Column(name = "soft_deleted", columnDefinition = "number", nullable = false)
@@ -110,6 +112,25 @@ class Appointment(
 
     @Lob
     var notes: String? = notes
+        private set
+
+    @Column(name = "visor_contact")
+    @Convert(converter = YesNoConverter::class)
+    var sendToVisor: Boolean? = sendToVisor
+        set(value) {
+            visorExported = if (value == true && visorExported == null) {
+                false
+            } else if (value != true) {
+                null
+            } else {
+                visorExported
+            }
+            field = value
+        }
+
+    @Column(name = "visor_exported")
+    @Convert(converter = YesNoConverter::class)
+    var visorExported: Boolean? = null
         private set
 
     fun appendNotes(parts: List<String>) =

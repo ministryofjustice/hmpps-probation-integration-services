@@ -45,9 +45,9 @@ spec:
                 - name: PIPELINES_ENABLED
                   value: contact-semantic-full-load
                 - name: PIPELINE_WORKERS
-                  value: '4'
+                  value: '2'
                 - name: PIPELINE_BATCH_SIZE # Maximum number of in-memory events per worker
-                  value: '1000'
+                  value: '250'
                 - name: JDBC_BATCH_SIZE # Maximum number of cases to return from DB at a time, note: each case corresponds to >1000 events
                   value: '50'
                 - name: APPLICATIONINSIGHTS_CONNECTION_STRING
