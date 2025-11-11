@@ -34,4 +34,5 @@ data class Sentence(
     val unpaidWorkMinutesCompleted: Int = 0,
     val rarDaysOrdered: Int = 0,
     val rarDaysCompleted: Int = 0,
+    val rarRequirement: Boolean = false,
 )

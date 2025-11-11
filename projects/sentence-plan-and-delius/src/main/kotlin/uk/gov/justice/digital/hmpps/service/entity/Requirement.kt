@@ -76,7 +76,18 @@ interface RequirementRepository : JpaRepository<Requirement, Long> {
         """
     )
     fun sumTotalUnpaidWorkHoursByDisposal(id: Long): Int
+
+    @Query(
+        """
+        select count(1) from Requirement r
+        where r.mainCategory.code = 'F' and r.disposal.id = :disposalId
+    """
+    )
+    fun countRarRequirements(disposalId: Long): Int
 }
+
+fun RequirementRepository.hasRarRequirement(disposalId: Long): Boolean =
+    countRarRequirements(disposalId) > 0
 
 fun RequirementRepository.getRar(disposalId: Long): Rar {
     val rarDays = getRarDays(disposalId)
