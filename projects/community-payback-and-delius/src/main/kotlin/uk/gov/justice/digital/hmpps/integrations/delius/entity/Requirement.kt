@@ -28,7 +28,6 @@ class Requirement(
     val softDeleted: Boolean
 )
 
-
 @Immutable
 @Entity
 @Table(name = "r_rqmnt_type_main_category")

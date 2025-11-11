@@ -36,7 +36,7 @@ class ContactOutcome(
     val id: Long,
 )
 
-fun ContactOutcome.toCodeDescription() = CodeDescription(this.code, this.description,)
+fun ContactOutcome.toCodeDescription() = CodeDescription(this.code, this.description)
 
 @Immutable
 @Entity
