@@ -4,8 +4,8 @@ with next as (select offender_id from (select offender_id
                 and offender_id >= :sql_last_value + :batch_size
                 and exists (select 1 from event where event.offender_id = offender.offender_id and event.active_flag = 1 and event.soft_deleted = 0)
                 and ( select count(*)
-                      from contact
-                      where contact.offender_id = offender.offender_id and contact.soft_deleted = 0 ) > 2500
+                      from contact where contact.offender_id = offender.offender_id and contact.soft_deleted = 0 ) >
+                    3500
               order by offender_id) where rownum = 1)
 select "json",
        "contactId",
@@ -19,7 +19,7 @@ from (with page as (select contact.*
                             and offender_id < :sql_last_value + :batch_size
                           group by offender_id
                           having exists (select 1 from event where event.offender_id = contact.offender_id and event.active_flag = 1 and event.soft_deleted = 0)
-                             and count(*) > 2500
+                             and count(*) > 3500
                           order by offender_id fetch next :batch_size rows only) offender
                          on offender.offender_id = contact.offender_id
                     where :contact_id = 0

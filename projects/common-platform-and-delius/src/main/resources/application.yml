@@ -66,9 +66,6 @@ integrations:
   manage-offences.url: http://localhost:${wiremock.port}/manage-offences
   core-person-record.url: http://localhost:${wiremock.port}/core-person-record
 
-opensearch:
-  uris: http://localhost:${wiremock.port}
-
 os-places:
   api:
     url: http://localhost:${wiremock.port}/address-lookup
