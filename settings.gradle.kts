@@ -51,7 +51,6 @@ include(
     "resettlement-passport-and-delius",
     "risk-assessment-scores-to-delius",
     "sentence-plan-and-delius",
-    "sentence-plan-and-oasys",
     "soc-and-delius",
     "subject-access-requests-and-delius",
     "suicide-risk-form-and-delius",
