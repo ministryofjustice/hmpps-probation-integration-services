@@ -18,7 +18,6 @@ import uk.gov.justice.digital.hmpps.model.AppointmentResponse
 import uk.gov.justice.digital.hmpps.model.SessionResponse
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
-import java.math.BigDecimal
 import java.time.LocalDate
 import java.util.*
 
@@ -68,6 +67,6 @@ class AppointmentsIntegrationTest {
         assertThat(response.project.name).isEqualTo("Default UPW Project")
         assertThat(response.appointmentSummaries.size).isEqualTo(2)
         assertThat(response.appointmentSummaries[0].case.crn).isEqualTo("Z000001")
-        assertThat(response.appointmentSummaries[0].requirementProgress.requiredMinutes).isEqualTo(BigDecimal(120 * 60))
+        assertThat(response.appointmentSummaries[0].requirementProgress.requiredMinutes).isEqualTo(120 * 60)
     }
 }

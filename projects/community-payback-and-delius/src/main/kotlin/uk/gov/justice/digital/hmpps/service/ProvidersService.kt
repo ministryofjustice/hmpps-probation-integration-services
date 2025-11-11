@@ -36,10 +36,10 @@ class ProvidersService(
         return SupervisorsResponse(supervisors = staff.map { it.toSupervisor() })
     }
 
-    fun getSessions(teamCode: String, startDate: LocalDate, endDate: LocalDate): List<UnpaidWorkSessionDto> {
+    fun getSessions(teamCode: String, startDate: LocalDate, endDate: LocalDate): List<UnpaidWorkSession> {
         val team = teamRepository.findTeamByCode(teamCode)
         val sessions = unpaidWorkAppointmentRepository.getUnpaidWorkSessionDetails(team.id, startDate, endDate)
 
-        return sessions.map { it.toDto() }
+        return sessions.map { it.toModel() }
     }
 }
