@@ -15,7 +15,7 @@ jobs:
   delete-images:
     runs-on: ubuntu-latest
     permissions:
-      packages: read
+      packages: write
     steps:
       - uses: actions/checkout@v5
       - uses: ./.github/actions/get-projects
