@@ -184,6 +184,36 @@ jobs:
             ingress=$(kubectl get ingress -o jsonpath='{.items[*].metadata.name}' -l 'app=${{ matrix.project }}')
             kubectl annotate ingress "$ingress" 'nginx.ingress.kubernetes.io/configuration-snippet=' --overwrite
 
+  ingress-alerts:
+    name: ${{ inputs.action == 'enable' && 'Disable' || 'Enable' }} ingress alerts
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
+    needs: get-projects
+    strategy:
+      matrix:
+        project: ${{ fromJson(needs.get-projects.outputs.projects) }}
+    steps:
+      - uses: actions/checkout@v5
+      - uses: ./.github/actions/cloud-platform-auth
+        with:
+          api: ${{ secrets.KUBE_ENV_API }}
+          cert: ${{ secrets.KUBE_CERT }}
+          cluster: ${{ secrets.KUBE_CLUSTER }}
+          namespace: ${{ secrets.KUBE_NAMESPACE }}
+          token: ${{ secrets.KUBE_TOKEN }}
+
+      - name: Disable ingress alerts
+        if: inputs.action == 'enable'
+        run: kubectl get prometheusrule "${project}-ingress" -o json | jq '(.spec.groups[].rules[].expr) |= . + " and false"' | kubectl apply -f -
+        env:
+          project: ${{ matrix.project }}
+
+      - name: Enable ingress alerts
+        if: inputs.action == 'disable'
+        run: kubectl get prometheusrule "${project}-ingress" -o json | jq '(.spec.groups[].rules[].expr) |= sub(" and false$"; "")' | kubectl apply -f -
+        env:
+          project: ${{ matrix.project }}
+
   block-pipeline:
     name: Block deployment pipeline
     needs:
