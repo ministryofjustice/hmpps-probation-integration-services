@@ -854,24 +854,24 @@
                                 </thead>
                                 <tbody>
                                 <tr>
+                                    <td>ASSESSMENT_XOR</td>
+                                    <td> (&#10;(STAFF_ID IS NOT NULL AND PROVIDER_EMPLOYEE_ID IS NULL)&#10;OR&#10;(STAFF_ID IS NULL AND PROVIDER_EMPLOYEE_ID IS NOT NULL)&#10;) </td>
+                                </tr>
+                                <tr>
                                     <td>ASSESSMENT_TEAM_XOR</td>
                                     <td> (&#10;(TEAM_ID IS NOT NULL AND PROVIDER_TEAM_ID IS NULL)&#10;OR&#10;(TEAM_ID IS NULL AND PROVIDER_TEAM_ID IS NOT NULL)&#10;) </td>
-                                </tr>
-                                <tr>
-                                    <td>YES_OR_NO_OR_UNKNOWN</td>
-                                    <td>OFFENDERS_AGREEMENT IN (&#39;N&#39;,&#39;Y&#39;,&#39;U&#39;)</td>
-                                </tr>
-                                <tr>
-                                    <td>YES_OR_NO_ONLY_1291962580</td>
-                                    <td>DOCUMENT_LINKED IN (&#39;Y&#39;,&#39;N&#39;)</td>
                                 </tr>
                                 <tr>
                                     <td>TRUE_OR_FALSE15</td>
                                     <td>SOFT_DELETED IN (0, 1)</td>
                                 </tr>
                                 <tr>
-                                    <td>ASSESSMENT_XOR</td>
-                                    <td> (&#10;(STAFF_ID IS NOT NULL AND PROVIDER_EMPLOYEE_ID IS NULL)&#10;OR&#10;(STAFF_ID IS NULL AND PROVIDER_EMPLOYEE_ID IS NOT NULL)&#10;) </td>
+                                    <td>YES_OR_NO_ONLY_1291962580</td>
+                                    <td>DOCUMENT_LINKED IN (&#39;Y&#39;,&#39;N&#39;)</td>
+                                </tr>
+                                <tr>
+                                    <td>YES_OR_NO_OR_UNKNOWN</td>
+                                    <td>OFFENDERS_AGREEMENT IN (&#39;N&#39;,&#39;Y&#39;,&#39;U&#39;)</td>
                                 </tr>
                                 </tbody>
                             </table>
