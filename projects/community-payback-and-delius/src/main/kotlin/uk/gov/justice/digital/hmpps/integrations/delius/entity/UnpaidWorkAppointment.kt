@@ -9,6 +9,7 @@ import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedDate
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
+import uk.gov.justice.digital.hmpps.model.CodeDescription
 import uk.gov.justice.digital.hmpps.model.AppointmentResponseCase
 import uk.gov.justice.digital.hmpps.model.AppointmentResponseName
 import java.time.LocalDate
@@ -159,9 +160,7 @@ interface UnpaidWorkSessionDto {
     val enforcementActionCount: Long
 
     fun toModel() = UnpaidWorkSession(
-        projectId,
-        projectName,
-        projectCode,
+        CodeDescription(projectCode, projectName),
         startTime,
         endTime,
         appointmentDate,
@@ -172,12 +171,10 @@ interface UnpaidWorkSessionDto {
 }
 
 data class UnpaidWorkSession(
-    val projectId: Long,
-    val projectName: String,
-    val projectCode: String,
+    val project: CodeDescription,
     val startTime: LocalTime,
     val endTime: LocalTime,
-    val appointmentDate: LocalDate,
+    val date: LocalDate,
     val allocatedCount: Long,
     val outcomeCount: Long,
     val enforcementActionCount: Long
