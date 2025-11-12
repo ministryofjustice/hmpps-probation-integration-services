@@ -46,6 +46,6 @@ class ProvidersService(
         val team = teamRepository.findTeamByCode(teamCode)
         val sessions = unpaidWorkAppointmentRepository.getUnpaidWorkSessionDetails(team.id, startDate, endDate)
 
-        return SessionsResponse(sessions.map { it.toDto() })
+        return SessionsResponse(sessions.map { it.toModel() })
     }
 }
