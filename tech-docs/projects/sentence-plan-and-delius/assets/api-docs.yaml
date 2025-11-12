@@ -172,10 +172,13 @@ components:
         rarDaysCompleted:
           type: integer
           format: int32
+        rarRequirement:
+          type: boolean
       required:
       - programmeRequirement
       - rarDaysCompleted
       - rarDaysOrdered
+      - rarRequirement
       - unpaidWorkHoursOrdered
       - unpaidWorkMinutesCompleted
     FirstAppointment:

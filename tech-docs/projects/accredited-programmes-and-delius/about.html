@@ -93,8 +93,30 @@
               <nav id="toc" class="js-toc-list toc__list" aria-labelledby="toc-heading">
                       <ul>
   <li>
-    <a href="#accredited-programmes-and-delius"><span>accredited-programmes-and-delius</span></a>
+    <a href="#accredited-programmes-and-delius"><span>Accredited Programmes and Delius</span></a>
     <ul>
+      <li>
+        <a href="#business-need"><span>Business Need</span></a>
+        <ul>
+          <li>
+            <a href="#context-map"><span>Context Map</span></a>
+          </li>
+        </ul>
+      </li>
+      <li>
+        <a href="#workflows"><span>Workflows</span></a>
+        <ul>
+          <li>
+            <a href="#status-changes"><span>Status Changes</span></a>
+          </li>
+          <li>
+            <a href="#appointments"><span>Appointments</span></a>
+          </li>
+          <li>
+            <a href="#api-access-control"><span>API Access Control</span></a>
+          </li>
+        </ul>
+      </li>
       <li>
         <a href="#api-reference"><span>API Reference</span></a>
       </li>
@@ -109,9 +131,81 @@
 
         <div class="app-pane__content toc-open-disabled" aria-label="Content">
           <main id="content" class="technical-documentation" data-module="anchored-headings">
-            <h1 id="accredited-programmes-and-delius">accredited-programmes-and-delius</h1>
-<p>// TODO Describe the service</p>
-<h2 id="api-reference">API Reference</h2>
+            <h1 id="accredited-programmes-and-delius">Accredited Programmes and Delius</h1>
+<p>An integration service to enable
+the <a href="https://github.com/ministryofjustice/hmpps-accredited-programmes-manage-and-deliver-ui">Accredited Programmes in Community</a>
+service to exchange data with Delius, supporting the replacement of the IAPS (Integrated Accredited Programme System)
+and IM (Interventions Manager) systems.</p>
+<h2 id="business-need">Business Need</h2>
+<p>The Accredited Programmes service needs to:</p>
+
+<ul>
+<li>Display probation case information</li>
+<li>Create and manage programme appointments in Delius</li>
+<li>Log status changes and important events to the Delius contact log</li>
+</ul>
+<p>This service acts as the integration layer between the Accredited Programmes service and Delius, providing
+synchronous APIs for probation case information and appointment management along with asynchronous consumption of domain
+events for status changes.</p>
+<h3 id="context-map">Context Map</h3>
+<p><a href=".https://raw.githubusercontent.com/ministryofjustice/hmpps-probation-integration-services/refs/heads/main/projects/accredited-programmes-and-delius/.https://github.com/ministryofjustice/hmpps-probation-integration-services/blob/main/projects/accredited-programmes-and-delius/doc/tech-docs/source/images/accredited-programmes-and-delius-context-map.svg" rel="noopener noreferrer"><img src=".https://raw.githubusercontent.com/ministryofjustice/hmpps-probation-integration-services/refs/heads/main/projects/accredited-programmes-and-delius/.https://github.com/ministryofjustice/hmpps-probation-integration-services/blob/main/projects/accredited-programmes-and-delius/doc/tech-docs/source/images/accredited-programmes-and-delius-context-map.svg" alt="Context Map" /></a></p>
+<h2 id="workflows">Workflows</h2>
+<h3 id="status-changes">Status Changes</h3>
+
+<ul>
+<li>Accredited Programmes updates the status for the person on a programme (e.g. &ldquo;on programme&rdquo;, &ldquo;programme completed&rdquo;, &ldquo;
+withdrawn&rdquo;).</li>
+<li>The integration service adds a contact to Delius to inform the offender&rsquo;s practitioner of the status change.</li>
+</ul>
+<div class="table-container">
+        <table>
+          <tr>
+<th>Business Event</th>
+<th>HMPPS Domain Event</th>
+</tr><tr>
+<td>Status change</td>
+<td><code>accredited-programmes-community.referral.status-updated</code></td>
+</tr>
+        </table>
+      </div><p>Example <a href="https://github.com/ministryofjustice/hmpps-probation-integration-services/blob/main/projects/accredited-programmes-and-delius/src/dev/resources/messages">messages</a> are in the development source tree.</p>
+<h3 id="appointments">Appointments</h3>
+
+<ul>
+<li>Programme attendance appointments and 3‑way meetings are created or updated in bulk by Accredited Programmes.</li>
+<li>Delius contacts are updated and linked to the Accredited Programmes session records via external reference.</li>
+</ul>
+<div class="table-container">
+        <table>
+          <tr>
+<th>Business Event</th>
+<th>API Endpoint</th>
+</tr><tr>
+<td>Find appointments</td>
+<td>POST /appointments/search</td>
+</tr><tr>
+<td>Create appointments</td>
+<td>POST /appointments</td>
+</tr><tr>
+<td>Update appointments (logging outcomes, rescheduling, etc.)</td>
+<td>PUT /appointments</td>
+</tr><tr>
+<td>Delete appointments</td>
+<td>DELETE /appointments</td>
+</tr>
+        </table>
+      </div><h3 id="api-access-control">API Access Control</h3>
+<p>API endpoints are secured by roles supplied by the HMPPS Auth client:</p>
+<div class="table-container">
+        <table>
+          <tr>
+<th>API Endpoint</th>
+<th>Required Role</th>
+</tr><tr>
+<td>All endpoints</td>
+<td>ROLE_PROBATION_API_<em>ACCREDITED_PROGRAMMES</em>_CASE_DETAIL</td>
+</tr>
+        </table>
+      </div><h2 id="api-reference">API Reference</h2>
 
 <ul>
 <li><a href="api-reference.html">API Reference</a></li>

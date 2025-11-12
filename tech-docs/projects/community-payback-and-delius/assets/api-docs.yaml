@@ -117,9 +117,7 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/UnpaidWorkSessionDto"
+                $ref: "#/components/schemas/SessionsResponse"
   /providers/{code}/teams:
     get:
       tags:
@@ -233,21 +231,25 @@ components:
             $ref: "#/components/schemas/Supervisor"
       required:
       - supervisors
+    SessionsResponse:
+      type: object
+      properties:
+        sessions:
+          type: array
+          items:
+            $ref: "#/components/schemas/UnpaidWorkSessionDto"
+      required:
+      - sessions
     UnpaidWorkSessionDto:
       type: object
       properties:
-        projectId:
-          type: integer
-          format: int64
-        projectName:
-          type: string
-        projectCode:
-          type: string
+        project:
+          $ref: "#/components/schemas/CodeDescription"
         startTime:
           type: string
         endTime:
           type: string
-        appointmentDate:
+        date:
           type: string
           format: date
         allocatedCount:
@@ -261,13 +263,11 @@ components:
           format: int64
       required:
       - allocatedCount
-      - appointmentDate
+      - date
       - endTime
       - enforcementActionCount
       - outcomeCount
-      - projectCode
-      - projectId
-      - projectName
+      - project
       - startTime
     TeamsResponse:
       type: object
