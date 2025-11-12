@@ -33,6 +33,8 @@ events for status changes.
 |----------------|-----------------------------------------------------------|
 | Status change  | `accredited-programmes-community.referral.status-updated` |
 
+Example [messages](./src/dev/resources/messages) are in the development source tree.
+
 ### Appointments
 
 - Programme attendance appointments and 3‑way meetings are created or updated in bulk by Accredited Programmes.
