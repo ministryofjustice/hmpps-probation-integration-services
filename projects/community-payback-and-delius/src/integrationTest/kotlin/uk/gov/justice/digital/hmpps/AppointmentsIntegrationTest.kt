@@ -15,8 +15,10 @@ import uk.gov.justice.digital.hmpps.data.generator.UPWGenerator
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.Behaviour
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.WorkQuality
 import uk.gov.justice.digital.hmpps.model.AppointmentResponse
+import uk.gov.justice.digital.hmpps.model.SessionResponse
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
+import java.time.LocalDate
 import java.util.*
 
 @AutoConfigureMockMvc
@@ -47,5 +49,24 @@ class AppointmentsIntegrationTest {
         assertThat(response.enforcementAction!!.respondBy).isEqualTo(response.date.plusDays(ReferenceDataGenerator.DEFAULT_ENFORCEMENT_ACTION.responseByPeriod))
         assertThat(response.behaviour).isEqualTo(Behaviour.EX.value)
         assertThat(response.workQuality).isEqualTo(WorkQuality.EX.value)
+    }
+
+    @Test
+    fun `can retrieve single session details`() {
+        val response = mockMvc
+            .perform(
+                get(
+                    "/projects/N01DEFAULT/appointments?date=${
+                        LocalDate.now().plusDays(1)
+                    }&startTime=12:00&endTime=14:00&username=DefaultUser"
+                ).withToken()
+            )
+            .andExpect(status().is2xxSuccessful)
+            .andReturn().response.contentAsJson<SessionResponse>()
+
+        assertThat(response.project.name).isEqualTo("Default UPW Project")
+        assertThat(response.appointmentSummaries.size).isEqualTo(2)
+        assertThat(response.appointmentSummaries[0].case.crn).isEqualTo("Z000001")
+        assertThat(response.appointmentSummaries[0].requirementProgress.requiredMinutes).isEqualTo(120 * 60)
     }
 }

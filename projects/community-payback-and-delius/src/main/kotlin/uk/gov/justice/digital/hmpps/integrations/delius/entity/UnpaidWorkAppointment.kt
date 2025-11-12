@@ -10,6 +10,8 @@ import org.springframework.data.annotation.LastModifiedDate
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import uk.gov.justice.digital.hmpps.model.CodeDescription
+import uk.gov.justice.digital.hmpps.model.AppointmentResponseCase
+import uk.gov.justice.digital.hmpps.model.AppointmentResponseName
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.ZonedDateTime
@@ -84,6 +86,8 @@ class UpwAppointment(
     @JoinColumn(name = "behaviour_id")
     val behaviour: ReferenceData?,
 
+    val minutesCredited: Long? = null,
+
     @Version
     val rowVersion: Long,
 
@@ -92,6 +96,20 @@ class UpwAppointment(
 
     @LastModifiedDate
     var lastUpdatedDatetime: ZonedDateTime = ZonedDateTime.now()
+)
+
+fun UpwAppointment.toAppointmentResponseCase() = AppointmentResponseCase(
+    crn = this.person.crn,
+    name = AppointmentResponseName(
+        forename = this.person.forename,
+        surname = this.person.surname,
+        middleNames = this.person.secondName?.let { names -> listOf(names) } ?: emptyList()
+    ),
+    dateOfBirth = this.person.dateOfBirth,
+    currentExclusion = this.person.currentExclusion,
+    exclusionMessage = this.person.exclusionMessage,
+    currentRestriction = this.person.currentRestriction,
+    restrictionMessage = this.person.restrictionMessage,
 )
 
 enum class WorkQuality(val value: String) {
@@ -105,40 +123,6 @@ enum class Behaviour(val value: String) {
 }
 
 @Entity
-@Table(name = "upw_project")
-@Immutable
-class UpwProject(
-    @Id
-    @Column(name = "upw_project_id")
-    val id: Long,
-
-    val name: String,
-
-    val code: String,
-
-    val teamId: Long,
-
-    @ManyToOne
-    @JoinColumn(name = "placement_address_id")
-    val placementAddress: Address?,
-
-    @ManyToOne
-    @JoinColumn(name = "project_type_id")
-    val projectType: ReferenceData
-)
-
-@Entity
-@Table(name = "upw_project_availability")
-@Immutable
-class UpwProjectAvailability(
-    @Id
-    @Column(name = "upw_project_availability_id")
-    val id: Long,
-
-    val upwProjectId: Long
-)
-
-@Entity
 @Table(name = "upw_details")
 @Immutable
 class UpwDetails(
@@ -146,67 +130,11 @@ class UpwDetails(
     @Column(name = "upw_details_id")
     val id: Long,
 
-    val disposalId: Long
-)
-
-@Entity
-@Table(name = "disposal")
-@Immutable
-class Disposal(
-    @Id
-    @Column(name = "disposal_id")
-    val id: Long,
+    val disposalId: Long,
 
     @Column(columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)
-    val softDeleted: Boolean = false,
-)
-
-@Entity
-@Table(name = "contact")
-@Immutable
-class Contact(
-    @Id
-    @Column(name = "contact_id")
-    val id: Long,
-
-    @ManyToOne
-    @JoinColumn(name = "contact_outcome_type_id")
-    val contactOutcome: ContactOutcome?,
-
-    @ManyToOne
-    @JoinColumn(name = "latest_enforcement_action_id")
-    val latestEnforcementAction: EnforcementAction?,
-
-    @Lob
-    val notes: String?,
-
-    @Convert(converter = YesNoConverter::class)
-    val sensitive: Boolean?,
-
-    @Convert(converter = YesNoConverter::class)
-    val alertActive: Boolean?,
-
-    @Version
-    val rowVersion: Long
-)
-
-@Entity
-@Table(name = "r_enforcement_action")
-@Immutable
-class EnforcementAction(
-    @Id
-    @Column(name = "enforcement_action_id")
-    val id: Long,
-
-    val code: String,
-
-    val description: String,
-
-    val responseByPeriod: Long,
-
-    @Convert(converter = YesNoConverter::class)
-    val outstandingContactAction: Boolean
+    val softDeleted: Boolean = false
 )
 
 @JsonPropertyOrder(
@@ -220,7 +148,7 @@ class EnforcementAction(
     "outcomeCount",
     "enforcementActionCount"
 )
-interface UnpaidWorkSession {
+interface UnpaidWorkSessionDto {
     val projectId: Long
     val projectName: String
     val projectCode: String
@@ -230,9 +158,19 @@ interface UnpaidWorkSession {
     val allocatedCount: Long
     val outcomeCount: Long
     val enforcementActionCount: Long
+
+    fun toModel() = UnpaidWorkSession(
+        CodeDescription(projectCode, projectName),
+        startTime,
+        endTime,
+        appointmentDate,
+        allocatedCount,
+        outcomeCount,
+        enforcementActionCount
+    )
 }
 
-data class UnpaidWorkSessionDto(
+data class UnpaidWorkSession(
     val project: CodeDescription,
     val startTime: LocalTime,
     val endTime: LocalTime,
@@ -242,14 +180,16 @@ data class UnpaidWorkSessionDto(
     val enforcementActionCount: Long
 )
 
-fun UnpaidWorkSession.toDto() = UnpaidWorkSessionDto(
-    CodeDescription(projectCode, projectName),
-    startTime,
-    endTime,
-    appointmentDate,
-    allocatedCount,
-    outcomeCount,
-    enforcementActionCount
+interface UpwMinutesDto {
+    val requiredMinutes: Long
+    val completedMinutes: Long
+
+    fun toModel() = UpwMinutes(requiredMinutes, completedMinutes)
+}
+
+data class UpwMinutes(
+    val requiredMinutes: Long,
+    val completedMinutes: Long
 )
 
 interface UnpaidWorkAppointmentRepository : JpaRepository<UpwAppointment, Long> {
@@ -294,11 +234,38 @@ interface UnpaidWorkAppointmentRepository : JpaRepository<UpwAppointment, Long> 
             order by uwa.appointment_date asc, uwp.upw_project_name
         """, nativeQuery = true
     )
-    fun getUnpaidWorkSessionDetails(teamId: Long, startDate: LocalDate, endDate: LocalDate): List<UnpaidWorkSession>
+    fun getUnpaidWorkSessionDetails(teamId: Long, startDate: LocalDate, endDate: LocalDate): List<UnpaidWorkSessionDto>
 
     fun getUpwAppointmentById(appointmentId: Long): UpwAppointment
-}
 
-interface UnpaidWorkProjectRepository : JpaRepository<UpwProject, Long> {
-    fun getUpwProjectByCode(projectCode: String): UpwProject
+    fun getUpwAppointmentsByAppointmentDateAndStartTimeAndEndTime(
+        appointmentDate: LocalDate,
+        startTime: LocalTime, endTime: LocalTime
+    ): List<UpwAppointment>
+
+    @Query(
+        """
+        SELECT
+            CASE
+                WHEN r_disposal_type.pre_cja2003 = 'Y' THEN disposal.length * 60
+                ELSE COALESCE(
+                        (SELECT SUM(rqmnt.length) * 60 FROM rqmnt rqmnt
+                         JOIN r_rqmnt_type_main_category ON r_rqmnt_type_main_category.rqmnt_type_main_category_id = rqmnt.rqmnt_type_main_category_id AND r_rqmnt_type_main_category.code = 'W'
+                         WHERE rqmnt.disposal_id = disposal.disposal_id AND rqmnt.soft_deleted = 0),
+                        0)
+                END AS "requiredMinutes",
+            COALESCE(
+                    (SELECT SUM(appts.minutes_credited) FROM upw_appointment appts WHERE appts.upw_details_id = upw_details.upw_details_id AND appts.soft_deleted = 0),
+                    0)
+                AS "completedMinutes"
+        FROM upw_details
+        JOIN disposal
+             ON disposal.disposal_id = upw_details.disposal_id
+        JOIN r_disposal_type
+             ON r_disposal_type.disposal_type_id = disposal.disposal_type_id
+        WHERE upw_details.soft_deleted = 0
+          AND upw_details.upw_details_id = :upwDetailsId;
+    """, nativeQuery = true
+    )
+    fun getUpwRequiredAndCompletedMinutes(upwDetailsId: Long): UpwMinutesDto
 }

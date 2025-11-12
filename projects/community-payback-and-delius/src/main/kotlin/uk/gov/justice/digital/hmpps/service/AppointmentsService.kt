@@ -1,11 +1,10 @@
 package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.stereotype.Service
-import uk.gov.justice.digital.hmpps.integrations.delius.entity.Behaviour
-import uk.gov.justice.digital.hmpps.integrations.delius.entity.UnpaidWorkAppointmentRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.entity.UnpaidWorkProjectRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.entity.WorkQuality
+import uk.gov.justice.digital.hmpps.integrations.delius.entity.*
 import uk.gov.justice.digital.hmpps.model.*
+import java.time.LocalDate
+import java.time.LocalTime
 import java.util.*
 
 @Service
@@ -29,19 +28,7 @@ class AppointmentsService(
                 project.projectType.description,
                 project.projectType.code
             ),
-            case = AppointmentResponseCase(
-                crn = appointment.person.crn,
-                name = AppointmentResponseName(
-                    forename = appointment.person.forename,
-                    surname = appointment.person.surname,
-                    middleNames = appointment.person.secondName?.let { listOf(it) } ?: emptyList()
-                ),
-                dateOfBirth = appointment.person.dateOfBirth,
-                currentExclusion = appointment.person.currentExclusion,
-                exclusionMessage = appointment.person.exclusionMessage,
-                currentRestriction = appointment.person.currentRestriction,
-                restrictionMessage = appointment.person.restrictionMessage,
-            ),
+            case = appointment.toAppointmentResponseCase(),
             supervisor = AppointmentResponseSupervisor(
                 code = appointment.staff.code,
                 name = AppointmentResponseName(
@@ -66,12 +53,7 @@ class AppointmentsService(
             startTime = appointment.startTime,
             endTime = appointment.endTime,
             penaltyHours = penaltyTimeToHHmm(appointment.penaltyTime),
-            outcome = appointment.contact.contactOutcome?.let {
-                CodeDescription(
-                    appointment.contact.contactOutcome.code,
-                    appointment.contact.contactOutcome.description,
-                )
-            },
+            outcome = appointment.contact.contactOutcome?.toCodeDescription(),
             enforcementAction = appointment.contact.latestEnforcementAction?.let {
                 AppointmentResponseEnforcementAction(
                     appointment.contact.latestEnforcementAction.code,
@@ -87,6 +69,39 @@ class AppointmentsService(
             updatedAt = appointment.lastUpdatedDatetime,
             sensitive = appointment.contact.sensitive,
             alertActive = appointment.contact.alertActive
+        )
+    }
+
+    fun getSession(
+        projectCode: String,
+        date: LocalDate,
+        startTime: LocalTime,
+        endTime: LocalTime,
+        username: String
+    ): SessionResponse {
+        val project = unpaidWorkProjectRepository.getUpwProjectByCode(projectCode)
+        val appointments = unpaidWorkAppointmentRepository.getUpwAppointmentsByAppointmentDateAndStartTimeAndEndTime(
+            date, startTime, endTime
+        )
+
+        val appointmentSummaries = appointments.map {
+            val minutes = unpaidWorkAppointmentRepository.getUpwRequiredAndCompletedMinutes(it.upwDetailsId).toModel()
+
+            SessionResponseAppointmentSummary(
+                id = it.id,
+                case = it.toAppointmentResponseCase(),
+                outcome = it.contact.contactOutcome?.toCodeDescription(),
+                requirementProgress = minutes,
+            )
+        }
+
+        return SessionResponse(
+            project = AppointmentResponseProject(
+                name = project.name,
+                code = project.code,
+                location = project.placementAddress?.toAppointmentResponseAddress()
+            ),
+            appointmentSummaries = appointmentSummaries
         )
     }
 

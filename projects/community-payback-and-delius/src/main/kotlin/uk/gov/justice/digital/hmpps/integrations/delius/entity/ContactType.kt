@@ -4,6 +4,7 @@ import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
+import uk.gov.justice.digital.hmpps.model.CodeDescription
 import java.io.Serializable
 
 @Entity
@@ -34,6 +35,8 @@ class ContactOutcome(
     @Column(name = "contact_outcome_type_id")
     val id: Long,
 )
+
+fun ContactOutcome.toCodeDescription() = CodeDescription(this.code, this.description)
 
 @Immutable
 @Entity
