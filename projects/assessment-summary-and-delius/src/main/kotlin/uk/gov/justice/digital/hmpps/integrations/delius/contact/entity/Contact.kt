@@ -88,11 +88,8 @@ class Contact(
     var notes: String? = null
         private set
 
-    fun withNotes(notes: String?): Contact {
-        this.notes = (this.notes ?: "") + """${System.lineSeparator()}
-            |$notes
-        """.trimMargin()
-        return this
+    fun withNotes(notes: String?) = this.apply {
+        this.notes = listOfNotNull(this.notes, notes).joinToString("\n")
     }
 
     fun updateWithDetail(contactDetail: ContactDetail): Contact = apply {

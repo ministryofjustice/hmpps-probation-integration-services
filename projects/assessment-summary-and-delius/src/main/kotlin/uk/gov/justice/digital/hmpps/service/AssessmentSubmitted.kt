@@ -47,10 +47,8 @@ class AssessmentSubmitted(
             it["CRN"] = person.crn
 
             val ta = TelemetryAggregator()
-            val registrationEvents = riskService.recordRisk(person, summary) { key, value -> ta.add(key, value) }
+            riskService.recordRisk(person, summary) { key, value -> ta.add(key, value) }
             telemetryParams.putAll(ta.params())
-
-            domainEventService.publishEvents(registrationEvents)
         }
 
         contact.copyToVisor = riskService.activeVisorAndMappa(person)

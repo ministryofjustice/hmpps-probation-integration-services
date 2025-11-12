@@ -13,6 +13,7 @@ import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.Contact
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactType
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.AuditableEntity
+import uk.gov.justice.digital.hmpps.integrations.delius.entity.AuditableNonPartitionedEntity
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.ReferenceData
 import java.time.LocalDate
 
@@ -34,10 +35,10 @@ class Registration(
     val contact: Contact,
 
     @Column(name = "registering_team_id")
-    val teamId: Long,
+    val teamId: Long = contact.teamId,
 
     @Column(name = "registering_staff_id")
-    val staffId: Long,
+    val staffId: Long = contact.staffId,
 
     @ManyToOne
     @JoinColumn(name = "register_type_id")
@@ -51,11 +52,30 @@ class Registration(
     @JoinColumn(name = "register_level_id")
     var level: ReferenceData? = null,
 
+    @ManyToOne
+    @JoinColumn(name = "initial_register_category_id")
+    val initialCategory: ReferenceData? = null,
+
+    @ManyToOne
+    @JoinColumn(name = "initial_register_level_id")
+    val initialLevel: ReferenceData? = null,
+
     var nextReviewDate: LocalDate? = null,
+
+    @Column(columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
+    var deregistered: Boolean = false,
+
+    @OneToOne(mappedBy = "registration", cascade = [CascadeType.ALL])
+    var deregistration: DeRegistration? = null,
+
+    @OneToMany(mappedBy = "registration", cascade = [CascadeType.ALL], orphanRemoval = true)
+    @OrderBy("date, createdDatetime")
+    var reviews: MutableList<RegistrationReview> = mutableListOf(),
 
     @Lob
     @Column(name = "registration_notes")
-    val notes: String? = null,
+    var notes: String? = null,
 
     @Column(columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)
@@ -65,43 +85,7 @@ class Registration(
     @Column(name = "registration_id")
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "registration_id_seq")
     val id: Long = 0
-) : AuditableEntity() {
-
-    @Column(columnDefinition = "number")
-    @Convert(converter = NumericBooleanConverter::class)
-    var deregistered: Boolean = false
-        private set
-
-    @OneToOne(mappedBy = "registration", cascade = [CascadeType.ALL])
-    var deregistration: DeRegistration? = null
-        private set
-
-    @OneToMany(mappedBy = "registration", cascade = [CascadeType.ALL], orphanRemoval = true)
-    @OrderBy("date, createdDatetime")
-    var reviews: MutableList<RegistrationReview> = mutableListOf()
-        private set
-
-    fun withReview(contact: Contact, notes: String? = contact.notes): Registration {
-        reviews += RegistrationReview(personId, this, contact, nextReviewDate, null, teamId, staffId, notes)
-        return this
-    }
-
-    fun deregister(contact: Contact): Boolean {
-        deregistration = DeRegistration(LocalDate.now(), this, personId, contact, contact.teamId, contact.staffId)
-        deregistered = true
-        nextReviewDate = null
-        reviews.removeIf { !it.completed && it.notes.isNullOrBlank() && it.lastUpdatedDatetime == it.createdDatetime }
-        return reviews.lastOrNull()?.let {
-            it.reviewDue = null
-            if (it.completed) {
-                false
-            } else {
-                it.completed = true
-                true
-            }
-        } == true
-    }
-}
+) : AuditableEntity()
 
 @Immutable
 @Table(name = "r_register_type")
@@ -163,13 +147,12 @@ class RegisterDuplicateGroup(
 @SequenceGenerator(name = "registration_review_id_seq", sequenceName = "registration_review_id_seq", allocationSize = 1)
 @EntityListeners(AuditingEntityListener::class)
 class RegistrationReview(
-
-    @Column(name = "offender_id")
-    val personId: Long,
-
     @ManyToOne
     @JoinColumn(name = "registration_id")
     val registration: Registration,
+
+    @Column(name = "offender_id")
+    val personId: Long = registration.personId,
 
     @OneToOne(cascade = [CascadeType.ALL])
     @JoinColumn(name = "contact_id")
@@ -190,6 +173,14 @@ class RegistrationReview(
     @Lob
     var notes: String? = null,
 
+    @ManyToOne
+    @JoinColumn(name = "register_category_id")
+    val category: ReferenceData? = null,
+
+    @ManyToOne
+    @JoinColumn(name = "register_level_id")
+    val level: ReferenceData? = null,
+
     @Convert(converter = YesNoConverter::class)
     var completed: Boolean = false,
 
@@ -202,6 +193,43 @@ class RegistrationReview(
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "registration_review_id_seq")
     val id: Long = 0
 ) : AuditableEntity()
+
+@Entity
+@Table(name = "reg_category_level_history")
+@SequenceGenerator(
+    name = "reg_cat_level_history_id_seq",
+    sequenceName = "reg_cat_level_history_id_seq",
+    allocationSize = 1
+)
+@EntityListeners(AuditingEntityListener::class)
+class RegistrationHistory(
+    @ManyToOne
+    @JoinColumn(name = "registration_id")
+    val registration: Registration,
+
+    @Column
+    val startDate: LocalDate,
+
+    @Column
+    var endDate: LocalDate? = null,
+
+    @ManyToOne
+    @JoinColumn(name = "register_category_id")
+    val category: ReferenceData? = registration.category,
+
+    @ManyToOne
+    @JoinColumn(name = "register_level_id")
+    val level: ReferenceData? = registration.level,
+
+    @Column(columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
+    val softDeleted: Boolean = false,
+
+    @Id
+    @Column(name = "reg_category_level_history_id")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "reg_cat_level_history_id_seq")
+    val id: Long = 0,
+) : AuditableNonPartitionedEntity()
 
 @Entity
 @SQLRestriction("soft_deleted = 0")
@@ -218,7 +246,7 @@ class DeRegistration(
     val registration: Registration,
 
     @Column(name = "offender_id")
-    val personId: Long,
+    val personId: Long = registration.personId,
 
     @OneToOne
     @JoinColumn(name = "contact_id")
@@ -244,7 +272,10 @@ interface RegistrationRepository : JpaRepository<Registration, Long> {
     fun findByPersonIdAndTypeFlagCode(personId: Long, flagCode: String): List<Registration>
 
     @EntityGraph(attributePaths = ["contact", "type.flag", "type.registrationContactType", "type.reviewContactType", "reviews.contact"])
-    fun findByPersonIdAndTypeCodeIn(personId: Long, typeCodes: List<String>): List<Registration>
+    fun findByPersonIdAndTypeCodeInOrderByLastUpdatedDatetimeDesc(
+        personId: Long,
+        typeCodes: List<String>
+    ): List<Registration>
 
     @Query(
         """
@@ -267,7 +298,10 @@ interface RegisterTypeCount {
 }
 
 fun RegistrationRepository.findByPersonIdAndTypeCode(personId: Long, typeCode: String) =
-    findByPersonIdAndTypeCodeIn(personId, listOf(typeCode))
+    findByPersonIdAndTypeCodeInOrderByLastUpdatedDatetimeDesc(personId, listOf(typeCode))
+
+fun RegistrationRepository.findByPersonIdAndTypeCodeIn(personId: Long, typeCodes: List<String>) =
+    findByPersonIdAndTypeCodeInOrderByLastUpdatedDatetimeDesc(personId, typeCodes)
 
 interface RegisterTypeRepository : JpaRepository<RegisterType, Long> {
     @EntityGraph(attributePaths = ["flag", "registrationContactType", "reviewContactType"])
@@ -286,3 +320,7 @@ interface RegisterTypeRepository : JpaRepository<RegisterType, Long> {
 
 fun RegisterTypeRepository.getByCode(code: String) =
     findByCode(code) ?: throw NotFoundException("RegisterType", "code", code)
+
+interface RegistrationHistoryRepository : JpaRepository<RegistrationHistory, Long> {
+    fun findByRegistrationIdAndEndDateIsNull(registrationId: Long): RegistrationHistory?
+}
