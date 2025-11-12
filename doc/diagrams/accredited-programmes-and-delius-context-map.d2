@@ -1,0 +1,34 @@
+
+style { ...@common/style.style }
+vars { ...@common/style.vars }
+** { ...@common/style.all-style }
+
+context-accredited-programmes: Accredited Programmes Context {
+  entities: Entities {
+    grid-columns: 3
+    referral: Referral
+    status: Status
+    attendance: Attendance
+  }
+}
+
+context-delius: Delius Context {
+  entities: Entities {
+    grid-columns: 3
+    pop: Person on Probation
+    sentence: Sentence
+    lc: Licence Condition
+    requirement: Requirement
+    staff: Practitioner
+    team: Team
+    contacts: Contact
+    appointments: Appointment
+    ea: Enforcement Action
+  }
+
+  interface: Accredited Programmes and Delius {
+    type: Anti-Corruption Layer
+  }
+}
+
+context-accredited-programmes--context-delius.interface: Upstream\n\n\nDownstream
