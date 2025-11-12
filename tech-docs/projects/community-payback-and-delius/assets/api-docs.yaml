@@ -136,6 +136,45 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/TeamsResponse"
+  /projects/{projectCode}/appointments:
+    get:
+      tags:
+      - appointments-controller
+      operationId: getSession
+      parameters:
+      - name: projectCode
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: date
+        in: query
+        required: true
+        schema:
+          type: string
+          format: date
+      - name: startTime
+        in: query
+        required: true
+        schema:
+          type: string
+      - name: endTime
+        in: query
+        required: true
+        schema:
+          type: string
+      - name: username
+        in: query
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SessionResponse"
   /projects/{projectCode}/appointments/{appointmentId}:
     get:
       tags:
@@ -237,10 +276,10 @@ components:
         sessions:
           type: array
           items:
-            $ref: "#/components/schemas/UnpaidWorkSessionDto"
+            $ref: "#/components/schemas/UnpaidWorkSession"
       required:
       - sessions
-    UnpaidWorkSessionDto:
+    UnpaidWorkSession:
       type: object
       properties:
         project:
@@ -278,6 +317,112 @@ components:
             $ref: "#/components/schemas/CodeDescription"
       required:
       - teams
+    AppointmentResponseAddress:
+      type: object
+      properties:
+        streetName:
+          type: string
+        buildingName:
+          type: string
+        addressNumber:
+          type: string
+        townCity:
+          type: string
+        county:
+          type: string
+        postCode:
+          type: string
+    AppointmentResponseCase:
+      type: object
+      properties:
+        crn:
+          type: string
+        name:
+          $ref: "#/components/schemas/AppointmentResponseName"
+        dateOfBirth:
+          type: string
+          format: date
+        currentExclusion:
+          type: boolean
+        exclusionMessage:
+          type: string
+        currentRestriction:
+          type: boolean
+        restrictionMessage:
+          type: string
+      required:
+      - crn
+      - currentExclusion
+      - currentRestriction
+      - dateOfBirth
+      - name
+    AppointmentResponseName:
+      type: object
+      properties:
+        forename:
+          type: string
+        surname:
+          type: string
+        middleNames:
+          type: array
+          items:
+            type: string
+      required:
+      - forename
+      - middleNames
+      - surname
+    AppointmentResponseProject:
+      type: object
+      properties:
+        name:
+          type: string
+        code:
+          type: string
+        location:
+          $ref: "#/components/schemas/AppointmentResponseAddress"
+      required:
+      - code
+      - name
+    SessionResponse:
+      type: object
+      properties:
+        project:
+          $ref: "#/components/schemas/AppointmentResponseProject"
+        appointmentSummaries:
+          type: array
+          items:
+            $ref: "#/components/schemas/SessionResponseAppointmentSummary"
+      required:
+      - appointmentSummaries
+      - project
+    SessionResponseAppointmentSummary:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        case:
+          $ref: "#/components/schemas/AppointmentResponseCase"
+        outcome:
+          $ref: "#/components/schemas/CodeDescription"
+        requirementProgress:
+          $ref: "#/components/schemas/UpwMinutes"
+      required:
+      - case
+      - id
+      - requirementProgress
+    UpwMinutes:
+      type: object
+      properties:
+        requiredMinutes:
+          type: integer
+          format: int64
+        completedMinutes:
+          type: integer
+          format: int64
+      required:
+      - completedMinutes
+      - requiredMinutes
     AppointmentResponse:
       type: object
       properties:
@@ -348,45 +493,6 @@ components:
       - updatedAt
       - version
       - workedIntensively
-    AppointmentResponseAddress:
-      type: object
-      properties:
-        streetName:
-          type: string
-        buildingName:
-          type: string
-        addressNumber:
-          type: string
-        townCity:
-          type: string
-        county:
-          type: string
-        postCode:
-          type: string
-    AppointmentResponseCase:
-      type: object
-      properties:
-        crn:
-          type: string
-        name:
-          $ref: "#/components/schemas/AppointmentResponseName"
-        dateOfBirth:
-          type: string
-          format: date
-        currentExclusion:
-          type: boolean
-        exclusionMessage:
-          type: string
-        currentRestriction:
-          type: boolean
-        restrictionMessage:
-          type: string
-      required:
-      - crn
-      - currentExclusion
-      - currentRestriction
-      - dateOfBirth
-      - name
     AppointmentResponseEnforcementAction:
       type: object
       properties:
@@ -401,21 +507,6 @@ components:
       - code
       - description
       - respondBy
-    AppointmentResponseName:
-      type: object
-      properties:
-        forename:
-          type: string
-        surname:
-          type: string
-        middleNames:
-          type: array
-          items:
-            type: string
-      required:
-      - forename
-      - middleNames
-      - surname
     AppointmentResponsePickupData:
       type: object
       properties:
@@ -425,18 +516,6 @@ components:
           type: string
       required:
       - location
-    AppointmentResponseProject:
-      type: object
-      properties:
-        name:
-          type: string
-        code:
-          type: string
-        location:
-          $ref: "#/components/schemas/AppointmentResponseAddress"
-      required:
-      - code
-      - name
     AppointmentResponseSupervisor:
       type: object
       properties:
