@@ -19,6 +19,7 @@ class PersonDetailsService(
         val manager = personEntity.manager
 
         val sentences = disposalRepository.findActiveSentences(crn).map { disposal ->
+            val hasRarRequirement = requirementRepository.hasRarRequirement(disposal.id)
             val rarDays = requirementRepository.getRar(disposal.id)
             val upwHoursOrdered = requirementRepository.sumTotalUnpaidWorkHoursByDisposal(disposal.id)
             val upwMinutesCompleted = upwAppointmentRepository.calculateUnpaidTimeWorked(disposal.id)
@@ -30,7 +31,8 @@ class PersonDetailsService(
                 unpaidWorkHoursOrdered = upwHoursOrdered,
                 unpaidWorkMinutesCompleted = upwMinutesCompleted,
                 rarDaysCompleted = rarDays.completed,
-                rarDaysOrdered = rarDays.totalDays
+                rarDaysOrdered = rarDays.totalDays,
+                rarRequirement = hasRarRequirement,
             )
         }
 

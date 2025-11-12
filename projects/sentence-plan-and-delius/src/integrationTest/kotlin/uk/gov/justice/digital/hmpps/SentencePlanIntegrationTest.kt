@@ -26,7 +26,7 @@ internal class SentencePlanIntegrationTest {
     lateinit var mockMvc: MockMvc
 
     @Test
-    fun `API call retuns a success response`() {
+    fun `API call returns a success response`() {
 
         mockMvc
             .perform(get("/case-details/X123123").withToken())
@@ -39,13 +39,14 @@ internal class SentencePlanIntegrationTest {
                     0,
                     20,
                     2,
-                    1
+                    1,
+                    true
                 )
             )
     }
 
     @Test
-    fun `API call retuns a non custody person`() {
+    fun `API call returns a non custody person`() {
         mockMvc
             .perform(get("/case-details/X123124").withToken())
             .andExpect(status().is2xxSuccessful)
@@ -57,7 +58,8 @@ internal class SentencePlanIntegrationTest {
                     6,
                     3,
                     0,
-                    0
+                    0,
+                    false,
                 )
             )
     }
@@ -98,6 +100,7 @@ internal class SentencePlanIntegrationTest {
         custody: Boolean = true, person: Person, disposal: Disposal,
         upwHoursOrdered: Int, upwMinutesCompleted: Int,
         rarDaysOrdered: Int, rarDaysCompleted: Int,
+        hasRarRequirement: Boolean,
     ): CaseDetails {
         return CaseDetails(
             Name(
@@ -122,7 +125,7 @@ internal class SentencePlanIntegrationTest {
             listOf(
                 Sentence(
                     disposal.type.description, disposal.startDate, disposal.expectedEndDate(), false,
-                    upwHoursOrdered, upwMinutesCompleted, rarDaysOrdered, rarDaysCompleted
+                    upwHoursOrdered, upwMinutesCompleted, rarDaysOrdered, rarDaysCompleted, hasRarRequirement
                 )
             )
         )
