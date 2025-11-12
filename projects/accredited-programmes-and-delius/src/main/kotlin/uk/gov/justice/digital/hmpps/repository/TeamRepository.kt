@@ -12,7 +12,7 @@ interface TeamRepository : JpaRepository<Team, Long> {
         """
             select t from Staff s
             join s.teams t
-            where s.user.username = :username and t.endDate is null
+            where upper(s.user.username) = upper(:username) and t.endDate is null
         """
     )
     fun findUserTeams(username: String): List<Team>
