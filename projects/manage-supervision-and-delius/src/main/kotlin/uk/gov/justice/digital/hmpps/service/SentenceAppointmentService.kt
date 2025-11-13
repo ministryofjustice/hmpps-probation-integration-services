@@ -33,7 +33,6 @@ class SentenceAppointmentService(
     private val licenceConditionRepository: LicenceConditionRepository,
     private val staffUserRepository: StaffUserRepository,
     private val locationRepository: LocationRepository,
-    private val objectMapper: ObjectMapper,
     private val nsiRepository: NsiRepository,
     private val bankHolidayClient: BankHolidayClient,
     private val userService: UserService
