@@ -48,6 +48,7 @@ private fun Contact.toUserAlert(): UserAlert = UserAlert(
     id,
     UserAlertType(type.description, type.editable == true),
     person.crn,
+    person.name(),
     date,
     description,
     notes,
