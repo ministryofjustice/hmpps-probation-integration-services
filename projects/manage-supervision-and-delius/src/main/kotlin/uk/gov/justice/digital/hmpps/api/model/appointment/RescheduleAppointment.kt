@@ -30,6 +30,8 @@ data class RecreateAppointmentRequest(
     val sensitive: Boolean?,
     val sendToVisor: Boolean?,
     val requestedBy: RequestedBy,
+    val reasonForRecreate: String?,
+    val reasonIsSensitive: Boolean?,
     val uuid: UUID?,
 ) : AppointmentRequest {
     enum class RequestedBy {

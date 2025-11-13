@@ -313,6 +313,50 @@ class RecreateAppointmentIntegrationTest : IntegrationTestBase() {
         assertThat(appointment.externalReference).isEqualTo(Appointment.URN_PREFIX + request.uuid)
     }
 
+    @Test
+    fun `recreate with sensitive reason for recreate`() {
+        val person = PersonGenerator.RECREATE_APPT_PERSON_1
+        val original = sentenceAppointmentRepository.save(
+            AppointmentGenerator.generateAppointment(
+                person,
+                ZonedDateTime.now().plusDays(9),
+                ZonedDateTime.now().plusDays(9).plusMinutes(30),
+                notes = "Notes on the original appointment"
+            )
+        )
+        val request = recreateRequest(
+            date = LocalDate.now().plusDays(11),
+            notes = "Some sensitive notes to append",
+            reason = "Some reason to append",
+            reasonIsSensitive = true,
+        )
+
+        val recreated = mockMvc
+            .perform(
+                MockMvcRequestBuilders.put("/appointments/${original.id}/recreate")
+                    .withUserToken(PI_USER.username)
+                    .withJson(request)
+            )
+            .andExpect(MockMvcResultMatchers.status().isOk)
+            .andReturn().response.contentAsJson<RecreatedAppointment>()
+
+        val appointment = appointmentRepository.getAppointment(recreated.id)
+        assertThat(appointment.lastUpdatedUserId).isEqualTo(PI_USER.id)
+        assertThat(appointment.sensitive).isTrue
+        assertThat(appointment.date).isEqualTo(request.date)
+        assertThat(appointment.notes).isEqualTo(
+            """
+            |${original.notes}
+            |
+            |${request.reasonForRecreate}
+            |
+            |${request.notes}
+        """.trimMargin()
+        )
+        assertThat(recreated.externalReference).isEqualTo(Appointment.URN_PREFIX + request.uuid)
+        assertThat(appointment.externalReference).isEqualTo(Appointment.URN_PREFIX + request.uuid)
+    }
+
     private fun recreateRequest(
         date: LocalDate = LocalDate.now().plusDays(1),
         startTime: LocalTime = LocalTime.now().plusHours(1),
@@ -324,6 +368,8 @@ class RecreateAppointmentIntegrationTest : IntegrationTestBase() {
         sensitive: Boolean? = null,
         sendToVisor: Boolean? = null,
         requestedBy: RecreateAppointmentRequest.RequestedBy = RecreateAppointmentRequest.RequestedBy.SERVICE,
+        reason: String? = null,
+        reasonIsSensitive: Boolean? = null,
         uuid: UUID? = UUID.randomUUID(),
     ) = RecreateAppointmentRequest(
         date,
@@ -336,6 +382,8 @@ class RecreateAppointmentIntegrationTest : IntegrationTestBase() {
         sensitive,
         sendToVisor,
         requestedBy,
+        reason,
+        reasonIsSensitive,
         uuid
     )
 }
