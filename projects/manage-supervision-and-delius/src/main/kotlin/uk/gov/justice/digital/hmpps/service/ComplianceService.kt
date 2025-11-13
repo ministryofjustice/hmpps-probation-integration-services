@@ -33,10 +33,7 @@ class ComplianceService(
         val allActiveSentenceActivity =
             activityService.getPersonSentenceActivity(summary.id, currentSentences.map { it.id })
         val allBreaches = nsiRepository.getAllBreaches(summary.id)
-        val previousOrders = events.filter {
-            val endDate = listOfNotNull(it.disposal?.terminationDate, it.lastUpdatedDateTime.toLocalDate()).max()
-            it.isInactiveEvent() && endDate.isAfter(LocalDate.now().minusYears(2))
-        }
+        val previousOrders = events.filter { it.isInactiveEvent() }
 
         fun breachesForSentence(eventId: Long) = allBreaches.filter { (it.eventId == eventId) }
         fun activeBreachCountForSentence(eventId: Long) =
@@ -85,7 +82,12 @@ class ComplianceService(
                 breaches = previousOrders.flatMap { breachesForSentence(it.id) }.count(),
                 count = previousOrders.size,
                 lastEndedDate = previousOrders.firstOrNull()?.disposal?.terminationDate,
-                orders = previousOrders.mapNotNull {
+                orders = previousOrders.filter {
+                    // only display those within the last two years
+                    val endDate =
+                        listOfNotNull(it.disposal?.terminationDate, it.lastUpdatedDateTime.toLocalDate()).max()
+                    endDate.isAfter(LocalDate.now().minusYears(2))
+                }.mapNotNull {
                     it.disposal?.toOrder(
                         it.eventNumber,
                         it.mainOffence?.offence?.description,
