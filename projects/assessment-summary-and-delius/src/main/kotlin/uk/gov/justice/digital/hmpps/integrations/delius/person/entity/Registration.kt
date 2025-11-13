@@ -287,7 +287,7 @@ interface RegistrationRepository : JpaRepository<Registration, Long> {
         where r2.personId = :personId and r2.type.code = 'MAPP' 
         and r2.category.code in ('M1', 'M2', 'M3', 'M4') and r2.level.code in ('M1', 'M2', 'M3')
         group by r2.type.code
-    """
+        """
     )
     fun hasVisorAndMappa(personId: Long): List<RegisterTypeCount>
 }

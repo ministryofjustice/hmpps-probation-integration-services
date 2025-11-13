@@ -6,12 +6,14 @@ import uk.gov.justice.digital.hmpps.audit.service.AuditableService
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
 import uk.gov.justice.digital.hmpps.enum.RiskOfSeriousHarmType
 import uk.gov.justice.digital.hmpps.enum.RiskType
+import uk.gov.justice.digital.hmpps.flags.FeatureFlags
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractionCode.SUBMIT_ASSESSMENT_SUMMARY
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractionCode.UPDATE_RISK_DATA
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.getByCrn
 import uk.gov.justice.digital.hmpps.integrations.oasys.AssessmentSummary
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
+import uk.gov.justice.digital.hmpps.flagged.RiskService as FlaggedRiskService
 
 @Service
 @Transactional
@@ -20,9 +22,14 @@ class AssessmentSubmitted(
     private val personRepository: PersonRepository,
     private val assessmentService: AssessmentService,
     private val riskService: RiskService,
-    private val domainEventService: DomainEventService,
-    private val telemetryService: TelemetryService
+    private val flaggedRiskService: FlaggedRiskService,
+    private val featureFlags: FeatureFlags,
+    private val telemetryService: TelemetryService,
 ) : AuditableService(auditedInteractionService) {
+    companion object {
+        const val UPDATE_RISK_REGISTRATIONS_IN_PLACE = "assessment-summary_update-risk-registrations-in-place"
+    }
+
     fun assessmentSubmitted(crn: String, summary: AssessmentSummary) {
         val telemetryParams = mutableMapOf(
             "crn" to crn,
@@ -47,7 +54,11 @@ class AssessmentSubmitted(
             it["CRN"] = person.crn
 
             val ta = TelemetryAggregator()
-            riskService.recordRisk(person, summary) { key, value -> ta.add(key, value) }
+            if (featureFlags.enabled(UPDATE_RISK_REGISTRATIONS_IN_PLACE)) {
+                riskService.recordRisk(person, summary) { key, value -> ta.add(key, value) }
+            } else {
+                flaggedRiskService.recordRisk(person, summary) { key, value -> ta.add(key, value) }
+            }
             telemetryParams.putAll(ta.params())
         }
 
