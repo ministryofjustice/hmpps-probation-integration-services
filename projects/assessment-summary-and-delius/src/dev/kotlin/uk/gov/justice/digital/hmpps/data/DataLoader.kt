@@ -128,10 +128,11 @@ class DataLoader(
         riskOfSeriousHarmTypes.forEach {
             val type = RegistrationGenerator.TYPES[it.code]
             val contact = entityManager.merge(ContactGenerator.generateContact(this, type!!.registrationContactType!!))
-            val registration = RegistrationGenerator.generate(this.id, LocalDate.parse("2023-06-14"), contact, type)
             val reviewContact = entityManager.merge(ContactGenerator.generateContact(this, type.reviewContactType!!))
+            val registration =
+                RegistrationGenerator.generate(this.id, LocalDate.parse("2023-06-14"), contact, reviewContact, type)
             highestRiskColour = type.colour
-            saveAll(this, registration.withReview(reviewContact))
+            saveAll(this, registration)
         }
         return this
     }
@@ -140,13 +141,17 @@ class DataLoader(
         risks.forEach { risk ->
             val type = risk.first
             val level = ReferenceDataGenerator.LEVELS.singleOrNull { it.code == risk.second?.code }
-            val contact = entityManager.merge(ContactGenerator.generateContact(this, type.registrationContactType!!))
-            val registration =
-                RegistrationGenerator.generate(this.id, LocalDate.parse("2023-06-14"), contact, type, level = level)
-            val reviewContact = entityManager.merge(
-                ContactGenerator.generateContact(this, type.reviewContactType!!).withNotes("existing notes")
+            val registration = RegistrationGenerator.generate(
+                personId = this.id,
+                date = LocalDate.parse("2023-06-14"),
+                contact = entityManager.merge(ContactGenerator.generateContact(this, type.registrationContactType!!)),
+                reviewContact = entityManager.merge(
+                    ContactGenerator.generateContact(this, type.reviewContactType!!).withNotes("existing notes")
+                ),
+                type = type,
+                level = level
             )
-            saveAll(this, registration.withReview(reviewContact))
+            saveAll(this, registration)
         }
         return this
     }
@@ -167,12 +172,13 @@ class DataLoader(
                 this.id,
                 LocalDate.parse("2025-04-01"),
                 c1,
+                null,
                 mappaType,
                 category = MAPPA_CAT_1,
                 level = MAPPA_LVL_2
             )
         val visor =
-            RegistrationGenerator.generate(this.id, LocalDate.parse("2025-04-01"), c2, visorType)
+            RegistrationGenerator.generate(this.id, LocalDate.parse("2025-04-01"), c2, null, visorType)
         saveAll(mappa, visor)
     }
 

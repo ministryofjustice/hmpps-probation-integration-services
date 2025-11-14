@@ -3,7 +3,7 @@ spring:
   jackson:
     default-property-inclusion: non_null
   jpa:
-    hibernate.ddl-auto: validate
+    hibernate.ddl-auto: none # TODO revert to "validate" once "assessment-summary_update-risk-registrations-in-place" feature is enabled in production (planned for 12/12/2025)
     properties:
       hibernate:
         timezone.default_storage: NORMALIZE

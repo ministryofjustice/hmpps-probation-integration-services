@@ -29,3 +29,22 @@ abstract class AuditableEntity {
     @LastModifiedBy
     var lastUpdatedUserId: Long = 0
 }
+
+@MappedSuperclass
+abstract class AuditableNonPartitionedEntity {
+    @Version
+    @Column(name = "row_version")
+    var version: Long = 0
+
+    @CreatedDate
+    var createdDatetime: ZonedDateTime = ZonedDateTime.now()
+
+    @CreatedBy
+    var createdByUserId: Long = 0
+
+    @LastModifiedDate
+    var lastUpdatedDatetime: ZonedDateTime = ZonedDateTime.now()
+
+    @LastModifiedBy
+    var lastUpdatedUserId: Long = 0
+}
