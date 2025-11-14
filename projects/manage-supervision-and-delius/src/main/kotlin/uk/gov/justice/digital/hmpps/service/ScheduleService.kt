@@ -145,10 +145,12 @@ fun Contact.toActivity(noteId: Int? = null) = Activity(
     didTheyComply = if (type.attendanceContact) {
         complied
     } else null,
-    acceptableAbsence = outcome?.outcomeAttendance == false && outcome.outcomeCompliantAcceptable == true,
-    acceptableAbsenceReason = if (outcome?.outcomeAttendance == false && outcome.outcomeCompliantAcceptable == true)
+    acceptableAbsence = if (type.attendanceContact) {
+        outcome?.outcomeAttendance == false && outcome.outcomeCompliantAcceptable == true
+    } else null,
+    acceptableAbsenceReason = if (type.attendanceContact && outcome?.outcomeAttendance == false && outcome.outcomeCompliantAcceptable == true)
         outcome.description else null,
-    absentWaitingEvidence = attended == false && outcome == null,
+    absentWaitingEvidence = type.attendanceContact && attended == false && outcome == null,
     documents = documents.map { it.toDocument() },
     startDateTime = startDateTime(),
     endDateTime = endDateTime(),
@@ -156,8 +158,8 @@ fun Contact.toActivity(noteId: Int? = null) = Activity(
     isInitial = isInitial(),
     lastUpdated = lastUpdated,
     lastUpdatedBy = Name(forename = lastUpdatedUser.forename, surname = lastUpdatedUser.surname),
-    wasAbsent = outcome?.outcomeAttendance == false,
-    nonComplianceReason = if (outcome?.outcomeCompliantAcceptable == false) type.description else null,
+    wasAbsent = type.attendanceContact && outcome?.outcomeAttendance == false,
+    nonComplianceReason = if (type.attendanceContact && outcome?.outcomeCompliantAcceptable == false) type.description else null,
     appointmentNotes = if (noteId == null) formatNote(notes, true) else null,
     appointmentNote = if (noteId != null) formatNote(notes, false).elementAtOrNull(noteId) else null,
     location = location?.toOfficeAddress(),
