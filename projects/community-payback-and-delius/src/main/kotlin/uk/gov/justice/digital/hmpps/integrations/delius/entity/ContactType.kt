@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.integrations.delius.entity
 
 import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
+import org.hibernate.type.YesNoConverter
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import uk.gov.justice.digital.hmpps.model.CodeDescription
@@ -30,6 +31,14 @@ class ContactOutcome(
 
     @Column(name = "description")
     val description: String,
+
+    @Column(name = "outcome_attendance")
+    @Convert(converter = YesNoConverter::class)
+    val attended: Boolean? = null,
+
+    @Column(name = "outcome_compliant_acceptable")
+    @Convert(converter = YesNoConverter::class)
+    val complied: Boolean? = null,
 
     @Id
     @Column(name = "contact_outcome_type_id")
@@ -72,4 +81,6 @@ interface ContactOutcomeRepository : JpaRepository<ContactOutcome, Long> {
         """
     )
     fun findForTypeCode(typeCode: String): List<ContactOutcome>
+
+    fun findContactOutcomeByCode(code: String): ContactOutcome?
 }

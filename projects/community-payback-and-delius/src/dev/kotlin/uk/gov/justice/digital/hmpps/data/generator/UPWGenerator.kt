@@ -50,12 +50,30 @@ object UPWGenerator {
 
     val DEFAULT_CONTACT =
         generateContact(
+            contactTypeId = ReferenceDataGenerator.UPW_APPOINTMENT_TYPE.id,
             latestEnforcementAction = ReferenceDataGenerator.DEFAULT_ENFORCEMENT_ACTION,
             contactOutcome = ReferenceDataGenerator.FAILED_TO_ATTEND_CONTACT_OUTCOME,
+            startTime = LocalTime.of(9, 0),
+            endTime = LocalTime.of(17, 0),
+            date = LocalDate.now(),
+            personId = PersonGenerator.DEFAULT_PERSON.id!!,
+            officeLocation = DEFAULT_OFFICE_LOCATION,
+            staff = StaffGenerator.DEFAULT_STAFF,
+            team = TeamGenerator.DEFAULT_UPW_TEAM,
+            provider = ProviderGenerator.DEFAULT_PROVIDER
         )
     val CONTACT_NO_ENFORCEMENT = generateContact(
+        contactTypeId = ReferenceDataGenerator.UPW_APPOINTMENT_TYPE.id,
         latestEnforcementAction = null,
-        contactOutcome = ReferenceDataGenerator.ATTENDED_COMPLIED_CONTACT_OUTCOME
+        contactOutcome = ReferenceDataGenerator.ATTENDED_COMPLIED_CONTACT_OUTCOME,
+        startTime = LocalTime.of(10, 15),
+        endTime = LocalTime.of(16, 30),
+        date = LocalDate.now(),
+        personId = PersonGenerator.DEFAULT_PERSON.id!!,
+        officeLocation = DEFAULT_OFFICE_LOCATION,
+        staff = StaffGenerator.DEFAULT_STAFF,
+        team = TeamGenerator.DEFAULT_UPW_TEAM,
+        provider = ProviderGenerator.DEFAULT_PROVIDER
     )
 
     val DEFAULT_UPW_APPOINTMENT = generateUpwAppointment(
@@ -167,19 +185,34 @@ object UPWGenerator {
     ) = UpwDetails(id, disposalId, softDeleted)
 
     fun generateContact(
-        id: Long = IdGenerator.getAndIncrement(),
+        id: Long = 0,
+        contactTypeId: Long,
         contactOutcome: ContactOutcome?,
         latestEnforcementAction: EnforcementAction?,
+        date: LocalDate,
+        startTime: LocalTime?,
+        endTime: LocalTime?,
+        linkedContactId: Long? = null,
+        personId: Long,
+        eventId: Long? = null,
+        requirementId: Long? = null,
+        licenceConditionId: Long? = null,
+        officeLocation: OfficeLocation,
+        staff: Staff,
+        team: Team,
+        provider: Provider,
         notes: String? = null,
         sensitive: Boolean? = false,
         alertsActive: Boolean? = false,
         rowVersion: Long = 1,
-    ) = Contact(id, contactOutcome, latestEnforcementAction, notes, sensitive, alertsActive, rowVersion)
+    ) = Contact(id, contactTypeId, contactOutcome, latestEnforcementAction, date, startTime, endTime, linkedContactId,
+        personId, eventId, requirementId, licenceConditionId, officeLocation, staff, team, provider, notes, sensitive,
+        alertsActive, rowVersion)
 
     fun generateUpwAppointment(
         id: Long = IdGenerator.getAndIncrement(),
-        attended: String = "Y",
-        complied: String = "Y",
+        attended: Boolean? = true,
+        complied: Boolean? = true,
         softDeleted: Boolean = false,
         startTime: LocalTime,
         endTime: LocalTime,
