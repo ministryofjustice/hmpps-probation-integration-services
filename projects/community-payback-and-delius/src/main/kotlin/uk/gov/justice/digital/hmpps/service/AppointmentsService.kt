@@ -158,9 +158,9 @@ class AppointmentsService(
 
         val staff =
             appointmentOutcome.supervisor?.let {
-            staffRepository.findStaffByCode(appointmentOutcome.supervisor.code)
-                ?: throw IllegalStateException("Staff with code ${appointmentOutcome.supervisor.code} not found")
-        }
+                staffRepository.findStaffByCode(appointmentOutcome.supervisor.code)
+                    ?: throw IllegalStateException("Staff with code ${appointmentOutcome.supervisor.code} not found")
+            }
 
         val result = unpaidWorkAppointmentRepository.save(
             appointment.update(
