@@ -205,9 +205,11 @@ object UPWGenerator {
         sensitive: Boolean? = false,
         alertsActive: Boolean? = false,
         rowVersion: Long = 1,
-    ) = Contact(id, contactTypeId, contactOutcome, latestEnforcementAction, date, startTime, endTime, linkedContactId,
+    ) = Contact(
+        id, contactTypeId, contactOutcome, latestEnforcementAction, date, startTime, endTime, linkedContactId,
         personId, eventId, requirementId, licenceConditionId, officeLocation, staff, team, provider, notes, sensitive,
-        alertsActive, rowVersion)
+        alertsActive, rowVersion
+    )
 
     fun generateUpwAppointment(
         id: Long = IdGenerator.getAndIncrement(),

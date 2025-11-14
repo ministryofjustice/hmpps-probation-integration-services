@@ -119,7 +119,7 @@ class AppointmentsService(
     }
 
     fun updateAppointmentOutcome(
-        projectCode:String,
+        projectCode: String,
         appointmentId: Long,
         appointmentOutcome: AppointmentOutcomeRequest
     ) {
@@ -133,7 +133,8 @@ class AppointmentsService(
         }
 
         if (LocalDateTime.of(appointment.appointmentDate, appointmentOutcome.endTime).isBefore(LocalDateTime.now())
-            && appointmentOutcome.outcome == null) {
+            && appointmentOutcome.outcome == null
+        ) {
             throw IllegalStateException("Appointments in the past require an outcome")
         }
 
@@ -155,16 +156,20 @@ class AppointmentsService(
                 ?: throw IllegalStateException("Behaviour reference data with code $behaviourCode not found")
         } ?: throw IllegalStateException("Behaviour ${appointmentOutcome.behaviour} not recognised")
 
-        val staff = appointmentOutcome.supervisor?.let { staffRepository.findStaffByCode(appointmentOutcome.supervisor.code) }
+        val staff =
+            appointmentOutcome.supervisor?.let { staffRepository.findStaffByCode(appointmentOutcome.supervisor.code) }
 
         val result = unpaidWorkAppointmentRepository.save(
-            appointment.update(appointmentOutcome, workQuality, behaviour,
-                outcome, staff, contact.update(appointmentOutcome))
+            appointment.update(
+                appointmentOutcome, workQuality, behaviour,
+                outcome, staff, contact.update(appointmentOutcome)
+            )
         )
 
         if (appointmentOutcome.alertActive) {
-            val personManager = personManagerRepository.findByPersonIdAndActiveIsTrueAndSoftDeletedIsFalse(appointment.person.id!!)
-                ?: throw NotFoundException("PersonManager", "personId", appointment.person.id)
+            val personManager =
+                personManagerRepository.findByPersonIdAndActiveIsTrueAndSoftDeletedIsFalse(appointment.person.id!!)
+                    ?: throw NotFoundException("PersonManager", "personId", appointment.person.id)
 
             contactAlertRepository.save(
                 ContactAlert(
@@ -179,8 +184,9 @@ class AppointmentsService(
         }
 
         if (outcome!!.complied == false) {
-            val enforcementAction = enforcementActionRepository.findEnforcementActionByCode(EnforcementAction.REFER_TO_PERSON_MANAGER)
-                ?: throw IllegalStateException("No Enforcement Action with code ${EnforcementAction.REFER_TO_PERSON_MANAGER} found.")
+            val enforcementAction =
+                enforcementActionRepository.findEnforcementActionByCode(EnforcementAction.REFER_TO_PERSON_MANAGER)
+                    ?: throw IllegalStateException("No Enforcement Action with code ${EnforcementAction.REFER_TO_PERSON_MANAGER} found.")
 
             enforcementRepository.save(
                 Enforcement(
@@ -223,8 +229,10 @@ class AppointmentsService(
         return String.format("%02d:%02d", hours, mins)
     }
 
-    private fun UpwAppointment.update(request: AppointmentOutcomeRequest, workQuality: ReferenceData,
-        behaviour: ReferenceData, contactOutcome: ContactOutcome?, staff: Staff?, contact: Contact) = apply {
+    private fun UpwAppointment.update(
+        request: AppointmentOutcomeRequest, workQuality: ReferenceData,
+        behaviour: ReferenceData, contactOutcome: ContactOutcome?, staff: Staff?, contact: Contact
+    ) = apply {
         startTime = request.startTime
         endTime = request.endTime
         staff?.let { this.staff = staff }

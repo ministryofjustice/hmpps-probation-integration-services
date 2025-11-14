@@ -43,7 +43,7 @@ class Person(
     @Column(name = "restriction_message")
     val restrictionMessage: String? = null,
 
-)
+    )
 
 @Entity
 @Immutable

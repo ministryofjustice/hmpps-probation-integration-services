@@ -26,7 +26,8 @@ class AppointmentsController(
     ) = appointmentsService.getSession(projectCode, date, startTime, endTime, username)
 
     @PutMapping(value = ["/{projectCode}/appointments/{appointmentId}/outcome"])
-    fun updateAppointmentOutcome(@PathVariable projectCode:String, @PathVariable appointmentId: Long,
+    fun updateAppointmentOutcome(
+        @PathVariable projectCode: String, @PathVariable appointmentId: Long,
         @RequestBody appointmentOutcome: AppointmentOutcomeRequest
     ) = appointmentsService.updateAppointmentOutcome(projectCode, appointmentId, appointmentOutcome)
 }

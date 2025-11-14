@@ -24,6 +24,6 @@ class Enforcement(
     @Column(name = "response_date")
     val responseDate: LocalDate? = null,
 
-)
+    )
 
 interface EnforcementRepository : JpaRepository<Enforcement, Long>

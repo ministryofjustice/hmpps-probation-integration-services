@@ -104,9 +104,10 @@ class AppointmentsIntegrationTest {
                 alertActive = false,
             )
         }
-        .andExpect { status().is2xxSuccessful }
+            .andExpect { status().is2xxSuccessful }
 
-        val appointment = unpaidWorkAppointmentRepository.getUpwAppointmentById(UPWGenerator.UPW_APPOINTMENT_NO_ENFORCEMENT.id)
+        val appointment =
+            unpaidWorkAppointmentRepository.getUpwAppointmentById(UPWGenerator.UPW_APPOINTMENT_NO_ENFORCEMENT.id)
 
         assertThat(appointment).isNotNull
         assertThat(appointment!!.startTime).isEqualTo(LocalTime.of(11, 0))
@@ -134,9 +135,10 @@ class AppointmentsIntegrationTest {
                 alertActive = true,
             )
         }
-        .andExpect { status().is2xxSuccessful }
+            .andExpect { status().is2xxSuccessful }
 
-        val alert = contactAlertRepository.findAll().firstOrNull { it.contactId == UPWGenerator.UPW_APPOINTMENT_NO_ENFORCEMENT.contact.id }
+        val alert = contactAlertRepository.findAll()
+            .firstOrNull { it.contactId == UPWGenerator.UPW_APPOINTMENT_NO_ENFORCEMENT.contact.id }
         assertThat(alert).isNotNull
     }
 }
