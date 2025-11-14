@@ -20,7 +20,7 @@ class GetOverdueOutcomeTest : IntegrationTestBase() {
             .andExpect(MockMvcResultMatchers.status().isOk)
             .andReturn().response.contentAsJson<OverdueOutcomeAppointments>()
 
-        assertThat(response.content).hasSize(1)
+        assertThat(response.content).hasSize(2)
         with(response.content.first()) {
             assertThat(type).isEqualTo(OverdueOutcome.Type("COAP", "Description for COAP"))
             assertThat(date).isEqualTo(LocalDate.of(2024, 11, 27))

@@ -301,6 +301,7 @@ class DataLoader(
         entityManager.persist(LimitedAccessGenerator.BOTH_RESTRICTION)
 
         sentenceAppointmentRepository.saveAndFlush(AppointmentGenerator.PERSON_APPOINTMENT)
+        sentenceAppointmentRepository.save(AppointmentGenerator.LATE_NIGHT_APPOINTMENT)
 
         entityManager.persistAll(
             PersonGenerator.RESCHEDULED_PERSON_1,
