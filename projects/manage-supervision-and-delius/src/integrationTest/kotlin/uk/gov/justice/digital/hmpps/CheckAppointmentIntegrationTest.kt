@@ -226,6 +226,25 @@ class CheckAppointmentIntegrationTest : IntegrationTestBase() {
                     isWithinOneHourOfMeetingWith = null,
                     overlapsWithMeetingWith = null
                 ), true, STAFF_USER_1.username
+            ),
+            Arguments.of(
+                named(
+                    "the appointment is close to the end of the day",
+                    ZonedDateTime.of(2024, 11, 27, 22, 45, 0, 0, EuropeLondon)
+                ),
+                ZonedDateTime.of(2024, 11, 27, 23, 15, 0, 0, EuropeLondon),
+                AppointmentChecks(
+                    nonWorkingDayName = null,
+                    isWithinOneHourOfMeetingWith = null,
+                    overlapsWithMeetingWith = AppointmentCheck(
+                        isCurrentUser = false,
+                        appointmentIsWith = Name(
+                            forename = "John",
+                            surname = "Smith"
+                        ),
+                        startAndEnd = "11pm to 11:30pm"
+                    )
+                ), true, STAFF_USER_1.username
             )
         )
     }

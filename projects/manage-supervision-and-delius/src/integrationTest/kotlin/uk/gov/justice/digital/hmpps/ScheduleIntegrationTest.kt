@@ -77,7 +77,7 @@ class ScheduleIntegrationTest : IntegrationTestBase() {
         "upcoming,10,1,2",
         "upcoming?size=1,1,2,1",
         "upcoming?sortBy=appointment&ascending=false,10,1,2",
-        "previous,10,1,5",
+        "previous,10,1,6",
         "previous?size=4,4,2,4"
     )
     fun `schedule pagination`(uri: String, requestSize: Int, totalPages: Int, totalResults: Int) {

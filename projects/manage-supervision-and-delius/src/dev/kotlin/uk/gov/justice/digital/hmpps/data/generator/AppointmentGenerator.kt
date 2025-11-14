@@ -63,6 +63,13 @@ object AppointmentGenerator {
         USER.staff?.id!!
     )
 
+    val LATE_NIGHT_APPOINTMENT = generateAppointment(
+        PersonGenerator.OVERVIEW,
+        ZonedDateTime.of(2024, 11, 27, 23, 0, 0, 0, EuropeLondon),
+        ZonedDateTime.of(2024, 11, 27, 23, 30, 0, 0, EuropeLondon),
+        USER.staff?.id!!
+    )
+
     fun generateAppointment(
         person: Person,
         start: ZonedDateTime,
