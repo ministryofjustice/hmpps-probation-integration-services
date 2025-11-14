@@ -1885,6 +1885,10 @@ components:
           enum:
           - POP
           - SERVICE
+        reasonForRecreate:
+          type: string
+        reasonIsSensitive:
+          type: boolean
         uuid:
           type: string
           format: uuid
@@ -4416,6 +4420,8 @@ components:
           $ref: "#/components/schemas/UserAlertType"
         crn:
           type: string
+        name:
+          $ref: "#/components/schemas/Name"
         date:
           type: string
           format: date
@@ -4429,6 +4435,7 @@ components:
       - crn
       - date
       - id
+      - name
       - officer
       - type
     UserAlertType:
