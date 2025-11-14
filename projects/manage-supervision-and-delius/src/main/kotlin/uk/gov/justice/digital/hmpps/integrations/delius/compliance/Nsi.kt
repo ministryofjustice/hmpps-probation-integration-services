@@ -105,5 +105,5 @@ interface NsiRepository : JpaRepository<Nsi, Long> {
 }
 
 fun NsiRepository.getAllBreaches(personId: Long): List<Nsi> = findByPersonIdAndTypeCode(personId, "BRE")
-fun NsiRepository.breachCountForEvents(ids: Set<Long>): Int = countByTypeCodeAndEventIdIn( "BRE", ids)
+fun NsiRepository.breachCountForEvents(ids: Set<Long>): Int = countByTypeCodeAndEventIdIn("BRE", ids)
 
