@@ -60,5 +60,5 @@ fun Staff.toSupervisor() = Supervisor(
 )
 
 interface StaffRepository : JpaRepository<Staff, Long> {
-    fun findStaffByCode(code: String): Staff
+    fun findStaffByCode(code: String): Staff?
 }
