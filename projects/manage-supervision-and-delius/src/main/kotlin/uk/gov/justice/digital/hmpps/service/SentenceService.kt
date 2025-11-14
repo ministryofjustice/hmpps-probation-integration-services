@@ -8,7 +8,7 @@ import uk.gov.justice.digital.hmpps.api.model.sentence.Offence
 import uk.gov.justice.digital.hmpps.api.model.sentence.Requirement
 import uk.gov.justice.digital.hmpps.datetime.DeliusDateFormatter
 import uk.gov.justice.digital.hmpps.integrations.delius.compliance.NsiRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.compliance.countBreaches
+import uk.gov.justice.digital.hmpps.integrations.delius.compliance.breachCountForEvents
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.CourtDocumentDetails
 import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.DocumentRepository
@@ -72,7 +72,7 @@ class SentenceService(
             ProbationHistory(
                 inactiveEvents.count(),
                 getMostRecentTerminatedDateFromInactiveEvents(inactiveEvents),
-                nsiRepository.countBreaches(person.id),
+                nsiRepository.breachCountForEvents(inactiveEvents.map { it.id }.toSet()),
                 offenderManagerRepository.countOffenderManagersByPersonAndActiveIsFalse(person)
             )
         )
