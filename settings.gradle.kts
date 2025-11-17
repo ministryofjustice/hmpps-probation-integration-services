@@ -78,29 +78,29 @@ dependencyResolutionManagement {
     versionCatalogs {
         create("libs") {
             library("asyncapi", "org.openfolder:kotlin-asyncapi-spring-web:3.1.3")
-            library("aws-s3", "io.awspring.cloud:spring-cloud-aws-starter-s3:3.4.0")
-            library("aws-autoconfigure", "io.awspring.cloud:spring-cloud-aws-autoconfigure:3.4.0")
-            library("aws-query-protocol", "software.amazon.awssdk:aws-query-protocol:2.37.3")
-            library("aws-sns", "io.awspring.cloud:spring-cloud-aws-starter-sns:3.4.0")
-            library("aws-sqs", "io.awspring.cloud:spring-cloud-aws-starter-sqs:3.4.0")
-            library("aws-starter", "io.awspring.cloud:spring-cloud-aws-starter:3.4.0")
-            library("aws-sts", "software.amazon.awssdk:sts:2.37.3")
+            library("aws-s3", "io.awspring.cloud:spring-cloud-aws-starter-s3:3.4.1")
+            library("aws-autoconfigure", "io.awspring.cloud:spring-cloud-aws-autoconfigure:3.4.1")
+            library("aws-query-protocol", "software.amazon.awssdk:aws-query-protocol:2.38.2")
+            library("aws-sns", "io.awspring.cloud:spring-cloud-aws-starter-sns:3.4.1")
+            library("aws-sqs", "io.awspring.cloud:spring-cloud-aws-starter-sqs:3.4.1")
+            library("aws-starter", "io.awspring.cloud:spring-cloud-aws-starter:3.4.1")
+            library("aws-sts", "software.amazon.awssdk:sts:2.38.2")
             library("azure-app-insights", "com.microsoft.azure:applicationinsights-web:3.7.6")
             library("azure-identity", "com.azure:azure-identity:1.18.1")
             library("flipt", "io.flipt:flipt-client-java:1.1.2")
             library("html2md", "com.vladsch.flexmark:flexmark-html2md-converter:0.64.8")
-            library("microsoft-graph", "com.microsoft.graph:microsoft-graph:6.55.0")
+            library("microsoft-graph", "com.microsoft.graph:microsoft-graph:6.56.0")
             library("mockito-inline", "org.mockito:mockito-inline:5.2.0")
             library("mockito-kotlin", "org.mockito.kotlin:mockito-kotlin:6.1.0")
             library("notify", "uk.gov.service.notify:notifications-java-client:5.2.1-RELEASE")
             library("opensearch", "org.opensearch.client:opensearch-java:3.3.0")
-            library("opensearch-starter", "org.opensearch.client:spring-data-opensearch-starter:2.0.2")
+            library("opensearch-starter", "org.opensearch.client:spring-data-opensearch-starter:2.0.3")
             library(
                 "opentelemetry-annotations",
                 "io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:2.21.0"
             )
             library("sentry", "io.sentry:sentry-spring-boot-starter-jakarta:8.25.0")
-            library("springdoc", "org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.13")
+            library("springdoc", "org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.14")
             library("wiremock", "org.wiremock:wiremock-standalone:3.13.1")
 
             bundle(
