@@ -152,6 +152,25 @@ object UPWGenerator {
         minutesCredited = 10L
     )
 
+    val UPW_APPOINTMENT_PAST = generateUpwAppointment(
+        startTime = LocalTime.of(9, 0),
+        endTime = LocalTime.of(15, 0),
+        appointmentDate = LocalDate.now().minusDays(1),
+        upwProjectId = SECOND_UPW_PROJECT.id,
+        upwDetailsId = SECOND_UPW_DETAILS.id,
+        contact = CONTACT_NO_ENFORCEMENT,
+        contactOutcomeTypeId = null,
+        pickupLocation = DEFAULT_OFFICE_LOCATION,
+        pickupTime = LocalTime.of(8, 0),
+        penaltyTime = null,
+        person = PersonGenerator.DEFAULT_PERSON,
+        staff = StaffGenerator.DEFAULT_STAFF,
+        team = TeamGenerator.DEFAULT_UPW_TEAM,
+        workQuality = null,
+        behaviour = null,
+        minutesCredited = 0L
+    )
+
     val DEFAULT_RQMNT = generateRequirement(
         length = 120,
         disposal = SECOND_DISPOSAL
