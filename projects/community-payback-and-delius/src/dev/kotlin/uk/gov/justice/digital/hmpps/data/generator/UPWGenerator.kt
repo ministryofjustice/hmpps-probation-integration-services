@@ -231,7 +231,7 @@ object UPWGenerator {
     )
 
     fun generateUpwAppointment(
-        id: Long = IdGenerator.getAndIncrement(),
+        id: Long = 0,
         attended: Boolean? = true,
         complied: Boolean? = true,
         softDeleted: Boolean = false,

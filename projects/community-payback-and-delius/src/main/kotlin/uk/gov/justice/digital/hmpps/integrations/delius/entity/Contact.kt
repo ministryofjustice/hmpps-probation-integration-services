@@ -1,7 +1,6 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.entity
 
 import jakarta.persistence.*
-import org.hibernate.annotations.Immutable
 import org.hibernate.type.YesNoConverter
 import org.springframework.data.jpa.repository.JpaRepository
 import java.time.LocalDate
@@ -83,7 +82,6 @@ interface ContactRepository : JpaRepository<Contact, Long>
 
 @Entity
 @Table(name = "contact_alert")
-@Immutable
 class ContactAlert(
     @Id
     @SequenceGenerator(name = "contact_alert_id_generator", sequenceName = "contact_alert_id_seq", allocationSize = 1)

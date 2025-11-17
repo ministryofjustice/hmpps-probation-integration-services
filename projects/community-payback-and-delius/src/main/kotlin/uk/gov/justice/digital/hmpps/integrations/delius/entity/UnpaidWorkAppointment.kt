@@ -20,6 +20,8 @@ import java.time.ZonedDateTime
 @Table(name = "upw_appointment")
 class UpwAppointment(
     @Id
+    @SequenceGenerator(name = "upw_appointment_id_generator", sequenceName = "upw_appointment_id_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "upw_appointment_id_generator")
     @Column(name = "upw_appointment_id")
     val id: Long,
 
