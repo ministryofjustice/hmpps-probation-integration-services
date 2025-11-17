@@ -99,11 +99,11 @@ class NsiType(
 interface NsiRepository : JpaRepository<Nsi, Long> {
     @EntityGraph(attributePaths = ["type", "nsiStatus"])
     fun findByPersonIdAndTypeCode(personId: Long, typeCode: String): List<Nsi>
-    fun countByPersonIdAndTypeCode(personId: Long, typeCode: String): Int
+    fun countByTypeCodeAndEventIdIn(typeCode: String, ids: Set<Long>): Int
 
     fun findByPersonIdAndActiveIsTrue(personId: Long): List<Nsi>
 }
 
 fun NsiRepository.getAllBreaches(personId: Long): List<Nsi> = findByPersonIdAndTypeCode(personId, "BRE")
-fun NsiRepository.countBreaches(personId: Long): Int = countByPersonIdAndTypeCode(personId, "BRE")
+fun NsiRepository.breachCountForEvents(ids: Set<Long>): Int = countByTypeCodeAndEventIdIn("BRE", ids)
 

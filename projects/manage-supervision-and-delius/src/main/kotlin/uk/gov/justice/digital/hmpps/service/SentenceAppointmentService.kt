@@ -1,6 +1,5 @@
 package uk.gov.justice.digital.hmpps.service
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.api.model.Name
@@ -33,7 +32,6 @@ class SentenceAppointmentService(
     private val licenceConditionRepository: LicenceConditionRepository,
     private val staffUserRepository: StaffUserRepository,
     private val locationRepository: LocationRepository,
-    private val objectMapper: ObjectMapper,
     private val nsiRepository: NsiRepository,
     private val bankHolidayClient: BankHolidayClient,
     private val userService: UserService
@@ -49,7 +47,8 @@ class SentenceAppointmentService(
             personId,
             start.toLocalDate(),
             start.minusHours(withinHourOf),
-            end.plusHours(withinHourOf)
+            // use end of day if end plus hours would be the next day
+            minOf(end.plusHours(withinHourOf), start.withHour(23).withMinute(59).withSecond(59)),
         )
         return overlaps.partition {
             it.startDateTime.atZone(EuropeLondon).isBefore(end) &&

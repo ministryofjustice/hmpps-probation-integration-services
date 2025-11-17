@@ -1,14 +1,15 @@
 ---
 title: Accredited Programmes And Delius
 source_url: 'https://github.com/ministryofjustice/hmpps-probation-integration-services/blob/main/doc/tech-docs/source/projects/accredited-programmes-and-delius/about.html.md.erb'
-last_reviewed_on: 2025-07-07
-review_in: 4 months
+last_reviewed_on: 2025-11-12
+review_in: 3 months
 ---
+
 
 [//]: # (This pulls in the project README by default - replace with more appropriate documentation as necessary)
 <%= URI.open('https://raw.githubusercontent.com/ministryofjustice/hmpps-probation-integration-services/main/projects/accredited-programmes-and-delius/README.md').read
-.gsub(/\.\/(.+?)\.(svg|png)/, 'https://raw.githubusercontent.com/ministryofjustice/hmpps-probation-integration-services/refs/heads/main/projects/accredited-programmes-and-delius/\1.\2')
-.gsub(/\.\//, 'https://github.com/ministryofjustice/hmpps-probation-integration-services/blob/main/projects/accredited-programmes-and-delius/') %>
+       .gsub(/\.\.\/\.\.\/doc\/tech-docs\/source\/images\//, '/images/')
+       .gsub(/\.\//, 'https://github.com/ministryofjustice/hmpps-probation-integration-services/blob/main/projects/accredited-programmes-and-delius/') %>
 
 ## API Reference
 

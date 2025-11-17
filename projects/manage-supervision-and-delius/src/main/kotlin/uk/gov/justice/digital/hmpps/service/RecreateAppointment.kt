@@ -42,6 +42,10 @@ class RecreateAppointment(
         ) {
             throw ConflictException("Appointment clashes with existing appointment")
         }
+        request.reasonForRecreate?.also { reason ->
+            original.appendNotes(reason)
+            request.reasonIsSensitive?.also { original.amendmentSensitive(it) }
+        }
 
         val newAppointment = appointmentRepository.save(original.recreateWith(request))
         original.applyOutcome(

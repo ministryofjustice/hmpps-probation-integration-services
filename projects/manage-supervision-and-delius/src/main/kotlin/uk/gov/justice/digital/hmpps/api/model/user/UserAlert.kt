@@ -1,11 +1,13 @@
 package uk.gov.justice.digital.hmpps.api.model.user
 
+import uk.gov.justice.digital.hmpps.api.model.Name
 import java.time.LocalDate
 
 data class UserAlert(
     val id: Long,
     val type: UserAlertType,
     val crn: String,
+    val name: Name,
     val date: LocalDate,
     val description: String?,
     val notes: String?,
