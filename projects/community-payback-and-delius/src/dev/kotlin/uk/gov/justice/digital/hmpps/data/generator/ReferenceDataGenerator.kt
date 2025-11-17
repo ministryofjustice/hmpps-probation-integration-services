@@ -46,9 +46,9 @@ object ReferenceDataGenerator {
 
     val UPW_APPOINTMENT_TYPE = generateContactType(ContactType.Code.UNPAID_WORK_APPOINTMENT.value)
 
-    val DEFAULT_ENFORCEMENT_ACTION = generateEnforcementAction(
-        code = "DEF",
-        description = "Default Enforcement",
+    val ROM_ENFORCEMENT_ACTION = generateEnforcementAction(
+        code = EnforcementAction.REFER_TO_PERSON_MANAGER,
+        description = "Refer to Offender Manager",
         responseByPeriod = 7L,
         outstandingContactAction = true,
         contactTypeId = UPW_APPOINTMENT_TYPE.id

@@ -51,7 +51,7 @@ object UPWGenerator {
     val DEFAULT_CONTACT =
         generateContact(
             contactTypeId = ReferenceDataGenerator.UPW_APPOINTMENT_TYPE.id,
-            latestEnforcementAction = ReferenceDataGenerator.DEFAULT_ENFORCEMENT_ACTION,
+            latestEnforcementAction = ReferenceDataGenerator.ROM_ENFORCEMENT_ACTION,
             contactOutcome = ReferenceDataGenerator.FAILED_TO_ATTEND_CONTACT_OUTCOME,
             startTime = LocalTime.of(9, 0),
             endTime = LocalTime.of(17, 0),

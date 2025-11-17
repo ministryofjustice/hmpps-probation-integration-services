@@ -13,10 +13,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator
 import uk.gov.justice.digital.hmpps.data.generator.UPWGenerator
-import uk.gov.justice.digital.hmpps.integrations.delius.entity.Behaviour
-import uk.gov.justice.digital.hmpps.integrations.delius.entity.ContactAlertRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.entity.UnpaidWorkAppointmentRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.entity.WorkQuality
+import uk.gov.justice.digital.hmpps.integrations.delius.entity.*
 import uk.gov.justice.digital.hmpps.model.AppointmentOutcomeRequest
 import uk.gov.justice.digital.hmpps.model.AppointmentResponse
 import uk.gov.justice.digital.hmpps.model.Code
@@ -43,6 +40,9 @@ class AppointmentsIntegrationTest {
     @Autowired
     lateinit var contactAlertRepository: ContactAlertRepository
 
+    @Autowired
+    lateinit var enforcementRepository: EnforcementRepository
+
     @Test
     fun `can retrieve appointment details`() {
         val response = mockMvc
@@ -59,7 +59,7 @@ class AppointmentsIntegrationTest {
         assertThat(response.project.name).isEqualTo("Default UPW Project")
         assertThat(response.case.crn).isEqualTo(PersonGenerator.DEFAULT_PERSON.crn)
         assertThat(response.penaltyHours).isEqualTo("01:00")
-        assertThat(response.enforcementAction!!.respondBy).isEqualTo(response.date.plusDays(ReferenceDataGenerator.DEFAULT_ENFORCEMENT_ACTION.responseByPeriod))
+        assertThat(response.enforcementAction!!.respondBy).isEqualTo(response.date.plusDays(ReferenceDataGenerator.ROM_ENFORCEMENT_ACTION.responseByPeriod))
         assertThat(response.behaviour).isEqualTo(Behaviour.EX.value)
         assertThat(response.workQuality).isEqualTo(WorkQuality.EX.value)
     }
@@ -140,5 +140,33 @@ class AppointmentsIntegrationTest {
         val alert = contactAlertRepository.findAll()
             .firstOrNull { it.contactId == UPWGenerator.UPW_APPOINTMENT_NO_ENFORCEMENT.contact.id }
         assertThat(alert).isNotNull
+    }
+
+    @Test
+    fun `enforcement created when complied is false`() {
+        mockMvc.put("/projects/N01DEFAULT/appointments/${UPWGenerator.UPW_APPOINTMENT_NO_ENFORCEMENT.id}/outcome") {
+            withToken()
+            json = AppointmentOutcomeRequest(
+                id = UPWGenerator.UPW_APPOINTMENT_NO_OUTCOME.id,
+                version = UUID(5, 5),
+                outcome = Code("F"),
+                supervisor = Code("N01P001"),
+                startTime = LocalTime.of(8, 0),
+                endTime = LocalTime.of(10, 0),
+                notes = "enforcement",
+                hiVisWorn = true,
+                workedIntensively = true,
+                penaltyMinutes = 5,
+                workQuality = "EXCELLENT",
+                behaviour = "UNSATISFACTORY",
+                sensitive = false,
+                alertActive = true,
+            )
+        }
+            .andExpect { status().is2xxSuccessful }
+
+        val enforcement = enforcementRepository.findAll()
+            .firstOrNull { it.contact.id == UPWGenerator.UPW_APPOINTMENT_NO_OUTCOME.contact.id }
+        assertThat(enforcement).isNotNull
     }
 }
