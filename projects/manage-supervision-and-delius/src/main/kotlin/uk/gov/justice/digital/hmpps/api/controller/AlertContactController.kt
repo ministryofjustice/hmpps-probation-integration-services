@@ -6,12 +6,7 @@ import jakarta.validation.Valid
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
 import org.springframework.security.access.prepost.PreAuthorize
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PutMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RequestParam
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 import uk.gov.justice.digital.hmpps.api.model.user.ClearAlerts
 import uk.gov.justice.digital.hmpps.api.model.user.UserAlerts
 import uk.gov.justice.digital.hmpps.aspect.WithDeliusUser
@@ -36,4 +31,11 @@ class AlertContactController(private val userAlertService: UserAlertService) {
     fun clearUserAlerts(@Valid @RequestBody toClear: ClearAlerts) {
         userAlertService.clearAlerts(toClear)
     }
+
+    @GetMapping("/{alertId}/notes/{noteId}")
+    @Operation(summary = "Get alert note")
+    fun getAlertNote(
+        @PathVariable alertId: Long,
+        @PathVariable noteId: Int
+    ) = userAlertService.getAlertNote(alertId, noteId)
 }
