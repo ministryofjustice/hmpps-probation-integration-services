@@ -16,7 +16,7 @@ class Staff(
     @Column(name = "staff_id")
     val id: Long = 0,
 
-    @Column(name = "officer_code", columnDefinition = "char(8)")
+    @Column(name = "officer_code", columnDefinition = "char(7)")
     val code: String,
 
     val forename: String,

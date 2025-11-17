@@ -277,7 +277,7 @@ interface UnpaidWorkAppointmentRepository : JpaRepository<UpwAppointment, Long> 
         JOIN r_disposal_type
              ON r_disposal_type.disposal_type_id = disposal.disposal_type_id
         WHERE upw_details.soft_deleted = 0
-          AND upw_details.upw_details_id = :upwDetailsId;
+          AND upw_details.upw_details_id = :upwDetailsId
     """, nativeQuery = true
     )
     fun getUpwRequiredAndCompletedMinutes(upwDetailsId: Long): UpwMinutesDto
