@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 import uk.gov.justice.digital.hmpps.api.model.Name
+import uk.gov.justice.digital.hmpps.api.model.sentence.NoteDetail
 import uk.gov.justice.digital.hmpps.api.model.user.*
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator
 import uk.gov.justice.digital.hmpps.data.generator.IdGenerator
@@ -73,6 +74,7 @@ class AlertContactIntegrationTest : IntegrationTestBase() {
                     Name(forename = "Forename", middleName = "Middle1 Middle2", surname = "Surname"),
                     LocalDate.now().minusDays(1),
                     "Description of first alert",
+                    listOf(),
                     null,
                     Staff(Name("John", null, "Smith"), "N01BDT1")
                 ),
@@ -83,12 +85,20 @@ class AlertContactIntegrationTest : IntegrationTestBase() {
                     Name(forename = "Forename", middleName = "Middle1 Middle2", surname = "Surname"),
                     LocalDate.now().minusDays(2),
                     null,
-                    "Some notes about the other alert",
+                    listOf(NoteDetail(0, note = "Some notes about the other alert", hasNoteBeenTruncated = false)),
+                    null,
                     Staff(Name("Limited", null, "Access"), "N01BDT3")
                 )
             ), 2, 1, 0, 10
         )
         assertEquals(expected, response)
+
+        val noteResponse = mockMvc
+            .perform(MockMvcRequestBuilders.get("/alerts/${alertContacts[0].id}/notes/0").withUserToken(user.username))
+            .andExpect(MockMvcResultMatchers.status().isOk)
+            .andReturn().response.contentAsJson<UserAlert>()
+
+        assertThat(noteResponse.alertNote).isEqualTo(NoteDetail(0, note = "Some notes about the other alert"))
     }
 
     @Test

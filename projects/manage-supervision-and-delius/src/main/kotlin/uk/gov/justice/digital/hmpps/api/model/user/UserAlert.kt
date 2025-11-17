@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.api.model.user
 
 import uk.gov.justice.digital.hmpps.api.model.Name
+import uk.gov.justice.digital.hmpps.api.model.sentence.NoteDetail
 import java.time.LocalDate
 
 data class UserAlert(
@@ -10,7 +11,8 @@ data class UserAlert(
     val name: Name,
     val date: LocalDate,
     val description: String?,
-    val notes: String?,
+    val alertNotes: List<NoteDetail>,
+    val alertNote: NoteDetail?,
     val officer: Staff
 )
 
