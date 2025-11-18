@@ -211,6 +211,7 @@ class RiskService(
             person = person,
             detail = ContactDetail(
                 typeCode = ContactType.Code.REGISTRATION_REVIEW,
+                date = nextReviewDate ?: LocalDate.now(),
                 notes = notes(),
                 contactType = type.reviewContactType
             ),
