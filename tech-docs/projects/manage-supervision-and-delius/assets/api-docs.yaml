@@ -1832,6 +1832,32 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ProviderOfficeLocation"
+  /alerts/{alertId}/notes/{noteId}:
+    get:
+      tags:
+      - Activity
+      summary: Get alert note
+      operationId: getAlertNote
+      parameters:
+      - name: alertId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - name: noteId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int32
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserAlert"
 components:
   schemas:
     RescheduleAppointmentRequest:
@@ -4427,11 +4453,16 @@ components:
           format: date
         description:
           type: string
-        notes:
-          type: string
+        alertNotes:
+          type: array
+          items:
+            $ref: "#/components/schemas/NoteDetail"
+        alertNote:
+          $ref: "#/components/schemas/NoteDetail"
         officer:
           $ref: "#/components/schemas/Staff"
       required:
+      - alertNotes
       - crn
       - date
       - id
