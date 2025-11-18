@@ -8,6 +8,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactTy
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.RegisterDuplicateGroup
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.RegisterType
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.Registration
+import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.RegistrationReview
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.ReferenceData
 import java.time.LocalDate
 
@@ -38,9 +39,10 @@ object RegistrationGenerator {
         personId: Long,
         date: LocalDate,
         contact: Contact,
+        reviewContact: Contact? = null,
         type: RegisterType,
-        category: ReferenceData? = null,
         level: ReferenceData? = null,
+        category: ReferenceData? = null,
         teamId: Long = ProviderGenerator.DEFAULT_TEAM_ID,
         staffId: Long = ProviderGenerator.DEFAULT_STAFF_ID,
         nextReviewDate: LocalDate? = type.reviewPeriod?.let { date.plusMonths(it) },
@@ -55,10 +57,26 @@ object RegistrationGenerator {
         type,
         category,
         level,
+        category,
+        level,
         nextReviewDate,
-        notes,
-        softDeleted
-    )
+        notes = notes,
+        softDeleted = softDeleted
+    ).also { registration ->
+        if (reviewContact != null) {
+            registration.reviews += RegistrationReview(
+                registration = registration,
+                contact = reviewContact,
+                date = nextReviewDate,
+                reviewDue = null,
+                teamId = teamId,
+                staffId = staffId,
+                notes = reviewContact.notes,
+                category = level,
+                level = category
+            )
+        }
+    }
 
     fun generateType(
         code: String,

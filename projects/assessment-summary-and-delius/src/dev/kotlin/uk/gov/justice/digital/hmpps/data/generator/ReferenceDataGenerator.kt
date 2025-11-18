@@ -33,7 +33,11 @@ object ReferenceDataGenerator {
     val COURTS = listOf("CRT150", "LVRPCC").map { generateCourt(it) }
     val REQ_MAIN_CATS = listOf("RM38").map { generateReqMainCat(it) }
     val DOMAIN_EVENT_TYPE_DATASET = generateDataset(Dataset.Code.DOMAIN_EVENT_TYPE.value)
-    val DOMAIN_EVENT_TYPES = listOf(ReferenceData.Code.REGISTRATION_ADDED, ReferenceData.Code.REGISTRATION_DEREGISTERED)
+    val DOMAIN_EVENT_TYPES = listOf(
+        ReferenceData.Code.REGISTRATION_ADDED,
+        ReferenceData.Code.REGISTRATION_UPDATED,
+        ReferenceData.Code.REGISTRATION_DEREGISTERED
+    )
         .map { generateReferenceData(it.value, dataset = DOMAIN_EVENT_TYPE_DATASET) }
     val DISPOSAL_TYPE = generateDisposalType("NC")
 
