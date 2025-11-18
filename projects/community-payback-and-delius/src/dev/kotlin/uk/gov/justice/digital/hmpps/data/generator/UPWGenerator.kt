@@ -182,8 +182,9 @@ object UPWGenerator {
         code: String,
         teamId: Long,
         placementAddress: Address?,
-        projectType: ReferenceData
-    ) = UpwProject(id, name, code, teamId, placementAddress, projectType)
+        projectType: ReferenceData,
+        hiVisRequired: Boolean = false
+    ) = UpwProject(id, name, code, teamId, placementAddress, projectType, hiVisRequired)
 
     fun generateUpwProjectAvailability(
         id: Long = IdGenerator.getAndIncrement(),

@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.integrations.delius.entity
 
 import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
+import org.hibernate.type.YesNoConverter
 import org.springframework.data.jpa.repository.JpaRepository
 
 @Entity
@@ -24,7 +25,11 @@ class UpwProject(
 
     @ManyToOne
     @JoinColumn(name = "project_type_id")
-    val projectType: ReferenceData
+    val projectType: ReferenceData,
+
+    @Convert(converter = YesNoConverter::class)
+    @Column(name = "high_visibility_vest_required")
+    val hiVisRequired: Boolean
 )
 
 @Entity
