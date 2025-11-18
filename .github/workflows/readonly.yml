@@ -73,6 +73,7 @@ jobs:
         run: |
           json=$(
             kubectl get deployments -o jsonpath='{.items[*].metadata.name}' | xargs -n1 \
+            | grep -v delius-database \
             | grep -v domain-events-and-delius \
             | grep -v offender-events-and-delius \
             | grep -v opensearch-proxy \
