@@ -32,6 +32,7 @@ class DisposalType(
     @Column(name = "disposal_type_id")
     val id: Long,
 
+    @Column(name = "disposal_type_code")
     val code: String,
 
     val description: String,
