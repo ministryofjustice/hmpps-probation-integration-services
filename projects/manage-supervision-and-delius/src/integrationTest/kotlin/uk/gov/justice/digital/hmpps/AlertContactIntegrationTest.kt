@@ -42,7 +42,10 @@ class AlertContactIntegrationTest : IntegrationTestBase() {
         val person = PersonGenerator.OVERVIEW
 
         val staff = transactionTemplate.execute {
-            entityManager.find(uk.gov.justice.digital.hmpps.integrations.delius.user.entity.Staff::class.java, user.staff!!.id)
+            entityManager.find(
+                uk.gov.justice.digital.hmpps.integrations.delius.user.entity.Staff::class.java,
+                user.staff!!.id
+            )
         }!!
 
         val alertContacts = contactRepository.saveAll(
