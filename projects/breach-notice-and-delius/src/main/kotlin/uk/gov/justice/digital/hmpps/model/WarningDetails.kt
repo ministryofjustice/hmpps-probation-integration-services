@@ -5,7 +5,6 @@ import java.time.LocalDateTime
 data class WarningDetails(
     val breachReasons: List<CodedDescription>,
     val enforceableContacts: List<EnforceableContact>,
-    val requirements: List<Requirement>
 )
 
 data class EnforceableContact(
