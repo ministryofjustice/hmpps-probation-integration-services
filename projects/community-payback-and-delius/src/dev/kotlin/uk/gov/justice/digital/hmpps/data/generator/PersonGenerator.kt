@@ -1,6 +1,9 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.Person
+import uk.gov.justice.digital.hmpps.integrations.delius.entity.PersonManager
+import uk.gov.justice.digital.hmpps.integrations.delius.entity.Staff
+import uk.gov.justice.digital.hmpps.integrations.delius.entity.Team
 import java.time.LocalDate
 
 object PersonGenerator {
@@ -18,6 +21,12 @@ object PersonGenerator {
         dateOfBirth = LocalDate.of(1977, 1, 25)
     )
 
+    val DEFAULT_PERSON_MANAGER = generatePersonManager(
+        personId = DEFAULT_PERSON.id!!,
+        staff = StaffGenerator.DEFAULT_STAFF,
+        team = TeamGenerator.DEFAULT_UPW_TEAM,
+    )
+
     fun generatePerson(
         id: Long = IdGenerator.getAndIncrement(),
         crn: String,
@@ -26,4 +35,20 @@ object PersonGenerator {
         surname: String,
         dateOfBirth: LocalDate
     ) = Person(id, crn, forename, secondName, surname, dateOfBirth)
+
+    fun generatePersonManager(
+        id: Long = IdGenerator.getAndIncrement(),
+        personId: Long,
+        staff: Staff,
+        team: Team,
+        active: Boolean = true,
+        softDeleted: Boolean = false
+    ) = PersonManager(
+        id = id,
+        personId = personId,
+        staff = staff,
+        team = team,
+        active = active,
+        softDeleted = softDeleted
+    )
 }

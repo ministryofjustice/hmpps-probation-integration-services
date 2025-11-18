@@ -9,34 +9,41 @@ import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedDate
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
-import uk.gov.justice.digital.hmpps.model.CodeDescription
 import uk.gov.justice.digital.hmpps.model.AppointmentResponseCase
 import uk.gov.justice.digital.hmpps.model.AppointmentResponseName
+import uk.gov.justice.digital.hmpps.model.CodeDescription
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.ZonedDateTime
 
 @Entity
 @Table(name = "upw_appointment")
-@Immutable
 class UpwAppointment(
     @Id
+    @SequenceGenerator(
+        name = "upw_appointment_id_generator",
+        sequenceName = "upw_appointment_id_seq",
+        allocationSize = 1
+    )
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "upw_appointment_id_generator")
     @Column(name = "upw_appointment_id")
     val id: Long,
 
-    @Column(columnDefinition = "char(1)")
-    val attended: String?,
+    @Column(name = "attended")
+    @Convert(converter = YesNoConverter::class)
+    var attended: Boolean?,
 
-    @Column(columnDefinition = "char(1)")
-    val complied: String?,
+    @Column(name = "complied")
+    @Convert(converter = YesNoConverter::class)
+    var complied: Boolean?,
 
     @Column(columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean = false,
 
-    val startTime: LocalTime,
+    var startTime: LocalTime,
 
-    val endTime: LocalTime,
+    var endTime: LocalTime,
 
     val appointmentDate: LocalDate,
 
@@ -50,13 +57,13 @@ class UpwAppointment(
 
     val pickUpTime: LocalTime?,
 
-    val penaltyTime: Long?, // In minutes
+    var penaltyTime: Long?, // In minutes
 
     @ManyToOne
     @JoinColumn(name = "contact_id")
     val contact: Contact,
 
-    val contactOutcomeTypeId: Long?,
+    var contactOutcomeTypeId: Long?,
 
     @ManyToOne
     @JoinColumn(name = "offender_id")
@@ -64,7 +71,7 @@ class UpwAppointment(
 
     @ManyToOne
     @JoinColumn(name = "staff_id")
-    val staff: Staff,
+    var staff: Staff,
 
     @ManyToOne
     @JoinColumn(name = "team_id")
@@ -72,24 +79,24 @@ class UpwAppointment(
 
     @Convert(converter = YesNoConverter::class)
     @Column(name = "high_visibility_vest")
-    val hiVisWorn: Boolean,
+    var hiVisWorn: Boolean,
 
     @Convert(converter = YesNoConverter::class)
     @Column(name = "intensive")
-    val workedIntensively: Boolean,
+    var workedIntensively: Boolean,
 
     @ManyToOne
     @JoinColumn(name = "work_quality_id")
-    val workQuality: ReferenceData?,
+    var workQuality: ReferenceData?,
 
     @ManyToOne
     @JoinColumn(name = "behaviour_id")
-    val behaviour: ReferenceData?,
+    var behaviour: ReferenceData?,
 
-    val minutesCredited: Long? = null,
+    var minutesCredited: Long? = null,
 
     @Version
-    val rowVersion: Long,
+    var rowVersion: Long,
 
     @CreatedDate
     var createdDatetime: ZonedDateTime = ZonedDateTime.now(),
@@ -114,12 +121,24 @@ fun UpwAppointment.toAppointmentResponseCase() = AppointmentResponseCase(
 
 enum class WorkQuality(val value: String) {
     EX("EXCELLENT"), GD("GOOD"), NA("NOT_APPLICABLE"), PR("POOR"),
-    ST("SATISFACTORY"), US("UNSATISFACTORY")
+    ST("SATISFACTORY"), US("UNSATISFACTORY");
+
+    companion object {
+        fun of(value: String): WorkQuality? = WorkQuality.entries.firstOrNull {
+            it.value.equals(value, true)
+        }
+    }
 }
 
 enum class Behaviour(val value: String) {
     EX("EXCELLENT"), GD("GOOD"), NA("NOT_APPLICABLE"), PR("POOR"),
-    SA("SATISFACTORY"), UN("UNSATISFACTORY")
+    SA("SATISFACTORY"), UN("UNSATISFACTORY");
+
+    companion object {
+        fun of(value: String): Behaviour? = Behaviour.entries.firstOrNull {
+            it.value.equals(value, true)
+        }
+    }
 }
 
 @Entity
@@ -236,7 +255,7 @@ interface UnpaidWorkAppointmentRepository : JpaRepository<UpwAppointment, Long> 
     )
     fun getUnpaidWorkSessionDetails(teamId: Long, startDate: LocalDate, endDate: LocalDate): List<UnpaidWorkSessionDto>
 
-    fun getUpwAppointmentById(appointmentId: Long): UpwAppointment
+    fun getUpwAppointmentById(appointmentId: Long): UpwAppointment?
 
     fun getUpwAppointmentsByAppointmentDateAndStartTimeAndEndTime(
         appointmentDate: LocalDate,
@@ -264,7 +283,7 @@ interface UnpaidWorkAppointmentRepository : JpaRepository<UpwAppointment, Long> 
         JOIN r_disposal_type
              ON r_disposal_type.disposal_type_id = disposal.disposal_type_id
         WHERE upw_details.soft_deleted = 0
-          AND upw_details.upw_details_id = :upwDetailsId;
+          AND upw_details.upw_details_id = :upwDetailsId
     """, nativeQuery = true
     )
     fun getUpwRequiredAndCompletedMinutes(upwDetailsId: Long): UpwMinutesDto
