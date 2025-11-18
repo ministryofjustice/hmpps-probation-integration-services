@@ -35,7 +35,8 @@ class AppointmentsService(
             project = AppointmentResponseProject(
                 name = project.name,
                 code = project.code,
-                location = project.placementAddress?.toAppointmentResponseAddress()
+                location = project.placementAddress?.toAppointmentResponseAddress(),
+                hiVisWorn = appointment.hiVisWorn
             ),
             projectType = NameCode(
                 project.projectType.description,
@@ -74,7 +75,6 @@ class AppointmentsService(
                     appointment.appointmentDate.plusDays(appointment.contact.latestEnforcementAction.responseByPeriod)
                 )
             },
-            hiVisWorn = appointment.hiVisWorn,
             workedIntensively = appointment.workedIntensively,
             workQuality = appointment.workQuality?.let { WorkQuality.valueOf(appointment.workQuality!!.code).value },
             behaviour = appointment.behaviour?.let { Behaviour.valueOf(appointment.behaviour!!.code).value },
@@ -109,7 +109,7 @@ class AppointmentsService(
         }
 
         return SessionResponse(
-            project = AppointmentResponseProject(
+            project = SessionResponseProject(
                 name = project.name,
                 code = project.code,
                 location = project.placementAddress?.toAppointmentResponseAddress()
