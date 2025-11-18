@@ -38,26 +38,33 @@ object ReferenceDataGenerator {
         selectable = true
     )
     val UNSATISFACTORY_BEHAVIOUR = generateReferenceData(
-        code = "US",
+        code = "UN",
         description = "Unsatisfactory",
         datasetId = DatasetGenerator.UPW_BEHAVIOUR_DATASET.id,
         selectable = true
     )
-    val DEFAULT_ENFORCEMENT_ACTION = generateEnforcementAction(
-        code = "DEF",
-        description = "Default Enforcement",
-        responseByPeriod = 7L,
-        outstandingContactAction = true
-    )
 
     val UPW_APPOINTMENT_TYPE = generateContactType(ContactType.Code.UNPAID_WORK_APPOINTMENT.value)
+
+    val ROM_ENFORCEMENT_ACTION = generateEnforcementAction(
+        code = EnforcementAction.REFER_TO_PERSON_MANAGER,
+        description = "Refer to Offender Manager",
+        responseByPeriod = 7L,
+        outstandingContactAction = true,
+        contactTypeId = UPW_APPOINTMENT_TYPE.id
+    )
+
     val ATTENDED_COMPLIED_CONTACT_OUTCOME = generateContactOutcome(
         code = "A",
-        description = "Attended - Complied"
+        description = "Attended - Complied",
+        attended = true,
+        complied = true
     )
     val FAILED_TO_ATTEND_CONTACT_OUTCOME = generateContactOutcome(
         code = "F",
-        description = "Failed to Attend"
+        description = "Failed to Attend",
+        attended = false,
+        complied = false
     )
 
     val UPW_RQMNT_MAIN_CATEGORY = generateRequirementMainCategory(
@@ -84,8 +91,9 @@ object ReferenceDataGenerator {
         code: String,
         description: String,
         responseByPeriod: Long,
-        outstandingContactAction: Boolean
-    ) = EnforcementAction(id, code, description, responseByPeriod, outstandingContactAction)
+        outstandingContactAction: Boolean,
+        contactTypeId: Long
+    ) = EnforcementAction(id, code, description, responseByPeriod, outstandingContactAction, contactTypeId)
 
     fun generateContactType(
         code: String,
@@ -95,8 +103,10 @@ object ReferenceDataGenerator {
     fun generateContactOutcome(
         code: String,
         description: String,
+        attended: Boolean?,
+        complied: Boolean?,
         id: Long = IdGenerator.getAndIncrement(),
-    ) = ContactOutcome(code, description, id)
+    ) = ContactOutcome(code, description, attended, complied, id)
 
     fun generateRequirementMainCategory(
         id: Long = IdGenerator.getAndIncrement(),
