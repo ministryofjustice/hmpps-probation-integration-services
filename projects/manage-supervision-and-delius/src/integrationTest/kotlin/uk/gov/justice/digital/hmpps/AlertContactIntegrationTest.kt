@@ -201,6 +201,8 @@ class AlertContactIntegrationTest : IntegrationTestBase() {
             )
         )
 
+        val alerts = contactAlertRepository.saveAll(alertContacts.map { generateContactAlert(it) })
+
         mockMvc
             .perform(
                 MockMvcRequestBuilders.put("/alerts")
@@ -213,5 +215,7 @@ class AlertContactIntegrationTest : IntegrationTestBase() {
             assertThat(it.alert).isFalse
             assertThat(it.notes).contains("Alert cleared from MPOP")
         }
+
+        assertThat(contactAlertRepository.findAllById(alerts.map { it.id })).isEmpty()
     }
 }

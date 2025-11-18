@@ -23,4 +23,6 @@ class ContactAlert(
     val id: Long = 0,
 )
 
-interface ContactAlertRepository : JpaRepository<ContactAlert, Long>
+interface ContactAlertRepository : JpaRepository<ContactAlert, Long> {
+    fun deleteByContactIdIn(contactId: Collection<Long>)
+}

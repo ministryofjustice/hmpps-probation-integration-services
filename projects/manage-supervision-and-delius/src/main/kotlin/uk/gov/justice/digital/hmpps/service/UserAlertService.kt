@@ -9,12 +9,17 @@ import uk.gov.justice.digital.hmpps.api.model.Name
 import uk.gov.justice.digital.hmpps.api.model.user.*
 import uk.gov.justice.digital.hmpps.aspect.UserContext
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.Contact
+import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.ContactAlertRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.PersonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.getContact
 
 @Service
-class UserAlertService(private val contactRepository: ContactRepository, val personRepository: PersonRepository) {
+class UserAlertService(
+    private val contactRepository: ContactRepository,
+    private val contactAlertRepository: ContactAlertRepository,
+    val personRepository: PersonRepository
+) {
     @Transactional(readOnly = true)
     fun getUserAlerts(pageable: Pageable): UserAlerts {
         val page: Page<Contact> = UserContext.get()?.let {
@@ -32,6 +37,7 @@ class UserAlertService(private val contactRepository: ContactRepository, val per
     @Transactional
     fun clearAlerts(toClear: ClearAlerts) {
         val username = requireNotNull(UserContext.get()?.username) { "username required in token" }
+        contactAlertRepository.deleteByContactIdIn(toClear.alertIds)
         contactRepository.findAllById(toClear.alertIds).takeIf { it.isNotEmpty() }?.let { alerts ->
             val comConfirmations = personRepository.userIsCom(username, alerts.map { it.person.crn }.toSet())
                 .associate { it.crn to it.userIsCom }
