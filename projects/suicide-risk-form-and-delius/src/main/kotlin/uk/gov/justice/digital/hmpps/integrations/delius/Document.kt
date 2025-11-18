@@ -4,6 +4,7 @@ import jakarta.persistence.*
 import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.NumericBooleanConverter
 import org.springframework.data.jpa.repository.JpaRepository
+import java.time.LocalDateTime
 import java.time.ZonedDateTime
 import java.util.*
 
@@ -31,6 +32,8 @@ class Document(
     val externalReference: String,
 
     var lastSaved: ZonedDateTime? = null,
+
+    var createdDatetime: LocalDateTime? = null,
 
     var lastUpdatedUserId: Long? = null,
 

@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.service
 
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer
 import jakarta.persistence.EntityManager
 import org.springframework.http.MediaType
 import org.springframework.http.client.MultipartBodyBuilder
@@ -21,6 +22,7 @@ import uk.gov.justice.digital.hmpps.model.ContactDocumentDetails
 import uk.gov.justice.digital.hmpps.model.ContactDocumentItem
 import uk.gov.justice.digital.hmpps.model.ContactDocumentResponse
 import uk.gov.justice.digital.hmpps.user.AuditUserService
+import java.time.LocalDateTime
 import java.time.ZonedDateTime
 import java.util.*
 
@@ -40,6 +42,7 @@ class DocumentService(
         document.status = "Y"
         document.workInProgress = "N"
         document.lastSaved = ZonedDateTime.now()
+        document.createdDatetime = LocalDateTime.now()
         document.lastUpdatedUserId = auditUserService.findUser(event.username)?.id
             ?: throw NotFoundException("User", "username", event.username)
 

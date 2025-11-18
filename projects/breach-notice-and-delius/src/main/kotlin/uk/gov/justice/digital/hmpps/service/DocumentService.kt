@@ -18,6 +18,7 @@ import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
 import uk.gov.justice.digital.hmpps.messaging.breachNoticeId
 import uk.gov.justice.digital.hmpps.messaging.username
 import uk.gov.justice.digital.hmpps.user.AuditUserService
+import java.time.LocalDateTime
 import java.time.ZonedDateTime
 import java.util.*
 
@@ -37,6 +38,7 @@ class DocumentService(
         document.status = "Y"
         document.workInProgress = "N"
         document.lastSaved = ZonedDateTime.now()
+        document.createdDatetime = LocalDateTime.now()
         document.lastUpdatedUserId = auditUserService.findUser(event.username)?.id
             ?: throw NotFoundException("User", "username", event.username)
 
