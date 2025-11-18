@@ -35,7 +35,8 @@ class AppointmentsService(
             project = AppointmentResponseProject(
                 name = project.name,
                 code = project.code,
-                location = project.placementAddress?.toAppointmentResponseAddress()
+                location = project.placementAddress?.toAppointmentResponseAddress(),
+                hiVisRequired = project.hiVisRequired
             ),
             projectType = NameCode(
                 project.projectType.description,
@@ -109,7 +110,7 @@ class AppointmentsService(
         }
 
         return SessionResponse(
-            project = AppointmentResponseProject(
+            project = SessionResponseProject(
                 name = project.name,
                 code = project.code,
                 location = project.placementAddress?.toAppointmentResponseAddress()

@@ -36,7 +36,8 @@ data class AppointmentResponse(
 data class AppointmentResponseProject(
     val name: String,
     val code: String,
-    val location: AppointmentResponseAddress?
+    val location: AppointmentResponseAddress?,
+    val hiVisRequired: Boolean
 )
 
 data class AppointmentResponseAddress(

@@ -458,6 +458,7 @@ internal class IntegrationTest {
         """.trimIndent().let { assertThat(completedReview.contact.notes?.trim(), equalTo(it)) }
         val newReview = riskToChildren.reviews.single { !it.completed }
         assertThat(newReview.date, equalTo(LocalDate.now().plusMonths(6)))
+        assertThat(newReview.contact.date, equalTo(newReview.date))
         assertThat(newReview.reviewDue, nullValue())
         """
             Type: Safeguarding - Risk to children
