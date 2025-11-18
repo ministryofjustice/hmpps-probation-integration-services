@@ -34,6 +34,8 @@ class Document(
 
     var lastSaved: ZonedDateTime? = null,
 
+    var createdDatetime: ZonedDateTime? = null,
+
     var lastUpdatedUserId: Long? = null,
 
     @Column(columnDefinition = "char")

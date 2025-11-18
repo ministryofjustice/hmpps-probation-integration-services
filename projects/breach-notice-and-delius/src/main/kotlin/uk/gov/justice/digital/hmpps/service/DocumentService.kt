@@ -37,6 +37,7 @@ class DocumentService(
         document.status = "Y"
         document.workInProgress = "N"
         document.lastSaved = ZonedDateTime.now()
+        document.createdDatetime = ZonedDateTime.now()
         document.lastUpdatedUserId = auditUserService.findUser(event.username)?.id
             ?: throw NotFoundException("User", "username", event.username)
 
