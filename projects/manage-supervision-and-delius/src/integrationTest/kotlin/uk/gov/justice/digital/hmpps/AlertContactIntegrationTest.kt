@@ -9,6 +9,7 @@ import uk.gov.justice.digital.hmpps.api.model.Name
 import uk.gov.justice.digital.hmpps.api.model.sentence.NoteDetail
 import uk.gov.justice.digital.hmpps.api.model.user.*
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator
+import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.generateContactAlert
 import uk.gov.justice.digital.hmpps.data.generator.IdGenerator
 import uk.gov.justice.digital.hmpps.data.generator.OffenderManagerGenerator.STAFF_USER_1
 import uk.gov.justice.digital.hmpps.data.generator.OffenderManagerGenerator.STAFF_USER_2
@@ -40,6 +41,10 @@ class AlertContactIntegrationTest : IntegrationTestBase() {
         val user = STAFF_USER_1
         val person = PersonGenerator.OVERVIEW
 
+        val staff = transactionTemplate.execute {
+            entityManager.find(uk.gov.justice.digital.hmpps.integrations.delius.user.entity.Staff::class.java, user.staff!!.id)
+        }!!
+
         val alertContacts = contactRepository.saveAll(
             listOf(
                 ContactGenerator.generateContact(
@@ -47,18 +52,21 @@ class AlertContactIntegrationTest : IntegrationTestBase() {
                     ContactGenerator.OTHER_CT,
                     ZonedDateTime.now().minusDays(2),
                     alert = true,
-                    staff = ContactGenerator.LIMITED_ACCESS_STAFF,
+                    staff = staff,
                     notes = "Some notes about the other alert"
                 ),
                 ContactGenerator.generateContact(
                     person,
                     ContactGenerator.BREACH_CONTACT_TYPE,
                     ZonedDateTime.now().minusDays(1),
+                    staff = staff,
                     alert = true,
                     description = "Description of first alert"
                 ),
             )
         )
+
+        contactAlertRepository.saveAll(alertContacts.map { generateContactAlert(it) })
 
         val response = mockMvc
             .perform(MockMvcRequestBuilders.get("/alerts").withUserToken(user.username))
@@ -76,7 +84,7 @@ class AlertContactIntegrationTest : IntegrationTestBase() {
                     "Description of first alert",
                     listOf(),
                     null,
-                    Staff(Name("John", null, "Smith"), "N01BDT1")
+                    Staff(Name("Peter", null, "Parker"), "N01PEPA")
                 ),
                 UserAlert(
                     alertContacts[0].id,
@@ -87,7 +95,7 @@ class AlertContactIntegrationTest : IntegrationTestBase() {
                     null,
                     listOf(NoteDetail(0, note = "Some notes about the other alert", hasNoteBeenTruncated = false)),
                     null,
-                    Staff(Name("Limited", null, "Access"), "N01BDT3")
+                    Staff(Name("Peter", null, "Parker"), "N01PEPA")
                 )
             ), 2, 1, 0, 10
         )

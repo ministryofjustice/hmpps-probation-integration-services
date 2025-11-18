@@ -683,10 +683,11 @@ interface ContactRepository : JpaRepository<Contact, Long> {
 
     @Query(
         """
-            SELECT c from Contact c
-            join fetch c.person p
-            join OffenderManager com on p.id = com.person.id and com.active = true and com.softDeleted = false
-            where c.alert = true and com.staff.user.username = :username
+            SELECT c from ContactAlert ca
+            join ca.contact c
+            join OffenderManager com on com.person.id = c.person.id and com.active = true and com.softDeleted = false
+            where c.alert = true and c.softDeleted = false
+            and ca.staff.user.username = :username and com.staff.id = ca.staff.id
         """
     )
     fun findAllUserAlerts(username: String, pageable: Pageable): Page<Contact>

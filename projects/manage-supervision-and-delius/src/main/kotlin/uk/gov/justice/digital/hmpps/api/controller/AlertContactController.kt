@@ -23,7 +23,7 @@ class AlertContactController(private val userAlertService: UserAlertService) {
     fun getUserAlerts(
         @RequestParam(required = false, defaultValue = "0") page: Int,
         @RequestParam(required = false, defaultValue = "10") size: Int
-    ): UserAlerts = userAlertService.getUserAlerts(PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "date")))
+    ): UserAlerts = userAlertService.getUserAlerts(PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "c.date")))
 
     @PutMapping
     @WithDeliusUser

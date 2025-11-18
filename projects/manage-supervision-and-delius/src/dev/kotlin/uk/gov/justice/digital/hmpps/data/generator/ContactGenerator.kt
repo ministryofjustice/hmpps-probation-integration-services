@@ -269,6 +269,9 @@ object ContactGenerator {
         alert = alert
     )
 
+    fun generateContactAlert(contact: Contact, id: Long = IdGenerator.getAndIncrement()): ContactAlert =
+        ContactAlert(contact, contact.staff!!, id)
+
     fun generateOutcome(code: String, description: String, attendance: Boolean, acceptable: Boolean) =
         ContactOutcome(IdGenerator.getAndIncrement(), code, description, attendance, acceptable, true)
 
