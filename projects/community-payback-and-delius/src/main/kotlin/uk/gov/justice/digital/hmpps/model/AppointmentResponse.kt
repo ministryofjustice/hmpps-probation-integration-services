@@ -23,6 +23,7 @@ data class AppointmentResponse(
     val penaltyHours: String,
     val outcome: CodeDescription?,
     val enforcementAction: AppointmentResponseEnforcementAction?,
+    val hiVisWorn: Boolean,
     val workedIntensively: Boolean,
     val workQuality: String?,
     val behaviour: String?,
@@ -36,7 +37,7 @@ data class AppointmentResponseProject(
     val name: String,
     val code: String,
     val location: AppointmentResponseAddress?,
-    val hiVisWorn: Boolean
+    val hiVisRequired: Boolean
 )
 
 data class AppointmentResponseAddress(
