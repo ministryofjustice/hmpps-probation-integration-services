@@ -4,3 +4,7 @@ data class CodeDescription(
     val code: String,
     val description: String
 )
+
+data class Code(
+    val code: String
+)

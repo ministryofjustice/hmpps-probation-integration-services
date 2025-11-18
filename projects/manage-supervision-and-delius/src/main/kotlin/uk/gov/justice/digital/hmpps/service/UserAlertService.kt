@@ -11,6 +11,7 @@ import uk.gov.justice.digital.hmpps.aspect.UserContext
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.Contact
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.PersonRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.getContact
 
 @Service
 class UserAlertService(private val contactRepository: ContactRepository, val personRepository: PersonRepository) {
@@ -42,15 +43,18 @@ class UserAlertService(private val contactRepository: ContactRepository, val per
             }
         }
     }
+
+    fun getAlertNote(alertId: Long, noteId: Int): UserAlert? = contactRepository.getContact(alertId).toUserAlert(noteId)
 }
 
-private fun Contact.toUserAlert(): UserAlert = UserAlert(
+private fun Contact.toUserAlert(noteId: Int? = null): UserAlert = UserAlert(
     id,
     UserAlertType(type.description, type.editable == true),
     person.crn,
     person.name(),
     date,
     description,
-    notes,
+    if (noteId == null) formatNote(notes, true) else listOf(),
+    noteId?.let { formatNote(notes, false).takeIf { it.size > noteId }?.get(noteId) },
     Staff(Name(staff!!.forename, surname = staff.surname), staff.code)
 )

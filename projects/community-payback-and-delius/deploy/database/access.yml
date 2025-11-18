@@ -2,6 +2,11 @@ database:
   access:
     username_key: /community-payback-and-delius/db-username
     password_key: /community-payback-and-delius/db-password
+    tables:
+      - contact
+      - upw_appointment
+      - contact_alert
+      - enforcement
 
   audit:
     username: CommunityPaybackAndDelius
