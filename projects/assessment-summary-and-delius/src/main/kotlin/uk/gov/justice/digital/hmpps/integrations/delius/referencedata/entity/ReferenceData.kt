@@ -30,6 +30,7 @@ class ReferenceData(
     enum class Code(val value: String) {
         OASYS_RISK_FLAG("1"),
         REGISTRATION_ADDED("probation-case.registration.added"),
+        REGISTRATION_UPDATED("probation-case.registration.updated"),
         REGISTRATION_DEREGISTERED("probation-case.registration.deregistered")
     }
 }

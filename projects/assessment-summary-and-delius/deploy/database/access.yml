@@ -17,6 +17,9 @@ database:
       - offender
       - registration
       - registration_review
+      - reg_category_level_history
+    sequences:
+      - reg_cat_level_history_id_seq
 
   audit:
     username: AssessmentSummaryAndDelius
