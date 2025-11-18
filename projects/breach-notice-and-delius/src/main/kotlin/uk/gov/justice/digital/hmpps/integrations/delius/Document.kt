@@ -35,7 +35,7 @@ class Document(
 
     var lastSaved: ZonedDateTime? = null,
 
-    var createdDatetime: LocalDateTime? = null,
+    var createdDatetime: ZonedDateTime? = null,
 
     var lastUpdatedUserId: Long? = null,
 
