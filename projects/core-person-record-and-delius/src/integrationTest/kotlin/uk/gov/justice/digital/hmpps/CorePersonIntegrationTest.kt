@@ -146,7 +146,7 @@ internal class CorePersonIntegrationTest {
                           "district": "London",
                           "county": "   ",
                           "postcode": "PC1 1TS",
-                          "uprn": "123456789",
+                          "uprn": 123456789,
                           "telephoneNumber": "01234 567890",
                           "noFixedAbode": false,
                           "status": {
