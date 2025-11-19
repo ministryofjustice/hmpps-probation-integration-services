@@ -74,7 +74,7 @@ data class Address(
     val townCity: String?,
     val county: String?,
     val postcode: String,
-    val uprn: String?,
+    val uprn: Long?,
     val telephoneNumber: String?,
     val noFixedAbode: Boolean,
     val status: CodeDescription,
