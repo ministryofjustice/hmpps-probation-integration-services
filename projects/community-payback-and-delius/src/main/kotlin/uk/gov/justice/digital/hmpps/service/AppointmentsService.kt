@@ -134,7 +134,9 @@ class AppointmentsService(
         }
 
         if (appointmentOutcome.outcome == null) {
-            require(LocalDateTime.of(appointment.appointmentDate, appointmentOutcome.endTime).isBefore(LocalDateTime.now())) {
+            require(
+                LocalDateTime.of(appointment.appointmentDate, appointmentOutcome.endTime).isBefore(LocalDateTime.now())
+            ) {
                 "Appointments in the past require an outcome"
             }
         }
