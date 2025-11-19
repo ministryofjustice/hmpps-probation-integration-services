@@ -6,15 +6,16 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import uk.gov.justice.digital.hmpps.model.PduOfficeLocations
 import uk.gov.justice.digital.hmpps.model.RegionWithMembers
+import uk.gov.justice.digital.hmpps.service.GetPdu
 import uk.gov.justice.digital.hmpps.service.GetRegion
 
 @RestController
 @RequestMapping("/regions")
-class RegionController(private val getRegion: GetRegion) {
+class RegionController(private val getRegion: GetRegion, private val getPdu: GetPdu) {
     @GetMapping("/{code}/members")
     fun getRegionMembers(@PathVariable code: String): RegionWithMembers = getRegion.withMembers(code)
 
     @GetMapping("/pdu/{pdu}/office-locations")
     fun getPduOfficeLocations(@PathVariable pdu: String): PduOfficeLocations =
-        getRegion.pduOfficeLocations(pdu)
+        getPdu.pduOfficeLocations(pdu)
 }
