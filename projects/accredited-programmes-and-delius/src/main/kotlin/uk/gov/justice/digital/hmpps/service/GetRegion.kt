@@ -36,7 +36,6 @@ class GetRegion(
             officeLocationRepository.findByPduCode(code)
                 .map { CodedValue(it.code, it.description) })
     }
-
 }
 
 private fun List<RegionMember>.asPdus() =
