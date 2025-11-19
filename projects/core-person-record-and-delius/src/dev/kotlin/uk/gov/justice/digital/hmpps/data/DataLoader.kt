@@ -28,11 +28,14 @@ class DataLoader(
         saveAll(
             PersonGenerator.TITLE,
             PersonGenerator.GENDER,
+            PersonGenerator.GENDER_IDENTITY,
             PersonGenerator.ETHNICITY,
+            PersonGenerator.RELIGION,
             PersonGenerator.NATIONALITY,
             PersonGenerator.MAIN_ADDRESS,
             PersonGenerator.PREVIOUS_ADDRESS,
             PersonGenerator.SEXUAL_ORIENTATION,
+            PersonGenerator.DRIVERS_LICENCE,
             PersonGenerator.MIN_PERSON,
             PersonGenerator.FULL_PERSON,
             *PersonGenerator.FULL_PERSON_ALIASES.toTypedArray(),
@@ -41,6 +44,7 @@ class DataLoader(
             *PersonGenerator.FULL_PERSON_EXCLUSIONS.toTypedArray(),
             *PersonGenerator.FULL_PERSON_RESTRICTIONS.map { it.user }.toTypedArray(),
             *PersonGenerator.FULL_PERSON_RESTRICTIONS.toTypedArray(),
+            *PersonGenerator.FULL_PERSON_IDENTIFIERS.toTypedArray(),
             *PersonGenerator.SENTENCES.toTypedArray()
         )
     }

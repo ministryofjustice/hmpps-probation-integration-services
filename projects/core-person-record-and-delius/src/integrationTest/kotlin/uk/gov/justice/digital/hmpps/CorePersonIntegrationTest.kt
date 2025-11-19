@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
+import org.springframework.test.json.JsonCompareMode
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.*
@@ -30,7 +31,8 @@ internal class CorePersonIntegrationTest {
                     {
                       "identifiers": {
                         "deliusId": ${PersonGenerator.MIN_PERSON.id},
-                        "crn": "M123456"
+                        "crn": "M123456",
+                        "additionalIdentifiers": []
                       },
                       "name": {
                         "forename": "Isabelle",
@@ -38,9 +40,11 @@ internal class CorePersonIntegrationTest {
                       },
                       "dateOfBirth": "1990-03-05",
                       "aliases": [],
-                      "addresses": []
+                      "addresses": [],
+                      "sentences": []
                     }
-                    """.trimIndent()
+                    """.trimIndent(),
+                    JsonCompareMode.STRICT,
                 )
             )
     }
@@ -61,7 +65,16 @@ internal class CorePersonIntegrationTest {
                         "prisonerNumber": "94600E",
                         "pnc": "2011/0593710D",
                         "cro": "89861/11W",
-                        "ni": "FJ123456W"
+                        "ni": "FJ123456W",
+                        "additionalIdentifiers": [
+                          {
+                            "type": {
+                              "code": "DRL",
+                              "description": "Drivers Licence"
+                            },
+                            "value": "BANTE707155F99XX"
+                          }
+                        ]
                       },
                       "name": {
                         "forename": "Frederick",
@@ -71,18 +84,20 @@ internal class CorePersonIntegrationTest {
                         "preferred": "Freddy"
                       },
                       "dateOfBirth": "1975-07-15",
+                      "dateOfDeath": "2015-08-15", 
                       "title": {
                         "code": "TIT",
                         "description": "Description of TIT"
-                      },
-                      "sexualOrientation": {
-                        "code": "SEO",
-                        "description": "Description of SEO"
                       },
                       "gender": {
                         "code": "GEN",
                         "description": "Description of GEN"
                       },
+                      "genderIdentity": {
+                        "code": "GID",
+                        "description": "Description of GID"
+                      },
+                      "genderIdentityDescription": "Self-described gender identity",
                       "nationality": {
                         "code": "NAT",
                         "description": "Description of NAT"
@@ -95,7 +110,16 @@ internal class CorePersonIntegrationTest {
                         "code": "ETH",
                         "description": "Description of ETH"
                       },
-                      "ethnicityDescription": "Description of ethnicity",
+                      "ethnicityDescription": "Self-described ethnicity",
+                      "religion": {
+                        "code": "REL",
+                        "description": "Description of REL"
+                      },
+                      "religionDescription": "Self-described faith",
+                      "sexualOrientation": {
+                        "code": "SEO",
+                        "description": "Description of SEO"
+                      },
                       "contactDetails": {
                         "telephone": "0191 755 4789",
                         "mobile": "07895746789",
@@ -117,12 +141,19 @@ internal class CorePersonIntegrationTest {
                       "addresses": [
                         {
                           "fullAddress": "1 Main Street, London, PC1 1TS",
+                          "addressNumber": "1",
+                          "streetName": "Main Street",
+                          "district": "London",
+                          "county": "   ",
                           "postcode": "PC1 1TS",
+                          "uprn": 123456789,
+                          "telephoneNumber": "01234 567890",
                           "noFixedAbode": false,
                           "status": {
-                              "code": "M",
-                              "description": "Main Address"
+                            "code": "M",
+                            "description": "Main Address"
                           },
+                          "notes": "Some notes about this address",
                           "startDate": "${LocalDate.now().minusDays(30)}"
                         },
                         {
@@ -130,8 +161,8 @@ internal class CorePersonIntegrationTest {
                           "postcode": "NF1 1NF",
                           "noFixedAbode": true,
                           "status": {
-                              "code": "P",
-                              "description": "Previous Address"
+                            "code": "P",
+                            "description": "Previous Address"
                           },
                           "startDate": "${LocalDate.now().minusDays(60)}",
                           "endDate": "${LocalDate.now().minusDays(30)}"
@@ -163,7 +194,8 @@ internal class CorePersonIntegrationTest {
                         }
                       ]
                     }
-                    """.trimIndent()
+                    """.trimIndent(),
+                    JsonCompareMode.STRICT,
                 )
             )
     }
