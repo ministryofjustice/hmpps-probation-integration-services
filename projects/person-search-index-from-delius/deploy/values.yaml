@@ -53,5 +53,8 @@ generic-service:
     person-search-index-from-delius-contact-queue:
       CONTACT_SEMANTIC_SQS_QUEUE_NAME: QUEUE_NAME
 
+reindexing:
+  contact_semantic_schedule_suspended: false
+
 generic-prometheus-alerts:
   targetApplication: person-search-index-from-delius
