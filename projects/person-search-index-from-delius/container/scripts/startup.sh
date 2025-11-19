@@ -32,14 +32,14 @@ done
 if grep -q 'person' <<<"$PIPELINES_ENABLED"; then
   /scripts/setup-index.sh -i "$PERSON_INDEX_PREFIX" -p /pipelines/person/index/person-search-pipeline.json -t /pipelines/person/index/person-search-template.json
   if grep -q 'person-full-load' <<<"$PIPELINES_ENABLED"; then
-    sentry-cli monitors run "$PERSON_REINDEXING_SENTRY_MONITOR_ID" -- /scripts/monitor-reindexing.sh -i "$PERSON_INDEX_PREFIX" -t "$PERSON_REINDEXING_TIMEOUT" &
+    /scripts/monitor-reindexing.sh -i "$PERSON_INDEX_PREFIX" -t "$PERSON_REINDEXING_TIMEOUT" &
   fi
 fi
 
 if grep -q 'contact-keyword' <<<"$PIPELINES_ENABLED"; then
   /scripts/setup-index.sh -i "$CONTACT_KEYWORD_INDEX_PREFIX" -t /pipelines/contact-keyword/index/index-template-keyword.json
   if grep -q 'contact-keyword-full-load' <<<"$PIPELINES_ENABLED"; then
-    sentry-cli monitors run "$CONTACT_REINDEXING_SENTRY_MONITOR_ID" -- /scripts/monitor-reindexing.sh -i "$CONTACT_KEYWORD_INDEX_PREFIX" -t "$CONTACT_KEYWORD_REINDEXING_TIMEOUT" &
+    /scripts/monitor-reindexing.sh -i "$CONTACT_KEYWORD_INDEX_PREFIX" -t "$CONTACT_KEYWORD_REINDEXING_TIMEOUT" &
   fi
 fi
 
@@ -63,7 +63,7 @@ if grep -q 'contact-semantic' <<<"$PIPELINES_ENABLED"; then
     -t /pipelines/contact-semantic/index/index-template-contact-semantic-block.json \
 
   if grep -q 'contact-semantic-full-load' <<<"$PIPELINES_ENABLED"; then
-    sentry-cli monitors run "$CONTACT_REINDEXING_SENTRY_MONITOR_ID" -- /scripts/monitor-reindexing.sh -i "$CONTACT_SEMANTIC_INDEX_PREFIX" -t "$CONTACT_SEMANTIC_REINDEXING_TIMEOUT" &
+    /scripts/monitor-reindexing.sh -i "$CONTACT_SEMANTIC_INDEX_PREFIX" -t "$CONTACT_SEMANTIC_REINDEXING_TIMEOUT" &
     # export the name of the standby index to be referenced in logstash-full-load.conf, because the max_token_count check in the text_chunking ingest processor does not account for aliases (as of OpenSearch 2.19)
     CONTACT_SEMANTIC_INDEX_STANDBY=$(curl_json "${SEARCH_INDEX_HOST}/_alias/${CONTACT_SEMANTIC_INDEX_PREFIX}-standby" | jq -r 'keys[0]')
     export CONTACT_SEMANTIC_INDEX_STANDBY

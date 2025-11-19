@@ -42,6 +42,8 @@ spec:
                   value: '259200' # 72 hours
                 - name: CONTACT_SEMANTIC_BLOCK_INDEX_PREFIX
                   value: contact-semantic-block
+                - name: CONTACT_SEMANTIC_FULL_LOAD_THRESHOLD
+                  value: '-1' # Set to -1 to disable indexing. Set to 0 to index all cases with an active event. Set to N to index cases with an active event and more than N contacts.
                 - name: PIPELINES_ENABLED
                   value: contact-semantic-full-load
                 - name: PIPELINE_WORKERS
