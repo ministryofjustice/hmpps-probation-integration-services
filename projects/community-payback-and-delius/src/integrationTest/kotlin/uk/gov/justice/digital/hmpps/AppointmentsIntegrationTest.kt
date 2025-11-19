@@ -13,11 +13,10 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator
 import uk.gov.justice.digital.hmpps.data.generator.UPWGenerator
-import uk.gov.justice.digital.hmpps.integrations.delius.entity.*
-import uk.gov.justice.digital.hmpps.model.AppointmentOutcomeRequest
-import uk.gov.justice.digital.hmpps.model.AppointmentResponse
-import uk.gov.justice.digital.hmpps.model.Code
-import uk.gov.justice.digital.hmpps.model.SessionResponse
+import uk.gov.justice.digital.hmpps.integrations.delius.entity.ContactAlertRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.entity.EnforcementRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.entity.UnpaidWorkAppointmentRepository
+import uk.gov.justice.digital.hmpps.model.*
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.json
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
@@ -60,8 +59,8 @@ class AppointmentsIntegrationTest {
         assertThat(response.case.crn).isEqualTo(PersonGenerator.DEFAULT_PERSON.crn)
         assertThat(response.penaltyHours).isEqualTo("01:00")
         assertThat(response.enforcementAction!!.respondBy).isEqualTo(response.date.plusDays(ReferenceDataGenerator.ROM_ENFORCEMENT_ACTION.responseByPeriod))
-        assertThat(response.behaviour).isEqualTo(Behaviour.EX.value)
-        assertThat(response.workQuality).isEqualTo(WorkQuality.EX.value)
+        assertThat(response.behaviour).isEqualTo(Behaviour.EXCELLENT)
+        assertThat(response.workQuality).isEqualTo(WorkQuality.EXCELLENT)
     }
 
     @Test
@@ -98,8 +97,8 @@ class AppointmentsIntegrationTest {
                 hiVisWorn = true,
                 workedIntensively = true,
                 penaltyMinutes = 5,
-                workQuality = "EXCELLENT",
-                behaviour = "UNSATISFACTORY",
+                workQuality = WorkQuality.EXCELLENT,
+                behaviour = Behaviour.UNSATISFACTORY,
                 sensitive = false,
                 alertActive = false,
             )
@@ -129,8 +128,8 @@ class AppointmentsIntegrationTest {
                 hiVisWorn = true,
                 workedIntensively = true,
                 penaltyMinutes = 5,
-                workQuality = "EXCELLENT",
-                behaviour = "UNSATISFACTORY",
+                workQuality = WorkQuality.EXCELLENT,
+                behaviour = Behaviour.UNSATISFACTORY,
                 sensitive = false,
                 alertActive = true,
             )
@@ -157,8 +156,8 @@ class AppointmentsIntegrationTest {
                 hiVisWorn = true,
                 workedIntensively = true,
                 penaltyMinutes = 5,
-                workQuality = "EXCELLENT",
-                behaviour = "UNSATISFACTORY",
+                workQuality = WorkQuality.EXCELLENT,
+                behaviour = Behaviour.UNSATISFACTORY,
                 sensitive = false,
                 alertActive = true,
             )
@@ -185,8 +184,8 @@ class AppointmentsIntegrationTest {
                 hiVisWorn = true,
                 workedIntensively = true,
                 penaltyMinutes = 5,
-                workQuality = "EXCELLENT",
-                behaviour = "EXCELLENT",
+                workQuality = WorkQuality.EXCELLENT,
+                behaviour = Behaviour.EXCELLENT,
                 sensitive = false,
                 alertActive = true,
             )
@@ -209,8 +208,8 @@ class AppointmentsIntegrationTest {
                 hiVisWorn = true,
                 workedIntensively = true,
                 penaltyMinutes = 5,
-                workQuality = "EXCELLENT",
-                behaviour = "EXCELLENT",
+                workQuality = WorkQuality.EXCELLENT,
+                behaviour = Behaviour.EXCELLENT,
                 sensitive = false,
                 alertActive = true,
             )

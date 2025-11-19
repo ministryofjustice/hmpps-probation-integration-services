@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.service
 
+import jakarta.transaction.Transactional
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.*
@@ -26,8 +27,7 @@ class AppointmentsService(
 ) {
     fun getAppointment(projectCode: String, appointmentId: Long, username: String): AppointmentResponse {
         val project = unpaidWorkProjectRepository.getUpwProjectByCode(projectCode)
-        val appointment = unpaidWorkAppointmentRepository.getUpwAppointmentById(appointmentId)
-            ?: throw NotFoundException("UPWAppointment", "appointmentId", appointmentId)
+        val appointment = unpaidWorkAppointmentRepository.getAppointment(appointmentId)
 
         return AppointmentResponse(
             id = appointmentId,
@@ -77,8 +77,8 @@ class AppointmentsService(
             },
             hiVisWorn = appointment.hiVisWorn,
             workedIntensively = appointment.workedIntensively,
-            workQuality = appointment.workQuality?.let { WorkQuality.valueOf(appointment.workQuality!!.code).value },
-            behaviour = appointment.behaviour?.let { Behaviour.valueOf(appointment.behaviour!!.code).value },
+            workQuality = appointment.workQuality?.let { WorkQuality.of(appointment.workQuality!!.code) },
+            behaviour = appointment.behaviour?.let { Behaviour.of(appointment.behaviour!!.code) },
             notes = appointment.contact.notes,
             updatedAt = appointment.lastUpdatedDatetime,
             sensitive = appointment.contact.sensitive,
@@ -119,24 +119,24 @@ class AppointmentsService(
         )
     }
 
+    @Transactional
     fun updateAppointmentOutcome(
         projectCode: String,
         appointmentId: Long,
         appointmentOutcome: AppointmentOutcomeRequest
     ) {
-        val appointment = unpaidWorkAppointmentRepository.getUpwAppointmentById(appointmentId)
-            ?: throw NotFoundException("UPWAppointment", "appointmentId", appointmentId)
+        val appointment = unpaidWorkAppointmentRepository.getAppointment(appointmentId)
 
         val contact = appointment.contact
 
-        if (!appointmentOutcome.endTime.isAfter(appointmentOutcome.startTime)) {
-            throw IllegalStateException("End Time must be after Start Time")
+        require(appointmentOutcome.endTime > appointmentOutcome.startTime) {
+            "End Time must be after Start Time"
         }
 
-        if (LocalDateTime.of(appointment.appointmentDate, appointmentOutcome.endTime).isBefore(LocalDateTime.now())
-            && appointmentOutcome.outcome == null
-        ) {
-            throw IllegalStateException("Appointments in the past require an outcome")
+        if (appointmentOutcome.outcome == null) {
+            require(LocalDateTime.of(appointment.appointmentDate, appointmentOutcome.endTime).isBefore(LocalDateTime.now())) {
+                "Appointments in the past require an outcome"
+            }
         }
 
         val outcome = appointmentOutcome.outcome?.let {
@@ -144,33 +144,28 @@ class AppointmentsService(
                 ?: throw IllegalStateException("Contact outcome with code ${it.code} not found")
         }
 
-        val workQualityCode = WorkQuality.of(appointmentOutcome.workQuality)?.name
-        val behaviourCode = Behaviour.of(appointmentOutcome.behaviour)?.name
+        val workQuality = appointmentOutcome.workQuality?.let {
+            referenceDataRepository.getWorkQuality(appointmentOutcome.workQuality.code)
+        }
 
-        val workQuality = workQualityCode?.let {
-            referenceDataRepository.findByCodeAndDatasetCode(workQualityCode, Dataset.UPW_WORK_QUALITY)
-                ?: throw IllegalStateException("Work quality reference data with code $workQualityCode not found")
-        } ?: throw IllegalStateException("Work quality ${appointmentOutcome.workQuality} not recognised")
-
-        val behaviour = behaviourCode?.let {
-            referenceDataRepository.findByCodeAndDatasetCode(behaviourCode, Dataset.UPW_BEHAVIOUR)
-                ?: throw IllegalStateException("Behaviour reference data with code $behaviourCode not found")
-        } ?: throw IllegalStateException("Behaviour ${appointmentOutcome.behaviour} not recognised")
+        val behaviour = appointmentOutcome.behaviour?.let {
+            referenceDataRepository.getBehaviour(appointmentOutcome.behaviour.code)
+        }
 
         val staff =
             appointmentOutcome.supervisor?.let {
-                staffRepository.findStaffByCode(appointmentOutcome.supervisor.code)
-                    ?: throw IllegalStateException("Staff with code ${appointmentOutcome.supervisor.code} not found")
+                staffRepository.getStaff(appointmentOutcome.supervisor.code)
             }
 
-        unpaidWorkAppointmentRepository.save(
-            appointment.update(
-                appointmentOutcome, workQuality, behaviour,
-                outcome, staff, contact.update(appointmentOutcome)
-            )
+
+        contact.update(appointmentOutcome)
+
+        appointment.update(
+            appointmentOutcome, workQuality, behaviour,
+            outcome, staff
         )
 
-        if (appointmentOutcome.alertActive) {
+        if (appointmentOutcome.alertActive == true) {
             val personManager =
                 personManagerRepository.findByPersonIdAndActiveIsTrueAndSoftDeletedIsFalse(appointment.person.id!!)
                     ?: throw NotFoundException("PersonManager", "personId", appointment.person.id)
@@ -187,7 +182,7 @@ class AppointmentsService(
             )
         }
 
-        if (outcome!!.complied == false) {
+        if (outcome?.complied == false) {
             val enforcementAction =
                 enforcementActionRepository.findEnforcementActionByCode(EnforcementAction.REFER_TO_PERSON_MANAGER)
                     ?: throw IllegalStateException("No Enforcement Action with code ${EnforcementAction.REFER_TO_PERSON_MANAGER} found.")
@@ -234,8 +229,8 @@ class AppointmentsService(
     }
 
     private fun UpwAppointment.update(
-        request: AppointmentOutcomeRequest, workQuality: ReferenceData,
-        behaviour: ReferenceData, contactOutcome: ContactOutcome?, staff: Staff?, contact: Contact
+        request: AppointmentOutcomeRequest, workQuality: ReferenceData?,
+        behaviour: ReferenceData?, contactOutcome: ContactOutcome?, staff: Staff?
     ) = apply {
         startTime = request.startTime
         endTime = request.endTime

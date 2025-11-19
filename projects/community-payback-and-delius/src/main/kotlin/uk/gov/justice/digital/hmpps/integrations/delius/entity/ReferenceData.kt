@@ -5,6 +5,7 @@ import org.hibernate.annotations.Immutable
 import org.hibernate.type.YesNoConverter
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
+import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.model.CodeDescription
 
 @Entity
@@ -26,6 +27,11 @@ class ReferenceData(
 
     @Convert(converter = YesNoConverter::class)
     val selectable: Boolean
+)
+
+fun ReferenceData.toCodeDescription() = CodeDescription(
+    code = this.code,
+    description = this.description
 )
 
 @Immutable
@@ -66,7 +72,8 @@ interface ReferenceDataRepository : JpaRepository<ReferenceData, Long> {
     fun findByDatasetCode(datasetCode: String): List<ReferenceData>
 }
 
-fun ReferenceData.toCodeDescription() = CodeDescription(
-    code = this.code,
-    description = this.description
-)
+fun ReferenceDataRepository.getWorkQuality(code: String): ReferenceData =
+    findByCodeAndDatasetCode(code, Dataset.UPW_WORK_QUALITY) ?: throw NotFoundException(Dataset.UPW_WORK_QUALITY, "code", code)
+
+fun ReferenceDataRepository.getBehaviour(code: String): ReferenceData =
+    findByCodeAndDatasetCode(code, Dataset.UPW_BEHAVIOUR) ?: throw NotFoundException(Dataset.UPW_BEHAVIOUR, "code", code)

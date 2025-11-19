@@ -11,11 +11,11 @@ data class AppointmentOutcomeRequest(
     val startTime: LocalTime,
     val endTime: LocalTime,
     val notes: String?,
-    val hiVisWorn: Boolean,
-    val workedIntensively: Boolean,
-    val penaltyMinutes: Long,
-    val workQuality: String,
-    val behaviour: String,
-    val sensitive: Boolean,
-    val alertActive: Boolean
+    val hiVisWorn: Boolean?,
+    val workedIntensively: Boolean?,
+    val penaltyMinutes: Long?,
+    val workQuality: WorkQuality?,
+    val behaviour: Behaviour?,
+    val sensitive: Boolean?,
+    val alertActive: Boolean?
 )
