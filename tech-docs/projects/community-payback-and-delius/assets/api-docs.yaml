@@ -14,6 +14,32 @@ servers:
 security:
 - hmpps-auth-token: []
 paths:
+  /projects/{projectCode}/appointments/{appointmentId}/outcome:
+    put:
+      tags:
+      - appointments-controller
+      operationId: updateAppointmentOutcome
+      parameters:
+      - name: projectCode
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: appointmentId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AppointmentOutcomeRequest"
+        required: true
+      responses:
+        "200":
+          description: OK
   /reference-data/unpaid-work-appointment-outcomes:
     get:
       tags:
@@ -218,6 +244,59 @@ paths:
                 type: string
 components:
   schemas:
+    AppointmentOutcomeRequest:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        version:
+          type: string
+          format: uuid
+        outcome:
+          $ref: "#/components/schemas/Code"
+        supervisor:
+          $ref: "#/components/schemas/Code"
+        startTime:
+          type: string
+        endTime:
+          type: string
+        notes:
+          type: string
+        hiVisWorn:
+          type: boolean
+        workedIntensively:
+          type: boolean
+        penaltyMinutes:
+          type: integer
+          format: int64
+        workQuality:
+          type: string
+        behaviour:
+          type: string
+        sensitive:
+          type: boolean
+        alertActive:
+          type: boolean
+      required:
+      - alertActive
+      - behaviour
+      - endTime
+      - hiVisWorn
+      - id
+      - penaltyMinutes
+      - sensitive
+      - startTime
+      - version
+      - workQuality
+      - workedIntensively
+    Code:
+      type: object
+      properties:
+        code:
+          type: string
+      required:
+      - code
     CodeDescription:
       type: object
       properties:
@@ -371,23 +450,11 @@ components:
       - forename
       - middleNames
       - surname
-    AppointmentResponseProject:
-      type: object
-      properties:
-        name:
-          type: string
-        code:
-          type: string
-        location:
-          $ref: "#/components/schemas/AppointmentResponseAddress"
-      required:
-      - code
-      - name
     SessionResponse:
       type: object
       properties:
         project:
-          $ref: "#/components/schemas/AppointmentResponseProject"
+          $ref: "#/components/schemas/SessionResponseProject"
         appointmentSummaries:
           type: array
           items:
@@ -411,6 +478,18 @@ components:
       - case
       - id
       - requirementProgress
+    SessionResponseProject:
+      type: object
+      properties:
+        name:
+          type: string
+        code:
+          type: string
+        location:
+          $ref: "#/components/schemas/AppointmentResponseAddress"
+      required:
+      - code
+      - name
     UpwMinutes:
       type: object
       properties:
@@ -516,6 +595,21 @@ components:
           type: string
       required:
       - location
+    AppointmentResponseProject:
+      type: object
+      properties:
+        name:
+          type: string
+        code:
+          type: string
+        location:
+          $ref: "#/components/schemas/AppointmentResponseAddress"
+        hiVisRequired:
+          type: boolean
+      required:
+      - code
+      - hiVisRequired
+      - name
     AppointmentResponseSupervisor:
       type: object
       properties:
