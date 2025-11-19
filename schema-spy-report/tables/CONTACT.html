@@ -1380,64 +1380,64 @@
                                 </thead>
                                 <tbody>
                                 <tr>
-                                    <td>OFFENDER_MANAGER_TEAM_XOR</td>
-                                    <td> (&#10;(TEAM_ID IS NOT NULL AND PROVIDER_TEAM_ID IS NULL)&#10;OR&#10;(TEAM_ID IS NULL AND PROVIDER_TEAM_ID IS NOT NULL)&#10;) </td>
-                                </tr>
-                                <tr>
-                                    <td>ENFORCEMENT_ONE_OR_N_470810165</td>
-                                    <td>ENFORCEMENT &#61; 1 OR ENFORCEMENT IS NULL</td>
-                                </tr>
-                                <tr>
-                                    <td>YES_OR_NO_400</td>
-                                    <td>VISOR_EXPORTED IN (&#39;Y&#39;,&#39;N&#39;)</td>
-                                </tr>
-                                <tr>
-                                    <td>YES_OR_NO_401</td>
-                                    <td>ATTENDED IN (&#39;Y&#39;,&#39;N&#39;)</td>
-                                </tr>
-                                <tr>
-                                    <td>STAFF_OR_TEAM1</td>
-                                    <td> (&#10;STAFF_EMPLOYEE_ID &#61; STAFF_ID&#10;OR&#10;STAFF_EMPLOYEE_ID &#61; PROVIDER_EMPLOYEE_ID&#10;) </td>
-                                </tr>
-                                <tr>
-                                    <td>YES_OR_NO_402</td>
-                                    <td>COMPLIED IN (&#39;Y&#39;,&#39;N&#39;)</td>
-                                </tr>
-                                <tr>
-                                    <td>YES_OR_NO_403</td>
-                                    <td>SENSITIVE IN (&#39;Y&#39;,&#39;N&#39;)</td>
-                                </tr>
-                                <tr>
-                                    <td>GREATER_THAN_0</td>
-                                    <td>HOURS_CREDITED &gt; 0</td>
-                                </tr>
-                                <tr>
-                                    <td>CONTACT_TABLE_69233217</td>
-                                    <td>TABLE_NAME IN (&#39;APPROVED_PREMISES_REFERRAL&#39;, &#39;APPROVED_PREMISES_RESIDENCE&#39;, &#39;COURT_REPORT&#39;,&#10;   &#39;INSTITUTIONAL_REPORT&#39;, &#39;REFERRAL&#39;, &#39;DRUGS_TEST&#39;, &#39;ASSESSMENT&#39;)</td>
-                                </tr>
-                                <tr>
-                                    <td>PROVIDER_EMPLOYEE_OR_STAFF</td>
-                                    <td> (&#10;(PROVIDER_EMPLOYEE_ID IS NOT NULL  AND STAFF_ID IS NULL)&#10;OR&#10;(PROVIDER_EMPLOYEE_ID IS NULL  AND STAFF_ID IS NOT NULL)&#10;) </td>
+                                    <td>TRUE_OR_FALSE18</td>
+                                    <td>TRUST_PROVIDER_FLAG IN (0, 1)</td>
                                 </tr>
                                 <tr>
                                     <td>CONTACT_TYPE</td>
                                     <td> (&#10;(EVENT_ID IS NOT NULL AND RQMNT_ID IS NULL AND LIC_CONDITION_ID IS NULL AND NSI_ID IS NULL AND PSS_RQMNT_ID IS NULL)&#10;OR&#10;(EVENT_ID IS NOT NULL AND RQMNT_ID IS NOT NULL AND LIC_CONDITION_ID IS NULL AND NSI_ID IS NULL AND PSS_RQMNT_ID IS NULL)&#10;OR&#10;(EVENT_ID IS NOT NULL AND RQMNT_ID IS NULL AND LIC_CONDITION_ID IS NOT NULL AND NSI_ID IS NULL AND PSS_RQMNT_ID IS NULL)&#10;OR&#10;(EVENT_ID IS NOT NULL AND RQMNT_ID IS NULL AND LIC_CONDITION_ID IS NULL AND NSI_ID IS NOT NULL AND PSS_RQMNT_ID IS NULL)&#10;OR&#10;(EVENT_ID IS NOT NULL AND RQMNT_ID IS NULL AND LIC_CONDITION_ID IS NULL AND NSI_ID IS NULL AND PSS_RQMNT_ID IS NOT NULL)&#10;OR&#10;(EVENT_ID IS NULL AND RQMNT_ID IS NULL AND LIC_CONDITION_ID IS NULL AND NSI_ID IS NOT NULL AND PSS_RQMNT_ID IS NULL )&#10;OR&#10;(EVENT_ID IS NULL AND RQMNT_ID IS NULL AND LIC_CONDITION_ID IS NULL AND NSI_ID IS NULL AND PSS_RQMNT_ID IS NULL)&#10;) </td>
                                 </tr>
                                 <tr>
+                                    <td>STAFF_OR_TEAM1</td>
+                                    <td> (&#10;STAFF_EMPLOYEE_ID &#61; STAFF_ID&#10;OR&#10;STAFF_EMPLOYEE_ID &#61; PROVIDER_EMPLOYEE_ID&#10;) </td>
+                                </tr>
+                                <tr>
                                     <td>YES_OR_NO_ONLY_1885306206</td>
                                     <td>RAR_ACTIVITY IN (&#39;Y&#39;,&#39;N&#39;)</td>
+                                </tr>
+                                <tr>
+                                    <td>YES_OR_NO_400</td>
+                                    <td>VISOR_EXPORTED IN (&#39;Y&#39;,&#39;N&#39;)</td>
+                                </tr>
+                                <tr>
+                                    <td>ENFORCEMENT_ONE_OR_N_470810165</td>
+                                    <td>ENFORCEMENT &#61; 1 OR ENFORCEMENT IS NULL</td>
+                                </tr>
+                                <tr>
+                                    <td>TRUE_OR_FALSE16</td>
+                                    <td>SOFT_DELETED IN (0, 1)</td>
+                                </tr>
+                                <tr>
+                                    <td>OFFENDER_MANAGER_TEAM_XOR</td>
+                                    <td> (&#10;(TEAM_ID IS NOT NULL AND PROVIDER_TEAM_ID IS NULL)&#10;OR&#10;(TEAM_ID IS NULL AND PROVIDER_TEAM_ID IS NOT NULL)&#10;) </td>
                                 </tr>
                                 <tr>
                                     <td>TRUST_OR_PROVIDER1</td>
                                     <td> (&#10;TRUST_PROVIDER_TEAM_ID &#61; TEAM_ID&#10;OR&#10;TRUST_PROVIDER_TEAM_ID &#61; PROVIDER_TEAM_ID&#10;) </td>
                                 </tr>
                                 <tr>
-                                    <td>TRUE_OR_FALSE18</td>
-                                    <td>TRUST_PROVIDER_FLAG IN (0, 1)</td>
+                                    <td>PROVIDER_EMPLOYEE_OR_STAFF</td>
+                                    <td> (&#10;(PROVIDER_EMPLOYEE_ID IS NOT NULL  AND STAFF_ID IS NULL)&#10;OR&#10;(PROVIDER_EMPLOYEE_ID IS NULL  AND STAFF_ID IS NOT NULL)&#10;) </td>
                                 </tr>
                                 <tr>
-                                    <td>TRUE_OR_FALSE16</td>
-                                    <td>SOFT_DELETED IN (0, 1)</td>
+                                    <td>YES_OR_NO_403</td>
+                                    <td>SENSITIVE IN (&#39;Y&#39;,&#39;N&#39;)</td>
+                                </tr>
+                                <tr>
+                                    <td>YES_OR_NO_402</td>
+                                    <td>COMPLIED IN (&#39;Y&#39;,&#39;N&#39;)</td>
+                                </tr>
+                                <tr>
+                                    <td>GREATER_THAN_0</td>
+                                    <td>HOURS_CREDITED &gt; 0</td>
+                                </tr>
+                                <tr>
+                                    <td>YES_OR_NO_401</td>
+                                    <td>ATTENDED IN (&#39;Y&#39;,&#39;N&#39;)</td>
+                                </tr>
+                                <tr>
+                                    <td>CONTACT_TABLE_69233217</td>
+                                    <td>TABLE_NAME IN (&#39;APPROVED_PREMISES_REFERRAL&#39;, &#39;APPROVED_PREMISES_RESIDENCE&#39;, &#39;COURT_REPORT&#39;,&#10;   &#39;INSTITUTIONAL_REPORT&#39;, &#39;REFERRAL&#39;, &#39;DRUGS_TEST&#39;, &#39;ASSESSMENT&#39;)</td>
                                 </tr>
                                 </tbody>
                             </table>
