@@ -9,6 +9,7 @@ import uk.gov.justice.digital.hmpps.integration.delius.entity.*
 @Service
 class PersonService(
     private val personRepository: PersonRepository,
+    private val additionalIdentifierRepository: AdditionalIdentifierRepository,
     private val aliasRepository: AliasRepository,
     private val addressRepository: AddressRepository,
     private val exclusionRepository: ExclusionRepository,
@@ -27,6 +28,7 @@ class PersonService(
         addresses = addressRepository.findAllByPersonIdOrderByStartDateDesc(id).mapNotNull(PersonAddress::asAddress),
         exclusions = exclusionRepository.findByPersonId(id).exclusionsAsLimitedAccess(exclusionMessage),
         restrictions = restrictionRepository.findByPersonId(id).restrictionsAsLimitedAccess(restrictionMessage),
-        sentences = disposalRepository.findByPersonId(id).map(Disposal::asModel)
+        sentences = disposalRepository.findByPersonId(id).map(Disposal::asModel),
+        additionalIdentifiers = additionalIdentifierRepository.findByPersonId(id).map(AdditionalIdentifier::asModel),
     )
 }

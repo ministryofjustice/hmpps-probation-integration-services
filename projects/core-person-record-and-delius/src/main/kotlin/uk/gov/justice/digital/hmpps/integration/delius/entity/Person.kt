@@ -17,8 +17,12 @@ import java.util.*
     attributeNodes = [
         NamedAttributeNode("title"),
         NamedAttributeNode("gender"),
+        NamedAttributeNode("genderIdentity"),
         NamedAttributeNode("nationality"),
-        NamedAttributeNode("ethnicity")
+        NamedAttributeNode("secondNationality"),
+        NamedAttributeNode("ethnicity"),
+        NamedAttributeNode("religion"),
+        NamedAttributeNode("sexualOrientation"),
     ]
 )
 @Entity
@@ -50,7 +54,9 @@ data class Person(
     val thirdName: String?,
     val surname: String,
     @Column(name = "date_of_birth_date")
-    val dob: LocalDate,
+    val dateOfBirth: LocalDate,
+    @Column(name = "deceased_date")
+    val dateOfDeath: LocalDate?,
     val previousSurname: String?,
     val preferredName: String?,
     val telephoneNumber: String?,
@@ -67,6 +73,12 @@ data class Person(
     val gender: ReferenceData?,
 
     @ManyToOne
+    @JoinColumn(name = "gender_identity_id")
+    val genderIdentity: ReferenceData?,
+
+    val genderIdentityDescription: String?,
+
+    @ManyToOne
     @JoinColumn(name = "nationality_id")
     val nationality: ReferenceData?,
 
@@ -77,12 +89,17 @@ data class Person(
     @ManyToOne
     @JoinColumn(name = "ethnicity_id")
     val ethnicity: ReferenceData?,
+    val ethnicityDescription: String?,
+
+    @ManyToOne
+    @JoinColumn(name = "religion_id")
+    val religion: ReferenceData?,
+    val religionDescription: String?,
 
     @ManyToOne
     @JoinColumn(name = "sexual_orientation_id")
     val sexualOrientation: ReferenceData?,
 
-    val ethnicityDescription: String?,
     val exclusionMessage: String?,
     val restrictionMessage: String?,
 

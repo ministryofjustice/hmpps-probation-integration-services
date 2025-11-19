@@ -11,18 +11,24 @@ fun Person.detail(
     exclusions: LimitedAccess? = null,
     restrictions: LimitedAccess? = null,
     sentences: List<Sentence>,
+    additionalIdentifiers: List<Identifier>,
 ) = PersonDetail(
-    identifiers = identifiers(),
+    identifiers = identifiers(additionalIdentifiers),
     name = name(),
-    dateOfBirth = dob,
+    dateOfBirth = dateOfBirth,
+    dateOfDeath = dateOfDeath,
     title = title?.asCodeDescription(),
     gender = gender?.asCodeDescription(),
+    genderIdentity = genderIdentity?.asCodeDescription(),
+    genderIdentityDescription = genderIdentityDescription,
     nationality = nationality?.asCodeDescription(),
     secondNationality = secondNationality?.asCodeDescription(),
     ethnicity = ethnicity?.asCodeDescription(),
     ethnicityDescription = ethnicityDescription,
-    contactDetails = contactDetails(),
+    religion = religion?.asCodeDescription(),
+    religionDescription = religionDescription,
     sexualOrientation = sexualOrientation?.asCodeDescription(),
+    contactDetails = contactDetails(),
     aliases = aliases,
     addresses = addresses,
     excludedFrom = exclusions,
@@ -30,8 +36,17 @@ fun Person.detail(
     sentences = sentences,
 )
 
-fun Person.identifiers() =
-    Identifiers(id, crn, nomsId?.trim(), prisonerNumber, pnc?.trim(), cro?.trim(), niNumber?.trim())
+fun Person.identifiers(additionalIdentifiers: List<Identifier>) =
+    Identifiers(
+        deliusId = id,
+        crn = crn,
+        nomsId = nomsId?.trim(),
+        prisonerNumber = prisonerNumber,
+        pnc = pnc?.trim(),
+        cro = cro?.trim(),
+        ni = niNumber?.trim(),
+        additionalIdentifiers = additionalIdentifiers,
+    )
 
 fun Person.name() =
     Name(
@@ -45,6 +60,11 @@ fun Person.name() =
 fun Person.contactDetails() = ContactDetails.of(telephoneNumber, mobileNumber, emailAddress)
 
 fun ReferenceData.asCodeDescription() = CodeDescription(code, description)
+
+fun AdditionalIdentifier.asModel() = Identifier(
+    type = type.asCodeDescription(),
+    value = value,
+)
 
 fun uk.gov.justice.digital.hmpps.integration.delius.entity.Alias.asModel() = Alias(
     Name(
@@ -71,9 +91,18 @@ fun PersonAddress.asAddress() = postcode?.let {
             county,
             postcode
         ).trimAndJoin(),
+        buildingName = buildingName,
+        addressNumber = addressNumber,
+        streetName = streetName,
+        district = district,
+        townCity = townCity,
+        county = county,
         postcode = postcode,
+        uprn = uprn,
+        telephoneNumber = telephoneNumber,
         noFixedAbode = noFixedAbode,
         status = status.asCodeDescription(),
+        notes = notes,
         startDate = startDate,
         endDate = endDate,
     )
