@@ -120,6 +120,7 @@ class DataLoader(
     private val officeLocationRepository: OfficeLocationRepository,
     private val providerRepository: ProviderRepository,
     private val enforcementActionRepository: EnforcementActionRepository,
+    private val pduRepository: PduRepository,
 ) : ApplicationListener<ApplicationReadyEvent> {
     @PostConstruct
     fun saveAuditUser() {
@@ -199,5 +200,7 @@ class DataLoader(
         contactRepository.save(TWO_THIRDS_CONTACT)
         contactRepository.save(OTHER_CONTACT)
         contactRepository.saveAll(APPOINTMENTS)
+        pduRepository.save(PDU)
+        pduRepository.save(PDU_2)
     }
 }

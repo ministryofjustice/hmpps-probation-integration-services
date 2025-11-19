@@ -92,4 +92,28 @@ class GetRegionWIthMembersIntegrationTest(
                 }
             }
     }
-}
+
+    @Test
+    fun `office locations returned for pdu`() {
+        mockMvc.get("/regions/pdu/PDU1/office-locations") { withToken() }
+            .andExpect { status { isOk() } }
+            .andExpect {
+                content {
+                    json(
+                        """
+                {
+                  "code": "PDU1",
+                  "description": "Test PDU",
+                  "officeLocations": [
+                    {
+                      "code": "OFFICE1",
+                      "description": "Test Office Location"
+                    }
+                  ]
+                }
+            """.trimIndent()
+                    )
+                }
+            }
+    }
+    }
