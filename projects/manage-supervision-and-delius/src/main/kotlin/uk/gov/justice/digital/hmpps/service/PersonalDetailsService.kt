@@ -42,6 +42,10 @@ class PersonalDetailsService(
     private val contactService: ContactService
 ) : AuditableService(auditedInteractionService) {
 
+    fun getContactInformation(crn: String): PersonContactInformation = personRepository.getPerson(crn).let {
+        PersonContactInformation(it.crn, it.telephoneNumber, it.mobileNumber, it.emailAddress)
+    }
+
     fun updatePersonContactDetails(crn: String, request: PersonContactEditRequest): PersonalDetails {
 
         val person = personRepository.getPerson(crn)
