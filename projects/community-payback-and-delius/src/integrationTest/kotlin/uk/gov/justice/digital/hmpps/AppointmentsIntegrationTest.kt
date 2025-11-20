@@ -71,7 +71,7 @@ class AppointmentsIntegrationTest {
                 get(
                     "/projects/N01DEFAULT/appointments?date=${
                         LocalDate.now().plusDays(1)
-                    }&startTime=12:00&endTime=14:00&username=DefaultUser"
+                    }"
                 ).withToken()
             )
             .andExpect(status().is2xxSuccessful)

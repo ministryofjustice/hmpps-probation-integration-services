@@ -180,8 +180,6 @@ interface UnpaidWorkSessionDto {
 
     fun toModel() = UnpaidWorkSession(
         CodeDescription(projectCode, projectName),
-        startTime,
-        endTime,
         appointmentDate,
         allocatedCount,
         outcomeCount,
@@ -191,8 +189,6 @@ interface UnpaidWorkSessionDto {
 
 data class UnpaidWorkSession(
     val project: CodeDescription,
-    val startTime: LocalTime,
-    val endTime: LocalTime,
     val date: LocalDate,
     val allocatedCount: Long,
     val outcomeCount: Long,
@@ -257,9 +253,8 @@ interface UnpaidWorkAppointmentRepository : JpaRepository<UpwAppointment, Long> 
 
     fun getUpwAppointmentById(appointmentId: Long): UpwAppointment?
 
-    fun getUpwAppointmentsByAppointmentDateAndStartTimeAndEndTime(
-        appointmentDate: LocalDate,
-        startTime: LocalTime, endTime: LocalTime
+    fun getUpwAppointmentsByAppointmentDate(
+        appointmentDate: LocalDate
     ): List<UpwAppointment>
 
     @Query(
