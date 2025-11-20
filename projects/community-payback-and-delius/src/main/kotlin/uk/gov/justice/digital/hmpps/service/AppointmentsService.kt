@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
+import uk.gov.justice.digital.hmpps.exceptions.LimitedAccessException
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.*
 import uk.gov.justice.digital.hmpps.model.*
 import java.time.Duration
@@ -22,13 +23,29 @@ class AppointmentsService(
     private val personManagerRepository: PersonManagerRepository,
     private val enforcementRepository: EnforcementRepository,
     private val enforcementActionRepository: EnforcementActionRepository,
-    private val contactRepository: ContactRepository
+    private val contactRepository: ContactRepository,
+    private val userAccessService: UserAccessService
 ) {
     fun getAppointment(projectCode: String, appointmentId: Long, username: String): AppointmentResponse {
         val project = unpaidWorkProjectRepository.getUpwProjectByCode(projectCode)
         val appointment = unpaidWorkAppointmentRepository.getUpwAppointmentById(appointmentId)
             ?: throw NotFoundException("UPWAppointment", "appointmentId", appointmentId)
+        val limitedAccessDetails = userAccessService.caseAccessFor(username, appointment.person.crn)
+        when {
+            limitedAccessDetails.userExcluded -> throw LimitedAccessException(
+                appointment.person.crn,
+                username,
+                limitedAccessDetails.exclusionMessage
+                    ?: "Access is excluded for crn ${appointment.person.crn} for user $username"
+            )
 
+            limitedAccessDetails.userRestricted -> throw LimitedAccessException(
+                appointment.person.crn,
+                username,
+                limitedAccessDetails.restrictionMessage
+                    ?: "Access is restricted for crn ${appointment.person.crn} for user $username"
+            )
+        }
         return AppointmentResponse(
             id = appointmentId,
             version = UUID(appointment.rowVersion, appointment.contact.rowVersion),

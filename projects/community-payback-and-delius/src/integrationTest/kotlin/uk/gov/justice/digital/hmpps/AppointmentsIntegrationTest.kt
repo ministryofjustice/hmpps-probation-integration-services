@@ -3,9 +3,11 @@ package uk.gov.justice.digital.hmpps
 import com.github.tomakehurst.wiremock.WireMockServer
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import org.mockito.kotlin.whenever
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.test.context.bean.override.mockito.MockitoBean
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.put
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
@@ -18,6 +20,8 @@ import uk.gov.justice.digital.hmpps.model.AppointmentOutcomeRequest
 import uk.gov.justice.digital.hmpps.model.AppointmentResponse
 import uk.gov.justice.digital.hmpps.model.Code
 import uk.gov.justice.digital.hmpps.model.SessionResponse
+import uk.gov.justice.digital.hmpps.service.CaseAccess
+import uk.gov.justice.digital.hmpps.service.UserAccessService
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.json
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
@@ -42,6 +46,9 @@ class AppointmentsIntegrationTest {
 
     @Autowired
     lateinit var enforcementRepository: EnforcementRepository
+
+    @MockitoBean
+    lateinit var limitedAccessService: UserAccessService
 
     @Test
     fun `can retrieve appointment details`() {
@@ -192,6 +199,24 @@ class AppointmentsIntegrationTest {
             )
         }
             .andExpect { status().is4xxClientError }
+    }
+
+    @Test
+    fun `returns 403 when limited access check fails`() {
+        whenever(limitedAccessService.caseAccessFor("NoAccessUser", "Z000001")).thenReturn(
+            CaseAccess(
+                "Z000001",
+                userExcluded = true,
+                userRestricted = false,
+                "No access"
+            )
+        )
+
+        val appointmentId = UPWGenerator.DEFAULT_UPW_APPOINTMENT.id
+
+        mockMvc
+            .perform(get("/projects/N01DEFAULT/appointments/$appointmentId?username=NoAccessUser").withToken())
+            .andExpect(status().isForbidden)
     }
 
     @Test
