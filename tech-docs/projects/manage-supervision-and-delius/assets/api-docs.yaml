@@ -1720,6 +1720,24 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ProbationPractitioner"
+  /case/{crn}/contact-information:
+    get:
+      tags:
+      - Case Detail
+      operationId: getContactInformation
+      parameters:
+      - name: crn
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PersonContactInformation"
   /appointment/{crn}/overdue-outcomes:
     get:
       tags:
@@ -4321,6 +4339,19 @@ components:
       - provider
       - team
       - unallocated
+    PersonContactInformation:
+      type: object
+      properties:
+        crn:
+          type: string
+        telephoneNumber:
+          type: string
+        mobileNumber:
+          type: string
+        email:
+          type: string
+      required:
+      - crn
     OverdueOutcome:
       type: object
       properties:

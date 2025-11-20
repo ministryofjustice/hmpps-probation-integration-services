@@ -57,12 +57,31 @@ components:
       properties:
         fullAddress:
           type: string
+        buildingName:
+          type: string
+        addressNumber:
+          type: string
+        streetName:
+          type: string
+        district:
+          type: string
+        townCity:
+          type: string
+        county:
+          type: string
         postcode:
+          type: string
+        uprn:
+          type: integer
+          format: int64
+        telephoneNumber:
           type: string
         noFixedAbode:
           type: boolean
         status:
           $ref: "#/components/schemas/CodeDescription"
+        notes:
+          type: string
         startDate:
           type: string
           format: date
@@ -107,6 +126,16 @@ components:
           type: string
         email:
           type: string
+    Identifier:
+      type: object
+      properties:
+        type:
+          $ref: "#/components/schemas/CodeDescription"
+        value:
+          type: string
+      required:
+      - type
+      - value
     Identifiers:
       type: object
       properties:
@@ -125,7 +154,12 @@ components:
           type: string
         ni:
           type: string
+        additionalIdentifiers:
+          type: array
+          items:
+            $ref: "#/components/schemas/Identifier"
       required:
+      - additionalIdentifiers
       - crn
       - deliusId
     LimitedAccess:
@@ -172,10 +206,17 @@ components:
         dateOfBirth:
           type: string
           format: date
+        dateOfDeath:
+          type: string
+          format: date
         title:
           $ref: "#/components/schemas/CodeDescription"
         gender:
           $ref: "#/components/schemas/CodeDescription"
+        genderIdentity:
+          $ref: "#/components/schemas/CodeDescription"
+        genderIdentityDescription:
+          type: string
         nationality:
           $ref: "#/components/schemas/CodeDescription"
         secondNationality:
@@ -184,10 +225,14 @@ components:
           $ref: "#/components/schemas/CodeDescription"
         ethnicityDescription:
           type: string
-        contactDetails:
-          $ref: "#/components/schemas/ContactDetails"
+        religion:
+          $ref: "#/components/schemas/CodeDescription"
+        religionDescription:
+          type: string
         sexualOrientation:
           $ref: "#/components/schemas/CodeDescription"
+        contactDetails:
+          $ref: "#/components/schemas/ContactDetails"
         aliases:
           type: array
           items:
