@@ -14,13 +14,9 @@ jobs:
       templates:
         - 5dd8e146-b4cf-46eb-9716-6ee132b3da3c
     east-of-england:
-      apiKeySecret: OLD_API_KEY
+      apiKeySecret: N56_API_KEY
       templates:
-        - 4895f1a9-50b7-481e-9fca-2ac0f8d200d2
-    # TODO transition east of england region to new API key + template (PI-2778)
-    #      apiKeySecret: N56_API_KEY
-    #      templates:
-    #        - 179d106d-fc99-45af-9d04-22716cdf5e50
+        - 179d106d-fc99-45af-9d04-22716cdf5e50
     greater-manchester:
       apiKeySecret: N50_API_KEY
       templates:
