@@ -15,6 +15,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator
 import uk.gov.justice.digital.hmpps.data.generator.UPWGenerator
+import uk.gov.justice.digital.hmpps.data.generator.UserGenerator
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.*
 import uk.gov.justice.digital.hmpps.model.AppointmentOutcomeRequest
 import uk.gov.justice.digital.hmpps.model.AppointmentResponse
@@ -50,8 +51,20 @@ class AppointmentsIntegrationTest {
     @MockitoBean
     lateinit var limitedAccessService: UserAccessService
 
+    private val CRN = PersonGenerator.DEFAULT_PERSON.crn
+    private val USER_NAME = UserGenerator.DEFAULT_USER.username
+
     @Test
     fun `can retrieve appointment details`() {
+        whenever(limitedAccessService.caseAccessFor(USER_NAME, CRN)).thenReturn(
+            CaseAccess(
+                CRN,
+                userExcluded = false,
+                userRestricted = false,
+                "Has access"
+            )
+        )
+
         val response = mockMvc
             .perform(get("/projects/N01DEFAULT/appointments/${UPWGenerator.DEFAULT_UPW_APPOINTMENT.id}?username=DefaultUser").withToken())
             .andExpect(status().is2xxSuccessful)
