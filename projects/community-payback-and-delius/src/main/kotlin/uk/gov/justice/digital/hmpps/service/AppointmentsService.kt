@@ -132,8 +132,9 @@ class AppointmentsService(
             "End Time must be after Start Time"
         }
 
-        require(request.outcome != null ||
-            LocalDateTime.of(appointment.appointmentDate, request.endTime) > LocalDateTime.now()
+        require(
+            request.outcome != null ||
+                LocalDateTime.of(appointment.appointmentDate, request.endTime) > LocalDateTime.now()
         ) {
             "Appointments in the past require an outcome"
         }
@@ -243,14 +244,15 @@ class AppointmentsService(
         rowVersion = request.version.mostSignificantBits
     }
 
-    private fun Contact.update(request: AppointmentOutcomeRequest, contactOutcome: ContactOutcome?, staff: Staff) = apply {
-        startTime = request.startTime
-        endTime = request.endTime
-        this.staff = staff
-        this.contactOutcome = contactOutcome
-        notes = notes?.let { it + System.lineSeparator() + System.lineSeparator() + request.notes }
-        sensitive = request.sensitive
-        alertActive = request.alertActive
-        rowVersion = request.version.leastSignificantBits
-    }
+    private fun Contact.update(request: AppointmentOutcomeRequest, contactOutcome: ContactOutcome?, staff: Staff) =
+        apply {
+            startTime = request.startTime
+            endTime = request.endTime
+            this.staff = staff
+            this.contactOutcome = contactOutcome
+            notes = notes?.let { it + System.lineSeparator() + System.lineSeparator() + request.notes }
+            sensitive = request.sensitive
+            alertActive = request.alertActive
+            rowVersion = request.version.leastSignificantBits
+        }
 }
