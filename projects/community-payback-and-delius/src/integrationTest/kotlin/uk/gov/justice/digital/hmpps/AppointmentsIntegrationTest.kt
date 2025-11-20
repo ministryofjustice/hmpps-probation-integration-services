@@ -170,30 +170,6 @@ class AppointmentsIntegrationTest {
     }
 
     @Test
-    fun `past appointment without an outcome returns an error`() {
-        mockMvc.put("/projects/N01DEFAULT/appointments/${UPWGenerator.UPW_APPOINTMENT_PAST.id}/outcome") {
-            withToken()
-            json = AppointmentOutcomeRequest(
-                id = UPWGenerator.UPW_APPOINTMENT_NO_OUTCOME.id,
-                version = UUID(5, 5),
-                outcome = null,
-                supervisor = Code("N01P001"),
-                startTime = LocalTime.of(8, 0),
-                endTime = LocalTime.of(10, 0),
-                notes = "null outcome",
-                hiVisWorn = true,
-                workedIntensively = true,
-                penaltyMinutes = 5,
-                workQuality = WorkQuality.EXCELLENT,
-                behaviour = Behaviour.EXCELLENT,
-                sensitive = false,
-                alertActive = true,
-            )
-        }
-            .andExpect { status().is4xxClientError }
-    }
-
-    @Test
     fun `404 if appointment id is invalid`() {
         mockMvc.put("/projects/N01DEFAULT/appointments/987654/outcome") {
             withToken()

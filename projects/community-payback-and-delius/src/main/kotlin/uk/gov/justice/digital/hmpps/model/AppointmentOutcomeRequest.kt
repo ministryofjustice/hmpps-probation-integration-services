@@ -7,7 +7,7 @@ data class AppointmentOutcomeRequest(
     val id: Long,
     val version: UUID,
     val outcome: Code?,
-    val supervisor: Code?,
+    val supervisor: Code,
     val startTime: LocalTime,
     val endTime: LocalTime,
     val notes: String?,
