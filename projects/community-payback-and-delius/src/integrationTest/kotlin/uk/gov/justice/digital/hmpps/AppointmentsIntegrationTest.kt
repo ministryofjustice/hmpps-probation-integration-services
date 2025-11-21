@@ -118,6 +118,9 @@ class AppointmentsIntegrationTest {
         assertThat(appointment).isNotNull
         assertThat(appointment!!.startTime).isEqualTo(LocalTime.of(11, 0))
         assertThat(appointment.endTime).isEqualTo(LocalTime.of(15, 0))
+
+        // tidy up
+        unpaidWorkAppointmentRepository.delete(appointment)
     }
 
     @Test
