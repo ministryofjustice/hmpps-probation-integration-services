@@ -72,7 +72,7 @@ class AppointmentsIntegrationTest {
                 get(
                     "/projects/N01DEFAULT/appointments?date=${
                         LocalDate.now().plusDays(1)
-                    }"
+                    }&username=DefaultUser"
                 ).withToken()
             )
             .andExpect(status().is2xxSuccessful)
@@ -202,8 +202,8 @@ class AppointmentsIntegrationTest {
             .perform(get("/projects/N01DEFAULT/appointments/$appointmentId?username=LimitedAccess").withToken())
             .andExpect(status().is2xxSuccessful)
             .andReturn().response.contentAsJson<AppointmentResponse>()
-        assertThat(response.case.currentRestriction)
-        assertThat(response.case.restrictionMessage)
+        assertThat(response.case.currentRestriction).isEqualTo(true)
+        assertThat(response.case.restrictionMessage).isNotNull()
     }
 
     @Test
@@ -213,7 +213,7 @@ class AppointmentsIntegrationTest {
             .perform(get("/projects/N01DEFAULT/appointments/$appointmentId?username=FullAccess").withToken())
             .andExpect(status().is2xxSuccessful)
             .andReturn().response.contentAsJson<AppointmentResponse>()
-        assertThat(response.case.currentRestriction)
+        assertThat(response.case.currentRestriction).isEqualTo(false)
         assertThat(response.case.restrictionMessage.isNullOrEmpty())
     }
 
@@ -226,7 +226,7 @@ class AppointmentsIntegrationTest {
             .andExpect(status().is2xxSuccessful)
             .andReturn().response.contentAsJson<AppointmentResponse>()
 
-        assertThat(response.case.currentExclusion)
+        assertThat(response.case.currentExclusion).isEqualTo(true)
         assertThat(response.case.exclusionMessage).isNotNull
     }
 

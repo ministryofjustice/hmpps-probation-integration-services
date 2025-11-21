@@ -30,26 +30,8 @@ class AppointmentsService(
         val appointment = unpaidWorkAppointmentRepository.getUpwAppointmentById(appointmentId)
             ?: throw NotFoundException("UPWAppointment", "appointmentId", appointmentId)
         val limitedAccessDetails = userAccessService.caseAccessFor(username, appointment.person.crn)
-        var currentExclusion: Boolean? = null
-        var exclusionMessage: String? = null
-        var currentRestriction: Boolean? = null
-        var restrictionMessage: String? = null
-        when {
-            limitedAccessDetails.userExcluded -> {
-                currentExclusion = limitedAccessDetails.userExcluded
-                exclusionMessage = limitedAccessDetails.exclusionMessage
-            }
-
-            limitedAccessDetails.userRestricted -> {
-                currentRestriction = limitedAccessDetails.userRestricted
-                restrictionMessage = limitedAccessDetails.restrictionMessage
-            }
-        }
         val case = appointment.toAppointmentResponseCase(
-            currentExclusion,
-            exclusionMessage,
-            currentRestriction,
-            restrictionMessage
+            limitedAccess = limitedAccessDetails
         )
 
         return AppointmentResponse(
@@ -111,17 +93,19 @@ class AppointmentsService(
 
     fun getSession(
         projectCode: String,
-        date: LocalDate
+        date: LocalDate,
+        username: String
     ): SessionResponse {
         val project = unpaidWorkProjectRepository.getUpwProjectByCode(projectCode)
         val appointments = unpaidWorkAppointmentRepository.getUpwAppointmentsByAppointmentDate(date)
 
         val appointmentSummaries = appointments.map {
             val minutes = unpaidWorkAppointmentRepository.getUpwRequiredAndCompletedMinutes(it.upwDetailsId).toModel()
+            val limitedAccess = userAccessService.caseAccessFor(username, it.person.crn)
 
             SessionResponseAppointmentSummary(
                 id = it.id,
-                case = it.toAppointmentResponseCase(),
+                case = it.toAppointmentResponseCase(limitedAccess),
                 outcome = it.contact.contactOutcome?.toCodeDescription(),
                 requirementProgress = minutes,
             )

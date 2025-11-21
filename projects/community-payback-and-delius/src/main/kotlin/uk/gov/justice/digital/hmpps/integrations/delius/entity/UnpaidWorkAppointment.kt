@@ -12,6 +12,7 @@ import org.springframework.data.jpa.repository.Query
 import uk.gov.justice.digital.hmpps.model.AppointmentResponseCase
 import uk.gov.justice.digital.hmpps.model.AppointmentResponseName
 import uk.gov.justice.digital.hmpps.model.CodeDescription
+import uk.gov.justice.digital.hmpps.service.CaseAccess
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.ZonedDateTime
@@ -120,10 +121,7 @@ fun UpwAppointment.toAppointmentResponseCase() = AppointmentResponseCase(
 )
 
 fun UpwAppointment.toAppointmentResponseCase(
-    currentExclusion: Boolean?,
-    exclusionMessage: String?,
-    currentRestriction: Boolean?,
-    restrictionMessage: String?
+    limitedAccess: CaseAccess
 ) = AppointmentResponseCase(
     crn = this.person.crn,
     name = AppointmentResponseName(
@@ -132,10 +130,10 @@ fun UpwAppointment.toAppointmentResponseCase(
         middleNames = this.person.secondName?.let { names -> listOf(names) } ?: emptyList()
     ),
     dateOfBirth = this.person.dateOfBirth,
-    currentExclusion = currentExclusion ?: this.person.currentExclusion,
-    exclusionMessage = exclusionMessage ?: this.person.exclusionMessage,
-    currentRestriction = currentRestriction ?: this.person.currentRestriction,
-    restrictionMessage = restrictionMessage ?: this.person.restrictionMessage,
+    currentExclusion = limitedAccess.userExcluded,
+    exclusionMessage = limitedAccess.exclusionMessage,
+    currentRestriction = limitedAccess.userRestricted,
+    restrictionMessage = limitedAccess.restrictionMessage,
 )
 
 enum class WorkQuality(val value: String) {
