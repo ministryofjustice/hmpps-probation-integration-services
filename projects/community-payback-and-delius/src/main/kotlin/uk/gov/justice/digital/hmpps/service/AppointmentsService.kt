@@ -76,8 +76,8 @@ class AppointmentsService(
             },
             hiVisWorn = appointment.hiVisWorn,
             workedIntensively = appointment.workedIntensively,
-            workQuality = appointment.workQuality?.let { WorkQuality.of(appointment.workQuality!!.code) },
-            behaviour = appointment.behaviour?.let { Behaviour.of(appointment.behaviour!!.code) },
+            workQuality = appointment.workQuality?.let { WorkQuality.of(it.code) },
+            behaviour = appointment.behaviour?.let { Behaviour.of(it.code) },
             notes = appointment.contact.notes,
             updatedAt = appointment.lastUpdatedDatetime,
             sensitive = appointment.contact.sensitive,
@@ -151,10 +151,7 @@ class AppointmentsService(
             referenceDataRepository.getBehaviour(request.behaviour.code)
         }
 
-        val staff =
-            request.supervisor.let {
-                staffRepository.getStaff(request.supervisor.code)
-            }
+        val staff = staffRepository.getStaff(request.supervisor.code)
 
 
         contact.update(request, outcome, staff)
@@ -250,7 +247,7 @@ class AppointmentsService(
             endTime = request.endTime
             this.staff = staff
             this.contactOutcome = contactOutcome
-            notes = notes?.let { it + System.lineSeparator() + System.lineSeparator() + request.notes }
+            notes = listOfNotNull(notes, request.notes).joinToString("\n\n")
             sensitive = request.sensitive
             alertActive = request.alertActive
             rowVersion = request.version.leastSignificantBits
