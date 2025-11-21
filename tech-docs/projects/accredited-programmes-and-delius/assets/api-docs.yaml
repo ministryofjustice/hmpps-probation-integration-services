@@ -136,6 +136,24 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/RegionWithMembers"
+  /regions/pdu/{pdu}/office-locations:
+    get:
+      tags:
+      - region-controller
+      operationId: getPduOfficeLocations
+      parameters:
+      - name: pdu
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PduOfficeLocations"
   /docs/asyncapi:
     get:
       tags:
@@ -618,6 +636,21 @@ components:
       - code
       - description
       - members
+    PduOfficeLocations:
+      type: object
+      properties:
+        code:
+          type: string
+        description:
+          type: string
+        officeLocations:
+          type: array
+          items:
+            $ref: "#/components/schemas/CodedValue"
+      required:
+      - code
+      - description
+      - officeLocations
     Sentence:
       type: object
       properties:
@@ -710,21 +743,6 @@ components:
       - probationDeliveryUnit
       - staff
       - team
-    PduOfficeLocations:
-      type: object
-      properties:
-        code:
-          type: string
-        description:
-          type: string
-        officeLocations:
-          type: array
-          items:
-            $ref: "#/components/schemas/CodedValue"
-      required:
-      - code
-      - description
-      - officeLocations
     Requirement:
       type: object
       properties:
