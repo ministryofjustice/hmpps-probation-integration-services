@@ -252,9 +252,28 @@ object UPWGenerator {
         alertsActive: Boolean? = false,
         rowVersion: Long = 1,
     ) = Contact(
-        id, contactType, contactOutcome, attended, complied, latestEnforcementAction, date, startTime, endTime, linkedContactId,
-        personId, event, requirementId, licenceConditionId, officeLocation, staff, team, provider, notes, sensitive,
-        alertsActive, rowVersion
+        id,
+        contactType,
+        contactOutcome,
+        attended,
+        complied,
+        latestEnforcementAction,
+        date,
+        startTime,
+        endTime,
+        linkedContactId,
+        personId,
+        event,
+        requirementId,
+        licenceConditionId,
+        officeLocation,
+        staff,
+        team,
+        provider,
+        notes,
+        sensitive,
+        alertsActive,
+        rowVersion
     )
 
     fun generateUpwAppointment(
