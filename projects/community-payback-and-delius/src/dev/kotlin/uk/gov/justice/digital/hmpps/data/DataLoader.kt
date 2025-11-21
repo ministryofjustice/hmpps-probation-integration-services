@@ -75,6 +75,7 @@ class DataLoader(
         entityManager.persist(ReferenceDataGenerator.INDIVIDUAL_PLACEMENT_PROJECT_TYPE)
         entityManager.persist(ReferenceDataGenerator.INACTIVE_PROJECT_TYPE)
         entityManager.persist(ReferenceDataGenerator.UPW_APPOINTMENT_TYPE)
+        entityManager.persist(ReferenceDataGenerator.REVIEW_ENFORCEMENT_STATUS_TYPE)
         entityManager.persist(ReferenceDataGenerator.ROM_ENFORCEMENT_ACTION)
         entityManager.persist(ReferenceDataGenerator.ATTENDED_COMPLIED_CONTACT_OUTCOME)
         entityManager.persist(ReferenceDataGenerator.FAILED_TO_ATTEND_CONTACT_OUTCOME)

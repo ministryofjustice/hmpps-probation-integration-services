@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.entity
 
 import jakarta.persistence.*
+import org.springframework.data.jpa.repository.JpaRepository
 import java.time.LocalDate
 
 @Entity
@@ -24,3 +25,5 @@ class Event(
     @OneToOne(mappedBy = "event")
     val disposal: Disposal?,
 )
+
+interface EventRepository : JpaRepository<Event, Long>

@@ -43,6 +43,12 @@ class AppointmentsIntegrationTest {
     @Autowired
     lateinit var enforcementRepository: EnforcementRepository
 
+    @Autowired
+    lateinit var eventRepository: EventRepository
+
+    @Autowired
+    lateinit var contactRepository: ContactRepository
+
     @Test
     fun `can retrieve appointment details`() {
         val response = mockMvc
@@ -147,7 +153,7 @@ class AppointmentsIntegrationTest {
         mockMvc.put("/projects/N01DEFAULT/appointments/${UPWGenerator.UPW_APPOINTMENT_NO_ENFORCEMENT.id}/outcome") {
             withToken()
             json = AppointmentOutcomeRequest(
-                id = UPWGenerator.UPW_APPOINTMENT_NO_OUTCOME.id,
+                id = UPWGenerator.UPW_APPOINTMENT_NO_ENFORCEMENT.id,
                 version = UUID(5, 5),
                 outcome = Code("F"),
                 supervisor = Code("N01P001"),
@@ -166,7 +172,7 @@ class AppointmentsIntegrationTest {
             .andExpect { status().is2xxSuccessful }
 
         val enforcement = enforcementRepository.findAll()
-            .firstOrNull { it.contact.id == UPWGenerator.UPW_APPOINTMENT_NO_OUTCOME.contact.id }
+            .firstOrNull { it.contact.id == UPWGenerator.UPW_APPOINTMENT_NO_ENFORCEMENT.contact.id }
         assertThat(enforcement).isNotNull
     }
 
@@ -216,5 +222,40 @@ class AppointmentsIntegrationTest {
             )
         }
             .andExpect { status().is4xxClientError }
+    }
+
+    @Test
+    fun `ftc count is updated if complied is false`() {
+        mockMvc.put("/projects/N01DEFAULT/appointments/${UPWGenerator.UPW_APPOINTMENT_NO_OUTCOME.id}/outcome") {
+            withToken()
+            json = AppointmentOutcomeRequest(
+                id = UPWGenerator.UPW_APPOINTMENT_NO_OUTCOME.id,
+                version = UUID(5, 5),
+                outcome = Code("F"),
+                supervisor = Code("N01P001"),
+                startTime = LocalTime.of(8, 0),
+                endTime = LocalTime.of(10, 0),
+                notes = "ftc count",
+                hiVisWorn = true,
+                workedIntensively = true,
+                penaltyMinutes = 5,
+                workQuality = "EXCELLENT",
+                behaviour = "UNSATISFACTORY",
+                sensitive = false,
+                alertActive = true,
+            )
+        }
+            .andExpect { status().is2xxSuccessful }
+
+        val event = eventRepository.findAll()
+            .firstOrNull { it.id == UPWGenerator.UPW_APPOINTMENT_NO_OUTCOME.contact.event!!.id }
+
+        assertThat(event!!.ftcCount).isEqualTo(1L)
+
+        val enforcementReviewContact = contactRepository.findAll()
+            .firstOrNull { it.linkedContactId == UPWGenerator.UPW_APPOINTMENT_NO_OUTCOME.contact.id
+                && it.contactType.code == ContactType.Code.REVIEW_ENFORCEMENT_STATUS.value}
+        assertThat(enforcementReviewContact).isNotNull
+
     }
 }

@@ -95,7 +95,8 @@ object UPWGenerator {
         officeLocation = DEFAULT_OFFICE_LOCATION,
         staff = StaffGenerator.DEFAULT_STAFF,
         team = TeamGenerator.DEFAULT_UPW_TEAM,
-        provider = ProviderGenerator.DEFAULT_PROVIDER
+        provider = ProviderGenerator.DEFAULT_PROVIDER,
+        event = DEFAULT_EVENT
     )
 
     val DEFAULT_UPW_APPOINTMENT = generateUpwAppointment(

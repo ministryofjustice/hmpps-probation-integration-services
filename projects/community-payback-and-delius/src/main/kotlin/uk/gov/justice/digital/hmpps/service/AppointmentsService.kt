@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.*
 import uk.gov.justice.digital.hmpps.model.*
@@ -115,6 +116,7 @@ class AppointmentsService(
         )
     }
 
+    @Transactional
     fun updateAppointmentOutcome(
         projectCode: String,
         appointmentId: Long,
@@ -159,11 +161,11 @@ class AppointmentsService(
                     ?: throw IllegalStateException("Staff with code ${appointmentOutcome.supervisor.code} not found")
             }
 
-        unpaidWorkAppointmentRepository.save(
-            appointment.update(
-                appointmentOutcome, workQuality, behaviour,
-                outcome, staff, contact.update(appointmentOutcome)
-            )
+        contact.update(appointmentOutcome, outcome)
+
+        appointment.update(
+            appointmentOutcome, workQuality, behaviour,
+            outcome, staff
         )
 
         if (appointmentOutcome.alertActive) {
@@ -233,7 +235,7 @@ class AppointmentsService(
 
     private fun UpwAppointment.update(
         request: AppointmentOutcomeRequest, workQuality: ReferenceData,
-        behaviour: ReferenceData, contactOutcome: ContactOutcome?, staff: Staff?, contact: Contact
+        behaviour: ReferenceData, contactOutcome: ContactOutcome?, staff: Staff?
     ) = apply {
         startTime = request.startTime
         endTime = request.endTime
@@ -250,10 +252,12 @@ class AppointmentsService(
         rowVersion = request.version.mostSignificantBits
     }
 
-    private fun Contact.update(request: AppointmentOutcomeRequest) = apply {
+    private fun Contact.update(request: AppointmentOutcomeRequest, contactOutcome: ContactOutcome?) = apply {
         startTime = request.startTime
         endTime = request.endTime
         notes = notes?.let { it + System.lineSeparator() + System.lineSeparator() + request.notes }
+        attended = contactOutcome?.attended
+        complied = contactOutcome?.complied
         sensitive = request.sensitive
         alertActive = request.alertActive
         rowVersion = request.version.leastSignificantBits

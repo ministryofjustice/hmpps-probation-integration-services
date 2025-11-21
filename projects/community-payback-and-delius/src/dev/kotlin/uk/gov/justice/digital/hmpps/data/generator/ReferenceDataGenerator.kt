@@ -45,6 +45,7 @@ object ReferenceDataGenerator {
     )
 
     val UPW_APPOINTMENT_TYPE = generateContactType(ContactType.Code.UNPAID_WORK_APPOINTMENT.value)
+    val REVIEW_ENFORCEMENT_STATUS_TYPE = generateContactType(ContactType.Code.REVIEW_ENFORCEMENT_STATUS.value)
 
     val ROM_ENFORCEMENT_ACTION = generateEnforcementAction(
         code = EnforcementAction.REFER_TO_PERSON_MANAGER,
@@ -75,7 +76,8 @@ object ReferenceDataGenerator {
     val DEFAULT_DISPOSAL_TYPE = generateDisposalType(
         code = "100",
         description = "Community Order",
-        preCja2003 = false
+        preCja2003 = false,
+        ftcLimit = 0
     )
 
     fun generateReferenceData(
