@@ -49,6 +49,9 @@ internal class AppointmentsServiceTest {
     @Mock
     lateinit var contactRepository: ContactRepository
 
+    @Mock
+    lateinit var userAccessService: UserAccessService
+
     @InjectMocks
     lateinit var appointmentsService: AppointmentsService
 
