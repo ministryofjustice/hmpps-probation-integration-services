@@ -8,7 +8,10 @@ import uk.gov.justice.digital.hmpps.repository.RegionMember
 import uk.gov.justice.digital.hmpps.repository.StaffRepository
 
 @Service
-class GetRegion(private val staffRepository: StaffRepository) {
+class GetRegion(
+    private val staffRepository: StaffRepository,
+
+    ) {
     fun withMembers(code: String): RegionWithMembers =
         staffRepository.findRegionMembers(code)
             .takeIf { it.isNotEmpty() }

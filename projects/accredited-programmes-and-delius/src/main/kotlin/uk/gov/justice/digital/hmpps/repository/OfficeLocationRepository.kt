@@ -17,6 +17,17 @@ interface OfficeLocationRepository : JpaRepository<OfficeLocation, Long> {
     """
     )
     fun findByRegionId(regionId: Long): List<OfficeLocation>
+
+    @Query(
+        """
+        select o from OfficeLocation o
+        join fetch o.localAdminUnit lau
+        join fetch lau.probationDeliveryUnit pdu
+        where pdu.code = :pduCode and pdu.selectable = true and lau.selectable = true
+        """
+
+    )
+    fun findByPduCode(pduCode: String): List<OfficeLocation>
 }
 
 fun OfficeLocationRepository.getByCode(code: String): OfficeLocation =

@@ -26,8 +26,12 @@ class PersonAddress(
     var county: String?,
     var district: String?,
     val postcode: String?,
+    val uprn: Long?,
+    val telephoneNumber: String?,
     @Convert(converter = YesNoConverter::class)
     val noFixedAbode: Boolean,
+    @Lob
+    val notes: String?,
     val startDate: LocalDate,
     val endDate: LocalDate?,
     @Column(name = "soft_deleted", columnDefinition = "number")

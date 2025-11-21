@@ -1,21 +1,25 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
+import uk.gov.justice.digital.hmpps.data.generator.IdGenerator.id
 import uk.gov.justice.digital.hmpps.integration.delius.entity.*
 import java.time.LocalDate
 import java.time.LocalDateTime
 
 object PersonGenerator {
     val ETHNICITY = generateReferenceData("ETH")
+    val RELIGION = generateReferenceData("REL")
     val GENDER = generateReferenceData("GEN")
+    val GENDER_IDENTITY = generateReferenceData("GID")
     val NATIONALITY = generateReferenceData("NAT")
     val SECOND_NATIONALITY = NATIONALITY
     val TITLE = generateReferenceData("TIT")
     val PREVIOUS_ADDRESS = generateReferenceData("P", "Previous Address")
     val MAIN_ADDRESS = generateReferenceData("M", "Main Address")
     val SEXUAL_ORIENTATION = generateReferenceData("SEO")
+    val DRIVERS_LICENCE = generateReferenceData("DRL", "Drivers Licence")
 
     val MIN_PERSON =
-        generatePerson("M123456", firstname = "Isabelle", surname = "Necessary", dob = LocalDate.of(1990, 3, 5))
+        generatePerson("M123456", firstname = "Isabelle", surname = "Necessary", dateOfBirth = LocalDate.of(1990, 3, 5))
     val FULL_PERSON = generatePerson(
         crn = "F123456",
         nomsId = "A3349EX",
@@ -27,7 +31,8 @@ object PersonGenerator {
         secondName = "Paul",
         thirdName = "Bernard",
         surname = "Johnson",
-        dob = LocalDate.of(1975, 7, 15),
+        dateOfBirth = LocalDate.of(1975, 7, 15),
+        dateOfDeath = LocalDate.of(2015, 8, 15),
         previousSurname = "No Previous",
         preferredName = "Freddy",
         telephoneNumber = "0191 755 4789",
@@ -35,10 +40,14 @@ object PersonGenerator {
         emailAddress = "fred@gmail.com",
         title = TITLE,
         gender = GENDER,
+        genderIdentity = GENDER_IDENTITY,
+        genderIdentityDescription = "Self-described gender identity",
         nationality = NATIONALITY,
         secondNationality = SECOND_NATIONALITY,
         ethnicity = ETHNICITY,
-        ethnicityDescription = "Description of ethnicity",
+        ethnicityDescription = "Self-described ethnicity",
+        religion = RELIGION,
+        religionDescription = "Self-described faith",
         sexualOrientation = SEXUAL_ORIENTATION,
         exclusionMessage = "This case is excluded because ...",
         restrictionMessage = "This case is restricted because ..."
@@ -58,24 +67,36 @@ object PersonGenerator {
 
     val FULL_PERSON_ADDRESSES = listOf(
         generateAddress(
-            FULL_PERSON.id,
-            MAIN_ADDRESS,
-            "1",
-            null,
-            "Main Street",
-            "",
-            "   ",
-            "London",
-            "PC1 1TS",
-            LocalDate.now().minusDays(30)
+            personId = FULL_PERSON.id,
+            status = MAIN_ADDRESS,
+            addressNumber = "1",
+            buildingName = null,
+            streetName = "Main Street",
+            townCity = "",
+            county = "   ",
+            district = "London",
+            postcode = "PC1 1TS",
+            uprn = 123456789,
+            telephoneNumber = "01234 567890",
+            notes = "Some notes about this address",
+            startDate = LocalDate.now().minusDays(30),
         ),
         generateAddress(
-            FULL_PERSON.id,
-            PREVIOUS_ADDRESS,
+            personId = FULL_PERSON.id,
+            status = PREVIOUS_ADDRESS,
             postcode = "NF1 1NF",
             noFixedAbode = true,
             startDate = LocalDate.now().minusDays(60),
-            endDate = LocalDate.now().minusDays(30)
+            endDate = LocalDate.now().minusDays(30),
+        )
+    )
+
+    val FULL_PERSON_IDENTIFIERS = listOf(
+        AdditionalIdentifier(
+            id = id(),
+            personId = FULL_PERSON.id,
+            type = DRIVERS_LICENCE,
+            value = "BANTE707155F99XX",
         )
     )
 
@@ -113,7 +134,8 @@ object PersonGenerator {
         secondName: String? = null,
         thirdName: String? = null,
         surname: String,
-        dob: LocalDate,
+        dateOfBirth: LocalDate,
+        dateOfDeath: LocalDate? = null,
         previousSurname: String? = null,
         preferredName: String? = null,
         telephoneNumber: String? = null,
@@ -121,10 +143,14 @@ object PersonGenerator {
         emailAddress: String? = null,
         title: ReferenceData? = null,
         gender: ReferenceData? = null,
+        genderIdentity: ReferenceData? = null,
+        genderIdentityDescription: String? = null,
         nationality: ReferenceData? = null,
         secondNationality: ReferenceData? = null,
         ethnicity: ReferenceData? = null,
         ethnicityDescription: String? = null,
+        religion: ReferenceData? = null,
+        religionDescription: String? = null,
         exclusionMessage: String? = null,
         restrictionMessage: String? = null,
         sexualOrientation: ReferenceData? = null,
@@ -141,7 +167,8 @@ object PersonGenerator {
         secondName = secondName,
         thirdName = thirdName,
         surname = surname,
-        dob = dob,
+        dateOfBirth = dateOfBirth,
+        dateOfDeath = dateOfDeath,
         previousSurname = previousSurname,
         preferredName = preferredName,
         telephoneNumber = telephoneNumber,
@@ -149,13 +176,17 @@ object PersonGenerator {
         emailAddress = emailAddress,
         title = title,
         gender = gender,
+        genderIdentity = genderIdentity,
+        genderIdentityDescription = genderIdentityDescription,
         nationality = nationality,
         secondNationality = secondNationality,
         ethnicity = ethnicity,
         ethnicityDescription = ethnicityDescription,
+        religion = religion,
+        religionDescription = religionDescription,
+        sexualOrientation = sexualOrientation,
         exclusionMessage = exclusionMessage,
         restrictionMessage = restrictionMessage,
-        sexualOrientation = sexualOrientation,
         softDeleted = softDeleted,
         id = id,
     )
@@ -182,26 +213,32 @@ object PersonGenerator {
         county: String? = null,
         district: String? = null,
         postcode: String? = null,
+        uprn: Long? = null,
         startDate: LocalDate,
         noFixedAbode: Boolean = false,
+        telephoneNumber: String? = null,
+        notes: String? = null,
         endDate: LocalDate? = null,
         softDeleted: Boolean = false,
-        id: Long = IdGenerator.getAndIncrement()
+        id: Long = IdGenerator.getAndIncrement(),
     ) = PersonAddress(
-        personId,
-        status,
-        addressNumber,
-        buildingName,
-        streetName,
-        townCity,
-        county,
-        district,
-        postcode,
-        noFixedAbode,
-        startDate,
-        endDate,
-        softDeleted,
-        id,
+        personId = personId,
+        status = status,
+        addressNumber = addressNumber,
+        buildingName = buildingName,
+        streetName = streetName,
+        townCity = townCity,
+        county = county,
+        district = district,
+        postcode = postcode,
+        uprn = uprn,
+        noFixedAbode = noFixedAbode,
+        telephoneNumber = telephoneNumber,
+        notes = notes,
+        startDate = startDate,
+        endDate = endDate,
+        softDeleted = softDeleted,
+        id = id,
     )
 
     private fun generateExclusion(

@@ -70,7 +70,7 @@ class AppointmentsIntegrationTest {
                 get(
                     "/projects/N01DEFAULT/appointments?date=${
                         LocalDate.now().plusDays(1)
-                    }&startTime=12:00&endTime=14:00&username=DefaultUser"
+                    }&username=DefaultUser"
                 ).withToken()
             )
             .andExpect(status().is2xxSuccessful)
@@ -167,6 +167,41 @@ class AppointmentsIntegrationTest {
         val enforcement = enforcementRepository.findAll()
             .firstOrNull { it.contact.id == UPWGenerator.UPW_APPOINTMENT_NO_OUTCOME.contact.id }
         assertThat(enforcement).isNotNull
+    }
+
+    @Test
+    fun `returns 2xx when limited access check passes but with current restriction flag true`() {
+        val appointmentId = UPWGenerator.LAO_RESTRICTED_UPW_APPOINTMENT.id
+        val response = mockMvc
+            .perform(get("/projects/N01DEFAULT/appointments/$appointmentId?username=LimitedAccess").withToken())
+            .andExpect(status().is2xxSuccessful)
+            .andReturn().response.contentAsJson<AppointmentResponse>()
+        assertThat(response.case.currentRestriction).isEqualTo(true)
+        assertThat(response.case.restrictionMessage).isNotNull()
+    }
+
+    @Test
+    fun `returns 2xx when limited access check fails but with current restriction flag true`() {
+        val appointmentId = UPWGenerator.LAO_RESTRICTED_UPW_APPOINTMENT.id
+        val response = mockMvc
+            .perform(get("/projects/N01DEFAULT/appointments/$appointmentId?username=FullAccess").withToken())
+            .andExpect(status().is2xxSuccessful)
+            .andReturn().response.contentAsJson<AppointmentResponse>()
+        assertThat(response.case.currentRestriction).isEqualTo(false)
+        assertThat(response.case.restrictionMessage.isNullOrEmpty())
+    }
+
+    @Test
+    fun `returns 2xx when limited access check fails but with current exclusion flag true`() {
+        val appointmentId = UPWGenerator.LAO_EXCLUDED_UPW_APPOINTMENT.id
+
+        val response = mockMvc
+            .perform(get("/projects/N01DEFAULT/appointments/$appointmentId?username=LimitedAccess").withToken())
+            .andExpect(status().is2xxSuccessful)
+            .andReturn().response.contentAsJson<AppointmentResponse>()
+
+        assertThat(response.case.currentExclusion).isEqualTo(true)
+        assertThat(response.case.exclusionMessage).isNotNull
     }
 
     @Test

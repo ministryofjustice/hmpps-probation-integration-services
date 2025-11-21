@@ -13,6 +13,7 @@ import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.model.AppointmentResponseCase
 import uk.gov.justice.digital.hmpps.model.AppointmentResponseName
 import uk.gov.justice.digital.hmpps.model.CodeDescription
+import uk.gov.justice.digital.hmpps.service.CaseAccess
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.ZonedDateTime
@@ -106,7 +107,9 @@ class UpwAppointment(
     var lastUpdatedDatetime: ZonedDateTime = ZonedDateTime.now()
 )
 
-fun UpwAppointment.toAppointmentResponseCase() = AppointmentResponseCase(
+fun UpwAppointment.toAppointmentResponseCase(
+    limitedAccess: CaseAccess
+) = AppointmentResponseCase(
     crn = this.person.crn,
     name = AppointmentResponseName(
         forename = this.person.forename,
@@ -114,10 +117,10 @@ fun UpwAppointment.toAppointmentResponseCase() = AppointmentResponseCase(
         middleNames = this.person.secondName?.let { names -> listOf(names) } ?: emptyList()
     ),
     dateOfBirth = this.person.dateOfBirth,
-    currentExclusion = this.person.currentExclusion,
-    exclusionMessage = this.person.exclusionMessage,
-    currentRestriction = this.person.currentRestriction,
-    restrictionMessage = this.person.restrictionMessage,
+    currentExclusion = limitedAccess.userExcluded,
+    exclusionMessage = limitedAccess.exclusionMessage,
+    currentRestriction = limitedAccess.userRestricted,
+    restrictionMessage = limitedAccess.restrictionMessage,
 )
 
 @Entity
@@ -159,8 +162,6 @@ interface UnpaidWorkSessionDto {
 
     fun toModel() = UnpaidWorkSession(
         CodeDescription(projectCode, projectName),
-        startTime,
-        endTime,
         appointmentDate,
         allocatedCount,
         outcomeCount,
@@ -170,8 +171,6 @@ interface UnpaidWorkSessionDto {
 
 data class UnpaidWorkSession(
     val project: CodeDescription,
-    val startTime: LocalTime,
-    val endTime: LocalTime,
     val date: LocalDate,
     val allocatedCount: Long,
     val outcomeCount: Long,
@@ -209,7 +208,7 @@ interface UnpaidWorkAppointmentRepository : JpaRepository<UpwAppointment, Long> 
                      uwa1.contact_outcome_type_id
               from upw_appointment uwa1
               where 1 = 1
-                and uwa1.appointment_date between trunc(CAST(:startDate AS DATE)) and trunc(CAST(:endDate AS DATE)) + (1 - 1 / 24 / 60 / 60)
+                and uwa1.appointment_date between trunc(cast(:startDate as DATE)) and trunc(cast(:endDate as DATE)) + (1 - 1 / 24 / 60 / 60)
                 and uwa1.soft_deleted = 0 )
             --
             select uwp.upw_project_id as "projectId",
@@ -236,33 +235,32 @@ interface UnpaidWorkAppointmentRepository : JpaRepository<UpwAppointment, Long> 
 
     fun getUpwAppointmentById(appointmentId: Long): UpwAppointment?
 
-    fun getUpwAppointmentsByAppointmentDateAndStartTimeAndEndTime(
-        appointmentDate: LocalDate,
-        startTime: LocalTime, endTime: LocalTime
+    fun getUpwAppointmentsByAppointmentDate(
+        appointmentDate: LocalDate
     ): List<UpwAppointment>
 
     @Query(
         """
-        SELECT
-            CASE
-                WHEN r_disposal_type.pre_cja2003 = 'Y' THEN disposal.length * 60
-                ELSE COALESCE(
-                        (SELECT SUM(rqmnt.length) * 60 FROM rqmnt rqmnt
-                         JOIN r_rqmnt_type_main_category ON r_rqmnt_type_main_category.rqmnt_type_main_category_id = rqmnt.rqmnt_type_main_category_id AND r_rqmnt_type_main_category.code = 'W'
-                         WHERE rqmnt.disposal_id = disposal.disposal_id AND rqmnt.soft_deleted = 0),
+        select
+            case
+                when r_disposal_type.pre_cja2003 = 'Y' then disposal.length * 60
+                else coalesce(
+                        (select sum(rqmnt.length) * 60 from rqmnt rqmnt
+                         join r_rqmnt_type_main_category on r_rqmnt_type_main_category.rqmnt_type_main_category_id = rqmnt.rqmnt_type_main_category_id and r_rqmnt_type_main_category.code = 'W'
+                         where rqmnt.disposal_id = disposal.disposal_id and rqmnt.soft_deleted = 0),
                         0)
-                END AS "requiredMinutes",
-            COALESCE(
-                    (SELECT SUM(appts.minutes_credited) FROM upw_appointment appts WHERE appts.upw_details_id = upw_details.upw_details_id AND appts.soft_deleted = 0),
+                end as "requiredMinutes",
+            coalesce(
+                    (select sum(appts.minutes_credited) from upw_appointment appts where appts.upw_details_id = upw_details.upw_details_id and appts.soft_deleted = 0),
                     0)
-                AS "completedMinutes"
-        FROM upw_details
-        JOIN disposal
-             ON disposal.disposal_id = upw_details.disposal_id
-        JOIN r_disposal_type
-             ON r_disposal_type.disposal_type_id = disposal.disposal_type_id
-        WHERE upw_details.soft_deleted = 0
-          AND upw_details.upw_details_id = :upwDetailsId
+                as "completedMinutes"
+        from upw_details
+        join disposal
+             on disposal.disposal_id = upw_details.disposal_id
+        join r_disposal_type
+             on r_disposal_type.disposal_type_id = disposal.disposal_type_id
+        where upw_details.soft_deleted = 0
+          and upw_details.upw_details_id = :upwDetailsId
     """, nativeQuery = true
     )
     fun getUpwRequiredAndCompletedMinutes(upwDetailsId: Long): UpwMinutesDto
