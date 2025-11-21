@@ -13,7 +13,6 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator
 import uk.gov.justice.digital.hmpps.data.generator.UPWGenerator
-import uk.gov.justice.digital.hmpps.data.generator.UserGenerator
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.*
 import uk.gov.justice.digital.hmpps.model.AppointmentOutcomeRequest
 import uk.gov.justice.digital.hmpps.model.AppointmentResponse
@@ -43,9 +42,6 @@ class AppointmentsIntegrationTest {
 
     @Autowired
     lateinit var enforcementRepository: EnforcementRepository
-
-    val CRN = PersonGenerator.DEFAULT_PERSON.crn
-    val USER_NAME = UserGenerator.DEFAULT_USER.username
 
     @Test
     fun `can retrieve appointment details`() {
