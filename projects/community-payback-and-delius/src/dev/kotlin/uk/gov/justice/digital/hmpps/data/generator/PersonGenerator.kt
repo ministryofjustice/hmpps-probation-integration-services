@@ -21,6 +21,20 @@ object PersonGenerator {
         dateOfBirth = LocalDate.of(1977, 1, 25)
     )
 
+    val EXCLUDED_PERSON = generatePerson(
+        crn = "E123456",
+        forename = "Excluded",
+        surname = "Person",
+        dateOfBirth = LocalDate.of(1985, 3, 15)
+    )
+
+    val RESTRICTED_PERSON = generatePerson(
+        crn = "R123456",
+        forename = "Restricted",
+        surname = "Person",
+        dateOfBirth = LocalDate.of(1992, 8, 30)
+    )
+
     val DEFAULT_PERSON_MANAGER = generatePersonManager(
         personId = DEFAULT_PERSON.id!!,
         staff = StaffGenerator.DEFAULT_STAFF,

@@ -22,12 +22,17 @@ class AppointmentsService(
     private val personManagerRepository: PersonManagerRepository,
     private val enforcementRepository: EnforcementRepository,
     private val enforcementActionRepository: EnforcementActionRepository,
-    private val contactRepository: ContactRepository
+    private val contactRepository: ContactRepository,
+    private val userAccessService: UserAccessService
 ) {
     fun getAppointment(projectCode: String, appointmentId: Long, username: String): AppointmentResponse {
         val project = unpaidWorkProjectRepository.getUpwProjectByCode(projectCode)
         val appointment = unpaidWorkAppointmentRepository.getUpwAppointmentById(appointmentId)
             ?: throw NotFoundException("UPWAppointment", "appointmentId", appointmentId)
+        val limitedAccessDetails = userAccessService.caseAccessFor(username, appointment.person.crn)
+        val case = appointment.toAppointmentResponseCase(
+            limitedAccess = limitedAccessDetails
+        )
 
         return AppointmentResponse(
             id = appointmentId,
@@ -42,7 +47,7 @@ class AppointmentsService(
                 project.projectType.description,
                 project.projectType.code
             ),
-            case = appointment.toAppointmentResponseCase(),
+            case = case,
             supervisor = AppointmentResponseSupervisor(
                 code = appointment.staff.code,
                 name = AppointmentResponseName(
@@ -88,17 +93,19 @@ class AppointmentsService(
 
     fun getSession(
         projectCode: String,
-        date: LocalDate
+        date: LocalDate,
+        username: String
     ): SessionResponse {
         val project = unpaidWorkProjectRepository.getUpwProjectByCode(projectCode)
         val appointments = unpaidWorkAppointmentRepository.getUpwAppointmentsByAppointmentDate(date)
 
         val appointmentSummaries = appointments.map {
             val minutes = unpaidWorkAppointmentRepository.getUpwRequiredAndCompletedMinutes(it.upwDetailsId).toModel()
+            val limitedAccess = userAccessService.caseAccessFor(username, it.person.crn)
 
             SessionResponseAppointmentSummary(
                 id = it.id,
-                case = it.toAppointmentResponseCase(),
+                case = it.toAppointmentResponseCase(limitedAccess),
                 outcome = it.contact.contactOutcome?.toCodeDescription(),
                 requirementProgress = minutes,
             )
@@ -256,3 +263,5 @@ class AppointmentsService(
         rowVersion = request.version.leastSignificantBits
     }
 }
+
+

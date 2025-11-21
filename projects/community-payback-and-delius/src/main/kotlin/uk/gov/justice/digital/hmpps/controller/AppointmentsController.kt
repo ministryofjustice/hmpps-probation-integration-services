@@ -20,8 +20,9 @@ class AppointmentsController(
 
     @GetMapping(value = ["/{projectCode}/appointments"])
     fun getSession(
-        @PathVariable projectCode: String, @RequestParam date: LocalDate
-    ) = appointmentsService.getSession(projectCode, date)
+        @PathVariable projectCode: String, @RequestParam date: LocalDate,
+        @RequestParam username: String
+    ) = appointmentsService.getSession(projectCode, date, username)
 
     @PutMapping(value = ["/{projectCode}/appointments/{appointmentId}/outcome"])
     fun updateAppointmentOutcome(
