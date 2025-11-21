@@ -3,11 +3,9 @@ package uk.gov.justice.digital.hmpps
 import com.github.tomakehurst.wiremock.WireMockServer
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
-import org.mockito.kotlin.whenever
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.test.context.bean.override.mockito.MockitoBean
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.put
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
@@ -21,8 +19,6 @@ import uk.gov.justice.digital.hmpps.model.AppointmentOutcomeRequest
 import uk.gov.justice.digital.hmpps.model.AppointmentResponse
 import uk.gov.justice.digital.hmpps.model.Code
 import uk.gov.justice.digital.hmpps.model.SessionResponse
-import uk.gov.justice.digital.hmpps.service.CaseAccess
-import uk.gov.justice.digital.hmpps.service.UserAccessService
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.json
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
@@ -48,22 +44,11 @@ class AppointmentsIntegrationTest {
     @Autowired
     lateinit var enforcementRepository: EnforcementRepository
 
-    @MockitoBean
-    lateinit var limitedAccessService: UserAccessService
-
-    private val CRN = PersonGenerator.DEFAULT_PERSON.crn
-    private val USER_NAME = UserGenerator.DEFAULT_USER.username
+    val CRN = PersonGenerator.DEFAULT_PERSON.crn
+    val USER_NAME = UserGenerator.DEFAULT_USER.username
 
     @Test
     fun `can retrieve appointment details`() {
-        whenever(limitedAccessService.caseAccessFor(USER_NAME, CRN)).thenReturn(
-            CaseAccess(
-                CRN,
-                userExcluded = false,
-                userRestricted = false,
-                "Has access"
-            )
-        )
 
         val response = mockMvc
             .perform(get("/projects/N01DEFAULT/appointments/${UPWGenerator.DEFAULT_UPW_APPOINTMENT.id}?username=DefaultUser").withToken())
@@ -215,21 +200,38 @@ class AppointmentsIntegrationTest {
     }
 
     @Test
-    fun `returns 403 when limited access check fails`() {
-        whenever(limitedAccessService.caseAccessFor("NoAccessUser", "Z000001")).thenReturn(
-            CaseAccess(
-                "Z000001",
-                userExcluded = true,
-                userRestricted = false,
-                "No access"
-            )
-        )
+    fun `returns 2xx when limited access check passes but with current restriction flag true`() {
+        val appointmentId = UPWGenerator.LAO_RESTRICTED_UPW_APPOINTMENT.id
+        val response = mockMvc
+            .perform(get("/projects/N01DEFAULT/appointments/$appointmentId?username=LimitedAccess").withToken())
+            .andExpect(status().is2xxSuccessful)
+            .andReturn().response.contentAsJson<AppointmentResponse>()
+        assertThat(response.case.currentRestriction)
+        assertThat(response.case.restrictionMessage)
+    }
 
-        val appointmentId = UPWGenerator.DEFAULT_UPW_APPOINTMENT.id
+    @Test
+    fun `returns 2xx when limited access check fails but with current restriction flag true`() {
+        val appointmentId = UPWGenerator.LAO_RESTRICTED_UPW_APPOINTMENT.id
+        val response = mockMvc
+            .perform(get("/projects/N01DEFAULT/appointments/$appointmentId?username=FullAccess").withToken())
+            .andExpect(status().is2xxSuccessful)
+            .andReturn().response.contentAsJson<AppointmentResponse>()
+        assertThat(response.case.currentRestriction)
+        assertThat(response.case.restrictionMessage.isNullOrEmpty())
+    }
 
-        mockMvc
-            .perform(get("/projects/N01DEFAULT/appointments/$appointmentId?username=NoAccessUser").withToken())
-            .andExpect(status().isForbidden)
+    @Test
+    fun `returns 2xx when limited access check fails but with current exclusion flag true`() {
+        val appointmentId = UPWGenerator.LAO_EXCLUDED_UPW_APPOINTMENT.id
+
+        val response = mockMvc
+            .perform(get("/projects/N01DEFAULT/appointments/$appointmentId?username=LimitedAccess").withToken())
+            .andExpect(status().is2xxSuccessful)
+            .andReturn().response.contentAsJson<AppointmentResponse>()
+
+        assertThat(response.case.currentExclusion)
+        assertThat(response.case.exclusionMessage).isNotNull
     }
 
     @Test

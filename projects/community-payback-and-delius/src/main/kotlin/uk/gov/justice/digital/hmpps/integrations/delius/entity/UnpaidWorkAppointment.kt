@@ -119,6 +119,25 @@ fun UpwAppointment.toAppointmentResponseCase() = AppointmentResponseCase(
     restrictionMessage = this.person.restrictionMessage,
 )
 
+fun UpwAppointment.toAppointmentResponseCase(
+    currentExclusion: Boolean?,
+    exclusionMessage: String?,
+    currentRestriction: Boolean?,
+    restrictionMessage: String?
+) = AppointmentResponseCase(
+    crn = this.person.crn,
+    name = AppointmentResponseName(
+        forename = this.person.forename,
+        surname = this.person.surname,
+        middleNames = this.person.secondName?.let { names -> listOf(names) } ?: emptyList()
+    ),
+    dateOfBirth = this.person.dateOfBirth,
+    currentExclusion = currentExclusion ?: this.person.currentExclusion,
+    exclusionMessage = exclusionMessage ?: this.person.exclusionMessage,
+    currentRestriction = currentRestriction ?: this.person.currentRestriction,
+    restrictionMessage = restrictionMessage ?: this.person.restrictionMessage,
+)
+
 enum class WorkQuality(val value: String) {
     EX("EXCELLENT"), GD("GOOD"), NA("NOT_APPLICABLE"), PR("POOR"),
     ST("SATISFACTORY"), US("UNSATISFACTORY");

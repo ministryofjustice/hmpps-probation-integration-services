@@ -2,7 +2,6 @@ package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
-import uk.gov.justice.digital.hmpps.exceptions.LimitedAccessException
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.*
 import uk.gov.justice.digital.hmpps.model.*
 import java.time.Duration
@@ -31,21 +30,28 @@ class AppointmentsService(
         val appointment = unpaidWorkAppointmentRepository.getUpwAppointmentById(appointmentId)
             ?: throw NotFoundException("UPWAppointment", "appointmentId", appointmentId)
         val limitedAccessDetails = userAccessService.caseAccessFor(username, appointment.person.crn)
+        var currentExclusion: Boolean? = null
+        var exclusionMessage: String? = null
+        var currentRestriction: Boolean? = null
+        var restrictionMessage: String? = null
         when {
-            limitedAccessDetails.userExcluded -> throw LimitedAccessException(
-                appointment.person.crn,
-                username,
-                limitedAccessDetails.exclusionMessage
-                    ?: "Access is excluded for crn ${appointment.person.crn} for user $username"
-            )
+            limitedAccessDetails.userExcluded -> {
+                currentExclusion = limitedAccessDetails.userExcluded
+                exclusionMessage = limitedAccessDetails.exclusionMessage
+            }
 
-            limitedAccessDetails.userRestricted -> throw LimitedAccessException(
-                appointment.person.crn,
-                username,
-                limitedAccessDetails.restrictionMessage
-                    ?: "Access is restricted for crn ${appointment.person.crn} for user $username"
-            )
+            limitedAccessDetails.userRestricted -> {
+                currentRestriction = limitedAccessDetails.userRestricted
+                restrictionMessage = limitedAccessDetails.restrictionMessage
+            }
         }
+        val case = appointment.toAppointmentResponseCase(
+            currentExclusion,
+            exclusionMessage,
+            currentRestriction,
+            restrictionMessage
+        )
+
         return AppointmentResponse(
             id = appointmentId,
             version = UUID(appointment.rowVersion, appointment.contact.rowVersion),
@@ -59,7 +65,7 @@ class AppointmentsService(
                 project.projectType.description,
                 project.projectType.code
             ),
-            case = appointment.toAppointmentResponseCase(),
+            case = case,
             supervisor = AppointmentResponseSupervisor(
                 code = appointment.staff.code,
                 name = AppointmentResponseName(
@@ -273,3 +279,5 @@ class AppointmentsService(
         rowVersion = request.version.leastSignificantBits
     }
 }
+
+
