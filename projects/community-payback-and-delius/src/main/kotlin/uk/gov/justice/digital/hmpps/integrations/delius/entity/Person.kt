@@ -37,10 +37,8 @@ class Person(
     @Convert(converter = NumericBooleanConverter::class)
     val currentRestriction: Boolean = false,
 
-    @Column(name = "exclusion_message")
     val exclusionMessage: String? = null,
 
-    @Column(name = "restriction_message")
     val restrictionMessage: String? = null,
 
     )

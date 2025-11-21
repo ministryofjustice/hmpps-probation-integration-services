@@ -118,6 +118,44 @@ object UPWGenerator {
         minutesCredited = 30L
     )
 
+    val LAO_EXCLUDED_UPW_APPOINTMENT = generateUpwAppointment(
+        startTime = LocalTime.of(9, 0),
+        endTime = LocalTime.of(17, 0),
+        appointmentDate = LocalDate.now(),
+        upwProjectId = DEFAULT_UPW_PROJECT.id,
+        upwDetailsId = DEFAULT_UPW_DETAILS.id,
+        contact = DEFAULT_CONTACT,
+        contactOutcomeTypeId = 1L,
+        pickupLocation = DEFAULT_OFFICE_LOCATION,
+        pickupTime = LocalTime.of(9, 0),
+        penaltyTime = 60L,
+        person = PersonGenerator.EXCLUDED_PERSON,
+        staff = StaffGenerator.DEFAULT_STAFF,
+        team = TeamGenerator.DEFAULT_UPW_TEAM,
+        workQuality = ReferenceDataGenerator.EXCELLENT_WORK_QUALITY,
+        behaviour = ReferenceDataGenerator.EXCELLENT_BEHAVIOUR,
+        minutesCredited = 30L
+    )
+
+    val LAO_RESTRICTED_UPW_APPOINTMENT = generateUpwAppointment(
+        startTime = LocalTime.of(9, 0),
+        endTime = LocalTime.of(17, 0),
+        appointmentDate = LocalDate.now(),
+        upwProjectId = DEFAULT_UPW_PROJECT.id,
+        upwDetailsId = DEFAULT_UPW_DETAILS.id,
+        contact = DEFAULT_CONTACT,
+        contactOutcomeTypeId = 1L,
+        pickupLocation = DEFAULT_OFFICE_LOCATION,
+        pickupTime = LocalTime.of(9, 0),
+        penaltyTime = 60L,
+        person = PersonGenerator.RESTRICTED_PERSON,
+        staff = StaffGenerator.DEFAULT_STAFF,
+        team = TeamGenerator.DEFAULT_UPW_TEAM,
+        workQuality = ReferenceDataGenerator.EXCELLENT_WORK_QUALITY,
+        behaviour = ReferenceDataGenerator.EXCELLENT_BEHAVIOUR,
+        minutesCredited = 30L
+    )
+
     val UPW_APPOINTMENT_NO_ENFORCEMENT = generateUpwAppointment(
         startTime = LocalTime.of(10, 15),
         endTime = LocalTime.of(16, 30),
