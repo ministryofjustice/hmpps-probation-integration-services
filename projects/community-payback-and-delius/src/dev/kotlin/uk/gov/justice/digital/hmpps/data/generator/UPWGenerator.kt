@@ -41,8 +41,30 @@ object UPWGenerator {
         upwProjectId = SECOND_UPW_PROJECT.id
     )
 
-    val DEFAULT_DISPOSAL = generateDisposal(length = 12, disposalType = ReferenceDataGenerator.DEFAULT_DISPOSAL_TYPE)
-    val SECOND_DISPOSAL = generateDisposal(length = 12, disposalType = ReferenceDataGenerator.DEFAULT_DISPOSAL_TYPE)
+    val DEFAULT_EVENT = generateEvent(
+        eventNumber = "1",
+        person = PersonGenerator.DEFAULT_PERSON,
+        disposal = null
+    )
+
+    val SECOND_EVENT = generateEvent(
+        eventNumber = "2",
+        person = PersonGenerator.DEFAULT_PERSON,
+        disposal = null
+    )
+
+    val DEFAULT_DISPOSAL = generateDisposal(
+        length = 12,
+        disposalType = ReferenceDataGenerator.DEFAULT_DISPOSAL_TYPE,
+        date = LocalDate.now(),
+        event = DEFAULT_EVENT
+    )
+    val SECOND_DISPOSAL = generateDisposal(
+        length = 12,
+        disposalType = ReferenceDataGenerator.DEFAULT_DISPOSAL_TYPE,
+        date = LocalDate.now(),
+        event = SECOND_EVENT
+    )
 
     val DEFAULT_UPW_DETAILS = generateUpwDetails(disposalId = DEFAULT_DISPOSAL.id)
     val SECOND_UPW_DETAILS = generateUpwDetails(disposalId = SECOND_DISPOSAL.id)
@@ -50,7 +72,7 @@ object UPWGenerator {
 
     val DEFAULT_CONTACT =
         generateContact(
-            contactTypeId = ReferenceDataGenerator.UPW_APPOINTMENT_TYPE.id,
+            contactType = ReferenceDataGenerator.UPW_APPOINTMENT_TYPE,
             latestEnforcementAction = ReferenceDataGenerator.ROM_ENFORCEMENT_ACTION,
             contactOutcome = ReferenceDataGenerator.FAILED_TO_ATTEND_CONTACT_OUTCOME,
             startTime = LocalTime.of(9, 0),
@@ -63,7 +85,7 @@ object UPWGenerator {
             provider = ProviderGenerator.DEFAULT_PROVIDER
         )
     val CONTACT_NO_ENFORCEMENT = generateContact(
-        contactTypeId = ReferenceDataGenerator.UPW_APPOINTMENT_TYPE.id,
+        contactType = ReferenceDataGenerator.UPW_APPOINTMENT_TYPE,
         latestEnforcementAction = null,
         contactOutcome = ReferenceDataGenerator.ATTENDED_COMPLIED_CONTACT_OUTCOME,
         startTime = LocalTime.of(10, 15),
@@ -193,10 +215,12 @@ object UPWGenerator {
 
     fun generateDisposal(
         id: Long = IdGenerator.getAndIncrement(),
+        disposalType: DisposalType,
+        date: LocalDate,
         length: Long,
+        event: Event,
         softDeleted: Boolean = false,
-        disposalType: DisposalType
-    ) = Disposal(id, length, softDeleted, disposalType)
+    ) = Disposal(id, disposalType, date, length, event, softDeleted)
 
     fun generateUpwDetails(
         id: Long = IdGenerator.getAndIncrement(),
@@ -206,15 +230,17 @@ object UPWGenerator {
 
     fun generateContact(
         id: Long = 0,
-        contactTypeId: Long,
+        contactType: ContactType,
         contactOutcome: ContactOutcome?,
+        attended: Boolean? = true,
+        complied: Boolean? = true,
         latestEnforcementAction: EnforcementAction?,
         date: LocalDate,
         startTime: LocalTime?,
         endTime: LocalTime?,
         linkedContactId: Long? = null,
         personId: Long,
-        eventId: Long? = null,
+        event: Event? = null,
         requirementId: Long? = null,
         licenceConditionId: Long? = null,
         officeLocation: OfficeLocation,
@@ -226,8 +252,8 @@ object UPWGenerator {
         alertsActive: Boolean? = false,
         rowVersion: Long = 1,
     ) = Contact(
-        id, contactTypeId, contactOutcome, latestEnforcementAction, date, startTime, endTime, linkedContactId,
-        personId, eventId, requirementId, licenceConditionId, officeLocation, staff, team, provider, notes, sensitive,
+        id, contactType, contactOutcome, attended, complied, latestEnforcementAction, date, startTime, endTime, linkedContactId,
+        personId, event, requirementId, licenceConditionId, officeLocation, staff, team, provider, notes, sensitive,
         alertsActive, rowVersion
     )
 
@@ -312,4 +338,20 @@ object UPWGenerator {
         disposal: Disposal,
         softDeleted: Boolean = false
     ) = Requirement(id, requirementMainCategory, length, disposal, softDeleted)
+
+    fun generateEvent(
+        id: Long = IdGenerator.getAndIncrement(),
+        eventNumber: String,
+        ftcCount: Long = 0,
+        breachEnd: LocalDate? = null,
+        person: Person,
+        disposal: Disposal?
+    ) = Event(
+        id = id,
+        number = eventNumber,
+        ftcCount = ftcCount,
+        breachEnd = breachEnd,
+        person = person,
+        disposal = disposal
+    )
 }

@@ -99,6 +99,8 @@ class DataLoader(
         entityManager.persist(UPWGenerator.SECOND_UPW_PROJECT)
         entityManager.persist(UPWGenerator.DEFAULT_UPW_PROJECT_AVAILABILITY)
         entityManager.persist(UPWGenerator.SECOND_UPW_PROJECT_AVAILABILITY)
+        entityManager.persist(UPWGenerator.DEFAULT_EVENT)
+        entityManager.persist(UPWGenerator.SECOND_EVENT)
         entityManager.persist(UPWGenerator.DEFAULT_DISPOSAL)
         entityManager.persist(UPWGenerator.SECOND_DISPOSAL)
         entityManager.persist(UPWGenerator.DEFAULT_UPW_DETAILS)

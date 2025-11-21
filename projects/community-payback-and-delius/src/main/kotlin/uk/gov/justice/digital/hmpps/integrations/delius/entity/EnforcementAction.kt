@@ -22,7 +22,9 @@ class EnforcementAction(
     @Convert(converter = YesNoConverter::class)
     val outstandingContactAction: Boolean,
 
-    val contactTypeId: Long,
+    @ManyToOne
+    @JoinColumn(name = "contact_type_id")
+    val contactType: ContactType
 ) {
     companion object {
         const val REFER_TO_PERSON_MANAGER = "ROM"

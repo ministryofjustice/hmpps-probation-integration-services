@@ -22,7 +22,8 @@ class AppointmentsService(
     private val personManagerRepository: PersonManagerRepository,
     private val enforcementRepository: EnforcementRepository,
     private val enforcementActionRepository: EnforcementActionRepository,
-    private val contactRepository: ContactRepository
+    private val contactRepository: ContactRepository,
+    private val contactTypeRepository: ContactTypeRepository
 ) {
     fun getAppointment(projectCode: String, appointmentId: Long, username: String): AppointmentResponse {
         val project = unpaidWorkProjectRepository.getUpwProjectByCode(projectCode)
@@ -173,7 +174,7 @@ class AppointmentsService(
             contactAlertRepository.save(
                 ContactAlert(
                     contactId = contact.id,
-                    contactTypeId = contact.contactTypeId,
+                    contactTypeId = contact.contactType.id,
                     personId = appointment.person.id,
                     personManagerId = personManager.id,
                     staffId = personManager.staff.id,
@@ -198,11 +199,11 @@ class AppointmentsService(
             contactRepository.save(
                 Contact(
                     linkedContactId = contact.id,
-                    contactTypeId = enforcementAction.contactTypeId,
+                    contactType = enforcementAction.contactType,
                     date = LocalDate.now(),
                     startTime = LocalTime.now(),
                     personId = contact.personId,
-                    eventId = contact.eventId,
+                    event = contact.event,
                     requirementId = contact.requirementId,
                     licenceConditionId = contact.licenceConditionId,
                     provider = contact.provider,
@@ -217,6 +218,8 @@ class AppointmentsService(
                     """.trimMargin(),
                 )
             )
+
+            contact.updateFailureToComplyCount()
         }
     }
 
@@ -254,5 +257,31 @@ class AppointmentsService(
         sensitive = request.sensitive
         alertActive = request.alertActive
         rowVersion = request.version.leastSignificantBits
+    }
+
+    private fun Contact.updateFailureToComplyCount() {
+        if (event == null) return
+        event.ftcCount = contactRepository.countFailureToComply(event)
+
+        val ftcLimit = event.disposal?.type?.ftcLimit ?: return
+        if (event.ftcCount > ftcLimit && !contactRepository.enforcementReviewExists(event.id, event.breachEnd)) {
+            contactRepository.save(
+                Contact(
+                    linkedContactId = id,
+                    contactType = contactTypeRepository.getByCode(ContactType.Code.REVIEW_ENFORCEMENT_STATUS.value),
+                    date = LocalDate.now(),
+                    startTime = LocalTime.now(),
+                    personId = personId,
+                    event = event,
+                    requirementId = requirementId,
+                    licenceConditionId = licenceConditionId,
+                    provider = provider,
+                    team = team,
+                    staff = staff,
+                    officeLocation = officeLocation,
+                    notes = null
+                )
+            )
+        }
     }
 }

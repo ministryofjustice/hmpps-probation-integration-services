@@ -51,7 +51,7 @@ object ReferenceDataGenerator {
         description = "Refer to Offender Manager",
         responseByPeriod = 7L,
         outstandingContactAction = true,
-        contactTypeId = UPW_APPOINTMENT_TYPE.id
+        contactType = UPW_APPOINTMENT_TYPE
     )
 
     val ATTENDED_COMPLIED_CONTACT_OUTCOME = generateContactOutcome(
@@ -92,13 +92,18 @@ object ReferenceDataGenerator {
         description: String,
         responseByPeriod: Long,
         outstandingContactAction: Boolean,
-        contactTypeId: Long
-    ) = EnforcementAction(id, code, description, responseByPeriod, outstandingContactAction, contactTypeId)
+        contactType: ContactType
+    ) = EnforcementAction(id, code, description, responseByPeriod, outstandingContactAction, contactType)
 
     fun generateContactType(
         code: String,
         id: Long = IdGenerator.getAndIncrement(),
-    ) = ContactType(code, id)
+        nationalStandards: Boolean = true
+    ) = ContactType(
+        code,
+        id,
+        nationalStandards = nationalStandards
+    )
 
     fun generateContactOutcome(
         code: String,
@@ -118,8 +123,9 @@ object ReferenceDataGenerator {
         id: Long = IdGenerator.getAndIncrement(),
         code: String,
         description: String,
+        ftcLimit: Long? = 3,
         preCja2003: Boolean = false
-    ) = DisposalType(id, code, description, preCja2003)
+    ) = DisposalType(id, code, description, ftcLimit, preCja2003)
 }
 
 object DatasetGenerator {
