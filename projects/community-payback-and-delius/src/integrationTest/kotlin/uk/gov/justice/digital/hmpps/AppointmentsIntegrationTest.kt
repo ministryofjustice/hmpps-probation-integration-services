@@ -253,9 +253,10 @@ class AppointmentsIntegrationTest {
         assertThat(event!!.ftcCount).isEqualTo(1L)
 
         val enforcementReviewContact = contactRepository.findAll()
-            .firstOrNull { it.linkedContactId == UPWGenerator.UPW_APPOINTMENT_NO_OUTCOME.contact.id
-                && it.contactType.code == ContactType.Code.REVIEW_ENFORCEMENT_STATUS.value}
+            .firstOrNull {
+                it.linkedContactId == UPWGenerator.UPW_APPOINTMENT_NO_OUTCOME.contact.id
+                    && it.contactType.code == ContactType.Code.REVIEW_ENFORCEMENT_STATUS.value
+            }
         assertThat(enforcementReviewContact).isNotNull
-
     }
 }
