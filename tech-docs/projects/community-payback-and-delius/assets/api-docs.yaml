@@ -179,6 +179,11 @@ paths:
         schema:
           type: string
           format: date
+      - name: username
+        in: query
+        required: true
+        schema:
+          type: string
       responses:
         "200":
           description: OK
