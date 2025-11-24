@@ -49,13 +49,16 @@ class UpwAppointment(
 
     var endTime: LocalTime,
 
-    val appointmentDate: LocalDate,
+    @Column(name = "appointment_date")
+    val date: LocalDate,
 
-    val upwProjectId: Long,
+    @ManyToOne
+    @JoinColumn(name = "upw_project_id")
+    val project: UpwProject,
 
     @ManyToOne
     @JoinColumn(name = "upw_details_id")
-    val upwDetails: UpwDetails,
+    val details: UpwDetails,
 
     @ManyToOne
     @JoinColumn(name = "pick_up_location_id")
@@ -234,8 +237,9 @@ interface UnpaidWorkAppointmentRepository : JpaRepository<UpwAppointment, Long> 
 
     fun getUpwAppointmentById(appointmentId: Long): UpwAppointment?
 
-    fun findByAppointmentDateAndUpwDetailsSoftDeletedFalse(
-        appointmentDate: LocalDate
+    fun findByDateAndProjectCodeAndDetailsSoftDeletedFalse(
+        appointmentDate: LocalDate,
+        projectCode: String
     ): List<UpwAppointment>
 
     @Query(

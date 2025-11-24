@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.web.servlet.MockMvc
+import org.springframework.test.web.servlet.get
 import org.springframework.test.web.servlet.put
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
@@ -66,17 +67,12 @@ class AppointmentsIntegrationTest {
     @Test
     fun `can retrieve single session details`() {
         val response = mockMvc
-            .perform(
-                get(
-                    "/projects/N01DEFAULT/appointments?date=${
-                        LocalDate.now().plusDays(1)
-                    }&username=DefaultUser"
-                ).withToken()
-            )
-            .andExpect(status().is2xxSuccessful)
+            .get("/projects/N01SECOND/appointments?date=${LocalDate.now().plusDays(1)}&username=DefaultUser") {
+                withToken()
+            }
+            .andExpect { status().is2xxSuccessful }
             .andReturn().response.contentAsJson<SessionResponse>()
-
-        assertThat(response.project.name).isEqualTo("Default UPW Project")
+        assertThat(response.project.name).isEqualTo("Second UPW Project")
         assertThat(response.appointmentSummaries.size).isEqualTo(2)
         assertThat(response.appointmentSummaries[0].case.crn).isEqualTo("Z000001")
         assertThat(response.appointmentSummaries[0].requirementProgress.requiredMinutes).isEqualTo(120 * 60)
