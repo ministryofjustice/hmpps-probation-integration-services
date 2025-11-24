@@ -58,7 +58,7 @@ class AppointmentsIntegrationTest {
         assertThat(response.project.name).isEqualTo("Default UPW Project")
         assertThat(response.case.crn).isEqualTo(PersonGenerator.DEFAULT_PERSON.crn)
         assertThat(response.penaltyHours).isEqualTo("01:00")
-        assertThat(response.enforcementAction!!.respondBy).isEqualTo(response.date.plusDays(ReferenceDataGenerator.ROM_ENFORCEMENT_ACTION.responseByPeriod))
+        assertThat(response.enforcementAction!!.respondBy).isEqualTo(response.date.plusDays(ReferenceDataGenerator.ROM_ENFORCEMENT_ACTION.responseByPeriod!!))
         assertThat(response.behaviour).isEqualTo(Behaviour.EXCELLENT)
         assertThat(response.workQuality).isEqualTo(WorkQuality.EXCELLENT)
     }

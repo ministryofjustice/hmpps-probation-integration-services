@@ -18,10 +18,10 @@ class EnforcementAction(
 
     val description: String,
 
-    val responseByPeriod: Long,
+    val responseByPeriod: Long?,
 
     @Convert(converter = YesNoConverter::class)
-    val outstandingContactAction: Boolean,
+    val outstandingContactAction: Boolean?,
 
     val contactTypeId: Long,
 ) {
