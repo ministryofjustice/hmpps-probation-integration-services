@@ -17,6 +17,7 @@ data class PersonDetail(
     val ethnicityDescription: String?,
     val religion: CodeDescription?,
     val religionDescription: String?,
+    val religionHistory: List<ReligionHistory>?,
     val sexualOrientation: CodeDescription?,
     val contactDetails: ContactDetails?,
     val aliases: List<Alias>,
@@ -62,6 +63,8 @@ data class ContactDetails(val telephone: String?, val mobile: String?, val email
 }
 
 data class CodeDescription(val code: String, val description: String)
+
+data class ReligionHistory(val code: String, val description: String, val startDate: LocalDate, val endDate: LocalDate)
 
 data class Alias(val name: Name, val dateOfBirth: LocalDate, val gender: CodeDescription?)
 

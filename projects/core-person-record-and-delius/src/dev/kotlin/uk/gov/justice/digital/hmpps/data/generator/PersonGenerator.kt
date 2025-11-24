@@ -6,6 +6,8 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 
 object PersonGenerator {
+    val FULL_PERSON_ID = IdGenerator.getAndIncrement()
+    val MIN_PERSON_ID = IdGenerator.getAndIncrement()
     val ETHNICITY = generateReferenceData("ETH")
     val RELIGION = generateReferenceData("REL")
     val GENDER = generateReferenceData("GEN")
@@ -17,9 +19,36 @@ object PersonGenerator {
     val MAIN_ADDRESS = generateReferenceData("M", "Main Address")
     val SEXUAL_ORIENTATION = generateReferenceData("SEO")
     val DRIVERS_LICENCE = generateReferenceData("DRL", "Drivers Licence")
+    val RELIGION_HISTORY =
+        generateReligionHistory(
+            FULL_PERSON_ID, 1, "JEDI", LocalDate.now().minusDays(30),
+            LocalDate.now().minusDays(1)
+        )
+
+    private fun generateReligionHistory(
+        offenderId: Long,
+        code: Long,
+        description: String,
+        startDate: LocalDate,
+        endDate: LocalDate
+    ) =
+        ReligionHistory(
+            IdGenerator.getAndIncrement(),
+            offenderId = offenderId,
+            code,
+            description = description,
+            startDate = startDate,
+            endDate = endDate
+        )
 
     val MIN_PERSON =
-        generatePerson("M123456", firstname = "Isabelle", surname = "Necessary", dateOfBirth = LocalDate.of(1990, 3, 5))
+        generatePerson(
+            "M123456",
+            firstname = "Isabelle",
+            surname = "Necessary",
+            dateOfBirth = LocalDate.of(1990, 3, 5),
+            id = MIN_PERSON_ID
+        )
     val FULL_PERSON = generatePerson(
         crn = "F123456",
         nomsId = "A3349EX",
@@ -48,14 +77,16 @@ object PersonGenerator {
         ethnicityDescription = "Self-described ethnicity",
         religion = RELIGION,
         religionDescription = "Self-described faith",
+        religionHistory = mutableListOf(RELIGION_HISTORY),
         sexualOrientation = SEXUAL_ORIENTATION,
         exclusionMessage = "This case is excluded because ...",
-        restrictionMessage = "This case is restricted because ..."
+        restrictionMessage = "This case is restricted because ...",
+        id = FULL_PERSON_ID
     )
 
     val FULL_PERSON_ALIASES = listOf(
         generateAlias(
-            FULL_PERSON.id,
+            FULL_PERSON_ID,
             "Freddy",
             null,
             null,
@@ -67,7 +98,7 @@ object PersonGenerator {
 
     val FULL_PERSON_ADDRESSES = listOf(
         generateAddress(
-            personId = FULL_PERSON.id,
+            personId = FULL_PERSON_ID,
             status = MAIN_ADDRESS,
             addressNumber = "1",
             buildingName = null,
@@ -82,7 +113,7 @@ object PersonGenerator {
             startDate = LocalDate.now().minusDays(30),
         ),
         generateAddress(
-            personId = FULL_PERSON.id,
+            personId = FULL_PERSON_ID,
             status = PREVIOUS_ADDRESS,
             postcode = "NF1 1NF",
             noFixedAbode = true,
@@ -94,27 +125,27 @@ object PersonGenerator {
     val FULL_PERSON_IDENTIFIERS = listOf(
         AdditionalIdentifier(
             id = id(),
-            personId = FULL_PERSON.id,
+            personId = FULL_PERSON_ID,
             type = DRIVERS_LICENCE,
             value = "BANTE707155F99XX",
         )
     )
 
     val FULL_PERSON_EXCLUSIONS = listOf(
-        generateExclusion(FULL_PERSON.id, "SomeUser1"),
-        generateExclusion(FULL_PERSON.id, "PastEndDatedUser", LocalDateTime.now().minusDays(30)),
+        generateExclusion(FULL_PERSON_ID, "SomeUser1"),
+        generateExclusion(FULL_PERSON_ID, "PastEndDatedUser", LocalDateTime.now().minusDays(30)),
     )
 
     val FULL_PERSON_RESTRICTIONS = listOf(
-        generateRestriction(FULL_PERSON.id, "SomeUser2"),
-        generateRestriction(FULL_PERSON.id, "FutureEndDatedUser", LocalDateTime.now().plusDays(30)),
+        generateRestriction(FULL_PERSON_ID, "SomeUser2"),
+        generateRestriction(FULL_PERSON_ID, "FutureEndDatedUser", LocalDateTime.now().plusDays(30)),
     )
 
     val SENTENCES = listOf(
-        generateDisposal(FULL_PERSON.id, LocalDate.of(2024, 8, 7), active = true, softDeleted = false),
-        generateDisposal(FULL_PERSON.id, LocalDate.of(2024, 8, 5), active = false, softDeleted = false),
-        generateDisposal(FULL_PERSON.id, LocalDate.of(2024, 8, 4), active = false, softDeleted = true),
-        generateDisposal(FULL_PERSON.id, LocalDate.of(2024, 8, 3), active = true, softDeleted = false)
+        generateDisposal(FULL_PERSON_ID, LocalDate.of(2024, 8, 7), active = true, softDeleted = false),
+        generateDisposal(FULL_PERSON_ID, LocalDate.of(2024, 8, 5), active = false, softDeleted = false),
+        generateDisposal(FULL_PERSON_ID, LocalDate.of(2024, 8, 4), active = false, softDeleted = true),
+        generateDisposal(FULL_PERSON_ID, LocalDate.of(2024, 8, 3), active = true, softDeleted = false)
     )
 
     fun generateReferenceData(
@@ -151,11 +182,12 @@ object PersonGenerator {
         ethnicityDescription: String? = null,
         religion: ReferenceData? = null,
         religionDescription: String? = null,
+        religionHistory: MutableList<ReligionHistory>? = null,
         exclusionMessage: String? = null,
         restrictionMessage: String? = null,
         sexualOrientation: ReferenceData? = null,
         softDeleted: Boolean = false,
-        id: Long = IdGenerator.getAndIncrement()
+        id: Long
     ) = Person(
         crn = crn,
         nomsId = nomsId,
@@ -184,6 +216,7 @@ object PersonGenerator {
         ethnicityDescription = ethnicityDescription,
         religion = religion,
         religionDescription = religionDescription,
+        religionHistory = religionHistory,
         sexualOrientation = sexualOrientation,
         exclusionMessage = exclusionMessage,
         restrictionMessage = restrictionMessage,

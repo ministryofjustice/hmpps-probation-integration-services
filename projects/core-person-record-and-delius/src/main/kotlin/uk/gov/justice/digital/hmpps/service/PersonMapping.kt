@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.service
 import uk.gov.justice.digital.hmpps.api.model.*
 import uk.gov.justice.digital.hmpps.api.model.Alias
 import uk.gov.justice.digital.hmpps.api.model.LimitedAccessUser
+import uk.gov.justice.digital.hmpps.api.model.ReligionHistory
 import uk.gov.justice.digital.hmpps.integration.delius.entity.*
 
 fun Person.detail(
@@ -27,6 +28,7 @@ fun Person.detail(
     ethnicityDescription = ethnicityDescription,
     religion = religion?.asCodeDescription(),
     religionDescription = religionDescription,
+    religionHistory = if (religionHistory!!.isNotEmpty()) religionHistory() else null,
     sexualOrientation = sexualOrientation?.asCodeDescription(),
     contactDetails = contactDetails(),
     aliases = aliases,
@@ -35,6 +37,15 @@ fun Person.detail(
     restrictedTo = restrictions,
     sentences = sentences,
 )
+
+fun Person.religionHistory(): List<ReligionHistory> = religionHistory?.map {
+    ReligionHistory(
+        code = it.code.toString(),
+        description = it.description,
+        startDate = it.startDate,
+        endDate = it.endDate,
+    )
+} ?: emptyList()
 
 fun Person.identifiers(additionalIdentifiers: List<Identifier>) =
     Identifiers(

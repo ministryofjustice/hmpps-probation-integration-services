@@ -115,6 +115,14 @@ internal class CorePersonIntegrationTest {
                         "code": "REL",
                         "description": "Description of REL"
                       },
+                      "religionHistory": [
+                        {
+                          "code": "1",
+                          "description": "JEDI",
+                          "startDate": "${LocalDate.now().minusDays(30)}",
+                          "endDate": "${LocalDate.now().minusDays(1)}"
+                        }
+                      ],
                       "religionDescription": "Self-described faith",
                       "sexualOrientation": {
                         "code": "SEO",
