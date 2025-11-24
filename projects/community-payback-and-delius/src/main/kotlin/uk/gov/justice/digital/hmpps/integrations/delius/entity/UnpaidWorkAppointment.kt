@@ -160,8 +160,6 @@ class UpwDetails(
     "projectId",
     "projectName",
     "projectCode",
-    "startTime",
-    "endTime",
     "appointmentDate",
     "allocatedCount",
     "outcomeCount",
@@ -171,8 +169,6 @@ interface UnpaidWorkSessionDto {
     val projectId: Long
     val projectName: String
     val projectCode: String
-    val startTime: LocalTime
-    val endTime: LocalTime
     val appointmentDate: LocalDate
     val allocatedCount: Long
     val outcomeCount: Long
@@ -232,8 +228,6 @@ interface UnpaidWorkAppointmentRepository : JpaRepository<UpwAppointment, Long> 
             select uwp.upw_project_id as "projectId",
                    uwp.upw_project_name as "projectName",
                    uwp.upw_project_code as "projectCode",
-                   uwa.start_time as "startTime",
-                   uwa.end_time as "endTime",
                    count(distinct uwa.upw_details_id) as "allocatedCount",
                    uwa.appointment_date as "appointmentDate",
                    count(distinct case when uwa.contact_outcome_type_id is not null then uwa.upw_appointment_id end) as "outcomeCount",
@@ -245,7 +239,7 @@ interface UnpaidWorkAppointmentRepository : JpaRepository<UpwAppointment, Long> 
                 left join "CONTACT" c on c.contact_id = uwa.contact_id
                 left join r_enforcement_action enf 
                        on enf.enforcement_action_id = c.latest_enforcement_action_id 
-            group by uwp.upw_project_id, uwp.upw_project_name, uwp.upw_project_code, uwa.start_time, uwa.end_time, uwa.appointment_date
+            group by uwp.upw_project_id, uwp.upw_project_name, uwp.upw_project_code, uwa.appointment_date
             order by uwa.appointment_date asc, uwp.upw_project_name
         """, nativeQuery = true
     )
