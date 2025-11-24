@@ -84,6 +84,7 @@ class AlertContactIntegrationTest : IntegrationTestBase() {
                     "X000004",
                     Name(forename = "Forename", middleName = "Middle1 Middle2", surname = "Surname"),
                     LocalDate.now().minusDays(1),
+                    response.content[0].startTime,
                     "Description of first alert",
                     listOf(),
                     null,
@@ -95,6 +96,7 @@ class AlertContactIntegrationTest : IntegrationTestBase() {
                     "X000004",
                     Name(forename = "Forename", middleName = "Middle1 Middle2", surname = "Surname"),
                     LocalDate.now().minusDays(2),
+                    response.content[1].startTime,
                     null,
                     listOf(NoteDetail(0, note = "Some notes about the other alert", hasNoteBeenTruncated = false)),
                     null,
@@ -110,6 +112,13 @@ class AlertContactIntegrationTest : IntegrationTestBase() {
             .andReturn().response.contentAsJson<UserAlert>()
 
         assertThat(noteResponse.alertNote).isEqualTo(NoteDetail(0, note = "Some notes about the other alert"))
+
+        val sortedByTypeDescription = mockMvc
+            .perform(MockMvcRequestBuilders.get("/alerts?sort=TYPE_DESCRIPTION,desc").withUserToken(user.username))
+            .andExpect(MockMvcResultMatchers.status().isOk)
+            .andReturn().response.contentAsJson<UserAlerts>()
+
+        assertThat(sortedByTypeDescription.content.map { it.type.description }).containsExactly("Non attendance contact type", "Breach Contact Type")
     }
 
     @Test
