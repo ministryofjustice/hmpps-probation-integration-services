@@ -31,6 +31,7 @@ class DataLoader(
             PersonGenerator.GENDER_IDENTITY,
             PersonGenerator.ETHNICITY,
             PersonGenerator.RELIGION,
+            PersonGenerator.RELIGION_HX,
             PersonGenerator.NATIONALITY,
             PersonGenerator.MAIN_ADDRESS,
             PersonGenerator.PREVIOUS_ADDRESS,

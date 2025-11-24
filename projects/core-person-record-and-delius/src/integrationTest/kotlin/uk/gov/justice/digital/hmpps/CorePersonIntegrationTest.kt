@@ -117,8 +117,8 @@ internal class CorePersonIntegrationTest {
                       },
                       "religionHistory": [
                         {
-                          "code": "1",
-                          "description": "JEDI",
+                          "code": "REL_HX",
+                          "description": "Description of REL_HX",
                           "startDate": "${LocalDate.now().minusDays(30)}",
                           "endDate": "${LocalDate.now().minusDays(1)}"
                         }

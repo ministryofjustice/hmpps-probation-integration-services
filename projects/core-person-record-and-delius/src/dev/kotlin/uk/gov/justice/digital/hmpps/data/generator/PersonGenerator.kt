@@ -10,6 +10,7 @@ object PersonGenerator {
     val MIN_PERSON_ID = IdGenerator.getAndIncrement()
     val ETHNICITY = generateReferenceData("ETH")
     val RELIGION = generateReferenceData("REL")
+    val RELIGION_HX = generateReferenceData("REL_HX")
     val GENDER = generateReferenceData("GEN")
     val GENDER_IDENTITY = generateReferenceData("GID")
     val NATIONALITY = generateReferenceData("NAT")
@@ -21,24 +22,21 @@ object PersonGenerator {
     val DRIVERS_LICENCE = generateReferenceData("DRL", "Drivers Licence")
     val RELIGION_HISTORY =
         generateReligionHistory(
-            FULL_PERSON_ID, 1, "JEDI", LocalDate.now().minusDays(30),
+            FULL_PERSON_ID, LocalDate.now().minusDays(30),
             LocalDate.now().minusDays(1)
         )
 
     private fun generateReligionHistory(
-        offenderId: Long,
-        code: Long,
-        description: String,
+        personId: Long,
         startDate: LocalDate,
         endDate: LocalDate
     ) =
         ReligionHistory(
             IdGenerator.getAndIncrement(),
-            offenderId = offenderId,
-            code,
-            description = description,
+            personId = personId,
             startDate = startDate,
-            endDate = endDate
+            endDate = endDate,
+            referenceData = RELIGION_HX
         )
 
     val MIN_PERSON =

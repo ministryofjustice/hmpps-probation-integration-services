@@ -1,9 +1,6 @@
 package uk.gov.justice.digital.hmpps.integration.delius.entity
 
-import jakarta.persistence.Column
-import jakarta.persistence.Entity
-import jakarta.persistence.Id
-import jakarta.persistence.Table
+import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import java.time.LocalDate
 
@@ -16,17 +13,15 @@ class ReligionHistory(
     val id: Long = 0,
 
     @Column(name = "offender_id")
-    val offenderId: Long = 0,
+    val personId: Long = 0,
 
-    @Column(name = "religion_id")
-    val code: Long = 0,
-
-    @Column(name = "religion_description")
-    val description: String = "",
+    @ManyToOne
+    @JoinColumn(name = "religion_id")
+    val referenceData: ReferenceData? = null,
 
     @Column(name = "start_date")
-    val startDate: LocalDate = LocalDate.MIN,
+    val startDate: LocalDate,
 
     @Column(name = "end_date")
-    val endDate: LocalDate = LocalDate.MIN
+    val endDate: LocalDate? = null
 )

@@ -40,8 +40,8 @@ fun Person.detail(
 
 fun Person.religionHistory(): List<ReligionHistory> = religionHistory?.map {
     ReligionHistory(
-        code = it.code.toString(),
-        description = it.description,
+        code = it.referenceData!!.code,
+        description = it.referenceData.description,
         startDate = it.startDate,
         endDate = it.endDate,
     )
