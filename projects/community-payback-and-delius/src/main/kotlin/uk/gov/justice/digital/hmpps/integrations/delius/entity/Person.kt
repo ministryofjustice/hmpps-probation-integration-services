@@ -4,6 +4,7 @@ import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.type.NumericBooleanConverter
 import org.springframework.data.jpa.repository.JpaRepository
+import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import java.time.LocalDate
 
 @Entity
@@ -74,3 +75,10 @@ class PersonManager(
 interface PersonManagerRepository : JpaRepository<PersonManager, Long> {
     fun findByPersonIdAndActiveIsTrueAndSoftDeletedIsFalse(personId: Long): PersonManager?
 }
+
+fun PersonManagerRepository.getActiveManagerForPerson(personId: Long) =
+    findByPersonIdAndActiveIsTrueAndSoftDeletedIsFalse(personId) ?: throw NotFoundException(
+        "PersonManager",
+        "personId",
+        personId
+    )

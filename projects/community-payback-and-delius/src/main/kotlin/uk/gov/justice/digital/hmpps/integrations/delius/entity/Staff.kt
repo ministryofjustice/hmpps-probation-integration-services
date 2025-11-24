@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.integrations.delius.entity
 import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.springframework.data.jpa.repository.JpaRepository
+import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.model.CodeDescription
 import uk.gov.justice.digital.hmpps.model.Name
 import uk.gov.justice.digital.hmpps.model.Supervisor
@@ -62,3 +63,6 @@ fun Staff.toSupervisor() = Supervisor(
 interface StaffRepository : JpaRepository<Staff, Long> {
     fun findStaffByCode(code: String): Staff?
 }
+
+fun StaffRepository.getStaff(code: String): Staff =
+    findStaffByCode(code) ?: throw NotFoundException("Staff", "code", code)

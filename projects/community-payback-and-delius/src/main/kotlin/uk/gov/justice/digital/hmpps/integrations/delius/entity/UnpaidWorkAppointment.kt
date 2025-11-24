@@ -9,6 +9,7 @@ import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedDate
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
+import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.model.AppointmentResponseCase
 import uk.gov.justice.digital.hmpps.model.AppointmentResponseName
 import uk.gov.justice.digital.hmpps.model.CodeDescription
@@ -80,11 +81,11 @@ class UpwAppointment(
 
     @Convert(converter = YesNoConverter::class)
     @Column(name = "high_visibility_vest")
-    var hiVisWorn: Boolean,
+    var hiVisWorn: Boolean?,
 
     @Convert(converter = YesNoConverter::class)
     @Column(name = "intensive")
-    var workedIntensively: Boolean,
+    var workedIntensively: Boolean?,
 
     @ManyToOne
     @JoinColumn(name = "work_quality_id")
@@ -121,28 +122,6 @@ fun UpwAppointment.toAppointmentResponseCase(
     currentRestriction = limitedAccess.userRestricted,
     restrictionMessage = limitedAccess.restrictionMessage,
 )
-
-enum class WorkQuality(val value: String) {
-    EX("EXCELLENT"), GD("GOOD"), NA("NOT_APPLICABLE"), PR("POOR"),
-    ST("SATISFACTORY"), US("UNSATISFACTORY");
-
-    companion object {
-        fun of(value: String): WorkQuality? = WorkQuality.entries.firstOrNull {
-            it.value.equals(value, true)
-        }
-    }
-}
-
-enum class Behaviour(val value: String) {
-    EX("EXCELLENT"), GD("GOOD"), NA("NOT_APPLICABLE"), PR("POOR"),
-    SA("SATISFACTORY"), UN("UNSATISFACTORY");
-
-    companion object {
-        fun of(value: String): Behaviour? = Behaviour.entries.firstOrNull {
-            it.value.equals(value, true)
-        }
-    }
-}
 
 @Entity
 @Table(name = "upw_details")
@@ -280,3 +259,6 @@ interface UnpaidWorkAppointmentRepository : JpaRepository<UpwAppointment, Long> 
     )
     fun getUpwRequiredAndCompletedMinutes(upwDetailsId: Long): UpwMinutesDto
 }
+
+fun UnpaidWorkAppointmentRepository.getAppointment(id: Long) =
+    getUpwAppointmentById(id) ?: throw NotFoundException("Unpaid Work Appointment", "id", id)
