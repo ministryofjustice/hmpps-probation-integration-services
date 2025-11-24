@@ -4,6 +4,7 @@ import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.type.YesNoConverter
 import org.springframework.data.jpa.repository.JpaRepository
+import uk.gov.justice.digital.hmpps.exception.NotFoundException
 
 @Entity
 @Table(name = "r_enforcement_action")
@@ -32,3 +33,6 @@ class EnforcementAction(
 interface EnforcementActionRepository : JpaRepository<EnforcementAction, Long> {
     fun findEnforcementActionByCode(code: String): EnforcementAction?
 }
+
+fun EnforcementActionRepository.getEnforcementAction(code: String) =
+    findEnforcementActionByCode(code) ?: throw NotFoundException("Enforcement Action", "code", code)

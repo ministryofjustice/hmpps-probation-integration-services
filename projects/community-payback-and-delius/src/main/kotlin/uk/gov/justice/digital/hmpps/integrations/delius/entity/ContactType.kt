@@ -5,6 +5,7 @@ import org.hibernate.annotations.Immutable
 import org.hibernate.type.YesNoConverter
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
+import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.model.CodeDescription
 import java.io.Serializable
 
@@ -84,3 +85,6 @@ interface ContactOutcomeRepository : JpaRepository<ContactOutcome, Long> {
 
     fun findContactOutcomeByCode(code: String): ContactOutcome?
 }
+
+fun ContactOutcomeRepository.getContactOutcome(code: String) =
+    findContactOutcomeByCode(code) ?: throw NotFoundException("Contact Outcome", "code", code)
