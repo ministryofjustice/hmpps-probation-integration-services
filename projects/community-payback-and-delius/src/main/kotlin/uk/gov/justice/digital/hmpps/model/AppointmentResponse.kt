@@ -101,5 +101,5 @@ data class AppointmentResponsePickupData(
 data class AppointmentResponseEnforcementAction(
     val code: String,
     val description: String,
-    val respondBy: LocalDate
+    val respondBy: LocalDate?
 )

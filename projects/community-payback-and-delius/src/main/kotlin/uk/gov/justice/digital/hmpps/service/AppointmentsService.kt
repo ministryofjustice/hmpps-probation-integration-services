@@ -72,11 +72,11 @@ class AppointmentsService(
             endTime = appointment.endTime,
             penaltyHours = penaltyTimeToHHmm(appointment.penaltyTime),
             outcome = appointment.contact.contactOutcome?.toCodeDescription(),
-            enforcementAction = appointment.contact.latestEnforcementAction?.let {
+            enforcementAction = appointment.contact.latestEnforcementAction?.let { enforcementAction ->
                 AppointmentResponseEnforcementAction(
-                    appointment.contact.latestEnforcementAction.code,
-                    appointment.contact.latestEnforcementAction.description,
-                    appointment.appointmentDate.plusDays(appointment.contact.latestEnforcementAction.responseByPeriod)
+                    code = enforcementAction.code,
+                    description = enforcementAction.description,
+                    respondBy = enforcementAction.responseByPeriod?.let { appointment.appointmentDate.plusDays(it) }
                 )
             },
             hiVisWorn = appointment.hiVisWorn,
@@ -187,7 +187,7 @@ class AppointmentsService(
                 Enforcement(
                     contact = contact,
                     enforcementAction = enforcementAction,
-                    responseDate = enforcementAction.responseByPeriod.let { LocalDate.now().plusDays(it) }
+                    responseDate = enforcementAction.responseByPeriod?.let { LocalDate.now().plusDays(it) }
                 )
             )
 
