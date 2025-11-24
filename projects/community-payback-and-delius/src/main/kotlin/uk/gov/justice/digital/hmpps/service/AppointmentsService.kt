@@ -28,10 +28,8 @@ class AppointmentsService(
     fun getAppointment(projectCode: String, appointmentId: Long, username: String): AppointmentResponse {
         val project = unpaidWorkProjectRepository.getUpwProjectByCode(projectCode)
         val appointment = unpaidWorkAppointmentRepository.getAppointment(appointmentId)
-        val limitedAccessDetails = userAccessService.caseAccessFor(username, appointment.person.crn)
-        val case = appointment.toAppointmentResponseCase(
-            limitedAccess = limitedAccessDetails
-        )
+        val limitedAccess = userAccessService.caseAccessFor(username, appointment.person.crn)
+        val case = appointment.toAppointmentResponseCase(limitedAccess)
 
         return AppointmentResponse(
             id = appointmentId,
@@ -67,7 +65,7 @@ class AppointmentsService(
                 location = appointment.pickUpLocation.toAppointmentResponseAddress(),
                 time = appointment.pickUpTime
             ),
-            date = appointment.appointmentDate,
+            date = appointment.date,
             startTime = appointment.startTime,
             endTime = appointment.endTime,
             penaltyHours = penaltyTimeToHHmm(appointment.penaltyTime),
@@ -76,7 +74,7 @@ class AppointmentsService(
                 AppointmentResponseEnforcementAction(
                     code = enforcementAction.code,
                     description = enforcementAction.description,
-                    respondBy = enforcementAction.responseByPeriod?.let { appointment.appointmentDate.plusDays(it) }
+                    respondBy = enforcementAction.responseByPeriod?.let { appointment.date.plusDays(it) }
                 )
             },
             hiVisWorn = appointment.hiVisWorn,
@@ -96,17 +94,20 @@ class AppointmentsService(
         username: String
     ): SessionResponse {
         val project = unpaidWorkProjectRepository.getUpwProjectByCode(projectCode)
-        val appointments = unpaidWorkAppointmentRepository.getUpwAppointmentsByAppointmentDate(date)
+        val appointments =
+            unpaidWorkAppointmentRepository.findByDateAndProjectCodeAndDetailsSoftDeletedFalse(date, project.code)
+        val upwDetailsIds = appointments.map { it.details.id }.distinct()
+        val minutes = unpaidWorkAppointmentRepository.getUpwRequiredAndCompletedMinutes(upwDetailsIds)
+            .associateBy { it.id }.mapValues { (_, v) -> v.toModel() }
 
         val appointmentSummaries = appointments.map {
-            val minutes = unpaidWorkAppointmentRepository.getUpwRequiredAndCompletedMinutes(it.upwDetailsId).toModel()
             val limitedAccess = userAccessService.caseAccessFor(username, it.person.crn)
 
             SessionResponseAppointmentSummary(
                 id = it.id,
                 case = it.toAppointmentResponseCase(limitedAccess),
                 outcome = it.contact.contactOutcome?.toCodeDescription(),
-                requirementProgress = minutes,
+                requirementProgress = checkNotNull(minutes[it.details.id])
             )
         }
 
@@ -136,7 +137,7 @@ class AppointmentsService(
 
         require(
             request.outcome != null ||
-                LocalDateTime.of(appointment.appointmentDate, request.endTime) > LocalDateTime.now()
+                LocalDateTime.of(appointment.date, request.endTime) > LocalDateTime.now()
         ) {
             "Appointments in the past require an outcome"
         }

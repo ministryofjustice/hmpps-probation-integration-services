@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.integrations.delius.entity
 import com.fasterxml.jackson.annotation.JsonPropertyOrder
 import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
+import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.NumericBooleanConverter
 import org.hibernate.type.YesNoConverter
 import org.springframework.data.annotation.CreatedDate
@@ -20,6 +21,7 @@ import java.time.ZonedDateTime
 
 @Entity
 @Table(name = "upw_appointment")
+@SQLRestriction("soft_deleted = 0")
 class UpwAppointment(
     @Id
     @SequenceGenerator(
@@ -47,11 +49,16 @@ class UpwAppointment(
 
     var endTime: LocalTime,
 
-    val appointmentDate: LocalDate,
+    @Column(name = "appointment_date")
+    val date: LocalDate,
 
-    val upwProjectId: Long,
+    @ManyToOne
+    @JoinColumn(name = "upw_project_id")
+    val project: UpwProject,
 
-    val upwDetailsId: Long,
+    @ManyToOne
+    @JoinColumn(name = "upw_details_id")
+    val details: UpwDetails,
 
     @ManyToOne
     @JoinColumn(name = "pick_up_location_id")
@@ -124,8 +131,8 @@ fun UpwAppointment.toAppointmentResponseCase(
 )
 
 @Entity
-@Table(name = "upw_details")
 @Immutable
+@SQLRestriction("soft_deleted = 0")
 class UpwDetails(
     @Id
     @Column(name = "upw_details_id")
@@ -174,6 +181,7 @@ data class UnpaidWorkSession(
 )
 
 interface UpwMinutesDto {
+    val id: Long
     val requiredMinutes: Long
     val completedMinutes: Long
 
@@ -229,13 +237,15 @@ interface UnpaidWorkAppointmentRepository : JpaRepository<UpwAppointment, Long> 
 
     fun getUpwAppointmentById(appointmentId: Long): UpwAppointment?
 
-    fun getUpwAppointmentsByAppointmentDate(
-        appointmentDate: LocalDate
+    fun findByDateAndProjectCodeAndDetailsSoftDeletedFalse(
+        appointmentDate: LocalDate,
+        projectCode: String
     ): List<UpwAppointment>
 
     @Query(
         """
         select
+            upw_details.upw_details_id as "id",
             case
                 when r_disposal_type.pre_cja2003 = 'Y' then disposal.length * 60
                 else coalesce(
@@ -254,10 +264,10 @@ interface UnpaidWorkAppointmentRepository : JpaRepository<UpwAppointment, Long> 
         join r_disposal_type
              on r_disposal_type.disposal_type_id = disposal.disposal_type_id
         where upw_details.soft_deleted = 0
-          and upw_details.upw_details_id = :upwDetailsId
+          and upw_details.upw_details_id in :upwDetailsId
     """, nativeQuery = true
     )
-    fun getUpwRequiredAndCompletedMinutes(upwDetailsId: Long): UpwMinutesDto
+    fun getUpwRequiredAndCompletedMinutes(upwDetailsId: List<Long>): List<UpwMinutesDto>
 }
 
 fun UnpaidWorkAppointmentRepository.getAppointment(id: Long) =
