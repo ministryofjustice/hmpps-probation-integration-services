@@ -46,6 +46,7 @@ class DataLoader(
             *PersonGenerator.FULL_PERSON_RESTRICTIONS.map { it.user }.toTypedArray(),
             *PersonGenerator.FULL_PERSON_RESTRICTIONS.toTypedArray(),
             *PersonGenerator.FULL_PERSON_IDENTIFIERS.toTypedArray(),
+            *PersonGenerator.FULL_PERSON_RELIGION_HISTORY.toTypedArray(),
             *PersonGenerator.SENTENCES.toTypedArray()
         )
     }

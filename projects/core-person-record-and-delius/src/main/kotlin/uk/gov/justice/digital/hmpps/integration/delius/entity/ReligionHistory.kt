@@ -2,6 +2,8 @@ package uk.gov.justice.digital.hmpps.integration.delius.entity
 
 import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
+import org.springframework.data.jpa.repository.EntityGraph
+import org.springframework.data.jpa.repository.JpaRepository
 import java.time.LocalDate
 
 @Immutable
@@ -25,3 +27,10 @@ class ReligionHistory(
     @Column(name = "end_date")
     val endDate: LocalDate? = null
 )
+
+interface religionHistoryRepository : JpaRepository<ReligionHistory, Long> {
+    @EntityGraph(attributePaths = ["referenceData"])
+    fun findAllByPersonId(
+        personId: Long
+    ): List<ReligionHistory>
+}

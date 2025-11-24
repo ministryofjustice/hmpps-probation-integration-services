@@ -75,7 +75,6 @@ object PersonGenerator {
         ethnicityDescription = "Self-described ethnicity",
         religion = RELIGION,
         religionDescription = "Self-described faith",
-        religionHistory = mutableListOf(RELIGION_HISTORY),
         sexualOrientation = SEXUAL_ORIENTATION,
         exclusionMessage = "This case is excluded because ...",
         restrictionMessage = "This case is restricted because ...",
@@ -93,6 +92,8 @@ object PersonGenerator {
             gender = GENDER
         )
     )
+
+    val FULL_PERSON_RELIGION_HISTORY = listOf(RELIGION_HISTORY)
 
     val FULL_PERSON_ADDRESSES = listOf(
         generateAddress(
@@ -180,7 +181,6 @@ object PersonGenerator {
         ethnicityDescription: String? = null,
         religion: ReferenceData? = null,
         religionDescription: String? = null,
-        religionHistory: MutableList<ReligionHistory>? = null,
         exclusionMessage: String? = null,
         restrictionMessage: String? = null,
         sexualOrientation: ReferenceData? = null,
@@ -214,7 +214,6 @@ object PersonGenerator {
         ethnicityDescription = ethnicityDescription,
         religion = religion,
         religionDescription = religionDescription,
-        religionHistory = religionHistory,
         sexualOrientation = sexualOrientation,
         exclusionMessage = exclusionMessage,
         restrictionMessage = restrictionMessage,

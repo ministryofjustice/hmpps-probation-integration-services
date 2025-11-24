@@ -100,10 +100,6 @@ data class Person(
     @JoinColumn(name = "sexual_orientation_id")
     val sexualOrientation: ReferenceData?,
 
-    @OneToMany(cascade = [CascadeType.ALL], fetch = FetchType.LAZY)
-    @JoinColumn(name = "offender_id")
-    val religionHistory: MutableList<ReligionHistory>?,
-
     val exclusionMessage: String?,
     val restrictionMessage: String?,
 

@@ -17,7 +17,7 @@ data class PersonDetail(
     val ethnicityDescription: String?,
     val religion: CodeDescription?,
     val religionDescription: String?,
-    val religionHistory: List<ReligionHistory>?,
+    val religionHistory: List<ReligionHistory>? = null,
     val sexualOrientation: CodeDescription?,
     val contactDetails: ContactDetails?,
     val aliases: List<Alias>,

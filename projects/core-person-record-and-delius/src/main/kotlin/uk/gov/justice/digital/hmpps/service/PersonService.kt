@@ -14,7 +14,8 @@ class PersonService(
     private val addressRepository: AddressRepository,
     private val exclusionRepository: ExclusionRepository,
     private val restrictionRepository: RestrictionRepository,
-    private val disposalRepository: DisposalRepository
+    private val disposalRepository: DisposalRepository,
+    private val religionHistoryRepository: religionHistoryRepository
 ) {
     fun getPersonDetail(crn: String): PersonDetail = personRepository.getByCrn(crn).withDetail()
 
@@ -30,5 +31,7 @@ class PersonService(
         restrictions = restrictionRepository.findByPersonId(id).restrictionsAsLimitedAccess(restrictionMessage),
         sentences = disposalRepository.findByPersonId(id).map(Disposal::asModel),
         additionalIdentifiers = additionalIdentifierRepository.findByPersonId(id).map(AdditionalIdentifier::asModel),
+        religionHistory = religionHistoryRepository.findAllByPersonId(id).map(ReligionHistory::asModel)
+            .takeIf { it.isNotEmpty() }
     )
 }

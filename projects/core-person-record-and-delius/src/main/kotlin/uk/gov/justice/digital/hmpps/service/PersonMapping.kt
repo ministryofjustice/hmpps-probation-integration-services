@@ -13,6 +13,7 @@ fun Person.detail(
     restrictions: LimitedAccess? = null,
     sentences: List<Sentence>,
     additionalIdentifiers: List<Identifier>,
+    religionHistory: List<ReligionHistory>? = null,
 ) = PersonDetail(
     identifiers = identifiers(additionalIdentifiers),
     name = name(),
@@ -28,7 +29,6 @@ fun Person.detail(
     ethnicityDescription = ethnicityDescription,
     religion = religion?.asCodeDescription(),
     religionDescription = religionDescription,
-    religionHistory = if (religionHistory!!.isNotEmpty()) religionHistory() else null,
     sexualOrientation = sexualOrientation?.asCodeDescription(),
     contactDetails = contactDetails(),
     aliases = aliases,
@@ -36,16 +36,8 @@ fun Person.detail(
     excludedFrom = exclusions,
     restrictedTo = restrictions,
     sentences = sentences,
+    religionHistory = religionHistory,
 )
-
-fun Person.religionHistory(): List<ReligionHistory> = religionHistory?.map {
-    ReligionHistory(
-        code = it.referenceData!!.code,
-        description = it.referenceData.description,
-        startDate = it.startDate,
-        endDate = it.endDate,
-    )
-} ?: emptyList()
 
 fun Person.identifiers(additionalIdentifiers: List<Identifier>) =
     Identifiers(
@@ -67,6 +59,13 @@ fun Person.name() =
         previousSurname,
         preferredName
     )
+
+fun uk.gov.justice.digital.hmpps.integration.delius.entity.ReligionHistory.asModel() = ReligionHistory(
+    code = referenceData!!.code,
+    description = referenceData.description,
+    startDate = startDate,
+    endDate = endDate,
+)
 
 fun Person.contactDetails() = ContactDetails.of(telephoneNumber, mobileNumber, emailAddress)
 
