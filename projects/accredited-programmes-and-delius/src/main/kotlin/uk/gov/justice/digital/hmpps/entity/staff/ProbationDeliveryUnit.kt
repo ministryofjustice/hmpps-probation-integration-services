@@ -23,7 +23,8 @@ class ProbationDeliveryUnit(
     @Convert(converter = YesNoConverter::class)
     val selectable: Boolean,
 
-    val functional: Char
+    @Convert(converter = YesNoConverter::class)
+    val functional: Boolean
 ) {
     fun toCodedValue() = CodedValue(code, description)
 }
