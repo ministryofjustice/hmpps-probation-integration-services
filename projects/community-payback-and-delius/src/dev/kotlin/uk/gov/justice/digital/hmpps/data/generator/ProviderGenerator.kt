@@ -14,5 +14,4 @@ object ProviderGenerator {
         description: String,
         selectable: Boolean = true
     ) = Provider(id, code, description, selectable)
-
 }
