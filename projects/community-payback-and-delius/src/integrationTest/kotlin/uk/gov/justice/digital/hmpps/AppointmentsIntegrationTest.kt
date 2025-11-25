@@ -1,6 +1,5 @@
 package uk.gov.justice.digital.hmpps
 
-import com.github.tomakehurst.wiremock.WireMockServer
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -11,6 +10,7 @@ import org.springframework.test.web.servlet.get
 import org.springframework.test.web.servlet.put
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import uk.gov.justice.digital.hmpps.advice.ErrorResponse
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator
 import uk.gov.justice.digital.hmpps.data.generator.UPWGenerator
@@ -32,9 +32,6 @@ class AppointmentsIntegrationTest {
     lateinit var mockMvc: MockMvc
 
     @Autowired
-    internal lateinit var wireMockServer: WireMockServer
-
-    @Autowired
     lateinit var unpaidWorkAppointmentRepository: UnpaidWorkAppointmentRepository
 
     @Autowired
@@ -42,6 +39,15 @@ class AppointmentsIntegrationTest {
 
     @Autowired
     lateinit var enforcementRepository: EnforcementRepository
+
+    @Test
+    fun `non-existent project returns 404`() {
+        mockMvc.get("/projects/DOESNOTEXIST/appointments/123?username=DefaultUser") { withToken() }
+            .andExpect { status { isNotFound() } }
+            .andReturn().response.contentAsJson<ErrorResponse>().also {
+                assertThat(it.message).contains("Project with code of DOESNOTEXIST not found")
+            }
+    }
 
     @Test
     fun `can retrieve appointment details`() {
