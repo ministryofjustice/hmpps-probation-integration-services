@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps
 
 import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions.within
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
@@ -23,6 +24,7 @@ import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.json
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 import java.time.LocalDate
 import java.time.LocalTime
+import java.time.temporal.ChronoUnit.SECONDS
 import java.util.*
 
 @AutoConfigureMockMvc
@@ -113,6 +115,7 @@ class AppointmentsIntegrationTest {
         assertThat(appointment).isNotNull
         assertThat(appointment!!.startTime).isEqualTo(LocalTime.of(11, 0))
         assertThat(appointment.endTime).isEqualTo(LocalTime.of(15, 0))
+        assertThat(appointment.lastUpdatedDatetime).isCloseTo(appointment.lastUpdatedDatetime, within(1, SECONDS))
     }
 
     @Test
