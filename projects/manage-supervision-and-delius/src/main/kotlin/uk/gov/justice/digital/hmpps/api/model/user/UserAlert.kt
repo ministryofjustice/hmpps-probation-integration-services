@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.api.model.user
 import uk.gov.justice.digital.hmpps.api.model.Name
 import uk.gov.justice.digital.hmpps.api.model.sentence.NoteDetail
 import java.time.LocalDate
+import java.time.LocalTime
 
 data class UserAlert(
     val id: Long,
@@ -10,6 +11,7 @@ data class UserAlert(
     val crn: String,
     val name: Name,
     val date: LocalDate,
+    val startTime: LocalTime,
     val description: String?,
     val alertNotes: List<NoteDetail>,
     val alertNote: NoteDetail?,
