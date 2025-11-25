@@ -5,12 +5,13 @@ import uk.gov.justice.digital.hmpps.integration.delius.entity.*
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.ZonedDateTime
+import java.time.temporal.ChronoUnit
 
 object PersonGenerator {
     val FULL_PERSON_ID = IdGenerator.getAndIncrement()
     val MIN_PERSON_ID = IdGenerator.getAndIncrement()
     val UPDATER_USER_ID = IdGenerator.getAndIncrement()
-    val UPDATED_ZONED_DATETIME = ZonedDateTime.now().minusDays(1)
+    val UPDATED_ZONED_DATETIME = ZonedDateTime.now().minusDays(1).truncatedTo(ChronoUnit.SECONDS)
     val RELIGION_HISTORY_UPDATER = generateUpdaterUser(UPDATER_USER_ID, "User1")
     val ETHNICITY = generateReferenceData("ETH")
     val RELIGION = generateReferenceData("REL")
