@@ -54,7 +54,7 @@ object PersonGenerator {
             endDate = endDate,
             referenceData = RELIGION_HX,
             lastUpdatedBy = RELIGION_HISTORY_UPDATER,
-            lastUpdatedDatetime = UPDATED_ZONED_DATETIME
+            lastUpdatedAt = UPDATED_ZONED_DATETIME
         )
 
     private fun generateReligionHistory(
@@ -70,7 +70,7 @@ object PersonGenerator {
             endDate = endDate,
             religionDescription = religionDescription,
             lastUpdatedBy = RELIGION_HISTORY_UPDATER,
-            lastUpdatedDatetime = UPDATED_ZONED_DATETIME
+            lastUpdatedAt = UPDATED_ZONED_DATETIME
         )
 
     val MIN_PERSON =

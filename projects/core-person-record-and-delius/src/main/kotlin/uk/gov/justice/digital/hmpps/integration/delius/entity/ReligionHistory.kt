@@ -36,7 +36,7 @@ class ReligionHistory(
     val lastUpdatedBy: User,
 
     @Column(name = "last_updated_datetime")
-    val lastUpdatedDatetime: ZonedDateTime
+    val lastUpdatedAt: ZonedDateTime
 )
 
 interface ReligionHistoryRepository : JpaRepository<ReligionHistory, Long> {

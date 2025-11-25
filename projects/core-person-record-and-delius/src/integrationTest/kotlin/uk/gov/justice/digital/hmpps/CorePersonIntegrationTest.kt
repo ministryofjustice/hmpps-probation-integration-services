@@ -123,7 +123,7 @@ internal class CorePersonIntegrationTest {
                           "startDate": "${LocalDate.now().minusDays(30)}",
                           "endDate": "${LocalDate.now().minusDays(10)}",
                           "lastUpdatedBy": "User1",
-                          "lastUpdatedDatetime": "${PersonGenerator.UPDATED_ZONED_DATETIME.toLocalDateTime()}Z"
+                          "lastUpdatedAt": "${PersonGenerator.UPDATED_ZONED_DATETIME.toLocalDateTime()}Z"
                           
                         },
                         {
@@ -131,7 +131,7 @@ internal class CorePersonIntegrationTest {
                           "startDate": "${LocalDate.now().minusDays(10)}",
                           "endDate": "${LocalDate.now().minusDays(1)}",
                           "lastUpdatedBy": "User1",
-                          "lastUpdatedDatetime": "${PersonGenerator.UPDATED_ZONED_DATETIME.toLocalDateTime()}Z"
+                          "lastUpdatedAt": "${PersonGenerator.UPDATED_ZONED_DATETIME.toLocalDateTime()}Z"
                         }
                       ],
                       "religionDescription": "Self-described faith",

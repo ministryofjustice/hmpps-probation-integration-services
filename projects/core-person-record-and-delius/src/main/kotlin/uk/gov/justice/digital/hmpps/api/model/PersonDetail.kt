@@ -71,7 +71,7 @@ data class ReligionHistory(
     val startDate: LocalDate,
     val endDate: LocalDate?,
     val lastUpdatedBy: String,
-    val lastUpdatedDatetime: ZonedDateTime,
+    val lastUpdatedAt: ZonedDateTime,
 )
 
 data class Alias(val name: Name, val dateOfBirth: LocalDate, val gender: CodeDescription?)
