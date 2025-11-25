@@ -26,7 +26,7 @@ class AppointmentsService(
     private val userAccessService: UserAccessService
 ) {
     fun getAppointment(projectCode: String, appointmentId: Long, username: String): AppointmentResponse {
-        val project = unpaidWorkProjectRepository.getUpwProjectByCode(projectCode)
+        val project = unpaidWorkProjectRepository.getByCode(projectCode)
         val appointment = unpaidWorkAppointmentRepository.getAppointment(appointmentId)
         val limitedAccess = userAccessService.caseAccessFor(username, appointment.person.crn)
         val case = appointment.toAppointmentResponseCase(limitedAccess)
@@ -93,7 +93,7 @@ class AppointmentsService(
         date: LocalDate,
         username: String
     ): SessionResponse {
-        val project = unpaidWorkProjectRepository.getUpwProjectByCode(projectCode)
+        val project = unpaidWorkProjectRepository.getByCode(projectCode)
         val appointments =
             unpaidWorkAppointmentRepository.findByDateAndProjectCodeAndDetailsSoftDeletedFalse(date, project.code)
         val upwDetailsIds = appointments.map { it.details.id }.distinct()
