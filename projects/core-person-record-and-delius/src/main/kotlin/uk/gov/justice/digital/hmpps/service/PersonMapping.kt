@@ -65,6 +65,8 @@ fun uk.gov.justice.digital.hmpps.integration.delius.entity.ReligionHistory.asMod
     description = referenceData?.description ?: religionDescription,
     startDate = startDate,
     endDate = endDate,
+    lastUpdatedBy = lastUpdatedBy.distinguishedName,
+    lastUpdatedDatetime = lastUpdatedDatetime,
 )
 
 fun Person.contactDetails() = ContactDetails.of(telephoneNumber, mobileNumber, emailAddress)

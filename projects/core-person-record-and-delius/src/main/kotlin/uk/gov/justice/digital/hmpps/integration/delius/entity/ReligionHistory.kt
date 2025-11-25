@@ -5,6 +5,7 @@ import org.hibernate.annotations.Immutable
 import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
 import java.time.LocalDate
+import java.time.ZonedDateTime
 
 @Immutable
 @Entity
@@ -28,7 +29,14 @@ class ReligionHistory(
     val startDate: LocalDate,
 
     @Column(name = "end_date")
-    val endDate: LocalDate? = null
+    val endDate: LocalDate? = null,
+
+    @ManyToOne
+    @JoinColumn(name = "last_updated_user_id")
+    val lastUpdatedBy: User,
+
+    @Column(name = "last_updated_datetime")
+    val lastUpdatedDatetime: ZonedDateTime
 )
 
 interface ReligionHistoryRepository : JpaRepository<ReligionHistory, Long> {

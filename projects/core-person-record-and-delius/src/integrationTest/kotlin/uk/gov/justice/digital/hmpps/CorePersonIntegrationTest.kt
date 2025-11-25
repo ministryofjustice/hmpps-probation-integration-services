@@ -121,12 +121,17 @@ internal class CorePersonIntegrationTest {
                           "code": "REL_HX",
                           "description": "Description of REL_HX",
                           "startDate": "${LocalDate.now().minusDays(30)}",
-                          "endDate": "${LocalDate.now().minusDays(10)}"
+                          "endDate": "${LocalDate.now().minusDays(10)}",
+                          "lastUpdatedBy": "User1",
+                          "lastUpdatedDatetime": "${PersonGenerator.UPDATED_ZONED_DATETIME.toLocalDateTime()}Z"
+                          
                         },
                         {
                           "description": "Self-described religion",
                           "startDate": "${LocalDate.now().minusDays(10)}",
-                          "endDate": "${LocalDate.now().minusDays(1)}"
+                          "endDate": "${LocalDate.now().minusDays(1)}",
+                          "lastUpdatedBy": "User1",
+                          "lastUpdatedDatetime": "${PersonGenerator.UPDATED_ZONED_DATETIME.toLocalDateTime()}Z"
                         }
                       ],
                       "religionDescription": "Self-described faith",

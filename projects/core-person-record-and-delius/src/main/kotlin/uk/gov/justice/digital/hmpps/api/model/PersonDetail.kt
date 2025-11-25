@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.api.model
 
 import java.time.LocalDate
+import java.time.ZonedDateTime
 
 data class PersonDetail(
     val identifiers: Identifiers,
@@ -68,7 +69,9 @@ data class ReligionHistory(
     val code: String?,
     val description: String?,
     val startDate: LocalDate,
-    val endDate: LocalDate?
+    val endDate: LocalDate?,
+    val lastUpdatedBy: String,
+    val lastUpdatedDatetime: ZonedDateTime,
 )
 
 data class Alias(val name: Name, val dateOfBirth: LocalDate, val gender: CodeDescription?)

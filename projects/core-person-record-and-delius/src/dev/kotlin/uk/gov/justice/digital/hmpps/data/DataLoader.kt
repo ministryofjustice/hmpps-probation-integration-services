@@ -26,6 +26,7 @@ class DataLoader(
     @Transactional
     override fun onApplicationEvent(are: ApplicationReadyEvent) {
         saveAll(
+            PersonGenerator.RELIGION_HISTORY_UPDATER,
             PersonGenerator.TITLE,
             PersonGenerator.GENDER,
             PersonGenerator.GENDER_IDENTITY,

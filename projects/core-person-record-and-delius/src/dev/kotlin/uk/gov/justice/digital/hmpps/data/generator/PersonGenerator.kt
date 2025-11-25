@@ -4,10 +4,14 @@ import uk.gov.justice.digital.hmpps.data.generator.IdGenerator.id
 import uk.gov.justice.digital.hmpps.integration.delius.entity.*
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.ZonedDateTime
 
 object PersonGenerator {
     val FULL_PERSON_ID = IdGenerator.getAndIncrement()
     val MIN_PERSON_ID = IdGenerator.getAndIncrement()
+    val UPDATER_USER_ID = IdGenerator.getAndIncrement()
+    val UPDATED_ZONED_DATETIME = ZonedDateTime.now().minusDays(1)
+    val RELIGION_HISTORY_UPDATER = generateUpdaterUser(UPDATER_USER_ID, "User1")
     val ETHNICITY = generateReferenceData("ETH")
     val RELIGION = generateReferenceData("REL")
     val RELIGION_HX = generateReferenceData("REL_HX")
@@ -28,7 +32,13 @@ object PersonGenerator {
     val SELF_DESCRIBED_RELIGION_HISTORY =
         generateReligionHistory(
             FULL_PERSON_ID, "Self-described religion", LocalDate.now().minusDays(10),
-            LocalDate.now().minusDays(1),
+            LocalDate.now().minusDays(1)
+        )
+
+    private fun generateUpdaterUser(updaterUserId: Long, username: String) =
+        User(
+            id = updaterUserId,
+            distinguishedName = username
         )
 
     private fun generateReligionHistory(
@@ -41,21 +51,25 @@ object PersonGenerator {
             personId = personId,
             startDate = startDate,
             endDate = endDate,
-            referenceData = RELIGION_HX
+            referenceData = RELIGION_HX,
+            lastUpdatedBy = RELIGION_HISTORY_UPDATER,
+            lastUpdatedDatetime = UPDATED_ZONED_DATETIME
         )
 
     private fun generateReligionHistory(
         personId: Long,
         religionDescription: String,
         startDate: LocalDate,
-        endDate: LocalDate
+        endDate: LocalDate,
     ) =
         ReligionHistory(
             IdGenerator.getAndIncrement(),
             personId = personId,
             startDate = startDate,
             endDate = endDate,
-            religionDescription = religionDescription
+            religionDescription = religionDescription,
+            lastUpdatedBy = RELIGION_HISTORY_UPDATER,
+            lastUpdatedDatetime = UPDATED_ZONED_DATETIME
         )
 
     val MIN_PERSON =
