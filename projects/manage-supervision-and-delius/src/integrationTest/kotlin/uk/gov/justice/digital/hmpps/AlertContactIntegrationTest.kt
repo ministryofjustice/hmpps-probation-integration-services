@@ -118,7 +118,10 @@ class AlertContactIntegrationTest : IntegrationTestBase() {
             .andExpect(MockMvcResultMatchers.status().isOk)
             .andReturn().response.contentAsJson<UserAlerts>()
 
-        assertThat(sortedByTypeDescription.content.map { it.type.description }).containsExactly("Non attendance contact type", "Breach Contact Type")
+        assertThat(sortedByTypeDescription.content.map { it.type.description }).containsExactly(
+            "Non attendance contact type",
+            "Breach Contact Type"
+        )
     }
 
     @Test

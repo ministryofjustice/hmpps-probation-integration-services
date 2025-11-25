@@ -32,7 +32,13 @@ class AlertContactController(private val userAlertService: UserAlertService) {
         } else {
             Sort.Direction.DESC
         }
-        return userAlertService.getUserAlerts(PageRequest.of(page, size, Sort.by(direction, *properties.toTypedArray())))
+        return userAlertService.getUserAlerts(
+            PageRequest.of(
+                page,
+                size,
+                Sort.by(direction, *properties.toTypedArray())
+            )
+        )
     }
 
     @PutMapping
