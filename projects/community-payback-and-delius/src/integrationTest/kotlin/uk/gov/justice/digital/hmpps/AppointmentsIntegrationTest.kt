@@ -7,17 +7,17 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.web.servlet.MockMvc
+import org.springframework.test.web.servlet.get
 import org.springframework.test.web.servlet.put
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator
 import uk.gov.justice.digital.hmpps.data.generator.UPWGenerator
-import uk.gov.justice.digital.hmpps.integrations.delius.entity.*
-import uk.gov.justice.digital.hmpps.model.AppointmentOutcomeRequest
-import uk.gov.justice.digital.hmpps.model.AppointmentResponse
-import uk.gov.justice.digital.hmpps.model.Code
-import uk.gov.justice.digital.hmpps.model.SessionResponse
+import uk.gov.justice.digital.hmpps.integrations.delius.entity.ContactAlertRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.entity.EnforcementRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.entity.UnpaidWorkAppointmentRepository
+import uk.gov.justice.digital.hmpps.model.*
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.json
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
@@ -59,25 +59,20 @@ class AppointmentsIntegrationTest {
         assertThat(response.project.name).isEqualTo("Default UPW Project")
         assertThat(response.case.crn).isEqualTo(PersonGenerator.DEFAULT_PERSON.crn)
         assertThat(response.penaltyHours).isEqualTo("01:00")
-        assertThat(response.enforcementAction!!.respondBy).isEqualTo(response.date.plusDays(ReferenceDataGenerator.ROM_ENFORCEMENT_ACTION.responseByPeriod))
-        assertThat(response.behaviour).isEqualTo(Behaviour.EX.value)
-        assertThat(response.workQuality).isEqualTo(WorkQuality.EX.value)
+        assertThat(response.enforcementAction!!.respondBy).isEqualTo(response.date.plusDays(ReferenceDataGenerator.ROM_ENFORCEMENT_ACTION.responseByPeriod!!))
+        assertThat(response.behaviour).isEqualTo(Behaviour.EXCELLENT)
+        assertThat(response.workQuality).isEqualTo(WorkQuality.EXCELLENT)
     }
 
     @Test
     fun `can retrieve single session details`() {
         val response = mockMvc
-            .perform(
-                get(
-                    "/projects/N01DEFAULT/appointments?date=${
-                        LocalDate.now().plusDays(1)
-                    }&startTime=12:00&endTime=14:00&username=DefaultUser"
-                ).withToken()
-            )
-            .andExpect(status().is2xxSuccessful)
+            .get("/projects/N01SECOND/appointments?date=${LocalDate.now().plusDays(1)}&username=DefaultUser") {
+                withToken()
+            }
+            .andExpect { status().is2xxSuccessful }
             .andReturn().response.contentAsJson<SessionResponse>()
-
-        assertThat(response.project.name).isEqualTo("Default UPW Project")
+        assertThat(response.project.name).isEqualTo("Second UPW Project")
         assertThat(response.appointmentSummaries.size).isEqualTo(2)
         assertThat(response.appointmentSummaries[0].case.crn).isEqualTo("Z000001")
         assertThat(response.appointmentSummaries[0].requirementProgress.requiredMinutes).isEqualTo(120 * 60)
@@ -98,8 +93,8 @@ class AppointmentsIntegrationTest {
                 hiVisWorn = true,
                 workedIntensively = true,
                 penaltyMinutes = 5,
-                workQuality = "EXCELLENT",
-                behaviour = "UNSATISFACTORY",
+                workQuality = WorkQuality.EXCELLENT,
+                behaviour = Behaviour.UNSATISFACTORY,
                 sensitive = false,
                 alertActive = false,
             )
@@ -129,8 +124,8 @@ class AppointmentsIntegrationTest {
                 hiVisWorn = true,
                 workedIntensively = true,
                 penaltyMinutes = 5,
-                workQuality = "EXCELLENT",
-                behaviour = "UNSATISFACTORY",
+                workQuality = WorkQuality.EXCELLENT,
+                behaviour = Behaviour.UNSATISFACTORY,
                 sensitive = false,
                 alertActive = true,
             )
@@ -157,8 +152,8 @@ class AppointmentsIntegrationTest {
                 hiVisWorn = true,
                 workedIntensively = true,
                 penaltyMinutes = 5,
-                workQuality = "EXCELLENT",
-                behaviour = "UNSATISFACTORY",
+                workQuality = WorkQuality.EXCELLENT,
+                behaviour = Behaviour.UNSATISFACTORY,
                 sensitive = false,
                 alertActive = true,
             )
@@ -171,27 +166,38 @@ class AppointmentsIntegrationTest {
     }
 
     @Test
-    fun `past appointment without an outcome returns an error`() {
-        mockMvc.put("/projects/N01DEFAULT/appointments/${UPWGenerator.UPW_APPOINTMENT_PAST.id}/outcome") {
-            withToken()
-            json = AppointmentOutcomeRequest(
-                id = UPWGenerator.UPW_APPOINTMENT_NO_OUTCOME.id,
-                version = UUID(5, 5),
-                outcome = null,
-                supervisor = Code("N01P001"),
-                startTime = LocalTime.of(8, 0),
-                endTime = LocalTime.of(10, 0),
-                notes = "null outcome",
-                hiVisWorn = true,
-                workedIntensively = true,
-                penaltyMinutes = 5,
-                workQuality = "EXCELLENT",
-                behaviour = "EXCELLENT",
-                sensitive = false,
-                alertActive = true,
-            )
-        }
-            .andExpect { status().is4xxClientError }
+    fun `returns 2xx when limited access check passes but with current restriction flag true`() {
+        val appointmentId = UPWGenerator.LAO_RESTRICTED_UPW_APPOINTMENT.id
+        val response = mockMvc
+            .perform(get("/projects/N01DEFAULT/appointments/$appointmentId?username=LimitedAccess").withToken())
+            .andExpect(status().is2xxSuccessful)
+            .andReturn().response.contentAsJson<AppointmentResponse>()
+        assertThat(response.case.currentRestriction).isEqualTo(true)
+        assertThat(response.case.restrictionMessage).isNotNull()
+    }
+
+    @Test
+    fun `returns 2xx when limited access check fails but with current restriction flag true`() {
+        val appointmentId = UPWGenerator.LAO_RESTRICTED_UPW_APPOINTMENT.id
+        val response = mockMvc
+            .perform(get("/projects/N01DEFAULT/appointments/$appointmentId?username=FullAccess").withToken())
+            .andExpect(status().is2xxSuccessful)
+            .andReturn().response.contentAsJson<AppointmentResponse>()
+        assertThat(response.case.currentRestriction).isEqualTo(false)
+        assertThat(response.case.restrictionMessage.isNullOrEmpty())
+    }
+
+    @Test
+    fun `returns 2xx when limited access check fails but with current exclusion flag true`() {
+        val appointmentId = UPWGenerator.LAO_EXCLUDED_UPW_APPOINTMENT.id
+
+        val response = mockMvc
+            .perform(get("/projects/N01DEFAULT/appointments/$appointmentId?username=LimitedAccess").withToken())
+            .andExpect(status().is2xxSuccessful)
+            .andReturn().response.contentAsJson<AppointmentResponse>()
+
+        assertThat(response.case.currentExclusion).isEqualTo(true)
+        assertThat(response.case.exclusionMessage).isNotNull
     }
 
     @Test
@@ -209,8 +215,8 @@ class AppointmentsIntegrationTest {
                 hiVisWorn = true,
                 workedIntensively = true,
                 penaltyMinutes = 5,
-                workQuality = "EXCELLENT",
-                behaviour = "EXCELLENT",
+                workQuality = WorkQuality.EXCELLENT,
+                behaviour = Behaviour.EXCELLENT,
                 sensitive = false,
                 alertActive = true,
             )

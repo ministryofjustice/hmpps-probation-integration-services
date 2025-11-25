@@ -4,6 +4,7 @@ database:
     password_key: /manage-supervision-and-delius/db-password
     tables:
       - contact
+      - contact_alert
       - offender
       - offender_address
       - audited_interaction

@@ -5,7 +5,6 @@ import org.springframework.web.bind.annotation.*
 import uk.gov.justice.digital.hmpps.model.AppointmentOutcomeRequest
 import uk.gov.justice.digital.hmpps.service.AppointmentsService
 import java.time.LocalDate
-import java.time.LocalTime
 
 @RestController
 @RequestMapping("/projects")
@@ -22,8 +21,8 @@ class AppointmentsController(
     @GetMapping(value = ["/{projectCode}/appointments"])
     fun getSession(
         @PathVariable projectCode: String, @RequestParam date: LocalDate,
-        @RequestParam startTime: LocalTime, @RequestParam endTime: LocalTime, @RequestParam username: String
-    ) = appointmentsService.getSession(projectCode, date, startTime, endTime, username)
+        @RequestParam username: String
+    ) = appointmentsService.getSession(projectCode, date, username)
 
     @PutMapping(value = ["/{projectCode}/appointments/{appointmentId}/outcome"])
     fun updateAppointmentOutcome(

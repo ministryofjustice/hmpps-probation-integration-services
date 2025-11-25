@@ -1,7 +1,7 @@
 package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.stereotype.Service
-import uk.gov.justice.digital.hmpps.exception.NotFoundException
+import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.*
 import uk.gov.justice.digital.hmpps.model.*
 import java.time.Duration
@@ -22,12 +22,14 @@ class AppointmentsService(
     private val personManagerRepository: PersonManagerRepository,
     private val enforcementRepository: EnforcementRepository,
     private val enforcementActionRepository: EnforcementActionRepository,
-    private val contactRepository: ContactRepository
+    private val contactRepository: ContactRepository,
+    private val userAccessService: UserAccessService
 ) {
     fun getAppointment(projectCode: String, appointmentId: Long, username: String): AppointmentResponse {
         val project = unpaidWorkProjectRepository.getUpwProjectByCode(projectCode)
-        val appointment = unpaidWorkAppointmentRepository.getUpwAppointmentById(appointmentId)
-            ?: throw NotFoundException("UPWAppointment", "appointmentId", appointmentId)
+        val appointment = unpaidWorkAppointmentRepository.getAppointment(appointmentId)
+        val limitedAccess = userAccessService.caseAccessFor(username, appointment.person.crn)
+        val case = appointment.toAppointmentResponseCase(limitedAccess)
 
         return AppointmentResponse(
             id = appointmentId,
@@ -42,7 +44,7 @@ class AppointmentsService(
                 project.projectType.description,
                 project.projectType.code
             ),
-            case = appointment.toAppointmentResponseCase(),
+            case = case,
             supervisor = AppointmentResponseSupervisor(
                 code = appointment.staff.code,
                 name = AppointmentResponseName(
@@ -63,22 +65,22 @@ class AppointmentsService(
                 location = appointment.pickUpLocation.toAppointmentResponseAddress(),
                 time = appointment.pickUpTime
             ),
-            date = appointment.appointmentDate,
+            date = appointment.date,
             startTime = appointment.startTime,
             endTime = appointment.endTime,
             penaltyHours = penaltyTimeToHHmm(appointment.penaltyTime),
             outcome = appointment.contact.contactOutcome?.toCodeDescription(),
-            enforcementAction = appointment.contact.latestEnforcementAction?.let {
+            enforcementAction = appointment.contact.latestEnforcementAction?.let { enforcementAction ->
                 AppointmentResponseEnforcementAction(
-                    appointment.contact.latestEnforcementAction.code,
-                    appointment.contact.latestEnforcementAction.description,
-                    appointment.appointmentDate.plusDays(appointment.contact.latestEnforcementAction.responseByPeriod)
+                    code = enforcementAction.code,
+                    description = enforcementAction.description,
+                    respondBy = enforcementAction.responseByPeriod?.let { appointment.date.plusDays(it) }
                 )
             },
             hiVisWorn = appointment.hiVisWorn,
             workedIntensively = appointment.workedIntensively,
-            workQuality = appointment.workQuality?.let { WorkQuality.valueOf(appointment.workQuality!!.code).value },
-            behaviour = appointment.behaviour?.let { Behaviour.valueOf(appointment.behaviour!!.code).value },
+            workQuality = appointment.workQuality?.let { WorkQuality.of(it.code) },
+            behaviour = appointment.behaviour?.let { Behaviour.of(it.code) },
             notes = appointment.contact.notes,
             updatedAt = appointment.lastUpdatedDatetime,
             sensitive = appointment.contact.sensitive,
@@ -89,23 +91,23 @@ class AppointmentsService(
     fun getSession(
         projectCode: String,
         date: LocalDate,
-        startTime: LocalTime,
-        endTime: LocalTime,
         username: String
     ): SessionResponse {
         val project = unpaidWorkProjectRepository.getUpwProjectByCode(projectCode)
-        val appointments = unpaidWorkAppointmentRepository.getUpwAppointmentsByAppointmentDateAndStartTimeAndEndTime(
-            date, startTime, endTime
-        )
+        val appointments =
+            unpaidWorkAppointmentRepository.findByDateAndProjectCodeAndDetailsSoftDeletedFalse(date, project.code)
+        val upwDetailsIds = appointments.map { it.details.id }.distinct()
+        val minutes = unpaidWorkAppointmentRepository.getUpwRequiredAndCompletedMinutes(upwDetailsIds)
+            .associateBy { it.id }.mapValues { (_, v) -> v.toModel() }
 
         val appointmentSummaries = appointments.map {
-            val minutes = unpaidWorkAppointmentRepository.getUpwRequiredAndCompletedMinutes(it.upwDetailsId).toModel()
+            val limitedAccess = userAccessService.caseAccessFor(username, it.person.crn)
 
             SessionResponseAppointmentSummary(
                 id = it.id,
-                case = it.toAppointmentResponseCase(),
+                case = it.toAppointmentResponseCase(limitedAccess),
                 outcome = it.contact.contactOutcome?.toCodeDescription(),
-                requirementProgress = minutes,
+                requirementProgress = checkNotNull(minutes[it.details.id])
             )
         }
 
@@ -119,61 +121,52 @@ class AppointmentsService(
         )
     }
 
+    @Transactional
     fun updateAppointmentOutcome(
         projectCode: String,
         appointmentId: Long,
-        appointmentOutcome: AppointmentOutcomeRequest
+        request: AppointmentOutcomeRequest
     ) {
-        val appointment = unpaidWorkAppointmentRepository.getUpwAppointmentById(appointmentId)
-            ?: throw NotFoundException("UPWAppointment", "appointmentId", appointmentId)
+        val appointment = unpaidWorkAppointmentRepository.getAppointment(appointmentId)
 
         val contact = appointment.contact
 
-        if (!appointmentOutcome.endTime.isAfter(appointmentOutcome.startTime)) {
-            throw IllegalStateException("End Time must be after Start Time")
+        require(request.endTime > request.startTime) {
+            "End Time must be after Start Time"
         }
 
-        if (LocalDateTime.of(appointment.appointmentDate, appointmentOutcome.endTime).isBefore(LocalDateTime.now())
-            && appointmentOutcome.outcome == null
+        require(
+            request.outcome != null ||
+                LocalDateTime.of(appointment.date, request.endTime) > LocalDateTime.now()
         ) {
-            throw IllegalStateException("Appointments in the past require an outcome")
+            "Appointments in the past require an outcome"
         }
 
-        val outcome = appointmentOutcome.outcome?.let {
-            contactOutcomeRepository.findContactOutcomeByCode(it.code)
-                ?: throw IllegalStateException("Contact outcome with code ${it.code} not found")
+        val outcome = request.outcome?.let {
+            contactOutcomeRepository.getContactOutcome(it.code)
         }
 
-        val workQualityCode = WorkQuality.of(appointmentOutcome.workQuality)?.name
-        val behaviourCode = Behaviour.of(appointmentOutcome.behaviour)?.name
+        val workQuality = request.workQuality?.let {
+            referenceDataRepository.getWorkQuality(request.workQuality.code)
+        }
 
-        val workQuality = workQualityCode?.let {
-            referenceDataRepository.findByCodeAndDatasetCode(workQualityCode, Dataset.UPW_WORK_QUALITY)
-                ?: throw IllegalStateException("Work quality reference data with code $workQualityCode not found")
-        } ?: throw IllegalStateException("Work quality ${appointmentOutcome.workQuality} not recognised")
+        val behaviour = request.behaviour?.let {
+            referenceDataRepository.getBehaviour(request.behaviour.code)
+        }
 
-        val behaviour = behaviourCode?.let {
-            referenceDataRepository.findByCodeAndDatasetCode(behaviourCode, Dataset.UPW_BEHAVIOUR)
-                ?: throw IllegalStateException("Behaviour reference data with code $behaviourCode not found")
-        } ?: throw IllegalStateException("Behaviour ${appointmentOutcome.behaviour} not recognised")
+        val staff = staffRepository.getStaff(request.supervisor.code)
 
-        val staff =
-            appointmentOutcome.supervisor?.let {
-                staffRepository.findStaffByCode(appointmentOutcome.supervisor.code)
-                    ?: throw IllegalStateException("Staff with code ${appointmentOutcome.supervisor.code} not found")
-            }
 
-        unpaidWorkAppointmentRepository.save(
-            appointment.update(
-                appointmentOutcome, workQuality, behaviour,
-                outcome, staff, contact.update(appointmentOutcome)
-            )
+        contact.update(request, outcome, staff)
+
+        appointment.update(
+            request, workQuality, behaviour,
+            outcome, staff
         )
 
-        if (appointmentOutcome.alertActive) {
+        if (request.alertActive == true) {
             val personManager =
-                personManagerRepository.findByPersonIdAndActiveIsTrueAndSoftDeletedIsFalse(appointment.person.id!!)
-                    ?: throw NotFoundException("PersonManager", "personId", appointment.person.id)
+                personManagerRepository.getActiveManagerForPerson(appointment.person.id!!)
 
             contactAlertRepository.save(
                 ContactAlert(
@@ -187,16 +180,15 @@ class AppointmentsService(
             )
         }
 
-        if (outcome!!.complied == false) {
+        if (outcome?.complied == false) {
             val enforcementAction =
-                enforcementActionRepository.findEnforcementActionByCode(EnforcementAction.REFER_TO_PERSON_MANAGER)
-                    ?: throw IllegalStateException("No Enforcement Action with code ${EnforcementAction.REFER_TO_PERSON_MANAGER} found.")
+                enforcementActionRepository.getEnforcementAction(EnforcementAction.REFER_TO_PERSON_MANAGER)
 
             enforcementRepository.save(
                 Enforcement(
                     contact = contact,
                     enforcementAction = enforcementAction,
-                    responseDate = enforcementAction.responseByPeriod.let { LocalDate.now().plusDays(it) }
+                    responseDate = enforcementAction.responseByPeriod?.let { LocalDate.now().plusDays(it) }
                 )
             )
 
@@ -234,12 +226,12 @@ class AppointmentsService(
     }
 
     private fun UpwAppointment.update(
-        request: AppointmentOutcomeRequest, workQuality: ReferenceData,
-        behaviour: ReferenceData, contactOutcome: ContactOutcome?, staff: Staff?, contact: Contact
+        request: AppointmentOutcomeRequest, workQuality: ReferenceData?,
+        behaviour: ReferenceData?, contactOutcome: ContactOutcome?, staff: Staff
     ) = apply {
         startTime = request.startTime
         endTime = request.endTime
-        staff?.let { this.staff = staff }
+        this.staff = staff
         hiVisWorn = request.hiVisWorn
         workedIntensively = request.workedIntensively
         minutesCredited = Duration.between(startTime, endTime).toMinutes()
@@ -252,12 +244,15 @@ class AppointmentsService(
         rowVersion = request.version.mostSignificantBits
     }
 
-    private fun Contact.update(request: AppointmentOutcomeRequest) = apply {
-        startTime = request.startTime
-        endTime = request.endTime
-        notes = notes?.let { it + System.lineSeparator() + System.lineSeparator() + request.notes }
-        sensitive = request.sensitive
-        alertActive = request.alertActive
-        rowVersion = request.version.leastSignificantBits
-    }
+    private fun Contact.update(request: AppointmentOutcomeRequest, contactOutcome: ContactOutcome?, staff: Staff) =
+        apply {
+            startTime = request.startTime
+            endTime = request.endTime
+            this.staff = staff
+            this.contactOutcome = contactOutcome
+            notes = listOfNotNull(notes, request.notes).joinToString("\n\n")
+            sensitive = request.sensitive
+            alertActive = request.alertActive
+            rowVersion = request.version.leastSignificantBits
+        }
 }

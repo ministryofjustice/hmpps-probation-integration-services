@@ -23,10 +23,10 @@ data class AppointmentResponse(
     val penaltyHours: String,
     val outcome: CodeDescription?,
     val enforcementAction: AppointmentResponseEnforcementAction?,
-    val hiVisWorn: Boolean,
-    val workedIntensively: Boolean,
-    val workQuality: String?,
-    val behaviour: String?,
+    val hiVisWorn: Boolean?,
+    val workedIntensively: Boolean?,
+    val workQuality: WorkQuality?,
+    val behaviour: Behaviour?,
     val notes: String?,
     val updatedAt: ZonedDateTime,
     val sensitive: Boolean?,
@@ -101,5 +101,5 @@ data class AppointmentResponsePickupData(
 data class AppointmentResponseEnforcementAction(
     val code: String,
     val description: String,
-    val respondBy: LocalDate
+    val respondBy: LocalDate?
 )

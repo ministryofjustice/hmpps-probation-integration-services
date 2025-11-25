@@ -4,6 +4,7 @@ import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.type.NumericBooleanConverter
 import org.springframework.data.jpa.repository.JpaRepository
+import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import java.time.LocalDate
 
 @Entity
@@ -37,10 +38,8 @@ class Person(
     @Convert(converter = NumericBooleanConverter::class)
     val currentRestriction: Boolean = false,
 
-    @Column(name = "exclusion_message")
     val exclusionMessage: String? = null,
 
-    @Column(name = "restriction_message")
     val restrictionMessage: String? = null,
 
     )
@@ -76,3 +75,10 @@ class PersonManager(
 interface PersonManagerRepository : JpaRepository<PersonManager, Long> {
     fun findByPersonIdAndActiveIsTrueAndSoftDeletedIsFalse(personId: Long): PersonManager?
 }
+
+fun PersonManagerRepository.getActiveManagerForPerson(personId: Long) =
+    findByPersonIdAndActiveIsTrueAndSoftDeletedIsFalse(personId) ?: throw NotFoundException(
+        "PersonManager",
+        "personId",
+        personId
+    )
