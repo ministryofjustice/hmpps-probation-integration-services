@@ -4,6 +4,7 @@ import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.type.YesNoConverter
 import org.springframework.data.jpa.repository.JpaRepository
+import uk.gov.justice.digital.hmpps.exception.NotFoundException.Companion.orNotFoundBy
 
 @Entity
 @Table(name = "upw_project")
@@ -44,5 +45,7 @@ class UpwProjectAvailability(
 )
 
 interface UnpaidWorkProjectRepository : JpaRepository<UpwProject, Long> {
-    fun getUpwProjectByCode(projectCode: String): UpwProject
+    fun findByCode(code: String): UpwProject?
 }
+
+fun UnpaidWorkProjectRepository.getByCode(code: String) = findByCode(code).orNotFoundBy("code", code)
