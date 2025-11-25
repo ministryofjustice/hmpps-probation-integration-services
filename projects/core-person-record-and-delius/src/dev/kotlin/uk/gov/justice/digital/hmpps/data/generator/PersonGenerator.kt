@@ -23,7 +23,12 @@ object PersonGenerator {
     val RELIGION_HISTORY =
         generateReligionHistory(
             FULL_PERSON_ID, LocalDate.now().minusDays(30),
-            LocalDate.now().minusDays(1)
+            LocalDate.now().minusDays(10)
+        )
+    val SELF_DESCRIBED_RELIGION_HISTORY =
+        generateReligionHistory(
+            FULL_PERSON_ID, "Self-described religion", LocalDate.now().minusDays(10),
+            LocalDate.now().minusDays(1),
         )
 
     private fun generateReligionHistory(
@@ -37,6 +42,20 @@ object PersonGenerator {
             startDate = startDate,
             endDate = endDate,
             referenceData = RELIGION_HX
+        )
+
+    private fun generateReligionHistory(
+        personId: Long,
+        religionDescription: String,
+        startDate: LocalDate,
+        endDate: LocalDate
+    ) =
+        ReligionHistory(
+            IdGenerator.getAndIncrement(),
+            personId = personId,
+            startDate = startDate,
+            endDate = endDate,
+            religionDescription = religionDescription
         )
 
     val MIN_PERSON =
@@ -93,7 +112,7 @@ object PersonGenerator {
         )
     )
 
-    val FULL_PERSON_RELIGION_HISTORY = listOf(RELIGION_HISTORY)
+    val FULL_PERSON_RELIGION_HISTORY = listOf(RELIGION_HISTORY, SELF_DESCRIBED_RELIGION_HISTORY)
 
     val FULL_PERSON_ADDRESSES = listOf(
         generateAddress(

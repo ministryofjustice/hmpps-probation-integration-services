@@ -41,7 +41,8 @@ internal class CorePersonIntegrationTest {
                       "dateOfBirth": "1990-03-05",
                       "aliases": [],
                       "addresses": [],
-                      "sentences": []
+                      "sentences": [],
+                      "religionHistory": []
                     }
                     """.trimIndent(),
                     JsonCompareMode.STRICT,
@@ -120,6 +121,11 @@ internal class CorePersonIntegrationTest {
                           "code": "REL_HX",
                           "description": "Description of REL_HX",
                           "startDate": "${LocalDate.now().minusDays(30)}",
+                          "endDate": "${LocalDate.now().minusDays(10)}"
+                        },
+                        {
+                          "description": "Self-described religion",
+                          "startDate": "${LocalDate.now().minusDays(10)}",
                           "endDate": "${LocalDate.now().minusDays(1)}"
                         }
                       ],

@@ -21,6 +21,9 @@ class ReligionHistory(
     @JoinColumn(name = "religion_id")
     val referenceData: ReferenceData? = null,
 
+    @Column(name = "religion_description")
+    val religionDescription: String? = null,
+
     @Column(name = "start_date")
     val startDate: LocalDate,
 
@@ -28,7 +31,7 @@ class ReligionHistory(
     val endDate: LocalDate? = null
 )
 
-interface religionHistoryRepository : JpaRepository<ReligionHistory, Long> {
+interface ReligionHistoryRepository : JpaRepository<ReligionHistory, Long> {
     @EntityGraph(attributePaths = ["referenceData"])
     fun findAllByPersonId(
         personId: Long

@@ -13,7 +13,7 @@ fun Person.detail(
     restrictions: LimitedAccess? = null,
     sentences: List<Sentence>,
     additionalIdentifiers: List<Identifier>,
-    religionHistory: List<ReligionHistory>? = null,
+    religionHistory: List<ReligionHistory>,
 ) = PersonDetail(
     identifiers = identifiers(additionalIdentifiers),
     name = name(),
@@ -61,8 +61,8 @@ fun Person.name() =
     )
 
 fun uk.gov.justice.digital.hmpps.integration.delius.entity.ReligionHistory.asModel() = ReligionHistory(
-    code = referenceData!!.code,
-    description = referenceData.description,
+    code = referenceData?.code,
+    description = referenceData?.description ?: religionDescription,
     startDate = startDate,
     endDate = endDate,
 )
