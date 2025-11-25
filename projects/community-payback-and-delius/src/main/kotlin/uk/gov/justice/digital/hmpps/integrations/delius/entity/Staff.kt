@@ -61,8 +61,8 @@ fun Staff.toSupervisor() = Supervisor(
 )
 
 interface StaffRepository : JpaRepository<Staff, Long> {
-    fun findStaffByCode(code: String): Staff?
+    fun findByCode(code: String): Staff?
 }
 
 fun StaffRepository.getStaff(code: String): Staff =
-    findStaffByCode(code) ?: throw NotFoundException("Staff", "code", code)
+    findByCode(code) ?: throw NotFoundException("Staff", "code", code)
