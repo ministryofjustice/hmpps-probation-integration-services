@@ -262,24 +262,32 @@ components:
           format: int64
         workQuality:
           type: string
+          enum:
+          - EXCELLENT
+          - GOOD
+          - NOT_APPLICABLE
+          - POOR
+          - SATISFACTORY
+          - UNSATISFACTORY
         behaviour:
           type: string
+          enum:
+          - EXCELLENT
+          - GOOD
+          - NOT_APPLICABLE
+          - POOR
+          - SATISFACTORY
+          - UNSATISFACTORY
         sensitive:
           type: boolean
         alertActive:
           type: boolean
       required:
-      - alertActive
-      - behaviour
       - endTime
-      - hiVisWorn
       - id
-      - penaltyMinutes
-      - sensitive
       - startTime
+      - supervisor
       - version
-      - workQuality
-      - workedIntensively
     Code:
       type: object
       properties:
@@ -528,8 +536,22 @@ components:
           type: boolean
         workQuality:
           type: string
+          enum:
+          - EXCELLENT
+          - GOOD
+          - NOT_APPLICABLE
+          - POOR
+          - SATISFACTORY
+          - UNSATISFACTORY
         behaviour:
           type: string
+          enum:
+          - EXCELLENT
+          - GOOD
+          - NOT_APPLICABLE
+          - POOR
+          - SATISFACTORY
+          - UNSATISFACTORY
         notes:
           type: string
         updatedAt:
@@ -543,7 +565,6 @@ components:
       - case
       - date
       - endTime
-      - hiVisWorn
       - id
       - penaltyHours
       - pickUpData
@@ -555,7 +576,6 @@ components:
       - team
       - updatedAt
       - version
-      - workedIntensively
     AppointmentResponseEnforcementAction:
       type: object
       properties:
@@ -569,7 +589,6 @@ components:
       required:
       - code
       - description
-      - respondBy
     AppointmentResponsePickupData:
       type: object
       properties:
