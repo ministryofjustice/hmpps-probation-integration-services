@@ -81,6 +81,12 @@ paths:
           type: integer
           format: int32
           default: 10
+      - name: sort
+        in: query
+        required: false
+        schema:
+          type: string
+          default: "DATE_AND_TIME,desc"
       responses:
         "200":
           description: OK
@@ -4482,6 +4488,8 @@ components:
         date:
           type: string
           format: date
+        startTime:
+          type: string
         description:
           type: string
         alertNotes:
@@ -4499,6 +4507,7 @@ components:
       - id
       - name
       - officer
+      - startTime
       - type
     UserAlertType:
       type: object

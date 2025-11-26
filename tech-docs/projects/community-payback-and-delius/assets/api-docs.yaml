@@ -40,6 +40,24 @@ paths:
       responses:
         "200":
           description: OK
+  /supervisors:
+    get:
+      tags:
+      - supervisors-controller
+      operationId: getSupervisors
+      parameters:
+      - name: username
+        in: query
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SupervisorResponse"
   /reference-data/unpaid-work-appointment-outcomes:
     get:
       tags:
@@ -90,7 +108,7 @@ paths:
     get:
       tags:
       - providers-controller
-      operationId: getSupervisors
+      operationId: getSupervisors_1
       parameters:
       - name: providerCode
         in: path
@@ -295,6 +313,16 @@ components:
           type: string
       required:
       - code
+    SupervisorResponse:
+      type: object
+      properties:
+        code:
+          type: string
+        isUnpaidWorkTeamMember:
+          type: boolean
+      required:
+      - code
+      - isUnpaidWorkTeamMember
     CodeDescription:
       type: object
       properties:
