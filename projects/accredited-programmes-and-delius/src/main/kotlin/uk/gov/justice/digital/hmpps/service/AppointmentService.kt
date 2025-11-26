@@ -10,6 +10,7 @@ import uk.gov.justice.digital.hmpps.entity.contact.Contact
 import uk.gov.justice.digital.hmpps.entity.contact.ContactType
 import uk.gov.justice.digital.hmpps.entity.contact.enforcement.Enforcement
 import uk.gov.justice.digital.hmpps.entity.contact.enforcement.EnforcementAction
+import uk.gov.justice.digital.hmpps.exception.NotFoundException.Companion.orNotFoundBy
 import uk.gov.justice.digital.hmpps.integration.StatusInfo
 import uk.gov.justice.digital.hmpps.model.*
 import uk.gov.justice.digital.hmpps.repository.*
@@ -48,7 +49,7 @@ class AppointmentService(
     }
 
     fun create(request: CreateAppointmentsRequest) {
-        contactRepository.saveAll(request.appointments.map { it.asEntity() })
+        contactRepository.saveAll(request.appointments.asEntities())
     }
 
     fun update(request: UpdateAppointmentsRequest) {
@@ -95,29 +96,42 @@ class AppointmentService(
         )
     }
 
-    private fun CreateAppointmentRequest.asEntity(): Contact {
-        val (requirement, licenceCondition) = getComponent(requirementId, licenceConditionId)
-        val event = requirement?.disposal?.event ?: licenceCondition?.disposal?.event
-        requireNotNull(event) { "Appointment component not found for $reference" }
-        val team = teamRepository.getByCode(team.code)
-        return Contact(
-            person = event.person.asPersonCrn(),
-            event = event,
-            requirement = requirement,
-            licenceCondition = licenceCondition,
-            date = date,
-            startTime = ZonedDateTime.of(date, startTime, EuropeLondon),
-            endTime = ZonedDateTime.of(date, endTime, EuropeLondon),
-            notes = notes,
-            sensitive = sensitive,
-            provider = team.provider,
-            team = team,
-            staff = staffRepository.getByCode(staff.code),
-            location = location?.code?.let { officeLocationRepository.getByCode(it) },
-            type = contactTypeRepository.getByCode(type.code),
-            externalReference = "${Contact.REFERENCE_PREFIX}$reference",
-            outcome = outcome?.code?.let { contactOutcomeRepository.getByCode(it) },
-        )
+    private fun List<CreateAppointmentRequest>.asEntities(): List<Contact> {
+        val typeCodes = map { it.type.code }.distinct()
+        val types = typeCodes.mapNotNull { contactTypeRepository.findByCode(it) }.associateBy { it.code }
+        val outcomes = contactOutcomeRepository.getAllByCodeIn(mapNotNull { it.outcome?.code })
+        val locations = officeLocationRepository.getAllByCodeIn(mapNotNull { it.location?.code })
+        val teams = teamRepository.getAllByCodeIn(map { it.team.code })
+        val staff = staffRepository.getAllByCodeIn(map { it.staff.code })
+        val requirements = requirementRepository.getAllByCodeIn(mapNotNull { it.requirementId })
+        val licenceConditions = licenceConditionRepository.getAllByCodeIn(mapNotNull { it.licenceConditionId })
+
+        return map {
+            val requirement = it.requirementId?.let { id -> requirements[id] }
+            val licenceCondition = it.licenceConditionId?.let { id -> licenceConditions[id] }
+            val event = checkNotNull(
+                listOfNotNull(requirement?.disposal?.event, licenceCondition?.disposal?.event).firstOrNull()
+            ) { "Appointment component not found" }
+            val team = teams[it.team.code].orNotFoundBy("code", it.team.code)
+            Contact(
+                person = event.person.asPersonCrn(),
+                event = event,
+                requirement = requirement,
+                licenceCondition = licenceCondition,
+                date = it.date,
+                startTime = ZonedDateTime.of(it.date, it.startTime, EuropeLondon),
+                endTime = ZonedDateTime.of(it.date, it.endTime, EuropeLondon),
+                notes = it.notes,
+                sensitive = it.sensitive,
+                provider = team.provider,
+                team = team,
+                staff = staff[it.staff.code].orNotFoundBy("code", it.staff.code),
+                location = it.location?.code?.let { code -> locations[code].orNotFoundBy("code", code) },
+                type = types[it.type.code].orNotFoundBy("code", it.type.code),
+                externalReference = "${Contact.REFERENCE_PREFIX}${it.reference}",
+                outcome = it.outcome?.code?.let { code -> outcomes[code].orNotFoundBy("code", code) },
+            )
+        }
     }
 
     private fun getComponent(requirementId: Long?, licenceConditionId: Long?) = Pair(
@@ -229,4 +243,14 @@ class AppointmentService(
         notes = notes,
         sensitive = sensitive
     )
+}
+
+inline fun <reified T> Map<String, T>.reportMissing(codes: Set<String>) = also {
+    val missing = codes - keys
+    require(missing.isEmpty()) { "Invalid ${T::class.simpleName} codes: $missing" }
+}
+
+inline fun <reified T> Map<Long, T>.reportMissingIds(ids: Set<Long>) = also {
+    val missing = ids - keys
+    require(missing.isEmpty()) { "Invalid ${T::class.simpleName} IDs: $missing" }
 }

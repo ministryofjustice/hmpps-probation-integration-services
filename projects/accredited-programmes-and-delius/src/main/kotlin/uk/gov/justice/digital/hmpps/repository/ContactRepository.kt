@@ -8,6 +8,7 @@ import uk.gov.justice.digital.hmpps.entity.contact.ContactOutcome
 import uk.gov.justice.digital.hmpps.entity.contact.ContactType
 import uk.gov.justice.digital.hmpps.entity.sentence.Event
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
+import uk.gov.justice.digital.hmpps.service.reportMissing
 import java.time.LocalDate
 
 interface ContactRepository : JpaRepository<Contact, Long> {
@@ -75,7 +76,11 @@ fun ContactTypeRepository.getByCode(code: String) =
 
 interface ContactOutcomeRepository : JpaRepository<ContactOutcome, Long> {
     fun findByCode(code: String): ContactOutcome?
+    fun findAllByCodeIn(code: Set<String>): List<ContactOutcome>
 }
 
 fun ContactOutcomeRepository.getByCode(code: String) =
     findByCode(code) ?: throw NotFoundException("ContactOutcome", "code", code)
+
+fun ContactOutcomeRepository.getAllByCodeIn(codes: List<String>) =
+    codes.toSet().let { codes -> findAllByCodeIn(codes).associateBy { it.code }.reportMissing(codes) }
