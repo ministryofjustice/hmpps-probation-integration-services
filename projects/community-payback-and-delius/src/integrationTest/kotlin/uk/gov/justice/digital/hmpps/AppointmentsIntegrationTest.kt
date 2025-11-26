@@ -15,9 +15,7 @@ import uk.gov.justice.digital.hmpps.advice.ErrorResponse
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator
 import uk.gov.justice.digital.hmpps.data.generator.UPWGenerator
-import uk.gov.justice.digital.hmpps.integrations.delius.entity.ContactAlertRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.entity.EnforcementRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.entity.UnpaidWorkAppointmentRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.entity.*
 import uk.gov.justice.digital.hmpps.model.*
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.json
@@ -257,8 +255,8 @@ class AppointmentsIntegrationTest {
                 hiVisWorn = true,
                 workedIntensively = true,
                 penaltyMinutes = 5,
-                workQuality = "EXCELLENT",
-                behaviour = "UNSATISFACTORY",
+                workQuality = WorkQuality.EXCELLENT,
+                behaviour = Behaviour.UNSATISFACTORY,
                 sensitive = false,
                 alertActive = true,
             )

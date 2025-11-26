@@ -2,7 +2,6 @@ package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.*
 import uk.gov.justice.digital.hmpps.model.*
 import java.time.Duration
@@ -233,8 +232,8 @@ class AppointmentsService(
     }
 
     private fun UpwAppointment.update(
-        request: AppointmentOutcomeRequest, workQuality: ReferenceData,
-        behaviour: ReferenceData, contactOutcome: ContactOutcome?, staff: Staff?
+        request: AppointmentOutcomeRequest, workQuality: ReferenceData?,
+        behaviour: ReferenceData?, contactOutcome: ContactOutcome?, staff: Staff
     ) = apply {
         startTime = request.startTime
         endTime = request.endTime
@@ -251,18 +250,19 @@ class AppointmentsService(
         rowVersion = request.version.mostSignificantBits
     }
 
-    private fun Contact.update(request: AppointmentOutcomeRequest, contactOutcome: ContactOutcome?) = apply {
-        startTime = request.startTime
-        endTime = request.endTime
-        this.staff = staff
-        this.contactOutcome = contactOutcome
-        notes = listOfNotNull(notes, request.notes).joinToString("\n\n")
-        attended = contactOutcome?.attended
-        complied = contactOutcome?.complied
-        sensitive = request.sensitive
-        alertActive = request.alertActive
-        rowVersion = request.version.leastSignificantBits
-    }
+    private fun Contact.update(request: AppointmentOutcomeRequest, contactOutcome: ContactOutcome?, staff: Staff) =
+        apply {
+            startTime = request.startTime
+            endTime = request.endTime
+            this.staff = staff
+            this.contactOutcome = contactOutcome
+            notes = listOfNotNull(notes, request.notes).joinToString("\n\n")
+            attended = contactOutcome?.attended
+            complied = contactOutcome?.complied
+            sensitive = request.sensitive
+            alertActive = request.alertActive
+            rowVersion = request.version.leastSignificantBits
+        }
 
     private fun Contact.updateFailureToComplyCount() {
         if (event == null) return
