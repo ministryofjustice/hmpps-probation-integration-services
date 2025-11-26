@@ -70,7 +70,12 @@ internal class AllocateEventServiceTest {
 
     @Test
     fun `when event not found exception thrown`() {
-        whenever(eventRepository.findByPersonCrnAndNumberAndActiveTrueAndSoftDeletedFalse(any(), any())).thenReturn(null)
+        whenever(
+            eventRepository.findByPersonCrnAndNumberAndActiveTrueAndSoftDeletedFalse(
+                any(),
+                any()
+            )
+        ).thenReturn(null)
 
         val ex = assertThrows<NotFoundException> {
             allocateEventService.createEventAllocation(
