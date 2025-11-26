@@ -16,6 +16,7 @@ import org.springframework.test.web.servlet.post
 import org.springframework.test.web.servlet.put
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import uk.gov.justice.digital.hmpps.advice.ErrorResponse
 import uk.gov.justice.digital.hmpps.data.TestData
 import uk.gov.justice.digital.hmpps.data.TestData.CA_COMMUNITY_EVENT
 import uk.gov.justice.digital.hmpps.data.TestData.CA_PERSON
@@ -26,6 +27,7 @@ import uk.gov.justice.digital.hmpps.model.*
 import uk.gov.justice.digital.hmpps.repository.ContactRepository
 import uk.gov.justice.digital.hmpps.repository.EnforcementActionRepository
 import uk.gov.justice.digital.hmpps.repository.EnforcementRepository
+import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.json
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
@@ -201,58 +203,62 @@ internal class AppointmentControllerIntegrationTest(
     fun `can create an appointment - contact outcome not found`() {
         val appointmentReference = UUID.randomUUID()
         mockMvc
-            .perform(
-                post("/appointments").withToken().withJson(
-                    CreateAppointmentsRequest(
-                        listOf(
-                            CreateAppointmentRequest(
-                                appointmentReference,
-                                REQUIREMENTS[2].id,
-                                null,
-                                LocalDate.now().minusDays(7),
-                                LocalTime.now(),
-                                LocalTime.now().plusMinutes(30),
-                                RequestCode("UNKNOWN"),
-                                RequestCode("OFFICE1"),
-                                RequestCode("STAFF01"),
-                                RequestCode("TEAM01"),
-                                "Some notes about the appointment",
-                                true,
-                            )
+            .post("/appointments") {
+                withToken()
+                json = CreateAppointmentsRequest(
+                    listOf(
+                        CreateAppointmentRequest(
+                            appointmentReference,
+                            REQUIREMENTS[2].id,
+                            null,
+                            LocalDate.now().minusDays(7),
+                            LocalTime.now(),
+                            LocalTime.now().plusMinutes(30),
+                            RequestCode("UNKNOWN"),
+                            RequestCode("OFFICE1"),
+                            RequestCode("STAFF01"),
+                            RequestCode("TEAM01"),
+                            "Some notes about the appointment",
+                            true,
                         )
                     )
                 )
-            )
-            .andExpect(status().isNotFound)
+            }
+            .andExpect { status { isBadRequest() } }
+            .andReturn().response.contentAsJson<ErrorResponse>().also {
+                assertThat(it.message).isEqualTo("Invalid ContactOutcome codes: [UNKNOWN]")
+            }
     }
 
     @Test
     fun `can create an appointment - location not found`() {
         val appointmentReference = UUID.randomUUID()
         mockMvc
-            .perform(
-                post("/appointments").withToken().withJson(
-                    CreateAppointmentsRequest(
-                        listOf(
-                            CreateAppointmentRequest(
-                                appointmentReference,
-                                REQUIREMENTS[2].id,
-                                null,
-                                LocalDate.now().minusDays(7),
-                                LocalTime.now(),
-                                LocalTime.now().plusMinutes(30),
-                                RequestCode("ATTC"),
-                                RequestCode("OFFICE99"),
-                                RequestCode("STAFF01"),
-                                RequestCode("TEAM01"),
-                                "Some notes about the appointment",
-                                true,
-                            )
+            .post("/appointments") {
+                withToken()
+                json = CreateAppointmentsRequest(
+                    listOf(
+                        CreateAppointmentRequest(
+                            appointmentReference,
+                            REQUIREMENTS[2].id,
+                            null,
+                            LocalDate.now().minusDays(7),
+                            LocalTime.now(),
+                            LocalTime.now().plusMinutes(30),
+                            RequestCode("ATTC"),
+                            RequestCode("OFFICE99"),
+                            RequestCode("STAFF01"),
+                            RequestCode("TEAM01"),
+                            "Some notes about the appointment",
+                            true,
                         )
                     )
                 )
-            )
-            .andExpect(status().isNotFound)
+            }
+            .andExpect { status { isBadRequest() } }
+            .andReturn().response.contentAsJson<ErrorResponse>().also {
+                assertThat(it.message).isEqualTo("Invalid OfficeLocation codes: [OFFICE99]")
+            }
     }
 
     @Test
@@ -281,61 +287,69 @@ internal class AppointmentControllerIntegrationTest(
                     )
                 )
             )
-            .andExpect(status().isNotFound)
+            .andExpect(status().isBadRequest)
+            .andReturn().response.contentAsJson<ErrorResponse>().also {
+                assertThat(it.message).isEqualTo("Invalid Staff codes: [STAFF99]")
+            }
     }
 
     @Test
     fun `can create an appointment - team not found`() {
         val appointmentReference = UUID.randomUUID()
-        mockMvc.post("/appointments") {
-            withToken()
-            json = CreateAppointmentsRequest(
-                listOf(
-                    CreateAppointmentRequest(
-                        appointmentReference,
-                        REQUIREMENTS[2].id,
-                        null,
-                        LocalDate.now().minusDays(7),
-                        LocalTime.now(),
-                        LocalTime.now().plusMinutes(30),
-                        RequestCode("ATTC"),
-                        RequestCode("OFFICE1"),
-                        RequestCode("STAFF01"),
-                        RequestCode("TEAM99"),
-                        "Some notes about the appointment",
-                        true,
+        mockMvc
+            .post("/appointments") {
+                withToken()
+                json = CreateAppointmentsRequest(
+                    listOf(
+                        CreateAppointmentRequest(
+                            appointmentReference,
+                            REQUIREMENTS[2].id,
+                            null,
+                            LocalDate.now().minusDays(7),
+                            LocalTime.now(),
+                            LocalTime.now().plusMinutes(30),
+                            RequestCode("ATTC"),
+                            RequestCode("OFFICE1"),
+                            RequestCode("STAFF01"),
+                            RequestCode("TEAM99"),
+                            "Some notes about the appointment",
+                            true,
+                        )
                     )
                 )
-            )
-        }.andExpect { status { isNotFound() } }
+            }
+            .andExpect { status { isBadRequest() } }
+            .andReturn().response.contentAsJson<ErrorResponse>().also {
+                assertThat(it.message).isEqualTo("Invalid Team codes: [TEAM99]")
+            }
     }
 
     @Test
-    fun `can create an appointment`() {
-        val appointmentReference = UUID.randomUUID()
+    fun `can create appointments`() {
+        val requests = List(10) {
+            CreateAppointmentRequest(
+                UUID.randomUUID(),
+                REQUIREMENTS[2].id,
+                null,
+                LocalDate.now().minusDays(7),
+                LocalTime.now(),
+                LocalTime.now().plusMinutes(30),
+                RequestCode("ATTC"),
+                RequestCode("OFFICE1"),
+                RequestCode("STAFF01"),
+                RequestCode("TEAM01"),
+                "Some notes about the appointment",
+                true,
+            )
+        }
+
         mockMvc.post("/appointments") {
             withToken()
-            json = CreateAppointmentsRequest(
-                listOf(
-                    CreateAppointmentRequest(
-                        appointmentReference,
-                        REQUIREMENTS[2].id,
-                        null,
-                        LocalDate.now().minusDays(7),
-                        LocalTime.now(),
-                        LocalTime.now().plusMinutes(30),
-                        RequestCode("ATTC"),
-                        RequestCode("OFFICE1"),
-                        RequestCode("STAFF01"),
-                        RequestCode("TEAM01"),
-                        "Some notes about the appointment",
-                        true,
-                    )
-                )
-            )
+            json = CreateAppointmentsRequest(requests)
         }.andExpect { status { isCreated() } }
 
-        val appointment = contactRepository.findByExternalReference("${Contact.REFERENCE_PREFIX}$appointmentReference")
+        val appointment =
+            contactRepository.findByExternalReference("${Contact.REFERENCE_PREFIX}${requests[0].reference}")
         assertThat(appointment).isNotNull
         with(appointment!!) {
             assertThat(date).isEqualTo(LocalDate.now().minusDays(7))

@@ -23,7 +23,7 @@ data class CreateAppointmentRequest(
     val type: Type = Type.PROGRAMME_ATTENDANCE
 ) {
     init {
-        require((licenceConditionId == null && requirementId != null) || (requirementId == null && licenceConditionId != null)) {
+        require(listOfNotNull(licenceConditionId, requirementId).count() == 1) {
             "Either licence condition or requirement id must be specified."
         }
     }
