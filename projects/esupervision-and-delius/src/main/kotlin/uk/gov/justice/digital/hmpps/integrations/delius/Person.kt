@@ -7,8 +7,6 @@ import org.hibernate.type.NumericBooleanConverter
 import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
 import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException
-import uk.gov.justice.digital.hmpps.exception.NotFoundException
-import java.time.LocalDate
 
 @Entity
 @Immutable
@@ -25,6 +23,18 @@ class Person(
     @Id
     @Column(name = "offender_id")
     val id: Long,
+
+    @Column(name = "first_name")
+    val firstName: String,
+
+    @Column(name = "surname")
+    val lastName: String,
+
+    @Column(name = "mobile_number")
+    val mobile: String?,
+
+    @Column(name = "e_mail_address")
+    val emailAddress: String?
 )
 
 @Immutable
@@ -69,3 +79,8 @@ interface PersonManagerRepository : JpaRepository<PersonManager, Long> {
 
 fun PersonManagerRepository.getByCrn(crn: String) =
     findByPersonCrn(crn) ?: throw IgnorableMessageException("CRN not found")
+
+interface PersonRepository : JpaRepository<Person, Long> {
+    fun findByCrn(crn: String): Person?
+    fun findByCrnIn(crns: List<String>): List<Person>
+}
