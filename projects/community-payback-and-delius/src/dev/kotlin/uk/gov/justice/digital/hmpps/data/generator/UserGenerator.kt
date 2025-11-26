@@ -5,5 +5,5 @@ import uk.gov.justice.digital.hmpps.user.AuditUser
 
 object UserGenerator {
     val AUDIT_USER = AuditUser(IdGenerator.getAndIncrement(), "CommunityPaybackAndDelius")
-    val DEFAULT_USER = User(IdGenerator.getAndIncrement(), "DefaultUser")
+    val DEFAULT_USER = User(IdGenerator.getAndIncrement(), "DefaultUser", StaffGenerator.DEFAULT_STAFF)
 }

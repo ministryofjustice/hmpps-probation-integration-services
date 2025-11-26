@@ -25,11 +25,12 @@ class DataLoader(
 
     @Transactional
     override fun onApplicationEvent(are: ApplicationReadyEvent) {
-        loadUsers()
-        loadPeople()
         loadProviders()
         loadTeams()
         loadStaff()
+        loadUsers()
+        loadProbationAreaUsers()
+        loadPeople()
         loadReferenceData()
         loadUnpaidWorkData()
         loadLimitedAccessData()
@@ -50,10 +51,12 @@ class DataLoader(
         entityManager.persist(ProviderGenerator.DEFAULT_PROVIDER)
         entityManager.persist(ProviderGenerator.SECOND_PROVIDER)
         entityManager.persist(ProviderGenerator.UNSELECTABLE_PROVIDER)
+    }
 
-        entityManager.persist(ProviderGenerator.DEFAULT_PROBATION_AREA_USER)
-        entityManager.persist(ProviderGenerator.SECOND_DEFAULT_PROBATION_AREA_USER)
-        entityManager.persist(ProviderGenerator.DEFAULT_USER_UNSELECTABLE_PROBATION_AREA)
+    fun loadProbationAreaUsers() {
+        entityManager.persist(ProbationAreaUserGenerator.DEFAULT_PROBATION_AREA_USER)
+        entityManager.persist(ProbationAreaUserGenerator.SECOND_DEFAULT_PROBATION_AREA_USER)
+        entityManager.persist(ProbationAreaUserGenerator.DEFAULT_USER_UNSELECTABLE_PROBATION_AREA)
     }
 
     fun loadTeams() {

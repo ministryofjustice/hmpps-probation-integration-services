@@ -97,3 +97,6 @@ interface ContactOutcomeRepository : JpaRepository<ContactOutcome, Long> {
 
     fun findContactOutcomeByCode(code: String): ContactOutcome?
 }
+
+fun ContactOutcomeRepository.getContactOutcome(code: String) =
+    findContactOutcomeByCode(code) ?: throw NotFoundException("Contact Outcome", "code", code)

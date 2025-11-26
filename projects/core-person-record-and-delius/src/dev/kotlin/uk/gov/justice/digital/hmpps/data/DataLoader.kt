@@ -26,11 +26,13 @@ class DataLoader(
     @Transactional
     override fun onApplicationEvent(are: ApplicationReadyEvent) {
         saveAll(
+            PersonGenerator.RELIGION_HISTORY_UPDATER,
             PersonGenerator.TITLE,
             PersonGenerator.GENDER,
             PersonGenerator.GENDER_IDENTITY,
             PersonGenerator.ETHNICITY,
             PersonGenerator.RELIGION,
+            PersonGenerator.RELIGION_HX,
             PersonGenerator.NATIONALITY,
             PersonGenerator.MAIN_ADDRESS,
             PersonGenerator.PREVIOUS_ADDRESS,
@@ -45,6 +47,7 @@ class DataLoader(
             *PersonGenerator.FULL_PERSON_RESTRICTIONS.map { it.user }.toTypedArray(),
             *PersonGenerator.FULL_PERSON_RESTRICTIONS.toTypedArray(),
             *PersonGenerator.FULL_PERSON_IDENTIFIERS.toTypedArray(),
+            *PersonGenerator.FULL_PERSON_RELIGION_HISTORY.toTypedArray(),
             *PersonGenerator.SENTENCES.toTypedArray()
         )
     }

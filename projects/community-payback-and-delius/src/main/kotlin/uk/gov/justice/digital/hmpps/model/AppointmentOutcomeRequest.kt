@@ -7,15 +7,15 @@ data class AppointmentOutcomeRequest(
     val id: Long,
     val version: UUID,
     val outcome: Code?,
-    val supervisor: Code?,
+    val supervisor: Code,
     val startTime: LocalTime,
     val endTime: LocalTime,
     val notes: String?,
-    val hiVisWorn: Boolean,
-    val workedIntensively: Boolean,
-    val penaltyMinutes: Long,
-    val workQuality: String,
-    val behaviour: String,
-    val sensitive: Boolean,
-    val alertActive: Boolean
+    val hiVisWorn: Boolean?,
+    val workedIntensively: Boolean?,
+    val penaltyMinutes: Long?,
+    val workQuality: WorkQuality?,
+    val behaviour: Behaviour?,
+    val sensitive: Boolean?,
+    val alertActive: Boolean?
 )

@@ -3,12 +3,17 @@ package uk.gov.justice.digital.hmpps.integrations.delius.entity
 import com.fasterxml.jackson.annotation.JsonPropertyOrder
 import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
+import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.NumericBooleanConverter
 import org.hibernate.type.YesNoConverter
+import org.springframework.data.annotation.CreatedBy
 import org.springframework.data.annotation.CreatedDate
+import org.springframework.data.annotation.LastModifiedBy
 import org.springframework.data.annotation.LastModifiedDate
+import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
+import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.model.AppointmentResponseCase
 import uk.gov.justice.digital.hmpps.model.AppointmentResponseName
 import uk.gov.justice.digital.hmpps.model.CodeDescription
@@ -19,6 +24,8 @@ import java.time.ZonedDateTime
 
 @Entity
 @Table(name = "upw_appointment")
+@SQLRestriction("soft_deleted = 0")
+@EntityListeners(AuditingEntityListener::class)
 class UpwAppointment(
     @Id
     @SequenceGenerator(
@@ -46,11 +53,16 @@ class UpwAppointment(
 
     var endTime: LocalTime,
 
-    val appointmentDate: LocalDate,
+    @Column(name = "appointment_date")
+    val date: LocalDate,
 
-    val upwProjectId: Long,
+    @ManyToOne
+    @JoinColumn(name = "upw_project_id")
+    val project: UpwProject,
 
-    val upwDetailsId: Long,
+    @ManyToOne
+    @JoinColumn(name = "upw_details_id")
+    val details: UpwDetails,
 
     @ManyToOne
     @JoinColumn(name = "pick_up_location_id")
@@ -80,11 +92,11 @@ class UpwAppointment(
 
     @Convert(converter = YesNoConverter::class)
     @Column(name = "high_visibility_vest")
-    var hiVisWorn: Boolean,
+    var hiVisWorn: Boolean?,
 
     @Convert(converter = YesNoConverter::class)
     @Column(name = "intensive")
-    var workedIntensively: Boolean,
+    var workedIntensively: Boolean?,
 
     @ManyToOne
     @JoinColumn(name = "work_quality_id")
@@ -102,8 +114,14 @@ class UpwAppointment(
     @CreatedDate
     var createdDatetime: ZonedDateTime = ZonedDateTime.now(),
 
+    @CreatedBy
+    var createdByUserId: Long = 0,
+
     @LastModifiedDate
-    var lastUpdatedDatetime: ZonedDateTime = ZonedDateTime.now()
+    var lastUpdatedDatetime: ZonedDateTime = ZonedDateTime.now(),
+
+    @LastModifiedBy
+    var lastUpdatedUserId: Long = 0
 )
 
 fun UpwAppointment.toAppointmentResponseCase(
@@ -122,31 +140,9 @@ fun UpwAppointment.toAppointmentResponseCase(
     restrictionMessage = limitedAccess.restrictionMessage,
 )
 
-enum class WorkQuality(val value: String) {
-    EX("EXCELLENT"), GD("GOOD"), NA("NOT_APPLICABLE"), PR("POOR"),
-    ST("SATISFACTORY"), US("UNSATISFACTORY");
-
-    companion object {
-        fun of(value: String): WorkQuality? = WorkQuality.entries.firstOrNull {
-            it.value.equals(value, true)
-        }
-    }
-}
-
-enum class Behaviour(val value: String) {
-    EX("EXCELLENT"), GD("GOOD"), NA("NOT_APPLICABLE"), PR("POOR"),
-    SA("SATISFACTORY"), UN("UNSATISFACTORY");
-
-    companion object {
-        fun of(value: String): Behaviour? = Behaviour.entries.firstOrNull {
-            it.value.equals(value, true)
-        }
-    }
-}
-
 @Entity
-@Table(name = "upw_details")
 @Immutable
+@SQLRestriction("soft_deleted = 0")
 class UpwDetails(
     @Id
     @Column(name = "upw_details_id")
@@ -163,8 +159,6 @@ class UpwDetails(
     "projectId",
     "projectName",
     "projectCode",
-    "startTime",
-    "endTime",
     "appointmentDate",
     "allocatedCount",
     "outcomeCount",
@@ -174,8 +168,6 @@ interface UnpaidWorkSessionDto {
     val projectId: Long
     val projectName: String
     val projectCode: String
-    val startTime: LocalTime
-    val endTime: LocalTime
     val appointmentDate: LocalDate
     val allocatedCount: Long
     val outcomeCount: Long
@@ -199,6 +191,7 @@ data class UnpaidWorkSession(
 )
 
 interface UpwMinutesDto {
+    val id: Long
     val requiredMinutes: Long
     val completedMinutes: Long
 
@@ -235,8 +228,6 @@ interface UnpaidWorkAppointmentRepository : JpaRepository<UpwAppointment, Long> 
             select uwp.upw_project_id as "projectId",
                    uwp.upw_project_name as "projectName",
                    uwp.upw_project_code as "projectCode",
-                   uwa.start_time as "startTime",
-                   uwa.end_time as "endTime",
                    count(distinct uwa.upw_details_id) as "allocatedCount",
                    uwa.appointment_date as "appointmentDate",
                    count(distinct case when uwa.contact_outcome_type_id is not null then uwa.upw_appointment_id end) as "outcomeCount",
@@ -248,7 +239,7 @@ interface UnpaidWorkAppointmentRepository : JpaRepository<UpwAppointment, Long> 
                 left join "CONTACT" c on c.contact_id = uwa.contact_id
                 left join r_enforcement_action enf 
                        on enf.enforcement_action_id = c.latest_enforcement_action_id 
-            group by uwp.upw_project_id, uwp.upw_project_name, uwp.upw_project_code, uwa.start_time, uwa.end_time, uwa.appointment_date
+            group by uwp.upw_project_id, uwp.upw_project_name, uwp.upw_project_code, uwa.appointment_date
             order by uwa.appointment_date asc, uwp.upw_project_name
         """, nativeQuery = true
     )
@@ -256,13 +247,15 @@ interface UnpaidWorkAppointmentRepository : JpaRepository<UpwAppointment, Long> 
 
     fun getUpwAppointmentById(appointmentId: Long): UpwAppointment?
 
-    fun getUpwAppointmentsByAppointmentDate(
-        appointmentDate: LocalDate
+    fun findByDateAndProjectCodeAndDetailsSoftDeletedFalse(
+        appointmentDate: LocalDate,
+        projectCode: String
     ): List<UpwAppointment>
 
     @Query(
         """
         select
+            upw_details.upw_details_id as "id",
             case
                 when r_disposal_type.pre_cja2003 = 'Y' then disposal.length * 60
                 else coalesce(
@@ -281,8 +274,11 @@ interface UnpaidWorkAppointmentRepository : JpaRepository<UpwAppointment, Long> 
         join r_disposal_type
              on r_disposal_type.disposal_type_id = disposal.disposal_type_id
         where upw_details.soft_deleted = 0
-          and upw_details.upw_details_id = :upwDetailsId
+          and upw_details.upw_details_id in :upwDetailsId
     """, nativeQuery = true
     )
-    fun getUpwRequiredAndCompletedMinutes(upwDetailsId: Long): UpwMinutesDto
+    fun getUpwRequiredAndCompletedMinutes(upwDetailsId: List<Long>): List<UpwMinutesDto>
 }
+
+fun UnpaidWorkAppointmentRepository.getAppointment(id: Long) =
+    getUpwAppointmentById(id) ?: throw NotFoundException("Unpaid Work Appointment", "id", id)

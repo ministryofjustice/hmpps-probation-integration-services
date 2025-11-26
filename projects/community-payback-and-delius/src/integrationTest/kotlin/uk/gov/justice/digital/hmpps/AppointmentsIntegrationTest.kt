@@ -1,28 +1,30 @@
 package uk.gov.justice.digital.hmpps
 
-import com.github.tomakehurst.wiremock.WireMockServer
 import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions.within
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.web.servlet.MockMvc
+import org.springframework.test.web.servlet.get
 import org.springframework.test.web.servlet.put
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import uk.gov.justice.digital.hmpps.advice.ErrorResponse
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator
 import uk.gov.justice.digital.hmpps.data.generator.UPWGenerator
-import uk.gov.justice.digital.hmpps.integrations.delius.entity.*
-import uk.gov.justice.digital.hmpps.model.AppointmentOutcomeRequest
-import uk.gov.justice.digital.hmpps.model.AppointmentResponse
-import uk.gov.justice.digital.hmpps.model.Code
-import uk.gov.justice.digital.hmpps.model.SessionResponse
+import uk.gov.justice.digital.hmpps.integrations.delius.entity.ContactAlertRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.entity.EnforcementRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.entity.UnpaidWorkAppointmentRepository
+import uk.gov.justice.digital.hmpps.model.*
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.json
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 import java.time.LocalDate
 import java.time.LocalTime
+import java.time.temporal.ChronoUnit.SECONDS
 import java.util.*
 
 @AutoConfigureMockMvc
@@ -30,9 +32,6 @@ import java.util.*
 class AppointmentsIntegrationTest {
     @Autowired
     lateinit var mockMvc: MockMvc
-
-    @Autowired
-    internal lateinit var wireMockServer: WireMockServer
 
     @Autowired
     lateinit var unpaidWorkAppointmentRepository: UnpaidWorkAppointmentRepository
@@ -50,8 +49,16 @@ class AppointmentsIntegrationTest {
     lateinit var contactRepository: ContactRepository
 
     @Test
-    fun `can retrieve appointment details`() {
+    fun `non-existent project returns 404`() {
+        mockMvc.get("/projects/DOESNOTEXIST/appointments/123?username=DefaultUser") { withToken() }
+            .andExpect { status { isNotFound() } }
+            .andReturn().response.contentAsJson<ErrorResponse>().also {
+                assertThat(it.message).contains("Project with code of DOESNOTEXIST not found")
+            }
+    }
 
+    @Test
+    fun `can retrieve appointment details`() {
         val response = mockMvc
             .perform(get("/projects/N01DEFAULT/appointments/${UPWGenerator.DEFAULT_UPW_APPOINTMENT.id}?username=DefaultUser").withToken())
             .andExpect(status().is2xxSuccessful)
@@ -66,25 +73,20 @@ class AppointmentsIntegrationTest {
         assertThat(response.project.name).isEqualTo("Default UPW Project")
         assertThat(response.case.crn).isEqualTo(PersonGenerator.DEFAULT_PERSON.crn)
         assertThat(response.penaltyHours).isEqualTo("01:00")
-        assertThat(response.enforcementAction!!.respondBy).isEqualTo(response.date.plusDays(ReferenceDataGenerator.ROM_ENFORCEMENT_ACTION.responseByPeriod))
-        assertThat(response.behaviour).isEqualTo(Behaviour.EX.value)
-        assertThat(response.workQuality).isEqualTo(WorkQuality.EX.value)
+        assertThat(response.enforcementAction!!.respondBy).isEqualTo(response.date.plusDays(ReferenceDataGenerator.ROM_ENFORCEMENT_ACTION.responseByPeriod!!))
+        assertThat(response.behaviour).isEqualTo(Behaviour.EXCELLENT)
+        assertThat(response.workQuality).isEqualTo(WorkQuality.EXCELLENT)
     }
 
     @Test
     fun `can retrieve single session details`() {
         val response = mockMvc
-            .perform(
-                get(
-                    "/projects/N01DEFAULT/appointments?date=${
-                        LocalDate.now().plusDays(1)
-                    }&username=DefaultUser"
-                ).withToken()
-            )
-            .andExpect(status().is2xxSuccessful)
+            .get("/projects/N01SECOND/appointments?date=${LocalDate.now().plusDays(1)}&username=DefaultUser") {
+                withToken()
+            }
+            .andExpect { status().is2xxSuccessful }
             .andReturn().response.contentAsJson<SessionResponse>()
-
-        assertThat(response.project.name).isEqualTo("Default UPW Project")
+        assertThat(response.project.name).isEqualTo("Second UPW Project")
         assertThat(response.appointmentSummaries.size).isEqualTo(2)
         assertThat(response.appointmentSummaries[0].case.crn).isEqualTo("Z000001")
         assertThat(response.appointmentSummaries[0].requirementProgress.requiredMinutes).isEqualTo(120 * 60)
@@ -105,8 +107,8 @@ class AppointmentsIntegrationTest {
                 hiVisWorn = true,
                 workedIntensively = true,
                 penaltyMinutes = 5,
-                workQuality = "EXCELLENT",
-                behaviour = "UNSATISFACTORY",
+                workQuality = WorkQuality.EXCELLENT,
+                behaviour = Behaviour.UNSATISFACTORY,
                 sensitive = false,
                 alertActive = false,
             )
@@ -119,6 +121,7 @@ class AppointmentsIntegrationTest {
         assertThat(appointment).isNotNull
         assertThat(appointment!!.startTime).isEqualTo(LocalTime.of(11, 0))
         assertThat(appointment.endTime).isEqualTo(LocalTime.of(15, 0))
+        assertThat(appointment.lastUpdatedDatetime).isCloseTo(appointment.lastUpdatedDatetime, within(1, SECONDS))
 
         // tidy up
         unpaidWorkAppointmentRepository.delete(appointment)
@@ -139,8 +142,8 @@ class AppointmentsIntegrationTest {
                 hiVisWorn = true,
                 workedIntensively = true,
                 penaltyMinutes = 5,
-                workQuality = "EXCELLENT",
-                behaviour = "UNSATISFACTORY",
+                workQuality = WorkQuality.EXCELLENT,
+                behaviour = Behaviour.UNSATISFACTORY,
                 sensitive = false,
                 alertActive = true,
             )
@@ -167,8 +170,8 @@ class AppointmentsIntegrationTest {
                 hiVisWorn = true,
                 workedIntensively = true,
                 penaltyMinutes = 5,
-                workQuality = "EXCELLENT",
-                behaviour = "UNSATISFACTORY",
+                workQuality = WorkQuality.EXCELLENT,
+                behaviour = Behaviour.UNSATISFACTORY,
                 sensitive = false,
                 alertActive = true,
             )
@@ -178,30 +181,6 @@ class AppointmentsIntegrationTest {
         val enforcement = enforcementRepository.findAll()
             .firstOrNull { it.contact.id == UPWGenerator.UPW_APPOINTMENT_NO_ENFORCEMENT.contact.id }
         assertThat(enforcement).isNotNull
-    }
-
-    @Test
-    fun `past appointment without an outcome returns an error`() {
-        mockMvc.put("/projects/N01DEFAULT/appointments/${UPWGenerator.UPW_APPOINTMENT_PAST.id}/outcome") {
-            withToken()
-            json = AppointmentOutcomeRequest(
-                id = UPWGenerator.UPW_APPOINTMENT_NO_OUTCOME.id,
-                version = UUID(5, 5),
-                outcome = null,
-                supervisor = Code("N01P001"),
-                startTime = LocalTime.of(8, 0),
-                endTime = LocalTime.of(10, 0),
-                notes = "null outcome",
-                hiVisWorn = true,
-                workedIntensively = true,
-                penaltyMinutes = 5,
-                workQuality = "EXCELLENT",
-                behaviour = "EXCELLENT",
-                sensitive = false,
-                alertActive = true,
-            )
-        }
-            .andExpect { status().is4xxClientError }
     }
 
     @Test
@@ -254,8 +233,8 @@ class AppointmentsIntegrationTest {
                 hiVisWorn = true,
                 workedIntensively = true,
                 penaltyMinutes = 5,
-                workQuality = "EXCELLENT",
-                behaviour = "EXCELLENT",
+                workQuality = WorkQuality.EXCELLENT,
+                behaviour = Behaviour.EXCELLENT,
                 sensitive = false,
                 alertActive = true,
             )

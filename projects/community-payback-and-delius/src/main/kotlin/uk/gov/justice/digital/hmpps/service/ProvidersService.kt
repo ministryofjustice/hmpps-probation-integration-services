@@ -3,10 +3,7 @@ package uk.gov.justice.digital.hmpps.service
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.*
-import uk.gov.justice.digital.hmpps.model.ProvidersResponse
-import uk.gov.justice.digital.hmpps.model.SessionsResponse
-import uk.gov.justice.digital.hmpps.model.SupervisorsResponse
-import uk.gov.justice.digital.hmpps.model.TeamsResponse
+import uk.gov.justice.digital.hmpps.model.*
 import java.time.LocalDate
 import java.time.temporal.ChronoUnit
 
@@ -18,7 +15,7 @@ class ProvidersService(
     private val unpaidWorkAppointmentRepository: UnpaidWorkAppointmentRepository
 ) {
     fun getProvidersForUser(username: String): ProvidersResponse {
-        userRepository.findUserByUsername(username)
+        userRepository.findByUsername(username)
             ?: throw NotFoundException("User", "username", username)
 
         val probationAreaUsers = probationAreaUserRepository.findByUsername(username)
@@ -37,6 +34,13 @@ class ProvidersService(
 
         return SupervisorsResponse(supervisors = staff.map { it.toSupervisor() })
     }
+
+    fun getSupervisorsForUsername(username: String) = userRepository.getByUsername(username).staff?.let { staff ->
+        SupervisorResponse(
+            code = staff.code,
+            isUnpaidWorkTeamMember = staff.teams.any { it.unpaidWorkTeam }
+        )
+    } ?: throw NotFoundException("Staff code for user", "username", username)
 
     fun getSessions(teamCode: String, startDate: LocalDate, endDate: LocalDate): SessionsResponse {
         if (ChronoUnit.DAYS.between(startDate, endDate) > 7) {

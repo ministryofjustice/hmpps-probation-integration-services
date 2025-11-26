@@ -5,6 +5,10 @@ on:
     - cron: "30 7 * * MON" # Every Monday at 07:30 UTC
   workflow_dispatch:
 
+permissions:
+  contents: read
+  id-token: write
+
 jobs:
   allocation-failures:
     runs-on: ubuntu-latest
@@ -94,3 +98,31 @@ jobs:
           app_insights_key: ${{ secrets.APP_INSIGHTS_API_KEY }}
           app_insights_guid: ${{ secrets.APP_INSIGHTS_APPLICATION_GUID }}
           app_insights_subscription_id: ${{ secrets.APP_INSIGHTS_SUBSCRIPTION_ID }}
+
+  appointment-reminders-telemetry:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - id: get-timestamp
+        run: echo "timestamp=$(date -u +'%Y%m%d%H%M%SZ')" | tee -a "$GITHUB_OUTPUT"
+      - uses: ./.github/actions/app-insights-to-s3
+        with:
+          query: |
+            customEvents
+            | where timestamp between (startofday(ago(7d)) .. startofday(now()))
+            | where cloud_RoleName in ("appointment-reminders-and-delius")
+            | where name == "UnpaidWorkAppointmentReminderSent"
+            | project
+              timestamp,
+              eventName=name,
+              crn=customDimensions.crn,
+              providerCode=customDimensions.providerCode,
+              templateIds=customDimensions.templateIds,
+              notificationIds=customDimensions.notificationIds,
+              upwAppointmentIds=customDimensions.upwAppointmentIds
+            | order by timestamp desc
+          role-arn: ${{ secrets.ANALYTICAL_PLATFORM_EXPORT_S3_ROLE_TO_ASSUME }}
+          bucket-name: ${{ secrets.ANALYTICAL_PLATFORM_EXPORT_S3_BUCKET_NAME }}
+          bucket-prefix: /landing/hmpps-probation-integration/data/database_name=azure_monitor_application_insights/table_name=appointment_reminders_and_delius/extraction_timestamp=${{ steps.get-timestamp.outputs.timestamp }}/export.jsonl
+          app-insights-key: ${{ secrets.APP_INSIGHTS_API_KEY }}
+          app-insights-guid: ${{ secrets.APP_INSIGHTS_APPLICATION_GUID }}

@@ -22,7 +22,7 @@ class Contact(
 
     @ManyToOne
     @JoinColumn(name = "contact_outcome_type_id")
-    val contactOutcome: ContactOutcome? = null,
+    var contactOutcome: ContactOutcome? = null,
 
     @Convert(converter = YesNoConverter::class)
     var attended: Boolean? = null,

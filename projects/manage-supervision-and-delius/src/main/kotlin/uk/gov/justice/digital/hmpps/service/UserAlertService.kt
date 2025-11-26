@@ -13,6 +13,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.ContactA
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.PersonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.getContact
+import java.time.LocalTime
 
 @Service
 class UserAlertService(
@@ -59,6 +60,7 @@ private fun Contact.toUserAlert(noteId: Int? = null): UserAlert = UserAlert(
     person.crn,
     person.name(),
     date,
+    startTime?.toLocalTime() ?: LocalTime.MIN,
     description,
     if (noteId == null) formatNote(notes, true) else listOf(),
     noteId?.let { formatNote(notes, false).takeIf { it.size > noteId }?.get(noteId) },

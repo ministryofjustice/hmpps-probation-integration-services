@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.data.generator
 
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.*
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.ZonedDateTime
 
@@ -102,9 +103,9 @@ object UPWGenerator {
     val DEFAULT_UPW_APPOINTMENT = generateUpwAppointment(
         startTime = LocalTime.of(9, 0),
         endTime = LocalTime.of(17, 0),
-        appointmentDate = LocalDate.now(),
-        upwProjectId = DEFAULT_UPW_PROJECT.id,
-        upwDetailsId = DEFAULT_UPW_DETAILS.id,
+        date = LocalDate.now(),
+        project = DEFAULT_UPW_PROJECT,
+        details = DEFAULT_UPW_DETAILS,
         contact = DEFAULT_CONTACT,
         contactOutcomeTypeId = 1L,
         pickupLocation = DEFAULT_OFFICE_LOCATION,
@@ -121,9 +122,9 @@ object UPWGenerator {
     val LAO_EXCLUDED_UPW_APPOINTMENT = generateUpwAppointment(
         startTime = LocalTime.of(9, 0),
         endTime = LocalTime.of(17, 0),
-        appointmentDate = LocalDate.now(),
-        upwProjectId = DEFAULT_UPW_PROJECT.id,
-        upwDetailsId = DEFAULT_UPW_DETAILS.id,
+        date = LocalDate.now(),
+        project = DEFAULT_UPW_PROJECT,
+        details = DEFAULT_UPW_DETAILS,
         contact = DEFAULT_CONTACT,
         contactOutcomeTypeId = 1L,
         pickupLocation = DEFAULT_OFFICE_LOCATION,
@@ -140,9 +141,9 @@ object UPWGenerator {
     val LAO_RESTRICTED_UPW_APPOINTMENT = generateUpwAppointment(
         startTime = LocalTime.of(9, 0),
         endTime = LocalTime.of(17, 0),
-        appointmentDate = LocalDate.now(),
-        upwProjectId = DEFAULT_UPW_PROJECT.id,
-        upwDetailsId = DEFAULT_UPW_DETAILS.id,
+        date = LocalDate.now(),
+        project = DEFAULT_UPW_PROJECT,
+        details = DEFAULT_UPW_DETAILS,
         contact = DEFAULT_CONTACT,
         contactOutcomeTypeId = 1L,
         pickupLocation = DEFAULT_OFFICE_LOCATION,
@@ -159,9 +160,9 @@ object UPWGenerator {
     val UPW_APPOINTMENT_NO_ENFORCEMENT = generateUpwAppointment(
         startTime = LocalTime.of(10, 15),
         endTime = LocalTime.of(16, 30),
-        appointmentDate = LocalDate.now(),
-        upwProjectId = DEFAULT_UPW_PROJECT.id,
-        upwDetailsId = DEFAULT_UPW_DETAILS.id,
+        date = LocalDate.now(),
+        project = DEFAULT_UPW_PROJECT,
+        details = DEFAULT_UPW_DETAILS,
         contact = CONTACT_NO_ENFORCEMENT,
         contactOutcomeTypeId = 1L,
         pickupLocation = DEFAULT_OFFICE_LOCATION,
@@ -178,9 +179,9 @@ object UPWGenerator {
     val UPW_APPOINTMENT_NO_OUTCOME = generateUpwAppointment(
         startTime = LocalTime.of(12, 0),
         endTime = LocalTime.of(14, 0),
-        appointmentDate = LocalDate.now().plusDays(1),
-        upwProjectId = SECOND_UPW_PROJECT.id,
-        upwDetailsId = SECOND_UPW_DETAILS.id,
+        date = LocalDate.now().plusDays(1),
+        project = SECOND_UPW_PROJECT,
+        details = SECOND_UPW_DETAILS,
         contact = CONTACT_NO_ENFORCEMENT,
         contactOutcomeTypeId = null,
         pickupLocation = DEFAULT_OFFICE_LOCATION,
@@ -191,15 +192,17 @@ object UPWGenerator {
         team = TeamGenerator.DEFAULT_UPW_TEAM,
         workQuality = null,
         behaviour = null,
-        minutesCredited = 0L
+        minutesCredited = 0L,
+        createdDatetime = ZonedDateTime.now().minusDays(1),
+        lastUpdatedDatetime = ZonedDateTime.now().minusDays(1),
     )
 
     val SECOND_UPW_APPOINTMENT_OUTCOME_NO_ENFORCEMENT = generateUpwAppointment(
         startTime = LocalTime.of(12, 0),
         endTime = LocalTime.of(14, 0),
-        appointmentDate = LocalDate.now().plusDays(1),
-        upwProjectId = SECOND_UPW_PROJECT.id,
-        upwDetailsId = THIRD_UPW_DETAILS.id,
+        date = LocalDate.now().plusDays(1),
+        project = SECOND_UPW_PROJECT,
+        details = THIRD_UPW_DETAILS,
         contact = CONTACT_NO_ENFORCEMENT,
         contactOutcomeTypeId = 1L,
         pickupLocation = DEFAULT_OFFICE_LOCATION,
@@ -216,9 +219,9 @@ object UPWGenerator {
     val UPW_APPOINTMENT_PAST = generateUpwAppointment(
         startTime = LocalTime.of(9, 0),
         endTime = LocalTime.of(15, 0),
-        appointmentDate = LocalDate.now().minusDays(1),
-        upwProjectId = SECOND_UPW_PROJECT.id,
-        upwDetailsId = SECOND_UPW_DETAILS.id,
+        date = LocalDate.now().minusDays(1),
+        project = SECOND_UPW_PROJECT,
+        details = SECOND_UPW_DETAILS,
         contact = CONTACT_NO_ENFORCEMENT,
         contactOutcomeTypeId = null,
         pickupLocation = DEFAULT_OFFICE_LOCATION,
@@ -322,9 +325,9 @@ object UPWGenerator {
         softDeleted: Boolean = false,
         startTime: LocalTime,
         endTime: LocalTime,
-        appointmentDate: LocalDate,
-        upwProjectId: Long,
-        upwDetailsId: Long,
+        date: LocalDate,
+        project: UpwProject,
+        details: UpwDetails,
         pickupLocation: OfficeLocation,
         pickupTime: LocalTime,
         penaltyTime: Long?,
@@ -348,9 +351,9 @@ object UPWGenerator {
         softDeleted,
         startTime,
         endTime,
-        appointmentDate,
-        upwProjectId,
-        upwDetailsId,
+        date,
+        project,
+        details,
         pickupLocation,
         pickupTime,
         penaltyTime,
@@ -366,7 +369,9 @@ object UPWGenerator {
         minutesCredited,
         rowVersion,
         createdDatetime,
-        lastUpdatedDatetime
+        0,
+        lastUpdatedDatetime,
+        0,
     )
 
     fun generateAddress(
