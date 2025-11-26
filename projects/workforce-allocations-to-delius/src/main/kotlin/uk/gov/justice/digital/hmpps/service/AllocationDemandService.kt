@@ -149,7 +149,7 @@ class AllocationDemandService(
             ?: throw NotFoundException("Staff", "code", staffCode)
         val allocatingStaff = staffRepository.findStaffWithUserByUsername(allocatingStaffUsername)
             ?: throw NotFoundException("Staff", "username", allocatingStaffUsername)
-        val eventId = eventRepository.findByPersonCrnAndNumberAndSoftDeletedFalse(crn, eventNumber)?.id
+        val eventId = eventRepository.findByPersonCrnAndNumberAndActiveTrueAndSoftDeletedFalse(crn, eventNumber)?.id
             ?: throw NotFoundException("Event number $eventNumber not found for $crn")
 
         val requirements = caseViewRequirementRepository.findAllByDisposalEventId(eventId)
