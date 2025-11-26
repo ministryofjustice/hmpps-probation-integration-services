@@ -30,7 +30,7 @@ interface EventRepository : JpaRepository<Event, Long> {
     )
     fun updateIaps(eventId: Long, iapsFlagValue: Long = 1)
 
-    fun findByPersonCrnAndNumberAndSoftDeletedFalse(crn: String, number: String): Event?
+    fun findByPersonCrnAndNumberAndActiveTrueAndSoftDeletedFalse(crn: String, number: String): Event?
 
     @Query(
         """
@@ -79,5 +79,5 @@ interface EventRepository : JpaRepository<Event, Long> {
 }
 
 fun EventRepository.getByPersonCrnAndNumber(crn: String, number: String) =
-    findByPersonCrnAndNumberAndSoftDeletedFalse(crn, number)
+    findByPersonCrnAndNumberAndActiveTrueAndSoftDeletedFalse(crn, number)
         ?: throw NotFoundException("Event $number not found for crn $crn")

@@ -73,7 +73,7 @@ class AllocationCompletedServiceTest {
         whenever(personRepository.findByCrnAndSoftDeletedFalse(person.crn)).thenReturn(person)
         whenever(personRepository.findCaseType(person.crn)).thenReturn(COMMUNITY)
         whenever(
-            eventRepository.findByPersonCrnAndNumberAndSoftDeletedFalse(
+            eventRepository.findByPersonCrnAndNumberAndActiveTrueAndSoftDeletedFalse(
                 person.crn,
                 event.number
             )
@@ -93,7 +93,7 @@ class AllocationCompletedServiceTest {
         whenever(personRepository.findByCrnAndSoftDeletedFalse(person.crn)).thenReturn(person)
         whenever(personRepository.findCaseType(person.crn)).thenReturn(COMMUNITY)
         whenever(
-            eventRepository.findByPersonCrnAndNumberAndSoftDeletedFalse(
+            eventRepository.findByPersonCrnAndNumberAndActiveTrueAndSoftDeletedFalse(
                 person.crn,
                 event.number
             )
@@ -115,7 +115,7 @@ class AllocationCompletedServiceTest {
         whenever(personRepository.findByCrnAndSoftDeletedFalse(person.crn)).thenReturn(person)
         whenever(personRepository.findCaseType(person.crn)).thenReturn(COMMUNITY)
         whenever(
-            eventRepository.findByPersonCrnAndNumberAndSoftDeletedFalse(
+            eventRepository.findByPersonCrnAndNumberAndActiveTrueAndSoftDeletedFalse(
                 person.crn,
                 event.number
             )

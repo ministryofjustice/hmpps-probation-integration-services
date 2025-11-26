@@ -1,12 +1,18 @@
 package uk.gov.justice.digital.hmpps.repository
 
+import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import uk.gov.justice.digital.hmpps.entity.staff.Staff
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
+import uk.gov.justice.digital.hmpps.service.reportMissing
 
 interface StaffRepository : JpaRepository<Staff, Long> {
+    @EntityGraph(attributePaths = ["user"])
     fun findByCode(code: String): Staff?
+
+    @EntityGraph(attributePaths = ["user"])
+    fun findAllByCodeIn(code: Set<String>): List<Staff>
 
     @Query(
         """
@@ -33,6 +39,9 @@ interface StaffRepository : JpaRepository<Staff, Long> {
 
 fun StaffRepository.getByCode(code: String): Staff =
     findByCode(code) ?: throw NotFoundException("Staff", "code", code)
+
+fun StaffRepository.getAllByCodeIn(codes: List<String>) =
+    codes.toSet().let { codes -> findAllByCodeIn(codes).associateBy { it.code }.reportMissing(codes) }
 
 interface RegionMember {
     val staffCode: String

@@ -70,7 +70,12 @@ internal class AllocateEventServiceTest {
 
     @Test
     fun `when event not found exception thrown`() {
-        whenever(eventRepository.findByPersonCrnAndNumberAndSoftDeletedFalse(any(), any())).thenReturn(null)
+        whenever(
+            eventRepository.findByPersonCrnAndNumberAndActiveTrueAndSoftDeletedFalse(
+                any(),
+                any()
+            )
+        ).thenReturn(null)
 
         val ex = assertThrows<NotFoundException> {
             allocateEventService.createEventAllocation(
@@ -84,7 +89,7 @@ internal class AllocateEventServiceTest {
     @Test
     fun `when event not active exception thrown`() {
         whenever(
-            eventRepository.findByPersonCrnAndNumberAndSoftDeletedFalse(
+            eventRepository.findByPersonCrnAndNumberAndActiveTrueAndSoftDeletedFalse(
                 PersonGenerator.DEFAULT.crn,
                 allocationDetail.eventNumber.toString()
             )
@@ -103,7 +108,7 @@ internal class AllocateEventServiceTest {
     fun `when order manager not found for event and date exception thrown`() {
         val event = EventGenerator.generate()
         whenever(
-            eventRepository.findByPersonCrnAndNumberAndSoftDeletedFalse(
+            eventRepository.findByPersonCrnAndNumberAndActiveTrueAndSoftDeletedFalse(
                 PersonGenerator.DEFAULT.crn,
                 allocationDetail.eventNumber.toString()
             )
@@ -128,7 +133,7 @@ internal class AllocateEventServiceTest {
         )
         val event = EventGenerator.generate()
         whenever(
-            eventRepository.findByPersonCrnAndNumberAndSoftDeletedFalse(
+            eventRepository.findByPersonCrnAndNumberAndActiveTrueAndSoftDeletedFalse(
                 PersonGenerator.DEFAULT.crn,
                 allocationDetail.eventNumber.toString()
             )
@@ -150,7 +155,7 @@ internal class AllocateEventServiceTest {
     fun `when pending transfer for event exception thrown`() {
         val event = EventGenerator.generate()
         whenever(
-            eventRepository.findByPersonCrnAndNumberAndSoftDeletedFalse(
+            eventRepository.findByPersonCrnAndNumberAndActiveTrueAndSoftDeletedFalse(
                 PersonGenerator.DEFAULT.crn,
                 "1"
             )
@@ -173,7 +178,7 @@ internal class AllocateEventServiceTest {
     fun `when transfer reason not found exception thrown`() {
         val event = EventGenerator.generate()
         whenever(
-            eventRepository.findByPersonCrnAndNumberAndSoftDeletedFalse(
+            eventRepository.findByPersonCrnAndNumberAndActiveTrueAndSoftDeletedFalse(
                 PersonGenerator.DEFAULT.crn,
                 allocationDetail.eventNumber.toString()
             )
@@ -196,7 +201,7 @@ internal class AllocateEventServiceTest {
         val event = EventGenerator.generate()
         val spoStaffCode = "NOTFOUND"
         whenever(
-            eventRepository.findByPersonCrnAndNumberAndSoftDeletedFalse(
+            eventRepository.findByPersonCrnAndNumberAndActiveTrueAndSoftDeletedFalse(
                 PersonGenerator.DEFAULT.crn,
                 allocationDetail.eventNumber.toString()
             )
