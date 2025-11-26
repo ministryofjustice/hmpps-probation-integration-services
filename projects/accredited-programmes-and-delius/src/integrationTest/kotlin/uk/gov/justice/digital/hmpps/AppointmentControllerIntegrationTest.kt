@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps
 
 import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.EnumSource
@@ -20,6 +21,7 @@ import uk.gov.justice.digital.hmpps.advice.ErrorResponse
 import uk.gov.justice.digital.hmpps.data.TestData
 import uk.gov.justice.digital.hmpps.data.TestData.CA_COMMUNITY_EVENT
 import uk.gov.justice.digital.hmpps.data.TestData.CA_PERSON
+import uk.gov.justice.digital.hmpps.data.TestData.LICENCE_CONDITIONS
 import uk.gov.justice.digital.hmpps.data.TestData.REQUIREMENTS
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.toCrn
 import uk.gov.justice.digital.hmpps.entity.contact.Contact
@@ -325,11 +327,11 @@ internal class AppointmentControllerIntegrationTest(
     }
 
     @Test
-    fun `can create appointments`() {
-        val requests = List(10) {
+    fun `can not create appointment without one of requirement or licence condition id`() {
+        assertThatThrownBy {
             CreateAppointmentRequest(
                 UUID.randomUUID(),
-                REQUIREMENTS[2].id,
+                null,
                 null,
                 LocalDate.now().minusDays(7),
                 LocalTime.now(),
@@ -342,6 +344,32 @@ internal class AppointmentControllerIntegrationTest(
                 true,
             )
         }
+            .isInstanceOf(IllegalArgumentException::class.java)
+            .hasMessage("Either licence condition or requirement id must be specified.")
+    }
+
+    @Test
+    fun `can create appointments`() {
+        val request = CreateAppointmentRequest(
+            reference = UUID.randomUUID(),
+            requirementId = REQUIREMENTS[2].id,
+            licenceConditionId = null,
+            date = LocalDate.now().minusDays(7),
+            startTime = LocalTime.now(),
+            endTime = LocalTime.now().plusMinutes(30),
+            outcome = RequestCode("ATTC"),
+            location = RequestCode("OFFICE1"),
+            staff = RequestCode("STAFF01"),
+            team = RequestCode("TEAM01"),
+            notes = "Some notes about the appointment",
+            sensitive = true,
+        )
+        val requests = (List(3) { request } + List(3) {
+            request.copy(
+                requirementId = null,
+                licenceConditionId = LICENCE_CONDITIONS[1].id
+            )
+        }).map { it.copy(reference = UUID.randomUUID()) }
 
         mockMvc.post("/appointments") {
             withToken()
@@ -389,7 +417,8 @@ internal class AppointmentControllerIntegrationTest(
             )
         }.andExpect { status { isCreated() } }
 
-        val appointment = contactRepository.findByExternalReference("${Contact.REFERENCE_PREFIX}$appointmentReference")
+        val appointment =
+            contactRepository.findByExternalReference("${Contact.REFERENCE_PREFIX}$appointmentReference")
         assertThat(appointment).isNotNull
         with(appointment!!) {
             assertThat(date).isEqualTo(LocalDate.now().minusDays(7))
