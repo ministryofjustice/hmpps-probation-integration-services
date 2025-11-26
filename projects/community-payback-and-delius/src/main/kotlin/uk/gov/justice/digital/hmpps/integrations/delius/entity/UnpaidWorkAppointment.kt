@@ -6,8 +6,11 @@ import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.NumericBooleanConverter
 import org.hibernate.type.YesNoConverter
+import org.springframework.data.annotation.CreatedBy
 import org.springframework.data.annotation.CreatedDate
+import org.springframework.data.annotation.LastModifiedBy
 import org.springframework.data.annotation.LastModifiedDate
+import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
@@ -22,6 +25,7 @@ import java.time.ZonedDateTime
 @Entity
 @Table(name = "upw_appointment")
 @SQLRestriction("soft_deleted = 0")
+@EntityListeners(AuditingEntityListener::class)
 class UpwAppointment(
     @Id
     @SequenceGenerator(
@@ -110,8 +114,14 @@ class UpwAppointment(
     @CreatedDate
     var createdDatetime: ZonedDateTime = ZonedDateTime.now(),
 
+    @CreatedBy
+    var createdByUserId: Long = 0,
+
     @LastModifiedDate
-    var lastUpdatedDatetime: ZonedDateTime = ZonedDateTime.now()
+    var lastUpdatedDatetime: ZonedDateTime = ZonedDateTime.now(),
+
+    @LastModifiedBy
+    var lastUpdatedUserId: Long = 0
 )
 
 fun UpwAppointment.toAppointmentResponseCase(

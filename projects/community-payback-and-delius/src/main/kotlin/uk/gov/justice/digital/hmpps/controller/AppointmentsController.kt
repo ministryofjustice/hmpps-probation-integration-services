@@ -26,7 +26,8 @@ class AppointmentsController(
 
     @PutMapping(value = ["/{projectCode}/appointments/{appointmentId}/outcome"])
     fun updateAppointmentOutcome(
-        @PathVariable projectCode: String, @PathVariable appointmentId: Long,
+        @PathVariable projectCode: String,
+        @PathVariable appointmentId: Long,
         @RequestBody appointmentOutcome: AppointmentOutcomeRequest
     ) = appointmentsService.updateAppointmentOutcome(projectCode, appointmentId, appointmentOutcome)
 }

@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.data.generator
 
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.*
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.ZonedDateTime
 
@@ -168,7 +169,9 @@ object UPWGenerator {
         team = TeamGenerator.DEFAULT_UPW_TEAM,
         workQuality = null,
         behaviour = null,
-        minutesCredited = 0L
+        minutesCredited = 0L,
+        createdDatetime = ZonedDateTime.now().minusDays(1),
+        lastUpdatedDatetime = ZonedDateTime.now().minusDays(1),
     )
 
     val SECOND_UPW_APPOINTMENT_OUTCOME_NO_ENFORCEMENT = generateUpwAppointment(
@@ -320,7 +323,9 @@ object UPWGenerator {
         minutesCredited,
         rowVersion,
         createdDatetime,
-        lastUpdatedDatetime
+        0,
+        lastUpdatedDatetime,
+        0,
     )
 
     fun generateAddress(

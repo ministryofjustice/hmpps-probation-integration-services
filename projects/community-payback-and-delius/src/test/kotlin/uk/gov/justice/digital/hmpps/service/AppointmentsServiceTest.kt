@@ -9,6 +9,8 @@ import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.whenever
 import uk.gov.justice.digital.hmpps.data.generator.UPWGenerator
+import uk.gov.justice.digital.hmpps.data.generator.UPWGenerator.DEFAULT_UPW_PROJECT
+import uk.gov.justice.digital.hmpps.data.generator.UPWGenerator.SECOND_UPW_PROJECT
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.*
 import uk.gov.justice.digital.hmpps.model.AppointmentOutcomeRequest
 import uk.gov.justice.digital.hmpps.model.Behaviour
@@ -62,7 +64,7 @@ internal class AppointmentsServiceTest {
 
         val exception = assertThrows<IllegalArgumentException> {
             appointmentsService.updateAppointmentOutcome(
-                "N01UPW",
+                SECOND_UPW_PROJECT.code,
                 UPWGenerator.UPW_APPOINTMENT_PAST.id,
                 AppointmentOutcomeRequest(
                     id = UPWGenerator.UPW_APPOINTMENT_PAST.id,
@@ -93,7 +95,7 @@ internal class AppointmentsServiceTest {
 
         val exception = assertThrows<IllegalArgumentException> {
             appointmentsService.updateAppointmentOutcome(
-                "N01UPW",
+                DEFAULT_UPW_PROJECT.code,
                 UPWGenerator.DEFAULT_UPW_APPOINTMENT.id,
                 AppointmentOutcomeRequest(
                     id = UPWGenerator.DEFAULT_UPW_APPOINTMENT.id,

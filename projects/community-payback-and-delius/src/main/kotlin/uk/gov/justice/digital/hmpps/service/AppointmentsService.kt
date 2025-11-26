@@ -128,6 +128,9 @@ class AppointmentsService(
         request: AppointmentOutcomeRequest
     ) {
         val appointment = unpaidWorkAppointmentRepository.getAppointment(appointmentId)
+        require(projectCode == appointment.project.code) {
+            "Appointment is not for the provided project"
+        }
 
         val contact = appointment.contact
 
