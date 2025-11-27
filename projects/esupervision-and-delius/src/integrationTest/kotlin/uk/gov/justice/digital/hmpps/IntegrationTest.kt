@@ -21,8 +21,10 @@ import uk.gov.justice.digital.hmpps.integrations.delius.ContactType
 import uk.gov.justice.digital.hmpps.message.MessageAttributes
 import uk.gov.justice.digital.hmpps.message.Notification
 import uk.gov.justice.digital.hmpps.messaging.HmppsChannelManager
+import uk.gov.justice.digital.hmpps.model.PersonalDetails
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
+import java.time.LocalDate
 
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = RANDOM_PORT)
@@ -129,5 +131,66 @@ internal class IntegrationTest() {
         mockMvc.perform(post("/cases").withJson(crns).withToken())
             .andExpect(status().isOk)
             .andExpect { jsonPath("$.length()").value(1) }
+    }
+
+    @Test
+    fun `validate a correct set of details and return a 200 response status code`() {
+        val testBody = PersonalDetails(
+            crn = PersonGenerator.DEFAULT_PERSON.crn,
+            name = uk.gov.justice.digital.hmpps.model.Name(
+                forename = PersonGenerator.DEFAULT_PERSON.firstName,
+                surname = PersonGenerator.DEFAULT_PERSON.lastName
+            ),
+            dateOfBirth = PersonGenerator.DEFAULT_PERSON.dateOfBirth
+        )
+        mockMvc.perform(
+            post("/case/{${PersonGenerator.DEFAULT_PERSON.crn}/validate-details").withJson(testBody).withToken()
+        )
+            .andExpect(status().isOk)
+    }
+
+    @Test
+    fun `validate an correct set of details, with name wrong case and return a 200 response status code`() {
+        val testBody = PersonalDetails(
+            crn = PersonGenerator.DEFAULT_PERSON.crn,
+            name = uk.gov.justice.digital.hmpps.model.Name(
+                forename = PersonGenerator.DEFAULT_PERSON.firstName.uppercase(),
+                surname = PersonGenerator.DEFAULT_PERSON.lastName.uppercase()
+            ),
+            dateOfBirth = PersonGenerator.DEFAULT_PERSON.dateOfBirth
+        )
+        mockMvc.perform(
+            post("/case/{${PersonGenerator.DEFAULT_PERSON.crn}/validate-details").withJson(testBody).withToken()
+        ).andExpect(status().isOk)
+    }
+
+    @Test
+    fun `validate an incorrect set of details and return a 400 response status code`() {
+        val testBody = PersonalDetails(
+            crn = PersonGenerator.DEFAULT_PERSON.crn,
+            name = uk.gov.justice.digital.hmpps.model.Name(
+                forename = "WrongForename",
+                surname = "WrongSurname"
+            ),
+            dateOfBirth = PersonGenerator.DEFAULT_PERSON.dateOfBirth
+        )
+        mockMvc.perform(
+            post("/case/{${PersonGenerator.DEFAULT_PERSON.crn}/validate-details").withJson(testBody).withToken()
+        )
+            .andExpect(status().isBadRequest)
+    }
+
+    @Test
+    fun `validate details for a non existent crn and return a 404 response status code`() {
+        val testBody = PersonalDetails(
+            crn = "NOT_A_CRN",
+            name = uk.gov.justice.digital.hmpps.model.Name(
+                forename = "AnyForename",
+                surname = "AnySurname"
+            ),
+            dateOfBirth = LocalDate.parse("2000-01-01")
+        )
+        mockMvc.perform(post("/case/NOT_A_CRN/validate-details").withJson(testBody).withToken())
+            .andExpect(status().isNotFound)
     }
 }

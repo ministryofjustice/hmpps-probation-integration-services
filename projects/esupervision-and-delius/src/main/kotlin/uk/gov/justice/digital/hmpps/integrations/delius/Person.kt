@@ -7,6 +7,7 @@ import org.hibernate.type.NumericBooleanConverter
 import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
 import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException
+import java.time.LocalDate
 
 @Entity
 @Immutable
@@ -23,6 +24,9 @@ class Person(
     @Id
     @Column(name = "offender_id")
     val id: Long,
+
+    @Column(name = "date_of_birth_date")
+    val dateOfBirth: LocalDate,
 
     @Column(name = "first_name")
     val firstName: String,
@@ -84,3 +88,4 @@ interface PersonRepository : JpaRepository<Person, Long> {
     fun findByCrn(crn: String): Person?
     fun findByCrnIn(crns: List<String>): List<Person>
 }
+
