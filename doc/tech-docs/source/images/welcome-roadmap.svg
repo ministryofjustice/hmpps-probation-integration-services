@@ -1,0 +1,358 @@
+<?xml version="1.0" encoding="utf-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" data-d2-version="v0.7.0"
+     preserveAspectRatio="xMidYMid meet" viewBox="0 0 2592 286">
+    <svg class="d2-2036142477 d2-svg" width="2592" height="286" viewBox="-16 -16 2592 286">
+        <rect x="-15.000000" y="-15.000000" width="2590.000000" height="284.000000" rx="0.000000" stroke="#000000"
+              fill="#ffffff" stroke-width="2"/>
+        <style type="text/css"><![CDATA[
+.d2-2036142477 .text-mono {
+	font-family: "d2-2036142477-font-mono";
+}
+@font-face {
+	font-family: d2-2036142477-font-mono;
+	src: url("data:application/font-woff;base64,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");
+}]]></style>
+        <style type="text/css"><![CDATA[.shape {
+  shape-rendering: geometricPrecision;
+  stroke-linejoin: round;
+}
+.connection {
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.blend {
+  mix-blend-mode: multiply;
+  opacity: 0.5;
+}
+
+		.d2-2036142477 .fill-N1{fill:#0A0F25;}
+		.d2-2036142477 .fill-N2{fill:#676C7E;}
+		.d2-2036142477 .fill-N3{fill:#9499AB;}
+		.d2-2036142477 .fill-N4{fill:#CFD2DD;}
+		.d2-2036142477 .fill-N5{fill:#DEE1EB;}
+		.d2-2036142477 .fill-N6{fill:#EEF1F8;}
+		.d2-2036142477 .fill-N7{fill:#FFFFFF;}
+		.d2-2036142477 .fill-B1{fill:#010E31;}
+		.d2-2036142477 .fill-B2{fill:#173688;}
+		.d2-2036142477 .fill-B3{fill:#5679D4;}
+		.d2-2036142477 .fill-B4{fill:#84A1EC;}
+		.d2-2036142477 .fill-B5{fill:#C8D6F9;}
+		.d2-2036142477 .fill-B6{fill:#E5EDFF;}
+		.d2-2036142477 .fill-AA2{fill:#048E63;}
+		.d2-2036142477 .fill-AA4{fill:#A6E2D0;}
+		.d2-2036142477 .fill-AA5{fill:#CAF2E6;}
+		.d2-2036142477 .fill-AB4{fill:#FFDA90;}
+		.d2-2036142477 .fill-AB5{fill:#FFF0D1;}
+		.d2-2036142477 .stroke-N1{stroke:#0A0F25;}
+		.d2-2036142477 .stroke-N2{stroke:#676C7E;}
+		.d2-2036142477 .stroke-N3{stroke:#9499AB;}
+		.d2-2036142477 .stroke-N4{stroke:#CFD2DD;}
+		.d2-2036142477 .stroke-N5{stroke:#DEE1EB;}
+		.d2-2036142477 .stroke-N6{stroke:#EEF1F8;}
+		.d2-2036142477 .stroke-N7{stroke:#FFFFFF;}
+		.d2-2036142477 .stroke-B1{stroke:#010E31;}
+		.d2-2036142477 .stroke-B2{stroke:#173688;}
+		.d2-2036142477 .stroke-B3{stroke:#5679D4;}
+		.d2-2036142477 .stroke-B4{stroke:#84A1EC;}
+		.d2-2036142477 .stroke-B5{stroke:#C8D6F9;}
+		.d2-2036142477 .stroke-B6{stroke:#E5EDFF;}
+		.d2-2036142477 .stroke-AA2{stroke:#048E63;}
+		.d2-2036142477 .stroke-AA4{stroke:#A6E2D0;}
+		.d2-2036142477 .stroke-AA5{stroke:#CAF2E6;}
+		.d2-2036142477 .stroke-AB4{stroke:#FFDA90;}
+		.d2-2036142477 .stroke-AB5{stroke:#FFF0D1;}
+		.d2-2036142477 .background-color-N1{background-color:#0A0F25;}
+		.d2-2036142477 .background-color-N2{background-color:#676C7E;}
+		.d2-2036142477 .background-color-N3{background-color:#9499AB;}
+		.d2-2036142477 .background-color-N4{background-color:#CFD2DD;}
+		.d2-2036142477 .background-color-N5{background-color:#DEE1EB;}
+		.d2-2036142477 .background-color-N6{background-color:#EEF1F8;}
+		.d2-2036142477 .background-color-N7{background-color:#FFFFFF;}
+		.d2-2036142477 .background-color-B1{background-color:#010E31;}
+		.d2-2036142477 .background-color-B2{background-color:#173688;}
+		.d2-2036142477 .background-color-B3{background-color:#5679D4;}
+		.d2-2036142477 .background-color-B4{background-color:#84A1EC;}
+		.d2-2036142477 .background-color-B5{background-color:#C8D6F9;}
+		.d2-2036142477 .background-color-B6{background-color:#E5EDFF;}
+		.d2-2036142477 .background-color-AA2{background-color:#048E63;}
+		.d2-2036142477 .background-color-AA4{background-color:#A6E2D0;}
+		.d2-2036142477 .background-color-AA5{background-color:#CAF2E6;}
+		.d2-2036142477 .background-color-AB4{background-color:#FFDA90;}
+		.d2-2036142477 .background-color-AB5{background-color:#FFF0D1;}
+		.d2-2036142477 .color-N1{color:#0A0F25;}
+		.d2-2036142477 .color-N2{color:#676C7E;}
+		.d2-2036142477 .color-N3{color:#9499AB;}
+		.d2-2036142477 .color-N4{color:#CFD2DD;}
+		.d2-2036142477 .color-N5{color:#DEE1EB;}
+		.d2-2036142477 .color-N6{color:#EEF1F8;}
+		.d2-2036142477 .color-N7{color:#FFFFFF;}
+		.d2-2036142477 .color-B1{color:#010E31;}
+		.d2-2036142477 .color-B2{color:#173688;}
+		.d2-2036142477 .color-B3{color:#5679D4;}
+		.d2-2036142477 .color-B4{color:#84A1EC;}
+		.d2-2036142477 .color-B5{color:#C8D6F9;}
+		.d2-2036142477 .color-B6{color:#E5EDFF;}
+		.d2-2036142477 .color-AA2{color:#048E63;}
+		.d2-2036142477 .color-AA4{color:#A6E2D0;}
+		.d2-2036142477 .color-AA5{color:#CAF2E6;}
+		.d2-2036142477 .color-AB4{color:#FFDA90;}
+		.d2-2036142477 .color-AB5{color:#FFF0D1;}.appendix text.text{fill:#0A0F25}.md{--color-fg-default:#0A0F25;--color-fg-muted:#676C7E;--color-fg-subtle:#9499AB;--color-canvas-default:#FFFFFF;--color-canvas-subtle:#EEF1F8;--color-border-default:#010E31;--color-border-muted:#173688;--color-neutral-muted:#EEF1F8;--color-accent-fg:#173688;--color-accent-emphasis:#173688;--color-attention-subtle:#676C7E;--color-danger-fg:red;}.sketch-overlay-B1{fill:url(#streaks-darker-d2-2036142477);mix-blend-mode:lighten}.sketch-overlay-B2{fill:url(#streaks-darker-d2-2036142477);mix-blend-mode:lighten}.sketch-overlay-B3{fill:url(#streaks-dark-d2-2036142477);mix-blend-mode:overlay}.sketch-overlay-B4{fill:url(#streaks-normal-d2-2036142477);mix-blend-mode:color-burn}.sketch-overlay-B5{fill:url(#streaks-normal-d2-2036142477);mix-blend-mode:color-burn}.sketch-overlay-B6{fill:url(#streaks-bright-d2-2036142477);mix-blend-mode:darken}.sketch-overlay-AA2{fill:url(#streaks-dark-d2-2036142477);mix-blend-mode:overlay}.sketch-overlay-AA4{fill:url(#streaks-normal-d2-2036142477);mix-blend-mode:color-burn}.sketch-overlay-AA5{fill:url(#streaks-bright-d2-2036142477);mix-blend-mode:darken}.sketch-overlay-AB4{fill:url(#streaks-normal-d2-2036142477);mix-blend-mode:color-burn}.sketch-overlay-AB5{fill:url(#streaks-bright-d2-2036142477);mix-blend-mode:darken}.sketch-overlay-N1{fill:url(#streaks-darker-d2-2036142477);mix-blend-mode:lighten}.sketch-overlay-N2{fill:url(#streaks-dark-d2-2036142477);mix-blend-mode:overlay}.sketch-overlay-N3{fill:url(#streaks-normal-d2-2036142477);mix-blend-mode:color-burn}.sketch-overlay-N4{fill:url(#streaks-normal-d2-2036142477);mix-blend-mode:color-burn}.sketch-overlay-N5{fill:url(#streaks-bright-d2-2036142477);mix-blend-mode:darken}.sketch-overlay-N6{fill:url(#streaks-bright-d2-2036142477);mix-blend-mode:darken}.sketch-overlay-N7{fill:url(#streaks-bright-d2-2036142477);mix-blend-mode:darken}.light-code{display: block}.dark-code{display: none}]]></style>
+        <clipPath id="d2-2036142477-KJSXC5LJOJSW2ZLOORZQ">
+            <path d="M 12.000000 22.000000 L 12.000000 22.000000 S 12.000000 12.000000 22.000000 12.000000 L 328.000000 12.000000 L 328.000000 12.000000 S 338.000000 12.000000 338.000000 22.000000 L 338.000000 232.000000 S 338.000000  242.000000 328.000000 242.000000 L 22.000000 242.000000 S 12.000000 242.000000 12.000000 232.000000L 12.000000 22.000000Z 12.000000 12.000000"
+                  fill="none"/>
+        </clipPath>
+        <g class="UmVxdWlyZW1lbnRz process_step">
+            <g class="shape">
+                <rect x="12.000000" y="12.000000" width="326.000000" height="230.000000" rx="10.000000" ry="10.000000"
+                      stroke="#f5f5f5" fill="#333333" style="stroke-width:2;"/>
+                <rect x="12.000000" y="12.000000" width="326.000000" height="92.000000" fill="#f5f5f5"
+                      class="class_header" clip-path="url(#d2-2036142477-Requirements)"/>
+                <text x="175.000000" y="62.500000" fill="#333333" class="text-mono"
+                      style="text-anchor:middle;font-size:24px;">1. Requirements
+                </text>
+                <text x="22.000000" y="132.000000" fill="#173688" class="text-mono fill-B2"
+                      style="text-anchor:start;font-size:20px">+
+                </text>
+                <text x="42.000000" y="132.000000" fill="#f5f5f5" class="text-mono"
+                      style="text-anchor:start;font-size:20px">Initial chat
+                </text>
+                <text x="318.000000" y="132.000000" fill="#048E63" class="text-mono fill-AA2"
+                      style="text-anchor:end;font-size:20px"/>
+                <text x="22.000000" y="178.000000" fill="#173688" class="text-mono fill-B2"
+                      style="text-anchor:start;font-size:20px">+
+                </text>
+                <text x="42.000000" y="178.000000" fill="#f5f5f5" class="text-mono"
+                      style="text-anchor:start;font-size:20px">Understand use case
+                </text>
+                <text x="318.000000" y="178.000000" fill="#048E63" class="text-mono fill-AA2"
+                      style="text-anchor:end;font-size:20px"/>
+                <text x="22.000000" y="224.000000" fill="#173688" class="text-mono fill-B2"
+                      style="text-anchor:start;font-size:20px">+
+                </text>
+                <text x="42.000000" y="224.000000" fill="#f5f5f5" class="text-mono"
+                      style="text-anchor:start;font-size:20px">Align on timelines
+                </text>
+                <text x="318.000000" y="224.000000" fill="#048E63" class="text-mono fill-AA2"
+                      style="text-anchor:end;font-size:20px"/>
+                <line x1="22.000000" x2="328.000000" y1="242.000000" y2="242.000000" stroke="#f5f5f5"
+                      style="stroke-width:1"/>
+            </g>
+        </g>
+        <clipPath id="d2-2036142477-INXW23LVNZUWGYLUNFXW4">
+            <path d="M 408.000000 45.000000 L 408.000000 45.000000 S 408.000000 35.000000 418.000000 35.000000 L 820.000000 35.000000 L 820.000000 35.000000 S 830.000000 35.000000 830.000000 45.000000 L 830.000000 209.000000 S 830.000000  219.000000 820.000000 219.000000 L 418.000000 219.000000 S 408.000000 219.000000 408.000000 209.000000L 408.000000 45.000000Z 408.000000 35.000000"
+                  fill="none"/>
+        </clipPath>
+        <g class="Q29tbXVuaWNhdGlvbg== process_step">
+            <g class="shape">
+                <rect x="408.000000" y="35.000000" width="422.000000" height="184.000000" rx="10.000000" ry="10.000000"
+                      stroke="#f5f5f5" fill="#333333" style="stroke-width:2;"/>
+                <rect x="408.000000" y="35.000000" width="422.000000" height="92.000000" fill="#f5f5f5"
+                      class="class_header" clip-path="url(#d2-2036142477-Communication)"/>
+                <text x="619.000000" y="85.500000" fill="#333333" class="text-mono"
+                      style="text-anchor:middle;font-size:24px;">2. Communication
+                </text>
+                <text x="418.000000" y="155.000000" fill="#173688" class="text-mono fill-B2"
+                      style="text-anchor:start;font-size:20px">+
+                </text>
+                <text x="438.000000" y="155.000000" fill="#f5f5f5" class="text-mono"
+                      style="text-anchor:start;font-size:20px">Create shared Slack channel
+                </text>
+                <text x="810.000000" y="155.000000" fill="#048E63" class="text-mono fill-AA2"
+                      style="text-anchor:end;font-size:20px"/>
+                <text x="418.000000" y="201.000000" fill="#173688" class="text-mono fill-B2"
+                      style="text-anchor:start;font-size:20px">+
+                </text>
+                <text x="438.000000" y="201.000000" fill="#f5f5f5" class="text-mono"
+                      style="text-anchor:start;font-size:20px">Set up weekly catch-up
+                </text>
+                <text x="810.000000" y="201.000000" fill="#048E63" class="text-mono fill-AA2"
+                      style="text-anchor:end;font-size:20px"/>
+                <line x1="418.000000" x2="820.000000" y1="219.000000" y2="219.000000" stroke="#f5f5f5"
+                      style="stroke-width:1"/>
+            </g>
+        </g>
+        <clipPath id="d2-2036142477-IRSXG2LHNY">
+            <path d="M 900.000000 22.000000 L 900.000000 22.000000 S 900.000000 12.000000 910.000000 12.000000 L 1300.000000 12.000000 L 1300.000000 12.000000 S 1310.000000 12.000000 1310.000000 22.000000 L 1310.000000 232.000000 S 1310.000000  242.000000 1300.000000 242.000000 L 910.000000 242.000000 S 900.000000 242.000000 900.000000 232.000000L 900.000000 22.000000Z 900.000000 12.000000"
+                  fill="none"/>
+        </clipPath>
+        <g class="RGVzaWdu process_step">
+            <g class="shape">
+                <rect x="900.000000" y="12.000000" width="410.000000" height="230.000000" rx="10.000000" ry="10.000000"
+                      stroke="#f5f5f5" fill="#333333" style="stroke-width:2;"/>
+                <rect x="900.000000" y="12.000000" width="410.000000" height="92.000000" fill="#f5f5f5"
+                      class="class_header" clip-path="url(#d2-2036142477-Design)"/>
+                <text x="1105.000000" y="62.500000" fill="#333333" class="text-mono"
+                      style="text-anchor:middle;font-size:24px;">3. Design
+                </text>
+                <text x="910.000000" y="132.000000" fill="#173688" class="text-mono fill-B2"
+                      style="text-anchor:start;font-size:20px">+
+                </text>
+                <text x="930.000000" y="132.000000" fill="#f5f5f5" class="text-mono"
+                      style="text-anchor:start;font-size:20px">Define API endpoints
+                </text>
+                <text x="1290.000000" y="132.000000" fill="#048E63" class="text-mono fill-AA2"
+                      style="text-anchor:end;font-size:20px"/>
+                <text x="910.000000" y="178.000000" fill="#173688" class="text-mono fill-B2"
+                      style="text-anchor:start;font-size:20px">+
+                </text>
+                <text x="930.000000" y="178.000000" fill="#f5f5f5" class="text-mono"
+                      style="text-anchor:start;font-size:20px">Define Event schemas
+                </text>
+                <text x="1290.000000" y="178.000000" fill="#048E63" class="text-mono fill-AA2"
+                      style="text-anchor:end;font-size:20px"/>
+                <text x="910.000000" y="224.000000" fill="#173688" class="text-mono fill-B2"
+                      style="text-anchor:start;font-size:20px">+
+                </text>
+                <text x="930.000000" y="224.000000" fill="#f5f5f5" class="text-mono"
+                      style="text-anchor:start;font-size:20px">Create Jira Epic &amp; Stories
+                </text>
+                <text x="1290.000000" y="224.000000" fill="#048E63" class="text-mono fill-AA2"
+                      style="text-anchor:end;font-size:20px"/>
+                <line x1="910.000000" x2="1300.000000" y1="242.000000" y2="242.000000" stroke="#f5f5f5"
+                      style="stroke-width:1"/>
+            </g>
+        </g>
+        <clipPath id="d2-2036142477-IRSXMZLMN5YG2ZLOOQ">
+            <path d="M 1380.000000 22.000000 L 1380.000000 22.000000 S 1380.000000 12.000000 1390.000000 12.000000 L 1744.000000 12.000000 L 1744.000000 12.000000 S 1754.000000 12.000000 1754.000000 22.000000 L 1754.000000 232.000000 S 1754.000000  242.000000 1744.000000 242.000000 L 1390.000000 242.000000 S 1380.000000 242.000000 1380.000000 232.000000L 1380.000000 22.000000Z 1380.000000 12.000000"
+                  fill="none"/>
+        </clipPath>
+        <g class="RGV2ZWxvcG1lbnQ= process_step">
+            <g class="shape">
+                <rect x="1380.000000" y="12.000000" width="374.000000" height="230.000000" rx="10.000000" ry="10.000000"
+                      stroke="#f5f5f5" fill="#333333" style="stroke-width:2;"/>
+                <rect x="1380.000000" y="12.000000" width="374.000000" height="92.000000" fill="#f5f5f5"
+                      class="class_header" clip-path="url(#d2-2036142477-Development)"/>
+                <text x="1567.000000" y="62.500000" fill="#333333" class="text-mono"
+                      style="text-anchor:middle;font-size:24px;">4. Development
+                </text>
+                <text x="1390.000000" y="132.000000" fill="#173688" class="text-mono fill-B2"
+                      style="text-anchor:start;font-size:20px">+
+                </text>
+                <text x="1410.000000" y="132.000000" fill="#f5f5f5" class="text-mono"
+                      style="text-anchor:start;font-size:20px">Build Read APIs
+                </text>
+                <text x="1734.000000" y="132.000000" fill="#048E63" class="text-mono fill-AA2"
+                      style="text-anchor:end;font-size:20px"/>
+                <text x="1390.000000" y="178.000000" fill="#173688" class="text-mono fill-B2"
+                      style="text-anchor:start;font-size:20px">+
+                </text>
+                <text x="1410.000000" y="178.000000" fill="#f5f5f5" class="text-mono"
+                      style="text-anchor:start;font-size:20px">Build Event Consumers
+                </text>
+                <text x="1734.000000" y="178.000000" fill="#048E63" class="text-mono fill-AA2"
+                      style="text-anchor:end;font-size:20px"/>
+                <text x="1390.000000" y="224.000000" fill="#173688" class="text-mono fill-B2"
+                      style="text-anchor:start;font-size:20px">+
+                </text>
+                <text x="1410.000000" y="224.000000" fill="#f5f5f5" class="text-mono"
+                      style="text-anchor:start;font-size:20px">Deploy to Dev &amp; Preprod
+                </text>
+                <text x="1734.000000" y="224.000000" fill="#048E63" class="text-mono fill-AA2"
+                      style="text-anchor:end;font-size:20px"/>
+                <line x1="1390.000000" x2="1744.000000" y1="242.000000" y2="242.000000" stroke="#f5f5f5"
+                      style="stroke-width:1"/>
+            </g>
+        </g>
+        <clipPath id="d2-2036142477-KRSXG5DJNZTQ">
+            <path d="M 1824.000000 45.000000 L 1824.000000 45.000000 S 1824.000000 35.000000 1834.000000 35.000000 L 2117.000000 35.000000 L 2117.000000 35.000000 S 2127.000000 35.000000 2127.000000 45.000000 L 2127.000000 209.000000 S 2127.000000  219.000000 2117.000000 219.000000 L 1834.000000 219.000000 S 1824.000000 219.000000 1824.000000 209.000000L 1824.000000 45.000000Z 1824.000000 35.000000"
+                  fill="none"/>
+        </clipPath>
+        <g class="VGVzdGluZw== process_step">
+            <g class="shape">
+                <rect x="1824.000000" y="35.000000" width="303.000000" height="184.000000" rx="10.000000" ry="10.000000"
+                      stroke="#f5f5f5" fill="#333333" style="stroke-width:2;"/>
+                <rect x="1824.000000" y="35.000000" width="303.000000" height="92.000000" fill="#f5f5f5"
+                      class="class_header" clip-path="url(#d2-2036142477-Testing)"/>
+                <text x="1975.500000" y="85.500000" fill="#333333" class="text-mono"
+                      style="text-anchor:middle;font-size:24px;">5. Testing
+                </text>
+                <text x="1834.000000" y="155.000000" fill="#173688" class="text-mono fill-B2"
+                      style="text-anchor:start;font-size:20px">+
+                </text>
+                <text x="1854.000000" y="155.000000" fill="#f5f5f5" class="text-mono"
+                      style="text-anchor:start;font-size:20px">Write E2E tests
+                </text>
+                <text x="2107.000000" y="155.000000" fill="#048E63" class="text-mono fill-AA2"
+                      style="text-anchor:end;font-size:20px"/>
+                <text x="1834.000000" y="201.000000" fill="#173688" class="text-mono fill-B2"
+                      style="text-anchor:start;font-size:20px">+
+                </text>
+                <text x="1854.000000" y="201.000000" fill="#f5f5f5" class="text-mono"
+                      style="text-anchor:start;font-size:20px">Verify in Preprod
+                </text>
+                <text x="2107.000000" y="201.000000" fill="#048E63" class="text-mono fill-AA2"
+                      style="text-anchor:end;font-size:20px"/>
+                <line x1="1834.000000" x2="2117.000000" y1="219.000000" y2="219.000000" stroke="#f5f5f5"
+                      style="stroke-width:1"/>
+            </g>
+        </g>
+        <clipPath id="d2-2036142477-I5XSATDJOZSQ">
+            <path d="M 2197.000000 45.000000 L 2197.000000 45.000000 S 2197.000000 35.000000 2207.000000 35.000000 L 2538.000000 35.000000 L 2538.000000 35.000000 S 2548.000000 35.000000 2548.000000 45.000000 L 2548.000000 209.000000 S 2548.000000  219.000000 2538.000000 219.000000 L 2207.000000 219.000000 S 2197.000000 219.000000 2197.000000 209.000000L 2197.000000 45.000000Z 2197.000000 35.000000"
+                  fill="none"/>
+        </clipPath>
+        <g class="R28gTGl2ZQ== process_step">
+            <g class="shape">
+                <rect x="2197.000000" y="35.000000" width="351.000000" height="184.000000" rx="10.000000" ry="10.000000"
+                      stroke="#e6fffa" fill="#007f5f" style="stroke-width:2;"/>
+                <rect x="2197.000000" y="35.000000" width="351.000000" height="92.000000" fill="#e6fffa"
+                      class="class_header" clip-path="url(#d2-2036142477-Go Live)"/>
+                <text x="2372.500000" y="85.500000" fill="#007f5f" class="text-mono"
+                      style="text-anchor:middle;font-size:24px;">6. Go Live
+                </text>
+                <text x="2207.000000" y="155.000000" fill="#173688" class="text-mono fill-B2"
+                      style="text-anchor:start;font-size:20px">+
+                </text>
+                <text x="2227.000000" y="155.000000" fill="#e6fffa" class="text-mono"
+                      style="text-anchor:start;font-size:20px">Release to Production
+                </text>
+                <text x="2528.000000" y="155.000000" fill="#048E63" class="text-mono fill-AA2"
+                      style="text-anchor:end;font-size:20px"/>
+                <text x="2207.000000" y="201.000000" fill="#173688" class="text-mono fill-B2"
+                      style="text-anchor:start;font-size:20px">+
+                </text>
+                <text x="2227.000000" y="201.000000" fill="#e6fffa" class="text-mono"
+                      style="text-anchor:start;font-size:20px">Ongoing Slack support
+                </text>
+                <text x="2528.000000" y="201.000000" fill="#048E63" class="text-mono fill-AA2"
+                      style="text-anchor:end;font-size:20px"/>
+                <line x1="2207.000000" x2="2538.000000" y1="219.000000" y2="219.000000" stroke="#e6fffa"
+                      style="stroke-width:1"/>
+            </g>
+        </g>
+        <g class="KFJlcXVpcmVtZW50cyAtJmd0OyBDb21tdW5pY2F0aW9uKVswXQ==">
+            <marker id="mk-d2-2036142477-3488378134" markerWidth="10.000000" markerHeight="12.000000" refX="7.000000"
+                    refY="6.000000" viewBox="0.000000 0.000000 10.000000 12.000000" orient="auto"
+                    markerUnits="userSpaceOnUse">
+                <polygon points="0.000000,0.000000 10.000000,6.000000 0.000000,12.000000" fill="#010E31"
+                         class="connection fill-B1" stroke-width="2"/>
+            </marker>
+            <path d="M 340.000000 127.000000 L 404.000000 127.000000" stroke="#010E31" fill="none"
+                  class="connection stroke-B1" style="stroke-width:2;" marker-end="url(#mk-d2-2036142477-3488378134)"
+                  mask="url(#d2-2036142477)"/>
+        </g>
+        <g class="KENvbW11bmljYXRpb24gLSZndDsgRGVzaWduKVswXQ==">
+            <path d="M 832.000000 127.000000 L 896.000000 127.000000" stroke="#010E31" fill="none"
+                  class="connection stroke-B1" style="stroke-width:2;" marker-end="url(#mk-d2-2036142477-3488378134)"
+                  mask="url(#d2-2036142477)"/>
+        </g>
+        <g class="KERlc2lnbiAtJmd0OyBEZXZlbG9wbWVudClbMF0=">
+            <path d="M 1312.000000 127.000000 L 1376.000000 127.000000" stroke="#010E31" fill="none"
+                  class="connection stroke-B1" style="stroke-width:2;" marker-end="url(#mk-d2-2036142477-3488378134)"
+                  mask="url(#d2-2036142477)"/>
+        </g>
+        <g class="KERldmVsb3BtZW50IC0mZ3Q7IFRlc3RpbmcpWzBd">
+            <path d="M 1756.000000 127.000000 L 1820.000000 127.000000" stroke="#010E31" fill="none"
+                  class="connection stroke-B1" style="stroke-width:2;" marker-end="url(#mk-d2-2036142477-3488378134)"
+                  mask="url(#d2-2036142477)"/>
+        </g>
+        <g class="KFRlc3RpbmcgLSZndDsgR28gTGl2ZSlbMF0=">
+            <path d="M 2129.000000 127.000000 L 2193.000000 127.000000" stroke="#010E31" fill="none"
+                  class="connection stroke-B1" style="stroke-width:2;" marker-end="url(#mk-d2-2036142477-3488378134)"
+                  mask="url(#d2-2036142477)"/>
+        </g>
+        <mask id="d2-2036142477" maskUnits="userSpaceOnUse" x="-14" y="-14" width="2588" height="282">
+            <rect x="-14" y="-14" width="2588" height="282" fill="white"></rect>
+
+        </mask>
+    </svg>
+</svg>
