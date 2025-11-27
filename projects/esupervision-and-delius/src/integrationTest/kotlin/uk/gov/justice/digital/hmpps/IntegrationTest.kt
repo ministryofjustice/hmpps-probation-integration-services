@@ -158,6 +158,9 @@ internal class IntegrationTest() {
             ),
             dateOfBirth = PersonGenerator.DEFAULT_PERSON.dateOfBirth.toString()
         )
+        mockMvc.perform(
+            post("/case/{${PersonGenerator.DEFAULT_PERSON.crn}/validate-details").withJson(testBody).withToken()
+        ).andExpect(status().isOk)
     }
 
     @Test
