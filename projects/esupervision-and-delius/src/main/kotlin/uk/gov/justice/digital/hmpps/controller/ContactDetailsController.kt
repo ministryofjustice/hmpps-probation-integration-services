@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.controller
 
 import io.swagger.v3.oas.annotations.Operation
+import jakarta.validation.constraints.Size
 import org.springframework.http.HttpStatus
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
@@ -19,6 +20,12 @@ class ContactDetailsController(val contactDetailsService: ContactDetailsService)
     @PreAuthorize("hasRole('PROBATION_API__ESUPERVISION__CASE_DETAIL')")
     @PostMapping(value = ["/cases"])
     @Operation(summary = "Gets contact details for people on probation, for multiple cases by CRN")
-    fun getContactDetailsForCases(@RequestBody crns: List<String>) =
+    fun getContactDetailsForCases(
+        @RequestBody @Size(
+            min = 1,
+            max = 500,
+            message = "Please provide between 1 and 500 crns"
+        ) crns: List<String>
+    ) =
         contactDetailsService.getContactDetailsForCrns(crns)
 }

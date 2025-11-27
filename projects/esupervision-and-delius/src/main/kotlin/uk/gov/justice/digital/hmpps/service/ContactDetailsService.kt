@@ -21,7 +21,7 @@ class ContactDetailsService(
         }
 
     fun getContactDetailsForCrns(crns: List<String>) =
-        personRepository.findByCrnIn(crns.take(500)).map { person ->
+        personRepository.findByCrnIn(crns).map { person ->
             uk.gov.justice.digital.hmpps.model.ContactDetails(
                 crn = person.crn,
                 name = uk.gov.justice.digital.hmpps.model.Name(
