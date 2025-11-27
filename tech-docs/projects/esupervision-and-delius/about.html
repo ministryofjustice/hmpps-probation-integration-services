@@ -96,6 +96,15 @@
     <a href="#esupervision-and-delius"><span>esupervision-and-delius</span></a>
     <ul>
       <li>
+        <a href="#business-need"><span>Business need</span></a>
+      </li>
+      <li>
+        <a href="#data-dependencies"><span>Data dependencies</span></a>
+      </li>
+      <li>
+        <a href="#api-access-control"><span>API Access Control</span></a>
+      </li>
+      <li>
         <a href="#api-reference"><span>API Reference</span></a>
       </li>
     </ul>
@@ -110,8 +119,30 @@
         <div class="app-pane__content toc-open-disabled" aria-label="Content">
           <main id="content" class="technical-documentation" data-module="anchored-headings">
             <h1 id="esupervision-and-delius">esupervision-and-delius</h1>
-<p>// TODO Describe the service</p>
-<h2 id="api-reference">API Reference</h2>
+<p>This service provides an API to get contact details of the Delius person record
+and to handle messages from the client to Delius for the purpose of &ldquo;check ins&rdquo;.</p>
+<h2 id="business-need">Business need</h2>
+<p>Provides contact details of a person on probation to the client.
+Provides message handling for &lsquo;check in messages&rsquo; from the client to Delius.</p>
+<h2 id="data-dependencies">Data dependencies</h2>
+<p>This integration service depends on Delius data for up-to-date data relating to a <strong>Person on Probation</strong>.</p>
+<h2 id="api-access-control">API Access Control</h2>
+<p>API endpoints are secured by roles supplied by the HMPPS Auth client used in
+the requests</p>
+<div class="table-container">
+        <table>
+          <tr>
+<th>API Endpoint</th>
+<th>Required Role</th>
+</tr><tr>
+<td>/case/{identifier}</td>
+<td>PROBATION_API_<em>ESUPERVISION</em>_CASE_DETAIL</td>
+</tr><tr>
+<td>/cases</td>
+<td>PROBATION_API_<em>ESUPERVISION</em>_CASE_DETAIL</td>
+</tr>
+        </table>
+      </div><h2 id="api-reference">API Reference</h2>
 
 <ul>
 <li><a href="asyncapi-reference.html">AsyncAPI Reference</a></li>
