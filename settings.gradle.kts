@@ -136,6 +136,7 @@ buildCache {
         isPush = System.getenv("CI") != null
         bucket = "hmpps-probation-integration-gradle-cache"
         region = "eu-west-2"
-        lookupDefaultAwsCredentials = true
+        lookupDefaultAwsCredentials = false
+        awsProfile = "cache-profile"
     }
 }
