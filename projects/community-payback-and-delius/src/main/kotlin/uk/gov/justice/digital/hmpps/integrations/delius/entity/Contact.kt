@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.integrations.delius.entity
 import jakarta.persistence.*
 import org.hibernate.type.YesNoConverter
 import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.jpa.repository.Query
 import java.time.LocalDate
 import java.time.LocalTime
 
@@ -15,12 +16,19 @@ class Contact(
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "contact_id_seq")
     val id: Long = 0,
 
-    @Column(name = "contact_type_id")
-    val contactTypeId: Long,
+    @ManyToOne
+    @JoinColumn(name = "contact_type_id")
+    val contactType: ContactType,
 
     @ManyToOne
     @JoinColumn(name = "contact_outcome_type_id")
     var contactOutcome: ContactOutcome? = null,
+
+    @Convert(converter = YesNoConverter::class)
+    var attended: Boolean? = null,
+
+    @Convert(converter = YesNoConverter::class)
+    var complied: Boolean? = null,
 
     @ManyToOne
     @JoinColumn(name = "latest_enforcement_action_id")
@@ -40,8 +48,9 @@ class Contact(
     @Column(name = "offender_id")
     val personId: Long,
 
-    @Column(name = "event_id")
-    val eventId: Long? = null,
+    @ManyToOne
+    @JoinColumn(name = "event_id")
+    val event: Event? = null,
 
     @Column(name = "rqmnt_id")
     val requirementId: Long? = null,
@@ -78,7 +87,38 @@ class Contact(
     var rowVersion: Long = 0
 )
 
-interface ContactRepository : JpaRepository<Contact, Long>
+interface ContactRepository : JpaRepository<Contact, Long> {
+    @Query(
+        """
+        select count(distinct c.date)
+        from Contact c
+        where c.event.id = :eventId
+        and c.complied = false
+        and c.contactType.nationalStandards = true
+        and (:lastResetDate is null or c.date >= :lastResetDate)
+        """
+    )
+    fun countFailureToComply(
+        event: Event,
+        eventId: Long = event.id,
+        lastResetDate: LocalDate? = listOfNotNull(event.breachEnd, event.disposal?.date).maxOrNull()
+    ): Long
+
+    @Query(
+        """
+        select count(c.id) > 0 from Contact c
+        where c.event.id = :eventId
+        and c.contactType.code = :typeCode
+        and c.contactOutcome is null
+        and (:since is null or c.date >= :since)
+        """
+    )
+    fun enforcementReviewExists(
+        eventId: Long,
+        since: LocalDate?,
+        typeCode: String = ContactType.Code.REVIEW_ENFORCEMENT_STATUS.value,
+    ): Boolean
+}
 
 @Entity
 @Table(name = "contact_alert")
