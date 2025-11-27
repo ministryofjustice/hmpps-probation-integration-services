@@ -7,11 +7,11 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
+import org.springframework.test.json.JsonCompareMode
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers.*
 import uk.gov.justice.digital.hmpps.data.generator.MessageGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonContactDetailsGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
@@ -85,6 +85,22 @@ internal class IntegrationTest() {
     fun `get contact details for a single crn`() {
         mockMvc.perform(get("/case/${PersonContactDetailsGenerator.DEFAULT_PERSON_CONTACT_DETAILS.crn}").withToken())
             .andExpect(status().isOk)
+            .andExpect(
+                content().json(
+                    """
+                    {
+                      "crn": "${PersonContactDetailsGenerator.DEFAULT_PERSON_CONTACT_DETAILS.crn}",
+                      "name": {
+                        "forename": "${PersonContactDetailsGenerator.DEFAULT_PERSON_CONTACT_DETAILS.firstName}",
+                        "surname": "${PersonContactDetailsGenerator.DEFAULT_PERSON_CONTACT_DETAILS.lastName}"
+                      },
+                      "mobile": "${PersonContactDetailsGenerator.DEFAULT_PERSON_CONTACT_DETAILS.mobile.toString()}",
+                      "email": "${PersonContactDetailsGenerator.DEFAULT_PERSON_CONTACT_DETAILS.emailAddress}"
+                    }
+                    """.trimIndent(),
+                    JsonCompareMode.STRICT,
+                )
+            )
     }
 
     @Test
