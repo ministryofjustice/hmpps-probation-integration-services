@@ -8,7 +8,16 @@ import java.time.LocalDate
 
 object PersonGenerator {
     val DEFAULT_PERSON =
-        generatePerson("A000001", false, IdGenerator.getAndIncrement(), "John", "Doe", "07745612923", "john@doe.com")
+        generatePerson(
+            "A000001",
+            false,
+            IdGenerator.getAndIncrement(),
+            "1985-10-01",
+            "John",
+            "Doe",
+            "07745612923",
+            "john@doe.com"
+        )
     val DEFAULT_COM = generatePersonManager(DEFAULT_PERSON, DEFAULT_PROVIDER, DEFAULT_TEAM, DEFAULT_STAFF)
     val PREVIOUS_EVENT = generateEvent(DEFAULT_PERSON, LocalDate.now().minusDays(7))
     val DEFAULT_EVENT = generateEvent(DEFAULT_PERSON, LocalDate.now().minusDays(5))
@@ -17,12 +26,13 @@ object PersonGenerator {
         crn: String,
         softDeleted: Boolean,
         id: Long,
+        dateOfBirth: String,
         firstName: String,
         lastName: String,
         mobile: String,
         email: String
     ) =
-        Person(crn, softDeleted, id, firstName, lastName, mobile, email)
+        Person(crn, softDeleted, id, LocalDate.parse(dateOfBirth), firstName, lastName, mobile, email)
 
     fun generatePersonManager(
         person: Person,
