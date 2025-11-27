@@ -12,7 +12,7 @@ object PersonGenerator {
             "A000001",
             false,
             IdGenerator.getAndIncrement(),
-            "1985-10-01",
+            LocalDate.of(1985, 10, 1),
             "John",
             "Doe",
             "07745612923",
@@ -26,13 +26,13 @@ object PersonGenerator {
         crn: String,
         softDeleted: Boolean,
         id: Long,
-        dateOfBirth: String,
+        dateOfBirth: LocalDate,
         firstName: String,
         lastName: String,
         mobile: String,
         email: String
     ) =
-        Person(crn, softDeleted, id, LocalDate.parse(dateOfBirth), firstName, lastName, mobile, email)
+        Person(crn, softDeleted, id, dateOfBirth, firstName, lastName, mobile, email)
 
     fun generatePersonManager(
         person: Person,

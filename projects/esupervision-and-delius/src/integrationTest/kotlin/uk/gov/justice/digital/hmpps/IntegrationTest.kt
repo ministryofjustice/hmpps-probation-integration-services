@@ -24,6 +24,7 @@ import uk.gov.justice.digital.hmpps.messaging.HmppsChannelManager
 import uk.gov.justice.digital.hmpps.model.PersonalDetails
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
+import java.time.LocalDate
 
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = RANDOM_PORT)
@@ -140,7 +141,7 @@ internal class IntegrationTest() {
                 forename = PersonGenerator.DEFAULT_PERSON.firstName,
                 surname = PersonGenerator.DEFAULT_PERSON.lastName
             ),
-            dateOfBirth = PersonGenerator.DEFAULT_PERSON.dateOfBirth.toString()
+            dateOfBirth = PersonGenerator.DEFAULT_PERSON.dateOfBirth
         )
         mockMvc.perform(
             post("/case/{${PersonGenerator.DEFAULT_PERSON.crn}/validate-details").withJson(testBody).withToken()
@@ -156,7 +157,7 @@ internal class IntegrationTest() {
                 forename = PersonGenerator.DEFAULT_PERSON.firstName.uppercase(),
                 surname = PersonGenerator.DEFAULT_PERSON.lastName.uppercase()
             ),
-            dateOfBirth = PersonGenerator.DEFAULT_PERSON.dateOfBirth.toString()
+            dateOfBirth = PersonGenerator.DEFAULT_PERSON.dateOfBirth
         )
         mockMvc.perform(
             post("/case/{${PersonGenerator.DEFAULT_PERSON.crn}/validate-details").withJson(testBody).withToken()
@@ -171,7 +172,7 @@ internal class IntegrationTest() {
                 forename = "WrongForename",
                 surname = "WrongSurname"
             ),
-            dateOfBirth = PersonGenerator.DEFAULT_PERSON.dateOfBirth.toString()
+            dateOfBirth = PersonGenerator.DEFAULT_PERSON.dateOfBirth
         )
         mockMvc.perform(
             post("/case/{${PersonGenerator.DEFAULT_PERSON.crn}/validate-details").withJson(testBody).withToken()
@@ -187,7 +188,7 @@ internal class IntegrationTest() {
                 forename = "AnyForename",
                 surname = "AnySurname"
             ),
-            dateOfBirth = "2000-01-01"
+            dateOfBirth = LocalDate.parse("2000-01-01")
         )
         mockMvc.perform(post("/case/NOT_A_CRN/validate-details").withJson(testBody).withToken())
             .andExpect(status().isNotFound)
