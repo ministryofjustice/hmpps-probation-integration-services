@@ -229,6 +229,10 @@ components:
           $ref: "#/components/schemas/CodeDescription"
         religionDescription:
           type: string
+        religionHistory:
+          type: array
+          items:
+            $ref: "#/components/schemas/ReligionHistory"
         sexualOrientation:
           $ref: "#/components/schemas/CodeDescription"
         contactDetails:
@@ -256,6 +260,28 @@ components:
       - identifiers
       - name
       - sentences
+    ReligionHistory:
+      type: object
+      properties:
+        code:
+          type: string
+        description:
+          type: string
+        startDate:
+          type: string
+          format: date
+        endDate:
+          type: string
+          format: date
+        lastUpdatedBy:
+          type: string
+        lastUpdatedAt:
+          type: string
+          format: date-time
+      required:
+      - lastUpdatedAt
+      - lastUpdatedBy
+      - startDate
     Sentence:
       type: object
       properties:
