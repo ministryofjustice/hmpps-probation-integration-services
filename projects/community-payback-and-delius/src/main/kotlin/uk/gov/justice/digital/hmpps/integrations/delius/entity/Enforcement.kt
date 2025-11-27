@@ -59,6 +59,6 @@ class Enforcement(
     @Column(name = "last_updated_user_id")
     var lastUpdatedUserId: Long = 0
 
-    )
+)
 
 interface EnforcementRepository : JpaRepository<Enforcement, Long>
