@@ -15,9 +15,7 @@ import uk.gov.justice.digital.hmpps.advice.ErrorResponse
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator
 import uk.gov.justice.digital.hmpps.data.generator.UPWGenerator
-import uk.gov.justice.digital.hmpps.integrations.delius.entity.ContactAlertRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.entity.EnforcementRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.entity.UnpaidWorkAppointmentRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.entity.*
 import uk.gov.justice.digital.hmpps.model.*
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.json
@@ -41,6 +39,12 @@ class AppointmentsIntegrationTest {
 
     @Autowired
     lateinit var enforcementRepository: EnforcementRepository
+
+    @Autowired
+    lateinit var eventRepository: EventRepository
+
+    @Autowired
+    lateinit var contactRepository: ContactRepository
 
     @Test
     fun `non-existent project returns 404`() {
@@ -116,6 +120,9 @@ class AppointmentsIntegrationTest {
         assertThat(appointment!!.startTime).isEqualTo(LocalTime.of(11, 0))
         assertThat(appointment.endTime).isEqualTo(LocalTime.of(15, 0))
         assertThat(appointment.lastUpdatedDatetime).isCloseTo(appointment.lastUpdatedDatetime, within(1, SECONDS))
+
+        // tidy up
+        unpaidWorkAppointmentRepository.delete(appointment)
     }
 
     @Test
@@ -151,7 +158,7 @@ class AppointmentsIntegrationTest {
         mockMvc.put("/projects/N01DEFAULT/appointments/${UPWGenerator.UPW_APPOINTMENT_NO_ENFORCEMENT.id}/outcome") {
             withToken()
             json = AppointmentOutcomeRequest(
-                id = UPWGenerator.UPW_APPOINTMENT_NO_OUTCOME.id,
+                id = UPWGenerator.UPW_APPOINTMENT_NO_ENFORCEMENT.id,
                 version = UUID(5, 5),
                 outcome = Code("F"),
                 supervisor = Code("N01P001"),
@@ -170,7 +177,7 @@ class AppointmentsIntegrationTest {
             .andExpect { status().is2xxSuccessful }
 
         val enforcement = enforcementRepository.findAll()
-            .firstOrNull { it.contact.id == UPWGenerator.UPW_APPOINTMENT_NO_OUTCOME.contact.id }
+            .firstOrNull { it.contact.id == UPWGenerator.UPW_APPOINTMENT_NO_ENFORCEMENT.contact.id }
         assertThat(enforcement).isNotNull
     }
 
@@ -231,5 +238,41 @@ class AppointmentsIntegrationTest {
             )
         }
             .andExpect { status().is4xxClientError }
+    }
+
+    @Test
+    fun `ftc count is updated if complied is false`() {
+        mockMvc.put("/projects/N01DEFAULT/appointments/${UPWGenerator.UPW_APPOINTMENT_NO_OUTCOME.id}/outcome") {
+            withToken()
+            json = AppointmentOutcomeRequest(
+                id = UPWGenerator.UPW_APPOINTMENT_NO_OUTCOME.id,
+                version = UUID(5, 5),
+                outcome = Code("F"),
+                supervisor = Code("N01P001"),
+                startTime = LocalTime.of(8, 0),
+                endTime = LocalTime.of(10, 0),
+                notes = "ftc count",
+                hiVisWorn = true,
+                workedIntensively = true,
+                penaltyMinutes = 5,
+                workQuality = WorkQuality.EXCELLENT,
+                behaviour = Behaviour.UNSATISFACTORY,
+                sensitive = false,
+                alertActive = true,
+            )
+        }
+            .andExpect { status().is2xxSuccessful }
+
+        val event = eventRepository.findAll()
+            .firstOrNull { it.id == UPWGenerator.UPW_APPOINTMENT_NO_OUTCOME.contact.event!!.id }
+
+        assertThat(event!!.ftcCount).isEqualTo(1L)
+
+        val enforcementReviewContact = contactRepository.findAll()
+            .firstOrNull {
+                it.linkedContactId == UPWGenerator.UPW_APPOINTMENT_NO_OUTCOME.contact.id
+                    && it.contactType.code == ContactType.Code.REVIEW_ENFORCEMENT_STATUS.value
+            }
+        assertThat(enforcementReviewContact).isNotNull
     }
 }

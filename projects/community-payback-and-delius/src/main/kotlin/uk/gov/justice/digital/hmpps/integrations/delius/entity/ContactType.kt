@@ -17,11 +17,23 @@ class ContactType(
     @Id
     @Column(name = "contact_type_id")
     val id: Long,
+
+    @Column(name = "national_standards_contact")
+    @Convert(converter = YesNoConverter::class)
+    val nationalStandards: Boolean
 ) {
     enum class Code(val value: String) {
-        UNPAID_WORK_APPOINTMENT("CUPA")
+        UNPAID_WORK_APPOINTMENT("CUPA"),
+        REVIEW_ENFORCEMENT_STATUS("ARWS")
     }
 }
+
+interface ContactTypeRepository : JpaRepository<ContactType, Long> {
+    fun findByCode(code: String): ContactType?
+}
+
+fun ContactTypeRepository.getByCode(code: String) =
+    findByCode(code) ?: throw NotFoundException("ContactType", "code", code)
 
 @Immutable
 @Entity
