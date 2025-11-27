@@ -8,7 +8,7 @@ import org.springframework.data.annotation.LastModifiedBy
 import org.springframework.data.annotation.LastModifiedDate
 import org.springframework.data.jpa.repository.JpaRepository
 import java.time.LocalDate
-import java.time.LocalDateTime
+import java.time.ZonedDateTime
 
 @Entity
 @Table(name = "enforcement")
@@ -35,21 +35,21 @@ class Enforcement(
     val softDeleted: Boolean = false,
 
     @Column(name = "action_taken_date")
-    val actionTakenDate: LocalDateTime = LocalDateTime.now(),
+    val actionTakenDate: ZonedDateTime = ZonedDateTime.now(),
 
     @Column(name = "action_taken_time")
-    val actionTakenTime: LocalDateTime = LocalDateTime.now(),
+    val actionTakenTime: ZonedDateTime = ZonedDateTime.now(),
 
     @Column(name = "partition_area_id")
     val partitionAreaId: Long = 0,
 
     @CreatedDate
     @Column(name = "created_datetime")
-    var createdDateTime: LocalDateTime = LocalDateTime.now(),
+    var createdDateTime: ZonedDateTime = ZonedDateTime.now(),
 
     @LastModifiedDate
     @Column(name = "last_updated_datetime")
-    var lastUpdatedDateTime: LocalDateTime = LocalDateTime.now(),
+    var lastUpdatedDateTime: ZonedDateTime = ZonedDateTime.now(),
 
     @CreatedBy
     @Column(name = "created_by_user_id")
