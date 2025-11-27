@@ -34,7 +34,8 @@ class SentenceAppointmentService(
     private val locationRepository: LocationRepository,
     private val nsiRepository: NsiRepository,
     private val bankHolidayClient: BankHolidayClient,
-    private val userService: UserService
+    private val userService: UserService,
+    private val outcomeService: AppointmentOutcomeService,
 ) : AuditableService(auditedInteractionService) {
 
     private fun getOverlaps(
@@ -61,7 +62,7 @@ class SentenceAppointmentService(
             return date.dayOfWeek.name.lowercase().replaceFirstChar(Char::titlecase)
         }
         return try {
-            bankHolidayClient.getBankHolidays().englandAndWales.events.firstOrNull { it.date == date }?.title
+            bankHolidayClient.getBankHolidays().englandAndWales.events.firstOrNull { it.date.isEqual(date) }?.title
         } catch (ex: Exception) {
             null
         }
@@ -96,6 +97,9 @@ class SentenceAppointmentService(
             audit["offenderId"] = om.person.id
 
             checkForConflicts(createAppointment)
+            if (createAppointment.start.isBefore(ZonedDateTime.now())) {
+                require(createAppointment.outcomeRecorded) { "An outcome must be provided for an appointment in the past." }
+            }
 
             val userAndTeam = staffUserRepository.getUserAndTeamAssociation(
                 createAppointment.user.username,
@@ -110,6 +114,9 @@ class SentenceAppointmentService(
             }
 
             val saved = sentenceAppointmentRepository.save(createAppointment.withManager(om, userAndTeam, location))
+            if (createAppointment.outcomeRecorded) {
+                outcomeService.recordOutcome(Outcome(saved.id, true, null, createAppointment.sensitive ?: false))
+            }
 
             audit["contactId"] = saved.id
 
