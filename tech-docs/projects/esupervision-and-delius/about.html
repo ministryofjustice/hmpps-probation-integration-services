@@ -120,9 +120,11 @@
           <main id="content" class="technical-documentation" data-module="anchored-headings">
             <h1 id="esupervision-and-delius">esupervision-and-delius</h1>
 <p>This service provides an API to get contact details of the Delius person record
-and to handle messages from the client to Delius for the purpose of &ldquo;check ins&rdquo;.</p>
+and to handle messages from the client to Delius for the purpose of &ldquo;check ins&rdquo;. Additionally,
+it provides functionality to verify a person on probation&rsquo;s basic details</p>
 <h2 id="business-need">Business need</h2>
 <p>Provides contact details of a person on probation to the client.
+Provides verification of a person on probation&rsquo;s basic details.
 Provides message handling for &lsquo;check in messages&rsquo; from the client to Delius.</p>
 <h2 id="data-dependencies">Data dependencies</h2>
 <p>This integration service depends on Delius data for up-to-date data relating to a <strong>Person on Probation</strong>.</p>
@@ -136,6 +138,9 @@ the requests</p>
 <th>Required Role</th>
 </tr><tr>
 <td>/case/{identifier}</td>
+<td>PROBATION_API_<em>ESUPERVISION</em>_CASE_DETAIL</td>
+</tr><tr>
+<td>/case/{identifier}/validate-details</td>
 <td>PROBATION_API_<em>ESUPERVISION</em>_CASE_DETAIL</td>
 </tr><tr>
 <td>/cases</td>
