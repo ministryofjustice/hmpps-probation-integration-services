@@ -1,6 +1,6 @@
 dependencies {
-    implementation(project(":libs:commons"))
     compileOnly("org.springframework.boot:spring-boot-starter-data-jpa")
+    implementation(project(":libs:commons"))
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
