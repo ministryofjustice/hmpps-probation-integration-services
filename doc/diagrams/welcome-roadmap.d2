@@ -1,0 +1,73 @@
+
+style { ...@common/style.style }
+vars { ...@common/style.vars }
+** { ...@common/style.all-style }
+
+direction: right
+
+classes: {
+  process_step: {
+    shape: class
+    style: {
+      border-radius: 5
+      stroke-width: 2
+      fill: "#f5f5f5"
+      stroke: "#333333"
+    }
+  }
+}
+
+Requirements: {
+  class: process_step
+  label: "1. Requirements"
+  "Initial chat"
+  "Understand use case"
+  "Align on timelines"
+}
+
+Communication: {
+  class: process_step
+  label: "2. Communication"
+  "Create shared Slack channel"
+  "Set up weekly catch-up"
+}
+
+Design: {
+  class: process_step
+  label: "3. Design"
+  "Define API endpoints"
+  "Define Event schemas"
+  "Create Jira Epic & Stories"
+}
+
+Development: {
+  class: process_step
+  label: "4. Development"
+  "Build Read APIs"
+  "Build Event Consumers"
+  "Deploy to Dev & Preprod"
+}
+
+Testing: {
+  class: process_step
+  label: "5. Testing"
+  "Write E2E tests"
+  "Verify in Dev & Preprod"
+}
+
+"Go Live": {
+  class: process_step
+  label: "6. Go Live"
+  style: {
+    fill: "#e6fffa"
+    stroke: "#007f5f"
+  }
+  "Release to Production"
+  "Ongoing Slack support"
+}
+
+Requirements -> Communication
+Communication -> Design
+Design -> Development
+Development -> Testing
+Testing -> "Go Live"

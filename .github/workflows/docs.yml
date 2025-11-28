@@ -9,6 +9,11 @@ on:
   schedule:
     - cron: "30 5 * * MON-FRI" # Every weekday at 05:30 UTC
   workflow_dispatch:
+    inputs:
+      deploy:
+        description: Deploy?
+        type: boolean
+        default: false
 
 permissions: {}
 
@@ -38,7 +43,7 @@ jobs:
         working-directory: doc/tech-docs
 
       - name: Publish
-        if: github.ref_name == 'main'
+        if: github.ref_name == 'main' || inputs.deploy
         uses: JamesIves/github-pages-deploy-action@4a3abc783e1a24aeb44c16e869ad83caf6b4cc23 # v4.7.4
         with:
           folder: doc/tech-docs/docs
