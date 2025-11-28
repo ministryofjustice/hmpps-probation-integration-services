@@ -19,6 +19,7 @@ data class CreateAppointment(
     val notes: String? = null,
     val sensitive: Boolean? = null,
     val visorReport: Boolean? = null,
+    val outcomeRecorded: Boolean = false,
 ) {
     @JsonIgnore
     val urn = URN_PREFIX + uuid

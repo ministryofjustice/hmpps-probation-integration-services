@@ -80,12 +80,14 @@ jobs:
       - name: Tag image with environment
         if: ${{ steps.check_files.outputs.files_exists == 'true' && steps.enabled.outputs.enabled == 'true' }}
         run: |
-          docker pull "$image:${{ inputs.version }}"
-          docker pull "$image:${{ inputs.environment }}" && docker image tag "$image:${{ inputs.environment }}" "$image:${{ inputs.environment }}-prev"
-          docker image tag "$image:${{ inputs.version }}" "$image:${{ inputs.environment }}"
+          docker pull "$image:$version"
+          docker pull "$image:$environment" && docker image tag "$image:$environment" "$image:$environment-prev"
+          docker image tag "$image:$version" "$image:$environment"
           docker push --all-tags "$image"
         env:
           image: ghcr.io/ministryofjustice/hmpps-probation-integration-services/${{ matrix.project }}
+          version: ${{ inputs.version }}
+          environment: ${{ inputs.environment }}
 
       - name: Create Sentry release
         if: ${{ steps.check_files.outputs.files_exists == 'true' && steps.enabled.outputs.enabled == 'true' }}

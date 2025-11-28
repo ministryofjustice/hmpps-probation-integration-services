@@ -26,6 +26,17 @@ runs:
         role-skip-session-tagging: true
         role-duration-seconds: 1200
 
+    - name: Save credentials to AWS profile
+      if: inputs.cache-role != ''
+      shell: bash # language=bash
+      run: |
+        export AWS_PROFILE=cache-profile
+        aws configure set aws_access_key_id "$AWS_ACCESS_KEY_ID" --profile "$PROFILE_NAME"
+        aws configure set aws_secret_access_key "$AWS_SECRET_ACCESS_KEY" --profile "$PROFILE_NAME"
+        aws configure set aws_session_token "$AWS_SESSION_TOKEN" --profile "$PROFILE_NAME"
+        aws configure set region "eu-west-2" --profile "$PROFILE_NAME"
+        echo "AWS_PROFILE=$AWS_PROFILE" >> $GITHUB_ENV
+
     - name: Set cache encryption key as environment variable
       shell: bash
       run: echo "GRADLE_ENCRYPTION_KEY=$key" >> $GITHUB_ENV
@@ -35,11 +46,9 @@ runs:
     - uses: gradle/actions/setup-gradle@v5
       with:
         add-job-summary: 'on-failure'
-        #cache-encryption-key: ${{ env.GRADLE_ENCRYPTION_KEY }} # TODO configuration cache doesn't work with s3-build-cache yet, as of Oct 2025. See https://github.com/burrunan/gradle-s3-build-cache/issues/21
-        cache-read-only: ${{ github.ref_name != 'main' }}
+        cache-encryption-key: ${{ env.GRADLE_ENCRYPTION_KEY }}
         gradle-home-cache-excludes: |
-          caches
-          notifications
+          caches/build-cache-1
 
     - name: Manually cache buildSrc output # workaround for https://github.com/gradle/actions/issues/21
       uses: actions/cache@v4

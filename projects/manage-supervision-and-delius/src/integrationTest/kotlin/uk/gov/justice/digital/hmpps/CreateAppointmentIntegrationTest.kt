@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps
 
+import org.assertj.core.api.Assertions.assertThat
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.Test
@@ -104,6 +105,12 @@ class CreateAppointmentIntegrationTest : IntegrationTestBase() {
         assertThat(appointment.createdByUserId, equalTo(user.id))
         assertThat(appointment.lastUpdatedUserId, equalTo(user.id))
 
+        if (createAppointment.start.isBefore(ZonedDateTime.now())) {
+            assertThat(appointment.outcomeId).isNotNull()
+            assertThat(appointment.attended).isEqualTo("Y")
+            assertThat(appointment.complied).isEqualTo("Y")
+        }
+
         sentenceAppointmentRepository.deleteById(appointment.id)
     }
 
@@ -141,6 +148,19 @@ class CreateAppointmentIntegrationTest : IntegrationTestBase() {
                     end = ZonedDateTime.now().plusDays(1).plusHours(1),
                     notes = "Some Notes",
                     sensitive = true,
+                    uuid = UUID.randomUUID()
+                )
+            ),
+            Arguments.of(
+                CreateAppointment(
+                    user,
+                    type = CreateAppointment.Type.PlannedOfficeVisitNS.code,
+                    eventId = PersonGenerator.EVENT_1.id,
+                    start = ZonedDateTime.now().minusDays(1),
+                    end = ZonedDateTime.now().minusDays(1).plusHours(1),
+                    notes = "Notes about an appointment in the past",
+                    sensitive = true,
+                    outcomeRecorded = true,
                     uuid = UUID.randomUUID()
                 )
             )

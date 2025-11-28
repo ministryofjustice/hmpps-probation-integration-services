@@ -75,6 +75,9 @@ class SentenceAppointmentServiceTest {
     @Mock
     lateinit var objectMapper: ObjectMapper
 
+    @Mock
+    lateinit var outcomeService: AppointmentOutcomeService
+
     @InjectMocks
     lateinit var service: SentenceAppointmentService
 

@@ -14,3 +14,7 @@ repositories {
     mavenCentral()
     gradlePluginPortal()
 }
+
+tasks {
+    jar { outputs.cacheIf { true } }
+}
