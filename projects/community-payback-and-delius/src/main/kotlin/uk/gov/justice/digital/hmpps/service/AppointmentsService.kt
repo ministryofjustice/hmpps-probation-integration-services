@@ -240,7 +240,7 @@ class AppointmentsService(
         this.staff = staff
         hiVisWorn = request.hiVisWorn
         workedIntensively = request.workedIntensively
-        minutesCredited = Duration.between(startTime, endTime).toMinutes()
+        minutesCredited = Duration.between(startTime, endTime).toMinutes() - (request.penaltyMinutes ?: 0L)
         penaltyTime = request.penaltyMinutes
         this.workQuality = workQuality
         this.behaviour = behaviour

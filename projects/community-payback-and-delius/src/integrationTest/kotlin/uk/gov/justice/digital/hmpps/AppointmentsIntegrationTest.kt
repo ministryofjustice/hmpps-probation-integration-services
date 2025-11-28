@@ -70,7 +70,7 @@ class AppointmentsIntegrationTest {
         )
         assertThat(response.project.name).isEqualTo("Default UPW Project")
         assertThat(response.case.crn).isEqualTo(PersonGenerator.DEFAULT_PERSON.crn)
-        assertThat(response.penaltyHours).isEqualTo("01:00")
+        assertThat(response.penaltyHours).isEqualTo("01:05")
         assertThat(response.enforcementAction!!.respondBy).isEqualTo(response.date.plusDays(ReferenceDataGenerator.ROM_ENFORCEMENT_ACTION.responseByPeriod!!))
         assertThat(response.behaviour).isEqualTo(Behaviour.EXCELLENT)
         assertThat(response.workQuality).isEqualTo(WorkQuality.EXCELLENT)
@@ -120,7 +120,8 @@ class AppointmentsIntegrationTest {
         assertThat(appointment!!.startTime).isEqualTo(LocalTime.of(11, 0))
         assertThat(appointment.endTime).isEqualTo(LocalTime.of(15, 0))
         assertThat(appointment.lastUpdatedDatetime).isCloseTo(appointment.lastUpdatedDatetime, within(1, SECONDS))
-
+        assertThat(appointment.penaltyTime).isEqualTo(5)
+        assertThat(appointment.minutesCredited).isEqualTo(235)
         // tidy up
         unpaidWorkAppointmentRepository.delete(appointment)
     }
@@ -139,7 +140,7 @@ class AppointmentsIntegrationTest {
                 notes = "contact alert",
                 hiVisWorn = true,
                 workedIntensively = true,
-                penaltyMinutes = 5,
+                penaltyMinutes = 65,
                 workQuality = WorkQuality.EXCELLENT,
                 behaviour = Behaviour.UNSATISFACTORY,
                 sensitive = false,
@@ -167,7 +168,7 @@ class AppointmentsIntegrationTest {
                 notes = "enforcement",
                 hiVisWorn = true,
                 workedIntensively = true,
-                penaltyMinutes = 5,
+                penaltyMinutes = 65,
                 workQuality = WorkQuality.EXCELLENT,
                 behaviour = Behaviour.UNSATISFACTORY,
                 sensitive = false,
@@ -230,7 +231,7 @@ class AppointmentsIntegrationTest {
                 notes = "doesn't exist",
                 hiVisWorn = true,
                 workedIntensively = true,
-                penaltyMinutes = 5,
+                penaltyMinutes = 65,
                 workQuality = WorkQuality.EXCELLENT,
                 behaviour = Behaviour.EXCELLENT,
                 sensitive = false,
@@ -254,7 +255,7 @@ class AppointmentsIntegrationTest {
                 notes = "ftc count",
                 hiVisWorn = true,
                 workedIntensively = true,
-                penaltyMinutes = 5,
+                penaltyMinutes = 65,
                 workQuality = WorkQuality.EXCELLENT,
                 behaviour = Behaviour.UNSATISFACTORY,
                 sensitive = false,
