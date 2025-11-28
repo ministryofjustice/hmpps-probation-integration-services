@@ -2,7 +2,6 @@ package uk.gov.justice.digital.hmpps.data.generator
 
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.*
 import java.time.LocalDate
-import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.ZonedDateTime
 
@@ -110,7 +109,7 @@ object UPWGenerator {
         contactOutcomeTypeId = 1L,
         pickupLocation = DEFAULT_OFFICE_LOCATION,
         pickupTime = LocalTime.of(9, 0),
-        penaltyTime = 60L,
+        penaltyTime = 65L,
         person = PersonGenerator.DEFAULT_PERSON,
         staff = StaffGenerator.DEFAULT_STAFF,
         team = TeamGenerator.DEFAULT_UPW_TEAM,
@@ -135,7 +134,7 @@ object UPWGenerator {
         team = TeamGenerator.DEFAULT_UPW_TEAM,
         workQuality = ReferenceDataGenerator.EXCELLENT_WORK_QUALITY,
         behaviour = ReferenceDataGenerator.EXCELLENT_BEHAVIOUR,
-        minutesCredited = 30L
+        minutesCredited = 420L
     )
 
     val LAO_RESTRICTED_UPW_APPOINTMENT = generateUpwAppointment(
@@ -154,7 +153,7 @@ object UPWGenerator {
         team = TeamGenerator.DEFAULT_UPW_TEAM,
         workQuality = ReferenceDataGenerator.EXCELLENT_WORK_QUALITY,
         behaviour = ReferenceDataGenerator.EXCELLENT_BEHAVIOUR,
-        minutesCredited = 30L
+        minutesCredited = 420L
     )
 
     val UPW_APPOINTMENT_NO_ENFORCEMENT = generateUpwAppointment(
@@ -173,7 +172,7 @@ object UPWGenerator {
         team = TeamGenerator.DEFAULT_UPW_TEAM,
         workQuality = ReferenceDataGenerator.EXCELLENT_WORK_QUALITY,
         behaviour = ReferenceDataGenerator.EXCELLENT_BEHAVIOUR,
-        minutesCredited = 60L,
+        minutesCredited = 375L,
     )
 
     val UPW_APPOINTMENT_NO_OUTCOME = generateUpwAppointment(
@@ -192,7 +191,7 @@ object UPWGenerator {
         team = TeamGenerator.DEFAULT_UPW_TEAM,
         workQuality = null,
         behaviour = null,
-        minutesCredited = 0L,
+        minutesCredited = 240L,
         createdDatetime = ZonedDateTime.now().minusDays(1),
         lastUpdatedDatetime = ZonedDateTime.now().minusDays(1),
     )
@@ -213,7 +212,7 @@ object UPWGenerator {
         team = TeamGenerator.DEFAULT_UPW_TEAM,
         workQuality = ReferenceDataGenerator.UNSATISFACTORY_WORK_QUALITY,
         behaviour = ReferenceDataGenerator.UNSATISFACTORY_BEHAVIOUR,
-        minutesCredited = 10L
+        minutesCredited = 240L
     )
 
     val UPW_APPOINTMENT_PAST = generateUpwAppointment(
@@ -232,7 +231,7 @@ object UPWGenerator {
         team = TeamGenerator.DEFAULT_UPW_TEAM,
         workQuality = null,
         behaviour = null,
-        minutesCredited = 0L
+        minutesCredited = 360L
     )
 
     val DEFAULT_RQMNT = generateRequirement(
