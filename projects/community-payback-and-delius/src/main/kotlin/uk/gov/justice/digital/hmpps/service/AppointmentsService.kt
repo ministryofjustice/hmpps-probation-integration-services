@@ -247,6 +247,7 @@ class AppointmentsService(
         contactOutcomeTypeId = contactOutcome?.id
         attended = contactOutcome?.attended
         complied = contactOutcome?.complied
+        notes = listOfNotNull(notes, request.notes).joinToString("\n\n")
         rowVersion = request.version.mostSignificantBits
     }
 

@@ -1,0 +1,135 @@
+---
+title: Requesting an Integration Service
+source_url: 'https://github.com/ministryofjustice/hmpps-probation-integration-services/blob/main/doc/tech-docs/source/welcome.html.md.erb'
+last_reviewed_on: 2025-11-27
+review_in: 3 months
+---
+
+# Requesting an Integration Service
+
+Hello! If you are building a digital service in HMPPS that needs to interact with probation case data in NDelius, then
+you are in the right place.
+
+This guide outlines how the **Probation Integration** team works with client teams like yours to build secure, reliable,
+and domain-focused integrations.
+
+## How we integrate
+
+A probation integration service typically acts as
+an [anti-corruption layer](https://learn.microsoft.com/en-us/azure/architecture/patterns/anti-corruption-layer) that
+connects your HMPPS digital or domain service to the NDelius probation case management system.
+Adding this layer helps define a meaningful domain and responsibility boundary - allowing us to hide the complexity of
+NDelius and provide a stable, well-defined interface for your service to interact with the data it needs.
+
+Most integrations involve a combination of the following capabilities:
+
+* **Reading Data:** Providing REST API endpoints to read existing probation data in the format your service needs.
+* **Writing Data:**
+  Consuming [HMPPS Domain Event](https://github.com/ministryofjustice/hmpps-domain-events#hmpps-domain-events)
+  messages to map and write data back asynchronously.
+
+Every digital service will get their own dedicated integration - they are not shared between clients.
+This allows us to build integrations that are tailored to the specific needs of each team.
+
+## Roadmap
+
+Here is the typical roadmap for working with us, from discussion to production.
+Timescales vary depending on the complexity of the integration, but we aim to move as quickly as possible.
+
+[![](images/welcome-roadmap.svg)](images/welcome-roadmap.svg)
+
+### 1. Requirements
+
+Everything starts with a conversation.
+We'll meet to understand your use case, data requirements, and timelines.
+This helps us align our teams and set expectations early.
+
+At this stage, we may need a few follow-up sessions to clarify details.
+We may also need to include other teams (e.g. the National Delius Service Team) to confirm what's possible.
+
+### 2. Ongoing communication
+
+We believe in close collaboration - for asking questions, sharing updates, and resolving issues quickly.
+Here are the main channels we use:
+
+* **Slack:** We will create a shared Slack channel (e.g., `#topic-pi-<your-project>`) for day-to-day questions and dev
+  support.
+* **Weekly Catch-up (Optional):** During the active design and development phases, we can schedule a weekly catch-up to
+  discuss changes to requirements, unblock any issues and track progress.
+
+### 3. Design
+
+Before writing code, we agree on the contracts:
+
+* **APIs:** We define the endpoints, request parameters, and response structures for any data you need to read.
+* **Events:** You define the domain event type that your service will publish. You may also need to define a "detail"
+  API to enable sharing of sensitive data -
+  see [Handling sensitive data](https://dsdmoj.atlassian.net/wiki/spaces/PINT/pages/3916103711/HMPPS+Domain+Events#Handling-sensitive-data).
+
+Once the design has been agreed, we will add stories to
+our [Jira board](https://dsdmoj.atlassian.net/jira/software/c/projects/PI/boards/5627) under a single epic.
+
+### 4. Development
+
+We will build the integration service and deploy it to the `dev` and `preprod` environments -
+see [Environments](https://github.com/ministryofjustice/hmpps-probation-integration-services#environments).
+Once it's ready for you to start testing against, we will share an update on Slack.
+
+At this point you can start hooking up your dev service and start testing.
+If you spot any issues, or need any changes, get in touch on Slack - we are happy to help!
+
+### 5. Testing
+
+At this point, we will add an automated test to validate the end-to-end user journey - setting up cases in NDelius,
+completing the required steps in your service, and verifying data is flowing correctly.
+See [End-to-end testing](https://github.com/ministryofjustice/hmpps-probation-integration-services#end-to-end-tests).
+
+To support this, we may ask you to grant permissions to our test user accounts in the `dev` environment.
+
+Depending on the scope of your service, the National Delius Service Team (NDST) may also need to do some manual testing
+to validate the impact on the NDelius system.
+
+### 6. Go Live
+
+Once an end-to-end test is in place and passing, the integration service will be deployed to production.
+Then it's up to you to start using it 🚀
+
+## Support
+
+Our partnership doesn't end at "Go Live".
+For ongoing questions, troubleshooting, or future enhancements, you can always reach us in your dedicated Slack channel
+or our general support channel: [#probation-integration-tech](https://moj.enterprise.slack.com/archives/C02HQ4M2YQN).
+
+### Monitoring
+
+We continuously monitor the integration services and will be alerted of any exceptions.
+We will proactively investigate and resolve issues, keeping you informed of any significant incidents.
+
+If you notice any issues from your side, please reach out on Slack.
+
+* [Application Insights](https://portal.azure.com/#blade/AppInsightsExtension/BladeRedirect/BladeName/searchV1/ResourceId/%252Fsubscriptions%252Fa5ddf257-3b21-4ba9-a28c-ab30f751b383%252FresourceGroups%252Fnomisapi-prod-rg%252Fproviders%252FMicrosoft.Insights%252Fcomponents%252Fnomisapi-prod/BladeInputs/%7B%22tables%22%3A%5B%22availabilityResults%22%2C%22requests%22%2C%22exceptions%22%2C%22pageViews%22%2C%22traces%22%2C%22customEvents%22%2C%22dependencies%22%5D%2C%22timeContextWhereClause%22%3A%22%7C%20where%20timestamp%20%3E%20datetime(%5C%222025-11-26T18%3A00%3A26.805Z%5C%22)%20and%20timestamp%20%3C%20datetime(%5C%222025-11-27T18%3A00%3A26.805Z%5C%22)%22%2C%22filterWhereClause%22%3A%22%7C%20where%20customDimensions%5B%5C%22service.team%5C%22%5D%20in%20(%5C%22probation-integration%5C%22)%7C%20order%20by%20timestamp%20desc%22%2C%22originalParams%22%3A%7B%22eventTypes%22%3A%5B%7B%22value%22%3A%22availabilityResult%22%2C%22tableName%22%3A%22availabilityResults%22%2C%22label%22%3A%22Availability%22%7D%2C%7B%22value%22%3A%22request%22%2C%22tableName%22%3A%22requests%22%2C%22label%22%3A%22Request%22%7D%2C%7B%22value%22%3A%22exception%22%2C%22tableName%22%3A%22exceptions%22%2C%22label%22%3A%22Exception%22%7D%2C%7B%22value%22%3A%22pageView%22%2C%22tableName%22%3A%22pageViews%22%2C%22label%22%3A%22Page%20View%22%7D%2C%7B%22value%22%3A%22trace%22%2C%22tableName%22%3A%22traces%22%2C%22label%22%3A%22Trace%22%7D%2C%7B%22value%22%3A%22customEvent%22%2C%22tableName%22%3A%22customEvents%22%2C%22label%22%3A%22Custom%20Event%22%7D%2C%7B%22value%22%3A%22dependency%22%2C%22tableName%22%3A%22dependencies%22%2C%22label%22%3A%22Dependency%22%7D%5D%2C%22timeContext%22%3A%7B%22durationMs%22%3A86400000%7D%2C%22filter%22%3A%5B%7B%22dimension%22%3A%7B%22displayName%22%3A%22service.team%22%2C%22tables%22%3A%5B%22availabilityResults%22%2C%22requests%22%2C%22exceptions%22%2C%22pageViews%22%2C%22traces%22%2C%22customEvents%22%2C%22dependencies%22%5D%2C%22name%22%3A%22customDimensions%2Fservice.team%22%2C%22draftKey%22%3A%22customDimensions%2Fservice.team%22%7D%2C%22values%22%3A%5B%22probation-integration%22%5D%2C%22operator%22%3A%7B%22label%22%3A%22%3D%22%2C%22value%22%3A%22%3D%3D%22%2C%22isSelected%22%3Atrue%7D%7D%5D%2C%22searchPhrase%22%3A%7B%22originalPhrase%22%3A%22%22%2C%22_tokens%22%3A%5B%5D%7D%2C%22sort%22%3A%22desc%22%7D%7D)
+* [Sentry](https://ministryofjustice.sentry.io/dashboard/168098/)
+* [#probation-integration-notifications channel](https://moj.enterprise.slack.com/archives/C033HPR0W91)
+
+## Responsibility
+
+Responsibility is split between the two teams as follows:
+
+* **Probation Integration Team:**
+    * Providing guidance on integration and data domain modelling best practices.
+    * Building and maintaining the APIs and Domain Event consumers.
+    * Defining the authorisation roles required to access the APIs.
+    * Managing the connection to the NDelius data stores (Database, LDAP server, Alfresco).
+
+
+* **Client Team:**
+    * Researching user needs and validating the use case.
+    * Defining the domain and product requirements.
+    * Consuming the APIs provided.
+    * Publishing the agreed domain events.
+    * Assistance with testing and validation of data.
+    * Ownership of any data stored in your service.
+
+---
+
+#### *We look forward to working with you!*

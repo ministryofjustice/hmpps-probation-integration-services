@@ -6,12 +6,14 @@ import org.springframework.data.annotation.CreatedBy
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedBy
 import org.springframework.data.annotation.LastModifiedDate
+import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import org.springframework.data.jpa.repository.JpaRepository
 import java.time.LocalDate
 import java.time.ZonedDateTime
 
 @Entity
 @Table(name = "enforcement")
+@EntityListeners(AuditingEntityListener::class)
 class Enforcement(
     @Id
     @SequenceGenerator(name = "enforcement_id_seq", sequenceName = "enforcement_id_seq", allocationSize = 1)
