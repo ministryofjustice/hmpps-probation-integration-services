@@ -4,9 +4,10 @@ database:
     password_key: /community-payback-and-delius/db-password
     tables:
       - contact
-      - upw_appointment
       - contact_alert
       - enforcement
+      - event
+      - upw_appointment
 
   audit:
     username: CommunityPaybackAndDelius

@@ -1,14 +1,22 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.entity
 
 import jakarta.persistence.*
+import org.hibernate.type.NumericBooleanConverter
 import org.hibernate.type.YesNoConverter
+import org.springframework.data.annotation.CreatedBy
+import org.springframework.data.annotation.CreatedDate
+import org.springframework.data.annotation.LastModifiedBy
+import org.springframework.data.annotation.LastModifiedDate
+import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import java.time.LocalDate
 import java.time.LocalTime
+import java.time.ZonedDateTime
 
 @Entity
 @Table(name = "contact")
+@EntityListeners(AuditingEntityListener::class)
 class Contact(
     @Id
     @Column(name = "contact_id")
@@ -84,7 +92,36 @@ class Contact(
     var alertActive: Boolean? = false,
 
     @Version
-    var rowVersion: Long = 0
+    var rowVersion: Long = 0,
+
+    @CreatedDate
+    @Column(name = "created_datetime")
+    var createdDateTime: ZonedDateTime = ZonedDateTime.now(),
+
+    @LastModifiedDate
+    @Column(name = "last_updated_datetime")
+    var lastUpdatedDateTime: ZonedDateTime = ZonedDateTime.now(),
+
+    @CreatedBy
+    @Column(name = "created_by_user_id")
+    var createdByUserId: Long = 0,
+
+    @LastModifiedBy
+    @Column(name = "last_updated_user_id")
+    var lastUpdatedUserId: Long = 0,
+
+    @Column(columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
+    val softDeleted: Boolean = false,
+
+    // The following fields are not used, but must be set:
+    val partitionAreaId: Long = 0,
+
+    val trustProviderTeamId: Long = team.id,
+
+    @Column(columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
+    val trustProviderFlag: Boolean = false,
 )
 
 interface ContactRepository : JpaRepository<Contact, Long> {
