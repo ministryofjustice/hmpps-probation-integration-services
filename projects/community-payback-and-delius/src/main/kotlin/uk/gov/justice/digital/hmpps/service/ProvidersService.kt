@@ -43,9 +43,7 @@ class ProvidersService(
     } ?: throw NotFoundException("Staff code for user", "username", username)
 
     fun getSessions(teamCode: String, startDate: LocalDate, endDate: LocalDate): SessionsResponse {
-        if (ChronoUnit.DAYS.between(startDate, endDate) > 7) {
-            throw IllegalArgumentException("Date range cannot be greater than 7 days")
-        }
+        require(ChronoUnit.DAYS.between(startDate, endDate) <= 7) { "Date range cannot be greater than 7 days" }
 
         val team = teamRepository.findTeamByCode(teamCode)
         val sessions = unpaidWorkAppointmentRepository.getUnpaidWorkSessionDetails(team.id, startDate, endDate)

@@ -36,9 +36,7 @@ class DetailsService(
     fun signAndSend(username: String): SignAndSendResponse {
         val ldapUser = ldapTemplate.findByUsername<LdapUser>(username)
             ?: throw NotFoundException("User", "username", username)
-        if (ldapUser.userHomeArea == null) {
-            throw IllegalArgumentException("No home area found for $username")
-        }
+        requireNotNull(ldapUser.userHomeArea) { "No home area found for $username" }
 
         val defaultReplyAddress = ldapTemplate.findPreferenceByUsername(username, "replyAddress")?.toLongOrNull()
         val officeLocations = officeLocationRepository.findAllByProviderCode(ldapUser.userHomeArea)
