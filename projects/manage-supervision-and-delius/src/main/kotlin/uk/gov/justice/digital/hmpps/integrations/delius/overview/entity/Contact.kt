@@ -12,7 +12,6 @@ import org.springframework.data.domain.Sort
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.CrudRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.LicenceCondition as LicenceConditionEntity
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.ContactDocument
@@ -26,6 +25,7 @@ import java.time.LocalDate
 import java.time.LocalTime
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
+import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.LicenceCondition as LicenceConditionEntity
 
 @Entity
 @Table(name = "contact")
@@ -462,67 +462,67 @@ interface ContactRepository : JpaRepository<Contact, Long> {
 
     @Query(
         """
-                SELECT  o.first_name AS forename,
-                        o.second_name AS second_name,
-                        o.third_name AS third_name,
-                        o.surname AS surname,
-                        o.date_of_birth_date AS dob,
-                        c.contact_id AS id,
-                        o.crn AS crn, 
-                        ol.description AS location, 
-                        c.contact_date AS contact_date, 
-                        c.contact_start_time AS contact_start_time,
-                        c.contact_end_time AS contact_end_time,
+                select  o.first_name as forename,
+                        o.second_name as second_name,
+                        o.third_name as third_name,
+                        o.surname as surname,
+                        o.date_of_birth_date as dob,
+                        c.contact_id as id,
+                        o.crn as crn, 
+                        ol.description as location, 
+                        c.contact_date as contact_date, 
+                        c.contact_start_time as contact_start_time,
+                        c.contact_end_time as contact_end_time,
                         total_sentences,
-                        rct.description AS contactDescription,
-                        rct.code as typeCode,
+                        rct.description as contactdescription,
+                        rct.code as typecode,
                         case when c.complied = 'N' then 0 else 1 end as complied,
-                        rtmc.code as rqmntMainCatCode,
-                        NVL(rdt.description, latest_sentence_description)  AS sentenceDescription
-                FROM contact c 
-                JOIN r_contact_type rct ON rct.contact_type_id = c.contact_type_id 
-                JOIN offender o ON o.offender_id = c.offender_id
-                JOIN staff s ON s.staff_id = c.staff_id 
-                JOIN caseload cl ON s.staff_id = cl.staff_employee_id AND c.offender_id = cl.offender_id AND (cl.role_code = 'OM') 
-                LEFT JOIN office_location ol ON ol.office_location_id = c.office_location_id 
-                LEFT JOIN event e ON e.event_id = c.event_id AND (e.soft_deleted = 0) 
-                LEFT JOIN disposal d ON e.event_id = d.event_id 
-                LEFT JOIN r_disposal_type rdt ON rdt.disposal_type_id = d.disposal_type_id 
+                        rtmc.code as rqmntmaincatcode,
+                        nvl(rdt.description, latest_sentence_description)  as sentencedescription
+                from contact c 
+                join r_contact_type rct on rct.contact_type_id = c.contact_type_id 
+                join offender o on o.offender_id = c.offender_id
+                join staff s on s.staff_id = c.staff_id 
+                join caseload cl on s.staff_id = cl.staff_employee_id and c.offender_id = cl.offender_id and (cl.role_code = 'OM') 
+                left join office_location ol on ol.office_location_id = c.office_location_id 
+                left join event e on e.event_id = c.event_id and (e.soft_deleted = 0) 
+                left join disposal d on e.event_id = d.event_id 
+                left join r_disposal_type rdt on rdt.disposal_type_id = d.disposal_type_id 
                 left join rqmnt r on r.rqmnt_id = c.rqmnt_id
                 left join r_rqmnt_type_main_category rtmc on rtmc.rqmnt_type_main_category_id = r.rqmnt_type_main_category_id
-                LEFT JOIN ( 
-                        SELECT sub.* 
-                        FROM
-                          (SELECT e.*,
-                            rdt.description AS latest_sentence_description,
-                            COUNT(e.event_id) over (PARTITION BY e.offender_id) AS total_sentences,
-                            ROW_NUMBER() over (PARTITION BY e.offender_id ORDER BY CAST(e.event_number AS NUMBER) DESC) AS row_num 
-                            FROM event e 
-                            JOIN disposal d ON d.event_id = e.event_id
-                            JOIN r_disposal_type rdt ON rdt.disposal_type_id = d.disposal_type_id
-                            WHERE e.soft_deleted = 0 
-                            AND e.active_flag = 1
+                left join ( 
+                        select sub.* 
+                        from
+                          (select e.*,
+                            rdt.description as latest_sentence_description,
+                            count(e.event_id) over (partition by e.offender_id) as total_sentences,
+                            row_number() over (partition by e.offender_id order by cast(e.event_number as number) desc) as row_num 
+                            from event e 
+                            join disposal d on d.event_id = e.event_id
+                            join r_disposal_type rdt on rdt.disposal_type_id = d.disposal_type_id
+                            where e.soft_deleted = 0 
+                            and e.active_flag = 1
                             ) sub
-                        WHERE sub.row_num = 1
-                 ) ls ON ls.offender_id =c.offender_id 
-                 WHERE (c.soft_deleted = 0) 
-                 AND s.staff_id = :staffId
-                 AND rct.attendance_contact = 'Y' 
-                 AND (to_char(c.contact_date,'YYYY-MM-DD') > :dateNow  OR (to_char(c.contact_date,'YYYY-MM-DD') = :dateNow 
-                 AND to_char(c.contact_start_time,'HH24:MI') > :timeNow)) 
+                        where sub.row_num = 1
+                 ) ls on ls.offender_id =c.offender_id 
+                 where (c.soft_deleted = 0) 
+                 and s.staff_id = :staffId
+                 and rct.attendance_contact = 'Y' 
+                 and (to_char(c.contact_date,'YYYY-MM-DD') > :dateNow  or (to_char(c.contact_date,'YYYY-MM-DD') = :dateNow 
+                 and to_char(c.contact_start_time,'HH24:MI') > :timeNow)) 
         """,
         countQuery = """
-                SELECT COUNT(1) 
-                FROM contact c 
-                JOIN r_contact_type rct ON rct.contact_type_id = c.contact_type_id 
-                JOIN offender o ON o.offender_id = c.offender_id
-                JOIN staff s ON s.staff_id = c.staff_id 
-                JOIN caseload cl ON s.staff_id = cl.staff_employee_id AND c.offender_id = cl.offender_id AND (cl.role_code = 'OM')  
-                WHERE (c.soft_deleted = 0) 
-                AND s.staff_id = :staffId
-                AND rct.attendance_contact = 'Y' 
-                AND (to_char(c.contact_date,'YYYY-MM-DD') > :dateNow  OR (to_char(c.contact_date,'YYYY-MM-DD') = :dateNow 
-                AND to_char(c.contact_start_time,'HH24:MI') > :timeNow)) 
+                select count(1) 
+                from contact c 
+                join r_contact_type rct on rct.contact_type_id = c.contact_type_id 
+                join offender o on o.offender_id = c.offender_id
+                join staff s on s.staff_id = c.staff_id 
+                join caseload cl on s.staff_id = cl.staff_employee_id and c.offender_id = cl.offender_id and (cl.role_code = 'OM')  
+                where (c.soft_deleted = 0) 
+                and s.staff_id = :staffId
+                and rct.attendance_contact = 'Y' 
+                and (to_char(c.contact_date,'YYYY-MM-DD') > :dateNow  or (to_char(c.contact_date,'YYYY-MM-DD') = :dateNow 
+                and to_char(c.contact_start_time,'HH24:MI') > :timeNow)) 
         """,
         nativeQuery = true
     )
@@ -535,71 +535,71 @@ interface ContactRepository : JpaRepository<Contact, Long> {
 
     @Query(
         """
-            SELECT  o.first_name AS forename, 
-                    o.second_name AS second_name, 
-                    o.third_name AS third_name, 
-                    o.surname AS surname, 
-                    o.date_of_birth_date AS dob, 
-                    c.contact_id AS id, 
-                    o.crn AS crn, 
-                    ol.description AS location, 
-                    c.contact_date AS contact_date, 
-                    c.contact_start_time AS contact_start_time, 
-                    c.contact_end_time AS contact_end_time, 
-                    (SELECT COUNT(1)
-                         FROM event e 
-                         JOIN disposal d ON d.event_id = e.event_id
-                         WHERE e.offender_id = o.offender_id
-                         AND e.active_flag = 1
-                         AND e.soft_deleted = 0) as totalSentences,
-                    rct.description AS contactDescription,
-                    rct.code as typeCode,
+            select  o.first_name as forename, 
+                    o.second_name as second_name, 
+                    o.third_name as third_name, 
+                    o.surname as surname, 
+                    o.date_of_birth_date as dob, 
+                    c.contact_id as id, 
+                    o.crn as crn, 
+                    ol.description as location, 
+                    c.contact_date as contact_date, 
+                    c.contact_start_time as contact_start_time, 
+                    c.contact_end_time as contact_end_time, 
+                    (select count(1)
+                         from event e 
+                         join disposal d on d.event_id = e.event_id
+                         where e.offender_id = o.offender_id
+                         and e.active_flag = 1
+                         and e.soft_deleted = 0) as totalsentences,
+                    rct.description as contactdescription,
+                    rct.code as typecode,
                     case when c.complied = 'N' then 0 else 1 end as complied,
-                    rtmc.code as rqmntMainCatCode,
-                    CASE WHEN d.disposal_id IS NOT NULL 
-                    THEN 
+                    rtmc.code as rqmntmaincatcode,
+                    case when d.disposal_id is not null 
+                    then 
                         rdt.description
-                    ELSE
-                        (SELECT rdt.description
-                          FROM disposal d
-                          JOIN r_disposal_type rdt ON rdt.disposal_type_id = d.disposal_type_id
-                          WHERE d.offender_id = o.offender_id
-                          ORDER BY e.created_datetime DESC FETCH FIRST 1 ROW ONLY)
-                    END AS sentenceDescription      
-            FROM offender o
-            JOIN contact c ON o.offender_id = c.offender_id
-            JOIN r_contact_type rct ON rct.contact_type_id = c.contact_type_id
-            JOIN staff s ON s.staff_id = c.staff_id
-            JOIN caseload cl ON s.staff_id = cl.staff_employee_id AND c.offender_id = cl.offender_id AND (cl.role_code = 'OM')
-            LEFT JOIN office_location ol ON ol.office_location_id = c.office_location_id
-            LEFT JOIN event e ON e.event_id = c.event_id AND e.ACTIVE_FLAG = 1 AND e.soft_deleted = 0
-            LEFT JOIN disposal d ON d.event_id = e.event_id
-            LEFT JOIN r_disposal_type rdt ON rdt.disposal_type_id = d.disposal_type_id
+                    else
+                        (select rdt.description
+                          from disposal d
+                          join r_disposal_type rdt on rdt.disposal_type_id = d.disposal_type_id
+                          where d.offender_id = o.offender_id
+                          order by e.created_datetime desc fetch first 1 row only)
+                    end as sentencedescription      
+            from offender o
+            join contact c on o.offender_id = c.offender_id
+            join r_contact_type rct on rct.contact_type_id = c.contact_type_id
+            join staff s on s.staff_id = c.staff_id
+            join caseload cl on s.staff_id = cl.staff_employee_id and c.offender_id = cl.offender_id and (cl.role_code = 'OM')
+            left join office_location ol on ol.office_location_id = c.office_location_id
+            left join event e on e.event_id = c.event_id and e.active_flag = 1 and e.soft_deleted = 0
+            left join disposal d on d.event_id = e.event_id
+            left join r_disposal_type rdt on rdt.disposal_type_id = d.disposal_type_id
             left join rqmnt r on r.rqmnt_id = c.rqmnt_id
             left join r_rqmnt_type_main_category rtmc on rtmc.rqmnt_type_main_category_id = r.rqmnt_type_main_category_id
-            WHERE (c.soft_deleted = 0) 
-            AND s.staff_id = :staffId 
-            AND rct.attendance_contact = 'Y'  
-            AND rct.contact_outcome_flag = 'Y' 
-            AND c.contact_outcome_type_id IS NULL 
-            AND (to_char(c.contact_date,'YYYY-MM-DD') < :dateNow OR (to_char(c.contact_date,'YYYY-MM-DD') = :dateNow
-            AND to_char(c.contact_start_time,'HH24:MI') < :timeNow)) 
+            where (c.soft_deleted = 0) 
+            and s.staff_id = :staffId 
+            and rct.attendance_contact = 'Y'  
+            and rct.contact_outcome_flag = 'Y' 
+            and c.contact_outcome_type_id is null 
+            and (to_char(c.contact_date,'YYYY-MM-DD') < :dateNow or (to_char(c.contact_date,'YYYY-MM-DD') = :dateNow
+            and to_char(c.contact_start_time,'HH24:MI') < :timeNow)) 
         """,
         nativeQuery = true,
         countQuery = """
-            SELECT  count(1)
-            FROM offender o
-            JOIN contact c ON o.offender_id = c.offender_id
-            JOIN r_contact_type rct ON rct.contact_type_id = c.contact_type_id
-            JOIN staff s ON s.staff_id = c.staff_id
-            JOIN caseload cl ON s.staff_id = cl.staff_employee_id AND c.offender_id = cl.offender_id AND (cl.role_code = 'OM')
-            WHERE (c.soft_deleted = 0) 
-            AND s.staff_id = :staffId
-            AND rct.attendance_contact = 'Y' 
-            AND rct.contact_outcome_flag = 'Y'
-            AND c.contact_outcome_type_id IS NULL
-            AND (to_char(c.contact_date,'YYYY-MM-DD') < :dateNow  OR (to_char(c.contact_date,'YYYY-MM-DD') = :dateNow
-            AND to_char(c.contact_start_time,'HH24:MI') < :timeNow)) 
+            select  count(1)
+            from offender o
+            join contact c on o.offender_id = c.offender_id
+            join r_contact_type rct on rct.contact_type_id = c.contact_type_id
+            join staff s on s.staff_id = c.staff_id
+            join caseload cl on s.staff_id = cl.staff_employee_id and c.offender_id = cl.offender_id and (cl.role_code = 'OM')
+            where (c.soft_deleted = 0) 
+            and s.staff_id = :staffId
+            and rct.attendance_contact = 'Y' 
+            and rct.contact_outcome_flag = 'Y'
+            and c.contact_outcome_type_id is null
+            and (to_char(c.contact_date,'YYYY-MM-DD') < :dateNow  or (to_char(c.contact_date,'YYYY-MM-DD') = :dateNow
+            and to_char(c.contact_start_time,'HH24:MI') < :timeNow)) 
         """
     )
     fun findAppointmentsWithoutOutcomesByUser(
@@ -659,18 +659,18 @@ interface ContactRepository : JpaRepository<Contact, Long> {
         left join rq on appt.rqmnt_id = rq.rqmnt_id   
     """,
         countQuery = """
-        SELECT COUNT(1)
-        FROM offender o
-        JOIN caseload cl ON o.offender_id = cl.offender_id AND (cl.role_code = 'OM')
-        JOIN CONTACT c ON c.offender_id = o.offender_id AND c.staff_id = :staffId
-        JOIN r_contact_type rct ON rct.contact_type_id = c.contact_type_id
-        WHERE cl.staff_employee_id = :staffId
-        AND rct.attendance_contact = 'Y'  
-        AND rct.contact_outcome_flag = 'Y'
-        AND c.contact_outcome_type_id IS NULL 
-        AND c.soft_deleted = 0
-        AND (to_char(c.contact_date,'YYYY-MM-DD') < :dateNow
-        OR (to_char(c.contact_date,'YYYY-MM-DD') = :dateNow AND to_char(c.contact_start_time,'HH24:MI') < :timeNow))              
+        select count(1)
+        from offender o
+        join caseload cl on o.offender_id = cl.offender_id and (cl.role_code = 'OM')
+        join contact c on c.offender_id = o.offender_id and c.staff_id = :staffId
+        join r_contact_type rct on rct.contact_type_id = c.contact_type_id
+        where cl.staff_employee_id = :staffId
+        and rct.attendance_contact = 'Y'  
+        and rct.contact_outcome_flag = 'Y'
+        and c.contact_outcome_type_id is null 
+        and c.soft_deleted = 0
+        and (to_char(c.contact_date,'YYYY-MM-DD') < :dateNow
+        or (to_char(c.contact_date,'YYYY-MM-DD') = :dateNow and to_char(c.contact_start_time,'HH24:MI') < :timeNow))              
         """,
         nativeQuery = true
     )
@@ -691,6 +691,7 @@ interface ContactRepository : JpaRepository<Contact, Long> {
         """
     )
     fun findAllUserAlerts(username: String, pageable: Pageable): Page<Contact>
+    fun findByPersonIdIn(personIds: kotlin.collections.MutableCollection<Long>): kotlin.collections.MutableList<uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.Contact>
 }
 
 fun ContactRepository.getContact(id: Long) = findById(id).orElseThrow { NotFoundException("Contact", "id", id) }

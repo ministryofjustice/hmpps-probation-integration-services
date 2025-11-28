@@ -75,6 +75,20 @@ class UserService(
         AttributesMapper { it["cn"].get().toString() }
     )
 
+    private fun getContactTypes(staffId: Long): List<KeyPair> {
+        val caseload = caseloadRepository
+            .findByStaffId(staffId, PageRequest.of(0, 10000))
+            .filter { it.roleCode == "OM" }
+        val offenderIds = caseload.map { it.person.id }
+        val contacts = contactRepository.findByPersonIdIn(offenderIds.toMutableList())
+            .filter { it.type.attendanceContact }
+            .filter { it.startTime != null }
+            .filter { it.startDateTime() > ZonedDateTime.now() }
+            .groupBy { it.person.id }
+            .mapNotNull { (_, contacts) -> contacts.firstOrNull() }
+        return contacts.map { KeyPair(it.type.code, it.type.description) }.distinct()
+    }
+
     @Transactional
     fun getUserCaseload(username: String, pageable: Pageable): StaffCaseload {
         val user = userRepository.getUser(username)
@@ -108,8 +122,7 @@ class UserService(
         val sentenceTypes =
             caseloadRepository.findSentenceTypesForStaff(user.staff.id)
                 .map { KeyPair(it.code.trim(), it.description) }
-        val contactTypes =
-            caseloadRepository.findContactTypesForStaff(user.staff.id).map { KeyPair(it.code.trim(), it.description) }
+        val contactTypes = getContactTypes(user.staff.id)
         val userAccess = userAccessService.userAccessFor(username, caseload.content.map { it.person.crn })
 
         return StaffCaseload(
