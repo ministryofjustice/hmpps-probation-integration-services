@@ -2,7 +2,6 @@ package uk.gov.justice.digital.hmpps.data.generator
 
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.*
 import java.time.LocalDate
-import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.ZonedDateTime
 
@@ -341,6 +340,7 @@ object UPWGenerator {
         workQuality: ReferenceData?,
         behaviour: ReferenceData?,
         minutesCredited: Long?,
+        notes: String? = null,
         rowVersion: Long = 1,
         createdDatetime: ZonedDateTime = ZonedDateTime.now(),
         lastUpdatedDatetime: ZonedDateTime = ZonedDateTime.now()
@@ -367,6 +367,7 @@ object UPWGenerator {
         workQuality,
         behaviour,
         minutesCredited,
+        notes,
         rowVersion,
         createdDatetime,
         0,

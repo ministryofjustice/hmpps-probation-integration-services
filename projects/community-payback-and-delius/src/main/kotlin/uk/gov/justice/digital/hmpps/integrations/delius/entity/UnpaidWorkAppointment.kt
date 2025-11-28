@@ -108,6 +108,9 @@ class UpwAppointment(
 
     var minutesCredited: Long? = null,
 
+    @Lob
+    var notes: String?,
+
     @Version
     var rowVersion: Long,
 
