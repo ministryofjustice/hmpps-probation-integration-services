@@ -19,6 +19,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.Offender
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.OffenderManagerRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.getByCrn
 import java.time.ZonedDateTime
+import java.util.UUID
 
 @Transactional
 @Service
@@ -198,6 +199,7 @@ fun Contact.toActivity(noteId: Int? = null) = Activity(
     eventId = event?.id,
     component = requirement?.asComponent() ?: licenceCondition?.asComponent(),
     nsiId = nsiId,
+    eSupervisionId = eSupervisionId()
 )
 
 fun ContactDocument.toDocument() =
@@ -211,3 +213,9 @@ fun Requirement.asComponent() =
     Component(id, mainCategory?.description ?: "", Component.Type.REQUIREMENT)
 
 fun LicenceCondition.asComponent() = Component(id, mainCategory.description, Component.Type.LICENCE_CONDITION)
+
+private fun Contact.eSupervisionId() = externalReference?.let { er ->
+    Contact.E_SUPERVISION_PREFIXES.firstOrNull { prefix -> er.startsWith(prefix) }?.let {
+        UUID.fromString(er.replace(it, ""))
+    }
+}
