@@ -2682,8 +2682,11 @@ components:
           type: boolean
         visorReport:
           type: boolean
+        outcomeRecorded:
+          type: boolean
       required:
       - end
+      - outcomeRecorded
       - start
       - type
       - user
