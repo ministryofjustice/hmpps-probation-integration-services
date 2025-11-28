@@ -474,11 +474,11 @@ interface ContactRepository : JpaRepository<Contact, Long> {
                         c.contact_start_time as contact_start_time,
                         c.contact_end_time as contact_end_time,
                         total_sentences,
-                        rct.description as contactdescription,
-                        rct.code as typecode,
+                        rct.description as contactDescription,
+                        rct.code as typeCode,
                         case when c.complied = 'N' then 0 else 1 end as complied,
-                        rtmc.code as rqmntmaincatcode,
-                        nvl(rdt.description, latest_sentence_description)  as sentencedescription
+                        rtmc.code as rqmntMainCatCode,
+                        nvl(rdt.description, latest_sentence_description)  as sentenceDescription
                 from contact c 
                 join r_contact_type rct on rct.contact_type_id = c.contact_type_id 
                 join offender o on o.offender_id = c.offender_id
@@ -551,11 +551,11 @@ interface ContactRepository : JpaRepository<Contact, Long> {
                          join disposal d on d.event_id = e.event_id
                          where e.offender_id = o.offender_id
                          and e.active_flag = 1
-                         and e.soft_deleted = 0) as totalsentences,
-                    rct.description as contactdescription,
-                    rct.code as typecode,
+                         and e.soft_deleted = 0) as totalSentences,
+                    rct.description as contactDescription,
+                    rct.code as typeCode,
                     case when c.complied = 'N' then 0 else 1 end as complied,
-                    rtmc.code as rqmntmaincatcode,
+                    rtmc.code as rqmntMainCatCode,
                     case when d.disposal_id is not null 
                     then 
                         rdt.description
@@ -565,7 +565,7 @@ interface ContactRepository : JpaRepository<Contact, Long> {
                           join r_disposal_type rdt on rdt.disposal_type_id = d.disposal_type_id
                           where d.offender_id = o.offender_id
                           order by e.created_datetime desc fetch first 1 row only)
-                    end as sentencedescription      
+                    end as sentenceDescription      
             from offender o
             join contact c on o.offender_id = c.offender_id
             join r_contact_type rct on rct.contact_type_id = c.contact_type_id
