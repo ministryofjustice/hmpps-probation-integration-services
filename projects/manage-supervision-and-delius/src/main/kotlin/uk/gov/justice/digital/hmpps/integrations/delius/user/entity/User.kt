@@ -506,7 +506,7 @@ interface CaseloadRepository : JpaRepository<Caseload, Long> {
     )
 )
 WHERE row_num = 1
-ORDER BY description;
+ORDER BY description
     """, nativeQuery = true
     )
     fun findContactTypesForStaff(id: Long): List<ContactTypeDetails>
