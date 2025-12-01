@@ -460,13 +460,14 @@ interface CaseloadRepository : JpaRepository<Caseload, Long> {
         left join fetch ls.disposal d
         left join fetch d.type dt
         where c.staff.id = :id
+        and c.roleCode = 'OM'
         and (:nameOrCrn is null 
-          or upper(p.crn) like '%' || upper(:nameOrCrn) || '%' ESCAPE '\'
-          or upper(p.forename || ' ' || p.surname) like '%' || upper(:nameOrCrn) || '%' ESCAPE '\'
-          or upper(p.surname || ' ' || p.forename) like '%' || upper(:nameOrCrn) || '%' ESCAPE '\'
-          or upper(p.surname || ', ' || p.forename) like '%' || upper(:nameOrCrn) || '%' ESCAPE '\')
-        and (:nextContactCode is null or (upper(trim(naType.code)) = upper(trim(:nextContactCode))))
-        and (:sentenceCode is null or (upper(trim(dt.code)) = upper(trim(:sentenceCode))))
+          or lower(p.crn) like '%' || :nameOrCrn || '%' ESCAPE '\'
+          or lower(p.forename || ' ' || p.surname) like '%' || :nameOrCrn || '%' ESCAPE '\'
+          or lower(p.surname || ' ' || p.forename) like '%' || :nameOrCrn || '%' ESCAPE '\'
+          or lower(p.surname || ', ' || p.forename) like '%' || :nameOrCrn || '%' ESCAPE '\')
+        and (:nextContactCode is null or naType.code = :nextContactCode)
+        and (:sentenceCode is null or dt.code = :sentenceCode)
     """
     )
     fun searchByStaffId(
@@ -489,23 +490,24 @@ interface CaseloadRepository : JpaRepository<Caseload, Long> {
 
     @Query(
         """
-            SELECT DISTINCT code, description FROM (
-                SELECT code, description, ROW_NUMBER() OVER (PARTITION BY offender_id ORDER BY date_time asc) as row_num 
-                FROM (
-                    SELECT 
-                        ct.code,
-                        ct.description,
-                        c.offender_id,
-                        trunc(c.contact_date) + (c.contact_start_time-trunc(c.contact_start_time)) AS date_time
-                    FROM caseload cl
-                    JOIN contact c ON c.offender_id = cl.offender_id AND c.staff_id = cl.staff_employee_id AND c.contact_start_time IS NOT NULL AND c.soft_deleted = 0
-                    JOIN r_contact_type ct ON ct.contact_type_id = c.contact_type_id AND ct.attendance_contact = 'Y'
-                    WHERE cl.role_code = 'OM'
-                    AND cl.staff_employee_id = :id
-                ) WHERE date_time > current_date
-            )
-            WHERE row_num = 1
-            ORDER BY description
+        SELECT DISTINCT code, description FROM (
+    SELECT code, description, ROW_NUMBER() OVER (PARTITION BY offender_id ORDER BY date_time asc) as row_num
+    FROM (
+        SELECT
+            ct.code,
+            ct.description,
+            c.offender_id,
+            trunc(c.contact_date) + (c.contact_start_time-trunc(c.contact_start_time)) AS date_time
+        FROM caseload cl
+        JOIN contact c ON c.offender_id = cl.offender_id AND c.staff_id = cl.staff_employee_id AND c.contact_start_time IS NOT NULL AND c.soft_deleted = 0
+        JOIN r_contact_type ct ON ct.contact_type_id = c.contact_type_id AND ct.attendance_contact = 'Y'
+        WHERE cl.role_code = 'OM'
+          AND cl.staff_employee_id = :id
+          AND trunc(c.contact_date) + (c.contact_start_time-trunc(c.contact_start_time)) > current_date
+    )
+)
+WHERE row_num = 1
+ORDER BY description
     """, nativeQuery = true
     )
     fun findContactTypesForStaff(id: Long): List<ContactTypeDetails>
@@ -516,6 +518,7 @@ interface CaseloadRepository : JpaRepository<Caseload, Long> {
             join Event e on e.personId = c.person.id and e.active = true and e.softDeleted = false 
             where e.disposal is not null 
             and c.staff.id = :id
+            and c.roleCode = 'OM'
             order by e.disposal.type.description asc
         """
     )
