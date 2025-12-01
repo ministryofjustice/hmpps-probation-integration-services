@@ -460,6 +460,7 @@ interface CaseloadRepository : JpaRepository<Caseload, Long> {
         left join fetch ls.disposal d
         left join fetch d.type dt
         where c.staff.id = :id
+        and c.roleCode = 'OM'
         and (:nameOrCrn is null 
           or lower(p.crn) like '%' || :nameOrCrn || '%' ESCAPE '\'
           or lower(p.forename || ' ' || p.surname) like '%' || :nameOrCrn || '%' ESCAPE '\'
