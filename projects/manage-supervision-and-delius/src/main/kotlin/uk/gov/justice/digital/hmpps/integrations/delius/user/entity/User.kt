@@ -517,6 +517,7 @@ ORDER BY description
             join Event e on e.personId = c.person.id and e.active = true and e.softDeleted = false 
             where e.disposal is not null 
             and c.staff.id = :id
+            and c.roleCode = 'OM'
             order by e.disposal.type.description asc
         """
     )
