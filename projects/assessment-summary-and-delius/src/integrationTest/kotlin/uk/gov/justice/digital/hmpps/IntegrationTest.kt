@@ -398,6 +398,8 @@ internal class IntegrationTest {
             )
         )
         assertThat(review.date, equalTo(LocalDate.now().plusMonths(6)))
+        assertThat(review.level?.code, equalTo("RSKH"))
+        assertThat(review.category?.code, equalTo(null))
     }
 
     @Test
