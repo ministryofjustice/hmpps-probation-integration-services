@@ -224,8 +224,8 @@ class RiskService(
             teamId = teamId,
             staffId = staffId,
             notes = contact.notes,
-            category = level,
-            level = category
+            category = category,
+            level = level
         )
     }
 
