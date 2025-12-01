@@ -461,12 +461,12 @@ interface CaseloadRepository : JpaRepository<Caseload, Long> {
         left join fetch d.type dt
         where c.staff.id = :id
         and (:nameOrCrn is null 
-          or upper(p.crn) like '%' || upper(:nameOrCrn) || '%' ESCAPE '\'
-          or upper(p.forename || ' ' || p.surname) like '%' || upper(:nameOrCrn) || '%' ESCAPE '\'
-          or upper(p.surname || ' ' || p.forename) like '%' || upper(:nameOrCrn) || '%' ESCAPE '\'
-          or upper(p.surname || ', ' || p.forename) like '%' || upper(:nameOrCrn) || '%' ESCAPE '\')
-        and (:nextContactCode is null or (upper(trim(naType.code)) = upper(trim(:nextContactCode))))
-        and (:sentenceCode is null or (upper(trim(dt.code)) = upper(trim(:sentenceCode))))
+          or lower(p.crn) like '%' || :nameOrCrn || '%' ESCAPE '\'
+          or lower(p.forename || ' ' || p.surname) like '%' || :nameOrCrn || '%' ESCAPE '\'
+          or lower(p.surname || ' ' || p.forename) like '%' || :nameOrCrn || '%' ESCAPE '\'
+          or lower(p.surname || ', ' || p.forename) like '%' || :nameOrCrn || '%' ESCAPE '\')
+        and (:nextContactCode is null or naType.code = :nextContactCode)
+        and (:sentenceCode is null or dt.code = :sentenceCode)
     """
     )
     fun searchByStaffId(
