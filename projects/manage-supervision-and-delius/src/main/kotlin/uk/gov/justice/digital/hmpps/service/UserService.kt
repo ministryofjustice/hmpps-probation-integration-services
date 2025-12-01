@@ -100,9 +100,9 @@ class UserService(
         val user = userRepository.getUser(username)
         val caseload = caseloadRepository.searchByStaffId(
             user.staff!!.id,
-            searchFilter.nameOrCrn,
-            searchFilter.nextContactCode,
-            searchFilter.sentenceCode,
+            searchFilter.nameOrCrn?.trim()?.lowercase(),
+            searchFilter.nextContactCode?.trim()?.uppercase(),
+            searchFilter.sentenceCode?.trim()?.uppercase(),
             pageable
         )
         val sentenceTypes =
