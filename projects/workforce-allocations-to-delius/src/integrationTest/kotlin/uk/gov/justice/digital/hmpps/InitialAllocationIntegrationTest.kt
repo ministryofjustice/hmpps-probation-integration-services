@@ -36,8 +36,8 @@ class InitialAllocationIntegrationTest {
             .andExpect(
                 content().string(
                     """
-                    crn,eventNumber,sentenceType,allocatedBy,allocationDate,endDate,officerCode,teamCode,teamDescription,pduCode,pduDescription,providerCode,providerDescription,hasExclusion,hasRestriction
-                    X123456,4,None,"HMPPS Allocations",07/05/2024,,"TEST01 ",N03AAA,"Description for N03AAA",PDU1,"Some PDU",N02,"NPS North East",N,N
+                    crn,eventNumber,sentenceType,allocatedBy,allocationDate,endDate,officerCode,teamCode,teamDescription,pduCode,pduDescription,providerCode,providerDescription,previousOfficerCode,previouslyUnallocated,hasExclusion,hasRestriction
+                    X123456,4,None,"HMPPS Allocations",07/05/2024,,"TEST01 ",N03AAA,"Description for N03AAA",PDU1,"Some PDU",N02,"NPS North East",N02UATU,Y,N,N
                     
                     """.trimIndent()
                 )
