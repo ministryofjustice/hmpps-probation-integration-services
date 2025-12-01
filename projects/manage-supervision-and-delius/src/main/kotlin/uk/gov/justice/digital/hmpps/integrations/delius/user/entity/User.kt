@@ -489,23 +489,15 @@ interface CaseloadRepository : JpaRepository<Caseload, Long> {
 
     @Query(
         """
-            SELECT DISTINCT code, description FROM (
-                SELECT code, description, ROW_NUMBER() OVER (PARTITION BY offender_id ORDER BY date_time asc) as row_num 
-                FROM (
-                    SELECT 
-                        ct.code,
-                        ct.description,
-                        c.offender_id,
-                        trunc(c.contact_date) + (c.contact_start_time-trunc(c.contact_start_time)) AS date_time
-                    FROM caseload cl
-                    JOIN contact c ON c.offender_id = cl.offender_id AND c.staff_id = cl.staff_employee_id AND c.contact_start_time IS NOT NULL AND c.soft_deleted = 0
-                    JOIN r_contact_type ct ON ct.contact_type_id = c.contact_type_id AND ct.attendance_contact = 'Y'
-                    WHERE cl.role_code = 'OM'
-                    AND cl.staff_employee_id = :id
-                ) WHERE date_time > current_date
-            )
-            WHERE row_num = 1
-            ORDER BY description
+              SELECT code, description FROM (
+        SELECT ct.code, ct.description, trunc(c.contact_date) + (c.contact_start_time-trunc(c.contact_start_time)) as date_time
+        FROM caseload cl
+        JOIN contact c ON c.offender_id = cl.offender_id AND c.staff_id = cl.staff_employee_id AND c.contact_start_time IS NOT NULL AND c.soft_deleted = 0
+        JOIN r_contact_type ct ON ct.contact_type_id = c.contact_type_id AND ct.attendance_contact = 'Y'
+        WHERE cl.role_code = 'OM'
+        AND cl.staff_employee_id = :id
+        AND trunc(c.contact_date) + (c.contact_start_time-trunc(c.contact_start_time)) > current_date
+        ORDER BY trunc(c.contact_date) + (c.contact_start_time - trunc(c.contact_start_time))) fetch first 1 rows only;
     """, nativeQuery = true
     )
     fun findContactTypesForStaff(id: Long): List<ContactTypeDetails>
