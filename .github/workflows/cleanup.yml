@@ -33,7 +33,7 @@ jobs:
   delete-reports:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
         with:
           ref: gh-pages
           fetch-depth: 0
