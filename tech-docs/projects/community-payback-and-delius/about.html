@@ -93,8 +93,28 @@
               <nav id="toc" class="js-toc-list toc__list" aria-labelledby="toc-heading">
                       <ul>
   <li>
-    <a href="#community-payback-and-delius"><span>community-payback-and-delius</span></a>
+    <a href="#community-payback-and-delius"><span>Community Payback and Delius</span></a>
     <ul>
+      <li>
+        <a href="#business-need"><span>Business Need</span></a>
+      </li>
+      <li>
+        <a href="#interfaces"><span>Interfaces</span></a>
+        <ul>
+          <li>
+            <a href="#api-endpoints"><span>API Endpoints</span></a>
+          </li>
+          <li>
+            <a href="#message-event-handling"><span>Message/Event Handling</span></a>
+          </li>
+        </ul>
+      </li>
+      <li>
+        <a href="#context-map"><span>Context Map</span></a>
+      </li>
+      <li>
+        <a href="#authorisation"><span>Authorisation</span></a>
+      </li>
       <li>
         <a href="#api-reference"><span>API Reference</span></a>
       </li>
@@ -109,9 +129,50 @@
 
         <div class="app-pane__content toc-open-disabled" aria-label="Content">
           <main id="content" class="technical-documentation" data-module="anchored-headings">
-            <h1 id="community-payback-and-delius">community-payback-and-delius</h1>
-<p>// TODO Describe the service</p>
-<h2 id="api-reference">API Reference</h2>
+            <h1 id="community-payback-and-delius">Community Payback and Delius</h1>
+<p>Integration service enabling the <a href="https://github.com/ministryofjustice/hmpps-community-payback-api">Community Payback service</a> to retrieve and update details about Unpaid Work appointments and projects from NDelius.</p>
+<h2 id="business-need">Business Need</h2>
+<p>The Community Payback service requires access to up-to-date information about Unpaid Work appointments and projects for people on probation. This integration service provides APIs to:</p>
+
+<ul>
+<li>Retrieve Unpaid Work appointment, session and project details from NDelius</li>
+<li>Update Unpaid Work appointments and project records in NDelius</li>
+</ul>
+<h2 id="interfaces">Interfaces</h2>
+<h3 id="api-endpoints">API Endpoints</h3>
+<p>The service exposes RESTful API endpoints for the Community Payback service to:</p>
+
+<ul>
+<li>Search for and retrieve Unpaid Work appointments and project details</li>
+<li>Create, update, or delete Unpaid Work appointments and projects</li>
+</ul>
+<p>API endpoints are secured and require appropriate roles via HMPPS Auth.</p>
+<h3 id="message-event-handling">Message/Event Handling</h3>
+<p>(If the service consumes or produces domain events, describe them here. Otherwise, remove this section.)</p>
+<h2 id="context-map">Context Map</h2>
+<p><a href="../../images/community-payback-and-delius-context-map.svg" rel="noopener noreferrer"><img src="../../images/community-payback-and-delius-context-map.svg" alt="Context Map" /></a></p>
+<h2 id="authorisation">Authorisation</h2>
+<p>API endpoints are protected by roles supplied by the HMPPS Auth client. Only authorised clients can access or modify Unpaid Work data.</p>
+<div class="table-container">
+        <table>
+          <tr>
+<th>API Endpoint</th>
+<th>Required Role</th>
+</tr><tr>
+<td>/projects/**</td>
+<td>ROLE_COMMUNITY_PAYBACK_UNPAID_WORK</td>
+</tr><tr>
+<td>/providers/**</td>
+<td>ROLE_COMMUNITY_PAYBACK_UNPAID_WORK</td>
+</tr><tr>
+<td>/supervisors/**</td>
+<td>ROLE_COMMUNITY_PAYBACK_UNPAID_WORK</td>
+</tr><tr>
+<td>/reference-data/**</td>
+<td>ROLE_COMMUNITY_PAYBACK_UNPAID_WORK</td>
+</tr>
+        </table>
+      </div><h2 id="api-reference">API Reference</h2>
 
 <ul>
 <li><a href="api-reference.html">API Reference</a></li>
