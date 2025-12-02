@@ -113,7 +113,7 @@ class AppointmentsIntegrationTest {
                 sensitive = false,
                 alertActive = false,
             )
-        }.andExpect { status().isConflict }
+        }.andExpect { status { isConflict } }
 
         val appointment =
             unpaidWorkAppointmentRepository.getAppointment(UPWGenerator.UPW_APPOINTMENT_NO_OUTCOME.id)
