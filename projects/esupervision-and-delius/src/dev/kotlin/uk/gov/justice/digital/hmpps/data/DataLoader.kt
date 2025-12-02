@@ -35,13 +35,17 @@ class DataLoader(
             ),
             ContactTypeGenerator.CT_ESPCHI,
             ProviderGenerator.DEFAULT_PROVIDER,
+            ProviderGenerator.DEFAULT_PDU,
+            ProviderGenerator.DEFAULT_LDU,
             ProviderGenerator.DEFAULT_TEAM,
             ProviderGenerator.DEFAULT_STAFF,
+            ProviderGenerator.DEFAULT_STAFF_USER,
             PersonGenerator.DEFAULT_PERSON,
             PersonGenerator.DEFAULT_COM,
             PersonGenerator.PREVIOUS_EVENT,
             PersonGenerator.DEFAULT_EVENT,
             PersonContactDetailsGenerator.DEFAULT_PERSON_CONTACT_DETAILS,
+            PersonGenerator.generatePersonManager(PersonContactDetailsGenerator.DEFAULT_PERSON_CONTACT_DETAILS)
         )
     }
 

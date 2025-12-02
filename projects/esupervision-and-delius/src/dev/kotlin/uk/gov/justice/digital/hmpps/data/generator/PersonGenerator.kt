@@ -18,7 +18,7 @@ object PersonGenerator {
             "07745612923",
             "john@doe.com"
         )
-    val DEFAULT_COM = generatePersonManager(DEFAULT_PERSON, DEFAULT_PROVIDER, DEFAULT_TEAM, DEFAULT_STAFF)
+    val DEFAULT_COM = generatePersonManager(DEFAULT_PERSON)
     val PREVIOUS_EVENT = generateEvent(DEFAULT_PERSON, LocalDate.now().minusDays(7))
     val DEFAULT_EVENT = generateEvent(DEFAULT_PERSON, LocalDate.now().minusDays(5))
 
@@ -36,9 +36,9 @@ object PersonGenerator {
 
     fun generatePersonManager(
         person: Person,
-        provider: Provider,
-        team: Team,
-        staff: Staff,
+        provider: Provider = DEFAULT_PROVIDER,
+        team: Team = DEFAULT_TEAM,
+        staff: Staff = DEFAULT_STAFF,
         active: Boolean = true,
         softDeleted: Boolean = false,
         id: Long = IdGenerator.getAndIncrement()
