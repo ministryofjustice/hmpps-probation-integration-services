@@ -22,7 +22,7 @@ class Contact(
     @Column(name = "contact_id")
     @SequenceGenerator(name = "contact_id_seq", sequenceName = "contact_id_seq", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "contact_id_seq")
-    val id: Long = 0,
+    override val id: Long = 0,
 
     @ManyToOne
     @JoinColumn(name = "contact_type_id")
@@ -92,7 +92,7 @@ class Contact(
     var alertActive: Boolean? = false,
 
     @Version
-    var rowVersion: Long = 0,
+    override var rowVersion: Long = 0,
 
     @CreatedDate
     @Column(name = "created_datetime")
@@ -122,7 +122,7 @@ class Contact(
     @Column(columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)
     val trustProviderFlag: Boolean = false,
-)
+) : Versioned
 
 interface ContactRepository : JpaRepository<Contact, Long> {
     @Query(
