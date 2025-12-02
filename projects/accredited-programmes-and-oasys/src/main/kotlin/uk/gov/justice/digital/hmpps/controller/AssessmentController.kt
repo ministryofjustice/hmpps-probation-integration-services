@@ -23,6 +23,7 @@ class AssessmentController(private val ordsClient: OrdsClient) {
     fun getSection(@PathVariable id: Long, @PathVariable name: String): JsonNode =
         ordsClient.getSection(id, name.lowercase()).asResponse()
 
+    @Deprecated("Use /assessments/id/{id}/risk/predictors/all in the Assess Risks and Needs (ARNS) API. This endpoint will be removed in a future release.")
     @GetMapping("/{id}/risk-predictors")
     fun getRiskPredictors(@PathVariable id: Long): RiskPrediction = ordsClient.getRiskPredictors(id)
 
