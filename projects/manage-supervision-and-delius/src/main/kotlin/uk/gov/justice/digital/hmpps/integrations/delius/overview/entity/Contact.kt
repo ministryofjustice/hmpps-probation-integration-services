@@ -124,6 +124,8 @@ class Contact(
     @Column(name = "alert_active")
     var alert: Boolean? = false,
 
+    val externalReference: String? = null,
+
     @Column(name = "soft_deleted", columnDefinition = "number", nullable = false)
     @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean = false,
@@ -176,6 +178,13 @@ class Contact(
 
     fun appendNotes(additionalNotes: String) {
         notes = notes?.plus(System.lineSeparator() + additionalNotes) ?: additionalNotes
+    }
+
+    companion object {
+        val E_SUPERVISION_PREFIXES = setOf(
+            "urn:uk:gov:hmpps:esupervision:check-in:",
+            "urn:uk:gov:hmpps:esupervision:check-in-expiry:"
+        )
     }
 }
 
