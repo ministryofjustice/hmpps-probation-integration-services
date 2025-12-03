@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.integrations.delius.entity
 
 import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
+import org.hibernate.annotations.SQLRestriction
 import org.springframework.data.jpa.repository.JpaRepository
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.model.CodeDescription
@@ -43,6 +44,7 @@ class Staff(
         joinColumns = [JoinColumn(name = "staff_id")],
         inverseJoinColumns = [JoinColumn(name = "team_id")]
     )
+    @SQLRestriction("unpaid_work_team = 'Y'")
     val teams: List<Team>
 )
 
@@ -61,9 +63,7 @@ fun Staff.toSupervisor() = Supervisor(
     }
 )
 
-fun Staff.toSupervisorTeams() = teams.filter {
-    it.unpaidWorkTeam
-}.map {
+fun Staff.toSupervisorTeams() = teams.map {
     SupervisorTeamsResponse(
         code = it.code,
         description = it.description,
