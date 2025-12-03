@@ -97,7 +97,27 @@ internal class IntegrationTest() {
                         "surname": "${PersonContactDetailsGenerator.DEFAULT_PERSON_CONTACT_DETAILS.lastName}"
                       },
                       "mobile": "${PersonContactDetailsGenerator.DEFAULT_PERSON_CONTACT_DETAILS.mobile.toString()}",
-                      "email": "${PersonContactDetailsGenerator.DEFAULT_PERSON_CONTACT_DETAILS.emailAddress}"
+                      "email": "${PersonContactDetailsGenerator.DEFAULT_PERSON_CONTACT_DETAILS.emailAddress}",
+                      "practitioner": {
+                        "code": "${ProviderGenerator.DEFAULT_STAFF.code}",
+                        "email": "john.smith@moj.gov.uk",
+                        "name": {
+                          "forename": "${ProviderGenerator.DEFAULT_STAFF.forename}",
+                          "surname": "${ProviderGenerator.DEFAULT_STAFF.surname}"
+                        },
+                        "localAdminUnit": {
+                          "code": "${ProviderGenerator.DEFAULT_LDU.code}",
+                          "description": "${ProviderGenerator.DEFAULT_LDU.description}"
+                        },
+                        "probationDeliveryUnit": {
+                          "code": "${ProviderGenerator.DEFAULT_PDU.code}",
+                          "description": "${ProviderGenerator.DEFAULT_PDU.description}"
+                        },
+                        "provider": {
+                          "code": "${ProviderGenerator.DEFAULT_PROVIDER.code}",
+                          "description": "${ProviderGenerator.DEFAULT_PROVIDER.description}"
+                        }
+                      }
                     }
                     """.trimIndent(),
                     JsonCompareMode.STRICT,

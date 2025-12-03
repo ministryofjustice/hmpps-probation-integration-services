@@ -82,7 +82,7 @@ private fun ReferralSession.appointmentOutcome(
     }
     val attended = Attended.of(feedback.attendanceFeedback.attended!!)
     return UpdateAppointmentOutcome(
-        latestFeedback!!.id,
+        latestFeedback.id,
         deliusId,
         crn,
         referralReference,
@@ -110,7 +110,7 @@ private fun SupplierAssessment.appointmentOutcome(
     }
     val attended = Attended.of(feedback.attendanceFeedback.attended!!)
     return UpdateAppointmentOutcome(
-        latestFeedback!!.id,
+        latestFeedback.id,
         deliusId,
         crn,
         referralReference,

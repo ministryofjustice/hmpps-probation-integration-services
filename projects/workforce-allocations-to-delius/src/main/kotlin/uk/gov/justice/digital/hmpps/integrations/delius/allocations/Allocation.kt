@@ -24,10 +24,12 @@ import java.util.stream.Stream
     "pduDescription",
     "providerCode",
     "providerDescription",
+    "previousOfficerCode",
+    "previouslyUnallocated",
     "hasExclusion",
     "hasRestriction",
 )
-interface InitialAllocation {
+interface Allocation {
     val crn: String
     val eventNumber: Int
     val sentenceType: String
@@ -45,6 +47,8 @@ interface InitialAllocation {
     val pduDescription: String
     val providerCode: String
     val providerDescription: String
+    val previousOfficerCode: String
+    val previouslyUnallocated: String
     val hasExclusion: String
     val hasRestriction: String
 }
@@ -67,6 +71,9 @@ interface InitialAllocationRepository : JpaRepository<Person, Long> {
                     borough.description as "pduDescription",
                     probation_area.code as "providerCode",
                     probation_area.description as "providerDescription",
+                    previous_staff.officer_code as "previousOfficerCode",
+                    (case when (previous_staff.officer_code like '%U' or upper(previous_staff.forename) || ' ' || upper(previous_staff.surname) like '%AWAITING ALLOCATION%')
+                          then 'Y' else 'N' end) as "previouslyUnallocated",
                     (case when exists (select 1 from exclusion where exclusion.offender_id = allocation.offender_id and (exclusion_end_time is null or exclusion_end_time > current_date)) 
                           then 'Y' else 'N' end) as "hasExclusion",
                     (case when exists (select 1 from restriction where restriction.offender_id = allocation.offender_id and (restriction_end_time is null or restriction_end_time > current_date)) 
@@ -94,7 +101,7 @@ interface InitialAllocationRepository : JpaRepository<Person, Long> {
             ) allocation
             join user_ created_by on created_by.user_id = allocation.created_by_user_id
             join staff on staff.staff_id = allocation.allocation_staff_id and staff.officer_code not like '%U' and upper(staff.forename) || ' ' || upper(staff.surname) not like '%AWAITING ALLOCATION%'
-            join staff previous_staff on previous_staff.staff_id = allocation.prev_staff_id and (previous_staff.officer_code like '%U' or upper(previous_staff.forename) || ' ' || upper(previous_staff.surname) like '%AWAITING ALLOCATION%')
+            join staff previous_staff on previous_staff.staff_id = allocation.prev_staff_id and staff.staff_id <> previous_staff.staff_id
             join team on team.team_id = allocation.allocation_team_id
             join district on district.district_id = team.district_id
             join borough on borough.borough_id = district.borough_id
@@ -103,5 +110,5 @@ interface InitialAllocationRepository : JpaRepository<Person, Long> {
         """,
         nativeQuery = true
     )
-    fun findAllInitialAllocations(startDate: LocalDate = LocalDate.ofYearDay(2024, 1)): Stream<InitialAllocation>
+    fun findAllAllocations(startDate: LocalDate = LocalDate.ofYearDay(2024, 1)): Stream<Allocation>
 }

@@ -1,5 +1,7 @@
 package uk.gov.justice.digital.hmpps.service
 
+import jakarta.persistence.EntityManager
+import org.springframework.orm.ObjectOptimisticLockingFailureException
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.*
@@ -24,7 +26,7 @@ class AppointmentsService(
     private val enforcementActionRepository: EnforcementActionRepository,
     private val contactRepository: ContactRepository,
     private val userAccessService: UserAccessService,
-    private val contactTypeRepository: ContactTypeRepository
+    private val contactTypeRepository: ContactTypeRepository,
 ) {
     fun getAppointment(projectCode: String, appointmentId: Long, username: String): AppointmentResponse {
         val project = unpaidWorkProjectRepository.getByCode(projectCode)
@@ -129,6 +131,9 @@ class AppointmentsService(
         request: AppointmentOutcomeRequest
     ) {
         val appointment = unpaidWorkAppointmentRepository.getAppointment(appointmentId)
+        appointment.validateVersion(request.version.mostSignificantBits)
+        appointment.contact.validateVersion(request.version.leastSignificantBits)
+
         require(projectCode == appointment.project.code) {
             "Appointment is not for the provided project"
         }
@@ -160,13 +165,9 @@ class AppointmentsService(
 
         val staff = staffRepository.getStaff(request.supervisor.code)
 
-
         contact.update(request, outcome, staff)
 
-        appointment.update(
-            request, workQuality, behaviour,
-            outcome, staff
-        )
+        appointment.update(request, workQuality, behaviour, outcome, staff)
 
         if (request.alertActive == true) {
             val personManager =
@@ -247,7 +248,7 @@ class AppointmentsService(
         contactOutcomeTypeId = contactOutcome?.id
         attended = contactOutcome?.attended
         complied = contactOutcome?.complied
-        rowVersion = request.version.mostSignificantBits
+        notes = listOfNotNull(notes, request.notes).joinToString("\n\n")
     }
 
     private fun Contact.update(request: AppointmentOutcomeRequest, contactOutcome: ContactOutcome?, staff: Staff) =
@@ -261,7 +262,6 @@ class AppointmentsService(
             complied = contactOutcome?.complied
             sensitive = request.sensitive
             alertActive = request.alertActive
-            rowVersion = request.version.leastSignificantBits
         }
 
     private fun Contact.updateFailureToComplyCount() {
@@ -287,6 +287,12 @@ class AppointmentsService(
                     notes = null
                 )
             )
+        }
+    }
+
+    private fun Versioned.validateVersion(version: Long) {
+        if (rowVersion != version) {
+            throw ObjectOptimisticLockingFailureException(this::class.java, id)
         }
     }
 }

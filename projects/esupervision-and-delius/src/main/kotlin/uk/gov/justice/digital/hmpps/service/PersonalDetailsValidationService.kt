@@ -13,7 +13,7 @@ class PersonalDetailsValidationService(val personRepository: PersonRepository) {
             ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "CRN not found")
         if (!person.firstName.trim().equals(personalDetails.name.forename.trim(), ignoreCase = true) ||
             !person.lastName.trim().equals(personalDetails.name.surname.trim(), ignoreCase = true) ||
-            person.dateOfBirth.equals(personalDetails.dateOfBirth).not()
+            !person.dateOfBirth.isEqual(personalDetails.dateOfBirth)
         ) {
             throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Validation failed")
         }

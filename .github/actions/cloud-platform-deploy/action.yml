@@ -93,11 +93,11 @@ runs:
         for attempt in $(seq 1 $MAX_ATTEMPTS); do
           echo "::group::Helm upgrade (attempt $attempt)"
           exec helm upgrade "${PROJECT}" "projects/${PROJECT}/deploy" \
-            --atomic \
             --history-max 10 \
-            --force \
+            --force-replace \
             --install \
             --reset-values \
+            --rollback-on-failure \
             --set "version=${VERSION}" \
             --set "generic-service.image.tag=${VERSION}" \
             --set "generic-service.env.VERSION=${VERSION}" \

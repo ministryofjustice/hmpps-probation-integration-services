@@ -35,7 +35,7 @@ class UpwAppointment(
     )
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "upw_appointment_id_generator")
     @Column(name = "upw_appointment_id")
-    val id: Long,
+    override val id: Long,
 
     @Column(name = "attended")
     @Convert(converter = YesNoConverter::class)
@@ -108,8 +108,11 @@ class UpwAppointment(
 
     var minutesCredited: Long? = null,
 
+    @Lob
+    var notes: String?,
+
     @Version
-    var rowVersion: Long,
+    override var rowVersion: Long,
 
     @CreatedDate
     var createdDatetime: ZonedDateTime = ZonedDateTime.now(),
@@ -122,7 +125,7 @@ class UpwAppointment(
 
     @LastModifiedBy
     var lastUpdatedUserId: Long = 0
-)
+) : Versioned
 
 fun UpwAppointment.toAppointmentResponseCase(
     limitedAccess: CaseAccess

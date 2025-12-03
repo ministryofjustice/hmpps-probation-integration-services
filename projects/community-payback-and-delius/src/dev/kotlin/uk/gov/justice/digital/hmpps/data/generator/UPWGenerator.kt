@@ -340,6 +340,7 @@ object UPWGenerator {
         workQuality: ReferenceData?,
         behaviour: ReferenceData?,
         minutesCredited: Long?,
+        notes: String? = null,
         rowVersion: Long = 1,
         createdDatetime: ZonedDateTime = ZonedDateTime.now(),
         lastUpdatedDatetime: ZonedDateTime = ZonedDateTime.now()
@@ -366,6 +367,7 @@ object UPWGenerator {
         workQuality,
         behaviour,
         minutesCredited,
+        notes,
         rowVersion,
         createdDatetime,
         0,
