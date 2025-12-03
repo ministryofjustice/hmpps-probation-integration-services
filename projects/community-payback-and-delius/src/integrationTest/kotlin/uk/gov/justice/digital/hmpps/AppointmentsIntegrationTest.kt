@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.data.repository.findByIdOrNull
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
 import org.springframework.test.web.servlet.put
@@ -89,6 +88,7 @@ class AppointmentsIntegrationTest {
         assertThat(response.appointmentSummaries.size).isEqualTo(2)
         assertThat(response.appointmentSummaries[0].case.crn).isEqualTo("Z000001")
         assertThat(response.appointmentSummaries[0].requirementProgress.requiredMinutes).isEqualTo(120 * 60)
+        assertThat(response.appointmentSummaries[0].requirementProgress.adjustments).isEqualTo(4)
     }
 
     @Test

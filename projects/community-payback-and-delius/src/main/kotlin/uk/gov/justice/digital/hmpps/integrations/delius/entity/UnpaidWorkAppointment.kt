@@ -146,6 +146,29 @@ fun UpwAppointment.toAppointmentResponseCase(
 @Entity
 @Immutable
 @SQLRestriction("soft_deleted = 0")
+@Table(name = "upw_adjustment")
+class UpwAdjustment(
+    @Id
+    @Column(name = "upw_adjustment_id")
+    val id: Long,
+
+    @Column(name = "upw_details_id")
+    val upwDetailsId: Long,
+
+    @Column(name = "adjustment_amount")
+    val adjustmentAmount: Long,
+
+    @Column(name = "adjustment_type")
+    val adjustmentType: String,
+
+    @Column(name = "soft_deleted")
+    @Convert(converter = NumericBooleanConverter::class)
+    val softDeleted: Boolean = false
+)
+
+@Entity
+@Immutable
+@SQLRestriction("soft_deleted = 0")
 class UpwDetails(
     @Id
     @Column(name = "upw_details_id")
@@ -197,13 +220,16 @@ interface UpwMinutesDto {
     val id: Long
     val requiredMinutes: Long
     val completedMinutes: Long
+    val positiveAdjustments: Long
+    val negativeAdjustments: Long
 
-    fun toModel() = UpwMinutes(requiredMinutes, completedMinutes)
+    fun toModel() = UpwMinutes(requiredMinutes, completedMinutes, positiveAdjustments - negativeAdjustments)
 }
 
 data class UpwMinutes(
     val requiredMinutes: Long,
-    val completedMinutes: Long
+    val completedMinutes: Long,
+    val adjustments: Long,
 )
 
 interface UnpaidWorkAppointmentRepository : JpaRepository<UpwAppointment, Long> {
@@ -270,7 +296,11 @@ interface UnpaidWorkAppointmentRepository : JpaRepository<UpwAppointment, Long> 
             coalesce(
                     (select sum(appts.minutes_credited) from upw_appointment appts where appts.upw_details_id = upw_details.upw_details_id and appts.soft_deleted = 0),
                     0)
-                as "completedMinutes"
+                as "completedMinutes",
+                (select coalesce(sum(adjustment_amount), 0) from upw_adjustment where upw_adjustment.upw_details_id = upw_details.upw_details_id and adjustment_type = 'POSITIVE' and upw_adjustment.soft_deleted = 0) as positiveAdjustments,
+                (select coalesce(sum(adjustment_amount), 0) from upw_adjustment where upw_adjustment.upw_details_id = upw_details.upw_details_id and adjustment_type = 'NEGATIVE' and upw_adjustment.soft_deleted = 0) as negativeAdjustments
+            
+                
         from upw_details
         join disposal
              on disposal.disposal_id = upw_details.disposal_id
