@@ -166,8 +166,6 @@ class UpwAdjustment(
     val softDeleted: Boolean = false
 )
 
-
-
 @Entity
 @Immutable
 @SQLRestriction("soft_deleted = 0")
