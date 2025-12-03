@@ -61,7 +61,9 @@ fun Staff.toSupervisor() = Supervisor(
     }
 )
 
-fun Staff.toSupervisorTeams() = teams.map {
+fun Staff.toSupervisorTeams() = teams.filter {
+    it.unpaidWorkTeam
+}.map {
     SupervisorTeamsResponse(
         code = it.code,
         description = it.description,
