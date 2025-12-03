@@ -7,6 +7,7 @@ import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.model.CodeDescription
 import uk.gov.justice.digital.hmpps.model.Name
 import uk.gov.justice.digital.hmpps.model.Supervisor
+import uk.gov.justice.digital.hmpps.model.SupervisorTeamsResponse
 import java.time.LocalDate
 
 @Immutable
@@ -59,6 +60,17 @@ fun Staff.toSupervisor() = Supervisor(
         )
     }
 )
+
+fun Staff.toSupervisorTeams() = teams.map {
+    SupervisorTeamsResponse(
+        code = it.code,
+        description = it.description,
+        provider = CodeDescription(
+            code = it.provider.code,
+            description = it.provider.description
+        )
+    )
+}
 
 interface StaffRepository : JpaRepository<Staff, Long> {
     fun findByCode(code: String): Staff?
