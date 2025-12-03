@@ -27,6 +27,7 @@ object PersonGenerator {
     val MAPPA_CATEGORY = ReferenceData(IdGenerator.getAndIncrement(), "X9", "X9 Desc")
     val MAPPA_LEVEL = ReferenceData(IdGenerator.getAndIncrement(), "M2", "M2 Desc")
     val OVERVIEW = generateOverview("X000004")
+    val E_SUP_PERSON = generateOverview("E500700")
     val EVENT_1 = generateEvent(
         OVERVIEW,
         eventNumber = "7654321",

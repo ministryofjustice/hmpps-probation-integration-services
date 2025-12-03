@@ -6,6 +6,7 @@ import uk.gov.justice.digital.hmpps.api.model.personalDetails.Document
 import uk.gov.justice.digital.hmpps.api.model.schedule.OfficeAddress
 import uk.gov.justice.digital.hmpps.api.model.sentence.NoteDetail
 import java.time.ZonedDateTime
+import java.util.UUID
 
 data class Activity(
     val id: Long,
@@ -57,6 +58,7 @@ data class Activity(
     val eventId: Long? = null,
     val component: Component? = null,
     val nsiId: Long? = null,
+    val esupervisionId: UUID? = null,
 )
 
 data class Component(val id: Long, val description: String, val type: Type) {
