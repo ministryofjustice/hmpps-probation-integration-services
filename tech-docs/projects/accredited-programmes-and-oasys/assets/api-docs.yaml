@@ -57,6 +57,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/RiskPrediction"
+      deprecated: true
   /assessments/timeline/{nomisIdOrCrn}:
     get:
       tags:

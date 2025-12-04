@@ -313,16 +313,6 @@ components:
           type: string
       required:
       - code
-    SupervisorResponse:
-      type: object
-      properties:
-        code:
-          type: string
-        isUnpaidWorkTeamMember:
-          type: boolean
-      required:
-      - code
-      - isUnpaidWorkTeamMember
     CodeDescription:
       type: object
       properties:
@@ -333,6 +323,34 @@ components:
       required:
       - code
       - description
+    SupervisorResponse:
+      type: object
+      properties:
+        code:
+          type: string
+        isUnpaidWorkTeamMember:
+          type: boolean
+        unpaidWorkTeams:
+          type: array
+          items:
+            $ref: "#/components/schemas/SupervisorTeamsResponse"
+      required:
+      - code
+      - isUnpaidWorkTeamMember
+      - unpaidWorkTeams
+    SupervisorTeamsResponse:
+      type: object
+      properties:
+        code:
+          type: string
+        description:
+          type: string
+        provider:
+          $ref: "#/components/schemas/CodeDescription"
+      required:
+      - code
+      - description
+      - provider
     ProvidersResponse:
       type: object
       properties:
@@ -470,11 +488,26 @@ components:
       - forename
       - middleNames
       - surname
+    Project:
+      type: object
+      properties:
+        name:
+          type: string
+        code:
+          type: string
+        location:
+          $ref: "#/components/schemas/AppointmentResponseAddress"
+        hiVisRequired:
+          type: boolean
+      required:
+      - code
+      - hiVisRequired
+      - name
     SessionResponse:
       type: object
       properties:
         project:
-          $ref: "#/components/schemas/SessionResponseProject"
+          $ref: "#/components/schemas/Project"
         appointmentSummaries:
           type: array
           items:
@@ -498,18 +531,6 @@ components:
       - case
       - id
       - requirementProgress
-    SessionResponseProject:
-      type: object
-      properties:
-        name:
-          type: string
-        code:
-          type: string
-        location:
-          $ref: "#/components/schemas/AppointmentResponseAddress"
-      required:
-      - code
-      - name
     UpwMinutes:
       type: object
       properties:
@@ -519,7 +540,11 @@ components:
         completedMinutes:
           type: integer
           format: int64
+        adjustments:
+          type: integer
+          format: int64
       required:
+      - adjustments
       - completedMinutes
       - requiredMinutes
     AppointmentResponse:
@@ -532,7 +557,7 @@ components:
           type: string
           format: uuid
         project:
-          $ref: "#/components/schemas/AppointmentResponseProject"
+          $ref: "#/components/schemas/Project"
         projectType:
           $ref: "#/components/schemas/NameCode"
         case:
@@ -626,21 +651,6 @@ components:
           type: string
       required:
       - location
-    AppointmentResponseProject:
-      type: object
-      properties:
-        name:
-          type: string
-        code:
-          type: string
-        location:
-          $ref: "#/components/schemas/AppointmentResponseAddress"
-        hiVisRequired:
-          type: boolean
-      required:
-      - code
-      - hiVisRequired
-      - name
     AppointmentResponseSupervisor:
       type: object
       properties:

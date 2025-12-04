@@ -2884,6 +2884,9 @@ components:
         nsiId:
           type: integer
           format: int64
+        esupervisionId:
+          type: string
+          format: uuid
       required:
       - deliusManaged
       - documents
