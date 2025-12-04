@@ -10,8 +10,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
 import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import org.springframework.test.web.servlet.get
 import uk.gov.justice.digital.hmpps.api.model.ManagedOffender
 import uk.gov.justice.digital.hmpps.data.generator.CaseloadGenerator.CASELOAD_ROLE_OM_1
 import uk.gov.justice.digital.hmpps.data.generator.CaseloadGenerator.CASELOAD_ROLE_OM_2
@@ -27,15 +26,16 @@ import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = RANDOM_PORT)
-internal class CaseloadIntegrationTest {
-    @Autowired
-    lateinit var mockMvc: MockMvc
+internal class CaseloadIntegrationTest @Autowired constructor(private val mockMvc: MockMvc) {
 
     @ParameterizedTest
     @MethodSource("caseloadArgs")
     fun getManagedOffenders(url: String, expected: List<ManagedOffender>?) {
-        val res = mockMvc.perform(get(url).withToken()).andExpect(status().isOk)
-            .andReturn().response.contentAsJson<List<ManagedOffender>>()
+        val res = mockMvc.get(url) {
+            withToken()
+        }.andExpect {
+            status { isOk() }
+        }.andReturn().response.contentAsJson<List<ManagedOffender>>()
         assertThat(res, equalTo(expected))
     }
 
