@@ -45,36 +45,20 @@ import java.time.LocalDate
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = RANDOM_PORT)
 @TestMethodOrder(OrderAnnotation::class)
-internal class MessagingIntegrationInactiveTest {
-    @Value("\${messaging.consumer.queue}")
-    lateinit var queueName: String
-
-    @Autowired
-    lateinit var channelManager: HmppsChannelManager
-
-    @Autowired
-    lateinit var wireMockServer: WireMockServer
-
-    @Autowired
-    lateinit var contactRepository: ContactRepository
-
-    @Autowired
-    lateinit var nsiRepository: NsiRepository
-
-    @Autowired
-    lateinit var personAddressRepository: PersonAddressRepository
+internal class MessagingIntegrationInactiveTest @Autowired constructor(
+    @Value("\${messaging.consumer.queue}") private val queueName: String,
+    private val channelManager: HmppsChannelManager,
+    private val wireMockServer: WireMockServer,
+    private val contactRepository: ContactRepository,
+    private val nsiRepository: NsiRepository,
+    private val personAddressRepository: PersonAddressRepository,
+    private val referralRepository: ReferralRepository,
+    private val residenceRepository: ResidenceRepository,
+    private val staffRepository: StaffRepository
+) {
 
     @MockitoBean
     lateinit var telemetryService: TelemetryService
-
-    @Autowired
-    private lateinit var referralRepository: ReferralRepository
-
-    @Autowired
-    private lateinit var residenceRepository: ResidenceRepository
-
-    @Autowired
-    private lateinit var staffRepository: StaffRepository
 
     @Test
     fun `application submission with an inactive event creates an alert contact`() {

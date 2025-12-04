@@ -10,8 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import org.springframework.test.web.servlet.get
 import uk.gov.justice.digital.hmpps.data.generator.ApprovedPremisesGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ReferralGenerator
@@ -26,16 +25,17 @@ import java.time.ZonedDateTime
 
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class ReferralControllerIntegrationTest {
-    @Autowired
-    lateinit var mockMvc: MockMvc
+class ReferralControllerIntegrationTest(
+    @Autowired private val mockMvc: MockMvc
+) {
 
     @Test
     fun `existing referrals for a crn are returned successfully`() {
         val person = PersonGenerator.DEFAULT
-        val res = mockMvc
-            .perform(get("/probation-case/${person.crn}/referrals").withToken())
-            .andExpect(status().isOk)
+        val res = mockMvc.get("/probation-case/${person.crn}/referrals") {
+            withToken()
+        }
+            .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<ExistingReferrals>()
 
         assertThat(res.referrals.size, equalTo(1))
@@ -45,9 +45,10 @@ class ReferralControllerIntegrationTest {
     @MethodSource("bookingDetails")
     fun `referral detail is returned correctly`(bookingId: String, detail: ReferralDetail) {
         val person = PersonGenerator.PERSON_WITH_BOOKING
-        val res = mockMvc
-            .perform(get("/probation-case/${person.crn}/referrals/$bookingId").withToken())
-            .andExpect(status().isOk)
+        val res = mockMvc.get("/probation-case/${person.crn}/referrals/$bookingId") {
+            withToken()
+        }
+            .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<ReferralDetail>()
 
         assertThat(res, equalTo(detail))

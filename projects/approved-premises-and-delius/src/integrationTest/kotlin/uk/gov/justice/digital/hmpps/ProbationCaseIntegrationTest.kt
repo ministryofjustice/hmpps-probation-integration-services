@@ -9,37 +9,41 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
 import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import org.springframework.test.web.servlet.get
+import org.springframework.test.web.servlet.post
 import uk.gov.justice.digital.hmpps.data.generator.ProbationCaseGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ProbationCaseGenerator.COM_TEAM
 import uk.gov.justice.digital.hmpps.model.*
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
-import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withJson
+import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.json
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 import java.time.LocalDate
 
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = RANDOM_PORT)
-class ProbationCaseIntegrationTest {
-    @Autowired
-    lateinit var mockMvc: MockMvc
+class ProbationCaseIntegrationTest(
+    @Autowired private val mockMvc: MockMvc
+) {
 
     @Test
     fun `more than 500 ids is rejected`() {
-        mockMvc
-            .perform(post("/probation-cases/summaries").withToken().withJson(List(501) { "A000001" }))
-            .andExpect(status().isBadRequest)
+        mockMvc.post("/probation-cases/summaries") {
+            withToken()
+            json = List(501) { "A000001" }
+        }.andExpect {
+            status { isBadRequest() }
+        }
     }
 
     @Test
     fun `case summaries are correctly returned`() {
         val complex = ProbationCaseGenerator.CASE_COMPLEX
         val simple = ProbationCaseGenerator.CASE_SIMPLE
-        val summaries = mockMvc
-            .perform(post("/probation-cases/summaries").withToken().withJson(listOf(complex.crn, simple.crn)))
-            .andExpect(status().isOk)
+        val summaries = mockMvc.post("/probation-cases/summaries") {
+            withToken()
+            json = listOf(complex.crn, simple.crn)
+        }
+            .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<CaseSummaries>()
 
         assertThat(summaries.cases.size, equalTo(2))
@@ -55,9 +59,12 @@ class ProbationCaseIntegrationTest {
     fun `case summaries are correctly returned by NOMIS id`() {
         val complex = ProbationCaseGenerator.CASE_COMPLEX
         val simple = ProbationCaseGenerator.CASE_SIMPLE
-        val summaries = mockMvc
-            .perform(post("/probation-cases/summaries").withToken().withJson(listOf(complex.nomsId, simple.nomsId)))
-            .andExpect(status().isOk)
+        val summaries = mockMvc.post("/probation-cases/summaries") {
+            withToken()
+            json = listOf(complex.nomsId, simple.nomsId)
+
+        }
+            .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<CaseSummaries>()
 
         assertThat(summaries.cases.size, equalTo(2))
@@ -72,9 +79,9 @@ class ProbationCaseIntegrationTest {
     @Test
     fun `case details are correctly returned`() {
         val case = ProbationCaseGenerator.CASE_COMPLEX
-        val detail = mockMvc
-            .perform(get("/probation-cases/${case.crn}/details").withToken())
-            .andExpect(status().isOk)
+        val detail = mockMvc.get("/probation-cases/${case.crn}/details")
+        { withToken() }
+            .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<CaseDetail>()
 
         assertThat(detail.case.name, equalTo(Name("James", "Brown", listOf("John", "Jack"))))
