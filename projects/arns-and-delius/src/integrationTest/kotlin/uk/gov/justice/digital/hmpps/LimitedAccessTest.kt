@@ -8,50 +8,46 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
 import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
+import org.springframework.test.web.servlet.post
 import uk.gov.justice.digital.hmpps.data.generator.LimitedAccessGenerator
 import uk.gov.justice.digital.hmpps.service.CaseAccess
 import uk.gov.justice.digital.hmpps.service.UserAccess
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
-import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withJson
+import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.json
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = RANDOM_PORT)
-internal class LimitedAccessTest {
-    @Autowired
-    lateinit var mockMvc: MockMvc
+internal class LimitedAccessTest @Autowired constructor(private val mockMvc: MockMvc) {
 
     @Test
     fun `limited access controls are correctly returned with username`() {
-        val res = mockMvc.perform(
-            post("/users/access?username=${LimitedAccessGenerator.LIMITED_ACCESS_USER.username}")
-                .withToken()
-                .withJson(
-                    listOf(
-                        LimitedAccessGenerator.EXCLUDED_CASE.crn,
-                        LimitedAccessGenerator.RESTRICTED_CASE.crn,
-                        LimitedAccessGenerator.UNLIMITED_ACCESS.crn
-                    )
-                )
-        ).andReturn().response.contentAsJson<UserAccess>()
+        val res = mockMvc.post("/users/access?username=${LimitedAccessGenerator.LIMITED_ACCESS_USER.username}") {
+            withToken()
+            json = listOf(
+                LimitedAccessGenerator.EXCLUDED_CASE.crn,
+                LimitedAccessGenerator.RESTRICTED_CASE.crn,
+                LimitedAccessGenerator.UNLIMITED_ACCESS.crn
+            )
+        }.andExpect {
+            status { isOk() }
+        }.andReturn().response.contentAsJson<UserAccess>()
 
         validateResults(res)
     }
 
     @Test
     fun `limited access controls are correctly returned without username`() {
-        val res = mockMvc.perform(
-            post("/users/access")
-                .withToken()
-                .withJson(
-                    listOf(
-                        LimitedAccessGenerator.EXCLUDED_CASE.crn,
-                        LimitedAccessGenerator.RESTRICTED_CASE.crn,
-                        LimitedAccessGenerator.UNLIMITED_ACCESS.crn
-                    )
-                )
-        ).andReturn().response.contentAsJson<UserAccess>()
+        val res = mockMvc.post("/users/access") {
+            withToken()
+            json = listOf(
+                LimitedAccessGenerator.EXCLUDED_CASE.crn,
+                LimitedAccessGenerator.RESTRICTED_CASE.crn,
+                LimitedAccessGenerator.UNLIMITED_ACCESS.crn
+            )
+        }.andExpect {
+            status { isOk() }
+        }.andReturn().response.contentAsJson<UserAccess>()
 
         validateResults(res)
     }
@@ -93,17 +89,16 @@ internal class LimitedAccessTest {
 
     @Test
     fun `limited access controls are correctly returned with full access`() {
-        val result = mockMvc.perform(
-            post("/users/access?username=${LimitedAccessGenerator.FULL_ACCESS_USER.username}")
-                .withToken()
-                .withJson(
-                    listOf(
-                        LimitedAccessGenerator.EXCLUDED_CASE.crn,
-                        LimitedAccessGenerator.RESTRICTED_CASE.crn,
-                        LimitedAccessGenerator.UNLIMITED_ACCESS.crn
-                    )
-                )
-        ).andReturn().response.contentAsJson<UserAccess>()
+        val result = mockMvc.post("/users/access?username=${LimitedAccessGenerator.FULL_ACCESS_USER.username}") {
+            withToken()
+            json = listOf(
+                LimitedAccessGenerator.EXCLUDED_CASE.crn,
+                LimitedAccessGenerator.RESTRICTED_CASE.crn,
+                LimitedAccessGenerator.UNLIMITED_ACCESS.crn
+            )
+        }.andExpect {
+            status { isOk() }
+        }.andReturn().response.contentAsJson<UserAccess>()
 
         assertThat(
             result.access.first { it.crn == LimitedAccessGenerator.EXCLUDED_CASE.crn },
