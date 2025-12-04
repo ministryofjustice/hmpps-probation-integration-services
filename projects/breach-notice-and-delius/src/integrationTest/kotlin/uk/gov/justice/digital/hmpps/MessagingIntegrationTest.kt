@@ -20,12 +20,10 @@ import java.time.ZonedDateTime
 import java.time.temporal.ChronoUnit
 import java.util.*
 
-internal class MessagingIntegrationTest : BaseIntegrationTest() {
-    @Autowired
-    private lateinit var contactRepository: ContactRepository
-
-    @Autowired
-    private lateinit var documentRepository: DocumentRepository
+internal class MessagingIntegrationTest @Autowired constructor(
+    private val contactRepository: ContactRepository,
+    private val documentRepository: DocumentRepository
+) : BaseIntegrationTest() {
 
     @Test
     fun `breach notice not found`() {

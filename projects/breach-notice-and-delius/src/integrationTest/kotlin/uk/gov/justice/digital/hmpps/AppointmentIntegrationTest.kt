@@ -2,8 +2,7 @@ package uk.gov.justice.digital.hmpps
 
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import org.springframework.test.web.servlet.get
 import uk.gov.justice.digital.hmpps.data.generator.AppointmentGenerator.FUTURE_APPOINTMENTS
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.DEFAULT_PERSON_MANAGER
@@ -17,9 +16,10 @@ internal class AppointmentIntegrationTest : BaseIntegrationTest() {
     @Test
     fun `can retrieve future appointments successfully`() {
         val person = PersonGenerator.DEFAULT_PERSON
-        val response = mockMvc
-            .perform(get("/next-appointment-details/${person.crn}").withToken())
-            .andExpect(status().is2xxSuccessful)
+        val response = mockMvc.get("/next-appointment-details/${person.crn}") {
+            withToken()
+        }
+            .andExpect { status { is2xxSuccessful() } }
             .andReturn().response.contentAsJson<NextAppointmentDetails>()
 
         assertThat(response).isEqualTo(
