@@ -10,7 +10,7 @@ in the Sucide Risk Form service, and publishes a domain event when a new form is
 
 ## Context Maps
 
-:TODO add link to context maps
+![Context Maps](../../doc/tech-docs/source/images/suicide-risk-form-and-delius-context-maps.png)
 
 ## Interfaces
 
