@@ -14,6 +14,7 @@ import org.springframework.mock.web.MockHttpServletResponse
 import org.springframework.test.json.JsonCompareMode
 import org.springframework.test.web.servlet.MockHttpServletRequestDsl
 import org.springframework.test.web.servlet.ResultActions
+import org.springframework.test.web.servlet.ResultActionsDsl
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.header
@@ -52,4 +53,19 @@ object MockMvcExtensions {
     inline fun <reified T> ResultActions.andExpectJson(obj: T, compareMode: JsonCompareMode = JsonCompareMode.LENIENT) =
         this.andExpect(header().string(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE))
             .andExpect(content().json(objectMapper.writeValueAsString(obj), compareMode))
+
+    inline fun <reified T> ResultActionsDsl.andExpectJson(
+        obj: T,
+        compareMode: JsonCompareMode = JsonCompareMode.LENIENT
+    ) = andExpect {
+        header {
+            string(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+        }
+        content {
+            json(
+                objectMapper.writeValueAsString(obj),
+                compareMode
+            )
+        }
+    }
 }
