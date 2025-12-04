@@ -47,45 +47,21 @@ import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import java.time.LocalDate
 
 @SpringBootTest
-internal class IntegrationTest {
-    @Value("\${messaging.consumer.queue}")
-    lateinit var queueName: String
-
-    @Autowired
-    lateinit var wireMockServer: WireMockServer
-
-    @Autowired
-    lateinit var channelManager: HmppsChannelManager
-
-    @Autowired
-    lateinit var personRepository: PersonRepository
-
-    @Autowired
-    lateinit var registrationRepository: RegistrationRepository
-
-    @Autowired
-    lateinit var registrationHistoryRepository: RegistrationHistoryRepository
-
-    @Autowired
-    lateinit var oasysAssessmentRepository: OasysAssessmentRepository
-
-    @Autowired
-    lateinit var iapsPersonRepository: IapsPersonRepository
-
-    @Autowired
-    lateinit var contactRepository: ContactRepository
-
-    @Autowired
-    lateinit var transactionManager: PlatformTransactionManager
-
-    @Autowired
-    lateinit var domainEventRepository: DomainEventRepository
-
-    @Autowired
-    lateinit var objectMapper: ObjectMapper
-
-    @Autowired
-    lateinit var entityManager: EntityManager
+internal class IntegrationTest @Autowired constructor(
+    private val wireMockServer: WireMockServer,
+    private val channelManager: HmppsChannelManager,
+    private val personRepository: PersonRepository,
+    private val registrationRepository: RegistrationRepository,
+    private val registrationHistoryRepository: RegistrationHistoryRepository,
+    private val oasysAssessmentRepository: OasysAssessmentRepository,
+    private val iapsPersonRepository: IapsPersonRepository,
+    private val contactRepository: ContactRepository,
+    private val transactionManager: PlatformTransactionManager,
+    private val domainEventRepository: DomainEventRepository,
+    private val objectMapper: ObjectMapper,
+    private val entityManager: EntityManager,
+    @Value("\${messaging.consumer.queue}") private val queueName: String
+) {
 
     @MockitoBean
     lateinit var telemetryService: TelemetryService
