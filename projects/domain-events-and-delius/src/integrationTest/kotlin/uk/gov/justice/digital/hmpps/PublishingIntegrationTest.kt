@@ -21,21 +21,15 @@ import uk.gov.justice.digital.hmpps.service.enhancement.EnhancedEventType
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 
 @SpringBootTest
-internal class PublishingIntegrationTest {
+internal class PublishingIntegrationTest @Autowired constructor(
     @Value("\${messaging.producer.topic}")
-    lateinit var topicName: String
-
-    @Autowired
-    lateinit var hmppsChannelManager: HmppsChannelManager
-
-    @Autowired
-    lateinit var domainEventRepository: DomainEventRepository
-
+    private val topicName: String,
+    private val hmppsChannelManager: HmppsChannelManager,
+    private val domainEventRepository: DomainEventRepository,
+    private val wireMockServer: WireMockServer
+) {
     @MockitoBean
     lateinit var telemetryService: TelemetryService
-
-    @Autowired
-    lateinit var wireMockServer: WireMockServer
 
     @Test
     fun `messages are published successfully`() {
