@@ -9,9 +9,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
 import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import org.springframework.test.web.servlet.get
 import uk.gov.justice.digital.hmpps.api.model.Attendances
 import uk.gov.justice.digital.hmpps.api.model.KeyValue
 import uk.gov.justice.digital.hmpps.api.model.LicenceConditions
@@ -41,24 +39,24 @@ import java.time.LocalDate
 
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = RANDOM_PORT)
-internal class ConvictionByCrnAndEventIdIntegrationTest {
-    @Autowired
-    lateinit var mockMvc: MockMvc
+internal class ConvictionByCrnAndEventIdIntegrationTest @Autowired constructor(
+    private val mockMvc: MockMvc
+) {
 
     @Test
     fun `unauthorized status returned`() {
         val crn = PersonGenerator.CURRENTLY_MANAGED.crn
         mockMvc
-            .perform(get("/probation-case/$crn/convictions/1"))
-            .andExpect(status().isUnauthorized)
+            .get("/probation-case/$crn/convictions/1") { }
+            .andExpect { status { isUnauthorized() } }
     }
 
     @Test
     fun `API call probation record not found`() {
         mockMvc
-            .perform(get("/probation-case/A123456/convictions/1").withToken())
-            .andExpect(status().isNotFound)
-            .andExpect(jsonPath("$.developerMessage").value("Person with crn of A123456 not found"))
+            .get("/probation-case/A123456/convictions/1") { withToken() }
+            .andExpect { status { isNotFound() } }
+            .andExpect { jsonPath("$.developerMessage") { value("Person with crn of A123456 not found") } }
     }
 
     @Test
@@ -66,9 +64,9 @@ internal class ConvictionByCrnAndEventIdIntegrationTest {
         val crn = PersonGenerator.CURRENTLY_MANAGED.crn
 
         mockMvc
-            .perform(get("/probation-case/$crn/convictions/3").withToken())
-            .andExpect(status().isNotFound)
-            .andExpect(jsonPath("$.developerMessage").value("Conviction with ID 3 for Offender with crn C123456 not found"))
+            .get("/probation-case/$crn/convictions/3") { withToken() }
+            .andExpect { status { isNotFound() } }
+            .andExpect { jsonPath("$.developerMessage") { value("Conviction with ID 3 for Offender with crn C123456 not found") } }
     }
 
     @Test
@@ -253,8 +251,8 @@ internal class ConvictionByCrnAndEventIdIntegrationTest {
         )
 
         val response = mockMvc
-            .perform(get("/probation-case/$crn/convictions/${event.id}").withToken())
-            .andExpect(status().is2xxSuccessful)
+            .get("/probation-case/$crn/convictions/${event.id}") { withToken() }
+            .andExpect { status { is2xxSuccessful() } }
             .andReturn().response.contentAsJson<Conviction>()
 
         assertEquals(expectedResponse.convictionId, response.convictionId)
@@ -266,8 +264,8 @@ internal class ConvictionByCrnAndEventIdIntegrationTest {
         val event = SentenceGenerator.CURRENTLY_MANAGED
 
         val response = mockMvc
-            .perform(get("/probation-case/$crn/convictions/${event.id}/attendancesFilter").withToken())
-            .andExpect(status().isOk)
+            .get("/probation-case/$crn/convictions/${event.id}/attendancesFilter") { withToken() }
+            .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<Attendances>()
 
         assertThat(response.attendances[0], equalTo(ATTENDANCE_CONTACT_1.toAttendance()))
@@ -279,8 +277,8 @@ internal class ConvictionByCrnAndEventIdIntegrationTest {
         val event = SentenceGenerator.CURRENTLY_MANAGED
 
         val response = mockMvc
-            .perform(get("/probation-case/$crn/convictions/${event.id}/courtAppearances").withToken())
-            .andExpect(status().isOk)
+            .get("/probation-case/$crn/convictions/${event.id}/courtAppearances") { withToken() }
+            .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<CourtAppearanceBasicWrapper>()
 
         assertThat(response.courtAppearances[0], equalTo(COURT_APPEARANCE.toCourtAppearance()))
@@ -292,8 +290,8 @@ internal class ConvictionByCrnAndEventIdIntegrationTest {
         val event = SentenceGenerator.CURRENTLY_MANAGED
 
         val response = mockMvc
-            .perform(get("/probation-case/$crn/convictions/${event.id}/courtReports").withToken())
-            .andExpect(status().isOk)
+            .get("/probation-case/$crn/convictions/${event.id}/courtReports") { withToken() }
+            .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<List<CourtReportMinimal>>()
 
         assertThat(response.size, equalTo(1))
@@ -306,8 +304,8 @@ internal class ConvictionByCrnAndEventIdIntegrationTest {
         val event = SentenceGenerator.CURRENTLY_MANAGED
 
         val response = mockMvc
-            .perform(get("/probation-case/$crn/convictions/${event.id}/licenceConditions").withToken())
-            .andExpect(status().isOk)
+            .get("/probation-case/$crn/convictions/${event.id}/licenceConditions") { withToken() }
+            .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<LicenceConditions>()
 
         assertThat(response.licenceConditions.size, equalTo(1))
@@ -320,8 +318,8 @@ internal class ConvictionByCrnAndEventIdIntegrationTest {
         val event = SentenceGenerator.CURRENTLY_MANAGED
 
         val response = mockMvc
-            .perform(get("/probation-case/$crn/convictions/${event.id}/sentenceStatus").withToken())
-            .andExpect(status().isOk)
+            .get("/probation-case/$crn/convictions/${event.id}/sentenceStatus") { withToken() }
+            .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<SentenceStatus>()
 
         assertThat(response.actualReleaseDate, equalTo(SentenceGenerator.RELEASE_2.date.toLocalDate()))
@@ -333,8 +331,8 @@ internal class ConvictionByCrnAndEventIdIntegrationTest {
         val event = SentenceGenerator.NO_SENTENCE_EVENT
 
         val response = mockMvc
-            .perform(get("/probation-case/$crn/convictions/${event.id}/sentenceStatus").withToken())
-            .andExpect(status().isNotFound)
+            .get("/probation-case/$crn/convictions/${event.id}/sentenceStatus") { withToken() }
+            .andExpect { status { isNotFound() } }
             .andReturn().response.contentAsJson<ErrorResponse>()
 
         assertThat(response.developerMessage, equalTo("Sentence not found for crn '$crn', convictionId '${event.id}'"))

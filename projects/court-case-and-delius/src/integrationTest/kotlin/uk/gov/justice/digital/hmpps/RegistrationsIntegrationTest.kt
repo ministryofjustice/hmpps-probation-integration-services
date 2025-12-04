@@ -8,8 +8,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
 import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import org.springframework.test.web.servlet.get
 import uk.gov.justice.digital.hmpps.api.model.Registrations
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.RegistrationsGenerator.DEREG_2
@@ -18,17 +17,16 @@ import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = RANDOM_PORT)
-internal class RegistrationsIntegrationTest {
-    @Autowired
-    lateinit var mockMvc: MockMvc
+internal class RegistrationsIntegrationTest @Autowired constructor(
+    private val mockMvc: MockMvc,
+) {
 
     @Test
     fun `get registrations by CRN with active only set to false`() {
         val crn = PersonGenerator.CURRENTLY_MANAGED.crn
 
-        val response = mockMvc
-            .perform(get("/probation-case/$crn/registrations?activeOnly=false").withToken())
-            .andExpect(status().isOk)
+        val response = mockMvc.get("/probation-case/$crn/registrations?activeOnly=false") { withToken() }
+            .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<Registrations>()
 
         assertThat(response.registrations?.size, equalTo(3))
@@ -41,9 +39,8 @@ internal class RegistrationsIntegrationTest {
     fun `get registrations by CRN with active only set to true`() {
         val crn = PersonGenerator.CURRENTLY_MANAGED.crn
 
-        val response = mockMvc
-            .perform(get("/probation-case/$crn/registrations?activeOnly=true").withToken())
-            .andExpect(status().isOk)
+        val response = mockMvc.get("/probation-case/$crn/registrations?activeOnly=true") { withToken() }
+            .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<Registrations>()
 
         assertThat(response.registrations?.size, equalTo(2))
@@ -52,9 +49,9 @@ internal class RegistrationsIntegrationTest {
 
     @Test
     fun `registrations record soft deleted returns null registations`() {
-        val response = mockMvc
-            .perform(get("/probation-case/S123456/registrations").withToken())
-            .andExpect(status().isOk).andReturn()
+        val response = mockMvc.get("/probation-case/S123456/registrations") { withToken() }
+            .andExpect { status { isOk() } }
+            .andReturn()
             .response.contentAsJson<Registrations>()
         assertThat(response.registrations, equalTo(null))
     }

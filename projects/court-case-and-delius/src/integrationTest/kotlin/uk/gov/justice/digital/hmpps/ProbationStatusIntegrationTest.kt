@@ -11,9 +11,7 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
 import org.springframework.test.context.bean.override.mockito.MockitoBean
 import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import org.springframework.test.web.servlet.get
 import uk.gov.justice.digital.hmpps.api.model.Ids
 import uk.gov.justice.digital.hmpps.api.model.ProbationCase
 import uk.gov.justice.digital.hmpps.api.model.ProbationStatus
@@ -26,22 +24,20 @@ import java.time.LocalDate
 
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = RANDOM_PORT)
-internal class ProbationStatusIntegrationTest {
-    @Autowired
-    lateinit var mockMvc: MockMvc
-
-    @Autowired
-    lateinit var wireMockServer: WireMockServer
+internal class ProbationStatusIntegrationTest @Autowired constructor(
+    private val mockMvc: MockMvc,
+    private val wireMockServer: WireMockServer
+) {
 
     @MockitoBean
     lateinit var telemetryService: TelemetryService
 
     @Test
-    fun `can return status with other ids`() {
+    fun `can return status with other ids_new`() {
         val person = PersonGenerator.CURRENTLY_MANAGED
-        mockMvc
-            .perform(get("/probation-case/${person.crn}/search").withToken())
-            .andExpect(status().is2xxSuccessful)
+
+        mockMvc.get("/probation-case/${person.crn}/search") { withToken() }
+            .andExpect { status { is2xxSuccessful() } }
             .andExpectJson(
                 ProbationCase(
                     person.id,
@@ -54,16 +50,17 @@ internal class ProbationStatusIntegrationTest {
     @ParameterizedTest
     @MethodSource("probationStatuses")
     fun `correct status returned for each case`(crn: String, statusDetail: ProbationStatusDetail) {
-        val expect = mockMvc
-            .perform(get("/probation-case/$crn/status").withToken())
-            .andExpect(status().is2xxSuccessful)
-            .andExpect(jsonPath("$.status").value(statusDetail.status.name))
-            .andExpect(jsonPath("$.inBreach").value(statusDetail.inBreach))
-            .andExpect(jsonPath("$.preSentenceActivity").value(statusDetail.preSentenceActivity))
-            .andExpect(jsonPath("$.awaitingPsr").value(statusDetail.awaitingPsr))
+        val expect = mockMvc.get("/probation-case/$crn/status") { withToken() }
+            .andExpect {
+                status { is2xxSuccessful() }
+                jsonPath("$.status") { value(statusDetail.status.name) }
+                jsonPath("$.inBreach") { value(statusDetail.inBreach) }
+                jsonPath("$.preSentenceActivity") { value(statusDetail.preSentenceActivity) }
+                jsonPath("$.awaitingPsr") { value(statusDetail.awaitingPsr) }
+            }
 
         statusDetail.terminationDate?.let {
-            expect.andExpect(jsonPath("$.terminationDate").value(it.toString()))
+            expect.andExpect { jsonPath("$.terminationDate") { value(it.toString()) } }
         }
     }
 

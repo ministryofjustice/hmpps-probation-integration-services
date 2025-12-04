@@ -9,9 +9,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
 import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import org.springframework.test.web.servlet.get
 import uk.gov.justice.digital.hmpps.api.model.KeyValue
 import uk.gov.justice.digital.hmpps.api.model.conviction.*
 import uk.gov.justice.digital.hmpps.data.generator.AdditionalSentenceGenerator.SENTENCE_DISQ
@@ -35,24 +33,24 @@ import java.time.LocalDate
 
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = RANDOM_PORT)
-internal class ConvictionByCrnIntegrationTest {
-    @Autowired
-    lateinit var mockMvc: MockMvc
+internal class ConvictionByCrnIntegrationTest @Autowired constructor(
+    private val mockMvc: MockMvc
+) {
 
     @Test
     fun `unauthorized status returned`() {
         val crn = PersonGenerator.CURRENTLY_MANAGED.crn
         mockMvc
-            .perform(get("/probation-case/$crn/convictions"))
-            .andExpect(status().isUnauthorized)
+            .get("/probation-case/$crn/convictions") { }
+            .andExpect { status { isUnauthorized() } }
     }
 
     @Test
     fun `API call probation record not found`() {
         mockMvc
-            .perform(get("/probation-case/A123456/convictions").withToken())
-            .andExpect(status().isNotFound)
-            .andExpect(jsonPath("$.developerMessage").value("Person with crn of A123456 not found"))
+            .get("/probation-case/A123456/convictions") { withToken() }
+            .andExpect { status { isNotFound() } }
+            .andExpect { jsonPath("$.developerMessage") { value("Person with crn of A123456 not found") } }
     }
 
     @Test
@@ -239,8 +237,8 @@ internal class ConvictionByCrnIntegrationTest {
         )
 
         val response = mockMvc
-            .perform(get("/probation-case/$crn/convictions?activeOnly=true").withToken())
-            .andExpect(status().is2xxSuccessful)
+            .get("/probation-case/$crn/convictions?activeOnly=true") { withToken() }
+            .andExpect { status { is2xxSuccessful() } }
             .andReturn().response.contentAsJson<List<Conviction>>()
 
         assertEquals(expectedResponse.first().convictionId, response.first().convictionId)
@@ -251,27 +249,28 @@ internal class ConvictionByCrnIntegrationTest {
         val crn = PersonGenerator.CURRENTLY_MANAGED.crn
 
         mockMvc
-            .perform(get("/probation-case/$crn/convictions").withToken())
-            .andExpect(status().is2xxSuccessful)
-            .andExpect(jsonPath("$.length()").value(2))
-            .andExpect(jsonPath("$[1].active").value(true))
-            .andExpect(jsonPath("$[0].active").value(false))
+            .get("/probation-case/$crn/convictions") { withToken() }
+            .andExpect { status { is2xxSuccessful() } }
+            .andExpect { jsonPath("$.length()") { value(2) } }
+            .andExpect { jsonPath("$[1].active") { value(true) } }
+            .andExpect { jsonPath("$[0].active") { value(false) } }
     }
 
     @Test
     fun `return a empty list for a person with no active events`() {
         val crn = PersonGenerator.NO_ACTIVE_EVENTS.crn
         mockMvc
-            .perform(get("/probation-case/$crn/convictions?activeOnly=true").withToken())
-            .andExpect(status().is2xxSuccessful)
-            .andExpect(jsonPath("$.length()").value(0))
+            .get("/probation-case/$crn/convictions?activeOnly=true") { withToken() }
+            .andExpect { status { is2xxSuccessful() } }
+            .andExpect { jsonPath("$.length()") { value(0) } }
     }
 
     @Test
     fun `convictions record soft deleted return emptyList for convictions`() {
         val response = mockMvc
-            .perform(get("/probation-case/S123456/convictions").withToken())
-            .andExpect(status().isOk).andReturn()
+            .get("/probation-case/S123456/convictions") { withToken() }
+            .andExpect { status { isOk() } }
+            .andReturn()
             .response.contentAsJson<List<Conviction>>()
         MatcherAssert.assertThat(response, Matchers.equalTo(emptyList()))
     }

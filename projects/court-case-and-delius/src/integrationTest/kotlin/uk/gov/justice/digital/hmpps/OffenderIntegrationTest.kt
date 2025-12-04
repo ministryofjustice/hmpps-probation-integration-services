@@ -7,12 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
-import org.springframework.http.HttpStatus
 import org.springframework.test.context.TestPropertySource
 import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
-import org.springframework.test.web.servlet.result.isEqualTo
+import org.springframework.test.web.servlet.get
 import software.amazon.awssdk.utils.ImmutableMap
 import uk.gov.justice.digital.hmpps.api.model.*
 import uk.gov.justice.digital.hmpps.api.resource.advice.ErrorResponse
@@ -35,16 +32,15 @@ import java.time.LocalDate
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = RANDOM_PORT)
 @TestPropertySource(properties = ["lao-access.ignore-exclusions = false", "lao-access.ignore-restrictions = true"])
-internal class OffenderIntegrationTest {
-    @Autowired
-    lateinit var mockMvc: MockMvc
+internal class OffenderIntegrationTest @Autowired constructor(
+    private val mockMvc: MockMvc
+) {
 
     @Test
     fun `Summary API call returns probation record with active sentence`() {
         val crn = PersonGenerator.CURRENTLY_MANAGED.crn
-        val detailResponse = mockMvc
-            .perform(get("/probation-case/$crn").withToken())
-            .andExpect(status().is2xxSuccessful)
+        val detailResponse = mockMvc.get("/probation-case/$crn") { withToken() }
+            .andExpect { status { is2xxSuccessful() } }
             .andReturn().response.contentAsJson<OffenderDetailSummary>()
         assertThat(detailResponse.preferredName, equalTo("Other name"))
         assertThat(detailResponse.softDeleted, equalTo(false))
@@ -128,17 +124,15 @@ internal class OffenderIntegrationTest {
 
     @Test
     fun `Summary API call probation record not found`() {
-        mockMvc
-            .perform(get("/probation-case/A123456").withToken())
-            .andExpect(status().isNotFound)
+        mockMvc.get("/probation-case/A123456") { withToken() }
+            .andExpect { status { isNotFound() } }
     }
 
     @Test
     fun `Summary API call retuns probation record with no active sentence`() {
         val crn = PersonGenerator.NO_SENTENCE.crn
-        val detailResponse = mockMvc
-            .perform(get("/probation-case/$crn").withToken())
-            .andExpect(status().is2xxSuccessful)
+        val detailResponse = mockMvc.get("/probation-case/$crn") { withToken() }
+            .andExpect { status { is2xxSuccessful() } }
             .andReturn().response.contentAsJson<OffenderDetailSummary>()
         assertThat(detailResponse.currentDisposal, equalTo("0"))
         assertThat(detailResponse.activeProbationManagedSentence, equalTo(false))
@@ -147,9 +141,8 @@ internal class OffenderIntegrationTest {
     @Test
     fun `Detail API call retuns probation record with active sentence`() {
         val crn = PersonGenerator.CURRENTLY_MANAGED.crn
-        val detailResponse = mockMvc
-            .perform(get("/probation-case/$crn/all").withToken())
-            .andExpect(status().is2xxSuccessful)
+        val detailResponse = mockMvc.get("/probation-case/$crn/all") { withToken() }
+            .andExpect { status { is2xxSuccessful() } }
             .andReturn().response.contentAsJson<OffenderDetail>()
         assertThat(detailResponse.preferredName, equalTo("Other name"))
         assertThat(detailResponse.softDeleted, equalTo(false))
@@ -251,7 +244,10 @@ internal class OffenderIntegrationTest {
             detailResponse.offenderManagers?.get(0)?.team!!.code.trim(),
             equalTo(TeamGenerator.DEFAULT.code.trim())
         )
-        assertThat(detailResponse.offenderManagers!![0].team!!.description, equalTo(TeamGenerator.DEFAULT.description))
+        assertThat(
+            detailResponse.offenderManagers!![0].team!!.description,
+            equalTo(TeamGenerator.DEFAULT.description)
+        )
         assertThat(detailResponse.offenderProfile.religion, equalTo(RELIGION.description))
         assertThat(detailResponse.offenderProfile.remandStatus, equalTo("Remand Status"))
         assertThat(detailResponse.offenderProfile.riskColour, equalTo("RED"))
@@ -272,34 +268,30 @@ internal class OffenderIntegrationTest {
 
     @Test
     fun `Detail API call probation record not found`() {
-        mockMvc
-            .perform(get("/probation-case/A123456/all").withToken())
-            .andExpect(status().isNotFound)
+        mockMvc.get("/probation-case/A123456/all") { withToken() }
+            .andExpect { status { isNotFound() } }
     }
 
     @Test
     fun `probation summary record that is soft deleted still returns`() {
-        val response = mockMvc
-            .perform(get("/probation-case/S123456").withToken())
-            .andExpect(status().isOk).andReturn()
+        val response = mockMvc.get("/probation-case/S123456") { withToken() }
+            .andExpect { status { isOk() } }.andReturn()
             .response.contentAsJson<OffenderDetailSummary>()
         assertThat(response.softDeleted, equalTo(true))
     }
 
     @Test
     fun `probation detail record that is soft deleted still returns`() {
-        val response = mockMvc
-            .perform(get("/probation-case/S123456/all").withToken())
-            .andExpect(status().isOk).andReturn()
+        val response = mockMvc.get("/probation-case/S123456/all") { withToken() }
+            .andExpect { status { isOk() } }.andReturn()
             .response.contentAsJson<OffenderDetail>()
         assertThat(response.softDeleted, equalTo(true))
     }
 
     @Test
     fun `Detail API call allOffenderManagers record soft deleted`() {
-        val response = mockMvc
-            .perform(get("/probation-case/S123456/allOffenderManagers").withToken())
-            .andExpect(status().isOk).andReturn()
+        val response = mockMvc.get("/probation-case/S123456/allOffenderManagers") { withToken() }
+            .andExpect { status { isOk() } }.andReturn()
             .response.contentAsJson<List<OffenderManager>>()
         assertThat(response, equalTo(emptyList()))
     }
@@ -307,9 +299,8 @@ internal class OffenderIntegrationTest {
     @Test
     fun `Detail API call retuns probation record with no active sentence`() {
         val crn = PersonGenerator.NO_SENTENCE.crn
-        val detailResponse = mockMvc
-            .perform(get("/probation-case/$crn/all").withToken())
-            .andExpect(status().is2xxSuccessful)
+        val detailResponse = mockMvc.get("/probation-case/$crn/all") { withToken() }
+            .andExpect { status { is2xxSuccessful() } }
             .andReturn().response.contentAsJson<OffenderDetailSummary>()
         assertThat(detailResponse.currentDisposal, equalTo("0"))
         assertThat(detailResponse.activeProbationManagedSentence, equalTo(false))
@@ -318,9 +309,8 @@ internal class OffenderIntegrationTest {
     @Test
     fun `All offender managers API call not including teams retuns successfully`() {
         val crn = PersonGenerator.CURRENTLY_MANAGED.crn
-        val allOffenderManagers = mockMvc
-            .perform(get("/probation-case/$crn/allOffenderManagers").withToken())
-            .andExpect(status().is2xxSuccessful)
+        val allOffenderManagers = mockMvc.get("/probation-case/$crn/allOffenderManagers") { withToken() }
+            .andExpect { status { is2xxSuccessful() } }
             .andReturn().response.contentAsJson<List<CommunityOrPrisonOffenderManager>>()
         assertThat(allOffenderManagers[0].staff?.surname, equalTo(ALLOCATED.surname))
         assertThat(
@@ -333,10 +323,10 @@ internal class OffenderIntegrationTest {
     @Test
     fun `All offender managers API call including teams retuns successfully`() {
         val crn = PersonGenerator.CURRENTLY_MANAGED.crn
-        val allOffenderManagers = mockMvc
-            .perform(get("/probation-case/$crn/allOffenderManagers?includeProbationAreaTeams=true").withToken())
-            .andExpect(status().is2xxSuccessful)
-            .andReturn().response.contentAsJson<List<CommunityOrPrisonOffenderManager>>()
+        val allOffenderManagers =
+            mockMvc.get("/probation-case/$crn/allOffenderManagers?includeProbationAreaTeams=true") { withToken() }
+                .andExpect { status { is2xxSuccessful() } }
+                .andReturn().response.contentAsJson<List<CommunityOrPrisonOffenderManager>>()
         assertThat(allOffenderManagers[0].staff?.surname, equalTo(ALLOCATED.surname))
         assertThat(
             allOffenderManagers[0].probationArea?.institution?.institutionName,
@@ -353,16 +343,14 @@ internal class OffenderIntegrationTest {
 
     @Test
     fun `All offender managers crn not found`() {
-        mockMvc
-            .perform(get("/probation-case/X999999/allOffenderManagers").withToken())
-            .andExpect(status().isNotFound)
+        mockMvc.get("/probation-case/X999999/allOffenderManagers") { withToken() }
+            .andExpect { status { isNotFound() } }
     }
 
     @Test
     fun `Detail API call probation excluded case`() {
-        val resp = mockMvc
-            .perform(get("/probation-case/${PersonGenerator.EXCLUDED_CASE.crn}/all").withToken())
-            .andExpect(status().isEqualTo(HttpStatus.FORBIDDEN.value()))
+        val resp = mockMvc.get("/probation-case/${PersonGenerator.EXCLUDED_CASE.crn}/all") { withToken() }
+            .andExpect { status { isForbidden() } }
             .andReturn().response.contentAsJson<ErrorResponse>()
 
         assertThat(resp.developerMessage, equalTo(PersonGenerator.EXCLUDED_CASE.exclusionMessage))
@@ -370,16 +358,14 @@ internal class OffenderIntegrationTest {
 
     @Test
     fun `Detail API call probation restricted case returns 200`() {
-        mockMvc
-            .perform(get("/probation-case/${PersonGenerator.RESTRICTED_CASE.crn}/all").withToken())
-            .andExpect(status().isOk)
+        mockMvc.get("/probation-case/${PersonGenerator.RESTRICTED_CASE.crn}/all") { withToken() }
+            .andExpect { status { isOk() } }
     }
 
     @Test
     fun `Summary API call probation excluded case`() {
-        val resp = mockMvc
-            .perform(get("/probation-case/${PersonGenerator.EXCLUDED_CASE.crn}").withToken())
-            .andExpect(status().isEqualTo(HttpStatus.FORBIDDEN.value()))
+        val resp = mockMvc.get("/probation-case/${PersonGenerator.EXCLUDED_CASE.crn}") { withToken() }
+            .andExpect { status { isForbidden() } }
             .andReturn().response.contentAsJson<ErrorResponse>()
 
         assertThat(resp.developerMessage, equalTo(PersonGenerator.EXCLUDED_CASE.exclusionMessage))
@@ -387,8 +373,7 @@ internal class OffenderIntegrationTest {
 
     @Test
     fun `Summary API call probation restricted case returns 200`() {
-        mockMvc
-            .perform(get("/probation-case/${PersonGenerator.RESTRICTED_CASE.crn}").withToken())
-            .andExpect(status().isOk)
+        mockMvc.get("/probation-case/${PersonGenerator.RESTRICTED_CASE.crn}") { withToken() }
+            .andExpect { status { isOk() } }
     }
 }
