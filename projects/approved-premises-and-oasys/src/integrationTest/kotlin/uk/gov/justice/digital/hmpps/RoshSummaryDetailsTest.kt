@@ -7,8 +7,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
 import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import org.springframework.test.web.servlet.get
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.model.RoshSummaryDetails
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
@@ -17,17 +16,15 @@ import java.time.ZonedDateTime
 
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = RANDOM_PORT)
-internal class RoshSummaryDetailsTest {
-
-    @Autowired
-    lateinit var mockMvc: MockMvc
+internal class RoshSummaryDetailsTest @Autowired constructor(private val mockMvc: MockMvc) {
 
     @Test
     fun `should return rosh summary details`() {
-        val roshSummaryDetails = mockMvc
-            .perform(get("/rosh-summary/D006296").withToken())
-            .andExpect(status().is2xxSuccessful)
-            .andReturn().response.contentAsJson<RoshSummaryDetails>()
+        val roshSummaryDetails = mockMvc.get("/rosh-summary/D006296") {
+            withToken()
+        }.andExpect {
+            status { is2xxSuccessful() }
+        }.andReturn().response.contentAsJson<RoshSummaryDetails>()
 
         assertThat(roshSummaryDetails.initiationDate)
             .isEqualTo(ZonedDateTime.parse("2022-11-09T14:33:53Z").withZoneSameInstant(EuropeLondon))
@@ -50,8 +47,10 @@ internal class RoshSummaryDetailsTest {
 
     @Test
     fun `should return HTTP not found when CRN does not exist`() {
-        mockMvc
-            .perform(get("/rosh-summary/D000001").withToken())
-            .andExpect(status().isNotFound)
+        mockMvc.get("/rosh-summary/D000001") {
+            withToken()
+        }.andExpect {
+            status { isNotFound() }
+        }
     }
 }
