@@ -31,21 +31,16 @@ import java.time.temporal.ChronoUnit
 import java.util.concurrent.CompletableFuture
 
 @SpringBootTest
-internal class IntegrationTest {
+internal class IntegrationTest @Autowired constructor(
     @Value("\${messaging.consumer.queue}")
-    lateinit var queueName: String
-
-    @Autowired
-    lateinit var channelManager: HmppsChannelManager
+    private val queueName: String,
+    private val channelManager: HmppsChannelManager,
+    private val contactRepository: ContactRepository,
+    private val custodyRepository: CustodyRepository
+) {
 
     @MockitoBean
     lateinit var telemetryService: TelemetryService
-
-    @Autowired
-    lateinit var contactRepository: ContactRepository
-
-    @Autowired
-    lateinit var custodyRepository: CustodyRepository
 
     private val sedDate = "2025-09-10"
 
