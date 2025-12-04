@@ -15,9 +15,9 @@ import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 
 @SpringBootTest
 @AutoConfigureMockMvc
-class SupervisorsIntegrationTest {
-    @Autowired
-    lateinit var mockMvc: MockMvc
+class SupervisorsIntegrationTest @Autowired constructor(
+    private val mockMvc: MockMvc
+) {
 
     @Test
     fun `supervisor by username not found`() {

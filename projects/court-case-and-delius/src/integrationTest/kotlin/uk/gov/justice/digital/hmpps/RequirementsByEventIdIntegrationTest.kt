@@ -9,9 +9,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
 import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import org.springframework.test.web.servlet.get
 import uk.gov.justice.digital.hmpps.api.model.KeyValue
 import uk.gov.justice.digital.hmpps.api.model.conviction.ConvictionRequirements
 import uk.gov.justice.digital.hmpps.api.model.conviction.Requirement
@@ -23,34 +21,35 @@ import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = RANDOM_PORT)
-internal class RequirementsByEventIdIntegrationTest {
-    @Autowired
-    lateinit var mockMvc: MockMvc
+internal class RequirementsByEventIdIntegrationTest @Autowired constructor(
+    private val mockMvc: MockMvc
+) {
 
     @Test
     fun `unauthorized status returned`() {
         val crn = PersonGenerator.CURRENTLY_MANAGED.crn
-        mockMvc
-            .perform(get("/probation-case/$crn/convictions/123/requirements"))
-            .andExpect(status().isUnauthorized)
+        mockMvc.get("/probation-case/$crn/convictions/123/requirements")
+            .andExpect { status { isUnauthorized() } }
     }
 
     @Test
     fun `probation record not found`() {
-        mockMvc
-            .perform(get("/probation-case/A123456/convictions/123/requirements").withToken())
-            .andExpect(status().isNotFound)
-            .andExpect(jsonPath("$.developerMessage").value("Person with crn of A123456 not found"))
+        mockMvc.get("/probation-case/A123456/convictions/123/requirements") { withToken() }
+            .andExpect {
+                status { isNotFound() }
+                jsonPath("$.developerMessage") { value("Person with crn of A123456 not found") }
+            }
     }
 
     @Test
     fun `sentence not found`() {
         val crn = PersonGenerator.CURRENTLY_MANAGED.crn
 
-        mockMvc
-            .perform(get("/probation-case/$crn/convictions/3/requirements").withToken())
-            .andExpect(status().isNotFound)
-            .andExpect(jsonPath("$.developerMessage").value("Conviction with convictionId 3 not found"))
+        mockMvc.get("/probation-case/$crn/convictions/3/requirements") { withToken() }
+            .andExpect {
+                status { isNotFound() }
+                jsonPath("$.developerMessage") { value("Conviction with convictionId 3 not found") }
+            }
     }
 
     @Test
@@ -85,9 +84,8 @@ internal class RequirementsByEventIdIntegrationTest {
             )
         )
 
-        val response = mockMvc
-            .perform(get("/probation-case/$crn/convictions/${event.id}/requirements").withToken())
-            .andExpect(status().isOk)
+        val response = mockMvc.get("/probation-case/$crn/convictions/${event.id}/requirements") { withToken() }
+            .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<ConvictionRequirements>()
 
         assertEquals(expectedResponse, response)
@@ -98,10 +96,11 @@ internal class RequirementsByEventIdIntegrationTest {
         val crn = PersonGenerator.CURRENTLY_MANAGED.crn
         val event = SentenceGenerator.INACTIVE_EVENT
 
-        mockMvc
-            .perform(get("/probation-case/$crn/convictions/${event.id}/requirements").withToken())
-            .andExpect(status().isOk)
-            .andExpect(jsonPath("$.requirements").isEmpty)
+        mockMvc.get("/probation-case/$crn/convictions/${event.id}/requirements") { withToken() }
+            .andExpect {
+                status { isOk() }
+                jsonPath("$.requirements") { isEmpty() }
+            }
     }
 
     @ParameterizedTest
@@ -114,11 +113,12 @@ internal class RequirementsByEventIdIntegrationTest {
         val crn = PersonGenerator.CURRENTLY_MANAGED.crn
         val event = SentenceGenerator.CURRENTLY_MANAGED
 
-        mockMvc
-            .perform(get("/probation-case/$crn/convictions/${event.id}/requirements?$requestParams").withToken())
-            .andExpect(status().isOk)
-            .andExpect(jsonPath("$.requirements.length()").value(1))
-            .andExpect(jsonPath("$.requirements[0].active").value(active))
-            .andExpect(jsonPath("$.requirements[0].softDeleted").value(deleted))
+        mockMvc.get("/probation-case/$crn/convictions/${event.id}/requirements?$requestParams") { withToken() }
+            .andExpect {
+                status { isOk() }
+                jsonPath("$.requirements.length()") { value(1) }
+                jsonPath("$.requirements[0].active") { value(active) }
+                jsonPath("$.requirements[0].softDeleted") { value(deleted) }
+            }
     }
 }

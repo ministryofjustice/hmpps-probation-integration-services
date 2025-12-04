@@ -2,8 +2,7 @@ package uk.gov.justice.digital.hmpps
 
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import org.springframework.test.web.servlet.get
 import uk.gov.justice.digital.hmpps.data.generator.DocumentGenerator.BREACH_NOTICE_ID
 import uk.gov.justice.digital.hmpps.data.generator.DocumentGenerator.PSS_BREACH_NOTICE_ID
 import uk.gov.justice.digital.hmpps.data.generator.EventGenerator.DEFAULT_DISPOSAL
@@ -19,9 +18,10 @@ internal class RequirementsIntegrationTest : BaseIntegrationTest() {
 
     @Test
     fun `can retrieve requirements`() {
-        val response = mockMvc
-            .perform(get("/requirements/$BREACH_NOTICE_ID").withToken())
-            .andExpect(status().is2xxSuccessful)
+        val response = mockMvc.get("/requirements/$BREACH_NOTICE_ID") {
+            withToken()
+        }
+            .andExpect { status { is2xxSuccessful() } }
             .andReturn().response.contentAsJson<RequirementResponse>()
 
         val requirements = requirementRepository.findAllByDisposalId(DEFAULT_DISPOSAL.id)
@@ -33,9 +33,10 @@ internal class RequirementsIntegrationTest : BaseIntegrationTest() {
 
     @Test
     fun `can retrieve pss requirements`() {
-        val response = mockMvc
-            .perform(get("/requirements/$PSS_BREACH_NOTICE_ID").withToken())
-            .andExpect(status().is2xxSuccessful)
+        val response = mockMvc.get("/requirements/$PSS_BREACH_NOTICE_ID") {
+            withToken()
+        }
+            .andExpect { status { is2xxSuccessful() } }
             .andReturn().response.contentAsJson<RequirementResponse>()
 
         assertThat(response.requirements).isEqualTo(listOf(PSS_REQUIREMENT.toModel()))

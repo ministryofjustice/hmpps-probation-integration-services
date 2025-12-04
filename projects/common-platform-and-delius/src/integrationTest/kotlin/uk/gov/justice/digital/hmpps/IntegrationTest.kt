@@ -32,39 +32,25 @@ import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonAddr
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonAddressRepository
 import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
 import uk.gov.justice.digital.hmpps.message.Notification
-import uk.gov.justice.digital.hmpps.messaging.CommonPlatformHearing
 import uk.gov.justice.digital.hmpps.messaging.HmppsChannelManager
 import uk.gov.justice.digital.hmpps.service.EventService
-import uk.gov.justice.digital.hmpps.service.OffenceService
 import uk.gov.justice.digital.hmpps.service.PersonService
-import uk.gov.justice.digital.hmpps.telemetry.TelemetryMessagingExtensions.notificationReceived
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import java.io.ByteArrayInputStream
 import java.time.LocalDate
 import java.time.LocalDateTime
-import java.util.function.Function
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation::class)
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-internal class IntegrationTest {
-    @Autowired
-    private lateinit var referenceDataRepository: ReferenceDataRepository
-
-    @Value("\${messaging.consumer.queue}")
-    lateinit var queueName: String
-
-    @Value("\${messaging.producer.topic}")
-    lateinit var topicName: String
-
-    @Autowired
-    lateinit var channelManager: HmppsChannelManager
-
-    @Autowired
-    lateinit var hmppsChannelManager: HmppsChannelManager
-
-    @Autowired
-    lateinit var wireMockServer: WireMockServer
+internal class IntegrationTest @Autowired constructor(
+    private val referenceDataRepository: ReferenceDataRepository,
+    @Value("\${messaging.consumer.queue}") private val queueName: String,
+    @Value("\${messaging.producer.topic}") private val topicName: String,
+    private val channelManager: HmppsChannelManager,
+    private val hmppsChannelManager: HmppsChannelManager,
+    private val wireMockServer: WireMockServer
+) {
 
     @MockitoSpyBean
     lateinit var telemetryService: TelemetryService
@@ -110,9 +96,6 @@ internal class IntegrationTest {
 
     @MockitoSpyBean
     lateinit var eventService: EventService
-
-    @MockitoSpyBean
-    lateinit var offenceService: OffenceService
 
     @MockitoBean
     lateinit var s3Client: S3Client

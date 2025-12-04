@@ -21,6 +21,7 @@ import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 @SpringBootTest(properties = ["event.exception.throw-not-found: false"])
 @ExtendWith(OutputCaptureExtension::class)
 internal class NotFoundIntegrationTest {
+
     @Value("\${messaging.consumer.queue}")
     lateinit var queueName: String
 

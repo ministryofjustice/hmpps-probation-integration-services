@@ -2,8 +2,7 @@ package uk.gov.justice.digital.hmpps
 
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import org.springframework.test.web.servlet.get
 import uk.gov.justice.digital.hmpps.data.generator.DocumentGenerator.BREACH_NOTICE_ID
 import uk.gov.justice.digital.hmpps.data.generator.OfficeLocationGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
@@ -22,9 +21,10 @@ internal class BasicDetailsIntegrationTest : BaseIntegrationTest() {
     fun `can retrieve all basic details successfully`() {
         val person = PersonGenerator.DEFAULT_PERSON
         val username = StaffGenerator.DEFAULT_SU.username
-        val response = mockMvc
-            .perform(get("/basic-details/${person.crn}/$username").withToken())
-            .andExpect(status().is2xxSuccessful)
+        val response = mockMvc.get("/basic-details/${person.crn}/$username") {
+            withToken()
+        }
+            .andExpect { status { is2xxSuccessful() } }
             .andReturn().response.contentAsJson<BasicDetails>()
 
         assertThat(response).isEqualTo(
@@ -43,24 +43,27 @@ internal class BasicDetailsIntegrationTest : BaseIntegrationTest() {
 
     @Test
     fun `username not found returns 404 response`() {
-        mockMvc
-            .perform(get("/basic-details/${PersonGenerator.DEFAULT_PERSON.crn}/nonexistent").withToken())
-            .andExpect(status().isNotFound)
+        mockMvc.get("/basic-details/${PersonGenerator.DEFAULT_PERSON.crn}/nonexistent") {
+            withToken()
+        }
+            .andExpect { status { isNotFound() } }
     }
 
     @Test
     fun `no home area returns 400 response`() {
-        mockMvc
-            .perform(get("/basic-details/${PersonGenerator.DEFAULT_PERSON.crn}/NoHomeArea").withToken())
-            .andExpect(status().isBadRequest)
+        mockMvc.get("/basic-details/${PersonGenerator.DEFAULT_PERSON.crn}/NoHomeArea") {
+            withToken()
+        }
+            .andExpect { status { isBadRequest() } }
     }
 
     @Test
     fun `can retrieve crn from breach notice id successfully`() {
         val person = PersonGenerator.DEFAULT_PERSON
-        val response = mockMvc
-            .perform(get("/case/$BREACH_NOTICE_ID").withToken())
-            .andExpect(status().is2xxSuccessful)
+        val response = mockMvc.get("/case/$BREACH_NOTICE_ID") {
+            withToken()
+        }
+            .andExpect { status { is2xxSuccessful() } }
             .andReturn().response.contentAsJson<DocumentCrn>()
 
         assertThat(response.crn).isEqualTo(person.crn)
@@ -68,8 +71,9 @@ internal class BasicDetailsIntegrationTest : BaseIntegrationTest() {
 
     @Test
     fun `document not found returns 404 response`() {
-        mockMvc
-            .perform(get("/case/${UUID.randomUUID()}").withToken())
-            .andExpect(status().isNotFound)
+        mockMvc.get("/case/${UUID.randomUUID()}") {
+            withToken()
+        }
+            .andExpect { status { isNotFound() } }
     }
 }

@@ -8,10 +8,8 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
 import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import org.springframework.test.web.servlet.get
+import org.springframework.test.web.servlet.post
 import uk.gov.justice.digital.hmpps.api.model.*
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.DEFAULT_PERSON
@@ -24,22 +22,21 @@ import uk.gov.justice.digital.hmpps.service.asPDUHead
 import uk.gov.justice.digital.hmpps.service.asStaffName
 import uk.gov.justice.digital.hmpps.service.asTeam
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
-import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withJson
+import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.json
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = RANDOM_PORT)
-internal class IntegrationTest {
-    @Autowired
-    lateinit var mockMvc: MockMvc
+internal class IntegrationTest @Autowired constructor(
+    private val mockMvc: MockMvc,
+) {
 
     @Test
     fun `returns case details`() {
         val crn = DEFAULT_PERSON.crn
 
-        val response = mockMvc
-            .perform(get("/probation-case/$crn").withToken())
-            .andExpect(status().isOk)
+        val response = mockMvc.get("/probation-case/$crn") { withToken() }
+            .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<ProbationCase>()
 
         assertThat(response, equalTo(ProbationCase(DEFAULT_PERSON.crn, DEFAULT_PERSON.nomsNumber)))
@@ -49,9 +46,8 @@ internal class IntegrationTest {
     fun `returns case details by NOMIS id`() {
         val nomsNumber = DEFAULT_PERSON.nomsNumber
 
-        val response = mockMvc
-            .perform(get("/probation-case/$nomsNumber").withToken())
-            .andExpect(status().isOk)
+        val response = mockMvc.get("/probation-case/$nomsNumber") { withToken() }
+            .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<ProbationCase>()
 
         assertThat(response, equalTo(ProbationCase(DEFAULT_PERSON.crn, DEFAULT_PERSON.nomsNumber)))
@@ -61,9 +57,11 @@ internal class IntegrationTest {
     fun `returns case list`() {
         val crns = listOf(DEFAULT_PERSON.crn, PERSON_CREATE_LC.crn)
 
-        val response = mockMvc
-            .perform(post("/probation-case").withToken().withJson(crns))
-            .andExpect(status().isOk)
+        val response = mockMvc.post("/probation-case") {
+            withToken()
+            json = crns
+        }
+            .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<List<ProbationCase>>()
 
         assertThat(
@@ -80,9 +78,8 @@ internal class IntegrationTest {
     fun `returns responsible officer details`() {
         val crn = DEFAULT_PERSON.crn
 
-        val manager = mockMvc
-            .perform(get("/probation-case/$crn/responsible-community-manager").withToken())
-            .andExpect(status().isOk)
+        val manager = mockMvc.get("/probation-case/$crn/responsible-community-manager") { withToken() }
+            .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<Manager>()
 
         assertThat(
@@ -99,12 +96,17 @@ internal class IntegrationTest {
     @Test
     fun `returns responsible officer details for a list of CRNs`() {
         val crn = DEFAULT_PERSON.crn
-        mockMvc
-            .perform(post("/probation-case/responsible-community-manager").withToken().withJson(listOf(crn)))
-            .andExpect(status().isOk)
-            .andExpect(jsonPath("size()", equalTo(1)))
-            .andExpect(jsonPath("$[0].code", equalTo("N01BDT1")))
-            .andExpect(jsonPath("$[0].email", equalTo("john.smith@moj.gov.uk")))
+
+        mockMvc.post("/probation-case/responsible-community-manager") {
+            withToken()
+            json = listOf(crn)
+        }
+            .andExpect {
+                status { isOk() }
+                jsonPath("$.size()") { value(1) }
+                jsonPath("$[0].code") { value("N01BDT1") }
+                jsonPath("$[0].email") { value("john.smith@moj.gov.uk") }
+            }
     }
 
     @Test
@@ -114,10 +116,11 @@ internal class IntegrationTest {
             ProviderGenerator.LOCATION_BRK_1.asAddress(),
             ProviderGenerator.LOCATION_BRK_2.asAddress()
         )
-        val manager = mockMvc
-            .perform(get("/probation-case/$crn/responsible-community-manager").withToken())
-            .andExpect(status().isOk)
+
+        val manager = mockMvc.get("/probation-case/$crn/responsible-community-manager") { withToken() }
+            .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<Manager>()
+
         assertThat(
             manager,
             equalTo(
@@ -133,41 +136,43 @@ internal class IntegrationTest {
 
     @Test
     fun `returns 404 if no crn or community officer`() {
-        mockMvc.perform(
-            get("/probation-case/Z123456/responsible-community-manager")
-                .withToken()
-        ).andExpect(status().isNotFound)
+        mockMvc.get("/probation-case/Z123456/responsible-community-manager") { withToken() }
+            .andExpect {
+                status { isNotFound() }
+            }
     }
 
     @Test
     fun `returns staff details`() {
         val username = StaffGenerator.DEFAULT_STAFF_USER.username
-        mockMvc
-            .perform(get("/staff/$username").withToken())
-            .andExpect(status().isOk)
-            .andExpect(jsonPath("$.username", equalTo("john-smith")))
-            .andExpect(jsonPath("$.email", equalTo("john.smith@moj.gov.uk")))
-            .andExpect(jsonPath("$.telephoneNumber", equalTo("10101010101")))
+        mockMvc.get("/staff/$username") { withToken() }
+            .andExpect {
+                status { isOk() }
+                jsonPath("$.username") { value(equalTo("john-smith")) }
+                jsonPath("$.email") { value(equalTo("john.smith@moj.gov.uk")) }
+                jsonPath("$.telephoneNumber") { value(equalTo("10101010101")) }
+            }
     }
 
     @Test
     fun `username is case-insensitive`() {
         val username = StaffGenerator.DEFAULT_STAFF_USER.username.uppercase()
-        mockMvc
-            .perform(get("/staff/$username").withToken())
-            .andExpect(status().isOk)
-            .andExpect(jsonPath("$.username", equalTo("john-smith")))
-            .andExpect(jsonPath("$.email", equalTo("john.smith@moj.gov.uk")))
-            .andExpect(jsonPath("$.telephoneNumber", equalTo("10101010101")))
+
+        mockMvc.get("/staff/$username") { withToken() }
+            .andExpect {
+                status { isOk() }
+                jsonPath("$.username") { value("john-smith") }
+                jsonPath("$.email") { value("john.smith@moj.gov.uk") }
+                jsonPath("$.telephoneNumber") { value("10101010101") }
+            }
     }
 
     @Test
     fun `returns pdu heads`() {
         val boroughCode = ProviderGenerator.DEFAULT_BOROUGH.code
 
-        val pduHeads = mockMvc
-            .perform(get("/staff/$boroughCode/pdu-head").withToken())
-            .andExpect(status().isOk)
+        val pduHeads = mockMvc.get("/staff/$boroughCode/pdu-head") { withToken() }
+            .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<List<PDUHead>>()
 
         assertThat(
@@ -185,9 +190,11 @@ internal class IntegrationTest {
         val usernames =
             listOf(StaffGenerator.DEFAULT_PDUSTAFF_USER.username, StaffGenerator.DEFAULT_STAFF_USER.username)
 
-        val staffNames = mockMvc
-            .perform(post("/staff").withToken().withJson(usernames))
-            .andExpect(status().isOk)
+        val staffNames = mockMvc.post("/staff") {
+            withToken()
+            json = usernames
+        }
+            .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<List<StaffName>>()
 
         assertThat(
@@ -208,9 +215,11 @@ internal class IntegrationTest {
             StaffGenerator.DEFAULT_STAFF_USER.username.uppercase()
         )
 
-        val staffNames = mockMvc
-            .perform(post("/staff").withToken().withJson(usernames))
-            .andExpect(status().isOk)
+        val staffNames = mockMvc.post("/staff") {
+            withToken()
+            json = usernames
+        }
+            .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<List<StaffName>>()
 
         assertThat(
@@ -225,28 +234,30 @@ internal class IntegrationTest {
     }
 
     @Test
-    fun `returns staff by id `() {
-        mockMvc
-            .perform(get("/staff/byid/${StaffGenerator.DEFAULT.id}").withToken())
-            .andExpect(status().isOk)
-            .andExpect(jsonPath("$.username", equalTo("john-smith")))
-            .andExpect(jsonPath("$.email", equalTo("john.smith@moj.gov.uk")))
-            .andExpect(jsonPath("$.telephoneNumber", equalTo("10101010101")))
+    fun `returns staff by id`() {
+        mockMvc.get("/staff/byid/${StaffGenerator.DEFAULT.id}") { withToken() }
+            .andExpect {
+                status { isOk() }
+                jsonPath("$.username") { value("john-smith") }
+                jsonPath("$.email") { value("john.smith@moj.gov.uk") }
+                jsonPath("$.telephoneNumber") { value("10101010101") }
+            }
     }
 
     @Test
     fun `returns staff by id not found `() {
 
-        mockMvc.perform(get("/staff/byid/9999999").withToken()).andExpect(status().isNotFound)
+        mockMvc.get("/staff/byid/9999999") { withToken() }.andExpect { status { isNotFound() } }
     }
 
     @Test
-    fun `returns staff by code`() {
-        mockMvc
-            .perform(get("/staff/bycode/${StaffGenerator.DEFAULT.code}").withToken())
-            .andExpect(status().isOk)
-            .andExpect(jsonPath("$.username", equalTo("john-smith")))
-            .andExpect(jsonPath("$.email", equalTo("john.smith@moj.gov.uk")))
-            .andExpect(jsonPath("$.telephoneNumber", equalTo("10101010101")))
+    fun `returns staff by code_new`() {
+        mockMvc.get("/staff/bycode/${StaffGenerator.DEFAULT.code}") { withToken() }
+            .andExpect {
+                status { isOk() }
+                jsonPath("$.username") { value("john-smith") }
+                jsonPath("$.email") { value("john.smith@moj.gov.uk") }
+                jsonPath("$.telephoneNumber") { value("10101010101") }
+            }
     }
 }

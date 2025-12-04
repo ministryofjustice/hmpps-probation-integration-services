@@ -9,10 +9,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
 import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import org.springframework.test.web.servlet.get
 import uk.gov.justice.digital.hmpps.api.model.*
 import uk.gov.justice.digital.hmpps.api.resource.advice.ErrorResponse
 import uk.gov.justice.digital.hmpps.data.generator.NsiManagerGenerator
@@ -29,51 +26,54 @@ import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = RANDOM_PORT)
-internal class NsisByCrnAndConvictionIdIntegrationTest {
-    @Autowired
-    lateinit var mockMvc: MockMvc
+internal class NsisByCrnAndConvictionIdIntegrationTest @Autowired constructor(
+    private val mockMvc: MockMvc
+) {
 
     @Test
     fun `unauthorized status returned`() {
         val crn = PersonGenerator.CURRENTLY_MANAGED.crn
-        mockMvc
-            .perform(get("/probation-case/$crn/convictions/1/nsis"))
-            .andExpect(status().isUnauthorized)
+        mockMvc.get("/probation-case/$crn/convictions/1/nsis")
+            .andExpect { status { isUnauthorized() } }
     }
 
     @Test
     fun `request params not provided`() {
         val crn = PersonGenerator.CURRENTLY_MANAGED.crn
         mockMvc
-            .perform(get("/probation-case/$crn/convictions/1/nsis").withToken())
-            .andExpect(status().isBadRequest)
-            .andExpect(status().reason("Required parameter 'nsiCodes' is not present."))
+            .get("/probation-case/$crn/convictions/1/nsis") { withToken() }
+            .andExpect {
+                status {
+                    isBadRequest()
+                    reason("Required parameter 'nsiCodes' is not present.")
+                }
+            }
     }
 
     @Test
     fun `probation record not found`() {
-        mockMvc
-            .perform(
-                get("/probation-case/A123456/convictions/123/nsis")
-                    .param("nsiCodes", "{}")
-                    .withToken()
-            )
-            .andExpect(status().isNotFound)
-            .andExpect(jsonPath("$.developerMessage").value("Person with crn of A123456 not found"))
+        mockMvc.get("/probation-case/A123456/convictions/123/nsis") {
+            param("nsiCodes", "{}")
+            withToken()
+        }
+            .andExpect {
+                status { isNotFound() }
+                jsonPath("$.developerMessage") { value("Person with crn of A123456 not found") }
+            }
     }
 
     @Test
     fun `sentence not found`() {
         val crn = PersonGenerator.CURRENTLY_MANAGED.crn
 
-        mockMvc
-            .perform(
-                get("/probation-case/$crn/convictions/3/nsis")
-                    .param("nsiCodes", "{}")
-                    .withToken()
-            )
-            .andExpect(status().isNotFound)
-            .andExpect(jsonPath("$.developerMessage").value("Conviction with ID 3 for Offender with crn C123456 not found"))
+        mockMvc.get("/probation-case/$crn/convictions/3/nsis") {
+            param("nsiCodes", "{}")
+            withToken()
+        }
+            .andExpect {
+                status { isNotFound() }
+                jsonPath("$.developerMessage") { value("Conviction with ID 3 for Offender with crn C123456 not found") }
+            }
     }
 
     @Test
@@ -128,15 +128,15 @@ internal class NsisByCrnAndConvictionIdIntegrationTest {
             )
         )
 
-        val response = mockMvc
-            .perform(
-                get("/probation-case/$crn/convictions/${event.id}/nsis")
-                    .param("nsiCodes", "NSITYPE")
-                    .withToken()
-            )
-            .andExpect(status().isOk)
-            .andDo(MockMvcResultHandlers.print())
-            .andReturn().response.contentAsJson<NsiDetails>()
+        val response = mockMvc.get("/probation-case/$crn/convictions/${event.id}/nsis") {
+            param("nsiCodes", "NSITYPE")
+            withToken()
+        }
+            .andExpect { status { isOk() } }
+            .andDo { print() }
+            .andReturn()
+            .response
+            .contentAsJson<NsiDetails>()
 
         assertEquals(expectedResponse, response)
     }
@@ -155,13 +155,10 @@ internal class NsisByCrnAndConvictionIdIntegrationTest {
     fun `nsi by nsiId`() {
         val crn = PersonGenerator.CURRENTLY_MANAGED.crn
         val expectedNsi = BREACH_NSIS.toNsi()
-        val actualNsi = mockMvc
-            .perform(
-                get("/probation-case/$crn/convictions/${BREACH_NSIS.eventId}/nsis/${BREACH_NSIS.id}")
-                    .withToken()
-            )
-            .andExpect(status().isOk)
-            .andReturn().response.contentAsJson<Nsi>()
+        val actualNsi =
+            mockMvc.get("/probation-case/$crn/convictions/${BREACH_NSIS.eventId}/nsis/${BREACH_NSIS.id}") { withToken() }
+                .andExpect { status { isOk() } }
+                .andReturn().response.contentAsJson<Nsi>()
 
         MatcherAssert.assertThat(actualNsi.nsiOutcome, equalTo(expectedNsi.nsiOutcome))
     }
@@ -169,12 +166,8 @@ internal class NsisByCrnAndConvictionIdIntegrationTest {
     @Test
     fun `nsi by nsiId not found`() {
         val crn = PersonGenerator.CURRENTLY_MANAGED.crn
-        val response = mockMvc
-            .perform(
-                get("/probation-case/$crn/convictions/${BREACH_NSIS.eventId}/nsis/999")
-                    .withToken()
-            )
-            .andExpect(status().isNotFound)
+        val response = mockMvc.get("/probation-case/$crn/convictions/${BREACH_NSIS.eventId}/nsis/999") { withToken() }
+            .andExpect { status { isNotFound() } }
             .andReturn().response.contentAsJson<ErrorResponse>()
 
         MatcherAssert.assertThat(response.developerMessage, equalTo("NSI with id 999 not found"))

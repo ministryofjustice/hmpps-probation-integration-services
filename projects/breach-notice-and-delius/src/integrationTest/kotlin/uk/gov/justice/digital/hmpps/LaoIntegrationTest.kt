@@ -4,8 +4,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import org.springframework.test.web.servlet.get
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.EXCLUSION
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.RESTRICTION
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.RESTRICTION_EXCLUSION
@@ -20,9 +19,10 @@ internal class LaoIntegrationTest : BaseIntegrationTest() {
     @ParameterizedTest
     @MethodSource("laoUserCases")
     fun `LAO results are appropriately returned`(user: AuditUser, person: Person, access: CaseAccess) {
-        val response = mockMvc
-            .perform(get("/users/${user.username}/access/${person.crn}").withToken())
-            .andExpect(status().is2xxSuccessful)
+        val response = mockMvc.get("/users/${user.username}/access/${person.crn}") {
+            withToken()
+        }
+            .andExpect { status { is2xxSuccessful() } }
             .andReturn().response.contentAsJson<CaseAccess>()
 
         assertThat(response).isEqualTo(access)

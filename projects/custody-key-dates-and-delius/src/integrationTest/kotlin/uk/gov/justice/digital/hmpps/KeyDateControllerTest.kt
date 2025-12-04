@@ -17,34 +17,27 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.bean.override.mockito.MockitoBean
 import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import org.springframework.test.web.servlet.post
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.Custody
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.CustodyDateType
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.CustodyRepository
 import uk.gov.justice.digital.hmpps.messaging.HmppsChannelManager
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
-import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withJson
+import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.json
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 import java.time.LocalDate
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
 @TestMethodOrder(MethodOrderer.OrderAnnotation::class)
-internal class KeyDateControllerTest {
+internal class KeyDateControllerTest @Autowired constructor(
     @Value("\${messaging.consumer.queue}")
-    lateinit var queueName: String
-
-    @Autowired
-    lateinit var channelManager: HmppsChannelManager
-
-    @Autowired
-    lateinit var mockMvc: MockMvc
-
-    @Autowired
-    lateinit var custodyRepository: CustodyRepository
-
+    private val queueName: String,
+    private val channelManager: HmppsChannelManager,
+    private val mockMvc: MockMvc,
+    private val custodyRepository: CustodyRepository
+) {
     @MockitoBean
     lateinit var telemetryService: TelemetryService
 
@@ -53,9 +46,11 @@ internal class KeyDateControllerTest {
     fun `API call in dry run `() {
         val noms = PersonGenerator.DEFAULT.nomsId
 
-        mockMvc
-            .perform(post("/update-custody-dates?dryRun=true").withToken().withJson(listOf(noms)))
-            .andExpect(status().is2xxSuccessful)
+        mockMvc.post("/update-custody-dates?dryRun=true") {
+            withToken()
+            json = listOf(noms)
+        }
+            .andExpect { status { is2xxSuccessful() } }
 
         channelManager.getChannel(queueName).waitUntilEmpty()
 
@@ -80,9 +75,11 @@ internal class KeyDateControllerTest {
     fun `API call in update mode`() {
         val noms = PersonGenerator.PERSON_WITH_KEYDATES.nomsId
 
-        mockMvc
-            .perform(post("/update-custody-dates?dryRun=false").withToken().withJson(listOf(noms)))
-            .andExpect(status().is2xxSuccessful)
+        mockMvc.post("/update-custody-dates?dryRun=false") {
+            withToken()
+            json = listOf(noms)
+        }
+            .andExpect { status { is2xxSuccessful() } }
 
         channelManager.getChannel(queueName).waitUntilEmpty()
 
@@ -102,9 +99,8 @@ internal class KeyDateControllerTest {
     @Test
     @Order(3)
     fun `API call in update mode for all nomsIds`() {
-        mockMvc
-            .perform(post("/update-custody-dates?dryRun=false").withToken())
-            .andExpect(status().is2xxSuccessful)
+        mockMvc.post("/update-custody-dates?dryRun=false") { withToken() }
+            .andExpect { status { is2xxSuccessful() } }
 
         channelManager.getChannel(queueName).waitUntilEmpty()
 

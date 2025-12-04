@@ -8,11 +8,11 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
 import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import org.springframework.test.web.servlet.post
 import org.springframework.transaction.support.TransactionTemplate
 import uk.gov.justice.digital.hmpps.api.model.MatchRequest
 import uk.gov.justice.digital.hmpps.api.model.MatchResponse
+import uk.gov.justice.digital.hmpps.api.model.MatchedBy
 import uk.gov.justice.digital.hmpps.data.generator.IdGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator.GENDER_FEMALE
@@ -20,26 +20,18 @@ import uk.gov.justice.digital.hmpps.data.generator.SentenceGenerator
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.OffenderAlias
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonRepository
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
-import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withJson
+import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.json
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 import java.time.LocalDate
-import uk.gov.justice.digital.hmpps.api.model.MatchedBy
 
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = RANDOM_PORT)
-internal class MatchIntegrationTest {
-
-    @Autowired
-    lateinit var mockMvc: MockMvc
-
-    @Autowired
-    internal lateinit var personRepository: PersonRepository
-
-    @Autowired
-    internal lateinit var entityManager: EntityManager
-
-    @Autowired
-    internal lateinit var transactionTemplate: TransactionTemplate
+internal class MatchIntegrationTest @Autowired constructor(
+    private val mockMvc: MockMvc,
+    private val personRepository: PersonRepository,
+    private val entityManager: EntityManager,
+    private val transactionTemplate: TransactionTemplate
+) {
 
     @Test
     fun `search by name and date of birth including aliases`() {
@@ -98,18 +90,15 @@ internal class MatchIntegrationTest {
         }
 
         val r1 = mockMvc
-            .perform(
-                post("/probation-cases/match?useSearch=false")
-                    .withJson(
-                        MatchRequest(
-                            firstName = "Robert",
-                            surname = "Smith",
-                            dateOfBirth = LocalDate.of(1980, 1, 1)
-                        )
-                    )
-                    .withToken()
-            )
-            .andExpect(status().is2xxSuccessful)
+            .post("/probation-cases/match?useSearch=false") {
+                json = MatchRequest(
+                    firstName = "Robert",
+                    surname = "Smith",
+                    dateOfBirth = LocalDate.of(1980, 1, 1)
+                )
+                withToken()
+            }
+            .andExpect { status { is2xxSuccessful() } }
             .andReturn().response.contentAsJson<MatchResponse>()
 
         assertThat(r1.matches).hasSize(1)
@@ -117,12 +106,11 @@ internal class MatchIntegrationTest {
         assertThat(r1.matchedBy).isEqualTo(MatchedBy.ALL_SUPPLIED)
 
         val r2 = mockMvc
-            .perform(
-                post("/probation-cases/match?useSearch=false")
-                    .withJson(MatchRequest(surname = "Smith"))
-                    .withToken()
-            )
-            .andExpect(status().is2xxSuccessful)
+            .post("/probation-cases/match?useSearch=false") {
+                json = MatchRequest(surname = "Smith")
+                withToken()
+            }
+            .andExpect { status { is2xxSuccessful() } }
             .andReturn().response.contentAsJson<MatchResponse>()
 
         assertThat(r2.matches).hasSize(2)
@@ -130,17 +118,14 @@ internal class MatchIntegrationTest {
         assertThat(r2.matchedBy).isEqualTo(MatchedBy.ALL_SUPPLIED)
 
         val r3 = mockMvc
-            .perform(
-                post("/probation-cases/match?useSearch=false")
-                    .withJson(
-                        MatchRequest(
-                            surname = "Smith",
-                            dateOfBirth = LocalDate.of(1980, 1, 1),
-                        )
-                    )
-                    .withToken()
-            )
-            .andExpect(status().is2xxSuccessful)
+            .post("/probation-cases/match?useSearch=false") {
+                json = MatchRequest(
+                    surname = "Smith",
+                    dateOfBirth = LocalDate.of(1980, 1, 1),
+                )
+                withToken()
+            }
+            .andExpect { status { is2xxSuccessful() } }
             .andReturn().response.contentAsJson<MatchResponse>()
 
         assertThat(r3.matches).hasSize(1)
@@ -148,18 +133,15 @@ internal class MatchIntegrationTest {
         assertThat(r3.matchedBy).isEqualTo(MatchedBy.ALL_SUPPLIED)
 
         val r4 = mockMvc
-            .perform(
-                post("/probation-cases/match?useSearch=false")
-                    .withJson(
-                        MatchRequest(
-                            firstName = "Marge",
-                            surname = "Smith",
-                            dateOfBirth = LocalDate.of(1980, 1, 1),
-                        )
-                    )
-                    .withToken()
-            )
-            .andExpect(status().is2xxSuccessful)
+            .post("/probation-cases/match?useSearch=false") {
+                json = MatchRequest(
+                    firstName = "Marge",
+                    surname = "Smith",
+                    dateOfBirth = LocalDate.of(1980, 1, 1),
+                )
+                withToken()
+            }
+            .andExpect { status { is2xxSuccessful() } }
             .andReturn().response.contentAsJson<MatchResponse>()
 
         assertThat(r4.matches).hasSize(1)
@@ -167,19 +149,16 @@ internal class MatchIntegrationTest {
         assertThat(r4.matchedBy).isEqualTo(MatchedBy.ALL_SUPPLIED_ALIAS)
 
         val r5 = mockMvc
-            .perform(
-                post("/probation-cases/match?useSearch=false")
-                    .withJson(
-                        MatchRequest(
-                            pncNumber = "09/516048H",
-                            surname = "Smith",
-                            firstName = "Robert",
-                            dateOfBirth = LocalDate.of(1980, 1, 1)
-                        )
-                    )
-                    .withToken()
-            )
-            .andExpect(status().is2xxSuccessful)
+            .post("/probation-cases/match?useSearch=false") {
+                json = MatchRequest(
+                    pncNumber = "09/516048H",
+                    surname = "Smith",
+                    firstName = "Robert",
+                    dateOfBirth = LocalDate.of(1980, 1, 1)
+                )
+                withToken()
+            }
+            .andExpect { status { is2xxSuccessful() } }
             .andReturn().response.contentAsJson<MatchResponse>()
 
         assertThat(r5.matches).hasSize(1)
@@ -187,18 +166,15 @@ internal class MatchIntegrationTest {
         assertThat(r5.matchedBy).isEqualTo(MatchedBy.NAME)
 
         val r6 = mockMvc
-            .perform(
-                post("/probation-cases/match?useSearch=false")
-                    .withJson(
-                        MatchRequest(
-                            surname = "Smith",
-                            firstName = "James",
-                            dateOfBirth = LocalDate.of(1980, 1, 1)
-                        )
-                    )
-                    .withToken()
-            )
-            .andExpect(status().is2xxSuccessful)
+            .post("/probation-cases/match?useSearch=false") {
+                json = MatchRequest(
+                    surname = "Smith",
+                    firstName = "James",
+                    dateOfBirth = LocalDate.of(1980, 1, 1)
+                )
+                withToken()
+            }
+            .andExpect { status { is2xxSuccessful() } }
             .andReturn().response.contentAsJson<MatchResponse>()
 
         assertThat(r6.matches).hasSize(1)
@@ -206,12 +182,11 @@ internal class MatchIntegrationTest {
         assertThat(r6.matchedBy).isEqualTo(MatchedBy.PARTIAL_NAME)
 
         val r7 = mockMvc
-            .perform(
-                post("/probation-cases/match?useSearch=false")
-                    .withJson(MatchRequest(surname = "Smith", dateOfBirth = LocalDate.of(1980, 1, 2)))
-                    .withToken()
-            )
-            .andExpect(status().is2xxSuccessful)
+            .post("/probation-cases/match?useSearch=false") {
+                json = MatchRequest(surname = "Smith", dateOfBirth = LocalDate.of(1980, 1, 2))
+                withToken()
+            }
+            .andExpect { status { is2xxSuccessful() } }
             .andReturn().response.contentAsJson<MatchResponse>()
 
         assertThat(r7.matches).hasSize(1)
@@ -219,12 +194,11 @@ internal class MatchIntegrationTest {
         assertThat(r7.matchedBy).isEqualTo(MatchedBy.PARTIAL_NAME_DOB_LENIENT)
 
         val r8 = mockMvc
-            .perform(
-                post("/probation-cases/match?useSearch=false")
-                    .withJson(MatchRequest(surname = "Smith", dateOfBirth = LocalDate.of(1980, 2, 1)))
-                    .withToken()
-            )
-            .andExpect(status().is2xxSuccessful)
+            .post("/probation-cases/match?useSearch=false") {
+                json = MatchRequest(surname = "Smith", dateOfBirth = LocalDate.of(1980, 2, 1))
+                withToken()
+            }
+            .andExpect { status { is2xxSuccessful() } }
             .andReturn().response.contentAsJson<MatchResponse>()
 
         assertThat(r8.matches).hasSize(1)
@@ -258,11 +232,11 @@ internal class MatchIntegrationTest {
         )
 
         val r1 = mockMvc
-            .perform(
-                post("/probation-cases/match?useSearch=false")
-                    .withJson(MatchRequest(surname = "Any", pncNumber = "1973/5052670T")).withToken()
-            )
-            .andExpect(status().is2xxSuccessful)
+            .post("/probation-cases/match?useSearch=false") {
+                json = MatchRequest(surname = "Any", pncNumber = "1973/5052670T")
+                withToken()
+            }
+            .andExpect { status { is2xxSuccessful() } }
             .andReturn().response.contentAsJson<MatchResponse>()
 
         assertThat(r1.matches).hasSize(1)
@@ -270,11 +244,11 @@ internal class MatchIntegrationTest {
         assertThat(r1.matchedBy).isEqualTo(MatchedBy.EXTERNAL_KEY)
 
         val r2 = mockMvc
-            .perform(
-                post("/probation-cases/match?useSearch=false")
-                    .withJson(MatchRequest(surname = "Any", pncNumber = "99/9158411A")).withToken()
-            )
-            .andExpect(status().is2xxSuccessful)
+            .post("/probation-cases/match?useSearch=false") {
+                json = MatchRequest(surname = "Any", pncNumber = "99/9158411A")
+                withToken()
+            }
+            .andExpect { status { is2xxSuccessful() } }
             .andReturn().response.contentAsJson<MatchResponse>()
 
         assertThat(r2.matches).hasSize(1)

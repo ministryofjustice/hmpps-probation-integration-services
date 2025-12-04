@@ -26,18 +26,12 @@ import java.time.ZonedDateTime
 
 @SpringBootTest
 @ExtendWith(OutputCaptureExtension::class)
-internal class IntegrationTest {
-    @Value("\${messaging.consumer.queue}")
-    lateinit var queueName: String
-
-    @Autowired
-    lateinit var channelManager: HmppsChannelManager
-
-    @Autowired
-    lateinit var wireMockServer: WireMockServer
-
-    @Autowired
-    lateinit var contactRepository: ContactRepository
+internal class IntegrationTest @Autowired constructor(
+    @Value("\${messaging.consumer.queue}") private val queueName: String,
+    private val channelManager: HmppsChannelManager,
+    private val wireMockServer: WireMockServer,
+    private val contactRepository: ContactRepository
+) {
 
     @MockitoBean
     lateinit var telemetryService: TelemetryService

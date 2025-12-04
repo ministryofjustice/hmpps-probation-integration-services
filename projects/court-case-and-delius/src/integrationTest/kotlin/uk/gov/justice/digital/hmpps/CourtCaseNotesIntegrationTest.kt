@@ -24,28 +24,21 @@ import java.time.ZonedDateTime
 const val COURT_CASE_NOTE_MERGED = "CourtCaseNoteMerged"
 
 @SpringBootTest
-class CaseNotesIntegrationTest {
-
-    @Value("\${messaging.consumer.queue}")
-    private lateinit var queueName: String
-
-    @Autowired
-    private lateinit var channelManager: HmppsChannelManager
-
-    @Autowired
-    private lateinit var caseNoteRepository: CaseNoteRepository
+class CaseNotesIntegrationTest @Autowired constructor(
+    @Value("\${messaging.consumer.queue}") private val queueName: String,
+    private val channelManager: HmppsChannelManager,
+    private val caseNoteRepository: CaseNoteRepository,
+    private val wireMockserver: WireMockServer
+) {
 
     @MockitoBean
     private lateinit var telemetryService: TelemetryService
-
-    @Autowired
-    lateinit var wireMockserver: WireMockServer
 
     @MockitoSpyBean
     lateinit var air: AuditedInteractionRepository
 
     @Test
-    fun `create a new court case note succesfully`() {
+    fun `create a new court case note successfully`() {
         channelManager.getChannel(queueName).publishAndWait(
             prepMessage(CourtCaseNoteMessageGenerator.NEW, wireMockserver.port())
         )
@@ -60,7 +53,7 @@ class CaseNotesIntegrationTest {
     }
 
     @Test
-    fun `replace a court case note succesfully`() {
+    fun `replace a court case note successfully`() {
         val message = CourtCaseNoteMessageGenerator.EXISTS.copy(occurredAt = ZonedDateTime.now())
 
         channelManager.getChannel(queueName).publishAndWait(

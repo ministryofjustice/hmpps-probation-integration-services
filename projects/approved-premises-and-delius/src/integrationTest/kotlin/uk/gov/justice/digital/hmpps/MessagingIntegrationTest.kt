@@ -14,7 +14,6 @@ import org.mockito.Mockito.verify
 import org.mockito.kotlin.times
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
 import org.springframework.test.context.bean.override.mockito.MockitoBean
@@ -52,48 +51,25 @@ import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import uk.gov.justice.digital.hmpps.test.CustomMatchers.isSameTimeAs
 import java.time.LocalDate
 
-@AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = RANDOM_PORT)
 @TestMethodOrder(OrderAnnotation::class)
-internal class MessagingIntegrationTest {
-    @Value("\${messaging.consumer.queue}")
-    lateinit var queueName: String
-
-    @Value("\${messaging.producer.topic}")
-    lateinit var topicName: String
-
-    @Autowired
-    lateinit var channelManager: HmppsChannelManager
-
-    @Autowired
-    lateinit var wireMockServer: WireMockServer
-
-    @Autowired
-    lateinit var contactRepository: ContactRepository
-
-    @Autowired
-    lateinit var nsiRepository: NsiRepository
-
-    @Autowired
-    lateinit var personAddressRepository: PersonAddressRepository
+internal class MessagingIntegrationTest @Autowired constructor(
+    @Value("\${messaging.consumer.queue}") private val queueName: String,
+    @Value("\${messaging.producer.topic}") private val topicName: String,
+    private val channelManager: HmppsChannelManager,
+    private val wireMockServer: WireMockServer,
+    private val contactRepository: ContactRepository,
+    private val nsiRepository: NsiRepository,
+    private val personAddressRepository: PersonAddressRepository,
+    private val referralRepository: ReferralRepository,
+    private val residenceRepository: ResidenceRepository,
+    private val preferredResidenceRepository: PreferredResidenceRepository,
+    private val staffRepository: StaffRepository,
+    private val nsiManagerRepository: NsiManagerRepository
+) {
 
     @MockitoBean
     lateinit var telemetryService: TelemetryService
-
-    @Autowired
-    private lateinit var referralRepository: ReferralRepository
-
-    @Autowired
-    private lateinit var residenceRepository: ResidenceRepository
-
-    @Autowired
-    private lateinit var preferredResidenceRepository: PreferredResidenceRepository
-
-    @Autowired
-    private lateinit var staffRepository: StaffRepository
-
-    @Autowired
-    private lateinit var nsiManagerRepository: NsiManagerRepository
 
     @BeforeEach
     fun clearTopic() {

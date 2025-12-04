@@ -10,8 +10,7 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
 import org.springframework.test.context.bean.override.mockito.MockitoBean
 import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import org.springframework.test.web.servlet.get
 import uk.gov.justice.digital.hmpps.controller.*
 import uk.gov.justice.digital.hmpps.integrations.oasys.Level
 import uk.gov.justice.digital.hmpps.integrations.oasys.ScoredAnswer
@@ -25,18 +24,19 @@ import uk.gov.justice.digital.hmpps.integrations.oasys.PniCalculation.Type as Pn
 
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = RANDOM_PORT)
-internal class IntegrationTest {
-    @Autowired
-    lateinit var mockMvc: MockMvc
+internal class IntegrationTest(
+    @Autowired private val mockMvc: MockMvc
+) {
 
     @MockitoBean
     lateinit var telemetryService: TelemetryService
 
     @Test
     fun `get timeline returns ok`() {
-        val json = mockMvc
-            .perform(get("/assessments/timeline/A1234YZ").withToken())
-            .andExpect(status().is2xxSuccessful)
+        val json = mockMvc.get("/assessments/timeline/A1234YZ") {
+            withToken()
+        }
+            .andExpect { status { is2xxSuccessful() } }
             .andReturn().response.contentAsJson<Timeline>()
 
         assertThat(
@@ -52,16 +52,18 @@ internal class IntegrationTest {
 
     @Test
     fun `get timeline returns ok by CRN`() {
-        mockMvc
-            .perform(get("/assessments/timeline/T123456").withToken())
-            .andExpect(status().isOk)
+        mockMvc.get("/assessments/timeline/T123456") {
+            withToken()
+        }
+            .andExpect { status { isOk() } }
     }
 
     @Test
     fun `get rosh full section returns correct response`() {
-        val json = mockMvc
-            .perform(get("/assessments/90123456/section/sectionroshfull").withToken())
-            .andExpect(status().is2xxSuccessful)
+        val json = mockMvc.get("/assessments/90123456/section/sectionroshfull") {
+            withToken()
+        }
+            .andExpect { status { is2xxSuccessful() } }
             .andReturn().response.contentAsJson<JsonNode>()
 
         assertThat(json["crn"].asText(), equalTo("T123456"))
@@ -72,9 +74,10 @@ internal class IntegrationTest {
 
     @Test
     fun `get rosh summary section returns correct response`() {
-        val json = mockMvc
-            .perform(get("/assessments/90123456/section/sectionroshsumm").withToken())
-            .andExpect(status().is2xxSuccessful)
+        val json = mockMvc.get("/assessments/90123456/section/sectionroshsumm") {
+            withToken()
+        }
+            .andExpect { status { is2xxSuccessful() } }
             .andReturn().response.contentAsJson<JsonNode>()
 
         assertThat(json["crn"].asText(), equalTo("T123456"))
@@ -85,18 +88,21 @@ internal class IntegrationTest {
 
     @Test
     fun `get section returns 404 if oasys returns 404`() {
-        mockMvc
-            .perform(get("/assessments/90123451/section/sectionroshsumm").withToken())
-            .andExpect(status().isNotFound)
+        mockMvc.get("/assessments/90123451/section/sectionroshsumm") {
+            withToken()
+        }
+            .andExpect {
+                status { isNotFound() }
+            }
     }
 
     @Test
     fun `get risk predictors returns correct response`() {
-        val prediction = mockMvc
-            .perform(
-                get("/assessments/90123456/risk-predictors")
-                    .queryParam("crn", "T123456").withToken()
-            ).andExpect(status().is2xxSuccessful)
+        val prediction = mockMvc.get("/assessments/90123456/risk-predictors") {
+            param("crn", "T123456")
+            withToken()
+        }
+            .andExpect { status { is2xxSuccessful() } }
             .andReturn().response.contentAsJson<RiskPrediction>()
 
         assertThat(
@@ -123,9 +129,11 @@ internal class IntegrationTest {
 
     @Test
     fun `get pni success`() {
-        val res = mockMvc
-            .perform(get("/assessments/pni/A8746PN?community=false").withToken())
-            .andExpect(status().isOk)
+
+        val res = mockMvc.get("/assessments/pni/A8746PN?community=false") {
+            withToken()
+        }
+            .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<PniResponse>()
 
         assertThat(
@@ -186,22 +194,25 @@ internal class IntegrationTest {
 
     @Test
     fun `get pni for CRN`() {
-        mockMvc
-            .perform(get("/assessments/pni/P467261?community=false").withToken())
-            .andExpect(status().isOk)
+        mockMvc.get("/assessments/pni/P467261?community=false") {
+            withToken()
+        }
+            .andExpect { status { isOk() } }
     }
 
     @Test
     fun `get pni no calculation`() {
-        mockMvc
-            .perform(get("/assessments/pni/A8747PN?community=true").withToken())
-            .andExpect(status().isOk)
+        mockMvc.get("/assessments/pni/A8747PN?community=true") {
+            withToken()
+        }
+            .andExpect { status { isOk() } }
     }
 
     @Test
     fun `get pni returns 404 if oasys returns 404`() {
-        mockMvc
-            .perform(get("/assessments/pni/A1741PN?community=false").withToken())
-            .andExpect(status().isNotFound)
+        mockMvc.get("/assessments/pni/A1741PN?community=false") {
+            withToken()
+        }
+            .andExpect { status { isNotFound() } }
     }
 }

@@ -4,7 +4,8 @@ import uk.gov.justice.digital.hmpps.integrations.delius.Person
 import java.time.LocalDate
 
 object PersonContactDetailsGenerator {
-    val DEFAULT_PERSON_CONTACT_DETAILS = generatePersonContactDetails("A000002")
+    val PERSON_CONTACT_DETAILS_1 = generatePersonContactDetails("A000002")
+    val PERSON_CONTACT_DETAILS_2 = generatePersonContactDetails("A000003")
 
     fun generatePersonContactDetails(
         crn: String,

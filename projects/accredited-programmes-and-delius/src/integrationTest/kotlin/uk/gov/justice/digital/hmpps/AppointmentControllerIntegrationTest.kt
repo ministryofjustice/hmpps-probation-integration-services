@@ -15,8 +15,6 @@ import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.delete
 import org.springframework.test.web.servlet.post
 import org.springframework.test.web.servlet.put
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import uk.gov.justice.digital.hmpps.advice.ErrorResponse
 import uk.gov.justice.digital.hmpps.data.TestData
 import uk.gov.justice.digital.hmpps.data.TestData.CA_COMMUNITY_EVENT
@@ -31,7 +29,6 @@ import uk.gov.justice.digital.hmpps.repository.EnforcementActionRepository
 import uk.gov.justice.digital.hmpps.repository.EnforcementRepository
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.json
-import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 import java.time.LocalDate
 import java.time.LocalTime
@@ -40,11 +37,11 @@ import java.util.*
 
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = RANDOM_PORT)
-internal class AppointmentControllerIntegrationTest(
-    @Autowired private val mockMvc: MockMvc,
-    @Autowired private val contactRepository: ContactRepository,
-    @Autowired private val enforcementActionRepository: EnforcementActionRepository,
-    @Autowired private val enforcementRepository: EnforcementRepository
+internal class AppointmentControllerIntegrationTest @Autowired constructor(
+    private val mockMvc: MockMvc,
+    private val contactRepository: ContactRepository,
+    private val enforcementActionRepository: EnforcementActionRepository,
+    private val enforcementRepository: EnforcementRepository
 ) {
     @Test
     fun `exception when end date before start date`() {
@@ -266,30 +263,30 @@ internal class AppointmentControllerIntegrationTest(
     @Test
     fun `can create an appointment - staff not found`() {
         val appointmentReference = UUID.randomUUID()
-        mockMvc
-            .perform(
-                post("/appointments").withToken().withJson(
-                    CreateAppointmentsRequest(
-                        listOf(
-                            CreateAppointmentRequest(
-                                appointmentReference,
-                                REQUIREMENTS[2].id,
-                                null,
-                                LocalDate.now().minusDays(7),
-                                LocalTime.now(),
-                                LocalTime.now().plusMinutes(30),
-                                RequestCode("ATTC"),
-                                RequestCode("OFFICE1"),
-                                RequestCode("STAFF99"),
-                                RequestCode("TEAM01"),
-                                "Some notes about the appointment",
-                                true,
-                            )
-                        )
+        mockMvc.post("/appointments") {
+            withToken()
+            json = CreateAppointmentsRequest(
+                listOf(
+                    CreateAppointmentRequest(
+                        appointmentReference,
+                        REQUIREMENTS[2].id,
+                        null,
+                        LocalDate.now().minusDays(7),
+                        LocalTime.now(),
+                        LocalTime.now().plusMinutes(30),
+                        RequestCode("ATTC"),
+                        RequestCode("OFFICE1"),
+                        RequestCode("STAFF99"),
+                        RequestCode("TEAM01"),
+                        "Some notes about the appointment",
+                        true,
                     )
                 )
+
             )
-            .andExpect(status().isBadRequest)
+        }
+
+            .andExpect { status { isBadRequest() } }
             .andReturn().response.contentAsJson<ErrorResponse>().also {
                 assertThat(it.message).isEqualTo("Invalid Staff codes: [STAFF99]")
             }
@@ -528,7 +525,7 @@ internal class AppointmentControllerIntegrationTest(
         mockMvc.delete("/appointments") {
             withToken()
             json = DeleteAppointmentsRequest(listOf(AppointmentReference(appointmentReference)))
-        }.andExpect { status().isNoContent }
+        }.andExpect { status { isNoContent() } }
 
         val appointment = contactRepository.findByExternalReference(existing.externalReference!!)
         assertThat(appointment).isNull()

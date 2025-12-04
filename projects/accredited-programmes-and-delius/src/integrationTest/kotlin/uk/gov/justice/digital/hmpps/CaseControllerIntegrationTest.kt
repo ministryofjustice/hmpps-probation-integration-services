@@ -7,92 +7,93 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
 import org.springframework.test.json.JsonCompareMode
 import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import org.springframework.test.web.servlet.get
 import uk.gov.justice.digital.hmpps.data.TestData
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 import java.time.LocalDate
 
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = RANDOM_PORT)
-internal class CaseControllerIntegrationTest {
-    @Autowired
-    lateinit var mockMvc: MockMvc
+internal class CaseControllerIntegrationTest(
+    @Autowired private val mockMvc: MockMvc
+) {
 
     @Test
     fun `personal details 404`() {
-        mockMvc
-            .perform(get("/case/DOESNOTEXIST/personal-details").withToken())
-            .andExpect(status().isNotFound)
+        mockMvc.get("/case/DOESNOTEXIST/personal-details") {
+            withToken()
+        }.andExpect { status { isNotFound() } }
     }
 
     @Test
     fun `personal details success`() {
-        mockMvc
-            .perform(get("/case/${TestData.PERSON.crn}/personal-details").withToken())
-            .andExpect(status().isOk)
-            .andExpect(
-                content().json(
+        mockMvc.get("/case/${TestData.PERSON.crn}/personal-details") {
+            withToken()
+        }.andExpect {
+            status { isOk() }
+            content {
+                json(
                     """
-                    {
-                      "crn": "${TestData.PERSON.crn}",
-                      "name": {
-                        "forename": "Forename",
-                        "middleNames": "MiddleName",
-                        "surname": "Surname"
-                      },
-                      "dateOfBirth": "${LocalDate.now().minusYears(45).minusMonths(6)}",
-                      "age": "45 years, 6 months",
-                      "sex": {
-                        "code": "M",
-                        "description": "Male"
-                      },
-                      "ethnicity": {
-                        "code": "A9",
-                        "description": "Asian or Asian British: Other"
-                      },
-                      "probationPractitioner": {
-                        "name": {
-                          "forename": "Forename",
-                          "surname": "Surname"
-                        },
-                        "code": "STAFF01",
-                        "email": "test@example.com"
-                      },
-                      "team": {
-                        "code": "TEAM01",
-                        "description": "Test Team"
-                      },
-                      "probationDeliveryUnit": {
-                        "code": "PDU1",
-                        "description": "Test PDU"
-                      },
-                      "region": {
-                        "code": "PA1",
-                        "description": "Test Provider"
-                      }
-                    }
-                    """.trimIndent(),
-                    JsonCompareMode.STRICT,
+                {
+                  "crn": "${TestData.PERSON.crn}",
+                  "name": {
+                    "forename": "Forename",
+                    "middleNames": "MiddleName",
+                    "surname": "Surname"
+                  },
+                  "dateOfBirth": "${LocalDate.now().minusYears(45).minusMonths(6)}",
+                  "age": "45 years, 6 months",
+                  "sex": {
+                    "code": "M",
+                    "description": "Male"
+                  },
+                  "ethnicity": {
+                    "code": "A9",
+                    "description": "Asian or Asian British: Other"
+                  },
+                  "probationPractitioner": {
+                    "name": {
+                      "forename": "Forename",
+                      "surname": "Surname"
+                    },
+                    "code": "STAFF01",
+                    "email": "test@example.com"
+                  },
+                  "team": {
+                    "code": "TEAM01",
+                    "description": "Test Team"
+                  },
+                  "probationDeliveryUnit": {
+                    "code": "PDU1",
+                    "description": "Test PDU"
+                  },
+                  "region": {
+                    "code": "PA1",
+                    "description": "Test Provider"
+                  }
+                }
+                """.trimIndent(),
+                    JsonCompareMode.STRICT
                 )
-            )
+            }
+        }
     }
 
     @Test
     fun `sentence not found`() {
-        mockMvc
-            .perform(get("/case/DOESNOTEXIST/sentence/1").withToken())
-            .andExpect(status().isNotFound)
+        mockMvc.get("/case/DOESNOTEXIST/sentence/1") {
+            withToken()
+        }.andExpect { status { isNotFound() } }
     }
 
     @Test
     fun `custodial sentence success`() {
-        mockMvc
-            .perform(get("/case/${TestData.PERSON.crn}/sentence/1").withToken())
-            .andExpect(status().isOk)
-            .andExpect(
-                content().json(
+        mockMvc.get("/case/${TestData.PERSON.crn}/sentence/1") {
+            withToken()
+        }.andExpect {
+            status { isOk() }
+            content {
+                json(
                     """
                     {
                       "description": "ORA Adult Custody (inc PSS) (24 Months)",
@@ -126,25 +127,27 @@ internal class CaseControllerIntegrationTest {
                       ]
                     }
                     """.trimIndent(),
-                    JsonCompareMode.STRICT,
+                    JsonCompareMode.STRICT
                 )
-            )
+            }
+        }
     }
 
     @Test
     fun `un-sentenced event`() {
-        mockMvc
-            .perform(get("/case/${TestData.PERSON.crn}/sentence/2").withToken())
-            .andExpect(status().isBadRequest)
+        mockMvc.get("/case/${TestData.PERSON.crn}/sentence/2") {
+            withToken()
+        }.andExpect { status { isBadRequest() } }
     }
 
     @Test
     fun `community sentence success`() {
-        mockMvc
-            .perform(get("/case/${TestData.PERSON.crn}/sentence/3").withToken())
-            .andExpect(status().isOk)
-            .andExpect(
-                content().json(
+        mockMvc.get("/case/${TestData.PERSON.crn}/sentence/3") {
+            withToken()
+        }.andExpect {
+            status { isOk() }
+            content {
+                json(
                     """
                     {
                       "description": "ORA Community Order (6 Months)",
@@ -165,25 +168,27 @@ internal class CaseControllerIntegrationTest {
                       "postSentenceSupervisionRequirements": []
                     }
                     """.trimIndent(),
-                    JsonCompareMode.STRICT,
+                    JsonCompareMode.STRICT
                 )
-            )
+            }
+        }
     }
 
     @Test
     fun `offences not found`() {
-        mockMvc
-            .perform(get("/case/DOESNOTEXIST/sentence/1/offences").withToken())
-            .andExpect(status().isNotFound)
+        mockMvc.get("/case/DOESNOTEXIST/sentence/1/offences") {
+            withToken()
+        }.andExpect { status { isNotFound() } }
     }
 
     @Test
     fun `offences success`() {
-        mockMvc
-            .perform(get("/case/${TestData.PERSON.crn}/sentence/1/offences").withToken())
-            .andExpect(status().isOk)
-            .andExpect(
-                content().json(
+        mockMvc.get("/case/${TestData.PERSON.crn}/sentence/1/offences") {
+            withToken()
+        }.andExpect {
+            status { isOk() }
+            content {
+                json(
                     """
                     {
                       "mainOffence": {
@@ -204,18 +209,20 @@ internal class CaseControllerIntegrationTest {
                       ]
                     }
                     """.trimIndent(),
-                    JsonCompareMode.STRICT,
+                    JsonCompareMode.STRICT
                 )
-            )
+            }
+        }
     }
 
     @Test
     fun `registrations success`() {
-        mockMvc
-            .perform(get("/case/${TestData.PERSON.crn}/registrations").withToken())
-            .andExpect(status().isOk)
-            .andExpect(
-                content().json(
+        mockMvc.get("/case/${TestData.PERSON.crn}/registrations") {
+            withToken()
+        }.andExpect {
+            status { isOk() }
+            content {
+                json(
                     """
                     {
                       "registrations": [
@@ -234,18 +241,20 @@ internal class CaseControllerIntegrationTest {
                       ]
                     }
                     """.trimIndent(),
-                    JsonCompareMode.STRICT,
+                    JsonCompareMode.STRICT
                 )
-            )
+            }
+        }
     }
 
     @Test
     fun `requirement success`() {
-        mockMvc
-            .perform(get("/case/${TestData.PERSON.crn}/requirement/${TestData.REQUIREMENTS[0].id}").withToken())
-            .andExpect(status().isOk)
-            .andExpect(
-                content().json(
+        mockMvc.get("/case/${TestData.PERSON.crn}/requirement/${TestData.REQUIREMENTS[0].id}") {
+            withToken()
+        }.andExpect {
+            status { isOk() }
+            content {
+                json(
                     """
                     {
                       "manager": {
@@ -286,18 +295,20 @@ internal class CaseControllerIntegrationTest {
                       ]
                     }
                     """.trimIndent(),
-                    JsonCompareMode.STRICT,
+                    JsonCompareMode.STRICT
                 )
-            )
+            }
+        }
     }
 
     @Test
     fun `licence condition success`() {
-        mockMvc
-            .perform(get("/case/${TestData.PERSON.crn}/licence-conditions/${TestData.LICENCE_CONDITIONS.first().id}").withToken())
-            .andExpect(status().isOk)
-            .andExpect(
-                content().json(
+        mockMvc.get("/case/${TestData.PERSON.crn}/licence-conditions/${TestData.LICENCE_CONDITIONS.first().id}") {
+            withToken()
+        }.andExpect {
+            status { isOk() }
+            content {
+                json(
                     """
                     {
                       "manager": {
@@ -338,8 +349,9 @@ internal class CaseControllerIntegrationTest {
                       ]
                     }
                     """.trimIndent(),
-                    JsonCompareMode.STRICT,
+                    JsonCompareMode.STRICT
                 )
-            )
+            }
+        }
     }
 }
