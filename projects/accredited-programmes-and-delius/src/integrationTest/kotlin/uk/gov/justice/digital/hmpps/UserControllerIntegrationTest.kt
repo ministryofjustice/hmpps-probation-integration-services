@@ -9,7 +9,6 @@ import org.springframework.test.json.JsonCompareMode
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
 import org.springframework.test.web.servlet.post
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import uk.gov.justice.digital.hmpps.data.TestData
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.json
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
@@ -25,7 +24,7 @@ internal class UserControllerIntegrationTest(@Autowired private val mockMvc: Moc
             json = listOf(TestData.PERSON.crn)
         }
             .andExpect {
-                status().isOk
+                status { isOk() }
                 content {
                     json(
                         """

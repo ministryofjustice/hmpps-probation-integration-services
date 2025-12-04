@@ -15,11 +15,11 @@ import uk.gov.justice.digital.hmpps.repository.ContactRepository
 
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = RANDOM_PORT)
-class StatusChangedEventIntegrationTest(
+class StatusChangedEventIntegrationTest @Autowired constructor(
     @Value("\${messaging.consumer.queue}") private val queueName: String,
-    @Autowired private val channelManager: HmppsChannelManager,
-    @Autowired private val wireMockServer: WireMockServer,
-    @Autowired private val contactRepository: ContactRepository,
+    private val channelManager: HmppsChannelManager,
+    private val wireMockServer: WireMockServer,
+    private val contactRepository: ContactRepository,
 ) {
 
     @Test
