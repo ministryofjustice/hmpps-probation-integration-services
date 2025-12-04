@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps
 
+import com.github.tomakehurst.wiremock.WireMockServer
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -30,6 +31,9 @@ import java.time.LocalDate
 @SpringBootTest(webEnvironment = RANDOM_PORT)
 internal class IntegrationTest() {
     @Autowired
+    lateinit var wireMockServer: WireMockServer
+
+    @Autowired
     lateinit var mockMvc: MockMvc
 
     @Value("\${messaging.consumer.queue}")
@@ -49,7 +53,7 @@ internal class IntegrationTest() {
         channelManager.getChannel(queueName).publishAndWait(notification)
 
         val contact = contactRepository.findAll().single {
-            it.person.id == PersonGenerator.DEFAULT_PERSON.id && it.description == "Online check in completed"
+            it.person.id == PersonGenerator.DEFAULT_PERSON.id && it.description == "Online check in completed" && it.externalReference == null
         }
         assertThat(contact.type.code).isEqualTo(ContactType.E_SUPERVISION_CHECK_IN)
         assertThat(contact.date).isEqualTo(notification.message.occurredAt.toLocalDate())
@@ -70,7 +74,7 @@ internal class IntegrationTest() {
         channelManager.getChannel(queueName).publishAndWait(notification)
 
         val contact = contactRepository.findAll().single {
-            it.person.id == PersonGenerator.DEFAULT_PERSON.id && it.description == "Check in has not been submitted on time"
+            it.person.id == PersonGenerator.DEFAULT_PERSON.id && it.description == "Check in has not been submitted on time" && it.externalReference == null
         }
         assertThat(contact.type.code).isEqualTo(ContactType.E_SUPERVISION_CHECK_IN)
         assertThat(contact.date).isEqualTo(notification.message.occurredAt.toLocalDate())
@@ -81,6 +85,54 @@ internal class IntegrationTest() {
         assertThat(contact.alert).isEqualTo(true)
         assertThat(contact.isSensitive).isEqualTo(false)
         assertThat(contact.notes).isEqualTo("Check in has not been submitted on time" + System.lineSeparator() + "Review the online check in using the manage probation check ins service: https://esupervision/check-in/expired")
+    }
+
+    @Test
+    fun `esupervision received with detail url`() {
+        val notification = prepEvent("esupervision-received-detail-url-A000001", wireMockServer.port())
+        channelManager.getChannel(queueName).publishAndWait(notification)
+
+        val contact = contactRepository.findAll().single {
+            it.externalReference == "urn:uk:gov:hmpps:esupervision:check-in:61e80782-bdd1-43c3-b69f-78366582210a"
+        }
+        assertThat(contact.type.code).isEqualTo(ContactType.E_SUPERVISION_CHECK_IN)
+        assertThat(contact.event.id).isEqualTo(PersonGenerator.DEFAULT_EVENT.id)
+        assertThat(contact.provider.id).isEqualTo(ProviderGenerator.DEFAULT_PROVIDER.id)
+        assertThat(contact.team.id).isEqualTo(ProviderGenerator.DEFAULT_TEAM.id)
+        assertThat(contact.staff.id).isEqualTo(ProviderGenerator.DEFAULT_STAFF.id)
+        assertThat(contact.alert).isEqualTo(true)
+        assertThat(contact.isSensitive).isEqualTo(false)
+        assertThat(contact.notes).isEqualTo(
+            """
+            |Online check in completed
+            |Review the online check in using the manage probation check ins service: https://esupervision/check-in/received
+            |Some notes about the check-in
+            """.trimMargin()
+        )
+    }
+
+    @Test
+    fun `esupervision expired with detail url`() {
+        val notification = prepEvent("esupervision-expired-detail-url-A000001", wireMockServer.port())
+        channelManager.getChannel(queueName).publishAndWait(notification)
+
+        val contact = contactRepository.findAll().single {
+            it.externalReference == "urn:uk:gov:hmpps:esupervision:check-in-expiry:93d51990-3b72-4a7b-97cb-92759b04eaeb"
+        }
+        assertThat(contact.type.code).isEqualTo(ContactType.E_SUPERVISION_CHECK_IN)
+        assertThat(contact.event.id).isEqualTo(PersonGenerator.DEFAULT_EVENT.id)
+        assertThat(contact.provider.id).isEqualTo(ProviderGenerator.DEFAULT_PROVIDER.id)
+        assertThat(contact.team.id).isEqualTo(ProviderGenerator.DEFAULT_TEAM.id)
+        assertThat(contact.staff.id).isEqualTo(ProviderGenerator.DEFAULT_STAFF.id)
+        assertThat(contact.alert).isEqualTo(true)
+        assertThat(contact.isSensitive).isEqualTo(false)
+        assertThat(contact.notes).isEqualTo(
+            """
+            |Check in has not been submitted on time
+            |Review the online check in using the manage probation check ins service: https://esupervision/check-in/expired
+            |Some notes about the expired check-in
+            """.trimMargin()
+        )
     }
 
     @Test

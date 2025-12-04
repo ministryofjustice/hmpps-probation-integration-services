@@ -56,6 +56,7 @@ spring:
   ldap.embedded.base-dn: ${spring.ldap.base}
 
 seed.database: true
+wiremock.enabled: true
 
 messaging.consumer.queue: message-queue
 

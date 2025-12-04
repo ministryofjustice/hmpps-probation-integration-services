@@ -11,6 +11,8 @@ import org.springframework.data.annotation.LastModifiedDate
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import org.springframework.data.jpa.repository.JpaRepository
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
+import uk.gov.justice.digital.hmpps.messaging.Handler.Companion.CHECK_IN_EXPIRED
+import uk.gov.justice.digital.hmpps.messaging.Handler.Companion.CHECK_IN_RECEIVED
 import java.time.LocalDate
 import java.time.ZonedDateTime
 
@@ -52,6 +54,8 @@ class Contact(
 
     @Lob
     val notes: String?,
+
+    val externalReference: String?,
 
     @Column(columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)
@@ -100,6 +104,14 @@ class Contact(
     @LastModifiedBy
     @Column(name = "last_updated_user_id")
     var lastModifiedUserId: Long = 0
+
+    companion object {
+        fun externalReferencePrefix(eventType: String): String = when (eventType) {
+            CHECK_IN_RECEIVED -> "urn:uk:gov:hmpps:esupervision:check-in:"
+            CHECK_IN_EXPIRED -> "urn:uk:gov:hmpps:esupervision:check-in-expiry:"
+            else -> throw IllegalArgumentException("Unexpected event type: $eventType")
+        }
+    }
 }
 
 @Immutable
