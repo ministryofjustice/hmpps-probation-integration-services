@@ -16,7 +16,7 @@ in the Sucide Risk Form service, and publishes a domain event when a new form is
 
 ### Message Formats
 
-The service publishes domain events to
+The service consumes domain events from the
 [SQS Queue](https://github.com/ministryofjustice/cloud-platform-environments/blob/main/namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-prod/resources/suicide-risk-form-and-delius-queue.tf).
 
 Example [messages](./src/dev/resources/messages/) are in the development source tree
