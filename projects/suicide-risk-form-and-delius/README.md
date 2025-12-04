@@ -10,7 +10,7 @@ in the Sucide Risk Form service, and consumes a domain event when a new form is 
 
 ## Context Maps
 
-![Context Maps](../../doc/tech-docs/source/images/suicide-risk-form-and delius-context-map.svg)
+![Context Maps](../../doc/tech-docs/source/images/suicide-risk-form-and-delius-context-map.svg)
 
 ## Interfaces
 
