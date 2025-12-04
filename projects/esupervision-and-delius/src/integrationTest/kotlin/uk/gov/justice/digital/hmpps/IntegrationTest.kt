@@ -95,6 +95,7 @@ internal class IntegrationTest() {
         val contact = contactRepository.findAll().single {
             it.externalReference == "urn:uk:gov:hmpps:esupervision:check-in:61e80782-bdd1-43c3-b69f-78366582210a"
         }
+        assertThat(contact.description).isEqualTo("Online check in completed")
         assertThat(contact.type.code).isEqualTo(ContactType.E_SUPERVISION_CHECK_IN)
         assertThat(contact.event.id).isEqualTo(PersonGenerator.DEFAULT_EVENT.id)
         assertThat(contact.provider.id).isEqualTo(ProviderGenerator.DEFAULT_PROVIDER.id)
@@ -105,7 +106,6 @@ internal class IntegrationTest() {
         assertThat(contact.notes).isEqualTo(
             """
             |Online check in completed
-            |Review the online check in using the manage probation check ins service: https://esupervision/check-in/received
             |Some notes about the check-in
             """.trimMargin()
         )
@@ -119,6 +119,7 @@ internal class IntegrationTest() {
         val contact = contactRepository.findAll().single {
             it.externalReference == "urn:uk:gov:hmpps:esupervision:check-in-expiry:93d51990-3b72-4a7b-97cb-92759b04eaeb"
         }
+        assertThat(contact.description).isEqualTo("Check in has not been submitted on time")
         assertThat(contact.type.code).isEqualTo(ContactType.E_SUPERVISION_CHECK_IN)
         assertThat(contact.event.id).isEqualTo(PersonGenerator.DEFAULT_EVENT.id)
         assertThat(contact.provider.id).isEqualTo(ProviderGenerator.DEFAULT_PROVIDER.id)
@@ -129,7 +130,6 @@ internal class IntegrationTest() {
         assertThat(contact.notes).isEqualTo(
             """
             |Check in has not been submitted on time
-            |Review the online check in using the manage probation check ins service: https://esupervision/check-in/expired
             |Some notes about the expired check-in
             """.trimMargin()
         )

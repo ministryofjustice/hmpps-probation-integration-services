@@ -50,7 +50,7 @@ class CheckInService(
             description = description(),
             notes = listOfNotNull(
                 description(),
-                "Review the online check in using the manage probation check ins service: ${checkInUrl()}",
+                checkInUrl()?.let { "Review the online check in using the manage probation check ins service: $it" },
                 detail?.notes
             ).joinToString(System.lineSeparator()),
             externalReference = detail?.checkinUuid?.let { Contact.externalReferencePrefix(eventType) + it },
