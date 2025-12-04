@@ -9,8 +9,6 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
 import org.springframework.test.web.servlet.put
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import uk.gov.justice.digital.hmpps.advice.ErrorResponse
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator
@@ -27,25 +25,14 @@ import java.util.*
 
 @AutoConfigureMockMvc
 @SpringBootTest
-class AppointmentsIntegrationTest {
-    @Autowired
-    lateinit var mockMvc: MockMvc
-
-    @Autowired
-    lateinit var unpaidWorkAppointmentRepository: UnpaidWorkAppointmentRepository
-
-    @Autowired
-    lateinit var contactAlertRepository: ContactAlertRepository
-
-    @Autowired
-    lateinit var enforcementRepository: EnforcementRepository
-
-    @Autowired
-    lateinit var eventRepository: EventRepository
-
-    @Autowired
-    lateinit var contactRepository: ContactRepository
-
+class AppointmentsIntegrationTest @Autowired constructor(
+    private val mockMvc: MockMvc,
+    private val unpaidWorkAppointmentRepository: UnpaidWorkAppointmentRepository,
+    private val contactAlertRepository: ContactAlertRepository,
+    private val enforcementRepository: EnforcementRepository,
+    private val eventRepository: EventRepository,
+    private val contactRepository: ContactRepository
+) {
     @Test
     fun `non-existent project returns 404`() {
         mockMvc.get("/projects/DOESNOTEXIST/appointments/123?username=DefaultUser") { withToken() }
@@ -57,10 +44,10 @@ class AppointmentsIntegrationTest {
 
     @Test
     fun `can retrieve appointment details`() {
-        val response = mockMvc
-            .perform(get("/projects/N01DEFAULT/appointments/${UPWGenerator.DEFAULT_UPW_APPOINTMENT.id}?username=DefaultUser").withToken())
-            .andExpect(status().is2xxSuccessful)
-            .andReturn().response.contentAsJson<AppointmentResponse>()
+        val response =
+            mockMvc.get("/projects/N01DEFAULT/appointments/${UPWGenerator.DEFAULT_UPW_APPOINTMENT.id}?username=DefaultUser") { withToken() }
+                .andExpect { status { is2xxSuccessful() } }
+                .andReturn().response.contentAsJson<AppointmentResponse>()
 
         assertThat(response.version).isEqualTo(
             UUID(
@@ -82,7 +69,7 @@ class AppointmentsIntegrationTest {
             .get("/projects/N01SECOND/appointments?date=${LocalDate.now().plusDays(1)}&username=DefaultUser") {
                 withToken()
             }
-            .andExpect { status().is2xxSuccessful }
+            .andExpect { status { is2xxSuccessful() } }
             .andReturn().response.contentAsJson<SessionResponse>()
         assertThat(response.project.name).isEqualTo("Second UPW Project")
         assertThat(response.appointmentSummaries.size).isEqualTo(2)
@@ -142,7 +129,7 @@ class AppointmentsIntegrationTest {
                 sensitive = false,
                 alertActive = false,
             )
-        }.andExpect { status().is2xxSuccessful }
+        }.andExpect { status { is2xxSuccessful() } }
 
         val appointment =
             unpaidWorkAppointmentRepository.getAppointment(UPWGenerator.UPW_APPOINTMENT_NO_ENFORCEMENT.id)
@@ -180,8 +167,7 @@ class AppointmentsIntegrationTest {
                 sensitive = false,
                 alertActive = true,
             )
-        }.andExpect { status().is2xxSuccessful }
-
+        }.andExpect { status { is2xxSuccessful() } }
         val alert = contactAlertRepository.findAll()
             .firstOrNull { it.contactId == UPWGenerator.UPW_APPOINTMENT_NO_ENFORCEMENT.contact.id }
         assertThat(alert).isNotNull
@@ -209,7 +195,7 @@ class AppointmentsIntegrationTest {
                 sensitive = false,
                 alertActive = true,
             )
-        }.andExpect { status().is2xxSuccessful }
+        }.andExpect { status { is2xxSuccessful() } }
 
         val alertCreated = contactAlertRepository.findAll()
 
@@ -233,7 +219,7 @@ class AppointmentsIntegrationTest {
                 sensitive = false,
                 alertActive = false,
             )
-        }.andExpect { status().is2xxSuccessful }
+        }.andExpect { status { is2xxSuccessful() } }
 
         val alertDeleted = contactAlertRepository.findAll()
 
@@ -243,7 +229,8 @@ class AppointmentsIntegrationTest {
 
     @Test
     fun `enforcement created when complied is false`() {
-        val original = unpaidWorkAppointmentRepository.getAppointment(UPWGenerator.UPW_APPOINTMENT_NO_ENFORCEMENT.id)
+        val original =
+            unpaidWorkAppointmentRepository.getAppointment(UPWGenerator.UPW_APPOINTMENT_NO_ENFORCEMENT.id)
 
         mockMvc.put("/projects/N01DEFAULT/appointments/${original.id}/outcome") {
             withToken()
@@ -263,7 +250,7 @@ class AppointmentsIntegrationTest {
                 sensitive = false,
                 alertActive = true,
             )
-        }.andExpect { status().is2xxSuccessful }
+        }.andExpect { status { is2xxSuccessful() } }
 
         val enforcement = enforcementRepository.findAll()
             .firstOrNull { it.contact.id == UPWGenerator.UPW_APPOINTMENT_NO_ENFORCEMENT.contact.id }
@@ -273,10 +260,10 @@ class AppointmentsIntegrationTest {
     @Test
     fun `returns 2xx when limited access check passes but with current restriction flag true`() {
         val appointmentId = UPWGenerator.LAO_RESTRICTED_UPW_APPOINTMENT.id
-        val response = mockMvc
-            .perform(get("/projects/N01DEFAULT/appointments/$appointmentId?username=LimitedAccess").withToken())
-            .andExpect(status().is2xxSuccessful)
-            .andReturn().response.contentAsJson<AppointmentResponse>()
+        val response =
+            mockMvc.get("/projects/N01DEFAULT/appointments/$appointmentId?username=LimitedAccess") { withToken() }
+                .andExpect { status { is2xxSuccessful() } }
+                .andReturn().response.contentAsJson<AppointmentResponse>()
         assertThat(response.case.currentRestriction).isEqualTo(true)
         assertThat(response.case.restrictionMessage).isNotNull()
     }
@@ -284,10 +271,10 @@ class AppointmentsIntegrationTest {
     @Test
     fun `returns 2xx when limited access check fails but with current restriction flag true`() {
         val appointmentId = UPWGenerator.LAO_RESTRICTED_UPW_APPOINTMENT.id
-        val response = mockMvc
-            .perform(get("/projects/N01DEFAULT/appointments/$appointmentId?username=FullAccess").withToken())
-            .andExpect(status().is2xxSuccessful)
-            .andReturn().response.contentAsJson<AppointmentResponse>()
+        val response =
+            mockMvc.get("/projects/N01DEFAULT/appointments/$appointmentId?username=FullAccess") { withToken() }
+                .andExpect { status { is2xxSuccessful() } }
+                .andReturn().response.contentAsJson<AppointmentResponse>()
         assertThat(response.case.currentRestriction).isEqualTo(false)
         assertThat(response.case.restrictionMessage.isNullOrEmpty())
     }
@@ -296,10 +283,10 @@ class AppointmentsIntegrationTest {
     fun `returns 2xx when limited access check fails but with current exclusion flag true`() {
         val appointmentId = UPWGenerator.LAO_EXCLUDED_UPW_APPOINTMENT.id
 
-        val response = mockMvc
-            .perform(get("/projects/N01DEFAULT/appointments/$appointmentId?username=LimitedAccess").withToken())
-            .andExpect(status().is2xxSuccessful)
-            .andReturn().response.contentAsJson<AppointmentResponse>()
+        val response =
+            mockMvc.get("/projects/N01DEFAULT/appointments/$appointmentId?username=LimitedAccess") { withToken() }
+                .andExpect { status { is2xxSuccessful() } }
+                .andReturn().response.contentAsJson<AppointmentResponse>()
 
         assertThat(response.case.currentExclusion).isEqualTo(true)
         assertThat(response.case.exclusionMessage).isNotNull
@@ -326,14 +313,14 @@ class AppointmentsIntegrationTest {
                 alertActive = true,
             )
         }
-            .andExpect { status().is4xxClientError }
+            .andExpect { status { is4xxClientError() } }
     }
 
     @Test
     fun `ftc count is updated if complied is false`() {
         val original = unpaidWorkAppointmentRepository.getAppointment(UPWGenerator.UPW_APPOINTMENT_NO_OUTCOME.id)
 
-        mockMvc.put("/projects/N01DEFAULT/appointments/${original.id}/outcome") {
+        mockMvc.put("/projects/N01SECOND/appointments/${original.id}/outcome") {
             withToken()
             json = AppointmentOutcomeRequest(
                 id = UPWGenerator.UPW_APPOINTMENT_NO_OUTCOME.id,
@@ -351,7 +338,7 @@ class AppointmentsIntegrationTest {
                 sensitive = false,
                 alertActive = true,
             )
-        }.andExpect { status().is2xxSuccessful }
+        }.andExpect { status { is2xxSuccessful() } }
 
         val event = eventRepository.findAll()
             .firstOrNull { it.id == UPWGenerator.UPW_APPOINTMENT_NO_OUTCOME.contact.event!!.id }
