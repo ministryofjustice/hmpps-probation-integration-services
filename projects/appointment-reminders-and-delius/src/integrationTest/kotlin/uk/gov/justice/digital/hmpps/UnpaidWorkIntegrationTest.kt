@@ -4,11 +4,9 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.*
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
 import org.springframework.test.context.bean.override.mockito.MockitoBean
-import org.springframework.test.web.servlet.MockMvc
 import uk.gov.justice.digital.hmpps.config.JobConfig
 import uk.gov.justice.digital.hmpps.config.TrialConfig
 import uk.gov.justice.digital.hmpps.model.UnpaidWorkAppointment
@@ -19,17 +17,11 @@ import uk.gov.service.notify.NotificationClient
 import uk.gov.service.notify.NotificationList
 import java.time.ZonedDateTime
 
-@AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = RANDOM_PORT)
-internal class UnpaidWorkIntegrationTest {
-    @Autowired
-    lateinit var mockMvc: MockMvc
-
-    @Autowired
-    lateinit var unpaidWorkAppointmentsService: UnpaidWorkAppointmentsService
-
-    @Autowired
-    lateinit var jobConfig: JobConfig
+internal class UnpaidWorkIntegrationTest(
+    @Autowired private val unpaidWorkAppointmentsService: UnpaidWorkAppointmentsService,
+    @Autowired private val jobConfig: JobConfig
+) {
 
     @MockitoBean
     lateinit var upwAppointmentRepository: UpwAppointmentRepository
