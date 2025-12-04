@@ -34,33 +34,19 @@ import java.time.ZonedDateTime
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = RANDOM_PORT)
 @TestMethodOrder(MethodOrderer.OrderAnnotation::class)
-internal class CASIntegrationTest {
-    @Value("\${messaging.consumer.queue}")
-    lateinit var queueName: String
-
-    @Value("\${messaging.producer.topic}")
-    lateinit var topicName: String
-
-    @Autowired
-    lateinit var channelManager: HmppsChannelManager
-
-    @Autowired
-    lateinit var wireMockServer: WireMockServer
-
-    @Autowired
-    lateinit var contactRepository: ContactRepository
-
-    @Autowired
-    lateinit var addressRepository: PersonAddressRepository
-
-    @Autowired
-    lateinit var personRepository: PersonRepository
+internal class CASIntegrationTest @Autowired constructor(
+    @Value("\${messaging.consumer.queue}") private val queueName: String,
+    @Value("\${messaging.producer.topic}") private val topicName: String,
+    private val channelManager: HmppsChannelManager,
+    private val wireMockServer: WireMockServer,
+    private val contactRepository: ContactRepository,
+    private val addressRepository: PersonAddressRepository,
+    private val personRepository: PersonRepository,
+    private val objectMapper: ObjectMapper
+) {
 
     @MockitoBean
     lateinit var telemetryService: TelemetryService
-
-    @Autowired
-    lateinit var objectMapper: ObjectMapper
 
     @Test
     @Order(1)
