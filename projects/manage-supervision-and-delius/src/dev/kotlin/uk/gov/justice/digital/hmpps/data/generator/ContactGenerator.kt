@@ -4,6 +4,7 @@ import uk.gov.justice.digital.hmpps.data.generator.AppointmentGenerator.generate
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.DEFAULT_BOROUGH
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.DEFAULT_PROVIDER
 import uk.gov.justice.digital.hmpps.data.generator.LicenceConditionGenerator.LONG_NOTE
+import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.E_SUP_PERSON
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.OVERVIEW
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.*
@@ -14,6 +15,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.user.entity.*
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.ZonedDateTime
+import java.util.UUID
 
 object ContactGenerator {
 
@@ -103,6 +105,8 @@ object ContactGenerator {
         locationRequired = "Y"
     )
 
+    val E_SUPERVISION_TYPE = generateContactType("ESPCHI", true, "E Supervision", locationRequired = "N")
+
     val ACCEPTABLE_ABSENCE = generateOutcome("OUT", "Acceptable", false, true)
 
     val POSSIBLE_OUTCOME_1 =
@@ -160,6 +164,14 @@ object ContactGenerator {
         OVERVIEW,
         OTHER_CT,
         ZonedDateTime.of(LocalDateTime.now(EuropeLondon).minusDays(10), EuropeLondon),
+    )
+
+    val E_SUPERVISION_ID: UUID = UUID.randomUUID()
+    val E_SUPERVISION_CONTACT = generateContact(
+        E_SUP_PERSON,
+        E_SUPERVISION_TYPE,
+        ZonedDateTime.now(),
+        externalReference = Contact.E_SUPERVISION_PREFIXES.first() + E_SUPERVISION_ID
     )
 
     val COMMUNICATION_CATEGORY = generateContactCategory(OTHER_CT, COMMUNICATION_CATEGORY_RD)
@@ -244,6 +256,7 @@ object ContactGenerator {
         alert: Boolean = false,
         team: Team = DEFAULT_TEAM,
         staff: Staff = DEFAULT_STAFF,
+        externalReference: String? = null,
     ) = Contact(
         id = IdGenerator.getAndIncrement(),
         person = person,
@@ -266,7 +279,8 @@ object ContactGenerator {
         outcome = outcome,
         description = description,
         licenceCondition = licenceCondition,
-        alert = alert
+        alert = alert,
+        externalReference = externalReference,
     )
 
     fun generateContactAlert(contact: Contact, id: Long = IdGenerator.getAndIncrement()): ContactAlert =

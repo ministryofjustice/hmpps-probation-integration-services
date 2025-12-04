@@ -77,6 +77,7 @@ class DataLoader(
         entityManager.persistCollection(PersonGenerator.PROVISIONS)
         entityManager.persistCollection(PersonGenerator.PERSONAL_CIRCUMSTANCES)
         entityManager.persist(PersonGenerator.OVERVIEW)
+        entityManager.persist(PersonGenerator.E_SUP_PERSON)
         entityManager.persist(CourtGenerator.BHAM)
         entityManager.persist(PersonGenerator.EVENT_1)
         entityManager.persist(PersonGenerator.EVENT_2)
@@ -162,6 +163,8 @@ class DataLoader(
             ContactGenerator.OTHER_CT,
             ContactGenerator.APPT_CT_2,
             ContactGenerator.APPT_CT_3,
+            ContactGenerator.E_SUPERVISION_TYPE,
+            ContactGenerator.E_SUPERVISION_CONTACT,
             ContactGenerator.PREVIOUS_APPT_CONTACT,
             ContactGenerator.FIRST_NON_APPT_CONTACT,
             ContactGenerator.NEXT_APPT_CONTACT,

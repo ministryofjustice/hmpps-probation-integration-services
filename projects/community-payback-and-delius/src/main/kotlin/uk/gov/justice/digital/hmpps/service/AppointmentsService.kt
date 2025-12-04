@@ -36,7 +36,7 @@ class AppointmentsService(
         return AppointmentResponse(
             id = appointmentId,
             version = UUID(appointment.rowVersion, appointment.contact.rowVersion),
-            project = AppointmentResponseProject(
+            project = Project(
                 name = project.name,
                 code = project.code,
                 location = project.placementAddress?.toAppointmentResponseAddress(),
@@ -114,10 +114,11 @@ class AppointmentsService(
         }
 
         return SessionResponse(
-            project = SessionResponseProject(
+            project = Project(
                 name = project.name,
                 code = project.code,
-                location = project.placementAddress?.toAppointmentResponseAddress()
+                location = project.placementAddress?.toAppointmentResponseAddress(),
+                hiVisRequired = project.hiVisRequired,
             ),
             appointmentSummaries = appointmentSummaries
         )

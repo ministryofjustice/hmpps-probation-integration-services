@@ -38,7 +38,8 @@ class ProvidersService(
     fun getSupervisorsForUsername(username: String) = userRepository.getByUsername(username).staff?.let { staff ->
         SupervisorResponse(
             code = staff.code,
-            isUnpaidWorkTeamMember = staff.teams.any { it.unpaidWorkTeam }
+            isUnpaidWorkTeamMember = staff.teams.any { it.unpaidWorkTeam },
+            unpaidWorkTeams = staff.toSupervisorTeams()
         )
     } ?: throw NotFoundException("Staff code for user", "username", username)
 
