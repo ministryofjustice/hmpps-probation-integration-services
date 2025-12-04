@@ -32,30 +32,19 @@ import java.time.Duration
 import java.time.ZonedDateTime
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class LicenceActivatedIntegrationTest {
+class LicenceActivatedIntegrationTest @Autowired constructor(
     @Value("\${messaging.consumer.queue}")
-    lateinit var queueName: String
-
-    @Autowired
-    lateinit var channelManager: HmppsChannelManager
-
-    @Autowired
-    lateinit var wireMockServer: WireMockServer
+    internal val queueName: String,
+    internal val channelManager: HmppsChannelManager,
+    internal val wireMockServer: WireMockServer,
+    internal val lcr: LicenceConditionRepository,
+    internal val lcmr: LicenceConditionManagerRepository,
+    internal val pmr: PersonManagerRepository,
+    internal val contactRepository: ContactRepository
+) {
 
     @MockitoBean
     lateinit var telemetryService: TelemetryService
-
-    @Autowired
-    lateinit var lcr: LicenceConditionRepository
-
-    @Autowired
-    lateinit var lcmr: LicenceConditionManagerRepository
-
-    @Autowired
-    lateinit var pmr: PersonManagerRepository
-
-    @Autowired
-    lateinit var contactRepository: ContactRepository
 
     @Test
     fun `add licence conditions`() {

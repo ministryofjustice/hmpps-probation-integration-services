@@ -10,27 +10,24 @@ import org.springframework.ldap.NameNotFoundException
 import org.springframework.ldap.core.LdapTemplate
 import org.springframework.ldap.support.LdapNameBuilder
 import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import org.springframework.test.web.servlet.delete
+import org.springframework.test.web.servlet.put
 import uk.gov.justice.digital.hmpps.api.model.DeliusRole
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestMethodOrder(MethodOrderer.OrderAnnotation::class)
-internal class UserRoleIntegrationTest {
-    @Autowired
-    lateinit var mockMvc: MockMvc
-
-    @Autowired
-    lateinit var ldapTemplate: LdapTemplate
+internal class UserRoleIntegrationTest @Autowired constructor(
+    internal val mockMvc: MockMvc,
+    internal val ldapTemplate: LdapTemplate
+) {
 
     @Order(1)
     @Test
     fun `successfully updates ldap role`() {
-        mockMvc.perform(put("/users/john-smith/roles").withToken())
-            .andExpect(status().is2xxSuccessful)
+        mockMvc.put("/users/john-smith/roles") { withToken() }
+            .andExpect { status { is2xxSuccessful() } }
 
         val res = ldapTemplate.lookupContext(
             LdapNameBuilder.newInstance()
@@ -44,8 +41,8 @@ internal class UserRoleIntegrationTest {
     @Order(2)
     @Test
     fun `successfully removes ldap role`() {
-        mockMvc.perform(delete("/users/john-smith/roles").withToken())
-            .andExpect(status().is2xxSuccessful)
+        mockMvc.delete("/users/john-smith/roles") { withToken() }
+            .andExpect { status { is2xxSuccessful() } }
 
         val res = assertThrows<NameNotFoundException> {
             ldapTemplate.lookupContext(

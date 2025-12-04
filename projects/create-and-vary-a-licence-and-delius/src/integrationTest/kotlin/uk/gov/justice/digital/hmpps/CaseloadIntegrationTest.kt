@@ -12,10 +12,8 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
 import org.springframework.test.context.junit.jupiter.EnabledIf
 import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import org.springframework.test.web.servlet.get
+import org.springframework.test.web.servlet.post
 import uk.gov.justice.digital.hmpps.api.model.ManagedOffender
 import uk.gov.justice.digital.hmpps.api.model.SearchRequest
 import uk.gov.justice.digital.hmpps.data.generator.CaseloadGenerator.CASELOAD_ROLE_OM_1
@@ -28,49 +26,54 @@ import uk.gov.justice.digital.hmpps.data.generator.CaseloadGenerator.TEAM1
 import uk.gov.justice.digital.hmpps.data.generator.CaseloadGenerator.generateManagedOffender
 import uk.gov.justice.digital.hmpps.data.generator.ProviderGenerator.DEFAULT_TEAM
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
-import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withJson
+import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.json
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = RANDOM_PORT)
-internal class CaseloadIntegrationTest {
-    @Autowired
-    lateinit var mockMvc: MockMvc
+internal class CaseloadIntegrationTest @Autowired constructor(
+    private val mockMvc: MockMvc,
+) {
 
     @ParameterizedTest
     @MethodSource("caseloadArgs")
     fun getManagedOffenders(url: String, expected: List<ManagedOffender>?) {
-        val res = mockMvc.perform(get(url).withToken()).andExpect(status().isOk)
+        val res = mockMvc.get(url) { withToken() }
+            .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<List<ManagedOffender>>()
         assertThat(res, equalTo(expected))
     }
 
     @Test
     fun `team managed offenders can be sorted`() {
-        mockMvc.perform(post("/staff/byid/${STAFF1.id}/caseload/team-managed-offenders?sort=surname,desc").withToken())
-            .andExpect(status().isOk)
-            .andExpect(jsonPath("$.page.size").value(100))
-            .andExpect(jsonPath("$.page.number").value(0))
-            .andExpect(jsonPath("$.page.totalElements").value(4))
-            .andExpect(jsonPath("$.page.totalPages").value(1))
-            .andExpect(jsonPath("$.content[*].crn", equalTo(listOf("crn0077", "crn0022", "crn0078", "crn0001"))))
-            .andExpect(jsonPath("$.content[*].name.surname", equalTo(listOf("mys", "Doe", "Doe", "Brown"))))
+        mockMvc.post("/staff/byid/${STAFF1.id}/caseload/team-managed-offenders?sort=surname,desc") { withToken() }
+            .andExpect {
+                status { isOk() }
+                jsonPath("$.page.size") { value(100) }
+                jsonPath("$.page.number") { value(0) }
+                jsonPath("$.page.totalElements") { value(4) }
+                jsonPath("$.page.totalPages") { value(1) }
+                jsonPath("$.content[*].crn") { value(equalTo(listOf("crn0077", "crn0022", "crn0078", "crn0001"))) }
+                jsonPath("$.content[*].name.surname") { value(equalTo(listOf("mys", "Doe", "Doe", "Brown"))) }
+            }
     }
 
     @Test
     @EnabledIf("#{environment.acceptsProfiles('oracle')}", loadContext = true)
     fun `team managed offenders can be filtered by substring`() {
-        mockMvc.perform(
-            post("/staff/byid/${STAFF1.id}/caseload/team-managed-offenders").withToken()
-                .withJson(SearchRequest("john b"))
-        )
-            .andExpect(status().isOk)
-            .andExpect(jsonPath("$.page.size").value(100))
-            .andExpect(jsonPath("$.page.number").value(0))
-            .andExpect(jsonPath("$.page.totalElements").value(1))
-            .andExpect(jsonPath("$.page.totalPages").value(1))
-            .andExpect(jsonPath("$.content[0].name.forename").value("John"))
-            .andExpect(jsonPath("$.content[0].name.surname").value("Brown"))
+        mockMvc.post("/staff/byid/${STAFF1.id}/caseload/team-managed-offenders") {
+            withToken()
+            json = SearchRequest("john b")
+        }
+            .andExpect {
+                status { isOk() }
+                jsonPath("$.page.size") { value(100) }
+                jsonPath("$.page.number") { value(0) }
+                jsonPath("$.page.totalElements") { value(1) }
+                jsonPath("$.page.totalPages") { value(1) }
+                jsonPath("$.content[0].name.forename") { value("John") }
+                jsonPath("$.content[0].name.surname") { value("Brown") }
+            }
     }
 
     companion object {
