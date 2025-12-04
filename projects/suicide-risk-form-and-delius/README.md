@@ -6,7 +6,7 @@ practitioners to create suicide risk forms for people on probation who may be at
 ## Business Need
 
 This integration service provides an API for read-only access to case data from Delius, to reduce the need for re-keying
-in the Sucide Risk Form service, and publishes a domain event when a new form is created or a form is deleted.
+in the Sucide Risk Form service, and consumes a domain event when a new form is created or a form is deleted.
 
 ## Context Maps
 
