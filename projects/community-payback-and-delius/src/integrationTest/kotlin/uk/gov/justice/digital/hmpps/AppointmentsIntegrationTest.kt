@@ -153,6 +153,7 @@ class AppointmentsIntegrationTest {
         assertThat(appointment.lastUpdatedDatetime).isCloseTo(appointment.lastUpdatedDatetime, within(1, SECONDS))
         assertThat(appointment.penaltyTime).isEqualTo(5)
         assertThat(appointment.minutesCredited).isEqualTo(235)
+
         // tidy up
         unpaidWorkAppointmentRepository.delete(appointment)
     }
@@ -161,7 +162,7 @@ class AppointmentsIntegrationTest {
     fun `contact alert created when alertActive is true`() {
         val original = unpaidWorkAppointmentRepository.getAppointment(UPWGenerator.UPW_APPOINTMENT_NO_OUTCOME.id)
 
-        mockMvc.put("/projects/N01DEFAULT/appointments/${original.id}/outcome") {
+        mockMvc.put("/projects/N01SECOND/appointments/${original.id}/outcome") {
             withToken()
             json = AppointmentOutcomeRequest(
                 id = UPWGenerator.UPW_APPOINTMENT_NO_OUTCOME.id,
@@ -184,6 +185,60 @@ class AppointmentsIntegrationTest {
         val alert = contactAlertRepository.findAll()
             .firstOrNull { it.contactId == UPWGenerator.UPW_APPOINTMENT_NO_ENFORCEMENT.contact.id }
         assertThat(alert).isNotNull
+    }
+
+    @Test
+    fun `contact alert deleted when alertActive is false`() {
+        val original = unpaidWorkAppointmentRepository.getAppointment(UPWGenerator.UPW_APPOINTMENT_NO_OUTCOME.id)
+
+        mockMvc.put("/projects/N01SECOND/appointments/${original.id}/outcome") {
+            withToken()
+            json = AppointmentOutcomeRequest(
+                id = UPWGenerator.UPW_APPOINTMENT_NO_OUTCOME.id,
+                version = UUID(original.rowVersion, original.contact.rowVersion),
+                outcome = Code("A"),
+                supervisor = Code("N01P001"),
+                startTime = LocalTime.of(8, 0),
+                endTime = LocalTime.of(10, 0),
+                notes = "contact alert",
+                hiVisWorn = true,
+                workedIntensively = true,
+                penaltyMinutes = 65,
+                workQuality = WorkQuality.EXCELLENT,
+                behaviour = Behaviour.UNSATISFACTORY,
+                sensitive = false,
+                alertActive = true,
+            )
+        }.andExpect { status().is2xxSuccessful }
+
+        val alertCreated = contactAlertRepository.findAll()
+
+        val second = unpaidWorkAppointmentRepository.getAppointment(UPWGenerator.UPW_APPOINTMENT_NO_OUTCOME.id)
+
+        mockMvc.put("/projects/N01SECOND/appointments/${original.id}/outcome") {
+            withToken()
+            json = AppointmentOutcomeRequest(
+                id = UPWGenerator.UPW_APPOINTMENT_NO_OUTCOME.id,
+                version = UUID(second.rowVersion, second.contact.rowVersion),
+                outcome = Code("A"),
+                supervisor = Code("N01P001"),
+                startTime = LocalTime.of(8, 0),
+                endTime = LocalTime.of(10, 0),
+                notes = "contact alert deleting",
+                hiVisWorn = true,
+                workedIntensively = true,
+                penaltyMinutes = 65,
+                workQuality = WorkQuality.EXCELLENT,
+                behaviour = Behaviour.UNSATISFACTORY,
+                sensitive = false,
+                alertActive = false,
+            )
+        }.andExpect { status().is2xxSuccessful }
+
+        val alertDeleted = contactAlertRepository.findAll()
+
+        assertThat(alertCreated).isNotEmpty
+        assertThat(alertDeleted).isEmpty()
     }
 
     @Test
