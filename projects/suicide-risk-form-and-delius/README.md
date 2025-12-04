@@ -1,4 +1,4 @@
-# Suicide-risk-form-and-delius
+# Suicide Risk Form and Delius
 
 The [HMPPS Suicide Risk Form service](https://github.com/ministryofjustice/hmpps-suicide-risk-form-ui) enables probation
 practitioners to create breach suicide risk forms for offenders who may be at risk of suicide.
