@@ -1,0 +1,16 @@
+{
+  "eventType": "esupervision.check-in.expired",
+  "version": 2,
+  "description": "An e-Supervision remote check-in was expired",
+  "detailUrl": "http://localhost:{wiremock.port}/e-supervision-api/checkin-submitted/93d51990-3b72-4a7b-97cb-92759b04eaeb",
+  "occurredAt": "2025-08-26T09:30:00+01:00",
+  "additionalInformation": {},
+  "personReference": {
+    "identifiers": [
+      {
+        "type": "CRN",
+        "value": "A000001"
+      }
+    ]
+  }
+}

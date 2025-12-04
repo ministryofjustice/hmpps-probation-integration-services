@@ -1,0 +1,30 @@
+{
+  "mappings": [
+    {
+      "request": {
+        "method": "GET",
+        "urlPathPattern": "/e-supervision-api/checkin-submitted/93d51990-3b72-4a7b-97cb-92759b04eaeb"
+      },
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "body": "{\"checkinUuid\": \"93d51990-3b72-4a7b-97cb-92759b04eaeb\", \"notes\": \"Some notes about the expired check-in\"}"
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "urlPathPattern": "/e-supervision-api/checkin-submitted/61e80782-bdd1-43c3-b69f-78366582210a"
+      },
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "body": "{\"checkinUuid\": \"61e80782-bdd1-43c3-b69f-78366582210a\", \"notes\": \"Some notes about the check-in\"}"
+      }
+    }
+  ]
+}
