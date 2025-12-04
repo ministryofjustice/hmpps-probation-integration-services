@@ -122,6 +122,8 @@ class DataLoader(
         entityManager.persist(UPWGenerator.DEFAULT_RQMNT)
         entityManager.persist(UPWGenerator.LAO_EXCLUDED_UPW_APPOINTMENT)
         entityManager.persist(UPWGenerator.LAO_RESTRICTED_UPW_APPOINTMENT)
+        entityManager.persist(UPWGenerator.SECOND_UPW_DETAILS_ADJUSTMENT_NEGATIVE)
+        entityManager.persist(UPWGenerator.SECOND_UPW_DETAILS_ADJUSTMENT_POSITIVE)
     }
 
     fun loadLimitedAccessData() {

@@ -42,7 +42,12 @@ class SupervisorsIntegrationTest {
         mockMvc.get("/supervisors?username=${UserGenerator.DEFAULT_USER.username}") { withToken() }
             .andExpect { status { isOk() } }
             .andExpect {
-                content { json("""{"code": "N01P001", "isUnpaidWorkTeamMember": true}""", JsonCompareMode.STRICT) }
+                content {
+                    json(
+                        """{"code": "N01P001", "isUnpaidWorkTeamMember": true, "unpaidWorkTeams":[{"code":"N01UPW","description":"N01 UPW Team","provider":{"code":"N01","description":"N01 Provider"}}]}""",
+                        JsonCompareMode.STRICT
+                    )
+                }
             }
     }
 }

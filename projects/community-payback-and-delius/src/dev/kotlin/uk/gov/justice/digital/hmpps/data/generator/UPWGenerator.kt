@@ -239,6 +239,18 @@ object UPWGenerator {
         disposal = SECOND_DISPOSAL
     )
 
+    val SECOND_UPW_DETAILS_ADJUSTMENT_POSITIVE = generateUPWAdjustment(
+        upwDetailsId = SECOND_UPW_DETAILS.id,
+        adjustmentAmount = 7L,
+        adjustmentType = "POSITIVE"
+    )
+
+    val SECOND_UPW_DETAILS_ADJUSTMENT_NEGATIVE = generateUPWAdjustment(
+        upwDetailsId = SECOND_UPW_DETAILS.id,
+        adjustmentAmount = 3L,
+        adjustmentType = "NEGATIVE"
+    )
+
     fun generateUpwProject(
         id: Long = IdGenerator.getAndIncrement(),
         name: String,
@@ -268,6 +280,13 @@ object UPWGenerator {
         disposalId: Long,
         softDeleted: Boolean = false
     ) = UpwDetails(id, disposalId, softDeleted)
+
+    fun generateUPWAdjustment(
+        id: Long = IdGenerator.getAndIncrement(),
+        upwDetailsId: Long,
+        adjustmentAmount: Long,
+        adjustmentType: String,
+    ) = UpwAdjustment(id, upwDetailsId, adjustmentAmount, adjustmentType)
 
     fun generateContact(
         id: Long = 0,

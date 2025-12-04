@@ -10,7 +10,7 @@ import java.util.*
 data class AppointmentResponse(
     val id: Long,
     val version: UUID,
-    val project: AppointmentResponseProject,
+    val project: Project,
     val projectType: NameCode,
     val case: AppointmentResponseCase,
     val supervisor: AppointmentResponseSupervisor,
@@ -31,13 +31,6 @@ data class AppointmentResponse(
     val updatedAt: ZonedDateTime,
     val sensitive: Boolean?,
     val alertActive: Boolean?
-)
-
-data class AppointmentResponseProject(
-    val name: String,
-    val code: String,
-    val location: AppointmentResponseAddress?,
-    val hiVisRequired: Boolean
 )
 
 data class AppointmentResponseAddress(

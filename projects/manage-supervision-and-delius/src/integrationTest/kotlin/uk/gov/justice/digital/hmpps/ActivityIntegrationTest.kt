@@ -14,6 +14,8 @@ import uk.gov.justice.digital.hmpps.client.ActivitySearchRequest
 import uk.gov.justice.digital.hmpps.client.ContactSearchResponse
 import uk.gov.justice.digital.hmpps.client.ContactSearchResult
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator
+import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.E_SUPERVISION_ID
+import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.E_SUP_PERSON
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.OVERVIEW
 import uk.gov.justice.digital.hmpps.service.toActivity
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
@@ -77,7 +79,6 @@ class ActivityIntegrationTest : IntegrationTestBase() {
 
     @Test
     fun `all person activity is returned`() {
-
         val person = OVERVIEW
         val res = mockMvc
             .perform(get("/activity/${person.crn}").withToken())
@@ -100,5 +101,17 @@ class ActivityIntegrationTest : IntegrationTestBase() {
         assertThat(res.activities[4].isAppointment, equalTo(true))
         assertThat(res.activities[1].documents.size, equalTo(0))
         assertThat(res.activities[6].action, equalTo("Breach Enforcement Action"))
+    }
+
+    @Test
+    fun `can retrieve e supervision uuid`() {
+        val person = E_SUP_PERSON
+        val res = mockMvc
+            .perform(get("/activity/${person.crn}").withToken())
+            .andExpect(status().isOk)
+            .andReturn().response.contentAsJson<PersonActivity>()
+
+        assertThat(res.activities.size, equalTo(1))
+        assertThat(res.activities.first().esupervisionId, equalTo(E_SUPERVISION_ID))
     }
 }

@@ -1,6 +1,5 @@
 package uk.gov.justice.digital.hmpps.service
 
-import jakarta.persistence.EntityManager
 import org.springframework.orm.ObjectOptimisticLockingFailureException
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -37,7 +36,7 @@ class AppointmentsService(
         return AppointmentResponse(
             id = appointmentId,
             version = UUID(appointment.rowVersion, appointment.contact.rowVersion),
-            project = AppointmentResponseProject(
+            project = Project(
                 name = project.name,
                 code = project.code,
                 location = project.placementAddress?.toAppointmentResponseAddress(),
@@ -115,10 +114,11 @@ class AppointmentsService(
         }
 
         return SessionResponse(
-            project = SessionResponseProject(
+            project = Project(
                 name = project.name,
                 code = project.code,
-                location = project.placementAddress?.toAppointmentResponseAddress()
+                location = project.placementAddress?.toAppointmentResponseAddress(),
+                hiVisRequired = project.hiVisRequired,
             ),
             appointmentSummaries = appointmentSummaries
         )
@@ -169,20 +169,28 @@ class AppointmentsService(
 
         appointment.update(request, workQuality, behaviour, outcome, staff)
 
-        if (request.alertActive == true) {
-            val personManager =
-                personManagerRepository.getActiveManagerForPerson(appointment.person.id!!)
+        when (request.alertActive) {
+            true -> {
+                val personManager =
+                    personManagerRepository.getActiveManagerForPerson(appointment.person.id!!)
 
-            contactAlertRepository.save(
-                ContactAlert(
-                    contactId = contact.id,
-                    contactTypeId = contact.contactType.id,
-                    personId = appointment.person.id,
-                    personManagerId = personManager.id,
-                    staffId = personManager.staff.id,
-                    teamId = personManager.team.id
+                contactAlertRepository.save(
+                    ContactAlert(
+                        contactId = contact.id,
+                        contactTypeId = contact.contactType.id,
+                        personId = appointment.person.id,
+                        personManagerId = personManager.id,
+                        staffId = personManager.staff.id,
+                        teamId = personManager.team.id
+                    )
                 )
-            )
+            }
+
+            false -> {
+                contactAlertRepository.deleteByContactId(contact.id)
+            }
+
+            null -> {}
         }
 
         if (outcome?.complied == false) {

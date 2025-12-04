@@ -79,6 +79,8 @@ class PersonManager(
 interface PersonManagerRepository : JpaRepository<PersonManager, Long> {
     @EntityGraph(attributePaths = ["provider", "team", "staff"])
     fun findByPersonCrn(crn: String): PersonManager?
+
+    fun findByPersonCrnIn(crns: List<String>): List<PersonManager>
 }
 
 fun PersonManagerRepository.getByCrn(crn: String) =
@@ -86,6 +88,5 @@ fun PersonManagerRepository.getByCrn(crn: String) =
 
 interface PersonRepository : JpaRepository<Person, Long> {
     fun findByCrn(crn: String): Person?
-    fun findByCrnIn(crns: List<String>): List<Person>
 }
 

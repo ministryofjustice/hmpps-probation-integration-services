@@ -1,0 +1,32 @@
+context-cp: Community Payback Context {
+  entities: Entities {
+    grid-columns: 3
+    session: Session
+    appointment: Appointment
+    provider: Provider
+    supervisor: Supervisor
+    location: Appointment Location
+  }
+}
+
+context-delius: Delius Context {
+  interface: Community Payback\n and Delius {
+    type: Anti-Corruption\nLayer
+  }
+
+  entities: Entities {
+    grid-columns: 3
+    upw-appointment: UPW Appointment
+    upw-project: UPW Project
+    contact: Contact
+    enforcement: Enforcement
+    event: Event
+    requirement: Requirement
+    provider: Provider
+    team: Team
+    staff: Staff
+    address: Address
+  }
+}
+
+context-cp -- context-delius.interface: Upstream\n\n\nDownstream

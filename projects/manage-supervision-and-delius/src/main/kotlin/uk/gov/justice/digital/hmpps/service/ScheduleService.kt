@@ -19,6 +19,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.Offender
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.OffenderManagerRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.getByCrn
 import java.time.ZonedDateTime
+import java.util.UUID
 
 @Transactional
 @Service
@@ -135,6 +136,7 @@ fun Contact.toActivityOverview() = Activity(
     description = description,
     outcome = outcome?.description,
     deliusManaged = CreateAppointment.Type.entries.none { it.code == type.code } || complied == false || requirement?.mainCategory?.code == "F",
+    esupervisionId = eSupervisionId()
 )
 
 fun Contact.toActivity(noteId: Int? = null) = Activity(
@@ -198,6 +200,7 @@ fun Contact.toActivity(noteId: Int? = null) = Activity(
     eventId = event?.id,
     component = requirement?.asComponent() ?: licenceCondition?.asComponent(),
     nsiId = nsiId,
+    esupervisionId = eSupervisionId()
 )
 
 fun ContactDocument.toDocument() =
@@ -211,3 +214,9 @@ fun Requirement.asComponent() =
     Component(id, mainCategory?.description ?: "", Component.Type.REQUIREMENT)
 
 fun LicenceCondition.asComponent() = Component(id, mainCategory.description, Component.Type.LICENCE_CONDITION)
+
+fun Contact.eSupervisionId(): UUID? = externalReference?.let { er ->
+    Contact.E_SUPERVISION_PREFIXES.firstOrNull { prefix -> er.startsWith(prefix) }?.let {
+        UUID.fromString(er.replace(it, ""))
+    }
+}
