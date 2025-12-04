@@ -85,19 +85,19 @@ internal class IntegrationTest() {
 
     @Test
     fun `get contact details for a single crn`() {
-        mockMvc.perform(get("/case/${PersonContactDetailsGenerator.DEFAULT_PERSON_CONTACT_DETAILS.crn}").withToken())
+        mockMvc.perform(get("/case/${PersonContactDetailsGenerator.PERSON_CONTACT_DETAILS_1.crn}").withToken())
             .andExpect(status().isOk)
             .andExpect(
                 content().json(
                     """
                     {
-                      "crn": "${PersonContactDetailsGenerator.DEFAULT_PERSON_CONTACT_DETAILS.crn}",
+                      "crn": "${PersonContactDetailsGenerator.PERSON_CONTACT_DETAILS_1.crn}",
                       "name": {
-                        "forename": "${PersonContactDetailsGenerator.DEFAULT_PERSON_CONTACT_DETAILS.firstName}",
-                        "surname": "${PersonContactDetailsGenerator.DEFAULT_PERSON_CONTACT_DETAILS.lastName}"
+                        "forename": "${PersonContactDetailsGenerator.PERSON_CONTACT_DETAILS_1.firstName}",
+                        "surname": "${PersonContactDetailsGenerator.PERSON_CONTACT_DETAILS_1.lastName}"
                       },
-                      "mobile": "${PersonContactDetailsGenerator.DEFAULT_PERSON_CONTACT_DETAILS.mobile.toString()}",
-                      "email": "${PersonContactDetailsGenerator.DEFAULT_PERSON_CONTACT_DETAILS.emailAddress}",
+                      "mobile": "${PersonContactDetailsGenerator.PERSON_CONTACT_DETAILS_1.mobile.toString()}",
+                      "email": "${PersonContactDetailsGenerator.PERSON_CONTACT_DETAILS_1.emailAddress}",
                       "practitioner": {
                         "code": "${ProviderGenerator.DEFAULT_STAFF.code}",
                         "email": "john.smith@moj.gov.uk",
@@ -134,8 +134,8 @@ internal class IntegrationTest() {
     @Test
     fun `get multiple contact details`() {
         val crns = listOf(
-            PersonContactDetailsGenerator.DEFAULT_PERSON_CONTACT_DETAILS.crn,
-            PersonContactDetailsGenerator.DEFAULT_PERSON_CONTACT_DETAILS.crn,
+            PersonContactDetailsGenerator.PERSON_CONTACT_DETAILS_1.crn,
+            PersonContactDetailsGenerator.PERSON_CONTACT_DETAILS_1.crn,
         )
         mockMvc.perform(post("/cases").withJson(crns).withToken())
             .andExpect(status().isOk)
@@ -145,7 +145,7 @@ internal class IntegrationTest() {
     @Test
     fun `get multiple contact details with one bad crn returns only existing crn details`() {
         val crns = listOf(
-            PersonContactDetailsGenerator.DEFAULT_PERSON_CONTACT_DETAILS.crn,
+            PersonContactDetailsGenerator.PERSON_CONTACT_DETAILS_1.crn,
             "NOT_A_CRN",
         )
         mockMvc.perform(post("/cases").withJson(crns).withToken())

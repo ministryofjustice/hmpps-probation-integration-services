@@ -44,8 +44,10 @@ class DataLoader(
             PersonGenerator.DEFAULT_COM,
             PersonGenerator.PREVIOUS_EVENT,
             PersonGenerator.DEFAULT_EVENT,
-            PersonContactDetailsGenerator.DEFAULT_PERSON_CONTACT_DETAILS,
-            PersonGenerator.generatePersonManager(PersonContactDetailsGenerator.DEFAULT_PERSON_CONTACT_DETAILS)
+            PersonContactDetailsGenerator.PERSON_CONTACT_DETAILS_1,
+            PersonContactDetailsGenerator.PERSON_CONTACT_DETAILS_2,
+            PersonGenerator.generatePersonManager(PersonContactDetailsGenerator.PERSON_CONTACT_DETAILS_1),
+            PersonGenerator.generatePersonManager(PersonContactDetailsGenerator.PERSON_CONTACT_DETAILS_2)
         )
     }
 
