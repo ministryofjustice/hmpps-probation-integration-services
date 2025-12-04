@@ -8,8 +8,6 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.asyncDispatch
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.*
 import org.springframework.util.ResourceUtils
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
@@ -22,33 +20,30 @@ internal class DocIntegrationTest(
 
     @Test
     fun `document is downloaded`() {
-        // 1. Trigger async request using Kotlin DSL
-        val mvcResult = mockMvc.get("/documents/A000001/00000000-0000-0000-0000-000000000001") {
+        mockMvc.get("/documents/A000001/00000000-0000-0000-0000-000000000001") {
             withToken()
             accept = MediaType.APPLICATION_OCTET_STREAM
         }
+            .andExpect { request { asyncStarted() } }
+            .asyncDispatch()
             .andExpect {
-                request { asyncStarted() }
-            }
-            .andReturn()
+                status { is2xxSuccessful() }
 
-        // 2. Continue async processing using perform + asyncDispatch (DSL not supported here)
-        mockMvc.perform(asyncDispatch(mvcResult))
-            .andExpect(status().is2xxSuccessful)
-            .andExpect(header().string("Content-Type", "application/octet-stream"))
-            .andExpect(
-                header().string(
-                    "Content-Disposition",
-                    "attachment; filename=\"=?UTF-8?Q?test.doc?=\"; filename*=UTF-8''test.doc"
-                )
-            )
-            .andExpect(header().doesNotExist("Custom-Alfresco-Header"))
-            .andExpect(
-                content().bytes(
-                    ResourceUtils.getFile("classpath:simulations/__files/document.pdf")
-                        .readBytes()
-                )
-            )
+                header {
+                    string("Content-Type", "application/octet-stream")
+                    string(
+                        "Content-Disposition",
+                        "attachment; filename=\"=?UTF-8?Q?test.doc?=\"; filename*=UTF-8''test.doc"
+                    )
+                    doesNotExist("Custom-Alfresco-Header")
+                }
+
+                content {
+                    bytes(
+                        ResourceUtils.getFile("classpath:simulations/__files/document.pdf").readBytes()
+                    )
+                }
+            }
     }
 
     @Test

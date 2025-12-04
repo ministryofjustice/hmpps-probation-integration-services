@@ -1,4 +1,3 @@
-// Kotlin
 package uk.gov.justice.digital.hmpps
 
 import org.assertj.core.api.Assertions.assertThat

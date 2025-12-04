@@ -20,11 +20,16 @@ import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 
 @SpringBootTest(properties = ["event.exception.throw-not-found: false"])
 @ExtendWith(OutputCaptureExtension::class)
-internal class NotFoundIntegrationTest @Autowired constructor(
-    @Value("\${messaging.consumer.queue}") private val queueName: String,
-    private val channelManager: HmppsChannelManager,
-    private val wireMockServer: WireMockServer
-) {
+internal class NotFoundIntegrationTest {
+
+    @Value("\${messaging.consumer.queue}")
+    lateinit var queueName: String
+
+    @Autowired
+    lateinit var channelManager: HmppsChannelManager
+
+    @Autowired
+    lateinit var wireMockServer: WireMockServer
 
     @MockitoBean
     lateinit var telemetryService: TelemetryService
