@@ -93,8 +93,25 @@
               <nav id="toc" class="js-toc-list toc__list" aria-labelledby="toc-heading">
                       <ul>
   <li>
-    <a href="#suicide-risk-form-and-delius"><span>suicide-risk-form-and-delius</span></a>
+    <a href="#suicide-risk-form-and-delius"><span>Suicide Risk Form and Delius</span></a>
     <ul>
+      <li>
+        <a href="#business-need"><span>Business Need</span></a>
+      </li>
+      <li>
+        <a href="#context-maps"><span>Context Maps</span></a>
+      </li>
+      <li>
+        <a href="#interfaces"><span>Interfaces</span></a>
+        <ul>
+          <li>
+            <a href="#message-formats"><span>Message Formats</span></a>
+          </li>
+        </ul>
+      </li>
+      <li>
+        <a href="#authorisation"><span>Authorisation</span></a>
+      </li>
       <li>
         <a href="#api-reference"><span>API Reference</span></a>
       </li>
@@ -109,9 +126,31 @@
 
         <div class="app-pane__content toc-open-disabled" aria-label="Content">
           <main id="content" class="technical-documentation" data-module="anchored-headings">
-            <h1 id="suicide-risk-form-and-delius">suicide-risk-form-and-delius</h1>
-<p>// TODO Describe the service</p>
-<h2 id="api-reference">API Reference</h2>
+            <h1 id="suicide-risk-form-and-delius">Suicide Risk Form and Delius</h1>
+<p>The <a href="https://github.com/ministryofjustice/hmpps-suicide-risk-form-ui">HMPPS Suicide Risk Form service</a> enables probation
+practitioners to create suicide risk forms for people on probation who may be at risk of suicide.</p>
+<h2 id="business-need">Business Need</h2>
+<p>This integration service provides an API for read-only access to case data from Delius, to reduce the need for re-keying
+in the Sucide Risk Form service, and consumes a domain event when a new form is created or a form is deleted.</p>
+<h2 id="context-maps">Context Maps</h2>
+<p><a href="/images/suicide-risk-form-and delius-context-map.svg" rel="noopener noreferrer"><img src="../../images/suicide-risk-form-anddelius-context-map.svg" alt="Context Maps" /></a></p>
+<h2 id="interfaces">Interfaces</h2>
+<h3 id="message-formats">Message Formats</h3>
+<p>The service consumes domain events from the
+<a href="https://github.com/ministryofjustice/cloud-platform-environments/blob/main/namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-prod/resources/suicide-risk-form-and-delius-queue.tf">SQS Queue</a>.</p>
+<p>Example <a href="https://github.com/ministryofjustice/hmpps-probation-integration-services/blob/main/projects/suicide-risk-form-and-delius/src/dev/resources/messages/">messages</a> are in the development source tree</p>
+<h2 id="authorisation">Authorisation</h2>
+<div class="table-container">
+        <table>
+          <tr>
+<th>API Endpoint</th>
+<th>Required Role</th>
+</tr><tr>
+<td>/</td>
+<td>PROBATION_API_<em>SUICIDE_RISK_FORM</em>_CASE_DETAIL</td>
+</tr>
+        </table>
+      </div><h2 id="api-reference">API Reference</h2>
 
 <ul>
 <li><a href="api-reference.html">API Reference</a></li>
