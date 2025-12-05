@@ -16,7 +16,7 @@ data class AppointmentResponse(
     val supervisor: AppointmentResponseSupervisor,
     val team: NameCode,
     val provider: NameCode,
-    val pickUpData: AppointmentResponsePickupData,
+    val pickUpData: AppointmentResponsePickupData?,
     val date: LocalDate,
     val startTime: LocalTime,
     val endTime: LocalTime,
@@ -87,7 +87,7 @@ data class AppointmentResponseSupervisor(
 )
 
 data class AppointmentResponsePickupData(
-    val location: AppointmentResponseAddress,
+    val location: AppointmentResponseAddress?,
     val time: LocalTime?
 )
 
