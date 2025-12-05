@@ -38,14 +38,14 @@ runs:
         token: ${{ inputs.token }}
 
     - name: Checkout pull request
-      uses: actions/checkout@v5
+      uses: actions/checkout@v6
       if: github.event_name == 'pull_request'
       with:
         ref: ${{ github.event.pull_request.head.ref }}
         token: ${{ env.token }}
 
     - name: Checkout branch
-      uses: actions/checkout@v5
+      uses: actions/checkout@v6
       if: github.event_name != 'pull_request'
       with:
         ref: ${{ github.ref }}
