@@ -53,6 +53,7 @@ internal class PersonalDetailsControllerTest {
             provisions = Provisions(emptyList(), lastUpdated = null),
             contacts = emptyList(),
             dateOfBirth = LocalDate.now().minusYears(50),
+            dateOfDeath = LocalDate.now().minusDays(7),
             documents = emptyList(),
             email = "testemail",
             mainAddress = PersonDetailsGenerator.PERSON_ADDRESS_1.toAddress(),
@@ -76,6 +77,7 @@ internal class PersonalDetailsControllerTest {
         val res = controller.getPersonalDetails("X000005")
         assertThat(res.preferredName, equalTo("Steve"))
         assertThat(res.mainAddress?.streetName, equalTo("Test Street"))
+        assertThat(res.dateOfDeath, equalTo(LocalDate.now().minusDays(7)))
     }
 
     @Test
@@ -172,6 +174,7 @@ internal class PersonalDetailsControllerTest {
             provisions = Provisions(emptyList(), lastUpdated = null),
             contacts = emptyList(),
             dateOfBirth = LocalDate.now().minusYears(50),
+            dateOfDeath = null,
             documents = emptyList(),
             email = "testemail",
             mainAddress = PersonDetailsGenerator.PERSON_ADDRESS_1.toAddress(),
