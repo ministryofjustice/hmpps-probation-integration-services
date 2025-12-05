@@ -7,13 +7,10 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
-import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import org.springframework.test.web.servlet.get
 import uk.gov.justice.digital.hmpps.data.generator.DataGenerator
 import uk.gov.justice.digital.hmpps.data.generator.DataGenerator.DEFAULT_PROVIDER
 import uk.gov.justice.digital.hmpps.data.generator.DataGenerator.EVENT
@@ -32,9 +29,8 @@ internal class CaseDetailsIntegrationTest : BaseIntegrationTest() {
         val person = PersonGenerator.DEFAULT
         val crn = person.crn
         val eventNumber = EVENT.number
-        val detailResponse = mockMvc
-            .perform(get("/case-details/$crn/$eventNumber").withToken())
-            .andExpect(status().is2xxSuccessful)
+        val detailResponse = mockMvc.get("/case-details/$crn/$eventNumber") { withToken() }
+            .andExpect { status { is2xxSuccessful() } }
             .andReturn().response.contentAsJson<CaseDetails>()
 
         assertThat(detailResponse, equalTo(getDetailResponse()))
@@ -43,9 +39,8 @@ internal class CaseDetailsIntegrationTest : BaseIntegrationTest() {
     @ParameterizedTest
     @MethodSource("limitedAccess")
     fun `Response includes lao info when case is Restricted Or Excluded`(person: Person, lad: LimitedAccessDetail) {
-        val response = mockMvc
-            .perform(get("/case-details/${person.crn}/1").withToken())
-            .andExpect(status().isOk)
+        val response = mockMvc.get("/case-details/${person.crn}/1") { withToken() }
+            .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<CaseDetails>()
 
         assertThat(response.limitedAccess, equalTo(lad))
@@ -54,9 +49,8 @@ internal class CaseDetailsIntegrationTest : BaseIntegrationTest() {
     @ParameterizedTest
     @MethodSource("limitedAccess")
     fun `LAO info for a Restricted Or Excluded`(person: Person, lad: LimitedAccessDetail) {
-        val response = mockMvc
-            .perform(get("/case/${person.crn}/access-limitations").withToken())
-            .andExpect(status().isOk)
+        val response = mockMvc.get("/case/${person.crn}/access-limitations") { withToken() }
+            .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<LimitedAccessDetail>()
 
         assertThat(response, equalTo(lad))
@@ -67,9 +61,8 @@ internal class CaseDetailsIntegrationTest : BaseIntegrationTest() {
         val person = PersonGenerator.WITH_RELEASE_DATE
         val crn = person.crn
         val eventNumber = 1
-        val detailResponse = mockMvc
-            .perform(get("/case-details/$crn/$eventNumber").withToken())
-            .andExpect(status().is2xxSuccessful)
+        val detailResponse = mockMvc.get("/case-details/$crn/$eventNumber") { withToken() }
+            .andExpect { status { is2xxSuccessful() } }
             .andReturn().response.contentAsJson<CaseDetails>()
 
         MatcherAssert.assertThat(
