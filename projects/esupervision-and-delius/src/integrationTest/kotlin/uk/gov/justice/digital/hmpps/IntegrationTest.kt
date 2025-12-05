@@ -198,7 +198,7 @@ internal class IntegrationTest @Autowired constructor(
     @Test
     fun `get multiple contact details with one bad crn returns only existing crn details`() {
         val crns = listOf(
-            PersonContactDetailsGenerator.PERSON_CONTACT_DETAILS_1.crn,
+            PersonContactDetailsGenerator.DEFAULT_PERSON_CONTACT_DETAILS.crn,
             "NOT_A_CRN",
         )
         mockMvc.post("/cases") {
