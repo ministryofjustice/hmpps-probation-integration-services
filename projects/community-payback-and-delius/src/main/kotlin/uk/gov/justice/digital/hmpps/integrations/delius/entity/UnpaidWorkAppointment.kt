@@ -66,7 +66,7 @@ class UpwAppointment(
 
     @ManyToOne
     @JoinColumn(name = "pick_up_location_id")
-    val pickUpLocation: OfficeLocation,
+    val pickUpLocation: OfficeLocation?,
 
     val pickUpTime: LocalTime?,
 

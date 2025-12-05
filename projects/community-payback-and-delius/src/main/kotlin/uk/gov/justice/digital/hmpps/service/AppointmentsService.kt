@@ -64,7 +64,7 @@ class AppointmentsService(
                 appointment.team.provider.code
             ),
             pickUpData = AppointmentResponsePickupData(
-                location = appointment.pickUpLocation.toAppointmentResponseAddress(),
+                location = appointment.pickUpLocation?.toAppointmentResponseAddress(),
                 time = appointment.pickUpTime
             ),
             date = appointment.date,
