@@ -620,7 +620,6 @@ components:
       - endTime
       - id
       - penaltyHours
-      - pickUpData
       - project
       - projectType
       - provider
@@ -649,8 +648,6 @@ components:
           $ref: "#/components/schemas/AppointmentResponseAddress"
         time:
           type: string
-      required:
-      - location
     AppointmentResponseSupervisor:
       type: object
       properties:
