@@ -191,8 +191,6 @@ internal class IntegrationTest @Autowired constructor(
                 status { isOk() }
                 jsonPath("$.length()") { value(2) }
             }
-
-            .andDo { print() }
     }
 
     @Test
