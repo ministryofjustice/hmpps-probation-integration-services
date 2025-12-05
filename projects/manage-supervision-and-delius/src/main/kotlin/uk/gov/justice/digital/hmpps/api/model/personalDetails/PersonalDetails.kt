@@ -13,6 +13,7 @@ data class PersonalDetails(
     val previousAddressCount: Int,
     val preferredGender: String,
     val dateOfBirth: LocalDate,
+    val dateOfDeath: LocalDate?,
     val preferredName: String?,
     val previousSurname: String?,
     val preferredLanguage: String?,

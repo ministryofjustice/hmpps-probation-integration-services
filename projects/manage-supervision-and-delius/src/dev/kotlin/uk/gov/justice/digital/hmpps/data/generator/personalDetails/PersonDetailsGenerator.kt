@@ -424,6 +424,7 @@ object PersonDetailsGenerator {
         surname = surname,
         preferredName = preferredName,
         dateOfBirth = LocalDate.now().minusYears(40),
+        dateOfDeath = null,
         telephoneNumber = "0987657432",
         mobileNumber = "07986789351",
         emailAddress = "testemail",

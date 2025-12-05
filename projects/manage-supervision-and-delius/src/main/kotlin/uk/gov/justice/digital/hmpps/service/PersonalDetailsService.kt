@@ -212,6 +212,7 @@ class PersonalDetailsService(
             contacts = personalContacts.map(PersonalContactEntity::toContact),
             preferredGender = person.gender.description,
             dateOfBirth = person.dateOfBirth,
+            dateOfDeath = person.dateOfDeath,
             preferredName = person.preferredName,
             telephoneNumber = person.telephoneNumber,
             mobileNumber = person.mobileNumber,
