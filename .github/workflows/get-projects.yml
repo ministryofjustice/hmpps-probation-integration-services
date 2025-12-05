@@ -25,7 +25,7 @@ jobs:
       projects: ${{ steps.get-projects.outputs.projects }}
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - uses: ./.github/actions/get-projects
         id: get-projects
         with:

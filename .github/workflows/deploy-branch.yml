@@ -88,7 +88,7 @@ jobs:
     outputs:
       version: ${{ steps.gradle.outputs.version || steps.docker.outputs.version }}
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
 
       - name: Check project type
         id: check-project

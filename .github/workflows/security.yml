@@ -32,7 +32,7 @@ jobs:
       matrix:
         project: ${{ fromJSON(needs.get-projects.outputs.projects) }}
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
 
       - name: Add new line to .trivyignore files
         # to ensure files exist, and they can be merged correctly by Trivy
@@ -90,7 +90,7 @@ jobs:
     needs:
       - trivy-scan
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
 
       - uses: actions/download-artifact@v6
         with:
@@ -147,7 +147,7 @@ jobs:
     needs:
       - get-projects
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - uses: ./.github/actions/setup-gradle
         with:
           cache-role: ${{ secrets.GRADLE_CACHE_S3_ROLE_TO_ASSUME }}
