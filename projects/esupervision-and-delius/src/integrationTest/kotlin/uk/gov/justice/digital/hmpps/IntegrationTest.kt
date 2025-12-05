@@ -10,9 +10,9 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
 import org.springframework.test.json.JsonCompareMode
 import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.*
+import org.springframework.test.web.servlet.get
+import org.springframework.test.web.servlet.post
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import uk.gov.justice.digital.hmpps.data.generator.MessageGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonContactDetailsGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
@@ -23,27 +23,19 @@ import uk.gov.justice.digital.hmpps.message.MessageAttributes
 import uk.gov.justice.digital.hmpps.message.Notification
 import uk.gov.justice.digital.hmpps.messaging.HmppsChannelManager
 import uk.gov.justice.digital.hmpps.model.PersonalDetails
-import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withJson
+import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.json
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 import java.time.LocalDate
 
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = RANDOM_PORT)
-internal class IntegrationTest() {
-    @Autowired
-    lateinit var wireMockServer: WireMockServer
-
-    @Autowired
-    lateinit var mockMvc: MockMvc
-
-    @Value("\${messaging.consumer.queue}")
-    lateinit var queueName: String
-
-    @Autowired
-    lateinit var channelManager: HmppsChannelManager
-
-    @Autowired
-    lateinit var contactRepository: ContactRepository
+internal class IntegrationTest @Autowired constructor(
+    @Value("\${messaging.consumer.queue}") private val queueName: String,
+    private val mockMvc: MockMvc,
+    private val channelManager: HmppsChannelManager,
+    private val contactRepository: ContactRepository,
+    private val wireMockServer: WireMockServer
+) {
 
     @Test
     fun `esupervision received contact created`() {
@@ -137,61 +129,68 @@ internal class IntegrationTest() {
 
     @Test
     fun `get contact details for a single crn`() {
-        mockMvc.perform(get("/case/${PersonContactDetailsGenerator.PERSON_CONTACT_DETAILS_1.crn}").withToken())
-            .andExpect(status().isOk)
-            .andExpect(
-                content().json(
-                    """
-                    {
-                      "crn": "${PersonContactDetailsGenerator.PERSON_CONTACT_DETAILS_1.crn}",
-                      "name": {
-                        "forename": "${PersonContactDetailsGenerator.PERSON_CONTACT_DETAILS_1.firstName}",
-                        "surname": "${PersonContactDetailsGenerator.PERSON_CONTACT_DETAILS_1.lastName}"
-                      },
-                      "mobile": "${PersonContactDetailsGenerator.PERSON_CONTACT_DETAILS_1.mobile.toString()}",
-                      "email": "${PersonContactDetailsGenerator.PERSON_CONTACT_DETAILS_1.emailAddress}",
-                      "practitioner": {
-                        "code": "${ProviderGenerator.DEFAULT_STAFF.code}",
-                        "email": "john.smith@moj.gov.uk",
-                        "name": {
-                          "forename": "${ProviderGenerator.DEFAULT_STAFF.forename}",
-                          "surname": "${ProviderGenerator.DEFAULT_STAFF.surname}"
-                        },
-                        "localAdminUnit": {
-                          "code": "${ProviderGenerator.DEFAULT_LDU.code}",
-                          "description": "${ProviderGenerator.DEFAULT_LDU.description}"
-                        },
-                        "probationDeliveryUnit": {
-                          "code": "${ProviderGenerator.DEFAULT_PDU.code}",
-                          "description": "${ProviderGenerator.DEFAULT_PDU.description}"
-                        },
-                        "provider": {
-                          "code": "${ProviderGenerator.DEFAULT_PROVIDER.code}",
-                          "description": "${ProviderGenerator.DEFAULT_PROVIDER.description}"
+        mockMvc.get("/case/${PersonContactDetailsGenerator.PERSON_CONTACT_DETAILS_1.crn}") { withToken() }
+            .andExpect {
+                status { isOk() }
+                content {
+                    json(
+                        """
+                        {
+                          "crn": "${PersonContactDetailsGenerator.PERSON_CONTACT_DETAILS_1.crn}",
+                          "name": {
+                            "forename": "${PersonContactDetailsGenerator.PERSON_CONTACT_DETAILS_1.firstName}",
+                            "surname": "${PersonContactDetailsGenerator.PERSON_CONTACT_DETAILS_1.lastName}"
+                          },
+                          "mobile": "${PersonContactDetailsGenerator.PERSON_CONTACT_DETAILS_1.mobile.toString()}",
+                          "email": "${PersonContactDetailsGenerator.PERSON_CONTACT_DETAILS_1.emailAddress}",
+                          "practitioner": {
+                            "code": "${ProviderGenerator.DEFAULT_STAFF.code}",
+                            "email": "john.smith@moj.gov.uk",
+                            "name": {
+                              "forename": "${ProviderGenerator.DEFAULT_STAFF.forename}",
+                              "surname": "${ProviderGenerator.DEFAULT_STAFF.surname}"
+                            },
+                            "localAdminUnit": {
+                              "code": "${ProviderGenerator.DEFAULT_LDU.code}",
+                              "description": "${ProviderGenerator.DEFAULT_LDU.description}"
+                            },
+                            "probationDeliveryUnit": {
+                              "code": "${ProviderGenerator.DEFAULT_PDU.code}",
+                              "description": "${ProviderGenerator.DEFAULT_PDU.description}"
+                            },
+                            "provider": {
+                              "code": "${ProviderGenerator.DEFAULT_PROVIDER.code}",
+                              "description": "${ProviderGenerator.DEFAULT_PROVIDER.description}"
+                            }
+                          }
                         }
-                      }
-                    }
-                    """.trimIndent(),
-                    JsonCompareMode.STRICT,
-                )
-            )
+                        """.trimIndent(),
+                        JsonCompareMode.STRICT,
+                    )
+                }
+            }
     }
 
     @Test
     fun `bad crn returns a 404`() {
-        mockMvc.perform(get("/case/NOT_A_CRN").withToken())
-            .andExpect(status().isNotFound)
+        mockMvc.get("/case/NOT_A_CRN") { withToken() }
+            .andExpect { status().isNotFound }
     }
 
     @Test
     fun `get multiple contact details`() {
         val crns = listOf(
             PersonContactDetailsGenerator.PERSON_CONTACT_DETAILS_1.crn,
-            PersonContactDetailsGenerator.PERSON_CONTACT_DETAILS_1.crn,
+            PersonContactDetailsGenerator.PERSON_CONTACT_DETAILS_2.crn,
         )
-        mockMvc.perform(post("/cases").withJson(crns).withToken())
-            .andExpect(status().isOk)
-            .andExpect { jsonPath("$.length()").value(2) }
+        mockMvc.post("/cases") {
+            json = crns
+            withToken()
+        }
+            .andExpect {
+                status { isOk() }
+                jsonPath("$.length()") { value(2) }
+            }
     }
 
     @Test
@@ -200,9 +199,14 @@ internal class IntegrationTest() {
             PersonContactDetailsGenerator.PERSON_CONTACT_DETAILS_1.crn,
             "NOT_A_CRN",
         )
-        mockMvc.perform(post("/cases").withJson(crns).withToken())
-            .andExpect(status().isOk)
-            .andExpect { jsonPath("$.length()").value(1) }
+        mockMvc.post("/cases") {
+            json = crns
+            withToken()
+        }
+            .andExpect {
+                status { isOk() }
+                jsonPath("$.length()") { value(1) }
+            }
     }
 
     @Test
@@ -215,10 +219,11 @@ internal class IntegrationTest() {
             ),
             dateOfBirth = PersonGenerator.DEFAULT_PERSON.dateOfBirth
         )
-        mockMvc.perform(
-            post("/case/{${PersonGenerator.DEFAULT_PERSON.crn}/validate-details").withJson(testBody).withToken()
-        )
-            .andExpect(status().isOk)
+        mockMvc.post("/case/{${PersonGenerator.DEFAULT_PERSON.crn}/validate-details") {
+            json = testBody
+            withToken()
+        }
+            .andExpect { status { isOk() } }
     }
 
     @Test
@@ -231,9 +236,11 @@ internal class IntegrationTest() {
             ),
             dateOfBirth = PersonGenerator.DEFAULT_PERSON.dateOfBirth
         )
-        mockMvc.perform(
-            post("/case/{${PersonGenerator.DEFAULT_PERSON.crn}/validate-details").withJson(testBody).withToken()
-        ).andExpect(status().isOk)
+        mockMvc.post("/case/{${PersonGenerator.DEFAULT_PERSON.crn}/validate-details") {
+            json = testBody
+            withToken()
+        }
+            .andExpect { status { isOk() } }
     }
 
     @Test
@@ -246,10 +253,11 @@ internal class IntegrationTest() {
             ),
             dateOfBirth = PersonGenerator.DEFAULT_PERSON.dateOfBirth
         )
-        mockMvc.perform(
-            post("/case/{${PersonGenerator.DEFAULT_PERSON.crn}/validate-details").withJson(testBody).withToken()
-        )
-            .andExpect(status().isBadRequest)
+        mockMvc.post("/case/{${PersonGenerator.DEFAULT_PERSON.crn}/validate-details") {
+            json = testBody
+            withToken()
+        }
+            .andExpect { status { isBadRequest() } }
     }
 
     @Test
@@ -262,7 +270,10 @@ internal class IntegrationTest() {
             ),
             dateOfBirth = LocalDate.parse("2000-01-01")
         )
-        mockMvc.perform(post("/case/NOT_A_CRN/validate-details").withJson(testBody).withToken())
-            .andExpect(status().isNotFound)
+        mockMvc.post("/case/NOT_A_CRN/validate-details") {
+            json = testBody
+            withToken()
+        }
+            .andExpect { status { isNotFound() } }
     }
 }
