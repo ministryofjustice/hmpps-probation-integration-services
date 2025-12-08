@@ -213,7 +213,8 @@ class RiskService(
             detail = ContactDetail(
                 typeCode = ContactType.Code.REGISTRATION_REVIEW,
                 date = nextReviewDate ?: LocalDate.now(),
-                notes = notes()
+                notes = notes(),
+                description = "Registration Review of Register of type ${type.description}"
             ),
         )
         reviews += RegistrationReview(
