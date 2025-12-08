@@ -376,6 +376,7 @@ internal class IntegrationTest @Autowired constructor(
         assertThat(review.date, equalTo(LocalDate.now().plusMonths(6)))
         assertThat(review.level?.code, equalTo("RSKH"))
         assertThat(review.category?.code, equalTo(null))
+        assertThat(review.contact.description, equalTo("Registration Review of Register of type Risk to children"))
     }
 
     @Test
