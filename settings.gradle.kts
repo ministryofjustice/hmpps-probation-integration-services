@@ -57,6 +57,7 @@ include(
     "tier-to-delius",
     "unpaid-work-and-delius",
     "workforce-allocations-to-delius",
+    "libs:appointments",
     "libs:audit",
     "libs:commons",
     "libs:dev-tools",
