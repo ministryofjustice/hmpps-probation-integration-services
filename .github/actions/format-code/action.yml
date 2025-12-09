@@ -67,10 +67,10 @@ runs:
       env:
         version: ${{ inputs.idea_version }}
 
-    - name: Download IntelliJ IDEA Community Edition
+    - name: Download IntelliJ IDEA
       shell: bash
       run: |
-        curl -fsSL https://download.jetbrains.com/idea/ideaIC-$version.tar.gz | tar -xz
+        curl -fsSL https://download.jetbrains.com/idea/idea-$version.tar.gz | tar -xz
         mv idea-* /tmp/idea
       env:
         version: ${{ steps.latest.outputs.version }}
