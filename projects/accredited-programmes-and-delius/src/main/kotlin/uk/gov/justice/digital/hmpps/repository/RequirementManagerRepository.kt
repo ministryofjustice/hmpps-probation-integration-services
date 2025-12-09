@@ -2,7 +2,7 @@ package uk.gov.justice.digital.hmpps.repository
 
 import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
-import uk.gov.justice.digital.hmpps.entity.sentence.component.RequirementManager
+import uk.gov.justice.digital.hmpps.entity.sentence.component.manager.RequirementManager
 
 interface RequirementManagerRepository : JpaRepository<RequirementManager, Long> {
     @EntityGraph(

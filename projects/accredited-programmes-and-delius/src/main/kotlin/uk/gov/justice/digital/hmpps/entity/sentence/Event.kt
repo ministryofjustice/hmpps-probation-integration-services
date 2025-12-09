@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.entity.sentence
 import jakarta.persistence.*
 import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.NumericBooleanConverter
+import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import uk.gov.justice.digital.hmpps.entity.Person
 import uk.gov.justice.digital.hmpps.entity.contact.Contact
 import uk.gov.justice.digital.hmpps.entity.contact.ContactType.Companion.LICENCE_SUPERVISION_TWO_THIRDS_POINT
@@ -11,6 +12,7 @@ import java.time.LocalDate
 
 @Entity
 @SQLRestriction("active_flag = 1 and soft_deleted = 0")
+@EntityListeners(AuditingEntityListener::class)
 class Event(
     @Id
     @Column(name = "event_id")

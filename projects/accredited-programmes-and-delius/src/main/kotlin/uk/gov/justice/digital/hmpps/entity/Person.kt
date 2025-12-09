@@ -54,4 +54,6 @@ class Person(
     @Column(columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean = false,
-)
+) {
+    fun asPersonCrn() = PersonCrn(id, crn, softDeleted)
+}

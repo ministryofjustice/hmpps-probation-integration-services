@@ -1,9 +1,10 @@
-package uk.gov.justice.digital.hmpps.entity.sentence.component
+package uk.gov.justice.digital.hmpps.entity.sentence.component.manager
 
 import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.NumericBooleanConverter
+import uk.gov.justice.digital.hmpps.entity.sentence.component.LicenceCondition
 import uk.gov.justice.digital.hmpps.entity.staff.Staff
 import uk.gov.justice.digital.hmpps.entity.staff.Team
 
@@ -16,16 +17,17 @@ class LicenceConditionManager(
     @Column(name = "lic_condition_manager_id", nullable = false)
     val id: Long,
 
-    @Column(name = "lic_condition_id")
-    val licenceConditionId: Long,
+    @OneToOne
+    @JoinColumn(name = "lic_condition_id")
+    val licenceCondition: LicenceCondition,
 
     @ManyToOne
     @JoinColumn(name = "staff_id")
-    val staff: Staff,
+    override val staff: Staff,
 
     @ManyToOne
     @JoinColumn(name = "team_id")
-    val team: Team,
+    override val team: Team,
 
     @Column(name = "active_flag", columnDefinition = "number", nullable = false)
     @Convert(converter = NumericBooleanConverter::class)
@@ -34,4 +36,4 @@ class LicenceConditionManager(
     @Column(updatable = false, columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean = false,
-)
+) : Manager

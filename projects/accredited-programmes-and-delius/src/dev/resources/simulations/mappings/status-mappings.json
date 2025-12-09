@@ -31,6 +31,38 @@
           "response-template"
         ]
       }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "urlPathPattern": "/accredited-programmes-api/status-programme-complete-requirement/(.*)"
+      },
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "body": "{\"newStatus\": \"PROGRAMME_COMPLETE\", \"sourcedFromEntityType\": \"REQUIREMENT\", \"sourcedFromEntityId\": {{request.path.[2]}}, \"notes\": \"Programme completed successfully\"}",
+        "transformers": [
+          "response-template"
+        ]
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "urlPathPattern": "/accredited-programmes-api/status-programme-complete-licence-condition/(.*)"
+      },
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "body": "{\"newStatus\": \"PROGRAMME_COMPLETE\", \"sourcedFromEntityType\": \"LICENCE_CONDITION\", \"sourcedFromEntityId\": {{request.path.[2]}}, \"notes\": \"Programme completed successfully\"}",
+        "transformers": [
+          "response-template"
+        ]
+      }
     }
   ]
 }

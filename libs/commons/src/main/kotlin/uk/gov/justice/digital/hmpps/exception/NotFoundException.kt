@@ -8,7 +8,7 @@ open class NotFoundException(message: String) : RuntimeException(message) {
     ) : this("$entity with $field of $value not found")
 
     companion object {
-        inline fun <reified T> T?.orNotFoundBy(key: String, value: String): T =
+        inline fun <reified T> T?.orNotFoundBy(key: String, value: Any): T =
             this ?: throw NotFoundException(T::class.simpleName ?: "Object", key, value)
     }
 }

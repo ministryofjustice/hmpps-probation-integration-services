@@ -13,10 +13,8 @@ import uk.gov.justice.digital.hmpps.entity.PersonCrn
 import uk.gov.justice.digital.hmpps.entity.sentence.Event
 import uk.gov.justice.digital.hmpps.entity.sentence.component.LicenceCondition
 import uk.gov.justice.digital.hmpps.entity.sentence.component.Requirement
-import uk.gov.justice.digital.hmpps.entity.staff.OfficeLocation
-import uk.gov.justice.digital.hmpps.entity.staff.Provider
-import uk.gov.justice.digital.hmpps.entity.staff.Staff
-import uk.gov.justice.digital.hmpps.entity.staff.Team
+import uk.gov.justice.digital.hmpps.entity.sentence.component.SentenceComponent
+import uk.gov.justice.digital.hmpps.entity.staff.*
 import java.time.LocalDate
 import java.time.ZonedDateTime
 
@@ -42,13 +40,15 @@ class Contact(
     @JoinColumn(name = "event_id")
     val event: Event? = null,
 
+    component: SentenceComponent? = null,
+
     @ManyToOne
     @JoinColumn(name = "rqmnt_id")
-    val requirement: Requirement? = null,
+    val requirement: Requirement? = component as? Requirement,
 
     @ManyToOne
     @JoinColumn(name = "lic_condition_id")
-    val licenceCondition: LicenceCondition? = null,
+    val licenceCondition: LicenceCondition? = component as? LicenceCondition,
 
     @Column(name = "contact_date")
     var date: LocalDate,
@@ -113,7 +113,12 @@ class Contact(
     var lastUpdatedDatetime: ZonedDateTime = ZonedDateTime.now(),
 
     @CreatedBy
+    @Column(name = "created_by_user_id")
     var createdByUserId: Long = 0,
+
+    @ManyToOne
+    @JoinColumn(name = "created_by_user_id", insertable = false, updatable = false)
+    val createdByUser: User? = null,
 
     @LastModifiedBy
     var lastUpdatedUserId: Long = 0,

@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.entity.staff
 
 import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
+import org.hibernate.type.NumericBooleanConverter
 
 @Entity
 @Immutable
@@ -16,5 +17,9 @@ class User(
 
     @OneToOne
     @JoinColumn(name = "staff_id")
-    val staff: Staff?,
+    val staff: Staff? = null,
+
+    @Column(name = "\"system_user\"", columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
+    val systemUser: Boolean = false,
 )
