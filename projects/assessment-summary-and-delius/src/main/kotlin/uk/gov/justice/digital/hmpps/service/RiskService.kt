@@ -110,7 +110,7 @@ class RiskService(
                 ContactType.Code.REGISTRATION,
                 notes = assessmentNote?.let { "$assessmentNote\n\nSee Register for more details" }
                     ?: reviewNotes(type, nextReviewDate),
-                contactType = type.registrationContactType
+                description = "Registration of type ${type.description} added"
             )
         )
         val registration = registrationRepository.save(
