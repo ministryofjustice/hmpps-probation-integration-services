@@ -32,6 +32,8 @@ class Contact(
 
     externalReference: String? = null,
 
+    val description: String? = null,
+
     @Column(name = "alert_active")
     @Convert(converter = YesNoConverter::class)
     val alert: Boolean? = false,
