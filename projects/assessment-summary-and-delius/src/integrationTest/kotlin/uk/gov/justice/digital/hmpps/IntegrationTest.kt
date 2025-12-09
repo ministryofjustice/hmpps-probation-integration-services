@@ -145,6 +145,8 @@ internal class IntegrationTest @Autowired constructor(
         assertThat(registrations.size, equalTo(1))
         val reg = registrations.first()
         assertThat(reg.type.code, equalTo(RiskOfSeriousHarmType.L.code))
+        assertThat(reg.contact.type.code, equalTo(ContactType.Code.REGISTRATION.value))
+        assertThat(reg.contact.description, equalTo("Registration of type Description of RLRH added"))
 
         val assessment = oasysAssessmentRepository.findByOasysId(PersonGenerator.LOW_ROSH.oasysId())!!
         assertThat(assessment.court?.code, equalTo("CRT150"))
