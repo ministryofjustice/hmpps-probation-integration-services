@@ -17,7 +17,7 @@ import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 internal class IntegrationTest @Autowired constructor(
     private val mockMvc: MockMvc
 ) {
-    
+
     @MockitoBean
     lateinit var telemetryService: TelemetryService
 

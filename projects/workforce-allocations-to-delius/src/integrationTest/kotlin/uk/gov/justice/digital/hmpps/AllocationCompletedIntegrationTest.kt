@@ -45,7 +45,7 @@ class AllocationCompletedIntegrationTest @Autowired constructor(
                 jsonPath("$.staff.email") { doesNotExist() }
             }
     }
-    
+
     @Test
     fun `allocation order manager successful response_new`() {
         val person = PersonGenerator.DEFAULT
