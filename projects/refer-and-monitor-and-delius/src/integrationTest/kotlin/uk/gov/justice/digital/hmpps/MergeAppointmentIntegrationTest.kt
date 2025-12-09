@@ -15,7 +15,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.ResultMatcher
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put
+import org.springframework.test.web.servlet.put
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import uk.gov.justice.digital.hmpps.api.model.MergeAppointment
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
@@ -26,7 +26,7 @@ import uk.gov.justice.digital.hmpps.service.Attended
 import uk.gov.justice.digital.hmpps.service.NoSessionReasonType
 import uk.gov.justice.digital.hmpps.service.Outcome
 import uk.gov.justice.digital.hmpps.test.CustomMatchers.isCloseTo
-import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withJson
+import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.json
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 import java.time.ZonedDateTime
 import java.util.*
@@ -34,20 +34,17 @@ import java.util.*
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestMethodOrder(MethodOrderer.OrderAnnotation::class)
-internal class MergeAppointmentIntegrationTest {
-    @Autowired
-    lateinit var mockMvc: MockMvc
-
-    @Autowired
-    lateinit var contactRepository: ContactRepository
+internal class MergeAppointmentIntegrationTest @Autowired constructor(
+    private val mockMvc: MockMvc,
+    private val contactRepository: ContactRepository
+) {
 
     private fun makeRequest(person: Person, referralId: UUID, request: MergeAppointment, result: ResultMatcher) {
-        mockMvc.perform(
-            put("/probation-case/${person.crn}/referrals/$referralId/appointments")
-                .withToken()
-                .withJson(request)
-        )
-            .andExpect(result)
+        mockMvc.put("/probation-case/${person.crn}/referrals/$referralId/appointments") {
+            withToken()
+            json = request
+        }
+            .andExpect { result }
     }
 
     @Test

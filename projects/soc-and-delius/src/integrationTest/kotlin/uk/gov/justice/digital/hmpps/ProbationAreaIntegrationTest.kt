@@ -7,145 +7,146 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
 import org.springframework.test.json.JsonCompareMode
 import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import org.springframework.test.web.servlet.get
+import org.springframework.test.web.servlet.post
 import uk.gov.justice.digital.hmpps.data.generator.ManagerGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ProbationAreaGenerator
-import uk.gov.justice.digital.hmpps.entity.ManagerHistory
 import uk.gov.justice.digital.hmpps.model.LocalDeliveryUnit
 import uk.gov.justice.digital.hmpps.model.ProbationArea
 import uk.gov.justice.digital.hmpps.model.ProbationAreaContainer
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.andExpectJson
-import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withJson
+import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.json
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = RANDOM_PORT)
-internal class ProbationAreaIntegrationTest {
-    @Autowired
-    lateinit var mockMvc: MockMvc
+internal class ProbationAreaIntegrationTest @Autowired constructor(
+    private val mockMvc: MockMvc
+) {
 
     @Test
     fun `API call retuns a success response`() {
-        mockMvc
-            .perform(get("/probation-areas").withToken())
-            .andExpect(status().is2xxSuccessful)
+        mockMvc.get("/probation-areas") { withToken() }
+            .andExpect { status { is2xxSuccessful() } }
             .andExpectJson(getProbationAreas())
     }
 
     @Test
     fun `API call including non selectable returns a success response`() {
-        mockMvc
-            .perform(get("/probation-areas?includeNonSelectable=true").withToken())
-            .andExpect(status().is2xxSuccessful)
+        mockMvc.get("/probation-areas?includeNonSelectable=true") { withToken() }
+            .andExpect { status { is2xxSuccessful() } }
             .andExpectJson(getProbationAreasIncludingNonSelectable())
     }
 
     @Test
     fun `get probation history for multiple CRNs`() {
         val crns = listOf(ManagerGenerator.PERSON.crn, ManagerGenerator.PERSON_2.crn, "SOME_OTHER_CRN")
-        mockMvc.perform(post("/probation-area-history").withToken().withJson(crns))
-            .andExpect(status().is2xxSuccessful)
-            .andExpect(
-                content().json(
-                    """
-                    {
-                      "MH00001": [
+        mockMvc.post("/probation-area-history") {
+            withToken()
+            json = crns
+        }
+            .andExpect {
+                status { is2xxSuccessful() }
+                content {
+                    json(
+                        """
                         {
-                          "startDate": "2000-01-01",
-                          "endDate": "2002-01-01",
-                          "localAdminUnit": {
-                            "code": "LA1",
-                            "description": "Admin Unit of LA1",
-                            "probationDeliveryUnit": {
-                              "code": "PD1",
-                              "description": "Delivery Unit of PD1",
-                              "probationArea": {
-                                "code": "M01",
-                                "description": "Area 1"
+                          "MH00001": [
+                            {
+                              "startDate": "2000-01-01",
+                              "endDate": "2002-01-01",
+                              "localAdminUnit": {
+                                "code": "LA1",
+                                "description": "Admin Unit of LA1",
+                                "probationDeliveryUnit": {
+                                  "code": "PD1",
+                                  "description": "Delivery Unit of PD1",
+                                  "probationArea": {
+                                    "code": "M01",
+                                    "description": "Area 1"
+                                  }
+                                }
+                              }
+                            },
+                            {
+                              "startDate": "2001-01-01",
+                              "endDate": "2003-01-01",
+                              "localAdminUnit": {
+                                "code": "LA2",
+                                "description": "Admin Unit of LA2",
+                                "probationDeliveryUnit": {
+                                  "code": "PD2",
+                                  "description": "Delivery Unit of PD2",
+                                  "probationArea": {
+                                    "code": "M02",
+                                    "description": "Area 2"
+                                  }
+                                }
+                              }
+                            },
+                            {
+                              "startDate": "2002-01-01",
+                              "localAdminUnit": {
+                                "code": "LA3",
+                                "description": "Admin Unit of LA3",
+                                "probationDeliveryUnit": {
+                                  "code": "PD3",
+                                  "description": "Delivery Unit of PD3",
+                                  "probationArea": {
+                                    "code": "M03",
+                                    "description": "Area 3"
+                                  }
+                                }
+                              }
+                            },
+                            {
+                              "startDate": "2005-01-01",
+                              "endDate": "2007-01-01",
+                              "localAdminUnit": {
+                                "code": "LA1",
+                                "description": "Admin Unit of LA1",
+                                "probationDeliveryUnit": {
+                                  "code": "PD1",
+                                  "description": "Delivery Unit of PD1",
+                                  "probationArea": {
+                                    "code": "M01",
+                                    "description": "Area 1"
+                                  }
+                                }
                               }
                             }
-                          }
-                        },
-                        {
-                          "startDate": "2001-01-01",
-                          "endDate": "2003-01-01",
-                          "localAdminUnit": {
-                            "code": "LA2",
-                            "description": "Admin Unit of LA2",
-                            "probationDeliveryUnit": {
-                              "code": "PD2",
-                              "description": "Delivery Unit of PD2",
-                              "probationArea": {
-                                "code": "M02",
-                                "description": "Area 2"
+                          ],
+                          "MH00002": [
+                            {
+                              "startDate": "2025-05-15",
+                              "localAdminUnit": {
+                                "code": "LA1",
+                                "description": "Admin Unit of LA1",
+                                "probationDeliveryUnit": {
+                                  "code": "PD1",
+                                  "description": "Delivery Unit of PD1",
+                                  "probationArea": {
+                                    "code": "M01",
+                                    "description": "Area 1"
+                                  }
+                                }
                               }
                             }
-                          }
-                        },
-                        {
-                          "startDate": "2002-01-01",
-                          "localAdminUnit": {
-                            "code": "LA3",
-                            "description": "Admin Unit of LA3",
-                            "probationDeliveryUnit": {
-                              "code": "PD3",
-                              "description": "Delivery Unit of PD3",
-                              "probationArea": {
-                                "code": "M03",
-                                "description": "Area 3"
-                              }
-                            }
-                          }
-                        },
-                        {
-                          "startDate": "2005-01-01",
-                          "endDate": "2007-01-01",
-                          "localAdminUnit": {
-                            "code": "LA1",
-                            "description": "Admin Unit of LA1",
-                            "probationDeliveryUnit": {
-                              "code": "PD1",
-                              "description": "Delivery Unit of PD1",
-                              "probationArea": {
-                                "code": "M01",
-                                "description": "Area 1"
-                              }
-                            }
-                          }
+                          ]
                         }
-                      ],
-                      "MH00002": [
-                        {
-                          "startDate": "2025-05-15",
-                          "localAdminUnit": {
-                            "code": "LA1",
-                            "description": "Admin Unit of LA1",
-                            "probationDeliveryUnit": {
-                              "code": "PD1",
-                              "description": "Delivery Unit of PD1",
-                              "probationArea": {
-                                "code": "M01",
-                                "description": "Area 1"
-                              }
-                            }
-                          }
-                        }
-                      ]
-                    }
-                    """.trimIndent(),
-                    JsonCompareMode.STRICT
-                )
-            )
+                        """.trimIndent(), JsonCompareMode.STRICT
+                    )
+                }
+            }
     }
 
     @Test
     fun `does not accept over 500 crns`() {
-        mockMvc
-            .perform(post("/probation-area-history").withToken().withJson(List(501) { "CRN" }))
-            .andExpect(status().isBadRequest)
+        mockMvc.post("/probation-area-history") {
+            withToken()
+            json = List(501) { "CRN" }
+        }
+            .andExpect { status { isBadRequest() } }
     }
 
     private fun getProbationAreas(): ProbationAreaContainer = ProbationAreaContainer(

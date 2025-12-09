@@ -23,23 +23,13 @@ import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import java.time.ZonedDateTime
 
 @SpringBootTest
-class AllocatePersonIntegrationTest {
-
-    @Value("\${messaging.consumer.queue}")
-    private lateinit var queueName: String
-
-    @Autowired
-    private lateinit var channelManager: HmppsChannelManager
-
-    @Autowired
-    private lateinit var wireMockServer: WireMockServer
-
-    @Autowired
-    private lateinit var personManagerRepository: PersonManagerRepository
-
-    @Autowired
-    private lateinit var responsibleOfficerRepository: ResponsibleOfficerRepository
-
+class AllocatePersonIntegrationTest @Autowired constructor(
+    @Value("\${messaging.consumer.queue}") private val queueName: String,
+    private val channelManager: HmppsChannelManager,
+    private val wireMockServer: WireMockServer,
+    private val personManagerRepository: PersonManagerRepository,
+    private val responsibleOfficerRepository: ResponsibleOfficerRepository
+) {
     @MockitoBean
     private lateinit var telemetryService: TelemetryService
 

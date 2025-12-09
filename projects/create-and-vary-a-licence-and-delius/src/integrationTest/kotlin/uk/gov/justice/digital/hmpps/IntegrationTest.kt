@@ -251,7 +251,7 @@ internal class IntegrationTest @Autowired constructor(
     }
 
     @Test
-    fun `returns staff by code_new`() {
+    fun `returns staff by code`() {
         mockMvc.get("/staff/bycode/${StaffGenerator.DEFAULT.code}") { withToken() }
             .andExpect {
                 status { isOk() }

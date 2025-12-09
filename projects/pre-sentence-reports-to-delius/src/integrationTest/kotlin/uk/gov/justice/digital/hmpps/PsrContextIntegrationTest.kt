@@ -10,8 +10,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.bean.override.mockito.MockitoBean
 import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import org.springframework.test.web.servlet.get
 import uk.gov.justice.digital.hmpps.data.generator.CourtReportGenerator
 import uk.gov.justice.digital.hmpps.integrations.delius.courtreport.CourtReportRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.presentencereport.*
@@ -22,22 +21,18 @@ import java.util.*
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
-class PsrContextIntegrationTest {
-
-    @Autowired
-    lateinit var mockMvc: MockMvc
-
-    @Autowired
-    lateinit var objectMapper: ObjectMapper
-
+class PsrContextIntegrationTest @Autowired constructor(
+    private val mockMvc: MockMvc,
+    private val objectMapper: ObjectMapper
+) {
     @MockitoBean
     lateinit var courtReportRepository: CourtReportRepository
 
     @Test
     fun `get PSR Context unauthorised`() {
         val courtReportId: Long = CourtReportGenerator.DEFAULT.id
-        mockMvc.perform(get("/context/$courtReportId"))
-            .andExpect(status().isUnauthorized)
+        mockMvc.get("/context/$courtReportId")
+            .andExpect { status { isUnauthorized() } }
     }
 
     @Test
@@ -46,8 +41,8 @@ class PsrContextIntegrationTest {
         whenever(courtReportRepository.getCourtReportContextJson(reportId))
             .thenReturn(null)
 
-        mockMvc.perform(get("/context/$reportId").withToken())
-            .andExpect(status().isNotFound)
+        mockMvc.get("/context/$reportId") { withToken() }
+            .andExpect { status { isNotFound() } }
     }
 
     @Test
@@ -56,8 +51,8 @@ class PsrContextIntegrationTest {
         whenever(courtReportRepository.getCourtReportContextJson(reportId))
             .thenReturn(objectMapper.writeValueAsString(getPreSentenceReportContext()))
 
-        val detail = mockMvc.perform(get("/context/$reportId").withToken())
-            .andExpect(status().is2xxSuccessful)
+        val detail = mockMvc.get("/context/$reportId") { withToken() }
+            .andExpect { status { is2xxSuccessful() } }
             .andReturn().response.contentAsJson<PreSentenceReportContext>()
 
         assertThat(detail, equalTo(getPreSentenceReportContext()))

@@ -14,8 +14,7 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
 import org.springframework.test.context.bean.override.mockito.MockitoBean
 import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import org.springframework.test.web.servlet.get
 import uk.gov.justice.digital.hmpps.api.model.*
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.SentenceGenerator
@@ -28,9 +27,9 @@ import java.time.LocalDate
 
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = RANDOM_PORT)
-internal class IntegrationTest {
-    @Autowired
-    lateinit var mockMvc: MockMvc
+internal class IntegrationTest @Autowired constructor(
+    private val mockMvc: MockMvc
+) {
 
     @MockitoBean
     lateinit var telemetryService: TelemetryService
@@ -38,9 +37,8 @@ internal class IntegrationTest {
     @Test
     fun `registrations are correctly returned`() {
         val person = PersonGenerator.REGISTERED_PERSON
-        val res = mockMvc
-            .perform(get("/probation-cases/${person.crn}/registrations").withToken())
-            .andExpect(status().is2xxSuccessful)
+        val res = mockMvc.get("/probation-cases/${person.crn}/registrations") { withToken() }
+            .andExpect { status { is2xxSuccessful() } }
             .andReturn().response.contentAsJson<Registrations>()
 
         assertThat(res.registrations, hasSize(2))
@@ -76,9 +74,8 @@ internal class IntegrationTest {
     @ParameterizedTest
     @MethodSource("custodialSentences")
     fun `releases are correctly returned`(person: PersonDetail, releaseRecall: ReleaseRecall) {
-        val res = mockMvc
-            .perform(get("/probation-cases/${person.crn}/release").withToken())
-            .andExpect(status().is2xxSuccessful)
+        val res = mockMvc.get("/probation-cases/${person.crn}/release") { withToken() }
+            .andExpect { status { is2xxSuccessful() } }
             .andReturn().response.contentAsJson<ReleaseRecall>()
 
         assertThat(res, equalTo(releaseRecall))
@@ -88,9 +85,8 @@ internal class IntegrationTest {
     fun `should retrieve case details`() {
         val person = PersonGenerator.DETAILED_PERSON
         val address = PersonGenerator.DETAIL_ADDRESS
-        val res = mockMvc
-            .perform(get("/probation-cases/${person.crn}").withToken())
-            .andExpect(status().is2xxSuccessful)
+        val res = mockMvc.get("/probation-cases/${person.crn}") { withToken() }
+            .andExpect { status { is2xxSuccessful() } }
             .andReturn().response.contentAsJson<CaseDetails>()
 
         assertThat(
@@ -130,9 +126,8 @@ internal class IntegrationTest {
     @Test
     fun `should retrieve minimal case details`() {
         val person = PersonGenerator.REGISTERED_PERSON
-        val res = mockMvc
-            .perform(get("/probation-cases/${person.crn}").withToken())
-            .andExpect(status().is2xxSuccessful)
+        val res = mockMvc.get("/probation-cases/${person.crn}") { withToken() }
+            .andExpect { status { is2xxSuccessful() } }
             .andReturn().response.contentAsJson<CaseDetails>()
 
         assertThat(

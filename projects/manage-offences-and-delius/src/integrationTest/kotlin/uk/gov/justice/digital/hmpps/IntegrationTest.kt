@@ -16,18 +16,14 @@ import uk.gov.justice.digital.hmpps.resourceloader.ResourceLoader
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 
 @SpringBootTest
-internal class IntegrationTest {
-    @Value("\${messaging.consumer.queue}")
-    lateinit var queueName: String
-
-    @Autowired
-    lateinit var channelManager: HmppsChannelManager
+internal class IntegrationTest @Autowired constructor(
+    @Value("\${messaging.consumer.queue}") private val queueName: String,
+    private val channelManager: HmppsChannelManager,
+    private val offenceRepository: OffenceRepository
+) {
 
     @MockitoBean
     lateinit var telemetryService: TelemetryService
-
-    @Autowired
-    lateinit var offenceRepository: OffenceRepository
 
     @Test
     fun `update offence code`() {

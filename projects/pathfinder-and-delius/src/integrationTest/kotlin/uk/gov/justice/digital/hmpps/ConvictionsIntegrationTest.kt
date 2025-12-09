@@ -6,8 +6,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
 import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import org.springframework.test.web.servlet.get
 import uk.gov.justice.digital.hmpps.data.generator.ConvictionEventGenerator
 import uk.gov.justice.digital.hmpps.data.generator.CourtAppearanceGenerator
 import uk.gov.justice.digital.hmpps.data.generator.KeyDateGenerator
@@ -17,43 +16,39 @@ import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = RANDOM_PORT)
-internal class ConvictionsIntegrationTest {
-    @Autowired
-    lateinit var mockMvc: MockMvc
+internal class ConvictionsIntegrationTest @Autowired constructor(
+    private val mockMvc: MockMvc
+) {
 
     @Test
     fun `API call retuns a success response using NOMS`() {
         val noms = ConvictionEventGenerator.PERSON.nomsNumber
-        mockMvc
-            .perform(get("/convictions/$noms?type=NOMS").withToken())
-            .andExpect(status().is2xxSuccessful)
+        mockMvc.get("/convictions/$noms?type=NOMS") { withToken() }
+            .andExpect { status { is2xxSuccessful() } }
             .andExpectJson(getConvictions(true))
     }
 
     @Test
     fun `API call retuns a success response using CRN`() {
         val crn = ConvictionEventGenerator.PERSON.crn
-        mockMvc
-            .perform(get("/convictions/$crn?type=CRN").withToken())
-            .andExpect(status().is2xxSuccessful)
+        mockMvc.get("/convictions/$crn?type=CRN") { withToken() }
+            .andExpect { status { is2xxSuccessful() } }
             .andExpectJson(getConvictions(true))
     }
 
     @Test
     fun `API call retuns only active convictions success response using CRN`() {
         val crn = ConvictionEventGenerator.PERSON.crn
-        mockMvc
-            .perform(get("/convictions/$crn?type=CRN&activeOnly=true").withToken())
-            .andExpect(status().is2xxSuccessful)
+        mockMvc.get("/convictions/$crn?type=CRN&activeOnly=true") { withToken() }
+            .andExpect { status { is2xxSuccessful() } }
             .andExpectJson(getConvictions())
     }
 
     @Test
     fun `API call retuns only active convictions success response using NOMS`() {
         val noms = ConvictionEventGenerator.PERSON.nomsNumber
-        mockMvc
-            .perform(get("/convictions/$noms?type=NOMS&activeOnly=true").withToken())
-            .andExpect(status().is2xxSuccessful)
+        mockMvc.get("/convictions/$noms?type=NOMS&activeOnly=true") { withToken() }
+            .andExpect { status { is2xxSuccessful() } }
             .andExpectJson(getConvictions())
     }
 

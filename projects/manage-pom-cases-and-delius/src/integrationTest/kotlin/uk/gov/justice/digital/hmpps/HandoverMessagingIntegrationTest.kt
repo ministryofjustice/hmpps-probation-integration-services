@@ -26,27 +26,17 @@ import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import java.time.LocalDate
 
 @SpringBootTest
-internal class HandoverMessagingIntegrationTest {
-    @Value("\${messaging.consumer.queue}")
-    lateinit var queueName: String
-
-    @Value("\${mpc.handover.url}")
-    lateinit var handoverUrl: String
-
-    @Autowired
-    lateinit var channelManager: HmppsChannelManager
-
-    @Autowired
-    lateinit var wireMockServer: WireMockServer
+internal class HandoverMessagingIntegrationTest @Autowired constructor(
+    @Value("\${messaging.consumer.queue}") private val queueName: String,
+    @Value("\${mpc.handover.url}") private val handoverUrl: String,
+    private val channelManager: HmppsChannelManager,
+    private val wireMockServer: WireMockServer,
+    private val custodyRepository: CustodyRepository,
+    private val keyDateRepository: KeyDateRepository
+) {
 
     @MockitoBean
     lateinit var telemetryService: TelemetryService
-
-    @Autowired
-    lateinit var custodyRepository: CustodyRepository
-
-    @Autowired
-    lateinit var keyDateRepository: KeyDateRepository
 
     @Test
     fun `updates a handover key date and start date successfully`() {

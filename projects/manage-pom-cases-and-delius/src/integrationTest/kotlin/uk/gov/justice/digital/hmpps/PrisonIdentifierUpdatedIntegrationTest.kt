@@ -22,18 +22,12 @@ import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import java.time.ZonedDateTime
 
 @SpringBootTest
-internal class PrisonIdentifierUpdatedIntegrationTest {
-    @Value("\${messaging.consumer.queue}")
-    lateinit var queueName: String
-
-    @Value("\${mpc.handover.url}")
-    lateinit var handoverUrl: String
-
-    @Autowired
-    lateinit var channelManager: HmppsChannelManager
-
-    @Autowired
-    lateinit var wireMockServer: WireMockServer
+internal class PrisonIdentifierUpdatedIntegrationTest @Autowired constructor(
+    @Value("\${messaging.consumer.queue}") private val queueName: String,
+    @Value("\${mpc.handover.url}") private val handoverUrl: String,
+    private val channelManager: HmppsChannelManager,
+    private val wireMockServer: WireMockServer
+) {
 
     @MockitoBean
     lateinit var telemetryService: TelemetryService

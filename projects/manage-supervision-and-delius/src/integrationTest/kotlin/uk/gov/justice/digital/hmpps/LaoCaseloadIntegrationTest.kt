@@ -4,9 +4,8 @@ import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.Assertions.assertNotEquals
 import org.junit.jupiter.api.Test
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import org.springframework.test.web.servlet.get
+import org.springframework.test.web.servlet.post
 import uk.gov.justice.digital.hmpps.api.model.user.StaffCaseload
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.LIMITED_ACCESS_USER
 import uk.gov.justice.digital.hmpps.data.generator.personalDetails.PersonDetailsGenerator.EXCLUSION
@@ -15,7 +14,7 @@ import uk.gov.justice.digital.hmpps.data.generator.personalDetails.PersonDetails
 import uk.gov.justice.digital.hmpps.data.generator.personalDetails.PersonDetailsGenerator.RESTRICTION_EXCLUSION
 import uk.gov.justice.digital.hmpps.service.UserAccess
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
-import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withJson
+import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.json
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 
 internal class LaoCaseloadIntegrationTest : IntegrationTestBase() {
@@ -23,9 +22,8 @@ internal class LaoCaseloadIntegrationTest : IntegrationTestBase() {
     @Test
     fun `all caseload activity for an lao user`() {
         val person = LIMITED_ACCESS_USER
-        val res = mockMvc
-            .perform(get("/caseload/user/${person.username}").withToken())
-            .andExpect(status().isOk)
+        val res = mockMvc.get("/caseload/user/${person.username}") { withToken() }
+            .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<StaffCaseload>()
 
         val caseload = res.caseload.sortedBy { it.crn }
@@ -64,12 +62,11 @@ internal class LaoCaseloadIntegrationTest : IntegrationTestBase() {
     fun `check lao access for a user with list of crns`() {
         val person = LIMITED_ACCESS_USER
         val crns = listOf(RESTRICTION_EXCLUSION.crn, EXCLUSION.crn, RESTRICTION.crn, PERSONAL_DETAILS.crn)
-        val res = mockMvc
-            .perform(
-                MockMvcRequestBuilders.post("/user/${person.username}/access").withToken()
-                    .withJson(crns)
-            )
-            .andExpect(status().isOk)
+        val res = mockMvc.post("/user/${person.username}/access") {
+            withToken()
+            json = crns
+        }
+            .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<UserAccess>()
 
         val userAccess = res.access.sortedBy { it.crn }
@@ -90,11 +87,10 @@ internal class LaoCaseloadIntegrationTest : IntegrationTestBase() {
     @Test
     fun `check lao access returns 400 when no crns are provided`() {
         val person = LIMITED_ACCESS_USER
-        mockMvc
-            .perform(
-                MockMvcRequestBuilders.post("/user/${person.username}/access").withToken()
-                    .withJson(emptyList<String>())
-            )
-            .andExpect(status().isBadRequest)
+        mockMvc.post("/user/${person.username}/access") {
+            withToken()
+            json = emptyList<String>()
+        }
+            .andExpect { status { isBadRequest() } }
     }
 }

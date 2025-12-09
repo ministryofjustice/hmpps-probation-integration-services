@@ -26,12 +26,10 @@ import uk.gov.justice.digital.hmpps.telemetry.TelemetryMessagingExtensions.notif
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 
 @SpringBootTest
-internal class IntegrationTest {
-    @Autowired
-    lateinit var handler: Handler
-
-    @Autowired
-    lateinit var contactRepository: ContactRepository
+internal class IntegrationTest @Autowired constructor(
+    private val handler: Handler,
+    private val contactRepository: ContactRepository
+) {
 
     @MockitoBean
     lateinit var telemetryService: TelemetryService

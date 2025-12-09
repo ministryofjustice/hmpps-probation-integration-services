@@ -22,15 +22,12 @@ import java.util.concurrent.TimeoutException
 
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = RANDOM_PORT)
-internal class IntegrationTest {
+internal class IntegrationTest @Autowired constructor(
     @Value("\${messaging.consumer.queue}")
-    lateinit var queueName: String
-
-    @Autowired
-    lateinit var channelManager: HmppsChannelManager
-
-    @Autowired
-    lateinit var mockMvc: MockMvc
+    private val queueName: String,
+    private val channelManager: HmppsChannelManager,
+    private val mockMvc: MockMvc
+) {
 
     @MockitoBean
     lateinit var telemetryService: TelemetryService
@@ -53,8 +50,7 @@ internal class IntegrationTest {
 
     @Test
     fun `API call retuns a success response`() {
-        mockMvc
-            .perform(get("/example/123").withToken())
-            .andExpect(status().is2xxSuccessful)
+        mockMvc.get("/example/123") { withToken() }
+            .andExpect { status { is2xxSuccessful() } }
     }
 }

@@ -5,8 +5,7 @@ import org.junit.jupiter.api.Test
 import org.mockito.kotlin.any
 import org.mockito.kotlin.never
 import org.mockito.kotlin.verify
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import org.springframework.test.web.servlet.post
 import uk.gov.justice.digital.hmpps.data.generator.IdGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator.AI_PREVIOUS_CRN
@@ -21,20 +20,18 @@ import uk.gov.justice.digital.hmpps.integration.delius.entity.Disability
 import uk.gov.justice.digital.hmpps.integration.delius.entity.PersonAlias
 import uk.gov.justice.digital.hmpps.model.*
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
-import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withJson
+import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.json
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 import java.time.LocalDate
 
 internal class SearchIntegrationTest : BaseIntegrationTest() {
     @Test
     fun `search without params responds with client error`() {
-        mockMvc
-            .perform(
-                post("/search/probation-cases")
-                    .withJson(SearchRequest())
-                    .withToken()
-            )
-            .andExpect(status().is4xxClientError)
+        mockMvc.post("/search/probation-cases") {
+            json = SearchRequest()
+            withToken()
+        }
+            .andExpect { status { is4xxClientError() } }
     }
 
     @Test
@@ -75,48 +72,42 @@ internal class SearchIntegrationTest : BaseIntegrationTest() {
         }
 
         val r1 = mockMvc
-            .perform(
-                post("/search/probation-cases")
-                    .withJson(
-                        SearchRequest(
-                            firstName = "Robert",
-                            surname = "Smith",
-                            dateOfBirth = LocalDate.of(1980, 1, 1)
-                        )
-                    )
-                    .withToken()
-            )
-            .andExpect(status().is2xxSuccessful)
+            .post("/search/probation-cases") {
+                json = SearchRequest(
+                    firstName = "Robert",
+                    surname = "Smith",
+                    dateOfBirth = LocalDate.of(1980, 1, 1)
+
+                )
+                withToken()
+            }
+            .andExpect { status { is2xxSuccessful() } }
             .andReturn().response.contentAsJson<List<ProbationCaseDetail>>()
 
         assertThat(r1).hasSize(1)
         assertThat(r1.first().otherIds.crn).isEqualTo("P123456")
 
         val r2 = mockMvc
-            .perform(
-                post("/search/probation-cases")
-                    .withJson(SearchRequest(surname = "Smith"))
-                    .withToken()
-            )
-            .andExpect(status().is2xxSuccessful)
+            .post("/search/probation-cases") {
+                json = SearchRequest(surname = "Smith")
+                withToken()
+            }
+            .andExpect { status { is2xxSuccessful() } }
             .andReturn().response.contentAsJson<List<ProbationCaseDetail>>()
 
         assertThat(r2).hasSize(2)
         assertThat(r2.map { it.otherIds.crn }).containsExactlyInAnyOrder("P123456", "P123457")
 
         val r3 = mockMvc
-            .perform(
-                post("/search/probation-cases")
-                    .withJson(
-                        SearchRequest(
-                            surname = "Smith",
-                            dateOfBirth = LocalDate.of(1980, 1, 1),
-                            includeAliases = true
-                        )
-                    )
-                    .withToken()
-            )
-            .andExpect(status().is2xxSuccessful)
+            .post("/search/probation-cases") {
+                json = SearchRequest(
+                    surname = "Smith",
+                    dateOfBirth = LocalDate.of(1980, 1, 1),
+                    includeAliases = true
+                )
+                withToken()
+            }
+            .andExpect { status { is2xxSuccessful() } }
             .andReturn().response.contentAsJson<List<ProbationCaseDetail>>()
 
         assertThat(r3).hasSize(2)
@@ -163,32 +154,44 @@ internal class SearchIntegrationTest : BaseIntegrationTest() {
         }
 
         val r1 = mockMvc
-            .perform(post("/search/probation-cases").withJson(SearchRequest(pncNumber = "1973/5052670T")).withToken())
-            .andExpect(status().is2xxSuccessful)
+            .post("/search/probation-cases") {
+                json = SearchRequest(pncNumber = "1973/5052670T")
+                withToken()
+            }
+            .andExpect { status { is2xxSuccessful() } }
             .andReturn().response.contentAsJson<List<ProbationCaseDetail>>()
 
         assertThat(r1).hasSize(1)
         assertThat(r1.first().otherIds.crn).isEqualTo("P223457")
 
         val r2 = mockMvc
-            .perform(post("/search/probation-cases").withJson(SearchRequest(nomsNumber = "S3477CH")).withToken())
-            .andExpect(status().is2xxSuccessful)
+            .post("/search/probation-cases") {
+                json = SearchRequest(nomsNumber = "S3477CH")
+                withToken()
+            }
+            .andExpect { status { is2xxSuccessful() } }
             .andReturn().response.contentAsJson<List<ProbationCaseDetail>>()
 
         assertThat(r2).hasSize(1)
         assertThat(r2.first().otherIds.crn).isEqualTo("P223456")
 
         val r3 = mockMvc
-            .perform(post("/search/probation-cases").withJson(SearchRequest(crn = "P223458")).withToken())
-            .andExpect(status().is2xxSuccessful)
+            .post("/search/probation-cases") {
+                json = SearchRequest(crn = "P223458")
+                withToken()
+            }
+            .andExpect { status { is2xxSuccessful() } }
             .andReturn().response.contentAsJson<List<ProbationCaseDetail>>()
 
         assertThat(r3).hasSize(1)
         assertThat(r3.first().otherIds.nomsNumber).isEqualTo("S3479CH")
 
         val r4 = mockMvc
-            .perform(post("/search/probation-cases").withJson(SearchRequest(crn = "N223458")).withToken())
-            .andExpect(status().is2xxSuccessful)
+            .post("/search/probation-cases") {
+                json = SearchRequest(crn = "N223458")
+                withToken()
+            }
+            .andExpect { status { is2xxSuccessful() } }
             .andReturn().response.contentAsJson<List<ProbationCaseDetail>>()
 
         assertThat(r4).hasSize(1)
@@ -239,8 +242,11 @@ internal class SearchIntegrationTest : BaseIntegrationTest() {
         }
 
         val r1 = mockMvc
-            .perform(post("/search/probation-cases").withJson(SearchRequest(crn = "G123456")).withToken())
-            .andExpect(status().is2xxSuccessful)
+            .post("/search/probation-cases") {
+                json = SearchRequest(crn = "G123456")
+                withToken()
+            }
+            .andExpect { status { is2xxSuccessful() } }
             .andReturn().response.contentAsJson<List<ProbationCaseDetail>>()
 
         assertThat(r1).hasSize(1)

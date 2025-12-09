@@ -25,7 +25,6 @@ import uk.gov.justice.digital.hmpps.data.generator.ProviderGenerator
 import uk.gov.justice.digital.hmpps.entity.PrisonStaff
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactType
-import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.PrisonManagerRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.ResponsibleOfficerRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.StaffRepository
@@ -39,15 +38,15 @@ import kotlin.jvm.optionals.getOrNull
 
 @SpringBootTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation::class)
-internal class AllocationMessagingIntegrationTest {
+internal class AllocationMessagingIntegrationTest @Autowired constructor(
     @Value("\${messaging.consumer.queue}")
-    lateinit var queueName: String
-
-    @Autowired
-    lateinit var channelManager: HmppsChannelManager
-
-    @Autowired
-    lateinit var wireMockServer: WireMockServer
+    private val queueName: String,
+    private val channelManager: HmppsChannelManager,
+    private val wireMockServer: WireMockServer,
+    private val contactRepository: ContactRepository,
+    private val staffRepository: StaffRepository,
+    private val responsibleOfficerRepository: ResponsibleOfficerRepository
+) {
 
     @MockitoBean
     lateinit var telemetryService: TelemetryService
@@ -57,15 +56,6 @@ internal class AllocationMessagingIntegrationTest {
 
     @MockitoSpyBean
     lateinit var prisonManagerRepository: PrisonManagerRepository
-
-    @Autowired
-    lateinit var contactRepository: ContactRepository
-
-    @Autowired
-    lateinit var staffRepository: StaffRepository
-
-    @Autowired
-    lateinit var responsibleOfficerRepository: ResponsibleOfficerRepository
 
     @Order(1)
     @Test

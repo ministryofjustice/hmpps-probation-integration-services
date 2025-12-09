@@ -8,8 +8,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.ldap.core.LdapTemplate
 import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import org.springframework.test.web.servlet.get
 import uk.gov.justice.digital.hmpps.data.generator.DocumentGenerator
 import uk.gov.justice.digital.hmpps.data.generator.OfficeLocationGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
@@ -23,24 +22,20 @@ import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 
 @AutoConfigureMockMvc
 @SpringBootTest
-class BasicDetailsIntegrationTest {
-
-    @Autowired
-    internal lateinit var mockMvc: MockMvc
-
-    @Autowired
-    internal lateinit var wireMockServer: WireMockServer
-
-    @Autowired
-    internal lateinit var ldapTemplate: LdapTemplate
+internal class BasicDetailsIntegrationTest @Autowired constructor(
+    private val mockMvc: MockMvc,
+    private val wireMockServer: WireMockServer,
+    private val ldapTemplate: LdapTemplate
+) {
 
     @Test
     fun `can retrieve all basic details`() {
         val person = PersonGenerator.DEFAULT_PERSON
 
-        val response = mockMvc
-            .perform(get("/basic-details/${person.crn}").withToken())
-            .andExpect(status().is2xxSuccessful)
+        val response = mockMvc.get("/basic-details/${person.crn}") {
+            withToken()
+        }
+            .andExpect { status { is2xxSuccessful() } }
             .andReturn().response.contentAsJson<BasicDetails>()
 
         assertThat(response).isEqualTo(
@@ -64,9 +59,10 @@ class BasicDetailsIntegrationTest {
         val ldapUser = ldapTemplate.findByUsername<LdapUser>(user.username)!!
         val officeLocation = OfficeLocationGenerator.DEFAULT
 
-        val response = mockMvc
-            .perform(get("/sign-and-send/${user.username}").withToken())
-            .andExpect(status().is2xxSuccessful)
+        val response = mockMvc.get("/sign-and-send/${user.username}") {
+            withToken()
+        }
+            .andExpect { status { is2xxSuccessful() } }
             .andReturn().response.contentAsJson<SignAndSendResponse>()
 
         assertThat(response).isEqualTo(
@@ -100,9 +96,10 @@ class BasicDetailsIntegrationTest {
     fun `can retrieve crn from suicide risk form id successfully`() {
         val person = PersonGenerator.DEFAULT_PERSON
         val srfId = DocumentGenerator.SUICIDE_RISK_FORM_ID
-        val response = mockMvc
-            .perform(get("/case/$srfId").withToken())
-            .andExpect(status().is2xxSuccessful)
+        val response = mockMvc.get("/case/$srfId") {
+            withToken()
+        }
+            .andExpect { status { is2xxSuccessful() } }
             .andReturn().response.contentAsJson<DocumentCrn>()
 
         assertThat(response.crn).isEqualTo(person.crn)

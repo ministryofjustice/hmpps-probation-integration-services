@@ -10,8 +10,9 @@ import org.springframework.ldap.NameNotFoundException
 import org.springframework.ldap.core.LdapTemplate
 import org.springframework.ldap.support.LdapNameBuilder
 import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import org.springframework.test.web.servlet.delete
+import org.springframework.test.web.servlet.get
+import org.springframework.test.web.servlet.put
 import uk.gov.justice.digital.hmpps.model.DeliusRole
 import uk.gov.justice.digital.hmpps.model.UserDetails
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.andExpectJson
@@ -20,18 +21,16 @@ import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestMethodOrder(MethodOrderer.OrderAnnotation::class)
-internal class UserRoleIntegrationTest {
-    @Autowired
-    lateinit var mockMvc: MockMvc
-
-    @Autowired
-    lateinit var ldapTemplate: LdapTemplate
+internal class UserRoleIntegrationTest @Autowired constructor(
+    private val mockMvc: MockMvc,
+    private val ldapTemplate: LdapTemplate
+) {
 
     @Order(1)
     @Test
     fun `successfully updates ldap role`() {
-        mockMvc.perform(put("/users/john-smith/roles/pf_std_probation").withToken())
-            .andExpect(status().is2xxSuccessful)
+        mockMvc.put("/users/john-smith/roles/pf_std_probation") { withToken() }
+            .andExpect { status { is2xxSuccessful() } }
 
         val res = ldapTemplate.lookupContext(
             LdapNameBuilder.newInstance()
@@ -45,8 +44,8 @@ internal class UserRoleIntegrationTest {
     @Order(2)
     @Test
     fun `successfully removes ldap role`() {
-        mockMvc.perform(delete("/users/john-smith/roles/pf_std_probation").withToken())
-            .andExpect(status().is2xxSuccessful)
+        mockMvc.delete("/users/john-smith/roles/pf_std_probation") { withToken() }
+            .andExpect { status { is2xxSuccessful() } }
 
         val res = assertThrows<NameNotFoundException> {
             ldapTemplate.lookupContext(
@@ -64,14 +63,14 @@ internal class UserRoleIntegrationTest {
 
     @Test
     fun `successfully gets user details`() {
-        mockMvc.perform(get("/users/john-smith/details").withToken())
-            .andExpect(status().is2xxSuccessful)
+        mockMvc.get("/users/john-smith/details") { withToken() }
+            .andExpect { status { is2xxSuccessful() } }
             .andExpectJson(UserDetails("john-smith", "John", "Smith", "john.smith@moj.gov.uk"))
     }
 
     @Test
     fun `returns 404 when user not found`() {
-        mockMvc.perform(get("/users/does-not-exist/details").withToken())
-            .andExpect(status().isNotFound)
+        mockMvc.get("/users/does-not-exist/details") { withToken() }
+            .andExpect { status { isNotFound() } }
     }
 }

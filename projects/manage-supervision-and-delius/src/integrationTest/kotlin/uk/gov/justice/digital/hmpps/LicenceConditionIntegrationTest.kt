@@ -2,8 +2,7 @@ package uk.gov.justice.digital.hmpps
 
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers
+import org.springframework.test.web.servlet.get
 import uk.gov.justice.digital.hmpps.api.model.sentence.LicenceCondition
 import uk.gov.justice.digital.hmpps.api.model.sentence.LicenceConditionNoteDetail
 import uk.gov.justice.digital.hmpps.api.model.sentence.NoteDetail
@@ -21,20 +20,16 @@ class LicenceConditionIntegrationTest : IntegrationTestBase() {
 
     @Test
     fun `unauthorized status returned`() {
-        mockMvc
-            .perform(MockMvcRequestBuilders.get("/sentence/${PersonGenerator.OVERVIEW.crn}/licence-condition/1/note/1"))
-            .andExpect(MockMvcResultMatchers.status().isUnauthorized)
+        mockMvc.get("/sentence/${PersonGenerator.OVERVIEW.crn}/licence-condition/1/note/1")
+            .andExpect { status { isUnauthorized() } }
     }
 
     @Test
     fun `licence condition not found`() {
-        val response = mockMvc
-            .perform(
-                MockMvcRequestBuilders.get("/sentence/${PersonGenerator.OVERVIEW.crn}/licence-condition/1/note/6")
-                    .withToken()
-            )
-            .andExpect(MockMvcResultMatchers.status().isOk)
-            .andReturn().response.contentAsJson<LicenceConditionNoteDetail>()
+        val response =
+            mockMvc.get("/sentence/${PersonGenerator.OVERVIEW.crn}/licence-condition/1/note/6") { withToken() }
+                .andExpect { status { isOk() } }
+                .andReturn().response.contentAsJson<LicenceConditionNoteDetail>()
 
         val expected = LicenceConditionNoteDetail(PersonGenerator.OVERVIEW.toSummary())
 
@@ -44,11 +39,10 @@ class LicenceConditionIntegrationTest : IntegrationTestBase() {
     @Test
     fun `note not found`() {
         val response = mockMvc
-            .perform(
-                MockMvcRequestBuilders.get("/sentence/${PersonGenerator.OVERVIEW.crn}/licence-condition/${LC_WITH_NOTES.id}/note/7")
-                    .withToken()
-            )
-            .andExpect(MockMvcResultMatchers.status().isOk)
+            .get("/sentence/${PersonGenerator.OVERVIEW.crn}/licence-condition/${LC_WITH_NOTES.id}/note/7") {
+                withToken()
+            }
+            .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<LicenceConditionNoteDetail>()
 
         val expected = LicenceConditionNoteDetail(
@@ -69,11 +63,10 @@ class LicenceConditionIntegrationTest : IntegrationTestBase() {
     @Test
     fun `get note for licence condition`() {
         val response = mockMvc
-            .perform(
-                MockMvcRequestBuilders.get("/sentence/${PersonGenerator.OVERVIEW.crn}/licence-condition/${LC_WITH_NOTES.id}/note/1")
-                    .withToken()
-            )
-            .andExpect(MockMvcResultMatchers.status().isOk)
+            .get("/sentence/${PersonGenerator.OVERVIEW.crn}/licence-condition/${LC_WITH_NOTES.id}/note/1") {
+                withToken()
+            }
+            .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<LicenceConditionNoteDetail>()
 
         val expected = LicenceConditionNoteDetail(

@@ -6,8 +6,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
 import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import org.springframework.test.web.servlet.get
 import uk.gov.justice.digital.hmpps.data.generator.ConvictionEventGenerator
 import uk.gov.justice.digital.hmpps.data.generator.DetailsGenerator
 import uk.gov.justice.digital.hmpps.data.generator.KeyDateGenerator
@@ -18,25 +17,23 @@ import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = RANDOM_PORT)
-internal class DetailsIntegrationTest {
-    @Autowired
-    lateinit var mockMvc: MockMvc
+internal class DetailsIntegrationTest @Autowired constructor(
+    private val mockMvc: MockMvc
+) {
 
     @Test
     fun `API call retuns a success response using NOMS`() {
         val noms = DetailsGenerator.PERSON.nomsNumber
-        mockMvc
-            .perform(get("/detail/$noms?type=NOMS").withToken())
-            .andExpect(status().is2xxSuccessful)
+        mockMvc.get("/detail/$noms?type=NOMS") { withToken() }
+            .andExpect { status { is2xxSuccessful() } }
             .andExpectJson(getDetail())
     }
 
     @Test
     fun `API call retuns a success response using CRN`() {
         val crn = DetailsGenerator.PERSON.crn
-        mockMvc
-            .perform(get("/detail/$crn?type=CRN").withToken())
-            .andExpect(status().is2xxSuccessful)
+        mockMvc.get("/detail/$crn?type=CRN") { withToken() }
+            .andExpect { status { is2xxSuccessful() } }
             .andExpectJson(getDetail())
     }
 

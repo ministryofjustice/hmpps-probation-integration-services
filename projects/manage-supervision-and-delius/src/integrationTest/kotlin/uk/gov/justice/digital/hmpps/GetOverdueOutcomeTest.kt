@@ -2,8 +2,7 @@ package uk.gov.justice.digital.hmpps
 
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers
+import org.springframework.test.web.servlet.get
 import uk.gov.justice.digital.hmpps.api.model.appointment.OverdueOutcome
 import uk.gov.justice.digital.hmpps.api.model.appointment.OverdueOutcomeAppointments
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
@@ -15,9 +14,8 @@ class GetOverdueOutcomeTest : IntegrationTestBase() {
     @Test
     fun `can retrieve appointments with an overdue outcome`() {
         val person = PersonGenerator.OVERVIEW
-        val response = mockMvc
-            .perform(get("/appointment/${person.crn}/overdue-outcomes").withToken())
-            .andExpect(MockMvcResultMatchers.status().isOk)
+        val response = mockMvc.get("/appointment/${person.crn}/overdue-outcomes") { withToken() }
+            .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<OverdueOutcomeAppointments>()
 
         assertThat(response.content).hasSize(2)

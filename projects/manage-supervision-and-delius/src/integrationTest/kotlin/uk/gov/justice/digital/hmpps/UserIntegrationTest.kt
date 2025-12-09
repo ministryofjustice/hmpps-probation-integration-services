@@ -3,9 +3,8 @@ package uk.gov.justice.digital.hmpps
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.Test
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import org.springframework.test.web.servlet.get
+import org.springframework.test.web.servlet.post
 import uk.gov.justice.digital.hmpps.advice.ErrorResponse
 import uk.gov.justice.digital.hmpps.api.model.Name
 import uk.gov.justice.digital.hmpps.api.model.user.*
@@ -19,7 +18,7 @@ import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.OVERVIEW
 import uk.gov.justice.digital.hmpps.data.generator.personalDetails.PersonDetailsGenerator.PERSONAL_DETAILS
 import uk.gov.justice.digital.hmpps.service.name
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
-import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withJson
+import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.json
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 
 class UserIntegrationTest : IntegrationTestBase() {
@@ -28,9 +27,8 @@ class UserIntegrationTest : IntegrationTestBase() {
     fun `all caseload activity is for a user`() {
 
         val person = USER
-        val res = mockMvc
-            .perform(get("/caseload/user/${person.username}").withToken())
-            .andExpect(status().isOk)
+        val res = mockMvc.get("/caseload/user/${person.username}") { withToken() }
+            .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<StaffCaseload>()
 
         assertThat(res.provider, equalTo(DEFAULT_PROVIDER.description))
@@ -42,9 +40,8 @@ class UserIntegrationTest : IntegrationTestBase() {
     fun `all caseload activity is for another user`() {
 
         val person = USER_1
-        val res = mockMvc
-            .perform(get("/caseload/user/${person.username}").withToken())
-            .andExpect(status().isOk)
+        val res = mockMvc.get("/caseload/user/${person.username}") { withToken() }
+            .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<StaffCaseload>()
 
         assertThat(res.provider, equalTo(DEFAULT_PROVIDER.description))
@@ -54,25 +51,22 @@ class UserIntegrationTest : IntegrationTestBase() {
 
     @Test
     fun `not found status returned`() {
-        mockMvc
-            .perform(get("/caseload/user/invalidusername").withToken())
-            .andExpect(status().isNotFound)
+        mockMvc.get("/caseload/user/invalidusername") { withToken() }
+            .andExpect { status { isNotFound() } }
     }
 
     @Test
     fun `unauthorized status returned`() {
-        mockMvc
-            .perform(get("/caseload/user/invalidusername"))
-            .andExpect(status().isUnauthorized)
+        mockMvc.get("/caseload/user/invalidusername")
+            .andExpect { status { isUnauthorized() } }
     }
 
     @Test
     fun `teams for a user`() {
 
         val person = USER_1
-        val res = mockMvc
-            .perform(get("/caseload/user/${person.username}/teams").withToken())
-            .andExpect(status().isOk)
+        val res = mockMvc.get("/caseload/user/${person.username}/teams") { withToken() }
+            .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<UserTeam>()
 
         assertThat(res.provider, equalTo(DEFAULT_PROVIDER.description))
@@ -84,9 +78,8 @@ class UserIntegrationTest : IntegrationTestBase() {
     fun `staff for a team`() {
 
         val code = DEFAULT_TEAM.code.trim()
-        val res = mockMvc
-            .perform(get("/caseload/team/${code}/staff").withToken())
-            .andExpect(status().isOk)
+        val res = mockMvc.get("/caseload/team/${code}/staff") { withToken() }
+            .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<TeamStaff>()
 
         assertThat(res.provider, equalTo(DEFAULT_PROVIDER.description))
@@ -100,9 +93,8 @@ class UserIntegrationTest : IntegrationTestBase() {
     fun `all caseload activity for a team`() {
 
         val code = DEFAULT_TEAM.code.trim()
-        val res = mockMvc
-            .perform(get("/caseload/team/${code}").withToken())
-            .andExpect(status().isOk)
+        val res = mockMvc.get("/caseload/team/${code}") { withToken() }
+            .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<TeamCaseload>()
 
         assertThat(res.provider, equalTo(DEFAULT_PROVIDER.description))
@@ -116,12 +108,12 @@ class UserIntegrationTest : IntegrationTestBase() {
     fun `caseload search returns all when no search criteria or sort specified`() {
 
         val user = USER
-        val res = mockMvc
-            .perform(
-                post("/caseload/user/${user.username}/search").withToken()
-                    .withJson(UserSearchFilter(nameOrCrn = null, nextContactCode = null, sentenceCode = null))
-            )
-            .andExpect(status().isOk)
+        val res = mockMvc.post("/caseload/user/${user.username}/search") {
+            withToken()
+            json = UserSearchFilter(nameOrCrn = null, nextContactCode = null, sentenceCode = null)
+        }
+            .andExpect { status { isOk() } }
+
             .andReturn().response.contentAsJson<StaffCaseload>()
 
         assertThat(res.caseload.size, equalTo(2))
@@ -131,12 +123,11 @@ class UserIntegrationTest : IntegrationTestBase() {
     fun `caseload search returns one when name part specified`() {
 
         val user = USER
-        val res = mockMvc
-            .perform(
-                post("/caseload/user/${user.username}/search").withToken()
-                    .withJson(UserSearchFilter(nameOrCrn = "Blog", nextContactCode = null, sentenceCode = null))
-            )
-            .andExpect(status().isOk)
+        val res = mockMvc.post("/caseload/user/${user.username}/search") {
+            withToken()
+            json = UserSearchFilter(nameOrCrn = "Blog", nextContactCode = null, sentenceCode = null)
+        }
+            .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<StaffCaseload>()
 
         assertThat(res.caseload.size, equalTo(1))
@@ -147,18 +138,15 @@ class UserIntegrationTest : IntegrationTestBase() {
     fun `caseload search returns one case when 2 name parts specified`() {
 
         val user = USER
-        val res = mockMvc
-            .perform(
-                post("/caseload/user/${user.username}/search").withToken()
-                    .withJson(
-                        UserSearchFilter(
-                            nameOrCrn = "Caroline Blog",
-                            nextContactCode = null,
-                            sentenceCode = null
-                        )
-                    )
+        val res = mockMvc.post("/caseload/user/${user.username}/search") {
+            withToken()
+            json = UserSearchFilter(
+                nameOrCrn = "Caroline Blog",
+                nextContactCode = null,
+                sentenceCode = null
             )
-            .andExpect(status().isOk)
+        }
+            .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<StaffCaseload>()
 
         assertThat(res.caseload.size, equalTo(1))
@@ -169,12 +157,11 @@ class UserIntegrationTest : IntegrationTestBase() {
     fun `caseload search returns 1 case when sentence specified in filter`() {
 
         val user = USER
-        val res = mockMvc
-            .perform(
-                post("/caseload/user/${user.username}/search").withToken()
-                    .withJson(UserSearchFilter(nameOrCrn = null, nextContactCode = null, sentenceCode = "DFS"))
-            )
-            .andExpect(status().isOk)
+        val res = mockMvc.post("/caseload/user/${user.username}/search") {
+            withToken()
+            json = UserSearchFilter(nameOrCrn = null, nextContactCode = null, sentenceCode = "DFS")
+        }
+            .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<StaffCaseload>()
 
         assertThat(res.caseload.size, equalTo(1))
@@ -186,12 +173,11 @@ class UserIntegrationTest : IntegrationTestBase() {
     fun `caseload search returns 1 case when nextAppointment type specified in filter`() {
 
         val user = USER
-        val res = mockMvc
-            .perform(
-                post("/caseload/user/${user.username}/search").withToken()
-                    .withJson(UserSearchFilter(nameOrCrn = null, nextContactCode = "CODI", sentenceCode = null))
-            )
-            .andExpect(status().isOk)
+        val res = mockMvc.post("/caseload/user/${user.username}/search") {
+            withToken()
+            json = UserSearchFilter(nameOrCrn = null, nextContactCode = "CODI", sentenceCode = null)
+        }
+            .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<StaffCaseload>()
 
         assertThat(res.caseload.size, equalTo(1))
@@ -203,12 +189,11 @@ class UserIntegrationTest : IntegrationTestBase() {
     fun `caseload search returns null sentence type as last case when sentence type is in the sort criteria as descending`() {
 
         val user = USER
-        val res = mockMvc
-            .perform(
-                post("/caseload/user/${user.username}/search?sortBy=sentence.desc").withToken()
-                    .withJson(UserSearchFilter(nameOrCrn = null, nextContactCode = null, sentenceCode = null))
-            )
-            .andExpect(status().isOk)
+        val res = mockMvc.post("/caseload/user/${user.username}/search?sortBy=sentence.desc") {
+            withToken()
+            json = UserSearchFilter(nameOrCrn = null, nextContactCode = null, sentenceCode = null)
+        }
+            .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<StaffCaseload>()
 
         assertThat(res.caseload.size, equalTo(2))
@@ -220,12 +205,11 @@ class UserIntegrationTest : IntegrationTestBase() {
     fun `caseload search returns null next appointment as the last case when next contact is in the sort criteria as descending`() {
 
         val user = USER
-        val res = mockMvc
-            .perform(
-                post("/caseload/user/${user.username}/search?sortBy=nextContact.desc").withToken()
-                    .withJson(UserSearchFilter(nameOrCrn = null, nextContactCode = null, sentenceCode = null))
-            )
-            .andExpect(status().isOk)
+        val res = mockMvc.post("/caseload/user/${user.username}/search?sortBy=nextContact.desc") {
+            withToken()
+            json = UserSearchFilter(nameOrCrn = null, nextContactCode = null, sentenceCode = null)
+        }
+            .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<StaffCaseload>()
 
         assertThat(res.caseload.size, equalTo(2))
@@ -237,12 +221,11 @@ class UserIntegrationTest : IntegrationTestBase() {
     fun `caseload search returns crn with name bloggs first when sorting by surname asc`() {
 
         val user = USER
-        val res = mockMvc
-            .perform(
-                post("/caseload/user/${user.username}/search?sortBy=surname.asc").withToken()
-                    .withJson(UserSearchFilter(nameOrCrn = null, nextContactCode = null, sentenceCode = null))
-            )
-            .andExpect(status().isOk)
+        val res = mockMvc.post("/caseload/user/${user.username}/search?sortBy=surname.asc") {
+            withToken()
+            json = UserSearchFilter(nameOrCrn = null, nextContactCode = null, sentenceCode = null)
+        }
+            .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<StaffCaseload>()
 
         assertThat(res.caseload.size, equalTo(2))
@@ -254,12 +237,11 @@ class UserIntegrationTest : IntegrationTestBase() {
     fun `caseload search returns crn with name Surname first when sorting by surname desc`() {
 
         val user = USER
-        val res = mockMvc
-            .perform(
-                post("/caseload/user/${user.username}/search?sortBy=surname.desc").withToken()
-                    .withJson(UserSearchFilter(nameOrCrn = null, nextContactCode = null, sentenceCode = null))
-            )
-            .andExpect(status().isOk)
+        val res = mockMvc.post("/caseload/user/${user.username}/search?sortBy=surname.desc") {
+            withToken()
+            json = UserSearchFilter(nameOrCrn = null, nextContactCode = null, sentenceCode = null)
+        }
+            .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<StaffCaseload>()
 
         assertThat(res.caseload.size, equalTo(2))
@@ -273,12 +255,11 @@ class UserIntegrationTest : IntegrationTestBase() {
     fun `caseload search throws a bad request when the sortBy is not in the correct format`() {
 
         val user = USER
-        val res = mockMvc
-            .perform(
-                post("/caseload/user/${user.username}/search?sortBy=surname.desc.ssss").withToken()
-                    .withJson(UserSearchFilter(nameOrCrn = null, nextContactCode = null, sentenceCode = null))
-            )
-            .andExpect(status().isBadRequest)
+        val res = mockMvc.post("/caseload/user/${user.username}/search?sortBy=surname.desc.ssss") {
+            withToken()
+            json = UserSearchFilter(nameOrCrn = null, nextContactCode = null, sentenceCode = null)
+        }
+            .andExpect { status { isBadRequest() } }
             .andReturn().response.contentAsJson<ErrorResponse>()
         assertThat(res.message, equalTo("Sort criteria invalid format"))
     }
@@ -287,31 +268,28 @@ class UserIntegrationTest : IntegrationTestBase() {
     fun `caseload search throws a bad request when the sortBy is not implemented`() {
 
         val user = USER
-        val res = mockMvc
-            .perform(
-                post("/caseload/user/${user.username}/search?sortBy=sausages.desc").withToken()
-                    .withJson(UserSearchFilter(nameOrCrn = null, nextContactCode = null, sentenceCode = null))
-            )
-            .andExpect(status().isBadRequest)
+        val res = mockMvc.post("/caseload/user/${user.username}/search?sortBy=sausages.desc") {
+            withToken()
+            json = UserSearchFilter(nameOrCrn = null, nextContactCode = null, sentenceCode = null)
+        }
+            .andExpect { status { isBadRequest() } }
             .andReturn().response.contentAsJson<ErrorResponse>()
         assertThat(res.message, equalTo("Sort by sausages.desc is not implemented"))
     }
 
     @Test
     fun `caseload search throws a not found when the user is not known`() {
-        mockMvc
-            .perform(
-                post("/caseload/user/NOT_KNOWN/search?sortBy=sentence.desc").withToken()
-                    .withJson(UserSearchFilter(nameOrCrn = null, nextContactCode = null, sentenceCode = null))
-            )
-            .andExpect(status().isNotFound)
+        mockMvc.post("/caseload/user/NOT_KNOWN/search?sortBy=sentence.desc") {
+            withToken()
+            json = UserSearchFilter(nameOrCrn = null, nextContactCode = null, sentenceCode = null)
+        }
+            .andExpect { status { isNotFound() } }
     }
 
     @Test
     fun `caseload search throws a bad request when no request body is found`() {
         val user = USER
-        mockMvc
-            .perform(post("/caseload/user/${user.username}/search?sortBy=sentence.desc").withToken())
-            .andExpect(status().isBadRequest)
+        mockMvc.post("/caseload/user/${user.username}/search?sortBy=sentence.desc") { withToken() }
+            .andExpect { status { isBadRequest() } }
     }
 }

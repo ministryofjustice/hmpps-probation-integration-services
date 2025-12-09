@@ -25,30 +25,18 @@ import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 
 @SpringBootTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation::class)
-internal class OpdIntegrationTest {
+internal class OpdIntegrationTest @Autowired constructor(
     @Value("\${messaging.consumer.queue}")
-    lateinit var queueName: String
-
-    @Autowired
-    lateinit var channelManager: HmppsChannelManager
-
+    private val queueName: String,
+    private val channelManager: HmppsChannelManager,
+    private val wireMockServer: WireMockServer,
+    private val personManagerRepository: PersonManagerRepository,
+    private val nsiRepository: NsiRepository,
+    private val nsiManagerRepository: NsiManagerRepository,
+    private val contactRepository: ContactRepository
+) {
     @MockitoBean
     lateinit var telemetryService: TelemetryService
-
-    @Autowired
-    lateinit var wireMockServer: WireMockServer
-
-    @Autowired
-    lateinit var personManagerRepository: PersonManagerRepository
-
-    @Autowired
-    lateinit var nsiRepository: NsiRepository
-
-    @Autowired
-    lateinit var nsiManagerRepository: NsiManagerRepository
-
-    @Autowired
-    lateinit var contactRepository: ContactRepository
 
     @Order(1)
     @Test

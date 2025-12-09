@@ -9,8 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import org.springframework.test.web.servlet.put
 import uk.gov.justice.digital.hmpps.api.model.ReferralStarted
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ProviderGenerator
@@ -21,22 +20,18 @@ import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.Person
 import uk.gov.justice.digital.hmpps.integrations.delius.referral.NsiRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.referral.entity.NsiStatus
 import uk.gov.justice.digital.hmpps.test.CustomMatchers.isCloseTo
-import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withJson
+import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.json
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 import java.time.ZonedDateTime
 import java.util.*
 
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-internal class ReferralStartedIntegrationTest {
-    @Autowired
-    lateinit var mockMvc: MockMvc
-
-    @Autowired
-    lateinit var nsiRepository: NsiRepository
-
-    @Autowired
-    lateinit var contactRepository: ContactRepository
+internal class ReferralStartedIntegrationTest @Autowired constructor(
+    private val mockMvc: MockMvc,
+    private val nsiRepository: NsiRepository,
+    private val contactRepository: ContactRepository
+) {
 
     @Test
     fun `nsi, manager and contacts created when it doesn't already exist`() {
@@ -68,10 +63,11 @@ internal class ReferralStartedIntegrationTest {
 
     private fun makeRequest(person: Person, referralId: UUID, request: ReferralStarted) {
         request.set(ReferralStarted::referralId, referralId)
-        mockMvc
-            .perform(put("/probation-case/${person.crn}/referrals").withToken().withJson(request))
-            .andExpect(status().isNoContent)
-
+        mockMvc.put("/probation-case/${person.crn}/referrals") {
+            withToken()
+            json = request
+        }
+            .andExpect { status { isNoContent() } }
         validateNsiAndContacts(person, request)
     }
 

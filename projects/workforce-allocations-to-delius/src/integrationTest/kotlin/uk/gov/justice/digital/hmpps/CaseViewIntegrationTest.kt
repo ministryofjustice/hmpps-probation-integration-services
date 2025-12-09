@@ -9,8 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import org.springframework.test.web.servlet.get
 import uk.gov.justice.digital.hmpps.api.model.*
 import uk.gov.justice.digital.hmpps.data.generator.AddressGenerator
 import uk.gov.justice.digital.hmpps.data.generator.DocumentGenerator
@@ -22,27 +21,26 @@ import java.time.LocalDate
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
-class CaseViewIntegrationTest {
-
-    @Autowired
-    lateinit var mockMvc: MockMvc
+class CaseViewIntegrationTest @Autowired constructor(
+    private val mockMvc: MockMvc
+) {
 
     @Test
     fun `get case view unauthorised`() {
-        mockMvc.perform(get("/allocation-demand/N452321/1/case-view"))
-            .andExpect(status().isUnauthorized)
+        mockMvc.get("/allocation-demand/N452321/1/case-view")
+            .andExpect { status { isUnauthorized() } }
     }
 
     @Test
     fun `get case view no matching crn`() {
-        mockMvc.perform(get("/allocation-demand/N452321/1/case-view").withToken())
-            .andExpect(status().isNotFound)
+        mockMvc.get("/allocation-demand/N452321/1/case-view") { withToken() }
+            .andExpect { status { isNotFound() } }
     }
 
     @Test
     fun `get case view no matching event`() {
-        mockMvc.perform(get("/allocation-demand/${PersonGenerator.DEFAULT.crn}/107/case-view").withToken())
-            .andExpect(status().isNotFound)
+        mockMvc.get("/allocation-demand/${PersonGenerator.DEFAULT.crn}/107/case-view") { withToken() }
+            .andExpect { status { isNotFound() } }
     }
 
     @Test
@@ -50,8 +48,8 @@ class CaseViewIntegrationTest {
         val person = PersonGenerator.CASE_VIEW
         val eventNumber = EventGenerator.CASE_VIEW.number
 
-        val cv = mockMvc.perform(get("/allocation-demand/${person.crn}/$eventNumber/case-view").withToken())
-            .andExpect(status().is2xxSuccessful)
+        val cv = mockMvc.get("/allocation-demand/${person.crn}/$eventNumber/case-view") { withToken() }
+            .andExpect { status { is2xxSuccessful() } }
             .andReturn().response.contentAsJson<CaseView>()
 
         Assertions.assertNotNull(cv)

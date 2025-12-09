@@ -2,8 +2,7 @@ package uk.gov.justice.digital.hmpps
 
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers
+import org.springframework.test.web.servlet.get
 import uk.gov.justice.digital.hmpps.api.model.overview.Rar
 import uk.gov.justice.digital.hmpps.api.model.sentence.NoteDetail
 import uk.gov.justice.digital.hmpps.api.model.sentence.Requirement
@@ -19,19 +18,14 @@ class RequirementIntegrationTest : IntegrationTestBase() {
 
     @Test
     fun `unauthorized status returned`() {
-        mockMvc
-            .perform(MockMvcRequestBuilders.get("/sentence/${PersonGenerator.OVERVIEW.crn}/requirement/1/note/1"))
-            .andExpect(MockMvcResultMatchers.status().isUnauthorized)
+        mockMvc.get("/sentence/${PersonGenerator.OVERVIEW.crn}/requirement/1/note/1")
+            .andExpect { status { isUnauthorized() } }
     }
 
     @Test
     fun `requirement not found`() {
-        val response = mockMvc
-            .perform(
-                MockMvcRequestBuilders.get("/sentence/${PersonGenerator.OVERVIEW.crn}/requirement/0/note/6")
-                    .withToken()
-            )
-            .andExpect(MockMvcResultMatchers.status().isOk)
+        val response = mockMvc.get("/sentence/${PersonGenerator.OVERVIEW.crn}/requirement/0/note/6") { withToken() }
+            .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<RequirementNoteDetail>()
 
         val expected = RequirementNoteDetail(PersonGenerator.OVERVIEW.toSummary())
@@ -41,13 +35,10 @@ class RequirementIntegrationTest : IntegrationTestBase() {
 
     @Test
     fun `get requirement`() {
-        val response = mockMvc
-            .perform(
-                MockMvcRequestBuilders.get("/sentence/${PersonGenerator.OVERVIEW.crn}/requirement/${REQUIREMENT.id}/note/0")
-                    .withToken()
-            )
-            .andExpect(MockMvcResultMatchers.status().isOk)
-            .andReturn().response.contentAsJson<RequirementNoteDetail>()
+        val response =
+            mockMvc.get("/sentence/${PersonGenerator.OVERVIEW.crn}/requirement/${REQUIREMENT.id}/note/0") { withToken() }
+                .andExpect { status { isOk() } }
+                .andReturn().response.contentAsJson<RequirementNoteDetail>()
 
         val expected = RequirementNoteDetail(
             PersonGenerator.OVERVIEW.toSummary(),

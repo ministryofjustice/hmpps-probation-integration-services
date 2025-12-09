@@ -8,8 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import org.springframework.test.web.servlet.get
 import uk.gov.justice.digital.hmpps.api.model.*
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ProviderGenerator
@@ -19,14 +18,14 @@ import java.time.LocalDate
 
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class CaseDetailIntegrationTests {
-    @Autowired
-    lateinit var mockMvc: MockMvc
+class CaseDetailIntegrationTests @Autowired constructor(
+    private val mockMvc: MockMvc
+) {
 
     @Test
     fun `crn is correctly returned when noms id present in delius`() {
-        val identifiers = mockMvc.perform(get("/probation-cases/${PersonGenerator.DEFAULT.noms}/crn").withToken())
-            .andExpect(status().is2xxSuccessful)
+        val identifiers = mockMvc.get("/probation-cases/${PersonGenerator.DEFAULT.noms}/crn") { withToken() }
+            .andExpect { status { is2xxSuccessful() } }
             .andReturn().response.contentAsJson<CaseIdentifiers>()
 
         assertThat(identifiers.crn, equalTo(PersonGenerator.DEFAULT.crn))
@@ -34,14 +33,14 @@ class CaseDetailIntegrationTests {
 
     @Test
     fun `not found returned when noms id not present in delius`() {
-        mockMvc.perform(get("/probation-cases/N4567FD/crn").withToken())
-            .andExpect(status().isNotFound)
+        mockMvc.get("/probation-cases/N4567FD/crn") { withToken() }
+            .andExpect { status { isNotFound() } }
     }
 
     @Test
     fun `mappa detail is returned when available`() {
-        val mappa = mockMvc.perform(get("/probation-cases/${PersonGenerator.DEFAULT.crn}/mappa").withToken())
-            .andExpect(status().is2xxSuccessful)
+        val mappa = mockMvc.get("/probation-cases/${PersonGenerator.DEFAULT.crn}/mappa") { withToken() }
+            .andExpect { status { is2xxSuccessful() } }
             .andReturn().response.contentAsJson<MappaDetail>()
 
         assertThat(mappa.category, equalTo(1))
@@ -52,9 +51,8 @@ class CaseDetailIntegrationTests {
 
     @Test
     fun `community manager is returned`() {
-        val manager = mockMvc
-            .perform(get("/probation-cases/${PersonGenerator.DEFAULT.crn}/community-manager").withToken())
-            .andExpect(status().is2xxSuccessful)
+        val manager = mockMvc.get("/probation-cases/${PersonGenerator.DEFAULT.crn}/community-manager") { withToken() }
+            .andExpect { status { is2xxSuccessful() } }
             .andReturn().response.contentAsJson<Manager>()
 
         assertThat(
@@ -66,8 +64,8 @@ class CaseDetailIntegrationTests {
 
     @Test
     fun `person detail is returned correctly`() {
-        val detail = mockMvc.perform(get("/probation-cases/${PersonGenerator.DEFAULT.crn}").withToken())
-            .andExpect(status().is2xxSuccessful)
+        val detail = mockMvc.get("/probation-cases/${PersonGenerator.DEFAULT.crn}") { withToken() }
+            .andExpect { status { is2xxSuccessful() } }
             .andReturn().response.contentAsJson<PersonDetail>()
 
         assertThat(detail.crn, equalTo(PersonGenerator.DEFAULT.crn))

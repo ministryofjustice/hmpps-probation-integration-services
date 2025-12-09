@@ -13,8 +13,7 @@ import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDO
 import org.springframework.test.context.bean.override.mockito.MockitoBean
 import org.springframework.test.context.bean.override.mockito.MockitoSpyBean
 import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import org.springframework.test.web.servlet.post
 import uk.gov.justice.digital.hmpps.audit.entity.AuditedInteraction
 import uk.gov.justice.digital.hmpps.audit.repository.AuditedInteractionRepository
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
@@ -24,15 +23,15 @@ import uk.gov.justice.digital.hmpps.service.ContactSearchRequest
 import uk.gov.justice.digital.hmpps.service.PageRequest
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import uk.gov.justice.digital.hmpps.test.CustomMatchers.isCloseTo
-import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withJson
+import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.json
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 import java.time.ZonedDateTime
 
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = RANDOM_PORT)
-internal class IntegrationTest {
-    @Autowired
-    lateinit var mockMvc: MockMvc
+internal class IntegrationTest @Autowired constructor(
+    private val mockMvc: MockMvc
+) {
 
     @MockitoBean
     lateinit var telemetryService: TelemetryService
@@ -49,19 +48,15 @@ internal class IntegrationTest {
         val sort = "date"
         val direction = "asc"
         val dateTime = ZonedDateTime.now()
-        mockMvc
-            .perform(
-                post("/probation-search/audit/contact-search")
-                    .withToken()
-                    .withJson(
-                        ContactSearchAuditRequest(
-                            ContactSearchRequest(person.crn, query, true),
-                            "SearchUser",
-                            PageRequest(page, pageSize, sort, direction),
-                            dateTime
-                        )
-                    )
-            ).andExpect(status().isCreated)
+        mockMvc.post("/probation-search/audit/contact-search") {
+            withToken()
+            json = ContactSearchAuditRequest(
+                ContactSearchRequest(person.crn, query, true),
+                "SearchUser",
+                PageRequest(page, pageSize, sort, direction),
+                dateTime
+            )
+        }.andExpect { status { isCreated() } }
 
         val audit = argumentCaptor<AuditedInteraction>()
         verify(air, timeout(2000)).save(audit.capture())

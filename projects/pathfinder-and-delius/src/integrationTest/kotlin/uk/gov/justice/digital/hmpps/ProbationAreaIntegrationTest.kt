@@ -6,8 +6,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
 import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import org.springframework.test.web.servlet.get
 import uk.gov.justice.digital.hmpps.data.generator.ProbationAreaGenerator
 import uk.gov.justice.digital.hmpps.model.LocalDeliveryUnit
 import uk.gov.justice.digital.hmpps.model.ProbationArea
@@ -17,23 +16,21 @@ import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = RANDOM_PORT)
-internal class ProbationAreaIntegrationTest {
-    @Autowired
-    lateinit var mockMvc: MockMvc
+internal class ProbationAreaIntegrationTest @Autowired constructor(
+    private val mockMvc: MockMvc
+) {
 
     @Test
     fun `API call retuns a success response`() {
-        mockMvc
-            .perform(get("/probation-areas").withToken())
-            .andExpect(status().is2xxSuccessful)
+        mockMvc.get("/probation-areas") { withToken() }
+            .andExpect { status { is2xxSuccessful() } }
             .andExpectJson(getProbationAreas())
     }
 
     @Test
     fun `API call including non selectable retuns a success response`() {
-        mockMvc
-            .perform(get("/probation-areas?includeNonSelectable=true").withToken())
-            .andExpect(status().is2xxSuccessful)
+        mockMvc.get("/probation-areas?includeNonSelectable=true") { withToken() }
+            .andExpect { status { is2xxSuccessful() } }
             .andExpectJson(getProbationAreasIncludingNonSelectable())
     }
 

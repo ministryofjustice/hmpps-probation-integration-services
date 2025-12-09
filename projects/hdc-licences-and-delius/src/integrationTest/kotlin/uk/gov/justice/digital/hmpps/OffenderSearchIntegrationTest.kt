@@ -7,25 +7,24 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
 import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import org.springframework.test.web.servlet.post
 import uk.gov.justice.digital.hmpps.model.*
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
-import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withJson
+import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.json
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = RANDOM_PORT)
-class OffenderSearchIntegrationTest {
-    @Autowired
-    lateinit var mockMvc: MockMvc
+class OffenderSearchIntegrationTest @Autowired constructor(
+    private val mockMvc: MockMvc
+) {
 
     @Test
     fun `unauthorized status returned`() {
         val nomsList = listOf("AAA", "BBB")
         mockMvc
-            .perform(post("/nomsNumbers").withJson(nomsList))
-            .andExpect(status().isUnauthorized)
+            .post("/nomsNumbers") { json = nomsList }
+            .andExpect { status { isUnauthorized() } }
     }
 
     @Test
@@ -47,7 +46,12 @@ class OffenderSearchIntegrationTest {
                 IDs(crn = "X000002", nomsNumber = "PERSON2"),
                 offenderManagers = listOf(
                     OffenderManager(
-                        StaffHuman("STAFF0U", forenames = "Test1 Forename1", surname = "Staff1", unallocated = true),
+                        StaffHuman(
+                            "STAFF0U",
+                            forenames = "Test1 Forename1",
+                            surname = "Staff1",
+                            unallocated = true
+                        ),
                         probationArea = ProbationArea(description = "Test"),
                         active = true
                     )
@@ -55,8 +59,11 @@ class OffenderSearchIntegrationTest {
             )
         )
         val response = mockMvc
-            .perform(post("/nomsNumbers").withToken().withJson(nomsList))
-            .andExpect(status().isOk)
+            .post("/nomsNumbers") {
+                withToken()
+                json = nomsList
+            }
+            .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<List<OffenderDetail>>()
 
         assertEquals(expected, response)

@@ -37,33 +37,19 @@ import java.time.ZonedDateTime
 
 @SpringBootTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation::class)
-internal class ReferAndMonitorIntegrationTest {
+internal class ReferAndMonitorIntegrationTest @Autowired constructor(
     @Value("\${messaging.consumer.queue}")
-    lateinit var queueName: String
-
-    @Autowired
-    lateinit var channelManager: HmppsChannelManager
-
-    @Autowired
-    lateinit var wireMockServer: WireMockServer
-
+    private val queueName: String,
+    private val channelManager: HmppsChannelManager,
+    private val wireMockServer: WireMockServer,
+    private val nsiRepository: NsiRepository,
+    private val statusHistoryRepo: NsiStatusHistoryRepository,
+    private val contactRepository: ContactRepository,
+    private val enforcementRepository: EnforcementRepository,
+    private val eventRepository: EventRepository
+) {
     @MockitoBean
     lateinit var telemetryService: TelemetryService
-
-    @Autowired
-    lateinit var nsiRepository: NsiRepository
-
-    @Autowired
-    lateinit var statusHistoryRepo: NsiStatusHistoryRepository
-
-    @Autowired
-    lateinit var contactRepository: ContactRepository
-
-    @Autowired
-    lateinit var enforcementRepository: EnforcementRepository
-
-    @Autowired
-    lateinit var eventRepository: EventRepository
 
     @Test
     @Order(1)

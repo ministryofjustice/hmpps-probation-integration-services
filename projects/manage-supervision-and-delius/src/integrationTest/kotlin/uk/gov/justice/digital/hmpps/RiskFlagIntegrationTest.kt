@@ -5,8 +5,7 @@ import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Test
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import org.springframework.test.web.servlet.get
 import uk.gov.justice.digital.hmpps.api.model.risk.PersonRiskFlag
 import uk.gov.justice.digital.hmpps.api.model.risk.PersonRiskFlags
 import uk.gov.justice.digital.hmpps.api.model.risk.RiskLevel
@@ -30,9 +29,8 @@ class RiskFlagIntegrationTest : IntegrationTestBase() {
     fun `all risk flags are returned`() {
 
         val person = OVERVIEW
-        val res = mockMvc
-            .perform(get("/risk-flags/${person.crn}").withToken())
-            .andExpect(status().isOk)
+        val res = mockMvc.get("/risk-flags/${person.crn}") { withToken() }
+            .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<PersonRiskFlags>()
         assertThat(res.personSummary.crn, equalTo(person.crn))
         assertThat(res.mappa?.level, equalTo(2))
@@ -68,9 +66,8 @@ class RiskFlagIntegrationTest : IntegrationTestBase() {
     @Test
     fun `opd and mappa is not returned`() {
         val person = PERSON_2
-        val res = mockMvc
-            .perform(get("/risk-flags/${person.crn}").withToken())
-            .andExpect(status().isOk)
+        val res = mockMvc.get("/risk-flags/${person.crn}") { withToken() }
+            .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<PersonRiskFlags>()
         assertThat(res.personSummary.crn, equalTo(person.crn))
         assertThat(res.mappa, equalTo(null))
@@ -81,9 +78,8 @@ class RiskFlagIntegrationTest : IntegrationTestBase() {
     fun `individual risk flag is returned`() {
 
         val person = OVERVIEW
-        val res = mockMvc
-            .perform(get("/risk-flags/${person.crn}/${REGISTRATION_2.id}").withToken())
-            .andExpect(status().isOk)
+        val res = mockMvc.get("/risk-flags/${person.crn}/${REGISTRATION_2.id}") { withToken() }
+            .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<PersonRiskFlag>()
         assertThat(res.personSummary.crn, equalTo(person.crn))
         assertThat(res.riskFlag.description, equalTo(REGISTRATION_2.type.description))
@@ -93,9 +89,8 @@ class RiskFlagIntegrationTest : IntegrationTestBase() {
     @Test
     fun `individual risk flag is returned with single note`() {
         val person = OVERVIEW
-        val res = mockMvc
-            .perform(get("/risk-flags/${person.crn}/${REGISTRATION_2.id}/note/1").withToken())
-            .andExpect(status().isOk)
+        val res = mockMvc.get("/risk-flags/${person.crn}/${REGISTRATION_2.id}/note/1") { withToken() }
+            .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<PersonRiskFlag>()
         assertThat(res.personSummary.crn, equalTo(person.crn))
         assertThat(res.riskFlag.description, equalTo(REGISTRATION_2.type.description))
@@ -106,9 +101,8 @@ class RiskFlagIntegrationTest : IntegrationTestBase() {
     @Test
     fun `individual risk flag is returned with removal history note`() {
         val person = OVERVIEW
-        val res = mockMvc
-            .perform(get("/risk-flags/${person.crn}/${REGISTRATION_3.id}/risk-removal-note/1").withToken())
-            .andExpect(status().isOk)
+        val res = mockMvc.get("/risk-flags/${person.crn}/${REGISTRATION_3.id}/risk-removal-note/1") { withToken() }
+            .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<PersonRiskFlag>()
         assertThat(res.personSummary.crn, equalTo(person.crn))
         assertThat(res.riskFlag.description, equalTo(REGISTRATION_3.type.description))
@@ -130,6 +124,7 @@ class RiskFlagIntegrationTest : IntegrationTestBase() {
     fun `individual risk flag not found`() {
 
         val person = OVERVIEW
-        mockMvc.perform(get("/risk-flags/${person.crn}/9999999").withToken()).andExpect(status().isNotFound)
+        mockMvc.get("/risk-flags/${person.crn}/9999999") { withToken() }
+            .andExpect { status { isNotFound() } }
     }
 }

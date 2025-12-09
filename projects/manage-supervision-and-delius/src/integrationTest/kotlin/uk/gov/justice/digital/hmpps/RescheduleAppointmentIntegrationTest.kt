@@ -2,8 +2,7 @@ package uk.gov.justice.digital.hmpps
 
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers
+import org.springframework.test.web.servlet.put
 import uk.gov.justice.digital.hmpps.api.model.appointment.RescheduleAppointmentRequest
 import uk.gov.justice.digital.hmpps.data.generator.AppointmentGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.LOCATION_BRK_1
@@ -14,7 +13,7 @@ import uk.gov.justice.digital.hmpps.data.generator.OffenderManagerGenerator.PI_U
 import uk.gov.justice.digital.hmpps.data.generator.OffenderManagerGenerator.TEAM_1
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.integrations.delius.appointment.getAppointment
-import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withJson
+import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.json
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.ZonedDateTime
@@ -25,13 +24,11 @@ class RescheduleAppointmentIntegrationTest : IntegrationTestBase() {
     fun `end time must be after start time`() {
         val request =
             rescheduleRequest(startTime = LocalTime.now().plusHours(1), endTime = LocalTime.now().minusHours(1))
-        mockMvc
-            .perform(
-                MockMvcRequestBuilders.put("/appointments/${IdGenerator.getAndIncrement()}/reschedule")
-                    .withUserToken(PI_USER.username)
-                    .withJson(request)
-            )
-            .andExpect(MockMvcResultMatchers.status().isBadRequest)
+        mockMvc.put("/appointments/${IdGenerator.getAndIncrement()}/reschedule") {
+            withUserToken(PI_USER.username)
+            json = request
+        }
+            .andExpect { status { isBadRequest() } }
     }
 
     @Test
@@ -51,13 +48,11 @@ class RescheduleAppointmentIntegrationTest : IntegrationTestBase() {
             endTime = now.toLocalTime()
         )
 
-        mockMvc
-            .perform(
-                MockMvcRequestBuilders.put("/appointments/${appointment.id}/reschedule")
-                    .withUserToken(PI_USER.username)
-                    .withJson(request)
-            )
-            .andExpect(MockMvcResultMatchers.status().isBadRequest)
+        mockMvc.put("/appointments/${appointment.id}/reschedule") {
+            withUserToken(PI_USER.username)
+            json = request
+        }
+            .andExpect { status { isBadRequest() } }
     }
 
     @Test
@@ -72,13 +67,11 @@ class RescheduleAppointmentIntegrationTest : IntegrationTestBase() {
         )
         val request = rescheduleRequest(startTime = LocalTime.now(), endTime = LocalTime.now().minusHours(1))
 
-        mockMvc
-            .perform(
-                MockMvcRequestBuilders.put("/appointments/${appointment.id}/reschedule")
-                    .withUserToken(PI_USER.username)
-                    .withJson(request)
-            )
-            .andExpect(MockMvcResultMatchers.status().isBadRequest)
+        mockMvc.put("/appointments/${appointment.id}/reschedule") {
+            withUserToken(PI_USER.username)
+            json = request
+        }
+            .andExpect { status { isBadRequest() } }
     }
 
     @Test
@@ -94,13 +87,11 @@ class RescheduleAppointmentIntegrationTest : IntegrationTestBase() {
             endTime = end.toLocalTime()
         )
 
-        mockMvc
-            .perform(
-                MockMvcRequestBuilders.put("/appointments/${appointment.id}/reschedule")
-                    .withUserToken(PI_USER.username)
-                    .withJson(request)
-            )
-            .andExpect(MockMvcResultMatchers.status().isBadRequest)
+        mockMvc.put("/appointments/${appointment.id}/reschedule") {
+            withUserToken(PI_USER.username)
+            json = request
+        }
+            .andExpect { status { isBadRequest() } }
     }
 
     @Test
@@ -126,13 +117,11 @@ class RescheduleAppointmentIntegrationTest : IntegrationTestBase() {
             endTime = ZonedDateTime.now().plusDays(4).plusHours(1).toLocalTime(),
         )
 
-        mockMvc
-            .perform(
-                MockMvcRequestBuilders.put("/appointments/${appointment.id}/reschedule")
-                    .withUserToken(PI_USER.username)
-                    .withJson(request)
-            )
-            .andExpect(MockMvcResultMatchers.status().isConflict)
+        mockMvc.put("/appointments/${appointment.id}/reschedule") {
+            withUserToken(PI_USER.username)
+            json = request
+        }
+            .andExpect { status { isConflict() } }
     }
 
     @Test
@@ -148,13 +137,11 @@ class RescheduleAppointmentIntegrationTest : IntegrationTestBase() {
         )
         val request = rescheduleRequest(locationCode = DEFAULT_LOCATION.code, notes = "Notes to be appended")
 
-        mockMvc
-            .perform(
-                MockMvcRequestBuilders.put("/appointments/${original.id}/reschedule")
-                    .withUserToken(PI_USER.username)
-                    .withJson(request)
-            )
-            .andExpect(MockMvcResultMatchers.status().isOk)
+        mockMvc.put("/appointments/${original.id}/reschedule") {
+            withUserToken(PI_USER.username)
+            json = request
+        }
+            .andExpect { status { isOk() } }
 
         val appointment = appointmentRepository.getAppointment(original.id)
         assertThat(appointment.lastUpdatedUserId).isEqualTo(PI_USER.id)
@@ -190,13 +177,11 @@ class RescheduleAppointmentIntegrationTest : IntegrationTestBase() {
             notes = "Notes to be appended"
         )
 
-        mockMvc
-            .perform(
-                MockMvcRequestBuilders.put("/appointments/${original.id}/reschedule")
-                    .withUserToken(PI_USER.username)
-                    .withJson(request)
-            )
-            .andExpect(MockMvcResultMatchers.status().isOk)
+        mockMvc.put("/appointments/${original.id}/reschedule") {
+            withUserToken(PI_USER.username)
+            json = request
+        }
+            .andExpect { status { isOk() } }
 
         val appointment = appointmentRepository.getAppointment(original.id)
         assertThat(appointment.lastUpdatedUserId).isEqualTo(PI_USER.id)
@@ -232,13 +217,11 @@ class RescheduleAppointmentIntegrationTest : IntegrationTestBase() {
             notes = "Some sensitive notes to append"
         )
 
-        mockMvc
-            .perform(
-                MockMvcRequestBuilders.put("/appointments/${original.id}/reschedule")
-                    .withUserToken(PI_USER.username)
-                    .withJson(request)
-            )
-            .andExpect(MockMvcResultMatchers.status().isOk)
+        mockMvc.put("/appointments/${original.id}/reschedule") {
+            withUserToken(PI_USER.username)
+            json = request
+        }
+            .andExpect { status { isOk() } }
 
         val appointment = appointmentRepository.getAppointment(original.id)
         assertThat(appointment.lastUpdatedUserId).isEqualTo(PI_USER.id)
@@ -271,13 +254,11 @@ class RescheduleAppointmentIntegrationTest : IntegrationTestBase() {
             notes = "Some sensitive notes to append"
         )
 
-        mockMvc
-            .perform(
-                MockMvcRequestBuilders.put("/appointments/${original.id}/reschedule")
-                    .withUserToken(PI_USER.username)
-                    .withJson(request)
-            )
-            .andExpect(MockMvcResultMatchers.status().isOk)
+        mockMvc.put("/appointments/${original.id}/reschedule") {
+            withUserToken(PI_USER.username)
+            json = request
+        }
+            .andExpect { status { isOk() } }
 
         val appointment = appointmentRepository.getAppointment(original.id)
         assertThat(appointment.lastUpdatedUserId).isEqualTo(PI_USER.id)

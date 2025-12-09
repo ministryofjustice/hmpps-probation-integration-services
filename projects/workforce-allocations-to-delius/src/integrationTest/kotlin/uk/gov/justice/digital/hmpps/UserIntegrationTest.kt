@@ -6,11 +6,10 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.test.json.JsonCompareMode
 import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.MvcResult
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.*
+import org.springframework.test.web.servlet.get
+import org.springframework.test.web.servlet.post
 import uk.gov.justice.digital.hmpps.api.model.CaseAccess
 import uk.gov.justice.digital.hmpps.api.model.CaseAccessList
 import uk.gov.justice.digital.hmpps.api.model.User
@@ -21,39 +20,40 @@ import uk.gov.justice.digital.hmpps.data.generator.StaffGenerator
 import uk.gov.justice.digital.hmpps.data.generator.UserGenerator
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.andExpectJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
-import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withJson
+import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.json
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class UserIntegrationTest {
-    @Autowired
-    lateinit var mockMvc: MockMvc
+class UserIntegrationTest @Autowired constructor(
+    private val mockMvc: MockMvc
+) {
 
     @Test
     fun `get all users`() {
-        mockMvc.perform(get("/users").withToken())
-            .andExpect(request().asyncStarted())
-            .andDo(MvcResult::getAsyncResult)
-            .andExpect(status().is2xxSuccessful)
-            .andExpect(content().contentTypeCompatibleWith("application/json"))
-            .andExpect(content().json("""[{"username":"JoeBloggs","staffCode":"N02ABS1"}]"""))
+        mockMvc.get("/users") { withToken() }
+            .andExpect { request { asyncStarted() } }
+            .asyncDispatch()
+            .andExpect {
+                status { is2xxSuccessful() }
+                content {
+                    contentTypeCompatibleWith("application/json")
+                    json("""[{"username":"JoeBloggs","staffCode":"N02ABS1"}]""")
+                }
+            }
     }
 
     @Test
     fun `limited access controls are correctly returned`() {
-        val result = mockMvc.perform(
-            post("/users/limited-access?username=${LimitedAccessGenerator.EXCLUSION.user.username}")
-                .withToken()
-                .withJson(
-                    listOf(
-                        PersonGenerator.EXCLUSION.crn,
-                        PersonGenerator.RESTRICTION.crn,
-                        PersonGenerator.DEFAULT.crn,
-                        PersonGenerator.RESTRICTION_EXCLUSION.crn
-                    )
-                )
-        ).andReturn().response.contentAsJson<UserAccess>()
+        val result = mockMvc.post("/users/limited-access?username=${LimitedAccessGenerator.EXCLUSION.user.username}") {
+            withToken()
+            json = listOf(
+                PersonGenerator.EXCLUSION.crn,
+                PersonGenerator.RESTRICTION.crn,
+                PersonGenerator.DEFAULT.crn,
+                PersonGenerator.RESTRICTION_EXCLUSION.crn
+            )
+        }.andReturn().response.contentAsJson<UserAccess>()
 
         assertThat(
             result.access.first { it.crn == PersonGenerator.EXCLUSION.crn },
@@ -103,17 +103,16 @@ class UserIntegrationTest {
 
     @Test
     fun `limited access controls do not prevent legitimate access`() {
-        val result = mockMvc.perform(
-            post("/users/limited-access?username=${LimitedAccessGenerator.RESTRICTION.user.username}")
-                .withToken()
-                .withJson(
-                    listOf(
-                        PersonGenerator.EXCLUSION.crn,
-                        PersonGenerator.RESTRICTION.crn,
-                        PersonGenerator.DEFAULT.crn
-                    )
+        val result =
+            mockMvc.post("/users/limited-access?username=${LimitedAccessGenerator.RESTRICTION.user.username}") {
+                withToken()
+                json = listOf(
+                    PersonGenerator.EXCLUSION.crn,
+                    PersonGenerator.RESTRICTION.crn,
+                    PersonGenerator.DEFAULT.crn
                 )
-        ).andReturn().response.contentAsJson<UserAccess>()
+            }
+                .andReturn().response.contentAsJson<UserAccess>()
 
         assertThat(
             result.access.first { it.crn == PersonGenerator.EXCLUSION.crn },
@@ -131,7 +130,9 @@ class UserIntegrationTest {
 
     @Test
     fun `get all access limitations`() {
-        mockMvc.perform(get("/person/${PersonGenerator.RESTRICTION_EXCLUSION.crn}/limited-access/all").withToken())
+        mockMvc.get("/person/${PersonGenerator.RESTRICTION_EXCLUSION.crn}/limited-access/all") {
+            withToken()
+        }
             .andExpectJson(
                 CaseAccessList(
                     crn = PersonGenerator.RESTRICTION_EXCLUSION.crn,
@@ -151,25 +152,24 @@ class UserIntegrationTest {
     @Test
     fun `get all access limitations filtered by staff code`() {
         val staff = StaffGenerator.STAFF_WITH_USER
-        mockMvc.perform(
-            post("/person/${PersonGenerator.RESTRICTION_EXCLUSION.crn}/limited-access")
-                .withToken()
-                .withJson(listOf(staff.code))
-        ).andExpectJson(
-            CaseAccessList(
-                crn = PersonGenerator.RESTRICTION_EXCLUSION.crn,
-                excludedFrom = emptyList(),
-                restrictedTo = listOf(User(staff.user!!.username, staff.code)),
-                exclusionMessage = PersonGenerator.RESTRICTION_EXCLUSION.exclusionMessage,
-                restrictionMessage = PersonGenerator.RESTRICTION_EXCLUSION.restrictionMessage,
+        mockMvc.post("/person/${PersonGenerator.RESTRICTION_EXCLUSION.crn}/limited-access") {
+            withToken()
+            json = listOf(staff.code)
+        }
+            .andExpectJson(
+                CaseAccessList(
+                    crn = PersonGenerator.RESTRICTION_EXCLUSION.crn,
+                    excludedFrom = emptyList(),
+                    restrictedTo = listOf(User(staff.user!!.username, staff.code)),
+                    exclusionMessage = PersonGenerator.RESTRICTION_EXCLUSION.exclusionMessage,
+                    restrictionMessage = PersonGenerator.RESTRICTION_EXCLUSION.restrictionMessage,
+                )
             )
-        )
 
-        mockMvc.perform(
-            post("/person/${PersonGenerator.RESTRICTION_EXCLUSION.crn}/limited-access")
-                .withToken()
-                .withJson(listOf("OTHER"))
-        ).andExpectJson(
+        mockMvc.post("/person/${PersonGenerator.RESTRICTION_EXCLUSION.crn}/limited-access") {
+            withToken()
+            json = listOf("OTHER")
+        }.andExpectJson(
             CaseAccessList(
                 crn = PersonGenerator.RESTRICTION_EXCLUSION.crn,
                 excludedFrom = emptyList(),
@@ -182,39 +182,48 @@ class UserIntegrationTest {
 
     @Test
     fun `get teams for  username`() {
-        mockMvc.perform(get("/users/s001wt/teams").withToken())
-            .andExpect(status().is2xxSuccessful)
-            .andExpect(
-                content().json(
-                    """
-                    {
-                      "teams": [
+        mockMvc.get("/users/s001wt/teams") { withToken() }
+            .andExpect {
+                status { is2xxSuccessful() }
+                content {
+                    json(
+                        """
                         {
-                          "code": "N03AAA",
-                          "description": "Description for N03AAA",
-                          "localAdminUnit": {
-                            "code": "LAU1",
-                            "description": "Some LAU",
-                            "probationDeliveryUnit": {
-                              "code": "PDU1",
-                              "description": "Some PDU",
-                              "provider": {
-                                "code": "N02",
-                                "description": "NPS North East"
+                          "datasets": [
+                            {
+                              "code": "N02",
+                              "description": "NPS North East"
+                            }
+                          ],
+                          "teams": [
+                            {
+                              "code": "N03AAA",
+                              "description": "Description for N03AAA",
+                              "localAdminUnit": {
+                                "code": "LAU1",
+                                "description": "Some LAU",
+                                "probationDeliveryUnit": {
+                                  "code": "PDU1",
+                                  "description": "Some PDU",
+                                  "provider": {
+                                    "code": "N02",
+                                    "description": "NPS North East"
+                                  }
+                                }
                               }
                             }
-                          }
+                          ]
                         }
-                      ]
-                    }
-                    """.trimIndent()
-                )
-            )
+                        """.trimIndent(),
+                        JsonCompareMode.STRICT,
+                    )
+                }
+            }
     }
 
     @Test
     fun `403 forbidden - staff is end dated`() {
-        mockMvc.perform(get("/users/e001dt/teams").withToken())
-            .andExpect(status().isForbidden)
+        mockMvc.get("/users/e001dt/teams") { withToken() }
+            .andExpect { status { isForbidden() } }
     }
 }

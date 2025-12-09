@@ -28,25 +28,15 @@ import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import java.time.ZonedDateTime
 
 @SpringBootTest
-class AllocateEventIntegrationTest {
-
-    @Value("\${messaging.consumer.queue}")
-    private lateinit var queueName: String
-
-    @Autowired
-    private lateinit var channelManager: HmppsChannelManager
-
-    @Autowired
-    private lateinit var wireMockServer: WireMockServer
-
-    @Autowired
-    private lateinit var orderManagerRepository: OrderManagerRepository
-
+class AllocateEventIntegrationTest @Autowired constructor(
+    @Value("\${messaging.consumer.queue}") private val queueName: String,
+    private val channelManager: HmppsChannelManager,
+    private val wireMockServer: WireMockServer,
+    private val orderManagerRepository: OrderManagerRepository,
+    private val contactRepository: ContactRepository
+) {
     @MockitoBean
     private lateinit var telemetryService: TelemetryService
-
-    @Autowired
-    private lateinit var contactRepository: ContactRepository
 
     @Test
     fun `allocate new order manager spoStaffCode present`() {

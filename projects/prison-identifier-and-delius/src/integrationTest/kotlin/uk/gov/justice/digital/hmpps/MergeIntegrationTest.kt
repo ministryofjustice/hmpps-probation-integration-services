@@ -5,7 +5,6 @@ import org.junit.jupiter.api.Test
 import org.mockito.Mockito.verify
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
 import org.springframework.test.context.bean.override.mockito.MockitoBean
@@ -13,18 +12,13 @@ import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.PERSON_WITH_N
 import uk.gov.justice.digital.hmpps.messaging.HmppsChannelManager
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 
-@AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = RANDOM_PORT)
-internal class MergeIntegrationTest {
+internal class MergeIntegrationTest @Autowired constructor(
     @Value("\${messaging.consumer.queue}")
-    lateinit var queueName: String
-
-    @Autowired
-    lateinit var wireMockServer: WireMockServer
-
-    @Autowired
-    lateinit var channelManager: HmppsChannelManager
-
+    private val queueName: String,
+    private val wireMockServer: WireMockServer,
+    private val channelManager: HmppsChannelManager
+) {
     @MockitoBean
     lateinit var telemetryService: TelemetryService
 

@@ -6,8 +6,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
 import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import org.springframework.test.web.servlet.post
 import uk.gov.justice.digital.hmpps.data.generator.DetailsGenerator
 import uk.gov.justice.digital.hmpps.data.generator.SearchGenerator
 import uk.gov.justice.digital.hmpps.data.generator.SearchGenerator.JOHN_SMITH_1
@@ -17,20 +16,22 @@ import uk.gov.justice.digital.hmpps.entity.DetailPerson
 import uk.gov.justice.digital.hmpps.entity.PersonAlias
 import uk.gov.justice.digital.hmpps.model.*
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.andExpectJson
-import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withJson
+import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.json
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = RANDOM_PORT)
-class SearchIntegrationTest {
-    @Autowired
-    lateinit var mockMvc: MockMvc
+class SearchIntegrationTest @Autowired constructor(
+    private val mockMvc: MockMvc
+) {
 
     @Test
     fun `search must have at least one parameter`() {
-        mockMvc
-            .perform(post("/search/probation-cases").withToken().withJson(SearchRequest()))
-            .andExpect(status().is4xxClientError)
+        mockMvc.post("/search/probation-cases") {
+            withToken()
+            json = SearchRequest()
+        }
+            .andExpect { status { is4xxClientError() } }
     }
 
     @Test
@@ -45,14 +46,18 @@ class SearchIntegrationTest {
             person.nomsNumber
         )
 
-        mockMvc
-            .perform(post("/search/probation-cases").withToken().withJson(request))
-            .andExpect(status().is2xxSuccessful)
+        mockMvc.post("/search/probation-cases") {
+            withToken()
+            json = request
+        }
+            .andExpect { status { is2xxSuccessful() } }
             .andExpectJson(listOf(person.asProbationCase()))
 
-        mockMvc
-            .perform(post("/search/probation-cases?useSearch=false").withToken().withJson(request))
-            .andExpect(status().is2xxSuccessful)
+        mockMvc.post("/search/probation-cases?useSearch=false") {
+            withToken()
+            json = request
+        }
+            .andExpect { status { is2xxSuccessful() } }
             .andExpectJson(listOf(person.asProbationCase()))
     }
 
@@ -60,14 +65,18 @@ class SearchIntegrationTest {
     fun `can find all matching names`() {
         val request = SearchRequest("John", "Smith")
 
-        mockMvc
-            .perform(post("/search/probation-cases").withToken().withJson(request))
-            .andExpect(status().is2xxSuccessful)
+        mockMvc.post("/search/probation-cases") {
+            withToken()
+            json = request
+        }
+            .andExpect { status { is2xxSuccessful() } }
             .andExpectJson(listOf(JOHN_SMITH_1.asProbationCase(), JOHN_SMITH_2.asProbationCase()))
 
-        mockMvc
-            .perform(post("/search/probation-cases?useSearch=false").withToken().withJson(request))
-            .andExpect(status().is2xxSuccessful)
+        mockMvc.post("/search/probation-cases?useSearch=false") {
+            withToken()
+            json = request
+        }
+            .andExpect { status { is2xxSuccessful() } }
             .andExpectJson(listOf(JOHN_SMITH_1.asProbationCase(), JOHN_SMITH_2.asProbationCase()))
     }
 
@@ -75,14 +84,18 @@ class SearchIntegrationTest {
     fun `can find all matching crn`() {
         val request = SearchRequest(crn = JOHN_SMITH_2.crn)
 
-        mockMvc
-            .perform(post("/search/probation-cases").withToken().withJson(request))
-            .andExpect(status().is2xxSuccessful)
+        mockMvc.post("/search/probation-cases") {
+            withToken()
+            json = request
+        }
+            .andExpect { status { is2xxSuccessful() } }
             .andExpectJson(listOf(JOHN_SMITH_2.asProbationCase()))
 
-        mockMvc
-            .perform(post("/search/probation-cases?useSearch=false").withToken().withJson(request))
-            .andExpect(status().is2xxSuccessful)
+        mockMvc.post("/search/probation-cases?useSearch=false") {
+            withToken()
+            json = request
+        }
+            .andExpect { status { is2xxSuccessful() } }
             .andExpectJson(listOf(JOHN_SMITH_2.asProbationCase()))
     }
 
@@ -90,31 +103,37 @@ class SearchIntegrationTest {
     fun `can find all matching noms`() {
         val request = SearchRequest(nomsNumber = JOHN_SMITH_1.nomsNumber)
 
-        mockMvc
-            .perform(post("/search/probation-cases").withToken().withJson(request))
-            .andExpect(status().is2xxSuccessful)
+        mockMvc.post("/search/probation-cases") {
+            withToken()
+            json = request
+        }
+            .andExpect { status { is2xxSuccessful() } }
             .andExpectJson(listOf(JOHN_SMITH_1.asProbationCase()))
 
-        mockMvc
-            .perform(post("/search/probation-cases?useSearch=false").withToken().withJson(request))
-            .andExpect(status().is2xxSuccessful)
+        mockMvc.post("/search/probation-cases?useSearch=false") {
+            withToken()
+            json = request
+        }
+            .andExpect { status { is2xxSuccessful() } }
             .andExpectJson(listOf(JOHN_SMITH_1.asProbationCase()))
     }
 
     @Test
     fun `must provide at least one crn for crn lookup`() {
-        mockMvc
-            .perform(post("/search/probation-cases/crns").withToken().withJson(listOf<String>()))
-            .andExpect(status().is4xxClientError)
+        mockMvc.post("/search/probation-cases/crns") {
+            withToken()
+            json = listOf<String>()
+        }
+            .andExpect { status { is4xxClientError() } }
     }
 
     @Test
     fun `can find all by crns`() {
-        mockMvc
-            .perform(
-                post("/search/probation-cases/crns").withToken().withJson(listOf(JOHN_SMITH_1.crn, JOHN_SMITH_2.crn))
-            )
-            .andExpect(status().is2xxSuccessful)
+        mockMvc.post("/search/probation-cases/crns") {
+            withToken()
+            json = listOf(JOHN_SMITH_1.crn, JOHN_SMITH_2.crn)
+        }
+            .andExpect { status { is2xxSuccessful() } }
             .andExpectJson(listOf(JOHN_SMITH_1.asProbationCase(JOHN_SMITH_1_ALIAS), JOHN_SMITH_2.asProbationCase()))
     }
 

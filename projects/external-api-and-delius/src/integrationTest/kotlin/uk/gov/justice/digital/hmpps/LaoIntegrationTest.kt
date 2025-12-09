@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
+import org.springframework.test.web.servlet.post
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.EXCLUSION
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.RESTRICTION
@@ -16,22 +16,22 @@ import uk.gov.justice.digital.hmpps.model.CrnRequest
 import uk.gov.justice.digital.hmpps.service.CaseAccess
 import uk.gov.justice.digital.hmpps.service.UserAccess
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
-import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withJson
+import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.json
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 import uk.gov.justice.digital.hmpps.user.AuditUser
 
 internal class LaoIntegrationTest : BaseIntegrationTest() {
+
     @ParameterizedTest
     @MethodSource("laoUserCases")
     fun `LAO results are appropriately returned`(user: AuditUser?, person: Person, access: CaseAccess) {
         val queryParam = user?.let { "?username=${user.username}" } ?: ""
         val response = mockMvc
-            .perform(
-                post("/probation-cases/access$queryParam")
-                    .withJson(CrnRequest(listOf(person.crn)))
-                    .withToken()
-            )
-            .andExpect(status().is2xxSuccessful)
+            .post("/probation-cases/access$queryParam") {
+                json = CrnRequest(listOf(person.crn))
+                withToken()
+            }
+            .andExpect { status { is2xxSuccessful() } }
             .andReturn().response.contentAsJson<UserAccess>()
 
         Assertions.assertThat(response).isEqualTo(UserAccess(listOf(access)))
@@ -67,10 +67,9 @@ internal class LaoIntegrationTest : BaseIntegrationTest() {
     @Test
     fun `validates that between 1 and 500 crns are provided`() {
         mockMvc
-            .perform(
-                post("/probation-cases/access?username=${UserGenerator.AUDIT_USER.username.lowercase()}")
-                    .withToken()
-                    .withJson(CrnRequest(listOf()))
-            ).andExpect { status().isBadRequest }
+            .post("/probation-cases/access?username=${UserGenerator.AUDIT_USER.username.lowercase()}") {
+                withToken()
+                json = CrnRequest(listOf())
+            }.andExpect { status().isBadRequest }
     }
 }

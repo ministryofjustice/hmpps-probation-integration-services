@@ -15,20 +15,17 @@ import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = RANDOM_PORT)
-internal class IntegrationTest {
-    @Autowired
-    lateinit var mockMvc: MockMvc
-
-    @Autowired
-    lateinit var wireMockServer: WireMockServer
+internal class IntegrationTest @Autowired constructor(
+    private val mockMvc: MockMvc,
+    private val wireMockServer: WireMockServer
+) {
 
     @MockitoBean
     lateinit var telemetryService: TelemetryService
 
     @Test
     fun `API call retuns a success response`() {
-        mockMvc
-            .perform(get("/example/123").withToken())
-            .andExpect(status().is2xxSuccessful)
+        mockMvc.get("/example/123") { withToken() }
+            .andExpect { status { is2xxSuccessful() } }
     }
 }

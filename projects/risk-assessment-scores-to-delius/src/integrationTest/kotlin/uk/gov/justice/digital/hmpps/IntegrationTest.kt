@@ -14,11 +14,9 @@ import uk.gov.justice.digital.hmpps.exception.ConflictException
 import uk.gov.justice.digital.hmpps.integrations.delius.RiskAssessmentService
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.OGRSAssessmentRepository
-import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
 import uk.gov.justice.digital.hmpps.message.MessageAttributes
 import uk.gov.justice.digital.hmpps.message.Notification
 import uk.gov.justice.digital.hmpps.messaging.HmppsChannelManager
-import uk.gov.justice.digital.hmpps.messaging.NotificationHandler
 import uk.gov.justice.digital.hmpps.messaging.OgrsScore
 import uk.gov.justice.digital.hmpps.messaging.telemetryProperties
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
@@ -28,24 +26,15 @@ import java.util.concurrent.CompletionException
 
 @SpringBootTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation::class)
-internal class IntegrationTest {
-    @Value("\${messaging.consumer.queue}")
-    lateinit var queueName: String
-
-    @Autowired
-    private lateinit var channelManager: HmppsChannelManager
-
+internal class IntegrationTest @Autowired constructor(
+    @Value("\${messaging.consumer.queue}") private val queueName: String,
+    private val channelManager: HmppsChannelManager,
+    private val ogrsAssessmentRepository: OGRSAssessmentRepository,
+    private val contactRepository: ContactRepository,
+    private val riskAssessmentService: RiskAssessmentService
+) {
     @MockitoBean
     private lateinit var telemetryService: TelemetryService
-
-    @Autowired
-    private lateinit var ogrsAssessmentRepository: OGRSAssessmentRepository
-
-    @Autowired
-    private lateinit var contactRepository: ContactRepository
-
-    @Autowired
-    private lateinit var riskAssessmentService: RiskAssessmentService
 
     @Test
     fun `successfully update RSR scores`() {

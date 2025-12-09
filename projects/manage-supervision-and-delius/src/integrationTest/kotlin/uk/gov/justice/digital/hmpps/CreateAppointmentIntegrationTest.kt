@@ -7,9 +7,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
+import org.springframework.test.web.servlet.post
 import uk.gov.justice.digital.hmpps.api.model.appointment.AppointmentDetail
 import uk.gov.justice.digital.hmpps.api.model.appointment.CreateAppointment
 import uk.gov.justice.digital.hmpps.api.model.appointment.User
@@ -22,7 +20,7 @@ import uk.gov.justice.digital.hmpps.data.generator.OffenderManagerGenerator.TEAM
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.test.CustomMatchers.isCloseTo
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
-import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withJson
+import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.json
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 import java.time.ZonedDateTime
 import java.util.*
@@ -31,47 +29,47 @@ class CreateAppointmentIntegrationTest : IntegrationTestBase() {
 
     @Test
     fun `unauthorized status returned`() {
-        mockMvc
-            .perform(post("/appointment/D123456"))
-            .andExpect(MockMvcResultMatchers.status().isUnauthorized)
+        mockMvc.post("/appointment/D123456")
+            .andExpect { status { isUnauthorized() } }
     }
 
     @Test
     fun `when offender does not exist returns a 404 response`() {
-        mockMvc.perform(
-            post("/appointment/D123456")
-                .withToken()
-                .withJson(
-                    CreateAppointment(
-                        user,
-                        type = CreateAppointment.Type.HomeVisitToCaseNS.code,
-                        start = ZonedDateTime.now().plusDays(1),
-                        end = ZonedDateTime.now().plusDays(2),
-                        eventId = 1,
-                        uuid = UUID.randomUUID()
-                    )
+        mockMvc.post("/appointment/D123456") {
+            withToken()
+            json =
+                CreateAppointment(
+                    user,
+                    type = CreateAppointment.Type.HomeVisitToCaseNS.code,
+                    start = ZonedDateTime.now().plusDays(1),
+                    end = ZonedDateTime.now().plusDays(2),
+                    eventId = 1,
+                    uuid = UUID.randomUUID()
                 )
-        ).andExpect(MockMvcResultMatchers.status().isNotFound)
+        }
+            .andExpect { status { isNotFound() } }
     }
 
     @Test
     fun `appointment end date before start returns bad request`() {
-        mockMvc.perform(
-            post("/appointment/${PersonGenerator.PERSON_1.crn}")
-                .withToken()
-                .withJson(
-                    CreateAppointment(
-                        user,
-                        type = CreateAppointment.Type.InitialAppointmentInOfficeNS.code,
-                        start = ZonedDateTime.now().plusDays(2),
-                        end = ZonedDateTime.now().plusDays(1),
-                        eventId = PersonGenerator.EVENT_1.id,
-                        uuid = UUID.randomUUID()
-                    )
+        mockMvc.post("/appointment/${PersonGenerator.PERSON_1.crn}") {
+            withToken()
+            json =
+                CreateAppointment(
+                    user,
+                    type = CreateAppointment.Type.InitialAppointmentInOfficeNS.code,
+                    start = ZonedDateTime.now().plusDays(2),
+                    end = ZonedDateTime.now().plusDays(1),
+                    eventId = PersonGenerator.EVENT_1.id,
+                    uuid = UUID.randomUUID()
                 )
-        )
-            .andExpect(MockMvcResultMatchers.status().isBadRequest)
-            .andExpect(jsonPath("$.message", equalTo("Appointment end time cannot be before start time")))
+
+        }
+            .andExpect {
+                status { isBadRequest() }
+                jsonPath("$.message") { value(equalTo("Appointment end time cannot be before start time")) }
+
+            }
     }
 
     @ParameterizedTest
@@ -79,12 +77,11 @@ class CreateAppointmentIntegrationTest : IntegrationTestBase() {
     fun `create a new appointment without notes`(createAppointment: CreateAppointment) {
         val user = PI_USER
 
-        val response = mockMvc.perform(
-            post("/appointment/${PersonGenerator.PERSON_1.crn}")
-                .withUserToken(user.username)
-                .withJson(createAppointment)
-        )
-            .andExpect(MockMvcResultMatchers.status().isCreated)
+        val response = mockMvc.post("/appointment/${PersonGenerator.PERSON_1.crn}") {
+            withUserToken(user.username)
+            json = createAppointment
+        }
+            .andExpect { status { isCreated() } }
             .andReturn().response.contentAsJson<AppointmentDetail>()
 
         val appointment = sentenceAppointmentRepository.findById(response.appointments[0].id).get()

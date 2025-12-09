@@ -2,9 +2,7 @@ package uk.gov.justice.digital.hmpps
 
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
-import org.springframework.test.web.servlet.MvcResult
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers
+import org.springframework.test.web.servlet.get
 import uk.gov.justice.digital.hmpps.api.model.Name
 import uk.gov.justice.digital.hmpps.api.model.offence.Offence
 import uk.gov.justice.digital.hmpps.api.model.offence.Offences
@@ -17,31 +15,21 @@ class OffenceIntegrationTest : IntegrationTestBase() {
 
     @Test
     fun `unauthorized status returned`() {
-        mockMvc
-            .perform(MockMvcRequestBuilders.get("/sentence/X123456/offences/1"))
-            .andExpect(MockMvcResultMatchers.status().isUnauthorized)
+        mockMvc.get("/sentence/X123456/offences/1")
+            .andExpect { status { isUnauthorized() } }
     }
 
     @Test
     fun `person does not exist`() {
-        val name = Name(
-            PersonGenerator.OVERVIEW.forename,
-            PersonGenerator.OVERVIEW.secondName,
-            PersonGenerator.OVERVIEW.surname
-        )
 
-        mockMvc
-            .perform(
-                MockMvcRequestBuilders.get("/sentence/X123456/offences/1")
-                    .withToken()
-            )
-            .andExpect(MockMvcResultMatchers.status().isNotFound)
-            .andExpect { result: MvcResult ->
-                assertEquals(
-                    "Person with crn of X123456 not found",
-                    result.resolvedException!!.message
-                )
-            }
+        val result = mockMvc.get("/sentence/X123456/offences/1") { withToken() }
+            .andExpect { status { isNotFound() } }
+            .andReturn();
+
+        assertEquals(
+            "Person with crn of X123456 not found",
+            result.resolvedException!!.message
+        )
     }
 
     @Test
@@ -57,11 +45,8 @@ class OffenceIntegrationTest : IntegrationTestBase() {
         )
 
         val response = mockMvc
-            .perform(
-                MockMvcRequestBuilders.get("/sentence/${PersonDetailsGenerator.PERSONAL_DETAILS.crn}/offences/1")
-                    .withToken()
-            )
-            .andExpect(MockMvcResultMatchers.status().isOk)
+            .get("/sentence/${PersonDetailsGenerator.PERSONAL_DETAILS.crn}/offences/1") { withToken() }
+            .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<Offences>()
 
         assertEquals(expected, response)
@@ -108,11 +93,10 @@ class OffenceIntegrationTest : IntegrationTestBase() {
             listOf(additionalOffence1, additionalOffence2)
         )
         val response = mockMvc
-            .perform(
-                MockMvcRequestBuilders.get("/sentence/${PersonGenerator.OVERVIEW.crn}/offences/${PersonGenerator.EVENT_1.eventNumber}")
-                    .withToken()
-            )
-            .andExpect(MockMvcResultMatchers.status().isOk)
+            .get("/sentence/${PersonGenerator.OVERVIEW.crn}/offences/${PersonGenerator.EVENT_1.eventNumber}") {
+                withToken()
+            }
+            .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<Offences>()
 
         assertEquals(expected, response)

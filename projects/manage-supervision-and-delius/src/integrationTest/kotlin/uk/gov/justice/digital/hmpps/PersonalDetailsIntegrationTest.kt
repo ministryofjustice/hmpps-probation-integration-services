@@ -13,15 +13,14 @@ import org.mockito.Mockito
 import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
 import org.springframework.http.HttpHeaders
+import org.springframework.http.MediaType
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
-import org.springframework.test.web.servlet.MvcResult
+import org.springframework.test.web.servlet.MockHttpServletRequestDsl
+import org.springframework.test.web.servlet.get
+import org.springframework.test.web.servlet.post
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.util.ResourceUtils
 import uk.gov.justice.digital.hmpps.advice.ErrorResponse
@@ -50,7 +49,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractio
 import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
 import uk.gov.justice.digital.hmpps.service.*
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
-import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withJson
+import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.json
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 import java.security.KeyPair
 import java.security.KeyPairGenerator
@@ -89,10 +88,12 @@ class PersonalDetailsIntegrationTest : IntegrationTestBase() {
     fun `personal details are returned`() {
 
         val person = PERSONAL_DETAILS
-        val res = mockMvc
-            .perform(get("/personal-details/${person.crn}").withToken())
-            .andExpect(status().isOk)
+        val res = mockMvc.get("/personal-details/${person.crn}") {
+            withToken()
+        }
+            .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<PersonalDetails>()
+
         assertThat(res.crn, equalTo(person.crn))
         assertThat(res.noms, equalTo(person.noms))
         assertThat(res.name, equalTo(Name("Caroline", "Louise", "Bloggs")))
@@ -141,9 +142,10 @@ class PersonalDetailsIntegrationTest : IntegrationTestBase() {
     @Test
     fun `get main address single note`() {
         val person = PERSONAL_DETAILS
-        val res = mockMvc
-            .perform(get("/personal-details/${person.crn}/main-address/note/1").withToken())
-            .andExpect(status().isOk)
+        val res = mockMvc.get("/personal-details/${person.crn}/main-address/note/1") {
+            withToken()
+        }
+            .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<PersonalDetailsSummary>()
 
         assertThat(res.crn, equalTo(person.crn))
@@ -159,54 +161,66 @@ class PersonalDetailsIntegrationTest : IntegrationTestBase() {
 
     @Test
     fun `not found status returned`() {
-        mockMvc
-            .perform(get("/personal-details/X123456").withToken())
-            .andExpect(status().isNotFound)
+        mockMvc.get("/personal-details/X123456") {
+            withToken()
+        }
+            .andExpect { status { isNotFound() } }
     }
 
     @Test
     fun `unauthorized status returned`() {
-        mockMvc
-            .perform(get("/personal-details/X000005"))
-            .andExpect(status().isUnauthorized)
+        mockMvc.get("/personal-details/X000005/document/A010") {
+            withToken()
+        }
+            .andExpect { status { isNotFound() } }
     }
 
     @Test
     fun `document can be downloaded`() {
-        mockMvc.perform(
-            get("/personal-details/X000005/document/00000000-0000-0000-0000-000000000001").accept("application/octet-stream")
-                .withToken()
-        )
-            .andExpect(MockMvcResultMatchers.request().asyncStarted())
-            .andDo(MvcResult::getAsyncResult)
-            .andExpect(status().is2xxSuccessful)
-            .andExpect(MockMvcResultMatchers.header().string("Content-Type", "application/msword;charset=UTF-8"))
-            .andExpect(
-                MockMvcResultMatchers.header().string(
-                    "Content-Disposition",
-                    "attachment; filename=\"=?UTF-8?Q?induction.doc?=\"; filename*=UTF-8''induction.doc"
-                )
-            )
-            .andExpect(MockMvcResultMatchers.header().doesNotExist("Custom-Alfresco-Header"))
-            .andExpect(
-                MockMvcResultMatchers.content()
-                    .bytes(ResourceUtils.getFile("classpath:simulations/__files/document.pdf").readBytes())
-            )
+        mockMvc.get("/personal-details/X000005/document/00000000-0000-0000-0000-000000000001") {
+            accept = MediaType.APPLICATION_OCTET_STREAM
+            withToken()
+        }
+            .andExpect {
+                request { asyncStarted() }
+            }
+            .asyncDispatch()
+            .andExpect {
+                status { is2xxSuccessful() }
+                header {
+                    string("Content-Type", "application/msword;charset=UTF-8")
+                }
+                header {
+                    string(
+                        "Content-Disposition",
+                        "attachment; filename=\"=?UTF-8?Q?induction.doc?=\"; filename*=UTF-8''induction.doc"
+                    )
+                }
+                header {
+                    doesNotExist("Custom-Alfresco-Header")
+                }
+                content {
+                    bytes(ResourceUtils.getFile("classpath:simulations/__files/document.pdf").readBytes())
+                }
+            }
     }
 
     @Test
     fun `document can not be found`() {
-        mockMvc.perform(get("/personal-details/X000005/document/A010").withToken())
-            .andExpect(status().isNotFound)
+        mockMvc.get("/personal-details/X000005/document/A010") {
+            withToken()
+        }
+            .andExpect { status { isNotFound() } }
     }
 
     @Test
     fun `personal summary is returned`() {
 
         val person = PERSONAL_DETAILS
-        val res = mockMvc
-            .perform(get("/personal-details/${person.crn}/summary").withToken())
-            .andExpect(status().isOk)
+        val res = mockMvc.get("/personal-details/${person.crn}/summary") {
+            withToken()
+        }
+            .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<PersonSummary>()
         assertThat(res.crn, equalTo(person.crn))
         assertThat(res.pnc, equalTo(person.pnc))
@@ -218,9 +232,10 @@ class PersonalDetailsIntegrationTest : IntegrationTestBase() {
     fun `personal contact is returned`() {
         val person = PERSONAL_DETAILS
         val contact = PERSONAL_CONTACT_1
-        val res = mockMvc
-            .perform(get("/personal-details/${person.crn}/personal-contact/${contact.id}").withToken())
-            .andExpect(status().isOk)
+        val res = mockMvc.get("/personal-details/${person.crn}/personal-contact/${contact.id}") {
+            withToken()
+        }
+            .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<PersonalContact>()
 
         assertThat(res, equalTo(contact.toContact()))
@@ -230,9 +245,10 @@ class PersonalDetailsIntegrationTest : IntegrationTestBase() {
     fun `personal contact single note is returned`() {
         val person = PERSONAL_DETAILS
         val contact = PERSONAL_CONTACT_1
-        val res = mockMvc
-            .perform(get("/personal-details/${person.crn}/personal-contact/${contact.id}/note/0").withToken())
-            .andExpect(status().isOk)
+        val res = mockMvc.get("/personal-details/${person.crn}/personal-contact/${contact.id}/note/0") {
+            withToken()
+        }
+            .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<PersonalContact>()
 
         assertThat(res, equalTo(contact.toContact(true, 0)))
@@ -242,9 +258,10 @@ class PersonalDetailsIntegrationTest : IntegrationTestBase() {
     fun `personal contact single note not found`() {
         val person = PERSONAL_DETAILS
         val contact = PERSONAL_CONTACT_1
-        val res = mockMvc
-            .perform(get("/personal-details/${person.crn}/personal-contact/${contact.id}/note/10").withToken())
-            .andExpect(status().isOk)
+        val res = mockMvc.get("/personal-details/${person.crn}/personal-contact/${contact.id}/note/10") {
+            withToken()
+        }
+            .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<PersonalContact>()
 
         assertThat(res, equalTo(contact.toContact(true, 0)))
@@ -252,25 +269,29 @@ class PersonalDetailsIntegrationTest : IntegrationTestBase() {
 
     @Test
     fun `personal summary not found`() {
-        mockMvc
-            .perform(get("/personal-details/X999999/summary").withToken())
-            .andExpect(status().isNotFound)
+        mockMvc.get("/personal-details/X999999/summary") {
+            withToken()
+        }
+            .andExpect { status { isNotFound() } }
     }
 
     @Test
     fun `personal contact not found`() {
-        mockMvc
-            .perform(get("/personal-details/X999999/personal-contact/999999999").withToken())
-            .andExpect(status().isNotFound)
+        mockMvc.get("/personal-details/X999999/personal-contact/999999999") {
+            withToken()
+        }
+            .andExpect { status { isNotFound() } }
     }
 
     @Test
     fun `addresses are returned`() {
         val person = PERSONAL_DETAILS
-        val res = mockMvc
-            .perform(get("/personal-details/${person.crn}/addresses").withToken())
-            .andExpect(status().isOk)
+        val res = mockMvc.get("/personal-details/${person.crn}/addresses") {
+            withToken()
+        }
+            .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<AddressOverview>()
+
         assertThat(res.personSummary, equalTo(person.toSummary()))
         assertThat(res.mainAddress?.postcode, equalTo("NE2 56A"))
         assertThat(res.previousAddresses[0].postcode, equalTo("NE4 END"))
@@ -281,9 +302,10 @@ class PersonalDetailsIntegrationTest : IntegrationTestBase() {
     @Test
     fun `previous address with single note is returned`() {
         val person = PERSONAL_DETAILS
-        val res = mockMvc
-            .perform(get("/personal-details/${person.crn}/addresses/${PREVIOUS_ADDRESS.id}/note/1").withToken())
-            .andExpect(status().isOk)
+        val res = mockMvc.get("/personal-details/${person.crn}/addresses/${PREVIOUS_ADDRESS.id}/note/1") {
+            withToken()
+        }
+            .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<AddressOverviewSummary>()
         assertThat(res.personSummary, equalTo(person.toSummary()))
         assertThat(res.address!!.postcode, equalTo("NE4 END"))
@@ -294,17 +316,19 @@ class PersonalDetailsIntegrationTest : IntegrationTestBase() {
 
     @Test
     fun `addresses person not found`() {
-        mockMvc
-            .perform(get("/personal-details/X999999/addresses").withToken())
-            .andExpect(status().isNotFound)
+        mockMvc.get("/personal-details/X999999/addresses") {
+            withToken()
+        }
+            .andExpect { status { isNotFound() } }
     }
 
     @Test
     fun `circumstances are returned with correct notes`() {
         val person = PERSONAL_DETAILS
-        val res = mockMvc
-            .perform(get("/personal-details/${person.crn}/circumstances").withToken())
-            .andExpect(status().isOk)
+        val res = mockMvc.get("/personal-details/${person.crn}/circumstances") {
+            withToken()
+        }
+            .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<CircumstanceOverview>()
         assertThat(res.personSummary, equalTo(person.toSummary()))
         assertThat(res.circumstances[0], equalTo(PERSONAL_CIRC_1.toCircumstance()))
@@ -317,28 +341,33 @@ class PersonalDetailsIntegrationTest : IntegrationTestBase() {
     @Test
     fun `circumstance with single note is returned`() {
         val person = PERSONAL_DETAILS
-        val res = mockMvc
-            .perform(get("/personal-details/${person.crn}/circumstances/${PERSONAL_CIRC_1.id}/note/0").withToken())
-            .andExpect(status().isOk)
+        val res = mockMvc.get("/personal-details/${person.crn}/circumstances/${PERSONAL_CIRC_1.id}/note/0") {
+            withToken()
+        }
+            .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<CircumstanceOverviewSummary>()
+
         assertThat(res.personSummary, equalTo(person.toSummary()))
         assertThat(res.circumstance, equalTo(PERSONAL_CIRC_1.toCircumstance(true, 0)))
     }
 
     @Test
     fun `circumstances not found`() {
-        mockMvc
-            .perform(get("/personal-details/X999999/circumstances").withToken())
-            .andExpect(status().isNotFound)
+        mockMvc.get("/personal-details/X999999/circumstances") {
+            withToken()
+        }
+            .andExpect { status { isNotFound() } }
     }
 
     @Test
     fun `disabilities are returned`() {
         val person = PERSONAL_DETAILS
-        val res = mockMvc
-            .perform(get("/personal-details/${person.crn}/disabilities").withToken())
-            .andExpect(status().isOk)
+        val res = mockMvc.get("/personal-details/${person.crn}/disabilities") {
+            withToken()
+        }
+            .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<DisabilityOverview>()
+
         assertThat(res.personSummary, equalTo(person.toSummary()))
         assertThat(res.disabilities!![0], equalTo(DISABILITY_1.toDisability(0)))
         assertThat(res.disabilities!![1], equalTo(DISABILITY_2.toDisability(1)))
@@ -357,10 +386,12 @@ class PersonalDetailsIntegrationTest : IntegrationTestBase() {
             lastUpdatedBy = Name(forename = USER.forename, surname = USER.surname)
         )
 
-        val res = mockMvc
-            .perform(get("/personal-details/${person.crn}/disability/0/note/1").withToken())
-            .andExpect(status().isOk)
+        val res = mockMvc.get("/personal-details/${person.crn}/disability/0/note/1") {
+            withToken()
+        }
+            .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<DisabilityOverview>()
+
         assertThat(res.personSummary, equalTo(person.toSummary()))
         assertThat(res.disability, equalTo(expected))
     }
@@ -380,10 +411,12 @@ class PersonalDetailsIntegrationTest : IntegrationTestBase() {
             )
         )
 
-        val res = mockMvc
-            .perform(get("/personal-details/${person.crn}/disability/0/note/10").withToken())
-            .andExpect(status().isOk)
+        val res = mockMvc.get("/personal-details/${person.crn}/disability/0/note/10") {
+            withToken()
+        }
+            .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<DisabilityOverview>()
+
         assertThat(res, equalTo(expected))
     }
 
@@ -393,26 +426,30 @@ class PersonalDetailsIntegrationTest : IntegrationTestBase() {
 
         val expected = DisabilityOverview(person.toSummary())
 
-        val res = mockMvc
-            .perform(get("/personal-details/${person.crn}/disability/10/note/1").withToken())
-            .andExpect(status().isOk)
+        val res = mockMvc.get("/personal-details/${person.crn}/disability/10/note/1") {
+            withToken()
+        }
+            .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<DisabilityOverview>()
+
         assertThat(res, equalTo(expected))
     }
 
     @Test
     fun `disabilities not found`() {
-        mockMvc
-            .perform(get("/personal-details/X999999/disabilities").withToken())
-            .andExpect(status().isNotFound)
+        mockMvc.get("/personal-details/X999999/disabilities") {
+            withToken()
+        }
+            .andExpect { status { isNotFound() } }
     }
 
     @Test
     fun `provisions are returned`() {
         val person = PERSONAL_DETAILS
-        val res = mockMvc
-            .perform(get("/personal-details/${person.crn}/provisions").withToken())
-            .andExpect(status().isOk)
+        val res = mockMvc.get("/personal-details/${person.crn}/provisions") {
+            withToken()
+        }
+            .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<ProvisionOverview>()
         assertThat(res.personSummary, equalTo(person.toSummary()))
         assertThat(res.provisions[0], equalTo(PROVISION_1.toProvision()))
@@ -422,19 +459,22 @@ class PersonalDetailsIntegrationTest : IntegrationTestBase() {
     @Test
     fun `provision with single note is returned`() {
         val person = PERSONAL_DETAILS
-        val res = mockMvc
-            .perform(get("/personal-details/${person.crn}/provisions/${PROVISION_1.id}/note/0").withToken())
-            .andExpect(status().isOk)
+        val res = mockMvc.get("/personal-details/${person.crn}/provisions/${PROVISION_1.id}/note/0") {
+            withToken()
+        }
+            .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<ProvisionOverviewSummary>()
+
         assertThat(res.personSummary, equalTo(person.toSummary()))
         assertThat(res.provision, equalTo(PROVISION_1.toProvision(singleNote = true, 0)))
     }
 
     @Test
     fun `provisions not found`() {
-        mockMvc
-            .perform(get("/personal-details/X999999/provisions").withToken())
-            .andExpect(status().isNotFound)
+        mockMvc.get("/personal-details/X999999/provisions") {
+            withToken()
+        }
+            .andExpect { status { isNotFound() } }
     }
 
     @Test
@@ -442,23 +482,20 @@ class PersonalDetailsIntegrationTest : IntegrationTestBase() {
     fun `main address updated with valid end date results in no main address and more previous addresses`() {
 
         val person = PERSONAL_DETAILS
-        mockMvc
-            .perform(
-                post("/personal-details/${person.crn}/address").withToken()
-                    .withJson(
-                        PersonAddressEditRequest(
-                            postcode = "NE1 UPD",
-                            startDate = LocalDate.now().minusDays(10),
-                            endDate = LocalDate.now()
-
-                        )
-                    )
-            )
-            .andExpect(status().isOk)
+        mockMvc.post("/personal-details/${person.crn}/address") {
+            withToken()
+            json =
+                PersonAddressEditRequest(
+                    postcode = "NE1 UPD",
+                    startDate = LocalDate.now().minusDays(10),
+                    endDate = LocalDate.now()
+                )
+        }
+            .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<PersonalDetails>()
-        val res = mockMvc
-            .perform(get("/personal-details/${person.crn}/addresses").withToken())
-            .andExpect(status().isOk)
+
+        val res = mockMvc.get("/personal-details/${person.crn}/addresses") { withToken() }
+            .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<AddressOverview>()
         assertThat(res.personSummary, equalTo(person.toSummary()))
         assertThat(res.mainAddress, equalTo(null))
@@ -470,17 +507,15 @@ class PersonalDetailsIntegrationTest : IntegrationTestBase() {
     fun `update contact details for a person`(editRequest: PersonContactEditRequest) {
         val person = PERSONAL_DETAILS
 
-        val expectedResponse = (mockMvc
-            .perform(get("/personal-details/${person.crn}").withToken())
-            .andExpect(status().isOk)
+        val expectedResponse = (mockMvc.get("/personal-details/${person.crn}") { withToken() }
+            .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<PersonalDetails>())
 
-        val response = mockMvc
-            .perform(
-                post("/personal-details/${person.crn}/contact").withToken()
-                    .withJson(editRequest)
-            )
-            .andExpect(status().isOk)
+        val response = mockMvc.post("/personal-details/${person.crn}/contact") {
+            withToken()
+            json = editRequest
+        }
+            .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<PersonalDetails>()
 
         assertThat(response.telephoneNumber, equalTo(editRequest.phoneNumber))
@@ -507,18 +542,16 @@ class PersonalDetailsIntegrationTest : IntegrationTestBase() {
     @Transactional
     fun `when first main address with no notes - address is created (with delius usertoken)`() {
 
-        val res = mockMvc
-            .perform(
-                post("/personal-details/X000004/address").withDeliusUserToken(deliusToken)
-                    .withJson(
-                        PersonAddressEditRequest(
-                            postcode = "NE3 NEW",
-                            startDate = LocalDate.now().minusDays(10),
-                            notes = "",
-                        )
-                    )
+        val res = mockMvc.post("/personal-details/X000004/address") {
+            withDeliusUserToken(deliusToken)
+            json = PersonAddressEditRequest(
+                postcode = "NE3 NEW",
+                startDate = LocalDate.now().minusDays(10),
+                notes = "",
             )
-            .andExpect(status().isOk)
+
+        }
+            .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<PersonalDetails>()
 
         val updateSqlCaptor = ArgumentCaptor.forClass(String::class.java)
@@ -541,37 +574,32 @@ class PersonalDetailsIntegrationTest : IntegrationTestBase() {
     @Transactional
     fun `when no main address new main address is created (no delius user token)`() {
         val person = PERSONAL_DETAILS
-        mockMvc
-            .perform(
-                post("/personal-details/${person.crn}/address").withToken()
-                    .withJson(
-                        PersonAddressEditRequest(
-                            postcode = "NE1 UPD",
-                            startDate = LocalDate.now().minusDays(10),
-                            endDate = LocalDate.now()
-
-                        )
-                    )
+        mockMvc.post("/personal-details/${person.crn}/address") {
+            withToken()
+            json = PersonAddressEditRequest(
+                postcode = "NE1 UPD",
+                startDate = LocalDate.now().minusDays(10),
+                endDate = LocalDate.now()
             )
-            .andExpect(status().isOk)
+        }
+            .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<PersonalDetails>()
-        mockMvc
-            .perform(
-                post("/personal-details/${person.crn}/address").withToken()
-                    .withJson(
-                        PersonAddressEditRequest(
-                            postcode = "NE1 NEW",
-                            startDate = LocalDate.now().minusDays(9),
-                            endDate = null
 
-                        )
-                    )
+        mockMvc.post("/personal-details/${person.crn}/address") {
+            withToken()
+            json = PersonAddressEditRequest(
+                postcode = "NE1 NEW",
+                startDate = LocalDate.now().minusDays(9),
+                endDate = null
+
             )
-            .andExpect(status().isOk)
+
+        }
+            .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<PersonalDetails>()
-        val res = mockMvc
-            .perform(get("/personal-details/${person.crn}/addresses").withToken())
-            .andExpect(status().isOk)
+
+        val res = mockMvc.get("/personal-details/${person.crn}/addresses") { withToken() }
+            .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<AddressOverview>()
         assertThat(res.personSummary, equalTo(person.toSummary()))
         assertThat(res.mainAddress?.postcode, equalTo("NE1 NEW"))
@@ -612,12 +640,11 @@ class PersonalDetailsIntegrationTest : IntegrationTestBase() {
             notes = "This has been updated for testing"
         )
         val person = PERSONAL_DETAILS
-        val updateResponse = mockMvc
-            .perform(
-                post("/personal-details/${person.crn}/address").withDeliusUserToken(deliusToken)
-                    .withJson(request)
-            )
-            .andExpect(status().isOk)
+        val updateResponse = mockMvc.post("/personal-details/${person.crn}/address") {
+            withDeliusUserToken(deliusToken)
+            json = request
+        }
+            .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<PersonalDetails>()
 
         val domainEvents = channelManager.getChannel(topicName).pollFor(1)
@@ -626,9 +653,8 @@ class PersonalDetailsIntegrationTest : IntegrationTestBase() {
 
         assertThat(updateAddressEvent?.eventType, equalTo("probation-case.address.updated"))
 
-        val res = mockMvc
-            .perform(get("/personal-details/${person.crn}/addresses").withToken())
-            .andExpect(status().isOk)
+        val res = mockMvc.get("/personal-details/${person.crn}/addresses") { withToken() }
+            .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<AddressOverview>()
         assertThat(res.personSummary, equalTo(person.toSummary()))
 
@@ -665,11 +691,11 @@ class PersonalDetailsIntegrationTest : IntegrationTestBase() {
     @Test
     fun `when address update request does not have a start date`() {
         val request = PersonAddressEditRequest()
-        val res = mockMvc.perform(
-            post("/personal-details/X000001/address").withDeliusUserToken("DeliusUser")
-                .withJson(request)
-        )
-            .andExpect(status().isBadRequest)
+        val res = mockMvc.post("/personal-details/X000001/address") {
+            withDeliusUserToken("DeliusUser")
+            json = request
+        }
+            .andExpect { status { isBadRequest() } }
             .andReturn().response.contentAsJson<ErrorResponse>()
 
         assertThat(res.message, equalTo("Start date must be provided"))
@@ -678,11 +704,11 @@ class PersonalDetailsIntegrationTest : IntegrationTestBase() {
     @Test
     fun `when address update request has a start date later than today`() {
         val request = PersonAddressEditRequest(startDate = LocalDate.now().plusDays(1))
-        val res = mockMvc.perform(
-            post("/personal-details/X000001/address").withDeliusUserToken("DeliusUser")
-                .withJson(request)
-        )
-            .andExpect(status().isBadRequest)
+        val res = mockMvc.post("/personal-details/X000001/address") {
+            withDeliusUserToken("DeliusUser")
+            json = request
+        }
+            .andExpect { status { isBadRequest() } }
             .andReturn().response.contentAsJson<ErrorResponse>()
 
         assertThat(res.message, equalTo("Start date must not be later than today"))
@@ -691,11 +717,11 @@ class PersonalDetailsIntegrationTest : IntegrationTestBase() {
     @Test
     fun `when address update request has an date later than today`() {
         val request = PersonAddressEditRequest(startDate = LocalDate.now(), endDate = LocalDate.now().plusDays(1))
-        val res = mockMvc.perform(
-            post("/personal-details/X000001/address").withDeliusUserToken("DeliusUser")
-                .withJson(request)
-        )
-            .andExpect(status().isBadRequest)
+        val res = mockMvc.post("/personal-details/X000001/address") {
+            withDeliusUserToken("DeliusUser")
+            json = request
+        }
+            .andExpect { status { isBadRequest() } }
             .andReturn().response.contentAsJson<ErrorResponse>()
 
         assertThat(res.message, equalTo("End date must not be later than today"))
@@ -707,11 +733,11 @@ class PersonalDetailsIntegrationTest : IntegrationTestBase() {
             startDate = LocalDate.now(),
             streetName = "U".repeat(100)
         )
-        val res = mockMvc.perform(
-            post("/personal-details/X000001/address").withDeliusUserToken("DeliusUser")
-                .withJson(request)
-        )
-            .andExpect(status().isBadRequest)
+        val res = mockMvc.post("/personal-details/X000001/address") {
+            withDeliusUserToken("DeliusUser")
+            json = request
+        }
+            .andExpect { status { isBadRequest() } }
             .andReturn().response.contentAsJson<ErrorResponse>()
 
         assertThat(res.message, equalTo("Validation failure"))
@@ -725,11 +751,11 @@ class PersonalDetailsIntegrationTest : IntegrationTestBase() {
             mobileNumber = "0".repeat(36),
             emailAddress = "X".repeat(256)
         )
-        val res = mockMvc.perform(
-            post("/personal-details/X000001/contact").withDeliusUserToken("DeliusUser")
-                .withJson(request)
-        )
-            .andExpect(status().isBadRequest)
+        val res = mockMvc.post("/personal-details/X000001/contact") {
+            withDeliusUserToken("DeliusUser")
+            json = request
+        }
+            .andExpect { status { isBadRequest() } }
             .andReturn().response.contentAsJson<ErrorResponse>()
 
         assertThat(res.message, equalTo("Validation failure"))
@@ -738,4 +764,7 @@ class PersonalDetailsIntegrationTest : IntegrationTestBase() {
 }
 
 fun MockHttpServletRequestBuilder.withDeliusUserToken(token: String) =
+    header(HttpHeaders.AUTHORIZATION, "Bearer $token")
+
+fun MockHttpServletRequestDsl.withDeliusUserToken(token: String) =
     header(HttpHeaders.AUTHORIZATION, "Bearer $token")

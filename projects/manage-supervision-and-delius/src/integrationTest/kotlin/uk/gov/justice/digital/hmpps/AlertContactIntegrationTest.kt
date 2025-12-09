@@ -3,8 +3,8 @@ package uk.gov.justice.digital.hmpps
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers
+import org.springframework.test.web.servlet.get
+import org.springframework.test.web.servlet.put
 import uk.gov.justice.digital.hmpps.api.model.Name
 import uk.gov.justice.digital.hmpps.api.model.sentence.NoteDetail
 import uk.gov.justice.digital.hmpps.api.model.user.*
@@ -15,7 +15,7 @@ import uk.gov.justice.digital.hmpps.data.generator.OffenderManagerGenerator.STAF
 import uk.gov.justice.digital.hmpps.data.generator.OffenderManagerGenerator.STAFF_USER_2
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
-import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withJson
+import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.json
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 import java.time.LocalDate
 import java.time.ZonedDateTime
@@ -24,16 +24,14 @@ class AlertContactIntegrationTest : IntegrationTestBase() {
 
     @Test
     fun `unauthorized status returned`() {
-        mockMvc
-            .perform(MockMvcRequestBuilders.get("/alerts"))
-            .andExpect(MockMvcResultMatchers.status().isUnauthorized)
+        mockMvc.get("/alerts")
+            .andExpect { status { isUnauthorized() } }
     }
 
     @Test
     fun `no alerts`() {
-        mockMvc
-            .perform(MockMvcRequestBuilders.get("/alerts").withUserToken("no-alerts"))
-            .andExpect(MockMvcResultMatchers.status().isOk)
+        mockMvc.get("/alerts") { withUserToken("no-alerts") }
+            .andExpect { status { isOk() } }
     }
 
     @Test
@@ -71,9 +69,8 @@ class AlertContactIntegrationTest : IntegrationTestBase() {
 
         contactAlertRepository.saveAll(alertContacts.map { generateContactAlert(it) })
 
-        val response = mockMvc
-            .perform(MockMvcRequestBuilders.get("/alerts").withUserToken(user.username))
-            .andExpect(MockMvcResultMatchers.status().isOk)
+        val response = mockMvc.get("/alerts") { withUserToken(user.username) }
+            .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<UserAlerts>()
 
         val expected = UserAlerts(
@@ -106,16 +103,14 @@ class AlertContactIntegrationTest : IntegrationTestBase() {
         )
         assertEquals(expected, response)
 
-        val noteResponse = mockMvc
-            .perform(MockMvcRequestBuilders.get("/alerts/${alertContacts[0].id}/notes/0").withUserToken(user.username))
-            .andExpect(MockMvcResultMatchers.status().isOk)
+        val noteResponse = mockMvc.get("/alerts/${alertContacts[0].id}/notes/0") { withUserToken(user.username) }
+            .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<UserAlert>()
 
         assertThat(noteResponse.alertNote).isEqualTo(NoteDetail(0, note = "Some notes about the other alert"))
 
-        val sortedByTypeDescription = mockMvc
-            .perform(MockMvcRequestBuilders.get("/alerts?sort=TYPE_DESCRIPTION,desc").withUserToken(user.username))
-            .andExpect(MockMvcResultMatchers.status().isOk)
+        val sortedByTypeDescription = mockMvc.get("/alerts?sort=TYPE_DESCRIPTION,desc") { withUserToken(user.username) }
+            .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<UserAlerts>()
 
         assertThat(sortedByTypeDescription.content.map { it.type.description }).containsExactly(
@@ -126,40 +121,36 @@ class AlertContactIntegrationTest : IntegrationTestBase() {
 
     @Test
     fun `unauthorized status returned when clearing alerts without a token`() {
-        mockMvc
-            .perform(MockMvcRequestBuilders.put("/alerts"))
-            .andExpect(MockMvcResultMatchers.status().isUnauthorized)
+        mockMvc.put("/alerts")
+            .andExpect { status { isUnauthorized() } }
     }
 
     @Test
     fun `bad request if no username present in token`() {
-        mockMvc
-            .perform(
-                MockMvcRequestBuilders.put("/alerts")
-                    .withToken()
-                    .withJson(ClearAlerts(listOf(IdGenerator.getAndIncrement())))
-            ).andExpect(MockMvcResultMatchers.status().isBadRequest)
+        mockMvc.put("/alerts") {
+            withToken()
+            json = ClearAlerts(listOf(IdGenerator.getAndIncrement()))
+        }
+            .andExpect { status { isBadRequest() } }
     }
 
     @Test
     fun `bad request if no alerts sent for clearing`() {
-        mockMvc
-            .perform(
-                MockMvcRequestBuilders.put("/alerts")
-                    .withUserToken("no-alert-ids")
-                    .withJson(ClearAlerts(emptyList()))
-            ).andExpect(MockMvcResultMatchers.status().isBadRequest)
+        mockMvc.put("/alerts") {
+            withUserToken("no-alert-ids")
+            json = ClearAlerts(emptyList())
+        }
+            .andExpect { status { isBadRequest() } }
     }
 
     @Test
     fun `no contact updated if id does not exist`() {
         val user = STAFF_USER_1
-        mockMvc
-            .perform(
-                MockMvcRequestBuilders.put("/alerts")
-                    .withUserToken(user.username)
-                    .withJson(ClearAlerts(listOf(IdGenerator.getAndIncrement())))
-            ).andExpect(MockMvcResultMatchers.status().isOk)
+        mockMvc.put("/alerts") {
+            withUserToken(user.username)
+            json = ClearAlerts(listOf(IdGenerator.getAndIncrement()))
+        }
+            .andExpect { status { isOk() } }
     }
 
     @Test
@@ -177,12 +168,11 @@ class AlertContactIntegrationTest : IntegrationTestBase() {
             )
         )
 
-        mockMvc
-            .perform(
-                MockMvcRequestBuilders.put("/alerts")
-                    .withUserToken(user.username)
-                    .withJson(ClearAlerts(listOf(IdGenerator.getAndIncrement())))
-            ).andExpect(MockMvcResultMatchers.status().isOk)
+        mockMvc.put("/alerts") {
+            withUserToken(user.username)
+            json = ClearAlerts(listOf(IdGenerator.getAndIncrement()))
+        }
+            .andExpect { status { isOk() } }
 
         assertThat(contact.alert).isTrue
         contactRepository.save(contact.apply { alert = false })
@@ -215,13 +205,11 @@ class AlertContactIntegrationTest : IntegrationTestBase() {
 
         val alerts = contactAlertRepository.saveAll(alertContacts.map { generateContactAlert(it) })
 
-        mockMvc
-            .perform(
-                MockMvcRequestBuilders.put("/alerts")
-                    .withUserToken(user.username)
-                    .withJson(ClearAlerts(alertContacts.map { it.id }))
-            )
-            .andExpect(MockMvcResultMatchers.status().isOk)
+        mockMvc.put("/alerts") {
+            withUserToken(user.username)
+            json = ClearAlerts(alertContacts.map { it.id })
+        }
+            .andExpect { status { isOk() } }
 
         contactRepository.findAllById(alertContacts.map { it.id }).forEach {
             assertThat(it.alert).isFalse
