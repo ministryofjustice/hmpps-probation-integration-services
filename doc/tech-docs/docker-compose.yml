@@ -1,6 +1,6 @@
 services:
   publisher:
-    image: ghcr.io/ministryofjustice/tech-docs-github-pages-publisher:v6.1.0
+    image: ghcr.io/ministryofjustice/tech-docs-github-pages-publisher:v6.2.0
     volumes:
       - ./config:/tech-docs-github-pages-publisher/config
       - ./source:/tech-docs-github-pages-publisher/source
