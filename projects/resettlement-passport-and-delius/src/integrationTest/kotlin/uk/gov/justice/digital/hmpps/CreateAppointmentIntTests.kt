@@ -9,67 +9,56 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.data.domain.PageRequest
 import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers
+import org.springframework.test.web.servlet.post
 import uk.gov.justice.digital.hmpps.api.model.CreateAppointment
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.entity.AlertRepository
 import uk.gov.justice.digital.hmpps.entity.AppointmentRepository
 import uk.gov.justice.digital.hmpps.test.CustomMatchers.isCloseTo
-import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withJson
+import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.json
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 import java.time.Duration
 import java.time.ZonedDateTime
 
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-internal class CreateAppointmentIntTests {
-    @Autowired
-    internal lateinit var mockMvc: MockMvc
-
-    @Autowired
-    internal lateinit var appointmentRepository: AppointmentRepository
-
-    @Autowired
-    internal lateinit var alertRepository: AlertRepository
+internal class CreateAppointmentIntTests @Autowired constructor(
+    private val mockMvc: MockMvc,
+    private val appointmentRepository: AppointmentRepository,
+    private val alertRepository: AlertRepository
+) {
 
     @Test
-    fun `create appointment when offender does not exist retuns a 404 response`() {
-        mockMvc.perform(
-            post("/appointments/D123456")
-                .withToken()
-                .withJson(
-                    CreateAppointment(
-                        CreateAppointment.Type.Accommodation,
-                        ZonedDateTime.now().plusDays(1),
-                        Duration.ofMinutes(30)
-                    )
-                )
-        ).andExpect(MockMvcResultMatchers.status().isNotFound)
+    fun `create appointment when offender does not exist returns a 404 response`() {
+        mockMvc.post("/appointments/D123456") {
+            withToken()
+            json = CreateAppointment(
+                CreateAppointment.Type.Accommodation,
+                ZonedDateTime.now().plusDays(1),
+                Duration.ofMinutes(30)
+            )
+        }
+            .andExpect { status { isNotFound() } }
     }
 
     @Test
     fun `create appointment retuns a 409 when conflicting appointment`() {
         val start = ZonedDateTime.now().plusDays(7).plusMinutes(10)
-        mockMvc.perform(
-            post("/appointments/${PersonGenerator.CREATE_APPOINTMENT.crn}")
-                .withToken()
-                .withJson(
-                    CreateAppointment(CreateAppointment.Type.Health, start, Duration.ofMinutes(30))
-                )
-        ).andExpect(MockMvcResultMatchers.status().isConflict)
+        mockMvc.post("/appointments/${PersonGenerator.CREATE_APPOINTMENT.crn}") {
+            withToken()
+            json = CreateAppointment(CreateAppointment.Type.Health, start, Duration.ofMinutes(30))
+        }
+            .andExpect { status { isConflict() } }
     }
 
     @Test
     fun `create appointment ending before start returns bad request`() {
         val start = ZonedDateTime.now().plusDays(7).plusMinutes(10)
-        mockMvc.perform(
-            post("/appointments/${PersonGenerator.CREATE_APPOINTMENT.crn}")
-                .withToken()
-                .withJson(
-                    CreateAppointment(CreateAppointment.Type.Finance, start, Duration.ofMinutes(-1))
-                )
-        ).andExpect(MockMvcResultMatchers.status().isBadRequest)
+        mockMvc.post("/appointments/${PersonGenerator.CREATE_APPOINTMENT.crn}") {
+            withToken()
+            json = CreateAppointment(CreateAppointment.Type.Finance, start, Duration.ofMinutes(-1))
+        }
+            .andExpect { status { isBadRequest() } }
     }
 
     @Test
@@ -79,11 +68,11 @@ internal class CreateAppointmentIntTests {
         val notes = "Resettlement Passport Notes"
         val create = CreateAppointment(CreateAppointment.Type.SkillsAndWork, start, Duration.ofHours(1), notes)
 
-        mockMvc.perform(
-            post("/appointments/${person.crn}")
-                .withToken()
-                .withJson(create)
-        ).andExpect(MockMvcResultMatchers.status().isCreated)
+        mockMvc.post("/appointments/${person.crn}") {
+            withToken()
+            json = create
+        }
+            .andExpect { status { isCreated() } }
 
         val appointment = appointmentRepository.findAppointmentsFor(
             person.crn,

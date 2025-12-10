@@ -3,8 +3,7 @@ package uk.gov.justice.digital.hmpps
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.Test
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import org.springframework.test.web.servlet.get
 import uk.gov.justice.digital.hmpps.api.model.overview.Overview
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.ADDITIONAL_OFFENCE_1
@@ -24,9 +23,8 @@ class OverviewIntegrationTest : IntegrationTestBase() {
     @Test
     fun `overview details are returned`() {
         val person = OVERVIEW
-        val res = mockMvc
-            .perform(get("/overview/${person.crn}").withToken())
-            .andExpect(status().isOk)
+        val res = mockMvc.get("/overview/${person.crn}") { withToken() }
+            .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<Overview>()
         assertThat(res.personalDetails.name.forename, equalTo(person.forename))
         assertThat(
@@ -79,15 +77,13 @@ class OverviewIntegrationTest : IntegrationTestBase() {
 
     @Test
     fun `not found status returned`() {
-        mockMvc
-            .perform(get("/overview/X123456").withToken())
-            .andExpect(status().isNotFound)
+        mockMvc.get("/overview/X123456") { withToken() }
+            .andExpect { status { isNotFound() } }
     }
 
     @Test
     fun `unauthorized status returned`() {
-        mockMvc
-            .perform(get("/overview/X123456"))
-            .andExpect(status().isUnauthorized)
+        mockMvc.get("/overview/X123456")
+            .andExpect { status { isUnauthorized() } }
     }
 }

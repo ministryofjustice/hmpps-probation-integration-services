@@ -7,8 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import org.springframework.test.web.servlet.get
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.RegistrationGenerator
 import uk.gov.justice.digital.hmpps.integrations.delius.RegistrationRepository
@@ -20,23 +19,20 @@ import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 
 @AutoConfigureMockMvc
 @SpringBootTest
-class InformationPageIntegrationTest {
-    @Autowired
-    internal lateinit var mockMvc: MockMvc
-
-    @Autowired
-    internal lateinit var wireMockServer: WireMockServer
-
-    @Autowired
-    internal lateinit var registrationRepository: RegistrationRepository
+internal class InformationPageIntegrationTest @Autowired constructor(
+    private val mockMvc: MockMvc,
+    private val wireMockServer: WireMockServer,
+    private val registrationRepository: RegistrationRepository
+) {
 
     @Test
     fun `can retrieve information page details for suicide risk registration`() {
         val person = PersonGenerator.DEFAULT_PERSON
 
-        val response = mockMvc
-            .perform(get("/information-page/${person.crn}").withToken())
-            .andExpect(status().is2xxSuccessful)
+        val response = mockMvc.get("/information-page/${person.crn}") {
+            withToken()
+        }
+            .andExpect { status { is2xxSuccessful() } }
             .andReturn().response.contentAsJson<InformationPageResponse>()
 
         val registration = RegistrationGenerator.SUICIDE_SELF_HARM_REGISTRATION
@@ -58,16 +54,18 @@ class InformationPageIntegrationTest {
 
     @Test
     fun `non-existent crn returns 404`() {
-        mockMvc
-            .perform(get("/information-page/Z000001").withToken())
-            .andExpect(status().isNotFound)
+        mockMvc.get("/information-page/Z000001") {
+            withToken()
+        }
+            .andExpect { status { isNotFound() } }
     }
 
     @Test
     fun `crn with no registrations returns null`() {
-        val response = mockMvc
-            .perform(get("/information-page/A000002").withToken())
-            .andExpect(status().is2xxSuccessful)
+        val response = mockMvc.get("/information-page/A000002") {
+            withToken()
+        }
+            .andExpect { status { is2xxSuccessful() } }
             .andReturn().response.contentAsJson<InformationPageResponse>()
 
         assertThat(response.registration).isNull()
@@ -79,9 +77,10 @@ class InformationPageIntegrationTest {
 
         val person = PersonGenerator.DEFAULT_PERSON
 
-        val response = mockMvc
-            .perform(get("/information-page/${person.crn}").withToken())
-            .andExpect(status().is2xxSuccessful)
+        val response = mockMvc.get("/information-page/${person.crn}") {
+            withToken()
+        }
+            .andExpect { status { is2xxSuccessful() } }
             .andReturn().response.contentAsJson<InformationPageResponse>()
 
 

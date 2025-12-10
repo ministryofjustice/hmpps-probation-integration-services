@@ -6,8 +6,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
 import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import org.springframework.test.web.servlet.get
 import uk.gov.justice.digital.hmpps.data.generator.EventGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ProviderGenerator
@@ -21,16 +20,15 @@ import java.time.ZonedDateTime
 
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = RANDOM_PORT)
-internal class SentencePlanIntegrationTest {
-    @Autowired
-    lateinit var mockMvc: MockMvc
+internal class SentencePlanIntegrationTest @Autowired constructor(
+    private val mockMvc: MockMvc
+) {
 
     @Test
     fun `API call returns a success response`() {
 
-        mockMvc
-            .perform(get("/case-details/X123123").withToken())
-            .andExpect(status().is2xxSuccessful)
+        mockMvc.get("/case-details/X123123") { withToken() }
+            .andExpect { status { is2xxSuccessful() } }
             .andExpectJson(
                 getDetailResponse(
                     true,
@@ -47,9 +45,8 @@ internal class SentencePlanIntegrationTest {
 
     @Test
     fun `API call returns a non custody person`() {
-        mockMvc
-            .perform(get("/case-details/X123124").withToken())
-            .andExpect(status().is2xxSuccessful)
+        mockMvc.get("/case-details/X123124") { withToken() }
+            .andExpect { status { is2xxSuccessful() } }
             .andExpectJson(
                 getDetailResponse(
                     false,
@@ -67,33 +64,29 @@ internal class SentencePlanIntegrationTest {
     @Test
     fun `API call to get first appointment date`() {
         val date = ZonedDateTime.of(2020, 12, 1, 12, 12, 12, 0, ZoneId.of("Europe/London"))
-        mockMvc
-            .perform(get("/case-details/X123124/first-appointment-date").withToken())
-            .andExpect(status().is2xxSuccessful)
+        mockMvc.get("/case-details/X123124/first-appointment-date") { withToken() }
+            .andExpect { status { is2xxSuccessful() } }
             .andExpectJson(FirstAppointment(date))
     }
 
     @Test
     fun `successfully indicates when case is part of caseload`() {
-        mockMvc
-            .perform(get("/users/default/access/${PersonGenerator.DEFAULT.crn}").withToken())
-            .andExpect(status().is2xxSuccessful)
+        mockMvc.get("/users/default/access/${PersonGenerator.DEFAULT.crn}") { withToken() }
+            .andExpect { status { is2xxSuccessful() } }
             .andExpectJson(UserCaseloadIndicator(true, false, false, null, null))
     }
 
     @Test
     fun `successfully indicates when case is not part of caseload`() {
-        mockMvc
-            .perform(get("/users/default/access/${PersonGenerator.NON_CUSTODIAL.crn}").withToken())
-            .andExpect(status().is2xxSuccessful)
+        mockMvc.get("/users/default/access/${PersonGenerator.NON_CUSTODIAL.crn}") { withToken() }
+            .andExpect { status { is2xxSuccessful() } }
             .andExpectJson(UserCaseloadIndicator(false, true, false, "Exclusion Applied", null))
     }
 
     @Test
     fun `not found if user or staff does not exist`() {
-        mockMvc
-            .perform(get("/users/non-existent/access/${PersonGenerator.DEFAULT.crn}").withToken())
-            .andExpect(status().isNotFound)
+        mockMvc.get("/users/non-existent/access/${PersonGenerator.DEFAULT.crn}") { withToken() }
+            .andExpect { status { isNotFound() } }
     }
 
     private fun getDetailResponse(

@@ -3,8 +3,7 @@ package uk.gov.justice.digital.hmpps
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.Test
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import org.springframework.test.web.servlet.get
 import uk.gov.justice.digital.hmpps.api.model.compliance.PersonCompliance
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.INACTIVE_EVENT_1
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.INACTIVE_ORDER_2
@@ -18,9 +17,8 @@ class ComplianceIntegrationTest : IntegrationTestBase() {
     @Test
     fun `compliance details are returned`() {
         val person = OVERVIEW
-        val res = mockMvc
-            .perform(get("/compliance/${person.crn}").withToken())
-            .andExpect(status().isOk)
+        val res = mockMvc.get("/compliance/${person.crn}") { withToken() }
+            .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<PersonCompliance>()
         assertThat(res.personSummary.name.forename, equalTo(person.forename))
         assertThat(
@@ -46,15 +44,13 @@ class ComplianceIntegrationTest : IntegrationTestBase() {
 
     @Test
     fun `not found status returned`() {
-        mockMvc
-            .perform(get("/compliance/X123456").withToken())
-            .andExpect(status().isNotFound)
+        mockMvc.get("/compliance/X123456") { withToken() }
+            .andExpect { status { isNotFound() } }
     }
 
     @Test
     fun `unauthorized status returned`() {
-        mockMvc
-            .perform(get("/compliance/X123456"))
-            .andExpect(status().isUnauthorized)
+        mockMvc.get("/compliance/X123456")
+            .andExpect { status { isUnauthorized() } }
     }
 }

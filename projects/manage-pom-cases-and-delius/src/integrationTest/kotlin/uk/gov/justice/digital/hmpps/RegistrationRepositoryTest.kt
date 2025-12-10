@@ -12,12 +12,10 @@ import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.registrati
 import java.time.LocalDate
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-internal class RegistrationRepositoryTest {
-    @Autowired
-    lateinit var personRepository: PersonRepository
-
-    @Autowired
-    lateinit var registrationRepository: RegistrationRepository
+internal class RegistrationRepositoryTest @Autowired constructor(
+    private val personRepository: PersonRepository,
+    private val registrationRepository: RegistrationRepository
+) {
 
     @Test
     fun `correctly identifies when a vlo is assigned`() {

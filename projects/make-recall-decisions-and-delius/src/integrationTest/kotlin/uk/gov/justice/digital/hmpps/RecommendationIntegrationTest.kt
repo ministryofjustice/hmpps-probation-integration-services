@@ -22,18 +22,12 @@ import uk.gov.justice.digital.hmpps.telemetry.TelemetryMessagingExtensions.notif
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 
 @SpringBootTest
-internal class RecommendationIntegrationTest {
-    @Value("\${messaging.consumer.queue}")
-    lateinit var queueName: String
-
-    @Autowired
-    lateinit var channelManager: HmppsChannelManager
-
-    @Autowired
-    lateinit var entityManager: EntityManager
-
-    @Autowired
-    lateinit var wireMockServer: WireMockServer
+internal class RecommendationIntegrationTest @Autowired constructor(
+    @Value("\${messaging.consumer.queue}") private val queueName: String,
+    private val channelManager: HmppsChannelManager,
+    private val entityManager: EntityManager,
+    private val wireMockServer: WireMockServer
+) {
 
     @MockitoBean
     lateinit var telemetryService: TelemetryService

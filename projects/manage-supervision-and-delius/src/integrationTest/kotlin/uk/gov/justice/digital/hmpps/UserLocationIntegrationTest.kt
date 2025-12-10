@@ -3,9 +3,7 @@ package uk.gov.justice.digital.hmpps
 import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
+import org.springframework.test.web.servlet.get
 import uk.gov.justice.digital.hmpps.api.model.sentence.Address
 import uk.gov.justice.digital.hmpps.api.model.sentence.LocationDetails
 import uk.gov.justice.digital.hmpps.api.model.sentence.Name
@@ -19,22 +17,23 @@ class UserLocationIntegrationTest : IntegrationTestBase() {
 
     @Test
     fun `unauthorized status returned`() {
-        mockMvc
-            .perform(MockMvcRequestBuilders.get("/user/peter-parker/locations"))
-            .andExpect(MockMvcResultMatchers.status().isUnauthorized)
+        mockMvc.get("/user/peter-parker/locations")
+            .andExpect { status { isUnauthorized() } }
     }
 
     @Test
     fun `user not found`() {
-        mockMvc.perform(MockMvcRequestBuilders.get("/user/user/locations").withToken())
-            .andExpect(MockMvcResultMatchers.status().isNotFound)
-            .andExpect(jsonPath("$.message", equalTo("User with username of user not found")))
+        mockMvc.get("/user/user/locations") { withToken() }
+            .andExpect {
+                status { isNotFound() }
+                jsonPath("$.message") { value(equalTo("User with username of user not found")) }
+            }
     }
 
     @Test
     fun `get user locations`() {
-        val response = mockMvc.perform(MockMvcRequestBuilders.get("/user/peter-parker/locations").withToken())
-            .andExpect(MockMvcResultMatchers.status().isOk)
+        val response = mockMvc.get("/user/peter-parker/locations") { withToken() }
+            .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<UserOfficeLocation>()
 
         val expected = UserOfficeLocation(

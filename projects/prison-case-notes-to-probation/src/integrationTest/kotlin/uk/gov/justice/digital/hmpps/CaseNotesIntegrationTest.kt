@@ -13,7 +13,6 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.ArgumentMatchers.anyMap
 import org.mockito.kotlin.atLeastOnce
 import org.mockito.kotlin.eq
-import org.mockito.kotlin.isNull
 import org.mockito.kotlin.never
 import org.mockito.kotlin.verify
 import org.springframework.beans.factory.annotation.Autowired
@@ -21,12 +20,10 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.bean.override.mockito.MockitoBean
 import org.springframework.test.context.bean.override.mockito.MockitoSpyBean
-import org.testcontainers.shaded.org.bouncycastle.oer.its.ieee1609dot2dot1.AdditionalParams.original
 import uk.gov.justice.digital.hmpps.audit.repository.AuditedInteractionRepository
 import uk.gov.justice.digital.hmpps.data.generator.*
 import uk.gov.justice.digital.hmpps.datetime.DeliusDateTimeFormatter
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.CaseNoteType.Companion.OTHER_INFORMATION
-import uk.gov.justice.digital.hmpps.integrations.delius.model.CaseNoteHeader
 import uk.gov.justice.digital.hmpps.integrations.delius.model.DeliusCaseNote
 import uk.gov.justice.digital.hmpps.integrations.delius.repository.CaseNoteRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.repository.OffenderRepository
@@ -36,37 +33,22 @@ import uk.gov.justice.digital.hmpps.message.MessageAttributes
 import uk.gov.justice.digital.hmpps.messaging.HmppsChannelManager
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import uk.gov.justice.digital.hmpps.test.CustomMatchers.isCloseTo
-import java.time.Duration
-import java.time.LocalDateTime
 import java.time.ZonedDateTime
-import kotlin.text.Typography.notEqual
 
 const val CASE_NOTE_MERGED = "CaseNoteMerged"
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation::class)
 @SpringBootTest
-class CaseNotesIntegrationTest {
-
-    @Autowired
-    private lateinit var offenderRepository: OffenderRepository
-
-    @Value("\${messaging.consumer.queue}")
-    private lateinit var queueName: String
-
-    @Autowired
-    private lateinit var channelManager: HmppsChannelManager
-
-    @Autowired
-    private lateinit var caseNoteRepository: CaseNoteRepository
-
-    @Autowired
-    private lateinit var staffRepository: StaffRepository
-
+class CaseNotesIntegrationTest @Autowired constructor(
+    private val offenderRepository: OffenderRepository,
+    @Value("\${messaging.consumer.queue}") private val queueName: String,
+    private val channelManager: HmppsChannelManager,
+    private val caseNoteRepository: CaseNoteRepository,
+    private val staffRepository: StaffRepository,
+    private val wireMockserver: WireMockServer
+) {
     @MockitoBean
     private lateinit var telemetryService: TelemetryService
-
-    @Autowired
-    lateinit var wireMockserver: WireMockServer
 
     @MockitoSpyBean
     lateinit var air: AuditedInteractionRepository

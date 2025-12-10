@@ -16,23 +16,20 @@ import org.springframework.data.repository.findByIdOrNull
 import org.springframework.test.context.bean.override.mockito.MockitoBean
 import org.springframework.test.context.bean.override.mockito.MockitoSpyBean
 import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import org.springframework.test.web.servlet.post
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.PERSON_WITH_DUPLICATE_NOMS
 import uk.gov.justice.digital.hmpps.entity.*
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
-import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withJson
+import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.json
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = RANDOM_PORT)
 @TestMethodOrder(MethodOrderer.OrderAnnotation::class)
-internal class PrisonMatchingIntegrationTest {
-
-    @Autowired
-    lateinit var mockMvc: MockMvc
-
+internal class PrisonMatchingIntegrationTest @Autowired constructor(
+    private val mockMvc: MockMvc
+) {
     @MockitoSpyBean
     lateinit var personRepository: PersonRepository
 
@@ -53,9 +50,11 @@ internal class PrisonMatchingIntegrationTest {
     fun `crn does not exist`() {
         val crn = "ZZZ"
 
-        mockMvc
-            .perform(post("/person/match-by-crn").withToken().withJson(listOf(crn)))
-            .andExpect(status().is2xxSuccessful)
+        mockMvc.post("/person/match-by-crn") {
+            withToken()
+            json = listOf(crn)
+        }
+            .andExpect { status { is2xxSuccessful() } }
 
         verify(telemetryService, never()).trackEvent(any(), any(), any())
     }
@@ -65,9 +64,11 @@ internal class PrisonMatchingIntegrationTest {
     fun `no match with existing noms number if no custodial sentence in Delius`() {
         val crn = PersonGenerator.PERSON_WITH_NOMS.crn
 
-        mockMvc
-            .perform(post("/person/match-by-crn").withToken().withJson(listOf(crn)))
-            .andExpect(status().is2xxSuccessful)
+        mockMvc.post("/person/match-by-crn") {
+            withToken()
+            json = listOf(crn)
+        }
+            .andExpect { status { is2xxSuccessful() } }
 
         verify(telemetryService, timeout(5000)).trackEvent(
             "MatchResultNoMatch", mapOf(
@@ -85,9 +86,11 @@ internal class PrisonMatchingIntegrationTest {
         val crn = PersonGenerator.PERSON_WITH_NO_NOMS.crn
         val custodyId = personRepository.findSentencedByCrn(crn).first().custody!!.id
 
-        mockMvc
-            .perform(post("/person/match-by-crn?dryRun=false").withToken().withJson(listOf(crn)))
-            .andExpect(status().is2xxSuccessful)
+        mockMvc.post("/person/match-by-crn?dryRun=false") {
+            withToken()
+            json = listOf(crn)
+        }
+            .andExpect { status { is2xxSuccessful() } }
 
         verify(telemetryService, timeout(5000)).trackEvent(
             "MatchResultSuccess", mapOf(
@@ -121,9 +124,11 @@ internal class PrisonMatchingIntegrationTest {
         val crn = PersonGenerator.PERSON_WITH_MULTI_MATCH.crn
         val custodyId = personRepository.findSentencedByCrn(crn).first().custody!!.id
 
-        mockMvc
-            .perform(post("/person/match-by-crn").withToken().withJson(listOf(crn)))
-            .andExpect(status().is2xxSuccessful)
+        mockMvc.post("/person/match-by-crn") {
+            withToken()
+            json = listOf(crn)
+        }
+            .andExpect { status { is2xxSuccessful() } }
 
         verify(telemetryService, timeout(5000)).trackEvent(
             "MatchResultSuccess", mapOf(
@@ -154,9 +159,11 @@ internal class PrisonMatchingIntegrationTest {
         val crn = PersonGenerator.PERSON_WITH_MULTI_MATCH.crn
         val custodyId = personRepository.findSentencedByCrn(crn).first().custody!!.id
 
-        mockMvc
-            .perform(post("/person/match-by-crn?dryRun=false").withToken().withJson(listOf(crn)))
-            .andExpect(status().is2xxSuccessful)
+        mockMvc.post("/person/match-by-crn?dryRun=false") {
+            withToken()
+            json = listOf(crn)
+        }
+            .andExpect { status { is2xxSuccessful() } }
 
         verify(telemetryService, timeout(5000)).trackEvent(
             "MatchResultSuccess", mapOf(
@@ -193,9 +200,11 @@ internal class PrisonMatchingIntegrationTest {
     fun `no match - nothing updated`() {
         val crn = PersonGenerator.PERSON_WITH_NO_MATCH.crn
 
-        mockMvc
-            .perform(post("/person/match-by-crn").withToken().withJson(listOf(crn)))
-            .andExpect(status().is2xxSuccessful)
+        mockMvc.post("/person/match-by-crn") {
+            withToken()
+            json = listOf(crn)
+        }
+            .andExpect { status { is2xxSuccessful() } }
 
         verify(telemetryService, timeout(5000)).trackEvent(
             "MatchResultNoMatch", mapOf(
@@ -217,9 +226,11 @@ internal class PrisonMatchingIntegrationTest {
         val crn = PersonGenerator.PERSON_WITH_NOMS_IN_DELIUS.crn
         val custodyId = personRepository.findSentencedByCrn(crn).first().custody!!.id
 
-        mockMvc
-            .perform(post("/person/match-by-crn").withToken().withJson(listOf(crn)))
-            .andExpect(status().is2xxSuccessful)
+        mockMvc.post("/person/match-by-crn") {
+            withToken()
+            json = listOf(crn)
+        }
+            .andExpect { status { is2xxSuccessful() } }
 
         verify(telemetryService, timeout(5000)).trackEvent(
             "MatchResultSuccess", mapOf(

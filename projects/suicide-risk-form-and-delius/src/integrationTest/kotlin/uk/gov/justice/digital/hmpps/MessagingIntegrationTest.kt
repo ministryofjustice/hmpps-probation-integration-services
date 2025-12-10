@@ -15,7 +15,6 @@ import org.mockito.kotlin.never
 import org.mockito.kotlin.verify
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.bean.override.mockito.MockitoBean
 import uk.gov.justice.digital.hmpps.data.generator.DocumentGenerator
@@ -29,27 +28,18 @@ import java.time.ZonedDateTime
 import java.time.temporal.ChronoUnit
 import java.util.*
 
-@AutoConfigureMockMvc
 @TestMethodOrder(MethodOrderer.OrderAnnotation::class)
 @SpringBootTest
-class MessagingIntegrationTest {
+internal class MessagingIntegrationTest @Autowired constructor(
     @Value("\${messaging.consumer.queue}")
-    internal lateinit var queueName: String
-
-    @Autowired
-    internal lateinit var channelManager: HmppsChannelManager
-
-    @Autowired
-    internal lateinit var wireMockServer: WireMockServer
-
+    internal val queueName: String,
+    internal val channelManager: HmppsChannelManager,
+    internal val wireMockServer: WireMockServer,
+    private val documentRepository: DocumentRepository,
+    private val contactRepository: ContactRepository
+) {
     @MockitoBean
     internal lateinit var telemetryService: TelemetryService
-
-    @Autowired
-    private lateinit var documentRepository: DocumentRepository
-
-    @Autowired
-    private lateinit var contactRepository: ContactRepository
 
     @Test
     fun `suicide risk form is created`() {

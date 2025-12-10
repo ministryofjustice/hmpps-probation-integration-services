@@ -12,9 +12,9 @@ import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
 import org.springframework.http.HttpHeaders
+import org.springframework.test.web.servlet.MockHttpServletRequestDsl
+import org.springframework.test.web.servlet.post
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import uk.gov.justice.digital.hmpps.api.model.Name
 import uk.gov.justice.digital.hmpps.api.model.appointment.AppointmentCheck
 import uk.gov.justice.digital.hmpps.api.model.appointment.AppointmentChecks
@@ -24,7 +24,7 @@ import uk.gov.justice.digital.hmpps.data.generator.OffenderManagerGenerator.STAF
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
-import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withJson
+import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.json
 import java.security.KeyPair
 import java.security.KeyPairGenerator
 import java.time.Duration
@@ -269,11 +269,11 @@ class CheckAppointmentIntegrationTest : IntegrationTestBase() {
             withJsonResponse("/gov-uk/bank-holidays.json", "bank-holidays.json", 200)
         }
 
-        val response = mockMvc.perform(
-            post("/appointment/${PersonGenerator.PERSON_1.crn}/check")
-                .withUserToken(username)
-                .withJson(CheckAppointment(start, end))
-        ).andExpect(status().isOk).andReturn().response.contentAsJson<AppointmentChecks>()
+        val response = mockMvc.post("/appointment/${PersonGenerator.PERSON_1.crn}/check") {
+            withUserToken(username)
+            json = CheckAppointment(start, end)
+        }
+            .andExpect { status { isOk() } }.andReturn().response.contentAsJson<AppointmentChecks>()
         assertThat(response, equalTo(expected))
     }
 }
@@ -294,3 +294,7 @@ fun createToken(username: String): String {
 
 fun MockHttpServletRequestBuilder.withUserToken(username: String) =
     header(HttpHeaders.AUTHORIZATION, "Bearer ${createToken(username)}")
+
+fun MockHttpServletRequestDsl.withUserToken(username: String) {
+    this.header(HttpHeaders.AUTHORIZATION, "Bearer ${createToken(username)}")
+}

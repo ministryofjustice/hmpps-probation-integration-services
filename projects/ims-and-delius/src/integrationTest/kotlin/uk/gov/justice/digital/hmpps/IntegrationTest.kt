@@ -11,27 +11,23 @@ import org.springframework.ldap.NameNotFoundException
 import org.springframework.ldap.core.LdapTemplate
 import org.springframework.ldap.support.LdapNameBuilder
 import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import org.springframework.test.web.servlet.delete
+import org.springframework.test.web.servlet.put
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = RANDOM_PORT)
 @TestMethodOrder(MethodOrderer.OrderAnnotation::class)
-internal class IntegrationTest {
-    @Autowired
-    lateinit var mockMvc: MockMvc
-
-    @Autowired
-    lateinit var ldapTemplate: LdapTemplate
+internal class IntegrationTest @Autowired constructor(
+    private val mockMvc: MockMvc,
+    private val ldapTemplate: LdapTemplate
+) {
 
     @Test
     @Order(1)
     fun `can add role`() {
-        mockMvc
-            .perform(put("/user/test.user/role").withToken())
-            .andExpect(status().is2xxSuccessful)
+        mockMvc.put("/user/test.user/role") { withToken() }
+            .andExpect { status { is2xxSuccessful() } }
 
         val role = ldapTemplate.lookupContext(LdapNameBuilder.newInstance("cn=IMSBT001,cn=test.user").build())
 
@@ -41,9 +37,8 @@ internal class IntegrationTest {
     @Test
     @Order(2)
     fun `can remove role`() {
-        mockMvc
-            .perform(delete("/user/test.user/role").withToken())
-            .andExpect(status().is2xxSuccessful)
+        mockMvc.delete("/user/test.user/role") { withToken() }
+            .andExpect { status { is2xxSuccessful() } }
 
         assertThrows<NameNotFoundException> {
             ldapTemplate.lookupContext(LdapNameBuilder.newInstance("cn=IMSBT001,cn=test.user").build())

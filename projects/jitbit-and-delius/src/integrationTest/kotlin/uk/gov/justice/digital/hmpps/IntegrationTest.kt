@@ -11,10 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
+import org.springframework.test.json.JsonCompareMode
 import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import org.springframework.test.web.servlet.get
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.DEFAULT
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.EXCLUSION
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.RESTRICTION
@@ -25,95 +24,100 @@ import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = RANDOM_PORT)
-internal class IntegrationTest {
-    @Autowired
-    lateinit var mockMvc: MockMvc
+internal class IntegrationTest @Autowired constructor(
+    private val mockMvc: MockMvc
+) {
 
     @Test
     fun `returns 404 when not found`() {
-        mockMvc
-            .perform(get("/case/NONEXISTENT").withToken())
-            .andExpect(status().isNotFound)
+        mockMvc.get("/case/NONEXISTENT") { withToken() }
+            .andExpect { status { isNotFound() } }
     }
 
     @Test
     fun `returns full details`() {
         mockMvc
-            .perform(get("/case/A000001").withToken())
-            .andExpect(status().isOk)
-            .andExpect(
-                content().json(
-                    """
-                    {
-                      "name": {
-                        "forename": "First",
-                        "middleName": "Middle Middle 2",
-                        "surname": "Last"
-                      },
-                      "dateOfBirth": "1980-01-01",
-                      "mainAddress": {
-                        "buildingName": "Building name",
-                        "addressNumber": "123",
-                        "streetName": "Street",
-                        "townCity": "Town",
-                        "district": "District",
-                        "county": "County",
-                        "postcode": "POSTCODE",
-                        "noFixedAbode": false
-                      }
-                    }
-                    """
-                )
-            )
+            .get("/case/A000001") { withToken() }
+            .andExpect {
+                status { isOk() }
+                content {
+                    json(
+                        """
+                        {
+                          "name": {
+                            "forename": "First",
+                            "middleName": "Middle Middle 2",
+                            "surname": "Last"
+                          },
+                          "dateOfBirth": "1980-01-01",
+                          "mainAddress": {
+                            "buildingName": "Building name",
+                            "addressNumber": "123",
+                            "streetName": "Street",
+                            "townCity": "Town",
+                            "district": "District",
+                            "county": "County",
+                            "postcode": "POSTCODE",
+                            "noFixedAbode": false
+                          }
+                        }
+                        """, JsonCompareMode.STRICT
+                    )
+                }
+
+            }
     }
 
     @Test
     fun `returns basic details`() {
         mockMvc
-            .perform(get("/case/A000002").withToken())
-            .andExpect(status().isOk)
-            .andExpect(
-                content().json(
-                    """
-                    {
-                      "name": {
-                        "forename": "First",
-                        "surname": "Last"
-                      },
-                      "dateOfBirth": "1980-01-01"
-                    }
-                    """
-                )
-            )
+            .get("/case/A000002") { withToken() }
+            .andExpect {
+                status { isOk() }
+
+                content {
+                    json(
+                        """
+                        {
+                          "name": {
+                            "forename": "First",
+                            "surname": "Last"
+                          },
+                          "dateOfBirth": "1980-01-01"
+                        }
+                        """, JsonCompareMode.STRICT
+                    )
+                }
+            }
     }
 
     @ParameterizedTest
     @ValueSource(strings = ["E123456", "R123456", "B123456"])
     fun `does not return data for lao cases`(crn: String) {
         mockMvc
-            .perform(get("/case/$crn").withToken())
-            .andExpect(status().isForbidden)
-            .andExpect(
-                content().json(
-                    """
-                    {
-                      "status": 403,
-                      "message": "Access has been denied as this case is a Limited Access case"
-                    }
-                    """
-                )
-            )
+            .get("/case/$crn") { withToken() }
+            .andExpect {
+                status { isForbidden() }
+
+                content {
+                    json(
+                        """
+                        {
+                          "status": 403,
+                          "message": "Access has been denied as this case is a Limited Access case"
+                        }
+                        """, JsonCompareMode.STRICT
+                    )
+                }
+            }
     }
 
     @ParameterizedTest
     @MethodSource("caseAccess")
     fun `returns LAO information correctly`(crn: String, limitedAccess: LimitedAccessDetail) {
         val response = mockMvc
-            .perform(
-                get("/case/$crn/access")
-                    .withToken()
-            )
-            .andExpect(status().is2xxSuccessful)
+            .get("/case/$crn/access") { withToken() }
+            .andExpect { status { is2xxSuccessful() } }
             .andReturn().response.contentAsJson<LimitedAccessDetail>()
 
         assertThat(response, equalTo(limitedAccess))

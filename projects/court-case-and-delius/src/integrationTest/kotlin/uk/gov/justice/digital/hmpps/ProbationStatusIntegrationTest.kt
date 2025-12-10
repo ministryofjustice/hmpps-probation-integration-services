@@ -33,7 +33,7 @@ internal class ProbationStatusIntegrationTest @Autowired constructor(
     lateinit var telemetryService: TelemetryService
 
     @Test
-    fun `can return status with other ids_new`() {
+    fun `can return status with other ids`() {
         val person = PersonGenerator.CURRENTLY_MANAGED
 
         mockMvc.get("/probation-case/${person.crn}/search") { withToken() }

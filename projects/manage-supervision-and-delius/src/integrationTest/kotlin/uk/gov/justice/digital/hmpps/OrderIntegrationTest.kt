@@ -2,8 +2,7 @@ package uk.gov.justice.digital.hmpps
 
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers
+import org.springframework.test.web.servlet.get
 import uk.gov.justice.digital.hmpps.api.model.Name
 import uk.gov.justice.digital.hmpps.api.model.overview.Order
 import uk.gov.justice.digital.hmpps.api.model.sentence.*
@@ -24,24 +23,19 @@ class OrderIntegrationTest : IntegrationTestBase() {
 
     @Test
     fun `unauthorized status returned`() {
-        mockMvc
-            .perform(MockMvcRequestBuilders.get("/sentence/X123456/previous-orders"))
-            .andExpect(MockMvcResultMatchers.status().isUnauthorized)
+        mockMvc.get("/sentence/X123456/previous-orders")
+            .andExpect { status { isUnauthorized() } }
 
-        mockMvc
-            .perform(MockMvcRequestBuilders.get("/sentence/X123456/previous-orders/1"))
-            .andExpect(MockMvcResultMatchers.status().isUnauthorized)
+        mockMvc.get("/sentence/X123456/previous-orders/1")
+            .andExpect { status { isUnauthorized() } }
     }
 
     @Test
     fun `no previous orders`() {
-        val response = mockMvc
-            .perform(
-                MockMvcRequestBuilders.get("/sentence/${PersonDetailsGenerator.PERSONAL_DETAILS.crn}/previous-orders")
-                    .withToken()
-            )
-            .andExpect(MockMvcResultMatchers.status().isOk)
-            .andReturn().response.contentAsJson<PreviousOrderHistory>()
+        val response =
+            mockMvc.get("/sentence/${PersonDetailsGenerator.PERSONAL_DETAILS.crn}/previous-orders") { withToken() }
+                .andExpect { status { isOk() } }
+                .andReturn().response.contentAsJson<PreviousOrderHistory>()
 
         val expected = PreviousOrderHistory(Name("Caroline", "Louise", "Bloggs"), listOf())
 
@@ -50,13 +44,10 @@ class OrderIntegrationTest : IntegrationTestBase() {
 
     @Test
     fun `no previous orders by crn and event number`() {
-        val response = mockMvc
-            .perform(
-                MockMvcRequestBuilders.get("/sentence/${PersonDetailsGenerator.PERSONAL_DETAILS.crn}/previous-orders/1")
-                    .withToken()
-            )
-            .andExpect(MockMvcResultMatchers.status().isOk)
-            .andReturn().response.contentAsJson<PreviousOrderHistory>()
+        val response =
+            mockMvc.get("/sentence/${PersonDetailsGenerator.PERSONAL_DETAILS.crn}/previous-orders/1") { withToken() }
+                .andExpect { status { isOk() } }
+                .andReturn().response.contentAsJson<PreviousOrderHistory>()
 
         val expected = PreviousOrderHistory(Name("Caroline", "Louise", "Bloggs"), listOf())
 
@@ -65,11 +56,8 @@ class OrderIntegrationTest : IntegrationTestBase() {
 
     @Test
     fun `return previous orders`() {
-        val response = mockMvc
-            .perform(
-                MockMvcRequestBuilders.get("/sentence/${PersonGenerator.OVERVIEW.crn}/previous-orders").withToken()
-            )
-            .andExpect(MockMvcResultMatchers.status().isOk)
+        val response = mockMvc.get("/sentence/${PersonGenerator.OVERVIEW.crn}/previous-orders") { withToken() }
+            .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<PreviousOrderHistory>()
 
         val expected = PreviousOrderHistory(
@@ -107,13 +95,10 @@ class OrderIntegrationTest : IntegrationTestBase() {
 
     @Test
     fun `return previous orders by crn and event id`() {
-        val response = mockMvc
-            .perform(
-                MockMvcRequestBuilders.get("/sentence/${PersonGenerator.OVERVIEW.crn}/previous-orders/${INACTIVE_EVENT_1.eventNumber}")
-                    .withToken()
-            )
-            .andExpect(MockMvcResultMatchers.status().isOk)
-            .andReturn().response.contentAsJson<PreviousOrderInformation>()
+        val response =
+            mockMvc.get("/sentence/${PersonGenerator.OVERVIEW.crn}/previous-orders/${INACTIVE_EVENT_1.eventNumber}") { withToken() }
+                .andExpect { status { isOk() } }
+                .andReturn().response.contentAsJson<PreviousOrderInformation>()
 
         val expected = PreviousOrderInformation(
             Name("Forename", "Middle1", "Surname"),
@@ -146,13 +131,12 @@ class OrderIntegrationTest : IntegrationTestBase() {
 
     @Test
     fun `return previous order no disposal length`() {
-        val response = mockMvc
-            .perform(
-                MockMvcRequestBuilders.get("/sentence/${PersonGenerator.OVERVIEW.crn}/previous-orders/${INACTIVE_EVENT_3.eventNumber}")
-                    .withToken()
-            )
-            .andExpect(MockMvcResultMatchers.status().isOk)
-            .andReturn().response.contentAsJson<PreviousOrderInformation>()
+        val response =
+            mockMvc.get("/sentence/${PersonGenerator.OVERVIEW.crn}/previous-orders/${INACTIVE_EVENT_3.eventNumber}") {
+                withToken()
+            }
+                .andExpect { status { isOk() } }
+                .andReturn().response.contentAsJson<PreviousOrderInformation>()
 
         assertEquals(response.title, "Default Sentence Type")
     }

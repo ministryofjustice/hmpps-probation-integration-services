@@ -5,8 +5,7 @@ import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.CsvSource
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import org.springframework.test.web.servlet.get
 import uk.gov.justice.digital.hmpps.api.model.Name
 import uk.gov.justice.digital.hmpps.api.model.activity.Component
 import uk.gov.justice.digital.hmpps.api.model.schedule.NextAppointment
@@ -21,7 +20,6 @@ import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.OVERVIEW
 import uk.gov.justice.digital.hmpps.service.toActivity
 import uk.gov.justice.digital.hmpps.service.toDocument
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
-import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 import java.time.LocalDate
 
 class ScheduleIntegrationTest : IntegrationTestBase() {
@@ -29,9 +27,8 @@ class ScheduleIntegrationTest : IntegrationTestBase() {
     @Test
     fun `upcoming schedule is returned`() {
         val person = OVERVIEW
-        val res = mockMvc
-            .perform(get("/schedule/${person.crn}/upcoming").withDeliusUserToken("DeliusUser"))
-            .andExpect(status().isOk)
+        val res = mockMvc.get("/schedule/${person.crn}/upcoming") { withDeliusUserToken("DeliusUser") }
+            .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<Schedule>()
 
         assertThat(res.personSummary.crn, equalTo(person.crn))
@@ -52,9 +49,8 @@ class ScheduleIntegrationTest : IntegrationTestBase() {
     @Test
     fun `previous schedule is returned`() {
         val person = OVERVIEW
-        val res = mockMvc
-            .perform(get("/schedule/${person.crn}/previous").withDeliusUserToken("DeliusUser"))
-            .andExpect(status().isOk)
+        val res = mockMvc.get("/schedule/${person.crn}/previous") { withDeliusUserToken("DeliusUser") }
+            .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<Schedule>()
         assertThat(res.personSummary.crn, equalTo(person.crn))
         assertThat(
@@ -82,9 +78,8 @@ class ScheduleIntegrationTest : IntegrationTestBase() {
     )
     fun `schedule pagination`(uri: String, requestSize: Int, totalPages: Int, totalResults: Int) {
         val person = OVERVIEW
-        val res = mockMvc
-            .perform(get("/schedule/${person.crn}/$uri").withDeliusUserToken("DeliusUser"))
-            .andExpect(status().isOk)
+        val res = mockMvc.get("/schedule/${person.crn}/$uri") { withDeliusUserToken("DeliusUser") }
+            .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<Schedule>()
 
         assertThat(res.personSummary.crn, equalTo(person.crn))
@@ -96,16 +91,14 @@ class ScheduleIntegrationTest : IntegrationTestBase() {
 
     @Test
     fun `previous schedule not found status returned`() {
-        mockMvc
-            .perform(get("/schedule/X123456/previous").withDeliusUserToken("DeliusUser"))
-            .andExpect(status().isNotFound)
+        mockMvc.get("/schedule/X123456/previous") { withDeliusUserToken("DeliusUser") }
+            .andExpect { status { isNotFound() } }
     }
 
     @Test
     fun `Upcomimg schedule not found status returned`() {
-        mockMvc
-            .perform(get("/schedule/X123456/upcoming").withDeliusUserToken("DeliusUser"))
-            .andExpect(status().isNotFound)
+        mockMvc.get("/schedule/X123456/upcoming") { withDeliusUserToken("DeliusUser") }
+            .andExpect { status { isNotFound() } }
     }
 
     @Test
@@ -113,9 +106,8 @@ class ScheduleIntegrationTest : IntegrationTestBase() {
 
         val person = OVERVIEW
         val id = ContactGenerator.NEXT_APPT_CONTACT.id
-        val res = mockMvc
-            .perform(get("/schedule/${person.crn}/appointment/${id}").withDeliusUserToken("DeliusUser"))
-            .andExpect(status().isOk)
+        val res = mockMvc.get("/schedule/${person.crn}/appointment/${id}") { withDeliusUserToken("DeliusUser") }
+            .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<PersonAppointment>()
         val expectedDocs =
             listOf(
@@ -143,9 +135,8 @@ class ScheduleIntegrationTest : IntegrationTestBase() {
 
         val person = OVERVIEW
         val id = ContactGenerator.PREVIOUS_APPT_CONTACT_ABSENT.id
-        val res = mockMvc
-            .perform(get("/schedule/${person.crn}/appointment/${id}").withToken())
-            .andExpect(status().isOk)
+        val res = mockMvc.get("/schedule/${person.crn}/appointment/${id}") { withDeliusUserToken("DeliusUser") }
+            .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<PersonAppointment>()
 
         val expectedNotes = listOf(
@@ -163,9 +154,8 @@ class ScheduleIntegrationTest : IntegrationTestBase() {
 
         val person = OVERVIEW
         val id = ContactGenerator.PREVIOUS_APPT_CONTACT_ABSENT.id
-        val res = mockMvc
-            .perform(get("/schedule/${person.crn}/appointment/${id}/note/1").withToken())
-            .andExpect(status().isOk)
+        val res = mockMvc.get("/schedule/${person.crn}/appointment/${id}/note/1") { withDeliusUserToken("DeliusUser") }
+            .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<PersonAppointment>()
 
         val expectedNote = NoteDetail(1, "Harry Kane", LocalDate.of(2024, 10, 29), LONG_NOTE)
@@ -180,9 +170,10 @@ class ScheduleIntegrationTest : IntegrationTestBase() {
         val person = OVERVIEW
         val id = ContactGenerator.PREVIOUS_APPT_CONTACT_ABSENT.id
         val username = "peter-parker"
-        val res = mockMvc
-            .perform(get("/schedule/${person.crn}/next-appointment?contactId=$id&username=$username").withToken())
-            .andExpect(status().isOk)
+        val res = mockMvc.get("/schedule/${person.crn}/next-appointment?contactId=$id&username=$username") {
+            withDeliusUserToken("DeliusUser")
+        }
+            .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<NextAppointment>()
 
         assertThat(res.appointment?.type, equalTo("Initial Appointment on Doorstep (NS)"))

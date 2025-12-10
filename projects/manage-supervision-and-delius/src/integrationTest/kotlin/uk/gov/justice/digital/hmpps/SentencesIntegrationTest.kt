@@ -2,8 +2,7 @@ package uk.gov.justice.digital.hmpps
 
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers
+import org.springframework.test.web.servlet.get
 import uk.gov.justice.digital.hmpps.api.model.sentence.*
 import uk.gov.justice.digital.hmpps.data.generator.LicenceConditionGenerator.LC_WITHOUT_NOTES
 import uk.gov.justice.digital.hmpps.data.generator.LicenceConditionGenerator.LC_WITH_1500_CHAR_NOTE
@@ -25,18 +24,14 @@ class SentencesIntegrationTest : IntegrationTestBase() {
 
     @Test
     fun `unauthorized status returned`() {
-        mockMvc
-            .perform(MockMvcRequestBuilders.get("/sentences/X123456"))
-            .andExpect(MockMvcResultMatchers.status().isUnauthorized)
+        mockMvc.get("/sentences/X123456")
+            .andExpect { status { isUnauthorized() } }
     }
 
     @Test
     fun `no active sentences`() {
-        val response = mockMvc
-            .perform(
-                MockMvcRequestBuilders.get("/sentences/${PersonDetailsGenerator.PERSONAL_DETAILS.crn}").withToken()
-            )
-            .andExpect(MockMvcResultMatchers.status().isOk)
+        val response = mockMvc.get("/sentences/${PersonDetailsGenerator.PERSONAL_DETAILS.crn}") { withToken() }
+            .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<MinimalSentenceOverview>()
 
         val expected = MinimalSentenceOverview(
@@ -48,9 +43,8 @@ class SentencesIntegrationTest : IntegrationTestBase() {
 
     @Test
     fun `get active sentences`() {
-        val response = mockMvc
-            .perform(MockMvcRequestBuilders.get("/sentences/${PersonGenerator.OVERVIEW.crn}").withToken())
-            .andExpect(MockMvcResultMatchers.status().isOk)
+        val response = mockMvc.get("/sentences/${PersonGenerator.OVERVIEW.crn}") { withToken() }
+            .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<MinimalSentenceOverview>()
 
         val expected = MinimalSentenceOverview(

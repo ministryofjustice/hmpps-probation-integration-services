@@ -9,8 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import org.springframework.test.web.servlet.get
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.EXCLUSION
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.RESTRICTION
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.RESTRICTION_EXCLUSION
@@ -23,19 +22,18 @@ import uk.gov.justice.digital.hmpps.user.AuditUser
 
 @AutoConfigureMockMvc
 @SpringBootTest
-class UserAccessIntegrationTest {
-    @Autowired
-    internal lateinit var mockMvc: MockMvc
-
-    @Autowired
-    internal lateinit var wireMockServer: WireMockServer
+internal class UserAccessIntegrationTest @Autowired constructor(
+    internal val mockMvc: MockMvc,
+    internal val wireMockServer: WireMockServer
+) {
 
     @ParameterizedTest
     @MethodSource("laoUserCases")
     fun `LAO results are appropriately returned`(user: AuditUser, person: Person, access: CaseAccess) {
-        val response = mockMvc
-            .perform(get("/users/${user.username}/access/${person.crn}").withToken())
-            .andExpect(status().is2xxSuccessful)
+        val response = mockMvc.get("/users/${user.username}/access/${person.crn}") {
+            withToken()
+        }
+            .andExpect { status { is2xxSuccessful() } }
             .andReturn().response.contentAsJson<CaseAccess>()
 
         assertThat(response).isEqualTo(access)

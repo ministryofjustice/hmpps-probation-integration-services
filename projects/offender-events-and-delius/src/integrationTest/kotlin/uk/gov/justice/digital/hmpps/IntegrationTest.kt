@@ -13,21 +13,18 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.bean.override.mockito.MockitoBean
 import org.springframework.test.context.bean.override.mockito.MockitoSpyBean
 import uk.gov.justice.digital.hmpps.data.generator.OffenderDeltaGenerator
-import uk.gov.justice.digital.hmpps.integrations.delius.offender.*
+import uk.gov.justice.digital.hmpps.integrations.delius.offender.OffenderDelta
+import uk.gov.justice.digital.hmpps.integrations.delius.offender.OffenderDeltaRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.offender.OffenderDeltaService
 import uk.gov.justice.digital.hmpps.messaging.HmppsChannelManager
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 
 @SpringBootTest
-internal class IntegrationTest {
-    @Value("\${messaging.producer.topic}")
-    lateinit var topicName: String
-
-    @Autowired
-    lateinit var channelManager: HmppsChannelManager
-
-    @Autowired
-    lateinit var offenderDeltaRepository: OffenderDeltaRepository
-
+internal class IntegrationTest @Autowired constructor(
+    @Value("\${messaging.producer.topic}") private val topicName: String,
+    private val channelManager: HmppsChannelManager,
+    private val offenderDeltaRepository: OffenderDeltaRepository
+) {
     @MockitoSpyBean
     lateinit var offenderDeltaService: OffenderDeltaService
 

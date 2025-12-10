@@ -2,7 +2,6 @@ package uk.gov.justice.digital.hmpps
 
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
-import org.hamcrest.Matchers.hasItem
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
@@ -12,33 +11,30 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import org.springframework.test.web.servlet.get
 import uk.gov.justice.digital.hmpps.api.model.*
 import uk.gov.justice.digital.hmpps.data.generator.CaseDetailsGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ProviderGenerator
 import uk.gov.justice.digital.hmpps.data.generator.SentenceGenerator
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.Person
-import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.address
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 import java.time.LocalDate
 
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class ProbationCaseResourceTest {
-    @Autowired
-    lateinit var mockMvc: MockMvc
+class ProbationCaseResourceTest @Autowired constructor(
+    private val mockMvc: MockMvc
+) {
 
     @ParameterizedTest
     @MethodSource("existingCases")
     fun `retrieve responsible officer`(person: Person, communityResponsible: Boolean) {
         val staff = ProviderGenerator.JOHN_SMITH
 
-        val ro = mockMvc
-            .perform(get("/probation-case/${person.crn}/responsible-officer").withToken())
-            .andExpect(status().is2xxSuccessful)
+        val ro = mockMvc.get("/probation-case/${person.crn}/responsible-officer") { withToken() }
+            .andExpect { status { is2xxSuccessful() } }
             .andReturn().response.contentAsJson<ResponsibleOfficer>()
 
         val com = ro.communityManager
@@ -71,16 +67,14 @@ class ProbationCaseResourceTest {
 
     @Test
     fun `crn not found returns 404`() {
-        mockMvc
-            .perform(get("/probation-case/InvalidCrn/responsible-officer").withToken())
-            .andExpect(status().isNotFound)
+        mockMvc.get("/probation-case/InvalidCrn/responsible-officer") { withToken() }
+            .andExpect { status { isNotFound() } }
     }
 
     @Test
     fun `nomsId returned when populated`() {
-        val identifiers = mockMvc
-            .perform(get("/probation-case/${PersonGenerator.DEFAULT.crn}/identifiers").withToken())
-            .andExpect(status().isOk)
+        val identifiers = mockMvc.get("/probation-case/${PersonGenerator.DEFAULT.crn}/identifiers") { withToken() }
+            .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<CaseIdentifier>()
 
         assertThat(identifiers.nomsId, equalTo("A1234YZ"))
@@ -88,16 +82,16 @@ class ProbationCaseResourceTest {
 
     @Test
     fun `case details returns 404 when not found`() {
-        mockMvc.perform(get("/probation-case/InvalidCrn/detail").withToken())
-            .andExpect(status().isNotFound)
+        mockMvc.get("/probation-case/InvalidCrn/detail") { withToken() }
+            .andExpect { status { isNotFound() } }
     }
 
     @Test
     fun `basic details returned for a case successfully`() {
-        val caseDetail = mockMvc
-            .perform(get("/probation-case/${CaseDetailsGenerator.MINIMAL_PERSON.crn}/details").withToken())
-            .andExpect(status().isOk)
-            .andReturn().response.contentAsJson<CaseDetail>()
+        val caseDetail =
+            mockMvc.get("/probation-case/${CaseDetailsGenerator.MINIMAL_PERSON.crn}/details") { withToken() }
+                .andExpect { status { isOk() } }
+                .andReturn().response.contentAsJson<CaseDetail>()
 
         assertThat(
             caseDetail,
@@ -116,9 +110,8 @@ class ProbationCaseResourceTest {
 
     @Test
     fun `full details returned for case when available`() {
-        val caseDetail = mockMvc
-            .perform(get("/probation-case/${CaseDetailsGenerator.FULL_PERSON.crn}/details").withToken())
-            .andExpect(status().isOk)
+        val caseDetail = mockMvc.get("/probation-case/${CaseDetailsGenerator.FULL_PERSON.crn}/details") { withToken() }
+            .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<CaseDetail>()
 
         assertFullPersonDetails(caseDetail)
@@ -126,9 +119,8 @@ class ProbationCaseResourceTest {
 
     @Test
     fun `conviction details returned for case when available`() {
-        val cc = mockMvc
-            .perform(get("/probation-case/${CaseDetailsGenerator.FULL_PERSON.crn}/convictions").withToken())
-            .andExpect(status().isOk)
+        val cc = mockMvc.get("/probation-case/${CaseDetailsGenerator.FULL_PERSON.crn}/convictions") { withToken() }
+            .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<CaseConvictions>()
 
         assertFullPersonDetails(cc.caseDetail)
@@ -138,10 +130,12 @@ class ProbationCaseResourceTest {
 
     @Test
     fun `conviction details returned for individual conviction when available`() {
-        val cc = mockMvc
-            .perform(get("/probation-case/${CaseDetailsGenerator.FULL_PERSON.crn}/convictions/${SentenceGenerator.FULL_DETAIL_EVENT.id}").withToken())
-            .andExpect(status().isOk)
-            .andReturn().response.contentAsJson<CaseConviction>()
+        val cc =
+            mockMvc
+                .get("/probation-case/${CaseDetailsGenerator.FULL_PERSON.crn}/convictions/${SentenceGenerator.FULL_DETAIL_EVENT.id}")
+                { withToken() }
+                .andExpect { status { isOk() } }
+                .andReturn().response.contentAsJson<CaseConviction>()
 
         assertFullPersonDetails(cc.caseDetail)
         assertFullConvictionDetails(cc.conviction)

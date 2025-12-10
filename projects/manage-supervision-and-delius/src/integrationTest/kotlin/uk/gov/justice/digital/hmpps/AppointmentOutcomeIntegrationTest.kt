@@ -4,10 +4,8 @@ import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
+import org.springframework.test.web.servlet.patch
+import org.springframework.test.web.servlet.post
 import uk.gov.justice.digital.hmpps.api.model.appointment.AppointmentDetail
 import uk.gov.justice.digital.hmpps.api.model.appointment.CreateAppointment
 import uk.gov.justice.digital.hmpps.api.model.appointment.Outcome
@@ -20,7 +18,7 @@ import uk.gov.justice.digital.hmpps.data.generator.OffenderManagerGenerator.TEAM
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.test.CustomMatchers.isCloseTo
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
-import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withJson
+import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.json
 import java.time.ZonedDateTime
 import java.util.*
 
@@ -29,24 +27,20 @@ class AppointmentOutcomeIntegrationTest : IntegrationTestBase() {
 
     @Test
     fun `unauthorized status returned`() {
-        mockMvc
-            .perform(
-                MockMvcRequestBuilders.patch("/appointment")
-                    .withJson(outcome)
-            )
-            .andExpect(MockMvcResultMatchers.status().isUnauthorized)
+        mockMvc.patch("/appointment") { json = outcome }
+            .andExpect { status { isUnauthorized() } }
     }
 
     @Test
     fun `when an appointment does not exist returns a 404 response`() {
-        mockMvc
-            .perform(
-                MockMvcRequestBuilders.patch("/appointment")
-                    .withUserToken(PI_USER.username)
-                    .withJson(outcome)
-            )
-            .andExpect(MockMvcResultMatchers.status().isNotFound)
-            .andExpect(jsonPath("$.message", equalTo("Appointment with id of 123 not found")))
+        mockMvc.patch("/appointment") {
+            withUserToken(PI_USER.username)
+            json = outcome
+        }
+            .andExpect {
+                status { isNotFound() }
+                jsonPath("$.message") { value("Appointment with id of 123 not found") }
+            }
     }
 
     @Test
@@ -62,13 +56,11 @@ class AppointmentOutcomeIntegrationTest : IntegrationTestBase() {
 
         val request = Outcome(response.appointments[0].id, true, "my notes", true)
 
-        mockMvc
-            .perform(
-                MockMvcRequestBuilders.patch("/appointment")
-                    .withUserToken(PI_USER.username)
-                    .withJson(request)
-            )
-            .andExpect(MockMvcResultMatchers.status().isOk)
+        mockMvc.patch("/appointment") {
+            withUserToken(PI_USER.username)
+            json = request
+        }
+            .andExpect { status { isOk() } }
 
         val updatedAppointment = sentenceAppointmentRepository.findById(response.appointments[0].id).get()
 
@@ -91,18 +83,17 @@ class AppointmentOutcomeIntegrationTest : IntegrationTestBase() {
         sentenceAppointmentRepository.delete(updatedAppointment)
     }
 
-    private fun createAppointment() = mockMvc.perform(
-        post("/appointment/${PersonGenerator.PERSON_1.crn}")
-            .withUserToken(PI_USER.username)
-            .withJson(
-                CreateAppointment(
-                    User(STAFF_USER_1.username, TEAM.code, locationCode = DEFAULT_LOCATION.code),
-                    type = CreateAppointment.Type.PlannedOfficeVisitNS.code,
-                    start = ZonedDateTime.now().plusDays(1),
-                    end = ZonedDateTime.now().plusDays(2),
-                    eventId = PersonGenerator.EVENT_1.id,
-                    uuid = UUID.randomUUID()
-                )
+    private fun createAppointment() = mockMvc.post("/appointment/${PersonGenerator.PERSON_1.crn}") {
+        withUserToken(PI_USER.username)
+        json =
+            CreateAppointment(
+                User(STAFF_USER_1.username, TEAM.code, locationCode = DEFAULT_LOCATION.code),
+                type = CreateAppointment.Type.PlannedOfficeVisitNS.code,
+                start = ZonedDateTime.now().plusDays(1),
+                end = ZonedDateTime.now().plusDays(2),
+                eventId = PersonGenerator.EVENT_1.id,
+                uuid = UUID.randomUUID()
             )
-    ).andReturn().response.contentAsJson<AppointmentDetail>()
+    }
+        .andReturn().response.contentAsJson<AppointmentDetail>()
 }

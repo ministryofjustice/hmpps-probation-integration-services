@@ -10,8 +10,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
 import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import org.springframework.test.web.servlet.get
 import uk.gov.justice.digital.hmpps.api.model.*
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ProviderGenerator
@@ -22,17 +21,15 @@ import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = RANDOM_PORT)
-internal class ApiIntegrationTest {
-
-    @Autowired
-    lateinit var mockMvc: MockMvc
+internal class ApiIntegrationTest @Autowired constructor(
+    private val mockMvc: MockMvc
+) {
 
     @ParameterizedTest
     @MethodSource("caseIdentifiers")
     fun `successful retrieval of a case record by crn or noms id`(identifier: String, person: Person) {
-        val record = mockMvc
-            .perform(get("/case-records/$identifier").withToken())
-            .andExpect(status().is2xxSuccessful)
+        val record = mockMvc.get("/case-records/$identifier") { withToken() }
+            .andExpect { status { is2xxSuccessful() } }
             .andReturn().response.contentAsJson<ProbationRecord>()
 
         val district = ProviderGenerator.DEFAULT_DISTRICT

@@ -20,22 +20,15 @@ import uk.gov.justice.digital.hmpps.telemetry.TelemetryMessagingExtensions.notif
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 
 @SpringBootTest
-class PsrCompletedIntegrationTest {
-
+internal class PsrCompletedIntegrationTest @Autowired constructor(
     @Value("\${messaging.consumer.queue}")
-    private lateinit var queueName: String
-
-    @Autowired
-    private lateinit var channelManager: HmppsChannelManager
-
+    private val queueName: String,
+    private val channelManager: HmppsChannelManager,
+    private val wireMockServer: WireMockServer,
+    private val documentRepository: DocumentRepository
+) {
     @MockitoBean
     private lateinit var telemetryService: TelemetryService
-
-    @Autowired
-    private lateinit var wireMockServer: WireMockServer
-
-    @Autowired
-    private lateinit var documentRepository: DocumentRepository
 
     @MockitoSpyBean
     private lateinit var alfrescoUploadClient: AlfrescoUploadClient

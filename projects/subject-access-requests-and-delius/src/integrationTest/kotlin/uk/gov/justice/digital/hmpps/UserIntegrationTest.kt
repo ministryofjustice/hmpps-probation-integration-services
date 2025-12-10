@@ -7,23 +7,21 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
 import org.springframework.test.json.JsonCompareMode
 import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import org.springframework.test.web.servlet.get
 import uk.gov.justice.digital.hmpps.api.model.User
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.andExpectJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = RANDOM_PORT)
-internal class UserIntegrationTest {
-    @Autowired
-    lateinit var mockMvc: MockMvc
+internal class UserIntegrationTest @Autowired constructor(
+    private val mockMvc: MockMvc
+) {
 
     @Test
     fun `returns data`() {
-        mockMvc
-            .perform(get("/user").withToken())
-            .andExpect(status().isOk)
+        mockMvc.get("/user") { withToken() }
+            .andExpect { status { isOk() } }
             .andExpectJson(
                 listOf(
                     User("SubjectAccessRequestsAndDelius", "Service"),

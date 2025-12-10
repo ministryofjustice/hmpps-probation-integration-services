@@ -6,8 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import org.springframework.test.web.servlet.get
 import uk.gov.justice.digital.hmpps.api.model.Colour
 import uk.gov.justice.digital.hmpps.api.model.RiskItem
 import uk.gov.justice.digital.hmpps.api.model.RiskSummary
@@ -16,17 +15,14 @@ import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class RegistrationIntegrationTest {
-    @Autowired
-    lateinit var mockMvc: MockMvc
+class RegistrationIntegrationTest @Autowired constructor(
+    private val mockMvc: MockMvc
+) {
 
     @Test
     fun `test crn with risk flags`() {
-        val result = mockMvc.perform(
-            MockMvcRequestBuilders
-                .get("/registrations/X123456/flags").withToken()
-        )
-            .andExpect(status().isOk)
+        val result = mockMvc.get("/registrations/X123456/flags") { withToken() }
+            .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<RiskSummary>()
 
         val expected = RiskSummary(
@@ -42,11 +38,8 @@ class RegistrationIntegrationTest {
 
     @Test
     fun `test no registrations`() {
-        val result = mockMvc.perform(
-            MockMvcRequestBuilders
-                .get("/registrations/N123456/flags").withToken()
-        )
-            .andExpect(status().isOk)
+        val result = mockMvc.get("/registrations/N123456/flags") { withToken() }
+            .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<RiskSummary>()
 
         val expected = RiskSummary()

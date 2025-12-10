@@ -7,8 +7,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import org.springframework.test.web.servlet.post
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator
 import uk.gov.justice.digital.hmpps.data.generator.DocumentGenerator
 import uk.gov.justice.digital.hmpps.integrations.delius.DocumentRepository
@@ -18,15 +17,11 @@ import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 
 @AutoConfigureMockMvc
 @SpringBootTest
-class TreatmentPageIntegrationTest {
-    @Autowired
-    internal lateinit var mockMvc: MockMvc
-
-    @Autowired
-    internal lateinit var wireMockServer: WireMockServer
-
-    @Autowired
-    internal lateinit var documentRepository: DocumentRepository
+internal class TreatmentPageIntegrationTest @Autowired constructor(
+    private val mockMvc: MockMvc,
+    private val wireMockServer: WireMockServer,
+    private val documentRepository: DocumentRepository
+) {
 
     @Test
     fun `can retrieve documents for a single contact`() {
@@ -44,12 +39,12 @@ class TreatmentPageIntegrationTest {
         )
         documentRepository.save(document)
 
-        val response = mockMvc.perform(
-            post("/treatment")
-                .withToken()
-                .content("[${contact.id}]")
-                .contentType(MediaType.APPLICATION_JSON)
-        ).andExpect(status().is2xxSuccessful)
+        val response = mockMvc.post("/treatment") {
+            withToken()
+            contentType = MediaType.APPLICATION_JSON
+            content = "[${contact.id}]"
+        }
+            .andExpect { status { is2xxSuccessful() } }
             .andReturn().response.contentAsJson<ContactDocumentResponse>()
 
         assert(response.content.size == 1)
@@ -87,12 +82,12 @@ class TreatmentPageIntegrationTest {
         documentRepository.save(document1)
         documentRepository.save(document2)
 
-        val response = mockMvc.perform(
-            post("/treatment")
-                .withToken()
-                .content("[${contact1.id},${contact2.id}]")
-                .contentType(MediaType.APPLICATION_JSON)
-        ).andExpect(status().is2xxSuccessful)
+        val response = mockMvc.post("/treatment") {
+            withToken()
+            contentType = MediaType.APPLICATION_JSON
+            content = "[${contact1.id},${contact2.id}]"
+        }
+            .andExpect { status { is2xxSuccessful() } }
             .andReturn().response.contentAsJson<ContactDocumentResponse>()
 
         assert(response.content.size == 2)
@@ -104,12 +99,12 @@ class TreatmentPageIntegrationTest {
 
     @Test
     fun `returns empty list for zero contact ids`() {
-        val response = mockMvc.perform(
-            post("/treatment")
-                .withToken()
-                .content("[]")
-                .contentType(MediaType.APPLICATION_JSON)
-        ).andExpect(status().is2xxSuccessful)
+        val response = mockMvc.post("/treatment") {
+            withToken()
+            contentType = MediaType.APPLICATION_JSON
+            content = "[]"
+        }
+            .andExpect { status { is2xxSuccessful() } }
             .andReturn().response.contentAsJson<ContactDocumentResponse>()
 
         assert(response.content.isEmpty())
@@ -124,12 +119,12 @@ class TreatmentPageIntegrationTest {
             id = 103L
         )
 
-        val response = mockMvc.perform(
-            post("/treatment")
-                .withToken()
-                .content("[${contact.id}]")
-                .contentType(MediaType.APPLICATION_JSON)
-        ).andExpect(status().is2xxSuccessful)
+        val response = mockMvc.post("/treatment") {
+            withToken()
+            contentType = MediaType.APPLICATION_JSON
+            content = "[${contact.id}]"
+        }
+            .andExpect { status { is2xxSuccessful() } }
             .andReturn().response.contentAsJson<ContactDocumentResponse>()
 
         assert(response.content.size == 1)

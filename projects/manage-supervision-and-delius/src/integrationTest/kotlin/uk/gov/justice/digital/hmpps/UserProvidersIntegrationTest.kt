@@ -5,8 +5,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers
+import org.springframework.test.web.servlet.get
 import uk.gov.justice.digital.hmpps.api.model.sentence.User
 import uk.gov.justice.digital.hmpps.api.model.user.DefaultUserDetails
 import uk.gov.justice.digital.hmpps.api.model.user.Provider
@@ -26,17 +25,15 @@ class UserProvidersIntegrationTest : IntegrationTestBase() {
 
     @Test
     fun `unauthorized status returned`() {
-        mockMvc
-            .perform(MockMvcRequestBuilders.get("/user/user1/providers"))
-            .andExpect(MockMvcResultMatchers.status().isUnauthorized)
+        mockMvc.get("/user/user1/providers")
+            .andExpect { status { isUnauthorized() } }
     }
 
     @ParameterizedTest
     @MethodSource("providerRequests")
     fun `get user providers`(uri: String, expected: UserProviderResponse) {
-        val response = mockMvc
-            .perform(MockMvcRequestBuilders.get(uri).withToken())
-            .andExpect(MockMvcResultMatchers.status().isOk)
+        val response = mockMvc.get(uri) { withToken() }
+            .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<UserProviderResponse>()
         assertEquals(expected, response)
     }

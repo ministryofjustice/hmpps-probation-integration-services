@@ -8,8 +8,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
 import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import org.springframework.test.web.servlet.get
 import uk.gov.justice.digital.hmpps.data.generator.OfficeLocationGenerator.LOCATION_1
 import uk.gov.justice.digital.hmpps.data.generator.OfficeLocationGenerator.LOCATION_2
 import uk.gov.justice.digital.hmpps.data.generator.PersonManagerGenerator.BOROUGH_1
@@ -29,15 +28,15 @@ import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = RANDOM_PORT)
-internal class ProviderIntegrationTest {
-    @Autowired
-    lateinit var mockMvc: MockMvc
+internal class ProviderIntegrationTest @Autowired constructor(
+    private val mockMvc: MockMvc
+) {
 
     @Test
     fun `get all providers`() {
         val response = mockMvc
-            .perform(get("/providers").withToken())
-            .andExpect(status().isOk)
+            .get("/providers") { withToken() }
+            .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<List<Provider>>()
 
         val expected = listOf(DEFAULT_PROVIDER.toProvider(), PROVIDER_1.toProvider(), PROVIDER_2.toProvider())
@@ -51,8 +50,8 @@ internal class ProviderIntegrationTest {
     @Test
     fun `get all pdus for provider`() {
         val response = mockMvc
-            .perform(get("/providers/${PROVIDER_1.code.trim()}/pdus").withToken())
-            .andExpect(status().isOk)
+            .get("/providers/${PROVIDER_1.code.trim()}/pdus") { withToken() }
+            .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<List<ProbationDeliveryUnit>>()
 
         val expected = listOf(BOROUGH_1.toPdu())
@@ -66,8 +65,10 @@ internal class ProviderIntegrationTest {
     @Test
     fun `get all office locations for provider and pdu`() {
         val response = mockMvc
-            .perform(get("/providers/${DEFAULT_PROVIDER.code.trim()}/pdus/${DEFAULT_BOROUGH.code.trim()}/locations").withToken())
-            .andExpect(status().isOk)
+            .get("/providers/${DEFAULT_PROVIDER.code.trim()}/pdus/${DEFAULT_BOROUGH.code.trim()}/locations") {
+                withToken()
+            }
+            .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<List<OfficeAddress>>()
 
         val expected =

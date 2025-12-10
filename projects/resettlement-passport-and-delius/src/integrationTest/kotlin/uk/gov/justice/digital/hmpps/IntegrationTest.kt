@@ -10,8 +10,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
 import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import org.springframework.test.web.servlet.get
 import uk.gov.justice.digital.hmpps.api.controller.ResultSet
 import uk.gov.justice.digital.hmpps.api.model.Appointment
 import uk.gov.justice.digital.hmpps.api.model.DutyToReferNSI
@@ -25,15 +24,14 @@ import java.time.ZonedDateTime
 
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = RANDOM_PORT)
-internal class IntegrationTest {
-    @Autowired
-    lateinit var mockMvc: MockMvc
+internal class IntegrationTest @Autowired constructor(
+    private val mockMvc: MockMvc
+) {
 
     @Test
     fun `duty to refer retuns a success response`() {
-        val detailResponse = mockMvc
-            .perform(get("/duty-to-refer-nsi/X123123?type=CRN").withToken())
-            .andExpect(status().is2xxSuccessful)
+        val detailResponse = mockMvc.get("/duty-to-refer-nsi/X123123?type=CRN") { withToken() }
+            .andExpect { status { is2xxSuccessful() } }
             .andReturn().response.contentAsJson<DutyToReferNSI>()
 
         assertThat(detailResponse).isEqualTo(getNSI())
@@ -57,22 +55,20 @@ internal class IntegrationTest {
 
     @Test
     fun `duty to refer retuns a 404 response`() {
-        mockMvc
-            .perform(get("/duty-to-refer-nsi/N123123B?type=CRN").withToken())
-            .andExpect(status().is4xxClientError)
+        mockMvc.get("/duty-to-refer-nsi/N123123B?type=CRN") { withToken() }
+            .andExpect { status { is4xxClientError() } }
     }
 
     @Test
     fun `future appointments are retrieved and mapped accordingly`() {
-        val res = mockMvc.perform(
-            get("/appointments/${PersonGenerator.DEFAULT.crn}")
-                .queryParam("size", "10")
-                .queryParam("page", "1")
-                .queryParam("startDate", LocalDate.now().toString())
-                .queryParam("endDate", LocalDate.now().plusDays(7).toString())
-                .withToken()
-        )
-            .andExpect(status().is2xxSuccessful)
+        val res = mockMvc.get("/appointments/${PersonGenerator.DEFAULT.crn}") {
+            param("size", "10")
+            param("page", "1")
+            param("startDate", LocalDate.now().toString())
+            param("endDate", LocalDate.now().plusDays(7).toString())
+            withToken()
+        }
+            .andExpect { status { is2xxSuccessful() } }
             .andReturn().response.contentAsJson<ResultSet<Appointment>>()
 
         res.assertPagination()
@@ -86,15 +82,14 @@ internal class IntegrationTest {
 
     @Test
     fun `past appointments are retrieved and mapped accordingly`() {
-        val res = mockMvc.perform(
-            get("/appointments/${PersonGenerator.DEFAULT.crn}")
-                .queryParam("size", "10")
-                .queryParam("page", "1")
-                .queryParam("startDate", LocalDate.now().minusDays(7).toString())
-                .queryParam("endDate", LocalDate.now().toString())
-                .withToken()
-        )
-            .andExpect(status().is2xxSuccessful)
+        val res = mockMvc.get("/appointments/${PersonGenerator.DEFAULT.crn}") {
+            param("size", "10")
+            param("page", "1")
+            param("startDate", LocalDate.now().minusDays(7).toString())
+            param("endDate", LocalDate.now().toString())
+            withToken()
+        }
+            .andExpect { status { is2xxSuccessful() } }
             .andReturn().response.contentAsJson<ResultSet<Appointment>>()
 
         res.assertPagination()

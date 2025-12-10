@@ -5,8 +5,7 @@ import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertNull
 import org.springframework.mock.web.MockMultipartFile
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import org.springframework.test.web.servlet.multipart
 import org.springframework.util.ResourceUtils
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.APPT_CT_3
@@ -38,16 +37,16 @@ class DocumentUploadIntegrationTest : IntegrationTestBase() {
         val savedContact = contactRepository.save(contactToSave)
         assertNull(documentRepository.findByPrimaryKeyId(savedContact.id))
 
-        val requestBuilder = multipart("/documents/${person.crn}/update/contact/{id}", savedContact.id)
-            .file(multipartFile)
-            .with { request ->
+        mockMvc.multipart("/documents/${person.crn}/update/contact/{id}", savedContact.id) {
+            withToken()
+            file(MockMultipartFile("file", "document.pdf", "application/pdf", document.readBytes()))
+            with { request ->
                 request.method = "PATCH"
                 request.setParameter("crn", person.crn)
                 request
             }
-
-        mockMvc.perform(requestBuilder.withToken())
-            .andExpect(status().isOk)
+        }
+            .andExpect { status { isOk() } }
 
         val doc = documentRepository.findByPrimaryKeyId(savedContact.id)
         assertThat(doc?.alfrescoId, equalTo("00000000-0000-0000-0000-000000000001"))

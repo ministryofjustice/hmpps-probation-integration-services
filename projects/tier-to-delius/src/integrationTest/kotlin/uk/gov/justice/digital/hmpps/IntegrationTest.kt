@@ -24,29 +24,16 @@ import java.time.ZonedDateTime
 
 @SpringBootTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation::class)
-internal class IntegrationTest {
-
+internal class IntegrationTest @Autowired constructor(
     @Value("\${messaging.consumer.queue}")
-    private lateinit var queueName: String
-
-    @Autowired
-    private lateinit var channelManager: HmppsChannelManager
-
-    @Autowired
-    private lateinit var referenceDataRepository: ReferenceDataRepository
-
-    @Autowired
-    private lateinit var personRepository: PersonRepository
-
-    @Autowired
-    private lateinit var managementTierDevRepository: ManagementTierDevRepository
-
-    @Autowired
-    private lateinit var contactDevRepository: ContactDevRepository
-
-    @Autowired
-    private lateinit var wireMockServer: WireMockServer
-
+    private val queueName: String,
+    private val channelManager: HmppsChannelManager,
+    private val referenceDataRepository: ReferenceDataRepository,
+    private val personRepository: PersonRepository,
+    private val managementTierDevRepository: ManagementTierDevRepository,
+    private val contactDevRepository: ContactDevRepository,
+    private val wireMockServer: WireMockServer
+) {
     @MockitoBean
     private lateinit var telemetryService: TelemetryService
 

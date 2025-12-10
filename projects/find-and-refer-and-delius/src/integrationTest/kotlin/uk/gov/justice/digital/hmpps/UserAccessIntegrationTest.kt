@@ -8,8 +8,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
 import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import org.springframework.test.web.servlet.get
 import uk.gov.justice.digital.hmpps.data.generator.LimitedAccessUserGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.service.CaseAccess
@@ -18,9 +17,9 @@ import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = RANDOM_PORT)
-internal class UserAccessIntegrationTest {
-    @Autowired
-    lateinit var mockMvc: MockMvc
+internal class UserAccessIntegrationTest @Autowired constructor(
+    private val mockMvc: MockMvc
+) {
 
     @Test
     fun `user is excluded from viewing a case`() {
@@ -28,8 +27,8 @@ internal class UserAccessIntegrationTest {
         val exclusionUser = LimitedAccessUserGenerator.EXCLUSION_USER
         val exclusionPerson = PersonGenerator.EXCLUSION
         val response = mockMvc
-            .perform(get("/users/${exclusionUser.username}/access/${exclusionPerson.crn}").withToken())
-            .andExpect(status().isOk)
+            .get("/users/${exclusionUser.username}/access/${exclusionPerson.crn}") { withToken() }
+            .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<CaseAccess>()
 
         assertThat(response.crn, equalTo(exclusionPerson.crn))
@@ -45,8 +44,8 @@ internal class UserAccessIntegrationTest {
         val user = LimitedAccessUserGenerator.EXCLUSION_USER
         val restrictionPerson = PersonGenerator.RESTRICTION
         val response = mockMvc
-            .perform(get("/users/${user.username}/access/${restrictionPerson.crn}").withToken())
-            .andExpect(status().isOk)
+            .get("/users/${user.username}/access/${restrictionPerson.crn}") { withToken() }
+            .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<CaseAccess>()
 
         assertThat(response.crn, equalTo(restrictionPerson.crn))
@@ -62,8 +61,8 @@ internal class UserAccessIntegrationTest {
         val restrictionUser = LimitedAccessUserGenerator.RESTRICTION_USER
         val restrictionPerson = PersonGenerator.RESTRICTION
         val response = mockMvc
-            .perform(get("/users/${restrictionUser.username}/access/${restrictionPerson.crn}").withToken())
-            .andExpect(status().isOk)
+            .get("/users/${restrictionUser.username}/access/${restrictionPerson.crn}") { withToken() }
+            .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<CaseAccess>()
 
         assertThat(response.crn, equalTo(restrictionPerson.crn))
@@ -79,8 +78,8 @@ internal class UserAccessIntegrationTest {
         val user = LimitedAccessUserGenerator.RESTRICTION_AND_EXCLUSION_USER
         val restrictionExclusionPerson = PersonGenerator.RESTRICTION_EXCLUSION
         val response = mockMvc
-            .perform(get("/users/${user.username}/access/${restrictionExclusionPerson.crn}").withToken())
-            .andExpect(status().isOk)
+            .get("/users/${user.username}/access/${restrictionExclusionPerson.crn}") { withToken() }
+            .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<CaseAccess>()
 
         assertThat(response.crn, equalTo(restrictionExclusionPerson.crn))

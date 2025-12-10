@@ -9,8 +9,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
 import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import org.springframework.test.web.servlet.get
 import uk.gov.justice.digital.hmpps.api.Manager
 import uk.gov.justice.digital.hmpps.api.Team
 import uk.gov.justice.digital.hmpps.data.generator.CommunityManagerGenerator.ALLOCATED_PERSON
@@ -24,24 +23,22 @@ import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = RANDOM_PORT)
-internal class CommunityManagerIntTest {
-    @Autowired
-    lateinit var mockMvc: MockMvc
+internal class CommunityManagerIntTest @Autowired constructor(
+    private val mockMvc: MockMvc
+) {
 
     @ParameterizedTest
     @MethodSource("communityManagers")
     fun `returns the community manager correctly`(nomsId: String, expected: Manager) {
-        mockMvc
-            .perform(get("/probation-cases/$nomsId/community-manager").withToken())
-            .andExpect(status().is2xxSuccessful)
+        mockMvc.get("/probation-cases/$nomsId/community-manager") { withToken() }
+            .andExpect { status { is2xxSuccessful() } }
             .andExpectJson(expected)
     }
 
     @Test
     fun `noms id not found throws 404`() {
-        mockMvc
-            .perform(get("/probation-cases/invalid/community-manager").withToken())
-            .andExpect(status().isNotFound)
+        mockMvc.get("/probation-cases/invalid/community-manager") { withToken() }
+            .andExpect { status { isNotFound() } }
     }
 
     companion object {

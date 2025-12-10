@@ -7,40 +7,42 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
 import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import org.springframework.test.web.servlet.get
 import uk.gov.justice.digital.hmpps.data.generator.DataGenerator.PERSON
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = RANDOM_PORT)
-internal class IntegrationTest {
-    @Autowired
-    lateinit var mockMvc: MockMvc
+internal class IntegrationTest @Autowired constructor(
+    private val mockMvc: MockMvc
+) {
 
     @Test
     fun `get community manager`() {
-        mockMvc
-            .perform(get("/probation-case/${PERSON.prisonerId}/community-manager").withToken())
-            .andExpect(status().is2xxSuccessful)
-            .andExpect(jsonPath("firstName", equalTo("Test")))
-            .andExpect(jsonPath("lastName", equalTo("User")))
-            .andExpect(jsonPath("email", equalTo("test@example.com")))
+        mockMvc.get("/probation-case/${PERSON.prisonerId}/community-manager") { withToken() }
+            .andExpect {
+                status { is2xxSuccessful() }
+
+                jsonPath("firstName") { value(equalTo("Test")) }
+                jsonPath("lastName") { value(equalTo("User")) }
+                jsonPath("email") { value(equalTo("test@example.com")) }
+            }
     }
 
     @Test
     fun `get main address`() {
-        mockMvc
-            .perform(get("/probation-case/${PERSON.prisonerId}/main-address").withToken())
-            .andExpect(status().is2xxSuccessful)
-            .andExpect(jsonPath("buildingName", equalTo("Building Name")))
-            .andExpect(jsonPath("addressNumber", equalTo("123")))
-            .andExpect(jsonPath("streetName", equalTo("Street Name")))
-            .andExpect(jsonPath("district", equalTo("District")))
-            .andExpect(jsonPath("town", equalTo("Town City")))
-            .andExpect(jsonPath("county", equalTo("County")))
-            .andExpect(jsonPath("postcode", equalTo("AA1 1AA")))
-            .andExpect(jsonPath("noFixedAbode", equalTo(false)))
+        mockMvc.get("/probation-case/${PERSON.prisonerId}/main-address") { withToken() }
+            .andExpect {
+                status { is2xxSuccessful() }
+
+                jsonPath("buildingName") { value(equalTo("Building Name")) }
+                jsonPath("addressNumber") { value(equalTo("123")) }
+                jsonPath("streetName") { value(equalTo("Street Name")) }
+                jsonPath("district") { value(equalTo("District")) }
+                jsonPath("town") { value(equalTo("Town City")) }
+                jsonPath("county") { value(equalTo("County")) }
+                jsonPath("postcode") { value(equalTo("AA1 1AA")) }
+                jsonPath("noFixedAbode") { value(equalTo(false)) }
+            }
     }
 }

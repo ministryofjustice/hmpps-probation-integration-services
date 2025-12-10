@@ -6,9 +6,8 @@ import com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.Test
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import org.springframework.test.web.servlet.get
+import org.springframework.test.web.servlet.post
 import uk.gov.justice.digital.hmpps.api.model.activity.PersonActivity
 import uk.gov.justice.digital.hmpps.client.ActivitySearchRequest
 import uk.gov.justice.digital.hmpps.client.ContactSearchResponse
@@ -19,8 +18,8 @@ import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.E_SUP_PERSON
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.OVERVIEW
 import uk.gov.justice.digital.hmpps.service.toActivity
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
+import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.json
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.objectMapper
-import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 
 class ActivityIntegrationTest : IntegrationTestBase() {
@@ -56,15 +55,15 @@ class ActivityIntegrationTest : IntegrationTestBase() {
                 )
         )
 
-        val res = mockMvc
-            .perform(
-                post("/activity/${person.crn}").withToken()
-                    .withJson(
-                        ActivitySearchRequest(crn = person.crn)
-                    )
-            )
-            .andExpect(status().isOk)
+        val res = mockMvc.post("/activity/${person.crn}") {
+            withToken()
+            json = ActivitySearchRequest(crn = person.crn)
+        }
+            .andExpect {
+                status { isOk() }
+            }
             .andReturn().response.contentAsJson<PersonActivity>()
+
 
         assertThat(res.personSummary.crn, equalTo(person.crn))
         assertThat(res.activities.size, equalTo(3))
@@ -80,9 +79,8 @@ class ActivityIntegrationTest : IntegrationTestBase() {
     @Test
     fun `all person activity is returned`() {
         val person = OVERVIEW
-        val res = mockMvc
-            .perform(get("/activity/${person.crn}").withToken())
-            .andExpect(status().isOk)
+        val res = mockMvc.get("/activity/${person.crn}") { withToken() }
+            .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<PersonActivity>()
 
         assertThat(res.personSummary.crn, equalTo(person.crn))
@@ -106,9 +104,8 @@ class ActivityIntegrationTest : IntegrationTestBase() {
     @Test
     fun `can retrieve e supervision uuid`() {
         val person = E_SUP_PERSON
-        val res = mockMvc
-            .perform(get("/activity/${person.crn}").withToken())
-            .andExpect(status().isOk)
+        val res = mockMvc.get("/activity/${person.crn}") { withToken() }
+            .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<PersonActivity>()
 
         assertThat(res.activities.size, equalTo(1))

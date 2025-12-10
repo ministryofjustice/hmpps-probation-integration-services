@@ -4,8 +4,7 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.ValueSource
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers
+import org.springframework.test.web.servlet.get
 import uk.gov.justice.digital.hmpps.api.model.appointment.*
 import uk.gov.justice.digital.hmpps.api.model.sentence.*
 import uk.gov.justice.digital.hmpps.api.model.user.Team
@@ -40,9 +39,8 @@ class AppointmentIntegrationTest : IntegrationTestBase() {
     @ParameterizedTest
     @ValueSource(strings = ["D123456/contact-type/abc", "types"])
     fun `unauthorized status returned`(path: String) {
-        mockMvc
-            .perform(get("/appointment/$path"))
-            .andExpect(MockMvcResultMatchers.status().isUnauthorized)
+        mockMvc.get("/appointment/$path")
+            .andExpect { status { isUnauthorized() } }
     }
 
     @Test
@@ -54,8 +52,8 @@ class AppointmentIntegrationTest : IntegrationTestBase() {
             true
         )
         val response = mockMvc
-            .perform(get("/appointment/${PersonDetailsGenerator.PERSONAL_DETAILS.crn}/contact-type/${code}").withToken())
-            .andExpect(MockMvcResultMatchers.status().isOk)
+            .get("/appointment/${PersonDetailsGenerator.PERSONAL_DETAILS.crn}/contact-type/${code}") { withToken() }
+            .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<ContactTypeAssociation>()
 
         assertEquals(expected, response)
@@ -92,9 +90,8 @@ class AppointmentIntegrationTest : IntegrationTestBase() {
                 )
             )
         )
-        val response = mockMvc
-            .perform(get("/appointment/${PersonGenerator.OVERVIEW.crn}/contact-type/${code}").withToken())
-            .andExpect(MockMvcResultMatchers.status().isOk)
+        val response = mockMvc.get("/appointment/${PersonGenerator.OVERVIEW.crn}/contact-type/${code}") { withToken() }
+            .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<ContactTypeAssociation>()
 
         assertEquals(expected, response)
@@ -102,25 +99,22 @@ class AppointmentIntegrationTest : IntegrationTestBase() {
 
     @Test
     fun `return mpop contact types`() {
-        val response = mockMvc
-            .perform(get("/appointment/types").withToken())
-            .andExpect(MockMvcResultMatchers.status().isOk)
+        val response = mockMvc.get("/appointment/types") { withToken() }
+            .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<AppointmentTypeResponse>()
 
         val types = mutableListOf<AppointmentType>()
         types.addAll(APPOINTMENT_TYPES.map { it.toAppointmentType() })
         types.add(7, APPT_CT_3.toAppointmentType())
 
-        val expected =
-            AppointmentTypeResponse(types)
+        val expected = AppointmentTypeResponse(types)
         assertEquals(expected, response)
     }
 
     @Test
     fun `return teams by provider`() {
-        val response = mockMvc
-            .perform(get("/appointment/teams/provider/${DEFAULT_PROVIDER.code}").withToken())
-            .andExpect(MockMvcResultMatchers.status().isOk)
+        val response = mockMvc.get("/appointment/teams/provider/${DEFAULT_PROVIDER.code}") { withToken() }
+            .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<TeamResponse>()
 
         val expected = TeamResponse(
@@ -135,11 +129,10 @@ class AppointmentIntegrationTest : IntegrationTestBase() {
     @Test
     fun `return location by provider and team`() {
         val response = mockMvc
-            .perform(
-                get("/appointment/location/provider/${DEFAULT_PROVIDER.code}/team/${OffenderManagerGenerator.TEAM.code}")
-                    .withToken()
-            )
-            .andExpect(MockMvcResultMatchers.status().isOk)
+            .get("/appointment/location/provider/${DEFAULT_PROVIDER.code}/team/${OffenderManagerGenerator.TEAM.code}") {
+                withToken()
+            }
+            .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<ProviderOfficeLocation>()
 
         val expected = ProviderOfficeLocation(listOf(DEFAULT_LOCATION.toLocationDetails()))
@@ -149,12 +142,8 @@ class AppointmentIntegrationTest : IntegrationTestBase() {
 
     @Test
     fun `get staff by team`() {
-        val response = mockMvc
-            .perform(
-                get("/appointment/staff/team/${OffenderManagerGenerator.TEAM.code}")
-                    .withToken()
-            )
-            .andExpect(MockMvcResultMatchers.status().isOk)
+        val response = mockMvc.get("/appointment/staff/team/${OffenderManagerGenerator.TEAM.code}") { withToken() }
+            .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<StaffTeam>()
 
         val expected = StaffTeam(

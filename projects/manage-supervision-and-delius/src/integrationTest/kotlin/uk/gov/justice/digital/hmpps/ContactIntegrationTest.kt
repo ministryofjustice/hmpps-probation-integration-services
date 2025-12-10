@@ -2,9 +2,7 @@ package uk.gov.justice.digital.hmpps
 
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
-import org.springframework.test.web.servlet.MvcResult
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers
+import org.springframework.test.web.servlet.get
 import uk.gov.justice.digital.hmpps.api.model.Name
 import uk.gov.justice.digital.hmpps.api.model.sentence.Contact
 import uk.gov.justice.digital.hmpps.api.model.sentence.ProfessionalContact
@@ -18,42 +16,32 @@ class ContactIntegrationTest : IntegrationTestBase() {
 
     @Test
     fun `unauthorized status returned`() {
-        mockMvc
-            .perform(MockMvcRequestBuilders.get("/sentence/X123456/contacts"))
-            .andExpect(MockMvcResultMatchers.status().isUnauthorized)
+        mockMvc.get("/sentence/X123456/contacts")
+            .andExpect { status { isUnauthorized() } }
     }
 
     @Test
     fun `person does not exist`() {
-        mockMvc
-            .perform(
-                MockMvcRequestBuilders.get("/sentence/X123456/contacts")
-                    .withToken()
-            )
-            .andExpect(MockMvcResultMatchers.status().isNotFound)
-            .andExpect { result: MvcResult ->
-                assertEquals(
-                    "Person with crn of X123456 not found",
-                    result.resolvedException!!.message
-                )
-            }
+        val result = mockMvc.get("/sentence/X123456/contacts") { withToken() }
+            .andExpect { status { isNotFound() } }
+            .andReturn()
+
+        assertEquals(
+            "Person with crn of X123456 not found",
+            result.resolvedException?.message
+        )
     }
 
     @Test
     fun `no offender manager records`() {
+        val result = mockMvc.get("/sentence/${PersonDetailsGenerator.PERSONAL_DETAILS.crn}/contacts") { withToken() }
+            .andExpect { status { isNotFound() } }
+            .andReturn()
 
-        mockMvc
-            .perform(
-                MockMvcRequestBuilders.get("/sentence/${PersonDetailsGenerator.PERSONAL_DETAILS.crn}/contacts")
-                    .withToken()
-            )
-            .andExpect(MockMvcResultMatchers.status().isNotFound)
-            .andExpect { result: MvcResult ->
-                assertEquals(
-                    "Offender Manager records with crn of ${PersonDetailsGenerator.PERSONAL_DETAILS.crn} not found",
-                    result.resolvedException!!.message
-                )
-            }
+        assertEquals(
+            "Offender Manager records with crn of ${PersonDetailsGenerator.PERSONAL_DETAILS.crn} not found",
+            result.resolvedException?.message
+        )
     }
 
     @Test
@@ -109,12 +97,8 @@ class ContactIntegrationTest : IntegrationTestBase() {
         val expected =
             ProfessionalContact(name, currentContacts = listOf(contact1, contact3), previousContacts = listOf(contact2))
 
-        val response = mockMvc
-            .perform(
-                MockMvcRequestBuilders.get("/sentence/${PersonGenerator.OVERVIEW.crn}/contacts")
-                    .withToken()
-            )
-            .andExpect(MockMvcResultMatchers.status().isOk)
+        val response = mockMvc.get("/sentence/${PersonGenerator.OVERVIEW.crn}/contacts") { withToken() }
+            .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<ProfessionalContact>()
 
         assertEquals(expected, response)
