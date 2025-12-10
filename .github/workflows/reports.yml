@@ -123,6 +123,6 @@ jobs:
             | order by timestamp desc
           role-arn: ${{ secrets.ANALYTICAL_PLATFORM_EXPORT_S3_ROLE_TO_ASSUME }}
           bucket-name: ${{ secrets.ANALYTICAL_PLATFORM_EXPORT_S3_BUCKET_NAME }}
-          bucket-prefix: /landing/hmpps-probation-integration/data/database_name=azure_monitor_application_insights/table_name=appointment_reminders_and_delius/extraction_timestamp=${{ steps.get-timestamp.outputs.timestamp }}/export.jsonl
+          bucket-prefix: landing/hmpps-probation-integration/data/database_name=azure_monitor_application_insights/table_name=appointment_reminders_and_delius/extraction_timestamp=${{ steps.get-timestamp.outputs.timestamp }}/export.jsonl
           app-insights-key: ${{ secrets.APP_INSIGHTS_API_KEY }}
           app-insights-guid: ${{ secrets.APP_INSIGHTS_APPLICATION_GUID }}

@@ -38,7 +38,7 @@ runs:
       run: |
         curl -fsSL -H "x-api-key: $key" --data-urlencode "query=$query" --get "$url" \
           | jq -rc '.tables[0] | (.columns | map(.name)) as $cols | .rows[] | with_entries(.key |= $cols[.])' \
-          | aws s3 cp - "s3://$bucket_name/$bucket_prefix"
+          | aws s3 cp - "s3://$bucket_name/$bucket_prefix" --acl bucket-owner-full-control --sse AES256
       env:
         url: https://api.applicationinsights.io/v1/apps/${{ inputs.app-insights-guid }}/query
         key: ${{ inputs.app-insights-key }}
