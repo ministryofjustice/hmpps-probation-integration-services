@@ -259,6 +259,7 @@ jobs:
           - topic-cvl-delius-integration
           - pic-and-probation-integration
           - topic-pi-community-payback-upw
+          - hmpps_accredited_programmes_manage_and_deliver_devs
     steps:
       - name: Send message to Slack
         uses: slackapi/slack-github-action@91efab103c0de0a537f72a35f6b8cda0ee76bf0a # v2.1.1
