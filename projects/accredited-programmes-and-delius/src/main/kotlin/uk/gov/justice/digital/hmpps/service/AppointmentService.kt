@@ -1,24 +1,19 @@
 package uk.gov.justice.digital.hmpps.service
 
-import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
-import uk.gov.justice.digital.hmpps.entity.Person
-import uk.gov.justice.digital.hmpps.entity.PersonCrn
 import uk.gov.justice.digital.hmpps.entity.contact.Contact
 import uk.gov.justice.digital.hmpps.entity.contact.ContactType
 import uk.gov.justice.digital.hmpps.entity.contact.enforcement.Enforcement
 import uk.gov.justice.digital.hmpps.entity.contact.enforcement.EnforcementAction
 import uk.gov.justice.digital.hmpps.exception.NotFoundException.Companion.orNotFoundBy
-import uk.gov.justice.digital.hmpps.integration.StatusInfo
 import uk.gov.justice.digital.hmpps.model.*
 import uk.gov.justice.digital.hmpps.repository.*
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
-import java.util.*
 
 @Transactional
 @Service
@@ -57,43 +52,13 @@ class AppointmentService(
             .chunked(500)
             .flatMap { chunk -> contactRepository.findByExternalReferenceIn(chunk) }
             .mapNotNull { contact -> request.findByReference(contact.externalReference!!)?.let { it to contact } }
-            .forEach { (request, contact) -> contact.update(request) }
+            .applyUpdates()
     }
 
     fun delete(request: DeleteAppointmentsRequest) {
         request.appointments.map { "${Contact.REFERENCE_PREFIX}${it.reference}" }.toSet()
             .chunked(500)
             .forEach { contactRepository.softDeleteByExternalReferenceIn(it.toSet()) }
-    }
-
-    fun statusChanged(messageId: UUID, crn: String, occurredAt: ZonedDateTime, info: StatusInfo) {
-        contactRepository.save(info.asEntity(messageId, crn, occurredAt))
-    }
-
-    private fun StatusInfo.asEntity(messageId: UUID, crn: String, occurredAt: ZonedDateTime): Contact {
-        val (requirement, licenceCondition) = when (sourcedFromEntityType) {
-            StatusInfo.EntityType.LICENCE_CONDITION -> getComponent(null, sourcedFromEntityId)
-            StatusInfo.EntityType.REQUIREMENT -> getComponent(sourcedFromEntityId, null)
-        }
-        val event = requirement?.disposal?.event ?: licenceCondition?.disposal?.event
-        requireNotNull(event) { "Appointment component not found" }
-        check(crn == event.person.crn) { "CRN and component do not match" }
-        val manager = requireNotNull(event.person.manager) { "Person manager not found" }
-        return Contact(
-            person = event.person.asPersonCrn(),
-            event = event,
-            requirement = requirement,
-            licenceCondition = licenceCondition,
-            date = occurredAt.toLocalDate(),
-            startTime = occurredAt,
-            notes = notes,
-            sensitive = false,
-            provider = manager.team.provider,
-            team = manager.team,
-            staff = manager.staff,
-            type = contactTypeRepository.getByCode(newStatus.contactTypeCode),
-            externalReference = "urn:uk:gov:hmpps:accredited-programmes-service:$messageId"
-        )
     }
 
     private fun List<CreateAppointmentRequest>.asEntities(): List<Contact> {
@@ -134,34 +99,40 @@ class AppointmentService(
         }
     }
 
-    private fun getComponent(requirementId: Long?, licenceConditionId: Long?) = Pair(
-        requirementId?.let { requirementRepository.findByIdOrNull(it) },
-        licenceConditionId?.let { licenceConditionRepository.findByIdOrNull(it) }
-    )
+    private fun List<Pair<UpdateAppointmentRequest, Contact>>.applyUpdates(): List<Contact> {
+        val requests = map { (request, _) -> request }
+        val outcomes = contactOutcomeRepository.getAllByCodeIn(requests.mapNotNull { it.outcome?.code })
+        val locations = officeLocationRepository.getAllByCodeIn(requests.mapNotNull { it.location?.code })
+        val teams = teamRepository.getAllByCodeIn(requests.map { it.team.code })
+        val staffs = staffRepository.getAllByCodeIn(requests.map { it.staff.code })
+        val enforcementAction = enforcementActionRepository.getByCode(EnforcementAction.REFER_TO_PERSON_MANAGER)
 
-    private fun Contact.update(request: UpdateAppointmentRequest) = apply {
-        val newTeam = if (request.team.code == team.code) team else teamRepository.getByCode(request.team.code)
-        date = request.date
-        startTime = ZonedDateTime.of(date, request.startTime, EuropeLondon)
-        endTime = ZonedDateTime.of(date, request.endTime, EuropeLondon)
-        provider = newTeam.provider
-        team = newTeam
-        staff = staffRepository.getByCode(request.staff.code)
-        location = request.location?.code?.let { officeLocationRepository.getByCode(it) }
-        sensitive = sensitive || request.sensitive
-        outcome = request.outcome?.code?.let { contactOutcomeRepository.getByCode(it) }?.also { outcome ->
-            complied = outcome.complied
-            attended = outcome.attended
-            if (outcome.complied == false) {
-                applyEnforcementAction(EnforcementAction.REFER_TO_PERSON_MANAGER)
-                updateFailureToComplyCount()
+        return map { (request, contact) ->
+            contact.apply {
+                val newTeam = teams[request.team.code].orNotFoundBy("code", request.team.code)
+                date = request.date
+                startTime = ZonedDateTime.of(date, request.startTime, EuropeLondon)
+                endTime = ZonedDateTime.of(date, request.endTime, EuropeLondon)
+                provider = newTeam.provider
+                team = newTeam
+                staff = staffs[request.staff.code].orNotFoundBy("code", request.staff.code)
+                location = request.location?.code?.let { code -> locations[code].orNotFoundBy("code", code) }
+                sensitive = sensitive || request.sensitive
+                outcome =
+                    request.outcome?.code?.let { code -> outcomes[code].orNotFoundBy("code", code) }?.also { outcome ->
+                        complied = outcome.complied
+                        attended = outcome.attended
+                        if (outcome.complied == false) {
+                            applyEnforcementAction(enforcementAction)
+                            updateFailureToComplyCount()
+                        }
+                    }
+                request.notes?.also { appendNotes(it) }
             }
         }
-        request.notes?.also { appendNotes(it) }
     }
 
-    private fun Contact.applyEnforcementAction(actionCode: String) {
-        val action: EnforcementAction = enforcementActionRepository.getByCode(actionCode)
+    private fun Contact.applyEnforcementAction(action: EnforcementAction) {
         if (!enforcementRepository.existsByContactId(id)) {
             enforcementRepository.save(
                 Enforcement(
@@ -225,8 +196,6 @@ class AppointmentService(
             )
         )
     }
-
-    private fun Person.asPersonCrn() = PersonCrn(id, crn, softDeleted)
 
     private fun Contact.asAppointment() = AppointmentResponse(
         crn = person.crn,

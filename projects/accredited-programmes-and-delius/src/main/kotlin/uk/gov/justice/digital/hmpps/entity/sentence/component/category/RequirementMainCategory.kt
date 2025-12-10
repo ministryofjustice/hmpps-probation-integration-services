@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.entity.sentence.component
+package uk.gov.justice.digital.hmpps.entity.sentence.component.category
 
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
@@ -7,12 +7,12 @@ import jakarta.persistence.Table
 import org.hibernate.annotations.Immutable
 import uk.gov.justice.digital.hmpps.model.CodedValue
 
-@Entity
 @Immutable
-@Table(name = "r_lic_cond_type_main_cat")
-class LicenceConditionMainCategory(
+@Entity
+@Table(name = "r_rqmnt_type_main_category")
+class RequirementMainCategory(
     @Id
-    @Column(name = "lic_cond_type_main_cat_id")
+    @Column(name = "rqmnt_type_main_category_id", nullable = false)
     val id: Long,
     val code: String,
     val description: String,

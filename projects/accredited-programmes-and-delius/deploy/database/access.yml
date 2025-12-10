@@ -5,7 +5,13 @@ database:
     tables:
       - audited_interaction
       - contact
+      - domain_event
       - enforcement
+      - lic_condition
+      - lic_condition_transfer
+      - rejected_transfer_diary
+      - rqmnt
+      - rqmnt_transfer
 
   audit:
     username: AccreditedProgrammesAndDelius

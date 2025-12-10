@@ -4,6 +4,8 @@ import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.NumericBooleanConverter
+import uk.gov.justice.digital.hmpps.entity.sentence.component.category.PssRequirementMainCategory
+import uk.gov.justice.digital.hmpps.entity.sentence.component.category.PssRequirementSubCategory
 import uk.gov.justice.digital.hmpps.entity.sentence.custody.Custody
 
 @Entity

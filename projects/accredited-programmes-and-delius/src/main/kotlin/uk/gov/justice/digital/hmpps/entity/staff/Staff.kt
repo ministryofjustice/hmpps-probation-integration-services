@@ -21,7 +21,7 @@ class Staff(
     val surname: String,
 
     @OneToOne(mappedBy = "staff")
-    val user: User?,
+    val user: User? = null,
 
     @ManyToMany
     @JoinTable(

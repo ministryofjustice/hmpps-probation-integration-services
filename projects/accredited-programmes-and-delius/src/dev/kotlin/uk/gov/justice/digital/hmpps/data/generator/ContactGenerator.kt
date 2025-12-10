@@ -38,7 +38,7 @@ object ContactGenerator {
         sensitive = false,
     )
 
-    fun Requirement.generateAppointment(
+    fun Requirement.contact(
         type: ContactType,
         date: LocalDate,
         staff: Staff,
@@ -62,7 +62,7 @@ object ContactGenerator {
         sensitive = false,
     )
 
-    fun LicenceCondition.generateAppointment(
+    fun LicenceCondition.contact(
         type: ContactType,
         date: LocalDate,
         staff: Staff,

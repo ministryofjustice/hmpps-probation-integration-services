@@ -24,5 +24,7 @@ class ContactType(
         const val SUPERVISION_TWO_THIRDS_POINT = "PRST02"
         const val LICENCE_SUPERVISION_TWO_THIRDS_POINT = "PRST03"
         const val REVIEW_ENFORCEMENT_STATUS = "ARWS"
+        const val COMPONENT_TERMINATED = "ETER"
+        const val COMPONENT_TRANSFER_REJECTED = "ETCX"
     }
 }

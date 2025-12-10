@@ -65,6 +65,33 @@ interface ContactRepository : JpaRepository<Contact, Long> {
         since: LocalDate?,
         typeCode: String = ContactType.REVIEW_ENFORCEMENT_STATUS,
     ): Boolean
+
+    @[Modifying Query(
+        """
+        update Contact c 
+        set c.softDeleted = true
+        where c.requirement.id = :id
+        and c.date > :date
+        and c.outcome is null
+        and c.createdByUser.systemUser = false
+        """
+    )]
+    fun deleteFutureRequirementContacts(id: Long, date: LocalDate)
+
+    @[Modifying Query(
+        """
+        update Contact c 
+        set c.softDeleted = true
+        where c.licenceCondition.id = :id
+        and c.date > :date
+        and c.outcome is null
+        and c.createdByUser.systemUser = false
+        """
+    )]
+    fun deleteFutureLicenceConditionContacts(id: Long, date: LocalDate)
+
+    fun findByRequirementIdAndTypeCode(id: Long, typeCode: String): Contact?
+    fun findByLicenceConditionIdAndTypeCode(id: Long, typeCode: String): Contact?
 }
 
 interface ContactTypeRepository : JpaRepository<ContactType, Long> {

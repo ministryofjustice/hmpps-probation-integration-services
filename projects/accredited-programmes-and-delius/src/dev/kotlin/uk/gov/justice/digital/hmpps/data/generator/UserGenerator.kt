@@ -9,5 +9,6 @@ object UserGenerator {
         id = id(),
         username = username,
         staff = staff,
+        systemUser = false
     )
 }

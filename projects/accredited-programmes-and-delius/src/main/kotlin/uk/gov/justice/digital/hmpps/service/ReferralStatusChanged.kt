@@ -9,11 +9,11 @@ import java.util.*
 @Service
 class ReferralStatusChanged(
     private val detailService: DomainEventDetailService,
-    private val appointmentService: AppointmentService,
+    private val statusChangeService: StatusChangeService
 ) {
     fun handle(messageId: UUID, domainEvent: HmppsDomainEvent) {
         detailService.getDetail<StatusInfo>(domainEvent.detailUrl).also { detail ->
-            appointmentService.statusChanged(
+            statusChangeService.statusChanged(
                 messageId,
                 requireNotNull(domainEvent.personReference.findCrn()),
                 domainEvent.occurredAt,
