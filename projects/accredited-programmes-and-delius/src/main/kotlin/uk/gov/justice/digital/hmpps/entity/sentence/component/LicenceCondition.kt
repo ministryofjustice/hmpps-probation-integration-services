@@ -88,6 +88,8 @@ class LicenceCondition(
     @LastModifiedBy
     var lastUpdatedUserId: Long = 0,
 ) : SentenceComponent {
+    override val type: String
+        @Transient get() = "Licence Condition"
     override val completedReason: ReferenceData.KnownValue
         @Transient get() = ReferenceData.LICENCE_CONDITION_COMPLETED
     override val transferRejectionReason: ReferenceData.KnownValue

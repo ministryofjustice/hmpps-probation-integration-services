@@ -88,6 +88,8 @@ class Requirement(
     @LastModifiedBy
     var lastUpdatedUserId: Long = 0,
 ) : SentenceComponent {
+    override val type: String
+        @Transient get() = "Requirement"
     override val completedReason: ReferenceData.KnownValue
         @Transient get() = ReferenceData.REQUIREMENT_COMPLETED
     override val transferRejectionReason: ReferenceData.KnownValue

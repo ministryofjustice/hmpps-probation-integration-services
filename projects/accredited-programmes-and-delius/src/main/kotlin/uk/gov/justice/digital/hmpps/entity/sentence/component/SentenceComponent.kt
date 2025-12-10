@@ -14,15 +14,10 @@ interface SentenceComponent {
     var terminationDate: ZonedDateTime?
     var terminationReason: ReferenceData?
     var pendingTransfer: Boolean
-    val manager: Manager?
     val pendingTransfers: List<Transfer>
+    val manager: Manager?
     var notes: String?
     val type: String
-        get() = when (this) {
-            is Requirement -> "Requirement"
-            is LicenceCondition -> "Licence Condition"
-            else -> "Component"
-        }
     val completedReason: ReferenceData.KnownValue
     val transferRejectionReason: ReferenceData.KnownValue
 }
