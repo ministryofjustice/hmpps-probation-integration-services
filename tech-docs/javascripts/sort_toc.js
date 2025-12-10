@@ -1,1 +1,1 @@
-$(document).ready((function(){const t=document.getElementById("toc-integration-services-0");Array.from(t.children).sort(((t,e)=>t.textContent.trim().toLowerCase().localeCompare(e.textContent.trim().toLowerCase()))).forEach((e=>t.appendChild(e)))}));
+$(document).ready(function(){const t=document.getElementById("toc-integration-services-0");Array.from(t.children).sort((t,e)=>t.textContent.trim().toLowerCase().localeCompare(e.textContent.trim().toLowerCase())).forEach(e=>t.appendChild(e))});
