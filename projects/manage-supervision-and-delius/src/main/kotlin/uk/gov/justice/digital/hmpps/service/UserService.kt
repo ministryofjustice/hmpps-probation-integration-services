@@ -98,25 +98,26 @@ class UserService(
         sortedBy: String
     ): StaffCaseload {
         val user = userRepository.getUser(username)
+        val pageableNoSort = PageRequest.of(pageable.pageNumber, pageable.pageSize)
         val caseload = caseloadRepository.searchByStaffId(
             user.staff!!.id,
             searchFilter.nameOrCrn?.trim()?.lowercase(),
             searchFilter.nextContactCode?.trim()?.uppercase(),
             searchFilter.sentenceCode?.trim()?.uppercase(),
-            pageable
+            pageableNoSort
         )
         val sentenceTypes =
             caseloadRepository.findSentenceTypesForStaff(user.staff.id)
                 .map { KeyPair(it.code.trim(), it.description) }
         val contactTypes =
             caseloadRepository.findContactTypesForStaff(user.staff.id).map { KeyPair(it.code.trim(), it.description) }
-        val userAccess = userAccessService.userAccessFor(username, caseload.content.map { it.person.crn })
+        val userAccess = userAccessService.userAccessFor(username, caseload.content.map { it.crn })
 
         return StaffCaseload(
             totalElements = caseload.totalElements.toInt(),
             totalPages = caseload.totalPages,
             provider = user.staff.provider.description,
-            caseload = caseload.content.map { it.toStaffCase(userAccess.access.first { ua -> ua.crn == it.person.crn }) },
+            caseload = caseload.content.map { it.toStaffCase(userAccess.access.first { ua -> ua.crn == it.crn }) },
             staff = Name(forename = user.staff.forename, surname = user.staff.surname),
             metaData = MetaData(sentenceTypes = sentenceTypes, contactTypes = contactTypes),
             sortedBy = sortedBy
@@ -320,6 +321,33 @@ fun Caseload.toStaffCase(caseAccess: CaseAccess? = null) = StaffCase(
     latestSentence = latestSentence?.disposal?.type?.description.takeIf { !caseAccess.isLao() },
     numberOfAdditionalSentences = (latestSentence?.let { it.totalNumberOfSentences - 1L }
         ?: 0L).takeIf { !caseAccess.isLao() },
+)
+
+fun CaseloadRow.toStaffCase(caseAccess: CaseAccess? = null) = StaffCase(
+    limitedAccess = caseAccess.isLao(),
+    caseName = Name(
+        forename = firstName,
+        middleName = listOfNotNull(thirdName).joinToString(" "),
+        surname = surname
+    ).takeIf { !caseAccess.isLao() },
+    crn = crn,
+    nextAppointment = nextAppointmentId?.takeIf { !caseAccess.isLao() }?.let { id ->
+        Appointment(
+            id = id,
+            description = nextContactTypeDescription!!,
+            date = ZonedDateTime.of(nextAppointmentDateTime, EuropeLondon)
+        )
+    },
+    previousAppointment = prevAppointmentId?.takeIf { !caseAccess.isLao() }?.let { id ->
+        Appointment(
+            id = id,
+            description = prevContactTypeDescription!!,
+            date = ZonedDateTime.of(prevAppointmentDateTime, EuropeLondon)
+        )
+    },
+    dob = dateOfBirth.takeIf { !caseAccess.isLao() },
+    latestSentence = disposalTypeDescription.takeIf { !caseAccess.isLao() },
+    numberOfAdditionalSentences = (totalSentences!! - 1).takeIf { !caseAccess.isLao() },
 )
 
 fun Caseload.toTeamCase() = TeamCase(

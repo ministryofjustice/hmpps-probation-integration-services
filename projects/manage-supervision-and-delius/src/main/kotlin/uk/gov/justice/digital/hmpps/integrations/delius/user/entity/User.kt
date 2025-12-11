@@ -15,6 +15,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.ContactT
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.Disposal
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.DisposalType
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.ZonedDateTime
 
 @Entity
@@ -448,35 +449,131 @@ interface CaseloadRepository : JpaRepository<Caseload, Long> {
     fun findByStaffId(id: Long, pageable: Pageable): Page<Caseload>
 
     @Query(
-        """
-        select c from Caseload c
-        join fetch c.person p
-        join fetch c.team t
-        left join fetch c.nextAppointment na
-        left join fetch na.type naType
-        left join fetch c.previousAppointment pa
-        left join fetch pa.type paType
-        left join fetch c.latestSentence ls
-        left join fetch ls.disposal d
-        left join fetch d.type dt
-        where c.staff.id = :id
-        and c.roleCode = 'OM'
-        and (:nameOrCrn is null 
-          or lower(p.crn) like '%' || :nameOrCrn || '%' ESCAPE '\'
-          or lower(p.forename || ' ' || p.surname) like '%' || :nameOrCrn || '%' ESCAPE '\'
-          or lower(p.surname || ' ' || p.forename) like '%' || :nameOrCrn || '%' ESCAPE '\'
-          or lower(p.surname || ', ' || p.forename) like '%' || :nameOrCrn || '%' ESCAPE '\')
-        and (:nextContactCode is null or naType.code = :nextContactCode)
-        and (:sentenceCode is null or dt.code = :sentenceCode)
-    """
+        """select * from (with filtered_caseload as (
+    select cl.* from caseload cl
+    join offender person on cl.offender_id = person.offender_id
+    where cl.staff_employee_id = :id
+      and cl.role_code = 'OM'
+      and (:nameOrCrn is null
+        or lower(person.crn) like '%' || :nameOrCrn || '%'
+        or lower(person.first_name || ' ' || person.surname) like '%' || :nameOrCrn || '%'
+        or lower(person.surname || ' ' || person.first_name) like '%' || :nameOrCrn || '%'
+        or lower(person.surname || ', ' || person.first_name) like '%' || :nameOrCrn || '%')
+),
+     pastappointments as ( select c.contact_id,
+                                  c.staff_id,c.offender_id, c.contact_type_id ,
+                                  ct.code as type_code,
+                                  ct.attendance_contact,
+                                  ct.description contact_type_description,
+                                  trunc(c.contact_date) + (c.contact_start_time - trunc(c.contact_start_time)) as appointment_datetime
+                           from contact c
+                           join r_contact_type ct on c.contact_type_id = ct.contact_type_id and ct.attendance_contact = 'Y'
+                           join filtered_caseload on filtered_caseload.offender_id = c.offender_id and filtered_caseload.staff_employee_id = c.staff_id
+                           where c.contact_date is not null
+                             and c.staff_id = :id
+                             and c.contact_start_time is not null
+                             and c.contact_date between current_date-1825 and current_date-1
+                             and c.soft_deleted = 0
+     ),
+     futureappointments as ( select c.contact_id,
+                                    c.staff_id,c.offender_id, c.contact_type_id ,
+                                    ct.code as type_code,
+                                    ct.attendance_contact,
+                                    ct.description contact_type_description,
+                                    trunc(c.contact_date) + (c.contact_start_time - trunc(c.contact_start_time)) as appointment_datetime
+                             from contact c
+                             join r_contact_type ct on c.contact_type_id = ct.contact_type_id and ct.attendance_contact = 'Y'
+                             join filtered_caseload on filtered_caseload.offender_id = c.offender_id and filtered_caseload.staff_employee_id = c.staff_id
+                             where c.contact_date is not null
+                               and c.staff_id = :id
+                               and c.contact_start_time is not null
+                               and c.contact_date >= current_date
+                               and c.soft_deleted = 0
+     )
+select
+
+    c1_0.offender_id                                as offenderid,
+    disposal.event_id                               as eventid,
+    disposal.termination_date                       as terminationdate,
+    dt.description                                  as disposaltypedescription,
+    coalesce(ls1_0.total_sentences, 0)              as totalsentences,
+    na1.contact_id                                  as nextappointmentid,
+    na1.appointment_datetime                        as nextappointmentdatetime,
+    na1.contact_type_description                    as nextcontacttypedescription,
+    pa1.contact_id                                  as prevappointmentid,
+    pa1.appointment_datetime                        as prevappointmentdatetime,
+    pa1.contact_type_description                    as prevcontacttypedescription,
+    t1_0.code                                       as teamcode,
+    person.crn                                        as crn,
+    person.date_of_birth_date                         as dateofbirth,
+    person.first_name                                 as firstname,
+    person.surname                                    as surname,
+    person.third_name                                 as thirdname
+
+from filtered_caseload c1_0
+join team t1_0 on t1_0.team_id = c1_0.trust_provider_team_id
+join offender person on c1_0.offender_id = person.offender_id
+left join ( select c.contact_id, c.appointment_datetime, c.contact_type_id, c.attendance_contact, c.type_code, c.contact_type_description, c.offender_id, c.staff_id, row_number() over (partition by offender_id order by appointment_datetime) as row_num
+            from futureappointments c
+            where c.appointment_datetime > current_date
+) na1 on na1.offender_id = c1_0.offender_id and na1.staff_id = c1_0.staff_employee_id and na1.row_num = 1
+left join ( select c.contact_id, c.appointment_datetime, c.contact_type_id, c.attendance_contact, c.type_code, c.contact_type_description, c.offender_id, c.staff_id, row_number() over (partition by offender_id order by appointment_datetime desc) as row_num
+            from pastappointments c
+            where c.appointment_datetime < current_date
+) pa1 on pa1.offender_id = c1_0.offender_id and pa1.staff_id = c1_0.staff_employee_id and pa1.row_num = 1
+left join ( select sub.*
+            from ( select d.*,
+                          count(e.event_id) over (partition by e.offender_id)                                         as total_sentences,
+                          row_number() over (partition by e.offender_id order by cast(e.event_number as number) desc) as row_num
+                   from event e
+                   join disposal d on d.event_id = e.event_id
+                   where e.soft_deleted = 0
+                     and e.active_flag = 1 ) sub
+            where sub.row_num = 1 ) ls1_0 on ls1_0.offender_id = c1_0.offender_id
+left join disposal on disposal.disposal_id = ls1_0.disposal_id
+left join r_disposal_type dt on dt.disposal_type_id = disposal.disposal_type_id
+where (:nextContactCode is null or na1.type_code = :nextContactCode)
+  and (:sentenceCode is null or dt.disposal_type_code = :sentenceCode) 
+   ) main 
+    """,
+
+        countQuery = """
+        select count(*)
+        from filtered_caseload c1_0
+        join team t1_0 on t1_0.team_id = c1_0.trust_provider_team_id
+        left join disposal on disposal.disposal_id = c1_0.disposal_id
+        left join r_disposal_type dt on dt.disposal_type_id = disposal.disposal_type_id
+        left join (
+            select sub.offender_id
+            from (
+                select e.offender_id,
+                       row_number() over (partition by e.offender_id order by cast(e.event_number as number) desc) as row_num
+                from event e
+                join disposal d on d.event_id = e.event_id
+                where e.soft_deleted = 0
+                  and e.active_flag = 1
+            ) sub
+            where sub.row_num = 1
+        ) ls1_0 on ls1_0.offender_id = c1_0.offender_id
+        where (:nextContactCode is null or exists (
+            select 1 from appointments na1
+            where na1.offender_id = c1_0.offender_id
+              and na1.staff_id = c1_0.staff_employee_id
+              and na1.appointment_datetime > current_date
+              and na1.type_code = :nextContactCode
+              fetch first 1 row only
+        ))
+          and (:sentenceCode is null or dt.disposal_type_code = :sentenceCode)
+    """, nativeQuery = true
     )
+
     fun searchByStaffId(
         id: Long,
         nameOrCrn: String?,
         nextContactCode: String?,
         sentenceCode: String?,
         pageable: Pageable
-    ): Page<Caseload>
+    ): Page<CaseloadRow>
 
     @Query(
         """
@@ -530,13 +627,34 @@ interface ContactTypeDetails {
     val description: String
 }
 
+interface CaseloadRow {
+    val offenderId: Long
+    val teamCode: String
+    val crn: String
+    val dateOfBirth: LocalDate?
+    val firstName: String
+    val surname: String
+    val thirdName: String?
+    val eventId: Long?
+    val terminationDate: LocalDate?
+    val disposalTypeDescription: String?
+    val totalSentences: Long?
+    val nextAppointmentId: Long?
+    val nextAppointmentDateTime: LocalDateTime?
+    val nextContactTypeDescription: String?
+    val prevAppointmentId: Long?
+    val prevAppointmentDateTime: LocalDateTime?
+    val prevContactTypeDescription: String?
+}
+
+
 enum class CaseloadOrderType(val sortColumn: String) {
-    NEXT_CONTACT("na.appointmentDatetime"),
-    LAST_CONTACT("pa.appointmentDatetime"),
-    SENTENCE("dt.description"),
-    SURNAME("p.surname"),
-    NAME_OR_CRN("p.surname"),
-    DOB("p.dateOfBirth")
+    NEXT_CONTACT("nextAppointmentDateTime"),
+    LAST_CONTACT("prevAppointmentDateTime"),
+    SENTENCE("disposalTypeDescription"),
+    SURNAME("surname"),
+    NAME_OR_CRN("surname"),
+    DOB("dateOfBirth")
 }
 
 @Entity
