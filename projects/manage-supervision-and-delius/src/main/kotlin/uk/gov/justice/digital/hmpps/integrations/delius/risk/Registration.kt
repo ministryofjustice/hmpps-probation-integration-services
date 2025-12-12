@@ -14,8 +14,8 @@ import org.springframework.data.jpa.repository.Query
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.RegisterType
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.ReferenceData
-import uk.gov.justice.digital.hmpps.integrations.delius.user.entity.Staff
 import uk.gov.justice.digital.hmpps.integrations.delius.user.entity.User
+import uk.gov.justice.digital.hmpps.integrations.delius.user.staff.entity.Staff
 import java.time.LocalDate
 import java.time.ZonedDateTime
 

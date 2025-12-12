@@ -2,11 +2,10 @@ package uk.gov.justice.digital.hmpps.advice
 
 import jakarta.validation.ConstraintViolationException
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass
-import org.springframework.dao.DataAccessException
 import org.springframework.dao.DataIntegrityViolationException
+import org.springframework.dao.OptimisticLockingFailureException
 import org.springframework.http.HttpStatus.*
 import org.springframework.http.ResponseEntity
-import org.springframework.orm.ObjectOptimisticLockingFailureException
 import org.springframework.security.access.AccessDeniedException
 import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.ExceptionHandler
@@ -60,10 +59,15 @@ class ControllerAdvice {
 }
 
 @RestControllerAdvice(basePackages = ["uk.gov.justice.digital.hmpps"])
-@ConditionalOnClass(name = ["org.springframework.dao.DataAccessException"])
+@ConditionalOnClass(name = ["org.springframework.dao.DataIntegrityViolationException"])
 class JpaControllerAdvice {
-    @ExceptionHandler(DataAccessException::class)
-    fun handle(e: DataAccessException) = ResponseEntity
+    @ExceptionHandler(DataIntegrityViolationException::class)
+    fun handle(e: DataIntegrityViolationException) = ResponseEntity
+        .status(CONFLICT)
+        .body(ErrorResponse(status = CONFLICT.value(), message = e.message))
+
+    @ExceptionHandler(OptimisticLockingFailureException::class)
+    fun handle(e: OptimisticLockingFailureException) = ResponseEntity
         .status(CONFLICT)
         .body(ErrorResponse(status = CONFLICT.value(), message = e.message))
 }

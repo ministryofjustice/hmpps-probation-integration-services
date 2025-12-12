@@ -7,15 +7,19 @@ import uk.gov.justice.digital.hmpps.data.generator.LicenceConditionGenerator.LON
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.E_SUP_PERSON
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.OVERVIEW
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
+import uk.gov.justice.digital.hmpps.integrations.delius.caseload.entity.Caseload
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.ContactDocument
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.ReferenceData
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.LicenceCondition
-import uk.gov.justice.digital.hmpps.integrations.delius.user.entity.*
+import uk.gov.justice.digital.hmpps.integrations.delius.user.entity.Provider
+import uk.gov.justice.digital.hmpps.integrations.delius.user.entity.User
+import uk.gov.justice.digital.hmpps.integrations.delius.user.staff.entity.Staff
+import uk.gov.justice.digital.hmpps.integrations.delius.user.team.entity.Team
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.ZonedDateTime
-import java.util.UUID
+import java.util.*
 
 object ContactGenerator {
 

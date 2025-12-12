@@ -12,20 +12,20 @@ import org.springframework.data.domain.Sort
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.CrudRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.LicenceCondition as LicenceConditionEntity
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.ContactDocument
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.ReferenceData
 import uk.gov.justice.digital.hmpps.integrations.delius.user.entity.Provider
-import uk.gov.justice.digital.hmpps.integrations.delius.user.entity.Staff
-import uk.gov.justice.digital.hmpps.integrations.delius.user.entity.Team
 import uk.gov.justice.digital.hmpps.integrations.delius.user.entity.User
+import uk.gov.justice.digital.hmpps.integrations.delius.user.staff.entity.Staff
+import uk.gov.justice.digital.hmpps.integrations.delius.user.team.entity.Team
 import java.io.Serializable
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
+import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.LicenceCondition as LicenceConditionEntity
 
 @Entity
 @Table(name = "contact")
