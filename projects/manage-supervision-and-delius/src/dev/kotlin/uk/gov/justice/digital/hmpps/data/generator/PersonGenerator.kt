@@ -1,10 +1,14 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.DEFAULT_STAFF
+import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.DEFAULT_TEAM
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.LIMITED_ACCESS_STAFF
+import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.STAFF_1
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.USER
 import uk.gov.justice.digital.hmpps.data.generator.personalDetails.PersonDetailsGenerator
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
+import uk.gov.justice.digital.hmpps.integrations.delius.caseload.entity.Caseload
+import uk.gov.justice.digital.hmpps.integrations.delius.caseload.entity.CaseloadPerson
 import uk.gov.justice.digital.hmpps.integrations.delius.compliance.Nsi
 import uk.gov.justice.digital.hmpps.integrations.delius.compliance.NsiStatus
 import uk.gov.justice.digital.hmpps.integrations.delius.compliance.NsiType
@@ -14,10 +18,8 @@ import uk.gov.justice.digital.hmpps.integrations.delius.risk.DeRegistration
 import uk.gov.justice.digital.hmpps.integrations.delius.risk.RegistrationReview
 import uk.gov.justice.digital.hmpps.integrations.delius.risk.RiskFlag
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.Court
-import uk.gov.justice.digital.hmpps.integrations.delius.user.entity.Caseload
-import uk.gov.justice.digital.hmpps.integrations.delius.user.entity.CaseloadPerson
-import uk.gov.justice.digital.hmpps.integrations.delius.user.entity.Staff
-import uk.gov.justice.digital.hmpps.integrations.delius.user.entity.Team
+import uk.gov.justice.digital.hmpps.integrations.delius.user.staff.entity.Staff
+import uk.gov.justice.digital.hmpps.integrations.delius.user.team.entity.Team
 import java.time.*
 import java.time.temporal.ChronoUnit
 
@@ -283,18 +285,18 @@ object PersonGenerator {
         PersonDetailsGenerator.RESTRICTION_EXCLUSION.id
     )
 
-    val CASELOAD_PERSON_1 = generateCaseload(PERSON_1, DEFAULT_STAFF, ContactGenerator.DEFAULT_TEAM)
-    val CASELOAD_PERSON_2 = generateCaseload(PERSON_2, ContactGenerator.STAFF_1, ContactGenerator.DEFAULT_TEAM)
-    val CASELOAD_PERSON_3 = generateCaseload(PERSON_2, DEFAULT_STAFF, ContactGenerator.DEFAULT_TEAM)
+    val CASELOAD_PERSON_1 = generateCaseload(PERSON_1, DEFAULT_STAFF, DEFAULT_TEAM)
+    val CASELOAD_PERSON_2 = generateCaseload(PERSON_2, STAFF_1, DEFAULT_TEAM)
+    val CASELOAD_PERSON_3 = generateCaseload(PERSON_2, DEFAULT_STAFF, DEFAULT_TEAM)
 
     val CASELOAD_LIMITED_ACCESS_EXCLUSION =
-        generateCaseload(CL_EXCLUDED, LIMITED_ACCESS_STAFF, ContactGenerator.DEFAULT_TEAM)
+        generateCaseload(CL_EXCLUDED, LIMITED_ACCESS_STAFF, DEFAULT_TEAM)
     val CASELOAD_LIMITED_ACCESS_RESTRICTION =
-        generateCaseload(CL_RESTRICTED, LIMITED_ACCESS_STAFF, ContactGenerator.DEFAULT_TEAM)
+        generateCaseload(CL_RESTRICTED, LIMITED_ACCESS_STAFF, DEFAULT_TEAM)
     val CASELOAD_LIMITED_ACCESS_BOTH =
-        generateCaseload(CL_RESTRICTED_EXCLUDED, LIMITED_ACCESS_STAFF, ContactGenerator.DEFAULT_TEAM)
+        generateCaseload(CL_RESTRICTED_EXCLUDED, LIMITED_ACCESS_STAFF, DEFAULT_TEAM)
     val CASELOAD_LIMITED_ACCESS_NEITHER =
-        generateCaseload(PERSON_2, LIMITED_ACCESS_STAFF, ContactGenerator.DEFAULT_TEAM)
+        generateCaseload(PERSON_2, LIMITED_ACCESS_STAFF, DEFAULT_TEAM)
 
     fun generateEvent(
         person: Person,
@@ -615,14 +617,13 @@ object PersonGenerator {
         active = active
     )
 
-    fun generateCaseload(caseLoadPerson: CaseloadPerson, staff: Staff, team: Team) =
-        Caseload(
-            id = IdGenerator.getAndIncrement(),
-            person = caseLoadPerson,
-            staff = staff,
-            team = team,
-            roleCode = "OM"
-        )
+    fun generateCaseload(caseLoadPerson: CaseloadPerson, staff: Staff, team: Team) = Caseload(
+        id = IdGenerator.getAndIncrement(),
+        person = caseLoadPerson,
+        staff = staff,
+        team = team,
+        roleCode = "OM"
+    )
 
     fun generateCaseloadPerson(
         crn: String,

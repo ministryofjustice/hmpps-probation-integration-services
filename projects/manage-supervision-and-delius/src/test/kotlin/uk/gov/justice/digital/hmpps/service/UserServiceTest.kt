@@ -34,11 +34,19 @@ import uk.gov.justice.digital.hmpps.data.generator.OffenderManagerGenerator.STAF
 import uk.gov.justice.digital.hmpps.data.generator.OffenderManagerGenerator.TEAM_1
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.CASELOAD_PERSON_1
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
+import uk.gov.justice.digital.hmpps.integrations.delius.caseload.CaseloadItem
+import uk.gov.justice.digital.hmpps.integrations.delius.caseload.CaseloadRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.caseload.TeamCaseloadItem
+import uk.gov.justice.digital.hmpps.integrations.delius.caseload.entity.Caseload
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.Appointment
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.StaffAndRole
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.StaffUserRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.user.entity.*
+import uk.gov.justice.digital.hmpps.integrations.delius.user.entity.ProbationAreaUserRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.user.entity.UserRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.user.staff.StaffRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.user.team.TeamRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.user.team.entity.Team
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.ZonedDateTime
@@ -84,13 +92,8 @@ internal class UserServiceTest {
         val username = "username"
         whenever(userAccessService.userAccessFor(anyString(), anyList())).thenReturn(UserAccess(emptyList()))
         whenever(userRepository.findByUsername(username)).thenReturn(USER)
-        whenever(caseloadRepository.findByStaffId(USER.staff!!.id, Pageable.ofSize(1))).thenReturn(
-            PageImpl(
-                listOf(
-                    CASELOAD_PERSON_1
-                )
-            )
-        )
+        whenever(caseloadRepository.searchByStaffId(Pageable.ofSize(1), USER.staff!!.id))
+            .thenReturn(PageImpl(listOf(CASELOAD_PERSON_1.toCaseloadItem())))
         val res = service.getUserCaseload(username, Pageable.ofSize(1))
         assertThat(
             res.provider, equalTo(DEFAULT_PROVIDER.description)
@@ -135,13 +138,8 @@ internal class UserServiceTest {
     fun `calls get team caseload function`() {
         val teamCode = DEFAULT_TEAM.code
         whenever(teamRepository.findByTeamCode(teamCode)).thenReturn(DEFAULT_TEAM)
-        whenever(caseloadRepository.findByTeamCode(teamCode, Pageable.ofSize(1))).thenReturn(
-            PageImpl(
-                listOf(
-                    CASELOAD_PERSON_1
-                )
-            )
-        )
+        whenever(caseloadRepository.findByTeamCode(teamCode, Pageable.ofSize(1)))
+            .thenReturn(PageImpl(listOf(CASELOAD_PERSON_1.toTeamCaseloadItem())))
         val res = service.getTeamCaseload(teamCode, Pageable.ofSize(1))
         assertThat(res.provider, equalTo(DEFAULT_PROVIDER.description))
         assertThat(res.caseload[0].staff.code, equalTo(CASELOAD_PERSON_1.staff.code))
@@ -436,5 +434,35 @@ internal class UserServiceTest {
             get() = null
         override val rqmntMainCatCode: String?
             get() = null
+    }
+
+    fun Caseload.toCaseloadItem() = object : CaseloadItem {
+        override val offenderId = person.id
+        override val crn = person.crn
+        override val firstName = person.forename
+        override val secondName = person.secondName
+        override val thirdName = person.thirdName
+        override val surname = person.surname
+        override val latestSentenceTypeDescription = null
+        override val teamCode = team.code
+        override val dateOfBirth = person.dateOfBirth
+        override val totalSentences: Long = 1
+        override val nextAppointmentId = null
+        override val nextAppointmentDateTime = null
+        override val nextAppointmentTypeDescription = null
+        override val prevAppointmentId = null
+        override val prevAppointmentDateTime = null
+        override val prevAppointmentTypeDescription = null
+    }
+
+    fun Caseload.toTeamCaseloadItem() = object : TeamCaseloadItem {
+        override val crn = person.crn
+        override val firstName = person.forename
+        override val secondName = person.secondName
+        override val thirdName = person.thirdName
+        override val surname = person.surname
+        override val staffForename = staff.forename
+        override val staffSurname = staff.surname
+        override val staffCode = staff.code
     }
 }

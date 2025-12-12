@@ -14,8 +14,6 @@ import uk.gov.justice.digital.hmpps.api.model.user.*
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.USER
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.CASELOAD_PERSON_1
 import uk.gov.justice.digital.hmpps.service.UserService
-import uk.gov.justice.digital.hmpps.service.toStaffCase
-import uk.gov.justice.digital.hmpps.service.toTeamCase
 
 @ExtendWith(MockitoExtension::class)
 internal class CaseloadControllerTest {
@@ -33,8 +31,15 @@ internal class CaseloadControllerTest {
             totalPages = 1,
             totalElements = 1,
             provider = USER.staff?.provider?.description,
-            caseload = listOf(CASELOAD_PERSON_1.toStaffCase()),
-            staff = Name(forename = USER.staff!!.forename, surname = USER.staff!!.surname)
+            caseload = listOf(
+                StaffCase(
+                    caseName = CASELOAD_PERSON_1.staff.name(),
+                    crn = CASELOAD_PERSON_1.person.crn,
+                    dob = CASELOAD_PERSON_1.person.dateOfBirth,
+                    limitedAccess = false
+                )
+            ),
+            staff = USER.staff!!.name()
         )
         whenever(userService.getUserCaseload(username, PageRequest.of(0, 10))).thenReturn(expectedResponse)
         val res = controller.getUserCaseload(username, 0, 10)
@@ -60,7 +65,7 @@ internal class CaseloadControllerTest {
             totalPages = 1,
             totalElements = 1,
             provider = USER.staff?.provider?.description,
-            caseload = listOf(CASELOAD_PERSON_1.toTeamCase()),
+            caseload = listOf(),
             team = Team(description = "desc", code = "code")
         )
         whenever(userService.getTeamCaseload(teamCode, PageRequest.of(0, 10))).thenReturn(expectedResponse)

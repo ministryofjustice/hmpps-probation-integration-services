@@ -17,18 +17,24 @@ import uk.gov.justice.digital.hmpps.api.model.appointment.UserAppointments
 import uk.gov.justice.digital.hmpps.api.model.appointment.UserDiary
 import uk.gov.justice.digital.hmpps.api.model.overview.Appointment
 import uk.gov.justice.digital.hmpps.api.model.user.*
-import uk.gov.justice.digital.hmpps.api.model.user.Provider
-import uk.gov.justice.digital.hmpps.api.model.user.Staff
-import uk.gov.justice.digital.hmpps.api.model.user.Team
 import uk.gov.justice.digital.hmpps.aspect.DeliusUserAspect
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
+import uk.gov.justice.digital.hmpps.exception.NotFoundException.Companion.orNotFoundBy
+import uk.gov.justice.digital.hmpps.integrations.delius.caseload.CaseloadItem
+import uk.gov.justice.digital.hmpps.integrations.delius.caseload.CaseloadRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.caseload.TeamCaseloadItem
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.LdapUser
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.StaffUser
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.StaffUserRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.getUser
-import uk.gov.justice.digital.hmpps.integrations.delius.user.entity.*
+import uk.gov.justice.digital.hmpps.integrations.delius.user.entity.ProbationAreaUser
+import uk.gov.justice.digital.hmpps.integrations.delius.user.entity.ProbationAreaUserRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.user.entity.UserRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.user.entity.getUser
+import uk.gov.justice.digital.hmpps.integrations.delius.user.staff.StaffRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.user.team.*
 import uk.gov.justice.digital.hmpps.ldap.findAttributeByUsername
 import uk.gov.justice.digital.hmpps.ldap.findByUsername
 import uk.gov.justice.digital.hmpps.ldap.findPreferenceByUsername
@@ -77,16 +83,16 @@ class UserService(
 
     @Transactional
     fun getUserCaseload(username: String, pageable: Pageable): StaffCaseload {
-        val user = userRepository.getUser(username)
-        val caseload = caseloadRepository.findByStaffId(user.staff!!.id, pageable)
+        val staff = userRepository.getUser(username).staff.orNotFoundBy("username", username)
+        val caseload = caseloadRepository.searchByStaffId(pageable, staff.id)
+        val userAccess = userAccessService.userAccessFor(username, caseload.content.map { it.crn })
 
-        val userAccess = userAccessService.userAccessFor(username, caseload.content.map { it.person.crn })
         return StaffCaseload(
             totalElements = caseload.totalElements.toInt(),
             totalPages = caseload.totalPages,
-            provider = user.staff.provider.description,
-            caseload = caseload.content.map { it.toStaffCase(userAccess.access.firstOrNull { ua -> ua.crn == it.person.crn }) },
-            staff = Name(forename = user.staff.forename, surname = user.staff.surname),
+            provider = staff.provider.description,
+            caseload = caseload.content.map { it.toStaffCase(userAccess.access.firstOrNull { ua -> ua.crn == it.crn }) },
+            staff = staff.name(),
         )
     }
 
@@ -97,28 +103,26 @@ class UserService(
         pageable: Pageable,
         sortedBy: String
     ): StaffCaseload {
-        val user = userRepository.getUser(username)
-        val pageableNoSort = PageRequest.of(pageable.pageNumber, pageable.pageSize)
+        val staff = userRepository.getUser(username).staff.orNotFoundBy("username", username)
         val caseload = caseloadRepository.searchByStaffId(
-            user.staff!!.id,
-            searchFilter.nameOrCrn?.trim()?.lowercase(),
-            searchFilter.nextContactCode?.trim()?.uppercase(),
-            searchFilter.sentenceCode?.trim()?.uppercase(),
-            pageableNoSort
+            pageable = pageable,
+            staffId = staff.id,
+            nameOrCrn = searchFilter.nameOrCrn?.trim()?.lowercase(),
+            nextContactCode = searchFilter.nextContactCode?.trim()?.uppercase(),
+            sentenceCode = searchFilter.sentenceCode?.trim()?.uppercase()
         )
         val sentenceTypes =
-            caseloadRepository.findSentenceTypesForStaff(user.staff.id)
-                .map { KeyPair(it.code.trim(), it.description) }
+            caseloadRepository.findSentenceTypesForStaff(staff.id).map { KeyPair(it.code.trim(), it.description) }
         val contactTypes =
-            caseloadRepository.findContactTypesForStaff(user.staff.id).map { KeyPair(it.code.trim(), it.description) }
+            caseloadRepository.findContactTypesForStaff(staff.id).map { KeyPair(it.code.trim(), it.description) }
         val userAccess = userAccessService.userAccessFor(username, caseload.content.map { it.crn })
 
         return StaffCaseload(
             totalElements = caseload.totalElements.toInt(),
             totalPages = caseload.totalPages,
-            provider = user.staff.provider.description,
+            provider = staff.provider.description,
             caseload = caseload.content.map { it.toStaffCase(userAccess.access.first { ua -> ua.crn == it.crn }) },
-            staff = Name(forename = user.staff.forename, surname = user.staff.surname),
+            staff = staff.name(),
             metaData = MetaData(sentenceTypes = sentenceTypes, contactTypes = contactTypes),
             sortedBy = sortedBy
         )
@@ -295,69 +299,46 @@ class UserService(
     }
 }
 
-fun Caseload.toStaffCase(caseAccess: CaseAccess? = null) = StaffCase(
-    limitedAccess = caseAccess.isLao(),
-    caseName = Name(
-        forename = person.forename,
-        middleName = listOfNotNull(person.secondName, person.thirdName).joinToString(" "),
-        surname = person.surname
-    ).takeIf { !caseAccess.isLao() },
-    crn = person.crn,
-    nextAppointment = nextAppointment?.let {
-        Appointment(
-            id = it.id,
-            description = it.type.description,
-            date = it.appointmentDatetime
-        )
-    }.takeIf { !caseAccess.isLao() },
-    previousAppointment = previousAppointment?.let {
-        Appointment(
-            id = it.id,
-            description = it.type.description,
-            date = it.appointmentDatetime
-        )
-    }.takeIf { !caseAccess.isLao() },
-    dob = person.dateOfBirth.takeIf { !caseAccess.isLao() },
-    latestSentence = latestSentence?.disposal?.type?.description.takeIf { !caseAccess.isLao() },
-    numberOfAdditionalSentences = (latestSentence?.let { it.totalNumberOfSentences - 1L }
-        ?: 0L).takeIf { !caseAccess.isLao() },
-)
+fun CaseloadItem.toStaffCase(caseAccess: CaseAccess? = null) = if (caseAccess.isLao()) {
+    StaffCase(
+        limitedAccess = true,
+        crn = crn,
+    )
+} else {
+    StaffCase(
+        limitedAccess = false,
+        caseName = Name(
+            forename = firstName,
+            middleName = listOfNotNull(secondName, thirdName).joinToString(" "),
+            surname = surname
+        ),
+        crn = crn,
+        nextAppointment = nextAppointmentId?.let { id ->
+            Appointment(id, nextAppointmentDateTime!!.atZone(EuropeLondon), nextAppointmentTypeDescription!!)
+        },
+        previousAppointment = prevAppointmentId?.let { id ->
+            Appointment(id, prevAppointmentDateTime!!.atZone(EuropeLondon), prevAppointmentTypeDescription!!)
+        },
+        dob = dateOfBirth,
+        latestSentence = latestSentenceTypeDescription,
+        numberOfAdditionalSentences = totalSentences - 1,
+    )
+}
 
-fun CaseloadRow.toStaffCase(caseAccess: CaseAccess? = null) = StaffCase(
-    limitedAccess = caseAccess.isLao(),
+fun TeamCaseloadItem.toTeamCase() = TeamCase(
+    crn = crn,
     caseName = Name(
         forename = firstName,
-        middleName = listOfNotNull(thirdName).joinToString(" "),
+        middleName = listOfNotNull(secondName, thirdName).joinToString(" "),
         surname = surname
-    ).takeIf { !caseAccess.isLao() },
-    crn = crn,
-    nextAppointment = nextAppointmentId?.takeIf { !caseAccess.isLao() }?.let { id ->
-        Appointment(
-            id = id,
-            description = nextContactTypeDescription!!,
-            date = ZonedDateTime.of(nextAppointmentDateTime, EuropeLondon)
-        )
-    },
-    previousAppointment = prevAppointmentId?.takeIf { !caseAccess.isLao() }?.let { id ->
-        Appointment(
-            id = id,
-            description = prevContactTypeDescription!!,
-            date = ZonedDateTime.of(prevAppointmentDateTime, EuropeLondon)
-        )
-    },
-    dob = dateOfBirth.takeIf { !caseAccess.isLao() },
-    latestSentence = disposalTypeDescription.takeIf { !caseAccess.isLao() },
-    numberOfAdditionalSentences = (totalSentences!! - 1).takeIf { !caseAccess.isLao() },
-)
-
-fun Caseload.toTeamCase() = TeamCase(
-    caseName = Name(
-        forename = person.forename,
-        middleName = listOfNotNull(person.secondName, person.thirdName).joinToString(" "),
-        surname = person.surname
     ),
-    crn = person.crn,
-    staff = Staff(name = Name(forename = staff.forename, surname = staff.surname), code = staff.code)
+    staff = Staff(
+        name = Name(
+            forename = staffForename,
+            surname = staffSurname
+        ),
+        code = staffCode
+    ),
 )
 
 fun CaseAccess?.isLao() = this != null && (this.userExcluded || this.userRestricted)

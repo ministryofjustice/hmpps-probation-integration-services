@@ -19,6 +19,7 @@ import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 import java.time.LocalDate
 import java.time.ZonedDateTime
+import uk.gov.justice.digital.hmpps.integrations.delius.user.staff.entity.Staff as StaffEntity
 
 class AlertContactIntegrationTest : IntegrationTestBase() {
 
@@ -42,10 +43,7 @@ class AlertContactIntegrationTest : IntegrationTestBase() {
         val person = PersonGenerator.OVERVIEW
 
         val staff = transactionTemplate.execute {
-            entityManager.find(
-                uk.gov.justice.digital.hmpps.integrations.delius.user.entity.Staff::class.java,
-                user.staff!!.id
-            )
+            entityManager.find(StaffEntity::class.java, user.staff!!.id)
         }!!
 
         val alertContacts = contactRepository.saveAll(
