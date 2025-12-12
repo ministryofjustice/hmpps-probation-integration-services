@@ -20,13 +20,15 @@ object EventGenerator {
 
     fun nonCustodialEvent(
         person: Person,
+        number: String,
         lengthInDays: Long = 365,
         disposalDate: ZonedDateTime = ZonedDateTime.of(2022, 5, 1, 0, 0, 0, 0, EuropeLondon),
         disposalCode: String = "DEF"
     ): Event {
         val event = Event(
             id = IdGenerator.getAndIncrement(),
-            person = person
+            person = person,
+            number = number
         )
         val disposal = Disposal(
             id = IdGenerator.getAndIncrement(),
@@ -49,7 +51,7 @@ object EventGenerator {
         lengthInDays: Long = 365,
         disposalCode: String = "DEF"
     ): Event {
-        val event = nonCustodialEvent(person, lengthInDays, disposalDate, disposalCode)
+        val event = nonCustodialEvent(person, "1", lengthInDays, disposalDate, disposalCode)
         val disposal = event.disposal!!
         val custody = Custody(
             id = IdGenerator.getAndIncrement(),

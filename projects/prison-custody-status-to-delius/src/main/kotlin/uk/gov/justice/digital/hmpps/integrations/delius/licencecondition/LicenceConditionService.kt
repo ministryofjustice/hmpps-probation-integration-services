@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactDetail
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactService
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactType
+import uk.gov.justice.digital.hmpps.integrations.delius.domainevent.DomainEventService
 import uk.gov.justice.digital.hmpps.integrations.delius.licencecondition.entity.LicenceCondition
 import uk.gov.justice.digital.hmpps.integrations.delius.licencecondition.entity.LicenceConditionRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.licencecondition.entity.LicenceConditionTransfer
@@ -24,7 +25,8 @@ class LicenceConditionService(
     private val contactService: ContactService,
     private val licenceConditionTransferRepository: LicenceConditionTransferRepository,
     private val referenceDataRepository: ReferenceDataRepository,
-    private val rejectedTransferDiaryRepository: RejectedTransferDiaryRepository
+    private val rejectedTransferDiaryRepository: RejectedTransferDiaryRepository,
+    private val domainEventService: DomainEventService
 ) {
     fun terminateLicenceConditionsForDisposal(
         disposalId: Long,
@@ -36,6 +38,7 @@ class LicenceConditionService(
             .findAllByDisposalIdAndMainCategoryCodeNotAndTerminationReasonIsNull(disposalId)
             .forEach {
                 terminateLicenceCondition(it, terminationReason, terminationDate, endOfTemporaryLicence)
+                domainEventService.publishLicenceConditionTermination(it)
             }
     }
 

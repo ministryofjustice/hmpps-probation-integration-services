@@ -13,7 +13,9 @@ class LicenceConditionCategory(
     val id: Long = 0,
 
     @Column(nullable = false)
-    val code: String
+    val code: String,
+
+    val description: String
 ) {
     enum class Code(val value: String) {
         ACCREDITED_PROGRAM("LAP")

@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps
 import com.github.tomakehurst.wiremock.client.WireMock.*
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
+import org.hamcrest.Matchers.hasSize
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.whenever
@@ -18,7 +19,6 @@ import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.CustodyEventTypeCode
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.InstitutionCode
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.ReleaseTypeCode
-import uk.gov.justice.digital.hmpps.integrations.prison.Booking
 import uk.gov.justice.digital.hmpps.test.CustomMatchers.isCloseTo
 import java.time.ZonedDateTime
 
@@ -112,6 +112,9 @@ class PcstdIntegrationTest : PcstdIntegrationTestBase() {
             assertNotNull(it.terminationDate)
             assertThat(it.terminationReason?.code, equalTo("TEST"))
         }
+
+        val domainEvents = domainEventRepository.findAllForCrn(custody.disposal.event.person.crn)
+        assertThat(domainEvents, hasSize(2))
 
         verifyTelemetry("Recalled", "LocationUpdated", "StatusUpdated") {
             mapOf(

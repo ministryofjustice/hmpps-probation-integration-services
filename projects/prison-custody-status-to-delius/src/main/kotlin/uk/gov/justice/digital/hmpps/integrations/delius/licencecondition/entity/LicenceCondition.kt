@@ -34,6 +34,10 @@ class LicenceCondition(
     @JoinColumn(name = "lic_cond_type_main_cat_id")
     val mainCategory: LicenceConditionCategory,
 
+    @ManyToOne
+    @JoinColumn(name = "lic_cond_type_sub_cat_id")
+    val subCategory: ReferenceData?,
+
     @OneToOne(mappedBy = "licenceCondition")
     val manager: LicenceConditionManager? = null,
 

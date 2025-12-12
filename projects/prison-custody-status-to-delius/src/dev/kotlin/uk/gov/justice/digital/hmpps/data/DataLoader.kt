@@ -109,7 +109,8 @@ class DataLoader(
                 ReferenceDataGenerator.PRISON_MANAGER_ALLOCATION_REASON.set,
                 ReferenceDataSetGenerator.ACCEPTED_DECISION,
                 ReferenceDataSetGenerator.LICENCE_AREA_TRANSFER_REJECTION_REASON,
-                ReferenceDataSetGenerator.AUTO_TRANSFER_REASON
+                ReferenceDataSetGenerator.AUTO_TRANSFER_REASON,
+                ReferenceDataSetGenerator.DOMAIN_EVENT_TYPE
             )
         )
         referenceDataRepository.saveAll(
@@ -123,7 +124,8 @@ class DataLoader(
                     ReferenceDataGenerator.LICENCE_CONDITION_TERMINATION_REASON,
                     ReferenceDataGenerator.LC_REJECTED_DECISION,
                     ReferenceDataGenerator.LC_REJECTED_REASON,
-                    ReferenceDataGenerator.AUTO_TRANSFER
+                    ReferenceDataGenerator.AUTO_TRANSFER,
+                    ReferenceDataGenerator.LC_TERMINATED_DOMAIN_EVENT
                 )
         )
         recallReasonRepository.saveAll(ReferenceDataGenerator.RECALL_REASON.values)

@@ -12,18 +12,12 @@ import org.mockito.kotlin.any
 import org.mockito.kotlin.never
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
-import uk.gov.justice.digital.hmpps.data.generator.EventGenerator
-import uk.gov.justice.digital.hmpps.data.generator.InstitutionGenerator
-import uk.gov.justice.digital.hmpps.data.generator.LicenceConditionGenerator
-import uk.gov.justice.digital.hmpps.data.generator.LicenceConditionTransferGenerator
-import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
-import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator
-import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataSetGenerator
-import uk.gov.justice.digital.hmpps.data.generator.withManager
+import uk.gov.justice.digital.hmpps.data.generator.*
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactDetail
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactService
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactType
+import uk.gov.justice.digital.hmpps.integrations.delius.domainevent.DomainEventService
 import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.Event
 import uk.gov.justice.digital.hmpps.integrations.delius.licencecondition.entity.LicenceCondition
 import uk.gov.justice.digital.hmpps.integrations.delius.licencecondition.entity.LicenceConditionRepository
@@ -51,6 +45,9 @@ internal class LicenceConditionServiceTest {
 
     @Mock
     lateinit var contactService: ContactService
+
+    @Mock
+    lateinit var domainEventService: DomainEventService
 
     @InjectMocks
     lateinit var licenceConditionService: LicenceConditionService
