@@ -4,7 +4,7 @@ USER root
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # hadolint ignore=DL3033
 RUN yum update -y && \
-    yum install -y shadow-utils jq && \
+    yum install -y shadow-utils jq glib2 && \
     yum clean all && \
     useradd --uid 1000 --create-home --system app && \
     curl -sL https://sentry.io/get-cli/ | bash
