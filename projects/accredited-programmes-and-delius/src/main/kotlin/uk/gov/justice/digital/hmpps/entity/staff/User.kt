@@ -19,7 +19,7 @@ class User(
     @JoinColumn(name = "staff_id")
     val staff: Staff? = null,
 
-    @Column(name = "\"SYSTEM_USER\"", columnDefinition = "number")
+    @Column(name = "system_user", columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)
     val systemUser: Boolean = false,
 )
