@@ -32,6 +32,8 @@ class RecreateAppointment(
             )
         ) { "Appointment date or time must change to be recreated" }
 
+        require(request.isInFuture() || request.outcomeCode != null) { "Appointments in the past require an outcome" }
+
         if (appointmentRepository.appointmentClashes(
                 original.person.id,
                 request.date,
@@ -77,7 +79,7 @@ class RecreateAppointment(
             startTime = ZonedDateTime.of(request.date, request.startTime, EuropeLondon),
             endTime = ZonedDateTime.of(request.date, request.endTime, EuropeLondon),
             provider = team.provider,
-            outcome = null,
+            outcome = request.outcomeCode?.let { outcomeRepository.getByCode(it) },
             rarActivity = rarActivity,
             notes = notes,
             sensitive = sensitive == true || request.sensitive == true,
