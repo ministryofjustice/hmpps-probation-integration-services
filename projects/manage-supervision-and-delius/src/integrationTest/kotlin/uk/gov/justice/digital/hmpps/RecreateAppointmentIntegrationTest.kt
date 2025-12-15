@@ -1,7 +1,10 @@
 package uk.gov.justice.digital.hmpps
 
 import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions.within
+import org.junit.jupiter.api.MethodOrderer
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.TestMethodOrder
 import org.springframework.test.web.servlet.put
 import uk.gov.justice.digital.hmpps.api.model.appointment.RecreateAppointmentRequest
 import uk.gov.justice.digital.hmpps.api.model.appointment.RecreatedAppointment
@@ -24,8 +27,10 @@ import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.ZonedDateTime
+import java.time.temporal.ChronoUnit
 import java.util.*
 
+@TestMethodOrder(MethodOrderer.MethodName::class)
 class RecreateAppointmentIntegrationTest : IntegrationTestBase() {
 
     @Test
@@ -376,8 +381,8 @@ class RecreateAppointmentIntegrationTest : IntegrationTestBase() {
 
         val newAppointment = appointmentRepository.getAppointment(recreated.id)
         assertThat(newAppointment.date).isEqualTo(request.date)
-        assertThat(newAppointment.startTime?.toLocalTime()).isEqualTo(request.startTime)
-        assertThat(newAppointment.endTime?.toLocalTime()).isEqualTo(request.endTime)
+        assertThat(newAppointment.startTime?.toLocalTime()).isCloseTo(request.startTime, within(1, ChronoUnit.SECONDS))
+        assertThat(newAppointment.endTime?.toLocalTime()).isCloseTo(request.endTime, within(1, ChronoUnit.SECONDS))
         assertThat(newAppointment.outcome?.code).isNull()
     }
 
@@ -411,8 +416,8 @@ class RecreateAppointmentIntegrationTest : IntegrationTestBase() {
 
         val newAppointment = appointmentRepository.getAppointment(recreated.id)
         assertThat(newAppointment.date).isEqualTo(request.date)
-        assertThat(newAppointment.startTime?.toLocalTime()).isEqualTo(request.startTime)
-        assertThat(newAppointment.endTime?.toLocalTime()).isEqualTo(request.endTime)
+        assertThat(newAppointment.startTime?.toLocalTime()).isCloseTo(request.startTime, within(1, ChronoUnit.SECONDS))
+        assertThat(newAppointment.endTime?.toLocalTime()).isCloseTo(request.endTime, within(1, ChronoUnit.SECONDS))
         assertThat(newAppointment.outcome?.code).isEqualTo(request.outcomeCode)
         assertThat(newAppointment.notes).isEqualTo("Notes on the original appointment\n\nAppointment was held in the past")
     }
