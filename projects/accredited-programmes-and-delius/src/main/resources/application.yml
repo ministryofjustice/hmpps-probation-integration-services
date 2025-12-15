@@ -3,7 +3,9 @@ spring:
   jackson:
     default-property-inclusion: non_null
   jpa:
-    hibernate.ddl-auto: validate
+    hibernate:
+      ddl-auto: validate
+      naming.physical-strategy: uk.gov.justice.digital.hmpps.config.ReservedWordHandlingNamingStrategy
     properties:
       hibernate:
         jdbc.batch_size: 100
