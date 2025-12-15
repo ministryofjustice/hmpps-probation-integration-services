@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.data.generator
 
 import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataSetGenerator.ACCEPTED_DECISION
 import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataSetGenerator.AUTO_TRANSFER_REASON
+import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataSetGenerator.DOMAIN_EVENT_TYPE
 import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataSetGenerator.LICENCE_AREA_TRANSFER_REJECTION_REASON
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactType
 import uk.gov.justice.digital.hmpps.integrations.delius.recall.entity.RecallReason
@@ -45,6 +46,8 @@ object ReferenceDataGenerator {
 
     val AUTO_TRANSFER = generate("AUT", AUTO_TRANSFER_REASON)
 
+    val LC_TERMINATED_DOMAIN_EVENT = generate("probation-case.licence-condition.terminated", DOMAIN_EVENT_TYPE)
+
     fun generate(
         code: String,
         dataset: ReferenceDataSet,
@@ -61,6 +64,7 @@ object ReferenceDataSetGenerator {
     val ACCEPTED_DECISION = generate("ACCEPTED DECISION")
     val LICENCE_AREA_TRANSFER_REJECTION_REASON = generate("LICENCE AREA TRANSFER REJECTION REASON")
     val AUTO_TRANSFER_REASON = generate("Automatic Transfer")
+    val DOMAIN_EVENT_TYPE = generate("DOMAIN EVENT TYPE")
 
     fun generate(name: String, id: Long = IdGenerator.getAndIncrement()) = ReferenceDataSet(id, name)
 }

@@ -25,3 +25,5 @@ fun ReferenceDataRepository.getTransferStatus(code: String): ReferenceData = get
     code,
     "TRANSFER STATUS"
 )
+
+fun ReferenceDataRepository.domainEventType(code: String) = getByCodeAndSetName(code, "DOMAIN EVENT TYPE")

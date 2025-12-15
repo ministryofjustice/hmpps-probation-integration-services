@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.module.kotlin.readValue
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.client.WireMock.aResponse
@@ -22,6 +23,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactTy
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.entity.Custody
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.entity.CustodyHistory
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.entity.CustodyHistoryRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.domainevent.entity.DomainEventRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.EventRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.licencecondition.entity.LicenceConditionRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonRepository
@@ -34,6 +36,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.
 import uk.gov.justice.digital.hmpps.integrations.delius.release.entity.ReleaseRepository
 import uk.gov.justice.digital.hmpps.integrations.prison.Booking
 import uk.gov.justice.digital.hmpps.integrations.prison.Movement
+import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
 import uk.gov.justice.digital.hmpps.messaging.HmppsChannelManager
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import java.time.ZonedDateTime
@@ -83,6 +86,9 @@ open class PcstdIntegrationTestBase {
 
     @Autowired
     internal lateinit var licenceConditionRepository: LicenceConditionRepository
+
+    @Autowired
+    internal lateinit var domainEventRepository: DomainEventRepository
 
     @MockitoBean
     internal lateinit var telemetryService: TelemetryService
@@ -203,4 +209,8 @@ open class PcstdIntegrationTestBase {
 
     internal fun CustodyHistory.eventTester() =
         CustodyEventTester(CustodyEventTypeCode.entries.first { it.code == type.code }, detail)
+
+    internal fun DomainEventRepository.findAllForCrn(crn: String) = findAll()
+        .map { objectMapper.readValue<HmppsDomainEvent>(it.messageBody) }
+        .filter { it.personReference.findCrn() == crn }
 }

@@ -7,12 +7,13 @@ import uk.gov.justice.digital.hmpps.integrations.delius.licencecondition.entity.
 import uk.gov.justice.digital.hmpps.set
 
 object LicenceConditionGenerator {
-    val DEFAULT = generate(EventGenerator.nonCustodialEvent(PersonGenerator.RELEASABLE))
+    val DEFAULT = generate(EventGenerator.nonCustodialEvent(PersonGenerator.RELEASABLE, "1"))
 
     fun generate(event: Event) = LicenceCondition(
         id = IdGenerator.getAndIncrement(),
         disposal = event.disposal!!,
-        mainCategory = LicenceConditionCategory(IdGenerator.getAndIncrement(), "TEST")
+        mainCategory = LicenceConditionCategory(IdGenerator.getAndIncrement(), "TEST", "Test description"),
+        subCategory = null
     )
 }
 

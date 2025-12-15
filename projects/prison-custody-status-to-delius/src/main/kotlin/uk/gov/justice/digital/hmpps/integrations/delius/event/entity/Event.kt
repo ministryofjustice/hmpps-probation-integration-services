@@ -37,7 +37,10 @@ class Event(
     var firstReleaseDate: ZonedDateTime? = null,
 
     @OneToMany(mappedBy = "event")
-    val managers: List<OrderManager> = listOf()
+    val managers: List<OrderManager> = listOf(),
+
+    @Column(name = "event_number")
+    val number: String
 ) {
     fun manager() = managers.first()
 }
