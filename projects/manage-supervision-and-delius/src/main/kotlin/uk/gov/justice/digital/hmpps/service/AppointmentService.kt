@@ -14,9 +14,9 @@ import uk.gov.justice.digital.hmpps.integrations.delius.compliance.NsiRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.LicenceConditionRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.LocationRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.user.entity.TeamRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.user.team.TeamRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.ContactType as ContactTypeEntity
-import uk.gov.justice.digital.hmpps.integrations.delius.user.entity.Team as TeamEntity
+import uk.gov.justice.digital.hmpps.integrations.delius.user.team.entity.Team as TeamEntity
 
 @Service
 class AppointmentService(

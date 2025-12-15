@@ -3,7 +3,7 @@ package uk.gov.justice.digital.hmpps.integrations.delius.overview.entity
 import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.springframework.data.jpa.repository.JpaRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.user.entity.Staff
+import uk.gov.justice.digital.hmpps.integrations.delius.user.staff.entity.Staff
 
 @Immutable
 @Entity

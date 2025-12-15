@@ -17,8 +17,6 @@ import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.ContactA
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.DocumentRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.SentenceAppointmentRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.user.entity.StaffRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.user.entity.UserRepository
 import uk.gov.justice.digital.hmpps.messaging.HmppsChannelManager
 
 @AutoConfigureMockMvc
