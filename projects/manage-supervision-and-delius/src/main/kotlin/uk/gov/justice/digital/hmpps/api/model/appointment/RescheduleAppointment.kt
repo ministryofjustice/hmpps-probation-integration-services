@@ -1,8 +1,9 @@
 package uk.gov.justice.digital.hmpps.api.model.appointment
 
+import io.swagger.v3.oas.annotations.Parameter
 import java.time.LocalDate
 import java.time.LocalTime
-import java.util.UUID
+import java.util.*
 
 @FutureAppointment
 @ValidAppointment
@@ -17,7 +18,6 @@ data class RescheduleAppointmentRequest(
     val sensitive: Boolean?,
 ) : AppointmentRequest
 
-@FutureAppointment
 @ValidAppointment
 data class RecreateAppointmentRequest(
     override val date: LocalDate,
@@ -26,6 +26,8 @@ data class RecreateAppointmentRequest(
     val staffCode: String?,
     val teamCode: String?,
     val locationCode: String?,
+    @Parameter(description = "Outcome code for the new appointment. Required if appointment date/time is in the past")
+    val outcomeCode: String?,
     val notes: String?,
     val sensitive: Boolean?,
     val sendToVisor: Boolean?,

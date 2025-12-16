@@ -13,6 +13,8 @@ interface AppointmentRequest {
     val startTime: LocalTime
     val endTime: LocalTime
 
+    fun isInFuture() = LocalDate.now().let { now -> date > now || (date == now && startTime > LocalTime.now()) }
+
     fun changesDateOrTime(date: LocalDate, startTime: LocalTime?, endTime: LocalTime?): Boolean {
         return !this.date.isEqual(date) ||
             this.startTime.truncatedTo(SECONDS).isDifferentTo(startTime?.truncatedTo(SECONDS)) ||
@@ -52,7 +54,7 @@ annotation class FutureAppointment(
     val payload: Array<KClass<out Any>> = [],
 ) {
     companion object {
-        const val DEFAULT_MESSAGE = "End time must be after start time."
+        const val DEFAULT_MESSAGE = "Appointment must be in the future."
     }
 }
 

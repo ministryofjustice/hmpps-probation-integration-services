@@ -1,12 +1,17 @@
 package uk.gov.justice.digital.hmpps
 
 import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions.within
+import org.junit.jupiter.api.MethodOrderer
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.TestMethodOrder
 import org.springframework.test.web.servlet.put
 import uk.gov.justice.digital.hmpps.api.model.appointment.RecreateAppointmentRequest
 import uk.gov.justice.digital.hmpps.api.model.appointment.RecreatedAppointment
 import uk.gov.justice.digital.hmpps.data.generator.AppointmentGenerator
 import uk.gov.justice.digital.hmpps.data.generator.AppointmentGenerator.ATTENDED_COMPLIED
+import uk.gov.justice.digital.hmpps.data.generator.AppointmentGenerator.POP_RESCHEDULED_OUTCOME
+import uk.gov.justice.digital.hmpps.data.generator.AppointmentGenerator.SERVICE_RESCHEDULED_OUTCOME
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.LOCATION_BRK_1
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.STAFF_1
 import uk.gov.justice.digital.hmpps.data.generator.IdGenerator
@@ -18,25 +23,28 @@ import uk.gov.justice.digital.hmpps.integrations.delius.appointment.Appointment
 import uk.gov.justice.digital.hmpps.integrations.delius.appointment.getAppointment
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.json
+import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.ZonedDateTime
+import java.time.temporal.ChronoUnit
 import java.util.*
 
+@TestMethodOrder(MethodOrderer.MethodName::class)
 class RecreateAppointmentIntegrationTest : IntegrationTestBase() {
 
     @Test
     fun `end time must be after start time`() {
         val request = recreateRequest(startTime = LocalTime.now().plusHours(1), endTime = LocalTime.now().minusHours(1))
-        mockMvc.put("/appointments/${IdGenerator.getAndIncrement()}/recreate") {
-            withUserToken(PI_USER.username)
-            json = request
-        }
-            .andExpect { status { isBadRequest() } }
+        mockMvc
+            .put("/appointments/${IdGenerator.getAndIncrement()}/recreate") {
+                withUserToken(PI_USER.username)
+                json = request
+            }.andExpect { status { isBadRequest() } }
     }
 
     @Test
-    fun `recreated appointment must be in the future`() {
+    fun `recreated appointment without an outcome must be in the future`() {
         val person = PersonGenerator.RECREATE_APPT_PERSON_1
         val appointment = sentenceAppointmentRepository.save(
             AppointmentGenerator.generateAppointment(
@@ -52,11 +60,16 @@ class RecreateAppointmentIntegrationTest : IntegrationTestBase() {
             endTime = now.toLocalTime()
         )
 
-        mockMvc.put("/appointments/${appointment.id}/recreate") {
-            withUserToken(PI_USER.username)
-            json = request
-        }
-            .andExpect { status { isBadRequest() } }
+        mockMvc
+            .put("/appointments/${appointment.id}/recreate") {
+                withUserToken(PI_USER.username)
+                json = request
+            }.andExpect {
+                status { isBadRequest() }
+                content {
+                    jsonPath("message") { value("Appointments in the past require an outcome") }
+                }
+            }
     }
 
     @Test
@@ -70,13 +83,18 @@ class RecreateAppointmentIntegrationTest : IntegrationTestBase() {
                 outcome = ATTENDED_COMPLIED
             )
         )
-        val request = recreateRequest(startTime = LocalTime.now(), endTime = LocalTime.now().minusHours(1))
+        val request = recreateRequest(startTime = LocalTime.now(), endTime = LocalTime.now().plusHours(1))
 
-        mockMvc.put("/appointments/${appointment.id}/recreate") {
-            withUserToken(PI_USER.username)
-            json = request
-        }
-            .andExpect { status { isBadRequest() } }
+        mockMvc
+            .put("/appointments/${appointment.id}/recreate") {
+                withUserToken(PI_USER.username)
+                json = request
+            }.andExpect {
+                status { isBadRequest() }
+                content {
+                    jsonPath("message") { value("Appointment with an outcome cannot be recreated") }
+                }
+            }
     }
 
     @Test
@@ -95,8 +113,12 @@ class RecreateAppointmentIntegrationTest : IntegrationTestBase() {
         mockMvc.put("/appointments/${appointment.id}/recreate") {
             withUserToken(PI_USER.username)
             json = request
+        }.andExpect {
+            status { isBadRequest() }
+            content {
+                jsonPath("message") { value("Appointment date or time must change to be recreated") }
+            }
         }
-            .andExpect { status { isBadRequest() } }
     }
 
     @Test
@@ -332,6 +354,106 @@ class RecreateAppointmentIntegrationTest : IntegrationTestBase() {
         assertThat(appointment.externalReference).isEqualTo(Appointment.URN_PREFIX + request.uuid)
     }
 
+    @Test
+    fun `recreate future appointment to future without outcome`() {
+        val person = PersonGenerator.RECREATE_APPT_PERSON_1
+        val original = sentenceAppointmentRepository.save(
+            AppointmentGenerator.generateAppointment(
+                person = person,
+                start = ZonedDateTime.now().plusDays(10),
+                end = ZonedDateTime.now().plusDays(10).plusMinutes(30),
+            )
+        )
+        val request = recreateRequest(
+            date = LocalDate.now().plusDays(20)
+        )
+
+        val recreated = mockMvc
+            .put("/appointments/${original.id}/recreate") {
+                withToken()
+                json = request
+            }
+            .andExpect { status { isOk() } }
+            .andReturn().response.contentAsJson<RecreatedAppointment>()
+
+        val originalAppointment = appointmentRepository.getAppointment(original.id)
+        assertThat(originalAppointment.outcome?.code).isEqualTo(SERVICE_RESCHEDULED_OUTCOME.code)
+
+        val newAppointment = appointmentRepository.getAppointment(recreated.id)
+        assertThat(newAppointment.date).isEqualTo(request.date)
+        assertThat(newAppointment.startTime?.toLocalTime()).isCloseTo(request.startTime, within(1, ChronoUnit.SECONDS))
+        assertThat(newAppointment.endTime?.toLocalTime()).isCloseTo(request.endTime, within(1, ChronoUnit.SECONDS))
+        assertThat(newAppointment.outcome?.code).isNull()
+    }
+
+    @Test
+    fun `recreate future appointment to past with outcome`() {
+        val person = PersonGenerator.RECREATE_APPT_PERSON_1
+        val original = sentenceAppointmentRepository.save(
+            AppointmentGenerator.generateAppointment(
+                person = person,
+                start = ZonedDateTime.now().plusDays(10),
+                end = ZonedDateTime.now().plusDays(10).plusMinutes(30),
+                notes = "Notes on the original appointment"
+            )
+        )
+        val request = recreateRequest(
+            date = LocalDate.now().minusDays(2),
+            outcomeCode = ATTENDED_COMPLIED.code,
+            notes = "Appointment was held in the past"
+        )
+
+        val recreated = mockMvc
+            .put("/appointments/${original.id}/recreate") {
+                withToken()
+                json = request
+            }
+            .andExpect { status { isOk() } }
+            .andReturn().response.contentAsJson<RecreatedAppointment>()
+
+        val originalAppointment = appointmentRepository.getAppointment(original.id)
+        assertThat(originalAppointment.outcome?.code).isEqualTo(SERVICE_RESCHEDULED_OUTCOME.code)
+
+        val newAppointment = appointmentRepository.getAppointment(recreated.id)
+        assertThat(newAppointment.date).isEqualTo(request.date)
+        assertThat(newAppointment.startTime?.toLocalTime()).isCloseTo(request.startTime, within(1, ChronoUnit.SECONDS))
+        assertThat(newAppointment.endTime?.toLocalTime()).isCloseTo(request.endTime, within(1, ChronoUnit.SECONDS))
+        assertThat(newAppointment.outcome?.code).isEqualTo(request.outcomeCode)
+        assertThat(newAppointment.notes).isEqualTo("Notes on the original appointment\n\nAppointment was held in the past")
+    }
+
+    @Test
+    fun `recreate past appointment to different past date with outcome`() {
+        val person = PersonGenerator.RECREATE_APPT_PERSON_1
+        val original = sentenceAppointmentRepository.save(
+            AppointmentGenerator.generateAppointment(
+                person = person,
+                start = ZonedDateTime.now().minusDays(5),
+                end = ZonedDateTime.now().minusDays(5).plusMinutes(30),
+            )
+        )
+        val request = recreateRequest(
+            date = LocalDate.now().minusDays(3),
+            outcomeCode = ATTENDED_COMPLIED.code,
+            requestedBy = RecreateAppointmentRequest.RequestedBy.POP,
+        )
+
+        val recreated = mockMvc
+            .put("/appointments/${original.id}/recreate") {
+                withToken()
+                json = request
+            }
+            .andExpect { status { isOk() } }
+            .andReturn().response.contentAsJson<RecreatedAppointment>()
+
+        val originalAppointment = appointmentRepository.getAppointment(original.id)
+        assertThat(originalAppointment.outcome?.code).isEqualTo(POP_RESCHEDULED_OUTCOME.code)
+
+        val newAppointment = appointmentRepository.getAppointment(recreated.id)
+        assertThat(newAppointment.date).isEqualTo(request.date)
+        assertThat(newAppointment.outcome?.code).isEqualTo(ATTENDED_COMPLIED.code)
+    }
+
     private fun recreateRequest(
         date: LocalDate = LocalDate.now().plusDays(1),
         startTime: LocalTime = LocalTime.now().plusHours(1),
@@ -339,6 +461,7 @@ class RecreateAppointmentIntegrationTest : IntegrationTestBase() {
         staffCode: String? = null,
         teamCode: String? = null,
         locationCode: String? = null,
+        outcomeCode: String? = null,
         notes: String? = null,
         sensitive: Boolean? = null,
         sendToVisor: Boolean? = null,
@@ -353,6 +476,7 @@ class RecreateAppointmentIntegrationTest : IntegrationTestBase() {
         staffCode,
         teamCode,
         locationCode,
+        outcomeCode,
         notes,
         sensitive,
         sendToVisor,
