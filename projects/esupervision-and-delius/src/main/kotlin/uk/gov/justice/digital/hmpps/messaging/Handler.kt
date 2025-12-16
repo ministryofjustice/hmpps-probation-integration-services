@@ -20,7 +20,8 @@ class Handler(
     val checkInService: CheckInService,
     val telemetryService: TelemetryService,
 ) : NotificationHandler<HmppsDomainEvent> {
-    @Publish(messages = [Message(title = CHECK_IN_RECEIVED), Message(title = CHECK_IN_EXPIRED)])
+    @Publish(messages = [Message(title = CHECK_IN_RECEIVED), Message(title = CHECK_IN_EXPIRED),
+        Message(title = CHECK_IN_REVIEWED), Message(title = CHECK_IN_UPDATED)])
     override fun handle(notification: Notification<HmppsDomainEvent>) {
         when (notification.eventType) {
             CHECK_IN_RECEIVED, CHECK_IN_EXPIRED -> try {
@@ -41,6 +42,16 @@ class Handler(
                 )
             }
 
+            CHECK_IN_REVIEWED, CHECK_IN_UPDATED -> {
+                checkInService.update(notification.message)
+                telemetryService.trackEvent(
+                    "CheckInEventUpdated", mapOf(
+                        "eventType" to notification.eventType,
+                        "crn" to notification.message.personReference.findCrn(),
+                    )
+                )
+                }
+
             else -> throw IllegalArgumentException("Unexpected event type: ${notification.eventType}")
         }
     }
@@ -48,6 +59,8 @@ class Handler(
     companion object {
         const val CHECK_IN_RECEIVED = "esupervision.check-in.received"
         const val CHECK_IN_EXPIRED = "esupervision.check-in.expired"
+        const val CHECK_IN_REVIEWED = "esupervision.check-in.reviewed"
+        const val CHECK_IN_UPDATED = "esupervision.check-in.updated"
     }
 }
 

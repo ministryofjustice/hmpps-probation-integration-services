@@ -104,6 +104,38 @@ internal class IntegrationTest @Autowired constructor(
     }
 
     @Test
+    fun `esupervision reviewed contact updated`() {
+        val notification = prepEvent("esupervision-reviewed-A000001", wireMockServer.port())
+        channelManager.getChannel(queueName).publishAndWait(notification)
+
+        val contact = contactRepository.findAll().single {
+            it.externalReference == "urn:uk:gov:hmpps:esupervision:check-in:8b8a8cf1-a8fe-42c4-879c-095bbed91466"
+        }
+        assertThat(contact.notes).isEqualTo(
+            """
+            |Existing Notes
+            |Check-in review
+            """.trimMargin()
+        )
+    }
+
+    @Test
+    fun `esupervision updated contact updated`() {
+        val notification = prepEvent("esupervision-updated-A000001", wireMockServer.port())
+        channelManager.getChannel(queueName).publishAndWait(notification)
+
+        val contact = contactRepository.findAll().single {
+            it.externalReference == "urn:uk:gov:hmpps:esupervision:check-in:a18648f4-46ec-4344-8e8e-ba15c18c3ab9"
+        }
+        assertThat(contact.notes).isEqualTo(
+            """
+            |Existing Notes
+            |Check-in updated
+            """.trimMargin()
+        )
+    }
+
+    @Test
     fun `esupervision expired with detail url`() {
         val notification = prepEvent("esupervision-expired-detail-url-A000001", wireMockServer.port())
         channelManager.getChannel(queueName).publishAndWait(notification)

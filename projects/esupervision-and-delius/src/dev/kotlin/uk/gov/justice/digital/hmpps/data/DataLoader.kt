@@ -33,6 +33,11 @@ class DataLoader(
                 BusinessInteractionCode.ADD_CONTACT.code,
                 ZonedDateTime.now()
             ),
+            BusinessInteraction(
+                IdGenerator.getAndIncrement(),
+                BusinessInteractionCode.UPDATE_CONTACT.code,
+                ZonedDateTime.now()
+            ),
             ContactTypeGenerator.CT_ESPCHI,
             ProviderGenerator.DEFAULT_PROVIDER,
             ProviderGenerator.DEFAULT_PDU,
@@ -47,7 +52,9 @@ class DataLoader(
             PersonContactDetailsGenerator.PERSON_CONTACT_DETAILS_1,
             PersonContactDetailsGenerator.PERSON_CONTACT_DETAILS_2,
             PersonGenerator.generatePersonManager(PersonContactDetailsGenerator.PERSON_CONTACT_DETAILS_1),
-            PersonGenerator.generatePersonManager(PersonContactDetailsGenerator.PERSON_CONTACT_DETAILS_2)
+            PersonGenerator.generatePersonManager(PersonContactDetailsGenerator.PERSON_CONTACT_DETAILS_2),
+            ContactGenerator.CONTACT_TO_REVIEW,
+            ContactGenerator.CONTACT_TO_UPDATE
         )
     }
 
