@@ -20,8 +20,10 @@ class Handler(
     val checkInService: CheckInService,
     val telemetryService: TelemetryService,
 ) : NotificationHandler<HmppsDomainEvent> {
-    @Publish(messages = [Message(title = CHECK_IN_RECEIVED), Message(title = CHECK_IN_EXPIRED),
-        Message(title = CHECK_IN_REVIEWED), Message(title = CHECK_IN_UPDATED)])
+    @Publish(
+        messages = [Message(title = CHECK_IN_RECEIVED), Message(title = CHECK_IN_EXPIRED),
+            Message(title = CHECK_IN_REVIEWED), Message(title = CHECK_IN_UPDATED)]
+    )
     override fun handle(notification: Notification<HmppsDomainEvent>) {
         when (notification.eventType) {
             CHECK_IN_RECEIVED, CHECK_IN_EXPIRED -> try {
@@ -50,7 +52,7 @@ class Handler(
                         "crn" to notification.message.personReference.findCrn(),
                     )
                 )
-                }
+            }
 
             else -> throw IllegalArgumentException("Unexpected event type: ${notification.eventType}")
         }
