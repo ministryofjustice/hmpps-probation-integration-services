@@ -26,8 +26,8 @@ data class RecreateAppointmentRequest(
     val staffCode: String?,
     val teamCode: String?,
     val locationCode: String?,
-    @Parameter(description = "Outcome code for the new appointment. Required if appointment date/time is in the past")
-    val outcomeCode: String?,
+    @Parameter(description = "Whether to record an attended/complied outcome for the new appointment. Required if appointment date/time is in the past")
+    val outcomeRecorded: Boolean = false,
     val notes: String?,
     val sensitive: Boolean?,
     val sendToVisor: Boolean?,

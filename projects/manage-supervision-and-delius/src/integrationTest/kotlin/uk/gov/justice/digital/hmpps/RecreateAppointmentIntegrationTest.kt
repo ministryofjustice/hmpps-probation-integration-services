@@ -2,9 +2,7 @@ package uk.gov.justice.digital.hmpps
 
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.within
-import org.junit.jupiter.api.MethodOrderer
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.TestMethodOrder
 import org.springframework.test.web.servlet.put
 import uk.gov.justice.digital.hmpps.api.model.appointment.RecreateAppointmentRequest
 import uk.gov.justice.digital.hmpps.api.model.appointment.RecreatedAppointment
@@ -30,7 +28,6 @@ import java.time.ZonedDateTime
 import java.time.temporal.ChronoUnit
 import java.util.*
 
-@TestMethodOrder(MethodOrderer.MethodName::class)
 class RecreateAppointmentIntegrationTest : IntegrationTestBase() {
 
     @Test
@@ -399,7 +396,7 @@ class RecreateAppointmentIntegrationTest : IntegrationTestBase() {
         )
         val request = recreateRequest(
             date = LocalDate.now().minusDays(2),
-            outcomeCode = ATTENDED_COMPLIED.code,
+            outcomeRecorded = true,
             notes = "Appointment was held in the past"
         )
 
@@ -418,7 +415,7 @@ class RecreateAppointmentIntegrationTest : IntegrationTestBase() {
         assertThat(newAppointment.date).isEqualTo(request.date)
         assertThat(newAppointment.startTime?.toLocalTime()).isCloseTo(request.startTime, within(1, ChronoUnit.SECONDS))
         assertThat(newAppointment.endTime?.toLocalTime()).isCloseTo(request.endTime, within(1, ChronoUnit.SECONDS))
-        assertThat(newAppointment.outcome?.code).isEqualTo(request.outcomeCode)
+        assertThat(newAppointment.outcome?.code).isEqualTo(ATTENDED_COMPLIED.code)
         assertThat(newAppointment.notes).isEqualTo("Notes on the original appointment\n\nAppointment was held in the past")
     }
 
@@ -434,7 +431,7 @@ class RecreateAppointmentIntegrationTest : IntegrationTestBase() {
         )
         val request = recreateRequest(
             date = LocalDate.now().minusDays(3),
-            outcomeCode = ATTENDED_COMPLIED.code,
+            outcomeRecorded = true,
             requestedBy = RecreateAppointmentRequest.RequestedBy.POP,
         )
 
@@ -461,7 +458,7 @@ class RecreateAppointmentIntegrationTest : IntegrationTestBase() {
         staffCode: String? = null,
         teamCode: String? = null,
         locationCode: String? = null,
-        outcomeCode: String? = null,
+        outcomeRecorded: Boolean = false,
         notes: String? = null,
         sensitive: Boolean? = null,
         sendToVisor: Boolean? = null,
@@ -476,7 +473,7 @@ class RecreateAppointmentIntegrationTest : IntegrationTestBase() {
         staffCode,
         teamCode,
         locationCode,
-        outcomeCode,
+        outcomeRecorded,
         notes,
         sensitive,
         sendToVisor,
