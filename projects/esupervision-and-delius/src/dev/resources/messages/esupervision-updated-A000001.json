@@ -1,0 +1,16 @@
+{
+  "eventType": "esupervision.check-in.updated",
+  "version": 2,
+  "description": "An e-Supervision remote check-in has been updated",
+  "detailUrl": "http://localhost:{wiremock.port}/e-supervision-api/checkin-updated/a18648f4-46ec-4344-8e8e-ba15c18c3ab9",
+  "occurredAt": "2025-12-16T09:30:00+01:00",
+  "additionalInformation": {},
+  "personReference": {
+    "identifiers": [
+      {
+        "type": "CRN",
+        "value": "A000001"
+      }
+    ]
+  }
+}

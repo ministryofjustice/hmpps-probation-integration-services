@@ -8,6 +8,7 @@ import uk.gov.justice.digital.hmpps.detail.DomainEventDetailService
 import uk.gov.justice.digital.hmpps.integrations.delius.*
 import uk.gov.justice.digital.hmpps.integrations.delius.ContactType.Companion.E_SUPERVISION_CHECK_IN
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractionCode.ADD_CONTACT
+import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractionCode.UPDATE_CONTACT
 import uk.gov.justice.digital.hmpps.integrations.esupervision.CheckInDetail
 import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
 import uk.gov.justice.digital.hmpps.messaging.checkInUrl
@@ -22,7 +23,6 @@ class CheckInService(
     private val eventRepository: EventRepository,
     private val contactTypeRepository: ContactTypeRepository,
     private val contactRepository: ContactRepository,
-    private val contactAlertRepository: ContactAlertRepository,
 ) : AuditableService(auditedInteractionService) {
     fun handle(de: HmppsDomainEvent) = audit(ADD_CONTACT) { audit ->
         val detail = de.detailUrl?.let { deDetailService.getDetail<CheckInDetail>(de) }
@@ -33,8 +33,19 @@ class CheckInService(
             ?: throw IllegalStateException("Case does not have an active event")
         audit["eventId"] = event.id
         val contact = contactRepository.save(de.createContact(com, event, detail))
-        contactAlertRepository.save(contact.toAlert(com))
         audit["contactId"] = contact.id
+    }
+
+    fun update(de: HmppsDomainEvent) = audit(UPDATE_CONTACT) { audit ->
+        val detail = de.detailUrl?.let { deDetailService.getDetail<CheckInDetail>(de) }
+        val uuid = requireNotNull(detail?.checkinUuid)
+        val contact = contactRepository.getByExternalReference(Contact.externalReferencePrefix(de.eventType) + uuid)
+        audit["contactId"] = contact.id
+        contact.notes = listOfNotNull(
+            contact.notes,
+            detail.notes
+        ).joinToString(System.lineSeparator())
+        contactRepository.save(contact)
     }
 
     private fun HmppsDomainEvent.createContact(com: PersonManager, event: Event, detail: CheckInDetail?): Contact =
@@ -57,13 +68,4 @@ class CheckInService(
             softDeleted = false,
             id = 0,
         )
-
-    private fun Contact.toAlert(com: PersonManager): ContactAlert = ContactAlert(
-        contactId = id,
-        typeId = type.id,
-        personId = person.id,
-        teamId = team.id,
-        staffId = staff.id,
-        personManagerId = com.id
-    )
 }

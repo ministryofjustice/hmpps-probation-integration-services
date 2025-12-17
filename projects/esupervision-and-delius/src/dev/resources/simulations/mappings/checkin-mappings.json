@@ -25,6 +25,32 @@
         "status": 200,
         "body": "{\"checkinUuid\": \"61e80782-bdd1-43c3-b69f-78366582210a\", \"notes\": \"Some notes about the check-in\"}"
       }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "urlPathPattern": "/e-supervision-api/checkin-reviewed/8b8a8cf1-a8fe-42c4-879c-095bbed91466"
+      },
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "body": "{\"checkinUuid\": \"8b8a8cf1-a8fe-42c4-879c-095bbed91466\", \"notes\": \"Check-in review\"}"
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "urlPathPattern": "/e-supervision-api/checkin-updated/a18648f4-46ec-4344-8e8e-ba15c18c3ab9"
+      },
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "body": "{\"checkinUuid\": \"a18648f4-46ec-4344-8e8e-ba15c18c3ab9\", \"notes\": \"Check-in updated\"}"
+      }
     }
   ]
 }

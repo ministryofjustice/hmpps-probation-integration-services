@@ -13,6 +13,8 @@ import org.springframework.data.jpa.repository.JpaRepository
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.messaging.Handler.Companion.CHECK_IN_EXPIRED
 import uk.gov.justice.digital.hmpps.messaging.Handler.Companion.CHECK_IN_RECEIVED
+import uk.gov.justice.digital.hmpps.messaging.Handler.Companion.CHECK_IN_REVIEWED
+import uk.gov.justice.digital.hmpps.messaging.Handler.Companion.CHECK_IN_UPDATED
 import java.time.LocalDate
 import java.time.ZonedDateTime
 
@@ -53,7 +55,7 @@ class Contact(
     val description: String,
 
     @Lob
-    val notes: String?,
+    var notes: String?,
 
     val externalReference: String?,
 
@@ -67,9 +69,6 @@ class Contact(
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "contact_id_seq")
     val id: Long,
 ) {
-    @Column(name = "alert_active")
-    @Convert(converter = YesNoConverter::class)
-    val alert: Boolean = true
 
     @Column(name = "sensitive")
     @Convert(converter = YesNoConverter::class)
@@ -107,7 +106,7 @@ class Contact(
 
     companion object {
         fun externalReferencePrefix(eventType: String): String = when (eventType) {
-            CHECK_IN_RECEIVED -> "urn:uk:gov:hmpps:esupervision:check-in:"
+            CHECK_IN_RECEIVED, CHECK_IN_REVIEWED, CHECK_IN_UPDATED -> "urn:uk:gov:hmpps:esupervision:check-in:"
             CHECK_IN_EXPIRED -> "urn:uk:gov:hmpps:esupervision:check-in-expiry:"
             else -> throw IllegalArgumentException("Unexpected event type: $eventType")
         }
@@ -136,4 +135,10 @@ interface ContactTypeRepository : JpaRepository<ContactType, Long> {
 fun ContactTypeRepository.getByCode(code: String): ContactType =
     findByCode(code) ?: throw NotFoundException("ContactType", "code", code)
 
-interface ContactRepository : JpaRepository<Contact, Long>
+interface ContactRepository : JpaRepository<Contact, Long> {
+    fun findByExternalReference(externalReference: String): Contact?
+}
+
+fun ContactRepository.getByExternalReference(externalReference: String): Contact =
+    findByExternalReference(externalReference)
+        ?: throw NotFoundException("Contact", "externalReference", externalReference)

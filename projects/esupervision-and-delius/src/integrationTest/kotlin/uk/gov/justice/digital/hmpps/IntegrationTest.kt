@@ -53,7 +53,6 @@ internal class IntegrationTest @Autowired constructor(
         assertThat(contact.provider.id).isEqualTo(ProviderGenerator.DEFAULT_PROVIDER.id)
         assertThat(contact.team.id).isEqualTo(ProviderGenerator.DEFAULT_TEAM.id)
         assertThat(contact.staff.id).isEqualTo(ProviderGenerator.DEFAULT_STAFF.id)
-        assertThat(contact.alert).isEqualTo(true)
         assertThat(contact.isSensitive).isEqualTo(false)
         assertThat(contact.notes).isEqualTo("Online check in completed" + System.lineSeparator() + "Review the online check in using the manage probation check ins service: https://esupervision/check-in/received")
     }
@@ -74,7 +73,6 @@ internal class IntegrationTest @Autowired constructor(
         assertThat(contact.provider.id).isEqualTo(ProviderGenerator.DEFAULT_PROVIDER.id)
         assertThat(contact.team.id).isEqualTo(ProviderGenerator.DEFAULT_TEAM.id)
         assertThat(contact.staff.id).isEqualTo(ProviderGenerator.DEFAULT_STAFF.id)
-        assertThat(contact.alert).isEqualTo(true)
         assertThat(contact.isSensitive).isEqualTo(false)
         assertThat(contact.notes).isEqualTo("Check in has not been submitted on time" + System.lineSeparator() + "Review the online check in using the manage probation check ins service: https://esupervision/check-in/expired")
     }
@@ -93,12 +91,43 @@ internal class IntegrationTest @Autowired constructor(
         assertThat(contact.provider.id).isEqualTo(ProviderGenerator.DEFAULT_PROVIDER.id)
         assertThat(contact.team.id).isEqualTo(ProviderGenerator.DEFAULT_TEAM.id)
         assertThat(contact.staff.id).isEqualTo(ProviderGenerator.DEFAULT_STAFF.id)
-        assertThat(contact.alert).isEqualTo(true)
         assertThat(contact.isSensitive).isEqualTo(false)
         assertThat(contact.notes).isEqualTo(
             """
             |Online check in completed
             |Some notes about the check-in
+            """.trimMargin()
+        )
+    }
+
+    @Test
+    fun `esupervision reviewed contact updated`() {
+        val notification = prepEvent("esupervision-reviewed-A000001", wireMockServer.port())
+        channelManager.getChannel(queueName).publishAndWait(notification)
+
+        val contact = contactRepository.findAll().single {
+            it.externalReference == "urn:uk:gov:hmpps:esupervision:check-in:8b8a8cf1-a8fe-42c4-879c-095bbed91466"
+        }
+        assertThat(contact.notes).isEqualTo(
+            """
+            |Existing Notes
+            |Check-in review
+            """.trimMargin()
+        )
+    }
+
+    @Test
+    fun `esupervision updated contact updated`() {
+        val notification = prepEvent("esupervision-updated-A000001", wireMockServer.port())
+        channelManager.getChannel(queueName).publishAndWait(notification)
+
+        val contact = contactRepository.findAll().single {
+            it.externalReference == "urn:uk:gov:hmpps:esupervision:check-in:a18648f4-46ec-4344-8e8e-ba15c18c3ab9"
+        }
+        assertThat(contact.notes).isEqualTo(
+            """
+            |Existing Notes
+            |Check-in updated
             """.trimMargin()
         )
     }
@@ -117,7 +146,6 @@ internal class IntegrationTest @Autowired constructor(
         assertThat(contact.provider.id).isEqualTo(ProviderGenerator.DEFAULT_PROVIDER.id)
         assertThat(contact.team.id).isEqualTo(ProviderGenerator.DEFAULT_TEAM.id)
         assertThat(contact.staff.id).isEqualTo(ProviderGenerator.DEFAULT_STAFF.id)
-        assertThat(contact.alert).isEqualTo(true)
         assertThat(contact.isSensitive).isEqualTo(false)
         assertThat(contact.notes).isEqualTo(
             """
