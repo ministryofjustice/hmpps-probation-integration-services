@@ -1904,9 +1904,12 @@ components:
           type: string
         sensitive:
           type: boolean
+        isInFuture:
+          type: boolean
       required:
       - date
       - endTime
+      - isInFuture
       - startTime
     RecreateAppointmentRequest:
       type: object
@@ -1923,6 +1926,8 @@ components:
         teamCode:
           type: string
         locationCode:
+          type: string
+        outcomeCode:
           type: string
         notes:
           type: string
@@ -1942,9 +1947,12 @@ components:
         uuid:
           type: string
           format: uuid
+        isInFuture:
+          type: boolean
       required:
       - date
       - endTime
+      - isInFuture
       - requestedBy
       - startTime
     RecreatedAppointment:
