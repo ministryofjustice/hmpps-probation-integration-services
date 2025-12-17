@@ -3,13 +3,20 @@ package uk.gov.justice.digital.hmpps.data.generator
 import uk.gov.justice.digital.hmpps.integrations.delius.person.Person
 import uk.gov.justice.digital.hmpps.integrations.delius.person.PersonManager
 import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.ProbationArea
+import java.time.LocalDate
 
 object PersonGenerator {
     fun generate(
         crn: String,
         id: Long = IdGenerator.getAndIncrement()
     ): Person {
-        val person = Person(id = id, crn = crn, forename = "Test", surname = "Person")
+        val person = Person(
+            id = id,
+            crn = crn,
+            forename = "Test",
+            surname = "Person",
+            dateOfBirth = LocalDate.now().minusYears(18)
+        )
         person.managers.add(PersonManagerGenerator.generate(person))
         return person
     }

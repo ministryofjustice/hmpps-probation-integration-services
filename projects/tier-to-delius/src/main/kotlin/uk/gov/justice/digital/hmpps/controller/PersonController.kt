@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.RestController
 import uk.gov.justice.digital.hmpps.controller.model.Name
 import uk.gov.justice.digital.hmpps.controller.model.PersonDetails
 import uk.gov.justice.digital.hmpps.integrations.delius.person.PersonRepository
+import java.time.LocalDate
+import java.time.temporal.ChronoUnit.YEARS
 
 @RestController
 class PersonController(private val personRepository: PersonRepository) {
@@ -18,7 +20,9 @@ class PersonController(private val personRepository: PersonRepository) {
             name = Name(
                 forenames = listOfNotNull(it.forename, it.secondName, it.thirdName).joinToString(" "),
                 surname = it.surname
-            )
+            ),
+            dateOfBirth = it.dateOfBirth,
+            age = YEARS.between(it.dateOfBirth, LocalDate.now())
         )
     }
 }
