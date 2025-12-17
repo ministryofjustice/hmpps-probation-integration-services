@@ -53,7 +53,6 @@ internal class IntegrationTest @Autowired constructor(
         assertThat(contact.provider.id).isEqualTo(ProviderGenerator.DEFAULT_PROVIDER.id)
         assertThat(contact.team.id).isEqualTo(ProviderGenerator.DEFAULT_TEAM.id)
         assertThat(contact.staff.id).isEqualTo(ProviderGenerator.DEFAULT_STAFF.id)
-        assertThat(contact.alert).isEqualTo(true)
         assertThat(contact.isSensitive).isEqualTo(false)
         assertThat(contact.notes).isEqualTo("Online check in completed" + System.lineSeparator() + "Review the online check in using the manage probation check ins service: https://esupervision/check-in/received")
     }
@@ -74,7 +73,6 @@ internal class IntegrationTest @Autowired constructor(
         assertThat(contact.provider.id).isEqualTo(ProviderGenerator.DEFAULT_PROVIDER.id)
         assertThat(contact.team.id).isEqualTo(ProviderGenerator.DEFAULT_TEAM.id)
         assertThat(contact.staff.id).isEqualTo(ProviderGenerator.DEFAULT_STAFF.id)
-        assertThat(contact.alert).isEqualTo(true)
         assertThat(contact.isSensitive).isEqualTo(false)
         assertThat(contact.notes).isEqualTo("Check in has not been submitted on time" + System.lineSeparator() + "Review the online check in using the manage probation check ins service: https://esupervision/check-in/expired")
     }
@@ -93,7 +91,6 @@ internal class IntegrationTest @Autowired constructor(
         assertThat(contact.provider.id).isEqualTo(ProviderGenerator.DEFAULT_PROVIDER.id)
         assertThat(contact.team.id).isEqualTo(ProviderGenerator.DEFAULT_TEAM.id)
         assertThat(contact.staff.id).isEqualTo(ProviderGenerator.DEFAULT_STAFF.id)
-        assertThat(contact.alert).isEqualTo(true)
         assertThat(contact.isSensitive).isEqualTo(false)
         assertThat(contact.notes).isEqualTo(
             """
@@ -149,7 +146,6 @@ internal class IntegrationTest @Autowired constructor(
         assertThat(contact.provider.id).isEqualTo(ProviderGenerator.DEFAULT_PROVIDER.id)
         assertThat(contact.team.id).isEqualTo(ProviderGenerator.DEFAULT_TEAM.id)
         assertThat(contact.staff.id).isEqualTo(ProviderGenerator.DEFAULT_STAFF.id)
-        assertThat(contact.alert).isEqualTo(true)
         assertThat(contact.isSensitive).isEqualTo(false)
         assertThat(contact.notes).isEqualTo(
             """

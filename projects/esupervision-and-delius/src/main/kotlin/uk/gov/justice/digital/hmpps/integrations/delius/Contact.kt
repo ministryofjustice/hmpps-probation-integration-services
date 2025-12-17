@@ -69,9 +69,6 @@ class Contact(
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "contact_id_seq")
     val id: Long,
 ) {
-    @Column(name = "alert_active")
-    @Convert(converter = YesNoConverter::class)
-    val alert: Boolean = true
 
     @Column(name = "sensitive")
     @Convert(converter = YesNoConverter::class)
