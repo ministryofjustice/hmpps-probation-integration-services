@@ -10,6 +10,7 @@ import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.exception.ConflictException
 import uk.gov.justice.digital.hmpps.integrations.delius.appointment.*
 import uk.gov.justice.digital.hmpps.integrations.delius.appointment.Appointment.Companion.URN_PREFIX
+import uk.gov.justice.digital.hmpps.integrations.delius.appointment.AppointmentOutcome.Code.ATTENDED_COMPLIED
 import java.time.ZonedDateTime
 
 @Service
@@ -32,7 +33,7 @@ class RecreateAppointment(
             )
         ) { "Appointment date or time must change to be recreated" }
 
-        require(request.isInFuture() || request.outcomeCode != null) { "Appointments in the past require an outcome" }
+        require(request.isInFuture() || request.outcomeRecorded) { "Appointments in the past require an outcome" }
 
         if (appointmentRepository.appointmentClashes(
                 original.person.id,
@@ -79,7 +80,9 @@ class RecreateAppointment(
             startTime = ZonedDateTime.of(request.date, request.startTime, EuropeLondon),
             endTime = ZonedDateTime.of(request.date, request.endTime, EuropeLondon),
             provider = team.provider,
-            outcome = request.outcomeCode?.let { outcomeRepository.getByCode(it) },
+            outcome = if (request.outcomeRecorded) {
+                outcomeRepository.getByCode(ATTENDED_COMPLIED.value)
+            } else null,
             rarActivity = rarActivity,
             notes = notes,
             sensitive = sensitive == true || request.sensitive == true,

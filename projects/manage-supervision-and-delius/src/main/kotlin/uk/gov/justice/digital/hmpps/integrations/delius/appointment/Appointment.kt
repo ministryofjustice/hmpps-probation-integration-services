@@ -211,6 +211,7 @@ class AppointmentOutcome(
     val id: Long,
 ) {
     enum class Code(val value: String) {
+        ATTENDED_COMPLIED("ATTC"),
         RESCHEDULED_SERVICE("RSSR"),
         RESCHEDULED_POP("RSOF"),
     }
