@@ -5,6 +5,9 @@ import io.opentelemetry.instrumentation.annotations.WithSpan
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
+import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.RegisterType
+import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.RegistrationRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.service.DomainEventService
 import uk.gov.justice.digital.hmpps.message.MessageAttributes
 import uk.gov.justice.digital.hmpps.message.Notification
 import uk.gov.justice.digital.hmpps.publisher.NotificationPublisher
@@ -16,35 +19,39 @@ import java.time.temporal.ChronoUnit
 class OffenderDeltaService(
     @Value("\${offender-events.batch-size:50}")
     private val batchSize: Int,
-    private val repository: OffenderDeltaRepository,
+    private val offenderDeltaRepository: OffenderDeltaRepository,
     private val contactRepository: ContactRepository,
     private val notificationPublisher: NotificationPublisher,
-    private val telemetryService: TelemetryService
+    private val telemetryService: TelemetryService,
+    private val domainEventService: DomainEventService,
+    private val registrationRepository: RegistrationRepository,
 ) {
-    fun getDeltas(): List<OffenderDelta> = repository.findAll(Pageable.ofSize(batchSize)).content
+    fun getDeltas(): List<OffenderDelta> = offenderDeltaRepository.findAll(Pageable.ofSize(batchSize)).content
 
-    fun deleteAll(deltas: List<OffenderDelta>) = repository.deleteAllByIdInBatch(deltas.map { it.id })
+    fun deleteAll(deltas: List<OffenderDelta>) = offenderDeltaRepository.deleteAllByIdInBatch(deltas.map { it.id })
 
     @WithSpan("POLL offender_delta", kind = SpanKind.SERVER)
     fun notify(delta: OffenderDelta) {
-        delta.asNotifications().forEach {
-            notificationPublisher.publish(it)
-            telemetryService.trackEvent(
-                "OffenderEventPublished",
-                mapOf(
-                    "crn" to it.message.crn,
-                    "eventType" to it.eventType!!,
-                    "occurredAt" to ISO_ZONED_DATE_TIME.format(it.message.eventDatetime),
-                    "notification" to it.toString(),
+        delta
+            .also { handleDomainEvent(it) }
+            .asNotifications().forEach {
+                notificationPublisher.publish(it)
+                telemetryService.trackEvent(
+                    "OffenderEventPublished",
+                    mapOf(
+                        "crn" to it.message.crn,
+                        "eventType" to it.eventType!!,
+                        "occurredAt" to ISO_ZONED_DATE_TIME.format(it.message.eventDatetime),
+                        "notification" to it.toString(),
+                    )
                 )
-            )
-        }
+            }
     }
 
     fun OffenderDelta.asNotifications(): List<Notification<OffenderEvent>> {
         fun sourceToEventType(): String? = when (sourceTable) {
             "ALIAS" -> "OFFENDER_ALIAS_CHANGED"
-            "CONTACT" -> if (contactRepository.findById(sourceRecordId).isEmpty) "CONTACT_DELETED" else "CONTACT_CHANGED"
+            "CONTACT" -> if (!contactRepository.existsByIdAndSoftDeletedFalse(sourceRecordId)) "CONTACT_DELETED" else "CONTACT_CHANGED"
             "DEREGISTRATION" -> "OFFENDER_REGISTRATION_DEREGISTERED"
             "DISPOSAL" -> "SENTENCE_CHANGED"
             "EVENT" -> "CONVICTION_CHANGED"
@@ -76,6 +83,59 @@ class OffenderDeltaService(
             } ?: emptyList()
         } else {
             emptyList()
+        }
+    }
+
+    private fun handleDomainEvent(delta: OffenderDelta) {
+        if (!isContactDomainEventCandidate(delta)) return
+
+        val offender = delta.offender ?: return
+
+        val contact = contactRepository.findById(delta.sourceRecordId).orElse(null)
+        val contactId = contact?.id ?: delta.sourceRecordId
+
+        val isMappaDomainEventEnabled = contact?.visorExported == true
+        if (!isMappaDomainEventEnabled) return
+
+        val category = resolveMappaCategory(offender.id)
+
+        when (delta.action) {
+
+            "DELETE" -> domainEventService.publishContactDeleted(
+                crn = offender.crn,
+                contactId = contactId,
+                export = true,
+                category = category,
+                occurredAt = delta.dateChanged
+            )
+
+            else -> domainEventService.publishContactUpdated(
+                crn = offender.crn,
+                contactId = contactId,
+                export = true,
+                category = category,
+                occurredAt = delta.dateChanged
+            )
+        }
+    }
+
+    private fun isContactDomainEventCandidate(delta: OffenderDelta): Boolean =
+        delta.sourceTable == "CONTACT"
+
+    private fun resolveMappaCategory(offenderId: Long): Int {
+        val registration = registrationRepository
+            .findByPersonIdAndTypeCodeOrderByIdDesc(
+                offenderId,
+                RegisterType.Code.MAPPA.value
+            )
+            .firstOrNull()
+
+        return when (registration?.category?.code) {
+            "M1" -> 1
+            "M2" -> 2
+            "M3" -> 3
+            "M4" -> 4
+            else -> 0
         }
     }
 }
