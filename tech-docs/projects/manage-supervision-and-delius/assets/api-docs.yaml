@@ -1927,8 +1927,8 @@ components:
           type: string
         locationCode:
           type: string
-        outcomeCode:
-          type: string
+        outcomeRecorded:
+          type: boolean
         notes:
           type: string
         sensitive:
@@ -1953,6 +1953,7 @@ components:
       - date
       - endTime
       - isInFuture
+      - outcomeRecorded
       - requestedBy
       - startTime
     RecreatedAppointment:
