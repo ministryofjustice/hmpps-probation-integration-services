@@ -214,8 +214,16 @@ components:
           type: string
         name:
           $ref: "#/components/schemas/Name"
+        dateOfBirth:
+          type: string
+          format: date
+        age:
+          type: integer
+          format: int64
       required:
+      - age
       - crn
+      - dateOfBirth
       - name
   securitySchemes:
     hmpps-auth-token:
