@@ -360,7 +360,7 @@ class OffenderDeltaServiceTest {
 
         whenever(contactRepository.existsByIdAndSoftDeletedFalse(sourceRecordId))
             .thenReturn(false)
-        
+
         // when
         offenderDeltaService.notify(delta)
 

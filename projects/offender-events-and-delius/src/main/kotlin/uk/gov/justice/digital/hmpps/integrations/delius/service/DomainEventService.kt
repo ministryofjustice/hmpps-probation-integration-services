@@ -87,7 +87,7 @@ class DomainEventService(
             personReference = personReferenceForCrn(crn),
             additionalInformation = additionalInformation
         )
-        
+
         domainEventRepository.save(
             DomainEvent(
                 type = referenceDataRepository.domainEventType(eventType),
