@@ -109,7 +109,7 @@ jobs:
         with:
           query: |
             customEvents
-            | where timestamp between (startofday(ago(7d)) .. startofday(now()))
+            | where timestamp between (startofday(ago(10d)) .. startofday(now()))
             | where cloud_RoleName in ("appointment-reminders-and-delius")
             | where name == "UnpaidWorkAppointmentReminderSent"
             | project
