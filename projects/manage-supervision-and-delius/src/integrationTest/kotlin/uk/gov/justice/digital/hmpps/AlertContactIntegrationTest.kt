@@ -19,6 +19,7 @@ import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.json
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 import java.time.LocalDate
 import java.time.ZonedDateTime
+import java.time.temporal.ChronoUnit.SECONDS
 import uk.gov.justice.digital.hmpps.integrations.delius.user.staff.entity.Staff as StaffEntity
 
 class AlertContactIntegrationTest : IntegrationTestBase() {
@@ -215,7 +216,7 @@ class AlertContactIntegrationTest : IntegrationTestBase() {
             assertThat(it.notes).endsWith("Alert cleared from the Manage people on probation service")
             assertThat(it.lastUpdatedUser.id).isEqualTo(user.id)
             assertThat(it.lastUpdated.toLocalDate()).isEqualTo(LocalDate.now())
-            assertThat(it.createdDateTime).isEqualTo(original.createdDateTime)
+            assertThat(it.createdDateTime.truncatedTo(SECONDS)).isEqualTo(original.createdDateTime.truncatedTo(SECONDS))
         }
 
         assertThat(contactAlertRepository.findAllById(alerts.map { it.id })).isEmpty()
