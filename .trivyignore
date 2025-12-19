@@ -3,3 +3,9 @@
 # Reason: Not processing any untrusted XML
 # Package: libexpat:2.6.4-r0
 CVE-2024-8176 exp:2025-08-01
+
+# libpng: Out-of-bounds read vulnerability in libpng
+# https://github.com/adoptium/containers/issues/858
+# Reason: Vulnerability present due to upstream eclipse-temurin Alpine image rebuild lag
+# Package: libpng
+CVE-2025-66293 exp:2026-08-01
