@@ -3,10 +3,18 @@ package uk.gov.justice.digital.hmpps.service
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
+import uk.gov.justice.digital.hmpps.datetime.toDeliusDate
 import uk.gov.justice.digital.hmpps.entity.contact.Contact
 import uk.gov.justice.digital.hmpps.entity.contact.ContactType
 import uk.gov.justice.digital.hmpps.entity.contact.enforcement.Enforcement
 import uk.gov.justice.digital.hmpps.entity.contact.enforcement.EnforcementAction
+import uk.gov.justice.digital.hmpps.entity.sentence.Event
+import uk.gov.justice.digital.hmpps.entity.sentence.component.LicenceCondition
+import uk.gov.justice.digital.hmpps.entity.sentence.component.Requirement
+import uk.gov.justice.digital.hmpps.entity.sentence.component.SentenceComponent
+import uk.gov.justice.digital.hmpps.entity.staff.Provider
+import uk.gov.justice.digital.hmpps.entity.staff.Staff
+import uk.gov.justice.digital.hmpps.entity.staff.Team
 import uk.gov.justice.digital.hmpps.exception.NotFoundException.Companion.orNotFoundBy
 import uk.gov.justice.digital.hmpps.model.*
 import uk.gov.justice.digital.hmpps.repository.*
@@ -78,6 +86,31 @@ class AppointmentService(
                 listOfNotNull(requirement?.disposal?.event, licenceCondition?.disposal?.event).firstOrNull()
             ) { "Appointment component not found" }
             val team = teams[it.team.code].orNotFoundBy("code", it.team.code)
+
+            if (it.type == CreateAppointmentRequest.Type.PRE_GROUP_ONE_TO_ONE_MEETING && updateCommencementDate(requirement, it.date)) {
+                saveComponentCommencedContact(
+                    event,
+                    requirement,
+                    licenceCondition,
+                    it,
+                    team.provider,
+                    team,
+                    staff[it.staff.code].orNotFoundBy("code", it.staff.code)
+                )
+            }
+
+            if (it.type == CreateAppointmentRequest.Type.PRE_GROUP_ONE_TO_ONE_MEETING && updateCommencementDate(licenceCondition, it.date)) {
+                saveComponentCommencedContact(
+                    event,
+                    requirement,
+                    licenceCondition,
+                    it,
+                    team.provider,
+                    team,
+                    staff[it.staff.code].orNotFoundBy("code", it.staff.code)
+                )
+            }
+
             Contact(
                 person = event.person.asPersonCrn(),
                 event = event,
@@ -212,6 +245,44 @@ class AppointmentService(
         notes = notes,
         sensitive = sensitive
     )
+
+    private fun updateCommencementDate(component: SentenceComponent?, commencementDate: LocalDate): Boolean {
+        if (component == null) return false
+
+        val shouldCreateCommencedContact = component.commencementDate == null
+        component.commencementDate = commencementDate.atStartOfDay(EuropeLondon)
+        component.notes = listOfNotNull(
+            component.notes,
+            "Actual Start Date set to ${commencementDate.toDeliusDate()} following notification from the Accredited Programmes – Intervention Service"
+        ).joinToString(System.lineSeparator() + System.lineSeparator())
+
+        return shouldCreateCommencedContact
+    }
+
+
+    private fun saveComponentCommencedContact(
+        event: Event,
+        requirement: Requirement?,
+        licenceCondition: LicenceCondition?,
+        it: CreateAppointmentRequest,
+        provider: Provider,
+        team: Team,
+        staff: Staff
+    ) {
+        contactRepository.save(
+            Contact(
+                person = event.person.asPersonCrn(),
+                event = event,
+                requirement = requirement,
+                licenceCondition = licenceCondition,
+                date = it.date,
+                provider = provider,
+                team = team,
+                staff = staff,
+                type = contactTypeRepository.findByCode(ContactType.ORDER_COMPONENT_COMMENCED).orNotFoundBy("code", ContactType.ORDER_COMPONENT_COMMENCED),
+            )
+        )
+    }
 }
 
 inline fun <reified T> Map<String, T>.reportMissing(codes: Set<String>) = also {

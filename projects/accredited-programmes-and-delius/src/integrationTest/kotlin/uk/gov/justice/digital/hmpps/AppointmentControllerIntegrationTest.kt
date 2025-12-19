@@ -22,11 +22,13 @@ import uk.gov.justice.digital.hmpps.data.TestData.CA_PERSON
 import uk.gov.justice.digital.hmpps.data.TestData.LICENCE_CONDITIONS
 import uk.gov.justice.digital.hmpps.data.TestData.REQUIREMENTS
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.toCrn
+import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.entity.contact.Contact
 import uk.gov.justice.digital.hmpps.model.*
 import uk.gov.justice.digital.hmpps.repository.ContactRepository
 import uk.gov.justice.digital.hmpps.repository.EnforcementActionRepository
 import uk.gov.justice.digital.hmpps.repository.EnforcementRepository
+import uk.gov.justice.digital.hmpps.repository.RequirementRepository
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.json
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
@@ -41,7 +43,8 @@ internal class AppointmentControllerIntegrationTest @Autowired constructor(
     private val mockMvc: MockMvc,
     private val contactRepository: ContactRepository,
     private val enforcementActionRepository: EnforcementActionRepository,
-    private val enforcementRepository: EnforcementRepository
+    private val enforcementRepository: EnforcementRepository,
+    private val requirementRepository: RequirementRepository
 ) {
     @Test
     fun `exception when end date before start date`() {
@@ -422,6 +425,14 @@ internal class AppointmentControllerIntegrationTest @Autowired constructor(
             assertThat(sensitive).isTrue
             assertThat(notes).isEqualTo("Some notes about the appointment and type")
             assertThat(this.type.code).isEqualTo(type.code)
+        }
+
+        if (type == CreateAppointmentRequest.Type.PRE_GROUP_ONE_TO_ONE_MEETING) {
+            val requirement = requirementRepository.findByIdOrNull(REQUIREMENTS[2].id)
+            assertThat(requirement!!.commencementDate).isEqualTo(LocalDate.now().minusDays(7).atStartOfDay(EuropeLondon))
+
+            val ecomContact = contactRepository.findByRequirementIdAndTypeCode(REQUIREMENTS[2].id, "ECOM")
+            assertThat(ecomContact).isNotNull
         }
     }
 
