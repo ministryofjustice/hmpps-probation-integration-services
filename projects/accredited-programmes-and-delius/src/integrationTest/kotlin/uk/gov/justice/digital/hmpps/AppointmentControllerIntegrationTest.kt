@@ -429,7 +429,9 @@ internal class AppointmentControllerIntegrationTest @Autowired constructor(
 
         if (type == CreateAppointmentRequest.Type.PRE_GROUP_ONE_TO_ONE_MEETING) {
             val requirement = requirementRepository.findByIdOrNull(REQUIREMENTS[2].id)
-            assertThat(requirement!!.commencementDate).isEqualTo(LocalDate.now().minusDays(7).atStartOfDay(EuropeLondon))
+            assertThat(requirement!!.commencementDate).isEqualTo(
+                LocalDate.now().minusDays(7).atStartOfDay(EuropeLondon)
+            )
 
             val ecomContact = contactRepository.findByRequirementIdAndTypeCode(REQUIREMENTS[2].id, "ECOM")
             assertThat(ecomContact).isNotNull

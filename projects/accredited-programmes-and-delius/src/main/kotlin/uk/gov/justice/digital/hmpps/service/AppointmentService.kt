@@ -87,7 +87,11 @@ class AppointmentService(
             ) { "Appointment component not found" }
             val team = teams[it.team.code].orNotFoundBy("code", it.team.code)
 
-            if (it.type == CreateAppointmentRequest.Type.PRE_GROUP_ONE_TO_ONE_MEETING && updateCommencementDate(requirement, it.date)) {
+            if (it.type == CreateAppointmentRequest.Type.PRE_GROUP_ONE_TO_ONE_MEETING && updateCommencementDate(
+                    requirement,
+                    it.date
+                )
+            ) {
                 saveComponentCommencedContact(
                     event,
                     requirement,
@@ -99,7 +103,11 @@ class AppointmentService(
                 )
             }
 
-            if (it.type == CreateAppointmentRequest.Type.PRE_GROUP_ONE_TO_ONE_MEETING && updateCommencementDate(licenceCondition, it.date)) {
+            if (it.type == CreateAppointmentRequest.Type.PRE_GROUP_ONE_TO_ONE_MEETING && updateCommencementDate(
+                    licenceCondition,
+                    it.date
+                )
+            ) {
                 saveComponentCommencedContact(
                     event,
                     requirement,
@@ -259,7 +267,6 @@ class AppointmentService(
         return shouldCreateCommencedContact
     }
 
-
     private fun saveComponentCommencedContact(
         event: Event,
         requirement: Requirement?,
@@ -279,7 +286,8 @@ class AppointmentService(
                 provider = provider,
                 team = team,
                 staff = staff,
-                type = contactTypeRepository.findByCode(ContactType.ORDER_COMPONENT_COMMENCED).orNotFoundBy("code", ContactType.ORDER_COMPONENT_COMMENCED),
+                type = contactTypeRepository.findByCode(ContactType.ORDER_COMPONENT_COMMENCED)
+                    .orNotFoundBy("code", ContactType.ORDER_COMPONENT_COMMENCED),
             )
         )
     }
