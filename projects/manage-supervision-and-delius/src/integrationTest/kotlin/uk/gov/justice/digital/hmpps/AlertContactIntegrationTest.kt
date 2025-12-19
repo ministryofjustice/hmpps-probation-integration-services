@@ -19,6 +19,7 @@ import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.json
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 import java.time.LocalDate
 import java.time.ZonedDateTime
+import java.time.temporal.ChronoUnit.SECONDS
 import uk.gov.justice.digital.hmpps.integrations.delius.user.staff.entity.Staff as StaffEntity
 
 class AlertContactIntegrationTest : IntegrationTestBase() {
@@ -210,8 +211,12 @@ class AlertContactIntegrationTest : IntegrationTestBase() {
             .andExpect { status { isOk() } }
 
         contactRepository.findAllById(alertContacts.map { it.id }).forEach {
+            val original = alertContacts.single { original -> original.id == it.id }
             assertThat(it.alert).isFalse
-            assertThat(it.notes).contains("Alert cleared from MPOP")
+            assertThat(it.notes).endsWith("Alert cleared from the Manage people on probation service")
+            assertThat(it.lastUpdatedUser.id).isEqualTo(user.id)
+            assertThat(it.lastUpdated.toLocalDate()).isEqualTo(LocalDate.now())
+            assertThat(it.createdDateTime.truncatedTo(SECONDS)).isEqualTo(original.createdDateTime.truncatedTo(SECONDS))
         }
 
         assertThat(contactAlertRepository.findAllById(alerts.map { it.id })).isEmpty()
