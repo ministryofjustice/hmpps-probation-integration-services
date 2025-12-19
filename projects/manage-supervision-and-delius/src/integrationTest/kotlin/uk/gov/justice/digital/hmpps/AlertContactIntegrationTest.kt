@@ -210,8 +210,12 @@ class AlertContactIntegrationTest : IntegrationTestBase() {
             .andExpect { status { isOk() } }
 
         contactRepository.findAllById(alertContacts.map { it.id }).forEach {
+            val original = alertContacts.single { original -> original.id == it.id }
             assertThat(it.alert).isFalse
-            assertThat(it.notes).contains("Alert cleared from MPOP")
+            assertThat(it.notes).endsWith("Alert cleared from the Manage people on probation service")
+            assertThat(it.lastUpdatedUser.id).isEqualTo(user.id)
+            assertThat(it.lastUpdated.toLocalDate()).isEqualTo(LocalDate.now())
+            assertThat(it.createdDateTime).isEqualTo(original.createdDateTime)
         }
 
         assertThat(contactAlertRepository.findAllById(alerts.map { it.id })).isEmpty()
