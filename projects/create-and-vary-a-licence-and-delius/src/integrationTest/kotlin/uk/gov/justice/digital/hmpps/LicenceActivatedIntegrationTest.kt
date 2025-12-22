@@ -4,12 +4,15 @@ import com.github.tomakehurst.wiremock.WireMockServer
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.containsInAnyOrder
 import org.hamcrest.Matchers.equalTo
-import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.MethodSource
 import org.mockito.kotlin.verify
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.bean.override.mockito.MockitoBean
+import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.PERSON_CREATE_LC
 import uk.gov.justice.digital.hmpps.data.generator.SentenceGenerator
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactType
@@ -20,12 +23,10 @@ import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.LicenceC
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.LicenceConditionRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.ReferenceData
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.TransferReason
+import uk.gov.justice.digital.hmpps.message.MessageAttributes
 import uk.gov.justice.digital.hmpps.messaging.HmppsChannelManager
 import uk.gov.justice.digital.hmpps.resourceloader.ResourceLoader
-import uk.gov.justice.digital.hmpps.service.ActionResult
-import uk.gov.justice.digital.hmpps.service.CONDITION_PREFIX
-import uk.gov.justice.digital.hmpps.service.LIMITED_PREFIX
-import uk.gov.justice.digital.hmpps.service.STANDARD_PREFIX
+import uk.gov.justice.digital.hmpps.service.*
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import uk.gov.justice.digital.hmpps.test.CustomMatchers.isCloseTo
 import java.time.Duration
@@ -46,15 +47,25 @@ class LicenceActivatedIntegrationTest @Autowired constructor(
     @MockitoBean
     lateinit var telemetryService: TelemetryService
 
-    @Test
-    fun `add licence conditions`() {
+    @BeforeEach
+    fun clear() {
+        lcmr.deleteAll()
+        lcr.deleteAll()
+        contactRepository.findAll()
+            .filter { it.personId == PERSON_CREATE_LC.id && it.type.code == ContactType.LPOP }
+            .forEach(contactRepository::delete)
+    }
+
+    @ParameterizedTest
+    @MethodSource("domainEventTypes")
+    fun `add licence conditions`(type: DomainEventType) {
         val sentence = SentenceGenerator.SENTENCE_CREATE_LC
         val person = sentence.disposal.event.person
 
         val notification = prepMessage(
             ResourceLoader.event("licence-activated-L453621"),
             wireMockServer.port()
-        )
+        ).copy(attributes = MessageAttributes(type.name))
 
         channelManager.getChannel(queueName).publishAndWait(notification, timeout = Duration.ofMinutes(2))
 
@@ -156,4 +167,13 @@ class LicenceActivatedIntegrationTest @Autowired constructor(
     }
 
     private fun String.prefixed(prefix: String = CONDITION_PREFIX): String = prefix + System.lineSeparator() + this
+
+    companion object {
+        @JvmStatic
+        fun domainEventTypes() = listOf(
+            DomainEventType.LicenceActivated,
+            DomainEventType.PRRDLicenceActivated,
+            DomainEventType.TimeServedLicenceActivated
+        )
+    }
 }
