@@ -6,7 +6,6 @@ import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.NumericBooleanConverter
 import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.offender.Contact
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.ReferenceData
 
 @Immutable
@@ -22,10 +21,6 @@ class Registration(
 
     @Column(name = "offender_id")
     val personId: Long,
-
-    @OneToOne
-    @JoinColumn(name = "contact_id")
-    val contact: Contact,
 
     @ManyToOne
     @JoinColumn(name = "register_type_id")
@@ -63,6 +58,6 @@ class RegisterType(
 }
 
 interface RegistrationRepository : JpaRepository<Registration, Long> {
-    @EntityGraph(attributePaths = ["category"])
+    @EntityGraph(attributePaths = ["type", "category"])
     fun findByPersonIdAndTypeCodeOrderByIdDesc(personId: Long, typeCode: String): List<Registration>
 }

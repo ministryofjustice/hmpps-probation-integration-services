@@ -91,10 +91,10 @@ class OffenderDeltaService(
 
         val offender = delta.offender ?: return
 
-        val contact = contactRepository.findById(delta.sourceRecordId).orElse(null)
-        val contactId = contact?.id ?: delta.sourceRecordId
+        val contactId = delta.sourceRecordId
+        val contact = contactRepository.findById(contactId).orElse(null)
 
-        val isMappaDomainEventEnabled = contact?.visorExported == true
+        val isMappaDomainEventEnabled = contact?.visorContact == true
         if (!isMappaDomainEventEnabled) return
 
         val category = resolveMappaCategory(offender.id)
@@ -104,7 +104,6 @@ class OffenderDeltaService(
             "DELETE" -> domainEventService.publishContactDeleted(
                 crn = offender.crn,
                 contactId = contactId,
-                export = true,
                 category = category,
                 occurredAt = delta.dateChanged
             )
@@ -112,7 +111,6 @@ class OffenderDeltaService(
             else -> domainEventService.publishContactUpdated(
                 crn = offender.crn,
                 contactId = contactId,
-                export = true,
                 category = category,
                 occurredAt = delta.dateChanged
             )

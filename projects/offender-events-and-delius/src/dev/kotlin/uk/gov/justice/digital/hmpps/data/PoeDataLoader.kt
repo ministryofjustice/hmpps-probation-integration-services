@@ -34,9 +34,8 @@ class PoeDataLoader(
         val offender = offenderRepository.save(OffenderGenerator.DEFAULT)
         contactRepository.save(Contact(id = 101))
         contactRepository.save(Contact(id = 102, softDeleted = true))
-        contactRepository.save(Contact(id = 201, visorExported = true, softDeleted = true))
-
-        val contact202 = contactRepository.save(Contact(id = 202, visorExported = true))
+        contactRepository.save(Contact(id = 201, visorContact = true, softDeleted = true))
+        contactRepository.save(Contact(id = 202, visorContact = true))
 
         datasetRepository.save(DatasetGenerator.DOMAIN_EVENT_TYPE)
         referenceDataRepository.saveAll(
@@ -60,7 +59,6 @@ class PoeDataLoader(
         registrationRepository.save(
             RegistrationGenerator.mappaRegistration(
                 offenderId = offender.id,
-                contact = contact202,
                 type = type,
                 category = category
             )

@@ -1,6 +1,5 @@
 package uk.gov.justice.digital.hmpps
 
-import org.awaitility.Awaitility.await
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.*
 import org.junit.jupiter.api.Test
@@ -21,7 +20,6 @@ import uk.gov.justice.digital.hmpps.integrations.delius.offender.OffenderDeltaRe
 import uk.gov.justice.digital.hmpps.integrations.delius.offender.OffenderDeltaService
 import uk.gov.justice.digital.hmpps.messaging.HmppsChannelManager
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
-import java.util.concurrent.TimeUnit
 
 @SpringBootTest
 internal class IntegrationTest @Autowired constructor(
@@ -74,40 +72,35 @@ internal class IntegrationTest @Autowired constructor(
         verify(offenderDeltaService, after(500).atLeastOnce()).notify(any())
 
         // then
-        await()
-            .atMost(5, TimeUnit.SECONDS)
-            .untilAsserted {
-
-                val domainEvents = domainEventRepository.findAll()
-                assertThat(
-                    domainEvents.map { it.type.code },
-                    org.hamcrest.Matchers.not(
-                        hasItems(
-                            "probation-case.mappa-information.updated"
-                        )
-                    )
+        val domainEvents = domainEventRepository.findAll()
+        assertThat(
+            domainEvents.map { it.type.code },
+            org.hamcrest.Matchers.not(
+                hasItems(
+                    "probation-case.mappa-information.updated"
                 )
+            )
+        )
 
-                val publishedEvents = generateSequence {
-                    channelManager.getChannel(topicName).receive()
-                }.toList()
+        val publishedEvents = generateSequence {
+            channelManager.getChannel(topicName).receive()
+        }.toList()
 
-                assertThat(
-                    publishedEvents.map { it.eventType },
-                    hasItems("CONTACT_CHANGED")
-                )
+        assertThat(
+            publishedEvents.map { it.eventType },
+            hasItems("CONTACT_CHANGED")
+        )
 
-                verify(telemetryService, atLeastOnce()).trackEvent(
-                    eq("OffenderEventPublished"),
-                    check { properties ->
-                        assertThat(properties["crn"], equalTo("X123456"))
-                        assertThat(properties["eventType"], equalTo("CONTACT_CHANGED"))
-                        assertThat(properties["occurredAt"], notNullValue())
-                        assertThat(properties["notification"], notNullValue())
-                    },
-                    any()
-                )
-            }
+        verify(telemetryService, atLeastOnce()).trackEvent(
+            eq("OffenderEventPublished"),
+            check { properties ->
+                assertThat(properties["crn"], equalTo("X123456"))
+                assertThat(properties["eventType"], equalTo("CONTACT_CHANGED"))
+                assertThat(properties["occurredAt"], notNullValue())
+                assertThat(properties["notification"], notNullValue())
+            },
+            any()
+        )
     }
 
     @Test
@@ -127,37 +120,32 @@ internal class IntegrationTest @Autowired constructor(
         verify(offenderDeltaService, after(500).atLeastOnce()).notify(any())
 
         // then
-        await()
-            .atMost(5, TimeUnit.SECONDS)
-            .untilAsserted {
+        val domainEvents = domainEventRepository.findAll()
 
-                val domainEvents = domainEventRepository.findAll()
+        assertThat(
+            domainEvents.map { it.type.code },
+            hasItems("probation-case.mappa-information.updated")
+        )
 
-                assertThat(
-                    domainEvents.map { it.type.code },
-                    hasItems("probation-case.mappa-information.updated")
-                )
+        val publishedNotifications = generateSequence {
+            channelManager.getChannel(topicName).receive()
+        }.toList()
 
-                val publishedNotifications = generateSequence {
-                    channelManager.getChannel(topicName).receive()
-                }.toList()
+        assertThat(
+            publishedNotifications.map { it.eventType },
+            hasItems("CONTACT_CHANGED")
+        )
 
-                assertThat(
-                    publishedNotifications.map { it.eventType },
-                    hasItems("CONTACT_CHANGED")
-                )
-
-                verify(telemetryService, atLeastOnce()).trackEvent(
-                    eq("OffenderEventPublished"),
-                    check { properties ->
-                        assertThat(properties["crn"], equalTo("X123456"))
-                        assertThat(properties["eventType"], equalTo("CONTACT_CHANGED"))
-                        assertThat(properties["occurredAt"], notNullValue())
-                        assertThat(properties["notification"], notNullValue())
-                    },
-                    any()
-                )
-            }
+        verify(telemetryService, atLeastOnce()).trackEvent(
+            eq("OffenderEventPublished"),
+            check { properties ->
+                assertThat(properties["crn"], equalTo("X123456"))
+                assertThat(properties["eventType"], equalTo("CONTACT_CHANGED"))
+                assertThat(properties["occurredAt"], notNullValue())
+                assertThat(properties["notification"], notNullValue())
+            },
+            any()
+        )
     }
 
     @Test
@@ -177,41 +165,36 @@ internal class IntegrationTest @Autowired constructor(
         verify(offenderDeltaService, after(500).atLeastOnce()).notify(any())
 
         // then
-        await()
-            .atMost(5, TimeUnit.SECONDS)
-            .untilAsserted {
-
-                val domainEvents = domainEventRepository.findAll()
-                assertThat(
-                    domainEvents.map { it.type.code },
-                    org.hamcrest.Matchers.not(
-                        hasItems(
-                            "probation-case.mappa-information.deleted",
-                            "probation-case.mappa-information.updated"
-                        )
-                    )
+        val domainEvents = domainEventRepository.findAll()
+        assertThat(
+            domainEvents.map { it.type.code },
+            org.hamcrest.Matchers.not(
+                hasItems(
+                    "probation-case.mappa-information.deleted",
+                    "probation-case.mappa-information.updated"
                 )
+            )
+        )
 
-                val publishedNotifications = generateSequence {
-                    channelManager.getChannel(topicName).receive()
-                }.toList()
+        val publishedNotifications = generateSequence {
+            channelManager.getChannel(topicName).receive()
+        }.toList()
 
-                assertThat(
-                    publishedNotifications.map { it.eventType },
-                    hasItems("CONTACT_DELETED")
-                )
+        assertThat(
+            publishedNotifications.map { it.eventType },
+            hasItems("CONTACT_DELETED")
+        )
 
-                verify(telemetryService, atLeastOnce()).trackEvent(
-                    eq("OffenderEventPublished"),
-                    check { properties ->
-                        assertThat(properties["crn"], equalTo("X123456"))
-                        assertThat(properties["eventType"], equalTo("CONTACT_DELETED"))
-                        assertThat(properties["occurredAt"], notNullValue())
-                        assertThat(properties["notification"], notNullValue())
-                    },
-                    any()
-                )
-            }
+        verify(telemetryService, atLeastOnce()).trackEvent(
+            eq("OffenderEventPublished"),
+            check { properties ->
+                assertThat(properties["crn"], equalTo("X123456"))
+                assertThat(properties["eventType"], equalTo("CONTACT_DELETED"))
+                assertThat(properties["occurredAt"], notNullValue())
+                assertThat(properties["notification"], notNullValue())
+            },
+            any()
+        )
     }
 
     @Test
@@ -231,45 +214,40 @@ internal class IntegrationTest @Autowired constructor(
         verify(offenderDeltaService, after(500).atLeastOnce()).notify(any())
 
         // then
-        await()
-            .atMost(5, TimeUnit.SECONDS)
-            .untilAsserted {
+        val domainEvents = domainEventRepository.findAll()
+        val eventTypes = domainEvents.map { it.type.code }
 
-                val domainEvents = domainEventRepository.findAll()
-                val eventTypes = domainEvents.map { it.type.code }
+        assertThat(
+            eventTypes,
+            hasItems("probation-case.mappa-information.deleted")
+        )
 
-                assertThat(
-                    eventTypes,
-                    hasItems("probation-case.mappa-information.deleted")
-                )
+        assertThat(
+            eventTypes,
+            org.hamcrest.Matchers.not(
+                hasItems("probation-case.mappa-information.updated")
+            )
+        )
 
-                assertThat(
-                    eventTypes,
-                    org.hamcrest.Matchers.not(
-                        hasItems("probation-case.mappa-information.updated")
-                    )
-                )
+        val publishedNotifications = generateSequence {
+            channelManager.getChannel(topicName).receive()
+        }.toList()
 
-                val publishedNotifications = generateSequence {
-                    channelManager.getChannel(topicName).receive()
-                }.toList()
+        assertThat(
+            publishedNotifications.map { it.eventType },
+            hasItems("CONTACT_DELETED")
+        )
 
-                assertThat(
-                    publishedNotifications.map { it.eventType },
-                    hasItems("CONTACT_DELETED")
-                )
-
-                verify(telemetryService, atLeastOnce()).trackEvent(
-                    eq("OffenderEventPublished"),
-                    check { properties ->
-                        assertThat(properties["crn"], equalTo("X123456"))
-                        assertThat(properties["eventType"], equalTo("CONTACT_DELETED"))
-                        assertThat(properties["occurredAt"], notNullValue())
-                        assertThat(properties["notification"], notNullValue())
-                    },
-                    any()
-                )
-            }
+        verify(telemetryService, atLeastOnce()).trackEvent(
+            eq("OffenderEventPublished"),
+            check { properties ->
+                assertThat(properties["crn"], equalTo("X123456"))
+                assertThat(properties["eventType"], equalTo("CONTACT_DELETED"))
+                assertThat(properties["occurredAt"], notNullValue())
+                assertThat(properties["notification"], notNullValue())
+            },
+            any()
+        )
     }
 
     /**
@@ -307,41 +285,36 @@ internal class IntegrationTest @Autowired constructor(
         verify(offenderDeltaService, after(500).atLeastOnce()).notify(any())
 
         // then
-        await()
-            .atMost(5, TimeUnit.SECONDS)
-            .untilAsserted {
-
-                val domainEvents = domainEventRepository.findAll()
-                assertThat(
-                    domainEvents.map { it.type.code },
-                    not(
-                        hasItems(
-                            "probation-case.mappa-information.updated",
-                            "probation-case.mappa-information.deleted"
-                        )
-                    )
+        val domainEvents = domainEventRepository.findAll()
+        assertThat(
+            domainEvents.map { it.type.code },
+            not(
+                hasItems(
+                    "probation-case.mappa-information.updated",
+                    "probation-case.mappa-information.deleted"
                 )
+            )
+        )
 
-                val publishedNotifications = generateSequence {
-                    channelManager.getChannel(topicName).receive()
-                }.toList()
+        val publishedNotifications = generateSequence {
+            channelManager.getChannel(topicName).receive()
+        }.toList()
 
-                assertThat(
-                    publishedNotifications.map { it.eventType },
-                    hasItems("CONTACT_DELETED")
-                )
+        assertThat(
+            publishedNotifications.map { it.eventType },
+            hasItems("CONTACT_DELETED")
+        )
 
-                verify(telemetryService, atLeastOnce()).trackEvent(
-                    eq("OffenderEventPublished"),
-                    check { properties ->
-                        assertThat(properties["crn"], equalTo("X123456"))
-                        assertThat(properties["eventType"], equalTo("CONTACT_DELETED"))
-                        assertThat(properties["occurredAt"], notNullValue())
-                        assertThat(properties["notification"], notNullValue())
-                    },
-                    any()
-                )
-            }
+        verify(telemetryService, atLeastOnce()).trackEvent(
+            eq("OffenderEventPublished"),
+            check { properties ->
+                assertThat(properties["crn"], equalTo("X123456"))
+                assertThat(properties["eventType"], equalTo("CONTACT_DELETED"))
+                assertThat(properties["occurredAt"], notNullValue())
+                assertThat(properties["notification"], notNullValue())
+            },
+            any()
+        )
     }
 
     companion object {

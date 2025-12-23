@@ -22,78 +22,56 @@ class DomainEventService(
     fun publishContactUpdated(
         crn: String,
         contactId: Long,
-        export: Boolean,
         category: Int,
         occurredAt: ZonedDateTime
     ) {
-        publishMappaEvent(
-            eventType = MappaDomainEventType.UPDATED,
-            description = "MAPPS information has been updated in NDelius",
-            crn = crn,
-            contactId = contactId,
-            export = export,
-            category = category,
-            occurredAt = occurredAt,
-            includePreviousCrn = false
+        publishDomainEvent(
+            HmppsDomainEvent(
+                eventType = MappaDomainEventType.UPDATED,
+                version = 1,
+                description = "MAPPS information has been updated in NDelius",
+                occurredAt = occurredAt,
+                personReference = personReferenceForCrn(crn),
+                additionalInformation = mapOf(
+                    "contactId" to contactId,
+                    "mapps" to mapOf(
+                        "category" to category
+                    )
+                )
+            )
         )
     }
 
     fun publishContactDeleted(
         crn: String,
         contactId: Long,
-        export: Boolean,
         category: Int,
         occurredAt: ZonedDateTime
     ) {
-        publishMappaEvent(
-            eventType = MappaDomainEventType.DELETED,
-            description = "MAPPS information has been deleted in NDelius",
-            crn = crn,
-            contactId = contactId,
-            export = export,
-            category = category,
-            occurredAt = occurredAt,
-            includePreviousCrn = true
+        publishDomainEvent(
+            HmppsDomainEvent(
+                eventType = MappaDomainEventType.DELETED,
+                version = 1,
+                description = "MAPPS information has been deleted in NDelius",
+                occurredAt = occurredAt,
+                personReference = personReferenceForCrn(crn),
+                additionalInformation = mapOf(
+                    "contactId" to contactId,
+                    "mapps" to mapOf(
+                        "category" to category
+                    )
+                )
+            )
         )
     }
 
-    private fun publishMappaEvent(
-        eventType: String,
-        description: String,
-        crn: String,
-        contactId: Long,
-        export: Boolean,
-        category: Int,
-        occurredAt: ZonedDateTime,
-        includePreviousCrn: Boolean
-    ) {
-        val additionalInformation = mutableMapOf<String, Any?>(
-            "contactId" to contactId,
-            "mapps" to mapOf(
-                "export" to export,
-                "category" to category
-            )
-        )
-
-        if (includePreviousCrn) {
-            additionalInformation["previousCrn"] = crn
-        }
-
-        val event = HmppsDomainEvent(
-            eventType = eventType,
-            version = 1,
-            description = description,
-            occurredAt = occurredAt,
-            personReference = personReferenceForCrn(crn),
-            additionalInformation = additionalInformation
-        )
-
+    private fun publishDomainEvent(event: HmppsDomainEvent) {
         domainEventRepository.save(
             DomainEvent(
-                type = referenceDataRepository.domainEventType(eventType),
+                type = referenceDataRepository.domainEventType(event.eventType),
                 messageBody = objectMapper.writeValueAsString(event),
                 messageAttributes = objectMapper.writeValueAsString(
-                    MessageAttributes(eventType)
+                    MessageAttributes(event.eventType)
                 )
             )
         )

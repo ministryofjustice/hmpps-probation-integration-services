@@ -82,10 +82,10 @@ class OffenderDeltaServiceTest {
 
         // then — handleDomainEvent is NOT triggered
         verify(domainEventService, never())
-            .publishContactUpdated(any(), any(), any(), any(), any())
+            .publishContactUpdated(any(), any(), any(), any())
 
         verify(domainEventService, never())
-            .publishContactDeleted(any(), any(), any(), any(), any())
+            .publishContactDeleted(any(), any(), any(), any())
     }
 
     @ParameterizedTest
@@ -116,10 +116,10 @@ class OffenderDeltaServiceTest {
 
         // then — no domain events
         verify(domainEventService, never())
-            .publishContactUpdated(any(), any(), any(), any(), any())
+            .publishContactUpdated(any(), any(), any(), any())
 
         verify(domainEventService, never())
-            .publishContactDeleted(any(), any(), any(), any(), any())
+            .publishContactDeleted(any(), any(), any(), any())
 
         // then — exactly one notification
         val notificationCaptor = argumentCaptor<Notification<*>>()
@@ -171,10 +171,10 @@ class OffenderDeltaServiceTest {
 
         // then — no domain events
         verify(domainEventService, never())
-            .publishContactUpdated(any(), any(), any(), any(), any())
+            .publishContactUpdated(any(), any(), any(), any())
 
         verify(domainEventService, never())
-            .publishContactDeleted(any(), any(), any(), any(), any())
+            .publishContactDeleted(any(), any(), any(), any())
 
         // then — exactly two notifications
         val notificationCaptor = argumentCaptor<Notification<*>>()
@@ -232,10 +232,10 @@ class OffenderDeltaServiceTest {
 
         // then — NO DOMAIN EVENTS
         verify(domainEventService, never())
-            .publishContactUpdated(any(), any(), any(), any(), any())
+            .publishContactUpdated(any(), any(), any(), any())
 
         verify(domainEventService, never())
-            .publishContactDeleted(any(), any(), any(), any(), any())
+            .publishContactDeleted(any(), any(), any(), any())
 
         // then — NO TELEMETRY
         verify(telemetryService, never())
@@ -261,10 +261,10 @@ class OffenderDeltaServiceTest {
 
         // then — DOMAIN EVENT is NOT published
         verify(domainEventService, never())
-            .publishContactUpdated(any(), any(), any(), any(), any())
+            .publishContactUpdated(any(), any(), any(), any())
 
         verify(domainEventService, never())
-            .publishContactDeleted(any(), any(), any(), any(), any())
+            .publishContactDeleted(any(), any(), any(), any())
 
         // then — NO DATA EVENT notification
         verify(notificationPublisher, never())
@@ -308,10 +308,10 @@ class OffenderDeltaServiceTest {
 
         // then — DOMAIN EVENT is NOT published
         verify(domainEventService, never())
-            .publishContactUpdated(any(), any(), any(), any(), any())
+            .publishContactUpdated(any(), any(), any(), any())
 
         verify(domainEventService, never())
-            .publishContactDeleted(any(), any(), any(), any(), any())
+            .publishContactDeleted(any(), any(), any(), any())
 
         // then — DATA EVENT notification is published
         val captor = argumentCaptor<Notification<*>>()
@@ -353,7 +353,7 @@ class OffenderDeltaServiceTest {
                 Optional.of(
                     Contact(
                         id = sourceRecordId,
-                        visorExported = false
+                        visorContact = false
                     )
                 )
             )
@@ -366,10 +366,10 @@ class OffenderDeltaServiceTest {
 
         // then — NO DOMAIN EVENTS
         verify(domainEventService, never())
-            .publishContactUpdated(any(), any(), any(), any(), any())
+            .publishContactUpdated(any(), any(), any(), any())
 
         verify(domainEventService, never())
-            .publishContactDeleted(any(), any(), any(), any(), any())
+            .publishContactDeleted(any(), any(), any(), any())
 
         // then — DATA EVENT notification is published
         verify(notificationPublisher)
@@ -406,7 +406,7 @@ class OffenderDeltaServiceTest {
                 Optional.of(
                     Contact(
                         id = sourceRecordId,
-                        visorExported = true
+                        visorContact = true
                     )
                 )
             )
@@ -428,7 +428,6 @@ class OffenderDeltaServiceTest {
         verify(domainEventService).publishContactUpdated(
             crn = eq("X202020"),
             contactId = eq(sourceRecordId),
-            export = eq(true),
             category = eq(0),
             occurredAt = eq(occurredAt)
         )
@@ -473,7 +472,7 @@ class OffenderDeltaServiceTest {
                 Optional.of(
                     Contact(
                         id = sourceRecordId,
-                        visorExported = true
+                        visorContact = true
                     )
                 )
             )
@@ -507,7 +506,6 @@ class OffenderDeltaServiceTest {
         verify(domainEventService).publishContactUpdated(
             crn = eq("X111111"),
             contactId = eq(sourceRecordId),
-            export = eq(true),
             category = eq(4),
             occurredAt = eq(occurredAt)
         )
@@ -566,7 +564,7 @@ class OffenderDeltaServiceTest {
                 Optional.of(
                     Contact(
                         id = sourceRecordId,
-                        visorExported = true,
+                        visorContact = true,
                         softDeleted = true
                     )
                 )
@@ -582,7 +580,6 @@ class OffenderDeltaServiceTest {
         verify(domainEventService).publishContactUpdated(
             crn = eq("X606060"),
             contactId = eq(sourceRecordId),
-            export = eq(true),
             category = eq(0),
             occurredAt = eq(occurredAt)
         )
@@ -627,7 +624,7 @@ class OffenderDeltaServiceTest {
                 Optional.of(
                     Contact(
                         id = sourceRecordId,
-                        visorExported = true,
+                        visorContact = true,
                         softDeleted = true
                     )
                 )
@@ -661,7 +658,6 @@ class OffenderDeltaServiceTest {
         verify(domainEventService).publishContactDeleted(
             crn = eq("X111111"),
             contactId = eq(sourceRecordId),
-            export = eq(true),
             category = eq(4),
             occurredAt = eq(occurredAt)
         )
@@ -726,10 +722,10 @@ class OffenderDeltaServiceTest {
 
         // then — NO DOMAIN EVENTS (VISOR flag cannot be resolved)
         verify(domainEventService, never())
-            .publishContactUpdated(any(), any(), any(), any(), any())
+            .publishContactUpdated(any(), any(), any(), any())
 
         verify(domainEventService, never())
-            .publishContactDeleted(any(), any(), any(), any(), any())
+            .publishContactDeleted(any(), any(), any(), any())
 
         // then — NOTIFICATION is published
         val notificationCaptor = argumentCaptor<Notification<*>>()

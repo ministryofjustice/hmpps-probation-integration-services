@@ -18,9 +18,9 @@ class Contact(
     @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean = false,
 
-    @Column(name = "visor_exported")
+    @Column(name = "visor_contact")
     @Convert(converter = YesNoConverter::class)
-    val visorExported: Boolean? = false
+    val visorContact: Boolean? = false
 )
 
 interface ContactRepository : JpaRepository<Contact, Long> {

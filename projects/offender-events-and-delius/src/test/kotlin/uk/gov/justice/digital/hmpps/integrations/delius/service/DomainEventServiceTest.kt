@@ -6,7 +6,6 @@ import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -67,7 +66,6 @@ class DomainEventServiceTest {
         domainEventService.publishContactUpdated(
             crn = "X972222",
             contactId = 2510101288L,
-            export = true,
             category = 0,
             occurredAt = occurredAt
         )
@@ -97,9 +95,6 @@ class DomainEventServiceTest {
             2510101288L,
             body["additionalInformation"]["contactId"].asLong()
         )
-        assertTrue(
-            body["additionalInformation"]["mapps"]["export"].asBoolean()
-        )
         assertEquals(
             0,
             body["additionalInformation"]["mapps"]["category"].asInt()
@@ -128,7 +123,6 @@ class DomainEventServiceTest {
         domainEventService.publishContactDeleted(
             crn = "X972222",
             contactId = 2510101297L,
-            export = true,
             category = 4,
             occurredAt = occurredAt
         )
@@ -151,15 +145,8 @@ class DomainEventServiceTest {
             body["description"].asText()
         )
         assertEquals(
-            "X972222",
-            body["additionalInformation"]["previousCrn"].asText()
-        )
-        assertEquals(
             2510101297L,
             body["additionalInformation"]["contactId"].asLong()
-        )
-        assertTrue(
-            body["additionalInformation"]["mapps"]["export"].asBoolean()
         )
         assertEquals(
             4,
