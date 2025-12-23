@@ -30,9 +30,12 @@ class DomainEventService(
 
     fun deleteAll(deltas: List<DomainEvent>) = domainEventRepository.deleteAllByIdInBatch(deltas.map { it.id })
 
+    fun publishAll(events: List<DomainEvent>) {
+        events.map { notificationEnhancer.enhance(it.asNotification()) }.onEach(::notify)
+    }
+
     @WithSpan("POLL domain_event", kind = SpanKind.SERVER)
-    fun notify(delta: DomainEvent) {
-        val notification = notificationEnhancer.enhance(delta.asNotification())
+    fun notify(notification: Notification<HmppsDomainEvent>) {
         notificationPublisher.publish(notification)
         telemetryService.trackEvent(
             "DomainEventPublished",
