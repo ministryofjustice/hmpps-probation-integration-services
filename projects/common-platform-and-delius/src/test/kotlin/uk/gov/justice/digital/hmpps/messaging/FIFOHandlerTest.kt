@@ -86,11 +86,22 @@ internal class FIFOHandlerTest {
     }
 
     @Test
-    fun `When a defendant is missing name or dob then records are not inserted and probation-search is not performed`() {
-        corePersonHasNoCrn()
+    fun `When a defendant is missing dob then records are not inserted`() {
+        corePersonHasNoCrn(dob = null)
         val notification = Notification(message = MessageGenerator.COMMON_PLATFORM_EVENT_NULL_FIELDS)
         handler.handle(notification)
         verify(telemetryService).notificationReceived(notification)
+        verify(telemetryService).trackEvent(eq("InvalidDateOfBirth"), anyMap(), anyMap())
+        verify(remandService, never()).insertPersonOnRemand(any())
+    }
+
+    @Test
+    fun `When a defendant has a dob indicating they are less than 10 years old then records are not inserted`() {
+        corePersonHasNoCrn(dob = LocalDate.now().minusYears(9))
+        val notification = Notification(message = MessageGenerator.COMMON_PLATFORM_EVENT_NULL_FIELDS)
+        handler.handle(notification)
+        verify(telemetryService).notificationReceived(notification)
+        verify(telemetryService).trackEvent(eq("InvalidDateOfBirth"), anyMap(), anyMap())
         verify(remandService, never()).insertPersonOnRemand(any())
     }
 
@@ -114,8 +125,10 @@ internal class FIFOHandlerTest {
 
         verify(telemetryService).notificationReceived(notification)
         verify(telemetryService).trackEvent(
-            "HearingDatesDebug",
+            "PersonAlreadyExists",
             mapOf(
+                "defendantId" to "00000000-0000-0000-0000-000000000000",
+                "crns" to "[X123456]",
                 "hearingId" to notification.message.hearing.id,
                 "hearingDates" to "2024-01-01T12:00Z[Europe/London], 2024-03-19T12:00Z[Europe/London], 2030-12-31T12:00Z[Europe/London]",
                 "futureHearingDate" to "true"
@@ -176,10 +189,10 @@ internal class FIFOHandlerTest {
         )
     }
 
-    private fun corePersonHasNoCrn() {
+    private fun corePersonHasNoCrn(dob: LocalDate? = LocalDate.now().minusYears(21)) {
         val person = CorePersonRecord(
             "John", "Robert", "Smith",
-            LocalDate.now().minusYears(21),
+            dob,
             Identifiers()
         )
         whenever(corePersonClient.findByDefendantId(any())).thenReturn(person)
