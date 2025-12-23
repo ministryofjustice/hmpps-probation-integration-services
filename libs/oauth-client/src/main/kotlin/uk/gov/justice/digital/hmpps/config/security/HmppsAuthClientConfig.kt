@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.config.security
 
+import org.eclipse.jetty.client.HttpClient
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.client.JettyClientHttpRequestFactory
@@ -17,15 +18,17 @@ class HmppsAuthClientConfig(
     private val clientManager: OAuth2AuthorizedClientManager
 ) {
     @Bean
-    fun oauth2Client() = restClientBuilder
-        .requestFactory(withTimeouts(Duration.ofSeconds(1), Duration.ofSeconds(5)))
+    fun oauth2Client(): RestClient = restClientBuilder
+        .requestFactory(JettyClientHttpRequestFactory(HttpClient().apply {
+            responseBufferSize = 1024 * 1024 // 1 MB, to allow for larger buffered responses (e.g. OASys 401 page)
+        }).apply {
+            setConnectTimeout(Duration.ofSeconds(1))
+            setReadTimeout(Duration.ofSeconds(5))
+        })
         .requestInterceptor(HmppsAuthInterceptor(clientManager, "default"))
         .requestInterceptor(RetryInterceptor())
         .build()
 }
-
-fun withTimeouts(connection: Duration, read: Duration) =
-    JettyClientHttpRequestFactory().also { it.setConnectTimeout(connection); it.setReadTimeout(read); }
 
 inline fun <reified T> createClient(client: RestClient): T {
     return HttpServiceProxyFactory.builderFor(RestClientAdapter.create(client)).build()
