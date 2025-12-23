@@ -272,6 +272,7 @@ object ContactGenerator {
         sensitive = sensitive,
         complied = complied,
         requirement = requirement,
+        createdDateTime = ZonedDateTime.now().minusDays(1),
         lastUpdated = ZonedDateTime.now().minusDays(1),
         lastUpdatedUser = USER,
         team = team,

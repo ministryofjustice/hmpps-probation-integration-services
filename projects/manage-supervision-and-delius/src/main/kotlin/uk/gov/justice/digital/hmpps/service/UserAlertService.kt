@@ -8,11 +8,7 @@ import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.api.model.Name
 import uk.gov.justice.digital.hmpps.api.model.user.*
 import uk.gov.justice.digital.hmpps.aspect.UserContext
-import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.Contact
-import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.ContactAlertRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.ContactRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.PersonRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.getContact
+import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.*
 import java.time.LocalTime
 
 @Service
@@ -45,7 +41,7 @@ class UserAlertService(
             alerts.forEach {
                 if (comConfirmations[it.person.crn] == true && it.alert == true) {
                     it.alert = false
-                    it.appendNotes("Alert cleared from MPOP")
+                    it.appendNotes("Alert cleared from the Manage people on probation service")
                 }
             }
         }
