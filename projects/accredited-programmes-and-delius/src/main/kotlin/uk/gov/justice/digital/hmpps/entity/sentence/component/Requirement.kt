@@ -40,7 +40,7 @@ class Requirement(
     override val startDate: ZonedDateTime,
 
     @Column(name = "commencement_date")
-    override val commencementDate: ZonedDateTime? = null,
+    override var commencementDate: ZonedDateTime? = null,
 
     @Column(name = "termination_date")
     override var terminationDate: ZonedDateTime? = null,

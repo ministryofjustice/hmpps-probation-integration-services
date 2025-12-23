@@ -45,12 +45,14 @@ import uk.gov.justice.digital.hmpps.data.TestData.MANAGER
 import uk.gov.justice.digital.hmpps.data.TestData.MONTHS
 import uk.gov.justice.digital.hmpps.data.TestData.OFFENCES
 import uk.gov.justice.digital.hmpps.data.TestData.OFFICE_LOCATION
+import uk.gov.justice.digital.hmpps.data.TestData.ORDER_COMPONENT_COMMENCED_CONTACT_TYPE
 import uk.gov.justice.digital.hmpps.data.TestData.OTHER_CONTACT
 import uk.gov.justice.digital.hmpps.data.TestData.OTHER_CONTACT_TYPE
 import uk.gov.justice.digital.hmpps.data.TestData.PDU
 import uk.gov.justice.digital.hmpps.data.TestData.PDU_2
 import uk.gov.justice.digital.hmpps.data.TestData.PENDING_STATUS
 import uk.gov.justice.digital.hmpps.data.TestData.PERSON
+import uk.gov.justice.digital.hmpps.data.TestData.PRE_GROUP_ONE_TO_ONE_MEETING_CONTACT_TYPE
 import uk.gov.justice.digital.hmpps.data.TestData.PROVIDER
 import uk.gov.justice.digital.hmpps.data.TestData.PSS_END_DATE
 import uk.gov.justice.digital.hmpps.data.TestData.PSS_END_DATE_KEY_DATE_TYPE
@@ -203,6 +205,8 @@ class DataLoader(
         contactTypeRepository.save(ENFORCEMENT_REVIEW_CONTACT_TYPE)
         contactTypeRepository.save(COMPONENT_TERMINATED_CONTACT_TYPE)
         contactTypeRepository.save(COMPONENT_TRANSFER_REJECTED_CONTACT_TYPE)
+        contactTypeRepository.save(PRE_GROUP_ONE_TO_ONE_MEETING_CONTACT_TYPE)
+        contactTypeRepository.save(ORDER_COMPONENT_COMMENCED_CONTACT_TYPE)
         contactTypeRepository.saveAll(STATUS_CONTACT_TYPES)
         contactOutcomeRepository.save(ATTENDED_COMPLIED)
         contactOutcomeRepository.save(FAILED_TO_COMPLY)
