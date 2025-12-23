@@ -4,7 +4,6 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.audit.service.OptimisationTables
 import uk.gov.justice.digital.hmpps.integrations.cvl.ActivatedLicence
-import uk.gov.justice.digital.hmpps.integrations.cvl.AdditionalLicenceCondition
 import uk.gov.justice.digital.hmpps.integrations.cvl.telemetryProperties
 import uk.gov.justice.digital.hmpps.integrations.delius.manager.entity.PersonManager
 import uk.gov.justice.digital.hmpps.integrations.delius.manager.entity.PersonManagerRepository
@@ -136,10 +135,8 @@ class LicenceConditionApplier(
     ): ActionResult? {
         val additions = conditions.ap.additional.mapNotNull { condition ->
             val cvlMapping = when (condition.type) {
-                AdditionalLicenceCondition.Type.ELECTRONIC_MONITORING -> cvlMappingRepository.getByCvlCodeAndModifier(
-                    condition.code,
-                    condition.restrictions?.firstOrNull()?.modifier
-                )
+                "ELECTRONIC_MONITORING" -> cvlMappingRepository
+                    .getByCvlCodeAndModifier(condition.code, condition.restrictions?.firstOrNull()?.modifier)
 
                 else -> cvlMappingRepository.getByCvlCode(condition.code)
             }
