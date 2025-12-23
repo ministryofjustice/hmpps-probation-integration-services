@@ -21,16 +21,12 @@ data class StandardLicenceCondition(
 ) : Describable
 
 data class AdditionalLicenceCondition(
-    val type: Type,
+    val type: String,
     val code: String,
     @JsonAlias("text")
     override val description: String,
     val restrictions: List<Restriction>?
 ) : Describable {
-    enum class Type {
-        ELECTRONIC_MONITORING, MULTIPLE_EXCLUSION_ZONE, STANDARD
-    }
-
     enum class Restriction(val modifier: String) {
         ALCOHOL_ABSTINENCE("alcohol abstinence"),
         ALCOHOL_MONITORING("alcohol monitoring"),
