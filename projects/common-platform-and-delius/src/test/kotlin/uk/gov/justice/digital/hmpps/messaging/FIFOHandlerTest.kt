@@ -114,8 +114,10 @@ internal class FIFOHandlerTest {
 
         verify(telemetryService).notificationReceived(notification)
         verify(telemetryService).trackEvent(
-            "HearingDatesDebug",
+            "PersonAlreadyExists",
             mapOf(
+                "defendantId" to "00000000-0000-0000-0000-000000000000",
+                "crns" to "[X123456]",
                 "hearingId" to notification.message.hearing.id,
                 "hearingDates" to "2024-01-01T12:00Z[Europe/London], 2024-03-19T12:00Z[Europe/London], 2030-12-31T12:00Z[Europe/London]",
                 "futureHearingDate" to "true"
