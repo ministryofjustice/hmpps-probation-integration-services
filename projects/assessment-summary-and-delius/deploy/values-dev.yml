@@ -9,7 +9,7 @@ generic-service:
     SENTRY_ENVIRONMENT: dev
     LOGGING_LEVEL_UK_GOV_DIGITAL_JUSTICE_HMPPS: DEBUG
     INTEGRATIONS_ORDS_URL: https://t2.oasys.service.justice.gov.uk/eor/oasys
-    MESSAGING_CONSUMER_DETAIL_URLS: https://t2.oasys.service.justice.gov.uk,https://t2-b.oasys.service.justice.gov.uk
+    MESSAGING_CONSUMER_DETAIL_URLS: https://t2.oasys.service.justice.gov.uk
 
 generic-prometheus-alerts:
   businessHoursOnly: true
