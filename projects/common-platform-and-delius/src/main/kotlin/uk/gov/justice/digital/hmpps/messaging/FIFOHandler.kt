@@ -47,35 +47,22 @@ class FIFOHandler(
 
         defendants.forEach { defendant ->
             val matchedPerson = corePerson.findByDefendantId(defendant.id)
+            val telemetryProperties = matchedPerson.telemetryProperties + notification.telemetryProperties
 
             // Defendant already has a CRN in core person service
             if (matchedPerson.identifiers.crns.isNotEmpty()) {
-                telemetryService.trackEvent(
-                    "PersonAlreadyExists", mapOf(
-                        "defendantId" to defendant.id,
-                        "crns" to matchedPerson.identifiers.crns.joinToString(", ", prefix = "[", postfix = "]")
-                    ) + notification.telemetryProperties
-                )
+                telemetryService.trackEvent("PersonAlreadyExists", telemetryProperties)
                 return@forEach
             }
 
             // Under 10-year-old validation
             if (matchedPerson.dateOfBirth == null || YEARS.between(matchedPerson.dateOfBirth, LocalDate.now()) <= 10) {
-                telemetryService.trackEvent(
-                    "InvalidDateOfBirth",
-                    mapOf(
-                        "defendantId" to defendant.id,
-                        "dateOfBirth" to matchedPerson.dateOfBirth.toString()
-                    ) + notification.telemetryProperties
-                )
+                telemetryService.trackEvent("InvalidDateOfBirth", telemetryProperties)
                 return@forEach
             }
 
             if (featureFlags.enabled("common-platform-record-creation-toggle")) {
-                val remandedOffences = defendant.offences.filter { offence ->
-                    offence.judicialResults?.any { it.label == "Remanded in custody" } == true
-                }
-
+                val remandedOffences = offenceService.getRemandOffences(defendant.offences, telemetryProperties)
                 val mainOffence = offenceService.findMainOffence(remandedOffences) ?: return@forEach
 
                 val caseUrn = notification.message.hearing.prosecutionCases.find { it.defendants.contains(defendant) }
@@ -84,22 +71,19 @@ class FIFOHandler(
                 // Insert person and event
                 val insertRemandDTO = InsertRemandDTO(
                     defendant = defendant,
+                    mainOffence = mainOffence,
+                    additionalOffences = remandedOffences.filter { it.offenceCode != mainOffence.offenceCode },
                     courtCode = notification.message.hearing.courtCentre.code,
-                    hearingOffence = mainOffence,
                     sittingDay = notification.message.hearing.hearingDays.first().sittingDay,
                     caseUrn = caseUrn,
                     hearingId = notification.message.hearing.id,
-                    remandedOffences.filter { it.offenceCode != mainOffence.offenceCode }
                 )
 
                 if (personService.personWithDefendantIdExists(defendant.id)) return
 
                 insertPersonAndEvent(insertRemandDTO)
             } else {
-                telemetryService.trackEvent(
-                    "SimulatedPersonCreated",
-                    mapOf("defendantId" to defendant.id) + notification.telemetryProperties
-                )
+                telemetryService.trackEvent("SimulatedPersonCreated", telemetryProperties)
             }
         }
     }
@@ -203,8 +187,14 @@ class FIFOHandler(
         insertRemandResult.insertPersonResult.address?.let { notifier.addressCreated(it) }
     }
 
+    private val CorePersonRecord.telemetryProperties
+        get() = mapOf(
+            "defendantIds" to identifiers.defendantIds.joinToString(", ", prefix = "[", postfix = "]"),
+            "crns" to identifiers.crns.joinToString(", ", prefix = "[", postfix = "]")
+        )
+
     // Log sitting/hearing dates on incoming messages and set a flag if at least one date is in the future
-    val Notification<CommonPlatformHearing>.telemetryProperties
+    private val Notification<CommonPlatformHearing>.telemetryProperties
         get() = mapOf(
             "hearingId" to message.hearing.id,
             "hearingDates" to message.hearing.hearingDays.joinToString(", ") { it.sittingDay.toString() },
