@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import software.amazon.awssdk.services.s3.S3Client
 import software.amazon.awssdk.services.s3.model.GetObjectRequest
+import uk.gov.justice.digital.hmpps.dto.OffenceAndPlea
 import uk.gov.justice.digital.hmpps.integrations.client.ManageOffencesClient
 import uk.gov.justice.digital.hmpps.integrations.client.OffencePriority
 import uk.gov.justice.digital.hmpps.messaging.HearingOffence
@@ -20,32 +21,41 @@ class OffenceService(
 ) {
     val priorityMap: Map<String, Int> by lazy { readOffencePrioritiesFromS3() }
 
-    fun getOffenceHomeOfficeCodeByCJACode(cjaCode: String): String =
+    fun getOffenceHomeOfficeCodeByCJACode(cjaCode: String) =
         manageOffencesClient.getOffenceByCode(cjaCode).homeOfficeStatsCode?.replace("/", "")
-            ?: throw IllegalArgumentException("No Home Office code found for CJA code $cjaCode")
 
-    fun findMainOffence(remandedOffences: List<HearingOffence>): HearingOffence? {
-        return remandedOffences.mapNotNull {
-            val homeOfficeCode = it.offenceCode?.let { code -> getOffenceHomeOfficeCodeByCJACode(code) }
+    fun findMainOffence(remandedOffences: List<OffenceAndPlea>) =
+        remandedOffences.minByOrNull { priorityMap[it.homeOfficeOffenceCode] ?: Int.MAX_VALUE }
 
-            // If home office offence code is 222/22 ('Not Known') or CJA offence code suffix is 500 or above
-            if (homeOfficeCode == "22222" || (it.offenceCode?.takeLast(3)?.toIntOrNull()
-                    ?.let { suffix -> suffix >= 500 } == true)
-            ) {
-                telemetryService.trackEvent(
-                    "OffenceCodeIgnored", mapOf(
-                        "offenceCode" to it.offenceCode,
-                        "homeOfficeCode" to homeOfficeCode
+    fun getRemandOffences(
+        hearingOffences: List<HearingOffence>,
+        telemetryProperties: Map<String, String>
+    ) = hearingOffences
+        .filter { it.judicialResults?.any { r -> r.label == "Remanded in custody" } == true }
+        .mapNotNull { offence ->
+            offence.offenceCode
+                ?.let { offenceCode -> getOffenceHomeOfficeCodeByCJACode(offenceCode) }
+                ?.let { homeOfficeCode -> offence.withHomeOfficeCode(homeOfficeCode) }
+                ?: run {
+                    telemetryService.trackEvent(
+                        "MissingHomeOfficeCode", mapOf("offenceCode" to offence.offenceCode) + telemetryProperties
                     )
-                )
-
-                null
-            } else {
-                it to (priorityMap[homeOfficeCode] ?: Int.MAX_VALUE)
-            }
+                    null
+                }
         }
-            .minByOrNull { (_, priority) -> priority }?.first
-    }
+        .filter { offence ->
+            // If the home office code is 222/22 ('Not Known'), or CJA offence code suffix is 500 or above
+            val ignored = offence.homeOfficeOffenceCode == "22222" ||
+                (offence.offenceCode.takeLast(3).toIntOrNull()?.let { it >= 500 } == true)
+            if (ignored) telemetryService.trackEvent(
+                "OffenceCodeIgnored",
+                mapOf(
+                    "offenceCode" to offence.offenceCode,
+                    "homeOfficeCode" to offence.homeOfficeOffenceCode
+                ) + telemetryProperties
+            )
+            !ignored
+        }
 
     private fun readOffencePrioritiesFromS3(): Map<String, Int> {
         val request = GetObjectRequest.builder()

@@ -4,9 +4,9 @@ import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.audit.service.AuditableService
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
 import uk.gov.justice.digital.hmpps.dto.InsertEventResult
+import uk.gov.justice.digital.hmpps.dto.OffenceAndPlea
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractionCode
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.*
-import uk.gov.justice.digital.hmpps.messaging.HearingOffence
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.ZonedDateTime
@@ -32,54 +32,28 @@ class EventService(
 ) : AuditableService(auditedInteractionService) {
 
     fun insertEvent(
-        hearingOffence: HearingOffence,
         person: Person,
+        mainOffence: OffenceAndPlea,
+        additionalOffences: List<OffenceAndPlea>,
         courtCode: String,
         sittingDay: ZonedDateTime,
         caseUrn: String,
-        hearingId: String,
-        additionalOffences: List<HearingOffence>
+        hearingId: String
     ): InsertEventResult =
         audit(BusinessInteractionCode.INSERT_EVENT) { audit ->
-
             // Create and save the event entity
-            val savedEvent = eventRepository.save(
+            val event = eventRepository.save(
                 Event(
-                    id = null,
                     person = person,
                     number = eventRepository.getNextEventNumber(person.id!!),
                     referralDate = sittingDay.toLocalDate(), // TODO: Identify event's referral date
-                    active = true,
-                    ftcCount = 0,
                     courtCaseUrn = caseUrn
                 )
             )
 
-            val detailedOffence = hearingOffence.offenceCode?.let { detailedOffenceRepository.findByCode(it) }
-            val hoOffenceCode = detailedOffence?.homeOfficeCode?.replace(
-                "/",
-                ""
-            ) ?: throw IllegalArgumentException("Home Office Code cannot be null")
-
-            // Create the main offence record from the hearing message
-            val savedMainOffence = mainOffenceRepository.save(
-                MainOffence(
-                    id = null,
-                    date = LocalDate.now(), // TODO: From the offence -> Wording free text field
-                    event = savedEvent,
-                    offence = offenceRepository.findOffence(hoOffenceCode),
-                    softDeleted = false,
-                    count = 1, // TODO: Need to identify how offence count is used, in most cases appears to be 1
-                    person = person,
-                    detailedOffence = detailedOffence,
-                )
-            )
-
-            additionalOffences.mapNotNull { it.asAdditionalOffence(savedEvent) }
-                .takeIf { it.isNotEmpty() }
-                ?.also {
-                    additionalOffenceRepository.saveAll(it)
-                }
+            // Create the main offence and additional offences
+            val savedMainOffence = mainOffenceRepository.save(mainOffence.asMainOffence(event))
+            additionalOffences.map { it.asAdditionalOffence(event) }.also { additionalOffenceRepository.saveAll(it) }
 
             val court = courtRepository.getByOuCode(courtCode)
             val courtAppearanceContactType = contactTypeRepository.getByCode(ContactTypeCode.COURT_APPEARANCE.code)
@@ -89,7 +63,7 @@ class EventService(
             val remandedInCustodyOutcome = referenceDataRepository.remandedInCustodyOutcome()
             val remandedInCustodyStatus = referenceDataRepository.remandedInCustodyStatus()
             val plea = referenceDataRepository.findByCodeAndDatasetCode(
-                when (hearingOffence.plea?.pleaValue) {
+                when (mainOffence.plea?.pleaValue) {
                     "NOT_GUILTY" -> ReferenceData.StandardRefDataCode.NOT_GUILTY.code
                     "GUILTY" -> ReferenceData.StandardRefDataCode.GUILTY.code
                     else -> ReferenceData.StandardRefDataCode.NOT_KNOWN_PLEA.code
@@ -102,7 +76,7 @@ class EventService(
                 CourtAppearance(
                     id = null,
                     appearanceDate = sittingDay.toLocalDateTime(),
-                    event = savedEvent,
+                    event = event,
                     teamId = unallocatedTeam.id,
                     staffId = unallocatedStaff.id,
                     softDeleted = false,
@@ -125,7 +99,7 @@ class EventService(
                     startTime = sittingDay.with(LocalDate.of(1970, 1, 1)),
                     endTime = null,
                     alert = true,
-                    eventId = savedEvent.id!!,
+                    eventId = event.id!!,
                     type = courtAppearanceContactType,
                     probationAreaId = court.provider.id,
                     team = unallocatedTeam,
@@ -139,12 +113,12 @@ class EventService(
             val savedOrderManager = orderManagerRepository.save(
                 OrderManager(
                     id = null,
-                    allocationDate = savedEvent.referralDate,
+                    allocationDate = event.referralDate,
                     teamId = unallocatedTeam.id,
                     staffId = unallocatedStaff.id,
                     softDeleted = false,
                     endDate = null,
-                    event = savedEvent,
+                    event = event,
                     allocationReason = referenceDataRepository.initialOrderAllocationReason(),
                     providerEmployeeId = null,
                     providerTeamId = null,
@@ -159,21 +133,25 @@ class EventService(
             person.remandStatus = remandedInCustodyStatus.description
             personService.updatePerson(person)
 
-            audit["offenderId"] = savedEvent.person.id!!
-            InsertEventResult(savedEvent, savedMainOffence, initialCourtAppearance, initialContact, savedOrderManager)
+            audit["offenderId"] = event.person.id!!
+            InsertEventResult(event, savedMainOffence, initialCourtAppearance, initialContact, savedOrderManager)
         }
 
-    private fun HearingOffence.asAdditionalOffence(event: Event): AdditionalOffence? {
-        val detailedOffence = offenceCode?.let { detailedOffenceRepository.findByCode(it) }
-        return detailedOffence?.homeOfficeCode?.replace("/", "")?.let {
-            val offence = offenceRepository.findOffence(it)
-            AdditionalOffence(
-                event,
-                offence,
-                LocalDateTime.now(),
-                detailedOffence,
-                1
-            )
-        }
-    }
+    private fun OffenceAndPlea.asAdditionalOffence(event: Event) = AdditionalOffence(
+        event = event,
+        date = LocalDateTime.now(),
+        offence = offenceRepository.findOffence(homeOfficeOffenceCode),
+        detailedOffence = detailedOffenceRepository.findByCode(offenceCode),
+        offenceCount = 1
+    )
+
+    private fun OffenceAndPlea.asMainOffence(event: Event) = MainOffence(
+        id = null,
+        date = LocalDate.now(), // TODO: From the offence -> Wording free text field
+        event = event,
+        person = event.person,
+        offence = offenceRepository.findOffence(homeOfficeOffenceCode),
+        detailedOffence = detailedOffenceRepository.findByCode(offenceCode),
+        count = 1, // TODO: Need to identify how offence count is used, in most cases appears to be 1
+    )
 }

@@ -13,6 +13,7 @@ import uk.gov.justice.digital.hmpps.data.generator.*
 import uk.gov.justice.digital.hmpps.dto.InsertEventResult
 import uk.gov.justice.digital.hmpps.dto.InsertPersonResult
 import uk.gov.justice.digital.hmpps.dto.InsertRemandResult
+import uk.gov.justice.digital.hmpps.dto.OffenceAndPlea
 import uk.gov.justice.digital.hmpps.flags.FeatureFlags
 import uk.gov.justice.digital.hmpps.integrations.client.CorePersonClient
 import uk.gov.justice.digital.hmpps.integrations.client.CorePersonRecord
@@ -127,7 +128,7 @@ internal class FIFOHandlerTest {
         verify(telemetryService).trackEvent(
             "PersonAlreadyExists",
             mapOf(
-                "defendantId" to "00000000-0000-0000-0000-000000000000",
+                "defendantIds" to "[00000000-0000-0000-0000-000000000000]",
                 "crns" to "[X123456]",
                 "hearingId" to notification.message.hearing.id,
                 "hearingDates" to "2024-01-01T12:00Z[Europe/London], 2024-03-19T12:00Z[Europe/London], 2030-12-31T12:00Z[Europe/London]",
@@ -159,16 +160,7 @@ internal class FIFOHandlerTest {
     }
 
     private fun personOnRemandIsSuccessfullyCreated() {
-        whenever(offenceService.findMainOffence(any())).thenReturn(
-            HearingOffence(
-                id = "0",
-                offenceTitle = "Offence",
-                wording = "Offence",
-                offenceCode = "AA00000",
-                offenceLegislation = "",
-                listingNumber = 0
-            )
-        )
+        whenever(offenceService.findMainOffence(any())).thenReturn(OffenceAndPlea("AA00000", "12345", null))
 
         whenever(remandService.insertPersonOnRemand(any())).thenReturn(
             InsertRemandResult(
@@ -201,7 +193,7 @@ internal class FIFOHandlerTest {
     private fun corePersonAlreadyHasCrn() {
         val person = CorePersonRecord(
             "John", "Robert", "Smith", LocalDate.now().minusYears(21),
-            Identifiers(crns = listOf("X123456"))
+            Identifiers(crns = listOf("X123456"), defendantIds = listOf("00000000-0000-0000-0000-000000000000"))
         )
         whenever(corePersonClient.findByDefendantId(any())).thenReturn(person)
     }

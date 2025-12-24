@@ -18,13 +18,13 @@ class RemandService(
         )
 
         val insertEventResult = eventService.insertEvent(
-            hearingOffence = insertRemandDTO.hearingOffence,
             person = insertPersonResult.person,
+            mainOffence = insertRemandDTO.mainOffence,
+            additionalOffences = insertRemandDTO.additionalOffences,
             courtCode = insertRemandDTO.courtCode,
             sittingDay = insertRemandDTO.sittingDay,
             caseUrn = insertRemandDTO.caseUrn,
             hearingId = insertRemandDTO.hearingId,
-            additionalOffences = insertRemandDTO.additionalOffences,
         )
 
         return InsertRemandResult(insertPersonResult, insertEventResult)

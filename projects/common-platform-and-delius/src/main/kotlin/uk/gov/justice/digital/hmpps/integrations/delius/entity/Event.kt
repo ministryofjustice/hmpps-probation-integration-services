@@ -73,13 +73,13 @@ class Event(
     val inBreach: Boolean = false,
 
     @Column(name = "active_flag", columnDefinition = "NUMBER", nullable = false)
-    val active: Boolean,
+    val active: Boolean = true,
 
     @Column
     val breachEnd: LocalDate? = null,
 
     @Column
-    val ftcCount: Long,
+    val ftcCount: Long = 0,
 
     @Column(columnDefinition = "NUMBER", nullable = false)
     val pendingTransfer: Boolean = false,
