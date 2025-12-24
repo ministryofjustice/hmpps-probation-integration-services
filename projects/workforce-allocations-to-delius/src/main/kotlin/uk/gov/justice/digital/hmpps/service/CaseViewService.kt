@@ -54,7 +54,7 @@ class CaseViewService(
             val requirements = requirementRepository.findAllByDisposalEventId(it.id)
             ReallocationCaseView.ActiveEvent(
                 it.number,
-                it.failureToComplyCount ?: 0,
+                it.failureToComplyCount,
                 listOfNotNull(it.referralDate, it.breachEnd, sentence?.startDate).max(),
                 sentence?.toCvSentence(),
                 listOfNotNull(sentence?.mainOffence()) + additionalOffences.map { o -> o.toCvOffence() },

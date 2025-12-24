@@ -202,7 +202,7 @@ class SentenceServiceTest {
                         requirement2.expectedEndDate,
                         requirement2.terminationDate,
                         requirement2.terminationDetails?.description,
-                        requirement2.mainCategory!!.description,
+                        requirement2.mainCategory.description,
                         requirement2.length,
                         null,
                         listOf(NoteDetail(0, note = requirement2.notes!!, hasNoteBeenTruncated = false)),
@@ -221,8 +221,8 @@ class SentenceServiceTest {
         verify(additionalSentenceRepository, times(1)).getAllByEventId(event.id)
         verify(courtAppearanceRepository, times(1)).getFirstCourtAppearanceByEventIdOrderByDate(event.id)
         verify(documentRepository, times(1)).getCourtDocuments(event.id, event.eventNumber)
-        verify(requirementRepository, times(1)).sumTotalUnpaidWorkHoursByDisposal(event.disposal!!.id)
-        verify(upwAppointmentRepository, times(1)).calculateUnpaidTimeWorked(event.disposal!!.id)
+        verify(requirementRepository, times(1)).sumTotalUnpaidWorkHoursByDisposal(event.disposal.id)
+        verify(upwAppointmentRepository, times(1)).calculateUnpaidTimeWorked(event.disposal.id)
 
         verifyNoMoreInteractions(eventRepository)
         verifyNoMoreInteractions(additionalSentenceRepository)
@@ -243,7 +243,7 @@ class SentenceServiceTest {
             .thenReturn(listOf(requirement1))
 
         whenever(requirementRepository.sumTotalUnpaidWorkHoursByDisposal(event.disposal!!.id)).thenReturn(1)
-        whenever(upwAppointmentRepository.calculateUnpaidTimeWorked(event.disposal!!.id)).thenReturn(0)
+        whenever(upwAppointmentRepository.calculateUnpaidTimeWorked(event.disposal.id)).thenReturn(0)
 
         val response = service.getEvents(PersonGenerator.OVERVIEW.crn, null, true)
 
@@ -263,7 +263,7 @@ class SentenceServiceTest {
             .thenReturn(listOf(requirement1))
 
         whenever(requirementRepository.sumTotalUnpaidWorkHoursByDisposal(event.disposal!!.id)).thenReturn(1)
-        whenever(upwAppointmentRepository.calculateUnpaidTimeWorked(event.disposal!!.id)).thenReturn(1)
+        whenever(upwAppointmentRepository.calculateUnpaidTimeWorked(event.disposal.id)).thenReturn(1)
 
         val response = service.getEvents(PersonGenerator.OVERVIEW.crn, null, true)
 
@@ -284,7 +284,7 @@ class SentenceServiceTest {
             .thenReturn(listOf(requirement1))
 
         whenever(requirementRepository.sumTotalUnpaidWorkHoursByDisposal(event.disposal!!.id)).thenReturn(2)
-        whenever(upwAppointmentRepository.calculateUnpaidTimeWorked(event.disposal!!.id)).thenReturn(2)
+        whenever(upwAppointmentRepository.calculateUnpaidTimeWorked(event.disposal.id)).thenReturn(2)
 
         val response = service.getEvents(PersonGenerator.OVERVIEW.crn, null, true)
 
@@ -304,7 +304,7 @@ class SentenceServiceTest {
             .thenReturn(listOf(requirement1))
 
         whenever(requirementRepository.sumTotalUnpaidWorkHoursByDisposal(event.disposal!!.id)).thenReturn(1)
-        whenever(upwAppointmentRepository.calculateUnpaidTimeWorked(event.disposal!!.id)).thenReturn(60)
+        whenever(upwAppointmentRepository.calculateUnpaidTimeWorked(event.disposal.id)).thenReturn(60)
 
         val response = service.getEvents(PersonGenerator.OVERVIEW.crn, null, true)
 
@@ -316,9 +316,9 @@ class SentenceServiceTest {
             requirement1.expectedEndDate,
             requirement1.terminationDate,
             requirement1.terminationDetails?.description,
-            "${requirement1.mainCategory!!.description} - ${requirement1.subCategory!!.description}",
+            "${requirement1.mainCategory.description} - ${requirement1.subCategory!!.description}",
             requirement1.length,
-            requirement1.mainCategory!!.unitDetails!!.description,
+            requirement1.mainCategory.unitDetails!!.description,
             listOf(NoteDetail(0, note = requirement1.notes!!, hasNoteBeenTruncated = false)),
             null,
             active = true
@@ -338,7 +338,7 @@ class SentenceServiceTest {
             .thenReturn(listOf(requirement1))
 
         whenever(requirementRepository.sumTotalUnpaidWorkHoursByDisposal(event.disposal!!.id)).thenReturn(2)
-        whenever(upwAppointmentRepository.calculateUnpaidTimeWorked(event.disposal!!.id)).thenReturn(61)
+        whenever(upwAppointmentRepository.calculateUnpaidTimeWorked(event.disposal.id)).thenReturn(61)
 
         val response = service.getEvents(PersonGenerator.OVERVIEW.crn, null, true)
 
@@ -358,7 +358,7 @@ class SentenceServiceTest {
             .thenReturn(listOf(requirement1))
 
         whenever(requirementRepository.sumTotalUnpaidWorkHoursByDisposal(event.disposal!!.id)).thenReturn(2)
-        whenever(upwAppointmentRepository.calculateUnpaidTimeWorked(event.disposal!!.id)).thenReturn(62)
+        whenever(upwAppointmentRepository.calculateUnpaidTimeWorked(event.disposal.id)).thenReturn(62)
 
         val response = service.getEvents(PersonGenerator.OVERVIEW.crn, null, true)
 
@@ -378,7 +378,7 @@ class SentenceServiceTest {
             .thenReturn(listOf(requirement1))
 
         whenever(requirementRepository.sumTotalUnpaidWorkHoursByDisposal(event.disposal!!.id)).thenReturn(1)
-        whenever(upwAppointmentRepository.calculateUnpaidTimeWorked(event.disposal!!.id)).thenReturn(120)
+        whenever(upwAppointmentRepository.calculateUnpaidTimeWorked(event.disposal.id)).thenReturn(120)
 
         val response = service.getEvents(PersonGenerator.OVERVIEW.crn, null, true)
 
@@ -390,9 +390,9 @@ class SentenceServiceTest {
             requirement1.expectedEndDate,
             requirement1.terminationDate,
             requirement1.terminationDetails?.description,
-            "${requirement1.mainCategory!!.description} - ${requirement1.subCategory!!.description}",
+            "${requirement1.mainCategory.description} - ${requirement1.subCategory!!.description}",
             requirement1.length,
-            requirement1.mainCategory!!.unitDetails!!.description,
+            requirement1.mainCategory.unitDetails!!.description,
             listOf(NoteDetail(0, note = requirement1.notes!!, hasNoteBeenTruncated = false)),
             null,
             active = true
@@ -412,7 +412,7 @@ class SentenceServiceTest {
             .thenReturn(listOf(requirement1))
 
         whenever(requirementRepository.sumTotalUnpaidWorkHoursByDisposal(event.disposal!!.id)).thenReturn(3)
-        whenever(upwAppointmentRepository.calculateUnpaidTimeWorked(event.disposal!!.id)).thenReturn(121)
+        whenever(upwAppointmentRepository.calculateUnpaidTimeWorked(event.disposal.id)).thenReturn(121)
 
         val response = service.getEvents(PersonGenerator.OVERVIEW.crn, null, true)
 
@@ -432,7 +432,7 @@ class SentenceServiceTest {
             .thenReturn(listOf(requirement1))
 
         whenever(requirementRepository.sumTotalUnpaidWorkHoursByDisposal(event.disposal!!.id)).thenReturn(3)
-        whenever(upwAppointmentRepository.calculateUnpaidTimeWorked(event.disposal!!.id)).thenReturn(122)
+        whenever(upwAppointmentRepository.calculateUnpaidTimeWorked(event.disposal.id)).thenReturn(122)
 
         val response = service.getEvents(PersonGenerator.OVERVIEW.crn, null, true)
 

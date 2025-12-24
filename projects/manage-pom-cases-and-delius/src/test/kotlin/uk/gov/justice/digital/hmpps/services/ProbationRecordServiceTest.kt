@@ -47,7 +47,7 @@ internal class ProbationRecordServiceTest {
 
         whenever(personRepository.findByNomsId(person.nomsId!!)).thenReturn(person)
 
-        service.findByIdentifier(Identifier(person.nomsId!!))
+        service.findByIdentifier(Identifier(person.nomsId))
 
         verify(ldapTemplate, never()).search(any(), any<AttributesMapper<String?>>())
     }

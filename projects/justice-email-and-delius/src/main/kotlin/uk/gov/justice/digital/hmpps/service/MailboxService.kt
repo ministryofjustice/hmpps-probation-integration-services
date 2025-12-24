@@ -60,28 +60,29 @@ class MailboxService(
         .byMailFolderId("inbox")
         .messages()
         .get { request ->
-            request.queryParameters.top = 10
-            request.queryParameters.filter = "isRead ne true"
-            request.queryParameters.select = arrayOf("subject", "from", "id", "receivedDateTime", "body", "isRead")
-            request.queryParameters.orderby = arrayOf("receivedDateTime DESC")
-        }.value ?: emptyList()
+            val parameters = request.queryParameters!!
+            parameters.top = 10
+            parameters.filter = "isRead ne true"
+            parameters.select = arrayOf("subject", "from", "id", "receivedDateTime", "body", "isRead")
+            parameters.orderby = arrayOf("receivedDateTime DESC")
+        }?.value ?: emptyList()
 
     private fun Message.markAsRead() {
         graphServiceClient
             .users()
             .byUserId(emailAddress)
             .messages()
-            .byMessageId(id)
+            .byMessageId(id!!)
             .patch(Message().apply { isRead = true })
     }
 
     private fun Message.asNotification() = Notification(
         message = EmailMessage(
-            id = id,
-            subject = subject,
-            bodyContent = body.content,
-            fromEmailAddress = from.emailAddress.address,
-            receivedDateTime = receivedDateTime.toZonedDateTime(),
+            id = id!!,
+            subject = subject!!,
+            bodyContent = body!!.content!!,
+            fromEmailAddress = from!!.emailAddress!!.address!!,
+            receivedDateTime = receivedDateTime!!.toZonedDateTime(),
         ),
         attributes = MessageAttributes("email.message.received")
     )
