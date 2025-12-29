@@ -51,7 +51,7 @@ runs:
           caches/build-cache-1
 
     - name: Manually cache buildSrc output # workaround for https://github.com/gradle/actions/issues/21
-      uses: actions/cache@v4
+      uses: actions/cache@v5
       with:
         path: buildSrc/build
         key: gradle-buildSrc-${{ hashFiles('buildSrc/src/**', 'buildSrc/build.gradle.kts') }}
