@@ -94,7 +94,7 @@ dependencyResolutionManagement {
             library("mockito-kotlin", "org.mockito.kotlin:mockito-kotlin:6.1.0")
             library("notify", "uk.gov.service.notify:notifications-java-client:6.0.0-RELEASE")
             library("opensearch", "org.opensearch.client:opensearch-java:3.4.0")
-            library("opensearch-starter", "org.opensearch.client:spring-data-opensearch-starter:2.0.3")
+            library("opensearch-starter", "org.opensearch.client:spring-data-opensearch-starter:3.0.0")
             library(
                 "opentelemetry-annotations",
                 "io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:2.23.0"
