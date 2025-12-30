@@ -143,14 +143,19 @@ SPRING_PROFILES_ACTIVE=dev,delius-db ./gradlew <project-name>:bootRun
 
 # Test
 ## Integration tests
+
+### WireMock
+
 Integration tests use WireMock JSON files to mock any external services.
 
-The json files for simulations must reside in simulations/mappings in the dev class path. This makes them usable for dev and test.
-Any json bodies to add to mappings must live in the simulations/__files directory. These are the defaults for WireMock.
-Any json mappings and body files provided in these locations will be automatically loaded and available during dev and test.
+The JSON files for simulations must reside in simulations/mappings in the dev class path. This makes them usable for dev
+and test.
+Any JSON bodies to add to mappings must live in the simulations/__files directory. These are the defaults for WireMock.
+Any JSON mappings and body files provided in these locations will be automatically loaded and available during dev and
+test.
 
 The WireMock Server is exposed as a spring bean and can be injected into Spring Boot (Integration) Tests
-for verification or adding extra scenarios specific to a test that are not available in json.
+for verification or adding extra scenarios specific to a test that are not available in JSON.
 
 ```
 @Autowired
@@ -158,14 +163,14 @@ private val wireMockServer: WireMockServer
 ```
 
 The strategy with the dev/test profiles is to use a single WireMock server and distinguish any potential duplicate urls using a service name on the url if required.
-For example if two urls were used as part of a service 
+For example, if two URLs were used as part of a service
 
 ```
 https://hmpps.service1/offender/{crn}
 https://hmpps.service2/offender/{crn}
 ```
 
-When mocking these urls the following would be appropriate (rather than a separate mock server for each service)
+When mocking these URLs, the following would be appropriate (rather than a separate mock server for each service)
 ```
 {wiremockUrl}:{wiremockPort}/service1/offender/{crn}
 {wiremockUrl}:{wiremockPort}/service2/offender/{crn}
@@ -173,15 +178,53 @@ When mocking these urls the following would be appropriate (rather than a separa
 
 All other concepts of Spring Boot Tests are usable as per Spring documentation.
 
+### Data
+
+We use Kotlin code to load test data into the database, rather than SQL files, to take advantage of type safety and IDE
+support.
+
+Our general pattern for this is to define utility methods for generating test data, then to load a static set of test
+data in a `DataLoader`. For example,
+
+```kotlin
+// PersonGenerator.kt
+object PersonGenerator {
+    val PERSON1 = generate(crn = "A000001")
+    val PERSON2 = generate(crn = "A000002")
+
+    fun generate(crn: String) = Person(
+        id = id(),
+        crn = crn,
+        //...
+    )
+}
+
+// DataLoader.kt
+class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
+    override fun setupData() {
+        save(PERSON1)
+        save(PERSON2)
+        save(PersonGenerator.generate(crn = "A000003"))
+    }
+}
+```
+
+#### Note on entity IDs
+
+* Immutable entities should specify the ID as non-nullable (e.g. `val id: Long = 0`), and use the `id()` function to
+  generate a new ID when creating test data
+* Mutable entities should specify the ID as nullable (e.g. `val id: Long? = null`), and the ID should be set to null
+  when creating new data
+
 ### Testing with an Oracle Database
 
-By default, integration tests run against an in-memory H2 database.
-This can sometimes cause problems where H2 doesn't behave in the same way as the target Oracle database.
+By default, integration tests run locally against an in-memory H2 database.
+This can sometimes result in us missing problems where H2 doesn't behave in the same way as the target Oracle database.
 
 To run the integration tests using a slim Oracle database container, use the `oracle` profile:
 
 ```shell
-SPRING_PROFILES_ACTIVE=integration-test,oracle ./gradlew integrationTest 
+SPRING_PROFILES_ACTIVE=oracle ./gradlew integrationTest 
 ```
 
 ## End-to-end tests

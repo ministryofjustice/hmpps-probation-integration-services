@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
+import uk.gov.justice.digital.hmpps.data.generator.IdGenerator.id
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.*
 import java.time.LocalDate
 import java.time.LocalTime
@@ -70,15 +71,14 @@ object UPWGenerator {
     val SECOND_UPW_DETAILS = generateUpwDetails(disposalId = SECOND_DISPOSAL.id)
     val THIRD_UPW_DETAILS = generateUpwDetails(disposalId = SECOND_DISPOSAL.id)
 
-    val DEFAULT_CONTACT =
-        generateContact(
+    val DEFAULT_CONTACT = generateContact(
             contactType = ReferenceDataGenerator.UPW_APPOINTMENT_TYPE,
             latestEnforcementAction = ReferenceDataGenerator.ROM_ENFORCEMENT_ACTION,
             contactOutcome = ReferenceDataGenerator.FAILED_TO_ATTEND_CONTACT_OUTCOME,
             startTime = LocalTime.of(9, 0),
             endTime = LocalTime.of(17, 0),
             date = LocalDate.now(),
-            personId = PersonGenerator.DEFAULT_PERSON.id!!,
+        personId = PersonGenerator.DEFAULT_PERSON.id,
             officeLocation = DEFAULT_OFFICE_LOCATION,
             staff = StaffGenerator.DEFAULT_STAFF,
             team = TeamGenerator.DEFAULT_UPW_TEAM,
@@ -91,7 +91,7 @@ object UPWGenerator {
         startTime = LocalTime.of(10, 15),
         endTime = LocalTime.of(16, 30),
         date = LocalDate.now(),
-        personId = PersonGenerator.DEFAULT_PERSON.id!!,
+        personId = PersonGenerator.DEFAULT_PERSON.id,
         officeLocation = DEFAULT_OFFICE_LOCATION,
         staff = StaffGenerator.DEFAULT_STAFF,
         team = TeamGenerator.DEFAULT_UPW_TEAM,
@@ -289,7 +289,7 @@ object UPWGenerator {
     ) = UpwAdjustment(id, upwDetailsId, adjustmentAmount, adjustmentType)
 
     fun generateContact(
-        id: Long = 0,
+        id: Long = id(),
         contactType: ContactType,
         contactOutcome: ContactOutcome?,
         attended: Boolean? = true,
@@ -337,7 +337,7 @@ object UPWGenerator {
     )
 
     fun generateUpwAppointment(
-        id: Long = 0,
+        id: Long = id(),
         attended: Boolean? = true,
         complied: Boolean? = true,
         softDeleted: Boolean = false,

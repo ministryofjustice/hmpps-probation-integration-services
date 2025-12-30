@@ -10,6 +10,7 @@ import org.springframework.data.annotation.LastModifiedDate
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
+import uk.gov.justice.digital.hmpps.jpa.GeneratedId
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.ZonedDateTime
@@ -21,7 +22,7 @@ class Contact(
     @Id
     @Column(name = "contact_id")
     @SequenceGenerator(name = "contact_id_seq", sequenceName = "contact_id_seq", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "contact_id_seq")
+    @GeneratedId(generator = "contact_id_seq")
     override val id: Long = 0,
 
     @ManyToOne
@@ -162,7 +163,7 @@ interface ContactRepository : JpaRepository<Contact, Long> {
 class ContactAlert(
     @Id
     @SequenceGenerator(name = "contact_alert_id_generator", sequenceName = "contact_alert_id_seq", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "contact_alert_id_generator")
+    @GeneratedId(generator = "contact_alert_id_generator")
     @Column(name = "contact_alert_id", nullable = false)
     val id: Long = 0,
 

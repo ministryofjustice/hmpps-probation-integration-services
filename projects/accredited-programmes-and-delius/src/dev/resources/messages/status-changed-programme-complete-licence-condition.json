@@ -1,7 +1,7 @@
 {
   "Type": "Notification",
   "MessageId": "ae06c49e-1f41-4b9f-b2f2-dcca610d02cd",
-  "Message": "{\"eventType\":\"accredited-programmes-community.referral.status-updated\",\"version\":1,\"description\":\"Status changed\",\"detailUrl\":\"http://localhost:{wiremock.port}/accredited-programmes-api/status-programme-complete-licence-condition/:id\",\"occurredAt\":\"2025-06-01T14:30:00.000+01:00\",\"additionalInformation\":{},\"personReference\":{\"identifiers\":[{\"type\":\"CRN\",\"value\":\"A000003\"}]}}",
+  "Message": "{\"eventType\":\"accredited-programmes-community.referral.status-updated\",\"version\":1,\"description\":\"Status changed\",\"detailUrl\":\"http://localhost:{dev.wiremock.port}/accredited-programmes-api/status-programme-complete-licence-condition/:id\",\"occurredAt\":\"2025-06-01T14:30:00.000+01:00\",\"additionalInformation\":{},\"personReference\":{\"identifiers\":[{\"type\":\"CRN\",\"value\":\"A000003\"}]}}",
   "Timestamp": "2025-06-01T14:30:00.000Z",
   "MessageAttributes": {
     "eventType": {

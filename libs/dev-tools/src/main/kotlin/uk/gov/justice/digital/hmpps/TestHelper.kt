@@ -17,7 +17,7 @@ fun prepEvent(fileName: String, port: Int = SecureRandom().nextInt(9999)): Notif
 
 fun prepMessage(message: HmppsDomainEvent, port: Int = SecureRandom().nextInt(9999)): Notification<HmppsDomainEvent> =
     Notification(
-        message = message.copy(detailUrl = message.detailUrl?.replace("{wiremock.port}", port.toString())),
+        message = message.copy(detailUrl = message.detailUrl?.replace("{dev.wiremock.port}", port.toString())),
         attributes = MessageAttributes(message.eventType)
     )
 
@@ -26,17 +26,12 @@ fun prepNotification(
     port: Int = SecureRandom().nextInt(9999)
 ): Notification<HmppsDomainEvent> = notification.copy(
     message = notification.message.copy(
-        detailUrl = notification.message.detailUrl?.replace(
-            "{wiremock.port}",
-            port.toString()
-        )
+        detailUrl = notification.message.detailUrl?.replace("{dev.wiremock.port}", port.toString())
     ),
     attributes = notification.attributes
 )
 
 fun ZonedDateTime.closeTo(dateTime: ZonedDateTime?, unit: ChronoUnit = ChronoUnit.SECONDS, number: Int = 1): Boolean {
-    return dateTime != null && unit.between(
-        this.withZoneSameInstant(EuropeLondon),
-        dateTime.withZoneSameInstant(EuropeLondon)
-    ) <= number
+    return dateTime != null &&
+        unit.between(this.withZoneSameInstant(EuropeLondon), dateTime.withZoneSameInstant(EuropeLondon)) <= number
 }

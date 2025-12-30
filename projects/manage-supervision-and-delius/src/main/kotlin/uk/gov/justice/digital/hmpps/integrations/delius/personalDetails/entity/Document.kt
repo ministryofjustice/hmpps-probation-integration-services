@@ -13,6 +13,7 @@ import org.springframework.data.jpa.repository.Query
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.Contact
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.ReferenceData
+import uk.gov.justice.digital.hmpps.jpa.GeneratedId
 import uk.gov.justice.digital.hmpps.service.DocumentLevelCode
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -28,7 +29,7 @@ import java.time.ZonedDateTime
 @SequenceGenerator(name = "document_id_generator", sequenceName = "document_id_seq", allocationSize = 1)
 abstract class Document {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "document_id_generator")
+    @GeneratedId(generator = "document_id_generator")
     @Column(name = "document_id")
     open var id: Long = 0
 

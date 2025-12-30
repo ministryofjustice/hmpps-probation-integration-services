@@ -98,7 +98,7 @@ class AppointmentService(
     fun findOverdueOutcomes(crn: String): OverdueOutcomeAppointments =
         appointmentRepository.findOverdueOutcomes(crn).map {
             OverdueOutcome(
-                it.id,
+                it.id!!,
                 it.externalReference,
                 OverdueOutcome.Type(it.type.code, it.type.description),
                 it.date,

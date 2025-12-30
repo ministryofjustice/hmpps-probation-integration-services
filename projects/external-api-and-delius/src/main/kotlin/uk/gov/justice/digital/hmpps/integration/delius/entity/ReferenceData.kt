@@ -6,7 +6,7 @@ import org.hibernate.annotations.Immutable
 @Entity
 @Immutable
 @Table(name = "r_standard_reference_list")
-data class ReferenceData(
+class ReferenceData(
 
     @Column(name = "code_value")
     val code: String,

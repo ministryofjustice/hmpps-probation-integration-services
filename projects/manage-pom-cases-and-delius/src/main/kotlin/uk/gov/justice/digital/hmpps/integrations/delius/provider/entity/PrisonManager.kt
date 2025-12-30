@@ -11,6 +11,7 @@ import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactType
 import uk.gov.justice.digital.hmpps.integrations.delius.reference.entity.ReferenceData
+import uk.gov.justice.digital.hmpps.jpa.GeneratedId
 import java.time.ZonedDateTime
 
 @Entity
@@ -23,7 +24,7 @@ class PrisonManager(
         sequenceName = "prison_offender_manager_id_seq",
         allocationSize = 1
     )
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "prison_manager_id_generator")
+    @GeneratedId(generator = "prison_manager_id_generator")
     @Column(name = "prison_offender_manager_id", nullable = false)
     val id: Long = 0,
 
@@ -129,9 +130,9 @@ class ResponsibleOfficer(
     val version: Long = 0,
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "responsible_officer_id_generator")
+    @GeneratedId(generator = "responsible_officer_id_generator")
     @Column(name = "responsible_officer_id", nullable = false)
-    val id: Long = 0
+    val id: Long? = null
 ) {
 
     @CreatedBy

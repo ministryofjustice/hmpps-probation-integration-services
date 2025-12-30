@@ -22,18 +22,18 @@ class NsiService(
         val type = nsiTypeRepository.getByCode(NsiType.Code.OPD_COMMUNITY_PATHWAY.value)
         val subType = opdAssessment.result.subTypeCode?.value?.let { nsiSubTypeRepository.nsiSubType(it) }
         val status = nsiStatusRepository.getByCode(NsiStatus.Code.PENDING_CONSULTATION.value)
-        val nsi = Nsi(
-            com.person,
-            opdAssessment.date.toLocalDate(),
-            type,
-            subType,
-            status,
-            opdAssessment.date,
-            opdAssessment.date,
-            com.providerId
+        val nsi = nsiRepository.save(
+            Nsi(
+                com.person,
+                opdAssessment.date.toLocalDate(),
+                type,
+                subType,
+                status,
+                opdAssessment.date,
+                opdAssessment.date,
+                com.providerId
+            ).appendNotes(opdAssessment.notes)
         )
-        nsi.appendNotes(opdAssessment.notes)
-        nsiRepository.save(nsi)
 
         nsiManagerRepository.save(
             NsiManager(
@@ -44,6 +44,6 @@ class NsiService(
                 opdAssessment.date
             )
         )
-        contactService.createContact(com, status.contactType, nsi.id, opdAssessment)
+        contactService.createContact(com, status.contactType, nsi.id!!, opdAssessment)
     }
 }

@@ -9,6 +9,7 @@ import org.springframework.data.annotation.LastModifiedBy
 import org.springframework.data.annotation.LastModifiedDate
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import org.springframework.data.jpa.repository.JpaRepository
+import uk.gov.justice.digital.hmpps.jpa.GeneratedId
 import java.time.LocalDate
 import java.time.ZonedDateTime
 
@@ -33,6 +34,11 @@ class Residence(
 
     @Lob
     val arrivalNotes: String?,
+
+    @Id
+    @Column(name = "approved_premises_residence_id")
+    @GeneratedId(generator = "ap_residence_id_seq")
+    val id: Long? = null
 ) {
     var departureDate: ZonedDateTime? = null
     var departureReasonId: Long? = null
@@ -41,11 +47,6 @@ class Residence(
     @Column(columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean = false
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ap_residence_id_seq")
-    @Column(name = "approved_premises_residence_id")
-    val id: Long = 0
 
     @Version
     var rowVersion: Long = 0

@@ -11,6 +11,7 @@ import org.springframework.data.annotation.LastModifiedDate
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.Person
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceData
+import uk.gov.justice.digital.hmpps.jpa.GeneratedId
 import java.time.LocalDate
 import java.time.ZonedDateTime
 
@@ -69,9 +70,9 @@ class Nsi(
     val pendingTransfer: Boolean = false,
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "nsi_id_generator")
+    @GeneratedId(generator = "nsi_id_generator")
     @Column(name = "nsi_id")
-    val id: Long = 0,
+    val id: Long? = null,
 
     @Version
     @Column(name = "row_version")
@@ -166,9 +167,9 @@ class NsiManager(
     val version: Long = 0,
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "nsi_manager_id_generator")
+    @GeneratedId(generator = "nsi_manager_id_generator")
     @Column(name = "nsi_manager_id")
-    val id: Long = 0
+    val id: Long? = null
 )
 
 @Entity
@@ -223,7 +224,7 @@ class NsiStatusHistory(
         sequenceName = "nsi_status_history_id_seq",
         allocationSize = 1
     )
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "nsi_status_history_id_generator")
+    @GeneratedId(generator = "nsi_status_history_id_generator")
     @Column(name = "nsi_status_history_id")
     val id: Long = 0,
 

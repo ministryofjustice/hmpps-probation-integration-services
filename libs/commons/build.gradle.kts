@@ -2,6 +2,7 @@ import uk.gov.justice.digital.hmpps.extensions.ClassPathExtension
 
 dependencies {
     api(libs.bundles.telemetry)
+    compileOnly("org.springframework.boot:spring-boot-starter-data-jpa")
     compileOnly("org.springframework.boot:spring-boot-starter-data-ldap")
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-web")

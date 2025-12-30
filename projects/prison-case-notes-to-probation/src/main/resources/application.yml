@@ -29,7 +29,7 @@ spring:
         client-secret: ${integrations.prison-case-notes.client-secret}
     provider:
       hmpps-auth:
-        token-uri: http://localhost:${wiremock.port}/auth/oauth/token
+        token-uri: http://localhost:${dev.wiremock.port}/auth/oauth/token
   threads.virtual.enabled: true
 
 delius.db.username: PrisonCaseNotesToProbation
@@ -54,24 +54,24 @@ spring:
   datasource.url: jdbc:h2:file:./dev;MODE=Oracle;DEFAULT_NULL_ORDERING=HIGH;AUTO_SERVER=true;AUTO_SERVER_PORT=9092
   jpa.hibernate.ddl-auto: create-drop
 
-seed.database: true
-wiremock.enabled: true
+dev:
+  dataloader.enabled: true
+  wiremock.enabled: true
 
 messaging.consumer.queue: events
-messaging.consumer.detail.urls: http://localhost:${wiremock.port},http://localhost:${wiremock.port}
+messaging.consumer.detail.urls: http://localhost:${dev.wiremock.port},http://localhost:${dev.wiremock.port}
 
 integrations:
   prison-case-notes:
     client-id: prison-case-notes-to-probation
     client-secret: prison-case-notes-to-probation
-    base_url: "http://localhost:${wiremock.port}"
+    base_url: "http://localhost:${dev.wiremock.port}"
   prisoner-alerts:
-    base_url: "http://localhost:${wiremock.port}"
+    base_url: "http://localhost:${dev.wiremock.port}"
 
 logging.level:
   uk.gov.justice.digital.hmpps: DEBUG
   org.hibernate.tool.schema: ERROR
-  org.apache.activemq: WARN
 
 
 
@@ -99,7 +99,7 @@ spring:
     username: delius_pool
     password: NDelius1
   jpa.hibernate.ddl-auto: validate
-seed.database: false
+dev.dataloader.enabled: false
 delius.db.username: NationalUser
 
 ---

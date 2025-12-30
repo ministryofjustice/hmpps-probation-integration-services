@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
+import uk.gov.justice.digital.hmpps.data.generator.IdGenerator.id
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.entity.ApprovedPremises
 import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referral.entity.Referral
@@ -17,14 +18,14 @@ object ReferralGenerator {
     val EXISTING_REFERRAL = generateReferral()
 
     val BOOKING_ID = UUID.randomUUID().toString()
-    var BOOKING_WITHOUT_ARRIVAL = generateReferral(
+    val BOOKING_WITHOUT_ARRIVAL = generateReferral(
         person = PersonGenerator.PERSON_WITH_BOOKING,
         referralNotes = "Some other notes",
         externalReference = "${EXT_REF_BOOKING_PREFIX}$BOOKING_ID",
     )
 
     val ARRIVED_ID = UUID.randomUUID().toString()
-    var BOOKING_ARRIVED = generateReferral(
+    val BOOKING_ARRIVED = generateReferral(
         person = PersonGenerator.PERSON_WITH_BOOKING,
         referralNotes = "Some other notes",
         externalReference = "${EXT_REF_BOOKING_PREFIX}$ARRIVED_ID",
@@ -32,12 +33,10 @@ object ReferralGenerator {
         expectedDepartureDate = LocalDate.now().plusDays(7),
     )
 
-    var BOOKING_ARRIVED_DB_RECORD: Referral? = null
-
-    var ARRIVAL = generateResidence(PersonGenerator.PERSON_WITH_BOOKING, BOOKING_ARRIVED)
+    val ARRIVAL = generateResidence(PersonGenerator.PERSON_WITH_BOOKING, BOOKING_ARRIVED)
 
     val DEPARTED_ID = UUID.randomUUID().toString()
-    var BOOKING_DEPARTED = generateReferral(
+    val BOOKING_DEPARTED = generateReferral(
         person = PersonGenerator.PERSON_WITH_BOOKING,
         referralNotes = "Some other notes",
         externalReference = "${EXT_REF_BOOKING_PREFIX}$DEPARTED_ID",
@@ -45,9 +44,7 @@ object ReferralGenerator {
         expectedDepartureDate = LocalDate.now().minusDays(1)
     )
 
-    var BOOKING_DEPARTED_DB_RECORD: Referral? = null
-
-    var DEPARTURE = generateResidence(
+    val DEPARTURE = generateResidence(
         PersonGenerator.PERSON_WITH_BOOKING, BOOKING_DEPARTED,
         departureDateTime = ZonedDateTime.of(
             BOOKING_DEPARTED.expectedDepartureDate,
@@ -103,7 +100,8 @@ object ReferralGenerator {
         decisionStaffId = 26553,
         referringTeamId = TeamGenerator.UNALLOCATED.id,
         referringStaffId = 563828,
-        externalReference = externalReference
+        externalReference = externalReference,
+        id = id()
     )
 
     fun generateResidence(
@@ -119,7 +117,7 @@ object ReferralGenerator {
         departureDateTime: ZonedDateTime? = null
     ) = Residence(
         person.id,
-        referral.id,
+        referral.id!!,
         approvedPremisesId,
         arrivalDateTime.truncatedTo(ChronoUnit.SECONDS),
         departureDateTime?.toLocalDate(),

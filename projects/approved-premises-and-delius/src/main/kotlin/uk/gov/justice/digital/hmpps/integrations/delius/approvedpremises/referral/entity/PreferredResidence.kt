@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referr
 import jakarta.persistence.*
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import org.springframework.data.jpa.repository.JpaRepository
+import uk.gov.justice.digital.hmpps.jpa.GeneratedId
 
 @Entity
 @Table(name = "approved_premises_preferred")
@@ -10,9 +11,9 @@ import org.springframework.data.jpa.repository.JpaRepository
 @SequenceGenerator(name = "ap_preferred_id_seq", sequenceName = "ap_preferred_id_seq", allocationSize = 1)
 class PreferredResidence(
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ap_preferred_id_seq")
+    @GeneratedId(generator = "ap_preferred_id_seq")
     @Column(name = "approved_premises_preferred_id")
-    val id: Long = 0,
+    val id: Long? = null,
 
     val approvedPremisesReferralId: Long
 )

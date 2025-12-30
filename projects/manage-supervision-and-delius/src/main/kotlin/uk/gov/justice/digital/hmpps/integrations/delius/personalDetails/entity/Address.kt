@@ -14,6 +14,7 @@ import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.ReferenceData
 import uk.gov.justice.digital.hmpps.integrations.delius.user.entity.User
+import uk.gov.justice.digital.hmpps.jpa.GeneratedId
 import java.time.LocalDate
 
 @Entity(name = "PersonalDetailsAddress")
@@ -100,7 +101,7 @@ class PersonAddress(
 
     @Id
     @Column(name = "offender_address_id")
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "offender_address_id_generator")
+    @GeneratedId(generator = "offender_address_id_generator")
     val id: Long? = null,
 )
 

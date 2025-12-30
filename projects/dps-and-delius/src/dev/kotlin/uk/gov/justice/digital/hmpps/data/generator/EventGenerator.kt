@@ -1,22 +1,7 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
-import uk.gov.justice.digital.hmpps.data.entity.Contact
-import uk.gov.justice.digital.hmpps.data.entity.ContactType
-import uk.gov.justice.digital.hmpps.data.entity.Court
-import uk.gov.justice.digital.hmpps.data.entity.CourtReport
-import uk.gov.justice.digital.hmpps.data.entity.CourtReportType
-import uk.gov.justice.digital.hmpps.data.entity.InstitutionalReport
-import uk.gov.justice.digital.hmpps.data.entity.Nsi
-import uk.gov.justice.digital.hmpps.data.entity.NsiType
-import uk.gov.justice.digital.hmpps.entity.CourtAppearance
-import uk.gov.justice.digital.hmpps.entity.Custody
-import uk.gov.justice.digital.hmpps.entity.Disposal
-import uk.gov.justice.digital.hmpps.entity.DisposalType
-import uk.gov.justice.digital.hmpps.entity.Event
-import uk.gov.justice.digital.hmpps.entity.Institution
-import uk.gov.justice.digital.hmpps.entity.MainOffence
-import uk.gov.justice.digital.hmpps.entity.Offence
-import uk.gov.justice.digital.hmpps.entity.ReferenceData
+import uk.gov.justice.digital.hmpps.data.entity.*
+import uk.gov.justice.digital.hmpps.entity.*
 import uk.gov.justice.digital.hmpps.set
 import java.time.LocalDate
 import java.time.ZonedDateTime
@@ -78,7 +63,7 @@ object EventGenerator {
         date = ZonedDateTime.now(),
         courtId = COURT.courtId,
         event = EVENT
-    ).also { EVENT.set(Event::courtAppearances, listOf(this)) }
+    ).also { EVENT.set(Event::courtAppearances, listOf(it)) }
 
     val UNSENTENCED_COURT_APPEARANCE = CourtAppearance(
         id = IdGenerator.getAndIncrement(),
@@ -86,7 +71,7 @@ object EventGenerator {
         courtId = COURT.courtId,
         event = UNSENTENCED_EVENT,
         outcome = ReferenceData(IdGenerator.getAndIncrement(), "TEST", "Community Order")
-    ).also { UNSENTENCED_EVENT.set(Event::courtAppearances, listOf(this)) }
+    ).also { UNSENTENCED_EVENT.set(Event::courtAppearances, listOf(it)) }
 
     val COURT_REPORT_TYPE =
         CourtReportType(courtReportTypeId = IdGenerator.getAndIncrement(), description = "court report type")

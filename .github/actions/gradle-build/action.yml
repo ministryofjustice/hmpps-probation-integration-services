@@ -47,8 +47,9 @@ runs:
       shell: bash
       run: ./gradlew "${PROJECT}:check"
       env:
-        SPRING_PROFILES_ACTIVE: oracle
         PROJECT: ${{ inputs.project }}
+        SPRING_PROFILES_ACTIVE: oracle
+        TZ: Europe/London
 
     - name: Push
       if: inputs.push == 'true'

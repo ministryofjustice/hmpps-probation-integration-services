@@ -108,7 +108,7 @@ class CreateAppointmentIntegrationTest : IntegrationTestBase() {
             assertThat(appointment.complied).isEqualTo("Y")
         }
 
-        sentenceAppointmentRepository.deleteById(appointment.id)
+        sentenceAppointmentRepository.deleteById(appointment.id!!)
     }
 
     companion object {

@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
+import uk.gov.justice.digital.hmpps.data.generator.IdGenerator.id
 import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.entity.Address
 import uk.gov.justice.digital.hmpps.integrations.delius.person.address.PersonAddress
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceData
@@ -15,8 +16,6 @@ object AddressGenerator {
         startDate = LocalDate.of(2022, 11, 29)
     )
 
-    var PERSON_ADDRESS_ID: Long? = null
-
     var INACTIVE_PERSON_ADDRESS = generatePersonAddress(
         personId = PersonGenerator.PERSON_INACTIVE_EVENT.id,
         addressNumber = "12",
@@ -25,8 +24,6 @@ object AddressGenerator {
         postcode = "MB01 3TD",
         startDate = LocalDate.of(2022, 11, 29)
     )
-
-    var INACTIVE_PERSON_ADDRESS_ID: Long? = null
 
     var PERSON_AP_ADDRESS = generatePersonAddress(
         type = ReferenceDataGenerator.AP_ADDRESS_TYPE,
@@ -221,6 +218,7 @@ object AddressGenerator {
         county,
         postcode,
         telephoneNumber,
-        startDate = startDate
+        startDate = startDate,
+        id = id()
     )
 }

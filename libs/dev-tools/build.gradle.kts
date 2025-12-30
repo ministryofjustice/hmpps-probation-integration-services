@@ -4,6 +4,7 @@ dependencies {
     implementation(project(":libs:commons"))
     implementation(project(":libs:messaging"))
 
+    compileOnly("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-test")
     implementation("org.springframework.security:spring-security-oauth2-jose")
@@ -12,6 +13,7 @@ dependencies {
     api(libs.wiremock)
 
     testImplementation(libs.bundles.mockito)
+    testImplementation("org.springframework.boot:spring-boot-starter-data-jpa")
 }
 configure<ClassPathExtension> {
     jacocoExclusions = listOf(

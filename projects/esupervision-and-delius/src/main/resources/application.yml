@@ -27,7 +27,7 @@ spring:
         client-secret: ${oauth2.client-secret}
     provider:
       hmpps-auth:
-        token-uri: http://localhost:${wiremock.port}/auth/oauth/token
+        token-uri: http://localhost:${dev.wiremock.port}/auth/oauth/token
   threads.virtual.enabled: true
 
 delius.db.username: EsupervisionAndDelius # Should match value in [deploy/database/access.yml].
@@ -55,8 +55,9 @@ spring:
   jpa.hibernate.ddl-auto: create-drop
   ldap.embedded.base-dn: ${spring.ldap.base}
 
-seed.database: true
-wiremock.enabled: true
+dev:
+  dataloader.enabled: true
+  wiremock.enabled: true
 
 messaging.consumer.queue: message-queue
 
@@ -67,7 +68,6 @@ oauth2:
 logging.level:
   uk.gov.justice.digital.hmpps: DEBUG
   org.hibernate.tool.schema: ERROR
-  org.apache.activemq: WARN
 
 ---
 spring.config.activate.on-profile: integration-test
@@ -87,7 +87,7 @@ spring:
     username: delius_pool
     password: NDelius1
   jpa.hibernate.ddl-auto: validate
-seed.database: false
+dev.dataloader.enabled: false
 delius.db.username: NationalUser
 
 ---

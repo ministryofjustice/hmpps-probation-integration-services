@@ -161,7 +161,7 @@ internal class RegistrationsFlagDisabledIntegrationTest @Autowired constructor(
         assertThat(contact.copyToVisor, equalTo(true))
         assertThat(contact.visorExported, equalTo(false))
 
-        val prevContact = contactRepository.findByIdOrNull(prevAssessmentContact.id)!!
+        val prevContact = contactRepository.findByIdOrNull(prevAssessmentContact.id!!)!!
         assertThat(prevContact.externalReference, equalTo(null))
 
         val scores = assessment.sectionScores.associate { it.id.level to it.score }

@@ -17,6 +17,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.entity.Person.Companion.
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.Person.Companion.FORENAME
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.Person.Companion.PNC
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.Person.Companion.SURNAME
+import uk.gov.justice.digital.hmpps.jpa.GeneratedId
 import java.time.LocalDate
 import java.time.ZonedDateTime
 
@@ -28,7 +29,7 @@ import java.time.ZonedDateTime
 class Person(
     @Id
     @Column(name = "offender_id")
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "offender_id_seq")
+    @GeneratedId(generator = "offender_id_seq")
     val id: Long? = null,
 
     @Column(columnDefinition = "char(7)")

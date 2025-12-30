@@ -25,6 +25,7 @@ import java.time.LocalDate
 import java.time.ZonedDateTime
 
 object TestData {
+    val AUDIT_USER = UserGenerator.generate("AccreditedProgrammesAndDelius")
     val DATASET = Dataset(id(), "OTHER")
     val GENDER = ReferenceData(id(), "M", "Male", DATASET)
     val ETHNICITY = ReferenceData(id(), "A9", "Asian or Asian British: Other", DATASET)

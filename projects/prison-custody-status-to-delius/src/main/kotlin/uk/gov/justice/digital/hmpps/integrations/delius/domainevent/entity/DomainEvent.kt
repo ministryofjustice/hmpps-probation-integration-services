@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.integrations.delius.domainevent.entity
 import jakarta.persistence.*
 import org.springframework.data.jpa.repository.JpaRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceData
+import uk.gov.justice.digital.hmpps.jpa.GeneratedId
 import java.time.ZonedDateTime
 
 @Entity
@@ -21,8 +22,8 @@ class DomainEvent(
 
     @Id
     @Column(name = "domain_event_id")
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "domain_event_id_seq")
-    val id: Long = 0
+    @GeneratedId(generator = "domain_event_id_seq")
+    val id: Long? = null
 ) {
     var createdDatetime: ZonedDateTime = ZonedDateTime.now()
 }
