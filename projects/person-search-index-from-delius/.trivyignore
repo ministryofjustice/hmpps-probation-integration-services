@@ -2,4 +2,4 @@
 # https://github.com/ministryofjustice/hmpps-probation-integration-services/issues/5898
 # Reason: Not processing untrusted compressed input
 # Package: org.lz4:lz4-java:1.8.0
-CVE-2025-12183 exp:2025-02-01
+CVE-2025-12183 exp:2026-02-01
