@@ -1,15 +1,11 @@
 package uk.gov.justice.digital.hmpps.data
 
-import jakarta.annotation.PostConstruct
-import jakarta.persistence.EntityManager
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
-import org.springframework.boot.context.event.ApplicationReadyEvent
-import org.springframework.context.ApplicationListener
 import org.springframework.stereotype.Component
-import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.data.generator.*
 import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator.MAPPA_CAT_1
 import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator.MAPPA_LVL_2
+import uk.gov.justice.digital.hmpps.data.loader.BaseDataLoader
+import uk.gov.justice.digital.hmpps.data.manager.DataManager
 import uk.gov.justice.digital.hmpps.enum.RiskLevel
 import uk.gov.justice.digital.hmpps.enum.RiskOfSeriousHarmType
 import uk.gov.justice.digital.hmpps.enum.RiskOfSeriousHarmType.*
@@ -20,26 +16,16 @@ import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.Event
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.Person
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.RegisterType
 import uk.gov.justice.digital.hmpps.set
-import uk.gov.justice.digital.hmpps.user.AuditUserRepository
 import java.time.LocalDate
 
 @Component
-@ConditionalOnProperty("seed.database")
-class DataLoader(
-    private val auditUserRepository: AuditUserRepository,
-    private val entityManager: EntityManager
-) : ApplicationListener<ApplicationReadyEvent> {
+class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
+    override fun systemUser() = UserGenerator.AUDIT_USER
 
-    @PostConstruct
-    fun saveAuditUser() {
-        auditUserRepository.save(UserGenerator.AUDIT_USER)
-    }
-
-    @Transactional
-    override fun onApplicationEvent(are: ApplicationReadyEvent) {
-        saveAll(*ReferenceDataGenerator.BUSINESS_INTERACTIONS.toTypedArray())
-        saveAll(*ReferenceDataGenerator.COURTS.toTypedArray())
-        saveAll(*ReferenceDataGenerator.OFFENCES.toTypedArray())
+    override fun setupData() {
+        saveAll(ReferenceDataGenerator.BUSINESS_INTERACTIONS)
+        saveAll(ReferenceDataGenerator.COURTS)
+        saveAll(ReferenceDataGenerator.OFFENCES)
         saveAll(
             ReferenceDataGenerator.OASYS_ASSESSMENT_STATUS_DATASET,
             *ReferenceDataGenerator.OASYS_ASSESSMENT_STATUSES.toTypedArray(),
@@ -50,11 +36,11 @@ class DataLoader(
             ReferenceDataGenerator.SAFEGUARDING_FLAG
         )
         saveAll(ReferenceDataGenerator.LEVELS_DATASET, *ReferenceDataGenerator.LEVELS.toTypedArray())
-        saveAll(*ContactGenerator.TYPES.values.toTypedArray())
-        saveAll(*RegistrationGenerator.TYPES.values.toTypedArray())
+        saveAll(ContactGenerator.TYPES.values)
+        saveAll(RegistrationGenerator.TYPES.values)
         saveAll(RegistrationGenerator.ALT_TYPE)
         saveAll(RegistrationGenerator.DUPLICATE_GROUP)
-        saveAll(*ReferenceDataGenerator.REQ_MAIN_CATS.toTypedArray())
+        saveAll(ReferenceDataGenerator.REQ_MAIN_CATS)
         saveAll(
             ReferenceDataGenerator.DOMAIN_EVENT_TYPE_DATASET,
             *ReferenceDataGenerator.DOMAIN_EVENT_TYPES.toTypedArray()
@@ -102,8 +88,8 @@ class DataLoader(
         val personManager = PersonGenerator.generateManager(this)
         val event = PersonGenerator.generateEvent(this, softDeleted = softDeleted)
         if (custodial) event.set(Event::disposal, PersonGenerator.generateDisposal(event))
-        saveAll(this, personManager, event, event.disposal)
         this.set(Person::manager, personManager)
+        saveAll(this, personManager, event, event.disposal)
         return this
     }
 
@@ -112,7 +98,7 @@ class DataLoader(
         type: ContactType.Code,
         externalReference: String? = null
     ): Person {
-        val contact = entityManager.merge(
+        val contact = save(
             ContactGenerator.generateContact(
                 this,
                 ContactGenerator.TYPES[type.value]!!,
@@ -120,15 +106,15 @@ class DataLoader(
             )
         )
         val assessment = AssessmentGenerator.generate(this, contact, LocalDate.parse("2013-06-07"), oasysId = oasysId)
-        entityManager.merge(assessment)
+        save(assessment)
         return this
     }
 
     private fun Person.withRiskOfSeriousHarm(vararg riskOfSeriousHarmTypes: RiskOfSeriousHarmType): Person {
         riskOfSeriousHarmTypes.forEach {
             val type = RegistrationGenerator.TYPES[it.code]
-            val contact = entityManager.merge(ContactGenerator.generateContact(this, type!!.registrationContactType!!))
-            val reviewContact = entityManager.merge(ContactGenerator.generateContact(this, type.reviewContactType!!))
+            val contact = save(ContactGenerator.generateContact(this, type!!.registrationContactType!!))
+            val reviewContact = save(ContactGenerator.generateContact(this, type.reviewContactType!!))
             val registration =
                 RegistrationGenerator.generate(this.id, LocalDate.parse("2023-06-14"), contact, reviewContact, type)
             highestRiskColour = type.colour
@@ -144,8 +130,8 @@ class DataLoader(
             val registration = RegistrationGenerator.generate(
                 personId = this.id,
                 date = LocalDate.parse("2023-06-14"),
-                contact = entityManager.merge(ContactGenerator.generateContact(this, type.registrationContactType!!)),
-                reviewContact = entityManager.merge(
+                contact = save(ContactGenerator.generateContact(this, type.registrationContactType!!)),
+                reviewContact = save(
                     ContactGenerator.generateContact(this, type.reviewContactType!!).withNotes("existing notes")
                 ),
                 type = type,
@@ -165,8 +151,8 @@ class DataLoader(
         val mappaType = RegistrationGenerator.TYPES[RegisterType.Code.MAPPA.value]!!
         val visorType = RegistrationGenerator.TYPES[RegisterType.Code.VISOR.value]!!
         val contactType = ContactGenerator.TYPES[ContactType.Code.REGISTRATION.value]!!
-        val c1 = entityManager.merge(ContactGenerator.generateContact(this, contactType))
-        val c2 = entityManager.merge(ContactGenerator.generateContact(this, contactType))
+        val c1 = save(ContactGenerator.generateContact(this, contactType))
+        val c2 = save(ContactGenerator.generateContact(this, contactType))
         val mappa =
             RegistrationGenerator.generate(
                 this.id,
@@ -181,6 +167,4 @@ class DataLoader(
             RegistrationGenerator.generate(this.id, LocalDate.parse("2025-04-01"), c2, null, visorType)
         saveAll(mappa, visor)
     }
-
-    private fun saveAll(vararg entities: Any?) = entities.filterNotNull().forEach(entityManager::merge)
 }

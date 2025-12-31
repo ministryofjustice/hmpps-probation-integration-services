@@ -15,6 +15,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.entity.Pro
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceData
 import uk.gov.justice.digital.hmpps.integrations.delius.staff.entity.Staff
 import uk.gov.justice.digital.hmpps.integrations.delius.team.entity.Team
+import uk.gov.justice.digital.hmpps.jpa.GeneratedId
 import java.time.ZonedDateTime
 
 @Entity
@@ -80,7 +81,7 @@ class PrisonManager(
         sequenceName = "prison_offender_manager_id_seq",
         allocationSize = 1
     )
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "prison_manager_id_generator")
+    @GeneratedId(generator = "prison_manager_id_generator")
     @Column(name = "prison_offender_manager_id", nullable = false)
     val id: Long = 0,
 )

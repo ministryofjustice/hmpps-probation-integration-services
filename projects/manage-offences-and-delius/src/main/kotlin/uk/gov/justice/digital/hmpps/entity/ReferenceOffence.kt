@@ -1,7 +1,6 @@
 package uk.gov.justice.digital.hmpps.entity
 
 import jakarta.persistence.*
-import jakarta.persistence.GenerationType.SEQUENCE
 import org.hibernate.type.YesNoConverter
 import org.springframework.data.annotation.CreatedBy
 import org.springframework.data.annotation.CreatedDate
@@ -10,6 +9,7 @@ import org.springframework.data.annotation.LastModifiedDate
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import org.springframework.data.jpa.repository.JpaRepository
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
+import uk.gov.justice.digital.hmpps.jpa.GeneratedId
 import java.time.ZonedDateTime
 
 @EntityListeners(AuditingEntityListener::class)
@@ -54,7 +54,7 @@ class ReferenceOffence(
     var childAbduction: Boolean?,
 
     @Id
-    @GeneratedValue(strategy = SEQUENCE, generator = "offence_id_seq")
+    @GeneratedId(generator = "offence_id_seq")
     @Column(name = "offence_id")
     val id: Long? = null
 ) {

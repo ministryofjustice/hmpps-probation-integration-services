@@ -12,6 +12,7 @@ import org.springframework.data.annotation.LastModifiedDate
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import org.springframework.data.jpa.repository.JpaRepository
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
+import uk.gov.justice.digital.hmpps.jpa.GeneratedId
 import java.time.LocalDate
 import java.time.ZonedDateTime
 
@@ -22,7 +23,7 @@ class Contact(
     @Id
     @Column(name = "contact_id")
     @SequenceGenerator(name = "contact_id_seq", sequenceName = "contact_id_seq", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "contact_id_seq")
+    @GeneratedId(generator = "contact_id_seq")
     val id: Long = 0,
 
     @[Version Column(name = "row_version")]

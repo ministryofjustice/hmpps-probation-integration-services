@@ -93,7 +93,7 @@ class LicenceActivatedIntegrationTest @Autowired constructor(
 
         val com = pmr.findByPersonCrnOrPersonNomsNumber(person.crn)!!
         conditions.forEach {
-            val lcm = lcmr.findByLicenceConditionId(it.id)
+            val lcm = lcmr.findByLicenceConditionId(it.id!!)
             assertThat(lcm?.providerId, equalTo(com.provider.id))
             assertThat(lcm?.teamId, equalTo(com.team.id))
             assertThat(lcm?.staffId, equalTo(com.staff.id))

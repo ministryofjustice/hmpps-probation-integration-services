@@ -115,10 +115,10 @@ class SentenceAppointmentService(
 
             val saved = sentenceAppointmentRepository.save(createAppointment.withManager(om, userAndTeam, location))
             if (createAppointment.outcomeRecorded) {
-                outcomeService.recordOutcome(Outcome(saved.id, true, null, createAppointment.sensitive ?: false))
+                outcomeService.recordOutcome(Outcome(saved.id!!, true, null, createAppointment.sensitive ?: false))
             }
 
-            audit["contactId"] = saved.id
+            audit["contactId"] = saved.id!!
 
             return@audit AppointmentDetail(listOf(CreatedAppointment(saved.id, saved.externalReference)))
         }

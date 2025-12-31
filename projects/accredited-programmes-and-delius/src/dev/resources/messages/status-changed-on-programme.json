@@ -1,7 +1,7 @@
 {
   "Type": "Notification",
   "MessageId": "aa2c2828-167f-529b-8e19-73735a2fb85c",
-  "Message": "{\"eventType\":\"accredited-programmes-community.referral.status-updated\",\"version\":1,\"description\":\"Status changed\",\"detailUrl\":\"http://localhost:{wiremock.port}/accredited-programmes-api/status-on-programme/:id\",\"occurredAt\":\"2025-09-09T09:15:30.000+01:00\",\"additionalInformation\":{},\"personReference\":{\"identifiers\":[{\"type\":\"CRN\",\"value\":\"A000001\"}]}}",
+  "Message": "{\"eventType\":\"accredited-programmes-community.referral.status-updated\",\"version\":1,\"description\":\"Status changed\",\"detailUrl\":\"http://localhost:{dev.wiremock.port}/accredited-programmes-api/status-on-programme/:id\",\"occurredAt\":\"2025-09-09T09:15:30.000+01:00\",\"additionalInformation\":{},\"personReference\":{\"identifiers\":[{\"type\":\"CRN\",\"value\":\"A000001\"}]}}",
   "Timestamp": "2022-09-09T09:15:30.000Z",
   "MessageAttributes": {
     "eventType": {

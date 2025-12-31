@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
+import uk.gov.justice.digital.hmpps.data.generator.IdGenerator.id
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.*
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -16,7 +17,7 @@ object PersonGenerator {
         dateOfBirth: LocalDate = LocalDate.now().minusYears(Random.nextInt(16, 76).toLong()),
         pnc: String? = null,
         cro: String? = null,
-        id: Long? = IdGenerator.getAndIncrement(),
+        id: Long? = id(),
         defendantId: String? = null
     ) = Person(
         id = id,
@@ -39,7 +40,7 @@ object PersonManagerGenerator {
     val DEFAULT = generate(person = PersonGenerator.DEFAULT)
 
     fun generate(
-        id: Long = IdGenerator.getAndIncrement(),
+        id: Long = id(),
         person: Person,
         provider: Provider = ProviderGenerator.DEFAULT,
         team: Team = TeamGenerator.UNALLOCATED,
@@ -60,11 +61,11 @@ object PersonManagerGenerator {
 }
 
 object EqualityGenerator {
-    val DEFAULT = generate(1L, 1L, false)
+    val DEFAULT = generate(personId = PersonGenerator.DEFAULT.id!!)
 
     fun generate(
-        id: Long = IdGenerator.getAndIncrement(),
-        personId: Long = 1L,
+        personId: Long,
+        id: Long = id(),
         softDeleted: Boolean = false
     ) = Equality(
         id = id,

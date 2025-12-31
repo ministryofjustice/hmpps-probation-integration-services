@@ -12,6 +12,7 @@ import org.springframework.data.jpa.repository.JpaRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.allocation.entity.event.keydate.KeyDate.TypeCode.HANDOVER_DATE
 import uk.gov.justice.digital.hmpps.integrations.delius.allocation.entity.event.keydate.KeyDate.TypeCode.HANDOVER_START_DATE
 import uk.gov.justice.digital.hmpps.integrations.delius.reference.entity.ReferenceData
+import uk.gov.justice.digital.hmpps.jpa.GeneratedId
 import java.time.LocalDate
 import java.time.ZonedDateTime
 
@@ -32,9 +33,9 @@ class KeyDate(
     var date: LocalDate,
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "key_date_id_seq")
+    @GeneratedId(generator = "key_date_id_seq")
     @Column(name = "key_date_id")
-    val id: Long = 0
+    val id: Long? = null
 ) {
     val partitionAreaId = 0
 

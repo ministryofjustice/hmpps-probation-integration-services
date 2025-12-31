@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.entity
 import jakarta.persistence.*
 import org.hibernate.type.NumericBooleanConverter
 import org.springframework.data.jpa.repository.JpaRepository
+import uk.gov.justice.digital.hmpps.jpa.GeneratedId
 
 @Entity
 @SequenceGenerator(name = "contact_alert_id_generator", sequenceName = "contact_alert_id_seq", allocationSize = 1)
@@ -36,9 +37,9 @@ class Alert(
     val version: Long = 0,
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "contact_alert_id_generator")
+    @GeneratedId(generator = "contact_alert_id_generator")
     @Column(name = "contact_alert_id")
-    val id: Long = 0,
+    val id: Long? = null,
 )
 
 interface AlertRepository : JpaRepository<Alert, Long> {

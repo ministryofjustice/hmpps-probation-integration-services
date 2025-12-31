@@ -9,6 +9,7 @@ import org.springframework.data.annotation.LastModifiedBy
 import org.springframework.data.annotation.LastModifiedDate
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import org.springframework.data.jpa.repository.JpaRepository
+import uk.gov.justice.digital.hmpps.jpa.GeneratedId
 import java.time.LocalDate
 import java.time.ZonedDateTime
 
@@ -60,8 +61,8 @@ class LicenceCondition(
 
     @Id
     @Column(name = "lic_condition_id")
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "lic_condition_id_seq")
-    val id: Long = 0
+    @GeneratedId(generator = "lic_condition_id_seq")
+    val id: Long? = null
 ) {
     val partitionAreaId: Long = 0
 
@@ -125,8 +126,8 @@ class LicenceConditionManager(
 
     @Id
     @Column(name = "lic_condition_manager_id")
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "lic_condition_manager_id_seq")
-    val id: Long = 0
+    @GeneratedId(generator = "lic_condition_manager_id_seq")
+    val id: Long? = null
 ) {
     val partitionAreaId: Long = 0
 

@@ -16,14 +16,14 @@ object EventGenerator {
     val UNSENTENCED_EVENT = generateEvent(PersonGenerator.DEFAULT_PERSON)
 
     val DEFAULT_RQMNT_CATEGORY = generateRequirementMainCategory("DRMC")
-    val DS_REQUIREMENT_SUB_CATEOGORY = generateDataset(Dataset.REQUIREMENT_SUB_CATEGORY)
+    val DS_REQUIREMENT_SUB_CATEGORY = generateDataset(Dataset.REQUIREMENT_SUB_CATEGORY)
 
     val UNPAID_RQMT_CATEGORY = generateRequirementMainCategory("W")
     val UNPAID_RQMT_SUB_CATEOGORY_RECORDS = listOf("W01", "W02", "W03", "W04", "W05").map {
-        generateReferenceData(DS_REQUIREMENT_SUB_CATEOGORY, it)
+        generateReferenceData(DS_REQUIREMENT_SUB_CATEGORY, it)
     }
 
-    val DEFAULT_RQMNT_SUB_CATEGORY = generateReferenceData(DS_REQUIREMENT_SUB_CATEOGORY, "DRSC")
+    val DEFAULT_RQMNT_SUB_CATEGORY = generateReferenceData(DS_REQUIREMENT_SUB_CATEGORY, "DRSC")
     val DEFAULT_RQMNT = generateRequirement(DEFAULT_DISPOSAL, DEFAULT_RQMNT_CATEGORY, DEFAULT_RQMNT_SUB_CATEGORY)
 
     val UNPAID_WORK_RQMTS = UNPAID_RQMT_SUB_CATEOGORY_RECORDS.map {

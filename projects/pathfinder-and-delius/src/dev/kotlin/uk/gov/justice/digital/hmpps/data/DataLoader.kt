@@ -1,31 +1,18 @@
 package uk.gov.justice.digital.hmpps.data
 
-import jakarta.annotation.PostConstruct
 import jakarta.persistence.EntityManager
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
-import org.springframework.boot.context.event.ApplicationReadyEvent
-import org.springframework.context.ApplicationListener
 import org.springframework.stereotype.Component
-import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.data.generator.*
 import uk.gov.justice.digital.hmpps.data.generator.DetailsGenerator.generatePersonManager
-import uk.gov.justice.digital.hmpps.user.AuditUserRepository
+import uk.gov.justice.digital.hmpps.data.loader.BaseDataLoader
+import uk.gov.justice.digital.hmpps.data.manager.DataManager
 
 @Component
-@ConditionalOnProperty("seed.database")
-class DataLoader(
-    private val auditUserRepository: AuditUserRepository,
-    private val em: EntityManager
-) : ApplicationListener<ApplicationReadyEvent> {
+class DataLoader(dataManager: DataManager, private val em: EntityManager) : BaseDataLoader(dataManager) {
+    override fun systemUser() = UserGenerator.AUDIT_USER
 
-    @PostConstruct
-    fun saveAuditUser() {
-        auditUserRepository.save(UserGenerator.AUDIT_USER)
-    }
-
-    @Transactional
-    override fun onApplicationEvent(are: ApplicationReadyEvent) {
-        em.saveAll(
+    override fun setupData() {
+        saveAll(
             ProbationAreaGenerator.DEFAULT_PA,
             ProbationAreaGenerator.DEFAULT_BOROUGH,
             ProbationAreaGenerator.DEFAULT_LDU,
@@ -108,6 +95,4 @@ class DataLoader(
         )
             .executeUpdate()
     }
-
-    fun EntityManager.saveAll(vararg any: Any) = any.forEach { persist(it) }
 }

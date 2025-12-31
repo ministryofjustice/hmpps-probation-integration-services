@@ -16,6 +16,7 @@ import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.ContactOutcome
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.ContactType
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.Person
+import uk.gov.justice.digital.hmpps.jpa.GeneratedId
 import java.io.Serializable
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -99,9 +100,9 @@ class SentenceAppointment(
     var visorContact: Boolean? = null,
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "contact_id_generator")
+    @GeneratedId(generator = "contact_id_generator")
     @Column(name = "contact_id")
-    val id: Long = 0
+    val id: Long? = null
 ) {
     var partitionAreaId: Long = 0
 

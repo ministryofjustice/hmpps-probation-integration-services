@@ -1,41 +1,25 @@
 package uk.gov.justice.digital.hmpps.data
 
-import jakarta.annotation.PostConstruct
-import jakarta.persistence.EntityManager
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
-import org.springframework.boot.context.event.ApplicationReadyEvent
-import org.springframework.context.ApplicationListener
 import org.springframework.stereotype.Component
-import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.audit.BusinessInteraction
 import uk.gov.justice.digital.hmpps.data.generator.*
 import uk.gov.justice.digital.hmpps.data.generator.CourtAppearanceGenerator.COURT_APPEARANCE
 import uk.gov.justice.digital.hmpps.data.generator.personalDetails.PersonDetailsGenerator
+import uk.gov.justice.digital.hmpps.data.loader.BaseDataLoader
+import uk.gov.justice.digital.hmpps.data.manager.DataManager
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractionCode
-import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.SentenceAppointmentRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.user.entity.UserRepository
 import java.time.ZonedDateTime
 
 @Component
-@ConditionalOnProperty("seed.database")
-class DataLoader(
-    private val entityManager: EntityManager,
-    private val userRepository: UserRepository,
-    private val sentenceAppointmentRepository: SentenceAppointmentRepository
-) : ApplicationListener<ApplicationReadyEvent> {
+class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
+    override fun systemUser() = UserGenerator.AUDIT_USER
 
-    @PostConstruct
-    fun saveAuditUser() {
-        userRepository.save(UserGenerator.AUDIT_USER)
-    }
-
-    @Transactional
-    override fun onApplicationEvent(are: ApplicationReadyEvent) {
+    override fun setupData() {
 
         BusinessInteractionCode.entries.forEach {
-            entityManager.persist(BusinessInteraction(IdGenerator.getAndIncrement(), it.code, ZonedDateTime.now()))
+            save(BusinessInteraction(IdGenerator.getAndIncrement(), it.code, ZonedDateTime.now()))
         }
-        entityManager.persistAll(
+        saveAll(
             AppointmentGenerator.ATTENDED_COMPLIED,
             AppointmentGenerator.POP_RESCHEDULED_OUTCOME,
             AppointmentGenerator.SERVICE_RESCHEDULED_OUTCOME,
@@ -51,44 +35,44 @@ class DataLoader(
             ContactGenerator.LOCATION_BRK_1,
         )
 
-        entityManager.persist(ContactGenerator.USER)
+        save(ContactGenerator.USER)
 
-        entityManager.persist(ContactGenerator.USER_1)
+        save(ContactGenerator.USER_1)
 
-        entityManager.persist(ContactGenerator.USER_2)
+        save(ContactGenerator.USER_2)
 
-        entityManager.persist(ContactGenerator.LIMITED_ACCESS_USER)
+        save(ContactGenerator.LIMITED_ACCESS_USER)
 
-        entityManager.persistAll(
+        saveAll(
             PersonGenerator.GENDER_MALE,
             PersonGenerator.MAPPA_TYPE,
             PersonGenerator.MAPPA_CATEGORY,
             PersonGenerator.MAPPA_LEVEL
         )
 
-        PersonGenerator.DISABILITIES.forEach { entityManager.persist(it.type) }
-        PersonGenerator.PROVISIONS.forEach { entityManager.persist(it.type) }
+        PersonGenerator.DISABILITIES.forEach { save(it.type) }
+        PersonGenerator.PROVISIONS.forEach { save(it.type) }
         PersonGenerator.PERSONAL_CIRCUMSTANCES.forEach {
-            entityManager.persist(it.type)
-            entityManager.persist(it.subType)
+            save(it.type)
+            save(it.subType)
         }
 
-        entityManager.persistCollection(PersonGenerator.DISABILITIES)
-        entityManager.persistCollection(PersonGenerator.PROVISIONS)
-        entityManager.persistCollection(PersonGenerator.PERSONAL_CIRCUMSTANCES)
-        entityManager.persist(PersonGenerator.OVERVIEW)
-        entityManager.persist(PersonGenerator.E_SUP_PERSON)
-        entityManager.persist(CourtGenerator.BHAM)
-        entityManager.persist(PersonGenerator.EVENT_1)
-        entityManager.persist(PersonGenerator.EVENT_2)
-        entityManager.persist(PersonGenerator.INACTIVE_EVENT_1)
-        entityManager.persist(PersonGenerator.INACTIVE_EVENT_2)
-        entityManager.persist(PersonGenerator.INACTIVE_EVENT_3)
-        entityManager.persist(PersonGenerator.INACTIVE_EVENT_NO_TIME_UNIT)
+        saveAll(PersonGenerator.DISABILITIES)
+        saveAll(PersonGenerator.PROVISIONS)
+        saveAll(PersonGenerator.PERSONAL_CIRCUMSTANCES)
+        save(PersonGenerator.OVERVIEW)
+        save(PersonGenerator.E_SUP_PERSON)
+        save(CourtGenerator.BHAM)
+        save(PersonGenerator.EVENT_1)
+        save(PersonGenerator.EVENT_2)
+        save(PersonGenerator.INACTIVE_EVENT_1)
+        save(PersonGenerator.INACTIVE_EVENT_2)
+        save(PersonGenerator.INACTIVE_EVENT_3)
+        save(PersonGenerator.INACTIVE_EVENT_NO_TIME_UNIT)
 
-        entityManager.persist(AdditionalSentenceGenerator.REF_DISQ)
-        entityManager.persist(AdditionalSentenceGenerator.REF_FINE)
-        entityManager.persist(
+        save(AdditionalSentenceGenerator.REF_DISQ)
+        save(AdditionalSentenceGenerator.REF_FINE)
+        save(
             AdditionalSentenceGenerator.generateSentence(
                 3,
                 null,
@@ -97,19 +81,19 @@ class DataLoader(
                 AdditionalSentenceGenerator.REF_DISQ
             )
         )
-        entityManager.persist(CourtGenerator.DEFAULT)
+        save(CourtGenerator.DEFAULT)
 
-        entityManager.persist(CourtReportGenerator.COURT_APPEARANCE)
-        entityManager.persist(CourtReportGenerator.DEFAULT_TYPE)
-        entityManager.persist(CourtReportGenerator.EVENT_DOCUMENT)
-        entityManager.persist(CourtReportGenerator.COURT_DOCUMENT)
-        entityManager.persist(CourtReportGenerator.COURT_REPORT)
-        entityManager.persist(COURT_APPEARANCE)
+        save(CourtReportGenerator.COURT_APPEARANCE)
+        save(CourtReportGenerator.DEFAULT_TYPE)
+        save(CourtReportGenerator.EVENT_DOCUMENT)
+        save(CourtReportGenerator.COURT_DOCUMENT)
+        save(CourtReportGenerator.COURT_REPORT)
+        save(COURT_APPEARANCE)
 
-        entityManager.persist(CourtReportGenerator.DEFAULT_TYPE)
-        entityManager.persist(CourtReportGenerator.COURT_REPORT)
+        save(CourtReportGenerator.DEFAULT_TYPE)
+        save(CourtReportGenerator.COURT_REPORT)
 
-        entityManager.persistAll(
+        saveAll(
             OffenderManagerGenerator.BOROUGH,
             OffenderManagerGenerator.DISTRICT,
             OffenderManagerGenerator.TEAM,
@@ -234,7 +218,7 @@ class DataLoader(
     }
 
     fun personalDetailsData() {
-        entityManager.persistAll(
+        saveAll(
             PersonDetailsGenerator.ADDRESS_TYPE,
             PersonDetailsGenerator.ADDRESS_STATUS,
             PersonDetailsGenerator.GENDER_FEMALE,
@@ -282,43 +266,33 @@ class DataLoader(
             PersonDetailsGenerator.ALIAS_1,
             PersonDetailsGenerator.ALIAS_2,
         )
-        entityManager.flush()
-        entityManager.merge(PersonGenerator.PERSON_1)
-        entityManager.merge(PersonGenerator.PERSON_2)
-        entityManager.merge(PersonGenerator.CL_EXCLUDED)
-        entityManager.merge(PersonGenerator.CL_RESTRICTED)
-        entityManager.merge(PersonGenerator.CL_RESTRICTED_EXCLUDED)
-        entityManager.flush()
-        entityManager.persist(PersonGenerator.CASELOAD_PERSON_1)
-        entityManager.persist(PersonGenerator.CASELOAD_PERSON_2)
-        entityManager.persist(PersonGenerator.CASELOAD_PERSON_3)
+        save(PersonGenerator.PERSON_1)
+        save(PersonGenerator.PERSON_2)
+        save(PersonGenerator.CL_EXCLUDED)
+        save(PersonGenerator.CL_RESTRICTED)
+        save(PersonGenerator.CL_RESTRICTED_EXCLUDED)
+        save(PersonGenerator.CASELOAD_PERSON_1)
+        save(PersonGenerator.CASELOAD_PERSON_2)
+        save(PersonGenerator.CASELOAD_PERSON_3)
 
-        entityManager.persist(PersonGenerator.CASELOAD_LIMITED_ACCESS_EXCLUSION)
-        entityManager.persist(PersonGenerator.CASELOAD_LIMITED_ACCESS_RESTRICTION)
-        entityManager.persist(PersonGenerator.CASELOAD_LIMITED_ACCESS_BOTH)
-        entityManager.persist(PersonGenerator.CASELOAD_LIMITED_ACCESS_NEITHER)
+        save(PersonGenerator.CASELOAD_LIMITED_ACCESS_EXCLUSION)
+        save(PersonGenerator.CASELOAD_LIMITED_ACCESS_RESTRICTION)
+        save(PersonGenerator.CASELOAD_LIMITED_ACCESS_BOTH)
+        save(PersonGenerator.CASELOAD_LIMITED_ACCESS_NEITHER)
 
-        entityManager.persist(LimitedAccessGenerator.EXCLUSION)
-        entityManager.persist(LimitedAccessGenerator.RESTRICTION)
-        entityManager.persist(LimitedAccessGenerator.BOTH_EXCLUSION)
-        entityManager.persist(LimitedAccessGenerator.BOTH_RESTRICTION)
+        save(LimitedAccessGenerator.EXCLUSION)
+        save(LimitedAccessGenerator.RESTRICTION)
+        save(LimitedAccessGenerator.BOTH_EXCLUSION)
+        save(LimitedAccessGenerator.BOTH_RESTRICTION)
 
-        sentenceAppointmentRepository.saveAndFlush(AppointmentGenerator.PERSON_APPOINTMENT)
-        sentenceAppointmentRepository.save(AppointmentGenerator.LATE_NIGHT_APPOINTMENT)
+        save(AppointmentGenerator.PERSON_APPOINTMENT)
+        save(AppointmentGenerator.LATE_NIGHT_APPOINTMENT)
 
-        entityManager.persistAll(
+        saveAll(
             PersonGenerator.RESCHEDULED_PERSON_1,
             PersonGenerator.RESCHEDULED_PERSON_2,
             PersonGenerator.RECREATE_APPT_PERSON_1,
             PersonGenerator.RECREATE_APPT_PERSON_2,
         )
-    }
-
-    private fun EntityManager.persistAll(vararg entities: Any) {
-        entities.forEach { persist(it) }
-    }
-
-    private fun EntityManager.persistCollection(entities: Collection<Any>) {
-        entities.forEach { persist(it) }
     }
 }

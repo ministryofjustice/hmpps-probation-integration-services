@@ -15,6 +15,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.entity.AuditableEntity
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.Person
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.ReferenceData
 import uk.gov.justice.digital.hmpps.integrations.oasys.WeightedScores
+import uk.gov.justice.digital.hmpps.jpa.GeneratedId
 import java.io.Serializable
 import java.time.LocalDate
 
@@ -90,9 +91,9 @@ class OasysAssessment(
     val softDeleted: Boolean = false,
 
     @Id
-    @GeneratedValue(generator = "oasys_assessment_id_seq")
+    @GeneratedId(generator = "oasys_assessment_id_seq")
     @Column(name = "oasys_assessment_id")
-    val id: Long = 0
+    val id: Long? = null
 ) : AuditableEntity() {
 
     init {

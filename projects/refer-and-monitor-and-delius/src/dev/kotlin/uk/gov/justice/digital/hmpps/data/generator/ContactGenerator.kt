@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
+import uk.gov.justice.digital.hmpps.data.generator.IdGenerator.id
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.Contact
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactOutcome
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactType
@@ -121,21 +122,21 @@ object ContactGenerator {
         staffId = ProviderGenerator.INTENDED_STAFF.id,
         rarActivity = rarActivity,
         externalReference = externalReference,
-        softDeleted = softDeleted
+        softDeleted = softDeleted,
     ).addNotes(notes).apply { this.outcome = outcome }
 
     fun generateType(
         code: String,
         nationalStandards: Boolean = false,
         attendance: Boolean = false,
-        id: Long = IdGenerator.getAndIncrement()
+        id: Long = id()
     ) = ContactType(code, nationalStandards, attendance, id)
 
     fun generateOutcome(
         code: String,
         attendance: Boolean? = null,
         compliantAcceptable: Boolean? = null,
-        id: Long = IdGenerator.getAndIncrement()
+        id: Long = id()
     ) = ContactOutcome(code, attendance, compliantAcceptable, id)
 
     fun generateEnforcementAction(
@@ -143,6 +144,6 @@ object ContactGenerator {
         contactType: ContactType,
         responseByPeriod: Long? = 7,
         description: String = "Description of $code",
-        id: Long = IdGenerator.getAndIncrement()
+        id: Long = id()
     ) = EnforcementAction(code, description, responseByPeriod, contactType, id)
 }

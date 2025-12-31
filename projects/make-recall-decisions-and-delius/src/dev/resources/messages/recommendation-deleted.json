@@ -2,7 +2,7 @@
   "eventType": "prison-recall.recommendation.deleted",
   "version": 1,
   "description": "Deleted recommendation in 'Consider a recall'",
-  "detailUrl": "http://localhost:{wiremock.port}/mrd/delete-recommendation-rationale/1",
+  "detailUrl": "http://localhost:{dev.wiremock.port}/mrd/delete-recommendation-rationale/1",
   "occurredAt": "2022-12-01T14:25:40.117Z",
   "additionalInformation": {
     "recommendationUrl": "https://example.com/overview",

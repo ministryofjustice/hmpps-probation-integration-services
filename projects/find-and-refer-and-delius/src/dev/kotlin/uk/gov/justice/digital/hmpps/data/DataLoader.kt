@@ -1,35 +1,21 @@
 package uk.gov.justice.digital.hmpps.data
 
-import jakarta.annotation.PostConstruct
-import jakarta.persistence.EntityManager
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
-import org.springframework.boot.context.event.ApplicationReadyEvent
-import org.springframework.context.ApplicationListener
 import org.springframework.stereotype.Component
-import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.data.generator.*
-import uk.gov.justice.digital.hmpps.user.AuditUserRepository
+import uk.gov.justice.digital.hmpps.data.loader.BaseDataLoader
+import uk.gov.justice.digital.hmpps.data.manager.DataManager
 
 @Component
-@ConditionalOnProperty("seed.database")
-class DataLoader(
-    private val auditUserRepository: AuditUserRepository,
-    private val entityManager: EntityManager,
-) : ApplicationListener<ApplicationReadyEvent> {
+class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
+    override fun systemUser() = UserGenerator.AUDIT_USER
 
-    @PostConstruct
-    fun saveAuditUser() {
-        auditUserRepository.save(UserGenerator.AUDIT_USER)
-    }
-
-    @Transactional
-    override fun onApplicationEvent(are: ApplicationReadyEvent) {
-        entityManager.persistAll(
+    override fun setupData() {
+        saveAll(
             LimitedAccessUserGenerator.EXCLUSION_USER,
             LimitedAccessUserGenerator.RESTRICTION_USER,
             LimitedAccessUserGenerator.RESTRICTION_AND_EXCLUSION_USER
         )
-        entityManager.persistAll(
+        saveAll(
             PersonGenerator.GENDER_MALE,
             PersonGenerator.ETHNICITY,
             PersonGenerator.PERSON_1,
@@ -38,20 +24,18 @@ class DataLoader(
             PersonGenerator.RESTRICTION,
             PersonGenerator.RESTRICTION_EXCLUSION,
         )
-        entityManager.flush()
-        entityManager.persistAll(
+        saveAll(
             LimitedAccessGenerator.EXCLUSION,
             LimitedAccessGenerator.RESTRICTION,
             LimitedAccessGenerator.BOTH_EXCLUSION,
             LimitedAccessGenerator.BOTH_RESTRICTION,
         )
-        entityManager.persistAll(
+        saveAll(
             PersonManagerGenerator.DEFAULT_PROVIDER,
             PersonManagerGenerator.PROVIDER_1,
             PersonManagerGenerator.PROVIDER_2
         )
-        entityManager.flush()
-        entityManager.persistAll(
+        saveAll(
             PersonManagerGenerator.DEFAULT_BOROUGH,
             PersonManagerGenerator.BOROUGH_1,
             PersonManagerGenerator.BOROUGH_2,
@@ -63,20 +47,19 @@ class DataLoader(
             PersonManagerGenerator.TEAM_2,
             PersonManagerGenerator.PERSON_MANAGER,
         )
-        entityManager.flush()
-        entityManager.persistAll(
+        saveAll(
             OfficeLocationGenerator.LOCATION_1,
             OfficeLocationGenerator.LOCATION_2,
             OfficeLocationGenerator.TEAM_OFFICE_1,
             OfficeLocationGenerator.TEAM_OFFICE_2,
         )
-        entityManager.persistAll(
+        saveAll(
             EventGenerator.CUSTODIAL_STATUS,
             EventGenerator.EVENT,
             EventGenerator.DISPOSAL,
             EventGenerator.CUSTODY,
         )
-        entityManager.persistAll(
+        saveAll(
             RequirementGenerator.RMC38,
             RequirementGenerator.RMC_7,
             RequirementGenerator.RMC_OTHER,
@@ -91,9 +74,5 @@ class DataLoader(
             RequirementGenerator.ACC_PROG_5,
             RequirementGenerator.ACC_PROG_6,
         )
-    }
-
-    private fun EntityManager.persistAll(vararg entities: Any) {
-        entities.forEach { persist(it) }
     }
 }

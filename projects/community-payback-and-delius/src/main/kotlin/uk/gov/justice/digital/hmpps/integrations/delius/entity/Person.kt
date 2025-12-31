@@ -13,7 +13,7 @@ import java.time.LocalDate
 class Person(
     @Id
     @Column(name = "offender_id")
-    val id: Long? = null,
+    val id: Long = 0,
 
     @Column(columnDefinition = "char(7)")
     val crn: String,

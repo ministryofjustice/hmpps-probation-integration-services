@@ -9,6 +9,7 @@ import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedBy
 import org.springframework.data.annotation.LastModifiedDate
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
+import uk.gov.justice.digital.hmpps.jpa.GeneratedId
 import java.time.ZonedDateTime
 
 @Entity
@@ -17,7 +18,7 @@ import java.time.ZonedDateTime
 class Contact(
     @Id
     @Column(name = "contact_id", updatable = false)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "contact_id_seq")
+    @GeneratedId(generator = "contact_id_seq")
     val id: Long,
 
     @Column(name = "offender_id", updatable = false)

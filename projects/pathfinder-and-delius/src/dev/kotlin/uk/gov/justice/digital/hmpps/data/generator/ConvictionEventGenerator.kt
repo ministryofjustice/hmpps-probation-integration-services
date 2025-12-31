@@ -71,7 +71,7 @@ object ConvictionEventGenerator {
         IdGenerator.getAndIncrement(),
         LocalDate.now(),
         LocalDate.now(),
-        PERSON_2
+        PERSON
     )
     val MAIN_OFFENCE_2 = MainOffence(
         IdGenerator.getAndIncrement(),

@@ -14,6 +14,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
+import uk.gov.justice.digital.hmpps.jpa.GeneratedId
 import uk.gov.justice.digital.hmpps.model.AppointmentResponseCase
 import uk.gov.justice.digital.hmpps.model.AppointmentResponseName
 import uk.gov.justice.digital.hmpps.model.CodeDescription
@@ -33,7 +34,7 @@ class UpwAppointment(
         sequenceName = "upw_appointment_id_seq",
         allocationSize = 1
     )
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "upw_appointment_id_generator")
+    @GeneratedId(generator = "upw_appointment_id_generator")
     @Column(name = "upw_appointment_id")
     override val id: Long,
 

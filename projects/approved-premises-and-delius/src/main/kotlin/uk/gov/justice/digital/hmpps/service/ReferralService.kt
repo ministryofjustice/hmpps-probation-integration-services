@@ -120,7 +120,7 @@ class ReferralService(
         val person = personRepository.getByCrn(crn)
         val externalReference = EXT_REF_BOOKING_PREFIX + details.bookingId
         val referral = findReferral(person, externalReference)?.also {
-            if (preferredResidenceRepository.existsByApprovedPremisesReferralId(it.id)) {
+            if (preferredResidenceRepository.existsByApprovedPremisesReferralId(it.id!!)) {
                 preferredResidenceRepository.deleteByApprovedPremisesReferralId(it.id)
             }
 
@@ -191,7 +191,7 @@ class ReferralService(
             expectedDepartureDate = details.expectedDepartureOn
         } ?: Residence(
             personId = person.id,
-            referralId = existing.referral.id,
+            referralId = existing.referral.id!!,
             approvedPremisesId = ap.id,
             arrivalDate = details.arrivedAt,
             expectedDepartureDate = details.expectedDepartureOn,
@@ -203,7 +203,7 @@ class ReferralService(
     fun personDeparted(person: Person, details: PersonDeparted) {
         val externalReference = EXT_REF_BOOKING_PREFIX + details.bookingId
         val referral = getReferral(person, externalReference)
-        val residence = residenceRepository.findByReferralId(referral.id) ?: throw IgnorableMessageException(
+        val residence = residenceRepository.findByReferralId(referral.id!!) ?: throw IgnorableMessageException(
             "Residence not found",
             mapOf("crn" to person.crn, "externalReference" to externalReference)
         )

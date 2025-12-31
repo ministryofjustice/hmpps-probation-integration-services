@@ -39,7 +39,7 @@ class ActionPlanNotification(
                 mapOf("crn" to notification.crn, "referralId" to notification.referral.id)
             )
         contactRepository.findNotificationContact(
-            nsi.id,
+            nsi.id!!,
             ContactType.Code.CRSNOTE.value,
             notification.date.toLocalDate()
         ).firstOrNull { c -> c.notes?.contains("Action Plan ${notification.type}") == true } ?: run {

@@ -19,9 +19,8 @@ internal class DataQualityIntegrationTest(
 
     @Test
     fun `retrieves count of cases with an invalid mobile number`() {
-        mockMvc.get("/data-quality/${ProviderGenerator.LONDON.code}/invalid-mobile-numbers/count") {
-            withToken()
-        }
+        mockMvc
+            .get("/data-quality/${ProviderGenerator.LONDON.code}/invalid-mobile-numbers/count") { withToken() }
             .andExpect {
                 status { isOk() }
                 content { string("2") }
@@ -30,9 +29,8 @@ internal class DataQualityIntegrationTest(
 
     @Test
     fun `retrieves cases with an invalid mobile number`() {
-        mockMvc.get("/data-quality/${ProviderGenerator.LONDON.code}/invalid-mobile-numbers") {
-            withToken()
-        }
+        mockMvc
+            .get("/data-quality/${ProviderGenerator.LONDON.code}/invalid-mobile-numbers") { withToken() }
             .andExpect {
                 status { isOk() }
                 content {
@@ -76,43 +74,42 @@ internal class DataQualityIntegrationTest(
 
     @Test
     fun `retrieves cases with a missing mobile number`() {
-        mockMvc.get("/data-quality/${ProviderGenerator.LONDON.code}/missing-mobile-numbers") {
-            withToken()
-        }.andExpect {
-            status { isOk() }
-            content {
-                json(
-                    """
-                    {
-                      "content": [
+        mockMvc
+            .get("/data-quality/${ProviderGenerator.LONDON.code}/missing-mobile-numbers") { withToken() }
+            .andExpect {
+                status { isOk() }
+                content {
+                    json(
+                        """
                         {
-                          "name": "Test Person",
-                          "crn": "A000006",
-                          "manager": {
-                            "name": "Test Staff",
-                            "email": "test@example.com"
-                          },
-                          "probationDeliveryUnit": "Croydon"
+                          "content": [
+                            {
+                              "name": "Test Person",
+                              "crn": "A000006",
+                              "manager": {
+                                "name": "Test Staff",
+                                "email": "test@example.com"
+                              },
+                              "probationDeliveryUnit": "Croydon"
+                            }
+                          ],
+                          "page": {
+                            "size": 10,
+                            "number": 0,
+                            "totalElements": 1,
+                            "totalPages": 1
+                          }
                         }
-                      ],
-                      "page": {
-                        "size": 10,
-                        "number": 0,
-                        "totalElements": 1,
-                        "totalPages": 1
-                      }
-                    }
-                    """.trimIndent(), JsonCompareMode.STRICT
-                )
+                        """.trimIndent(), JsonCompareMode.STRICT
+                    )
+                }
             }
-        }
     }
 
     @Test
     fun `retrieves cases with duplicate mobile numbers`() {
-        mockMvc.get("/data-quality/${ProviderGenerator.LONDON.code}/duplicate-mobile-numbers") {
-            withToken()
-        }
+        mockMvc
+            .get("/data-quality/${ProviderGenerator.LONDON.code}/duplicate-mobile-numbers") { withToken() }
             .andExpect {
                 status { isOk() }
                 content {

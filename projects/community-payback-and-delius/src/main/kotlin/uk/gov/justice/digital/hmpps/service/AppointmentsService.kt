@@ -171,9 +171,7 @@ class AppointmentsService(
 
         when (request.alertActive) {
             true -> {
-                val personManager =
-                    personManagerRepository.getActiveManagerForPerson(appointment.person.id!!)
-
+                val personManager = personManagerRepository.getActiveManagerForPerson(appointment.person.id)
                 contactAlertRepository.save(
                     ContactAlert(
                         contactId = contact.id,
@@ -186,10 +184,7 @@ class AppointmentsService(
                 )
             }
 
-            false -> {
-                contactAlertRepository.deleteByContactId(contact.id)
-            }
-
+            false -> contactAlertRepository.deleteByContactId(contact.id)
             null -> {}
         }
 

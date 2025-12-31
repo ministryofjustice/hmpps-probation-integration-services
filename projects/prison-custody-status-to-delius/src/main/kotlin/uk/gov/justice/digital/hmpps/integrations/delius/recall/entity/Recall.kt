@@ -11,6 +11,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import org.springframework.data.jpa.repository.JpaRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.Person
 import uk.gov.justice.digital.hmpps.integrations.delius.release.entity.Release
+import uk.gov.justice.digital.hmpps.jpa.GeneratedId
 import java.time.ZonedDateTime
 
 @Entity
@@ -19,7 +20,7 @@ import java.time.ZonedDateTime
 class Recall(
     @Id
     @SequenceGenerator(name = "recall_id_generator", sequenceName = "recall_id_seq", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "recall_id_generator")
+    @GeneratedId(generator = "recall_id_generator")
     @Column(name = "recall_id", nullable = false)
     val id: Long = 0,
 

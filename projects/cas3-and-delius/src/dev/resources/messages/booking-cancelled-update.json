@@ -2,7 +2,7 @@
   "eventType": "accommodation.cas3.booking.cancelled.updated",
   "version": 1,
   "description": "A cas3 booking has been cancelled",
-  "detailUrl": "http://localhost:{wiremock.port}/cas3-api/events/booking-cancelled/12345",
+  "detailUrl": "http://localhost:{dev.wiremock.port}/cas3-api/events/booking-cancelled/12345",
   "occurredAt": "2022-12-04T10:42:43+00:00",
   "additionalInformation": {
     "applicationId": "68df9f6c-3fcb-4ec6-8fcf-96551cd9b080"

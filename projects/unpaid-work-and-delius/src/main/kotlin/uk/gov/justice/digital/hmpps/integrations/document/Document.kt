@@ -7,6 +7,7 @@ import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedBy
 import org.springframework.data.annotation.LastModifiedDate
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
+import uk.gov.justice.digital.hmpps.jpa.GeneratedId
 import java.time.ZonedDateTime
 
 @Entity
@@ -15,7 +16,7 @@ import java.time.ZonedDateTime
 class Document(
     @Id
     @SequenceGenerator(name = "document_id_generator", sequenceName = "document_id_seq", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "document_id_generator")
+    @GeneratedId(generator = "document_id_generator")
     @Column(name = "document_id")
     val id: Long = 0,
 

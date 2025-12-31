@@ -18,7 +18,7 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
 import org.springframework.test.context.bean.override.mockito.MockitoBean
 import uk.gov.justice.digital.hmpps.data.generator.*
-import uk.gov.justice.digital.hmpps.data.generator.AddressGenerator.PERSON_ADDRESS_ID
+import uk.gov.justice.digital.hmpps.data.generator.AddressGenerator.PERSON_ADDRESS
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.EventDetails
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.PersonArrived
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.PersonDeparted
@@ -355,7 +355,7 @@ internal class MessagingIntegrationTest @Autowired constructor(
 
         // And the main address is updated to be that of the approved premises - consequently any existing main address is made previous
         val addresses = personAddressRepository.findAll().filter { it.personId == PersonGenerator.DEFAULT.id }
-            .associateBy { it.id == PERSON_ADDRESS_ID }
+            .associateBy { it.id == PERSON_ADDRESS.id }
         assertThat(addresses.size, equalTo(2))
         val previous = addresses[true]!!
         assertThat(previous.endDate, equalTo(details.arrivedAt.toLocalDate()))
@@ -606,10 +606,10 @@ internal class MessagingIntegrationTest @Autowired constructor(
         }
         assertNotNull(ref!!)
 
-        residenceRepository.findByReferralId(ref.id)?.also(residenceRepository::delete)
+        residenceRepository.findByReferralId(ref.id!!)?.also(residenceRepository::delete)
 
-        preferredResidenceRepository.save(PreferredResidence(0, ref.id))
-        assertTrue(preferredResidenceRepository.existsByApprovedPremisesReferralId(ref.id))
+        preferredResidenceRepository.save(PreferredResidence(0, ref.id!!))
+        assertTrue(preferredResidenceRepository.existsByApprovedPremisesReferralId(ref.id!!))
 
         channelManager.getChannel(queueName).publishAndWait(event)
 
@@ -643,6 +643,6 @@ internal class MessagingIntegrationTest @Autowired constructor(
         }
         assertNull(referral)
 
-        assertFalse(preferredResidenceRepository.existsByApprovedPremisesReferralId(ref.id))
+        assertFalse(preferredResidenceRepository.existsByApprovedPremisesReferralId(ref.id!!))
     }
 }
