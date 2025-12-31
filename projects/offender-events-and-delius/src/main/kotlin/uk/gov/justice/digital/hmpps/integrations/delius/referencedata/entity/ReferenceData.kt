@@ -59,5 +59,3 @@ fun ReferenceDataRepository.getByCode(code: String, datasetCode: String) =
     findByCode(code, datasetCode) ?: throw NotFoundException(datasetCode, "code", code)
 
 fun ReferenceDataRepository.domainEventType(code: String) = getByCode(code, Dataset.Code.DOMAIN_EVENT_TYPE.value)
-
-interface DatasetRepository : JpaRepository<Dataset, Long>

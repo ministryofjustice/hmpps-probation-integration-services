@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps
 
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.*
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
@@ -14,6 +15,7 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.bean.override.mockito.MockitoBean
 import org.springframework.test.context.bean.override.mockito.MockitoSpyBean
 import uk.gov.justice.digital.hmpps.data.generator.OffenderDeltaGenerator
+import uk.gov.justice.digital.hmpps.integrations.delius.OffenderDeltaPoller
 import uk.gov.justice.digital.hmpps.integrations.delius.domainevent.entity.DomainEventRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.offender.OffenderDelta
 import uk.gov.justice.digital.hmpps.integrations.delius.offender.OffenderDeltaRepository
@@ -25,6 +27,7 @@ import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 internal class IntegrationTest @Autowired constructor(
     @Value("\${messaging.producer.topic}") private val topicName: String,
     private val channelManager: HmppsChannelManager,
+    private val offenderDeltaPoller: OffenderDeltaPoller,
     private val offenderDeltaRepository: OffenderDeltaRepository,
     private val domainEventRepository: DomainEventRepository
 ) {
@@ -34,12 +37,17 @@ internal class IntegrationTest @Autowired constructor(
     @MockitoBean
     lateinit var telemetryService: TelemetryService
 
+    @BeforeEach
+    fun reset() {
+        domainEventRepository.deleteAll()
+    }
+
     @ParameterizedTest
     @MethodSource("deltas")
     fun `offender delta test`(delta: OffenderDelta, expected: List<Map<String, String>>) {
         offenderDeltaRepository.save(delta)
 
-        verify(offenderDeltaService, after(250).atLeastOnce()).notify(any())
+        offenderDeltaPoller.poll()
         generateSequence { channelManager.getChannel(topicName).receive()?.eventType }.toList()
 
         if (expected.isNotEmpty()) {
@@ -58,8 +66,6 @@ internal class IntegrationTest @Autowired constructor(
     @Test
     fun `CONTACT UPSERT with visor flag false publishes notification and telemetry but no MAPPA domain event`() {
         // given
-        domainEventRepository.deleteAll()
-
         val delta = OffenderDeltaGenerator.generate(
             sourceTable = "CONTACT",
             sourceId = 101, // visorExported = false, softDeleted = false
@@ -69,7 +75,7 @@ internal class IntegrationTest @Autowired constructor(
         offenderDeltaRepository.save(delta)
 
         // when
-        verify(offenderDeltaService, after(500).atLeastOnce()).notify(any())
+        offenderDeltaPoller.poll()
 
         // then
         val domainEvents = domainEventRepository.findAll()
@@ -106,8 +112,6 @@ internal class IntegrationTest @Autowired constructor(
     @Test
     fun `CONTACT UPSERT with visor flag true publishes MAPPA updated domain event, notification and telemetry`() {
         // given
-        domainEventRepository.deleteAll()
-
         val delta = OffenderDeltaGenerator.generate(
             sourceTable = "CONTACT",
             sourceId = 202, // visorExported = true, softDeleted = false, MAPPA registration exists
@@ -117,7 +121,7 @@ internal class IntegrationTest @Autowired constructor(
         offenderDeltaRepository.save(delta)
 
         // when
-        verify(offenderDeltaService, after(500).atLeastOnce()).notify(any())
+        offenderDeltaPoller.poll()
 
         // then
         val domainEvents = domainEventRepository.findAll()
@@ -151,8 +155,6 @@ internal class IntegrationTest @Autowired constructor(
     @Test
     fun `CONTACT DELETE with visor flag false publishes CONTACT_DELETED notification and telemetry but no MAPPA domain event`() {
         // given
-        domainEventRepository.deleteAll()
-
         val delta = OffenderDeltaGenerator.generate(
             sourceTable = "CONTACT",
             sourceId = 102, // softDeleted = true, visorExported = false
@@ -162,7 +164,7 @@ internal class IntegrationTest @Autowired constructor(
         offenderDeltaRepository.save(delta)
 
         // when
-        verify(offenderDeltaService, after(500).atLeastOnce()).notify(any())
+        offenderDeltaPoller.poll()
 
         // then
         val domainEvents = domainEventRepository.findAll()
@@ -200,8 +202,6 @@ internal class IntegrationTest @Autowired constructor(
     @Test
     fun `CONTACT DELETE with visor flag true publishes CONTACT_DELETED notification telemetry and MAPPA deleted domain event`() {
         // given
-        domainEventRepository.deleteAll()
-
         val delta = OffenderDeltaGenerator.generate(
             sourceTable = "CONTACT",
             sourceId = 201, // visorExported = true, softDeleted = true
@@ -211,7 +211,7 @@ internal class IntegrationTest @Autowired constructor(
         offenderDeltaRepository.save(delta)
 
         // when
-        verify(offenderDeltaService, after(500).atLeastOnce()).notify(any())
+        offenderDeltaPoller.poll()
 
         // then
         val domainEvents = domainEventRepository.findAll()
@@ -270,8 +270,6 @@ internal class IntegrationTest @Autowired constructor(
     @Test
     fun `CONTACT DELETE hard deleted contact publishes CONTACT_DELETED notification and telemetry but no MAPPA domain event`() {
         // given
-        domainEventRepository.deleteAll()
-
         // sourceId = 99 -> hard deleted contact (no CONTACT row exists)
         val delta = OffenderDeltaGenerator.generate(
             sourceTable = "CONTACT",
@@ -282,7 +280,7 @@ internal class IntegrationTest @Autowired constructor(
         offenderDeltaRepository.save(delta)
 
         // when
-        verify(offenderDeltaService, after(500).atLeastOnce()).notify(any())
+        offenderDeltaPoller.poll()
 
         // then
         val domainEvents = domainEventRepository.findAll()

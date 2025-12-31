@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.integrations.delius.domainevent.entity
 import jakarta.persistence.*
 import org.springframework.data.jpa.repository.JpaRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.ReferenceData
+import uk.gov.justice.digital.hmpps.jpa.GeneratedId
 
 @Entity
 @SequenceGenerator(
@@ -13,7 +14,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.Ref
 class DomainEvent(
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "domain_event_id_seq")
+    @GeneratedId(generator = "domain_event_id_seq")
     @Column(name = "domain_event_id")
     val id: Long = 0,
 

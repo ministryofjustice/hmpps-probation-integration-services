@@ -16,7 +16,6 @@ class Registration(
 
     @Id
     @Column(name = "registration_id")
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "registration_id_seq")
     val id: Long = 0,
 
     @Column(name = "offender_id")

@@ -8,4 +8,8 @@ object DatasetGenerator {
         id = id(),
         name = Dataset.Code.DOMAIN_EVENT_TYPE.value
     )
+    val MAPPA_CATEGORY = Dataset(
+        id = id(),
+        name = "MAPPA CATEGORY"
+    )
 }
