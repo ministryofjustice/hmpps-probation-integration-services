@@ -10,7 +10,7 @@ interface SentenceComponent {
     val id: Long
     val disposal: Disposal
     val startDate: ZonedDateTime
-    val commencementDate: ZonedDateTime?
+    var commencementDate: ZonedDateTime?
     var terminationDate: ZonedDateTime?
     var terminationReason: ReferenceData?
     var pendingTransfer: Boolean
