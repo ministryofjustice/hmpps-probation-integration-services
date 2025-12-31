@@ -1,7 +1,7 @@
 {
   "Type" : "Notification",
   "MessageId" : "2ed0c68a-492f-5818-8da8-a6b185ba0ca2",
-  "Message" : "{\"eventType\":\"person.alert.updated\",\"additionalInformation\":{\"alertUuid\":\"424e52e8-1971-4622-8d2d-4b4466c771fd\",\"alertCode\":\"OVI\",\"source\":\"DPS\"},\"version\":1,\"description\":\"An alert has been created in the alerts service\",\"occurredAt\":\"2025-02-28T14:38:30.224174387Z\",\"detailUrl\":\"http://localhost:{wiremock.port}/alerts/424e52e8-1971-4622-8d2d-4b4466c771fd\",\"personReference\":{\"identifiers\":[{\"type\":\"NOMS\",\"value\":\"AA0001A\"}]}}",
+  "Message": "{\"eventType\":\"person.alert.updated\",\"additionalInformation\":{\"alertUuid\":\"424e52e8-1971-4622-8d2d-4b4466c771fd\",\"alertCode\":\"OVI\",\"source\":\"DPS\"},\"version\":1,\"description\":\"An alert has been created in the alerts service\",\"occurredAt\":\"2025-02-28T14:38:30.224174387Z\",\"detailUrl\":\"http://localhost:{dev.wiremock.port}/alerts/424e52e8-1971-4622-8d2d-4b4466c771fd\",\"personReference\":{\"identifiers\":[{\"type\":\"NOMS\",\"value\":\"AA0001A\"}]}}",
   "MessageAttributes" : {
     "eventType" : {"Type":"String","Value":"person.alert.updated"}
   }

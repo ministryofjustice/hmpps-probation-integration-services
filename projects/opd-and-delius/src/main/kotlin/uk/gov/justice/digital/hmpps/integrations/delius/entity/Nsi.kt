@@ -14,6 +14,7 @@ import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactType
+import uk.gov.justice.digital.hmpps.jpa.GeneratedId
 import java.time.LocalDate
 import java.time.ZonedDateTime
 
@@ -59,9 +60,9 @@ class Nsi(
     val pendingTransfer: Boolean = false,
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "nsi_id_generator")
+    @GeneratedId(generator = "nsi_id_generator")
     @Column(name = "nsi_id")
-    val id: Long = 0,
+    val id: Long? = null,
 
     @Version
     @Column(name = "row_version")
@@ -94,7 +95,7 @@ class Nsi(
             active = field == null
         }
 
-    fun appendNotes(notes: String) {
+    fun appendNotes(notes: String) = this.also {
         this.notes = this.notes?.plus(notes) ?: notes
     }
 }
@@ -137,9 +138,9 @@ class NsiManager(
     val version: Long = 0,
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "nsi_manager_id_generator")
+    @GeneratedId(generator = "nsi_manager_id_generator")
     @Column(name = "nsi_manager_id")
-    val id: Long = 0
+    val id: Long? = null
 ) {
     @CreatedDate
     var createdDatetime: ZonedDateTime = ZonedDateTime.now()

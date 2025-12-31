@@ -10,7 +10,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.person.Person
 import java.time.LocalDate
 
 object CourtAppearanceGenerator {
-    var DEFAULT = generate(EventGenerator.CASE_VIEW.asEvent())
+    val DEFAULT = generate(EventGenerator.CASE_VIEW.asEvent())
 
     fun generate(
         event: Event,

@@ -14,6 +14,7 @@ import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.findByIdOrNull
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
+import uk.gov.justice.digital.hmpps.jpa.GeneratedId
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.ZonedDateTime
@@ -74,9 +75,9 @@ class Appointment(
     val softDeleted: Boolean,
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "contact_id_generator")
+    @GeneratedId(generator = "contact_id_generator")
     @Column(name = "contact_id")
-    val id: Long = 0
+    val id: Long? = null
 ) {
     var partitionAreaId: Long = 0
 

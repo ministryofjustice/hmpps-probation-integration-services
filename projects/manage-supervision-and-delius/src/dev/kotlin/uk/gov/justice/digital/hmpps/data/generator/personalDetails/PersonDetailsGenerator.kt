@@ -1,7 +1,7 @@
 package uk.gov.justice.digital.hmpps.data.generator.personalDetails
 
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.USER
-import uk.gov.justice.digital.hmpps.data.generator.IdGenerator
+import uk.gov.justice.digital.hmpps.data.generator.IdGenerator.id
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.ContactAddress
@@ -14,11 +14,11 @@ import java.time.LocalDate
 import java.time.ZonedDateTime
 
 object PersonDetailsGenerator {
-    val GENDER_FEMALE = ReferenceData(IdGenerator.getAndIncrement(), "F", "Female")
-    val RELIGION_DEFAULT = ReferenceData(IdGenerator.getAndIncrement(), "C", "Christian")
-    val SEXUAL_ORIENTATION = ReferenceData(IdGenerator.getAndIncrement(), "H", "Heterosexual")
-    val LANGUAGE_RD = ReferenceData(IdGenerator.getAndIncrement(), "E", "Arabic")
-    val GENDER_IDENTITY_RD = ReferenceData(IdGenerator.getAndIncrement(), "GI", "Test Gender Identity")
+    val GENDER_FEMALE = ReferenceData(id(), "F", "Female")
+    val RELIGION_DEFAULT = ReferenceData(id(), "C", "Christian")
+    val SEXUAL_ORIENTATION = ReferenceData(id(), "H", "Heterosexual")
+    val LANGUAGE_RD = ReferenceData(id(), "E", "Arabic")
+    val GENDER_IDENTITY_RD = ReferenceData(id(), "GI", "Test Gender Identity")
 
     val PERSONAL_DETAILS = generatePersonDetails(
         "X000005",
@@ -54,18 +54,18 @@ object PersonDetailsGenerator {
     val ALIAS_1 = generateAlias("Sam", "Edward", "Smith", PERSONAL_DETAILS.id)
     val ALIAS_2 = generateAlias("Joe", "Richard", "Jones", PersonGenerator.OVERVIEW.id)
 
-    val DISABILITY_1_RD = ReferenceData(IdGenerator.getAndIncrement(), "D20", "Some Illness")
-    val DISABILITY_2_RD = ReferenceData(IdGenerator.getAndIncrement(), "D20", "Blind")
-    val PERSONAL_CIRCUMSTANCE_1_RD = PersonalCircumstanceType(IdGenerator.getAndIncrement(), "E02", "Employed")
+    val DISABILITY_1_RD = ReferenceData(id(), "D20", "Some Illness")
+    val DISABILITY_2_RD = ReferenceData(id(), "D20", "Blind")
+    val PERSONAL_CIRCUMSTANCE_1_RD = PersonalCircumstanceType(id(), "E02", "Employed")
     val PERSONAL_CIRCUMSTANCE_SUBTYPE_1 =
-        PersonalCircumstanceSubType(IdGenerator.getAndIncrement(), "Full-time employed (30 or more hours per week")
-    val PERSONAL_CIRCUMSTANCE_2_RD = PersonalCircumstanceType(IdGenerator.getAndIncrement(), "A20", "Owns house")
-    val PERSONAL_CIRCUMSTANCE_SUBTYPE_2 = PersonalCircumstanceSubType(IdGenerator.getAndIncrement(), "Has children")
-    val PROVISION_1_RD = ReferenceData(IdGenerator.getAndIncrement(), "BB01", "Braille")
-    val PROVISION_2_RD = ReferenceData(IdGenerator.getAndIncrement(), "BC20", "Lots of breaks")
+        PersonalCircumstanceSubType(id(), "Full-time employed (30 or more hours per week")
+    val PERSONAL_CIRCUMSTANCE_2_RD = PersonalCircumstanceType(id(), "A20", "Owns house")
+    val PERSONAL_CIRCUMSTANCE_SUBTYPE_2 = PersonalCircumstanceSubType(id(), "Has children")
+    val PROVISION_1_RD = ReferenceData(id(), "BB01", "Braille")
+    val PROVISION_2_RD = ReferenceData(id(), "BC20", "Lots of breaks")
 
     val DISABILITY_1 = Disability(
-        IdGenerator.getAndIncrement(),
+        id(),
         PERSONAL_DETAILS.id,
         DISABILITY_1_RD,
         LocalDate.now().minusDays(1),
@@ -80,7 +80,7 @@ object PersonDetailsGenerator {
         """.trimIndent()
     )
     val DISABILITY_2 = Disability(
-        IdGenerator.getAndIncrement(),
+        id(),
         PERSONAL_DETAILS.id,
         DISABILITY_2_RD,
         LocalDate.now().minusDays(2),
@@ -89,7 +89,7 @@ object PersonDetailsGenerator {
     )
 
     val PROVISION_1 = Provision(
-        IdGenerator.getAndIncrement(),
+        id(),
         PERSONAL_DETAILS.id,
         PROVISION_1_RD,
         LocalDate.now().minusDays(1),
@@ -104,7 +104,7 @@ object PersonDetailsGenerator {
         """.trimIndent()
     )
     val PROVISION_2 = Provision(
-        IdGenerator.getAndIncrement(),
+        id(),
         PERSONAL_DETAILS.id,
         PROVISION_2_RD,
         LocalDate.now().minusDays(2),
@@ -113,7 +113,7 @@ object PersonDetailsGenerator {
     )
 
     val PERSONAL_CIRC_1 = PersonalCircumstance(
-        IdGenerator.getAndIncrement(),
+        id(),
         PERSONAL_DETAILS.id,
         PERSONAL_CIRCUMSTANCE_1_RD,
         PERSONAL_CIRCUMSTANCE_SUBTYPE_1,
@@ -133,7 +133,7 @@ object PersonDetailsGenerator {
         LocalDate.now().minusDays(1)
     )
     val PERSONAL_CIRC_2 = PersonalCircumstance(
-        IdGenerator.getAndIncrement(),
+        id(),
         PERSONAL_DETAILS.id,
         PERSONAL_CIRCUMSTANCE_2_RD,
         PERSONAL_CIRCUMSTANCE_SUBTYPE_2,
@@ -153,7 +153,7 @@ object PersonDetailsGenerator {
     )
 
     val PERSONAL_CIRC_PREV = PersonalCircumstance(
-        IdGenerator.getAndIncrement(),
+        id(),
         PERSONAL_DETAILS.id,
         PERSONAL_CIRCUMSTANCE_2_RD,
         PERSONAL_CIRCUMSTANCE_SUBTYPE_2,
@@ -165,11 +165,11 @@ object PersonDetailsGenerator {
         endDate = LocalDate.now().minusDays(3),
     )
 
-    val RELATIONSHIP_TYPE = ReferenceData(IdGenerator.getAndIncrement(), "FM01", "Family Member")
+    val RELATIONSHIP_TYPE = ReferenceData(id(), "FM01", "Family Member")
 
     val CONTACT_ADDRESS = generateContactAddress("31", "Test Steet", "Test town", "Test County", "NE1 56A")
     val PERSONAL_CONTACT_1 = PersonalContactEntity(
-        IdGenerator.getAndIncrement(),
+        id(),
         PERSONAL_DETAILS,
         "Sam",
         "Steven",
@@ -192,16 +192,16 @@ object PersonDetailsGenerator {
         """.trimIndent(),
     )
 
-    val ADDRESS_TYPE = Dataset(IdGenerator.getAndIncrement(), "ADDRESS TYPE")
-    val ADDRESS_STATUS = Dataset(IdGenerator.getAndIncrement(), "ADDRESS STATUS")
+    val ADDRESS_TYPE = Dataset(id(), "ADDRESS TYPE")
+    val ADDRESS_STATUS = Dataset(id(), "ADDRESS STATUS")
 
-    val PERSON_ADDRESS_STATUS_1 = ReferenceData(IdGenerator.getAndIncrement(), "M", "Main Address", ADDRESS_STATUS.id)
+    val PERSON_ADDRESS_STATUS_1 = ReferenceData(id(), "M", "Main Address", ADDRESS_STATUS.id)
     val PERSON_PREVIOUS_ADDRESS_STATUS =
-        ReferenceData(IdGenerator.getAndIncrement(), "P", "Previous Address", ADDRESS_STATUS.id)
+        ReferenceData(id(), "P", "Previous Address", ADDRESS_STATUS.id)
     val PERSON_ADDRESS_STATUS_2 =
-        ReferenceData(IdGenerator.getAndIncrement(), "A", "Another Address", ADDRESS_STATUS.id)
-    val PERSON_ADDRESS_TYPE_1 = ReferenceData(IdGenerator.getAndIncrement(), "T1", "Address type 1", ADDRESS_TYPE.id)
-    val PERSON_ADDRESS_TYPE_2 = ReferenceData(IdGenerator.getAndIncrement(), "T2", "Address type 2", ADDRESS_TYPE.id)
+        ReferenceData(id(), "A", "Another Address", ADDRESS_STATUS.id)
+    val PERSON_ADDRESS_TYPE_1 = ReferenceData(id(), "T1", "Address type 1", ADDRESS_TYPE.id)
+    val PERSON_ADDRESS_TYPE_2 = ReferenceData(id(), "T2", "Address type 2", ADDRESS_TYPE.id)
     val PERSON_ADDRESS_1 = generatePersonAddress(
         "31",
         "Test Street",
@@ -347,7 +347,7 @@ object PersonDetailsGenerator {
         county: String,
         postcode: String,
     ) = ContactAddress(
-        id = IdGenerator.getAndIncrement(),
+        id = id(),
         buildingName = null,
         addressNumber = addressNumber,
         county = county,
@@ -377,7 +377,7 @@ object PersonDetailsGenerator {
 
     ) = PersonAddress(
         personId = personId,
-        id = null,
+        id = id(),
         buildingName = null,
         buildingNumber = addressNumber,
         county = county,
@@ -415,7 +415,7 @@ object PersonDetailsGenerator {
         exclusionMessage: String? = null,
         restrictionMessage: String? = null
     ) = Person(
-        id = IdGenerator.getAndIncrement(),
+        id = id(),
         crn = crn,
         pnc = "1964/6108598D",
         noms = "G9566GQ",
@@ -459,7 +459,7 @@ object PersonDetailsGenerator {
     }
 
     fun generateAlias(forename: String, secondName: String, surname: String, personId: Long) = Alias(
-        id = IdGenerator.getAndIncrement(),
+        id = id(),
         forename = forename,
         secondName = secondName,
         surname = surname,

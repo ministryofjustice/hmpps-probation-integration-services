@@ -10,7 +10,7 @@ import java.time.LocalDate
 @Entity
 @Immutable
 @SQLRestriction("soft_deleted = 0")
-data class MainOffence(
+class MainOffence(
     @Id
     @Column(name = "main_offence_id")
     val id: Long,
@@ -37,7 +37,7 @@ data class MainOffence(
 @Entity
 @Immutable
 @SQLRestriction("soft_deleted = 0")
-data class AdditionalOffence(
+class AdditionalOffence(
     @Id
     @Column(name = "additional_offence_id")
     val id: Long,
@@ -64,7 +64,7 @@ data class AdditionalOffence(
 @Immutable
 @Entity
 @Table(name = "r_offence")
-data class Offence(
+class Offence(
     @Id
     @Column(name = "offence_id")
     val id: Long,

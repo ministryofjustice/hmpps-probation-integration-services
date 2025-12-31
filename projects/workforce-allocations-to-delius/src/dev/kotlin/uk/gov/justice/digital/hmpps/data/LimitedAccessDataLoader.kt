@@ -1,28 +1,18 @@
 package uk.gov.justice.digital.hmpps.data
 
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.stereotype.Component
 import uk.gov.justice.digital.hmpps.data.generator.LimitedAccessGenerator
 import uk.gov.justice.digital.hmpps.data.generator.LimitedAccessGenerator.generateExclusion
 import uk.gov.justice.digital.hmpps.data.generator.LimitedAccessGenerator.generateRestriction
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.UserGenerator
-import uk.gov.justice.digital.hmpps.integrations.delius.person.PersonRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.user.ExclusionRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.user.RestrictionRepository
-import uk.gov.justice.digital.hmpps.user.AuditUserRepository
+import uk.gov.justice.digital.hmpps.data.manager.DataManager
 
 @Component
-@ConditionalOnProperty("seed.database")
-class LimitedAccessDataLoader(
-    private val auditUserRepository: AuditUserRepository,
-    private val personRepository: PersonRepository,
-    private val exclusionRepository: ExclusionRepository,
-    private val restrictionRepository: RestrictionRepository
-) {
+class LimitedAccessDataLoader(private val dataManager: DataManager) {
     fun loadData() {
-        auditUserRepository.saveAll(listOf(UserGenerator.LIMITED_ACCESS_USER))
-        personRepository.saveAll(
+        dataManager.saveAll(listOf(UserGenerator.LIMITED_ACCESS_USER))
+        dataManager.saveAll(
             listOf(
                 PersonGenerator.EXCLUSION,
                 PersonGenerator.RESTRICTION,
@@ -30,9 +20,9 @@ class LimitedAccessDataLoader(
             )
         )
 
-        exclusionRepository.save(LimitedAccessGenerator.EXCLUSION)
-        restrictionRepository.save(LimitedAccessGenerator.RESTRICTION)
-        exclusionRepository.save(generateExclusion(person = PersonGenerator.RESTRICTION_EXCLUSION))
-        restrictionRepository.save(generateRestriction(person = PersonGenerator.RESTRICTION_EXCLUSION))
+        dataManager.save(LimitedAccessGenerator.EXCLUSION)
+        dataManager.save(LimitedAccessGenerator.RESTRICTION)
+        dataManager.save(generateExclusion(person = PersonGenerator.RESTRICTION_EXCLUSION))
+        dataManager.save(generateRestriction(person = PersonGenerator.RESTRICTION_EXCLUSION))
     }
 }

@@ -10,6 +10,7 @@ import org.springframework.data.annotation.LastModifiedBy
 import org.springframework.data.annotation.LastModifiedDate
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import org.springframework.data.jpa.repository.JpaRepository
+import uk.gov.justice.digital.hmpps.jpa.GeneratedId
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.ZonedDateTime
@@ -22,7 +23,7 @@ import java.time.ZonedDateTime
 class PersonManager(
     @Id
     @Column(name = "offender_manager_id")
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "offender_manager_id_seq")
+    @GeneratedId(generator = "offender_manager_id_seq")
     val id: Long? = null,
 
     @Column(name = "allocation_date")

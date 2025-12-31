@@ -13,7 +13,7 @@ spring:
         client-secret: ${ords.client-secret}
     provider:
       ords-oasys-auth:
-        token-uri: http://localhost:${wiremock.port}/eor/oasys/oauth/token
+        token-uri: http://localhost:${dev.wiremock.port}/eor/oasys/oauth/token
 
 oauth2.roles:
   - PROBATION_API__APPROVED_PREMISES__ASSESSMENTS
@@ -34,7 +34,8 @@ info.productId: HMPPS518 # https://developer-portal.hmpps.service.justice.gov.uk
 spring.config.activate.on-profile: [ "dev", "integration-test" ]
 server.shutdown: immediate
 
-wiremock.enabled: true
+dev:
+  wiremock.enabled: true
 
 ords:
   client-id: approved-premises-and-oasys
@@ -42,7 +43,7 @@ ords:
 
 integrations:
   ords-oasys:
-    url: http://localhost:${wiremock.port}/eor/oasys
+    url: http://localhost:${dev.wiremock.port}/eor/oasys
 
 logging.level:
   uk.gov.justice.digital.hmpps: DEBUG

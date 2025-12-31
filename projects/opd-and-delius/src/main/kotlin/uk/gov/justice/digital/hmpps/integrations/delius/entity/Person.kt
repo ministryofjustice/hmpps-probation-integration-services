@@ -5,9 +5,7 @@ import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.NumericBooleanConverter
 import org.springframework.data.jpa.repository.JpaRepository
-import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException
 import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException.Companion.orIgnore
-import uk.gov.justice.digital.hmpps.exception.NotFoundException
 
 @Immutable
 @Entity

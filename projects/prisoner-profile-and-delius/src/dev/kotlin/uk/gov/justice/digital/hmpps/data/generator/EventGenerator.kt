@@ -73,7 +73,7 @@ object EventGenerator {
         event = EVENT,
         outcome = null,
         softDeleted = false
-    ).also { EVENT.set(Event::courtAppearances, listOf(this)) }
+    ).also { EVENT.set(Event::courtAppearances, listOf(it)) }
 
     val UNSENTENCED_COURT_APPEARANCE = CourtAppearance(
         id = IdGenerator.getAndIncrement(),
@@ -82,7 +82,7 @@ object EventGenerator {
         event = UNSENTENCED_EVENT,
         outcome = ReferenceData("TEST", "Community Order", IdGenerator.getAndIncrement()),
         softDeleted = false
-    ).also { UNSENTENCED_EVENT.set(Event::courtAppearances, listOf(this)) }
+    ).also { UNSENTENCED_EVENT.set(Event::courtAppearances, listOf(it)) }
 
     val COURT_REPORT_TYPE =
         CourtReportType(courtReportTypeId = IdGenerator.getAndIncrement(), description = "court report type")

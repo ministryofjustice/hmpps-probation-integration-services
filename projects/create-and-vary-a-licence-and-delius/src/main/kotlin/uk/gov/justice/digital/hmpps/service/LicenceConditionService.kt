@@ -37,7 +37,7 @@ class LicenceConditionService(
         )
         licenceConditionManagerRepository.save(
             LicenceConditionManager(
-                lc.id,
+                lc.id!!,
                 startDate.atStartOfDay(EuropeLondon),
                 com.provider.id,
                 com.team.id,

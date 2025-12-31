@@ -15,6 +15,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
+import uk.gov.justice.digital.hmpps.jpa.GeneratedId
 import java.time.*
 import java.time.format.DateTimeFormatter
 
@@ -78,9 +79,9 @@ class Appointment(
     val version: Long = 0,
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "contact_id_generator")
+    @GeneratedId(generator = "contact_id_generator")
     @Column(name = "contact_id")
-    val id: Long = 0
+    val id: Long? = null
 ) {
     var partitionAreaId: Long = 0
 

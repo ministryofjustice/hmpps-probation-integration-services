@@ -1,73 +1,31 @@
 package uk.gov.justice.digital.hmpps.data
 
-import jakarta.annotation.PostConstruct
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
-import org.springframework.boot.context.event.ApplicationReadyEvent
-import org.springframework.context.ApplicationListener
-import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Component
 import uk.gov.justice.digital.hmpps.data.generator.*
-import uk.gov.justice.digital.hmpps.integrations.delius.allocation.entity.CaseAllocationRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.allocation.entity.event.CustodyRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.allocation.entity.event.Disposal
-import uk.gov.justice.digital.hmpps.integrations.delius.allocation.entity.event.Event
-import uk.gov.justice.digital.hmpps.integrations.delius.allocation.entity.event.keydate.KeyDateRepository
+import uk.gov.justice.digital.hmpps.data.loader.BaseDataLoader
+import uk.gov.justice.digital.hmpps.data.manager.DataManager
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactType
-import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactTypeRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonManager
-import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.registration.entity.RegisterType
-import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.registration.entity.RegistrationRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.*
-import uk.gov.justice.digital.hmpps.integrations.delius.reference.entity.ReferenceDataRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.reference.entity.ReferenceDataSet
-import uk.gov.justice.digital.hmpps.user.AuditUserRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.StaffUser
 import java.time.LocalDate
 
 @Component
-@ConditionalOnProperty("seed.database")
-class DataLoader(
-    private val auditUserRepository: AuditUserRepository,
-    private val staffUserRepository: StaffUserRepository,
-    private val referenceDataSetRepository: ReferenceDataSetRepository,
-    private val referenceDataRepository: ReferenceDataRepository,
-    private val registerTypeRepository: RegisterTypeRepository,
-    private val institutionRepository: InstitutionRepository,
-    private val probationAreaRepository: ProbationAreaRepository,
-    private val districtRepository: DistrictRepository,
-    private val teamRepository: TeamRepository,
-    private val staffRepository: StaffRepository,
-    private val personRepository: PersonRepository,
-    private val personManagerRepository: PersonManagerRepository,
-    private val eventRepository: EventRepository,
-    private val disposalRepository: DisposalRepository,
-    private val custodyRepository: CustodyRepository,
-    private val caseAllocationRepository: CaseAllocationRepository,
-    private val registrationRepository: RegistrationRepository,
-    private val keyDateRepository: KeyDateRepository,
-    private val contactTypeRepository: ContactTypeRepository,
-    private val entityManagerDataLoader: EntityManagerDataLoader
-) : ApplicationListener<ApplicationReadyEvent> {
+class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
+    override fun systemUser() = UserGenerator.AUDIT_USER
 
-    @PostConstruct
-    fun saveAuditUser() {
-        auditUserRepository.save(UserGenerator.AUDIT_USER)
-    }
-
-    override fun onApplicationEvent(are: ApplicationReadyEvent) {
-        institutionRepository.save(ProviderGenerator.DEFAULT_PROVIDER.institution!!)
-        probationAreaRepository.save(ProviderGenerator.DEFAULT_PROVIDER)
-        referenceDataSetRepository.save(ReferenceDataGenerator.KEY_DATE_TYPE_DATASET)
-        referenceDataSetRepository.save(ReferenceDataGenerator.POM_ALLOCATION_DATASET)
-        referenceDataRepository.saveAll(ReferenceDataGenerator.ALL)
-        registerTypeRepository.saveAll(
+    override fun setupData() {
+        save(ProviderGenerator.DEFAULT_PROVIDER.institution!!)
+        save(ProviderGenerator.DEFAULT_PROVIDER)
+        save(ReferenceDataGenerator.KEY_DATE_TYPE_DATASET)
+        save(ReferenceDataGenerator.POM_ALLOCATION_DATASET)
+        saveAll(ReferenceDataGenerator.ALL)
+        saveAll(
             listOf(
                 RegistrationGenerator.TYPE_MAPPA,
                 RegistrationGenerator.TYPE_OTH,
                 RegistrationGenerator.TYPE_DASO
             )
         )
-        contactTypeRepository.saveAll(
+        saveAll(
             ContactType.Code.entries.map {
                 ContactType(
                     it.value,
@@ -76,13 +34,16 @@ class DataLoader(
             }
         )
 
-        districtRepository.save(ProviderGenerator.DEFAULT_DISTRICT)
-        teamRepository.saveAll(PersonManagerGenerator.ALL.map { it.team } + ProviderGenerator.POM_TEAM + ProviderGenerator.UNALLOCATED_TEAM)
-        val staffMap = entityManagerDataLoader.loadData()
+        save(ProviderGenerator.DEFAULT_DISTRICT)
+        saveAll(PersonManagerGenerator.ALL.map { it.team } + ProviderGenerator.POM_TEAM + ProviderGenerator.UNALLOCATED_TEAM)
 
-        staffRepository.save(ProviderGenerator.generateStaff("Test", "Test", "Test"))
+        save(ProviderGenerator.generateStaff("Test", "Test", "Test"))
 
-        UserGenerator.DEFAULT_STAFF_USER = staffUserRepository.save(
+        val staffMap = (PersonManagerGenerator.ALL.map { it.staff } + ProviderGenerator.UNALLOCATED_STAFF)
+            .map { save(it) }
+            .associateBy { it.code }
+
+        UserGenerator.DEFAULT_STAFF_USER = save(
             StaffUser(
                 UserGenerator.DEFAULT_STAFF_USER.username,
                 staffMap[ProviderGenerator.DEFAULT_STAFF.code],
@@ -90,7 +51,7 @@ class DataLoader(
             )
         )
 
-        personRepository.saveAll(
+        saveAll(
             listOf(
                 PersonGenerator.DEFAULT,
                 PersonGenerator.HANDOVER,
@@ -102,7 +63,7 @@ class DataLoader(
                 PersonGenerator.PERSON_MULTIPLE_CUSTODIAL
             )
         )
-        personManagerRepository.saveAll(
+        saveAll(
             PersonManagerGenerator.ALL.map {
                 PersonManagerGenerator.generate(
                     team = it.team,
@@ -114,10 +75,10 @@ class DataLoader(
             }
         )
 
-        eventRepository.saveAll(CaseAllocationGenerator.ALL.map { it.event })
-        disposalRepository.saveAll(CaseAllocationGenerator.ALL.map { it.event.disposal })
-        caseAllocationRepository.saveAll(CaseAllocationGenerator.ALL)
-        registrationRepository.saveAll(
+        saveAll(CaseAllocationGenerator.ALL.map { it.event })
+        saveAll(CaseAllocationGenerator.ALL.map { it.event.disposal })
+        saveAll(CaseAllocationGenerator.ALL)
+        saveAll(
             listOf(
                 RegistrationGenerator.generate(
                     RegistrationGenerator.TYPE_MAPPA,
@@ -145,42 +106,42 @@ class DataLoader(
         )
 
         val sentenceChangedHandoverEvent =
-            eventRepository.save(EventGenerator.generateEvent(PersonGenerator.CREATE_SENTENCE_CHANGED.id))
+            save(EventGenerator.generateEvent(PersonGenerator.CREATE_SENTENCE_CHANGED.id))
         val sentenceChangedHandoverDisposal =
-            disposalRepository.save(EventGenerator.generateDisposal(sentenceChangedHandoverEvent))
-        custodyRepository.save(EventGenerator.generateCustody(sentenceChangedHandoverDisposal))
+            save(EventGenerator.generateDisposal(sentenceChangedHandoverEvent))
+        save(EventGenerator.generateCustody(sentenceChangedHandoverDisposal))
 
         val notFoundSentenceChangedHandoverEvent =
-            eventRepository.save(EventGenerator.generateEvent(PersonGenerator.PERSON_NOT_FOUND.id))
+            save(EventGenerator.generateEvent(PersonGenerator.PERSON_NOT_FOUND.id))
         val notFoundSentenceChangedHandoverDisposal =
-            disposalRepository.save(EventGenerator.generateDisposal(notFoundSentenceChangedHandoverEvent))
-        custodyRepository.save(EventGenerator.generateCustody(notFoundSentenceChangedHandoverDisposal))
+            save(EventGenerator.generateDisposal(notFoundSentenceChangedHandoverEvent))
+        save(EventGenerator.generateCustody(notFoundSentenceChangedHandoverDisposal))
 
         //Multiple custodial
         val multipleHandoverEvent1 =
-            eventRepository.save(EventGenerator.generateEvent(PersonGenerator.PERSON_MULTIPLE_CUSTODIAL.id))
+            save(EventGenerator.generateEvent(PersonGenerator.PERSON_MULTIPLE_CUSTODIAL.id))
         val multipleHandoverEvent2 =
-            eventRepository.save(EventGenerator.generateEvent(PersonGenerator.PERSON_MULTIPLE_CUSTODIAL.id))
+            save(EventGenerator.generateEvent(PersonGenerator.PERSON_MULTIPLE_CUSTODIAL.id))
         val multipleHandoverDisposal1 =
-            disposalRepository.save(EventGenerator.generateDisposal(multipleHandoverEvent1))
+            save(EventGenerator.generateDisposal(multipleHandoverEvent1))
         val multipleHandoverDisposal2 =
-            disposalRepository.save(EventGenerator.generateDisposal(multipleHandoverEvent2))
-        custodyRepository.save(EventGenerator.generateCustody(multipleHandoverDisposal1))
-        custodyRepository.save(EventGenerator.generateCustody(multipleHandoverDisposal2))
+            save(EventGenerator.generateDisposal(multipleHandoverEvent2))
+        save(EventGenerator.generateCustody(multipleHandoverDisposal1))
+        save(EventGenerator.generateCustody(multipleHandoverDisposal2))
 
-        val handoverEvent = eventRepository.save(EventGenerator.generateEvent(PersonGenerator.HANDOVER.id))
-        val handoverDisposal = disposalRepository.save(EventGenerator.generateDisposal(handoverEvent))
-        custodyRepository.save(EventGenerator.generateCustody(handoverDisposal))
+        val handoverEvent = save(EventGenerator.generateEvent(PersonGenerator.HANDOVER.id))
+        val handoverDisposal = save(EventGenerator.generateDisposal(handoverEvent))
+        save(EventGenerator.generateCustody(handoverDisposal))
 
-        val bothEvent = eventRepository.save(EventGenerator.generateEvent(PersonGenerator.CREATE_HANDOVER_AND_START.id))
-        val bothDisposal = disposalRepository.save(EventGenerator.generateDisposal(bothEvent))
-        custodyRepository.save(EventGenerator.generateCustody(bothDisposal))
+        val bothEvent = save(EventGenerator.generateEvent(PersonGenerator.CREATE_HANDOVER_AND_START.id))
+        val bothDisposal = save(EventGenerator.generateDisposal(bothEvent))
+        save(EventGenerator.generateCustody(bothDisposal))
 
         val handoverStartEvent =
-            eventRepository.save(EventGenerator.generateEvent(PersonGenerator.UPDATE_HANDOVER_AND_START.id))
-        val handoverStartDisposal = disposalRepository.save(EventGenerator.generateDisposal(handoverStartEvent))
-        val handoverStartCustody = custodyRepository.save(EventGenerator.generateCustody(handoverStartDisposal))
-        keyDateRepository.saveAll(
+            save(EventGenerator.generateEvent(PersonGenerator.UPDATE_HANDOVER_AND_START.id))
+        val handoverStartDisposal = save(EventGenerator.generateDisposal(handoverStartEvent))
+        val handoverStartCustody = save(EventGenerator.generateCustody(handoverStartDisposal))
+        saveAll(
             listOf(
                 EventGenerator.generateKeyDate(
                     handoverStartCustody,
@@ -196,12 +157,3 @@ class DataLoader(
         )
     }
 }
-
-interface ReferenceDataSetRepository : JpaRepository<ReferenceDataSet, Long>
-interface StaffUserRepository : JpaRepository<StaffUser, Long>
-interface DistrictRepository : JpaRepository<District, Long>
-interface EventRepository : JpaRepository<Event, Long>
-interface DisposalRepository : JpaRepository<Disposal, Long>
-interface RegisterTypeRepository : JpaRepository<RegisterType, Long>
-interface InstitutionRepository : JpaRepository<Institution, Long>
-interface PersonManagerRepository : JpaRepository<PersonManager, Long>

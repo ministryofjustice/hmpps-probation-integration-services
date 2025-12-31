@@ -302,9 +302,7 @@ class PersonalDetailsIntegrationTest : IntegrationTestBase() {
     @Test
     fun `previous address with single note is returned`() {
         val person = PERSONAL_DETAILS
-        val res = mockMvc.get("/personal-details/${person.crn}/addresses/${PREVIOUS_ADDRESS.id}/note/1") {
-            withToken()
-        }
+        val res = mockMvc.get("/personal-details/${person.crn}/addresses/${PREVIOUS_ADDRESS.id}/note/1") { withToken() }
             .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<AddressOverviewSummary>()
         assertThat(res.personSummary, equalTo(person.toSummary()))
@@ -502,6 +500,7 @@ class PersonalDetailsIntegrationTest : IntegrationTestBase() {
         assertThat(res.previousAddresses.size, equalTo(6))
     }
 
+    @Transactional
     @ParameterizedTest
     @MethodSource("personContactDetails")
     fun `update contact details for a person`(editRequest: PersonContactEditRequest) {

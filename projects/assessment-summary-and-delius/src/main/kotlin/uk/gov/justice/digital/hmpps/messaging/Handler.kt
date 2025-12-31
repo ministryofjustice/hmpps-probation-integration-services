@@ -32,6 +32,9 @@ class Handler(
         try {
             if (notification.message.eventType == AssessmentSummaryProduced) {
                 telemetryService.notificationReceived(notification)
+                if (notification.message.detailUrl?.startsWith("https://t2-b.oasys.service.justice.gov.uk") == true) {
+                    throw IgnorableMessageException("Not processing assessments from T2-B test environment")
+                }
                 val summary = nullIfNotFound { detailService.getDetail<AssessmentSummaries>(notification.message) }
                     .orIgnore { "No assessment in OASys" }
                 assessmentSubmitted.assessmentSubmitted(summary.crn, summary.assessments.first())

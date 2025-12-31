@@ -1,78 +1,27 @@
 package uk.gov.justice.digital.hmpps.data
 
-import jakarta.annotation.PostConstruct
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
-import org.springframework.boot.context.event.ApplicationReadyEvent
-import org.springframework.context.ApplicationListener
-import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Component
-import uk.gov.justice.digital.hmpps.audit.repository.BusinessInteractionRepository
 import uk.gov.justice.digital.hmpps.data.generator.*
-import uk.gov.justice.digital.hmpps.data.repository.DisposalRepository
-import uk.gov.justice.digital.hmpps.data.repository.DisposalTypeRepository
-import uk.gov.justice.digital.hmpps.data.repository.ProbationAreaRepository
-import uk.gov.justice.digital.hmpps.data.repository.ReferenceDataSetRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactTypeRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.custody.entity.CustodyRepository
+import uk.gov.justice.digital.hmpps.data.loader.BaseDataLoader
+import uk.gov.justice.digital.hmpps.data.manager.DataManager
 import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.Event
-import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.EventRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.OrderManagerRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.licencecondition.entity.LicenceConditionCategory
-import uk.gov.justice.digital.hmpps.integrations.delius.licencecondition.entity.LicenceConditionRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.Person
-import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.manager.prison.entity.PrisonManager
-import uk.gov.justice.digital.hmpps.integrations.delius.person.manager.prison.entity.PrisonManagerRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.person.manager.probation.entity.PersonManagerRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.institution.entity.InstitutionRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.recall.entity.RecallReasonRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.recall.entity.RecallRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceDataRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.CustodialStatusCode
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.InstitutionCode
-import uk.gov.justice.digital.hmpps.integrations.delius.release.entity.ReleaseRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.staff.entity.StaffRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.team.entity.TeamRepository
 import uk.gov.justice.digital.hmpps.user.AuditUser
-import uk.gov.justice.digital.hmpps.user.AuditUserRepository
 import java.time.ZoneId
 import java.time.ZonedDateTime
 
 @Component
-@ConditionalOnProperty("seed.database")
 class DataLoader(
     @Value("\${delius.db.username}") private val deliusDbUsername: String,
-    private val auditUserRepository: AuditUserRepository,
-    private val businessInteractionRepository: BusinessInteractionRepository,
-    private val referenceDataRepository: ReferenceDataRepository,
-    private val referenceDataSetRepository: ReferenceDataSetRepository,
-    private val recallReasonRepository: RecallReasonRepository,
-    private val contactTypeRepository: ContactTypeRepository,
-    private val institutionRepository: InstitutionRepository,
-    private val personRepository: PersonRepository,
-    private val eventRepository: EventRepository,
-    private val disposalTypeRepository: DisposalTypeRepository,
-    private val disposalRepository: DisposalRepository,
-    private val custodyRepository: CustodyRepository,
-    private val orderManagerRepository: OrderManagerRepository,
-    private val releaseRepository: ReleaseRepository,
-    private val recallRepository: RecallRepository,
-    private val personManagerRepository: PersonManagerRepository,
-    private val staffRepository: StaffRepository,
-    private val teamRepository: TeamRepository,
-    private val probationAreaRepository: ProbationAreaRepository,
-    private val licenceConditionRepository: LicenceConditionRepository,
-    private val licenceConditionCategoryRepository: LicenceConditionCategoryRepository,
-    private val prisonManagerRepository: PrisonManagerRepository,
-) : ApplicationListener<ApplicationReadyEvent> {
+    dataManager: DataManager
+) : BaseDataLoader(dataManager) {
+    override fun systemUser() = AuditUser(IdGenerator.getAndIncrement(), deliusDbUsername)
 
-    @PostConstruct
-    fun saveAuditUser() {
-        auditUserRepository.save(AuditUser(IdGenerator.getAndIncrement(), deliusDbUsername))
-    }
-
-    override fun onApplicationEvent(are: ApplicationReadyEvent) {
+    override fun setupData() {
         createReferenceData()
         createReleasablePerson(PersonGenerator.RELEASABLE)
         createRecallablePerson()
@@ -94,11 +43,11 @@ class DataLoader(
     }
 
     private fun createReferenceData() {
-        businessInteractionRepository.saveAll(BusinessInteractionGenerator.ALL.values)
-        probationAreaRepository.save(ProbationAreaGenerator.DEFAULT)
-        teamRepository.save(TeamGenerator.DEFAULT)
-        staffRepository.save(StaffGenerator.UNALLOCATED)
-        referenceDataSetRepository.saveAll(
+        saveAll(BusinessInteractionGenerator.ALL.values)
+        save(ProbationAreaGenerator.DEFAULT)
+        save(TeamGenerator.DEFAULT)
+        save(StaffGenerator.UNALLOCATED)
+        saveAll(
             listOf(
                 ReferenceDataSetGenerator.RELEASE_TYPE,
                 ReferenceDataSetGenerator.CUSTODIAL_STATUS,
@@ -113,7 +62,7 @@ class DataLoader(
                 ReferenceDataSetGenerator.DOMAIN_EVENT_TYPE
             )
         )
-        referenceDataRepository.saveAll(
+        saveAll(
             ReferenceDataGenerator.RELEASE_TYPE.values +
                 ReferenceDataGenerator.CUSTODIAL_STATUS.values +
                 ReferenceDataGenerator.CUSTODY_EVENT_TYPE.values +
@@ -128,24 +77,26 @@ class DataLoader(
                     ReferenceDataGenerator.LC_TERMINATED_DOMAIN_EVENT
                 )
         )
-        recallReasonRepository.saveAll(ReferenceDataGenerator.RECALL_REASON.values)
-        contactTypeRepository.saveAll(ReferenceDataGenerator.CONTACT_TYPE.values)
-        institutionRepository.saveAll(
+        saveAll(ReferenceDataGenerator.RECALL_REASON.values)
+        saveAll(ReferenceDataGenerator.CONTACT_TYPE.values)
+        saveAll(
             listOf(
                 InstitutionGenerator.DEFAULT,
                 InstitutionGenerator.MOVED_TO,
                 InstitutionGenerator.MOVED_TO_WITH_POM
             )
         )
-        probationAreaRepository.saveAll(
+        saveAll(
             listOf(
                 InstitutionGenerator.DEFAULT.probationArea!!,
                 InstitutionGenerator.MOVED_TO_WITH_POM.probationArea!!
             )
         )
-        val team = teamRepository.save(TeamGenerator.allStaff(InstitutionGenerator.DEFAULT.probationArea!!))
+        val team = save(TeamGenerator.allStaff(InstitutionGenerator.DEFAULT.probationArea!!))
+        val teamSwi = save(TeamGenerator.allStaff(InstitutionGenerator.MOVED_TO.probationArea!!))
+        save(StaffGenerator.unallocated(teamSwi))
         val teamBir =
-            teamRepository.save(TeamGenerator.allStaff(InstitutionGenerator.MOVED_TO_WITH_POM.probationArea!!))
+            save(TeamGenerator.allStaff(InstitutionGenerator.MOVED_TO_WITH_POM.probationArea!!))
         val prisonManager = PrisonManager(
             0,
             PersonGenerator.MATCHABLE_WITH_POM.id,
@@ -166,17 +117,17 @@ class DataLoader(
             InstitutionGenerator.MOVED_TO_WITH_POM.probationArea!!,
             false
         )
-        prisonManagerRepository.saveAll(listOf(prisonManager, prisonManager1))
-        staffRepository.save(StaffGenerator.unallocated(team))
-        staffRepository.save(StaffGenerator.unallocated(teamBir))
-        institutionRepository.saveAll(InstitutionGenerator.STANDARD_INSTITUTIONS.values)
-        probationAreaRepository.saveAll(InstitutionGenerator.STANDARD_INSTITUTIONS.values.mapNotNull { it.probationArea })
-        val teams = teamRepository.saveAll(
+        saveAll(listOf(prisonManager, prisonManager1))
+        save(StaffGenerator.unallocated(team))
+        save(StaffGenerator.unallocated(teamBir))
+        saveAll(InstitutionGenerator.STANDARD_INSTITUTIONS.values)
+        saveAll(InstitutionGenerator.STANDARD_INSTITUTIONS.values.mapNotNull { it.probationArea })
+        val teams = saveAll(
             InstitutionGenerator.STANDARD_INSTITUTIONS.values
                 .mapNotNull { it.probationArea }
                 .map { TeamGenerator.allStaff(it) }
         )
-        staffRepository.saveAll(teams.map { StaffGenerator.unallocated(it) })
+        saveAll(teams.map { StaffGenerator.unallocated(it) })
     }
 
     private fun createPersonToDie() {
@@ -200,8 +151,8 @@ class DataLoader(
         createEvent(event)
         val conditions = listOf(LicenceConditionGenerator.generate(event), LicenceConditionGenerator.generate(event))
         conditions.forEach {
-            licenceConditionCategoryRepository.save(it.mainCategory)
-            licenceConditionRepository.save(it)
+            save(it.mainCategory)
+            save(it)
         }
     }
 
@@ -309,23 +260,16 @@ class DataLoader(
     }
 
     private fun createPerson(person: Person) {
-        personRepository.save(person)
-        personManagerRepository.save(PersonManagerGenerator.generate(person))
+        save(person)
+        save(PersonManagerGenerator.generate(person))
     }
 
     private fun createEvent(event: Event) {
-        eventRepository.save(event)
-        disposalTypeRepository.save(event.disposal!!.type)
-        disposalRepository.save(event.disposal!!)
-        custodyRepository.save(event.disposal!!.custody!!)
-        orderManagerRepository.save(OrderManagerGenerator.generate(event))
-        val release = event.disposal?.custody?.mostRecentRelease()
-        val recall = release?.recall
-        if (recall != null) {
-            release.recall = null
-        }
-        release?.also { releaseRepository.save(it) }
-        recall?.also { recallRepository.save(it) }
+        save(event)
+        save(event.disposal!!.type)
+        save(event.disposal!!)
+        save(event.disposal!!.custody!!)
+        save(OrderManagerGenerator.generate(event))
     }
 
     private fun createAbsconded() {
@@ -338,5 +282,3 @@ class DataLoader(
         )
     }
 }
-
-interface LicenceConditionCategoryRepository : JpaRepository<LicenceConditionCategory, Long>
