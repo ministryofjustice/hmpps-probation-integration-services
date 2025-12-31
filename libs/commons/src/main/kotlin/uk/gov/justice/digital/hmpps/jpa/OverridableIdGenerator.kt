@@ -37,7 +37,7 @@ class OverridableIdGenerator(
         parameters[INITIAL_PARAM] = sequenceGenerator.initialValue
         parameters[INCREMENT_PARAM] = sequenceGenerator.allocationSize
 
-        super.configure(type, parameters, serviceRegistry)
+        if (serviceRegistry != null) super.configure(type, parameters, serviceRegistry)
     }
 
     override fun generate(session: SharedSessionContractImplementor, obj: Any): Any {
