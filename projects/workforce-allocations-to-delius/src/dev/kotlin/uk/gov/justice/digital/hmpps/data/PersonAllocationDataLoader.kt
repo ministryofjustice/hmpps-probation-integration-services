@@ -4,11 +4,9 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.stereotype.Component
 import uk.gov.justice.digital.hmpps.data.generator.*
 import uk.gov.justice.digital.hmpps.data.repository.*
-import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.event.*
 import uk.gov.justice.digital.hmpps.integrations.delius.event.ogrs.OASYSAssessmentRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.event.ogrs.OGRSAssessmentRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.registration.RegistrationRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.event.requirement.Requirement
 import uk.gov.justice.digital.hmpps.integrations.delius.event.requirement.RequirementManager
 import uk.gov.justice.digital.hmpps.integrations.delius.event.requirement.RequirementManagerRepository
@@ -17,6 +15,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.Additiona
 import uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.DisposalRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.*
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.Staff
+import uk.gov.justice.digital.hmpps.integrations.delius.registration.RegistrationRepository
 
 @Component
 @ConditionalOnProperty("seed.database")
@@ -31,7 +30,6 @@ class PersonAllocationDataLoader(
     private val disposalTypeRepository: DisposalTypeRepository,
     private val requirementRepository: RequirementRepository,
     private val requirementManagerRepository: RequirementManagerRepository,
-    private val contactRepository: ContactRepository,
     private val keyDateRepository: KeyDateRepository,
     private val custodyRepository: CustodyRepository,
     private val institutionalReportRepository: InstitutionalReportRepository,
@@ -59,6 +57,7 @@ class PersonAllocationDataLoader(
 
         OrderManagerGenerator.DEFAULT = createEventWithManager(EventGenerator.DEFAULT)
         OrderManagerGenerator.NEW = createEventWithManager(EventGenerator.NEW)
+        OrderManagerGenerator.REALLOCATION = createEventWithManager(EventGenerator.REALLOCATION)
         OrderManagerGenerator.HISTORIC = createEventWithManager(EventGenerator.HISTORIC)
         OrderManagerGenerator.DELETED_EVENT = createEventWithManager(EventGenerator.DELETED)
         OrderManagerGenerator.INACTIVE_EVENT =
@@ -69,6 +68,7 @@ class PersonAllocationDataLoader(
         RequirementManagerGenerator.DEFAULT = createRequirementWithManager(RequirementGenerator.DEFAULT)
         RequirementManagerGenerator.NEW = createRequirementWithManager(RequirementGenerator.NEW)
         RequirementManagerGenerator.HISTORIC = createRequirementWithManager(RequirementGenerator.HISTORIC)
+        RequirementManagerGenerator.REALLOCATION = createRequirementWithManager(RequirementGenerator.REALLOCATION)
 
         custodyRepository.save(CustodyGenerator.DEFAULT)
         keyDateRepository.save(KeyDateGenerator.DEFAULT)
@@ -88,7 +88,8 @@ class PersonAllocationDataLoader(
         val pm = personManagerRepository.save(
             PersonManagerGenerator.generate(
                 personId = person.id,
-                startDateTime = ManagerGenerator.START_DATE_TIME
+                startDateTime = ManagerGenerator.START_DATE_TIME,
+                allocationReason = ReferenceDataGenerator.REALLOCATION_ORDER_ALLOCATION
             )
         )
         val ro = responsibleOfficerRepository.save(

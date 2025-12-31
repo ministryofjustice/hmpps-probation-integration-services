@@ -78,6 +78,9 @@ class AllocationsDataLoader(
                 ReferenceDataGenerator.INITIAL_OM_ALLOCATION,
                 ReferenceDataGenerator.INITIAL_ORDER_ALLOCATION,
                 ReferenceDataGenerator.INITIAL_RM_ALLOCATION,
+                ReferenceDataGenerator.REALLOCATION_ORDER_ALLOCATION,
+                ReferenceDataGenerator.REALLOCATION_OM_ALLOCATION,
+                ReferenceDataGenerator.REALLOCATION_RM_ALLOCATION,
                 ReferenceDataGenerator.INS_RPT_PAR,
                 ReferenceDataGenerator.PENDING_TRANSFER,
                 ReferenceDataGenerator.PSQ_GRADE,
@@ -112,7 +115,8 @@ class AllocationsDataLoader(
                 ContactTypeGenerator.INITIAL_APPOINTMENT_ON_DOORSTEP,
                 ContactTypeGenerator.INITIAL_APPOINTMENT_HOME_VISIT,
                 ContactTypeGenerator.INITIAL_APPOINTMENT_BY_VIDEO,
-                ContactTypeGenerator.CASE_ALLOCATION_SPO_OVERSIGHT
+                ContactTypeGenerator.CASE_ALLOCATION_SPO_OVERSIGHT,
+                ContactTypeGenerator.CASE_REALLOCATION_SPO_OVERSIGHT,
             )
         )
 

@@ -1,6 +1,8 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.allocations
 
 import org.springframework.stereotype.Component
+import uk.gov.justice.digital.hmpps.api.model.AllocationType
+import uk.gov.justice.digital.hmpps.api.model.deriveDeliusCodeFromTextDefaultInitial
 import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException
 import uk.gov.justice.digital.hmpps.exception.NotActiveException
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
@@ -16,7 +18,7 @@ import uk.gov.justice.digital.hmpps.integrations.workforceallocations.Allocation
 class AllocationValidator(
     private val staffRepository: StaffRepository,
     private val teamRepository: TeamRepository,
-    private val referenceDataRepository: ReferenceDataRepository
+    private val referenceDataRepository: ReferenceDataRepository,
 ) {
 
     fun initialValidations(
@@ -40,9 +42,26 @@ class AllocationValidator(
             )
         }
 
+        var allocationType: AllocationType
+
+        when (allocationDetail) {
+            is AllocationDetail.PersonAllocation -> allocationType = AllocationType.PERSON
+            is AllocationDetail.EventAllocation -> allocationType = AllocationType.ORDER
+            is AllocationDetail.RequirementAllocation -> allocationType = AllocationType.REQUIREMENT
+        }
+
+        var allocationReasonCode: String
+
+        if (allocationDetail.allocationReason != null) {
+            allocationReasonCode =
+                deriveDeliusCodeFromTextDefaultInitial(allocationDetail.allocationReason, allocationType)
+        } else {
+            allocationReasonCode = allocationDetail.code
+        }
+
         val allocationReason = referenceDataRepository.findByDatasetAndCode(
             allocationDetail.datasetCode,
-            allocationDetail.code
+            allocationReasonCode
         ) ?: throw NotFoundException(allocationDetail.datasetCode.value, "code", allocationDetail.code)
 
         val staff = staffRepository.findByCode(allocationDetail.staffCode)
