@@ -72,18 +72,18 @@ object UPWGenerator {
     val THIRD_UPW_DETAILS = generateUpwDetails(disposalId = SECOND_DISPOSAL.id)
 
     val DEFAULT_CONTACT = generateContact(
-            contactType = ReferenceDataGenerator.UPW_APPOINTMENT_TYPE,
-            latestEnforcementAction = ReferenceDataGenerator.ROM_ENFORCEMENT_ACTION,
-            contactOutcome = ReferenceDataGenerator.FAILED_TO_ATTEND_CONTACT_OUTCOME,
-            startTime = LocalTime.of(9, 0),
-            endTime = LocalTime.of(17, 0),
-            date = LocalDate.now(),
+        contactType = ReferenceDataGenerator.UPW_APPOINTMENT_TYPE,
+        latestEnforcementAction = ReferenceDataGenerator.ROM_ENFORCEMENT_ACTION,
+        contactOutcome = ReferenceDataGenerator.FAILED_TO_ATTEND_CONTACT_OUTCOME,
+        startTime = LocalTime.of(9, 0),
+        endTime = LocalTime.of(17, 0),
+        date = LocalDate.now(),
         personId = PersonGenerator.DEFAULT_PERSON.id,
-            officeLocation = DEFAULT_OFFICE_LOCATION,
-            staff = StaffGenerator.DEFAULT_STAFF,
-            team = TeamGenerator.DEFAULT_UPW_TEAM,
-            provider = ProviderGenerator.DEFAULT_PROVIDER
-        )
+        officeLocation = DEFAULT_OFFICE_LOCATION,
+        staff = StaffGenerator.DEFAULT_STAFF,
+        team = TeamGenerator.DEFAULT_UPW_TEAM,
+        provider = ProviderGenerator.DEFAULT_PROVIDER
+    )
     val CONTACT_NO_ENFORCEMENT = generateContact(
         contactType = ReferenceDataGenerator.UPW_APPOINTMENT_TYPE,
         latestEnforcementAction = null,
