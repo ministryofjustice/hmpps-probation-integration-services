@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.integrations.workforceallocations
 import com.fasterxml.jackson.annotation.JsonAlias
 import com.fasterxml.jackson.databind.JsonDeserializer
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize
+import uk.gov.justice.digital.hmpps.api.model.AllocationReason
 import uk.gov.justice.digital.hmpps.integrations.delius.allocations.entity.DatasetCode
 import java.time.ZonedDateTime
 
@@ -14,7 +15,7 @@ sealed interface AllocationDetail {
     val createdDate: ZonedDateTime
     val datasetCode: DatasetCode
     val code: String
-    val allocationReason: String?
+    val allocationReason: AllocationReason
 
     @JsonDeserialize(using = JsonDeserializer.None::class)
     data class PersonAllocation(
@@ -25,7 +26,7 @@ sealed interface AllocationDetail {
         val crn: String,
         override val datasetCode: DatasetCode = DatasetCode.OM_ALLOCATION_REASON,
         override val code: String = "IN1",
-        override val allocationReason: String?
+        override val allocationReason: AllocationReason
     ) : AllocationDetail
 
     @JsonDeserialize(using = JsonDeserializer.None::class)
@@ -44,7 +45,7 @@ sealed interface AllocationDetail {
         @JsonAlias("sensitiveNotes")
         val sensitive: Boolean?,
         val sensitiveOversightNotes: Boolean?,
-        override val allocationReason: String?
+        override val allocationReason: AllocationReason
     ) : AllocationDetail
 
     @JsonDeserialize(using = JsonDeserializer.None::class)
@@ -57,6 +58,6 @@ sealed interface AllocationDetail {
         val requirementId: Long,
         override val datasetCode: DatasetCode = DatasetCode.RM_ALLOCATION_REASON,
         override val code: String = "IN1",
-        override val allocationReason: String?
+        override val allocationReason: AllocationReason
     ) : AllocationDetail
 }

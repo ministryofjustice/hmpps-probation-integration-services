@@ -66,7 +66,7 @@ class ReallocateEventIntegrationTest @Autowired constructor(
         val allocationDetail = ResourceLoader.file<AllocationDetail>(jsonFile)
 
         val expectedAllocationReason =
-            deriveDeliusCodeFromTextDefaultInitial(allocationDetail.allocationReason, AllocationType.ORDER)
+            deriveDeliusCodeFromTextDefaultInitial(allocationDetail.allocationReason.name, AllocationType.ORDER)
         assertThat(
             orderManagerRepository.findById(existingOm.id).get().allocationReason.code,
             equalTo(expectedAllocationReason)

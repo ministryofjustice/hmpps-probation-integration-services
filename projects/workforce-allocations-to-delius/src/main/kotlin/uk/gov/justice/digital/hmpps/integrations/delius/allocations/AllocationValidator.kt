@@ -42,22 +42,17 @@ class AllocationValidator(
             )
         }
 
-        var allocationType: AllocationType
-
-        when (allocationDetail) {
-            is AllocationDetail.PersonAllocation -> allocationType = AllocationType.PERSON
-            is AllocationDetail.EventAllocation -> allocationType = AllocationType.ORDER
-            is AllocationDetail.RequirementAllocation -> allocationType = AllocationType.REQUIREMENT
+        val allocationType = when (allocationDetail) {
+            is AllocationDetail.PersonAllocation -> AllocationType.PERSON
+            is AllocationDetail.EventAllocation -> AllocationType.ORDER
+            is AllocationDetail.RequirementAllocation -> AllocationType.REQUIREMENT
         }
 
-        var allocationReasonCode: String
-
-        if (allocationDetail.allocationReason != null) {
-            allocationReasonCode =
-                deriveDeliusCodeFromTextDefaultInitial(allocationDetail.allocationReason, allocationType)
-        } else {
-            allocationReasonCode = allocationDetail.code
-        }
+        val allocationReasonCode =
+            deriveDeliusCodeFromTextDefaultInitial(
+                allocationDetail.allocationReason.toString(),
+                allocationType
+            )
 
         val allocationReason = referenceDataRepository.findByDatasetAndCode(
             allocationDetail.datasetCode,
