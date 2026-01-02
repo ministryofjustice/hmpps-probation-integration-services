@@ -18,7 +18,6 @@ interface PersonManagerRepository : JpaRepository<PersonManager, Long> {
     fun findActiveManager(personId: Long, dateTime: ZonedDateTime = ZonedDateTime.now()): PersonManager?
 
     fun findPersonManagersByStaffCode(staffCode: String): List<PersonManager>
-
 }
 
 fun PersonManagerRepository.getActiveManager(personId: Long) = findActiveManager(personId)
