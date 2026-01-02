@@ -2,7 +2,6 @@ package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import uk.gov.justice.digital.hmpps.api.model.AllocationReason
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
 import uk.gov.justice.digital.hmpps.audit.service.OptimisationTables
 import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException
@@ -102,7 +101,7 @@ class AllocateEventService(
         orderManager: OrderManager,
         spoStaff: Staff?
     ) {
-        if (allocationDetail.allocationReason == AllocationReason.INITIAL_ALLOCATION) {
+        if (allocationDetail.allocationReason == null) {
             contactRepository.save(
                 Contact(
                     type = contactTypeRepository.findByCodeOrThrow(ContactTypeCode.CASE_ALLOCATION_SPO_OVERSIGHT.value),

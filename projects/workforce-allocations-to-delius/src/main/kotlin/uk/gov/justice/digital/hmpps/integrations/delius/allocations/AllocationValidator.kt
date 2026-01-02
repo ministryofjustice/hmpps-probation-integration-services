@@ -48,11 +48,10 @@ class AllocationValidator(
             is AllocationDetail.RequirementAllocation -> AllocationType.REQUIREMENT
         }
 
-        val allocationReasonCode =
-            deriveDeliusCodeFromTextDefaultInitial(
-                allocationDetail.allocationReason.toString(),
-                allocationType
-            )
+        val allocationReasonCode = when (allocationDetail.allocationReason) {
+            null -> allocationDetail.code
+            else -> deriveDeliusCodeFromTextDefaultInitial(allocationDetail.allocationReason.toString(), allocationType)
+        }
 
         val allocationReason = referenceDataRepository.findByDatasetAndCode(
             allocationDetail.datasetCode,

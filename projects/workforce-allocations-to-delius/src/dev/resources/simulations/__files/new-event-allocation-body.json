@@ -8,6 +8,5 @@
   "eventNumber": 2,
   "spoStaffCode": "N02ABSX",
   "allocationJustificationNotes": "CADE notes",
-  "sensitiveNotes": true,
-  "allocationReason": "INITIAL_ALLOCATION"
+  "sensitiveNotes": true
 }

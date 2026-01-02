@@ -8,6 +8,5 @@
   "eventNumber": 1,
   "sensitiveNotes": false,
   "sensitiveOversightNotes": false,
-  "spoOversightNotes": "Spo oversight notes",
-  "allocationReason": "INITIAL_ALLOCATION"
+  "spoOversightNotes": "Spo oversight notes"
 }

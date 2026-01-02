@@ -10,6 +10,5 @@
   "staffGrade": "GA1",
   "staffEmail": "someone@email.com",
   "staffForename": "Bob",
-  "staffSurname": "Smith",
-  "allocationReason": "INITIAL_ALLOCATION"
+  "staffSurname": "Smith"
 }

@@ -63,7 +63,7 @@ class ReallocatePersonIntegrationTest @Autowired constructor(
         val pm = personManagerRepository.findPersonManagersByStaffCode(allocationDetail.staffCode).get(0)
 
         val expectedAllocationReason = deriveDeliusCodeFromTextDefaultInitial(
-            allocationDetail.allocationReason.name,
+            allocationDetail.allocationReason!!.name,
             AllocationType.PERSON
         )
         assertThat(pm.allocationReason.code, equalTo(expectedAllocationReason))

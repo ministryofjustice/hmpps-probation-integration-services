@@ -68,7 +68,7 @@ class ReallocateRequirementIntegrationTest @Autowired constructor(
 
         val expectedAllocationReason =
             deriveDeliusCodeFromTextDefaultInitial(
-                allocationDetail.allocationReason.name,
+                allocationDetail.allocationReason!!.name,
                 AllocationType.REQUIREMENT
             )
 
