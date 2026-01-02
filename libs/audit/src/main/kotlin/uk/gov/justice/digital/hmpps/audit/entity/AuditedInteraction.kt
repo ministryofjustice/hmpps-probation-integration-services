@@ -1,10 +1,6 @@
 package uk.gov.justice.digital.hmpps.audit.entity
 
-import jakarta.persistence.Column
-import jakarta.persistence.Convert
-import jakarta.persistence.Entity
-import jakarta.persistence.Id
-import jakarta.persistence.IdClass
+import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.springframework.data.domain.Persistable
 import uk.gov.justice.digital.hmpps.audit.converter.AuditedInteractionOutcomeConverter

@@ -1,17 +1,9 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.event.requirement
 
-import jakarta.persistence.AssociationOverride
-import jakarta.persistence.Column
-import jakarta.persistence.Entity
-import jakarta.persistence.EntityListeners
-import jakarta.persistence.GeneratedValue
-import jakarta.persistence.GenerationType
-import jakarta.persistence.Id
-import jakarta.persistence.JoinColumn
-import jakarta.persistence.SequenceGenerator
-import jakarta.persistence.Table
+import jakarta.persistence.*
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import uk.gov.justice.digital.hmpps.integrations.delius.allocations.entity.ManagerBaseEntity
+import uk.gov.justice.digital.hmpps.jpa.GeneratedId
 
 @Entity
 @Table(name = "rqmnt_manager")
@@ -27,6 +19,6 @@ class RequirementManager(
 
     @Id
     @Column(name = "rqmnt_manager_id")
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "rqmnt_manager_id_seq")
+    @GeneratedId(generator = "rqmnt_manager_id_seq")
     var id: Long = 0
 ) : ManagerBaseEntity()

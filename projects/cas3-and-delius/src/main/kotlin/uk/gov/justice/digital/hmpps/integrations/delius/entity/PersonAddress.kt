@@ -10,6 +10,7 @@ import org.springframework.data.annotation.LastModifiedDate
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
+import uk.gov.justice.digital.hmpps.jpa.GeneratedId
 import java.time.LocalDate
 import java.time.ZonedDateTime
 
@@ -20,7 +21,7 @@ import java.time.ZonedDateTime
 class PersonAddress(
     @Id
     @Column(name = "offender_address_id")
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "offender_address_id_generator")
+    @GeneratedId(generator = "offender_address_id_generator")
     val id: Long,
     @Column(name = "offender_id")
     val personId: Long,

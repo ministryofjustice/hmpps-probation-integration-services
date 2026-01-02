@@ -1,71 +1,53 @@
 package uk.gov.justice.digital.hmpps.data
 
-import jakarta.annotation.PostConstruct
-import jakarta.persistence.EntityManager
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
-import org.springframework.boot.context.event.ApplicationReadyEvent
-import org.springframework.context.ApplicationListener
 import org.springframework.stereotype.Component
-import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.audit.BusinessInteraction
 import uk.gov.justice.digital.hmpps.audit.BusinessInteractionCode
-import uk.gov.justice.digital.hmpps.audit.repository.BusinessInteractionRepository
 import uk.gov.justice.digital.hmpps.data.generator.*
-import uk.gov.justice.digital.hmpps.user.AuditUserRepository
+import uk.gov.justice.digital.hmpps.data.loader.BaseDataLoader
+import uk.gov.justice.digital.hmpps.data.manager.DataManager
 import java.time.ZonedDateTime
 
 @Component
-@ConditionalOnProperty("seed.database")
-class DataLoader(
-    private val auditUserRepository: AuditUserRepository,
-    private val entityManager: EntityManager,
-    private val businessInteractionRepository: BusinessInteractionRepository
-) : ApplicationListener<ApplicationReadyEvent> {
+class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
+    override fun systemUser() = UserGenerator.AUDIT_USER
 
-    @PostConstruct
-    fun saveAuditUser() {
-        auditUserRepository.save(UserGenerator.AUDIT_USER)
+    override fun setupData() {
         BusinessInteractionCode.entries
             .map { BusinessInteraction(IdGenerator.getAndIncrement(), it.code, ZonedDateTime.now()) }
-            .forEach { businessInteractionRepository.save(it) }
-    }
+            .forEach { save(it) }
+        save(PersonGenerator.DS_ADDRESS_STATUS)
+        save(PersonGenerator.DEFAULT_ADDRESS_STATUS)
+        save(PersonGenerator.DEFAULT_PERSON)
+        save(PersonGenerator.DEFAULT_ADDRESS)
 
-    @Transactional
-    override fun onApplicationEvent(are: ApplicationReadyEvent) {
-        entityManager.persist(PersonGenerator.DS_ADDRESS_STATUS)
-        entityManager.persist(PersonGenerator.DEFAULT_ADDRESS_STATUS)
-        entityManager.persist(PersonGenerator.DEFAULT_PERSON)
-        entityManager.persist(PersonGenerator.DEFAULT_ADDRESS)
+        save(ProviderGenerator.N00)
+        save(StaffGenerator.DEFAULT)
+        save(UserGenerator.LIMITED_ACCESS_USER)
+        save(UserGenerator.NON_LAO_USER)
+        save(UserGenerator.DEFAULT)
+        save(PersonGenerator.RESTRICTION)
+        save(PersonGenerator.EXCLUSION)
+        save(PersonGenerator.RESTRICTION_EXCLUSION)
+        save(LimitedAccessGenerator.RESTRICTION)
+        save(LimitedAccessGenerator.EXCLUSION)
+        save(LimitedAccessGenerator.BOTH_RESTRICTION)
+        save(LimitedAccessGenerator.BOTH_EXCLUSION)
 
-        entityManager.persist(ProviderGenerator.N00)
-        entityManager.persist(StaffGenerator.DEFAULT)
-        entityManager.persist(UserGenerator.LIMITED_ACCESS_USER)
-        entityManager.persist(UserGenerator.NON_LAO_USER)
-        entityManager.persist(UserGenerator.DEFAULT)
-        entityManager.persist(PersonGenerator.RESTRICTION)
-        entityManager.persist(PersonGenerator.EXCLUSION)
-        entityManager.persist(PersonGenerator.RESTRICTION_EXCLUSION)
-        entityManager.flush()
-        entityManager.persist(LimitedAccessGenerator.RESTRICTION)
-        entityManager.persist(LimitedAccessGenerator.EXCLUSION)
-        entityManager.persist(LimitedAccessGenerator.BOTH_RESTRICTION)
-        entityManager.persist(LimitedAccessGenerator.BOTH_EXCLUSION)
-
-        entityManager.persist(ReferenceDataGenerator.REGISTER_TYPE_FLAG_DATASET)
-        entityManager.persist(ReferenceDataGenerator.SAFEGUARDING_FLAG)
-        entityManager.persist(ReferenceDataGenerator.INFORMATION_FLAG)
-        entityManager.persist(ReferenceDataGenerator.REGISTER_LEVEL_DATASET)
-        entityManager.persist(ReferenceDataGenerator.HIGH_RISK_REGISTER_LEVEL)
-        entityManager.persist(ReferenceDataGenerator.APPOINTMENT_CONTACT_TYPE)
-        entityManager.persist(ReferenceDataGenerator.APPOINTMENT_OUTCOME)
-        entityManager.persist(RegistrationGenerator.SUICIDE_SELF_HARM_RISK_TYPE)
-        entityManager.persist(RegistrationGenerator.CONTACT_SUSPENDED_TYPE)
-        entityManager.flush()
-        entityManager.persist(RegistrationGenerator.SUICIDE_SELF_HARM_REGISTRATION)
-        entityManager.persist(PersonGenerator.PERSON_NO_REGISTRATIONS)
-        entityManager.persist(OfficeLocationGenerator.DEFAULT)
-        entityManager.persist(DocumentGenerator.DEFAULT_SUICIDE_RISK_FORM)
-        entityManager.persist(DocumentGenerator.DELETED_SUICIDE_RISK_FORM)
-        entityManager.persist(ContactGenerator.DEFAULT_CONTACT)
+        save(ReferenceDataGenerator.REGISTER_TYPE_FLAG_DATASET)
+        save(ReferenceDataGenerator.SAFEGUARDING_FLAG)
+        save(ReferenceDataGenerator.INFORMATION_FLAG)
+        save(ReferenceDataGenerator.REGISTER_LEVEL_DATASET)
+        save(ReferenceDataGenerator.HIGH_RISK_REGISTER_LEVEL)
+        save(ReferenceDataGenerator.APPOINTMENT_CONTACT_TYPE)
+        save(ReferenceDataGenerator.APPOINTMENT_OUTCOME)
+        save(RegistrationGenerator.SUICIDE_SELF_HARM_RISK_TYPE)
+        save(RegistrationGenerator.CONTACT_SUSPENDED_TYPE)
+        save(RegistrationGenerator.SUICIDE_SELF_HARM_REGISTRATION)
+        save(PersonGenerator.PERSON_NO_REGISTRATIONS)
+        save(OfficeLocationGenerator.DEFAULT)
+        save(DocumentGenerator.DEFAULT_SUICIDE_RISK_FORM)
+        save(DocumentGenerator.DELETED_SUICIDE_RISK_FORM)
+        save(ContactGenerator.DEFAULT_CONTACT)
     }
 }

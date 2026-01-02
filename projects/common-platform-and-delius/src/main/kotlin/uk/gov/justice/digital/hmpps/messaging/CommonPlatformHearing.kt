@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.messaging
 
 import com.asyncapi.kotlinasyncapi.annotation.channel.Message
+import uk.gov.justice.digital.hmpps.dto.OffenceAndPlea
 import java.time.LocalDate
 import java.time.ZonedDateTime
 
@@ -60,7 +61,13 @@ data class HearingOffence(
     val judicialResults: List<JudicialResult>? = emptyList(),
     val plea: Plea? = null,
     val verdict: Verdict? = null
-)
+) {
+    fun withHomeOfficeCode(homeOfficeCode: String) = OffenceAndPlea(
+        offenceCode = offenceCode!!,
+        homeOfficeOffenceCode = homeOfficeCode,
+        plea = plea
+    )
+}
 
 data class JudicialResult(
     val isConvictedResult: Boolean?,

@@ -190,7 +190,7 @@ class RiskService(
     }
 
     private fun Registration.addHistory(date: LocalDate) {
-        registrationHistoryRepository.findByRegistrationIdAndEndDateIsNull(id)?.apply { endDate = date }
+        registrationHistoryRepository.findByRegistrationIdAndEndDateIsNull(id!!)?.apply { endDate = date }
         registrationHistoryRepository.flush()
         registrationHistoryRepository.save(RegistrationHistory(this, date))
     }

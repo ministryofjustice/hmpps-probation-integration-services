@@ -23,7 +23,7 @@ import java.time.LocalDate
 @Immutable
 @Table(name = "offender")
 @SQLRestriction("soft_deleted = 0")
-data class Person(
+class Person(
 
     @Column(columnDefinition = "char(7)")
     val crn: String,

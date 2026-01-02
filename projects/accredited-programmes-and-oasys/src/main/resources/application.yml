@@ -33,15 +33,15 @@ info.productId: HMPPS518 # https://developer-portal.hmpps.service.justice.gov.uk
 spring.config.activate.on-profile: [ "dev", "integration-test" ]
 server.shutdown: immediate
 
-wiremock.enabled: true
+dev:
+  wiremock.enabled: true
 
 integrations:
   ords:
-    url: http://localhost:${wiremock.port}/eor/oasys
+    url: http://localhost:${dev.wiremock.port}/eor/oasys
     client-id: accredited-programmes-and-oasys
     client-secret: accredited-programmes-and-oasys
 
 logging.level:
   uk.gov.justice.digital.hmpps: DEBUG
   org.hibernate.tool.schema: ERROR
-  org.apache.activemq: WARN

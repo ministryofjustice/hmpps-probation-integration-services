@@ -8,6 +8,7 @@ import org.springframework.data.annotation.LastModifiedBy
 import org.springframework.data.annotation.LastModifiedDate
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import org.springframework.data.jpa.repository.JpaRepository
+import uk.gov.justice.digital.hmpps.jpa.GeneratedId
 import java.time.LocalDate
 import java.time.ZonedDateTime
 
@@ -17,7 +18,7 @@ import java.time.ZonedDateTime
 class Enforcement(
     @Id
     @SequenceGenerator(name = "enforcement_id_seq", sequenceName = "enforcement_id_seq", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.AUTO, generator = "enforcement_id_seq")
+    @GeneratedId(generator = "enforcement_id_seq")
     @Column(name = "enforcement_id")
     val id: Long = 0,
 

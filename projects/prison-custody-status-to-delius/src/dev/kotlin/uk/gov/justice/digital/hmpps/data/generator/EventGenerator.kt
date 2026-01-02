@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
+import uk.gov.justice.digital.hmpps.data.generator.IdGenerator.id
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.entity.Custody
 import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.Disposal
@@ -80,7 +81,8 @@ object EventGenerator {
             type = ReferenceDataGenerator.RELEASE_TYPE[releaseType]!!,
             custody = custody,
             person = person,
-            institutionId = institution?.id
+            institutionId = institution?.id,
+            id = id(),
         )
         custody.releases.add(release)
         event.firstReleaseDate = release.date

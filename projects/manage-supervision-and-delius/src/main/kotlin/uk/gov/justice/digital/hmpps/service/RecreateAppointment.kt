@@ -57,7 +57,7 @@ class RecreateAppointment(
                 SERVICE -> outcomeRepository.getByCode(AppointmentOutcome.Code.RESCHEDULED_SERVICE.value)
             }
         )
-        return RecreatedAppointment(newAppointment.id, requireNotNull(newAppointment.externalReference))
+        return RecreatedAppointment(newAppointment.id!!, requireNotNull(newAppointment.externalReference))
     }
 
     private fun Appointment.recreateWith(request: RecreateAppointmentRequest): Appointment {

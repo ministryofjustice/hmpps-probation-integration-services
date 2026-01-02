@@ -17,6 +17,7 @@ import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.entity.ApprovedPremises
 import uk.gov.justice.digital.hmpps.integrations.delius.person.Person
+import uk.gov.justice.digital.hmpps.jpa.GeneratedId
 import java.time.LocalDate
 import java.time.ZonedDateTime
 
@@ -85,6 +86,10 @@ class Referral(
     @Lob
     val riskInformation: String?,
     val externalReference: String?,
+    @Id
+    @Column(name = "approved_premises_referral_id")
+    @GeneratedId(generator = "ap_referral_id_seq")
+    val id: Long? = null,
 ) {
     @Column(name = "original_ap_admit_date")
     var admissionDate: LocalDate? = null
@@ -94,11 +99,6 @@ class Referral(
 
     @Lob
     var nonArrivalNotes: String? = null
-
-    @Id
-    @Column(name = "approved_premises_referral_id")
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ap_referral_id_seq")
-    val id: Long = 0
 
     @Column(columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)

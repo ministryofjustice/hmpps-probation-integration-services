@@ -82,9 +82,8 @@ class AllocatePersonIntegrationTest @Autowired constructor(
         )
 
         val firstRo = responsibleOfficerRepository.save(
-            responsibleOfficerRepository.findByIdOrNull(initialRo.id)?.apply {
-                endDate = ZonedDateTime.now().minusDays(1)
-            }!!
+            responsibleOfficerRepository.findByIdOrNull(initialRo.id!!)
+                ?.apply { endDate = ZonedDateTime.now().minusDays(1) }!!
         )
         val secondRo =
             responsibleOfficerRepository.save(
@@ -140,7 +139,7 @@ class AllocatePersonIntegrationTest @Autowired constructor(
         val oldPm = personManagerRepository.findById(existingPm.id).orElseThrow()
         assert(allocationDetail.createdDate.closeTo(oldPm.endDate))
 
-        val oldRo = responsibleOfficerRepository.findById(existingRo.id).orElseThrow()
+        val oldRo = responsibleOfficerRepository.findById(existingRo.id!!).orElseThrow()
         assert(allocationDetail.createdDate.closeTo(oldRo.endDate))
 
         val updatedPmCount = personManagerRepository.findAll().count { it.personId == person.id }

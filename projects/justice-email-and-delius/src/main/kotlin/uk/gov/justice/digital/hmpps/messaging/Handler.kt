@@ -78,7 +78,7 @@ class Handler(
                         eventId = event?.id,
                     )
                 )
-                audit["contactId"] = contact.id
+                audit["contactId"] = contact.id!!
 
                 telemetryService.trackEvent(
                     "CreatedContact", mapOf(

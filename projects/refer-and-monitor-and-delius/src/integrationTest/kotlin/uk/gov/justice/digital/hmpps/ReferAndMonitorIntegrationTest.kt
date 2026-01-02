@@ -54,7 +54,7 @@ internal class ReferAndMonitorIntegrationTest @Autowired constructor(
     @Test
     @Order(1)
     fun `session appointment feedback submitted failed to comply`() {
-        val scheduled = contactRepository.findById(ContactGenerator.CRSAPT_NON_COMPLIANT.id).orElseThrow()
+        val scheduled = contactRepository.findById(ContactGenerator.CRSAPT_NON_COMPLIANT.id!!).orElseThrow()
         assertNull(scheduled.outcome)
 
         val nsi = nsiRepository.findById(scheduled.nsiId!!).orElseThrow()
@@ -68,7 +68,7 @@ internal class ReferAndMonitorIntegrationTest @Autowired constructor(
         channelManager.getChannel(queueName).publishAndWait(notification)
 
         val expectedOutcome = ContactGenerator.OUTCOMES[ContactOutcome.Code.FAILED_TO_COMPLY.value]!!
-        val appointment = contactRepository.findById(ContactGenerator.CRSAPT_NON_COMPLIANT.id).orElseThrow()
+        val appointment = contactRepository.findById(ContactGenerator.CRSAPT_NON_COMPLIANT.id!!).orElseThrow()
         assertThat(appointment.outcome?.code, equalTo(expectedOutcome.code))
         assertThat(appointment.attended, equalTo(expectedOutcome.attendance))
         assertThat(appointment.complied, equalTo(expectedOutcome.compliantAcceptable))
@@ -109,7 +109,7 @@ internal class ReferAndMonitorIntegrationTest @Autowired constructor(
     @Test
     @Order(2)
     fun `session appointment feedback submitted not attended`() {
-        val scheduled = contactRepository.findById(ContactGenerator.CRSAPT_NOT_ATTENDED.id).orElseThrow()
+        val scheduled = contactRepository.findById(ContactGenerator.CRSAPT_NOT_ATTENDED.id!!).orElseThrow()
         assertNull(scheduled.outcome)
 
         val notification = prepNotification(
@@ -120,7 +120,7 @@ internal class ReferAndMonitorIntegrationTest @Autowired constructor(
         channelManager.getChannel(queueName).publishAndWait(notification)
 
         val expectedOutcome = ContactGenerator.OUTCOMES[ContactOutcome.Code.FAILED_TO_ATTEND.value]!!
-        val appointment = contactRepository.findById(ContactGenerator.CRSAPT_NOT_ATTENDED.id).orElseThrow()
+        val appointment = contactRepository.findById(ContactGenerator.CRSAPT_NOT_ATTENDED.id!!).orElseThrow()
         assertThat(appointment.outcome?.code, equalTo(expectedOutcome.code))
         assertThat(appointment.attended, equalTo(expectedOutcome.attendance))
         assertThat(appointment.complied, equalTo(expectedOutcome.compliantAcceptable))
@@ -163,7 +163,7 @@ internal class ReferAndMonitorIntegrationTest @Autowired constructor(
     @Test
     @Order(3)
     fun `session appointment feedback submitted complied`() {
-        val scheduled = contactRepository.findById(ContactGenerator.CRSAPT_COMPLIANT.id).orElseThrow()
+        val scheduled = contactRepository.findById(ContactGenerator.CRSAPT_COMPLIANT.id!!).orElseThrow()
         assertNull(scheduled.outcome)
 
         val notification = prepNotification(
@@ -174,7 +174,7 @@ internal class ReferAndMonitorIntegrationTest @Autowired constructor(
         channelManager.getChannel(queueName).publishAndWait(notification)
 
         val expectedOutcome = ContactGenerator.OUTCOMES[ContactOutcome.Code.COMPLIED.value]!!
-        val appointment = contactRepository.findById(ContactGenerator.CRSAPT_COMPLIANT.id).orElseThrow()
+        val appointment = contactRepository.findById(ContactGenerator.CRSAPT_COMPLIANT.id!!).orElseThrow()
         assertThat(appointment.outcome?.code, equalTo(expectedOutcome.code))
         assertThat(appointment.attended, equalTo(expectedOutcome.attendance))
         assertThat(appointment.complied, equalTo(expectedOutcome.compliantAcceptable))
@@ -210,7 +210,7 @@ internal class ReferAndMonitorIntegrationTest @Autowired constructor(
     @Test
     @Order(4)
     fun `session appointment feedback submitted no session`() {
-        val scheduled = contactRepository.findById(ContactGenerator.CRSAPT_NO_SESSION.id).orElseThrow()
+        val scheduled = contactRepository.findById(ContactGenerator.CRSAPT_NO_SESSION.id!!).orElseThrow()
         assertNull(scheduled.outcome)
 
         val notification = prepNotification(
@@ -221,7 +221,7 @@ internal class ReferAndMonitorIntegrationTest @Autowired constructor(
         channelManager.getChannel(queueName).publishAndWait(notification)
 
         val expectedOutcome = ContactGenerator.OUTCOMES[ContactOutcome.Code.SENT_HOME.value]!!
-        val appointment = contactRepository.findById(ContactGenerator.CRSAPT_NO_SESSION.id).orElseThrow()
+        val appointment = contactRepository.findById(ContactGenerator.CRSAPT_NO_SESSION.id!!).orElseThrow()
         assertThat(appointment.outcome?.code, equalTo(expectedOutcome.code))
         assertThat(appointment.attended, equalTo(expectedOutcome.attendance))
         assertThat(appointment.complied, equalTo(expectedOutcome.compliantAcceptable))
@@ -242,7 +242,7 @@ internal class ReferAndMonitorIntegrationTest @Autowired constructor(
     @Test
     @Order(5)
     fun `referral withdrawn`() {
-        val nsi = nsiRepository.findById(NsiGenerator.WITHDRAWN.id).orElseThrow()
+        val nsi = nsiRepository.findById(NsiGenerator.WITHDRAWN.id!!).orElseThrow()
         assertThat(nsi.status.code, equalTo(NsiStatus.Code.IN_PROGRESS.value))
         assertNull(nsi.actualEndDate)
         assertNull(nsi.outcome)
@@ -265,7 +265,7 @@ internal class ReferAndMonitorIntegrationTest @Autowired constructor(
 
         channelManager.getChannel(queueName).publishAndWait(notification)
 
-        val saved = nsiRepository.findById(NsiGenerator.WITHDRAWN.id).orElseThrow()
+        val saved = nsiRepository.findById(NsiGenerator.WITHDRAWN.id!!).orElseThrow()
         assertThat(saved.status.code, equalTo(NsiStatus.Code.END.value))
         assertThat(
             saved.actualEndDate!!.withZoneSameInstant(EuropeLondon),

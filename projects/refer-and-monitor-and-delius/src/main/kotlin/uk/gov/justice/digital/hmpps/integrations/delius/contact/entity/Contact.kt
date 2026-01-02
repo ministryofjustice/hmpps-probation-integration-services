@@ -12,6 +12,7 @@ import org.springframework.data.annotation.LastModifiedDate
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import uk.gov.justice.digital.hmpps.extensions.hasChanged
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.Person
+import uk.gov.justice.digital.hmpps.jpa.GeneratedId
 import java.math.BigDecimal
 import java.math.RoundingMode
 import java.time.Duration
@@ -77,8 +78,8 @@ class Contact(
 
     @Id
     @Column(name = "contact_id")
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "contact_id_generator")
-    val id: Long = 0,
+    @GeneratedId(generator = "contact_id_generator")
+    val id: Long? = null,
 
     @Version
     @Column(name = "row_version")
@@ -258,7 +259,7 @@ class Enforcement(
 
     @Id
     @SequenceGenerator(name = "enforcement_id_seq", sequenceName = "enforcement_id_seq", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.AUTO, generator = "enforcement_id_seq")
+    @GeneratedId(generator = "enforcement_id_seq")
     @Column(name = "enforcement_id")
     val id: Long = 0,
 

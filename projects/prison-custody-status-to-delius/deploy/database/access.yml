@@ -8,6 +8,7 @@ database:
       - contact_alert
       - custody
       - custody_history
+      - domain_event
       - event
       - iaps_event
       - lic_condition

@@ -1,11 +1,6 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.probationarea.entity
 
-import jakarta.persistence.Column
-import jakarta.persistence.Entity
-import jakarta.persistence.Id
-import jakarta.persistence.JoinColumn
-import jakarta.persistence.JoinColumns
-import jakarta.persistence.OneToOne
+import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.institution.entity.Institution
 

@@ -59,11 +59,11 @@ internal class CaseSummaryServiceTest {
 
         assertThat(details.personalDetails.name.forename, equalTo(person.forename))
         assertThat(details.mainAddress!!.addressNumber, equalTo(address.addressNumber))
-        assertThat(details.mainAddress!!.streetName, equalTo(address.streetName))
+        assertThat(details.mainAddress.streetName, equalTo(address.streetName))
         assertThat(details.communityManager!!.staffCode, equalTo(manager.staff.code))
-        assertThat(details.communityManager!!.team.code, equalTo(manager.team.code))
-        assertThat(details.communityManager!!.name.forename, equalTo(manager.staff.forename))
-        assertThat(details.communityManager!!.name.surname, equalTo(manager.staff.surname))
+        assertThat(details.communityManager.team.code, equalTo(manager.team.code))
+        assertThat(details.communityManager.name.forename, equalTo(manager.staff.forename))
+        assertThat(details.communityManager.name.surname, equalTo(manager.staff.surname))
     }
 
     @Test
@@ -77,7 +77,7 @@ internal class CaseSummaryServiceTest {
         assertThat(overview.personalDetails.name.forename, equalTo(person.forename))
         assertThat(overview.registerFlags, equalTo(listOf("MAPPA 1", "High RoSH")))
         assertThat(overview.lastRelease!!.releaseDate, equalTo(release.date))
-        assertThat(overview.lastRelease!!.recallDate, equalTo(release.recall?.date))
+        assertThat(overview.lastRelease.recallDate, equalTo(release.recall?.date))
         assertThat(overview.activeConvictions, hasSize(1))
         assertThat(overview.activeConvictions[0].number, equalTo("3"))
         assertThat(overview.activeConvictions[0].mainOffence.description, equalTo("Offence description"))
@@ -131,8 +131,8 @@ internal class CaseSummaryServiceTest {
 
         assertThat(overview.personalDetails.name.forename, equalTo(person.forename))
         assertThat(overview.mappa!!.category, equalTo(1))
-        assertThat(overview.mappa!!.level, equalTo(2))
-        assertThat(overview.mappa!!.startDate, equalTo(RegistrationGenerator.MAPPA.date))
+        assertThat(overview.mappa.level, equalTo(2))
+        assertThat(overview.mappa.startDate, equalTo(RegistrationGenerator.MAPPA.date))
         assertThat(overview.roshHistory, hasSize(1))
         assertThat(overview.roshHistory[0].type, equalTo(RegistrationGenerator.HIGH_ROSH.type.code))
         assertThat(overview.roshHistory[0].typeDescription, equalTo(RegistrationGenerator.HIGH_ROSH.type.description))

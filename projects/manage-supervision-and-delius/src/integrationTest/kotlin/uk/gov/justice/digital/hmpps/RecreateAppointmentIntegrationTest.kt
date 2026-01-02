@@ -373,7 +373,7 @@ class RecreateAppointmentIntegrationTest : IntegrationTestBase() {
             .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<RecreatedAppointment>()
 
-        val originalAppointment = appointmentRepository.getAppointment(original.id)
+        val originalAppointment = appointmentRepository.getAppointment(original.id!!)
         assertThat(originalAppointment.outcome?.code).isEqualTo(SERVICE_RESCHEDULED_OUTCOME.code)
 
         val newAppointment = appointmentRepository.getAppointment(recreated.id)
@@ -408,7 +408,7 @@ class RecreateAppointmentIntegrationTest : IntegrationTestBase() {
             .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<RecreatedAppointment>()
 
-        val originalAppointment = appointmentRepository.getAppointment(original.id)
+        val originalAppointment = appointmentRepository.getAppointment(original.id!!)
         assertThat(originalAppointment.outcome?.code).isEqualTo(SERVICE_RESCHEDULED_OUTCOME.code)
 
         val newAppointment = appointmentRepository.getAppointment(recreated.id)
@@ -443,7 +443,7 @@ class RecreateAppointmentIntegrationTest : IntegrationTestBase() {
             .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<RecreatedAppointment>()
 
-        val originalAppointment = appointmentRepository.getAppointment(original.id)
+        val originalAppointment = appointmentRepository.getAppointment(original.id!!)
         assertThat(originalAppointment.outcome?.code).isEqualTo(POP_RESCHEDULED_OUTCOME.code)
 
         val newAppointment = appointmentRepository.getAppointment(recreated.id)

@@ -1,6 +1,6 @@
 package uk.gov.justice.digital.hmpps.messaging
 
-import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import io.awspring.cloud.sqs.operations.SqsTemplate
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
@@ -18,7 +18,7 @@ import uk.gov.justice.digital.hmpps.converter.NotificationConverter
 import uk.gov.justice.digital.hmpps.data.generator.MessageGenerator
 import uk.gov.justice.digital.hmpps.message.Notification
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
-import uk.gov.justice.digital.hmpps.test.MockMvcExtensions
+import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.objectMapper
 import java.util.*
 
 @ExtendWith(MockitoExtension::class)
@@ -32,9 +32,6 @@ internal class CourtMessageHandlerTest {
     @Mock
     lateinit var sqsTemplate: SqsTemplate
 
-    @Mock
-    lateinit var objectMapper: ObjectMapper
-
     lateinit var handler: CourtMessageHandler
 
     @BeforeEach
@@ -43,7 +40,7 @@ internal class CourtMessageHandlerTest {
             converter,
             telemetryService,
             sqsTemplate,
-            MockMvcExtensions.objectMapper,
+            objectMapper,
             "receive-queue",
             "send-queue"
         )
@@ -54,7 +51,7 @@ internal class CourtMessageHandlerTest {
         val notification = Notification(message = MessageGenerator.COMMON_PLATFORM_EVENT_MULTIPLE_DEFENDANTS)
         val incomingMessage = Optional.of(
             MessageBuilder.createMessage(
-                MockMvcExtensions.objectMapper.writeValueAsString(notification),
+                objectMapper.writeValueAsString(notification),
                 MessageHeaders(mapOf())
             )
         )
@@ -73,7 +70,7 @@ internal class CourtMessageHandlerTest {
         val notification = Notification(message = MessageGenerator.COMMON_PLATFORM_EVENT_MULTIPLE_DEFENDANTS)
         val incomingMessage = Optional.of(
             MessageBuilder.createMessage(
-                MockMvcExtensions.objectMapper.writeValueAsString(notification),
+                objectMapper.writeValueAsString(notification),
                 MessageHeaders(mapOf())
             )
         )
@@ -87,11 +84,8 @@ internal class CourtMessageHandlerTest {
         val captor = argumentCaptor<Message<String>>()
         verify(sqsTemplate, times(2)).send(eq("send-queue"), captor.capture())
 
-        val output = MockMvcExtensions.objectMapper.readValue(
-            captor.firstValue.payload,
-            Notification::class.java
-        ) as Notification<String>
-        val outputHearing = MockMvcExtensions.objectMapper.readValue(output.message, CommonPlatformHearing::class.java)
+        val output = objectMapper.readValue(captor.firstValue.payload, jacksonTypeRef<Notification<String>>())
+        val outputHearing = objectMapper.readValue(output.message, CommonPlatformHearing::class.java)
 
         assertThat(outputHearing.hearing.prosecutionCases.size, equalTo(1))
         assertThat(outputHearing.hearing.prosecutionCases[0].defendants.size, equalTo(1))

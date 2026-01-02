@@ -10,6 +10,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
+import uk.gov.justice.digital.hmpps.jpa.GeneratedId
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.ZonedDateTime
@@ -21,7 +22,7 @@ import java.time.ZonedDateTime
 class Event(
     @Id
     @Column(name = "event_id")
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "event_id_seq")
+    @GeneratedId(generator = "event_id_seq")
     val id: Long? = null,
 
     @Column(name = "consecutive_to_event_id")
@@ -73,13 +74,13 @@ class Event(
     val inBreach: Boolean = false,
 
     @Column(name = "active_flag", columnDefinition = "NUMBER", nullable = false)
-    val active: Boolean,
+    val active: Boolean = true,
 
     @Column
     val breachEnd: LocalDate? = null,
 
     @Column
-    val ftcCount: Long,
+    val ftcCount: Long = 0,
 
     @Column(columnDefinition = "NUMBER", nullable = false)
     val pendingTransfer: Boolean = false,
@@ -106,7 +107,7 @@ class Event(
 @Table(name = "order_manager")
 class OrderManager(
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "order_manager_id_seq")
+    @GeneratedId(generator = "order_manager_id_seq")
     @Column(name = "order_manager_id")
     val id: Long? = null,
 

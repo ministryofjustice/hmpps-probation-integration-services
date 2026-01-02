@@ -36,7 +36,7 @@ object PersonGenerator {
     )
 
     val DEFAULT_PERSON_MANAGER = generatePersonManager(
-        personId = DEFAULT_PERSON.id!!,
+        personId = DEFAULT_PERSON.id,
         staff = StaffGenerator.DEFAULT_STAFF,
         team = TeamGenerator.DEFAULT_UPW_TEAM,
     )

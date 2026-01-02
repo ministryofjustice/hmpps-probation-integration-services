@@ -5,9 +5,7 @@ import org.gradle.api.Project
 import org.gradle.api.tasks.SourceSet
 import org.gradle.api.tasks.SourceSetContainer
 import org.gradle.api.tasks.testing.Test
-import org.gradle.kotlin.dsl.configure
-import org.gradle.kotlin.dsl.get
-import org.gradle.kotlin.dsl.named
+import org.gradle.kotlin.dsl.*
 import org.gradle.testing.jacoco.tasks.JacocoReport
 import org.sonarqube.gradle.SonarExtension
 import uk.gov.justice.digital.hmpps.extensions.ClassPathExtension
@@ -54,19 +52,17 @@ class ClassPathPlugin : Plugin<Project> {
                 }
             }
 
-            project.tasks.register("integrationTest", Test::class.java) {
+            project.tasks.register<Test>("integrationTest") {
                 testClassesDirs = getByName("integrationTest").output.classesDirs
                 classpath = getByName("integrationTest").runtimeClasspath
                 val profiles = System.getProperty("spring.profiles.active", System.getenv("SPRING_PROFILES_ACTIVE"))
-                systemProperty("spring.profiles.active", "integration-test,$profiles")
+                systemProperty("spring.profiles.active", listOfNotNull("integration-test", profiles).joinToString(","))
             }
-            project.tasks.withType(Test::class.java) {
+            project.tasks.withType<Test> {
                 useJUnitPlatform()
                 finalizedBy("jacocoTestReport")
             }
-            project.tasks.named("check") {
-                dependsOn("test", "integrationTest")
-            }
+            project.tasks.named("check") { dependsOn("test", "integrationTest") }
 
             project.configure<SonarExtension> {
                 properties {
