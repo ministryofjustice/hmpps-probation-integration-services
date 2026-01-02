@@ -14,6 +14,7 @@ import org.springframework.data.repository.findByIdOrNull
 import org.springframework.test.context.bean.override.mockito.MockitoBean
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonManagerGenerator
+import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ResponsibleOfficerGenerator
 import uk.gov.justice.digital.hmpps.integrations.delius.person.*
 import uk.gov.justice.digital.hmpps.integrations.workforceallocations.AllocationDetail
@@ -75,7 +76,8 @@ class AllocatePersonIntegrationTest @Autowired constructor(
         val secondPm = personManagerRepository.save(
             PersonManagerGenerator.generate(
                 personId = person.id,
-                startDateTime = firstPm.endDate!!
+                startDateTime = firstPm.endDate!!,
+                allocationReason = ReferenceDataGenerator.INITIAL_ORDER_ALLOCATION
             )
         )
 

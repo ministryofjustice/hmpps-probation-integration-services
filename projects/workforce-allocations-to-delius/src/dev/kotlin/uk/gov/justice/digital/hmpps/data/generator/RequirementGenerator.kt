@@ -15,6 +15,7 @@ object RequirementGenerator {
     val DEFAULT = generate()
     val NEW = generate(id = 9001)
     val HISTORIC = generate(id = 9002)
+    val REALLOCATION = generate(id = 9003)
 
     val CASE_VIEW = forCaseView()
 

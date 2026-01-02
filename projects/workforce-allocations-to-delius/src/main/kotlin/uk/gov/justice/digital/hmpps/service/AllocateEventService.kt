@@ -101,20 +101,37 @@ class AllocateEventService(
         orderManager: OrderManager,
         spoStaff: Staff?
     ) {
-        contactRepository.save(
-            Contact(
-                type = contactTypeRepository.findByCodeOrThrow(ContactTypeCode.CASE_ALLOCATION_SPO_OVERSIGHT.value),
-                personId = event.person.id,
-                eventId = event.id,
-                date = orderManager.startDate.toLocalDate(),
-                startTime = orderManager.startDate,
-                teamId = orderManager.team.id,
-                staffId = spoStaff?.id ?: orderManager.staff.id,
-                providerId = orderManager.provider.id,
-                notes = allocationDetail.spoOversightNotes,
-                isSensitive = allocationDetail.sensitiveOversightNotes ?: true
+        if (allocationDetail.allocationReason == null) {
+            contactRepository.save(
+                Contact(
+                    type = contactTypeRepository.findByCodeOrThrow(ContactTypeCode.CASE_ALLOCATION_SPO_OVERSIGHT.value),
+                    personId = event.person.id,
+                    eventId = event.id,
+                    date = orderManager.startDate.toLocalDate(),
+                    startTime = orderManager.startDate,
+                    teamId = orderManager.team.id,
+                    staffId = spoStaff?.id ?: orderManager.staff.id,
+                    providerId = orderManager.provider.id,
+                    notes = allocationDetail.spoOversightNotes,
+                    isSensitive = allocationDetail.sensitiveOversightNotes ?: true
+                )
             )
-        )
+        } else {
+            contactRepository.save(
+                Contact(
+                    type = contactTypeRepository.findByCodeOrThrow(ContactTypeCode.CASE_REALLOCATION_SPO_OVERSIGHT.value),
+                    personId = event.person.id,
+                    eventId = event.id,
+                    date = orderManager.startDate.toLocalDate(),
+                    startTime = orderManager.startDate,
+                    teamId = orderManager.team.id,
+                    staffId = spoStaff?.id ?: orderManager.staff.id,
+                    providerId = orderManager.provider.id,
+                    notes = allocationDetail.spoOversightNotes,
+                    isSensitive = allocationDetail.sensitiveOversightNotes ?: true
+                )
+            )
+        }
     }
 
     fun Event.hasAccreditedProgrammeRequirement(): Boolean =

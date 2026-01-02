@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.data.generator
 
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.integrations.delius.allocations.entity.ManagerBaseEntity
+import uk.gov.justice.digital.hmpps.integrations.delius.allocations.entity.ReferenceData
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.Provider
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.Staff
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.Team
@@ -23,6 +24,7 @@ interface ManagerGenerator {
         lastModifiedDateTime: ZonedDateTime = ZonedDateTime.now(),
         createdUserId: Long = UserGenerator.AUDIT_USER.id,
         lastModifiedUserId: Long = UserGenerator.AUDIT_USER.id,
+        allocationReason: ReferenceData = ReferenceDataGenerator.REALLOCATION_ORDER_ALLOCATION,
         version: Long = 0
     ) = apply {
         this.provider = provider
@@ -36,6 +38,7 @@ interface ManagerGenerator {
         this.lastModifiedDateTime = lastModifiedDateTime
         this.createdUserId = createdUserId
         this.lastModifiedUserId = lastModifiedUserId
+        this.allocationReason = allocationReason
         this.version = version
     }
 }

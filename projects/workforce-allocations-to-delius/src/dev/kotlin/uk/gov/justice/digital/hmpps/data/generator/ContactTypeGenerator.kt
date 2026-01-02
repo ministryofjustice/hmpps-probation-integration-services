@@ -14,6 +14,7 @@ object ContactTypeGenerator {
     val INITIAL_APPOINTMENT_HOME_VISIT = generate(ContactTypeCode.INITIAL_APPOINTMENT_HOME_VISIT.value)
     val INITIAL_APPOINTMENT_BY_VIDEO = generate(ContactTypeCode.INITIAL_APPOINTMENT_BY_VIDEO.value)
     val CASE_ALLOCATION_SPO_OVERSIGHT = generate(ContactTypeCode.CASE_ALLOCATION_SPO_OVERSIGHT.value)
+    val CASE_REALLOCATION_SPO_OVERSIGHT = generate(ContactTypeCode.CASE_REALLOCATION_SPO_OVERSIGHT.value)
 
     fun generate(
         code: String,

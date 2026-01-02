@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.data.generator
 
 import uk.gov.justice.digital.hmpps.data.generator.RequirementManagerGenerator.build
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
+import uk.gov.justice.digital.hmpps.integrations.delius.allocations.entity.ReferenceData
 import uk.gov.justice.digital.hmpps.integrations.delius.event.OrderManager
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.Provider
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.Staff
@@ -11,6 +12,8 @@ import java.time.ZonedDateTime
 object OrderManagerGenerator {
     var DEFAULT = generate(startDateTime = ManagerGenerator.START_DATE_TIME)
     var NEW = generate(eventId = EventGenerator.NEW.id, startDateTime = ManagerGenerator.START_DATE_TIME)
+    var REALLOCATION =
+        generate(eventId = EventGenerator.REALLOCATION.id, startDateTime = ManagerGenerator.START_DATE_TIME)
     var HISTORIC = generate(eventId = EventGenerator.HISTORIC.id, startDateTime = ManagerGenerator.START_DATE_TIME)
     var DELETED_EVENT =
         generate(eventId = EventGenerator.DELETED.id, startDateTime = ManagerGenerator.START_DATE_TIME.minusDays(3))
@@ -48,6 +51,7 @@ object OrderManagerGenerator {
         lastModifiedDateTime: ZonedDateTime = ZonedDateTime.now(),
         createdUserId: Long = UserGenerator.AUDIT_USER.id,
         lastModifiedUserId: Long = UserGenerator.AUDIT_USER.id,
+        allocationReason: ReferenceData = ReferenceDataGenerator.REALLOCATION_ORDER_ALLOCATION,
         version: Long = 0
     ) = OrderManager(
         eventId = eventId,
@@ -62,6 +66,7 @@ object OrderManagerGenerator {
         lastModifiedDateTime,
         createdUserId,
         lastModifiedUserId,
+        allocationReason,
         version
     ) as OrderManager
 }

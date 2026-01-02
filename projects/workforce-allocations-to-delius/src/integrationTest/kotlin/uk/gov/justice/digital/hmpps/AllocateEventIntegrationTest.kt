@@ -158,6 +158,7 @@ class AllocateEventIntegrationTest @Autowired constructor(
             .firstOrNull { it.eventId == oldOm.eventId && it.type.code == ContactTypeCode.CASE_ALLOCATION_SPO_OVERSIGHT.value }
 
         assertNotNull(spoContact)
+
         assertThat(spoContact!!.staffId, equalTo(staffId))
         assertThat(
             spoContact.isSensitive,
