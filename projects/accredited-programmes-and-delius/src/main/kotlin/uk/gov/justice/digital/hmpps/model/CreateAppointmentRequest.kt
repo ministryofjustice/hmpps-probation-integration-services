@@ -31,6 +31,7 @@ data class CreateAppointmentRequest(
     enum class Type(val code: String) {
         PROGRAMME_ATTENDANCE(ContactType.APPOINTMENT),
         THREE_WAY_MEETING(ContactType.THREE_WAY_MEETING),
+        PRE_GROUP_ONE_TO_ONE_MEETING(ContactType.PRE_GROUP_ONE_TO_ONE_MEETING)
     }
 }
 
