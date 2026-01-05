@@ -80,11 +80,11 @@ dependencyResolutionManagement {
             library("asyncapi", "org.openfolder:kotlin-asyncapi-spring-web:3.1.3")
             library("aws-s3", "io.awspring.cloud:spring-cloud-aws-starter-s3:3.4.2")
             library("aws-autoconfigure", "io.awspring.cloud:spring-cloud-aws-autoconfigure:3.4.2")
-            library("aws-query-protocol", "software.amazon.awssdk:aws-query-protocol:2.40.13")
+            library("aws-query-protocol", "software.amazon.awssdk:aws-query-protocol:2.40.16")
             library("aws-sns", "io.awspring.cloud:spring-cloud-aws-starter-sns:3.4.2")
             library("aws-sqs", "io.awspring.cloud:spring-cloud-aws-starter-sqs:3.4.2")
             library("aws-starter", "io.awspring.cloud:spring-cloud-aws-starter:3.4.2")
-            library("aws-sts", "software.amazon.awssdk:sts:2.40.13")
+            library("aws-sts", "software.amazon.awssdk:sts:2.40.16")
             library("azure-app-insights", "com.microsoft.azure:applicationinsights-web:3.7.6")
             library("azure-identity", "com.azure:azure-identity:1.18.1")
             library("flipt", "io.flipt:flipt-client-java:1.2.1")
@@ -94,7 +94,7 @@ dependencyResolutionManagement {
             library("mockito-kotlin", "org.mockito.kotlin:mockito-kotlin:6.1.0")
             library("notify", "uk.gov.service.notify:notifications-java-client:6.0.0-RELEASE")
             library("opensearch", "org.opensearch.client:opensearch-java:3.4.0")
-            library("opensearch-starter", "org.opensearch.client:spring-data-opensearch-starter:2.0.3")
+            library("opensearch-starter", "org.opensearch.client:spring-data-opensearch-starter:2.0.5")
             library(
                 "opentelemetry-annotations",
                 "io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:2.23.0"
