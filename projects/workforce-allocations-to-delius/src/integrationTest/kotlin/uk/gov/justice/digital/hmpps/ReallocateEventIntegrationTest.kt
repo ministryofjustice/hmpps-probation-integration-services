@@ -15,6 +15,8 @@ import uk.gov.justice.digital.hmpps.api.model.AllocationType
 import uk.gov.justice.digital.hmpps.api.model.deriveDeliusCodeFromTextDefaultInitial
 import uk.gov.justice.digital.hmpps.data.generator.EventGenerator
 import uk.gov.justice.digital.hmpps.data.generator.OrderManagerGenerator
+import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactTypeCode
 import uk.gov.justice.digital.hmpps.integrations.delius.event.OrderManager
 import uk.gov.justice.digital.hmpps.integrations.delius.event.OrderManagerRepository
 import uk.gov.justice.digital.hmpps.integrations.workforceallocations.AllocationDetail
@@ -28,6 +30,7 @@ class ReallocateEventIntegrationTest @Autowired constructor(
     private val channelManager: HmppsChannelManager,
     private val wireMockServer: WireMockServer,
     private val orderManagerRepository: OrderManagerRepository,
+    private val contactRepository: ContactRepository
 ) {
     @MockitoBean
     private lateinit var telemetryService: TelemetryService
@@ -55,6 +58,29 @@ class ReallocateEventIntegrationTest @Autowired constructor(
         )
     }
 
+    @Test
+    fun `reallocation completes and SPO Management oversight contact created correctly`() {
+        val event = EventGenerator.REALLOCATION
+        val existingManager = OrderManagerGenerator.REALLOCATION
+
+        allocateAndValidateSpoOversight(
+            "new-event-reallocation-message-spo-oversight",
+            "reallocation-event-allocation-body-spo-oversight",
+            existingManager,
+        )
+
+        verify(telemetryService).trackEvent(
+            eq("EventAllocation"),
+            eq(
+                mapOf(
+                    "crn" to event.person.crn,
+                    "detailUrl" to "http://localhost:${wireMockServer.port()}/allocation/event/reallocate-new-order-manager-spo-oversight"
+                )
+            ),
+            any()
+        )
+    }
+
     private fun allocateAndValidate(
         messageName: String,
         jsonFile: String,
@@ -70,6 +96,28 @@ class ReallocateEventIntegrationTest @Autowired constructor(
         assertThat(
             orderManagerRepository.findById(existingOm.id).get().allocationReason.code,
             equalTo(expectedAllocationReason)
+        )
+    }
+
+    private fun allocateAndValidateSpoOversight(
+        messageName: String,
+        jsonFile: String,
+        existingOm: OrderManager,
+    ) {
+        val allocationEvent = prepMessage(messageName, wireMockServer.port())
+        channelManager.getChannel(queueName).publishAndWait(allocationEvent)
+
+        val allocationDetail = ResourceLoader.file<AllocationDetail>(jsonFile)
+
+        val contact =
+            contactRepository.findAll().first { it.type.code == ContactTypeCode.CASE_REALLOCATION_SPO_OVERSIGHT.value }
+
+        assert(
+            contact.notes!!.contains("Comment added by Workforce Allocation Service on ${allocationDetail.createdDate}")
+        )
+
+        assert(
+            contact.notes!!.contains(allocationDetail.allocationReason.toString())
         )
     }
 }

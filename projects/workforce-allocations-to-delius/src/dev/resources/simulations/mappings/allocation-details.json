@@ -68,6 +68,19 @@
     {
       "request": {
         "method": "GET",
+        "url": "/allocation/event/reallocate-new-order-manager-spo-oversight"
+      },
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "bodyFileName": "reallocation-event-allocation-body-spo-oversight.json"
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
         "url": "/allocation/event/allocate-historic-order-manager"
       },
       "response": {
