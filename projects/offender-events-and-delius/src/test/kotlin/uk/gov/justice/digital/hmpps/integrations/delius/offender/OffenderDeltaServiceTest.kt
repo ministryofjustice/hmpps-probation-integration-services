@@ -69,10 +69,10 @@ class OffenderDeltaServiceTest {
         val occurredAt = ZonedDateTime.parse("2025-12-15T17:30:30Z")
 
         val delta = OffenderDelta(
-            id = 35248210L,
+            id = id(),
             offender = offender,
             sourceTable = table,
-            sourceRecordId = 2510101410L,
+            sourceRecordId = id(),
             action = "UPSERT",
             dateChanged = occurredAt
         )
@@ -95,7 +95,7 @@ class OffenderDeltaServiceTest {
     ) {
         // given
         val offender = Offender(
-            id = 101L,
+            id = id(),
             crn = "X101010",
             nomsNumber = null
         )
@@ -103,10 +103,10 @@ class OffenderDeltaServiceTest {
         val occurredAt = ZonedDateTime.parse("2025-12-15T18:00:00Z")
 
         val delta = OffenderDelta(
-            id = 40000001L,
+            id = id(),
             offender = offender,
             sourceTable = table,
-            sourceRecordId = 90000001L,
+            sourceRecordId = id(),
             action = "UPSERT",
             dateChanged = occurredAt
         )
@@ -150,7 +150,7 @@ class OffenderDeltaServiceTest {
     ) {
         // given
         val offender = Offender(
-            id = 202L,
+            id = id(),
             crn = "X202202",
             nomsNumber = null
         )
@@ -158,10 +158,10 @@ class OffenderDeltaServiceTest {
         val occurredAt = ZonedDateTime.parse("2025-12-15T18:30:00Z")
 
         val delta = OffenderDelta(
-            id = 50000001L,
+            id = id(),
             offender = offender,
             sourceTable = table,
-            sourceRecordId = 80000001L,
+            sourceRecordId = id(),
             action = "UPSERT",
             dateChanged = occurredAt
         )
@@ -207,7 +207,7 @@ class OffenderDeltaServiceTest {
     fun `when sourceTable is MANAGEMENT_TIER_EVENT then no notification telemetry or domain event is generated`() {
         // given
         val offender = Offender(
-            id = 999L,
+            id = id(),
             crn = "X999999",
             nomsNumber = null
         )
@@ -215,10 +215,10 @@ class OffenderDeltaServiceTest {
         val occurredAt = ZonedDateTime.parse("2025-12-15T17:31:30Z")
 
         val delta = OffenderDelta(
-            id = 35248220L,
+            id = id(),
             offender = offender,
             sourceTable = "MANAGEMENT_TIER_EVENT",
-            sourceRecordId = 2510101420L,
+            sourceRecordId = id(),
             action = "UPSERT",
             dateChanged = occurredAt
         )
@@ -248,10 +248,10 @@ class OffenderDeltaServiceTest {
         val occurredAt = ZonedDateTime.parse("2025-12-15T17:24:30Z")
 
         val delta = OffenderDelta(
-            id = 35248150L,
+            id = id(),
             offender = null,
             sourceTable = "CONTACT",
-            sourceRecordId = 2510101350L,
+            sourceRecordId = id(),
             action = "UPSERT",
             dateChanged = occurredAt
         )
@@ -279,16 +279,16 @@ class OffenderDeltaServiceTest {
     fun `when CONTACT and contact record does not exist then no domain event is generated`() {
         // given
         val offender = Offender(
-            id = 10L,
+            id = id(),
             crn = "X12345",
             nomsNumber = null
         )
 
         val occurredAt = ZonedDateTime.parse("2025-12-15T17:25:30Z")
-        val sourceRecordId = 2510101360L
+        val sourceRecordId = id()
 
         val delta = OffenderDelta(
-            id = 35248160L,
+            id = id(),
             offender = offender,
             sourceTable = "CONTACT",
             sourceRecordId = sourceRecordId,
@@ -331,16 +331,16 @@ class OffenderDeltaServiceTest {
     fun `when CONTACT and VISOR flag is false then no domain event is generated`() {
         // given
         val offender = Offender(
-            id = 30L,
+            id = id(),
             crn = "X303030",
             nomsNumber = null
         )
 
         val occurredAt = ZonedDateTime.parse("2025-12-15T17:27:30Z")
-        val sourceRecordId = 2510101380L
+        val sourceRecordId = id()
 
         val delta = OffenderDelta(
-            id = 35248180L,
+            id = id(),
             offender = offender,
             sourceTable = "CONTACT",
             sourceRecordId = sourceRecordId,
@@ -377,16 +377,16 @@ class OffenderDeltaServiceTest {
     fun `when CONTACT_CHANGED and VISOR flag is true but no MAPPA registration exists then category defaults to 0`() {
         // given
         val offender = Offender(
-            id = 20L,
+            id = id(),
             crn = "X202020",
             nomsNumber = null
         )
 
         val occurredAt = ZonedDateTime.parse("2025-12-15T17:26:30Z")
-        val sourceRecordId = 2510101370L
+        val sourceRecordId = id()
 
         val delta = OffenderDelta(
-            id = 35248170L,
+            id = id(),
             offender = offender,
             sourceTable = "CONTACT",
             sourceRecordId = sourceRecordId,
@@ -435,16 +435,16 @@ class OffenderDeltaServiceTest {
     fun `when CONTACT_CHANGED and VISOR flag is true then contact updated domain event is generated`() {
         // given
         val offender = Offender(
-            id = 50L,
+            id = id(),
             crn = "X111111",
             nomsNumber = null
         )
 
         val occurredAt = ZonedDateTime.parse("2025-12-15T17:23:30Z")
-        val sourceRecordId = 2510101340L
+        val sourceRecordId = id()
 
         val delta = OffenderDelta(
-            id = 35248140L,
+            id = id(),
             offender = offender,
             sourceTable = "CONTACT",
             sourceRecordId = sourceRecordId,
@@ -463,8 +463,8 @@ class OffenderDeltaServiceTest {
         val mappaCategory = ReferenceData(
             code = "M4",
             description = "MAPPA category 4",
-            datasetId = 3001L,
-            id = 4001L
+            datasetId = id(),
+            id = id()
         )
 
         val registration = mock<Registration> {
@@ -521,16 +521,16 @@ class OffenderDeltaServiceTest {
     fun `when CONTACT_CHANGED and VISOR is true then contact updated domain event is generated`() {
         // given
         val offender = Offender(
-            id = 60L,
+            id = id(),
             crn = "X606060",
             nomsNumber = null
         )
 
         val occurredAt = ZonedDateTime.parse("2025-12-15T17:28:30Z")
-        val sourceRecordId = 2510101390L
+        val sourceRecordId = id()
 
         val delta = OffenderDelta(
-            id = 35248190L,
+            id = id(),
             offender = offender,
             sourceTable = "CONTACT",
             sourceRecordId = sourceRecordId,
@@ -569,16 +569,16 @@ class OffenderDeltaServiceTest {
     fun `when CONTACT_DELETED and VISOR flag is true then contact deleted domain event is generated`() {
         // given
         val offender = Offender(
-            id = 50L,
+            id = id(),
             crn = "X111111",
             nomsNumber = null
         )
 
         val occurredAt = ZonedDateTime.parse("2025-12-15T17:21:30Z")
-        val sourceRecordId = 2510101320L
+        val sourceRecordId = id()
 
         val delta = OffenderDelta(
-            id = 35248120L,
+            id = id(),
             offender = offender,
             sourceTable = "CONTACT",
             sourceRecordId = sourceRecordId,
@@ -596,8 +596,8 @@ class OffenderDeltaServiceTest {
         val mappaCategory = ReferenceData(
             code = "M4",
             description = "MAPPA category 4",
-            datasetId = 3001L,
-            id = 4001L
+            datasetId = id(),
+            id = id()
         )
 
         val registration = mock<Registration> {
@@ -653,16 +653,16 @@ class OffenderDeltaServiceTest {
     fun `when CONTACT_DELETED and contact record does not exist then no domain event is generated because VISOR flag cannot be resolved`() {
         // given
         val offender = Offender(
-            id = 80L,
+            id = id(),
             crn = "X808080",
             nomsNumber = null
         )
 
         val occurredAt = ZonedDateTime.parse("2025-12-15T17:30:30Z")
-        val sourceRecordId = 2510101410L
+        val sourceRecordId = id()
 
         val delta = OffenderDelta(
-            id = 35248210L,
+            id = id(),
             offender = offender,
             sourceTable = "CONTACT",
             sourceRecordId = sourceRecordId,

@@ -10,6 +10,7 @@ import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
+import uk.gov.justice.digital.hmpps.data.generator.IdGenerator.id
 import uk.gov.justice.digital.hmpps.integrations.delius.domainevent.entity.DomainEvent
 import uk.gov.justice.digital.hmpps.integrations.delius.domainevent.entity.DomainEventRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.ReferenceData
@@ -51,10 +52,11 @@ class DomainEventServiceTest {
             )
         ).thenReturn(eventTypeRef)
 
+        val contactId = id()
         // when
         domainEventService.publishContactUpdated(
             crn = "X972222",
-            contactId = 2510101288L,
+            contactId = contactId,
             category = 0,
             occurredAt = occurredAt
         )
@@ -81,7 +83,7 @@ class DomainEventServiceTest {
             body["personReference"]["identifiers"][0]["value"].asText()
         )
         assertEquals(
-            2510101288L,
+            contactId,
             body["additionalInformation"]["contactId"].asLong()
         )
         assertEquals(
@@ -108,10 +110,12 @@ class DomainEventServiceTest {
             )
         ).thenReturn(eventTypeRef)
 
+        val contactId = id()
+
         // when
         domainEventService.publishContactDeleted(
             crn = "X972222",
-            contactId = 2510101297L,
+            contactId = contactId,
             category = 4,
             occurredAt = occurredAt
         )
@@ -134,7 +138,7 @@ class DomainEventServiceTest {
             body["description"].asText()
         )
         assertEquals(
-            2510101297L,
+            contactId,
             body["additionalInformation"]["contactId"].asLong()
         )
         assertEquals(
