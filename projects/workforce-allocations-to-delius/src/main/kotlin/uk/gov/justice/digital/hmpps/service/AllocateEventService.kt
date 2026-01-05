@@ -119,7 +119,12 @@ class AllocateEventService(
                     isSensitive = allocationDetail.sensitiveOversightNotes ?: true
                 )
             )
-        } else {
+        } else if (allocationDetail.spoOversightNotes != null) {
+
+            val reallocationNotes = allocationDetail.spoOversightNotes.let {
+                "$it : ${allocationDetail.allocationReason.name} Comment added by Workforce Allocation Service on ${allocationDetail.createdDate}"
+            }
+
             contactRepository.save(
                 Contact(
                     type = contactTypeRepository.findByCodeOrThrow(ContactTypeCode.CASE_REALLOCATION_SPO_OVERSIGHT.value),
@@ -130,7 +135,7 @@ class AllocateEventService(
                     teamId = orderManager.team.id,
                     staffId = spoStaff?.id ?: orderManager.staff.id,
                     providerId = orderManager.provider.id,
-                    notes = allocationDetail.spoOversightNotes,
+                    notes = reallocationNotes,
                     isSensitive = allocationDetail.sensitiveOversightNotes ?: true
                 )
             )
