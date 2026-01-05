@@ -1,39 +1,25 @@
 package uk.gov.justice.digital.hmpps.data
 
-import jakarta.annotation.PostConstruct
-import jakarta.persistence.EntityManager
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
-import org.springframework.boot.context.event.ApplicationReadyEvent
-import org.springframework.context.ApplicationListener
 import org.springframework.stereotype.Component
-import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.data.generator.*
-import uk.gov.justice.digital.hmpps.user.AuditUserRepository
+import uk.gov.justice.digital.hmpps.data.loader.BaseDataLoader
+import uk.gov.justice.digital.hmpps.data.manager.DataManager
 
 @Component
-@ConditionalOnProperty("seed.database")
-class DataLoader(
-    private val auditUserRepository: AuditUserRepository,
-    private val entityManager: EntityManager
-) : ApplicationListener<ApplicationReadyEvent> {
+class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
+    override fun systemUser() = UserGenerator.AUDIT_USER
 
-    @PostConstruct
-    fun saveAuditUser() {
-        auditUserRepository.save(UserGenerator.AUDIT_USER)
-    }
-
-    @Transactional
-    override fun onApplicationEvent(are: ApplicationReadyEvent) {
-        entityManager.persist(ProviderGenerator.DEFAULT_PROVIDER)
-        entityManager.persist(StaffGenerator.PDUHEAD)
-        entityManager.persist(StaffGenerator.DEFAULT_PDUSTAFF_USER)
-        entityManager.persist(ProviderGenerator.DEFAULT_BOROUGH)
-        entityManager.persist(ProviderGenerator.DEFAULT_DISTRICT)
+    override fun setupData() {
+        save(ProviderGenerator.DEFAULT_PROVIDER)
+        save(StaffGenerator.PDUHEAD)
+        save(StaffGenerator.DEFAULT_PDUSTAFF_USER)
+        save(ProviderGenerator.DEFAULT_BOROUGH)
+        save(ProviderGenerator.DEFAULT_DISTRICT)
 
         createOfficeLocationsAndDistricts()
 
-        entityManager.persist(ProviderGenerator.DEFAULT_TEAM)
-        entityManager.persist(ProviderGenerator.TEAM_ENDED_OR_NULL_LOCATIONS)
+        save(ProviderGenerator.DEFAULT_TEAM)
+        save(ProviderGenerator.TEAM_ENDED_OR_NULL_LOCATIONS)
 
         StaffGenerator.DEFAULT = StaffGenerator.generateStaff(
             StaffGenerator.DEFAULT.code,
@@ -45,24 +31,23 @@ class DataLoader(
             StaffGenerator.DEFAULT.user,
             StaffGenerator.DEFAULT.id
         )
-        entityManager.persist(StaffGenerator.DEFAULT)
+        save(StaffGenerator.DEFAULT)
 
-        entityManager.persist(StaffGenerator.DEFAULT_STAFF_USER)
-        entityManager.flush()
+        save(StaffGenerator.DEFAULT_STAFF_USER)
 
-        entityManager.persist(PersonGenerator.DEFAULT_PERSON)
-        entityManager.persist(PersonGenerator.PERSON_ENDED_TEAM_LOCATION)
-        entityManager.persist(PersonGenerator.DEFAULT_CM)
-        entityManager.persist(PersonGenerator.CM_ENDED_TEAM_LOCATION)
+        save(PersonGenerator.DEFAULT_PERSON)
+        save(PersonGenerator.PERSON_ENDED_TEAM_LOCATION)
+        save(PersonGenerator.DEFAULT_CM)
+        save(PersonGenerator.CM_ENDED_TEAM_LOCATION)
 
-        val person = PersonGenerator.generatePerson("N123456").also(entityManager::persist)
-        PersonGenerator.generateManager(person).also(entityManager::persist)
+        val person = save(PersonGenerator.generatePerson("N123456"))
+        save(PersonGenerator.generateManager(person))
 
         createCaseloadData()
     }
 
     private fun createOfficeLocationsAndDistricts() {
-        entityManager.persistAll(
+        saveAll(
             ProviderGenerator.DISTRICT_BRK,
             ProviderGenerator.DISTRICT_MKY,
             ProviderGenerator.DISTRICT_OXF,
@@ -74,7 +59,7 @@ class DataLoader(
     }
 
     private fun createCaseloadData() {
-        entityManager.persistAll(
+        saveAll(
             CaseloadGenerator.TEAM1,
             CaseloadGenerator.STAFF1,
             CaseloadGenerator.STAFF2,
@@ -84,9 +69,5 @@ class DataLoader(
             CaseloadGenerator.CASELOAD_ROLE_OM_4,
             CaseloadGenerator.CASELOAD_ROLE_OS_1
         )
-    }
-
-    private fun EntityManager.persistAll(vararg entities: Any) {
-        entities.forEach { persist(it) }
     }
 }

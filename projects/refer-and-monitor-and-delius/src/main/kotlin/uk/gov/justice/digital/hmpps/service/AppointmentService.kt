@@ -9,11 +9,7 @@ import org.springframework.web.server.ResponseStatusException
 import uk.gov.justice.digital.hmpps.api.model.MergeAppointment
 import uk.gov.justice.digital.hmpps.audit.service.AuditableService
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
-import uk.gov.justice.digital.hmpps.exception.AppointmentNotFoundException
-import uk.gov.justice.digital.hmpps.exception.ConflictException
-import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException
-import uk.gov.justice.digital.hmpps.exception.NotFoundException
-import uk.gov.justice.digital.hmpps.exception.asReason
+import uk.gov.justice.digital.hmpps.exception.*
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractionCode.ADD_CONTACT
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractionCode.UPDATE_CONTACT
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.*
@@ -87,7 +83,7 @@ class AppointmentService(
             app
         } ?: createContact(mergeAppointment, assignation, nsi)
 
-        audit["contactId"] = appointment.id
+        audit["contactId"] = appointment.id!!
         appointment.locationId = assignation.location?.id
 
         mergeAppointment.notes?.also {
@@ -123,7 +119,7 @@ class AppointmentService(
 
         contactRepository.saveAndFlush(appointment)
         nsiRepository.findByIdIfRar(appointment.nsiId!!)?.rarCount = contactRepository.countNsiRar(appointment.nsiId)
-        return appointment.id
+        return appointment.id!!
     }
 
     private fun createContact(mergeAppointment: MergeAppointment, assignation: CrsAssignation, nsi: Nsi): Contact =
@@ -137,7 +133,7 @@ class AppointmentService(
                 locationId = assignation.location?.id,
                 eventId = nsi.eventId,
                 nsiId = nsi.id,
-                rarActivity = mergeAppointment.countsTowardsRar && nsiRepository.isRar(nsi.id) == true,
+                rarActivity = mergeAppointment.countsTowardsRar && nsiRepository.isRar(nsi.id!!) == true,
                 externalReference = mergeAppointment.urn,
                 date = mergeAppointment.start.toLocalDate(),
                 startTime = mergeAppointment.start,
@@ -205,7 +201,7 @@ class AppointmentService(
 
     private fun handleNonCompliance(appointment: Contact) {
         val action = enforcementActionRepository.getByCode(EnforcementAction.Code.REFER_TO_PERSON_MANAGER.value)
-        enforcementRepository.findByContactId(appointment.id) ?: Enforcement(
+        enforcementRepository.findByContactId(appointment.id!!) ?: Enforcement(
             appointment,
             action,
             action.responseByPeriod?.let { now().plusDays(it) }

@@ -3,13 +3,14 @@ package uk.gov.justice.digital.hmpps.integrations.delius.contact.alert
 import jakarta.persistence.*
 import org.hibernate.type.NumericBooleanConverter
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
+import uk.gov.justice.digital.hmpps.jpa.GeneratedId
 
 @Entity
 @EntityListeners(AuditingEntityListener::class)
 class ContactAlert(
     @Id
     @SequenceGenerator(name = "contact_alert_id_generator", sequenceName = "contact_alert_id_seq", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "contact_alert_id_generator")
+    @GeneratedId(generator = "contact_alert_id_generator")
     @Column(name = "contact_alert_id", nullable = false)
     val id: Long = 0,
 

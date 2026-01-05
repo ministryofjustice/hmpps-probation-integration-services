@@ -2,7 +2,6 @@ package uk.gov.justice.digital.hmpps
 
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.containsInAnyOrder
-import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
@@ -44,9 +43,10 @@ class TierDetailsTest @Autowired constructor(
         mockMvc.get("/person/A000001") { withToken() }
             .andExpect {
                 status { is2xxSuccessful() }
-                jsonPath("$.crn") { value(equalTo("A000001")) }
-                jsonPath("$.name.forenames") { value(equalTo("Test")) }
-                jsonPath("$.name.surname") { value(equalTo("Person")) }
+                jsonPath("$.crn") { value("A000001") }
+                jsonPath("$.name.forenames") { value("Test") }
+                jsonPath("$.name.surname") { value("Person") }
+                jsonPath("$.age") { value(18) }
             }
     }
 

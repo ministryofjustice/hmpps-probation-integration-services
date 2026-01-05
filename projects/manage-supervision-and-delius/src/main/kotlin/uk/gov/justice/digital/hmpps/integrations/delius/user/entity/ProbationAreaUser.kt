@@ -4,8 +4,8 @@ import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
-import java.io.Serializable
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.StaffUser
+import java.io.Serializable
 
 @Entity
 @Immutable

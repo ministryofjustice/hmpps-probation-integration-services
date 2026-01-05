@@ -3,12 +3,14 @@ package uk.gov.justice.digital.hmpps
 import com.github.tomakehurst.wiremock.WireMockServer
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import org.mockito.kotlin.verify
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
 import org.springframework.data.repository.findByIdOrNull
+import org.springframework.test.context.bean.override.mockito.MockitoSpyBean
 import uk.gov.justice.digital.hmpps.data.RequirementTransferRepository
 import uk.gov.justice.digital.hmpps.data.TestData
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.contact
@@ -22,13 +24,15 @@ import uk.gov.justice.digital.hmpps.repository.ContactRepository
 import uk.gov.justice.digital.hmpps.repository.LicenceConditionRepository
 import uk.gov.justice.digital.hmpps.repository.RejectedTransferDiaryRepository
 import uk.gov.justice.digital.hmpps.repository.RequirementRepository
+import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import uk.gov.justice.digital.hmpps.test.Assertions.assertNotNull
+import java.time.ZoneId
 import java.time.ZonedDateTime
 
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = RANDOM_PORT)
 class ComponentTerminationIntegrationTest @Autowired constructor(
-//    @MockitoSpyBean val telemetryService: TelemetryService, // FIXME dirtying the Spring context messes up the test data due to the DataLoader not correctly reinitialising
+    @MockitoSpyBean val telemetryService: TelemetryService,
     @Value("\${messaging.consumer.queue}") val queueName: String,
     val channelManager: HmppsChannelManager,
     val wireMockServer: WireMockServer,
@@ -89,16 +93,17 @@ class ComponentTerminationIntegrationTest @Autowired constructor(
         assertThat(deletedContact).isEmpty
 
         // Verify telemetry
-//        verify(telemetryService).trackEvent(
-//            "ComponentTerminated", mapOf(
-//                "type" to "Requirement",
-//                "id" to TestData.TERMINATION_REQUIREMENTS[0].id.toString(),
-//                "crn" to "A000003",
-//                "startDate" to "2025-01-01T12:00Z[Europe/London]",
-//                "commencementDate" to null,
-//                "terminationDate" to "2025-06-01T14:30+01:00[Europe/London]"
-//            )
-//        )
+        verify(telemetryService).trackEvent(
+            "ComponentTerminated", mapOf(
+                "type" to "Requirement",
+                "id" to TestData.TERMINATION_REQUIREMENTS[0].id.toString(),
+                "crn" to "A000003",
+                "startDate" to TestData.TERMINATION_REQUIREMENTS[0].startDate
+                    .withZoneSameInstant(ZoneId.systemDefault()).toString(),
+                "commencementDate" to null,
+                "terminationDate" to "2025-06-01T14:30+01:00[Europe/London]"
+            )
+        )
     }
 
     @Test
@@ -153,28 +158,31 @@ class ComponentTerminationIntegrationTest @Autowired constructor(
         assertThat(deletedContact).isEmpty
 
         // Verify telemetry
-//        verify(telemetryService).trackEvent(
-//            "ComponentTerminated", mapOf(
-//                "type" to "LicenceCondition",
-//                "id" to TestData.TERMINATION_LICENCE_CONDITION.id.toString(),
-//                "crn" to "A000003",
-//                "startDate" to "2025-01-01T12:00Z[Europe/London]",
-//                "commencementDate" to null,
-//                "terminationDate" to "2025-06-01T14:30+01:00[Europe/London]"
-//            )
-//        )
+        verify(telemetryService).trackEvent(
+            "ComponentTerminated", mapOf(
+                "type" to "LicenceCondition",
+                "id" to TestData.TERMINATION_LICENCE_CONDITION.id.toString(),
+                "crn" to "A000003",
+                "startDate" to TestData.TERMINATION_LICENCE_CONDITION.startDate
+                    .withZoneSameInstant(ZoneId.systemDefault()).toString(),
+                "commencementDate" to null,
+                "terminationDate" to "2025-06-01T14:30+01:00[Europe/London]"
+            )
+        )
     }
 
     @Test
     fun `termination date updated if already terminated`() {
         val event = prepMessage("status-changed-programme-complete-requirement", wireMockServer.port())
-        val terminationDate = ZonedDateTime.of(2025, 1, 1, 12, 0, 0, 0, EuropeLondon)
+        val newTerminationDate = ZonedDateTime.of(2026, 1, 1, 12, 0, 0, 0, EuropeLondon)
+        assertThat(TestData.TERMINATION_REQUIREMENTS[2].terminationDate)
+            .isEqualTo(ZonedDateTime.of(2030, 1, 1, 12, 0, 0, 0, EuropeLondon))
 
         channelManager.getChannel(queueName).publishAndWait(
             event.copy(
                 message = event.message.copy(
                     detailUrl = event.message.detailUrl?.replace(":id", "${TestData.TERMINATION_REQUIREMENTS[2].id}"),
-                    occurredAt = terminationDate
+                    occurredAt = newTerminationDate
                 )
             )
         )
@@ -184,27 +192,26 @@ class ComponentTerminationIntegrationTest @Autowired constructor(
 
         // Verify the requirement termination date was updated
         val requirement = assertNotNull(requirementRepository.findByIdOrNull(TestData.TERMINATION_REQUIREMENTS[2].id))
-        assertThat(requirement.terminationDate).isEqualTo(terminationDate)
+        assertThat(requirement.terminationDate?.withZoneSameInstant(EuropeLondon)).isEqualTo(newTerminationDate)
 
         // Verify termination contact was updated
         val terminationContact =
             assertNotNull(contacts.firstOrNull { it.type.code == ContactType.COMPONENT_TERMINATED })
-        assertThat(terminationContact.date).isEqualTo(terminationDate.toLocalDate())
+        assertThat(terminationContact.date).isEqualTo(newTerminationDate.toLocalDate())
 
         // Verify telemetry
-//        verify(telemetryService).trackEvent(
-//            "ComponentTerminationUpdated",
-//            mapOf(
-//                "reason" to "Programme completion occurred earlier than the start date",
-//                "occurredAt" to "2024-01-01T14:30Z[Europe/London]",
-//                "type" to "Requirement",
-//                "id" to TestData.TERMINATION_REQUIREMENTS[1].id.toString(),
-//                "crn" to "A000003",
-//                "startDate" to "2030-01-01T12:00Z[Europe/London]",
-//                "commencementDate" to null,
-//                "terminationDate" to null
-//            )
-//        )
+        verify(telemetryService).trackEvent(
+            "ComponentTerminationUpdated",
+            mapOf(
+                "type" to "Requirement",
+                "id" to TestData.TERMINATION_REQUIREMENTS[2].id.toString(),
+                "crn" to "A000003",
+                "startDate" to TestData.TERMINATION_REQUIREMENTS[2].startDate
+                    .withZoneSameInstant(ZoneId.systemDefault()).toString(),
+                "commencementDate" to null,
+                "terminationDate" to "2026-01-01T12:00Z[Europe/London]"
+            )
+        )
     }
 
     @Test
@@ -214,25 +221,26 @@ class ComponentTerminationIntegrationTest @Autowired constructor(
         channelManager.getChannel(queueName).publishAndWait(
             event.copy(
                 message = event.message.copy(
-                    detailUrl = event.message.detailUrl?.replace(":id", "${TestData.TERMINATION_REQUIREMENTS[2].id}"),
+                    detailUrl = event.message.detailUrl?.replace(":id", "${TestData.TERMINATION_REQUIREMENTS[1].id}"),
                     occurredAt = ZonedDateTime.of(2024, 1, 1, 14, 30, 0, 0, EuropeLondon)
                 )
             )
         )
 
-//        verify(telemetryService).trackEvent(
-//            "ComponentTerminationRejected",
-//            mapOf(
-//                "reason" to "Programme completion occurred earlier than the start date",
-//                "occurredAt" to "2024-01-01T14:30Z[Europe/London]",
-//                "type" to "Requirement",
-//                "id" to TestData.TERMINATION_REQUIREMENTS[1].id.toString(),
-//                "crn" to "A000003",
-//                "startDate" to "2030-01-01T12:00Z[Europe/London]",
-//                "commencementDate" to null,
-//                "terminationDate" to null
-//            )
-//        )
+        verify(telemetryService).trackEvent(
+            "ComponentTerminationRejected",
+            mapOf(
+                "reason" to "Programme completion occurred earlier than the start date",
+                "occurredAt" to "2024-01-01T14:30Z[Europe/London]",
+                "type" to "Requirement",
+                "id" to TestData.TERMINATION_REQUIREMENTS[1].id.toString(),
+                "crn" to "A000003",
+                "startDate" to TestData.TERMINATION_REQUIREMENTS[1].startDate
+                    .withZoneSameInstant(ZoneId.systemDefault()).toString(),
+                "commencementDate" to null,
+                "terminationDate" to null
+            )
+        )
     }
 
     @Test

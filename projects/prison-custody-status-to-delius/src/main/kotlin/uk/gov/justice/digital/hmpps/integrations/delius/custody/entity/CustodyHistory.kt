@@ -1,18 +1,10 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.custody.entity
 
-import jakarta.persistence.Column
-import jakarta.persistence.Entity
-import jakarta.persistence.GeneratedValue
-import jakarta.persistence.GenerationType
-import jakarta.persistence.Id
-import jakarta.persistence.JoinColumn
-import jakarta.persistence.ManyToOne
-import jakarta.persistence.SequenceGenerator
-import jakarta.persistence.Table
-import jakarta.persistence.Version
+import jakarta.persistence.*
 import org.springframework.data.jpa.repository.JpaRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.Person
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceData
+import uk.gov.justice.digital.hmpps.jpa.GeneratedId
 import java.time.ZonedDateTime
 
 @Entity
@@ -24,7 +16,7 @@ class CustodyHistory(
         sequenceName = "custody_history_id_seq",
         allocationSize = 1
     )
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "custody_history_id_generator")
+    @GeneratedId(generator = "custody_history_id_generator")
     @Column(name = "custody_history_id")
     val id: Long = 0,
 

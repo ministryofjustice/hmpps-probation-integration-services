@@ -15,6 +15,7 @@ import uk.gov.justice.digital.hmpps.entity.sentence.component.LicenceCondition
 import uk.gov.justice.digital.hmpps.entity.sentence.component.Requirement
 import uk.gov.justice.digital.hmpps.entity.sentence.component.SentenceComponent
 import uk.gov.justice.digital.hmpps.entity.staff.*
+import uk.gov.justice.digital.hmpps.jpa.GeneratedId
 import java.time.LocalDate
 import java.time.ZonedDateTime
 
@@ -25,7 +26,7 @@ class Contact(
     @Id
     @Column(name = "contact_id")
     @SequenceGenerator(name = "contact_id_seq", sequenceName = "contact_id_seq", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "contact_id_seq")
+    @GeneratedId(generator = "contact_id_seq")
     val id: Long = 0,
 
     @Version

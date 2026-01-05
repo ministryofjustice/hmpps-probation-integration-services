@@ -3,7 +3,7 @@
   "version": 1,
   "description": "Recall being considered",
   "occurredAt": "2022-11-21T06:27:57.028Z",
-  "detailUrl": "http://localhost:{wiremock.port}/mrd/recallConsideration/1",
+  "detailUrl": "http://localhost:{dev.wiremock.port}/mrd/recallConsideration/1",
   "additionalInformation": {
     "recommendationUrl": "http://mrd.case.crn/overview",
     "bookedBy": {

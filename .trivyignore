@@ -1,5 +1,7 @@
-# libexpat: expat: Improper Restriction of XML Entity Expansion Depth in libexpat
-# https://github.com/ministryofjustice/hmpps-probation-integration-services/issues/4812
-# Reason: Not processing any untrusted XML
-# Package: libexpat:2.6.4-r0
-CVE-2024-8176 exp:2025-08-01
+# libpng: Out-of-bounds read vulnerability in libpng
+# https://github.com/adoptium/containers/issues/858
+# Reason: Vulnerability present due to upstream eclipse-temurin Alpine image rebuild lag
+# Package: libpng
+CVE-2025-66293 exp:2026-02-01
+CVE-2025-65018 exp:2026-02-01
+CVE-2025-64720 exp:2026-02-01

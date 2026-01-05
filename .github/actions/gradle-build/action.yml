@@ -47,8 +47,9 @@ runs:
       shell: bash
       run: ./gradlew "${PROJECT}:check"
       env:
-        SPRING_PROFILES_ACTIVE: oracle
         PROJECT: ${{ inputs.project }}
+        SPRING_PROFILES_ACTIVE: oracle
+        TZ: Europe/London
 
     - name: Push
       if: inputs.push == 'true'
@@ -75,13 +76,13 @@ runs:
         PROJECT: ${{ inputs.project }}
 
     - name: Store changes
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v6
       with:
         name: changes-${{ inputs.project }}
         path: ${{ inputs.project }}-changes.json
 
     - name: Store test artifacts
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v6
       with:
         name: test-results-${{ inputs.project }}
         path: |

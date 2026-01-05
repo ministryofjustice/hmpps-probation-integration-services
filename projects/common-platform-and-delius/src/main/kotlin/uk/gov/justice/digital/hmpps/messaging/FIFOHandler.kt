@@ -20,8 +20,8 @@ import uk.gov.justice.digital.hmpps.telemetry.TelemetryMessagingExtensions.notif
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import java.time.Duration
 import java.time.LocalDate
-import java.time.Period
 import java.time.ZonedDateTime
+import java.time.temporal.ChronoUnit.YEARS
 
 @Component
 @Channel("common-platform-and-delius-fifo-queue")
@@ -42,54 +42,27 @@ class FIFOHandler(
 
         // Filter hearing message for defendants containing a judicial result label of 'Remanded in custody'
         val defendants = notification.message.hearing.prosecutionCases.flatMap { it.defendants }.filter { defendant ->
-            defendant.offences.any { offence ->
-                offence.judicialResults?.any { judicialResult ->
-                    judicialResult.label == "Remanded in custody"
-                } == true
-            }
-        }
-        if (defendants.isEmpty()) {
-            return
-        }
-
-        // Log sitting/hearing dates on incoming messages and set a flag if at least one date is in the future
-        telemetryService.trackEvent(
-            "HearingDatesDebug", mapOf(
-                "hearingId" to notification.message.hearing.id,
-                "hearingDates" to notification.message.hearing.hearingDays.joinToString(", ") { it.sittingDay.toString() },
-                "futureHearingDate" to notification.message.hearing.hearingDays.maxBy { it.sittingDay }
-                    .sittingDay.isAfter(ZonedDateTime.now()).toString()
-            )
-        )
+            defendant.offences.mapNotNull { it.judicialResults }.flatten().any { it.label == "Remanded in custody" }
+        }.ifEmpty { return }
 
         defendants.forEach { defendant ->
-
             val matchedPerson = corePerson.findByDefendantId(defendant.id)
+            val telemetryProperties = matchedPerson.telemetryProperties + notification.telemetryProperties
 
+            // Defendant already has a CRN in core person service
             if (matchedPerson.identifiers.crns.isNotEmpty()) {
-                telemetryService.trackEvent(
-                    "ProbationSearchMatchDetected", mapOf(
-                        "hearingId" to notification.message.hearing.id,
-                        "defendantId" to defendant.id,
-                        "crns" to matchedPerson.identifiers.crns.joinToString(", ", prefix = "[", postfix = "]")
-                    )
-                )
+                telemetryService.trackEvent("PersonAlreadyExists", telemetryProperties)
                 return@forEach
             }
 
-            // Under 10 years old validation
-            matchedPerson.dateOfBirth?.also {
-                val age = Period.between(it, LocalDate.now()).years
-                require(age > 10) {
-                    "Date of birth would indicate person is under ten years old: $it"
-                }
+            // Under 10-year-old validation
+            if (matchedPerson.dateOfBirth == null || YEARS.between(matchedPerson.dateOfBirth, LocalDate.now()) <= 10) {
+                telemetryService.trackEvent("InvalidDateOfBirth", telemetryProperties)
+                return@forEach
             }
 
             if (featureFlags.enabled("common-platform-record-creation-toggle")) {
-                val remandedOffences = defendant.offences.filter { offence ->
-                    offence.judicialResults?.any { it.label == "Remanded in custody" } == true
-                }
-
+                val remandedOffences = offenceService.getRemandOffences(defendant.offences, telemetryProperties)
                 val mainOffence = offenceService.findMainOffence(remandedOffences) ?: return@forEach
 
                 val caseUrn = notification.message.hearing.prosecutionCases.find { it.defendants.contains(defendant) }
@@ -98,23 +71,19 @@ class FIFOHandler(
                 // Insert person and event
                 val insertRemandDTO = InsertRemandDTO(
                     defendant = defendant,
+                    mainOffence = mainOffence,
+                    additionalOffences = remandedOffences.filter { it.offenceCode != mainOffence.offenceCode },
                     courtCode = notification.message.hearing.courtCentre.code,
-                    hearingOffence = mainOffence,
                     sittingDay = notification.message.hearing.hearingDays.first().sittingDay,
                     caseUrn = caseUrn,
                     hearingId = notification.message.hearing.id,
-                    remandedOffences.filter { it.offenceCode != mainOffence.offenceCode }
                 )
 
                 if (personService.personWithDefendantIdExists(defendant.id)) return
 
                 insertPersonAndEvent(insertRemandDTO)
             } else {
-                telemetryService.trackEvent(
-                    "SimulatedPersonCreated", mapOf(
-                        "hearingId" to notification.message.hearing.id, "defendantId" to defendant.id
-                    )
-                )
+                telemetryService.trackEvent("SimulatedPersonCreated", telemetryProperties)
             }
         }
     }
@@ -217,4 +186,19 @@ class FIFOHandler(
         notifier.caseCreated(insertRemandResult.insertPersonResult.person)
         insertRemandResult.insertPersonResult.address?.let { notifier.addressCreated(it) }
     }
+
+    private val CorePersonRecord.telemetryProperties
+        get() = mapOf(
+            "defendantIds" to identifiers.defendantIds.joinToString(", ", prefix = "[", postfix = "]"),
+            "crns" to identifiers.crns.joinToString(", ", prefix = "[", postfix = "]")
+        )
+
+    // Log sitting/hearing dates on incoming messages and set a flag if at least one date is in the future
+    private val Notification<CommonPlatformHearing>.telemetryProperties
+        get() = mapOf(
+            "hearingId" to message.hearing.id,
+            "hearingDates" to message.hearing.hearingDays.joinToString(", ") { it.sittingDay.toString() },
+            "futureHearingDate" to message.hearing.hearingDays.maxBy { it.sittingDay }
+                .sittingDay.isAfter(ZonedDateTime.now()).toString()
+        )
 }

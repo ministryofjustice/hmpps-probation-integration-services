@@ -7,6 +7,7 @@ import org.springframework.data.annotation.CreatedBy
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedBy
 import org.springframework.data.annotation.LastModifiedDate
+import java.time.LocalDate
 import java.time.ZonedDateTime
 
 @Entity
@@ -31,6 +32,9 @@ class Person(
 
     @Column(name = "surname", length = 35)
     val surname: String,
+
+    @Column(name = "date_of_birth_date")
+    val dateOfBirth: LocalDate,
 
     @Column(name = "current_tier")
     var currentTier: Long? = null,

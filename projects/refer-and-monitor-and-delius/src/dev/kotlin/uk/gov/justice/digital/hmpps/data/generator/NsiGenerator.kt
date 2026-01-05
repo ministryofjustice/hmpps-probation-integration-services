@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
+import uk.gov.justice.digital.hmpps.data.generator.IdGenerator.id
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactType
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.Person
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.Dataset
@@ -49,9 +50,7 @@ object NsiGenerator {
         eventId = 97
     )
 
-    var NSI_FUZZY_SEARCH: Nsi? = null
-
-    var TERMINATED = generate(
+    val TERMINATED = generate(
         TYPES.values.first(),
         eventId = SentenceGenerator.EVENT_WITH_NSI.id,
         active = false,
@@ -85,7 +84,8 @@ object NsiGenerator {
         rarCount = rarCount,
         notes = notes,
         active = active,
-        softDeleted = softDeleted
+        softDeleted = softDeleted,
+        id = id()
     )
 
     fun generateType(code: String, id: Long = IdGenerator.getAndIncrement()) = NsiType(code, id)

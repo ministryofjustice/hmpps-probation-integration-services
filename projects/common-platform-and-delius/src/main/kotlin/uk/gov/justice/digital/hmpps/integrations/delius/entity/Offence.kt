@@ -11,6 +11,7 @@ import org.springframework.data.annotation.LastModifiedDate
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import org.springframework.data.jpa.repository.JpaRepository
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
+import uk.gov.justice.digital.hmpps.jpa.GeneratedId
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.ZonedDateTime
@@ -21,7 +22,7 @@ import java.time.ZonedDateTime
 class MainOffence(
     @Id
     @Column(name = "main_offence_id")
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "main_offence_id_seq")
+    @GeneratedId(generator = "main_offence_id_seq")
     val id: Long? = null,
 
     @Column(name = "offence_date")
@@ -172,7 +173,7 @@ class AdditionalOffence(
     val softDeleted: Boolean = false,
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "additional_offence_seq")
+    @GeneratedId(generator = "additional_offence_seq")
     @Column(name = "additional_offence_id")
     val id: Long? = null
 ) {

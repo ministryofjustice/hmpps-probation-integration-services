@@ -47,8 +47,12 @@ class DomainEventServiceTest {
     @Test
     fun `multiple messages can be published`() {
         whenever(notificationEnhancer.enhance(any())).thenAnswer { it.getArgument(0) }
-        service.notify(DomainEventGenerator.generate("manual-ogrs"))
-        service.notify(DomainEventGenerator.generate("registration-added"))
+        service.publishAll(
+            listOf(
+                DomainEventGenerator.generate("manual-ogrs"),
+                DomainEventGenerator.generate("registration-added")
+            )
+        )
 
         verify(notificationPublisher, times(2)).publish(any())
     }
@@ -56,10 +60,13 @@ class DomainEventServiceTest {
     @Test
     fun `nothing is published if any entity is invalid`() {
         assertThrows<JsonProcessingException> {
-            service.notify(
-                DomainEventGenerator.generate(
-                    "{\"invalid-json\"}",
-                    "{\"invalid-json\"}"
+            service.publishAll(
+                listOf(
+                    DomainEventGenerator.generate("manual-ogrs"),
+                    DomainEventGenerator.generate(
+                        """{"invalid-json"}""",
+                        """{"invalid-json"}""",
+                    )
                 )
             )
         }

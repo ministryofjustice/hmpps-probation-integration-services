@@ -70,6 +70,6 @@ internal class UserServiceTest {
         assertThat(user.name.forename, equalTo("forename"))
         assertThat(user.staffCode, nullValue())
         assertThat(user.homeArea!!.code, equalTo("N01"))
-        assertThat(user.homeArea!!.name, equalTo("London"))
+        assertThat(user.homeArea.name, equalTo("London"))
     }
 }

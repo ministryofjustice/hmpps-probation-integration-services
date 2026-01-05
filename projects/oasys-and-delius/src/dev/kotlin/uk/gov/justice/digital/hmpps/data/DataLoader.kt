@@ -1,12 +1,6 @@
 package uk.gov.justice.digital.hmpps.data
 
-import jakarta.annotation.PostConstruct
-import jakarta.persistence.EntityManager
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
-import org.springframework.boot.context.event.ApplicationReadyEvent
-import org.springframework.context.ApplicationListener
 import org.springframework.stereotype.Component
-import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.data.generator.*
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.CUSTODY_PERSON
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.DETAILED_PERSON
@@ -21,24 +15,16 @@ import uk.gov.justice.digital.hmpps.data.generator.RegistrationGenerator.CATEGOR
 import uk.gov.justice.digital.hmpps.data.generator.RegistrationGenerator.DEFAULT_TYPE
 import uk.gov.justice.digital.hmpps.data.generator.RegistrationGenerator.FLAG
 import uk.gov.justice.digital.hmpps.data.generator.RegistrationGenerator.LEVEL
+import uk.gov.justice.digital.hmpps.data.loader.BaseDataLoader
+import uk.gov.justice.digital.hmpps.data.manager.DataManager
 import uk.gov.justice.digital.hmpps.integration.delius.sentence.entity.Custody
-import uk.gov.justice.digital.hmpps.user.AuditUserRepository
 import java.time.ZonedDateTime
 
 @Component
-@ConditionalOnProperty("seed.database")
-class DataLoader(
-    private val auditUserRepository: AuditUserRepository,
-    private val entityManager: EntityManager
-) : ApplicationListener<ApplicationReadyEvent> {
+class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
+    override fun systemUser() = UserGenerator.AUDIT_USER
 
-    @PostConstruct
-    fun saveAuditUser() {
-        auditUserRepository.save(UserGenerator.AUDIT_USER)
-    }
-
-    @Transactional
-    override fun onApplicationEvent(are: ApplicationReadyEvent) {
+    override fun setupData() {
         referenceData()
         providerData()
         personData()
@@ -47,7 +33,7 @@ class DataLoader(
     }
 
     fun referenceData() {
-        entityManager.saveAll(
+        saveAll(
             FLAG,
             LEVEL,
             CATEGORY,
@@ -62,7 +48,7 @@ class DataLoader(
     }
 
     fun providerData() {
-        entityManager.saveAll(
+        saveAll(
             DEFAULT_PROVIDER,
             DEFAULT_TEAM,
             UNALLOCATED_STAFF,
@@ -71,9 +57,8 @@ class DataLoader(
     }
 
     fun personData() {
-        entityManager.saveAll(REGISTERED_PERSON, RELEASED_PERSON, CUSTODY_PERSON, DETAILED_PERSON)
-        entityManager.flush()
-        entityManager.persist(PersonGenerator.DETAIL_ADDRESS)
+        saveAll(REGISTERED_PERSON, RELEASED_PERSON, CUSTODY_PERSON, DETAILED_PERSON)
+        save(PersonGenerator.DETAIL_ADDRESS)
     }
 
     fun registrationData() {
@@ -89,11 +74,11 @@ class DataLoader(
             createdDateTime = ZonedDateTime.now().minusHours(1)
         )
         val review2 = RegistrationGenerator.generateReview(registration2)
-        entityManager.saveAll(registration1, review1, registration2, review2)
+        saveAll(registration1, review1, registration2, review2)
     }
 
     fun custodialData() {
-        entityManager.saveAll(
+        saveAll(
             SentenceGenerator.INSTITUTION_TYPE,
             SentenceGenerator.DEFAULT_INSTITUTION,
             SentenceGenerator.CUSTODY_STATUS,
@@ -102,12 +87,10 @@ class DataLoader(
         )
         persistCustody(SentenceGenerator.CUSTODIAL_SENTENCE)
         persistCustody(SentenceGenerator.RELEASED_SENTENCE)
-        entityManager.saveAll(SentenceGenerator.RELEASE, SentenceGenerator.RECALL)
+        saveAll(SentenceGenerator.RELEASE, SentenceGenerator.RECALL)
     }
 
     fun persistCustody(custody: Custody) {
-        entityManager.saveAll(custody.disposal.event, custody.disposal, custody)
+        saveAll(custody.disposal.event, custody.disposal, custody)
     }
-
-    fun EntityManager.saveAll(vararg any: Any) = any.forEach(::persist)
 }

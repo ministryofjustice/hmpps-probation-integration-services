@@ -3,7 +3,7 @@
   "version": 1,
   "description": "Management Oversight - Recall",
   "occurredAt": "2022-11-21T06:27:57.028Z",
-  "detailUrl": "http://localhost:{wiremock.port}/mrd/management-oversight/1",
+  "detailUrl": "http://localhost:{dev.wiremock.port}/mrd/management-oversight/1",
   "additionalInformation": {
     "contactOutcome": "DECISION_NOT_TO_RECALL",
     "recommendationUrl": "http://mrd.case.crn/overview",

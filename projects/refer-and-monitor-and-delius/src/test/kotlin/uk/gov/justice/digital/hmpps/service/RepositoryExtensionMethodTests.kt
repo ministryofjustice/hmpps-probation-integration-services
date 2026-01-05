@@ -30,7 +30,7 @@ import uk.gov.justice.digital.hmpps.messaging.NsiTermination
 import uk.gov.justice.digital.hmpps.messaging.ReferralEndType
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import java.time.ZonedDateTime
-import java.util.Optional
+import java.util.*
 
 @ExtendWith(MockitoExtension::class)
 internal class RepositoryExtensionMethodTests {
@@ -98,7 +98,7 @@ internal class RepositoryExtensionMethodTests {
 
         val termination = NsiTermination(
             person.crn,
-            nsi.externalReference!!,
+            nsi.externalReference,
             1,
             ZonedDateTime.now().minusDays(1),
             ZonedDateTime.now(),
@@ -127,7 +127,7 @@ internal class RepositoryExtensionMethodTests {
             nsiService.terminateNsi(
                 NsiTermination(
                     person.crn,
-                    nsi.externalReference!!,
+                    nsi.externalReference,
                     1,
                     ZonedDateTime.now().minusDays(1),
                     ZonedDateTime.now(),
@@ -159,7 +159,7 @@ internal class RepositoryExtensionMethodTests {
             nsiService.terminateNsi(
                 NsiTermination(
                     person.crn,
-                    nsi.externalReference!!,
+                    nsi.externalReference,
                     1,
                     ZonedDateTime.now().minusDays(1),
                     ZonedDateTime.now(),

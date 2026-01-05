@@ -9,6 +9,7 @@ import org.hibernate.type.YesNoConverter
 import org.springframework.data.annotation.CreatedBy
 import org.springframework.data.annotation.LastModifiedBy
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
+import uk.gov.justice.digital.hmpps.jpa.GeneratedId
 import java.time.ZonedDateTime
 
 @EntityListeners(AuditingEntityListener::class)
@@ -99,8 +100,8 @@ data class CaseNote(
     @Id
     @Column(name = "contact_id", updatable = false)
     @SequenceGenerator(name = "contact_id_seq", sequenceName = "contact_id_seq", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "contact_id_seq")
-    val id: Long = 0,
+    @GeneratedId(generator = "contact_id_seq")
+    val id: Long? = null,
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

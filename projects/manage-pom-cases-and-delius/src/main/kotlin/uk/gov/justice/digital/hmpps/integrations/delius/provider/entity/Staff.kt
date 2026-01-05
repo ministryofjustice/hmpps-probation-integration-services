@@ -8,6 +8,7 @@ import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedBy
 import org.springframework.data.annotation.LastModifiedDate
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
+import uk.gov.justice.digital.hmpps.jpa.GeneratedId
 import java.time.ZonedDateTime
 
 @Entity
@@ -36,7 +37,7 @@ class Staff(
     @Id
     @Column(name = "staff_id")
     @SequenceGenerator(name = "staff_id_seq", sequenceName = "staff_id_seq", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "staff_id_seq")
+    @GeneratedId(generator = "staff_id_seq")
     val id: Long = 0
 ) {
     fun isUnallocated() = code.endsWith("U")

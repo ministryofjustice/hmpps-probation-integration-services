@@ -14,6 +14,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.ProbationA
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceData
 import uk.gov.justice.digital.hmpps.integrations.delius.staff.Staff
 import uk.gov.justice.digital.hmpps.integrations.delius.team.Team
+import uk.gov.justice.digital.hmpps.jpa.GeneratedId
 import java.time.ZonedDateTime
 
 @Entity
@@ -21,7 +22,7 @@ import java.time.ZonedDateTime
 class NsiManager(
     @Id
     @SequenceGenerator(name = "nsi_manager_id_generator", sequenceName = "nsi_manager_id_seq", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "nsi_manager_id_generator")
+    @GeneratedId(generator = "nsi_manager_id_generator")
     @Column(name = "nsi_manager_id")
     val id: Long = 0,
 

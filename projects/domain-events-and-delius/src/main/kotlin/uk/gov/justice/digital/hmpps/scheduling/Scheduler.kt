@@ -11,7 +11,7 @@ class Scheduler(private val service: DomainEventService) {
     @Scheduled(fixedDelayString = "\${poller.fixed-delay:100}")
     fun poll() {
         service.getDeltas()
-            .onEach { service.notify(it) }
+            .also(service::publishAll)
             .also(service::deleteAll)
     }
 }

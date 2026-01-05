@@ -11,6 +11,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.Contact
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.AuditableEntity
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.RegisterType
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.ReferenceData
+import uk.gov.justice.digital.hmpps.jpa.GeneratedId
 import java.time.LocalDate
 
 @Entity
@@ -60,8 +61,8 @@ class FlaggedRegistration(
 
     @Id
     @Column(name = "registration_id")
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "registration_id_seq")
-    val id: Long = 0
+    @GeneratedId(generator = "registration_id_seq")
+    val id: Long? = null
 ) : AuditableEntity() {
     @Column(columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)
@@ -141,8 +142,8 @@ class FlaggedRegistrationReview(
 
     @Id
     @Column(name = "registration_review_id")
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "registration_review_id_seq")
-    val id: Long = 0
+    @GeneratedId(generator = "registration_review_id_seq")
+    val id: Long? = null
 ) : AuditableEntity()
 
 @Entity
@@ -177,8 +178,8 @@ class FlaggedDeRegistration(
 
     @Id
     @Column(name = "deregistration_id")
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "deregistration_id_seq")
-    val id: Long = 0
+    @GeneratedId(generator = "deregistration_id_seq")
+    val id: Long? = null
 ) : AuditableEntity()
 
 interface FlaggedRegistrationRepository : JpaRepository<FlaggedRegistration, Long> {
