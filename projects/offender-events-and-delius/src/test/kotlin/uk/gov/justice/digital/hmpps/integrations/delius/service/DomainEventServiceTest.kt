@@ -1,10 +1,5 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.service
 
-import com.fasterxml.jackson.databind.DeserializationFeature
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.databind.SerializationFeature
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
-import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -19,6 +14,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.domainevent.entity.Domai
 import uk.gov.justice.digital.hmpps.integrations.delius.domainevent.entity.DomainEventRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.ReferenceData
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.ReferenceDataRepository
+import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.objectMapper
 import java.time.ZonedDateTime
 
 @ExtendWith(MockitoExtension::class)
@@ -30,19 +26,12 @@ class DomainEventServiceTest {
     @Mock
     lateinit var domainEventRepository: DomainEventRepository
 
-    private lateinit var objectMapper: ObjectMapper
     private lateinit var domainEventService: DomainEventService
 
     private val occurredAt = ZonedDateTime.parse("2025-12-15T17:18:30Z")
 
     @BeforeEach
     fun setUp() {
-        objectMapper = ObjectMapper()
-            .registerModule(JavaTimeModule())
-            .registerKotlinModule()
-            .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
-            .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-
         domainEventService = DomainEventService(
             objectMapper = objectMapper,
             referenceDataRepository = referenceDataRepository,

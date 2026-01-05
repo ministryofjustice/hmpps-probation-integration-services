@@ -92,10 +92,8 @@ class OffenderDeltaService(
         val offender = delta.offender ?: return
 
         val contactId = delta.sourceRecordId
-        val contact = contactRepository.findById(contactId).orElse(null)
 
-        val isMappaDomainEventEnabled = contact?.visorContact == true
-        if (!isMappaDomainEventEnabled) return
+        if (!contactRepository.existsByIdAndVisorContactTrue(contactId)) return
 
         val category = resolveMappaCategory(offender.id)
 

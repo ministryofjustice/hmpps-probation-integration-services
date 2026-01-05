@@ -26,5 +26,6 @@ class Contact(
 interface ContactRepository : JpaRepository<Contact, Long> {
 
     fun existsByIdAndSoftDeletedFalse(id: Long): Boolean
+    fun existsByIdAndVisorContactTrue(id: Long): Boolean
 }
 

@@ -9,6 +9,7 @@ import org.junit.jupiter.params.provider.MethodSource
 import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.*
+import uk.gov.justice.digital.hmpps.data.generator.IdGenerator.id
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.RegisterType
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.Registration
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.RegistrationRepository
@@ -18,7 +19,6 @@ import uk.gov.justice.digital.hmpps.message.Notification
 import uk.gov.justice.digital.hmpps.publisher.NotificationPublisher
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import java.time.ZonedDateTime
-import java.util.*
 
 @ExtendWith(MockitoExtension::class)
 class OffenderDeltaServiceTest {
@@ -61,7 +61,7 @@ class OffenderDeltaServiceTest {
     fun `when sourceTable is not CONTACT then no domain event is generated`(table: String) {
         // given
         val offender = Offender(
-            id = 99L,
+            id = id(),
             crn = "X999999",
             nomsNumber = null
         )
@@ -297,8 +297,8 @@ class OffenderDeltaServiceTest {
         )
 
         // contact does not exist
-        whenever(contactRepository.findById(sourceRecordId))
-            .thenReturn(Optional.empty())
+        whenever(contactRepository.existsByIdAndVisorContactTrue(sourceRecordId))
+            .thenReturn(false)
 
         whenever(contactRepository.existsByIdAndSoftDeletedFalse(sourceRecordId))
             .thenReturn(false)
@@ -348,15 +348,8 @@ class OffenderDeltaServiceTest {
             dateChanged = occurredAt
         )
 
-        whenever(contactRepository.findById(sourceRecordId))
-            .thenReturn(
-                Optional.of(
-                    Contact(
-                        id = sourceRecordId,
-                        visorContact = false
-                    )
-                )
-            )
+        whenever(contactRepository.existsByIdAndVisorContactTrue(sourceRecordId))
+            .thenReturn(false)
 
         whenever(contactRepository.existsByIdAndSoftDeletedFalse(sourceRecordId))
             .thenReturn(false)
@@ -401,15 +394,8 @@ class OffenderDeltaServiceTest {
             dateChanged = occurredAt
         )
 
-        whenever(contactRepository.findById(sourceRecordId))
-            .thenReturn(
-                Optional.of(
-                    Contact(
-                        id = sourceRecordId,
-                        visorContact = true
-                    )
-                )
-            )
+        whenever(contactRepository.existsByIdAndVisorContactTrue(sourceRecordId))
+            .thenReturn(true)
 
         whenever(contactRepository.existsByIdAndSoftDeletedFalse(sourceRecordId))
             .thenReturn(true)
@@ -467,15 +453,8 @@ class OffenderDeltaServiceTest {
         )
 
         // contact exists with ViSOR enabled
-        whenever(contactRepository.findById(sourceRecordId))
-            .thenReturn(
-                Optional.of(
-                    Contact(
-                        id = sourceRecordId,
-                        visorContact = true
-                    )
-                )
-            )
+        whenever(contactRepository.existsByIdAndVisorContactTrue(sourceRecordId))
+            .thenReturn(true)
 
         whenever(contactRepository.existsByIdAndSoftDeletedFalse(sourceRecordId))
             .thenReturn(true)
@@ -539,7 +518,7 @@ class OffenderDeltaServiceTest {
      * reflects current business behaviour.
      */
     @Test
-    fun `when CONTACT_CHANGED and contact is soft deleted but VISOR is true then contact updated domain event is generated`() {
+    fun `when CONTACT_CHANGED and VISOR is true then contact updated domain event is generated`() {
         // given
         val offender = Offender(
             id = 60L,
@@ -559,19 +538,8 @@ class OffenderDeltaServiceTest {
             dateChanged = occurredAt
         )
 
-        whenever(contactRepository.findById(sourceRecordId))
-            .thenReturn(
-                Optional.of(
-                    Contact(
-                        id = sourceRecordId,
-                        visorContact = true,
-                        softDeleted = true
-                    )
-                )
-            )
-
-        whenever(contactRepository.existsByIdAndSoftDeletedFalse(sourceRecordId))
-            .thenReturn(false)
+        whenever(contactRepository.existsByIdAndVisorContactTrue(sourceRecordId))
+            .thenReturn(true)
 
         // when
         offenderDeltaService.notify(delta)
@@ -619,16 +587,8 @@ class OffenderDeltaServiceTest {
         )
 
         // contact soft deleted with ViSOR enabled
-        whenever(contactRepository.findById(sourceRecordId))
-            .thenReturn(
-                Optional.of(
-                    Contact(
-                        id = sourceRecordId,
-                        visorContact = true,
-                        softDeleted = true
-                    )
-                )
-            )
+        whenever(contactRepository.existsByIdAndVisorContactTrue(sourceRecordId))
+            .thenReturn(true)
 
         whenever(contactRepository.existsByIdAndSoftDeletedFalse(sourceRecordId))
             .thenReturn(false)
@@ -711,8 +671,8 @@ class OffenderDeltaServiceTest {
         )
 
         // hard deleted contact – record does not exist
-        whenever(contactRepository.findById(sourceRecordId))
-            .thenReturn(Optional.empty())
+        whenever(contactRepository.existsByIdAndVisorContactTrue(sourceRecordId))
+            .thenReturn(false)
 
         whenever(contactRepository.existsByIdAndSoftDeletedFalse(sourceRecordId))
             .thenReturn(false)
