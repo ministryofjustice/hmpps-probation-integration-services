@@ -4,6 +4,7 @@ import jakarta.persistence.*
 import org.springframework.data.jpa.repository.JpaRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.ReferenceData
 import uk.gov.justice.digital.hmpps.jpa.GeneratedId
+import java.time.ZonedDateTime
 
 @Entity
 @SequenceGenerator(
@@ -27,6 +28,8 @@ class DomainEvent(
 
     @Column(name = "message_attributes", columnDefinition = "varchar2(4000)", nullable = false)
     val messageAttributes: String
-)
+) {
+    var createdDatetime: ZonedDateTime = ZonedDateTime.now()
+}
 
 interface DomainEventRepository : JpaRepository<DomainEvent, Long>
