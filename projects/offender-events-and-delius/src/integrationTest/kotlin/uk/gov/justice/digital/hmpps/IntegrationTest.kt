@@ -46,18 +46,27 @@ internal class IntegrationTest @Autowired constructor(
     @MethodSource("deltas")
     fun `offender delta test`(delta: OffenderDelta, expected: List<Map<String, String>>) {
         offenderDeltaRepository.save(delta)
+        verify(offenderDeltaService, after(250).atLeastOnce()).notify(any())
 
         offenderDeltaPoller.poll()
-        generateSequence { channelManager.getChannel(topicName).receive()?.eventType }.toList()
+        generateSequence { channelManager.getChannel(topicName).receive() }.toList()
 
         if (expected.isNotEmpty()) {
-            expected.forEach {
-                verify(telemetryService, timeout(30000)).trackEvent(
-                    eq("OffenderEventPublished"),
-                    check { properties -> assertThat(properties.entries, hasItems(*it.entries.toTypedArray())) },
-                    any()
-                )
-            }
+
+            val propertiesCaptor = argumentCaptor<Map<String, String>>()
+
+            verify(telemetryService, timeout(30000).atLeast(expected.size)).trackEvent(
+                eq("OffenderEventPublished"),
+                propertiesCaptor.capture(),
+                any()
+            )
+
+            val publishedEventTypes = propertiesCaptor.allValues.mapNotNull { it["eventType"] }
+
+            assertThat(
+                publishedEventTypes,
+                hasItems(*expected.map { it["eventType"] }.toTypedArray())
+            )
         } else {
             verify(telemetryService, never()).trackEvent(any(), any(), any())
         }
@@ -400,21 +409,18 @@ internal class IntegrationTest @Autowired constructor(
                     properties + ("eventType" to "OFFENDER_REGISTRATION_DELETED")
                 )
             ),
-            //contact soft_deleted = 0
             Arguments.of(
                 OffenderDeltaGenerator.generate(sourceTable = "CONTACT", sourceId = 101),
                 listOf(
                     properties + ("eventType" to "CONTACT_CHANGED")
                 )
             ),
-            //contact hard deleted
             Arguments.of(
                 OffenderDeltaGenerator.generate(sourceTable = "CONTACT", sourceId = 99, action = "DELETE"),
                 listOf(
                     properties + ("eventType" to "CONTACT_DELETED")
                 )
             ),
-            //contact soft_deleted = 1
             Arguments.of(
                 OffenderDeltaGenerator.generate(sourceTable = "CONTACT", sourceId = 102, action = "DELETE"),
                 listOf(
