@@ -102,28 +102,18 @@ class AllocateEventService(
         orderManager: OrderManager,
         spoStaff: Staff?
     ) {
-        if (allocationDetail.allocationReason == null ||
-            allocationDetail.allocationReason == AllocationReason.INITIAL_ALLOCATION
+        val type = if (allocationDetail.allocationReason == AllocationReason.INITIAL_ALLOCATION ||
+            allocationDetail.allocationReason == null
         ) {
+            ContactTypeCode.CASE_ALLOCATION_SPO_OVERSIGHT
+        } else {
+            ContactTypeCode.CASE_REALLOCATION_SPO_OVERSIGHT
+        }
+
+        if (allocationDetail.spoOversightNotes != null || type == ContactTypeCode.CASE_ALLOCATION_SPO_OVERSIGHT) {
             contactRepository.save(
                 Contact(
                     type = contactTypeRepository.findByCodeOrThrow(ContactTypeCode.CASE_ALLOCATION_SPO_OVERSIGHT.value),
-                    personId = event.person.id,
-                    eventId = event.id,
-                    date = orderManager.startDate.toLocalDate(),
-                    startTime = orderManager.startDate,
-                    teamId = orderManager.team.id,
-                    staffId = spoStaff?.id ?: orderManager.staff.id,
-                    providerId = orderManager.provider.id,
-                    notes = allocationDetail.spoOversightNotes,
-                    isSensitive = allocationDetail.sensitiveOversightNotes ?: true
-                )
-            )
-        } else if (allocationDetail.spoOversightNotes != null) {
-
-            contactRepository.save(
-                Contact(
-                    type = contactTypeRepository.findByCodeOrThrow(ContactTypeCode.CASE_REALLOCATION_SPO_OVERSIGHT.value),
                     personId = event.person.id,
                     eventId = event.id,
                     date = orderManager.startDate.toLocalDate(),

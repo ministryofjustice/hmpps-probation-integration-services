@@ -53,7 +53,7 @@ class AllocationValidator(
         val allocationReason = referenceDataRepository.findByDatasetAndCode(
             allocationDetail.datasetCode,
             allocationReasonCode
-        ) ?: throw NotFoundException(allocationDetail.datasetCode.value, "code", allocationDetail.code)
+        ) ?: throw NotFoundException(allocationDetail.datasetCode.value, "code", allocationReasonCode)
 
         val staff = staffRepository.findByCode(allocationDetail.staffCode)
             ?: throw NotFoundException("Staff", "code", allocationDetail.staffCode)
