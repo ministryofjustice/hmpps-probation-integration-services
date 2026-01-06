@@ -45,16 +45,12 @@ runs:
         cache-encryption-key: ${{ inputs.gradle-cache-encryption-key }}
 
     - name: Build
-      uses: nick-fields/retry@v3
-      with:
-        max_attempts: 3
-        timeout_minutes: 15
-        command: ./gradlew "${{ inputs.project }}:check"
+      shell: bash
+      run: ./gradlew "${PROJECT}:check"
       env:
         PROJECT: ${{ inputs.project }}
         SPRING_PROFILES_ACTIVE: oracle
         TZ: Europe/London
-
 
     - name: Push
       if: inputs.push == 'true'
