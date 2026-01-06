@@ -76,14 +76,13 @@ on:
           - preprod
           - prod
 
-permissions:
-  contents: read
-  id-token: write
-  packages: write
-
 jobs:
   build:
     name: Build
+    permissions:
+      contents: read
+      id-token: write
+      packages: write
     runs-on: ubuntu-latest
     outputs:
       version: ${{ steps.gradle.outputs.version || steps.docker.outputs.version }}
@@ -120,6 +119,10 @@ jobs:
 
   deploy:
     name: Deploy
+    permissions:
+      contents: read
+      id-token: write
+      packages: write
     uses: ./.github/workflows/deploy.yml
     needs: build
     with:
