@@ -50,9 +50,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      packages: read
       checks: write
-      id-token: write
       statuses: write
     steps:
       - uses: actions/checkout@v6
