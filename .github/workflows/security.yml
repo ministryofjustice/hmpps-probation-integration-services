@@ -14,10 +14,6 @@ jobs:
   get-projects:
     permissions:
       contents: read
-      checks: write
-      id-token: write
-      issues: write
-      security-events: write
     uses: ./.github/workflows/get-projects.yml
     with:
       projects: All
