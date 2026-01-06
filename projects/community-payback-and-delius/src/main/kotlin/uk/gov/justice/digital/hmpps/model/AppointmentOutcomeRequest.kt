@@ -14,6 +14,7 @@ data class AppointmentOutcomeRequest(
     val hiVisWorn: Boolean?,
     val workedIntensively: Boolean?,
     val penaltyMinutes: Long?,
+    val minutesCredited: Long?,
     val workQuality: WorkQuality?,
     val behaviour: Behaviour?,
     val sensitive: Boolean?,
