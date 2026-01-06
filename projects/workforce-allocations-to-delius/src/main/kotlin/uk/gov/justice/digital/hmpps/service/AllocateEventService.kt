@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import uk.gov.justice.digital.hmpps.api.model.AllocationReason
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
 import uk.gov.justice.digital.hmpps.audit.service.OptimisationTables
 import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException
@@ -101,20 +102,30 @@ class AllocateEventService(
         orderManager: OrderManager,
         spoStaff: Staff?
     ) {
-        contactRepository.save(
-            Contact(
-                type = contactTypeRepository.findByCodeOrThrow(ContactTypeCode.CASE_ALLOCATION_SPO_OVERSIGHT.value),
-                personId = event.person.id,
-                eventId = event.id,
-                date = orderManager.startDate.toLocalDate(),
-                startTime = orderManager.startDate,
-                teamId = orderManager.team.id,
-                staffId = spoStaff?.id ?: orderManager.staff.id,
-                providerId = orderManager.provider.id,
-                notes = allocationDetail.spoOversightNotes,
-                isSensitive = allocationDetail.sensitiveOversightNotes ?: true
+        val type = if (allocationDetail.allocationReason == AllocationReason.INITIAL_ALLOCATION ||
+            allocationDetail.allocationReason == null
+        ) {
+            ContactTypeCode.CASE_ALLOCATION_SPO_OVERSIGHT
+        } else {
+            ContactTypeCode.CASE_REALLOCATION_SPO_OVERSIGHT
+        }
+
+        if (allocationDetail.spoOversightNotes != null || type == ContactTypeCode.CASE_ALLOCATION_SPO_OVERSIGHT) {
+            contactRepository.save(
+                Contact(
+                    type = contactTypeRepository.findByCodeOrThrow(ContactTypeCode.CASE_ALLOCATION_SPO_OVERSIGHT.value),
+                    personId = event.person.id,
+                    eventId = event.id,
+                    date = orderManager.startDate.toLocalDate(),
+                    startTime = orderManager.startDate,
+                    teamId = orderManager.team.id,
+                    staffId = spoStaff?.id ?: orderManager.staff.id,
+                    providerId = orderManager.provider.id,
+                    notes = allocationDetail.spoOversightNotes,
+                    isSensitive = allocationDetail.sensitiveOversightNotes ?: true
+                )
             )
-        )
+        }
     }
 
     fun Event.hasAccreditedProgrammeRequirement(): Boolean =
