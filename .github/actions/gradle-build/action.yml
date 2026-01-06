@@ -44,16 +44,6 @@ runs:
         cache-role: ${{ inputs.gradle-cache-role }}
         cache-encryption-key: ${{ inputs.gradle-cache-encryption-key }}
 
-    # --- Added test step: check Maven Central connectivity from runner
-    - name: Check Maven Central connectivity
-      shell: bash
-      run: |
-        set -euxo pipefail
-        echo "Checking repo.maven.apache.org..."
-        curl -I https://repo.maven.apache.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-csv/2.19.4/jackson-dataformat-csv-2.19.4.pom || true
-        echo "Checking repo1.maven.org..."
-        curl -I https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-csv/2.19.4/jackson-dataformat-csv-2.19.4.pom || true
-
     - name: Build
       shell: bash
       run: ./gradlew "${PROJECT}:check"
