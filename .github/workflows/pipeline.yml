@@ -32,9 +32,6 @@ jobs:
     name: Post-build
     permissions:
       contents: read
-      checks: write
-      id-token: write
-      packages: write
     runs-on: ubuntu-latest
     needs: build
     outputs:
