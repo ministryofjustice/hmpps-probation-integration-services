@@ -125,7 +125,7 @@ class AllocateEventService(
             val formattedDate = allocationDetail.createdDate.format(formatter)
 
             val reallocationNotes = allocationDetail.spoOversightNotes.let {
-                "$it : ${allocationDetail.allocationReason.name} Comment added by Workforce Allocation Service on ${formattedDate}"
+                "$it : ${allocationDetail.allocationReason.name} Comment added by Workforce Allocations Service on ${formattedDate}"
             }
 
             contactRepository.save(

@@ -116,7 +116,7 @@ class ReallocateEventIntegrationTest @Autowired constructor(
             contactRepository.findAll().first { it.type.code == ContactTypeCode.CASE_REALLOCATION_SPO_OVERSIGHT.value }
 
         assert(
-            contact.notes!!.contains("Comment added by Workforce Allocation Service on ${formattedDate}")
+            contact.notes!!.contains("Comment added by Workforce Allocations Service on ${formattedDate}")
         )
 
         assert(
