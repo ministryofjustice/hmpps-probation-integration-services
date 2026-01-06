@@ -3,10 +3,17 @@ package uk.gov.justice.digital.hmpps.service
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
+import uk.gov.justice.digital.hmpps.datetime.toDeliusDate
 import uk.gov.justice.digital.hmpps.entity.contact.Contact
 import uk.gov.justice.digital.hmpps.entity.contact.ContactType
 import uk.gov.justice.digital.hmpps.entity.contact.enforcement.Enforcement
 import uk.gov.justice.digital.hmpps.entity.contact.enforcement.EnforcementAction
+import uk.gov.justice.digital.hmpps.entity.sentence.Event
+import uk.gov.justice.digital.hmpps.entity.sentence.component.LicenceCondition
+import uk.gov.justice.digital.hmpps.entity.sentence.component.Requirement
+import uk.gov.justice.digital.hmpps.entity.sentence.component.SentenceComponent
+import uk.gov.justice.digital.hmpps.entity.staff.Staff
+import uk.gov.justice.digital.hmpps.entity.staff.Team
 import uk.gov.justice.digital.hmpps.exception.NotFoundException.Companion.orNotFoundBy
 import uk.gov.justice.digital.hmpps.model.*
 import uk.gov.justice.digital.hmpps.repository.*
@@ -70,15 +77,24 @@ class AppointmentService(
         val staff = staffRepository.getAllByCodeIn(map { it.staff.code })
         val requirements = requirementRepository.getAllByCodeIn(mapNotNull { it.requirementId })
         val licenceConditions = licenceConditionRepository.getAllByCodeIn(mapNotNull { it.licenceConditionId })
+        val commencedContactType = contactTypeRepository.findByCode(ContactType.ORDER_COMPONENT_COMMENCED)
+            .orNotFoundBy("code", ContactType.ORDER_COMPONENT_COMMENCED)
 
-        return map {
+        return flatMap {
             val requirement = it.requirementId?.let { id -> requirements[id] }
             val licenceCondition = it.licenceConditionId?.let { id -> licenceConditions[id] }
             val event = checkNotNull(
                 listOfNotNull(requirement?.disposal?.event, licenceCondition?.disposal?.event).firstOrNull()
             ) { "Appointment component not found" }
             val team = teams[it.team.code].orNotFoundBy("code", it.team.code)
-            Contact(
+            val staffMember = staff[it.staff.code].orNotFoundBy("code", it.staff.code)
+
+            val commencementContact = if (it.type == CreateAppointmentRequest.Type.PRE_GROUP_ONE_TO_ONE_MEETING) {
+                val component = requirement ?: licenceCondition
+                component?.commenceComponent(event, it, team, staffMember, commencedContactType)
+            } else null
+
+            val appointment = Contact(
                 person = event.person.asPersonCrn(),
                 event = event,
                 requirement = requirement,
@@ -90,12 +106,14 @@ class AppointmentService(
                 sensitive = it.sensitive,
                 provider = team.provider,
                 team = team,
-                staff = staff[it.staff.code].orNotFoundBy("code", it.staff.code),
+                staff = staffMember,
                 location = it.location?.code?.let { code -> locations[code].orNotFoundBy("code", code) },
                 type = types[it.type.code].orNotFoundBy("code", it.type.code),
                 externalReference = "${Contact.REFERENCE_PREFIX}${it.reference}",
                 outcome = it.outcome?.code?.let { code -> outcomes[code].orNotFoundBy("code", code) },
             )
+
+            listOfNotNull(commencementContact, appointment)
         }
     }
 
@@ -212,6 +230,35 @@ class AppointmentService(
         notes = notes,
         sensitive = sensitive
     )
+
+    private fun SentenceComponent.commenceComponent(
+        event: Event,
+        request: CreateAppointmentRequest,
+        team: Team,
+        staff: Staff,
+        contactType: ContactType
+    ): Contact? {
+        val shouldCreateCommencedContact = this.commencementDate == null
+        this.commencementDate = request.date.atStartOfDay(EuropeLondon)
+        this.notes = listOfNotNull(
+            this.notes,
+            "Actual Start Date set to ${request.date.toDeliusDate()} following notification from the Accredited Programmes – Intervention Service"
+        ).joinToString(System.lineSeparator() + System.lineSeparator())
+
+        return if (shouldCreateCommencedContact) {
+            Contact(
+                person = event.person.asPersonCrn(),
+                event = event,
+                requirement = this as? Requirement,
+                licenceCondition = this as? LicenceCondition,
+                date = request.date,
+                provider = team.provider,
+                team = team,
+                staff = staff,
+                type = contactType,
+            )
+        } else null
+    }
 }
 
 inline fun <reified T> Map<String, T>.reportMissing(codes: Set<String>) = also {

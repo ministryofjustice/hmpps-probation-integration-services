@@ -64,6 +64,8 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
         save(TestData.ENFORCEMENT_REVIEW_CONTACT_TYPE)
         save(TestData.COMPONENT_TERMINATED_CONTACT_TYPE)
         save(TestData.COMPONENT_TRANSFER_REJECTED_CONTACT_TYPE)
+        save(TestData.PRE_GROUP_ONE_TO_ONE_MEETING_CONTACT_TYPE)
+        save(TestData.ORDER_COMPONENT_COMMENCED_CONTACT_TYPE)
         saveAll(TestData.STATUS_CONTACT_TYPES)
         save(TestData.ATTENDED_COMPLIED)
         save(TestData.FAILED_TO_COMPLY)

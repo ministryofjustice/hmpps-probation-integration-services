@@ -95,6 +95,8 @@ object TestData {
 
     val COMPONENT_TERMINATED_CONTACT_TYPE = ContactType(id(), ContactType.COMPONENT_TERMINATED, false)
     val COMPONENT_TRANSFER_REJECTED_CONTACT_TYPE = ContactType(id(), ContactType.COMPONENT_TRANSFER_REJECTED, false)
+    val PRE_GROUP_ONE_TO_ONE_MEETING_CONTACT_TYPE = ContactType(id(), ContactType.PRE_GROUP_ONE_TO_ONE_MEETING, false)
+    val ORDER_COMPONENT_COMMENCED_CONTACT_TYPE = ContactType(id(), ContactType.ORDER_COMPONENT_COMMENCED, false)
 
     val ATTENDED_COMPLIED = ContactOutcome(id(), "ATTC", "Attended and Complied")
     val FAILED_TO_COMPLY = ContactOutcome(id(), "FTC", "Failed to comply", attended = false, complied = false)
