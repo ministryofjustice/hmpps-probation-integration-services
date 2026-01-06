@@ -80,8 +80,6 @@ jobs:
   get-projects:
     permissions:
       contents: read
-      id-token: write
-      issues: write
     uses: ./.github/workflows/get-projects.yml
     with:
       projects: ${{ inputs.projects || 'Changed' }}
