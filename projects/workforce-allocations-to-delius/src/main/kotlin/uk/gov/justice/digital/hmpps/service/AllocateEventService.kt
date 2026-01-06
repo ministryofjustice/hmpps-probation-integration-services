@@ -17,7 +17,6 @@ import uk.gov.justice.digital.hmpps.integrations.delius.event.TransferReasonCode
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.Staff
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.StaffRepository
 import uk.gov.justice.digital.hmpps.integrations.workforceallocations.AllocationDetail.EventAllocation
-import java.time.format.DateTimeFormatter
 
 @Service
 class AllocateEventService(
@@ -121,12 +120,6 @@ class AllocateEventService(
                 )
             )
         } else if (allocationDetail.spoOversightNotes != null) {
-            val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy 'at' HH:mm")
-            val formattedDate = allocationDetail.createdDate.format(formatter)
-
-            val reallocationNotes = allocationDetail.spoOversightNotes.let {
-                "$it : ${allocationDetail.allocationReason.name} Comment added by Workforce Allocations Service on ${formattedDate}"
-            }
 
             contactRepository.save(
                 Contact(
@@ -138,7 +131,7 @@ class AllocateEventService(
                     teamId = orderManager.team.id,
                     staffId = spoStaff?.id ?: orderManager.staff.id,
                     providerId = orderManager.provider.id,
-                    notes = reallocationNotes,
+                    notes = allocationDetail.spoOversightNotes,
                     isSensitive = allocationDetail.sensitiveOversightNotes ?: true
                 )
             )

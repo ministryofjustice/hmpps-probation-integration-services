@@ -2,7 +2,7 @@ package uk.gov.justice.digital.hmpps.integrations.delius.allocations
 
 import org.springframework.stereotype.Component
 import uk.gov.justice.digital.hmpps.api.model.AllocationType
-import uk.gov.justice.digital.hmpps.api.model.deriveDeliusCodeFromTextDefaultInitial
+import uk.gov.justice.digital.hmpps.api.model.deriveDeliusCodeDefaultInitial
 import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException
 import uk.gov.justice.digital.hmpps.exception.NotActiveException
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
@@ -48,10 +48,7 @@ class AllocationValidator(
             is AllocationDetail.RequirementAllocation -> AllocationType.REQUIREMENT
         }
 
-        val allocationReasonCode = when (allocationDetail.allocationReason) {
-            null -> allocationDetail.code
-            else -> deriveDeliusCodeFromTextDefaultInitial(allocationDetail.allocationReason.toString(), allocationType)
-        }
+        val allocationReasonCode = deriveDeliusCodeDefaultInitial(allocationDetail.allocationReason, allocationType)
 
         val allocationReason = referenceDataRepository.findByDatasetAndCode(
             allocationDetail.datasetCode,

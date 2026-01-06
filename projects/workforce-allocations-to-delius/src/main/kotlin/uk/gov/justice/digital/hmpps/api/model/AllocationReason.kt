@@ -11,17 +11,6 @@ enum class AllocationReason {
     TRANSFER_IN,
     PROBATION_RESET,
     INITIAL_ALLOCATION;
-
-    companion object {
-        fun fromTextOrDefaultInitial(value: String?): AllocationReason {
-            val parsed = value
-                ?.trim()
-                ?.takeIf { it.isNotEmpty() }
-                ?.let { runCatching { AllocationReason.valueOf(it) }.getOrNull() }
-
-            return parsed ?: INITIAL_ALLOCATION
-        }
-    }
 }
 
 enum class AllocationType {
@@ -64,13 +53,6 @@ fun deriveDeliusCodeDefaultInitial(
     return codes.forType(type)
 }
 
-fun deriveDeliusCodeFromTextDefaultInitial(
-    reasonText: String?,
-    type: AllocationType,
-): String {
-    val reason = AllocationReason.fromTextOrDefaultInitial(reasonText)
-    return deriveDeliusCodeDefaultInitial(reason, type)
-}
 
 
 

@@ -12,7 +12,7 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.bean.override.mockito.MockitoBean
 import uk.gov.justice.digital.hmpps.api.model.AllocationType
-import uk.gov.justice.digital.hmpps.api.model.deriveDeliusCodeFromTextDefaultInitial
+import uk.gov.justice.digital.hmpps.api.model.deriveDeliusCodeDefaultInitial
 import uk.gov.justice.digital.hmpps.data.generator.RequirementGenerator
 import uk.gov.justice.digital.hmpps.data.generator.RequirementManagerGenerator
 import uk.gov.justice.digital.hmpps.integrations.delius.event.requirement.RequirementManager
@@ -67,10 +67,7 @@ class ReallocateRequirementIntegrationTest @Autowired constructor(
         val allocationDetail = ResourceLoader.file<AllocationDetail>(jsonFile)
 
         val expectedAllocationReason =
-            deriveDeliusCodeFromTextDefaultInitial(
-                allocationDetail.allocationReason!!.name,
-                AllocationType.REQUIREMENT
-            )
+            deriveDeliusCodeDefaultInitial(allocationDetail.allocationReason, AllocationType.REQUIREMENT)
 
         assertThat(
             expectedAllocationReason,

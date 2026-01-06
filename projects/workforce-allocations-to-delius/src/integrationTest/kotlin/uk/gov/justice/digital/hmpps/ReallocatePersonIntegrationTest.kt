@@ -12,7 +12,7 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.bean.override.mockito.MockitoBean
 import uk.gov.justice.digital.hmpps.api.model.AllocationType
-import uk.gov.justice.digital.hmpps.api.model.deriveDeliusCodeFromTextDefaultInitial
+import uk.gov.justice.digital.hmpps.api.model.deriveDeliusCodeDefaultInitial
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.integrations.delius.person.PersonManagerRepository
 import uk.gov.justice.digital.hmpps.integrations.workforceallocations.AllocationDetail
@@ -62,10 +62,8 @@ class ReallocatePersonIntegrationTest @Autowired constructor(
 
         val pm = personManagerRepository.findPersonManagersByStaffCode(allocationDetail.staffCode).get(0)
 
-        val expectedAllocationReason = deriveDeliusCodeFromTextDefaultInitial(
-            allocationDetail.allocationReason!!.name,
-            AllocationType.PERSON
-        )
+        val expectedAllocationReason =
+            deriveDeliusCodeDefaultInitial(allocationDetail.allocationReason, AllocationType.PERSON)
         assertThat(pm.allocationReason.code, equalTo(expectedAllocationReason))
     }
 }
