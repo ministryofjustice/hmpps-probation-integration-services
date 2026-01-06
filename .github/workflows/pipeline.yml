@@ -11,15 +11,14 @@ on:
         type: boolean
         default: false
 
-permissions:
-  contents: read
-  checks: write
-  id-token: write
-  packages: write
-
 jobs:
   build:
     name: Build
+    permissions:
+      contents: read
+      checks: write
+      id-token: write
+      packages: write
     uses: ./.github/workflows/build.yml
     with:
       push: true
@@ -31,6 +30,11 @@ jobs:
 
   post-build:
     name: Post-build
+    permissions:
+      contents: read
+      checks: write
+      id-token: write
+      packages: write
     runs-on: ubuntu-latest
     needs: build
     outputs:
@@ -47,6 +51,11 @@ jobs:
 
   analyse:
     name: Analyse
+    permissions:
+      contents: read
+      checks: write
+      id-token: write
+      packages: write
     runs-on: ubuntu-latest
     needs: build
     steps:
@@ -59,6 +68,11 @@ jobs:
 
   deploy-to-test:
     name: Deploy to test
+    permissions:
+      contents: read
+      checks: write
+      id-token: write
+      packages: write
     uses: ./.github/workflows/deploy.yml
     needs: post-build
     if: ${{ needs.post-build.outputs.dev_deployments != '[]' }}
@@ -70,6 +84,11 @@ jobs:
 
   deploy-to-preprod:
     name: Deploy to preprod
+    permissions:
+      contents: read
+      checks: write
+      id-token: write
+      packages: write
     uses: ./.github/workflows/deploy.yml
     needs: post-build
     if: ${{ needs.post-build.outputs.preprod_deployments != '[]'}}
@@ -81,6 +100,11 @@ jobs:
 
   end-to-end-tests:
     name: Run end-to-end tests
+    permissions:
+      contents: read
+      checks: write
+      id-token: write
+      packages: write
     needs:
       - post-build
       - deploy-to-test
@@ -115,6 +139,11 @@ jobs:
 
   report-test-failures:
     name: Failed testing
+    permissions:
+      contents: read
+      checks: write
+      id-token: write
+      packages: write
     if: ${{ failure() && needs.end-to-end-tests.outputs.failed-projects != '[]' }}
     needs:
       - end-to-end-tests
@@ -128,6 +157,11 @@ jobs:
 
   deploy-to-prod:
     name: Deploy to production
+    permissions:
+      contents: read
+      checks: write
+      id-token: write
+      packages: write
     uses: ./.github/workflows/deploy.yml
     if: ${{ (success() || (failure() && needs.end-to-end-tests.outputs.deploy-to-prod != '[]')) && github.ref == 'refs/heads/main' }}
     needs:
