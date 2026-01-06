@@ -93,6 +93,7 @@ class OffenderDeltaService(
 
         val contactId = delta.sourceRecordId
 
+        // ignore hard-deleted contacts or non-visor contacts
         if (!contactRepository.existsByIdAndVisorContactTrue(contactId)) return
 
         val category = resolveMappaCategory(offender.id)
@@ -109,16 +110,15 @@ class OffenderDeltaService(
             )
         )
 
-        when (delta.action) {
-
-            "DELETE" -> domainEventService.publishContactDeleted(
+        if (!contactRepository.existsByIdAndSoftDeletedFalse(contactId)) {
+            domainEventService.publishContactDeleted(
                 crn = offender.crn,
                 contactId = contactId,
                 category = category,
                 occurredAt = delta.dateChanged
             )
-
-            else -> domainEventService.publishContactUpdated(
+        } else {
+            domainEventService.publishContactUpdated(
                 crn = offender.crn,
                 contactId = contactId,
                 category = category,

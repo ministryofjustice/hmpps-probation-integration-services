@@ -503,22 +503,8 @@ class OffenderDeltaServiceTest {
             .trackEvent(any(), any(), any())
     }
 
-    /**
-     * NOTE:
-     *
-     * In this scenario the contact record exists but is soft deleted.
-     *
-     * As a result:
-     * - The domain event is still published as CONTACT_UPDATED because the delta action is UPSERT
-     *   and the VISOR flag is enabled.
-     * - The data event notification is published as CONTACT_DELETED because the contact is no longer
-     *   active (existsByIdAndSoftDeletedFalse = false).
-     *
-     * This difference between domain event semantics and data event semantics is intentional and
-     * reflects current business behaviour.
-     */
     @Test
-    fun `when CONTACT_CHANGED and VISOR is true then contact updated domain event is generated`() {
+    fun `when CONTACT SOFT DELETED and VISOR is true then contact deleted domain event is generated`() {
         // given
         val offender = Offender(
             id = id(),
@@ -541,11 +527,14 @@ class OffenderDeltaServiceTest {
         whenever(contactRepository.existsByIdAndVisorContactTrue(sourceRecordId))
             .thenReturn(true)
 
+        whenever(contactRepository.existsByIdAndSoftDeletedFalse(sourceRecordId))
+            .thenReturn(false)
+
         // when
         offenderDeltaService.notify(delta)
 
         // then — DOMAIN EVENT (UPDATED)
-        verify(domainEventService).publishContactUpdated(
+        verify(domainEventService).publishContactDeleted(
             crn = eq("X606060"),
             contactId = eq(sourceRecordId),
             category = eq(0),
