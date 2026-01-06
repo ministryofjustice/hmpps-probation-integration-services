@@ -55,7 +55,6 @@ jobs:
       contents: read
       checks: write
       id-token: write
-      packages: write
     runs-on: ubuntu-latest
     needs: build
     steps:
