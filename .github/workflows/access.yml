@@ -73,16 +73,15 @@ on:
     paths:
       - 'projects/**/deploy/database/access.yml'
 
-permissions:
-  contents: read
-  id-token: write
-  issues: write
-
 env:
   modernisation-platform-environments: '["test"]'
 
 jobs:
   get-projects:
+    permissions:
+      contents: read
+      id-token: write
+      issues: write
     uses: ./.github/workflows/get-projects.yml
     with:
       projects: ${{ inputs.projects || 'Changed' }}
@@ -91,6 +90,10 @@ jobs:
           - 'projects/**/deploy/database/access.yml'
 
   setup-access:
+    permissions:
+      contents: read
+      id-token: write
+      issues: write
     runs-on: ubuntu-latest
     needs: get-projects
     strategy:
@@ -153,6 +156,10 @@ jobs:
           aws-account-id: ${{ secrets.MODERNISATION_PLATFORM_AWS_ACCOUNT_ID }}
 
   create-issue:
+    permissions:
+      contents: read
+      id-token: write
+      issues: write
     runs-on: ubuntu-latest
     needs: get-projects
     strategy:
