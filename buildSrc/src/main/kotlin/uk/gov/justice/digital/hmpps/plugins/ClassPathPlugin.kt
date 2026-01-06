@@ -5,10 +5,18 @@ import org.gradle.api.Project
 import org.gradle.api.tasks.SourceSet
 import org.gradle.api.tasks.SourceSetContainer
 import org.gradle.api.tasks.testing.Test
-import org.gradle.kotlin.dsl.*
+import org.gradle.internal.classpath.Instrumented.systemProperty
+import org.gradle.kotlin.dsl.configure
+import org.gradle.kotlin.dsl.get
+import org.gradle.kotlin.dsl.invoke
+import org.gradle.kotlin.dsl.named
+import org.gradle.kotlin.dsl.register
+import org.gradle.kotlin.dsl.withType
+import org.gradle.model.internal.core.ModelNodes.withType
 import org.gradle.testing.jacoco.tasks.JacocoReport
 import org.sonarqube.gradle.SonarExtension
 import uk.gov.justice.digital.hmpps.extensions.ClassPathExtension
+import kotlin.text.get
 
 class ClassPathPlugin : Plugin<Project> {
     override fun apply(project: Project) {
