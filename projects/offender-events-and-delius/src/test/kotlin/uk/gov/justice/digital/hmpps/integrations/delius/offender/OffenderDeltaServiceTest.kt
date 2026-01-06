@@ -427,7 +427,7 @@ class OffenderDeltaServiceTest {
         )
 
         // then — TELEMETRY
-        verify(telemetryService)
+        verify(telemetryService, atLeastOnce())
             .trackEvent(any(), any(), any())
     }
 
@@ -499,7 +499,7 @@ class OffenderDeltaServiceTest {
         )
 
         // then — TELEMETRY is recorded
-        verify(telemetryService)
+        verify(telemetryService, atLeastOnce())
             .trackEvent(any(), any(), any())
     }
 
@@ -561,7 +561,7 @@ class OffenderDeltaServiceTest {
         )
 
         // then — TELEMETRY
-        verify(telemetryService)
+        verify(telemetryService, atLeastOnce())
             .trackEvent(any(), any(), any())
     }
 
@@ -632,7 +632,7 @@ class OffenderDeltaServiceTest {
         )
 
         // then — TELEMETRY is recorded
-        verify(telemetryService)
+        verify(telemetryService, atLeastOnce())
             .trackEvent(any(), any(), any())
     }
 

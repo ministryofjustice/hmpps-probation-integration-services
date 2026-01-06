@@ -7,6 +7,7 @@ import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.ArgumentCaptor
 import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
+import org.mockito.kotlin.any
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
@@ -15,6 +16,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.domainevent.entity.Domai
 import uk.gov.justice.digital.hmpps.integrations.delius.domainevent.entity.DomainEventRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.ReferenceData
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.ReferenceDataRepository
+import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.objectMapper
 import java.time.ZonedDateTime
 
@@ -27,6 +29,9 @@ class DomainEventServiceTest {
     @Mock
     lateinit var domainEventRepository: DomainEventRepository
 
+    @Mock
+    lateinit var telemetryService: TelemetryService
+
     private lateinit var domainEventService: DomainEventService
 
     private val occurredAt = ZonedDateTime.parse("2025-12-15T17:18:30Z")
@@ -36,7 +41,8 @@ class DomainEventServiceTest {
         domainEventService = DomainEventService(
             objectMapper = objectMapper,
             referenceDataRepository = referenceDataRepository,
-            domainEventRepository = domainEventRepository
+            domainEventRepository = domainEventRepository,
+            telemetryService = telemetryService
         )
     }
 
@@ -51,6 +57,10 @@ class DomainEventServiceTest {
                 "DOMAIN EVENT TYPE"
             )
         ).thenReturn(eventTypeRef)
+
+        whenever(domainEventRepository.save(any())).thenAnswer {
+            it.arguments[0] as DomainEvent
+        }
 
         val contactId = id()
         // when
@@ -109,6 +119,10 @@ class DomainEventServiceTest {
                 "DOMAIN EVENT TYPE"
             )
         ).thenReturn(eventTypeRef)
+
+        whenever(domainEventRepository.save(any())).thenAnswer {
+            it.arguments[0] as DomainEvent
+        }
 
         val contactId = id()
 

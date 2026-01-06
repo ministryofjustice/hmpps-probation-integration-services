@@ -10,13 +10,15 @@ import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
 import uk.gov.justice.digital.hmpps.message.MessageAttributes
 import uk.gov.justice.digital.hmpps.message.PersonIdentifier
 import uk.gov.justice.digital.hmpps.message.PersonReference
+import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import java.time.ZonedDateTime
 
 @Service
 class DomainEventService(
     private val objectMapper: ObjectMapper,
     private val referenceDataRepository: ReferenceDataRepository,
-    private val domainEventRepository: DomainEventRepository
+    private val domainEventRepository: DomainEventRepository,
+    private val telemetryService: TelemetryService,
 ) {
 
     fun publishContactUpdated(
@@ -74,7 +76,18 @@ class DomainEventService(
                     MessageAttributes(event.eventType)
                 )
             )
-        )
+        ).also { domainEvent ->
+            telemetryService.trackEvent(
+                "DomainEventSaved",
+                mapOf(
+                    "domainEventId" to domainEvent.id.toString(),
+                    "eventType" to event.eventType,
+                    "crn" to event.personReference.findCrn(),
+                    "nomsNumber" to event.personReference.findNomsNumber(),
+                    "occurredAt" to event.occurredAt.toString()
+                ).filterValues { it != null }
+            )
+        }
     }
 
     private fun personReferenceForCrn(crn: String): PersonReference =
