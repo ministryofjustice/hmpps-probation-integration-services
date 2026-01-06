@@ -17,6 +17,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.event.TransferReasonCode
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.Staff
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.StaffRepository
 import uk.gov.justice.digital.hmpps.integrations.workforceallocations.AllocationDetail.EventAllocation
+import java.time.format.DateTimeFormatter
 
 @Service
 class AllocateEventService(
@@ -120,9 +121,11 @@ class AllocateEventService(
                 )
             )
         } else if (allocationDetail.spoOversightNotes != null) {
+            val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy 'at' HH:mm")
+            val formattedDate = allocationDetail.createdDate.format(formatter)
 
             val reallocationNotes = allocationDetail.spoOversightNotes.let {
-                "$it : ${allocationDetail.allocationReason.name} Comment added by Workforce Allocation Service on ${allocationDetail.createdDate}"
+                "$it : ${allocationDetail.allocationReason.name} Comment added by Workforce Allocation Service on ${formattedDate}"
             }
 
             contactRepository.save(

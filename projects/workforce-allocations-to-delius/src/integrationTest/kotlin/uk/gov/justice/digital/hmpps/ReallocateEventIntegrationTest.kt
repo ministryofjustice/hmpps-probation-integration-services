@@ -23,6 +23,7 @@ import uk.gov.justice.digital.hmpps.integrations.workforceallocations.Allocation
 import uk.gov.justice.digital.hmpps.messaging.HmppsChannelManager
 import uk.gov.justice.digital.hmpps.resourceloader.ResourceLoader
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
+import java.time.format.DateTimeFormatter
 
 @SpringBootTest
 class ReallocateEventIntegrationTest @Autowired constructor(
@@ -108,12 +109,14 @@ class ReallocateEventIntegrationTest @Autowired constructor(
         channelManager.getChannel(queueName).publishAndWait(allocationEvent)
 
         val allocationDetail = ResourceLoader.file<AllocationDetail>(jsonFile)
+        val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy 'at' HH:mm")
+        val formattedDate = allocationDetail.createdDate.format(formatter)
 
         val contact =
             contactRepository.findAll().first { it.type.code == ContactTypeCode.CASE_REALLOCATION_SPO_OVERSIGHT.value }
 
         assert(
-            contact.notes!!.contains("Comment added by Workforce Allocation Service on ${allocationDetail.createdDate}")
+            contact.notes!!.contains("Comment added by Workforce Allocation Service on ${formattedDate}")
         )
 
         assert(
