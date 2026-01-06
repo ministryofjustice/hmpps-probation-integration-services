@@ -140,9 +140,6 @@ jobs:
     name: Failed testing
     permissions:
       contents: read
-      checks: write
-      id-token: write
-      packages: write
     if: ${{ failure() && needs.end-to-end-tests.outputs.failed-projects != '[]' }}
     needs:
       - end-to-end-tests
