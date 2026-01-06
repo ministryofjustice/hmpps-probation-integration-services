@@ -81,7 +81,6 @@ jobs:
     name: Build
     permissions:
       contents: read
-      id-token: write
       packages: write
     runs-on: ubuntu-latest
     outputs:
