@@ -155,7 +155,6 @@ jobs:
   create-issue:
     permissions:
       contents: read
-      id-token: write
       issues: write
     runs-on: ubuntu-latest
     needs: get-projects
