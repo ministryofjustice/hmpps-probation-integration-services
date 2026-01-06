@@ -410,6 +410,7 @@ components:
           enum:
           - PROGRAMME_ATTENDANCE
           - THREE_WAY_MEETING
+          - PRE_GROUP_ONE_TO_ONE_MEETING
       required:
       - date
       - endTime
