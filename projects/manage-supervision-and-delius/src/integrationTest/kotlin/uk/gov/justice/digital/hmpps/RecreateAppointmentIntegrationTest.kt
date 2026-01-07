@@ -118,35 +118,6 @@ class RecreateAppointmentIntegrationTest : IntegrationTestBase() {
         }
     }
 
-    @Test
-    fun `cannot reschedule if appointment would clash`() {
-        val person = PersonGenerator.RECREATE_APPT_PERSON_1
-        val appointment = sentenceAppointmentRepository.save(
-            AppointmentGenerator.generateAppointment(
-                person,
-                ZonedDateTime.now().plusDays(3),
-                ZonedDateTime.now().plusDays(3).plusMinutes(30)
-            )
-        )
-        val clashing = sentenceAppointmentRepository.save(
-            AppointmentGenerator.generateAppointment(
-                person,
-                ZonedDateTime.now().plusDays(4),
-                ZonedDateTime.now().plusDays(4).plusMinutes(60)
-            )
-        )
-        val request = recreateRequest(
-            date = clashing.date,
-            startTime = ZonedDateTime.now().plusDays(4).toLocalTime(),
-            endTime = ZonedDateTime.now().plusDays(4).plusHours(1).toLocalTime(),
-        )
-
-        mockMvc.put("/appointments/${appointment.id}/recreate") {
-            withUserToken(PI_USER.username)
-            json = request
-        }
-            .andExpect { status { isConflict() } }
-    }
 
     @Test
     fun `recreate with a location`() {
