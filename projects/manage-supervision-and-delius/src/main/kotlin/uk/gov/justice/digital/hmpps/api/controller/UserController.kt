@@ -31,7 +31,10 @@ class UserController(
         @RequestParam(required = false, defaultValue = "10") size: Int,
         @RequestParam(required = false, defaultValue = "default") sortBy: String,
         @RequestParam(required = false, defaultValue = "true") ascending: Boolean
-    ) = userService.getUpcomingAppointments(username, PageRequest.of(page, size, sortUpcomingAppointments(sortBy, ascending, true)))
+    ) = userService.getUpcomingAppointments(
+        username,
+        PageRequest.of(page, size, sortUpcomingAppointments(sortBy, ascending, true))
+    )
 
     @GetMapping("/schedule/no-outcome")
     @Operation(summary = "Gets passed appointments without an outcome for a user")
@@ -41,7 +44,10 @@ class UserController(
         @RequestParam(required = false, defaultValue = "10") size: Int,
         @RequestParam(required = false, defaultValue = "date") sortBy: String,
         @RequestParam(required = false, defaultValue = "true") ascending: Boolean
-    ) = userService.getAppointmentsWithoutOutcomes(username, PageRequest.of(page, size, sortAppointmentsWithoutOutcomes(sortBy, ascending, false)))
+    ) = userService.getAppointmentsWithoutOutcomes(
+        username,
+        PageRequest.of(page, size, sortAppointmentsWithoutOutcomes(sortBy, ascending, false))
+    )
 
     @GetMapping("/appointments")
     @Operation(summary = "Gets passed appointments without an outcome for a user")
@@ -70,16 +76,19 @@ class UserController(
             "name" -> Sort.by(direction, "${qualifier}surname")
             "dob" -> Sort.by(direction, "${qualifier}date_of_birth_date")
             "appointment" -> Sort.by(direction, "rct.description")
-            "sentence" -> JpaSort.unsafe(direction, "case when d.disposal_id is not null \n" +
-                "                    then \n" +
-                "                        rdt.description\n" +
-                "                    else\n" +
-                "                        (select rdt.description\n" +
-                "                          from disposal d\n" +
-                "                          join r_disposal_type rdt on rdt.disposal_type_id = d.disposal_type_id\n" +
-                "                          where d.offender_id = o.offender_id\n" +
-                "                          order by e.created_datetime desc fetch first 1 row only)\n" +
-                "                    end")
+            "sentence" -> JpaSort.unsafe(
+                direction, "case when d.disposal_id is not null \n" +
+                    "                    then \n" +
+                    "                        rdt.description\n" +
+                    "                    else\n" +
+                    "                        (select rdt.description\n" +
+                    "                          from disposal d\n" +
+                    "                          join r_disposal_type rdt on rdt.disposal_type_id = d.disposal_type_id\n" +
+                    "                          where d.offender_id = o.offender_id\n" +
+                    "                          order by e.created_datetime desc fetch first 1 row only)\n" +
+                    "                    end"
+            )
+
             else -> Sort.by(direction, "contact_date", "contact_start_time")
         }
     }
