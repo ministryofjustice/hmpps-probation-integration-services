@@ -22,7 +22,8 @@ internal class LimitedAccessTest @Autowired constructor(
 ) {
     @Test
     fun `should return 200 and Allow full access`() {
-        val url = "/users/${LimitedAccessGenerator.LAO_DEFAULT_USER.username}/access/${PersonGenerator.DEFAULT_PERSON.crn}"
+        val url =
+            "/users/${LimitedAccessGenerator.LAO_DEFAULT_USER.username}/access/${PersonGenerator.DEFAULT_PERSON.crn}"
         val res = mockMvc.get(url) { withToken() }
             .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<CaseAccess>()
@@ -32,7 +33,8 @@ internal class LimitedAccessTest @Autowired constructor(
 
     @Test
     fun `should return 200 and Allow restricted access`() {
-        val url = "/users/${LimitedAccessGenerator.LAO_RESTRICTED_USER.username}/access/${LimitedAccessGenerator.LAO_RESTRICTION.person.crn}"
+        val url =
+            "/users/${LimitedAccessGenerator.LAO_RESTRICTED_USER.username}/access/${LimitedAccessGenerator.LAO_RESTRICTION.person.crn}"
         val res = mockMvc.get(url) { withToken() }
             .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<CaseAccess>()
@@ -42,16 +44,19 @@ internal class LimitedAccessTest @Autowired constructor(
 
     @Test
     fun `should return 200 and Not Allow restricted access`() {
-        val url = "/users/${LimitedAccessGenerator.LAO_EXCLUDED_USER.username}/access/${LimitedAccessGenerator.LAO_RESTRICTION.person.crn}"
+        val url =
+            "/users/${LimitedAccessGenerator.LAO_EXCLUDED_USER.username}/access/${LimitedAccessGenerator.LAO_RESTRICTION.person.crn}"
         val res = mockMvc.get(url) { withToken() }
             .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<CaseAccess>()
         assertThat(res.userExcluded, equalTo(false))
         assertThat(res.userRestricted, equalTo(true))
     }
+
     @Test
     fun `should return 200 and Allow excluded access`() {
-        val url = "/users/${LimitedAccessGenerator.LAO_RESTRICTED_USER.username}/access/${LimitedAccessGenerator.LAO_EXCLUSION.person.crn}"
+        val url =
+            "/users/${LimitedAccessGenerator.LAO_RESTRICTED_USER.username}/access/${LimitedAccessGenerator.LAO_EXCLUSION.person.crn}"
         val res = mockMvc.get(url) { withToken() }
             .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<CaseAccess>()
@@ -61,7 +66,8 @@ internal class LimitedAccessTest @Autowired constructor(
 
     @Test
     fun `should return 200 and Not Allow Excluded access`() {
-        val url = "/users/${LimitedAccessGenerator.LAO_EXCLUDED_USER.username}/access/${LimitedAccessGenerator.LAO_EXCLUSION.person.crn}"
+        val url =
+            "/users/${LimitedAccessGenerator.LAO_EXCLUDED_USER.username}/access/${LimitedAccessGenerator.LAO_EXCLUSION.person.crn}"
         val res = mockMvc.get(url) { withToken() }
             .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<CaseAccess>()

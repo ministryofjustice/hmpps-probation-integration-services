@@ -15,8 +15,10 @@ import uk.gov.justice.digital.hmpps.service.UserAccessService
 
 @RestController
 @RequestMapping("users")
-class UserResource(private val ldapTemplate: LdapTemplate,
-        private val userAccessService: UserAccessService) {
+class UserResource(
+    private val ldapTemplate: LdapTemplate,
+    private val userAccessService: UserAccessService
+) {
     @PreAuthorize("hasRole('PROBATION_API__CVL__USER_ROLES__RW')")
     @PutMapping(value = ["/{username}/roles"])
     fun addRole(@PathVariable username: String) =

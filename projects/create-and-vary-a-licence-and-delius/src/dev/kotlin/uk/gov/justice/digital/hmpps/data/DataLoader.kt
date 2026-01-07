@@ -31,13 +31,13 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
 
         StaffGenerator.DEFAULT = StaffGenerator.generateStaff(
             StaffGenerator.DEFAULT.code,
-        StaffGenerator.DEFAULT.forename,
-        StaffGenerator.DEFAULT.surname,
-        listOf(ProviderGenerator.DEFAULT_TEAM),
-        ProviderGenerator.DEFAULT_PROVIDER,
-        StaffGenerator.DEFAULT.middleName,
-        StaffGenerator.DEFAULT.user,
-        StaffGenerator.DEFAULT.id
+            StaffGenerator.DEFAULT.forename,
+            StaffGenerator.DEFAULT.surname,
+            listOf(ProviderGenerator.DEFAULT_TEAM),
+            ProviderGenerator.DEFAULT_PROVIDER,
+            StaffGenerator.DEFAULT.middleName,
+            StaffGenerator.DEFAULT.user,
+            StaffGenerator.DEFAULT.id
         )
         StaffGenerator.DEFAULT_EXCLUDED = StaffGenerator.generateStaff(
             StaffGenerator.DEFAULT.code,
