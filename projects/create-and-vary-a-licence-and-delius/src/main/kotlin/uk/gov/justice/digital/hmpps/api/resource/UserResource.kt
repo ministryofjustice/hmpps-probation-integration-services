@@ -29,7 +29,7 @@ class UserResource(
     fun removeRole(@PathVariable username: String) =
         ldapTemplate.removeRole(username, DeliusRole.LHDCBT002)
 
-    @PreAuthorize("hasRole('PROBATION_API__CVL__USER_ROLES__RW')")
+    @PreAuthorize("hasRole('PROBATION_API__CVL__CASE_DETAIL')")
     @GetMapping("/{username}/access/{crn}")
     fun checkForAccess(@PathVariable username: String, @PathVariable crn: String) =
         userAccessService.caseAccessFor(username, crn)
