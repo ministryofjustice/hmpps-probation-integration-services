@@ -118,7 +118,6 @@ class RecreateAppointmentIntegrationTest : IntegrationTestBase() {
         }
     }
 
-
     @Test
     fun `recreate with a location`() {
         val person = PersonGenerator.RECREATE_APPT_PERSON_1
