@@ -4,6 +4,7 @@ database:
     password_key: /offender-events-and-delius/db-password
     tables:
       - offender_delta
+      - domain_event
 
   audit:
     username: OffenderEventsAndDelius
