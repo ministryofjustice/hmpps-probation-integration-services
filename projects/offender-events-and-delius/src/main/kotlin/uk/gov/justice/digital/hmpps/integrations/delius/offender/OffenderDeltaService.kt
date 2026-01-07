@@ -98,18 +98,6 @@ class OffenderDeltaService(
 
         val category = resolveMappaCategory(offender.id)
 
-        //TODO: can be deleted
-        telemetryService.trackEvent(
-            "ContactDomainEventCandidate",
-            mapOf(
-                "action" to delta.action,
-                "crn" to offender.crn,
-                "contactId" to contactId.toString(),
-                "category" to category.toString(),
-                "occurredAt" to delta.dateChanged.toString()
-            )
-        )
-
         if (!contactRepository.existsByIdAndSoftDeletedFalse(contactId)) {
             domainEventService.publishContactDeleted(
                 crn = offender.crn,
