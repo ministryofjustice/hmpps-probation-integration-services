@@ -1,40 +1,26 @@
 package uk.gov.justice.digital.hmpps.data
 
-import jakarta.annotation.PostConstruct
-import jakarta.persistence.EntityManager
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
-import org.springframework.boot.context.event.ApplicationReadyEvent
-import org.springframework.context.ApplicationListener
 import org.springframework.stereotype.Component
-import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.data.generator.*
+import uk.gov.justice.digital.hmpps.data.loader.BaseDataLoader
+import uk.gov.justice.digital.hmpps.data.manager.DataManager
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.CvlMapping
-import uk.gov.justice.digital.hmpps.user.AuditUserRepository
 
 @Component
-@ConditionalOnProperty("seed.database")
-class DataLoader(
-    private val auditUserRepository: AuditUserRepository,
-    private val entityManager: EntityManager
-) : ApplicationListener<ApplicationReadyEvent> {
+class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
+    override fun systemUser() = UserGenerator.AUDIT_USER
 
-    @PostConstruct
-    fun saveAuditUser() {
-        auditUserRepository.save(UserGenerator.AUDIT_USER)
-    }
-
-    @Transactional
-    override fun onApplicationEvent(are: ApplicationReadyEvent) {
-        entityManager.persist(ProviderGenerator.DEFAULT_PROVIDER)
-        entityManager.persist(StaffGenerator.PDUHEAD)
-        entityManager.persist(StaffGenerator.DEFAULT_PDUSTAFF_USER)
-        entityManager.persist(ProviderGenerator.DEFAULT_BOROUGH)
-        entityManager.persist(ProviderGenerator.DEFAULT_DISTRICT)
+    override fun setupData() {
+        save(ProviderGenerator.DEFAULT_PROVIDER)
+        save(StaffGenerator.PDUHEAD)
+        save(StaffGenerator.DEFAULT_PDUSTAFF_USER)
+        save(ProviderGenerator.DEFAULT_BOROUGH)
+        save(ProviderGenerator.DEFAULT_DISTRICT)
 
         createOfficeLocationsAndDistricts()
 
-        entityManager.persist(ProviderGenerator.DEFAULT_TEAM)
-        entityManager.persist(ProviderGenerator.TEAM_ENDED_OR_NULL_LOCATIONS)
+        save(ProviderGenerator.DEFAULT_TEAM)
+        save(ProviderGenerator.TEAM_ENDED_OR_NULL_LOCATIONS)
 
         StaffGenerator.DEFAULT = StaffGenerator.generateStaff(
             StaffGenerator.DEFAULT.code,
@@ -46,18 +32,16 @@ class DataLoader(
             StaffGenerator.DEFAULT.user,
             StaffGenerator.DEFAULT.id
         )
-        entityManager.persist(StaffGenerator.DEFAULT)
+        save(StaffGenerator.DEFAULT)
+        save(StaffGenerator.DEFAULT_STAFF_USER)
 
-        entityManager.persist(StaffGenerator.DEFAULT_STAFF_USER)
-        entityManager.flush()
+        save(PersonGenerator.DEFAULT_PERSON)
+        save(PersonGenerator.PERSON_ENDED_TEAM_LOCATION)
+        save(PersonGenerator.DEFAULT_CM)
+        save(PersonGenerator.CM_ENDED_TEAM_LOCATION)
 
-        entityManager.persist(PersonGenerator.DEFAULT_PERSON)
-        entityManager.persist(PersonGenerator.PERSON_ENDED_TEAM_LOCATION)
-        entityManager.persist(PersonGenerator.DEFAULT_CM)
-        entityManager.persist(PersonGenerator.CM_ENDED_TEAM_LOCATION)
-
-        val person = PersonGenerator.generatePerson("N123456").also(entityManager::persist)
-        PersonGenerator.generateManager(person).also(entityManager::persist)
+        val person = save(PersonGenerator.generatePerson("N123456"))
+        save(PersonGenerator.generateManager(person))
 
         createForAddingLicenceConditions()
 
@@ -65,7 +49,7 @@ class DataLoader(
     }
 
     private fun createForAddingLicenceConditions() {
-        entityManager.persistAll(
+        saveAll(
             ReferenceDataGenerator.DATASET_LC_SUB_CAT,
             ReferenceDataGenerator.DATASET_LM_ALLOCATION_REASON,
             ReferenceDataGenerator.DATASET_CUSTODY_STATUS,
@@ -86,11 +70,11 @@ class DataLoader(
             SentenceGenerator.SENTENCE_CREATE_LC,
             PersonGenerator.generateManager(PersonGenerator.PERSON_CREATE_LC)
         )
-        entityManager.saveCvlMappings(ReferenceDataGenerator.CVL_MAPPINGS)
+        saveCvlMappings(ReferenceDataGenerator.CVL_MAPPINGS)
     }
 
     private fun createOfficeLocationsAndDistricts() {
-        entityManager.persistAll(
+        saveAll(
             ProviderGenerator.DISTRICT_BRK,
             ProviderGenerator.DISTRICT_MKY,
             ProviderGenerator.DISTRICT_OXF,
@@ -102,7 +86,7 @@ class DataLoader(
     }
 
     private fun createCaseloadData() {
-        entityManager.persistAll(
+        saveAll(
             CaseloadGenerator.TEAM1,
             CaseloadGenerator.TEAM2,
             CaseloadGenerator.STAFF1,
@@ -115,13 +99,9 @@ class DataLoader(
         )
     }
 
-    private fun EntityManager.persistAll(vararg entities: Any) {
-        entities.forEach { persist(it) }
-    }
-
-    private fun EntityManager.saveCvlMappings(mappings: List<CvlMapping>) {
+    private fun saveCvlMappings(mappings: List<CvlMapping>) {
         mappings.forEach {
-            persistAll(it.mainCategory, it.subCategory, it)
+            saveAll(it.mainCategory, it.subCategory, it)
         }
     }
 }

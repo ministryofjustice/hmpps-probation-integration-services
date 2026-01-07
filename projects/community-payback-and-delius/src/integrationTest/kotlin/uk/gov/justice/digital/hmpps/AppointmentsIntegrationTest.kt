@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
 import org.springframework.test.web.servlet.put
@@ -44,17 +45,17 @@ class AppointmentsIntegrationTest @Autowired constructor(
 
     @Test
     fun `can retrieve appointment details`() {
+        val versions = UUID(
+            unpaidWorkAppointmentRepository.findByIdOrNull(UPWGenerator.DEFAULT_UPW_APPOINTMENT.id)!!.rowVersion,
+            contactRepository.findByIdOrNull(UPWGenerator.DEFAULT_CONTACT.id)!!.rowVersion
+        )
+
         val response =
             mockMvc.get("/projects/N01DEFAULT/appointments/${UPWGenerator.DEFAULT_UPW_APPOINTMENT.id}?username=DefaultUser") { withToken() }
                 .andExpect { status { is2xxSuccessful() } }
                 .andReturn().response.contentAsJson<AppointmentResponse>()
 
-        assertThat(response.version).isEqualTo(
-            UUID(
-                UPWGenerator.DEFAULT_UPW_APPOINTMENT.rowVersion,
-                UPWGenerator.DEFAULT_CONTACT.rowVersion
-            )
-        )
+        assertThat(response.version).isEqualTo(versions)
         assertThat(response.project.name).isEqualTo("Default UPW Project")
         assertThat(response.case.crn).isEqualTo(PersonGenerator.DEFAULT_PERSON.crn)
         assertThat(response.penaltyHours).isEqualTo("01:05")
@@ -95,6 +96,7 @@ class AppointmentsIntegrationTest @Autowired constructor(
                 hiVisWorn = true,
                 workedIntensively = true,
                 penaltyMinutes = 5,
+                minutesCredited = 235,
                 workQuality = WorkQuality.EXCELLENT,
                 behaviour = Behaviour.UNSATISFACTORY,
                 sensitive = false,
@@ -124,6 +126,7 @@ class AppointmentsIntegrationTest @Autowired constructor(
                 hiVisWorn = true,
                 workedIntensively = true,
                 penaltyMinutes = 5,
+                minutesCredited = 235,
                 workQuality = WorkQuality.EXCELLENT,
                 behaviour = Behaviour.UNSATISFACTORY,
                 sensitive = false,
@@ -162,6 +165,7 @@ class AppointmentsIntegrationTest @Autowired constructor(
                 hiVisWorn = true,
                 workedIntensively = true,
                 penaltyMinutes = 65,
+                minutesCredited = 55,
                 workQuality = WorkQuality.EXCELLENT,
                 behaviour = Behaviour.UNSATISFACTORY,
                 sensitive = false,
@@ -190,6 +194,7 @@ class AppointmentsIntegrationTest @Autowired constructor(
                 hiVisWorn = true,
                 workedIntensively = true,
                 penaltyMinutes = 65,
+                minutesCredited = 55,
                 workQuality = WorkQuality.EXCELLENT,
                 behaviour = Behaviour.UNSATISFACTORY,
                 sensitive = false,
@@ -214,6 +219,7 @@ class AppointmentsIntegrationTest @Autowired constructor(
                 hiVisWorn = true,
                 workedIntensively = true,
                 penaltyMinutes = 65,
+                minutesCredited = 55,
                 workQuality = WorkQuality.EXCELLENT,
                 behaviour = Behaviour.UNSATISFACTORY,
                 sensitive = false,
@@ -245,6 +251,7 @@ class AppointmentsIntegrationTest @Autowired constructor(
                 hiVisWorn = true,
                 workedIntensively = true,
                 penaltyMinutes = 65,
+                minutesCredited = 55,
                 workQuality = WorkQuality.EXCELLENT,
                 behaviour = Behaviour.UNSATISFACTORY,
                 sensitive = false,
@@ -307,6 +314,7 @@ class AppointmentsIntegrationTest @Autowired constructor(
                 hiVisWorn = true,
                 workedIntensively = true,
                 penaltyMinutes = 65,
+                minutesCredited = 55,
                 workQuality = WorkQuality.EXCELLENT,
                 behaviour = Behaviour.EXCELLENT,
                 sensitive = false,
@@ -333,6 +341,7 @@ class AppointmentsIntegrationTest @Autowired constructor(
                 hiVisWorn = true,
                 workedIntensively = true,
                 penaltyMinutes = 65,
+                minutesCredited = 55,
                 workQuality = WorkQuality.EXCELLENT,
                 behaviour = Behaviour.UNSATISFACTORY,
                 sensitive = false,

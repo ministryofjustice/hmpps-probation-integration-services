@@ -1,12 +1,6 @@
 package uk.gov.justice.digital.hmpps.data
 
-import jakarta.annotation.PostConstruct
-import jakarta.persistence.EntityManager
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
-import org.springframework.boot.context.event.ApplicationReadyEvent
-import org.springframework.context.ApplicationListener
 import org.springframework.stereotype.Component
-import org.springframework.transaction.support.TransactionTemplate
 import uk.gov.justice.digital.hmpps.data.generator.*
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.CONTACT
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.CONTACT_OUTCOME_TYPE
@@ -26,153 +20,129 @@ import uk.gov.justice.digital.hmpps.data.generator.SentenceGenerator.RELEASED_CO
 import uk.gov.justice.digital.hmpps.data.generator.SentenceGenerator.RELEASED_CUSTODY
 import uk.gov.justice.digital.hmpps.data.generator.SentenceGenerator.RELEASED_EVENT
 import uk.gov.justice.digital.hmpps.data.generator.SentenceGenerator.RELEASED_SENTENCE
+import uk.gov.justice.digital.hmpps.data.loader.BaseDataLoader
+import uk.gov.justice.digital.hmpps.data.manager.DataManager
 import uk.gov.justice.digital.hmpps.integration.delius.entity.Person
 import uk.gov.justice.digital.hmpps.model.Category
 import uk.gov.justice.digital.hmpps.model.Level
 import uk.gov.justice.digital.hmpps.user.AuditUser
-import uk.gov.justice.digital.hmpps.user.AuditUserRepository
 import java.time.LocalDate
 import java.time.LocalDateTime
 
 @Component
-@ConditionalOnProperty("seed.database")
-class DataLoader(
-    private val auditUserRepository: AuditUserRepository,
-    private val entityManager: EntityManager,
-    private val transactionTemplate: TransactionTemplate,
-) : ApplicationListener<ApplicationReadyEvent> {
+class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
+    override fun systemUser() = UserGenerator.AUDIT_USER
 
-    @PostConstruct
-    fun saveAuditUser() {
-        auditUserRepository.save(UserGenerator.AUDIT_USER)
-        auditUserRepository.save(UserGenerator.LIMITED_ACCESS_USER)
-    }
+    override fun setupData() {
+        save(UserGenerator.LIMITED_ACCESS_USER)
+        save(ReferenceDataGenerator.DATASET_TYPE_OTHER)
+        save(ReferenceDataGenerator.DATASET_TYPE_GENDER)
+        save(ReferenceDataGenerator.DATASET_TYPE_ETHNICITY)
+        save(ReferenceDataGenerator.DATASET_TYPE_ADDRESS_STATUS)
+        save(ReferenceDataGenerator.RD_MALE)
+        save(ReferenceDataGenerator.RD_FEMALE)
+        save(RegistrationGenerator.CHILD_CONCERNS_TYPE)
+        save(RegistrationGenerator.generate(RegistrationGenerator.CHILD_CONCERNS_TYPE))
+        save(RegistrationGenerator.CHILD_PROTECTION_TYPE)
+        save(RegistrationGenerator.generate(RegistrationGenerator.CHILD_PROTECTION_TYPE))
+        save(RegistrationGenerator.SERIOUS_FURTHER_OFFENCE_TYPE)
+        save(RegistrationGenerator.WARRANT_SUMMONS_TYPE)
+        save(RegistrationGenerator.generate(RegistrationGenerator.SERIOUS_FURTHER_OFFENCE_TYPE))
+        save(RegistrationGenerator.generate(RegistrationGenerator.WARRANT_SUMMONS_TYPE))
+        save(RegistrationGenerator.MAPPA_TYPE)
+        RegistrationGenerator.CATEGORIES.values.forEach(::save)
+        RegistrationGenerator.LEVELS.values.forEach(::save)
+        save(RD_RELIGION)
+        save(RD_NATIONALITY)
+        save(AI_PREVIOUS_CRN)
+        save(RD_DISABILITY_TYPE)
+        save(RD_DISABILITY_CONDITION)
+        save(RD_ADDRESS_STATUS)
+        save(RD_ETHNICITY)
+        save(INVALID_MAPPA_LEVEL)
+        save(DataGenerator.DEFAULT_PROVIDER)
+        save(DataGenerator.DEFAULT_PDU)
+        save(DataGenerator.DEFAULT_LAU)
+        save(DataGenerator.DEFAULT_TEAM)
+        save(DataGenerator.JOHN_SMITH)
+        save(DataGenerator.JS_USER)
+        save(DataGenerator.PERSON)
+        save(DataGenerator.PERSON_2)
+        save(DataGenerator.PERSON_MANAGER)
+        save(DataGenerator.PERSON_MANAGER_2)
+        save(PersonGenerator.generateAddress(PersonGenerator.DEFAULT))
+        save(DataGenerator.OFFENCE)
+        save(DataGenerator.COURT)
+        save(DataGenerator.COURT_APPEARANCE_TYPE)
+        save(DataGenerator.COURT_APPEARANCE_PLEA)
+        save(DataGenerator.DISPOSAL_TYPE)
+        save(DataGenerator.MONTHS)
+        save(DataGenerator.LENGTH_UNIT_NA)
+        save(DataGenerator.EVENT)
+        save(DataGenerator.EVENT_NON_APP_LENGTH_UNIT)
+        save(CONTACT_TYPE)
+        save(CONTACT_OUTCOME_TYPE)
+        save(CONTACT)
+        save(MAPPA_CONTACT)
+        save(
+            RegistrationGenerator.generate(
+                RegistrationGenerator.MAPPA_TYPE,
+                RegistrationGenerator.CATEGORIES[Category.M2.name],
+                RegistrationGenerator.LEVELS[Level.M1.name],
+                reviewDate = LocalDate.now().plusMonths(6),
+                notes = "Mappa Detail for ${DataGenerator.PERSON.crn}",
+            )
+        )
+        save(
+            RegistrationGenerator.generate(
+                RegistrationGenerator.MAPPA_TYPE,
+                RegistrationGenerator.CATEGORIES[Category.M2.name],
+                INVALID_MAPPA_LEVEL,
+                person = DataGenerator.PERSON_2,
+                reviewDate = LocalDate.now().plusMonths(6),
+                notes = "Invalid mappa level ${DataGenerator.PERSON_2.crn}"
+            )
+        )
+        save(PersonGenerator.EXCLUSION)
+        save(DataGenerator.EXCLUSION_PERSON_MANAGER)
+        save(PersonGenerator.RESTRICTION)
+        save(DataGenerator.RESTRICTION_PERSON_MANAGER)
+        save(PersonGenerator.RESTRICTION_EXCLUSION)
+        save(PersonGenerator.WITH_RELEASE_DATE)
+        save(PersonGenerator.generateManager(PersonGenerator.WITH_RELEASE_DATE))
+        save(ReferenceDataGenerator.DATASET_TYPE_KEY_DATE)
+        save(SentenceGenerator.RELEASE_DATE_TYPE)
+        save(RELEASED_EVENT)
+        save(RELEASED_COURT_APPEARANCE)
+        save(RELEASED_SENTENCE)
+        save(RELEASED_CUSTODY)
+        save(SentenceGenerator.RELEASE_DATE)
 
-    override fun onApplicationEvent(applicationReadyEvent: ApplicationReadyEvent) {
-        transactionTemplate.execute {
-            with(entityManager) {
-                persist(ReferenceDataGenerator.DATASET_TYPE_OTHER)
-                persist(ReferenceDataGenerator.DATASET_TYPE_GENDER)
-                persist(ReferenceDataGenerator.DATASET_TYPE_ETHNICITY)
-                persist(ReferenceDataGenerator.DATASET_TYPE_ADDRESS_STATUS)
-                persist(ReferenceDataGenerator.RD_MALE)
-                persist(ReferenceDataGenerator.RD_FEMALE)
-                persist(RegistrationGenerator.CHILD_CONCERNS_TYPE)
-                persist(RegistrationGenerator.generate(RegistrationGenerator.CHILD_CONCERNS_TYPE))
-                persist(RegistrationGenerator.CHILD_PROTECTION_TYPE)
-                persist(RegistrationGenerator.generate(RegistrationGenerator.CHILD_PROTECTION_TYPE))
-                persist(RegistrationGenerator.SERIOUS_FURTHER_OFFENCE_TYPE)
-                persist(RegistrationGenerator.WARRANT_SUMMONS_TYPE)
-                persist(RegistrationGenerator.generate(RegistrationGenerator.SERIOUS_FURTHER_OFFENCE_TYPE))
-                persist(RegistrationGenerator.generate(RegistrationGenerator.WARRANT_SUMMONS_TYPE))
-                persist(RegistrationGenerator.MAPPA_TYPE)
-                RegistrationGenerator.CATEGORIES.values.forEach(::persist)
-                RegistrationGenerator.LEVELS.values.forEach(::persist)
-                persist(RD_RELIGION)
-                persist(RD_NATIONALITY)
-                persist(AI_PREVIOUS_CRN)
-                persist(RD_DISABILITY_TYPE)
-                persist(RD_DISABILITY_CONDITION)
-                persist(RD_ADDRESS_STATUS)
-                persist(RD_ETHNICITY)
-                persist(INVALID_MAPPA_LEVEL)
-                persist(DataGenerator.DEFAULT_PROVIDER)
-                persist(DataGenerator.DEFAULT_PDU)
-                persist(DataGenerator.DEFAULT_LAU)
-                persist(DataGenerator.DEFAULT_TEAM)
-                persist(DataGenerator.JOHN_SMITH)
-                persist(DataGenerator.JS_USER)
-                persist(DataGenerator.PERSON)
-                persist(DataGenerator.PERSON_2)
-                persist(DataGenerator.PERSON_MANAGER)
-                persist(DataGenerator.PERSON_MANAGER_2)
-                persist(PersonGenerator.generateAddress(PersonGenerator.DEFAULT))
-                persist(DataGenerator.OFFENCE)
-                persist(DataGenerator.COURT)
-                persist(DataGenerator.COURT_APPEARANCE_TYPE)
-                persist(DataGenerator.COURT_APPEARANCE_PLEA)
-                persist(DataGenerator.DISPOSAL_TYPE)
-                persist(DataGenerator.MONTHS)
-                persist(DataGenerator.LENGTH_UNIT_NA)
-                persist(DataGenerator.EVENT)
-                persist(DataGenerator.EVENT.disposal)
-                persist(DataGenerator.EVENT.mainOffence)
-                DataGenerator.EVENT.additionalOffences.forEach { persist(it) }
-                DataGenerator.EVENT.courtAppearances.forEach { persist(it) }
-                persist(DataGenerator.EVENT_NON_APP_LENGTH_UNIT)
-                persist(DataGenerator.EVENT_NON_APP_LENGTH_UNIT.disposal)
-                persist(DataGenerator.EVENT_NON_APP_LENGTH_UNIT.mainOffence)
-                DataGenerator.EVENT_NON_APP_LENGTH_UNIT.additionalOffences.forEach { persist(it) }
-                DataGenerator.EVENT_NON_APP_LENGTH_UNIT.courtAppearances.forEach { persist(it) }
-                merge(CONTACT_TYPE)
-                merge(CONTACT_OUTCOME_TYPE)
-                merge(CONTACT)
-                merge(MAPPA_CONTACT)
-                persist(
-                    RegistrationGenerator.generate(
-                        RegistrationGenerator.MAPPA_TYPE,
-                        RegistrationGenerator.CATEGORIES[Category.M2.name],
-                        RegistrationGenerator.LEVELS[Level.M1.name],
-                        reviewDate = LocalDate.now().plusMonths(6),
-                        notes = "Mappa Detail for ${DataGenerator.PERSON.crn}",
-                    )
-                )
-                persist(
-                    RegistrationGenerator.generate(
-                        RegistrationGenerator.MAPPA_TYPE,
-                        RegistrationGenerator.CATEGORIES[Category.M2.name],
-                        INVALID_MAPPA_LEVEL,
-                        person = DataGenerator.PERSON_2,
-                        reviewDate = LocalDate.now().plusMonths(6),
-                        notes = "Invalid mappa level ${DataGenerator.PERSON_2.crn}"
-                    )
-                )
-                persist(PersonGenerator.EXCLUSION)
-                persist(DataGenerator.EXCLUSION_PERSON_MANAGER)
-                persist(PersonGenerator.RESTRICTION)
-                persist(DataGenerator.RESTRICTION_PERSON_MANAGER)
-                persist(PersonGenerator.RESTRICTION_EXCLUSION)
-                persist(PersonGenerator.WITH_RELEASE_DATE)
-                persist(PersonGenerator.generateManager(PersonGenerator.WITH_RELEASE_DATE))
-                persist(ReferenceDataGenerator.DATASET_TYPE_KEY_DATE)
-                persist(SentenceGenerator.RELEASE_DATE_TYPE)
-                persist(RELEASED_EVENT.mainOffence)
-                persist(RELEASED_EVENT)
-                persist(RELEASED_COURT_APPEARANCE)
-                persist(RELEASED_SENTENCE)
-                persist(RELEASED_CUSTODY)
-                persist(SentenceGenerator.RELEASE_DATE)
+        generateCustodialEvent(PersonGenerator.EXCLUSION)
+        generateCustodialEvent(PersonGenerator.RESTRICTION)
 
-                generateCustodialEvent(PersonGenerator.EXCLUSION)
-                generateCustodialEvent(PersonGenerator.RESTRICTION)
+        save(SentenceGenerator.generateOgrsAssessment(LocalDate.now(), 3))
 
-                persist(SentenceGenerator.generateOgrsAssessment(LocalDate.now(), 3))
-            }
-        }
         loadLaoData()
     }
 
     private fun loadLaoData() {
-        transactionTemplate.execute {
-            with(entityManager) {
-                merge(LaoGenerator.EXCLUSION)
-                merge(LaoGenerator.RESTRICTION)
-                merge(LaoGenerator.BOTH_EXCLUSION)
-                merge(LaoGenerator.BOTH_RESTRICTION)
-                merge(
-                    generateRestriction(
-                        PersonGenerator.RESTRICTION,
-                        user = AuditUser(JS_USER.id, JS_USER.username),
-                        endDateTime = LocalDateTime.now().plusDays(1)
-                    )
-                )
-            }
-        }
+        save(LaoGenerator.EXCLUSION)
+        save(LaoGenerator.RESTRICTION)
+        save(LaoGenerator.BOTH_EXCLUSION)
+        save(LaoGenerator.BOTH_RESTRICTION)
+        save(
+            generateRestriction(
+                PersonGenerator.RESTRICTION,
+                user = AuditUser(JS_USER.id, JS_USER.username),
+                endDateTime = LocalDateTime.now().plusDays(1)
+            )
+        )
     }
 
     private fun generateCustodialEvent(person: Person) {
-        val event = entityManager.merge(SentenceGenerator.generateEvent(person))
-        val disposal = entityManager.merge(SentenceGenerator.generateSentence(event))
-        entityManager.merge(SentenceGenerator.generateCustody(disposal))
+        val event = save(SentenceGenerator.generateEvent(person))
+        val disposal = save(SentenceGenerator.generateSentence(event))
+        save(SentenceGenerator.generateCustody(disposal))
     }
 }

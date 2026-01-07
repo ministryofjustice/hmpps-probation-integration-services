@@ -1,42 +1,30 @@
 package uk.gov.justice.digital.hmpps.data
 
-import jakarta.annotation.PostConstruct
-import jakarta.persistence.EntityManager
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
-import org.springframework.boot.context.event.ApplicationReadyEvent
-import org.springframework.context.ApplicationListener
 import org.springframework.stereotype.Component
-import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.audit.BusinessInteraction
 import uk.gov.justice.digital.hmpps.data.generator.*
+import uk.gov.justice.digital.hmpps.data.loader.BaseDataLoader
+import uk.gov.justice.digital.hmpps.data.manager.DataManager
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
-import uk.gov.justice.digital.hmpps.entity.*
-import uk.gov.justice.digital.hmpps.user.AuditUserRepository
+import uk.gov.justice.digital.hmpps.entity.BusinessInteractionCode
+import uk.gov.justice.digital.hmpps.entity.Category
+import uk.gov.justice.digital.hmpps.entity.Level
+import uk.gov.justice.digital.hmpps.entity.Person
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.ZonedDateTime
 
 @Component
-@ConditionalOnProperty("seed.database")
-class DataLoader(
-    private val auditUserRepository: AuditUserRepository,
-    private val em: EntityManager,
-    private val staffRepository: StaffRepository
-) : ApplicationListener<ApplicationReadyEvent> {
+class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
+    override fun systemUser() = UserGenerator.AUDIT_USER
 
-    @PostConstruct
-    fun saveAuditUser() {
-        auditUserRepository.save(UserGenerator.AUDIT_USER)
-    }
-
-    @Transactional
-    override fun onApplicationEvent(are: ApplicationReadyEvent) {
+    override fun setupData() {
         BusinessInteractionCode.entries.forEach {
-            em.persist(BusinessInteraction(IdGenerator.getAndIncrement(), it.code, ZonedDateTime.now()))
+            save(BusinessInteraction(IdGenerator.getAndIncrement(), it.code, ZonedDateTime.now()))
         }
-        ProviderGenerator.DEFAULT_STAFF = staffRepository.save(ProviderGenerator.DEFAULT_STAFF)
-        ProviderGenerator.EXISTING_CSN_STAFF = staffRepository.save(ProviderGenerator.EXISTING_CSN_STAFF)
-        em.saveAll(
+        ProviderGenerator.DEFAULT_STAFF = save(ProviderGenerator.DEFAULT_STAFF)
+        ProviderGenerator.EXISTING_CSN_STAFF = save(ProviderGenerator.EXISTING_CSN_STAFF)
+        saveAll(
             NSITypeGenerator.DTR,
             NSIStatusGenerator.INITIATED,
             ReferenceDataGenerator.ADDRESS_STATUS,
@@ -63,10 +51,10 @@ class DataLoader(
             RegistrationGenerator.MAPPA_TYPE
         )
 
-        RegistrationGenerator.CATEGORIES.values.forEach { em.persist(it) }
-        RegistrationGenerator.LEVELS.values.forEach { em.persist(it) }
+        saveAll(RegistrationGenerator.CATEGORIES.values)
+        saveAll(RegistrationGenerator.LEVELS.values)
 
-        em.merge(
+        save(
             RegistrationGenerator.generate(
                 date = LocalDate.now().minusDays(30),
                 category = RegistrationGenerator.CATEGORIES[Category.M1.name],
@@ -83,7 +71,7 @@ class DataLoader(
     fun createAppointmentData() {
         val conflictPerson = PersonGenerator.CREATE_APPOINTMENT
         val conflictManager = PersonGenerator.generateManager(PersonGenerator.CREATE_APPOINTMENT)
-        em.saveAll(
+        saveAll(
             *AppointmentGenerator.APPOINTMENT_TYPES.toTypedArray(),
             conflictPerson,
             conflictManager,
@@ -100,8 +88,6 @@ class DataLoader(
             )
         )
     }
-
-    fun EntityManager.saveAll(vararg any: Any) = any.forEach { merge(it) }
 
     private fun createAppointments(person: Person) {
         dates().flatMap { date ->
@@ -129,7 +115,7 @@ class DataLoader(
                     }
                 )
             }
-        }.forEach { em.merge(it) }
+        }.forEach { save(it) }
     }
 
     private fun dates(): List<LocalDate> {

@@ -1,72 +1,56 @@
 package uk.gov.justice.digital.hmpps.data
 
-import jakarta.annotation.PostConstruct
-import jakarta.persistence.EntityManager
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
-import org.springframework.boot.context.event.ApplicationReadyEvent
-import org.springframework.context.ApplicationListener
 import org.springframework.stereotype.Component
-import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.data.generator.*
-import uk.gov.justice.digital.hmpps.user.AuditUserRepository
+import uk.gov.justice.digital.hmpps.data.loader.BaseDataLoader
+import uk.gov.justice.digital.hmpps.data.manager.DataManager
 
 @Component
-@ConditionalOnProperty("seed.database")
-class DataLoader(
-    private val entityManager: EntityManager,
-    private val auditUserRepository: AuditUserRepository
-) : ApplicationListener<ApplicationReadyEvent> {
+class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
+    override fun systemUser() = UserGenerator.AUDIT_USER
 
-    @PostConstruct
-    fun saveAuditUser() {
-        auditUserRepository.save(UserGenerator.AUDIT_USER)
-    }
-
-    @Transactional
-    override fun onApplicationEvent(are: ApplicationReadyEvent) {
-        entityManager.run {
-            persist(BusinessInteractionGenerator.INSERT_PERSON)
-            persist(BusinessInteractionGenerator.INSERT_ADDRESS)
-            persist(BusinessInteractionGenerator.INSERT_EVENT)
-            persist(BusinessInteractionGenerator.INSERT_COURT_APPEARANCE)
-            persist(DatasetGenerator.GENDER)
-            persist(DatasetGenerator.OM_ALLOCATION_REASON)
-            persist(DatasetGenerator.ADDRESS_STATUS)
-            persist(DatasetGenerator.ADDRESS_TYPE)
-            persist(DatasetGenerator.ORDER_ALLOCATION_REASON)
-            persist(DatasetGenerator.COURT_APPEARANCE_TYPE)
-            persist(DatasetGenerator.REMAND_STATUS)
-            persist(DatasetGenerator.PLEA)
-            persist(DatasetGenerator.COURT_APPEARANCE_OUTCOME)
-            persist(DatasetGenerator.NATIONALITY)
-            persist(DatasetGenerator.ETHNICITY)
-            persist(ReferenceDataGenerator.GENDER_MALE)
-            persist(ReferenceDataGenerator.GENDER_FEMALE)
-            persist(ReferenceDataGenerator.INITIAL_ALLOCATION)
-            persist(ReferenceDataGenerator.MAIN_ADDRESS_STATUS)
-            persist(ReferenceDataGenerator.AWAITING_ASSESSMENT)
-            persist(ReferenceDataGenerator.ORDER_MANAGER_INITIAL_ALLOCATION)
-            persist(ReferenceDataGenerator.GUILTY_PLEA)
-            persist(ReferenceDataGenerator.TRIAL_ADJOURNMENT_APPEARANCE_TYPE)
-            persist(ReferenceDataGenerator.REMANDED_IN_CUSTODY_OUTCOME)
-            persist(ReferenceDataGenerator.REMANDED_IN_CUSTODY_STATUS)
-            persist(ReferenceDataGenerator.BRITISH_NATIONALITY)
-            persist(ReferenceDataGenerator.FRENCH_NATIONALITY)
-            persist(ReferenceDataGenerator.WHITE_BRITISH_ETHNICITY)
-            persist(TransferReasonGenerator.CASE_ORDER)
-            persist(ProviderGenerator.DEFAULT)
-            persist(TeamGenerator.ALLOCATED)
-            persist(TeamGenerator.UNALLOCATED)
-            persist(StaffGenerator.UNALLOCATED)
-            persist(StaffGenerator.ALLOCATED)
-            persist(CourtGenerator.UNKNOWN_COURT_N07_PROVIDER)
-            persist(OffenceGenerator.DEFAULT)
-            persist(OffenceGenerator.SECOND_OFFENCE)
-            persist(OffenceGenerator.THIRD_OFFENCE)
-            persist(ContactTypeGenerator.EAPP)
-            persist(DetailedOffenceGenerator.DEFAULT)
-            persist(DetailedOffenceGenerator.SECOND_OFFENCE)
-            persist(DetailedOffenceGenerator.THIRD_OFFENCE)
-        }
+    override fun setupData() {
+        save(BusinessInteractionGenerator.INSERT_PERSON)
+        save(BusinessInteractionGenerator.INSERT_ADDRESS)
+        save(BusinessInteractionGenerator.INSERT_EVENT)
+        save(BusinessInteractionGenerator.INSERT_COURT_APPEARANCE)
+        save(DatasetGenerator.GENDER)
+        save(DatasetGenerator.OM_ALLOCATION_REASON)
+        save(DatasetGenerator.ADDRESS_STATUS)
+        save(DatasetGenerator.ADDRESS_TYPE)
+        save(DatasetGenerator.ORDER_ALLOCATION_REASON)
+        save(DatasetGenerator.COURT_APPEARANCE_TYPE)
+        save(DatasetGenerator.REMAND_STATUS)
+        save(DatasetGenerator.PLEA)
+        save(DatasetGenerator.COURT_APPEARANCE_OUTCOME)
+        save(DatasetGenerator.NATIONALITY)
+        save(DatasetGenerator.ETHNICITY)
+        save(ReferenceDataGenerator.GENDER_MALE)
+        save(ReferenceDataGenerator.GENDER_FEMALE)
+        save(ReferenceDataGenerator.INITIAL_ALLOCATION)
+        save(ReferenceDataGenerator.MAIN_ADDRESS_STATUS)
+        save(ReferenceDataGenerator.AWAITING_ASSESSMENT)
+        save(ReferenceDataGenerator.ORDER_MANAGER_INITIAL_ALLOCATION)
+        save(ReferenceDataGenerator.GUILTY_PLEA)
+        save(ReferenceDataGenerator.TRIAL_ADJOURNMENT_APPEARANCE_TYPE)
+        save(ReferenceDataGenerator.REMANDED_IN_CUSTODY_OUTCOME)
+        save(ReferenceDataGenerator.REMANDED_IN_CUSTODY_STATUS)
+        save(ReferenceDataGenerator.BRITISH_NATIONALITY)
+        save(ReferenceDataGenerator.FRENCH_NATIONALITY)
+        save(ReferenceDataGenerator.WHITE_BRITISH_ETHNICITY)
+        save(TransferReasonGenerator.CASE_ORDER)
+        save(ProviderGenerator.DEFAULT)
+        save(TeamGenerator.ALLOCATED)
+        save(TeamGenerator.UNALLOCATED)
+        save(StaffGenerator.UNALLOCATED)
+        save(StaffGenerator.ALLOCATED)
+        save(CourtGenerator.UNKNOWN_COURT_N07_PROVIDER)
+        save(OffenceGenerator.DEFAULT)
+        save(OffenceGenerator.SECOND_OFFENCE)
+        save(OffenceGenerator.THIRD_OFFENCE)
+        save(ContactTypeGenerator.EAPP)
+        save(DetailedOffenceGenerator.DEFAULT)
+        save(DetailedOffenceGenerator.SECOND_OFFENCE)
+        save(DetailedOffenceGenerator.THIRD_OFFENCE)
     }
 }

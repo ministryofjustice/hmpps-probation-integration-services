@@ -1,9 +1,13 @@
 package uk.gov.justice.digital.hmpps.entity.sentence.component.transfer
 
-import jakarta.persistence.*
+import jakarta.persistence.Column
+import jakarta.persistence.Entity
+import jakarta.persistence.Id
+import jakarta.persistence.SequenceGenerator
 import uk.gov.justice.digital.hmpps.entity.sentence.component.LicenceCondition
 import uk.gov.justice.digital.hmpps.entity.sentence.component.Requirement
 import uk.gov.justice.digital.hmpps.entity.sentence.component.SentenceComponent
+import uk.gov.justice.digital.hmpps.jpa.GeneratedId
 import java.time.ZonedDateTime
 
 @Entity
@@ -14,7 +18,7 @@ class RejectedTransferDiary(
         sequenceName = "rejected_transfer_diary_id_seq",
         allocationSize = 1
     )
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "rejected_transfer_diary_id_generator")
+    @GeneratedId(generator = "rejected_transfer_diary_id_generator")
     @Column(name = "rejected_transfer_diary_id", nullable = false)
     val id: Long = 0,
 

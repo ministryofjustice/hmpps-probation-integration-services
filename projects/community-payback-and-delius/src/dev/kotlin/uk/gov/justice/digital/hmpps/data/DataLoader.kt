@@ -1,30 +1,16 @@
 package uk.gov.justice.digital.hmpps.data
 
-import jakarta.annotation.PostConstruct
-import jakarta.persistence.EntityManager
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
-import org.springframework.boot.context.event.ApplicationReadyEvent
-import org.springframework.context.ApplicationListener
 import org.springframework.stereotype.Component
-import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.data.generator.*
+import uk.gov.justice.digital.hmpps.data.loader.BaseDataLoader
+import uk.gov.justice.digital.hmpps.data.manager.DataManager
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.ContactTypeOutcome
-import uk.gov.justice.digital.hmpps.user.AuditUserRepository
 
 @Component
-@ConditionalOnProperty("seed.database")
-class DataLoader(
-    private val auditUserRepository: AuditUserRepository,
-    private val entityManager: EntityManager
-) : ApplicationListener<ApplicationReadyEvent> {
+class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
+    override fun systemUser() = UserGenerator.AUDIT_USER
 
-    @PostConstruct
-    fun saveAuditUser() {
-        auditUserRepository.save(UserGenerator.AUDIT_USER)
-    }
-
-    @Transactional
-    override fun onApplicationEvent(are: ApplicationReadyEvent) {
+    override fun setupData() {
         loadProviders()
         loadTeams()
         loadStaff()
@@ -37,106 +23,106 @@ class DataLoader(
     }
 
     fun loadUsers() {
-        entityManager.persist(UserGenerator.DEFAULT_USER)
+        save(UserGenerator.DEFAULT_USER)
     }
 
     fun loadPeople() {
-        entityManager.persist(PersonGenerator.DEFAULT_PERSON)
-        entityManager.persist(PersonGenerator.SECOND_PERSON)
-        entityManager.persist(PersonGenerator.EXCLUDED_PERSON)
-        entityManager.persist(PersonGenerator.RESTRICTED_PERSON)
+        save(PersonGenerator.DEFAULT_PERSON)
+        save(PersonGenerator.SECOND_PERSON)
+        save(PersonGenerator.EXCLUDED_PERSON)
+        save(PersonGenerator.RESTRICTED_PERSON)
     }
 
     fun loadProviders() {
-        entityManager.persist(ProviderGenerator.DEFAULT_PROVIDER)
-        entityManager.persist(ProviderGenerator.SECOND_PROVIDER)
-        entityManager.persist(ProviderGenerator.UNSELECTABLE_PROVIDER)
+        save(ProviderGenerator.DEFAULT_PROVIDER)
+        save(ProviderGenerator.SECOND_PROVIDER)
+        save(ProviderGenerator.UNSELECTABLE_PROVIDER)
     }
 
     fun loadProbationAreaUsers() {
-        entityManager.persist(ProbationAreaUserGenerator.DEFAULT_PROBATION_AREA_USER)
-        entityManager.persist(ProbationAreaUserGenerator.SECOND_DEFAULT_PROBATION_AREA_USER)
-        entityManager.persist(ProbationAreaUserGenerator.DEFAULT_USER_UNSELECTABLE_PROBATION_AREA)
+        save(ProbationAreaUserGenerator.DEFAULT_PROBATION_AREA_USER)
+        save(ProbationAreaUserGenerator.SECOND_DEFAULT_PROBATION_AREA_USER)
+        save(ProbationAreaUserGenerator.DEFAULT_USER_UNSELECTABLE_PROBATION_AREA)
     }
 
     fun loadTeams() {
-        entityManager.persist(TeamGenerator.DEFAULT_UPW_TEAM)
-        entityManager.persist(TeamGenerator.SECOND_UPW_TEAM)
-        entityManager.persist(TeamGenerator.NON_UPW_TEAM)
-        entityManager.persist(TeamGenerator.END_DATED_TEAM)
-        entityManager.persist(TeamGenerator.OTHER_PROVIDER_TEAM)
+        save(TeamGenerator.DEFAULT_UPW_TEAM)
+        save(TeamGenerator.SECOND_UPW_TEAM)
+        save(TeamGenerator.NON_UPW_TEAM)
+        save(TeamGenerator.END_DATED_TEAM)
+        save(TeamGenerator.OTHER_PROVIDER_TEAM)
     }
 
     fun loadStaff() {
-        entityManager.persist(StaffGenerator.DEFAULT_STAFF)
-        entityManager.persist(StaffGenerator.SECOND_STAFF)
-        entityManager.persist(PersonGenerator.DEFAULT_PERSON_MANAGER)
+        save(StaffGenerator.DEFAULT_STAFF)
+        save(StaffGenerator.SECOND_STAFF)
+        save(PersonGenerator.DEFAULT_PERSON_MANAGER)
     }
 
     fun loadReferenceData() {
-        entityManager.persist(DatasetGenerator.UPW_PROJECT_TYPE_DATASET)
-        entityManager.persist(DatasetGenerator.UPW_WORK_QUALITY_DATASET)
-        entityManager.persist(DatasetGenerator.UPW_BEHAVIOUR_DATASET)
-        entityManager.persist(ReferenceDataGenerator.GROUP_PLACEMENT_PROJECT_TYPE)
-        entityManager.persist(ReferenceDataGenerator.INDIVIDUAL_PLACEMENT_PROJECT_TYPE)
-        entityManager.persist(ReferenceDataGenerator.INACTIVE_PROJECT_TYPE)
-        entityManager.persist(ReferenceDataGenerator.UPW_APPOINTMENT_TYPE)
-        entityManager.persist(ReferenceDataGenerator.REVIEW_ENFORCEMENT_STATUS_TYPE)
-        entityManager.persist(ReferenceDataGenerator.ROM_ENFORCEMENT_ACTION)
-        entityManager.persist(ReferenceDataGenerator.ATTENDED_COMPLIED_CONTACT_OUTCOME)
-        entityManager.persist(ReferenceDataGenerator.FAILED_TO_ATTEND_CONTACT_OUTCOME)
-        entityManager.persist(
+        save(DatasetGenerator.UPW_PROJECT_TYPE_DATASET)
+        save(DatasetGenerator.UPW_WORK_QUALITY_DATASET)
+        save(DatasetGenerator.UPW_BEHAVIOUR_DATASET)
+        save(ReferenceDataGenerator.GROUP_PLACEMENT_PROJECT_TYPE)
+        save(ReferenceDataGenerator.INDIVIDUAL_PLACEMENT_PROJECT_TYPE)
+        save(ReferenceDataGenerator.INACTIVE_PROJECT_TYPE)
+        save(ReferenceDataGenerator.UPW_APPOINTMENT_TYPE)
+        save(ReferenceDataGenerator.REVIEW_ENFORCEMENT_STATUS_TYPE)
+        save(ReferenceDataGenerator.ROM_ENFORCEMENT_ACTION)
+        save(ReferenceDataGenerator.ATTENDED_COMPLIED_CONTACT_OUTCOME)
+        save(ReferenceDataGenerator.FAILED_TO_ATTEND_CONTACT_OUTCOME)
+        save(
             ContactTypeOutcome(
                 ReferenceDataGenerator.UPW_APPOINTMENT_TYPE,
                 ReferenceDataGenerator.ATTENDED_COMPLIED_CONTACT_OUTCOME
             )
         )
-        entityManager.persist(ReferenceDataGenerator.EXCELLENT_WORK_QUALITY)
-        entityManager.persist(ReferenceDataGenerator.UNSATISFACTORY_WORK_QUALITY)
-        entityManager.persist(ReferenceDataGenerator.EXCELLENT_BEHAVIOUR)
-        entityManager.persist(ReferenceDataGenerator.UNSATISFACTORY_BEHAVIOUR)
-        entityManager.persist(ReferenceDataGenerator.UPW_RQMNT_MAIN_CATEGORY)
-        entityManager.persist(ReferenceDataGenerator.DEFAULT_DISPOSAL_TYPE)
+        save(ReferenceDataGenerator.EXCELLENT_WORK_QUALITY)
+        save(ReferenceDataGenerator.UNSATISFACTORY_WORK_QUALITY)
+        save(ReferenceDataGenerator.EXCELLENT_BEHAVIOUR)
+        save(ReferenceDataGenerator.UNSATISFACTORY_BEHAVIOUR)
+        save(ReferenceDataGenerator.UPW_RQMNT_MAIN_CATEGORY)
+        save(ReferenceDataGenerator.DEFAULT_DISPOSAL_TYPE)
     }
 
     fun loadUnpaidWorkData() {
-        entityManager.persist(UPWGenerator.DEFAULT_ADDRESS)
-        entityManager.persist(UPWGenerator.DEFAULT_OFFICE_LOCATION)
-        entityManager.persist(UPWGenerator.DEFAULT_UPW_PROJECT)
-        entityManager.persist(UPWGenerator.SECOND_UPW_PROJECT)
-        entityManager.persist(UPWGenerator.DEFAULT_UPW_PROJECT_AVAILABILITY)
-        entityManager.persist(UPWGenerator.SECOND_UPW_PROJECT_AVAILABILITY)
-        entityManager.persist(UPWGenerator.DEFAULT_EVENT)
-        entityManager.persist(UPWGenerator.SECOND_EVENT)
-        entityManager.persist(UPWGenerator.DEFAULT_DISPOSAL)
-        entityManager.persist(UPWGenerator.SECOND_DISPOSAL)
-        entityManager.persist(UPWGenerator.DEFAULT_UPW_DETAILS)
-        entityManager.persist(UPWGenerator.SECOND_UPW_DETAILS)
-        entityManager.persist(UPWGenerator.THIRD_UPW_DETAILS)
-        entityManager.persist(UPWGenerator.DEFAULT_CONTACT)
-        entityManager.persist(UPWGenerator.CONTACT_NO_ENFORCEMENT)
-        entityManager.persist(UPWGenerator.DEFAULT_UPW_APPOINTMENT)
-        entityManager.persist(UPWGenerator.UPW_APPOINTMENT_NO_ENFORCEMENT)
-        entityManager.persist(UPWGenerator.UPW_APPOINTMENT_NO_OUTCOME)
-        entityManager.persist(UPWGenerator.SECOND_UPW_APPOINTMENT_OUTCOME_NO_ENFORCEMENT)
-        entityManager.persist(UPWGenerator.DEFAULT_RQMNT)
-        entityManager.persist(UPWGenerator.LAO_EXCLUDED_UPW_APPOINTMENT)
-        entityManager.persist(UPWGenerator.LAO_RESTRICTED_UPW_APPOINTMENT)
-        entityManager.persist(UPWGenerator.SECOND_UPW_DETAILS_ADJUSTMENT_NEGATIVE)
-        entityManager.persist(UPWGenerator.SECOND_UPW_DETAILS_ADJUSTMENT_POSITIVE)
+        save(UPWGenerator.DEFAULT_ADDRESS)
+        save(UPWGenerator.DEFAULT_OFFICE_LOCATION)
+        save(UPWGenerator.DEFAULT_UPW_PROJECT)
+        save(UPWGenerator.SECOND_UPW_PROJECT)
+        save(UPWGenerator.DEFAULT_UPW_PROJECT_AVAILABILITY)
+        save(UPWGenerator.SECOND_UPW_PROJECT_AVAILABILITY)
+        save(UPWGenerator.DEFAULT_EVENT)
+        save(UPWGenerator.SECOND_EVENT)
+        save(UPWGenerator.DEFAULT_DISPOSAL)
+        save(UPWGenerator.SECOND_DISPOSAL)
+        save(UPWGenerator.DEFAULT_UPW_DETAILS)
+        save(UPWGenerator.SECOND_UPW_DETAILS)
+        save(UPWGenerator.THIRD_UPW_DETAILS)
+        save(UPWGenerator.DEFAULT_CONTACT)
+        save(UPWGenerator.CONTACT_NO_ENFORCEMENT)
+        save(UPWGenerator.DEFAULT_UPW_APPOINTMENT)
+        save(UPWGenerator.UPW_APPOINTMENT_NO_ENFORCEMENT)
+        save(UPWGenerator.UPW_APPOINTMENT_NO_OUTCOME)
+        save(UPWGenerator.SECOND_UPW_APPOINTMENT_OUTCOME_NO_ENFORCEMENT)
+        save(UPWGenerator.DEFAULT_RQMNT)
+        save(UPWGenerator.LAO_EXCLUDED_UPW_APPOINTMENT)
+        save(UPWGenerator.LAO_RESTRICTED_UPW_APPOINTMENT)
+        save(UPWGenerator.SECOND_UPW_DETAILS_ADJUSTMENT_NEGATIVE)
+        save(UPWGenerator.SECOND_UPW_DETAILS_ADJUSTMENT_POSITIVE)
     }
 
     fun loadLimitedAccessData() {
-        entityManager.persist(LimitedAccessGenerator.FULL_ACCESS_USER)
-        entityManager.persist(LimitedAccessGenerator.LIMITED_ACCESS_USER)
-        entityManager.persist(LimitedAccessGenerator.EXCLUDED_CASE)
-        entityManager.persist(LimitedAccessGenerator.RESTRICTED_CASE)
-        entityManager.persist(
+        save(LimitedAccessGenerator.FULL_ACCESS_USER)
+        save(LimitedAccessGenerator.LIMITED_ACCESS_USER)
+        save(LimitedAccessGenerator.EXCLUDED_CASE)
+        save(LimitedAccessGenerator.RESTRICTED_CASE)
+        save(
             LimitedAccessGenerator.generateExclusion(
                 LimitedAccessGenerator.EXCLUDED_CASE
             )
         )
-        entityManager.persist(
+        save(
             LimitedAccessGenerator.generateRestriction(
                 LimitedAccessGenerator.RESTRICTED_CASE
             )

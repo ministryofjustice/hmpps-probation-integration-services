@@ -4,21 +4,19 @@ import uk.gov.justice.digital.hmpps.data.generator.IdGenerator.id
 import uk.gov.justice.digital.hmpps.entity.Event
 import uk.gov.justice.digital.hmpps.entity.ManagerEntity
 import uk.gov.justice.digital.hmpps.entity.Person
-import uk.gov.justice.digital.hmpps.set
 
 object PersonGenerator {
     val PERSON1 = generate("A000001", "07000000001")
-    val PERSON2 = generate("A000002", "07000000002")
-    val PERSON3 = generate("A000003", "07000000002")
-    val PERSON4 = generate("A000004", "07000000004 invalid")
-    val PERSON5 = generate("A000005", "070000005")
-    val PERSON6 = generate("A000006", null)
-    val PERSON7 = generate("A000007", "07000000007", events = emptyList())
+    val PERSON2_DUPLICATE = generate("A000002", "07000000002")
+    val PERSON3_DUPLICATE = generate("A000003", "07000000002")
+    val PERSON4_INVALID = generate("A000004", "07000000004 invalid")
+    val PERSON5_INVALID = generate("A000005", "070000005")
+    val PERSON6_EMPTY = generate("A000006", null)
+    val PERSON7_NO_EVENT = generate("A000007", "07000000007")
 
     fun generate(
         crn: String,
         mobileNumber: String?,
-        events: List<(Person) -> Event> = listOf { Event(id = id(), person = it) }
     ) = Person(
         id = id(),
         crn = crn,
@@ -30,15 +28,14 @@ object PersonGenerator {
         manager = null,
         events = emptyList(),
         softDeleted = false
-    ).also { person ->
-        person.set("events", events.map { it(person) })
-        person.set(
-            "manager", ManagerEntity(
-                id = id(),
-                person = person,
-                staff = StaffGenerator.TEST_STAFF,
-                team = TeamGenerator.DEFAULT,
-            )
-        )
-    }
+    )
+
+    fun Person.event() = Event(id = id(), person = this)
+
+    fun Person.manager() = ManagerEntity(
+        id = id(),
+        person = this,
+        staff = StaffGenerator.TEST_STAFF,
+        team = TeamGenerator.DEFAULT,
+    )
 }

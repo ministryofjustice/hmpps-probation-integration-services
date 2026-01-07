@@ -25,9 +25,8 @@ class StaffControllerIntegrationTest(
     fun `approved premises key worker staff are returned successfully`() {
         val approvedPremises = ApprovedPremisesGenerator.DEFAULT
 
-        mockMvc.get("/approved-premises/${approvedPremises.code.code}/staff") {
-            withToken()
-        }
+        mockMvc
+            .get("/approved-premises/${approvedPremises.code.code}/staff") { withToken() }
             .andExpect {
                 status { isOk() }
                 jsonPath("$.page.totalElements", equalTo(5))

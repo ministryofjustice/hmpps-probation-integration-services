@@ -1,70 +1,42 @@
 package uk.gov.justice.digital.hmpps.data
 
-import jakarta.annotation.PostConstruct
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
-import org.springframework.boot.context.event.ApplicationReadyEvent
-import org.springframework.context.ApplicationListener
 import org.springframework.stereotype.Component
-import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.data.generator.*
 import uk.gov.justice.digital.hmpps.data.generator.SentenceGenerator.DEFAULT_CUSTODY
 import uk.gov.justice.digital.hmpps.data.generator.SentenceGenerator.generateCustodialSentence
 import uk.gov.justice.digital.hmpps.data.generator.SentenceGenerator.generateDisposal
 import uk.gov.justice.digital.hmpps.data.generator.SentenceGenerator.generateEvent
 import uk.gov.justice.digital.hmpps.data.generator.SentenceGenerator.generateOrderManager
-import uk.gov.justice.digital.hmpps.data.repository.*
+import uk.gov.justice.digital.hmpps.data.loader.BaseDataLoader
+import uk.gov.justice.digital.hmpps.data.manager.DataManager
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.Custody
-import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.CustodyRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.KeyDate
-import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.KeyDateRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.contact.ContactTypeRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.reference.ReferenceData
-import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.reference.ReferenceDataRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.Person
-import uk.gov.justice.digital.hmpps.integrations.delius.person.PersonRepository
-import uk.gov.justice.digital.hmpps.user.AuditUserRepository
 import java.time.LocalDate
 
 @Component
-@ConditionalOnProperty("seed.database")
-class DataLoader(
-    private val auditUserRepository: AuditUserRepository,
-    private val datasetRepository: DatasetRepository,
-    private val referenceDataRepository: ReferenceDataRepository,
-    private val contactTypeRepository: ContactTypeRepository,
-    private val personRepository: PersonRepository,
-    private val eventRepository: EventRepository,
-    private val orderManagerRepository: OrderManagerRepository,
-    private val disposalRepository: DisposalRepository,
-    private val disposalTypeRepository: DisposalTypeRepository,
-    private val custodyRepository: CustodyRepository,
-    private val keyDateRepository: KeyDateRepository
-) : ApplicationListener<ApplicationReadyEvent> {
+class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
+    override fun systemUser() = UserGenerator.AUDIT_USER
 
-    @PostConstruct
-    fun saveAuditUser() {
-        auditUserRepository.save(UserGenerator.AUDIT_USER)
-    }
-
-    @Transactional
-    override fun onApplicationEvent(are: ApplicationReadyEvent) {
-        datasetRepository.saveAll(
+    override fun setupData() {
+        saveAll(
             listOf(
                 ReferenceDataGenerator.DS_CUSTODY_STATUS,
                 ReferenceDataGenerator.DS_KEY_DATE_TYPE
             )
         )
-        referenceDataRepository.save(ReferenceDataGenerator.DEFAULT_CUSTODY_STATUS)
-        val keyDateTypes = referenceDataRepository.saveAll(ReferenceDataGenerator.KEY_DATE_TYPES.values)
-        contactTypeRepository.save(ContactTypeGenerator.EDSS)
-        disposalTypeRepository.save(SentenceGenerator.DEFAULT_DISPOSAL_TYPE)
+        save(ReferenceDataGenerator.DEFAULT_CUSTODY_STATUS)
+        val keyDateTypes = saveAll(ReferenceDataGenerator.KEY_DATE_TYPES.values)
+        save(ContactTypeGenerator.EDSS)
+        save(SentenceGenerator.DEFAULT_DISPOSAL_TYPE)
 
-        personRepository.save(PersonGenerator.DEFAULT)
+        save(PersonGenerator.DEFAULT)
 
-        val event = eventRepository.save(generateEvent(PersonGenerator.DEFAULT))
-        orderManagerRepository.save(generateOrderManager(event))
-        val disposal = disposalRepository.save(generateDisposal(event))
-        DEFAULT_CUSTODY = custodyRepository.save(
+        val event = save(generateEvent(PersonGenerator.DEFAULT))
+        save(generateOrderManager(event))
+        val disposal = save(generateDisposal(event))
+        DEFAULT_CUSTODY = save(
             generateCustodialSentence(
                 ReferenceDataGenerator.DEFAULT_CUSTODY_STATUS,
                 disposal,
@@ -72,7 +44,7 @@ class DataLoader(
             )
         )
 
-        keyDateRepository.saveAll(
+        saveAll(
             listOf(
                 KeyDateGenerator.generate(
                     DEFAULT_CUSTODY,
@@ -106,18 +78,18 @@ class DataLoader(
         bookingRef: String,
         keyDateTypes: List<ReferenceData>
     ): Custody {
-        val person = personRepository.save(personRef)
-        val event = eventRepository.save(generateEvent(person, "1"))
-        orderManagerRepository.save(generateOrderManager(event))
-        val disposal = disposalRepository.save(generateDisposal(event))
-        val custody = custodyRepository.save(
+        val person = save(personRef)
+        val event = save(generateEvent(person, "1"))
+        save(generateOrderManager(event))
+        val disposal = save(generateDisposal(event))
+        val custody = save(
             generateCustodialSentence(
                 ReferenceDataGenerator.DEFAULT_CUSTODY_STATUS,
                 disposal,
                 bookingRef
             )
         )
-        keyDateRepository.saveAll(keyDateTypes.flatMap { referenceData ->
+        saveAll(keyDateTypes.flatMap { referenceData ->
             when (referenceData.code) {
                 "LED" -> listOf(
                     KeyDate(custody, referenceData, LocalDate.parse("2025-09-11")).also { it.softDeleted = true }

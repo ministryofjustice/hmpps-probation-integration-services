@@ -4,6 +4,7 @@ import jakarta.persistence.*
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.BaseEntity
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.reference.ReferenceData
+import uk.gov.justice.digital.hmpps.jpa.GeneratedId
 import java.time.LocalDate
 
 @Entity
@@ -27,9 +28,9 @@ class KeyDate(
     val date: LocalDate,
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "key_date_id_seq")
+    @GeneratedId(generator = "key_date_id_seq")
     @Column(name = "key_date_id")
-    val id: Long = 0,
+    val id: Long? = null,
 ) : BaseEntity() {
     fun changeDate(date: LocalDate): KeyDate? = if (this.date == date && !this.softDeleted) {
         null

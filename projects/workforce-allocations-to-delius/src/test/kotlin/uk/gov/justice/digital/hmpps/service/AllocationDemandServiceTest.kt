@@ -17,14 +17,7 @@ import org.mockito.kotlin.any
 import org.mockito.kotlin.eq
 import org.mockito.kotlin.whenever
 import uk.gov.justice.digital.hmpps.api.model.ManagementStatus.CURRENTLY_MANAGED
-import uk.gov.justice.digital.hmpps.data.generator.DisposalGenerator
-import uk.gov.justice.digital.hmpps.data.generator.LdapUserGenerator
-import uk.gov.justice.digital.hmpps.data.generator.OffenceGenerator
-import uk.gov.justice.digital.hmpps.data.generator.OrderManagerGenerator
-import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
-import uk.gov.justice.digital.hmpps.data.generator.PersonManagerGenerator
-import uk.gov.justice.digital.hmpps.data.generator.StaffGenerator
-import uk.gov.justice.digital.hmpps.data.generator.TeamGenerator
+import uk.gov.justice.digital.hmpps.data.generator.*
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.allocations.AllocationDemandRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.caseview.CaseViewRequirementRepository
@@ -126,7 +119,7 @@ class AllocationDemandServiceTest {
 
         assertThat(response.probationStatus.description, equalTo("Currently managed"))
         assertThat(response.communityPersonManager!!.code, equalTo(manager.staff.code))
-        assertThat(response.communityPersonManager!!.grade, equalTo("PSO"))
+        assertThat(response.communityPersonManager.grade, equalTo("PSO"))
         assertThat(response.teams.keys, equalTo(setOf(team.code)))
         with(response.teams[team.code]!!) {
             assertThat(this.map { it.code }, equalTo(listOf(staff.code)))

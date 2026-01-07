@@ -1,13 +1,13 @@
 package uk.gov.justice.digital.hmpps.entity
 
 import jakarta.persistence.*
-import jakarta.persistence.GenerationType.SEQUENCE
 import org.hibernate.type.YesNoConverter
 import org.springframework.data.annotation.CreatedBy
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedBy
 import org.springframework.data.annotation.LastModifiedDate
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
+import uk.gov.justice.digital.hmpps.jpa.GeneratedId
 import java.time.LocalDate
 import java.time.ZonedDateTime
 
@@ -70,7 +70,7 @@ class DetailedOffence(
 
     @Id
     @Column(name = "detailed_offence_id")
-    @GeneratedValue(strategy = SEQUENCE, generator = "detailed_offence_id_seq")
+    @GeneratedId(generator = "detailed_offence_id_seq")
     val id: Long? = null,
 
     @Version

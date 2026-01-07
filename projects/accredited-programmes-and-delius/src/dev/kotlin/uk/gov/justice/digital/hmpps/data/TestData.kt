@@ -25,6 +25,7 @@ import java.time.LocalDate
 import java.time.ZonedDateTime
 
 object TestData {
+    val AUDIT_USER = UserGenerator.generate("AccreditedProgrammesAndDelius")
     val DATASET = Dataset(id(), "OTHER")
     val GENDER = ReferenceData(id(), "M", "Male", DATASET)
     val ETHNICITY = ReferenceData(id(), "A9", "Asian or Asian British: Other", DATASET)
@@ -94,6 +95,8 @@ object TestData {
 
     val COMPONENT_TERMINATED_CONTACT_TYPE = ContactType(id(), ContactType.COMPONENT_TERMINATED, false)
     val COMPONENT_TRANSFER_REJECTED_CONTACT_TYPE = ContactType(id(), ContactType.COMPONENT_TRANSFER_REJECTED, false)
+    val PRE_GROUP_ONE_TO_ONE_MEETING_CONTACT_TYPE = ContactType(id(), ContactType.PRE_GROUP_ONE_TO_ONE_MEETING, false)
+    val ORDER_COMPONENT_COMMENCED_CONTACT_TYPE = ContactType(id(), ContactType.ORDER_COMPONENT_COMMENCED, false)
 
     val ATTENDED_COMPLIED = ContactOutcome(id(), "ATTC", "Attended and Complied")
     val FAILED_TO_COMPLY = ContactOutcome(id(), "FTC", "Failed to comply", attended = false, complied = false)

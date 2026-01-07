@@ -13,6 +13,8 @@ import software.amazon.awssdk.core.ResponseInputStream
 import software.amazon.awssdk.services.s3.S3Client
 import software.amazon.awssdk.services.s3.model.GetObjectRequest
 import software.amazon.awssdk.services.s3.model.GetObjectResponse
+import uk.gov.justice.digital.hmpps.data.generator.JudicialResultGenerator
+import uk.gov.justice.digital.hmpps.dto.OffenceAndPlea
 import uk.gov.justice.digital.hmpps.integrations.client.ManageOffencesClient
 import uk.gov.justice.digital.hmpps.integrations.client.Offence
 import uk.gov.justice.digital.hmpps.service.OffenceService
@@ -54,43 +56,10 @@ internal class OffenceServiceTest {
     fun `Main offence is set to the offence with the lowest priority`() {
         mockS3Client()
 
-        whenever(manageOffencesClient.getOffenceByCode("TN42001")).thenReturn(
-            Offence(
-                id = 0,
-                code = "TN42001",
-                description = "Offence 1",
-                startDate = LocalDate.now(),
-                homeOfficeStatsCode = "001/00"
-            )
-        )
-        whenever(manageOffencesClient.getOffenceByCode("ZZ00120")).thenReturn(
-            Offence(
-                id = 1,
-                code = "ZZ00120",
-                description = "Offence 2",
-                startDate = LocalDate.now(),
-                homeOfficeStatsCode = "001/01"
-            )
-        )
-
         val result = offenceService.findMainOffence(
             listOf(
-                HearingOffence(
-                    id = "0",
-                    offenceTitle = "Offence 1",
-                    offenceCode = "TN42001",
-                    wording = "Offence 1",
-                    offenceLegislation = "Offence 1",
-                    listingNumber = 0
-                ),
-                HearingOffence(
-                    id = "1",
-                    offenceTitle = "Offence 2",
-                    offenceCode = "ZZ00120",
-                    wording = "Offence 2",
-                    offenceLegislation = "Offence 2",
-                    listingNumber = 0
-                )
+                OffenceAndPlea("TN42001", "00100", null),
+                OffenceAndPlea("ZZ00120", "00101", null),
             )
         )
 
@@ -109,7 +78,7 @@ internal class OffenceServiceTest {
             )
         )
 
-        offenceService.findMainOffence(
+        offenceService.getRemandOffences(
             listOf(
                 HearingOffence(
                     id = "0",
@@ -117,9 +86,10 @@ internal class OffenceServiceTest {
                     offenceCode = "AA00000",
                     wording = "Unknown",
                     offenceLegislation = "Unknown",
-                    listingNumber = 0
+                    listingNumber = 0,
+                    judicialResults = listOf(JudicialResultGenerator.DEFAULT)
                 )
-            )
+            ), mapOf()
         )
 
         verify(telemetryService).trackEvent(
@@ -144,7 +114,7 @@ internal class OffenceServiceTest {
             )
         )
 
-        offenceService.findMainOffence(
+        offenceService.getRemandOffences(
             listOf(
                 HearingOffence(
                     id = "0",
@@ -152,9 +122,10 @@ internal class OffenceServiceTest {
                     offenceCode = "AA99999",
                     wording = "Unknown",
                     offenceLegislation = "Unknown",
-                    listingNumber = 0
+                    listingNumber = 0,
+                    judicialResults = listOf(JudicialResultGenerator.DEFAULT)
                 )
-            )
+            ), mapOf()
         )
 
         verify(telemetryService).trackEvent(

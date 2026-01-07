@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
+import uk.gov.justice.digital.hmpps.integrations.delius.allocations.entity.ReferenceData
 import uk.gov.justice.digital.hmpps.integrations.delius.event.requirement.RequirementManager
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.Provider
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.Staff
@@ -10,6 +11,7 @@ object RequirementManagerGenerator : ManagerGenerator {
     var DEFAULT = generate(startDateTime = ZonedDateTime.now().minusMonths(1))
     var NEW = generate(requirementId = RequirementGenerator.NEW.id)
     var HISTORIC = generate(requirementId = RequirementGenerator.HISTORIC.id)
+    var REALLOCATION = generate(requirementId = RequirementGenerator.REALLOCATION.id)
     fun generate(
         requirementId: Long = RequirementGenerator.DEFAULT.id,
         transferReasonId: Long = TransferReasonGenerator.COMPONENT.id,
@@ -22,6 +24,7 @@ object RequirementManagerGenerator : ManagerGenerator {
         lastModifiedDateTime: ZonedDateTime = ZonedDateTime.now(),
         createdUserId: Long = UserGenerator.AUDIT_USER.id,
         lastModifiedUserId: Long = UserGenerator.AUDIT_USER.id,
+        allocationReason: ReferenceData = ReferenceDataGenerator.REALLOCATION_RM_ALLOCATION,
         version: Long = 0
     ) = RequirementManager(
         requirementId,
@@ -36,6 +39,7 @@ object RequirementManagerGenerator : ManagerGenerator {
         lastModifiedDateTime,
         createdUserId,
         lastModifiedUserId,
+        allocationReason,
         version
     ) as RequirementManager
 }

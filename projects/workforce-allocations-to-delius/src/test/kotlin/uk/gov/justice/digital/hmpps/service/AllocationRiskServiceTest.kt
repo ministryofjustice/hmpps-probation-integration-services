@@ -16,8 +16,8 @@ import uk.gov.justice.digital.hmpps.data.generator.RegistrationGenerator
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.event.ogrs.OASYSAssessmentRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.event.ogrs.OGRSAssessmentRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.registration.RegistrationRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.PersonRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.registration.RegistrationRepository
 
 @ExtendWith(MockitoExtension::class)
 class AllocationRiskServiceTest {
@@ -77,7 +77,7 @@ class AllocationRiskServiceTest {
         assertThat(response.inactiveRegistrations.size, equalTo(0))
         assertThat(response.ogrs!!.score, equalTo(OasysAssessmentGenerator.DEFAULT.score))
         assertThat(
-            response.ogrs!!.lastUpdatedDate,
+            response.ogrs.lastUpdatedDate,
             equalTo(OasysAssessmentGenerator.DEFAULT.lastModifiedDateTime.toLocalDate())
         )
     }
@@ -102,7 +102,7 @@ class AllocationRiskServiceTest {
         assertThat(response.inactiveRegistrations.size, equalTo(1))
         assertThat(response.ogrs!!.score, equalTo(OgrsAssessmentGenerator.DEFAULT.score))
         assertThat(
-            response.ogrs!!.lastUpdatedDate,
+            response.ogrs.lastUpdatedDate,
             equalTo(OgrsAssessmentGenerator.DEFAULT.lastModifiedDateTime.toLocalDate())
         )
     }

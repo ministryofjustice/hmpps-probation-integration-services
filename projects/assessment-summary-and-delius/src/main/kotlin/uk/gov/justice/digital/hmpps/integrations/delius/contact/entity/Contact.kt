@@ -10,6 +10,7 @@ import org.springframework.data.jpa.repository.JpaRepository
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.AuditableEntity
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.Person
+import uk.gov.justice.digital.hmpps.jpa.GeneratedId
 import uk.gov.justice.digital.hmpps.service.ContactDetail
 import java.time.LocalDate
 
@@ -44,8 +45,8 @@ class Contact(
 
     @Id
     @Column(name = "contact_id")
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "contact_id_seq")
-    val id: Long = 0
+    @GeneratedId(generator = "contact_id_seq")
+    val id: Long? = null
 ) : AuditableEntity() {
 
     @Column(name = "contact_date")

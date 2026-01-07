@@ -143,7 +143,7 @@ class RescheduleAppointmentIntegrationTest : IntegrationTestBase() {
         }
             .andExpect { status { isOk() } }
 
-        val appointment = appointmentRepository.getAppointment(original.id)
+        val appointment = appointmentRepository.getAppointment(original.id!!)
         assertThat(appointment.lastUpdatedUserId).isEqualTo(PI_USER.id)
         assertThat(appointment.location?.code).isEqualTo(request.locationCode)
         assertThat(appointment.date).isEqualTo(request.date)
@@ -183,7 +183,7 @@ class RescheduleAppointmentIntegrationTest : IntegrationTestBase() {
         }
             .andExpect { status { isOk() } }
 
-        val appointment = appointmentRepository.getAppointment(original.id)
+        val appointment = appointmentRepository.getAppointment(original.id!!)
         assertThat(appointment.lastUpdatedUserId).isEqualTo(PI_USER.id)
         assertThat(appointment.location?.code).isEqualTo(request.locationCode)
         assertThat(appointment.team.code).isEqualTo(request.teamCode)
@@ -223,7 +223,7 @@ class RescheduleAppointmentIntegrationTest : IntegrationTestBase() {
         }
             .andExpect { status { isOk() } }
 
-        val appointment = appointmentRepository.getAppointment(original.id)
+        val appointment = appointmentRepository.getAppointment(original.id!!)
         assertThat(appointment.lastUpdatedUserId).isEqualTo(PI_USER.id)
         assertThat(appointment.sensitive).isEqualTo(request.sensitive)
         assertThat(appointment.date).isEqualTo(request.date)
@@ -260,7 +260,7 @@ class RescheduleAppointmentIntegrationTest : IntegrationTestBase() {
         }
             .andExpect { status { isOk() } }
 
-        val appointment = appointmentRepository.getAppointment(original.id)
+        val appointment = appointmentRepository.getAppointment(original.id!!)
         assertThat(appointment.lastUpdatedUserId).isEqualTo(PI_USER.id)
         assertThat(appointment.sensitive).isEqualTo(true)
         assertThat(appointment.date).isEqualTo(request.date)

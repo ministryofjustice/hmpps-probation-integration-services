@@ -1,36 +1,22 @@
 package uk.gov.justice.digital.hmpps.data
 
-import jakarta.annotation.PostConstruct
-import jakarta.persistence.EntityManager
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
-import org.springframework.boot.context.event.ApplicationReadyEvent
-import org.springframework.context.ApplicationListener
 import org.springframework.stereotype.Component
-import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.api.model.DocumentType
 import uk.gov.justice.digital.hmpps.data.generator.*
+import uk.gov.justice.digital.hmpps.data.loader.BaseDataLoader
+import uk.gov.justice.digital.hmpps.data.manager.DataManager
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
-import uk.gov.justice.digital.hmpps.user.AuditUserRepository
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.ZonedDateTime
 
 @Component
-@ConditionalOnProperty("seed.database")
-class DataLoader(
-    private val auditUserRepository: AuditUserRepository,
-    private val em: EntityManager
-) : ApplicationListener<ApplicationReadyEvent> {
+class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
+    override fun systemUser() = UserGenerator.AUDIT_USER
 
-    @PostConstruct
-    fun saveAuditUser() {
-        auditUserRepository.save(UserGenerator.AUDIT_USER)
-    }
-
-    @Transactional
-    override fun onApplicationEvent(are: ApplicationReadyEvent) {
-        em.saveAll(
+    override fun setupData() {
+        saveAll(
             ReferenceDataGenerator.PRISON,
             InstitutionGenerator.WSIHMP,
             OrganisationGenerator.DEFAULT,
@@ -118,14 +104,14 @@ class DataLoader(
             PersonGenerator.ALIAS
         )
 
-        em.saveAll(
+        saveAll(
             StaffGenerator.ALLOCATED,
             StaffGenerator.UNALLOCATED,
             StaffGenerator.OFFICER,
             StaffGenerator.STAFF_USER
         )
 
-        em.saveAll(
+        saveAll(
             PersonGenerator.generatePersonManager(PersonGenerator.NEW_TO_PROBATION),
             PersonGenerator.generatePersonManager(PersonGenerator.CURRENTLY_MANAGED),
         )
@@ -141,7 +127,7 @@ class DataLoader(
         val outcome = SentenceGenerator.OUTCOME
         val courtAppearance =
             SentenceGenerator.generateCourtAppearance(SentenceGenerator.NO_SENTENCE_EVENT, outcome, LocalDateTime.now())
-        em.saveAll(SentenceGenerator.NO_SENTENCE_EVENT, noSentenceManager, outcome, courtAppearance)
+        saveAll(SentenceGenerator.NO_SENTENCE_EVENT, noSentenceManager, outcome, courtAppearance)
 
         val newEvent = SentenceGenerator.generateEvent(PersonGenerator.NEW_TO_PROBATION, referralDate = LocalDate.now())
         val newSentence =
@@ -154,7 +140,7 @@ class DataLoader(
                 ZonedDateTime.of(LocalDate.now().minusDays(1), LocalTime.NOON, EuropeLondon),
                 ZonedDateTime.of(LocalDate.now().minusDays(3), LocalTime.NOON, EuropeLondon)
             )
-        em.saveAll(newEvent, newSentence, newManager)
+        saveAll(newEvent, newSentence, newManager)
 
         val currentEvent = SentenceGenerator.CURRENTLY_MANAGED
         val currentSentence = SentenceGenerator.CURRENT_SENTENCE
@@ -171,7 +157,7 @@ class DataLoader(
             SentenceGenerator.generateCourtReport(currentCourtAppearance, PersonGenerator.CURRENTLY_MANAGED.id)
         val reportManager = SentenceGenerator.generateCourtReportManager(currentCourtReport)
 
-        em.saveAll(
+        saveAll(
             currentEvent,
             SentenceGenerator.INACTIVE_EVENT,
             SentenceGenerator.INACTIVE_EVENT_1,
@@ -240,11 +226,11 @@ class DataLoader(
                 ZonedDateTime.of(LocalDate.now().minusDays(7), LocalTime.NOON, EuropeLondon),
                 ZonedDateTime.of(LocalDate.now().minusDays(10), LocalTime.NOON, EuropeLondon)
             )
-        em.saveAll(preEvent, preSentence, preManager)
+        saveAll(preEvent, preSentence, preManager)
 
-        em.merge(CourtCaseNoteGenerator.CASE_NOTE)
+        save(CourtCaseNoteGenerator.CASE_NOTE)
 
-        em.saveAll(
+        saveAll(
             DocumentEntityGenerator.generateDocument(
                 PersonGenerator.CURRENTLY_MANAGED.id,
                 currentEvent.id,
@@ -254,10 +240,10 @@ class DataLoader(
             )
         )
 
-        em.persist(PersonGenerator.PRISON_MANAGER)
-        em.persist(PersonGenerator.RESPONSIBLE_OFFICER)
+        save(PersonGenerator.PRISON_MANAGER)
+        save(PersonGenerator.RESPONSIBLE_OFFICER)
 
-        em.saveAll(
+        saveAll(
             ContactGenerator.ATTENDANCE_OUTCOME,
             ContactGenerator.ATTENDANCE_CONTACT_TYPE,
             ContactGenerator.ATTENDANCE_CONTACT_1,
@@ -265,7 +251,7 @@ class DataLoader(
         )
 
         //Registrations
-        em.saveAll(
+        saveAll(
             RegistrationsGenerator.REG_TYPE,
             RegistrationsGenerator.ACTIVE_REG,
             RegistrationsGenerator.INACTIVE_REG,
@@ -278,5 +264,3 @@ class DataLoader(
         )
     }
 }
-
-fun EntityManager.saveAll(vararg any: Any) = any.forEach { persist(it) }

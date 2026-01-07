@@ -42,7 +42,7 @@ class Custody(
 class KeyDate(
     @Id
     @Column(name = "key_date_id")
-    val id: Long?,
+    val id: Long = 0,
 
     @ManyToOne
     @JoinColumn(name = "custody_id")

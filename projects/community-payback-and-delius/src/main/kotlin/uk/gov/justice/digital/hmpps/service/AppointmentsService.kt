@@ -171,9 +171,7 @@ class AppointmentsService(
 
         when (request.alertActive) {
             true -> {
-                val personManager =
-                    personManagerRepository.getActiveManagerForPerson(appointment.person.id!!)
-
+                val personManager = personManagerRepository.getActiveManagerForPerson(appointment.person.id)
                 contactAlertRepository.save(
                     ContactAlert(
                         contactId = contact.id,
@@ -186,10 +184,7 @@ class AppointmentsService(
                 )
             }
 
-            false -> {
-                contactAlertRepository.deleteByContactId(contact.id)
-            }
-
+            false -> contactAlertRepository.deleteByContactId(contact.id)
             null -> {}
         }
 
@@ -249,7 +244,7 @@ class AppointmentsService(
         this.staff = staff
         hiVisWorn = request.hiVisWorn
         workedIntensively = request.workedIntensively
-        minutesCredited = Duration.between(startTime, endTime).toMinutes() - (request.penaltyMinutes ?: 0L)
+        minutesCredited = request.minutesCredited
         penaltyTime = request.penaltyMinutes
         this.workQuality = workQuality
         this.behaviour = behaviour

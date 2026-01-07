@@ -13,7 +13,6 @@ import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactRepositor
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactTypeRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.Contact
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactOutcome
-import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactType
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactType.Code.*
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.getByCode
 import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.EventRepository
@@ -56,7 +55,7 @@ class NsiService(
             } ?: find() ?: throw IllegalStateException("Unable to find or create NSI for ${rs.urn}")
 
         audit["offenderId"] = nsi.person.id
-        audit["nsiId"] = nsi.id
+        audit["nsiId"] = nsi.id!!
 
         if (nsi.notes != rs.notes) {
             nsi.notes = rs.notes
@@ -82,7 +81,7 @@ class NsiService(
         val outcome = nsiOutcomeRepository.nsiOutcome(outcomeCode)
 
         audit["offenderId"] = nsi.person.id
-        audit["nsiId"] = nsi.id
+        audit["nsiId"] = nsi.id!!
 
         if (nsi.status.id != status.id) {
             nsi.status = status
@@ -136,7 +135,7 @@ class NsiService(
         return nsi
     }
 
-    private fun Nsi.statusHistory() = NsiStatusHistory(id, status.id, statusDate, notes)
+    private fun Nsi.statusHistory() = NsiStatusHistory(id!!, status.id, statusDate, notes)
     private fun Nsi.statusChangeContact() = Contact(
         person,
         contactTypeRepository.getReferenceById(status.contactTypeId),
@@ -175,14 +174,9 @@ class NsiService(
 
     private fun createNotificationIfNotExists(nsiTermination: NsiTermination, nsi: Nsi) {
         nsiTermination.notificationDateTime?.let {
-            contactRepository.findNotificationContact(
-                nsi.id,
-                ContactType.Code.CRSNOTE.value,
-                it.toLocalDate()
-            ).firstOrNull { c -> c.notes?.contains("End of Service Report Submitted") == true } ?: run {
-                contactRepository.save(
-                    nsi.contact(ContactType.Code.CRSNOTE.value, it).addNotes(nsiTermination.notificationNotes)
-                )
+            contactRepository.findNotificationContact(nsi.id!!, CRSNOTE.value, it.toLocalDate())
+                .firstOrNull { c -> c.notes?.contains("End of Service Report Submitted") == true } ?: run {
+                contactRepository.save(nsi.contact(CRSNOTE.value, it).addNotes(nsiTermination.notificationNotes))
             }
         }
     }

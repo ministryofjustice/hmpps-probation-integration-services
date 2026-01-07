@@ -6,6 +6,7 @@ import org.hibernate.type.NumericBooleanConverter
 import org.hibernate.type.YesNoConverter
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.BaseEntity
+import uk.gov.justice.digital.hmpps.jpa.GeneratedId
 import java.time.ZonedDateTime
 
 @Entity
@@ -14,8 +15,8 @@ import java.time.ZonedDateTime
 class Contact(
     @Id
     @Column(name = "contact_id", updatable = false)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "contact_id_seq")
-    val id: Long = 0,
+    @GeneratedId(generator = "contact_id_seq")
+    val id: Long? = null,
 
     @Column(name = "offender_id", updatable = false)
     val personId: Long,

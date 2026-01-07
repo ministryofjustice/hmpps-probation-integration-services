@@ -15,6 +15,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactTy
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.AuditableEntity
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.AuditableNonPartitionedEntity
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.ReferenceData
+import uk.gov.justice.digital.hmpps.jpa.GeneratedId
 import java.time.LocalDate
 
 @Entity
@@ -83,8 +84,8 @@ class Registration(
 
     @Id
     @Column(name = "registration_id")
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "registration_id_seq")
-    val id: Long = 0
+    @GeneratedId(generator = "registration_id_seq")
+    val id: Long? = null
 ) : AuditableEntity()
 
 @Immutable
@@ -190,8 +191,8 @@ class RegistrationReview(
 
     @Id
     @Column(name = "registration_review_id")
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "registration_review_id_seq")
-    val id: Long = 0
+    @GeneratedId(generator = "registration_review_id_seq")
+    val id: Long? = null
 ) : AuditableEntity()
 
 @Entity
@@ -227,8 +228,8 @@ class RegistrationHistory(
 
     @Id
     @Column(name = "reg_category_level_history_id")
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "reg_cat_level_history_id_seq")
-    val id: Long = 0,
+    @GeneratedId(generator = "reg_cat_level_history_id_seq")
+    val id: Long? = null,
 ) : AuditableNonPartitionedEntity()
 
 @Entity
@@ -263,8 +264,8 @@ class DeRegistration(
 
     @Id
     @Column(name = "deregistration_id")
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "deregistration_id_seq")
-    val id: Long = 0
+    @GeneratedId(generator = "deregistration_id_seq")
+    val id: Long? = null
 ) : AuditableEntity()
 
 interface RegistrationRepository : JpaRepository<Registration, Long> {

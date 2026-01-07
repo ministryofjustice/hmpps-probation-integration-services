@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.integrations.delius.assessment.entity
 import jakarta.persistence.*
 import org.hibernate.type.NumericBooleanConverter
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.Person
+import uk.gov.justice.digital.hmpps.jpa.GeneratedId
 import java.io.Serializable
 
 @Entity
@@ -30,9 +31,9 @@ class SentencePlan(
     val version: Long = 0,
 
     @Id
-    @GeneratedValue(generator = "oasys_sentence_plan_id_seq")
+    @GeneratedId(generator = "oasys_sentence_plan_id_seq")
     @Column(name = "oasys_sentence_plan_id")
-    val id: Long = 0
+    val id: Long? = null
 ) {
     val partitionAreaId: Long = 0
 

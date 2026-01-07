@@ -132,8 +132,8 @@ class AllocationCompletedServiceTest {
 
         assertThat(response.type, equalTo(COMMUNITY))
         assertThat(response.staff!!.code, equalTo(staff.code))
-        assertThat(response.staff!!.grade, equalTo("PSO"))
-        assertThat(response.staff!!.email, equalTo(user.email))
+        assertThat(response.staff.grade, equalTo("PSO"))
+        assertThat(response.staff.email, equalTo(user.email))
         assertThat(response.event.number, equalTo(event.number))
         assertThat(response.event.manager, nullValue())
         assertThat(response.initialAppointment?.date, equalTo(initialAppointmentDate))

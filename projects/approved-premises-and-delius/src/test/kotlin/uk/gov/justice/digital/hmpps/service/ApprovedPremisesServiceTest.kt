@@ -16,6 +16,7 @@ import org.mockito.kotlin.whenever
 import org.springframework.boot.context.event.ApplicationStartedEvent
 import uk.gov.justice.digital.hmpps.audit.service.OptimisationTables
 import uk.gov.justice.digital.hmpps.data.generator.*
+import uk.gov.justice.digital.hmpps.data.generator.IdGenerator.id
 import uk.gov.justice.digital.hmpps.detail.DomainEventDetailService
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.*
@@ -601,13 +602,23 @@ internal class ApprovedPremisesServiceTest {
             ReferenceDataGenerator.RISK_UNKNOWN.id,
             null,
             EXT_REF_BOOKING_PREFIX + bookingId,
+            id(),
         )
         if (andResidence) {
             whenever(referralRepository.findReferralDetail(person.crn, EXT_REF_BOOKING_PREFIX + bookingId))
                 .thenReturn(object : ReferralAndResidence {
                     override val referral get() = ref
                     override val premises get() = ApprovedPremisesGenerator.DEFAULT
-                    override val residence get() = null
+                    override val residence
+                        get() = Residence(
+                            id = id(),
+                            personId = person.id,
+                            referralId = ref.id!!,
+                            approvedPremisesId = ref.approvedPremisesId!!,
+                            arrivalDate = ZonedDateTime.now(),
+                            expectedDepartureDate = LocalDate.now().plusDays(7),
+                            arrivalNotes = null
+                        )
                 })
         } else {
             whenever(

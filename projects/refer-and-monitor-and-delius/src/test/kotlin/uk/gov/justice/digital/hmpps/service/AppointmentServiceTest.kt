@@ -15,19 +15,14 @@ import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator
 import uk.gov.justice.digital.hmpps.data.generator.NsiGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ProviderGenerator
-import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactOutcomeRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactTypeRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.contact.EnforcementActionRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.contact.EnforcementRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.contact.*
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.Contact
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactType
 import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.EventRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.referral.NsiRepository
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import java.time.ZonedDateTime
-import java.util.Optional
-import java.util.UUID
+import java.util.*
 
 @ExtendWith(MockitoExtension::class)
 internal class AppointmentServiceTest {
@@ -116,7 +111,7 @@ internal class AppointmentServiceTest {
             )
         )
         whenever(contactRepository.findByPersonCrnAndExternalReference(crn, mergeAppointment.urn)).thenReturn(null)
-        whenever(contactRepository.findById(contact.id)).thenReturn(Optional.of(contact))
+        whenever(contactRepository.findById(contact.id!!)).thenReturn(Optional.of(contact))
 
         val id = assertDoesNotThrow { appointmentService.mergeAppointment(crn, mergeAppointment) }
         assertThat(id, equalTo(contact.id))

@@ -14,6 +14,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.Person
 import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.institution.entity.InstitutionId
 import uk.gov.justice.digital.hmpps.integrations.delius.recall.entity.Recall
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceData
+import uk.gov.justice.digital.hmpps.jpa.GeneratedId
 import java.time.ZonedDateTime
 
 @Entity
@@ -22,7 +23,7 @@ import java.time.ZonedDateTime
 class Release(
     @Id
     @SequenceGenerator(name = "release_id_generator", sequenceName = "release_id_seq", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "release_id_generator")
+    @GeneratedId(generator = "release_id_generator")
     @Column(name = "release_id", nullable = false)
     val id: Long = 0,
 

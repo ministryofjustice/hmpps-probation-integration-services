@@ -1,13 +1,6 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.referencedata
 
-import jakarta.persistence.AttributeConverter
-import jakarta.persistence.Column
-import jakarta.persistence.Convert
-import jakarta.persistence.Converter
-import jakarta.persistence.Embeddable
-import jakarta.persistence.Entity
-import jakarta.persistence.Id
-import jakarta.persistence.Table
+import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.type.YesNoConverter
 import java.io.Serializable

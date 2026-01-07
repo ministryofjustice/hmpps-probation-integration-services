@@ -5,20 +5,18 @@ import uk.gov.justice.digital.hmpps.data.generator.DocumentGenerator
 import uk.gov.justice.digital.hmpps.data.generator.DocumentGenerator.generate
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ProbationCaseGenerator
-import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referral.entity.EventRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.document.DocumentRepository
+import uk.gov.justice.digital.hmpps.data.manager.DataManager
 import uk.gov.justice.digital.hmpps.integrations.delius.person.PersonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.getByCrn
 import java.util.*
 
 @Component
 class DocumentDataLoader(
+    private val dataManager: DataManager,
     private val personRepository: PersonRepository,
-    private val documentRepository: DocumentRepository,
-    private val eventRepository: EventRepository
 ) {
     fun loadData() {
-        documentRepository.saveAll(
+        dataManager.saveAll(
             listOf(
                 DocumentGenerator.EVENT,
                 DocumentGenerator.PERSON,
@@ -34,7 +32,7 @@ class DocumentDataLoader(
 
         val person = personRepository.getByCrn(ProbationCaseGenerator.CASE_X320741.crn)
         val personEvent = PersonGenerator.generateEvent("1", person)
-            .apply(eventRepository::save)
+            .apply(dataManager::save)
 
         val personDocument = generate(
             tableName = "OFFENDER",
@@ -57,7 +55,7 @@ class DocumentDataLoader(
             primaryKeyId = person.id
         )
 
-        documentRepository.saveAll(
+        dataManager.saveAll(
             listOf(
                 personDocument,
                 cpsPack,

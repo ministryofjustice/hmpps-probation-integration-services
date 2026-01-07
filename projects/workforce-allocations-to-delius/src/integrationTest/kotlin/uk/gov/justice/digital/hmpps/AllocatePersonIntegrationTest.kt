@@ -14,6 +14,7 @@ import org.springframework.data.repository.findByIdOrNull
 import org.springframework.test.context.bean.override.mockito.MockitoBean
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonManagerGenerator
+import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ResponsibleOfficerGenerator
 import uk.gov.justice.digital.hmpps.integrations.delius.person.*
 import uk.gov.justice.digital.hmpps.integrations.workforceallocations.AllocationDetail
@@ -75,14 +76,14 @@ class AllocatePersonIntegrationTest @Autowired constructor(
         val secondPm = personManagerRepository.save(
             PersonManagerGenerator.generate(
                 personId = person.id,
-                startDateTime = firstPm.endDate!!
+                startDateTime = firstPm.endDate!!,
+                allocationReason = ReferenceDataGenerator.INITIAL_ORDER_ALLOCATION
             )
         )
 
         val firstRo = responsibleOfficerRepository.save(
-            responsibleOfficerRepository.findByIdOrNull(initialRo.id)?.apply {
-                endDate = ZonedDateTime.now().minusDays(1)
-            }!!
+            responsibleOfficerRepository.findByIdOrNull(initialRo.id!!)
+                ?.apply { endDate = ZonedDateTime.now().minusDays(1) }!!
         )
         val secondRo =
             responsibleOfficerRepository.save(
@@ -138,7 +139,7 @@ class AllocatePersonIntegrationTest @Autowired constructor(
         val oldPm = personManagerRepository.findById(existingPm.id).orElseThrow()
         assert(allocationDetail.createdDate.closeTo(oldPm.endDate))
 
-        val oldRo = responsibleOfficerRepository.findById(existingRo.id).orElseThrow()
+        val oldRo = responsibleOfficerRepository.findById(existingRo.id!!).orElseThrow()
         assert(allocationDetail.createdDate.closeTo(oldRo.endDate))
 
         val updatedPmCount = personManagerRepository.findAll().count { it.personId == person.id }

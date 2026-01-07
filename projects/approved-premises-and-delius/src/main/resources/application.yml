@@ -23,7 +23,7 @@ spring:
         client-secret: ${oauth2.client-secret}
     provider:
       hmpps-auth:
-        token-uri: http://localhost:${wiremock.port}/auth/oauth/token
+        token-uri: http://localhost:${dev.wiremock.port}/auth/oauth/token
   threads.virtual.enabled: true
   ldap:
     base: ou=Users,dc=moj,dc=com
@@ -37,7 +37,7 @@ springdoc.default-produces-media-type: application/json
 
 delius.db.username: ApprovedPremisesAndDelius # Should match value in [deploy/database/access.yml].
 
-integrations.alfresco.url: http://localhost:${wiremock.port}/alfresco
+integrations.alfresco.url: http://localhost:${dev.wiremock.port}/alfresco
 
 management:
   endpoints.web:
@@ -58,12 +58,13 @@ spring:
     hibernate.ddl-auto: create-drop
   ldap.embedded.base-dn: ${spring.ldap.base}
 
-seed.database: true
-wiremock.enabled: true
+dev:
+  dataloader.enabled: true
+  wiremock.enabled: true
 
 messaging.producer.topic: domain-events
 messaging.consumer.queue: message-queue
-messaging.consumer.detail.urls: http://localhost:${wiremock.port}
+messaging.consumer.detail.urls: http://localhost:${dev.wiremock.port}
 
 oauth2:
   client-id: $SERVICE_NAME
@@ -72,7 +73,6 @@ oauth2:
 logging.level:
   uk.gov.justice.digital.hmpps: DEBUG
   org.hibernate.tool.schema: ERROR
-  org.apache.activemq: WARN
 
 ---
 spring.config.activate.on-profile: integration-test
@@ -92,7 +92,7 @@ spring:
     username: delius_pool
     password: NDelius1
   jpa.hibernate.ddl-auto: validate
-seed.database: false
+dev.dataloader.enabled: false
 delius.db.username: NationalUser
 
 ---
