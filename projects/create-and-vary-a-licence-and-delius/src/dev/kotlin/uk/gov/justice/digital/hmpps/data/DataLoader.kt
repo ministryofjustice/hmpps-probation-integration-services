@@ -17,6 +17,7 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
         save(ProviderGenerator.DEFAULT_BOROUGH)
         save(ProviderGenerator.DEFAULT_DISTRICT)
 
+
         createOfficeLocationsAndDistricts()
 
         save(ProviderGenerator.DEFAULT_TEAM)
@@ -32,6 +33,7 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
             StaffGenerator.DEFAULT.user,
             StaffGenerator.DEFAULT.id
         )
+
         save(StaffGenerator.DEFAULT)
         save(StaffGenerator.DEFAULT_STAFF_USER)
 
@@ -39,6 +41,8 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
         save(PersonGenerator.PERSON_ENDED_TEAM_LOCATION)
         save(PersonGenerator.DEFAULT_CM)
         save(PersonGenerator.CM_ENDED_TEAM_LOCATION)
+
+        createLimitedAccessData()
 
         val person = save(PersonGenerator.generatePerson("N123456"))
         save(PersonGenerator.generateManager(person))
@@ -83,6 +87,16 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
             ProviderGenerator.LOCATION_ENDED,
             ProviderGenerator.LOCATION_NULL
         )
+    }
+
+    private fun createLimitedAccessData() {
+        save(LimitedAccessGenerator.LAO_RESTRICTED_PERSON)
+        save(LimitedAccessGenerator.LAO_EXCLUDED_PERSON)
+        save(LimitedAccessGenerator.LAO_EXCLUSION)
+        save(LimitedAccessGenerator.LAO_EXCLUDED_USER)
+        save(LimitedAccessGenerator.LAO_RESTRICTION)
+        save(LimitedAccessGenerator.LAO_RESTRICTED_USER)
+        save(LimitedAccessGenerator.LAO_DEFAULT_USER)
     }
 
     private fun createCaseloadData() {
