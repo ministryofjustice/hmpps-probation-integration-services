@@ -200,7 +200,8 @@ fun Contact.toActivity(noteId: Int? = null) = Activity(
     eventId = event?.id,
     component = requirement?.asComponent() ?: licenceCondition?.asComponent(),
     nsiId = nsiId,
-    esupervisionId = eSupervisionId()
+    esupervisionId = eSupervisionId(),
+    externalReference = externalReference
 )
 
 fun ContactDocument.toDocument() =
