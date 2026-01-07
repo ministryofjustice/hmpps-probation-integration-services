@@ -14,6 +14,10 @@ object StaffGenerator {
     val DEFAULT_PDUSTAFF_USER = generateStaffUser("bob-smith", PDUHEAD)
     var DEFAULT = generateStaff("N01BDT1", "John", "Smith", teams = listOf(ProviderGenerator.DEFAULT_TEAM))
     val DEFAULT_STAFF_USER = generateStaffUser("john-smith", DEFAULT)
+    var DEFAULT_EXCLUDED = generateStaff("N01BDT1", "Mr", "Excluded", teams = listOf(ProviderGenerator.DEFAULT_TEAM))
+    val DEFAULT_EXCLUDED_STAFF_USER = generateStaffUser("mr-excluded", DEFAULT_EXCLUDED)
+    var DEFAULT_RESTRICTED = generateStaff("N01BDT1", "Mr", "Restricted", teams = listOf(ProviderGenerator.DEFAULT_TEAM))
+    val DEFAULT_RESTRICTED_STAFF_USER = generateStaffUser("mr-restricted", DEFAULT_RESTRICTED)
 
     fun generateStaff(
         code: String,
