@@ -278,6 +278,9 @@ components:
         penaltyMinutes:
           type: integer
           format: int64
+        minutesCredited:
+          type: integer
+          format: int64
         workQuality:
           type: string
           enum:
