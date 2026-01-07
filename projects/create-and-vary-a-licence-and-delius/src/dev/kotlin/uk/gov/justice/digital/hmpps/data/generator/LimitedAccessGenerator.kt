@@ -1,23 +1,14 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
-import uk.gov.justice.digital.hmpps.data.generator.StaffGenerator.DEFAULT_EXCLUDED_STAFF_USER
-import uk.gov.justice.digital.hmpps.data.generator.StaffGenerator.DEFAULT_RESTRICTED_STAFF_USER
-import uk.gov.justice.digital.hmpps.data.generator.StaffGenerator.DEFAULT_STAFF_USER
 import uk.gov.justice.digital.hmpps.entity.Exclusion
 import uk.gov.justice.digital.hmpps.entity.LimitedAccessPerson
 import uk.gov.justice.digital.hmpps.entity.LimitedAccessUser
 import uk.gov.justice.digital.hmpps.entity.Restriction
-import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.StaffUser
 
 object LimitedAccessGenerator {
-    val LAO_DEFAULT_USER = generateLAOUser(DEFAULT_STAFF_USER)
-    val LAO_EXCLUDED_USER = generateLAOUser(DEFAULT_EXCLUDED_STAFF_USER)
-    val LAO_RESTRICTED_USER = generateLAOUser(DEFAULT_RESTRICTED_STAFF_USER)
-
-    fun generateLAOUser(user: StaffUser) = LimitedAccessUser(
-        username = user.username,
-        id = user.id
-    )
+    val LAO_DEFAULT_USER = LimitedAccessUser("mr-default", IdGenerator.getAndIncrement())
+    val LAO_EXCLUDED_USER = LimitedAccessUser("mr-excluded", IdGenerator.getAndIncrement())
+    val LAO_RESTRICTED_USER = LimitedAccessUser("mr-restricted", IdGenerator.getAndIncrement())
 
     val LAO_EXCLUDED_PERSON = LimitedAccessPerson(
         crn = "E123456",

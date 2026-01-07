@@ -16,13 +16,7 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
         save(StaffGenerator.DEFAULT_PDUSTAFF_USER)
         save(ProviderGenerator.DEFAULT_BOROUGH)
         save(ProviderGenerator.DEFAULT_DISTRICT)
-        save(LimitedAccessGenerator.LAO_DEFAULT_USER)
-        save(LimitedAccessGenerator.LAO_EXCLUDED_USER)
-        save(LimitedAccessGenerator.LAO_RESTRICTED_USER)
-        save(LimitedAccessGenerator.LAO_EXCLUDED_PERSON)
-        save(LimitedAccessGenerator.LAO_RESTRICTED_PERSON)
-        save(LimitedAccessGenerator.LAO_EXCLUSION)
-        save(LimitedAccessGenerator.LAO_RESTRICTION)
+
 
         createOfficeLocationsAndDistricts()
 
@@ -39,37 +33,16 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
             StaffGenerator.DEFAULT.user,
             StaffGenerator.DEFAULT.id
         )
-        StaffGenerator.DEFAULT_EXCLUDED = StaffGenerator.generateStaff(
-            StaffGenerator.DEFAULT.code,
-            StaffGenerator.DEFAULT.forename,
-            StaffGenerator.DEFAULT.surname,
-            listOf(ProviderGenerator.DEFAULT_TEAM),
-            ProviderGenerator.DEFAULT_PROVIDER,
-            StaffGenerator.DEFAULT.middleName,
-            StaffGenerator.DEFAULT.user,
-            StaffGenerator.DEFAULT.id
-        )
-        StaffGenerator.DEFAULT_RESTRICTED = StaffGenerator.generateStaff(
-            StaffGenerator.DEFAULT.code,
-            StaffGenerator.DEFAULT.forename,
-            StaffGenerator.DEFAULT.surname,
-            listOf(ProviderGenerator.DEFAULT_TEAM),
-            ProviderGenerator.DEFAULT_PROVIDER,
-            StaffGenerator.DEFAULT.middleName,
-            StaffGenerator.DEFAULT.user,
-            StaffGenerator.DEFAULT.id
-        )
+
         save(StaffGenerator.DEFAULT)
         save(StaffGenerator.DEFAULT_STAFF_USER)
-        save(StaffGenerator.DEFAULT_EXCLUDED)
-        save(StaffGenerator.DEFAULT_RESTRICTED)
-        save(StaffGenerator.DEFAULT_EXCLUDED_STAFF_USER)
-        save(StaffGenerator.DEFAULT_RESTRICTED_STAFF_USER)
 
         save(PersonGenerator.DEFAULT_PERSON)
         save(PersonGenerator.PERSON_ENDED_TEAM_LOCATION)
         save(PersonGenerator.DEFAULT_CM)
         save(PersonGenerator.CM_ENDED_TEAM_LOCATION)
+
+        createLimitedAccessData()
 
         val person = save(PersonGenerator.generatePerson("N123456"))
         save(PersonGenerator.generateManager(person))
@@ -114,6 +87,16 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
             ProviderGenerator.LOCATION_ENDED,
             ProviderGenerator.LOCATION_NULL
         )
+    }
+
+    private fun createLimitedAccessData() {
+        save(LimitedAccessGenerator.LAO_RESTRICTED_PERSON)
+        save(LimitedAccessGenerator.LAO_EXCLUDED_PERSON)
+        save(LimitedAccessGenerator.LAO_EXCLUSION)
+        save(LimitedAccessGenerator.LAO_EXCLUDED_USER)
+        save(LimitedAccessGenerator.LAO_RESTRICTION)
+        save(LimitedAccessGenerator.LAO_RESTRICTED_USER)
+        save(LimitedAccessGenerator.LAO_DEFAULT_USER)
     }
 
     private fun createCaseloadData() {
