@@ -28,6 +28,23 @@ The supported data events are:
 See [OffenderDeltaService.kt](https://github.com/ministryofjustice/hmpps-probation-integration-services/blob/main/projects/offender-events-and-delius/src/main/kotlin/uk/gov/justice/digital/hmpps/integrations/delius/offender/OffenderDeltaService.kt)
 for the up-to-date mapping.
 
+### MAPPA (ViSOR) contact domain events
+
+In addition to publishing data events, CONTACT changes may also result in MAPPA-related **domain events** being written
+to the `domain_event` table and published to the HMPPS domain events topic.
+
+When a CONTACT change is processed:
+
+- If the contact has the **ViSOR flag enabled**, a MAPPA domain event is generated.
+- `CONTACT_DELETED` events produce action `DELETE` `probation-case.mappa-information.deleted` domain events.
+- `CONTACT_CHANGED` events with actions `INSERT, UPDATE, or UPSERT` produce `probation-case.mappa-information.updated`
+  domain events.
+- As an interim approach, if a CONTACT has been hard-deleted and the ViSOR flag cannot be determined, no MAPPA domain
+  event is generated.
+- If no MAPPA registration exists for the offender, the MAPPA category defaults to `0`.
+
+This behaviour is implemented in `OffenderDeltaService` alongside the existing data event handling.
+
 ## Data dependencies
 
 Delius for retrieving batches of changes waiting to be processed.
