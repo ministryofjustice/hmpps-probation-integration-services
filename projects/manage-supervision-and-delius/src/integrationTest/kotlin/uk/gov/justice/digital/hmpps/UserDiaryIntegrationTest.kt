@@ -23,6 +23,7 @@ class UserDiaryIntegrationTest : IntegrationTestBase() {
     fun `unauthorized status returned`(uri: String) {
         mockMvc.get("/user/peter-parker//${uri}/schedule/")
             .andExpect { status { isUnauthorized() } }
+    }
 
         @Test
         fun `get user appointments`() {
@@ -109,6 +110,23 @@ class UserDiaryIntegrationTest : IntegrationTestBase() {
         }
 
         @Test
+        fun `sort works for sentence description`() {
+            val user = USER
+            val response =
+                mockMvc.get("/user/${user.username}/schedule/upcoming?sortBy=sentence") { withToken() }
+                    .andExpect { status { isOk() } }
+                    .andReturn().response.contentAsJson<UserDiary>()
+        }
+
+        @Test
+        fun `sort works for appointment description`() {
+            val user = USER
+            val response =
+                mockMvc.get("/user/${user.username}/schedule/no-outcome?sortBy=appointment") { withToken() }
+                    .andExpect { status { isOk() } }
+        }
+
+        @Test
         fun `get past appointments with no outcome default sort ascending order`() {
             val user = USER
 
@@ -124,4 +142,3 @@ class UserDiaryIntegrationTest : IntegrationTestBase() {
             assertEquals("Bracknell Office", response.appointments[0].location)
         }
     }
-}
