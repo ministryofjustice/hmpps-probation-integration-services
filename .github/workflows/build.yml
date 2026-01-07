@@ -31,14 +31,13 @@ on:
 env:
   push: ${{ !(github.event_name == 'push' && github.ref_name != 'main') && inputs.push }}
 
-permissions:
-  contents: read
-  id-token: write
-  packages: write
-
 jobs:
   build-gradle:
     name: Gradle build
+    permissions:
+      contents: read
+      id-token: write
+      packages: write
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -118,6 +117,10 @@ jobs:
 
   build-docker:
     name: Docker build
+    permissions:
+      contents: read
+      id-token: write
+      packages: write
     runs-on: ubuntu-latest
     outputs:
       changes: ${{ steps.build.outputs.changes }}

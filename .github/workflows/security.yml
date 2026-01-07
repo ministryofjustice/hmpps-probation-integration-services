@@ -10,20 +10,21 @@ on:
     paths:
       - '**/.trivyignore'
 
-permissions:
-  contents: read
-  checks: write
-  id-token: write
-  issues: write
-  security-events: write
-
 jobs:
   get-projects:
+    permissions:
+      contents: read
     uses: ./.github/workflows/get-projects.yml
     with:
       projects: All
 
   trivy-scan:
+    permissions:
+      contents: read
+      checks: write
+      id-token: write
+      issues: write
+      security-events: write
     runs-on: ubuntu-latest
     needs:
       - get-projects
@@ -86,6 +87,12 @@ jobs:
           path: results.json
 
   trivy-merge:
+    permissions:
+      contents: read
+      checks: write
+      id-token: write
+      issues: write
+      security-events: write
     runs-on: ubuntu-latest
     needs:
       - trivy-scan
@@ -143,6 +150,12 @@ jobs:
         run: if [ "$(jq '. | with_entries(select(.value != null)) | length' < results.json)" != 0 ]; then exit 1; fi
 
   veracode-scan:
+    permissions:
+      contents: read
+      checks: write
+      id-token: write
+      issues: write
+      security-events: write
     runs-on: ubuntu-latest
     needs:
       - get-projects
@@ -189,3 +202,5 @@ jobs:
           filepath: package.zip
           vid: ${{ env.VERACODE_API_ID }}
           vkey: ${{ env.VERACODE_API_KEY }}
+
+

@@ -16,6 +16,19 @@
     {
       "request": {
         "method": "GET",
+        "url": "/allocation/person/reallocate-new-person-manager"
+      },
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "bodyFileName": "reallocation-person-allocation-body.json"
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
         "url": "/allocation/person/allocate-historic-person-manager"
       },
       "response": {
@@ -42,6 +55,19 @@
     {
       "request": {
         "method": "GET",
+        "url": "/allocation/event/reallocate-new-order-manager"
+      },
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "bodyFileName": "reallocation-event-allocation-body.json"
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
         "url": "/allocation/event/allocate-historic-order-manager"
       },
       "response": {
@@ -63,6 +89,19 @@
         },
         "status": 200,
         "bodyFileName": "new-requirement-allocation-body.json"
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "url": "/allocation/requirements/reallocate-new-requirement-manager"
+      },
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "bodyFileName": "reallocation-requirement-allocation-body.json"
       }
     },
     {

@@ -32,6 +32,7 @@ class PersonAllocationDataLoader(private val dataManager: DataManager) {
         OrderManagerGenerator.DEFAULT = createEventWithManager(EventGenerator.DEFAULT)
         OrderManagerGenerator.NEW = createEventWithManager(EventGenerator.NEW)
         OrderManagerGenerator.HISTORIC = createEventWithManager(EventGenerator.HISTORIC)
+        OrderManagerGenerator.REALLOCATION = createEventWithManager(EventGenerator.REALLOCATION)
         OrderManagerGenerator.DELETED_EVENT = createEventWithManager(EventGenerator.DELETED)
         OrderManagerGenerator.INACTIVE_EVENT =
             createEventWithManager(EventGenerator.INACTIVE, StaffGenerator.STAFF_FOR_INACTIVE_EVENT)
@@ -41,6 +42,7 @@ class PersonAllocationDataLoader(private val dataManager: DataManager) {
         RequirementManagerGenerator.DEFAULT = createRequirementWithManager(RequirementGenerator.DEFAULT)
         RequirementManagerGenerator.NEW = createRequirementWithManager(RequirementGenerator.NEW)
         RequirementManagerGenerator.HISTORIC = createRequirementWithManager(RequirementGenerator.HISTORIC)
+        RequirementManagerGenerator.REALLOCATION = createRequirementWithManager(RequirementGenerator.REALLOCATION)
 
         dataManager.save(CustodyGenerator.DEFAULT)
         dataManager.save(KeyDateGenerator.DEFAULT)
@@ -60,7 +62,8 @@ class PersonAllocationDataLoader(private val dataManager: DataManager) {
         val pm = dataManager.save(
             PersonManagerGenerator.generate(
                 personId = person.id,
-                startDateTime = ManagerGenerator.START_DATE_TIME
+                startDateTime = ManagerGenerator.START_DATE_TIME,
+                allocationReason = ReferenceDataGenerator.REALLOCATION_ORDER_ALLOCATION
             )
         )
         val ro = dataManager.save(
