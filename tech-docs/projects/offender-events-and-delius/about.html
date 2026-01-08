@@ -98,6 +98,13 @@
     <a href="#offender-events-and-delius"><span>Offender Events and Delius</span></a>
     <ul>
       <li>
+        <ul>
+          <li>
+            <a href="#mappa-visor-contact-domain-events"><span>MAPPA (ViSOR) contact domain events</span></a>
+          </li>
+        </ul>
+      </li>
+      <li>
         <a href="#data-dependencies"><span>Data dependencies</span></a>
         <ul>
           <li>
@@ -188,6 +195,21 @@ polling the OFFENDER_DELTA table, which is populated by database triggers on the
         </table>
       </div><p>See <a href="https://github.com/ministryofjustice/hmpps-probation-integration-services/blob/main/projects/offender-events-and-delius/src/main/kotlin/uk/gov/justice/digital/hmpps/integrations/delius/offender/OffenderDeltaService.kt">OffenderDeltaService.kt</a>
 for the up-to-date mapping.</p>
+<h3 id="mappa-visor-contact-domain-events">MAPPA (ViSOR) contact domain events</h3>
+<p>In addition to publishing data events, CONTACT changes may also result in MAPPA-related <strong>domain events</strong> being written
+to the <code>domain_event</code> table and published to the HMPPS domain events topic.</p>
+<p>When a CONTACT change is processed:</p>
+
+<ul>
+<li>If the contact has the <strong>ViSOR flag enabled</strong>, a MAPPA domain event is generated.</li>
+<li><code>CONTACT_DELETED</code> events produce action <code>DELETE</code> <code>probation-case.mappa-information.deleted</code> domain events.</li>
+<li><code>CONTACT_CHANGED</code> events with actions <code>INSERT, UPDATE, or UPSERT</code> produce <code>probation-case.mappa-information.updated</code>
+domain events.</li>
+<li>As an interim approach, if a CONTACT has been hard-deleted and the ViSOR flag cannot be determined, no MAPPA domain
+event is generated.</li>
+<li>If no MAPPA registration exists for the offender, the MAPPA category defaults to <code>0</code>.</li>
+</ul>
+<p>This behaviour is implemented in <code>OffenderDeltaService</code> alongside the existing data event handling.</p>
 <h2 id="data-dependencies">Data dependencies</h2>
 <p>Delius for retrieving batches of changes waiting to be processed.</p>
 <h3 id="context-map-domain-event-data">Context map - Domain Event Data</h3>

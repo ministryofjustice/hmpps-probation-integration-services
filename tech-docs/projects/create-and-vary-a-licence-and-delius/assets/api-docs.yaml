@@ -143,6 +143,29 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/Manager"
+  /users/{username}/access/{crn}:
+    get:
+      tags:
+      - user-resource
+      operationId: checkForAccess
+      parameters:
+      - name: username
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: crn
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CaseAccess"
   /team/{teamCode}/caseload/managed-offenders:
     get:
       tags:
@@ -606,6 +629,23 @@ components:
       - provider
       - team
       - unallocated
+    CaseAccess:
+      type: object
+      properties:
+        crn:
+          type: string
+        userExcluded:
+          type: boolean
+        userRestricted:
+          type: boolean
+        exclusionMessage:
+          type: string
+        restrictionMessage:
+          type: string
+      required:
+      - crn
+      - userExcluded
+      - userRestricted
     PDUHead:
       type: object
       properties:
