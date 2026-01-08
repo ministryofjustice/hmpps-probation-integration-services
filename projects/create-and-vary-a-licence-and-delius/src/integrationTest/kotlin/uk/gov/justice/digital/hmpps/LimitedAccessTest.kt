@@ -1,6 +1,5 @@
 package uk.gov.justice.digital.hmpps
 
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.jupiter.api.Test
@@ -14,7 +13,6 @@ import org.springframework.test.web.servlet.post
 import uk.gov.justice.digital.hmpps.data.generator.LimitedAccessGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.service.CaseAccess
-import uk.gov.justice.digital.hmpps.service.UserAccess
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.json
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
