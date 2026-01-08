@@ -79,7 +79,6 @@ class UserController(
         }
     }
 
-
     @GetMapping("/providers")
     fun getUserProviders(
         @PathVariable username: String,
