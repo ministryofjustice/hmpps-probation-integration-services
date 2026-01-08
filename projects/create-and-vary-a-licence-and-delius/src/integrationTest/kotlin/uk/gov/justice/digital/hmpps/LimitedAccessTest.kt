@@ -81,9 +81,11 @@ internal class LimitedAccessTest @Autowired constructor(
     fun `should return list of exclusions and restrictions for user given list of CRNS`() {
         val url =
             "/users/${LimitedAccessGenerator.LAO_DEFAULT_USER.username}/access"
-        val requestBody = listOf(LimitedAccessGenerator.LAO_RESTRICTION.person.crn,
+        val requestBody = listOf(
+            LimitedAccessGenerator.LAO_RESTRICTION.person.crn,
             LimitedAccessGenerator.LAO_EXCLUSION.person.crn,
-            PersonGenerator.DEFAULT_PERSON.crn)
+            PersonGenerator.DEFAULT_PERSON.crn
+        )
 
         val res = mockMvc.post(url) {
             withToken()
@@ -91,7 +93,8 @@ internal class LimitedAccessTest @Autowired constructor(
         }
             .andExpect { status { isOk() } }
             .andReturn().response.contentAsString
-        val expected = """{"access":[{"crn":"R123456","userExcluded":false,"userRestricted":true,"restrictionMessage":"You do not have access to this person."},{"crn":"E123456","userExcluded":false,"userRestricted":false},{"crn":"T123456","userExcluded":false,"userRestricted":false}]}"""
+        val expected =
+            """{"access":[{"crn":"R123456","userExcluded":false,"userRestricted":true,"restrictionMessage":"You do not have access to this person."},{"crn":"E123456","userExcluded":false,"userRestricted":false},{"crn":"T123456","userExcluded":false,"userRestricted":false}]}"""
         assertThat(res, equalTo(expected))
     }
 }
