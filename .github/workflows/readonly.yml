@@ -77,7 +77,6 @@ jobs:
             | grep -v domain-events-and-delius \
             | grep -v offender-events-and-delius \
             | grep -v opensearch-proxy \
-            | grep -v manage-supervision-and-delius \
             | jq --raw-input . | jq --slurp --compact-output .
           )
           echo "projects=$json" | tee -a "$GITHUB_OUTPUT"
