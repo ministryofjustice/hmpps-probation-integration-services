@@ -18,6 +18,17 @@ class UserController(
     private val userLocationService: UserLocationService,
     private val userService: UserService
 ) {
+    private val sentenceSortUpcoming = "nvl(rdt.description, latest_sentence_description)"
+    private val sentenceSortNoOutcomes = """case when d.disposal_id is not null
+                                        then
+                                            rdt.description
+                                        else
+                                            (select rdt.description
+                                              from disposal d
+                                              join r_disposal_type rdt on rdt.disposal_type_id = d.disposal_type_id
+                                              where d.offender_id = o.offender_id
+                                              order by e.created_datetime desc fetch first 1 row only)
+                                        end"""
 
     @GetMapping("/locations")
     @Operation(summary = "Display user locations")
@@ -33,7 +44,7 @@ class UserController(
         @RequestParam(required = false, defaultValue = "true") ascending: Boolean
     ) = userService.getUpcomingAppointments(
         username,
-        PageRequest.of(page, size, sortUpcomingAppointments(sortBy, ascending, true))
+        PageRequest.of(page, size, sort(sortBy, ascending, true, sentenceSortUpcoming))
     )
 
     @GetMapping("/schedule/no-outcome")
@@ -46,7 +57,7 @@ class UserController(
         @RequestParam(required = false, defaultValue = "true") ascending: Boolean
     ) = userService.getAppointmentsWithoutOutcomes(
         username,
-        PageRequest.of(page, size, sortAppointmentsWithoutOutcomes(sortBy, ascending, false))
+        PageRequest.of(page, size, sort(sortBy, ascending, false, sentenceSortNoOutcomes))
     )
 
     @GetMapping("/appointments")
@@ -55,7 +66,7 @@ class UserController(
         @PathVariable username: String
     ) = userService.getAppointmentsForUser(username)
 
-    private fun sortUpcomingAppointments(sortString: String, ascending: Boolean, offenderBased: Boolean): Sort {
+    private fun sort(sortString: String, ascending: Boolean, offenderBased: Boolean, sentenceSort: String): Sort {
         val direction = if (ascending) Sort.Direction.ASC else Sort.Direction.DESC
         val qualifier = if (offenderBased) "o." else ""
         return when (sortString) {
@@ -63,35 +74,11 @@ class UserController(
             "name" -> Sort.by(direction, "${qualifier}surname")
             "dob" -> Sort.by(direction, "${qualifier}date_of_birth_date")
             "appointment" -> Sort.by(direction, "rct.description")
-            "sentence" -> JpaSort.unsafe(direction, "nvl(rdt.description, latest_sentence_description)")
+            "sentence" -> JpaSort.unsafe(direction, sentenceSort)
             else -> Sort.by(direction, "contact_date", "contact_start_time")
         }
     }
 
-    private fun sortAppointmentsWithoutOutcomes(sortString: String, ascending: Boolean, offenderBased: Boolean): Sort {
-        val direction = if (ascending) Sort.Direction.ASC else Sort.Direction.DESC
-        val qualifier = if (offenderBased) "o." else ""
-        return when (sortString) {
-            "date" -> Sort.by(direction, "contact_date", "contact_start_time")
-            "name" -> Sort.by(direction, "${qualifier}surname")
-            "dob" -> Sort.by(direction, "${qualifier}date_of_birth_date")
-            "appointment" -> Sort.by(direction, "rct.description")
-            "sentence" -> JpaSort.unsafe(
-                direction, "case when d.disposal_id is not null \n" +
-                    "                    then \n" +
-                    "                        rdt.description\n" +
-                    "                    else\n" +
-                    "                        (select rdt.description\n" +
-                    "                          from disposal d\n" +
-                    "                          join r_disposal_type rdt on rdt.disposal_type_id = d.disposal_type_id\n" +
-                    "                          where d.offender_id = o.offender_id\n" +
-                    "                          order by e.created_datetime desc fetch first 1 row only)\n" +
-                    "                    end"
-            )
-
-            else -> Sort.by(direction, "contact_date", "contact_start_time")
-        }
-    }
 
     @GetMapping("/providers")
     fun getUserProviders(
