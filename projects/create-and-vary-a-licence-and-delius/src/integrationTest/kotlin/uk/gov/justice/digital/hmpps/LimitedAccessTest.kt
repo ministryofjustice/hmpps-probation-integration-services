@@ -83,9 +83,11 @@ internal class LimitedAccessTest @Autowired constructor(
     fun `should return list of exclusions and restrictions for user given list of CRNS`() {
         val url =
             "/users/${LimitedAccessGenerator.LAO_DEFAULT_USER.username}/access"
-        val requestBody = listOf(LimitedAccessGenerator.LAO_RESTRICTION.person.crn,
+        val requestBody = listOf(
+            LimitedAccessGenerator.LAO_RESTRICTION.person.crn,
             LimitedAccessGenerator.LAO_EXCLUSION.person.crn,
-            PersonGenerator.DEFAULT_PERSON.crn)
+            PersonGenerator.DEFAULT_PERSON.crn
+        )
         val json = jacksonObjectMapper().writeValueAsString(requestBody)
         val res = mockMvc.post(url) {
             withToken()
@@ -94,7 +96,6 @@ internal class LimitedAccessTest @Autowired constructor(
         }
             .andExpect { status { isOk() } }
             .andReturn().response.contentAsString
-
 
         val actualResult = jacksonObjectMapper().readValue(res, UserAccess::class.java)
         assertThat(actualResult.access.size, equalTo(requestBody.size))
