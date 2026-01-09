@@ -40,7 +40,7 @@ class RecreateAppointment(
             request.reasonIsSensitive?.also { original.amendmentSensitive(it) }
         }
 
-        val newAppointment = appointmentRepository.save(original.recreateWith(request))
+        val newAppointment = appointmentRepository.save(original.recreateWith(request, original.eventId))
         original.applyOutcome(
             when (request.requestedBy) {
                 POP -> outcomeRepository.getByCode(AppointmentOutcome.Code.RESCHEDULED_POP.value)
@@ -50,7 +50,7 @@ class RecreateAppointment(
         return RecreatedAppointment(newAppointment.id!!, requireNotNull(newAppointment.externalReference))
     }
 
-    private fun Appointment.recreateWith(request: RecreateAppointmentRequest): Appointment {
+    private fun Appointment.recreateWith(request: RecreateAppointmentRequest, eventId: Long): Appointment {
         val team = request.teamCode?.let { teamRepository.getByCode(it) } ?: team
         val (location, locationNotes) = request.locationCode?.let { locationCode ->
             if (locationCode != location?.code) {
@@ -78,7 +78,8 @@ class RecreateAppointment(
             sensitive = sensitive == true || request.sensitive == true,
             sendToVisor = request.sendToVisor,
             externalReference = request.uuid?.let { URN_PREFIX + it },
-            softDeleted = false
+            softDeleted = false,
+            eventId = eventId
         ).appendNotes(listOfNotNull(locationNotes, request.notes))
     }
 }
