@@ -3,6 +3,7 @@
 # Reason: This CVE affects the AWS CLI base image used by the redrive-dead-letter-queues module.
 # We are temporarily suppressing this to allow time for an updated base image to be released.
 CVE-2025-61727 exp:2026-01-14
+CVE-2025-61729 exp:2026-01-14
 
 # glib2: Core library vulnerability (Amazon Linux 2023)
 # Package: glib2 (2.82.2-767.amzn2023)
