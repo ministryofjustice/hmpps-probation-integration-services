@@ -8,6 +8,7 @@ import java.time.LocalDate
 
 @Entity
 @Immutable
+@Table(name = "office_location")
 @SQLRestriction("end_date is null or end_date > current_date")
 class OfficeLocation(
     @Id

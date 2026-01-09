@@ -114,11 +114,10 @@ class Contact(
     var lastUpdatedDatetime: ZonedDateTime = ZonedDateTime.now(),
 
     @CreatedBy
-    @Column(name = "created_by_user_id")
     var createdByUserId: Long = 0,
 
     @ManyToOne
-    @JoinColumn(name = "created_by_user_id", insertable = false, updatable = false)
+    @JoinColumn(name = "created_by_user_id2", insertable = false, updatable = false)
     val createdByUser: User? = null,
 
     @LastModifiedBy
@@ -141,8 +140,8 @@ class Contact(
     var notes: String? = notes
         private set
 
-    fun appendNotes(extraNotes: String) {
-        notes = notes + System.lineSeparator() + System.lineSeparator() + extraNotes
+    fun appendNotes(newNotes: String) {
+        notes = listOfNotNull(notes, newNotes).joinToString(System.lineSeparator() + System.lineSeparator())
     }
 
     companion object {
