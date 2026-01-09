@@ -63,6 +63,7 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
         save(DatasetGenerator.UPW_PROJECT_TYPE_DATASET)
         save(DatasetGenerator.UPW_WORK_QUALITY_DATASET)
         save(DatasetGenerator.UPW_BEHAVIOUR_DATASET)
+        save(DatasetGenerator.NON_WORKING_DAYS_DATASET)
         save(ReferenceDataGenerator.GROUP_PLACEMENT_PROJECT_TYPE)
         save(ReferenceDataGenerator.INDIVIDUAL_PLACEMENT_PROJECT_TYPE)
         save(ReferenceDataGenerator.INACTIVE_PROJECT_TYPE)
@@ -83,6 +84,8 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
         save(ReferenceDataGenerator.UNSATISFACTORY_BEHAVIOUR)
         save(ReferenceDataGenerator.UPW_RQMNT_MAIN_CATEGORY)
         save(ReferenceDataGenerator.DEFAULT_DISPOSAL_TYPE)
+        save(ReferenceDataGenerator.NON_WORKING_DAY_CHRISTMAS)
+        save(ReferenceDataGenerator.NON_WORKING_DAY_NEW_YEAR)
     }
 
     fun loadUnpaidWorkData() {

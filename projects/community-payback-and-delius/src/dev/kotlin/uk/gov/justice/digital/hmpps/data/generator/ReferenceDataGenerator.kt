@@ -43,6 +43,18 @@ object ReferenceDataGenerator {
         datasetId = DatasetGenerator.UPW_BEHAVIOUR_DATASET.id,
         selectable = true
     )
+    val NON_WORKING_DAY_CHRISTMAS = generateReferenceData(
+        code = "251225",
+        description = "Christmas Day",
+        datasetId = DatasetGenerator.NON_WORKING_DAYS_DATASET.id,
+        selectable = true
+    )
+    val NON_WORKING_DAY_NEW_YEAR = generateReferenceData(
+        code = "010126",
+        description = "New Year",
+        datasetId = DatasetGenerator.NON_WORKING_DAYS_DATASET.id,
+        selectable = true
+    )
 
     val UPW_APPOINTMENT_TYPE = generateContactType(ContactType.Code.UNPAID_WORK_APPOINTMENT.value)
     val REVIEW_ENFORCEMENT_STATUS_TYPE = generateContactType(ContactType.Code.REVIEW_ENFORCEMENT_STATUS.value)
@@ -134,6 +146,7 @@ object DatasetGenerator {
     val UPW_PROJECT_TYPE_DATASET = generateDataset(code = Dataset.UPW_PROJECT_TYPE)
     val UPW_WORK_QUALITY_DATASET = generateDataset(code = Dataset.UPW_WORK_QUALITY)
     val UPW_BEHAVIOUR_DATASET = generateDataset(code = Dataset.UPW_BEHAVIOUR)
+    val NON_WORKING_DAYS_DATASET = generateDataset(code = Dataset.NON_WORKING_DAYS)
 
     fun generateDataset(
         id: Long = IdGenerator.getAndIncrement(),
