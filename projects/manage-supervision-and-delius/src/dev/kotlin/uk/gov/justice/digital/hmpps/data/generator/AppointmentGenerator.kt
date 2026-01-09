@@ -80,6 +80,7 @@ object AppointmentGenerator {
         notes: String? = "Notes",
         sensitive: Boolean? = false,
         outcome: ContactOutcome? = null,
+        eventId: Long? = PersonGenerator.EVENT_1.id
     ) = SentenceAppointment(
         person = person,
         type = APPOINTMENT_TYPES[0],
@@ -95,7 +96,8 @@ object AppointmentGenerator {
         notes = notes,
         sensitive = sensitive,
         outcomeId = outcome?.id,
-        probationAreaId = DEFAULT_PROVIDER.id
+        probationAreaId = DEFAULT_PROVIDER.id,
+        eventId = eventId
     ).apply {
         createdByUserId = USER.id
         lastUpdatedUserId = USER.id

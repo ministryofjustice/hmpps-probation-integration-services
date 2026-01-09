@@ -58,6 +58,9 @@ class Appointment(
     @JoinColumn(name = "office_location_id")
     var location: AppointmentLocation?,
 
+    @Column(name = "event_id")
+    var eventId: Long,
+
     notes: String?,
 
     sensitive: Boolean?,
