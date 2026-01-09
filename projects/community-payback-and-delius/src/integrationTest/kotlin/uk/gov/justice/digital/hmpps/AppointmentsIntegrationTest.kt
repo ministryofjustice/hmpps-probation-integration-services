@@ -58,6 +58,7 @@ class AppointmentsIntegrationTest @Autowired constructor(
         assertThat(response.version).isEqualTo(versions)
         assertThat(response.project.name).isEqualTo("Default UPW Project")
         assertThat(response.case.crn).isEqualTo(PersonGenerator.DEFAULT_PERSON.crn)
+        assertThat(response.event.number).isEqualTo(1)
         assertThat(response.penaltyHours).isEqualTo("01:05")
         assertThat(response.enforcementAction!!.respondBy).isEqualTo(response.date.plusDays(ReferenceDataGenerator.ROM_ENFORCEMENT_ACTION.responseByPeriod!!))
         assertThat(response.behaviour).isEqualTo(Behaviour.EXCELLENT)

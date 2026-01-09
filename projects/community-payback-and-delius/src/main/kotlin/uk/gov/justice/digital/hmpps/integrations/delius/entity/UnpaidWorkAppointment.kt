@@ -175,7 +175,9 @@ class UpwDetails(
     @Column(name = "upw_details_id")
     val id: Long,
 
-    val disposalId: Long,
+    @ManyToOne
+    @JoinColumn(name = "disposal_id")
+    val disposal: Disposal,
 
     @Column(columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)
