@@ -17,4 +17,7 @@ class ReferenceDataController(
 
     @GetMapping("/unpaid-work-appointment-outcomes")
     fun getUnpaidWorkAppointmentOutcomes() = referenceDataService.getUpwAppointmentOutcomes()
+
+    @GetMapping("/non-working-days")
+    fun getNonWorkingDays() = referenceDataService.getNonWorkingDays()
 }

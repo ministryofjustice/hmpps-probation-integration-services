@@ -11,6 +11,7 @@ import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator.ATTEND
 import uk.gov.justice.digital.hmpps.model.CodeDescription
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
+import java.time.LocalDate
 
 @AutoConfigureMockMvc
 @SpringBootTest
@@ -41,6 +42,20 @@ class ReferenceDataIntegrationTest @Autowired constructor(
                 ATTENDED_COMPLIED_CONTACT_OUTCOME.code,
                 ATTENDED_COMPLIED_CONTACT_OUTCOME.description
             )
+        )
+    }
+
+    @Test
+    fun `can retrieve non working days`() {
+        val response = mockMvc
+            .get("/reference-data/non-working-days") { withToken() }
+            .andExpect { status { is2xxSuccessful() } }
+            .andReturn().response.contentAsJson<List<LocalDate>>()
+
+        assertThat(response.size).isEqualTo(2)
+        assertThat(response).containsExactlyInAnyOrder(
+            LocalDate.of(2025, 12, 25),
+            LocalDate.of(2026, 1, 1)
         )
     }
 }
