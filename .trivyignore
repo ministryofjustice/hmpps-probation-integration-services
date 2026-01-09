@@ -5,11 +5,4 @@
 CVE-2025-66293 exp:2026-02-01
 CVE-2025-65018 exp:2026-02-01
 CVE-2025-64720 exp:2026-02-01
-
-# libcap: Capability handling vulnerability (Amazon Linux 2023)
-# Package: libcap (2.73-1.amzn2023.0.4)
-# Reason: A patched version is available, but updating libcap would require upgrading the
-# Amazon Linux 2023 base image used by this service. That upgrade is a broader change
-# This will be revisited as part of a planned base image update.
 CVE-2025-68973 exp:2026-02-01
-CVE-2025-61729 exp:2026-02-01

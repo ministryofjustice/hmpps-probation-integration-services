@@ -1,1 +1,5 @@
-
+# libcap: Capability handling vulnerability (Amazon Linux 2023)
+# Package: libcap (2.73-1.amzn2023.0.4)
+# Reason: This CVE affects the AWS CLI base image used by the redrive-dead-letter-queues module.
+# We are temporarily suppressing this to allow time for an updated base image to be released.
+CVE-2025-61727 exp:2026-01-14
