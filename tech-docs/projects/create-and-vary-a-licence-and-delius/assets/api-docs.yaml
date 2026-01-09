@@ -41,6 +41,32 @@ paths:
       responses:
         "200":
           description: OK
+  /users/{username}/access:
+    post:
+      tags:
+      - user-resource
+      operationId: checkForAccess
+      parameters:
+      - name: username
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: string
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserAccess"
   /staff:
     post:
       tags:
@@ -147,7 +173,7 @@ paths:
     get:
       tags:
       - user-resource
-      operationId: checkForAccess
+      operationId: checkForAccess_1
       parameters:
       - name: username
         in: path
@@ -358,6 +384,32 @@ paths:
                 type: string
 components:
   schemas:
+    CaseAccess:
+      type: object
+      properties:
+        crn:
+          type: string
+        userExcluded:
+          type: boolean
+        userRestricted:
+          type: boolean
+        exclusionMessage:
+          type: string
+        restrictionMessage:
+          type: string
+      required:
+      - crn
+      - userExcluded
+      - userRestricted
+    UserAccess:
+      type: object
+      properties:
+        access:
+          type: array
+          items:
+            $ref: "#/components/schemas/CaseAccess"
+      required:
+      - access
     Name:
       type: object
       properties:
@@ -629,23 +681,6 @@ components:
       - provider
       - team
       - unallocated
-    CaseAccess:
-      type: object
-      properties:
-        crn:
-          type: string
-        userExcluded:
-          type: boolean
-        userRestricted:
-          type: boolean
-        exclusionMessage:
-          type: string
-        restrictionMessage:
-          type: string
-      required:
-      - crn
-      - userExcluded
-      - userRestricted
     PDUHead:
       type: object
       properties:
