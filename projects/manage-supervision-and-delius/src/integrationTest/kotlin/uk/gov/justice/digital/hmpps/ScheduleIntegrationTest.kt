@@ -149,7 +149,7 @@ class ScheduleIntegrationTest : IntegrationTestBase() {
         assertThat(res.appointment.outcome, equalTo("Acceptable"))
         assertThat(res.appointment.appointmentNotes, equalTo(expectedNotes))
         assertThat(res.appointment.eventId, equalTo(PersonGenerator.EVENT_1.id))
-        assertThat( res.appointment.eventNumber, equalTo(PersonGenerator.EVENT_1.eventNumber))
+        assertThat(res.appointment.eventNumber, equalTo(PersonGenerator.EVENT_1.eventNumber))
     }
 
     @Test
