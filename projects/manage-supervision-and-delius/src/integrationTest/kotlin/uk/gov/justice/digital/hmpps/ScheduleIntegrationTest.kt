@@ -16,6 +16,7 @@ import uk.gov.justice.digital.hmpps.api.model.user.PersonManager
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator
 import uk.gov.justice.digital.hmpps.data.generator.LicenceConditionGenerator
 import uk.gov.justice.digital.hmpps.data.generator.LicenceConditionGenerator.LONG_NOTE
+import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.OVERVIEW
 import uk.gov.justice.digital.hmpps.service.toActivity
 import uk.gov.justice.digital.hmpps.service.toDocument
@@ -147,6 +148,8 @@ class ScheduleIntegrationTest : IntegrationTestBase() {
         assertThat(res.appointment.description, equalTo("previous appointment"))
         assertThat(res.appointment.outcome, equalTo("Acceptable"))
         assertThat(res.appointment.appointmentNotes, equalTo(expectedNotes))
+        assertThat(res.appointment.eventId, equalTo(PersonGenerator.EVENT_1.id))
+        assertThat( res.appointment.eventNumber, equalTo(PersonGenerator.EVENT_1.eventNumber))
     }
 
     @Test
