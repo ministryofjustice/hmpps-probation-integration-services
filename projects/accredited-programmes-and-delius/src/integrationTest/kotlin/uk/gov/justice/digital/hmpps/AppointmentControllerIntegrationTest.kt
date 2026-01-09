@@ -44,7 +44,7 @@ internal class AppointmentControllerIntegrationTest @Autowired constructor(
     private val contactRepository: ContactRepository,
     private val enforcementActionRepository: EnforcementActionRepository,
     private val enforcementRepository: EnforcementRepository,
-    private val requirementRepository: RequirementRepository
+    private val requirementRepository: RequirementRepository,
 ) {
     @Test
     fun `exception when end date before start date`() {
@@ -228,7 +228,7 @@ internal class AppointmentControllerIntegrationTest @Autowired constructor(
             }
             .andExpect { status { isBadRequest() } }
             .andReturn().response.contentAsJson<ErrorResponse>().also {
-                assertThat(it.message).isEqualTo("Invalid ContactOutcome codes: [UNKNOWN]")
+                assertThat(it.message).isEqualTo("Invalid AppointmentOutcome codes: [UNKNOWN]")
             }
     }
 
@@ -266,29 +266,29 @@ internal class AppointmentControllerIntegrationTest @Autowired constructor(
     @Test
     fun `can create an appointment - staff not found`() {
         val appointmentReference = UUID.randomUUID()
-        mockMvc.post("/appointments") {
-            withToken()
-            json = CreateAppointmentsRequest(
-                listOf(
-                    CreateAppointmentRequest(
-                        appointmentReference,
-                        REQUIREMENTS[2].id,
-                        null,
-                        LocalDate.now().minusDays(7),
-                        LocalTime.now(),
-                        LocalTime.now().plusMinutes(30),
-                        RequestCode("ATTC"),
-                        RequestCode("OFFICE1"),
-                        RequestCode("STAFF99"),
-                        RequestCode("TEAM01"),
-                        "Some notes about the appointment",
-                        true,
+        mockMvc
+            .post("/appointments") {
+                withToken()
+                json = CreateAppointmentsRequest(
+                    listOf(
+                        CreateAppointmentRequest(
+                            reference = appointmentReference,
+                            requirementId = REQUIREMENTS[2].id,
+                            licenceConditionId = null,
+                            date = LocalDate.now().minusDays(7),
+                            startTime = LocalTime.now(),
+                            endTime = LocalTime.now().plusMinutes(30),
+                            outcome = RequestCode("ATTC"),
+                            location = RequestCode("OFFICE1"),
+                            staff = RequestCode("STAFF99"),
+                            team = RequestCode("TEAM01"),
+                            notes = "Some notes about the appointment",
+                            sensitive = true,
+                        )
                     )
+
                 )
-
-            )
-        }
-
+            }
             .andExpect { status { isBadRequest() } }
             .andReturn().response.contentAsJson<ErrorResponse>().also {
                 assertThat(it.message).isEqualTo("Invalid Staff codes: [STAFF99]")

@@ -1,34 +1,27 @@
 package uk.gov.justice.digital.hmpps.appointments.service
 
 import org.springframework.stereotype.Service
-import uk.gov.justice.digital.hmpps.appointments.domain.provider.Location
-import uk.gov.justice.digital.hmpps.appointments.domain.provider.LocationRepository
-import uk.gov.justice.digital.hmpps.appointments.domain.person.PersonManager
-import uk.gov.justice.digital.hmpps.appointments.domain.provider.Staff
-import uk.gov.justice.digital.hmpps.appointments.domain.provider.StaffRepository
-import uk.gov.justice.digital.hmpps.appointments.domain.provider.Team
-import uk.gov.justice.digital.hmpps.appointments.domain.provider.TeamRepository
-import uk.gov.justice.digital.hmpps.appointments.domain.provider.getStaffByCode
-import uk.gov.justice.digital.hmpps.appointments.domain.provider.getLocationByCode
-import uk.gov.justice.digital.hmpps.appointments.domain.provider.getTeamByCode
+import uk.gov.justice.digital.hmpps.appointments.entity.AppointmentEntities
 import uk.gov.justice.digital.hmpps.appointments.model.Assigned
+import uk.gov.justice.digital.hmpps.appointments.repository.AppointmentsRepositories
+import uk.gov.justice.digital.hmpps.appointments.repository.AppointmentsRepositories.getByCode
 
 @Service
 class AssignationService(
-    private val teamRepository: TeamRepository,
-    private val staffRepository: StaffRepository,
-    private val locationRepository: LocationRepository,
+    private val teamRepository: AppointmentsRepositories.TeamRepository,
+    private val staffRepository: AppointmentsRepositories.StaffRepository,
+    private val locationRepository: AppointmentsRepositories.LocationRepository,
 ) {
-    fun retrieveAssignation(assigned: Assigned?, manager: PersonManager): Assignation {
-        val team = assigned?.team?.code?.let { teamRepository.getTeamByCode(it) } ?: manager.team
-        val staff = assigned?.staff?.code?.let { staffRepository.getStaffByCode(it) } ?: manager.staff
-        val location = assigned?.location?.code?.let { locationRepository.getLocationByCode(team.provider.code, it) }
-        return Assignation(team = team, staff = staff, location = location)
+    fun retrieveAssignation(assigned: Assigned?, manager: AppointmentEntities.PersonManager): Assignation {
+        val team = assigned?.team?.code?.let { teamRepository.getByCode(it) } ?: manager.team
+        val staff = assigned?.staff?.code?.let { staffRepository.getByCode(it) } ?: manager.staff
+        val location = assigned?.location?.code?.let { locationRepository.getByCode(it) }
+        return Assignation(team = team, staff = staff, officeLocation = location)
     }
 }
 
 data class Assignation(
-    val location: Location?,
-    val team: Team,
-    val staff: Staff,
+    val officeLocation: AppointmentEntities.OfficeLocation?,
+    val team: AppointmentEntities.Team,
+    val staff: AppointmentEntities.Staff,
 )

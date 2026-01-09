@@ -2,6 +2,8 @@ package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import uk.gov.justice.digital.hmpps.appointments.model.ReferencedEntities
+import uk.gov.justice.digital.hmpps.appointments.service.AppointmentService
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.datetime.toDeliusDate
 import uk.gov.justice.digital.hmpps.entity.contact.Contact
@@ -35,6 +37,7 @@ class AppointmentService(
     private val contactRepository: ContactRepository,
     private val enforcementActionRepository: EnforcementActionRepository,
     private val enforcementRepository: EnforcementRepository,
+    private val newAppointmentService: AppointmentService,
 ) {
     fun getAppointments(request: GetAppointmentsRequest) = with(request) {
         require(toDate >= fromDate) { "toDate cannot be before fromDate" }
@@ -51,7 +54,33 @@ class AppointmentService(
     }
 
     fun create(request: CreateAppointmentsRequest) {
-        contactRepository.saveAll(request.appointments.asEntities())
+        request.appointments.run {
+            val requirements = requirementRepository.getAllByCodeIn(mapNotNull { it.requirementId })
+            val licenceConditions = licenceConditionRepository.getAllByCodeIn(mapNotNull { it.licenceConditionId })
+            newAppointmentService.create(map { request ->
+                val event = (requirements[request.requirementId]
+                    ?: licenceConditions[request.licenceConditionId])!!.disposal.event
+                uk.gov.justice.digital.hmpps.appointments.model.CreateAppointmentRequest(
+                    reference = "${Contact.REFERENCE_PREFIX}${request.reference}",
+                    typeCode = request.type.code,
+                    relatedTo = ReferencedEntities(
+                        personId = event.person.id,
+                        eventId = event.id,
+                        requirementId = request.requirementId,
+                        licenceConditionId = request.licenceConditionId
+                    ),
+                    date = request.date,
+                    startTime = request.startTime,
+                    endTime = request.endTime,
+                    outcomeCode = request.outcome?.code,
+                    locationCode = request.location?.code,
+                    staffCode = request.staff.code,
+                    teamCode = request.team.code,
+                    notes = request.notes,
+                    sensitive = request.sensitive
+                )
+            })
+        }
     }
 
     fun update(request: UpdateAppointmentsRequest) {
