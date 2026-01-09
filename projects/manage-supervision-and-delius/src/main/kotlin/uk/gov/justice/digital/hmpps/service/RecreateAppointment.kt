@@ -35,16 +35,6 @@ class RecreateAppointment(
 
         require(request.isInFuture() || request.outcomeRecorded) { "Appointments in the past require an outcome" }
 
-        if (appointmentRepository.appointmentClashes(
-                original.person.id,
-                request.date,
-                request.startTime,
-                request.endTime,
-                original.id
-            )
-        ) {
-            throw ConflictException("Appointment clashes with existing appointment")
-        }
         request.reasonForRecreate?.also { reason ->
             original.appendNotes(reason)
             request.reasonIsSensitive?.also { original.amendmentSensitive(it) }

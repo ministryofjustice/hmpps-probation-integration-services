@@ -23,105 +23,146 @@ class UserDiaryIntegrationTest : IntegrationTestBase() {
     fun `unauthorized status returned`(uri: String) {
         mockMvc.get("/user/peter-parker//${uri}/schedule/")
             .andExpect { status { isUnauthorized() } }
+    }
 
-        @Test
-        fun `get user appointments`() {
-            val user = USER
+    @Test
+    fun `get user appointments`() {
+        val user = USER
 
-            val response = mockMvc.get("/user/${user.username}/appointments") { withToken() }
+        val response = mockMvc.get("/user/${user.username}/appointments") { withToken() }
+            .andExpect { status { isOk() } }
+            .andReturn().response.contentAsJson<UserAppointments>()
+
+        assertEquals(2, response.appointments.size)
+        assertEquals(3, response.outcomes.size)
+    }
+
+    @Test
+    fun `get user appointments where user has no staff record`() {
+        val user = USER_2
+
+        val expected =
+            UserAppointments(
+                Name(USER_2.forename, surname = USER_2.surname),
+                totalAppointments = 0,
+                totalOutcomes = 0
+            )
+        val response =
+            mockMvc.get("/user/${user.username}/appointments") { withToken() }
                 .andExpect { status { isOk() } }
                 .andReturn().response.contentAsJson<UserAppointments>()
 
-            assertEquals(2, response.appointments.size)
-            assertEquals(3, response.outcomes.size)
-        }
+        assertEquals(expected, response)
+    }
 
-        @Test
-        fun `get user appointments where user has no staff record`() {
-            val user = USER_2
+    @ParameterizedTest
+    @ValueSource(strings = ["upcoming", "no-outcome"])
+    fun `user without staff record`(uri: String) {
+        val user = USER_2
 
-            val expected =
-                UserAppointments(
-                    Name(USER_2.forename, surname = USER_2.surname),
-                    totalAppointments = 0,
-                    totalOutcomes = 0
-                )
-            val response =
-                mockMvc.get("/user/${user.username}/appointments") { withToken() }
-                    .andExpect { status { isOk() } }
-                    .andReturn().response.contentAsJson<UserAppointments>()
+        val expected = UserDiary(10, 0, 0, 0, listOf())
 
-            assertEquals(expected, response)
-        }
+        val response =
+            mockMvc.get("/user/${user.username}/schedule/${uri}") { withToken() }
+                .andExpect { status { isOk() } }
+                .andReturn().response.contentAsJson<UserDiary>()
 
-        @ParameterizedTest
-        @ValueSource(strings = ["upcoming", "no-outcome"])
-        fun `user without staff record`(uri: String) {
-            val user = USER_2
+        assertEquals(expected, response)
+    }
 
-            val expected = UserDiary(10, 0, 0, 0, listOf())
+    @ParameterizedTest
+    @CsvSource(
+        "upcoming, 2",
+        "upcoming?size=1, 1",
+        "upcoming?sortBy=date, 2",
+        "upcoming?sortBy=name, 2",
+        "upcoming?sortBy=dob, 2",
+        "upcoming?sortBy=appointment, 2",
+        "upcoming?sortBy=sentence, 2"
+    )
+    fun `get upcoming appointments sort ascending order`(uri: String, resultSize: Int) {
+        val user = USER
 
-            val response =
-                mockMvc.get("/user/${user.username}/schedule/${uri}") { withToken() }
-                    .andExpect { status { isOk() } }
-                    .andReturn().response.contentAsJson<UserDiary>()
+        val response =
+            mockMvc.get("/user/${user.username}/schedule/${uri}") { withToken() }
+                .andExpect { status { isOk() } }
+                .andReturn().response.contentAsJson<UserDiary>()
 
-            assertEquals(expected, response)
-        }
+        assertEquals(resultSize, response.appointments.size)
+        assertEquals(2, response.totalResults)
+        assertEquals("Default Sentence Type", response.appointments[0].latestSentence)
+    }
 
-        @ParameterizedTest
-        @CsvSource(
-            "upcoming, 2",
-            "upcoming?size=1, 1",
-            "upcoming?sortBy=date, 2",
-            "upcoming?sortBy=name, 2",
-            "upcoming?sortBy=dob, 2",
-            "upcoming?sortBy=appointment, 2",
-            "upcoming?sortBy=sentence, 2"
-        )
-        fun `get upcoming appointments sort ascending order`(uri: String, resultSize: Int) {
-            val user = USER
+    @Test
+    fun `get upcoming appointments default sort descending order`() {
+        val user = USER
 
-            val response =
-                mockMvc.get("/user/${user.username}/schedule/${uri}") { withToken() }
-                    .andExpect { status { isOk() } }
-                    .andReturn().response.contentAsJson<UserDiary>()
+        val response =
+            mockMvc.get("/user/${user.username}/schedule/upcoming?ascending=false") { withToken() }
+                .andExpect { status { isOk() } }
+                .andReturn().response.contentAsJson<UserDiary>()
 
-            assertEquals(resultSize, response.appointments.size)
-            assertEquals(2, response.totalResults)
-            assertEquals("Default Sentence Type", response.appointments[0].latestSentence)
-        }
+        assertEquals(2, response.totalResults)
+        assertEquals("Default Sentence Type", response.appointments[0].latestSentence)
+        assertEquals(NEXT_APPT_CONTACT.id, response.appointments[0].id)
+        assertEquals(1, response.appointments[0].numberOfAdditionalSentences)
+        assertEquals("Bracknell Office", response.appointments[0].location)
+    }
 
-        @Test
-        fun `get upcoming appointments default sort descending order`() {
-            val user = USER
+    @Test
+    fun `sort works for sentence description`() {
+        val user = USER
+        val response =
+            mockMvc.get("/user/${user.username}/schedule/upcoming?sortBy=sentence") { withToken() }
+                .andExpect { status { isOk() } }
+                .andReturn().response.contentAsJson<UserDiary>()
+    }
 
-            val response =
-                mockMvc.get("/user/${user.username}/schedule/upcoming?ascending=false") { withToken() }
-                    .andExpect { status { isOk() } }
-                    .andReturn().response.contentAsJson<UserDiary>()
+    @Test
+    fun `sort works for appointment description no-outcome`() {
+        val user = USER
+        val response =
+            mockMvc.get("/user/${user.username}/schedule/no-outcome?sortBy=appointment") { withToken() }
+                .andExpect { status { isOk() } }
+    }
 
-            assertEquals(2, response.totalResults)
-            assertEquals("Default Sentence Type", response.appointments[0].latestSentence)
-            assertEquals(NEXT_APPT_CONTACT.id, response.appointments[0].id)
-            assertEquals(1, response.appointments[0].numberOfAdditionalSentences)
-            assertEquals("Bracknell Office", response.appointments[0].location)
-        }
+    @Test
+    fun `sort works for sentence description no-outcome`() {
+        val user = USER
+        val response =
+            mockMvc.get("/user/${user.username}/schedule/no-outcome?sortBy=sentence") { withToken() }
+                .andExpect { status { isOk() } }
+    }
 
-        @Test
-        fun `get past appointments with no outcome default sort ascending order`() {
-            val user = USER
+    @Test
+    fun `sort works for name no-outcome`() {
+        val user = USER
+        val response =
+            mockMvc.get("/user/${user.username}/schedule/no-outcome?sortBy=name") { withToken() }
+                .andExpect { status { isOk() } }
+    }
 
-            val response =
-                mockMvc.get("/user/${user.username}/schedule/no-outcome") { withToken() }
-                    .andExpect { status { isOk() } }
-                    .andReturn().response.contentAsJson<UserDiary>()
+    @Test
+    fun `sort works for dob no-outcome`() {
+        val user = USER
+        val response =
+            mockMvc.get("/user/${user.username}/schedule/no-outcome?sortBy=dob") { withToken() }
+                .andExpect { status { isOk() } }
+    }
 
-            assertEquals(3, response.totalResults)
-            assertEquals("Default Sentence Type", response.appointments[0].latestSentence)
-            assertEquals(REQUIREMENT_CONTACT_1.id, response.appointments[0].id)
-            assertEquals(1, response.appointments[0].numberOfAdditionalSentences)
-            assertEquals("Bracknell Office", response.appointments[0].location)
-        }
+    @Test
+    fun `get past appointments with no outcome default sort ascending order`() {
+        val user = USER
+
+        val response =
+            mockMvc.get("/user/${user.username}/schedule/no-outcome") { withToken() }
+                .andExpect { status { isOk() } }
+                .andReturn().response.contentAsJson<UserDiary>()
+
+        assertEquals(3, response.totalResults)
+        assertEquals("Default Sentence Type", response.appointments[0].latestSentence)
+        assertEquals(REQUIREMENT_CONTACT_1.id, response.appointments[0].id)
+        assertEquals(1, response.appointments[0].numberOfAdditionalSentences)
+        assertEquals("Bracknell Office", response.appointments[0].location)
     }
 }
