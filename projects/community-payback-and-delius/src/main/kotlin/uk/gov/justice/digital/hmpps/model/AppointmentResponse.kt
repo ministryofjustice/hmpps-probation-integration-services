@@ -13,6 +13,7 @@ data class AppointmentResponse(
     val project: Project,
     val projectType: NameCode,
     val case: AppointmentResponseCase,
+    val event: EventResponse,
     val supervisor: AppointmentResponseSupervisor,
     val team: NameCode,
     val provider: NameCode,

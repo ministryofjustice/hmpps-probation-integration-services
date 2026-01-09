@@ -5,7 +5,6 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.*
 import uk.gov.justice.digital.hmpps.model.*
-import java.time.Duration
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
@@ -47,6 +46,7 @@ class AppointmentsService(
                 project.projectType.code
             ),
             case = case,
+            event = EventResponse(number = appointment.details.disposal.event.number.toInt()),
             supervisor = AppointmentResponseSupervisor(
                 code = appointment.staff.code,
                 name = AppointmentResponseName(
