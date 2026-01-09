@@ -9,10 +9,12 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
+import org.springframework.test.web.servlet.post
 import uk.gov.justice.digital.hmpps.data.generator.LimitedAccessGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.service.CaseAccess
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
+import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.json
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 
 @AutoConfigureMockMvc
@@ -73,5 +75,26 @@ internal class LimitedAccessTest @Autowired constructor(
             .andReturn().response.contentAsJson<CaseAccess>()
         assertThat(res.userExcluded, equalTo(true))
         assertThat(res.userRestricted, equalTo(false))
+    }
+
+    @Test
+    fun `should return list of exclusions and restrictions for user given list of CRNS`() {
+        val url =
+            "/users/${LimitedAccessGenerator.LAO_DEFAULT_USER.username}/access"
+        val requestBody = listOf(
+            LimitedAccessGenerator.LAO_RESTRICTION.person.crn,
+            LimitedAccessGenerator.LAO_EXCLUSION.person.crn,
+            PersonGenerator.DEFAULT_PERSON.crn
+        )
+
+        val res = mockMvc.post(url) {
+            withToken()
+            json = requestBody
+        }
+            .andExpect { status { isOk() } }
+            .andReturn().response.contentAsString
+        val expected =
+            """{"access":[{"crn":"R123456","userExcluded":false,"userRestricted":true,"restrictionMessage":"You do not have access to this person."},{"crn":"E123456","userExcluded":false,"userRestricted":false},{"crn":"T123456","userExcluded":false,"userRestricted":false}]}"""
+        assertThat(res, equalTo(expected))
     }
 }
