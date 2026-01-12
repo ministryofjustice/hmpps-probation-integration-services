@@ -67,9 +67,9 @@ object UPWGenerator {
         event = SECOND_EVENT
     )
 
-    val DEFAULT_UPW_DETAILS = generateUpwDetails(disposalId = DEFAULT_DISPOSAL.id)
-    val SECOND_UPW_DETAILS = generateUpwDetails(disposalId = SECOND_DISPOSAL.id)
-    val THIRD_UPW_DETAILS = generateUpwDetails(disposalId = SECOND_DISPOSAL.id)
+    val DEFAULT_UPW_DETAILS = generateUpwDetails(disposal = DEFAULT_DISPOSAL)
+    val SECOND_UPW_DETAILS = generateUpwDetails(disposal = SECOND_DISPOSAL)
+    val THIRD_UPW_DETAILS = generateUpwDetails(disposal = SECOND_DISPOSAL)
 
     val DEFAULT_CONTACT = generateContact(
         contactType = ReferenceDataGenerator.UPW_APPOINTMENT_TYPE,
@@ -277,9 +277,9 @@ object UPWGenerator {
 
     fun generateUpwDetails(
         id: Long = IdGenerator.getAndIncrement(),
-        disposalId: Long,
+        disposal: Disposal,
         softDeleted: Boolean = false
-    ) = UpwDetails(id, disposalId, softDeleted)
+    ) = UpwDetails(id, disposal, softDeleted)
 
     fun generateUPWAdjustment(
         id: Long = IdGenerator.getAndIncrement(),
