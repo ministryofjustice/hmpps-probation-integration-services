@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.integrations.delius.entity
 
 import jakarta.persistence.*
 import org.springframework.data.jpa.repository.JpaRepository
+import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import java.time.LocalDate
 
 @Entity
@@ -26,4 +27,10 @@ class Event(
     val disposal: Disposal?,
 )
 
-interface EventRepository : JpaRepository<Event, Long>
+interface EventRepository : JpaRepository<Event, Long> {
+    fun findByPersonIdAndNumber(personId: Long, eventNumber: String): Event?
+}
+
+fun EventRepository.getByPersonAndEventNumber(personId: Long, eventNumber: String) =
+    findByPersonIdAndNumber(personId, eventNumber)
+        ?: throw NotFoundException("Event", "event number", eventNumber)

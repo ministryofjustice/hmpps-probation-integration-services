@@ -66,6 +66,10 @@ class UpwAppointment(
     val details: UpwDetails,
 
     @ManyToOne
+    @JoinColumn(name = "upw_allocation_id")
+    val allocation: UpwAllocation?,
+
+    @ManyToOne
     @JoinColumn(name = "pick_up_location_id")
     val pickUpLocation: OfficeLocation?,
 
@@ -175,12 +179,24 @@ class UpwDetails(
     @Column(name = "upw_details_id")
     val id: Long,
 
-    val disposalId: Long,
+    @ManyToOne
+    @JoinColumn(name = "disposal_id")
+    val disposal: Disposal,
 
     @Column(columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean = false
 )
+
+interface UpwDetailsRepository : JpaRepository<UpwDetails, Long> {
+    @Query("""
+        select d from UpwDetails d
+        where d.disposal.event.id = :eventId
+        and d.softDeleted = false
+        and d.disposal.softDeleted = false
+    """)
+    fun findByEventId(eventId: Long): List<UpwDetails>
+}
 
 @JsonPropertyOrder(
     "projectId",
@@ -312,6 +328,17 @@ interface UnpaidWorkAppointmentRepository : JpaRepository<UpwAppointment, Long> 
     """, nativeQuery = true
     )
     fun getUpwRequiredAndCompletedMinutes(upwDetailsId: List<Long>): List<UpwMinutesDto>
+
+    @Query(
+        """
+        select a from UpwAppointment a
+        where a.details.disposal.event.id = :eventId
+        and a.softDeleted = false
+        and a.details.softDeleted = false
+        and a.details.disposal.softDeleted = false
+    """
+    )
+    fun findByEventId(eventId: Long): List<UpwAppointment>
 }
 
 fun UnpaidWorkAppointmentRepository.getAppointment(id: Long) =
