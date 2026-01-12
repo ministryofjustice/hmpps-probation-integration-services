@@ -40,7 +40,7 @@ class RecreateAppointment(
             request.reasonIsSensitive?.also { original.amendmentSensitive(it) }
         }
 
-        val newAppointment = appointmentRepository.save(original.recreateWith(request, original.eventId))
+        val newAppointment = appointmentRepository.save(original.recreateWith(request, original.eventId!!))
         original.applyOutcome(
             when (request.requestedBy) {
                 POP -> outcomeRepository.getByCode(AppointmentOutcome.Code.RESCHEDULED_POP.value)
