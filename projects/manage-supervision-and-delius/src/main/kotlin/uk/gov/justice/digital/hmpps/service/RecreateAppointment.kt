@@ -50,7 +50,7 @@ class RecreateAppointment(
         return RecreatedAppointment(newAppointment.id!!, requireNotNull(newAppointment.externalReference))
     }
 
-    private fun Appointment.recreateWith(request: RecreateAppointmentRequest, eventId: Long): Appointment {
+    private fun Appointment.recreateWith(request: RecreateAppointmentRequest, eventId: Long?): Appointment {
         val team = request.teamCode?.let { teamRepository.getByCode(it) } ?: team
         val (location, locationNotes) = request.locationCode?.let { locationCode ->
             if (locationCode != location?.code) {
