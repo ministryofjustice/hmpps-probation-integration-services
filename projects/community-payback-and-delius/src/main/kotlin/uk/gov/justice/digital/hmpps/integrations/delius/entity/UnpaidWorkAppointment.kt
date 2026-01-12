@@ -189,12 +189,14 @@ class UpwDetails(
 )
 
 interface UpwDetailsRepository : JpaRepository<UpwDetails, Long> {
-    @Query("""
+    @Query(
+        """
         select d from UpwDetails d
         where d.disposal.event.id = :eventId
         and d.softDeleted = false
         and d.disposal.softDeleted = false
-    """)
+    """
+    )
     fun findByEventId(eventId: Long): List<UpwDetails>
 }
 
