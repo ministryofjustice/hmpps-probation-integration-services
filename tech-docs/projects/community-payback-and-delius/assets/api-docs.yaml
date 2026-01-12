@@ -86,6 +86,21 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/CodeDescription"
+  /reference-data/non-working-days:
+    get:
+      tags:
+      - reference-data-controller
+      operationId: getNonWorkingDays
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+                  format: date
   /providers:
     get:
       tags:
