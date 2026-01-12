@@ -1,10 +1,9 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.offender
 
-import io.opentelemetry.api.trace.SpanKind
-import io.opentelemetry.instrumentation.annotations.WithSpan
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.RegisterType
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.RegistrationRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.service.DomainEventService
@@ -30,23 +29,33 @@ class OffenderDeltaService(
 
     fun deleteAll(deltas: List<OffenderDelta>) = offenderDeltaRepository.deleteAllByIdInBatch(deltas.map { it.id })
 
-    @WithSpan("POLL offender_delta", kind = SpanKind.SERVER)
-    fun notify(delta: OffenderDelta) {
-        delta
-            .also { handleDomainEvent(it) }
-            .asNotifications().forEach {
-                notificationPublisher.publish(it)
-                telemetryService.trackEvent(
-                    "OffenderEventPublished",
-                    mapOf(
-                        "crn" to it.message.crn,
-                        "eventType" to it.eventType!!,
-                        "occurredAt" to ISO_ZONED_DATE_TIME.format(it.message.eventDatetime),
-                        "notification" to it.toString(),
-                    )
-                )
-            }
+    @Transactional
+    fun prepareNotificationsAndDeleteDeltas(): List<Notification<OffenderEvent>> {
+        val deltas = getDeltas()
+        if (deltas.isEmpty()) return emptyList()
+
+        return deltas
+            .flatMap(::prepare)
+            .also { deleteAll(deltas) }
     }
+
+    internal fun notify(notification: Notification<OffenderEvent>) {
+        notificationPublisher.publish(notification)
+        telemetryService.trackEvent(
+            "OffenderEventPublished",
+            mapOf(
+                "crn" to notification.message.crn,
+                "eventType" to notification.eventType!!,
+                "occurredAt" to ISO_ZONED_DATE_TIME.format(notification.message.eventDatetime),
+                "notification" to notification.toString(),
+            )
+        )
+    }
+
+    internal fun prepare(delta: OffenderDelta): List<Notification<OffenderEvent>> =
+        delta
+            .also(::handleDomainEvents)
+            .asNotifications()
 
     fun OffenderDelta.asNotifications(): List<Notification<OffenderEvent>> {
         fun sourceToEventType(): String? = when (sourceTable) {
@@ -86,7 +95,7 @@ class OffenderDeltaService(
         }
     }
 
-    private fun handleDomainEvent(delta: OffenderDelta) {
+    private fun handleDomainEvents(delta: OffenderDelta) {
         if (!isContactDomainEventCandidate(delta)) return
 
         val offender = delta.offender ?: return
