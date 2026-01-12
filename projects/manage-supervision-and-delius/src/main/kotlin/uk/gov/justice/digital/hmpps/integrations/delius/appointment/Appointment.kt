@@ -59,7 +59,7 @@ class Appointment(
     var location: AppointmentLocation?,
 
     @Column(name = "event_id")
-    var eventId: Long,
+    var eventId: Long?,
 
     notes: String?,
 
