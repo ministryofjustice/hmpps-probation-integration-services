@@ -120,7 +120,7 @@ class AppointmentsIntegrationTest @Autowired constructor(
                 id = UPWGenerator.UPW_APPOINTMENT_TO_UPDATE.id,
                 version = UUID(original.rowVersion, original.contact.rowVersion),
                 outcome = Code("A"),
-                supervisor = Code("N01P001"),
+                supervisor = Code("N02P001"),
                 startTime = LocalTime.of(11, 0),
                 endTime = LocalTime.of(15, 0),
                 notes = "new notes",

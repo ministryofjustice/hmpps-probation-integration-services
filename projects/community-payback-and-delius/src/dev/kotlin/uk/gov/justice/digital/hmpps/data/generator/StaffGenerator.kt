@@ -20,6 +20,13 @@ object StaffGenerator {
         teams = listOf(TeamGenerator.DEFAULT_UPW_TEAM)
     )
 
+    val OTHER_PROVIDER_STAFF = generateStaff(
+        code = "N02P001",
+        forename = "OtherProvider",
+        surname = "Staff",
+        teams = listOf(TeamGenerator.OTHER_PROVIDER_TEAM)
+    )
+
     fun generateStaff(
         id: Long = IdGenerator.getAndIncrement(),
         code: String,
