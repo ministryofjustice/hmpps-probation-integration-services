@@ -1,9 +1,10 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.offender
 
+import io.opentelemetry.api.trace.SpanKind
+import io.opentelemetry.instrumentation.annotations.WithSpan
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
-import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.RegisterType
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.RegistrationRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.service.DomainEventService
@@ -29,16 +30,7 @@ class OffenderDeltaService(
 
     fun deleteAll(deltas: List<OffenderDelta>) = offenderDeltaRepository.deleteAllByIdInBatch(deltas.map { it.id })
 
-    @Transactional
-    fun prepareNotificationsAndDeleteDeltas(): List<Notification<OffenderEvent>> {
-        val deltas = getDeltas()
-        if (deltas.isEmpty()) return emptyList()
-
-        return deltas
-            .flatMap(::prepare)
-            .also { deleteAll(deltas) }
-    }
-
+    @WithSpan("POLL offender_delta", kind = SpanKind.SERVER)
     internal fun notify(notification: Notification<OffenderEvent>) {
         notificationPublisher.publish(notification)
         telemetryService.trackEvent(
