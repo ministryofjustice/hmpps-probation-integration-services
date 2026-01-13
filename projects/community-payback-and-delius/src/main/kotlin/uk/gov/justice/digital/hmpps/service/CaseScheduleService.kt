@@ -22,9 +22,9 @@ class CaseScheduleService(
             val upwMinutesDtos = unpaidWorkAppointmentRepository.getUpwRequiredAndCompletedMinutes(upwDetailsIds)
 
             UpwMinutes(
-                requiredMinutes = upwMinutesDtos.sumOf { it .requiredMinutes },
-                completedMinutes = upwMinutesDtos.sumOf { it .completedMinutes },
-                adjustments = upwMinutesDtos.sumOf { it .positiveAdjustments - it .negativeAdjustments }
+                requiredMinutes = upwMinutesDtos.sumOf { it.requiredMinutes },
+                completedMinutes = upwMinutesDtos.sumOf { it.completedMinutes },
+                adjustments = upwMinutesDtos.sumOf { it.positiveAdjustments - it.negativeAdjustments }
             )
         } else {
             UpwMinutes(0, 0, 0)
