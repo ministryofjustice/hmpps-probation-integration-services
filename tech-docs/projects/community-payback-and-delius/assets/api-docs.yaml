@@ -580,6 +580,8 @@ components:
           $ref: "#/components/schemas/NameCode"
         case:
           $ref: "#/components/schemas/AppointmentResponseCase"
+        event:
+          $ref: "#/components/schemas/EventResponse"
         supervisor:
           $ref: "#/components/schemas/AppointmentResponseSupervisor"
         team:
@@ -636,6 +638,7 @@ components:
       - case
       - date
       - endTime
+      - event
       - id
       - penaltyHours
       - project
@@ -676,6 +679,14 @@ components:
       required:
       - code
       - name
+    EventResponse:
+      type: object
+      properties:
+        number:
+          type: integer
+          format: int32
+      required:
+      - number
     NameCode:
       type: object
       properties:

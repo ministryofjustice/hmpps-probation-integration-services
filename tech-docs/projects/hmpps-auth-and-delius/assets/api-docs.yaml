@@ -26,7 +26,6 @@ paths:
         required: true
         schema:
           type: string
-          minLength: 1
       requestBody:
         content:
           application/json:

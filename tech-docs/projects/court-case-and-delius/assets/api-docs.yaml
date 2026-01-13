@@ -2185,7 +2185,6 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/AllTeam"
-      description: provider this staff member is associated with
     StaffDetails:
       required:
       - probationArea
