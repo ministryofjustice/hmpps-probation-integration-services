@@ -21,19 +21,10 @@ class CaseScheduleService(
         val requirementProgress = if (upwDetailsIds.isNotEmpty()) {
             val upwMinutesDtos = unpaidWorkAppointmentRepository.getUpwRequiredAndCompletedMinutes(upwDetailsIds)
 
-            var requiredMinutes: Long = 0
-            var completedMinutes: Long = 0
-            var adjustments: Long = 0
-            upwMinutesDtos.forEach {
-                requiredMinutes += it.requiredMinutes
-                completedMinutes += it.completedMinutes
-                adjustments += it.positiveAdjustments - it.negativeAdjustments
-            }
-
             UpwMinutes(
-                requiredMinutes = requiredMinutes,
-                completedMinutes = completedMinutes,
-                adjustments = adjustments
+                requiredMinutes = upwMinutesDtos.sumOf { it .requiredMinutes },
+                completedMinutes = upwMinutesDtos.sumOf { it .completedMinutes },
+                adjustments = upwMinutesDtos.sumOf { it .positiveAdjustments - it .negativeAdjustments }
             )
         } else {
             UpwMinutes(0, 0, 0)
