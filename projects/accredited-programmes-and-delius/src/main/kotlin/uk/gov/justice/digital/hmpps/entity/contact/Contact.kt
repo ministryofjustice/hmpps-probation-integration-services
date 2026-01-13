@@ -105,22 +105,26 @@ class Contact(
     val externalReference: String? = null,
 
     @Convert(converter = YesNoConverter::class)
-    var sensitive: Boolean = false,
+    var sensitive: Boolean? = false,
 
     @CreatedDate
+    @Column(name = "created_datetime")
     var createdDatetime: ZonedDateTime = ZonedDateTime.now(),
 
     @LastModifiedDate
+    @Column(name = "last_updated_datetime")
     var lastUpdatedDatetime: ZonedDateTime = ZonedDateTime.now(),
 
     @CreatedBy
+    @Column(name = "created_by_user_id")
     var createdByUserId: Long = 0,
 
     @ManyToOne
-    @JoinColumn(name = "created_by_user_id2", insertable = false, updatable = false)
+    @JoinColumn(name = "created_by_user_id", insertable = false, updatable = false)
     val createdByUser: User? = null,
 
     @LastModifiedBy
+    @Column(name = "last_updated_user_id")
     var lastUpdatedUserId: Long = 0,
 
     @Column(columnDefinition = "number")

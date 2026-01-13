@@ -1,14 +1,20 @@
 package uk.gov.justice.digital.hmpps.data
 
 import org.springframework.stereotype.Component
+import uk.gov.justice.digital.hmpps.appointments.audit.BusinessInteractionCode
+import uk.gov.justice.digital.hmpps.audit.BusinessInteraction
+import uk.gov.justice.digital.hmpps.data.generator.IdGenerator.id
 import uk.gov.justice.digital.hmpps.data.loader.BaseDataLoader
 import uk.gov.justice.digital.hmpps.data.manager.DataManager
+import java.time.ZonedDateTime
 
 @Component
 class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
     override fun systemUser() = TestData.AUDIT_USER
 
     override fun setupData() {
+        save(BusinessInteraction(id(), BusinessInteractionCode.ADD_CONTACT.code, ZonedDateTime.now()))
+        save(BusinessInteraction(id(), BusinessInteractionCode.UPDATE_CONTACT.code, ZonedDateTime.now()))
         save(TestData.DATASET)
         save(TestData.DOMAIN_EVENT_DATASET)
         saveAll(TestData.DATASETS.values)

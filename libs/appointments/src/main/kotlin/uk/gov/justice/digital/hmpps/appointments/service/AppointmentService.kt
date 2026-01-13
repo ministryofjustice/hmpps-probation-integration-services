@@ -2,105 +2,62 @@ package uk.gov.justice.digital.hmpps.appointments.service
 
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import uk.gov.justice.digital.hmpps.appointments.domain.audit.BusinessInteractionCode
-import uk.gov.justice.digital.hmpps.appointments.domain.contact.AppointmentRepository
-import uk.gov.justice.digital.hmpps.appointments.entity.AppointmentContact
+import uk.gov.justice.digital.hmpps.appointments.audit.BusinessInteractionCode
+import uk.gov.justice.digital.hmpps.appointments.entity.AppointmentEntities.AppointmentContact
 import uk.gov.justice.digital.hmpps.appointments.entity.AppointmentEntities.EnforcementAction
-import uk.gov.justice.digital.hmpps.appointments.model.ApplyOutcomeRequest
-import uk.gov.justice.digital.hmpps.appointments.model.CreateAppointmentRequest
-import uk.gov.justice.digital.hmpps.appointments.repository.AppointmentsRepositories
-import uk.gov.justice.digital.hmpps.appointments.repository.AppointmentsRepositories.getAllByCodeIn
-import uk.gov.justice.digital.hmpps.appointments.repository.AppointmentsRepositories.getByCode
+import uk.gov.justice.digital.hmpps.appointments.entity.AppointmentEntities.Outcome
+import uk.gov.justice.digital.hmpps.appointments.entity.AppointmentEntities.Type
+import uk.gov.justice.digital.hmpps.appointments.model.*
+import uk.gov.justice.digital.hmpps.appointments.repository.AppointmentReferenceDataRepositories.EnforcementActionRepository
+import uk.gov.justice.digital.hmpps.appointments.repository.AppointmentReferenceDataRepositories.LocationRepository
+import uk.gov.justice.digital.hmpps.appointments.repository.AppointmentReferenceDataRepositories.OutcomeRepository
+import uk.gov.justice.digital.hmpps.appointments.repository.AppointmentReferenceDataRepositories.StaffRepository
+import uk.gov.justice.digital.hmpps.appointments.repository.AppointmentReferenceDataRepositories.TeamRepository
+import uk.gov.justice.digital.hmpps.appointments.repository.AppointmentReferenceDataRepositories.TypeRepository
+import uk.gov.justice.digital.hmpps.appointments.repository.AppointmentReferenceDataRepositories.getAllByCodeIn
+import uk.gov.justice.digital.hmpps.appointments.repository.AppointmentReferenceDataRepositories.getByCode
+import uk.gov.justice.digital.hmpps.appointments.repository.AppointmentRepositories.AppointmentRepository
+import uk.gov.justice.digital.hmpps.appointments.repository.AppointmentRepositories.PersonRepository
 import uk.gov.justice.digital.hmpps.audit.service.AuditableService
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.exception.NotFoundException.Companion.orNotFoundBy
-import java.time.LocalDate
-import java.time.LocalTime
 import java.time.ZonedDateTime
 
 @Service("NewAppointmentService")
 @Transactional
 class AppointmentService(
-    private val teamRepository: AppointmentsRepositories.TeamRepository,
-    private val staffRepository: AppointmentsRepositories.StaffRepository,
-    private val locationRepository: AppointmentsRepositories.LocationRepository,
-    private val contactTypeRepository: AppointmentsRepositories.TypeRepository,
     private val appointmentRepository: AppointmentRepository,
-    private val enforcementActionRepository: AppointmentsRepositories.EnforcementActionRepository,
-    private val enforcementRepository: AppointmentsRepositories.EnforcementRepository,
-    private val outcomeRepository: AppointmentsRepositories.OutcomeRepository,
-    private val personRepository: AppointmentsRepositories.PersonRepository,
+    private val personRepository: PersonRepository,
+    private val teamRepository: TeamRepository,
+    private val staffRepository: StaffRepository,
+    private val locationRepository: LocationRepository,
+    private val typeRepository: TypeRepository,
+    private val enforcementActionRepository: EnforcementActionRepository,
+    private val outcomeRepository: OutcomeRepository,
+    private val enforcementService: EnforcementService,
     auditedInteractionService: AuditedInteractionService,
 ) : AuditableService(auditedInteractionService) {
-    fun scheduleFutureAppointment(request: CreateAppointmentRequest): AppointmentContact {
-        require(
-            request.date > LocalDate.now() ||
-                (request.date == LocalDate.now() && request.startTime > LocalTime.now())
-        ) { "Date and time must be in the future to schedule an appointment" }
-        // TODO checkForConflicts(request.relatedTo.person.id, request.externalReference, request.schedule)
-        return create(request)
-    }
 
-    fun create(request: CreateAppointmentRequest): AppointmentContact = create(listOf(request)).single()
+    fun create(request: CreateAppointment): AppointmentContact = create(listOf(request)).single()
 
-    fun create(requests: List<CreateAppointmentRequest>): List<AppointmentContact> =
-        appointmentRepository
-            .saveAll(requests.asNewEntities())
-            .onEach { it.audit(BusinessInteractionCode.ADD_CONTACT) }
-
-    fun AppointmentContact.audit(interactionCode: BusinessInteractionCode) = audit(interactionCode) { audit ->
-        audit["offenderId"] = personId
-        audit["contactId"] = id!!
-    }
-
-    fun applyOutcome(requests: List<ApplyOutcomeRequest>): List<AppointmentContact> =
-        requests.asSequence().map { it.reference }.toSet()
-            .chunked(500)
-            .flatMap { chunk -> appointmentRepository.findByExternalReferenceIn(chunk) }
-            .mapNotNull { contact ->
-                requests.find { it.reference == contact.externalReference }?.let { it to contact }
-            }
-            .applyOutcomes()
-            .onEach { it.audit(BusinessInteractionCode.UPDATE_CONTACT) }
-//        audit(BusinessInteractionCode.UPDATE_CONTACT, username = request.username) { audit ->
-//            val outcome = outcomeProvider(request.outcome.code)
-//            val appointment = appointmentRepository.getAppointment(request.externalReference).with(outcome)
-//            audit["contact_id"] = appointment.id!!
-//            appointment
-//        }
-
-//    fun update(requests: List<UpdateAppointmentRequest>) {
-//        request.appointments.map { "${Contact.REFERENCE_PREFIX}${it.reference}" }.toSet()
-//            .chunked(500)
-//            .flatMap { chunk -> contactRepository.findByExternalReferenceIn(chunk) }
-//            .mapNotNull { contact -> request.findByReference(contact.externalReference!!)?.let { it to contact } }
-//            .applyUpdates()
-//    }
-
-    //
-//    fun delete(request: DeleteAppointmentsRequest) {
-//        request.appointments.map { "${Contact.REFERENCE_PREFIX}${it.reference}" }.toSet()
-//            .chunked(500)
-//            .forEach { contactRepository.softDeleteByExternalReferenceIn(it.toSet()) }
-//    }
-//
-    private fun List<CreateAppointmentRequest>.asNewEntities(): List<AppointmentContact> {
-        val types = contactTypeRepository.getAllByCodeIn(map { it.typeCode })
+    fun create(requests: List<CreateAppointment>): List<AppointmentContact> = with(requests) {
+        val types = typeRepository.getAllByCodeIn(map { it.typeCode })
         val outcomes = outcomeRepository.getAllByCodeIn(mapNotNull { it.outcomeCode })
         val enforcementAction = enforcementActionRepository.getByCode(EnforcementAction.REFER_TO_PERSON_MANAGER)
+        val enforcementReviewType = typeRepository.getByCode(Type.REVIEW_ENFORCEMENT_STATUS)
         val locations = locationRepository.getAllByCodeIn(mapNotNull { it.locationCode })
         val teams = teamRepository.getAllByCodeIn(map { it.teamCode })
         val staff = staffRepository.getAllByCodeIn(map { it.staffCode })
 
-        return map { request ->
+        val entities = map { request ->
             val team = teams[request.teamCode].orNotFoundBy("code", request.teamCode)
             val staffMember = staff[request.staffCode].orNotFoundBy("code", request.staffCode)
 
             AppointmentContact(
                 externalReference = request.reference,
                 personId = request.relatedTo.personId
-                    ?: personRepository.getPerson(requireNotNull(request.relatedTo.crn) { "Either personId or crn must be provided" }).id,
+                    ?: personRepository.getIdByCrn(requireNotNull(request.relatedTo.crn) { "Either personId or crn must be provided" }),
                 eventId = request.relatedTo.eventId,
                 nsiId = request.relatedTo.nonStatutoryInterventionId,
                 licenceConditionId = request.relatedTo.licenceConditionId,
@@ -117,149 +74,221 @@ class AppointmentService(
                 notes = request.notes,
                 sensitive = request.sensitive,
                 visorContact = request.exportToVisor,
-            ).apply {
-                outcome = request.outcomeCode?.let { code -> outcomes[code].orNotFoundBy("code", code) }
-                    ?.also { outcome ->
-                        attended = outcome.attended
-                        complied = outcome.complied
-                        // TODO
-//                        if (outcome.complied == false) {
-//                            applyEnforcementAction(enforcementAction)
-//                            updateFailureToComplyCount()
-//                        }
-                    }
+            ).checkForSchedulingConflicts(
+                allowConflicts = request.allowConflicts
+            ).applyOutcome(
+                outcome = request.outcomeCode?.let { code -> outcomes[code].orNotFoundBy("code", code) },
+                enforcementAction = enforcementAction,
+                enforcementReviewType = enforcementReviewType,
+            )
+        }
+
+        appointmentRepository.saveAll(entities)
+            .onEach { it.audit(BusinessInteractionCode.ADD_CONTACT) }
+    }
+
+    fun <T> update(requests: List<T>, init: UpdateBuilder<T>.() -> Unit): List<AppointmentContact> {
+        val config = UpdateBuilder<T>().also { it.init() }
+        fun T.reference() = requireNotNull(config.reference) { "Reference must be provided" }.invoke(this)
+
+        return requests
+            .map { it.reference() }
+            .chunked(500)
+            .flatMap { chunk -> appointmentRepository.findByExternalReferenceIn(chunk) }
+            .mapNotNull { contact ->
+                requests.find { it.reference() == contact.externalReference }?.let { it to contact }
+            }
+            .withConfig(config.amendDateTime) { amendDateTime(it) }
+            .withConfig(config.recreate) { recreate(it) }
+            .withConfig(config.reschedule) { reschedule(it) }
+            .withConfig(config.reassign) { reassign(it) }
+            .withConfig(config.applyOutcome) { applyOutcome(it) }
+            .withConfig(config.appendNotes) { appendNotes(it) }
+            .withConfig(config.flagAs) { flagAs(it) }
+            .map { (_, contact) -> contact }
+            .onEach { it.audit(BusinessInteractionCode.UPDATE_CONTACT) }
+    }
+
+    private fun <T> UpdatePipeline<T>.amendDateTime(scheduleProvider: (T) -> UpdateAppointment.Schedule): UpdatePipeline<T> {
+        fun T.schedule() = scheduleProvider.invoke(this)
+        return map { (request, existing) ->
+            request to existing
+                .amendDateTime(request.schedule())
+                .checkForSchedulingConflicts(request.schedule().allowConflicts)
+        }
+    }
+
+    private fun AppointmentContact.amendDateTime(request: UpdateAppointment.Schedule) = apply {
+        val existingDate = date.atTime(startTime.toLocalTime()).atZone(EuropeLondon)
+
+        require(outcome == null) {
+            "Appointment with outcome cannot be rescheduled"
+        }
+
+        require(existingDate > ZonedDateTime.now()) {
+            "Appointment must be in the future to amend the date and time"
+        }
+
+        date = request.date
+        startTime = request.date.atTime(request.startTime).atZone(EuropeLondon)
+        endTime = request.endTime?.let { request.date.atTime(it).atZone(EuropeLondon) }
+    }
+
+    private fun <T> UpdatePipeline<T>.recreate(scheduleProvider: (T) -> UpdateAppointment.RecreateAppointment): UpdatePipeline<T> {
+        fun T.schedule() = scheduleProvider.invoke(this)
+        val outcomeCodes = mapNotNull { (request, _) -> request.schedule().rescheduledBy?.outcomeCode }
+        val outcomes = outcomeRepository.getAllByCodeIn(outcomeCodes)
+
+        return map { (request, existing) ->
+            val schedule = request.schedule()
+            val outcome = schedule.rescheduledBy?.outcomeCode?.let { outcomes[it] }
+            request to existing
+                .recreate(schedule, outcome)
+                .checkForSchedulingConflicts(request.schedule().allowConflicts)
+        }
+    }
+
+    private fun AppointmentContact.recreate(
+        request: UpdateAppointment.RecreateAppointment,
+        rescheduleOutcome: Outcome?
+    ) = apply {
+        require(outcome == null) {
+            "Appointment with outcome cannot be rescheduled"
+        }
+
+        requireNotNull(rescheduleOutcome) {
+            "Recreating an appointment requires a rescheduling reason (service request or person-on-probation request)"
+        }
+
+        requireNotNull(request.newReference) {
+            "A new reference must be provided when recreating an appointment"
+        }
+
+        // Create replacement appointment:
+        val replacementAppointment = CreateAppointment(
+            reference = request.newReference,
+            date = request.date,
+            startTime = request.startTime,
+            endTime = request.endTime,
+            typeCode = type.code,
+            relatedTo = ReferencedEntities(
+                personId = personId,
+                eventId = eventId,
+                nonStatutoryInterventionId = nsiId,
+                licenceConditionId = licenceConditionId,
+                requirementId = requirementId,
+                pssRequirementId = pssRequirementId
+            ),
+            staffCode = staff.code,
+            teamCode = team.code,
+            locationCode = officeLocation?.code,
+            outcomeCode = null,
+            notes = notes,
+            sensitive = sensitive,
+            exportToVisor = visorExported,
+        )
+
+        // Save replacement appointment
+        create(replacementAppointment)
+    }
+
+    /**
+     * Decides whether to recreate or amend the appointment based on the existing appointment date.
+     */
+    private fun <T> UpdatePipeline<T>.reschedule(scheduleProvider: (T) -> UpdateAppointment.RecreateAppointment): UpdatePipeline<T> {
+        fun T.schedule() = scheduleProvider.invoke(this)
+        val outcomeCodes = mapNotNull { (request, _) -> request.schedule().rescheduledBy?.outcomeCode }
+        val outcomes = outcomeRepository.getAllByCodeIn(outcomeCodes)
+
+        return map { (request, existing) ->
+            val existingDate = existing.date.atTime(existing.startTime.toLocalTime()).atZone(EuropeLondon)
+            request to if (existingDate <= ZonedDateTime.now()) {
+                val schedule = request.schedule()
+                val outcome = schedule.rescheduledBy?.outcomeCode?.let { outcomes[it] }
+                existing.recreate(schedule, outcome)
+            } else {
+                existing.amendDateTime(with(request.schedule()) {
+                    UpdateAppointment.Schedule(date, startTime, endTime, allowConflicts)
+                })
             }
         }
     }
 
-    private fun List<Pair<ApplyOutcomeRequest, AppointmentContact>>.applyOutcomes(): List<AppointmentContact> {
-        val requests = map { (request, _) -> request }
-        val outcomes = outcomeRepository.getAllByCodeIn(requests.map { it.outcome.code })
+    private fun <T> UpdatePipeline<T>.applyOutcome(outcomeProvider: (T) -> UpdateAppointment.Outcome): UpdatePipeline<T> {
+        fun T.outcome() = outcomeProvider.invoke(this)
+        val outcomes = outcomeRepository.getAllByCodeIn(mapNotNull { (item, _) -> item.outcome().outcomeCode })
         val enforcementAction = enforcementActionRepository.getByCode(EnforcementAction.REFER_TO_PERSON_MANAGER)
+        val enforcementReviewType = typeRepository.getByCode(Type.REVIEW_ENFORCEMENT_STATUS)
 
-        return map { (request, contact) ->
-            contact.apply {
-                outcome =
-                    request.outcome.code.let { code -> outcomes[code].orNotFoundBy("code", code) }.also { outcome ->
-                        complied = outcome.complied
-                        attended = outcome.attended
-//                        // TODO if (outcome.complied == false) {
-//                            applyEnforcementAction(enforcementAction)
-//                            updateFailureToComplyCount()
-//                        }
-                    }
+        return map { (request, existing) ->
+            request to existing.applyOutcome(
+                outcome = request.outcome().outcomeCode?.let { code -> outcomes[code].orNotFoundBy("code", code) },
+                enforcementAction = enforcementAction,
+                enforcementReviewType = enforcementReviewType,
+            )
+        }
+    }
+
+    private fun AppointmentContact.applyOutcome(
+        outcome: Outcome?,
+        enforcementAction: EnforcementAction,
+        enforcementReviewType: Type
+    ) =
+        apply {
+            this.outcome = outcome
+            if (outcome != null) {
+                attended = outcome.attended
+                complied = outcome.complied
+                if (outcome.complied == false && outcome.enforceable == true) {
+                    enforcementService.applyEnforcementAction(this, enforcementAction, enforcementReviewType)
+                }
+            }
+        }
+
+    private fun <T> UpdatePipeline<T>.reassign(assigneeProvider: (T) -> UpdateAppointment.Assignee): UpdatePipeline<T> {
+        fun T.assignee() = assigneeProvider.invoke(this)
+        val allStaff = staffRepository.getAllByCodeIn(map { (request, _) -> request.assignee().staffCode })
+        val allTeams = teamRepository.getAllByCodeIn(map { (request, _) -> request.assignee().teamCode })
+
+        return map { (request, existing) ->
+            request to existing.apply {
+                val assignee = request.assignee()
+                staff = allStaff[assignee.staffCode].orNotFoundBy("code", assignee.staffCode)
+                team = allTeams[assignee.teamCode].orNotFoundBy("code", assignee.teamCode)
             }
         }
     }
-//
-//    private fun Contact.applyEnforcementAction(action: EnforcementAction) {
-//        if (!enforcementRepository.existsByContactId(id)) {
-//            enforcementRepository.save(
-//                Enforcement(
-//                    contact = this,
-//                    action = action,
-//                    responseDate = action.responseByPeriod?.let { ZonedDateTime.now().plusDays(it) }
-//                )
-//            )
-//            contactRepository.save(
-//                Contact(
-//                    linkedContactId = id,
-//                    type = action.contactType,
-//                    date = LocalDate.now(),
-//                    startTime = ZonedDateTime.now(),
-//                    person = person,
-//                    event = event,
-//                    requirement = requirement,
-//                    licenceCondition = licenceCondition,
-//                    provider = provider,
-//                    team = team,
-//                    staff = staff,
-//                    location = location,
-//                    notes = """
-//                        |$notes
-//                        |
-//                        |${LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"))}
-//                        |Enforcement Action: ${action.description}
-//                    """.trimMargin(),
-//                )
-//            )
-//        }
-//        enforcementActionId = action.id
-//        enforcement = true
-//    }
-//
-//    private fun Contact.updateFailureToComplyCount() {
-//        if (event == null) return
-//        event.ftcCount = contactRepository.countFailureToComply(event)
-//
-//        val ftcLimit = event.disposal?.type?.ftcLimit ?: return
-//        if (event.ftcCount > ftcLimit && !contactRepository.enforcementReviewExists(event.id, event.breachEnd)) {
-//            createEnforcementReviewContact()
-//        }
-//    }
-//
-//    private fun Contact.createEnforcementReviewContact() {
-//        contactRepository.save(
-//            Contact(
-//                linkedContactId = id,
-//                type = contactTypeRepository.getByCode(ContactType.REVIEW_ENFORCEMENT_STATUS),
-//                date = LocalDate.now(),
-//                startTime = ZonedDateTime.now(),
-//                person = person,
-//                event = event,
-//                requirement = requirement,
-//                licenceCondition = licenceCondition,
-//                provider = provider,
-//                team = team,
-//                staff = staff,
-//                location = location,
-//            )
-//        )
-//    }
-//
-//    private fun Contact.asAppointment() = AppointmentResponse(
-//        crn = person.crn,
-//        reference = externalReference?.takeLast(36),
-//        requirementId = requirement?.id,
-//        licenceConditionId = licenceCondition?.id,
-//        date = date,
-//        startTime = startTime,
-//        endTime = endTime,
-//        outcome = outcome?.let { AppointmentOutcome(it.code, it.description, it.attended, it.complied) },
-//        location = location?.let { CodedValue(it.code, it.description) },
-//        staff = staff.toProbationPractitioner { null },
-//        team = team.toCodedValue(),
-//        notes = notes,
-//        sensitive = sensitive
-//    )
-//
-//    private fun SentenceComponent.commenceComponent(
-//        event: Event,
-//        request: CreateAppointmentRequest,
-//        team: Team,
-//        staff: Staff,
-//        contactType: ContactType
-//    ): Contact? {
-//        val shouldCreateCommencedContact = this.commencementDate == null
-//        this.commencementDate = request.date.atStartOfDay(EuropeLondon)
-//        this.notes = listOfNotNull(
-//            this.notes,
-//            "Actual Start Date set to ${request.date.toDeliusDate()} following notification from the Accredited Programmes – Intervention Service"
-//        ).joinToString(System.lineSeparator() + System.lineSeparator())
-//
-//        return if (shouldCreateCommencedContact) {
-//            Contact(
-//                person = event.person.asPersonCrn(),
-//                event = event,
-//                requirement = this as? Requirement,
-//                licenceCondition = this as? LicenceCondition,
-//                date = request.date,
-//                provider = team.provider,
-//                team = team,
-//                staff = staff,
-//                type = contactType,
-//            )
-//        } else null
-//    }
-}
 
+    private fun <T> UpdatePipeline<T>.appendNotes(notesProvider: (T) -> String?): UpdatePipeline<T> {
+        fun T.notes() = notesProvider.invoke(this)
+
+        return map { (request, existing) ->
+            request to existing.apply {
+                notes = listOfNotNull(notes, request.notes()).joinToString("\n\n")
+            }
+        }
+    }
+
+    private fun <T> UpdatePipeline<T>.flagAs(flagsProvider: (T) -> UpdateAppointment.Flags): UpdatePipeline<T> {
+        fun T.flags() = flagsProvider.invoke(this)
+
+        return map { (request, existing) ->
+            request to existing.apply {
+                sensitive = request.flags().sensitive ?: sensitive
+                visorContact = request.flags().visor ?: visorContact
+                visorExported = if (visorContact == true) visorExported ?: false else null
+            }
+        }
+    }
+
+    private fun AppointmentContact.checkForSchedulingConflicts(allowConflicts: Boolean) = also {
+        require(allowConflicts || !appointmentRepository.schedulingConflictExists(this)) {
+            "Appointment conflicts with an existing appointment (ref=${this.externalReference})"
+        }
+    }
+
+    private fun AppointmentContact.audit(interactionCode: BusinessInteractionCode) = audit(interactionCode) { audit ->
+        audit["offenderId"] = personId
+        audit["contactId"] = id!!
+    }
+}

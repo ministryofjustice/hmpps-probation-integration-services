@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.appointments.domain.audit
+package uk.gov.justice.digital.hmpps.appointments.audit
 
 import uk.gov.justice.digital.hmpps.audit.InteractionCode
 

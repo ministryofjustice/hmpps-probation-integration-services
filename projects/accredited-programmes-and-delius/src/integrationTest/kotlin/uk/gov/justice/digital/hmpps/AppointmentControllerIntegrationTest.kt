@@ -21,6 +21,7 @@ import uk.gov.justice.digital.hmpps.data.TestData.CA_COMMUNITY_EVENT
 import uk.gov.justice.digital.hmpps.data.TestData.CA_PERSON
 import uk.gov.justice.digital.hmpps.data.TestData.LICENCE_CONDITIONS
 import uk.gov.justice.digital.hmpps.data.TestData.REQUIREMENTS
+import uk.gov.justice.digital.hmpps.data.generator.IdGenerator.id
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.toCrn
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.entity.contact.Contact
@@ -228,7 +229,7 @@ internal class AppointmentControllerIntegrationTest @Autowired constructor(
             }
             .andExpect { status { isBadRequest() } }
             .andReturn().response.contentAsJson<ErrorResponse>().also {
-                assertThat(it.message).isEqualTo("Invalid AppointmentOutcome codes: [UNKNOWN]")
+                assertThat(it.message).isEqualTo("Invalid Outcome codes: [UNKNOWN]")
             }
     }
 
@@ -448,7 +449,7 @@ internal class AppointmentControllerIntegrationTest @Autowired constructor(
                 listOf(
                     UpdateAppointmentRequest(
                         reference = appointmentReference,
-                        date = LocalDate.now(),
+                        date = LocalDate.now().plusDays(1),
                         startTime = LocalTime.now(),
                         endTime = LocalTime.now().plusMinutes(30),
                         sensitive = true,
@@ -465,8 +466,6 @@ internal class AppointmentControllerIntegrationTest @Autowired constructor(
         val appointment = contactRepository.findByExternalReference(existing.externalReference!!)
         assertThat(appointment).isNotNull
         with(appointment!!) {
-            assertThat(date).isEqualTo(LocalDate.now())
-            assertThat(sensitive).isTrue
             assertThat(notes).isEqualTo(
                 """
                 |Some notes
@@ -475,6 +474,8 @@ internal class AppointmentControllerIntegrationTest @Autowired constructor(
                 """.trimMargin()
             )
             assertThat(outcome?.code).isEqualTo("ATTC")
+            assertThat(date).isEqualTo(LocalDate.now().plusDays(1))
+            assertThat(sensitive).isTrue
         }
     }
 
@@ -547,12 +548,12 @@ internal class AppointmentControllerIntegrationTest @Autowired constructor(
     private fun givenExistingContact(): Pair<Contact, UUID> {
         val existing = contactRepository.save(
             Contact(
-                id = 0,
+                id = id(),
                 person = CA_PERSON.toCrn(),
                 event = CA_COMMUNITY_EVENT,
-                date = LocalDate.now().minusDays(7),
-                startTime = ZonedDateTime.now().minusDays(7),
-                endTime = ZonedDateTime.now().minusDays(7).plusMinutes(30),
+                date = LocalDate.now().plusDays(7),
+                startTime = ZonedDateTime.now().plusDays(7),
+                endTime = ZonedDateTime.now().plusDays(7).plusMinutes(30),
                 type = TestData.APPOINTMENT_CONTACT_TYPE,
                 staff = TestData.STAFF,
                 team = TestData.TEAM,
