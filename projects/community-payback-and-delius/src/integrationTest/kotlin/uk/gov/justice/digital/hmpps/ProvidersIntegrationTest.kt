@@ -79,6 +79,6 @@ class ProvidersIntegrationTest @Autowired constructor(
             .andExpect { status { is2xxSuccessful() } }
             .andReturn().response.contentAsJson<SessionsResponse>()
 
-        assertThat(response.sessions.size).isEqualTo(3)
+        assertThat(response.sessions.size).isEqualTo(1)
     }
 }

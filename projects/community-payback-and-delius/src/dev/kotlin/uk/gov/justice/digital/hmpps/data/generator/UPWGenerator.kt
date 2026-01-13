@@ -31,7 +31,7 @@ object UPWGenerator {
     val SECOND_UPW_PROJECT = generateUpwProject(
         name = "Second UPW Project",
         code = "N01SECOND",
-        team = TeamGenerator.DEFAULT_UPW_TEAM,
+        team = TeamGenerator.OTHER_PROVIDER_TEAM,
         placementAddress = DEFAULT_ADDRESS,
         projectType = ReferenceDataGenerator.INDIVIDUAL_PLACEMENT_PROJECT_TYPE
     )
