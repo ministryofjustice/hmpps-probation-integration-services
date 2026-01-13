@@ -110,6 +110,7 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
         save(UPWGenerator.CONTACT_NO_ENFORCEMENT)
         save(UPWGenerator.DEFAULT_UPW_APPOINTMENT)
         save(UPWGenerator.UPW_APPOINTMENT_NO_ENFORCEMENT)
+        save(UPWGenerator.UPW_APPOINTMENT_TO_UPDATE)
         save(UPWGenerator.UPW_APPOINTMENT_NO_OUTCOME)
         save(UPWGenerator.SECOND_UPW_APPOINTMENT_OUTCOME_NO_ENFORCEMENT)
         save(UPWGenerator.DEFAULT_RQMNT)
