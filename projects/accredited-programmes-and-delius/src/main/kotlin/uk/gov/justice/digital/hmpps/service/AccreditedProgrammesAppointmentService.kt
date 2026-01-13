@@ -22,14 +22,14 @@ import uk.gov.justice.digital.hmpps.repository.*
 
 @Transactional
 @Service
-class AppointmentService(
+class AccreditedProgrammesAppointmentService(
     private val licenceConditionRepository: LicenceConditionRepository,
     private val requirementRepository: RequirementRepository,
     private val teamRepository: TeamRepository,
     private val staffRepository: StaffRepository,
     private val contactTypeRepository: ContactTypeRepository,
     private val contactRepository: ContactRepository,
-    private val newAppointmentService: AppointmentService,
+    private val appointmentService: AppointmentService,
 ) {
     fun getAppointments(request: GetAppointmentsRequest) = with(request) {
         require(toDate >= fromDate) { "toDate cannot be before fromDate" }
@@ -52,7 +52,7 @@ class AppointmentService(
             val teams = teamRepository.getAllByCodeIn(map { it.team.code })
             val staff = staffRepository.getAllByCodeIn(map { it.staff.code })
 
-            val createdAppointments = newAppointmentService.create(map { request ->
+            val createdAppointments = appointmentService.create(map { request ->
                 val component = requireNotNull(
                     requirements[request.requirementId] ?: licenceConditions[request.licenceConditionId]
                 ) { "Either requirementId or licenceConditionId must be provided" }
@@ -92,7 +92,7 @@ class AppointmentService(
     }
 
     fun update(request: UpdateAppointmentsRequest) {
-        newAppointmentService.update(request.appointments) {
+        appointmentService.update(request.appointments) {
             reference = { "${Contact.REFERENCE_PREFIX}${it.reference}" }
             amendDateTime = { Schedule(it.date, it.startTime, it.endTime, allowConflicts = true) }
             reassign = { Assignee(it.staff.code, it.team.code, it.location?.code) }

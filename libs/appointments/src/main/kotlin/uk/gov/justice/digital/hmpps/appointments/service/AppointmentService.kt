@@ -24,7 +24,7 @@ import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.exception.NotFoundException.Companion.orNotFoundBy
 import java.time.ZonedDateTime
 
-@Service("NewAppointmentService")
+@Service
 @Transactional
 class AppointmentService(
     private val appointmentRepository: AppointmentRepository,
