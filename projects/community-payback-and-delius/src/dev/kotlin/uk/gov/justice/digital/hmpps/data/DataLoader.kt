@@ -64,6 +64,7 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
         save(DatasetGenerator.UPW_WORK_QUALITY_DATASET)
         save(DatasetGenerator.UPW_BEHAVIOUR_DATASET)
         save(DatasetGenerator.NON_WORKING_DAYS_DATASET)
+        save(DatasetGenerator.UPW_FREQUENCY_DATASET)
         save(ReferenceDataGenerator.GROUP_PLACEMENT_PROJECT_TYPE)
         save(ReferenceDataGenerator.INDIVIDUAL_PLACEMENT_PROJECT_TYPE)
         save(ReferenceDataGenerator.INACTIVE_PROJECT_TYPE)
@@ -86,6 +87,8 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
         save(ReferenceDataGenerator.DEFAULT_DISPOSAL_TYPE)
         save(ReferenceDataGenerator.NON_WORKING_DAY_CHRISTMAS)
         save(ReferenceDataGenerator.NON_WORKING_DAY_NEW_YEAR)
+        save(ReferenceDataGenerator.UPW_DAY_MONDAY)
+        save(ReferenceDataGenerator.UPW_FREQUENCY_WEEKLY)
     }
 
     fun loadUnpaidWorkData() {
@@ -102,13 +105,16 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
         save(UPWGenerator.DEFAULT_UPW_DETAILS)
         save(UPWGenerator.SECOND_UPW_DETAILS)
         save(UPWGenerator.THIRD_UPW_DETAILS)
+        save(UPWGenerator.DEFAULT_UPW_ALLOCATION)
         save(UPWGenerator.DEFAULT_CONTACT)
         save(UPWGenerator.CONTACT_NO_ENFORCEMENT)
         save(UPWGenerator.DEFAULT_UPW_APPOINTMENT)
         save(UPWGenerator.UPW_APPOINTMENT_NO_ENFORCEMENT)
+        save(UPWGenerator.UPW_APPOINTMENT_TO_UPDATE)
         save(UPWGenerator.UPW_APPOINTMENT_NO_OUTCOME)
         save(UPWGenerator.SECOND_UPW_APPOINTMENT_OUTCOME_NO_ENFORCEMENT)
         save(UPWGenerator.DEFAULT_RQMNT)
+        save(UPWGenerator.SECOND_RQMNT)
         save(UPWGenerator.LAO_EXCLUDED_UPW_APPOINTMENT)
         save(UPWGenerator.LAO_RESTRICTED_UPW_APPOINTMENT)
         save(UPWGenerator.SECOND_UPW_DETAILS_ADJUSTMENT_NEGATIVE)

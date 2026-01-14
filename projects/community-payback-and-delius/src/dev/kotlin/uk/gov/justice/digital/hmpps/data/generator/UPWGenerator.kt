@@ -23,20 +23,26 @@ object UPWGenerator {
     val DEFAULT_UPW_PROJECT = generateUpwProject(
         name = "Default UPW Project",
         code = "N01DEFAULT",
-        teamId = TeamGenerator.DEFAULT_UPW_TEAM.id,
+        team = TeamGenerator.DEFAULT_UPW_TEAM,
         placementAddress = DEFAULT_ADDRESS,
-        projectType = ReferenceDataGenerator.GROUP_PLACEMENT_PROJECT_TYPE
+        projectType = ReferenceDataGenerator.GROUP_PLACEMENT_PROJECT_TYPE,
+        expectedEndDate = LocalDate.now().plusMonths(4)
     )
     val SECOND_UPW_PROJECT = generateUpwProject(
         name = "Second UPW Project",
         code = "N01SECOND",
-        teamId = TeamGenerator.DEFAULT_UPW_TEAM.id,
+        team = TeamGenerator.OTHER_PROVIDER_TEAM,
         placementAddress = DEFAULT_ADDRESS,
         projectType = ReferenceDataGenerator.INDIVIDUAL_PLACEMENT_PROJECT_TYPE
     )
 
     val DEFAULT_UPW_PROJECT_AVAILABILITY = generateUpwProjectAvailability(
-        upwProjectId = DEFAULT_UPW_PROJECT.id
+        upwProjectId = DEFAULT_UPW_PROJECT.id,
+        frequency = ReferenceDataGenerator.UPW_FREQUENCY_WEEKLY,
+        startTime = LocalTime.of(9, 0),
+        endTime = LocalTime.of(16, 0),
+        startDate = LocalDate.now(),
+        endDate = LocalDate.now().plusMonths(4)
     )
     val SECOND_UPW_PROJECT_AVAILABILITY = generateUpwProjectAvailability(
         upwProjectId = SECOND_UPW_PROJECT.id
@@ -70,6 +76,18 @@ object UPWGenerator {
     val DEFAULT_UPW_DETAILS = generateUpwDetails(disposal = DEFAULT_DISPOSAL)
     val SECOND_UPW_DETAILS = generateUpwDetails(disposal = SECOND_DISPOSAL)
     val THIRD_UPW_DETAILS = generateUpwDetails(disposal = SECOND_DISPOSAL)
+
+    val DEFAULT_UPW_ALLOCATION = generateUpwAllocation(
+        details = DEFAULT_UPW_DETAILS,
+        project = DEFAULT_UPW_PROJECT,
+        projectAvailability = DEFAULT_UPW_PROJECT_AVAILABILITY,
+        allocationDay = ReferenceDataGenerator.UPW_DAY_MONDAY,
+        requestedFrequency = ReferenceDataGenerator.UPW_FREQUENCY_WEEKLY,
+        startDate = LocalDate.now().minusDays(7),
+        endDate = LocalDate.now().plusMonths(3),
+        startTime = LocalTime.of(9, 0),
+        endTime = LocalTime.of(16, 0)
+    )
 
     val DEFAULT_CONTACT = generateContact(
         contactType = ReferenceDataGenerator.UPW_APPOINTMENT_TYPE,
@@ -105,6 +123,7 @@ object UPWGenerator {
         date = LocalDate.now(),
         project = DEFAULT_UPW_PROJECT,
         details = DEFAULT_UPW_DETAILS,
+        allocation = DEFAULT_UPW_ALLOCATION,
         contact = DEFAULT_CONTACT,
         contactOutcomeTypeId = 1L,
         pickupLocation = DEFAULT_OFFICE_LOCATION,
@@ -175,6 +194,25 @@ object UPWGenerator {
         minutesCredited = 375L,
     )
 
+    val UPW_APPOINTMENT_TO_UPDATE = generateUpwAppointment(
+        startTime = LocalTime.of(10, 15),
+        endTime = LocalTime.of(16, 30),
+        date = LocalDate.now(),
+        project = SECOND_UPW_PROJECT,
+        details = THIRD_UPW_DETAILS,
+        contact = CONTACT_NO_ENFORCEMENT,
+        contactOutcomeTypeId = 1L,
+        pickupLocation = DEFAULT_OFFICE_LOCATION,
+        pickupTime = LocalTime.of(10, 15),
+        penaltyTime = null,
+        person = PersonGenerator.SECOND_PERSON,
+        staff = StaffGenerator.OTHER_PROVIDER_STAFF,
+        team = TeamGenerator.OTHER_PROVIDER_TEAM,
+        workQuality = ReferenceDataGenerator.EXCELLENT_WORK_QUALITY,
+        behaviour = ReferenceDataGenerator.EXCELLENT_BEHAVIOUR,
+        minutesCredited = 100L,
+    )
+
     val UPW_APPOINTMENT_NO_OUTCOME = generateUpwAppointment(
         startTime = LocalTime.of(12, 0),
         endTime = LocalTime.of(14, 0),
@@ -236,6 +274,11 @@ object UPWGenerator {
 
     val DEFAULT_RQMNT = generateRequirement(
         length = 120,
+        disposal = DEFAULT_DISPOSAL
+    )
+
+    val SECOND_RQMNT = generateRequirement(
+        length = 120,
         disposal = SECOND_DISPOSAL
     )
 
@@ -255,16 +298,23 @@ object UPWGenerator {
         id: Long = IdGenerator.getAndIncrement(),
         name: String,
         code: String,
-        teamId: Long,
+        team: Team,
         placementAddress: Address?,
         projectType: ReferenceData,
-        hiVisRequired: Boolean = false
-    ) = UpwProject(id, name, code, teamId, placementAddress, projectType, hiVisRequired)
+        hiVisRequired: Boolean = false,
+        expectedEndDate: LocalDate? = null,
+        completionDate: LocalDate? = null
+    ) = UpwProject(id, name, code, team, placementAddress, projectType, hiVisRequired, expectedEndDate, completionDate)
 
     fun generateUpwProjectAvailability(
         id: Long = IdGenerator.getAndIncrement(),
-        upwProjectId: Long
-    ) = UpwProjectAvailability(id, upwProjectId)
+        upwProjectId: Long,
+        frequency: ReferenceData? = null,
+        startTime: LocalTime? = null,
+        endTime: LocalTime? = null,
+        startDate: LocalDate? = null,
+        endDate: LocalDate? = null
+    ) = UpwProjectAvailability(id, upwProjectId, frequency, startTime, endTime, startDate, endDate)
 
     fun generateDisposal(
         id: Long = IdGenerator.getAndIncrement(),
@@ -346,8 +396,9 @@ object UPWGenerator {
         date: LocalDate,
         project: UpwProject,
         details: UpwDetails,
-        pickupLocation: OfficeLocation,
-        pickupTime: LocalTime,
+        allocation: UpwAllocation? = null,
+        pickupLocation: OfficeLocation?,
+        pickupTime: LocalTime?,
         penaltyTime: Long?,
         contact: Contact,
         contactOutcomeTypeId: Long?,
@@ -373,6 +424,7 @@ object UPWGenerator {
         date,
         project,
         details,
+        allocation,
         pickupLocation,
         pickupTime,
         penaltyTime,
@@ -421,6 +473,34 @@ object UPWGenerator {
         disposal: Disposal,
         softDeleted: Boolean = false
     ) = Requirement(id, requirementMainCategory, length, disposal, softDeleted)
+
+    fun generateUpwAllocation(
+        id: Long = IdGenerator.getAndIncrement(),
+        details: UpwDetails,
+        project: UpwProject,
+        projectAvailability: UpwProjectAvailability?,
+        allocationDay: UpwDay,
+        requestedFrequency: ReferenceData?,
+        startDate: LocalDate?,
+        endDate: LocalDate?,
+        startTime: LocalTime,
+        endTime: LocalTime,
+        softDeleted: Boolean = false,
+        rowVersion: Long = 1
+    ) = UpwAllocation(
+        id,
+        details,
+        project,
+        projectAvailability,
+        allocationDay,
+        requestedFrequency,
+        startDate,
+        endDate,
+        startTime,
+        endTime,
+        softDeleted,
+        rowVersion
+    )
 
     fun generateEvent(
         id: Long = IdGenerator.getAndIncrement(),

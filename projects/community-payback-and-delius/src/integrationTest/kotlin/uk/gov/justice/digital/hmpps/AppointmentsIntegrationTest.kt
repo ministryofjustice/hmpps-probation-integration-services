@@ -112,15 +112,15 @@ class AppointmentsIntegrationTest @Autowired constructor(
 
     @Test
     fun `can update appointment outcome`() {
-        val original = unpaidWorkAppointmentRepository.getAppointment(UPWGenerator.UPW_APPOINTMENT_NO_ENFORCEMENT.id)
+        val original = unpaidWorkAppointmentRepository.getAppointment(UPWGenerator.UPW_APPOINTMENT_TO_UPDATE.id)
 
-        mockMvc.put("/projects/N01DEFAULT/appointments/${original.id}/outcome") {
+        mockMvc.put("/projects/N01SECOND/appointments/${original.id}/outcome") {
             withToken()
             json = AppointmentOutcomeRequest(
-                id = UPWGenerator.UPW_APPOINTMENT_NO_OUTCOME.id,
+                id = UPWGenerator.UPW_APPOINTMENT_TO_UPDATE.id,
                 version = UUID(original.rowVersion, original.contact.rowVersion),
                 outcome = Code("A"),
-                supervisor = Code("N01P001"),
+                supervisor = Code("N02P001"),
                 startTime = LocalTime.of(11, 0),
                 endTime = LocalTime.of(15, 0),
                 notes = "new notes",
@@ -136,7 +136,7 @@ class AppointmentsIntegrationTest @Autowired constructor(
         }.andExpect { status { is2xxSuccessful() } }
 
         val appointment =
-            unpaidWorkAppointmentRepository.getAppointment(UPWGenerator.UPW_APPOINTMENT_NO_ENFORCEMENT.id)
+            unpaidWorkAppointmentRepository.getAppointment(UPWGenerator.UPW_APPOINTMENT_TO_UPDATE.id)
 
         assertThat(appointment).isNotNull
         assertThat(appointment.startTime).isEqualTo(LocalTime.of(11, 0))
@@ -252,7 +252,7 @@ class AppointmentsIntegrationTest @Autowired constructor(
                 hiVisWorn = true,
                 workedIntensively = true,
                 penaltyMinutes = 65,
-                minutesCredited = 55,
+                minutesCredited = 375,
                 workQuality = WorkQuality.EXCELLENT,
                 behaviour = Behaviour.UNSATISFACTORY,
                 sensitive = false,
