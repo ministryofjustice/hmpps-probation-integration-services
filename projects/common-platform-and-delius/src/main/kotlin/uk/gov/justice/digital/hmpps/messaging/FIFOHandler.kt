@@ -65,11 +65,8 @@ class FIFOHandler(
                 val remandedOffences = offenceService.getRemandOffences(defendant.offences, telemetryProperties)
                 val mainOffence = offenceService.findMainOffence(remandedOffences) ?: return@forEach
 
-                val rawCaseUrn =
-                    notification.message.hearing.prosecutionCases.find { it.defendants.contains(defendant) }
-                        ?.prosecutionCaseIdentifier?.caseURN ?: return@forEach
-
-                val caseUrn = rawCaseUrn.replace("\\s".toRegex(), "")
+                val caseUrn = notification.message.hearing.prosecutionCases.find { it.defendants.contains(defendant) }
+                    ?.prosecutionCaseIdentifier?.caseURN?: return@forEach
 
                 // Insert person and event
                 val insertRemandDTO = InsertRemandDTO(
@@ -78,7 +75,7 @@ class FIFOHandler(
                     additionalOffences = remandedOffences.filter { it.offenceCode != mainOffence.offenceCode },
                     courtCode = notification.message.hearing.courtCentre.code,
                     sittingDay = notification.message.hearing.hearingDays.first().sittingDay,
-                    caseUrn = caseUrn,
+                    caseUrn = caseUrn.replace("\\s".toRegex(), ""),
                     hearingId = notification.message.hearing.id,
                 )
 
