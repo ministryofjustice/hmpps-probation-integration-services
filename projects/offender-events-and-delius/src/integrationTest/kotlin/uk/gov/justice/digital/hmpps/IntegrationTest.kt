@@ -45,12 +45,14 @@ internal class IntegrationTest @Autowired constructor(
     @ParameterizedTest
     @MethodSource("deltas")
     fun `offender delta test`(delta: OffenderDelta, expected: List<Map<String, String>>) {
+        // given
         offenderDeltaRepository.save(delta)
-        verify(offenderDeltaService, after(250).atLeastOnce()).notify(any())
 
+        // when
         offenderDeltaPoller.poll()
         generateSequence { channelManager.getChannel(topicName).receive() }.toList()
 
+        // then
         if (expected.isNotEmpty()) {
 
             val propertiesCaptor = argumentCaptor<Map<String, String>>()

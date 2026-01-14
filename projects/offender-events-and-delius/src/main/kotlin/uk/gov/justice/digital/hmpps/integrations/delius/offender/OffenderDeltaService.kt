@@ -31,22 +31,23 @@ class OffenderDeltaService(
     fun deleteAll(deltas: List<OffenderDelta>) = offenderDeltaRepository.deleteAllByIdInBatch(deltas.map { it.id })
 
     @WithSpan("POLL offender_delta", kind = SpanKind.SERVER)
-    fun notify(delta: OffenderDelta) {
-        delta
-            .also { handleDomainEvent(it) }
-            .asNotifications().forEach {
-                notificationPublisher.publish(it)
-                telemetryService.trackEvent(
-                    "OffenderEventPublished",
-                    mapOf(
-                        "crn" to it.message.crn,
-                        "eventType" to it.eventType!!,
-                        "occurredAt" to ISO_ZONED_DATE_TIME.format(it.message.eventDatetime),
-                        "notification" to it.toString(),
-                    )
-                )
-            }
+    internal fun notify(notification: Notification<OffenderEvent>) {
+        notificationPublisher.publish(notification)
+        telemetryService.trackEvent(
+            "OffenderEventPublished",
+            mapOf(
+                "crn" to notification.message.crn,
+                "eventType" to notification.eventType!!,
+                "occurredAt" to ISO_ZONED_DATE_TIME.format(notification.message.eventDatetime),
+                "notification" to notification.toString(),
+            )
+        )
     }
+
+    internal fun prepare(delta: OffenderDelta): List<Notification<OffenderEvent>> =
+        delta
+            .also(::handleDomainEvents)
+            .asNotifications()
 
     fun OffenderDelta.asNotifications(): List<Notification<OffenderEvent>> {
         fun sourceToEventType(): String? = when (sourceTable) {
@@ -86,7 +87,7 @@ class OffenderDeltaService(
         }
     }
 
-    private fun handleDomainEvent(delta: OffenderDelta) {
+    private fun handleDomainEvents(delta: OffenderDelta) {
         if (!isContactDomainEventCandidate(delta)) return
 
         val offender = delta.offender ?: return
