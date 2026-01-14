@@ -481,19 +481,22 @@ internal class AppointmentControllerIntegrationTest @Autowired constructor(
 
     @Test
     fun `logging a non-complied outcome increments failure to comply count`() {
-        val (existing1, appointmentReference1) = givenExistingContact()
-        val (_, appointmentReference2) = givenExistingContact()
+        val (existing1, appointmentReference1) = givenExistingContact(date = LocalDate.now().minusDays(1))
+        val (existing2, appointmentReference2) = givenExistingContact(date = LocalDate.now().minusDays(2))
 
-        listOf(appointmentReference1, appointmentReference2).forEachIndexed { index, reference ->
+        listOf(
+            existing1 to appointmentReference1,
+            existing2 to appointmentReference2
+        ).forEach { (existing, reference) ->
             mockMvc.put("/appointments") {
                 withToken()
                 json = UpdateAppointmentsRequest(
                     listOf(
                         UpdateAppointmentRequest(
                             reference = reference,
-                            date = LocalDate.now().minusDays(index.toLong()),
-                            startTime = LocalTime.now(),
-                            endTime = LocalTime.now().plusMinutes(30),
+                            date = existing.date,
+                            startTime = existing.startTime!!.toLocalTime(),
+                            endTime = existing.endTime!!.toLocalTime(),
                             sensitive = true,
                             outcome = RequestCode("FTC"),
                             location = RequestCode("OFFICE1"),
@@ -545,13 +548,13 @@ internal class AppointmentControllerIntegrationTest @Autowired constructor(
         assertThat(appointment).isNull()
     }
 
-    private fun givenExistingContact(): Pair<Contact, UUID> {
+    private fun givenExistingContact(date: LocalDate = LocalDate.now().plusDays(7)): Pair<Contact, UUID> {
         val existing = contactRepository.save(
             Contact(
                 id = id(),
                 person = CA_PERSON.toCrn(),
                 event = CA_COMMUNITY_EVENT,
-                date = LocalDate.now().plusDays(7),
+                date = date,
                 startTime = ZonedDateTime.now().plusDays(7),
                 endTime = ZonedDateTime.now().plusDays(7).plusMinutes(30),
                 type = TestData.APPOINTMENT_CONTACT_TYPE,

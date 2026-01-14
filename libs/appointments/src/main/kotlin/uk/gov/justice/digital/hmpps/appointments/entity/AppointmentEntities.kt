@@ -25,27 +25,13 @@ object AppointmentEntities {
     @NamedEntityGraph(
         name = "AppointmentContact.all",
         includeAllAttributes = true,
-        attributeNodes = [
-            NamedAttributeNode("event", subgraph = "Event"),
-            NamedAttributeNode("person", subgraph = "Person"),
-        ],
+        attributeNodes = [NamedAttributeNode("event", subgraph = "Event")],
         subgraphs = [
             NamedSubgraph(
                 name = "Event",
                 attributeNodes = [NamedAttributeNode(value = "disposal", subgraph = "Disposal")]
             ),
             NamedSubgraph(name = "Disposal", attributeNodes = [NamedAttributeNode(value = "type")]),
-            NamedSubgraph(
-                name = "Person",
-                attributeNodes = [NamedAttributeNode(value = "manager", subgraph = "Manager")]
-            ),
-            NamedSubgraph(
-                name = "Manager", attributeNodes = [
-                    NamedAttributeNode(value = "staff"),
-                    NamedAttributeNode(value = "team", subgraph = "Team"),
-                ]
-            ),
-            NamedSubgraph(name = "Team", attributeNodes = [NamedAttributeNode(value = "provider")]),
         ]
     )
     class AppointmentContact(
@@ -311,45 +297,12 @@ object AppointmentEntities {
     @Table(name = "offender")
     @SQLRestriction("soft_deleted = 0")
     class Person(
-        @Column(columnDefinition = "char(7)")
-        val crn: String,
-
-        @OneToOne(mappedBy = "person")
-        val manager: PersonManager,
-
         @Id
         @Column(name = "offender_id")
-        val id: Long
-    )
+        val id: Long,
 
-    @Entity
-    @Immutable
-    @Table(name = "offender_manager")
-    @SQLRestriction("active_flag = 1 and soft_deleted = 0")
-    class PersonManager(
-        @Id
-        @Column(name = "offender_manager_id")
-        val id: Long = 0,
-
-        @OneToOne
-        @JoinColumn(name = "offender_id")
-        val person: Person,
-
-        @ManyToOne
-        @JoinColumn(name = "team_id")
-        val team: Team,
-
-        @ManyToOne
-        @JoinColumn(name = "allocation_staff_id")
-        val staff: Staff,
-
-        @Column(columnDefinition = "number", nullable = false)
-        @Convert(converter = NumericBooleanConverter::class)
-        val softDeleted: Boolean = false,
-
-        @Column(name = "active_flag", columnDefinition = "number", nullable = false)
-        @Convert(converter = NumericBooleanConverter::class)
-        val active: Boolean = true,
+        @Column(columnDefinition = "char(7)")
+        val crn: String,
     )
 
     @Entity
@@ -394,7 +347,7 @@ object AppointmentEntities {
         @Column(name = "code", columnDefinition = "char(7)")
         override val code: String,
 
-        val endDate: LocalDate?,
+        val endDate: LocalDate? = null,
     ) : CodedReferenceData
 
     @Immutable

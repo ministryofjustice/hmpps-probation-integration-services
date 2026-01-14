@@ -23,6 +23,7 @@ import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.exception.NotFoundException.Companion.orNotFoundBy
 import java.time.ZonedDateTime
+import java.time.temporal.ChronoUnit
 
 @Service
 @Transactional
@@ -118,20 +119,28 @@ class AppointmentService(
         }
     }
 
-    private fun AppointmentContact.amendDateTime(request: UpdateAppointment.Schedule) = apply {
+    private fun AppointmentContact.amendDateTime(request: UpdateAppointment.Schedule): AppointmentContact {
         val existingDate = date.atTime(startTime.toLocalTime()).atZone(EuropeLondon)
+        val requestDate = request.date.atTime(request.startTime).atZone(EuropeLondon)
+        if (requestDate.truncatedTo(ChronoUnit.SECONDS) == existingDate.truncatedTo(ChronoUnit.SECONDS)) return this
 
         require(outcome == null) {
             "Appointment with outcome cannot be rescheduled"
         }
 
-        require(existingDate > ZonedDateTime.now()) {
+        require(existingDate >= ZonedDateTime.now()) {
             "Appointment must be in the future to amend the date and time"
         }
 
-        date = request.date
-        startTime = request.date.atTime(request.startTime).atZone(EuropeLondon)
-        endTime = request.endTime?.let { request.date.atTime(it).atZone(EuropeLondon) }
+        require(requestDate >= ZonedDateTime.now()) {
+            "Appointment cannot be rescheduled into the past"
+        }
+
+        return apply {
+            date = request.date
+            startTime = request.date.atTime(request.startTime).atZone(EuropeLondon)
+            endTime = request.endTime?.let { request.date.atTime(it).atZone(EuropeLondon) }
+        }
     }
 
     private fun <T> UpdatePipeline<T>.recreate(scheduleProvider: (T) -> UpdateAppointment.RecreateAppointment): UpdatePipeline<T> {
@@ -151,7 +160,11 @@ class AppointmentService(
     private fun AppointmentContact.recreate(
         request: UpdateAppointment.RecreateAppointment,
         rescheduleOutcome: Outcome?
-    ) = apply {
+    ): AppointmentContact {
+        val existingDate = date.atTime(startTime.toLocalTime()).atZone(EuropeLondon)
+        val requestDate = request.date.atTime(request.startTime).atZone(EuropeLondon)
+        if (requestDate.truncatedTo(ChronoUnit.SECONDS) == existingDate.truncatedTo(ChronoUnit.SECONDS)) return this
+
         require(outcome == null) {
             "Appointment with outcome cannot be rescheduled"
         }
@@ -164,36 +177,42 @@ class AppointmentService(
             "A new reference must be provided when recreating an appointment"
         }
 
-        // Create replacement appointment:
-        val replacementAppointment = CreateAppointment(
-            reference = request.newReference,
-            date = request.date,
-            startTime = request.startTime,
-            endTime = request.endTime,
-            typeCode = type.code,
-            relatedTo = ReferencedEntities(
-                personId = personId,
-                eventId = eventId,
-                nonStatutoryInterventionId = nsiId,
-                licenceConditionId = licenceConditionId,
-                requirementId = requirementId,
-                pssRequirementId = pssRequirementId
-            ),
-            staffCode = staff.code,
-            teamCode = team.code,
-            locationCode = officeLocation?.code,
-            outcomeCode = null,
-            notes = notes,
-            sensitive = sensitive,
-            exportToVisor = visorExported,
-        )
+        require(requestDate >= ZonedDateTime.now()) {
+            "Appointment cannot be rescheduled into the past"
+        }
 
-        // Save replacement appointment
-        create(replacementAppointment)
+        // Update the existing appointment with the rescheduled outcome
+        outcome = rescheduleOutcome
+
+        // Create replacement appointment
+        return create(
+            CreateAppointment(
+                reference = request.newReference,
+                date = request.date,
+                startTime = request.startTime,
+                endTime = request.endTime,
+                typeCode = type.code,
+                relatedTo = ReferencedEntities(
+                    personId = personId,
+                    eventId = eventId,
+                    nonStatutoryInterventionId = nsiId,
+                    licenceConditionId = licenceConditionId,
+                    requirementId = requirementId,
+                    pssRequirementId = pssRequirementId
+                ),
+                staffCode = staff.code,
+                teamCode = team.code,
+                locationCode = officeLocation?.code,
+                outcomeCode = null,
+                notes = notes,
+                sensitive = sensitive,
+                exportToVisor = visorExported,
+            )
+        )
     }
 
     /**
-     * Decides whether to recreate or amend the appointment based on the existing appointment date.
+     * Helper - decides whether to recreate or amend the appointment based on the existing appointment date.
      */
     private fun <T> UpdatePipeline<T>.reschedule(scheduleProvider: (T) -> UpdateAppointment.RecreateAppointment): UpdatePipeline<T> {
         fun T.schedule() = scheduleProvider.invoke(this)
@@ -204,7 +223,7 @@ class AppointmentService(
             val existingDate = existing.date.atTime(existing.startTime.toLocalTime()).atZone(EuropeLondon)
             request to if (existingDate <= ZonedDateTime.now()) {
                 val schedule = request.schedule()
-                val outcome = schedule.rescheduledBy?.outcomeCode?.let { outcomes[it] }
+                val outcome = schedule.rescheduledBy?.outcomeCode?.let { outcomes[it].orNotFoundBy("code", it) }
                 existing.recreate(schedule, outcome)
             } else {
                 existing.amendDateTime(with(request.schedule()) {
@@ -249,12 +268,15 @@ class AppointmentService(
         fun T.assignee() = assigneeProvider.invoke(this)
         val allStaff = staffRepository.getAllByCodeIn(map { (request, _) -> request.assignee().staffCode })
         val allTeams = teamRepository.getAllByCodeIn(map { (request, _) -> request.assignee().teamCode })
+        val allLocations =
+            locationRepository.getAllByCodeIn(mapNotNull { (request, _) -> request.assignee().locationCode })
 
         return map { (request, existing) ->
             request to existing.apply {
                 val assignee = request.assignee()
                 staff = allStaff[assignee.staffCode].orNotFoundBy("code", assignee.staffCode)
                 team = allTeams[assignee.teamCode].orNotFoundBy("code", assignee.teamCode)
+                officeLocation = assignee.locationCode?.let { allLocations[it].orNotFoundBy("code", it) }
             }
         }
     }
@@ -283,7 +305,7 @@ class AppointmentService(
 
     private fun AppointmentContact.checkForSchedulingConflicts(allowConflicts: Boolean) = also {
         require(allowConflicts || !appointmentRepository.schedulingConflictExists(this)) {
-            "Appointment conflicts with an existing appointment (ref=${this.externalReference})"
+            "Appointment with reference $externalReference conflicts with an existing appointment"
         }
     }
 

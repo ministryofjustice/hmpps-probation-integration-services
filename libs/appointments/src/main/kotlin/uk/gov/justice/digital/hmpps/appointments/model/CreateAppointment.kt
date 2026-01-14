@@ -18,7 +18,7 @@ data class CreateAppointment(
     val outcomeCode: String? = null,
     val notes: String? = null,
     val sensitive: Boolean? = false,
-    val exportToVisor: Boolean? = false, // TODO for new contacts - validate that person has a MAPPA / ViSOR registration
+    val exportToVisor: Boolean? = false,
     val allowConflicts: Boolean = false,
 ) {
     init {

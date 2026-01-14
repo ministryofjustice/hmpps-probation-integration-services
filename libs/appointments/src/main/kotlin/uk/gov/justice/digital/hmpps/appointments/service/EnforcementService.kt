@@ -70,10 +70,11 @@ class EnforcementService(
                 staff = staff,
                 officeLocation = officeLocation,
                 notes = listOfNotNull(
-                    notes, """
-                                ${DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm").format(LocalDateTime.now())}
-                                Enforcement Action: ${action.description}
-                            """.trimIndent()
+                    notes,
+                    """
+                        ${DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm").format(LocalDateTime.now())}
+                        Enforcement Action: ${action.description}
+                    """.trimIndent()
                 ).joinToString("\n\n"),
             )
         )
