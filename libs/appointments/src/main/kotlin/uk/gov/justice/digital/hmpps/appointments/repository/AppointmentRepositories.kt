@@ -13,7 +13,6 @@ import uk.gov.justice.digital.hmpps.appointments.entity.AppointmentEntities.Type
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import java.time.LocalDate
 import java.time.ZonedDateTime
-import java.time.format.DateTimeFormatter.ISO_LOCAL_TIME
 
 object AppointmentRepositories {
     interface AppointmentRepository : JpaRepository<AppointmentContact, Long> {
@@ -59,7 +58,7 @@ object AppointmentRepositories {
                 join c.person p
                 where p.id = :personId
                 and c.externalReference <> :externalReference
-                and date_trunc('day', c.date) = :date
+                and to_char(c.date, 'YYYY-MM-DD') = to_char(:date, 'YYYY-MM-DD') 
                 and to_char(c.startTime, 'HH24:MI') < to_char(:endTime, 'HH24:MI') 
                 and c.endTime is not null 
                 and to_char(c.endTime, 'HH24:MI') > to_char(:startTime, 'HH24:MI')
@@ -74,8 +73,6 @@ object AppointmentRepositories {
             date: LocalDate = appointment.date,
             startTime: ZonedDateTime = appointment.startTime,
             endTime: ZonedDateTime = requireNotNull(appointment.endTime) { "End time must be set to check for conflicts" },
-            start: String = startTime.format(ISO_LOCAL_TIME),
-            end: String = endTime.format(ISO_LOCAL_TIME),
             pageable: Pageable = Pageable.ofSize(1)
         ): Page<Long>
 
