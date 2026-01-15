@@ -14,7 +14,7 @@ import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import java.time.LocalDate
 import java.time.ZonedDateTime
 
-object AppointmentRepositories {
+internal object AppointmentRepositories {
     interface AppointmentRepository : JpaRepository<AppointmentContact, Long> {
         @EntityGraph("AppointmentContact.all")
         fun findByExternalReferenceIn(externalReference: List<String>): List<AppointmentContact>

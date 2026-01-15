@@ -15,7 +15,7 @@ import java.time.format.DateTimeFormatter
 
 @Transactional
 @Service
-class EnforcementService(
+internal class EnforcementService(
     private val enforcementRepository: EnforcementRepository,
     private val appointmentRepository: AppointmentRepository,
 ) {

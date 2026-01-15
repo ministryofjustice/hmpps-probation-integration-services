@@ -16,7 +16,7 @@ import uk.gov.justice.digital.hmpps.jpa.GeneratedId
 import java.time.LocalDate
 import java.time.ZonedDateTime
 
-object AppointmentEntities {
+internal object AppointmentEntities {
     @Entity(name = "AppointmentContact")
     @EntityListeners(AuditingEntityListener::class)
     @Table(name = "contact")

@@ -8,7 +8,6 @@ import uk.gov.justice.digital.hmpps.entity.Dataset
 import uk.gov.justice.digital.hmpps.entity.ReferenceData
 import uk.gov.justice.digital.hmpps.entity.contact.ContactOutcome
 import uk.gov.justice.digital.hmpps.entity.contact.ContactType
-import uk.gov.justice.digital.hmpps.entity.contact.enforcement.EnforcementAction
 import uk.gov.justice.digital.hmpps.entity.registration.RegisterType
 import uk.gov.justice.digital.hmpps.entity.sentence.DisposalType
 import uk.gov.justice.digital.hmpps.entity.sentence.component.category.LicenceConditionMainCategory

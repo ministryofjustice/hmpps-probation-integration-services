@@ -2,7 +2,7 @@ package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import uk.gov.justice.digital.hmpps.appointments.entity.AppointmentEntities.AppointmentContact
+import uk.gov.justice.digital.hmpps.appointments.model.Appointment
 import uk.gov.justice.digital.hmpps.appointments.model.CreateAppointment
 import uk.gov.justice.digital.hmpps.appointments.model.ReferencedEntities
 import uk.gov.justice.digital.hmpps.appointments.model.UpdateAppointment.*
@@ -49,8 +49,6 @@ class AccreditedProgrammesAppointmentService(
         with(request.appointments) {
             val requirements = requirementRepository.getAllByCodeIn(mapNotNull { it.requirementId })
             val licenceConditions = licenceConditionRepository.getAllByCodeIn(mapNotNull { it.licenceConditionId })
-            val teams = teamRepository.getAllByCodeIn(map { it.team.code })
-            val staff = staffRepository.getAllByCodeIn(map { it.staff.code })
 
             val createdAppointments = appointmentService.create(map { request ->
                 val component = requireNotNull(
@@ -78,12 +76,15 @@ class AccreditedProgrammesAppointmentService(
                 )
             })
 
+            val teams = teamRepository.getAllByCodeIn(map { it.team.code })
+            val staff = staffRepository.getAllByCodeIn(map { it.staff.code })
             val commencedContactType = contactTypeRepository.getByCode(ContactType.ORDER_COMPONENT_COMMENCED)
             val commencementContacts = createdAppointments.mapNotNull {
-                if (it.type.code == CreateAppointmentRequest.Type.PRE_GROUP_ONE_TO_ONE_MEETING.code) {
-                    val component = requirements[it.requirementId] ?: licenceConditions[it.licenceConditionId]
-                    val team = teams[it.team.code].orNotFoundBy("code", it.team.code)
-                    val staff = staff[it.staff.code].orNotFoundBy("code", it.staff.code)
+                if (it.typeCode == CreateAppointmentRequest.Type.PRE_GROUP_ONE_TO_ONE_MEETING.code) {
+                    val component = requirements[it.relatedTo.requirementId]
+                        ?: licenceConditions[it.relatedTo.licenceConditionId]
+                    val team = teams[it.teamCode].orNotFoundBy("code", it.teamCode)
+                    val staff = staff[it.staffCode].orNotFoundBy("code", it.staffCode)
                     component?.commenceComponent(it, team, staff, commencedContactType)
                 } else null
             }
@@ -125,7 +126,7 @@ class AccreditedProgrammesAppointmentService(
     )
 
     private fun SentenceComponent.commenceComponent(
-        appointment: AppointmentContact,
+        appointment: Appointment,
         team: Team,
         staff: Staff,
         contactType: ContactType

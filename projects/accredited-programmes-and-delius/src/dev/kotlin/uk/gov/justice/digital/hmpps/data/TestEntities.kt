@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.entity.contact.enforcement
+package uk.gov.justice.digital.hmpps.data
 
 import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
@@ -75,8 +75,4 @@ class EnforcementAction(
     @Id
     @Column(name = "enforcement_action_id")
     val id: Long = 0
-) {
-    companion object {
-        const val REFER_TO_PERSON_MANAGER = "ROM"
-    }
-}
+)

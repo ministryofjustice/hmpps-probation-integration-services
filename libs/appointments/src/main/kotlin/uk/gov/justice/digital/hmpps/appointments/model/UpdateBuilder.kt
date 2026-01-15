@@ -13,10 +13,10 @@ class UpdateBuilder<T> {
     var flagAs: ((T) -> UpdateAppointment.Flags)? = null
 }
 
-typealias UpdatePipeline<T> = List<Pair<T, AppointmentContact>>
 typealias ConfigProvider<T, R> = (T) -> R
+internal typealias UpdatePipeline<T> = List<Pair<T, AppointmentContact>>
 
-fun <T, R> UpdatePipeline<T>.withConfig(
+internal fun <T, R> UpdatePipeline<T>.withConfig(
     configProvider: ConfigProvider<T, R>?,
     fn: UpdatePipeline<T>.(ConfigProvider<T, R>) -> UpdatePipeline<T>
 ): UpdatePipeline<T> {
