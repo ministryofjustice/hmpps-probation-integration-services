@@ -99,7 +99,8 @@ object TestData {
     val ORDER_COMPONENT_COMMENCED_CONTACT_TYPE = ContactType(id(), ContactType.ORDER_COMPONENT_COMMENCED, false)
 
     val ATTENDED_COMPLIED = ContactOutcome(id(), "ATTC", "Attended and Complied")
-    val FAILED_TO_COMPLY = ContactOutcome(id(), "FTC", "Failed to comply", attended = false, complied = false)
+    val FAILED_TO_COMPLY =
+        ContactOutcome(id(), "FTC", "Failed to comply", attended = false, complied = false, enforceable = true)
     val REFER_TO_MANAGER_CONTACT_TYPE = ContactType(id(), "ROM", false)
     val REFER_TO_MANAGER_ACTION = EnforcementAction("ROM", "Refer to manager", 7, REFER_TO_MANAGER_CONTACT_TYPE, id())
     val ENFORCEMENT_REVIEW_CONTACT_TYPE = ContactType(id(), "ARWS", false)

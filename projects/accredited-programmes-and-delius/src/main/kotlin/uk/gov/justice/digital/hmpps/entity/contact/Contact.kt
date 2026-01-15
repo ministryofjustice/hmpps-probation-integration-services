@@ -105,12 +105,14 @@ class Contact(
     val externalReference: String? = null,
 
     @Convert(converter = YesNoConverter::class)
-    var sensitive: Boolean = false,
+    var sensitive: Boolean? = false,
 
     @CreatedDate
+    @Column(name = "created_datetime")
     var createdDatetime: ZonedDateTime = ZonedDateTime.now(),
 
     @LastModifiedDate
+    @Column(name = "last_updated_datetime")
     var lastUpdatedDatetime: ZonedDateTime = ZonedDateTime.now(),
 
     @CreatedBy
@@ -122,6 +124,7 @@ class Contact(
     val createdByUser: User? = null,
 
     @LastModifiedBy
+    @Column(name = "last_updated_user_id")
     var lastUpdatedUserId: Long = 0,
 
     @Column(columnDefinition = "number")
@@ -141,8 +144,8 @@ class Contact(
     var notes: String? = notes
         private set
 
-    fun appendNotes(extraNotes: String) {
-        notes = notes + System.lineSeparator() + System.lineSeparator() + extraNotes
+    fun appendNotes(newNotes: String) {
+        notes = listOfNotNull(notes, newNotes).joinToString(System.lineSeparator() + System.lineSeparator())
     }
 
     companion object {
