@@ -16,6 +16,8 @@ import org.springframework.test.web.servlet.delete
 import org.springframework.test.web.servlet.post
 import org.springframework.test.web.servlet.put
 import uk.gov.justice.digital.hmpps.advice.ErrorResponse
+import uk.gov.justice.digital.hmpps.data.EnforcementActionRepository
+import uk.gov.justice.digital.hmpps.data.EnforcementRepository
 import uk.gov.justice.digital.hmpps.data.TestData
 import uk.gov.justice.digital.hmpps.data.TestData.CA_COMMUNITY_EVENT
 import uk.gov.justice.digital.hmpps.data.TestData.CA_PERSON
@@ -27,8 +29,6 @@ import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.entity.contact.Contact
 import uk.gov.justice.digital.hmpps.model.*
 import uk.gov.justice.digital.hmpps.repository.ContactRepository
-import uk.gov.justice.digital.hmpps.repository.EnforcementActionRepository
-import uk.gov.justice.digital.hmpps.repository.EnforcementRepository
 import uk.gov.justice.digital.hmpps.repository.RequirementRepository
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.json
@@ -514,6 +514,7 @@ internal class AppointmentControllerIntegrationTest @Autowired constructor(
         assertThat(appointment.complied).isFalse
         assertThat(appointment.outcome?.code).isEqualTo("FTC")
         assertThat(appointment.event?.ftcCount).isEqualTo(2)
+        assertThat(appointment.enforcement).isTrue
         val enforcementAction = enforcementActionRepository.findByIdOrNull(appointment.enforcementActionId!!)!!
         assertThat(enforcementAction.code).isEqualTo("ROM")
         val enforcement = enforcementRepository.findAll().single { it.contact.id == appointment.id }

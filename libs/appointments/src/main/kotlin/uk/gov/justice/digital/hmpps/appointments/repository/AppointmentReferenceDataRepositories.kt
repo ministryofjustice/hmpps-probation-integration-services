@@ -11,7 +11,7 @@ import uk.gov.justice.digital.hmpps.appointments.entity.AppointmentEntities.Team
 import uk.gov.justice.digital.hmpps.appointments.entity.AppointmentEntities.Type
 import uk.gov.justice.digital.hmpps.exception.NotFoundException.Companion.orNotFoundBy
 
-object AppointmentReferenceDataRepositories {
+internal object AppointmentReferenceDataRepositories {
     interface ReferenceDataRepository<T : CodedReferenceData> {
         fun findByCode(code: String): T?
         fun findAllByCodeIn(code: Set<String>): List<T>

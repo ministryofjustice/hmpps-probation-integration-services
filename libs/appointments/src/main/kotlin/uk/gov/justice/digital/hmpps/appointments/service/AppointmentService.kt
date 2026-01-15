@@ -27,7 +27,7 @@ import java.time.temporal.ChronoUnit
 
 @Service
 @Transactional
-class AppointmentService(
+class AppointmentService internal constructor(
     private val appointmentRepository: AppointmentRepository,
     private val personRepository: PersonRepository,
     private val teamRepository: TeamRepository,
@@ -40,9 +40,11 @@ class AppointmentService(
     auditedInteractionService: AuditedInteractionService,
 ) : AuditableService(auditedInteractionService) {
 
-    fun create(request: CreateAppointment): AppointmentContact = create(listOf(request)).single()
+    fun create(request: CreateAppointment): Appointment = create(listOf(request)).single()
 
-    fun create(requests: List<CreateAppointment>): List<AppointmentContact> = with(requests) {
+    fun create(requests: List<CreateAppointment>) = createEntities(requests).map { Appointment(it) }
+
+    private fun createEntities(requests: List<CreateAppointment>): List<AppointmentContact> = with(requests) {
         val types = typeRepository.getAllByCodeIn(map { it.typeCode })
         val outcomes = outcomeRepository.getAllByCodeIn(mapNotNull { it.outcomeCode })
         val enforcementAction = enforcementActionRepository.getByCode(EnforcementAction.REFER_TO_PERSON_MANAGER)
@@ -88,7 +90,7 @@ class AppointmentService(
             .onEach { it.audit(BusinessInteractionCode.ADD_CONTACT) }
     }
 
-    fun <T> update(requests: List<T>, init: UpdateBuilder<T>.() -> Unit): List<AppointmentContact> {
+    fun <T> update(requests: List<T>, init: UpdateBuilder<T>.() -> Unit): List<Appointment> {
         val config = UpdateBuilder<T>().also { it.init() }
         fun T.reference() = requireNotNull(config.reference) { "Reference must be provided" }.invoke(this)
 
@@ -108,6 +110,7 @@ class AppointmentService(
             .withConfig(config.flagAs) { flagAs(it) }
             .map { (_, contact) -> contact }
             .onEach { it.audit(BusinessInteractionCode.UPDATE_CONTACT) }
+            .map { Appointment(it) }
     }
 
     private fun <T> UpdatePipeline<T>.amendDateTime(scheduleProvider: (T) -> UpdateAppointment.Schedule): UpdatePipeline<T> {
@@ -185,30 +188,32 @@ class AppointmentService(
         outcome = rescheduleOutcome
 
         // Create replacement appointment
-        return create(
-            CreateAppointment(
-                reference = request.newReference,
-                date = request.date,
-                startTime = request.startTime,
-                endTime = request.endTime,
-                typeCode = type.code,
-                relatedTo = ReferencedEntities(
-                    personId = personId,
-                    eventId = eventId,
-                    nonStatutoryInterventionId = nsiId,
-                    licenceConditionId = licenceConditionId,
-                    requirementId = requirementId,
-                    pssRequirementId = pssRequirementId
-                ),
-                staffCode = staff.code,
-                teamCode = team.code,
-                locationCode = officeLocation?.code,
-                outcomeCode = null,
-                notes = notes,
-                sensitive = sensitive,
-                exportToVisor = visorExported,
+        return createEntities(
+            listOf(
+                CreateAppointment(
+                    reference = request.newReference,
+                    date = request.date,
+                    startTime = request.startTime,
+                    endTime = request.endTime,
+                    typeCode = type.code,
+                    relatedTo = ReferencedEntities(
+                        personId = personId,
+                        eventId = eventId,
+                        nonStatutoryInterventionId = nsiId,
+                        licenceConditionId = licenceConditionId,
+                        requirementId = requirementId,
+                        pssRequirementId = pssRequirementId
+                    ),
+                    staffCode = staff.code,
+                    teamCode = team.code,
+                    locationCode = officeLocation?.code,
+                    outcomeCode = null,
+                    notes = notes,
+                    sensitive = sensitive,
+                    exportToVisor = visorExported,
+                )
             )
-        )
+        ).single()
     }
 
     /**
@@ -252,17 +257,16 @@ class AppointmentService(
         outcome: Outcome?,
         enforcementAction: EnforcementAction,
         enforcementReviewType: Type
-    ) =
-        apply {
-            this.outcome = outcome
-            if (outcome != null) {
-                attended = outcome.attended
-                complied = outcome.complied
-                if (outcome.complied == false && outcome.enforceable == true) {
-                    enforcementService.applyEnforcementAction(this, enforcementAction, enforcementReviewType)
-                }
+    ) = apply {
+        this.outcome = outcome
+        if (outcome != null) {
+            attended = outcome.attended
+            complied = outcome.complied
+            if (outcome.complied == false && outcome.enforceable == true) {
+                enforcementService.applyEnforcementAction(this, enforcementAction, enforcementReviewType)
             }
         }
+    }
 
     private fun <T> UpdatePipeline<T>.reassign(assigneeProvider: (T) -> UpdateAppointment.Assignee): UpdatePipeline<T> {
         fun T.assignee() = assigneeProvider.invoke(this)

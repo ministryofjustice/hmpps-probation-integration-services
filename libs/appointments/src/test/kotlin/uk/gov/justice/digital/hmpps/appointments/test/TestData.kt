@@ -18,7 +18,7 @@ import java.time.LocalDate
 import java.time.LocalTime
 import java.time.ZonedDateTime
 
-object TestData {
+internal object TestData {
     val PERSON = AppointmentEntities.Person(id(), "A000001")
     val TYPE = Type(id(), "TYPE", attendance = true, nationalStandards = true)
     val REVIEW_TYPE = Type(id(), REVIEW_ENFORCEMENT_STATUS, attendance = false)

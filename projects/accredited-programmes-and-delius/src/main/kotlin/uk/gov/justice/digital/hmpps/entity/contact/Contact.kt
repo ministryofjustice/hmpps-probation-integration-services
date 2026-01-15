@@ -99,7 +99,8 @@ class Contact(
     @JoinColumn(name = "probation_area_id")
     var provider: Provider,
 
-    notes: String? = null,
+    @Lob
+    var notes: String? = null,
 
     @Column
     val externalReference: String? = null,
@@ -140,14 +141,6 @@ class Contact(
     @Convert(converter = NumericBooleanConverter::class)
     val trustProviderFlag: Boolean = false,
 ) {
-    @Lob
-    var notes: String? = notes
-        private set
-
-    fun appendNotes(newNotes: String) {
-        notes = listOfNotNull(notes, newNotes).joinToString(System.lineSeparator() + System.lineSeparator())
-    }
-
     companion object {
         const val REFERENCE_PREFIX = "urn:uk:gov:accredited-programmes:appointment:"
     }

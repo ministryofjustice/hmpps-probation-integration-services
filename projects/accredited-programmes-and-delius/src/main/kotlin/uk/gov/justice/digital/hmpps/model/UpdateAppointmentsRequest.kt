@@ -5,11 +5,7 @@ import java.time.LocalDate
 import java.time.LocalTime
 import java.util.*
 
-data class UpdateAppointmentsRequest(@NotEmpty val appointments: List<UpdateAppointmentRequest>) {
-    fun findByReference(reference: String): UpdateAppointmentRequest? = appointments.firstOrNull {
-        it.reference == UUID.fromString(reference.takeLast(36))
-    }
-}
+data class UpdateAppointmentsRequest(@NotEmpty val appointments: List<UpdateAppointmentRequest>)
 
 data class UpdateAppointmentRequest(
     val reference: UUID,

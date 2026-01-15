@@ -147,7 +147,11 @@ class AppointmentServiceTest {
 
         val result = appointmentService.create(request)
 
-        assertThat(result).isEqualTo(saved)
+        assertThat(result.id).isEqualTo(saved.id)
+        assertThat(result.reference).isEqualTo(saved.externalReference)
+        assertThat(result.date).isEqualTo(saved.date)
+        assertThat(result.typeCode).isEqualTo(TestData.TYPE.code)
+        assertThat(result.relatedTo.personId).isEqualTo(TestData.PERSON.id)
         verify(appointmentRepository).saveAll(check<List<AppointmentContact>> {
             assertThat(it).hasSize(1)
             assertThat(it[0].date).isEqualTo(request.date)
@@ -185,7 +189,11 @@ class AppointmentServiceTest {
 
         val result = appointmentService.create(request)
 
-        assertThat(result).isEqualTo(saved)
+        assertThat(result.id).isEqualTo(saved.id)
+        assertThat(result.reference).isEqualTo(saved.externalReference)
+        assertThat(result.date).isEqualTo(saved.date)
+        assertThat(result.typeCode).isEqualTo(TestData.TYPE.code)
+        assertThat(result.relatedTo.personId).isEqualTo(TestData.PERSON.id)
         verify(appointmentRepository, never()).schedulingConflictExists(any())
     }
 
@@ -291,8 +299,8 @@ class AppointmentServiceTest {
 
         assertThat(result.size).isEqualTo(1)
         assertThat(result[0].date).isEqualTo(LocalDate.now().plusDays(2))
-        assertThat(result[0].startTime.toLocalTime()).isEqualTo(LocalTime.NOON)
-        assertThat(result[0].endTime?.toLocalTime()).isEqualTo(LocalTime.NOON.plusHours(1))
+        assertThat(result[0].startTime).isEqualTo(LocalTime.NOON)
+        assertThat(result[0].endTime).isEqualTo(LocalTime.NOON.plusHours(1))
 
         verify(auditedInteractionService).createAuditedInteraction(
             interactionCode = eq(BusinessInteractionCode.UPDATE_CONTACT),
@@ -300,7 +308,7 @@ class AppointmentServiceTest {
                 AuditedInteraction.Parameters(
                     mutableMapOf(
                         "offenderId" to TestData.PERSON.id,
-                        "contactId" to result[0].id!!,
+                        "contactId" to result[0].id,
                     )
                 )
             ),
@@ -396,8 +404,8 @@ class AppointmentServiceTest {
         val result = appointmentService.create(requests)
 
         assertThat(result.size).isEqualTo(2)
-        assertThat(result[0].externalReference).isEqualTo("REF01")
-        assertThat(result[1].externalReference).isEqualTo("REF02")
+        assertThat(result[0].reference).isEqualTo("REF01")
+        assertThat(result[1].reference).isEqualTo("REF02")
     }
 
     @Test
