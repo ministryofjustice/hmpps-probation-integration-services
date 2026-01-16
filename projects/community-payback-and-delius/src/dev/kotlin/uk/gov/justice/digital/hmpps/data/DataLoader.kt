@@ -1,10 +1,14 @@
 package uk.gov.justice.digital.hmpps.data
 
 import org.springframework.stereotype.Component
+import uk.gov.justice.digital.hmpps.appointments.audit.BusinessInteractionCode
+import uk.gov.justice.digital.hmpps.audit.BusinessInteraction
 import uk.gov.justice.digital.hmpps.data.generator.*
+import uk.gov.justice.digital.hmpps.data.generator.IdGenerator.id
 import uk.gov.justice.digital.hmpps.data.loader.BaseDataLoader
 import uk.gov.justice.digital.hmpps.data.manager.DataManager
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.ContactTypeOutcome
+import java.time.ZonedDateTime
 
 @Component
 class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
@@ -60,6 +64,8 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
     }
 
     fun loadReferenceData() {
+        save(BusinessInteraction(id(), BusinessInteractionCode.ADD_CONTACT.code, ZonedDateTime.now()))
+        save(BusinessInteraction(id(), BusinessInteractionCode.UPDATE_CONTACT.code, ZonedDateTime.now()))
         save(DatasetGenerator.UPW_PROJECT_TYPE_DATASET)
         save(DatasetGenerator.UPW_WORK_QUALITY_DATASET)
         save(DatasetGenerator.UPW_BEHAVIOUR_DATASET)

@@ -109,7 +109,7 @@ internal object AppointmentEntities {
 
         @ManyToOne
         @JoinColumn(name = "contact_outcome_type_id")
-        var outcome: Outcome? = null,
+        var outcome: AppointmentOutcome? = null,
 
         @Convert(converter = YesNoConverter::class)
         var attended: Boolean? = null,
@@ -128,6 +128,10 @@ internal object AppointmentEntities {
         var notes: String? = null,
 
         // Flags
+        @Convert(converter = YesNoConverter::class)
+        @Column(name = "alert_active")
+        var alert: Boolean? = null,
+
         @Convert(converter = YesNoConverter::class)
         var sensitive: Boolean? = null,
 
@@ -197,7 +201,7 @@ internal object AppointmentEntities {
     @Entity
     @Immutable
     @Table(name = "r_contact_outcome_type")
-    class Outcome(
+    class AppointmentOutcome(
         @Id
         @Column(name = "contact_outcome_type_id")
         val id: Long,
@@ -295,7 +299,6 @@ internal object AppointmentEntities {
     @Immutable
     @Entity
     @Table(name = "offender")
-    @SQLRestriction("soft_deleted = 0")
     class Person(
         @Id
         @Column(name = "offender_id")
@@ -366,9 +369,9 @@ internal object AppointmentEntities {
     @Table(name = "enforcement")
     @SQLRestriction("soft_deleted = 0")
     @EntityListeners(AuditingEntityListener::class)
+    @SequenceGenerator(name = "enforcement_id_seq", sequenceName = "enforcement_id_seq", allocationSize = 1)
     class Enforcement(
         @Id
-        @SequenceGenerator(name = "enforcement_id_seq", sequenceName = "enforcement_id_seq", allocationSize = 1)
         @GeneratedId(generator = "enforcement_id_seq")
         @Column(name = "enforcement_id")
         val id: Long = 0,
@@ -385,15 +388,20 @@ internal object AppointmentEntities {
         @JoinColumn(name = "enforcement_action_id")
         val action: EnforcementAction?,
 
+        @Column(name = "response_date")
         val responseDate: ZonedDateTime?,
 
+        @Column(name = "action_taken_date")
         val actionTakenDate: ZonedDateTime = ZonedDateTime.now(),
+
+        @Column(name = "action_taken_time")
         val actionTakenTime: ZonedDateTime = ZonedDateTime.now(),
 
         @Column(columnDefinition = "number")
         @Convert(converter = NumericBooleanConverter::class)
         val softDeleted: Boolean = false,
 
+        @Column(name = "partition_area_id")
         val partitionAreaId: Long = 0,
 
         @CreatedDate
@@ -405,9 +413,11 @@ internal object AppointmentEntities {
         var lastUpdatedDateTime: ZonedDateTime = ZonedDateTime.now(),
 
         @CreatedBy
+        @Column(name = "created_by_user_id")
         var createdByUserId: Long = 0,
 
         @LastModifiedBy
+        @Column(name = "last_updated_user_id")
         var lastUpdatedUserId: Long = 0,
     )
 
@@ -431,6 +441,65 @@ internal object AppointmentEntities {
             const val REFER_TO_PERSON_MANAGER = "ROM"
         }
     }
+
+    @Entity
+    @Table(name = "contact_alert")
+    @SequenceGenerator(name = "contact_alert_id_generator", sequenceName = "contact_alert_id_seq", allocationSize = 1)
+    class Alert(
+        @Id
+        @Column(name = "contact_alert_id")
+        @GeneratedId(generator = "contact_alert_id_generator")
+        val id: Long = 0,
+
+        @Version
+        @Column(name = "row_version")
+        val version: Long = 0,
+
+        @Column(name = "offender_id")
+        val personId: Long,
+
+        @Column(name = "contact_id")
+        val appointmentId: Long?,
+
+        @Column(name = "contact_type_id")
+        val appointmentTypeId: Long,
+
+        @Column(name = "offender_manager_id")
+        val managerId: Long,
+
+        @Column(name = "trust_provider_team_id")
+        val teamId: Long,
+
+        @Column(name = "staff_employee_id")
+        val staffId: Long
+    )
+
+    @Entity
+    @Immutable
+    @Table(name = "offender_manager")
+    @SQLRestriction("soft_deleted = 0 and active_flag = 1")
+    class PersonManager(
+        @Id
+        @Column(name = "offender_manager_id")
+        val id: Long,
+
+        @Column(name = "offender_id")
+        val personId: Long,
+
+        @Column(name = "allocation_staff_id")
+        val staffId: Long,
+
+        @Column(name = "team_id")
+        val teamId: Long,
+
+        @Column(name = "active_flag", columnDefinition = "number")
+        @Convert(converter = NumericBooleanConverter::class)
+        val active: Boolean = true,
+
+        @Column(columnDefinition = "number")
+        @Convert(converter = NumericBooleanConverter::class)
+        val softDeleted: Boolean = false
+    )
 
     interface CodedReferenceData {
         val code: String

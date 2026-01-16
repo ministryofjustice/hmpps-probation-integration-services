@@ -2,10 +2,10 @@ package uk.gov.justice.digital.hmpps.appointments.repository
 
 import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
+import uk.gov.justice.digital.hmpps.appointments.entity.AppointmentEntities.AppointmentOutcome
 import uk.gov.justice.digital.hmpps.appointments.entity.AppointmentEntities.CodedReferenceData
 import uk.gov.justice.digital.hmpps.appointments.entity.AppointmentEntities.EnforcementAction
 import uk.gov.justice.digital.hmpps.appointments.entity.AppointmentEntities.OfficeLocation
-import uk.gov.justice.digital.hmpps.appointments.entity.AppointmentEntities.Outcome
 import uk.gov.justice.digital.hmpps.appointments.entity.AppointmentEntities.Staff
 import uk.gov.justice.digital.hmpps.appointments.entity.AppointmentEntities.Team
 import uk.gov.justice.digital.hmpps.appointments.entity.AppointmentEntities.Type
@@ -25,7 +25,7 @@ internal object AppointmentReferenceDataRepositories {
 
     interface TypeRepository : ReferenceDataRepository<Type>, JpaRepository<Type, Long>
 
-    interface OutcomeRepository : ReferenceDataRepository<Outcome>, JpaRepository<Outcome, Long>
+    interface OutcomeRepository : ReferenceDataRepository<AppointmentOutcome>, JpaRepository<AppointmentOutcome, Long>
 
     interface LocationRepository : ReferenceDataRepository<OfficeLocation>, JpaRepository<OfficeLocation, Long>
 

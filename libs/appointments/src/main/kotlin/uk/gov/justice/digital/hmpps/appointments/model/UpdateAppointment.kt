@@ -1,21 +1,43 @@
 package uk.gov.justice.digital.hmpps.appointments.model
 
+import uk.gov.justice.digital.hmpps.appointments.entity.AppointmentEntities.AppointmentContact
 import java.time.LocalDate
 import java.time.LocalTime
 
 class UpdateAppointment {
     data class Outcome(
         val outcomeCode: String?,
-    )
+    ) {
+        internal constructor(entity: AppointmentContact) : this(entity.outcome?.code)
+    }
 
     data class Schedule(
         val date: LocalDate,
         val startTime: LocalTime,
         val endTime: LocalTime?,
         val allowConflicts: Boolean = false,
-    )
+    ) {
+        init {
+            require(endTime == null || startTime < endTime) {
+                "Start time must be before end time"
+            }
+        }
 
-    data class RecreateAppointment(
+        internal constructor(entity: AppointmentContact) : this(
+            date = entity.date,
+            startTime = entity.startTime.toLocalTime(),
+            endTime = entity.endTime?.toLocalTime(),
+        )
+
+        internal constructor(recreate: Recreate) : this(
+            date = recreate.date,
+            startTime = recreate.startTime,
+            endTime = recreate.endTime,
+            allowConflicts = recreate.allowConflicts
+        )
+    }
+
+    data class Recreate(
         val date: LocalDate,
         val startTime: LocalTime,
         val endTime: LocalTime?,
@@ -23,6 +45,18 @@ class UpdateAppointment {
         val rescheduledBy: RescheduledBy? = null,
         val newReference: String? = null,
     ) {
+        init {
+            require(endTime == null || startTime < endTime) {
+                "Start time must be before end time"
+            }
+        }
+
+        internal constructor(entity: AppointmentContact) : this(
+            date = entity.date,
+            startTime = entity.startTime.toLocalTime(),
+            endTime = entity.endTime?.toLocalTime(),
+        )
+
         enum class RescheduledBy(val outcomeCode: String) {
             PERSON_ON_PROBATION("RSOF"),
             PROBATION_SERVICE("RSSR"),
@@ -33,10 +67,25 @@ class UpdateAppointment {
         val staffCode: String,
         val teamCode: String,
         val locationCode: String?,
-    )
+    ) {
+        internal constructor(entity: AppointmentContact) : this(
+            staffCode = entity.staff.code,
+            teamCode = entity.team.code,
+            locationCode = entity.officeLocation?.code
+        )
+    }
 
     data class Flags(
+        val alert: Boolean? = null,
         val sensitive: Boolean? = null,
+        val rarActivity: Boolean? = null,
         val visor: Boolean? = null,
-    )
+    ) {
+        internal constructor(entity: AppointmentContact) : this(
+            alert = entity.alert,
+            sensitive = entity.sensitive,
+            rarActivity = entity.rarActivity,
+            visor = entity.visorContact
+        )
+    }
 }

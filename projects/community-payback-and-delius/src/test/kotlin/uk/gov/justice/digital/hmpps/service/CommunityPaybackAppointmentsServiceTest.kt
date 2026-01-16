@@ -8,6 +8,7 @@ import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.whenever
+import uk.gov.justice.digital.hmpps.appointments.service.AppointmentService
 import uk.gov.justice.digital.hmpps.data.generator.UPWGenerator
 import uk.gov.justice.digital.hmpps.data.generator.UPWGenerator.DEFAULT_UPW_PROJECT
 import uk.gov.justice.digital.hmpps.data.generator.UPWGenerator.SECOND_UPW_PROJECT
@@ -20,7 +21,7 @@ import java.time.LocalTime
 import java.util.*
 
 @ExtendWith(MockitoExtension::class)
-internal class AppointmentsServiceTest {
+internal class CommunityPaybackAppointmentsServiceTest {
     @Mock
     lateinit var unpaidWorkProjectRepository: UnpaidWorkProjectRepository
 
@@ -37,28 +38,13 @@ internal class AppointmentsServiceTest {
     lateinit var staffRepository: StaffRepository
 
     @Mock
-    lateinit var contactAlertRepository: ContactAlertRepository
-
-    @Mock
-    lateinit var personManagerRepository: PersonManagerRepository
-
-    @Mock
-    lateinit var enforcementRepository: EnforcementRepository
-
-    @Mock
-    lateinit var enforcementActionRepository: EnforcementActionRepository
-
-    @Mock
-    lateinit var contactRepository: ContactRepository
-
-    @Mock
     lateinit var userAccessService: UserAccessService
 
     @Mock
-    lateinit var contactTypeRepository: ContactTypeRepository
+    lateinit var appointmentService: AppointmentService
 
     @InjectMocks
-    lateinit var appointmentsService: AppointmentsService
+    lateinit var communityPaybackAppointmentsService: CommunityPaybackAppointmentsService
 
     @Test
     fun `updating appointments in the past require an outcome`() {
@@ -66,7 +52,7 @@ internal class AppointmentsServiceTest {
             .thenReturn(UPWGenerator.UPW_APPOINTMENT_PAST)
 
         val exception = assertThrows<IllegalArgumentException> {
-            appointmentsService.updateAppointmentOutcome(
+            communityPaybackAppointmentsService.updateAppointmentOutcome(
                 SECOND_UPW_PROJECT.code,
                 UPWGenerator.UPW_APPOINTMENT_PAST.id,
                 AppointmentOutcomeRequest(
@@ -98,7 +84,7 @@ internal class AppointmentsServiceTest {
             .thenReturn(UPWGenerator.DEFAULT_UPW_APPOINTMENT)
 
         val exception = assertThrows<IllegalArgumentException> {
-            appointmentsService.updateAppointmentOutcome(
+            communityPaybackAppointmentsService.updateAppointmentOutcome(
                 DEFAULT_UPW_PROJECT.code,
                 UPWGenerator.DEFAULT_UPW_APPOINTMENT.id,
                 AppointmentOutcomeRequest(

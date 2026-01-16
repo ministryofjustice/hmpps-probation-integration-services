@@ -84,7 +84,7 @@ fun UpwAppointment.toAppointmentScheduleResponse() = AppointmentScheduleResponse
     date = this.date,
     startTime = this.startTime,
     endTime = this.endTime,
-    outcome = this.contact.contactOutcome?.toCodeDescription(),
+    outcome = this.contact.outcome?.toCodeDescription(),
     minutesCredited = this.minutesCredited,
     allocationId = this.allocation?.id
 )

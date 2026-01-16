@@ -2,11 +2,11 @@ package uk.gov.justice.digital.hmpps.appointments.test
 
 import uk.gov.justice.digital.hmpps.appointments.entity.AppointmentEntities
 import uk.gov.justice.digital.hmpps.appointments.entity.AppointmentEntities.AppointmentContact
+import uk.gov.justice.digital.hmpps.appointments.entity.AppointmentEntities.AppointmentOutcome
 import uk.gov.justice.digital.hmpps.appointments.entity.AppointmentEntities.Disposal
 import uk.gov.justice.digital.hmpps.appointments.entity.AppointmentEntities.DisposalType
 import uk.gov.justice.digital.hmpps.appointments.entity.AppointmentEntities.Event
 import uk.gov.justice.digital.hmpps.appointments.entity.AppointmentEntities.OfficeLocation
-import uk.gov.justice.digital.hmpps.appointments.entity.AppointmentEntities.Outcome
 import uk.gov.justice.digital.hmpps.appointments.entity.AppointmentEntities.Staff
 import uk.gov.justice.digital.hmpps.appointments.entity.AppointmentEntities.Team
 import uk.gov.justice.digital.hmpps.appointments.entity.AppointmentEntities.Type
@@ -22,8 +22,10 @@ internal object TestData {
     val PERSON = AppointmentEntities.Person(id(), "A000001")
     val TYPE = Type(id(), "TYPE", attendance = true, nationalStandards = true)
     val REVIEW_TYPE = Type(id(), REVIEW_ENFORCEMENT_STATUS, attendance = false)
-    val OUTCOME = Outcome(id(), "ATTC", "Attended - complied", attended = true, complied = true, enforceable = false)
-    val FTC_OUTCOME = Outcome(id(), "FTC", "Failed to comply", attended = false, complied = false, enforceable = true)
+    val OUTCOME =
+        AppointmentOutcome(id(), "ATTC", "Attended - complied", attended = true, complied = true, enforceable = false)
+    val FTC_OUTCOME =
+        AppointmentOutcome(id(), "FTC", "Failed to comply", attended = false, complied = false, enforceable = true)
     val PROVIDER = AppointmentEntities.Provider(id(), "P01")
     val TEAM = Team(id(), "T01", "Team 1", PROVIDER)
     val STAFF = Staff(id(), "S01")
@@ -34,6 +36,7 @@ internal object TestData {
         reference: String = "REF01",
         date: LocalDate = LocalDate.now().plusDays(1),
         startTime: LocalTime = LocalTime.now(),
+        endTime: LocalTime = startTime.plusHours(1),
         outcomeCode: String? = null
     ) = CreateAppointment(
         reference = reference,
@@ -41,7 +44,7 @@ internal object TestData {
         relatedTo = ReferencedEntities(personId = PERSON.id),
         date = date,
         startTime = startTime,
-        endTime = startTime.plusHours(1),
+        endTime = endTime,
         staffCode = STAFF.code,
         teamCode = TEAM.code,
         locationCode = OFFICE_LOCATION.code,
@@ -52,10 +55,11 @@ internal object TestData {
         personId: Long = PERSON.id,
         date: LocalDate = LocalDate.now(),
         startTime: ZonedDateTime = ZonedDateTime.now(),
+        endTime: ZonedDateTime = startTime.plusHours(1),
         staff: Staff = STAFF,
         team: Team = TEAM,
         type: Type = TYPE,
-        outcome: Outcome? = null,
+        outcome: AppointmentOutcome? = null,
         officeLocation: OfficeLocation? = OFFICE_LOCATION,
         event: Event? = null,
         externalReference: String? = "REF01",
@@ -67,6 +71,7 @@ internal object TestData {
         event = event,
         date = date,
         startTime = startTime,
+        endTime = endTime,
         staff = staff,
         team = team,
         officeLocation = officeLocation,

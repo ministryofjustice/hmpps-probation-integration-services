@@ -22,6 +22,10 @@ data class CreateAppointment(
     val allowConflicts: Boolean = false,
 ) {
     init {
+        require(endTime == null || startTime < endTime) {
+            "Start time must be before end time"
+        }
+
         require(outcomeCode != null || date.atTime(startTime).atZone(EuropeLondon) > ZonedDateTime.now()) {
             "Outcome must be provided when creating an appointment in the past"
         }

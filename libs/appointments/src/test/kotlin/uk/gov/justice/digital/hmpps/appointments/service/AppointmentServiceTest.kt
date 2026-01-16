@@ -10,13 +10,14 @@ import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.*
 import uk.gov.justice.digital.hmpps.appointments.audit.BusinessInteractionCode
 import uk.gov.justice.digital.hmpps.appointments.entity.AppointmentEntities.AppointmentContact
+import uk.gov.justice.digital.hmpps.appointments.entity.AppointmentEntities.AppointmentOutcome
 import uk.gov.justice.digital.hmpps.appointments.entity.AppointmentEntities.EnforcementAction
 import uk.gov.justice.digital.hmpps.appointments.entity.AppointmentEntities.OfficeLocation
-import uk.gov.justice.digital.hmpps.appointments.entity.AppointmentEntities.Outcome
 import uk.gov.justice.digital.hmpps.appointments.entity.AppointmentEntities.Staff
 import uk.gov.justice.digital.hmpps.appointments.entity.AppointmentEntities.Team
 import uk.gov.justice.digital.hmpps.appointments.entity.AppointmentEntities.Type
 import uk.gov.justice.digital.hmpps.appointments.model.UpdateAppointment
+import uk.gov.justice.digital.hmpps.appointments.model.UpdateAppointment.Outcome
 import uk.gov.justice.digital.hmpps.appointments.repository.AppointmentReferenceDataRepositories.EnforcementActionRepository
 import uk.gov.justice.digital.hmpps.appointments.repository.AppointmentReferenceDataRepositories.LocationRepository
 import uk.gov.justice.digital.hmpps.appointments.repository.AppointmentReferenceDataRepositories.OutcomeRepository
@@ -31,7 +32,7 @@ import uk.gov.justice.digital.hmpps.audit.entity.AuditedInteraction
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
 import uk.gov.justice.digital.hmpps.data.generator.IdGenerator.id
 import java.time.LocalDate
-import java.time.LocalTime
+import java.time.LocalTime.NOON
 
 @ExtendWith(MockitoExtension::class)
 class AppointmentServiceTest {
@@ -63,6 +64,9 @@ class AppointmentServiceTest {
     private lateinit var enforcementService: EnforcementService
 
     @Mock
+    private lateinit var alertService: AlertService
+
+    @Mock
     private lateinit var auditedInteractionService: AuditedInteractionService
 
     @InjectMocks
@@ -73,6 +77,13 @@ class AppointmentServiceTest {
         assertThatThrownBy { TestData.createAppointment(date = LocalDate.now().minusDays(1), outcomeCode = null) }
             .isInstanceOf(IllegalArgumentException::class.java)
             .hasMessage("Outcome must be provided when creating an appointment in the past")
+    }
+
+    @Test
+    fun `attempt to create appointment with end time before start time`() {
+        assertThatThrownBy { TestData.createAppointment(startTime = NOON, endTime = NOON.minusHours(1)) }
+            .isInstanceOf(IllegalArgumentException::class.java)
+            .hasMessage("Start time must be before end time")
     }
 
     @Test
@@ -90,7 +101,7 @@ class AppointmentServiceTest {
         val request = TestData.createAppointment().copy(outcomeCode = "INVALID")
         assertThatThrownBy { appointmentService.create(request) }
             .isInstanceOf(IllegalArgumentException::class.java)
-            .hasMessage("Invalid Outcome codes: [INVALID]")
+            .hasMessage("Invalid AppointmentOutcome codes: [INVALID]")
     }
 
     @Test
@@ -198,19 +209,36 @@ class AppointmentServiceTest {
     }
 
     @Test
+    fun `create multiple appointments`() {
+        mockCreateReferenceData()
+        val requests = listOf(
+            TestData.createAppointment(reference = "REF01"),
+            TestData.createAppointment(reference = "REF02")
+        )
+        val saved = requests.map { request -> TestData.appointment(externalReference = request.reference) }
+        whenever(appointmentRepository.saveAll(any<List<AppointmentContact>>())).thenReturn(saved)
+
+        val result = appointmentService.bulkCreate(requests)
+
+        assertThat(result.size).isEqualTo(2)
+        assertThat(result[0].reference).isEqualTo("REF01")
+        assertThat(result[1].reference).isEqualTo("REF02")
+    }
+
+    @Test
     fun `attempt to reschedule appointment with an existing outcome`() {
         val existing = TestData.appointment(outcome = TestData.OUTCOME)
         whenever(appointmentRepository.findByExternalReferenceIn(listOf(existing.externalReference!!)))
             .thenReturn(listOf(existing))
 
         assertThatThrownBy {
-            appointmentService.update(listOf(existing)) {
+            appointmentService.update(existing) {
                 reference = { existing.externalReference }
                 amendDateTime = {
                     UpdateAppointment.Schedule(
                         date = LocalDate.now().plusDays(2),
-                        startTime = LocalTime.NOON,
-                        endTime = LocalTime.NOON.plusHours(1)
+                        startTime = NOON,
+                        endTime = NOON.plusHours(1)
                     )
                 }
             }
@@ -219,13 +247,13 @@ class AppointmentServiceTest {
             .hasMessage("Appointment with outcome cannot be rescheduled")
 
         assertThatThrownBy {
-            appointmentService.update(listOf(existing)) {
+            appointmentService.update(existing) {
                 reference = { existing.externalReference }
                 recreate = {
-                    UpdateAppointment.RecreateAppointment(
+                    UpdateAppointment.Recreate(
                         date = LocalDate.now().plusDays(2),
-                        startTime = LocalTime.NOON,
-                        endTime = LocalTime.NOON.plusHours(1)
+                        startTime = NOON,
+                        endTime = NOON.plusHours(1)
                     )
                 }
             }
@@ -241,19 +269,19 @@ class AppointmentServiceTest {
             .thenReturn(listOf(existing))
 
         assertThatThrownBy {
-            appointmentService.update(listOf(existing)) {
+            appointmentService.update(existing) {
                 reference = { existing.externalReference }
                 amendDateTime = {
                     UpdateAppointment.Schedule(
                         date = LocalDate.now().minusDays(2),
-                        startTime = LocalTime.NOON,
-                        endTime = LocalTime.NOON.plusHours(1)
+                        startTime = NOON,
+                        endTime = NOON.plusHours(1)
                     )
                 }
             }
         }
             .isInstanceOf(IllegalArgumentException::class.java)
-            .hasMessage("Appointment must be in the future to amend the date and time")
+            .hasMessage("Outcome must be provided when amending an appointment in the past")
     }
 
     @Test
@@ -263,19 +291,19 @@ class AppointmentServiceTest {
             .thenReturn(listOf(existing))
 
         assertThatThrownBy {
-            appointmentService.update(listOf(existing)) {
+            appointmentService.update(existing) {
                 reference = { existing.externalReference }
                 amendDateTime = {
                     UpdateAppointment.Schedule(
                         date = LocalDate.now().minusDays(2),
-                        startTime = LocalTime.NOON,
-                        endTime = LocalTime.NOON.plusHours(1)
+                        startTime = NOON,
+                        endTime = NOON.plusHours(1)
                     )
                 }
             }
         }
             .isInstanceOf(IllegalArgumentException::class.java)
-            .hasMessage("Appointment cannot be rescheduled into the past")
+            .hasMessage("Outcome must be provided when amending an appointment in the past")
     }
 
     @Test
@@ -286,21 +314,20 @@ class AppointmentServiceTest {
             .thenReturn(listOf(existing))
         whenever(appointmentRepository.schedulingConflictExists(any())).thenReturn(false)
 
-        val result = appointmentService.update(listOf(existing)) {
+        val result = appointmentService.update(existing) {
             reference = { existing.externalReference }
             amendDateTime = {
                 UpdateAppointment.Schedule(
                     date = LocalDate.now().plusDays(2),
-                    startTime = LocalTime.NOON,
-                    endTime = LocalTime.NOON.plusHours(1)
+                    startTime = NOON,
+                    endTime = NOON.plusHours(1)
                 )
             }
         }
 
-        assertThat(result.size).isEqualTo(1)
-        assertThat(result[0].date).isEqualTo(LocalDate.now().plusDays(2))
-        assertThat(result[0].startTime).isEqualTo(LocalTime.NOON)
-        assertThat(result[0].endTime).isEqualTo(LocalTime.NOON.plusHours(1))
+        assertThat(result.date).isEqualTo(LocalDate.now().plusDays(2))
+        assertThat(result.startTime).isEqualTo(NOON)
+        assertThat(result.endTime).isEqualTo(NOON.plusHours(1))
 
         verify(auditedInteractionService).createAuditedInteraction(
             interactionCode = eq(BusinessInteractionCode.UPDATE_CONTACT),
@@ -308,7 +335,7 @@ class AppointmentServiceTest {
                 AuditedInteraction.Parameters(
                     mutableMapOf(
                         "offenderId" to TestData.PERSON.id,
-                        "contactId" to result[0].id,
+                        "contactId" to result.id,
                     )
                 )
             ),
@@ -327,9 +354,9 @@ class AppointmentServiceTest {
         whenever(outcomeRepository.findAllByCodeIn(setOf(FTC_OUTCOME.code))).thenReturn(listOf(FTC_OUTCOME))
         mockEnforcementReferenceData()
 
-        appointmentService.update(listOf(existing)) {
+        appointmentService.update(existing) {
             reference = { existing.externalReference }
-            applyOutcome = { UpdateAppointment.Outcome(FTC_OUTCOME.code) }
+            applyOutcome = { Outcome(FTC_OUTCOME.code) }
         }
 
         assertThat(existing.outcome?.code).isEqualTo(FTC_OUTCOME.code)
@@ -351,7 +378,7 @@ class AppointmentServiceTest {
         whenever(teamRepository.findAllByCodeIn(setOf(newTeam.code))).thenReturn(listOf(newTeam))
         whenever(locationRepository.findAllByCodeIn(setOf(newLocation.code))).thenReturn(listOf(newLocation))
 
-        appointmentService.update(listOf(existing)) {
+        appointmentService.update(existing) {
             reference = { existing.externalReference }
             reassign = { UpdateAppointment.Assignee(newStaff.code, newTeam.code, newLocation.code) }
         }
@@ -368,7 +395,7 @@ class AppointmentServiceTest {
         whenever(appointmentRepository.findByExternalReferenceIn(listOf(existing.externalReference!!)))
             .thenReturn(listOf(existing))
 
-        appointmentService.update(listOf(existing)) {
+        appointmentService.update(existing) {
             reference = { existing.externalReference }
             appendNotes = { "New notes" }
         }
@@ -383,7 +410,7 @@ class AppointmentServiceTest {
         whenever(appointmentRepository.findByExternalReferenceIn(listOf(existing.externalReference!!)))
             .thenReturn(listOf(existing))
 
-        appointmentService.update(listOf(existing)) {
+        appointmentService.update(existing) {
             reference = { existing.externalReference }
             flagAs = { UpdateAppointment.Flags(sensitive = true) }
         }
@@ -392,20 +419,35 @@ class AppointmentServiceTest {
     }
 
     @Test
-    fun `create multiple appointments`() {
-        mockCreateReferenceData()
-        val requests = listOf(
-            TestData.createAppointment(reference = "REF01"),
-            TestData.createAppointment(reference = "REF02")
-        )
-        val saved = requests.map { request -> TestData.appointment(externalReference = request.reference) }
-        whenever(appointmentRepository.saveAll(any<List<AppointmentContact>>())).thenReturn(saved)
+    fun `update appointment flag as alert active`() {
+        val existing = TestData.appointment()
 
-        val result = appointmentService.create(requests)
+        whenever(appointmentRepository.findByExternalReferenceIn(listOf(existing.externalReference!!)))
+            .thenReturn(listOf(existing))
 
-        assertThat(result.size).isEqualTo(2)
-        assertThat(result[0].reference).isEqualTo("REF01")
-        assertThat(result[1].reference).isEqualTo("REF02")
+        appointmentService.update(existing) {
+            reference = { existing.externalReference }
+            flagAs = { UpdateAppointment.Flags(alert = true) }
+        }
+
+        assertThat(existing.alert).isEqualTo(true)
+        verify(alertService).createAlert(existing)
+    }
+
+    @Test
+    fun `update appointment flag as alert inactive`() {
+        val existing = TestData.appointment()
+
+        whenever(appointmentRepository.findByExternalReferenceIn(listOf(existing.externalReference!!)))
+            .thenReturn(listOf(existing))
+
+        appointmentService.update(existing) {
+            reference = { existing.externalReference }
+            flagAs = { UpdateAppointment.Flags(alert = false) }
+        }
+
+        assertThat(existing.alert).isEqualTo(false)
+        verify(alertService).removeAlert(existing)
     }
 
     @Test
@@ -416,13 +458,13 @@ class AppointmentServiceTest {
         whenever(appointmentRepository.findByExternalReferenceIn(listOf(existing.externalReference!!)))
             .thenReturn(listOf(existing))
 
-        appointmentService.update(listOf(existing)) {
+        appointmentService.update(existing) {
             reference = { existing.externalReference }
             reschedule = {
-                UpdateAppointment.RecreateAppointment(
+                UpdateAppointment.Recreate(
                     date = LocalDate.now().plusDays(2),
-                    startTime = LocalTime.NOON,
-                    endTime = LocalTime.NOON.plusHours(1),
+                    startTime = NOON,
+                    endTime = NOON.plusHours(1),
                     newReference = "NEW_REF"
                 )
             }
@@ -437,33 +479,34 @@ class AppointmentServiceTest {
         mockCreateReferenceData()
         // Appointment is in the past, so it should recreate
         val existing = TestData.appointment(date = LocalDate.now().minusDays(1))
-        val outcome = Outcome(id(), "RSSR", "Rescheduled", attended = false, complied = true, enforceable = false)
+        val rescheduledOutcome =
+            AppointmentOutcome(id(), "RSSR", "Rescheduled", attended = false, complied = true, enforceable = false)
 
         whenever(appointmentRepository.findByExternalReferenceIn(listOf(existing.externalReference!!)))
             .thenReturn(listOf(existing))
-        whenever(outcomeRepository.findAllByCodeIn(setOf("RSSR"))).thenReturn(listOf(outcome))
+        whenever(outcomeRepository.findAllByCodeIn(setOf("RSSR"))).thenReturn(listOf(rescheduledOutcome))
         whenever(appointmentRepository.saveAll(any<List<AppointmentContact>>())).thenAnswer {
             (it.arguments[0] as List<*>).map { contact ->
                 TestData.appointment(externalReference = (contact as AppointmentContact).externalReference)
             }
         }
 
-        appointmentService.update(listOf(existing)) {
+        appointmentService.update(existing) {
             reference = { existing.externalReference }
             reschedule = {
-                UpdateAppointment.RecreateAppointment(
+                UpdateAppointment.Recreate(
                     date = LocalDate.now().plusDays(1),
-                    startTime = LocalTime.NOON,
-                    endTime = LocalTime.NOON.plusHours(1),
+                    startTime = NOON,
+                    endTime = NOON.plusHours(1),
                     newReference = "NEW_REF",
-                    rescheduledBy = UpdateAppointment.RecreateAppointment.RescheduledBy.PROBATION_SERVICE
+                    rescheduledBy = UpdateAppointment.Recreate.RescheduledBy.PROBATION_SERVICE
                 )
             }
         }
 
         assertThat(existing.externalReference).isEqualTo("REF01")
         assertThat(existing.date).isEqualTo(LocalDate.now().minusDays(1))
-        assertThat(existing.outcome).isEqualTo(outcome)
+        assertThat(existing.outcome).isEqualTo(rescheduledOutcome)
 
         verify(appointmentRepository).saveAll(check<List<AppointmentContact>> { new ->
             assertThat(new).hasSize(1)
@@ -471,6 +514,39 @@ class AppointmentServiceTest {
             assertThat(new[0].date).isEqualTo(LocalDate.now().plusDays(1))
             assertThat(new[0].outcome).isEqualTo(null)
         })
+    }
+
+    @Test
+    fun `attempt to update appointment with end time before start time`() {
+        val existing = TestData.appointment()
+        whenever(appointmentRepository.findByExternalReferenceIn(listOf(existing.externalReference!!)))
+            .thenReturn(listOf(existing))
+        assertThatThrownBy {
+            appointmentService.update("REF01") {
+                reference = { it }
+                amendDateTime = { copy(startTime = NOON.plusHours(1), endTime = NOON) }
+            }
+        }.hasMessage("Start time must be before end time")
+    }
+
+    @Test
+    fun `amend date and time in the past is allowed while adding outcome`() {
+        mockEnforcementReferenceData()
+        val existing = TestData.appointment(date = LocalDate.now().minusDays(1))
+
+        whenever(appointmentRepository.findByExternalReferenceIn(listOf(existing.externalReference!!)))
+            .thenReturn(listOf(existing))
+        whenever(outcomeRepository.findAllByCodeIn(setOf(TestData.OUTCOME.code))).thenReturn(listOf(TestData.OUTCOME))
+
+        appointmentService.update(existing) {
+            reference = { existing.externalReference }
+            amendDateTime = { copy(date = LocalDate.now().minusDays(2)) }
+            applyOutcome = { Outcome(TestData.OUTCOME.code) }
+        }
+
+        assertThat(existing.externalReference).isEqualTo("REF01")
+        assertThat(existing.date).isEqualTo(LocalDate.now().minusDays(2))
+        assertThat(existing.outcome).isEqualTo(TestData.OUTCOME)
     }
 
     private fun mockCreateReferenceData() {

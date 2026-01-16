@@ -1,25 +1,29 @@
 package uk.gov.justice.digital.hmpps.appointments.model
 
 import uk.gov.justice.digital.hmpps.appointments.entity.AppointmentEntities.AppointmentContact
+import uk.gov.justice.digital.hmpps.appointments.model.UpdateAppointment.*
 
 class UpdateBuilder<T> {
-    var reference: ((T) -> String)? = null
-    var amendDateTime: ((T) -> UpdateAppointment.Schedule)? = null
-    var recreate: ((T) -> UpdateAppointment.RecreateAppointment)? = null
-    var reschedule: ((T) -> UpdateAppointment.RecreateAppointment)? = null
-    var reassign: ((T) -> UpdateAppointment.Assignee)? = null
-    var applyOutcome: ((T) -> UpdateAppointment.Outcome)? = null
-    var appendNotes: ((T) -> String?)? = null
-    var flagAs: ((T) -> UpdateAppointment.Flags)? = null
+    var id: ValueProvider<T, Long>? = null
+    var reference: ValueProvider<T, String>? = null
+    var amendDateTime: UpdateProvider<T, Schedule>? = null
+    var recreate: UpdateProvider<T, Recreate>? = null
+    var reschedule: UpdateProvider<T, Recreate>? = null
+    var reassign: UpdateProvider<T, Assignee>? = null
+    var applyOutcome: UpdateProvider<T, Outcome>? = null
+    var appendNotes: UpdateProvider<T, String?>? = null
+    var flagAs: UpdateProvider<T, Flags>? = null
 }
 
-typealias ConfigProvider<T, R> = (T) -> R
+typealias ValueProvider<T, Values> = (T) -> Values
+typealias UpdateProvider<T, Values> = Values.(T) -> Values
+
 internal typealias UpdatePipeline<T> = List<Pair<T, AppointmentContact>>
 
-internal fun <T, R> UpdatePipeline<T>.withConfig(
-    configProvider: ConfigProvider<T, R>?,
-    fn: UpdatePipeline<T>.(ConfigProvider<T, R>) -> UpdatePipeline<T>
-): UpdatePipeline<T> {
-    if (configProvider == null) return this
-    return fn(configProvider)
+internal fun <RequestType, Values> UpdatePipeline<RequestType>.applyUpdates(
+    provider: UpdateProvider<RequestType, Values>?,
+    fn: UpdatePipeline<RequestType>.(UpdateProvider<RequestType, Values>) -> UpdatePipeline<RequestType>
+): UpdatePipeline<RequestType> {
+    if (provider == null) return this
+    return this.fn(provider)
 }

@@ -105,7 +105,21 @@ object UPWGenerator {
     val CONTACT_NO_ENFORCEMENT = generateContact(
         contactType = ReferenceDataGenerator.UPW_APPOINTMENT_TYPE,
         latestEnforcementAction = null,
-        contactOutcome = ReferenceDataGenerator.ATTENDED_COMPLIED_CONTACT_OUTCOME,
+        contactOutcome = null,
+        startTime = LocalTime.of(10, 15),
+        endTime = LocalTime.of(16, 30),
+        date = LocalDate.now(),
+        personId = PersonGenerator.DEFAULT_PERSON.id,
+        officeLocation = DEFAULT_OFFICE_LOCATION,
+        staff = StaffGenerator.DEFAULT_STAFF,
+        team = TeamGenerator.DEFAULT_UPW_TEAM,
+        provider = ProviderGenerator.DEFAULT_PROVIDER,
+        event = DEFAULT_EVENT
+    )
+    val CONTACT_TO_UPDATE = generateContact(
+        contactType = ReferenceDataGenerator.UPW_APPOINTMENT_TYPE,
+        latestEnforcementAction = null,
+        contactOutcome = null,
         startTime = LocalTime.of(10, 15),
         endTime = LocalTime.of(16, 30),
         date = LocalDate.now(),
@@ -182,7 +196,7 @@ object UPWGenerator {
         project = DEFAULT_UPW_PROJECT,
         details = DEFAULT_UPW_DETAILS,
         contact = CONTACT_NO_ENFORCEMENT,
-        contactOutcomeTypeId = 1L,
+        contactOutcomeTypeId = null,
         pickupLocation = DEFAULT_OFFICE_LOCATION,
         pickupTime = LocalTime.of(10, 15),
         penaltyTime = null,
@@ -200,8 +214,8 @@ object UPWGenerator {
         date = LocalDate.now(),
         project = SECOND_UPW_PROJECT,
         details = THIRD_UPW_DETAILS,
-        contact = CONTACT_NO_ENFORCEMENT,
-        contactOutcomeTypeId = 1L,
+        contact = CONTACT_TO_UPDATE,
+        contactOutcomeTypeId = null,
         pickupLocation = DEFAULT_OFFICE_LOCATION,
         pickupTime = LocalTime.of(10, 15),
         penaltyTime = null,
@@ -346,7 +360,7 @@ object UPWGenerator {
         complied: Boolean? = true,
         latestEnforcementAction: EnforcementAction?,
         date: LocalDate,
-        startTime: LocalTime?,
+        startTime: LocalTime,
         endTime: LocalTime?,
         linkedContactId: Long? = null,
         personId: Long,
@@ -363,6 +377,7 @@ object UPWGenerator {
         rowVersion: Long = 1,
     ) = Contact(
         id,
+        rowVersion,
         contactType,
         contactOutcome,
         attended,
@@ -382,8 +397,7 @@ object UPWGenerator {
         provider,
         notes,
         sensitive,
-        alertsActive,
-        rowVersion
+        alertsActive
     )
 
     fun generateUpwAppointment(

@@ -101,7 +101,7 @@ object TestData {
     val FAILED_TO_COMPLY =
         ContactOutcome(id(), "FTC", "Failed to comply", attended = false, complied = false, enforceable = true)
     val REFER_TO_MANAGER_CONTACT_TYPE = ContactType(id(), "ROM", false)
-    val REFER_TO_MANAGER_ACTION = EnforcementAction("ROM", "Refer to manager", 7, REFER_TO_MANAGER_CONTACT_TYPE, id())
+    val REFER_TO_MANAGER_ACTION = EnforcementAction(id(), "ROM", "Refer to manager", 7, REFER_TO_MANAGER_CONTACT_TYPE)
     val ENFORCEMENT_REVIEW_CONTACT_TYPE = ContactType(id(), "ARWS", false)
 
     val PSS_END_DATE_KEY_DATE_TYPE =
