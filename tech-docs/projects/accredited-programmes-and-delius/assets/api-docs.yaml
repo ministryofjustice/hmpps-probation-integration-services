@@ -509,7 +509,6 @@ components:
       required:
       - crn
       - date
-      - sensitive
       - staff
       - team
     CodedValue:
