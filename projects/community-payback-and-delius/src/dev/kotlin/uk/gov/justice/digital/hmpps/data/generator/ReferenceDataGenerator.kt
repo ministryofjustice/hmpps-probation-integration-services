@@ -76,13 +76,15 @@ object ReferenceDataGenerator {
         code = "A",
         description = "Attended - Complied",
         attended = true,
-        complied = true
+        complied = true,
+        enforceable = false,
     )
     val FAILED_TO_ATTEND_CONTACT_OUTCOME = generateContactOutcome(
         code = "F",
         description = "Failed to Attend",
         attended = false,
-        complied = false
+        complied = false,
+        enforceable = true,
     )
 
     val UPW_RQMNT_MAIN_CATEGORY = generateRequirementMainCategory(
@@ -133,8 +135,9 @@ object ReferenceDataGenerator {
         description: String,
         attended: Boolean?,
         complied: Boolean?,
+        enforceable: Boolean?,
         id: Long = IdGenerator.getAndIncrement(),
-    ) = ContactOutcome(code, description, attended, complied, id)
+    ) = ContactOutcome(code, description, attended, complied, enforceable, id)
 
     fun generateRequirementMainCategory(
         id: Long = IdGenerator.getAndIncrement(),

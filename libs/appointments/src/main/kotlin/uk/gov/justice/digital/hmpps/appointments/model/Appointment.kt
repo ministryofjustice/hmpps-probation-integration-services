@@ -6,7 +6,7 @@ import java.time.LocalTime
 
 data class Appointment(
     val id: Long,
-    val reference: String,
+    val reference: String?,
     val typeCode: String,
     val relatedTo: ReferencedEntities,
     val date: LocalDate,
@@ -22,7 +22,7 @@ data class Appointment(
 ) {
     internal constructor(entity: AppointmentEntities.AppointmentContact) : this(
         id = entity.id!!,
-        reference = entity.externalReference!!,
+        reference = entity.externalReference,
         typeCode = entity.type.code,
         relatedTo = ReferencedEntities(
             crn = entity.person?.crn,

@@ -6,9 +6,11 @@ import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import uk.gov.justice.digital.hmpps.appointments.entity.AppointmentEntities
+import uk.gov.justice.digital.hmpps.appointments.entity.AppointmentEntities.Alert
 import uk.gov.justice.digital.hmpps.appointments.entity.AppointmentEntities.AppointmentContact
 import uk.gov.justice.digital.hmpps.appointments.entity.AppointmentEntities.Enforcement
 import uk.gov.justice.digital.hmpps.appointments.entity.AppointmentEntities.Person
+import uk.gov.justice.digital.hmpps.appointments.entity.AppointmentEntities.PersonManager
 import uk.gov.justice.digital.hmpps.appointments.entity.AppointmentEntities.Type
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import java.time.LocalDate
@@ -16,6 +18,9 @@ import java.time.ZonedDateTime
 
 internal object AppointmentRepositories {
     interface AppointmentRepository : JpaRepository<AppointmentContact, Long> {
+        @EntityGraph("AppointmentContact.all")
+        fun findByIdIn(externalReference: List<Long>): List<AppointmentContact>
+
         @EntityGraph("AppointmentContact.all")
         fun findByExternalReferenceIn(externalReference: List<String>): List<AppointmentContact>
 
@@ -57,7 +62,7 @@ internal object AppointmentRepositories {
                 join c.type ct
                 join c.person p
                 where p.id = :personId
-                and c.externalReference <> :externalReference
+                and (:appointmentId is null or c.id <> :appointmentId)
                 and to_char(c.date, 'YYYY-MM-DD') = to_char(:date, 'YYYY-MM-DD') 
                 and to_char(c.startTime, 'HH24:MI') < to_char(:endTime, 'HH24:MI') 
                 and c.endTime is not null 
@@ -69,7 +74,7 @@ internal object AppointmentRepositories {
         fun firstConflictingAppointment(
             appointment: AppointmentContact,
             personId: Long = appointment.personId,
-            externalReference: String = requireNotNull(appointment.externalReference) { "Reference must be set to check for conflicts" },
+            appointmentId: Long? = appointment.id,
             date: LocalDate = appointment.date,
             startTime: ZonedDateTime = appointment.startTime,
             endTime: ZonedDateTime = requireNotNull(appointment.endTime) { "End time must be set to check for conflicts" },
@@ -89,6 +94,17 @@ internal object AppointmentRepositories {
 
     interface EnforcementRepository : JpaRepository<Enforcement, Long> {
         fun existsByContactId(appointmentId: Long): Boolean
+    }
+
+    interface AlertRepository : JpaRepository<Alert, Long> {
+        fun deleteByAppointmentId(contactId: Long)
+    }
+
+    interface PersonManagerRepository : JpaRepository<PersonManager, Long> {
+        fun findByPersonId(personId: Long): PersonManager?
+
+        fun getActiveManagerForPerson(personId: Long) = findByPersonId(personId)
+            ?: throw NotFoundException("PersonManager", "personId", personId)
     }
 }
 

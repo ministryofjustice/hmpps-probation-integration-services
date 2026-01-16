@@ -13,8 +13,8 @@ import java.time.LocalDateTime
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 
-@Transactional
 @Service
+@Transactional
 internal class EnforcementService(
     private val enforcementRepository: EnforcementRepository,
     private val appointmentRepository: AppointmentRepository,
