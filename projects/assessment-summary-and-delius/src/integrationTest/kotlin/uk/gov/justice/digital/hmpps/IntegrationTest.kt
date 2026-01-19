@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.data.repository.findByIdOrNull
+import org.springframework.test.annotation.DirtiesContext
 import org.springframework.test.context.bean.override.mockito.MockitoBean
 import org.springframework.transaction.PlatformTransactionManager
 import org.springframework.transaction.support.TransactionTemplate
@@ -49,6 +50,7 @@ import java.math.BigDecimal
 import java.time.LocalDate
 
 @SpringBootTest
+@DirtiesContext
 internal class IntegrationTest @Autowired constructor(
     private val wireMockServer: WireMockServer,
     private val channelManager: HmppsChannelManager,
