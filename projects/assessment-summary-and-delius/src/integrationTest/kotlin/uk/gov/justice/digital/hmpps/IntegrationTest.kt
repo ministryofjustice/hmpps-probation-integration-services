@@ -379,6 +379,10 @@ internal class IntegrationTest @Autowired constructor(
         assertThat(review.level?.code, equalTo("RSKH"))
         assertThat(review.category?.code, equalTo(null))
         assertThat(review.contact.description, equalTo("Registration Review of Register of type Risk to children"))
+
+        // risk to staff is low - should not create registration
+        val staffRegistrations = registrationRepository.findByPersonIdAndTypeCode(person.id, RiskType.STAFF.code)
+        assertThat(staffRegistrations.size, equalTo(0))
     }
 
     @Test

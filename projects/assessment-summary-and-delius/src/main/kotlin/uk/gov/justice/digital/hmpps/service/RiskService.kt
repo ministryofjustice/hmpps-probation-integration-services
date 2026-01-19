@@ -78,8 +78,8 @@ class RiskService(
             val registration = registrationRepository.findByPersonIdAndTypeCode(person.id, riskType.code).firstOrNull()
 
             // Deregister if OASys identified the level as low risk
-            if (registration != null && riskLevel == RiskLevel.L) {
-                person.removeRegistration(registration, addToTelemetry = addToTelemetry)
+            if (riskLevel == RiskLevel.L) {
+                if (registration != null) person.removeRegistration(registration, addToTelemetry = addToTelemetry)
                 return@forEach
             }
 
