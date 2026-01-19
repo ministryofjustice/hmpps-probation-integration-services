@@ -82,6 +82,7 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
         )
         PersonGenerator.FEATURE_FLAG.withEvent().withRiskOfSeriousHarm(V)
         PersonGenerator.LOCKED_INCOMPLETE.withEvent()
+        PersonGenerator.OGRS4_TEST.withEvent()
     }
 
     private fun Person.withEvent(softDeleted: Boolean = false, custodial: Boolean = false): Person {
