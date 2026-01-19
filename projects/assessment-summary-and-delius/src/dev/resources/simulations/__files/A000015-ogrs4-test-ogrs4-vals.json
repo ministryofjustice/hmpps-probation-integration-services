@@ -1,5 +1,5 @@
 {
-  "probNumber": "A000014",
+  "probNumber": "A000015",
   "assessments": [
     {
       "assessmentPk": 4191308,
@@ -73,24 +73,24 @@
         "courtName": "Hereford (Bath Street) MC"
       },
       "newActuarialPredictors": {
-        "ogrs4gYr2": null,
-        "ogrs4gBand": null,
-        "ogrs4gCalculated": "N",
-        "ogrs4vYr2": null,
-        "ogrs4vBand": null,
-        "ogrs4vCalculated": "N",
-        "ogp2Yr2": 42.27,
-        "ogp2Band": "M",
-        "ogp2Calculated": "Y",
-        "ovp2Yr2": 35.24,
-        "ovp2Band": "L",
-        "ovp2Calculated": "Y",
-        "snsvStaticYr2": null,
-        "snsvStaticYr2Band": null,
-        "snsvStaticCalculated": "N",
-        "snsvDynamicYr2": 2.86,
-        "snsvDynamicYr2Band": "M",
-        "snsvDynamicCalculated": "Y"
+        "ogrs4gYr2": 30.14,
+        "ogrs4gBand": "L",
+        "ogrs4gCalculated": "Y",
+        "ogrs4vYr2": 45.39,
+        "ogrs4vBand": "M",
+        "ogrs4vCalculated": "Y",
+        "ogp2Yr2": null,
+        "ogp2Band": null,
+        "ogp2Calculated": "N",
+        "ovp2Yr2": null,
+        "ovp2Band": null,
+        "ovp2Calculated": "N",
+        "snsvStaticYr2": 1.99,
+        "snsvStaticYr2Band": "L",
+        "snsvStaticCalculated": "Y",
+        "snsvDynamicYr2": null,
+        "snsvDynamicYr2Band": null,
+        "snsvDynamicCalculated": "N"
       },
       "ogpOvp": {
         "ogpNC": "N",
@@ -114,40 +114,7 @@
           "additionalOffence": "N"
         }
       ],
-      "sentencePlan": {
-        "objectives": [
-          {
-            "objectiveCodeDesc": "Increased knowledge of physical/ psychological/ emotional self harm linked to drug use",
-            "objectiveSequence": 1,
-            "criminogenicNeeds": [
-              {
-                "criminogenicNeedDesc": "Risk to Public"
-              }
-            ],
-            "actions": [
-              {
-                "actionDesc": "Drug counselling",
-                "actionComment": "Frank will need to attend regularly"
-              }
-            ]
-          },
-          {
-            "objectiveCodeDesc": "Improve employment related skills",
-            "objectiveSequence": 2,
-            "criminogenicNeeds": [
-              {
-                "criminogenicNeedDesc": "Education Training and Employment"
-              }
-            ],
-            "actions": [
-              {
-                "actionDesc": "Basic skills",
-                "actionComment": "Some comment about their skills"
-              }
-            ]
-          }
-        ]
-      }
+      "sentencePlan": null
     }
   ]
 }

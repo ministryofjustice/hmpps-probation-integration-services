@@ -18,6 +18,7 @@ object PersonGenerator {
     val EXISTING_RISKS_WITHOUT_LEVEL = generate("A000012")
     val LOCKED_INCOMPLETE = generate("A000013")
     val OGRS4_TEST = generate("A000014")
+    val OGRS4_TEST_OGRS4_VALUES = generate("A000015")
 
     fun generate(
         crn: String,

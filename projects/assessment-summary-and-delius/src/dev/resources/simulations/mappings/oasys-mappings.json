@@ -185,6 +185,19 @@
     {
       "request": {
         "method": "GET",
+        "urlPath": "/eor/oasys/ass/asssumm/A000015/ALLOW/15/COMPLETE"
+      },
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "bodyFileName": "A000015-ogrs4-test-ogrs4-vals.json"
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
         "urlPattern": "/eor/oasys/ass/sectionroshsumm/ALLOW/.+"
       },
       "response": {

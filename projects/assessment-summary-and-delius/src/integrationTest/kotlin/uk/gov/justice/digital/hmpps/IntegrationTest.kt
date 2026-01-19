@@ -592,6 +592,32 @@ internal class IntegrationTest @Autowired constructor(
         assertThat(assessment?.svrpStaticDynamic, equalTo("D"))
     }
 
+    @Test
+    fun `ogrs4 columns are populated with new ogrs4 values when flag is set`() {
+        whenever(featureFlags.enabled(DELIUS_OGRS4_SUPPORT)).thenReturn(true)
+
+        val person = PersonGenerator.OGRS4_TEST_OGRS4_VALUES
+        val message = notification<HmppsDomainEvent>("assessment-summary-produced")
+            .withCrn(person.crn)
+
+        channelManager.getChannel(queueName).publishAndWait(message)
+
+        val assessment = flaggedOasysAssessmentRepository.findAll().firstOrNull { it.person.id == person.id }
+        assertThat(assessment, notNullValue())
+
+        assertThat(assessment?.arpScore, equalTo(BigDecimal("30.14")))
+        assertThat(assessment?.arpBand, equalTo("L"))
+        assertThat(assessment?.arpStaticDynamic, equalTo("S"))
+
+        assertThat(assessment?.vrpScore, equalTo(BigDecimal("45.39")))
+        assertThat(assessment?.vrpBand, equalTo("M"))
+        assertThat(assessment?.vrpStaticDynamic, equalTo("S"))
+
+        assertThat(assessment?.svrpScore, equalTo(BigDecimal("1.99")))
+        assertThat(assessment?.svrpBand, equalTo("L"))
+        assertThat(assessment?.svrpStaticDynamic, equalTo("S"))
+    }
+
     private fun Notification<HmppsDomainEvent>.withCrn(crn: String): Notification<HmppsDomainEvent> {
         val oasysId = crn.drop(1).toInt()
         return this.copy(
