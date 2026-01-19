@@ -229,7 +229,7 @@ internal class AppointmentControllerIntegrationTest @Autowired constructor(
             }
             .andExpect { status { isBadRequest() } }
             .andReturn().response.contentAsJson<ErrorResponse>().also {
-                assertThat(it.message).isEqualTo("Invalid Outcome codes: [UNKNOWN]")
+                assertThat(it.message).isEqualTo("Invalid AppointmentOutcome codes: [UNKNOWN]")
             }
     }
 

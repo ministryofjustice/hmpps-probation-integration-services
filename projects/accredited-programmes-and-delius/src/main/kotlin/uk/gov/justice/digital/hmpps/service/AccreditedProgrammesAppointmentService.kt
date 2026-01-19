@@ -50,7 +50,7 @@ class AccreditedProgrammesAppointmentService(
             val requirements = requirementRepository.getAllByCodeIn(mapNotNull { it.requirementId })
             val licenceConditions = licenceConditionRepository.getAllByCodeIn(mapNotNull { it.licenceConditionId })
 
-            val createdAppointments = appointmentService.create(map { request ->
+            val createdAppointments = appointmentService.bulkCreate(map { request ->
                 val component = requireNotNull(
                     requirements[request.requirementId] ?: licenceConditions[request.licenceConditionId]
                 ) { "Either requirementId or licenceConditionId must be provided" }
@@ -93,17 +93,18 @@ class AccreditedProgrammesAppointmentService(
     }
 
     fun update(request: UpdateAppointmentsRequest) {
-        appointmentService.update(request.appointments) {
+        appointmentService.bulkUpdate(request.appointments) {
             reference = { "${Contact.REFERENCE_PREFIX}${it.reference}" }
             amendDateTime = { Schedule(it.date, it.startTime, it.endTime, allowConflicts = true) }
             reassign = { Assignee(it.staff.code, it.team.code, it.location?.code) }
             applyOutcome = { Outcome(it.outcome?.code) }
             appendNotes = { it.notes }
-            flagAs = { Flags(sensitive = it.sensitive) }
+            flagAs = { copy(sensitive = it.sensitive) }
         }
     }
 
     fun delete(request: DeleteAppointmentsRequest) {
+        // TODO audit!
         request.appointments.map { "${Contact.REFERENCE_PREFIX}${it.reference}" }.toSet()
             .chunked(500)
             .forEach { contactRepository.softDeleteByExternalReferenceIn(it.toSet()) }

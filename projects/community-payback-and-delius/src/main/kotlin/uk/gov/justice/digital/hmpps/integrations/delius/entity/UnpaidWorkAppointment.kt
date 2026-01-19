@@ -81,7 +81,7 @@ class UpwAppointment(
     @JoinColumn(name = "contact_id")
     val contact: Contact,
 
-    var contactOutcomeTypeId: Long?,
+    var contactOutcomeTypeId: Long? = contact.outcome?.id,
 
     @ManyToOne
     @JoinColumn(name = "offender_id")
