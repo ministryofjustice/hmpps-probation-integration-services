@@ -53,7 +53,11 @@ class AssessmentService(
         return contact
     }
 
-    private fun AssessmentSummary.oasysAssessment(person: Person, event: Event, contact: Contact): FlaggedOasysAssessment =
+    private fun AssessmentSummary.oasysAssessment(
+        person: Person,
+        event: Event,
+        contact: Contact
+    ): FlaggedOasysAssessment =
         FlaggedOasysAssessment(
             oasysId = assessmentPk.toString(),
             date = dateCompleted ?: initiationDate,

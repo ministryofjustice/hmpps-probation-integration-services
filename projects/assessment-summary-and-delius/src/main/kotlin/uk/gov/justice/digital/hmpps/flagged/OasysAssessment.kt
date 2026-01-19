@@ -133,7 +133,8 @@ class FlaggedOasysAssessment(
         private set
 
     fun withSectionScores(weightedScores: WeightedScores): FlaggedOasysAssessment {
-        sectionScores = weightedScores.asSectionScores().map { FlaggedSectionScore(FlaggedSectionScoreId(this, it.first), it.second) }
+        sectionScores = weightedScores.asSectionScores()
+            .map { FlaggedSectionScore(FlaggedSectionScoreId(this, it.first), it.second) }
         return this
     }
 

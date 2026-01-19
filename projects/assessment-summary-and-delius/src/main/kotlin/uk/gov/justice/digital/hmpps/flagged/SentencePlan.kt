@@ -60,7 +60,8 @@ class FlaggedSentencePlan(
     }
 
     fun withWorkSummary(level: Long, workSummary: String): FlaggedSentencePlan {
-        workSummaries = workSummaries + FlaggedWorkSummary(FlaggedSentencePlanRelatedId(this, level), workSummary, person)
+        workSummaries =
+            workSummaries + FlaggedWorkSummary(FlaggedSentencePlanRelatedId(this, level), workSummary, person)
         return this
     }
 }
