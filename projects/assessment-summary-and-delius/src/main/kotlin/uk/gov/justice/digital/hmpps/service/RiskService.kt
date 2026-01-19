@@ -166,7 +166,13 @@ class RiskService(
         notes: String = registration.type.notes(),
         addToTelemetry: (String, String) -> Unit,
     ) {
-        val contact = contactService.createContact(ContactDetail(DEREGISTRATION, notes = notes), this)
+        val contact = contactService.createContact(
+            ContactDetail(
+                typeCode = DEREGISTRATION,
+                notes = notes,
+                description = "De-registration of type ${registration.type.description}"
+            ), this
+        )
         registration.deregistration = DeRegistration(
             date = LocalDate.now(),
             registration = registration,

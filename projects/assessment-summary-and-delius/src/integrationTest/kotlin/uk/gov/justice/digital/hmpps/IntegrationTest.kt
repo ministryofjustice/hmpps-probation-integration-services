@@ -34,6 +34,7 @@ import uk.gov.justice.digital.hmpps.enum.RiskType
 import uk.gov.justice.digital.hmpps.integrations.delius.assessment.entity.OasysAssessmentRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactType
+import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactType.Code.DEREGISTRATION
 import uk.gov.justice.digital.hmpps.integrations.delius.domainevent.entity.DomainEventRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.*
 import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
@@ -178,6 +179,16 @@ internal class IntegrationTest @Autowired constructor(
 
         val iaps = iapsPersonRepository.findAll().firstOrNull { it.personId == person.id }
         assertThat(iaps?.iapsFlag, equalTo(true))
+
+        val deregContacts =
+            contactRepository.findAll().filter { it.person.id == person.id && it.type.code == DEREGISTRATION.value }
+        assertThat(
+            deregContacts.map { it.description },
+            containsInAnyOrder(
+                "De-registration of type Description of RMRH",
+                "De-registration of type Description of RHRH"
+            )
+        )
     }
 
     @Test
