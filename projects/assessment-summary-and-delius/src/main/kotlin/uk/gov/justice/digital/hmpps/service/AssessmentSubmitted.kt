@@ -30,7 +30,7 @@ class AssessmentSubmitted(
 ) : AuditableService(auditedInteractionService) {
     companion object {
         const val UPDATE_RISK_REGISTRATIONS_IN_PLACE = "assessment-summary_update-risk-registrations-in-place"
-        const val DELIUS_OGRS4_SUPPORT = "assessment-summary_delius-ogrs4-support"
+        const val DELIUS_OGRS4_SUPPORT = "delius-ogrs4-support"
     }
 
     fun assessmentSubmitted(crn: String, summary: AssessmentSummary) {
