@@ -51,9 +51,9 @@ class AssessmentSubmitted(
             it["CRN"] = person.crn
             it["OASysId"] = summary.assessmentPk
             if (featureFlags.enabled(DELIUS_OGRS4_SUPPORT)) {
-                flaggedAssessmentService.recordAssessment(person, summary)
-            } else {
                 assessmentService.recordAssessment(person, summary)
+            } else {
+                flaggedAssessmentService.recordAssessment(person, summary)
             }
         }
 

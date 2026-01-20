@@ -29,7 +29,6 @@ import uk.gov.justice.digital.hmpps.datetime.toDeliusDate
 import uk.gov.justice.digital.hmpps.enum.RiskLevel
 import uk.gov.justice.digital.hmpps.enum.RiskOfSeriousHarmType
 import uk.gov.justice.digital.hmpps.enum.RiskType
-import uk.gov.justice.digital.hmpps.flagged.FlaggedOasysAssessmentRepository
 import uk.gov.justice.digital.hmpps.flags.FeatureFlags
 import uk.gov.justice.digital.hmpps.integrations.delius.assessment.entity.OasysAssessmentRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactRepository
@@ -64,7 +63,6 @@ internal class IntegrationTest @Autowired constructor(
     private val domainEventRepository: DomainEventRepository,
     private val objectMapper: ObjectMapper,
     private val entityManager: EntityManager,
-    private val flaggedOasysAssessmentRepository: FlaggedOasysAssessmentRepository,
     @Value("\${messaging.consumer.queue}") private val queueName: String
 ) {
 
@@ -80,7 +78,7 @@ internal class IntegrationTest @Autowired constructor(
     fun setUp() {
         transactionTemplate = TransactionTemplate(transactionManager)
         whenever(featureFlags.enabled(UPDATE_RISK_REGISTRATIONS_IN_PLACE)).thenReturn(true)
-        whenever(featureFlags.enabled(DELIUS_OGRS4_SUPPORT)).thenReturn(false)
+        whenever(featureFlags.enabled(DELIUS_OGRS4_SUPPORT)).thenReturn(true)
     }
 
     @Test
@@ -568,15 +566,13 @@ internal class IntegrationTest @Autowired constructor(
 
     @Test
     fun `ogrs4 columns are correctly populated from assessment when flag is set`() {
-        whenever(featureFlags.enabled(DELIUS_OGRS4_SUPPORT)).thenReturn(true)
-
         val person = PersonGenerator.OGRS4_TEST
         val message = notification<HmppsDomainEvent>("assessment-summary-produced")
             .withCrn(person.crn)
 
         channelManager.getChannel(queueName).publishAndWait(message)
 
-        val assessment = flaggedOasysAssessmentRepository.findAll().firstOrNull { it.person.id == person.id }
+        val assessment = oasysAssessmentRepository.findAll().firstOrNull { it.person.id == person.id }
         assertThat(assessment, notNullValue())
 
         assertThat(assessment?.arpScore, equalTo(BigDecimal("42.27")))
@@ -594,15 +590,13 @@ internal class IntegrationTest @Autowired constructor(
 
     @Test
     fun `ogrs4 columns are populated with new ogrs4 values when flag is set`() {
-        whenever(featureFlags.enabled(DELIUS_OGRS4_SUPPORT)).thenReturn(true)
-
         val person = PersonGenerator.OGRS4_TEST_OGRS4_VALUES
         val message = notification<HmppsDomainEvent>("assessment-summary-produced")
             .withCrn(person.crn)
 
         channelManager.getChannel(queueName).publishAndWait(message)
 
-        val assessment = flaggedOasysAssessmentRepository.findAll().firstOrNull { it.person.id == person.id }
+        val assessment = oasysAssessmentRepository.findAll().firstOrNull { it.person.id == person.id }
         assertThat(assessment, notNullValue())
 
         assertThat(assessment?.arpScore, equalTo(BigDecimal("30.14")))
