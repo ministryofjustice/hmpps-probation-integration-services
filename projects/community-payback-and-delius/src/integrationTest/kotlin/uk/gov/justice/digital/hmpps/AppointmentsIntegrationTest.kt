@@ -136,6 +136,29 @@ class AppointmentsIntegrationTest @Autowired constructor(
             )
         }.andExpect { status { isOk() } }
 
+        val updated = unpaidWorkAppointmentRepository.getAppointment(original.id)
+
+        mockMvc.put("/projects/N01SECOND/appointments/${original.id}/outcome") {
+            withToken()
+            json = AppointmentOutcomeRequest(
+                id = updated.id,
+                version = UUID(updated.rowVersion, updated.contact.rowVersion),
+                outcome = Code("A"),
+                supervisor = Code("N02P001"),
+                startTime = LocalTime.of(11, 0),
+                endTime = LocalTime.of(15, 0),
+                notes = "new notes",
+                hiVisWorn = true,
+                workedIntensively = true,
+                penaltyMinutes = 5,
+                minutesCredited = 235,
+                workQuality = WorkQuality.EXCELLENT,
+                behaviour = Behaviour.UNSATISFACTORY,
+                sensitive = false,
+                alertActive = false,
+            )
+        }.andExpect { status { isOk() } }
+
         val appointment = unpaidWorkAppointmentRepository.getAppointment(original.id)
 
         assertThat(appointment).isNotNull
