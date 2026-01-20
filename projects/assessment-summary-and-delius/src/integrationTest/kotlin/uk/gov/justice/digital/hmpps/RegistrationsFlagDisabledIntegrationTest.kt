@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.data.repository.findByIdOrNull
+import org.springframework.test.annotation.DirtiesContext
 import org.springframework.test.context.bean.override.mockito.MockitoBean
 import org.springframework.transaction.PlatformTransactionManager
 import org.springframework.transaction.support.TransactionTemplate
@@ -45,6 +46,7 @@ import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import java.time.LocalDate
 
 @SpringBootTest
+@DirtiesContext
 internal class RegistrationsFlagDisabledIntegrationTest @Autowired constructor(
     @Value("\${messaging.consumer.queue}") private val queueName: String,
     private val wireMockServer: WireMockServer,
