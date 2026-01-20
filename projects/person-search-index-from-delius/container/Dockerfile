@@ -15,8 +15,8 @@ RUN apt-get update && apt-get upgrade -y \
     && curl -sL https://sentry.io/get-cli/ | bash
 USER 1000
 
-RUN bin/logstash-plugin install logstash-input-opensearch && \
-    bin/logstash-plugin install logstash-output-opensearch
+RUN LS_JAVA_OPTS='-Xmx2G' bin/logstash-plugin install logstash-input-opensearch && \
+    LS_JAVA_OPTS='-Xmx2G' bin/logstash-plugin install logstash-output-opensearch
 
 COPY --chown=logstash ojdbc11.jar /etc/logstash/
 COPY --chown=logstash config /usr/share/logstash/config
