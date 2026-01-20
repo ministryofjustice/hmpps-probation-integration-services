@@ -150,7 +150,7 @@ class AppointmentService internal constructor(
         }
 
     private fun AppointmentContact.amendDateTime(request: Schedule): AppointmentContact {
-        if (date == request.date && startTime == request.startTime && endTime == request.endTime) return this
+        if (request isSameDateAndTimeAs this) return this
 
         require(outcome == null) {
             "Appointment with outcome cannot be rescheduled"
@@ -181,7 +181,7 @@ class AppointmentService internal constructor(
         request: Recreate,
         rescheduleOutcome: AppointmentOutcome?
     ): AppointmentContact {
-        if (date == request.date && startTime == request.startTime && endTime == request.endTime) return this
+        if (request isSameDateAndTimeAs this) return this
 
         require(outcome == null) {
             "Appointment with outcome cannot be rescheduled"

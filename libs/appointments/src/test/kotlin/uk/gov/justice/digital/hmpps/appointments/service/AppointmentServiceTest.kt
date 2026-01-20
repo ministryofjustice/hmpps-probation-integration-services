@@ -549,6 +549,22 @@ class AppointmentServiceTest {
         assertThat(existing.outcome).isEqualTo(TestData.OUTCOME)
     }
 
+    @Test
+    fun `amend date and time of appointment with outcome succeeds if date and time have not changed`() {
+        val existing = TestData.appointment(outcome = TestData.OUTCOME)
+
+        whenever(appointmentRepository.findByExternalReferenceIn(listOf(existing.externalReference!!)))
+            .thenReturn(listOf(existing))
+
+        appointmentService.update(existing) {
+            reference = { existing.externalReference }
+            amendDateTime = { this }
+        }
+
+        assertThat(existing.externalReference).isEqualTo("REF01")
+        assertThat(existing.outcome).isEqualTo(TestData.OUTCOME)
+    }
+
     private fun mockCreateReferenceData() {
         whenever(typeRepository.findAllByCodeIn(any())).thenReturn(listOf(TestData.TYPE))
         whenever(outcomeRepository.findAllByCodeIn(any())).thenReturn(emptyList())
