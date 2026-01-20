@@ -11,14 +11,12 @@ import org.hamcrest.core.IsEqual.equalTo
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.ArgumentMatchers.anyMap
-import org.mockito.kotlin.check
-import org.mockito.kotlin.eq
-import org.mockito.kotlin.timeout
-import org.mockito.kotlin.verify
+import org.mockito.kotlin.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.data.repository.findByIdOrNull
+import org.springframework.test.annotation.DirtiesContext
 import org.springframework.test.context.bean.override.mockito.MockitoBean
 import org.springframework.transaction.PlatformTransactionManager
 import org.springframework.transaction.support.TransactionTemplate
@@ -31,6 +29,7 @@ import uk.gov.justice.digital.hmpps.datetime.toDeliusDate
 import uk.gov.justice.digital.hmpps.enum.RiskLevel
 import uk.gov.justice.digital.hmpps.enum.RiskOfSeriousHarmType
 import uk.gov.justice.digital.hmpps.enum.RiskType
+import uk.gov.justice.digital.hmpps.flags.FeatureFlags
 import uk.gov.justice.digital.hmpps.integrations.delius.assessment.entity.OasysAssessmentRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactType
@@ -44,10 +43,14 @@ import uk.gov.justice.digital.hmpps.message.PersonReference
 import uk.gov.justice.digital.hmpps.messaging.HmppsChannelManager
 import uk.gov.justice.digital.hmpps.messaging.crn
 import uk.gov.justice.digital.hmpps.resourceloader.ResourceLoader.notification
+import uk.gov.justice.digital.hmpps.service.AssessmentSubmitted.Companion.DELIUS_OGRS4_SUPPORT
+import uk.gov.justice.digital.hmpps.service.AssessmentSubmitted.Companion.UPDATE_RISK_REGISTRATIONS_IN_PLACE
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
+import java.math.BigDecimal
 import java.time.LocalDate
 
 @SpringBootTest
+@DirtiesContext
 internal class IntegrationTest @Autowired constructor(
     private val wireMockServer: WireMockServer,
     private val channelManager: HmppsChannelManager,
@@ -67,11 +70,16 @@ internal class IntegrationTest @Autowired constructor(
     @MockitoBean
     lateinit var telemetryService: TelemetryService
 
+    @MockitoBean
+    lateinit var featureFlags: FeatureFlags
+
     lateinit var transactionTemplate: TransactionTemplate
 
     @BeforeEach
     fun setUp() {
         transactionTemplate = TransactionTemplate(transactionManager)
+        whenever(featureFlags.enabled(UPDATE_RISK_REGISTRATIONS_IN_PLACE)).thenReturn(true)
+        whenever(featureFlags.enabled(DELIUS_OGRS4_SUPPORT)).thenReturn(true)
     }
 
     @Test
@@ -569,6 +577,54 @@ internal class IntegrationTest @Autowired constructor(
             .map { objectMapper.readValue<HmppsDomainEvent>(it.messageBody) }
             .filter { it.crn() == person.crn }
         assertThat(registrationDomainEvents, empty())
+    }
+
+    @Test
+    fun `ogrs4 columns are correctly populated from assessment when flag is set`() {
+        val person = PersonGenerator.OGRS4_TEST
+        val message = notification<HmppsDomainEvent>("assessment-summary-produced")
+            .withCrn(person.crn)
+
+        channelManager.getChannel(queueName).publishAndWait(message)
+
+        val assessment = oasysAssessmentRepository.findAll().firstOrNull { it.person.id == person.id }
+        assertThat(assessment, notNullValue())
+
+        assertThat(assessment?.arpScore, equalTo(BigDecimal("42.27")))
+        assertThat(assessment?.arpBand, equalTo("M"))
+        assertThat(assessment?.arpStaticDynamic, equalTo("D"))
+
+        assertThat(assessment?.vrpScore, equalTo(BigDecimal("35.24")))
+        assertThat(assessment?.vrpBand, equalTo("L"))
+        assertThat(assessment?.vrpStaticDynamic, equalTo("D"))
+
+        assertThat(assessment?.svrpScore, equalTo(BigDecimal("2.86")))
+        assertThat(assessment?.svrpBand, equalTo("M"))
+        assertThat(assessment?.svrpStaticDynamic, equalTo("D"))
+    }
+
+    @Test
+    fun `ogrs4 columns are populated with new ogrs4 values when flag is set`() {
+        val person = PersonGenerator.OGRS4_TEST_OGRS4_VALUES
+        val message = notification<HmppsDomainEvent>("assessment-summary-produced")
+            .withCrn(person.crn)
+
+        channelManager.getChannel(queueName).publishAndWait(message)
+
+        val assessment = oasysAssessmentRepository.findAll().firstOrNull { it.person.id == person.id }
+        assertThat(assessment, notNullValue())
+
+        assertThat(assessment?.arpScore, equalTo(BigDecimal("30.14")))
+        assertThat(assessment?.arpBand, equalTo("L"))
+        assertThat(assessment?.arpStaticDynamic, equalTo("S"))
+
+        assertThat(assessment?.vrpScore, equalTo(BigDecimal("45.39")))
+        assertThat(assessment?.vrpBand, equalTo("M"))
+        assertThat(assessment?.vrpStaticDynamic, equalTo("S"))
+
+        assertThat(assessment?.svrpScore, equalTo(BigDecimal("1.99")))
+        assertThat(assessment?.svrpBand, equalTo("L"))
+        assertThat(assessment?.svrpStaticDynamic, equalTo("S"))
     }
 
     private fun Notification<HmppsDomainEvent>.withCrn(crn: String): Notification<HmppsDomainEvent> {

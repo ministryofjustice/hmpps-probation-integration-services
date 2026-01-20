@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.integrations.delius.assessment.entity
+package uk.gov.justice.digital.hmpps.flagged
 
 import jakarta.persistence.*
 import org.hibernate.annotations.NotFound
@@ -17,14 +17,13 @@ import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.Ref
 import uk.gov.justice.digital.hmpps.integrations.oasys.WeightedScores
 import uk.gov.justice.digital.hmpps.jpa.GeneratedId
 import java.io.Serializable
-import java.math.BigDecimal
 import java.time.LocalDate
 
 @Entity
 @Table(name = "oasys_assessment")
 @EntityListeners(AuditingEntityListener::class)
 @SequenceGenerator(name = "oasys_assessment_id_seq", sequenceName = "oasys_assessment_id_seq", allocationSize = 1)
-class OasysAssessment(
+class FlaggedOasysAssessment(
     @Column(name = "oasys_id")
     val oasysId: String,
 
@@ -87,24 +86,6 @@ class OasysAssessment(
     @JoinColumn(name = "assessment_status_id")
     val status: ReferenceData?,
 
-    val arpScore: BigDecimal?,
-    @Column(columnDefinition = "char(1)")
-    val arpBand: String?,
-    @Column(columnDefinition = "char(1)")
-    val arpStaticDynamic: String?,
-
-    val vrpScore: BigDecimal?,
-    @Column(columnDefinition = "char(1)")
-    val vrpBand: String?,
-    @Column(columnDefinition = "char(1)")
-    val vrpStaticDynamic: String?,
-
-    val svrpScore: BigDecimal?,
-    @Column(columnDefinition = "char(1)")
-    val svrpBand: String?,
-    @Column(columnDefinition = "char(1)")
-    val svrpStaticDynamic: String?,
-
     @Column(columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean = false,
@@ -125,19 +106,20 @@ class OasysAssessment(
     }
 
     @OneToMany(mappedBy = "id.assessment", cascade = [CascadeType.ALL])
-    var sectionScores: List<SectionScore> = listOf()
+    var sectionScores: List<FlaggedSectionScore> = listOf()
         private set
 
     @OneToMany(mappedBy = "assessment", cascade = [CascadeType.ALL])
-    var sentencePlans: List<SentencePlan> = listOf()
+    var sentencePlans: List<FlaggedSentencePlan> = listOf()
         private set
 
-    fun withSectionScores(weightedScores: WeightedScores): OasysAssessment {
-        sectionScores = weightedScores.asSectionScores().map { SectionScore(SectionScoreId(this, it.first), it.second) }
+    fun withSectionScores(weightedScores: WeightedScores): FlaggedOasysAssessment {
+        sectionScores = weightedScores.asSectionScores()
+            .map { FlaggedSectionScore(FlaggedSectionScoreId(this, it.first), it.second) }
         return this
     }
 
-    fun withSentencePlan(sentencePlan: SentencePlan): OasysAssessment {
+    fun withSentencePlan(sentencePlan: FlaggedSentencePlan): FlaggedOasysAssessment {
         sentencePlans = sentencePlans + sentencePlan
         return this
     }
@@ -161,10 +143,10 @@ class OasysAssessment(
 
 @Entity
 @Table(name = "oasys_assmnt_section_score")
-class SectionScore(
+class FlaggedSectionScore(
 
     @EmbeddedId
-    val id: SectionScoreId,
+    val id: FlaggedSectionScoreId,
 
     @Column(name = "section_score")
     var score: Long,
@@ -181,16 +163,16 @@ class SectionScore(
 }
 
 @Embeddable
-class SectionScoreId(
+class FlaggedSectionScoreId(
     @ManyToOne
     @JoinColumn(name = "oasys_assessment_id")
-    val assessment: OasysAssessment,
+    val assessment: FlaggedOasysAssessment,
 
     @Column(name = "level_")
     val level: Long
 ) : Serializable
 
-interface OasysAssessmentRepository : JpaRepository<OasysAssessment, Long> {
+interface FlaggedOasysAssessmentRepository : JpaRepository<FlaggedOasysAssessment, Long> {
     @EntityGraph(attributePaths = ["sectionScores"])
-    fun findByOasysId(oasysId: String): OasysAssessment?
+    fun findByOasysId(oasysId: String): FlaggedOasysAssessment?
 }
