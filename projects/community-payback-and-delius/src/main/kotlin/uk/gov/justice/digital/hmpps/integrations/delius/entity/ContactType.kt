@@ -53,6 +53,9 @@ class ContactOutcome(
     @Convert(converter = YesNoConverter::class)
     val complied: Boolean? = null,
 
+    @Convert(converter = YesNoConverter::class)
+    val enforceable: Boolean? = null,
+
     @Id
     @Column(name = "contact_outcome_type_id")
     val id: Long,

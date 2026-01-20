@@ -15,6 +15,7 @@ import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator
 import uk.gov.justice.digital.hmpps.data.generator.UPWGenerator
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.*
+import uk.gov.justice.digital.hmpps.integrations.delius.entity.ContactType.Code.REVIEW_ENFORCEMENT_STATUS
 import uk.gov.justice.digital.hmpps.model.*
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.json
@@ -24,8 +25,8 @@ import java.time.LocalTime
 import java.time.temporal.ChronoUnit.SECONDS
 import java.util.*
 
-@AutoConfigureMockMvc
 @SpringBootTest
+@AutoConfigureMockMvc
 class AppointmentsIntegrationTest @Autowired constructor(
     private val mockMvc: MockMvc,
     private val unpaidWorkAppointmentRepository: UnpaidWorkAppointmentRepository,
@@ -68,13 +69,13 @@ class AppointmentsIntegrationTest @Autowired constructor(
     @Test
     fun `can retrieve single session details`() {
         val response = mockMvc
-            .get("/projects/N01SECOND/appointments?date=${LocalDate.now().plusDays(1)}&username=DefaultUser") {
+            .get("/projects/N01DEFAULT/appointments?date=${LocalDate.now().plusDays(1)}&username=DefaultUser") {
                 withToken()
             }
             .andExpect { status { is2xxSuccessful() } }
             .andReturn().response.contentAsJson<SessionResponse>()
-        assertThat(response.project.name).isEqualTo("Second UPW Project")
-        assertThat(response.appointmentSummaries.size).isEqualTo(2)
+        assertThat(response.project.name).isEqualTo("Default UPW Project")
+        assertThat(response.appointmentSummaries.size).isEqualTo(1)
         assertThat(response.appointmentSummaries[0].case.crn).isEqualTo("Z000001")
         assertThat(response.appointmentSummaries[0].requirementProgress.requiredMinutes).isEqualTo(120 * 60)
         assertThat(response.appointmentSummaries[0].requirementProgress.adjustments).isEqualTo(4)
@@ -82,12 +83,12 @@ class AppointmentsIntegrationTest @Autowired constructor(
 
     @Test
     fun `not updated if version does not match`() {
-        val original = unpaidWorkAppointmentRepository.getAppointment(UPWGenerator.UPW_APPOINTMENT_NO_OUTCOME.id)
+        val original = unpaidWorkAppointmentRepository.getAppointment(UPWGenerator.UPW_APPOINTMENT_TO_UPDATE[0].id)
 
         mockMvc.put("/projects/${original.project.code}/appointments/${original.id}/outcome") {
             withToken()
             json = AppointmentOutcomeRequest(
-                id = UPWGenerator.UPW_APPOINTMENT_NO_OUTCOME.id,
+                id = UPWGenerator.UPW_APPOINTMENT_TO_UPDATE[0].id,
                 version = UUID(original.rowVersion + 1, original.contact.rowVersion + 1),
                 outcome = Code("A"),
                 supervisor = Code("N01P001"),
@@ -106,21 +107,21 @@ class AppointmentsIntegrationTest @Autowired constructor(
         }.andExpect { status { isConflict() } }
 
         val appointment =
-            unpaidWorkAppointmentRepository.getAppointment(UPWGenerator.UPW_APPOINTMENT_NO_OUTCOME.id)
+            unpaidWorkAppointmentRepository.getAppointment(UPWGenerator.UPW_APPOINTMENT_TO_UPDATE[0].id)
         assertThat(appointment.rowVersion).isEqualTo(original.rowVersion)
     }
 
     @Test
     fun `can update appointment outcome`() {
-        val original = unpaidWorkAppointmentRepository.getAppointment(UPWGenerator.UPW_APPOINTMENT_NO_ENFORCEMENT.id)
+        val original = unpaidWorkAppointmentRepository.getAppointment(UPWGenerator.UPW_APPOINTMENT_TO_UPDATE[1].id)
 
-        mockMvc.put("/projects/N01DEFAULT/appointments/${original.id}/outcome") {
+        mockMvc.put("/projects/N01SECOND/appointments/${original.id}/outcome") {
             withToken()
             json = AppointmentOutcomeRequest(
-                id = UPWGenerator.UPW_APPOINTMENT_NO_OUTCOME.id,
+                id = original.id,
                 version = UUID(original.rowVersion, original.contact.rowVersion),
                 outcome = Code("A"),
-                supervisor = Code("N01P001"),
+                supervisor = Code("N02P001"),
                 startTime = LocalTime.of(11, 0),
                 endTime = LocalTime.of(15, 0),
                 notes = "new notes",
@@ -133,10 +134,9 @@ class AppointmentsIntegrationTest @Autowired constructor(
                 sensitive = false,
                 alertActive = false,
             )
-        }.andExpect { status { is2xxSuccessful() } }
+        }.andExpect { status { isOk() } }
 
-        val appointment =
-            unpaidWorkAppointmentRepository.getAppointment(UPWGenerator.UPW_APPOINTMENT_NO_ENFORCEMENT.id)
+        val appointment = unpaidWorkAppointmentRepository.getAppointment(original.id)
 
         assertThat(appointment).isNotNull
         assertThat(appointment.startTime).isEqualTo(LocalTime.of(11, 0))
@@ -151,12 +151,12 @@ class AppointmentsIntegrationTest @Autowired constructor(
 
     @Test
     fun `contact alert created when alertActive is true`() {
-        val original = unpaidWorkAppointmentRepository.getAppointment(UPWGenerator.UPW_APPOINTMENT_NO_OUTCOME.id)
+        val original = unpaidWorkAppointmentRepository.getAppointment(UPWGenerator.UPW_APPOINTMENT_TO_UPDATE[2].id)
 
         mockMvc.put("/projects/N01SECOND/appointments/${original.id}/outcome") {
             withToken()
             json = AppointmentOutcomeRequest(
-                id = UPWGenerator.UPW_APPOINTMENT_NO_OUTCOME.id,
+                id = original.id,
                 version = UUID(original.rowVersion, original.contact.rowVersion),
                 outcome = Code("A"),
                 supervisor = Code("N01P001"),
@@ -173,21 +173,20 @@ class AppointmentsIntegrationTest @Autowired constructor(
                 alertActive = true,
             )
         }.andExpect { status { is2xxSuccessful() } }
-        val alert = contactAlertRepository.findAll()
-            .firstOrNull { it.contactId == UPWGenerator.UPW_APPOINTMENT_NO_ENFORCEMENT.contact.id }
+        val alert = contactAlertRepository.findAll().firstOrNull { it.contactId == original.contact.id }
         assertThat(alert).isNotNull
     }
 
     @Test
     fun `contact alert deleted when alertActive is false`() {
-        val original = unpaidWorkAppointmentRepository.getAppointment(UPWGenerator.UPW_APPOINTMENT_NO_OUTCOME.id)
+        val original = unpaidWorkAppointmentRepository.getAppointment(UPWGenerator.UPW_APPOINTMENT_TO_UPDATE[3].id)
 
         mockMvc.put("/projects/N01SECOND/appointments/${original.id}/outcome") {
             withToken()
             json = AppointmentOutcomeRequest(
-                id = UPWGenerator.UPW_APPOINTMENT_NO_OUTCOME.id,
+                id = original.id,
                 version = UUID(original.rowVersion, original.contact.rowVersion),
-                outcome = Code("A"),
+                outcome = null,
                 supervisor = Code("N01P001"),
                 startTime = LocalTime.of(8, 0),
                 endTime = LocalTime.of(10, 0),
@@ -203,16 +202,16 @@ class AppointmentsIntegrationTest @Autowired constructor(
             )
         }.andExpect { status { is2xxSuccessful() } }
 
-        val alertCreated = contactAlertRepository.findAll()
+        val alertCreated = contactAlertRepository.findAll().filter { it.contactId == original.contact.id }
 
-        val second = unpaidWorkAppointmentRepository.getAppointment(UPWGenerator.UPW_APPOINTMENT_NO_OUTCOME.id)
+        val second = unpaidWorkAppointmentRepository.getAppointment(original.id)
 
-        mockMvc.put("/projects/N01SECOND/appointments/${original.id}/outcome") {
+        mockMvc.put("/projects/N01SECOND/appointments/${second.id}/outcome") {
             withToken()
             json = AppointmentOutcomeRequest(
-                id = UPWGenerator.UPW_APPOINTMENT_NO_OUTCOME.id,
+                id = second.id,
                 version = UUID(second.rowVersion, second.contact.rowVersion),
-                outcome = Code("A"),
+                outcome = null,
                 supervisor = Code("N01P001"),
                 startTime = LocalTime.of(8, 0),
                 endTime = LocalTime.of(10, 0),
@@ -228,7 +227,7 @@ class AppointmentsIntegrationTest @Autowired constructor(
             )
         }.andExpect { status { is2xxSuccessful() } }
 
-        val alertDeleted = contactAlertRepository.findAll()
+        val alertDeleted = contactAlertRepository.findAll().filter { it.contactId == original.contact.id }
 
         assertThat(alertCreated).isNotEmpty
         assertThat(alertDeleted).isEmpty()
@@ -252,7 +251,7 @@ class AppointmentsIntegrationTest @Autowired constructor(
                 hiVisWorn = true,
                 workedIntensively = true,
                 penaltyMinutes = 65,
-                minutesCredited = 55,
+                minutesCredited = 375,
                 workQuality = WorkQuality.EXCELLENT,
                 behaviour = Behaviour.UNSATISFACTORY,
                 sensitive = false,
@@ -302,37 +301,43 @@ class AppointmentsIntegrationTest @Autowired constructor(
 
     @Test
     fun `404 if appointment id is invalid`() {
-        mockMvc.put("/projects/N01DEFAULT/appointments/987654/outcome") {
-            withToken()
-            json = AppointmentOutcomeRequest(
-                id = 987654,
-                version = UUID(1, 1),
-                outcome = null,
-                supervisor = Code("N01P001"),
-                startTime = LocalTime.of(8, 0),
-                endTime = LocalTime.of(10, 0),
-                notes = "doesn't exist",
-                hiVisWorn = true,
-                workedIntensively = true,
-                penaltyMinutes = 65,
-                minutesCredited = 55,
-                workQuality = WorkQuality.EXCELLENT,
-                behaviour = Behaviour.EXCELLENT,
-                sensitive = false,
-                alertActive = true,
-            )
-        }
-            .andExpect { status { is4xxClientError() } }
+        mockMvc
+            .put("/projects/N01DEFAULT/appointments/987654/outcome") {
+                withToken()
+                json = AppointmentOutcomeRequest(
+                    id = 987654,
+                    version = UUID(1, 1),
+                    outcome = null,
+                    supervisor = Code("N01P001"),
+                    startTime = LocalTime.of(8, 0),
+                    endTime = LocalTime.of(10, 0),
+                    notes = "doesn't exist",
+                    hiVisWorn = true,
+                    workedIntensively = true,
+                    penaltyMinutes = 65,
+                    minutesCredited = 55,
+                    workQuality = WorkQuality.EXCELLENT,
+                    behaviour = Behaviour.EXCELLENT,
+                    sensitive = false,
+                    alertActive = true,
+                )
+            }.andExpect { status { isNotFound() } }
     }
 
     @Test
     fun `ftc count is updated if complied is false`() {
-        val original = unpaidWorkAppointmentRepository.getAppointment(UPWGenerator.UPW_APPOINTMENT_NO_OUTCOME.id)
+        val original = unpaidWorkAppointmentRepository.getAppointment(UPWGenerator.UPW_APPOINTMENT_TO_UPDATE[4].id)
+        val originalFtcCount = original.contact.event!!.ftcCount
+
+        // Clear any existing enforcement review contacts
+        contactRepository.deleteAll(contactRepository.findAll().filter {
+            it.event?.id == original.contact.event!!.id && it.contactType.code == REVIEW_ENFORCEMENT_STATUS.value
+        })
 
         mockMvc.put("/projects/N01SECOND/appointments/${original.id}/outcome") {
             withToken()
             json = AppointmentOutcomeRequest(
-                id = UPWGenerator.UPW_APPOINTMENT_NO_OUTCOME.id,
+                id = original.id,
                 version = UUID(original.rowVersion, original.contact.rowVersion),
                 outcome = Code("F"),
                 supervisor = Code("N01P001"),
@@ -350,16 +355,12 @@ class AppointmentsIntegrationTest @Autowired constructor(
             )
         }.andExpect { status { is2xxSuccessful() } }
 
-        val event = eventRepository.findAll()
-            .firstOrNull { it.id == UPWGenerator.UPW_APPOINTMENT_NO_OUTCOME.contact.event!!.id }
+        val event = eventRepository.findAll().first { it.id == original.contact.event!!.id }
+        assertThat(event.ftcCount).isEqualTo(originalFtcCount + 1)
 
-        assertThat(event!!.ftcCount).isEqualTo(1L)
-
-        val enforcementReviewContact = contactRepository.findAll()
-            .firstOrNull {
-                it.linkedContactId == UPWGenerator.UPW_APPOINTMENT_NO_OUTCOME.contact.id
-                    && it.contactType.code == ContactType.Code.REVIEW_ENFORCEMENT_STATUS.value
-            }
-        assertThat(enforcementReviewContact).isNotNull
+        val enforcementReviewContact = contactRepository.findAll().filter {
+            it.linkedContactId == original.contact.id && it.contactType.code == REVIEW_ENFORCEMENT_STATUS.value
+        }
+        assertThat(enforcementReviewContact).hasSize(1)
     }
 }

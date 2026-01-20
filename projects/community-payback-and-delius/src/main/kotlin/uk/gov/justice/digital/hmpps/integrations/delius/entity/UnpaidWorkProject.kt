@@ -5,6 +5,8 @@ import org.hibernate.annotations.Immutable
 import org.hibernate.type.YesNoConverter
 import org.springframework.data.jpa.repository.JpaRepository
 import uk.gov.justice.digital.hmpps.exception.NotFoundException.Companion.orNotFoundBy
+import java.time.LocalDate
+import java.time.LocalTime
 
 @Entity
 @Table(name = "upw_project")
@@ -18,7 +20,9 @@ class UpwProject(
 
     val code: String,
 
-    val teamId: Long,
+    @ManyToOne
+    @JoinColumn(name = "team_id")
+    val team: Team,
 
     @ManyToOne
     @JoinColumn(name = "placement_address_id")
@@ -30,7 +34,11 @@ class UpwProject(
 
     @Convert(converter = YesNoConverter::class)
     @Column(name = "high_visibility_vest_required")
-    val hiVisRequired: Boolean
+    val hiVisRequired: Boolean,
+
+    val expectedEndDate: LocalDate?,
+
+    val completionDate: LocalDate?
 )
 
 @Entity
@@ -41,7 +49,23 @@ class UpwProjectAvailability(
     @Column(name = "upw_project_availability_id")
     val id: Long,
 
-    val upwProjectId: Long
+    val upwProjectId: Long,
+
+    @ManyToOne
+    @JoinColumn(name = "frequency_id")
+    val frequency: ReferenceData?,
+
+    @Column(name = "start_time")
+    val startTime: LocalTime?,
+
+    @Column(name = "end_time")
+    val endTime: LocalTime?,
+
+    @Column(name = "start_date")
+    val startDate: LocalDate?,
+
+    @Column(name = "end_date")
+    val endDate: LocalDate?
 )
 
 interface UnpaidWorkProjectRepository : JpaRepository<UpwProject, Long> {

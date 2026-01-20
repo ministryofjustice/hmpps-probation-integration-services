@@ -80,5 +80,6 @@ class ProvidersIntegrationTest @Autowired constructor(
             .andReturn().response.contentAsJson<SessionsResponse>()
 
         assertThat(response.sessions.size).isEqualTo(2)
+        assertThat(response.sessions.map { it.date }).isEqualTo(listOf(LocalDate.now(), LocalDate.now().plusDays(1)))
     }
 }

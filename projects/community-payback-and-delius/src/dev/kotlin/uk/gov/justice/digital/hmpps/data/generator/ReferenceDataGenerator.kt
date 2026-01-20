@@ -55,6 +55,11 @@ object ReferenceDataGenerator {
         datasetId = DatasetGenerator.NON_WORKING_DAYS_DATASET.id,
         selectable = true
     )
+    val UPW_FREQUENCY_WEEKLY = generateReferenceData(
+        code = "WE",
+        description = "Weekly",
+        datasetId = DatasetGenerator.UPW_FREQUENCY_DATASET.id
+    )
 
     val UPW_APPOINTMENT_TYPE = generateContactType(ContactType.Code.UNPAID_WORK_APPOINTMENT.value)
     val REVIEW_ENFORCEMENT_STATUS_TYPE = generateContactType(ContactType.Code.REVIEW_ENFORCEMENT_STATUS.value)
@@ -71,13 +76,15 @@ object ReferenceDataGenerator {
         code = "A",
         description = "Attended - Complied",
         attended = true,
-        complied = true
+        complied = true,
+        enforceable = false,
     )
     val FAILED_TO_ATTEND_CONTACT_OUTCOME = generateContactOutcome(
         code = "F",
         description = "Failed to Attend",
         attended = false,
-        complied = false
+        complied = false,
+        enforceable = true,
     )
 
     val UPW_RQMNT_MAIN_CATEGORY = generateRequirementMainCategory(
@@ -90,6 +97,10 @@ object ReferenceDataGenerator {
         description = "Community Order",
         preCja2003 = false,
         ftcLimit = 0
+    )
+
+    val UPW_DAY_MONDAY = generateUpwDay(
+        weekDay = "MONDAY"
     )
 
     fun generateReferenceData(
@@ -124,8 +135,9 @@ object ReferenceDataGenerator {
         description: String,
         attended: Boolean?,
         complied: Boolean?,
+        enforceable: Boolean?,
         id: Long = IdGenerator.getAndIncrement(),
-    ) = ContactOutcome(code, description, attended, complied, id)
+    ) = ContactOutcome(code, description, attended, complied, enforceable, id)
 
     fun generateRequirementMainCategory(
         id: Long = IdGenerator.getAndIncrement(),
@@ -140,6 +152,11 @@ object ReferenceDataGenerator {
         ftcLimit: Long? = 3,
         preCja2003: Boolean = false
     ) = DisposalType(id, code, description, ftcLimit, preCja2003)
+
+    fun generateUpwDay(
+        id: Long = IdGenerator.getAndIncrement(),
+        weekDay: String
+    ) = UpwDay(id, weekDay)
 }
 
 object DatasetGenerator {
@@ -147,6 +164,7 @@ object DatasetGenerator {
     val UPW_WORK_QUALITY_DATASET = generateDataset(code = Dataset.UPW_WORK_QUALITY)
     val UPW_BEHAVIOUR_DATASET = generateDataset(code = Dataset.UPW_BEHAVIOUR)
     val NON_WORKING_DAYS_DATASET = generateDataset(code = Dataset.NON_WORKING_DAYS)
+    val UPW_FREQUENCY_DATASET = generateDataset(code = Dataset.UPW_FREQUENCY)
 
     fun generateDataset(
         id: Long = IdGenerator.getAndIncrement(),

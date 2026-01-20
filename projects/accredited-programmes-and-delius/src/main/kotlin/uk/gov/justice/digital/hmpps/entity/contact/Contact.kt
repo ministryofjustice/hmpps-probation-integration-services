@@ -99,18 +99,21 @@ class Contact(
     @JoinColumn(name = "probation_area_id")
     var provider: Provider,
 
-    notes: String? = null,
+    @Lob
+    var notes: String? = null,
 
     @Column
     val externalReference: String? = null,
 
     @Convert(converter = YesNoConverter::class)
-    var sensitive: Boolean = false,
+    var sensitive: Boolean? = false,
 
     @CreatedDate
+    @Column(name = "created_datetime")
     var createdDatetime: ZonedDateTime = ZonedDateTime.now(),
 
     @LastModifiedDate
+    @Column(name = "last_updated_datetime")
     var lastUpdatedDatetime: ZonedDateTime = ZonedDateTime.now(),
 
     @CreatedBy
@@ -122,6 +125,7 @@ class Contact(
     val createdByUser: User? = null,
 
     @LastModifiedBy
+    @Column(name = "last_updated_user_id")
     var lastUpdatedUserId: Long = 0,
 
     @Column(columnDefinition = "number")
@@ -137,14 +141,6 @@ class Contact(
     @Convert(converter = NumericBooleanConverter::class)
     val trustProviderFlag: Boolean = false,
 ) {
-    @Lob
-    var notes: String? = notes
-        private set
-
-    fun appendNotes(extraNotes: String) {
-        notes = notes + System.lineSeparator() + System.lineSeparator() + extraNotes
-    }
-
     companion object {
         const val REFERENCE_PREFIX = "urn:uk:gov:accredited-programmes:appointment:"
     }

@@ -16,18 +16,19 @@ import org.springframework.test.web.servlet.delete
 import org.springframework.test.web.servlet.post
 import org.springframework.test.web.servlet.put
 import uk.gov.justice.digital.hmpps.advice.ErrorResponse
+import uk.gov.justice.digital.hmpps.data.EnforcementActionRepository
+import uk.gov.justice.digital.hmpps.data.EnforcementRepository
 import uk.gov.justice.digital.hmpps.data.TestData
 import uk.gov.justice.digital.hmpps.data.TestData.CA_COMMUNITY_EVENT
 import uk.gov.justice.digital.hmpps.data.TestData.CA_PERSON
 import uk.gov.justice.digital.hmpps.data.TestData.LICENCE_CONDITIONS
 import uk.gov.justice.digital.hmpps.data.TestData.REQUIREMENTS
+import uk.gov.justice.digital.hmpps.data.generator.IdGenerator.id
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.toCrn
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.entity.contact.Contact
 import uk.gov.justice.digital.hmpps.model.*
 import uk.gov.justice.digital.hmpps.repository.ContactRepository
-import uk.gov.justice.digital.hmpps.repository.EnforcementActionRepository
-import uk.gov.justice.digital.hmpps.repository.EnforcementRepository
 import uk.gov.justice.digital.hmpps.repository.RequirementRepository
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.json
@@ -44,7 +45,7 @@ internal class AppointmentControllerIntegrationTest @Autowired constructor(
     private val contactRepository: ContactRepository,
     private val enforcementActionRepository: EnforcementActionRepository,
     private val enforcementRepository: EnforcementRepository,
-    private val requirementRepository: RequirementRepository
+    private val requirementRepository: RequirementRepository,
 ) {
     @Test
     fun `exception when end date before start date`() {
@@ -228,7 +229,7 @@ internal class AppointmentControllerIntegrationTest @Autowired constructor(
             }
             .andExpect { status { isBadRequest() } }
             .andReturn().response.contentAsJson<ErrorResponse>().also {
-                assertThat(it.message).isEqualTo("Invalid ContactOutcome codes: [UNKNOWN]")
+                assertThat(it.message).isEqualTo("Invalid AppointmentOutcome codes: [UNKNOWN]")
             }
     }
 
@@ -266,29 +267,29 @@ internal class AppointmentControllerIntegrationTest @Autowired constructor(
     @Test
     fun `can create an appointment - staff not found`() {
         val appointmentReference = UUID.randomUUID()
-        mockMvc.post("/appointments") {
-            withToken()
-            json = CreateAppointmentsRequest(
-                listOf(
-                    CreateAppointmentRequest(
-                        appointmentReference,
-                        REQUIREMENTS[2].id,
-                        null,
-                        LocalDate.now().minusDays(7),
-                        LocalTime.now(),
-                        LocalTime.now().plusMinutes(30),
-                        RequestCode("ATTC"),
-                        RequestCode("OFFICE1"),
-                        RequestCode("STAFF99"),
-                        RequestCode("TEAM01"),
-                        "Some notes about the appointment",
-                        true,
+        mockMvc
+            .post("/appointments") {
+                withToken()
+                json = CreateAppointmentsRequest(
+                    listOf(
+                        CreateAppointmentRequest(
+                            reference = appointmentReference,
+                            requirementId = REQUIREMENTS[2].id,
+                            licenceConditionId = null,
+                            date = LocalDate.now().minusDays(7),
+                            startTime = LocalTime.now(),
+                            endTime = LocalTime.now().plusMinutes(30),
+                            outcome = RequestCode("ATTC"),
+                            location = RequestCode("OFFICE1"),
+                            staff = RequestCode("STAFF99"),
+                            team = RequestCode("TEAM01"),
+                            notes = "Some notes about the appointment",
+                            sensitive = true,
+                        )
                     )
+
                 )
-
-            )
-        }
-
+            }
             .andExpect { status { isBadRequest() } }
             .andReturn().response.contentAsJson<ErrorResponse>().also {
                 assertThat(it.message).isEqualTo("Invalid Staff codes: [STAFF99]")
@@ -448,7 +449,7 @@ internal class AppointmentControllerIntegrationTest @Autowired constructor(
                 listOf(
                     UpdateAppointmentRequest(
                         reference = appointmentReference,
-                        date = LocalDate.now(),
+                        date = LocalDate.now().plusDays(1),
                         startTime = LocalTime.now(),
                         endTime = LocalTime.now().plusMinutes(30),
                         sensitive = true,
@@ -465,8 +466,6 @@ internal class AppointmentControllerIntegrationTest @Autowired constructor(
         val appointment = contactRepository.findByExternalReference(existing.externalReference!!)
         assertThat(appointment).isNotNull
         with(appointment!!) {
-            assertThat(date).isEqualTo(LocalDate.now())
-            assertThat(sensitive).isTrue
             assertThat(notes).isEqualTo(
                 """
                 |Some notes
@@ -475,24 +474,29 @@ internal class AppointmentControllerIntegrationTest @Autowired constructor(
                 """.trimMargin()
             )
             assertThat(outcome?.code).isEqualTo("ATTC")
+            assertThat(date).isEqualTo(LocalDate.now().plusDays(1))
+            assertThat(sensitive).isTrue
         }
     }
 
     @Test
     fun `logging a non-complied outcome increments failure to comply count`() {
-        val (existing1, appointmentReference1) = givenExistingContact()
-        val (_, appointmentReference2) = givenExistingContact()
+        val (existing1, appointmentReference1) = givenExistingContact(date = LocalDate.now().minusDays(1))
+        val (existing2, appointmentReference2) = givenExistingContact(date = LocalDate.now().minusDays(2))
 
-        listOf(appointmentReference1, appointmentReference2).forEachIndexed { index, reference ->
+        listOf(
+            existing1 to appointmentReference1,
+            existing2 to appointmentReference2
+        ).forEach { (existing, reference) ->
             mockMvc.put("/appointments") {
                 withToken()
                 json = UpdateAppointmentsRequest(
                     listOf(
                         UpdateAppointmentRequest(
                             reference = reference,
-                            date = LocalDate.now().minusDays(index.toLong()),
-                            startTime = LocalTime.now(),
-                            endTime = LocalTime.now().plusMinutes(30),
+                            date = existing.date,
+                            startTime = existing.startTime!!.toLocalTime(),
+                            endTime = existing.endTime!!.toLocalTime(),
                             sensitive = true,
                             outcome = RequestCode("FTC"),
                             location = RequestCode("OFFICE1"),
@@ -510,6 +514,7 @@ internal class AppointmentControllerIntegrationTest @Autowired constructor(
         assertThat(appointment.complied).isFalse
         assertThat(appointment.outcome?.code).isEqualTo("FTC")
         assertThat(appointment.event?.ftcCount).isEqualTo(2)
+        assertThat(appointment.enforcement).isTrue
         val enforcementAction = enforcementActionRepository.findByIdOrNull(appointment.enforcementActionId!!)!!
         assertThat(enforcementAction.code).isEqualTo("ROM")
         val enforcement = enforcementRepository.findAll().single { it.contact.id == appointment.id }
@@ -544,15 +549,15 @@ internal class AppointmentControllerIntegrationTest @Autowired constructor(
         assertThat(appointment).isNull()
     }
 
-    private fun givenExistingContact(): Pair<Contact, UUID> {
+    private fun givenExistingContact(date: LocalDate = LocalDate.now().plusDays(7)): Pair<Contact, UUID> {
         val existing = contactRepository.save(
             Contact(
-                id = 0,
+                id = id(),
                 person = CA_PERSON.toCrn(),
                 event = CA_COMMUNITY_EVENT,
-                date = LocalDate.now().minusDays(7),
-                startTime = ZonedDateTime.now().minusDays(7),
-                endTime = ZonedDateTime.now().minusDays(7).plusMinutes(30),
+                date = date,
+                startTime = ZonedDateTime.now().plusDays(7),
+                endTime = ZonedDateTime.now().plusDays(7).plusMinutes(30),
                 type = TestData.APPOINTMENT_CONTACT_TYPE,
                 staff = TestData.STAFF,
                 team = TestData.TEAM,

@@ -1,10 +1,14 @@
 package uk.gov.justice.digital.hmpps.data
 
 import org.springframework.stereotype.Component
+import uk.gov.justice.digital.hmpps.appointments.audit.BusinessInteractionCode
+import uk.gov.justice.digital.hmpps.audit.BusinessInteraction
 import uk.gov.justice.digital.hmpps.data.generator.*
+import uk.gov.justice.digital.hmpps.data.generator.IdGenerator.id
 import uk.gov.justice.digital.hmpps.data.loader.BaseDataLoader
 import uk.gov.justice.digital.hmpps.data.manager.DataManager
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.ContactTypeOutcome
+import java.time.ZonedDateTime
 
 @Component
 class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
@@ -56,14 +60,18 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
     fun loadStaff() {
         save(StaffGenerator.DEFAULT_STAFF)
         save(StaffGenerator.SECOND_STAFF)
+        save(StaffGenerator.OTHER_PROVIDER_STAFF)
         save(PersonGenerator.DEFAULT_PERSON_MANAGER)
     }
 
     fun loadReferenceData() {
+        save(BusinessInteraction(id(), BusinessInteractionCode.ADD_CONTACT.code, ZonedDateTime.now()))
+        save(BusinessInteraction(id(), BusinessInteractionCode.UPDATE_CONTACT.code, ZonedDateTime.now()))
         save(DatasetGenerator.UPW_PROJECT_TYPE_DATASET)
         save(DatasetGenerator.UPW_WORK_QUALITY_DATASET)
         save(DatasetGenerator.UPW_BEHAVIOUR_DATASET)
         save(DatasetGenerator.NON_WORKING_DAYS_DATASET)
+        save(DatasetGenerator.UPW_FREQUENCY_DATASET)
         save(ReferenceDataGenerator.GROUP_PLACEMENT_PROJECT_TYPE)
         save(ReferenceDataGenerator.INDIVIDUAL_PLACEMENT_PROJECT_TYPE)
         save(ReferenceDataGenerator.INACTIVE_PROJECT_TYPE)
@@ -86,6 +94,8 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
         save(ReferenceDataGenerator.DEFAULT_DISPOSAL_TYPE)
         save(ReferenceDataGenerator.NON_WORKING_DAY_CHRISTMAS)
         save(ReferenceDataGenerator.NON_WORKING_DAY_NEW_YEAR)
+        save(ReferenceDataGenerator.UPW_DAY_MONDAY)
+        save(ReferenceDataGenerator.UPW_FREQUENCY_WEEKLY)
     }
 
     fun loadUnpaidWorkData() {
@@ -102,17 +112,18 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
         save(UPWGenerator.DEFAULT_UPW_DETAILS)
         save(UPWGenerator.SECOND_UPW_DETAILS)
         save(UPWGenerator.THIRD_UPW_DETAILS)
+        save(UPWGenerator.DEFAULT_UPW_ALLOCATION)
         save(UPWGenerator.DEFAULT_CONTACT)
         save(UPWGenerator.CONTACT_NO_ENFORCEMENT)
         save(UPWGenerator.DEFAULT_UPW_APPOINTMENT)
         save(UPWGenerator.UPW_APPOINTMENT_NO_ENFORCEMENT)
-        save(UPWGenerator.UPW_APPOINTMENT_NO_OUTCOME)
-        save(UPWGenerator.SECOND_UPW_APPOINTMENT_OUTCOME_NO_ENFORCEMENT)
+        saveAll(UPWGenerator.UPW_APPOINTMENT_TO_UPDATE)
         save(UPWGenerator.DEFAULT_RQMNT)
+        save(UPWGenerator.SECOND_RQMNT)
         save(UPWGenerator.LAO_EXCLUDED_UPW_APPOINTMENT)
         save(UPWGenerator.LAO_RESTRICTED_UPW_APPOINTMENT)
-        save(UPWGenerator.SECOND_UPW_DETAILS_ADJUSTMENT_NEGATIVE)
-        save(UPWGenerator.SECOND_UPW_DETAILS_ADJUSTMENT_POSITIVE)
+        save(UPWGenerator.DEFAULT_UPW_DETAILS_ADJUSTMENT_NEGATIVE)
+        save(UPWGenerator.DEFAULT_UPW_DETAILS_ADJUSTMENT_POSITIVE)
     }
 
     fun loadLimitedAccessData() {

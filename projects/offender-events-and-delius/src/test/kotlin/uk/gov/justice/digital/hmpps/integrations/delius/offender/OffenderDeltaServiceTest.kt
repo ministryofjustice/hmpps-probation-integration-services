@@ -58,7 +58,7 @@ class OffenderDeltaServiceTest {
 
     @ParameterizedTest
     @MethodSource("nonContactTables")
-    fun `when sourceTable is not CONTACT then no domain event is generated`(table: String) {
+    fun `when sourceTable is not CONTACT then no domain event is published`(table: String) {
         // given
         val offender = Offender(
             id = id(),
@@ -78,9 +78,9 @@ class OffenderDeltaServiceTest {
         )
 
         // when
-        offenderDeltaService.notify(delta)
+        offenderDeltaService.prepare(delta)
 
-        // then — handleDomainEvent is NOT triggered
+        // then — domain events are NOT published
         verify(domainEventService, never())
             .publishContactUpdated(any(), any(), any(), any())
 
@@ -112,16 +112,26 @@ class OffenderDeltaServiceTest {
         )
 
         // when
-        offenderDeltaService.notify(delta)
+        val notifications = offenderDeltaService.prepare(delta)
 
-        // then — no domain events
+        // then — exactly one notification prepared
+        Assertions.assertEquals(
+            1,
+            notifications.size,
+            "Expected exactly one notification for table=$table"
+        )
+
+        // when — NOTIFY
+        notifications.forEach(offenderDeltaService::notify)
+
+        // then — no domain events published
         verify(domainEventService, never())
             .publishContactUpdated(any(), any(), any(), any())
 
         verify(domainEventService, never())
             .publishContactDeleted(any(), any(), any(), any())
 
-        // then — exactly one notification
+        // then — exactly one notification published
         val notificationCaptor = argumentCaptor<Notification<*>>()
         verify(notificationPublisher, times(1))
             .publish(notificationCaptor.capture())
@@ -167,16 +177,26 @@ class OffenderDeltaServiceTest {
         )
 
         // when
-        offenderDeltaService.notify(delta)
+        val notifications = offenderDeltaService.prepare(delta)
 
-        // then — no domain events
+        // then — exactly two notifications prepared
+        Assertions.assertEquals(
+            2,
+            notifications.size,
+            "Expected exactly two notifications for table=$table"
+        )
+
+        // when — NOTIFY
+        notifications.forEach(offenderDeltaService::notify)
+
+        // then — no domain events published
         verify(domainEventService, never())
             .publishContactUpdated(any(), any(), any(), any())
 
         verify(domainEventService, never())
             .publishContactDeleted(any(), any(), any(), any())
 
-        // then — exactly two notifications
+        // then — exactly two notifications published
         val notificationCaptor = argumentCaptor<Notification<*>>()
         verify(notificationPublisher, times(2))
             .publish(notificationCaptor.capture())
@@ -191,7 +211,7 @@ class OffenderDeltaServiceTest {
             "Expected OFFENDER_CHANGED notification for table=$table but got $eventTypes"
         )
 
-        // must contain one specific event (not OFFENDER_CHANGED)
+        // must contain exactly one additional event type
         Assertions.assertEquals(
             2,
             eventTypes.size,
@@ -224,13 +244,19 @@ class OffenderDeltaServiceTest {
         )
 
         // when
-        offenderDeltaService.notify(delta)
+        val notifications = offenderDeltaService.prepare(delta)
 
-        // then — NO NOTIFICATIONS
+        // then — no notifications prepared
+        Assertions.assertTrue(notifications.isEmpty())
+
+        // when — NOTIFY (should effectively do nothing)
+        notifications.forEach(offenderDeltaService::notify)
+
+        // then — NO NOTIFICATIONS published
         verify(notificationPublisher, never())
             .publish(any())
 
-        // then — NO DOMAIN EVENTS
+        // then — NO DOMAIN EVENTS published
         verify(domainEventService, never())
             .publishContactUpdated(any(), any(), any(), any())
 
@@ -257,16 +283,22 @@ class OffenderDeltaServiceTest {
         )
 
         // when
-        offenderDeltaService.notify(delta)
+        val notifications = offenderDeltaService.prepare(delta)
 
-        // then — DOMAIN EVENT is NOT published
+        // then — no notifications prepared
+        Assertions.assertTrue(notifications.isEmpty())
+
+        // when — NOTIFY (should do nothing)
+        notifications.forEach(offenderDeltaService::notify)
+
+        // then — DOMAIN EVENTS are NOT published
         verify(domainEventService, never())
             .publishContactUpdated(any(), any(), any(), any())
 
         verify(domainEventService, never())
             .publishContactDeleted(any(), any(), any(), any())
 
-        // then — NO DATA EVENT notification
+        // then — NO NOTIFICATIONS published
         verify(notificationPublisher, never())
             .publish(any())
 
@@ -304,9 +336,20 @@ class OffenderDeltaServiceTest {
             .thenReturn(false)
 
         // when
-        offenderDeltaService.notify(delta)
+        val notifications = offenderDeltaService.prepare(delta)
 
-        // then — DOMAIN EVENT is NOT published
+        // then — exactly one notification prepared
+        Assertions.assertEquals(1, notifications.size)
+
+        Assertions.assertEquals(
+            "CONTACT_DELETED",
+            notifications.first().eventType
+        )
+
+        // when — NOTIFY
+        notifications.forEach(offenderDeltaService::notify)
+
+        // then — DOMAIN EVENTS are NOT published
         verify(domainEventService, never())
             .publishContactUpdated(any(), any(), any(), any())
 
@@ -315,7 +358,8 @@ class OffenderDeltaServiceTest {
 
         // then — DATA EVENT notification is published
         val captor = argumentCaptor<Notification<*>>()
-        verify(notificationPublisher).publish(captor.capture())
+        verify(notificationPublisher, times(1))
+            .publish(captor.capture())
 
         Assertions.assertEquals(
             "CONTACT_DELETED",
@@ -323,7 +367,7 @@ class OffenderDeltaServiceTest {
         )
 
         // then — TELEMETRY is recorded
-        verify(telemetryService)
+        verify(telemetryService, times(1))
             .trackEvent(any(), any(), any())
     }
 
@@ -348,6 +392,7 @@ class OffenderDeltaServiceTest {
             dateChanged = occurredAt
         )
 
+        // VISOR flag is false
         whenever(contactRepository.existsByIdAndVisorContactTrue(sourceRecordId))
             .thenReturn(false)
 
@@ -355,9 +400,15 @@ class OffenderDeltaServiceTest {
             .thenReturn(false)
 
         // when
-        offenderDeltaService.notify(delta)
+        val notifications = offenderDeltaService.prepare(delta)
 
-        // then — NO DOMAIN EVENTS
+        // then — at least one notification prepared
+        Assertions.assertTrue(notifications.isNotEmpty())
+
+        // when — NOTIFY
+        notifications.forEach(offenderDeltaService::notify)
+
+        // then — NO DOMAIN EVENTS published
         verify(domainEventService, never())
             .publishContactUpdated(any(), any(), any(), any())
 
@@ -365,11 +416,11 @@ class OffenderDeltaServiceTest {
             .publishContactDeleted(any(), any(), any(), any())
 
         // then — DATA EVENT notification is published
-        verify(notificationPublisher)
+        verify(notificationPublisher, times(notifications.size))
             .publish(any())
 
         // then — TELEMETRY is recorded
-        verify(telemetryService)
+        verify(telemetryService, times(notifications.size))
             .trackEvent(any(), any(), any())
     }
 
@@ -408,9 +459,20 @@ class OffenderDeltaServiceTest {
         ).thenReturn(emptyList())
 
         // when
-        offenderDeltaService.notify(delta)
+        val notifications = offenderDeltaService.prepare(delta)
 
-        // then — DOMAIN EVENT
+        // then — exactly one notification prepared
+        Assertions.assertEquals(1, notifications.size)
+
+        Assertions.assertEquals(
+            "CONTACT_CHANGED",
+            notifications.first().eventType
+        )
+
+        // when — NOTIFY
+        notifications.forEach(offenderDeltaService::notify)
+
+        // then — DOMAIN EVENT published
         verify(domainEventService).publishContactUpdated(
             crn = eq("X202020"),
             contactId = eq(sourceRecordId),
@@ -418,16 +480,18 @@ class OffenderDeltaServiceTest {
             occurredAt = eq(occurredAt)
         )
 
-        // then — NOTIFICATION
+        // then — NOTIFICATION published
         val notificationCaptor = argumentCaptor<Notification<*>>()
-        verify(notificationPublisher).publish(notificationCaptor.capture())
+        verify(notificationPublisher, times(1))
+            .publish(notificationCaptor.capture())
+
         Assertions.assertEquals(
             "CONTACT_CHANGED",
             notificationCaptor.firstValue.eventType
         )
 
         // then — TELEMETRY
-        verify(telemetryService, atLeastOnce())
+        verify(telemetryService, times(1))
             .trackEvent(any(), any(), any())
     }
 
@@ -479,7 +543,18 @@ class OffenderDeltaServiceTest {
         ).thenReturn(listOf(registration))
 
         // when
-        offenderDeltaService.notify(delta)
+        val notifications = offenderDeltaService.prepare(delta)
+
+        // then — exactly one notification prepared
+        Assertions.assertEquals(1, notifications.size)
+
+        Assertions.assertEquals(
+            "CONTACT_CHANGED",
+            notifications.first().eventType
+        )
+
+        // when — NOTIFY
+        notifications.forEach(offenderDeltaService::notify)
 
         // then — DOMAIN EVENT is published
         verify(domainEventService).publishContactUpdated(
@@ -491,7 +566,8 @@ class OffenderDeltaServiceTest {
 
         // then — DATA EVENT notification is published
         val notificationCaptor = argumentCaptor<Notification<*>>()
-        verify(notificationPublisher).publish(notificationCaptor.capture())
+        verify(notificationPublisher, times(1))
+            .publish(notificationCaptor.capture())
 
         Assertions.assertEquals(
             "CONTACT_CHANGED",
@@ -499,7 +575,7 @@ class OffenderDeltaServiceTest {
         )
 
         // then — TELEMETRY is recorded
-        verify(telemetryService, atLeastOnce())
+        verify(telemetryService, times(1))
             .trackEvent(any(), any(), any())
     }
 
@@ -527,13 +603,24 @@ class OffenderDeltaServiceTest {
         whenever(contactRepository.existsByIdAndVisorContactTrue(sourceRecordId))
             .thenReturn(true)
 
+        // soft-deleted contact
         whenever(contactRepository.existsByIdAndSoftDeletedFalse(sourceRecordId))
             .thenReturn(false)
 
         // when
-        offenderDeltaService.notify(delta)
+        val notifications = offenderDeltaService.prepare(delta)
 
-        // then — DOMAIN EVENT (UPDATED)
+        // then — exactly one notification prepared
+        Assertions.assertEquals(1, notifications.size)
+        Assertions.assertEquals(
+            "CONTACT_DELETED",
+            notifications.first().eventType
+        )
+
+        // when — NOTIFY
+        notifications.forEach(offenderDeltaService::notify)
+
+        // then — DOMAIN EVENT (DELETED) is published
         verify(domainEventService).publishContactDeleted(
             crn = eq("X606060"),
             contactId = eq(sourceRecordId),
@@ -541,16 +628,18 @@ class OffenderDeltaServiceTest {
             occurredAt = eq(occurredAt)
         )
 
-        // then — NOTIFICATION
+        // then — DATA EVENT notification is published
         val notificationCaptor = argumentCaptor<Notification<*>>()
-        verify(notificationPublisher).publish(notificationCaptor.capture())
+        verify(notificationPublisher, times(1))
+            .publish(notificationCaptor.capture())
+
         Assertions.assertEquals(
             "CONTACT_DELETED",
             notificationCaptor.firstValue.eventType
         )
 
-        // then — TELEMETRY
-        verify(telemetryService, atLeastOnce())
+        // then — TELEMETRY is recorded
+        verify(telemetryService, times(1))
             .trackEvent(any(), any(), any())
     }
 
@@ -575,13 +664,14 @@ class OffenderDeltaServiceTest {
             dateChanged = occurredAt
         )
 
-        // contact soft deleted with ViSOR enabled
+        // contact soft-deleted with ViSOR enabled
         whenever(contactRepository.existsByIdAndVisorContactTrue(sourceRecordId))
             .thenReturn(true)
 
         whenever(contactRepository.existsByIdAndSoftDeletedFalse(sourceRecordId))
             .thenReturn(false)
 
+        // MAPPA registration with category M4 → 4
         val mappaCategory = ReferenceData(
             code = "M4",
             description = "MAPPA category 4",
@@ -601,9 +691,20 @@ class OffenderDeltaServiceTest {
         ).thenReturn(listOf(registration))
 
         // when
-        offenderDeltaService.notify(delta)
+        val notifications = offenderDeltaService.prepare(delta)
 
-        // then — DOMAIN EVENT is published
+        // then — exactly one notification prepared
+        Assertions.assertEquals(1, notifications.size)
+
+        Assertions.assertEquals(
+            "CONTACT_DELETED",
+            notifications.first().eventType
+        )
+
+        // when — NOTIFY
+        notifications.forEach(offenderDeltaService::notify)
+
+        // then — DOMAIN EVENT (DELETED) is published
         verify(domainEventService).publishContactDeleted(
             crn = eq("X111111"),
             contactId = eq(sourceRecordId),
@@ -613,7 +714,8 @@ class OffenderDeltaServiceTest {
 
         // then — DATA EVENT notification is published
         val notificationCaptor = argumentCaptor<Notification<*>>()
-        verify(notificationPublisher).publish(notificationCaptor.capture())
+        verify(notificationPublisher, times(1))
+            .publish(notificationCaptor.capture())
 
         Assertions.assertEquals(
             "CONTACT_DELETED",
@@ -621,7 +723,7 @@ class OffenderDeltaServiceTest {
         )
 
         // then — TELEMETRY is recorded
-        verify(telemetryService, atLeastOnce())
+        verify(telemetryService, times(1))
             .trackEvent(any(), any(), any())
     }
 
@@ -667,18 +769,30 @@ class OffenderDeltaServiceTest {
             .thenReturn(false)
 
         // when
-        offenderDeltaService.notify(delta)
+        val notifications = offenderDeltaService.prepare(delta)
 
-        // then — NO DOMAIN EVENTS (VISOR flag cannot be resolved)
+        // then — exactly one notification prepared
+        Assertions.assertEquals(1, notifications.size)
+
+        Assertions.assertEquals(
+            "CONTACT_DELETED",
+            notifications.first().eventType
+        )
+
+        // when — NOTIFY
+        notifications.forEach(offenderDeltaService::notify)
+
+        // then — NO DOMAIN EVENTS published (VISOR flag cannot be resolved)
         verify(domainEventService, never())
             .publishContactUpdated(any(), any(), any(), any())
 
         verify(domainEventService, never())
             .publishContactDeleted(any(), any(), any(), any())
 
-        // then — NOTIFICATION is published
+        // then — DATA EVENT notification is published
         val notificationCaptor = argumentCaptor<Notification<*>>()
-        verify(notificationPublisher).publish(notificationCaptor.capture())
+        verify(notificationPublisher, times(1))
+            .publish(notificationCaptor.capture())
 
         Assertions.assertEquals(
             "CONTACT_DELETED",
@@ -686,7 +800,7 @@ class OffenderDeltaServiceTest {
         )
 
         // then — TELEMETRY is recorded
-        verify(telemetryService)
+        verify(telemetryService, times(1))
             .trackEvent(any(), any(), any())
     }
 

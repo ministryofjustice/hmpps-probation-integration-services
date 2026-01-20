@@ -57,6 +57,7 @@ include(
     "tier-to-delius",
     "unpaid-work-and-delius",
     "workforce-allocations-to-delius",
+    "libs:appointments",
     "libs:audit",
     "libs:commons",
     "libs:dev-tools",
@@ -80,11 +81,11 @@ dependencyResolutionManagement {
             library("asyncapi", "org.openfolder:kotlin-asyncapi-spring-web:3.1.3")
             library("aws-s3", "io.awspring.cloud:spring-cloud-aws-starter-s3:3.4.2")
             library("aws-autoconfigure", "io.awspring.cloud:spring-cloud-aws-autoconfigure:3.4.2")
-            library("aws-query-protocol", "software.amazon.awssdk:aws-query-protocol:2.40.16")
+            library("aws-query-protocol", "software.amazon.awssdk:aws-query-protocol:2.41.1")
             library("aws-sns", "io.awspring.cloud:spring-cloud-aws-starter-sns:3.4.2")
             library("aws-sqs", "io.awspring.cloud:spring-cloud-aws-starter-sqs:3.4.2")
             library("aws-starter", "io.awspring.cloud:spring-cloud-aws-starter:3.4.2")
-            library("aws-sts", "software.amazon.awssdk:sts:2.40.16")
+            library("aws-sts", "software.amazon.awssdk:sts:2.41.1")
             library("azure-app-insights", "com.microsoft.azure:applicationinsights-web:3.7.6")
             library("azure-identity", "com.azure:azure-identity:1.18.1")
             library("flipt", "io.flipt:flipt-client-java:1.2.1")
@@ -100,7 +101,7 @@ dependencyResolutionManagement {
                 "io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:2.23.0"
             )
             library("sentry", "io.sentry:sentry-spring-boot-starter-jakarta:8.29.0")
-            library("springdoc", "org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.14")
+            library("springdoc", "org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.15")
             library("wiremock", "org.wiremock:wiremock-standalone:3.13.2")
 
             bundle(
