@@ -19,6 +19,8 @@ class UpdateAppointment {
         val endTime: LocalTime?,
         val allowConflicts: Boolean = false,
     ) {
+        val isFuture: Boolean = date.atTime(endTime ?: startTime).atZone(EuropeLondon) > ZonedDateTime.now(EuropeLondon)
+
         init {
             require(endTime == null || startTime < endTime) {
                 "Start time must be before end time"
@@ -38,7 +40,11 @@ class UpdateAppointment {
             allowConflicts = recreate.allowConflicts
         )
 
-        val isFuture: Boolean = date.atTime(endTime ?: startTime).atZone(EuropeLondon) > ZonedDateTime.now()
+        infix fun isSameDateAndTimeAs(other: Schedule) =
+            date == other.date && startTime == other.startTime && endTime == other.endTime
+
+        internal infix fun isSameDateAndTimeAs(other: AppointmentContact) =
+            this isSameDateAndTimeAs Schedule(other)
     }
 
     data class Recreate(
@@ -65,6 +71,9 @@ class UpdateAppointment {
             PERSON_ON_PROBATION("RSOF"),
             PROBATION_SERVICE("RSSR"),
         }
+
+        internal infix fun isSameDateAndTimeAs(other: AppointmentContact) =
+            Schedule(this) isSameDateAndTimeAs Schedule(other)
     }
 
     data class Assignee(
