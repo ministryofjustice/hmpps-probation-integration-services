@@ -19,7 +19,7 @@ class UpdateAppointment {
         val endTime: LocalTime?,
         val allowConflicts: Boolean = false,
     ) {
-        val isFuture: Boolean = date.atTime(endTime ?: startTime).atZone(EuropeLondon) > ZonedDateTime.now()
+        val isFuture: Boolean = date.atTime(endTime ?: startTime).atZone(EuropeLondon) > ZonedDateTime.now(EuropeLondon)
 
         init {
             require(endTime == null || startTime < endTime) {
