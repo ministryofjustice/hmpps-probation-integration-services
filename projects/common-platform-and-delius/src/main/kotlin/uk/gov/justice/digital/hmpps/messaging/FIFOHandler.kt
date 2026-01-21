@@ -75,7 +75,7 @@ class FIFOHandler(
                     additionalOffences = remandedOffences.filter { it.offenceCode != mainOffence.offenceCode },
                     courtCode = notification.message.hearing.courtCentre.code,
                     sittingDay = notification.message.hearing.hearingDays.first().sittingDay,
-                    caseUrn = caseUrn,
+                    caseUrn = caseUrn.replace("[^A-Za-z0-9]".toRegex(), ""),
                     hearingId = notification.message.hearing.id,
                 )
 
