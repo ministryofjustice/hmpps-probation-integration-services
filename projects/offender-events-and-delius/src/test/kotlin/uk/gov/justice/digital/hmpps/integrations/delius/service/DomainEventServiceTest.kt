@@ -85,7 +85,7 @@ class DomainEventServiceTest {
             body["eventType"].asText()
         )
         assertEquals(
-            "MAPPS information has been updated in NDelius",
+            "MAPPA information has been updated in NDelius",
             body["description"].asText()
         )
         assertEquals(
@@ -98,7 +98,7 @@ class DomainEventServiceTest {
         )
         assertEquals(
             0,
-            body["additionalInformation"]["mapps"]["category"].asInt()
+            body["additionalInformation"]["mappa"]["category"].asInt()
         )
 
         val attributes = objectMapper.readTree(saved.messageAttributes)
@@ -148,7 +148,7 @@ class DomainEventServiceTest {
             body["eventType"].asText()
         )
         assertEquals(
-            "MAPPS information has been deleted in NDelius",
+            "MAPPA information has been deleted in NDelius",
             body["description"].asText()
         )
         assertEquals(
@@ -157,7 +157,7 @@ class DomainEventServiceTest {
         )
         assertEquals(
             4,
-            body["additionalInformation"]["mapps"]["category"].asInt()
+            body["additionalInformation"]["mappa"]["category"].asInt()
         )
     }
 }
