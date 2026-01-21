@@ -86,8 +86,8 @@ class AssessmentService(
                 else -> null
             },
             arpBand = when {
-                newActuarialPredictors.ogp2Calculated == "Y" -> newActuarialPredictors.ogp2Band
-                newActuarialPredictors.ogrs4gCalculated != "E" -> newActuarialPredictors.ogrs4gBand
+                newActuarialPredictors.ogp2Calculated == "Y" -> newActuarialPredictors.ogp2Band.asOasysBandCode()
+                newActuarialPredictors.ogrs4gCalculated != "E" -> newActuarialPredictors.ogrs4gBand.asOasysBandCode()
                 else -> null
             },
             arpStaticDynamic = when {
@@ -101,8 +101,8 @@ class AssessmentService(
                 else -> null
             },
             vrpBand = when {
-                newActuarialPredictors.ovp2Calculated == "Y" -> newActuarialPredictors.ovp2Band
-                newActuarialPredictors.ogrs4vCalculated != "E" -> newActuarialPredictors.ogrs4vBand
+                newActuarialPredictors.ovp2Calculated == "Y" -> newActuarialPredictors.ovp2Band.asOasysBandCode()
+                newActuarialPredictors.ogrs4vCalculated != "E" -> newActuarialPredictors.ogrs4vBand.asOasysBandCode()
                 else -> null
             },
             vrpStaticDynamic = when {
@@ -116,8 +116,8 @@ class AssessmentService(
                 else -> null
             },
             svrpBand = when {
-                newActuarialPredictors.snsvDynamicCalculated == "Y" -> newActuarialPredictors.snsvDynamicYr2Band
-                newActuarialPredictors.snsvStaticCalculated != "E" -> newActuarialPredictors.snsvStaticYr2Band
+                newActuarialPredictors.snsvDynamicCalculated == "Y" -> newActuarialPredictors.snsvDynamicYr2Band.asOasysBandCode()
+                newActuarialPredictors.snsvStaticCalculated != "E" -> newActuarialPredictors.snsvStaticYr2Band.asOasysBandCode()
                 else -> null
             },
             svrpStaticDynamic = when {
@@ -143,6 +143,14 @@ class AssessmentService(
         else -> null
     }?.let {
         referenceDataRepository.findByCode(it, OASYS_ASSESSMENT_STATUS.value)
+    }
+
+    private fun String?.asOasysBandCode(): String? = when (this?.uppercase()) {
+        "LOW" -> "L"
+        "MEDIUM" -> "M"
+        "HIGH" -> "H"
+        "VERY HIGH" -> "V"
+        else -> null
     }
 }
 
