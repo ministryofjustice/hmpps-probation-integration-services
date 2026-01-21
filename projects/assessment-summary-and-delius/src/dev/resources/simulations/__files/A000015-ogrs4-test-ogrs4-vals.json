@@ -1,0 +1,120 @@
+{
+  "probNumber": "A000015",
+  "assessments": [
+    {
+      "assessmentPk": 4191308,
+      "assessmentType": "LAYER3",
+      "dateCompleted": "2025-12-10T10:46:57",
+      "assessorSignedDate": "2025-12-10T10:46:57",
+      "initiationDate": "2025-12-08T16:16:13",
+      "assessmentStatus": "COMPLETE",
+      "superStatus": "COMPLETE",
+      "laterWIPAssessmentExists": false,
+      "latestWIPDate": null,
+      "laterSignLockAssessmentExists": false,
+      "latestSignLockDate": null,
+      "laterPartCompUnsignedAssessmentExists": false,
+      "latestPartCompUnsignedDate": null,
+      "laterPartCompSignedAssessmentExists": false,
+      "latestPartCompSignedDate": null,
+      "laterCompleteAssessmentExists": false,
+      "latestCompleteDate": "2025-12-10T10:46:57",
+      "currentConcernsRiskOfSuicide": "Yes",
+      "reviewSpDate": "",
+      "currentConcernsBreachOfTrust": null,
+      "currentConcernsCustody": null,
+      "currentConcernsRiskOfSelfHarm": null,
+      "initialSpDate": "",
+      "analysisEscapeAbscond": null,
+      "currentConcernsDisruptive": null,
+      "reviewNum": null,
+      "currentConcernsEscape": null,
+      "analysisVulnerabilities": null,
+      "currentConcernsVulnerability": null,
+      "currentConcernsHostel": null,
+      "riskPrisonersCustody": "Medium",
+      "riskStaffCustody": "Medium",
+      "riskStaffCommunity": "Medium",
+      "riskKnownAdultCustody": "Medium",
+      "riskKnownAdultCommunity": "Medium",
+      "riskPublicCustody": "Medium",
+      "riskPublicCommunity": "Medium",
+      "riskChildrenCustody": "Medium",
+      "riskChildrenCommunity": "Medium",
+      "analysisControlBehaveTrust": "N/A",
+      "analysisCoping": "N/A",
+      "analysisSuicideSelfharm": "N/A",
+      "weightedScores": {
+        "accommodationWeightedScore": 0,
+        "eteWeightedScore": 0,
+        "relationshipsWeightedScore": 3,
+        "lifestyleWeightedScore": 6,
+        "drugWeightedScore": 3,
+        "alcoholWeightedScore": 4,
+        "thinkingWeightedScore": 0,
+        "attitudesWeightedScore": 0
+      },
+      "offender": {
+        "riskToOthers": "M",
+        "offenderPk": 8173895
+      },
+      "furtherInformation": {
+        "totWeightedScore": 80,
+        "pOAssessment": "430",
+        "rsrAlgorithmVersion": 6,
+        "pOAssessmentDesc": "Start of Community Order",
+        "assessorName": "Two Central-Support",
+        "ogrs1Year": 29,
+        "ogrs2Year": 45,
+        "reviewTerm": "N",
+        "cmsEventNumber": 1,
+        "courtCode": "HERFMC",
+        "courtType": "MC",
+        "courtName": "Hereford (Bath Street) MC"
+      },
+      "newActuarialPredictors": {
+        "ogrs4gYr2": 30.14,
+        "ogrs4gBand": "L",
+        "ogrs4gCalculated": "Y",
+        "ogrs4vYr2": 45.39,
+        "ogrs4vBand": "M",
+        "ogrs4vCalculated": "Y",
+        "ogp2Yr2": null,
+        "ogp2Band": null,
+        "ogp2Calculated": "N",
+        "ovp2Yr2": null,
+        "ovp2Band": null,
+        "ovp2Calculated": "N",
+        "snsvStaticYr2": 1.99,
+        "snsvStaticYr2Band": "L",
+        "snsvStaticCalculated": "Y",
+        "snsvDynamicYr2": null,
+        "snsvDynamicYr2Band": null,
+        "snsvDynamicCalculated": "N"
+      },
+      "ogpOvp": {
+        "ogpNC": "N",
+        "ovpNC": "N",
+        "ogp1Year": 20,
+        "ogp2Year": 31,
+        "ovp1Year": 20,
+        "ovp2Year": 32,
+        "ogrs3RiskRecon": "L",
+        "ogpRisk": "L",
+        "ovpRisk": "M"
+      },
+      "indicators": {
+        "sanIndicator": "N"
+      },
+      "basicSentencePlan": null,
+      "offences": [
+        {
+          "offenceCode": "803",
+          "offenceSubcode": "01",
+          "additionalOffence": "N"
+        }
+      ],
+      "sentencePlan": null
+    }
+  ]
+}

@@ -79,7 +79,52 @@ class AssessmentService(
             ogpScore2 = ogpOvp.ogp2Year,
             ovpScore1 = ogpOvp.ovp1Year,
             ovpScore2 = ogpOvp.ovp2Year,
-            status = assessmentStatus.asOasysStatus()
+            status = assessmentStatus.asOasysStatus(),
+            arpScore = when {
+                newActuarialPredictors.ogp2Calculated == "Y" -> newActuarialPredictors.ogp2Yr2
+                newActuarialPredictors.ogrs4gCalculated != "E" -> newActuarialPredictors.ogrs4gYr2
+                else -> null
+            },
+            arpBand = when {
+                newActuarialPredictors.ogp2Calculated == "Y" -> newActuarialPredictors.ogp2Band
+                newActuarialPredictors.ogrs4gCalculated != "E" -> newActuarialPredictors.ogrs4gBand
+                else -> null
+            },
+            arpStaticDynamic = when {
+                newActuarialPredictors.ogp2Calculated == "Y" -> "D"
+                newActuarialPredictors.ogrs4gCalculated != "E" -> "S"
+                else -> null
+            },
+            vrpScore = when {
+                newActuarialPredictors.ovp2Calculated == "Y" -> newActuarialPredictors.ovp2Yr2
+                newActuarialPredictors.ogrs4vCalculated != "E" -> newActuarialPredictors.ogrs4vYr2
+                else -> null
+            },
+            vrpBand = when {
+                newActuarialPredictors.ovp2Calculated == "Y" -> newActuarialPredictors.ovp2Band
+                newActuarialPredictors.ogrs4vCalculated != "E" -> newActuarialPredictors.ogrs4vBand
+                else -> null
+            },
+            vrpStaticDynamic = when {
+                newActuarialPredictors.ovp2Calculated == "Y" -> "D"
+                newActuarialPredictors.ogrs4vCalculated != "E" -> "S"
+                else -> null
+            },
+            svrpScore = when {
+                newActuarialPredictors.snsvDynamicCalculated == "Y" -> newActuarialPredictors.snsvDynamicYr2
+                newActuarialPredictors.snsvStaticCalculated != "E" -> newActuarialPredictors.snsvStaticYr2
+                else -> null
+            },
+            svrpBand = when {
+                newActuarialPredictors.snsvDynamicCalculated == "Y" -> newActuarialPredictors.snsvDynamicYr2Band
+                newActuarialPredictors.snsvStaticCalculated != "E" -> newActuarialPredictors.snsvStaticYr2Band
+                else -> null
+            },
+            svrpStaticDynamic = when {
+                newActuarialPredictors.snsvDynamicCalculated == "Y" -> "D"
+                newActuarialPredictors.snsvStaticCalculated != "E" -> "S"
+                else -> null
+            }
         ).withSectionScores(weightedScores)
         sentencePlan?.objectives?.map { it.plan(person, assessment) }
             ?.forEach { assessment.withSentencePlan(it) }

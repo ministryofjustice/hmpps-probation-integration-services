@@ -25,4 +25,7 @@ class ContactOutcome(
     @Column(name = "outcome_compliant_acceptable")
     @Convert(converter = YesNoConverter::class)
     val complied: Boolean? = null,
+
+    @Convert(converter = YesNoConverter::class)
+    val enforceable: Boolean? = null,
 )

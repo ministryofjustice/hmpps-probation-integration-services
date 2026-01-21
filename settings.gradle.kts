@@ -57,6 +57,7 @@ include(
     "tier-to-delius",
     "unpaid-work-and-delius",
     "workforce-allocations-to-delius",
+    "libs:appointments",
     "libs:audit",
     "libs:commons",
     "libs:dev-tools",
@@ -80,16 +81,16 @@ dependencyResolutionManagement {
             library("asyncapi", "org.openfolder:kotlin-asyncapi-spring-web:3.1.3")
             library("aws-s3", "io.awspring.cloud:spring-cloud-aws-starter-s3:3.4.2")
             library("aws-autoconfigure", "io.awspring.cloud:spring-cloud-aws-autoconfigure:3.4.2")
-            library("aws-query-protocol", "software.amazon.awssdk:aws-query-protocol:2.41.1")
+            library("aws-query-protocol", "software.amazon.awssdk:aws-query-protocol:2.41.6")
             library("aws-sns", "io.awspring.cloud:spring-cloud-aws-starter-sns:3.4.2")
             library("aws-sqs", "io.awspring.cloud:spring-cloud-aws-starter-sqs:3.4.2")
             library("aws-starter", "io.awspring.cloud:spring-cloud-aws-starter:3.4.2")
-            library("aws-sts", "software.amazon.awssdk:sts:2.41.1")
+            library("aws-sts", "software.amazon.awssdk:sts:2.41.6")
             library("azure-app-insights", "com.microsoft.azure:applicationinsights-web:3.7.6")
             library("azure-identity", "com.azure:azure-identity:1.18.1")
             library("flipt", "io.flipt:flipt-client-java:1.2.1")
             library("html2md", "com.vladsch.flexmark:flexmark-html2md-converter:0.64.8")
-            library("microsoft-graph", "com.microsoft.graph:microsoft-graph:6.59.0")
+            library("microsoft-graph", "com.microsoft.graph:microsoft-graph:6.60.0")
             library("mockito-inline", "org.mockito:mockito-inline:5.2.0")
             library("mockito-kotlin", "org.mockito.kotlin:mockito-kotlin:6.1.0")
             library("notify", "uk.gov.service.notify:notifications-java-client:6.0.0-RELEASE")

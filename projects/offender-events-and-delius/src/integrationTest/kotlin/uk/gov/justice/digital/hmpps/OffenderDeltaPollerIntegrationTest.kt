@@ -17,7 +17,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.offender.OffenderDeltaRe
 import uk.gov.justice.digital.hmpps.publisher.NotificationPublisher
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 
-@SpringBootTest
+@SpringBootTest(properties = ["spring.task.scheduling.enabled=false"])
 internal class OffenderDeltaPollerIntegrationTest @Autowired constructor(
     @Value("\${messaging.producer.topic}") private val topicName: String,
     private val offenderDeltaPoller: OffenderDeltaPoller,
@@ -36,6 +36,7 @@ internal class OffenderDeltaPollerIntegrationTest @Autowired constructor(
 
     @BeforeEach
     fun setUp() {
+        domainEventRepository.deleteAll()
         offenderDeltaRepository.deleteAll()
     }
 

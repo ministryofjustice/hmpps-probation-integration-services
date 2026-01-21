@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonAlias
 import com.fasterxml.jackson.annotation.JsonFormat
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.service.annotation.GetExchange
+import java.math.BigDecimal
 import java.time.LocalDate
 
 interface OrdsClient {
@@ -44,7 +45,8 @@ data class AssessmentSummary(
     val ogpOvp: OgpOvp = OgpOvp(),
     val offences: List<Offence>? = arrayListOf(),
     val basicSentencePlan: List<BasicSentencePlanArea>? = null,
-    val sentencePlan: SentencePlan? = null
+    val sentencePlan: SentencePlan? = null,
+    val newActuarialPredictors: NewActuarialPredictors = NewActuarialPredictors()
 ) {
     /*
         Order of Risk has to match Delius read order:
@@ -159,4 +161,25 @@ data class RoshSummary(
 data class RoshSummaryAssessment(
     val whoAtRisk: String? = null,
     val natureOfRisk: String? = null,
+)
+
+data class NewActuarialPredictors(
+    val ogrs4gYr2: BigDecimal? = null,
+    val ogrs4gBand: String? = null,
+    val ogrs4gCalculated: String? = null,
+    val ogrs4vYr2: BigDecimal? = null,
+    val ogrs4vBand: String? = null,
+    val ogrs4vCalculated: String? = null,
+    val ogp2Yr2: BigDecimal? = null,
+    val ogp2Band: String? = null,
+    val ogp2Calculated: String? = null,
+    val ovp2Yr2: BigDecimal? = null,
+    val ovp2Band: String? = null,
+    val ovp2Calculated: String? = null,
+    val snsvStaticYr2: BigDecimal? = null,
+    val snsvStaticYr2Band: String? = null,
+    val snsvStaticCalculated: String? = null,
+    val snsvDynamicYr2: BigDecimal? = null,
+    val snsvDynamicYr2Band: String? = null,
+    val snsvDynamicCalculated: String? = null,
 )

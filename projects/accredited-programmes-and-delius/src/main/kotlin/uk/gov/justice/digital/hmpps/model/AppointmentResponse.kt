@@ -16,5 +16,5 @@ data class AppointmentResponse(
     val staff: ProbationPractitioner,
     val team: CodedValue,
     val notes: String?,
-    val sensitive: Boolean,
+    val sensitive: Boolean?,
 )

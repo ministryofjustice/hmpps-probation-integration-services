@@ -17,6 +17,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.Ref
 import uk.gov.justice.digital.hmpps.integrations.oasys.WeightedScores
 import uk.gov.justice.digital.hmpps.jpa.GeneratedId
 import java.io.Serializable
+import java.math.BigDecimal
 import java.time.LocalDate
 
 @Entity
@@ -85,6 +86,24 @@ class OasysAssessment(
     @ManyToOne
     @JoinColumn(name = "assessment_status_id")
     val status: ReferenceData?,
+
+    val arpScore: BigDecimal?,
+    @Column(columnDefinition = "char(1)")
+    val arpBand: String?,
+    @Column(columnDefinition = "char(1)")
+    val arpStaticDynamic: String?,
+
+    val vrpScore: BigDecimal?,
+    @Column(columnDefinition = "char(1)")
+    val vrpBand: String?,
+    @Column(columnDefinition = "char(1)")
+    val vrpStaticDynamic: String?,
+
+    val svrpScore: BigDecimal?,
+    @Column(columnDefinition = "char(1)")
+    val svrpBand: String?,
+    @Column(columnDefinition = "char(1)")
+    val svrpStaticDynamic: String?,
 
     @Column(columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)

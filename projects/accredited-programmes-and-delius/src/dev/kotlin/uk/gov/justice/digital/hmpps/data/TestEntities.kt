@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.entity.contact.enforcement
+package uk.gov.justice.digital.hmpps.data
 
 import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
@@ -18,23 +18,6 @@ import java.time.ZonedDateTime
 @EntityListeners(AuditingEntityListener::class)
 @SQLRestriction("soft_deleted = 0")
 class Enforcement(
-    @ManyToOne
-    @JoinColumn(name = "contact_id")
-    val contact: Contact,
-
-    val responseDate: ZonedDateTime? = null,
-    val actionTakenDate: ZonedDateTime = ZonedDateTime.now(),
-    val actionTakenTime: ZonedDateTime = ZonedDateTime.now(),
-    val partitionAreaId: Long = 0,
-
-    @ManyToOne
-    @JoinColumn(name = "enforcement_action_id")
-    val action: EnforcementAction? = null,
-
-    @Column(columnDefinition = "number")
-    @Convert(converter = NumericBooleanConverter::class)
-    val softDeleted: Boolean = false,
-
     @Id
     @SequenceGenerator(name = "enforcement_id_seq", sequenceName = "enforcement_id_seq", allocationSize = 1)
     @GeneratedId(generator = "enforcement_id_seq")
@@ -45,6 +28,30 @@ class Enforcement(
     @Column(name = "row_version")
     val version: Long = 0,
 
+    @ManyToOne
+    @JoinColumn(name = "contact_id")
+    val contact: Contact,
+
+    @ManyToOne
+    @JoinColumn(name = "enforcement_action_id")
+    val action: EnforcementAction? = null,
+
+    @Column(name = "response_date")
+    val responseDate: ZonedDateTime?,
+
+    @Column(name = "action_taken_date")
+    val actionTakenDate: ZonedDateTime = ZonedDateTime.now(),
+
+    @Column(name = "action_taken_time")
+    val actionTakenTime: ZonedDateTime = ZonedDateTime.now(),
+
+    @Column(columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
+    val softDeleted: Boolean = false,
+
+    @Column(name = "partition_area_id")
+    val partitionAreaId: Long = 0,
+
     @CreatedDate
     @Column(name = "created_datetime")
     var createdDateTime: ZonedDateTime = ZonedDateTime.now(),
@@ -54,16 +61,22 @@ class Enforcement(
     var lastUpdatedDateTime: ZonedDateTime = ZonedDateTime.now(),
 
     @CreatedBy
+    @Column(name = "created_by_user_id")
     var createdByUserId: Long = 0,
 
     @LastModifiedBy
-    var lastUpdatedUserId: Long = 0
+    @Column(name = "last_updated_user_id")
+    var lastUpdatedUserId: Long = 0,
 )
 
 @Entity
 @Immutable
 @Table(name = "r_enforcement_action")
 class EnforcementAction(
+    @Id
+    @Column(name = "enforcement_action_id")
+    val id: Long = 0,
+
     val code: String,
     val description: String,
     val responseByPeriod: Long?,
@@ -71,12 +84,4 @@ class EnforcementAction(
     @ManyToOne
     @JoinColumn(name = "contact_type_id")
     val contactType: ContactType,
-
-    @Id
-    @Column(name = "enforcement_action_id")
-    val id: Long = 0
-) {
-    companion object {
-        const val REFER_TO_PERSON_MANAGER = "ROM"
-    }
-}
+)

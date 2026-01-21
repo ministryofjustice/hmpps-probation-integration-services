@@ -25,13 +25,17 @@ class Contact(
     @GeneratedId(generator = "contact_id_seq")
     override val id: Long = 0,
 
+    @Version
+    @Column(name = "row_version")
+    override var rowVersion: Long = 0,
+
     @ManyToOne
     @JoinColumn(name = "contact_type_id")
     val contactType: ContactType,
 
     @ManyToOne
     @JoinColumn(name = "contact_outcome_type_id")
-    var contactOutcome: ContactOutcome? = null,
+    var outcome: ContactOutcome? = null,
 
     @Convert(converter = YesNoConverter::class)
     var attended: Boolean? = null,
@@ -47,7 +51,7 @@ class Contact(
     var date: LocalDate,
 
     @Column(name = "contact_start_time")
-    var startTime: LocalTime?,
+    var startTime: LocalTime,
 
     @Column(name = "contact_end_time")
     var endTime: LocalTime? = null,
@@ -90,10 +94,8 @@ class Contact(
     var sensitive: Boolean? = false,
 
     @Convert(converter = YesNoConverter::class)
+    @Column(name = "alert_active")
     var alertActive: Boolean? = false,
-
-    @Version
-    override var rowVersion: Long = 0,
 
     @CreatedDate
     @Column(name = "created_datetime")
@@ -147,7 +149,7 @@ interface ContactRepository : JpaRepository<Contact, Long> {
         select count(c.id) > 0 from Contact c
         where c.event.id = :eventId
         and c.contactType.code = :typeCode
-        and c.contactOutcome is null
+        and c.outcome is null
         and (:since is null or c.date >= :since)
         """
     )
@@ -167,7 +169,7 @@ class ContactAlert(
     @Column(name = "contact_alert_id", nullable = false)
     val id: Long = 0,
 
-    @Column
+    @Column(name = "contact_id")
     val contactId: Long?,
 
     @Column(name = "contact_type_id", nullable = false)
@@ -190,6 +192,4 @@ class ContactAlert(
     val version: Long = 0
 )
 
-interface ContactAlertRepository : JpaRepository<ContactAlert, Long> {
-    fun deleteByContactId(contactId: Long)
-}
+interface ContactAlertRepository : JpaRepository<ContactAlert, Long>
