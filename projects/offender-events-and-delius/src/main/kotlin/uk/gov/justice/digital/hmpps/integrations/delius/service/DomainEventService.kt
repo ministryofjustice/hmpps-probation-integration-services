@@ -31,12 +31,12 @@ class DomainEventService(
             HmppsDomainEvent(
                 eventType = MappaDomainEventType.UPDATED,
                 version = 1,
-                description = "MAPPS information has been updated in NDelius",
+                description = "MAPPA information has been updated in NDelius",
                 occurredAt = occurredAt,
                 personReference = personReferenceForCrn(crn),
                 additionalInformation = mapOf(
                     "contactId" to contactId,
-                    "mapps" to mapOf(
+                    "mappa" to mapOf(
                         "category" to category
                     )
                 )
@@ -54,12 +54,12 @@ class DomainEventService(
             HmppsDomainEvent(
                 eventType = MappaDomainEventType.DELETED,
                 version = 1,
-                description = "MAPPS information has been deleted in NDelius",
+                description = "MAPPA information has been deleted in NDelius",
                 occurredAt = occurredAt,
                 personReference = personReferenceForCrn(crn),
                 additionalInformation = mapOf(
                     "contactId" to contactId,
-                    "mapps" to mapOf(
+                    "mappa" to mapOf(
                         "category" to category
                     )
                 )
