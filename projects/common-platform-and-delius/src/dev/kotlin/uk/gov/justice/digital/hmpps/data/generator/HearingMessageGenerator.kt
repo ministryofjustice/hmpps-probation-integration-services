@@ -52,7 +52,7 @@ object ProsecutionCaseIdentifierGenerator {
     fun generate(
         prosecutionAuthorityCode: String = "AuthorityCode",
         prosecutionAuthorityId: String = UUID.randomUUID().toString(),
-        caseURN: String = "CASE " + (1000..9999).random()
+        caseURN: String = "CASE -" + (1000..9999).random()
     ): ProsecutionCaseIdentifier {
         return ProsecutionCaseIdentifier(
             prosecutionAuthorityCode = prosecutionAuthorityCode,
