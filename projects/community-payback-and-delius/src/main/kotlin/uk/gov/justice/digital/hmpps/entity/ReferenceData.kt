@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.integrations.delius.entity
+package uk.gov.justice.digital.hmpps.entity
 
 import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
@@ -75,15 +75,9 @@ interface ReferenceDataRepository : JpaRepository<ReferenceData, Long> {
 }
 
 fun ReferenceDataRepository.getWorkQuality(code: String): ReferenceData =
-    findByCodeAndDatasetCode(code, Dataset.UPW_WORK_QUALITY) ?: throw NotFoundException(
-        Dataset.UPW_WORK_QUALITY,
-        "code",
-        code
-    )
+    findByCodeAndDatasetCode(code, Dataset.UPW_WORK_QUALITY)
+        ?: throw NotFoundException(Dataset.UPW_WORK_QUALITY, "code", code)
 
 fun ReferenceDataRepository.getBehaviour(code: String): ReferenceData =
-    findByCodeAndDatasetCode(code, Dataset.UPW_BEHAVIOUR) ?: throw NotFoundException(
-        Dataset.UPW_BEHAVIOUR,
-        "code",
-        code
-    )
+    findByCodeAndDatasetCode(code, Dataset.UPW_BEHAVIOUR)
+        ?: throw NotFoundException(Dataset.UPW_BEHAVIOUR, "code", code)

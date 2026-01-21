@@ -8,18 +8,23 @@ import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.*
 import uk.gov.justice.digital.hmpps.appointments.entity.AppointmentEntities.AppointmentContact
+import uk.gov.justice.digital.hmpps.appointments.entity.AppointmentEntities.Type.Companion.REVIEW_ENFORCEMENT_STATUS
 import uk.gov.justice.digital.hmpps.appointments.repository.AppointmentRepositories.AppointmentRepository
 import uk.gov.justice.digital.hmpps.appointments.repository.AppointmentRepositories.EnforcementRepository
+import uk.gov.justice.digital.hmpps.appointments.repository.AppointmentRepositories.EventRepository
 import uk.gov.justice.digital.hmpps.appointments.test.TestData
 import uk.gov.justice.digital.hmpps.set
 
 @ExtendWith(MockitoExtension::class)
-class EnforcementServiceTest {
+class EnforcementServiceTest() {
     @Mock
     private lateinit var enforcementRepository: EnforcementRepository
 
     @Mock
     private lateinit var appointmentRepository: AppointmentRepository
+
+    @Mock
+    private lateinit var eventRepository: EventRepository
 
     @InjectMocks
     private lateinit var enforcementService: EnforcementService
@@ -34,7 +39,7 @@ class EnforcementServiceTest {
         verify(enforcementRepository).save(any())
         verify(appointmentRepository).save(check<AppointmentContact> {
             assertThat(it.type).isEqualTo(TestData.ACTION.type)
-            assertThat(it.linkedContactId).isEqualTo(appointment.id)
+            assertThat(it.linkedContact).isEqualTo(appointment)
             assertThat(it.notes).matches(
                 """
                 Some notes
@@ -91,7 +96,9 @@ class EnforcementServiceTest {
 
         enforcementService.applyEnforcementAction(appointment, TestData.ACTION, TestData.REVIEW_TYPE)
 
-        verify(appointmentRepository, never()).save(any())
+        verify(appointmentRepository, never()).save(check {
+            assertThat(it.type.code).isEqualTo(REVIEW_ENFORCEMENT_STATUS)
+        })
     }
 
     @Test
@@ -106,6 +113,8 @@ class EnforcementServiceTest {
 
         enforcementService.applyEnforcementAction(appointment, TestData.ACTION, TestData.REVIEW_TYPE)
 
-        verify(appointmentRepository, never()).save(any())
+        verify(appointmentRepository, never()).save(check {
+            assertThat(it.type.code).isEqualTo(REVIEW_ENFORCEMENT_STATUS)
+        })
     }
 }

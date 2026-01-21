@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.integrations.delius.entity
+package uk.gov.justice.digital.hmpps.entity.contact
 
 import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
@@ -99,6 +99,8 @@ interface ContactOutcomeRepository : JpaRepository<ContactOutcome, Long> {
     fun findForTypeCode(typeCode: String): List<ContactOutcome>
 
     fun findContactOutcomeByCode(code: String): ContactOutcome?
+
+    fun findByCodeIn(code: List<String>): List<ContactOutcome>
 }
 
 fun ContactOutcomeRepository.getContactOutcome(code: String) =

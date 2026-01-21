@@ -1,24 +1,25 @@
-package uk.gov.justice.digital.hmpps.integrations.delius.entity
+package uk.gov.justice.digital.hmpps.entity.unpaidwork
 
 import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.type.NumericBooleanConverter
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
+import uk.gov.justice.digital.hmpps.entity.ReferenceData
 import java.time.LocalDate
 import java.time.LocalTime
 
 @Entity
 @Table(name = "upw_allocation")
 @Immutable
-class UpwAllocation(
+class UnpaidWorkAllocation(
     @Id
     @Column(name = "upw_allocation_id")
     val id: Long,
 
     @ManyToOne
     @JoinColumn(name = "upw_details_id")
-    val details: UpwDetails,
+    val details: UnpaidWorkDetails,
 
     @ManyToOne
     @JoinColumn(name = "upw_project_id")
@@ -30,7 +31,7 @@ class UpwAllocation(
 
     @ManyToOne
     @JoinColumn(name = "allocation_day_id")
-    val allocationDay: UpwDay,
+    val allocationDay: UnpaidWorkDay,
 
     @ManyToOne
     @JoinColumn(name = "requested_frequency_id")
@@ -57,26 +58,16 @@ class UpwAllocation(
     val rowVersion: Long
 )
 
-interface UpwAllocationRepository : JpaRepository<UpwAllocation, Long> {
+interface UpwAllocationRepository : JpaRepository<UnpaidWorkAllocation, Long> {
     @Query(
         """
-        select a from UpwAllocation a
-        where a.details.disposal.event.id = :eventId
-        and a.softDeleted = false
-        and a.details.softDeleted = false
-        and a.details.disposal.softDeleted = false
-    """
+            select a from UnpaidWorkAllocation a
+            where a.details.disposal.event.id = :eventId
+            and a.softDeleted = false
+            and a.details.softDeleted = false
+            and a.details.disposal.softDeleted = false
+        """
     )
-    fun findByEventId(eventId: Long): List<UpwAllocation>
+    fun findByEventId(eventId: Long): List<UnpaidWorkAllocation>
 }
 
-@Entity
-@Table(name = "upw_day")
-@Immutable
-class UpwDay(
-    @Id
-    @Column(name = "upw_day_id")
-    val id: Long,
-
-    val weekDay: String
-)

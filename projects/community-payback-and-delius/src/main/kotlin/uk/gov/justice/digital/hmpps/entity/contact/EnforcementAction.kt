@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.integrations.delius.entity
+package uk.gov.justice.digital.hmpps.entity.contact
 
 import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
@@ -24,8 +24,4 @@ class EnforcementAction(
     @ManyToOne
     @JoinColumn(name = "contact_type_id")
     val contactType: ContactType
-) {
-    companion object {
-        const val REFER_TO_PERSON_MANAGER = "ROM"
-    }
-}
+)

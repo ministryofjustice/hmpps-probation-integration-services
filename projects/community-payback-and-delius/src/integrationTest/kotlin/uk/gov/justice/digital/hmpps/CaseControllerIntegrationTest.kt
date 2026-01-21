@@ -22,7 +22,7 @@ class CaseControllerIntegrationTest @Autowired constructor(
     @Test
     fun `returns schedule with requirement progress, allocations and appointments`() {
         val response = mockMvc
-            .get("/case/${PersonGenerator.DEFAULT_PERSON.crn}/event/${UPWGenerator.DEFAULT_EVENT.number}/appointments/schedule") {
+            .get("/case/${PersonGenerator.DEFAULT_PERSON.crn}/event/${UPWGenerator.EVENT_1.number}/appointments/schedule") {
                 withToken()
             }
             .andExpect { status { is2xxSuccessful() } }
@@ -30,14 +30,14 @@ class CaseControllerIntegrationTest @Autowired constructor(
 
         assertThat(response.requirementProgress).isNotNull
         assertThat(response.requirementProgress.requiredMinutes).isEqualTo(7200) // rqmnt length of 120 hours * 60
-        assertThat(response.requirementProgress.completedMinutes).isEqualTo(1245) // sum of minutesCredited on appointments
+        assertThat(response.requirementProgress.completedMinutes).isEqualTo(870) // sum of minutesCredited on appointments
 
         assertThat(response.allocations).isNotEmpty
         val allocation = response.allocations.first()
         assertThat(allocation.id).isEqualTo(UPWGenerator.DEFAULT_UPW_ALLOCATION.id)
         assertThat(allocation.project.name).isEqualTo("Default UPW Project")
-        assertThat(allocation.project.code).isEqualTo("N01DEFAULT")
-        assertThat(allocation.project.expectedEndDateExclusive).isEqualTo(UPWGenerator.DEFAULT_UPW_PROJECT.expectedEndDate)
+        assertThat(allocation.project.code).isEqualTo("N01P01")
+        assertThat(allocation.project.expectedEndDateExclusive).isEqualTo(UPWGenerator.UPW_PROJECT_1.expectedEndDate)
         assertThat(allocation.dayOfWeek).isEqualTo("MONDAY")
         assertThat(allocation.frequency).isEqualTo("Weekly")
         assertThat(allocation.startTime.toString()).isEqualTo("09:00")

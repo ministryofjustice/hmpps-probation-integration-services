@@ -1,9 +1,10 @@
-package uk.gov.justice.digital.hmpps.integrations.delius.entity
+package uk.gov.justice.digital.hmpps.entity.staff
 
 import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
 import org.springframework.data.jpa.repository.JpaRepository
+import uk.gov.justice.digital.hmpps.entity.ReferenceData
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.model.CodeDescription
 import uk.gov.justice.digital.hmpps.model.Name
@@ -76,6 +77,7 @@ fun Staff.toSupervisorTeams() = teams.map {
 
 interface StaffRepository : JpaRepository<Staff, Long> {
     fun findByCode(code: String): Staff?
+    fun findAllByCodeIn(code: Collection<String>): List<Staff>
 }
 
 fun StaffRepository.getStaff(code: String): Staff =

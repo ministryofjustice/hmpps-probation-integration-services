@@ -122,7 +122,9 @@ internal object AppointmentEntities {
 
         var enforcement: Boolean? = null,
 
-        var linkedContactId: Long? = null,
+        @ManyToOne
+        @JoinColumn(name = "linked_contact_id")
+        var linkedContact: AppointmentContact? = null,
 
         @Lob
         var notes: String? = null,
@@ -176,8 +178,8 @@ internal object AppointmentEntities {
     )
 
     @Immutable
-    @Entity
     @Table(name = "r_contact_type")
+    @Entity(name = "AppointmentType")
     class Type(
         @Id
         @Column(name = "contact_type_id")
@@ -198,8 +200,8 @@ internal object AppointmentEntities {
         }
     }
 
-    @Entity
     @Immutable
+    @Entity(name = "AppointmentOutcome")
     @Table(name = "r_contact_outcome_type")
     class AppointmentOutcome(
         @Id
@@ -224,8 +226,8 @@ internal object AppointmentEntities {
         val enforceable: Boolean?,
     ) : CodedReferenceData
 
-    @Entity
     @Table(name = "event")
+    @Entity(name = "AppointmentEvent")
     @SQLRestriction("soft_deleted = 0")
     @EntityListeners(AuditingEntityListener::class)
     class Event(
@@ -256,10 +258,10 @@ internal object AppointmentEntities {
         val softDeleted: Boolean = false,
     )
 
-    @Entity
     @Immutable
     @Table(name = "disposal")
     @SQLRestriction("soft_deleted = 0")
+    @Entity(name = "AppointmentDisposal")
     class Disposal(
         @Id
         @Column(name = "disposal_id")
@@ -281,9 +283,9 @@ internal object AppointmentEntities {
         val softDeleted: Boolean = false,
     )
 
-    @Entity
     @Immutable
     @Table(name = "r_disposal_type")
+    @Entity(name = "AppointmentDisposalType")
     class DisposalType(
         @Id
         @Column(name = "disposal_type_id")
@@ -297,8 +299,8 @@ internal object AppointmentEntities {
     ) : CodedReferenceData
 
     @Immutable
-    @Entity
     @Table(name = "offender")
+    @Entity(name = "AppointmentPerson")
     class Person(
         @Id
         @Column(name = "offender_id")
@@ -308,9 +310,9 @@ internal object AppointmentEntities {
         val crn: String,
     )
 
-    @Entity
     @Immutable
     @Table(name = "probation_area")
+    @Entity(name = "AppointmentProvider")
     class Provider(
         @Id
         @Column(name = "probation_area_id")
@@ -320,9 +322,9 @@ internal object AppointmentEntities {
         override val code: String,
     ) : CodedReferenceData
 
-    @Entity
     @Immutable
     @Table(name = "team")
+    @Entity(name = "AppointmentTeam")
     class Team(
         @Id
         @Column(name = "team_id")
@@ -339,8 +341,8 @@ internal object AppointmentEntities {
     ) : CodedReferenceData
 
     @Immutable
-    @Entity
     @Table(name = "office_location")
+    @Entity(name = "AppointmentOfficeLocation")
     @SQLRestriction("end_date is null or end_date > current_date")
     class OfficeLocation(
         @Id
@@ -354,8 +356,8 @@ internal object AppointmentEntities {
     ) : CodedReferenceData
 
     @Immutable
-    @Entity
     @Table(name = "staff")
+    @Entity(name = "AppointmentStaff")
     class Staff(
         @Id
         @Column(name = "staff_id")
@@ -365,9 +367,9 @@ internal object AppointmentEntities {
         override val code: String,
     ) : CodedReferenceData
 
-    @Entity
     @Table(name = "enforcement")
     @SQLRestriction("soft_deleted = 0")
+    @Entity(name = "AppointmentEnforcement")
     @EntityListeners(AuditingEntityListener::class)
     @SequenceGenerator(name = "enforcement_id_seq", sequenceName = "enforcement_id_seq", allocationSize = 1)
     class Enforcement(
@@ -421,9 +423,9 @@ internal object AppointmentEntities {
         var lastUpdatedUserId: Long = 0,
     )
 
-    @Entity
     @Immutable
     @Table(name = "r_enforcement_action")
+    @Entity(name = "AppointmentEnforcementAction")
     class EnforcementAction(
         @Id
         @Column(name = "enforcement_action_id")
@@ -442,8 +444,8 @@ internal object AppointmentEntities {
         }
     }
 
-    @Entity
     @Table(name = "contact_alert")
+    @Entity(name = "AppointmentAlert")
     @SequenceGenerator(name = "contact_alert_id_generator", sequenceName = "contact_alert_id_seq", allocationSize = 1)
     class Alert(
         @Id
@@ -458,8 +460,9 @@ internal object AppointmentEntities {
         @Column(name = "offender_id")
         val personId: Long,
 
-        @Column(name = "contact_id")
-        val appointmentId: Long?,
+        @OneToOne
+        @JoinColumn(name = "contact_id")
+        val appointment: AppointmentContact,
 
         @Column(name = "contact_type_id")
         val appointmentTypeId: Long,
@@ -474,9 +477,9 @@ internal object AppointmentEntities {
         val staffId: Long
     )
 
-    @Entity
     @Immutable
     @Table(name = "offender_manager")
+    @Entity(name = "AppointmentManager")
     @SQLRestriction("soft_deleted = 0 and active_flag = 1")
     class PersonManager(
         @Id

@@ -35,7 +35,7 @@ class AlertServiceTest {
 
         verify(alertRepository).save(check {
             assertThat(it.personId).isEqualTo(appointment.personId)
-            assertThat(it.appointmentId).isEqualTo(appointment.id)
+            assertThat(it.appointment.id).isEqualTo(appointment.id)
             assertThat(it.appointmentTypeId).isEqualTo(appointment.type.id)
             assertThat(it.managerId).isEqualTo(manager.id)
             assertThat(it.staffId).isEqualTo(manager.staffId)

@@ -5,13 +5,14 @@ import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
-import uk.gov.justice.digital.hmpps.appointments.entity.AppointmentEntities
 import uk.gov.justice.digital.hmpps.appointments.entity.AppointmentEntities.Alert
 import uk.gov.justice.digital.hmpps.appointments.entity.AppointmentEntities.AppointmentContact
 import uk.gov.justice.digital.hmpps.appointments.entity.AppointmentEntities.Enforcement
+import uk.gov.justice.digital.hmpps.appointments.entity.AppointmentEntities.Event
 import uk.gov.justice.digital.hmpps.appointments.entity.AppointmentEntities.Person
 import uk.gov.justice.digital.hmpps.appointments.entity.AppointmentEntities.PersonManager
 import uk.gov.justice.digital.hmpps.appointments.entity.AppointmentEntities.Type
+import uk.gov.justice.digital.hmpps.appointments.repository.AppointmentReferenceDataRepositories.reportMissing
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import java.time.LocalDate
 import java.time.ZonedDateTime
@@ -43,14 +44,14 @@ internal object AppointmentRepositories {
             """
             select count(distinct c.date)
             from AppointmentContact c
-            where c.event.id = :eventId
+            where c.eventId = :eventId
             and c.complied = false
             and c.type.nationalStandards = true
             and (:lastResetDate is null or c.date >= :lastResetDate)
             """
         )
         fun countFailureToComply(
-            event: AppointmentEntities.Event,
+            event: Event,
             eventId: Long = event.id,
             lastResetDate: LocalDate? = listOfNotNull(event.breachEnd, event.disposal?.date).maxOrNull()
         ): Long
@@ -86,10 +87,9 @@ internal object AppointmentRepositories {
     }
 
     interface PersonRepository : JpaRepository<Person, Long> {
-        @Query("select p.id from Person p where p.crn = :crn")
-        fun findIdByCrn(crn: String): Long?
-        fun getIdByCrn(crn: String): Long =
-            findIdByCrn(crn) ?: throw NotFoundException("Person", "crn", crn)
+        fun findAllByCrnIn(crns: Set<String>): List<Person>
+        fun getAllByCrnIn(crns: List<String>) =
+            crns.toSet().let { crns -> findAllByCrnIn(crns).associateBy { it.crn }.reportMissing(crns) }
     }
 
     interface EnforcementRepository : JpaRepository<Enforcement, Long> {
@@ -106,5 +106,7 @@ internal object AppointmentRepositories {
         fun getActiveManagerForPerson(personId: Long) = findByPersonId(personId)
             ?: throw NotFoundException("PersonManager", "personId", personId)
     }
+
+    interface EventRepository : JpaRepository<Event, Long>
 }
 

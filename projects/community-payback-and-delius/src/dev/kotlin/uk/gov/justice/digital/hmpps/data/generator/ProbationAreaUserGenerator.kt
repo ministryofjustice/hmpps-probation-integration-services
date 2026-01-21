@@ -1,9 +1,9 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
-import uk.gov.justice.digital.hmpps.integrations.delius.entity.ProbationAreaUser
-import uk.gov.justice.digital.hmpps.integrations.delius.entity.ProbationAreaUserId
-import uk.gov.justice.digital.hmpps.integrations.delius.entity.Provider
-import uk.gov.justice.digital.hmpps.integrations.delius.entity.User
+import uk.gov.justice.digital.hmpps.entity.staff.ProbationAreaUser
+import uk.gov.justice.digital.hmpps.entity.staff.ProbationAreaUserId
+import uk.gov.justice.digital.hmpps.entity.staff.Provider
+import uk.gov.justice.digital.hmpps.entity.staff.User
 
 object ProbationAreaUserGenerator {
     val DEFAULT_PROBATION_AREA_USER =
