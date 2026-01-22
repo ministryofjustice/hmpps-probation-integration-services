@@ -4,6 +4,7 @@ import org.springframework.stereotype.Component
 import uk.gov.justice.digital.hmpps.converter.NotificationConverter
 import uk.gov.justice.digital.hmpps.datetime.ZonedDateTimeDeserializer
 import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException
+import uk.gov.justice.digital.hmpps.flags.FeatureFlags
 import uk.gov.justice.digital.hmpps.integrations.delius.DeliusValidationError
 import uk.gov.justice.digital.hmpps.integrations.delius.RiskAssessmentService
 import uk.gov.justice.digital.hmpps.integrations.delius.RiskScoreService
@@ -17,8 +18,11 @@ class Handler(
     private val telemetryService: TelemetryService,
     private val riskScoreService: RiskScoreService,
     private val riskAssessmentService: RiskAssessmentService,
-    override val converter: NotificationConverter<HmppsDomainEvent>
+    override val converter: NotificationConverter<HmppsDomainEvent>,
+    private val featureFlags: FeatureFlags
 ) : NotificationHandler<HmppsDomainEvent> {
+
+    val flagValue = featureFlags.enabled("delius-ogrs4-support")
     override fun handle(notification: Notification<HmppsDomainEvent>) {
         telemetryService.notificationReceived(notification)
         val message = notification.message
@@ -30,9 +34,9 @@ class Handler(
                             ?: throw IllegalArgumentException("Missing CRN in ${message.personReference}"),
                         message.additionalInformation["EventNumber"] as Int?,
                         message.assessmentDate(),
-                        message.rsr(),
-                        message.ospIndecent(),
-                        message.ospIndirectIndecent(),
+                        if ( flagValue ) message.rsr() else message.rsrOLD(),
+                        if ( flagValue ) message.ospIndecent() else message.ospIndecentOLD(),
+                        if ( flagValue ) message.ospIndirectIndecent() else message.ospIndirectIndecentOLD(),
                         message.ospContact(),
                         message.ospDirectContact(),
                     )
@@ -76,39 +80,82 @@ class Handler(
 fun HmppsDomainEvent.assessmentDate() =
     ZonedDateTimeDeserializer.deserialize(additionalInformation["AssessmentDate"] as String)
 
-data class RiskAssessment(val score: Double, val band: String, val staticOrDynamic: String? = null)
+sealed class RiskAssessment {
+    abstract val score: Double
+    abstract val band: String
+    abstract val staticOrDynamic: String?
+
+    data class V3(
+        override val score: Double,
+        override val band: String,
+        override val staticOrDynamic: String? = null
+    ) : RiskAssessment()
+
+    data class V4(
+        override val score: Double,
+        override val band: String,
+        override val staticOrDynamic: String? = null,
+        val algorithmVersion: String? = null
+    ) : RiskAssessment()
+}
 
 data class OgrsScore(val ogrs3Yr1: Int, val ogrs3Yr2: Int)
 
-fun HmppsDomainEvent.rsr() = RiskAssessment(
+
+fun HmppsDomainEvent.rsr() =  RiskAssessment.V4(
     additionalInformation["RSRScore"] as Double,
     additionalInformation["RSRBand"] as String,
-    additionalInformation["RSRStaticOrDynamic"] as String
+    additionalInformation["RSRStaticOrDynamic"] as String,
+    additionalInformation["RSRAlgorithmVersion"] as String
+)
+
+fun HmppsDomainEvent.rsrOLD() =  RiskAssessment.V3(
+    additionalInformation["RSRScore"] as Double,
+    additionalInformation["RSRBand"] as String,
+    additionalInformation["RSRStaticOrDynamic"] as String,
 )
 
 fun HmppsDomainEvent.ospIndecent() = additionalInformation["OSPIndecentScore"]?.let {
-    RiskAssessment(
-        additionalInformation["OSPIndecentScore"] as Double,
-        additionalInformation["OSPIndecentBand"] as String,
+    RiskAssessment.V4(
+        score = additionalInformation["OSPIndecentScore"] as Double,
+        band = additionalInformation["OSPIndecentBand"] as String,
+        algorithmVersion = additionalInformation["RSRAlgorithmVersion"] as String
     )
 }
+
+fun HmppsDomainEvent.ospIndecentOLD() = additionalInformation["OSPIndecentScore"]?.let {
+    RiskAssessment.V3(
+        score = additionalInformation["OSPIndecentScore"] as Double,
+        band = additionalInformation["OSPIndecentBand"] as String,
+    )
+}
+
 
 fun HmppsDomainEvent.ospIndirectIndecent() = additionalInformation["OSPIndirectIndecentBand"]?.let {
-    RiskAssessment(
-        additionalInformation["OSPIndirectIndecentScore"] as Double,
-        additionalInformation["OSPIndirectIndecentBand"] as String,
+    RiskAssessment.V4(
+        score = additionalInformation["OSPIndirectIndecentScore"] as Double,
+        band = additionalInformation["OSPIndirectIndecentBand"] as String,
+        algorithmVersion = additionalInformation["RSRAlgorithmVersion"] as String
     )
 }
 
+fun HmppsDomainEvent.ospIndirectIndecentOLD() = additionalInformation["OSPIndirectIndecentBand"]?.let {
+    RiskAssessment.V3(
+        score = additionalInformation["OSPIndirectIndecentScore"] as Double,
+        band = additionalInformation["OSPIndirectIndecentBand"] as String,
+    )
+}
+
+
 fun HmppsDomainEvent.ospContact() = additionalInformation["OSPContactScore"]?.let {
-    RiskAssessment(
+    RiskAssessment.V3(
         additionalInformation["OSPContactScore"] as Double,
         additionalInformation["OSPContactBand"] as String,
     )
 }
 
 fun HmppsDomainEvent.ospDirectContact() = additionalInformation["OSPDirectContactBand"]?.let {
-    RiskAssessment(
+    RiskAssessment.V3(
         additionalInformation["OSPDirectContactScore"] as Double,
         additionalInformation["OSPDirectContactBand"] as String,
     )

@@ -19,6 +19,7 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource
 import org.springframework.jdbc.core.namedparam.SqlParameterSource
 import org.springframework.jdbc.core.simple.SimpleJdbcCall
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
+import uk.gov.justice.digital.hmpps.flags.FeatureFlags
 import uk.gov.justice.digital.hmpps.messaging.RiskAssessment
 import java.sql.SQLException
 import java.time.ZonedDateTime
@@ -30,6 +31,9 @@ internal class RiskScoreServiceTest {
 
     @Mock
     private lateinit var simpleJdbcCall: SimpleJdbcCall
+
+    @Mock
+    private lateinit var featureFlags: FeatureFlags
 
     @Test
     fun `scores are passed to the database procedure`() {
@@ -74,15 +78,16 @@ internal class RiskScoreServiceTest {
     }
 
     private fun whenUpdatingRsrAndOspScores() {
-        RiskScoreService(jdbcTemplate).updateRsrAndOspScores(
+        whenever(featureFlags.enabled("delius-ogrs4-support")).thenReturn(false)
+        RiskScoreService(jdbcTemplate, featureFlags).updateRsrAndOspScores(
             crn = "A000001",
             eventNumber = 123,
             assessmentDate = ZonedDateTime.of(2022, 12, 15, 9, 0, 0, 0, EuropeLondon),
-            rsr = RiskAssessment(1.00, "A", "STATIC"),
-            ospIndecent = RiskAssessment(2.00, "B"),
-            ospIndirectIndecent = RiskAssessment(3.00, "C"),
-            ospContact = RiskAssessment(4.00, "D"),
-            ospDirectContact = RiskAssessment(5.00, "E"),
+            rsr = RiskAssessment.V3(1.00, "A", "STATIC"),
+            ospIndecent = RiskAssessment.V3(2.00, "B"),
+            ospIndirectIndecent = RiskAssessment.V3(3.00, "C"),
+            ospContact = RiskAssessment.V3(4.00, "D"),
+            ospDirectContact = RiskAssessment.V3(5.00, "E"),
         )
     }
 

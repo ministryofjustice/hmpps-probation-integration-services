@@ -5,12 +5,14 @@ import org.hamcrest.MatcherAssert
 import org.hamcrest.Matchers
 import org.junit.jupiter.api.*
 import org.mockito.kotlin.verify
+import org.mockito.kotlin.whenever
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.bean.override.mockito.MockitoBean
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.exception.ConflictException
+import uk.gov.justice.digital.hmpps.flags.FeatureFlags
 import uk.gov.justice.digital.hmpps.integrations.delius.RiskAssessmentService
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.OGRSAssessmentRepository
@@ -36,8 +38,23 @@ internal class IntegrationTest @Autowired constructor(
     @MockitoBean
     private lateinit var telemetryService: TelemetryService
 
+    @MockitoBean
+    private lateinit var featureFlags: FeatureFlags
+
     @Test
-    fun `successfully update RSR scores`() {
+    fun `successfully update RSR scores feature flag true`() {
+        whenever(featureFlags.enabled("delius-ogrs4-support")).thenReturn(true)
+        val notification = Notification(
+            message = MessageGenerator.RSR_SCORES_DETERMINED,
+            attributes = MessageAttributes("risk-assessment.scores.determined")
+        )
+        channelManager.getChannel(queueName).publishAndWait(notification)
+        verify(telemetryService).trackEvent("RsrScoresUpdated", notification.message.telemetryProperties())
+    }
+
+    @Test
+    fun `successfully update RSR scores feature flag false`() {
+        whenever(featureFlags.enabled("delius-ogrs4-support")).thenReturn(false)
         val notification = Notification(
             message = MessageGenerator.RSR_SCORES_DETERMINED,
             attributes = MessageAttributes("risk-assessment.scores.determined")
