@@ -17,13 +17,19 @@ class RiskScoreService(
     jdbcTemplate: JdbcTemplate,
     private val featureFlags: FeatureFlags
 ) {
-
-    private val updateRsrAndOspScoresProcedure: SimpleJdbcCall =
+    private val updateRsrAndOspScoresProcedureV4: SimpleJdbcCall =
         SimpleJdbcCall(jdbcTemplate)
             .withCatalogName("pkg_triggersupport")
             .withProcedureName("procUpdateCAS")
             .withoutProcedureColumnMetaDataAccess()
-            .declareParameters(*sqlParametersFor(featureFlags.enabled("delius-ogrs4-support")))
+            .declareParameters(*sqlParametersFor(true))
+
+    private val updateRsrAndOspScoresProcedureV3: SimpleJdbcCall =
+        SimpleJdbcCall(jdbcTemplate)
+            .withCatalogName("pkg_triggersupport")
+            .withProcedureName("procUpdateCAS")
+            .withoutProcedureColumnMetaDataAccess()
+            .declareParameters(*sqlParametersFor(false))
 
     fun updateRsrAndOspScores(
         crn: String,
@@ -55,8 +61,9 @@ class RiskScoreService(
                     ospDirectContact = ospDirectContact
                 )
             }
+            if ( supportsOgrs4 ) updateRsrAndOspScoresProcedureV4.execute(params)
+            else updateRsrAndOspScoresProcedureV3.execute(params)
 
-            updateRsrAndOspScoresProcedure.execute(params)
         } catch (e: UncategorizedSQLException) {
             e.sqlException?.takeIf { it.isValidationError }
                 ?.parsedValidationMessage
@@ -83,9 +90,9 @@ class RiskScoreService(
         )
 
         val ogrs4Extras = listOf(
-            SqlParameter("p_rsr_version", Types.VARCHAR),
-            SqlParameter("p_osp_version_i", Types.VARCHAR),
-            SqlParameter("p_osp_version_c", Types.VARCHAR),
+            SqlParameter("p_rsr_version", Types.NUMERIC),
+            SqlParameter("p_osp_version_i", Types.NUMERIC),
+            SqlParameter("p_osp_version_c", Types.NUMERIC),
             SqlParameter("p_osp_score_dc", Types.NUMERIC),
             SqlParameter("p_osp_score_iic", Types.NUMERIC),
         )

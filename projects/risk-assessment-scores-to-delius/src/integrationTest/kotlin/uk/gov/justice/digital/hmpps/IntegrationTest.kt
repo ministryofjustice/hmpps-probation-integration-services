@@ -4,6 +4,9 @@ import org.assertj.core.api.Assertions.assertThat
 import org.hamcrest.MatcherAssert
 import org.hamcrest.Matchers
 import org.junit.jupiter.api.*
+import org.mockito.kotlin.any
+import org.mockito.kotlin.anyOrNull
+import org.mockito.kotlin.doNothing
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import org.springframework.beans.factory.annotation.Autowired
@@ -14,6 +17,7 @@ import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.exception.ConflictException
 import uk.gov.justice.digital.hmpps.flags.FeatureFlags
 import uk.gov.justice.digital.hmpps.integrations.delius.RiskAssessmentService
+import uk.gov.justice.digital.hmpps.integrations.delius.RiskScoreService
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.OGRSAssessmentRepository
 import uk.gov.justice.digital.hmpps.message.MessageAttributes
@@ -41,9 +45,16 @@ internal class IntegrationTest @Autowired constructor(
     @MockitoBean
     private lateinit var featureFlags: FeatureFlags
 
+    @MockitoBean
+    private lateinit var riskScoreService: RiskScoreService
+
     @Test
     fun `successfully update RSR scores feature flag true`() {
         whenever(featureFlags.enabled("delius-ogrs4-support")).thenReturn(true)
+        doNothing().whenever(riskScoreService).updateRsrAndOspScores(
+            any(), anyOrNull(), any(), any(), anyOrNull(), anyOrNull(), anyOrNull(), anyOrNull()
+        )
+
         val notification = Notification(
             message = MessageGenerator.RSR_SCORES_DETERMINED_V4,
             attributes = MessageAttributes("risk-assessment.scores.determined")
