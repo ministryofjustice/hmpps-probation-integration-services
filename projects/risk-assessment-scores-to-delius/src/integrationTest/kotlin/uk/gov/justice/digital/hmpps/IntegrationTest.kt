@@ -45,7 +45,7 @@ internal class IntegrationTest @Autowired constructor(
     fun `successfully update RSR scores feature flag true`() {
         whenever(featureFlags.enabled("delius-ogrs4-support")).thenReturn(true)
         val notification = Notification(
-            message = MessageGenerator.RSR_SCORES_DETERMINED,
+            message = MessageGenerator.RSR_SCORES_DETERMINED_V4,
             attributes = MessageAttributes("risk-assessment.scores.determined")
         )
         channelManager.getChannel(queueName).publishAndWait(notification)

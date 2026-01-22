@@ -95,7 +95,7 @@ sealed class RiskAssessment {
         override val score: Double,
         override val band: String,
         override val staticOrDynamic: String? = null,
-        val algorithmVersion: String? = null
+        val algorithmVersion: Int? = null
     ) : RiskAssessment()
 }
 
@@ -105,7 +105,7 @@ fun HmppsDomainEvent.rsr() = RiskAssessment.V4(
     additionalInformation["RSRScore"] as Double,
     additionalInformation["RSRBand"] as String,
     additionalInformation["RSRStaticOrDynamic"] as String,
-    additionalInformation["RSRAlgorithmVersion"] as String
+    additionalInformation["RSRAlgorithmVersion"] as Int
 )
 
 fun HmppsDomainEvent.rsrOLD() = RiskAssessment.V3(
@@ -118,7 +118,7 @@ fun HmppsDomainEvent.ospIndecent() = additionalInformation["OSPIndecentScore"]?.
     RiskAssessment.V4(
         score = additionalInformation["OSPIndecentScore"] as Double,
         band = additionalInformation["OSPIndecentBand"] as String,
-        algorithmVersion = additionalInformation["RSRAlgorithmVersion"] as String
+        algorithmVersion = additionalInformation["RSRAlgorithmVersion"] as Int
     )
 }
 
@@ -133,7 +133,7 @@ fun HmppsDomainEvent.ospIndirectIndecent() = additionalInformation["OSPIndirectI
     RiskAssessment.V4(
         score = additionalInformation["OSPIndirectIndecentScore"] as Double,
         band = additionalInformation["OSPIndirectIndecentBand"] as String,
-        algorithmVersion = additionalInformation["RSRAlgorithmVersion"] as String
+        algorithmVersion = additionalInformation["RSRAlgorithmVersion"] as Int
     )
 }
 
