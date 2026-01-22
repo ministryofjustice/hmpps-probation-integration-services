@@ -17,7 +17,7 @@ class RiskScoreService(jdbcTemplate: JdbcTemplate, private val featureFlags: Fea
     private val updateRsrAndOspScoresProcedure: SimpleJdbcCall
 
     init {
-            updateRsrAndOspScoresProcedure = if (featureFlags.enabled("delius-ogrs4-support")) {
+        updateRsrAndOspScoresProcedure = if (featureFlags.enabled("delius-ogrs4-support")) {
             SimpleJdbcCall(jdbcTemplate)
                 .withCatalogName("pkg_triggersupport")
                 .withProcedureName("procUpdateCAS")
@@ -74,39 +74,46 @@ class RiskScoreService(jdbcTemplate: JdbcTemplate, private val featureFlags: Fea
         ospDirectContact: RiskAssessment?,
     ) {
         try {
-            if ( featureFlags.enabled("delius-ogrs4-support") ) {
-            updateRsrAndOspScoresProcedure.execute(
-                MapSqlParameterSource()
-                    .addValue("p_crn", crn)
-                    .addValue("p_event_number", eventNumber)
-                    .addValue("p_rsr_assessor_date", assessmentDate)
-                    .addValue("p_rsr_score", rsr.score)
-                    .addValue("p_rsr_level_code", rsr.band)
-                    .addValue("p_osp_score_i", ospIndecent?.score)
-                    .addValue("p_osp_score_c", ospContact?.score)
-                    .addValue("p_osp_level_i_code", ospIndecent?.band)
-                    .addValue("p_osp_level_c_code", ospContact?.band)
-                    .addValue("p_osp_level_iic_code", ospIndirectIndecent?.band)
-                    .addValue("p_osp_level_dc_code", ospDirectContact?.band)
-                    .addValue("p_rsr_static_flag", rsr.staticOrDynamic)
-                    .addValue("p_rsr_version",   when (rsr) {
-                        is RiskAssessment.V4 -> rsr.algorithmVersion
-                        is RiskAssessment.V3 -> null
-                        null -> null
-                    })
-                    .addValue("p_osp_version_i", when (ospIndecent) {
-                        is RiskAssessment.V4 -> ospIndecent.algorithmVersion
-                        is RiskAssessment.V3 -> null
-                        null -> null
-                    })
-                    .addValue("p_osp_version_c", when (ospContact) {
-                        is RiskAssessment.V4 -> ospContact.algorithmVersion
-                        is RiskAssessment.V3 -> null
-                        null -> null
-                    })
-                    .addValue("p_osp_score_dc", ospDirectContact?.score)
-                    .addValue("p_osp_score_iic", ospIndirectIndecent?.score)
-            ) } else {
+            if (featureFlags.enabled("delius-ogrs4-support")) {
+                updateRsrAndOspScoresProcedure.execute(
+                    MapSqlParameterSource()
+                        .addValue("p_crn", crn)
+                        .addValue("p_event_number", eventNumber)
+                        .addValue("p_rsr_assessor_date", assessmentDate)
+                        .addValue("p_rsr_score", rsr.score)
+                        .addValue("p_rsr_level_code", rsr.band)
+                        .addValue("p_osp_score_i", ospIndecent?.score)
+                        .addValue("p_osp_score_c", ospContact?.score)
+                        .addValue("p_osp_level_i_code", ospIndecent?.band)
+                        .addValue("p_osp_level_c_code", ospContact?.band)
+                        .addValue("p_osp_level_iic_code", ospIndirectIndecent?.band)
+                        .addValue("p_osp_level_dc_code", ospDirectContact?.band)
+                        .addValue("p_rsr_static_flag", rsr.staticOrDynamic)
+                        .addValue(
+                            "p_rsr_version", when (rsr) {
+                                is RiskAssessment.V4 -> rsr.algorithmVersion
+                                is RiskAssessment.V3 -> null
+                                null -> null
+                            }
+                        )
+                        .addValue(
+                            "p_osp_version_i", when (ospIndecent) {
+                                is RiskAssessment.V4 -> ospIndecent.algorithmVersion
+                                is RiskAssessment.V3 -> null
+                                null -> null
+                            }
+                        )
+                        .addValue(
+                            "p_osp_version_c", when (ospContact) {
+                                is RiskAssessment.V4 -> ospContact.algorithmVersion
+                                is RiskAssessment.V3 -> null
+                                null -> null
+                            }
+                        )
+                        .addValue("p_osp_score_dc", ospDirectContact?.score)
+                        .addValue("p_osp_score_iic", ospIndirectIndecent?.score)
+                )
+            } else {
                 updateRsrAndOspScoresProcedure.execute(
                     MapSqlParameterSource()
                         .addValue("p_crn", crn)

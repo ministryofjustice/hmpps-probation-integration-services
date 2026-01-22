@@ -34,9 +34,9 @@ class Handler(
                             ?: throw IllegalArgumentException("Missing CRN in ${message.personReference}"),
                         message.additionalInformation["EventNumber"] as Int?,
                         message.assessmentDate(),
-                        if ( flagValue ) message.rsr() else message.rsrOLD(),
-                        if ( flagValue ) message.ospIndecent() else message.ospIndecentOLD(),
-                        if ( flagValue ) message.ospIndirectIndecent() else message.ospIndirectIndecentOLD(),
+                        if (flagValue) message.rsr() else message.rsrOLD(),
+                        if (flagValue) message.ospIndecent() else message.ospIndecentOLD(),
+                        if (flagValue) message.ospIndirectIndecent() else message.ospIndirectIndecentOLD(),
                         message.ospContact(),
                         message.ospDirectContact(),
                     )
@@ -101,15 +101,14 @@ sealed class RiskAssessment {
 
 data class OgrsScore(val ogrs3Yr1: Int, val ogrs3Yr2: Int)
 
-
-fun HmppsDomainEvent.rsr() =  RiskAssessment.V4(
+fun HmppsDomainEvent.rsr() = RiskAssessment.V4(
     additionalInformation["RSRScore"] as Double,
     additionalInformation["RSRBand"] as String,
     additionalInformation["RSRStaticOrDynamic"] as String,
     additionalInformation["RSRAlgorithmVersion"] as String
 )
 
-fun HmppsDomainEvent.rsrOLD() =  RiskAssessment.V3(
+fun HmppsDomainEvent.rsrOLD() = RiskAssessment.V3(
     additionalInformation["RSRScore"] as Double,
     additionalInformation["RSRBand"] as String,
     additionalInformation["RSRStaticOrDynamic"] as String,
@@ -130,7 +129,6 @@ fun HmppsDomainEvent.ospIndecentOLD() = additionalInformation["OSPIndecentScore"
     )
 }
 
-
 fun HmppsDomainEvent.ospIndirectIndecent() = additionalInformation["OSPIndirectIndecentBand"]?.let {
     RiskAssessment.V4(
         score = additionalInformation["OSPIndirectIndecentScore"] as Double,
@@ -145,7 +143,6 @@ fun HmppsDomainEvent.ospIndirectIndecentOLD() = additionalInformation["OSPIndire
         band = additionalInformation["OSPIndirectIndecentBand"] as String,
     )
 }
-
 
 fun HmppsDomainEvent.ospContact() = additionalInformation["OSPContactScore"]?.let {
     RiskAssessment.V3(
