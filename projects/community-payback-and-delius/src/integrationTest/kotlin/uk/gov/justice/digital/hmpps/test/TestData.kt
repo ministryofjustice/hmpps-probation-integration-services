@@ -58,18 +58,18 @@ object TestData {
     fun updateAppointment(id: Long) = AppointmentOutcomeRequest(
         id = id,
         version = UUID(1, 1),
-        outcome = null,
-        supervisor = Code("N01P001"),
         startTime = LocalTime.of(10, 0),
         endTime = LocalTime.of(18, 0),
-        notes = "testing update",
+        minutesCredited = 415,
+        penaltyMinutes = 65,
+        outcome = Code(ReferenceDataGenerator.ATTENDED_COMPLIED_CONTACT_OUTCOME.code),
         hiVisWorn = true,
         workedIntensively = true,
-        penaltyMinutes = 65,
-        minutesCredited = 415,
         workQuality = WorkQuality.EXCELLENT,
         behaviour = Behaviour.EXCELLENT,
+        supervisor = Code("N01P001"),
         sensitive = false,
         alertActive = false,
+        notes = "testing update",
     )
 }

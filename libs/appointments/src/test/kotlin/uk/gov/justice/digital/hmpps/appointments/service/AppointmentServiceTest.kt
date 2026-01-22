@@ -27,6 +27,7 @@ import uk.gov.justice.digital.hmpps.appointments.repository.AppointmentReference
 import uk.gov.justice.digital.hmpps.appointments.repository.AppointmentRepositories.AppointmentRepository
 import uk.gov.justice.digital.hmpps.appointments.repository.AppointmentRepositories.PersonRepository
 import uk.gov.justice.digital.hmpps.appointments.test.TestData
+import uk.gov.justice.digital.hmpps.appointments.test.TestData.ACCEPTABLE_ABSENCE_OUTCOME
 import uk.gov.justice.digital.hmpps.appointments.test.TestData.FTC_OUTCOME
 import uk.gov.justice.digital.hmpps.audit.entity.AuditedInteraction
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
@@ -347,7 +348,7 @@ class AppointmentServiceTest {
 
     @Test
     fun `update appointment apply outcome`() {
-        val existing = TestData.appointment()
+        val existing = TestData.appointment(date = LocalDate.now().minusDays(1))
 
         whenever(appointmentRepository.findByExternalReferenceIn(listOf(existing.externalReference!!)))
             .thenReturn(listOf(existing))
@@ -363,6 +364,47 @@ class AppointmentServiceTest {
         assertThat(existing.attended).isEqualTo(FTC_OUTCOME.attended)
         assertThat(existing.complied).isEqualTo(FTC_OUTCOME.complied)
         verify(enforcementService).applyEnforcementAction(eq(existing), eq(TestData.ACTION), eq(TestData.REVIEW_TYPE))
+    }
+
+    @Test
+    fun `attempt to apply non-compliant outcome to future appointment`() {
+        val existing = TestData.appointment(date = LocalDate.now().plusDays(1))
+
+        whenever(appointmentRepository.findByExternalReferenceIn(listOf(existing.externalReference!!)))
+            .thenReturn(listOf(existing))
+        whenever(outcomeRepository.findAllByCodeIn(setOf(FTC_OUTCOME.code))).thenReturn(listOf(FTC_OUTCOME))
+        mockEnforcementReferenceData()
+
+        assertThatThrownBy {
+            appointmentService.update(existing) {
+                reference = { existing.externalReference }
+                applyOutcome = { Outcome(FTC_OUTCOME.code) }
+            }
+        }
+            .isInstanceOf(IllegalArgumentException::class.java)
+            .hasMessage("Only permissible absences can be recorded for a future attendance")
+    }
+
+    @Test
+    fun `update future appointment with acceptable absence outcome`() {
+        val existing = TestData.appointment(date = LocalDate.now().plusDays(1))
+
+        whenever(appointmentRepository.findByExternalReferenceIn(listOf(existing.externalReference!!)))
+            .thenReturn(listOf(existing))
+        whenever(outcomeRepository.findAllByCodeIn(setOf(ACCEPTABLE_ABSENCE_OUTCOME.code)))
+            .thenReturn(listOf(ACCEPTABLE_ABSENCE_OUTCOME))
+        mockEnforcementReferenceData()
+
+        appointmentService.update(existing) {
+            reference = { existing.externalReference }
+            applyOutcome = { Outcome(ACCEPTABLE_ABSENCE_OUTCOME.code) }
+        }
+
+        assertThat(existing.outcome?.code).isEqualTo(ACCEPTABLE_ABSENCE_OUTCOME.code)
+        assertThat(existing.attended).isFalse
+        assertThat(existing.complied).isTrue
+        verifyNoInteractions(enforcementService)
+        verifyNoInteractions(alertService)
     }
 
     @Test
