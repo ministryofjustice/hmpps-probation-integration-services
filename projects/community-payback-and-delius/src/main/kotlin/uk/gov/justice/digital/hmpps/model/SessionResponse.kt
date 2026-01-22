@@ -1,6 +1,6 @@
 package uk.gov.justice.digital.hmpps.model
 
-import uk.gov.justice.digital.hmpps.integrations.delius.entity.UpwMinutes
+import uk.gov.justice.digital.hmpps.entity.unpaidwork.UpwMinutes
 
 data class SessionResponse(
     val project: Project,

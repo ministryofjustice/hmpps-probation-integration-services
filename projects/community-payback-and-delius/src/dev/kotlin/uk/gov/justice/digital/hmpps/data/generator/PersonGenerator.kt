@@ -1,9 +1,9 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
-import uk.gov.justice.digital.hmpps.integrations.delius.entity.Person
-import uk.gov.justice.digital.hmpps.integrations.delius.entity.PersonManager
-import uk.gov.justice.digital.hmpps.integrations.delius.entity.Staff
-import uk.gov.justice.digital.hmpps.integrations.delius.entity.Team
+import uk.gov.justice.digital.hmpps.entity.person.Person
+import uk.gov.justice.digital.hmpps.entity.person.PersonManager
+import uk.gov.justice.digital.hmpps.entity.staff.Staff
+import uk.gov.justice.digital.hmpps.entity.staff.Team
 import java.time.LocalDate
 
 object PersonGenerator {

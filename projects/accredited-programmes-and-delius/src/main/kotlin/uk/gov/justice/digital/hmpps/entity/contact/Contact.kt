@@ -81,8 +81,6 @@ class Contact(
     @Column(name = "latest_enforcement_action_id")
     var enforcementActionId: Long? = null,
 
-    val linkedContactId: Long? = null,
-
     @ManyToOne
     @JoinColumn(name = "office_location_id")
     var location: OfficeLocation? = null,

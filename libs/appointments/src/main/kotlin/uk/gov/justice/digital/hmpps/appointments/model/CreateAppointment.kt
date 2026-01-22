@@ -17,6 +17,7 @@ data class CreateAppointment(
     val locationCode: String? = null,
     val outcomeCode: String? = null,
     val notes: String? = null,
+    val alert: Boolean? = false,
     val sensitive: Boolean? = false,
     val exportToVisor: Boolean? = false,
     val allowConflicts: Boolean = false,

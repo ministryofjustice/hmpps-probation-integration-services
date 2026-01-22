@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.integrations.delius.entity
+package uk.gov.justice.digital.hmpps.data.entity
 
 import jakarta.persistence.*
 import org.hibernate.type.NumericBooleanConverter
@@ -8,6 +8,8 @@ import org.springframework.data.annotation.LastModifiedBy
 import org.springframework.data.annotation.LastModifiedDate
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import org.springframework.data.jpa.repository.JpaRepository
+import uk.gov.justice.digital.hmpps.entity.contact.Contact
+import uk.gov.justice.digital.hmpps.entity.contact.EnforcementAction
 import uk.gov.justice.digital.hmpps.jpa.GeneratedId
 import java.time.LocalDate
 import java.time.ZonedDateTime

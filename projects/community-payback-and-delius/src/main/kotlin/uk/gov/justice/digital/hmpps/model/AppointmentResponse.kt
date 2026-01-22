@@ -1,7 +1,7 @@
 package uk.gov.justice.digital.hmpps.model
 
-import uk.gov.justice.digital.hmpps.integrations.delius.entity.Address
-import uk.gov.justice.digital.hmpps.integrations.delius.entity.OfficeLocation
+import uk.gov.justice.digital.hmpps.entity.person.Address
+import uk.gov.justice.digital.hmpps.entity.staff.OfficeLocation
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.ZonedDateTime
@@ -9,6 +9,7 @@ import java.util.*
 
 data class AppointmentResponse(
     val id: Long,
+    val reference: UUID?,
     val version: UUID,
     val project: Project,
     val projectType: NameCode,
