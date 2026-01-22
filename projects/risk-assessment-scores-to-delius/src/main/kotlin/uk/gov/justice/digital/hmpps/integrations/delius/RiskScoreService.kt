@@ -61,9 +61,8 @@ class RiskScoreService(
                     ospDirectContact = ospDirectContact
                 )
             }
-            if ( supportsOgrs4 ) updateRsrAndOspScoresProcedureV4.execute(params)
+            if (supportsOgrs4) updateRsrAndOspScoresProcedureV4.execute(params)
             else updateRsrAndOspScoresProcedureV3.execute(params)
-
         } catch (e: UncategorizedSQLException) {
             e.sqlException?.takeIf { it.isValidationError }
                 ?.parsedValidationMessage

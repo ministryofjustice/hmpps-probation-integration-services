@@ -1,4 +1,3 @@
-
 package uk.gov.justice.digital.hmpps.integrations.delius
 
 import org.hamcrest.MatcherAssert.assertThat
