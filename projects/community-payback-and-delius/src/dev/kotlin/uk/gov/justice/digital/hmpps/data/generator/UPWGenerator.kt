@@ -57,9 +57,17 @@ object UPWGenerator {
         placementAddress = DEFAULT_ADDRESS,
         projectType = ReferenceDataGenerator.GROUP_PLACEMENT_PROJECT_TYPE
     )
+    val COMPLETED_UPW_PROJECT = generateUpwProject(
+        name = "Completed UPW Project",
+        code = "N01COMP",
+        completionDate = LocalDate.now().minusDays(1),
+        team = TeamGenerator.DEFAULT_UPW_TEAM,
+        placementAddress = DEFAULT_ADDRESS,
+        projectType = ReferenceDataGenerator.GROUP_PLACEMENT_PROJECT_TYPE
+    )
 
     val DEFAULT_UPW_PROJECT_AVAILABILITY = generateUpwProjectAvailability(
-        upwProjectId = UPW_PROJECT_1.id,
+        project = UPW_PROJECT_1,
         frequency = ReferenceDataGenerator.UPW_FREQUENCY_WEEKLY,
         startTime = LocalTime.of(9, 0),
         endTime = LocalTime.of(16, 0),
@@ -67,7 +75,7 @@ object UPWGenerator {
         endDate = LocalDate.now().plusMonths(4)
     )
     val SECOND_UPW_PROJECT_AVAILABILITY = generateUpwProjectAvailability(
-        upwProjectId = UPW_PROJECT_2.id
+        project = UPW_PROJECT_2,
     )
 
     val EVENT_1 = generateEvent(
@@ -291,20 +299,33 @@ object UPWGenerator {
         team: Team,
         placementAddress: Address?,
         projectType: ReferenceData,
+        availability: List<UpwProjectAvailability> = listOf(),
         hiVisRequired: Boolean = false,
         expectedEndDate: LocalDate? = null,
         completionDate: LocalDate? = null
-    ) = UpwProject(id, name, code, team, placementAddress, projectType, hiVisRequired, expectedEndDate, completionDate)
+    ) = UpwProject(
+        id,
+        name,
+        code,
+        team,
+        placementAddress,
+        projectType,
+        availability,
+        hiVisRequired,
+        expectedEndDate,
+        completionDate
+    )
 
     fun generateUpwProjectAvailability(
         id: Long = IdGenerator.getAndIncrement(),
-        upwProjectId: Long,
+        project: UpwProject,
+        day: UnpaidWorkDay = ReferenceDataGenerator.UPW_DAY_MONDAY,
         frequency: ReferenceData? = null,
         startTime: LocalTime? = null,
         endTime: LocalTime? = null,
         startDate: LocalDate? = null,
         endDate: LocalDate? = null
-    ) = UpwProjectAvailability(id, upwProjectId, frequency, startTime, endTime, startDate, endDate)
+    ) = UpwProjectAvailability(id, project, day, frequency, startTime, endTime, startDate, endDate)
 
     fun generateDisposal(
         id: Long = IdGenerator.getAndIncrement(),

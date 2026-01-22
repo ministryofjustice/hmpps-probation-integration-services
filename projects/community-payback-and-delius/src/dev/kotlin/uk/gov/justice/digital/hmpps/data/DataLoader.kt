@@ -102,6 +102,7 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
         save(UPWGenerator.UPW_PROJECT_1)
         save(UPWGenerator.UPW_PROJECT_2)
         save(UPWGenerator.UPW_PROJECT_3)
+        save(UPWGenerator.COMPLETED_UPW_PROJECT)
         save(UPWGenerator.DEFAULT_UPW_PROJECT_AVAILABILITY)
         save(UPWGenerator.SECOND_UPW_PROJECT_AVAILABILITY)
         save(UPWGenerator.EVENT_1)

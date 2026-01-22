@@ -8,6 +8,7 @@ import uk.gov.justice.digital.hmpps.entity.ReferenceData
 import uk.gov.justice.digital.hmpps.entity.person.Address
 import uk.gov.justice.digital.hmpps.entity.staff.Team
 import uk.gov.justice.digital.hmpps.exception.NotFoundException.Companion.orNotFoundBy
+import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.LocalTime
 
@@ -35,6 +36,9 @@ class UpwProject(
     @JoinColumn(name = "project_type_id")
     val projectType: ReferenceData,
 
+    @OneToMany(mappedBy = "project")
+    val availability: List<UpwProjectAvailability>,
+
     @Convert(converter = YesNoConverter::class)
     @Column(name = "high_visibility_vest_required")
     val hiVisRequired: Boolean,
@@ -42,17 +46,37 @@ class UpwProject(
     val expectedEndDate: LocalDate?,
 
     val completionDate: LocalDate?
-)
+) {
+    fun requireAvailabilityOnDates(dates: List<LocalDate>) {
+        require(completionDate == null || completionDate > dates.max()) {
+            "Appointment cannot be scheduled after the project completion date (${dates.max()} > $completionDate)"
+        }
+        if (availability.isNotEmpty()) {
+            val availableDays = availability.map { DayOfWeek.valueOf(it.dayOfWeek.weekDay.uppercase()) }.toSet()
+            val requestedDays = dates.map { it.dayOfWeek }.toSet()
+            val invalidDays = requestedDays - availableDays
+            require(invalidDays.isEmpty()) {
+                "Project is not available on the following days: $invalidDays"
+            }
+        }
+    }
+}
 
 @Entity
-@Table(name = "upw_project_availability")
 @Immutable
+@Table(name = "upw_project_availability")
 class UpwProjectAvailability(
     @Id
     @Column(name = "upw_project_availability_id")
     val id: Long,
 
-    val upwProjectId: Long,
+    @ManyToOne
+    @JoinColumn(name = "upw_project_id")
+    val project: UpwProject,
+
+    @ManyToOne
+    @JoinColumn(name = "upw_day_id")
+    val dayOfWeek: UnpaidWorkDay,
 
     @ManyToOne
     @JoinColumn(name = "frequency_id")
