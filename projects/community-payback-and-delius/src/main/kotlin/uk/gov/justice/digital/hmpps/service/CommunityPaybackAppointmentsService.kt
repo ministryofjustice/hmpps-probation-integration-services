@@ -137,6 +137,7 @@ class CommunityPaybackAppointmentsService(
         requests: CreateAppointmentsRequest
     ): List<CreatedAppointment> = with(requests.appointments) {
         val project = unpaidWorkProjectRepository.getByCode(projectCode)
+            .apply { requireAvailabilityOnDates(map { it.date }) }
         val eventIds = eventRepository.getEventIds(map { it.crn to it.eventNumber })
         val upwDetails = upwDetailsRepository.findAllByEventId(eventIds.values).associateBy { it.disposal.event.id }
         val staff = staffRepository.findAllByCodeIn(mapNotNull { it.supervisor.code }).associateBy { it.code }
