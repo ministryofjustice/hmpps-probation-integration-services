@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.messaging
 
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertDoesNotThrow
 import org.junit.jupiter.api.assertThrows
@@ -11,6 +12,7 @@ import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import uk.gov.justice.digital.hmpps.MessageGenerator
 import uk.gov.justice.digital.hmpps.converter.NotificationConverter
+import uk.gov.justice.digital.hmpps.flags.FeatureFlags
 import uk.gov.justice.digital.hmpps.integrations.delius.DeliusValidationError
 import uk.gov.justice.digital.hmpps.integrations.delius.RiskAssessmentService
 import uk.gov.justice.digital.hmpps.integrations.delius.RiskScoreService
@@ -31,6 +33,9 @@ internal class HandlerTest {
 
     @Mock
     lateinit var riskAssessmentService: RiskAssessmentService
+
+    @Mock
+    lateinit var featureFlags: FeatureFlags
 
     @Mock
     lateinit var converter: NotificationConverter<HmppsDomainEvent>
@@ -69,9 +74,9 @@ internal class HandlerTest {
             message.message.personReference.findCrn()!!,
             message.message.additionalInformation["EventNumber"] as Int,
             message.message.assessmentDate(),
-            message.message.rsr(),
-            message.message.ospIndecent(),
-            message.message.ospIndirectIndecent(),
+            message.message.rsrOLD(),
+            message.message.ospIndecentOLD(),
+            message.message.ospIndirectIndecentOLD(),
             message.message.ospContact(),
             message.message.ospDirectContact()
         )
@@ -111,9 +116,9 @@ internal class HandlerTest {
                 message.message.personReference.findCrn()!!,
                 message.message.additionalInformation["EventNumber"] as Int,
                 message.message.assessmentDate(),
-                message.message.rsr(),
-                message.message.ospIndecent(),
-                message.message.ospIndirectIndecent(),
+                message.message.rsrOLD(),
+                message.message.ospIndecentOLD(),
+                message.message.ospIndirectIndecentOLD(),
                 message.message.ospContact(),
                 message.message.ospDirectContact()
             )
