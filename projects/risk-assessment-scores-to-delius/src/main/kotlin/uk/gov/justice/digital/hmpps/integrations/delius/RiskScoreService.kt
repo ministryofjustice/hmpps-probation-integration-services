@@ -15,16 +15,16 @@ import java.time.ZonedDateTime
 @Service
 class RiskScoreService(
     jdbcTemplate: JdbcTemplate,
-    featureFlags: FeatureFlags
+    private val featureFlags: FeatureFlags
 ) {
-    private val supportsOgrs4 = featureFlags.enabled("delius-ogrs4-support")
+
 
     private val updateRsrAndOspScoresProcedure: SimpleJdbcCall =
         SimpleJdbcCall(jdbcTemplate)
             .withCatalogName("pkg_triggersupport")
             .withProcedureName("procUpdateCAS")
             .withoutProcedureColumnMetaDataAccess()
-            .declareParameters(*sqlParametersFor(supportsOgrs4))
+            .declareParameters(*sqlParametersFor(featureFlags.enabled("delius-ogrs4-support")))
 
     fun updateRsrAndOspScores(
         crn: String,
@@ -37,6 +37,7 @@ class RiskScoreService(
         ospDirectContact: RiskAssessment?,
     ) {
         try {
+            val supportsOgrs4 = featureFlags.enabled("delius-ogrs4-support")
             val params = baseParams(
                 crn = crn,
                 eventNumber = eventNumber,
