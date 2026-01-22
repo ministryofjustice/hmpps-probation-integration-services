@@ -139,6 +139,40 @@ class CreateAppointmentIntegrationTest @Autowired constructor(
     }
 
     @Test
+    fun `attempt to create appointment on an unavailable project day`() {
+        val project = UPWGenerator.UPW_PROJECT_2 // project with availability on Mondays
+
+        mockMvc
+            .post("/projects/${project.code}/appointments") {
+                withToken()
+                json = CreateAppointmentsRequest(
+                    listOf(
+                        TestData.createAppointment().copy(date = LocalDate.of(2026, 1, 1)) // Thursday
+                    )
+                )
+            }
+            .andExpect { status { isBadRequest() } }
+            .andReturn().response.contentAsJson<ErrorResponse>().also {
+                assertThat(it.message).isEqualTo("Project is not available on the following days: [THURSDAY]")
+            }
+    }
+
+    @Test
+    fun `attempt to create appointment after project completion date`() {
+        val project = UPWGenerator.COMPLETED_UPW_PROJECT
+
+        mockMvc
+            .post("/projects/${project.code}/appointments") {
+                withToken()
+                json = CreateAppointmentsRequest(listOf(TestData.createAppointment()))
+            }
+            .andExpect { status { isBadRequest() } }
+            .andReturn().response.contentAsJson<ErrorResponse>().also {
+                assertThat(it.message).contains("Appointment cannot be scheduled after the project completion date")
+            }
+    }
+
+    @Test
     fun `create future appointments without an outcome`() {
         val request = CreateAppointmentsRequest(
             appointments = List(10) { TestData.createAppointment().copy(reference = UUID(0, it.toLong())) }
