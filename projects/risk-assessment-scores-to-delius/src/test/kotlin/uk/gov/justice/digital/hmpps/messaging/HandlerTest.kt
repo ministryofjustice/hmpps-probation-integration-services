@@ -114,7 +114,6 @@ internal class HandlerTest {
         verify(telemetryService).trackEvent("RsrScoresUpdated", message.message.telemetryProperties())
     }
 
-
     @Test
     fun `OGRS messages are processed`() {
         whenever(featureFlags.enabled(any())).thenReturn(false)
