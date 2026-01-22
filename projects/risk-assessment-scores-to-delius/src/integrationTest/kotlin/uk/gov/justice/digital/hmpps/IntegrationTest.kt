@@ -17,7 +17,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.entity.OGRSAssessmentRep
 import uk.gov.justice.digital.hmpps.message.MessageAttributes
 import uk.gov.justice.digital.hmpps.message.Notification
 import uk.gov.justice.digital.hmpps.messaging.HmppsChannelManager
-import uk.gov.justice.digital.hmpps.messaging.OgrsScore
+import uk.gov.justice.digital.hmpps.messaging.Ogrs4Score
 import uk.gov.justice.digital.hmpps.messaging.telemetryProperties
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import java.time.ZonedDateTime
@@ -86,7 +86,7 @@ internal class IntegrationTest @Autowired constructor(
         MatcherAssert.assertThat(contactRepository.findAll().size, Matchers.equalTo(1))
         MatcherAssert.assertThat(
             contactRepository.findAll()[0].notes,
-            Matchers.containsString("Reconviction calculation is 4% within one year and 8% within 2 years.")
+            Matchers.containsString("OGRS3: 4% within one year and 8% within 2 years.")
         )
     }
 
@@ -110,7 +110,7 @@ internal class IntegrationTest @Autowired constructor(
         MatcherAssert.assertThat(contactRepository.findAll().size, Matchers.equalTo(2))
         MatcherAssert.assertThat(
             contactRepository.findAll()[1].notes,
-            Matchers.containsString("Reconviction calculation is 5% within one year and 9% within 2 years.")
+            Matchers.containsString("OGRS3: 5% within one year and 9% within 2 years.")
         )
     }
 
@@ -123,7 +123,8 @@ internal class IntegrationTest @Autowired constructor(
                 crn,
                 1,
                 ZonedDateTime.now().minusMonths(1),
-                OgrsScore(1, 2)
+                Ogrs4Score(1, 2, null, null,
+                    null, null, null, null)
             )
         }
 
@@ -132,7 +133,8 @@ internal class IntegrationTest @Autowired constructor(
                 crn,
                 1,
                 ZonedDateTime.now().minusMonths(1),
-                OgrsScore(1, 2)
+                Ogrs4Score(1, 2, null, null,
+                    null, null, null, null)
             )
         }
 

@@ -11,6 +11,7 @@ import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import uk.gov.justice.digital.hmpps.MessageGenerator
 import uk.gov.justice.digital.hmpps.converter.NotificationConverter
+import uk.gov.justice.digital.hmpps.flags.FeatureFlags
 import uk.gov.justice.digital.hmpps.integrations.delius.DeliusValidationError
 import uk.gov.justice.digital.hmpps.integrations.delius.RiskAssessmentService
 import uk.gov.justice.digital.hmpps.integrations.delius.RiskScoreService
@@ -18,8 +19,10 @@ import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
 import uk.gov.justice.digital.hmpps.message.MessageAttributes
 import uk.gov.justice.digital.hmpps.message.Notification
 import uk.gov.justice.digital.hmpps.message.PersonReference
+import uk.gov.justice.digital.hmpps.messaging.Handler.Companion.DELIUS_OGRS4_SUPPORT
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryMessagingExtensions.notificationReceived
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
+import uk.gov.justice.digital.hmpps.flagged.RiskAssessmentService as FlaggedRiskAssessmentService
 
 @ExtendWith(MockitoExtension::class)
 internal class HandlerTest {
@@ -31,6 +34,12 @@ internal class HandlerTest {
 
     @Mock
     lateinit var riskAssessmentService: RiskAssessmentService
+
+    @Mock
+    lateinit var flaggedRiskAssessmentService: FlaggedRiskAssessmentService
+
+    @Mock
+    lateinit var featureFlags: FeatureFlags
 
     @Mock
     lateinit var converter: NotificationConverter<HmppsDomainEvent>
@@ -80,6 +89,8 @@ internal class HandlerTest {
 
     @Test
     fun `OGRS messages are processed`() {
+        whenever(featureFlags.enabled(DELIUS_OGRS4_SUPPORT)).thenReturn(true)
+
         // Given an OGRS message
         val message = Notification(
             message = MessageGenerator.OGRS_SCORES_DETERMINED,
@@ -94,7 +105,7 @@ internal class HandlerTest {
             message.message.personReference.findCrn()!!,
             message.message.additionalInformation["EventNumber"] as Int,
             message.message.assessmentDate(),
-            message.message.ogrsScore()
+            message.message.ogrs4Score()
         )
         verify(telemetryService).trackEvent("AddOrUpdateRiskAssessment", message.message.telemetryProperties())
     }

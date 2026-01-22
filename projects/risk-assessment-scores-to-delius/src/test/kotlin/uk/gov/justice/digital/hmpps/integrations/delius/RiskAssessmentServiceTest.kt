@@ -13,16 +13,8 @@ import org.mockito.kotlin.whenever
 import uk.gov.justice.digital.hmpps.data.generator.EventGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException
-import uk.gov.justice.digital.hmpps.exception.NotFoundException
-import uk.gov.justice.digital.hmpps.integrations.delius.entity.AdditionalIdentifierRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.entity.ContactRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.entity.ContactTypeRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.entity.EventRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.entity.OGRSAssessment
-import uk.gov.justice.digital.hmpps.integrations.delius.entity.OGRSAssessmentRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.entity.PersonManagerRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.entity.PersonRepository
-import uk.gov.justice.digital.hmpps.messaging.OgrsScore
+import uk.gov.justice.digital.hmpps.integrations.delius.entity.*
+import uk.gov.justice.digital.hmpps.messaging.Ogrs4Score
 import java.time.LocalDate
 import java.time.ZonedDateTime
 
@@ -63,7 +55,8 @@ class RiskAssessmentServiceTest {
                 crn,
                 1,
                 ZonedDateTime.now(),
-                OgrsScore(1, 1)
+                Ogrs4Score(1, 2, null, null,
+                    null, null, null, null)
             )
         }
     }
@@ -82,7 +75,8 @@ class RiskAssessmentServiceTest {
                 crn,
                 1,
                 ZonedDateTime.now(),
-                OgrsScore(1, 1)
+                Ogrs4Score(1, 2, null, null,
+                    null, null, null, null)
             )
         }
     }
@@ -101,7 +95,8 @@ class RiskAssessmentServiceTest {
                 crn,
                 1,
                 ZonedDateTime.now(),
-                OgrsScore(1, 1)
+                Ogrs4Score(1, 2, null, null,
+                    null, null, null, null)
             )
         }
     }
@@ -117,13 +112,15 @@ class RiskAssessmentServiceTest {
             .thenReturn(event)
 
         whenever(ogrsAssessmentRepository.findByEvent(event))
-            .thenReturn(OGRSAssessment(1, LocalDate.now().minusYears(1), event, 1, 1, 1))
+            .thenReturn(OGRSAssessment(1, LocalDate.now().minusYears(1), event,
+                1, 1, null, null, null, 1))
 
         riskAssessmentService.addOrUpdateRiskAssessment(
             crn,
             1,
             ZonedDateTime.now().minusYears(2),
-            OgrsScore(1, 1)
+            Ogrs4Score(1, 2, null, null,
+                null, null, null, null)
         )
         verify(ogrsAssessmentRepository, Mockito.times(0)).save(any())
     }

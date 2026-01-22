@@ -4,6 +4,7 @@ import org.springframework.stereotype.Component
 import uk.gov.justice.digital.hmpps.converter.NotificationConverter
 import uk.gov.justice.digital.hmpps.datetime.ZonedDateTimeDeserializer
 import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException
+import uk.gov.justice.digital.hmpps.flags.FeatureFlags
 import uk.gov.justice.digital.hmpps.integrations.delius.DeliusValidationError
 import uk.gov.justice.digital.hmpps.integrations.delius.RiskAssessmentService
 import uk.gov.justice.digital.hmpps.integrations.delius.RiskScoreService
@@ -11,14 +12,21 @@ import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
 import uk.gov.justice.digital.hmpps.message.Notification
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryMessagingExtensions.notificationReceived
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
+import uk.gov.justice.digital.hmpps.flagged.RiskAssessmentService as FlaggedRiskAssessmentService
 
 @Component
 class Handler(
     private val telemetryService: TelemetryService,
     private val riskScoreService: RiskScoreService,
     private val riskAssessmentService: RiskAssessmentService,
+    private val flaggedRiskAssessmentService: FlaggedRiskAssessmentService,
+    private val featureFlags: FeatureFlags,
     override val converter: NotificationConverter<HmppsDomainEvent>
 ) : NotificationHandler<HmppsDomainEvent> {
+    companion object {
+        const val DELIUS_OGRS4_SUPPORT = "delius-ogrs4-support"
+    }
+
     override fun handle(notification: Notification<HmppsDomainEvent>) {
         telemetryService.notificationReceived(notification)
         val message = notification.message
@@ -48,13 +56,24 @@ class Handler(
 
             "risk-assessment.scores.ogrs.determined" -> {
                 try {
-                    riskAssessmentService.addOrUpdateRiskAssessment(
-                        message.personReference.findCrn()
-                            ?: throw IllegalArgumentException("Missing CRN in ${message.personReference}"),
-                        message.additionalInformation["EventNumber"] as Int?,
-                        message.assessmentDate(),
-                        message.ogrsScore()
-                    )
+                    if (featureFlags.enabled(DELIUS_OGRS4_SUPPORT)) {
+                        riskAssessmentService.addOrUpdateRiskAssessment(
+                            message.personReference.findCrn()
+                                ?: throw IllegalArgumentException("Missing CRN in ${message.personReference}"),
+                            message.additionalInformation["EventNumber"] as Int?,
+                            message.assessmentDate(),
+                            message.ogrs4Score()
+                        )
+                    } else {
+                        flaggedRiskAssessmentService.addOrUpdateRiskAssessment(
+                            message.personReference.findCrn()
+                                ?: throw IllegalArgumentException("Missing CRN in ${message.personReference}"),
+                            message.additionalInformation["EventNumber"] as Int?,
+                            message.assessmentDate(),
+                            message.ogrsScore()
+                        )
+                    }
+
                     telemetryService.trackEvent("AddOrUpdateRiskAssessment", message.telemetryProperties())
                 } catch (dve: DeliusValidationError) {
                     telemetryService.trackEvent(
@@ -79,6 +98,9 @@ fun HmppsDomainEvent.assessmentDate() =
 data class RiskAssessment(val score: Double, val band: String, val staticOrDynamic: String? = null)
 
 data class OgrsScore(val ogrs3Yr1: Int, val ogrs3Yr2: Int)
+
+data class Ogrs4Score(val ogrs3Yr1: Int?, val ogrs3Yr2: Int?, val ogrs4GYr2: Double?, val ogp2Yr2: Double?,
+    val ogrs4VYr2: Double?, val ovp2Yr2: Double?, val ogp2Yr2Band: String?, val ogrs4GYr2Band: String?)
 
 fun HmppsDomainEvent.rsr() = RiskAssessment(
     additionalInformation["RSRScore"] as Double,
@@ -117,6 +139,17 @@ fun HmppsDomainEvent.ospDirectContact() = additionalInformation["OSPDirectContac
 fun HmppsDomainEvent.ogrsScore() = OgrsScore(
     additionalInformation["OGRS3Yr1"] as Int,
     additionalInformation["OGRS3Yr2"] as Int
+)
+
+fun HmppsDomainEvent.ogrs4Score() = Ogrs4Score(
+    additionalInformation["OGRS3Yr1"] as Int?,
+    additionalInformation["OGRS3Yr2"] as Int?,
+    additionalInformation["OGRS4GYr2"] as Double?,
+    additionalInformation["OGP2Yr2"] as Double?,
+    additionalInformation["OGRS4VYr2"] as Double?,
+    additionalInformation["OVP2Yr2"] as Double?,
+    additionalInformation["OGP2Yr2Band"] as String?,
+    additionalInformation["OGRS4GYr2Band"] as String?
 )
 
 fun HmppsDomainEvent.telemetryProperties() = mapOf(

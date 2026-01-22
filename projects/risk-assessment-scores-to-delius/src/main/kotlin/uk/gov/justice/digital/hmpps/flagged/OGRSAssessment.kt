@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.integrations.delius.entity
+package uk.gov.justice.digital.hmpps.flagged
 
 import jakarta.persistence.*
 import org.hibernate.annotations.SQLRestriction
@@ -9,6 +9,7 @@ import org.springframework.data.annotation.LastModifiedBy
 import org.springframework.data.annotation.LastModifiedDate
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import org.springframework.data.jpa.repository.JpaRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.entity.Event
 import uk.gov.justice.digital.hmpps.jpa.GeneratedId
 import java.time.LocalDate
 import java.time.ZonedDateTime
@@ -17,7 +18,7 @@ import java.time.ZonedDateTime
 @Table(name = "ogrs_assessment")
 @EntityListeners(AuditingEntityListener::class)
 @SQLRestriction("soft_deleted = 0")
-class OGRSAssessment(
+class FlaggedOGRSAssessment(
     @Id
     @Column(name = "ogrs_assessment_id", updatable = false)
     @SequenceGenerator(name = "ogrs_assessment_id_seq", sequenceName = "ogrs_assessment_id_seq", allocationSize = 1)
@@ -36,15 +37,6 @@ class OGRSAssessment(
 
     @Column(name = "ogrs3_score_2")
     var ogrs3Score2: Long?,
-
-    @Column(name = "arp_static_dynamic", columnDefinition = "char(1)")
-    var arpStaticDynamic: String?,
-
-    @Column(name = "arp_score")
-    var arpScore: Double?,
-
-    @Column(name = "arp_band", columnDefinition = "char(1)")
-    var arpBand: String?,
 
     @Column(name = "ogrs2_score")
     val ogrs2Score: Long? = null,
@@ -73,6 +65,6 @@ class OGRSAssessment(
     val rowVersion: Long = 0L
 )
 
-interface OGRSAssessmentRepository : JpaRepository<OGRSAssessment, Long> {
-    fun findByEvent(event: Event): OGRSAssessment?
+interface FlaggedOGRSAssessmentRepository : JpaRepository<FlaggedOGRSAssessment, Long> {
+    fun findByEvent(event: Event): FlaggedOGRSAssessment?
 }
