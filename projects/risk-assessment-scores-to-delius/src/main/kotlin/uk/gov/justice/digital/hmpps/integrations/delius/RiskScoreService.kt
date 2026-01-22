@@ -1,4 +1,3 @@
-
 package uk.gov.justice.digital.hmpps.integrations.delius
 
 import org.springframework.jdbc.UncategorizedSQLException
@@ -134,7 +133,6 @@ class RiskScoreService(
     // Only V4 has an algorithmVersion; V3 (and null) should yield null
     private fun RiskAssessment?.versionIfV4(): Int? =
         (this as? RiskAssessment.V4)?.algorithmVersion
-
 
     private val SQLException.isValidationError get() = errorCode == 20000
     private val SQLException.parsedValidationMessage
