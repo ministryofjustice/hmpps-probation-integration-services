@@ -135,7 +135,10 @@ class UnpaidWorkAppointment(
     var lastUpdatedDatetime: ZonedDateTime = ZonedDateTime.now(),
 
     @LastModifiedBy
-    var lastUpdatedUserId: Long = 0
+    var lastUpdatedUserId: Long = 0,
+
+    @Column(name = "partition_area_id")
+    val partitionAreaId: Long = 0,
 ) : Versioned {
     fun version() = UUID(rowVersion, contact.rowVersion)
 }

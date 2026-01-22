@@ -49,6 +49,9 @@ class CreateUnpaidWorkAppointment(
     @JoinColumn(name = "upw_project_id")
     val project: UpwProject,
 
+    @Column(name = "project_type_id")
+    val projectTypeId: Long = project.projectType.id,
+
     @ManyToOne
     @JoinColumn(name = "upw_details_id")
     val details: UnpaidWorkDetails,
@@ -133,7 +136,10 @@ class CreateUnpaidWorkAppointment(
     var lastUpdatedDatetime: ZonedDateTime = ZonedDateTime.now(),
 
     @LastModifiedBy
-    var lastUpdatedUserId: Long = 0
+    var lastUpdatedUserId: Long = 0,
+
+    @Column(name = "partition_area_id")
+    val partitionAreaId: Long = 0,
 ) : Versioned
 
 interface CreateUnpaidWorkAppointmentRepository : JpaRepository<CreateUnpaidWorkAppointment, Long>
