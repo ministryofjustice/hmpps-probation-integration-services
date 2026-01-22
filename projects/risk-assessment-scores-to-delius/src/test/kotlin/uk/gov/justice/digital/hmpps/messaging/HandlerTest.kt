@@ -40,13 +40,12 @@ internal class HandlerTest {
     @Mock
     lateinit var converter: NotificationConverter<HmppsDomainEvent>
 
-    //@InjectMocks
-    //lateinit var handler: Handler
+    @InjectMocks
+    lateinit var handler: Handler
 
     @Test
     fun `message is logged to telemetry`() {
         whenever(featureFlags.enabled(any())).thenReturn(false)
-        val handler = Handler(telemetryService, riskScoreService, riskAssessmentService, converter, featureFlags)
         // Given a message
         val message = Notification(
             message = MessageGenerator.RSR_SCORES_DETERMINED,
@@ -63,7 +62,6 @@ internal class HandlerTest {
     @Test
     fun `RSR messages are processed`() {
         whenever(featureFlags.enabled(any())).thenReturn(false)
-        val handler = Handler(telemetryService, riskScoreService, riskAssessmentService, converter, featureFlags)
         // Given an RSR message
         val message = Notification(
             message = MessageGenerator.RSR_SCORES_DETERMINED,
@@ -90,7 +88,6 @@ internal class HandlerTest {
     @Test
     fun `RSR messages are processed v4`() {
         whenever(featureFlags.enabled(any())).thenReturn(true)
-        val handler = Handler(telemetryService, riskScoreService, riskAssessmentService, converter, featureFlags)
         // Given an RSR message
         val message = Notification(
             message = MessageGenerator.RSR_SCORES_DETERMINED_V4,
@@ -117,7 +114,6 @@ internal class HandlerTest {
     @Test
     fun `OGRS messages are processed`() {
         whenever(featureFlags.enabled(any())).thenReturn(false)
-        val handler = Handler(telemetryService, riskScoreService, riskAssessmentService, converter, featureFlags)
         // Given an OGRS message
         val message = Notification(
             message = MessageGenerator.OGRS_SCORES_DETERMINED,
@@ -140,7 +136,6 @@ internal class HandlerTest {
     @Test
     fun `ignorable Delius errors are logged to Telemetry but not thrown`() {
         whenever(featureFlags.enabled(any())).thenReturn(false)
-        val handler = Handler(telemetryService, riskScoreService, riskAssessmentService, converter, featureFlags)
         // Given a message that causes an ignorable Delius error
         val message = Notification(
             message = MessageGenerator.RSR_SCORES_DETERMINED,
@@ -172,7 +167,6 @@ internal class HandlerTest {
     @Test
     fun `unknown messages are ignored`() {
         whenever(featureFlags.enabled(any())).thenReturn(false)
-        val handler = Handler(telemetryService, riskScoreService, riskAssessmentService, converter, featureFlags)
         assertDoesNotThrow {
             handler.handle(
                 Notification(
@@ -186,7 +180,6 @@ internal class HandlerTest {
     @Test
     fun `missing CRN is thrown`() {
         whenever(featureFlags.enabled(any())).thenReturn(false)
-        val handler = Handler(telemetryService, riskScoreService, riskAssessmentService, converter, featureFlags)
         assertThrows<IllegalArgumentException> {
             handler.handle(
                 Notification(

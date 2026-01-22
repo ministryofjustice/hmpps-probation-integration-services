@@ -22,8 +22,8 @@ class Handler(
     private val featureFlags: FeatureFlags
 ) : NotificationHandler<HmppsDomainEvent> {
 
-    val flagValue = featureFlags.enabled("delius-ogrs4-support")
     override fun handle(notification: Notification<HmppsDomainEvent>) {
+        val flagValue = featureFlags.enabled("delius-ogrs4-support")
         telemetryService.notificationReceived(notification)
         val message = notification.message
         when (message.eventType) {
