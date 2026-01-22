@@ -280,6 +280,12 @@ class AppointmentService internal constructor(
         enforcementAction: EnforcementAction,
         enforcementReviewType: Type
     ) = apply {
+        if (Schedule(this).isFuture && outcome != null) {
+            require(outcome.attended == false && outcome.complied == true) {
+                "Only permissible absences can be recorded for a future attendance"
+            }
+        }
+
         this.outcome = outcome
         if (outcome != null) {
             attended = outcome.attended

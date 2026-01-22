@@ -150,7 +150,7 @@ object UPWGenerator {
         contactOutcome = null,
         startTime = LocalTime.of(10, 15),
         endTime = LocalTime.of(16, 30),
-        date = LocalDate.now(),
+        date = LocalDate.now().minusDays(1),
         personId = PersonGenerator.DEFAULT_PERSON.id,
         officeLocation = DEFAULT_OFFICE_LOCATION,
         staff = StaffGenerator.DEFAULT_STAFF,
@@ -220,7 +220,7 @@ object UPWGenerator {
     val UPW_APPOINTMENT_NO_ENFORCEMENT = generateUpwAppointment(
         startTime = LocalTime.of(10, 15),
         endTime = LocalTime.of(16, 30),
-        date = LocalDate.now(),
+        date = LocalDate.now().minusDays(1),
         project = UPW_PROJECT_2,
         details = UPW_DETAILS_2,
         contact = CONTACT_NO_ENFORCEMENT,
@@ -240,7 +240,7 @@ object UPWGenerator {
         generateUpwAppointment(
             startTime = LocalTime.of(12, 0),
             endTime = LocalTime.of(14, 0),
-            date = LocalDate.now().plusDays(1),
+            date = LocalDate.now().minusDays(1),
             project = UPW_PROJECT_2,
             details = UPW_DETAILS_3,
             contact = generateContact(
@@ -251,7 +251,7 @@ object UPWGenerator {
                 contactOutcome = null,
                 startTime = LocalTime.of(12, 0),
                 endTime = LocalTime.of(14, 0),
-                date = LocalDate.now().plusDays(1),
+                date = LocalDate.now().minusDays(1),
                 officeLocation = DEFAULT_OFFICE_LOCATION,
                 staff = StaffGenerator.DEFAULT_STAFF,
                 team = TeamGenerator.DEFAULT_UPW_TEAM,

@@ -18,10 +18,7 @@ import uk.gov.justice.digital.hmpps.entity.contact.ContactType.Code.REVIEW_ENFOR
 import uk.gov.justice.digital.hmpps.entity.sentence.EventRepository
 import uk.gov.justice.digital.hmpps.entity.unpaidwork.UnpaidWorkAppointmentRepository
 import uk.gov.justice.digital.hmpps.entity.unpaidwork.getAppointment
-import uk.gov.justice.digital.hmpps.model.AppointmentOutcomeRequest
-import uk.gov.justice.digital.hmpps.model.Behaviour
 import uk.gov.justice.digital.hmpps.model.Code
-import uk.gov.justice.digital.hmpps.model.WorkQuality
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.json
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
@@ -111,23 +108,7 @@ class UpdateAppointmentIntegrationTest @Autowired constructor(
 
         mockMvc.put("/projects/$PROJECT/appointments/${original.id}/outcome") {
             withToken()
-            json = AppointmentOutcomeRequest(
-                id = original.id,
-                version = UUID(original.rowVersion, originalContact.rowVersion),
-                outcome = Code("F"),
-                supervisor = Code("N01P001"),
-                startTime = LocalTime.of(8, 0),
-                endTime = LocalTime.of(10, 0),
-                notes = "ftc count",
-                hiVisWorn = true,
-                workedIntensively = true,
-                penaltyMinutes = 65,
-                minutesCredited = 55,
-                workQuality = WorkQuality.EXCELLENT,
-                behaviour = Behaviour.UNSATISFACTORY,
-                sensitive = false,
-                alertActive = true,
-            )
+            json = TestData.updateAppointment(original.id).copy(outcome = Code("F"))
         }.andExpect { status { is2xxSuccessful() } }
 
         val event = eventRepository.findAll().first { it.id == originalContact.event!!.id }
@@ -145,23 +126,7 @@ class UpdateAppointmentIntegrationTest @Autowired constructor(
 
         mockMvc.put("/projects/$PROJECT/appointments/${original.id}/outcome") {
             withToken()
-            json = AppointmentOutcomeRequest(
-                id = original.id,
-                version = UUID(original.rowVersion, original.contact.rowVersion),
-                outcome = Code("F"),
-                supervisor = Code("N01P001"),
-                startTime = LocalTime.of(8, 0),
-                endTime = LocalTime.of(10, 0),
-                notes = "enforcement",
-                hiVisWorn = true,
-                workedIntensively = true,
-                penaltyMinutes = 65,
-                minutesCredited = 375,
-                workQuality = WorkQuality.EXCELLENT,
-                behaviour = Behaviour.UNSATISFACTORY,
-                sensitive = false,
-                alertActive = true,
-            )
+            json = TestData.updateAppointment(original.id).copy(outcome = Code("F"))
         }.andExpect { status { is2xxSuccessful() } }
 
         val enforcement = enforcementRepository.findAll().firstOrNull { it.contact.id == original.contact.id }
@@ -174,23 +139,7 @@ class UpdateAppointmentIntegrationTest @Autowired constructor(
 
         mockMvc.put("/projects/$PROJECT/appointments/${original.id}/outcome") {
             withToken()
-            json = AppointmentOutcomeRequest(
-                id = original.id,
-                version = UUID(original.rowVersion, original.contact.rowVersion),
-                outcome = Code("A"),
-                supervisor = Code("N01P001"),
-                startTime = LocalTime.of(8, 0),
-                endTime = LocalTime.of(10, 0),
-                notes = "contact alert",
-                hiVisWorn = true,
-                workedIntensively = true,
-                penaltyMinutes = 65,
-                minutesCredited = 55,
-                workQuality = WorkQuality.EXCELLENT,
-                behaviour = Behaviour.UNSATISFACTORY,
-                sensitive = false,
-                alertActive = true,
-            )
+            json = TestData.updateAppointment(original.id).copy(alertActive = true)
         }.andExpect { status { is2xxSuccessful() } }
         val alert = contactAlertRepository.findAll().firstOrNull { it.contactId == original.contact.id }
         assertThat(alert).isNotNull
@@ -202,23 +151,7 @@ class UpdateAppointmentIntegrationTest @Autowired constructor(
 
         mockMvc.put("/projects/$PROJECT/appointments/${original.id}/outcome") {
             withToken()
-            json = AppointmentOutcomeRequest(
-                id = original.id,
-                version = UUID(original.rowVersion, original.contact.rowVersion),
-                outcome = null,
-                supervisor = Code("N01P001"),
-                startTime = LocalTime.of(8, 0),
-                endTime = LocalTime.of(10, 0),
-                notes = "contact alert",
-                hiVisWorn = true,
-                workedIntensively = true,
-                penaltyMinutes = 65,
-                minutesCredited = 55,
-                workQuality = WorkQuality.EXCELLENT,
-                behaviour = Behaviour.UNSATISFACTORY,
-                sensitive = false,
-                alertActive = true,
-            )
+            json = TestData.updateAppointment(original.id).copy(alertActive = true)
         }.andExpect { status { is2xxSuccessful() } }
 
         val alertCreated = contactAlertRepository.findAll().filter { it.contactId == original.contact.id }
@@ -227,22 +160,9 @@ class UpdateAppointmentIntegrationTest @Autowired constructor(
 
         mockMvc.put("/projects/$PROJECT/appointments/${second.id}/outcome") {
             withToken()
-            json = AppointmentOutcomeRequest(
-                id = second.id,
+            json = TestData.updateAppointment(original.id).copy(
                 version = UUID(second.rowVersion, second.contact.rowVersion),
-                outcome = null,
-                supervisor = Code("N01P001"),
-                startTime = LocalTime.of(8, 0),
-                endTime = LocalTime.of(10, 0),
-                notes = "contact alert deleting",
-                hiVisWorn = true,
-                workedIntensively = true,
-                penaltyMinutes = 65,
-                minutesCredited = 55,
-                workQuality = WorkQuality.EXCELLENT,
-                behaviour = Behaviour.UNSATISFACTORY,
-                sensitive = false,
-                alertActive = false,
+                alertActive = false
             )
         }.andExpect { status { is2xxSuccessful() } }
 

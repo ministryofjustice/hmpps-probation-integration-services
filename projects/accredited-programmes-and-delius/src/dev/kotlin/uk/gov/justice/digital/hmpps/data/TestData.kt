@@ -100,6 +100,7 @@ object TestData {
     val ATTENDED_COMPLIED = ContactOutcome(id(), "ATTC", "Attended and Complied")
     val FAILED_TO_COMPLY =
         ContactOutcome(id(), "FTC", "Failed to comply", attended = false, complied = false, enforceable = true)
+    val ACCEPTABLE_ABSENCE = ContactOutcome(id(), "AA", "Acceptable absence", attended = false, complied = true)
     val REFER_TO_MANAGER_CONTACT_TYPE = ContactType(id(), "ROM", false)
     val REFER_TO_MANAGER_ACTION = EnforcementAction(id(), "ROM", "Refer to manager", 7, REFER_TO_MANAGER_CONTACT_TYPE)
     val ENFORCEMENT_REVIEW_CONTACT_TYPE = ContactType(id(), "ARWS", false)
