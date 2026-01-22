@@ -18,7 +18,6 @@ class RiskScoreService(
     private val featureFlags: FeatureFlags
 ) {
 
-
     private val updateRsrAndOspScoresProcedure: SimpleJdbcCall =
         SimpleJdbcCall(jdbcTemplate)
             .withCatalogName("pkg_triggersupport")
