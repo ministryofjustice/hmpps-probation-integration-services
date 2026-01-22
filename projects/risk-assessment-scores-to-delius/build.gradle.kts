@@ -23,7 +23,6 @@ dependencies {
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation(libs.bundles.mockito)
-    testImplementation("org.mockito:mockito-inline:5+")
 }
 
 configure<ClassPathExtension> {
