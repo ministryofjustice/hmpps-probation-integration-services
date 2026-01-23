@@ -7,10 +7,12 @@ import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
+import org.mockito.kotlin.any
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import uk.gov.justice.digital.hmpps.MessageGenerator
 import uk.gov.justice.digital.hmpps.converter.NotificationConverter
+import uk.gov.justice.digital.hmpps.flags.FeatureFlags
 import uk.gov.justice.digital.hmpps.integrations.delius.DeliusValidationError
 import uk.gov.justice.digital.hmpps.integrations.delius.RiskAssessmentService
 import uk.gov.justice.digital.hmpps.integrations.delius.RiskScoreService
@@ -33,6 +35,9 @@ internal class HandlerTest {
     lateinit var riskAssessmentService: RiskAssessmentService
 
     @Mock
+    lateinit var featureFlags: FeatureFlags
+
+    @Mock
     lateinit var converter: NotificationConverter<HmppsDomainEvent>
 
     @InjectMocks
@@ -40,6 +45,7 @@ internal class HandlerTest {
 
     @Test
     fun `message is logged to telemetry`() {
+        whenever(featureFlags.enabled(any())).thenReturn(false)
         // Given a message
         val message = Notification(
             message = MessageGenerator.RSR_SCORES_DETERMINED,
@@ -55,9 +61,36 @@ internal class HandlerTest {
 
     @Test
     fun `RSR messages are processed`() {
+        whenever(featureFlags.enabled(any())).thenReturn(false)
         // Given an RSR message
         val message = Notification(
             message = MessageGenerator.RSR_SCORES_DETERMINED,
+            attributes = MessageAttributes("risk-assessment.scores.determined")
+        )
+
+        // When it is received
+        handler.handle(message)
+
+        // Then it is processed
+        verify(riskScoreService).updateRsrAndOspScores(
+            message.message.personReference.findCrn()!!,
+            message.message.additionalInformation["EventNumber"] as Int,
+            message.message.assessmentDate(),
+            message.message.rsrOLD(),
+            message.message.ospIndecentOLD(),
+            message.message.ospIndirectIndecentOLD(),
+            message.message.ospContact(),
+            message.message.ospDirectContact()
+        )
+        verify(telemetryService).trackEvent("RsrScoresUpdated", message.message.telemetryProperties())
+    }
+
+    @Test
+    fun `RSR messages are processed v4`() {
+        whenever(featureFlags.enabled(any())).thenReturn(true)
+        // Given an RSR message
+        val message = Notification(
+            message = MessageGenerator.RSR_SCORES_DETERMINED_V4,
             attributes = MessageAttributes("risk-assessment.scores.determined")
         )
 
@@ -80,6 +113,7 @@ internal class HandlerTest {
 
     @Test
     fun `OGRS messages are processed`() {
+        whenever(featureFlags.enabled(any())).thenReturn(false)
         // Given an OGRS message
         val message = Notification(
             message = MessageGenerator.OGRS_SCORES_DETERMINED,
@@ -101,6 +135,7 @@ internal class HandlerTest {
 
     @Test
     fun `ignorable Delius errors are logged to Telemetry but not thrown`() {
+        whenever(featureFlags.enabled(any())).thenReturn(false)
         // Given a message that causes an ignorable Delius error
         val message = Notification(
             message = MessageGenerator.RSR_SCORES_DETERMINED,
@@ -111,9 +146,9 @@ internal class HandlerTest {
                 message.message.personReference.findCrn()!!,
                 message.message.additionalInformation["EventNumber"] as Int,
                 message.message.assessmentDate(),
-                message.message.rsr(),
-                message.message.ospIndecent(),
-                message.message.ospIndirectIndecent(),
+                message.message.rsrOLD(),
+                message.message.ospIndecentOLD(),
+                message.message.ospIndirectIndecentOLD(),
                 message.message.ospContact(),
                 message.message.ospDirectContact()
             )
@@ -131,6 +166,7 @@ internal class HandlerTest {
 
     @Test
     fun `unknown messages are ignored`() {
+        whenever(featureFlags.enabled(any())).thenReturn(false)
         assertDoesNotThrow {
             handler.handle(
                 Notification(
@@ -143,6 +179,7 @@ internal class HandlerTest {
 
     @Test
     fun `missing CRN is thrown`() {
+        whenever(featureFlags.enabled(any())).thenReturn(false)
         assertThrows<IllegalArgumentException> {
             handler.handle(
                 Notification(
