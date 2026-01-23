@@ -35,7 +35,6 @@ internal class RiskScoreServiceTest {
     @Mock
     private lateinit var jdbcTemplate: JdbcTemplate
 
-
     @Test
     fun `scores are passed to the database procedure`() {
         givenTheDatabaseProcedureSucceeds().use { construction ->
