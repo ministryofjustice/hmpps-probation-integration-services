@@ -7,6 +7,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
+import uk.gov.justice.digital.hmpps.data.generator.StaffGenerator
 import uk.gov.justice.digital.hmpps.model.ProvidersResponse
 import uk.gov.justice.digital.hmpps.model.SessionsResponse
 import uk.gov.justice.digital.hmpps.model.SupervisorsResponse
@@ -65,7 +66,11 @@ class ProvidersIntegrationTest @Autowired constructor(
             .andExpect { status { is2xxSuccessful() } }
             .andReturn().response.contentAsJson<SupervisorsResponse>()
 
-        assertThat(response.supervisors.size).isEqualTo(2)
+        assertThat(response.supervisors.map { it.code }).containsExactlyInAnyOrder(
+            StaffGenerator.DEFAULT_STAFF.code,
+            StaffGenerator.SECOND_STAFF.code,
+            StaffGenerator.UNALLOCATED_STAFF.code
+        )
     }
 
     @Test

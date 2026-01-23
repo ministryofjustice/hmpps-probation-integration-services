@@ -1,12 +1,12 @@
 package uk.gov.justice.digital.hmpps.model
 
+import io.swagger.v3.oas.annotations.media.Schema
 import jakarta.validation.Valid
 import jakarta.validation.constraints.Pattern
 import jakarta.validation.constraints.Positive
 import jakarta.validation.constraints.PositiveOrZero
 import java.time.LocalDate
 import java.time.LocalTime
-import java.time.temporal.ChronoUnit
 import java.util.*
 
 data class CreateAppointmentsRequest(
@@ -28,20 +28,22 @@ data class CreateAppointmentRequest(
     val endTime: LocalTime,
 
     // allocation
-    val supervisor: Code,
+    @Schema(description = "The appointment supervisor. Defaults to the unallocated staff member in the project team.")
+    val supervisor: Code?,
 
     // unpaid work details
     val allocationId: Long?,
     val pickUp: PickUp?,
     @field:PositiveOrZero
-    val minutesOffered: Long = ChronoUnit.MINUTES.between(startTime, endTime),
+    @Schema(description = "The minutes offered towards a person's unpaid work requirement. Defaults to the difference between the appointment startTime and endTime.")
+    val minutesOffered: Long? = null,
 
     // outcome details
     val outcome: Code?,
     @field:PositiveOrZero
-    val penaltyMinutes: Long = 0,
+    val penaltyMinutes: Long? = null,
     @field:PositiveOrZero
-    val minutesCredited: Long = 0,
+    val minutesCredited: Long? = null,
     val hiVisWorn: Boolean?,
     val workedIntensively: Boolean?,
     val workQuality: WorkQuality?,

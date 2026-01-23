@@ -143,7 +143,7 @@ class AppointmentService internal constructor(
     private fun <T> UpdatePipeline<T>.validateUpdates(updates: UpdateBuilder<T>) = onEach { (request, existing) ->
         val outcome = updates.applyOutcome?.invoke(Outcome(existing), request)?.outcomeCode
         val amendDateTime = updates.amendDateTime?.invoke(Schedule(existing), request)
-        require(amendDateTime == null || amendDateTime.isFuture || outcome != null) {
+        require(amendDateTime == null || amendDateTime.endsInFuture || outcome != null) {
             "Outcome must be provided when amending an appointment in the past"
         }
     }
@@ -280,7 +280,7 @@ class AppointmentService internal constructor(
         enforcementAction: EnforcementAction,
         enforcementReviewType: Type
     ) = apply {
-        if (Schedule(this).isFuture && outcome != null) {
+        if (Schedule(this).startsInFuture && outcome != null) {
             require(outcome.attended == false && outcome.complied == true) {
                 "Only permissible absences can be recorded for a future attendance"
             }
