@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.entity.staff
 
 import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
+import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.YesNoConverter
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
@@ -43,7 +44,20 @@ class Team(
         inverseJoinColumns = [JoinColumn(name = "staff_id")]
     )
     val staff: List<Staff>,
-)
+
+    @ManyToMany
+    @JoinTable(
+        name = "staff_team",
+        joinColumns = [JoinColumn(name = "team_id")],
+        inverseJoinColumns = [JoinColumn(name = "staff_id")]
+    )
+    @SQLRestriction("officer_code like '%U' and (end_date is null or end_date > current_date)")
+    val unallocatedStaff: List<Staff>,
+) {
+    fun unallocatedStaff() = checkNotNull(unallocatedStaff.singleOrNull()) {
+        "Team $code does not have a single unallocated staff member"
+    }
+}
 
 interface TeamRepository : JpaRepository<Team, Long> {
     @Query(

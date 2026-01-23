@@ -47,7 +47,7 @@ data class AppointmentScheduleResponse(
     val startTime: LocalTime,
     val endTime: LocalTime,
     val outcome: CodeDescription?,
-    val minutesCredited: Long?,
+    val minutesCredited: Long,
     val allocationId: Long?
 )
 
@@ -86,6 +86,6 @@ fun UnpaidWorkAppointment.toAppointmentScheduleResponse() = AppointmentScheduleR
     startTime = this.startTime,
     endTime = this.endTime,
     outcome = this.contact.outcome?.toCodeDescription(),
-    minutesCredited = this.minutesCredited,
+    minutesCredited = this.minutesCredited ?: 0,
     allocationId = this.allocation?.id
 )

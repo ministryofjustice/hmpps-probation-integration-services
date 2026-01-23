@@ -47,6 +47,7 @@ object TeamGenerator {
         upwTeam: Boolean,
         startDate: LocalDate = LocalDate.now().minusDays(1),
         endDate: LocalDate? = null,
-        staff: List<Staff> = emptyList()
-    ) = Team(id, code, description, provider, upwTeam, startDate, endDate, staff)
+        staff: List<Staff> = emptyList(),
+        unallocatedStaff: List<Staff> = emptyList(),
+    ) = Team(id, code, description, provider, upwTeam, startDate, endDate, staff, unallocatedStaff)
 }

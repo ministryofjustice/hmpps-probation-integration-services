@@ -19,7 +19,6 @@ import uk.gov.justice.digital.hmpps.jpa.GeneratedId
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.ZonedDateTime
-import java.time.temporal.ChronoUnit
 
 @Entity
 @Table(name = "upw_appointment")
@@ -79,7 +78,7 @@ class CreateUnpaidWorkAppointment(
     var outcomeId: Long?,
 
     @Column(name = "minutes_offered")
-    val minutesOffered: Long? = ChronoUnit.MINUTES.between(startTime, endTime),
+    val minutesOffered: Long?,
 
     @Column(name = "minutes_credited")
     var minutesCredited: Long?,

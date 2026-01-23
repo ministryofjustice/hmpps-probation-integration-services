@@ -6,6 +6,7 @@ import jakarta.persistence.Id
 import jakarta.persistence.Table
 import org.hibernate.annotations.Immutable
 import org.springframework.data.jpa.repository.JpaRepository
+import uk.gov.justice.digital.hmpps.utils.Extensions.reportMissing
 
 @Entity
 @Table(name = "office_location")
@@ -33,5 +34,7 @@ class OfficeLocation(
 )
 
 interface OfficeLocationRepository : JpaRepository<OfficeLocation, Long> {
-    fun findAllByCodeIn(codes: List<String>): List<OfficeLocation>
+    fun findByCodeIn(codes: Collection<String>): List<OfficeLocation>
+    fun getByCodeIn(codes: List<String>) =
+        codes.toSet().let { codes -> findByCodeIn(codes).associateBy { it.code }.reportMissing(codes) }
 }
