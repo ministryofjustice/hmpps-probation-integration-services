@@ -19,13 +19,12 @@ class Handler(
     private val riskScoreService: RiskScoreService,
     private val riskAssessmentService: RiskAssessmentService,
     override val converter: NotificationConverter<HmppsDomainEvent>,
-    private val featureFlags: FeatureFlags
 ) : NotificationHandler<HmppsDomainEvent> {
 
     override fun handle(notification: Notification<HmppsDomainEvent>) {
-        val flagValue = featureFlags.enabled("delius-ogrs4-support")
         telemetryService.notificationReceived(notification)
         val message = notification.message
+        val flagValue = (message.additionalInformation["RSRAlgorithmVersion"] as Int?) != null
         when (message.eventType) {
             "risk-assessment.scores.rsr.determined" -> {
                 try {

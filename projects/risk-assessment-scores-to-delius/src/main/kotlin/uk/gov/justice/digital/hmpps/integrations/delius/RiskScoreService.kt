@@ -6,7 +6,6 @@ import org.springframework.jdbc.core.SqlParameter
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource
 import org.springframework.jdbc.core.simple.SimpleJdbcCall
 import org.springframework.stereotype.Service
-import uk.gov.justice.digital.hmpps.flags.FeatureFlags
 import uk.gov.justice.digital.hmpps.messaging.RiskAssessment
 import java.sql.SQLException
 import java.sql.Types
@@ -14,8 +13,7 @@ import java.time.ZonedDateTime
 
 @Service
 class RiskScoreService(
-    jdbcTemplate: JdbcTemplate,
-    private val featureFlags: FeatureFlags
+    jdbcTemplate: JdbcTemplate
 ) {
     private val updateRsrAndOspScoresProcedureV4: SimpleJdbcCall =
         SimpleJdbcCall(jdbcTemplate)
@@ -42,7 +40,7 @@ class RiskScoreService(
         ospDirectContact: RiskAssessment?,
     ) {
         try {
-            val supportsOgrs4 = featureFlags.enabled("delius-ogrs4-support")
+            val supportsOgrs4 = rsr is RiskAssessment.V4
             val params = baseParams(
                 crn = crn,
                 eventNumber = eventNumber,
