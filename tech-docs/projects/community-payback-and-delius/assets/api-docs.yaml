@@ -40,6 +40,60 @@ paths:
       responses:
         "200":
           description: OK
+  /projects/{projectCode}/appointments:
+    get:
+      tags:
+      - appointments-controller
+      operationId: getSession
+      parameters:
+      - name: projectCode
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: date
+        in: query
+        required: true
+        schema:
+          type: string
+          format: date
+      - name: username
+        in: query
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SessionResponse"
+    post:
+      tags:
+      - appointments-controller
+      operationId: createAppointments
+      parameters:
+      - name: projectCode
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateAppointmentsRequest"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/CreatedAppointment"
   /supervisors:
     get:
       tags:
@@ -195,35 +249,6 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/TeamsResponse"
-  /projects/{projectCode}/appointments:
-    get:
-      tags:
-      - appointments-controller
-      operationId: getSession
-      parameters:
-      - name: projectCode
-        in: path
-        required: true
-        schema:
-          type: string
-      - name: date
-        in: query
-        required: true
-        schema:
-          type: string
-          format: date
-      - name: username
-        in: query
-        required: true
-        schema:
-          type: string
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/SessionResponse"
   /projects/{projectCode}/appointments/{appointmentId}:
     get:
       tags:
@@ -354,6 +379,106 @@ components:
           type: string
       required:
       - code
+    CreateAppointmentRequest:
+      type: object
+      properties:
+        reference:
+          type: string
+          format: uuid
+        crn:
+          type: string
+          pattern: "[A-Z][0-9]{6}"
+        eventNumber:
+          type: integer
+          format: int32
+        date:
+          type: string
+          format: date
+        startTime:
+          type: string
+        endTime:
+          type: string
+        supervisor:
+          $ref: "#/components/schemas/Code"
+        allocationId:
+          type: integer
+          format: int64
+        pickUp:
+          $ref: "#/components/schemas/PickUp"
+        minutesOffered:
+          type: integer
+          format: int64
+        outcome:
+          $ref: "#/components/schemas/Code"
+        penaltyMinutes:
+          type: integer
+          format: int64
+        minutesCredited:
+          type: integer
+          format: int64
+        hiVisWorn:
+          type: boolean
+        workedIntensively:
+          type: boolean
+        workQuality:
+          type: string
+          enum:
+          - EXCELLENT
+          - GOOD
+          - NOT_APPLICABLE
+          - POOR
+          - SATISFACTORY
+          - UNSATISFACTORY
+        behaviour:
+          type: string
+          enum:
+          - EXCELLENT
+          - GOOD
+          - NOT_APPLICABLE
+          - POOR
+          - SATISFACTORY
+          - UNSATISFACTORY
+        sensitive:
+          type: boolean
+        alertActive:
+          type: boolean
+        notes:
+          type: string
+      required:
+      - crn
+      - date
+      - endTime
+      - eventNumber
+      - minutesCredited
+      - minutesOffered
+      - penaltyMinutes
+      - reference
+      - startTime
+      - supervisor
+    CreateAppointmentsRequest:
+      type: object
+      properties:
+        appointments:
+          type: array
+          items:
+            $ref: "#/components/schemas/CreateAppointmentRequest"
+      required:
+      - appointments
+    PickUp:
+      type: object
+      properties:
+        time:
+          type: string
+        location:
+          $ref: "#/components/schemas/Code"
+    CreatedAppointment:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+      required:
+      - id
     CodeDescription:
       type: object
       properties:
@@ -594,6 +719,9 @@ components:
         id:
           type: integer
           format: int64
+        reference:
+          type: string
+          format: uuid
         version:
           type: string
           format: uuid
