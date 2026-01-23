@@ -103,7 +103,7 @@ class CreateAppointmentIntegrationTest @Autowired constructor(
             }
             .andExpect { status { isBadRequest() } }
             .andReturn().response.contentAsJson<ErrorResponse>().also {
-                assertThat(it.message).isEqualTo("Invalid Staff codes: [INVALID1, INVALID2]")
+                assertThat(it.message).isEqualTo("Invalid Staff: [INVALID1, INVALID2]")
             }
     }
 
@@ -118,9 +118,9 @@ class CreateAppointmentIntegrationTest @Autowired constructor(
                     )
                 )
             }
-            .andExpect { status { isNotFound() } }
+            .andExpect { status { isBadRequest() } }
             .andReturn().response.contentAsJson<ErrorResponse>().also {
-                assertThat(it.message).isEqualTo("OfficeLocation with code of INVALID not found")
+                assertThat(it.message).isEqualTo("Invalid OfficeLocation: [INVALID]")
             }
     }
 
@@ -277,10 +277,30 @@ class CreateAppointmentIntegrationTest @Autowired constructor(
             }
             .andExpect { status { isOk() } }
             .andExpect { content { jsonPath("size()") { value(1) } } }
-            .andReturn().response.contentAsJson<List<CreatedAppointment>>().first()
+            .andReturn().response.contentAsJson<List<CreatedAppointment>>()
 
         eventRepository.getByPersonAndEventNumber(PersonGenerator.DEFAULT_PERSON.id, UPWGenerator.EVENT_3.number).also {
             assertThat(it.ftcCount).isEqualTo(1)
+        }
+    }
+
+    @Test
+    fun `creating an appointment with out a supervisor defaults to unallocated`() {
+        val request = TestData.createAppointmentWithOutcome().copy(
+            supervisor = null
+        )
+
+        val created = mockMvc
+            .post("/projects/$PROJECT/appointments") {
+                withToken()
+                json = CreateAppointmentsRequest(listOf(request))
+            }
+            .andExpect { status { isOk() } }
+            .andExpect { content { jsonPath("size()") { value(1) } } }
+            .andReturn().response.contentAsJson<List<CreatedAppointment>>().first()
+
+        unpaidWorkAppointmentRepository.findById(created.id).get().also {
+            assertThat(it.contact.staff.code).isEqualTo(StaffGenerator.UNALLOCATED_STAFF.code)
         }
     }
 }

@@ -6,6 +6,7 @@ import org.hibernate.type.NumericBooleanConverter
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import uk.gov.justice.digital.hmpps.entity.ReferenceData
+import uk.gov.justice.digital.hmpps.utils.Extensions.reportMissing
 import java.time.LocalDate
 import java.time.LocalTime
 
@@ -69,5 +70,8 @@ interface UpwAllocationRepository : JpaRepository<UnpaidWorkAllocation, Long> {
         """
     )
     fun findByEventId(eventId: Long): List<UnpaidWorkAllocation>
+    fun findByIdIn(id: Set<Long>): List<UnpaidWorkAllocation>
+    fun getByIdIn(ids: List<Long>) =
+        ids.toSet().let { ids -> findByIdIn(ids).associateBy { it.id }.reportMissing(ids) }
 }
 

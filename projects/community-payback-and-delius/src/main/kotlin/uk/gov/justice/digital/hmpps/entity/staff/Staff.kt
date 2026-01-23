@@ -5,11 +5,12 @@ import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
 import org.springframework.data.jpa.repository.JpaRepository
 import uk.gov.justice.digital.hmpps.entity.ReferenceData
-import uk.gov.justice.digital.hmpps.exception.NotFoundException
+import uk.gov.justice.digital.hmpps.exception.NotFoundException.Companion.orNotFoundBy
 import uk.gov.justice.digital.hmpps.model.CodeDescription
 import uk.gov.justice.digital.hmpps.model.Name
 import uk.gov.justice.digital.hmpps.model.Supervisor
 import uk.gov.justice.digital.hmpps.model.SupervisorTeamsResponse
+import uk.gov.justice.digital.hmpps.utils.Extensions.reportMissing
 import java.time.LocalDate
 
 @Immutable
@@ -77,8 +78,8 @@ fun Staff.toSupervisorTeams() = teams.map {
 
 interface StaffRepository : JpaRepository<Staff, Long> {
     fun findByCode(code: String): Staff?
-    fun findAllByCodeIn(code: Collection<String>): List<Staff>
+    fun getByCode(code: String) = findByCode(code).orNotFoundBy("code", code)
+    fun findByCodeIn(code: Collection<String>): List<Staff>
+    fun getByCodeIn(codes: List<String>) =
+        codes.toSet().let { codes -> findByCodeIn(codes).associateBy { it.code }.reportMissing(codes) }
 }
-
-fun StaffRepository.getStaff(code: String): Staff =
-    findByCode(code) ?: throw NotFoundException("Staff", "code", code)

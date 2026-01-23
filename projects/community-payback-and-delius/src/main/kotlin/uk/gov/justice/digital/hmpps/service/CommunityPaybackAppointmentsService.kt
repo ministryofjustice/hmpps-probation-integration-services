@@ -9,17 +9,16 @@ import uk.gov.justice.digital.hmpps.appointments.service.AppointmentService
 import uk.gov.justice.digital.hmpps.entity.*
 import uk.gov.justice.digital.hmpps.entity.contact.ContactOutcomeRepository
 import uk.gov.justice.digital.hmpps.entity.contact.ContactType
-import uk.gov.justice.digital.hmpps.entity.contact.getContactOutcome
 import uk.gov.justice.digital.hmpps.entity.contact.toCodeDescription
 import uk.gov.justice.digital.hmpps.entity.sentence.EventRepository
 import uk.gov.justice.digital.hmpps.entity.staff.OfficeLocationRepository
 import uk.gov.justice.digital.hmpps.entity.staff.StaffRepository
-import uk.gov.justice.digital.hmpps.entity.staff.getStaff
 import uk.gov.justice.digital.hmpps.entity.unpaidwork.*
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.exception.NotFoundException.Companion.orNotFoundBy
 import uk.gov.justice.digital.hmpps.model.*
 import java.time.LocalDate
+import java.time.temporal.ChronoUnit
 import java.util.*
 
 @Service
@@ -136,14 +135,12 @@ class CommunityPaybackAppointmentsService(
         projectCode: String,
         requests: CreateAppointmentsRequest
     ): List<CreatedAppointment> = with(requests.appointments) {
-        val project = unpaidWorkProjectRepository.getByCode(projectCode)
-            .apply { requireAvailabilityOnDates(map { it.date }) }
+        val project = unpaidWorkProjectRepository.getByCode(projectCode).requireAvailabilityOnDates(map { it.date })
         val eventIds = eventRepository.getEventIds(map { it.crn to it.eventNumber })
-        val upwDetails = upwDetailsRepository.findAllByEventId(eventIds.values).associateBy { it.disposal.event.id }
-        val staff = staffRepository.findAllByCodeIn(mapNotNull { it.supervisor.code }).associateBy { it.code }
-        val locations = officeLocationRepository.findAllByCodeIn(mapNotNull { it.pickUp?.location?.code })
-            .associateBy { it.code }
-        val outcomes = contactOutcomeRepository.findByCodeIn(mapNotNull { it.outcome?.code }).associateBy { it.code }
+        val upwDetails = upwDetailsRepository.getByEventIdIn(eventIds.values)
+        val staff = staffRepository.getByCodeIn(mapNotNull { it.supervisor?.code })
+        val locations = officeLocationRepository.getByCodeIn(mapNotNull { it.pickUp?.location?.code })
+        val outcomes = contactOutcomeRepository.getByCodeIn(mapNotNull { it.outcome?.code })
         val workQuality = referenceDataRepository.findByDatasetCode(Dataset.UPW_WORK_QUALITY).associateBy { it.code }
         val behaviour = referenceDataRepository.findByDatasetCode(Dataset.UPW_BEHAVIOUR).associateBy { it.code }
 
@@ -160,7 +157,7 @@ class CommunityPaybackAppointmentsService(
                     date = request.date,
                     startTime = request.startTime,
                     endTime = request.endTime,
-                    staffCode = request.supervisor.code,
+                    staffCode = request.supervisor?.code ?: project.team.unallocatedStaff().code,
                     teamCode = project.team.code,
                     outcomeCode = request.outcome?.code,
                     notes = request.notes,
@@ -181,10 +178,12 @@ class CommunityPaybackAppointmentsService(
                     pickUpLocation = request.pickUp?.location?.code
                         ?.let { code -> locations[code].orNotFoundBy("code", code) },
                     pickUpTime = request.pickUp?.time,
-                    staff = staff[request.supervisor.code].orNotFoundBy("code", request.supervisor.code),
+                    staff = request.supervisor?.code?.let { staff[it].orNotFoundBy("code", it) }
+                        ?: project.team.unallocatedStaff(),
                     team = project.team,
                     project = project,
-                    minutesOffered = request.minutesOffered,
+                    minutesOffered = request.minutesOffered
+                        ?: ChronoUnit.MINUTES.between(request.startTime, request.endTime),
                     minutesCredited = request.minutesCredited,
                     penaltyMinutes = request.penaltyMinutes,
                     hiVisWorn = request.hiVisWorn,
@@ -225,11 +224,11 @@ class CommunityPaybackAppointmentsService(
             appendNotes = { it.notes }
         }
 
-        val outcome = request.outcome?.let { contactOutcomeRepository.getContactOutcome(it.code) }
+        val outcome = request.outcome?.let { contactOutcomeRepository.getByCode(it.code) }
         unpaidWorkAppointment.apply {
             startTime = request.startTime
             endTime = request.endTime
-            staff = staffRepository.getStaff(request.supervisor.code)
+            staff = staffRepository.getByCode(request.supervisor.code)
             hiVisWorn = request.hiVisWorn
             workedIntensively = request.workedIntensively
             minutesCredited = request.minutesCredited

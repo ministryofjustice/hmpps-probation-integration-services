@@ -6,7 +6,9 @@ import org.hibernate.type.YesNoConverter
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
+import uk.gov.justice.digital.hmpps.exception.NotFoundException.Companion.orNotFoundBy
 import uk.gov.justice.digital.hmpps.model.CodeDescription
+import uk.gov.justice.digital.hmpps.utils.Extensions.reportMissing
 import java.io.Serializable
 
 @Entity
@@ -98,10 +100,9 @@ interface ContactOutcomeRepository : JpaRepository<ContactOutcome, Long> {
     )
     fun findForTypeCode(typeCode: String): List<ContactOutcome>
 
-    fun findContactOutcomeByCode(code: String): ContactOutcome?
-
-    fun findByCodeIn(code: List<String>): List<ContactOutcome>
+    fun findByCode(code: String): ContactOutcome?
+    fun getByCode(code: String) = findByCode(code).orNotFoundBy("code", code)
+    fun findByCodeIn(code: Set<String>): List<ContactOutcome>
+    fun getByCodeIn(codes: List<String>) =
+        codes.toSet().let { codes -> findByCodeIn(codes).associateBy { it.code }.reportMissing(codes) }
 }
-
-fun ContactOutcomeRepository.getContactOutcome(code: String) =
-    findContactOutcomeByCode(code) ?: throw NotFoundException("Contact Outcome", "code", code)

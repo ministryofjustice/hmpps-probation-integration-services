@@ -23,7 +23,7 @@ class CaseScheduleService(
     fun getSchedule(crn: String, eventNumber: String): ScheduleResponse {
         val person = personRepository.getByCrn(crn)
         val event = eventRepository.getByPersonAndEventNumber(person.id, eventNumber)
-        val upwDetailsIds = upwDetailsRepository.findByEventId(event.id).map { it.id }
+        val upwDetailsIds = upwDetailsRepository.findByEventIdIn(event.id).map { it.id }
         val requirementProgress = if (upwDetailsIds.isNotEmpty()) {
             val upwMinutesDtos = unpaidWorkAppointmentRepository.getUpwRequiredAndCompletedMinutes(upwDetailsIds)
 

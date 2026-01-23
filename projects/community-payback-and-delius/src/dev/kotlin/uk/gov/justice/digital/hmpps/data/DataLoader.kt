@@ -61,6 +61,7 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
         save(StaffGenerator.DEFAULT_STAFF)
         save(StaffGenerator.SECOND_STAFF)
         save(StaffGenerator.OTHER_PROVIDER_STAFF)
+        save(StaffGenerator.UNALLOCATED_STAFF)
         save(PersonGenerator.DEFAULT_PERSON_MANAGER)
     }
 

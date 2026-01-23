@@ -47,7 +47,7 @@ class UpwProject(
 
     val completionDate: LocalDate?
 ) {
-    fun requireAvailabilityOnDates(dates: List<LocalDate>) {
+    fun requireAvailabilityOnDates(dates: List<LocalDate>) = apply {
         require(completionDate == null || completionDate > dates.max()) {
             "Appointment cannot be scheduled after the project completion date (${dates.max()} > $completionDate)"
         }
