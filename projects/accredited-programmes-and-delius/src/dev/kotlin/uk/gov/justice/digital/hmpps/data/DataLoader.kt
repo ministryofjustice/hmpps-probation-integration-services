@@ -75,6 +75,7 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
         saveAll(TestData.STATUS_CONTACT_TYPES)
         save(TestData.ATTENDED_COMPLIED)
         save(TestData.FAILED_TO_COMPLY)
+        save(TestData.ACCEPTABLE_ABSENCE)
         save(TestData.REFER_TO_MANAGER_ACTION)
         save(TestData.PSS_END_DATE_KEY_DATE_TYPE)
         save(TestData.PSS_END_DATE)

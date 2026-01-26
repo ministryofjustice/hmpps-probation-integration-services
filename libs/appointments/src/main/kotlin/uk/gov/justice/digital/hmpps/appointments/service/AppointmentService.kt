@@ -53,13 +53,16 @@ class AppointmentService internal constructor(
         val locations = locationRepository.getAllByCodeIn(mapNotNull { it.locationCode })
         val teams = teamRepository.getAllByCodeIn(map { it.teamCode })
         val staff = staffRepository.getAllByCodeIn(map { it.staffCode })
+        val personIds =
+            personRepository.getAllByCrnIn(filter { it.relatedTo.personId == null }.mapNotNull { it.relatedTo.crn })
 
         appointmentRepository
             .saveAll(map { request ->
                 AppointmentContact(
                     externalReference = request.reference,
-                    personId = request.relatedTo.personId
-                        ?: personRepository.getIdByCrn(requireNotNull(request.relatedTo.crn) { "Either personId or crn must be provided" }),
+                    personId = requireNotNull(request.relatedTo.personId ?: personIds[request.relatedTo.crn]?.id) {
+                        "Either personId or crn must be provided"
+                    },
                     eventId = request.relatedTo.eventId,
                     nsiId = request.relatedTo.nonStatutoryInterventionId,
                     licenceConditionId = request.relatedTo.licenceConditionId,
@@ -73,14 +76,18 @@ class AppointmentService internal constructor(
                     officeLocation = request.locationCode?.let { code -> locations[code].orNotFoundBy("code", code) },
                     type = types[request.typeCode].orNotFoundBy("code", request.typeCode),
                     notes = request.notes,
-                    sensitive = request.sensitive,
-                    visorContact = request.exportToVisor,
                 ).checkForSchedulingConflicts(
                     allowConflicts = request.allowConflicts
                 ).applyOutcome(
                     outcome = request.outcomeCode?.let { code -> outcomes[code].orNotFoundBy("code", code) },
                     enforcementAction = enforcementAction,
                     enforcementReviewType = enforcementReviewType,
+                ).flagAs(
+                    Flags(
+                        alert = request.alert,
+                        sensitive = request.sensitive,
+                        visor = request.exportToVisor,
+                    )
                 )
             })
             .onEach { it.audit(BusinessInteractionCode.ADD_CONTACT) }
@@ -136,7 +143,7 @@ class AppointmentService internal constructor(
     private fun <T> UpdatePipeline<T>.validateUpdates(updates: UpdateBuilder<T>) = onEach { (request, existing) ->
         val outcome = updates.applyOutcome?.invoke(Outcome(existing), request)?.outcomeCode
         val amendDateTime = updates.amendDateTime?.invoke(Schedule(existing), request)
-        require(amendDateTime == null || amendDateTime.isFuture || outcome != null) {
+        require(amendDateTime == null || amendDateTime.endsInFuture || outcome != null) {
             "Outcome must be provided when amending an appointment in the past"
         }
     }
@@ -273,6 +280,12 @@ class AppointmentService internal constructor(
         enforcementAction: EnforcementAction,
         enforcementReviewType: Type
     ) = apply {
+        if (Schedule(this).startsInFuture && outcome != null) {
+            require(outcome.attended == false && outcome.complied == true) {
+                "Only permissible absences can be recorded for a future attendance"
+            }
+        }
+
         this.outcome = outcome
         if (outcome != null) {
             attended = outcome.attended
@@ -308,17 +321,18 @@ class AppointmentService internal constructor(
     }
 
     private fun <T> UpdatePipeline<T>.flagAs(applyUpdates: UpdateProvider<T, Flags>) = map { (request, existing) ->
-        val update = Flags(existing).applyUpdates(request)
-        request to existing.apply {
-            alert = update.alert?.also { alert ->
-                if (alert) alertService.createAlert(this)
-                else alertService.removeAlert(this)
-            }
-            sensitive = update.sensitive
-            rarActivity = update.rarActivity
-            visorContact = update.visor
-            visorExported = if (visorContact == true) visorExported ?: false else null
+        request to existing.flagAs(Flags(existing).applyUpdates(request))
+    }
+
+    private fun AppointmentContact.flagAs(update: Flags) = apply {
+        alert = update.alert?.also { alert ->
+            if (alert) alertService.createAlert(this)
+            else alertService.removeAlert(this)
         }
+        sensitive = update.sensitive
+        rarActivity = update.rarActivity
+        visorContact = update.visor
+        visorExported = if (visorContact == true) visorExported ?: false else null
     }
 
     internal fun AppointmentContact.checkForSchedulingConflicts(allowConflicts: Boolean) = also {

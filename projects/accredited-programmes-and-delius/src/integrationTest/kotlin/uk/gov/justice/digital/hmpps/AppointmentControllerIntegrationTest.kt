@@ -453,7 +453,7 @@ internal class AppointmentControllerIntegrationTest @Autowired constructor(
                         startTime = LocalTime.now(),
                         endTime = LocalTime.now().plusMinutes(30),
                         sensitive = true,
-                        outcome = RequestCode("ATTC"),
+                        outcome = RequestCode("AA"),
                         location = RequestCode("OFFICE1"),
                         team = RequestCode("TEAM01"),
                         staff = RequestCode("STAFF01"),
@@ -473,7 +473,7 @@ internal class AppointmentControllerIntegrationTest @Autowired constructor(
                 |Some appended notes
                 """.trimMargin()
             )
-            assertThat(outcome?.code).isEqualTo("ATTC")
+            assertThat(outcome?.code).isEqualTo("AA")
             assertThat(date).isEqualTo(LocalDate.now().plusDays(1))
             assertThat(sensitive).isTrue
         }

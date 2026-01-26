@@ -7,10 +7,12 @@ import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
+import org.mockito.kotlin.any
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import uk.gov.justice.digital.hmpps.MessageGenerator
 import uk.gov.justice.digital.hmpps.converter.NotificationConverter
+import uk.gov.justice.digital.hmpps.flags.FeatureFlags
 import uk.gov.justice.digital.hmpps.integrations.delius.DeliusValidationError
 import uk.gov.justice.digital.hmpps.integrations.delius.RiskAssessmentService
 import uk.gov.justice.digital.hmpps.integrations.delius.RiskScoreService
@@ -69,6 +71,31 @@ internal class HandlerTest {
             message.message.personReference.findCrn()!!,
             message.message.additionalInformation["EventNumber"] as Int,
             message.message.assessmentDate(),
+            message.message.rsrOLD(),
+            message.message.ospIndecentOLD(),
+            message.message.ospIndirectIndecentOLD(),
+            message.message.ospContact(),
+            message.message.ospDirectContact()
+        )
+        verify(telemetryService).trackEvent("RsrScoresUpdated", message.message.telemetryProperties())
+    }
+
+    @Test
+    fun `RSR messages are processed v4`() {
+        // Given an RSR message
+        val message = Notification(
+            message = MessageGenerator.RSR_SCORES_DETERMINED_V4,
+            attributes = MessageAttributes("risk-assessment.scores.determined")
+        )
+
+        // When it is received
+        handler.handle(message)
+
+        // Then it is processed
+        verify(riskScoreService).updateRsrAndOspScores(
+            message.message.personReference.findCrn()!!,
+            message.message.additionalInformation["EventNumber"] as Int,
+            message.message.assessmentDate(),
             message.message.rsr(),
             message.message.ospIndecent(),
             message.message.ospIndirectIndecent(),
@@ -111,9 +138,9 @@ internal class HandlerTest {
                 message.message.personReference.findCrn()!!,
                 message.message.additionalInformation["EventNumber"] as Int,
                 message.message.assessmentDate(),
-                message.message.rsr(),
-                message.message.ospIndecent(),
-                message.message.ospIndirectIndecent(),
+                message.message.rsrOLD(),
+                message.message.ospIndecentOLD(),
+                message.message.ospIndirectIndecentOLD(),
                 message.message.ospContact(),
                 message.message.ospDirectContact()
             )

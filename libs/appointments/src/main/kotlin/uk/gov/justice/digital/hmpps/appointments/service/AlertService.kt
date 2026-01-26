@@ -15,9 +15,9 @@ internal class AlertService(
         val manager = personManagerRepository.getActiveManagerForPerson(appointment.personId)
         alertRepository.save(
             Alert(
-                personId = appointment.personId,
-                appointmentId = appointment.id,
+                appointment = appointment,
                 appointmentTypeId = appointment.type.id,
+                personId = appointment.personId,
                 managerId = manager.id,
                 staffId = manager.staffId,
                 teamId = manager.teamId

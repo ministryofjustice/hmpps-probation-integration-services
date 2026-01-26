@@ -1,7 +1,21 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
 import uk.gov.justice.digital.hmpps.data.generator.IdGenerator.id
-import uk.gov.justice.digital.hmpps.integrations.delius.entity.*
+import uk.gov.justice.digital.hmpps.entity.ReferenceData
+import uk.gov.justice.digital.hmpps.entity.contact.Contact
+import uk.gov.justice.digital.hmpps.entity.contact.ContactOutcome
+import uk.gov.justice.digital.hmpps.entity.contact.ContactType
+import uk.gov.justice.digital.hmpps.entity.contact.EnforcementAction
+import uk.gov.justice.digital.hmpps.entity.person.Address
+import uk.gov.justice.digital.hmpps.entity.person.Person
+import uk.gov.justice.digital.hmpps.entity.sentence.*
+import uk.gov.justice.digital.hmpps.entity.staff.OfficeLocation
+import uk.gov.justice.digital.hmpps.entity.staff.Provider
+import uk.gov.justice.digital.hmpps.entity.staff.Staff
+import uk.gov.justice.digital.hmpps.entity.staff.Team
+import uk.gov.justice.digital.hmpps.entity.unpaidwork.*
+import uk.gov.justice.digital.hmpps.model.Behaviour
+import uk.gov.justice.digital.hmpps.model.WorkQuality
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.ZonedDateTime
@@ -14,30 +28,46 @@ object UPWGenerator {
         postcode = "AB12CD"
     )
     val DEFAULT_OFFICE_LOCATION = generateOfficeLocation(
+        code = "LOC0001",
         addressNumber = "1001",
         streetName = "Office Street",
         town = "City",
         postcode = "ZY98XW"
     )
 
-    val DEFAULT_UPW_PROJECT = generateUpwProject(
+    val UPW_PROJECT_1 = generateUpwProject(
         name = "Default UPW Project",
-        code = "N01DEFAULT",
+        code = "N01P01",
         team = TeamGenerator.DEFAULT_UPW_TEAM,
         placementAddress = DEFAULT_ADDRESS,
         projectType = ReferenceDataGenerator.GROUP_PLACEMENT_PROJECT_TYPE,
         expectedEndDate = LocalDate.now().plusMonths(4)
     )
-    val SECOND_UPW_PROJECT = generateUpwProject(
+    val UPW_PROJECT_2 = generateUpwProject(
         name = "Second UPW Project",
-        code = "N01SECOND",
+        code = "N01P02",
         team = TeamGenerator.OTHER_PROVIDER_TEAM,
         placementAddress = DEFAULT_ADDRESS,
         projectType = ReferenceDataGenerator.INDIVIDUAL_PLACEMENT_PROJECT_TYPE
     )
+    val UPW_PROJECT_3 = generateUpwProject(
+        name = "Third UPW Project",
+        code = "N01P03",
+        team = TeamGenerator.DEFAULT_UPW_TEAM,
+        placementAddress = DEFAULT_ADDRESS,
+        projectType = ReferenceDataGenerator.GROUP_PLACEMENT_PROJECT_TYPE
+    )
+    val COMPLETED_UPW_PROJECT = generateUpwProject(
+        name = "Completed UPW Project",
+        code = "N01COMP",
+        completionDate = LocalDate.now().minusDays(1),
+        team = TeamGenerator.DEFAULT_UPW_TEAM,
+        placementAddress = DEFAULT_ADDRESS,
+        projectType = ReferenceDataGenerator.GROUP_PLACEMENT_PROJECT_TYPE
+    )
 
     val DEFAULT_UPW_PROJECT_AVAILABILITY = generateUpwProjectAvailability(
-        upwProjectId = DEFAULT_UPW_PROJECT.id,
+        project = UPW_PROJECT_1,
         frequency = ReferenceDataGenerator.UPW_FREQUENCY_WEEKLY,
         startTime = LocalTime.of(9, 0),
         endTime = LocalTime.of(16, 0),
@@ -45,41 +75,53 @@ object UPWGenerator {
         endDate = LocalDate.now().plusMonths(4)
     )
     val SECOND_UPW_PROJECT_AVAILABILITY = generateUpwProjectAvailability(
-        upwProjectId = SECOND_UPW_PROJECT.id
+        project = UPW_PROJECT_2,
     )
 
-    val DEFAULT_EVENT = generateEvent(
+    val EVENT_1 = generateEvent(
         eventNumber = "1",
         person = PersonGenerator.DEFAULT_PERSON,
         disposal = null
     )
 
-    val SECOND_EVENT = generateEvent(
+    val EVENT_2 = generateEvent(
         eventNumber = "2",
         person = PersonGenerator.DEFAULT_PERSON,
         disposal = null
     )
 
-    val DEFAULT_DISPOSAL = generateDisposal(
-        length = 12,
-        disposalType = ReferenceDataGenerator.DEFAULT_DISPOSAL_TYPE,
-        date = LocalDate.now(),
-        event = DEFAULT_EVENT
-    )
-    val SECOND_DISPOSAL = generateDisposal(
-        length = 12,
-        disposalType = ReferenceDataGenerator.DEFAULT_DISPOSAL_TYPE,
-        date = LocalDate.now(),
-        event = SECOND_EVENT
+    val EVENT_3 = generateEvent(
+        eventNumber = "3",
+        person = PersonGenerator.DEFAULT_PERSON,
+        disposal = null
     )
 
-    val DEFAULT_UPW_DETAILS = generateUpwDetails(disposal = DEFAULT_DISPOSAL)
-    val SECOND_UPW_DETAILS = generateUpwDetails(disposal = SECOND_DISPOSAL)
-    val THIRD_UPW_DETAILS = generateUpwDetails(disposal = SECOND_DISPOSAL)
+    val DISPOSAL_1 = generateDisposal(
+        length = 12,
+        disposalType = ReferenceDataGenerator.DEFAULT_DISPOSAL_TYPE,
+        date = LocalDate.of(2026, 1, 1),
+        event = EVENT_1
+    )
+    val DISPOSAL_2 = generateDisposal(
+        length = 12,
+        disposalType = ReferenceDataGenerator.DEFAULT_DISPOSAL_TYPE,
+        date = LocalDate.of(2026, 1, 1),
+        event = EVENT_2
+    )
+    val DISPOSAL_3 = generateDisposal(
+        length = 12,
+        disposalType = ReferenceDataGenerator.DEFAULT_DISPOSAL_TYPE,
+        date = LocalDate.of(2026, 1, 1),
+        event = EVENT_3
+    )
+
+    val UPW_DETAILS_1 = generateUpwDetails(disposal = DISPOSAL_1)
+    val UPW_DETAILS_2 = generateUpwDetails(disposal = DISPOSAL_2)
+    val UPW_DETAILS_3 = generateUpwDetails(disposal = DISPOSAL_3)
 
     val DEFAULT_UPW_ALLOCATION = generateUpwAllocation(
-        details = DEFAULT_UPW_DETAILS,
-        project = DEFAULT_UPW_PROJECT,
+        details = UPW_DETAILS_1,
+        project = UPW_PROJECT_1,
         projectAvailability = DEFAULT_UPW_PROJECT_AVAILABILITY,
         allocationDay = ReferenceDataGenerator.UPW_DAY_MONDAY,
         requestedFrequency = ReferenceDataGenerator.UPW_FREQUENCY_WEEKLY,
@@ -108,21 +150,21 @@ object UPWGenerator {
         contactOutcome = null,
         startTime = LocalTime.of(10, 15),
         endTime = LocalTime.of(16, 30),
-        date = LocalDate.now(),
+        date = LocalDate.now().minusDays(1),
         personId = PersonGenerator.DEFAULT_PERSON.id,
         officeLocation = DEFAULT_OFFICE_LOCATION,
         staff = StaffGenerator.DEFAULT_STAFF,
         team = TeamGenerator.DEFAULT_UPW_TEAM,
         provider = ProviderGenerator.DEFAULT_PROVIDER,
-        event = DEFAULT_EVENT
+        event = EVENT_1
     )
 
     val DEFAULT_UPW_APPOINTMENT = generateUpwAppointment(
         startTime = LocalTime.of(9, 0),
         endTime = LocalTime.of(17, 0),
         date = LocalDate.now().plusDays(1),
-        project = DEFAULT_UPW_PROJECT,
-        details = DEFAULT_UPW_DETAILS,
+        project = UPW_PROJECT_1,
+        details = UPW_DETAILS_1,
         allocation = DEFAULT_UPW_ALLOCATION,
         contact = DEFAULT_CONTACT,
         contactOutcomeTypeId = 1L,
@@ -132,8 +174,8 @@ object UPWGenerator {
         person = PersonGenerator.DEFAULT_PERSON,
         staff = StaffGenerator.DEFAULT_STAFF,
         team = TeamGenerator.DEFAULT_UPW_TEAM,
-        workQuality = ReferenceDataGenerator.EXCELLENT_WORK_QUALITY,
-        behaviour = ReferenceDataGenerator.EXCELLENT_BEHAVIOUR,
+        workQuality = ReferenceDataGenerator.WORK_QUALITY[WorkQuality.EXCELLENT],
+        behaviour = ReferenceDataGenerator.BEHAVIOUR[Behaviour.EXCELLENT],
         minutesCredited = 30L
     )
 
@@ -141,8 +183,8 @@ object UPWGenerator {
         startTime = LocalTime.of(9, 0),
         endTime = LocalTime.of(17, 0),
         date = LocalDate.now(),
-        project = DEFAULT_UPW_PROJECT,
-        details = DEFAULT_UPW_DETAILS,
+        project = UPW_PROJECT_1,
+        details = UPW_DETAILS_1,
         contact = DEFAULT_CONTACT,
         contactOutcomeTypeId = 1L,
         pickupLocation = DEFAULT_OFFICE_LOCATION,
@@ -151,8 +193,8 @@ object UPWGenerator {
         person = PersonGenerator.EXCLUDED_PERSON,
         staff = StaffGenerator.DEFAULT_STAFF,
         team = TeamGenerator.DEFAULT_UPW_TEAM,
-        workQuality = ReferenceDataGenerator.EXCELLENT_WORK_QUALITY,
-        behaviour = ReferenceDataGenerator.EXCELLENT_BEHAVIOUR,
+        workQuality = ReferenceDataGenerator.WORK_QUALITY[WorkQuality.EXCELLENT],
+        behaviour = ReferenceDataGenerator.BEHAVIOUR[Behaviour.EXCELLENT],
         minutesCredited = 420L
     )
 
@@ -160,8 +202,8 @@ object UPWGenerator {
         startTime = LocalTime.of(9, 0),
         endTime = LocalTime.of(17, 0),
         date = LocalDate.now(),
-        project = DEFAULT_UPW_PROJECT,
-        details = DEFAULT_UPW_DETAILS,
+        project = UPW_PROJECT_1,
+        details = UPW_DETAILS_1,
         contact = DEFAULT_CONTACT,
         contactOutcomeTypeId = 1L,
         pickupLocation = DEFAULT_OFFICE_LOCATION,
@@ -170,17 +212,17 @@ object UPWGenerator {
         person = PersonGenerator.RESTRICTED_PERSON,
         staff = StaffGenerator.DEFAULT_STAFF,
         team = TeamGenerator.DEFAULT_UPW_TEAM,
-        workQuality = ReferenceDataGenerator.EXCELLENT_WORK_QUALITY,
-        behaviour = ReferenceDataGenerator.EXCELLENT_BEHAVIOUR,
+        workQuality = ReferenceDataGenerator.WORK_QUALITY[WorkQuality.EXCELLENT],
+        behaviour = ReferenceDataGenerator.BEHAVIOUR[Behaviour.EXCELLENT],
         minutesCredited = 420L
     )
 
     val UPW_APPOINTMENT_NO_ENFORCEMENT = generateUpwAppointment(
         startTime = LocalTime.of(10, 15),
         endTime = LocalTime.of(16, 30),
-        date = LocalDate.now(),
-        project = DEFAULT_UPW_PROJECT,
-        details = DEFAULT_UPW_DETAILS,
+        date = LocalDate.now().minusDays(1),
+        project = UPW_PROJECT_2,
+        details = UPW_DETAILS_2,
         contact = CONTACT_NO_ENFORCEMENT,
         contactOutcomeTypeId = null,
         pickupLocation = DEFAULT_OFFICE_LOCATION,
@@ -189,8 +231,8 @@ object UPWGenerator {
         person = PersonGenerator.DEFAULT_PERSON,
         staff = StaffGenerator.DEFAULT_STAFF,
         team = TeamGenerator.DEFAULT_UPW_TEAM,
-        workQuality = ReferenceDataGenerator.EXCELLENT_WORK_QUALITY,
-        behaviour = ReferenceDataGenerator.EXCELLENT_BEHAVIOUR,
+        workQuality = ReferenceDataGenerator.WORK_QUALITY[WorkQuality.EXCELLENT],
+        behaviour = ReferenceDataGenerator.BEHAVIOUR[Behaviour.EXCELLENT],
         minutesCredited = 375L,
     )
 
@@ -198,18 +240,18 @@ object UPWGenerator {
         generateUpwAppointment(
             startTime = LocalTime.of(12, 0),
             endTime = LocalTime.of(14, 0),
-            date = LocalDate.now().plusDays(1),
-            project = SECOND_UPW_PROJECT,
-            details = THIRD_UPW_DETAILS,
+            date = LocalDate.now().minusDays(1),
+            project = UPW_PROJECT_2,
+            details = UPW_DETAILS_3,
             contact = generateContact(
                 personId = PersonGenerator.DEFAULT_PERSON.id,
-                event = DEFAULT_EVENT,
+                event = EVENT_2,
                 contactType = ReferenceDataGenerator.UPW_APPOINTMENT_TYPE,
                 latestEnforcementAction = null,
                 contactOutcome = null,
                 startTime = LocalTime.of(12, 0),
                 endTime = LocalTime.of(14, 0),
-                date = LocalDate.now().plusDays(1),
+                date = LocalDate.now().minusDays(1),
                 officeLocation = DEFAULT_OFFICE_LOCATION,
                 staff = StaffGenerator.DEFAULT_STAFF,
                 team = TeamGenerator.DEFAULT_UPW_TEAM,
@@ -230,22 +272,22 @@ object UPWGenerator {
 
     val DEFAULT_RQMNT = generateRequirement(
         length = 120,
-        disposal = DEFAULT_DISPOSAL
+        disposal = DISPOSAL_1
     )
 
     val SECOND_RQMNT = generateRequirement(
         length = 180,
-        disposal = SECOND_DISPOSAL
+        disposal = DISPOSAL_2
     )
 
     val DEFAULT_UPW_DETAILS_ADJUSTMENT_POSITIVE = generateUPWAdjustment(
-        upwDetailsId = DEFAULT_UPW_DETAILS.id,
+        upwDetailsId = UPW_DETAILS_1.id,
         adjustmentAmount = 7L,
         adjustmentType = "POSITIVE"
     )
 
     val DEFAULT_UPW_DETAILS_ADJUSTMENT_NEGATIVE = generateUPWAdjustment(
-        upwDetailsId = DEFAULT_UPW_DETAILS.id,
+        upwDetailsId = UPW_DETAILS_1.id,
         adjustmentAmount = 3L,
         adjustmentType = "NEGATIVE"
     )
@@ -257,20 +299,33 @@ object UPWGenerator {
         team: Team,
         placementAddress: Address?,
         projectType: ReferenceData,
+        availability: List<UpwProjectAvailability> = listOf(),
         hiVisRequired: Boolean = false,
         expectedEndDate: LocalDate? = null,
         completionDate: LocalDate? = null
-    ) = UpwProject(id, name, code, team, placementAddress, projectType, hiVisRequired, expectedEndDate, completionDate)
+    ) = UpwProject(
+        id,
+        name,
+        code,
+        team,
+        placementAddress,
+        projectType,
+        availability,
+        hiVisRequired,
+        expectedEndDate,
+        completionDate
+    )
 
     fun generateUpwProjectAvailability(
         id: Long = IdGenerator.getAndIncrement(),
-        upwProjectId: Long,
+        project: UpwProject,
+        day: UnpaidWorkDay = ReferenceDataGenerator.UPW_DAY_MONDAY,
         frequency: ReferenceData? = null,
         startTime: LocalTime? = null,
         endTime: LocalTime? = null,
         startDate: LocalDate? = null,
         endDate: LocalDate? = null
-    ) = UpwProjectAvailability(id, upwProjectId, frequency, startTime, endTime, startDate, endDate)
+    ) = UpwProjectAvailability(id, project, day, frequency, startTime, endTime, startDate, endDate)
 
     fun generateDisposal(
         id: Long = IdGenerator.getAndIncrement(),
@@ -285,14 +340,14 @@ object UPWGenerator {
         id: Long = IdGenerator.getAndIncrement(),
         disposal: Disposal,
         softDeleted: Boolean = false
-    ) = UpwDetails(id, disposal, softDeleted)
+    ) = UnpaidWorkDetails(id, disposal, softDeleted)
 
     fun generateUPWAdjustment(
         id: Long = IdGenerator.getAndIncrement(),
         upwDetailsId: Long,
         adjustmentAmount: Long,
         adjustmentType: String,
-    ) = UpwAdjustment(id, upwDetailsId, adjustmentAmount, adjustmentType)
+    ) = UnpaidWorkAdjustment(id, upwDetailsId, adjustmentAmount, adjustmentType)
 
     fun generateContact(
         id: Long = id(),
@@ -304,7 +359,6 @@ object UPWGenerator {
         date: LocalDate,
         startTime: LocalTime,
         endTime: LocalTime?,
-        linkedContactId: Long? = null,
         personId: Long,
         event: Event? = null,
         requirementId: Long? = null,
@@ -318,28 +372,28 @@ object UPWGenerator {
         alertsActive: Boolean? = false,
         rowVersion: Long = 1,
     ) = Contact(
-        id,
-        rowVersion,
-        contactType,
-        contactOutcome,
-        attended,
-        complied,
-        latestEnforcementAction,
-        date,
-        startTime,
-        endTime,
-        linkedContactId,
-        personId,
-        event,
-        requirementId,
-        licenceConditionId,
-        officeLocation,
-        staff,
-        team,
-        provider,
-        notes,
-        sensitive,
-        alertsActive
+        id = id,
+        rowVersion = rowVersion,
+        externalReference = null,
+        contactType = contactType,
+        outcome = contactOutcome,
+        attended = attended,
+        complied = complied,
+        latestEnforcementAction = latestEnforcementAction,
+        date = date,
+        startTime = startTime,
+        endTime = endTime,
+        personId = personId,
+        event = event,
+        requirementId = requirementId,
+        licenceConditionId = licenceConditionId,
+        officeLocation = officeLocation,
+        staff = staff,
+        team = team,
+        provider = provider,
+        notes = notes,
+        sensitive = sensitive,
+        alertActive = alertsActive
     )
 
     fun generateUpwAppointment(
@@ -351,8 +405,8 @@ object UPWGenerator {
         endTime: LocalTime,
         date: LocalDate,
         project: UpwProject,
-        details: UpwDetails,
-        allocation: UpwAllocation? = null,
+        details: UnpaidWorkDetails,
+        allocation: UnpaidWorkAllocation? = null,
         pickupLocation: OfficeLocation?,
         pickupTime: LocalTime?,
         penaltyTime: Long?,
@@ -370,36 +424,36 @@ object UPWGenerator {
         rowVersion: Long = 1,
         createdDatetime: ZonedDateTime = ZonedDateTime.now(),
         lastUpdatedDatetime: ZonedDateTime = ZonedDateTime.now()
-    ) = UpwAppointment(
-        id,
-        attended,
-        complied,
-        softDeleted,
-        startTime,
-        endTime,
-        date,
-        project,
-        details,
-        allocation,
-        pickupLocation,
-        pickupTime,
-        penaltyTime,
-        contact,
-        contactOutcomeTypeId,
-        person,
-        staff,
-        team,
-        hiVisWorn,
-        workedIntensively,
-        workQuality,
-        behaviour,
-        minutesCredited,
-        notes,
-        rowVersion,
-        createdDatetime,
-        0,
-        lastUpdatedDatetime,
-        0,
+    ) = UnpaidWorkAppointment(
+        id = id,
+        attended = attended,
+        complied = complied,
+        softDeleted = softDeleted,
+        date = date,
+        startTime = startTime,
+        endTime = endTime,
+        project = project,
+        details = details,
+        allocation = allocation,
+        pickUpTime = pickupTime,
+        pickUpLocation = pickupLocation,
+        penaltyMinutes = penaltyTime,
+        contact = contact,
+        outcomeId = contactOutcomeTypeId,
+        person = person,
+        staff = staff,
+        team = team,
+        hiVisWorn = hiVisWorn,
+        workedIntensively = workedIntensively,
+        workQuality = workQuality,
+        behaviour = behaviour,
+        minutesCredited = minutesCredited,
+        notes = notes,
+        rowVersion = rowVersion,
+        createdDatetime = createdDatetime,
+        createdByUserId = 0,
+        lastUpdatedDatetime = lastUpdatedDatetime,
+        lastUpdatedUserId = 0,
     )
 
     fun generateAddress(
@@ -414,13 +468,14 @@ object UPWGenerator {
 
     fun generateOfficeLocation(
         id: Long = IdGenerator.getAndIncrement(),
+        code: String,
         buildingName: String? = null,
         addressNumber: String? = null,
         streetName: String? = null,
         town: String? = null,
         county: String? = null,
         postcode: String? = null
-    ) = OfficeLocation(id, buildingName, addressNumber, streetName, town, county, postcode)
+    ) = OfficeLocation(id, code, buildingName, addressNumber, streetName, town, county, postcode)
 
     fun generateRequirement(
         id: Long = IdGenerator.getAndIncrement(),
@@ -432,10 +487,10 @@ object UPWGenerator {
 
     fun generateUpwAllocation(
         id: Long = IdGenerator.getAndIncrement(),
-        details: UpwDetails,
+        details: UnpaidWorkDetails,
         project: UpwProject,
         projectAvailability: UpwProjectAvailability?,
-        allocationDay: UpwDay,
+        allocationDay: UnpaidWorkDay,
         requestedFrequency: ReferenceData?,
         startDate: LocalDate?,
         endDate: LocalDate?,
@@ -443,7 +498,7 @@ object UPWGenerator {
         endTime: LocalTime,
         softDeleted: Boolean = false,
         rowVersion: Long = 1
-    ) = UpwAllocation(
+    ) = UnpaidWorkAllocation(
         id,
         details,
         project,

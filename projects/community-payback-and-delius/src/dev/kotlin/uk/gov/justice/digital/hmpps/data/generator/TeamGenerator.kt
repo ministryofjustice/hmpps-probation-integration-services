@@ -1,8 +1,8 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
-import uk.gov.justice.digital.hmpps.integrations.delius.entity.Provider
-import uk.gov.justice.digital.hmpps.integrations.delius.entity.Staff
-import uk.gov.justice.digital.hmpps.integrations.delius.entity.Team
+import uk.gov.justice.digital.hmpps.entity.staff.Provider
+import uk.gov.justice.digital.hmpps.entity.staff.Staff
+import uk.gov.justice.digital.hmpps.entity.staff.Team
 import java.time.LocalDate
 
 object TeamGenerator {
@@ -47,6 +47,7 @@ object TeamGenerator {
         upwTeam: Boolean,
         startDate: LocalDate = LocalDate.now().minusDays(1),
         endDate: LocalDate? = null,
-        staff: List<Staff> = emptyList()
-    ) = Team(id, code, description, provider, upwTeam, startDate, endDate, staff)
+        staff: List<Staff> = emptyList(),
+        unallocatedStaff: List<Staff> = emptyList(),
+    ) = Team(id, code, description, provider, upwTeam, startDate, endDate, staff, unallocatedStaff)
 }

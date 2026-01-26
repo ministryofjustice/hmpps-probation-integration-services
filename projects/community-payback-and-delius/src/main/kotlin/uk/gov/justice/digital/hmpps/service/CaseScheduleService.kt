@@ -1,7 +1,13 @@
 package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.stereotype.Service
-import uk.gov.justice.digital.hmpps.integrations.delius.entity.*
+import uk.gov.justice.digital.hmpps.entity.person.PersonRepository
+import uk.gov.justice.digital.hmpps.entity.person.getByCrn
+import uk.gov.justice.digital.hmpps.entity.sentence.EventRepository
+import uk.gov.justice.digital.hmpps.entity.unpaidwork.UnpaidWorkAppointmentRepository
+import uk.gov.justice.digital.hmpps.entity.unpaidwork.UpwAllocationRepository
+import uk.gov.justice.digital.hmpps.entity.unpaidwork.UpwDetailsRepository
+import uk.gov.justice.digital.hmpps.entity.unpaidwork.UpwMinutes
 import uk.gov.justice.digital.hmpps.model.ScheduleResponse
 import uk.gov.justice.digital.hmpps.model.toAllocationResponse
 import uk.gov.justice.digital.hmpps.model.toAppointmentScheduleResponse
@@ -17,7 +23,7 @@ class CaseScheduleService(
     fun getSchedule(crn: String, eventNumber: String): ScheduleResponse {
         val person = personRepository.getByCrn(crn)
         val event = eventRepository.getByPersonAndEventNumber(person.id, eventNumber)
-        val upwDetailsIds = upwDetailsRepository.findByEventId(event.id).map { it.id }
+        val upwDetailsIds = upwDetailsRepository.findByEventIdIn(event.id).map { it.id }
         val requirementProgress = if (upwDetailsIds.isNotEmpty()) {
             val upwMinutesDtos = unpaidWorkAppointmentRepository.getUpwRequiredAndCompletedMinutes(upwDetailsIds)
 

@@ -1,6 +1,15 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
-import uk.gov.justice.digital.hmpps.integrations.delius.entity.*
+import uk.gov.justice.digital.hmpps.entity.Dataset
+import uk.gov.justice.digital.hmpps.entity.ReferenceData
+import uk.gov.justice.digital.hmpps.entity.contact.ContactOutcome
+import uk.gov.justice.digital.hmpps.entity.contact.ContactType
+import uk.gov.justice.digital.hmpps.entity.contact.EnforcementAction
+import uk.gov.justice.digital.hmpps.entity.sentence.DisposalType
+import uk.gov.justice.digital.hmpps.entity.sentence.RequirementMainCategory
+import uk.gov.justice.digital.hmpps.entity.unpaidwork.UnpaidWorkDay
+import uk.gov.justice.digital.hmpps.model.Behaviour
+import uk.gov.justice.digital.hmpps.model.WorkQuality
 
 object ReferenceDataGenerator {
     val GROUP_PLACEMENT_PROJECT_TYPE = generateReferenceData(
@@ -19,30 +28,20 @@ object ReferenceDataGenerator {
         datasetId = DatasetGenerator.UPW_PROJECT_TYPE_DATASET.id,
         selectable = false
     )
-    val EXCELLENT_WORK_QUALITY = generateReferenceData(
-        code = "EX",
-        description = "Excellent",
-        datasetId = DatasetGenerator.UPW_WORK_QUALITY_DATASET.id,
-        selectable = true
-    )
-    val UNSATISFACTORY_WORK_QUALITY = generateReferenceData(
-        code = "US",
-        description = "Unsatisfactory",
-        datasetId = DatasetGenerator.UPW_WORK_QUALITY_DATASET.id,
-        selectable = true
-    )
-    val EXCELLENT_BEHAVIOUR = generateReferenceData(
-        code = "EX",
-        description = "Excellent",
-        datasetId = DatasetGenerator.UPW_BEHAVIOUR_DATASET.id,
-        selectable = true
-    )
-    val UNSATISFACTORY_BEHAVIOUR = generateReferenceData(
-        code = "UN",
-        description = "Unsatisfactory",
-        datasetId = DatasetGenerator.UPW_BEHAVIOUR_DATASET.id,
-        selectable = true
-    )
+    val WORK_QUALITY = WorkQuality.entries.associateWith {
+        generateReferenceData(
+            code = it.code,
+            description = it.name,
+            datasetId = DatasetGenerator.UPW_WORK_QUALITY_DATASET.id,
+        )
+    }
+    val BEHAVIOUR = Behaviour.entries.associateWith {
+        generateReferenceData(
+            code = it.code,
+            description = it.name,
+            datasetId = DatasetGenerator.UPW_BEHAVIOUR_DATASET.id,
+        )
+    }
     val NON_WORKING_DAY_CHRISTMAS = generateReferenceData(
         code = "251225",
         description = "Christmas Day",
@@ -65,7 +64,7 @@ object ReferenceDataGenerator {
     val REVIEW_ENFORCEMENT_STATUS_TYPE = generateContactType(ContactType.Code.REVIEW_ENFORCEMENT_STATUS.value)
 
     val ROM_ENFORCEMENT_ACTION = generateEnforcementAction(
-        code = EnforcementAction.REFER_TO_PERSON_MANAGER,
+        code = "ROM",
         description = "Refer to Offender Manager",
         responseByPeriod = 7L,
         outstandingContactAction = true,
@@ -156,7 +155,7 @@ object ReferenceDataGenerator {
     fun generateUpwDay(
         id: Long = IdGenerator.getAndIncrement(),
         weekDay: String
-    ) = UpwDay(id, weekDay)
+    ) = UnpaidWorkDay(id, weekDay)
 }
 
 object DatasetGenerator {

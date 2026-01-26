@@ -1,8 +1,8 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
-import uk.gov.justice.digital.hmpps.integrations.delius.entity.ReferenceData
-import uk.gov.justice.digital.hmpps.integrations.delius.entity.Staff
-import uk.gov.justice.digital.hmpps.integrations.delius.entity.Team
+import uk.gov.justice.digital.hmpps.entity.ReferenceData
+import uk.gov.justice.digital.hmpps.entity.staff.Staff
+import uk.gov.justice.digital.hmpps.entity.staff.Team
 import java.time.LocalDate
 
 object StaffGenerator {
@@ -25,6 +25,13 @@ object StaffGenerator {
         forename = "OtherProvider",
         surname = "Staff",
         teams = listOf(TeamGenerator.OTHER_PROVIDER_TEAM)
+    )
+
+    val UNALLOCATED_STAFF = generateStaff(
+        code = "N01000U",
+        forename = "Unallocated",
+        surname = "Staff",
+        teams = listOf(TeamGenerator.DEFAULT_UPW_TEAM)
     )
 
     fun generateStaff(

@@ -26,6 +26,8 @@ internal object TestData {
         AppointmentOutcome(id(), "ATTC", "Attended - complied", attended = true, complied = true, enforceable = false)
     val FTC_OUTCOME =
         AppointmentOutcome(id(), "FTC", "Failed to comply", attended = false, complied = false, enforceable = true)
+    val ACCEPTABLE_ABSENCE_OUTCOME =
+        AppointmentOutcome(id(), "AA", "Acceptable absence", attended = false, complied = true, enforceable = false)
     val PROVIDER = AppointmentEntities.Provider(id(), "P01")
     val TEAM = Team(id(), "T01", "Team 1", PROVIDER)
     val STAFF = Staff(id(), "S01")

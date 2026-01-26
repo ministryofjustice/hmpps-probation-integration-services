@@ -5,6 +5,7 @@ import uk.gov.justice.digital.hmpps.resourceloader.ResourceLoader
 
 object MessageGenerator {
     val RSR_SCORES_DETERMINED = ResourceLoader.message<HmppsDomainEvent>("rsr-scores-determined")
+    val RSR_SCORES_DETERMINED_V4 = ResourceLoader.message<HmppsDomainEvent>("rsr-scores-determined-v4")
     val RSR_SCORES_DETERMINED_WITHOUT_OSPIIC_OSPDC =
         ResourceLoader.message<HmppsDomainEvent>("rsr-scores-determined-null-osp")
     val RSR_SCORES_DETERMINED_WITH_OSPII_OSPDC =

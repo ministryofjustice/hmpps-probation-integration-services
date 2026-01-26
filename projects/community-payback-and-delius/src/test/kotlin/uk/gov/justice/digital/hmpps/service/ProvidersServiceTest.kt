@@ -7,10 +7,10 @@ import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
-import uk.gov.justice.digital.hmpps.integrations.delius.entity.ProbationAreaUserRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.entity.TeamRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.entity.UnpaidWorkAppointmentRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.entity.UserRepository
+import uk.gov.justice.digital.hmpps.entity.staff.ProbationAreaUserRepository
+import uk.gov.justice.digital.hmpps.entity.staff.TeamRepository
+import uk.gov.justice.digital.hmpps.entity.staff.UserRepository
+import uk.gov.justice.digital.hmpps.entity.unpaidwork.UnpaidWorkAppointmentRepository
 import java.time.LocalDate
 
 @ExtendWith(MockitoExtension::class)

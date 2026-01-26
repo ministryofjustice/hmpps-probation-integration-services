@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.appointments.service
 
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.appointments.entity.AppointmentEntities.AppointmentContact
@@ -8,6 +9,7 @@ import uk.gov.justice.digital.hmpps.appointments.entity.AppointmentEntities.Enfo
 import uk.gov.justice.digital.hmpps.appointments.entity.AppointmentEntities.Type
 import uk.gov.justice.digital.hmpps.appointments.repository.AppointmentRepositories.AppointmentRepository
 import uk.gov.justice.digital.hmpps.appointments.repository.AppointmentRepositories.EnforcementRepository
+import uk.gov.justice.digital.hmpps.appointments.repository.AppointmentRepositories.EventRepository
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.ZonedDateTime
@@ -18,6 +20,7 @@ import java.time.format.DateTimeFormatter
 internal class EnforcementService(
     private val enforcementRepository: EnforcementRepository,
     private val appointmentRepository: AppointmentRepository,
+    private val eventRepository: EventRepository,
 ) {
 
     fun applyEnforcementAction(appointment: AppointmentContact, action: EnforcementAction, reviewType: Type) {
@@ -29,7 +32,7 @@ internal class EnforcementService(
         enforcementActionId = action.id
         enforcement = true
 
-        if (!enforcementRepository.existsByContactId(id!!)) {
+        if (id == null || !enforcementRepository.existsByContactId(id)) {
             enforcementRepository.save(
                 Enforcement(
                     contact = this,
@@ -42,7 +45,8 @@ internal class EnforcementService(
     }
 
     private fun AppointmentContact.updateFailureToComplyCount(reviewType: Type) {
-        if (event == null) return
+        val event = event ?: eventId?.let { eventRepository.findByIdOrNull(it) } ?: return
+        appointmentRepository.save(this)
         event.ftcCount = appointmentRepository.countFailureToComply(event)
 
         val ftcLimit = event.disposal?.type?.ftcLimit ?: return
@@ -55,7 +59,7 @@ internal class EnforcementService(
         appointmentRepository.save(
             // This isn't really an appointment - but enforcement action needs a corresponding contact
             AppointmentContact(
-                linkedContactId = id,
+                linkedContact = this,
                 type = action.type,
                 date = LocalDate.now(),
                 startTime = ZonedDateTime.now(),
@@ -83,7 +87,7 @@ internal class EnforcementService(
     private fun AppointmentContact.createEnforcementReviewContact(reviewType: Type) {
         appointmentRepository.save(
             AppointmentContact(
-                linkedContactId = id,
+                linkedContact = this,
                 type = reviewType,
                 date = LocalDate.now(),
                 startTime = ZonedDateTime.now(),

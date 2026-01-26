@@ -1,11 +1,11 @@
 package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.stereotype.Service
-import uk.gov.justice.digital.hmpps.integrations.delius.entity.ContactOutcomeRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.entity.ContactType.Code.UNPAID_WORK_APPOINTMENT
-import uk.gov.justice.digital.hmpps.integrations.delius.entity.Dataset
-import uk.gov.justice.digital.hmpps.integrations.delius.entity.ReferenceDataRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.entity.toCodeDescription
+import uk.gov.justice.digital.hmpps.entity.Dataset
+import uk.gov.justice.digital.hmpps.entity.ReferenceDataRepository
+import uk.gov.justice.digital.hmpps.entity.contact.ContactOutcomeRepository
+import uk.gov.justice.digital.hmpps.entity.contact.ContactType.Code.UNPAID_WORK_APPOINTMENT
+import uk.gov.justice.digital.hmpps.entity.toCodeDescription
 import uk.gov.justice.digital.hmpps.model.CodeDescription
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter

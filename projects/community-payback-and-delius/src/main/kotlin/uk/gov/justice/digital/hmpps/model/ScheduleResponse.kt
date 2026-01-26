@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.model
 
-import uk.gov.justice.digital.hmpps.integrations.delius.entity.*
+import uk.gov.justice.digital.hmpps.entity.contact.toCodeDescription
+import uk.gov.justice.digital.hmpps.entity.unpaidwork.*
 import java.time.LocalDate
 import java.time.LocalTime
 import java.util.*
@@ -46,11 +47,11 @@ data class AppointmentScheduleResponse(
     val startTime: LocalTime,
     val endTime: LocalTime,
     val outcome: CodeDescription?,
-    val minutesCredited: Long?,
+    val minutesCredited: Long,
     val allocationId: Long?
 )
 
-fun UpwAllocation.toAllocationResponse() = AllocationResponse(
+fun UnpaidWorkAllocation.toAllocationResponse() = AllocationResponse(
     id = this.id,
     project = this.project.toProjectDetails(),
     projectAvailability = this.projectAvailability?.toProjectAvailabilityDetails(),
@@ -77,7 +78,7 @@ fun UpwProjectAvailability.toProjectAvailabilityDetails() = ProjectAvailabilityD
     endDateExclusive = this.endDate
 )
 
-fun UpwAppointment.toAppointmentScheduleResponse() = AppointmentScheduleResponse(
+fun UnpaidWorkAppointment.toAppointmentScheduleResponse() = AppointmentScheduleResponse(
     id = this.id,
     version = UUID(this.rowVersion, this.contact.rowVersion),
     project = NameCode(this.project.name, this.project.code),
@@ -85,6 +86,6 @@ fun UpwAppointment.toAppointmentScheduleResponse() = AppointmentScheduleResponse
     startTime = this.startTime,
     endTime = this.endTime,
     outcome = this.contact.outcome?.toCodeDescription(),
-    minutesCredited = this.minutesCredited,
+    minutesCredited = this.minutesCredited ?: 0,
     allocationId = this.allocation?.id
 )
