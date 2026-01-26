@@ -98,8 +98,6 @@ sealed class RiskAssessment {
     ) : RiskAssessment()
 }
 
-data class OgrsScore(val ogrs3Yr1: Int, val ogrs3Yr2: Int)
-
 data class Ogrs4Score(val ogrs3Yr1: Int?, val ogrs3Yr2: Int?, val ogrs4GYr2: Double?, val ogp2Yr2: Double?,
     val ogrs4VYr2: Double?, val ovp2Yr2: Double?, val ogp2Yr2Band: String?, val ogrs4GYr2Band: String?)
 
@@ -159,11 +157,6 @@ fun HmppsDomainEvent.ospDirectContact() = additionalInformation["OSPDirectContac
         additionalInformation["OSPDirectContactBand"] as String,
     )
 }
-
-fun HmppsDomainEvent.ogrsScore() = OgrsScore(
-    additionalInformation["OGRS3Yr1"] as Int,
-    additionalInformation["OGRS3Yr2"] as Int
-)
 
 fun HmppsDomainEvent.ogrs4Score() = Ogrs4Score(
     additionalInformation["OGRS3Yr1"] as Int?,
