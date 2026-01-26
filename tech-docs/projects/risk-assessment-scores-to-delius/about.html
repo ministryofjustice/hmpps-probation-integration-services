@@ -155,7 +155,8 @@ risk scores:</p>
 <h2 id="business-need">Business need</h2>
 <p>Helps the business users understand the actuarial risk predictors within the Delius user interface.</p>
 <h2 id="data-dependencies">Data dependencies</h2>
-<p>This integration service is used to update the RSR and OSP risk scores in Delius. The service will also add/update scores from OGRS risk assessments for a <strong>Person on Probation</strong> and an <strong>Event</strong> in Delius.</p>
+<p>This integration service is used to update the RSR and OSP risk scores in Delius. The service will also add/update
+scores from OGRS risk assessments for a <strong>Person on Probation</strong> and an <strong>Event</strong> in Delius.</p>
 <h3 id="context-map-risk-assessment-data">Context map - Risk Assessment Data</h3>
 <p><img src="../../images/risk-assessment-context-map.svg" alt="" /></p>
 <h2 id="workflows">Workflows</h2>
@@ -173,17 +174,20 @@ risk scores:</p>
 </tr>
         </table>
       </div><h3 id="risk-score-workflow">Risk Score Workflow</h3>
-<p>Two types of scores are provided in the risk score data: risk of serious recidivism (RAR) and OASys sexual reoffending predictor (OSP). The scores are updated in Delius.</p>
+<p>Two types of scores are provided in the risk score data: risk of serious recidivism (RAR) and OASys sexual reoffending
+predictor (OSP). The scores are updated in Delius.</p>
 <p><img src="../../images/risk-assessment-scores-workflow.svg" alt="" /></p>
 <h3 id="ogrs-risk-assessment-workflow">OGRS Risk Assessment Workflow</h3>
-<p>An OGRS risk assessment is conducted for a <strong>Person on Probation</strong> for a specific <strong>Event</strong>. The offender group reconviction scale (OGRS) score is stored or updated in Delius when the risk assessment is submitted.</p>
+<p>An OGRS risk assessment is conducted for a <strong>Person on Probation</strong> for a specific <strong>Event</strong>. The offender group
+reconviction scale (OGRS) score is stored or updated in Delius when the risk assessment is submitted.</p>
 <p><img src="../../images/risk-assessment-workflow.svg" alt="" /></p>
 <h2 id="interfaces">Interfaces</h2>
 <h3 id="message-formats">Message Formats</h3>
 <p>The service responds to HMPPS Domain Event messages via the
 <a href="https://github.com/ministryofjustice/cloud-platform-environments/blob/main/namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-prod/resources/risk-assessment-scores-to-delius-queue.tf">Risk Assessment Scores and Delius Queue</a>.</p>
 <p>Example <a href="https://github.com/ministryofjustice/hmpps-probation-integration-services/blob/main/projects/risk-assessment-scores-to-delius/src/dev/resources/messages/">messages</a> are in the development source tree.</p>
-<p>Incoming messages are filtered on <code>eventType</code> by the <a href="https://github.com/ministryofjustice/cloud-platform-environments/blob/main/namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-prod/resources/risk-assessment-scores-to-delius-queue.tf">SQS queue policy</a></p>
+<p>Incoming messages are filtered on <code>eventType</code> by
+the <a href="https://github.com/ministryofjustice/cloud-platform-environments/blob/main/namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-prod/resources/risk-assessment-scores-to-delius-queue.tf">SQS queue policy</a></p>
 <h2 id="oasys-domain-event">OASys Domain Event</h2>
 <p>Sample message:</p>
 <div class="highlight"><pre class="highlight json" tabindex="0"><code><span class="p">{</span><span class="w">
@@ -193,15 +197,24 @@ risk scores:</p>
   </span><span class="nl">"detailUrl"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://some-url-where-we-can-get-more-info-this-might-not-exist"</span><span class="p">,</span><span class="w">
   </span><span class="nl">"occurredAt"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2022-09-22T12:16:04+01:00"</span><span class="p">,</span><span class="w">
   </span><span class="nl">"additionalInformation"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-    </span><span class="nl">"RSRScore"</span><span class="p">:</span><span class="w"> </span><span class="mf">45.33</span><span class="p">,</span><span class="w">
-    </span><span class="nl">"RSRBand"</span><span class="p">:</span><span class="w"> </span><span class="s2">"H"</span><span class="p">,</span><span class="w">
-    </span><span class="nl">"RSRStaticOrDynamic"</span><span class="p">:</span><span class="w"> </span><span class="s2">"STATIC"</span><span class="p">,</span><span class="w">
-    </span><span class="nl">"OSPIndecentScore"</span><span class="p">:</span><span class="w"> </span><span class="mf">5.79</span><span class="p">,</span><span class="w">
-    </span><span class="nl">"OSPIndecentBand"</span><span class="p">:</span><span class="w"> </span><span class="s2">"H"</span><span class="p">,</span><span class="w">
-    </span><span class="nl">"OSPContactScore"</span><span class="p">:</span><span class="w"> </span><span class="mf">38.70</span><span class="p">,</span><span class="w">
-    </span><span class="nl">"OSPContactBand"</span><span class="p">:</span><span class="w"> </span><span class="s2">"V"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"RSRScore"</span><span class="p">:</span><span class="w"> </span><span class="mf">69.42</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"RSRBand"</span><span class="p">:</span><span class="w"> </span><span class="s2">"V"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"RSRStaticOrDynamic"</span><span class="p">:</span><span class="w"> </span><span class="s2">"DYNAMIC"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"OSPIndecentScore"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"OSPIndecentBand"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"OSPContactScore"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"OSPContactBand"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"OSPIndirectIndecentScore"</span><span class="p">:</span><span class="w"> </span><span class="mf">3.33</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"OSPIndirectIndecentBand"</span><span class="p">:</span><span class="w"> </span><span class="s2">"M"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"OSPDirectContactScore"</span><span class="p">:</span><span class="w"> </span><span class="mf">12.77</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"OSPDirectContactBand"</span><span class="p">:</span><span class="w"> </span><span class="s2">"V"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"SNSVStaticYr2"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"SNSVStaticYr2Band"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"SNSVDynamicYr2"</span><span class="p">:</span><span class="w"> </span><span class="mf">53.32</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"SNSVDynamicYr2Band"</span><span class="p">:</span><span class="w"> </span><span class="s2">"V"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"RSRAlgorithmVersion"</span><span class="p">:</span><span class="w"> </span><span class="mi">6</span><span class="p">,</span><span class="w">
     </span><span class="nl">"EventNumber"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
-    </span><span class="nl">"AssessmentDate"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2022-09-22T12:16:04+01:00"</span><span class="w">
+    </span><span class="nl">"AssessmentDate"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2025-12-19T14:44:43+00:00"</span><span class="w">
   </span><span class="p">},</span><span class="w">
   </span><span class="nl">"personReference"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
     </span><span class="nl">"identifiers"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
