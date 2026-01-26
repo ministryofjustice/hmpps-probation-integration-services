@@ -128,7 +128,9 @@ object UPWGenerator {
         startDate = LocalDate.now().minusDays(7),
         endDate = LocalDate.now().plusMonths(3),
         startTime = LocalTime.of(9, 0),
-        endTime = LocalTime.of(16, 0)
+        endTime = LocalTime.of(16, 0),
+        pickupTime = LocalTime.of(9, 0),
+        pickupLocation = DEFAULT_OFFICE_LOCATION,
     )
 
     val DEFAULT_CONTACT = generateContact(
@@ -497,7 +499,9 @@ object UPWGenerator {
         startTime: LocalTime,
         endTime: LocalTime,
         softDeleted: Boolean = false,
-        rowVersion: Long = 1
+        rowVersion: Long = 1,
+        pickupTime: LocalTime? = null,
+        pickupLocation: OfficeLocation?
     ) = UnpaidWorkAllocation(
         id,
         details,
@@ -509,6 +513,8 @@ object UPWGenerator {
         endDate,
         startTime,
         endTime,
+        pickupTime,
+        pickupLocation,
         softDeleted,
         rowVersion
     )
