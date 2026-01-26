@@ -35,9 +35,6 @@ internal class RiskScoreServiceTest {
     @Mock
     private lateinit var jdbcTemplate: JdbcTemplate
 
-    @Mock
-    private lateinit var featureFlags: FeatureFlags
-
     @Test
     fun `scores are passed to the database procedure`() {
         givenTheDatabaseProcedureSucceeds().use { construction ->
@@ -84,9 +81,8 @@ internal class RiskScoreServiceTest {
     // ---- Helpers ----
 
     private fun whenUpdatingRsrAndOspScores() {
-        whenever(featureFlags.enabled("delius-ogrs4-support")).thenReturn(false)
 
-        RiskScoreService(jdbcTemplate, featureFlags).updateRsrAndOspScores(
+        RiskScoreService(jdbcTemplate).updateRsrAndOspScores(
             crn = "A000001",
             eventNumber = 123,
             assessmentDate = ZonedDateTime.of(2022, 12, 15, 9, 0, 0, 0, EuropeLondon),

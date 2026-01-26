@@ -4,7 +4,6 @@ import org.springframework.stereotype.Component
 import uk.gov.justice.digital.hmpps.converter.NotificationConverter
 import uk.gov.justice.digital.hmpps.datetime.ZonedDateTimeDeserializer
 import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException
-import uk.gov.justice.digital.hmpps.flags.FeatureFlags
 import uk.gov.justice.digital.hmpps.integrations.delius.DeliusValidationError
 import uk.gov.justice.digital.hmpps.integrations.delius.RiskAssessmentService
 import uk.gov.justice.digital.hmpps.integrations.delius.RiskScoreService
@@ -19,13 +18,12 @@ class Handler(
     private val riskScoreService: RiskScoreService,
     private val riskAssessmentService: RiskAssessmentService,
     override val converter: NotificationConverter<HmppsDomainEvent>,
-    private val featureFlags: FeatureFlags
 ) : NotificationHandler<HmppsDomainEvent> {
 
     override fun handle(notification: Notification<HmppsDomainEvent>) {
-        val flagValue = featureFlags.enabled("delius-ogrs4-support")
         telemetryService.notificationReceived(notification)
         val message = notification.message
+        val flagValue = message.additionalInformation["RSRAlgorithmVersion"] != null
         when (message.eventType) {
             "risk-assessment.scores.rsr.determined" -> {
                 try {

@@ -12,10 +12,13 @@ risk scores:
 The scores are updated when an OASys risk assessment is submitted for a **Person on Probation**.
 
 ## Business need
+
 Helps the business users understand the actuarial risk predictors within the Delius user interface.
 
 ## Data dependencies
-This integration service is used to update the RSR and OSP risk scores in Delius. The service will also add/update scores from OGRS risk assessments for a **Person on Probation** and an **Event** in Delius.
+
+This integration service is used to update the RSR and OSP risk scores in Delius. The service will also add/update
+scores from OGRS risk assessments for a **Person on Probation** and an **Event** in Delius.
 
 ### Context map - Risk Assessment Data
 
@@ -24,17 +27,21 @@ This integration service is used to update the RSR and OSP risk scores in Delius
 ## Workflows
 
 | Business Event      | Message Event Type/Filter              |
-| ------------------- | -------------------------------------- |
+|---------------------|----------------------------------------|
 | Risk scores updated | risk-assessment.scores.rsr.determined  |
 | Risk assessment     | risk-assessment.scores.ogrs.determined |
 
 ### Risk Score Workflow
-Two types of scores are provided in the risk score data: risk of serious recidivism (RAR) and OASys sexual reoffending predictor (OSP). The scores are updated in Delius.
+
+Two types of scores are provided in the risk score data: risk of serious recidivism (RAR) and OASys sexual reoffending
+predictor (OSP). The scores are updated in Delius.
 
 ![](../../doc/tech-docs/source/images/risk-assessment-scores-workflow.svg)
 
 ### OGRS Risk Assessment Workflow
-An OGRS risk assessment is conducted for a **Person on Probation** for a specific **Event**. The offender group reconviction scale (OGRS) score is stored or updated in Delius when the risk assessment is submitted.
+
+An OGRS risk assessment is conducted for a **Person on Probation** for a specific **Event**. The offender group
+reconviction scale (OGRS) score is stored or updated in Delius when the risk assessment is submitted.
 
 ![](../../doc/tech-docs/source/images/risk-assessment-workflow.svg)
 
@@ -47,7 +54,8 @@ The service responds to HMPPS Domain Event messages via the
 
 Example [messages](./src/dev/resources/messages/) are in the development source tree.
 
-Incoming messages are filtered on `eventType` by the [SQS queue policy](https://github.com/ministryofjustice/cloud-platform-environments/blob/main/namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-prod/resources/risk-assessment-scores-to-delius-queue.tf)
+Incoming messages are filtered on `eventType` by
+the [SQS queue policy](https://github.com/ministryofjustice/cloud-platform-environments/blob/main/namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-prod/resources/risk-assessment-scores-to-delius-queue.tf)
 
 ## OASys Domain Event
 
@@ -61,15 +69,24 @@ Sample message:
   "detailUrl": "https://some-url-where-we-can-get-more-info-this-might-not-exist",
   "occurredAt": "2022-09-22T12:16:04+01:00",
   "additionalInformation": {
-    "RSRScore": 45.33,
-    "RSRBand": "H",
-    "RSRStaticOrDynamic": "STATIC",
-    "OSPIndecentScore": 5.79,
-    "OSPIndecentBand": "H",
-    "OSPContactScore": 38.70,
-    "OSPContactBand": "V",
+    "RSRScore": 69.42,
+    "RSRBand": "V",
+    "RSRStaticOrDynamic": "DYNAMIC",
+    "OSPIndecentScore": null,
+    "OSPIndecentBand": null,
+    "OSPContactScore": null,
+    "OSPContactBand": null,
+    "OSPIndirectIndecentScore": 3.33,
+    "OSPIndirectIndecentBand": "M",
+    "OSPDirectContactScore": 12.77,
+    "OSPDirectContactBand": "V",
+    "SNSVStaticYr2": null,
+    "SNSVStaticYr2Band": null,
+    "SNSVDynamicYr2": 53.32,
+    "SNSVDynamicYr2Band": "V",
+    "RSRAlgorithmVersion": 6,
     "EventNumber": 1,
-    "AssessmentDate": "2022-09-22T12:16:04+01:00"
+    "AssessmentDate": "2025-12-19T14:44:43+00:00"
   },
   "personReference": {
     "identifiers": [
