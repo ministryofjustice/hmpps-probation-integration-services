@@ -10,6 +10,7 @@ import org.springframework.test.web.servlet.get
 import uk.gov.justice.digital.hmpps.advice.ErrorResponse
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.UPWGenerator
+import uk.gov.justice.digital.hmpps.model.Code
 import uk.gov.justice.digital.hmpps.model.ScheduleResponse
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
@@ -35,6 +36,8 @@ class CaseControllerIntegrationTest @Autowired constructor(
         assertThat(response.allocations).isNotEmpty
         val allocation = response.allocations.first()
         assertThat(allocation.id).isEqualTo(UPWGenerator.DEFAULT_UPW_ALLOCATION.id)
+        assertThat(allocation.pickUp!!.time).isEqualTo(UPWGenerator.DEFAULT_UPW_ALLOCATION.pickUpTime)
+        assertThat(allocation.pickUp!!.location).isEqualTo(Code(UPWGenerator.DEFAULT_OFFICE_LOCATION.code))
         assertThat(allocation.project.name).isEqualTo("Default UPW Project")
         assertThat(allocation.project.code).isEqualTo("N01P01")
         assertThat(allocation.project.expectedEndDateExclusive).isEqualTo(UPWGenerator.UPW_PROJECT_1.expectedEndDate)

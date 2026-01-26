@@ -21,7 +21,8 @@ data class AllocationResponse(
     val startDateInclusive: LocalDate?,
     val endDateInclusive: LocalDate?,
     val startTime: LocalTime,
-    val endTime: LocalTime
+    val endTime: LocalTime,
+    val pickUp: PickUp?
 )
 
 data class ProjectDetails(
@@ -60,7 +61,13 @@ fun UnpaidWorkAllocation.toAllocationResponse() = AllocationResponse(
     startDateInclusive = this.startDate,
     endDateInclusive = this.endDate,
     startTime = this.startTime,
-    endTime = this.endTime
+    endTime = this.endTime,
+    pickUp = this.pickUpLocation?.let {
+        PickUp(
+            location = Code(it.code),
+            time = this.pickUpTime
+        )
+    }
 )
 
 fun UpwProject.toProjectDetails() = ProjectDetails(

@@ -6,6 +6,7 @@ import org.hibernate.type.NumericBooleanConverter
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import uk.gov.justice.digital.hmpps.entity.ReferenceData
+import uk.gov.justice.digital.hmpps.entity.staff.OfficeLocation
 import uk.gov.justice.digital.hmpps.utils.Extensions.reportMissing
 import java.time.LocalDate
 import java.time.LocalTime
@@ -49,6 +50,13 @@ class UnpaidWorkAllocation(
 
     @Column(name = "end_time")
     val endTime: LocalTime,
+
+    @Column(name = "pick_up_time")
+    val pickUpTime: LocalTime?,
+
+    @ManyToOne
+    @JoinColumn(name = "pick_up_location_id")
+    val pickUpLocation: OfficeLocation?,
 
     @Column(columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)
