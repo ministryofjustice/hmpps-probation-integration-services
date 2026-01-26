@@ -11,6 +11,7 @@ object EventGenerator {
     val NEP_2 = generate(NULL_EVENT_PROCESSING, "3", createdDateTime = ZonedDateTime.now().minusDays(1))
     val NEP_3 = generate(NULL_EVENT_PROCESSING, "4", createdDateTime = ZonedDateTime.now().minusDays(1))
     val MERGED_TO = generate(PersonGenerator.MERGED_TO)
+    val OGRS4 = generate(PersonGenerator.OGRS4)
 
     fun generate(
         person: Person = PersonGenerator.DEFAULT,

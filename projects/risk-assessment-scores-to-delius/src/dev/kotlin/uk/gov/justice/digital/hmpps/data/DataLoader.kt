@@ -35,6 +35,7 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
                 PersonGenerator.NULL_EVENT_PROCESSING,
                 PersonGenerator.MERGED_FROM,
                 PersonGenerator.MERGED_TO,
+                PersonGenerator.OGRS4
             )
         )
         saveAll(
@@ -44,6 +45,7 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
                 EventGenerator.NEP_2,
                 EventGenerator.NEP_3,
                 EventGenerator.MERGED_TO,
+                EventGenerator.OGRS4
             )
         )
         save(DisposalTypeGenerator.DEFAULT)
@@ -56,6 +58,7 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
                 PersonManagerGenerator.DEFAULT,
                 PersonManagerGenerator.generate(PersonGenerator.NULL_EVENT_PROCESSING),
                 PersonManagerGenerator.generate(PersonGenerator.MERGED_TO),
+                PersonManagerGenerator.generate(PersonGenerator.OGRS4)
             )
         )
         save(

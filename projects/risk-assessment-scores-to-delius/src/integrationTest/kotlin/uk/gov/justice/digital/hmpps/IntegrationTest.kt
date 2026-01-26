@@ -177,4 +177,35 @@ internal class IntegrationTest @Autowired constructor(
         MatcherAssert.assertThat(assessment?.ogrs3Score1, Matchers.equalTo(4))
         MatcherAssert.assertThat(assessment?.ogrs3Score2, Matchers.equalTo(6))
     }
+
+    @Test
+    @Order(6)
+    fun `successfully add OGRS assessment with new OGRS4 fields`() {
+        val person = PersonGenerator.OGRS4
+        val notification = Notification(
+            message = MessageGenerator.OGRS_SCORES_DETERMINED_OGRS4,
+            attributes = MessageAttributes("risk-assessment.scores.determined")
+        )
+        channelManager.getChannel(queueName).publishAndWait(notification)
+        verify(telemetryService).trackEvent("AddOrUpdateRiskAssessment", notification.message.telemetryProperties())
+
+        val assessment = ogrsAssessmentRepository.findAll().find { it.event.person.crn == person.crn }
+        MatcherAssert.assertThat(assessment, Matchers.notNullValue())
+        MatcherAssert.assertThat(assessment!!.ogrs3Score1, Matchers.equalTo(43))
+        MatcherAssert.assertThat(assessment.ogrs3Score2, Matchers.equalTo(60))
+        MatcherAssert.assertThat(assessment.arpStaticDynamic, Matchers.equalTo("S"))
+        MatcherAssert.assertThat(assessment.arpScore, Matchers.equalTo(54.21))
+        MatcherAssert.assertThat(assessment.arpBand, Matchers.equalTo("M"))
+
+
+        val contact = contactRepository.findAll().find { it.event?.person?.crn == person.crn }
+        MatcherAssert.assertThat(
+            contact!!.notes,
+            Matchers.containsString("OGRS3: 43% within one year and 60% within 2 years.")
+        )
+        MatcherAssert.assertThat(
+            contact.notes,
+            Matchers.containsString("All Reoffending Predictor (ARP): Static ARP score is 54.21% - M")
+        )
+    }
 }

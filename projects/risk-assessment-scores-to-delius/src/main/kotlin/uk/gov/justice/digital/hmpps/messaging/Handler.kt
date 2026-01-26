@@ -4,7 +4,6 @@ import org.springframework.stereotype.Component
 import uk.gov.justice.digital.hmpps.converter.NotificationConverter
 import uk.gov.justice.digital.hmpps.datetime.ZonedDateTimeDeserializer
 import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException
-import uk.gov.justice.digital.hmpps.flags.FeatureFlags
 import uk.gov.justice.digital.hmpps.integrations.delius.DeliusValidationError
 import uk.gov.justice.digital.hmpps.integrations.delius.RiskAssessmentService
 import uk.gov.justice.digital.hmpps.integrations.delius.RiskScoreService
@@ -12,20 +11,14 @@ import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
 import uk.gov.justice.digital.hmpps.message.Notification
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryMessagingExtensions.notificationReceived
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
-import uk.gov.justice.digital.hmpps.flagged.RiskAssessmentService as FlaggedRiskAssessmentService
 
 @Component
 class Handler(
     private val telemetryService: TelemetryService,
     private val riskScoreService: RiskScoreService,
     private val riskAssessmentService: RiskAssessmentService,
-    private val flaggedRiskAssessmentService: FlaggedRiskAssessmentService,
-    private val featureFlags: FeatureFlags,
     override val converter: NotificationConverter<HmppsDomainEvent>
 ) : NotificationHandler<HmppsDomainEvent> {
-    companion object {
-        const val DELIUS_OGRS4_SUPPORT = "delius-ogrs4-support"
-    }
 
     override fun handle(notification: Notification<HmppsDomainEvent>) {
         telemetryService.notificationReceived(notification)
@@ -56,23 +49,13 @@ class Handler(
 
             "risk-assessment.scores.ogrs.determined" -> {
                 try {
-                    if (featureFlags.enabled(DELIUS_OGRS4_SUPPORT)) {
-                        riskAssessmentService.addOrUpdateRiskAssessment(
-                            message.personReference.findCrn()
-                                ?: throw IllegalArgumentException("Missing CRN in ${message.personReference}"),
-                            message.additionalInformation["EventNumber"] as Int?,
-                            message.assessmentDate(),
-                            message.ogrs4Score()
-                        )
-                    } else {
-                        flaggedRiskAssessmentService.addOrUpdateRiskAssessment(
-                            message.personReference.findCrn()
-                                ?: throw IllegalArgumentException("Missing CRN in ${message.personReference}"),
-                            message.additionalInformation["EventNumber"] as Int?,
-                            message.assessmentDate(),
-                            message.ogrsScore()
-                        )
-                    }
+                    riskAssessmentService.addOrUpdateRiskAssessment(
+                        message.personReference.findCrn()
+                            ?: throw IllegalArgumentException("Missing CRN in ${message.personReference}"),
+                        message.additionalInformation["EventNumber"] as Int?,
+                        message.assessmentDate(),
+                        message.ogrs4Score()
+                    )
 
                     telemetryService.trackEvent("AddOrUpdateRiskAssessment", message.telemetryProperties())
                 } catch (dve: DeliusValidationError) {
