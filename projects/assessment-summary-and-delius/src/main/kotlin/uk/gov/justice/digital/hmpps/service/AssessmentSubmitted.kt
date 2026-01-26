@@ -13,7 +13,6 @@ import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonRepo
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.getByCrn
 import uk.gov.justice.digital.hmpps.integrations.oasys.AssessmentSummary
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
-import uk.gov.justice.digital.hmpps.flagged.AssessmentService as FlaggedAssessmentService
 import uk.gov.justice.digital.hmpps.flagged.RiskService as FlaggedRiskService
 
 @Service
@@ -22,7 +21,6 @@ class AssessmentSubmitted(
     auditedInteractionService: AuditedInteractionService,
     private val personRepository: PersonRepository,
     private val assessmentService: AssessmentService,
-    private val flaggedAssessmentService: FlaggedAssessmentService,
     private val riskService: RiskService,
     private val flaggedRiskService: FlaggedRiskService,
     private val featureFlags: FeatureFlags,
@@ -30,7 +28,6 @@ class AssessmentSubmitted(
 ) : AuditableService(auditedInteractionService) {
     companion object {
         const val UPDATE_RISK_REGISTRATIONS_IN_PLACE = "assessment-summary_update-risk-registrations-in-place"
-        const val DELIUS_OGRS4_SUPPORT = "delius-ogrs4-support"
     }
 
     fun assessmentSubmitted(crn: String, summary: AssessmentSummary) {
@@ -50,11 +47,7 @@ class AssessmentSubmitted(
         val contact = audit(SUBMIT_ASSESSMENT_SUMMARY) {
             it["CRN"] = person.crn
             it["OASysId"] = summary.assessmentPk
-            if (featureFlags.enabled(DELIUS_OGRS4_SUPPORT)) {
-                assessmentService.recordAssessment(person, summary)
-            } else {
-                flaggedAssessmentService.recordAssessment(person, summary)
-            }
+            assessmentService.recordAssessment(person, summary)
         }
 
         if (summary.assessmentStatus == "COMPLETE") audit(UPDATE_RISK_DATA) {
