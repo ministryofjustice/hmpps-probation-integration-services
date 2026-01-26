@@ -85,14 +85,12 @@ interface CaseloadRepository : JpaRepository<Caseload, Long> {
                                from future_appointments
                                where appointment_datetime > sysdate ) next_appointment
                              on next_appointment.offender_id = filtered_caseload.offender_id and
-                                next_appointment.staff_id = filtered_caseload.staff_employee_id and 
                                 next_appointment.row_num = 1
                    left join ( select past_appointments.*,
                                       row_number() over (partition by offender_id order by appointment_datetime desc) as row_num
                                from past_appointments
                                where appointment_datetime < sysdate ) prev_appointment
                              on prev_appointment.offender_id = filtered_caseload.offender_id and
-                                prev_appointment.staff_id = filtered_caseload.staff_employee_id and 
                                 prev_appointment.row_num = 1
                    left join ( select offender_id, total_sentences, disposal_id as latest_disposal_id
                                from ( select event.offender_id,
@@ -157,7 +155,6 @@ interface CaseloadRepository : JpaRepository<Caseload, Long> {
                         from future_appointments
                         where appointment_datetime > sysdate ) next_appointment
                       on next_appointment.offender_id = filtered_caseload.offender_id and
-                         next_appointment.staff_id = filtered_caseload.staff_employee_id and next_appointment.row_num = 1
             join ( select offender_id, disposal_id as latest_disposal_id
                    from ( select event.offender_id,
                                  disposal.disposal_id,
