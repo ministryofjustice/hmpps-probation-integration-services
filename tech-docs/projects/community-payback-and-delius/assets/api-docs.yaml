@@ -400,6 +400,8 @@ components:
           type: string
         supervisor:
           $ref: "#/components/schemas/Code"
+          description: The appointment supervisor. Defaults to the unallocated staff
+            member in the project team.
         allocationId:
           type: integer
           format: int64
@@ -408,6 +410,8 @@ components:
         minutesOffered:
           type: integer
           format: int64
+          description: The minutes offered towards a person's unpaid work requirement.
+            Defaults to the difference between the appointment startTime and endTime.
         outcome:
           $ref: "#/components/schemas/Code"
         penaltyMinutes:
@@ -449,12 +453,8 @@ components:
       - date
       - endTime
       - eventNumber
-      - minutesCredited
-      - minutesOffered
-      - penaltyMinutes
       - reference
       - startTime
-      - supervisor
     CreateAppointmentsRequest:
       type: object
       properties:
@@ -908,6 +908,7 @@ components:
       - date
       - endTime
       - id
+      - minutesCredited
       - project
       - startTime
       - version
