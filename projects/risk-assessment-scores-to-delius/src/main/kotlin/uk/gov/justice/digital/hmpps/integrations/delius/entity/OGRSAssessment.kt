@@ -37,6 +37,15 @@ class OGRSAssessment(
     @Column(name = "ogrs3_score_2")
     var ogrs3Score2: Long?,
 
+    @Column(name = "arp_static_dynamic", columnDefinition = "char(1)")
+    var arpStaticDynamic: String?,
+
+    @Column(name = "arp_score")
+    var arpScore: Double?,
+
+    @Column(name = "arp_band", columnDefinition = "char(1)")
+    var arpBand: String?,
+
     @Column(name = "ogrs2_score")
     val ogrs2Score: Long? = null,
 

@@ -121,7 +121,7 @@ internal class HandlerTest {
             message.message.personReference.findCrn()!!,
             message.message.additionalInformation["EventNumber"] as Int,
             message.message.assessmentDate(),
-            message.message.ogrsScore()
+            message.message.ogrs4Score()
         )
         verify(telemetryService).trackEvent("AddOrUpdateRiskAssessment", message.message.telemetryProperties())
     }

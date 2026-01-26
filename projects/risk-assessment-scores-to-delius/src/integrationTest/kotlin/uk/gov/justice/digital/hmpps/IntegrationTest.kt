@@ -23,7 +23,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.entity.OGRSAssessmentRep
 import uk.gov.justice.digital.hmpps.message.MessageAttributes
 import uk.gov.justice.digital.hmpps.message.Notification
 import uk.gov.justice.digital.hmpps.messaging.HmppsChannelManager
-import uk.gov.justice.digital.hmpps.messaging.OgrsScore
+import uk.gov.justice.digital.hmpps.messaging.Ogrs4Score
 import uk.gov.justice.digital.hmpps.messaging.telemetryProperties
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import java.time.ZonedDateTime
@@ -114,7 +114,7 @@ internal class IntegrationTest @Autowired constructor(
         MatcherAssert.assertThat(contactRepository.findAll().size, Matchers.equalTo(1))
         MatcherAssert.assertThat(
             contactRepository.findAll()[0].notes,
-            Matchers.containsString("Reconviction calculation is 4% within one year and 8% within 2 years.")
+            Matchers.containsString("OGRS3: 4% within one year and 8% within 2 years.")
         )
     }
 
@@ -138,7 +138,7 @@ internal class IntegrationTest @Autowired constructor(
         MatcherAssert.assertThat(contactRepository.findAll().size, Matchers.equalTo(2))
         MatcherAssert.assertThat(
             contactRepository.findAll()[1].notes,
-            Matchers.containsString("Reconviction calculation is 5% within one year and 9% within 2 years.")
+            Matchers.containsString("OGRS3: 5% within one year and 9% within 2 years.")
         )
     }
 
@@ -151,7 +151,10 @@ internal class IntegrationTest @Autowired constructor(
                 crn,
                 1,
                 ZonedDateTime.now().minusMonths(1),
-                OgrsScore(1, 2)
+                Ogrs4Score(
+                    1, 2, null, null,
+                    null, null, null, null
+                )
             )
         }
 
@@ -160,7 +163,10 @@ internal class IntegrationTest @Autowired constructor(
                 crn,
                 1,
                 ZonedDateTime.now().minusMonths(1),
-                OgrsScore(1, 2)
+                Ogrs4Score(
+                    1, 2, null, null,
+                    null, null, null, null
+                )
             )
         }
 
@@ -202,5 +208,35 @@ internal class IntegrationTest @Autowired constructor(
         val assessment = ogrsAssessmentRepository.findAll().find { it.event.person.crn == person.crn }
         MatcherAssert.assertThat(assessment?.ogrs3Score1, Matchers.equalTo(4))
         MatcherAssert.assertThat(assessment?.ogrs3Score2, Matchers.equalTo(6))
+    }
+
+    @Test
+    @Order(6)
+    fun `successfully add OGRS assessment with new OGRS4 fields`() {
+        val person = PersonGenerator.OGRS4
+        val notification = Notification(
+            message = MessageGenerator.OGRS_SCORES_DETERMINED_OGRS4,
+            attributes = MessageAttributes("risk-assessment.scores.determined")
+        )
+        channelManager.getChannel(queueName).publishAndWait(notification)
+        verify(telemetryService).trackEvent("AddOrUpdateRiskAssessment", notification.message.telemetryProperties())
+
+        val assessment = ogrsAssessmentRepository.findAll().find { it.event.person.crn == person.crn }
+        MatcherAssert.assertThat(assessment, Matchers.notNullValue())
+        MatcherAssert.assertThat(assessment!!.ogrs3Score1, Matchers.equalTo(43))
+        MatcherAssert.assertThat(assessment.ogrs3Score2, Matchers.equalTo(60))
+        MatcherAssert.assertThat(assessment.arpStaticDynamic, Matchers.equalTo("S"))
+        MatcherAssert.assertThat(assessment.arpScore, Matchers.equalTo(54.21))
+        MatcherAssert.assertThat(assessment.arpBand, Matchers.equalTo("M"))
+
+        val contact = contactRepository.findAll().find { it.event?.person?.crn == person.crn }
+        MatcherAssert.assertThat(
+            contact!!.notes,
+            Matchers.containsString("OGRS3: 43% within one year and 60% within 2 years.")
+        )
+        MatcherAssert.assertThat(
+            contact.notes,
+            Matchers.containsString("All Reoffending Predictor (ARP): Static ARP score is 54.21% - M")
+        )
     }
 }
