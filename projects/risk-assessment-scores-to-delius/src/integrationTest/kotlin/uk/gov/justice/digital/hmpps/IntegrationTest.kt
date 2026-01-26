@@ -151,8 +151,10 @@ internal class IntegrationTest @Autowired constructor(
                 crn,
                 1,
                 ZonedDateTime.now().minusMonths(1),
-                Ogrs4Score(1, 2, null, null,
-                    null, null, null, null)
+                Ogrs4Score(
+                    1, 2, null, null,
+                    null, null, null, null
+                )
             )
         }
 
@@ -161,8 +163,10 @@ internal class IntegrationTest @Autowired constructor(
                 crn,
                 1,
                 ZonedDateTime.now().minusMonths(1),
-                Ogrs4Score(1, 2, null, null,
-                    null, null, null, null)
+                Ogrs4Score(
+                    1, 2, null, null,
+                    null, null, null, null
+                )
             )
         }
 
@@ -224,7 +228,6 @@ internal class IntegrationTest @Autowired constructor(
         MatcherAssert.assertThat(assessment.arpStaticDynamic, Matchers.equalTo("S"))
         MatcherAssert.assertThat(assessment.arpScore, Matchers.equalTo(54.21))
         MatcherAssert.assertThat(assessment.arpBand, Matchers.equalTo("M"))
-
 
         val contact = contactRepository.findAll().find { it.event?.person?.crn == person.crn }
         MatcherAssert.assertThat(

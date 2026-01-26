@@ -55,8 +55,10 @@ class RiskAssessmentServiceTest {
                 crn,
                 1,
                 ZonedDateTime.now(),
-                Ogrs4Score(1, 2, null, null,
-                    null, null, null, null)
+                Ogrs4Score(
+                    1, 2, null, null,
+                    null, null, null, null
+                )
             )
         }
     }
@@ -75,8 +77,10 @@ class RiskAssessmentServiceTest {
                 crn,
                 1,
                 ZonedDateTime.now(),
-                Ogrs4Score(1, 2, null, null,
-                    null, null, null, null)
+                Ogrs4Score(
+                    1, 2, null, null,
+                    null, null, null, null
+                )
             )
         }
     }
@@ -95,8 +99,10 @@ class RiskAssessmentServiceTest {
                 crn,
                 1,
                 ZonedDateTime.now(),
-                Ogrs4Score(1, 2, null, null,
-                    null, null, null, null)
+                Ogrs4Score(
+                    1, 2, null, null,
+                    null, null, null, null
+                )
             )
         }
     }
@@ -112,15 +118,21 @@ class RiskAssessmentServiceTest {
             .thenReturn(event)
 
         whenever(ogrsAssessmentRepository.findByEvent(event))
-            .thenReturn(OGRSAssessment(1, LocalDate.now().minusYears(1), event,
-                1, 1, null, null, null, 1))
+            .thenReturn(
+                OGRSAssessment(
+                    1, LocalDate.now().minusYears(1), event,
+                    1, 1, null, null, null, 1
+                )
+            )
 
         riskAssessmentService.addOrUpdateRiskAssessment(
             crn,
             1,
             ZonedDateTime.now().minusYears(2),
-            Ogrs4Score(1, 2, null, null,
-                null, null, null, null)
+            Ogrs4Score(
+                1, 2, null, null,
+                null, null, null, null
+            )
         )
         verify(ogrsAssessmentRepository, Mockito.times(0)).save(any())
     }

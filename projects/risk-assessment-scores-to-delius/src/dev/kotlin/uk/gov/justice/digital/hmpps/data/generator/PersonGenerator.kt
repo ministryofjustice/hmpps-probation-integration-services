@@ -13,7 +13,6 @@ object PersonGenerator {
     val MERGED_TO = generate("M346787", "M3465GD")
     val OGRS4 = generate("X731390", "X1234YZ")
 
-
     fun generate(
         crn: String,
         nomsId: String? = null,

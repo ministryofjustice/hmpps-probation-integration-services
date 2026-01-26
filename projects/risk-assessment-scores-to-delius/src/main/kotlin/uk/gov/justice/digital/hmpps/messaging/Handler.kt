@@ -98,8 +98,10 @@ sealed class RiskAssessment {
     ) : RiskAssessment()
 }
 
-data class Ogrs4Score(val ogrs3Yr1: Int?, val ogrs3Yr2: Int?, val ogrs4GYr2: Double?, val ogp2Yr2: Double?,
-    val ogrs4VYr2: Double?, val ovp2Yr2: Double?, val ogp2Yr2Band: String?, val ogrs4GYr2Band: String?)
+data class Ogrs4Score(
+    val ogrs3Yr1: Int?, val ogrs3Yr2: Int?, val ogrs4GYr2: Double?, val ogp2Yr2: Double?,
+    val ogrs4VYr2: Double?, val ovp2Yr2: Double?, val ogp2Yr2Band: String?, val ogrs4GYr2Band: String?
+)
 
 fun HmppsDomainEvent.rsr() = RiskAssessment.V4(
     additionalInformation["RSRScore"] as Double,
