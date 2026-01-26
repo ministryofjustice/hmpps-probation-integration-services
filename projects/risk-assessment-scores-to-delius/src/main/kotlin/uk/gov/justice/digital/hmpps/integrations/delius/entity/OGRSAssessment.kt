@@ -40,7 +40,7 @@ class OGRSAssessment(
     @Column(name = "arp_static_dynamic", columnDefinition = "char(1)")
     var arpStaticDynamic: String?,
 
-    @Column(name = "arp_score")
+    @Column(name = "arp_score", columnDefinition = "number")
     var arpScore: Double?,
 
     @Column(name = "arp_band", columnDefinition = "char(1)")
