@@ -62,12 +62,10 @@ fun UnpaidWorkAllocation.toAllocationResponse() = AllocationResponse(
     endDateInclusive = this.endDate,
     startTime = this.startTime,
     endTime = this.endTime,
-    pickUp = this.pickUpLocation?.let {
-        PickUp(
-            location = Code(it.code),
-            time = this.pickUpTime
-        )
-    }
+    pickUp = PickUp(
+        time = this.pickUpTime,
+        location = this.pickUpLocation?.let { Code(it.code) }
+    )
 )
 
 fun UpwProject.toProjectDetails() = ProjectDetails(
