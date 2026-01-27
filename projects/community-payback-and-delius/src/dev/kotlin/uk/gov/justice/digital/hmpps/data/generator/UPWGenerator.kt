@@ -181,6 +181,26 @@ object UPWGenerator {
         minutesCredited = 30L
     )
 
+    val UPW_APPOINTMENT_WITHOUT_PICKUP = generateUpwAppointment(
+        startTime = LocalTime.of(9, 0),
+        endTime = LocalTime.of(17, 0),
+        date = LocalDate.now().plusDays(1),
+        project = UPW_PROJECT_2,
+        details = UPW_DETAILS_2,
+        allocation = DEFAULT_UPW_ALLOCATION,
+        contact = DEFAULT_CONTACT,
+        contactOutcomeTypeId = 1L,
+        pickupLocation = null,
+        pickupTime = null,
+        penaltyTime = 65L,
+        person = PersonGenerator.PERSON_2,
+        staff = StaffGenerator.DEFAULT_STAFF,
+        team = TeamGenerator.DEFAULT_UPW_TEAM,
+        workQuality = ReferenceDataGenerator.WORK_QUALITY[WorkQuality.EXCELLENT],
+        behaviour = ReferenceDataGenerator.BEHAVIOUR[Behaviour.EXCELLENT],
+        minutesCredited = 30L
+    )
+
     val LAO_EXCLUDED_UPW_APPOINTMENT = generateUpwAppointment(
         startTime = LocalTime.of(9, 0),
         endTime = LocalTime.of(17, 0),

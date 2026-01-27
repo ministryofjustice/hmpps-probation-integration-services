@@ -113,4 +113,17 @@ class GetAppointmentIntegrationTest @Autowired constructor(
         assertThat(response.case.currentExclusion).isEqualTo(true)
         assertThat(response.case.exclusionMessage).isNotNull
     }
+
+    @Test
+    fun `can retrieve appointment details with null pickup location`() {
+        val appointmentId = UPWGenerator.UPW_APPOINTMENT_WITHOUT_PICKUP.id
+
+        val response =
+            mockMvc.get("/projects/$PROJECT/appointments/$appointmentId?username=DefaultUser") { withToken() }
+                .andExpect { status { is2xxSuccessful() } }
+                .andReturn().response.contentAsJson<AppointmentResponse>()
+
+        assertThat(response.pickUpData?.location).isNull()
+        assertThat(response.pickUpData?.locationCode).isNull()
+    }
 }
