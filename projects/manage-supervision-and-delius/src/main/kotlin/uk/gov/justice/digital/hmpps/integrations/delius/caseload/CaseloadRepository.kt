@@ -154,7 +154,7 @@ interface CaseloadRepository : JpaRepository<Caseload, Long> {
                                row_number() over (partition by offender_id order by appointment_datetime) as row_num
                         from future_appointments
                         where appointment_datetime > sysdate ) next_appointment
-                      on next_appointment.offender_id = filtered_caseload.offender_id and
+                      on next_appointment.offender_id = filtered_caseload.offender_id and next_appointment.row_num = 1
             join ( select offender_id, disposal_id as latest_disposal_id
                    from ( select event.offender_id,
                                  disposal.disposal_id,
