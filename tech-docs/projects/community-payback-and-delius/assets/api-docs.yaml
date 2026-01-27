@@ -872,6 +872,8 @@ components:
           type: string
         endTime:
           type: string
+        pickUp:
+          $ref: "#/components/schemas/PickUp"
       required:
       - dayOfWeek
       - endTime
