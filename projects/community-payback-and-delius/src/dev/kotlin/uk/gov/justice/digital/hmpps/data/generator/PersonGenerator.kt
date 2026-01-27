@@ -14,6 +14,13 @@ object PersonGenerator {
         dateOfBirth = LocalDate.of(1990, 6, 10)
     )
 
+    val PERSON_2 = generatePerson(
+        crn = "Z009999",
+        forename = "Default",
+        surname = "Person_2",
+        dateOfBirth = LocalDate.of(1987, 3, 9)
+    )
+
     val SECOND_PERSON = generatePerson(
         crn = "Z000222",
         forename = "Second",

@@ -15,10 +15,7 @@ import uk.gov.justice.digital.hmpps.data.generator.UPWGenerator
 import uk.gov.justice.digital.hmpps.data.generator.UPWGenerator.UPW_PROJECT_1
 import uk.gov.justice.digital.hmpps.entity.contact.ContactRepository
 import uk.gov.justice.digital.hmpps.entity.unpaidwork.UnpaidWorkAppointmentRepository
-import uk.gov.justice.digital.hmpps.model.AppointmentResponse
-import uk.gov.justice.digital.hmpps.model.Behaviour
-import uk.gov.justice.digital.hmpps.model.SessionResponse
-import uk.gov.justice.digital.hmpps.model.WorkQuality
+import uk.gov.justice.digital.hmpps.model.*
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 import java.time.LocalDate
@@ -63,6 +60,7 @@ class GetAppointmentIntegrationTest @Autowired constructor(
         assertThat(response.penaltyHours).isEqualTo("01:05")
         assertThat(response.enforcementAction!!.respondBy).isEqualTo(response.date.plusDays(ReferenceDataGenerator.ROM_ENFORCEMENT_ACTION.responseByPeriod!!))
         assertThat(response.behaviour).isEqualTo(Behaviour.EXCELLENT)
+        assertThat(response.pickUpData!!.locationCode).isEqualTo(Code(UPWGenerator.DEFAULT_UPW_APPOINTMENT.pickUpLocation!!.code))
         assertThat(response.workQuality).isEqualTo(WorkQuality.EXCELLENT)
     }
 
@@ -114,5 +112,18 @@ class GetAppointmentIntegrationTest @Autowired constructor(
 
         assertThat(response.case.currentExclusion).isEqualTo(true)
         assertThat(response.case.exclusionMessage).isNotNull
+    }
+
+    @Test
+    fun `can retrieve appointment details with null pickup location`() {
+        val appointmentId = UPWGenerator.UPW_APPOINTMENT_WITHOUT_PICKUP.id
+
+        val response =
+            mockMvc.get("/projects/$PROJECT/appointments/$appointmentId?username=DefaultUser") { withToken() }
+                .andExpect { status { is2xxSuccessful() } }
+                .andReturn().response.contentAsJson<AppointmentResponse>()
+
+        assertThat(response.pickUpData?.location).isNull()
+        assertThat(response.pickUpData?.locationCode).isNull()
     }
 }
