@@ -128,7 +128,9 @@ object UPWGenerator {
         startDate = LocalDate.now().minusDays(7),
         endDate = LocalDate.now().plusMonths(3),
         startTime = LocalTime.of(9, 0),
-        endTime = LocalTime.of(16, 0)
+        endTime = LocalTime.of(16, 0),
+        pickupTime = LocalTime.of(9, 0),
+        pickupLocation = DEFAULT_OFFICE_LOCATION,
     )
 
     val DEFAULT_CONTACT = generateContact(
@@ -172,6 +174,26 @@ object UPWGenerator {
         pickupTime = LocalTime.of(9, 0),
         penaltyTime = 65L,
         person = PersonGenerator.DEFAULT_PERSON,
+        staff = StaffGenerator.DEFAULT_STAFF,
+        team = TeamGenerator.DEFAULT_UPW_TEAM,
+        workQuality = ReferenceDataGenerator.WORK_QUALITY[WorkQuality.EXCELLENT],
+        behaviour = ReferenceDataGenerator.BEHAVIOUR[Behaviour.EXCELLENT],
+        minutesCredited = 30L
+    )
+
+    val UPW_APPOINTMENT_WITHOUT_PICKUP = generateUpwAppointment(
+        startTime = LocalTime.of(9, 0),
+        endTime = LocalTime.of(17, 0),
+        date = LocalDate.now().plusDays(1),
+        project = UPW_PROJECT_2,
+        details = UPW_DETAILS_2,
+        allocation = DEFAULT_UPW_ALLOCATION,
+        contact = DEFAULT_CONTACT,
+        contactOutcomeTypeId = 1L,
+        pickupLocation = null,
+        pickupTime = null,
+        penaltyTime = 65L,
+        person = PersonGenerator.PERSON_2,
         staff = StaffGenerator.DEFAULT_STAFF,
         team = TeamGenerator.DEFAULT_UPW_TEAM,
         workQuality = ReferenceDataGenerator.WORK_QUALITY[WorkQuality.EXCELLENT],
@@ -497,7 +519,9 @@ object UPWGenerator {
         startTime: LocalTime,
         endTime: LocalTime,
         softDeleted: Boolean = false,
-        rowVersion: Long = 1
+        rowVersion: Long = 1,
+        pickupTime: LocalTime? = null,
+        pickupLocation: OfficeLocation?
     ) = UnpaidWorkAllocation(
         id,
         details,
@@ -509,6 +533,8 @@ object UPWGenerator {
         endDate,
         startTime,
         endTime,
+        pickupTime,
+        pickupLocation,
         softDeleted,
         rowVersion
     )

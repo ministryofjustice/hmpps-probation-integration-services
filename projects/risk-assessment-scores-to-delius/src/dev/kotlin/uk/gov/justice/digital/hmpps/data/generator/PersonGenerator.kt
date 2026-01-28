@@ -11,6 +11,7 @@ object PersonGenerator {
     val NULL_EVENT_PROCESSING = generate("X854525", "N0770LL")
     val MERGED_FROM = generate("M346785", "M1234GD", softDeleted = true)
     val MERGED_TO = generate("M346787", "M3465GD")
+    val OGRS4 = generate("X731390", "X1234YZ")
 
     fun generate(
         crn: String,

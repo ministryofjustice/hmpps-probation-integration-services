@@ -35,6 +35,7 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
         save(PersonGenerator.SECOND_PERSON)
         save(PersonGenerator.EXCLUDED_PERSON)
         save(PersonGenerator.RESTRICTED_PERSON)
+        save(PersonGenerator.PERSON_2)
     }
 
     fun loadProviders() {
@@ -119,6 +120,7 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
         save(UPWGenerator.DEFAULT_CONTACT)
         save(UPWGenerator.CONTACT_NO_ENFORCEMENT)
         save(UPWGenerator.DEFAULT_UPW_APPOINTMENT)
+        save(UPWGenerator.UPW_APPOINTMENT_WITHOUT_PICKUP)
         save(UPWGenerator.UPW_APPOINTMENT_NO_ENFORCEMENT)
         saveAll(UPWGenerator.UPW_APPOINTMENT_TO_UPDATE)
         save(UPWGenerator.DEFAULT_RQMNT)
