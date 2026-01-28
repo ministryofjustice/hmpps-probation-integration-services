@@ -818,6 +818,8 @@ components:
       properties:
         location:
           $ref: "#/components/schemas/AppointmentResponseAddress"
+        locationCode:
+          $ref: "#/components/schemas/Code"
         time:
           type: string
     AppointmentResponseSupervisor:
