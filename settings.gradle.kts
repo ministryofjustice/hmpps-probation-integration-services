@@ -81,26 +81,26 @@ dependencyResolutionManagement {
             library("asyncapi", "org.openfolder:kotlin-asyncapi-spring-web:3.1.3")
             library("aws-s3", "io.awspring.cloud:spring-cloud-aws-starter-s3:3.4.2")
             library("aws-autoconfigure", "io.awspring.cloud:spring-cloud-aws-autoconfigure:3.4.2")
-            library("aws-query-protocol", "software.amazon.awssdk:aws-query-protocol:2.41.6")
+            library("aws-query-protocol", "software.amazon.awssdk:aws-query-protocol:2.41.10")
             library("aws-sns", "io.awspring.cloud:spring-cloud-aws-starter-sns:3.4.2")
             library("aws-sqs", "io.awspring.cloud:spring-cloud-aws-starter-sqs:3.4.2")
             library("aws-starter", "io.awspring.cloud:spring-cloud-aws-starter:3.4.2")
-            library("aws-sts", "software.amazon.awssdk:sts:2.41.6")
+            library("aws-sts", "software.amazon.awssdk:sts:2.41.10")
             library("azure-app-insights", "com.microsoft.azure:applicationinsights-web:3.7.6")
             library("azure-identity", "com.azure:azure-identity:1.18.1")
             library("flipt", "io.flipt:flipt-client-java:1.2.1")
             library("html2md", "com.vladsch.flexmark:flexmark-html2md-converter:0.64.8")
             library("microsoft-graph", "com.microsoft.graph:microsoft-graph:6.60.0")
             library("mockito-inline", "org.mockito:mockito-inline:5.2.0")
-            library("mockito-kotlin", "org.mockito.kotlin:mockito-kotlin:6.1.0")
+            library("mockito-kotlin", "org.mockito.kotlin:mockito-kotlin:6.2.1")
             library("notify", "uk.gov.service.notify:notifications-java-client:6.0.0-RELEASE")
-            library("opensearch", "org.opensearch.client:opensearch-java:3.4.0")
+            library("opensearch", "org.opensearch.client:opensearch-java:3.5.0")
             library("opensearch-starter", "org.opensearch.client:spring-data-opensearch-starter:2.0.5")
             library(
                 "opentelemetry-annotations",
-                "io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:2.23.0"
+                "io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:2.24.0"
             )
-            library("sentry", "io.sentry:sentry-spring-boot-starter-jakarta:8.29.0")
+            library("sentry", "io.sentry:sentry-spring-boot-starter-jakarta:8.30.0")
             library("springdoc", "org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.15")
             library("wiremock", "org.wiremock:wiremock-standalone:3.13.2")
 
@@ -116,7 +116,7 @@ dependencyResolutionManagement {
 }
 
 plugins {
-    id("com.gradle.develocity") version "4.3"
+    id("com.gradle.develocity") version "4.3.1"
     id("com.github.burrunan.s3-build-cache") version "1.9.5"
 }
 
