@@ -43,7 +43,6 @@ import uk.gov.justice.digital.hmpps.message.PersonReference
 import uk.gov.justice.digital.hmpps.messaging.HmppsChannelManager
 import uk.gov.justice.digital.hmpps.messaging.crn
 import uk.gov.justice.digital.hmpps.resourceloader.ResourceLoader.notification
-import uk.gov.justice.digital.hmpps.service.AssessmentSubmitted.Companion.DELIUS_OGRS4_SUPPORT
 import uk.gov.justice.digital.hmpps.service.AssessmentSubmitted.Companion.UPDATE_RISK_REGISTRATIONS_IN_PLACE
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import java.math.BigDecimal
@@ -79,7 +78,6 @@ internal class IntegrationTest @Autowired constructor(
     fun setUp() {
         transactionTemplate = TransactionTemplate(transactionManager)
         whenever(featureFlags.enabled(UPDATE_RISK_REGISTRATIONS_IN_PLACE)).thenReturn(true)
-        whenever(featureFlags.enabled(DELIUS_OGRS4_SUPPORT)).thenReturn(true)
     }
 
     @Test

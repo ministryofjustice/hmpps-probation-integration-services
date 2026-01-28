@@ -75,6 +75,7 @@ class CommunityPaybackAppointmentsService(
             ),
             pickUpData = AppointmentResponsePickupData(
                 location = appointment.pickUpLocation?.toAppointmentResponseAddress(),
+                locationCode = appointment.pickUpLocation?.code?.let { Code(it) },
                 time = appointment.pickUpTime
             ),
             date = appointment.date,
