@@ -42,7 +42,7 @@ from ( with filtered_caseload as ( select caseload.*
                                     and contact_start_time is not null
                                     and contact_date between sysdate - 1825 and sysdate + 1825
                                     and soft_deleted = 0),
-            past_appointments as ( select max(all_appointments.contact_id)           as contact_id,
+            past_appointments as ( select max(all_appointments.contact_id) keep (dense_rank last order by all_appointments.appointment_datetime, all_appointments.contact_id)           as contact_id,
                                           max(all_appointments.appointment_datetime) as appointment_datetime,
                                           offender_id,
                                           type_code,
@@ -50,7 +50,7 @@ from ( with filtered_caseload as ( select caseload.*
                                    from all_appointments
                                    where contact_date between sysdate - 1825 and sysdate + 1
                                    group by offender_id, type_code, type_description ),
-            future_appointments as ( select min(all_appointments.contact_id)           as contact_id,
+            future_appointments as ( select min(all_appointments.contact_id) keep (dense_rank first order by appointment_datetime, contact_id)           as contact_id,
                                             min(all_appointments.appointment_datetime) as appointment_datetime,
                                             offender_id,
                                             type_code,
