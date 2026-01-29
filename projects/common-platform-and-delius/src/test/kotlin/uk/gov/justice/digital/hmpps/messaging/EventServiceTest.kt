@@ -86,11 +86,11 @@ internal class EventServiceTest {
         val sittingDay = ZonedDateTime.now()
         val caseUrn = ProsecutionCaseIdentifierGenerator.DEFAULT.caseURN
 
-        whenever(eventRepository.save(any())).thenReturn(event)
-        whenever(orderManagerRepository.save(any())).thenReturn(orderManager)
-        whenever(mainOffenceRepository.save(any())).thenReturn(mainOffence)
-        whenever(contactRepository.save(any())).thenReturn(ContactGenerator.EAPP)
-        whenever(courtAppearanceRepository.save(any())).thenReturn(
+        whenever(eventRepository.save(any<Event>())).thenReturn(event)
+        whenever(orderManagerRepository.save(any<OrderManager>())).thenReturn(orderManager)
+        whenever(mainOffenceRepository.save(any<MainOffence>())).thenReturn(mainOffence)
+        whenever(contactRepository.save(any<Contact>())).thenReturn(ContactGenerator.EAPP)
+        whenever(courtAppearanceRepository.save(any<CourtAppearance>())).thenReturn(
             CourtAppearanceGenerator.generate(
                 event = event,
                 appearanceType = ReferenceDataGenerator.TRIAL_ADJOURNMENT_APPEARANCE_TYPE,

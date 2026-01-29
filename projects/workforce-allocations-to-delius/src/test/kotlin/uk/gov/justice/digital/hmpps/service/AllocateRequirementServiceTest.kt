@@ -309,7 +309,7 @@ internal class AllocateRequirementServiceTest {
             )
         )
             .thenReturn(RequirementManagerGenerator.DEFAULT)
-        whenever(requirementManagerRepository.save(ArgumentMatchers.any())).thenAnswer { it.arguments[0] }
+        doAnswer { it.arguments[0] }.whenever(requirementManagerRepository).save(ArgumentMatchers.any())
         whenever(requirementRepository.countPendingTransfers(requirement.id)).thenReturn(0)
         whenever(transferReasonRepository.findByCode(TransferReasonCode.COMPONENT.value)).thenReturn(
             TransferReasonGenerator.COMPONENT
