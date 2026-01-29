@@ -12,6 +12,7 @@ import org.mockito.Mockito.verify
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.anyOrNull
 import org.mockito.kotlin.check
+import org.mockito.kotlin.doAnswer
 import org.mockito.kotlin.whenever
 import org.springframework.boot.context.event.ApplicationStartedEvent
 import uk.gov.justice.digital.hmpps.audit.service.OptimisationTables
@@ -321,8 +322,8 @@ internal class ApprovedPremisesServiceTest {
         givenNsiManagerInitialAllocation()
         givenAuditUser()
         givenReferral(person, details.eventDetails.bookingId, andResidence = true)
-        whenever(personAddressRepository.save(any())).thenAnswer { it.arguments[0].apply { set("id", 0L) } }
-        whenever(residenceRepository.save(any())).thenAnswer { it.arguments[0].apply { set("id", 0L) } }
+        doAnswer { it.arguments[0].apply { set("id", 0L) } }.whenever(personAddressRepository).save(any())
+        doAnswer { it.arguments[0].apply { set("id", 0L) } }.whenever(residenceRepository).save(any())
 
         approvedPremisesService.personArrived(personArrivedEvent)
 
@@ -515,7 +516,7 @@ internal class ApprovedPremisesServiceTest {
     }
 
     private fun givenContactTypes(types: List<ContactTypeCode>) {
-        whenever(contactRepository.save(any())).thenAnswer { it.arguments[0] }
+        doAnswer { it.arguments[0] }.whenever(contactRepository).save(any())
         types.forEach {
             whenever(contactTypeRepository.findByCode(it.code)).thenReturn(ContactTypeGenerator.generate(it.code))
         }
@@ -545,8 +546,8 @@ internal class ApprovedPremisesServiceTest {
     }
 
     private fun givenNsiTypes(types: List<NsiTypeCode> = listOf(), statuses: List<NsiStatusCode> = listOf()) {
-        whenever(nsiRepository.save(any())).thenAnswer { it.arguments[0] }
-        whenever(nsiManagerRepository.save(any())).thenAnswer { it.arguments[0] }
+        doAnswer { it.arguments[0] }.whenever(nsiRepository).save(any())
+        doAnswer { it.arguments[0] }.whenever(nsiManagerRepository).save(any())
         whenever(transferReasonRepository.findByCode("NSI"))
             .thenReturn(TransferReason(IdGenerator.getAndIncrement(), "NSI"))
         types.forEach {

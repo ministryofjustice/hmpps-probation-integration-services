@@ -8,6 +8,7 @@ import org.mockito.ArgumentCaptor
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.Mockito.any
+import org.mockito.Mockito.doAnswer
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
@@ -40,7 +41,7 @@ class StaffServiceTest {
         val staffName = StaffName("forename", "surname")
 
         whenever(officerCodeGenerator.generateFor(probationArea.code)).thenReturn(newStaffCode)
-        whenever(staffRepository.save(any(PrisonStaff::class.java))).thenAnswer { it.arguments[0] }
+        doAnswer { it.arguments[0] }.whenever(staffRepository).save(any())
 
         val newStaff = staffService.create(probationArea.id, probationArea.code, team.id, staffName)
 

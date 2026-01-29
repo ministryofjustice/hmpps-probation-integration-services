@@ -7,10 +7,7 @@ import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.ArgumentCaptor
 import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
-import org.mockito.kotlin.any
-import org.mockito.kotlin.mock
-import org.mockito.kotlin.verify
-import org.mockito.kotlin.whenever
+import org.mockito.kotlin.*
 import uk.gov.justice.digital.hmpps.data.generator.IdGenerator.id
 import uk.gov.justice.digital.hmpps.integrations.delius.domainevent.entity.DomainEvent
 import uk.gov.justice.digital.hmpps.integrations.delius.domainevent.entity.DomainEventRepository
@@ -58,9 +55,7 @@ class DomainEventServiceTest {
             )
         ).thenReturn(eventTypeRef)
 
-        whenever(domainEventRepository.save(any())).thenAnswer {
-            it.arguments[0] as DomainEvent
-        }
+        doAnswer { it.arguments[0] }.whenever(domainEventRepository).save(any())
 
         val contactId = id()
         // when
@@ -120,9 +115,7 @@ class DomainEventServiceTest {
             )
         ).thenReturn(eventTypeRef)
 
-        whenever(domainEventRepository.save(any())).thenAnswer {
-            it.arguments[0] as DomainEvent
-        }
+        doAnswer { it.arguments[0] }.whenever(domainEventRepository).save(any())
 
         val contactId = id()
 

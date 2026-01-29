@@ -17,6 +17,7 @@ import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
 import uk.gov.justice.digital.hmpps.data.generator.*
 import uk.gov.justice.digital.hmpps.integrations.client.OsClient
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.*
+import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonAddress
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonAddressRepository
 import uk.gov.justice.digital.hmpps.service.PersonService
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
@@ -66,16 +67,16 @@ internal class PersonServiceTest {
 
         mockReferenceData()
 
-        whenever(personRepository.save(any())).thenReturn(person)
+        whenever(personRepository.save(any<Person>())).thenReturn(person)
         whenever(courtRepository.findByOuCode(any())).thenReturn(CourtGenerator.UNKNOWN_COURT_N07_PROVIDER)
         whenever(personRepository.getNextCrn()).thenReturn(person.crn)
         whenever(personRepository.getSoundex(any())).thenReturn(person.firstNameSoundex)
         whenever(teamRepository.findByCode(any())).thenReturn(TeamGenerator.UNALLOCATED)
         whenever(staffRepository.findByCode(any())).thenReturn(StaffGenerator.UNALLOCATED)
-        whenever(personManagerRepository.save(any())).thenReturn(PersonManagerGenerator.DEFAULT)
-        whenever(equalityRepository.save(any())).thenReturn(EqualityGenerator.DEFAULT)
+        whenever(personManagerRepository.save(any<PersonManager>())).thenReturn(PersonManagerGenerator.DEFAULT)
+        whenever(equalityRepository.save(any<Equality>())).thenReturn(EqualityGenerator.DEFAULT)
         whenever(osClient.searchByFreeText(any(), any(), any())).thenReturn(OsPlacesResponseGenerator.SINGLE_RESULT)
-        whenever(personAddressRepository.save(any())).thenReturn(PersonAddressGenerator.MAIN_ADDRESS)
+        whenever(personAddressRepository.save(any<PersonAddress>())).thenReturn(PersonAddressGenerator.MAIN_ADDRESS)
 
         val savedPerson = personService.insertPerson(
             defendant = DefendantGenerator.DEFAULT,
@@ -101,16 +102,16 @@ internal class PersonServiceTest {
 
         mockReferenceData()
 
-        whenever(personRepository.save(any())).thenReturn(person)
+        whenever(personRepository.save(any<Person>())).thenReturn(person)
         whenever(courtRepository.findByOuCode(any())).thenReturn(CourtGenerator.UNKNOWN_COURT_N07_PROVIDER)
         whenever(personRepository.getNextCrn()).thenReturn(person.crn)
         whenever(personRepository.getSoundex(any())).thenReturn(person.firstNameSoundex)
         whenever(teamRepository.findByCode(any())).thenReturn(TeamGenerator.UNALLOCATED)
         whenever(staffRepository.findByCode(any())).thenReturn(StaffGenerator.UNALLOCATED)
-        whenever(personManagerRepository.save(any())).thenReturn(PersonManagerGenerator.DEFAULT)
-        whenever(equalityRepository.save(any())).thenReturn(EqualityGenerator.DEFAULT)
+        whenever(personManagerRepository.save(any<PersonManager>())).thenReturn(PersonManagerGenerator.DEFAULT)
+        whenever(equalityRepository.save(any<Equality>())).thenReturn(EqualityGenerator.DEFAULT)
         whenever(osClient.searchByFreeText(any(), any(), any())).thenReturn(OsPlacesResponseGenerator.NO_RESULTS)
-        whenever(personAddressRepository.save(any())).thenReturn(PersonAddressGenerator.MAIN_ADDRESS)
+        whenever(personAddressRepository.save(any<PersonAddress>())).thenReturn(PersonAddressGenerator.MAIN_ADDRESS)
 
         val savedPerson = personService.insertPerson(
             defendant = DefendantGenerator.DEFAULT,
