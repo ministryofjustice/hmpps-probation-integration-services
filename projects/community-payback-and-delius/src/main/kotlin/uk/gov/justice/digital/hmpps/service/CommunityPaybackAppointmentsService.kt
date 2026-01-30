@@ -196,10 +196,11 @@ class CommunityPaybackAppointmentsService(
                     complied = appointment.complied,
                     allocationId = request.allocationId,
                     notes = appointment.notes,
+                    reference = request.reference
                 )
             }
             .also(createUnpaidWorkAppointmentRepository::saveAll)
-            .map { CreatedAppointment(id = it.id!!) }
+            .map { CreatedAppointment(id = it.id!!, reference = it.reference!!) }
     }
 
     @Transactional

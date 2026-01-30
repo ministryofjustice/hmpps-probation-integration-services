@@ -19,6 +19,7 @@ import uk.gov.justice.digital.hmpps.jpa.GeneratedId
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.ZonedDateTime
+import java.util.*
 
 @Entity
 @Table(name = "upw_appointment")
@@ -139,6 +140,9 @@ class CreateUnpaidWorkAppointment(
 
     @Column(name = "partition_area_id")
     val partitionAreaId: Long = 0,
+
+    @Transient
+    val reference: UUID? = null,
 ) : Versioned
 
 interface CreateUnpaidWorkAppointmentRepository : JpaRepository<CreateUnpaidWorkAppointment, Long>

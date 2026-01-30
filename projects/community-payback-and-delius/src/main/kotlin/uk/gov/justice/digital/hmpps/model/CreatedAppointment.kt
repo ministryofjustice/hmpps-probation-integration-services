@@ -1,3 +1,5 @@
 package uk.gov.justice.digital.hmpps.model
 
-data class CreatedAppointment(val id: Long)
+import java.util.*
+
+data class CreatedAppointment(val id: Long, val reference: UUID)
