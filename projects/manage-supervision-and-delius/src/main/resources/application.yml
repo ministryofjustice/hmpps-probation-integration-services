@@ -12,11 +12,11 @@ spring:
         timezone.default_storage: NORMALIZE
         query.mutation_strategy: org.hibernate.query.sqm.mutation.internal.inline.InlineMutationStrategy
         query.mutation_strategy.persistent:
-            create_tables: false
-            drop_tables: false
+          create_tables: false
+          drop_tables: false
         query.mutation_strategy.global_temporary:
-            create_tables: false
-            drop_tables: false
+          create_tables: false
+          drop_tables: false
   security.oauth2.client:
     registration:
       default:
@@ -100,3 +100,10 @@ spring:
   jpa.hibernate.ddl-auto: validate
 dev.dataloader.enabled: false
 delius.db.username: NationalUser
+
+---
+
+spring.config.activate.on-profile: oracle
+spring:
+  datasource.url: 'jdbc:tc:oracle:slim-faststart:///XEPDB1'
+  jpa.hibernate.ddl-auto: create

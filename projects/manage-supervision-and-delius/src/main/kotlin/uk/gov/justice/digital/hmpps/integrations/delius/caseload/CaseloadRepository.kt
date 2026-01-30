@@ -11,139 +11,106 @@ import uk.gov.justice.digital.hmpps.integrations.delius.user.entity.ContactTypeD
 interface CaseloadRepository : JpaRepository<Caseload, Long> {
     @Query(
         """           
-select main.*
-from (
-  with filtered_caseload as (
-    select caseload.*
-    from caseload
-    join offender person on caseload.offender_id = person.offender_id
-    where caseload.staff_employee_id = :staffId
-      and caseload.role_code = 'OM'
-      and caseload.trust_provider_flag = 0
-      and (
-        :nameOrCrn is null or
-        lower(person.crn) like '%' || :nameOrCrn || '%' or
-        lower(person.first_name || ' ' || person.surname) like '%' || :nameOrCrn || '%' or
-        lower(person.surname || ' ' || person.first_name) like '%' || :nameOrCrn || '%' or
-        lower(person.surname || ', ' || person.first_name) like '%' || :nameOrCrn || '%'
-      )
-  ),
-  all_appointments as (
-    select
-      contact.contact_id                                               as contact_id,
-      contact.contact_date                                             as contact_date,
-      contact.offender_id                                              as offender_id,
-      contact.staff_id                                                 as staff_id,
-      r_contact_type.code                                              as type_code,
-      r_contact_type.description                                       as type_description,
-      trunc(contact.contact_date) +
-        (contact.contact_start_time - trunc(contact.contact_start_time)) as appointment_datetime
-    from contact
-    join r_contact_type
-      on contact.contact_type_id = r_contact_type.contact_type_id
-     and r_contact_type.attendance_contact = 'Y'
-    join filtered_caseload
-      on filtered_caseload.offender_id = contact.offender_id
-    where contact_date is not null
-      and contact_start_time is not null
-      and contact_date between sysdate - 1825 and sysdate + 1825
-      and soft_deleted = 0
-  ),
-
-  /* latest strictly BEFORE now */
-  past_appointments as (
-    select contact_id, appointment_datetime, offender_id, type_code, type_description
-    from (
-      select
-        aa2.contact_id,
-        aa2.appointment_datetime,
-        aa2.offender_id,
-        aa2.type_code,
-        aa2.type_description,
-        row_number() over (
-          partition by aa2.offender_id
-          order by aa2.appointment_datetime desc, aa2.contact_id desc
-        ) as rn
-      from all_appointments aa2
-      where aa2.appointment_datetime < sysdate
-        and aa2.contact_date between sysdate - 1825 and sysdate + 1
-    )
-    where rn = 1
-  ),
-
-  /* earliest strictly AFTER now */
-  future_appointments as (
-    select contact_id, appointment_datetime, offender_id, type_code, type_description
-    from (
-      select
-        aa.contact_id,
-        aa.appointment_datetime,
-        aa.offender_id,
-        aa.type_code,
-        aa.type_description,
-        row_number() over (
-          partition by aa.offender_id
-          order by aa.appointment_datetime asc, aa.contact_id asc
-        ) as rn
-      from all_appointments aa
-      where aa.appointment_datetime > sysdate
-        and aa.contact_date between sysdate - 1 and sysdate + 1825
-    )
-    where rn = 1
-  )
-
-  select
-    person.offender_id                          as offender_id,
-    person.crn                                  as crn,
-    person.date_of_birth_date                   as date_of_birth,
-    person.first_name                           as first_name,
-    person.second_name                          as second_name,
-    person.third_name                           as third_name,
-    person.surname                              as surname,
-    r_disposal_type.description                 as latest_sentence_type_description,
-    coalesce(sentence_stats.total_sentences, 0) as total_sentences,
-
-    next_appointment.contact_id                 as next_appointment_id,
-    next_appointment.appointment_datetime       as next_appointment_date_time,
-    next_appointment.type_description           as next_appointment_type_description,
-
-    prev_appointment.contact_id                 as prev_appointment_id,
-    prev_appointment.appointment_datetime       as prev_appointment_date_time,
-    prev_appointment.type_description           as prev_appointment_type_description,
-
-    team.code                                   as team_code
-  from filtered_caseload
-  join team on team.team_id = filtered_caseload.trust_provider_team_id
-  join offender person on filtered_caseload.offender_id = person.offender_id
-  left join future_appointments next_appointment
-    on next_appointment.offender_id = filtered_caseload.offender_id
-  left join past_appointments prev_appointment
-    on prev_appointment.offender_id = filtered_caseload.offender_id
-
-  left join (
-    select offender_id, total_sentences, disposal_id as latest_disposal_id
-    from (
-      select
-        event.offender_id,
-        disposal.disposal_id,
-        count(event.event_id) over (partition by event.offender_id)                                         as total_sentences,
-        row_number() over (partition by event.offender_id order by cast(event.event_number as number) desc) as row_num
-      from event
-      join disposal on disposal.event_id = event.event_id
-                   and disposal.active_flag = 1
-                   and disposal.soft_deleted = 0
-      where event.soft_deleted = 0
-        and event.active_flag = 1
-    ) sentences
-    where sentences.row_num = 1
-  ) sentence_stats
-    on sentence_stats.offender_id = filtered_caseload.offender_id
-  left join disposal on disposal.disposal_id = sentence_stats.latest_disposal_id
-  left join r_disposal_type on r_disposal_type.disposal_type_id = disposal.disposal_type_id
-  where (:nextContactCode is null or next_appointment.type_code = :nextContactCode)
-    and (:sentenceCode is null or r_disposal_type.disposal_type_code = :sentenceCode)
-) main
-order by null     
+/*+ INLINE */
+with fc as (
+    select /*+ CARDINALITY(fc 6) */ c.*
+    from caseload c
+    where c.staff_employee_id   = :staffId
+      and c.role_code           = 'OM'
+      and c.trust_provider_flag = 0
+),
+     filtered_offenders as (
+         select fc.*
+         from fc
+         join offender p on p.offender_id = fc.offender_id
+         where (:nameOrCrn is null
+             or lower(p.crn) like '%' || :nameOrCrn || '%'
+             or lower(p.first_name || ' ' || p.surname)  like '%' || :nameOrCrn || '%'
+             or lower(p.surname    || ' ' || p.first_name) like '%' || :nameOrCrn || '%'
+             or lower(p.surname    || ', ' || p.first_name) like '%' || :nameOrCrn || '%')
+     ),
+     apps as (
+         select c.offender_id,
+                c.contact_id,
+                c.contact_date,
+                c.contact_start_time,
+                trunc(c.contact_date) + (c.contact_start_time - trunc(c.contact_start_time)) as appointment_datetime,
+                ct.code        as type_code,
+                ct.description as type_description
+         from contact c
+         join r_contact_type ct
+              on ct.contact_type_id = c.contact_type_id
+                  and ct.attendance_contact = 'Y'
+         join filtered_offenders fo on fo.offender_id = c.offender_id
+         where c.soft_deleted = 0
+           and c.contact_date between trunc(sysdate) - 1825 and trunc(sysdate) + 1825
+     ),
+     agg_next as (
+         select offender_id,
+                min(contact_id)        keep (dense_rank first order by appointment_datetime)        as next_appointment_id,
+                min(appointment_datetime) keep (dense_rank first order by appointment_datetime)     as next_appointment_date_time,
+                min(type_description)   keep (dense_rank first order by appointment_datetime)       as next_appointment_type_description
+         from apps
+         where appointment_datetime > sysdate
+         group by offender_id
+     ),
+     agg_prev as (
+         select offender_id,
+                min(contact_id)        keep (dense_rank first order by appointment_datetime desc)   as prev_appointment_id,
+                min(appointment_datetime) keep (dense_rank first order by appointment_datetime desc) as prev_appointment_date_time,
+                min(type_description)   keep (dense_rank first order by appointment_datetime desc)   as prev_appointment_type_description
+         from apps
+         where appointment_datetime < sysdate
+         group by offender_id
+     ),
+     sentence_stats as (
+         select offender_id, total_sentences, disposal_id as latest_disposal_id
+         from (
+             select e.offender_id,
+                    d.disposal_id,
+                    count(e.event_id) over (partition by e.offender_id)                             as total_sentences,
+                    row_number() over (partition by e.offender_id order by to_number(e.event_number) desc) as rn
+             from event e
+             join disposal d on d.event_id = e.event_id
+                 and d.active_flag   = 1
+                 and d.soft_deleted  = 0
+             where e.active_flag  = 1
+               and e.soft_deleted = 0
+         )
+         where rn = 1
+     )
+select p.offender_id,
+       p.crn,
+       p.date_of_birth_date                   as date_of_birth,
+       p.first_name,
+       p.second_name,
+       p.third_name,
+       p.surname,
+       rdt.description                        as latest_sentence_type_description,
+       nvl(ss.total_sentences, 0)             as total_sentences,
+       an.next_appointment_id,
+       an.next_appointment_date_time,
+       an.next_appointment_type_description,
+       ap.prev_appointment_id,
+       ap.prev_appointment_date_time,
+       ap.prev_appointment_type_description,
+       t.code                                  as team_code
+from filtered_offenders fo
+join offender p        on p.offender_id = fo.offender_id
+join team t            on t.team_id     = fo.trust_provider_team_id
+left join agg_next an  on an.offender_id = fo.offender_id
+left join agg_prev ap  on ap.offender_id = fo.offender_id
+left join sentence_stats ss on ss.offender_id = fo.offender_id
+left join disposal d        on d.disposal_id  = ss.latest_disposal_id
+left join r_disposal_type rdt on rdt.disposal_type_id = d.disposal_type_id
+where (:nextContactCode is null or an.next_appointment_id is null or exists (
+    select 1 from apps a
+    where a.offender_id = fo.offender_id
+      and a.contact_id  = an.next_appointment_id
+      and a.type_code   = :nextContactCode
+))
+  and (:sentenceCode is null or rdt.disposal_type_code = :sentenceCode)
+order by null;
         """,
         countQuery = """
             with filtered_caseload as ( select caseload.*
