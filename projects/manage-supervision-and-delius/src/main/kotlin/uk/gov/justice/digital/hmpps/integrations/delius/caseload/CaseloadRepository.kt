@@ -10,7 +10,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.user.entity.ContactTypeD
 
 interface CaseloadRepository : JpaRepository<Caseload, Long> {
     @Query(
-        """with filtered_caseload as (
+        """select * from (with filtered_caseload as (
             select c.offender_id,
             c.trust_provider_team_id
                 from caseload c
@@ -69,28 +69,38 @@ interface CaseloadRepository : JpaRepository<Caseload, Long> {
     on ct.contact_type_id = c.contact_type_id
     and ct.attendance_contact = 'Y'
     where c.soft_deleted = 0
-    and (
-    c.contact_date >  trunc(sysdate)
-    or (c.contact_date = trunc(sysdate)
-    and c.contact_start_time > sysdate)
-    )
+    and 
+    (c.contact_date > trunc(sysdate)
+        or (
+            c.contact_date = trunc(sysdate)
+            and (c.contact_start_time - trunc(c.contact_start_time)) >
+           (sysdate - trunc(sysdate))
+            ))
     and c.contact_date <= trunc(sysdate) + 1825
     group by fc.offender_id
-    ),
-    next_time as (
+    ),  
+next_time as (
     select nd.offender_id,
-    nd.next_date,
-    min(c.contact_start_time) as next_time
+           nd.next_date,
+           min(c.contact_start_time) as next_time
     from next_date nd
     join contact c
-    on c.offender_id  = nd.offender_id
-    and c.contact_date = nd.next_date
+      on c.offender_id  = nd.offender_id
+     and c.contact_date = nd.next_date
     join r_contact_type ct
-    on ct.contact_type_id = c.contact_type_id
-    and ct.attendance_contact = 'Y'
+      on ct.contact_type_id = c.contact_type_id
+     and ct.attendance_contact = 'Y'
     where c.soft_deleted = 0
+      and (
+            c.contact_date > trunc(sysdate)
+         or (
+               c.contact_date = trunc(sysdate)
+           and (c.contact_start_time - trunc(c.contact_start_time)) >
+               (sysdate - trunc(sysdate))
+             )
+          )
     group by nd.offender_id, nd.next_date
-    ),
+),
     next_pick as (
     select nt.offender_id,
     min(c.contact_id) as contact_id
@@ -212,10 +222,9 @@ interface CaseloadRepository : JpaRepository<Caseload, Long> {
     left join prev_app pa
     on pa.offender_id = fc.offender_id
 
-    where (:nextContactCode is null or na.type_code = :nextContactCode)
+    where (:nextContactCode is null or upper(trim(na.type_code)) = upper(trim(:nextContactCode)))
     and (:sentenceCode   is null or rdt.disposal_type_code = :sentenceCode)
-
-    order by null;
+    ) main order by null
     """,
         nativeQuery = true
     )
