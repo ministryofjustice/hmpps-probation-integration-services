@@ -70,8 +70,8 @@ internal class LicenceConditionServiceTest {
             id = IdGenerator.getAndIncrement()
         )
 
-        whenever(licenceConditionRepository.save(any())).thenReturn(lc)
-        whenever(licenceConditionManagerRepository.save(any())).thenReturn(null)
+        whenever(licenceConditionRepository.save(any<LicenceCondition>())).thenReturn(lc)
+        whenever(licenceConditionManagerRepository.save(any<LicenceConditionManager>())).thenReturn(null)
         whenever(transferReasonRepository.findByCode(any())).thenReturn(TransferReason("TEST", 1L))
         whenever(referenceDataRepository.findByCodeAndDatasetCode(any(), any())).thenReturn(
             ReferenceData(

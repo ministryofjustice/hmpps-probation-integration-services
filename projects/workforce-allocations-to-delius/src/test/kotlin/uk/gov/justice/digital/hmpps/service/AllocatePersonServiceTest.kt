@@ -133,7 +133,7 @@ internal class AllocatePersonServiceTest {
                 )
             )
 
-        whenever(personManagerRepository.save(any<PersonManager>())).thenAnswer { it.arguments[0] }
+        doAnswer { it.arguments[0] }.whenever(personManagerRepository).save(any<PersonManager>())
 
         whenever(
             responsibleOfficerRepository.findActiveManagerAtDate(
@@ -166,7 +166,7 @@ internal class AllocatePersonServiceTest {
                 )
             )
 
-        whenever(personManagerRepository.save(any<PersonManager>())).thenAnswer { it.arguments[0] }
+        doAnswer { it.arguments[0] }.whenever(personManagerRepository).save(any<PersonManager>())
 
         whenever(
             responsibleOfficerRepository.findActiveManagerAtDate(

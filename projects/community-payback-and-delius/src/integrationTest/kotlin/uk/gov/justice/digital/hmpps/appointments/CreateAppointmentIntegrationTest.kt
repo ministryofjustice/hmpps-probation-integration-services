@@ -219,6 +219,8 @@ class CreateAppointmentIntegrationTest @Autowired constructor(
             .andExpect { content { jsonPath("size()") { value(1) } } }
             .andReturn().response.contentAsJson<List<CreatedAppointment>>().first()
 
+        assertThat(created.reference).isEqualTo(request.reference)
+
         unpaidWorkAppointmentRepository.findById(created.id).get().also {
             assertThat(it.date).isEqualTo(LocalDate.now().minusDays(1))
             assertThat(it.outcomeId).isEqualTo(ReferenceDataGenerator.ATTENDED_COMPLIED_CONTACT_OUTCOME.id)
@@ -249,6 +251,8 @@ class CreateAppointmentIntegrationTest @Autowired constructor(
             .andExpect { status { isOk() } }
             .andExpect { content { jsonPath("size()") { value(1) } } }
             .andReturn().response.contentAsJson<List<CreatedAppointment>>().first()
+
+        assertThat(created.reference).isEqualTo(request.reference)
 
         val upwAppointment = unpaidWorkAppointmentRepository.findById(created.id).get()
         assertThat(upwAppointment.contact.alertActive).isTrue
@@ -298,6 +302,8 @@ class CreateAppointmentIntegrationTest @Autowired constructor(
             .andExpect { status { isOk() } }
             .andExpect { content { jsonPath("size()") { value(1) } } }
             .andReturn().response.contentAsJson<List<CreatedAppointment>>().first()
+
+        assertThat(created.reference).isEqualTo(request.reference)
 
         unpaidWorkAppointmentRepository.findById(created.id).get().also {
             assertThat(it.contact.staff.code).isEqualTo(StaffGenerator.UNALLOCATED_STAFF.code)
