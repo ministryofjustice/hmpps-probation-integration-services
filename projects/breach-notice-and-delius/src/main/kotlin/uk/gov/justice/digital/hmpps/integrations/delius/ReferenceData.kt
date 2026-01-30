@@ -98,7 +98,8 @@ interface ReferenceDataRepository : JpaRepository<ReferenceData, Long> {
 }
 
 fun CodeAndDescription.codedDescription() = CodedDescription(code, description)
-fun List<CodeAndDescription>.codedDescriptions() = map(CodeAndDescription::codedDescription).sortedBy { it.description.lowercase() }
+fun List<CodeAndDescription>.codedDescriptions() =
+    map(CodeAndDescription::codedDescription).sortedBy { it.description.lowercase() }
 
 fun ReferenceData.sentenceType() = SentenceType(code, description, linkedData.first().description)
 fun List<ReferenceData>.sentenceTypes() = map(ReferenceData::sentenceType).sortedBy { it.description }
