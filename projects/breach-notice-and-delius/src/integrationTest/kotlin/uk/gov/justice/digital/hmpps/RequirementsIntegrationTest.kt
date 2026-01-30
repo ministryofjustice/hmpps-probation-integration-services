@@ -8,7 +8,7 @@ import uk.gov.justice.digital.hmpps.data.generator.DocumentGenerator.PSS_BREACH_
 import uk.gov.justice.digital.hmpps.data.generator.EventGenerator.DEFAULT_DISPOSAL
 import uk.gov.justice.digital.hmpps.data.generator.EventGenerator.PSS_REQUIREMENT
 import uk.gov.justice.digital.hmpps.data.generator.WarningGenerator
-import uk.gov.justice.digital.hmpps.integrations.delius.codedDescription
+import uk.gov.justice.digital.hmpps.integrations.delius.codedDescriptions
 import uk.gov.justice.digital.hmpps.model.RequirementResponse
 import uk.gov.justice.digital.hmpps.service.toModel
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
@@ -28,7 +28,7 @@ internal class RequirementsIntegrationTest : BaseIntegrationTest() {
         assertThat(requirements).isNotEmpty
         assertThat(response.requirements).isEqualTo(requirements.map { it.toModel() })
         assertThat(response.breachReasons)
-            .isEqualTo(WarningGenerator.BREACH_REASONS.filter { it.selectable }.map { it.codedDescription() })
+            .isEqualTo(WarningGenerator.BREACH_REASONS.filter { it.selectable }.codedDescriptions())
     }
 
     @Test
@@ -41,6 +41,6 @@ internal class RequirementsIntegrationTest : BaseIntegrationTest() {
 
         assertThat(response.requirements).isEqualTo(listOf(PSS_REQUIREMENT.toModel()))
         assertThat(response.breachReasons)
-            .isEqualTo(WarningGenerator.BREACH_REASONS.filter { it.selectable }.map { it.codedDescription() })
+            .isEqualTo(WarningGenerator.BREACH_REASONS.filter { it.selectable }.codedDescriptions())
     }
 }
