@@ -63,7 +63,8 @@ class ContactIntegrationTest : IntegrationTestBase() {
             allocatedUntil = null,
             lastUpdated = LocalDate.of(2025, 2, 10),
             responsibleOfficer = false,
-            prisonOffenderManager = false
+            prisonOffenderManager = false,
+            isUnallocated = false
         )
         val contact2 =
             Contact(
@@ -77,7 +78,8 @@ class ContactIntegrationTest : IntegrationTestBase() {
                 LocalDate.of(2025, 2, 10),
                 LocalDate.of(2025, 2, 9),
                 responsibleOfficer = false,
-                prisonOffenderManager = false
+                prisonOffenderManager = false,
+                isUnallocated = false
             )
 
         val contact3 = Contact(
@@ -91,11 +93,27 @@ class ContactIntegrationTest : IntegrationTestBase() {
             allocatedUntil = null,
             lastUpdated = LocalDate.of(2025, 2, 7),
             responsibleOfficer = true,
-            prisonOffenderManager = true
+            prisonOffenderManager = true,
+            isUnallocated = false
+        )
+
+        val contact4 = Contact(
+            "Unallocated Staff",
+            null,
+            null,
+            "Description of N01",
+            "Leicestershire All",
+            "OMU B",
+            LocalDate.of(2025, 2, 9),
+            LocalDate.of(2025, 2, 10),
+            lastUpdated = LocalDate.of(2025, 2, 9),
+            responsibleOfficer = false,
+            prisonOffenderManager = false,
+            isUnallocated = true
         )
 
         val expected =
-            ProfessionalContact(name, currentContacts = listOf(contact1, contact3), previousContacts = listOf(contact2))
+            ProfessionalContact(name, currentContacts = listOf(contact1, contact3), previousContacts = listOf(contact2, contact4))
 
         val response = mockMvc.get("/sentence/${PersonGenerator.OVERVIEW.crn}/contacts") { withToken() }
             .andExpect { status { isOk() } }
