@@ -115,23 +115,64 @@ from ( with filtered_caseload as ( select caseload.*
 order by null
     """,
         countQuery = """
-        select count(*)
-        from caseload
-        join offender person on caseload.offender_id = person.offender_id
-        left join event e on e.offender_id = caseload.offender_id and e.active_flag = 1 and e.soft_deleted = 0
-        left join disposal d on d.event_id = e.event_id and d.active_flag = 1 and d.soft_deleted = 0
-        left join r_disposal_type on d.disposal_type_id = r_disposal_type.disposal_type_id
-        left join contact c on c.offender_id = caseload.offender_id and c.soft_deleted = 0
-        left join r_contact_type ct on ct.contact_type_id = c.contact_type_id and ct.attendance_contact = 'Y'
-        where caseload.staff_employee_id = :staffId
-          and caseload.role_code = 'OM'
-          and caseload.trust_provider_flag = 0
-          and (:nameOrCrn is null or lower(person.crn) like '%' || :nameOrCrn || '%' or
-               lower(person.first_name || ' ' || person.surname) like '%' || :nameOrCrn || '%' or
-               lower(person.surname || ' ' || person.first_name) like '%' || :nameOrCrn || '%' or
-               lower(person.surname || ', ' || person.first_name) like '%' || :nameOrCrn || '%')
-          and (:nextContactCode is null or ct.code = :nextContactCode)
-          and (:sentenceCode is null or r_disposal_type.disposal_type_code = :sentenceCode)
+        with filtered_caseload as ( select caseload.*
+                                        from caseload
+                                        join offender person on caseload.offender_id = person.offender_id
+                                        where caseload.staff_employee_id = :staffId
+                                          and caseload.role_code = 'OM'
+                                          and caseload.trust_provider_flag = 0
+                                          and (:nameOrCrn is null or lower(person.crn) like '%' || :nameOrCrn || '%' or
+                                               lower(person.first_name || ' ' || person.surname) like '%' || :nameOrCrn || '%' or
+                                               lower(person.surname || ' ' || person.first_name) like '%' || :nameOrCrn || '%' or
+                                               lower(person.surname || ', ' || person.first_name) like '%' || :nameOrCrn || '%') ),
+                 appointments as ( select contact.contact_id                                               as contact_id,
+                                          contact.contact_date                                             as contact_date,
+                                          contact.offender_id                                              as offender_id,
+                                          contact.staff_id                                                 as staff_id,
+                                          r_contact_type.code                                              as type_code,
+                                          r_contact_type.description                                       as type_description,
+                                          trunc(contact.contact_date) +
+                                          (contact.contact_start_time - trunc(contact.contact_start_time)) as appointment_datetime
+                                   from contact
+                                   join r_contact_type on contact.contact_type_id = r_contact_type.contact_type_id and
+                                                          r_contact_type.attendance_contact = 'Y'
+                                   join filtered_caseload on filtered_caseload.offender_id = contact.offender_id and
+                                                             filtered_caseload.staff_employee_id = contact.staff_id
+                                   where contact_date is not null
+                                     and staff_id = :staffId
+                                     and contact_start_time is not null
+                                     and contact_date between sysdate - 1825 and sysdate + 1825
+                                     and soft_deleted = 0 ),
+                 future_appointments as ( select min(appointments.contact_id)           as contact_id,
+                                                 min(appointments.appointment_datetime) as appointment_datetime,
+                                                 offender_id,
+                                                 staff_id,
+                                                 type_code,
+                                                 type_description
+                                          from appointments
+                                          where contact_date between sysdate - 1 and sysdate + 1825
+                                          group by offender_id, staff_id, type_code, type_description )
+            select count(*)
+            from filtered_caseload
+            left join ( select future_appointments.*,
+                               row_number() over (partition by offender_id order by appointment_datetime) as row_num
+                        from future_appointments
+                        where appointment_datetime > sysdate ) next_appointment
+                      on next_appointment.offender_id = filtered_caseload.offender_id and next_appointment.row_num = 1
+            join ( select offender_id, disposal_id as latest_disposal_id
+                   from ( select event.offender_id,
+                                 disposal.disposal_id,
+                                 row_number() over (partition by event.offender_id order by event.event_number desc) as row_num
+                          from event
+                          join disposal
+                               on disposal.event_id = event.event_id and disposal.active_flag = 1 and disposal.soft_deleted = 0
+                          where event.soft_deleted = 0
+                            and event.active_flag = 1 ) sentences
+                   where sentences.row_num = 1 ) sentence_stats on sentence_stats.offender_id = filtered_caseload.offender_id
+            left join disposal on disposal.disposal_id = sentence_stats.latest_disposal_id
+            left join r_disposal_type on r_disposal_type.disposal_type_id = disposal.disposal_type_id
+            where (:nextContactCode is null or next_appointment.type_code = :nextContactCode)
+              and (:sentenceCode is null or r_disposal_type.disposal_type_code = :sentenceCode)
     """,
         nativeQuery = true
     )
