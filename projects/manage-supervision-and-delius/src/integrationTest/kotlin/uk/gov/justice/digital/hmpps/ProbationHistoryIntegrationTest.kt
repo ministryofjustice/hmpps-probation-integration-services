@@ -43,7 +43,7 @@ class ProbationHistoryIntegrationTest : IntegrationTestBase() {
                 SentenceSummary("1234567", "Pre-Sentence"),
                 SentenceSummary("7654321", "Default Sentence Type")
             ),
-            ProbationHistory(4, LocalDate.now().minusDays(7), 2, 1)
+            ProbationHistory(4, LocalDate.now().minusDays(7), 2, 2)
         )
 
         assertEquals(expected, response)

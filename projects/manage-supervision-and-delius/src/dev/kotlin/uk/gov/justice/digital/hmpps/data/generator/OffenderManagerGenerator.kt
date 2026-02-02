@@ -69,6 +69,14 @@ object OffenderManagerGenerator {
         DEFAULT_PROVIDER,
         startDate = LocalDate.now().minusDays(2)
     )
+    val STAFF_4 = Staff(
+        IdGenerator.getAndIncrement(),
+        "N01UATU",
+        "Unallocated",
+        "Staff",
+        DEFAULT_PROVIDER,
+        startDate = LocalDate.now().minusDays(2)
+    )
 
     val STAFF_USER_1 = StaffUser(IdGenerator.getAndIncrement(), STAFF_1, "peter-parker", "peter", surname = "parker")
     val STAFF_USER_2 = StaffUser(IdGenerator.getAndIncrement(), STAFF_2, "bwayne", "bruce", surname = "wayne")
@@ -131,6 +139,19 @@ object OffenderManagerGenerator {
             active = false
         )
 
+    val OFFENDER_MANAGER_UNALLOCATED =
+        OffenderManager(
+            IdGenerator.getAndIncrement(),
+            PersonGenerator.OVERVIEW,
+            DEFAULT_PROVIDER,
+            TEAM,
+            STAFF_4,
+            LocalDate.of(2025, 2, 9),
+            LocalDate.of(2025, 2, 10),
+            lastUpdated = ZonedDateTime.of(LocalDate.of(2025, 2, 9), LocalTime.NOON, EuropeLondon),
+            active = false
+        )
+
     val PRISON_OFFENDER_MANAGER_ACTIVE = PrisonManager(
         IdGenerator.getAndIncrement(),
         PersonGenerator.OVERVIEW,
@@ -176,5 +197,13 @@ object OffenderManagerGenerator {
         startDate = ZonedDateTime.now(),
         endDate = ZonedDateTime.now(),
         offenderManagerId = OFFENDER_MANAGER_INACTIVE.id
+    )
+
+    val RESPONSIBLE_OFFICER_OM_UNALLOCATED = ResponsibleOfficer(
+        IdGenerator.getAndIncrement(),
+        PersonGenerator.OVERVIEW.id,
+        startDate = ZonedDateTime.now(),
+        endDate = ZonedDateTime.now(),
+        offenderManagerId = OFFENDER_MANAGER_UNALLOCATED.id
     )
 }

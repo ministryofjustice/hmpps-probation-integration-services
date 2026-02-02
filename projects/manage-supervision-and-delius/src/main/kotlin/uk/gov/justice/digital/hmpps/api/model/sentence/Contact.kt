@@ -13,5 +13,6 @@ data class Contact(
     val allocatedUntil: LocalDate?,
     val lastUpdated: LocalDate?,
     val responsibleOfficer: Boolean,
-    val prisonOffenderManager: Boolean
+    val prisonOffenderManager: Boolean,
+    val isUnallocated: Boolean
 )
