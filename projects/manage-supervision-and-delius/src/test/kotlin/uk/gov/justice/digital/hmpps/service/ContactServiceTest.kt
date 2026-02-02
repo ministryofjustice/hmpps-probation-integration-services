@@ -107,7 +107,8 @@ class ContactServiceTest {
             allocatedUntil = null,
             lastUpdated = LocalDate.of(2025, 2, 10),
             responsibleOfficer = false,
-            prisonOffenderManager = false
+            prisonOffenderManager = false,
+            isUnallocated = false
         )
         val contact2 =
             Contact(
@@ -121,7 +122,8 @@ class ContactServiceTest {
                 LocalDate.of(2025, 2, 10),
                 LocalDate.of(2025, 2, 9),
                 responsibleOfficer = false,
-                prisonOffenderManager = false
+                prisonOffenderManager = false,
+                isUnallocated = false
             )
 
         val expected =

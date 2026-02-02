@@ -73,7 +73,8 @@ class ContactService(
             allocatedUntil = endDate,
             lastUpdated = lastUpdated.toLocalDate(),
             responsibleOfficer = responsibleOfficer != null,
-            prisonOffenderManager = false
+            prisonOffenderManager = false,
+            isUnallocated = staff.code.endsWith("U")
         )
     }
 
@@ -95,7 +96,8 @@ class ContactService(
             allocatedUntil = endDate,
             lastUpdated = lastUpdated.toLocalDate(),
             responsibleOfficer = responsibleOfficer != null,
-            prisonOffenderManager = true
+            prisonOffenderManager = true,
+            isUnallocated = staff.code.endsWith("U")
         )
     }
 }
