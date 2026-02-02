@@ -105,21 +105,21 @@ data class Ogrs4Score(
 
 fun HmppsDomainEvent.rsr() = RiskAssessment.V4(
     additionalInformation["RSRScore"] as Double,
-    mapBand(additionalInformation["RSRBand"].toString()),
+    mapBand(additionalInformation["RSRBand"] as String?),
     additionalInformation["RSRStaticOrDynamic"] as String,
     additionalInformation["RSRAlgorithmVersion"] as Int
 )
 
 fun HmppsDomainEvent.rsrOLD() = RiskAssessment.V3(
     additionalInformation["RSRScore"] as Double,
-    mapBand(additionalInformation["RSRBand"].toString()),
+    mapBand(additionalInformation["RSRBand"]) as String?,
     additionalInformation["RSRStaticOrDynamic"] as String,
 )
 
 fun HmppsDomainEvent.ospIndecent() = additionalInformation["OSPIndecentScore"]?.let {
     RiskAssessment.V4(
         score = additionalInformation["OSPIndecentScore"] as Double,
-        band = mapBand(additionalInformation["OSPIndecentBand"].toString()),
+        band = mapBand(additionalInformation["OSPIndecentBand"]) as String?,
         algorithmVersion = additionalInformation["RSRAlgorithmVersion"] as Int
     )
 }
@@ -127,14 +127,14 @@ fun HmppsDomainEvent.ospIndecent() = additionalInformation["OSPIndecentScore"]?.
 fun HmppsDomainEvent.ospIndecentOLD() = additionalInformation["OSPIndecentScore"]?.let {
     RiskAssessment.V3(
         score = additionalInformation["OSPIndecentScore"] as Double,
-        band = mapBand(additionalInformation["OSPIndecentBand"].toString()),
+        band = mapBand(additionalInformation["OSPIndecentBand"]) as String?,
     )
 }
 
 fun HmppsDomainEvent.ospIndirectIndecent() = additionalInformation["OSPIndirectIndecentBand"]?.let {
     RiskAssessment.V4(
         score = additionalInformation["OSPIndirectIndecentScore"] as Double,
-        band = mapBand(additionalInformation["OSPIndirectIndecentBand"].toString()),
+        band = mapBand(additionalInformation["OSPIndirectIndecentBand"]) as String?,
         algorithmVersion = additionalInformation["RSRAlgorithmVersion"] as Int
     )
 }
@@ -142,21 +142,21 @@ fun HmppsDomainEvent.ospIndirectIndecent() = additionalInformation["OSPIndirectI
 fun HmppsDomainEvent.ospIndirectIndecentOLD() = additionalInformation["OSPIndirectIndecentBand"]?.let {
     RiskAssessment.V3(
         score = additionalInformation["OSPIndirectIndecentScore"] as Double,
-        band = mapBand(additionalInformation["OSPIndirectIndecentBand"].toString()),
+        band = mapBand(additionalInformation["OSPIndirectIndecentBand"]) as String?,
     )
 }
 
 fun HmppsDomainEvent.ospContact() = additionalInformation["OSPContactScore"]?.let {
     RiskAssessment.V3(
         additionalInformation["OSPContactScore"] as Double,
-        mapBand(additionalInformation["OSPContactBand"].toString()),
+        mapBand(additionalInformation["OSPContactBand"]) as String?,
     )
 }
 
 fun HmppsDomainEvent.ospDirectContact() = additionalInformation["OSPDirectContactBand"]?.let {
     RiskAssessment.V3(
         additionalInformation["OSPDirectContactScore"] as Double,
-        mapBand(additionalInformation["OSPDirectContactBand"].toString()),
+        mapBand(additionalInformation["OSPDirectContactBand"]) as String?,
     )
 }
 
