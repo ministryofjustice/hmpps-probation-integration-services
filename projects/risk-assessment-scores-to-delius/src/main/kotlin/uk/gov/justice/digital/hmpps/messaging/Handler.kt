@@ -171,22 +171,12 @@ fun HmppsDomainEvent.ogrs4Score() = Ogrs4Score(
     additionalInformation["OGRS4GYr2Band"] as String?
 )
 
-private fun mapBand(band: String?): String? {
-    if (band == null) return null
-    val upper = band.uppercase()
-
-    // If already a single-letter band in the expected format, return as-is
-    if (upper.length == 1 && upper in setOf("L", "M", "H", "V")) {
-        return upper
-    }
-
-    return when (upper) {
-        "LOW" -> "L"
-        "MEDIUM" -> "M"
-        "HIGH" -> "H"
-        "VERY HIGH" -> "V"
-        else -> null
-    }
+private fun mapBand(band: String?) = when (band?.uppercase()) {
+    "LOW", "L" -> "L"
+    "MEDIUM", "M" -> "M"
+    "HIGH", "H" -> "H"
+    "VERY HIGH", "V" -> "V"
+    else -> null
 }
 
 fun HmppsDomainEvent.telemetryProperties() = mapOf(
