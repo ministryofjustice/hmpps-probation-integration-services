@@ -113,7 +113,11 @@ class ContactIntegrationTest : IntegrationTestBase() {
         )
 
         val expected =
-            ProfessionalContact(name, currentContacts = listOf(contact1, contact3), previousContacts = listOf(contact2, contact4))
+            ProfessionalContact(
+                name,
+                currentContacts = listOf(contact1, contact3),
+                previousContacts = listOf(contact2, contact4)
+            )
 
         val response = mockMvc.get("/sentence/${PersonGenerator.OVERVIEW.crn}/contacts") { withToken() }
             .andExpect { status { isOk() } }
