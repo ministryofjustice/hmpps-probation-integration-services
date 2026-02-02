@@ -1,9 +1,9 @@
-# Core person record and Delius
+# Core Person Record and Delius
 
-This service provides an API to get details of the Delius person record.
+This service provides an API to get details of the Delius Person record.
 
 ## Business need
-Provides a background person on probation information to the client.
+Provides background information about a Person on Probation to the client.
 
 ## Data dependencies
 This integration service depends on Delius data for up-to-date data relating to a **Person on Probation**.
