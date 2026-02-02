@@ -35,11 +35,18 @@ from ( with filtered_caseload as ( select caseload.*
                                          from contact c
                                          join r_contact_type ct on ct.contact_type_id = c.contact_type_id
                                          join filtered_caseload fc on fc.offender_id = c.offender_id
-                                         where c.soft_deleted = 0
-                                           and ct.attendance_contact = 'Y'
-                                           and c.contact_date <= trunc(sysdate) - 1825
-                                           and (c.contact_date > trunc(sysdate) or
-                                                (c.contact_date = trunc(sysdate) and c.contact_start_time > sysdate)) )
+                                            where c.soft_deleted = 0
+                                              and ct.attendance_contact = 'Y'
+                                              and c.contact_date <= trunc(sysdate) + 1825
+                                              and (
+                                                    c.contact_date > trunc(sysdate)
+                                                 or (
+                                                      c.contact_date = trunc(sysdate)
+                                                      and (c.contact_start_time - trunc(c.contact_start_time))
+                                                          > (sysdate - trunc(sysdate))
+                                                    )
+                                                  )
+                                             )
                                   where rn = 1 ),
             prev_appointment as ( select *
                                   from ( select c.offender_id,
@@ -55,8 +62,15 @@ from ( with filtered_caseload as ( select caseload.*
                                          where c.soft_deleted = 0
                                            and ct.attendance_contact = 'Y'
                                            and c.contact_date >= trunc(sysdate) - 1825
-                                           and (c.contact_date < trunc(sysdate) or
-                                                (c.contact_date = trunc(sysdate) and c.contact_start_time < sysdate)) )
+                                            and (
+                                                  c.contact_date < trunc(sysdate)
+                                               or (
+                                                    c.contact_date = trunc(sysdate)
+                                                    and (c.contact_start_time - trunc(c.contact_start_time))
+                                                        < (sysdate - trunc(sysdate))
+                                                  )
+                                                )
+                                             )
                                   where rn = 1 ),
             all_sentences as ( select e.offender_id, cast(e.event_number as int) as event_number, d.disposal_id
                                from filtered_caseload fc
