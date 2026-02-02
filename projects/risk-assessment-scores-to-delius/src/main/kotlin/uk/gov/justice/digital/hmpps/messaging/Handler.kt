@@ -81,18 +81,18 @@ fun HmppsDomainEvent.assessmentDate() =
 
 sealed class RiskAssessment {
     abstract val score: Double
-    abstract val band: String
+    abstract val band: String?
     abstract val staticOrDynamic: String?
 
     data class V3(
         override val score: Double,
-        override val band: String,
+        override val band: String?,
         override val staticOrDynamic: String? = null
     ) : RiskAssessment()
 
     data class V4(
         override val score: Double,
-        override val band: String,
+        override val band: String?,
         override val staticOrDynamic: String? = null,
         val algorithmVersion: Int? = null
     ) : RiskAssessment()
@@ -105,21 +105,21 @@ data class Ogrs4Score(
 
 fun HmppsDomainEvent.rsr() = RiskAssessment.V4(
     additionalInformation["RSRScore"] as Double,
-    mapBand(additionalInformation["RSRBand"].toString()) as String,
+    mapBand(additionalInformation["RSRBand"].toString()),
     additionalInformation["RSRStaticOrDynamic"] as String,
     additionalInformation["RSRAlgorithmVersion"] as Int
 )
 
 fun HmppsDomainEvent.rsrOLD() = RiskAssessment.V3(
     additionalInformation["RSRScore"] as Double,
-    mapBand(additionalInformation["RSRBand"].toString()) as String,
+    mapBand(additionalInformation["RSRBand"].toString()),
     additionalInformation["RSRStaticOrDynamic"] as String,
 )
 
 fun HmppsDomainEvent.ospIndecent() = additionalInformation["OSPIndecentScore"]?.let {
     RiskAssessment.V4(
         score = additionalInformation["OSPIndecentScore"] as Double,
-        band = mapBand(additionalInformation["OSPIndecentBand"].toString()) as String,
+        band = mapBand(additionalInformation["OSPIndecentBand"].toString()),
         algorithmVersion = additionalInformation["RSRAlgorithmVersion"] as Int
     )
 }
@@ -127,14 +127,14 @@ fun HmppsDomainEvent.ospIndecent() = additionalInformation["OSPIndecentScore"]?.
 fun HmppsDomainEvent.ospIndecentOLD() = additionalInformation["OSPIndecentScore"]?.let {
     RiskAssessment.V3(
         score = additionalInformation["OSPIndecentScore"] as Double,
-        band = mapBand(additionalInformation["OSPIndecentBand"].toString()) as String,
+        band = mapBand(additionalInformation["OSPIndecentBand"].toString()),
     )
 }
 
 fun HmppsDomainEvent.ospIndirectIndecent() = additionalInformation["OSPIndirectIndecentBand"]?.let {
     RiskAssessment.V4(
         score = additionalInformation["OSPIndirectIndecentScore"] as Double,
-        band = mapBand(additionalInformation["OSPIndirectIndecentBand"].toString()) as String,
+        band = mapBand(additionalInformation["OSPIndirectIndecentBand"].toString()),
         algorithmVersion = additionalInformation["RSRAlgorithmVersion"] as Int
     )
 }
@@ -142,21 +142,21 @@ fun HmppsDomainEvent.ospIndirectIndecent() = additionalInformation["OSPIndirectI
 fun HmppsDomainEvent.ospIndirectIndecentOLD() = additionalInformation["OSPIndirectIndecentBand"]?.let {
     RiskAssessment.V3(
         score = additionalInformation["OSPIndirectIndecentScore"] as Double,
-        band = mapBand(additionalInformation["OSPIndirectIndecentBand"].toString()) as String,
+        band = mapBand(additionalInformation["OSPIndirectIndecentBand"].toString()),
     )
 }
 
 fun HmppsDomainEvent.ospContact() = additionalInformation["OSPContactScore"]?.let {
     RiskAssessment.V3(
         additionalInformation["OSPContactScore"] as Double,
-        mapBand(additionalInformation["OSPContactBand"].toString()) as String,
+        mapBand(additionalInformation["OSPContactBand"].toString()),
     )
 }
 
 fun HmppsDomainEvent.ospDirectContact() = additionalInformation["OSPDirectContactBand"]?.let {
     RiskAssessment.V3(
         additionalInformation["OSPDirectContactScore"] as Double,
-        mapBand(additionalInformation["OSPDirectContactBand"].toString()) as String,
+        mapBand(additionalInformation["OSPDirectContactBand"].toString()),
     )
 }
 
@@ -188,16 +188,16 @@ fun HmppsDomainEvent.telemetryProperties() = mapOf(
     "crn" to (personReference.findCrn() ?: "unknown"),
     "eventNumber" to (additionalInformation["EventNumber"]?.toString() ?: "Not Provided"),
     "rsrScore" to additionalInformation["RSRScore"].toString(),
-    "rsrBand" to additionalInformation["RSRBand"].toString(),
+    "rsrBand" to mapBand(additionalInformation["RSRBand"].toString()),
     "rsrStaticOrDynamic" to additionalInformation["RSRStaticOrDynamic"].toString(),
     "ospIndecentScore" to additionalInformation["OSPIndecentScore"].toString(),
-    "ospIndecentBand" to additionalInformation["OSPIndecentBand"].toString(),
+    "ospIndecentBand" to mapBand(additionalInformation["OSPIndecentBand"].toString()),
     "ospContactScore" to additionalInformation["OSPContactScore"].toString(),
-    "ospContactBand" to additionalInformation["OSPContactBand"].toString(),
+    "ospContactBand" to mapBand(additionalInformation["OSPContactBand"].toString()),
     "ospIndirectIndecentScore" to additionalInformation["OSPIndirectIndecentScore"].toString(),
-    "ospIndirectIndecentBand" to additionalInformation["OSPIndirectIndecentBand"].toString(),
+    "ospIndirectIndecentBand" to mapBand(additionalInformation["OSPIndirectIndecentBand"].toString()),
     "ospDirectContactScore" to additionalInformation["OSPDirectContactScore"].toString(),
-    "ospDirectContactBand" to additionalInformation["OSPDirectContactBand"].toString(),
+    "ospDirectContactBand" to mapBand(additionalInformation["OSPDirectContactBand"].toString()),
     "OGRS3Yr1" to additionalInformation["OGRS3Yr1"].toString(),
     "OGRS3Yr2" to additionalInformation["OGRS3Yr2"].toString(),
     "RSRAlgorithmVersion" to additionalInformation["RSRAlgorithmVersion"].toString(),
