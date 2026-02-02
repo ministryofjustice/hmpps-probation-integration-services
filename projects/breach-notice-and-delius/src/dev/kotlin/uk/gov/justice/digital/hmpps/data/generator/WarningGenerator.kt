@@ -2,9 +2,7 @@ package uk.gov.justice.digital.hmpps.data.generator
 
 import uk.gov.justice.digital.hmpps.data.generator.DateTimeGenerator.zonedDateTime
 import uk.gov.justice.digital.hmpps.data.generator.EventGenerator.DEFAULT_EVENT
-import uk.gov.justice.digital.hmpps.data.generator.EventGenerator.DEFAULT_RQMNT
 import uk.gov.justice.digital.hmpps.data.generator.EventGenerator.PSS_EVENT
-import uk.gov.justice.digital.hmpps.data.generator.EventGenerator.PSS_REQUIREMENT
 import uk.gov.justice.digital.hmpps.data.generator.OfficeLocationGenerator.DEFAULT_LOCATION
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.DEFAULT_PERSON
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.PSS_PERSON
@@ -30,10 +28,10 @@ object WarningGenerator {
         generateNoticeType("FO", "Formal Warning"),
     )
     val BREACH_REASONS = listOf(
-        generateReason("BR01"),
-        generateReason("BR02"),
-        generateReason("BR03"),
-        generateReason("BR04", selectable = false),
+        generateReason("BR01", "Failed to attend as instructed"),
+        generateReason("BR02", "Attended late"),
+        generateReason("BR03", "failed to comply"),
+        generateReason("BR04", "attended but failed to comply", selectable = false),
     )
 
     val CONDITION_TYPES = listOf(

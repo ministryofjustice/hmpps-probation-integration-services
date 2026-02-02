@@ -103,4 +103,18 @@ internal class WarningIntegrationTest : BaseIntegrationTest() {
         mockMvc.get("/warning-details/${PersonGenerator.DEFAULT_PERSON.crn}/$PSS_BREACH_NOTICE_ID") { withToken() }
             .andExpect { status { isNotFound() } }
     }
+
+    @Test
+    fun `breach reasons are sorted case-insensitively`() {
+        val person = PersonGenerator.DEFAULT_PERSON
+        val response = mockMvc.get("/warning-details/${person.crn}/$BREACH_NOTICE_ID") {
+            withToken()
+        }
+            .andExpect { status { is2xxSuccessful() } }
+            .andReturn().response.contentAsJson<WarningDetails>()
+
+        val expectedSorted =
+            WarningGenerator.BREACH_REASONS.filter { it.selectable }.sortedBy { it.description.lowercase() }
+        assertThat(response.breachReasons.map { it.description }).isEqualTo(expectedSorted.map { it.description })
+    }
 }
