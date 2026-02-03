@@ -81,18 +81,18 @@ fun HmppsDomainEvent.assessmentDate() =
 
 sealed class RiskAssessment {
     abstract val score: Double
-    abstract val band: String
+    abstract val band: String?
     abstract val staticOrDynamic: String?
 
     data class V3(
         override val score: Double,
-        override val band: String,
+        override val band: String?,
         override val staticOrDynamic: String? = null
     ) : RiskAssessment()
 
     data class V4(
         override val score: Double,
-        override val band: String,
+        override val band: String?,
         override val staticOrDynamic: String? = null,
         val algorithmVersion: Int? = null
     ) : RiskAssessment()
@@ -105,21 +105,21 @@ data class Ogrs4Score(
 
 fun HmppsDomainEvent.rsr() = RiskAssessment.V4(
     additionalInformation["RSRScore"] as Double,
-    additionalInformation["RSRBand"] as String,
+    mapBand(additionalInformation["RSRBand"] as String?),
     additionalInformation["RSRStaticOrDynamic"] as String,
     additionalInformation["RSRAlgorithmVersion"] as Int
 )
 
 fun HmppsDomainEvent.rsrOLD() = RiskAssessment.V3(
     additionalInformation["RSRScore"] as Double,
-    additionalInformation["RSRBand"] as String,
+    mapBand(additionalInformation["RSRBand"]),
     additionalInformation["RSRStaticOrDynamic"] as String,
 )
 
 fun HmppsDomainEvent.ospIndecent() = additionalInformation["OSPIndecentScore"]?.let {
     RiskAssessment.V4(
         score = additionalInformation["OSPIndecentScore"] as Double,
-        band = additionalInformation["OSPIndecentBand"] as String,
+        band = mapBand(additionalInformation["OSPIndecentBand"]),
         algorithmVersion = additionalInformation["RSRAlgorithmVersion"] as Int
     )
 }
@@ -127,14 +127,14 @@ fun HmppsDomainEvent.ospIndecent() = additionalInformation["OSPIndecentScore"]?.
 fun HmppsDomainEvent.ospIndecentOLD() = additionalInformation["OSPIndecentScore"]?.let {
     RiskAssessment.V3(
         score = additionalInformation["OSPIndecentScore"] as Double,
-        band = additionalInformation["OSPIndecentBand"] as String,
+        band = mapBand(additionalInformation["OSPIndecentBand"]),
     )
 }
 
 fun HmppsDomainEvent.ospIndirectIndecent() = additionalInformation["OSPIndirectIndecentBand"]?.let {
     RiskAssessment.V4(
         score = additionalInformation["OSPIndirectIndecentScore"] as Double,
-        band = additionalInformation["OSPIndirectIndecentBand"] as String,
+        band = mapBand(additionalInformation["OSPIndirectIndecentBand"]),
         algorithmVersion = additionalInformation["RSRAlgorithmVersion"] as Int
     )
 }
@@ -142,21 +142,21 @@ fun HmppsDomainEvent.ospIndirectIndecent() = additionalInformation["OSPIndirectI
 fun HmppsDomainEvent.ospIndirectIndecentOLD() = additionalInformation["OSPIndirectIndecentBand"]?.let {
     RiskAssessment.V3(
         score = additionalInformation["OSPIndirectIndecentScore"] as Double,
-        band = additionalInformation["OSPIndirectIndecentBand"] as String,
+        band = mapBand(additionalInformation["OSPIndirectIndecentBand"]),
     )
 }
 
 fun HmppsDomainEvent.ospContact() = additionalInformation["OSPContactScore"]?.let {
     RiskAssessment.V3(
         additionalInformation["OSPContactScore"] as Double,
-        additionalInformation["OSPContactBand"] as String,
+        mapBand(additionalInformation["OSPContactBand"]),
     )
 }
 
 fun HmppsDomainEvent.ospDirectContact() = additionalInformation["OSPDirectContactBand"]?.let {
     RiskAssessment.V3(
         additionalInformation["OSPDirectContactScore"] as Double,
-        additionalInformation["OSPDirectContactBand"] as String,
+        mapBand(additionalInformation["OSPDirectContactBand"]),
     )
 }
 
@@ -170,6 +170,14 @@ fun HmppsDomainEvent.ogrs4Score() = Ogrs4Score(
     additionalInformation["OGP2Yr2Band"] as String?,
     additionalInformation["OGRS4GYr2Band"] as String?
 )
+
+private fun mapBand(band: Any?) = when ((band as String?)?.uppercase()) {
+    "LOW", "L" -> "L"
+    "MEDIUM", "M" -> "M"
+    "HIGH", "H" -> "H"
+    "VERY HIGH", "V" -> "V"
+    else -> null
+}
 
 fun HmppsDomainEvent.telemetryProperties() = mapOf(
     "occurredAt" to occurredAt.toString(),
