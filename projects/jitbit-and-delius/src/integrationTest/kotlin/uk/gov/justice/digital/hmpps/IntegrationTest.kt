@@ -25,8 +25,19 @@ import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = RANDOM_PORT)
 internal class IntegrationTest @Autowired constructor(
-    private val mockMvc: MockMvc
+    private val mockMvc: MockMvc,
 ) {
+    @Test
+    fun `returns true when user exists`() {
+        mockMvc.get("/user?email=test.user@example.com") { withToken() }
+            .andExpect { status { isOk() } }
+    }
+
+    @Test
+    fun `returns 404 when user does not exist`() {
+        mockMvc.get("/user?email=test.notauser@example.com") { withToken() }
+            .andExpect { status { isNotFound() } }
+    }
 
     @Test
     fun `returns 404 when not found`() {

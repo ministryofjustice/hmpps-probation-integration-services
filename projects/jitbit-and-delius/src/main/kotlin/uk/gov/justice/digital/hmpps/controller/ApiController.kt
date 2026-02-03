@@ -9,18 +9,22 @@ import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import uk.gov.justice.digital.hmpps.advice.ErrorResponse
 import uk.gov.justice.digital.hmpps.model.CaseDetails
 import uk.gov.justice.digital.hmpps.model.LimitedAccessDetail
+import uk.gov.justice.digital.hmpps.model.User
 import uk.gov.justice.digital.hmpps.model.limitedAccessDetail
 import uk.gov.justice.digital.hmpps.service.CaseDetailService
 import uk.gov.justice.digital.hmpps.service.UserAccessService
+import uk.gov.justice.digital.hmpps.service.UserService
 
 @RestController
 class ApiController(
     private val caseDetailService: CaseDetailService,
     private val userAccessService: UserAccessService,
+    private val userService: UserService,
 ) {
     @GetMapping(value = ["/case/{crn}"])
     @PreAuthorize("hasRole('PROBATION_API__JITBIT__CASE_DETAIL')")
@@ -68,6 +72,43 @@ class ApiController(
             HttpStatus.FORBIDDEN
         )
         else ResponseEntity.ok(caseDetailService.getCaseDetails(crn))
+
+    @GetMapping(value = ["/user"])
+    @PreAuthorize("hasRole('PROBATION_API__JITBIT__CASE_DETAIL')")
+    @Operation(
+        summary = "Check that a username exists",
+        responses = [
+            ApiResponse(
+                responseCode = "200",
+                description = "User exists",
+                content = [Content(
+                    mediaType = "application/json",
+                    schema = Schema(implementation = User::class)
+                )]
+            ),
+            ApiResponse(
+                responseCode = "404",
+                description = "User not found",
+                content = [Content(
+                    mediaType = "application/json",
+                    schema = Schema(
+                        implementation = ErrorResponse::class,
+                        example = """{"status": 404, "message": "Username not found"}"""
+                    )
+                )]
+            )
+        ]
+    )
+    fun userExists(@RequestParam email: String): ResponseEntity<*> =
+        if (userService.userExistsByEmail(email).exists)
+            ResponseEntity.ok(User(true))
+        else ResponseEntity(
+            ErrorResponse(
+                status = HttpStatus.NOT_FOUND.value(),
+                message = "Username not found"
+            ),
+            HttpStatus.NOT_FOUND
+        )
 
     @GetMapping(value = ["/case/{crn}/access"])
     @PreAuthorize("hasRole('PROBATION_API__JITBIT__CASE_DETAIL')")
