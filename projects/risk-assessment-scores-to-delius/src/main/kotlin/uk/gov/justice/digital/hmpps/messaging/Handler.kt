@@ -171,7 +171,7 @@ fun HmppsDomainEvent.ogrs4Score() = Ogrs4Score(
     additionalInformation["OGRS4GYr2Band"] as String?
 )
 
-private fun mapBand(band: Any?) = when (band?.toString()?.uppercase()) {
+private fun mapBand(band: Any?) = when ((band as String?)?.uppercase()) {
     "LOW", "L" -> "L"
     "MEDIUM", "M" -> "M"
     "HIGH", "H" -> "H"
