@@ -108,6 +108,13 @@ object ContactGenerator {
         offenderContact = true,
         locationRequired = "Y"
     )
+    val EMAIL_POP_CT = generateContactType(
+        "CMOB",
+        false,
+        "Email or text to person on probation",
+        offenderContact = true,
+        locationRequired = "N"
+    )
 
     val E_SUPERVISION_TYPE = generateContactType("ESPCHI", true, "E Supervision", locationRequired = "N")
 

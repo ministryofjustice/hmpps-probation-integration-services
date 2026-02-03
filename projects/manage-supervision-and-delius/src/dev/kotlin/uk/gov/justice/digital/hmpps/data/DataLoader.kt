@@ -150,6 +150,7 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
             ContactGenerator.OTHER_CT,
             ContactGenerator.APPT_CT_2,
             ContactGenerator.APPT_CT_3,
+            ContactGenerator.EMAIL_POP_CT,
             ContactGenerator.E_SUPERVISION_TYPE,
             ContactGenerator.E_SUPERVISION_CONTACT,
             ContactGenerator.PREVIOUS_APPT_CONTACT,
