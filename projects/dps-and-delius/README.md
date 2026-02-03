@@ -4,7 +4,7 @@ This service provides an API to retrieve documents and convictions for a Person 
 
 
 ## Business need
-Provides a background person on probation information to the client.
+Provides background information, documents and convictions for a Person on Probation to the client.
 
 
 ## Data dependencies
