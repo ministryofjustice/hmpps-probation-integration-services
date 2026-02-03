@@ -10,7 +10,7 @@ import java.time.format.DateTimeFormatter.ofPattern
 import javax.naming.Name
 
 @Entry(objectClasses = ["inetOrgPerson", "top"])
-class LdapUser(
+class DirectoryUser(
     @Id
     val dn: Name,
 
@@ -33,9 +33,7 @@ class LdapUser(
     @Attribute(name = "endDate")
     val endDate: String?,
 
-    @Transient
-    var roles: List<String>
-) {
+    ) {
     val enabled: Boolean
         get() = endDate == null || LocalDate.parse(endDate.substring(0, 8), ofPattern("yyyyMMdd")).isAfter(now())
 }

@@ -76,7 +76,7 @@ class ApiController(
     @GetMapping(value = ["/user"])
     @PreAuthorize("hasRole('PROBATION_API__JITBIT__CASE_DETAIL')")
     @Operation(
-        summary = "Check that a username exists",
+        summary = "Check that a user exists by email",
         responses = [
             ApiResponse(
                 responseCode = "200",
@@ -93,7 +93,7 @@ class ApiController(
                     mediaType = "application/json",
                     schema = Schema(
                         implementation = ErrorResponse::class,
-                        example = """{"status": 404, "message": "Username not found"}"""
+                        example = """{"status": 404, "message": "User not found"}"""
                     )
                 )]
             )
@@ -105,7 +105,7 @@ class ApiController(
         else ResponseEntity(
             ErrorResponse(
                 status = HttpStatus.NOT_FOUND.value(),
-                message = "Username not found"
+                message = "User not found"
             ),
             HttpStatus.NOT_FOUND
         )
