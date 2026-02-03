@@ -2121,8 +2121,11 @@ components:
           type: boolean
         prisonOffenderManager:
           type: boolean
+        isUnallocated:
+          type: boolean
       required:
       - allocationDate
+      - isUnallocated
       - name
       - prisonOffenderManager
       - probationDeliveryUnit
