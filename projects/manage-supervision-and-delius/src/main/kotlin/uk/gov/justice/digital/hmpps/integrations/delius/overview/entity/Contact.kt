@@ -27,7 +27,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.user.staff.entity.Staff
 import uk.gov.justice.digital.hmpps.integrations.delius.user.team.entity.Team
 import java.io.Serializable
 import java.time.LocalDate
-import java.time.LocalTime
+import java.time.LocalDateTime
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.LicenceCondition as LicenceConditionEntity
@@ -735,13 +735,13 @@ interface Appointment {
     val secondName: String?
     val thirdName: String?
     val surname: String
-    val dob: LocalDate
+    val dob: LocalDateTime
     val id: Long
     val crn: String
     val location: String?
-    val contactDate: LocalDate
-    val contactStartTime: LocalTime?
-    val contactEndTime: LocalTime?
+    val contactDate: LocalDateTime
+    val contactStartTime: LocalDateTime?
+    val contactEndTime: LocalDateTime?
     val totalSentences: Int?
     val contactDescription: String
     val sentenceDescription: String?

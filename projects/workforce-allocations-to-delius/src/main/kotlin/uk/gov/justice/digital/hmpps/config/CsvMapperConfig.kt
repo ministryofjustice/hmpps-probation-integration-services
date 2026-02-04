@@ -1,9 +1,8 @@
 package uk.gov.justice.digital.hmpps.config
 
-import com.fasterxml.jackson.dataformat.csv.CsvMapper
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
-import com.fasterxml.jackson.module.kotlin.registerKotlinModule
+import tools.jackson.dataformat.csv.CsvMapper
+import tools.jackson.module.kotlin.kotlinModule
 
 object CsvMapperConfig {
-    val csvMapper = CsvMapper().also { it.registerKotlinModule().registerModule(JavaTimeModule()) }
+    val csvMapper: CsvMapper = CsvMapper.builder().run { addModule(kotlinModule()) }.build()
 }

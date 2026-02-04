@@ -43,7 +43,11 @@ data class SubmittedBy(
 )
 
 enum class Decision {
-    ACCEPTED, REJECTED;
+    @JsonAlias("ACCEPTED")
+    ACCEPTED,
+
+    @JsonAlias("REJECTED")
+    REJECTED;
 
     override fun toString(): String {
         return when (this) {

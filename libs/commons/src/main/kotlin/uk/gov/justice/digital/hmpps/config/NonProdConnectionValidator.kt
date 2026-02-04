@@ -1,8 +1,8 @@
 package uk.gov.justice.digital.hmpps.config
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
-import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties
-import org.springframework.boot.autoconfigure.orm.jpa.HibernatePropertiesCustomizer
+import org.springframework.boot.hibernate.autoconfigure.HibernatePropertiesCustomizer
+import org.springframework.boot.jdbc.autoconfigure.DataSourceProperties
 import org.springframework.context.annotation.Configuration
 import uk.gov.justice.digital.hmpps.logging.Logger
 import uk.gov.justice.digital.hmpps.logging.Logger.logger
@@ -22,4 +22,5 @@ class NonProdConnectionValidator(private val dsp: DataSourceProperties) : Hibern
     }
 }
 
-private fun DataSourceProperties.isForPreprodOrProd() = url.contains("PRDNDA") or url.contains("PRENDA")
+private fun DataSourceProperties.isForPreprodOrProd() =
+    url?.contains("PRDNDA") == true || url?.contains("PRENDA") == true

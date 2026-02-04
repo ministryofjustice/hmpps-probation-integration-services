@@ -1,6 +1,6 @@
 package uk.gov.justice.digital.hmpps.messaging
 
-import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
+import tools.jackson.module.kotlin.jacksonTypeRef
 import io.awspring.cloud.sqs.operations.SqsTemplate
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo

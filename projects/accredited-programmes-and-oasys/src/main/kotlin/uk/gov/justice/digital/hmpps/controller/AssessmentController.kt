@@ -1,11 +1,11 @@
 package uk.gov.justice.digital.hmpps.controller
 
-import com.fasterxml.jackson.databind.JsonNode
-import com.fasterxml.jackson.databind.node.ObjectNode
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.client.HttpClientErrorException
+import tools.jackson.databind.JsonNode
+import tools.jackson.databind.node.ObjectNode
 import uk.gov.justice.digital.hmpps.advice.ErrorResponse
 import uk.gov.justice.digital.hmpps.integrations.oasys.OrdsClient
 import uk.gov.justice.digital.hmpps.integrations.oasys.asIntegrationModel
@@ -46,7 +46,7 @@ class AssessmentController(private val ordsClient: OrdsClient) {
 
 private fun ObjectNode.asResponse(): JsonNode {
     val assessment = this["assessments"].first() as ObjectNode
-    this["probNumber"]?.let { with(assessment) { set<JsonNode>("crn", it) } }
-    this["prisNumber"]?.let { with(assessment) { set<JsonNode>("nomsId", it) } }
+    this["probNumber"]?.let { assessment.set("crn", it) }
+    this["prisNumber"]?.let { assessment.set("nomsId", it) }
     return assessment
 }

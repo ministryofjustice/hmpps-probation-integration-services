@@ -37,7 +37,7 @@ class AsyncApiConfig {
         executor.maxPoolSize = 100
         executor.queueCapacity = 50
         executor.setThreadNamePrefix("async-")
-        executor.setTaskDecorator { runnable: Runnable? ->
+        executor.setTaskDecorator { runnable: Runnable ->
             DelegatingSecurityContextRunnable(
                 runnable
             )

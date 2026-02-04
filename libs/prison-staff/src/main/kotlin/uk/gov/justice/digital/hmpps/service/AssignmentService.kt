@@ -21,7 +21,7 @@ class AssignmentService(
 ) {
     companion object {
         private val mutexMap = ConcurrentReferenceHashMap<Long, ReentrantLock>()
-        private fun getMutex(key: Long) = mutexMap.compute(key) { _, v -> v ?: ReentrantLock() }!!
+        private fun getMutex(key: Long) = mutexMap.computeIfAbsent(key) { ReentrantLock() }!!
 
         private val unknownEstablishments = setOf("TRN")
     }

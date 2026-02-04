@@ -14,7 +14,7 @@ import uk.gov.justice.digital.hmpps.data.generator.InstitutionGenerator
 import uk.gov.justice.digital.hmpps.data.generator.NotificationGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 
-@TestPropertySource(properties = ["logging.level.org.springframework.transaction=DEBUG", "logging.level.org.hibernate.engine.transaction.internal.TransactionImpl=DEBUG"])
+@TestPropertySource(properties = ["logging.level.org.springframework.transaction=DEBUG", "logging.level.org.hibernate.resource.transaction.internal.TransactionImpl=DEBUG"])
 @ExtendWith(OutputCaptureExtension::class)
 class PcstdIntegrationTransactionRollbackTest : PcstdIntegrationTestBase() {
 
