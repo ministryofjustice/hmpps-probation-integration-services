@@ -143,4 +143,25 @@ class ContactLogIntegrationTest : IntegrationTestBase() {
         val savedContact = contactRepository.findById(response.id).get()
         assertThat(savedContact.requirement?.id, equalTo(PersonGenerator.REQUIREMENT.id))
     }
+
+    @Test
+    fun `contact alert created when alert flag is true`() {
+        val response = mockMvc.post("/contact/${PersonGenerator.PERSON_1.crn}") {
+            withToken()
+            json = CreateContact(
+                staffId = OffenderManagerGenerator.STAFF_1.id,
+                contactType = ContactGenerator.EMAIL_POP_CT.code,
+                notes = "Test",
+                alert = true,
+                sensitive = false,
+                visorReport = false
+            )
+        }
+            .andExpect { status { isCreated() } }
+            .andReturn().response.contentAsJson<CreateContactResponse>()
+
+        val savedContactAlert = contactAlertRepository.findByContactId(response.id).first()
+        assertThat(savedContactAlert.contact.id, equalTo(response.id))
+        assertThat(savedContactAlert.staff!!.id, equalTo(OffenderManagerGenerator.STAFF_1.id))
+    }
 }

@@ -10,6 +10,7 @@ import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractionCode
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.*
+import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.OffenderManagerRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.user.staff.StaffRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.user.staff.getStaffById
 import java.time.LocalDate
@@ -22,7 +23,9 @@ class ContactLogService(
     private val contactTypeRepository: ContactTypeRepository,
     private val staffRepository: StaffRepository,
     private val eventRepository: EventRepository,
-    private val requirementRepository: RequirementRepository
+    private val requirementRepository: RequirementRepository,
+    private val contactAlertRepository: ContactAlertRepository,
+    private val offenderManagerRepository: OffenderManagerRepository
 ) : AuditableService(auditedInteractionService) {
 
     @Transactional
@@ -71,6 +74,24 @@ class ContactLogService(
                     isVisor = createContact.visorReport
                 )
             )
+
+            if (createContact.alert) {
+                val personManager = offenderManagerRepository.findOffenderManagersByPersonIdAndActiveIsTrue(person.id) ?: throw NotFoundException(
+                    "PersonManager",
+                    "personId",
+                    person.id
+                )
+                contactAlertRepository.save(
+                    ContactAlert(
+                        contact = savedContact,
+                        typeId = contactType.id,
+                        personId = person.id,
+                        personManagerId = personManager.id,
+                        staff = personManager.staff,
+                        teamId = personManager.team.id
+                    )
+                )
+            }
 
             return@audit CreateContactResponse(savedContact.id)
         }
