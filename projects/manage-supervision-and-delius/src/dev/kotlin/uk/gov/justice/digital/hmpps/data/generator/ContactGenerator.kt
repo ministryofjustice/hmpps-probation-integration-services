@@ -296,8 +296,15 @@ object ContactGenerator {
     )
 
     fun generateContactAlert(contact: Contact, id: Long = IdGenerator.getAndIncrement()): ContactAlert =
-        ContactAlert(contact, contact.type.id, contact.person.id, OffenderManagerGenerator.OFFENDER_MANAGER_ACTIVE.team.id,
-            OffenderManagerGenerator.OFFENDER_MANAGER_ACTIVE.id, OffenderManagerGenerator.OFFENDER_MANAGER_ACTIVE.staff, id)
+        ContactAlert(
+            contact,
+            contact.type.id,
+            contact.person.id,
+            OffenderManagerGenerator.OFFENDER_MANAGER_ACTIVE.team.id,
+            OffenderManagerGenerator.OFFENDER_MANAGER_ACTIVE.id,
+            OffenderManagerGenerator.OFFENDER_MANAGER_ACTIVE.staff,
+            id
+        )
 
     fun generateOutcome(code: String, description: String, attendance: Boolean, acceptable: Boolean) =
         ContactOutcome(IdGenerator.getAndIncrement(), code, description, attendance, acceptable, true)

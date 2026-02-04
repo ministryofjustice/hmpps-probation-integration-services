@@ -76,11 +76,12 @@ class ContactLogService(
             )
 
             if (createContact.alert) {
-                val personManager = offenderManagerRepository.findOffenderManagersByPersonIdAndActiveIsTrue(person.id) ?: throw NotFoundException(
-                    "PersonManager",
-                    "personId",
-                    person.id
-                )
+                val personManager = offenderManagerRepository.findOffenderManagersByPersonIdAndActiveIsTrue(person.id)
+                    ?: throw NotFoundException(
+                        "PersonManager",
+                        "personId",
+                        person.id
+                    )
                 contactAlertRepository.save(
                     ContactAlert(
                         contact = savedContact,
