@@ -4,7 +4,6 @@ import org.springframework.ldap.core.AttributesMapper
 import org.springframework.ldap.core.LdapTemplate
 import org.springframework.ldap.query.LdapQueryBuilder.query
 import org.springframework.stereotype.Service
-import uk.gov.justice.digital.hmpps.model.User
 import uk.gov.justice.digital.hmpps.repository.UserRepository
 import uk.gov.justice.digital.hmpps.repository.userExists
 
