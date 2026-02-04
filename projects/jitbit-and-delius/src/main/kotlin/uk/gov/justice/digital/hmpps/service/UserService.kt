@@ -14,11 +14,8 @@ class UserService(
     val ldapTemplate: LdapTemplate,
 ) {
     fun userExistsByEmail(email: String): UserExistsResponse {
-        val users = getUserByEmail(email)
-        val userResults = users
-            .map { userExists(it) }
-            .filter { it.exists }
-            .map { it.username }
+        val userResults = getUserByEmail(email)
+            .filter { userRepository.userExists(it) }
         return UserExistsResponse(email, userResults)
     }
 
@@ -30,10 +27,6 @@ class UserService(
         AttributesMapper { it["cn"]?.get()?.toString() }
     ).filterNotNull().toList()
 
-    private fun userExists(username: String): User {
-        val exists = userRepository.userExists(username) != null
-        return User(exists, username)
-    }
 
     data class UserExistsResponse(
         val email: String,
