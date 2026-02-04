@@ -4,11 +4,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.hamcrest.MatcherAssert
 import org.hamcrest.Matchers
 import org.junit.jupiter.api.*
-import org.mockito.kotlin.any
-import org.mockito.kotlin.anyOrNull
-import org.mockito.kotlin.doNothing
-import org.mockito.kotlin.verify
-import org.mockito.kotlin.whenever
+import org.mockito.kotlin.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.context.SpringBootTest
@@ -57,6 +53,21 @@ internal class IntegrationTest @Autowired constructor(
 
         val notification = Notification(
             message = MessageGenerator.RSR_SCORES_DETERMINED_V4,
+            attributes = MessageAttributes("risk-assessment.scores.determined")
+        )
+        channelManager.getChannel(queueName).publishAndWait(notification)
+        verify(telemetryService).trackEvent("RsrScoresUpdated", notification.message.telemetryProperties())
+    }
+
+    @Test
+    fun `successfully update RSR scores when band full word(s)`() {
+        whenever(featureFlags.enabled("delius-ogrs4-support")).thenReturn(true)
+        doNothing().whenever(riskScoreService).updateRsrAndOspScores(
+            any(), anyOrNull(), any(), any(), anyOrNull(), anyOrNull(), anyOrNull(), anyOrNull()
+        )
+
+        val notification = Notification(
+            message = MessageGenerator.RSR_SCORES_DETERMINED_V4_LONG_BAND,
             attributes = MessageAttributes("risk-assessment.scores.determined")
         )
         channelManager.getChannel(queueName).publishAndWait(notification)

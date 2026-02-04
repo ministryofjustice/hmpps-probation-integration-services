@@ -1,0 +1,9 @@
+database:
+  access:
+    username_key: /cosso-and-delius/db-username
+    password_key: /cosso-and-delius/db-password
+
+  audit:
+    username: CossoAndDelius
+    forename: Breach Notice COSSO
+    surname: Service
