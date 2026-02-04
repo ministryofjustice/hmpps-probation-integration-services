@@ -26,3 +26,27 @@ cn: ABC002
 description: Test role 2
 objectclass: top
 objectClass: NDRoleAssociation
+
+dn: cn=test.user2,ou=Users,dc=moj,dc=com
+cn: test.user2
+objectclass: NDUser
+objectclass: inetOrgPerson
+objectclass: top
+givenName: Test
+sn: User
+userHomeArea: N01
+userSector: public
+mail: test.user2@example.com
+userPassword: secret
+
+dn: cn=test.user3,ou=Users,dc=moj,dc=com
+cn: test.user3
+objectclass: NDUser
+objectclass: inetOrgPerson
+objectclass: top
+givenName: Test
+sn: User
+userHomeArea: N01
+userSector: public
+mail: test.user2@example.com
+userPassword: secret

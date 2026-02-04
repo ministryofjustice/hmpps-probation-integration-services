@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RestController
 import uk.gov.justice.digital.hmpps.advice.ErrorResponse
 import uk.gov.justice.digital.hmpps.model.CaseDetails
 import uk.gov.justice.digital.hmpps.model.LimitedAccessDetail
-import uk.gov.justice.digital.hmpps.model.User
 import uk.gov.justice.digital.hmpps.model.limitedAccessDetail
 import uk.gov.justice.digital.hmpps.service.CaseDetailService
 import uk.gov.justice.digital.hmpps.service.UserAccessService
@@ -83,7 +82,7 @@ class ApiController(
                 description = "User exists",
                 content = [Content(
                     mediaType = "application/json",
-                    schema = Schema(implementation = User::class)
+                    schema = Schema(implementation = UserService.UserExistsResponse::class)
                 )]
             ),
             ApiResponse(
@@ -99,16 +98,20 @@ class ApiController(
             )
         ]
     )
-    fun userExists(@RequestParam email: String): ResponseEntity<*> =
-        if (userService.userExistsByEmail(email).exists)
-            ResponseEntity.ok(User(true))
-        else ResponseEntity(
-            ErrorResponse(
-                status = HttpStatus.NOT_FOUND.value(),
-                message = "User not found"
-            ),
-            HttpStatus.NOT_FOUND
-        )
+    fun userExists(@RequestParam email: String): ResponseEntity<*> {
+        val userResponse = userService.userExistsByEmail(email)
+        return when {
+            userResponse.users.isEmpty() -> ResponseEntity(
+                ErrorResponse(
+                    status = HttpStatus.NOT_FOUND.value(),
+                    message = "User not found"
+                ),
+                HttpStatus.NOT_FOUND
+            )
+
+            else -> ResponseEntity(userResponse, HttpStatus.OK)
+        }
+    }
 
     @GetMapping(value = ["/case/{crn}/access"])
     @PreAuthorize("hasRole('PROBATION_API__JITBIT__CASE_DETAIL')")

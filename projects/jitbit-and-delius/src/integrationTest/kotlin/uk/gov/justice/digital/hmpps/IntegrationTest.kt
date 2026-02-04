@@ -19,6 +19,7 @@ import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.EXCLUSION
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.RESTRICTION
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.RESTRICTION_EXCLUSION
 import uk.gov.justice.digital.hmpps.model.LimitedAccessDetail
+import uk.gov.justice.digital.hmpps.service.UserService
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 
@@ -28,7 +29,7 @@ internal class IntegrationTest @Autowired constructor(
     private val mockMvc: MockMvc,
 ) {
     @Test
-    fun `returns true when user exists`() {
+    fun `returns ok when user exists`() {
         mockMvc.get("/user?email=test.user@example.com") { withToken() }
             .andExpect { status { isOk() } }
     }
@@ -37,6 +38,15 @@ internal class IntegrationTest @Autowired constructor(
     fun `returns 404 when user does not exist`() {
         mockMvc.get("/user?email=test.notauser@example.com") { withToken() }
             .andExpect { status { isNotFound() } }
+    }
+
+    @Test
+    fun `returns ok when there are multiple matches for email`() {
+        val response = mockMvc.get("/user?email=test.user2@example.com") { withToken() }
+            .andExpect { status { isOk() } }
+            .andReturn().response.contentAsJson<UserService.UserExistsResponse>()
+
+        assertThat(response.users.size, equalTo(2))
     }
 
     @Test
