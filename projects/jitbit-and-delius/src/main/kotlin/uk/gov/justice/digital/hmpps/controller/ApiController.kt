@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import uk.gov.justice.digital.hmpps.advice.ErrorResponse
+import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.model.CaseDetails
 import uk.gov.justice.digital.hmpps.model.LimitedAccessDetail
 import uk.gov.justice.digital.hmpps.model.limitedAccessDetail
@@ -74,30 +75,6 @@ class ApiController(
 
     @GetMapping(value = ["/user"])
     @PreAuthorize("hasRole('PROBATION_API__JITBIT__CASE_DETAIL')")
-    @Operation(
-        summary = "Check that a user exists by email",
-        responses = [
-            ApiResponse(
-                responseCode = "200",
-                description = "Returns user(s) matching the email adddress",
-                content = [Content(
-                    mediaType = "application/json",
-                    schema = Schema(implementation = UserService.UserExistsResponse::class)
-                )]
-            ),
-            ApiResponse(
-                responseCode = "404",
-                description = "User not found",
-                content = [Content(
-                    mediaType = "application/json",
-                    schema = Schema(
-                        implementation = ErrorResponse::class,
-                        example = """{"status": 404, "message": "User not found"}"""
-                    )
-                )]
-            )
-        ]
-    )
     fun userExists(@RequestParam email: String) = userService.userExistsByEmail(email)
         .takeIf { it.users.isNotEmpty() }
         ?: throw NotFoundException("User not found")
