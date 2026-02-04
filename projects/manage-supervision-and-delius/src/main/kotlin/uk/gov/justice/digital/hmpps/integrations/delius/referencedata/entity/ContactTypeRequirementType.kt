@@ -22,6 +22,7 @@ class ContactTypeRequirementTypeId(
     val requirementTypeId: Long
 ) : Serializable
 
-interface ContactTypeRequirementTypeRepository : JpaRepository<ContactTypeRequirementType, ContactTypeRequirementTypeId> {
-  fun findByIdContactTypeId(contactTypeId: Long): List<ContactTypeRequirementType>
+interface ContactTypeRequirementTypeRepository :
+    JpaRepository<ContactTypeRequirementType, ContactTypeRequirementTypeId> {
+    fun findByIdContactTypeId(contactTypeId: Long): List<ContactTypeRequirementType>
 }

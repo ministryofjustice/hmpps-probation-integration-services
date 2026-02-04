@@ -117,7 +117,8 @@ class ContactLogService(
 
         // If requirementId is provided, check the contactTypeRequirementType mapping to see if the contact type is valid for the requirement type
         if (createContact.requirementId != null) {
-            val validRequirementTypes = contactTypeRequirementTypeRepository.findByIdContactTypeId(contactType.id).map { it.id.requirementTypeId }
+            val validRequirementTypes = contactTypeRequirementTypeRepository.findByIdContactTypeId(contactType.id)
+                .map { it.id.requirementTypeId }
             val requirement = requirementRepository.getRequirement(createContact.requirementId)
                 ?: throw NotFoundException("Requirement", "id", createContact.requirementId)
 
