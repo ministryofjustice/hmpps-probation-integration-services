@@ -79,7 +79,7 @@ class ApiController(
         responses = [
             ApiResponse(
                 responseCode = "200",
-                description = "User exists",
+                description = "Returns user(s) matching the email adddress",
                 content = [Content(
                     mediaType = "application/json",
                     schema = Schema(implementation = UserService.UserExistsResponse::class)
