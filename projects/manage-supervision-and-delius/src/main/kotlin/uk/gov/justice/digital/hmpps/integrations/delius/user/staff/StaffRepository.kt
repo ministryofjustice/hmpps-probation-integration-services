@@ -11,7 +11,12 @@ interface StaffRepository : JpaRepository<Staff, Long> {
     fun findTeamsByStaffCode(staffCode: String): List<Team>
 
     fun findStaffById(staffId: Long): Staff?
+
+    fun findStaffByCode(staffCode: String): Staff?
 }
 
 fun StaffRepository.getStaffById(staffId: Long): Staff =
     findStaffById(staffId) ?: throw NotFoundException("Staff", "id", staffId)
+
+fun StaffRepository.getStaffByCode(staffCode: String): Staff =
+    findStaffByCode(staffCode) ?: throw NotFoundException("Staff", "code", staffCode)

@@ -151,6 +151,8 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
             ContactGenerator.APPT_CT_2,
             ContactGenerator.APPT_CT_3,
             ContactGenerator.EMAIL_POP_CT,
+            ContactGenerator.EVENT_LEVEL_CT,
+            ContactGenerator.RQMNT_LEVEL_CT,
             ContactGenerator.E_SUPERVISION_TYPE,
             ContactGenerator.E_SUPERVISION_CONTACT,
             ContactGenerator.PREVIOUS_APPT_CONTACT,
@@ -216,7 +218,8 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
             CustodyGenerator.CUSTODY_1,
             CustodyGenerator.RELEASE_1,
             CustodyGenerator.RELEASE_2,
-            CustodyGenerator.RELEASE_3
+            CustodyGenerator.RELEASE_3,
+            ContactGenerator.RQMNT_CONTACT_TYPE
         )
         personalDetailsData()
     }

@@ -251,6 +251,10 @@ class ContactType(
     @Convert(converter = YesNoConverter::class)
     val offenderContact: Boolean = false,
 
+    @Column(name = "cja_orders")
+    @Convert(converter = YesNoConverter::class)
+    val eventContact: Boolean = false,
+
     @Column(name = "contact_location_flag", columnDefinition = "char(1)")
     val locationRequired: String,
 

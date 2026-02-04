@@ -1,8 +1,9 @@
 package uk.gov.justice.digital.hmpps.api.model.contact
 
 data class CreateContact(
-    val staffId: Long,
-    val contactType: String,
+    val staffCode: String,
+    val teamCode: String,
+    val type: String,
     val eventId: Long? = null,
     val requirementId: Long? = null,
     val description: String? = null,

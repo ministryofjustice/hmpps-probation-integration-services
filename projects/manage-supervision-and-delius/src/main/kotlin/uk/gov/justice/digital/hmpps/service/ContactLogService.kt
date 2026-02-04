@@ -7,13 +7,16 @@ import uk.gov.justice.digital.hmpps.api.model.contact.CreateContactResponse
 import uk.gov.justice.digital.hmpps.aspect.UserContext
 import uk.gov.justice.digital.hmpps.audit.service.AuditableService
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
+import uk.gov.justice.digital.hmpps.exception.InvalidRequestException
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractionCode
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.*
+import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.ContactTypeRequirementTypeRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.OffenderManagerRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.user.staff.StaffRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.user.staff.getStaffById
-import java.time.LocalDate
+import uk.gov.justice.digital.hmpps.integrations.delius.user.staff.getStaffByCode
+import uk.gov.justice.digital.hmpps.integrations.delius.user.team.TeamRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.user.team.getTeam
 
 @Service
 class ContactLogService(
@@ -25,7 +28,9 @@ class ContactLogService(
     private val eventRepository: EventRepository,
     private val requirementRepository: RequirementRepository,
     private val contactAlertRepository: ContactAlertRepository,
-    private val offenderManagerRepository: OffenderManagerRepository
+    private val offenderManagerRepository: OffenderManagerRepository,
+    private val teamRepository: TeamRepository,
+    private val contactTypeRequirementTypeRepository: ContactTypeRequirementTypeRepository
 ) : AuditableService(auditedInteractionService) {
 
     @Transactional
@@ -38,14 +43,15 @@ class ContactLogService(
 
             audit["offenderId"] = person.id
 
-            val staff = staffRepository.getStaffById(createContact.staffId)
-            val team = staff.teams.firstOrNull { it.endDate == null || it.endDate.isAfter(LocalDate.now()) }
-                ?: throw NotFoundException("Team", "staffId", createContact.staffId)
+            val staff = staffRepository.getStaffByCode(createContact.staffCode)
+            val team = teamRepository.getTeam(createContact.teamCode)
 
-            if (!CreateContact.Type.entries.any { it.code == createContact.contactType }) {
-                throw NotFoundException("CreateContact", "contactType", createContact.contactType)
+            if (!CreateContact.Type.entries.any { it.code == createContact.type }) {
+                throw NotFoundException("CreateContact", "contactType", createContact.type)
             }
-            val contactType = contactTypeRepository.getContactType(createContact.contactType)
+            val contactType = contactTypeRepository.getContactType(createContact.type)
+
+            validateContactTypeLevel(contactType, createContact)
 
             val event = createContact.eventId?.let {
                 eventRepository.findByIdAndActiveIsTrue(it)
@@ -95,6 +101,29 @@ class ContactLogService(
             }
 
             return@audit CreateContactResponse(savedContact.id)
+        }
+    }
+
+    private fun validateContactTypeLevel(contactType: ContactType, createContact: CreateContact) {
+        // If not an offender-level contact type, ensure eventId or requirementId is provided.
+        if (!contactType.offenderContact && createContact.eventId == null && createContact.requirementId == null) {
+            throw InvalidRequestException("Event ID or Requirement ID need to be provided for contact type ${contactType.code}")
+        }
+
+        // If offender-level only contact type, ensure no eventId or requirementId is provided.
+        if ((contactType.offenderContact && !contactType.eventContact) && (createContact.eventId != null || createContact.requirementId != null)) {
+            throw InvalidRequestException("Contact type ${contactType.code} cannot be associated with an event or requirement")
+        }
+
+        // If requirementId is provided, check the contactTypeRequirementType mapping to see if the contact type is valid for the requirement type
+        if (createContact.requirementId != null) {
+            val validRequirementTypes = contactTypeRequirementTypeRepository.findByIdContactTypeId(contactType.id).map { it.id.requirementTypeId }
+            val requirement = requirementRepository.getRequirement(createContact.requirementId)
+                ?: throw NotFoundException("Requirement", "id", createContact.requirementId)
+
+            if (requirement.mainCategory!!.id !in validRequirementTypes) {
+                throw InvalidRequestException("Contact type ${contactType.code} is not valid for requirement type ${requirement.mainCategory.code}")
+            }
         }
     }
 }

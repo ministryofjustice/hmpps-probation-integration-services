@@ -1,12 +1,10 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.overview.entity
 
 import jakarta.persistence.*
-import org.hibernate.annotations.Immutable
 import org.springframework.data.jpa.repository.JpaRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.Staff
 import uk.gov.justice.digital.hmpps.jpa.GeneratedId
 
-@Immutable
 @Entity
 @Table(name = "contact_alert")
 @SequenceGenerator(name = "contact_alert_id_generator", sequenceName = "contact_alert_id_seq", allocationSize = 1)

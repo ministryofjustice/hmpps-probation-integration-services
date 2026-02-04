@@ -26,8 +26,9 @@ class ContactLogIntegrationTest : IntegrationTestBase() {
         mockMvc.post("/contact/$crn") {
             withToken()
             json = CreateContact(
-                staffId = OffenderManagerGenerator.STAFF_1.id,
-                contactType = ContactGenerator.EMAIL_POP_CT.code,
+                staffCode = OffenderManagerGenerator.STAFF_1.code,
+                teamCode = OffenderManagerGenerator.TEAM.code,
+                type = ContactGenerator.EMAIL_POP_CT.code,
                 notes = "Test",
                 alert = false,
                 sensitive = false,
@@ -38,14 +39,34 @@ class ContactLogIntegrationTest : IntegrationTestBase() {
     }
 
     @Test
-    fun `invalid staff id returns not found`() {
-        val invalidStaffId = 99999L
+    fun `invalid staff code returns not found`() {
+        val invalidStaffCode = "ZZZZZZ"
 
         mockMvc.post("/contact/${PersonGenerator.PERSON_1.crn}") {
             withToken()
             json = CreateContact(
-                staffId = invalidStaffId,
-                contactType = ContactGenerator.EMAIL_POP_CT.code,
+                staffCode = invalidStaffCode,
+                teamCode = OffenderManagerGenerator.TEAM.code,
+                type = ContactGenerator.EMAIL_POP_CT.code,
+                notes = "Test",
+                alert = false,
+                sensitive = false,
+                visorReport = false
+            )
+        }
+            .andExpect { status { isNotFound() } }
+    }
+
+    @Test
+    fun `invalid team code returns not found`() {
+        val invalidTeamCode = "ZZZZZZ"
+
+        mockMvc.post("/contact/${PersonGenerator.PERSON_1.crn}") {
+            withToken()
+            json = CreateContact(
+                staffCode = OffenderManagerGenerator.STAFF_1.code,
+                teamCode = invalidTeamCode,
+                type = ContactGenerator.EMAIL_POP_CT.code,
                 notes = "Test",
                 alert = false,
                 sensitive = false,
@@ -62,8 +83,9 @@ class ContactLogIntegrationTest : IntegrationTestBase() {
         mockMvc.post("/contact/${PersonGenerator.PERSON_1.crn}") {
             withToken()
             json = CreateContact(
-                staffId = OffenderManagerGenerator.STAFF_1.id,
-                contactType = invalidContactType,
+                staffCode = OffenderManagerGenerator.STAFF_1.code,
+                teamCode = OffenderManagerGenerator.TEAM.code,
+                type = invalidContactType,
                 notes = "Test",
                 alert = false,
                 sensitive = false,
@@ -78,8 +100,9 @@ class ContactLogIntegrationTest : IntegrationTestBase() {
         val response = mockMvc.post("/contact/${PersonGenerator.PERSON_1.crn}") {
             withToken()
             json = CreateContact(
-                staffId = OffenderManagerGenerator.STAFF_1.id,
-                contactType = ContactGenerator.EMAIL_POP_CT.code,
+                staffCode = OffenderManagerGenerator.STAFF_1.code,
+                teamCode = OffenderManagerGenerator.TEAM.code,
+                type = ContactGenerator.EMAIL_POP_CT.code,
                 notes = "Test",
                 alert = false,
                 sensitive = false,
@@ -108,8 +131,9 @@ class ContactLogIntegrationTest : IntegrationTestBase() {
         val response = mockMvc.post("/contact/${PersonGenerator.PERSON_1.crn}") {
             withToken()
             json = CreateContact(
-                staffId = OffenderManagerGenerator.STAFF_1.id,
-                contactType = ContactGenerator.EMAIL_POP_CT.code,
+                staffCode = OffenderManagerGenerator.STAFF_1.code,
+                teamCode = OffenderManagerGenerator.TEAM.code,
+                type = ContactGenerator.EVENT_LEVEL_CT.code,
                 eventId = PersonGenerator.EVENT_1.id,
                 alert = false,
                 sensitive = false,
@@ -128,8 +152,9 @@ class ContactLogIntegrationTest : IntegrationTestBase() {
         val response = mockMvc.post("/contact/${PersonGenerator.PERSON_1.crn}") {
             withToken()
             json = CreateContact(
-                staffId = OffenderManagerGenerator.STAFF_1.id,
-                contactType = ContactGenerator.EMAIL_POP_CT.code,
+                staffCode = OffenderManagerGenerator.STAFF_1.code,
+                teamCode = OffenderManagerGenerator.TEAM.code,
+                type = ContactGenerator.RQMNT_LEVEL_CT.code,
                 eventId = PersonGenerator.EVENT_1.id,
                 requirementId = PersonGenerator.REQUIREMENT.id,
                 alert = false,
@@ -149,8 +174,9 @@ class ContactLogIntegrationTest : IntegrationTestBase() {
         val response = mockMvc.post("/contact/${PersonGenerator.PERSON_1.crn}") {
             withToken()
             json = CreateContact(
-                staffId = OffenderManagerGenerator.STAFF_1.id,
-                contactType = ContactGenerator.EMAIL_POP_CT.code,
+                staffCode = OffenderManagerGenerator.STAFF_1.code,
+                teamCode = OffenderManagerGenerator.TEAM.code,
+                type = ContactGenerator.EMAIL_POP_CT.code,
                 notes = "Test",
                 alert = true,
                 sensitive = false,
@@ -162,6 +188,56 @@ class ContactLogIntegrationTest : IntegrationTestBase() {
 
         val savedContactAlert = contactAlertRepository.findByContactId(response.id).first()
         assertThat(savedContactAlert.contact.id, equalTo(response.id))
-        assertThat(savedContactAlert.staff!!.id, equalTo(OffenderManagerGenerator.STAFF_1.id))
+        assertThat(savedContactAlert.staff.id, equalTo(OffenderManagerGenerator.STAFF_1.id))
+    }
+
+    @Test
+    fun `event-level contact type without eventId or requirementId returns bad request`() {
+        mockMvc.post("/contact/${PersonGenerator.PERSON_1.crn}") {
+            withToken()
+            json = CreateContact(
+                staffCode = OffenderManagerGenerator.STAFF_1.code,
+                teamCode = OffenderManagerGenerator.TEAM.code,
+                type = ContactGenerator.EVENT_LEVEL_CT.code,
+                alert = false,
+                sensitive = false,
+                visorReport = false
+            )
+        }
+            .andExpect { status { isBadRequest() } }
+    }
+
+    @Test
+    fun `offender-level only contact type with eventId returns bad request`() {
+        mockMvc.post("/contact/${PersonGenerator.PERSON_1.crn}") {
+            withToken()
+            json = CreateContact(
+                staffCode = OffenderManagerGenerator.STAFF_1.code,
+                teamCode = OffenderManagerGenerator.TEAM.code,
+                type = ContactGenerator.EMAIL_POP_CT.code,
+                eventId = PersonGenerator.EVENT_1.id,
+                alert = false,
+                sensitive = false,
+                visorReport = false
+            )
+        }
+            .andExpect { status { isBadRequest() } }
+    }
+
+    @Test
+    fun `invalid requirement type for contact type returns bad request`() {
+        mockMvc.post("/contact/${PersonGenerator.PERSON_1.crn}") {
+            withToken()
+            json = CreateContact(
+                staffCode = OffenderManagerGenerator.STAFF_1.code,
+                teamCode = OffenderManagerGenerator.TEAM.code,
+                type = ContactGenerator.RQMNT_LEVEL_CT.code,
+                requirementId = PersonGenerator.REQUIREMENT_UNPAID_WORK.id,
+                alert = false,
+                sensitive = false,
+                visorReport = false
+            )
+        }
+            .andExpect { status { isBadRequest() } }
     }
 }

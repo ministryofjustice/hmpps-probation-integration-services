@@ -10,6 +10,8 @@ import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.integrations.delius.caseload.entity.Caseload
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.ContactDocument
+import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.ContactTypeRequirementType
+import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.ContactTypeRequirementTypeId
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.ReferenceData
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.LicenceCondition
 import uk.gov.justice.digital.hmpps.integrations.delius.user.entity.Provider
@@ -114,6 +116,24 @@ object ContactGenerator {
         "Email or text to person on probation",
         offenderContact = true,
         locationRequired = "N"
+    )
+    val EVENT_LEVEL_CT = generateContactType(
+        "C326",
+        false,
+        "Event Level Contact",
+        eventContact = true,
+        locationRequired = "N"
+    )
+    val RQMNT_LEVEL_CT = generateContactType(
+        "C204",
+        false,
+        "Requirement Level Contact",
+        locationRequired = "N"
+    )
+
+    val RQMNT_CONTACT_TYPE = generateContactTypeRequirementType(
+        RQMNT_LEVEL_CT.id,
+        PersonGenerator.REQUIREMENT.mainCategory!!.id
     )
 
     val E_SUPERVISION_TYPE = generateContactType("ESPCHI", true, "E Supervision", locationRequired = "N")
@@ -316,6 +336,7 @@ object ContactGenerator {
         systemGenerated: Boolean = false,
         contactOutcomeFlag: Boolean = false,
         offenderContact: Boolean = false,
+        eventContact: Boolean = false,
         editable: Boolean = true,
         locationRequired: String,
     ) = ContactType(
@@ -326,6 +347,7 @@ object ContactGenerator {
         systemGenerated = systemGenerated,
         contactOutcomeFlag = contactOutcomeFlag,
         offenderContact = offenderContact,
+        eventContact = eventContact,
         locationRequired = locationRequired,
         editable = editable
     )
@@ -411,3 +433,12 @@ fun generateStaff(
     id: Long = IdGenerator.getAndIncrement()
 ) = Staff(code, forename, surname, DEFAULT_PROVIDER, caseload, emptyList(), null, id)
 
+fun generateContactTypeRequirementType(
+    contactTypeId: Long,
+    requirementTypeId: Long
+) = ContactTypeRequirementType(
+    ContactTypeRequirementTypeId(
+        contactTypeId,
+        requirementTypeId
+    )
+)
