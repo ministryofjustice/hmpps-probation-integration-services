@@ -99,7 +99,7 @@ class ApiController(
         ]
     )
     fun userExists(@RequestParam email: String) = userService.userExistsByEmail(email)
-        .takeIf { it.users.isNotEmpty() } 
+        .takeIf { it.users.isNotEmpty() }
         ?: throw NotFoundException("User not found")
 
     @GetMapping(value = ["/case/{crn}/access"])

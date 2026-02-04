@@ -18,23 +18,23 @@ class UserService(
         users = getUserByEmail(email)
             .filter { userRepository.existsByUserName(it) }
             .map { User(it) }
-    }
+}
 
-    private fun getUserByEmail(email: String): List<String> = ldapTemplate.search(
-        query()
-            .attributes("cn")
-            .searchScope(org.springframework.ldap.query.SearchScope.ONELEVEL)
-            .where("mail").`is`(email),
-        AttributesMapper { it["cn"]?.get()?.toString() }
-    ).filterNotNull().toList()
+private fun getUserByEmail(email: String): List<String> = ldapTemplate.search(
+    query()
+        .attributes("cn")
+        .searchScope(org.springframework.ldap.query.SearchScope.ONELEVEL)
+        .where("mail").`is`(email),
+    AttributesMapper { it["cn"]?.get()?.toString() }
+).filterNotNull().toList()
 
-    private fun userExists(username: String): User {
-        val exists = userRepository.userExists(username)
-        return User(exists, username)
-    }
+private fun userExists(username: String): User {
+    val exists = userRepository.userExists(username)
+    return User(exists, username)
+}
 
-    data class UserExistsResponse(
-        val email: String,
-        val users: List<User>
-    )
+data class UserExistsResponse(
+    val email: String,
+    val users: List<User>
+)
 }
