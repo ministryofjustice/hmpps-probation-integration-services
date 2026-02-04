@@ -17,12 +17,12 @@ import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 import java.time.LocalDate
 import java.time.LocalTime
 
-class ContactLogIntegrationTest : IntegrationTestBase()  {
+class ContactLogIntegrationTest : IntegrationTestBase() {
 
     @Test
     fun `invalid crn returns not found`() {
         val crn = "X000000"
-        
+
         mockMvc.post("/contact/$crn") {
             withToken()
             json = CreateContact(
@@ -92,13 +92,15 @@ class ContactLogIntegrationTest : IntegrationTestBase()  {
         val savedContact = contactRepository.findById(response.id).get()
         assertThat(savedContact.type.code, equalTo(ContactGenerator.EMAIL_POP_CT.code))
         assertThat(savedContact.notes, Matchers.containsString("Test"))
-        assertThat(savedContact.notes, Matchers.containsString("This contact was automatically created by the Manage Supervision integrations service."))
+        assertThat(
+            savedContact.notes,
+            Matchers.containsString("This contact was automatically created by the Manage Supervision integrations service.")
+        )
         assertThat(savedContact.date, equalTo(LocalDate.now()))
         assertThat(savedContact.startTime, isCloseTo(LocalTime.now()))
         assertThat(savedContact.alert, equalTo(false))
         assertThat(savedContact.sensitive, equalTo(false))
         assertThat(savedContact.isVisor, equalTo(false))
-
     }
 
     @Test
