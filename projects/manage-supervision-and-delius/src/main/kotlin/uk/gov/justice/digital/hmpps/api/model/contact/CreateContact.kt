@@ -7,9 +7,9 @@ data class CreateContact(
     val requirementId: Long? = null,
     val description: String? = null,
     val notes: String? = null,
-    val alert: Boolean,
-    val sensitive: Boolean,
-    val visorReport: Boolean
+    val alert: Boolean = false,
+    val sensitive: Boolean = false,
+    val visorReport: Boolean = false
 ) {
     enum class Type(val code: String) {
         EmailTextFromOther("CM3A"),
