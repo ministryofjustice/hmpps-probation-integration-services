@@ -98,20 +98,9 @@ class ApiController(
             )
         ]
     )
-    fun userExists(@RequestParam email: String): ResponseEntity<*> {
-        val userResponse = userService.userExistsByEmail(email)
-        return when {
-            userResponse.users.isEmpty() -> ResponseEntity(
-                ErrorResponse(
-                    status = HttpStatus.NOT_FOUND.value(),
-                    message = "User not found"
-                ),
-                HttpStatus.NOT_FOUND
-            )
-
-            else -> ResponseEntity(userResponse, HttpStatus.OK)
-        }
-    }
+    fun userExists(@RequestParam email: String) = userService.userExistsByEmail(email)
+        .takeIf { it.users.isNotEmpty() } 
+        ?: throw NotFoundException("User not found")
 
     @GetMapping(value = ["/case/{crn}/access"])
     @PreAuthorize("hasRole('PROBATION_API__JITBIT__CASE_DETAIL')")
