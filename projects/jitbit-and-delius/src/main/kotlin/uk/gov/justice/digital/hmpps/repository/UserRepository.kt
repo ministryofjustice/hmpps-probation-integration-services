@@ -7,4 +7,4 @@ interface UserRepository : JpaRepository<User, Long> {
     fun existsByUserName(userName: String): Boolean
 }
 
-fun UserRepository.getUserExists(username: String): Boolean = existsByUserName(username)
+fun UserRepository.userExists(username: String): Boolean = existsByUserName(username)
