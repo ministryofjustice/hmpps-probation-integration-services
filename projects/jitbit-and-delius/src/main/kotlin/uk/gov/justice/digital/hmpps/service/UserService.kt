@@ -27,7 +27,6 @@ class UserService(
         AttributesMapper { it["cn"]?.get()?.toString() }
     ).filterNotNull().toList()
 
-
     data class UserExistsResponse(
         val email: String,
         val users: List<String>
