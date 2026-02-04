@@ -13,10 +13,11 @@ class UserService(
     val userRepository: UserRepository,
     val ldapTemplate: LdapTemplate,
 ) {
-    fun userExistsByEmail(email: String): UserExistsResponse {
-        val users = getUserByEmail(email)
-        val userResults = users.map { userExists(it) }
-        return UserExistsResponse(email, userResults)
+    fun userExistsByEmail(email: String) = UserExistsResponse(
+        email = email,
+        users = getUserByEmail(email)
+            .filter { userRepository.existsByUserName(it) }
+            .map { User(it) }
     }
 
     private fun getUserByEmail(email: String): List<String> = ldapTemplate.search(
