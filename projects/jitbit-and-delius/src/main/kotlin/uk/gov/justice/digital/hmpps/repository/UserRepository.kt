@@ -9,4 +9,4 @@ interface UserRepository : JpaRepository<User, Long> {
     fun findUserByUsername(username: String): User?
 }
 
-fun UserRepository.userExists(username: String): String? = findUserByUsername(username)?.userName
+fun UserRepository.userExists(username: String) = findUserByUsername(username) != null
