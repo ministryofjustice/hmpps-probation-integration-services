@@ -38,7 +38,7 @@ class DetailsService
             eventNumber = event.eventNumber,
             name = name,
             dateOfBirth = person.dateOfBirth,
-            mainAddress = address.first()
+            mainAddress = address.firstOrNull()
         )
     }
 }
