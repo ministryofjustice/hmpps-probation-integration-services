@@ -49,10 +49,10 @@ class DocumentRepositoryTest {
         val repo = mock<DocumentRepository>()
         val doc = mock<Document>()
         whenever(repo.findByExternalReference(any())).thenReturn(doc)
-        whenever(repo.getbyUuid("uuid")).thenCallRealMethod()
+        whenever(repo.getByUuid("uuid")).thenCallRealMethod()
         whenever(repo.findByExternalReference(Document.psrUrn("uuid"))).thenReturn(doc)
 
-        val result = repo.getbyUuid("uuid")
+        val result = repo.getByUuid("uuid")
         assertEquals(doc, result)
     }
 
@@ -60,10 +60,10 @@ class DocumentRepositoryTest {
     fun `getbyUuid throws NotFoundException if not found`() {
         val repo = mock<DocumentRepository>()
         whenever(repo.findByExternalReference(any())).thenReturn(null)
-        whenever(repo.getbyUuid("uuid")).thenCallRealMethod()
+        whenever(repo.getByUuid("uuid")).thenCallRealMethod()
 
         val ex = assertThrows(NotFoundException::class.java) {
-            repo.getbyUuid("uuid")
+            repo.getByUuid("uuid")
         }
         assertTrue(ex.message!!.contains("Document with external reference"))
     }
