@@ -1,6 +1,8 @@
 package uk.gov.justice.digital.hmpps.integrations.workforceallocations
 
 import com.fasterxml.jackson.annotation.JsonAlias
+import com.fasterxml.jackson.annotation.JsonSubTypes
+import com.fasterxml.jackson.annotation.JsonTypeInfo
 import tools.jackson.databind.ValueDeserializer
 import tools.jackson.databind.annotation.JsonDeserialize
 import uk.gov.justice.digital.hmpps.api.model.AllocationReason
@@ -9,7 +11,12 @@ import uk.gov.justice.digital.hmpps.api.model.deriveDeliusCodeDefaultInitial
 import uk.gov.justice.digital.hmpps.integrations.delius.allocations.entity.DatasetCode
 import java.time.ZonedDateTime
 
-@JsonDeserialize(using = AllocationDetailDeserialiser::class)
+@JsonTypeInfo(use = JsonTypeInfo.Id.DEDUCTION)
+@JsonSubTypes(
+    JsonSubTypes.Type(AllocationDetail.PersonAllocation::class),
+    JsonSubTypes.Type(AllocationDetail.RequirementAllocation::class),
+    JsonSubTypes.Type(AllocationDetail.EventAllocation::class),
+)
 sealed interface AllocationDetail {
     val id: String
     val staffCode: String

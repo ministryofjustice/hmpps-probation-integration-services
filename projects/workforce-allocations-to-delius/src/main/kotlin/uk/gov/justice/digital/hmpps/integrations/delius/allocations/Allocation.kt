@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query
 import org.springframework.stereotype.Repository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.Person
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.util.stream.Stream
 
 @JsonPropertyOrder(
@@ -36,10 +37,10 @@ interface Allocation {
     val allocatedBy: String
 
     @get:JsonFormat(shape = STRING, pattern = "dd/MM/yyyy")
-    val allocationDate: LocalDate
+    val allocationDate: LocalDateTime
 
     @get:JsonFormat(shape = STRING, pattern = "dd/MM/yyyy")
-    val endDate: LocalDate?
+    val endDate: LocalDateTime?
     val officerCode: String
     val teamCode: String
     val teamDescription: String

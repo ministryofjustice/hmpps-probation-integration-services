@@ -25,6 +25,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.D
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.ReferenceData
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.*
 import java.time.LocalDate
+import java.time.LocalDateTime
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.Requirement as RequirementEntity
 
 @ExtendWith(MockitoExtension::class)
@@ -129,7 +130,7 @@ class SentenceServiceTest {
             ReferenceData(1, "T", "Ended")
         )
         val courtDocumentDetails =
-            CourtDocs("00000000-0000-0000-0000-000000000001", LocalDate.now(), "Pre Sentence Event")
+            CourtDocs("00000000-0000-0000-0000-000000000001", LocalDate.now().atStartOfDay(), "Pre Sentence Event")
 
         whenever(personRepository.findByCrn(PersonGenerator.OVERVIEW.crn)).thenReturn(PersonGenerator.OVERVIEW)
 
@@ -443,14 +444,14 @@ class SentenceServiceTest {
 
     data class CourtDocs(
         val _id: String,
-        val _lastSaved: LocalDate,
+        val _lastSaved: LocalDateTime,
         val _documentName: String
     ) : CourtDocumentDetails {
 
         override val id: String
             get() = _id
 
-        override val lastSaved: LocalDate
+        override val lastSaved: LocalDateTime
             get() = _lastSaved
 
         override val documentName: String

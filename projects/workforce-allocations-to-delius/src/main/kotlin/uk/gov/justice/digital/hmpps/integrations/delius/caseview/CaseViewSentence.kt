@@ -5,6 +5,7 @@ import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.NumericBooleanConverter
 import java.time.LocalDate
+import java.time.LocalDateTime
 
 @Entity
 @Immutable
@@ -61,9 +62,9 @@ class CaseViewEvent(
 interface SentenceSummary {
     val eventId: Long
     val description: String
-    val startDate: LocalDate
+    val startDate: LocalDateTime
     val length: String
-    val endDate: LocalDate
+    val endDate: LocalDateTime
     val offenceMainCategory: String
     val offenceSubCategory: String
 }
