@@ -60,7 +60,6 @@ class CheckInService(
             staff = com.staff,
             description = description(),
             notes = listOfNotNull(
-                description(),
                 checkInUrl()?.let { "Review the online check in using the manage probation check ins service: $it" },
                 detail?.notes
             ).joinToString(System.lineSeparator()),
