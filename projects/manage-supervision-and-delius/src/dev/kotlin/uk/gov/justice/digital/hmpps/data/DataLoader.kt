@@ -191,6 +191,7 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
             PersonGenerator.MAIN_CAT_W_TYPE,
             PersonGenerator.REQUIREMENT,
             PersonGenerator.REQUIREMENT_UNPAID_WORK,
+            PersonGenerator.REQUIREMENT_NULL_MAIN_CATEGORY,
             PersonGenerator.REQUIREMENT_CONTACT_1,
             PersonGenerator.REQUIREMENT_CONTACT_2,
             PersonGenerator.REGISTER_TYPE_1,

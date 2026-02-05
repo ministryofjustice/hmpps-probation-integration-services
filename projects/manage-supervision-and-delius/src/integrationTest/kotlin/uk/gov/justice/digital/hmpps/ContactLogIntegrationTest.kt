@@ -240,4 +240,21 @@ class ContactLogIntegrationTest : IntegrationTestBase() {
         }
             .andExpect { status { isBadRequest() } }
     }
+
+    @Test
+    fun `requirement with null main category returns bad request`() {
+        mockMvc.post("/contact/${PersonGenerator.PERSON_1.crn}") {
+            withToken()
+            json = CreateContact(
+                staffCode = OffenderManagerGenerator.STAFF_1.code,
+                teamCode = OffenderManagerGenerator.TEAM.code,
+                type = ContactGenerator.RQMNT_LEVEL_CT.code,
+                requirementId = PersonGenerator.REQUIREMENT_NULL_MAIN_CATEGORY.id,
+                alert = false,
+                sensitive = false,
+                visorReport = false
+            )
+        }
+            .andExpect { status { isBadRequest() } }
+    }
 }

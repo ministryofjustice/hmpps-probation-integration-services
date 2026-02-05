@@ -186,6 +186,14 @@ object PersonGenerator {
         startDate = LocalDate.now().minusDays(3),
     )
 
+    val REQUIREMENT_NULL_MAIN_CATEGORY = generateRequirement(
+        ACTIVE_ORDER,
+        subCategory = null,
+        mainCategory = null,
+        terminationDetails = null,
+        startDate = LocalDate.now().minusDays(1),
+    )
+
     val REQUIREMENT_CONTACT_1 = ContactGenerator.generateContact(
         OVERVIEW,
         ContactGenerator.APPT_CT_1,
@@ -438,7 +446,7 @@ object PersonGenerator {
         disposal: Disposal,
         length: Long = 12,
         notes: String? = "my notes",
-        mainCategory: RequirementMainCategory,
+        mainCategory: RequirementMainCategory? = null,
         active: Boolean = true,
         softDeleted: Boolean = false,
         expectedStartDate: LocalDate? = LocalDate.now().minusDays(1),

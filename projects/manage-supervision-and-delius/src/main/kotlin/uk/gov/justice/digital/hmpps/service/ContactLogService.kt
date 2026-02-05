@@ -119,10 +119,14 @@ class ContactLogService(
         if (createContact.requirementId != null) {
             val validRequirementTypes = contactTypeRequirementTypeRepository.findByIdContactTypeId(contactType.id)
                 .map { it.id.requirementTypeId }
+                .ifEmpty { return }
             val requirement = requirementRepository.getRequirement(createContact.requirementId)
                 ?: throw NotFoundException("Requirement", "id", createContact.requirementId)
 
-            if (requirement.mainCategory!!.id !in validRequirementTypes) {
+            val requirementType = requirement.mainCategory?.id
+                ?: throw InvalidRequestException("Contact type ${contactType.code} is not valid for this requirement")
+
+            if (requirementType !in validRequirementTypes) {
                 throw InvalidRequestException("Contact type ${contactType.code} is not valid for requirement type ${requirement.mainCategory.code}")
             }
         }

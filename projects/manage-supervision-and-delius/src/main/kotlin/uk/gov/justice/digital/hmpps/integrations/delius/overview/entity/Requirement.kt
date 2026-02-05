@@ -161,8 +161,8 @@ interface RequirementRepository : JpaRepository<Requirement, Long> {
         """
             SELECT r, m, d, sc, td, ud
             FROM Requirement r
-            JOIN r.mainCategory m
-            JOIN r.disposal d 
+            LEFT JOIN r.mainCategory m
+            JOIN r.disposal d
             JOIN d.event e
             LEFT JOIN r.subCategory sc
             LEFT JOIN r.terminationDetails td
