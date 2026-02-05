@@ -20,7 +20,7 @@ class ContactController(
     @PostMapping("/{crn}")
     @WithDeliusUser
     @ResponseStatus(HttpStatus.CREATED)
-    fun createAppointment(
+    fun createContact(
         @PathVariable crn: String,
         @Valid @RequestBody createContact: CreateContact
     ) = contactLogService.createContact(crn, createContact)
