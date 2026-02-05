@@ -12,5 +12,4 @@ class CourtAppearance(
     @OneToOne
     @JoinColumn(name = "event_id")
     val event: Event,
-) {
-}
+)
