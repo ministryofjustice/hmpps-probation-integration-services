@@ -23,21 +23,21 @@ class DomainEventDetailService(
         return uri
     }
 
-    final inline fun <reified T> getDetail(event: HmppsDomainEvent): T =
+    final inline fun <reified T : Any> getDetail(event: HmppsDomainEvent): T =
         getDetail(validate(event.detailUrl), object : ParameterizedTypeReference<T>() {})
 
-    final inline fun <reified T> getDetail(detailUrl: String?): T =
+    final inline fun <reified T : Any> getDetail(detailUrl: String?): T =
         getDetail(validate(detailUrl), object : ParameterizedTypeReference<T>() {})
 
-    fun <T> getDetail(uri: URI, type: ParameterizedTypeReference<T>): T =
+    fun <T : Any> getDetail(uri: URI, type: ParameterizedTypeReference<T>): T =
         retry(3, listOf(HttpStatusCodeException::class)) {
             requireNotNull(restClient).get().uri(uri).retrieve().body<T>(type)!!
         }
 
-    final inline fun <reified T> getDetailResponse(event: HmppsDomainEvent): ResponseEntity<T> =
+    final inline fun <reified T : Any> getDetailResponse(event: HmppsDomainEvent): ResponseEntity<T> =
         getDetailResponse(validate(event.detailUrl), object : ParameterizedTypeReference<T>() {})
 
-    fun <T> getDetailResponse(uri: URI, type: ParameterizedTypeReference<T>): ResponseEntity<T> =
+    fun <T : Any> getDetailResponse(uri: URI, type: ParameterizedTypeReference<T>): ResponseEntity<T> =
         retry(3, listOf(HttpStatusCodeException::class)) {
             requireNotNull(restClient).get().uri(uri).retrieve().toEntity<T>(type)
         }

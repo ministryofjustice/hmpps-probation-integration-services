@@ -1,8 +1,8 @@
 package uk.gov.justice.digital.hmpps.converter
 
-import com.fasterxml.jackson.databind.JsonMappingException
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
+import tools.jackson.core.JacksonException
+import tools.jackson.databind.ObjectMapper
+import tools.jackson.module.kotlin.jacksonTypeRef
 import uk.gov.justice.digital.hmpps.message.Notification
 import kotlin.reflect.KClass
 
@@ -17,7 +17,7 @@ abstract class NotificationConverter<T : Any>(
             message = objectMapper.readValue(stringMessage.message, getMessageType().java),
             attributes = stringMessage.attributes
         )
-    } catch (e: JsonMappingException) {
+    } catch (e: JacksonException) {
         onMappingError(e)
     }
 
@@ -29,7 +29,7 @@ abstract class NotificationConverter<T : Any>(
         )
     )
 
-    open fun onMappingError(e: JsonMappingException): Notification<T>? {
+    open fun onMappingError(e: JacksonException): Notification<T>? {
         throw e
     }
 }

@@ -22,6 +22,7 @@ import uk.gov.justice.digital.hmpps.entity.staff.Team
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.model.CodeDescription
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.ZonedDateTime
 import java.util.*
@@ -156,14 +157,14 @@ interface UnpaidWorkSessionDto {
     val projectId: Long
     val projectName: String
     val projectCode: String
-    val appointmentDate: LocalDate
+    val appointmentDate: LocalDateTime
     val allocatedCount: Long
     val outcomeCount: Long
     val enforcementActionCount: Long
 
     fun toModel() = UnpaidWorkSession(
         CodeDescription(projectCode, projectName),
-        appointmentDate,
+        appointmentDate.toLocalDate(),
         allocatedCount,
         outcomeCount,
         enforcementActionCount

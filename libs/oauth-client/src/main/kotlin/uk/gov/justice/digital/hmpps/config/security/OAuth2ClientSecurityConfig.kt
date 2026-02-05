@@ -1,6 +1,6 @@
 package uk.gov.justice.digital.hmpps.config.security
 
-import org.springframework.boot.autoconfigure.security.ConditionalOnDefaultWebSecurity
+import org.springframework.boot.security.autoconfigure.web.servlet.ConditionalOnDefaultWebSecurity
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.config.annotation.web.builders.HttpSecurity

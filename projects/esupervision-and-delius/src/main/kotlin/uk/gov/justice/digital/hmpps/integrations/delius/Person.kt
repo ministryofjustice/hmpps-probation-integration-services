@@ -6,7 +6,7 @@ import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.NumericBooleanConverter
 import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
-import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException
+import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException.Companion.orIgnore
 import java.time.LocalDate
 
 @Entity
@@ -79,14 +79,12 @@ class PersonManager(
 interface PersonManagerRepository : JpaRepository<PersonManager, Long> {
     @EntityGraph(attributePaths = ["provider", "team", "staff"])
     fun findByPersonCrn(crn: String): PersonManager?
-
     fun findByPersonCrnIn(crns: List<String>): List<PersonManager>
+    fun getByCrn(crn: String) = findByPersonCrn(crn).orIgnore { "CRN not found" }
 }
-
-fun PersonManagerRepository.getByCrn(crn: String) =
-    findByPersonCrn(crn) ?: throw IgnorableMessageException("CRN not found")
 
 interface PersonRepository : JpaRepository<Person, Long> {
     fun findByCrn(crn: String): Person?
+    fun existsByCrn(crn: String): Boolean
 }
 

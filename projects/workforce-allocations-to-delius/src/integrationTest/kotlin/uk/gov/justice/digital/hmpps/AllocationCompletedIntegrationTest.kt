@@ -2,9 +2,9 @@ package uk.gov.justice.digital.hmpps
 
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
 import uk.gov.justice.digital.hmpps.api.model.Mappings
@@ -52,11 +52,12 @@ class AllocationCompletedIntegrationTest @Autowired constructor(
         val event = EventGenerator.DEFAULT
         val team = TeamGenerator.DEFAULT
         val staff = StaffGenerator.DEFAULT
-        mockMvc.get("/allocation-completed/order-manager") {
-            withToken()
-            param("crn", person.crn)
-            param("eventNumber", event.number)
-        }
+        mockMvc
+            .get("/allocation-completed/order-manager") {
+                withToken()
+                param("crn", person.crn)
+                param("eventNumber", event.number)
+            }
             .andExpect {
                 status { is2xxSuccessful() }
                 jsonPath("$.code") { value(staff.code) }

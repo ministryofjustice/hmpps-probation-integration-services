@@ -5,6 +5,7 @@ import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.audit.service.AuditableService
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
 import uk.gov.justice.digital.hmpps.detail.DomainEventDetailService
+import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException
 import uk.gov.justice.digital.hmpps.integrations.delius.*
 import uk.gov.justice.digital.hmpps.integrations.delius.ContactType.Companion.E_SUPERVISION_CHECK_IN
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractionCode.ADD_CONTACT
@@ -23,6 +24,7 @@ class CheckInService(
     private val eventRepository: EventRepository,
     private val contactTypeRepository: ContactTypeRepository,
     private val contactRepository: ContactRepository,
+    private val personRepository: PersonRepository,
 ) : AuditableService(auditedInteractionService) {
     fun handle(de: HmppsDomainEvent) = audit(ADD_CONTACT) { audit ->
         val detail = de.detailUrl?.let { deDetailService.getDetail<CheckInDetail>(de) }
@@ -37,6 +39,8 @@ class CheckInService(
     }
 
     fun update(de: HmppsDomainEvent) = audit(UPDATE_CONTACT) { audit ->
+        if (!personRepository.existsByCrn(requireNotNull(de.personReference.findCrn())))
+            throw IgnorableMessageException("CRN not found")
         val detail = de.detailUrl?.let { deDetailService.getDetail<CheckInDetail>(de) }
         val uuid = requireNotNull(detail?.checkinUuid)
         val contact = contactRepository.getByExternalReference(Contact.externalReferencePrefix(de.eventType) + uuid)
@@ -60,7 +64,6 @@ class CheckInService(
             staff = com.staff,
             description = description(),
             notes = listOfNotNull(
-                description(),
                 checkInUrl()?.let { "Review the online check in using the manage probation check ins service: $it" },
                 detail?.notes
             ).joinToString(System.lineSeparator()),

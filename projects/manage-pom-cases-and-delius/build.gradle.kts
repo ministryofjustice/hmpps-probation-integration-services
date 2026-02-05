@@ -15,21 +15,21 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-ldap")
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-validation")
-    implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.springframework.boot:spring-boot-starter-webmvc")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
-    implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
+    implementation("tools.jackson.module:jackson-module-kotlin")
     implementation(libs.springdoc)
     implementation(libs.opentelemetry.annotations)
 
     dev(project(":libs:dev-tools"))
     dev("com.unboundid:unboundid-ldapsdk")
     dev("com.h2database:h2")
-    dev("org.testcontainers:oracle-free")
+    dev("org.testcontainers:testcontainers-oracle-free")
 
     runtimeOnly("com.oracle.database.jdbc:ojdbc11")
 
-    testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testImplementation("org.springframework.boot:spring-boot-starter-webmvc-test")
     testImplementation(libs.bundles.mockito)
 }
 

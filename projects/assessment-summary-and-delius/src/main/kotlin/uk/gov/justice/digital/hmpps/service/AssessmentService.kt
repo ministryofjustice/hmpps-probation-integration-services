@@ -172,10 +172,10 @@ fun Objective.plan(
 ): SentencePlan {
     fun Int.deliusIndex() = this + 1L
     val sp = SentencePlan(
-        person,
-        assessment,
-        objectiveSequence,
-        objectiveCodeDesc
+        person = person,
+        assessment = assessment,
+        objectiveNumber = objectiveSequence,
+        objective = objectiveCodeDesc
     )
     criminogenicNeeds?.forEachIndexed { index, need -> sp.withNeed(index.deliusIndex(), need.criminogenicNeedDesc) }
     actions?.forEachIndexed { index, action ->

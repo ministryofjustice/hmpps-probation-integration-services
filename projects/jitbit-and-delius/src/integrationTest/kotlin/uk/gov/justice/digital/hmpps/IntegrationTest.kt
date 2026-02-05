@@ -8,7 +8,7 @@ import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
 import org.junit.jupiter.params.provider.ValueSource
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
 import org.springframework.test.json.JsonCompareMode
@@ -19,14 +19,35 @@ import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.EXCLUSION
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.RESTRICTION
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.RESTRICTION_EXCLUSION
 import uk.gov.justice.digital.hmpps.model.LimitedAccessDetail
+import uk.gov.justice.digital.hmpps.service.UserService
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = RANDOM_PORT)
 internal class IntegrationTest @Autowired constructor(
-    private val mockMvc: MockMvc
+    private val mockMvc: MockMvc,
 ) {
+    @Test
+    fun `returns ok when user exists`() {
+        mockMvc.get("/user?email=test.user@example.com") { withToken() }
+            .andExpect { status { isOk() } }
+    }
+
+    @Test
+    fun `returns 404 when user does not exist`() {
+        mockMvc.get("/user?email=test.notauser@example.com") { withToken() }
+            .andExpect { status { isNotFound() } }
+    }
+
+    @Test
+    fun `returns ok when there are multiple matches for email`() {
+        val response = mockMvc.get("/user?email=test.user2@example.com") { withToken() }
+            .andExpect { status { isOk() } }
+            .andReturn().response.contentAsJson<UserService.UserExistsResponse>()
+
+        assertThat(response.users.size, equalTo(2))
+    }
 
     @Test
     fun `returns 404 when not found`() {

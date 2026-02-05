@@ -78,7 +78,7 @@ private fun Person.asMatch(status: MatchProbationStatus): Match =
 
 fun SentenceCounts.matchStatusDetail() = MatchProbationStatus(
     status,
-    terminationDate,
+    terminationDate?.toLocalDate(),
     breachCount > 0,
     preSentenceCount > 0,
     awaitingPsrCount > 0

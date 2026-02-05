@@ -1,7 +1,7 @@
 package uk.gov.justice.digital.hmpps.utils
 
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.PersonSummaryEntity
-import java.time.LocalDate
+import java.time.LocalDateTime
 
 data class Summary(
     override val id: Long,
@@ -12,5 +12,5 @@ data class Summary(
     override val crn: String,
     override val pnc: String?,
     override val noms: String?,
-    override val dateOfBirth: LocalDate
+    override val dateOfBirth: LocalDateTime
 ) : PersonSummaryEntity

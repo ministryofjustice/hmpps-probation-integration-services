@@ -148,7 +148,7 @@ class DataManagerTest {
         parent.children = mutableSetOf(child)
 
         whenever(entityManager.entityManagerFactory.persistenceUnitUtil.getIdentifier(parent)).thenReturn(1L)
-        whenever(entityManager.find<Any>(any(), any())).thenReturn(null)
+        whenever(entityManager.find(any<Class<*>>(), any())).thenReturn(null)
         whenever(entityManager.merge<Any>(any())).thenAnswer { it.arguments[0] }
 
         val result = dataManager.save(parent)

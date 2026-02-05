@@ -307,7 +307,7 @@ enum class Attended {
 
 data class Outcome(
     val attended: Attended,
-    private val didSessionHappen: Boolean? = null,
+    val didSessionHappen: Boolean? = null,
     val noSessionReasonType: NoSessionReasonType? = null,
     @JsonAlias("notifyProbationPractitionerOfBehaviour")
     val notify: Boolean = false

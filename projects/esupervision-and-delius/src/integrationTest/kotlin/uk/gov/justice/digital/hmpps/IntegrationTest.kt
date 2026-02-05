@@ -3,11 +3,13 @@ package uk.gov.justice.digital.hmpps
 import com.github.tomakehurst.wiremock.WireMockServer
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import org.mockito.kotlin.verify
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
+import org.springframework.test.context.bean.override.mockito.MockitoBean
 import org.springframework.test.json.JsonCompareMode
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
@@ -23,6 +25,7 @@ import uk.gov.justice.digital.hmpps.message.MessageAttributes
 import uk.gov.justice.digital.hmpps.message.Notification
 import uk.gov.justice.digital.hmpps.messaging.HmppsChannelManager
 import uk.gov.justice.digital.hmpps.model.PersonalDetails
+import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.json
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 import java.time.LocalDate
@@ -34,7 +37,8 @@ internal class IntegrationTest @Autowired constructor(
     private val mockMvc: MockMvc,
     private val channelManager: HmppsChannelManager,
     private val contactRepository: ContactRepository,
-    private val wireMockServer: WireMockServer
+    private val wireMockServer: WireMockServer,
+    @MockitoBean private val telemetryService: TelemetryService,
 ) {
 
     @Test
@@ -54,7 +58,7 @@ internal class IntegrationTest @Autowired constructor(
         assertThat(contact.team.id).isEqualTo(ProviderGenerator.DEFAULT_TEAM.id)
         assertThat(contact.staff.id).isEqualTo(ProviderGenerator.DEFAULT_STAFF.id)
         assertThat(contact.isSensitive).isEqualTo(false)
-        assertThat(contact.notes).isEqualTo("Online check in completed" + System.lineSeparator() + "Review the online check in using the manage probation check ins service: https://esupervision/check-in/received")
+        assertThat(contact.notes).isEqualTo("Review the online check in using the manage probation check ins service: https://esupervision/check-in/received")
     }
 
     @Test
@@ -74,7 +78,7 @@ internal class IntegrationTest @Autowired constructor(
         assertThat(contact.team.id).isEqualTo(ProviderGenerator.DEFAULT_TEAM.id)
         assertThat(contact.staff.id).isEqualTo(ProviderGenerator.DEFAULT_STAFF.id)
         assertThat(contact.isSensitive).isEqualTo(false)
-        assertThat(contact.notes).isEqualTo("Check in has not been submitted on time" + System.lineSeparator() + "Review the online check in using the manage probation check ins service: https://esupervision/check-in/expired")
+        assertThat(contact.notes).isEqualTo("Review the online check in using the manage probation check ins service: https://esupervision/check-in/expired")
     }
 
     @Test
@@ -92,12 +96,7 @@ internal class IntegrationTest @Autowired constructor(
         assertThat(contact.team.id).isEqualTo(ProviderGenerator.DEFAULT_TEAM.id)
         assertThat(contact.staff.id).isEqualTo(ProviderGenerator.DEFAULT_STAFF.id)
         assertThat(contact.isSensitive).isEqualTo(false)
-        assertThat(contact.notes).isEqualTo(
-            """
-            |Online check in completed
-            |Some notes about the check-in
-            """.trimMargin()
-        )
+        assertThat(contact.notes).isEqualTo("Some notes about the check-in")
     }
 
     @Test
@@ -133,6 +132,19 @@ internal class IntegrationTest @Autowired constructor(
     }
 
     @Test
+    fun `esupervision update for missing CRN ignored`() {
+        val notification = prepEvent("esupervision-updated-A000001", wireMockServer.port())
+        notification.message.personReference.identifiers[0].set("value", "INVALID")
+
+        channelManager.getChannel(queueName).publishAndWait(notification)
+
+        verify(telemetryService).trackEvent(
+            "CheckInEventIgnored",
+            mapOf("eventType" to "esupervision.check-in.updated", "crn" to "INVALID")
+        )
+    }
+
+    @Test
     fun `esupervision expired with detail url`() {
         val notification = prepEvent("esupervision-expired-detail-url-A000001", wireMockServer.port())
         channelManager.getChannel(queueName).publishAndWait(notification)
@@ -147,12 +159,7 @@ internal class IntegrationTest @Autowired constructor(
         assertThat(contact.team.id).isEqualTo(ProviderGenerator.DEFAULT_TEAM.id)
         assertThat(contact.staff.id).isEqualTo(ProviderGenerator.DEFAULT_STAFF.id)
         assertThat(contact.isSensitive).isEqualTo(false)
-        assertThat(contact.notes).isEqualTo(
-            """
-            |Check in has not been submitted on time
-            |Some notes about the expired check-in
-            """.trimMargin()
-        )
+        assertThat(contact.notes).isEqualTo("Some notes about the expired check-in")
     }
 
     @Test

@@ -105,7 +105,7 @@ internal class UPWAssessmentServiceTest {
 
         whenever(detailService.getDetailResponse<Any>(anyOrNull(), anyOrNull())).thenReturn(
             ResponseEntity.status(HttpStatus.OK)
-                .headers { it[HttpHeaders.CONTENT_DISPOSITION] = listOf("filename=upw-assessment.pdf") }
+                .headers { it.set(HttpHeaders.CONTENT_DISPOSITION, "filename=upw-assessment.pdf") }
                 .body(
                     "Ceci n'est pas une PDF".toByteArray()
                 )

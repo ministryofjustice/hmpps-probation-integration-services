@@ -1,6 +1,6 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.service
 
-import com.fasterxml.jackson.databind.ObjectMapper
+import tools.jackson.databind.ObjectMapper
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.integrations.delius.domainevent.entity.DomainEvent
 import uk.gov.justice.digital.hmpps.integrations.delius.domainevent.entity.DomainEventRepository

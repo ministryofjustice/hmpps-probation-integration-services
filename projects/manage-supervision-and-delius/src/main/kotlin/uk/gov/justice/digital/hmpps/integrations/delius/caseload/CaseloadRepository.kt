@@ -36,6 +36,7 @@ from ( with filtered_caseload as ( select caseload.*
                                          join r_contact_type ct on ct.contact_type_id = c.contact_type_id
                                          join filtered_caseload fc on fc.offender_id = c.offender_id
                                             where c.soft_deleted = 0
+                                              and c.contact_outcome_type_id is null
                                               and ct.attendance_contact = 'Y'
                                               and c.contact_date <= trunc(sysdate) + 1825
                                               and (

@@ -6,10 +6,7 @@ import org.springframework.data.jpa.repository.Query
 import uk.gov.justice.digital.hmpps.api.model.CaseType
 import uk.gov.justice.digital.hmpps.api.model.ManagementStatus
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
-import uk.gov.justice.digital.hmpps.security.ServiceContext
-import java.time.LocalDate
 import java.time.LocalDateTime
-import java.time.ZonedDateTime
 
 const val DISPOSAL_SQL = """
     select o.crn, d.active_flag * e.active_flag as active_flag, s.officer_code
@@ -157,7 +154,7 @@ interface PersonRepository : JpaRepository<Person, Long> {
 
 interface MostRecentInitialAllocation {
     val crn: String
-    val allocatedAt: LocalDate?
+    val allocatedAt: LocalDateTime?
 }
 
 fun PersonRepository.getCaseType(crn: String) = findCaseType(crn) ?: CaseType.UNKNOWN

@@ -8,7 +8,7 @@ import java.time.ZonedDateTime
 @Message
 data class HmppsDomainEvent(
     val eventType: String,
-    val version: Int,
+    val version: Int = 1,
     val detailUrl: String? = null,
     val occurredAt: ZonedDateTime = ZonedDateTime.now(),
     val description: String? = null,
