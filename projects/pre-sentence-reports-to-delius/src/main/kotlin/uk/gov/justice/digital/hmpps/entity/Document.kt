@@ -42,7 +42,7 @@ class Document(
 interface DocumentRepository : JpaRepository<Document, Long> {
     fun findByExternalReference(uuid: String): Document?
 
-    fun getbyUuid(uuid: String): Document {
+    fun getByUuid(uuid: String): Document {
         return findByExternalReference(Document.Companion.psrUrn(uuid))
             ?: throw NotFoundException("Document with external reference ${Document.Companion.psrUrn(uuid)} not found")
     }
