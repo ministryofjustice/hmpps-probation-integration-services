@@ -9,11 +9,11 @@ spring:
         timezone.default_storage: NORMALIZE
         query.mutation_strategy: org.hibernate.query.sqm.mutation.internal.inline.InlineMutationStrategy
         query.mutation_strategy.persistent:
-            create_tables: false
-            drop_tables: false
+          create_tables: false
+          drop_tables: false
         query.mutation_strategy.global_temporary:
-            create_tables: false
-            drop_tables: false
+          create_tables: false
+          drop_tables: false
   security.oauth2:
     client:
       registration:
@@ -80,7 +80,7 @@ spring.config.activate.on-profile: dev
 ---
 spring.config.activate.on-profile: integration-test
 spring.datasource.url: jdbc:h2:mem:./test;MODE=Oracle;DEFAULT_NULL_ORDERING=HIGH;DB_CLOSE_ON_EXIT=FALSE
-
+delius.db.username: PreSentenceService
 ---
 spring.config.activate.on-profile: oracle
 spring:
