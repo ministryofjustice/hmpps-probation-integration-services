@@ -43,5 +43,6 @@ class DocumentDetailsIntegrationTest @Autowired constructor(
         assertThat(response.eventNumber).isEqualTo(1L)
         assertThat(response.name?.forename).isEqualTo("Bob")
         assertThat(response.dateOfBirth).isEqualTo(LocalDate.of(1980, 1, 1))
+        assertThat(response.mainAddress?.noFixedAbode).isEqualTo(false)
     }
 }

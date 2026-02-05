@@ -44,6 +44,6 @@ class PersonAddress(
     val softDeleted: Boolean = false,
 )
 
-interface personAddressRepository : JpaRepository<PersonAddress, Long> {
+interface PersonAddressRepository : JpaRepository<PersonAddress, Long> {
     fun findByPersonId(personId: Long): List<PersonAddress>
 }

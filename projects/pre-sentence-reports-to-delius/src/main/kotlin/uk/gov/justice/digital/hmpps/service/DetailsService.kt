@@ -2,8 +2,8 @@ package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.integrations.delius.DocumentRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.PersonAddressRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.name
-import uk.gov.justice.digital.hmpps.integrations.delius.personAddressRepository
 import uk.gov.justice.digital.hmpps.model.Address
 import uk.gov.justice.digital.hmpps.model.DefendantDetails
 
@@ -11,7 +11,7 @@ import uk.gov.justice.digital.hmpps.model.DefendantDetails
 class DetailsService
     (
     val documentRepository: DocumentRepository,
-    val personAddressRepository: personAddressRepository
+    val personAddressRepository: PersonAddressRepository
 ) {
     fun getDefendantDetails(psrUuid: String): DefendantDetails {
         val document = documentRepository.getbyUuid(psrUuid)
