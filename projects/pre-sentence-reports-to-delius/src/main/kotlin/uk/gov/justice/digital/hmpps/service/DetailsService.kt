@@ -1,9 +1,9 @@
 package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.stereotype.Service
-import uk.gov.justice.digital.hmpps.integrations.delius.DocumentRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.PersonAddressRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.name
+import uk.gov.justice.digital.hmpps.entity.DocumentRepository
+import uk.gov.justice.digital.hmpps.entity.PersonAddressRepository
+import uk.gov.justice.digital.hmpps.entity.name
 import uk.gov.justice.digital.hmpps.model.Address
 import uk.gov.justice.digital.hmpps.model.DefendantDetails
 

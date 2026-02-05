@@ -2,8 +2,8 @@ package uk.gov.justice.digital.hmpps.data.generator
 
 import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator.DEFAULT_ADDRESS_STATUS
 import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator.DEFAULT_TITLE
-import uk.gov.justice.digital.hmpps.integrations.delius.Person
-import uk.gov.justice.digital.hmpps.integrations.delius.PersonAddress
+import uk.gov.justice.digital.hmpps.entity.Person
+import uk.gov.justice.digital.hmpps.entity.PersonAddress
 import java.time.LocalDate
 
 object PersonGenerator {

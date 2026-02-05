@@ -3,11 +3,11 @@ import org.junit.jupiter.api.Test
 import org.mockito.kotlin.any
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.whenever
+import uk.gov.justice.digital.hmpps.entity.CourtReport
+import uk.gov.justice.digital.hmpps.entity.Document
+import uk.gov.justice.digital.hmpps.entity.DocumentRepository
+import uk.gov.justice.digital.hmpps.entity.Person
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
-import uk.gov.justice.digital.hmpps.integrations.delius.CourtReport
-import uk.gov.justice.digital.hmpps.integrations.delius.Document
-import uk.gov.justice.digital.hmpps.integrations.delius.DocumentRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.Person
 
 class DocumentTest {
 

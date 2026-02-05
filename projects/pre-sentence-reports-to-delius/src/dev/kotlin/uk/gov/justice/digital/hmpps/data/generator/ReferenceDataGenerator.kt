@@ -1,7 +1,7 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
-import uk.gov.justice.digital.hmpps.integrations.delius.Dataset
-import uk.gov.justice.digital.hmpps.integrations.delius.ReferenceData
+import uk.gov.justice.digital.hmpps.entity.Dataset
+import uk.gov.justice.digital.hmpps.entity.ReferenceData
 
 object ReferenceDataGenerator {
     val DEFAULT_TITLE = ReferenceData(IdGenerator.getAndIncrement(), "MR", "Mr", generateDataset("title"), true)

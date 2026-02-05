@@ -1,7 +1,7 @@
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
-import uk.gov.justice.digital.hmpps.integrations.delius.Dataset
-import uk.gov.justice.digital.hmpps.integrations.delius.ReferenceData
+import uk.gov.justice.digital.hmpps.entity.Dataset
+import uk.gov.justice.digital.hmpps.entity.ReferenceData
 
 class ReferenceDataTest {
 

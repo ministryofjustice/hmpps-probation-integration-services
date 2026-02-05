@@ -1,10 +1,9 @@
-package uk.gov.justice.digital.hmpps.integrations.delius
+package uk.gov.justice.digital.hmpps.entity
 
 import jakarta.persistence.*
 import org.hibernate.type.NumericBooleanConverter
 import org.springframework.data.jpa.repository.JpaRepository
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
-import uk.gov.justice.digital.hmpps.integrations.delius.Document.Companion.psrUrn
 
 @Entity
 @Table(name = "document")
@@ -44,7 +43,7 @@ interface DocumentRepository : JpaRepository<Document, Long> {
     fun findByExternalReference(uuid: String): Document?
 
     fun getbyUuid(uuid: String): Document {
-        return findByExternalReference(psrUrn(uuid))
-            ?: throw NotFoundException("Document with external reference ${psrUrn(uuid)} not found")
+        return findByExternalReference(Document.Companion.psrUrn(uuid))
+            ?: throw NotFoundException("Document with external reference ${Document.Companion.psrUrn(uuid)} not found")
     }
 }

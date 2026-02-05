@@ -2,7 +2,7 @@ package uk.gov.justice.digital.hmpps.data.generator
 
 import uk.gov.justice.digital.hmpps.data.generator.CourtReportGenerator.DEFAULT_COURT_REPORT
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.DEFAULT_PERSON
-import uk.gov.justice.digital.hmpps.integrations.delius.Document
+import uk.gov.justice.digital.hmpps.entity.Document
 import java.util.*
 
 object DocumentGenerator {
