@@ -9,7 +9,6 @@ import uk.gov.justice.digital.hmpps.data.manager.DataManager
 class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
     override fun systemUser() = UserGenerator.AUDIT_USER
     override fun setupData() {
-        print("DocumentUUID:${DocumentGenerator.DEFAULT_DOCUMENT.externalReference}")
         saveAll(
             EventGenerator.DEFAULT_EVENT,
             CourtAppearanceGenerator.DEFAULT_COURT_APPEARANCE,
