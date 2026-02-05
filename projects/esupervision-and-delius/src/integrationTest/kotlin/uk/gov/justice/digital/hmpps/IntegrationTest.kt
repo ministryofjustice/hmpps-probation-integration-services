@@ -58,7 +58,7 @@ internal class IntegrationTest @Autowired constructor(
         assertThat(contact.team.id).isEqualTo(ProviderGenerator.DEFAULT_TEAM.id)
         assertThat(contact.staff.id).isEqualTo(ProviderGenerator.DEFAULT_STAFF.id)
         assertThat(contact.isSensitive).isEqualTo(false)
-        assertThat(contact.notes).isEqualTo("Online check in completed" + System.lineSeparator() + "Review the online check in using the manage probation check ins service: https://esupervision/check-in/received")
+        assertThat(contact.notes).isEqualTo("Review the online check in using the manage probation check ins service: https://esupervision/check-in/received")
     }
 
     @Test
@@ -78,7 +78,7 @@ internal class IntegrationTest @Autowired constructor(
         assertThat(contact.team.id).isEqualTo(ProviderGenerator.DEFAULT_TEAM.id)
         assertThat(contact.staff.id).isEqualTo(ProviderGenerator.DEFAULT_STAFF.id)
         assertThat(contact.isSensitive).isEqualTo(false)
-        assertThat(contact.notes).isEqualTo("Check in has not been submitted on time" + System.lineSeparator() + "Review the online check in using the manage probation check ins service: https://esupervision/check-in/expired")
+        assertThat(contact.notes).isEqualTo("Review the online check in using the manage probation check ins service: https://esupervision/check-in/expired")
     }
 
     @Test
@@ -96,12 +96,7 @@ internal class IntegrationTest @Autowired constructor(
         assertThat(contact.team.id).isEqualTo(ProviderGenerator.DEFAULT_TEAM.id)
         assertThat(contact.staff.id).isEqualTo(ProviderGenerator.DEFAULT_STAFF.id)
         assertThat(contact.isSensitive).isEqualTo(false)
-        assertThat(contact.notes).isEqualTo(
-            """
-            |Online check in completed
-            |Some notes about the check-in
-            """.trimMargin()
-        )
+        assertThat(contact.notes).isEqualTo("Some notes about the check-in")
     }
 
     @Test
@@ -164,12 +159,7 @@ internal class IntegrationTest @Autowired constructor(
         assertThat(contact.team.id).isEqualTo(ProviderGenerator.DEFAULT_TEAM.id)
         assertThat(contact.staff.id).isEqualTo(ProviderGenerator.DEFAULT_STAFF.id)
         assertThat(contact.isSensitive).isEqualTo(false)
-        assertThat(contact.notes).isEqualTo(
-            """
-            |Check in has not been submitted on time
-            |Some notes about the expired check-in
-            """.trimMargin()
-        )
+        assertThat(contact.notes).isEqualTo("Some notes about the expired check-in")
     }
 
     @Test
