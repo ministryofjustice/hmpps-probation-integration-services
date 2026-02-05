@@ -15,7 +15,6 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
             CourtReportGenerator.DEFAULT_COURT_REPORT,
             ReferenceDataGenerator.DEFAULT_TITLE,
             ReferenceDataGenerator.DEFAULT_ADDRESS_STATUS,
-            ReferenceDataGenerator.DEFAULT_STATUS,
             PersonGenerator.DEFAULT_PERSON,
             PersonAddressGenerator.DEFAULT_PERSON_ADDRESS,
             DocumentGenerator.DEFAULT_DOCUMENT

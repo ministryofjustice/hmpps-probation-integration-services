@@ -1,12 +1,14 @@
 package uk.gov.justice.digital.hmpps.entity
 
 import jakarta.persistence.*
+import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.NumericBooleanConverter
 import org.springframework.data.jpa.repository.JpaRepository
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 
 @Entity
 @Table(name = "document")
+@SQLRestriction("soft_deleted = 0")
 class Document(
 
     @ManyToOne

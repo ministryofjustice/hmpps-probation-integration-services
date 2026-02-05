@@ -21,33 +21,3 @@ class ReferenceData(
     @Convert(converter = YesNoConverter::class)
     val selectable: Boolean,
 )
-
-@Immutable
-@Entity
-@Table(name = "r_reference_data_master")
-class Dataset(
-
-    @Column(name = "code_set_name")
-    val code: String,
-
-    @Id
-    @Column(name = "reference_data_master_id")
-    val id: Long
-) {
-    companion object {
-        const val ADDRESS_STATUS = "ADDRESS STATUS"
-    }
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-
-        other as Dataset
-
-        return code == other.code
-    }
-
-    override fun hashCode(): Int {
-        return code.hashCode()
-    }
-}

@@ -4,8 +4,6 @@ import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.NumericBooleanConverter
-import org.springframework.data.jpa.repository.JpaRepository
-import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.model.Name
 import java.time.LocalDate
 
@@ -42,12 +40,3 @@ class Person(
 )
 
 fun Person.name() = Name(firstName, listOfNotNull(secondName, thirdName).joinToString(" "), surname)
-
-interface PersonRepository : JpaRepository<Person, Long> {
-    fun findByCrn(crn: String): Person?
-
-    fun existsByCrn(crn: String): Boolean
-}
-
-fun PersonRepository.getByCrn(crn: String): Person =
-    findByCrn(crn) ?: throw NotFoundException("Person", "crn", crn)

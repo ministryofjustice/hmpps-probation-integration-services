@@ -19,19 +19,18 @@ class DetailsService
         val person = document.person
         val event = document.courtReport.courtAppearance.event
         val name = person.name()
-        val address = personAddressRepository.findMainAddress(person.id)
-            .let {
-                Address(
-                    it?.buildingName,
-                    it?.buildingNumber,
-                    it?.streetName,
-                    it?.district,
-                    it?.townCity,
-                    it?.county,
-                    it?.postcode,
-                    it?.noFixedAbode
-                )
-            }
+        val address = personAddressRepository.findMainAddress(person.id)?.let {
+            Address(
+                it.buildingName,
+                it.buildingNumber,
+                it.streetName,
+                it.district,
+                it.townCity,
+                it.county,
+                it.postcode,
+                it.noFixedAbode
+            )
+        }
 
         return DefendantDetails(
             crn = person.crn,
