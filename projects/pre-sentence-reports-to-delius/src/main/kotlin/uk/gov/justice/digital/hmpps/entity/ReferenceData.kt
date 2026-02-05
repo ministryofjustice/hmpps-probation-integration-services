@@ -18,10 +18,6 @@ class ReferenceData(
     @Column(name = "code_description", length = 500, nullable = false)
     val description: String,
 
-    @ManyToOne
-    @JoinColumn(name = "reference_data_master_id")
-    val dataset: Dataset,
-
     @Convert(converter = YesNoConverter::class)
     val selectable: Boolean,
 )

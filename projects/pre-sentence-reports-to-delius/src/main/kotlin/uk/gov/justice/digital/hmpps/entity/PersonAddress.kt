@@ -4,6 +4,7 @@ import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.NumericBooleanConverter
+import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
 import java.time.LocalDate
 
@@ -45,5 +46,8 @@ class PersonAddress(
 )
 
 interface PersonAddressRepository : JpaRepository<PersonAddress, Long> {
-    fun findByPersonId(personId: Long): List<PersonAddress>
+    @EntityGraph(attributePaths = ["status"])
+    fun findAddressByPersonIdAndStatusCode(personId: Long, statusCode: String): PersonAddress?
 }
+
+fun PersonAddressRepository.findMainAddress(personId: Long) = findAddressByPersonIdAndStatusCode(personId, "M")

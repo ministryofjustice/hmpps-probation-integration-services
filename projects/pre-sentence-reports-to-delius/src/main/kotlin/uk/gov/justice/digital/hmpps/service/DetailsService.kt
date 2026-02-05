@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.service
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.entity.DocumentRepository
 import uk.gov.justice.digital.hmpps.entity.PersonAddressRepository
+import uk.gov.justice.digital.hmpps.entity.findMainAddress
 import uk.gov.justice.digital.hmpps.entity.name
 import uk.gov.justice.digital.hmpps.model.Address
 import uk.gov.justice.digital.hmpps.model.DefendantDetails
@@ -18,18 +19,17 @@ class DetailsService
         val person = document.person
         val event = document.courtReport.courtAppearance.event
         val name = person.name()
-        val address = personAddressRepository.findByPersonId(person.id)
-            .filter() { it.status?.description == "CURRENT" }
-            .map {
+        val address = personAddressRepository.findMainAddress(person.id)
+            .let {
                 Address(
-                    it.buildingName,
-                    it.buildingNumber,
-                    it.streetName,
-                    it.district,
-                    it.townCity,
-                    it.county,
-                    it.postcode,
-                    it.noFixedAbode
+                    it?.buildingName,
+                    it?.buildingNumber,
+                    it?.streetName,
+                    it?.district,
+                    it?.townCity,
+                    it?.county,
+                    it?.postcode,
+                    it?.noFixedAbode
                 )
             }
 
@@ -38,7 +38,7 @@ class DetailsService
             eventNumber = event.eventNumber,
             name = name,
             dateOfBirth = person.dateOfBirth,
-            mainAddress = address.firstOrNull()
+            mainAddress = address
         )
     }
 }
