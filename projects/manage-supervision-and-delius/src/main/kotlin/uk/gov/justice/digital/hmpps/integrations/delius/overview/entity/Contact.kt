@@ -526,7 +526,7 @@ interface ContactRepository : JpaRepository<Contact, Long> {
                           (select e.*,
                             rdt.description as latest_sentence_description,
                             count(e.event_id) over (partition by e.offender_id) as total_sentences,
-                            row_number() over (partition by e.offender_id order by cast(e.event_number as number) desc) as row_num 
+                            row_number() over (partition by e.offender_id order by cast(e.event_number as NUMBER) desc) as row_num 
                             from event e 
                             join disposal d on d.event_id = e.event_id
                             join r_disposal_type rdt on rdt.disposal_type_id = d.disposal_type_id
