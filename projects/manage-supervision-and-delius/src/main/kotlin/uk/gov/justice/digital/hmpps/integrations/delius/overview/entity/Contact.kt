@@ -394,7 +394,8 @@ interface ContactRepository : JpaRepository<Contact, Long> {
             select c.*
             from contact c
             join r_contact_type ct on c.contact_type_id = ct.contact_type_id
-            where c.offender_id = :personId 
+            where c.offender_id = :personId
+            and c.contact_outcome_type_id is null
             and ct.attendance_contact = 'Y'
             and (to_char(c.contact_date, 'YYYY-MM-DD') > :dateNow
             or (to_char(c.contact_date, 'YYYY-MM-DD') = :dateNow and to_char(c.contact_start_time, 'HH24:MI') > :timeNow))
@@ -404,7 +405,8 @@ interface ContactRepository : JpaRepository<Contact, Long> {
             select count(1)
             from contact c
             join r_contact_type ct on c.contact_type_id = ct.contact_type_id
-            where c.offender_id = :personId 
+            where c.offender_id = :personId
+            and c.contact_outcome_type_id is null
             and ct.attendance_contact = 'Y'
             and (to_char(c.contact_date, 'YYYY-MM-DD') > :dateNow
             or (to_char(c.contact_date, 'YYYY-MM-DD') = :dateNow and to_char(c.contact_start_time, 'HH24:MI') > :timeNow))
@@ -533,7 +535,8 @@ interface ContactRepository : JpaRepository<Contact, Long> {
                             ) sub
                         where sub.row_num = 1
                  ) ls on ls.offender_id =c.offender_id 
-                 where (c.soft_deleted = 0) 
+                 where (c.soft_deleted = 0)
+                 and c.contact_outcome_type_id is null
                  and s.staff_id = :staffId
                  and rct.attendance_contact = 'Y' 
                  and (to_char(c.contact_date,'YYYY-MM-DD') > :dateNow  or (to_char(c.contact_date,'YYYY-MM-DD') = :dateNow 
@@ -546,7 +549,8 @@ interface ContactRepository : JpaRepository<Contact, Long> {
                 join offender o on o.offender_id = c.offender_id
                 join staff s on s.staff_id = c.staff_id 
                 join caseload cl on s.staff_id = cl.staff_employee_id and c.offender_id = cl.offender_id and (cl.role_code = 'OM')  
-                where (c.soft_deleted = 0) 
+                where (c.soft_deleted = 0)
+                and c.contact_outcome_type_id is null
                 and s.staff_id = :staffId
                 and rct.attendance_contact = 'Y' 
                 and (to_char(c.contact_date,'YYYY-MM-DD') > :dateNow  or (to_char(c.contact_date,'YYYY-MM-DD') = :dateNow 
