@@ -48,6 +48,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.user.staff.StaffReposito
 import uk.gov.justice.digital.hmpps.integrations.delius.user.team.TeamRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.user.team.entity.Team
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.ZonedDateTime
 
@@ -323,9 +324,9 @@ internal class UserServiceTest {
             _id = 1,
             _forename = "forename",
             _surname = "surname",
-            _dob = LocalDate.of(2000, 4, 1),
+            _dob = LocalDateTime.of(2000, 4, 1, 0, 0, 0),
             _crn = "X12345",
-            _contactDate = LocalDate.now(),
+            _contactDate = LocalDateTime.now(),
             _contactDescription = "contact description",
             _typeCode = "ANCT"
         )
@@ -349,10 +350,10 @@ internal class UserServiceTest {
             ),
             id = testAppointment._id,
             crn = testAppointment.crn,
-            dob = testAppointment._dob,
+            dob = testAppointment._dob.toLocalDate(),
             type = testAppointment._contactDescription,
             startDateTime = ZonedDateTime.of(
-                testAppointment._contactDate,
+                testAppointment._contactDate.toLocalDate(),
                 LocalTime.MIDNIGHT, EuropeLondon
             ),
             deliusManaged = true
@@ -389,12 +390,12 @@ internal class UserServiceTest {
         val _secondName: String? = null,
         val _thirdName: String? = null,
         val _surname: String,
-        val _dob: LocalDate,
+        val _dob: LocalDateTime,
         val _crn: String,
         val _location: String? = null,
-        val _contactDate: LocalDate,
-        val _contactStartTime: LocalTime? = null,
-        val _contactEndTime: LocalTime? = null,
+        val _contactDate: LocalDateTime,
+        val _contactStartTime: LocalDateTime? = null,
+        val _contactEndTime: LocalDateTime? = null,
         val _totalSentences: Int? = null,
         val _contactDescription: String,
         val _typeCode: String,
@@ -410,17 +411,17 @@ internal class UserServiceTest {
             get() = _thirdName
         override val surname: String
             get() = _surname
-        override val dob: LocalDate
+        override val dob: LocalDateTime
             get() = _dob
         override val crn: String
             get() = _crn
         override val location: String?
             get() = _location
-        override val contactDate: LocalDate
+        override val contactDate: LocalDateTime
             get() = _contactDate
-        override val contactStartTime: LocalTime?
+        override val contactStartTime: LocalDateTime?
             get() = _contactStartTime
-        override val contactEndTime: LocalTime?
+        override val contactEndTime: LocalDateTime?
             get() = _contactEndTime
         override val totalSentences: Int?
             get() = _totalSentences
@@ -445,7 +446,7 @@ internal class UserServiceTest {
         override val surname = person.surname
         override val latestSentenceTypeDescription = null
         override val teamCode = team.code
-        override val dateOfBirth = person.dateOfBirth
+        override val dateOfBirth = person.dateOfBirth.atStartOfDay()
         override val totalSentences: Long = 1
         override val nextAppointmentId = null
         override val nextAppointmentDateTime = null

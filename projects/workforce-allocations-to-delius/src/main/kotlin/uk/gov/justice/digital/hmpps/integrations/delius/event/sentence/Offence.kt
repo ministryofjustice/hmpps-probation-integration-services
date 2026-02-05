@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.integrations.delius.event.sentence
 import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
+import org.hibernate.type.NumericBooleanConverter
 import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.event.Event
@@ -32,6 +33,7 @@ class MainOffence(
     override val event: Event,
 
     @Column(updatable = false, columnDefinition = "NUMBER")
+    @Convert(converter = NumericBooleanConverter::class)
     override val softDeleted: Boolean = false
 ) : EventOffence
 
@@ -53,6 +55,7 @@ class AdditionalOffence(
     override val event: Event,
 
     @Column(updatable = false, columnDefinition = "NUMBER")
+    @Convert(converter = NumericBooleanConverter::class)
     override val softDeleted: Boolean = false
 ) : EventOffence
 

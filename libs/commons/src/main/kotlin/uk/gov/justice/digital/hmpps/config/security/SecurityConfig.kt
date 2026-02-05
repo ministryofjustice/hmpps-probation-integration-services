@@ -1,9 +1,9 @@
 package uk.gov.justice.digital.hmpps.config.security
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
-import org.springframework.boot.autoconfigure.security.ConditionalOnDefaultWebSecurity
 import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.boot.context.properties.EnableConfigurationProperties
+import org.springframework.boot.security.autoconfigure.web.servlet.ConditionalOnDefaultWebSecurity
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler
@@ -36,10 +36,6 @@ class SecurityConfig(private val configurers: List<SecurityConfigurer>) {
     fun roleHierarchy(oauth2: OAuth2Properties): RoleHierarchy = withDefaultRolePrefix().also {
         if (oauth2.roles.isNotEmpty()) it.role("PROBATION_INTEGRATION_ADMIN").implies(*oauth2.roles.toTypedArray())
     }.build()
-
-    @Bean
-    fun methodSecurityExpressionHandler(roleHierarchy: RoleHierarchy) =
-        DefaultMethodSecurityExpressionHandler().also { it.setRoleHierarchy(roleHierarchy) }
 
     @ConfigurationProperties(prefix = "oauth2")
     class OAuth2Properties {

@@ -14,6 +14,7 @@ import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.ReferenceData
 import uk.gov.justice.digital.hmpps.integrations.delius.user.entity.User
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.ZonedDateTime
 
 @Entity
@@ -129,7 +130,7 @@ interface PersonSummaryEntity {
     val crn: String
     val pnc: String?
     val noms: String?
-    val dateOfBirth: LocalDate
+    val dateOfBirth: LocalDateTime
 }
 
 interface PersonRepository : JpaRepository<Person, Long> {

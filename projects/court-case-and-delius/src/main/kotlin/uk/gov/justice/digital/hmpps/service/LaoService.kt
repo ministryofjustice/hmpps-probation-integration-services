@@ -13,10 +13,10 @@ class LaoService(
     fun checkLao(crn: String) {
         personRepository.findByCrn(crn)?.let {
             if (it.currentExclusion && !laoAccess.ignoreExclusions) {
-                throw AccessDeniedException(it.exclusionMessage)
+                throw AccessDeniedException(it.exclusionMessage ?: "")
             }
             if (it.currentRestriction && !laoAccess.ignoreRestrictions) {
-                throw AccessDeniedException(it.restrictionMessage)
+                throw AccessDeniedException(it.restrictionMessage ?: "")
             }
         }
     }

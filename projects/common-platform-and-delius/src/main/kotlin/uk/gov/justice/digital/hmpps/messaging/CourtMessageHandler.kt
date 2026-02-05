@@ -1,7 +1,6 @@
 package uk.gov.justice.digital.hmpps.messaging
 
 import com.asyncapi.kotlinasyncapi.annotation.channel.Channel
-import com.fasterxml.jackson.databind.ObjectMapper
 import io.awspring.cloud.sqs.listener.SqsHeaders
 import io.awspring.cloud.sqs.operations.SqsTemplate
 import org.springframework.beans.factory.annotation.Value
@@ -10,6 +9,7 @@ import org.springframework.messaging.MessageHeaders
 import org.springframework.messaging.support.MessageBuilder
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
+import tools.jackson.databind.ObjectMapper
 import uk.gov.justice.digital.hmpps.config.AwsCondition
 import uk.gov.justice.digital.hmpps.converter.NotificationConverter
 import uk.gov.justice.digital.hmpps.message.Notification
@@ -42,7 +42,7 @@ class CourtMessageHandler(
             hearing.prosecutionCases
                 .flatMap { case -> case.defendants.map { defendant -> case to defendant } }
                 .forEach { (case, defendant) ->
-                    val cprUuid = defendant.cprUUID
+                    val cprUuid = requireNotNull(defendant.cprUUID) { "Missing Core Person UUID" }
                     val newCase = case.copy(defendants = listOf(defendant))
                     val newHearing = hearing.copy(prosecutionCases = listOf(newCase))
                     val newNotification = Notification(

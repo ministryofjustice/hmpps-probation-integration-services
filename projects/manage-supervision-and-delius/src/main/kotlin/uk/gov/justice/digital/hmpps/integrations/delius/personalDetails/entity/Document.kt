@@ -1,7 +1,6 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity
 
 import jakarta.persistence.*
-import jakarta.persistence.Table
 import org.hibernate.annotations.*
 import org.hibernate.type.NumericBooleanConverter
 import org.hibernate.type.YesNoConverter
@@ -416,7 +415,7 @@ class CourtReportDocument : Document()
 
 interface CourtDocumentDetails {
     val id: String
-    val lastSaved: LocalDate
+    val lastSaved: LocalDateTime
     val documentName: String
 }
 
@@ -459,4 +458,3 @@ interface DocumentRepository : JpaRepository<Document, Long> {
 
 fun DocumentRepository.getDocument(crn: String, alfrescoId: String) =
     findNameByPersonCrnAndAlfrescoId(crn, alfrescoId) ?: throw NotFoundException("Document", "alfrescoId", alfrescoId)
-

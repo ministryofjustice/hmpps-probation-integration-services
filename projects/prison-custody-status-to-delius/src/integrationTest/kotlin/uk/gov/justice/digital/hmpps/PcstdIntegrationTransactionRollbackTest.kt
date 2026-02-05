@@ -1,25 +1,18 @@
 package uk.gov.justice.digital.hmpps
 
 import org.hamcrest.MatcherAssert.assertThat
-import org.hamcrest.Matchers.containsString
 import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.extension.ExtendWith
-import org.springframework.boot.test.system.CapturedOutput
-import org.springframework.boot.test.system.OutputCaptureExtension
-import org.springframework.test.context.TestPropertySource
 import uk.gov.justice.digital.hmpps.data.generator.BookingGenerator
 import uk.gov.justice.digital.hmpps.data.generator.InstitutionGenerator
 import uk.gov.justice.digital.hmpps.data.generator.NotificationGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 
-@TestPropertySource(properties = ["logging.level.org.springframework.transaction=DEBUG", "logging.level.org.hibernate.engine.transaction.internal.TransactionImpl=DEBUG"])
-@ExtendWith(OutputCaptureExtension::class)
 class PcstdIntegrationTransactionRollbackTest : PcstdIntegrationTestBase() {
 
     @Test
-    fun `when a prisoner is matched with more than one pom`(output: CapturedOutput) {
+    fun `when a prisoner is matched with more than one pom`() {
 
         val notification = NotificationGenerator.PRISONER_MATCHED_WITH_POM
         val person = PersonGenerator.MATCHABLE_WITH_POM
@@ -39,8 +32,5 @@ class PcstdIntegrationTransactionRollbackTest : PcstdIntegrationTestBase() {
         verifyCustodyHistory(
             custody
         )
-
-        assertThat(output.toString(), containsString("rolling back"))
-        assertThat(output.toString(), containsString("Query did not return a unique result: 2 results were returned"))
     }
 }

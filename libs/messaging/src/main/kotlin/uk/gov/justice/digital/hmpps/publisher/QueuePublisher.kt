@@ -1,6 +1,6 @@
 package uk.gov.justice.digital.hmpps.publisher
 
-import com.fasterxml.jackson.databind.ObjectMapper
+import tools.jackson.databind.ObjectMapper
 import io.awspring.cloud.sqs.operations.SqsTemplate
 import io.opentelemetry.api.trace.Span
 import io.opentelemetry.api.trace.SpanKind

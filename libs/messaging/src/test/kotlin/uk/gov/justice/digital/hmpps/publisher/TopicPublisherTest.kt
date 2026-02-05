@@ -1,6 +1,6 @@
 package uk.gov.justice.digital.hmpps.publisher
 
-import com.fasterxml.jackson.databind.node.JsonNodeFactory
+import tools.jackson.databind.node.JsonNodeFactory
 import io.awspring.cloud.sns.core.SnsTemplate
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo

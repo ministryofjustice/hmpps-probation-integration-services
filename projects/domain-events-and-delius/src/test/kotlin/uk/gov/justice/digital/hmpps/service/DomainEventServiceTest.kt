@@ -1,7 +1,5 @@
 package uk.gov.justice.digital.hmpps.service
 
-import com.fasterxml.jackson.core.JsonProcessingException
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -9,11 +7,13 @@ import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.*
+import tools.jackson.core.JacksonException
 import uk.gov.justice.digital.hmpps.data.generator.DomainEventGenerator
 import uk.gov.justice.digital.hmpps.integrations.delius.DomainEventRepository
 import uk.gov.justice.digital.hmpps.publisher.NotificationPublisher
 import uk.gov.justice.digital.hmpps.service.enhancement.NotificationEnhancer
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
+import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.objectMapper
 
 @ExtendWith(MockitoExtension::class)
 class DomainEventServiceTest {
@@ -36,7 +36,7 @@ class DomainEventServiceTest {
     fun setup() {
         service = DomainEventService(
             batchSize = 50,
-            objectMapper = jacksonObjectMapper().findAndRegisterModules(),
+            objectMapper = objectMapper,
             domainEventRepository = domainEventRepository,
             notificationPublisher = notificationPublisher,
             notificationEnhancer = notificationEnhancer,
@@ -59,7 +59,7 @@ class DomainEventServiceTest {
 
     @Test
     fun `nothing is published if any entity is invalid`() {
-        assertThrows<JsonProcessingException> {
+        assertThrows<JacksonException> {
             service.publishAll(
                 listOf(
                     DomainEventGenerator.generate("manual-ogrs"),

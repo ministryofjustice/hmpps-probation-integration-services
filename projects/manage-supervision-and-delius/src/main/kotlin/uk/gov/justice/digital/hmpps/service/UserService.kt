@@ -319,7 +319,7 @@ fun CaseloadItem.toStaffCase(caseAccess: CaseAccess? = null) = if (caseAccess.is
         previousAppointment = prevAppointmentId?.let { id ->
             Appointment(id, prevAppointmentDateTime!!.atZone(EuropeLondon), prevAppointmentTypeDescription!!)
         },
-        dob = dateOfBirth,
+        dob = dateOfBirth?.toLocalDate(),
         latestSentence = latestSentenceTypeDescription,
         numberOfAdditionalSentences = totalSentences - 1,
     )
@@ -360,19 +360,19 @@ private fun AppointmentEntity.toUserAppointment() = UserAppointment(
     Name(forename, listOfNotNull(secondName, thirdName).joinToString(" "), surname),
     id,
     crn,
-    dob,
+    dob.toLocalDate(),
     sentenceDescription,
     totalSentences?.let { if (it > 0) it - 1 else it },
     contactDescription,
     if (contactStartTime != null) ZonedDateTime.of(
-        LocalDateTime.of(contactDate, contactStartTime),
+        LocalDateTime.of(contactDate.toLocalDate(), contactStartTime?.toLocalTime()),
         EuropeLondon
     ) else ZonedDateTime.of(
-        contactDate,
+        contactDate.toLocalDate(),
         LocalTime.MIDNIGHT, EuropeLondon
     ),
     if (contactEndTime != null) ZonedDateTime.of(
-        LocalDateTime.of(contactDate, contactEndTime),
+        LocalDateTime.of(contactDate.toLocalDate(), contactEndTime?.toLocalTime()),
         EuropeLondon
     ) else null,
     location,

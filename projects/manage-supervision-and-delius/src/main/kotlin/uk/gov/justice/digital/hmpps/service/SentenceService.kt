@@ -218,7 +218,7 @@ class SentenceService(
 
     private fun singularOrPlural(num: Long): String = if (num == 1L) "" else "s"
 
-    fun CourtDocumentDetails.toCourtDocument(): CourtDocument = CourtDocument(id, lastSaved, documentName)
+    fun CourtDocumentDetails.toCourtDocument(): CourtDocument = CourtDocument(id, lastSaved.toLocalDate(), documentName)
 
     fun getMostRecentTerminatedDateFromInactiveEvents(events: List<Event>): LocalDate? {
         if (events.isNotEmpty()) {
@@ -281,4 +281,3 @@ fun Disposal.toMinimalOrder(): MinimalOrder {
         date,
         expectedEndDate())
 }
-
