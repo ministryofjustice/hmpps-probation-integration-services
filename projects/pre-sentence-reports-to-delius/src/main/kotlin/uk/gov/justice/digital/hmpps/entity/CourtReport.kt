@@ -13,4 +13,4 @@ class CourtReport(
     @JoinColumn(name = "court_appearance_id")
     val courtAppearance: CourtAppearance,
 
-)
+    )
