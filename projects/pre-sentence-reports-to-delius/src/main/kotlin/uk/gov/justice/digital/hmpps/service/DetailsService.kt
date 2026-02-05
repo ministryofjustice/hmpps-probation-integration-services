@@ -14,7 +14,7 @@ class DetailsService
     val personAddressRepository: PersonAddressRepository
 ) {
     fun getDefendantDetails(psrUuid: String): DefendantDetails {
-        val document = documentRepository.getbyUuid(psrUuid)
+        val document = documentRepository.getByUuid(psrUuid)
         val person = document.person
         val event = document.courtReport.courtAppearance.event
         val name = person.name()
