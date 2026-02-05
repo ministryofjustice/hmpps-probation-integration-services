@@ -10,7 +10,12 @@ object DocumentGenerator {
     val DOCUMENT_INVALID_UUID = UUID.randomUUID().toString()
 
     val DEFAULT_DOCUMENT = Document(
-        DEFAULT_PERSON, DEFAULT_COURT_REPORT,
-        "COURT_REPORT", "urn:hmpps:pre-sentence-service:report:$DOCUMENT_UUID", 0, false, IdGenerator.getAndIncrement()
+        DEFAULT_PERSON,
+        DEFAULT_COURT_REPORT,
+        "COURT_REPORT",
+        "urn:uk:gov:hmpps:pre-sentence-service:report:$DOCUMENT_UUID",
+        0,
+        false,
+        IdGenerator.getAndIncrement()
     )
 }

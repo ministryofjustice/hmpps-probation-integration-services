@@ -36,7 +36,7 @@ class Document(
 ) {
     companion object {
         fun psrUrn(uuid: String): String =
-            "urn:hmpps:pre-sentence-service:report:${uuid}"
+            "urn:uk:gov:hmpps:pre-sentence-service:report:${uuid}"
     }
 }
 
