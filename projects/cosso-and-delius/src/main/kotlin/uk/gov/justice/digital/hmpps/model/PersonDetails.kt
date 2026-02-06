@@ -3,12 +3,12 @@ package uk.gov.justice.digital.hmpps.model
 import java.time.LocalDate
 
 data class PersonDetails(
-    val title: String?,
+    val title: String,
     val name: Name,
     val dateOfBirth: LocalDate,
-    val telephoneNumber: String?,
-    val mobileNumber: String?,
-    val emailAddress: String?,
+    val telephoneNumber: String,
+    val mobileNumber: String,
+    val emailAddress: String,
     val addresses: List<Address>
 )
 

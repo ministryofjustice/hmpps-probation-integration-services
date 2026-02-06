@@ -16,7 +16,6 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
         saveAll(
             PersonGenerator.DEFAULT_PERSON,
             ReferenceDataGenerator.MR_TITLE,
-            ReferenceDataGenerator.MAIN_ADDRESS_STATUS,
             PersonAddressGenerator.DEFAULT_PERSON_MAIN_ADDRESS,
         )
     }
