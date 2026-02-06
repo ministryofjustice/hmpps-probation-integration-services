@@ -97,5 +97,11 @@ fun CodeAndDescription.codedDescription() = CodedDescription(code, description)
 fun List<CodeAndDescription>.codedDescriptions() =
     map(CodeAndDescription::codedDescription).sortedBy { it.description.lowercase() }
 
-fun ReferenceData.sentenceType() = SentenceType(code, description, linkedData.first().description)
+fun ReferenceData.sentenceType() =
+    SentenceType(
+        code,
+        description,
+        linkedData.firstOrNull()?.description
+            ?: throw IllegalStateException("ReferenceData with code '$code' has no linked data for sentence type")
+    )
 fun List<ReferenceData>.sentenceTypes() = map(ReferenceData::sentenceType).sortedBy { it.description }
