@@ -39,7 +39,7 @@ object TestData {
         endTime = LocalTime.NOON.plusHours(6),
         supervisor = Code(StaffGenerator.DEFAULT_STAFF.code),
         allocationId = UPWGenerator.DEFAULT_UPW_ALLOCATION.id,
-        pickUp = PickUp(
+        pickUp = CreateAppointmentPickUpData(
             location = Code(UPWGenerator.DEFAULT_OFFICE_LOCATION.code),
             time = LocalTime.of(11, 30)
         ),
