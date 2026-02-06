@@ -89,6 +89,7 @@ data class AppointmentResponseSupervisor(
 )
 
 data class AppointmentResponsePickupData(
+    val locationDescription: String?,
     val location: AppointmentResponseAddress?,
     val locationCode: Code?,
     val time: LocalTime?

@@ -64,6 +64,7 @@ fun UnpaidWorkAllocation.toAllocationResponse() = AllocationResponse(
     endTime = this.endTime,
     pickUp = PickUp(
         time = this.pickUpTime,
+        locationDescription = this.pickUpLocation?.description,
         location = this.pickUpLocation?.let { Code(it.code) }
     )
 )

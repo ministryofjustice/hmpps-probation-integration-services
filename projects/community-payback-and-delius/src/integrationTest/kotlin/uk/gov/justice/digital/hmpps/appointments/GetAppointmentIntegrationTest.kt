@@ -60,6 +60,7 @@ class GetAppointmentIntegrationTest @Autowired constructor(
         assertThat(response.penaltyHours).isEqualTo("01:05")
         assertThat(response.enforcementAction!!.respondBy).isEqualTo(response.date.plusDays(ReferenceDataGenerator.ROM_ENFORCEMENT_ACTION.responseByPeriod!!))
         assertThat(response.behaviour).isEqualTo(Behaviour.EXCELLENT)
+        assertThat(response.pickUpData!!.locationDescription).isEqualTo(Code(UPWGenerator.DEFAULT_UPW_APPOINTMENT.pickUpLocation!!.description))
         assertThat(response.pickUpData!!.locationCode).isEqualTo(Code(UPWGenerator.DEFAULT_UPW_APPOINTMENT.pickUpLocation!!.code))
         assertThat(response.workQuality).isEqualTo(WorkQuality.EXCELLENT)
     }

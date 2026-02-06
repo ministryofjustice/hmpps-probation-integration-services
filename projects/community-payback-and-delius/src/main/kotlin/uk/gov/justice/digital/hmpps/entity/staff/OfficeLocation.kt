@@ -16,6 +16,8 @@ class OfficeLocation(
     @Column(name = "office_location_id")
     val id: Long,
 
+    val description: String,
+
     @Column(columnDefinition = "char(7)")
     val code: String,
 
