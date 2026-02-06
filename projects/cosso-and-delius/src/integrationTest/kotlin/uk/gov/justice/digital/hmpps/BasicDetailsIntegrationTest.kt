@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps
 
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
@@ -23,11 +24,11 @@ internal class BasicDetailsIntegrationTest @Autowired constructor(
         val result = mockMvc.get("/basic-details/$crn") { withToken() }
             .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<PersonDetails>()
-        assert(result.addresses.size == 1)
-        assert(result.addresses[0].status == "MAIN")
-        assert(result.name.surname == "Jones")
-        assert(result.title == "Mr")
-        assert(result.name.middleName == "Tom Billy")
+        assertThat(result.addresses.size == 1)
+        assertThat(result.addresses[0].status == "MAIN")
+        assertThat(result.name.surname == "Jones")
+        assertThat(result.title == "Mr")
+        assertThat(result.name.middleName == "Tom Billy")
     }
 
     @Test
