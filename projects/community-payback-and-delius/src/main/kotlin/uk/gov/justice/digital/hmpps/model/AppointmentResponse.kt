@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.model
 
+import io.swagger.v3.oas.annotations.media.Schema
 import uk.gov.justice.digital.hmpps.entity.person.Address
 import uk.gov.justice.digital.hmpps.entity.staff.OfficeLocation
 import java.time.LocalDate
@@ -89,7 +90,9 @@ data class AppointmentResponseSupervisor(
 )
 
 data class AppointmentResponsePickupData(
-    val location: AppointmentResponseAddress?,
+    val location: PickUpLocation?,
+    @Deprecated("this value is available from 'location'")
+    @param:Schema(deprecated = true)
     val locationCode: Code?,
     val time: LocalTime?
 )

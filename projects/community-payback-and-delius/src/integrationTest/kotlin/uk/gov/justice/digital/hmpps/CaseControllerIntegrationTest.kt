@@ -36,6 +36,9 @@ class CaseControllerIntegrationTest @Autowired constructor(
         assertThat(response.allocations).isNotEmpty
         val allocation = response.allocations.first()
         assertThat(allocation.id).isEqualTo(UPWGenerator.DEFAULT_UPW_ALLOCATION.id)
+        assertThat(allocation.pickUpData!!.time).isEqualTo(UPWGenerator.DEFAULT_UPW_ALLOCATION.pickUpTime)
+        assertThat(allocation.pickUpData!!.location!!.description).isEqualTo(UPWGenerator.DEFAULT_OFFICE_LOCATION.description)
+        assertThat(allocation.pickUpData!!.location!!.code).isEqualTo(Code(UPWGenerator.DEFAULT_OFFICE_LOCATION.code))
         assertThat(allocation.pickUp!!.time).isEqualTo(UPWGenerator.DEFAULT_UPW_ALLOCATION.pickUpTime)
         assertThat(allocation.pickUp!!.location).isEqualTo(Code(UPWGenerator.DEFAULT_OFFICE_LOCATION.code))
         assertThat(allocation.project.name).isEqualTo("Default UPW Project")

@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.model
 
+import io.swagger.v3.oas.annotations.media.Schema
 import uk.gov.justice.digital.hmpps.entity.contact.toCodeDescription
 import uk.gov.justice.digital.hmpps.entity.unpaidwork.*
 import java.time.LocalDate
@@ -22,7 +23,10 @@ data class AllocationResponse(
     val endDateInclusive: LocalDate?,
     val startTime: LocalTime,
     val endTime: LocalTime,
-    val pickUp: PickUp?
+    @Deprecated("Use [pickUpData]")
+    @param:Schema(deprecated = true)
+    val pickUp: LegacyPickUp?,
+    val pickUpData: PickUp?,
 )
 
 data class ProjectDetails(
@@ -62,9 +66,13 @@ fun UnpaidWorkAllocation.toAllocationResponse() = AllocationResponse(
     endDateInclusive = this.endDate,
     startTime = this.startTime,
     endTime = this.endTime,
-    pickUp = PickUp(
+    pickUp = LegacyPickUp(
         time = this.pickUpTime,
         location = this.pickUpLocation?.let { Code(it.code) }
+    ),
+    pickUpData = PickUp(
+        time = this.pickUpTime,
+        location = this.pickUpLocation?.toPickUpLocation(),
     )
 )
 
