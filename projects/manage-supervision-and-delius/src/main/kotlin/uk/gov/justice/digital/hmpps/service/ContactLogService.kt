@@ -17,6 +17,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.user.staff.StaffReposito
 import uk.gov.justice.digital.hmpps.integrations.delius.user.staff.getStaffByCode
 import uk.gov.justice.digital.hmpps.integrations.delius.user.team.TeamRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.user.team.getTeam
+import uk.gov.justice.digital.hmpps.messaging.Notifier
 
 @Service
 class ContactLogService(
@@ -30,7 +31,8 @@ class ContactLogService(
     private val contactAlertRepository: ContactAlertRepository,
     private val offenderManagerRepository: OffenderManagerRepository,
     private val teamRepository: TeamRepository,
-    private val contactTypeRequirementTypeRepository: ContactTypeRequirementTypeRepository
+    private val contactTypeRequirementTypeRepository: ContactTypeRequirementTypeRepository,
+    private val notifier: Notifier
 ) : AuditableService(auditedInteractionService) {
 
     @Transactional
@@ -72,7 +74,7 @@ class ContactLogService(
                     provider = team.provider,
                     notes = """
                     ${createContact.notes}
-                    
+
                     This contact was automatically created by the Manage Supervision integrations service.
                 """.trimIndent(),
                     alert = createContact.alert,
@@ -80,6 +82,8 @@ class ContactLogService(
                     isVisor = createContact.visorReport
                 )
             )
+
+            notifier.contactCreated(savedContact.id, createContact.visorReport, crn)
 
             if (createContact.alert) {
                 val personManager = offenderManagerRepository.findOffenderManagersByPersonIdAndActiveIsTrue(person.id)
