@@ -76,13 +76,13 @@ class CourtAppearance(
     val remandStatusId: Long? = null,
 
     @Column(name = "created_by_user_id")
-    val createdByUserId: Long? = null,
+    val createdByUserId: Long = 0,
 
     @Column(name = "created_datetime")
     val createdDatetime: LocalDateTime? = null,
 
     @Column(name = "last_updated_user_id")
-    val lastUpdatedUserId: Long? = null,
+    val lastUpdatedUserId: Long = 0,
 
     @Column(name = "last_updated_datetime")
     val lastUpdatedDatetime: LocalDateTime? = null,

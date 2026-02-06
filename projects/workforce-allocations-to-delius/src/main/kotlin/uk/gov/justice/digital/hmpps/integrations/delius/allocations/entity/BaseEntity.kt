@@ -24,7 +24,7 @@ abstract class BaseEntity {
 
     @Column(name = "created_datetime", nullable = false)
     @CreatedDate
-    var createdDateTime: ZonedDateTime? = null
+    var createdDatetime: ZonedDateTime = ZonedDateTime.now()
 
     @Column(name = "last_updated_datetime", nullable = false)
     @LastModifiedDate

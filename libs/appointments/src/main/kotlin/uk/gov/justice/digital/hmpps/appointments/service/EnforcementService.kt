@@ -50,7 +50,7 @@ internal class EnforcementService(
         event.ftcCount = appointmentRepository.countFailureToComply(event)
 
         val ftcLimit = event.disposal?.type?.ftcLimit ?: return
-        if (event.ftcCount!! > ftcLimit && !appointmentRepository.enforcementReviewExists(event.id, event.breachEnd)) {
+        if (event.ftcCount > ftcLimit && !appointmentRepository.enforcementReviewExists(event.id, event.breachEnd)) {
             createEnforcementReviewContact(reviewType)
         }
     }

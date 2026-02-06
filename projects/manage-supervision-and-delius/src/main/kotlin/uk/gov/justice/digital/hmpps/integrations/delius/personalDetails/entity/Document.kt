@@ -57,7 +57,7 @@ abstract class Document {
     open var createdByUserId: Long? = 0
 
     @Column(name = "last_updated_user_id")
-    open var lastUpdatedUserId: Long? = 0
+    open var lastUpdatedUserId: Long = 0
 
     @Column(updatable = false, columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)

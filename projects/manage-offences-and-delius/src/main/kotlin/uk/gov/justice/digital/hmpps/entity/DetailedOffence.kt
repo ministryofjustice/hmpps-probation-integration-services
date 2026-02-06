@@ -63,10 +63,10 @@ class DetailedOffence(
     var lastUpdatedUserId: Long = 0,
 
     @CreatedDate
-    var createdDatetime: ZonedDateTime? = null,
+    var createdDatetime: ZonedDateTime = ZonedDateTime.now(),
 
     @LastModifiedDate
-    var lastUpdatedDatetime: ZonedDateTime? = null,
+    var lastUpdatedDatetime: ZonedDateTime = ZonedDateTime.now(),
 
     @Id
     @Column(name = "detailed_offence_id")

@@ -37,13 +37,13 @@ class DocumentEntity(
     val tableName: String?,
 
     @Column(name = "created_datetime")
-    val createdAt: ZonedDateTime?,
+    val createdAt: ZonedDateTime = ZonedDateTime.now(),
 
     @Column
-    val createdByUserId: Long? = 0,
+    val createdByUserId: Long = 0,
 
     @Column
-    val lastUpdatedUserId: Long? = 0,
+    val lastUpdatedUserId: Long = 0,
 
     @Column(name = "date_produced")
     val dateProduced: LocalDateTime? = null,

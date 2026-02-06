@@ -153,19 +153,19 @@ internal object AppointmentEntities {
         // Audit
         @CreatedDate
         @Column(name = "created_datetime")
-        var createdDatetime: ZonedDateTime? = ZonedDateTime.now(),
+        var createdDatetime: ZonedDateTime = ZonedDateTime.now(),
 
         @LastModifiedDate
         @Column(name = "last_updated_datetime")
-        var lastUpdatedDatetime: ZonedDateTime? = ZonedDateTime.now(),
+        var lastUpdatedDatetime: ZonedDateTime = ZonedDateTime.now(),
 
         @CreatedBy
         @Column(name = "created_by_user_id")
-        var createdByUserId: Long? = null,
+        var createdByUserId: Long = 0,
 
         @LastModifiedBy
         @Column(name = "last_updated_user_id")
-        var lastUpdatedUserId: Long? = null,
+        var lastUpdatedUserId: Long = 0,
 
         // The following fields are not used but must be set:
         val partitionAreaId: Long = 0,
@@ -193,7 +193,7 @@ internal object AppointmentEntities {
 
         @Column(name = "national_standards_contact")
         @Convert(converter = YesNoConverter::class)
-        val nationalStandards: Boolean? = null,
+        val nationalStandards: Boolean,
     ) : CodedReferenceData {
         companion object {
             const val REVIEW_ENFORCEMENT_STATUS = "ARWS"
@@ -238,20 +238,20 @@ internal object AppointmentEntities {
         @OneToOne(mappedBy = "event")
         val disposal: Disposal?,
 
-        var ftcCount: Long?,
+        var ftcCount: Long,
         val breachEnd: LocalDate?,
 
         @CreatedDate
-        var createdDatetime: ZonedDateTime? = ZonedDateTime.now(),
+        var createdDatetime: ZonedDateTime = ZonedDateTime.now(),
 
         @CreatedBy
-        var createdByUserId: Long? = 0,
+        var createdByUserId: Long = 0,
 
         @LastModifiedDate
-        var lastUpdatedDatetime: ZonedDateTime? = ZonedDateTime.now(),
+        var lastUpdatedDatetime: ZonedDateTime = ZonedDateTime.now(),
 
         @LastModifiedBy
-        var lastUpdatedUserId: Long? = 0,
+        var lastUpdatedUserId: Long = 0,
 
         @Column(columnDefinition = "number")
         @Convert(converter = NumericBooleanConverter::class)

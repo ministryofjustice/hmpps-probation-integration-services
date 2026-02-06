@@ -59,10 +59,10 @@ class OGRSAssessment(
     var lastUpdatedUserId: Long = 0,
 
     @CreatedDate
-    var createdDatetime: ZonedDateTime? = null,
+    var createdDatetime: ZonedDateTime = ZonedDateTime.now(),
 
     @LastModifiedDate
-    var lastUpdatedDatetime: ZonedDateTime? = null,
+    var lastUpdatedDatetime: ZonedDateTime = ZonedDateTime.now(),
 
     @Column(name = "soft_deleted", columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)

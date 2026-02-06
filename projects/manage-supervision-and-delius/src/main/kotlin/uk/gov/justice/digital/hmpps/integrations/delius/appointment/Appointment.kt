@@ -98,11 +98,11 @@ class Appointment(
 
     @CreatedBy
     @Column(name = "created_by_user_id")
-    var createdByUserId: Long? = null
+    var createdByUserId: Long = 0
 
     @LastModifiedBy
     @Column(name = "last_updated_user_id")
-    var lastUpdatedUserId: Long? = null
+    var lastUpdatedUserId: Long = 0
 
     @ManyToOne
     @JoinColumn(name = "contact_outcome_type_id")

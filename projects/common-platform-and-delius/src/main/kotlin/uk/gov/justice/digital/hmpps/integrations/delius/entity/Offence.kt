@@ -139,10 +139,10 @@ class DetailedOffence(
     var lastUpdatedUserId: Long = 0,
 
     @CreatedDate
-    var createdDatetime: ZonedDateTime? = null,
+    var createdDatetime: ZonedDateTime = ZonedDateTime.now(),
 
     @LastModifiedDate
-    var lastUpdatedDatetime: ZonedDateTime? = null
+    var lastUpdatedDatetime: ZonedDateTime = ZonedDateTime.now()
 )
 
 @Entity
@@ -178,16 +178,16 @@ class AdditionalOffence(
     val id: Long? = null
 ) {
     @CreatedBy
-    var createdByUserId: Long? = null
+    var createdByUserId: Long = 0
 
     @CreatedDate
-    var createdDatetime: ZonedDateTime? = null
+    var createdDatetime: ZonedDateTime = ZonedDateTime.now()
 
     @LastModifiedBy
-    var lastUpdatedUserId: Long? = null
+    var lastUpdatedUserId: Long = 0
 
     @LastModifiedDate
-    var lastUpdatedDatetime: ZonedDateTime? = null
+    var lastUpdatedDatetime: ZonedDateTime = ZonedDateTime.now()
 
     @Version
     @Column(name = "row_version", nullable = false)

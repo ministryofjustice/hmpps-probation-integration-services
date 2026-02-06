@@ -7,6 +7,7 @@ spring:
     properties:
       hibernate:
         timezone.default_storage: NORMALIZE
+        integrator_provider: uk.gov.justice.digital.hmpps.jpa.KotlinNullabilityIntegratorProvider
         query.mutation_strategy: org.hibernate.query.sqm.mutation.internal.inline.InlineMutationStrategy
         query.mutation_strategy.persistent:
             create_tables: false

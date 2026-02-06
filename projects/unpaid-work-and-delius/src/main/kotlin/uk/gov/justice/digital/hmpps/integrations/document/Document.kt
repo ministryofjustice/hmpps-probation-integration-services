@@ -50,7 +50,7 @@ class Document(
     var lastSaved: ZonedDateTime? = null,
 
     @LastModifiedBy
-    var lastUpdatedUserId: Long? = null,
+    var lastUpdatedUserId: Long = 0,
 
     @Version
     var rowVersion: Long = 0,

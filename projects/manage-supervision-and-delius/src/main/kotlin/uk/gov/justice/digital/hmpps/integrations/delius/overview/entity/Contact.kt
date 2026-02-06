@@ -128,7 +128,7 @@ class Contact(
 
     @CreatedBy
     @Column(name = "created_by_user_id")
-    var createdByUserId: Long? = null,
+    var createdByUserId: Long = 0,
 
     @LastModifiedDate
     @Column(name = "last_updated_datetime")
@@ -136,7 +136,7 @@ class Contact(
 
     @LastModifiedBy
     @Column(name = "last_updated_user_id")
-    var lastUpdatedUserId: Long? = null,
+    var lastUpdatedUserId: Long = 0,
 
     @ManyToOne
     @JoinColumn(name = "last_updated_user_id", insertable = false, updatable = false)
