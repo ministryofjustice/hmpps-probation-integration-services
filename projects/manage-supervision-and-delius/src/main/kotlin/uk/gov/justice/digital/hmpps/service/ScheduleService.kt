@@ -19,7 +19,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.Offender
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.OffenderManagerRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.getByCrn
 import java.time.ZonedDateTime
-import java.util.UUID
+import java.util.*
 
 @Transactional
 @Service
@@ -117,7 +117,7 @@ fun Contact.toActivityOverview() = Activity(
     hasOutcome = hasARequiredOutcome(),
     isInitial = isInitial(),
     lastUpdated = lastUpdated,
-    lastUpdatedBy = Name(forename = lastUpdatedUser.forename, surname = lastUpdatedUser.surname),
+    lastUpdatedBy = Name(forename = lastUpdatedUser!!.forename, surname = lastUpdatedUser.surname),
     wasAbsent = outcome?.outcomeAttendance == false,
     nonComplianceReason = if (outcome?.outcomeCompliantAcceptable == false) type.description else null,
     countsTowardsRAR = rarActivity,
@@ -157,7 +157,7 @@ fun Contact.toActivity(noteId: Int? = null) = Activity(
     hasOutcome = hasARequiredOutcome(),
     isInitial = isInitial(),
     lastUpdated = lastUpdated,
-    lastUpdatedBy = Name(forename = lastUpdatedUser.forename, surname = lastUpdatedUser.surname),
+    lastUpdatedBy = Name(forename = lastUpdatedUser!!.forename, surname = lastUpdatedUser.surname),
     wasAbsent = outcome?.outcomeAttendance == false,
     nonComplianceReason = if (outcome?.outcomeCompliantAcceptable == false) type.description else null,
     appointmentNotes = if (noteId == null) formatNote(notes, true) else null,

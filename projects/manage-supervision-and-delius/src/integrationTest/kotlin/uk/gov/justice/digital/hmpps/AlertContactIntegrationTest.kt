@@ -214,7 +214,7 @@ class AlertContactIntegrationTest : IntegrationTestBase() {
             val original = alertContacts.single { original -> original.id == it.id }
             assertThat(it.alert).isFalse
             assertThat(it.notes).endsWith("Alert cleared from the Manage people on probation service")
-            assertThat(it.lastUpdatedUser.id).isEqualTo(user.id)
+            assertThat(it.lastUpdatedUser!!.id).isEqualTo(user.id)
             assertThat(it.lastUpdated.toLocalDate()).isEqualTo(LocalDate.now())
             assertThat(it.createdDateTime.truncatedTo(SECONDS)).isEqualTo(original.createdDateTime.truncatedTo(SECONDS))
         }
