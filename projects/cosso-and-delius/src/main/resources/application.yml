@@ -9,11 +9,11 @@ spring:
         timezone.default_storage: NORMALIZE
         query.mutation_strategy: org.hibernate.query.sqm.mutation.internal.inline.InlineMutationStrategy
         query.mutation_strategy.persistent:
-            create_tables: false
-            drop_tables: false
+          create_tables: false
+          drop_tables: false
         query.mutation_strategy.global_temporary:
-            create_tables: false
-            drop_tables: false
+          create_tables: false
+          drop_tables: false
   security.oauth2.client:
     registration:
       default:
@@ -27,7 +27,7 @@ spring:
   threads.virtual.enabled: true
 
 oauth2.roles:
-  - EXAMPLE
+  - PROBATION_API__COSSO__CASE_DETAILS
 
 springdoc.default-produces-media-type: application/json
 
