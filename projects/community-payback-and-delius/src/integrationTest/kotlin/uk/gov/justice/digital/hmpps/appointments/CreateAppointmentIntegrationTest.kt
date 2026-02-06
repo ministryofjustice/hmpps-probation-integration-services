@@ -114,7 +114,8 @@ class CreateAppointmentIntegrationTest @Autowired constructor(
                 withToken()
                 json = CreateAppointmentsRequest(
                     listOf(
-                        TestData.createAppointment().copy(pickUp = PickUp(LocalTime.of(8, 0), Code("INVALID")))
+                        TestData.createAppointment()
+                            .copy(pickUp = CreateAppointmentPickUpData(LocalTime.of(8, 0), Code("INVALID")))
                     )
                 )
             }

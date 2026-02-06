@@ -29,6 +29,7 @@ object UPWGenerator {
     )
     val DEFAULT_OFFICE_LOCATION = generateOfficeLocation(
         code = "LOC0001",
+        description = "City Location",
         addressNumber = "1001",
         streetName = "Office Street",
         town = "City",
@@ -491,13 +492,14 @@ object UPWGenerator {
     fun generateOfficeLocation(
         id: Long = IdGenerator.getAndIncrement(),
         code: String,
+        description: String,
         buildingName: String? = null,
         addressNumber: String? = null,
         streetName: String? = null,
         town: String? = null,
         county: String? = null,
         postcode: String? = null
-    ) = OfficeLocation(id, code, buildingName, addressNumber, streetName, town, county, postcode)
+    ) = OfficeLocation(id, code, description, buildingName, addressNumber, streetName, town, county, postcode)
 
     fun generateRequirement(
         id: Long = IdGenerator.getAndIncrement(),

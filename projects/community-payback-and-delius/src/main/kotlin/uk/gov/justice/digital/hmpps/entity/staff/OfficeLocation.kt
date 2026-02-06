@@ -19,6 +19,8 @@ class OfficeLocation(
     @Column(columnDefinition = "char(7)")
     val code: String,
 
+    val description: String,
+
     val buildingName: String?,
 
     val buildingNumber: String?,
