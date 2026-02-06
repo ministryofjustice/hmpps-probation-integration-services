@@ -2,7 +2,7 @@ package uk.gov.justice.digital.hmpps.model
 
 import uk.gov.justice.digital.hmpps.entity.staff.OfficeLocation
 
-data class PickUpLocation (
+data class PickUpLocation(
     val code: Code,
     val description: String,
     val streetName: String?,
