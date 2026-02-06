@@ -4,12 +4,12 @@ import com.asyncapi.kotlinasyncapi.annotation.Schema
 import com.asyncapi.kotlinasyncapi.annotation.channel.Channel
 import com.asyncapi.kotlinasyncapi.annotation.channel.Message
 import com.asyncapi.kotlinasyncapi.annotation.channel.Publish
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Primary
 import org.springframework.stereotype.Component
 import org.springframework.web.client.HttpClientErrorException
+import tools.jackson.databind.ObjectMapper
+import tools.jackson.module.kotlin.jacksonTypeRef
 import uk.gov.justice.digital.hmpps.converter.NotificationConverter
 import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonRepository

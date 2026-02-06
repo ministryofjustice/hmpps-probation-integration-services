@@ -7,6 +7,7 @@ import org.hibernate.type.NumericBooleanConverter
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import java.time.LocalDate
+import java.time.LocalDateTime
 
 @Immutable
 @Entity
@@ -82,5 +83,5 @@ interface NsiRepository : JpaRepository<Nsi, Long> {
 
 interface NsiDate {
     val name: String
-    val referralDate: LocalDate
+    val referralDate: LocalDateTime
 }

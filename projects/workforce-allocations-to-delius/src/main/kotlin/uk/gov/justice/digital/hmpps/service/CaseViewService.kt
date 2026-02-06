@@ -55,7 +55,7 @@ class CaseViewService(
             ReallocationCaseView.ActiveEvent(
                 it.number,
                 it.failureToComplyCount,
-                listOfNotNull(it.referralDate, it.breachEnd, sentence?.startDate).max(),
+                listOfNotNull(it.referralDate, it.breachEnd, sentence?.startDate?.toLocalDate()).max(),
                 sentence?.toCvSentence(),
                 listOfNotNull(sentence?.mainOffence()) + additionalOffences.map { o -> o.toCvOffence() },
                 requirements.map { r -> r.toCvRequirement() },
@@ -89,7 +89,9 @@ class CaseViewService(
         startDate
     )
 
-    private fun SentenceSummary.toCvSentence() = CvSentence(description, startDate, length, endDate)
+    private fun SentenceSummary.toCvSentence() =
+        CvSentence(description, startDate.toLocalDate(), length, endDate.toLocalDate())
+
     private fun SentenceSummary.mainOffence() = CvOffence(offenceMainCategory, offenceSubCategory, true)
     private fun CaseViewAdditionalOffence.toCvOffence() =
         CvOffence(offence.mainCategoryDescription, offence.subCategoryDescription, false)

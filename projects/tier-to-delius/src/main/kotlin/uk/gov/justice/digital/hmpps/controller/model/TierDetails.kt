@@ -1,12 +1,15 @@
 package uk.gov.justice.digital.hmpps.controller.model
 
+import com.fasterxml.jackson.annotation.JsonProperty
 import java.time.LocalDate
 
 data class TierDetails(
     val gender: String,
     val currentTier: String?,
-    val oGRSScore: Long?,
-    val rSRScore: Double?,
+    @JsonProperty("ogrsscore")
+    val ogrsScore: Long?,
+    @JsonProperty("rsrscore")
+    val rsrScore: Double?,
     val registrations: List<Registration>,
     val convictions: List<Conviction>,
     val previousEnforcementActivity: Boolean

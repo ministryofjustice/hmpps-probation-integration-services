@@ -25,9 +25,10 @@ import uk.gov.justice.digital.hmpps.integrations.delius.user.entity.Provider
 import uk.gov.justice.digital.hmpps.integrations.delius.user.entity.User
 import uk.gov.justice.digital.hmpps.integrations.delius.user.staff.entity.Staff
 import uk.gov.justice.digital.hmpps.integrations.delius.user.team.entity.Team
+import uk.gov.justice.digital.hmpps.jpa.GeneratedId
 import java.io.Serializable
 import java.time.LocalDate
-import java.time.LocalTime
+import java.time.LocalDateTime
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.LicenceCondition as LicenceConditionEntity
@@ -36,8 +37,10 @@ import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.LicenceC
 @Table(name = "contact")
 @SQLRestriction("soft_deleted = 0")
 @EntityListeners(AuditingEntityListener::class)
+@SequenceGenerator(name = "contact_id_generator", sequenceName = "contact_id_seq", allocationSize = 1)
 class Contact(
     @Id
+    @GeneratedId(generator = "contact_id_generator")
     @Column(name = "contact_id")
     val id: Long = 0,
 
@@ -109,6 +112,10 @@ class Contact(
     val staff: Staff? = null,
 
     @ManyToOne
+    @JoinColumn(name = "probation_area_id")
+    val provider: Provider? = null,
+
+    @ManyToOne
     @JoinColumn(name = "office_location_id")
     val location: OfficeLocation? = null,
 
@@ -133,7 +140,7 @@ class Contact(
 
     @ManyToOne
     @JoinColumn(name = "last_updated_user_id", insertable = false, updatable = false)
-    val lastUpdatedUser: User,
+    val lastUpdatedUser: User? = null,
 
     @Column(name = "visor_contact")
     @Convert(converter = YesNoConverter::class)
@@ -243,6 +250,10 @@ class ContactType(
     @Column(name = "offender_event_0")
     @Convert(converter = YesNoConverter::class)
     val offenderContact: Boolean = false,
+
+    @Column(name = "cja_orders")
+    @Convert(converter = YesNoConverter::class)
+    val eventContact: Boolean = false,
 
     @Column(name = "contact_location_flag", columnDefinition = "char(1)")
     val locationRequired: String,
@@ -735,13 +746,13 @@ interface Appointment {
     val secondName: String?
     val thirdName: String?
     val surname: String
-    val dob: LocalDate
+    val dob: LocalDateTime
     val id: Long
     val crn: String
     val location: String?
-    val contactDate: LocalDate
-    val contactStartTime: LocalTime?
-    val contactEndTime: LocalTime?
+    val contactDate: LocalDateTime
+    val contactStartTime: LocalDateTime?
+    val contactEndTime: LocalDateTime?
     val totalSentences: Int?
     val contactDescription: String
     val sentenceDescription: String?

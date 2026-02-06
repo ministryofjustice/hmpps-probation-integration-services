@@ -29,7 +29,7 @@ class ProbationStatusService(private val personRepository: PersonRepository) {
 
 fun SentenceCounts.detail() = ProbationStatusDetail(
     status,
-    terminationDate,
+    terminationDate?.toLocalDate(),
     breachCount > 0,
     preSentenceCount > 0,
     awaitingPsrCount > 0

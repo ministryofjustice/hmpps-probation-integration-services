@@ -91,7 +91,7 @@ internal class PersonalDetailsServiceTest {
             crn = "CRN",
             pnc = "PNC",
             noms = "NOMS",
-            dateOfBirth = LocalDate.now().minusYears(50)
+            dateOfBirth = LocalDate.now().minusYears(50).atStartOfDay()
         )
     }
 

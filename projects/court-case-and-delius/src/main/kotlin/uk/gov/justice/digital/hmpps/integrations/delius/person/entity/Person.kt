@@ -394,7 +394,7 @@ interface SentenceCounts {
     val crn: String
     val currentCount: Int
     val previousCount: Int
-    val terminationDate: LocalDate?
+    val terminationDate: LocalDateTime?
     val breachCount: Int
     val preSentenceCount: Int
     val awaitingPsrCount: Int

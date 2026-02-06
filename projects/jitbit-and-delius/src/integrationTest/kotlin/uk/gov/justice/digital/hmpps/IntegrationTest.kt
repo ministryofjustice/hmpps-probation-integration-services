@@ -8,9 +8,9 @@ import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
 import org.junit.jupiter.params.provider.ValueSource
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc
 import org.springframework.test.json.JsonCompareMode
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
@@ -50,7 +50,13 @@ internal class IntegrationTest @Autowired constructor(
     }
 
     @Test
-    fun `returns 404 when not found`() {
+    fun `returns 404 when user is expired`() {
+        mockMvc.get("/user?email=expired.user@example.com") { withToken() }
+            .andExpect { status { isNotFound() } }
+    }
+
+    @Test
+    fun `returns 404 when case not found`() {
         mockMvc.get("/case/NONEXISTENT") { withToken() }
             .andExpect { status { isNotFound() } }
     }

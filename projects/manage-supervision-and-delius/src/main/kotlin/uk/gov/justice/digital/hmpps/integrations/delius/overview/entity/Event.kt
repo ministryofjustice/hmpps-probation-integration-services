@@ -82,6 +82,8 @@ interface EventRepository : JpaRepository<Event, Long> {
             "ORDER BY e.dateCreated DESC"
     )
     fun findByPersonId(personId: Long): List<Event>
+
+    fun findByIdAndActiveIsTrue(eventId: Long): Event?
 }
 
 @Entity

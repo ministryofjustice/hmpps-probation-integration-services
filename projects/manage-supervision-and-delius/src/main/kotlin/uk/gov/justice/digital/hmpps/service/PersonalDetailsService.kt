@@ -507,4 +507,4 @@ fun PersonDocument.toDocument() =
     Document(id = alfrescoId, name = name, createdAt = createdAt, lastUpdated = lastUpdated)
 
 fun PersonSummaryEntity.toPersonSummary() =
-    PersonSummary(Name(forename, secondName, surname), crn, id, pnc, noms, dateOfBirth)
+    PersonSummary(Name(forename, secondName, surname), crn, id, pnc, noms, dateOfBirth.toLocalDate())

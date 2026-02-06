@@ -9,6 +9,7 @@ import org.springframework.web.client.RestClient
 import org.springframework.web.client.RestClient.Builder
 import org.springframework.web.client.support.RestClientAdapter
 import org.springframework.web.service.invoker.HttpServiceProxyFactory
+import org.springframework.web.service.invoker.createClient
 import java.time.Duration
 
 @Configuration
@@ -17,7 +18,7 @@ class HmppsAuthClientConfig(
     private val clientManager: OAuth2AuthorizedClientManager
 ) {
     @Bean
-    fun oauth2Client() = restClientBuilder
+    fun oauth2Client(): RestClient = restClientBuilder
         .requestFactory(withTimeouts(Duration.ofSeconds(1), Duration.ofSeconds(5)))
         .requestInterceptor(HmppsAuthInterceptor(clientManager, "default"))
         .requestInterceptor(RetryInterceptor())
@@ -27,10 +28,8 @@ class HmppsAuthClientConfig(
 fun withTimeouts(connection: Duration, read: Duration) =
     JettyClientHttpRequestFactory().also { it.setConnectTimeout(connection); it.setReadTimeout(read); }
 
-inline fun <reified T> createClient(client: RestClient): T {
-    return HttpServiceProxyFactory.builderFor(RestClientAdapter.create(client)).build()
-        .createClient(T::class.java)
-}
+inline fun <reified T : Any> createClient(client: RestClient) =
+    HttpServiceProxyFactory.builderFor(RestClientAdapter.create(client)).build().createClient<T>()
 
 fun <T> nullIfNotFound(fn: () -> T): T? = try {
     fn()

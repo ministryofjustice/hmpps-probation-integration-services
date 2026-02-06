@@ -1,7 +1,5 @@
 package uk.gov.justice.digital.hmpps.listener
 
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import io.awspring.cloud.sqs.annotation.SqsListener
 import io.awspring.cloud.sqs.listener.AsyncAdapterBlockingExecutionFailedException
 import io.awspring.cloud.sqs.listener.ListenerExecutionFailedException
@@ -10,7 +8,7 @@ import io.opentelemetry.api.trace.Span
 import io.opentelemetry.api.trace.SpanKind
 import io.opentelemetry.api.trace.StatusCode
 import io.sentry.Sentry
-import io.sentry.spring.jakarta.tracing.SentryTransaction
+import io.sentry.spring7.tracing.SentryTransaction
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression
 import org.springframework.context.annotation.Conditional
@@ -24,6 +22,8 @@ import org.springframework.transaction.CannotCreateTransactionException
 import org.springframework.transaction.UnexpectedRollbackException
 import org.springframework.web.client.HttpClientErrorException
 import org.springframework.web.client.RestClientException
+import tools.jackson.databind.ObjectMapper
+import tools.jackson.module.kotlin.jacksonTypeRef
 import uk.gov.justice.digital.hmpps.config.AwsCondition
 import uk.gov.justice.digital.hmpps.message.Notification
 import uk.gov.justice.digital.hmpps.messaging.NotificationHandler

@@ -1,12 +1,12 @@
 package uk.gov.justice.digital.hmpps.service
 
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.module.kotlin.readValue
 import io.opentelemetry.api.trace.SpanKind
 import io.opentelemetry.instrumentation.annotations.WithSpan
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
+import tools.jackson.databind.ObjectMapper
+import tools.jackson.module.kotlin.readValue
 import uk.gov.justice.digital.hmpps.integrations.delius.DomainEvent
 import uk.gov.justice.digital.hmpps.integrations.delius.DomainEventRepository
 import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent

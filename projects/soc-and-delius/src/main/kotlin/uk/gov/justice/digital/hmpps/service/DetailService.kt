@@ -5,7 +5,6 @@ import uk.gov.justice.digital.hmpps.controller.IdentifierType
 import uk.gov.justice.digital.hmpps.entity.*
 import uk.gov.justice.digital.hmpps.model.*
 import uk.gov.justice.digital.hmpps.model.KeyDate
-import uk.gov.justice.digital.hmpps.model.OffenderAlias
 import uk.gov.justice.digital.hmpps.model.Team
 import java.time.LocalDate
 
@@ -77,8 +76,8 @@ class DetailService(
             releaseLocation,
             recallDate,
             recallReason,
-            nsiDates.firstOrNull { it.name == "recall" }?.referralDate,
-            nsiDates.firstOrNull { it.name == "breach" }?.referralDate,
+            nsiDates.firstOrNull { it.name == "recall" }?.referralDate?.toLocalDate(),
+            nsiDates.firstOrNull { it.name == "breach" }?.referralDate?.toLocalDate(),
             offenderAliases = p.offenderAliases.map {
                 OffenderAlias(
                     id = it.aliasID,
@@ -98,4 +97,3 @@ fun DetailPerson.toProfile() = if (nationality?.description != null || religion?
 } else {
     null
 }
-

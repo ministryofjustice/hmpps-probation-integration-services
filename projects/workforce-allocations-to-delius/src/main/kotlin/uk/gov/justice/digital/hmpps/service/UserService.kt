@@ -1,8 +1,8 @@
 package uk.gov.justice.digital.hmpps.service
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import jakarta.transaction.Transactional
 import org.springframework.stereotype.Service
+import tools.jackson.databind.ObjectMapper
 import uk.gov.justice.digital.hmpps.api.model.CaseAccessList
 import uk.gov.justice.digital.hmpps.api.model.User
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
@@ -48,10 +48,10 @@ class UserService(
     }
 
     fun writeAllUsersWithRole(outputStream: OutputStream) {
-        objectMapper.factory.createGenerator(outputStream).use { json ->
+        objectMapper.createGenerator(outputStream).use { json ->
             json.writeStartArray()
             findAllUsersWithRole().use { users ->
-                users.forEach { user -> json.writeObject(user) }
+                users.forEach { user -> json.writePOJO(user) }
             }
             json.writeEndArray()
         }

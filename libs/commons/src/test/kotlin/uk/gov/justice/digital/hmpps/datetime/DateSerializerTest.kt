@@ -1,6 +1,5 @@
 package uk.gov.justice.digital.hmpps.datetime
 
-import com.fasterxml.jackson.core.JsonParser
 import org.hamcrest.MatcherAssert
 import org.hamcrest.Matchers
 import org.junit.jupiter.api.extension.ExtendWith
@@ -10,6 +9,7 @@ import org.junit.jupiter.params.provider.MethodSource
 import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.whenever
+import tools.jackson.core.JsonParser
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
@@ -27,7 +27,7 @@ class DateSerializerTest {
     @ParameterizedTest
     @MethodSource("dateTimeStrings")
     fun `deserialize zoned date time`(dateTime: String, zonedDateTime: ZonedDateTime) {
-        whenever(jsonParser.text).thenReturn(dateTime)
+        whenever(jsonParser.string).thenReturn(dateTime)
 
         val result = deserializer.deserialize(jsonParser, null)
         MatcherAssert.assertThat(result, Matchers.equalTo(zonedDateTime))

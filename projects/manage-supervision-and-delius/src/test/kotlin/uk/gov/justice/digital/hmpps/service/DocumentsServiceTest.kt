@@ -66,7 +66,7 @@ internal class DocumentsServiceTest {
             forename = PERSONAL_DETAILS.forename,
             secondName = PERSONAL_DETAILS.secondName,
             surname = PERSONAL_DETAILS.surname, crn = PERSONAL_DETAILS.crn, pnc = PERSONAL_DETAILS.pnc,
-            noms = PERSONAL_DETAILS.noms, dateOfBirth = PERSONAL_DETAILS.dateOfBirth
+            noms = PERSONAL_DETAILS.noms, dateOfBirth = PERSONAL_DETAILS.dateOfBirth.atStartOfDay()
         )
     }
 
