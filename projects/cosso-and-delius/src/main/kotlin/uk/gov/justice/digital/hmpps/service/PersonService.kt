@@ -39,9 +39,9 @@ class PersonService(
             title = person.title?.description ?: "",
             name = Name(person.firstName, person.middleName(), person.surname),
             dateOfBirth = person.dateOfBirth,
-            telephoneNumber = person.telephoneNumber ?: "",
-            mobileNumber = person.mobileNumber ?: "",
-            emailAddress = person.emailAddress ?: "",
+            telephoneNumber = person.telephoneNumber,
+            mobileNumber = person.mobileNumber,
+            emailAddress = person.emailAddress,
             addresses = addresses
         )
     }
