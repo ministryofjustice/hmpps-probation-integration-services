@@ -36,7 +36,7 @@ class PersonService(
             throw NotFoundException("No main address found for person with crn:$crn")
         }
         return PersonDetails(
-            title = person.title?.description ?: "",
+            title = person.title?.description,
             name = Name(person.firstName, person.middleName(), person.surname),
             dateOfBirth = person.dateOfBirth,
             telephoneNumber = person.telephoneNumber,
