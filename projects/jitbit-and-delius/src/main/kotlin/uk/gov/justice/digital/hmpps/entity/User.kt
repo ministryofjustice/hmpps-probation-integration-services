@@ -5,6 +5,7 @@ import jakarta.persistence.Entity
 import jakarta.persistence.Id
 import jakarta.persistence.Table
 import org.hibernate.annotations.Immutable
+import java.time.LocalDate
 
 @Entity
 @Immutable
@@ -15,5 +16,8 @@ class User(
     val id: Long,
 
     @Column(name = "distinguished_name")
-    val userName: String
+    val userName: String,
+
+    @Column(name = "end_date")
+    val endDate: LocalDate? = null
 )
