@@ -13,6 +13,9 @@ class PersonService(
     val personRepository: PersonRepository,
     val personAddressRepository: PersonAddressRepository
 ) {
+    companion object {
+        const val MAIN_ADDRESS_STATUS = "MAIN"
+    }
 
     fun getBasicDetails(crn: String): PersonDetails {
         val person = personRepository.findByCrn(crn) ?: throw NotFoundException("Person with crn:$crn not found")
@@ -29,7 +32,7 @@ class PersonService(
                 postcode = it.postcode,
             )
         }
-        if (addresses.none { it.status == "MAIN" }) {
+        if (addresses.none { it.status.uppercase() == MAIN_ADDRESS_STATUS }) {
             throw NotFoundException("No main address found for person with crn:$crn")
         }
         return PersonDetails(

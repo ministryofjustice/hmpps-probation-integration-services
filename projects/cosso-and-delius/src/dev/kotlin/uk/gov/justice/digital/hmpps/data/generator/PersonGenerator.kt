@@ -6,7 +6,7 @@ import java.time.LocalDate
 object PersonGenerator {
     val PERSON_NO_MAIN_ADDRESS = Person(
         offenderId = IdGenerator.getAndIncrement(),
-        crn = "X123456",
+        crn = "X123457",
         firstName = "Kyle",
         secondName = "Mark",
         thirdName = "David",

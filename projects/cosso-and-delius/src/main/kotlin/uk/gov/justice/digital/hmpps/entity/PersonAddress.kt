@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.Query
 @Table(name = "offender_address")
 class PersonAddress(
     @Id
-    @Column("offender_address_id")
+    @Column(name = "offender_address_id")
     val id: Long = 0,
     @ManyToOne
     @JoinColumn(name = "offender_id")

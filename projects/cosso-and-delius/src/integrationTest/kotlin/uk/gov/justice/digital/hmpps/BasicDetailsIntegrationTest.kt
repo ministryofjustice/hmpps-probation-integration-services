@@ -39,7 +39,7 @@ internal class BasicDetailsIntegrationTest @Autowired constructor(
 
     @Test
     fun `person with crn not found throws not found`() {
-        val crn = "X123456"
+        val crn = "X123458"
         mockMvc.get("/basic-details/$crn") { withToken() }
             .andExpect { status { isNotFound() } }
     }
