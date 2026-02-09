@@ -1,10 +1,12 @@
 package uk.gov.justice.digital.hmpps.client.approvedpremises.model
 
+import com.fasterxml.jackson.annotation.JsonProperty
 import java.time.ZonedDateTime
 
 data class EventDetails<T>(
     val id: String,
     val timestamp: ZonedDateTime,
+    @JsonProperty("eventType")
     val eventType: String,
     val eventDetails: T
 )
@@ -15,7 +17,7 @@ data class ApplicationSubmitted(
     val submittedAt: ZonedDateTime,
     val applicationOrigin: String,
 ) {
-    fun applicationOrigin(): String = ApplicationOrigin.from(applicationOrigin)!!.description
+    fun applicationOriginDescription(): String = ApplicationOrigin.from(applicationOrigin).description
 }
 
 data class ApplicationStatusUpdated(
@@ -23,9 +25,9 @@ data class ApplicationStatusUpdated(
     val applicationUrl: String,
     val newStatus: ApplicationStatus,
     val updatedAt: ZonedDateTime,
-    val applicationOrigin: String?,
+    val applicationOrigin: String,
 ) {
-    fun applicationOrigin(): String = ApplicationOrigin.from(applicationOrigin)?.description ?: ""
+    fun applicationOriginDescription(): String = ApplicationOrigin.from(applicationOrigin).description
 }
 
 enum class ApplicationOrigin(val description: String) {
@@ -34,7 +36,6 @@ enum class ApplicationOrigin(val description: String) {
     HomeDetentionCurfew("Home Detention Curfew");
 
     companion object {
-        fun from(value: String?): ApplicationOrigin? =
-            ApplicationOrigin.entries.firstOrNull { it.name.lowercase() == value?.lowercase() }
+        fun from(value: String) = entries.single { it.name.equals(value, ignoreCase = true) }
     }
 }
