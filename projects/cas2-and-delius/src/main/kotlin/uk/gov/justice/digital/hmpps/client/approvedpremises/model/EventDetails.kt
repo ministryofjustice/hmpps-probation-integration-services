@@ -15,7 +15,7 @@ data class ApplicationSubmitted(
     val submittedAt: ZonedDateTime,
     val applicationOrigin: String,
 ) {
-    fun applicationOrigin(): String = ApplicationOrigin.from(applicationOrigin)!!.description
+    fun applicationOriginDescription(): String = ApplicationOrigin.from(applicationOrigin).description
 }
 
 data class ApplicationStatusUpdated(
@@ -23,9 +23,9 @@ data class ApplicationStatusUpdated(
     val applicationUrl: String,
     val newStatus: ApplicationStatus,
     val updatedAt: ZonedDateTime,
-    val applicationOrigin: String?,
+    val applicationOrigin: String,
 ) {
-    fun applicationOrigin(): String = ApplicationOrigin.from(applicationOrigin)?.description ?: ""
+    fun applicationOriginDescription(): String = ApplicationOrigin.from(applicationOrigin).description
 }
 
 enum class ApplicationOrigin(val description: String) {
@@ -34,7 +34,6 @@ enum class ApplicationOrigin(val description: String) {
     HomeDetentionCurfew("Home Detention Curfew");
 
     companion object {
-        fun from(value: String?): ApplicationOrigin? =
-            ApplicationOrigin.entries.firstOrNull { it.name.lowercase() == value?.lowercase() }
+        fun from(value: String) = entries.single { it.name.equals(value, ignoreCase = true) }
     }
 }
