@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
 import uk.gov.justice.digital.hmpps.integrations.delius.*
+import uk.gov.justice.digital.hmpps.messaging.Handler.Companion.CHECK_IN_EXPIRED
 import uk.gov.justice.digital.hmpps.messaging.Handler.Companion.CHECK_IN_REVIEWED
 import uk.gov.justice.digital.hmpps.messaging.Handler.Companion.CHECK_IN_UPDATED
 import java.time.LocalDate
@@ -11,6 +12,8 @@ object ContactGenerator {
         generateContact(externalReference = Contact.externalReferencePrefix(CHECK_IN_REVIEWED) + "8b8a8cf1-a8fe-42c4-879c-095bbed91466")
     val CONTACT_TO_UPDATE =
         generateContact(externalReference = Contact.externalReferencePrefix(CHECK_IN_UPDATED) + "a18648f4-46ec-4344-8e8e-ba15c18c3ab9")
+    val CONTACT_TO_UPDATE_EXPIRY =
+        generateContact(externalReference = Contact.externalReferencePrefix(CHECK_IN_EXPIRED) + "b5a4d4c6-15c5-4f54-8ec2-f7f38c6f8b23")
 
     fun generateContact(
         person: Person = PersonGenerator.DEFAULT_PERSON,
