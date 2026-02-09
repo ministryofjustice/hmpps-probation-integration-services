@@ -28,7 +28,7 @@ class DetailsService
                 it.townCity,
                 it.county,
                 it.postcode,
-                it.noFixedAbode == "Y"
+                it.noFixedAbode
             )
         }
 
