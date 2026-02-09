@@ -426,7 +426,6 @@ components:
           - "NO"
         didSessionHappen:
           type: boolean
-          writeOnly: true
         noSessionReasonType:
           type: string
           enum:

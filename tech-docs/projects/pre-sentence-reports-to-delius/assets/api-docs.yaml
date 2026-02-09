@@ -14,6 +14,24 @@ servers:
 security:
 - hmpps-auth-token: []
 paths:
+  /report/{psrUuid}/defendant-details:
+    get:
+      tags:
+      - defendant-details-controller
+      operationId: getDefendantDetails
+      parameters:
+      - name: psrUuid
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DefendantDetails"
   /docs/asyncapi:
     get:
       tags:
@@ -26,119 +44,51 @@ paths:
             application/json:
               schema:
                 type: string
-  /context/{reportId}:
-    get:
-      tags:
-      - psr-context-controller
-      summary: Probation case information related to the pre-sentence report
-      description: "Creating a pre-sentence report requires details of the relevant\n\
-        \            probation case. This information provides context around the\
-        \ case and specific\n            details of the person's location, offence\
-        \ and current circumstances. Providing\n            these details as a single\
-        \ context API enables the pre-sentence service to\n            remove the\
-        \ need to access the case record and key the information into the\n      \
-        \      Pre-Sentence service manually\n        "
-      operationId: getPreSentenceReportContext
-      parameters:
-      - name: reportId
-        in: path
-        required: true
-        schema:
-          type: string
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/PreSentenceReportContext"
 components:
   schemas:
     Address:
       type: object
       properties:
-        noFixedAbode:
-          type: boolean
         buildingName:
           type: string
-        addressNumber:
+        buildingNumber:
           type: string
         streetName:
           type: string
-        town:
-          type: string
         district:
+          type: string
+        town:
           type: string
         county:
           type: string
         postcode:
           type: string
-      required:
-      - noFixedAbode
-    Court:
-      type: object
-      properties:
-        name:
-          type: string
-        localJusticeArea:
-          $ref: "#/components/schemas/LocalJusticeArea"
-      required:
-      - localJusticeArea
-      - name
-    LocalJusticeArea:
-      type: object
-      properties:
-        name:
-          type: string
-      required:
-      - name
-    Name:
-      type: object
-      properties:
-        forename:
-          type: string
-        surname:
-          type: string
-        middleName:
-          type: string
-      required:
-      - forename
-      - surname
-    Offence:
-      type: object
-      properties:
-        description:
-          type: string
-      required:
-      - description
-    PreSentenceReportContext:
+        noFixedAbode:
+          type: boolean
+    DefendantDetails:
       type: object
       properties:
         crn:
           type: string
+        eventNumber:
+          type: integer
+          format: int64
         name:
           $ref: "#/components/schemas/Name"
         dateOfBirth:
           type: string
           format: date
-        pnc:
-          type: string
-        address:
+        mainAddress:
           $ref: "#/components/schemas/Address"
-        mainOffence:
-          $ref: "#/components/schemas/Offence"
-        otherOffences:
-          type: array
-          items:
-            $ref: "#/components/schemas/Offence"
-        court:
-          $ref: "#/components/schemas/Court"
-      required:
-      - court
-      - crn
-      - dateOfBirth
-      - mainOffence
-      - name
+    Name:
+      type: object
+      properties:
+        forename:
+          type: string
+        middleName:
+          type: string
+        surname:
+          type: string
   securitySchemes:
     hmpps-auth-token:
       type: http

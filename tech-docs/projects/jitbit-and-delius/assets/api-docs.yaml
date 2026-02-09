@@ -14,6 +14,24 @@ servers:
 security:
 - hmpps-auth-token: []
 paths:
+  /user:
+    get:
+      tags:
+      - api-controller
+      operationId: userExists
+      parameters:
+      - name: email
+        in: query
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserExistsResponse"
   /case/{crn}:
     get:
       tags:
@@ -72,6 +90,18 @@ paths:
                 $ref: "#/components/schemas/LimitedAccessDetail"
 components:
   schemas:
+    UserExistsResponse:
+      type: object
+      properties:
+        email:
+          type: string
+        users:
+          type: array
+          items:
+            type: string
+      required:
+      - email
+      - users
     Address:
       type: object
       properties:

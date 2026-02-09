@@ -168,14 +168,12 @@ components:
           type: string
         currentTier:
           type: string
-        oGRSScore:
+        ogrsscore:
           type: integer
           format: int64
-          writeOnly: true
-        rSRScore:
+        rsrscore:
           type: number
           format: double
-          writeOnly: true
         registrations:
           type: array
           items:
@@ -186,12 +184,6 @@ components:
             $ref: "#/components/schemas/Conviction"
         previousEnforcementActivity:
           type: boolean
-        ogrsscore:
-          type: integer
-          format: int64
-        rsrscore:
-          type: number
-          format: double
       required:
       - convictions
       - gender

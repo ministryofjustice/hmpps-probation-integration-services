@@ -101,7 +101,68 @@ paths:
                 $ref: "#/components/schemas/PniResponse"
 components:
   schemas:
-    JsonNode: {}
+    JsonNode:
+      type: object
+      properties:
+        empty:
+          type: boolean
+        array:
+          type: boolean
+        "null":
+          type: boolean
+        object:
+          type: boolean
+        float:
+          type: boolean
+        valueNode:
+          type: boolean
+        container:
+          type: boolean
+        missingNode:
+          type: boolean
+        pojo:
+          type: boolean
+        floatingPointNumber:
+          type: boolean
+        bigDecimal:
+          type: boolean
+        bigInteger:
+          type: boolean
+        textual:
+          type: boolean
+          deprecated: true
+        binary:
+          type: boolean
+        nodeType:
+          type: string
+          enum:
+          - ARRAY
+          - BINARY
+          - BOOLEAN
+          - MISSING
+          - "NULL"
+          - NUMBER
+          - OBJECT
+          - POJO
+          - STRING
+        integralNumber:
+          type: boolean
+        boolean:
+          type: boolean
+        double:
+          type: boolean
+        int:
+          type: boolean
+        long:
+          type: boolean
+        number:
+          type: boolean
+        short:
+          type: boolean
+        string:
+          type: boolean
+        embeddedValue:
+          type: boolean
     RiskPrediction:
       type: object
       properties:

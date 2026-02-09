@@ -280,6 +280,30 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/PersonDocuments"
+  /contact/{crn}:
+    post:
+      tags:
+      - Contact
+      operationId: createContact
+      parameters:
+      - name: crn
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateContact"
+        required: true
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CreateContactResponse"
   /caseload/user/{username}/search:
     post:
       tags:
@@ -2563,6 +2587,46 @@ components:
           format: date-time
       required:
       - levelCode
+    CreateContact:
+      type: object
+      properties:
+        staffCode:
+          type: string
+        teamCode:
+          type: string
+        type:
+          type: string
+        eventId:
+          type: integer
+          format: int64
+        requirementId:
+          type: integer
+          format: int64
+        description:
+          type: string
+        notes:
+          type: string
+        alert:
+          type: boolean
+        sensitive:
+          type: boolean
+        visorReport:
+          type: boolean
+      required:
+      - alert
+      - sensitive
+      - staffCode
+      - teamCode
+      - type
+      - visorReport
+    CreateContactResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+      required:
+      - id
     UserSearchFilter:
       type: object
       properties:
