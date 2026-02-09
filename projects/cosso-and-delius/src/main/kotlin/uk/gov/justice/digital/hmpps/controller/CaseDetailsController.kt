@@ -10,7 +10,10 @@ import uk.gov.justice.digital.hmpps.service.PersonService
 @RestController
 class CaseDetailsController(val personService: PersonService) {
     @PreAuthorize("hasRole('PROBATION_API__COSSO__CASE_DETAILS')")
-    @GetMapping(value = ["/basic-details/{crn}"])
-    fun getBasicDetails(@PathVariable("crn") crn: String): PersonDetails =
-        personService.getBasicDetails(crn)
+    @GetMapping(value = ["/basic-details/{crn}/{username}"])
+    fun getBasicDetails(
+        @PathVariable("crn") crn: String,
+        @PathVariable("username") username: String
+    ): PersonDetails =
+        personService.getBasicDetails(crn, username)
 }

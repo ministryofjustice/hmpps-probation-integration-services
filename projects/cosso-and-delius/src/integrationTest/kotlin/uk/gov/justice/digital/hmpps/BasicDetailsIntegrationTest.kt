@@ -21,26 +21,28 @@ internal class BasicDetailsIntegrationTest @Autowired constructor(
     @Test
     fun `basic details returned with valid crn`() {
         val crn = PersonGenerator.DEFAULT_PERSON.crn
-        val result = mockMvc.get("/basic-details/$crn") { withToken() }
+        val username = "J0nSm17h"
+        val result = mockMvc.get("/basic-details/$crn/$username") { withToken() }
             .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<PersonDetails>()
         assertThat(result.addresses.size == 1)
-        assertThat(result.addresses[0].status == "MAIN")
         assertThat(result.name.surname == "Jones")
         assertThat(result.title == "Mr")
         assertThat(result.name.middleName == "Tom Billy")
     }
 
     @Test
-    fun `person with no main address throws not found`() {
+    fun `person with no home area throws bad request`() {
         val crn = PersonGenerator.PERSON_NO_MAIN_ADDRESS.crn
-        mockMvc.get("/basic-details/$crn") { withToken() }
-            .andExpect { status { isNotFound() } }
+        val username = "NoHomeArea"
+        mockMvc.get("/basic-details/$crn/$username") { withToken() }
+            .andExpect { status { isBadRequest() } }
     }
 
     @Test
     fun `person with crn not found throws not found`() {
         val crn = "X123458"
+        val username = "J0nSm17h"
         mockMvc.get("/basic-details/$crn") { withToken() }
             .andExpect { status { isNotFound() } }
     }

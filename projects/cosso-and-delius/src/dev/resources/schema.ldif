@@ -1,0 +1,27 @@
+dn: ou=Users,dc=moj,dc=com
+objectclass: top
+objectclass: organizationalUnit
+ou: Users
+
+dn: cn=J0nSm17h,ou=Users,dc=moj,dc=com
+objectclass: top
+objectclass: inetOrgPerson
+cn: J0nSm17h
+sn: Smith
+givenname: John
+mail: john.smith@moj.gov.uk
+telephoneNumber: 07247764536
+userHomeArea: N01
+
+dn: cn=UserPreferences,cn=J0nSm17h,ou=Users,dc=moj,dc=com
+objectclass: top
+objectclass: UserPreferences
+cn: UserPreferences
+replyAddress: 123
+
+dn: cn=NoHomeArea,ou=Users,dc=moj,dc=com
+objectclass: top
+objectclass: inetOrgPerson
+cn: NoHomeArea
+sn: Smith
+givenname: John
