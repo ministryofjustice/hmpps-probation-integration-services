@@ -50,3 +50,15 @@ userHomeArea: N01
 userSector: public
 mail: test.user2@example.com
 userPassword: secret
+
+dn: cn=expired.user,ou=Users,dc=moj,dc=com
+cn: expired.user
+objectclass: NDUser
+objectclass: inetOrgPerson
+objectclass: top
+givenName: Test
+sn: User
+userHomeArea: N01
+userSector: public
+mail: expired.user@example.com
+userPassword: secret

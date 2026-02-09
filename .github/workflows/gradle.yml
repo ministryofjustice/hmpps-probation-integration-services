@@ -1,8 +1,5 @@
 name: Gradle
 on:
-  workflow_dispatch:
-  schedule:
-    - cron: "30 5 * * MON-FRI" # Every weekday at 05:30 UTC
   push:
     paths:
       - gradlew
@@ -16,45 +13,3 @@ jobs:
     steps:
       - uses: actions/checkout@v6
       - uses: gradle/actions/wrapper-validation@v5
-
-  update-wrapper:
-    runs-on: ubuntu-latest
-    if: github.ref_name == 'main'
-    steps:
-      - uses: actions/create-github-app-token@v2
-        id: app-token
-        with:
-          app-id: ${{ secrets.BOT_APP_ID }}
-          private-key: ${{ secrets.BOT_APP_PRIVATE_KEY }}
-
-      - uses: actions/checkout@v6
-        with:
-          ref: main
-          token: ${{ steps.app-token.outputs.token }}
-
-      - uses: actions/setup-java@v5
-        with:
-          java-version: '25'
-          distribution: 'temurin'
-
-      - uses: gradle-update/update-gradle-wrapper-action@512b1875f3b6270828abfe77b247d5895a2da1e5 # v2.1.0
-        with:
-          labels: dependencies
-          repo-token: ${{ steps.app-token.outputs.token }}
-          commit-message-template: 'Update Gradle Wrapper to %targetVersion%'
-          merge-method: SQUASH
-
-      - name: Reset commit author # workaround for https://github.com/gradle-update/update-gradle-wrapper-action/issues/124
-        continue-on-error: true
-        run: |
-          if [ "$(git branch --show-current)" != main ]; then
-            git reset --soft "HEAD~$(find . -type f -name gradlew | wc -l)"
-          fi
-
-      - name: Commit and push
-        uses: dsanders11/github-app-commit-action@43de6da2f4d927e997c0784c7a0b61bd19ad6aac # v1.5.0
-        with:
-          fail-on-no-changes: false
-          force: true
-          message: Bump Gradle Wrapper to the latest version
-          token: ${{ steps.app-token.outputs.token }}
