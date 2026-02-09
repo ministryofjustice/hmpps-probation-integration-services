@@ -17,7 +17,7 @@ class DetailsService
     fun getDefendantDetails(psrUuid: String): DefendantDetails {
         val document = documentRepository.getByUuid(psrUuid)
         val person = document.person
-        val event = document.courtReport.courtAppearance.event
+        val eventNumber = Integer.valueOf(document.courtReport.courtAppearance.event.eventNumber).toLong()
         val name = person.name()
         val address = personAddressRepository.findMainAddress(person.id)?.let {
             Address(
@@ -34,7 +34,7 @@ class DetailsService
 
         return DefendantDetails(
             crn = person.crn,
-            eventNumber = event.eventNumber,
+            eventNumber = eventNumber,
             name = name,
             dateOfBirth = person.dateOfBirth,
             mainAddress = address
