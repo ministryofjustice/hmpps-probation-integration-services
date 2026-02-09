@@ -8,6 +8,7 @@ risk scores:
 * Risk of serious recidivism (RSR)
 * OASys sexual reoffending predictor (OSP)
 * Offender group reconviction scale (OGRS)
+* All Reoffending Predictor (ARP)
 
 The scores are updated when an OASys risk assessment is submitted for a **Person on Probation**.
 
