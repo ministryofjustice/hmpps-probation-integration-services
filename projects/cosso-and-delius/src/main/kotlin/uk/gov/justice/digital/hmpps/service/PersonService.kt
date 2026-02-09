@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.entity.PersonAddressRepository
 import uk.gov.justice.digital.hmpps.entity.PersonRepository
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
+import uk.gov.justice.digital.hmpps.exception.NotFoundException.Companion.orNotFoundBy
 import uk.gov.justice.digital.hmpps.model.Address
 import uk.gov.justice.digital.hmpps.model.Name
 import uk.gov.justice.digital.hmpps.model.PersonDetails
@@ -15,7 +16,7 @@ class PersonService(
 ) {
 
     fun getBasicDetails(crn: String): PersonDetails {
-        val person = personRepository.findByCrn(crn) ?: throw NotFoundException("Person with crn:$crn not found")
+        val person = personRepository.findByCrn(crn).orNotFoundBy("crn", crn)
         val addresses = personAddressRepository.findByPersonId(person.offenderId).map {
             Address(
                 id = it.id,
