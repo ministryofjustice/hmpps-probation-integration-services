@@ -14,5 +14,9 @@ class Event(
 
     val offenderId: Long,
 
+    /**
+     * Stored as a String to match the DB column type; API/DTO exposes this as a numeric value.
+     * Conversion between String and numeric forms is handled in the service/mapping layer.
+     */
     val eventNumber: String
 )
