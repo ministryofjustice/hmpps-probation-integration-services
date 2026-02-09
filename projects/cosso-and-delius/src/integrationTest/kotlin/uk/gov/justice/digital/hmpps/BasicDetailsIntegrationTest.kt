@@ -25,10 +25,10 @@ internal class BasicDetailsIntegrationTest @Autowired constructor(
         val result = mockMvc.get("/basic-details/$crn/$username") { withToken() }
             .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<PersonDetails>()
-        assertThat(result.addresses.size == 1)
-        assertThat(result.name.surname == "Jones")
-        assertThat(result.title == "Mr")
-        assertThat(result.name.middleName == "Tom Billy")
+        assertThat(result.addresses.size).isEqualTo(1)
+        assertThat(result.name.surname).isEqualTo("Jones")
+        assertThat(result.title).isEqualTo("Mr")
+        assertThat(result.name.middleName).isEqualTo("Tom Billy")
     }
 
     @Test
