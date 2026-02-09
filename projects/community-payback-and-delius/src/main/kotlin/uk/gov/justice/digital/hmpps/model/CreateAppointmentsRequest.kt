@@ -33,7 +33,7 @@ data class CreateAppointmentRequest(
 
     // unpaid work details
     val allocationId: Long?,
-    val pickUp: PickUp?,
+    val pickUp: CreateAppointmentPickUpData?,
     @field:PositiveOrZero
     @Schema(description = "The minutes offered towards a person's unpaid work requirement. Defaults to the difference between the appointment startTime and endTime.")
     val minutesOffered: Long? = null,
@@ -55,3 +55,5 @@ data class CreateAppointmentRequest(
 
     val notes: String?,
 )
+
+data class CreateAppointmentPickUpData(val time: LocalTime?, val location: Code?)
