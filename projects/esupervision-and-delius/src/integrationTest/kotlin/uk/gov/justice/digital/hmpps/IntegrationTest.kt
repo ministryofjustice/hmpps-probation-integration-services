@@ -6,9 +6,9 @@ import org.junit.jupiter.api.Test
 import org.mockito.kotlin.verify
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc
 import org.springframework.test.context.bean.override.mockito.MockitoBean
 import org.springframework.test.json.JsonCompareMode
 import org.springframework.test.web.servlet.MockMvc
@@ -127,6 +127,22 @@ internal class IntegrationTest @Autowired constructor(
             """
             |Existing Notes
             |Check-in updated
+            """.trimMargin()
+        )
+    }
+
+    @Test
+    fun `esupervision updated expiry contact updated`() {
+        val notification = prepEvent("esupervision-updated-expiry-A000001", wireMockServer.port())
+        channelManager.getChannel(queueName).publishAndWait(notification)
+
+        val contact = contactRepository.findAll().single {
+            it.externalReference == "urn:uk:gov:hmpps:esupervision:check-in-expiry:b5a4d4c6-15c5-4f54-8ec2-f7f38c6f8b23"
+        }
+        assertThat(contact.notes).isEqualTo(
+            """
+            |Existing Notes
+            |Check-in updated expiry
             """.trimMargin()
         )
     }
