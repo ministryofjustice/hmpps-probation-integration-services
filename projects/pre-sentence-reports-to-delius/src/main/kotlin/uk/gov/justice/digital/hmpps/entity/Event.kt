@@ -14,5 +14,5 @@ class Event(
 
     val offenderId: Long,
 
-    val eventNumber: Long
+    val eventNumber: String
 )
