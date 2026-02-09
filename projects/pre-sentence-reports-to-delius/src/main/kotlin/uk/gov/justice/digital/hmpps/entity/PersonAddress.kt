@@ -4,6 +4,7 @@ import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.NumericBooleanConverter
+import org.hibernate.type.YesNoConverter
 import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
 import java.time.LocalDate
@@ -38,8 +39,9 @@ class PersonAddress(
     val postcode: String?,
     val startDate: LocalDate?,
     val endDate: LocalDate?,
-    val noFixedAbode: Boolean?,
-
+    @Column(columnDefinition = "char")
+    @Convert(converter = YesNoConverter::class)
+    val noFixedAbode: Boolean,
     @Column(columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean = false,
