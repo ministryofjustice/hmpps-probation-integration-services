@@ -10,6 +10,6 @@ object PersonAddressGenerator {
         IdGenerator.getAndIncrement(), DEFAULT_PERSON, DEFAULT_ADDRESS_STATUS,
         "Building Name", "123", "Street Name", "Town City",
         "District", "County", "AB1 2CD",
-        LocalDate.of(2020, 1, 1), null, "N"
+        LocalDate.of(2020, 1, 1), null, false
     )
 }
