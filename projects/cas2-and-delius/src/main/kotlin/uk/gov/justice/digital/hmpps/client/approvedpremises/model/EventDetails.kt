@@ -1,10 +1,12 @@
 package uk.gov.justice.digital.hmpps.client.approvedpremises.model
 
+import com.fasterxml.jackson.annotation.JsonProperty
 import java.time.ZonedDateTime
 
 data class EventDetails<T>(
     val id: String,
     val timestamp: ZonedDateTime,
+    @JsonProperty("eventType")
     val eventType: String,
     val eventDetails: T
 )
