@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.datetime.toDeliusDate
+import uk.gov.justice.digital.hmpps.enum.RiskFlagColour
 import uk.gov.justice.digital.hmpps.enum.RiskLevel
 import uk.gov.justice.digital.hmpps.enum.RiskOfSeriousHarmType
 import uk.gov.justice.digital.hmpps.enum.RiskType
@@ -39,6 +40,12 @@ class RiskService(
     fun recordRisk(person: Person, summary: AssessmentSummary, telemetryRecording: (String, String) -> Unit) {
         recordRiskOfSeriousHarm(person, summary, telemetryRecording)
         recordOtherRisks(person, summary, telemetryRecording)
+
+        // Set the RoSH flag on the person
+        person.highestRiskColour = registrationRepository
+            .findByPersonIdAndTypeFlagCode(person.id, OASYS_RISK_FLAG.value)
+            .filter { !it.deregistered && it.type.colour != null }
+            .maxByOrNull { it.type.colour!!.uppercase().let(RiskFlagColour::valueOf).ordinal }?.type?.colour
     }
 
     private fun recordRiskOfSeriousHarm(
@@ -61,11 +68,6 @@ class RiskService(
             val type = registerTypeRepository.getByCode(roshType.code)
             person.addRegistration(type, addToTelemetry = addToTelemetry)
         }
-
-        // Set the RoSH flag on the person
-        person.highestRiskColour = registrationRepository
-            .findByPersonIdAndTypeFlagCode(person.id, OASYS_RISK_FLAG.value)
-            .firstOrNull { !it.deregistered }?.type?.colour
     }
 
     private fun recordOtherRisks(
