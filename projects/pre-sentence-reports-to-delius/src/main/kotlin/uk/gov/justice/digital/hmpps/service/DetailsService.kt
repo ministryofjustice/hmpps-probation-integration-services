@@ -28,7 +28,10 @@ class DetailsService
                 it.townCity,
                 it.county,
                 it.postcode,
-                it.noFixedAbode
+                when (it.noFixedAbode) {
+                    "Y" -> true
+                    else -> false
+                }
             )
         }
 

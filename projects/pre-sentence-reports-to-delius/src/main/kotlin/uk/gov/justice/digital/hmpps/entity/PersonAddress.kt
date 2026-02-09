@@ -38,8 +38,7 @@ class PersonAddress(
     val postcode: String?,
     val startDate: LocalDate?,
     val endDate: LocalDate?,
-    val noFixedAbode: Boolean?,
-
+    val noFixedAbode: String,
     @Column(columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean = false,
