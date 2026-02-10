@@ -818,10 +818,6 @@ components:
       properties:
         location:
           $ref: "#/components/schemas/PickUpLocation"
-        locationCode:
-          $ref: "#/components/schemas/Code"
-          deprecated: true
-          description: this value is available from 'location'
         time:
           type: string
     AppointmentResponseSupervisor:

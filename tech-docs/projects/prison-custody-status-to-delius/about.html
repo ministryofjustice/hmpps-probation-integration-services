@@ -128,6 +128,9 @@
           <li>
             <a href="#custody-status-details"><span>Custody Status Details</span></a>
           </li>
+          <li>
+            <a href="#outbound-messages"><span>Outbound Messages</span></a>
+          </li>
         </ul>
       </li>
       <li>
@@ -237,6 +240,19 @@ process the following custody change types:</p>
 <td>TRANSFERRED</td>
 </tr>
         </table>
+      </div><h3 id="outbound-messages">Outbound Messages</h3>
+<p>The service publishes data domain events when a person is recalled to custody and any active licence conditions
+have been terminated.</p>
+<div class="table-container">
+        <table>
+          <tr>
+<th>Business Event</th>
+<th>Outbound Event Type</th>
+</tr><tr>
+<td>Licence Condition Terminated</td>
+<td><code>probation-case.licence-condition.terminated</code></td>
+</tr>
+        </table>
       </div><h2 id="end-to-end-test">End-to-End Test</h2>
 <p>The service is <a href="https://github.com/ministryofjustice/hmpps-probation-integration-e2e-tests/tree/main/tests/prison-custody-status-to-delius">end-to-end tested</a>
 using a combination of <a href="https://github.com/ministryofjustice/prison-api">Prison API</a> calls and Delius UI inspection.</p>
@@ -246,17 +262,17 @@ using a combination of <a href="https://github.com/ministryofjustice/prison-api"
 <li><a href="asyncapi-reference.html">AsyncAPI Reference</a></li>
 </ul>
 
-              <div data-module='page-expiry' data-last-reviewed-on="2026-01-28">
+              <div data-module='page-expiry' data-last-reviewed-on="2026-05-09">
     <div class='page-expiry--not-expired'>
-      This page was last reviewed on 28 October 2025.
+      This page was last reviewed on 9 February 2026.
 
-        It needs to be reviewed again on 28 January 2026
+        It needs to be reviewed again on 9 May 2026
         by the page owner <a href="https://mojdt.slack.com/messages/probation-integration-team">#probation-integration-team</a>
         .
     </div>
 
     <div class='page-expiry--expired' hidden>
-      This page was set to be reviewed before 28 January 2026
+      This page was set to be reviewed before 9 May 2026
        by the page owner <a href="https://mojdt.slack.com/messages/probation-integration-team">#probation-integration-team</a>.
       This might mean the content is out of date.
     </div>
