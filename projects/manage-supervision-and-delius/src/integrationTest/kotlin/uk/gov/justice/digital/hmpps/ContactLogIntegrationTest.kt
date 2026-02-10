@@ -4,7 +4,9 @@ import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers
 import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.Test
+import org.springframework.test.web.servlet.get
 import org.springframework.test.web.servlet.post
+import uk.gov.justice.digital.hmpps.api.model.contact.ContactTypesResponse
 import uk.gov.justice.digital.hmpps.api.model.contact.CreateContact
 import uk.gov.justice.digital.hmpps.api.model.contact.CreateContactResponse
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator
@@ -256,5 +258,27 @@ class ContactLogIntegrationTest : IntegrationTestBase() {
             )
         }
             .andExpect { status { isBadRequest() } }
+    }
+
+    @Test
+    fun `get contact types returns expected types`() {
+        val response = mockMvc.get("/contact/types") { withToken() }
+            .andExpect { status { isOk() } }
+            .andReturn().response.contentAsJson<ContactTypesResponse>()
+
+        assertThat(response.contactTypes.size, equalTo(3))
+        assertThat(
+            response.contactTypes.map { it.code }.toSet(),
+            equalTo(setOf("CMOB", "C326", "C204"))
+        )
+
+        assertThat(
+            response.contactTypes.first { it.code == "CMOB" }.isPersonLevelContact,
+            equalTo(true)
+        )
+        assertThat(
+            response.contactTypes.first { it.code == "C326" }.isPersonLevelContact,
+            equalTo(false)
+        )
     }
 }
