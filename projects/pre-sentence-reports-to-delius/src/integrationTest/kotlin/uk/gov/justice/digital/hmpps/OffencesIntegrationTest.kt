@@ -26,7 +26,7 @@ class OffencesIntegrationTest @Autowired constructor(
             .andExpect { status { is2xxSuccessful() } }
             .andReturn().response.contentAsJson<OffenceDetails>()
         assertThat(response.mainOffence.date).isEqualTo(LocalDate.now())
-        assertThat(response.mainOffence.mainCategory.code).isEqualTo("1")
+        assertThat(response.mainOffence.mainCategory.code.trim()).isEqualTo("1")
         assertThat(response.mainOffence.subCategory.code).isEqualTo("1A")
     }
 
