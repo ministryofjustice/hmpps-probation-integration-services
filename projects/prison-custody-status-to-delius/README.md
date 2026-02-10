@@ -79,6 +79,15 @@ process the following custody change types:
 | Recall         | Recall - End of Temporary Licence           | TEMPORARY\_ABSENCE\_RETURN |
 | Recall         | Transfer from Other Establishment           | TRANSFERRED                |
 
+### Outbound Messages
+
+The service publishes data domain events when a person is recalled to custody and any active licence conditions
+have been terminated.
+
+| Business Event               | Outbound Event Type                           |
+|------------------------------|-----------------------------------------------|
+| Licence Condition Terminated | `probation-case.licence-condition.terminated` |
+
 ## End-to-End Test
 
 The service is [end-to-end tested](https://github.com/ministryofjustice/hmpps-probation-integration-e2e-tests/tree/main/tests/prison-custody-status-to-delius)

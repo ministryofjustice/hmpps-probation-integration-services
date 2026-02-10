@@ -16,7 +16,8 @@ This service provides an overview of the data held for a **Person on Probation**
 
 ## Admin tasks
 
-The service also enables management of sentence appointments (creation and recording outcome) and user admin tasks.
+The service also enables management of sentence appointments (creation and recording outcome), 
+contacts with a Person on Probation and user admin tasks.
 
 The supported user admin tasks are:
 
