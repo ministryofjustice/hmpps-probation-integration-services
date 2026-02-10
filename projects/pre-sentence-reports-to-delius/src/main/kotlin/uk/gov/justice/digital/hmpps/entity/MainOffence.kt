@@ -24,12 +24,12 @@ class MainOffence(
 
     @OneToOne
     @JoinColumn(name = "offence_id")
-    val offence: Offence,
+    val offence: OffenceEntity,
 )
 
 @Entity
 @Table(name = "r_offence")
-class Offence(
+class OffenceEntity(
     @Id
     @Column(name = "offence_id")
     val id: Long,

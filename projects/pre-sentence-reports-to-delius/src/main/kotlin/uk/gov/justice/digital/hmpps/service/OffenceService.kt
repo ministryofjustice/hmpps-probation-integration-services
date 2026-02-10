@@ -19,16 +19,22 @@ class OffenceService(
         val additionalOffences = additionalOffenceRepository.findAllByEventId(mainOffence.event.id).map {
             Offence(
                 it.offenceDate,
-                CodeAndDescription(it.offences.mainCategoryCode, it.offences.mainCategoryDescription),
-                CodeAndDescription(it.offences.subCategoryCode, it.offences.subCategoryDescription)
+                CodeAndDescription(it.offence.mainCategoryCode.trim(), it.offence.mainCategoryDescription),
+                CodeAndDescription(it.offence.subCategoryCode.trim(), it.offence.subCategoryDescription)
             )
         }
 
         return OffenceDetails(
             Offence(
                 mainOffence.date,
-                CodeAndDescription(mainOffence.offence.mainCategoryCode, mainOffence.offence.mainCategoryDescription),
-                CodeAndDescription(mainOffence.offence.subCategoryCode, mainOffence.offence.subCategoryDescription)
+                CodeAndDescription(
+                    mainOffence.offence.mainCategoryCode.trim(),
+                    mainOffence.offence.mainCategoryDescription
+                ),
+                CodeAndDescription(
+                    mainOffence.offence.subCategoryCode.trim(),
+                    mainOffence.offence.subCategoryDescription
+                )
             ), additionalOffences
         )
     }

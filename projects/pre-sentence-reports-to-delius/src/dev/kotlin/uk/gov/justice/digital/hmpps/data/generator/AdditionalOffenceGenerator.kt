@@ -1,7 +1,7 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
 import uk.gov.justice.digital.hmpps.entity.AdditionalOffence
-import uk.gov.justice.digital.hmpps.entity.Offence
+import uk.gov.justice.digital.hmpps.entity.OffenceEntity
 import java.time.LocalDate
 
 object AdditionalOffenceGenerator {
@@ -9,9 +9,9 @@ object AdditionalOffenceGenerator {
         additionalOffenceId = IdGenerator.getAndIncrement(),
         offenceDate = LocalDate.now(),
         eventId = EventGenerator.DEFAULT_EVENT.id,
-        offences = Offence(
+        offence = OffenceEntity(
             id = IdGenerator.getAndIncrement(),
-            mainCategoryCode = "1",
+            mainCategoryCode = "1  ",
             mainCategoryDescription = "Main additional offence description",
             subCategoryCode = "1A",
             subCategoryDescription = "Sub additional offence description"

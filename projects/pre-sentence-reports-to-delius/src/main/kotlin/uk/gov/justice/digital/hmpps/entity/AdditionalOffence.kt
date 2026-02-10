@@ -14,7 +14,7 @@ class AdditionalOffence(
     val eventId: Long,
     @OneToOne
     @JoinColumn(name = "offence_id")
-    val offences: Offence
+    val offence: OffenceEntity
 )
 
 interface AdditionalOffenceRepository : JpaRepository<AdditionalOffence, Long> {
