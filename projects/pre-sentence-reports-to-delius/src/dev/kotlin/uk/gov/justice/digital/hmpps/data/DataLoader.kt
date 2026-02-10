@@ -17,7 +17,9 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
             ReferenceDataGenerator.DEFAULT_ADDRESS_STATUS,
             PersonGenerator.DEFAULT_PERSON,
             PersonAddressGenerator.DEFAULT_PERSON_ADDRESS,
-            DocumentGenerator.DEFAULT_DOCUMENT
+            DocumentGenerator.DEFAULT_DOCUMENT,
+            MainOffenceGenerator.DEFAULT_MAIN_OFFENCE,
+            AdditionalOffenceGenerator.DEFAULT_ADDITIONAL_OFFENCE
         )
     }
 }
