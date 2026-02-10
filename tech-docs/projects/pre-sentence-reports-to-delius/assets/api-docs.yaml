@@ -72,7 +72,7 @@ components:
           type: string
         eventNumber:
           type: integer
-          format: int64
+          format: int32
         name:
           $ref: "#/components/schemas/Name"
         dateOfBirth:

@@ -318,9 +318,6 @@ components:
     AppointmentOutcomeRequest:
       type: object
       properties:
-        id:
-          type: integer
-          format: int64
         version:
           type: string
           format: uuid
@@ -368,7 +365,6 @@ components:
           type: boolean
       required:
       - endTime
-      - id
       - startTime
       - supervisor
       - version
@@ -379,6 +375,13 @@ components:
           type: string
       required:
       - code
+    CreateAppointmentPickUpData:
+      type: object
+      properties:
+        time:
+          type: string
+        location:
+          $ref: "#/components/schemas/Code"
     CreateAppointmentRequest:
       type: object
       properties:
@@ -406,7 +409,7 @@ components:
           type: integer
           format: int64
         pickUp:
-          $ref: "#/components/schemas/PickUp"
+          $ref: "#/components/schemas/CreateAppointmentPickUpData"
         minutesOffered:
           type: integer
           format: int64
@@ -464,13 +467,6 @@ components:
             $ref: "#/components/schemas/CreateAppointmentRequest"
       required:
       - appointments
-    PickUp:
-      type: object
-      properties:
-        time:
-          type: string
-        location:
-          $ref: "#/components/schemas/Code"
     CreatedAppointment:
       type: object
       properties:
@@ -821,9 +817,11 @@ components:
       type: object
       properties:
         location:
-          $ref: "#/components/schemas/AppointmentResponseAddress"
+          $ref: "#/components/schemas/PickUpLocation"
         locationCode:
           $ref: "#/components/schemas/Code"
+          deprecated: true
+          description: this value is available from 'location'
         time:
           type: string
     AppointmentResponseSupervisor:
@@ -854,6 +852,28 @@ components:
       required:
       - code
       - name
+    PickUpLocation:
+      type: object
+      properties:
+        code:
+          type: string
+        description:
+          type: string
+        streetName:
+          type: string
+        buildingName:
+          type: string
+        addressNumber:
+          type: string
+        townCity:
+          type: string
+        county:
+          type: string
+        postCode:
+          type: string
+      required:
+      - code
+      - description
     AllocationResponse:
       type: object
       properties:
@@ -920,6 +940,13 @@ components:
       - project
       - startTime
       - version
+    PickUp:
+      type: object
+      properties:
+        time:
+          type: string
+        location:
+          $ref: "#/components/schemas/PickUpLocation"
     ProjectAvailabilityDetails:
       type: object
       properties:
