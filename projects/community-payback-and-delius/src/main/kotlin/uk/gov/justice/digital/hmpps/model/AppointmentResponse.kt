@@ -82,9 +82,6 @@ data class AppointmentResponseSupervisor(
 
 data class AppointmentResponsePickupData(
     val location: PickUpLocation?,
-    @Deprecated("this value is available from 'location'")
-    @param:Schema(deprecated = true)
-    val locationCode: Code?,
     val time: LocalTime?
 )
 
