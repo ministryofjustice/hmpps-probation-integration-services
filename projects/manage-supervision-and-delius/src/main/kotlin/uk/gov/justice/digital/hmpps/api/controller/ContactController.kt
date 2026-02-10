@@ -24,4 +24,7 @@ class ContactController(
         @PathVariable crn: String,
         @Valid @RequestBody createContact: CreateContact
     ) = contactLogService.createContact(crn, createContact)
+
+    @GetMapping("/types")
+    fun getContactTypes() = contactLogService.getContactTypes()
 }
