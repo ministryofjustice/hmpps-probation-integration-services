@@ -10,6 +10,7 @@ class Person(
     @Id
     @Column(name = "offender_id")
     val offenderId: Long = 0,
+    @Column(name = "crn", nullable = false, columnDefinition = "CHAR(7)")
     val crn: String,
     @ManyToOne
     @JoinColumn(name = "title_id")
