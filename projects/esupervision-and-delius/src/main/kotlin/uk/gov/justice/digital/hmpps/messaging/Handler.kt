@@ -11,6 +11,7 @@ import uk.gov.justice.digital.hmpps.message.Notification
 import uk.gov.justice.digital.hmpps.messaging.Handler.Companion.CHECK_IN_EXPIRED
 import uk.gov.justice.digital.hmpps.messaging.Handler.Companion.CHECK_IN_RECEIVED
 import uk.gov.justice.digital.hmpps.service.CheckInService
+import uk.gov.justice.digital.hmpps.telemetry.TelemetryMessagingExtensions.notificationReceived
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 
 @Component
@@ -29,6 +30,7 @@ class Handler(
         ]
     )
     override fun handle(notification: Notification<HmppsDomainEvent>) {
+        telemetryService.notificationReceived(notification)
         try {
             when (notification.eventType) {
                 CHECK_IN_RECEIVED, CHECK_IN_EXPIRED -> {
