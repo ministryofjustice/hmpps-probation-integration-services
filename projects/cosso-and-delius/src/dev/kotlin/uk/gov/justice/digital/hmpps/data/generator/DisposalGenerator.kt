@@ -16,6 +16,8 @@ object DisposalGenerator {
             disposalTypeDescription = "Probation"
         ),
         lengthUnits = ReferenceDataGenerator.LENGTH_UNITS_MONTHS,
-        length2Units = ReferenceDataGenerator.LENGTH_UNITS_DAYS
+        length2Units = ReferenceDataGenerator.LENGTH_UNITS_DAYS,
+        softDeleted = false,
+        activeFlag = true
     )
 }

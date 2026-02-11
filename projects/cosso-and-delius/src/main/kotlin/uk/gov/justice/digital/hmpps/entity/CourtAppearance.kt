@@ -1,13 +1,18 @@
 package uk.gov.justice.digital.hmpps.entity
 
 import jakarta.persistence.Column
+import jakarta.persistence.Convert
 import jakarta.persistence.Entity
 import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.Table
 import org.hibernate.annotations.SQLRestriction
+import org.hibernate.type.NumericBooleanConverter
 import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.jpa.repository.Query
+import uk.gov.justice.digital.hmpps.service.OffenceService.Companion.SENTENCE_APPEARANCE_TYPE_CODE
+import java.time.LocalDate
 
 @Entity
 @Table(name = "court_appearance")
@@ -31,7 +36,9 @@ class CourtAppearance(
     @JoinColumn(name = "outcome_id")
     val outcome: ReferenceData,
 
-    val softDeleted: Int = 0
+    @Column(columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
+    val softDeleted: Boolean
 
 )
 
@@ -42,9 +49,24 @@ class CourtEntity(
     @Column(name = "court_id")
     val id: Long,
 
-    val courtName: String
+    val courtName: String,
+
+    @Column(name = "date")
+    val appearanceDate: LocalDate
 )
 
 interface CourtAppearanceRepository : JpaRepository<CourtAppearance, Long> {
+
+    @Query(
+        """
+        select ca from CourtAppearance ca
+        where ca.eventId = :eventId
+        and ca.appearanceType.code ="S"
+        and ca.outcome.id is not null
+        order by ca.court.appearanceDate
+        """
+    )
+    fun findSentencingAppearance(eventId: Long): List<CourtAppearance>
+
     fun findByEventIdAndAppearanceType_Code(eventId: Long, appearanceTypeCode: String): List<CourtAppearance>
 }

@@ -15,12 +15,12 @@ data class OffenceDetails(
 data class Requirement(
     val id: Long,
     val startDate: LocalDate,
-    val requirementTypeMainCategoryDescription: String,
-    val requirementLength: Int,
-    val requirementLengthUnits: String,
-    val requirementTypeSubCategoryDescription: String,
-    val secondaryRequirementLength: Int?,
-    val secondaryRequirementLengthUnits: String?
+    val mainCategory: String?,
+    val subCategory: String?,
+    val length: Int?,
+    val lengthUnit: String?,
+    val secondaryLength: Int?,
+    val secondaryLengthUnit: String?,
 )
 
 data class Sentence(

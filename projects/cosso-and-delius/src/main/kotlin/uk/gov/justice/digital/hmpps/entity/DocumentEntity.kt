@@ -1,15 +1,18 @@
 package uk.gov.justice.digital.hmpps.entity
 
 import jakarta.persistence.Column
+import jakarta.persistence.Convert
 import jakarta.persistence.Entity
 import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.Table
 import org.hibernate.annotations.SQLRestriction
+import org.hibernate.type.NumericBooleanConverter
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.Repository
 import uk.gov.justice.digital.hmpps.entity.DocumentEntity.Companion.cossoBreachNoticeUrn
+import uk.gov.justice.digital.hmpps.exception.NotFoundException.Companion.orNotFoundBy
 import java.util.UUID
 
 @Entity
@@ -32,7 +35,9 @@ class DocumentEntity(
 
     val externalReference: String,
 
-    val softDeleted: Int = 0
+    @Column(columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
+    val softDeleted: Boolean
 
 ) {
     companion object {
@@ -85,10 +90,6 @@ interface DocumentRepository : Repository<DocumentEntity, Long> {
     fun findEventIdFromDocument(urn: String): Long?
 
     fun findByExternalReference(externalReference: String): DocumentEntity?
-    fun getByUuid(uuid: String): DocumentEntity {
-        return findByExternalReference(cossoBreachNoticeUrn(UUID.fromString(uuid)))
-            ?: throw NoSuchElementException(
-                "No document found with UUID $uuid"
-            )
-    }
+    fun getByUuid(uuid: String): DocumentEntity = findByExternalReference(cossoBreachNoticeUrn(UUID.fromString(uuid)))
+        .orNotFoundBy("uuid", uuid)
 }

@@ -16,6 +16,7 @@ object DocumentGenerator {
         primaryKeyId = EventGenerator.DEFAULT_EVENT.eventId,
         tableName = "EVENT",
         externalReference = DocumentEntity.cossoBreachNoticeUrn(DEFAULT_DOCUMENT_UUID),
+        softDeleted = false
     )
 
     val MISSING_MAIN_OFFENCE_DOCUMENT = DocumentEntity(
@@ -24,6 +25,7 @@ object DocumentGenerator {
         primaryKeyId = MISSING_MAIN_OFFENCE_EVENT.eventId,
         tableName = "EVENT",
         externalReference = DocumentEntity.cossoBreachNoticeUrn(MISSING_MAIN_OFFENCE_DOCUMENT_UUID),
+        softDeleted = false
     )
 
     val MISSING_COURT_APPEARANCE_DOCUMENT = DocumentEntity(
@@ -32,6 +34,7 @@ object DocumentGenerator {
         primaryKeyId = MISSING_COURT_APPEARANCE_EVENT.eventId,
         tableName = "EVENT",
         externalReference = DocumentEntity.cossoBreachNoticeUrn(MISSING_COURT_APPEARANCE_DOCUMENT_UUID),
+        softDeleted = false
     )
 
     val MISSING_DISPOSAL_DOCUMENT = DocumentEntity(
@@ -40,5 +43,6 @@ object DocumentGenerator {
         primaryKeyId = EventGenerator.MISSING_DISPOSAL_EVENT.eventId,
         tableName = "EVENT",
         externalReference = DocumentEntity.cossoBreachNoticeUrn(MISSING_DISPOSAL_DOCUMENT_UUID),
+        softDeleted = false
     )
 }

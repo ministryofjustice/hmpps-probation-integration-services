@@ -15,7 +15,8 @@ object PersonGenerator {
         mobileNumber = "07700940123",
         title = ReferenceDataGenerator.MR_TITLE,
         dateOfBirth = LocalDate.of(1985, 3, 2),
-        emailAddress = "example2@example.com"
+        emailAddress = "example2@example.com",
+        softDeleted = false
     )
     val DEFAULT_PERSON = Person(
         offenderId = IdGenerator.getAndIncrement(),
@@ -28,6 +29,7 @@ object PersonGenerator {
         mobileNumber = "07700900123",
         title = ReferenceDataGenerator.MR_TITLE,
         dateOfBirth = LocalDate.of(1980, 1, 1),
-        emailAddress = "example@example.com"
+        emailAddress = "example@example.com",
+        softDeleted = false
     )
 }

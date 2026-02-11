@@ -1,12 +1,12 @@
 package uk.gov.justice.digital.hmpps
 
-import org.assertj.core.api.Assertions.assertThat
+import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.Test
-import org.skyscreamer.jsonassert.JSONAssert
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc
+import org.springframework.test.json.JsonCompareMode
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
 import uk.gov.justice.digital.hmpps.data.generator.DocumentGenerator
@@ -47,12 +47,12 @@ class OffenceDetailsIntegrationTest @Autowired constructor(
                 {
                   "id": 1000031,
                   "startDate": "${requirementStartDate}",
-                  "requirementTypeMainCategoryDescription": "Probation",
-                  "requirementLength": 2,
-                  "requirementLengthUnits": "Months",
-                  "requirementTypeSubCategoryDescription": "Probation2",
-                  "secondaryRequirementLength": 1,
-                  "secondaryRequirementLengthUnits": "Days"
+                  "mainCategory": "Probation",
+                  "length": 2,
+                  "lengthUnit": "Months",
+                  "subCategory": "Probation2",
+                  "secondaryLength": 1,
+                  "secondaryLengthUnit": "Days"
                 }
               ],
               "sentence": {
@@ -64,11 +64,13 @@ class OffenceDetailsIntegrationTest @Autowired constructor(
               }
             }
             """
-        val actual = mockMvc.get("/offence-details/${uuid}") { withToken() }
-            .andExpect { status { isOk() } }
-            .andReturn().response.contentAsString
-        assertThat(actual).isNotEmpty
-        JSONAssert.assertEquals(expectedResponse, actual, true)
+        mockMvc.get("/offence-details/${uuid}") { withToken() }
+            .andExpect { status { isOk() }
+                content {
+                    json(expectedResponse, JsonCompareMode.STRICT)
+                }
+            }
+
     }
 
     @Test
@@ -76,7 +78,7 @@ class OffenceDetailsIntegrationTest @Autowired constructor(
         val uuid = UUID.randomUUID()
         mockMvc.get("/offence-details/${uuid}") { withToken() }
             .andExpect { status { isNotFound() } }
-            .andExpect { jsonPath("$.message", org.hamcrest.Matchers.containsString("Event with")) }
+            .andExpect { jsonPath("$.message", equalTo("DocumentEntity with uuid of ${uuid} not found")) }
     }
 
     @Test
@@ -88,7 +90,7 @@ class OffenceDetailsIntegrationTest @Autowired constructor(
             .andExpect {
                 jsonPath(
                     "$.message",
-                    org.hamcrest.Matchers.equalTo("Offence with eventId of ${eventId} not found")
+                    equalTo("Offence with eventId of ${eventId} not found")
                 )
             }
     }
@@ -102,7 +104,7 @@ class OffenceDetailsIntegrationTest @Autowired constructor(
             .andExpect {
                 jsonPath(
                     "$.message",
-                    org.hamcrest.Matchers.equalTo("CourtAppearance with eventId of ${eventId} not found")
+                    equalTo("CourtAppearance with eventId of ${eventId} not found")
                 )
             }
     }
@@ -116,7 +118,7 @@ class OffenceDetailsIntegrationTest @Autowired constructor(
             .andExpect {
                 jsonPath(
                     "$.message",
-                    org.hamcrest.Matchers.equalTo("Disposal with eventId of ${eventId} not found")
+                    equalTo("Disposal with eventId of ${eventId} not found")
                 )
             }
     }

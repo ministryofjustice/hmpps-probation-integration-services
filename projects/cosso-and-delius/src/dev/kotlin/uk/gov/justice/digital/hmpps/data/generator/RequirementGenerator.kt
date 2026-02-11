@@ -13,7 +13,7 @@ object RequirementGenerator {
         requirementSubType = ReferenceDataGenerator.DEFAULT_REQUIREMENT_SUBTYPE,
         length = 2,
         length2 = 1,
-        softDeleted = 0
+        softDeleted = false
 
     )
 

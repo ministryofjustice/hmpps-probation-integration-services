@@ -1,12 +1,15 @@
 package uk.gov.justice.digital.hmpps.entity
 
 import jakarta.persistence.Column
+import jakarta.persistence.Convert
 import jakarta.persistence.Entity
 import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.OneToOne
 import jakarta.persistence.Table
+import org.hibernate.annotations.SQLRestriction
+import org.hibernate.type.NumericBooleanConverter
 import org.springframework.data.jpa.repository.JpaRepository
 
 @Entity
@@ -29,6 +32,7 @@ class MainOffence(
 
 @Entity
 @Table(name = "r_offence")
+@SQLRestriction("soft_deleted = 0")
 class OffenceEntity(
     @Id
     val offenceId: Long,
@@ -38,7 +42,10 @@ class OffenceEntity(
     val mainCategoryDescription: String,
     @Column(name = "sub_category_code", columnDefinition = "char(2)")
     val subCategoryCode: String,
-    val subCategoryDescription: String
+    val subCategoryDescription: String,
+    @Column(columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
+    val softDeleted: Boolean
 )
 
 interface MainOffenceRepository : JpaRepository<MainOffence, Long> {

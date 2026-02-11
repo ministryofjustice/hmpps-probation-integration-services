@@ -1,18 +1,19 @@
 package uk.gov.justice.digital.hmpps.entity
 
 import jakarta.persistence.Column
+import jakarta.persistence.Convert
 import jakarta.persistence.Entity
 import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.Table
 import org.hibernate.annotations.SQLRestriction
+import org.hibernate.type.NumericBooleanConverter
 import org.springframework.data.jpa.repository.JpaRepository
 import java.time.LocalDate
 
 @Entity
-@Table(name = "disposal")
-@SQLRestriction("soft_deleted = 0")
+@SQLRestriction("soft_deleted = 0 and active_flag = 1")
 class Disposal(
     @Id
     @Column(name = "disposal_id")
@@ -30,8 +31,12 @@ class Disposal(
     @ManyToOne
     @JoinColumn(name = "entry_length_2_units_id")
     val length2Units: ReferenceData,
-
-    val softDeleted: Int = 0
+    @Column(columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
+    val softDeleted: Boolean,
+    @Column(columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
+    val activeFlag: Boolean
 )
 
 @Entity

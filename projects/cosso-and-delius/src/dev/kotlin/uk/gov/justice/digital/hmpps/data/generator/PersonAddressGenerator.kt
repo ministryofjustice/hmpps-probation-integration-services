@@ -13,6 +13,7 @@ object PersonAddressGenerator {
         townCity = "London",
         district = "London",
         postcode = "SW1A 1AA",
-        county = "Greater London"
+        county = "Greater London",
+        softDeleted = false
     )
 }

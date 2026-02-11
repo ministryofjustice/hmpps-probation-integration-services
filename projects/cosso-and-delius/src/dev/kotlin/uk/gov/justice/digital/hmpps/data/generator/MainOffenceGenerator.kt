@@ -30,6 +30,7 @@ object MainOffenceGenerator {
         mainCategoryCode = "101",
         mainCategoryDescription = offenceDescription,
         subCategoryCode = "01",
-        subCategoryDescription = offenceDescription + "-SUB"
+        subCategoryDescription = offenceDescription + "-SUB",
+        softDeleted = false
     )
 }
