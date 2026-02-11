@@ -25,7 +25,11 @@ class OffenceService(
     private val disposalRepository: DisposalRepository,
     private val requirementRepository: RequirementRepository
 ) {
+    companion object{
+        const val SENTENCE_APPEARANCE_TYPE_CODE = "S"
+    }
     fun getOffenceDetails(uuid: String): OffenceDetails {
+
         val eventId =
             documentRepository.findEventIdFromDocument(DocumentEntity.cossoBreachNoticeUrn(UUID.fromString(uuid)))
                 ?: throw NotFoundException("Event", "uuid", uuid)
@@ -33,7 +37,8 @@ class OffenceService(
             ?: throw NotFoundException("Offence", "eventId", eventId)
         val additionalOffences = additionalOffenceRepository.findAllByEventId(eventId)
             .map { CodedDescription(it.offence.mainCategoryCode, it.offence.mainCategoryDescription) }
-        val courtAppearance = courtAppearanceRepository.findByEventIdAndAppearanceTypeCode(eventId, "S").firstOrNull()
+        val courtAppearance = courtAppearanceRepository.findByEventIdAndAppearanceType_Code(eventId,
+            SENTENCE_APPEARANCE_TYPE_CODE).firstOrNull()
             ?: throw NotFoundException("CourtAppearance", "eventId", eventId)
         val disposal = disposalRepository.findByEventId(eventId).firstOrNull()
             ?: throw NotFoundException("Disposal", "eventId", eventId)
@@ -66,7 +71,7 @@ class OffenceService(
 
     fun getSentence(disposal: Disposal): Sentence {
         return Sentence(
-            length = disposal.length ?: 0,
+            length = disposal.length,
             lengthUnits = disposal.lengthUnits.description,
             type = disposal.disposalType.disposalTypeDescription,
             secondLength = disposal.length2,

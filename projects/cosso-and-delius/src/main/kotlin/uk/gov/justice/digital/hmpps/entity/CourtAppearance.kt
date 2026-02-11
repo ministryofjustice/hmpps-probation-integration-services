@@ -46,5 +46,5 @@ class CourtEntity(
 )
 
 interface CourtAppearanceRepository : JpaRepository<CourtAppearance, Long> {
-    fun findByEventIdAndAppearanceTypeCode(eventId: Long, appearanceTypeCode: String): List<CourtAppearance>
+    fun findByEventIdAndAppearanceType_Code(eventId: Long, appearanceTypeCode: String): List<CourtAppearance>
 }
