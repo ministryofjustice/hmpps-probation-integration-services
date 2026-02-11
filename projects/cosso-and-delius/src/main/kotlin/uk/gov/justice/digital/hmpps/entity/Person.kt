@@ -8,7 +8,6 @@ import java.time.LocalDate
 
 @Entity
 @Table(name = "offender")
-@SQLRestriction("soft_deleted = 0")
 class Person(
     @Id
     @Column(name = "offender_id")
@@ -28,9 +27,6 @@ class Person(
     val mobileNumber: String? = null,
     @Column(name = "e_mail_address")
     val emailAddress: String? = null,
-    @Column(columnDefinition = "number")
-    @Convert(converter = NumericBooleanConverter::class)
-    val softDeleted: Boolean
 ) {
     fun middleName() = listOfNotNull(secondName, thirdName).joinToString(" ")
 }
