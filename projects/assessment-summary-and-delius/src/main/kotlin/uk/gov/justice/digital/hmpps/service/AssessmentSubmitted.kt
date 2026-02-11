@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.audit.service.AuditableService
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
+import uk.gov.justice.digital.hmpps.audit.service.OptimisationTables
 import uk.gov.justice.digital.hmpps.enum.RiskOfSeriousHarmType
 import uk.gov.justice.digital.hmpps.enum.RiskType
 import uk.gov.justice.digital.hmpps.flags.FeatureFlags
@@ -25,6 +26,7 @@ class AssessmentSubmitted(
     private val flaggedRiskService: FlaggedRiskService,
     private val featureFlags: FeatureFlags,
     private val telemetryService: TelemetryService,
+    private val optimisationTables: OptimisationTables,
 ) : AuditableService(auditedInteractionService) {
     companion object {
         const val UPDATE_RISK_REGISTRATIONS_IN_PLACE = "assessment-summary_update-risk-registrations-in-place"
@@ -67,6 +69,8 @@ class AssessmentSubmitted(
         if (personRepository.countAccreditedProgrammeRequirements(person.id) > 0) {
             personRepository.updateIaps(person.id)
         }
+
+        optimisationTables.rebuild(person.id)
 
         telemetryService.trackEvent("AssessmentSummarySuccess", telemetryParams)
     }

@@ -20,6 +20,8 @@ database:
       - reg_category_level_history
     sequences:
       - reg_cat_level_history_id_seq
+    packages:
+      - pkg_triggersupport # for caseload rebuild
 
   audit:
     username: AssessmentSummaryAndDelius
