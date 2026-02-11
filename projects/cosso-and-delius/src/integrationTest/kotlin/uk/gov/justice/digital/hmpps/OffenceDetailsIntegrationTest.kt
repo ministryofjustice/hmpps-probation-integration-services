@@ -65,12 +65,12 @@ class OffenceDetailsIntegrationTest @Autowired constructor(
             }
             """
         mockMvc.get("/offence-details/${uuid}") { withToken() }
-            .andExpect { status { isOk() }
+            .andExpect {
+                status { isOk() }
                 content {
                     json(expectedResponse, JsonCompareMode.STRICT)
                 }
             }
-
     }
 
     @Test
