@@ -32,5 +32,4 @@ object MainOffenceGenerator {
         subCategoryCode = "01",
         subCategoryDescription = offenceDescription + "-SUB"
     )
-
 }

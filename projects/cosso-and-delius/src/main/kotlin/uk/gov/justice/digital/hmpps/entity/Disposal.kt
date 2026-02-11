@@ -44,7 +44,6 @@ class DisposalType(
     val disposalTypeDescription: String
 )
 
-
-interface DisposalRepository : JpaRepository<Disposal, Long>{
+interface DisposalRepository : JpaRepository<Disposal, Long> {
     fun findByEventId(eventId: Long): List<Disposal>
 }

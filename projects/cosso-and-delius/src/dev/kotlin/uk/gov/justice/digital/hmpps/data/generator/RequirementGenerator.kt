@@ -15,8 +15,8 @@ object RequirementGenerator {
         length2 = 1,
         softDeleted = 0
 
-
     )
+
     fun getRequirementType(typeDescription: String) = RequirementType(
         id = IdGenerator.getAndIncrement(),
         description = typeDescription,
