@@ -37,7 +37,7 @@ class DocumentEntity(
 ) {
     companion object {
         fun cossoBreachNoticeUrn(uuid: UUID): String =
-            "urn:hmpps:cosso-breach-notice:$uuid"
+            "urn:uk:gov:hmpps:breach:cosso-breach-notice:$uuid"
     }
 }
 
