@@ -24,9 +24,9 @@ data class Requirement(
 )
 
 data class Sentence(
-    val length: Int,
-    val lengthUnits: String,
-    val type: String,
+    val length: Int?,
+    val lengthUnits: String?,
+    val type: String?,
     val secondLength: Int?,
     val secondLengthUnits: String?
 )
