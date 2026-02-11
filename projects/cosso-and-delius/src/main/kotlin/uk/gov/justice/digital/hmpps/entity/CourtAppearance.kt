@@ -11,7 +11,6 @@ import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.NumericBooleanConverter
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
-import uk.gov.justice.digital.hmpps.service.OffenceService.Companion.SENTENCE_APPEARANCE_TYPE_CODE
 import java.time.LocalDate
 
 @Entity

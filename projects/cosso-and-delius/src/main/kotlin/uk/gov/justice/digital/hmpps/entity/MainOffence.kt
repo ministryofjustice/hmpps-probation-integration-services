@@ -32,7 +32,6 @@ class MainOffence(
 
 @Entity
 @Table(name = "r_offence")
-@SQLRestriction("soft_deleted = 0")
 class OffenceEntity(
     @Id
     val offenceId: Long,
@@ -43,9 +42,7 @@ class OffenceEntity(
     @Column(name = "sub_category_code", columnDefinition = "char(2)")
     val subCategoryCode: String,
     val subCategoryDescription: String,
-    @Column(columnDefinition = "number")
-    @Convert(converter = NumericBooleanConverter::class)
-    val softDeleted: Boolean
+
 )
 
 interface MainOffenceRepository : JpaRepository<MainOffence, Long> {
