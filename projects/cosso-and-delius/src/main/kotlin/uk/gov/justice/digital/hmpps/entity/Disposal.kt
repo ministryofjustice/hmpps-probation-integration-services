@@ -1,0 +1,50 @@
+package uk.gov.justice.digital.hmpps.entity
+
+import jakarta.persistence.Column
+import jakarta.persistence.Entity
+import jakarta.persistence.Id
+import jakarta.persistence.JoinColumn
+import jakarta.persistence.ManyToOne
+import jakarta.persistence.Table
+import org.hibernate.annotations.SQLRestriction
+import org.springframework.data.jpa.repository.JpaRepository
+import java.time.LocalDate
+
+@Entity
+@Table(name = "disposal")
+@SQLRestriction("soft_deleted = 0")
+class Disposal(
+    @Id
+    @Column(name = "disposal_id")
+    val id: Long,
+    val disposalDate: LocalDate,
+    val eventId: Long,
+    val length: Int?,
+    val length2: Int?,
+    @ManyToOne
+    @JoinColumn(name = "disposal_type_id")
+    val disposalType: DisposalType,
+    @ManyToOne
+    @JoinColumn(name = "entry_length_units_id")
+    val lengthUnits: ReferenceData,
+    @ManyToOne
+    @JoinColumn(name = "entry_length_2_units_id")
+    val length2Units: ReferenceData,
+
+    val softDeleted: Int = 0
+)
+
+@Entity
+@Table(name = "r_disposal_type")
+class DisposalType(
+    @Id
+    @Column(name = "disposal_type_id")
+    val disposalTypeId: Long,
+    @Column(name = "description")
+    val disposalTypeDescription: String
+)
+
+
+interface DisposalRepository : JpaRepository<Disposal, Long>{
+    fun findByEventId(eventId: Long): List<Disposal>
+}
