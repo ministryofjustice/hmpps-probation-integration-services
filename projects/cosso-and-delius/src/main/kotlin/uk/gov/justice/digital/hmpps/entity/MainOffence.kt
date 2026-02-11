@@ -43,7 +43,7 @@ class OffenceEntity(
     val subCategoryCode: String,
     val subCategoryDescription: String,
 
-)
+    )
 
 interface MainOffenceRepository : JpaRepository<MainOffence, Long> {
     fun findByEventId(eventId: Long): MainOffence?
