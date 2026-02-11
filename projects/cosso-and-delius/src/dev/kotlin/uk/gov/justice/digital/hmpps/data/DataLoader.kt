@@ -21,6 +21,7 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
 
     override fun setupData() {
         saveAll(
+            UserGenerator.AUDIT_USER,
             PersonGenerator.DEFAULT_PERSON,
             ReferenceDataGenerator.MR_TITLE,
             ReferenceDataGenerator.LENGTH_UNITS_MONTHS,
