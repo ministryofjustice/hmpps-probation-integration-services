@@ -2,22 +2,17 @@ package uk.gov.justice.digital.hmpps
 
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import org.skyscreamer.jsonassert.JSONAssert
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
-import uk.gov.justice.digital.hmpps.data.document.Event
-import uk.gov.justice.digital.hmpps.data.generator.CourtAppearanceGenerator
-import uk.gov.justice.digital.hmpps.data.generator.DisposalGenerator
 import uk.gov.justice.digital.hmpps.data.generator.DocumentGenerator
 import uk.gov.justice.digital.hmpps.data.generator.EventGenerator
-import uk.gov.justice.digital.hmpps.data.generator.MainOffenceGenerator
-import uk.gov.justice.digital.hmpps.entity.MainOffence
-import uk.gov.justice.digital.hmpps.model.OffenceDetails
-import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
+import java.time.LocalDate
 import java.util.UUID
 
 @AutoConfigureMockMvc
@@ -28,6 +23,8 @@ class OffenceDetailsIntegrationTest @Autowired constructor(
     @Test
     fun `can get offence details from document uuid`() {
         val uuid = DocumentGenerator.DEFAULT_DOCUMENT_UUID
+        val sentenceDate = LocalDate.now().minusDays(7).toString()
+        val requirementStartDate = LocalDate.now().minusDays(6).toString()
         val expectedResponse = """
             {
               "mainOffence": {
@@ -41,7 +38,7 @@ class OffenceDetailsIntegrationTest @Autowired constructor(
                 }
               ],
               "sentencingCourt": "Warwick Magistrates Court",
-              "sentenceDate": "2026-02-04",
+              "sentenceDate": "${sentenceDate}",
               "sentenceImposed": {
                 "code": "PR",
                 "description": "Probation"
@@ -49,7 +46,7 @@ class OffenceDetailsIntegrationTest @Autowired constructor(
               "requirementsImposed": [
                 {
                   "id": 1000031,
-                  "startDate": "2026-02-05",
+                  "startDate": "${requirementStartDate}",
                   "requirementTypeMainCategoryDescription": "Probation",
                   "requirementLength": 2,
                   "requirementLengthUnits": "Months",
