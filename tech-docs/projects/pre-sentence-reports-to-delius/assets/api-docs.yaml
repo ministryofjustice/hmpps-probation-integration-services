@@ -44,6 +44,30 @@ paths:
             application/json:
               schema:
                 type: string
+  /case/{crn}/event/{event}/offences:
+    get:
+      tags:
+      - offence-controller
+      operationId: getOffences
+      parameters:
+      - name: crn
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: event
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int32
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OffenceDetails"
 components:
   schemas:
     Address:
@@ -89,6 +113,42 @@ components:
           type: string
         surname:
           type: string
+    CodeAndDescription:
+      type: object
+      properties:
+        code:
+          type: string
+        description:
+          type: string
+      required:
+      - code
+      - description
+    Offence:
+      type: object
+      properties:
+        date:
+          type: string
+          format: date
+        mainCategory:
+          $ref: "#/components/schemas/CodeAndDescription"
+        subCategory:
+          $ref: "#/components/schemas/CodeAndDescription"
+      required:
+      - date
+      - mainCategory
+      - subCategory
+    OffenceDetails:
+      type: object
+      properties:
+        mainOffence:
+          $ref: "#/components/schemas/Offence"
+        additionalOffences:
+          type: array
+          items:
+            $ref: "#/components/schemas/Offence"
+      required:
+      - additionalOffences
+      - mainOffence
   securitySchemes:
     hmpps-auth-token:
       type: http

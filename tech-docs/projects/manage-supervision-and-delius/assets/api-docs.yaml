@@ -1609,6 +1609,18 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/PersonDocuments"
+  /contact/types:
+    get:
+      tags:
+      - Contact
+      operationId: getContactTypes
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ContactTypesResponse"
   /compliance/{crn}:
     get:
       tags:
@@ -4297,6 +4309,28 @@ components:
       - breaches
       - count
       - orders
+    ContactTypeResponse:
+      type: object
+      properties:
+        code:
+          type: string
+        description:
+          type: string
+        isPersonLevelContact:
+          type: boolean
+      required:
+      - code
+      - description
+      - isPersonLevelContact
+    ContactTypesResponse:
+      type: object
+      properties:
+        contactTypes:
+          type: array
+          items:
+            $ref: "#/components/schemas/ContactTypeResponse"
+      required:
+      - contactTypes
     Breach:
       type: object
       properties:
