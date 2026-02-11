@@ -26,15 +26,52 @@ class OffenceDetailsIntegrationTest @Autowired constructor(
     private val mockMvc: MockMvc
 ) {
     @Test
-    fun `can get offence details from document uuid`() {
+    fun `can get offence details from document uuid` () {
         val uuid = DocumentGenerator.DEFAULT_DOCUMENT_UUID
+        val expectedResponse = """
+            {
+              "mainOffence": {
+                "code": "101",
+                "description": "Theft"
+              },
+              "additionalOffences": [
+                {
+                  "code": "101",
+                  "description": "Shoplifting"
+                }
+              ],
+              "sentencingCourt": "Warwick Magistrates Court",
+              "sentenceDate": "2026-02-04",
+              "sentenceImposed": {
+                "code": "PR",
+                "description": "Probation"
+              },
+              "requirementsImposed": [
+                {
+                  "id": 1000031,
+                  "startDate": "2026-02-05",
+                  "requirementTypeMainCategoryDescription": "Probation",
+                  "requirementLength": 2,
+                  "requirementLengthUnits": "Months",
+                  "requirementTypeSubCategoryDescription": "Probation2",
+                  "secondaryRequirementLength": 1,
+                  "secondaryRequirementLengthUnits": "Days"
+                }
+              ],
+              "sentence": {
+                "length": 1,
+                "lengthUnits": "Months",
+                "type": "Probation",
+                "secondLength": 2,
+                "secondLengthUnits": "Days"
+              }
+            }
+            """
         val actual = mockMvc.get("/offence-details/${uuid}") { withToken() }
-            .andExpect { status { isOk() } }
-            .andReturn().response.contentAsJson<OffenceDetails>()
-
-        assertThat(actual.mainOffence.code).isEqualTo(MainOffenceGenerator.DEFAULT_MAIN_OFFENCE.offence.mainCategoryCode)
-        assertThat(actual.sentencingCourt).isEqualTo(CourtAppearanceGenerator.DEFAULT_COURT_APPEARANCE.court.courtName)
-        assertThat(actual.sentenceDate).isEqualTo(DisposalGenerator.DEFAULT_DISPOSAL.disposalDate)
+            .andExpect { status { isOk()} }
+            .andReturn().response.contentAsString
+        assertThat(actual).isNotEmpty
+        JSONAssert.assertEquals(expectedResponse, actual, true)
     }
 
     @Test
