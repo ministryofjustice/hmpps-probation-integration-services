@@ -66,10 +66,10 @@ class ProvidersIntegrationTest @Autowired constructor(
             .andExpect { status { is2xxSuccessful() } }
             .andReturn().response.contentAsJson<SupervisorsResponse>()
 
-        assertThat(response.supervisors.map { listOf(it.code,it.unallocated) }).containsExactlyInAnyOrder(
-            listOf(StaffGenerator.DEFAULT_STAFF.code,false),
-            listOf(StaffGenerator.SECOND_STAFF.code,false),
-            listOf(StaffGenerator.UNALLOCATED_STAFF.code,true),
+        assertThat(response.supervisors.map { listOf(it.code, it.unallocated) }).containsExactlyInAnyOrder(
+            listOf(StaffGenerator.DEFAULT_STAFF.code, false),
+            listOf(StaffGenerator.SECOND_STAFF.code, false),
+            listOf(StaffGenerator.UNALLOCATED_STAFF.code, true),
         )
     }
 
