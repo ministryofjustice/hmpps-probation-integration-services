@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RestController
 import uk.gov.justice.digital.hmpps.service.OffenceService
 
 @RestController
-class OffenceDetailsController( val offenceService: OffenceService) {
+class OffenceDetailsController(val offenceService: OffenceService) {
     @PreAuthorize("hasRole('PROBATION_API__COSSO__CASE_DETAILS')")
     @GetMapping(value = ["/offence-details/{uuid}"])
     fun getOffenceDetails(@PathVariable uuid: String) = offenceService.getOffenceDetails(uuid)

@@ -26,12 +26,13 @@ class OffenceService(
     private val requirementRepository: RequirementRepository
 ) {
     fun getOffenceDetails(uuid: String): OffenceDetails {
-        val eventId = documentRepository.findEventIdFromDocument(DocumentEntity.cossoBreachNoticeUrn(UUID.fromString(uuid)))
-            ?: throw NotFoundException("Event", "uuid", uuid)
+        val eventId =
+            documentRepository.findEventIdFromDocument(DocumentEntity.cossoBreachNoticeUrn(UUID.fromString(uuid)))
+                ?: throw NotFoundException("Event", "uuid", uuid)
         val mainOffence = mainOffenceRepository.findByEventId(eventId)?.offence
             ?: throw NotFoundException("Offence", "eventId", eventId)
         val additionalOffences = additionalOffenceRepository.findAllByEventId(eventId)
-            .map{ CodedDescription(it.offence.mainCategoryCode, it.offence.mainCategoryDescription) }
+            .map { CodedDescription(it.offence.mainCategoryCode, it.offence.mainCategoryDescription) }
         val courtAppearance = courtAppearanceRepository.findByEventIdAndAppearanceTypeCode(eventId, "S").firstOrNull()
             ?: throw NotFoundException("CourtAppearance", "eventId", eventId)
         val disposal = disposalRepository.findByEventId(eventId).firstOrNull()
@@ -46,6 +47,7 @@ class OffenceService(
             sentence = getSentence(disposal)
         )
     }
+
     fun getRequirements(disposalId: Long): List<Requirement> {
         return requirementRepository.getByDisposalId(disposalId)
             .map {
@@ -60,14 +62,15 @@ class OffenceService(
                     secondaryRequirementLengthUnits = it.requirementType.length2Units.description
                 )
             }
-        }
-        fun getSentence(disposal: Disposal): Sentence{
-            return Sentence(
-                length = disposal.length ?: 0,
-                lengthUnits = disposal.lengthUnits.description,
-                type = disposal.disposalType.disposalTypeDescription,
-                secondLength = disposal.length2,
-                secondLengthUnits = disposal.length2Units.description
-            )
-        }
     }
+
+    fun getSentence(disposal: Disposal): Sentence {
+        return Sentence(
+            length = disposal.length ?: 0,
+            lengthUnits = disposal.lengthUnits.description,
+            type = disposal.disposalType.disposalTypeDescription,
+            secondLength = disposal.length2,
+            secondLengthUnits = disposal.length2Units.description
+        )
+    }
+}

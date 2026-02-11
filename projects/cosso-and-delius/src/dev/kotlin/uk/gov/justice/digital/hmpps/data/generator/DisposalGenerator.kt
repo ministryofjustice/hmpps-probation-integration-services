@@ -13,7 +13,8 @@ object DisposalGenerator {
         length2 = 2,
         disposalType = DisposalType(
             disposalTypeId = IdGenerator.getAndIncrement(),
-            disposalTypeDescription = "Probation"),
+            disposalTypeDescription = "Probation"
+        ),
         lengthUnits = ReferenceDataGenerator.LENGTH_UNITS_MONTHS,
         length2Units = ReferenceDataGenerator.LENGTH_UNITS_DAYS
     )

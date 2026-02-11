@@ -15,7 +15,7 @@ import java.util.UUID
 @Entity
 @Table(name = "document")
 @SQLRestriction("soft_deleted = 0")
-class DocumentEntity (
+class DocumentEntity(
     @Id
     @Column(name = "document_id")
     val id: Long,
@@ -33,8 +33,6 @@ class DocumentEntity (
     val externalReference: String,
 
     val softDeleted: Int = 0
-
-
 
 ) {
     companion object {
@@ -86,12 +84,11 @@ interface DocumentRepository : Repository<DocumentEntity, Long> {
     )
     fun findEventIdFromDocument(urn: String): Long?
 
-
     fun findByExternalReference(externalReference: String): DocumentEntity?
     fun getByUuid(uuid: String): DocumentEntity {
         return findByExternalReference(cossoBreachNoticeUrn(UUID.fromString(uuid)))
             ?: throw NoSuchElementException(
-            "No document found with UUID $uuid"
-        )
+                "No document found with UUID $uuid"
+            )
     }
 }
