@@ -82,11 +82,11 @@ dependencyResolutionManagement {
             library("asyncapi", "org.openfolder:kotlin-asyncapi-spring-web:3.2.0")
             library("aws-s3", "io.awspring.cloud:spring-cloud-aws-starter-s3:4.0.0")
             library("aws-autoconfigure", "io.awspring.cloud:spring-cloud-aws-autoconfigure:4.0.0")
-            library("aws-query-protocol", "software.amazon.awssdk:aws-query-protocol:2.41.16")
+            library("aws-query-protocol", "software.amazon.awssdk:aws-query-protocol:2.41.19")
             library("aws-sns", "io.awspring.cloud:spring-cloud-aws-starter-sns:4.0.0")
             library("aws-sqs", "io.awspring.cloud:spring-cloud-aws-starter-sqs:4.0.0")
             library("aws-starter", "io.awspring.cloud:spring-cloud-aws-starter:4.0.0")
-            library("aws-sts", "software.amazon.awssdk:sts:2.41.16")
+            library("aws-sts", "software.amazon.awssdk:sts:2.41.19")
             library("azure-app-insights", "com.microsoft.azure:applicationinsights-web:3.7.7")
             library("azure-identity", "com.azure:azure-identity:1.18.2")
             library("flipt", "io.flipt:flipt-client-java:1.2.1")
@@ -117,7 +117,7 @@ dependencyResolutionManagement {
 }
 
 plugins {
-    id("com.gradle.develocity") version "4.3.1"
+    id("com.gradle.develocity") version "4.3.2"
     id("com.github.burrunan.s3-build-cache") version "1.9.5"
 }
 

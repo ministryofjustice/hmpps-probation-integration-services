@@ -51,6 +51,19 @@
         "status": 200,
         "body": "{\"checkinUuid\": \"a18648f4-46ec-4344-8e8e-ba15c18c3ab9\", \"notes\": \"Check-in updated\"}"
       }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "urlPathPattern": "/e-supervision-api/checkin-updated/b5a4d4c6-15c5-4f54-8ec2-f7f38c6f8b23"
+      },
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "body": "{\"checkinUuid\": \"b5a4d4c6-15c5-4f54-8ec2-f7f38c6f8b23\", \"notes\": \"Check-in updated expiry\"}"
+      }
     }
   ]
 }

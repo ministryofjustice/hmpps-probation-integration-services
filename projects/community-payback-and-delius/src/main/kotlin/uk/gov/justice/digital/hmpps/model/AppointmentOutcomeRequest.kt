@@ -4,7 +4,6 @@ import java.time.LocalTime
 import java.util.*
 
 data class AppointmentOutcomeRequest(
-    val id: Long,
     val version: UUID,
     val outcome: Code?,
     val supervisor: Code,

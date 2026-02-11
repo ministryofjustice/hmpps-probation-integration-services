@@ -4,7 +4,7 @@ import java.time.LocalDate
 
 data class DefendantDetails(
     val crn: String?,
-    val eventNumber: Long?,
+    val eventNumber: Int?,
     val name: Name?,
     val dateOfBirth: LocalDate?,
     val mainAddress: Address?,

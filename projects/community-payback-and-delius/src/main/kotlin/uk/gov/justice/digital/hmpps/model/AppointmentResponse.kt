@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.model
 
+import io.swagger.v3.oas.annotations.media.Schema
 import uk.gov.justice.digital.hmpps.entity.person.Address
 import uk.gov.justice.digital.hmpps.entity.staff.OfficeLocation
 import java.time.LocalDate
@@ -53,15 +54,6 @@ fun Address.toAppointmentResponseAddress() = AppointmentResponseAddress(
     this.postcode
 )
 
-fun OfficeLocation.toAppointmentResponseAddress() = AppointmentResponseAddress(
-    this.streetName,
-    this.buildingName,
-    this.buildingNumber,
-    this.town,
-    this.county,
-    this.postcode
-)
-
 data class NameCode(
     val name: String,
     val code: String
@@ -89,8 +81,7 @@ data class AppointmentResponseSupervisor(
 )
 
 data class AppointmentResponsePickupData(
-    val location: AppointmentResponseAddress?,
-    val locationCode: Code?,
+    val location: PickUpLocation?,
     val time: LocalTime?
 )
 

@@ -2,6 +2,8 @@ package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import uk.gov.justice.digital.hmpps.api.model.contact.ContactTypeResponse
+import uk.gov.justice.digital.hmpps.api.model.contact.ContactTypesResponse
 import uk.gov.justice.digital.hmpps.api.model.contact.CreateContact
 import uk.gov.justice.digital.hmpps.api.model.contact.CreateContactResponse
 import uk.gov.justice.digital.hmpps.aspect.UserContext
@@ -75,7 +77,7 @@ class ContactLogService(
                     provider = team.provider,
                     notes = """
                     ${createContact.notes}
-
+                    
                     This contact was automatically created by the Manage Supervision integrations service.
                 """.trimIndent(),
                     alert = createContact.alert,
@@ -110,6 +112,11 @@ class ContactLogService(
             return@audit CreateContactResponse(savedContact.id)
         }
     }
+
+    fun getContactTypes(): ContactTypesResponse = ContactTypesResponse(
+        contactTypeRepository.findByCodeIn(CreateContact.Type.entries.map { it.code })
+            .map { it.toContactTypeResponse() }
+    )
 
     private fun validateContactTypeLevel(contactType: ContactType, createContact: CreateContact) {
         // If not an offender-level contact type, ensure eventId or requirementId is provided.
@@ -155,4 +162,10 @@ class ContactLogService(
             else -> 0
         }
     }
+
+    fun ContactType.toContactTypeResponse() = ContactTypeResponse(
+        code = code,
+        description = description,
+        isPersonLevelContact = offenderContact
+    )
 }

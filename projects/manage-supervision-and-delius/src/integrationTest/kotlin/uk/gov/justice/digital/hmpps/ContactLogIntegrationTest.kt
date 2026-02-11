@@ -4,13 +4,14 @@ import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers
 import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.Test
+import org.springframework.test.web.servlet.get
 import org.springframework.test.web.servlet.post
+import uk.gov.justice.digital.hmpps.api.model.contact.ContactTypesResponse
 import uk.gov.justice.digital.hmpps.api.model.contact.CreateContact
 import uk.gov.justice.digital.hmpps.api.model.contact.CreateContactResponse
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator
 import uk.gov.justice.digital.hmpps.data.generator.OffenderManagerGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
-import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
 import uk.gov.justice.digital.hmpps.test.CustomMatchers.isCloseTo
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.json
@@ -260,7 +261,29 @@ class ContactLogIntegrationTest : IntegrationTestBase() {
     }
 
     @Test
-    fun `contactCreated domain event published when contact is created`() {
+    fun `get contact types returns expected types`() {
+        val response = mockMvc.get("/contact/types") { withToken() }
+            .andExpect { status { isOk() } }
+            .andReturn().response.contentAsJson<ContactTypesResponse>()
+
+        assertThat(response.contactTypes.size, equalTo(3))
+        assertThat(
+            response.contactTypes.map { it.code }.toSet(),
+            equalTo(setOf("CMOB", "C326", "C204"))
+        )
+
+        assertThat(
+            response.contactTypes.first { it.code == "CMOB" }.isPersonLevelContact,
+            equalTo(true)
+        )
+        assertThat(
+            response.contactTypes.first { it.code == "C326" }.isPersonLevelContact,
+            equalTo(false)
+        )
+    }
+
+    @Test
+    fun `domain event published when contact is created`() {
         val response = mockMvc.post("/contact/${PersonGenerator.PERSON_1.crn}") {
             withToken()
             json = CreateContact(
@@ -286,6 +309,5 @@ class ContactLogIntegrationTest : IntegrationTestBase() {
         val mapps = event.additionalInformation["mapps"] as Map<String, Any>
         assertThat(mapps["export"], equalTo(true))
         assertThat(mapps["category"], equalTo(0))
-
     }
 }

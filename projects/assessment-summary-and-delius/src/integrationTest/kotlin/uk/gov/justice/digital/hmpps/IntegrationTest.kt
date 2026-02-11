@@ -1,7 +1,5 @@
 package uk.gov.justice.digital.hmpps
 
-import tools.jackson.databind.ObjectMapper
-import tools.jackson.module.kotlin.readValue
 import com.github.tomakehurst.wiremock.WireMockServer
 import jakarta.persistence.EntityManager
 import org.hamcrest.MatcherAssert.assertThat
@@ -20,6 +18,8 @@ import org.springframework.test.annotation.DirtiesContext
 import org.springframework.test.context.bean.override.mockito.MockitoBean
 import org.springframework.transaction.PlatformTransactionManager
 import org.springframework.transaction.support.TransactionTemplate
+import tools.jackson.databind.ObjectMapper
+import tools.jackson.module.kotlin.readValue
 import uk.gov.justice.digital.hmpps.data.entity.IapsPersonRepository
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator
@@ -279,6 +279,21 @@ internal class IntegrationTest @Autowired constructor(
         assertThat(scores[9L], equalTo(0))
         assertThat(scores[11L], equalTo(5))
         assertThat(scores[12L], equalTo(5))
+    }
+
+    @Test
+    fun `highest risk colour is recalculated from existing registrations using risk flag ordering`() {
+        val crn = PersonGenerator.HIGHEST_RISK_COLOUR.crn
+        val message =
+            notification<HmppsDomainEvent>("assessment-summary-produced").withCrn(PersonGenerator.HIGHEST_RISK_COLOUR.crn)
+
+        val before = personRepository.getByCrn(crn)
+        assertThat(before.highestRiskColour, equalTo("Green"))
+
+        channelManager.getChannel(queueName).publishAndWait(message)
+
+        val updatedPerson = personRepository.getByCrn(crn)
+        assertThat(updatedPerson.highestRiskColour, equalTo("Red"))
     }
 
     @Test

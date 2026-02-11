@@ -11,6 +11,7 @@ import org.springframework.data.annotation.LastModifiedDate
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import org.springframework.data.jpa.repository.JpaRepository
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
+import uk.gov.justice.digital.hmpps.exception.NotFoundException.Companion.orNotFoundBy
 import uk.gov.justice.digital.hmpps.jpa.GeneratedId
 import uk.gov.justice.digital.hmpps.messaging.Handler.Companion.CHECK_IN_EXPIRED
 import uk.gov.justice.digital.hmpps.messaging.Handler.Companion.CHECK_IN_RECEIVED
@@ -111,6 +112,9 @@ class Contact(
             CHECK_IN_EXPIRED -> "urn:uk:gov:hmpps:esupervision:check-in-expiry:"
             else -> throw IllegalArgumentException("Unexpected event type: $eventType")
         }
+
+        val externalReferencePrefixes =
+            listOf("urn:uk:gov:hmpps:esupervision:check-in:", "urn:uk:gov:hmpps:esupervision:check-in-expiry:")
     }
 }
 
@@ -137,9 +141,7 @@ fun ContactTypeRepository.getByCode(code: String): ContactType =
     findByCode(code) ?: throw NotFoundException("ContactType", "code", code)
 
 interface ContactRepository : JpaRepository<Contact, Long> {
-    fun findByExternalReference(externalReference: String): Contact?
+    fun findByExternalReferenceIn(externalReference: List<String>): Contact?
+    fun getByExternalReferenceIn(externalReference: List<String>): Contact =
+        findByExternalReferenceIn(externalReference).orNotFoundBy("externalReference", externalReference)
 }
-
-fun ContactRepository.getByExternalReference(externalReference: String): Contact =
-    findByExternalReference(externalReference)
-        ?: throw NotFoundException("Contact", "externalReference", externalReference)

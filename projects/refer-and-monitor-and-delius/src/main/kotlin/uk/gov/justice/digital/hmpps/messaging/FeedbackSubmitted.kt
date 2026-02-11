@@ -91,7 +91,7 @@ private fun ReferralSession.appointmentOutcome(
             attended,
             didSessionHappen = feedback.attendanceFeedback.didSessionHappen,
             noSessionReasonType = feedback.sessionFeedback.noSessionReasonType,
-            notify = feedback.sessionFeedback.notifyProbationPractitioner ?: true
+            notify = feedback.sessionFeedback.notifyProbationPractitionerOfBehaviour ?: true
         ),
         url
     )
@@ -119,7 +119,7 @@ private fun SupplierAssessment.appointmentOutcome(
             attended,
             didSessionHappen = feedback.attendanceFeedback.didSessionHappen,
             noSessionReasonType = feedback.sessionFeedback.noSessionReasonType,
-            notify = feedback.sessionFeedback.notifyProbationPractitioner ?: true
+            notify = feedback.sessionFeedback.notifyProbationPractitionerOfBehaviour ?: true
         ),
         url
     )

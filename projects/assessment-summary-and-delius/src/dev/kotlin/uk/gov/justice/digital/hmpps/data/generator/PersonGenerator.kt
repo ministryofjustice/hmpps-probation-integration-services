@@ -19,6 +19,7 @@ object PersonGenerator {
     val LOCKED_INCOMPLETE = generate("A000013")
     val OGRS4_TEST = generate("A000014")
     val OGRS4_TEST_OGRS4_VALUES = generate("A000015")
+    val HIGHEST_RISK_COLOUR = generate("A000016")
 
     fun generate(
         crn: String,

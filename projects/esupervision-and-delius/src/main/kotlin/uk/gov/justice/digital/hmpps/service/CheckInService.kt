@@ -43,12 +43,9 @@ class CheckInService(
             throw IgnorableMessageException("CRN not found")
         val detail = de.detailUrl?.let { deDetailService.getDetail<CheckInDetail>(de) }
         val uuid = requireNotNull(detail?.checkinUuid)
-        val contact = contactRepository.getByExternalReference(Contact.externalReferencePrefix(de.eventType) + uuid)
+        val contact = contactRepository.getByExternalReferenceIn(Contact.externalReferencePrefixes.map { it + uuid })
         audit["contactId"] = contact.id
-        contact.notes = listOfNotNull(
-            contact.notes,
-            detail.notes
-        ).joinToString(System.lineSeparator())
+        contact.notes = listOfNotNull(contact.notes, detail.notes).joinToString(System.lineSeparator())
         contactRepository.save(contact)
     }
 

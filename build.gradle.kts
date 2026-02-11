@@ -80,6 +80,8 @@ subprojects {
         plugin(ClassPathPlugin::class.java)
     }
 
+    extra["hibernate.version"] = "7.2.3.Final"
+
     tasks {
         withType<BootRun> {
             val profiles = System.getProperty("spring.profiles.active", System.getenv("SPRING_PROFILES_ACTIVE"))

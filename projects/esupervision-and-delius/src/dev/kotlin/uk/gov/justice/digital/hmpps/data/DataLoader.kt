@@ -40,7 +40,8 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
             PersonGenerator.generatePersonManager(PersonContactDetailsGenerator.PERSON_CONTACT_DETAILS_1),
             PersonGenerator.generatePersonManager(PersonContactDetailsGenerator.PERSON_CONTACT_DETAILS_2),
             ContactGenerator.CONTACT_TO_REVIEW,
-            ContactGenerator.CONTACT_TO_UPDATE
+            ContactGenerator.CONTACT_TO_UPDATE,
+            ContactGenerator.CONTACT_TO_UPDATE_EXPIRY
         )
     }
 }

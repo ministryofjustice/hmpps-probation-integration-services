@@ -1,9 +1,8 @@
 package uk.gov.justice.digital.hmpps.integrations.randm
 
-import com.fasterxml.jackson.annotation.JsonAlias
 import uk.gov.justice.digital.hmpps.service.NoSessionReasonType
 import java.time.ZonedDateTime
-import java.util.UUID
+import java.util.*
 
 data class Appointment(
     val id: UUID,
@@ -25,6 +24,5 @@ data class AttendanceFeedback(
 // Non-null behaviour with nullable notify to match model from Interventions Service
 data class SessionFeedback(
     val noSessionReasonType: NoSessionReasonType?,
-    @JsonAlias("notifyProbationPractitionerOfBehaviour")
-    val notifyProbationPractitioner: Boolean?
+    val notifyProbationPractitionerOfBehaviour: Boolean?
 )

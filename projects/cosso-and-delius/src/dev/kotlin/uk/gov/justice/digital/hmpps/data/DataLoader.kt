@@ -1,6 +1,9 @@
 package uk.gov.justice.digital.hmpps.data
 
 import org.springframework.stereotype.Component
+import uk.gov.justice.digital.hmpps.data.generator.PersonAddressGenerator
+import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
+import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator
 import uk.gov.justice.digital.hmpps.data.generator.UserGenerator
 import uk.gov.justice.digital.hmpps.data.loader.BaseDataLoader
 import uk.gov.justice.digital.hmpps.data.manager.DataManager
@@ -10,6 +13,10 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
     override fun systemUser() = UserGenerator.AUDIT_USER
 
     override fun setupData() {
-        // Perform dev/test database setup here, using the `save()` and `saveAll()` methods
+        saveAll(
+            PersonGenerator.DEFAULT_PERSON,
+            ReferenceDataGenerator.MR_TITLE,
+            PersonAddressGenerator.DEFAULT_PERSON_MAIN_ADDRESS,
+        )
     }
 }
