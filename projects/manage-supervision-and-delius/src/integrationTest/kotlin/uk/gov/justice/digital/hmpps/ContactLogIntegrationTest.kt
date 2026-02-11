@@ -10,6 +10,7 @@ import uk.gov.justice.digital.hmpps.api.model.contact.CreateContactResponse
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator
 import uk.gov.justice.digital.hmpps.data.generator.OffenderManagerGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
+import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
 import uk.gov.justice.digital.hmpps.test.CustomMatchers.isCloseTo
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.json
@@ -256,5 +257,35 @@ class ContactLogIntegrationTest : IntegrationTestBase() {
             )
         }
             .andExpect { status { isBadRequest() } }
+    }
+
+    @Test
+    fun `contactCreated domain event published when contact is created`() {
+        val response = mockMvc.post("/contact/${PersonGenerator.PERSON_1.crn}") {
+            withToken()
+            json = CreateContact(
+                staffCode = OffenderManagerGenerator.STAFF_1.code,
+                teamCode = OffenderManagerGenerator.TEAM.code,
+                type = ContactGenerator.EMAIL_POP_CT.code,
+                notes = "Test MAPPA contact",
+                alert = false,
+                sensitive = false,
+                visorReport = true
+            )
+        }
+            .andExpect { status { isCreated() } }
+            .andReturn().response.contentAsJson<CreateContactResponse>()
+
+        val messages = channelManager.getChannel(topicName).pollFor(1)
+        val event = messages.first().message as HmppsDomainEvent
+
+        assertThat(event.eventType, equalTo("probation-case.mappa-information.created"))
+        assertThat(event.personReference.identifiers.first().value, equalTo(PersonGenerator.PERSON_1.crn))
+        assertThat(event.additionalInformation["contactId"], equalTo(response.id))
+
+        val mapps = event.additionalInformation["mapps"] as Map<String, Any>
+        assertThat(mapps["export"], equalTo(true))
+        assertThat(mapps["category"], equalTo(0))
+
     }
 }

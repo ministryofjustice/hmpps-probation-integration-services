@@ -21,7 +21,7 @@ class Notifier(
             Message(title = "probation-case.address.created", payload = Schema(HmppsDomainEvent::class)),
             Message(title = "probation-case.address.updated", payload = Schema(HmppsDomainEvent::class)),
             Message(title = "probation-case.personal-details.updated", payload = Schema(HmppsDomainEvent::class)),
-            Message(title = "probation-case.supervision.created", payload = Schema(HmppsDomainEvent::class))
+            Message(title = "probation-case.mappa-information.created", payload = Schema(HmppsDomainEvent::class))
         ]
     )
 
@@ -87,24 +87,25 @@ class Notifier(
         )
     }
 
-    fun contactCreated(contactId: Long, isVisor: Boolean, crn: String) {
+    fun contactCreated(contactId: Long, isVisor: Boolean, category: Int, crn: String) {
         topicPublisher.publish(
             Notification(
                 message = HmppsDomainEvent(
                     version = 1,
-                    eventType = "probation-case.supervision.created",
-                    description = "A supervision contact has been created in NDelius",
+                    eventType = "probation-case.mappa-information.created",
+                    description = "MAPPS information has been created in NDelius",
                     personReference = PersonReference(
                         identifiers = listOf(PersonIdentifier("CRN", crn)),
                     ),
                     additionalInformation = mapOf(
                         "contactId" to contactId,
                         "mapps" to mapOf(
-                            "export" to isVisor
+                            "export" to isVisor,
+                            "category" to category
                         )
                     )
                 ),
-                attributes = MessageAttributes("probation-case.supervision.created")
+                attributes = MessageAttributes("probation-case.mappa-information.created")
             )
         )
     }

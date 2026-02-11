@@ -8,6 +8,7 @@ import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.NumericBooleanConverter
 import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.ReferenceData
 
 @Immutable
 @Entity
@@ -27,6 +28,10 @@ class Registration(
     @Convert(converter = NumericBooleanConverter::class)
     val deRegistered: Boolean,
 
+    @ManyToOne
+    @JoinColumn(name = "register_category_id")
+    val category: ReferenceData? = null,
+
     @Column(name = "soft_deleted", columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean,
@@ -40,6 +45,9 @@ interface RegistrationRepository : JpaRepository<Registration, Long> {
 
     @EntityGraph(attributePaths = ["type"])
     fun findByPersonId(personId: Long): List<Registration>
+
+    @EntityGraph(attributePaths = ["type", "category"])
+    fun findByPersonIdAndTypeCodeOrderByIdDesc(personId: Long, typeCode: String): List<Registration>
 }
 
 @Entity
