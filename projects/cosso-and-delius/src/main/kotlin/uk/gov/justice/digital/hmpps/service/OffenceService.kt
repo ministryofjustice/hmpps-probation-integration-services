@@ -25,9 +25,10 @@ class OffenceService(
     private val disposalRepository: DisposalRepository,
     private val requirementRepository: RequirementRepository
 ) {
-    companion object{
+    companion object {
         const val SENTENCE_APPEARANCE_TYPE_CODE = "S"
     }
+
     fun getOffenceDetails(uuid: String): OffenceDetails {
 
         val eventId =
@@ -37,8 +38,10 @@ class OffenceService(
             ?: throw NotFoundException("Offence", "eventId", eventId)
         val additionalOffences = additionalOffenceRepository.findAllByEventId(eventId)
             .map { CodedDescription(it.offence.mainCategoryCode, it.offence.mainCategoryDescription) }
-        val courtAppearance = courtAppearanceRepository.findByEventIdAndAppearanceType_Code(eventId,
-            SENTENCE_APPEARANCE_TYPE_CODE).firstOrNull()
+        val courtAppearance = courtAppearanceRepository.findByEventIdAndAppearanceType_Code(
+            eventId,
+            SENTENCE_APPEARANCE_TYPE_CODE
+        ).firstOrNull()
             ?: throw NotFoundException("CourtAppearance", "eventId", eventId)
         val disposal = disposalRepository.findByEventId(eventId).firstOrNull()
             ?: throw NotFoundException("Disposal", "eventId", eventId)
