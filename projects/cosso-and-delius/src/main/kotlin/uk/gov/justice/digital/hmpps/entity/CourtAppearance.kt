@@ -35,7 +35,7 @@ class CourtAppearance(
     @JoinColumn(name = "outcome_id")
     val outcome: ReferenceData,
 
-    @Column(columnDefinition = "number")
+    @Column(name = "soft_deleted", columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean
 

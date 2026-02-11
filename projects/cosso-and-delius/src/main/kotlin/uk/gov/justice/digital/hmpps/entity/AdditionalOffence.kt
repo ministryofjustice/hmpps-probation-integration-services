@@ -24,7 +24,7 @@ class AdditionalOffence(
     @ManyToOne
     @JoinColumn(name = "offence_id")
     val offence: OffenceEntity,
-    @Column(columnDefinition = "number")
+    @Column(name = "soft_deleted", columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean
 )

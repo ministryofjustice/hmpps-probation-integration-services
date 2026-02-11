@@ -32,11 +32,11 @@ class Disposal(
     @JoinColumn(name = "entry_length_2_units_id")
     val length2Units: ReferenceData,
 
-    @Column(columnDefinition = "number")
+    @Column(name = "soft_deleted", columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean,
 
-    @Column(columnDefinition = "number")
+    @Column(name = "active_flag", columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)
     val activeFlag: Boolean
 )

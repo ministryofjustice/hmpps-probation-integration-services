@@ -30,7 +30,7 @@ class RequirementEntity(
     val requirementSubType: ReferenceData,
     @Column(name = "length_2")
     val length2: Int?,
-    @Column(columnDefinition = "number")
+    @Column(name = "soft_deleted", columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean
 )
