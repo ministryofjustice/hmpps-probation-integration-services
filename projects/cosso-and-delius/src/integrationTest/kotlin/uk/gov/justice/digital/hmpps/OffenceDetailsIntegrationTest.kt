@@ -26,7 +26,7 @@ class OffenceDetailsIntegrationTest @Autowired constructor(
     private val mockMvc: MockMvc
 ) {
     @Test
-    fun `can get offence details from document uuid` () {
+    fun `can get offence details from document uuid`() {
         val uuid = DocumentGenerator.DEFAULT_DOCUMENT_UUID
         val expectedResponse = """
             {
@@ -68,7 +68,7 @@ class OffenceDetailsIntegrationTest @Autowired constructor(
             }
             """
         val actual = mockMvc.get("/offence-details/${uuid}") { withToken() }
-            .andExpect { status { isOk()} }
+            .andExpect { status { isOk() } }
             .andReturn().response.contentAsString
         assertThat(actual).isNotEmpty
         JSONAssert.assertEquals(expectedResponse, actual, true)
