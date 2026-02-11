@@ -40,7 +40,7 @@ class ProvidersService(
         SupervisorResponse(
             code = staff.code,
             isUnpaidWorkTeamMember = staff.teams.any { it.unpaidWorkTeam },
-            unpaidWorkTeams = staff.toSupervisorTeams()
+            unpaidWorkTeams = staff.toSupervisorTeams(),
         )
     } ?: throw NotFoundException("Staff code for user", "username", username)
 

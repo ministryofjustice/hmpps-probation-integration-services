@@ -62,7 +62,8 @@ fun Staff.toSupervisor() = Supervisor(
             code = this.grade.code,
             description = this.grade.description
         )
-    }
+    },
+    unallocated = code.endsWith('U')
 )
 
 fun Staff.toSupervisorTeams() = teams.map {

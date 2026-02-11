@@ -7,7 +7,8 @@ data class SupervisorsResponse(
 data class Supervisor(
     val name: Name,
     val code: String,
-    val grade: CodeDescription?
+    val grade: CodeDescription?,
+    val unallocated: Boolean
 )
 
 data class Name(
