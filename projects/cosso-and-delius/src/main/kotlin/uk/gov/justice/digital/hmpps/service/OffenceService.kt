@@ -30,14 +30,13 @@ class OffenceService(
     fun getOffenceDetails(uuid: String): OffenceDetails {
 
         val eventId = documentRepository.getByUuid(uuid).primaryKeyId
-            ?: throw NotFoundException("Event", "uuid", uuid)
         val mainOffence = mainOffenceRepository.findByEventId(eventId)?.offence
             ?: throw NotFoundException("Offence", "eventId", eventId)
         val additionalOffences = additionalOffenceRepository.findAllByEventId(eventId)
             .map { CodedDescription(it.offence.mainCategoryCode, it.offence.mainCategoryDescription) }
         val courtAppearance = courtAppearanceRepository.findSentencingAppearance(eventId).firstOrNull()
             ?: throw NotFoundException("CourtAppearance", "eventId", eventId)
-        val disposal = disposalRepository.findByEventId(eventId).firstOrNull()
+        val disposal = disposalRepository.findByEventId(eventId).firstOrNull { it.activeFlag }
             ?: throw NotFoundException("Disposal", "eventId", eventId)
         return OffenceDetails(
             mainOffence = CodedDescription(mainOffence.mainCategoryCode, mainOffence.mainCategoryDescription),
