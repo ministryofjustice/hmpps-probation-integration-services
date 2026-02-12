@@ -11,6 +11,7 @@ object CourtAppearanceGenerator {
         court = getCourt("Warwick Magistrates Court"),
         appearanceType = ReferenceDataGenerator.SENTENCE_APPEARANCE_TYPE,
         outcome = ReferenceDataGenerator.DEFAULT_OUTCOME,
+        appearanceDate = LocalDate.now().minusDays(7),
         softDeleted = false
     )
 
@@ -20,12 +21,12 @@ object CourtAppearanceGenerator {
         court = getCourt("Birmingham Magistrates Court"),
         appearanceType = ReferenceDataGenerator.SENTENCE_APPEARANCE_TYPE,
         outcome = ReferenceDataGenerator.DEFAULT_OUTCOME,
+        appearanceDate = LocalDate.now().minusDays(7),
         softDeleted = false
     )
 
     fun getCourt(description: String) = CourtEntity(
         id = IdGenerator.getAndIncrement(),
-        appearanceDate = LocalDate.now().minusDays(7),
         courtName = description
     )
 }

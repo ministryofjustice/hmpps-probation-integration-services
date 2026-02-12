@@ -78,7 +78,7 @@ class OffenceDetailsIntegrationTest @Autowired constructor(
         val uuid = UUID.randomUUID()
         mockMvc.get("/offence-details/${uuid}") { withToken() }
             .andExpect { status { isNotFound() } }
-            .andExpect { jsonPath("$.message", equalTo("DocumentEntity with uuid of ${uuid} not found")) }
+            .andExpect { jsonPath("$.message", equalTo("DocumentEntity with UUID of ${uuid} not found")) }
     }
 
     @Test

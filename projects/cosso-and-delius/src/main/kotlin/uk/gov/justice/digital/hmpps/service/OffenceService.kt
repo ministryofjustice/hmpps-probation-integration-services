@@ -5,14 +5,17 @@ import uk.gov.justice.digital.hmpps.entity.AdditionalOffenceRepository
 import uk.gov.justice.digital.hmpps.entity.CourtAppearanceRepository
 import uk.gov.justice.digital.hmpps.entity.Disposal
 import uk.gov.justice.digital.hmpps.entity.DisposalRepository
+import uk.gov.justice.digital.hmpps.entity.DocumentEntity
 import uk.gov.justice.digital.hmpps.entity.DocumentRepository
 import uk.gov.justice.digital.hmpps.entity.MainOffenceRepository
 import uk.gov.justice.digital.hmpps.entity.RequirementRepository
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
+import uk.gov.justice.digital.hmpps.exception.NotFoundException.Companion.orNotFoundBy
 import uk.gov.justice.digital.hmpps.model.CodedDescription
 import uk.gov.justice.digital.hmpps.model.OffenceDetails
 import uk.gov.justice.digital.hmpps.model.Requirement
 import uk.gov.justice.digital.hmpps.model.Sentence
+import java.util.UUID
 
 @Service
 class OffenceService(
@@ -29,14 +32,16 @@ class OffenceService(
 
     fun getOffenceDetails(uuid: String): OffenceDetails {
 
-        val eventId = documentRepository.getByUuid(uuid).primaryKeyId
+        val eventId = documentRepository.findEventIdFromDocument(
+            DocumentEntity.cossoBreachNoticeUrn(UUID.fromString(uuid)))
+            ?: throw NotFoundException("DocumentEntity", "UUID", uuid)
         val mainOffence = mainOffenceRepository.findByEventId(eventId)?.offence
             ?: throw NotFoundException("Offence", "eventId", eventId)
         val additionalOffences = additionalOffenceRepository.findAllByEventId(eventId)
             .map { CodedDescription(it.offence.mainCategoryCode, it.offence.mainCategoryDescription) }
         val courtAppearance = courtAppearanceRepository.findSentencingAppearance(eventId).firstOrNull()
             ?: throw NotFoundException("CourtAppearance", "eventId", eventId)
-        val disposal = disposalRepository.findByEventId(eventId).firstOrNull { it.activeFlag }
+        val disposal = disposalRepository.findFirstByEventIdOrderByDisposalDate(eventId)
             ?: throw NotFoundException("Disposal", "eventId", eventId)
         return OffenceDetails(
             mainOffence = CodedDescription(mainOffence.mainCategoryCode, mainOffence.mainCategoryDescription),

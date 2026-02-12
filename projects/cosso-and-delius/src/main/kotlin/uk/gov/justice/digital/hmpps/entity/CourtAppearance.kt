@@ -14,7 +14,6 @@ import org.springframework.data.jpa.repository.Query
 import java.time.LocalDate
 
 @Entity
-@Table(name = "court_appearance")
 @SQLRestriction("soft_deleted = 0")
 class CourtAppearance(
     @Id
@@ -22,6 +21,8 @@ class CourtAppearance(
     val id: Long,
 
     val eventId: Long,
+
+    val appearanceDate: LocalDate,
 
     @ManyToOne
     @JoinColumn(name = "court_id")
@@ -47,11 +48,7 @@ class CourtEntity(
     @Id
     @Column(name = "court_id")
     val id: Long,
-
     val courtName: String,
-
-    @Column(name = "date")
-    val appearanceDate: LocalDate
 )
 
 interface CourtAppearanceRepository : JpaRepository<CourtAppearance, Long> {
@@ -62,7 +59,7 @@ interface CourtAppearanceRepository : JpaRepository<CourtAppearance, Long> {
         where ca.eventId = :eventId
         and ca.appearanceType.code ="S"
         and ca.outcome.id is not null
-        order by ca.court.appearanceDate
+        order by ca.appearanceDate
         """
     )
     fun findSentencingAppearance(eventId: Long): List<CourtAppearance>

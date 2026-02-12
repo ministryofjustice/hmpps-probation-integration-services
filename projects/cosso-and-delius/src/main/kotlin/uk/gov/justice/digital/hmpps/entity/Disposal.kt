@@ -13,7 +13,7 @@ import org.springframework.data.jpa.repository.JpaRepository
 import java.time.LocalDate
 
 @Entity
-@SQLRestriction("soft_deleted = 0")
+@SQLRestriction("soft_deleted = 0 and active_flag = 1")
 class Disposal(
     @Id
     @Column(name = "disposal_id")
@@ -52,5 +52,5 @@ class DisposalType(
 )
 
 interface DisposalRepository : JpaRepository<Disposal, Long> {
-    fun findByEventId(eventId: Long): List<Disposal>
+    fun findFirstByEventIdOrderByDisposalDate(eventId: Long): Disposal?
 }

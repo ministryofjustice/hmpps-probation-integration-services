@@ -11,8 +11,6 @@ import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.NumericBooleanConverter
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.Repository
-import uk.gov.justice.digital.hmpps.entity.DocumentEntity.Companion.cossoBreachNoticeUrn
-import uk.gov.justice.digital.hmpps.exception.NotFoundException.Companion.orNotFoundBy
 import java.util.UUID
 
 @Entity
@@ -88,8 +86,4 @@ interface DocumentRepository : Repository<DocumentEntity, Long> {
         nativeQuery = true
     )
     fun findEventIdFromDocument(urn: String): Long?
-
-    fun findByExternalReference(externalReference: String): DocumentEntity?
-    fun getByUuid(uuid: String): DocumentEntity = findByExternalReference(cossoBreachNoticeUrn(UUID.fromString(uuid)))
-        .orNotFoundBy("uuid", uuid)
 }
