@@ -63,6 +63,4 @@ interface CourtAppearanceRepository : JpaRepository<CourtAppearance, Long> {
         """
     )
     fun findSentencingAppearance(eventId: Long): List<CourtAppearance>
-
-    fun findByEventIdAndAppearanceType_Code(eventId: Long, appearanceTypeCode: String): List<CourtAppearance>
 }
