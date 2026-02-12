@@ -13,7 +13,7 @@ import org.hibernate.type.NumericBooleanConverter
 import org.springframework.data.jpa.repository.JpaRepository
 
 @Entity
-@Table(name = "main_offence")
+@SQLRestriction("soft_deleted = 0")
 class MainOffence(
     @Id
     @Column("main_offence_id")
@@ -28,6 +28,10 @@ class MainOffence(
     @OneToOne
     @JoinColumn(name = "offence_id")
     val offence: OffenceEntity,
+
+    @Column(name = "soft_deleted", columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
+    val softDeleted: Boolean = false
 )
 
 @Entity

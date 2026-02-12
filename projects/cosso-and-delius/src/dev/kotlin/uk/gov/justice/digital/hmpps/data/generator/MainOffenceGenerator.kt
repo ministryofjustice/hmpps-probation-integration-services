@@ -8,21 +8,24 @@ object MainOffenceGenerator {
         id = IdGenerator.getAndIncrement(),
         eventId = EventGenerator.DEFAULT_EVENT.eventId,
         person = PersonGenerator.DEFAULT_PERSON,
-        offence = offenceEntity("Theft")
+        offence = offenceEntity("Theft"),
+        softDeleted = false
     )
 
     val MISSING_COURT_APPEARANCE_MAIN_OFFENCE = MainOffence(
         id = IdGenerator.getAndIncrement(),
         eventId = EventGenerator.MISSING_COURT_APPEARANCE_EVENT.eventId,
         person = PersonGenerator.DEFAULT_PERSON,
-        offence = offenceEntity("Theft")
+        offence = offenceEntity("Theft"),
+        softDeleted = false
     )
 
     val MISSING_DISPOSAL_MAIN_OFFENCE = MainOffence(
         id = IdGenerator.getAndIncrement(),
         eventId = EventGenerator.MISSING_DISPOSAL_EVENT.eventId,
         person = PersonGenerator.DEFAULT_PERSON,
-        offence = offenceEntity("Theft")
+        offence = offenceEntity("Theft"),
+        softDeleted = false
     )
 
     fun offenceEntity(offenceDescription: String) = OffenceEntity(
