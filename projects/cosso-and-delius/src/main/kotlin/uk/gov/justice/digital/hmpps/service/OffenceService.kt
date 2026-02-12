@@ -75,7 +75,7 @@ class OffenceService(
         return Sentence(
             length = disposal.length,
             lengthUnits = disposal.lengthUnits.description,
-            type = disposal.disposalType.disposalTypeDescription,
+            type = disposal.disposalType.description,
             secondLength = disposal.length2,
             secondLengthUnits = disposal.length2Units.description
         )
