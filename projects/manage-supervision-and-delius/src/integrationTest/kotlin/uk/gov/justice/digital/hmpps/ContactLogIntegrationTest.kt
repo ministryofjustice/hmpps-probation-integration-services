@@ -127,6 +127,8 @@ class ContactLogIntegrationTest : IntegrationTestBase() {
         assertThat(savedContact.alert, equalTo(false))
         assertThat(savedContact.sensitive, equalTo(false))
         assertThat(savedContact.isVisor, equalTo(false))
+
+        channelManager.getChannel(topicName).pollFor(1)
     }
 
     @Test
@@ -148,6 +150,8 @@ class ContactLogIntegrationTest : IntegrationTestBase() {
 
         val savedContact = contactRepository.findById(response.id).get()
         assertThat(savedContact.event?.id, equalTo(PersonGenerator.EVENT_1.id))
+
+        channelManager.getChannel(topicName).pollFor(1)
     }
 
     @Test
@@ -170,6 +174,8 @@ class ContactLogIntegrationTest : IntegrationTestBase() {
 
         val savedContact = contactRepository.findById(response.id).get()
         assertThat(savedContact.requirement?.id, equalTo(PersonGenerator.REQUIREMENT.id))
+
+        channelManager.getChannel(topicName).pollFor(1)
     }
 
     @Test
@@ -192,6 +198,8 @@ class ContactLogIntegrationTest : IntegrationTestBase() {
         val savedContactAlert = contactAlertRepository.findByContactId(response.id).first()
         assertThat(savedContactAlert.contact.id, equalTo(response.id))
         assertThat(savedContactAlert.staff.id, equalTo(OffenderManagerGenerator.STAFF_1.id))
+
+        channelManager.getChannel(topicName).pollFor(1)
     }
 
     @Test
