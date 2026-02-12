@@ -547,9 +547,12 @@ components:
           type: string
         grade:
           $ref: "#/components/schemas/CodeDescription"
+        unallocated:
+          type: boolean
       required:
       - code
       - name
+      - unallocated
     SupervisorsResponse:
       type: object
       properties:
