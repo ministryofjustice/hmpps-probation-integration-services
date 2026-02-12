@@ -57,7 +57,7 @@ interface CourtAppearanceRepository : JpaRepository<CourtAppearance, Long> {
         """
         select ca from CourtAppearance ca
         where ca.eventId = :eventId
-        and ca.appearanceType.code ="S"
+        and ca.appearanceType.code = 'S'
         and ca.outcome.id is not null
         order by ca.appearanceDate
         """

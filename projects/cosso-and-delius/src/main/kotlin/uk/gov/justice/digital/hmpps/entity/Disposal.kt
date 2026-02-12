@@ -46,9 +46,9 @@ class Disposal(
 class DisposalType(
     @Id
     @Column(name = "disposal_type_id")
-    val disposalTypeId: Long,
+    val id: Long,
     @Column(name = "description")
-    val disposalTypeDescription: String
+    val description: String
 )
 
 interface DisposalRepository : JpaRepository<Disposal, Long> {

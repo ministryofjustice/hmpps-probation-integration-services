@@ -11,6 +11,7 @@ import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
 import uk.gov.justice.digital.hmpps.data.generator.DocumentGenerator
 import uk.gov.justice.digital.hmpps.data.generator.EventGenerator
+import uk.gov.justice.digital.hmpps.data.generator.RequirementGenerator.DEFAULT_REQUIREMENT
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 import java.time.LocalDate
 import java.util.UUID
@@ -45,7 +46,7 @@ class OffenceDetailsIntegrationTest @Autowired constructor(
               },
               "requirementsImposed": [
                 {
-                  "id": 1000031,
+                  "id": ${DEFAULT_REQUIREMENT.id},
                   "startDate": "${requirementStartDate}",
                   "mainCategory": "Probation",
                   "length": 2,
