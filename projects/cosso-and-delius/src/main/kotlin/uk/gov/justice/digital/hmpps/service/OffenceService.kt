@@ -33,7 +33,8 @@ class OffenceService(
     fun getOffenceDetails(uuid: String): OffenceDetails {
 
         val eventId = documentRepository.findEventIdFromDocument(
-            DocumentEntity.cossoBreachNoticeUrn(UUID.fromString(uuid)))
+            DocumentEntity.cossoBreachNoticeUrn(UUID.fromString(uuid))
+        )
             ?: throw NotFoundException("DocumentEntity", "UUID", uuid)
         val mainOffence = mainOffenceRepository.findByEventId(eventId)?.offence
             ?: throw NotFoundException("Offence", "eventId", eventId)
