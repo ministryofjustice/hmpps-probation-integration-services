@@ -17,6 +17,15 @@ jobs:
       apiKeySecret: N56_API_KEY
       templates:
         - 179d106d-fc99-45af-9d04-22716cdf5e50
+      trials:
+        - templates:
+            - a2b6406f-5054-44e6-8fce-452482d4ceee # UPW Trial - Loss Aversion
+        - templates:
+            - 05943d0d-0a24-40cb-abb2-bb1d8338c900 # UPW Trial - Planning
+        - templates:
+            - 508bc0f3-48bb-4562-abf9-9fe41c4606ed # UPW Trial - Prosocial
+        - templates:
+            - 1e21a0ae-1bc3-4cb0-bc9e-b7dcf62d2b52 # UPW Trial - Social Norms
     greater-manchester:
       apiKeySecret: N50_API_KEY
       templates:
@@ -54,6 +63,15 @@ jobs:
       apiKeySecret: N52_API_KEY
       templates:
         - a2134b29-27a5-4b1d-b043-aeb079c1088d
+      trials:
+        - templates:
+            - c6599cc2-780b-480b-9bd7-885ed12a1b7c # UPW Trial - Loss Aversion
+        - templates:
+            - 10b78524-d777-4762-aedb-39120d2a84fd # UPW Trial - Planning
+        - templates:
+            - dae568ea-1f84-4381-977c-03f47465f279 # UPW Trial - Prosocial
+        - templates:
+            - 3dc42b0d-cfeb-4a87-a8b2-42e2be0f7faa # UPW Trial - Social Norms
     yorkshire-humber:
       apiKeySecret: N55_API_KEY
       templates:
