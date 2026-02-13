@@ -29,13 +29,13 @@ class OffenceDetailsIntegrationTest @Autowired constructor(
         val expectedResponse = """
             {
               "mainOffence": {
-                "code": "101",
-                "description": "Theft"
+                "code": "01",
+                "description": "Theft-SUB"
               },
               "additionalOffences": [
                 {
-                  "code": "101",
-                  "description": "Shoplifting"
+                  "code": "01",
+                  "description": "Shoplifting-SUB"
                 }
               ],
               "sentencingCourt": "Warwick Magistrates Court",

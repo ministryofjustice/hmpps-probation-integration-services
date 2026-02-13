@@ -39,13 +39,13 @@ class OffenceService(
         val mainOffence = mainOffenceRepository.findByEventId(eventId)?.offence
             ?: throw NotFoundException("Offence", "eventId", eventId)
         val additionalOffences = additionalOffenceRepository.findAllByEventId(eventId)
-            .map { CodedDescription(it.offence.mainCategoryCode, it.offence.mainCategoryDescription) }
+            .map { CodedDescription(it.offence.subCategoryCode, it.offence.subCategoryDescription) }
         val courtAppearance = courtAppearanceRepository.findSentencingAppearance(eventId).firstOrNull()
             ?: throw NotFoundException("CourtAppearance", "eventId", eventId)
         val disposal = disposalRepository.findFirstByEventIdOrderByDisposalDate(eventId)
             ?: throw NotFoundException("Disposal", "eventId", eventId)
         return OffenceDetails(
-            mainOffence = CodedDescription(mainOffence.mainCategoryCode, mainOffence.mainCategoryDescription),
+            mainOffence = CodedDescription(mainOffence.subCategoryCode, mainOffence.subCategoryDescription),
             additionalOffences = additionalOffences,
             sentencingCourt = courtAppearance.court.courtName,
             sentenceDate = disposal.disposalDate,
