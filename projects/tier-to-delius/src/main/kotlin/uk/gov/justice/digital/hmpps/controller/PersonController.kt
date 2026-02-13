@@ -18,7 +18,8 @@ class PersonController(private val personRepository: PersonRepository) {
         PersonDetails(
             crn = it.crn,
             name = Name(
-                forenames = listOfNotNull(it.forename, it.secondName, it.thirdName).joinToString(" "),
+                forename = it.forename,
+                middleName = listOfNotNull(it.secondName, it.thirdName).joinToString(" "),
                 surname = it.surname
             ),
             dateOfBirth = it.dateOfBirth,
