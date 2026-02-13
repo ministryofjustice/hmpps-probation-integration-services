@@ -1,11 +1,14 @@
 package uk.gov.justice.digital.hmpps.entity
 
 import jakarta.persistence.*
+import org.hibernate.annotations.SQLRestriction
+import org.hibernate.type.NumericBooleanConverter
 import org.springframework.data.jpa.repository.JpaRepository
 import java.time.LocalDate
 
 @Entity
 @Table(name = "offender")
+@SQLRestriction("soft_deleted = 0")
 class Person(
     @Id
     @Column(name = "offender_id")
@@ -24,7 +27,11 @@ class Person(
     val telephoneNumber: String? = null,
     val mobileNumber: String? = null,
     @Column(name = "e_mail_address")
-    val emailAddress: String? = null
+    val emailAddress: String? = null,
+    @Column(name = "soft_deleted", columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
+    val softDeleted: Boolean
+
 ) {
     fun middleName() = listOfNotNull(secondName, thirdName).joinToString(" ")
 }
