@@ -39,7 +39,7 @@ class RequirementEntity(
 @Table(name = "r_rqmnt_type_main_category")
 class RequirementType(
     @Id
-    @Column(name = "rqmnt_type_id")
+    @Column(name = "rqmnt_type_main_category_id")
     val id: Long,
     val description: String,
     @ManyToOne
