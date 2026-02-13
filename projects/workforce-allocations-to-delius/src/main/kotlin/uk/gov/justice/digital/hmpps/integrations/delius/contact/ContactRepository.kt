@@ -34,13 +34,12 @@ interface ContactRepository : JpaRepository<Contact, Long> {
 
     @Query(
         """
-        select c.date
+        select min(c.date)
         from Contact c
         where c.personId = :personId
         and c.type.attendanceContact = true
         and c.softDeleted = false
         and c.date > current_date
-        order by c.date, c.startTime
         """
     )
     fun getNextAppointmentDate(personId: Long): LocalDate?
