@@ -7,7 +7,7 @@ import uk.gov.justice.digital.hmpps.entity.sentence.EventRepository
 import uk.gov.justice.digital.hmpps.entity.unpaidwork.UnpaidWorkAppointmentRepository
 import uk.gov.justice.digital.hmpps.entity.unpaidwork.UpwAllocationRepository
 import uk.gov.justice.digital.hmpps.entity.unpaidwork.UpwDetailsRepository
-import uk.gov.justice.digital.hmpps.entity.unpaidwork.UpwMinutes
+import uk.gov.justice.digital.hmpps.model.RequirementProgress
 import uk.gov.justice.digital.hmpps.model.ScheduleResponse
 import uk.gov.justice.digital.hmpps.model.toAllocationResponse
 import uk.gov.justice.digital.hmpps.model.toAppointmentScheduleResponse
@@ -27,13 +27,13 @@ class CaseScheduleService(
         val requirementProgress = if (upwDetailsIds.isNotEmpty()) {
             val upwMinutesDtos = unpaidWorkAppointmentRepository.getUpwRequiredAndCompletedMinutes(upwDetailsIds)
 
-            UpwMinutes(
+            RequirementProgress(
                 requiredMinutes = upwMinutesDtos.sumOf { it.requiredMinutes },
                 completedMinutes = upwMinutesDtos.sumOf { it.completedMinutes },
                 adjustments = upwMinutesDtos.sumOf { it.positiveAdjustments - it.negativeAdjustments }
             )
         } else {
-            UpwMinutes(0, 0, 0)
+            RequirementProgress(0, 0, 0)
         }
 
         val allocations = upwAllocationRepository.findByEventId(event.id)

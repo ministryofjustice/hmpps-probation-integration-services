@@ -13,6 +13,7 @@ import uk.gov.justice.digital.hmpps.entity.contact.toCodeDescription
 import uk.gov.justice.digital.hmpps.entity.sentence.EventRepository
 import uk.gov.justice.digital.hmpps.entity.staff.OfficeLocationRepository
 import uk.gov.justice.digital.hmpps.entity.staff.StaffRepository
+import uk.gov.justice.digital.hmpps.entity.staff.toSupervisor
 import uk.gov.justice.digital.hmpps.entity.unpaidwork.*
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.exception.NotFoundException.Companion.orNotFoundBy
@@ -51,29 +52,22 @@ class CommunityPaybackAppointmentsService(
                 location = project.placementAddress?.toAppointmentResponseAddress(),
                 hiVisRequired = project.hiVisRequired
             ),
-            projectType = NameCode(
+            projectType = CodeName(
                 project.projectType.description,
                 project.projectType.code
             ),
             case = case,
             event = EventResponse(number = appointment.details.disposal.event.number.toInt()),
-            supervisor = AppointmentResponseSupervisor(
-                code = appointment.staff.code,
-                name = AppointmentResponseName(
-                    forename = appointment.staff.forename,
-                    surname = appointment.staff.surname,
-                    middleNames = appointment.staff.middleName?.let { listOf(it) } ?: emptyList()
-                )
-            ),
-            team = NameCode(
+            supervisor = appointment.staff.toSupervisor(),
+            team = CodeName(
                 appointment.team.description,
                 appointment.team.code
             ),
-            provider = NameCode(
+            provider = CodeName(
                 appointment.team.provider.description,
                 appointment.team.provider.code
             ),
-            pickUpData = AppointmentResponsePickupData(
+            pickUpData = PickUp(
                 location = appointment.pickUpLocation?.toPickUpLocation(),
                 time = appointment.pickUpTime
             ),
@@ -246,13 +240,13 @@ class CommunityPaybackAppointmentsService(
     private fun UnpaidWorkAppointment.toAppointmentResponseCase(
         limitedAccess: CaseAccess
     ) = AppointmentResponseCase(
-        crn = this.person.crn,
-        name = AppointmentResponseName(
-            forename = this.person.forename,
-            surname = this.person.surname,
-            middleNames = this.person.secondName?.let { names -> listOf(names) } ?: emptyList()
+        crn = person.crn,
+        name = PersonName(
+            forename = person.forename,
+            surname = person.surname,
+            middleNames = listOfNotNull(person.secondName, person.thirdName)
         ),
-        dateOfBirth = this.person.dateOfBirth,
+        dateOfBirth = person.dateOfBirth,
         currentExclusion = limitedAccess.userExcluded,
         exclusionMessage = limitedAccess.exclusionMessage,
         currentRestriction = limitedAccess.userRestricted,
