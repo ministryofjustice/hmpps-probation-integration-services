@@ -21,6 +21,7 @@ class Disposal(
     val disposalDate: LocalDate,
     val eventId: Long,
     val length: Int?,
+    @Column(name = "length_2")
     val length2: Int?,
     @ManyToOne
     @JoinColumn(name = "disposal_type_id")
