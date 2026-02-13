@@ -5,9 +5,10 @@ import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
 import org.springframework.data.jpa.repository.JpaRepository
 import uk.gov.justice.digital.hmpps.entity.ReferenceData
+import uk.gov.justice.digital.hmpps.entity.toCodeDescription
 import uk.gov.justice.digital.hmpps.exception.NotFoundException.Companion.orNotFoundBy
 import uk.gov.justice.digital.hmpps.model.CodeDescription
-import uk.gov.justice.digital.hmpps.model.Name
+import uk.gov.justice.digital.hmpps.model.StaffName
 import uk.gov.justice.digital.hmpps.model.Supervisor
 import uk.gov.justice.digital.hmpps.model.SupervisorTeamsResponse
 import uk.gov.justice.digital.hmpps.utils.Extensions.reportMissing
@@ -51,18 +52,9 @@ class Staff(
 )
 
 fun Staff.toSupervisor() = Supervisor(
-    name = Name(
-        forename = this.forename,
-        middleName = this.middleName,
-        surname = this.surname
-    ),
-    code = this.code,
-    grade = this.grade?.let {
-        CodeDescription(
-            code = this.grade.code,
-            description = this.grade.description
-        )
-    },
+    name = StaffName(forename, middleName, surname),
+    code = code,
+    grade = grade?.toCodeDescription(),
     unallocated = code.endsWith('U')
 )
 

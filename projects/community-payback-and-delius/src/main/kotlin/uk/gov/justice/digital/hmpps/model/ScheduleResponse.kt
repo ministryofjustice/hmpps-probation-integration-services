@@ -1,14 +1,16 @@
 package uk.gov.justice.digital.hmpps.model
 
-import io.swagger.v3.oas.annotations.media.Schema
 import uk.gov.justice.digital.hmpps.entity.contact.toCodeDescription
-import uk.gov.justice.digital.hmpps.entity.unpaidwork.*
+import uk.gov.justice.digital.hmpps.entity.unpaidwork.UnpaidWorkAllocation
+import uk.gov.justice.digital.hmpps.entity.unpaidwork.UnpaidWorkAppointment
+import uk.gov.justice.digital.hmpps.entity.unpaidwork.UpwProject
+import uk.gov.justice.digital.hmpps.entity.unpaidwork.UpwProjectAvailability
 import java.time.LocalDate
 import java.time.LocalTime
 import java.util.*
 
 data class ScheduleResponse(
-    val requirementProgress: UpwMinutes,
+    val requirementProgress: RequirementProgress,
     val allocations: List<AllocationResponse>,
     val appointments: List<AppointmentScheduleResponse>
 )
@@ -31,9 +33,9 @@ data class ProjectDetails(
     val code: String,
     val expectedEndDateExclusive: LocalDate?,
     val actualEndDateExclusive: LocalDate?,
-    val type: NameCode,
-    val provider: NameCode?,
-    val team: NameCode?
+    val type: CodeName,
+    val provider: CodeName?,
+    val team: CodeName?
 )
 
 data class ProjectAvailabilityDetails(
@@ -44,7 +46,7 @@ data class ProjectAvailabilityDetails(
 data class AppointmentScheduleResponse(
     val id: Long,
     val version: UUID,
-    val project: NameCode,
+    val project: CodeName,
     val date: LocalDate,
     val startTime: LocalTime,
     val endTime: LocalTime,
@@ -74,9 +76,9 @@ fun UpwProject.toProjectDetails() = ProjectDetails(
     code = this.code,
     expectedEndDateExclusive = this.expectedEndDate,
     actualEndDateExclusive = this.completionDate,
-    type = NameCode(this.projectType.description, this.projectType.code),
-    provider = NameCode(this.team.provider.description, this.team.provider.code),
-    team = NameCode(this.team.description, this.team.code)
+    type = CodeName(this.projectType.description, this.projectType.code),
+    provider = CodeName(this.team.provider.description, this.team.provider.code),
+    team = CodeName(this.team.description, this.team.code)
 )
 
 fun UpwProjectAvailability.toProjectAvailabilityDetails() = ProjectAvailabilityDetails(
@@ -87,7 +89,7 @@ fun UpwProjectAvailability.toProjectAvailabilityDetails() = ProjectAvailabilityD
 fun UnpaidWorkAppointment.toAppointmentScheduleResponse() = AppointmentScheduleResponse(
     id = this.id,
     version = UUID(this.rowVersion, this.contact.rowVersion),
-    project = NameCode(this.project.name, this.project.code),
+    project = CodeName(this.project.name, this.project.code),
     date = this.date,
     startTime = this.startTime,
     endTime = this.endTime,

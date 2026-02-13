@@ -21,6 +21,8 @@ import uk.gov.justice.digital.hmpps.entity.staff.Staff
 import uk.gov.justice.digital.hmpps.entity.staff.Team
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.model.CodeDescription
+import uk.gov.justice.digital.hmpps.model.RequirementProgress
+import uk.gov.justice.digital.hmpps.model.Session
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
@@ -162,7 +164,7 @@ interface UnpaidWorkSessionDto {
     val outcomeCount: Long
     val enforcementActionCount: Long
 
-    fun toModel() = UnpaidWorkSession(
+    fun toModel() = Session(
         CodeDescription(projectCode, projectName),
         appointmentDate.toLocalDate(),
         allocatedCount,
@@ -171,14 +173,6 @@ interface UnpaidWorkSessionDto {
     )
 }
 
-data class UnpaidWorkSession(
-    val project: CodeDescription,
-    val date: LocalDate,
-    val allocatedCount: Long,
-    val outcomeCount: Long,
-    val enforcementActionCount: Long
-)
-
 interface UpwMinutesDto {
     val id: Long
     val requiredMinutes: Long
@@ -186,14 +180,8 @@ interface UpwMinutesDto {
     val positiveAdjustments: Long
     val negativeAdjustments: Long
 
-    fun toModel() = UpwMinutes(requiredMinutes, completedMinutes, positiveAdjustments - negativeAdjustments)
+    fun toModel() = RequirementProgress(requiredMinutes, completedMinutes, positiveAdjustments - negativeAdjustments)
 }
-
-data class UpwMinutes(
-    val requiredMinutes: Long,
-    val completedMinutes: Long,
-    val adjustments: Long,
-)
 
 interface UnpaidWorkAppointmentRepository : JpaRepository<UnpaidWorkAppointment, Long> {
     @Query(

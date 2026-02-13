@@ -5,14 +5,8 @@ data class SupervisorsResponse(
 )
 
 data class Supervisor(
-    val name: Name,
+    val name: StaffName,
     val code: String,
     val grade: CodeDescription?,
     val unallocated: Boolean
-)
-
-data class Name(
-    val forename: String,
-    val middleName: String?,
-    val surname: String
 )
