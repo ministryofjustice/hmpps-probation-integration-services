@@ -14,6 +14,24 @@ servers:
 security:
 - hmpps-auth-token: []
 paths:
+  /offence-details/{uuid}:
+    get:
+      tags:
+      - offence-details-controller
+      operationId: getOffenceDetails
+      parameters:
+      - name: uuid
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OffenceDetails"
   /docs/asyncapi:
     get:
       tags:
@@ -51,6 +69,87 @@ paths:
                 $ref: "#/components/schemas/PersonDetails"
 components:
   schemas:
+    CodedDescription:
+      type: object
+      properties:
+        code:
+          type: string
+        description:
+          type: string
+      required:
+      - code
+      - description
+    OffenceDetails:
+      type: object
+      properties:
+        mainOffence:
+          $ref: "#/components/schemas/CodedDescription"
+        additionalOffences:
+          type: array
+          items:
+            $ref: "#/components/schemas/CodedDescription"
+        sentencingCourt:
+          type: string
+        sentenceDate:
+          type: string
+          format: date
+        sentenceImposed:
+          $ref: "#/components/schemas/CodedDescription"
+        requirementsImposed:
+          type: array
+          items:
+            $ref: "#/components/schemas/Requirement"
+        sentence:
+          $ref: "#/components/schemas/Sentence"
+      required:
+      - additionalOffences
+      - mainOffence
+      - requirementsImposed
+      - sentence
+      - sentenceDate
+      - sentenceImposed
+      - sentencingCourt
+    Requirement:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        startDate:
+          type: string
+          format: date
+        mainCategory:
+          type: string
+        subCategory:
+          type: string
+        length:
+          type: integer
+          format: int32
+        lengthUnit:
+          type: string
+        secondaryLength:
+          type: integer
+          format: int32
+        secondaryLengthUnit:
+          type: string
+      required:
+      - id
+      - startDate
+    Sentence:
+      type: object
+      properties:
+        length:
+          type: integer
+          format: int32
+        lengthUnits:
+          type: string
+        type:
+          type: string
+        secondLength:
+          type: integer
+          format: int32
+        secondLengthUnits:
+          type: string
     Address:
       type: object
       properties:
