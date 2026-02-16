@@ -26,6 +26,9 @@ class Person(
     @Column(name = "second_name", length = 35)
     val secondName: String? = null,
 
+    @Column(name = "third_name", length = 35)
+    val thirdName: String? = null,
+
     @Column(name = "surname", length = 35)
     val surname: String,
 

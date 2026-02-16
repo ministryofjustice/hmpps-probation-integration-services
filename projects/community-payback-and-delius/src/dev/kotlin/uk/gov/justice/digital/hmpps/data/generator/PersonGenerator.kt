@@ -53,9 +53,10 @@ object PersonGenerator {
         crn: String,
         forename: String,
         secondName: String? = null,
+        thirdName: String? = null,
         surname: String,
         dateOfBirth: LocalDate
-    ) = Person(id, crn, forename, secondName, surname, dateOfBirth)
+    ) = Person(id, crn, forename, secondName, thirdName, surname, dateOfBirth)
 
     fun generatePersonManager(
         id: Long = IdGenerator.getAndIncrement(),
