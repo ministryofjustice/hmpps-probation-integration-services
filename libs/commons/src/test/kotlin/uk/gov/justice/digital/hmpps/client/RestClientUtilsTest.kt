@@ -4,6 +4,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.eclipse.jetty.client.HttpClient
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
+import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.client.JettyClientHttpRequestFactory
 import org.springframework.web.client.HttpClientErrorException
@@ -46,7 +47,7 @@ class RestClientUtilsTest {
     @Test
     fun `returns null when callback throws not found`() {
         val result: String? = RestClientUtils.nullIfNotFound {
-            throw HttpClientErrorException(HttpStatus.NOT_FOUND, "not found")
+            throw HttpClientErrorException.create(HttpStatus.NOT_FOUND, "not found", HttpHeaders(), null, null)
         }
 
         assertThat(result).isNull()
