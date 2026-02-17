@@ -41,7 +41,7 @@ class AlfrescoClient(
 
                     else -> throw RuntimeException("Document text search failed. Alfresco responded with ${res.statusCode}.")
                 }
-            }, false) ?: throw RuntimeException("Document text search failed")
+            }, false)
     }
 
     fun streamDocument(id: String, filename: String): ResponseEntity<StreamingResponseBody> {
@@ -65,7 +65,7 @@ class AlfrescoClient(
 
                 else -> throw RuntimeException("Failed to download document. Alfresco responded with ${res.statusCode}.")
             }
-        }, false) ?: throw NotFoundException("Document content", "alfrescoId", id)
+        }, false)
     }
 
     private fun HttpHeaders.copy(key: String, res: RestClient.RequestHeadersSpec.ConvertibleClientHttpResponse) {
