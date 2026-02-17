@@ -526,7 +526,7 @@ components:
             $ref: "#/components/schemas/CodeDescription"
       required:
       - providers
-    Name:
+    StaffName:
       type: object
       properties:
         forename:
@@ -542,7 +542,7 @@ components:
       type: object
       properties:
         name:
-          $ref: "#/components/schemas/Name"
+          $ref: "#/components/schemas/StaffName"
         code:
           type: string
         grade:
@@ -562,16 +562,7 @@ components:
             $ref: "#/components/schemas/Supervisor"
       required:
       - supervisors
-    SessionsResponse:
-      type: object
-      properties:
-        sessions:
-          type: array
-          items:
-            $ref: "#/components/schemas/UnpaidWorkSession"
-      required:
-      - sessions
-    UnpaidWorkSession:
+    Session:
       type: object
       properties:
         project:
@@ -594,6 +585,15 @@ components:
       - enforcementActionCount
       - outcomeCount
       - project
+    SessionsResponse:
+      type: object
+      properties:
+        sessions:
+          type: array
+          items:
+            $ref: "#/components/schemas/Session"
+      required:
+      - sessions
     TeamsResponse:
       type: object
       properties:
@@ -624,7 +624,7 @@ components:
         crn:
           type: string
         name:
-          $ref: "#/components/schemas/AppointmentResponseName"
+          $ref: "#/components/schemas/PersonName"
         dateOfBirth:
           type: string
           format: date
@@ -642,17 +642,17 @@ components:
       - currentRestriction
       - dateOfBirth
       - name
-    AppointmentResponseName:
+    PersonName:
       type: object
       properties:
         forename:
-          type: string
-        surname:
           type: string
         middleNames:
           type: array
           items:
             type: string
+        surname:
+          type: string
       required:
       - forename
       - middleNames
@@ -672,6 +672,22 @@ components:
       - code
       - hiVisRequired
       - name
+    RequirementProgress:
+      type: object
+      properties:
+        requiredMinutes:
+          type: integer
+          format: int64
+        completedMinutes:
+          type: integer
+          format: int64
+        adjustments:
+          type: integer
+          format: int64
+      required:
+      - adjustments
+      - completedMinutes
+      - requiredMinutes
     SessionResponse:
       type: object
       properties:
@@ -695,27 +711,11 @@ components:
         outcome:
           $ref: "#/components/schemas/CodeDescription"
         requirementProgress:
-          $ref: "#/components/schemas/UpwMinutes"
+          $ref: "#/components/schemas/RequirementProgress"
       required:
       - case
       - id
       - requirementProgress
-    UpwMinutes:
-      type: object
-      properties:
-        requiredMinutes:
-          type: integer
-          format: int64
-        completedMinutes:
-          type: integer
-          format: int64
-        adjustments:
-          type: integer
-          format: int64
-      required:
-      - adjustments
-      - completedMinutes
-      - requiredMinutes
     AppointmentResponse:
       type: object
       properties:
@@ -731,19 +731,19 @@ components:
         project:
           $ref: "#/components/schemas/Project"
         projectType:
-          $ref: "#/components/schemas/NameCode"
+          $ref: "#/components/schemas/CodeName"
         case:
           $ref: "#/components/schemas/AppointmentResponseCase"
         event:
           $ref: "#/components/schemas/EventResponse"
         supervisor:
-          $ref: "#/components/schemas/AppointmentResponseSupervisor"
+          $ref: "#/components/schemas/Supervisor"
         team:
-          $ref: "#/components/schemas/NameCode"
+          $ref: "#/components/schemas/CodeName"
         provider:
-          $ref: "#/components/schemas/NameCode"
+          $ref: "#/components/schemas/CodeName"
         pickUpData:
-          $ref: "#/components/schemas/AppointmentResponsePickupData"
+          $ref: "#/components/schemas/PickUp"
         date:
           type: string
           format: date
@@ -816,20 +816,13 @@ components:
       required:
       - code
       - description
-    AppointmentResponsePickupData:
+    CodeName:
       type: object
       properties:
-        location:
-          $ref: "#/components/schemas/PickUpLocation"
-        time:
+        name:
           type: string
-    AppointmentResponseSupervisor:
-      type: object
-      properties:
         code:
           type: string
-        name:
-          $ref: "#/components/schemas/AppointmentResponseName"
       required:
       - code
       - name
@@ -841,16 +834,13 @@ components:
           format: int32
       required:
       - number
-    NameCode:
+    PickUp:
       type: object
       properties:
-        name:
+        time:
           type: string
-        code:
-          type: string
-      required:
-      - code
-      - name
+        location:
+          $ref: "#/components/schemas/PickUpLocation"
     PickUpLocation:
       type: object
       properties:
@@ -915,7 +905,7 @@ components:
           type: string
           format: uuid
         project:
-          $ref: "#/components/schemas/NameCode"
+          $ref: "#/components/schemas/CodeName"
         date:
           type: string
           format: date
@@ -939,13 +929,6 @@ components:
       - project
       - startTime
       - version
-    PickUp:
-      type: object
-      properties:
-        time:
-          type: string
-        location:
-          $ref: "#/components/schemas/PickUpLocation"
     ProjectAvailabilityDetails:
       type: object
       properties:
@@ -968,11 +951,11 @@ components:
           type: string
           format: date
         type:
-          $ref: "#/components/schemas/NameCode"
+          $ref: "#/components/schemas/CodeName"
         provider:
-          $ref: "#/components/schemas/NameCode"
+          $ref: "#/components/schemas/CodeName"
         team:
-          $ref: "#/components/schemas/NameCode"
+          $ref: "#/components/schemas/CodeName"
       required:
       - code
       - name
@@ -981,7 +964,7 @@ components:
       type: object
       properties:
         requirementProgress:
-          $ref: "#/components/schemas/UpwMinutes"
+          $ref: "#/components/schemas/RequirementProgress"
         allocations:
           type: array
           items:

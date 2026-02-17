@@ -192,11 +192,18 @@ components:
     Name:
       type: object
       properties:
+        forename:
+          type: string
         forenames:
+          type: string
+          deprecated: true
+          description: Use forename instead
+        middleName:
           type: string
         surname:
           type: string
       required:
+      - forename
       - forenames
       - surname
     PersonDetails:
