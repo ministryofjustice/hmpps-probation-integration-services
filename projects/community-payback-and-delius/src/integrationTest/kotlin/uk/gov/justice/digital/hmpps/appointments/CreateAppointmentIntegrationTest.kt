@@ -3,8 +3,8 @@ package uk.gov.justice.digital.hmpps.appointments
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.post
 import uk.gov.justice.digital.hmpps.advice.ErrorResponse
@@ -43,7 +43,7 @@ class CreateAppointmentIntegrationTest @Autowired constructor(
             }
             .andExpect { status { isNotFound() } }
             .andReturn().response.contentAsJson<ErrorResponse>().also {
-                assertThat(it.message).isEqualTo("UpwProject with code of DOESNOTEXIST not found")
+                assertThat(it.message).isEqualTo("UnpaidWorkProject with code of DOESNOTEXIST not found")
             }
     }
 

@@ -46,12 +46,7 @@ class CommunityPaybackAppointmentsService(
             id = appointmentId,
             reference = appointment.contact.reference(),
             version = UUID(appointment.rowVersion, appointment.contact.rowVersion),
-            project = Project(
-                name = project.name,
-                code = project.code,
-                location = project.placementAddress?.toAppointmentResponseAddress(),
-                hiVisRequired = project.hiVisRequired
-            ),
+            project = Project(project),
             projectType = CodeName(
                 project.projectType.description,
                 project.projectType.code
@@ -114,12 +109,7 @@ class CommunityPaybackAppointmentsService(
         }
 
         return SessionResponse(
-            project = Project(
-                name = project.name,
-                code = project.code,
-                location = project.placementAddress?.toAppointmentResponseAddress(),
-                hiVisRequired = project.hiVisRequired,
-            ),
+            project = Project(project),
             appointmentSummaries = appointmentSummaries
         )
     }

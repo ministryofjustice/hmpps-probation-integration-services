@@ -322,11 +322,17 @@ object UPWGenerator {
         team: Team,
         placementAddress: Address?,
         projectType: ReferenceData,
-        availability: List<UpwProjectAvailability> = listOf(),
+        availability: List<UnpaidWorkProjectAvailability> = listOf(),
         hiVisRequired: Boolean = false,
         expectedEndDate: LocalDate? = null,
-        completionDate: LocalDate? = null
-    ) = UpwProject(
+        completionDate: LocalDate? = null,
+        beneficiary: String? = "Beneficiary",
+        beneficiaryContactName: String? = "Joe Bloggs",
+        beneficiaryEmailAddress: String? = "joebloggs@example.com",
+        beneficiaryUrl: String? = "https://example.com",
+        beneficiaryContactAddress: Address? = placementAddress
+
+    ) = UnpaidWorkProject(
         id,
         name,
         code,
@@ -336,19 +342,24 @@ object UPWGenerator {
         availability,
         hiVisRequired,
         expectedEndDate,
-        completionDate
+        completionDate,
+        beneficiary,
+        beneficiaryContactName,
+        beneficiaryEmailAddress,
+        beneficiaryUrl,
+        beneficiaryContactAddress,
     )
 
     fun generateUpwProjectAvailability(
         id: Long = IdGenerator.getAndIncrement(),
-        project: UpwProject,
+        project: UnpaidWorkProject,
         day: UnpaidWorkDay = ReferenceDataGenerator.UPW_DAY_MONDAY,
         frequency: ReferenceData? = null,
         startTime: LocalTime? = null,
         endTime: LocalTime? = null,
         startDate: LocalDate? = null,
         endDate: LocalDate? = null
-    ) = UpwProjectAvailability(id, project, day, frequency, startTime, endTime, startDate, endDate)
+    ) = UnpaidWorkProjectAvailability(id, project, day, frequency, startTime, endTime, startDate, endDate)
 
     fun generateDisposal(
         id: Long = IdGenerator.getAndIncrement(),
@@ -427,7 +438,7 @@ object UPWGenerator {
         startTime: LocalTime,
         endTime: LocalTime,
         date: LocalDate,
-        project: UpwProject,
+        project: UnpaidWorkProject,
         details: UnpaidWorkDetails,
         allocation: UnpaidWorkAllocation? = null,
         pickupLocation: OfficeLocation?,
@@ -486,8 +497,9 @@ object UPWGenerator {
         streetName: String? = null,
         town: String? = null,
         county: String? = null,
-        postcode: String? = null
-    ) = Address(id, buildingName, addressNumber, streetName, town, county, postcode)
+        postcode: String? = null,
+        telephoneNumber: String? = null,
+    ) = Address(id, buildingName, addressNumber, streetName, town, county, postcode, telephoneNumber)
 
     fun generateOfficeLocation(
         id: Long = IdGenerator.getAndIncrement(),
@@ -512,8 +524,8 @@ object UPWGenerator {
     fun generateUpwAllocation(
         id: Long = IdGenerator.getAndIncrement(),
         details: UnpaidWorkDetails,
-        project: UpwProject,
-        projectAvailability: UpwProjectAvailability?,
+        project: UnpaidWorkProject,
+        projectAvailability: UnpaidWorkProjectAvailability?,
         allocationDay: UnpaidWorkDay,
         requestedFrequency: ReferenceData?,
         startDate: LocalDate?,
