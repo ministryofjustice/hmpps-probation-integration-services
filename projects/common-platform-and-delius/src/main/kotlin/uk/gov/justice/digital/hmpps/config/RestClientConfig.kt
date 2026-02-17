@@ -3,17 +3,15 @@ package uk.gov.justice.digital.hmpps.config
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.http.client.JdkClientHttpRequestFactory
 import org.springframework.http.client.support.HttpRequestWrapper
 import org.springframework.web.client.RestClient
 import org.springframework.web.util.UriComponentsBuilder
-import uk.gov.justice.digital.hmpps.config.security.RetryInterceptor
-import uk.gov.justice.digital.hmpps.config.security.createClient
+import uk.gov.justice.digital.hmpps.client.RestClientUtils.createClient
+import uk.gov.justice.digital.hmpps.client.RestClientUtils.jettyRequestFactory
+import uk.gov.justice.digital.hmpps.config.http.interceptor.RetryInterceptor
 import uk.gov.justice.digital.hmpps.integrations.client.CorePersonClient
 import uk.gov.justice.digital.hmpps.integrations.client.ManageOffencesClient
 import uk.gov.justice.digital.hmpps.integrations.client.OsClient
-import java.net.http.HttpClient
-import java.time.Duration
 
 @Configuration
 class RestClientConfig(private val oauth2Client: RestClient) {
@@ -24,7 +22,7 @@ class RestClientConfig(private val oauth2Client: RestClient) {
         @Value("\${os-places.api.url}") baseUrl: String
     ): OsClient = createClient(
         RestClient.builder()
-            .requestFactory(withTimeouts(Duration.ofSeconds(1), Duration.ofSeconds(5)))
+            .requestFactory(jettyRequestFactory())
             .requestInterceptor(RetryInterceptor())
             .requestInterceptor { request, body, execution ->
                 execution.execute(object : HttpRequestWrapper(request) {
@@ -34,10 +32,6 @@ class RestClientConfig(private val oauth2Client: RestClient) {
             }
             .baseUrl(baseUrl)
             .build())
-
-    fun withTimeouts(connection: Duration, read: Duration) =
-        JdkClientHttpRequestFactory(HttpClient.newBuilder().connectTimeout(connection).build())
-            .also { it.setReadTimeout(read) }
 
     @Bean
     fun manageOffencesClient(@Value("\${integrations.manage-offences.url}") baseUrl: String): ManageOffencesClient =

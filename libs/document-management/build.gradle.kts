@@ -7,6 +7,8 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("tools.jackson.module:jackson-module-kotlin")
 
+    api("org.eclipse.jetty:jetty-client")
+
     testImplementation("org.springframework.boot:spring-boot-starter-webmvc-test")
     testImplementation(libs.bundles.mockito)
 }

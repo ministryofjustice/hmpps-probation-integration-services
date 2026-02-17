@@ -1,9 +1,9 @@
 package uk.gov.justice.digital.hmpps.service
 
-import tools.jackson.databind.ObjectMapper
 import org.springframework.stereotype.Service
+import tools.jackson.databind.ObjectMapper
 import uk.gov.justice.digital.hmpps.client.*
-import uk.gov.justice.digital.hmpps.config.security.nullIfNotFound
+import uk.gov.justice.digital.hmpps.client.RestClientUtils.nullIfNotFound
 import uk.gov.justice.digital.hmpps.entity.PersonRepository
 import uk.gov.justice.digital.hmpps.entity.getByCrn
 import uk.gov.justice.digital.hmpps.flags.FeatureFlags

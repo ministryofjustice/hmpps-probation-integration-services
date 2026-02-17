@@ -1,7 +1,7 @@
 package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.stereotype.Component
-import uk.gov.justice.digital.hmpps.config.security.nullIfNotFound
+import uk.gov.justice.digital.hmpps.client.RestClientUtils.nullIfNotFound
 import uk.gov.justice.digital.hmpps.detail.DomainEventDetailService
 import uk.gov.justice.digital.hmpps.integrations.cvl.ActivatedLicence
 import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent

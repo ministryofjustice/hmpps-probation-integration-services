@@ -77,15 +77,15 @@ class DomainEventServiceTest {
 
         assertEquals(
             "probation-case.mappa-information.updated",
-            body["eventType"].asText()
+            body["eventType"].asString()
         )
         assertEquals(
             "MAPPA information has been updated in NDelius",
-            body["description"].asText()
+            body["description"].asString()
         )
         assertEquals(
             "X972222",
-            body["personReference"]["identifiers"][0]["value"].asText()
+            body["personReference"]["identifiers"][0]["value"].asString()
         )
         assertEquals(
             contactId,
@@ -99,7 +99,7 @@ class DomainEventServiceTest {
         val attributes = objectMapper.readTree(saved.messageAttributes)
         assertEquals(
             "probation-case.mappa-information.updated",
-            attributes["eventType"]["Value"].asText()
+            attributes["eventType"]["Value"].asString()
         )
     }
 
@@ -138,11 +138,11 @@ class DomainEventServiceTest {
 
         assertEquals(
             "probation-case.mappa-information.deleted",
-            body["eventType"].asText()
+            body["eventType"].asString()
         )
         assertEquals(
             "MAPPA information has been deleted in NDelius",
-            body["description"].asText()
+            body["description"].asString()
         )
         assertEquals(
             contactId,

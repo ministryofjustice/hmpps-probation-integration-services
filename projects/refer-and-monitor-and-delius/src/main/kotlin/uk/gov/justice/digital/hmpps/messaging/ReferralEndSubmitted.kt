@@ -2,7 +2,7 @@ package uk.gov.justice.digital.hmpps.messaging
 
 import com.fasterxml.jackson.annotation.JsonAlias
 import org.springframework.stereotype.Component
-import uk.gov.justice.digital.hmpps.config.security.nullIfNotFound
+import uk.gov.justice.digital.hmpps.client.RestClientUtils.nullIfNotFound
 import uk.gov.justice.digital.hmpps.detail.DomainEventDetailService
 import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException.Companion.orIgnore
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
