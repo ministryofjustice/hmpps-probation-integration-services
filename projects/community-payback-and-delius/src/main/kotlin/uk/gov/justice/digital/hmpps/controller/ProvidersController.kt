@@ -23,8 +23,9 @@ class ProvidersController(
 
     @GetMapping(value = ["/{providerCode}/teams/{teamCode}/sessions"])
     fun getSessions(
-        @PathVariable providerCode: String, @PathVariable teamCode: String,
-        @RequestParam startDate: LocalDate, @RequestParam endDate: LocalDate
-    ) =
-        providersService.getSessions(teamCode, startDate, endDate)
+        @PathVariable providerCode: String,
+        @PathVariable teamCode: String,
+        @RequestParam startDate: LocalDate,
+        @RequestParam endDate: LocalDate,
+    ) = providersService.getSessions(teamCode, startDate, endDate)
 }

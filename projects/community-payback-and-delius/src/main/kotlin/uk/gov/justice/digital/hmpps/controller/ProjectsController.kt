@@ -7,24 +7,31 @@ import org.springframework.web.bind.annotation.*
 import uk.gov.justice.digital.hmpps.model.AppointmentOutcomeRequest
 import uk.gov.justice.digital.hmpps.model.CreateAppointmentsRequest
 import uk.gov.justice.digital.hmpps.service.CommunityPaybackAppointmentsService
+import uk.gov.justice.digital.hmpps.service.ProjectService
 import java.time.LocalDate
 
 @Validated
 @RestController
 @RequestMapping("/projects")
 @PreAuthorize("hasRole('PROBATION_API__COMMUNITY_PAYBACK__CASE_DETAIL')")
-class AppointmentsController(
+class ProjectsController(
+    private val projectService: ProjectService,
     private val communityPaybackAppointmentsService: CommunityPaybackAppointmentsService
 ) {
+    @GetMapping(value = ["/{projectCode}"])
+    fun getProject(@PathVariable projectCode: String) = projectService.getProject(projectCode)
+
     @GetMapping(value = ["/{projectCode}/appointments/{appointmentId}"])
     fun getAppointment(
-        @PathVariable projectCode: String, @PathVariable appointmentId: Long,
+        @PathVariable projectCode: String,
+        @PathVariable appointmentId: Long,
         @RequestParam username: String
     ) = communityPaybackAppointmentsService.getAppointment(projectCode, appointmentId, username)
 
     @GetMapping(value = ["/{projectCode}/appointments"])
     fun getSession(
-        @PathVariable projectCode: String, @RequestParam date: LocalDate,
+        @PathVariable projectCode: String,
+        @RequestParam date: LocalDate,
         @RequestParam username: String
     ) = communityPaybackAppointmentsService.getSession(projectCode, date, username)
 

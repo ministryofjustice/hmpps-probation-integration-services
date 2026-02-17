@@ -25,11 +25,11 @@ class UnpaidWorkAllocation(
 
     @ManyToOne
     @JoinColumn(name = "upw_project_id")
-    val project: UpwProject,
+    val project: UnpaidWorkProject,
 
     @ManyToOne
     @JoinColumn(name = "upw_project_availability_id")
-    val projectAvailability: UpwProjectAvailability?,
+    val projectAvailability: UnpaidWorkProjectAvailability?,
 
     @ManyToOne
     @JoinColumn(name = "allocation_day_id")
