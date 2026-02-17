@@ -1,25 +1,14 @@
-package uk.gov.justice.digital.hmpps.alfresco
+package uk.gov.justice.digital.hmpps.client
 
 import org.springframework.beans.factory.annotation.Qualifier
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
-import org.springframework.context.annotation.Bean
-import org.springframework.context.annotation.Configuration
 import org.springframework.core.ParameterizedTypeReference
 import org.springframework.http.*
-import org.springframework.http.client.ClientHttpRequestExecution
-import org.springframework.http.client.ClientHttpRequestInterceptor
-import org.springframework.http.client.ClientHttpResponse
-import org.springframework.http.client.JdkClientHttpRequestFactory
 import org.springframework.stereotype.Component
 import org.springframework.web.client.RestClient
-import org.springframework.web.client.RestClient.RequestHeadersSpec.ConvertibleClientHttpResponse
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody
 import uk.gov.justice.digital.hmpps.alfresco.model.DocumentResponse
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
-import uk.gov.justice.digital.hmpps.security.ServiceContext
-import java.net.http.HttpClient
-import java.time.Duration
 import java.util.*
 
 @Component
@@ -79,33 +68,7 @@ class AlfrescoClient(
         }, false) ?: throw NotFoundException("Document content", "alfrescoId", id)
     }
 
-    private fun HttpHeaders.copy(key: String, res: ConvertibleClientHttpResponse) {
+    private fun HttpHeaders.copy(key: String, res: RestClient.RequestHeadersSpec.ConvertibleClientHttpResponse) {
         res.headers[key]?.let { values -> put(key, values) }
-    }
-}
-
-@Configuration
-class AlfrescoClientConfig(@Value("\${integrations.alfresco.url}") private val alfrescoBaseUrl: String) {
-    @Bean
-    fun alfrescoRestClient() = RestClient.builder()
-        .requestFactory(withTimeouts(Duration.ofSeconds(1), Duration.ofSeconds(60)))
-        .requestInterceptor(AlfrescoInterceptor())
-        .baseUrl(alfrescoBaseUrl)
-        .build()
-}
-
-fun withTimeouts(connection: Duration, read: Duration) =
-    JdkClientHttpRequestFactory(HttpClient.newBuilder().connectTimeout(connection).build())
-        .also { it.setReadTimeout(read) }
-
-class AlfrescoInterceptor : ClientHttpRequestInterceptor {
-    override fun intercept(
-        request: HttpRequest,
-        body: ByteArray,
-        execution: ClientHttpRequestExecution
-    ): ClientHttpResponse {
-        request.headers["X-DocRepository-Remote-User"] = "N00"
-        request.headers["X-DocRepository-Real-Remote-User"] = ServiceContext.servicePrincipal()?.username
-        return execution.execute(request, body)
     }
 }

@@ -4,14 +4,9 @@ import jakarta.transaction.Transactional
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody
-import uk.gov.justice.digital.hmpps.alfresco.AlfrescoClient
+import uk.gov.justice.digital.hmpps.client.AlfrescoClient
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
-import uk.gov.justice.digital.hmpps.entity.CourtAppearance
-import uk.gov.justice.digital.hmpps.entity.Disposal
-import uk.gov.justice.digital.hmpps.entity.DocumentRepository
-import uk.gov.justice.digital.hmpps.entity.PersonRepository
-import uk.gov.justice.digital.hmpps.entity.relatesToEvent
-import uk.gov.justice.digital.hmpps.entity.typeDescription
+import uk.gov.justice.digital.hmpps.entity.*
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.model.Conviction
 import uk.gov.justice.digital.hmpps.model.Document
