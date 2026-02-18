@@ -117,16 +117,13 @@ internal class IntegrationTest @Autowired constructor(
 
         // Verify that the OGRS assessment has been created
         ogrsAssessmentRepository.findAll().size
-        MatcherAssert.assertThat(ogrsAssessmentRepository.findAll().size, Matchers.equalTo(1))
-        MatcherAssert.assertThat(ogrsAssessmentRepository.findAll()[0].ogrs3Score1, Matchers.equalTo(4))
-        MatcherAssert.assertThat(ogrsAssessmentRepository.findAll()[0].ogrs3Score2, Matchers.equalTo(8))
+        assertThat(ogrsAssessmentRepository.findAll().size).isEqualTo(1)
+        assertThat(ogrsAssessmentRepository.findAll()[0].ogrs3Score1).isEqualTo(4)
+        assertThat(ogrsAssessmentRepository.findAll()[0].ogrs3Score2).isEqualTo(8)
 
         // Verify that the Contact has been created
-        MatcherAssert.assertThat(contactRepository.findAll().size, Matchers.equalTo(1))
-        MatcherAssert.assertThat(
-            contactRepository.findAll()[0].notes,
-            Matchers.containsString("OGRS3: 4% within one year and 8% within 2 years.")
-        )
+        assertThat(contactRepository.findAll().size).isEqualTo(1)
+        assertThat(contactRepository.findAll()[0].notes).contains("OGRS3: 4% within 1 year and 8% within 2 years.")
     }
 
     @Test
@@ -140,16 +137,15 @@ internal class IntegrationTest @Autowired constructor(
         verify(telemetryService).trackEvent("AddOrUpdateRiskAssessment", notification.message.telemetryProperties())
 
         // Verify that the OGRS assessment has been created
-        ogrsAssessmentRepository.findAll().size
-        MatcherAssert.assertThat(ogrsAssessmentRepository.findAll().size, Matchers.equalTo(1))
-        MatcherAssert.assertThat(ogrsAssessmentRepository.findAll()[0].ogrs3Score1, Matchers.equalTo(5))
-        MatcherAssert.assertThat(ogrsAssessmentRepository.findAll()[0].ogrs3Score2, Matchers.equalTo(9))
+        assertThat(ogrsAssessmentRepository.findAll()).hasSize(1)
+        assertThat(ogrsAssessmentRepository.findAll()[0].ogrs3Score1).isEqualTo(5)
+        assertThat(ogrsAssessmentRepository.findAll()[0].ogrs3Score2).isEqualTo(9)
 
         // Verify that the Contact has been created
-        MatcherAssert.assertThat(contactRepository.findAll().size, Matchers.equalTo(2))
+        assertThat(contactRepository.findAll()).hasSize(2)
         MatcherAssert.assertThat(
             contactRepository.findAll()[1].notes,
-            Matchers.containsString("OGRS3: 5% within one year and 9% within 2 years.")
+            Matchers.containsString("OGRS3: 5% within 1 year and 9% within 2 years.")
         )
     }
 
@@ -200,9 +196,9 @@ internal class IntegrationTest @Autowired constructor(
         verify(telemetryService).trackEvent("AddOrUpdateRiskAssessment", notification.message.telemetryProperties())
 
         val assessment = ogrsAssessmentRepository.findAll().find { it.event.person.crn == person.crn }
-        MatcherAssert.assertThat(assessment?.event?.number, Matchers.equalTo("3"))
-        MatcherAssert.assertThat(assessment?.ogrs3Score1, Matchers.equalTo(5))
-        MatcherAssert.assertThat(assessment?.ogrs3Score2, Matchers.equalTo(7))
+        assertThat(assessment?.event?.number).isEqualTo("3")
+        assertThat(assessment?.ogrs3Score1).isEqualTo(5)
+        assertThat(assessment?.ogrs3Score2).isEqualTo(7)
     }
 
     @Test
@@ -217,8 +213,8 @@ internal class IntegrationTest @Autowired constructor(
         verify(telemetryService).trackEvent("AddOrUpdateRiskAssessment", notification.message.telemetryProperties())
 
         val assessment = ogrsAssessmentRepository.findAll().find { it.event.person.crn == person.crn }
-        MatcherAssert.assertThat(assessment?.ogrs3Score1, Matchers.equalTo(4))
-        MatcherAssert.assertThat(assessment?.ogrs3Score2, Matchers.equalTo(6))
+        assertThat(assessment?.ogrs3Score1).isEqualTo(4)
+        assertThat(assessment?.ogrs3Score2).isEqualTo(6)
     }
 
     @Test
@@ -234,20 +230,14 @@ internal class IntegrationTest @Autowired constructor(
 
         val assessment = ogrsAssessmentRepository.findAll().find { it.event.person.crn == person.crn }
         MatcherAssert.assertThat(assessment, Matchers.notNullValue())
-        MatcherAssert.assertThat(assessment!!.ogrs3Score1, Matchers.equalTo(43))
-        MatcherAssert.assertThat(assessment.ogrs3Score2, Matchers.equalTo(60))
-        MatcherAssert.assertThat(assessment.arpStaticDynamic, Matchers.equalTo("S"))
-        MatcherAssert.assertThat(assessment.arpScore, Matchers.equalTo(54.21))
-        MatcherAssert.assertThat(assessment.arpBand, Matchers.equalTo("M"))
+        assertThat(assessment!!.ogrs3Score1).isEqualTo(43)
+        assertThat(assessment.ogrs3Score2).isEqualTo(60)
+        assertThat(assessment.arpStaticDynamic).isEqualTo("S")
+        assertThat(assessment.arpScore).isEqualTo(54.21)
+        assertThat(assessment.arpBand).isEqualTo("M")
 
         val contact = contactRepository.findAll().find { it.event?.person?.crn == person.crn }
-        MatcherAssert.assertThat(
-            contact!!.notes,
-            Matchers.containsString("OGRS3: 43% within one year and 60% within 2 years.")
-        )
-        MatcherAssert.assertThat(
-            contact.notes,
-            Matchers.containsString("All Reoffending Predictor (ARP): Static ARP score is 54.21% - M")
-        )
+        assertThat(contact!!.notes).contains("OGRS3: 43% within 1 year and 60% within 2 years.")
+        assertThat(contact.notes).contains("All Reoffending Predictor (ARP): Static ARP score is 54.21% - Medium")
     }
 }

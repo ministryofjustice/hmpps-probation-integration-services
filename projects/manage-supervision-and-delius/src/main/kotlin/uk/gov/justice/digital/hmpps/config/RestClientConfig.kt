@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.web.client.RestClient
 import uk.gov.justice.digital.hmpps.client.BankHolidayClient
 import uk.gov.justice.digital.hmpps.client.ProbationSearchClient
-import uk.gov.justice.digital.hmpps.config.security.createClient
+import uk.gov.justice.digital.hmpps.client.RestClientUtils.createClient
 import uk.gov.justice.digital.hmpps.integrations.delius.alfresco.AlfrescoUploadClient
 
 @Configuration

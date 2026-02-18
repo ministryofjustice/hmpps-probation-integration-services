@@ -32,7 +32,7 @@ class QueuePublisherTest {
 
         verify(sqsTemplate).send<String>(eq("my-queue"), check {
             assertThat(it.headers["eventType"], equalTo("test-event-type"))
-            assertThat(it.message.asText(), equalTo("\"test-message\""))
+            assertThat(it.message.asString(), equalTo("\"test-message\""))
         })
     }
 

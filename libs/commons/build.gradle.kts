@@ -6,6 +6,7 @@ dependencies {
     compileOnly("org.springframework.boot:spring-boot-starter-data-ldap")
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-webmvc")
+    implementation("org.eclipse.jetty:jetty-client")
     implementation("tools.jackson.module:jackson-module-kotlin")
     implementation(libs.flipt) {
         exclude("org.apache.httpcomponents", "httpclient")

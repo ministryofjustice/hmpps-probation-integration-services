@@ -25,6 +25,8 @@ class Address(
 
     val postcode: String?,
 
+    val telephoneNumber: String?,
+
     @Column(columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean = false

@@ -47,7 +47,7 @@ class CreateUnpaidWorkAppointment(
 
     @ManyToOne
     @JoinColumn(name = "upw_project_id")
-    val project: UpwProject,
+    val project: UnpaidWorkProject,
 
     @Column(name = "project_type_id")
     val projectTypeId: Long = project.projectType.id,

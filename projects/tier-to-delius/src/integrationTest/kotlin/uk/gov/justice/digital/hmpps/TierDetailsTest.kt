@@ -4,9 +4,9 @@ import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.containsInAnyOrder
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
 import uk.gov.justice.digital.hmpps.data.generator.*
@@ -44,7 +44,7 @@ class TierDetailsTest @Autowired constructor(
             .andExpect {
                 status { is2xxSuccessful() }
                 jsonPath("$.crn") { value("A000001") }
-                jsonPath("$.name.forenames") { value("Test") }
+                jsonPath("$.name.forename") { value("Test") }
                 jsonPath("$.name.surname") { value("Person") }
                 jsonPath("$.age") { value(18) }
             }

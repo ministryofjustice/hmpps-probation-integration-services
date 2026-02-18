@@ -7,7 +7,7 @@ import org.springframework.web.client.RestClient
 import uk.gov.justice.digital.hmpps.client.PrisonApiClient
 import uk.gov.justice.digital.hmpps.client.PrisonerSearchClient
 import uk.gov.justice.digital.hmpps.client.ProbationSearchClient
-import uk.gov.justice.digital.hmpps.config.security.createClient
+import uk.gov.justice.digital.hmpps.client.RestClientUtils.createClient
 
 @Configuration
 class RestClientConfig(private val oauth2Client: RestClient) {

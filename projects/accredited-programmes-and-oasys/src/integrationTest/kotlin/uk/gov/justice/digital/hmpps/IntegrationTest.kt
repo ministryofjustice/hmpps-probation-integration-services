@@ -1,16 +1,16 @@
 package uk.gov.justice.digital.hmpps
 
-import tools.jackson.databind.JsonNode
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc
 import org.springframework.test.context.bean.override.mockito.MockitoBean
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
+import tools.jackson.databind.JsonNode
 import uk.gov.justice.digital.hmpps.controller.*
 import uk.gov.justice.digital.hmpps.integrations.oasys.Level
 import uk.gov.justice.digital.hmpps.integrations.oasys.ScoredAnswer
@@ -66,10 +66,10 @@ internal class IntegrationTest(
             .andExpect { status { is2xxSuccessful() } }
             .andReturn().response.contentAsJson<JsonNode>()
 
-        assertThat(json["crn"].asText(), equalTo("T123456"))
-        assertThat(json["nomsId"].asText(), equalTo("A1234YZ"))
-        assertThat(json["dateCompleted"].asText(), equalTo("2024-01-15T11:30:00"))
-        assertThat(json["currentConcernsRiskOfSelfHarm"].asText(), equalTo("Yes"))
+        assertThat(json["crn"].asString(), equalTo("T123456"))
+        assertThat(json["nomsId"].asString(), equalTo("A1234YZ"))
+        assertThat(json["dateCompleted"].asString(), equalTo("2024-01-15T11:30:00"))
+        assertThat(json["currentConcernsRiskOfSelfHarm"].asString(), equalTo("Yes"))
     }
 
     @Test
@@ -80,10 +80,10 @@ internal class IntegrationTest(
             .andExpect { status { is2xxSuccessful() } }
             .andReturn().response.contentAsJson<JsonNode>()
 
-        assertThat(json["crn"].asText(), equalTo("T123456"))
-        assertThat(json["nomsId"].asText(), equalTo("A1234YZ"))
-        assertThat(json["dateCompleted"].asText(), equalTo("2024-01-15T11:30:00"))
-        assertThat(json["riskPublicCommunity"].asText(), equalTo("High"))
+        assertThat(json["crn"].asString(), equalTo("T123456"))
+        assertThat(json["nomsId"].asString(), equalTo("A1234YZ"))
+        assertThat(json["dateCompleted"].asString(), equalTo("2024-01-15T11:30:00"))
+        assertThat(json["riskPublicCommunity"].asString(), equalTo("High"))
     }
 
     @Test

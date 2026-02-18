@@ -106,12 +106,20 @@ class RiskAssessmentService(
             "Name: ${person.forename} ${person.surname}",
             "Order: ${event.disposal?.disposalType?.description ?: ""}",
             if (ogrsScore.ogrs3Yr1 != null && ogrsScore.ogrs3Yr2 != null) {
-                "OGRS3: ${ogrsScore.ogrs3Yr1}% within one year and ${ogrsScore.ogrs3Yr2}% within 2 years."
+                "OGRS3: ${ogrsScore.ogrs3Yr1}% within 1 year and ${ogrsScore.ogrs3Yr2}% within 2 years."
             } else null,
             if (arpValues.arpScore != null && arpValues.arpBand != null && arpValues.arpStaticDynamic != null) {
-                "All Reoffending Predictor (ARP): $arpStaticDynamic ARP score is ${arpValues.arpScore}% - ${arpValues.arpBand}"
+                "All Reoffending Predictor (ARP): $arpStaticDynamic ARP score is ${arpValues.arpScore}% - ${arpValues.arpBand.fromBand()}"
             } else null
         ).joinToString("\n")
+    }
+
+    private fun String?.fromBand() = when (this) {
+        "V" -> "Very high"
+        "H" -> "High"
+        "M" -> "Medium"
+        "L" -> "Low"
+        else -> this
     }
 
     private fun getOgrsPerson(crn: String): Person {

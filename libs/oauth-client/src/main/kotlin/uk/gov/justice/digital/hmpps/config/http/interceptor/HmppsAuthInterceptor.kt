@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.config.security
+package uk.gov.justice.digital.hmpps.config.http.interceptor
 
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpRequest
