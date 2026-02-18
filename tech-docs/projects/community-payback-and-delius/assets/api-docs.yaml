@@ -17,7 +17,7 @@ paths:
   /projects/{projectCode}/appointments/{appointmentId}/outcome:
     put:
       tags:
-      - appointments-controller
+      - projects-controller
       operationId: updateAppointmentOutcome
       parameters:
       - name: projectCode
@@ -43,7 +43,7 @@ paths:
   /projects/{projectCode}/appointments:
     get:
       tags:
-      - appointments-controller
+      - projects-controller
       operationId: getSession
       parameters:
       - name: projectCode
@@ -71,7 +71,7 @@ paths:
                 $ref: "#/components/schemas/SessionResponse"
     post:
       tags:
-      - appointments-controller
+      - projects-controller
       operationId: createAppointments
       parameters:
       - name: projectCode
@@ -249,10 +249,28 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/TeamsResponse"
+  /projects/{projectCode}:
+    get:
+      tags:
+      - projects-controller
+      operationId: getProject
+      parameters:
+      - name: projectCode
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Project"
   /projects/{projectCode}/appointments/{appointmentId}:
     get:
       tags:
-      - appointments-controller
+      - projects-controller
       operationId: getAppointment
       parameters:
       - name: projectCode
@@ -603,7 +621,63 @@ components:
             $ref: "#/components/schemas/CodeDescription"
       required:
       - teams
-    AppointmentResponseAddress:
+    Beneficiary:
+      type: object
+      properties:
+        name:
+          type: string
+        contactName:
+          type: string
+        emailAddress:
+          type: string
+        website:
+          type: string
+        telephoneNumber:
+          type: string
+        location:
+          $ref: "#/components/schemas/ProjectAddress"
+    CodeName:
+      type: object
+      properties:
+        name:
+          type: string
+        code:
+          type: string
+      required:
+      - code
+      - name
+    Project:
+      type: object
+      properties:
+        name:
+          type: string
+        code:
+          type: string
+        type:
+          $ref: "#/components/schemas/CodeName"
+        team:
+          $ref: "#/components/schemas/CodeName"
+        provider:
+          $ref: "#/components/schemas/CodeName"
+        location:
+          $ref: "#/components/schemas/ProjectAddress"
+        beneficiary:
+          $ref: "#/components/schemas/Beneficiary"
+        hiVisRequired:
+          type: boolean
+        expectedEndDateExclusive:
+          type: string
+          format: date
+        actualEndDateExclusive:
+          type: string
+          format: date
+      required:
+      - beneficiary
+      - code
+      - hiVisRequired
+      - name
+      - type
+    ProjectAddress:
       type: object
       properties:
         streetName:
@@ -657,21 +731,6 @@ components:
       - forename
       - middleNames
       - surname
-    Project:
-      type: object
-      properties:
-        name:
-          type: string
-        code:
-          type: string
-        location:
-          $ref: "#/components/schemas/AppointmentResponseAddress"
-        hiVisRequired:
-          type: boolean
-      required:
-      - code
-      - hiVisRequired
-      - name
     RequirementProgress:
       type: object
       properties:
@@ -732,6 +791,8 @@ components:
           $ref: "#/components/schemas/Project"
         projectType:
           $ref: "#/components/schemas/CodeName"
+          deprecated: true
+          description: Use project.type instead
         case:
           $ref: "#/components/schemas/AppointmentResponseCase"
         event:
@@ -816,16 +877,6 @@ components:
       required:
       - code
       - description
-    CodeName:
-      type: object
-      properties:
-        name:
-          type: string
-        code:
-          type: string
-      required:
-      - code
-      - name
     EventResponse:
       type: object
       properties:
@@ -870,7 +921,7 @@ components:
           type: integer
           format: int64
         project:
-          $ref: "#/components/schemas/ProjectDetails"
+          $ref: "#/components/schemas/Project"
         projectAvailability:
           $ref: "#/components/schemas/ProjectAvailabilityDetails"
         frequency:
@@ -937,29 +988,6 @@ components:
         endDateExclusive:
           type: string
           format: date
-    ProjectDetails:
-      type: object
-      properties:
-        name:
-          type: string
-        code:
-          type: string
-        expectedEndDateExclusive:
-          type: string
-          format: date
-        actualEndDateExclusive:
-          type: string
-          format: date
-        type:
-          $ref: "#/components/schemas/CodeName"
-        provider:
-          $ref: "#/components/schemas/CodeName"
-        team:
-          $ref: "#/components/schemas/CodeName"
-      required:
-      - code
-      - name
-      - type
     ScheduleResponse:
       type: object
       properties:
