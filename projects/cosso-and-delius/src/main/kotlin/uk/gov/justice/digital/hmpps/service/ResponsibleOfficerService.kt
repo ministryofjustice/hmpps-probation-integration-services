@@ -81,8 +81,7 @@ class ResponsibleOfficerService(
         return probationArea
     }
 
-    private fun officeAddress(username: String): OfficeAddress {
-        return ldapTemplate.findPreferenceByUsername(username, "replyAddress")
+    private fun officeAddress(username: String): OfficeAddress? = ldapTemplate.findPreferenceByUsername(username, "replyAddress")
             ?.toLongOrNull()
             ?.let { officeLocationRepository.findById(it).getOrNull() }
             ?.let { officeLocation ->
@@ -97,6 +96,5 @@ class ResponsibleOfficerService(
                     district = officeLocation.district,
                     postcode = officeLocation.postcode
                 )
-            } ?: OfficeAddress()
-    }
+            }
 }
