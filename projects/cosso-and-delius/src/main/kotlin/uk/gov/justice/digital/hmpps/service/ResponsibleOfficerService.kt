@@ -57,7 +57,7 @@ class ResponsibleOfficerService(
         )
     }
 
-    private fun ResponsibleOfficer.getStaff() = 
+    private fun ResponsibleOfficer.getStaff() =
         (offenderManager?.staff ?: prisonOffenderManager?.staff).orNotFoundBy("crn", person.crn)
 
     private fun getProbationAreaForResponsibleOfficer(
@@ -74,7 +74,8 @@ class ResponsibleOfficerService(
         return probationArea
     }
 
-    private fun officeAddress(username: String): OfficeAddress? = ldapTemplate.findPreferenceByUsername(username, "replyAddress")
+    private fun officeAddress(username: String): OfficeAddress? =
+        ldapTemplate.findPreferenceByUsername(username, "replyAddress")
             ?.toLongOrNull()
             ?.let { officeLocationRepository.findById(it).getOrNull() }
             ?.let { officeLocation ->
