@@ -11,6 +11,7 @@ import uk.gov.justice.digital.hmpps.entity.ResponsibleOfficerRepository
 import uk.gov.justice.digital.hmpps.entity.Staff
 import uk.gov.justice.digital.hmpps.entity.UserRepository
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
+import uk.gov.justice.digital.hmpps.exception.NotFoundException.Companion.orNotFoundBy
 import uk.gov.justice.digital.hmpps.ldap.findAttributeByUsername
 import uk.gov.justice.digital.hmpps.ldap.findPreferenceByUsername
 import uk.gov.justice.digital.hmpps.model.CodeAndDescription
@@ -33,7 +34,7 @@ class ResponsibleOfficerService(
         )
         val offenderManager = responsibleOfficer.offenderManager
         val prisonOffenderManager = responsibleOfficer.prisonOffenderManager
-        val staff = getResponsibleOfficerStaff(offenderManager, prisonOffenderManager, responsibleOfficer)
+        val staff = responsibleOfficer.getStaff()
         val username =
             userRepository.findByStaffId(staff.id)?.username ?: throw NotFoundException("User", "staffId", staff.id)
         val probationArea =
@@ -58,7 +59,7 @@ class ResponsibleOfficerService(
     }
 
     private fun ResponsibleOfficer.getStaff() =
-        (offenderManager?.staff ?: prisonOffenderManager?.staff).orNotFoundBy("crn", person.crn)
+        (offenderManager?.staff ?: prisonOffenderManager?.staff).orNotFoundBy("Staff", "responsibleOfficerId")
 
     private fun getProbationAreaForResponsibleOfficer(
         offenderManager: OffenderManager?,
