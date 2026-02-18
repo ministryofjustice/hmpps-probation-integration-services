@@ -26,7 +26,7 @@ class ResponsibleOfficerService(
     private val officeLocationRepository: OfficeLocationRepository,
     private val userRepository: UserRepository,
 
-) {
+    ) {
     fun getResponsibleOfficerDetails(crn: String): ResponsibleOfficerDetails {
         val responsibleOfficer = responsibleOfficerRepository.findByPerson_Crn(crn) ?: throw NotFoundException(
             "ResponsibleOfficer", "crn", crn
@@ -34,8 +34,10 @@ class ResponsibleOfficerService(
         val offenderManager = responsibleOfficer.offenderManager
         val prisonOffenderManager = responsibleOfficer.prisonOffenderManager
         val staff = getResponsibleOfficerStaff(offenderManager, prisonOffenderManager, responsibleOfficer)
-        val username = userRepository.findByStaffId(staff.id)?.username ?: throw NotFoundException("User", "staffId", staff.id)
-        val probationArea = getProbationAreaForResponsibleOfficer(offenderManager, prisonOffenderManager, responsibleOfficer)
+        val username =
+            userRepository.findByStaffId(staff.id)?.username ?: throw NotFoundException("User", "staffId", staff.id)
+        val probationArea =
+            getProbationAreaForResponsibleOfficer(offenderManager, prisonOffenderManager, responsibleOfficer)
         val emailAddress = ldapTemplate.findAttributeByUsername(username, "mail")
         val telephoneNumber = ldapTemplate.findAttributeByUsername(username, "telephoneNumber")
 
