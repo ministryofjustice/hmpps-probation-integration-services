@@ -38,5 +38,4 @@ object ResponsibleOfficerGenerator {
         prisonOffenderManager = DEFAULT_PRISON_OFFENDER_MANAGER,
         endDate = null
     )
-
 }

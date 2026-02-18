@@ -15,7 +15,7 @@ import java.time.LocalDate
 @Entity
 @Table(name = "responsible_officer")
 @SQLRestriction("end_date is null")
-class ResponsibleOfficer (
+class ResponsibleOfficer(
     @Id
     @Column(name = "responsible_officer_id")
     val id: Long,
@@ -84,7 +84,6 @@ class PrisonOffenderManager(
     @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean = false
 )
-
 
 interface ResponsibleOfficerRepository : JpaRepository<ResponsibleOfficer, Long> {
     fun findByPerson_Crn(crn: String): ResponsibleOfficer?

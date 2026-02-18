@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository
 
 @Entity
 @Table(name = "user_")
-class User (
+class User(
     @Id
     @Column(name = "user_id")
     val id: Long,
@@ -17,7 +17,7 @@ class User (
     val staffId: Long,
 
     @Column(name = "distinguished_name")
-    val username : String
+    val username: String
 )
 
 interface UserRepository : JpaRepository<User, Long> {

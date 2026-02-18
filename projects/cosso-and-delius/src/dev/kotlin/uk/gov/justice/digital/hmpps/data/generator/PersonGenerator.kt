@@ -42,7 +42,7 @@ object PersonGenerator {
         telephoneNumber = "01234567890",
         mobileNumber = "07700900123",
         title = ReferenceDataGenerator.MR_TITLE,
-        dateOfBirth = LocalDate.of(1986,2,3),
+        dateOfBirth = LocalDate.of(1986, 2, 3),
         emailAddress = "inPrison@example.com",
         softDeleted = false
     )
