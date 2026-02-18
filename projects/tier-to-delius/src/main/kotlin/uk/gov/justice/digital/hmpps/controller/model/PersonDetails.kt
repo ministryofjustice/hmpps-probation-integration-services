@@ -11,8 +11,6 @@ data class PersonDetails(
 
 data class Name(
     val forename: String,
-    @Deprecated("Use forename instead", ReplaceWith("forename"))
-    val forenames: String = forename,
     val middleName: String?,
     val surname: String
 )
