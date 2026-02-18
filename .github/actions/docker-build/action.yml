@@ -58,8 +58,8 @@ runs:
         cache-to: ${{ inputs.push == 'true' && format('type=gha,mode=max,scope={0}', inputs.project) || '' }}
         context: "{{defaultContext}}:projects/${{ inputs.project }}/container"
         pull: true
-        load: true
-        push: false
+        load: ${{ inputs.push != 'true' }}
+        push: ${{ inputs.push == 'true' }}
         provenance: false
         tags: |
           ghcr.io/ministryofjustice/hmpps-probation-integration-services/${{ inputs.project }}:latest
