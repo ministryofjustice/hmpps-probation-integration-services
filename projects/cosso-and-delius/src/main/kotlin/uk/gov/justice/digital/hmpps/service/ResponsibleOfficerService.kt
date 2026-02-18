@@ -57,15 +57,8 @@ class ResponsibleOfficerService(
         )
     }
 
-    private fun getResponsibleOfficerStaff(
-        offenderManager: OffenderManager?,
-        prisonOffenderManager: PrisonOffenderManager?,
-        responsibleOfficer: ResponsibleOfficer
-    ): Staff {
-        val staff = offenderManager?.staff ?: prisonOffenderManager?.staff
-        if (staff == null) throw NotFoundException("Staff", "responsibleOfficerId", responsibleOfficer.id)
-        return staff
-    }
+    private fun ResponsibleOfficer.getStaff() = 
+        (offenderManager?.staff ?: prisonOffenderManager?.staff).orNotFoundBy("crn", person.crn)
 
     private fun getProbationAreaForResponsibleOfficer(
         offenderManager: OffenderManager?,
