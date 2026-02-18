@@ -32,4 +32,18 @@ object PersonGenerator {
         emailAddress = "example@example.com",
         softDeleted = false
     )
+    val PERSON_IN_PRISON = Person(
+        offenderId = IdGenerator.getAndIncrement(),
+        crn = "X123457",
+        firstName = "Bob",
+        secondName = "Tom",
+        thirdName = "Billy",
+        surname = "Jones",
+        telephoneNumber = "01234567890",
+        mobileNumber = "07700900123",
+        title = ReferenceDataGenerator.MR_TITLE,
+        dateOfBirth = LocalDate.of(1986,2,3),
+        emailAddress = "inPrison@example.com",
+        softDeleted = false
+    )
 }

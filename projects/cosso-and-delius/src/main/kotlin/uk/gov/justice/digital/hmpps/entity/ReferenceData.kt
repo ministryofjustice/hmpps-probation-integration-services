@@ -3,7 +3,6 @@ package uk.gov.justice.digital.hmpps.entity
 import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.type.YesNoConverter
-import uk.gov.justice.digital.hmpps.model.CodedDescription
 
 @Immutable
 @Entity
@@ -11,10 +10,10 @@ import uk.gov.justice.digital.hmpps.model.CodedDescription
 class ReferenceData(
 
     @Column(name = "code_value")
-    override val code: String,
+    val code: String,
 
     @Column(name = "code_description")
-    override val description: String,
+    val description: String,
 
     @Convert(converter = YesNoConverter::class)
     val selectable: Boolean,
@@ -22,8 +21,8 @@ class ReferenceData(
     @Id
     @Column(name = "standard_reference_list_id")
     val id: Long
-) : CodeAndDescription
+)
 
-fun CodeAndDescription.codedDescription() = CodedDescription(code, description)
+fun CodeAndDescription.codedDescription() = CodeAndDescription(code, description)
 fun List<CodeAndDescription>.codedDescriptions() =
-    map(CodeAndDescription::codedDescription).sortedBy { it.description.lowercase() }
+    map { it.codedDescription() }.sortedBy { it.description.lowercase() }

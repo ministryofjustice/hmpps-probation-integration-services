@@ -86,4 +86,6 @@ interface DocumentRepository : Repository<DocumentEntity, Long> {
         nativeQuery = true
     )
     fun findEventIdFromDocument(urn: String): Long?
+
+    fun findByExternalReference(urn: String): DocumentEntity?
 }
