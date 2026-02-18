@@ -2,9 +2,13 @@ package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.ldap.core.LdapTemplate
 import org.springframework.stereotype.Service
-import uk.gov.justice.digital.hmpps.entity.DocumentRepository
+import uk.gov.justice.digital.hmpps.entity.OffenderManager
 import uk.gov.justice.digital.hmpps.entity.OfficeLocationRepository
+import uk.gov.justice.digital.hmpps.entity.PrisonOffenderManager
+import uk.gov.justice.digital.hmpps.entity.ProbationArea
+import uk.gov.justice.digital.hmpps.entity.ResponsibleOfficer
 import uk.gov.justice.digital.hmpps.entity.ResponsibleOfficerRepository
+import uk.gov.justice.digital.hmpps.entity.Staff
 import uk.gov.justice.digital.hmpps.entity.UserRepository
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.ldap.findAttributeByUsername
@@ -13,54 +17,84 @@ import uk.gov.justice.digital.hmpps.model.CodeAndDescription
 import uk.gov.justice.digital.hmpps.model.Name
 import uk.gov.justice.digital.hmpps.model.OfficeAddress
 import uk.gov.justice.digital.hmpps.model.ResponsibleOfficerDetails
+import kotlin.jvm.optionals.getOrNull
 
 @Service
 class ResponsibleOfficerService(
-    val documentRepository: DocumentRepository,
-    val responsibleOfficerRepository: ResponsibleOfficerRepository,
-    val ldapTemplate: LdapTemplate,
-    val officeLocationRepository: OfficeLocationRepository,
+    private val responsibleOfficerRepository: ResponsibleOfficerRepository,
+    private val ldapTemplate: LdapTemplate,
+    private val officeLocationRepository: OfficeLocationRepository,
     private val userRepository: UserRepository,
 
-    ) {
+) {
     fun getResponsibleOfficerDetails(crn: String): ResponsibleOfficerDetails {
         val responsibleOfficer = responsibleOfficerRepository.findByPerson_Crn(crn) ?: throw NotFoundException(
             "ResponsibleOfficer", "crn", crn
         )
-        val staffId =
-            responsibleOfficer.offenderManager?.staff?.id ?: responsibleOfficer.prisonOffenderManager?.staff?.id
-        val username = userRepository.findByStaffId(staffId!!)?.username
-        val staff = responsibleOfficer.offenderManager?.staff ?: responsibleOfficer.prisonOffenderManager?.staff
-        val probationArea =
-            responsibleOfficer.offenderManager?.probationArea ?: responsibleOfficer.prisonOffenderManager?.probationArea
-        val emailAddress = ldapTemplate.findAttributeByUsername(username!!, "mail")
+        val offenderManager = responsibleOfficer.offenderManager
+        val prisonOffenderManager = responsibleOfficer.prisonOffenderManager
+        val staff = getResponsibleOfficerStaff(offenderManager, prisonOffenderManager, responsibleOfficer)
+        val username = userRepository.findByStaffId(staff.id)?.username ?: throw NotFoundException("User", "staffId", staff.id)
+        val probationArea = getProbationAreaForResponsibleOfficer(offenderManager, prisonOffenderManager, responsibleOfficer)
+        val emailAddress = ldapTemplate.findAttributeByUsername(username, "mail")
         val telephoneNumber = ldapTemplate.findAttributeByUsername(username, "telephoneNumber")
-        val officeLocationId = ldapTemplate.findPreferenceByUsername(username, "replyAddress")
-        val officeAddress = officeLocationRepository.findById(officeLocationId!!.toLong()).get()
 
         return ResponsibleOfficerDetails(
             name = Name(
-                forename = staff!!.forename,
+                forename = staff.forename,
                 middleName = staff.middleName,
                 surname = staff.surname
             ),
-            emailAddress = emailAddress!!,
-            telephoneNumber = telephoneNumber!!,
-            replyAddress = OfficeAddress(
-                id = officeAddress.id,
-                officeDescription = officeAddress.description,
-                buildingName = officeAddress.buildingName,
-                buildingNumber = officeAddress.buildingNumber,
-                streetName = officeAddress.streetName,
-                townCity = officeAddress.townCity,
-                county = officeAddress.county,
-                district = officeAddress.district,
-                postcode = officeAddress.postcode,
-            ),
+            emailAddress = emailAddress,
+            telephoneNumber = telephoneNumber,
+            replyAddress = officeAddress(username),
             probationArea = CodeAndDescription(
-                code = probationArea!!.code,
+                code = probationArea.code,
                 description = probationArea.description
             )
         )
+    }
+
+    private fun getResponsibleOfficerStaff(
+        offenderManager: OffenderManager?,
+        prisonOffenderManager: PrisonOffenderManager?,
+        responsibleOfficer: ResponsibleOfficer
+    ): Staff {
+        val staff = offenderManager?.staff ?: prisonOffenderManager?.staff
+        if (staff == null) throw NotFoundException("Staff", "responsibleOfficerId", responsibleOfficer.id)
+        return staff
+    }
+
+    private fun getProbationAreaForResponsibleOfficer(
+        offenderManager: OffenderManager?,
+        prisonOffenderManager: PrisonOffenderManager?,
+        responsibleOfficer: ResponsibleOfficer
+    ): ProbationArea {
+        val probationArea = offenderManager?.probationArea ?: prisonOffenderManager?.probationArea
+        if (probationArea == null) throw NotFoundException(
+            "ProbationArea",
+            "responsibleOfficerId",
+            responsibleOfficer.id
+        )
+        return probationArea
+    }
+
+    private fun officeAddress(username: String): OfficeAddress {
+        return ldapTemplate.findPreferenceByUsername(username, "replyAddress")
+            ?.toLongOrNull()
+            ?.let { officeLocationRepository.findById(it).getOrNull() }
+            ?.let { officeLocation ->
+                OfficeAddress(
+                    id = officeLocation.id,
+                    officeDescription = officeLocation.description,
+                    buildingName = officeLocation.buildingName,
+                    buildingNumber = officeLocation.buildingNumber,
+                    streetName = officeLocation.streetName,
+                    townCity = officeLocation.townCity,
+                    county = officeLocation.county,
+                    district = officeLocation.district,
+                    postcode = officeLocation.postcode
+                )
+            } ?: OfficeAddress()
     }
 }

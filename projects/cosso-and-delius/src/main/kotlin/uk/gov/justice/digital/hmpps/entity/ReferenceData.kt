@@ -23,6 +23,3 @@ class ReferenceData(
     val id: Long
 )
 
-fun CodeAndDescription.codedDescription() = CodeAndDescription(code, description)
-fun List<CodeAndDescription>.codedDescriptions() =
-    map { it.codedDescription() }.sortedBy { it.description.lowercase() }
