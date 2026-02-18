@@ -22,6 +22,7 @@ data class ActivitySearchRequest(
     val dateFrom: LocalDate? = null,
     @JsonFormat(pattern = "yyyy-MM-dd")
     val dateTo: LocalDate? = null,
+    val includeSystemGenerated: Boolean = true,
     val filters: List<String> = emptyList(),
 )
 
