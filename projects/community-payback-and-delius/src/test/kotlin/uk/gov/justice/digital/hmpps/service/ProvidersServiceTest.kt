@@ -11,6 +11,7 @@ import uk.gov.justice.digital.hmpps.entity.staff.ProbationAreaUserRepository
 import uk.gov.justice.digital.hmpps.entity.staff.TeamRepository
 import uk.gov.justice.digital.hmpps.entity.staff.UserRepository
 import uk.gov.justice.digital.hmpps.entity.unpaidwork.UnpaidWorkAppointmentRepository
+import uk.gov.justice.digital.hmpps.entity.unpaidwork.UnpaidWorkProjectRepository
 import java.time.LocalDate
 
 @ExtendWith(MockitoExtension::class)
@@ -26,6 +27,9 @@ internal class ProvidersServiceTest {
 
     @Mock
     lateinit var unpaidWorkAppointmentRepository: UnpaidWorkAppointmentRepository
+
+    @Mock
+    lateinit var unpaidWorkProjectRepository: UnpaidWorkProjectRepository
 
     @InjectMocks
     lateinit var providersService: ProvidersService
