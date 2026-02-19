@@ -293,9 +293,13 @@ interface UnpaidWorkAppointmentRepository : JpaRepository<UnpaidWorkAppointment,
         and a.details.softDeleted = false
         and a.details.disposal.softDeleted = false"""
     )
-    fun findByEventIdInAndProjectProjectTypeCodeIn(eventIds: Collection<Long>, projectTypeCodes: Collection<String>): List<UnpaidWorkAppointment>
+    fun findByEventIdInAndProjectProjectTypeCodeIn(
+        eventIds: Collection<Long>,
+        projectTypeCodes: Collection<String>
+    ): List<UnpaidWorkAppointment>
 
-    @Query(    """
+    @Query(
+        """
         select 
             project.upw_project_id, 
             coalesce(overdue_count, 0) as overdue_count, 
