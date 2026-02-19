@@ -18,6 +18,4 @@ data class OfficeAddress(
     val district: String?,
     val county: String?,
     val postcode: String?
-) {
-    constructor() : this(null, null, null, null, null, null, null, null, null)
-}
+)
