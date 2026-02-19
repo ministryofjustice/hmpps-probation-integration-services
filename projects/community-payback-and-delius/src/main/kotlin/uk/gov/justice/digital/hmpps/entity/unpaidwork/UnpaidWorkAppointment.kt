@@ -291,7 +291,7 @@ interface UnpaidWorkAppointmentRepository : JpaRepository<UnpaidWorkAppointment,
                 count(*) as overdue_count, 
                 cast(max(trunc(cast(current_date as date)) - trunc(cast(appointment_date as date))) as int) as overdue_days
             from upw_appointment
-            where trunc(cast(appointment_date as date)) + (end_time - trunc(cast(end_time as date))) < current_date
+            where trunc(cast(appointment_date as date)) + (end_time - trunc(cast(end_time as date))) between current_date - 45 and current_date
               and contact_outcome_type_id is null
               and soft_deleted = 0
             group by upw_project_id
