@@ -108,7 +108,6 @@ object ReferenceDataGenerator {
         datasetId = DatasetGenerator.UPW_PROJECT_TYPE_DATASET.id
     )
 
-
     fun generateReferenceData(
         id: Long = IdGenerator.getAndIncrement(),
         code: String,

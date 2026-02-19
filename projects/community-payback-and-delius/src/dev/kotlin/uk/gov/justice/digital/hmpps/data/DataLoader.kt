@@ -25,7 +25,6 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
         loadUnpaidWorkData()
         loadLimitedAccessData()
         loadLinkedListData()
-
     }
 
     fun loadUsers() {
@@ -78,7 +77,7 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
         save(DatasetGenerator.UPW_FREQUENCY_DATASET)
         save(ReferenceDataGenerator.GROUP_PLACEMENT_PROJECT_TYPE)
         save(ReferenceDataGenerator.INDIVIDUAL_PLACEMENT_PROJECT_TYPE)
-        save( ReferenceDataGenerator.ETE_PROJECT_TYPE)
+        save(ReferenceDataGenerator.ETE_PROJECT_TYPE)
         save(ReferenceDataGenerator.INACTIVE_PROJECT_TYPE)
         save(ReferenceDataGenerator.UPW_APPOINTMENT_TYPE)
         save(ReferenceDataGenerator.REVIEW_ENFORCEMENT_STATUS_TYPE)

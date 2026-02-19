@@ -21,7 +21,6 @@ class CaseController(
         @PathVariable eventNumber: String
     ) = caseScheduleService.getSchedule(crn, eventNumber)
 
-
     @GetMapping("/{crn}/summary")
     fun getSummary(
         @PathVariable crn: String

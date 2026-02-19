@@ -71,7 +71,8 @@ class CaseControllerIntegrationTest @Autowired constructor(
 
     @Test
     fun `returns 200 when summary requested`() {
-        val expected = """{"unpaidWorkDetails":[{"eventNumber":1,"requiredMinutes":7200,"adjustments":4,"completedMinutes":870,"completedEteMinutes":870},{"eventNumber":2,"requiredMinutes":10800,"adjustments":0,"completedMinutes":405,"completedEteMinutes":405},{"eventNumber":3,"requiredMinutes":0,"adjustments":0,"completedMinutes":0,"completedEteMinutes":0}]}"""
+        val expected =
+            """{"unpaidWorkDetails":[{"eventNumber":1,"requiredMinutes":7200,"adjustments":4,"completedMinutes":870,"completedEteMinutes":870},{"eventNumber":2,"requiredMinutes":10800,"adjustments":0,"completedMinutes":405,"completedEteMinutes":405},{"eventNumber":3,"requiredMinutes":0,"adjustments":0,"completedMinutes":0,"completedEteMinutes":0}]}"""
         mockMvc.get("/case/${PersonGenerator.DEFAULT_PERSON.crn}/summary") { withToken() }
             .andExpect {
                 status { isOk() }

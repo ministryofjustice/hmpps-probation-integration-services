@@ -11,14 +11,14 @@ import uk.gov.justice.digital.hmpps.model.UnpaidWorkDetails
 import uk.gov.justice.digital.hmpps.model.UnpaidWorkMinutes
 
 @Service
-class CaseSummaryService (
+class CaseSummaryService(
     private val personRepository: PersonRepository,
     private val eventRepository: EventRepository,
     private val upwDetailsRepository: UpwDetailsRepository,
     private val unpaidWorkAppointmentRepository: UnpaidWorkAppointmentRepository,
     private val linkedListRepository: LinkedListRepository
-){
-    fun getSummaryForCase(crn: String) : UnpaidWorkDetails {
+) {
+    fun getSummaryForCase(crn: String): UnpaidWorkDetails {
         val personId = personRepository.getByCrn(crn).id
         val events = eventRepository.getByPerson_Id(personId)
         val details = upwDetailsRepository.findByEventIdIn(events.map { it.id })
@@ -30,7 +30,6 @@ class CaseSummaryService (
         val eteAppts = allAppointments.filter { appointment ->
             linkedListEntry.any { it.data2.code == appointment.project.projectType.code }
         }
-
 
         val upwMinutes = details.map { detail ->
             val matchingMinutes = requiredMinutes.filter { it.id == detail.id }
