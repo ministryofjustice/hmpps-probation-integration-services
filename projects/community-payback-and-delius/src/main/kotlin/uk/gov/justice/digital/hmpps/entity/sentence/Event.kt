@@ -46,7 +46,6 @@ interface EventRepository : JpaRepository<Event, Long>, EventIdRepository {
     fun getEventIds(pairs: List<Pair<String, Int>>) = findAllByPersonAndEventNumber(pairs)
         .associate { (crn, eventNumber, eventId) -> (crn to eventNumber) to eventId }
 
-    fun getByPerson(person: Person): MutableList<Event>
     fun getByPerson_Id(personId: Long): MutableList<Event>
 }
 
