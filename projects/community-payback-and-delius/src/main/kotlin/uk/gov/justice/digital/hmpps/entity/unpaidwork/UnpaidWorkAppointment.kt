@@ -293,8 +293,11 @@ interface UnpaidWorkAppointmentRepository : JpaRepository<UnpaidWorkAppointment,
         and a.details.softDeleted = false
         and a.details.disposal.softDeleted = false"""
     )
-    fun findByEventIdInAndProjectProjectTypeCodeIn(eventIds: Collection<Long>, projectTypeCodes: Collection<String>): List<UnpaidWorkAppointment>
-        """
+    fun findByEventIdInAndProjectProjectTypeCodeIn(
+        eventIds: Collection<Long>,
+        projectTypeCodes: Collection<String>
+    ): List<UnpaidWorkAppointment>
+    """
         select 
             project.upw_project_id, 
             coalesce(overdue_count, 0) as overdue_count, 
@@ -317,7 +320,7 @@ interface UnpaidWorkAppointmentRepository : JpaRepository<UnpaidWorkAppointment,
         and (:typeCodesCount = 0 or project_type.code_value in (:typeCodes))
         and (project.completion_date is null or project.completion_date > current_date)
         """,
-        nativeQuery = true
+    nativeQuery = true
     )
     fun getOutcomeStats(
         teamCode: String,
