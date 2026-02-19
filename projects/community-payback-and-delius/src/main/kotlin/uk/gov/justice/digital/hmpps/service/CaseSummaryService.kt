@@ -24,9 +24,8 @@ class CaseSummaryService(
         val details = upwDetailsRepository.findByEventIdIn(events.map { it.id })
         val detailsIds = details.map { it.id }
         val requiredMinutes = unpaidWorkAppointmentRepository.getUpwRequiredAndCompletedMinutes(detailsIds)
-        val appointments = events.map { event -> unpaidWorkAppointmentRepository.findByEventId(event.id) }
+        val allAppointments = unpaidWorkAppointmentRepository.findByEventIdIn(events.map { it.id })
         val linkedListEntry = linkedListRepository.findLinkedListsByData1_Code("ETE")
-        val allAppointments = appointments.flatten()
         val eteAppts = allAppointments.filter { appointment ->
             linkedListEntry.any { it.data2.code == appointment.project.projectType.code }
         }
