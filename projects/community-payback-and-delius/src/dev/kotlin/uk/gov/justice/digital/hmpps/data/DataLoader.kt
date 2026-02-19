@@ -123,6 +123,7 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
         save(UPWGenerator.UPW_APPOINTMENT_WITHOUT_PICKUP)
         save(UPWGenerator.UPW_APPOINTMENT_NO_ENFORCEMENT)
         saveAll(UPWGenerator.UPW_APPOINTMENT_TO_UPDATE)
+        save(UPWGenerator.OVERDUE_APPOINTMENT)
         save(UPWGenerator.DEFAULT_RQMNT)
         save(UPWGenerator.SECOND_RQMNT)
         save(UPWGenerator.LAO_EXCLUDED_UPW_APPOINTMENT)

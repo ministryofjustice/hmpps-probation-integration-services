@@ -9,6 +9,8 @@ import org.springframework.data.annotation.CreatedBy
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedBy
 import org.springframework.data.annotation.LastModifiedDate
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
@@ -273,6 +275,39 @@ interface UnpaidWorkAppointmentRepository : JpaRepository<UnpaidWorkAppointment,
     """
     )
     fun findByEventId(eventId: Long): List<UnpaidWorkAppointment>
+
+    @Query(
+        """
+        select 
+            project.upw_project_id, 
+            coalesce(overdue_count, 0) as overdue_count, 
+            coalesce(overdue_days, 0) as overdue_days
+        from upw_project project
+        join team t on t.team_id = project.team_id
+        join r_standard_reference_list project_type on project_type.standard_reference_list_id = project.project_type_id
+        left join (
+            select 
+                upw_project_id, 
+                count(*) as overdue_count, 
+                cast(max(trunc(cast(current_date as date)) - trunc(cast(appointment_date as date))) as int) as overdue_days
+            from upw_appointment
+            where trunc(cast(appointment_date as date)) + (end_time - trunc(cast(end_time as date))) < current_date
+              and contact_outcome_type_id is null
+              and soft_deleted = 0
+            group by upw_project_id
+        ) appointment_stats on appointment_stats.upw_project_id = project.upw_project_id
+        where t.code = :teamCode
+        and (:typeCodesCount = 0 or project_type.code_value in (:typeCodes))
+        and (project.completion_date is null or project.completion_date > current_date)
+        """,
+        nativeQuery = true
+    )
+    fun getOutcomeStats(
+        teamCode: String,
+        typeCodes: List<String>,
+        pageable: Pageable,
+        typeCodesCount: Int = typeCodes.count()
+    ): Page<Triple<Long, Int, Int>>
 }
 
 fun UnpaidWorkAppointmentRepository.getAppointment(id: Long) =
