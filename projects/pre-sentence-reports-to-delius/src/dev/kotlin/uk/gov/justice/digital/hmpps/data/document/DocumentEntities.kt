@@ -16,7 +16,6 @@ class Custody(@Id val custodyId: Long, val eventId: Long, val disposalId: Long)
 @Entity
 class Disposal(@Id val disposalId: Long, val eventId: Long)
 
-
 @Immutable
 @Entity
 class Assessment(@Id val assessmentId: Long, val referralId: Long?)
