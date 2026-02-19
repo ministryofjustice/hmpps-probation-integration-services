@@ -170,7 +170,7 @@ object DatasetGenerator {
     val UPW_BEHAVIOUR_DATASET = generateDataset(code = Dataset.UPW_BEHAVIOUR)
     val NON_WORKING_DAYS_DATASET = generateDataset(code = Dataset.NON_WORKING_DAYS)
     val UPW_FREQUENCY_DATASET = generateDataset(code = Dataset.UPW_FREQUENCY)
-    val UPW_PROJECT_CATEGORY_DATASET = generateDataset( code = Dataset.UPW_PROJECT_CATEGORY)
+    val UPW_PROJECT_CATEGORY_DATASET = generateDataset(code = Dataset.UPW_PROJECT_CATEGORY)
     fun generateDataset(
         id: Long = IdGenerator.getAndIncrement(),
         code: String
