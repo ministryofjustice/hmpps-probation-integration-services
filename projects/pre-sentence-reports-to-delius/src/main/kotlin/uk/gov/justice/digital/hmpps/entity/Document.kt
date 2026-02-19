@@ -96,6 +96,4 @@ interface DocumentRepository : JpaRepository<Document, Long> {
         return findEventIdFromDocument(Document.Companion.psrUrn(uuid))
             ?: throw NotFoundException("Document with external reference ${Document.Companion.psrUrn(uuid)} not found")
     }
-
-
 }
