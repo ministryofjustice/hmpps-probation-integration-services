@@ -17,7 +17,7 @@ dn: cn=UserPreferences,cn=J0nSm17h,ou=Users,dc=moj,dc=com
 objectclass: top
 objectclass: UserPreferences
 cn: UserPreferences
-replyAddress: 123
+replyAddress: 10001099
 
 dn: cn=NoHomeArea,ou=Users,dc=moj,dc=com
 objectclass: top

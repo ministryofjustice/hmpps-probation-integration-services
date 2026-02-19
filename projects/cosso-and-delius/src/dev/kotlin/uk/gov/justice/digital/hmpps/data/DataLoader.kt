@@ -7,10 +7,14 @@ import uk.gov.justice.digital.hmpps.data.generator.DisposalGenerator
 import uk.gov.justice.digital.hmpps.data.generator.DocumentGenerator
 import uk.gov.justice.digital.hmpps.data.generator.EventGenerator
 import uk.gov.justice.digital.hmpps.data.generator.MainOffenceGenerator
+import uk.gov.justice.digital.hmpps.data.generator.OfficeLocationGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonAddressGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
+import uk.gov.justice.digital.hmpps.data.generator.ProbationAreaGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator
 import uk.gov.justice.digital.hmpps.data.generator.RequirementGenerator
+import uk.gov.justice.digital.hmpps.data.generator.ResponsibleOfficerGenerator
+import uk.gov.justice.digital.hmpps.data.generator.StaffGenerator
 import uk.gov.justice.digital.hmpps.data.generator.UserGenerator
 import uk.gov.justice.digital.hmpps.data.loader.BaseDataLoader
 import uk.gov.justice.digital.hmpps.data.manager.DataManager
@@ -44,7 +48,15 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
             CourtAppearanceGenerator.DEFAULT_COURT_APPEARANCE,
             CourtAppearanceGenerator.MISSING_DISPOSAL_COURT_APPEARANCE,
             RequirementGenerator.DEFAULT_REQUIREMENT,
-            AdditionalOffenceGenerator.DEFAULT_ADDITIONAL_OFFENCE
+            AdditionalOffenceGenerator.DEFAULT_ADDITIONAL_OFFENCE,
+            StaffGenerator.DEFAULT_PROBATION_STAFF,
+            UserGenerator.DEFAULT_PROBATION_USER,
+            ProbationAreaGenerator.DEFAULT_PROBATION_AREA,
+            ResponsibleOfficerGenerator.DEFAULT_OFFENDER_MANAGER,
+            ResponsibleOfficerGenerator.DEFAULT_PROBATION_RESPONSIBLE_OFFICER,
+            ResponsibleOfficerGenerator.DEFAULT_PRISON_OFFENDER_MANAGER,
+            ResponsibleOfficerGenerator.DEFAULT_PRISON_RESPONSIBLE_OFFICER,
+            OfficeLocationGenerator.DEFAULT_OFFICE_LOCATION,
         )
     }
 }

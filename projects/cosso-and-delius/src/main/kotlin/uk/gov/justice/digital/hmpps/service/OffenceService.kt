@@ -10,8 +10,7 @@ import uk.gov.justice.digital.hmpps.entity.DocumentRepository
 import uk.gov.justice.digital.hmpps.entity.MainOffenceRepository
 import uk.gov.justice.digital.hmpps.entity.RequirementRepository
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
-import uk.gov.justice.digital.hmpps.exception.NotFoundException.Companion.orNotFoundBy
-import uk.gov.justice.digital.hmpps.model.CodedDescription
+import uk.gov.justice.digital.hmpps.model.CodeAndDescription
 import uk.gov.justice.digital.hmpps.model.OffenceDetails
 import uk.gov.justice.digital.hmpps.model.Requirement
 import uk.gov.justice.digital.hmpps.model.Sentence
@@ -39,17 +38,17 @@ class OffenceService(
         val mainOffence = mainOffenceRepository.findByEventId(eventId)?.offence
             ?: throw NotFoundException("Offence", "eventId", eventId)
         val additionalOffences = additionalOffenceRepository.findAllByEventId(eventId)
-            .map { CodedDescription(it.offence.subCategoryCode, it.offence.subCategoryDescription) }
+            .map { CodeAndDescription(it.offence.subCategoryCode, it.offence.subCategoryDescription) }
         val courtAppearance = courtAppearanceRepository.findSentencingAppearance(eventId).firstOrNull()
             ?: throw NotFoundException("CourtAppearance", "eventId", eventId)
         val disposal = disposalRepository.findFirstByEventIdOrderByDisposalDate(eventId)
             ?: throw NotFoundException("Disposal", "eventId", eventId)
         return OffenceDetails(
-            mainOffence = CodedDescription(mainOffence.subCategoryCode, mainOffence.subCategoryDescription),
+            mainOffence = CodeAndDescription(mainOffence.subCategoryCode, mainOffence.subCategoryDescription),
             additionalOffences = additionalOffences,
             sentencingCourt = courtAppearance.court.courtName,
             sentenceDate = disposal.disposalDate,
-            sentenceImposed = CodedDescription(courtAppearance.outcome.code, courtAppearance.outcome.description),
+            sentenceImposed = CodeAndDescription(courtAppearance.outcome.code, courtAppearance.outcome.description),
             requirementsImposed = getRequirements(disposal.id),
             sentence = getSentence(disposal)
         )
