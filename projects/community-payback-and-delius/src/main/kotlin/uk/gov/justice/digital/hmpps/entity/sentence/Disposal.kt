@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.entity.sentence
 
 import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
+import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.NumericBooleanConverter
 import org.hibernate.type.YesNoConverter
 import java.time.LocalDate
@@ -9,6 +10,7 @@ import java.time.LocalDate
 @Entity
 @Table(name = "disposal")
 @Immutable
+@SQLRestriction(value = "soft_deleted = 0")
 class Disposal(
     @Id
     @Column(name = "disposal_id")

@@ -276,24 +276,7 @@ interface UnpaidWorkAppointmentRepository : JpaRepository<UnpaidWorkAppointment,
     )
     fun findByEventId(eventId: Long): List<UnpaidWorkAppointment>
 
-    @Query(
-        """select a from UnpaidWorkAppointment a
-        where a.details.disposal.event.id in :eventIds
-        and a.softDeleted = false
-        and a.details.softDeleted = false
-        and a.details.disposal.softDeleted = false"""
-    )
-    fun findByEventIdIn(eventIds: Collection<Long>): List<UnpaidWorkAppointment>
-
-    @Query(
-        """select a from UnpaidWorkAppointment a
-        where a.details.disposal.event.id in :eventIds
-        and a.project.projectType.code in :projectTypeCodes
-        and a.softDeleted = false
-        and a.details.softDeleted = false
-        and a.details.disposal.softDeleted = false"""
-    )
-    fun findByEventIdInAndProjectProjectTypeCodeIn(
+    fun findByDetailsDisposalEventIdInAndProjectProjectTypeCodeIn(
         eventIds: Collection<Long>,
         projectTypeCodes: Collection<String>
     ): List<UnpaidWorkAppointment>

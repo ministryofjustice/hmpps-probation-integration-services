@@ -25,7 +25,7 @@ class CaseSummaryService(
         val requiredMinutes = unpaidWorkAppointmentRepository
             .getUpwRequiredAndCompletedMinutes(details.map { it.id })
         val linkedListEntry = linkedListRepository.findLinkedListsByData1_Code("ETE")
-        val eteAppts = unpaidWorkAppointmentRepository.findByEventIdInAndProjectProjectTypeCodeIn(
+        val eteAppts = unpaidWorkAppointmentRepository.findByDetailsDisposalEventIdInAndProjectProjectTypeCodeIn(
             eventIds = events.map { it.id },
             projectTypeCodes = linkedListEntry.map { it.data2.code }
         )
