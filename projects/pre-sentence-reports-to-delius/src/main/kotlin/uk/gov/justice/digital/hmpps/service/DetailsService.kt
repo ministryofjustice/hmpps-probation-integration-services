@@ -9,7 +9,6 @@ import uk.gov.justice.digital.hmpps.entity.name
 import uk.gov.justice.digital.hmpps.exception.NotFoundException.Companion.orNotFoundBy
 import uk.gov.justice.digital.hmpps.model.Address
 import uk.gov.justice.digital.hmpps.model.DefendantDetails
-import kotlin.jvm.optionals.getOrNull
 
 @Service
 class DetailsService
@@ -21,9 +20,8 @@ class DetailsService
     fun getDefendantDetails(psrUuid: String): DefendantDetails {
         val document = documentRepository.getByUuid(psrUuid)
         val person = document.person
-        val eventId = documentRepository.getEventIdByUuid(psrUuid).orNotFoundBy("CRN", person.crn)
-        val event = eventRepository
-            .findById(eventId).getOrNull()
+        val eventId = documentRepository.getEventIdByUuid(psrUuid)
+        val eventNumber = eventRepository.findById(eventId).get().eventNumber.toInt()
             .orNotFoundBy("CRN", person.crn)
         val name = person.name()
         val address = personAddressRepository.findMainAddress(person.id)?.let {
@@ -41,7 +39,7 @@ class DetailsService
 
         return DefendantDetails(
             crn = person.crn,
-            eventNumber = event.eventNumber.toInt(),
+            eventNumber = eventNumber,
             name = name,
             dateOfBirth = person.dateOfBirth,
             mainAddress = address

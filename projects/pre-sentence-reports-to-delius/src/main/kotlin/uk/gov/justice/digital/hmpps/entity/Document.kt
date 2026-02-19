@@ -80,6 +80,7 @@ interface DocumentRepository : JpaRepository<Document, Long> {
         left join contact on document.table_name = 'CONTACT' and document.primary_key_id = contact.contact_id
         left join nsi on document.table_name = 'NSI' and document.primary_key_id = nsi.nsi_id
         where document.external_reference = :urn
+        and document.soft_deleted = false
         """,
         nativeQuery = true
     )
@@ -92,8 +93,8 @@ interface DocumentRepository : JpaRepository<Document, Long> {
             ?: throw NotFoundException("Document with external reference ${Document.Companion.psrUrn(uuid)} not found")
     }
 
-    fun getEventIdByUuid(uuid: String): Long? {
+    fun getEventIdByUuid(uuid: String): Long {
         return findEventIdFromDocument(Document.Companion.psrUrn(uuid))
-            ?: throw NotFoundException("Document with external reference ${Document.Companion.psrUrn(uuid)} not found")
+            ?: throw NotFoundException("EventId from Document with external reference ${Document.Companion.psrUrn(uuid)} not found")
     }
 }

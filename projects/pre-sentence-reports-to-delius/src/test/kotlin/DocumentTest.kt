@@ -67,4 +67,24 @@ class DocumentRepositoryTest {
         }
         assertTrue(ex.message!!.contains("Document with external reference"))
     }
+
+    @Test
+    fun `getEventIdByUuid returns eventId if found`() {
+        val repo = mock<DocumentRepository>()
+        whenever(repo.findEventIdFromDocument(any())).thenReturn(123L)
+        whenever(repo.getEventIdByUuid("uuid")).thenCallRealMethod()
+        val result = repo.getEventIdByUuid("uuid")
+        assertEquals(123L, result)
+    }
+
+    @Test
+    fun `getEventIdByUuid throws NotFoundException if not found`() {
+        val repo = mock<DocumentRepository>()
+        whenever(repo.findEventIdFromDocument(any())).thenReturn(null)
+        whenever(repo.getEventIdByUuid("uuid")).thenCallRealMethod()
+        val ex = assertThrows(NotFoundException::class.java) {
+            repo.getEventIdByUuid("uuid")
+        }
+        assertTrue(ex.message!!.contains("EventId from Document with external reference"))
+    }
 }
