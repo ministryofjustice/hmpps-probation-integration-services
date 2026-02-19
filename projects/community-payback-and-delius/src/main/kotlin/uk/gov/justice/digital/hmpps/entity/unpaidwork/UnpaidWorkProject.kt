@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.entity.unpaidwork
 import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.type.YesNoConverter
+import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
 import uk.gov.justice.digital.hmpps.entity.ReferenceData
 import uk.gov.justice.digital.hmpps.entity.person.Address
@@ -71,7 +72,11 @@ class UnpaidWorkProject(
 }
 
 interface UnpaidWorkProjectRepository : JpaRepository<UnpaidWorkProject, Long> {
+    @EntityGraph(attributePaths = ["placementAddress", "beneficiaryContactAddress", "team.provider", "projectType"])
     fun findByCode(code: String): UnpaidWorkProject?
+
+    @EntityGraph(attributePaths = ["placementAddress", "beneficiaryContactAddress", "team.provider", "projectType"])
+    fun findAllByIdIn(ids: Collection<Long>): List<UnpaidWorkProject>
 }
 
 fun UnpaidWorkProjectRepository.getByCode(code: String) = findByCode(code).orNotFoundBy("code", code)

@@ -3,11 +3,11 @@ package uk.gov.justice.digital.hmpps.model
 import java.time.LocalDate
 
 data class OffenceDetails(
-    val mainOffence: CodedDescription,
-    val additionalOffences: List<CodedDescription>,
+    val mainOffence: CodeAndDescription,
+    val additionalOffences: List<CodeAndDescription>,
     val sentencingCourt: String,
     val sentenceDate: LocalDate,
-    val sentenceImposed: CodedDescription,
+    val sentenceImposed: CodeAndDescription,
     val requirementsImposed: List<Requirement>,
     val sentence: Sentence
 )
