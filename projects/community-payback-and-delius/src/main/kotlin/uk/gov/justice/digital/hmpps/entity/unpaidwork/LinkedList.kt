@@ -11,10 +11,6 @@ data class LinkedListId(
     val data1: Long = 0,
     @Column(name = "standard_reference_data2")
     val data2: Long = 0,
-    @Column(name = "row_version")
-    val rowVersion: Long = 0,
-    @Column(name = "training_session_id")
-    val trainingSessionId: Long = 0
 ) : Serializable
 
 @Entity

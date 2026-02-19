@@ -8,8 +8,6 @@ object LinkedListGenerator {
         id = LinkedListId(
             data1 = ReferenceDataGenerator.ETE_PROJECT_TYPE.id,
             data2 = ReferenceDataGenerator.GROUP_PLACEMENT_PROJECT_TYPE.id,
-            rowVersion = 0,
-            trainingSessionId = 0
         ),
         data1 = ReferenceDataGenerator.ETE_PROJECT_TYPE,
         data2 = ReferenceDataGenerator.GROUP_PLACEMENT_PROJECT_TYPE,
@@ -19,8 +17,6 @@ object LinkedListGenerator {
         id = LinkedListId(
             data1 = ReferenceDataGenerator.ETE_PROJECT_TYPE.id,
             data2 = ReferenceDataGenerator.INDIVIDUAL_PLACEMENT_PROJECT_TYPE.id,
-            rowVersion = 0,
-            trainingSessionId = 0
         ),
         data1 = ReferenceDataGenerator.ETE_PROJECT_TYPE,
         data2 = ReferenceDataGenerator.INDIVIDUAL_PLACEMENT_PROJECT_TYPE,
