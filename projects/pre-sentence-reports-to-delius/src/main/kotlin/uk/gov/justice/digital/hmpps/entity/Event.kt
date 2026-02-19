@@ -4,6 +4,7 @@ import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.Id
 import jakarta.persistence.Table
+import org.springframework.data.jpa.repository.JpaRepository
 
 @Entity
 @Table(name = "event")
@@ -20,3 +21,5 @@ class Event(
      */
     val eventNumber: String
 )
+
+interface EventRepository : JpaRepository<Event, Long>
