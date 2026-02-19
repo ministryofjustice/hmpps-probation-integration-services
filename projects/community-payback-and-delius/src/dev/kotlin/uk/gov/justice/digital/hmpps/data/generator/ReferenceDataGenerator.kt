@@ -102,6 +102,12 @@ object ReferenceDataGenerator {
         weekDay = "MONDAY"
     )
 
+    val ETE_PROJECT_TYPE = generateReferenceData(
+        code = "ETE",
+        description = "ETE",
+        datasetId = DatasetGenerator.UPW_PROJECT_CATEGORY_DATASET.id
+    )
+
     fun generateReferenceData(
         id: Long = IdGenerator.getAndIncrement(),
         code: String,
@@ -164,7 +170,7 @@ object DatasetGenerator {
     val UPW_BEHAVIOUR_DATASET = generateDataset(code = Dataset.UPW_BEHAVIOUR)
     val NON_WORKING_DAYS_DATASET = generateDataset(code = Dataset.NON_WORKING_DAYS)
     val UPW_FREQUENCY_DATASET = generateDataset(code = Dataset.UPW_FREQUENCY)
-
+    val UPW_PROJECT_CATEGORY_DATASET = generateDataset(code = Dataset.UPW_PROJECT_CATEGORY)
     fun generateDataset(
         id: Long = IdGenerator.getAndIncrement(),
         code: String

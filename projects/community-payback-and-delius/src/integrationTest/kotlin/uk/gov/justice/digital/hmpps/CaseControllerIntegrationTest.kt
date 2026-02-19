@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.test.json.JsonCompareMode
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
 import uk.gov.justice.digital.hmpps.advice.ErrorResponse
@@ -65,6 +66,26 @@ class CaseControllerIntegrationTest @Autowired constructor(
             .andExpect { status { isNotFound() } }
             .andReturn().response.contentAsJson<ErrorResponse>().also {
                 assertThat(it.message).contains("Event with event number of 999 not found")
+            }
+    }
+
+    @Test
+    fun `returns 200 when summary requested`() {
+        val expected =
+            """{"unpaidWorkDetails":[{"eventNumber":1,"requiredMinutes":7200,"adjustments":4,"completedMinutes":870,"completedEteMinutes":870},{"eventNumber":2,"requiredMinutes":10800,"adjustments":0,"completedMinutes":405,"completedEteMinutes":405},{"eventNumber":3,"requiredMinutes":0,"adjustments":0,"completedMinutes":0,"completedEteMinutes":0}]}"""
+        mockMvc.get("/case/${PersonGenerator.DEFAULT_PERSON.crn}/summary") { withToken() }
+            .andExpect {
+                status { isOk() }
+                content { json(expected, JsonCompareMode.STRICT) }
+            }
+    }
+
+    @Test
+    fun `returns 404 for unknown person`() {
+        mockMvc.get("/case/X999999/summary") { withToken() }
+            .andExpect { status { isNotFound() } }
+            .andReturn().response.contentAsJson<ErrorResponse>().also {
+                assertThat(it.message).contains("Person with crn of X999999 not found")
             }
     }
 }

@@ -51,6 +51,7 @@ class Dataset(
         const val UPW_BEHAVIOUR = "UPW BEHAVIOUR"
         const val NON_WORKING_DAYS = "NON WORKING DAYS"
         const val UPW_FREQUENCY = "UPW PROJECT FREQUENCY"
+        const val UPW_PROJECT_CATEGORY = "UPW PROJECT CATEGORY"
     }
 }
 

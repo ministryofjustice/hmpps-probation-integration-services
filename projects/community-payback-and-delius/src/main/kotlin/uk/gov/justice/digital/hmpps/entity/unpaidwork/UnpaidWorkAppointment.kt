@@ -276,6 +276,11 @@ interface UnpaidWorkAppointmentRepository : JpaRepository<UnpaidWorkAppointment,
     )
     fun findByEventId(eventId: Long): List<UnpaidWorkAppointment>
 
+    fun findByDetailsDisposalEventIdInAndProjectProjectTypeCodeIn(
+        eventIds: Collection<Long>,
+        projectTypeCodes: Collection<String>
+    ): List<UnpaidWorkAppointment>
+
     @Query(
         """
         select 
