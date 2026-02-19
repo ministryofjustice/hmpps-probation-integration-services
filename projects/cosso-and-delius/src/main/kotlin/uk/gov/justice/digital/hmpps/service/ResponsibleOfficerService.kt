@@ -60,8 +60,10 @@ class ResponsibleOfficerService(
     private fun ResponsibleOfficer.getStaff() =
         (offenderManager?.staff ?: prisonOffenderManager?.staff).orNotFoundBy("CRN", this.person.crn)
 
-    private fun ResponsibleOfficer.getProbationArea() = (offenderManager?.probationArea ?: prisonOffenderManager?.probationArea).orNotFoundBy(
-        "CRN", this.person.crn)
+    private fun ResponsibleOfficer.getProbationArea() =
+        (offenderManager?.probationArea ?: prisonOffenderManager?.probationArea).orNotFoundBy(
+            "CRN", this.person.crn
+        )
 
     private fun officeAddress(username: String): OfficeAddress? =
         ldapTemplate.findPreferenceByUsername(username, "replyAddress")
