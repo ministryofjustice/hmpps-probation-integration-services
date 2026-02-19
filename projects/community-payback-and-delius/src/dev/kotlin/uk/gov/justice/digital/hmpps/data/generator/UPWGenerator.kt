@@ -293,6 +293,22 @@ object UPWGenerator {
         )
     }
 
+    val OVERDUE_APPOINTMENT = generateUpwAppointment(
+        startTime = LocalTime.of(9, 0),
+        endTime = LocalTime.of(17, 0),
+        date = LocalDate.now().minusDays(7),
+        project = UPW_PROJECT_1,
+        details = UPW_DETAILS_1,
+        allocation = DEFAULT_UPW_ALLOCATION,
+        contact = DEFAULT_CONTACT,
+        pickupLocation = DEFAULT_OFFICE_LOCATION,
+        pickupTime = LocalTime.of(9, 0),
+        penaltyTime = 65L,
+        person = PersonGenerator.DEFAULT_PERSON,
+        staff = StaffGenerator.DEFAULT_STAFF,
+        team = TeamGenerator.DEFAULT_UPW_TEAM,
+    )
+
     val DEFAULT_RQMNT = generateRequirement(
         length = 120,
         disposal = DISPOSAL_1
@@ -445,15 +461,15 @@ object UPWGenerator {
         pickupTime: LocalTime?,
         penaltyTime: Long?,
         contact: Contact,
-        contactOutcomeTypeId: Long?,
+        contactOutcomeTypeId: Long? = null,
         person: Person,
         staff: Staff,
         team: Team,
         hiVisWorn: Boolean = false,
         workedIntensively: Boolean = false,
-        workQuality: ReferenceData?,
-        behaviour: ReferenceData?,
-        minutesCredited: Long?,
+        workQuality: ReferenceData? = null,
+        behaviour: ReferenceData? = null,
+        minutesCredited: Long? = null,
         notes: String? = null,
         rowVersion: Long = 1,
         createdDatetime: ZonedDateTime = ZonedDateTime.now(),

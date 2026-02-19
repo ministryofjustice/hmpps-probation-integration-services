@@ -32,6 +32,7 @@ class ActivityService(
             keywords = searchRequest.keywords,
             dateFrom = searchRequest.dateFrom,
             dateTo = searchRequest.dateTo,
+            includeSystemGenerated = searchRequest.includeSystemGenerated,
             filters = searchRequest.filters
         )
         val response =
