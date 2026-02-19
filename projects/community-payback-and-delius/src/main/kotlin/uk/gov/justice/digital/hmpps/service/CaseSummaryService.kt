@@ -33,7 +33,6 @@ class CaseSummaryService(
         val eteAppts = allAppointments.filter { appointment ->
             linkedListEntry.any { it.data2.code == appointment.project.projectType.code }
         }
-
         val upwMinutes = details.map { detail ->
             val matchingMinutes = requiredMinutes.filter { it.id == detail.id }
             val eteMinutes = eteAppts.filter { it.details.id == detail.id }.sumOf { it.minutesCredited ?: 0 }

@@ -75,6 +75,7 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
         save(DatasetGenerator.UPW_BEHAVIOUR_DATASET)
         save(DatasetGenerator.NON_WORKING_DAYS_DATASET)
         save(DatasetGenerator.UPW_FREQUENCY_DATASET)
+        save(DatasetGenerator.UPW_PROJECT_CATEGORY_DATASET)
         save(ReferenceDataGenerator.GROUP_PLACEMENT_PROJECT_TYPE)
         save(ReferenceDataGenerator.INDIVIDUAL_PLACEMENT_PROJECT_TYPE)
         save(ReferenceDataGenerator.ETE_PROJECT_TYPE)

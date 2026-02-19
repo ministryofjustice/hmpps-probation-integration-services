@@ -79,4 +79,13 @@ class CaseControllerIntegrationTest @Autowired constructor(
                 content { json(expected, JsonCompareMode.STRICT) }
             }
     }
+
+    @Test
+    fun `returns 404 for unknown person`() {
+        mockMvc.get("/case/X999999/summary") { withToken() }
+            .andExpect { status { isNotFound() } }
+            .andReturn().response.contentAsJson<ErrorResponse>().also {
+                assertThat(it.message).contains("Person with crn of X999999 not found")
+            }
+    }
 }
