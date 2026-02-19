@@ -102,6 +102,13 @@ object ReferenceDataGenerator {
         weekDay = "MONDAY"
     )
 
+    val ETE_PROJECT_TYPE = generateReferenceData(
+        code = "ETE",
+        description = "ETE",
+        datasetId = DatasetGenerator.UPW_PROJECT_TYPE_DATASET.id
+    )
+
+
     fun generateReferenceData(
         id: Long = IdGenerator.getAndIncrement(),
         code: String,
