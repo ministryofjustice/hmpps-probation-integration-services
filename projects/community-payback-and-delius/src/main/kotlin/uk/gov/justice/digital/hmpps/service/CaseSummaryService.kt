@@ -22,18 +22,13 @@ class CaseSummaryService(
         val personId = personRepository.getByCrn(crn).id
         val events = eventRepository.getByPerson_Id(personId)
         val details = upwDetailsRepository.findByEventIdIn(events.map { it.id })
-        val detailsIds = details.map { it.id }
-        val requiredMinutes = if (detailsIds.isEmpty()) {
-            emptyList()
-        } else {
-            unpaidWorkAppointmentRepository.getUpwRequiredAndCompletedMinutes(detailsIds)
-        }
-        val allAppointments = events.map { event -> unpaidWorkAppointmentRepository.findByEventId(event.id) }
-            .flatten()
+        val requiredMinutes = unpaidWorkAppointmentRepository
+            .getUpwRequiredAndCompletedMinutes(details.map { it.id })
         val linkedListEntry = linkedListRepository.findLinkedListsByData1_Code("ETE")
-        val eteAppts = allAppointments.filter { appointment ->
-            linkedListEntry.any { it.data2.code == appointment.project.projectType.code }
-        }
+        val eteAppts = unpaidWorkAppointmentRepository.findByEventIdInAndProjectProjectTypeCodeIn(
+            eventIds = events.map { it.id },
+            projectTypeCodes = linkedListEntry.map { it.data2.code }
+        )
         val upwMinutes = details.map { detail ->
             val matchingMinutes = requiredMinutes.filter { it.id == detail.id }
             val eteMinutes = eteAppts.filter { it.details.id == detail.id }.sumOf { it.minutesCredited ?: 0 }
