@@ -176,12 +176,15 @@ class GetAppointmentIntegrationTest @Autowired constructor(
 
     @Test
     fun `can retrieve all appointments by crn and date sort desc`() {
-        val responseString = mockMvc.get("/appointments?crn=${PersonGenerator.DEFAULT_PERSON.crn}&sort=date,desc") { withToken() }
-            .andExpect { status { is2xxSuccessful() } }
-            .andReturn().response.contentAsString
+        val responseString =
+            mockMvc.get("/appointments?crn=${PersonGenerator.DEFAULT_PERSON.crn}&sort=date,desc") { withToken() }
+                .andExpect { status { is2xxSuccessful() } }
+                .andReturn().response.contentAsString
         val node = objectMapper.readTree(responseString)
         val ids = node["content"].map { it["id"].asLong() }
-        assertThat(ids).containsExactly(UPWGenerator.DEFAULT_UPW_APPOINTMENT.id,
-            UPWGenerator.OVERDUE_APPOINTMENT.id, 1L, 2L, 3L)
+        assertThat(ids).containsExactly(
+            UPWGenerator.DEFAULT_UPW_APPOINTMENT.id,
+            UPWGenerator.OVERDUE_APPOINTMENT.id, 1L, 2L, 3L
+        )
     }
 }

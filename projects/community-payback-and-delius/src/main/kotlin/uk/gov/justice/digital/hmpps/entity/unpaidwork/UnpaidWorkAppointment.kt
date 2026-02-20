@@ -315,7 +315,8 @@ interface UnpaidWorkAppointmentRepository : JpaRepository<UnpaidWorkAppointment,
         typeCodesCount: Int = typeCodes.count()
     ): Page<Triple<Long, Int, Int>>
 
-    @Query("""
+    @Query(
+        """
         select a from UnpaidWorkAppointment a
         where (:crn is null or a.person.crn = :crn)
           and (:fromDate is null or a.date >= :fromDate)
@@ -323,7 +324,8 @@ interface UnpaidWorkAppointmentRepository : JpaRepository<UnpaidWorkAppointment,
           and (:projectCodes is null or a.project.code in :projectCodes)
           and (:projectTypeCodes is null or a.project.projectType.code in :projectTypeCodes)
           and (:outcomeCodes is null or a.contact.outcome.code in :outcomeCodes)
-    """)
+    """
+    )
     fun findAppointments(
         @Param("crn") crn: String?,
         @Param("fromDate") fromDate: LocalDate?,

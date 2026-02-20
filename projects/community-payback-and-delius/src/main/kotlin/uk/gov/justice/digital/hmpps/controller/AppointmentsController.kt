@@ -17,8 +17,7 @@ import java.time.LocalDate
 @PreAuthorize("hasRole('PROBATION_API__COMMUNITY_PAYBACK__CASE_DETAIL')")
 class AppointmentsController(
     private val communityPaybackAppointmentsService: CommunityPaybackAppointmentsService
-)
-{
+) {
     @GetMapping("")
     fun getAppointments(
         @RequestParam(required = false) crn: String?,
@@ -29,8 +28,12 @@ class AppointmentsController(
         @RequestParam(required = false) outcomeCode: List<String>?,
         @RequestParam(required = false, defaultValue = "0") page: Int,
         @RequestParam(required = false, defaultValue = "100") size: Int
-    ) = communityPaybackAppointmentsService.getAppointments(crn, fromDate, toDate,
+    ) = communityPaybackAppointmentsService.getAppointments(
+        crn, fromDate, toDate,
         projectCodes, projectTypeCodes, outcomeCode,
-        PageRequest.of(page, size).mapSorts("name" to "name",
-            "date" to "date"))
+        PageRequest.of(page, size).mapSorts(
+            "name" to "name",
+            "date" to "date"
+        )
+    )
 }

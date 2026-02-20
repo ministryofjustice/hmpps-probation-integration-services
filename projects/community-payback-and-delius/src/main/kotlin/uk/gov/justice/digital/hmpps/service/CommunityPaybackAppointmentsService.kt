@@ -92,7 +92,16 @@ class CommunityPaybackAppointmentsService(
             alertActive = appointment.contact.alertActive
         )
     }
-    fun getAppointments(crn: String?, fromDate: LocalDate?, toDate: LocalDate?, projectCodes: List<String>?, projectTypeCodes: List<String>?, outcomeCodes: List<String>?, pageable: Pageable): Page<AppointmentsResponse> {
+
+    fun getAppointments(
+        crn: String?,
+        fromDate: LocalDate?,
+        toDate: LocalDate?,
+        projectCodes: List<String>?,
+        projectTypeCodes: List<String>?,
+        outcomeCodes: List<String>?,
+        pageable: Pageable
+    ): Page<AppointmentsResponse> {
         val appointments = unpaidWorkAppointmentRepository.findAppointments(
             crn,
             fromDate,
