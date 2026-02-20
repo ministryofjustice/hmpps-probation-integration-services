@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.model
 
 import uk.gov.justice.digital.hmpps.entity.unpaidwork.UnpaidWorkProject
+import uk.gov.justice.digital.hmpps.entity.unpaidwork.UnpaidWorkProjectAvailability
 import java.time.LocalDate
 
 data class Project(
@@ -14,6 +15,7 @@ data class Project(
     val hiVisRequired: Boolean,
     val expectedEndDateExclusive: LocalDate?,
     val actualEndDateExclusive: LocalDate?,
+    val availability: List<ProjectAvailabilityDetails>,
 ) {
     constructor(entity: UnpaidWorkProject) : this(
         name = entity.name,
@@ -32,6 +34,7 @@ data class Project(
         ),
         hiVisRequired = entity.hiVisRequired,
         expectedEndDateExclusive = entity.expectedEndDate,
-        actualEndDateExclusive = entity.completionDate
+        actualEndDateExclusive = entity.completionDate,
+        availability = entity.availability.map { it.toProjectAvailabilityDetails() }
     )
 }

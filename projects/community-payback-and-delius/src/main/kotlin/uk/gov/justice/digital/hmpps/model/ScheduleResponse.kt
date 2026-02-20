@@ -29,6 +29,8 @@ data class AllocationResponse(
 
 data class ProjectAvailabilityDetails(
     val frequency: String?,
+    val dayOfWeek: String,
+    val startDateInclusive: LocalDate?,
     val endDateExclusive: LocalDate?
 )
 
@@ -62,6 +64,8 @@ fun UnpaidWorkAllocation.toAllocationResponse() = AllocationResponse(
 
 fun UnpaidWorkProjectAvailability.toProjectAvailabilityDetails() = ProjectAvailabilityDetails(
     frequency = frequency?.description,
+    dayOfWeek = dayOfWeek.weekDay,
+    startDateInclusive = startDate,
     endDateExclusive = endDate
 )
 

@@ -72,10 +72,10 @@ class UnpaidWorkProject(
 }
 
 interface UnpaidWorkProjectRepository : JpaRepository<UnpaidWorkProject, Long> {
-    @EntityGraph(attributePaths = ["placementAddress", "beneficiaryContactAddress", "team.provider", "projectType"])
+    @EntityGraph(attributePaths = ["placementAddress", "beneficiaryContactAddress", "team.provider", "projectType", "availability"])
     fun findByCode(code: String): UnpaidWorkProject?
 
-    @EntityGraph(attributePaths = ["placementAddress", "beneficiaryContactAddress", "team.provider", "projectType"])
+    @EntityGraph(attributePaths = ["placementAddress", "beneficiaryContactAddress", "team.provider", "projectType", "availability"])
     fun findAllByIdIn(ids: Collection<Long>): List<UnpaidWorkProject>
 }
 
