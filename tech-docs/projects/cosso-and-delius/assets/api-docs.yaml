@@ -14,6 +14,24 @@ servers:
 security:
 - hmpps-auth-token: []
 paths:
+  /responsible-officer-details/{crn}:
+    get:
+      tags:
+      - responsible-officer-controller
+      operationId: getResponsibleOfficerDetails
+      parameters:
+      - name: crn
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ResponsibleOfficerDetails"
   /offence-details/{uuid}:
     get:
       tags:
@@ -69,7 +87,7 @@ paths:
                 $ref: "#/components/schemas/PersonDetails"
 components:
   schemas:
-    CodedDescription:
+    CodeAndDescription:
       type: object
       properties:
         code:
@@ -79,22 +97,72 @@ components:
       required:
       - code
       - description
+    Name:
+      type: object
+      properties:
+        forename:
+          type: string
+        middleName:
+          type: string
+        surname:
+          type: string
+      required:
+      - forename
+      - surname
+    OfficeAddress:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        officeDescription:
+          type: string
+        buildingName:
+          type: string
+        buildingNumber:
+          type: string
+        streetName:
+          type: string
+        townCity:
+          type: string
+        district:
+          type: string
+        county:
+          type: string
+        postcode:
+          type: string
+    ResponsibleOfficerDetails:
+      type: object
+      properties:
+        name:
+          $ref: "#/components/schemas/Name"
+        emailAddress:
+          type: string
+        telephoneNumber:
+          type: string
+        probationArea:
+          $ref: "#/components/schemas/CodeAndDescription"
+        replyAddress:
+          $ref: "#/components/schemas/OfficeAddress"
+      required:
+      - name
+      - probationArea
     OffenceDetails:
       type: object
       properties:
         mainOffence:
-          $ref: "#/components/schemas/CodedDescription"
+          $ref: "#/components/schemas/CodeAndDescription"
         additionalOffences:
           type: array
           items:
-            $ref: "#/components/schemas/CodedDescription"
+            $ref: "#/components/schemas/CodeAndDescription"
         sentencingCourt:
           type: string
         sentenceDate:
           type: string
           format: date
         sentenceImposed:
-          $ref: "#/components/schemas/CodedDescription"
+          $ref: "#/components/schemas/CodeAndDescription"
         requirementsImposed:
           type: array
           items:
@@ -175,18 +243,6 @@ components:
       required:
       - id
       - status
-    Name:
-      type: object
-      properties:
-        forename:
-          type: string
-        middleName:
-          type: string
-        surname:
-          type: string
-      required:
-      - forename
-      - surname
     PersonDetails:
       type: object
       properties:

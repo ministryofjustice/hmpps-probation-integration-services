@@ -231,6 +231,41 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/SessionsResponse"
+  /providers/{providerCode}/teams/{teamCode}/projects:
+    get:
+      tags:
+      - providers-controller
+      operationId: getProjects
+      parameters:
+      - name: providerCode
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: teamCode
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: typeCode
+        in: query
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+      - name: pageable
+        in: query
+        required: true
+        schema:
+          $ref: "#/components/schemas/Pageable"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PagedModelProjectOutcomeStats"
   /providers/{code}/teams:
     get:
       tags:
@@ -308,6 +343,24 @@ paths:
             application/json:
               schema:
                 type: string
+  /case/{crn}/summary:
+    get:
+      tags:
+      - case-controller
+      operationId: getSummary
+      parameters:
+      - name: crn
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UnpaidWorkDetails"
   /case/{crn}/event/{eventNumber}/appointments/schedule:
     get:
       tags:
@@ -612,15 +665,21 @@ components:
             $ref: "#/components/schemas/Session"
       required:
       - sessions
-    TeamsResponse:
+    Pageable:
       type: object
       properties:
-        teams:
+        page:
+          type: integer
+          format: int32
+          minimum: 0
+        size:
+          type: integer
+          format: int32
+          minimum: 1
+        sort:
           type: array
           items:
-            $ref: "#/components/schemas/CodeDescription"
-      required:
-      - teams
+            type: string
     Beneficiary:
       type: object
       properties:
@@ -646,6 +705,30 @@ components:
       required:
       - code
       - name
+    PageMetadata:
+      type: object
+      properties:
+        size:
+          type: integer
+          format: int64
+        number:
+          type: integer
+          format: int64
+        totalElements:
+          type: integer
+          format: int64
+        totalPages:
+          type: integer
+          format: int64
+    PagedModelProjectOutcomeStats:
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: "#/components/schemas/ProjectOutcomeStats"
+        page:
+          $ref: "#/components/schemas/PageMetadata"
     Project:
       type: object
       properties:
@@ -692,6 +775,30 @@ components:
           type: string
         postCode:
           type: string
+    ProjectOutcomeStats:
+      type: object
+      properties:
+        project:
+          $ref: "#/components/schemas/Project"
+        overdueOutcomesCount:
+          type: integer
+          format: int32
+        oldestOverdueInDays:
+          type: integer
+          format: int32
+      required:
+      - oldestOverdueInDays
+      - overdueOutcomesCount
+      - project
+    TeamsResponse:
+      type: object
+      properties:
+        teams:
+          type: array
+          items:
+            $ref: "#/components/schemas/CodeDescription"
+      required:
+      - teams
     AppointmentResponseCase:
       type: object
       properties:
@@ -914,6 +1021,39 @@ components:
       required:
       - code
       - description
+    UnpaidWorkDetails:
+      type: object
+      properties:
+        unpaidWorkDetails:
+          type: array
+          items:
+            $ref: "#/components/schemas/UnpaidWorkMinutes"
+      required:
+      - unpaidWorkDetails
+    UnpaidWorkMinutes:
+      type: object
+      properties:
+        eventNumber:
+          type: integer
+          format: int64
+        requiredMinutes:
+          type: integer
+          format: int64
+        adjustments:
+          type: integer
+          format: int64
+        completedMinutes:
+          type: integer
+          format: int64
+        completedEteMinutes:
+          type: integer
+          format: int64
+      required:
+      - adjustments
+      - completedEteMinutes
+      - completedMinutes
+      - eventNumber
+      - requiredMinutes
     AllocationResponse:
       type: object
       properties:
