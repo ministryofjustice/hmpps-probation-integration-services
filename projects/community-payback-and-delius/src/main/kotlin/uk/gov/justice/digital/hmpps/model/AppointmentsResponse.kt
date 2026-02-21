@@ -1,12 +1,7 @@
 package uk.gov.justice.digital.hmpps.model
 
-import org.hibernate.query.Page
 import java.time.LocalDate
 import java.time.LocalTime
-
-data class AppointmentsSearchResponse(
-    val content: List<AppointmentsResponse>
-)
 
 data class AppointmentsResponse(
     val id: Long,

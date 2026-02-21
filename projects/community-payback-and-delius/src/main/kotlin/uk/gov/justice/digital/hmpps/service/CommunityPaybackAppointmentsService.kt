@@ -1,7 +1,6 @@
 package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.data.domain.Page
-import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
 import org.springframework.orm.ObjectOptimisticLockingFailureException
 import org.springframework.stereotype.Service
@@ -117,7 +116,7 @@ class CommunityPaybackAppointmentsService(
                     CodeDescription(ref.code, ref.description)
                 }
             }
-            val daysOverdue = if (outcome != null || it.date > LocalDate.now()) {
+            val daysOverdue = if (outcome == null || it.date < LocalDate.now()) {
                 ChronoUnit.DAYS.between(it.date, LocalDate.now())
             } else null
 

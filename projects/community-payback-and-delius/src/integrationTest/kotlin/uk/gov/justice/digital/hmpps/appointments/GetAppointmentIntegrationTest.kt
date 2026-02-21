@@ -8,7 +8,7 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
-import tools.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.databind.ObjectMapper
 import uk.gov.justice.digital.hmpps.advice.ErrorResponse
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator
@@ -156,7 +156,6 @@ class GetAppointmentIntegrationTest @Autowired constructor(
         val responseString = mockMvc.get("/appointments?fromDate=${LocalDate.now()}") { withToken() }
             .andExpect { status { is2xxSuccessful() } }
             .andReturn().response.contentAsString
-        println(responseString)
         val node = objectMapper.readTree(responseString)
         val ids = node["content"].map { it["id"].asLong() }
         assertThat(ids).size().isEqualTo(4)
@@ -167,7 +166,6 @@ class GetAppointmentIntegrationTest @Autowired constructor(
         val responseString = mockMvc.get("/appointments?toDate=${LocalDate.now()}") { withToken() }
             .andExpect { status { is2xxSuccessful() } }
             .andReturn().response.contentAsString
-        println(responseString)
         val node = objectMapper.readTree(responseString)
         val ids = node["content"].map { it["id"].asLong() }
         assertThat(ids).size().isEqualTo(6)
