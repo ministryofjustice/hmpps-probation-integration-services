@@ -26,8 +26,12 @@ class AppointmentsController(
         @RequestParam(required = false) outcomeCodes: List<String>?,
         @RequestParam(required = false, defaultValue = "0") page: Int,
         @RequestParam(required = false, defaultValue = "100") size: Int
-    ) = communityPaybackAppointmentsService.getAppointments(crn, fromDate, toDate,
+    ) = communityPaybackAppointmentsService.getAppointments(
+        crn, fromDate, toDate,
         projectCodes, projectTypeCodes, outcomeCodes,
-        PageRequest.of(page, size).mapSorts("name" to "name",
-            "date" to "date"))
+        PageRequest.of(page, size).mapSorts(
+            "name" to "name",
+            "date" to "date"
+        )
+    )
 }
