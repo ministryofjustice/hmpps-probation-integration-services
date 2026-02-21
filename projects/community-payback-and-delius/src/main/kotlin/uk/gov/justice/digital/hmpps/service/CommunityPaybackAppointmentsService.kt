@@ -1,5 +1,7 @@
 package uk.gov.justice.digital.hmpps.service
 
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.orm.ObjectOptimisticLockingFailureException
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -21,6 +23,7 @@ import uk.gov.justice.digital.hmpps.model.*
 import java.time.LocalDate
 import java.time.temporal.ChronoUnit
 import java.util.*
+import kotlin.jvm.optionals.getOrNull
 
 @Service
 class CommunityPaybackAppointmentsService(
@@ -87,6 +90,63 @@ class CommunityPaybackAppointmentsService(
             sensitive = appointment.contact.sensitive,
             alertActive = appointment.contact.alertActive
         )
+    }
+
+    fun getAppointments(
+        crn: String?,
+        fromDate: LocalDate?,
+        toDate: LocalDate?,
+        projectCodes: List<String>?,
+        projectTypeCodes: List<String>?,
+        outcomeCodes: List<String>?,
+        pageable: Pageable
+    ): Page<AppointmentsResponse> {
+        val appointments = unpaidWorkAppointmentRepository.findAppointments(
+            crn,
+            fromDate,
+            toDate,
+            projectCodes,
+            projectTypeCodes,
+            outcomeCodes,
+            pageable
+        )
+        return appointments.map {
+            val outcome = it.outcomeId?.let { outcomeId ->
+                referenceDataRepository.findById(outcomeId).map { ref ->
+                    CodeDescription(ref.code, ref.description)
+                }
+            }
+            val daysOverdue = if (outcome == null || it.date < LocalDate.now()) {
+                ChronoUnit.DAYS.between(it.date, LocalDate.now())
+            } else null
+
+            AppointmentsResponse(
+                id = it.id,
+                date = it.date,
+                startTime = it.startTime,
+                endTime = it.endTime,
+                daysOverdue = daysOverdue,
+                case = AppointmentResponseCase(
+                    crn = it.person.crn,
+                    name = PersonName(
+                        forename = it.person.forename,
+                        surname = it.person.surname,
+                        middleNames = listOfNotNull(it.person.secondName, it.person.thirdName)
+                    ),
+                    dateOfBirth = it.person.dateOfBirth,
+                    currentExclusion = it.person.currentExclusion,
+                    exclusionMessage = it.person.exclusionMessage,
+                    currentRestriction = it.person.currentRestriction,
+                    restrictionMessage = it.person.restrictionMessage,
+                ),
+                requirementProgress = RequirementProgress(
+                    requiredMinutes = it.minutesOffered ?: 0,
+                    completedMinutes = it.minutesCredited ?: 0,
+                    adjustments = it.penaltyMinutes ?: 0
+                ),
+                outcome = outcome?.getOrNull()
+            )
+        }
     }
 
     fun getSession(projectCode: String, date: LocalDate, username: String): SessionResponse {

@@ -8,6 +8,7 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
+import com.fasterxml.jackson.databind.ObjectMapper
 import uk.gov.justice.digital.hmpps.advice.ErrorResponse
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator
@@ -20,6 +21,7 @@ import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 import java.time.LocalDate
 import java.util.*
+import kotlin.collections.map
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -31,6 +33,8 @@ class GetAppointmentIntegrationTest @Autowired constructor(
     companion object {
         val PROJECT = UPW_PROJECT_1.code
     }
+
+    private val objectMapper = ObjectMapper()
 
     @Test
     fun `non-existent project returns 404`() {
@@ -125,5 +129,59 @@ class GetAppointmentIntegrationTest @Autowired constructor(
                 .andReturn().response.contentAsJson<AppointmentResponse>()
 
         assertThat(response.pickUpData?.location).isNull()
+    }
+
+    @Test
+    fun `can retrieve all appointments for a crn without sort`() {
+        val response = mockMvc.get("/appointments?crn=${PersonGenerator.DEFAULT_PERSON.crn}") { withToken() }
+            .andExpect { status { is2xxSuccessful() } }
+            .andReturn().response.contentAsString
+        val node = objectMapper.readTree(response)
+        val ids = node["content"].map { it["id"].asLong() }
+        assertThat(ids).size().isEqualTo(5)
+    }
+
+    @Test
+    fun `can retrieve all appointments without filters`() {
+        val response = mockMvc.get("/appointments") { withToken() }
+            .andExpect { status { is2xxSuccessful() } }
+            .andReturn().response.contentAsString
+        val node = objectMapper.readTree(response)
+        val ids = node["content"].map { it["id"].asLong() }
+        assertThat(ids).size().isEqualTo(8)
+    }
+
+    @Test
+    fun `can retrieve all appointments with a date filter from`() {
+        val responseString = mockMvc.get("/appointments?fromDate=${LocalDate.now()}") { withToken() }
+            .andExpect { status { is2xxSuccessful() } }
+            .andReturn().response.contentAsString
+        val node = objectMapper.readTree(responseString)
+        val ids = node["content"].map { it["id"].asLong() }
+        assertThat(ids).size().isEqualTo(4)
+    }
+
+    @Test
+    fun `can retrieve all appointments with a date filter to`() {
+        val responseString = mockMvc.get("/appointments?toDate=${LocalDate.now()}") { withToken() }
+            .andExpect { status { is2xxSuccessful() } }
+            .andReturn().response.contentAsString
+        val node = objectMapper.readTree(responseString)
+        val ids = node["content"].map { it["id"].asLong() }
+        assertThat(ids).size().isEqualTo(6)
+    }
+
+    @Test
+    fun `can retrieve all appointments by crn and date sort desc`() {
+        val responseString =
+            mockMvc.get("/appointments?crn=${PersonGenerator.DEFAULT_PERSON.crn}&sort=date,desc") { withToken() }
+                .andExpect { status { is2xxSuccessful() } }
+                .andReturn().response.contentAsString
+        val node = objectMapper.readTree(responseString)
+        val ids = node["content"].map { it["id"].asLong() }
+        assertThat(ids).containsExactly(
+            UPWGenerator.DEFAULT_UPW_APPOINTMENT.id,
+            UPWGenerator.OVERDUE_APPOINTMENT.id, 1L, 2L, 3L
+        )
     }
 }
