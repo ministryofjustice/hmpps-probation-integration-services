@@ -1,13 +1,18 @@
 package uk.gov.justice.digital.hmpps.messaging
 
 import com.asyncapi.kotlinasyncapi.annotation.channel.Channel
+import io.awspring.cloud.sqs.annotation.SqsListener
 import io.awspring.cloud.sqs.listener.SqsHeaders
 import io.awspring.cloud.sqs.operations.SqsTemplate
+import io.opentelemetry.api.trace.Span
+import io.opentelemetry.api.trace.StatusCode
+import io.opentelemetry.instrumentation.annotations.WithSpan
+import io.sentry.Sentry
+import io.sentry.spring7.tracing.SentryTransaction
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Conditional
 import org.springframework.messaging.MessageHeaders
 import org.springframework.messaging.support.MessageBuilder
-import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
 import tools.jackson.databind.ObjectMapper
 import uk.gov.justice.digital.hmpps.config.AwsCondition
@@ -23,14 +28,14 @@ class CourtMessageHandler(
     private val telemetryService: TelemetryService,
     private val sqsTemplate: SqsTemplate,
     private val objectMapper: ObjectMapper,
-    @Value("\${messaging.consumer.court-message-queue}") private val receiveQueue: String,
     @Value("\${messaging.consumer.queue}") private val sendQueue: String
 ) {
-    @Scheduled(fixedDelayString = "\${common-platform.queue.poller.fixed-delay:1000}")
-    fun handle() {
-        sqsTemplate.receive(receiveQueue, String::class.java).ifPresent { receivedMessage ->
-
-            val notification: Notification<CommonPlatformHearing> = converter.fromMessage(receivedMessage.payload)!!
+    @WithSpan
+    @SentryTransaction(operation = "messaging")
+    @SqsListener("\${messaging.consumer.court-message-queue}")
+    fun handle(receivedMessage: String) {
+        try {
+            val notification: Notification<CommonPlatformHearing> = converter.fromMessage(receivedMessage) ?: return
 
             telemetryService.trackEvent(
                 "CourtMessageHandlerReceived", mapOf(
@@ -62,6 +67,10 @@ class CourtMessageHandler(
                         )
                     )
                 }
+        } catch (e: Exception) {
+            Span.current().recordException(e).setStatus(StatusCode.ERROR)
+            Sentry.captureException(e)
+            throw e
         }
     }
 }
