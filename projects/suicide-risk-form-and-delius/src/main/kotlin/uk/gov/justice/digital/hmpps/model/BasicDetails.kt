@@ -6,7 +6,7 @@ data class BasicDetails(
     val title: String?,
     val name: Name,
     val addresses: List<Address>,
-    val prisonNumber: String?,
+    val nomsNumber: String?,
     val dateOfBirth: LocalDate
 )
 

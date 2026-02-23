@@ -27,7 +27,7 @@ class DetailsService(
         return BasicDetails(
             title = person.title?.description,
             name = person.name(),
-            prisonNumber = person.prisonerNumber,
+            nomsNumber = person.nomsNumber,
             dateOfBirth = person.dateOfBirth,
             addresses = person.addresses.map { it.toAddress() }
         )
