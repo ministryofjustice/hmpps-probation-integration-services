@@ -9,3 +9,6 @@ CVE-2025-68973 exp:2026-02-01
 # Package openssl-libs
 # Reason: Vulnerability present due to upstream image rebuild lag
 CVE-2026-22796 exp:2026-03-09
+CVE-2025-69419 exp:2026-03-09
+CVE-2025-69418 exp:2026-03-09
+CVE-2025-68160 exp:2026-03-09
