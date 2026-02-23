@@ -23,7 +23,6 @@ import uk.gov.justice.digital.hmpps.model.*
 import java.time.LocalDate
 import java.time.temporal.ChronoUnit
 import java.util.*
-import kotlin.collections.map
 
 @Service
 class CommunityPaybackAppointmentsService(
@@ -112,12 +111,13 @@ class CommunityPaybackAppointmentsService(
             pageable
         )
         val upwDetailsIds = appointments.map { it.details.id }.distinct()
+        val crns = appointments.map { it.person.crn }.distinct()
         val minutes = unpaidWorkAppointmentRepository.getUpwRequiredAndCompletedMinutes(upwDetailsIds)
             .associateBy { it.id }.mapValues { (_, v) -> v.toModel() }
+        val limitedAccess = userAccessService.userAccessFor(username, crns).access.associateBy { it.crn }
         return appointments.map {
-            val limitedAccess = userAccessService.caseAccessFor(username, it.person.crn)
+            val limitedAccess = limitedAccess.getValue(it.person.crn)
             val outcome = it.contact.outcome
-
             val daysOverdue = if (outcome == null || it.date < LocalDate.now()) {
                 ChronoUnit.DAYS.between(it.date, LocalDate.now())
             } else null

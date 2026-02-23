@@ -4,7 +4,6 @@ import org.springframework.data.domain.Pageable
 import org.springframework.data.web.PageableDefault
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
@@ -13,14 +12,14 @@ import uk.gov.justice.digital.hmpps.utils.Extensions.mapSorts
 import java.time.LocalDate
 
 @RestController
-@RequestMapping("/appointments/{username}")
+@RequestMapping("/appointments")
 @PreAuthorize("hasRole('PROBATION_API__COMMUNITY_PAYBACK__CASE_DETAIL')")
 class AppointmentsController(
     private val communityPaybackAppointmentsService: CommunityPaybackAppointmentsService
 ) {
-    @GetMapping("")
+    @GetMapping
     fun getAppointments(
-        @PathVariable username: String,
+        @RequestParam(required = true) username: String,
         @RequestParam(required = false) crn: String?,
         @RequestParam(required = false) fromDate: LocalDate?,
         @RequestParam(required = false) toDate: LocalDate?,
