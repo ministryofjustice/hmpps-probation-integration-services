@@ -33,7 +33,6 @@ class GetAppointmentIntegrationTest @Autowired constructor(
         val PROJECT = UPW_PROJECT_1.code
     }
 
-
     @Test
     fun `non-existent project returns 404`() {
         mockMvc.get("/projects/DOESNOTEXIST/appointments/123?username=DefaultUser") { withToken() }
