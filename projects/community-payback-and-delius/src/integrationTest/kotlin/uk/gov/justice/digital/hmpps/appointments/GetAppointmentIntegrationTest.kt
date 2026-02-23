@@ -134,9 +134,10 @@ class GetAppointmentIntegrationTest @Autowired constructor(
 
     @Test
     fun `can retrieve all appointments for a crn without sort`() {
-        val response = mockMvc.get("/appointments/${UserGenerator.DEFAULT_USER.username}?crn=${PersonGenerator.DEFAULT_PERSON.crn}") { withToken() }
-            .andExpect { status { is2xxSuccessful() } }
-            .andReturn().response.contentAsString
+        val response =
+            mockMvc.get("/appointments/${UserGenerator.DEFAULT_USER.username}?crn=${PersonGenerator.DEFAULT_PERSON.crn}") { withToken() }
+                .andExpect { status { is2xxSuccessful() } }
+                .andReturn().response.contentAsString
         val node = objectMapper.readTree(response)
         val ids = node["content"].map { it["id"].asLong() }
         assertThat(ids).size().isEqualTo(5)
@@ -154,9 +155,10 @@ class GetAppointmentIntegrationTest @Autowired constructor(
 
     @Test
     fun `can retrieve all appointments with a date filter from`() {
-        val responseString = mockMvc.get("/appointments/${UserGenerator.DEFAULT_USER.username}?fromDate=${LocalDate.now()}") { withToken() }
-            .andExpect { status { is2xxSuccessful() } }
-            .andReturn().response.contentAsString
+        val responseString =
+            mockMvc.get("/appointments/${UserGenerator.DEFAULT_USER.username}?fromDate=${LocalDate.now()}") { withToken() }
+                .andExpect { status { is2xxSuccessful() } }
+                .andReturn().response.contentAsString
         val node = objectMapper.readTree(responseString)
         val ids = node["content"].map { it["id"].asLong() }
         assertThat(ids).size().isEqualTo(4)
@@ -164,9 +166,10 @@ class GetAppointmentIntegrationTest @Autowired constructor(
 
     @Test
     fun `can retrieve all appointments with a date filter to`() {
-        val responseString = mockMvc.get("/appointments/${UserGenerator.DEFAULT_USER.username}?toDate=${LocalDate.now()}") { withToken() }
-            .andExpect { status { is2xxSuccessful() } }
-            .andReturn().response.contentAsString
+        val responseString =
+            mockMvc.get("/appointments/${UserGenerator.DEFAULT_USER.username}?toDate=${LocalDate.now()}") { withToken() }
+                .andExpect { status { is2xxSuccessful() } }
+                .andReturn().response.contentAsString
         val node = objectMapper.readTree(responseString)
         val ids = node["content"].map { it["id"].asLong() }
         assertThat(ids).size().isEqualTo(6)
