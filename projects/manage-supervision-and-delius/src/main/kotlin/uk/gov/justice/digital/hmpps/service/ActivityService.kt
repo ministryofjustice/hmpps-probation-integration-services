@@ -33,7 +33,8 @@ class ActivityService(
             dateFrom = searchRequest.dateFrom,
             dateTo = searchRequest.dateTo,
             includeSystemGenerated = searchRequest.includeSystemGenerated,
-            filters = searchRequest.filters
+            filters = searchRequest.filters,
+            contactTypeCodes = searchRequest.contactTypeCodes
         )
         val response =
             probationSearchClient.contactSearch(probationSearchRequest, pageable.pageNumber, pageable.pageSize)

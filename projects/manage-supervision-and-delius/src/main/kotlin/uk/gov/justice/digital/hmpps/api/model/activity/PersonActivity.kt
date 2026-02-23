@@ -30,4 +30,5 @@ data class PersonActivitySearchRequest(
         example = "false",
     ) val includeSystemGenerated: Boolean = true,
     val filters: List<String> = emptyList(),
+    val contactTypeCodes: List<String> = emptyList()
 )
