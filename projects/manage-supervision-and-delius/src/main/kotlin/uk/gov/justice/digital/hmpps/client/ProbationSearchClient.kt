@@ -24,6 +24,7 @@ data class ActivitySearchRequest(
     val dateTo: LocalDate? = null,
     val includeSystemGenerated: Boolean = true,
     val filters: List<String> = emptyList(),
+    val typeCodes: List<String> = emptyList()
 )
 
 data class ContactSearchResponse(
