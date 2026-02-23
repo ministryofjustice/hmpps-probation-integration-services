@@ -14,7 +14,6 @@ import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
-import org.springframework.data.repository.query.Param
 import uk.gov.justice.digital.hmpps.entity.ReferenceData
 import uk.gov.justice.digital.hmpps.entity.Versioned
 import uk.gov.justice.digital.hmpps.entity.contact.Contact
@@ -327,12 +326,12 @@ interface UnpaidWorkAppointmentRepository : JpaRepository<UnpaidWorkAppointment,
     """
     )
     fun findAppointments(
-        @Param("crn") crn: String?,
-        @Param("fromDate") fromDate: LocalDate?,
-        @Param("toDate") toDate: LocalDate?,
-        @Param("projectCodes") projectCodes: List<String>?,
-        @Param("projectTypeCodes") projectTypeCodes: List<String>?,
-        @Param("outcomeCodes") outcomeCodes: List<String>?,
+        crn: String?,
+        fromDate: LocalDate?,
+        toDate: LocalDate?,
+        projectCodes: List<String>?,
+        projectTypeCodes: List<String>?,
+        outcomeCodes: List<String>?,
         pageable: Pageable
     ): Page<UnpaidWorkAppointment>
 }

@@ -23,7 +23,7 @@ import uk.gov.justice.digital.hmpps.model.*
 import java.time.LocalDate
 import java.time.temporal.ChronoUnit
 import java.util.*
-import kotlin.jvm.optionals.getOrNull
+import kotlin.collections.map
 
 @Service
 class CommunityPaybackAppointmentsService(
@@ -93,6 +93,7 @@ class CommunityPaybackAppointmentsService(
     }
 
     fun getAppointments(
+        username: String,
         crn: String?,
         fromDate: LocalDate?,
         toDate: LocalDate?,
@@ -110,12 +111,13 @@ class CommunityPaybackAppointmentsService(
             outcomeCodes,
             pageable
         )
+        val upwDetailsIds = appointments.map { it.details.id }.distinct()
+        val minutes = unpaidWorkAppointmentRepository.getUpwRequiredAndCompletedMinutes(upwDetailsIds)
+            .associateBy { it.id }.mapValues { (_, v) -> v.toModel() }
         return appointments.map {
-            val outcome = it.outcomeId?.let { outcomeId ->
-                referenceDataRepository.findById(outcomeId).map { ref ->
-                    CodeDescription(ref.code, ref.description)
-                }
-            }
+            val limitedAccess = userAccessService.caseAccessFor(username, it.person.crn)
+            val outcome = it.contact.outcome
+
             val daysOverdue = if (outcome == null || it.date < LocalDate.now()) {
                 ChronoUnit.DAYS.between(it.date, LocalDate.now())
             } else null
@@ -126,25 +128,9 @@ class CommunityPaybackAppointmentsService(
                 startTime = it.startTime,
                 endTime = it.endTime,
                 daysOverdue = daysOverdue,
-                case = AppointmentResponseCase(
-                    crn = it.person.crn,
-                    name = PersonName(
-                        forename = it.person.forename,
-                        surname = it.person.surname,
-                        middleNames = listOfNotNull(it.person.secondName, it.person.thirdName)
-                    ),
-                    dateOfBirth = it.person.dateOfBirth,
-                    currentExclusion = it.person.currentExclusion,
-                    exclusionMessage = it.person.exclusionMessage,
-                    currentRestriction = it.person.currentRestriction,
-                    restrictionMessage = it.person.restrictionMessage,
-                ),
-                requirementProgress = RequirementProgress(
-                    requiredMinutes = it.minutesOffered ?: 0,
-                    completedMinutes = it.minutesCredited ?: 0,
-                    adjustments = it.penaltyMinutes ?: 0
-                ),
-                outcome = outcome?.getOrNull()
+                case = it.toAppointmentResponseCase(limitedAccess),
+                requirementProgress = checkNotNull(minutes[it.details.id]),
+                outcome = outcome?.toCodeDescription()
             )
         }
     }

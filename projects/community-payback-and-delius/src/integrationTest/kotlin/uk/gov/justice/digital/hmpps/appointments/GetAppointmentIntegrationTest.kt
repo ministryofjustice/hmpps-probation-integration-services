@@ -14,6 +14,7 @@ import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator
 import uk.gov.justice.digital.hmpps.data.generator.UPWGenerator
 import uk.gov.justice.digital.hmpps.data.generator.UPWGenerator.UPW_PROJECT_1
+import uk.gov.justice.digital.hmpps.data.generator.UserGenerator
 import uk.gov.justice.digital.hmpps.entity.contact.ContactRepository
 import uk.gov.justice.digital.hmpps.entity.unpaidwork.UnpaidWorkAppointmentRepository
 import uk.gov.justice.digital.hmpps.model.*
@@ -133,7 +134,7 @@ class GetAppointmentIntegrationTest @Autowired constructor(
 
     @Test
     fun `can retrieve all appointments for a crn without sort`() {
-        val response = mockMvc.get("/appointments?crn=${PersonGenerator.DEFAULT_PERSON.crn}") { withToken() }
+        val response = mockMvc.get("/appointments/${UserGenerator.DEFAULT_USER.username}?crn=${PersonGenerator.DEFAULT_PERSON.crn}") { withToken() }
             .andExpect { status { is2xxSuccessful() } }
             .andReturn().response.contentAsString
         val node = objectMapper.readTree(response)
@@ -143,7 +144,7 @@ class GetAppointmentIntegrationTest @Autowired constructor(
 
     @Test
     fun `can retrieve all appointments without filters`() {
-        val response = mockMvc.get("/appointments") { withToken() }
+        val response = mockMvc.get("/appointments/${UserGenerator.DEFAULT_USER.username}") { withToken() }
             .andExpect { status { is2xxSuccessful() } }
             .andReturn().response.contentAsString
         val node = objectMapper.readTree(response)
@@ -153,7 +154,7 @@ class GetAppointmentIntegrationTest @Autowired constructor(
 
     @Test
     fun `can retrieve all appointments with a date filter from`() {
-        val responseString = mockMvc.get("/appointments?fromDate=${LocalDate.now()}") { withToken() }
+        val responseString = mockMvc.get("/appointments/${UserGenerator.DEFAULT_USER.username}?fromDate=${LocalDate.now()}") { withToken() }
             .andExpect { status { is2xxSuccessful() } }
             .andReturn().response.contentAsString
         val node = objectMapper.readTree(responseString)
@@ -163,7 +164,7 @@ class GetAppointmentIntegrationTest @Autowired constructor(
 
     @Test
     fun `can retrieve all appointments with a date filter to`() {
-        val responseString = mockMvc.get("/appointments?toDate=${LocalDate.now()}") { withToken() }
+        val responseString = mockMvc.get("/appointments/${UserGenerator.DEFAULT_USER.username}?toDate=${LocalDate.now()}") { withToken() }
             .andExpect { status { is2xxSuccessful() } }
             .andReturn().response.contentAsString
         val node = objectMapper.readTree(responseString)
@@ -174,7 +175,7 @@ class GetAppointmentIntegrationTest @Autowired constructor(
     @Test
     fun `can retrieve all appointments by crn and date sort desc`() {
         val responseString =
-            mockMvc.get("/appointments?crn=${PersonGenerator.DEFAULT_PERSON.crn}&sort=date,desc") { withToken() }
+            mockMvc.get("/appointments/${UserGenerator.DEFAULT_USER.username}?crn=${PersonGenerator.DEFAULT_PERSON.crn}&sort=date,desc") { withToken() }
                 .andExpect { status { is2xxSuccessful() } }
                 .andReturn().response.contentAsString
         val node = objectMapper.readTree(responseString)
