@@ -183,10 +183,9 @@ class GetAppointmentIntegrationTest @Autowired constructor(
                 .andReturn().response.contentAsString
         val node = objectMapper.readTree(responseString)
         val ids = node["content"].map { it["id"].asLong() }
-        println(ids)
         assertThat(ids).containsExactly(
             UPWGenerator.DEFAULT_UPW_APPOINTMENT.id,
-            UPWGenerator.OVERDUE_APPOINTMENT.id, 1L, 2L, 3L
+            1L, 3L, 2L, UPWGenerator.OVERDUE_APPOINTMENT.id,
         )
     }
 }
