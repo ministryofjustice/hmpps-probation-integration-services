@@ -754,11 +754,18 @@ components:
         actualEndDateExclusive:
           type: string
           format: date
+        availability:
+          type: array
+          items:
+            $ref: "#/components/schemas/ProjectAvailabilityDetails"
       required:
+      - availability
       - beneficiary
       - code
       - hiVisRequired
       - name
+      - provider
+      - team
       - type
     ProjectAddress:
       type: object
@@ -775,6 +782,21 @@ components:
           type: string
         postCode:
           type: string
+    ProjectAvailabilityDetails:
+      type: object
+      properties:
+        frequency:
+          type: string
+        dayOfWeek:
+          type: string
+        startDateInclusive:
+          type: string
+          format: date
+        endDateExclusive:
+          type: string
+          format: date
+      required:
+      - dayOfWeek
     ProjectOutcomeStats:
       type: object
       properties:
@@ -1120,14 +1142,6 @@ components:
       - project
       - startTime
       - version
-    ProjectAvailabilityDetails:
-      type: object
-      properties:
-        frequency:
-          type: string
-        endDateExclusive:
-          type: string
-          format: date
     ScheduleResponse:
       type: object
       properties:
