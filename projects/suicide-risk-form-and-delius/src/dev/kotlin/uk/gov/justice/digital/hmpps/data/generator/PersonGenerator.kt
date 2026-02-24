@@ -34,7 +34,7 @@ object PersonGenerator {
         surname: String = "Surname",
         addresses: List<PersonAddress> = listOf(),
         dateOfBirth: LocalDate = LocalDate.now().minusYears(30L),
-        prisonerNumber: String? = "1234AB",
+        nomsNumber: String? = "A1234EA",
         softDeleted: Boolean = false,
         exclusionMessage: String? = null,
         restrictionMessage: String? = null,
@@ -47,7 +47,7 @@ object PersonGenerator {
         surname = surname,
         addresses = addresses,
         dateOfBirth = dateOfBirth,
-        prisonerNumber = prisonerNumber,
+        nomsNumber = nomsNumber,
         softDeleted = softDeleted,
         exclusionMessage = exclusionMessage,
         restrictionMessage = restrictionMessage

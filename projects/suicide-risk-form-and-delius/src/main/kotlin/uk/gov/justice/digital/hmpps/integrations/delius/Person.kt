@@ -37,8 +37,8 @@ class Person(
     @OneToMany(mappedBy = "person")
     val addresses: List<PersonAddress>,
 
-    @Column(name = "most_recent_prisoner_number")
-    val prisonerNumber: String? = null,
+    @Column(name = "noms_number", columnDefinition = "char(7)")
+    val nomsNumber: String?,
 
     @Column(columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)

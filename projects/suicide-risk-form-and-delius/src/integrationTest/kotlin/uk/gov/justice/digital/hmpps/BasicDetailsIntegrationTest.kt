@@ -47,7 +47,7 @@ internal class BasicDetailsIntegrationTest @Autowired constructor(
                     person.surname
                 ),
                 addresses = listOf(PersonGenerator.DEFAULT_ADDRESS.toAddress()),
-                prisonNumber = person.prisonerNumber,
+                nomsNumber = person.nomsNumber,
                 dateOfBirth = person.dateOfBirth
             )
         )
