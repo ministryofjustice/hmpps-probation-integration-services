@@ -25,7 +25,13 @@ class AlfrescoClient(
             NotFoundException::class.java to false,
             RuntimeException::class.java to true
         )
-        setRetryPolicy(SimpleRetryPolicy(3, exceptionMap as Map<Class<out Throwable?>?, Boolean?>?, true)) // 3 attempts, do not retry NotFoundException
+        setRetryPolicy(
+            SimpleRetryPolicy(
+                3,
+                exceptionMap as Map<Class<out Throwable?>?, Boolean?>?,
+                true
+            )
+        ) // 3 attempts, do not retry NotFoundException
         setBackOffPolicy(FixedBackOffPolicy().apply { backOffPeriod = 1000 }) // 1s delay
     }
 
@@ -56,29 +62,30 @@ class AlfrescoClient(
             }, false)
     }
 
-    fun streamDocument(id: String, filename: String): ResponseEntity<StreamingResponseBody> = retryTemplate.execute<ResponseEntity<StreamingResponseBody>, RuntimeException> {
-        UUID.fromString(id) // validate input
-        getDocumentById(id).exchange({ _, res ->
-            when (res.statusCode) {
-                HttpStatus.OK -> ResponseEntity.ok()
-                    .headers {
-                        it.copy(HttpHeaders.CONTENT_TYPE, res)
-                        it.copy(HttpHeaders.CONTENT_LENGTH, res)
-                        it.copy(HttpHeaders.ETAG, res)
-                        it.copy(HttpHeaders.LAST_MODIFIED, res)
-                    }
-                    .header(
-                        HttpHeaders.CONTENT_DISPOSITION,
-                        ContentDisposition.attachment().filename(filename, Charsets.UTF_8).build().toString()
-                    )
-                    .body(StreamingResponseBody { output -> res.body.use { it.copyTo(output) } })
+    fun streamDocument(id: String, filename: String): ResponseEntity<StreamingResponseBody> =
+        retryTemplate.execute<ResponseEntity<StreamingResponseBody>, RuntimeException> {
+            UUID.fromString(id) // validate input
+            getDocumentById(id).exchange({ _, res ->
+                when (res.statusCode) {
+                    HttpStatus.OK -> ResponseEntity.ok()
+                        .headers {
+                            it.copy(HttpHeaders.CONTENT_TYPE, res)
+                            it.copy(HttpHeaders.CONTENT_LENGTH, res)
+                            it.copy(HttpHeaders.ETAG, res)
+                            it.copy(HttpHeaders.LAST_MODIFIED, res)
+                        }
+                        .header(
+                            HttpHeaders.CONTENT_DISPOSITION,
+                            ContentDisposition.attachment().filename(filename, Charsets.UTF_8).build().toString()
+                        )
+                        .body(StreamingResponseBody { output -> res.body.use { it.copyTo(output) } })
 
-                HttpStatus.NOT_FOUND -> throw NotFoundException("Document content", "alfrescoId", id)
+                    HttpStatus.NOT_FOUND -> throw NotFoundException("Document content", "alfrescoId", id)
 
-                else -> throw RuntimeException("Failed to download document. Alfresco responded with ${res.statusCode}.")
-            }
-        }, false)
-    }
+                    else -> throw RuntimeException("Failed to download document. Alfresco responded with ${res.statusCode}.")
+                }
+            }, false)
+        }
 
     private fun HttpHeaders.copy(key: String, res: RestClient.RequestHeadersSpec.ConvertibleClientHttpResponse) {
         res.headers[key]?.let { values -> put(key, values) }
