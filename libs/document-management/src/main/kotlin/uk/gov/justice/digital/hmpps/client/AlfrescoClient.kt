@@ -21,14 +21,14 @@ class AlfrescoClient(
 ) {
     // RetryTemplate for GET calls
     private val retryTemplate: RetryTemplate = RetryTemplate().apply {
-        val exceptionMap = mapOf(
+        val exceptionMap: Map<Class<out Throwable>, Boolean> = mapOf(
             NotFoundException::class.java to false,
             RuntimeException::class.java to true
         )
         setRetryPolicy(
             SimpleRetryPolicy(
                 3,
-                exceptionMap as Map<Class<out Throwable?>?, Boolean?>?,
+                exceptionMap,
                 true
             )
         ) // 3 attempts, do not retry NotFoundException
