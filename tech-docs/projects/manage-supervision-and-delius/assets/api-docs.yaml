@@ -2867,9 +2867,14 @@ components:
           type: array
           items:
             type: string
+        typeCodes:
+          type: array
+          items:
+            type: string
       required:
       - filters
       - includeSystemGenerated
+      - typeCodes
     Activity:
       type: object
       properties:
