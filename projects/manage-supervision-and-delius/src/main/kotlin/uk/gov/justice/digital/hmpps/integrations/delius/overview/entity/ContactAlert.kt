@@ -24,7 +24,7 @@ class ContactAlert(
     val teamId: Long,
 
     @Column(name = "offender_manager_id")
-    val personManagerId: Long,
+    val personManagerId: Long?,
 
     @ManyToOne
     @JoinColumn(name = "staff_employee_id", nullable = false)
