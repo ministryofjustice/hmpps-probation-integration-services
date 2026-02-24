@@ -127,6 +127,24 @@ class AlfrescoClientTest {
     }
 
     @Test
+    fun `streamDocument doesnt retry a 404 not found`() {
+        val id = "00000000-0000-0000-0000-000000000002"
+        val fileName = "retry-document.txt"
+        val fileContents = "retry-content"
+        val responseHeaders = HttpHeaders().apply {
+            contentLength = fileContents.toByteArray().size.toLong()
+            eTag = "\"etag-retry\""
+            lastModified = 60000L
+        }
+        mockServer.expect(requestTo("http://localhost/fetch/$id"))
+            .andExpect(method(HttpMethod.GET))
+            .andRespond(withStatus(HttpStatus.NOT_FOUND))
+
+        assertThatThrownBy { client.streamDocument(id, fileName) }
+            .isInstanceOf(NotFoundException::class.java)
+    }
+
+    @Test
     fun `streamDocument retries on transient failure and succeeds`() {
         val id = "00000000-0000-0000-0000-000000000003"
         val fileName = "retry-document.txt"

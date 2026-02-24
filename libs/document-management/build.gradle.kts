@@ -8,7 +8,6 @@ dependencies {
     implementation("org.springframework.retry:spring-retry")
     implementation("tools.jackson.module:jackson-module-kotlin")
 
-
     api("org.eclipse.jetty:jetty-client")
 
     testImplementation("org.springframework.boot:spring-boot-starter-webmvc-test")
