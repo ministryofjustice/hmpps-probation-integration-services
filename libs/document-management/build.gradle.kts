@@ -5,7 +5,9 @@ dependencies {
     implementation(project(":libs:audit"))
     implementation("org.springframework.boot:spring-boot-starter-webmvc")
     implementation("org.springframework.boot:spring-boot-starter-security")
+    implementation("org.springframework.retry:spring-retry:1.3.4")
     implementation("tools.jackson.module:jackson-module-kotlin")
+
 
     api("org.eclipse.jetty:jetty-client")
 

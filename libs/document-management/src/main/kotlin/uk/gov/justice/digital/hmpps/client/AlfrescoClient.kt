@@ -7,6 +7,9 @@ import org.springframework.http.*
 import org.springframework.stereotype.Component
 import org.springframework.web.client.RestClient
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody
+import org.springframework.retry.support.RetryTemplate
+import org.springframework.retry.backoff.FixedBackOffPolicy
+import org.springframework.retry.policy.SimpleRetryPolicy
 import uk.gov.justice.digital.hmpps.alfresco.model.DocumentResponse
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import java.util.*
@@ -16,6 +19,15 @@ import java.util.*
 class AlfrescoClient(
     @Qualifier("alfrescoRestClient") private val restClient: RestClient
 ) {
+    // RetryTemplate for GET calls
+    private val retryTemplate: RetryTemplate = RetryTemplate().apply {
+        val exceptionMap = mapOf(
+            NotFoundException::class.java to false,
+            RuntimeException::class.java to true
+        )
+        setRetryPolicy(SimpleRetryPolicy(3, exceptionMap as Map<Class<out Throwable?>?, Boolean?>?, true)) // 3 attempts, do not retry NotFoundException
+        setBackOffPolicy(FixedBackOffPolicy().apply { backOffPeriod = 1000 }) // 1s delay
+    }
 
     fun getDocumentById(id: String): RestClient.RequestHeadersSpec<*> = restClient.get().uri("/fetch/$id")
         .accept(MediaType.MULTIPART_FORM_DATA)
@@ -44,9 +56,9 @@ class AlfrescoClient(
             }, false)
     }
 
-    fun streamDocument(id: String, filename: String): ResponseEntity<StreamingResponseBody> {
+    fun streamDocument(id: String, filename: String): ResponseEntity<StreamingResponseBody> = retryTemplate.execute<ResponseEntity<StreamingResponseBody>, RuntimeException> {
         UUID.fromString(id) // validate input
-        return getDocumentById(id).exchange({ _, res ->
+        getDocumentById(id).exchange({ _, res ->
             when (res.statusCode) {
                 HttpStatus.OK -> ResponseEntity.ok()
                     .headers {
