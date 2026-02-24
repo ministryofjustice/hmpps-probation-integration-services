@@ -12,3 +12,5 @@ CVE-2026-22796 exp:2026-03-09
 CVE-2025-69419 exp:2026-03-09
 CVE-2025-69418 exp:2026-03-09
 CVE-2025-68160 exp:2026-03-09
+# Ruby rack directory traversal (ubuntu-latest environment only, not used by our app)
+CVE-2026-22860 exp:2026-06-01
