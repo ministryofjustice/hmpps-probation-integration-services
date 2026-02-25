@@ -1,69 +1,149 @@
 ---
 title: Requesting an Integration Service
 source_url: 'https://github.com/ministryofjustice/hmpps-probation-integration-services/blob/main/doc/tech-docs/source/welcome.html.md.erb'
-last_reviewed_on: 2026-02-09
-review_in: 3 months
+last_reviewed_on: 2026-02-25
+review_in: 6 months
 ---
 
 # Requesting an Integration Service
 
-Hello! If you are building a digital service in HMPPS that needs to interact with probation case data in NDelius, then
-you are in the right place.
+If you are building a digital service that needs to access, publish or exchange probation data, this page explains how
+we work with you from the initial request through to live support.
 
-This guide outlines how the **Probation Integration** team works with client teams like yours to build secure, reliable,
-and domain-focused integrations.
+## Who we are
+
+The Probation Integration (PI) team sits within the Platform function of MoJ Digital Probation and manages a portfolio
+of integration initiatives, spanning:
+
+- Integration with the National Delius probation case management system
+- Platform integration services, including probation search
+- HMPPS domain events and data services, including tiering
 
 ## How we integrate
 
-A probation integration service typically acts as
+A probation integration service typically provides
 an [anti-corruption layer](https://learn.microsoft.com/en-us/azure/architecture/patterns/anti-corruption-layer) that
-connects your HMPPS digital or domain service to the NDelius probation case management system.
-Adding this layer helps define a meaningful domain and responsibility boundary - allowing us to hide the complexity of
-NDelius and provide a stable, well-defined interface for your service to interact with the data it needs.
+connects your HMPPS digital or domain service to National Delius, the central probation case management system.
+This layer helps define a meaningful domain and responsibility boundary that enables us to provide a stable,
+well-defined interface for your service to interact with the data it needs.
 
 Most integrations involve a combination of the following capabilities:
 
 * **Reading Data:** Providing REST API endpoints to read existing probation data in the format your service needs.
 * **Writing Data:**
   Consuming [HMPPS Domain Event](https://github.com/ministryofjustice/hmpps-domain-events#hmpps-domain-events)
-  messages to map and write data back asynchronously.
+  messages to map and write data back to National Delius asynchronously.
 
-Every digital service will get their own dedicated integration - they are not shared between clients.
+Every digital service receives its own dedicated integration - they are not shared between clients.
 This allows us to build integrations that are tailored to the specific needs of each team.
+
+## Engagement model
+
+All new integration requests follow a structured front-door and delivery model.
+This ensures fair, proportionate, and risk-led sequencing of integration work across services and programmes.
+
+Submitting a request does **not** guarantee delivery capacity.
+Work is assessed and sequenced alongside other active demand.
+
+### Prioritisation
+
+Prioritisation decisions are made across the broader portfolio, balancing:
+
+- Risk and operational impact
+- Strategic alignment
+- Delivery complexity
+- Available capacity and sequencing constraints
+
+This ensures effort is focused where it delivers the greatest operational value and risk reduction.
 
 ## Roadmap
 
-Here is the typical roadmap for working with us, from discussion to production.
+Here is the typical roadmap for working with us, from initial request to production.
 Timescales vary depending on the complexity of the integration, but we aim to move as quickly as possible.
 
 [![](images/welcome-roadmap.svg)](images/welcome-roadmap.svg)
 
-### 1. Requirements
+### 1. Initial Request & Triage
 
-Everything starts with a conversation.
-We'll meet to understand your use case, data requirements, and timelines.
+All new requests begin with completion of the
+**[Integration Request Form](https://dsdmoj.atlassian.net/jira/software/c/projects/PI/form/5050)**:
+
+> <https://dsdmoj.atlassian.net/jira/software/c/projects/PI/form/5050>
+
+#### Need help submitting a request?
+
+If you are unable to access the above Jira form or require support completing it, contact the team on Slack
+at [#probation-integration](https://moj.enterprise.slack.com/archives/C02QSERFGMB) and we will help you.
+
+We will work with you to ensure we have the correct information to triage the request.
 This helps us align our teams and set expectations early.
 
-At this stage, we may need a few follow-up sessions to clarify details.
-We may also need to include other teams (e.g. the National Delius Service Team) to confirm what's possible.
+Once the request is submitted, we will assess it using the following process.
+
+#### Gate 1 – Initial Triage
+
+This stage captures:
+
+- Service and programme context
+- Problem statement and intended outcome
+- High-level integration type
+- Systems involved
+- Risk, urgency, and constraints
+- Service readiness
+
+During triage, we determine:
+
+- Is this integration work and are we the appropriate team?
+- Is the request sufficiently defined?
+- Is there operational, security, or compliance risk?
+- Is the service ready to proceed?
+- Does the request align to recognised priorities?
+
+Following triage, the request will be:
+
+- Progressed to structured assessment
+- Held pending further clarity or readiness
+- Backlogged for future consideration
+- Redirected to another team
+
+Only requests that pass this gate move forward.
+
+#### Gate 2 – Prioritisation & Sequencing
+
+If progressed, we will establish collaborative engagement with the requesting team.
+This may include structured scoping sessions involving Business Analysts and Technical Architects.
+
+This stage clarifies:
+
+- Scope and integration type
+- Dependencies and constraints
+- Delivery complexity and impact
+- Data and security considerations
+- Relative priority compared to other active commitments
+
+Following a structured assessment, we determine:
+
+- Whether the work proceeds
+- The appropriate level of involvement
+- Relative priority
+- Sequencing into the roadmap
 
 ### 2. Ongoing communication
 
-We believe in close collaboration - for asking questions, sharing updates, and resolving issues quickly.
-Here are the main channels we use:
+Once the work has been reviewed by our team and prioritised, we will set up ongoing communication between our teams:
 
-* **Slack:** We will create a shared Slack channel (e.g., `#topic-pi-<your-project>`) for day-to-day questions and dev
-  support.
-* **Weekly Catch-up (Optional):** During the active design and development phases, we can schedule a weekly catch-up to
-  discuss changes to requirements, unblock any issues and track progress.
+* **Slack:** We will create a shared Slack channel (for example, `#topic-pi-<your-project>`) for day-to-day questions
+  and dev support.
+* **Weekly Catch-up (Optional):** During the active design and development phases, we may schedule a weekly catch-up
+  call to discuss changes to requirements, unblock any issues and track progress.
 
 ### 3. Design
 
-Before writing code, we agree on the contracts:
+Technical contracts and integration patterns are agreed before development begins:
 
 * **APIs:** We define the endpoints, request parameters, and response structures for any data you need to read.
-* **Events:** You define the domain event type that your service will publish. You may also need to define a "detail"
-  API to enable sharing of sensitive data -
+* **Events:** You define the domain event type that your service will publish. You may also need to build APIs to enable
+  sharing of sensitive data -
   see [Handling sensitive data](https://dsdmoj.atlassian.net/wiki/spaces/PINT/pages/3916103711/HMPPS+Domain+Events#Handling-sensitive-data).
 
 Once the design has been agreed, we will add stories to
@@ -71,34 +151,40 @@ our [Jira board](https://dsdmoj.atlassian.net/jira/software/c/projects/PI/boards
 
 ### 4. Development
 
-We will build the integration service and deploy it to the `dev` and `preprod` environments -
-see [Environments](https://github.com/ministryofjustice/hmpps-probation-integration-services#environments).
-Once it's ready for you to start testing against, we will share an update on Slack.
+We build or extend the integration service and deploy it to the `dev` and `preprod` environments  
+(see [Environments](https://github.com/ministryofjustice/hmpps-probation-integration-services#environments)).
 
-At this point you can start hooking up your dev service and start testing.
-If you spot any issues, or need any changes, get in touch on Slack - we are happy to help!
+Once ready, your service can begin integration testing.
+
+If you spot any issues or need any changes, get in touch on Slack - we are happy to help!
 
 ### 5. Testing
 
-At this point, we will add an automated test to validate the end-to-end user journey - setting up cases in NDelius,
-completing the required steps in your service, and verifying data is flowing correctly.
 See [End-to-end testing](https://github.com/ministryofjustice/hmpps-probation-integration-services#end-to-end-tests).
 
-To support this, we may ask you to grant permissions to our test user accounts in the `dev` environment.
+Our team will build an automated smoke test to validate the end-to-end user journey.
+This validates the integration layer but does not replace your service's functional or user testing.
+To support our testing, we may ask you to grant permissions for our test user accounts to access your `dev` environment.
 
-Depending on the scope of your service, the National Delius Service Team (NDST) may also need to do some manual testing
-to validate the impact on the NDelius system.
+Your team is responsible for functional testing and validation of your service, including:
+
+- Functional testing
+- Data verification
+- Environment validation
+
+Additional teams may need to perform testing, depending on the impact on other systems.
 
 ### 6. Go Live
 
-Once an end-to-end test is in place and passing, the integration service will be deployed to production.
-Then it's up to you to start using it 🚀
+Following validation, the integration is deployed to production ready for you to start using it.
 
 ## Support
 
-Our partnership doesn't end at "Go Live".
-For ongoing questions, troubleshooting, or future enhancements, you can always reach us in your dedicated Slack channel
-or our general support channel: [#probation-integration-tech](https://moj.enterprise.slack.com/archives/C02HQ4M2YQN).
+We will keep your dedicated Slack topic channel open for 3 months after your go-live to discuss any ongoing questions,
+troubleshooting, or future enhancements.
+
+After this time we will archive the channel, and any further support requests should be directed
+to [#probation-integration](https://moj.enterprise.slack.com/archives/C02QSERFGMB).
 
 ### Monitoring
 
@@ -107,29 +193,27 @@ We will proactively investigate and resolve issues, keeping you informed of any 
 
 If you notice any issues from your side, please reach out on Slack.
 
-* [Application Insights](https://portal.azure.com/#blade/AppInsightsExtension/BladeRedirect/BladeName/searchV1/ResourceId/%252Fsubscriptions%252Fa5ddf257-3b21-4ba9-a28c-ab30f751b383%252FresourceGroups%252Fnomisapi-prod-rg%252Fproviders%252FMicrosoft.Insights%252Fcomponents%252Fnomisapi-prod/BladeInputs/%7B%22tables%22%3A%5B%22availabilityResults%22%2C%22requests%22%2C%22exceptions%22%2C%22pageViews%22%2C%22traces%22%2C%22customEvents%22%2C%22dependencies%22%5D%2C%22timeContextWhereClause%22%3A%22%7C%20where%20timestamp%20%3E%20datetime(%5C%222025-11-26T18%3A00%3A26.805Z%5C%22)%20and%20timestamp%20%3C%20datetime(%5C%222025-11-27T18%3A00%3A26.805Z%5C%22)%22%2C%22filterWhereClause%22%3A%22%7C%20where%20customDimensions%5B%5C%22service.team%5C%22%5D%20in%20(%5C%22probation-integration%5C%22)%7C%20order%20by%20timestamp%20desc%22%2C%22originalParams%22%3A%7B%22eventTypes%22%3A%5B%7B%22value%22%3A%22availabilityResult%22%2C%22tableName%22%3A%22availabilityResults%22%2C%22label%22%3A%22Availability%22%7D%2C%7B%22value%22%3A%22request%22%2C%22tableName%22%3A%22requests%22%2C%22label%22%3A%22Request%22%7D%2C%7B%22value%22%3A%22exception%22%2C%22tableName%22%3A%22exceptions%22%2C%22label%22%3A%22Exception%22%7D%2C%7B%22value%22%3A%22pageView%22%2C%22tableName%22%3A%22pageViews%22%2C%22label%22%3A%22Page%20View%22%7D%2C%7B%22value%22%3A%22trace%22%2C%22tableName%22%3A%22traces%22%2C%22label%22%3A%22Trace%22%7D%2C%7B%22value%22%3A%22customEvent%22%2C%22tableName%22%3A%22customEvents%22%2C%22label%22%3A%22Custom%20Event%22%7D%2C%7B%22value%22%3A%22dependency%22%2C%22tableName%22%3A%22dependencies%22%2C%22label%22%3A%22Dependency%22%7D%5D%2C%22timeContext%22%3A%7B%22durationMs%22%3A86400000%7D%2C%22filter%22%3A%5B%7B%22dimension%22%3A%7B%22displayName%22%3A%22service.team%22%2C%22tables%22%3A%5B%22availabilityResults%22%2C%22requests%22%2C%22exceptions%22%2C%22pageViews%22%2C%22traces%22%2C%22customEvents%22%2C%22dependencies%22%5D%2C%22name%22%3A%22customDimensions%2Fservice.team%22%2C%22draftKey%22%3A%22customDimensions%2Fservice.team%22%7D%2C%22values%22%3A%5B%22probation-integration%22%5D%2C%22operator%22%3A%7B%22label%22%3A%22%3D%22%2C%22value%22%3A%22%3D%3D%22%2C%22isSelected%22%3Atrue%7D%7D%5D%2C%22searchPhrase%22%3A%7B%22originalPhrase%22%3A%22%22%2C%22_tokens%22%3A%5B%5D%7D%2C%22sort%22%3A%22desc%22%7D%7D)
-* [Sentry](https://ministryofjustice.sentry.io/dashboard/168098/)
-* [#probation-integration-notifications channel](https://moj.enterprise.slack.com/archives/C033HPR0W91)
+- [Application Insights](https://portal.azure.com/#blade/AppInsightsExtension/BladeRedirect/BladeName/searchV1/ResourceId/%252Fsubscriptions%252Fa5ddf257-3b21-4ba9-a28c-ab30f751b383%252FresourceGroups%252Fnomisapi-prod-rg%252Fproviders%252FMicrosoft.Insights%252Fcomponents%252Fnomisapi-prod/BladeInputs/%7B%22tables%22%3A%5B%22availabilityResults%22%2C%22requests%22%2C%22exceptions%22%2C%22pageViews%22%2C%22traces%22%2C%22customEvents%22%2C%22dependencies%22%5D%2C%22timeContextWhereClause%22%3A%22%7C%20where%20timestamp%20%3E%20datetime(%5C%222025-11-26T18%3A00%3A26.805Z%5C%22)%20and%20timestamp%20%3C%20datetime(%5C%222025-11-27T18%3A00%3A26.805Z%5C%22)%22%2C%22filterWhereClause%22%3A%22%7C%20where%20customDimensions%5B%5C%22service.team%5C%22%5D%20in%20(%5C%22probation-integration%5C%22)%7C%20order%20by%20timestamp%20desc%22%2C%22originalParams%22%3A%7B%22eventTypes%22%3A%5B%7B%22value%22%3A%22availabilityResult%22%2C%22tableName%22%3A%22availabilityResults%22%2C%22label%22%3A%22Availability%22%7D%2C%7B%22value%22%3A%22request%22%2C%22tableName%22%3A%22requests%22%2C%22label%22%3A%22Request%22%7D%2C%7B%22value%22%3A%22exception%22%2C%22tableName%22%3A%22exceptions%22%2C%22label%22%3A%22Exception%22%7D%2C%7B%22value%22%3A%22pageView%22%2C%22tableName%22%3A%22pageViews%22%2C%22label%22%3A%22Page%20View%22%7D%2C%7B%22value%22%3A%22trace%22%2C%22tableName%22%3A%22traces%22%2C%22label%22%3A%22Trace%22%7D%2C%7B%22value%22%3A%22customEvent%22%2C%22tableName%22%3A%22customEvents%22%2C%22label%22%3A%22Custom%20Event%22%7D%2C%7B%22value%22%3A%22dependency%22%2C%22tableName%22%3A%22dependencies%22%2C%22label%22%3A%22Dependency%22%7D%5D%2C%22timeContext%22%3A%7B%22durationMs%22%3A86400000%7D%2C%22filter%22%3A%5B%7B%22dimension%22%3A%7B%22displayName%22%3A%22service.team%22%2C%22tables%22%3A%5B%22availabilityResults%22%2C%22requests%22%2C%22exceptions%22%2C%22pageViews%22%2C%22traces%22%2C%22customEvents%22%2C%22dependencies%22%5D%2C%22name%22%3A%22customDimensions%2Fservice.team%22%2C%22draftKey%22%3A%22customDimensions%2Fservice.team%22%7D%2C%22values%22%3A%5B%22probation-integration%22%5D%2C%22operator%22%3A%7B%22label%22%3A%22%3D%22%2C%22value%22%3A%22%3D%3D%22%2C%22isSelected%22%3Atrue%7D%7D%5D%2C%22searchPhrase%22%3A%7B%22originalPhrase%22%3A%22%22%2C%22_tokens%22%3A%5B%5D%7D%2C%22sort%22%3A%22desc%22%7D%7D)
+- [Sentry](https://ministryofjustice.sentry.io/dashboard/168098/)
+- [#probation-integration-notifications channel](https://moj.enterprise.slack.com/archives/C033HPR0W91)
 
-## Responsibility
+## Roles and responsibilities
 
-Responsibility is split between the two teams as follows:
+### Probation Integration Team
 
-* **Probation Integration Team:**
-    * Providing guidance on integration and data domain modelling best practices.
-    * Building and maintaining the APIs and Domain Event consumers.
-    * Defining the authorisation roles required to access the APIs.
-    * Managing the connection to the NDelius data stores (Database, LDAP server, Alfresco).
+- Provide integration and domain modelling guidance
+- Build and maintain integration services
+- Define API access and authorisation requirements
+- Manage connections to probation data stores
 
+### Service Team
 
-* **Client Team:**
-    * Researching user needs and validating the use case.
-    * Defining the domain and product requirements.
-    * Consuming the APIs provided.
-    * Publishing the agreed domain events.
-    * Assistance with testing and validation of data.
-    * Ownership of any data stored in your service.
+- Define product and domain requirements
+- Validate user needs and outcomes
+- Consume agreed APIs and publish events where applicable
+- Participate in testing and validation
+- Retain ownership of data stored within their service
 
 ---
 
-#### *We look forward to working with you!*
+#### *We look forward to working with you*

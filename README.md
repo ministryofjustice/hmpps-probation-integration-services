@@ -402,6 +402,8 @@ the [hmpps-delius-pipelines](https://github.com/ministryofjustice/hmpps-delius-p
 repository.
 
 # Support
-For any issues or questions, please contact the Probation Integration team via the [#probation-integration-tech](https://mojdt.slack.com/archives/C02HQ4M2YQN)
+
+For any issues or questions, please contact the Probation Integration team via
+the [#probation-integration](https://moj.enterprise.slack.com/archives/C02QSERFGMB)
 Slack channel. Or feel free to create a [new issue](https://github.com/ministryofjustice/hmpps-probation-integration-services/issues/new) 
 in this repository.
