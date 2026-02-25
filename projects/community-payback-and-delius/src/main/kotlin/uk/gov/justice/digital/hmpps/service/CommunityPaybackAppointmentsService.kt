@@ -1,7 +1,7 @@
 package uk.gov.justice.digital.hmpps.service
 
-import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
+import org.springframework.data.web.PagedModel
 import org.springframework.orm.ObjectOptimisticLockingFailureException
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -100,7 +100,7 @@ class CommunityPaybackAppointmentsService(
         projectTypeCodes: List<String>?,
         outcomeCodes: List<String>?,
         pageable: Pageable
-    ): Page<AppointmentsResponse> {
+    ): PagedModel<AppointmentsResponse> {
         val appointments = unpaidWorkAppointmentRepository.findAppointments(
             crn,
             fromDate,
@@ -115,7 +115,7 @@ class CommunityPaybackAppointmentsService(
         val minutes = unpaidWorkAppointmentRepository.getUpwRequiredAndCompletedMinutes(upwDetailsIds)
             .associateBy { it.id }.mapValues { (_, v) -> v.toModel() }
         val limitedAccess = userAccessService.userAccessFor(username, crns).access.associateBy { it.crn }
-        return appointments.map {
+        return PagedModel(appointments.map {
             val limitedAccess = limitedAccess.getValue(it.person.crn)
             val outcome = it.contact.outcome
             val daysOverdue = if (outcome == null || it.date < LocalDate.now()) {
@@ -132,7 +132,7 @@ class CommunityPaybackAppointmentsService(
                 requirementProgress = checkNotNull(minutes[it.details.id]),
                 outcome = outcome?.toCodeDescription()
             )
-        }
+        })
     }
 
     fun getSession(projectCode: String, date: LocalDate, username: String): SessionResponse {
