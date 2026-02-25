@@ -384,6 +384,67 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ScheduleResponse"
+  /appointments:
+    get:
+      tags:
+      - appointments-controller
+      operationId: getAppointments
+      parameters:
+      - name: username
+        in: query
+        required: true
+        schema:
+          type: string
+      - name: crn
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: fromDate
+        in: query
+        required: false
+        schema:
+          type: string
+          format: date
+      - name: toDate
+        in: query
+        required: false
+        schema:
+          type: string
+          format: date
+      - name: projectCodes
+        in: query
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+      - name: projectTypeCodes
+        in: query
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+      - name: outcomeCodes
+        in: query
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+      - name: pageable
+        in: query
+        required: true
+        schema:
+          $ref: "#/components/schemas/Pageable"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PageAppointmentsResponse"
 components:
   schemas:
     AppointmentOutcomeRequest:
@@ -1159,6 +1220,94 @@ components:
       - allocations
       - appointments
       - requirementProgress
+    AppointmentsResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        date:
+          type: string
+          format: date
+        startTime:
+          type: string
+        endTime:
+          type: string
+        daysOverdue:
+          type: integer
+          format: int64
+        case:
+          $ref: "#/components/schemas/AppointmentResponseCase"
+        requirementProgress:
+          $ref: "#/components/schemas/RequirementProgress"
+        outcome:
+          $ref: "#/components/schemas/CodeDescription"
+      required:
+      - case
+      - date
+      - endTime
+      - id
+      - requirementProgress
+      - startTime
+    PageAppointmentsResponse:
+      type: object
+      properties:
+        totalPages:
+          type: integer
+          format: int32
+        totalElements:
+          type: integer
+          format: int64
+        size:
+          type: integer
+          format: int32
+        content:
+          type: array
+          items:
+            $ref: "#/components/schemas/AppointmentsResponse"
+        number:
+          type: integer
+          format: int32
+        numberOfElements:
+          type: integer
+          format: int32
+        sort:
+          $ref: "#/components/schemas/SortObject"
+        pageable:
+          $ref: "#/components/schemas/PageableObject"
+        first:
+          type: boolean
+        last:
+          type: boolean
+        empty:
+          type: boolean
+    PageableObject:
+      type: object
+      properties:
+        offset:
+          type: integer
+          format: int64
+        sort:
+          $ref: "#/components/schemas/SortObject"
+        paged:
+          type: boolean
+        pageNumber:
+          type: integer
+          format: int32
+        pageSize:
+          type: integer
+          format: int32
+        unpaged:
+          type: boolean
+    SortObject:
+      type: object
+      properties:
+        empty:
+          type: boolean
+        sorted:
+          type: boolean
+        unsorted:
+          type: boolean
   securitySchemes:
     hmpps-auth-token:
       type: http

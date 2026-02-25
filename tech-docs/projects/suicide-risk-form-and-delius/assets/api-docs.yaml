@@ -341,7 +341,7 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/Address"
-        prisonNumber:
+        nomsNumber:
           type: string
         dateOfBirth:
           type: string
