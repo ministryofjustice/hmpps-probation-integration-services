@@ -114,6 +114,20 @@ components:
           type: boolean
         float:
           type: boolean
+        nodeType:
+          type: string
+          enum:
+          - ARRAY
+          - BINARY
+          - BOOLEAN
+          - MISSING
+          - "NULL"
+          - NUMBER
+          - OBJECT
+          - POJO
+          - STRING
+        integralNumber:
+          type: boolean
         valueNode:
           type: boolean
         container:
@@ -132,20 +146,6 @@ components:
           type: boolean
           deprecated: true
         binary:
-          type: boolean
-        nodeType:
-          type: string
-          enum:
-          - ARRAY
-          - BINARY
-          - BOOLEAN
-          - MISSING
-          - "NULL"
-          - NUMBER
-          - OBJECT
-          - POJO
-          - STRING
-        integralNumber:
           type: boolean
         boolean:
           type: boolean
