@@ -27,6 +27,17 @@ interface PersonRepository : JpaRepository<Person, Long> {
                  'typeShortDescription' value r_contact_type.short_description,
                  'outcomeCode' value r_contact_outcome_type.code,
                  'outcomeDescription' value r_contact_outcome_type.description,
+                 'startDateTime' value decode(contact.contact_start_time, null, to_char(contact.contact_date, 'yyyy-mm-dd') || 'T00:00:00', to_char(contact.contact_date, 'yyyy-mm-dd') || 'T' || to_char(contact.contact_start_time, 'hh24:mi:ss')),
+                 'endDateTime' value  decode(contact.contact_end_time, null, null, to_char(contact.contact_date, 'yyyy-mm-dd') || 'T' || to_char(contact.contact_end_time, 'hh24:mi:ss')),
+                 'requiresOutcome' value case when exists (select cto.contact_outcome_type_id
+                                                           from r_contact_type_outcome cto
+                                                           join r_contact_outcome_type cot on cot.contact_outcome_type_id = cto.contact_outcome_type_id
+                                                           where r_contact_outcome_type.code is null
+                                                             and cto.contact_type_id = r_contact_type.contact_type_id
+                                                             and cot.selectable = 'Y')
+                                                  then 'Y' else 'N' end,
+                 'systemGenerated' value decode(r_contact_type.sgc_flag, 1, 'Y', 0, 'N', null),
+                 'outcomeRequiredFlag' value r_contact_type.contact_outcome_flag,
                  'softDeleted' value contact.soft_deleted,
                  'rowVersion' value contact.row_version
                  returning clob) as "json",
