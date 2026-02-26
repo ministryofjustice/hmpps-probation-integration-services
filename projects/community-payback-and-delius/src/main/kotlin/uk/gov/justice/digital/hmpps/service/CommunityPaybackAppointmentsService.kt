@@ -252,15 +252,15 @@ class CommunityPaybackAppointmentsService(
         if the current status is null or 'UN' (unallocated) then add the status 'WK' (work in progress)
         else if the status is any other value then keep the status as is
          */
-        val status = when {
+        val statusCode = when {
             remainingMinutes <= 0L -> "HC"
             currentStatus == null -> "WK"
             currentStatus == "UN" -> "WK"
             else -> currentStatus
         }
-        return referenceDataRepository.getStatus(status).orNotFoundBy(
+        return referenceDataRepository.getStatus(statusCode).orNotFoundBy(
             "status",
-            status
+            statusCode
         )
     }
 
