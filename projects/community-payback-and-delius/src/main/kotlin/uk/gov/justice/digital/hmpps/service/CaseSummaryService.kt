@@ -35,7 +35,7 @@ class CaseSummaryService(
             val disposal = detail.disposal
             UnpaidWorkMinutes(
                 eventNumber = disposal.event.number.toLong(),
-                disposalDate = disposal.date,
+                sentenceDate = disposal.date,
                 requiredMinutes = matchingMinutes.sumOf { it.requiredMinutes },
                 adjustments = matchingMinutes.sumOf { it.positiveAdjustments - it.negativeAdjustments },
                 completedMinutes = matchingMinutes.sumOf { it.completedMinutes },

@@ -8,7 +8,7 @@ data class UnpaidWorkDetails(
 
 data class UnpaidWorkMinutes(
     val eventNumber: Long,
-    val disposalDate: LocalDate,
+    val sentenceDate: LocalDate,
     val requiredMinutes: Long,
     val adjustments: Long,
     val completedMinutes: Long,
