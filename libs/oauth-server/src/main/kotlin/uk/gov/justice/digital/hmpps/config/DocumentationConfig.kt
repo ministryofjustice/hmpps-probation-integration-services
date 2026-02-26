@@ -17,8 +17,8 @@ import org.springframework.http.HttpHeaders
         title = "API Reference",
         contact = Contact(
             name = "Probation Integration Team",
-            email = "probation-integration-team@digital.justice.gov.uk",
-            url = "https://mojdt.slack.com/archives/C02HQ4M2YQN" // #probation-integration-tech Slack channel
+            email = "probation-integration@JusticeUK.onmicrosoft.com",
+            url = "https://moj.enterprise.slack.com/archives/C02QSERFGMB" // #probation-integration Slack channel
         ),
         license = License(
             name = "MIT",

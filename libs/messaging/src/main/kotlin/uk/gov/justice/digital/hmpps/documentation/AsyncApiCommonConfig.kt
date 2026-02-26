@@ -13,8 +13,8 @@ class AsyncApiCommonConfig {
             version("1.0")
             contact {
                 name("Probation Integration Team")
-                email("probation-integration-team@digital.justice.gov.uk")
-                url("https://mojdt.slack.com/archives/C02HQ4M2YQN") // #probation-integration-tech Slack channel
+                email("probation-integration@JusticeUK.onmicrosoft.com")
+                url("https://moj.enterprise.slack.com/archives/C02QSERFGMB") // #probation-integration Slack channel
             }
             license {
                 name("MIT")
