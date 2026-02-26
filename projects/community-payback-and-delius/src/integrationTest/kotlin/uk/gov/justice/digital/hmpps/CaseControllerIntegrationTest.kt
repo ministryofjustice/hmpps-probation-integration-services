@@ -72,7 +72,7 @@ class CaseControllerIntegrationTest @Autowired constructor(
     @Test
     fun `returns 200 when summary requested`() {
         val expected =
-            """{"unpaidWorkDetails":[{"eventNumber":1,"disposalDate": "2026-01-01","requiredMinutes":7200,"adjustments":4,"completedMinutes":870,"completedEteMinutes":870},{"eventNumber":2,"disposalDate": "2026-01-02","requiredMinutes":10800,"adjustments":0,"completedMinutes":405,"completedEteMinutes":405},{"eventNumber":3,"disposalDate": "2026-01-03","requiredMinutes":0,"adjustments":0,"completedMinutes":0,"completedEteMinutes":0},{"eventNumber":4,"disposalDate": "2026-01-04","requiredMinutes":600000,"adjustments":0,"completedMinutes":0,"completedEteMinutes":0},{"eventNumber":5,"disposalDate": "2026-01-05","requiredMinutes":0,"adjustments":0,"completedMinutes":0,"completedEteMinutes":0}]}"""
+            """{"unpaidWorkDetails":[{"eventNumber":1,"sentenceDate": "2026-01-01","requiredMinutes":7200,"adjustments":4,"completedMinutes":870,"completedEteMinutes":870},{"eventNumber":2,"sentenceDate": "2026-01-02","requiredMinutes":10800,"adjustments":0,"completedMinutes":405,"completedEteMinutes":405},{"eventNumber":3,"sentenceDate": "2026-01-03","requiredMinutes":0,"adjustments":0,"completedMinutes":0,"completedEteMinutes":0},{"eventNumber":4,"sentenceDate": "2026-01-04","requiredMinutes":600000,"adjustments":0,"completedMinutes":0,"completedEteMinutes":0},{"eventNumber":5,"sentenceDate": "2026-01-05","requiredMinutes":0,"adjustments":0,"completedMinutes":0,"completedEteMinutes":0}]}"""
         mockMvc.get("/case/${PersonGenerator.DEFAULT_PERSON.crn}/summary") { withToken() }
             .andExpect {
                 status { isOk() }
