@@ -198,12 +198,18 @@ class CommunityPaybackAppointmentsService(
             })
             .associateBy { appointment -> single { "$REFERENCE_PREFIX${it.reference}" == appointment.reference } }
             .map { (request, appointment) ->
-                val status = appointment.relatedTo.eventId?.let { calculateCurrentUPWStatus(it) }
-                val details = appointment.relatedTo.eventId!!.let { upwDetails[it].orNotFoundBy("Event ID", it) }
-                details.status = status!!
+                val eventId = requireNotNull(appointment.relatedTo.eventId) {
+                    "Event ID is required for appointment ${appointment.id}"
+                }
+                val status = calculateCurrentUPWStatus(eventId)
+                val details = upwDetails[eventId].orNotFoundBy("Event ID", eventId)
+                details.status = status
+                val personId = requireNotNull(appointment.relatedTo.personId) {
+                    "Person ID is required for appointment ${appointment.id}"
+                }
                 CreateUnpaidWorkAppointment(
                     contactId = appointment.id,
-                    personId = appointment.relatedTo.personId!!,
+                    personId = personId,
                     details = details,
                     date = request.date,
                     startTime = request.startTime,
