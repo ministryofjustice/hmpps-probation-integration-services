@@ -344,7 +344,7 @@ object UPWGenerator {
         disposal = DISPOSAL_2
     )
 
-    val FORTH_RQMNT = generateRequirement(
+    val FOURTH_RQMNT = generateRequirement(
         length = 10000,
         disposal = DISPOSAL_4
     )
