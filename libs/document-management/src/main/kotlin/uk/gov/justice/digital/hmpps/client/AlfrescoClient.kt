@@ -7,11 +7,12 @@ import org.springframework.http.*
 import org.springframework.stereotype.Component
 import org.springframework.web.client.RestClient
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody
-import org.springframework.retry.support.RetryTemplate
-import org.springframework.retry.backoff.FixedBackOffPolicy
-import org.springframework.retry.policy.SimpleRetryPolicy
 import uk.gov.justice.digital.hmpps.alfresco.model.DocumentResponse
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
+import uk.gov.justice.digital.hmpps.exception.ServerErrorException
+import uk.gov.justice.digital.hmpps.retry.retry
+import java.net.SocketTimeoutException
+import java.time.Duration
 import java.util.*
 
 @Component
@@ -19,22 +20,6 @@ import java.util.*
 class AlfrescoClient(
     @Qualifier("alfrescoRestClient") private val restClient: RestClient
 ) {
-    // RetryTemplate for GET calls
-    private val retryTemplate: RetryTemplate = RetryTemplate().apply {
-        val exceptionMap: Map<Class<out Throwable>, Boolean> = mapOf(
-            NotFoundException::class.java to false,
-            RuntimeException::class.java to true
-        )
-        setRetryPolicy(
-            SimpleRetryPolicy(
-                3,
-                exceptionMap,
-                true
-            )
-        ) // 3 attempts, do not retry NotFoundException
-        setBackOffPolicy(FixedBackOffPolicy().apply { backOffPeriod = 1000 }) // 1s delay
-    }
-
     fun getDocumentById(id: String): RestClient.RequestHeadersSpec<*> = restClient.get().uri("/fetch/$id")
         .accept(MediaType.MULTIPART_FORM_DATA)
 
@@ -63,11 +48,11 @@ class AlfrescoClient(
     }
 
     fun streamDocument(id: String, filename: String): ResponseEntity<StreamingResponseBody> =
-        retryTemplate.execute<ResponseEntity<StreamingResponseBody>, RuntimeException> {
+        retry(maxRetries = 3, exceptions = listOf(ServerErrorException::class, SocketTimeoutException::class), delay = Duration.ofSeconds(1)) {
             UUID.fromString(id) // validate input
             getDocumentById(id).exchange({ _, res ->
-                when (res.statusCode) {
-                    HttpStatus.OK -> ResponseEntity.ok()
+                when {
+                    res.statusCode == HttpStatus.OK -> ResponseEntity.ok()
                         .headers {
                             it.copy(HttpHeaders.CONTENT_TYPE, res)
                             it.copy(HttpHeaders.CONTENT_LENGTH, res)
@@ -80,7 +65,9 @@ class AlfrescoClient(
                         )
                         .body(StreamingResponseBody { output -> res.body.use { it.copyTo(output) } })
 
-                    HttpStatus.NOT_FOUND -> throw NotFoundException("Document content", "alfrescoId", id)
+                    res.statusCode == HttpStatus.NOT_FOUND -> throw NotFoundException("Document content", "alfrescoId", id)
+
+                    res.statusCode.is5xxServerError -> throw ServerErrorException("Alfresco 5xx error: ${res.statusCode}")
 
                     else -> throw RuntimeException("Failed to download document. Alfresco responded with ${res.statusCode}.")
                 }
