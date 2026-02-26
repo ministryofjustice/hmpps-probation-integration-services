@@ -141,7 +141,8 @@ object UPWGenerator {
     val UPW_DETAILS_1 = generateUpwDetails(disposal = DISPOSAL_1)
     val UPW_DETAILS_2 = generateUpwDetails(disposal = DISPOSAL_2)
     val UPW_DETAILS_3 = generateUpwDetails(disposal = DISPOSAL_3)
-    val UPW_DETAILS_4 = generateUpwDetails(disposal = DISPOSAL_4, status = ReferenceDataGenerator.UPW_STATUS_UNALLOCATED)
+    val UPW_DETAILS_4 =
+        generateUpwDetails(disposal = DISPOSAL_4, status = ReferenceDataGenerator.UPW_STATUS_UNALLOCATED)
     val UPW_DETAILS_5 = generateUpwDetails(disposal = DISPOSAL_5, status = ReferenceDataGenerator.UPW_STATUS_WORKING)
 
     val DEFAULT_UPW_ALLOCATION = generateUpwAllocation(

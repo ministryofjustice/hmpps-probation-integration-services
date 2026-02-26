@@ -198,8 +198,7 @@ class CommunityPaybackAppointmentsService(
             })
             .associateBy { appointment -> single { "$REFERENCE_PREFIX${it.reference}" == appointment.reference } }
             .map { (request, appointment) ->
-                val status = appointment.relatedTo.eventId?.
-                    let{ calculateCurrentUPWStatus(it) }
+                val status = appointment.relatedTo.eventId?.let { calculateCurrentUPWStatus(it) }
                 val details = appointment.relatedTo.eventId!!.let { upwDetails[it].orNotFoundBy("Event ID", it) }
                 details.status = status!!
                 CreateUnpaidWorkAppointment(
@@ -236,10 +235,11 @@ class CommunityPaybackAppointmentsService(
             .map { CreatedAppointment(id = it.id!!, reference = it.reference!!) }
     }
 
-    private fun calculateCurrentUPWStatus(eventId: Long) : ReferenceData {
+    private fun calculateCurrentUPWStatus(eventId: Long): ReferenceData {
         val upwDetails = upwDetailsRepository.findByEventIdIn(eventId)
         val upwMinutesDtos = unpaidWorkAppointmentRepository.getUpwRequiredAndCompletedMinutes(
-            upwDetails.map { it.id }.distinct())
+            upwDetails.map { it.id }.distinct()
+        )
         val progress = RequirementProgress(
             requiredMinutes = upwMinutesDtos.sumOf { it.requiredMinutes },
             completedMinutes = upwMinutesDtos.sumOf { it.completedMinutes },
