@@ -1,0 +1,9 @@
+database:
+  access:
+    username_key: /manage-people-on-probation-and-delius/db-username
+    password_key: /manage-people-on-probation-and-delius/db-password
+
+  audit:
+    username: ManagePeopleOnProbationAndDelius
+    forename: Manage People On Probation
+    surname: Service
