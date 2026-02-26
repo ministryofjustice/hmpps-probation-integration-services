@@ -32,8 +32,10 @@ class CaseSummaryService(
         val upwMinutes = details.map { detail ->
             val matchingMinutes = requiredMinutes.filter { it.id == detail.id }
             val eteMinutes = eteAppts.filter { it.details.id == detail.id }.sumOf { it.minutesCredited ?: 0 }
+            val disposal = detail.disposal
             UnpaidWorkMinutes(
-                eventNumber = detail.disposal.event.number.toLong(),
+                eventNumber = disposal.event.number.toLong(),
+                disposalDate = disposal.date,
                 requiredMinutes = matchingMinutes.sumOf { it.requiredMinutes },
                 adjustments = matchingMinutes.sumOf { it.positiveAdjustments - it.negativeAdjustments },
                 completedMinutes = matchingMinutes.sumOf { it.completedMinutes },
