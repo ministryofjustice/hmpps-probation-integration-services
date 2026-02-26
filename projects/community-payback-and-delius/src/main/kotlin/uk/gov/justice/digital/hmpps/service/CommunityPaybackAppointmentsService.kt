@@ -1,5 +1,7 @@
 package uk.gov.justice.digital.hmpps.service
 
+import org.springframework.data.domain.Pageable
+import org.springframework.data.web.PagedModel
 import org.springframework.orm.ObjectOptimisticLockingFailureException
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -87,6 +89,50 @@ class CommunityPaybackAppointmentsService(
             sensitive = appointment.contact.sensitive,
             alertActive = appointment.contact.alertActive
         )
+    }
+
+    fun getAppointments(
+        username: String,
+        crn: String?,
+        fromDate: LocalDate?,
+        toDate: LocalDate?,
+        projectCodes: List<String>?,
+        projectTypeCodes: List<String>?,
+        outcomeCodes: List<String>?,
+        pageable: Pageable
+    ): PagedModel<AppointmentsResponse> {
+        val appointments = unpaidWorkAppointmentRepository.findAppointments(
+            crn,
+            fromDate,
+            toDate,
+            projectCodes,
+            projectTypeCodes,
+            outcomeCodes,
+            pageable
+        )
+        val upwDetailsIds = appointments.map { it.details.id }.distinct()
+        val crns = appointments.map { it.person.crn }.distinct()
+        val minutes = unpaidWorkAppointmentRepository.getUpwRequiredAndCompletedMinutes(upwDetailsIds)
+            .associateBy { it.id }.mapValues { (_, v) -> v.toModel() }
+        val limitedAccess = userAccessService.userAccessFor(username, crns).access.associateBy { it.crn }
+        return PagedModel(appointments.map {
+            val limitedAccess = limitedAccess.getValue(it.person.crn)
+            val outcome = it.contact.outcome
+            val daysOverdue = if (outcome == null || it.date < LocalDate.now()) {
+                ChronoUnit.DAYS.between(it.date, LocalDate.now())
+            } else null
+
+            AppointmentsResponse(
+                id = it.id,
+                date = it.date,
+                startTime = it.startTime,
+                endTime = it.endTime,
+                daysOverdue = daysOverdue,
+                case = it.toAppointmentResponseCase(limitedAccess),
+                requirementProgress = checkNotNull(minutes[it.details.id]),
+                outcome = outcome?.toCodeDescription()
+            )
+        })
     }
 
     fun getSession(projectCode: String, date: LocalDate, username: String): SessionResponse {

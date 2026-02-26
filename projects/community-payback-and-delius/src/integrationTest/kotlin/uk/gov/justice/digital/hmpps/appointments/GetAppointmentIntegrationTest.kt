@@ -13,6 +13,7 @@ import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator
 import uk.gov.justice.digital.hmpps.data.generator.UPWGenerator
 import uk.gov.justice.digital.hmpps.data.generator.UPWGenerator.UPW_PROJECT_1
+import uk.gov.justice.digital.hmpps.data.generator.UserGenerator
 import uk.gov.justice.digital.hmpps.entity.contact.ContactRepository
 import uk.gov.justice.digital.hmpps.entity.unpaidwork.UnpaidWorkAppointmentRepository
 import uk.gov.justice.digital.hmpps.model.*
@@ -125,5 +126,56 @@ class GetAppointmentIntegrationTest @Autowired constructor(
                 .andReturn().response.contentAsJson<AppointmentResponse>()
 
         assertThat(response.pickUpData?.location).isNull()
+    }
+
+    @Test
+    fun `can retrieve all appointments for a crn without sort`() {
+        mockMvc.get("/appointments?username=${UserGenerator.DEFAULT_USER.username}&crn=${PersonGenerator.DEFAULT_PERSON.crn}") { withToken() }
+            .andExpect {
+                status { is2xxSuccessful() }
+                content { jsonPath("$.content.size()") { value(5) } }
+            }
+    }
+
+    @Test
+    fun `can retrieve all appointments without filters`() {
+        mockMvc.get("/appointments?username=${UserGenerator.DEFAULT_USER.username}") { withToken() }
+            .andExpect {
+                status { is2xxSuccessful() }
+                content { jsonPath("$.content.size()") { value(8) } }
+            }
+    }
+
+    @Test
+    fun `can retrieve all appointments with a date filter from`() {
+        mockMvc.get("/appointments?username=${UserGenerator.DEFAULT_USER.username}&fromDate=${LocalDate.now()}") { withToken() }
+            .andExpect {
+                status { is2xxSuccessful() }
+                content { jsonPath("$.content.size()") { value(4) } }
+            }
+    }
+
+    @Test
+    fun `can retrieve all appointments with a date filter to`() {
+        mockMvc.get("/appointments?username=${UserGenerator.DEFAULT_USER.username}&toDate=${LocalDate.now()}") { withToken() }
+            .andExpect {
+                status { is2xxSuccessful() }
+                content { jsonPath("$.content.size()") { value(6) } }
+            }
+    }
+
+    @Test
+    fun `can retrieve all appointments by crn and date sort desc`() {
+        mockMvc.get("/appointments?username=${UserGenerator.DEFAULT_USER.username}&crn=${PersonGenerator.DEFAULT_PERSON.crn}&sort=date,desc") { withToken() }
+            .andExpect {
+                status { is2xxSuccessful() }
+                content {
+                    jsonPath("$.content[0].id") { value(UPWGenerator.DEFAULT_UPW_APPOINTMENT.id) }
+                    jsonPath("$.content[1].id") { value(1L) }
+                    jsonPath("$.content[2].id") { value(3L) }
+                    jsonPath("$.content[3].id") { value(2L) }
+                    jsonPath("$.content[4].id") { value(UPWGenerator.OVERDUE_APPOINTMENT.id) }
+                }
+            }
     }
 }
