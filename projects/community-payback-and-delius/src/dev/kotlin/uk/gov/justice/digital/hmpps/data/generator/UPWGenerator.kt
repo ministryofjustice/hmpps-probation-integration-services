@@ -96,6 +96,16 @@ object UPWGenerator {
         person = PersonGenerator.DEFAULT_PERSON,
         disposal = null
     )
+    val EVENT_4 = generateEvent(
+        eventNumber = "4",
+        person = PersonGenerator.DEFAULT_PERSON,
+        disposal = null
+    )
+    val EVENT_5 = generateEvent(
+        eventNumber = "5",
+        person = PersonGenerator.DEFAULT_PERSON,
+        disposal = null
+    )
 
     val DISPOSAL_1 = generateDisposal(
         length = 12,
@@ -115,10 +125,24 @@ object UPWGenerator {
         date = LocalDate.of(2026, 1, 1),
         event = EVENT_3
     )
+    val DISPOSAL_4 = generateDisposal(
+        length = 12,
+        disposalType = ReferenceDataGenerator.DEFAULT_DISPOSAL_TYPE,
+        date = LocalDate.of(2026, 1, 1),
+        event = EVENT_4
+    )
+    val DISPOSAL_5 = generateDisposal(
+        length = 12,
+        disposalType = ReferenceDataGenerator.DEFAULT_DISPOSAL_TYPE,
+        date = LocalDate.of(2026, 1, 1),
+        event = EVENT_5
+    )
 
     val UPW_DETAILS_1 = generateUpwDetails(disposal = DISPOSAL_1)
     val UPW_DETAILS_2 = generateUpwDetails(disposal = DISPOSAL_2)
     val UPW_DETAILS_3 = generateUpwDetails(disposal = DISPOSAL_3)
+    val UPW_DETAILS_4 = generateUpwDetails(disposal = DISPOSAL_4, status = ReferenceDataGenerator.UPW_STATUS_UNALLOCATED)
+    val UPW_DETAILS_5 = generateUpwDetails(disposal = DISPOSAL_5, status = ReferenceDataGenerator.UPW_STATUS_WORKING)
 
     val DEFAULT_UPW_ALLOCATION = generateUpwAllocation(
         details = UPW_DETAILS_1,
@@ -319,6 +343,11 @@ object UPWGenerator {
         disposal = DISPOSAL_2
     )
 
+    val FORTH_RQMNT = generateRequirement(
+        length = 10000,
+        disposal = DISPOSAL_4
+    )
+
     val DEFAULT_UPW_DETAILS_ADJUSTMENT_POSITIVE = generateUPWAdjustment(
         upwDetailsId = UPW_DETAILS_1.id,
         adjustmentAmount = 7L,
@@ -389,8 +418,12 @@ object UPWGenerator {
     fun generateUpwDetails(
         id: Long = IdGenerator.getAndIncrement(),
         disposal: Disposal,
-        softDeleted: Boolean = false
-    ) = UnpaidWorkDetails(id, disposal, softDeleted)
+        softDeleted: Boolean = false,
+        status: ReferenceData? = null,
+    ) = UnpaidWorkDetails(
+        id = id, disposal = disposal, softDeleted = softDeleted,
+        status = status
+    )
 
     fun generateUPWAdjustment(
         id: Long = IdGenerator.getAndIncrement(),

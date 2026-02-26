@@ -198,10 +198,14 @@ class CommunityPaybackAppointmentsService(
             })
             .associateBy { appointment -> single { "$REFERENCE_PREFIX${it.reference}" == appointment.reference } }
             .map { (request, appointment) ->
+                val status = appointment.relatedTo.eventId?.
+                    let{ calculateCurrentUPWStatus(it) }
+                val details = appointment.relatedTo.eventId!!.let { upwDetails[it].orNotFoundBy("Event ID", it) }
+                details.status = status!!
                 CreateUnpaidWorkAppointment(
                     contactId = appointment.id,
                     personId = appointment.relatedTo.personId!!,
-                    details = appointment.relatedTo.eventId!!.let { upwDetails[it].orNotFoundBy("Event ID", it) },
+                    details = details,
                     date = request.date,
                     startTime = request.startTime,
                     endTime = request.endTime,
@@ -230,6 +234,34 @@ class CommunityPaybackAppointmentsService(
             }
             .also(createUnpaidWorkAppointmentRepository::saveAll)
             .map { CreatedAppointment(id = it.id!!, reference = it.reference!!) }
+    }
+
+    private fun calculateCurrentUPWStatus(eventId: Long) : ReferenceData {
+        val upwDetails = upwDetailsRepository.findByEventIdIn(eventId)
+        val upwMinutesDtos = unpaidWorkAppointmentRepository.getUpwRequiredAndCompletedMinutes(
+            upwDetails.map { it.id }.distinct())
+        val progress = RequirementProgress(
+            requiredMinutes = upwMinutesDtos.sumOf { it.requiredMinutes },
+            completedMinutes = upwMinutesDtos.sumOf { it.completedMinutes },
+            adjustments = upwMinutesDtos.sumOf { it.positiveAdjustments - it.negativeAdjustments }
+        )
+        val remainingMinutes = progress.requiredMinutes + progress.adjustments - progress.completedMinutes
+        val currentStatus = upwDetails.maxByOrNull { it.id }?.status?.code
+        /*
+        if remaining minutes are 0 or less, then add the completed status 'HC'
+        if the current status is null or 'UN' (unallocated) then add the status 'WK' (work in progress)
+        else if the status is any other value then keep the status as is
+         */
+        val status = when {
+            remainingMinutes <= 0L -> "HC"
+            currentStatus == null -> "WK"
+            currentStatus == "UN" -> "WK"
+            else -> currentStatus
+        }
+        return referenceDataRepository.getStatus(status).orNotFoundBy(
+            "status",
+            status
+        )
     }
 
     @Transactional
