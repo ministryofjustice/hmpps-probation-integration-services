@@ -310,4 +310,46 @@ class CreateAppointmentIntegrationTest @Autowired constructor(
             assertThat(it.contact.staff.code).isEqualTo(StaffGenerator.UNALLOCATED_STAFF.code)
         }
     }
+
+    @Test
+    fun `creating appointment with a status code of 'WK' and hours all worked changes to 'HC'`() {
+        val request = TestData.createAppointmentWithStatus()
+        val created = mockMvc
+            .post("/projects/$PROJECT/appointments") {
+                withToken()
+                json = CreateAppointmentsRequest(listOf(request))
+            }
+            .andExpect { status { isOk() } }
+            .andReturn().response.contentAsJson<List<CreatedAppointment>>().first()
+        val actualStatus = unpaidWorkAppointmentRepository.findById(created.id).get().details.status?.code
+        assertThat(actualStatus).isEqualTo("HC")
+    }
+
+    @Test
+    fun `creating appointment with a null status code and hours all worked changes to 'HC'`() {
+        val request = TestData.createAppointment()
+        val created = mockMvc
+            .post("/projects/$PROJECT/appointments") {
+                withToken()
+                json = CreateAppointmentsRequest(listOf(request))
+            }
+            .andExpect { status { isOk() } }
+            .andReturn().response.contentAsJson<List<CreatedAppointment>>().first()
+        val actualStatus = unpaidWorkAppointmentRepository.findById(created.id).get().details.status?.code
+        assertThat(actualStatus).isEqualTo("HC")
+    }
+
+    @Test
+    fun `creating appointment with a status code of 'Unallocated' and hours not all worked changes to 'WK'`() {
+        val request = TestData.createAppointmentWithStatusUnallocated()
+        val created = mockMvc
+            .post("/projects/$PROJECT/appointments") {
+                withToken()
+                json = CreateAppointmentsRequest(listOf(request))
+            }
+            .andExpect { status { isOk() } }
+            .andReturn().response.contentAsJson<List<CreatedAppointment>>().first()
+        val actualStatus = unpaidWorkAppointmentRepository.findById(created.id).get().details.status?.code
+        assertThat(actualStatus).isEqualTo("WK")
+    }
 }

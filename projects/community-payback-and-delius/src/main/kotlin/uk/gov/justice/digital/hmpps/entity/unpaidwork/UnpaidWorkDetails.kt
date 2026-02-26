@@ -1,16 +1,15 @@
 package uk.gov.justice.digital.hmpps.entity.unpaidwork
 
 import jakarta.persistence.*
-import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.NumericBooleanConverter
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
+import uk.gov.justice.digital.hmpps.entity.ReferenceData
 import uk.gov.justice.digital.hmpps.entity.sentence.Disposal
 import uk.gov.justice.digital.hmpps.utils.Extensions.reportMissing
 
 @Entity
-@Immutable
 @Table(name = "upw_details")
 @SQLRestriction("soft_deleted = 0")
 class UnpaidWorkDetails(
@@ -21,6 +20,10 @@ class UnpaidWorkDetails(
     @ManyToOne
     @JoinColumn(name = "disposal_id")
     val disposal: Disposal,
+
+    @ManyToOne
+    @JoinColumn(name = "upw_status_id")
+    var status: ReferenceData?,
 
     @Column(columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)

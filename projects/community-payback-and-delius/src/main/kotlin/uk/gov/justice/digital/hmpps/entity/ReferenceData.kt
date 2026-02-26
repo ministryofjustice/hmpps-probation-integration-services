@@ -52,6 +52,7 @@ class Dataset(
         const val NON_WORKING_DAYS = "NON WORKING DAYS"
         const val UPW_FREQUENCY = "UPW PROJECT FREQUENCY"
         const val UPW_PROJECT_CATEGORY = "UPW PROJECT CATEGORY"
+        const val UPW_STATUS = "UPW STATUS"
     }
 }
 
@@ -82,3 +83,7 @@ fun ReferenceDataRepository.getWorkQuality(code: String): ReferenceData =
 fun ReferenceDataRepository.getBehaviour(code: String): ReferenceData =
     findByCodeAndDatasetCode(code, Dataset.UPW_BEHAVIOUR)
         ?: throw NotFoundException(Dataset.UPW_BEHAVIOUR, "code", code)
+
+fun ReferenceDataRepository.getStatus(code: String): ReferenceData =
+    findByCodeAndDatasetCode(code, Dataset.UPW_STATUS)
+        ?: throw NotFoundException(Dataset.UPW_STATUS, "code", code)

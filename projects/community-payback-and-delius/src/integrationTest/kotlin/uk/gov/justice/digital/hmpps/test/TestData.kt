@@ -30,6 +30,46 @@ object TestData {
         notes = "testing"
     )
 
+    fun createAppointmentWithStatus() = CreateAppointmentRequest(
+        reference = UUID.randomUUID(),
+        crn = PersonGenerator.DEFAULT_PERSON.crn,
+        eventNumber = UPWGenerator.EVENT_5.number.toInt(),
+        date = LocalDate.now().plusDays(1),
+        startTime = LocalTime.NOON,
+        endTime = LocalTime.NOON.plusHours(6),
+        supervisor = Code(StaffGenerator.DEFAULT_STAFF.code),
+        allocationId = UPWGenerator.DEFAULT_UPW_ALLOCATION.id,
+        pickUp = null,
+        outcome = null,
+        hiVisWorn = null,
+        workedIntensively = null,
+        workQuality = null,
+        behaviour = null,
+        sensitive = false,
+        alertActive = false,
+        notes = "testing"
+    )
+
+    fun createAppointmentWithStatusUnallocated() = CreateAppointmentRequest(
+        reference = UUID.randomUUID(),
+        crn = PersonGenerator.DEFAULT_PERSON.crn,
+        eventNumber = UPWGenerator.EVENT_4.number.toInt(),
+        date = LocalDate.now().plusDays(1),
+        startTime = LocalTime.NOON,
+        endTime = LocalTime.NOON.plusHours(6),
+        supervisor = Code(StaffGenerator.DEFAULT_STAFF.code),
+        allocationId = UPWGenerator.DEFAULT_UPW_ALLOCATION.id,
+        pickUp = null,
+        outcome = null,
+        hiVisWorn = null,
+        workedIntensively = null,
+        workQuality = null,
+        behaviour = null,
+        sensitive = false,
+        alertActive = false,
+        notes = "testing"
+    )
+
     fun createAppointmentWithOutcome() = CreateAppointmentRequest(
         reference = UUID.randomUUID(),
         crn = PersonGenerator.DEFAULT_PERSON.crn,

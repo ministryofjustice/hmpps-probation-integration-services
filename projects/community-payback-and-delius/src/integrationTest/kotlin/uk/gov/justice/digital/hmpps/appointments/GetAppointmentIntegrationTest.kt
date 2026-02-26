@@ -172,7 +172,7 @@ class GetAppointmentIntegrationTest @Autowired constructor(
                 content {
                     jsonPath("$.content[0].id") { value(UPWGenerator.DEFAULT_UPW_APPOINTMENT.id) }
                     jsonPath("$.content[1].id") { value(1L) }
-                    jsonPath("$.content[2].id") { value(3L) }
+                    jsonPath("$.content[2].id") { value(5L) }
                     jsonPath("$.content[3].id") { value(2L) }
                     jsonPath("$.content[4].id") { value(UPWGenerator.OVERDUE_APPOINTMENT.id) }
                 }

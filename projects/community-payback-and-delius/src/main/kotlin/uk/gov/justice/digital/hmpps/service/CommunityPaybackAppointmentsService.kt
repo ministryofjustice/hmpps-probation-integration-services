@@ -198,10 +198,19 @@ class CommunityPaybackAppointmentsService(
             })
             .associateBy { appointment -> single { "$REFERENCE_PREFIX${it.reference}" == appointment.reference } }
             .map { (request, appointment) ->
+                val eventId = requireNotNull(appointment.relatedTo.eventId) {
+                    "Event ID is required for appointment ${appointment.id}"
+                }
+                val status = calculateCurrentUPWStatus(eventId)
+                val details = upwDetails[eventId].orNotFoundBy("Event ID", eventId)
+                details.status = status
+                val personId = requireNotNull(appointment.relatedTo.personId) {
+                    "Person ID is required for appointment ${appointment.id}"
+                }
                 CreateUnpaidWorkAppointment(
                     contactId = appointment.id,
-                    personId = appointment.relatedTo.personId!!,
-                    details = appointment.relatedTo.eventId!!.let { upwDetails[it].orNotFoundBy("Event ID", it) },
+                    personId = personId,
+                    details = details,
                     date = request.date,
                     startTime = request.startTime,
                     endTime = request.endTime,
@@ -230,6 +239,35 @@ class CommunityPaybackAppointmentsService(
             }
             .also(createUnpaidWorkAppointmentRepository::saveAll)
             .map { CreatedAppointment(id = it.id!!, reference = it.reference!!) }
+    }
+
+    private fun calculateCurrentUPWStatus(eventId: Long): ReferenceData {
+        val upwDetails = upwDetailsRepository.findByEventIdIn(eventId)
+        val upwMinutesDtos = unpaidWorkAppointmentRepository.getUpwRequiredAndCompletedMinutes(
+            upwDetails.map { it.id }.distinct()
+        )
+        val progress = RequirementProgress(
+            requiredMinutes = upwMinutesDtos.sumOf { it.requiredMinutes },
+            completedMinutes = upwMinutesDtos.sumOf { it.completedMinutes },
+            adjustments = upwMinutesDtos.sumOf { it.positiveAdjustments - it.negativeAdjustments }
+        )
+        val remainingMinutes = progress.requiredMinutes + progress.adjustments - progress.completedMinutes
+        val currentStatus = upwDetails.maxByOrNull { it.id }?.status?.code
+        /*
+        if remaining minutes are 0 or less, then add the completed status 'HC'
+        if the current status is null or 'UN' (unallocated) then add the status 'WK' (work in progress)
+        else if the status is any other value then keep the status as is
+         */
+        val statusCode = when {
+            remainingMinutes <= 0L -> "HC"
+            currentStatus == null -> "WK"
+            currentStatus == "UN" -> "WK"
+            else -> currentStatus
+        }
+        return referenceDataRepository.getStatus(statusCode).orNotFoundBy(
+            "status",
+            statusCode
+        )
     }
 
     @Transactional

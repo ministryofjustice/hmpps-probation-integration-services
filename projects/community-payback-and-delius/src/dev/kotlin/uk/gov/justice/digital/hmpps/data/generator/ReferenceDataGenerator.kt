@@ -108,6 +108,24 @@ object ReferenceDataGenerator {
         datasetId = DatasetGenerator.UPW_PROJECT_CATEGORY_DATASET.id
     )
 
+    val UPW_STATUS_WORKING = generateReferenceData(
+        code = "WK",
+        description = "Working",
+        datasetId = DatasetGenerator.UPW_STATUS.id
+    )
+
+    val UPW_STATUS_HOURS_COMPLETED = generateReferenceData(
+        code = "HC",
+        description = "Hours Completed",
+        datasetId = DatasetGenerator.UPW_STATUS.id
+    )
+
+    val UPW_STATUS_UNALLOCATED = generateReferenceData(
+        code = "UN",
+        description = "Unallocated",
+        datasetId = DatasetGenerator.UPW_STATUS.id
+    )
+
     fun generateReferenceData(
         id: Long = IdGenerator.getAndIncrement(),
         code: String,
@@ -171,6 +189,7 @@ object DatasetGenerator {
     val NON_WORKING_DAYS_DATASET = generateDataset(code = Dataset.NON_WORKING_DAYS)
     val UPW_FREQUENCY_DATASET = generateDataset(code = Dataset.UPW_FREQUENCY)
     val UPW_PROJECT_CATEGORY_DATASET = generateDataset(code = Dataset.UPW_PROJECT_CATEGORY)
+    val UPW_STATUS = generateDataset(code = Dataset.UPW_STATUS)
     fun generateDataset(
         id: Long = IdGenerator.getAndIncrement(),
         code: String
