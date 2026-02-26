@@ -461,6 +461,25 @@ class AppointmentServiceTest {
     }
 
     @Test
+    fun `attempt to remove sensitive flag from appointment`() {
+        val existing = TestData.appointment(sensitive = true)
+
+        whenever(appointmentRepository.findByExternalReferenceIn(listOf(existing.externalReference!!)))
+            .thenReturn(listOf(existing))
+
+        assertThatThrownBy {
+            appointmentService.update(existing) {
+                reference = { existing.externalReference }
+                flagAs = { UpdateAppointment.Flags(sensitive = false) }
+            }
+        }
+            .isInstanceOf(IllegalArgumentException::class.java)
+            .hasMessage("Sensitive flag cannot be removed")
+
+        assertThat(existing.sensitive).isEqualTo(true)
+    }
+
+    @Test
     fun `update appointment flag as alert active`() {
         val existing = TestData.appointment()
 

@@ -327,6 +327,8 @@ class AppointmentService internal constructor(
     }
 
     private fun AppointmentContact.flagAs(update: Flags) = apply {
+        require(this.sensitive != true || update.sensitive == true) { "Sensitive flag cannot be removed" }
+
         alert = update.alert?.also { alert ->
             if (alert) alertService.createAlert(this)
             else alertService.removeAlert(this)
