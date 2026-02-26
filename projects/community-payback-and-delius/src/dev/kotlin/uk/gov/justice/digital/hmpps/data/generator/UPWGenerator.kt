@@ -116,25 +116,25 @@ object UPWGenerator {
     val DISPOSAL_2 = generateDisposal(
         length = 12,
         disposalType = ReferenceDataGenerator.DEFAULT_DISPOSAL_TYPE,
-        date = LocalDate.of(2026, 1, 1),
+        date = LocalDate.of(2026, 1, 2),
         event = EVENT_2
     )
     val DISPOSAL_3 = generateDisposal(
         length = 12,
         disposalType = ReferenceDataGenerator.DEFAULT_DISPOSAL_TYPE,
-        date = LocalDate.of(2026, 1, 1),
+        date = LocalDate.of(2026, 1, 3),
         event = EVENT_3
     )
     val DISPOSAL_4 = generateDisposal(
         length = 12,
         disposalType = ReferenceDataGenerator.DEFAULT_DISPOSAL_TYPE,
-        date = LocalDate.of(2026, 1, 1),
+        date = LocalDate.of(2026, 1, 4),
         event = EVENT_4
     )
     val DISPOSAL_5 = generateDisposal(
         length = 12,
         disposalType = ReferenceDataGenerator.DEFAULT_DISPOSAL_TYPE,
-        date = LocalDate.of(2026, 1, 1),
+        date = LocalDate.of(2026, 1, 5),
         event = EVENT_5
     )
 
