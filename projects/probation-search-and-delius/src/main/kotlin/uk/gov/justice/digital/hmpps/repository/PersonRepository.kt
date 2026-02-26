@@ -36,7 +36,7 @@ interface PersonRepository : JpaRepository<Person, Long> {
                                                              and cto.contact_type_id = r_contact_type.contact_type_id
                                                              and cot.selectable = 'Y')
                                                   then 'Y' else 'N' end,
-                 'systemGenerated' value coalesce(decode(r_contact_type.sgc_flag, 1, 'Y', 0, 'N', null), 'N'),
+                 'systemGenerated' value decode(r_contact_type.sgc_flag, 1, 'Y', 0, 'N', null),
                  'outcomeRequiredFlag' value r_contact_type.contact_outcome_flag,
                  'softDeleted' value contact.soft_deleted,
                  'rowVersion' value contact.row_version
