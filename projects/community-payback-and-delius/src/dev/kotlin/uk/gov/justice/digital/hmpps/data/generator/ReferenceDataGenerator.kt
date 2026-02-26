@@ -122,7 +122,7 @@ object ReferenceDataGenerator {
 
     val UPW_STATUS_UNALLOCATED = generateReferenceData(
         code = "UN",
-        description = "Working",
+        description = "Unallocated",
         datasetId = DatasetGenerator.UPW_STATUS.id
     )
 
