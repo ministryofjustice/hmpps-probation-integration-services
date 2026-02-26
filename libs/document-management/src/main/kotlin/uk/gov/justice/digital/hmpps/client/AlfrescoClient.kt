@@ -48,7 +48,11 @@ class AlfrescoClient(
     }
 
     fun streamDocument(id: String, filename: String): ResponseEntity<StreamingResponseBody> =
-        retry(maxRetries = 3, exceptions = listOf(ServerErrorException::class, SocketTimeoutException::class), delay = Duration.ofSeconds(1)) {
+        retry(
+            maxRetries = 3,
+            exceptions = listOf(ServerErrorException::class, SocketTimeoutException::class),
+            delay = Duration.ofSeconds(1)
+        ) {
             UUID.fromString(id) // validate input
             getDocumentById(id).exchange({ _, res ->
                 when {
@@ -65,7 +69,11 @@ class AlfrescoClient(
                         )
                         .body(StreamingResponseBody { output -> res.body.use { it.copyTo(output) } })
 
-                    res.statusCode == HttpStatus.NOT_FOUND -> throw NotFoundException("Document content", "alfrescoId", id)
+                    res.statusCode == HttpStatus.NOT_FOUND -> throw NotFoundException(
+                        "Document content",
+                        "alfrescoId",
+                        id
+                    )
 
                     res.statusCode.is5xxServerError -> throw ServerErrorException("Alfresco 5xx error: ${res.statusCode}")
 
