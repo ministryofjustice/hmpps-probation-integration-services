@@ -139,7 +139,7 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
         save(UPWGenerator.OVERDUE_APPOINTMENT)
         save(UPWGenerator.DEFAULT_RQMNT)
         save(UPWGenerator.SECOND_RQMNT)
-        save(UPWGenerator.FORTH_RQMNT)
+        save(UPWGenerator.FOURTH_RQMNT)
         save(UPWGenerator.LAO_EXCLUDED_UPW_APPOINTMENT)
         save(UPWGenerator.LAO_RESTRICTED_UPW_APPOINTMENT)
         save(UPWGenerator.DEFAULT_UPW_DETAILS_ADJUSTMENT_NEGATIVE)
