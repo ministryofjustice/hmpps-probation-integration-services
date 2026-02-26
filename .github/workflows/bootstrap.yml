@@ -108,7 +108,7 @@ jobs:
           token: ${{ steps.app-token.outputs.token }}
 
       - name: Update e2e test repo
-        run: sed -i '/add new projects here/i \          - ' "'"'["'"$project_name"'"]'"'"'' hmpps-probation-integration-e2e-tests/.github/workflows/test-single-project.yml
+        run: sed -i '/add new projects here/i \          - '"'"'["'"$project_name"'"]'"'"'' hmpps-probation-integration-e2e-tests/.github/workflows/test-single-project.yml
         env:
           project_name: ${{ inputs.project_name }}
 
