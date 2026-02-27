@@ -51,7 +51,11 @@ class AlfrescoClient(
     fun streamDocument(id: String, filename: String): ResponseEntity<StreamingResponseBody> =
         retry(
             maxRetries = 3,
-            exceptions = listOf(ResourceAccessException::class, HttpServerErrorException::class, SocketTimeoutException::class),
+            exceptions = listOf(
+                ResourceAccessException::class,
+                HttpServerErrorException::class,
+                SocketTimeoutException::class
+            ),
             delay = Duration.ofSeconds(1)
         ) {
             UUID.fromString(id) // validate input
