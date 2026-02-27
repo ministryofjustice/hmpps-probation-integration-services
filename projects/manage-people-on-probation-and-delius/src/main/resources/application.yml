@@ -17,7 +17,8 @@ spring:
   threads.virtual.enabled: true
 
 oauth2.roles:
-  - EXAMPLE
+  - PROBATION_API__MANAGE_A_SUPERVISION__CASE_DETAIL
+  - PROBATION_API__MPOP__CASE_DETAIL
 
 springdoc.default-produces-media-type: application/json
 
