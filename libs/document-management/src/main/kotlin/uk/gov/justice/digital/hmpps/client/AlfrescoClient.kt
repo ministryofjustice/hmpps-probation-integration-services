@@ -5,11 +5,12 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.core.ParameterizedTypeReference
 import org.springframework.http.*
 import org.springframework.stereotype.Component
+import org.springframework.web.client.HttpServerErrorException
+import org.springframework.web.client.ResourceAccessException
 import org.springframework.web.client.RestClient
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody
 import uk.gov.justice.digital.hmpps.alfresco.model.DocumentResponse
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
-import uk.gov.justice.digital.hmpps.exception.ServerErrorException
 import uk.gov.justice.digital.hmpps.retry.retry
 import java.net.SocketTimeoutException
 import java.time.Duration
@@ -50,7 +51,7 @@ class AlfrescoClient(
     fun streamDocument(id: String, filename: String): ResponseEntity<StreamingResponseBody> =
         retry(
             maxRetries = 3,
-            exceptions = listOf(ServerErrorException::class, SocketTimeoutException::class),
+            exceptions = listOf(ResourceAccessException::class, HttpServerErrorException::class, SocketTimeoutException::class),
             delay = Duration.ofSeconds(1)
         ) {
             UUID.fromString(id) // validate input
@@ -75,7 +76,7 @@ class AlfrescoClient(
                         id
                     )
 
-                    res.statusCode.is5xxServerError -> throw ServerErrorException("Alfresco 5xx error: ${res.statusCode}")
+                    res.statusCode.is5xxServerError -> throw HttpServerErrorException(res.statusCode)
 
                     else -> throw RuntimeException("Failed to download document. Alfresco responded with ${res.statusCode}.")
                 }
