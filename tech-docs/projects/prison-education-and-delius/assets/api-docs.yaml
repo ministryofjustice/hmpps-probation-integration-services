@@ -3,8 +3,8 @@ info:
   title: API Reference
   contact:
     name: Probation Integration Team
-    url: https://mojdt.slack.com/archives/C02HQ4M2YQN
-    email: probation-integration-team@digital.justice.gov.uk
+    url: https://moj.enterprise.slack.com/archives/C02QSERFGMB
+    email: probation-integration@JusticeUK.onmicrosoft.com
   license:
     name: MIT
     url: https://github.com/ministryofjustice/hmpps-probation-integration-services/blob/main/LICENSE
