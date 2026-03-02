@@ -14,13 +14,15 @@ servers:
 security:
 - hmpps-auth-token: []
 paths:
-  /example/{inputId}:
+  /user/{username}/homepage:
     get:
       tags:
-      - api-controller
-      operationId: handle
+      - user-controller
+      summary: "Get summary information for a user's homepage, including upcoming\
+        \ appointments and recent appointments requiring an outcome"
+      operationId: getHomepage
       parameters:
-      - name: inputId
+      - name: username
         in: path
         required: true
         schema:
@@ -28,7 +30,70 @@ paths:
       responses:
         "200":
           description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Homepage"
 components:
+  schemas:
+    AppointmentSummary:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        crn:
+          type: string
+        name:
+          $ref: "#/components/schemas/Name"
+        type:
+          type: string
+        startDateTime:
+          type: string
+          format: date-time
+        endDateTime:
+          type: string
+          format: date-time
+        location:
+          type: string
+        deliusManaged:
+          type: boolean
+      required:
+      - crn
+      - id
+      - name
+      - startDateTime
+      - type
+    Homepage:
+      type: object
+      properties:
+        upcomingAppointments:
+          type: array
+          items:
+            $ref: "#/components/schemas/AppointmentSummary"
+        appointmentsRequiringOutcome:
+          type: array
+          items:
+            $ref: "#/components/schemas/AppointmentSummary"
+        appointmentsRequiringOutcomeCount:
+          type: integer
+          format: int32
+      required:
+      - appointmentsRequiringOutcome
+      - appointmentsRequiringOutcomeCount
+      - upcomingAppointments
+    Name:
+      type: object
+      properties:
+        forename:
+          type: string
+        middleName:
+          type: string
+        surname:
+          type: string
+      required:
+      - forename
+      - surname
   securitySchemes:
     hmpps-auth-token:
       type: http
