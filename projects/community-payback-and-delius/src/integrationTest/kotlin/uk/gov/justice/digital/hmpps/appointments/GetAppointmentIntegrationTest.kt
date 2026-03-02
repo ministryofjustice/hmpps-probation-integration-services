@@ -185,7 +185,17 @@ class GetAppointmentIntegrationTest @Autowired constructor(
             .andExpect {
                 status { is2xxSuccessful() }
                 content {
-                    jsonPath("$.content.size()") { value(0) }
+                    jsonPath("$.content.size()") { value(10) }
+                    jsonPath("$.content[0].outcome") { doesNotExist() }
+                    jsonPath("$.content[1].outcome") { doesNotExist() }
+                    jsonPath("$.content[2].outcome") { doesNotExist() }
+                    jsonPath("$.content[3].outcome") { doesNotExist() }
+                    jsonPath("$.content[4].outcome") { doesNotExist() }
+                    jsonPath("$.content[5].outcome") { doesNotExist() }
+                    jsonPath("$.content[6].outcome") { doesNotExist() }
+                    jsonPath("$.content[7].outcome") { doesNotExist() }
+                    jsonPath("$.content[8].outcome") { doesNotExist() }
+                    jsonPath("$.content[9].outcome") { doesNotExist() }
                 }
             }
     }
@@ -193,20 +203,18 @@ class GetAppointmentIntegrationTest @Autowired constructor(
     @Test
     fun `can retrieve appointments with outcome code`() {
         val outcomeCode = "F"
-        val response =
-            mockMvc.get("/appointments?username=${UserGenerator.DEFAULT_USER.username}&outcomeCodes=$outcomeCode") { withToken() }
-                .andExpect {
-                    status { is2xxSuccessful() }
-                    content {
-                        jsonPath("$.content.size()") { value(6) }
-                        jsonPath("$.content[0].outcome.code") { value(outcomeCode) }
-                        jsonPath("$.content[1].outcome.code") { value(outcomeCode) }
-                        jsonPath("$.content[2].outcome.code") { value(outcomeCode) }
-                        jsonPath("$.content[3].outcome.code") { value(outcomeCode) }
-                        jsonPath("$.content[4].outcome.code") { value(outcomeCode) }
-                        jsonPath("$.content[5].outcome.code") { value(outcomeCode) }
-                    }
-                }.andReturn().response.contentAsString
-        println(response)
+        mockMvc.get("/appointments?username=${UserGenerator.DEFAULT_USER.username}&outcomeCodes=$outcomeCode") { withToken() }
+            .andExpect {
+                status { is2xxSuccessful() }
+                content {
+                    jsonPath("$.content.size()") { value(6) }
+                    jsonPath("$.content[0].outcome.code") { value(outcomeCode) }
+                    jsonPath("$.content[1].outcome.code") { value(outcomeCode) }
+                    jsonPath("$.content[2].outcome.code") { value(outcomeCode) }
+                    jsonPath("$.content[3].outcome.code") { value(outcomeCode) }
+                    jsonPath("$.content[4].outcome.code") { value(outcomeCode) }
+                    jsonPath("$.content[5].outcome.code") { value(outcomeCode) }
+                }
+            }.andReturn().response.contentAsString
     }
 }
