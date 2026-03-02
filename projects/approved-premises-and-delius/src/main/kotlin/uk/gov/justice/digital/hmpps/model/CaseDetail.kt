@@ -24,7 +24,8 @@ data class CaseDetail(
     val registrations: List<Registration>,
     val mappaDetail: MappaDetail?,
     val careLeaver: Boolean,
-    val veteran: Boolean
+    val veteran: Boolean,
+    val sentences: List<Sentence>
 )
 
 data class Name(val forename: String, val surname: String, val middleNames: List<String>)
@@ -71,3 +72,10 @@ data class Offence(
 )
 
 data class Registration(val code: String, val description: String, val startDate: LocalDate)
+
+data class Sentence(
+    val typeDescription: String?,
+    val startDate: LocalDate? = null,
+    val endDate: LocalDate? = null,
+    val eventNumber: String? = null,
+)

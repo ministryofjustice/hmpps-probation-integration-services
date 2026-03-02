@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps
 
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
+import org.hamcrest.Matchers.hasSize
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -120,5 +121,11 @@ class ProbationCaseIntegrationTest(
         assertThat(otherOffence.eventId, equalTo(100001L))
         assertThat(detail.careLeaver, equalTo(false))
         assertThat(detail.veteran, equalTo(true))
+        assertThat(detail.sentences, hasSize(1))
+        val sentence = detail.sentences.first()
+        assertThat(sentence.typeDescription, equalTo(("Sentence Type 1")))
+        assertThat(sentence.startDate, equalTo(LocalDate.parse("2024-12-12")))
+        assertThat(sentence.endDate, equalTo(LocalDate.parse("2025-10-20")))
+        assertThat(sentence.eventNumber, equalTo("1"))
     }
 }
