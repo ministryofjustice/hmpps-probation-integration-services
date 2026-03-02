@@ -228,8 +228,9 @@ class GetAppointmentIntegrationTest @Autowired constructor(
         val outcomeCode = "F"
         val noOutcomeCode = "NO_OUTCOME"
         mockMvc.get("/appointments?username=${UserGenerator.DEFAULT_USER.username}&outcomeCodes=$outcomeCode&outcomeCodes=$noOutcomeCode") { withToken() }
-            .andExpect { status { is2xxSuccessful() }
-            jsonPath("$.page.totalElements") { value(16) }
+            .andExpect {
+                status { is2xxSuccessful() }
+                jsonPath("$.page.totalElements") { value(16) }
             }
     }
 }
