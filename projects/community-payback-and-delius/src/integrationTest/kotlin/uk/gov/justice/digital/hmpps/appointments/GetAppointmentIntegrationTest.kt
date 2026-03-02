@@ -133,7 +133,7 @@ class GetAppointmentIntegrationTest @Autowired constructor(
         mockMvc.get("/appointments?username=${UserGenerator.DEFAULT_USER.username}&crn=${PersonGenerator.DEFAULT_PERSON.crn}") { withToken() }
             .andExpect {
                 status { is2xxSuccessful() }
-                content { jsonPath("$.content.size()") { value(5) } }
+                content { jsonPath("$.content.size()") { value(10) } }
             }
     }
 
@@ -142,7 +142,7 @@ class GetAppointmentIntegrationTest @Autowired constructor(
         mockMvc.get("/appointments?username=${UserGenerator.DEFAULT_USER.username}") { withToken() }
             .andExpect {
                 status { is2xxSuccessful() }
-                content { jsonPath("$.content.size()") { value(8) } }
+                content { jsonPath("$.content.size()") { value(10) } }
             }
     }
 
@@ -151,7 +151,7 @@ class GetAppointmentIntegrationTest @Autowired constructor(
         mockMvc.get("/appointments?username=${UserGenerator.DEFAULT_USER.username}&fromDate=${LocalDate.now()}") { withToken() }
             .andExpect {
                 status { is2xxSuccessful() }
-                content { jsonPath("$.content.size()") { value(4) } }
+                content { jsonPath("$.content.size()") { value(10) } }
             }
     }
 
@@ -160,7 +160,7 @@ class GetAppointmentIntegrationTest @Autowired constructor(
         mockMvc.get("/appointments?username=${UserGenerator.DEFAULT_USER.username}&toDate=${LocalDate.now()}") { withToken() }
             .andExpect {
                 status { is2xxSuccessful() }
-                content { jsonPath("$.content.size()") { value(6) } }
+                content { jsonPath("$.content.size()") { value(10) } }
             }
     }
 
@@ -171,10 +171,15 @@ class GetAppointmentIntegrationTest @Autowired constructor(
                 status { is2xxSuccessful() }
                 content {
                     jsonPath("$.content[0].id") { value(UPWGenerator.DEFAULT_UPW_APPOINTMENT.id) }
-                    jsonPath("$.content[1].id") { value(1L) }
-                    jsonPath("$.content[2].id") { value(5L) }
-                    jsonPath("$.content[3].id") { value(2L) }
-                    jsonPath("$.content[4].id") { value(UPWGenerator.OVERDUE_APPOINTMENT.id) }
+                    jsonPath("$.content[1].id") { value(12L) }
+                    jsonPath("$.content[2].id") { value(11L) }
+                    jsonPath("$.content[3].id") { value(10L) }
+                    jsonPath("$.content[4].id") { value(9L) }
+                    jsonPath("$.content[5].id") { value(8L) }
+                    jsonPath("$.content[6].id") { value(7L) }
+                    jsonPath("$.content[7].id") { value(6L) }
+                    jsonPath("$.content[8].id") { value(4L) }
+                    jsonPath("$.content[9].id") { value(3L) }
                 }
             }
     }
