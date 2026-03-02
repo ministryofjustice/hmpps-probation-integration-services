@@ -197,12 +197,13 @@ class GetAppointmentIntegrationTest @Autowired constructor(
             .andExpect {
                 status { is2xxSuccessful() }
                 content {
-                    jsonPath("$.content.size()") { value(5) }
+                    jsonPath("$.content.size()") { value(6) }
                     jsonPath("$.content[0].outcome.code") { value(outcomeCode) }
                     jsonPath("$.content[1].outcome.code") { value(outcomeCode) }
                     jsonPath("$.content[2].outcome.code") { value(outcomeCode) }
                     jsonPath("$.content[3].outcome.code") { value(outcomeCode) }
                     jsonPath("$.content[4].outcome.code") { value(outcomeCode) }
+                    jsonPath("$.content[5].outcome.code") { value(outcomeCode) }
                 }
             }.andReturn().response.contentAsString
         println(response)
