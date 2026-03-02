@@ -182,30 +182,31 @@ class GetAppointmentIntegrationTest @Autowired constructor(
     @Test
     fun `can retrieve appointments without outcome code`() {
         mockMvc.get("/appointments?username=${UserGenerator.DEFAULT_USER.username}&outcomeCodes=NO_OUTCOME") { withToken() }
-        .andExpect {
-            status { is2xxSuccessful() }
-            content {
-                jsonPath("$.content.size()") { value(0) }
+            .andExpect {
+                status { is2xxSuccessful() }
+                content {
+                    jsonPath("$.content.size()") { value(0) }
+                }
             }
-        }
     }
 
     @Test
     fun `can retrieve appointments with outcome code`() {
         val outcomeCode = "F"
-        val response = mockMvc.get("/appointments?username=${UserGenerator.DEFAULT_USER.username}&outcomeCodes=$outcomeCode") { withToken() }
-            .andExpect {
-                status { is2xxSuccessful() }
-                content {
-                    jsonPath("$.content.size()") { value(6) }
-                    jsonPath("$.content[0].outcome.code") { value(outcomeCode) }
-                    jsonPath("$.content[1].outcome.code") { value(outcomeCode) }
-                    jsonPath("$.content[2].outcome.code") { value(outcomeCode) }
-                    jsonPath("$.content[3].outcome.code") { value(outcomeCode) }
-                    jsonPath("$.content[4].outcome.code") { value(outcomeCode) }
-                    jsonPath("$.content[5].outcome.code") { value(outcomeCode) }
-                }
-            }.andReturn().response.contentAsString
+        val response =
+            mockMvc.get("/appointments?username=${UserGenerator.DEFAULT_USER.username}&outcomeCodes=$outcomeCode") { withToken() }
+                .andExpect {
+                    status { is2xxSuccessful() }
+                    content {
+                        jsonPath("$.content.size()") { value(6) }
+                        jsonPath("$.content[0].outcome.code") { value(outcomeCode) }
+                        jsonPath("$.content[1].outcome.code") { value(outcomeCode) }
+                        jsonPath("$.content[2].outcome.code") { value(outcomeCode) }
+                        jsonPath("$.content[3].outcome.code") { value(outcomeCode) }
+                        jsonPath("$.content[4].outcome.code") { value(outcomeCode) }
+                        jsonPath("$.content[5].outcome.code") { value(outcomeCode) }
+                    }
+                }.andReturn().response.contentAsString
         println(response)
     }
 }
