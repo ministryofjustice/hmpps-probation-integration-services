@@ -5,6 +5,7 @@ import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.person.CommunityManager
 import uk.gov.justice.digital.hmpps.integrations.delius.person.ProbationCase
 import uk.gov.justice.digital.hmpps.integrations.delius.person.ProbationCaseRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.entity.DisposalRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.offence.entity.CaseOffence
 import uk.gov.justice.digital.hmpps.integrations.delius.person.offence.entity.MainOffenceRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.registration.entity.*
@@ -18,7 +19,8 @@ class CaseService(
     private val probationCaseRepository: ProbationCaseRepository,
     private val registrationRepository: RegistrationRepository,
     private val offenceRepository: MainOffenceRepository,
-    private val personalCircumstanceRepository: PersonalCircumstanceRepository
+    private val personalCircumstanceRepository: PersonalCircumstanceRepository,
+    private val disposalRepository: DisposalRepository,
 ) {
     fun getCaseSummaries(ids: List<String>): CaseSummaries =
         CaseSummaries(probationCaseRepository.findByCrnInOrNomsIdIn(ids).map { it.summary() })
@@ -29,7 +31,15 @@ class CaseService(
         val registrations = registrationRepository.findByPersonId(person.id)
         val offences = offenceRepository.findOffencesFor(person.id)
         val circumstances = personalCircumstanceRepository.findByPersonId(person.id)
-        return person.summary().withDetail(offences, registrations, circumstances.map { it.type.code })
+        val sentences = disposalRepository.findSentences(person.id).map { disposal ->
+            Sentence(
+                typeDescription = disposal.type.description,
+                startDate = disposal.startDate,
+                endDate = disposal.expectedEndDate(),
+                eventNumber = disposal.event.number
+            )
+        }
+        return person.summary().withDetail(offences, registrations, circumstances.map { it.type.code }, sentences)
     }
 }
 
@@ -49,7 +59,8 @@ fun ProbationCase.summary() = CaseSummary(
 fun CaseSummary.withDetail(
     offences: List<CaseOffence>,
     registrations: List<Registration>,
-    circumstances: List<String>
+    circumstances: List<String>,
+    sentences: List<Sentence>
 ): CaseDetail {
     val regMap = registrations.groupBy { it.type.code == RegisterType.Code.MAPPA.value }
     return CaseDetail(
@@ -58,7 +69,8 @@ fun CaseSummary.withDetail(
         regMap.flags(),
         regMap.mappa(),
         circumstances.isCareLeaver(),
-        circumstances.isVeteran()
+        circumstances.isVeteran(),
+        sentences
     )
 }
 

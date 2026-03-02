@@ -45,12 +45,6 @@ class CourtReport(
 )
 
 @Entity
-class Custody(@Id val custodyId: Long, val disposalId: Long)
-
-@Entity
-class Disposal(@Id val disposalId: Long, val eventId: Long)
-
-@Entity
 @Table(name = "r_institution")
 class Institution(
     @Id

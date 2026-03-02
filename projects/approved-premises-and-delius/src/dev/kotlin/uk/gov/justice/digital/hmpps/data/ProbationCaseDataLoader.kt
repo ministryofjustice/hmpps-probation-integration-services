@@ -10,6 +10,7 @@ import uk.gov.justice.digital.hmpps.data.generator.LimitedAccessGenerator.EXCLUD
 import uk.gov.justice.digital.hmpps.data.generator.LimitedAccessGenerator.RESTRICTED_CASE
 import uk.gov.justice.digital.hmpps.data.manager.DataManager
 import uk.gov.justice.digital.hmpps.entity.LimitedAccessPerson
+import uk.gov.justice.digital.hmpps.integrations.delius.entity.DisposalType
 import uk.gov.justice.digital.hmpps.integrations.delius.person.ProbationCase
 import uk.gov.justice.digital.hmpps.integrations.delius.person.registration.entity.RegisterType
 import uk.gov.justice.digital.hmpps.integrations.delius.personalcircumstance.entity.PersonalCircumstanceType
@@ -118,6 +119,14 @@ class ProbationCaseDataLoader(private val dataManager: DataManager) {
             additionalOffence = Pair(300002L, LocalDate.parse("2024-10-22"))
         )
 
+        generateEventAndAddSentence(
+            ProbationCaseGenerator.CASE_COMPLEX,
+            eventId = 200001L,
+            type = generateDisposalType(),
+            startDate = LocalDate.parse("2024-12-12"),
+            endDate = LocalDate.parse("2025-10-20")
+        )
+
         dataManager.saveAll(PersonalCircumstanceGenerator.PC_TYPES)
         dataManager.saveAll(PersonalCircumstanceGenerator.PC_SUB_TYPES)
         dataManager.save(
@@ -163,6 +172,32 @@ class ProbationCaseDataLoader(private val dataManager: DataManager) {
             )
         )
     }
+
+    private fun generateEventAndAddSentence(
+        probationCase: ProbationCase,
+        eventId: Long,
+        type: DisposalType,
+        startDate: LocalDate,
+        endDate: LocalDate,
+    ) {
+        val event = PersonGenerator.generateEvent(
+            "1",
+            probationCase.asPerson(),
+            id = eventId
+        ).apply(dataManager::save)
+
+        dataManager.save(
+            SentenceGenerator.generateSentence(
+                event,
+                type,
+                startDate,
+                endDate
+            )
+        )
+    }
+
+    private fun generateDisposalType(id: Long = IdGenerator.getAndIncrement()) =
+        DisposalType(id, description = "Sentence Type 1", "CC")
 }
 
 @Entity
