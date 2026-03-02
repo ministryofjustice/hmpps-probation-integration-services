@@ -5,10 +5,15 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.core.ParameterizedTypeReference
 import org.springframework.http.*
 import org.springframework.stereotype.Component
+import org.springframework.web.client.HttpServerErrorException
+import org.springframework.web.client.ResourceAccessException
 import org.springframework.web.client.RestClient
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody
 import uk.gov.justice.digital.hmpps.alfresco.model.DocumentResponse
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
+import uk.gov.justice.digital.hmpps.retry.retry
+import java.net.SocketTimeoutException
+import java.time.Duration
 import java.util.*
 
 @Component
@@ -16,7 +21,6 @@ import java.util.*
 class AlfrescoClient(
     @Qualifier("alfrescoRestClient") private val restClient: RestClient
 ) {
-
     fun getDocumentById(id: String): RestClient.RequestHeadersSpec<*> = restClient.get().uri("/fetch/$id")
         .accept(MediaType.MULTIPART_FORM_DATA)
 
@@ -44,29 +48,44 @@ class AlfrescoClient(
             }, false)
     }
 
-    fun streamDocument(id: String, filename: String): ResponseEntity<StreamingResponseBody> {
-        UUID.fromString(id) // validate input
-        return getDocumentById(id).exchange({ _, res ->
-            when (res.statusCode) {
-                HttpStatus.OK -> ResponseEntity.ok()
-                    .headers {
-                        it.copy(HttpHeaders.CONTENT_TYPE, res)
-                        it.copy(HttpHeaders.CONTENT_LENGTH, res)
-                        it.copy(HttpHeaders.ETAG, res)
-                        it.copy(HttpHeaders.LAST_MODIFIED, res)
-                    }
-                    .header(
-                        HttpHeaders.CONTENT_DISPOSITION,
-                        ContentDisposition.attachment().filename(filename, Charsets.UTF_8).build().toString()
+    fun streamDocument(id: String, filename: String): ResponseEntity<StreamingResponseBody> =
+        retry(
+            maxRetries = 3,
+            exceptions = listOf(
+                ResourceAccessException::class,
+                HttpServerErrorException::class,
+                SocketTimeoutException::class
+            ),
+            delay = Duration.ofSeconds(1)
+        ) {
+            UUID.fromString(id) // validate input
+            getDocumentById(id).exchange({ _, res ->
+                when {
+                    res.statusCode == HttpStatus.OK -> ResponseEntity.ok()
+                        .headers {
+                            it.copy(HttpHeaders.CONTENT_TYPE, res)
+                            it.copy(HttpHeaders.CONTENT_LENGTH, res)
+                            it.copy(HttpHeaders.ETAG, res)
+                            it.copy(HttpHeaders.LAST_MODIFIED, res)
+                        }
+                        .header(
+                            HttpHeaders.CONTENT_DISPOSITION,
+                            ContentDisposition.attachment().filename(filename, Charsets.UTF_8).build().toString()
+                        )
+                        .body(StreamingResponseBody { output -> res.body.use { it.copyTo(output) } })
+
+                    res.statusCode == HttpStatus.NOT_FOUND -> throw NotFoundException(
+                        "Document content",
+                        "alfrescoId",
+                        id
                     )
-                    .body(StreamingResponseBody { output -> res.body.use { it.copyTo(output) } })
 
-                HttpStatus.NOT_FOUND -> throw NotFoundException("Document content", "alfrescoId", id)
+                    res.statusCode.is5xxServerError -> throw HttpServerErrorException(res.statusCode)
 
-                else -> throw RuntimeException("Failed to download document. Alfresco responded with ${res.statusCode}.")
-            }
-        }, false)
-    }
+                    else -> throw RuntimeException("Failed to download document. Alfresco responded with ${res.statusCode}.")
+                }
+            }, false)
+        }
 
     private fun HttpHeaders.copy(key: String, res: RestClient.RequestHeadersSpec.ConvertibleClientHttpResponse) {
         res.headers[key]?.let { values -> put(key, values) }

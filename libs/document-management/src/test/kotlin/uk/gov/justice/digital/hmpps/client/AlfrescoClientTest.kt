@@ -16,6 +16,12 @@ import org.springframework.web.client.RestClient
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import java.io.ByteArrayOutputStream
 import java.nio.charset.StandardCharsets
+import org.springframework.test.web.client.ResponseCreator
+import java.io.IOException
+
+fun withResourceAccessException(): ResponseCreator = ResponseCreator {
+    throw org.springframework.web.client.ResourceAccessException("Connection timeout", IOException())
+}
 
 class AlfrescoClientTest {
 
@@ -124,5 +130,83 @@ class AlfrescoClientTest {
     fun `streamDocument validates id is a uuid`() {
         assertThatThrownBy { client.streamDocument("not-a-uuid", "document.pdf") }
             .isInstanceOf(IllegalArgumentException::class.java)
+    }
+
+    @Test
+    fun `streamDocument doesnt retry a 404 not found`() {
+        val id = "00000000-0000-0000-0000-000000000002"
+        val fileName = "retry-document.txt"
+        val fileContents = "retry-content"
+        val responseHeaders = HttpHeaders().apply {
+            contentLength = fileContents.toByteArray().size.toLong()
+            eTag = "\"etag-retry\""
+            lastModified = 60000L
+        }
+        mockServer.expect(requestTo("http://localhost/fetch/$id"))
+            .andExpect(method(HttpMethod.GET))
+            .andRespond(withStatus(HttpStatus.NOT_FOUND))
+
+        assertThatThrownBy { client.streamDocument(id, fileName) }
+            .isInstanceOf(NotFoundException::class.java)
+    }
+
+    @Test
+    fun `streamDocument retries on transient failure and succeeds`() {
+        val id = "00000000-0000-0000-0000-000000000003"
+        val fileName = "retry-document.txt"
+        val fileContents = "retry-content"
+        val responseHeaders = HttpHeaders().apply {
+            contentLength = fileContents.toByteArray().size.toLong()
+            eTag = "\"etag-retry\""
+            lastModified = 60000L
+        }
+
+        mockServer.expect(requestTo("http://localhost/fetch/$id"))
+            .andExpect(method(HttpMethod.GET))
+            .andRespond(withStatus(HttpStatus.INTERNAL_SERVER_ERROR))
+        mockServer.expect(requestTo("http://localhost/fetch/$id"))
+            .andExpect(method(HttpMethod.GET))
+            .andRespond(withStatus(HttpStatus.INTERNAL_SERVER_ERROR))
+        mockServer.expect(requestTo("http://localhost/fetch/$id"))
+            .andExpect(method(HttpMethod.GET))
+            .andRespond(withSuccess(fileContents, MediaType.TEXT_PLAIN).headers(responseHeaders))
+
+        val response = client.streamDocument(id, fileName)
+        val output = ByteArrayOutputStream()
+        response.body!!.writeTo(output)
+
+        assertThat(response.statusCode).isEqualTo(HttpStatus.OK)
+        assertThat(output.toString(StandardCharsets.UTF_8)).isEqualTo(fileContents)
+        mockServer.verify()
+    }
+
+    @Test
+    fun `streamDocument retries on transient resource access exception and succeeds`() {
+        val id = "00000000-0000-0000-0000-000000000003"
+        val fileName = "retry-document.txt"
+        val fileContents = "retry-content"
+        val responseHeaders = HttpHeaders().apply {
+            contentLength = fileContents.toByteArray().size.toLong()
+            eTag = "\"etag-retry\""
+            lastModified = 60000L
+        }
+
+        mockServer.expect(requestTo("http://localhost/fetch/$id"))
+            .andExpect(method(HttpMethod.GET))
+            .andRespond(withResourceAccessException())
+        mockServer.expect(requestTo("http://localhost/fetch/$id"))
+            .andExpect(method(HttpMethod.GET))
+            .andRespond(withResourceAccessException())
+        mockServer.expect(requestTo("http://localhost/fetch/$id"))
+            .andExpect(method(HttpMethod.GET))
+            .andRespond(withSuccess(fileContents, MediaType.TEXT_PLAIN).headers(responseHeaders))
+
+        val response = client.streamDocument(id, fileName)
+        val output = ByteArrayOutputStream()
+        response.body!!.writeTo(output)
+
+        assertThat(response.statusCode).isEqualTo(HttpStatus.OK)
+        assertThat(output.toString(StandardCharsets.UTF_8)).isEqualTo(fileContents)
+        mockServer.verify()
     }
 }
