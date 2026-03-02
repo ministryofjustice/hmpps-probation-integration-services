@@ -323,9 +323,11 @@ interface UnpaidWorkAppointmentRepository : JpaRepository<UnpaidWorkAppointment,
           and (:toDate is null or a.date <= :toDate)
           and (:projectCodes is null or a.project.code in :projectCodes)
           and (:projectTypeCodes is null or a.project.projectType.code in :projectTypeCodes)
+          and (:eventNumber is null or a.details.disposal.event.number = :eventNumber)
           and (
             (:filteredOutcomeCodes is null and :noOutcomeOnly = false) or
             (:noOutcomeOnly = true and o is null) or
+            (:noOutcomeOnly = false and o.code in :filteredOutcomeCodes) or
             (:filteredOutcomeCodes is not null and :noOutcomeOnly = false and o.code in :filteredOutcomeCodes)
           )
         """
@@ -338,6 +340,7 @@ interface UnpaidWorkAppointmentRepository : JpaRepository<UnpaidWorkAppointment,
         projectTypeCodes: List<String>?,
         filteredOutcomeCodes: List<String>?,
         noOutcomeOnly: Boolean,
+        eventNumber: String?,
         pageable: Pageable
     ): Page<UnpaidWorkAppointment>
 }

@@ -99,23 +99,24 @@ class CommunityPaybackAppointmentsService(
         projectCodes: List<String>?,
         projectTypeCodes: List<String>?,
         outcomeCodes: List<String>?,
+        eventNumber: String?,
         pageable: Pageable
     ): PagedModel<AppointmentsResponse> {
         val (filteredOutcomeCodes, noOutcomeOnly) = when {
             outcomeCodes == null -> null to false
             outcomeCodes.size == 1 && outcomeCodes[0] == "NO_OUTCOME" -> null to true
+            outcomeCodes.size > 1 && outcomeCodes.contains("NO_OUTCOME") -> outcomeCodes.filter { it != "NO_OUTCOME" } to true
             else -> outcomeCodes to false
         }
-        val filteredProjectCodes = if (projectCodes.isNullOrEmpty()) null else projectCodes
-        val filteredProjectTypeCodes = if (projectTypeCodes.isNullOrEmpty()) null else projectTypeCodes
         val appointments = unpaidWorkAppointmentRepository.findAppointments(
             crn,
             fromDate,
             toDate,
-            filteredProjectCodes,
-            filteredProjectTypeCodes,
+            projectCodes,
+            projectTypeCodes,
             filteredOutcomeCodes,
             noOutcomeOnly,
+            eventNumber,
             pageable
         )
         val upwDetailsIds = appointments.map { it.details.id }.distinct()
@@ -137,6 +138,8 @@ class CommunityPaybackAppointmentsService(
                 endTime = it.endTime,
                 daysOverdue = daysOverdue,
                 case = it.toAppointmentResponseCase(limitedAccess),
+                eventNumber = it.details.disposal.event.number.toInt(),
+                project = Project(it.project),
                 requirementProgress = checkNotNull(minutes[it.details.id]),
                 outcome = outcome?.toCodeDescription()
             )
