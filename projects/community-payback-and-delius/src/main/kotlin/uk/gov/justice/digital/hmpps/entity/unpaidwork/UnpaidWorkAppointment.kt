@@ -322,8 +322,12 @@ interface UnpaidWorkAppointmentRepository : JpaRepository<UnpaidWorkAppointment,
           and (:toDate is null or a.date <= :toDate)
           and (:projectCodes is null or a.project.code in :projectCodes)
           and (:projectTypeCodes is null or a.project.projectType.code in :projectTypeCodes)
-          and (:outcomeCodes is null or a.contact.outcome.code in :outcomeCodes)
-    """
+          and (
+            (:filteredOutcomeCodes is null and :noOutcomeOnly = false) or
+            (:noOutcomeOnly = true and a.contact.outcome.code is null) or
+            (:filteredOutcomeCodes is not null and :noOutcomeOnly = false and a.contact.outcome.code in :filteredOutcomeCodes)
+          )
+        """
     )
     fun findAppointments(
         crn: String?,
@@ -331,7 +335,8 @@ interface UnpaidWorkAppointmentRepository : JpaRepository<UnpaidWorkAppointment,
         toDate: LocalDate?,
         projectCodes: List<String>?,
         projectTypeCodes: List<String>?,
-        outcomeCodes: List<String>?,
+        filteredOutcomeCodes: List<String>?,
+        noOutcomeOnly: Boolean,
         pageable: Pageable
     ): Page<UnpaidWorkAppointment>
 }

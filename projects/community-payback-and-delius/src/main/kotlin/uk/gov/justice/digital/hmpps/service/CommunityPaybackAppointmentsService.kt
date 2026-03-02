@@ -101,13 +101,21 @@ class CommunityPaybackAppointmentsService(
         outcomeCodes: List<String>?,
         pageable: Pageable
     ): PagedModel<AppointmentsResponse> {
+        val (filteredOutcomeCodes, noOutcomeOnly) = when {
+            outcomeCodes == null -> null to false
+            outcomeCodes.size == 1 && outcomeCodes[0] == "NO_OUTCOME" -> null to true
+            else -> outcomeCodes to false
+        }
+        val filteredProjectCodes = if (projectCodes.isNullOrEmpty()) null else projectCodes
+        val filteredProjectTypeCodes = if (projectTypeCodes.isNullOrEmpty()) null else projectTypeCodes
         val appointments = unpaidWorkAppointmentRepository.findAppointments(
             crn,
             fromDate,
             toDate,
-            projectCodes,
-            projectTypeCodes,
-            outcomeCodes,
+            filteredProjectCodes,
+            filteredProjectTypeCodes,
+            filteredOutcomeCodes,
+            noOutcomeOnly,
             pageable
         )
         val upwDetailsIds = appointments.map { it.details.id }.distinct()
