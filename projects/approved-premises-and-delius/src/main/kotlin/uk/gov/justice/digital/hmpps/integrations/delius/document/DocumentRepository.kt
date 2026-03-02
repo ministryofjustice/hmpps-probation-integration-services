@@ -94,6 +94,7 @@ interface DocumentRepository : JpaRepository<DocumentEntity, Long> {
           and document.table_name in ('OFFENDER', 'ADDRESSASSESSMENT', 'PERSONALCONTACT', 'PERSONAL_CIRCUMSTANCE',
                                       'EVENT', 'COURT_REPORT', 'INSTITUTIONAL_REPORT', 'APPROVED_PREMISES_REFERRAL', 'ASSESSMENT', 'CASE_ALLOCATION', 'REFERRAL', 'UPW_APPOINTMENT',
                                       'CONTACT', 'NSI')
+        order by document.last_saved, document.document_id
         """,
         nativeQuery = true
     )
