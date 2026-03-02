@@ -215,6 +215,6 @@ class GetAppointmentIntegrationTest @Autowired constructor(
                     jsonPath("$.content[4].outcome.code") { value(outcomeCode) }
                     jsonPath("$.content[5].outcome.code") { value(outcomeCode) }
                 }
-            }.andReturn().response.contentAsString
+            }
     }
 }
