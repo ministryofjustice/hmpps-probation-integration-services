@@ -104,8 +104,8 @@ class CommunityPaybackAppointmentsService(
     ): PagedModel<AppointmentsResponse> {
         val (filteredOutcomeCodes, noOutcomeOnly) = when {
             outcomeCodes == null -> null to false
-            outcomeCodes.size == 1 && outcomeCodes[0] == "NO_OUTCOME" -> null to true
-            outcomeCodes.size > 1 && outcomeCodes.contains("NO_OUTCOME") -> outcomeCodes.filter { it != "NO_OUTCOME" } to true
+            outcomeCodes.size == 1 && outcomeCodes[0] == NO_OUTCOME -> null to true
+            outcomeCodes.size > 1 && outcomeCodes.contains(NO_OUTCOME) -> outcomeCodes.filter { it != NO_OUTCOME } to true
             else -> outcomeCodes to false
         }
         val appointments = unpaidWorkAppointmentRepository.findAppointments(
@@ -130,6 +130,7 @@ class CommunityPaybackAppointmentsService(
             val daysOverdue = if (outcome == null || it.date < LocalDate.now()) {
                 ChronoUnit.DAYS.between(it.date, LocalDate.now())
             } else null
+            val projectSummary = ProjectSummary(it.project.code, it.project.name, CodeDescription(it.project.projectType.code, it.project.projectType.description))
 
             AppointmentsResponse(
                 id = it.id,
@@ -139,7 +140,7 @@ class CommunityPaybackAppointmentsService(
                 daysOverdue = daysOverdue,
                 case = it.toAppointmentResponseCase(limitedAccess),
                 eventNumber = it.details.disposal.event.number.toInt(),
-                project = Project(it.project),
+                project = projectSummary,
                 requirementProgress = checkNotNull(minutes[it.details.id]),
                 outcome = outcome?.toCodeDescription()
             )
@@ -354,5 +355,6 @@ class CommunityPaybackAppointmentsService(
 
     companion object {
         const val REFERENCE_PREFIX = "urn:uk:gov:hmpps:community-payback:appointment:"
+        const val NO_OUTCOME = "NO_OUTCOME"
     }
 }

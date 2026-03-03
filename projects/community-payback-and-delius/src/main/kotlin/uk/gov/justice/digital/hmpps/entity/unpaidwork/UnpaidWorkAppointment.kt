@@ -325,10 +325,8 @@ interface UnpaidWorkAppointmentRepository : JpaRepository<UnpaidWorkAppointment,
           and (:projectTypeCodes is null or a.project.projectType.code in :projectTypeCodes)
           and (:eventNumber is null or a.details.disposal.event.number = :eventNumber)
           and (
-            (:filteredOutcomeCodes is null and :noOutcomeOnly = false) or
-            (:noOutcomeOnly = true and o is null) or
-            (:noOutcomeOnly = true and o.code in :filteredOutcomeCodes) or
-            (:filteredOutcomeCodes is not null and :noOutcomeOnly = false and o.code in :filteredOutcomeCodes)
+            (:noOutcomeOnly = true and (o is null or o.code in :filteredOutcomeCodes)) or
+            (:noOutcomeOnly = false and (:filteredOutcomeCodes is null or o.code in :filteredOutcomeCodes))
           )
         """
     )

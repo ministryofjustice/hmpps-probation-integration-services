@@ -26,11 +26,11 @@ class AppointmentsController(
         @RequestParam(required = false) projectCodes: List<String>?,
         @RequestParam(required = false) projectTypeCodes: List<String>?,
         @RequestParam(required = false) outcomeCodes: List<String>?,
-        @RequestParam(required = false) eventNumber: String?,
+        @RequestParam(required = false) eventNumber: Int?,
         @PageableDefault(page = 0, size = 10, sort = ["name"]) pageable: Pageable
     ) = communityPaybackAppointmentsService.getAppointments(
         username, crn, fromDate, toDate,
-        projectCodes, projectTypeCodes, outcomeCodes, eventNumber,
+        projectCodes, projectTypeCodes, outcomeCodes, eventNumber.toString(),
         pageable.mapSorts("name" to "lower(person.forename || person.surname)", "date" to "date")
     )
 }
