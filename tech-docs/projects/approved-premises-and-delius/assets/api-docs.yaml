@@ -552,11 +552,16 @@ components:
           type: boolean
         veteran:
           type: boolean
+        sentences:
+          type: array
+          items:
+            $ref: "#/components/schemas/Sentence"
       required:
       - careLeaver
       - case
       - offences
       - registrations
+      - sentences
       - veteran
     MappaDetail:
       type: object
@@ -626,6 +631,19 @@ components:
       - code
       - description
       - startDate
+    Sentence:
+      type: object
+      properties:
+        typeDescription:
+          type: string
+        startDate:
+          type: string
+          format: date
+        endDate:
+          type: string
+          format: date
+        eventNumber:
+          type: string
     ApReferral:
       type: object
       properties:
