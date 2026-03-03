@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.integrations.delius
+package uk.gov.justice.digital.hmpps.entity
 
 import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
@@ -6,6 +6,7 @@ import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.NumericBooleanConverter
 import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
+import uk.gov.justice.digital.hmpps.entity.event.EventEntity
 import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException.Companion.orIgnore
 import java.time.LocalDate
 
@@ -14,16 +15,12 @@ import java.time.LocalDate
 @SQLRestriction("soft_deleted = 0")
 @Table(name = "offender")
 class Person(
-    @Column(columnDefinition = "char(7)")
-    val crn: String,
-
-    @Column(name = "soft_deleted", columnDefinition = "number")
-    @Convert(converter = NumericBooleanConverter::class)
-    val softDeleted: Boolean,
-
     @Id
     @Column(name = "offender_id")
     val id: Long,
+
+    @Column(columnDefinition = "char(7)")
+    val crn: String,
 
     @Column(name = "date_of_birth_date")
     val dateOfBirth: LocalDate,
@@ -38,7 +35,14 @@ class Person(
     val mobile: String?,
 
     @Column(name = "e_mail_address")
-    val emailAddress: String?
+    val emailAddress: String?,
+
+    @OneToMany(mappedBy = "person")
+    val events: List<EventEntity> = emptyList(),
+
+    @Column(name = "soft_deleted", columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
+    val softDeleted: Boolean = false,
 )
 
 @Immutable
@@ -77,8 +81,10 @@ class PersonManager(
 )
 
 interface PersonManagerRepository : JpaRepository<PersonManager, Long> {
-    @EntityGraph(attributePaths = ["provider", "team", "staff"])
+    @EntityGraph(attributePaths = ["provider", "team.ldu.pdu", "staff.user", "person.events.disposal.type", "person.events.mainOffence.offence"])
     fun findByPersonCrn(crn: String): PersonManager?
+
+    @EntityGraph(attributePaths = ["provider", "team.ldu.pdu", "staff.user", "person.events.disposal.type", "person.events.mainOffence.offence"])
     fun findByPersonCrnIn(crns: List<String>): List<PersonManager>
     fun getByCrn(crn: String) = findByPersonCrn(crn).orIgnore { "CRN not found" }
 }
@@ -87,4 +93,3 @@ interface PersonRepository : JpaRepository<Person, Long> {
     fun findByCrn(crn: String): Person?
     fun existsByCrn(crn: String): Boolean
 }
-

@@ -1,38 +1,23 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
+import uk.gov.justice.digital.hmpps.data.generator.IdGenerator.id
 import uk.gov.justice.digital.hmpps.data.generator.ProviderGenerator.DEFAULT_PROVIDER
 import uk.gov.justice.digital.hmpps.data.generator.ProviderGenerator.DEFAULT_STAFF
 import uk.gov.justice.digital.hmpps.data.generator.ProviderGenerator.DEFAULT_TEAM
-import uk.gov.justice.digital.hmpps.integrations.delius.*
+import uk.gov.justice.digital.hmpps.entity.*
 import java.time.LocalDate
 
 object PersonGenerator {
-    val DEFAULT_PERSON =
-        generatePerson(
-            "A000001",
-            false,
-            IdGenerator.getAndIncrement(),
-            LocalDate.of(1985, 10, 1),
-            "John",
-            "Doe",
-            "07745612923",
-            "john@doe.com"
-        )
+    val DEFAULT_PERSON = generatePerson("A000001")
+    val PERSON_CONTACT_DETAILS_1 = generatePerson("A000002")
+    val PERSON_CONTACT_DETAILS_2 = generatePerson("A000003")
+
     val DEFAULT_COM = generatePersonManager(DEFAULT_PERSON)
-    val PREVIOUS_EVENT = generateEvent(DEFAULT_PERSON, LocalDate.now().minusDays(7))
-    val DEFAULT_EVENT = generateEvent(DEFAULT_PERSON, LocalDate.now().minusDays(5))
 
     fun generatePerson(
         crn: String,
-        softDeleted: Boolean,
-        id: Long,
-        dateOfBirth: LocalDate,
-        firstName: String,
-        lastName: String,
-        mobile: String,
-        email: String
-    ) =
-        Person(crn, softDeleted, id, dateOfBirth, firstName, lastName, mobile, email)
+        id: Long = id()
+    ) = Person(id, crn, LocalDate.of(1985, 10, 1), "John", "Doe", "07123456789", "john@example.com")
 
     fun generatePersonManager(
         person: Person,
@@ -41,14 +26,6 @@ object PersonGenerator {
         staff: Staff = DEFAULT_STAFF,
         active: Boolean = true,
         softDeleted: Boolean = false,
-        id: Long = IdGenerator.getAndIncrement()
+        id: Long = id()
     ) = PersonManager(person, provider, team, staff, active, softDeleted, id)
-
-    fun generateEvent(
-        person: Person,
-        referralDate: LocalDate,
-        active: Boolean = true,
-        softDeleted: Boolean = false,
-        id: Long = IdGenerator.getAndIncrement()
-    ) = Event(person, referralDate, active, softDeleted, id)
 }

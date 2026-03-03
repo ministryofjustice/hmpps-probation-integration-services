@@ -5,15 +5,17 @@ import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.audit.service.AuditableService
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
 import uk.gov.justice.digital.hmpps.detail.DomainEventDetailService
+import uk.gov.justice.digital.hmpps.entity.*
+import uk.gov.justice.digital.hmpps.entity.ContactType.Companion.E_SUPERVISION_CHECK_IN
+import uk.gov.justice.digital.hmpps.entity.audit.BusinessInteractionCode.ADD_CONTACT
+import uk.gov.justice.digital.hmpps.entity.audit.BusinessInteractionCode.UPDATE_CONTACT
+import uk.gov.justice.digital.hmpps.entity.event.EventEntity
+import uk.gov.justice.digital.hmpps.entity.event.EventRepository
 import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException
-import uk.gov.justice.digital.hmpps.integrations.delius.*
-import uk.gov.justice.digital.hmpps.integrations.delius.ContactType.Companion.E_SUPERVISION_CHECK_IN
-import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractionCode.ADD_CONTACT
-import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractionCode.UPDATE_CONTACT
-import uk.gov.justice.digital.hmpps.integrations.esupervision.CheckInDetail
 import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
 import uk.gov.justice.digital.hmpps.messaging.checkInUrl
 import uk.gov.justice.digital.hmpps.messaging.description
+import uk.gov.justice.digital.hmpps.messaging.detail.CheckInDetail
 
 @Service
 @Transactional
@@ -49,7 +51,11 @@ class CheckInService(
         contactRepository.save(contact)
     }
 
-    private fun HmppsDomainEvent.createContact(com: PersonManager, event: Event, detail: CheckInDetail?): Contact =
+    private fun HmppsDomainEvent.createContact(
+        com: PersonManager,
+        event: EventEntity,
+        detail: CheckInDetail?
+    ): Contact =
         Contact(
             person = com.person,
             event = event,

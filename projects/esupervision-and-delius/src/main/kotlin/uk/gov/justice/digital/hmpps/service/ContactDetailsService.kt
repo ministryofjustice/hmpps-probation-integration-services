@@ -2,16 +2,14 @@ package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.ldap.core.LdapTemplate
 import org.springframework.stereotype.Service
-import uk.gov.justice.digital.hmpps.integrations.delius.PersonManager
-import uk.gov.justice.digital.hmpps.integrations.delius.PersonManagerRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.Team
-import uk.gov.justice.digital.hmpps.integrations.delius.name
+import uk.gov.justice.digital.hmpps.entity.PersonManager
+import uk.gov.justice.digital.hmpps.entity.PersonManagerRepository
+import uk.gov.justice.digital.hmpps.entity.Team
+import uk.gov.justice.digital.hmpps.entity.event.EventEntity
+import uk.gov.justice.digital.hmpps.entity.name
 import uk.gov.justice.digital.hmpps.ldap.findEmailByUsername
 import uk.gov.justice.digital.hmpps.ldap.findEmailByUsernames
-import uk.gov.justice.digital.hmpps.model.CodedDescription
-import uk.gov.justice.digital.hmpps.model.ContactDetails
-import uk.gov.justice.digital.hmpps.model.Name
-import uk.gov.justice.digital.hmpps.model.Practitioner
+import uk.gov.justice.digital.hmpps.model.*
 
 @Service
 class ContactDetailsService(
@@ -29,7 +27,8 @@ class ContactDetailsService(
                 ),
                 mobile = com.person.mobile,
                 email = com.person.emailAddress,
-                com.asPractitioner { email }
+                events = com.person.events.map { it.asEvent() },
+                practitioner = com.asPractitioner { email }
             )
         }
 
@@ -49,19 +48,31 @@ class ContactDetailsService(
                     ),
                     mobile = com.person.mobile,
                     email = com.person.emailAddress,
-                    com.asPractitioner { emails[it] },
+                    events = com.person.events.map { it.asEvent() },
+                    practitioner = com.asPractitioner { emails[it] },
                 )
             }
         }
     }
 
     fun PersonManager.asPractitioner(getEmail: (String) -> String?) = Practitioner(
-        staff.code,
-        staff.name(),
-        team.ldu(),
-        team.pdu(),
-        with(provider) { CodedDescription(code, description) },
-        staff.user?.username?.let { getEmail(it) }
+        code = staff.code,
+        name = staff.name(),
+        localAdminUnit = team.ldu(),
+        probationDeliveryUnit = team.pdu(),
+        provider = with(provider) { CodedDescription(code, description) },
+        email = staff.user?.username?.let { getEmail(it) }
+    )
+
+    fun EventEntity.asEvent() = Event(
+        number = number.toInt(),
+        mainOffence = CodedDescription(mainOffence.offence.code, mainOffence.offence.description),
+        sentence = disposal?.let {
+            Event.Sentence(
+                date = it.date,
+                description = it.type.description
+            )
+        }
     )
 
     fun Team.ldu() = with(ldu) { CodedDescription(code, description) }
