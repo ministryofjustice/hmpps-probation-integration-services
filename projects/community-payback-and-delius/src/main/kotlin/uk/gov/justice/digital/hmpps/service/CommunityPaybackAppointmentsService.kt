@@ -130,7 +130,11 @@ class CommunityPaybackAppointmentsService(
             val daysOverdue = if (outcome == null || it.date < LocalDate.now()) {
                 ChronoUnit.DAYS.between(it.date, LocalDate.now())
             } else null
-            val projectSummary = ProjectSummary(it.project.code, it.project.name, CodeDescription(it.project.projectType.code, it.project.projectType.description))
+            val projectSummary = ProjectSummary(
+                it.project.code,
+                it.project.name,
+                CodeDescription(it.project.projectType.code, it.project.projectType.description)
+            )
 
             AppointmentsResponse(
                 id = it.id,
