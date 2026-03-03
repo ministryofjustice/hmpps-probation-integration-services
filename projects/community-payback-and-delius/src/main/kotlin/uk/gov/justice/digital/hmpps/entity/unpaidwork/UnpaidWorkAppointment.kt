@@ -25,6 +25,7 @@ import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.model.CodeDescription
 import uk.gov.justice.digital.hmpps.model.RequirementProgress
 import uk.gov.justice.digital.hmpps.model.Session
+import uk.gov.justice.digital.hmpps.service.CommunityPaybackAppointmentsService
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
@@ -317,13 +318,17 @@ interface UnpaidWorkAppointmentRepository : JpaRepository<UnpaidWorkAppointment,
     @Query(
         """
         select a from UnpaidWorkAppointment a
+        left join a.contact.outcome o
         where (:crn is null or a.person.crn = :crn)
           and (:fromDate is null or a.date >= :fromDate)
           and (:toDate is null or a.date <= :toDate)
           and (:projectCodes is null or a.project.code in :projectCodes)
           and (:projectTypeCodes is null or a.project.projectType.code in :projectTypeCodes)
-          and (:outcomeCodes is null or a.contact.outcome.code in :outcomeCodes)
-    """
+          and (:eventNumber is null or a.details.disposal.event.number = :eventNumber)
+          and (:outcomeCodes is null
+            or (o is null and "NO_OUTCOME" in :outcomeCodes)
+            or (o is not null and o.code in :outcomeCodes))
+        """
     )
     fun findAppointments(
         crn: String?,
@@ -332,6 +337,7 @@ interface UnpaidWorkAppointmentRepository : JpaRepository<UnpaidWorkAppointment,
         projectCodes: List<String>?,
         projectTypeCodes: List<String>?,
         outcomeCodes: List<String>?,
+        eventNumber: String?,
         pageable: Pageable
     ): Page<UnpaidWorkAppointment>
 }

@@ -99,6 +99,7 @@ class CommunityPaybackAppointmentsService(
         projectCodes: List<String>?,
         projectTypeCodes: List<String>?,
         outcomeCodes: List<String>?,
+        eventNumber: String?,
         pageable: Pageable
     ): PagedModel<AppointmentsResponse> {
         val appointments = unpaidWorkAppointmentRepository.findAppointments(
@@ -108,6 +109,7 @@ class CommunityPaybackAppointmentsService(
             projectCodes,
             projectTypeCodes,
             outcomeCodes,
+            eventNumber,
             pageable
         )
         val upwDetailsIds = appointments.map { it.details.id }.distinct()
@@ -121,6 +123,11 @@ class CommunityPaybackAppointmentsService(
             val daysOverdue = if (outcome == null || it.date < LocalDate.now()) {
                 ChronoUnit.DAYS.between(it.date, LocalDate.now())
             } else null
+            val projectSummary = ProjectSummary(
+                it.project.code,
+                it.project.name,
+                CodeDescription(it.project.projectType.code, it.project.projectType.description)
+            )
 
             AppointmentsResponse(
                 id = it.id,
@@ -129,6 +136,8 @@ class CommunityPaybackAppointmentsService(
                 endTime = it.endTime,
                 daysOverdue = daysOverdue,
                 case = it.toAppointmentResponseCase(limitedAccess),
+                eventNumber = it.details.disposal.event.number.toInt(),
+                project = projectSummary,
                 requirementProgress = checkNotNull(minutes[it.details.id]),
                 outcome = outcome?.toCodeDescription()
             )
