@@ -749,7 +749,7 @@ template:
             - moj, ministry_of_justice
             - mom, mum, mother
             - mosovo, police_management_of_sexual_or_violent_offenders
-            - msg, message, text, email, sms
+            - msg, message, text, email, sms, email/text
             - nacro, national_association_for_the_care_and_resettlement_of_offenders
             - nd, national_delius, delius, ndelius
             - nepacs, north_east_prison_after_care_society
