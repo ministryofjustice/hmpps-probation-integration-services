@@ -563,7 +563,7 @@ template:
             - mh, mental_health
             - min, minutes
             - mom, mum, mother
-            - msg, message, text, email, sms
+            - msg, message, text, email, sms, email/text
             - nd, national_delius, delius, ndelius
             - new_me, bnm, lmn, nmc, nms
             - nino, national_insurance_number, nin, ni_number, national_insurance
