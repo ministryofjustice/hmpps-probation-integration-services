@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.integrations.delius
+package uk.gov.justice.digital.hmpps.entity
 
 import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
@@ -10,6 +10,7 @@ import org.springframework.data.annotation.LastModifiedBy
 import org.springframework.data.annotation.LastModifiedDate
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import org.springframework.data.jpa.repository.JpaRepository
+import uk.gov.justice.digital.hmpps.entity.event.EventEntity
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.exception.NotFoundException.Companion.orNotFoundBy
 import uk.gov.justice.digital.hmpps.jpa.GeneratedId
@@ -30,7 +31,7 @@ class Contact(
 
     @ManyToOne
     @JoinColumn(name = "event_id")
-    val event: Event,
+    val event: EventEntity,
 
     @ManyToOne
     @JoinColumn(name = "contact_type_id")

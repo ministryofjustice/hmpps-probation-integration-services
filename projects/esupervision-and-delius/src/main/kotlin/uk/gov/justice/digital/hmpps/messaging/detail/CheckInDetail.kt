@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.integrations.esupervision
+package uk.gov.justice.digital.hmpps.messaging.detail
 
 import java.util.*
 

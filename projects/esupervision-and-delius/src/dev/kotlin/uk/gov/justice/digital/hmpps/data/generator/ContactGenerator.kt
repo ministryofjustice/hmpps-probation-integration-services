@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
-import uk.gov.justice.digital.hmpps.integrations.delius.*
+import uk.gov.justice.digital.hmpps.entity.*
+import uk.gov.justice.digital.hmpps.entity.event.EventEntity
 import uk.gov.justice.digital.hmpps.messaging.Handler.Companion.CHECK_IN_EXPIRED
 import uk.gov.justice.digital.hmpps.messaging.Handler.Companion.CHECK_IN_REVIEWED
 import uk.gov.justice.digital.hmpps.messaging.Handler.Companion.CHECK_IN_UPDATED
@@ -17,7 +18,7 @@ object ContactGenerator {
 
     fun generateContact(
         person: Person = PersonGenerator.DEFAULT_PERSON,
-        event: Event = PersonGenerator.DEFAULT_EVENT,
+        event: EventEntity = EventGenerator.EVENT_1,
         contactType: ContactType = ContactTypeGenerator.CT_ESPCHI,
         date: LocalDate = LocalDate.now(),
         startTime: ZonedDateTime = ZonedDateTime.now(),

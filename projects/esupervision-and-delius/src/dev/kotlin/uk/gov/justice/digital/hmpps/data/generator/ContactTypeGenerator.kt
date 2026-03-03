@@ -1,6 +1,6 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
-import uk.gov.justice.digital.hmpps.integrations.delius.ContactType
+import uk.gov.justice.digital.hmpps.entity.ContactType
 
 object ContactTypeGenerator {
     val CT_ESPCHI = generateContactType(ContactType.E_SUPERVISION_CHECK_IN)

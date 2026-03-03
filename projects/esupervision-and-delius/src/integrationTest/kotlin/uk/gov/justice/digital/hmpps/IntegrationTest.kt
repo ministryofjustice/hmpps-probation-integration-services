@@ -14,13 +14,12 @@ import org.springframework.test.json.JsonCompareMode
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
 import org.springframework.test.web.servlet.post
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import uk.gov.justice.digital.hmpps.data.generator.EventGenerator
 import uk.gov.justice.digital.hmpps.data.generator.MessageGenerator
-import uk.gov.justice.digital.hmpps.data.generator.PersonContactDetailsGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ProviderGenerator
-import uk.gov.justice.digital.hmpps.integrations.delius.ContactRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.ContactType
+import uk.gov.justice.digital.hmpps.entity.ContactRepository
+import uk.gov.justice.digital.hmpps.entity.ContactType
 import uk.gov.justice.digital.hmpps.message.MessageAttributes
 import uk.gov.justice.digital.hmpps.message.Notification
 import uk.gov.justice.digital.hmpps.messaging.HmppsChannelManager
@@ -53,7 +52,7 @@ internal class IntegrationTest @Autowired constructor(
         }
         assertThat(contact.type.code).isEqualTo(ContactType.E_SUPERVISION_CHECK_IN)
         assertThat(contact.date).isEqualTo(notification.message.occurredAt.toLocalDate())
-        assertThat(contact.event.id).isEqualTo(PersonGenerator.DEFAULT_EVENT.id)
+        assertThat(contact.event.id).isEqualTo(EventGenerator.EVENT_2.id)
         assertThat(contact.provider.id).isEqualTo(ProviderGenerator.DEFAULT_PROVIDER.id)
         assertThat(contact.team.id).isEqualTo(ProviderGenerator.DEFAULT_TEAM.id)
         assertThat(contact.staff.id).isEqualTo(ProviderGenerator.DEFAULT_STAFF.id)
@@ -73,7 +72,7 @@ internal class IntegrationTest @Autowired constructor(
         }
         assertThat(contact.type.code).isEqualTo(ContactType.E_SUPERVISION_CHECK_IN)
         assertThat(contact.date).isEqualTo(notification.message.occurredAt.toLocalDate())
-        assertThat(contact.event.id).isEqualTo(PersonGenerator.DEFAULT_EVENT.id)
+        assertThat(contact.event.id).isEqualTo(EventGenerator.EVENT_2.id)
         assertThat(contact.provider.id).isEqualTo(ProviderGenerator.DEFAULT_PROVIDER.id)
         assertThat(contact.team.id).isEqualTo(ProviderGenerator.DEFAULT_TEAM.id)
         assertThat(contact.staff.id).isEqualTo(ProviderGenerator.DEFAULT_STAFF.id)
@@ -91,7 +90,7 @@ internal class IntegrationTest @Autowired constructor(
         }
         assertThat(contact.description).isEqualTo("Online check in completed")
         assertThat(contact.type.code).isEqualTo(ContactType.E_SUPERVISION_CHECK_IN)
-        assertThat(contact.event.id).isEqualTo(PersonGenerator.DEFAULT_EVENT.id)
+        assertThat(contact.event.id).isEqualTo(EventGenerator.EVENT_2.id)
         assertThat(contact.provider.id).isEqualTo(ProviderGenerator.DEFAULT_PROVIDER.id)
         assertThat(contact.team.id).isEqualTo(ProviderGenerator.DEFAULT_TEAM.id)
         assertThat(contact.staff.id).isEqualTo(ProviderGenerator.DEFAULT_STAFF.id)
@@ -170,7 +169,7 @@ internal class IntegrationTest @Autowired constructor(
         }
         assertThat(contact.description).isEqualTo("Check in has not been submitted on time")
         assertThat(contact.type.code).isEqualTo(ContactType.E_SUPERVISION_CHECK_IN)
-        assertThat(contact.event.id).isEqualTo(PersonGenerator.DEFAULT_EVENT.id)
+        assertThat(contact.event.id).isEqualTo(EventGenerator.EVENT_2.id)
         assertThat(contact.provider.id).isEqualTo(ProviderGenerator.DEFAULT_PROVIDER.id)
         assertThat(contact.team.id).isEqualTo(ProviderGenerator.DEFAULT_TEAM.id)
         assertThat(contact.staff.id).isEqualTo(ProviderGenerator.DEFAULT_STAFF.id)
@@ -180,20 +179,40 @@ internal class IntegrationTest @Autowired constructor(
 
     @Test
     fun `get contact details for a single crn`() {
-        mockMvc.get("/case/${PersonContactDetailsGenerator.PERSON_CONTACT_DETAILS_1.crn}") { withToken() }
+        mockMvc.get("/case/${PersonGenerator.DEFAULT_PERSON.crn}") { withToken() }
             .andExpect {
                 status { isOk() }
                 content {
                     json(
                         """
                         {
-                          "crn": "${PersonContactDetailsGenerator.PERSON_CONTACT_DETAILS_1.crn}",
+                          "crn": "${PersonGenerator.DEFAULT_PERSON.crn}",
                           "name": {
-                            "forename": "${PersonContactDetailsGenerator.PERSON_CONTACT_DETAILS_1.firstName}",
-                            "surname": "${PersonContactDetailsGenerator.PERSON_CONTACT_DETAILS_1.lastName}"
+                            "forename": "${PersonGenerator.DEFAULT_PERSON.firstName}",
+                            "surname": "${PersonGenerator.DEFAULT_PERSON.lastName}"
                           },
-                          "mobile": "${PersonContactDetailsGenerator.PERSON_CONTACT_DETAILS_1.mobile.toString()}",
-                          "email": "${PersonContactDetailsGenerator.PERSON_CONTACT_DETAILS_1.emailAddress}",
+                          "mobile": "${PersonGenerator.DEFAULT_PERSON.mobile.toString()}",
+                          "email": "${PersonGenerator.DEFAULT_PERSON.emailAddress}",
+                          "events": [
+                            {
+                              "number": 2,
+                              "mainOffence": {
+                                "code": "03100",
+                                "description": "Aggravated burglary in a building other than a dwelling (including attempts)"
+                              },
+                              "sentence": {
+                                "date": "2026-03-01",
+                                "description": "ORA Community Order (24 Months)"
+                              }
+                            },
+                            {
+                              "number": 3,
+                              "mainOffence": {
+                                "code": "03100",
+                                "description": "Aggravated burglary in a building other than a dwelling (including attempts)"
+                              }
+                            }
+                          ],
                           "practitioner": {
                             "code": "${ProviderGenerator.DEFAULT_STAFF.code}",
                             "email": "john.smith@moj.gov.uk",
@@ -225,39 +244,37 @@ internal class IntegrationTest @Autowired constructor(
     @Test
     fun `bad crn returns a 404`() {
         mockMvc.get("/case/NOT_A_CRN") { withToken() }
-            .andExpect { status().isNotFound }
+            .andExpect { status { isNotFound() } }
     }
 
     @Test
     fun `get multiple contact details`() {
         val crns = listOf(
-            PersonContactDetailsGenerator.PERSON_CONTACT_DETAILS_1.crn,
-            PersonContactDetailsGenerator.PERSON_CONTACT_DETAILS_2.crn,
+            PersonGenerator.PERSON_CONTACT_DETAILS_1.crn,
+            PersonGenerator.PERSON_CONTACT_DETAILS_2.crn,
         )
         mockMvc.post("/cases") {
             json = crns
             withToken()
+        }.andExpect {
+            status { isOk() }
+            jsonPath("$.length()") { value(2) }
         }
-            .andExpect {
-                status { isOk() }
-                jsonPath("$.length()") { value(2) }
-            }
     }
 
     @Test
     fun `get multiple contact details with one bad crn returns only existing crn details`() {
         val crns = listOf(
-            PersonContactDetailsGenerator.PERSON_CONTACT_DETAILS_1.crn,
+            PersonGenerator.PERSON_CONTACT_DETAILS_1.crn,
             "NOT_A_CRN",
         )
         mockMvc.post("/cases") {
             json = crns
             withToken()
+        }.andExpect {
+            status { isOk() }
+            jsonPath("$.length()") { value(1) }
         }
-            .andExpect {
-                status { isOk() }
-                jsonPath("$.length()") { value(1) }
-            }
     }
 
     @Test
@@ -273,8 +290,7 @@ internal class IntegrationTest @Autowired constructor(
         mockMvc.post("/case/{${PersonGenerator.DEFAULT_PERSON.crn}/validate-details") {
             json = testBody
             withToken()
-        }
-            .andExpect { status { isOk() } }
+        }.andExpect { status { isOk() } }
     }
 
     @Test
@@ -290,8 +306,7 @@ internal class IntegrationTest @Autowired constructor(
         mockMvc.post("/case/{${PersonGenerator.DEFAULT_PERSON.crn}/validate-details") {
             json = testBody
             withToken()
-        }
-            .andExpect { status { isOk() } }
+        }.andExpect { status { isOk() } }
     }
 
     @Test
@@ -307,8 +322,7 @@ internal class IntegrationTest @Autowired constructor(
         mockMvc.post("/case/{${PersonGenerator.DEFAULT_PERSON.crn}/validate-details") {
             json = testBody
             withToken()
-        }
-            .andExpect { status { isBadRequest() } }
+        }.andExpect { status { isBadRequest() } }
     }
 
     @Test
@@ -324,7 +338,6 @@ internal class IntegrationTest @Autowired constructor(
         mockMvc.post("/case/NOT_A_CRN/validate-details") {
             json = testBody
             withToken()
-        }
-            .andExpect { status { isNotFound() } }
+        }.andExpect { status { isNotFound() } }
     }
 }

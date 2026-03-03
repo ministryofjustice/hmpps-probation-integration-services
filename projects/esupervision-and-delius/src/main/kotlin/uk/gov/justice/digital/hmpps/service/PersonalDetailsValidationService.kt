@@ -3,7 +3,7 @@ package uk.gov.justice.digital.hmpps.service
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.web.server.ResponseStatusException
-import uk.gov.justice.digital.hmpps.integrations.delius.PersonRepository
+import uk.gov.justice.digital.hmpps.entity.PersonRepository
 import uk.gov.justice.digital.hmpps.model.PersonalDetails
 
 @Service
