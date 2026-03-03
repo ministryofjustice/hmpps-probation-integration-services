@@ -433,6 +433,11 @@ paths:
           type: array
           items:
             type: string
+      - name: eventNumber
+        in: query
+        required: false
+        schema:
+          type: string
       - name: pageable
         in: query
         required: true
@@ -1242,6 +1247,11 @@ components:
           format: int64
         case:
           $ref: "#/components/schemas/AppointmentResponseCase"
+        eventNumber:
+          type: integer
+          format: int32
+        project:
+          $ref: "#/components/schemas/ProjectSummary"
         requirementProgress:
           $ref: "#/components/schemas/RequirementProgress"
         outcome:
@@ -1251,6 +1261,7 @@ components:
       - date
       - endTime
       - id
+      - project
       - requirementProgress
       - startTime
     PagedModelAppointmentsResponse:
@@ -1262,6 +1273,19 @@ components:
             $ref: "#/components/schemas/AppointmentsResponse"
         page:
           $ref: "#/components/schemas/PageMetadata"
+    ProjectSummary:
+      type: object
+      properties:
+        code:
+          type: string
+        name:
+          type: string
+        projectType:
+          $ref: "#/components/schemas/CodeDescription"
+      required:
+      - code
+      - name
+      - projectType
   securitySchemes:
     hmpps-auth-token:
       type: http
