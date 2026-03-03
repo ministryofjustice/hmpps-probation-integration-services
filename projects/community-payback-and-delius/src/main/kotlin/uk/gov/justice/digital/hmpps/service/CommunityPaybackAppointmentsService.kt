@@ -102,20 +102,13 @@ class CommunityPaybackAppointmentsService(
         eventNumber: String?,
         pageable: Pageable
     ): PagedModel<AppointmentsResponse> {
-        val (filteredOutcomeCodes, noOutcomeOnly) = when {
-            outcomeCodes == null -> null to false
-            outcomeCodes.size == 1 && outcomeCodes[0] == NO_OUTCOME -> null to true
-            outcomeCodes.size > 1 && outcomeCodes.contains(NO_OUTCOME) -> outcomeCodes.filter { it != NO_OUTCOME } to true
-            else -> outcomeCodes to false
-        }
         val appointments = unpaidWorkAppointmentRepository.findAppointments(
             crn,
             fromDate,
             toDate,
             projectCodes,
             projectTypeCodes,
-            filteredOutcomeCodes,
-            noOutcomeOnly,
+            outcomeCodes,
             eventNumber,
             pageable
         )
@@ -359,6 +352,5 @@ class CommunityPaybackAppointmentsService(
 
     companion object {
         const val REFERENCE_PREFIX = "urn:uk:gov:hmpps:community-payback:appointment:"
-        const val NO_OUTCOME = "NO_OUTCOME"
     }
 }
