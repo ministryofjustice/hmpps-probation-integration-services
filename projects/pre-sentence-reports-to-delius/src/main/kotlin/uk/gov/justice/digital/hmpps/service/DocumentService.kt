@@ -27,8 +27,7 @@ class DocumentService(
     private val alfrescoUploadClient: AlfrescoUploadClient,
     private val auditUserService: AuditUserService,
     private val entityManager: EntityManager,
-) : AuditableService(auditedInteractionService)
-{
+) : AuditableService(auditedInteractionService) {
     @Transactional
     fun uploadDocument(event: HmppsDomainEvent, file: ByteArray) = audit(BusinessInteractionCode.UPLOAD_DOCUMENT) {
         check(file.isPdf()) { "Invalid PDF file: ${event.detailUrl}" }
@@ -46,7 +45,8 @@ class DocumentService(
     }
 
     fun updateCourtReport(courtReportId: Long) {
-        val query = entityManager.createNativeQuery("update court_report set completed_date = :completedDate where court_report_id = :psrId")
+        val query =
+            entityManager.createNativeQuery("update court_report set completed_date = :completedDate where court_report_id = :psrId")
         query.setParameter("completedDate", ZonedDateTime.now())
         query.setParameter("psrId", courtReportId)
         query.executeUpdate()
@@ -63,18 +63,19 @@ class DocumentService(
         } ?: throw NotFoundException("Document", "externalReference", urn)
     }
 
-    private fun uk.gov.justice.digital.hmpps.entity.Document.toMultipart(file: ByteArray) = MultipartBodyBuilder().apply {
-        part("CRN", person.crn, MediaType.TEXT_PLAIN)
-        part("fileName", name, MediaType.TEXT_PLAIN)
-        part("filedata", file, MediaType.APPLICATION_OCTET_STREAM).filename(name)
-        part("author", "Service,Pre Sentence Report", MediaType.TEXT_PLAIN)
-        part("docType", "DOCUMENT", MediaType.TEXT_PLAIN)
-        //entityType in Alfresco does not always correspond exactly to tableName in Delius.
-        // See https://github.com/ministryofjustice/delius/blob/0087df0cb1dd5305fb44f89f4bf78dfc6b3916f6/NDelius-lib/src/main/java/uk/co/bconline/ndelius/util/iwp/MetadataMapper.java#L18-L39
-        part("entityType", "COURTREPORT", MediaType.TEXT_PLAIN)
-        part("entityId", courtReport.id.toString(), MediaType.TEXT_PLAIN)
-        part("locked", "true", MediaType.TEXT_PLAIN)
-    }.build()
+    private fun uk.gov.justice.digital.hmpps.entity.Document.toMultipart(file: ByteArray) =
+        MultipartBodyBuilder().apply {
+            part("CRN", person.crn, MediaType.TEXT_PLAIN)
+            part("fileName", name, MediaType.TEXT_PLAIN)
+            part("filedata", file, MediaType.APPLICATION_OCTET_STREAM).filename(name)
+            part("author", "Service,Pre Sentence Report", MediaType.TEXT_PLAIN)
+            part("docType", "DOCUMENT", MediaType.TEXT_PLAIN)
+            //entityType in Alfresco does not always correspond exactly to tableName in Delius.
+            // See https://github.com/ministryofjustice/delius/blob/0087df0cb1dd5305fb44f89f4bf78dfc6b3916f6/NDelius-lib/src/main/java/uk/co/bconline/ndelius/util/iwp/MetadataMapper.java#L18-L39
+            part("entityType", "COURTREPORT", MediaType.TEXT_PLAIN)
+            part("entityId", courtReport.id.toString(), MediaType.TEXT_PLAIN)
+            part("locked", "true", MediaType.TEXT_PLAIN)
+        }.build()
 
     private fun ByteArray.isPdf() = take(4).toByteArray().contentEquals("%PDF".toByteArray())
 }
