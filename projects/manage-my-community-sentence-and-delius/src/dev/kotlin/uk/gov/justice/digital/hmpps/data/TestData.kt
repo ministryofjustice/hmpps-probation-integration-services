@@ -11,6 +11,8 @@ import uk.gov.justice.digital.hmpps.entity.PersonalContact
 import uk.gov.justice.digital.hmpps.entity.ReferenceData
 import uk.gov.justice.digital.hmpps.entity.address.OfficeLocation
 import uk.gov.justice.digital.hmpps.entity.address.PersonAddress
+import uk.gov.justice.digital.hmpps.entity.appointment.Contact
+import uk.gov.justice.digital.hmpps.entity.appointment.ContactType
 import uk.gov.justice.digital.hmpps.entity.sentence.Disposal
 import uk.gov.justice.digital.hmpps.entity.sentence.DisposalType
 import uk.gov.justice.digital.hmpps.entity.sentence.Event
@@ -23,6 +25,7 @@ import uk.gov.justice.digital.hmpps.entity.staff.Staff
 import uk.gov.justice.digital.hmpps.entity.staff.StaffUser
 import uk.gov.justice.digital.hmpps.entity.staff.Team
 import java.time.LocalDate
+import java.time.LocalTime
 
 object TestData {
     object ReferenceData {
@@ -30,6 +33,8 @@ object TestData {
         val MAIN_ADDRESS_STATUS = ReferenceData(id(), PersonAddress.MAIN_ADDRESS_STATUS, "Main Address")
         val EMERGENCY_CONTACT_TYPE = ReferenceData(id(), PersonalContact.EMERGENCY_CONTACT, "Emergency Contact")
         val HOURS = ReferenceData(id(), "H", "Hours")
+        val APPOINTMENT_CONTACT_TYPE = ContactType(id(), "Office Appointment", true)
+        val NON_APPOINTMENT_CONTACT_TYPE = ContactType(id(), "Case Note", false)
         val COMMUNITY_ORDER = DisposalType(id(), "Community Order")
         val REQUIREMENT_CATEGORY = RequirementMainCategory(id(), "Unpaid Work", HOURS)
         val REQUIREMENT_SUBCATEGORY = ReferenceData(id(), "UPW", "Regular")
@@ -143,5 +148,55 @@ object TestData {
         val REQUIREMENT = Requirement(id(), length = 10, DISPOSAL, REQUIREMENT_CATEGORY, REQUIREMENT_SUBCATEGORY)
         val LICENCE_CONDITION =
             LicenceCondition(id(), DISPOSAL, LICENCE_CONDITION_CATEGORY, LICENCE_CONDITION_SUBCATEGORY)
+    }
+
+    object AppointmentData {
+        val FUTURE_1 = generate(
+            LocalDate.of(2050, 1, 1), LocalTime.of(9, 0), LocalTime.of(9, 30),
+            description = "Future appointment",
+        )
+        val FUTURE_2 = generate(
+            LocalDate.of(2050, 1, 1), LocalTime.of(12, 0), LocalTime.of(13, 30),
+            description = "Future appointment - no location",
+            location = null
+        )
+        val NON_APPOINTMENT = generate(
+            LocalDate.of(2050, 1, 1), LocalTime.of(10, 0), LocalTime.of(10, 30),
+            type = ReferenceData.NON_APPOINTMENT_CONTACT_TYPE,
+            description = "Non attendance contact",
+        )
+        val PAST_1 = generate(
+            LocalDate.of(2020, 1, 1), LocalTime.of(15, 0), LocalTime.of(15, 30),
+            description = "Past appointment - attended",
+            attended = true, complied = true,
+        )
+        val PAST_2 = generate(
+            LocalDate.of(2020, 1, 1), LocalTime.of(10, 0), LocalTime.of(10, 45),
+            description = "Past appointment - not attended",
+            attended = false, complied = false,
+        )
+
+        fun generate(
+            date: LocalDate,
+            startTime: LocalTime,
+            endTime: LocalTime,
+            description: String? = null,
+            type: ContactType = ReferenceData.APPOINTMENT_CONTACT_TYPE,
+            location: OfficeLocation? = TeamData.OFFICE,
+            attended: Boolean? = null,
+            complied: Boolean? = null,
+        ) = Contact(
+            id = id(),
+            personId = PersonData.DEFAULT.id,
+            date = date,
+            startTime = startTime,
+            endTime = endTime,
+            type = type,
+            description = description,
+            location = location,
+            staff = StaffData.STAFF,
+            attended = attended,
+            complied = complied,
+        )
     }
 }
