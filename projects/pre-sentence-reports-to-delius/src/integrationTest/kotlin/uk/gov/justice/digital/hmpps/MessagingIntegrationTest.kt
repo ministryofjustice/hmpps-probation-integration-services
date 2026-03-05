@@ -114,7 +114,9 @@ internal class MessagingIntegrationTest @Autowired constructor(
         wireMockServer.verify(
             postRequestedFor(urlEqualTo("/alfresco/uploadnew"))
                 .withRequestBodyPart(aMultipart().withFileName("Final Person's court report.pdf").build())
-                .withRequestBodyPart(aMultipart().withName("fileName").withBody(equalTo("Final Person's court report.pdf")).build())
+                .withRequestBodyPart(
+                    aMultipart().withName("fileName").withBody(equalTo("Final Person's court report.pdf")).build()
+                )
                 .withAlfrescoHeaders()
         )
     }

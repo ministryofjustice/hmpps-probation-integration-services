@@ -28,6 +28,7 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
         )
         businessInteractions()
     }
+
     private fun businessInteractions() {
         saveAll(
             BusinessInteractionCode.entries.map {

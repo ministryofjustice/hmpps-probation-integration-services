@@ -21,9 +21,11 @@ class Handler(
     private val detailService: DomainEventDetailService,
     private val documentService: DocumentService,
 ) : NotificationHandler<HmppsDomainEvent> {
-    @Publish(messages = [
-        Message(name = "pre-sentence.report.created", payload = Schema(HmppsDomainEvent::class))
-    ])
+    @Publish(
+        messages = [
+            Message(name = "pre-sentence.report.created", payload = Schema(HmppsDomainEvent::class))
+        ]
+    )
     override fun handle(notification: Notification<HmppsDomainEvent>) {
         telemetryService.notificationReceived(notification)
         when (notification.eventType) {
@@ -32,11 +34,12 @@ class Handler(
                 documentService.uploadDocument(notification.message, file)
                 telemetryService.trackEvent("DocumentUploaded", notification.message.telemetry())
             }
-             else -> throw IllegalArgumentException("Unsupported event type: ${notification.eventType}")
+
+            else -> throw IllegalArgumentException("Unsupported event type: ${notification.eventType}")
         }
+    }
 }
 
-}
 val HmppsDomainEvent.psrId get() = additionalInformation["psrId"] as String
 val HmppsDomainEvent.username get() = additionalInformation["username"] as String
 fun HmppsDomainEvent.telemetry() = mapOf(
