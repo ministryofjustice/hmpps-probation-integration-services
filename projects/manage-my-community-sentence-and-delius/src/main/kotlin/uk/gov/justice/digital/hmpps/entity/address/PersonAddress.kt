@@ -20,7 +20,7 @@ class PersonAddress(
     val person: Person,
     @ManyToOne
     @JoinColumn(name = "address_status_id")
-    var status: ReferenceData,
+    val status: ReferenceData,
     val buildingName: String? = null,
     val addressNumber: String? = null,
     val streetName: String? = null,
@@ -31,7 +31,7 @@ class PersonAddress(
     val postcode: String? = null,
     @Convert(converter = YesNoConverter::class)
     val noFixedAbode: Boolean? = false,
-    var endDate: LocalDate? = null,
+    val endDate: LocalDate? = null,
 
     @Column(columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)
