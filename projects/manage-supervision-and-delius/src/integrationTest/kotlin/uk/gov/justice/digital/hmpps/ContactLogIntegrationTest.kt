@@ -29,6 +29,8 @@ class ContactLogIntegrationTest : IntegrationTestBase() {
         mockMvc.post("/contact/$crn") {
             withToken()
             json = CreateContact(
+                date = LocalDate.of(2023, 1, 1),
+                time = LocalTime.of(10, 0),
                 staffCode = OffenderManagerGenerator.STAFF_1.code,
                 teamCode = OffenderManagerGenerator.TEAM.code,
                 type = ContactGenerator.EMAIL_POP_CT.code,
@@ -37,8 +39,7 @@ class ContactLogIntegrationTest : IntegrationTestBase() {
                 sensitive = false,
                 visorReport = false
             )
-        }
-            .andExpect { status { isNotFound() } }
+        }.andExpect { status { isNotFound() } }
     }
 
     @Test
@@ -48,6 +49,8 @@ class ContactLogIntegrationTest : IntegrationTestBase() {
         mockMvc.post("/contact/${PersonGenerator.PERSON_1.crn}") {
             withToken()
             json = CreateContact(
+                date = LocalDate.of(2023, 1, 1),
+                time = LocalTime.of(10, 0),
                 staffCode = invalidStaffCode,
                 teamCode = OffenderManagerGenerator.TEAM.code,
                 type = ContactGenerator.EMAIL_POP_CT.code,
@@ -56,8 +59,7 @@ class ContactLogIntegrationTest : IntegrationTestBase() {
                 sensitive = false,
                 visorReport = false
             )
-        }
-            .andExpect { status { isNotFound() } }
+        }.andExpect { status { isNotFound() } }
     }
 
     @Test
@@ -67,6 +69,8 @@ class ContactLogIntegrationTest : IntegrationTestBase() {
         mockMvc.post("/contact/${PersonGenerator.PERSON_1.crn}") {
             withToken()
             json = CreateContact(
+                date = LocalDate.of(2023, 1, 1),
+                time = LocalTime.of(10, 0),
                 staffCode = OffenderManagerGenerator.STAFF_1.code,
                 teamCode = invalidTeamCode,
                 type = ContactGenerator.EMAIL_POP_CT.code,
@@ -75,8 +79,7 @@ class ContactLogIntegrationTest : IntegrationTestBase() {
                 sensitive = false,
                 visorReport = false
             )
-        }
-            .andExpect { status { isNotFound() } }
+        }.andExpect { status { isNotFound() } }
     }
 
     @Test
@@ -86,6 +89,8 @@ class ContactLogIntegrationTest : IntegrationTestBase() {
         mockMvc.post("/contact/${PersonGenerator.PERSON_1.crn}") {
             withToken()
             json = CreateContact(
+                date = LocalDate.of(2023, 1, 1),
+                time = LocalTime.of(10, 0),
                 staffCode = OffenderManagerGenerator.STAFF_1.code,
                 teamCode = OffenderManagerGenerator.TEAM.code,
                 type = invalidContactType,
@@ -94,8 +99,7 @@ class ContactLogIntegrationTest : IntegrationTestBase() {
                 sensitive = false,
                 visorReport = false
             )
-        }
-            .andExpect { status { isNotFound() } }
+        }.andExpect { status { isNotFound() } }
     }
 
     @Test
@@ -103,6 +107,8 @@ class ContactLogIntegrationTest : IntegrationTestBase() {
         val response = mockMvc.post("/contact/${PersonGenerator.PERSON_1.crn}") {
             withToken()
             json = CreateContact(
+                date = LocalDate.of(2023, 1, 1),
+                time = LocalTime.of(10, 0),
                 staffCode = OffenderManagerGenerator.STAFF_1.code,
                 teamCode = OffenderManagerGenerator.TEAM.code,
                 type = ContactGenerator.EMAIL_POP_CT.code,
@@ -122,8 +128,8 @@ class ContactLogIntegrationTest : IntegrationTestBase() {
             savedContact.notes,
             Matchers.containsString("This contact was automatically created by the Manage Supervision integrations service.")
         )
-        assertThat(savedContact.date, equalTo(LocalDate.now()))
-        assertThat(savedContact.startTime, isCloseTo(LocalTime.now()))
+        assertThat(savedContact.date, equalTo(LocalDate.of(2023, 1, 1)))
+        assertThat(savedContact.startTime, isCloseTo(LocalTime.of(10, 0)))
         assertThat(savedContact.alert, equalTo(false))
         assertThat(savedContact.sensitive, equalTo(false))
         assertThat(savedContact.isVisor, equalTo(false))
@@ -136,6 +142,8 @@ class ContactLogIntegrationTest : IntegrationTestBase() {
         val response = mockMvc.post("/contact/${PersonGenerator.PERSON_1.crn}") {
             withToken()
             json = CreateContact(
+                date = LocalDate.of(2023, 1, 1),
+                time = LocalTime.of(10, 0),
                 staffCode = OffenderManagerGenerator.STAFF_1.code,
                 teamCode = OffenderManagerGenerator.TEAM.code,
                 type = ContactGenerator.EVENT_LEVEL_CT.code,
@@ -159,6 +167,8 @@ class ContactLogIntegrationTest : IntegrationTestBase() {
         val response = mockMvc.post("/contact/${PersonGenerator.PERSON_1.crn}") {
             withToken()
             json = CreateContact(
+                date = LocalDate.of(2023, 1, 1),
+                time = LocalTime.of(10, 0),
                 staffCode = OffenderManagerGenerator.STAFF_1.code,
                 teamCode = OffenderManagerGenerator.TEAM.code,
                 type = ContactGenerator.RQMNT_LEVEL_CT.code,
@@ -183,6 +193,8 @@ class ContactLogIntegrationTest : IntegrationTestBase() {
         val response = mockMvc.post("/contact/${PersonGenerator.PERSON_1.crn}") {
             withToken()
             json = CreateContact(
+                date = LocalDate.of(2023, 1, 1),
+                time = LocalTime.of(10, 0),
                 staffCode = OffenderManagerGenerator.STAFF_1.code,
                 teamCode = OffenderManagerGenerator.TEAM.code,
                 type = ContactGenerator.EMAIL_POP_CT.code,
@@ -207,6 +219,8 @@ class ContactLogIntegrationTest : IntegrationTestBase() {
         mockMvc.post("/contact/${PersonGenerator.PERSON_1.crn}") {
             withToken()
             json = CreateContact(
+                date = LocalDate.of(2023, 1, 1),
+                time = LocalTime.of(10, 0),
                 staffCode = OffenderManagerGenerator.STAFF_1.code,
                 teamCode = OffenderManagerGenerator.TEAM.code,
                 type = ContactGenerator.EVENT_LEVEL_CT.code,
@@ -223,6 +237,8 @@ class ContactLogIntegrationTest : IntegrationTestBase() {
         mockMvc.post("/contact/${PersonGenerator.PERSON_1.crn}") {
             withToken()
             json = CreateContact(
+                date = LocalDate.of(2023, 1, 1),
+                time = LocalTime.of(10, 0),
                 staffCode = OffenderManagerGenerator.STAFF_1.code,
                 teamCode = OffenderManagerGenerator.TEAM.code,
                 type = ContactGenerator.EMAIL_POP_CT.code,
@@ -240,6 +256,8 @@ class ContactLogIntegrationTest : IntegrationTestBase() {
         mockMvc.post("/contact/${PersonGenerator.PERSON_1.crn}") {
             withToken()
             json = CreateContact(
+                date = LocalDate.of(2023, 1, 1),
+                time = LocalTime.of(10, 0),
                 staffCode = OffenderManagerGenerator.STAFF_1.code,
                 teamCode = OffenderManagerGenerator.TEAM.code,
                 type = ContactGenerator.RQMNT_LEVEL_CT.code,
@@ -257,6 +275,8 @@ class ContactLogIntegrationTest : IntegrationTestBase() {
         mockMvc.post("/contact/${PersonGenerator.PERSON_1.crn}") {
             withToken()
             json = CreateContact(
+                date = LocalDate.of(2023, 1, 1),
+                time = LocalTime.of(10, 0),
                 staffCode = OffenderManagerGenerator.STAFF_1.code,
                 teamCode = OffenderManagerGenerator.TEAM.code,
                 type = ContactGenerator.RQMNT_LEVEL_CT.code,
@@ -296,6 +316,8 @@ class ContactLogIntegrationTest : IntegrationTestBase() {
         val response = mockMvc.post("/contact/${PersonGenerator.PERSON_1.crn}") {
             withToken()
             json = CreateContact(
+                date = LocalDate.of(2023, 1, 1),
+                time = LocalTime.of(10, 0),
                 staffCode = OffenderManagerGenerator.STAFF_1.code,
                 teamCode = OffenderManagerGenerator.TEAM.code,
                 type = ContactGenerator.EMAIL_POP_CT.code,
