@@ -8,23 +8,23 @@ import org.springframework.context.annotation.Configuration
 class AsyncApiConfig {
     @Bean
     fun asyncApiExtension() = AsyncApiExtension.builder(order = 1) {
-        info.title("pre-sentence-report-to-delius")
+        info.title("pre-sentence-reports-to-delius")
         servers {
             server("dev") {
-                url("https://sqs.eu-west-2.amazonaws.com/754256621582/probation-integration-dev-pre-sentence-report-to-delius-queue")
+                url("https://sqs.eu-west-2.amazonaws.com/754256621582/probation-integration-dev-pre-sentence-reports-to-delius-queue")
                 protocol("sqs")
             }
             server("preprod") {
-                url("https://sqs.eu-west-2.amazonaws.com/754256621582/probation-integration-preprod-pre-sentence-report-to-delius-queue")
+                url("https://sqs.eu-west-2.amazonaws.com/754256621582/probation-integration-preprod-pre-sentence-reports-to-delius-queue")
                 protocol("sqs")
             }
             server("prod") {
-                url("https://sqs.eu-west-2.amazonaws.com/754256621582/probation-integration-prod-pre-sentence-report-to-delius-queue")
+                url("https://sqs.eu-west-2.amazonaws.com/754256621582/probation-integration-prod-pre-sentence-reports-to-delius-queue")
                 protocol("sqs")
             }
         }
         externalDocs {
-            url("https://ministryofjustice.github.io/hmpps-probation-integration-services/tech-docs/projects/pre-sentence-report-to-delius/")
+            url("https://ministryofjustice.github.io/hmpps-probation-integration-services/tech-docs/projects/pre-sentence-reports-to-delius/")
         }
     }
 }

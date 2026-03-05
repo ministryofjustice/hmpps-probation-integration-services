@@ -29,7 +29,7 @@ class Document(
     val externalReference: String,
 
     @Column(name = "alfresco_document_id")
-    var alfrescoId: String?,
+    var alfrescoId: String,
 
     @Version
     var rowVersion: Long = 0,
