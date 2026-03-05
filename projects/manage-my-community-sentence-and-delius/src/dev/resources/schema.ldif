@@ -1,0 +1,13 @@
+dn: ou=Users,dc=moj,dc=com
+objectclass: top
+objectclass: organizationalUnit
+ou: Users
+
+dn: cn=test.user,ou=Users,dc=moj,dc=com
+objectclass: top
+objectclass: inetOrgPerson
+cn: test.user
+sn: User
+givenname: Test
+mail: test.user@example.com
+telephoneNumber: 07000000000
