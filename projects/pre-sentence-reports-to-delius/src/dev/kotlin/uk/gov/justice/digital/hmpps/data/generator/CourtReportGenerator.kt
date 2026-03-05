@@ -4,5 +4,7 @@ import uk.gov.justice.digital.hmpps.data.generator.CourtAppearanceGenerator.DEFA
 import uk.gov.justice.digital.hmpps.entity.CourtReport
 
 object CourtReportGenerator {
-    val DEFAULT_COURT_REPORT = CourtReport(IdGenerator.getAndIncrement(), DEFAULT_COURT_APPEARANCE)
+    val DEFAULT_COURT_REPORT = CourtReport(
+        id = IdGenerator.getAndIncrement(),
+        courtAppearance = DEFAULT_COURT_APPEARANCE)
 }

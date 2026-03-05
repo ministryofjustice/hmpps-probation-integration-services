@@ -1,0 +1,19 @@
+{
+  "eventType": "pre-sentence.report.created",
+  "version": 1,
+  "description": "PSR Report event",
+  "detailUrl": "http://localhost:{dev.wiremock.port}/pre-sentence-report/pdf/00000000-0000-0000-0000-000000000001",
+  "occurredAt": "2025-02-11T15:22:08.452612281+01:00",
+  "additionalInformation": {
+    "psrId": "00000000-0000-0000-0000-000000000001",
+    "username": "TestUser"
+  },
+  "personReference": {
+    "identifiers": [
+      {
+        "type": "CRN",
+        "value": "X012771"
+      }
+    ]
+  }
+}

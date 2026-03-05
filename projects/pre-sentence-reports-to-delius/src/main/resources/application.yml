@@ -64,7 +64,7 @@ integrations:
     client-secret: pre-sentence-reports-to-delius
     base-url: http://localhost:${dev.wiremock.port}
   alfresco:
-    url: http://localhost:${dev.wiremock.port}
+    url: http://localhost:${dev.wiremock.port}/alfresco
   new-tech:
     base-url: http://localhost:${dev.wiremock.port}
     secret: super-secret
