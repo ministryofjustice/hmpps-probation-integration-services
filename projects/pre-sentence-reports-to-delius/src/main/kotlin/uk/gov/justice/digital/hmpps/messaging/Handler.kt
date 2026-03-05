@@ -43,8 +43,11 @@ class Handler(
     }
 }
 
-val HmppsDomainEvent.psrId get() = additionalInformation["psrId"].toString() ?: throw IllegalArgumentException("Missing psrId")
-val HmppsDomainEvent.username get() = additionalInformation["username"].toString() ?: throw IllegalArgumentException("Missing username")
+val HmppsDomainEvent.psrId
+    get() = additionalInformation["psrId"].toString() ?: throw IllegalArgumentException("Missing psrId")
+val HmppsDomainEvent.username
+    get() = additionalInformation["username"].toString() ?: throw IllegalArgumentException("Missing username")
+
 fun HmppsDomainEvent.telemetry() = mapOf(
     "crn" to personReference.findCrn(),
     "psrId" to psrId,
