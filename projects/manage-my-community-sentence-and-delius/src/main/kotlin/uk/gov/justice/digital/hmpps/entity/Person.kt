@@ -23,6 +23,7 @@ class Person(
     val thirdName: String? = null,
     val surname: String,
     val preferredName: String? = null,
+    @Column(name = "date_of_birth_date")
     val dateOfBirth: LocalDate,
     val mobileNumber: String? = null,
     val telephoneNumber: String? = null,
