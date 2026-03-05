@@ -1,9 +1,8 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
-import uk.gov.justice.digital.hmpps.data.entities.User
 import uk.gov.justice.digital.hmpps.user.AuditUser
 
 object UserGenerator {
     val AUDIT_USER = AuditUser(IdGenerator.getAndIncrement(), "PreSentenceService")
-    val TEST_USER = User(IdGenerator.getAndIncrement(), "TestUser")
+    val TEST_USER = AuditUser(IdGenerator.getAndIncrement(), "TestUser")
 }

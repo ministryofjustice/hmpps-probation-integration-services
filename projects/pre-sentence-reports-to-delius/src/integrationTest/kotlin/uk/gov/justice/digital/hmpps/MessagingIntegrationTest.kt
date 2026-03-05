@@ -18,7 +18,6 @@ import uk.gov.justice.digital.hmpps.telemetry.TelemetryMessagingExtensions.notif
 import java.time.LocalDate
 import java.time.ZonedDateTime
 import java.time.temporal.ChronoUnit
-import java.util.*
 
 internal class MessagingIntegrationTest @Autowired constructor(
     private val documentRepository: DocumentRepository,
@@ -47,7 +46,7 @@ internal class MessagingIntegrationTest @Autowired constructor(
     fun `document not found`() {
         // Given a message with a non-existent psr id
         val notification = prepEvent("pre-sentence-report-created", wireMockServer.port()).run {
-            copy(message = message.copy(additionalInformation = mapOf("psrId" to UUID.fromString("99999999-9999-9999-9999-999999999999"))))
+            copy(message = message.copy(additionalInformation = mapOf("psrId" to "99999999-9999-9999-9999-999999999999")))
         }
 
         // When it is received
@@ -105,7 +104,7 @@ internal class MessagingIntegrationTest @Autowired constructor(
         assertThat(document.status).isEqualTo("Y")
         assertThat(document.workInProgress).isEqualTo("N")
         assertThat(document.lastSaved).isCloseTo(ZonedDateTime.now(), within(1, ChronoUnit.SECONDS))
-        assertThat(document.lastUpdatedUserId).isEqualTo(UserGenerator.TEST_USER.userId)
+        assertThat(document.lastUpdatedUserId).isEqualTo(UserGenerator.TEST_USER.id)
         // check the court report is marked as completed
         val courtReport = courtReportRepository.findById(FINAL_DOCUMENT.courtReport.id).get()
         assertThat(courtReport.completedDate).isCloseTo(LocalDate.now(), within(1, ChronoUnit.DAYS))

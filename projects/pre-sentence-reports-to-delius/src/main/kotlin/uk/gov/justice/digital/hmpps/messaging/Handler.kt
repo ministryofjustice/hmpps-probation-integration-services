@@ -12,6 +12,7 @@ import uk.gov.justice.digital.hmpps.message.Notification
 import uk.gov.justice.digital.hmpps.service.DocumentService
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryMessagingExtensions.notificationReceived
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
+import java.lang.IllegalArgumentException
 
 @Component
 @Channel("pre-sentence-reports-to-delius-queue")
@@ -35,13 +36,15 @@ class Handler(
                 telemetryService.trackEvent("DocumentUploaded", notification.message.telemetry())
             }
 
-            else -> throw IllegalArgumentException("Unsupported event type: ${notification.eventType}")
+            else -> {
+                telemetryService.trackEvent("UnknownEventType", notification.message.telemetry())
+            }
         }
     }
 }
 
-val HmppsDomainEvent.psrId get() = additionalInformation["psrId"] as String
-val HmppsDomainEvent.username get() = additionalInformation["username"] as String
+val HmppsDomainEvent.psrId get() = additionalInformation["psrId"].toString() ?: throw IllegalArgumentException("Missing psrId")
+val HmppsDomainEvent.username get() = additionalInformation["username"].toString() ?: throw IllegalArgumentException("Missing username")
 fun HmppsDomainEvent.telemetry() = mapOf(
     "crn" to personReference.findCrn(),
     "psrId" to psrId,

@@ -28,7 +28,7 @@ object DocumentGenerator {
     )
 
     val FINAL_DOCUMENT = Document(
-        name = "Final Person's court report",
+        name = "Final Person's court report.docx",
         person = DEFAULT_PERSON,
         courtReport = DEFAULT_COURT_REPORT,
         tableName = "COURT_REPORT",
