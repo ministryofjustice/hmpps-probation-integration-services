@@ -1,6 +1,6 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
-import uk.gov.justice.digital.hmpps.integrations.delius.*
+import uk.gov.justice.digital.hmpps.entity.*
 
 object ProviderGenerator {
     val DEFAULT_PROVIDER = generateProvider("DEF")

@@ -9,6 +9,7 @@ import uk.gov.justice.digital.hmpps.api.model.contact.CreateContactResponse
 import uk.gov.justice.digital.hmpps.aspect.UserContext
 import uk.gov.justice.digital.hmpps.audit.service.AuditableService
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
+import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.exception.InvalidRequestException
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractionCode
@@ -67,6 +68,8 @@ class ContactLogService(
 
             val savedContact = contactRepository.save(
                 Contact(
+                    date = createContact.date,
+                    startTime = createContact.date.atTime(createContact.time).atZone(EuropeLondon),
                     person = person,
                     type = contactType,
                     description = createContact.description,

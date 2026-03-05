@@ -1,6 +1,11 @@
 package uk.gov.justice.digital.hmpps.api.model.contact
 
+import java.time.LocalDate
+import java.time.LocalTime
+
 data class CreateContact(
+    val date: LocalDate,
+    val time: LocalTime,
     val staffCode: String,
     val teamCode: String,
     val type: String,
