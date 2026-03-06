@@ -205,8 +205,10 @@ internal class IntegrationTest @Autowired constructor(
         )
         // domain event raised for visor
         val domainEventForVisor = domainEventRepository.findAllForCrn(person.crn)
-            .firstOrNull { (it.eventType == ReferenceData.Code.REGISTRATION_VISOR.value) &&
-            (it.additionalInformation["contactId"].toString() == contact.id.toString()) }
+            .firstOrNull {
+                (it.eventType == ReferenceData.Code.REGISTRATION_VISOR.value) &&
+                    (it.additionalInformation["contactId"].toString() == contact.id.toString())
+            }
         assertNotNull(domainEventForVisor)
     }
 
