@@ -8,6 +8,7 @@ import uk.gov.justice.digital.hmpps.entity.Document
 import uk.gov.justice.digital.hmpps.entity.DocumentRepository
 import uk.gov.justice.digital.hmpps.entity.Person
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
+import java.time.ZonedDateTime
 
 class DocumentTest {
 
@@ -16,6 +17,13 @@ class DocumentTest {
         val person = mock<Person>()
         val courtReport = mock<CourtReport>()
         val document = Document(
+            name = "Document Name",
+            alfrescoId = "123456",
+            workInProgress = "N",
+            status = "Y",
+            lastUpdatedUserId = 1L,
+            createdDatetime = ZonedDateTime.now(),
+            lastSaved = ZonedDateTime.now(),
             person = person,
             courtReport = courtReport,
             tableName = "table",
