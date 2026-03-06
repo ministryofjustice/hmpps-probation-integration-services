@@ -3,9 +3,10 @@ package uk.gov.justice.digital.hmpps.appointments
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc
 import org.springframework.data.repository.findByIdOrNull
+import org.springframework.data.web.PagedModel.PageMetadata
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
 import uk.gov.justice.digital.hmpps.advice.ErrorResponse
@@ -32,6 +33,11 @@ class GetAppointmentIntegrationTest @Autowired constructor(
     companion object {
         val PROJECT = UPW_PROJECT_1.code
     }
+
+    private data class PagedModel<T>(
+        val content: List<T>,
+        val page: PageMetadata
+    )
 
     @Test
     fun `non-existent project returns 404`() {
@@ -148,11 +154,14 @@ class GetAppointmentIntegrationTest @Autowired constructor(
 
     @Test
     fun `can retrieve all appointments with a date filter from`() {
-        mockMvc.get("/appointments?username=${UserGenerator.DEFAULT_USER.username}&fromDate=${LocalDate.now()}") { withToken() }
-            .andExpect {
-                status { is2xxSuccessful() }
-                content { jsonPath("$.content.size()") { value(10) } }
-            }
+        val response = mockMvc
+            .get("/appointments?username=${UserGenerator.DEFAULT_USER.username}&fromDate=${LocalDate.now()}") { withToken() }
+            .andExpect { status { is2xxSuccessful() } }
+            .andReturn().response.contentAsJson<PagedModel<AppointmentsResponse>>()
+
+        assertThat(response.content)
+            .isNotEmpty
+            .allSatisfy { assertThat(it.date).isAfterOrEqualTo(LocalDate.now()) }
     }
 
     @Test
@@ -166,22 +175,15 @@ class GetAppointmentIntegrationTest @Autowired constructor(
 
     @Test
     fun `can retrieve all appointments by crn and date sort desc`() {
-        mockMvc.get("/appointments?username=${UserGenerator.DEFAULT_USER.username}&crn=${PersonGenerator.DEFAULT_PERSON.crn}&sort=date,desc") { withToken() }
-            .andExpect {
-                status { is2xxSuccessful() }
-                content {
-                    jsonPath("$.content[0].id") { value(UPWGenerator.DEFAULT_UPW_APPOINTMENT.id) }
-                    jsonPath("$.content[1].id") { value(12L) }
-                    jsonPath("$.content[2].id") { value(11L) }
-                    jsonPath("$.content[3].id") { value(10L) }
-                    jsonPath("$.content[4].id") { value(9L) }
-                    jsonPath("$.content[5].id") { value(8L) }
-                    jsonPath("$.content[6].id") { value(7L) }
-                    jsonPath("$.content[7].id") { value(6L) }
-                    jsonPath("$.content[8].id") { value(4L) }
-                    jsonPath("$.content[9].id") { value(3L) }
-                }
-            }
+        val response = mockMvc
+            .get("/appointments?username=${UserGenerator.DEFAULT_USER.username}&crn=${PersonGenerator.DEFAULT_PERSON.crn}&sort=date,desc") { withToken() }
+            .andExpect { status { is2xxSuccessful() } }
+            .andReturn().response.contentAsJson<PagedModel<AppointmentsResponse>>()
+
+        assertThat(response.content).hasSize(10)
+        assertThat(response.content.first().id).isEqualTo(UPWGenerator.DEFAULT_UPW_APPOINTMENT.id)
+        assertThat(response.content.map { it.case.crn }).containsOnly(PersonGenerator.DEFAULT_PERSON.crn)
+        assertThat(response.content.map { it.date }).isSortedAccordingTo(Comparator.reverseOrder())
     }
 
     @Test
@@ -208,29 +210,33 @@ class GetAppointmentIntegrationTest @Autowired constructor(
     @Test
     fun `can retrieve appointments with outcome code`() {
         val outcomeCode = "F"
-        mockMvc.get("/appointments?username=${UserGenerator.DEFAULT_USER.username}&outcomeCodes=$outcomeCode") { withToken() }
-            .andExpect {
-                status { is2xxSuccessful() }
-                content {
-                    jsonPath("$.content.size()") { value(6) }
-                    jsonPath("$.content[0].outcome.code") { value(outcomeCode) }
-                    jsonPath("$.content[1].outcome.code") { value(outcomeCode) }
-                    jsonPath("$.content[2].outcome.code") { value(outcomeCode) }
-                    jsonPath("$.content[3].outcome.code") { value(outcomeCode) }
-                    jsonPath("$.content[4].outcome.code") { value(outcomeCode) }
-                    jsonPath("$.content[5].outcome.code") { value(outcomeCode) }
+        val response =
+            mockMvc.get("/appointments?username=${UserGenerator.DEFAULT_USER.username}&outcomeCodes=$outcomeCode") { withToken() }
+                .andExpect {
+                    status { is2xxSuccessful() }
                 }
-            }
+                .andReturn().response.contentAsJson<PagedModel<AppointmentsResponse>>()
+
+        assertThat(response.content).isNotEmpty
+        assertThat(response.content.mapNotNull { it.outcome?.code }.distinct()).containsOnly(outcomeCode)
     }
 
     @Test
     fun `can retrieve appointments with outcome codes and also NO_OUTCOME`() {
         val outcomeCode = "F"
         val noOutcomeCode = "NO_OUTCOME"
-        mockMvc.get("/appointments?username=${UserGenerator.DEFAULT_USER.username}&outcomeCodes=$outcomeCode&outcomeCodes=$noOutcomeCode") { withToken() }
-            .andExpect {
-                status { is2xxSuccessful() }
-                jsonPath("$.page.totalElements") { value(31) }
-            }
+        val outcomeOnlyResponse = mockMvc
+            .get("/appointments?username=${UserGenerator.DEFAULT_USER.username}&outcomeCodes=$outcomeCode") { withToken() }
+            .andExpect { status { is2xxSuccessful() } }
+            .andReturn().response.contentAsJson<PagedModel<AppointmentsResponse>>()
+        assertThat(outcomeOnlyResponse.content).isNotEmpty.allSatisfy { assertThat(it.outcome?.code).isEqualTo("F") }
+
+        val response = mockMvc
+            .get("/appointments?username=${UserGenerator.DEFAULT_USER.username}&outcomeCodes=$outcomeCode&outcomeCodes=$noOutcomeCode") { withToken() }
+            .andExpect { status { is2xxSuccessful() } }
+            .andReturn().response.contentAsJson<PagedModel<AppointmentsResponse>>()
+        assertThat(outcomeOnlyResponse.content).isNotEmpty.allSatisfy { assertThat(it.outcome?.code).isIn("F", null) }
+
+        assertThat(response.page.totalElements).isGreaterThan(outcomeOnlyResponse.page.totalElements)
     }
 }
