@@ -50,6 +50,7 @@ import uk.gov.justice.digital.hmpps.service.AssessmentSubmitted.Companion.UPDATE
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import java.math.BigDecimal
 import java.time.LocalDate
+import kotlin.collections.firstOrNull
 
 @SpringBootTest
 @DirtiesContext
@@ -124,7 +125,8 @@ internal class IntegrationTest @Autowired constructor(
 
         // domain event NOT raised for visor
         val domainEventForVisor = domainEventRepository.findAllForCrn(person.crn)
-            .firstOrNull { it.eventType == ReferenceData.Code.REGISTRATION_VISOR.value }
+            .firstOrNull { (it.eventType == ReferenceData.Code.ASSESSMENT_SUMMARY_CREATED.value) &&
+                (it.additionalInformation["contactId"].toString() == contact.id.toString()) }
         assertNull(domainEventForVisor)
     }
 
@@ -205,10 +207,8 @@ internal class IntegrationTest @Autowired constructor(
         )
         // domain event raised for visor
         val domainEventForVisor = domainEventRepository.findAllForCrn(person.crn)
-            .firstOrNull {
-                (it.eventType == ReferenceData.Code.REGISTRATION_VISOR.value) &&
-                    (it.additionalInformation["contactId"].toString() == contact.id.toString())
-            }
+            .firstOrNull { (it.eventType == ReferenceData.Code.ASSESSMENT_SUMMARY_CREATED.value) &&
+            (it.additionalInformation["contactId"].toString() == contact.id.toString()) }
         assertNotNull(domainEventForVisor)
     }
 

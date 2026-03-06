@@ -32,7 +32,7 @@ class ReferenceData(
         REGISTRATION_ADDED("probation-case.registration.added"),
         REGISTRATION_UPDATED("probation-case.registration.updated"),
         REGISTRATION_DEREGISTERED("probation-case.registration.deregistered"),
-        REGISTRATION_VISOR("probation-case.assessment-summary.created"),
+        ASSESSMENT_SUMMARY_CREATED("probation-case.assessment-summary.created"),
     }
 }
 
