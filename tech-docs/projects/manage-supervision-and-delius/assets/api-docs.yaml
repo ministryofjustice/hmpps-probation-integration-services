@@ -2602,6 +2602,11 @@ components:
     CreateContact:
       type: object
       properties:
+        date:
+          type: string
+          format: date
+        time:
+          type: string
         staffCode:
           type: string
         teamCode:
@@ -2626,9 +2631,11 @@ components:
           type: boolean
       required:
       - alert
+      - date
       - sensitive
       - staffCode
       - teamCode
+      - time
       - type
       - visorReport
     CreateContactResponse:

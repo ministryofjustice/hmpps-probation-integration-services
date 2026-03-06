@@ -14,13 +14,13 @@ servers:
 security:
 - hmpps-auth-token: []
 paths:
-  /example/{inputId}:
+  /person/{crn}/sentences:
     get:
       tags:
       - api-controller
-      operationId: handle
+      operationId: getConditions
       parameters:
-      - name: inputId
+      - name: crn
         in: path
         required: true
         schema:
@@ -28,7 +28,185 @@ paths:
       responses:
         "200":
           description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Sentences"
+  /person/{crn}/personal-details:
+    get:
+      tags:
+      - api-controller
+      operationId: getPersonalDetails
+      parameters:
+      - name: crn
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PersonalDetails"
+  /person/{crn}/name:
+    get:
+      tags:
+      - api-controller
+      operationId: getName
+      parameters:
+      - name: crn
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Name"
 components:
+  schemas:
+    Condition:
+      type: object
+      properties:
+        type:
+          type: string
+        description:
+          type: string
+        length:
+          type: string
+      required:
+      - type
+    Sentence:
+      type: object
+      properties:
+        type:
+          type: string
+        startDate:
+          type: string
+          format: date
+        expectedEndDate:
+          type: string
+          format: date
+        requirements:
+          type: array
+          items:
+            $ref: "#/components/schemas/Condition"
+        licenceConditions:
+          type: array
+          items:
+            $ref: "#/components/schemas/Condition"
+      required:
+      - licenceConditions
+      - requirements
+      - startDate
+      - type
+    Sentences:
+      type: object
+      properties:
+        sentences:
+          type: array
+          items:
+            $ref: "#/components/schemas/Sentence"
+      required:
+      - sentences
+    Address:
+      type: object
+      properties:
+        houseNumber:
+          type: string
+        buildingName:
+          type: string
+        street:
+          type: string
+        town:
+          type: string
+        district:
+          type: string
+        county:
+          type: string
+        postcode:
+          type: string
+    Manager:
+      type: object
+      properties:
+        name:
+          $ref: "#/components/schemas/Name"
+        telephoneNumber:
+          type: string
+        team:
+          $ref: "#/components/schemas/Team"
+      required:
+      - name
+      - team
+    Name:
+      type: object
+      properties:
+        forename:
+          type: string
+        middleName:
+          type: string
+        surname:
+          type: string
+      required:
+      - forename
+      - surname
+    PersonalContact:
+      type: object
+      properties:
+        name:
+          $ref: "#/components/schemas/Name"
+        relationship:
+          type: string
+        mobileNumber:
+          type: string
+        emailAddress:
+          type: string
+      required:
+      - name
+      - relationship
+    PersonalDetails:
+      type: object
+      properties:
+        name:
+          $ref: "#/components/schemas/Name"
+        preferredName:
+          type: string
+        dateOfBirth:
+          type: string
+          format: date
+        mainAddress:
+          $ref: "#/components/schemas/Address"
+        telephoneNumber:
+          type: string
+        mobileNumber:
+          type: string
+        emailAddress:
+          type: string
+        emergencyContacts:
+          type: array
+          items:
+            $ref: "#/components/schemas/PersonalContact"
+        practitioner:
+          $ref: "#/components/schemas/Manager"
+      required:
+      - dateOfBirth
+      - emergencyContacts
+      - name
+      - practitioner
+    Team:
+      type: object
+      properties:
+        officeAddresses:
+          type: array
+          items:
+            $ref: "#/components/schemas/Address"
+      required:
+      - officeAddresses
   securitySchemes:
     hmpps-auth-token:
       type: http
