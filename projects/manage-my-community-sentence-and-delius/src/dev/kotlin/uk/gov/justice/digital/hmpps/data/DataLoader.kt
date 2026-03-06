@@ -16,6 +16,8 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
             TestData.ReferenceData.EMERGENCY_CONTACT_TYPE,
             TestData.ReferenceData.EMERGENCY_CONTACT_TYPE,
             TestData.ReferenceData.HOURS,
+            TestData.ReferenceData.APPOINTMENT_CONTACT_TYPE,
+            TestData.ReferenceData.NON_APPOINTMENT_CONTACT_TYPE,
             TestData.ReferenceData.COMMUNITY_ORDER,
             TestData.ReferenceData.REQUIREMENT_CATEGORY,
             TestData.ReferenceData.REQUIREMENT_SUBCATEGORY,
@@ -34,6 +36,11 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
             TestData.SentenceData.DISPOSAL,
             TestData.SentenceData.REQUIREMENT,
             TestData.SentenceData.LICENCE_CONDITION,
+            TestData.AppointmentData.FUTURE_1,
+            TestData.AppointmentData.FUTURE_2,
+            TestData.AppointmentData.NON_APPOINTMENT,
+            TestData.AppointmentData.PAST_1,
+            TestData.AppointmentData.PAST_2,
         )
     }
 }
