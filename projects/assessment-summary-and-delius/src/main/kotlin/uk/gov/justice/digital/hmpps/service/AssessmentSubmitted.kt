@@ -68,8 +68,9 @@ class AssessmentSubmitted(
         contact.copyToVisor = riskService.activeVisorAndMappa(person)
 
         if (contact.copyToVisor == true) {
-            domainEventService.publishVisorContact(person.crn, requireNotNull(contact.id)
-            { "Contact must be persisted before publishing Visor contact event" })
+            domainEventService.publishVisorContact(
+                person.crn, requireNotNull(contact.id)
+                { "Contact must be persisted before publishing Visor contact event" })
         }
 
         if (personRepository.countAccreditedProgrammeRequirements(person.id) > 0) {
