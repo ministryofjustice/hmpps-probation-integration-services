@@ -11,6 +11,7 @@ class RequirementMainCategory(
     @Id
     @Column(name = "rqmnt_type_main_category_id")
     val id: Long,
+    val code: String,
     val description: String,
     @ManyToOne
     @JoinColumn(name = "units_id")

@@ -33,4 +33,17 @@ interface ContactRepository : JpaRepository<Contact, Long> {
     )
     @EntityGraph(attributePaths = ["type", "staff.user", "location"])
     fun findPastAppointments(personId: Long, pageable: Pageable): Page<Contact>
+
+    @Query(
+        """
+        select count(distinct c.date)
+        from Contact c
+        join NonStatutoryIntervention nsi on nsi.id = c.nsiId
+        where nsi.requirementId = :requirementId
+        and c.rarActivity = true
+        and c.attended = true
+        and c.complied = true
+        """
+    )
+    fun countRarDaysAttended(requirementId: Long): Int
 }

@@ -3,8 +3,14 @@ package uk.gov.justice.digital.hmpps.data
 import uk.gov.justice.digital.hmpps.data.TestData.ReferenceData.COMMUNITY_ORDER
 import uk.gov.justice.digital.hmpps.data.TestData.ReferenceData.LICENCE_CONDITION_CATEGORY
 import uk.gov.justice.digital.hmpps.data.TestData.ReferenceData.LICENCE_CONDITION_SUBCATEGORY
+import uk.gov.justice.digital.hmpps.data.TestData.ReferenceData.RAR_REQUIREMENT_CATEGORY
+import uk.gov.justice.digital.hmpps.data.TestData.ReferenceData.RAR_REQUIREMENT_SUBCATEGORY
 import uk.gov.justice.digital.hmpps.data.TestData.ReferenceData.REQUIREMENT_CATEGORY
 import uk.gov.justice.digital.hmpps.data.TestData.ReferenceData.REQUIREMENT_SUBCATEGORY
+import uk.gov.justice.digital.hmpps.data.TestData.ReferenceData.UPW_REQUIREMENT_CATEGORY
+import uk.gov.justice.digital.hmpps.data.TestData.ReferenceData.UPW_REQUIREMENT_SUBCATEGORY
+import uk.gov.justice.digital.hmpps.data.TestData.RequirementData.RAR_REQUIREMENT
+import uk.gov.justice.digital.hmpps.data.TestData.SentenceData.DISPOSAL
 import uk.gov.justice.digital.hmpps.data.generator.IdGenerator.id
 import uk.gov.justice.digital.hmpps.entity.Person
 import uk.gov.justice.digital.hmpps.entity.PersonalContact
@@ -16,6 +22,7 @@ import uk.gov.justice.digital.hmpps.entity.appointment.ContactType
 import uk.gov.justice.digital.hmpps.entity.sentence.Disposal
 import uk.gov.justice.digital.hmpps.entity.sentence.DisposalType
 import uk.gov.justice.digital.hmpps.entity.sentence.Event
+import uk.gov.justice.digital.hmpps.entity.sentence.NonStatutoryIntervention
 import uk.gov.justice.digital.hmpps.entity.sentence.licencecondition.LicenceCondition
 import uk.gov.justice.digital.hmpps.entity.sentence.licencecondition.LicenceConditionMainCategory
 import uk.gov.justice.digital.hmpps.entity.sentence.requirement.Requirement
@@ -24,6 +31,8 @@ import uk.gov.justice.digital.hmpps.entity.staff.CommunityManager
 import uk.gov.justice.digital.hmpps.entity.staff.Staff
 import uk.gov.justice.digital.hmpps.entity.staff.StaffUser
 import uk.gov.justice.digital.hmpps.entity.staff.Team
+import uk.gov.justice.digital.hmpps.entity.unpaidwork.UnpaidWorkAppointment
+import uk.gov.justice.digital.hmpps.entity.unpaidwork.UnpaidWorkDetails
 import java.time.LocalDate
 import java.time.LocalTime
 
@@ -33,11 +42,17 @@ object TestData {
         val MAIN_ADDRESS_STATUS = ReferenceData(id(), PersonAddress.MAIN_ADDRESS_STATUS, "Main Address")
         val EMERGENCY_CONTACT_TYPE = ReferenceData(id(), PersonalContact.EMERGENCY_CONTACT, "Emergency Contact")
         val HOURS = ReferenceData(id(), "H", "Hours")
+        val DAYS = ReferenceData(id(), "D", "Days")
         val APPOINTMENT_CONTACT_TYPE = ContactType(id(), "Office Appointment", true)
         val NON_APPOINTMENT_CONTACT_TYPE = ContactType(id(), "Case Note", false)
         val COMMUNITY_ORDER = DisposalType(id(), "Community Order")
-        val REQUIREMENT_CATEGORY = RequirementMainCategory(id(), "Unpaid Work", HOURS)
-        val REQUIREMENT_SUBCATEGORY = ReferenceData(id(), "UPW", "Regular")
+        val REQUIREMENT_CATEGORY = RequirementMainCategory(id(), "C", "Court - Accredited Programme", DAYS)
+        val REQUIREMENT_SUBCATEGORY = ReferenceData(id(), "BC", "Building Choices")
+        val UPW_REQUIREMENT_CATEGORY = RequirementMainCategory(id(), Requirement.UPW, "Unpaid Work", HOURS)
+        val UPW_REQUIREMENT_SUBCATEGORY = ReferenceData(id(), "UPW", "Regular")
+        val RAR_REQUIREMENT_CATEGORY =
+            RequirementMainCategory(id(), Requirement.RAR, "Rehabilitation Activity Requirement (RAR)", DAYS)
+        val RAR_REQUIREMENT_SUBCATEGORY = ReferenceData(id(), "RAR", "Rehabilitation Activity Requirement (RAR)")
         val LICENCE_CONDITION_CATEGORY =
             LicenceConditionMainCategory(id(), "Alcohol Monitoring (Electronic Monitoring)")
         val LICENCE_CONDITION_SUBCATEGORY = ReferenceData(
@@ -145,9 +160,66 @@ object TestData {
             expectedEndDate = LocalDate.of(2025, 1, 1),
             enteredExpectedEndDate = LocalDate.of(2025, 6, 1),
         )
-        val REQUIREMENT = Requirement(id(), length = 10, DISPOSAL, REQUIREMENT_CATEGORY, REQUIREMENT_SUBCATEGORY)
-        val LICENCE_CONDITION =
-            LicenceCondition(id(), DISPOSAL, LICENCE_CONDITION_CATEGORY, LICENCE_CONDITION_SUBCATEGORY)
+    }
+
+    object RequirementData {
+        val REQUIREMENT =
+            Requirement(id(), length = null, DISPOSAL, REQUIREMENT_CATEGORY, REQUIREMENT_SUBCATEGORY)
+        val UPW_REQUIREMENT =
+            Requirement(id(), length = 10, DISPOSAL, UPW_REQUIREMENT_CATEGORY, UPW_REQUIREMENT_SUBCATEGORY)
+        val RAR_REQUIREMENT =
+            Requirement(id(), length = 15, DISPOSAL, RAR_REQUIREMENT_CATEGORY, RAR_REQUIREMENT_SUBCATEGORY)
+    }
+
+    object LicenceConditionData {
+        val LICENCE_CONDITION = LicenceCondition(
+            id = id(),
+            startDate = LocalDate.of(2024, 1, 1),
+            commencementDate = LocalDate.of(2024, 2, 1),
+            expectedEndDate = LocalDate.of(2025, 1, 1),
+            disposal = DISPOSAL,
+            mainCategory = LICENCE_CONDITION_CATEGORY,
+            subCategory = LICENCE_CONDITION_SUBCATEGORY
+        )
+    }
+
+    object UnpaidWorkData {
+        val UNPAID_WORK_DETAILS = UnpaidWorkDetails(id(), DISPOSAL.id)
+        val UNPAID_WORK_APPOINTMENT = UnpaidWorkAppointment(id(), UNPAID_WORK_DETAILS, minutesCredited = 180)
+    }
+
+    object RarData {
+        val RAR_NSI = NonStatutoryIntervention(id(), RAR_REQUIREMENT.id)
+        val RAR_CONTACT_1 = generate(LocalDate.of(2024, 1, 3), LocalTime.of(9, 0), LocalTime.of(10, 0))
+        val RAR_CONTACT_2 = generate(LocalDate.of(2024, 1, 4), LocalTime.of(11, 0), LocalTime.of(12, 0))
+        val RAR_CONTACT_3_SAME_DAY = generate(LocalDate.of(2024, 1, 4), LocalTime.of(15, 0), LocalTime.of(16, 0))
+        val RAR_CONTACT_NOT_ATTENDED = generate(
+            LocalDate.of(2024, 1, 5), LocalTime.of(11, 0), LocalTime.of(12, 0),
+            attended = false, complied = false,
+        )
+
+        fun generate(
+            date: LocalDate,
+            startTime: LocalTime,
+            endTime: LocalTime,
+            description: String? = null,
+            type: ContactType = ReferenceData.NON_APPOINTMENT_CONTACT_TYPE,
+            attended: Boolean? = true,
+            complied: Boolean? = true,
+        ) = Contact(
+            id = id(),
+            personId = PersonData.DEFAULT.id,
+            date = date,
+            startTime = startTime,
+            endTime = endTime,
+            type = type,
+            description = description,
+            nsiId = RAR_NSI.id,
+            staff = StaffData.STAFF,
+            attended = attended,
+            complied = complied,
+            rarActivity = true,
+        )
     }
 
     object AppointmentData {

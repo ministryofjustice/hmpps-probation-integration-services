@@ -15,7 +15,7 @@ class Requirement(
     @Id
     @Column(name = "rqmnt_id")
     val id: Long,
-    val length: Long?,
+    val length: Int?,
     @ManyToOne
     @JoinColumn(name = "disposal_id")
     val disposal: Disposal,
@@ -31,4 +31,9 @@ class Requirement(
     @Column(columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean = false,
-)
+) {
+    companion object {
+        const val UPW = "W"
+        const val RAR = "F"
+    }
+}

@@ -24,7 +24,7 @@ class ApiController(
     fun getPersonalDetails(@PathVariable crn: String) = personalDetailsService.getPersonalDetails(crn)
 
     @GetMapping(value = ["/person/{crn}/sentences"])
-    fun getConditions(@PathVariable crn: String) = sentenceService.getSentences(crn)
+    fun getConditions(@PathVariable crn: String) = sentenceService.getSentenceProgress(crn)
 
     @GetMapping(value = ["/person/{crn}/future-appointments"])
     fun getFutureAppointments(

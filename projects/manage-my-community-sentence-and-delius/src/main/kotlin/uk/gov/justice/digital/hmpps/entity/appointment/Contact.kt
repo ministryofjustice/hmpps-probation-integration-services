@@ -18,27 +18,31 @@ class Contact(
     @Column(name = "offender_id")
     val personId: Long,
     @Column(name = "contact_date")
-    var date: LocalDate,
+    val date: LocalDate,
     @Column(name = "contact_start_time")
-    var startTime: LocalTime,
+    val startTime: LocalTime,
     @Column(name = "contact_end_time")
-    var endTime: LocalTime? = null,
+    val endTime: LocalTime? = null,
     @ManyToOne
     @JoinColumn(name = "contact_type_id")
     val type: ContactType,
-    var description: String? = null,
+    val description: String? = null,
+    @Column(name = "nsi_id")
+    val nsiId: Long? = null,
     @Convert(converter = YesNoConverter::class)
-    var attended: Boolean? = null,
+    val rarActivity: Boolean? = null,
     @Convert(converter = YesNoConverter::class)
-    var complied: Boolean? = null,
+    val attended: Boolean? = null,
+    @Convert(converter = YesNoConverter::class)
+    val complied: Boolean? = null,
     @ManyToOne
     @JoinColumn(name = "office_location_id")
-    var location: OfficeLocation? = null,
+    val location: OfficeLocation? = null,
     @ManyToOne
     @JoinColumn(name = "staff_id")
-    var staff: Staff,
+    val staff: Staff,
     @Convert(converter = YesNoConverter::class)
-    var sensitive: Boolean? = false,
+    val sensitive: Boolean? = false,
     @Column(columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean = false,
