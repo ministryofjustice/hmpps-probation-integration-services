@@ -37,7 +37,7 @@ internal class ProvidersServiceTest {
     @Test
     fun `getSessions startDate and endDate must be within 7 days`() {
         val exception = assertThrows<IllegalArgumentException> {
-            providersService.getSessions("N01UPW", LocalDate.now().minusDays(8), LocalDate.now())
+            providersService.getSessions("N01UPW", LocalDate.now().minusDays(8), LocalDate.now(), emptyList())
         }
 
         assertThat(exception.message).isEqualTo("Date range cannot be greater than 7 days")

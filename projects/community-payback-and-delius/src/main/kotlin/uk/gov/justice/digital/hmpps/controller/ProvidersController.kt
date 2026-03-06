@@ -44,5 +44,6 @@ class ProvidersController(
         @PathVariable teamCode: String,
         @RequestParam startDate: LocalDate,
         @RequestParam endDate: LocalDate,
-    ) = providersService.getSessions(teamCode, startDate, endDate)
+        @RequestParam typeCode: List<String> = emptyList(),
+    ) = providersService.getSessions(teamCode, startDate, endDate, typeCode)
 }

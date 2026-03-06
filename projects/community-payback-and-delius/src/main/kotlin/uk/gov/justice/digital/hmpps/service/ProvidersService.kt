@@ -60,11 +60,17 @@ class ProvidersService(
         }.let { PagedModel(it) }
     }
 
-    fun getSessions(teamCode: String, startDate: LocalDate, endDate: LocalDate): SessionsResponse {
+    fun getSessions(
+        teamCode: String,
+        startDate: LocalDate,
+        endDate: LocalDate,
+        typeCodes: List<String>
+    ): SessionsResponse {
         require(ChronoUnit.DAYS.between(startDate, endDate) <= 7) { "Date range cannot be greater than 7 days" }
 
         val team = teamRepository.findTeamByCode(teamCode)
-        val sessions = unpaidWorkAppointmentRepository.getUnpaidWorkSessionDetails(team.id, startDate, endDate)
+        val sessions =
+            unpaidWorkAppointmentRepository.getUnpaidWorkSessionDetails(team.id, startDate, endDate, typeCodes)
 
         return SessionsResponse(sessions.map { it.toModel() })
     }
