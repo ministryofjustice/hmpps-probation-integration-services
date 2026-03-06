@@ -39,15 +39,30 @@ internal class SentencesIntegrationTest @Autowired constructor(private val mockM
                               "expectedEndDate": "2025-06-01",
                               "requirements": [
                                 {
+                                  "type": "Court - Accredited Programme",
+                                  "description": "Building Choices"
+                                },
+                                {
                                   "type": "Unpaid Work",
                                   "description": "Regular",
-                                  "length": "10 Hours"
+                                  "required": 10,
+                                  "completed": 3,
+                                  "unit": "HOURS"
+                                },
+                                {
+                                  "type": "Rehabilitation Activity Requirement (RAR)",
+                                  "description": "Rehabilitation Activity Requirement (RAR)",
+                                  "required": 15,
+                                  "completed": 2,
+                                  "unit": "DAYS"
                                 }
                               ],
                               "licenceConditions": [
                                 {
                                   "type": "Alcohol Monitoring (Electronic Monitoring)",
-                                  "description": "You must not drink any alcohol until [END DATE]. You will need to wear an electronic tag all the time so we can check this."
+                                  "description": "You must not drink any alcohol until [END DATE]. You will need to wear an electronic tag all the time so we can check this.",
+                                  "startDate": "2024-02-01",
+                                  "expectedEndDate": "2025-01-01"
                                 }
                               ]
                             }

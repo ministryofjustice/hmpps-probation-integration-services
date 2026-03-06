@@ -2,8 +2,6 @@ package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.ldap.core.LdapTemplate
 import org.springframework.stereotype.Service
-import uk.gov.justice.digital.hmpps.exception.NotFoundException
-import uk.gov.justice.digital.hmpps.exception.NotFoundException.Companion.orNotFoundBy
 import uk.gov.justice.digital.hmpps.ldap.findAttributeByUsername
 import uk.gov.justice.digital.hmpps.model.Address.Companion.toModel
 import uk.gov.justice.digital.hmpps.model.Manager
@@ -21,11 +19,10 @@ class PersonalDetailsService(
     private val personalContactRepository: PersonalContactRepository,
     private val ldapTemplate: LdapTemplate
 ) {
-    fun getName(crn: String) = personRepository.findNameByCrn(crn)
-        ?: throw NotFoundException("Person", "CRN", crn)
+    fun getName(crn: String) = personRepository.getNameByCrn(crn)
 
     fun getPersonalDetails(crn: String): PersonalDetails {
-        val person = personRepository.findByCrn(crn).orNotFoundBy("CRN", crn)
+        val person = personRepository.getByCrn(crn)
         val mainAddress = personAddressRepository.findMainAddress(person.id)
         val emergencyContacts = personalContactRepository.findEmergencyContacts(person.id)
         return PersonalDetails(

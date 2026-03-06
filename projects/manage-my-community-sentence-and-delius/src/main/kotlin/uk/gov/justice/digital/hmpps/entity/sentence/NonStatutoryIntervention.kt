@@ -1,28 +1,20 @@
-package uk.gov.justice.digital.hmpps.entity.staff
+package uk.gov.justice.digital.hmpps.entity.sentence
 
 import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.NumericBooleanConverter
-import uk.gov.justice.digital.hmpps.entity.Person
 
 @Entity
 @Immutable
-@Table(name = "offender_manager")
+@Table(name = "nsi")
 @SQLRestriction("active_flag = 1 and soft_deleted = 0")
-class CommunityManager(
+class NonStatutoryIntervention(
     @Id
-    @Column(name = "offender_manager_id")
+    @Column(name = "nsi_id")
     val id: Long,
-    @ManyToOne
-    @JoinColumn(name = "staff_employee_id")
-    val staff: Staff,
-    @ManyToOne
-    @JoinColumn(name = "team_id")
-    val team: Team,
-    @OneToOne
-    @JoinColumn(name = "offender_id")
-    val person: Person? = null,
+    @Column(name = "rqmnt_id")
+    val requirementId: Long?,
     @Column(columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)
     val activeFlag: Boolean = true,

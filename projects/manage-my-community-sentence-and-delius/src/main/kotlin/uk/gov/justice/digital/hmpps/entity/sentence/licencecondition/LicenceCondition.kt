@@ -6,6 +6,7 @@ import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.NumericBooleanConverter
 import uk.gov.justice.digital.hmpps.entity.ReferenceData
 import uk.gov.justice.digital.hmpps.entity.sentence.Disposal
+import java.time.LocalDate
 
 @Entity
 @Immutable
@@ -15,6 +16,9 @@ class LicenceCondition(
     @Id
     @Column(name = "lic_condition_id")
     val id: Long,
+    val startDate: LocalDate,
+    val commencementDate: LocalDate?,
+    val expectedEndDate: LocalDate?,
     @ManyToOne
     @JoinColumn(name = "disposal_id")
     val disposal: Disposal,
