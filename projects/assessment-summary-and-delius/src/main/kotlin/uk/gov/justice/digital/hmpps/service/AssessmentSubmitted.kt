@@ -27,6 +27,7 @@ class AssessmentSubmitted(
     private val featureFlags: FeatureFlags,
     private val telemetryService: TelemetryService,
     private val optimisationTables: OptimisationTables,
+    private val domainEventService: DomainEventService,
 ) : AuditableService(auditedInteractionService) {
     companion object {
         const val UPDATE_RISK_REGISTRATIONS_IN_PLACE = "assessment-summary_update-risk-registrations-in-place"
@@ -65,6 +66,12 @@ class AssessmentSubmitted(
         }
 
         contact.copyToVisor = riskService.activeVisorAndMappa(person)
+
+        if (contact.copyToVisor == true) {
+            domainEventService.publishVisorContact(
+                person.crn, requireNotNull(contact.id)
+                { "Contact must be persisted before publishing Visor contact event" })
+        }
 
         if (personRepository.countAccreditedProgrammeRequirements(person.id) > 0) {
             personRepository.updateIaps(person.id)
