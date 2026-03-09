@@ -162,8 +162,11 @@ class SentenceAppointmentServiceTest {
         verifyNoInteractions(requirementRepository)
         verifyNoInteractions(sentenceAppointmentRepository)
         verifyNoInteractions(appointmentTypeRepository)
-        verify( registrationRepository.findByPersonIdAndTypeCodeOrderByIdDesc(eq(PersonGenerator.PERSON_1.id)
-            , any())) {
+        verify(
+            registrationRepository.findByPersonIdAndTypeCodeOrderByIdDesc(
+                eq(PersonGenerator.PERSON_1.id), any()
+            )
+        ) {
             times(1)
         }
         verify(notifier.contactCreated(any(), eq(true), any(), any())) {
