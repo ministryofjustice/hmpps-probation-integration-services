@@ -65,9 +65,4 @@ open class IntegrationTestBase {
 
     @Autowired
     lateinit var channelManager: HmppsChannelManager
-
-    @Autowired
-    lateinit var notifier: Notifier
-    @Autowired
-    lateinit var registrationRepository: RegistrationRepository
 }

@@ -26,8 +26,10 @@ import uk.gov.justice.digital.hmpps.exception.InvalidRequestException
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.compliance.NsiRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.ContactType
+import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.RegistrationRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.RequirementRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.*
+import uk.gov.justice.digital.hmpps.messaging.Notifier
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
@@ -77,6 +79,12 @@ class SentenceAppointmentServiceTest {
 
     @Mock
     lateinit var outcomeService: AppointmentOutcomeService
+
+    @Mock
+    lateinit var notifier: Notifier
+
+    @Mock
+    lateinit var registrationRepository: RegistrationRepository
 
     @InjectMocks
     lateinit var service: SentenceAppointmentService
