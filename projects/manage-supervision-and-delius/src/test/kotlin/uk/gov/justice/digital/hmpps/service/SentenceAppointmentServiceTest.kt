@@ -14,6 +14,7 @@ import org.mockito.Mockito.verifyNoMoreInteractions
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.any
 import org.mockito.kotlin.eq
+import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.verifyNoInteractions
 import org.mockito.kotlin.whenever
@@ -161,8 +162,12 @@ class SentenceAppointmentServiceTest {
         verifyNoInteractions(requirementRepository)
         verifyNoInteractions(sentenceAppointmentRepository)
         verifyNoInteractions(appointmentTypeRepository)
+        verify( registrationRepository.findByPersonIdAndTypeCodeOrderByIdDesc(eq(PersonGenerator.PERSON_1.id)
+            , any())) {
+            times(1)
+        }
         verify(notifier.contactCreated(any(), eq(true), any(), any())) {
-            org.mockito.kotlin.times(1)
+            times(1)
         }
     }
 
@@ -198,6 +203,7 @@ class SentenceAppointmentServiceTest {
         verifyNoInteractions(requirementRepository)
         verifyNoInteractions(sentenceAppointmentRepository)
         verifyNoInteractions(appointmentTypeRepository)
+        verifyNoInteractions(registrationRepository)
         verifyNoInteractions(notifier)
     }
 
