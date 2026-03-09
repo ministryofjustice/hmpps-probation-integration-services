@@ -7,6 +7,7 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import uk.gov.justice.digital.hmpps.advice.ErrorResponse
 import uk.gov.justice.digital.hmpps.data.generator.StaffGenerator
 import uk.gov.justice.digital.hmpps.data.generator.UPWGenerator
@@ -28,7 +29,7 @@ class ProvidersIntegrationTest @Autowired constructor(
     fun `can retrieve all unpaid work teams for given provider`() {
         val response = mockMvc
             .get("/providers/N01/teams") { withToken() }
-            .andExpect { status { is2xxSuccessful() } }
+            .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<TeamsResponse>()
 
         assertThat(response.teams.size).isEqualTo(2)
@@ -38,7 +39,7 @@ class ProvidersIntegrationTest @Autowired constructor(
     fun `empty list returned when provider has no upw teams`() {
         val response = mockMvc
             .get("/providers/N99/teams") { withToken() }
-            .andExpect { status { is2xxSuccessful() } }
+            .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<TeamsResponse>()
 
         assertThat(response.teams).isEmpty()
@@ -48,7 +49,7 @@ class ProvidersIntegrationTest @Autowired constructor(
     fun `can retrieve all active providers for a user`() {
         val response = mockMvc
             .get("/providers?username=DefaultUser") { withToken() }
-            .andExpect { status { is2xxSuccessful() } }
+            .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<ProvidersResponse>()
 
         assertThat(response.providers.size).isEqualTo(2)
@@ -80,7 +81,7 @@ class ProvidersIntegrationTest @Autowired constructor(
         mockMvc
             .get("/providers/N02/teams/N02UP2/projects?typeCode=I&page=0&size=10") { withToken() }
             .andExpect {
-                status { is2xxSuccessful() }
+                status { isOk() }
                 jsonPath("$.content.length()") { value(1) }
                 jsonPath("$.content[0].project.code") { value(UPWGenerator.UPW_PROJECT_2.code) }
                 jsonPath("$.content[0].project.type.code") { value("I") }
@@ -95,7 +96,7 @@ class ProvidersIntegrationTest @Autowired constructor(
         mockMvc
             .get("/providers/N01/teams/N01UPW/projects?typeCode=G&sort=name,asc") { withToken() }
             .andExpect {
-                status { is2xxSuccessful() }
+                status { isOk() }
                 jsonPath("$.content.length()") { value(2) }
                 jsonPath("$.content[0].project.name") { value("Default UPW Project") }
                 jsonPath("$.content[1].project.name") { value("Third UPW Project") }
@@ -107,7 +108,7 @@ class ProvidersIntegrationTest @Autowired constructor(
         mockMvc
             .get("/providers/N01/teams/N01UPW/projects?sort=overdueOutcomesCount,desc") { withToken() }
             .andExpect {
-                status { is2xxSuccessful() }
+                status { isOk() }
                 jsonPath("$.content.length()") { value(2) }
                 jsonPath("$.content[0].overdueOutcomesCount") { value(1) }
                 jsonPath("$.content[1].overdueOutcomesCount") { value(0) }
@@ -116,7 +117,7 @@ class ProvidersIntegrationTest @Autowired constructor(
         mockMvc
             .get("/providers/N01/teams/N01UPW/projects?sort=oldestOverdueInDays") { withToken() }
             .andExpect {
-                status { is2xxSuccessful() }
+                status { isOk() }
                 jsonPath("$.content.length()") { value(2) }
                 jsonPath("$.content[0].oldestOverdueInDays") { value(0) }
                 jsonPath("$.content[1].oldestOverdueInDays") { value(7) }
@@ -140,10 +141,30 @@ class ProvidersIntegrationTest @Autowired constructor(
                 "/providers/N01/teams/N01UPW/sessions" +
                     "?startDate=${LocalDate.now().minusDays(3)}&endDate=${LocalDate.now().plusDays(3)}"
             ) { withToken() }
-            .andExpect { status { is2xxSuccessful() } }
+            .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<SessionsResponse>()
 
         assertThat(response.sessions.size).isEqualTo(2)
         assertThat(response.sessions.map { it.date }).isEqualTo(listOf(LocalDate.now(), LocalDate.now().plusDays(1)))
+    }
+
+    @Test
+    fun `can filter sessions by project type codes`() {
+        val startDate = LocalDate.now().minusDays(3)
+        val endDate = LocalDate.now().plusDays(3)
+
+        mockMvc
+            .get("/providers/N01/teams/N01UPW/sessions?startDate=$startDate&endDate=$endDate&typeCode=G") { withToken() }
+            .andExpect {
+                status { isOk() }
+                content { jsonPath("sessions.size()", 2) }
+            }
+
+        mockMvc
+            .get("/providers/N01/teams/N01UPW/sessions?startDate=$startDate&endDate=$endDate&typeCode=I") { withToken() }
+            .andExpect {
+                status { isOk() }
+                content { jsonPath("sessions.size()", 0) }
+            }
     }
 }

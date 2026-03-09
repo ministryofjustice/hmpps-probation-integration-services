@@ -25,7 +25,6 @@ import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.model.CodeDescription
 import uk.gov.justice.digital.hmpps.model.RequirementProgress
 import uk.gov.justice.digital.hmpps.model.Session
-import uk.gov.justice.digital.hmpps.service.CommunityPaybackAppointmentsService
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
@@ -189,44 +188,44 @@ interface UpwMinutesDto {
 interface UnpaidWorkAppointmentRepository : JpaRepository<UnpaidWorkAppointment, Long> {
     @Query(
         """
-            with uwp as ( select uwp1.upw_project_id, uwp1.name upw_project_name, uwp1.code upw_project_code
-              from upw_project uwp1,
-                   upw_project_availability uwpav
-              where 1 = 1
-                and uwp1.team_id = :teamId
-                and uwpav.upw_project_id = uwp1.upw_project_id ),
-     uwa as ( select uwa1.upw_appointment_id,
-                     uwa1.upw_details_id,
-                     uwa1.upw_project_id,
-                     uwa1.start_time,
-                     uwa1.end_time,
-                     uwa1.appointment_date,
-                     uwa1.contact_id,
-                     uwa1.contact_outcome_type_id
-              from upw_appointment uwa1
-              where 1 = 1
-                and uwa1.appointment_date between trunc(cast(:startDate as DATE)) and trunc(cast(:endDate as DATE)) + (1 - 1 / 24 / 60 / 60)
-                and uwa1.soft_deleted = 0 )
-            --
-            select uwp.upw_project_id as "projectId",
-                   uwp.upw_project_name as "projectName",
-                   uwp.upw_project_code as "projectCode",
-                   count(distinct uwa.upw_details_id) as "allocatedCount",
-                   uwa.appointment_date as "appointmentDate",
-                   count(distinct case when uwa.contact_outcome_type_id is not null then uwa.upw_appointment_id end) as "outcomeCount",
-                   count(distinct case when enf.outstanding_contact_action = 'Y' then uwa.upw_appointment_id end)    as "enforcementActionCount"
-                from uwp
-                join uwa on uwa.upw_project_id = uwp.upw_project_id
-                join upw_details uwd on uwd.upw_details_id = uwa.upw_details_id
-                join disposal d on d.disposal_id = uwd.disposal_id and d.soft_deleted = 0
-                left join "CONTACT" c on c.contact_id = uwa.contact_id
-                left join r_enforcement_action enf 
-                       on enf.enforcement_action_id = c.latest_enforcement_action_id 
-            group by uwp.upw_project_id, uwp.upw_project_name, uwp.upw_project_code, uwa.appointment_date
-            order by uwa.appointment_date asc, uwp.upw_project_name
+        with uwp as ( select uwp1.upw_project_id, uwp1.name upw_project_name, uwp1.code upw_project_code
+                      from upw_project uwp1,
+                           upw_project_availability uwpav,
+                           r_standard_reference_list type
+                      where uwp1.team_id = :teamId
+                        and (:typeCodesCount = 0 or type.code_value in (:typeCodes))
+                        and uwpav.upw_project_id = uwp1.upw_project_id 
+                        and type.standard_reference_list_id = uwp1.project_type_id),
+             uwa as ( select *
+                      from upw_appointment uwa1
+                      where uwa1.appointment_date between trunc(cast(:startDate as DATE)) and trunc(cast(:endDate as DATE)) + (1 - 1 / 24 / 60 / 60)
+                        and uwa1.soft_deleted = 0 )
+        select uwp.upw_project_id                                                                                as "projectId",
+               uwp.upw_project_name                                                                              as "projectName",
+               uwp.upw_project_code                                                                              as "projectCode",
+               count(distinct uwa.upw_details_id)                                                                as "allocatedCount",
+               uwa.appointment_date                                                                              as "appointmentDate",
+               count(distinct case when uwa.contact_outcome_type_id is not null
+                                       then uwa.upw_appointment_id end)                                          as "outcomeCount",
+               count(distinct case when enf.outstanding_contact_action = 'Y'
+                                       then uwa.upw_appointment_id end)                                          as "enforcementActionCount"
+        from uwp
+        join uwa on uwa.upw_project_id = uwp.upw_project_id
+        join upw_details uwd on uwd.upw_details_id = uwa.upw_details_id
+        join disposal d on d.disposal_id = uwd.disposal_id and d.soft_deleted = 0
+        left join contact c on c.contact_id = uwa.contact_id
+        left join r_enforcement_action enf on enf.enforcement_action_id = c.latest_enforcement_action_id
+        group by uwp.upw_project_id, uwp.upw_project_name, uwp.upw_project_code, uwa.appointment_date
+        order by uwa.appointment_date asc, uwp.upw_project_name
         """, nativeQuery = true
     )
-    fun getUnpaidWorkSessionDetails(teamId: Long, startDate: LocalDate, endDate: LocalDate): List<UnpaidWorkSessionDto>
+    fun getUnpaidWorkSessionDetails(
+        teamId: Long,
+        startDate: LocalDate,
+        endDate: LocalDate,
+        typeCodes: List<String>,
+        typeCodesCount: Int = typeCodes.count()
+    ): List<UnpaidWorkSessionDto>
 
     fun getUpwAppointmentById(appointmentId: Long): UnpaidWorkAppointment?
 
