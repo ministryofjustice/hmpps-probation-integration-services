@@ -224,6 +224,13 @@ paths:
         schema:
           type: string
           format: date
+      - name: typeCode
+        in: query
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
       responses:
         "200":
           description: OK
