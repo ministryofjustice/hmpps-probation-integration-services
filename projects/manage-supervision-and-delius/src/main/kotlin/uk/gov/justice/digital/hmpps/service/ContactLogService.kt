@@ -35,8 +35,8 @@ class ContactLogService(
     private val offenderManagerRepository: OffenderManagerRepository,
     private val teamRepository: TeamRepository,
     private val contactTypeRequirementTypeRepository: ContactTypeRequirementTypeRepository,
-    private val registrationRepository: RegistrationRepository,
-    private val notifier: Notifier
+    private val notifier: Notifier,
+    private val mappaCategoryResolver: MappaCategoryResolver
 ) : AuditableService(auditedInteractionService) {
 
     @Transactional
@@ -89,7 +89,7 @@ class ContactLogService(
                 )
             )
 
-            val category = resolveMappaCategory(person.id)
+            val category = mappaCategoryResolver.resolveMappaCategory(person.id)
 
             notifier.contactCreated(savedContact.id, createContact.visorReport, category, crn)
 
@@ -146,23 +146,6 @@ class ContactLogService(
             if (requirementType !in validRequirementTypes) {
                 throw InvalidRequestException("Contact type ${contactType.code} is not valid for requirement type ${requirement.mainCategory.code}")
             }
-        }
-    }
-
-    private fun resolveMappaCategory(offenderId: Long): Int {
-        val registration = registrationRepository
-            .findByPersonIdAndTypeCodeOrderByIdDesc(
-                offenderId,
-                "MAPP"
-            )
-            .firstOrNull()
-
-        return when (registration?.category?.code) {
-            "M1" -> 1
-            "M2" -> 2
-            "M3" -> 3
-            "M4" -> 4
-            else -> 0
         }
     }
 

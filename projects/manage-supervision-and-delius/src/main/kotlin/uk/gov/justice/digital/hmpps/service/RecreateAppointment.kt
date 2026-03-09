@@ -23,7 +23,7 @@ class RecreateAppointment(
     private val teamRepository: AppointmentTeamRepository,
     private val locationRepository: AppointmentLocationRepository,
     private val notifier: Notifier,
-    private val registrationRepository: RegistrationRepository,
+    private val mappaCategoryResolver: MappaCategoryResolver,
 ) {
     @Transactional
     fun recreate(id: Long, request: RecreateAppointmentRequest): RecreatedAppointment {
@@ -56,28 +56,12 @@ class RecreateAppointment(
             notifier.contactCreated(
                 newAppointment.id!!,
                 true,
-                resolveMappaCategory(original.person.id),
+                mappaCategoryResolver.resolveMappaCategory(original.person.id),
                 original.person.crn
             )
         }
 
         return RecreatedAppointment(newAppointment.id!!, requireNotNull(newAppointment.externalReference))
-    }
-
-    private fun resolveMappaCategory(offenderId: Long): Int {
-        val registration = registrationRepository
-            .findByPersonIdAndTypeCodeOrderByIdDesc(
-                offenderId,
-                "MAPP"
-            )
-            .firstOrNull()
-        return when (registration?.category?.code) {
-            "M1" -> 1
-            "M2" -> 2
-            "M3" -> 3
-            "M4" -> 4
-            else -> 0
-        }
     }
 
     private fun Appointment.recreateWith(request: RecreateAppointmentRequest, eventId: Long?): Appointment {

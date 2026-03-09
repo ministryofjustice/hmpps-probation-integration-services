@@ -47,7 +47,7 @@ interface RegistrationRepository : JpaRepository<Registration, Long> {
     fun findByPersonId(personId: Long): List<Registration>
 
     @EntityGraph(attributePaths = ["type", "category"])
-    fun findByPersonIdAndTypeCodeOrderByIdDesc(personId: Long, typeCode: String): List<Registration>
+    fun findFirstByPersonIdAndTypeCodeOrderByIdDesc(personId: Long, typeCode: String): Registration?
 }
 
 @Entity

@@ -12,10 +12,6 @@ import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.Mockito.verifyNoMoreInteractions
 import org.mockito.junit.jupiter.MockitoExtension
-import org.mockito.kotlin.any
-import org.mockito.kotlin.eq
-import org.mockito.kotlin.times
-import org.mockito.kotlin.verify
 import org.mockito.kotlin.verifyNoInteractions
 import org.mockito.kotlin.whenever
 import uk.gov.justice.digital.hmpps.api.model.appointment.CreateAppointment
@@ -34,9 +30,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.Registra
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.RequirementRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.*
 import uk.gov.justice.digital.hmpps.messaging.Notifier
-import java.time.ZoneId
 import java.time.ZonedDateTime
-import java.time.format.DateTimeFormatter
 import java.util.*
 
 @ExtendWith(MockitoExtension::class)
@@ -128,86 +122,6 @@ class SentenceAppointmentServiceTest {
         verifyNoInteractions(requirementRepository)
         verifyNoInteractions(sentenceAppointmentRepository)
         verifyNoInteractions(appointmentTypeRepository)
-    }
-
-    @Test
-    fun `licence and requirement id with visor true provided`() {
-        val appointment = CreateAppointment(
-            user,
-            type = CreateAppointment.Type.InitialAppointmentInOfficeNS.code,
-            start = ZonedDateTime.now().plusDays(1),
-            end = ZonedDateTime.now().plusDays(2),
-            eventId = PersonGenerator.EVENT_1.id,
-            uuid = uuid,
-            requirementId = 2,
-            licenceConditionId = 3,
-            visorReport = true
-        )
-
-        whenever(offenderManagerRepository.findByPersonCrnAndSoftDeletedIsFalseAndActiveIsTrue(PersonGenerator.PERSON_1.crn)).thenReturn(
-            OffenderManagerGenerator.OFFENDER_MANAGER_ACTIVE
-        )
-        val exception = assertThrows<InvalidRequestException> {
-            service.createAppointment(PersonGenerator.PERSON_1.crn, appointment)
-        }
-
-        assertThat(
-            exception.message,
-            equalTo("Either licence id or requirement id or nsi id can be provided")
-        )
-
-        verifyNoMoreInteractions(offenderManagerRepository)
-        verifyNoInteractions(eventSentenceRepository)
-        verifyNoInteractions(licenceConditionRepository)
-        verifyNoInteractions(requirementRepository)
-        verifyNoInteractions(sentenceAppointmentRepository)
-        verifyNoInteractions(appointmentTypeRepository)
-        verify(
-            registrationRepository.findByPersonIdAndTypeCodeOrderByIdDesc(
-                eq(PersonGenerator.PERSON_1.id), any()
-            )
-        ) {
-            times(1)
-        }
-        verify(notifier.contactCreated(any(), eq(true), any(), any())) {
-            times(1)
-        }
-    }
-
-    @Test
-    fun `licence and requirement id with visor false provided`() {
-        val appointment = CreateAppointment(
-            user,
-            type = CreateAppointment.Type.InitialAppointmentInOfficeNS.code,
-            start = ZonedDateTime.now().plusDays(1),
-            end = ZonedDateTime.now().plusDays(2),
-            eventId = PersonGenerator.EVENT_1.id,
-            uuid = uuid,
-            requirementId = 2,
-            licenceConditionId = 3,
-            visorReport = true
-        )
-
-        whenever(offenderManagerRepository.findByPersonCrnAndSoftDeletedIsFalseAndActiveIsTrue(PersonGenerator.PERSON_1.crn)).thenReturn(
-            OffenderManagerGenerator.OFFENDER_MANAGER_ACTIVE
-        )
-        val exception = assertThrows<InvalidRequestException> {
-            service.createAppointment(PersonGenerator.PERSON_1.crn, appointment)
-        }
-
-        assertThat(
-            exception.message,
-            equalTo("Either licence id or requirement id or nsi id can be provided")
-        )
-
-        verifyNoMoreInteractions(offenderManagerRepository)
-        verifyNoInteractions(eventSentenceRepository)
-        verifyNoInteractions(licenceConditionRepository)
-        verifyNoInteractions(requirementRepository)
-        verifyNoInteractions(sentenceAppointmentRepository)
-        verifyNoInteractions(appointmentTypeRepository)
-        verifyNoInteractions(registrationRepository)
-        verifyNoInteractions(notifier)
     }
 
     @Test

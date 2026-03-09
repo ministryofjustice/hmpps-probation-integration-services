@@ -7,6 +7,12 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
+import org.mockito.kotlin.any
+import org.mockito.kotlin.eq
+import org.mockito.kotlin.times
+import org.mockito.kotlin.verify
+import org.mockito.kotlin.verifyNoInteractions
+import org.springframework.test.context.bean.override.mockito.MockitoBean
 import org.springframework.test.web.servlet.post
 import uk.gov.justice.digital.hmpps.api.model.appointment.AppointmentDetail
 import uk.gov.justice.digital.hmpps.api.model.appointment.CreateAppointment
@@ -18,6 +24,7 @@ import uk.gov.justice.digital.hmpps.data.generator.OffenderManagerGenerator.STAF
 import uk.gov.justice.digital.hmpps.data.generator.OffenderManagerGenerator.STAFF_USER_1
 import uk.gov.justice.digital.hmpps.data.generator.OffenderManagerGenerator.TEAM
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
+import uk.gov.justice.digital.hmpps.messaging.Notifier
 import uk.gov.justice.digital.hmpps.test.CustomMatchers.isCloseTo
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.json
@@ -26,6 +33,9 @@ import java.time.ZonedDateTime
 import java.util.*
 
 class CreateAppointmentIntegrationTest : IntegrationTestBase() {
+
+    @MockitoBean
+    lateinit var notifier: Notifier
 
     @Test
     fun `unauthorized status returned`() {
@@ -70,6 +80,52 @@ class CreateAppointmentIntegrationTest : IntegrationTestBase() {
                 jsonPath("$.message") { value(equalTo("Appointment end time cannot be before start time")) }
 
             }
+    }
+
+    @Test
+    fun `appointment with visor flag set to true`() {
+        mockMvc.post("/appointment/${PersonGenerator.PERSON_1.crn}") {
+            withToken()
+            json =
+                CreateAppointment(
+                    user,
+                    type = CreateAppointment.Type.InitialAppointmentInOfficeNS.code,
+                    start = ZonedDateTime.now().plusHours(1),
+                    end = ZonedDateTime.now().plusDays(1),
+                    eventId = PersonGenerator.EVENT_1.id,
+                    visorReport = true,
+                    uuid = UUID.randomUUID()
+                )
+
+        }
+            .andExpect {
+                status { isCreated() }
+            }
+
+        verify(notifier, times(1)).contactCreated(any(), eq(true), any(), any())
+    }
+
+    @Test
+    fun `appointment with visor flag set to false`() {
+        mockMvc.post("/appointment/${PersonGenerator.PERSON_1.crn}") {
+            withToken()
+            json =
+                CreateAppointment(
+                    user,
+                    type = CreateAppointment.Type.InitialAppointmentInOfficeNS.code,
+                    start = ZonedDateTime.now().plusHours(1),
+                    end = ZonedDateTime.now().plusDays(1),
+                    eventId = PersonGenerator.EVENT_1.id,
+                    visorReport = false,
+                    uuid = UUID.randomUUID()
+                )
+
+        }
+            .andExpect {
+                status { isCreated() }
+            }
+
+        verifyNoInteractions(notifier)
     }
 
     @ParameterizedTest

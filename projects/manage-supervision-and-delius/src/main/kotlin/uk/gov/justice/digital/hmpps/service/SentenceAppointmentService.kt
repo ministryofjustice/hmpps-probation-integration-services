@@ -14,7 +14,6 @@ import uk.gov.justice.digital.hmpps.exception.InvalidRequestException
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractionCode
 import uk.gov.justice.digital.hmpps.integrations.delius.compliance.NsiRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.RegistrationRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.RequirementRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.*
 import uk.gov.justice.digital.hmpps.messaging.Notifier
@@ -39,7 +38,7 @@ class SentenceAppointmentService(
     private val userService: UserService,
     private val outcomeService: AppointmentOutcomeService,
     private val notifier: Notifier,
-    private val registrationRepository: RegistrationRepository,
+    private val mappaCategoryResolver: MappaCategoryResolver,
 ) : AuditableService(auditedInteractionService) {
 
     private fun getOverlaps(
@@ -123,7 +122,7 @@ class SentenceAppointmentService(
             }
 
             if (createAppointment.visorReport == true && saved.id != null) {
-                val category = resolveMappaCategory(om.person.id)
+                val category = mappaCategoryResolver.resolveMappaCategory(om.person.id)
                 notifier.contactCreated(saved.id, true, category, crn)
             }
 
@@ -189,22 +188,6 @@ class SentenceAppointmentService(
 
         sentenceAppointmentRepository.findByExternalReference(createAppointment.urn)?.let {
             throw ConflictException("Duplicate external reference ${createAppointment.urn}")
-        }
-    }
-
-    private fun resolveMappaCategory(offenderId: Long): Int {
-        val registration = registrationRepository
-            .findByPersonIdAndTypeCodeOrderByIdDesc(
-                offenderId,
-                "MAPP"
-            )
-            .firstOrNull()
-        return when (registration?.category?.code) {
-            "M1" -> 1
-            "M2" -> 2
-            "M3" -> 3
-            "M4" -> 4
-            else -> 0
         }
     }
 
