@@ -31,7 +31,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Sentences"
+                $ref: "#/components/schemas/SentenceProgress"
   /person/{crn}/personal-details:
     get:
       tags:
@@ -50,6 +50,38 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/PersonalDetails"
+  /person/{crn}/past-appointments:
+    get:
+      tags:
+      - api-controller
+      operationId: getPastAppointments
+      parameters:
+      - name: crn
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: page
+        in: query
+        required: false
+        schema:
+          type: integer
+          format: int32
+          default: 0
+      - name: size
+        in: query
+        required: false
+        schema:
+          type: integer
+          format: int32
+          default: 10
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PagedModelAppointment"
   /person/{crn}/name:
     get:
       tags:
@@ -68,17 +100,83 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Name"
+  /person/{crn}/future-appointments:
+    get:
+      tags:
+      - api-controller
+      operationId: getFutureAppointments
+      parameters:
+      - name: crn
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: page
+        in: query
+        required: false
+        schema:
+          type: integer
+          format: int32
+          default: 0
+      - name: size
+        in: query
+        required: false
+        schema:
+          type: integer
+          format: int32
+          default: 10
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PagedModelAppointment"
 components:
   schemas:
-    Condition:
+    LicenceCondition:
       type: object
       properties:
         type:
           type: string
         description:
           type: string
-        length:
+        startDate:
           type: string
+          format: date
+        expectedEndDate:
+          type: string
+          format: date
+      required:
+      - startDate
+      - type
+    Requirement:
+      type: object
+      properties:
+        type:
+          type: string
+        description:
+          type: string
+        required:
+          type: integer
+          format: int32
+          description: "The length of the requirement. Note: for unpaid work requirements,\
+            \ this does not currently include any adjustments."
+        completed:
+          type: integer
+          format: int32
+          description: "The progress made against the requirement. For rehabilitative\
+            \ activity requirements (RAR), this is the number of RAR days attended.\
+            \ For unpaid work requirements, this is the hours completed. For other\
+            \ requirement types, this is null."
+        unit:
+          type: string
+          enum:
+          - HOURS
+          - DAYS
+          - WEEKS
+          - MONTHS
+          - YEARS
       required:
       - type
     Sentence:
@@ -95,17 +193,17 @@ components:
         requirements:
           type: array
           items:
-            $ref: "#/components/schemas/Condition"
+            $ref: "#/components/schemas/Requirement"
         licenceConditions:
           type: array
           items:
-            $ref: "#/components/schemas/Condition"
+            $ref: "#/components/schemas/LicenceCondition"
       required:
       - licenceConditions
       - requirements
       - startDate
       - type
-    Sentences:
+    SentenceProgress:
       type: object
       properties:
         sentences:
@@ -207,6 +305,64 @@ components:
             $ref: "#/components/schemas/Address"
       required:
       - officeAddresses
+    Appointment:
+      type: object
+      properties:
+        date:
+          type: string
+          format: date
+        startTime:
+          type: string
+        endTime:
+          type: string
+        type:
+          type: string
+        description:
+          type: string
+        practitioner:
+          $ref: "#/components/schemas/Practitioner"
+        location:
+          $ref: "#/components/schemas/Address"
+        attended:
+          type: boolean
+        complied:
+          type: boolean
+      required:
+      - date
+      - practitioner
+      - startTime
+      - type
+    PageMetadata:
+      type: object
+      properties:
+        size:
+          type: integer
+          format: int64
+        number:
+          type: integer
+          format: int64
+        totalElements:
+          type: integer
+          format: int64
+        totalPages:
+          type: integer
+          format: int64
+    PagedModelAppointment:
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: "#/components/schemas/Appointment"
+        page:
+          $ref: "#/components/schemas/PageMetadata"
+    Practitioner:
+      type: object
+      properties:
+        name:
+          $ref: "#/components/schemas/Name"
+      required:
+      - name
   securitySchemes:
     hmpps-auth-token:
       type: http
