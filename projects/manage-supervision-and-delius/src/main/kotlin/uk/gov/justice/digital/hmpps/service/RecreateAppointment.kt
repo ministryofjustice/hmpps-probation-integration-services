@@ -11,6 +11,8 @@ import uk.gov.justice.digital.hmpps.exception.ConflictException
 import uk.gov.justice.digital.hmpps.integrations.delius.appointment.*
 import uk.gov.justice.digital.hmpps.integrations.delius.appointment.Appointment.Companion.URN_PREFIX
 import uk.gov.justice.digital.hmpps.integrations.delius.appointment.AppointmentOutcome.Code.ATTENDED_COMPLIED
+import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.RegistrationRepository
+import uk.gov.justice.digital.hmpps.messaging.Notifier
 import java.time.ZonedDateTime
 
 @Service
@@ -20,6 +22,8 @@ class RecreateAppointment(
     private val staffRepository: AppointmentStaffRepository,
     private val teamRepository: AppointmentTeamRepository,
     private val locationRepository: AppointmentLocationRepository,
+    private val notifier: Notifier,
+    private val registrationRepository: RegistrationRepository,
 ) {
     @Transactional
     fun recreate(id: Long, request: RecreateAppointmentRequest): RecreatedAppointment {
@@ -47,7 +51,28 @@ class RecreateAppointment(
                 SERVICE -> outcomeRepository.getByCode(AppointmentOutcome.Code.RESCHEDULED_SERVICE.value)
             }
         )
+
+        if (request.sendToVisor == true) {
+            notifier.contactCreated(newAppointment.id!!, true, resolveMappaCategory(original.person.id), original.person.crn )
+        }
+
         return RecreatedAppointment(newAppointment.id!!, requireNotNull(newAppointment.externalReference))
+    }
+
+    private fun resolveMappaCategory(offenderId: Long): Int {
+        val registration = registrationRepository
+            .findByPersonIdAndTypeCodeOrderByIdDesc(
+                offenderId,
+                "MAPP"
+            )
+            .firstOrNull()
+        return when (registration?.category?.code) {
+            "M1" -> 1
+            "M2" -> 2
+            "M3" -> 3
+            "M4" -> 4
+            else -> 0
+        }
     }
 
     private fun Appointment.recreateWith(request: RecreateAppointmentRequest, eventId: Long?): Appointment {

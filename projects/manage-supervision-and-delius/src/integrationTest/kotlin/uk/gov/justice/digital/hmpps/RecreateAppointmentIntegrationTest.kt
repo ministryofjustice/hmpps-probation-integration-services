@@ -3,6 +3,12 @@ package uk.gov.justice.digital.hmpps
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.within
 import org.junit.jupiter.api.Test
+import org.mockito.kotlin.any
+import org.mockito.kotlin.eq
+import org.mockito.kotlin.times
+import org.mockito.kotlin.verify
+import org.mockito.kotlin.verifyNoInteractions
+import org.springframework.test.context.bean.override.mockito.MockitoBean
 import org.springframework.test.web.servlet.put
 import uk.gov.justice.digital.hmpps.api.model.appointment.RecreateAppointmentRequest
 import uk.gov.justice.digital.hmpps.api.model.appointment.RecreatedAppointment
@@ -19,6 +25,7 @@ import uk.gov.justice.digital.hmpps.data.generator.OffenderManagerGenerator.TEAM
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.integrations.delius.appointment.Appointment
 import uk.gov.justice.digital.hmpps.integrations.delius.appointment.getAppointment
+import uk.gov.justice.digital.hmpps.messaging.Notifier
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.json
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
@@ -29,6 +36,9 @@ import java.time.temporal.ChronoUnit
 import java.util.*
 
 class RecreateAppointmentIntegrationTest : IntegrationTestBase() {
+
+    @MockitoBean
+    lateinit var notifier: Notifier
 
     @Test
     fun `end time must be after start time`() {
@@ -237,6 +247,64 @@ class RecreateAppointmentIntegrationTest : IntegrationTestBase() {
         )
         assertThat(recreated.externalReference).isEqualTo(Appointment.URN_PREFIX + request.uuid)
         assertThat(appointment.externalReference).isEqualTo(Appointment.URN_PREFIX + request.uuid)
+    }
+
+    @Test
+    fun `recreate with visor flag is true`() {
+        val person = PersonGenerator.RECREATE_APPT_PERSON_1
+        val original = sentenceAppointmentRepository.save(
+            AppointmentGenerator.generateAppointment(
+                person,
+                ZonedDateTime.now().plusDays(7),
+                ZonedDateTime.now().plusDays(7).plusMinutes(30),
+                notes = "Notes on the original appointment"
+            )
+        )
+        val request = recreateRequest(
+            date = LocalDate.now().plusDays(3),
+            sendToVisor = true,
+            sensitive = true,
+            notes = "Some sensitive notes to append"
+        )
+
+        val recreated = mockMvc.put("/appointments/${original.id}/recreate") {
+            withUserToken(PI_USER.username)
+            json = request
+        }
+            .andExpect { status { isOk() } }
+            .andReturn().response.contentAsJson<RecreatedAppointment>()
+
+        verify(notifier.contactCreated(any(), eq(true), any(), any() )) {
+            times(1)
+        }
+    }
+
+    @Test
+    fun `recreate with visor flag is false`() {
+        val person = PersonGenerator.RECREATE_APPT_PERSON_1
+        val original = sentenceAppointmentRepository.save(
+            AppointmentGenerator.generateAppointment(
+                person,
+                ZonedDateTime.now().plusDays(7),
+                ZonedDateTime.now().plusDays(7).plusMinutes(30),
+                notes = "Notes on the original appointment"
+            )
+        )
+        val request = recreateRequest(
+            date = LocalDate.now().plusDays(3),
+            sendToVisor = false,
+            sensitive = true,
+            notes = "Some sensitive notes to append"
+        )
+
+        val recreated = mockMvc.put("/appointments/${original.id}/recreate") {
+            withUserToken(PI_USER.username)
+            json = request
+        }
+            .andExpect { status { isOk() } }
+            .andReturn().response.contentAsJson<RecreatedAppointment>()
+
+        verifyNoInteractions(notifier)
     }
 
     @Test
