@@ -53,7 +53,12 @@ class RecreateAppointment(
         )
 
         if (request.sendToVisor == true) {
-            notifier.contactCreated(newAppointment.id!!, true, resolveMappaCategory(original.person.id), original.person.crn )
+            notifier.contactCreated(
+                newAppointment.id!!,
+                true,
+                resolveMappaCategory(original.person.id),
+                original.person.crn
+            )
         }
 
         return RecreatedAppointment(newAppointment.id!!, requireNotNull(newAppointment.externalReference))

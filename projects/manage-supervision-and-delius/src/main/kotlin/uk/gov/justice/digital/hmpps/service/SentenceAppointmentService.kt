@@ -191,6 +191,7 @@ class SentenceAppointmentService(
             throw ConflictException("Duplicate external reference ${createAppointment.urn}")
         }
     }
+
     private fun resolveMappaCategory(offenderId: Long): Int {
         val registration = registrationRepository
             .findByPersonIdAndTypeCodeOrderByIdDesc(

@@ -161,7 +161,8 @@ class SentenceAppointmentServiceTest {
         verifyNoInteractions(requirementRepository)
         verifyNoInteractions(sentenceAppointmentRepository)
         verifyNoInteractions(appointmentTypeRepository)
-        verify(notifier.contactCreated(any(), eq(true), any(), any())) { org.mockito.kotlin.times(1)
+        verify(notifier.contactCreated(any(), eq(true), any(), any())) {
+            org.mockito.kotlin.times(1)
         }
     }
 

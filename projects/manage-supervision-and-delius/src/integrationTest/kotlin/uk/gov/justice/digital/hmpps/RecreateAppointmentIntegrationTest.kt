@@ -274,7 +274,7 @@ class RecreateAppointmentIntegrationTest : IntegrationTestBase() {
             .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<RecreatedAppointment>()
 
-        verify(notifier.contactCreated(any(), eq(true), any(), any() )) {
+        verify(notifier.contactCreated(any(), eq(true), any(), any())) {
             times(1)
         }
     }
