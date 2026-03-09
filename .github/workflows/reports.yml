@@ -7,6 +7,7 @@ on:
 
 jobs:
   allocation-failures:
+    environment: azure-prod
     permissions:
       contents: read
       id-token: write
@@ -21,11 +22,13 @@ jobs:
           project_name: workforce-allocations-to-delius
           slack_channel: topic-pi-workforce-allocation
           slack_token: ${{ secrets.SLACK_BOT_TOKEN }}
-          app_insights_key: ${{ secrets.APP_INSIGHTS_API_KEY }}
-          app_insights_guid: ${{ secrets.APP_INSIGHTS_APPLICATION_GUID }}
-          app_insights_subscription_id: ${{ secrets.APP_INSIGHTS_SUBSCRIPTION_ID }}
+          azure_app_id: ${{ secrets.AZURE_APPLICATION_INSIGHTS_APP_ID }}
+          azure_subscription_id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          azure_tenant_id: ${{ secrets.AZURE_TENANT_ID }}
+          azure_client_id: ${{ secrets.AZURE_CLIENT_ID }}
 
   assessment-summary-failures:
+    environment: azure-prod
     permissions:
       contents: read
       id-token: write
@@ -40,11 +43,13 @@ jobs:
           project_name: assessment-summary-and-delius
           slack_channel: topic-pi-assessments
           slack_token: ${{ secrets.SLACK_BOT_TOKEN }}
-          app_insights_key: ${{ secrets.APP_INSIGHTS_API_KEY }}
-          app_insights_guid: ${{ secrets.APP_INSIGHTS_APPLICATION_GUID }}
-          app_insights_subscription_id: ${{ secrets.APP_INSIGHTS_SUBSCRIPTION_ID }}
+          azure_app_id: ${{ secrets.AZURE_APPLICATION_INSIGHTS_APP_ID }}
+          azure_subscription_id: ${{ secrets.APP_INSIGHTS_SUBSCRIPTION_ID }}
+          azure_tenant_id: ${{ secrets.APP_INSIGHTS_TENANT_ID }}
+          azure_client_id: ${{ secrets.APP_INSIGHTS_CLIENT_ID }}
 
   cas1-failures:
+    environment: azure-prod
     permissions:
       contents: read
       id-token: write
@@ -59,11 +64,13 @@ jobs:
           project_name: approved-premises-and-delius
           slack_channel: topic-pi-cas123
           slack_token: ${{ secrets.SLACK_BOT_TOKEN }}
-          app_insights_key: ${{ secrets.APP_INSIGHTS_API_KEY }}
-          app_insights_guid: ${{ secrets.APP_INSIGHTS_APPLICATION_GUID }}
-          app_insights_subscription_id: ${{ secrets.APP_INSIGHTS_SUBSCRIPTION_ID }}
+          azure_app_id: ${{ secrets.AZURE_APPLICATION_INSIGHTS_APP_ID }}
+          azure_subscription_id: ${{ secrets.APP_INSIGHTS_SUBSCRIPTION_ID }}
+          azure_tenant_id: ${{ secrets.APP_INSIGHTS_TENANT_ID }}
+          azure_client_id: ${{ secrets.APP_INSIGHTS_CLIENT_ID }}
 
   refer-and-monitor-failures:
+    environment: azure-prod
     permissions:
       contents: read
       id-token: write
@@ -83,11 +90,13 @@ jobs:
           project_name: refer-and-monitor-and-delius
           slack_channel: topic-pi-referandmonitor
           slack_token: ${{ secrets.SLACK_BOT_TOKEN }}
-          app_insights_key: ${{ secrets.APP_INSIGHTS_API_KEY }}
-          app_insights_guid: ${{ secrets.APP_INSIGHTS_APPLICATION_GUID }}
-          app_insights_subscription_id: ${{ secrets.APP_INSIGHTS_SUBSCRIPTION_ID }}
+          azure_app_id: ${{ secrets.AZURE_APPLICATION_INSIGHTS_APP_ID }}
+          azure_subscription_id: ${{ secrets.APP_INSIGHTS_SUBSCRIPTION_ID }}
+          azure_tenant_id: ${{ secrets.APP_INSIGHTS_TENANT_ID }}
+          azure_client_id: ${{ secrets.APP_INSIGHTS_CLIENT_ID }}
 
   manage-offences-new:
+    environment: azure-prod
     permissions:
       contents: read
       id-token: write
@@ -106,11 +115,13 @@ jobs:
           column2_value: homeOfficeCode
           slack_channel: topic-probation-offence-codes
           slack_token: ${{ secrets.SLACK_BOT_TOKEN }}
-          app_insights_key: ${{ secrets.APP_INSIGHTS_API_KEY }}
-          app_insights_guid: ${{ secrets.APP_INSIGHTS_APPLICATION_GUID }}
-          app_insights_subscription_id: ${{ secrets.APP_INSIGHTS_SUBSCRIPTION_ID }}
+          azure_app_id: ${{ secrets.AZURE_APPLICATION_INSIGHTS_APP_ID }}
+          azure_subscription_id: ${{ secrets.APP_INSIGHTS_SUBSCRIPTION_ID }}
+          azure_tenant_id: ${{ secrets.APP_INSIGHTS_TENANT_ID }}
+          azure_client_id: ${{ secrets.APP_INSIGHTS_CLIENT_ID }}
 
   appointment-reminders-telemetry:
+    environment: azure-prod
     permissions:
       contents: read
       id-token: write
@@ -138,5 +149,8 @@ jobs:
           role-arn: ${{ secrets.ANALYTICAL_PLATFORM_EXPORT_S3_ROLE_TO_ASSUME }}
           bucket-name: ${{ secrets.ANALYTICAL_PLATFORM_EXPORT_S3_BUCKET_NAME }}
           bucket-prefix: landing/hmpps-probation-integration/data/database_name=azure_monitor_application_insights/table_name=appointment_reminders_and_delius/extraction_timestamp=${{ steps.get-timestamp.outputs.timestamp }}/export.jsonl
-          app-insights-key: ${{ secrets.APP_INSIGHTS_API_KEY }}
-          app-insights-guid: ${{ secrets.APP_INSIGHTS_APPLICATION_GUID }}
+          azure_app_id: ${{ secrets.AZURE_APPLICATION_INSIGHTS_APP_ID }}
+          azure_subscription_id: ${{ secrets.APP_INSIGHTS_SUBSCRIPTION_ID }}
+          azure_tenant_id: ${{ secrets.APP_INSIGHTS_TENANT_ID }}
+          azure_client_id: ${{ secrets.APP_INSIGHTS_CLIENT_ID }}
+
