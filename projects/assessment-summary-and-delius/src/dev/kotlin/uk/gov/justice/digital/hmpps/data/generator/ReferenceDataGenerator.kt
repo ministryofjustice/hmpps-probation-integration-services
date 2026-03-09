@@ -37,7 +37,7 @@ object ReferenceDataGenerator {
         ReferenceData.Code.REGISTRATION_ADDED,
         ReferenceData.Code.REGISTRATION_UPDATED,
         ReferenceData.Code.REGISTRATION_DEREGISTERED,
-        ReferenceData.Code.ASSESSMENT_SUMMARY_CREATED,
+        ReferenceData.Code.MAPPA_INFORMATION_ADDED,
     )
         .map { generateReferenceData(it.value, dataset = DOMAIN_EVENT_TYPE_DATASET) }
     val DISPOSAL_TYPE = generateDisposalType("NC")

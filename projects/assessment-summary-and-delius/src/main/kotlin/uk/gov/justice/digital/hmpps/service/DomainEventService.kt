@@ -85,22 +85,16 @@ class DomainEventService(
     )
 
     fun publishVisorContact(crn: String, contactId: Long) {
-        publish(
-            HmppsDomainEvent(
-                eventType = ReferenceData.Code.ASSESSMENT_SUMMARY_CREATED.value,
-                version = 1,
-                description = "An assessment summary has been created in NDelius",
-                occurredAt = ZonedDateTime.now(),
-                personReference = forCrn(crn),
-                additionalInformation = mapOf(
-                    "contactId" to contactId,
-                    "mapps" to mapOf(
-                        "export" to true,
-                        "category" to "visor"
-                    )
-                )
-            )
-        )
+        publish(HmppsDomainEvent(
+            eventType = ReferenceData.Code.MAPPA_INFORMATION_ADDED.value,
+            version = 1,
+            description = "An assessment summary has been created in NDelius",
+            occurredAt = ZonedDateTime.now(),
+            personReference = forCrn(crn),
+            additionalInformation = mapOf("contactId" to contactId,
+                "mapps" to mapOf("export" to true,
+                    "category" to "visor"))
+        ))
     }
 
     private fun forCrn(crn: String) = PersonReference(listOf(PersonIdentifier("CRN", crn)))
