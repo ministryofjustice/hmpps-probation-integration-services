@@ -190,11 +190,12 @@ interface UnpaidWorkAppointmentRepository : JpaRepository<UnpaidWorkAppointment,
         """
         with uwp as ( select uwp1.upw_project_id, uwp1.name upw_project_name, uwp1.code upw_project_code
                       from upw_project uwp1,
-                           upw_project_availability uwpav
-                      join r_standard_reference_list type on type.standard_reference_list_id = uwp1.project_type_id
+                           upw_project_availability uwpav,
+                           r_standard_reference_list type
                       where uwp1.team_id = :teamId
                         and (:typeCodesCount = 0 or type.code_value in (:typeCodes))
-                        and uwpav.upw_project_id = uwp1.upw_project_id ),
+                        and uwpav.upw_project_id = uwp1.upw_project_id 
+                        and type.standard_reference_list_id = uwp1.project_type_id),
              uwa as ( select *
                       from upw_appointment uwa1
                       where uwa1.appointment_date between trunc(cast(:startDate as DATE)) and trunc(cast(:endDate as DATE)) + (1 - 1 / 24 / 60 / 60)
