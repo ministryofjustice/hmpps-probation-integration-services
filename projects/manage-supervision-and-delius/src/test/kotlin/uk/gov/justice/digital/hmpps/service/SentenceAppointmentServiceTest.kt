@@ -84,6 +84,9 @@ class SentenceAppointmentServiceTest {
     @Mock
     lateinit var registrationRepository: RegistrationRepository
 
+    @Mock
+    lateinit var mappaCategoryResolver: MappaCategoryResolver
+
     @InjectMocks
     lateinit var service: SentenceAppointmentService
 
