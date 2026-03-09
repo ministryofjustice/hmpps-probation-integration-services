@@ -14,8 +14,10 @@ import uk.gov.justice.digital.hmpps.exception.InvalidRequestException
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractionCode
 import uk.gov.justice.digital.hmpps.integrations.delius.compliance.NsiRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.RegistrationRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.RequirementRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.*
+import uk.gov.justice.digital.hmpps.messaging.Notifier
 import uk.gov.justice.digital.hmpps.utils.AppointmentTimeHelper
 import java.time.DayOfWeek
 import java.time.LocalDate
@@ -36,6 +38,8 @@ class SentenceAppointmentService(
     private val bankHolidayClient: BankHolidayClient,
     private val userService: UserService,
     private val outcomeService: AppointmentOutcomeService,
+    private val notifier: Notifier,
+    private val registrationRepository: RegistrationRepository,
 ) : AuditableService(auditedInteractionService) {
 
     private fun getOverlaps(
@@ -118,6 +122,11 @@ class SentenceAppointmentService(
                 outcomeService.recordOutcome(Outcome(saved.id!!, true, null, createAppointment.sensitive ?: false))
             }
 
+            if (createAppointment.visorReport == true && saved.id != null) {
+                val category = resolveMappaCategory(om.person.id)
+                notifier.contactCreated(saved.id, true, category, crn)
+            }
+
             audit["contactId"] = saved.id!!
 
             return@audit AppointmentDetail(listOf(CreatedAppointment(saved.id, saved.externalReference)))
@@ -180,6 +189,21 @@ class SentenceAppointmentService(
 
         sentenceAppointmentRepository.findByExternalReference(createAppointment.urn)?.let {
             throw ConflictException("Duplicate external reference ${createAppointment.urn}")
+        }
+    }
+    private fun resolveMappaCategory(offenderId: Long): Int {
+        val registration = registrationRepository
+            .findByPersonIdAndTypeCodeOrderByIdDesc(
+                offenderId,
+                "MAPP"
+            )
+            .firstOrNull()
+        return when (registration?.category?.code) {
+            "M1" -> 1
+            "M2" -> 2
+            "M3" -> 3
+            "M4" -> 4
+            else -> 0
         }
     }
 
