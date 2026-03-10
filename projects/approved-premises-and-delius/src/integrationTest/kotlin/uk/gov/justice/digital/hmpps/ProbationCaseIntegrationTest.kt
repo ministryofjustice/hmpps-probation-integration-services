@@ -102,10 +102,18 @@ class ProbationCaseIntegrationTest(
         assertThat(detail.mappaDetail?.category, equalTo(3))
         assertThat(detail.mappaDetail?.level, equalTo(2))
         assertThat(detail.registrations.map { it.description }, equalTo(listOf("Description of ARSO")))
-        assertThat(
-            detail.registrations.flatMap { it -> it.riskNotes.map { it.note } },
-            equalTo(listOf("Risk Notes 2", "Risk Notes 1"))
-        )
+
+        val notes = detail.registrations.flatMap { it.riskNotes }
+        assertThat(notes.size, equalTo(2))
+
+        assertThat(notes[0].createdBy, equalTo("Bob"))
+        assertThat(notes[0].createdByDate, equalTo(LocalDate.parse("2026-03-11")))
+        assertThat(notes[0].note, equalTo("Risk Notes 2"))
+
+        assertThat(notes[1].createdBy, equalTo("Dan"))
+        assertThat(notes[1].createdByDate, equalTo(LocalDate.parse("2026-03-10")))
+        assertThat(notes[1].note, equalTo("Risk Notes 1"))
+
         val mainOffence = detail.offences.first { it.main }
         assertThat(mainOffence.id, equalTo("M200001"))
         assertThat(mainOffence.description, equalTo("Murder - OFF1"))
