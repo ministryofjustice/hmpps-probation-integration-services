@@ -105,20 +105,8 @@ class DomainEventService(
         )
     }
 
-    private fun resolveMappaCategory(offenderId: Long): Int {
-        val registration = registrationRepository
-            .findFirstByPersonIdAndTypeCodeOrderByIdDesc(
-                offenderId,
-                "MAPP"
-            )
-
-        return when (registration?.category?.code) {
-            "M1" -> 1
-            "M2" -> 2
-            "M3" -> 3
-            "M4" -> 4
-            else -> 0
-        }
+    private fun resolveMappaCategory(offenderId: Long): Int? {
+        return registrationRepository.findByMappaByPersonId(offenderId).firstOrNull()
     }
 
     private fun forCrn(crn: String) = PersonReference(listOf(PersonIdentifier("CRN", crn)))
