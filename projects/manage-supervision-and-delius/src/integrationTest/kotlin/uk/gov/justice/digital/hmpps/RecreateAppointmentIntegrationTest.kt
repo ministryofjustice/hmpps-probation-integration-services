@@ -139,7 +139,8 @@ class RecreateAppointmentIntegrationTest : IntegrationTestBase() {
                 notes = "Notes on the original appointment"
             )
         )
-        val request = recreateRequest(locationCode = DEFAULT_LOCATION.code, notes = "Notes to be appended", sendToVisor = false)
+        val request =
+            recreateRequest(locationCode = DEFAULT_LOCATION.code, notes = "Notes to be appended", sendToVisor = false)
 
         val recreated =
             mockMvc.put("/appointments/${original.id}/recreate") {
