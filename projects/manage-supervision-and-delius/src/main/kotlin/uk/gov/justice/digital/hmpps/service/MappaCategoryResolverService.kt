@@ -5,6 +5,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.Registra
 
 @Service
 class MappaCategoryResolverService(private val registrationRepository: RegistrationRepository) {
-    fun resolveMappaCategory(offenderId: Long): Int = registrationRepository.findByMappaCategoryByPersonId(offenderId) ?: 0
+    fun resolveMappaCategory(offenderId: Long): Int =
+        registrationRepository.findByMappaCategoryByPersonId(offenderId) ?: 0
 }
 

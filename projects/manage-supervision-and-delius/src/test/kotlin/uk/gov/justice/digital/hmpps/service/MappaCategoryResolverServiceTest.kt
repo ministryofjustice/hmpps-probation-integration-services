@@ -1,6 +1,5 @@
 package uk.gov.justice.digital.hmpps.service
 
-
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -20,14 +19,14 @@ class MappaCategoryResolverServiceTest {
 
     @Test
     fun `registration with Mapp M1 returns 1`() {
-        whenever( registrationRepository.findByMappaCategoryByPersonId(1L) ).thenReturn(1)
+        whenever(registrationRepository.findByMappaCategoryByPersonId(1L)).thenReturn(1)
         var actual = service.resolveMappaCategory(1L)
         assertThat(actual).isEqualTo(1)
     }
 
     @Test
     fun `registration with no Mapp returns 0`() {
-        whenever( registrationRepository.findByMappaCategoryByPersonId(1L) ).thenReturn(0)
+        whenever(registrationRepository.findByMappaCategoryByPersonId(1L)).thenReturn(0)
         var actual = service.resolveMappaCategory(1L)
         assertThat(actual).isEqualTo(0)
     }

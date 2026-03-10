@@ -48,15 +48,17 @@ interface RegistrationRepository : JpaRepository<Registration, Long> {
     @EntityGraph(attributePaths = ["type"])
     fun findByPersonId(personId: Long): List<Registration>
 
-    @Query("""select case 
+    @Query(
+        """select case 
        when r.category.code = 'M1' then 1
        when r.category.code = 'M2' then 2
        when r.category.code = 'M3' then 3
        when r.category.code = 'M4' then 4
        else 0 end
         from Registration r
-        where r.personId = :personId and r.type.code = 'MAPP' order by r.id desc""")
-    fun findByMappaCategoryByPersonId(personId: Long, pageRequest: PageRequest = PageRequest.of(0,1)): Int?
+        where r.personId = :personId and r.type.code = 'MAPP' order by r.id desc"""
+    )
+    fun findByMappaCategoryByPersonId(personId: Long, pageRequest: PageRequest = PageRequest.of(0, 1)): Int?
 
     @EntityGraph(attributePaths = ["type", "category"])
     fun findFirstByPersonIdAndTypeCodeOrderByIdDesc(personId: Long, typeCode: String): Registration?
