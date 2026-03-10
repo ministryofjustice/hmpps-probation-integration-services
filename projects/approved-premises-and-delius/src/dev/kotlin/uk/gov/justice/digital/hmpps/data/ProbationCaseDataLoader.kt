@@ -48,13 +48,21 @@ class ProbationCaseDataLoader(private val dataManager: DataManager) {
             )
         )
 
+        val riskNotes = """
+            Comment added by Dan on 10/03/2026 at 14:20
+            Risk Notes 1
+            ---------------------------------------------------------
+            Comment added by Bob on 11/03/2026 at 09:15
+            Risk Notes 2
+        """.trimIndent()
+
         dataManager.save(
             PersonGenerator.generateRegistration(
                 ProbationCaseGenerator.CASE_COMPLEX.asPerson(),
                 ReferenceDataGenerator.REGISTER_TYPES[RegisterType.Code.MAPPA.value]!!,
                 LocalDate.now().minusDays(7),
                 ReferenceDataGenerator.NON_MAPPA_CATEGORY,
-                ReferenceDataGenerator.REGISTER_LEVELS["M2"]
+                ReferenceDataGenerator.REGISTER_LEVELS["M2"],
             )
         )
 
@@ -72,7 +80,8 @@ class ProbationCaseDataLoader(private val dataManager: DataManager) {
             PersonGenerator.generateRegistration(
                 ProbationCaseGenerator.CASE_COMPLEX.asPerson(),
                 ReferenceDataGenerator.REGISTER_TYPES[RegisterType.Code.SEX_OFFENCE.value]!!,
-                LocalDate.now().minusDays(7)
+                LocalDate.now().minusDays(7),
+                notes = riskNotes,
             )
         )
 

@@ -1,11 +1,12 @@
 package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.stereotype.Service
+import uk.gov.justice.digital.hmpps.datetime.DeliusDateFormatter
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
+import uk.gov.justice.digital.hmpps.integrations.delius.entity.DisposalRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.CommunityManager
 import uk.gov.justice.digital.hmpps.integrations.delius.person.ProbationCase
 import uk.gov.justice.digital.hmpps.integrations.delius.person.ProbationCaseRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.entity.DisposalRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.offence.entity.CaseOffence
 import uk.gov.justice.digital.hmpps.integrations.delius.person.offence.entity.MainOffenceRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.registration.entity.*
@@ -13,6 +14,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.person.registration.enti
 import uk.gov.justice.digital.hmpps.integrations.delius.personalcircumstance.PersonalCircumstanceRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.personalcircumstance.entity.PersonalCircumstanceType
 import uk.gov.justice.digital.hmpps.model.*
+import java.time.LocalDate
 
 @Service
 class CaseService(
@@ -113,7 +115,13 @@ fun CaseOffence.asOffence() =
         eventNumber
     )
 
-fun Registration.asRegistration() = uk.gov.justice.digital.hmpps.model.Registration(type.code, type.description, date)
+fun Registration.asRegistration() = uk.gov.justice.digital.hmpps.model.Registration(
+    code = type.code,
+    description = type.description,
+    startDate = date,
+    riskNotes = notes
+)
+
 fun Registration.asMappa() = MappaDetail(
     level?.code?.toMappaLevel(),
     level?.description,

@@ -1,8 +1,11 @@
 package uk.gov.justice.digital.hmpps
 
 import org.hamcrest.MatcherAssert.assertThat
+import org.hamcrest.Matchers.allOf
+import org.hamcrest.Matchers.containsString
 import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.hasSize
+import org.hamcrest.Matchers.notNullValue
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -102,6 +105,16 @@ class ProbationCaseIntegrationTest(
         assertThat(detail.mappaDetail?.category, equalTo(3))
         assertThat(detail.mappaDetail?.level, equalTo(2))
         assertThat(detail.registrations.map { it.description }, equalTo(listOf("Description of ARSO")))
+
+        val riskNotes = detail.registrations.first { it.riskNotes != null }.riskNotes!!
+        assertThat(
+            riskNotes,
+            allOf(
+                containsString("Risk Notes 1"),
+                containsString("Risk Notes 2")
+            )
+        )
+
         val mainOffence = detail.offences.first { it.main }
         assertThat(mainOffence.id, equalTo("M200001"))
         assertThat(mainOffence.description, equalTo("Murder - OFF1"))

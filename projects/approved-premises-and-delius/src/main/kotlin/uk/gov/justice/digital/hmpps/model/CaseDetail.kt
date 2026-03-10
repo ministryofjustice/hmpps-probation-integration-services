@@ -71,7 +71,12 @@ data class Offence(
     val eventNumber: String
 )
 
-data class Registration(val code: String, val description: String, val startDate: LocalDate)
+data class Registration(
+    val code: String,
+    val description: String,
+    val startDate: LocalDate,
+    val riskNotes: String? = null,
+)
 
 data class Sentence(
     val typeDescription: String?,

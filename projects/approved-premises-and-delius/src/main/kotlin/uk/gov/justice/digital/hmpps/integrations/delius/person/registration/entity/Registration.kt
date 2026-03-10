@@ -44,6 +44,9 @@ class Registration(
 
     val lastUpdatedDatetime: ZonedDateTime,
 
+    @Column(name = "registration_notes", columnDefinition = "clob")
+    val notes: String?,
+
     @Id
     @Column(name = "registration_id")
     val id: Long
