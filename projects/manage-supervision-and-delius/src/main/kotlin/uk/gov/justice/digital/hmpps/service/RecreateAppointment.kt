@@ -7,11 +7,9 @@ import uk.gov.justice.digital.hmpps.api.model.appointment.RecreateAppointmentReq
 import uk.gov.justice.digital.hmpps.api.model.appointment.RecreateAppointmentRequest.RequestedBy.SERVICE
 import uk.gov.justice.digital.hmpps.api.model.appointment.RecreatedAppointment
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
-import uk.gov.justice.digital.hmpps.exception.ConflictException
 import uk.gov.justice.digital.hmpps.integrations.delius.appointment.*
 import uk.gov.justice.digital.hmpps.integrations.delius.appointment.Appointment.Companion.URN_PREFIX
 import uk.gov.justice.digital.hmpps.integrations.delius.appointment.AppointmentOutcome.Code.ATTENDED_COMPLIED
-import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.RegistrationRepository
 import uk.gov.justice.digital.hmpps.messaging.Notifier
 import java.time.ZonedDateTime
 
@@ -23,7 +21,7 @@ class RecreateAppointment(
     private val teamRepository: AppointmentTeamRepository,
     private val locationRepository: AppointmentLocationRepository,
     private val notifier: Notifier,
-    private val mappaCategoryResolver: MappaCategoryResolver,
+    private val mappaCategoryResolverService: MappaCategoryResolverService,
 ) {
     @Transactional
     fun recreate(id: Long, request: RecreateAppointmentRequest): RecreatedAppointment {
@@ -56,7 +54,7 @@ class RecreateAppointment(
             notifier.contactCreated(
                 newAppointment.id!!,
                 true,
-                mappaCategoryResolver.resolveMappaCategory(original.person.id),
+                mappaCategoryResolverService.resolveMappaCategory(original.person.id),
                 original.person.crn
             )
         }

@@ -19,7 +19,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.ContactR
 import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.DocumentRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.SentenceAppointmentRepository
 import uk.gov.justice.digital.hmpps.messaging.HmppsChannelManager
-import uk.gov.justice.digital.hmpps.service.MappaCategoryResolver
+import uk.gov.justice.digital.hmpps.service.MappaCategoryResolverService
 
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = RANDOM_PORT)
@@ -67,5 +67,5 @@ open class IntegrationTestBase {
     lateinit var channelManager: HmppsChannelManager
 
     @MockitoBean
-    lateinit var mappaCategoryResolver: MappaCategoryResolver
+    lateinit var mappaCategoryResolverService: MappaCategoryResolverService
 }

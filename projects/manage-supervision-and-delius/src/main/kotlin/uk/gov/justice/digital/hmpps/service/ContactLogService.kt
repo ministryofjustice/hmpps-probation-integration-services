@@ -36,7 +36,7 @@ class ContactLogService(
     private val teamRepository: TeamRepository,
     private val contactTypeRequirementTypeRepository: ContactTypeRequirementTypeRepository,
     private val notifier: Notifier,
-    private val mappaCategoryResolver: MappaCategoryResolver
+    private val mappaCategoryResolverService: MappaCategoryResolverService
 ) : AuditableService(auditedInteractionService) {
 
     @Transactional
@@ -89,7 +89,7 @@ class ContactLogService(
                 )
             )
 
-            val category = mappaCategoryResolver.resolveMappaCategory(person.id)
+            val category = mappaCategoryResolverService.resolveMappaCategory(person.id)
 
             notifier.contactCreated(savedContact.id, createContact.visorReport, category, crn)
 

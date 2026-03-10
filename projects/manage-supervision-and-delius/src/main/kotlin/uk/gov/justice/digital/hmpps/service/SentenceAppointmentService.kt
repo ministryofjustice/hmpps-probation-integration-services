@@ -38,7 +38,7 @@ class SentenceAppointmentService(
     private val userService: UserService,
     private val outcomeService: AppointmentOutcomeService,
     private val notifier: Notifier,
-    private val mappaCategoryResolver: MappaCategoryResolver,
+    private val mappaCategoryResolverService: MappaCategoryResolverService,
 ) : AuditableService(auditedInteractionService) {
 
     private fun getOverlaps(
@@ -122,7 +122,7 @@ class SentenceAppointmentService(
             }
 
             if (createAppointment.visorReport == true && saved.id != null) {
-                val category = mappaCategoryResolver.resolveMappaCategory(om.person.id)
+                val category = mappaCategoryResolverService.resolveMappaCategory(om.person.id)
                 notifier.contactCreated(saved.id, true, category, crn)
             }
 
