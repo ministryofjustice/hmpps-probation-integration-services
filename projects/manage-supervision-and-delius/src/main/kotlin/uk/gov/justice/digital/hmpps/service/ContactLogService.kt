@@ -81,7 +81,7 @@ class ContactLogService(
                     notes = """
                     ${createContact.notes}
                     
-                    This contact was automatically created by the Manage Supervision integrations service.
+                    This contact was created in the Manage people on probation service.
                 """.trimIndent(),
                     alert = createContact.alert,
                     sensitive = createContact.sensitive,

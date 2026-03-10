@@ -126,7 +126,7 @@ class ContactLogIntegrationTest : IntegrationTestBase() {
         assertThat(savedContact.notes, Matchers.containsString("Test"))
         assertThat(
             savedContact.notes,
-            Matchers.containsString("This contact was automatically created by the Manage Supervision integrations service.")
+            Matchers.containsString("This contact was created in the Manage people on probation service.")
         )
         assertThat(savedContact.date, equalTo(LocalDate.of(2023, 1, 1)))
         assertThat(savedContact.startTime, isCloseTo(LocalTime.of(10, 0)))
