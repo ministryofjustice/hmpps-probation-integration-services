@@ -5,7 +5,9 @@ import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.integrations.delius.domainevent.entity.DomainEvent
 import uk.gov.justice.digital.hmpps.integrations.delius.domainevent.entity.DomainEventRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.DeRegistration
+import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.Person
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.Registration
+import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.RegistrationRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.ReferenceData
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.ReferenceDataRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.domainEventType
@@ -19,7 +21,8 @@ import java.time.ZonedDateTime
 class DomainEventService(
     private val objectMapper: ObjectMapper,
     private val referenceDataRepository: ReferenceDataRepository,
-    private val domainEventRepository: DomainEventRepository
+    private val domainEventRepository: DomainEventRepository,
+    private val registrationRepository: RegistrationRepository,
 ) {
     fun publish(hmppsDomainEvent: HmppsDomainEvent) = domainEventRepository.save(
         DomainEvent(
@@ -83,6 +86,28 @@ class DomainEventService(
             )
         )
     )
+
+    fun publishVisorContact(person: Person, contactId: Long) {
+        publish(
+            HmppsDomainEvent(
+                eventType = ReferenceData.Code.MAPPA_INFORMATION_CREATED.value,
+                version = 1,
+                description = "MAPPA information has been created in NDelius",
+                occurredAt = ZonedDateTime.now(),
+                personReference = forCrn(person.crn),
+                additionalInformation = mapOf(
+                    "contactId" to contactId,
+                    "mapps" to mapOf(
+                        "category" to resolveMappaCategory(person.id)
+                    )
+                )
+            )
+        )
+    }
+
+    private fun resolveMappaCategory(offenderId: Long): Int {
+        return registrationRepository.findByMappaByPersonId(offenderId) ?: 0
+    }
 
     private fun forCrn(crn: String) = PersonReference(listOf(PersonIdentifier("CRN", crn)))
 }

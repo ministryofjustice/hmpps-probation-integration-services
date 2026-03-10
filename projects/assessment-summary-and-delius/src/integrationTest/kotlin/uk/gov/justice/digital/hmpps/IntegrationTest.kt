@@ -8,6 +8,8 @@ import org.hamcrest.Matchers.*
 import org.hamcrest.core.IsEqual.equalTo
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertNotNull
+import org.junit.jupiter.api.assertNull
 import org.mockito.ArgumentMatchers.anyMap
 import org.mockito.kotlin.*
 import org.springframework.beans.factory.annotation.Autowired
@@ -36,6 +38,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactTy
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactType.Code.DEREGISTRATION
 import uk.gov.justice.digital.hmpps.integrations.delius.domainevent.entity.DomainEventRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.*
+import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.ReferenceData
 import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
 import uk.gov.justice.digital.hmpps.message.Notification
 import uk.gov.justice.digital.hmpps.message.PersonIdentifier
@@ -47,6 +50,7 @@ import uk.gov.justice.digital.hmpps.service.AssessmentSubmitted.Companion.UPDATE
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import java.math.BigDecimal
 import java.time.LocalDate
+import kotlin.collections.firstOrNull
 
 @SpringBootTest
 @DirtiesContext
@@ -118,6 +122,14 @@ internal class IntegrationTest @Autowired constructor(
         assertThat(contact.externalReference, equalTo("urn:uk:gov:hmpps:oasys:assessment:${assessment?.oasysId}"))
         assertThat(contact.copyToVisor, equalTo(false))
         assertThat(contact.visorExported, equalTo(null))
+
+        // domain event NOT raised for visor
+        val domainEventForVisor = domainEventRepository.findAllForCrn(person.crn)
+            .firstOrNull {
+                (it.eventType == ReferenceData.Code.MAPPA_INFORMATION_CREATED.value) &&
+                    (it.additionalInformation["contactId"].toString() == contact.id.toString())
+            }
+        assertNull(domainEventForVisor)
     }
 
     @Test
@@ -195,6 +207,15 @@ internal class IntegrationTest @Autowired constructor(
                 "De-registration of type Description of RHRH"
             )
         )
+        // domain event raised for visor
+        val domainEventForVisor = domainEventRepository.findAllForCrn(person.crn)
+            .firstOrNull {
+                (it.eventType == ReferenceData.Code.MAPPA_INFORMATION_CREATED.value) &&
+                    (it.additionalInformation["contactId"].toString() == contact.id.toString())
+            }
+        assertNotNull(domainEventForVisor)
+        assertThat(domainEventForVisor.description, equalTo("MAPPA information has been created in NDelius"))
+        assertThat(domainEventForVisor.additionalInformation["mapps"], equalTo(mapOf("category" to 1)))
     }
 
     @Test
