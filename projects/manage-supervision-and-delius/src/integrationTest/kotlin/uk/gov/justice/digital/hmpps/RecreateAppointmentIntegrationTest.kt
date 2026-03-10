@@ -255,8 +255,8 @@ class RecreateAppointmentIntegrationTest : IntegrationTestBase() {
         val original = sentenceAppointmentRepository.save(
             AppointmentGenerator.generateAppointment(
                 person,
-                ZonedDateTime.now().plusDays(7),
-                ZonedDateTime.now().plusDays(7).plusMinutes(30),
+                ZonedDateTime.now().plusDays(45),
+                ZonedDateTime.now().plusDays(45).plusMinutes(30),
                 notes = "Notes on the original appointment"
             )
         )
@@ -283,8 +283,8 @@ class RecreateAppointmentIntegrationTest : IntegrationTestBase() {
         val original = sentenceAppointmentRepository.save(
             AppointmentGenerator.generateAppointment(
                 person,
-                ZonedDateTime.now().plusDays(7),
-                ZonedDateTime.now().plusDays(7).plusMinutes(30),
+                ZonedDateTime.now().plusDays(46),
+                ZonedDateTime.now().plusDays(46).plusMinutes(30),
                 notes = "Notes on the original appointment"
             )
         )

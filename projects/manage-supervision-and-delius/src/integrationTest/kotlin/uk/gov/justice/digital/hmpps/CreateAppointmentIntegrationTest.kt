@@ -90,8 +90,8 @@ class CreateAppointmentIntegrationTest : IntegrationTestBase() {
                 CreateAppointment(
                     user,
                     type = CreateAppointment.Type.InitialAppointmentInOfficeNS.code,
-                    start = ZonedDateTime.now().plusHours(1),
-                    end = ZonedDateTime.now().plusDays(1),
+                    start = ZonedDateTime.now().plusDays(30),
+                    end = ZonedDateTime.now().plusDays(30).plusHours(1),
                     eventId = PersonGenerator.EVENT_1.id,
                     visorReport = true,
                     uuid = UUID.randomUUID()
@@ -113,8 +113,8 @@ class CreateAppointmentIntegrationTest : IntegrationTestBase() {
                 CreateAppointment(
                     user,
                     type = CreateAppointment.Type.InitialAppointmentInOfficeNS.code,
-                    start = ZonedDateTime.now().plusHours(1),
-                    end = ZonedDateTime.now().plusDays(1),
+                    start = ZonedDateTime.now().plusDays(31),
+                    end = ZonedDateTime.now().plusDays(31).plusHours(1),
                     eventId = PersonGenerator.EVENT_1.id,
                     visorReport = false,
                     uuid = UUID.randomUUID()
