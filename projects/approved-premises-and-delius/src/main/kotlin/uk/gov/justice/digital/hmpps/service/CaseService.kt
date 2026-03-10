@@ -143,7 +143,6 @@ fun Map<Boolean, List<Registration>>.mappa() = get(true)?.firstOrNull {
 
 fun Map<Boolean, List<Registration>>.flags() = get(false)?.map { it.asRegistration() } ?: listOf()
 
-
 val NOTE_HEADER_REGEX = Regex(
     "^Comment added by (.+?) on (\\d{2}/\\d{2}/\\d{4}) at \\d{2}:\\d{2}${System.lineSeparator()}"
 )

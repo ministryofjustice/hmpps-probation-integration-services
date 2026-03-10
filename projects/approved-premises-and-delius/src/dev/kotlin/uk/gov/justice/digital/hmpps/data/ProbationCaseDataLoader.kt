@@ -79,8 +79,8 @@ class ProbationCaseDataLoader(private val dataManager: DataManager) {
                 ProbationCaseGenerator.CASE_COMPLEX.asPerson(),
                 ReferenceDataGenerator.REGISTER_TYPES[RegisterType.Code.SEX_OFFENCE.value]!!,
                 LocalDate.now().minusDays(7),
-                 notes = riskNotes,
-                )
+                notes = riskNotes,
+            )
         )
 
         generateEventAndAddOffences(
