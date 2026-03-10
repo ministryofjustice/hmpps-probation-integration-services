@@ -5,6 +5,8 @@ import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.NumericBooleanConverter
 import org.hibernate.type.YesNoConverter
+import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
@@ -278,16 +280,14 @@ interface RegistrationRepository : JpaRepository<Registration, Long> {
         typeCodes: List<String>
     ): List<Registration>
 
-    @EntityGraph(attributePaths = ["contact", "type.flag", "type.registrationContactType", "type.reviewContactType", "reviews.contact"])
     @Query(
         """select case when r.category.code = 'M1' then 1 
             when r.category.code = 'M2' then 2 
             when r.category.code = 'M3' then 3 
             when r.category.code = 'M4' then 4 
             else 0 end
-            from Registration r where r.personId = :personId and r.type.code = 'MAPP' order by r.id desc"""
-    )
-    fun findByMappaByPersonId(personId: Long): List<Int>
+            from Registration r where r.personId = :personId and r.type.code = 'MAPP' order by r.id desc""" )
+    fun findByMappaByPersonId(personId: Long, pageable: Pageable = PageRequest.of(0,1)): Int?
 
     @Query(
         """
