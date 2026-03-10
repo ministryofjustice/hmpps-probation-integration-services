@@ -285,7 +285,8 @@ interface RegistrationRepository : JpaRepository<Registration, Long> {
             when r.category.code = 'M3' then 3 
             when r.category.code = 'M4' then 4 
             else 0 end
-            from Registration r where r.personId = :personId and r.type.code = 'MAPP' order by r.id desc""" )
+            from Registration r where r.personId = :personId and r.type.code = 'MAPP' order by r.id desc"""
+    )
     fun findByMappaByPersonId(personId: Long): List<Int>
 
     @Query(
