@@ -28,50 +28,50 @@ class ProjectsIntegrationTest @Autowired constructor(
                 content {
                     json(
                         """
-                            {
-                              "name": "Default UPW Project",
-                              "code": "N01P01",
-                              "type": {
-                                "name": "Group Placement",
-                                "code": "G"
-                              },
-                              "team": {
-                                "name": "N01 UPW Team",
-                                "code": "N01UPW"
-                              },
-                              "provider": {
-                                "name": "N01 Provider",
-                                "code": "N01"
-                              },
-                              "location": {
-                                "streetName": "Test Street",
-                                "addressNumber": "123",
-                                "townCity": "Town",
-                                "postCode": "AB12CD"
-                              },
-                              "beneficiary": {
-                                "name": "Beneficiary",
-                                "contactName": "Joe Bloggs",
-                                "emailAddress": "joebloggs@example.com",
-                                "website": "https://example.com",
-                                "location": {
-                                  "streetName": "Test Street",
-                                  "addressNumber": "123",
-                                  "townCity": "Town",
-                                  "postCode": "AB12CD"
-                                }
-                              },
-                              "hiVisRequired": false,
-                              "expectedEndDateExclusive": "${UPW_PROJECT_1.expectedEndDate}",
-                              "availability": [
-                                {
-                                    "frequency": "Weekly",
-                                    "dayOfWeek": "MONDAY",
-                                    "startDateInclusive": "${DEFAULT_UPW_PROJECT_AVAILABILITY.startDate}",
-                                    "endDateExclusive": "${DEFAULT_UPW_PROJECT_AVAILABILITY.endDate}"
-                                }
-                              ]
+                        {
+                          "name": "Default UPW Project",
+                          "code": "N01P01",
+                          "type": {
+                            "name": "Individual Placement",
+                            "code": "I"
+                          },
+                          "team": {
+                            "name": "N01 UPW Team",
+                            "code": "N01UPW"
+                          },
+                          "provider": {
+                            "name": "N01 Provider",
+                            "code": "N01"
+                          },
+                          "location": {
+                            "streetName": "Test Street",
+                            "addressNumber": "123",
+                            "townCity": "Town",
+                            "postCode": "AB12CD"
+                          },
+                          "beneficiary": {
+                            "name": "Beneficiary",
+                            "contactName": "Joe Bloggs",
+                            "emailAddress": "joebloggs@example.com",
+                            "website": "https://example.com",
+                            "location": {
+                              "streetName": "Test Street",
+                              "addressNumber": "123",
+                              "townCity": "Town",
+                              "postCode": "AB12CD"
                             }
+                          },
+                          "hiVisRequired": false,
+                          "expectedEndDateExclusive": "${UPW_PROJECT_1.expectedEndDate}",
+                          "availability": [
+                            {
+                              "frequency": "Weekly",
+                              "dayOfWeek": "MONDAY",
+                              "startDateInclusive": "${DEFAULT_UPW_PROJECT_AVAILABILITY.startDate}",
+                              "endDateExclusive": "${DEFAULT_UPW_PROJECT_AVAILABILITY.endDate}"
+                            }
+                          ]
+                        }
                         """.trimIndent(), JsonCompareMode.STRICT
                     )
                 }

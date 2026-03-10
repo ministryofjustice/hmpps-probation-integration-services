@@ -79,12 +79,12 @@ class ProvidersIntegrationTest @Autowired constructor(
     @Test
     fun `can retrieve all upw projects for provider and team`() {
         mockMvc
-            .get("/providers/N02/teams/N02UP2/projects?typeCode=I&page=0&size=10") { withToken() }
+            .get("/providers/N02/teams/N02UP2/projects?typeCode=ET1&page=0&size=10") { withToken() }
             .andExpect {
                 status { isOk() }
                 jsonPath("$.content.length()") { value(1) }
                 jsonPath("$.content[0].project.code") { value(UPWGenerator.UPW_PROJECT_2.code) }
-                jsonPath("$.content[0].project.type.code") { value("I") }
+                jsonPath("$.content[0].project.type.code") { value("ET1") }
                 jsonPath("$.content[0].project.team.code") { value("N02UP2") }
                 jsonPath("$.content[0].overdueOutcomesCount") { value(11) }
                 jsonPath("$.content[0].oldestOverdueInDays") { value(1) }
@@ -94,12 +94,12 @@ class ProvidersIntegrationTest @Autowired constructor(
     @Test
     fun `can sort projects by name`() {
         mockMvc
-            .get("/providers/N01/teams/N01UPW/projects?typeCode=G&sort=name,asc") { withToken() }
+            .get("/providers/N01/teams/N01UPW/projects?typeCode=I&sort=name,asc") { withToken() }
             .andExpect {
                 status { isOk() }
-                jsonPath("$.content.length()") { value(2) }
+                jsonPath("$.content.length()") { value(1) }
                 jsonPath("$.content[0].project.name") { value("Default UPW Project") }
-                jsonPath("$.content[1].project.name") { value("Third UPW Project") }
+                jsonPath("$.content[0].project.type.name") { value("Individual Placement") }
             }
     }
 

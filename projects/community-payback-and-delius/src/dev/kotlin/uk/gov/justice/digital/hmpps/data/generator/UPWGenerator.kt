@@ -41,7 +41,7 @@ object UPWGenerator {
         code = "N01P01",
         team = TeamGenerator.DEFAULT_UPW_TEAM,
         placementAddress = DEFAULT_ADDRESS,
-        projectType = ReferenceDataGenerator.GROUP_PLACEMENT_PROJECT_TYPE,
+        projectType = ReferenceDataGenerator.INDIVIDUAL_PLACEMENT_PROJECT_TYPE,
         expectedEndDate = LocalDate.now().plusMonths(4)
     )
     val UPW_PROJECT_2 = generateUpwProject(
@@ -49,7 +49,7 @@ object UPWGenerator {
         code = "N01P02",
         team = TeamGenerator.OTHER_PROVIDER_TEAM,
         placementAddress = DEFAULT_ADDRESS,
-        projectType = ReferenceDataGenerator.INDIVIDUAL_PLACEMENT_PROJECT_TYPE
+        projectType = ReferenceDataGenerator.ELEARNING_PROJECT_TYPE
     )
     val UPW_PROJECT_3 = generateUpwProject(
         name = "Third UPW Project",

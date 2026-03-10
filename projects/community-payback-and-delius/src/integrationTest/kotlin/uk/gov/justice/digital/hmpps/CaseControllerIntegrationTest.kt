@@ -3,15 +3,14 @@ package uk.gov.justice.digital.hmpps
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc
 import org.springframework.test.json.JsonCompareMode
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
 import uk.gov.justice.digital.hmpps.advice.ErrorResponse
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.UPWGenerator
-import uk.gov.justice.digital.hmpps.model.Code
 import uk.gov.justice.digital.hmpps.model.ScheduleResponse
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
@@ -71,12 +70,58 @@ class CaseControllerIntegrationTest @Autowired constructor(
 
     @Test
     fun `returns 200 when summary requested`() {
-        val expected =
-            """{"unpaidWorkDetails":[{"eventNumber":1,"sentenceDate": "2026-01-01","requiredMinutes":7200,"adjustments":4,"completedMinutes":870,"completedEteMinutes":870},{"eventNumber":2,"sentenceDate": "2026-01-02","requiredMinutes":10800,"adjustments":0,"completedMinutes":405,"completedEteMinutes":405},{"eventNumber":3,"sentenceDate": "2026-01-03","requiredMinutes":0,"adjustments":0,"completedMinutes":0,"completedEteMinutes":0},{"eventNumber":4,"sentenceDate": "2026-01-04","requiredMinutes":600000,"adjustments":0,"completedMinutes":0,"completedEteMinutes":0},{"eventNumber":5,"sentenceDate": "2026-01-05","requiredMinutes":0,"adjustments":0,"completedMinutes":0,"completedEteMinutes":0}]}"""
         mockMvc.get("/case/${PersonGenerator.DEFAULT_PERSON.crn}/summary") { withToken() }
             .andExpect {
                 status { isOk() }
-                content { json(expected, JsonCompareMode.STRICT) }
+                content {
+                    json(
+                        """
+                        {
+                          "unpaidWorkDetails": [
+                            {
+                              "eventNumber": 1,
+                              "sentenceDate": "2026-01-01",
+                              "requiredMinutes": 7200,
+                              "adjustments": 4,
+                              "completedMinutes": 870,
+                              "completedEteMinutes": 0
+                            },
+                            {
+                              "eventNumber": 2,
+                              "sentenceDate": "2026-01-02",
+                              "requiredMinutes": 10800,
+                              "adjustments": 0,
+                              "completedMinutes": 405,
+                              "completedEteMinutes": 405
+                            },
+                            {
+                              "eventNumber": 3,
+                              "sentenceDate": "2026-01-03",
+                              "requiredMinutes": 0,
+                              "adjustments": 0,
+                              "completedMinutes": 0,
+                              "completedEteMinutes": 0
+                            },
+                            {
+                              "eventNumber": 4,
+                              "sentenceDate": "2026-01-04",
+                              "requiredMinutes": 600000,
+                              "adjustments": 0,
+                              "completedMinutes": 0,
+                              "completedEteMinutes": 0
+                            },
+                            {
+                              "eventNumber": 5,
+                              "sentenceDate": "2026-01-05",
+                              "requiredMinutes": 0,
+                              "adjustments": 0,
+                              "completedMinutes": 0,
+                              "completedEteMinutes": 0
+                            }
+                          ]
+                        }""".trimIndent(), JsonCompareMode.STRICT
+                    )
+                }
             }
     }
 

@@ -3,8 +3,8 @@ package uk.gov.justice.digital.hmpps
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
 import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator.ATTENDED_COMPLIED_CONTACT_OUTCOME
@@ -23,10 +23,21 @@ class ReferenceDataIntegrationTest @Autowired constructor(
     fun `can retrieve all selectable unpaid work project types`() {
         val response = mockMvc
             .get("/reference-data/project-types") { withToken() }
-            .andExpect { status { is2xxSuccessful() } }
-            .andReturn().response.contentAsJson<List<CodeDescription>>()
-
-        assertThat(response.size).isEqualTo(2)
+            .andExpect {
+                status { is2xxSuccessful() }
+                content {
+                    json(
+                        """
+                    [
+                        {"code": "G", "description": "Group Placement"},
+                        {"code": "I", "description": "Individual Placement"},
+                        {"code": "ET1", "description": "ETE - E-Learning"},
+                        {"code": "ET9", "description": "ETE - Training"}
+                    ]
+                    """.trimIndent()
+                    )
+                }
+            }
     }
 
     @Test

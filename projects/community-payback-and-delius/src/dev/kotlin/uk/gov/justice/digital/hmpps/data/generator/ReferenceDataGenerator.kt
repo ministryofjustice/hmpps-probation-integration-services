@@ -22,6 +22,16 @@ object ReferenceDataGenerator {
         description = "Individual Placement",
         datasetId = DatasetGenerator.UPW_PROJECT_TYPE_DATASET.id
     )
+    val ELEARNING_PROJECT_TYPE = generateReferenceData(
+        code = "ET1",
+        description = "ETE - E-Learning",
+        datasetId = DatasetGenerator.UPW_PROJECT_TYPE_DATASET.id
+    )
+    val TRAINING_PROJECT_TYPE = generateReferenceData(
+        code = "ET9",
+        description = "ETE - Training",
+        datasetId = DatasetGenerator.UPW_PROJECT_TYPE_DATASET.id
+    )
     val INACTIVE_PROJECT_TYPE = generateReferenceData(
         code = "NA",
         description = "Individual Placement",
