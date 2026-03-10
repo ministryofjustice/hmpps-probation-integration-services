@@ -214,6 +214,8 @@ internal class IntegrationTest @Autowired constructor(
                     (it.additionalInformation["contactId"].toString() == contact.id.toString())
             }
         assertNotNull(domainEventForVisor)
+        assertThat(domainEventForVisor.description, equalTo("MAPPA information has been created in NDelius"))
+        assertThat(domainEventForVisor.additionalInformation["mapps"], equalTo(mapOf("category" to 1)))
     }
 
     @Test
