@@ -88,17 +88,23 @@ class DomainEventService(
     )
 
     fun publishVisorContact(person: Person, contactId: Long) {
-        publish(HmppsDomainEvent(
-            eventType = ReferenceData.Code.MAPPA_INFORMATION_CREATED.value,
-            version = 1,
-            description = "MAPPA information has been created in NDelius",
-            occurredAt = ZonedDateTime.now(),
-            personReference = forCrn(person.crn),
-            additionalInformation = mapOf("contactId" to contactId,
-                "mapps" to mapOf(
-                    "category" to resolveMappaCategory(person.id)))
-        ))
+        publish(
+            HmppsDomainEvent(
+                eventType = ReferenceData.Code.MAPPA_INFORMATION_CREATED.value,
+                version = 1,
+                description = "MAPPA information has been created in NDelius",
+                occurredAt = ZonedDateTime.now(),
+                personReference = forCrn(person.crn),
+                additionalInformation = mapOf(
+                    "contactId" to contactId,
+                    "mapps" to mapOf(
+                        "category" to resolveMappaCategory(person.id)
+                    )
+                )
+            )
+        )
     }
+
     private fun resolveMappaCategory(offenderId: Long): Int {
         val registration = registrationRepository
             .findFirstByPersonIdAndTypeCodeOrderByIdDesc(
