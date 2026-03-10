@@ -71,11 +71,19 @@ data class Offence(
     val eventNumber: String
 )
 
-data class Registration(val code: String, val description: String, val startDate: LocalDate)
+data class Registration(val code: String, val description: String, val startDate: LocalDate, val riskNotes: List<NoteDetail> = emptyList())
 
 data class Sentence(
     val typeDescription: String?,
     val startDate: LocalDate? = null,
     val endDate: LocalDate? = null,
     val eventNumber: String? = null,
+)
+
+data class NoteDetail(
+    val id: Int,
+    val createdBy: String? = null,
+    val createdByDate: LocalDate? = null,
+    val note: String,
+    val hasNoteBeenTruncated: Boolean? = null
 )

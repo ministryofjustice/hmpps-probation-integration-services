@@ -41,8 +41,9 @@ object PersonGenerator {
         softDeleted: Boolean = false,
         deregistered: Boolean = false,
         lastUpdatedDateTime: ZonedDateTime = ZonedDateTime.now(),
-        id: Long = IdGenerator.getAndIncrement()
-    ) = Registration(person.id, type, category, level, date, softDeleted, deregistered, lastUpdatedDateTime, id)
+        id: Long = IdGenerator.getAndIncrement(),
+        notes: String? = null
+    ) = Registration(person.id, type, category, level, date, softDeleted, deregistered, lastUpdatedDateTime, notes, id)
 }
 
 object PersonManagerGenerator {
