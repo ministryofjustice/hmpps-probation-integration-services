@@ -74,9 +74,6 @@ class Nsi(@Id @Column(name = "nsi_id") val id: Long, @Column(name = "event_id") 
 @Table(name = "personal_circumstance")
 class PersonalCircumstance(@Id @Column(name = "personal_circumstance_id") val id: Long, val startDate: LocalDate)
 
-@Entity
-class PersonalContact(@Id val personalContactId: Long, val relationshipTypeId: Long, val relationship: String)
-
 @Entity(name = "ReferralEntity")
 @Table(name = "referral")
 class Referral(@Id val referralId: Long, val referralTypeId: Long, val referralDate: LocalDate, val eventId: Long)

@@ -25,7 +25,38 @@ data class CaseDetail(
     val mappaDetail: MappaDetail?,
     val careLeaver: Boolean,
     val veteran: Boolean,
-    val sentences: List<Sentence>
+    val sentences: List<Sentence>,
+    val personalContacts: List<PersonalContact>? = listOf(),
+)
+
+data class PersonalContact(
+    val relationship: String,
+    val relationshipType: Type,
+    val name: ContactName,
+    val telephoneNumber: String?,
+    val mobileNumber: String?,
+    val address: Address?
+)
+
+data class Type(
+    val code: String,
+    val description: String
+)
+
+data class ContactName(
+    val forename: String,
+    val middleName: String?,
+    val surname: String
+)
+
+data class Address(
+    val buildingName: String?,
+    val addressNumber: String?,
+    val streetName: String?,
+    val district: String?,
+    val town: String?,
+    val county: String?,
+    val postcode: String?
 )
 
 data class Name(val forename: String, val surname: String, val middleNames: List<String>)
