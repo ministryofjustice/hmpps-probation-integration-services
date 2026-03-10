@@ -139,7 +139,7 @@ class RecreateAppointmentIntegrationTest : IntegrationTestBase() {
                 notes = "Notes on the original appointment"
             )
         )
-        val request = recreateRequest(locationCode = DEFAULT_LOCATION.code, notes = "Notes to be appended")
+        val request = recreateRequest(locationCode = DEFAULT_LOCATION.code, notes = "Notes to be appended", sendToVisor = false)
 
         val recreated =
             mockMvc.put("/appointments/${original.id}/recreate") {
@@ -163,6 +163,8 @@ class RecreateAppointmentIntegrationTest : IntegrationTestBase() {
         )
         assertThat(recreated.externalReference).isEqualTo(Appointment.URN_PREFIX + request.uuid)
         assertThat(appointment.externalReference).isEqualTo(Appointment.URN_PREFIX + request.uuid)
+
+        verifyNoInteractions(notifier)
     }
 
     @Test
@@ -224,7 +226,8 @@ class RecreateAppointmentIntegrationTest : IntegrationTestBase() {
         val request = recreateRequest(
             date = LocalDate.now().plusDays(3),
             sensitive = true,
-            notes = "Some sensitive notes to append"
+            notes = "Some sensitive notes to append",
+            sendToVisor = true,
         )
 
         val recreated = mockMvc.put("/appointments/${original.id}/recreate") {
@@ -247,62 +250,7 @@ class RecreateAppointmentIntegrationTest : IntegrationTestBase() {
         )
         assertThat(recreated.externalReference).isEqualTo(Appointment.URN_PREFIX + request.uuid)
         assertThat(appointment.externalReference).isEqualTo(Appointment.URN_PREFIX + request.uuid)
-    }
-
-    @Test
-    fun `recreate with visor flag is true`() {
-        val person = PersonGenerator.RECREATE_APPT_PERSON_1
-        val original = sentenceAppointmentRepository.save(
-            AppointmentGenerator.generateAppointment(
-                person,
-                ZonedDateTime.now().plusDays(45),
-                ZonedDateTime.now().plusDays(45).plusMinutes(30),
-                notes = "Notes on the original appointment"
-            )
-        )
-        val request = recreateRequest(
-            date = LocalDate.now().plusDays(3),
-            sendToVisor = true,
-            sensitive = true,
-            notes = "Some sensitive notes to append"
-        )
-
-        val recreated = mockMvc.put("/appointments/${original.id}/recreate") {
-            withUserToken(PI_USER.username)
-            json = request
-        }
-            .andExpect { status { isOk() } }
-            .andReturn().response.contentAsJson<RecreatedAppointment>()
-
         verify(notifier, times(1)).contactCreated(any(), eq(true), any(), any())
-    }
-
-    @Test
-    fun `recreate with visor flag is false`() {
-        val person = PersonGenerator.RECREATE_APPT_PERSON_1
-        val original = sentenceAppointmentRepository.save(
-            AppointmentGenerator.generateAppointment(
-                person,
-                ZonedDateTime.now().plusDays(46),
-                ZonedDateTime.now().plusDays(46).plusMinutes(30),
-                notes = "Notes on the original appointment"
-            )
-        )
-        val request = recreateRequest(
-            date = LocalDate.now().plusDays(3),
-            sendToVisor = false,
-            sensitive = true,
-            notes = "Some sensitive notes to append"
-        )
-
-        val recreated = mockMvc.put("/appointments/${original.id}/recreate") {
-            withUserToken(PI_USER.username)
-            json = request
-        }
-            .andExpect { status { isOk() } }
-            .andReturn().response.contentAsJson<RecreatedAppointment>()
-
-        verifyNoInteractions(notifier)
     }
 
     @Test

@@ -82,52 +82,6 @@ class CreateAppointmentIntegrationTest : IntegrationTestBase() {
             }
     }
 
-    @Test
-    fun `appointment with visor flag set to true`() {
-        mockMvc.post("/appointment/${PersonGenerator.PERSON_1.crn}") {
-            withToken()
-            json =
-                CreateAppointment(
-                    user,
-                    type = CreateAppointment.Type.InitialAppointmentInOfficeNS.code,
-                    start = ZonedDateTime.now().plusDays(30),
-                    end = ZonedDateTime.now().plusDays(30).plusHours(1),
-                    eventId = PersonGenerator.EVENT_1.id,
-                    visorReport = true,
-                    uuid = UUID.randomUUID()
-                )
-
-        }
-            .andExpect {
-                status { isCreated() }
-            }
-
-        verify(notifier, times(1)).contactCreated(any(), eq(true), any(), any())
-    }
-
-    @Test
-    fun `appointment with visor flag set to false`() {
-        mockMvc.post("/appointment/${PersonGenerator.PERSON_1.crn}") {
-            withToken()
-            json =
-                CreateAppointment(
-                    user,
-                    type = CreateAppointment.Type.InitialAppointmentInOfficeNS.code,
-                    start = ZonedDateTime.now().plusDays(31),
-                    end = ZonedDateTime.now().plusDays(31).plusHours(1),
-                    eventId = PersonGenerator.EVENT_1.id,
-                    visorReport = false,
-                    uuid = UUID.randomUUID()
-                )
-
-        }
-            .andExpect {
-                status { isCreated() }
-            }
-
-        verifyNoInteractions(notifier)
-    }
-
     @ParameterizedTest
     @MethodSource("createAppointment")
     fun `create a new appointment without notes`(createAppointment: CreateAppointment) {
@@ -164,6 +118,12 @@ class CreateAppointmentIntegrationTest : IntegrationTestBase() {
             assertThat(appointment.complied).isEqualTo("Y")
         }
 
+        if (createAppointment.visorReport == true) {
+            verify(notifier, times(1)).contactCreated(any(), eq(true), any(), any())
+        } else {
+            verifyNoInteractions(notifier)
+        }
+
         sentenceAppointmentRepository.deleteById(appointment.id!!)
     }
 
@@ -179,7 +139,8 @@ class CreateAppointmentIntegrationTest : IntegrationTestBase() {
                     start = ZonedDateTime.now().plusDays(1),
                     end = ZonedDateTime.now().plusDays(1).plusHours(1),
                     eventId = PersonGenerator.EVENT_1.id,
-                    uuid = UUID.randomUUID()
+                    uuid = UUID.randomUUID(),
+                    visorReport = true,
                 )
             ),
             Arguments.of(
