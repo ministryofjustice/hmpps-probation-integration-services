@@ -164,7 +164,7 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
     }
 
     fun loadLinkedListData() {
-        save(LinkedListGenerator.GROUP_PLACEMENT_ETE_LINKED_LIST)
-        save(LinkedListGenerator.INDIVIDUAL_PLACEMENT_ETE_LINKED_LIST)
+        save(LinkedListGenerator.ELEARNING_ETE_LINKED_LIST)
+        save(LinkedListGenerator.TRAINING_ETE_LINKED_LIST)
     }
 }

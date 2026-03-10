@@ -19,15 +19,15 @@ class LinkedList(
     @EmbeddedId
     val id: LinkedListId,
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "standard_reference_data1", insertable = false, updatable = false)
     val data1: ReferenceData,
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "standard_reference_data2", insertable = false, updatable = false)
     val data2: ReferenceData,
 )
 
 interface LinkedListRepository : JpaRepository<LinkedList, LinkedListId> {
-    fun findLinkedListsByData1_Code(data1Code: String): MutableList<LinkedList>
+    fun findByData1Code(data1Code: String): MutableList<LinkedList>
 }
