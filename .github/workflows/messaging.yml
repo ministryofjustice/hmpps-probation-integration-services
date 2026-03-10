@@ -71,6 +71,7 @@ jobs:
 
       - name: Replay messages
         env:
+          # TODO migrate to OIDC
           APP_INSIGHTS_APPLICATION_GUID: ${{ secrets.APP_INSIGHTS_APPLICATION_GUID }}
           APP_INSIGHTS_API_KEY: ${{ secrets.APP_INSIGHTS_API_KEY }}
           START_TIME: ${{ inputs.start_time }}

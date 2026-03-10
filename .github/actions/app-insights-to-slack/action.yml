@@ -44,14 +44,17 @@ inputs:
   slack_token:
     description: Slack token
     required: true
-  app_insights_key:
-    description: Application Insights API key
+  azure_app_id:
+    description: Azure Application Insights API Application ID
     required: true
-  app_insights_guid:
-    description: Application Insights GUID
+  azure_client_id:
+    description: Azure Client ID
     required: true
-  app_insights_subscription_id:
-    description: Application Insights Subscription ID
+  azure_tenant_id:
+    description: Azure Tenant ID
+    required: true
+  azure_subscription_id:
+    description: Azure Subscription ID
     required: true
 
 runs:
@@ -64,15 +67,11 @@ runs:
       env:
         event_name: ${{ inputs.event_name }}
 
-    - name: Search app insights
-      id: search
-      run: |
-        if [[ "$summarise_count_by" != "none"  ]]; then _query=$countQuery; else _query=$query; fi
-        echo "result=$(curl -fsSL -H "x-api-key: $key" --data-urlencode "query=$_query" --get "$url")" | tee -a "$GITHUB_OUTPUT"
+    - name: Build query
+      id: build
+      run: if [[ "$summarise_count_by" != "none" ]]; then echo "$countQuery"; else echo "$query"; fi > query.kql
       shell: bash
       env:
-        url: https://api.applicationinsights.io/v1/apps/${{ inputs.app_insights_guid }}/query
-        key: ${{ inputs.app_insights_key }}
         summarise_count_by: ${{ inputs.summarise_count_by }}
         query: |
           customEvents
@@ -103,18 +102,39 @@ runs:
           ) on customDimensions_message
           | project tostring(EventCount), customDimensions_${{ inputs.summarise_count_by }}, itemId, timestamp
           | order by EventCount desc
+
+    - name: Azure CLI Login
+      uses: azure/login@a457da9ea143d694b1b9c7c869ebb04ebe844ef5
+      with:
+        client-id: ${{ inputs.azure_client_id }}
+        tenant-id: ${{ inputs.azure_tenant_id }}
+        subscription-id: ${{ inputs.azure_subscription_id }}
+
+    - name: Search Application Insights
+      uses: azure/cli@9f7ce6f37c31b777ec6c6b6d1dfe7db79f497956
+      id: search
+      with:
+        inlineScript: |
+          token=$(az account get-access-token --resource https://api.applicationinsights.io --query accessToken -o tsv)
+          curl -fsSL -H "Authorization: Bearer $token" --data-urlencode "query=$(cat query.kql)" --get "$url" > result.json
+      env:
+        url: https://api.applicationinsights.io/v1/apps/${{ inputs.azure_app_id }}/query
+
     - name: Transform results into Slack message
       id: transform
-      if: fromJson(steps.search.outputs.result).tables[0].rows[0] != null
       shell: bash
       run: |
-        echo "result=$(echo "$search_result" | jq -rc \
+        count=$(jq -r '.tables[0].rows | length // 0' result.json)
+        echo "Found $count results."
+        if [[ "$count" -eq 0 ]]; then exit 0; fi
+
+        echo "result=$(jq -rc \
         --arg slack_channel "$slack_channel" \
         --arg title "$title" \
         --arg summary "$summary" \
         --arg column1_header "$column1_header" \
         --arg column2_header "$column2_header" \
-        --arg app_insights_subscription_id "$app_insights_subscription_id" \
+        --arg azure_subscription_id "$azure_subscription_id" \
         '
         .tables[0].rows |
         {
@@ -157,7 +177,7 @@ runs:
               },
               {
                 "type": "mrkdwn",
-                "text": (.[1] + " (<https://portal.azure.com/#blade/AppInsightsExtension/DetailsV2Blade/DataModel/%7B%22eventId%22:%22" + .[2] + "%22,%22timestamp%22:%22" + .[3] + "%22%7D/ComponentId/%7B%22Name%22:%22nomisapi-prod%22,%22ResourceGroup%22:%22nomisapi-prod-rg%22,%22SubscriptionId%22:%22\($app_insights_subscription_id)%22%7D|Details>).")
+                "text": (.[1] + " (<https://portal.azure.com/#blade/AppInsightsExtension/DetailsV2Blade/DataModel/%7B%22eventId%22:%22" + .[2] + "%22,%22timestamp%22:%22" + .[3] + "%22%7D/ComponentId/%7B%22Name%22:%22nomisapi-prod%22,%22ResourceGroup%22:%22nomisapi-prod-rg%22,%22SubscriptionId%22:%22\($azure_subscription_id)%22%7D|Details>).")
               }
             ]) | flatten)
           })) +
@@ -172,7 +192,7 @@ runs:
               ]
             }
           ])
-        }')" | tee -a "$GITHUB_OUTPUT"
+        }' result.json)" >> "$GITHUB_OUTPUT"
       env:
         search_result: ${{ steps.search.outputs.result }}
         slack_channel: ${{ inputs.slack_channel }}
@@ -180,7 +200,7 @@ runs:
         summary: ${{ inputs.summary }}
         column1_header: ${{ inputs.column1_header }}
         column2_header: ${{ inputs.column2_header }}
-        app_insights_subscription_id: ${{ inputs.app_insights_subscription_id }}
+        azure_subscription_id: ${{ inputs.azure_subscription_id }}
 
     - name: Send message to Slack
       id: send

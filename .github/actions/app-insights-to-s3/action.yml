@@ -14,11 +14,17 @@ inputs:
   bucket-prefix:
     description: S3 Bucket Object Prefix
     required: true
-  app-insights-key:
-    description: Application Insights API key
+  azure_app_id:
+    description: Azure Application Insights API Application ID
     required: true
-  app-insights-guid:
-    description: Application Insights GUID
+  azure_client_id:
+    description: Azure Client ID
+    required: true
+  azure_tenant_id:
+    description: Azure Tenant ID
+    required: true
+  azure_subscription_id:
+    description: Azure Subscription ID
     required: true
 
 runs:
@@ -32,16 +38,29 @@ runs:
         role-session-name: probation-integration-s3-export-${{ github.run_number }}
         role-duration-seconds: 1200
 
-    - name: Export Application Insights query result to S3
+    - name: Authenticate with Azure
+      uses: azure/login@a457da9ea143d694b1b9c7c869ebb04ebe844ef5
+      with:
+        client-id: ${{ inputs.azure_client_id }}
+        tenant-id: ${{ inputs.azure_tenant_id }}
+        subscription-id: ${{ inputs.azure_subscription_id }}
+
+    - name: Search Application Insights
+      uses: azure/cli@9f7ce6f37c31b777ec6c6b6d1dfe7db79f497956
       id: search
+      with:
+        inlineScript: |
+          token=$(az account get-access-token --resource https://api.applicationinsights.io --query accessToken -o tsv)
+          curl -fsSL -H "Authorization: Bearer $token" --data-urlencode "query=$query" --get "$url" > result.json
+      env:
+        url: https://api.applicationinsights.io/v1/apps/${{ inputs.azure_app_id }}/query
+        query: ${{ inputs.query }}
+
+    - name: Export to S3
       shell: bash # language=bash
       run: |
-        curl -fsSL -H "x-api-key: $key" --data-urlencode "query=$query" --get "$url" \
-          | jq -rc '.tables[0] | (.columns | map(.name)) as $cols | .rows[] | with_entries(.key |= $cols[.])' \
+        jq -rc '.tables[0] | (.columns | map(.name)) as $cols | .rows[] | with_entries(.key |= $cols[.])' result.json \
           | aws s3 cp - "s3://$bucket_name/$bucket_prefix" --acl bucket-owner-full-control --sse AES256
       env:
-        url: https://api.applicationinsights.io/v1/apps/${{ inputs.app-insights-guid }}/query
-        key: ${{ inputs.app-insights-key }}
-        query: ${{ inputs.query }}
         bucket_name: ${{ inputs.bucket-name }}
         bucket_prefix: ${{ inputs.bucket-prefix }}
