@@ -278,6 +278,8 @@ interface RegistrationRepository : JpaRepository<Registration, Long> {
         typeCodes: List<String>
     ): List<Registration>
 
+    fun findFirstByPersonIdAndTypeCodeOrderByIdDesc(personId: Long, typeCode: String): Registration?
+
     @Query(
         """
         select r1.type.code as type, count(r1) as number from Registration r1

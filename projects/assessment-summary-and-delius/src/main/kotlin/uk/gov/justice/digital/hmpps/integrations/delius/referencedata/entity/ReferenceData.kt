@@ -32,7 +32,7 @@ class ReferenceData(
         REGISTRATION_ADDED("probation-case.registration.added"),
         REGISTRATION_UPDATED("probation-case.registration.updated"),
         REGISTRATION_DEREGISTERED("probation-case.registration.deregistered"),
-        MAPPA_INFORMATION_ADDED("probation-case.mappa-information.added"),
+        MAPPA_INFORMATION_CREATED("probation-case.mappa-information.created"),
     }
 }
 

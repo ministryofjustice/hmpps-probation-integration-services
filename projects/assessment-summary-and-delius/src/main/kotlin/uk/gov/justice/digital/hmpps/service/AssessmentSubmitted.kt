@@ -68,7 +68,7 @@ class AssessmentSubmitted(
         contact.copyToVisor = riskService.activeVisorAndMappa(person)
 
         if (contact.copyToVisor == true) {
-            domainEventService.publishVisorContact(person.crn, contact.id!!)
+            domainEventService.publishVisorContact(person, contact.id!!)
         }
 
         if (personRepository.countAccreditedProgrammeRequirements(person.id) > 0) {
