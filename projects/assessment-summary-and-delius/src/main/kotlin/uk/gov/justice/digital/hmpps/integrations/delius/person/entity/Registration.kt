@@ -5,6 +5,7 @@ import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.NumericBooleanConverter
 import org.hibernate.type.YesNoConverter
+import org.springframework.data.domain.PageRequest
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
@@ -284,9 +285,8 @@ interface RegistrationRepository : JpaRepository<Registration, Long> {
             when r.category.code = 'M3' then 3 
             when r.category.code = 'M4' then 4 
             else 0 end
-            from Registration r where r.personId = :personId and r.type.code = 'MAPP' order by r.id desc"""
-    )
-    fun findByMappaByPersonId(personId: Long): List<Int>
+            from Registration r where r.personId = :personId and r.type.code = 'MAPP' order by r.id desc""" )
+    fun findByMappaByPersonId(personId: Long, pageRequest: PageRequest = PageRequest.of(0,1)): Int?
 
     @Query(
         """

@@ -106,7 +106,7 @@ class DomainEventService(
     }
 
     private fun resolveMappaCategory(offenderId: Long): Int {
-        return registrationRepository.findByMappaByPersonId(offenderId).firstOrNull() ?: 0
+        return registrationRepository.findByMappaByPersonId(offenderId) ?: 0
     }
 
     private fun forCrn(crn: String) = PersonReference(listOf(PersonIdentifier("CRN", crn)))
