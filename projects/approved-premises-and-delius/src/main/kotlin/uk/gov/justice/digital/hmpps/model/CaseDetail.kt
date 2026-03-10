@@ -75,7 +75,7 @@ data class Registration(
     val code: String,
     val description: String,
     val startDate: LocalDate,
-    val riskNotes: List<NoteDetail> = emptyList()
+    val riskNotes: String? = null,
 )
 
 data class Sentence(
@@ -83,12 +83,4 @@ data class Sentence(
     val startDate: LocalDate? = null,
     val endDate: LocalDate? = null,
     val eventNumber: String? = null,
-)
-
-data class NoteDetail(
-    val id: Int,
-    val createdBy: String? = null,
-    val createdByDate: LocalDate? = null,
-    val note: String,
-    val hasNoteBeenTruncated: Boolean? = null
 )

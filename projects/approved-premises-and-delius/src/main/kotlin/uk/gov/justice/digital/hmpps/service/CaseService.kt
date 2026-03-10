@@ -119,7 +119,7 @@ fun Registration.asRegistration() = uk.gov.justice.digital.hmpps.model.Registrat
     code = type.code,
     description = type.description,
     startDate = date,
-    riskNotes = formatNote(notes, truncateNote = false)
+    riskNotes = notes
 )
 
 fun Registration.asMappa() = MappaDetail(
@@ -142,43 +142,3 @@ fun Map<Boolean, List<Registration>>.mappa() = get(true)?.firstOrNull {
 }?.asMappa()
 
 fun Map<Boolean, List<Registration>>.flags() = get(false)?.map { it.asRegistration() } ?: listOf()
-
-val NOTE_HEADER_REGEX = Regex(
-    "^Comment added by (.+?) on (\\d{2}/\\d{2}/\\d{4}) at \\d{2}:\\d{2}${System.lineSeparator()}"
-)
-
-fun formatNote(notes: String?, truncateNote: Boolean): List<NoteDetail> {
-    val splitParam = "---------------------------------------------------------" + System.lineSeparator()
-
-    return buildList {
-        notes
-            ?.takeIf { it.isNotBlank() }
-            ?.split(splitParam)
-            ?.asReversed()
-            ?.forEachIndexed { index, note ->
-
-                val match = NOTE_HEADER_REGEX.find(note)
-                val header = match?.value
-
-                val commentText = (header?.let { note.removePrefix(it) } ?: note).trimEnd()
-                if (commentText.isBlank() || commentText == "null") return@forEachIndexed
-
-                val userCreatedBy = match?.groupValues?.getOrNull(1)
-                val dateCreatedBy = match?.groupValues?.getOrNull(2)
-                    ?.let { LocalDate.parse(it, DeliusDateFormatter) }
-
-                val finalText = if (truncateNote) commentText.take(1500) else commentText
-                val truncatedFlag = if (truncateNote) commentText.length > 1500 else null
-
-                add(
-                    NoteDetail(
-                        id = index,
-                        createdBy = userCreatedBy,
-                        createdByDate = dateCreatedBy,
-                        note = finalText,
-                        hasNoteBeenTruncated = truncatedFlag
-                    )
-                )
-            }
-    }
-}

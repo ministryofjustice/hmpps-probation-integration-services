@@ -1,8 +1,11 @@
 package uk.gov.justice.digital.hmpps
 
 import org.hamcrest.MatcherAssert.assertThat
+import org.hamcrest.Matchers.allOf
+import org.hamcrest.Matchers.containsString
 import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.hasSize
+import org.hamcrest.Matchers.notNullValue
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -103,16 +106,14 @@ class ProbationCaseIntegrationTest(
         assertThat(detail.mappaDetail?.level, equalTo(2))
         assertThat(detail.registrations.map { it.description }, equalTo(listOf("Description of ARSO")))
 
-        val notes = detail.registrations.flatMap { it.riskNotes }
-        assertThat(notes.size, equalTo(2))
-
-        assertThat(notes[0].createdBy, equalTo("Bob"))
-        assertThat(notes[0].createdByDate, equalTo(LocalDate.parse("2026-03-11")))
-        assertThat(notes[0].note, equalTo("Risk Notes 2"))
-
-        assertThat(notes[1].createdBy, equalTo("Dan"))
-        assertThat(notes[1].createdByDate, equalTo(LocalDate.parse("2026-03-10")))
-        assertThat(notes[1].note, equalTo("Risk Notes 1"))
+        val riskNotes = detail.registrations.first { it.riskNotes != null }.riskNotes!!
+        assertThat(
+            riskNotes,
+            allOf(
+                containsString("Risk Notes 1"),
+                containsString("Risk Notes 2")
+            )
+        )
 
         val mainOffence = detail.offences.first { it.main }
         assertThat(mainOffence.id, equalTo("M200001"))
