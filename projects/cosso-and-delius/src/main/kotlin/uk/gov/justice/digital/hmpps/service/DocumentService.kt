@@ -29,10 +29,11 @@ class DocumentService(
     private val auditUserService: AuditUserService,
     private val entityManager: EntityManager,
 ) : AuditableService(auditedInteractionService) {
+    @Transactional
     fun uploadDocument(event: HmppsDomainEvent, file: ByteArray) = audit(BusinessInteractionCode.UPLOAD_DOCUMENT) {
         check(file.isPdf()) { "Invalid PDF file: ${event.detailUrl}" }
         val document = getDocument(event, it)
-        document.name = document.name!!.replace(Regex("\\.docx?$"), ".pdf")
+        document.name = document.name.replace(Regex("\\.docx?$"), ".pdf")
         document.status = "Y"
         document.workInProgress = "N"
         document.lastSaved = ZonedDateTime.now()

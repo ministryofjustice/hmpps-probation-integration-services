@@ -24,7 +24,8 @@ class Handler(
 ) : NotificationHandler<HmppsDomainEvent> {
     @Publish(
         messages = [
-            Message(name = "probation-case.COSSO.created", payload = Schema(HmppsDomainEvent::class))
+            Message(name = "probation-case.COSSO.created", payload = Schema(HmppsDomainEvent::class)),
+            Message(name = "probation-case.COSSO.deleted", payload = Schema(HmppsDomainEvent::class))
         ]
     )
     override fun handle(notification: Notification<HmppsDomainEvent>) {

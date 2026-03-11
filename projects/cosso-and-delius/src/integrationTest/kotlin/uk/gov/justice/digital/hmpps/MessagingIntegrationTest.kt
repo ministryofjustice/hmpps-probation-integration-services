@@ -47,7 +47,7 @@ internal class MessagingIntegrationTest : BaseIntegrationTest() {
     fun `document not found`() {
         // Given a message with a non-existent breach notice id
         val notification = prepEvent("cosso-notice-created", wireMockServer.port()).run {
-            copy(message = message.copy(additionalInformation = mapOf("cossoBreachNoticeId" to UUID.fromString("99999999-9999-9999-9999-999999999999"))))
+            copy(message = message.copy(additionalInformation = mapOf("COSSOBreachNoticeId" to "99999999-9999-9999-9999-999999999999")))
         }
 
         // When it is received

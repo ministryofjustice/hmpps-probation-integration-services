@@ -34,6 +34,7 @@ class DocumentEntity(
 
     val externalReference: String,
 
+    @Column(name = "alfresco_document_id")
     var alfrescoId: String,
 
     @Column(name = "document_name")
