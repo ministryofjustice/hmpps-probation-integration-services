@@ -82,29 +82,29 @@ rootProject.allChildren()
 dependencyResolutionManagement {
     versionCatalogs {
         create("libs") {
-            library("asyncapi", "org.openfolder:kotlin-asyncapi-spring-web:3.2.0")
+            library("asyncapi", "org.openfolder:kotlin-asyncapi-spring-web:3.2.1")
             library("aws-s3", "io.awspring.cloud:spring-cloud-aws-starter-s3:4.0.0")
             library("aws-autoconfigure", "io.awspring.cloud:spring-cloud-aws-autoconfigure:4.0.0")
-            library("aws-query-protocol", "software.amazon.awssdk:aws-query-protocol:2.41.29")
+            library("aws-query-protocol", "software.amazon.awssdk:aws-query-protocol:2.42.5")
             library("aws-sns", "io.awspring.cloud:spring-cloud-aws-starter-sns:4.0.0")
             library("aws-sqs", "io.awspring.cloud:spring-cloud-aws-starter-sqs:4.0.0")
             library("aws-starter", "io.awspring.cloud:spring-cloud-aws-starter:4.0.0")
-            library("aws-sts", "software.amazon.awssdk:sts:2.41.29")
+            library("aws-sts", "software.amazon.awssdk:sts:2.42.5")
             library("azure-app-insights", "com.microsoft.azure:applicationinsights-web:3.7.7")
             library("azure-identity", "com.azure:azure-identity:1.18.2")
             library("flipt", "io.flipt:flipt-client-java:1.2.1")
             library("html2md", "com.vladsch.flexmark:flexmark-html2md-converter:0.64.8")
-            library("microsoft-graph", "com.microsoft.graph:microsoft-graph:6.61.0")
+            library("microsoft-graph", "com.microsoft.graph:microsoft-graph:6.62.0")
             library("mockito-inline", "org.mockito:mockito-inline:5.2.0")
             library("mockito-kotlin", "org.mockito.kotlin:mockito-kotlin:6.2.3")
             library("notify", "uk.gov.service.notify:notifications-java-client:6.0.0-RELEASE")
-            library("opensearch", "org.opensearch.client:opensearch-java:3.6.0")
+            library("opensearch", "org.opensearch.client:opensearch-java:3.7.0")
             library("opensearch-starter", "org.opensearch.client:spring-data-opensearch-starter:2.0.5")
             library(
                 "opentelemetry-annotations",
                 "io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:2.25.0"
             )
-            library("sentry", "io.sentry:sentry-spring-boot-4:8.32.0")
+            library("sentry", "io.sentry:sentry-spring-boot-4:8.33.0")
             library("springdoc", "org.springdoc:springdoc-openapi-starter-webmvc-ui:3.0.1")
             library("wiremock", "org.wiremock:wiremock-standalone:3.13.2")
 
