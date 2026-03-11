@@ -23,14 +23,14 @@ class UnpaidWorkAppointmentsService(
     @Value("\${jobs.unpaid-work-appointment-reminders.excluded-project-codes:}") private val excludedProjectCodes: List<String>,
 ) {
     fun sendUnpaidWorkAppointmentReminders(config: JobConfig) {
-        val alreadySentCrns = findCrnsForMessagesAlreadySent()
+        val excludedCrns = excludedCrns.toSet() + findCrnsForMessagesAlreadySent()
 
         upwAppointmentRepository.getUnpaidWorkAppointments(
             date = LocalDate.now().plusDays(config.daysInAdvance.toLong()),
             providerCode = config.provider.code,
             excludedProjectCodes = excludedProjectCodes,
-            excludedCrns = excludedCrns + alreadySentCrns
-        ).forEach {
+            excludedCrns = excludedCrns.take(999) // Oracle limits the number of elements in an IN predicate to 1000 entries.
+        ).filter { it.crn !in excludedCrns }.forEach {
             val telemetryProperties = mapOf(
                 "crn" to it.crn,
                 "providerCode" to config.provider.code,
@@ -74,7 +74,7 @@ class UnpaidWorkAppointmentsService(
         return bucket.ifEmpty { templates } // If a trial is removed, fall back to default templates
     }
 
-    private fun findCrnsForMessagesAlreadySent(): List<String> {
+    private fun findCrnsForMessagesAlreadySent(): Set<String> {
         val today = ZonedDateTime.now().truncatedTo(ChronoUnit.DAYS)
 
         fun getPage(olderThan: String? = null) =
@@ -89,7 +89,7 @@ class UnpaidWorkAppointmentsService(
             .flatten()
             .filter { !it.sentAt.get().isBefore(today) }
 
-        return alreadySentNotifications.mapNotNull { it.reference.getOrNull() }.toList()
+        return alreadySentNotifications.mapNotNull { it.reference.getOrNull() }.toSet()
     }
 
     companion object {
