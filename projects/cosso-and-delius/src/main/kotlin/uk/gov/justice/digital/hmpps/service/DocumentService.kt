@@ -54,8 +54,7 @@ class DocumentService(
         alfrescoUploadClient.release(document.alfrescoId)
         alfrescoUploadClient.delete(document.alfrescoId)
     }
-
-    private fun updateParent(document: DocumentEntity) {
+    fun updateParent(document: DocumentEntity) {
         val hasOtherDocuments = documentRepository
             .existsByTableNameAndPrimaryKeyIdAndIdNot(document.tableName, document.primaryKeyId, document.id)
 
