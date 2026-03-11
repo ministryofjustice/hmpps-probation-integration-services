@@ -61,11 +61,16 @@ spring:
 dev:
   dataloader.enabled: true
   wiremock.enabled: true
+  wiremock.port: 8091
 
 messaging.consumer.queue: message-queue
 messaging.consumer.detail.urls: http://localhost:${dev.wiremock.port}
 
+
+
 integrations:
+  alfresco:
+    url: http://localhost:${dev.wiremock.port:8091}/alfresco
   example:
     url: http://localhost:${dev.wiremock.port}/example
 

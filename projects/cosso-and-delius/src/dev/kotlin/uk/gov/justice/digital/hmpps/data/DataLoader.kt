@@ -1,11 +1,14 @@
 package uk.gov.justice.digital.hmpps.data
 
 import org.springframework.stereotype.Component
+import uk.gov.justice.digital.hmpps.audit.BusinessInteraction
+import uk.gov.justice.digital.hmpps.audit.BusinessInteractionCode
 import uk.gov.justice.digital.hmpps.data.generator.AdditionalOffenceGenerator
 import uk.gov.justice.digital.hmpps.data.generator.CourtAppearanceGenerator
 import uk.gov.justice.digital.hmpps.data.generator.DisposalGenerator
 import uk.gov.justice.digital.hmpps.data.generator.DocumentGenerator
 import uk.gov.justice.digital.hmpps.data.generator.EventGenerator
+import uk.gov.justice.digital.hmpps.data.generator.IdGenerator
 import uk.gov.justice.digital.hmpps.data.generator.MainOffenceGenerator
 import uk.gov.justice.digital.hmpps.data.generator.OfficeLocationGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonAddressGenerator
@@ -18,12 +21,14 @@ import uk.gov.justice.digital.hmpps.data.generator.StaffGenerator
 import uk.gov.justice.digital.hmpps.data.generator.UserGenerator
 import uk.gov.justice.digital.hmpps.data.loader.BaseDataLoader
 import uk.gov.justice.digital.hmpps.data.manager.DataManager
+import java.time.ZonedDateTime
 
 @Component
 class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
     override fun systemUser() = UserGenerator.AUDIT_USER
 
     override fun setupData() {
+        businessInteractions()
         saveAll(
             PersonGenerator.DEFAULT_PERSON,
             ReferenceDataGenerator.MR_TITLE,
@@ -41,6 +46,8 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
             DocumentGenerator.MISSING_MAIN_OFFENCE_DOCUMENT,
             DocumentGenerator.MISSING_COURT_APPEARANCE_DOCUMENT,
             DocumentGenerator.MISSING_DISPOSAL_DOCUMENT,
+            DocumentGenerator.DEFAULT_COSSO_DELETED,
+            DocumentGenerator.DEFAULT_COSSO_CREATED,
             MainOffenceGenerator.DEFAULT_MAIN_OFFENCE,
             MainOffenceGenerator.MISSING_COURT_APPEARANCE_MAIN_OFFENCE,
             MainOffenceGenerator.MISSING_DISPOSAL_MAIN_OFFENCE,
@@ -57,6 +64,18 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
             ResponsibleOfficerGenerator.DEFAULT_PRISON_OFFENDER_MANAGER,
             ResponsibleOfficerGenerator.DEFAULT_PRISON_RESPONSIBLE_OFFICER,
             OfficeLocationGenerator.DEFAULT_OFFICE_LOCATION,
+        )
+    }
+
+    private fun businessInteractions() {
+        saveAll(
+            BusinessInteractionCode.entries.map {
+                BusinessInteraction(
+                    IdGenerator.getAndIncrement(),
+                    it.code,
+                    ZonedDateTime.now()
+                )
+            }
         )
     }
 }

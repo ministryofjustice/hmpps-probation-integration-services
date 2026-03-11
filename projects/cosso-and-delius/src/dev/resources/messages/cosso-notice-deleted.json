@@ -1,0 +1,19 @@
+{
+  "eventType": "probation-case.COSSO.deleted",
+  "version": 1,
+  "description": "Breach notice event",
+  "detailUrl": "http://localhost:{dev.wiremock.port}/cosso/pdf/00000000-0000-0000-0000-000000000003",
+  "occurredAt": "2025-02-11T15:22:08.452612281+01:00",
+  "additionalInformation": {
+    "COSSOBreachNoticeId": "00000000-0000-0000-0000-000000000003",
+    "username": "TestUser"
+  },
+  "personReference": {
+    "identifiers": [
+      {
+        "type": "CRN",
+        "value": "X123456"
+      }
+    ]
+  }
+}

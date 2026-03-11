@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.data.document
 import jakarta.persistence.Entity
 import jakarta.persistence.Id
 import org.hibernate.annotations.Immutable
+import org.springframework.data.jpa.repository.JpaRepository
 
 @Immutable
 @Entity
