@@ -21,9 +21,11 @@ class DocumentServiceTest {
     )
 
     @ParameterizedTest
-    @ValueSource(strings = [
-        "ADDRESSASSESSMENT", "ASSESSMENT", "CONTACT", "NSI", "REFERRAL", "REGISTRATION", "UPW_APPOINTMENT"
-    ])
+    @ValueSource(
+        strings = [
+            "ADDRESSASSESSMENT", "ASSESSMENT", "CONTACT", "NSI", "REFERRAL", "REGISTRATION", "UPW_APPOINTMENT"
+        ]
+    )
     fun `updateParent sets document_linked correctly for supported tables`(tableName: String) {
         val tableNameToSnakeCase = mapOf(
             "ADDRESSASSESSMENT" to "address_assessment",
