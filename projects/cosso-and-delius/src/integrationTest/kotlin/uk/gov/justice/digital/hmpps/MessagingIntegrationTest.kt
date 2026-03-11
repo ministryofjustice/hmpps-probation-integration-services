@@ -93,7 +93,7 @@ internal class MessagingIntegrationTest : BaseIntegrationTest() {
             "DocumentUploaded",
             mapOf(
                 "crn" to "X123456",
-                "cossoBreachNoticeId" to "00000000-0000-0000-0000-000000000001",
+                "id" to "00000000-0000-0000-0000-000000000001",
                 "username" to "CossoAndDelius"
             ),
             mapOf()
@@ -130,7 +130,7 @@ internal class MessagingIntegrationTest : BaseIntegrationTest() {
             "DocumentDeleted",
             mapOf(
                 "crn" to "X123456",
-                "cossoBreachNoticeId" to "00000000-0000-0000-0000-000000000003",
+                "id" to "00000000-0000-0000-0000-000000000003",
                 "username" to "TestUser"
             ),
             mapOf()

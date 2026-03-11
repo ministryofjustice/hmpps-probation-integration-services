@@ -24,20 +24,20 @@ class Handler(
 ) : NotificationHandler<HmppsDomainEvent> {
     @Publish(
         messages = [
-            Message(name = "probation-case.COSSO.created", payload = Schema(HmppsDomainEvent::class)),
-            Message(name = "probation-case.COSSO.deleted", payload = Schema(HmppsDomainEvent::class))
+            Message(name = "probation-case.cosso-breach-notice.created", payload = Schema(HmppsDomainEvent::class)),
+            Message(name = "probation-case.cosso-breach-notice.deleted", payload = Schema(HmppsDomainEvent::class))
         ]
     )
     override fun handle(notification: Notification<HmppsDomainEvent>) {
         telemetryService.notificationReceived(notification)
         when (notification.eventType) {
-            "probation-case.COSSO.created" -> {
+            "probation-case.cosso-breach-notice.created" -> {
                 val file = detailService.getDetail<ByteArray>(notification.message)
                 documentService.uploadDocument(notification.message, file)
                 telemetryService.trackEvent("DocumentUploaded", notification.message.telemetry())
             }
 
-            "probation-case.COSSO.deleted" -> {
+            "probation-case.cosso-breach-notice.deleted" -> {
                 documentService.deleteDocument(notification.message)
                 telemetryService.trackEvent("DocumentDeleted", notification.message.telemetry())
             }
@@ -46,13 +46,13 @@ class Handler(
 }
 
 val HmppsDomainEvent.cossoBreachNoticeId
-    get() = additionalInformation["COSSOBreachNoticeId"] as String?
-        ?: throw IllegalArgumentException("Missing cossoBreachNoticeId")
+    get() = additionalInformation["id"] as String?
+        ?: throw IllegalArgumentException("Missing id")
 val HmppsDomainEvent.username
     get() = additionalInformation["username"] as String? ?: throw IllegalArgumentException("Missing username")
 
 fun HmppsDomainEvent.telemetry() = mapOf(
     "crn" to personReference.findCrn(),
-    "cossoBreachNoticeId" to cossoBreachNoticeId,
+    "id" to cossoBreachNoticeId,
     "username" to username,
 )
