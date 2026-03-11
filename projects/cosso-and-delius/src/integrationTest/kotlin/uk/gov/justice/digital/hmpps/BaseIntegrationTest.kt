@@ -1,6 +1,5 @@
 package uk.gov.justice.digital.hmpps
 
-
 import com.github.tomakehurst.wiremock.WireMockServer
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value

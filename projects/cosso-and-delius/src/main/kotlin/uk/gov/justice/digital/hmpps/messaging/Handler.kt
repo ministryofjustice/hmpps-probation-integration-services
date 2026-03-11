@@ -35,6 +35,7 @@ class Handler(
                 documentService.uploadDocument(notification.message, file)
                 telemetryService.trackEvent("DocumentUploaded", notification.message.telemetry())
             }
+
             "probation-case.COSSO.deleted" -> {
                 documentService.deleteDocument(notification.message)
                 telemetryService.trackEvent("DocumentDeleted", notification.message.telemetry())
@@ -44,7 +45,8 @@ class Handler(
 }
 
 val HmppsDomainEvent.cossoBreachNoticeId
-    get() = additionalInformation["COSSOBreachNoticeId"] as String? ?: throw IllegalArgumentException("Missing cossoBreachNoticeId")
+    get() = additionalInformation["COSSOBreachNoticeId"] as String?
+        ?: throw IllegalArgumentException("Missing cossoBreachNoticeId")
 val HmppsDomainEvent.username
     get() = additionalInformation["username"] as String? ?: throw IllegalArgumentException("Missing username")
 

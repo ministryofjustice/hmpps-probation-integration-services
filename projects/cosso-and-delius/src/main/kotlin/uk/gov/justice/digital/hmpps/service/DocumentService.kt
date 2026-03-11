@@ -76,7 +76,6 @@ class DocumentService(
             .executeUpdate()
     }
 
-
     private fun getDocument(event: HmppsDomainEvent, audit: AuditedInteraction.Parameters): DocumentEntity {
         val urn = cossoBreachNoticeUrn(UUID.fromString(event.cossoBreachNoticeId))
         return documentRepository.findByExternalReference(urn)?.also {
