@@ -627,6 +627,8 @@ components:
         startDate:
           type: string
           format: date
+        riskNotes:
+          type: string
       required:
       - code
       - description
