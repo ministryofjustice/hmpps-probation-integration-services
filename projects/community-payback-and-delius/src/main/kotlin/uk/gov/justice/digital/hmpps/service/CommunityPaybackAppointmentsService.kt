@@ -72,6 +72,7 @@ class CommunityPaybackAppointmentsService(
             startTime = appointment.startTime,
             endTime = appointment.endTime,
             penaltyHours = penaltyTimeToHHmm(appointment.penaltyMinutes),
+            minutesCredited = appointment.minutesCredited,
             outcome = appointment.contact.outcome?.toCodeDescription(),
             enforcementAction = appointment.contact.latestEnforcementAction?.let { enforcementAction ->
                 AppointmentResponseEnforcementAction(

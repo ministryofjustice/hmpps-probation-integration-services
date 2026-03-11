@@ -22,6 +22,7 @@ data class AppointmentResponse(
     val startTime: LocalTime,
     val endTime: LocalTime,
     val penaltyHours: String,
+    val minutesCredited: Long?,
     val outcome: CodeDescription?,
     val enforcementAction: AppointmentResponseEnforcementAction?,
     val hiVisWorn: Boolean?,
