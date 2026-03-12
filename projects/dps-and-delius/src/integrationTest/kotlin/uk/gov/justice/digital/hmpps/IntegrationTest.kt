@@ -1,12 +1,10 @@
 package uk.gov.justice.digital.hmpps
 
-import com.github.tomakehurst.wiremock.WireMockServer
-import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc
 import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
@@ -16,10 +14,7 @@ import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = RANDOM_PORT)
-internal class IntegrationTest @Autowired constructor(
-    private val mockMvc: MockMvc,
-    private val wireMockServer: WireMockServer
-) {
+internal class IntegrationTest @Autowired constructor(private val mockMvc: MockMvc) {
 
     @Test
     fun `non-existent case returns 404`() {
@@ -33,36 +28,36 @@ internal class IntegrationTest @Autowired constructor(
             .andExpect {
                 status { isOk() }
 
-                jsonPath("crn") { value(equalTo(PersonGenerator.DEFAULT.crn)) }
+                jsonPath("crn") { value(PersonGenerator.DEFAULT.crn) }
 
-                jsonPath("name.forename") { value(equalTo(PersonGenerator.DEFAULT.forename)) }
-                jsonPath("name.middleName") { value(equalTo(PersonGenerator.DEFAULT.secondName)) }
-                jsonPath("name.surname") { value(equalTo(PersonGenerator.DEFAULT.surname)) }
+                jsonPath("name.forename") { value(PersonGenerator.DEFAULT.forename) }
+                jsonPath("name.middleName") { value(PersonGenerator.DEFAULT.secondName) }
+                jsonPath("name.surname") { value(PersonGenerator.DEFAULT.surname) }
 
-                jsonPath("convictions[0].offence") { value(equalTo("Burglary")) }
-                jsonPath("convictions[0].title") { value(equalTo("Sentenced (6 Months)")) }
-                jsonPath("convictions[0].institutionName") { value(equalTo("test institution")) }
-                jsonPath("convictions[0].documents[5].type") { value(equalTo("Sentence related")) }
-                jsonPath("convictions[0].documents[4].type") { value(equalTo("Crown Prosecution Service case pack")) }
-                jsonPath("convictions[0].documents[3].type") { value(equalTo("Court Report")) }
-                jsonPath("convictions[0].documents[3].description") { value(equalTo("court report type requested by test court on 01/01/2000")) }
-                jsonPath("convictions[0].documents[2].type") { value(equalTo("Institutional Report")) }
-                jsonPath("convictions[0].documents[2].description") { value(equalTo("institutional report type at test institution requested on 02/01/2000")) }
-                jsonPath("convictions[0].documents[1].type") { value(equalTo("Contact related document")) }
-                jsonPath("convictions[0].documents[1].description") { value(equalTo("Contact on 03/01/2000 for contact type")) }
-                jsonPath("convictions[0].documents[0].type") { value(equalTo("Non Statutory Intervention related document")) }
-                jsonPath("convictions[0].documents[0].description") { value(equalTo("Non Statutory Intervention for nsi type on 04/01/2000")) }
-                jsonPath("convictions[1].offence") { value(equalTo("Daylight Robbery")) }
-                jsonPath("convictions[1].title") { value(equalTo("Community Order")) }
-                jsonPath("convictions[1].active") { value(equalTo(true)) }
+                jsonPath("convictions[0].offence") { value("Burglary") }
+                jsonPath("convictions[0].title") { value("Sentenced (6 Months)") }
+                jsonPath("convictions[0].institutionName") { value("test institution") }
+                jsonPath("convictions[0].documents[5].type") { value("Sentence related") }
+                jsonPath("convictions[0].documents[4].type") { value("Crown Prosecution Service case pack") }
+                jsonPath("convictions[0].documents[3].type") { value("Court Report") }
+                jsonPath("convictions[0].documents[3].description") { value("court report type requested by test court on 01/01/2000") }
+                jsonPath("convictions[0].documents[2].type") { value("Institutional Report") }
+                jsonPath("convictions[0].documents[2].description") { value("institutional report type at test institution requested on 02/01/2000") }
+                jsonPath("convictions[0].documents[1].type") { value("Contact related document") }
+                jsonPath("convictions[0].documents[1].description") { value("Contact on 03/01/2000 for contact type") }
+                jsonPath("convictions[0].documents[0].type") { value("Non Statutory Intervention related document") }
+                jsonPath("convictions[0].documents[0].description") { value("Non Statutory Intervention for nsi type on 04/01/2000") }
+                jsonPath("convictions[1].offence") { value("Daylight Robbery") }
+                jsonPath("convictions[1].title") { value("Community Order") }
+                jsonPath("convictions[1].active") { value(true) }
 
-                jsonPath("documents[6].type") { value(equalTo("Offender related")) }
-                jsonPath("documents[5].type") { value(equalTo("PNC previous convictions")) }
-                jsonPath("documents[4].type") { value(equalTo("Address assessment related document")) }
-                jsonPath("documents[3].type") { value(equalTo("Personal contact related document")) }
-                jsonPath("documents[2].type") { value(equalTo("Personal circumstance related document")) }
-                jsonPath("documents[1].type") { value(equalTo("Contact related document")) }
-                jsonPath("documents[0].type") { value(equalTo("Non Statutory Intervention related document")) }
+                jsonPath("documents[6].type") { value("Offender related") }
+                jsonPath("documents[5].type") { value("PNC previous convictions") }
+                jsonPath("documents[4].type") { value("Address assessment related document") }
+                jsonPath("documents[3].type") { value("Personal contact related document") }
+                jsonPath("documents[2].type") { value("Personal circumstance related document") }
+                jsonPath("documents[1].type") { value("Contact related document") }
+                jsonPath("documents[0].type") { value("Non Statutory Intervention related document") }
             }
     }
 
