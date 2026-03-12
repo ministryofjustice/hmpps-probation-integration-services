@@ -51,9 +51,11 @@ class ProvidersService(
     fun getProjectsForTeam(
         teamCode: String,
         typeCodes: List<String>,
-        pageable: Pageable
+        pageable: Pageable,
+        overdueDays: Int
     ): PagedModel<ProjectOutcomeStats> {
-        val stats = unpaidWorkAppointmentRepository.getOutcomeStats(teamCode, typeCodes, pageable)
+        val stats =
+            unpaidWorkAppointmentRepository.getOutcomeStats(teamCode, typeCodes, pageable, overdueDays = overdueDays)
         val projects = unpaidWorkProjectRepository.findAllByIdIn(stats.content.map { (id) -> id }).associateBy { it.id }
         return stats.map { (id, overdueCount, overdueDays) ->
             ProjectOutcomeStats(Project(projects.getValue(id)), overdueCount, overdueDays)
