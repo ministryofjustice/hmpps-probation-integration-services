@@ -52,23 +52,23 @@ class RecreateAppointment(
         )
 
         if (original.sendToVisor == true) {
-            sendVisorDomainEvent(original.id!!, original.person)
+            sendVisorDomainEvent(original.id!!, original.person, EventType.UPDATED)
         }
         if (request.sendToVisor == true) {
-            sendVisorDomainEvent(newAppointment.id!!, newAppointment.person)
+            sendVisorDomainEvent(newAppointment.id!!, newAppointment.person, EventType.CREATED)
         }
 
 
         return RecreatedAppointment(newAppointment.id!!, requireNotNull(newAppointment.externalReference))
     }
 
-    private fun sendVisorDomainEvent(apptId: Long, person: AppointmentPerson) {
+    private fun sendVisorDomainEvent(apptId: Long, person: AppointmentPerson, eventType: EventType) {
         notifier.contactCreated(
             apptId,
             true,
             mappaCategoryResolverService.resolveMappaCategory(person.id),
             person.crn,
-            EventType.UPDATED
+            eventType
         )
     }
 

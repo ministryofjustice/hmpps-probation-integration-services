@@ -253,7 +253,7 @@ class RecreateAppointmentIntegrationTest : IntegrationTestBase() {
         assertThat(recreated.externalReference).isEqualTo(Appointment.URN_PREFIX + request.uuid)
         assertThat(appointment.externalReference).isEqualTo(Appointment.URN_PREFIX + request.uuid)
         // original appointment is NOT visor, visor flag added to the recreated appt so only one Domain event raised
-        verify(notifier, times(1)).contactCreated(any(), eq(true), any(), any(), eq(EventType.UPDATED))
+        verify(notifier, times(1)).contactCreated(any(), eq(true), any(), any(), eq(EventType.CREATED))
     }
 
     @Test
@@ -297,7 +297,8 @@ class RecreateAppointmentIntegrationTest : IntegrationTestBase() {
         assertThat(recreated.externalReference).isEqualTo(Appointment.URN_PREFIX + request.uuid)
         assertThat(appointment.externalReference).isEqualTo(Appointment.URN_PREFIX + request.uuid)
         // original appointment is visor, visor flag added to the recreated appt so two Domain events raised
-        verify(notifier, times(2)).contactCreated(any(), eq(true), any(), any(), any())
+        verify(notifier, times(2))
+            .contactCreated(any(), eq(true), any(), any(), any())
     }
 
     @Test
