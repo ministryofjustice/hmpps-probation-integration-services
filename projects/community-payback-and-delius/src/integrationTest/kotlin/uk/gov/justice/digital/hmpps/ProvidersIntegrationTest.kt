@@ -167,4 +167,18 @@ class ProvidersIntegrationTest @Autowired constructor(
                 content { jsonPath("sessions.size()", 0) }
             }
     }
+
+    @Test
+    fun `can filter sessions by project type codes and overdueDays`() {
+        val startDate = LocalDate.now().minusDays(3)
+        val endDate = LocalDate.now().plusDays(3)
+        val overdueDays = 100
+
+        mockMvc
+            .get("/providers/N01/teams/N01UPW/sessions?startDate=$startDate&endDate=$endDate&typeCode=G&overdueDays=$overdueDays") { withToken() }
+            .andExpect {
+                status { isOk() }
+                content { jsonPath("sessions.size()", 2) }
+            }
+    }
 }
