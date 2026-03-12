@@ -120,8 +120,10 @@ class CreateAppointmentIntegrationTest : IntegrationTestBase() {
         }
 
         if (createAppointment.visorReport == true) {
-            verify(notifier, times(1)).contactCreated(any(), eq(true), any(), any(),
-                eq(EventType.CREATED))
+            verify(notifier, times(1)).contactCreated(
+                any(), eq(true), any(), any(),
+                eq(EventType.CREATED)
+            )
         } else {
             verifyNoInteractions(notifier)
         }

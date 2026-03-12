@@ -92,10 +92,14 @@ class AppointmentOutcomeIntegrationTest : IntegrationTestBase() {
         assertThat(updatedAppointment.officeLocationId, equalTo(createdAppointment.officeLocationId))
 
         //should be 2 visor domain events, one for the creation of the appt, and one for the outcome recording
-        verify(notifier, times(1)).contactCreated(any(), eq(true), any(), any(),
-            eq(EventType.CREATED))
-        verify(notifier, times(1)).contactCreated(any(), eq(true), any(), any(),
-            eq(EventType.UPDATED))
+        verify(notifier, times(1)).contactCreated(
+            any(), eq(true), any(), any(),
+            eq(EventType.CREATED)
+        )
+        verify(notifier, times(1)).contactCreated(
+            any(), eq(true), any(), any(),
+            eq(EventType.UPDATED)
+        )
 
         sentenceAppointmentRepository.delete(updatedAppointment)
     }
