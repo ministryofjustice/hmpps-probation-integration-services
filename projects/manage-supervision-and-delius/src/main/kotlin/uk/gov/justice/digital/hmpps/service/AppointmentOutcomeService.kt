@@ -7,12 +7,15 @@ import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.SentenceAppointmentRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.ContactTypeOutcomeRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.getByTypeIdAndOutcomeCode
+import uk.gov.justice.digital.hmpps.messaging.Notifier
 
 @Transactional
 @Service
 class AppointmentOutcomeService(
     private val sentenceAppointmentRepository: SentenceAppointmentRepository,
-    private val contactTypeOutcomeRepository: ContactTypeOutcomeRepository
+    private val contactTypeOutcomeRepository: ContactTypeOutcomeRepository,
+    private val mappaCategoryResolverService: MappaCategoryResolverService,
+    private val notifier: Notifier,
 ) {
 
     fun recordOutcome(outcome: Outcome) {
@@ -31,6 +34,15 @@ class AppointmentOutcomeService(
             notes = listOfNotNull(notes, outcome.notes).joinToString(System.lineSeparator())
             if (outcome.sensitive && (sensitive != true)) {
                 sensitive = true
+            }
+            if (appointment.visorContact == true){
+                val mappaCategory = mappaCategoryResolverService.resolveMappaCategory(appointment.person.id)
+                notifier.contactCreated(
+                    appointment.id!!,
+                    true,
+                        mappaCategory,
+                        appointment.person.crn
+                    )
             }
         }
     }

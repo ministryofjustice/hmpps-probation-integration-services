@@ -251,6 +251,7 @@ class RecreateAppointmentIntegrationTest : IntegrationTestBase() {
         )
         assertThat(recreated.externalReference).isEqualTo(Appointment.URN_PREFIX + request.uuid)
         assertThat(appointment.externalReference).isEqualTo(Appointment.URN_PREFIX + request.uuid)
+        // original appointment is NOT visor, visor flag added to the recreated appt so only one Domain event raised
         verify(notifier, times(1)).contactCreated(any(), eq(true), any(), any())
     }
 
@@ -263,13 +264,15 @@ class RecreateAppointmentIntegrationTest : IntegrationTestBase() {
                 ZonedDateTime.now().plusDays(8),
                 ZonedDateTime.now().plusDays(8).plusMinutes(30),
                 notes = "Notes on the original appointment",
-                sensitive = true
+                sensitive = true,
+                visorContact = true,
             )
         )
         val request = recreateRequest(
             date = LocalDate.now().plusDays(3),
             sensitive = false,
-            notes = "Some sensitive notes to append"
+            notes = "Some sensitive notes to append",
+            sendToVisor = true,
         )
 
         val recreated = mockMvc.put("/appointments/${original.id}/recreate") {
@@ -292,6 +295,8 @@ class RecreateAppointmentIntegrationTest : IntegrationTestBase() {
         )
         assertThat(recreated.externalReference).isEqualTo(Appointment.URN_PREFIX + request.uuid)
         assertThat(appointment.externalReference).isEqualTo(Appointment.URN_PREFIX + request.uuid)
+        // original appointment is visor, visor flag added to the recreated appt so two Domain events raised
+        verify(notifier, times(2)).contactCreated(any(), eq(true), any(), any())
     }
 
     @Test

@@ -4,6 +4,11 @@ import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
+import org.mockito.kotlin.any
+import org.mockito.kotlin.eq
+import org.mockito.kotlin.times
+import org.mockito.kotlin.verify
+import org.springframework.test.context.bean.override.mockito.MockitoBean
 import org.springframework.test.web.servlet.patch
 import org.springframework.test.web.servlet.post
 import uk.gov.justice.digital.hmpps.api.model.appointment.AppointmentDetail
@@ -16,6 +21,7 @@ import uk.gov.justice.digital.hmpps.data.generator.OffenderManagerGenerator.PI_U
 import uk.gov.justice.digital.hmpps.data.generator.OffenderManagerGenerator.STAFF_USER_1
 import uk.gov.justice.digital.hmpps.data.generator.OffenderManagerGenerator.TEAM
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
+import uk.gov.justice.digital.hmpps.messaging.Notifier
 import uk.gov.justice.digital.hmpps.test.CustomMatchers.isCloseTo
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.json
@@ -23,6 +29,10 @@ import java.time.ZonedDateTime
 import java.util.*
 
 class AppointmentOutcomeIntegrationTest : IntegrationTestBase() {
+
+    @MockitoBean
+    lateinit var notifier: Notifier
+
     val outcome = Outcome(123, true, "Some notes", false)
 
     @Test
@@ -80,6 +90,9 @@ class AppointmentOutcomeIntegrationTest : IntegrationTestBase() {
         assertThat(updatedAppointment.probationAreaId, equalTo(createdAppointment.probationAreaId))
         assertThat(updatedAppointment.officeLocationId, equalTo(createdAppointment.officeLocationId))
 
+        //should be 2 visor domain events, one for the creation of the appt, and one for the outcome recording
+        verify(notifier, times(2)).contactCreated(any(), eq(true), any(), any())
+
         sentenceAppointmentRepository.delete(updatedAppointment)
     }
 
@@ -92,7 +105,8 @@ class AppointmentOutcomeIntegrationTest : IntegrationTestBase() {
                 start = ZonedDateTime.now().plusDays(1),
                 end = ZonedDateTime.now().plusDays(2),
                 eventId = PersonGenerator.EVENT_1.id,
-                uuid = UUID.randomUUID()
+                uuid = UUID.randomUUID(),
+                visorReport = true,
             )
     }
         .andReturn().response.contentAsJson<AppointmentDetail>()
