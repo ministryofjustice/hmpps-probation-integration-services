@@ -65,7 +65,11 @@ dev:
 messaging.consumer.queue: message-queue
 messaging.consumer.detail.urls: http://localhost:${dev.wiremock.port}
 
+
+
 integrations:
+  alfresco:
+    url: http://localhost:${dev.wiremock.port}/alfresco
   example:
     url: http://localhost:${dev.wiremock.port}/example
 

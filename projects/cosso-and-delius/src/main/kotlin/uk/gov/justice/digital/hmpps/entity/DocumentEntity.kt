@@ -9,8 +9,9 @@ import jakarta.persistence.ManyToOne
 import jakarta.persistence.Table
 import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.NumericBooleanConverter
+import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
-import org.springframework.data.repository.Repository
+import java.time.ZonedDateTime
 import java.util.UUID
 
 @Entity
@@ -33,6 +34,22 @@ class DocumentEntity(
 
     val externalReference: String,
 
+    @Column(name = "alfresco_document_id")
+    var alfrescoId: String,
+
+    @Column(name = "document_name")
+    var name: String,
+
+    @Column(name = "status", columnDefinition = "char(1)")
+    var status: String,
+
+    @Column(name = "work_in_progress", columnDefinition = "char(1)")
+    var workInProgress: String,
+
+    var lastSaved: ZonedDateTime?,
+    var createdDatetime: ZonedDateTime?,
+    var lastUpdatedUserId: Long?,
+
     @Column(name = "soft_deleted", columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean
@@ -44,7 +61,7 @@ class DocumentEntity(
     }
 }
 
-interface DocumentRepository : Repository<DocumentEntity, Long> {
+interface DocumentRepository : JpaRepository<DocumentEntity, Long> {
     @Query(
         """
         select coalesce(event.event_id,
@@ -86,6 +103,8 @@ interface DocumentRepository : Repository<DocumentEntity, Long> {
         nativeQuery = true
     )
     fun findEventIdFromDocument(urn: String): Long?
+
+    fun existsByTableNameAndPrimaryKeyIdAndIdNot(tableName: String, primaryKeyId: Long, id: Long): Boolean
 
     fun findByExternalReference(urn: String): DocumentEntity?
 }
