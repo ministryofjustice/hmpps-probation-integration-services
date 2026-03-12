@@ -59,9 +59,6 @@ interface RegistrationRepository : JpaRepository<Registration, Long> {
         where r.personId = :personId and r.type.code = 'MAPP' order by r.id desc"""
     )
     fun findByMappaCategoryByPersonId(personId: Long, pageRequest: PageRequest = PageRequest.of(0, 1)): Int?
-
-    @EntityGraph(attributePaths = ["type", "category"])
-    fun findFirstByPersonIdAndTypeCodeOrderByIdDesc(personId: Long, typeCode: String): Registration?
 }
 
 @Entity

@@ -21,7 +21,8 @@ class Notifier(
             Message(title = "probation-case.address.created", payload = Schema(HmppsDomainEvent::class)),
             Message(title = "probation-case.address.updated", payload = Schema(HmppsDomainEvent::class)),
             Message(title = "probation-case.personal-details.updated", payload = Schema(HmppsDomainEvent::class)),
-            Message(title = "probation-case.mappa-information.created", payload = Schema(HmppsDomainEvent::class))
+            Message(title = "probation-case.mappa-information.created", payload = Schema(HmppsDomainEvent::class)),
+            Message(title = "probation-case.mappa-information.updated", payload = Schema(HmppsDomainEvent::class))
         ]
     )
 
@@ -87,13 +88,13 @@ class Notifier(
         )
     }
 
-    fun contactCreated(contactId: Long, isVisor: Boolean, category: Int, crn: String) {
+    fun contactCreated(contactId: Long, isVisor: Boolean, category: Int, crn: String, eventType: EventType) {
         topicPublisher.publish(
             Notification(
                 message = HmppsDomainEvent(
                     version = 1,
-                    eventType = "probation-case.mappa-information.created",
-                    description = "MAPPS information has been created in NDelius",
+                    eventType = "probation-case.mappa-information.${eventType.value}",
+                    description = "MAPPS information has been ${eventType.value} in NDelius",
                     personReference = PersonReference(
                         identifiers = listOf(PersonIdentifier("CRN", crn)),
                     ),
@@ -105,8 +106,13 @@ class Notifier(
                         )
                     )
                 ),
-                attributes = MessageAttributes("probation-case.mappa-information.created")
+                attributes = MessageAttributes("probation-case.mappa-information.${eventType.value}")
             )
         )
     }
+}
+
+enum class EventType(val value: String) {
+    CREATED("created"),
+    UPDATED("updated")
 }

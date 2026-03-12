@@ -16,6 +16,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractio
 import uk.gov.justice.digital.hmpps.integrations.delius.compliance.NsiRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.RequirementRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.*
+import uk.gov.justice.digital.hmpps.messaging.EventType
 import uk.gov.justice.digital.hmpps.messaging.Notifier
 import uk.gov.justice.digital.hmpps.utils.AppointmentTimeHelper
 import java.time.DayOfWeek
@@ -123,7 +124,7 @@ class SentenceAppointmentService(
 
             if (createAppointment.visorReport == true && saved.id != null) {
                 val category = mappaCategoryResolverService.resolveMappaCategory(om.person.id)
-                notifier.contactCreated(saved.id, true, category, crn)
+                notifier.contactCreated(saved.id, true, category, crn, EventType.CREATED)
             }
 
             audit["contactId"] = saved.id!!

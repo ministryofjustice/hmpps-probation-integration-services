@@ -24,6 +24,7 @@ import uk.gov.justice.digital.hmpps.data.generator.OffenderManagerGenerator.STAF
 import uk.gov.justice.digital.hmpps.data.generator.OffenderManagerGenerator.STAFF_USER_1
 import uk.gov.justice.digital.hmpps.data.generator.OffenderManagerGenerator.TEAM
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
+import uk.gov.justice.digital.hmpps.messaging.EventType
 import uk.gov.justice.digital.hmpps.messaging.Notifier
 import uk.gov.justice.digital.hmpps.test.CustomMatchers.isCloseTo
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
@@ -119,7 +120,8 @@ class CreateAppointmentIntegrationTest : IntegrationTestBase() {
         }
 
         if (createAppointment.visorReport == true) {
-            verify(notifier, times(1)).contactCreated(any(), eq(true), any(), any())
+            verify(notifier, times(1)).contactCreated(any(), eq(true), any(), any(),
+                eq(EventType.CREATED))
         } else {
             verifyNoInteractions(notifier)
         }

@@ -10,6 +10,7 @@ import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.integrations.delius.appointment.*
 import uk.gov.justice.digital.hmpps.integrations.delius.appointment.Appointment.Companion.URN_PREFIX
 import uk.gov.justice.digital.hmpps.integrations.delius.appointment.AppointmentOutcome.Code.ATTENDED_COMPLIED
+import uk.gov.justice.digital.hmpps.messaging.EventType
 import uk.gov.justice.digital.hmpps.messaging.Notifier
 import java.time.ZonedDateTime
 
@@ -66,7 +67,8 @@ class RecreateAppointment(
             apptId,
             true,
             mappaCategoryResolverService.resolveMappaCategory(person.id),
-            person.crn
+            person.crn,
+            EventType.UPDATED
         )
     }
 

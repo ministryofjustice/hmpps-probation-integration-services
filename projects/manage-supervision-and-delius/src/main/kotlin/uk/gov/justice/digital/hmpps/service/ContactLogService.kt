@@ -20,6 +20,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.user.staff.StaffReposito
 import uk.gov.justice.digital.hmpps.integrations.delius.user.staff.getStaffByCode
 import uk.gov.justice.digital.hmpps.integrations.delius.user.team.TeamRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.user.team.getTeam
+import uk.gov.justice.digital.hmpps.messaging.EventType
 import uk.gov.justice.digital.hmpps.messaging.Notifier
 
 @Service
@@ -91,7 +92,7 @@ class ContactLogService(
 
             val category = mappaCategoryResolverService.resolveMappaCategory(person.id)
 
-            notifier.contactCreated(savedContact.id, createContact.visorReport, category, crn)
+            notifier.contactCreated(savedContact.id, createContact.visorReport, category, crn, EventType.CREATED)
 
             if (createContact.alert) {
                 val personManager = offenderManagerRepository.findOffenderManagersByPersonIdAndActiveIsTrue(person.id)
