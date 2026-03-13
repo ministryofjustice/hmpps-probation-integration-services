@@ -71,12 +71,13 @@ class CaseControllerIntegrationTest @Autowired constructor(
 
     @Test
     fun `returns 200 when summary requested`() {
-        val response = mockMvc.get("/case/${PersonGenerator.DEFAULT_PERSON.crn}/summary?username=${UserGenerator.DEFAULT_USER}") { withToken() }
-            .andExpect {
-                status { isOk() }
-                 content {
-                    json(
-                        """
+        val response =
+            mockMvc.get("/case/${PersonGenerator.DEFAULT_PERSON.crn}/summary?username=${UserGenerator.DEFAULT_USER}") { withToken() }
+                .andExpect {
+                    status { isOk() }
+                    content {
+                        json(
+                            """
                         {
                             "case": {
                                 "crn": "Z000001",
@@ -203,9 +204,9 @@ class CaseControllerIntegrationTest @Autowired constructor(
                             ]
                         }
                         """.trimIndent(), JsonCompareMode.STRICT
-                    )
-                }
-            }.andReturn().response.contentAsString
+                        )
+                    }
+                }.andReturn().response.contentAsString
         println(response)
     }
 

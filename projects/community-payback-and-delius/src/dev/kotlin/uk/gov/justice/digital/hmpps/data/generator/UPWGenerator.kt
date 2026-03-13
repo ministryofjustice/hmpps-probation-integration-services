@@ -488,14 +488,14 @@ object UPWGenerator {
         softDeleted: Boolean = false,
         mainOffence: MainOffence,
     ) = Disposal(
-            id = id,
-            type = disposalType,
-            date = date,
-            length = length,
-            event = event,
-            softDeleted =softDeleted,
-            mainOffence = mainOffence,
-        )
+        id = id,
+        type = disposalType,
+        date = date,
+        length = length,
+        event = event,
+        softDeleted = softDeleted,
+        mainOffence = mainOffence,
+    )
 
     fun generateUpwDetails(
         id: Long = IdGenerator.getAndIncrement(),

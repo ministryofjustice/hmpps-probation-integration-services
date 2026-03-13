@@ -14,5 +14,4 @@ class Court(
 
     val courtName: String,
 
-
-)
+    )

@@ -68,15 +68,18 @@ class CaseSummaryService(
                 upwStatus = detail.status?.description,
                 referralDate = disposal.event.referralDate,
                 convictionDate = disposal.event.convictionDate,
-                court = CodeDescription(code = detail.disposal.event.court.code,
-                    description = detail.disposal.event.court.courtName),
+                court = CodeDescription(
+                    code = detail.disposal.event.court.code,
+                    description = detail.disposal.event.court.courtName
+                ),
                 mainOffence = Offence(
                     date = mainOffence.offenceDate,
                     count = mainOffence.offenceCount,
                     code = mainOffence.offence.mainCategoryCode,
-                    description = mainOffence.offence.mainCategoryDescription )
+                    description = mainOffence.offence.mainCategoryDescription
+                )
             )
         }
-        return UnpaidWorkDetails(case,upwMinutes)
+        return UnpaidWorkDetails(case, upwMinutes)
     }
 }
