@@ -323,7 +323,7 @@ class CommunityPaybackAppointmentsService(
 
     private fun UnpaidWorkAppointment.toAppointmentResponseCase(
         limitedAccess: CaseAccess
-    ) = AppointmentResponseCase(
+    ) = Case(
         crn = person.crn,
         name = PersonName(
             forename = person.forename,
