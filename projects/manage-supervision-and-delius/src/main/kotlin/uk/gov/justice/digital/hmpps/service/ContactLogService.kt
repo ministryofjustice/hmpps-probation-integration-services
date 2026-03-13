@@ -20,6 +20,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.user.staff.StaffReposito
 import uk.gov.justice.digital.hmpps.integrations.delius.user.staff.getStaffByCode
 import uk.gov.justice.digital.hmpps.integrations.delius.user.team.TeamRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.user.team.getTeam
+import uk.gov.justice.digital.hmpps.messaging.EventType
 import uk.gov.justice.digital.hmpps.messaging.Notifier
 
 @Service
@@ -35,8 +36,8 @@ class ContactLogService(
     private val offenderManagerRepository: OffenderManagerRepository,
     private val teamRepository: TeamRepository,
     private val contactTypeRequirementTypeRepository: ContactTypeRequirementTypeRepository,
-    private val registrationRepository: RegistrationRepository,
-    private val notifier: Notifier
+    private val notifier: Notifier,
+    private val mappaCategoryResolverService: MappaCategoryResolverService
 ) : AuditableService(auditedInteractionService) {
 
     @Transactional
@@ -89,9 +90,9 @@ class ContactLogService(
                 )
             )
 
-            val category = resolveMappaCategory(person.id)
+            val category = mappaCategoryResolverService.resolveMappaCategory(person.id)
 
-            notifier.contactCreated(savedContact.id, createContact.visorReport, category, crn)
+            notifier.contactCreated(savedContact.id, createContact.visorReport, category, crn, EventType.CREATED)
 
             if (createContact.alert) {
                 val personManager = offenderManagerRepository.findOffenderManagersByPersonIdAndActiveIsTrue(person.id)
@@ -146,23 +147,6 @@ class ContactLogService(
             if (requirementType !in validRequirementTypes) {
                 throw InvalidRequestException("Contact type ${contactType.code} is not valid for requirement type ${requirement.mainCategory.code}")
             }
-        }
-    }
-
-    private fun resolveMappaCategory(offenderId: Long): Int {
-        val registration = registrationRepository
-            .findByPersonIdAndTypeCodeOrderByIdDesc(
-                offenderId,
-                "MAPP"
-            )
-            .firstOrNull()
-
-        return when (registration?.category?.code) {
-            "M1" -> 1
-            "M2" -> 2
-            "M3" -> 3
-            "M4" -> 4
-            else -> 0
         }
     }
 

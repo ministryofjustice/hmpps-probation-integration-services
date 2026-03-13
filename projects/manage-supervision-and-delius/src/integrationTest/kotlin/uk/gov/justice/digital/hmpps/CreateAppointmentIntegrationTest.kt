@@ -7,6 +7,12 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
+import org.mockito.kotlin.any
+import org.mockito.kotlin.eq
+import org.mockito.kotlin.times
+import org.mockito.kotlin.verify
+import org.mockito.kotlin.verifyNoInteractions
+import org.springframework.test.context.bean.override.mockito.MockitoBean
 import org.springframework.test.web.servlet.post
 import uk.gov.justice.digital.hmpps.api.model.appointment.AppointmentDetail
 import uk.gov.justice.digital.hmpps.api.model.appointment.CreateAppointment
@@ -18,6 +24,8 @@ import uk.gov.justice.digital.hmpps.data.generator.OffenderManagerGenerator.STAF
 import uk.gov.justice.digital.hmpps.data.generator.OffenderManagerGenerator.STAFF_USER_1
 import uk.gov.justice.digital.hmpps.data.generator.OffenderManagerGenerator.TEAM
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
+import uk.gov.justice.digital.hmpps.messaging.EventType
+import uk.gov.justice.digital.hmpps.messaging.Notifier
 import uk.gov.justice.digital.hmpps.test.CustomMatchers.isCloseTo
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.json
@@ -26,6 +34,9 @@ import java.time.ZonedDateTime
 import java.util.*
 
 class CreateAppointmentIntegrationTest : IntegrationTestBase() {
+
+    @MockitoBean
+    lateinit var notifier: Notifier
 
     @Test
     fun `unauthorized status returned`() {
@@ -108,6 +119,15 @@ class CreateAppointmentIntegrationTest : IntegrationTestBase() {
             assertThat(appointment.complied).isEqualTo("Y")
         }
 
+        if (createAppointment.visorReport == true) {
+            verify(notifier, times(1)).contactCreated(
+                any(), eq(true), any(), any(),
+                eq(EventType.CREATED)
+            )
+        } else {
+            verifyNoInteractions(notifier)
+        }
+
         sentenceAppointmentRepository.deleteById(appointment.id!!)
     }
 
@@ -123,7 +143,8 @@ class CreateAppointmentIntegrationTest : IntegrationTestBase() {
                     start = ZonedDateTime.now().plusDays(1),
                     end = ZonedDateTime.now().plusDays(1).plusHours(1),
                     eventId = PersonGenerator.EVENT_1.id,
-                    uuid = UUID.randomUUID()
+                    uuid = UUID.randomUUID(),
+                    visorReport = true,
                 )
             ),
             Arguments.of(

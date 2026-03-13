@@ -3,6 +3,12 @@ package uk.gov.justice.digital.hmpps
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.within
 import org.junit.jupiter.api.Test
+import org.mockito.kotlin.any
+import org.mockito.kotlin.eq
+import org.mockito.kotlin.times
+import org.mockito.kotlin.verify
+import org.mockito.kotlin.verifyNoInteractions
+import org.springframework.test.context.bean.override.mockito.MockitoBean
 import org.springframework.test.web.servlet.put
 import uk.gov.justice.digital.hmpps.api.model.appointment.RecreateAppointmentRequest
 import uk.gov.justice.digital.hmpps.api.model.appointment.RecreatedAppointment
@@ -19,6 +25,8 @@ import uk.gov.justice.digital.hmpps.data.generator.OffenderManagerGenerator.TEAM
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.integrations.delius.appointment.Appointment
 import uk.gov.justice.digital.hmpps.integrations.delius.appointment.getAppointment
+import uk.gov.justice.digital.hmpps.messaging.EventType
+import uk.gov.justice.digital.hmpps.messaging.Notifier
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.json
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
@@ -29,6 +37,9 @@ import java.time.temporal.ChronoUnit
 import java.util.*
 
 class RecreateAppointmentIntegrationTest : IntegrationTestBase() {
+
+    @MockitoBean
+    lateinit var notifier: Notifier
 
     @Test
     fun `end time must be after start time`() {
@@ -129,7 +140,8 @@ class RecreateAppointmentIntegrationTest : IntegrationTestBase() {
                 notes = "Notes on the original appointment"
             )
         )
-        val request = recreateRequest(locationCode = DEFAULT_LOCATION.code, notes = "Notes to be appended")
+        val request =
+            recreateRequest(locationCode = DEFAULT_LOCATION.code, notes = "Notes to be appended", sendToVisor = false)
 
         val recreated =
             mockMvc.put("/appointments/${original.id}/recreate") {
@@ -153,6 +165,8 @@ class RecreateAppointmentIntegrationTest : IntegrationTestBase() {
         )
         assertThat(recreated.externalReference).isEqualTo(Appointment.URN_PREFIX + request.uuid)
         assertThat(appointment.externalReference).isEqualTo(Appointment.URN_PREFIX + request.uuid)
+
+        verifyNoInteractions(notifier)
     }
 
     @Test
@@ -214,7 +228,8 @@ class RecreateAppointmentIntegrationTest : IntegrationTestBase() {
         val request = recreateRequest(
             date = LocalDate.now().plusDays(3),
             sensitive = true,
-            notes = "Some sensitive notes to append"
+            notes = "Some sensitive notes to append",
+            sendToVisor = true,
         )
 
         val recreated = mockMvc.put("/appointments/${original.id}/recreate") {
@@ -237,6 +252,8 @@ class RecreateAppointmentIntegrationTest : IntegrationTestBase() {
         )
         assertThat(recreated.externalReference).isEqualTo(Appointment.URN_PREFIX + request.uuid)
         assertThat(appointment.externalReference).isEqualTo(Appointment.URN_PREFIX + request.uuid)
+        // original appointment is NOT visor, visor flag added to the recreated appt so only one Domain event raised
+        verify(notifier, times(1)).contactCreated(any(), eq(true), any(), any(), eq(EventType.CREATED))
     }
 
     @Test
@@ -248,13 +265,15 @@ class RecreateAppointmentIntegrationTest : IntegrationTestBase() {
                 ZonedDateTime.now().plusDays(8),
                 ZonedDateTime.now().plusDays(8).plusMinutes(30),
                 notes = "Notes on the original appointment",
-                sensitive = true
+                sensitive = true,
+                visorContact = true,
             )
         )
         val request = recreateRequest(
             date = LocalDate.now().plusDays(3),
             sensitive = false,
-            notes = "Some sensitive notes to append"
+            notes = "Some sensitive notes to append",
+            sendToVisor = true,
         )
 
         val recreated = mockMvc.put("/appointments/${original.id}/recreate") {
@@ -277,6 +296,9 @@ class RecreateAppointmentIntegrationTest : IntegrationTestBase() {
         )
         assertThat(recreated.externalReference).isEqualTo(Appointment.URN_PREFIX + request.uuid)
         assertThat(appointment.externalReference).isEqualTo(Appointment.URN_PREFIX + request.uuid)
+        // original appointment is visor, visor flag added to the recreated appt so two Domain events raised
+        verify(notifier, times(2))
+            .contactCreated(any(), eq(true), any(), any(), any())
     }
 
     @Test

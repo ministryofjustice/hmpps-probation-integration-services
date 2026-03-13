@@ -7,10 +7,11 @@ import uk.gov.justice.digital.hmpps.api.model.appointment.RecreateAppointmentReq
 import uk.gov.justice.digital.hmpps.api.model.appointment.RecreateAppointmentRequest.RequestedBy.SERVICE
 import uk.gov.justice.digital.hmpps.api.model.appointment.RecreatedAppointment
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
-import uk.gov.justice.digital.hmpps.exception.ConflictException
 import uk.gov.justice.digital.hmpps.integrations.delius.appointment.*
 import uk.gov.justice.digital.hmpps.integrations.delius.appointment.Appointment.Companion.URN_PREFIX
 import uk.gov.justice.digital.hmpps.integrations.delius.appointment.AppointmentOutcome.Code.ATTENDED_COMPLIED
+import uk.gov.justice.digital.hmpps.messaging.EventType
+import uk.gov.justice.digital.hmpps.messaging.Notifier
 import java.time.ZonedDateTime
 
 @Service
@@ -20,6 +21,8 @@ class RecreateAppointment(
     private val staffRepository: AppointmentStaffRepository,
     private val teamRepository: AppointmentTeamRepository,
     private val locationRepository: AppointmentLocationRepository,
+    private val notifier: Notifier,
+    private val mappaCategoryResolverService: MappaCategoryResolverService,
 ) {
     @Transactional
     fun recreate(id: Long, request: RecreateAppointmentRequest): RecreatedAppointment {
@@ -47,7 +50,26 @@ class RecreateAppointment(
                 SERVICE -> outcomeRepository.getByCode(AppointmentOutcome.Code.RESCHEDULED_SERVICE.value)
             }
         )
+
+        if (original.sendToVisor == true) {
+            sendVisorDomainEvent(original.id!!, original.person, EventType.UPDATED)
+        }
+        if (request.sendToVisor == true) {
+            sendVisorDomainEvent(newAppointment.id!!, newAppointment.person, EventType.CREATED)
+        }
+
+
         return RecreatedAppointment(newAppointment.id!!, requireNotNull(newAppointment.externalReference))
+    }
+
+    private fun sendVisorDomainEvent(apptId: Long, person: AppointmentPerson, eventType: EventType) {
+        notifier.contactCreated(
+            apptId,
+            true,
+            mappaCategoryResolverService.resolveMappaCategory(person.id),
+            person.crn,
+            eventType
+        )
     }
 
     private fun Appointment.recreateWith(request: RecreateAppointmentRequest, eventId: Long?): Appointment {
