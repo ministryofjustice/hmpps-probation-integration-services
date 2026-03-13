@@ -74,7 +74,7 @@ class CaseControllerIntegrationTest @Autowired constructor(
         mockMvc.get("/case/${PersonGenerator.DEFAULT_PERSON.crn}/summary?username=${UserGenerator.DEFAULT_USER.username}") { withToken() }
             .andExpect {
                 status { isOk() }
-                 content {
+                content {
                     json(
                         """
                         {
