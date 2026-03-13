@@ -4,9 +4,11 @@ import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.entity.person.PersonRepository
 import uk.gov.justice.digital.hmpps.entity.person.getByCrn
 import uk.gov.justice.digital.hmpps.entity.sentence.EventRepository
+import uk.gov.justice.digital.hmpps.entity.sentence.MainOffenceRepository
 import uk.gov.justice.digital.hmpps.entity.unpaidwork.LinkedListRepository
 import uk.gov.justice.digital.hmpps.entity.unpaidwork.UnpaidWorkAppointmentRepository
 import uk.gov.justice.digital.hmpps.entity.unpaidwork.UpwDetailsRepository
+import uk.gov.justice.digital.hmpps.exception.NotFoundException.Companion.orNotFoundBy
 import uk.gov.justice.digital.hmpps.model.Case
 import uk.gov.justice.digital.hmpps.model.CodeDescription
 import uk.gov.justice.digital.hmpps.model.Offence
@@ -22,6 +24,7 @@ class CaseSummaryService(
     private val unpaidWorkAppointmentRepository: UnpaidWorkAppointmentRepository,
     private val linkedListRepository: LinkedListRepository,
     private val userAccessService: UserAccessService,
+    private val mainOffenceRepository: MainOffenceRepository,
 ) {
     fun getSummaryForCase(crn: String, username: String): UnpaidWorkDetails {
         val person = personRepository.getByCrn(crn)
@@ -36,6 +39,7 @@ class CaseSummaryService(
             eventIds = events.map { it.id },
             projectTypeCodes = linkedListEntry.map { it.data2.code }
         )
+
         val case = Case(
             crn = crn,
             name = PersonName(
@@ -54,7 +58,7 @@ class CaseSummaryService(
             val matchingMinutes = requiredMinutes.filter { it.id == detail.id }
             val eteMinutes = eteAppts.filter { it.details.id == detail.id }.sumOf { it.minutesCredited ?: 0 }
             val disposal = detail.disposal
-            val mainOffence = disposal.mainOffence
+            val mainOffence = mainOffenceRepository.findByEventId(disposal.event.id).orNotFoundBy("event id", disposal.event.id.toString())
             UnpaidWorkMinutes(
                 eventNumber = disposal.event.number.toLong(),
                 sentenceDate = disposal.date,
@@ -73,8 +77,8 @@ class CaseSummaryService(
                 mainOffence = Offence(
                     date = mainOffence.offenceDate,
                     count = mainOffence.offenceCount,
-                    code = mainOffence.offence.mainCategoryCode,
-                    description = mainOffence.offence.mainCategoryDescription
+                    code = mainOffence.offence.code,
+                    description = mainOffence.offence.description
                 )
             )
         }

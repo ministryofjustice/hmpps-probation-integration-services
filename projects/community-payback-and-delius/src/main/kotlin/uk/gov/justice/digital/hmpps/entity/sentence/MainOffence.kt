@@ -6,6 +6,7 @@ import jakarta.persistence.Entity
 import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
+import jakarta.persistence.OneToOne
 import jakarta.persistence.Table
 import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.NumericBooleanConverter
@@ -23,7 +24,9 @@ class MainOffence(
     val offenceDate: LocalDate,
     val offenceCount: Int,
 
-    val eventId: Long,
+    @OneToOne
+    @JoinColumn(name = "event_id")
+    val event: Event,
 
     @ManyToOne
     @JoinColumn(name = "offence_id")
@@ -42,5 +45,11 @@ class Offence(
     val id: Long,
 
     val mainCategoryCode: String,
+    val code: String,
     val mainCategoryDescription: String,
+    val description: String,
 )
+
+interface MainOffenceRepository : JpaRepository<MainOffence, Long> {
+    fun findByEventId(eventId: Long): MainOffence?
+}

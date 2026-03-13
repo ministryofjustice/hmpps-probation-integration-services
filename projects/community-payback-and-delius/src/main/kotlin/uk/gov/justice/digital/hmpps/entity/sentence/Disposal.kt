@@ -29,10 +29,6 @@ class Disposal(
     @JoinColumn(name = "event_id")
     val event: Event,
 
-    @OneToOne
-    @JoinColumn(name = "main_offence_id")
-    val mainOffence: MainOffence,
-
     @Column(columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean = false,

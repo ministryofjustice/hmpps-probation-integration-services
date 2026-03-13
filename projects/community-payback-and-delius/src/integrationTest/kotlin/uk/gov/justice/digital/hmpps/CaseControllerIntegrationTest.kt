@@ -108,7 +108,7 @@ class CaseControllerIntegrationTest @Autowired constructor(
                                     "mainOffence": {
                                         "date": "${UPWGenerator.EVENT_1_MAIN_OFFENCE.offenceDate}",
                                         "count": 1,
-                                        "code": "OFF01",
+                                        "code": "12345",
                                         "description": "Theft from a motor vehicle"
                                     }
                                 },
@@ -129,7 +129,7 @@ class CaseControllerIntegrationTest @Autowired constructor(
                                     "mainOffence": {
                                         "date": "${UPWGenerator.EVENT_2_MAIN_OFFENCE.offenceDate}",
                                         "count": 1,
-                                        "code": "OFF01",
+                                        "code": "12345",
                                         "description": "Theft from a motor vehicle"
                                     }
                                 },
@@ -150,7 +150,7 @@ class CaseControllerIntegrationTest @Autowired constructor(
                                     "mainOffence": {
                                         "date": "${UPWGenerator.EVENT_3_MAIN_OFFENCE.offenceDate}",
                                         "count": 1,
-                                        "code": "OFF01",
+                                        "code": "12345",
                                         "description": "Theft from a motor vehicle"
                                     }
                                 },
@@ -172,7 +172,7 @@ class CaseControllerIntegrationTest @Autowired constructor(
                                     "mainOffence": {
                                         "date": "${UPWGenerator.EVENT_4_MAIN_OFFENCE.offenceDate}",
                                         "count": 1,
-                                        "code": "OFF01",
+                                        "code": "12345",
                                         "description": "Theft from a motor vehicle"
                                     }
                                 },
@@ -194,7 +194,7 @@ class CaseControllerIntegrationTest @Autowired constructor(
                                     "mainOffence": {
                                         "date": "${UPWGenerator.EVENT_5_MAIN_OFFENCE.offenceDate}",
                                         "count": 1,
-                                        "code": "OFF01",
+                                        "code": "12345",
                                         "description": "Theft from a motor vehicle"
                                     }
                                 }
