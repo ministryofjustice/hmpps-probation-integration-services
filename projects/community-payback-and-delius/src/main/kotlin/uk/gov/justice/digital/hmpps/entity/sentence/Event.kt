@@ -31,6 +31,13 @@ class Event(
     @OneToOne(mappedBy = "event")
     val disposal: Disposal?,
 
+    @ManyToOne
+    @JoinColumn(name = "court_id")
+    val court: Court,
+
+    val referralDate: LocalDate,
+    val convictionDate: LocalDate,
+
     @Column(columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean = false

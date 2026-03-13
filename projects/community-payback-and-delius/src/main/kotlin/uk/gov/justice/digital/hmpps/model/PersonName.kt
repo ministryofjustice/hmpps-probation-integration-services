@@ -2,7 +2,7 @@ package uk.gov.justice.digital.hmpps.model
 
 data class PersonName(
     val forename: String,
-    val middleNames: List<String>,
+    val middleNames: List<String?>,
     val surname: String
 )
 

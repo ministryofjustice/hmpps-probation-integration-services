@@ -79,63 +79,135 @@ object UPWGenerator {
         project = UPW_PROJECT_2,
     )
 
+    val DEFAULT_COURT = Court(
+        id = IdGenerator.getAndIncrement(),
+        code = "C01",
+        courtName = "Westminster Magistrates Court"
+    )
+
     val EVENT_1 = generateEvent(
         eventNumber = "1",
         person = PersonGenerator.DEFAULT_PERSON,
-        disposal = null
+        disposal = null,
+        referralDate = LocalDate.now().minusDays(1),
+        convictionDate = LocalDate.now().minusWeeks(1),
+        court = DEFAULT_COURT,
     )
 
     val EVENT_2 = generateEvent(
         eventNumber = "2",
         person = PersonGenerator.DEFAULT_PERSON,
-        disposal = null
+        disposal = null,
+        referralDate = LocalDate.now().minusDays(1),
+        convictionDate = LocalDate.now().minusWeeks(1),
+        court = DEFAULT_COURT
     )
 
     val EVENT_3 = generateEvent(
         eventNumber = "3",
         person = PersonGenerator.DEFAULT_PERSON,
-        disposal = null
+        disposal = null,
+        referralDate = LocalDate.now().minusDays(1),
+        convictionDate = LocalDate.now().minusWeeks(1),
+        court = DEFAULT_COURT,
     )
     val EVENT_4 = generateEvent(
         eventNumber = "4",
         person = PersonGenerator.DEFAULT_PERSON,
-        disposal = null
+        disposal = null,
+        referralDate = LocalDate.now().minusDays(1),
+        convictionDate = LocalDate.now().minusWeeks(1),
+        court = DEFAULT_COURT,
     )
     val EVENT_5 = generateEvent(
         eventNumber = "5",
         person = PersonGenerator.DEFAULT_PERSON,
-        disposal = null
+        disposal = null,
+        referralDate = LocalDate.now().minusDays(1),
+        convictionDate = LocalDate.now().minusWeeks(1),
+        court = DEFAULT_COURT,
+    )
+
+    val DEFAULT_OFFENCE = Offence(
+        id = IdGenerator.getAndIncrement(),
+        mainCategoryCode = "OFF01",
+        mainCategoryDescription = "Theft from a motor vehicle"
+    )
+
+    val EVENT_1_MAIN_OFFENCE = MainOffence(
+        id = IdGenerator.getAndIncrement(),
+        offenceDate = EVENT_1.convictionDate.minusMonths(3),
+        offenceCount = 1,
+        eventId = EVENT_1.id,
+        offence = DEFAULT_OFFENCE
+    )
+
+    val EVENT_2_MAIN_OFFENCE = MainOffence(
+        id = IdGenerator.getAndIncrement(),
+        offenceDate = EVENT_2.convictionDate.minusMonths(3),
+        offenceCount = 1,
+        eventId = EVENT_2.id,
+        offence = DEFAULT_OFFENCE
+    )
+
+    val EVENT_3_MAIN_OFFENCE = MainOffence(
+        id = IdGenerator.getAndIncrement(),
+        offenceDate = EVENT_3.convictionDate.minusMonths(3),
+        offenceCount = 1,
+        eventId = EVENT_3.id,
+        offence = DEFAULT_OFFENCE
+    )
+
+    val EVENT_4_MAIN_OFFENCE = MainOffence(
+        id = IdGenerator.getAndIncrement(),
+        offenceDate = EVENT_4.convictionDate.minusMonths(3),
+        offenceCount = 1,
+        eventId = EVENT_4.id,
+        offence = DEFAULT_OFFENCE
+    )
+
+    val EVENT_5_MAIN_OFFENCE = MainOffence(
+        id = IdGenerator.getAndIncrement(),
+        offenceDate = EVENT_5.convictionDate.minusMonths(3),
+        offenceCount = 1,
+        eventId = EVENT_5.id,
+        offence = DEFAULT_OFFENCE
     )
 
     val DISPOSAL_1 = generateDisposal(
         length = 12,
         disposalType = ReferenceDataGenerator.DEFAULT_DISPOSAL_TYPE,
         date = LocalDate.of(2026, 1, 1),
-        event = EVENT_1
+        event = EVENT_1,
+        mainOffence = EVENT_1_MAIN_OFFENCE,
     )
     val DISPOSAL_2 = generateDisposal(
         length = 12,
         disposalType = ReferenceDataGenerator.DEFAULT_DISPOSAL_TYPE,
         date = LocalDate.of(2026, 1, 2),
-        event = EVENT_2
+        event = EVENT_2,
+        mainOffence = EVENT_2_MAIN_OFFENCE,
     )
     val DISPOSAL_3 = generateDisposal(
         length = 12,
         disposalType = ReferenceDataGenerator.DEFAULT_DISPOSAL_TYPE,
         date = LocalDate.of(2026, 1, 3),
-        event = EVENT_3
+        event = EVENT_3,
+        mainOffence = EVENT_3_MAIN_OFFENCE,
     )
     val DISPOSAL_4 = generateDisposal(
         length = 12,
         disposalType = ReferenceDataGenerator.DEFAULT_DISPOSAL_TYPE,
         date = LocalDate.of(2026, 1, 4),
-        event = EVENT_4
+        event = EVENT_4,
+        mainOffence = EVENT_4_MAIN_OFFENCE,
     )
     val DISPOSAL_5 = generateDisposal(
         length = 12,
         disposalType = ReferenceDataGenerator.DEFAULT_DISPOSAL_TYPE,
         date = LocalDate.of(2026, 1, 5),
-        event = EVENT_5
+        event = EVENT_5,
+        mainOffence = EVENT_5_MAIN_OFFENCE,
     )
 
     val UPW_DETAILS_1 = generateUpwDetails(disposal = DISPOSAL_1)
@@ -414,7 +486,16 @@ object UPWGenerator {
         length: Long,
         event: Event,
         softDeleted: Boolean = false,
-    ) = Disposal(id, disposalType, date, length, event, softDeleted)
+        mainOffence: MainOffence,
+    ) = Disposal(
+            id = id,
+            type = disposalType,
+            date = date,
+            length = length,
+            event = event,
+            softDeleted =softDeleted,
+            mainOffence = mainOffence,
+        )
 
     fun generateUpwDetails(
         id: Long = IdGenerator.getAndIncrement(),
@@ -609,13 +690,19 @@ object UPWGenerator {
         ftcCount: Long = 0,
         breachEnd: LocalDate? = null,
         person: Person,
-        disposal: Disposal?
+        disposal: Disposal?,
+        referralDate: LocalDate,
+        convictionDate: LocalDate,
+        court: Court = DEFAULT_COURT
     ) = Event(
         id = id,
         number = eventNumber,
         ftcCount = ftcCount,
         breachEnd = breachEnd,
         person = person,
-        disposal = disposal
+        disposal = disposal,
+        referralDate = referralDate,
+        convictionDate = convictionDate,
+        court = court,
     )
 }
