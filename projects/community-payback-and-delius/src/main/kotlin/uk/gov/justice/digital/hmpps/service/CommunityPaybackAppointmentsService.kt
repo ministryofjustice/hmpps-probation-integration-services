@@ -318,6 +318,8 @@ class CommunityPaybackAppointmentsService(
             attended = outcome?.attended
             complied = outcome?.complied
             notes = appointment.notes
+            pickUpTime = request.pickUp?.time
+            pickUpLocation = request.pickUp?.location?.code?.let { code -> officeLocationRepository.getByCode(code) }
         }
     }
 

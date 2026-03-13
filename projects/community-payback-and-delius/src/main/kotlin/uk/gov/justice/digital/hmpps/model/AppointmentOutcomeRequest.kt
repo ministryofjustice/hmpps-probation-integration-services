@@ -17,5 +17,6 @@ data class AppointmentOutcomeRequest(
     val workQuality: WorkQuality?,
     val behaviour: Behaviour?,
     val sensitive: Boolean?,
-    val alertActive: Boolean?
+    val alertActive: Boolean?,
+    val pickUp: CreateAppointmentPickUpData?
 )
