@@ -135,7 +135,7 @@ object UPWGenerator {
         mainCategoryDescription = "Theft",
         description = "Theft from a motor vehicle",
 
-    )
+        )
 
     val EVENT_1_MAIN_OFFENCE = MainOffence(
         id = IdGenerator.getAndIncrement(),

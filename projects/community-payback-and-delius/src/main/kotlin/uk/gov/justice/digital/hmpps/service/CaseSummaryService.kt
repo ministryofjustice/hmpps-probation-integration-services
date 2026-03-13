@@ -58,7 +58,8 @@ class CaseSummaryService(
             val matchingMinutes = requiredMinutes.filter { it.id == detail.id }
             val eteMinutes = eteAppts.filter { it.details.id == detail.id }.sumOf { it.minutesCredited ?: 0 }
             val disposal = detail.disposal
-            val mainOffence = mainOffenceRepository.findByEventId(disposal.event.id).orNotFoundBy("event id", disposal.event.id.toString())
+            val mainOffence = mainOffenceRepository.findByEventId(disposal.event.id)
+                .orNotFoundBy("event id", disposal.event.id.toString())
             UnpaidWorkMinutes(
                 eventNumber = disposal.event.number.toLong(),
                 sentenceDate = disposal.date,
