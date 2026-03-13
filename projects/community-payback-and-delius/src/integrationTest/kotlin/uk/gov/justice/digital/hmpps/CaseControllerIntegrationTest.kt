@@ -71,13 +71,12 @@ class CaseControllerIntegrationTest @Autowired constructor(
 
     @Test
     fun `returns 200 when summary requested`() {
-        val response =
-            mockMvc.get("/case/${PersonGenerator.DEFAULT_PERSON.crn}/summary?username=${UserGenerator.DEFAULT_USER}") { withToken() }
-                .andExpect {
-                    status { isOk() }
-                    content {
-                        json(
-                            """
+        val response = mockMvc.get("/case/${PersonGenerator.DEFAULT_PERSON.crn}/summary?username=${UserGenerator.DEFAULT_USER.username}") { withToken() }
+            .andExpect {
+                status { isOk() }
+                 content {
+                    json(
+                        """
                         {
                             "case": {
                                 "crn": "Z000001",
@@ -204,15 +203,15 @@ class CaseControllerIntegrationTest @Autowired constructor(
                             ]
                         }
                         """.trimIndent(), JsonCompareMode.STRICT
-                        )
-                    }
-                }.andReturn().response.contentAsString
+                    )
+                }
+            }.andReturn().response.contentAsString
         println(response)
     }
 
     @Test
     fun `returns 404 for unknown person`() {
-        mockMvc.get("/case/X999999/summary") { withToken() }
+        mockMvc.get("/case/X999999/summary?username=${UserGenerator.DEFAULT_USER.username}") { withToken() }
             .andExpect { status { isNotFound() } }
             .andReturn().response.contentAsJson<ErrorResponse>().also {
                 assertThat(it.message).contains("Person with crn of X999999 not found")
