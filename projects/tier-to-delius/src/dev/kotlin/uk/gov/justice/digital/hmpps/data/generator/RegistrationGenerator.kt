@@ -14,6 +14,7 @@ object RegistrationGenerator {
         CaseEntityGenerator.DEFAULT.id,
         RegisterTypeGenerator.DEFAULT,
         ReferenceDataGenerator.LEVEL_ONE,
+        ReferenceDataGenerator.CATEGORY_ONE,
         LocalDate.now()
     )
 }
