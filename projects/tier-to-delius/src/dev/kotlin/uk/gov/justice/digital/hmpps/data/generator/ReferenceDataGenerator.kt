@@ -11,6 +11,7 @@ object ReferenceDataGenerator {
     val GENDER_MALE = generate("MALE", ReferenceDataSetGenerator.GENDER)
     val TIER_ONE = generate("T1", ReferenceDataSetGenerator.TIER)
     val LEVEL_ONE = generate("L1", ReferenceDataSetGenerator.REGISTER_LEVEL)
+    val CATEGORY_ONE = generate("CAT1", ReferenceDataSetGenerator.REGISTER_CATEGORY)
     val FLAG = generate("F1", ReferenceDataSetGenerator.REGISTER_TYPE_FLAG)
     val ENFORCEMENT_OUTCOMES = EnforcementActivityCode.stringValues.map { generate(it, NSI_OUTCOME) }
     val STATIC_RSR = generate("S", RSR_TYPE)
@@ -28,6 +29,7 @@ object ReferenceDataSetGenerator {
     val TIER_CHANGE_REASON = generate("TIER CHANGE REASON")
     val GENDER = generate("GENDER")
     val REGISTER_LEVEL = generate("REGISTER LEVEL")
+    val REGISTER_CATEGORY = generate("REGISTER CATEGORY")
     val REGISTER_TYPE_FLAG = generate("REGISTER TYPE FLAG")
     val NSI_OUTCOME = generate("NSI OUTCOME")
     val RSR_TYPE = generate("RSR SCORE CHANGE")
