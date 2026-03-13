@@ -29,6 +29,7 @@ class MainOffence(
     @JoinColumn(name = "offence_id")
     val offence: Offence,
 
+    @Column(name = "soft_deleted", columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean = false
 )
@@ -43,7 +44,3 @@ class Offence(
     val mainCategoryCode: String,
     val mainCategoryDescription: String,
 )
-
-interface MainOffenceRepository : JpaRepository<MainOffence, Long> {
-    fun findFirstByEventIdOrderByOffenceCountDesc(eventId: Long): MainOffence
-}

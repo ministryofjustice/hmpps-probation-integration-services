@@ -4,7 +4,6 @@ import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.entity.person.PersonRepository
 import uk.gov.justice.digital.hmpps.entity.person.getByCrn
 import uk.gov.justice.digital.hmpps.entity.sentence.EventRepository
-import uk.gov.justice.digital.hmpps.entity.sentence.MainOffenceRepository
 import uk.gov.justice.digital.hmpps.entity.unpaidwork.LinkedListRepository
 import uk.gov.justice.digital.hmpps.entity.unpaidwork.UnpaidWorkAppointmentRepository
 import uk.gov.justice.digital.hmpps.entity.unpaidwork.UpwDetailsRepository
@@ -22,7 +21,6 @@ class CaseSummaryService(
     private val upwDetailsRepository: UpwDetailsRepository,
     private val unpaidWorkAppointmentRepository: UnpaidWorkAppointmentRepository,
     private val linkedListRepository: LinkedListRepository,
-    private val mainOffenceRepository: MainOffenceRepository,
     private val userAccessService: UserAccessService,
 ) {
     fun getSummaryForCase(crn: String, username: String): UnpaidWorkDetails {
@@ -43,7 +41,7 @@ class CaseSummaryService(
             name = PersonName(
                 forename = person.forename,
                 surname = person.surname,
-                middleNames = listOf(person.secondName, person.thirdName)
+                middleNames = listOfNotNull(person.secondName, person.thirdName)
             ),
             dateOfBirth = person.dateOfBirth,
             currentExclusion = laoStatus.userExcluded,
@@ -56,7 +54,7 @@ class CaseSummaryService(
             val matchingMinutes = requiredMinutes.filter { it.id == detail.id }
             val eteMinutes = eteAppts.filter { it.details.id == detail.id }.sumOf { it.minutesCredited ?: 0 }
             val disposal = detail.disposal
-            val mainOffence = mainOffenceRepository.findFirstByEventIdOrderByOffenceCountDesc(disposal.event.id)
+            val mainOffence = disposal.mainOffence
             UnpaidWorkMinutes(
                 eventNumber = disposal.event.number.toLong(),
                 sentenceDate = disposal.date,
