@@ -261,6 +261,13 @@ paths:
           type: array
           items:
             type: string
+      - name: overdueDays
+        in: query
+        required: false
+        schema:
+          type: integer
+          format: int32
+          default: 45
       - name: pageable
         in: query
         required: true
@@ -1016,6 +1023,9 @@ components:
           type: string
         penaltyHours:
           type: string
+        minutesCredited:
+          type: integer
+          format: int64
         outcome:
           $ref: "#/components/schemas/CodeDescription"
         enforcementAction:

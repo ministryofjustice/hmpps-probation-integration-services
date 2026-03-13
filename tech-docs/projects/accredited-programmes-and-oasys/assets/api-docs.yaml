@@ -114,6 +114,8 @@ components:
           type: boolean
         float:
           type: boolean
+        valueNode:
+          type: boolean
         container:
           type: boolean
         missingNode:
@@ -144,8 +146,6 @@ components:
           - POJO
           - STRING
         integralNumber:
-          type: boolean
-        valueNode:
           type: boolean
         boolean:
           type: boolean
