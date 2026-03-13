@@ -37,6 +37,7 @@ class OfficeLocation(
 
 interface OfficeLocationRepository : JpaRepository<OfficeLocation, Long> {
     fun findByCodeIn(codes: Collection<String>): List<OfficeLocation>
+    fun getByCode(code: String): OfficeLocation?
     fun getByCodeIn(codes: List<String>) =
         codes.toSet().let { codes -> findByCodeIn(codes).associateBy { it.code }.reportMissing(codes) }
 }
