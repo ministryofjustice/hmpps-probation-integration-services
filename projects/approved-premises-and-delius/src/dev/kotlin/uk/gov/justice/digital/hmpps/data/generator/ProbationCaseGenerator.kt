@@ -4,6 +4,7 @@ import uk.gov.justice.digital.hmpps.data.generator.ProbationCaseGenerator.COM_PR
 import uk.gov.justice.digital.hmpps.data.generator.ProbationCaseGenerator.COM_TEAM
 import uk.gov.justice.digital.hmpps.data.generator.ProbationCaseGenerator.COM_UNALLOCATED
 import uk.gov.justice.digital.hmpps.integrations.delius.person.*
+import uk.gov.justice.digital.hmpps.integrations.delius.person.contact.CasePersonalContactEntity
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceData
 import uk.gov.justice.digital.hmpps.integrations.delius.team.Team
 import java.time.LocalDate
@@ -151,7 +152,8 @@ object ProbationCaseGenerator {
         currentExclusion: Boolean = false,
         currentRestriction: Boolean = false,
         softDeleted: Boolean = false,
-        id: Long = IdGenerator.getAndIncrement()
+        id: Long = IdGenerator.getAndIncrement(),
+        contacts: List<CasePersonalContactEntity> = emptyList()
     ) = ProbationCase(
         crn,
         nomsId,
@@ -171,7 +173,8 @@ object ProbationCaseGenerator {
         currentRestriction,
         listOf(),
         softDeleted,
-        id
+        id,
+        contacts
     )
 
     fun generateBorough(code: String, description: String) = Borough(IdGenerator.getAndIncrement(), code, description)

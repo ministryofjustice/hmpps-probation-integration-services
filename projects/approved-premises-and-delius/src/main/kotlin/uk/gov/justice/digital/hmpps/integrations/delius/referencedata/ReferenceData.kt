@@ -61,7 +61,8 @@ enum class DatasetCode(val value: String) {
     RISK_OF_HARM("RISK OF HARM"),
     SOURCE_TYPE("SOURCE TYPE"),
     STAFF_GRADE("OFFICER GRADE"),
-    YES_NO("YES NO DONT KNOW");
+    YES_NO("YES NO DONT KNOW"),
+    RELATIONSHIP("RELATIONSHIP");
 
     companion object {
         private val index = DatasetCode.entries.associateBy { it.value }

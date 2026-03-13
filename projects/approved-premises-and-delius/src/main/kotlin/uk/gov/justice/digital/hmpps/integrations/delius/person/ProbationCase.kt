@@ -6,6 +6,7 @@ import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.NumericBooleanConverter
 import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.person.contact.CasePersonalContactEntity
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceData
 import java.time.LocalDate
 
@@ -78,7 +79,10 @@ class ProbationCase(
 
     @Id
     @Column(name = "offender_id")
-    val id: Long
+    val id: Long,
+
+    @OneToMany(mappedBy = "case")
+    val personalContacts: List<CasePersonalContactEntity>,
 ) {
     fun currentManager() = communityManagers.first()
 }

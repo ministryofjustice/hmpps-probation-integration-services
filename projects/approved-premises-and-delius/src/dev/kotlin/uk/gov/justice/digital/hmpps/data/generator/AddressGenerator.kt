@@ -3,10 +3,34 @@ package uk.gov.justice.digital.hmpps.data.generator
 import uk.gov.justice.digital.hmpps.data.generator.IdGenerator.id
 import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.entity.Address
 import uk.gov.justice.digital.hmpps.integrations.delius.person.address.PersonAddress
+import uk.gov.justice.digital.hmpps.integrations.delius.person.contact.AddressEntity
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceData
 import java.time.LocalDate
 
 object AddressGenerator {
+        val DEFAULT = generateAddressEntity("", "1", "Promise Street", "", "Make Believe", "", "MB01 1PS", "01234567890")
+
+        fun generateAddressEntity(
+            buildingName: String? = null,
+            addressNumber: String? = null,
+            streetName: String? = null,
+            district: String? = null,
+            town: String? = null,
+            county: String? = null,
+            postcode: String? = null,
+            telephoneNumber: String? = null,
+            id: Long = IdGenerator.getAndIncrement()
+        ) = AddressEntity(
+            id,
+            buildingName,
+            addressNumber,
+            streetName,
+            district,
+            town,
+            county,
+            postcode,
+            telephoneNumber
+        )
 
     var PERSON_ADDRESS = generatePersonAddress(
         addressNumber = "12",

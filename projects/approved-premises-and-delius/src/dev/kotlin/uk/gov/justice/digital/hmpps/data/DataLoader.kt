@@ -27,6 +27,10 @@ class DataLoader(
         save(ReferenceDataGenerator.MC05)
         saveAll(ReferenceDataGenerator.REGISTER_TYPES.values)
         save(ReferenceDataGenerator.NSI_INITIAL_ALLOCATION)
+        save(AddressGenerator.DEFAULT)
+        save(DatasetGeneratorNew.RELATIONSHIP)
+        save(ReferenceDataGenerator.DOCTOR_RELATIONSHIP)
+        save(PersonalContactGenerator.CASE_COMPLEX_DOCTOR)
 
         saveAll(AddressGenerator.ALL_ADDRESSES)
         save(ProbationCaseGenerator.BOROUGH)

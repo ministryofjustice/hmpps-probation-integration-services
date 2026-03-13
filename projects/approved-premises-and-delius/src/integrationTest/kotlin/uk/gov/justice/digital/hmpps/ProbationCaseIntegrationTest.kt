@@ -12,6 +12,8 @@ import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDO
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
 import org.springframework.test.web.servlet.post
+import uk.gov.justice.digital.hmpps.data.generator.DatasetGeneratorNew
+import uk.gov.justice.digital.hmpps.data.generator.PersonalContactGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ProbationCaseGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ProbationCaseGenerator.COM_TEAM
 import uk.gov.justice.digital.hmpps.model.*
@@ -80,6 +82,7 @@ class ProbationCaseIntegrationTest(
     @Test
     fun `case details are correctly returned`() {
         val case = ProbationCaseGenerator.CASE_COMPLEX
+        PersonalContactGenerator.generate(case = case)
         val detail = mockMvc.get("/probation-cases/${case.crn}/details")
         { withToken() }
             .andExpect { status { isOk() } }
@@ -127,5 +130,23 @@ class ProbationCaseIntegrationTest(
         assertThat(sentence.startDate, equalTo(LocalDate.parse("2024-12-12")))
         assertThat(sentence.endDate, equalTo(LocalDate.parse("2025-10-20")))
         assertThat(sentence.eventNumber, equalTo("1"))
+        assertThat(detail.personalContacts, hasSize(1))
+        detail.personalContacts!!.first().let { contact ->
+            assertThat(contact.name.forename , equalTo("Shiver"))
+            assertThat(contact.name.middleName , equalTo("Me"))
+            assertThat(contact.name.surname , equalTo("Timbers"))
+            assertThat(contact.telephoneNumber , equalTo("01234567890"))
+            assertThat(contact.mobileNumber , equalTo("0779999887"))
+            assertThat(contact.address!!.buildingName, equalTo(null))
+            assertThat(contact.address!!.addressNumber, equalTo("1"))
+            assertThat(contact.address!!.streetName, equalTo("Promise Street"))
+            assertThat(contact.address!!.district, equalTo(null))
+            assertThat(contact.address!!.town, equalTo("Make Believe"))
+            assertThat(contact.address!!.county, equalTo(null))
+            assertThat(contact.address!!.postcode, equalTo("MB01 1PS"))
+            assertThat(contact.relationship, equalTo("Captains mate"))
+            assertThat(contact.relationshipType.code, equalTo("DOC"))
+            assertThat(contact.relationshipType.description, equalTo("Doctor"))
+        }
     }
 }

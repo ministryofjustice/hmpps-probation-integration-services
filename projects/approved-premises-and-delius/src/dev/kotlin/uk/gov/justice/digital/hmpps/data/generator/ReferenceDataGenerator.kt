@@ -152,6 +152,21 @@ object ReferenceDataGenerator {
 
     fun generateReferralSource(code: String, id: Long = IdGenerator.getAndIncrement()) = ReferralSource(id, code)
     fun generateMoveOnCategory(code: String, id: Long = IdGenerator.getAndIncrement()) = MoveOnCategory(id, code)
+
+    val DOCTOR_RELATIONSHIP = generate2(DatasetGeneratorNew.RELATIONSHIP, "DOC", "Doctor")
+
+    fun generate2(
+        dataset: Dataset,
+        code: String,
+        description: String = code,
+        id: Long = IdGenerator.getAndIncrement()
+    ) = ReferenceData(
+        id,
+        code,
+        description,
+        dataset.id,
+        true
+    )
 }
 
 object DatasetGenerator {
