@@ -102,7 +102,7 @@ class CaseControllerIntegrationTest @Autowired constructor(
                                     "referralDate": "${UPWGenerator.EVENT_1.referralDate}",
                                     "convictionDate": "${UPWGenerator.EVENT_1.convictionDate}",
                                     "court": {
-                                        "code": "C01",
+                                        "code": "C01234",
                                         "description": "Westminster Magistrates Court"
                                     },
                                     "mainOffence": {
@@ -123,7 +123,7 @@ class CaseControllerIntegrationTest @Autowired constructor(
                                     "referralDate": "${UPWGenerator.EVENT_2.referralDate}",
                                     "convictionDate": "${UPWGenerator.EVENT_2.convictionDate}",
                                     "court": {
-                                        "code": "C01",
+                                        "code": "C01234",
                                         "description": "Westminster Magistrates Court"
                                     },
                                     "mainOffence": {
@@ -144,7 +144,7 @@ class CaseControllerIntegrationTest @Autowired constructor(
                                     "referralDate": "${UPWGenerator.EVENT_3.referralDate}",
                                     "convictionDate": "${UPWGenerator.EVENT_3.convictionDate}",
                                     "court": {
-                                        "code": "C01",
+                                        "code": "C01234",
                                         "description": "Westminster Magistrates Court"
                                     },
                                     "mainOffence": {
@@ -166,7 +166,7 @@ class CaseControllerIntegrationTest @Autowired constructor(
                                     "referralDate": "${UPWGenerator.EVENT_4.referralDate}",
                                     "convictionDate": "${UPWGenerator.EVENT_4.convictionDate}",
                                     "court": {
-                                        "code": "C01",
+                                        "code": "C01234",
                                         "description": "Westminster Magistrates Court"
                                     },
                                     "mainOffence": {
@@ -188,7 +188,7 @@ class CaseControllerIntegrationTest @Autowired constructor(
                                     "referralDate": "${UPWGenerator.EVENT_5.referralDate}",
                                     "convictionDate": "${UPWGenerator.EVENT_5.convictionDate}",
                                     "court": {
-                                        "code": "C01",
+                                        "code": "C01234",
                                         "description": "Westminster Magistrates Court"
                                     },
                                     "mainOffence": {

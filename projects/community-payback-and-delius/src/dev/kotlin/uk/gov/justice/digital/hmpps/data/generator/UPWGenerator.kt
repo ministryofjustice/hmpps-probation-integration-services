@@ -81,7 +81,7 @@ object UPWGenerator {
 
     val DEFAULT_COURT = Court(
         id = IdGenerator.getAndIncrement(),
-        code = "C01",
+        code = "C01234",
         courtName = "Westminster Magistrates Court"
     )
 
