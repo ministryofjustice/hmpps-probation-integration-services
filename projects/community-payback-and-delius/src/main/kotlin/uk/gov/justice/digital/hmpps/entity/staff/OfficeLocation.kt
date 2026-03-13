@@ -6,6 +6,8 @@ import jakarta.persistence.Id
 import jakarta.persistence.Table
 import org.hibernate.annotations.Immutable
 import org.springframework.data.jpa.repository.JpaRepository
+import uk.gov.justice.digital.hmpps.exception.NotFoundException.Companion.orNotFoundBy
+import uk.gov.justice.digital.hmpps.utils.Extensions
 import uk.gov.justice.digital.hmpps.utils.Extensions.reportMissing
 
 @Entity
@@ -37,7 +39,8 @@ class OfficeLocation(
 
 interface OfficeLocationRepository : JpaRepository<OfficeLocation, Long> {
     fun findByCodeIn(codes: Collection<String>): List<OfficeLocation>
-    fun getByCode(code: String): OfficeLocation?
+    fun findByCode(code: String): OfficeLocation?
+    fun getByCode(code: String): OfficeLocation = findByCode(code).orNotFoundBy("OfficeLocationCode", code)
     fun getByCodeIn(codes: List<String>) =
         codes.toSet().let { codes -> findByCodeIn(codes).associateBy { it.code }.reportMissing(codes) }
 }

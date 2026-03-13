@@ -319,9 +319,7 @@ class CommunityPaybackAppointmentsService(
             complied = outcome?.complied
             notes = appointment.notes
             pickUpTime = request.pickUp?.time
-            pickUpLocation = request.pickUp?.location?.code?.let { code ->
-                officeLocationRepository.getByCode(code).orNotFoundBy("code", code)
-            }
+            pickUpLocation = request.pickUp?.location?.code?.let { code -> officeLocationRepository.getByCode(code) }
         }
     }
 

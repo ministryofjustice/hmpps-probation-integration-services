@@ -93,6 +93,8 @@ class UpdateAppointmentIntegrationTest @Autowired constructor(
         assertThat(appointment.project.code).isEqualTo(PROJECT)
         assertThat(appointment.notes).isEqualTo("testing update")
         assertThat(appointment.lastUpdatedDatetime).isCloseTo(appointment.lastUpdatedDatetime, within(1, SECONDS))
+        assertThat(appointment.pickUpTime.toString()).isEqualTo("09:30")
+        assertThat(appointment.pickUpLocation?.code).isEqualTo(UPWGenerator.DEFAULT_OFFICE_LOCATION.code)
     }
 
     @Test
