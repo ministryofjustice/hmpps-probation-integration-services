@@ -172,7 +172,5 @@ object DatasetGenerator {
     val RELIGION = ALL_DATASETS[DatasetCode.RELIGION]!!
     val REGISTER_CATEGORY = ALL_DATASETS[DatasetCode.REGISTER_CATEGORY]!!
     val REGISTER_LEVEL = ALL_DATASETS[DatasetCode.REGISTER_LEVEL]!!
-
-    // val REGISTER_TYPE_FLAG = ALL_DATASETS[DatasetCode.REGISTER_TYPE_FLAG]!!
     fun all() = ALL_DATASETS.values
 }
