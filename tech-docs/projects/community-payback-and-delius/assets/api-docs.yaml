@@ -368,6 +368,11 @@ paths:
         required: true
         schema:
           type: string
+      - name: username
+        in: query
+        required: true
+        schema:
+          type: string
       responses:
         "200":
           description: OK
@@ -514,6 +519,8 @@ components:
           type: boolean
         alertActive:
           type: boolean
+        pickUp:
+          $ref: "#/components/schemas/CreateAppointmentPickUpData"
       required:
       - endTime
       - startTime
@@ -901,7 +908,7 @@ components:
             $ref: "#/components/schemas/CodeDescription"
       required:
       - teams
-    AppointmentResponseCase:
+    Case:
       type: object
       properties:
         crn:
@@ -975,7 +982,7 @@ components:
           type: integer
           format: int64
         case:
-          $ref: "#/components/schemas/AppointmentResponseCase"
+          $ref: "#/components/schemas/Case"
         outcome:
           $ref: "#/components/schemas/CodeDescription"
         requirementProgress:
@@ -1003,7 +1010,7 @@ components:
           deprecated: true
           description: Use project.type instead
         case:
-          $ref: "#/components/schemas/AppointmentResponseCase"
+          $ref: "#/components/schemas/Case"
         event:
           $ref: "#/components/schemas/EventResponse"
         supervisor:
@@ -1126,14 +1133,35 @@ components:
       required:
       - code
       - description
+    Offence:
+      type: object
+      properties:
+        date:
+          type: string
+          format: date
+        count:
+          type: integer
+          format: int32
+        code:
+          type: string
+        description:
+          type: string
+      required:
+      - code
+      - count
+      - date
+      - description
     UnpaidWorkDetails:
       type: object
       properties:
+        case:
+          $ref: "#/components/schemas/Case"
         unpaidWorkDetails:
           type: array
           items:
             $ref: "#/components/schemas/UnpaidWorkMinutes"
       required:
+      - case
       - unpaidWorkDetails
     UnpaidWorkMinutes:
       type: object
@@ -1156,11 +1184,30 @@ components:
         completedEteMinutes:
           type: integer
           format: int64
+        eventOutcome:
+          type: string
+        upwStatus:
+          type: string
+        referralDate:
+          type: string
+          format: date
+        convictionDate:
+          type: string
+          format: date
+        court:
+          $ref: "#/components/schemas/CodeDescription"
+        mainOffence:
+          $ref: "#/components/schemas/Offence"
       required:
       - adjustments
       - completedEteMinutes
       - completedMinutes
+      - convictionDate
+      - court
       - eventNumber
+      - eventOutcome
+      - mainOffence
+      - referralDate
       - requiredMinutes
       - sentenceDate
     AllocationResponse:
@@ -1263,7 +1310,7 @@ components:
           type: integer
           format: int64
         case:
-          $ref: "#/components/schemas/AppointmentResponseCase"
+          $ref: "#/components/schemas/Case"
         eventNumber:
           type: integer
           format: int32
