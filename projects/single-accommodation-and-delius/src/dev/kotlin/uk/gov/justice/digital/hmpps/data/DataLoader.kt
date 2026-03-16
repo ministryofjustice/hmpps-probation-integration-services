@@ -11,7 +11,6 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
 
     override fun setupData() {
         save(ReferenceDataGenerator.GENDER_MALE)
-        save(ReferenceDataGenerator.C1_TIER)
         save(ReferenceDataGenerator.EXP_RELEASE_DATE_TYPE)
         save(ProviderGenerator.DEFAULT)
         save(TeamGenerator.DEFAULT)

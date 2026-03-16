@@ -54,7 +54,6 @@ class CaseListService(
                 ),
                 gender = person.gender.description,
                 roshLevel = roshLevels[person.id],
-                tier = person.currentTier?.description,
                 expectedReleaseDate = keyDateRepository.findExpectedReleaseDates(person.id).firstOrNull()?.date
             )
         }

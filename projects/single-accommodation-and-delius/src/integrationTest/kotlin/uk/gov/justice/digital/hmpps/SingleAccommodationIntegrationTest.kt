@@ -62,7 +62,6 @@ internal class SingleAccommodationIntegrationTest @Autowired constructor(
                         team = CodeDescription(code = team.code, description = team.description),
                         gender = person.gender.description,
                         roshLevel = CodeDescription("RHRH", "High RoSH"),
-                        tier = "C1",
                         expectedReleaseDate = KeyDateGenerator.EXPECTED_RELEASE.date
                     )
                 )

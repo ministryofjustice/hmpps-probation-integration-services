@@ -34,10 +34,6 @@ class Person(
 
     @Column(name = "pnc_number", columnDefinition = "char(13)")
     val pnc: String?,
-
-    @ManyToOne
-    @JoinColumn(name = "current_tier")
-    val currentTier: ReferenceData?,
 )
 
 interface PersonRepository : JpaRepository<Person, Long> {

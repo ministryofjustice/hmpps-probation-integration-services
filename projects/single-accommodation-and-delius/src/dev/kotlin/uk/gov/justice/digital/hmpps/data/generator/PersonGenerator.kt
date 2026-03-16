@@ -15,8 +15,7 @@ object PersonGenerator {
         dateOfBirth = LocalDate.of(1980, 1, 1),
         gender = ReferenceDataGenerator.GENDER_MALE,
         noms = "A0001AA",
-        pnc = "2004/0000001P",
-        currentTier = ReferenceDataGenerator.C1_TIER
+        pnc = "2004/0000001P"
     )
 }
 

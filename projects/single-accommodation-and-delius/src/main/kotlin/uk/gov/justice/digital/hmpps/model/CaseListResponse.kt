@@ -16,7 +16,6 @@ data class Case(
     val team: CodeDescription,
     val gender: String,
     val roshLevel: CodeDescription?,
-    val tier: String?,
     val expectedReleaseDate: LocalDate?
 )
 

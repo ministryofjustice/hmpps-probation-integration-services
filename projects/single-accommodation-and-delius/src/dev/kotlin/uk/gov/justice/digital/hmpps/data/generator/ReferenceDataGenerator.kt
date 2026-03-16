@@ -9,12 +9,6 @@ object ReferenceDataGenerator {
         description = "Male"
     )
 
-    val C1_TIER = ReferenceData(
-        id = IdGenerator.getAndIncrement(),
-        code = "C1",
-        description = "C1"
-    )
-
     val EXP_RELEASE_DATE_TYPE = ReferenceData(
         id = IdGenerator.getAndIncrement(),
         code = "EXP",
