@@ -11,13 +11,9 @@ data class AppointmentsResponse(
     val daysOverdue: Long?,
     val case: Case,
     val eventNumber: Int?,
-    val project: ProjectSummary,
+    val project: CodeDescription,
+    val projectType: CodeName,
     val requirementProgress: RequirementProgress,
-    val outcome: CodeDescription?
-)
-
-data class ProjectSummary(
-    val code: String,
-    val name: String,
-    val projectType: CodeDescription
+    val outcome: CodeDescription?,
+    val notes: String?
 )

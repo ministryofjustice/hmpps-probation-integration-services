@@ -124,12 +124,6 @@ class CommunityPaybackAppointmentsService(
             val daysOverdue = if (outcome == null || it.date < LocalDate.now()) {
                 ChronoUnit.DAYS.between(it.date, LocalDate.now())
             } else null
-            val projectSummary = ProjectSummary(
-                it.project.code,
-                it.project.name,
-                CodeDescription(it.project.projectType.code, it.project.projectType.description)
-            )
-
             AppointmentsResponse(
                 id = it.id,
                 date = it.date,
@@ -138,9 +132,17 @@ class CommunityPaybackAppointmentsService(
                 daysOverdue = daysOverdue,
                 case = it.toAppointmentResponseCase(limitedAccess),
                 eventNumber = it.details.disposal.event.number.toInt(),
-                project = projectSummary,
+                project = CodeDescription(
+                    description = it.project.name,
+                    code = it.project.code
+                ),
+                projectType = CodeName(
+                    name = it.project.projectType.description,
+                    code = it.project.projectType.code
+                ),
                 requirementProgress = checkNotNull(minutes[it.details.id]),
-                outcome = outcome?.toCodeDescription()
+                outcome = outcome?.toCodeDescription(),
+                notes = it.contact.notes
             )
         })
     }
