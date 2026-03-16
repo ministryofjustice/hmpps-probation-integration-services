@@ -70,7 +70,7 @@ jobs:
           gradle-cache-encryption-key: ${{ secrets.GRADLE_ENCRYPTION_KEY }}
           get-info-artifact: ${{ github.event_name == 'workflow_dispatch' && 'false' || 'true' }} # No build artifact is available on manual deploy
 
-      - uses: docker/login-action@v3
+      - uses: docker/login-action@v4
         if: ${{ steps.check_files.outputs.files_exists == 'true' && steps.enabled.outputs.enabled == 'true' }}
         with:
           registry: ghcr.io
