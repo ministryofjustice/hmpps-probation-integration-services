@@ -32,6 +32,8 @@ class TierDetailsTest @Autowired constructor(
                 jsonPath("$.registrations[0].code") { value(RegistrationGenerator.DEFAULT.type.code) }
                 jsonPath("$.registrations[0].description") { value(RegistrationGenerator.DEFAULT.type.description) }
                 jsonPath("$.registrations[0].level") { value(RegistrationGenerator.DEFAULT.level?.code) }
+                jsonPath("$.registrations[0].category") { value(RegistrationGenerator.DEFAULT.category?.code) }
+                jsonPath("$.latestReleaseDate") { value("2020-01-01") }
                 jsonPath("$.convictions[0].breached") { isBoolean() }
                 jsonPath("$.convictions[0].sentenceTypeCode") { value(DisposalTypeGenerator.DEFAULT.sentenceType) }
                 jsonPath("$.convictions[0].requirements[0].mainCategoryTypeCode") { value("MAIN") }
