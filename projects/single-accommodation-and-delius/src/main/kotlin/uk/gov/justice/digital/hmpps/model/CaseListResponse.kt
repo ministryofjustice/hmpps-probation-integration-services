@@ -15,7 +15,7 @@ data class Case(
     val staff: Officer,
     val team: CodeDescription,
     val gender: String,
-    val roshLevel: String?,
+    val roshLevel: CodeDescription?,
     val tier: String?,
     val expectedReleaseDate: LocalDate?
 )

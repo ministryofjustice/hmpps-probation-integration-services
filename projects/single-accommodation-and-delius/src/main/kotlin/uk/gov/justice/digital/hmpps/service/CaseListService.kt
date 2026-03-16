@@ -26,7 +26,7 @@ class CaseListService(
         val casesById = personRepository.findByIdIn(personIds).associateBy { it.id }
         val roshLevels = registrationRepository.findByPersonIdInAndTypeCodeIn(personIds, RegisterType.ROSH_CODES)
             .groupBy { it.personId }
-            .mapValues { (_, reg) -> reg.first().type.code }
+            .mapValues { (_, reg) -> CodeDescription(reg.first().type.code, reg.first().type.description) }
         val responsibleCases = personManagers.mapNotNull {
             val person = casesById[it.personId] ?: return@mapNotNull null
             Case(
