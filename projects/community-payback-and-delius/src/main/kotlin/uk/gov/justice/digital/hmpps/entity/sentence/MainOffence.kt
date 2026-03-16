@@ -45,6 +45,7 @@ class Offence(
     val id: Long,
 
     val mainCategoryCode: String,
+    @Column(name = "code", columnDefinition = "char(5)")
     val code: String,
     val mainCategoryDescription: String,
     val description: String,
