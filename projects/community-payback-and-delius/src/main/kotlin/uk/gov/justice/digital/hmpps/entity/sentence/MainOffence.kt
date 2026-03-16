@@ -44,9 +44,12 @@ class Offence(
     @Column(name = "offence_id")
     val id: Long,
 
+    @Column(name = "main_category_code", columnDefinition = "char(3)")
     val mainCategoryCode: String,
+
     @Column(name = "code", columnDefinition = "char(5)")
     val code: String,
+
     val mainCategoryDescription: String,
     val description: String,
 )
