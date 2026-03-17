@@ -129,7 +129,6 @@ class CommunityPaybackAppointmentsService(
                 it.project.name,
                 CodeDescription(it.project.projectType.code, it.project.projectType.description)
             )
-
             AppointmentsResponse(
                 id = it.id,
                 date = it.date,
@@ -140,7 +139,8 @@ class CommunityPaybackAppointmentsService(
                 eventNumber = it.details.disposal.event.number.toInt(),
                 project = projectSummary,
                 requirementProgress = checkNotNull(minutes[it.details.id]),
-                outcome = outcome?.toCodeDescription()
+                outcome = outcome?.toCodeDescription(),
+                notes = it.contact.notes
             )
         })
     }

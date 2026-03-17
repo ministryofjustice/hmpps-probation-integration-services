@@ -13,7 +13,8 @@ data class AppointmentsResponse(
     val eventNumber: Int?,
     val project: ProjectSummary,
     val requirementProgress: RequirementProgress,
-    val outcome: CodeDescription?
+    val outcome: CodeDescription?,
+    val notes: String?
 )
 
 data class ProjectSummary(
