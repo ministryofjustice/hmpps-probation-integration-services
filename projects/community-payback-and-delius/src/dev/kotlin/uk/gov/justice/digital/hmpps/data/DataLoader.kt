@@ -141,6 +141,7 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
         save(UPWGenerator.DEFAULT_UPW_ALLOCATION)
         save(UPWGenerator.DEFAULT_CONTACT)
         save(UPWGenerator.CONTACT_NO_ENFORCEMENT)
+        save(UPWGenerator.CONTACT_NO_ENFORCEMENT_2)
         save(UPWGenerator.DEFAULT_UPW_APPOINTMENT)
         save(UPWGenerator.UPW_APPOINTMENT_WITHOUT_PICKUP)
         save(UPWGenerator.UPW_APPOINTMENT_NO_ENFORCEMENT)
@@ -153,6 +154,7 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
         save(UPWGenerator.LAO_RESTRICTED_UPW_APPOINTMENT)
         save(UPWGenerator.DEFAULT_UPW_DETAILS_ADJUSTMENT_NEGATIVE)
         save(UPWGenerator.DEFAULT_UPW_DETAILS_ADJUSTMENT_POSITIVE)
+        save(UPWGenerator.GET_ADJUSTMENT_NEGATIVE)
     }
 
     fun loadLimitedAccessData() {

@@ -265,8 +265,28 @@ object UPWGenerator {
         provider = ProviderGenerator.DEFAULT_PROVIDER,
         event = EVENT_1,
         alertsActive = true,
-        primaryKeyId = 1L,
+        primaryKeyId = EVENT_1.id,
         externalReference = CONTACT_NO_ENFORCEMENT_EXTERNAL_REFERENCE.toString(),
+    )
+
+    val CONTACT_NO_ENFORCEMENT_2_EXTERNAL_REFERENCE = UUID.fromString("ea55cd30-5c64-4af9-8e5f-226407f3f500")
+
+    val CONTACT_NO_ENFORCEMENT_2 = generateContact(
+        contactType = ReferenceDataGenerator.UPW_APPOINTMENT_TYPE,
+        latestEnforcementAction = null,
+        contactOutcome = null,
+        startTime = LocalTime.of(10, 15),
+        endTime = LocalTime.of(16, 30),
+        date = LocalDate.now().minusDays(1),
+        person = PersonGenerator.DEFAULT_PERSON,
+        officeLocation = DEFAULT_OFFICE_LOCATION,
+        staff = StaffGenerator.DEFAULT_STAFF,
+        team = TeamGenerator.DEFAULT_UPW_TEAM,
+        provider = ProviderGenerator.DEFAULT_PROVIDER,
+        event = EVENT_2,
+        alertsActive = true,
+        primaryKeyId = EVENT_2.id,
+        externalReference = "urn:" + CONTACT_NO_ENFORCEMENT_2_EXTERNAL_REFERENCE.toString(),
     )
 
     val DEFAULT_UPW_APPOINTMENT = generateUpwAppointment(
@@ -442,6 +462,12 @@ object UPWGenerator {
 
     val DEFAULT_UPW_DETAILS_ADJUSTMENT_NEGATIVE = generateUPWAdjustment(
         upwDetailsId = UPW_DETAILS_1.id,
+        adjustmentAmount = 3L,
+        adjustmentType = "NEGATIVE"
+    )
+
+    val GET_ADJUSTMENT_NEGATIVE = generateUPWAdjustment(
+        upwDetailsId = UPW_DETAILS_2.id,
         adjustmentAmount = 3L,
         adjustmentType = "NEGATIVE"
     )

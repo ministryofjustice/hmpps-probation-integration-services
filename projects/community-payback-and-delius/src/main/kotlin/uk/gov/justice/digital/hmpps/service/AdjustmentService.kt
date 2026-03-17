@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.stereotype.Service
+import org.slf4j.LoggerFactory
 import uk.gov.justice.digital.hmpps.entity.ReferenceDataRepository
 import uk.gov.justice.digital.hmpps.entity.contact.ContactRepository
 import uk.gov.justice.digital.hmpps.entity.getAdjustmentReason
@@ -28,6 +29,7 @@ class AdjustmentService(
     private val referenceDataRepository: ReferenceDataRepository,
     private val userRepository: UserRepository,
 ) {
+    private val log = LoggerFactory.getLogger(this::class.java)
     fun createAdjustments(
         adjustments: List<AdjustmentRequest>,
         crn: String,
@@ -36,7 +38,6 @@ class AdjustmentService(
     ): List<AdjustmentPostResponse> {
         val response = mutableListOf<AdjustmentPostResponse>()
         adjustments.forEach { adjustment ->
-
             val contact = contactRepository.findByExternalReferenceAndContactPersonCrnAndEventNumber(
                 externalReference = adjustment.reference.toString(),
                 crn = crn,

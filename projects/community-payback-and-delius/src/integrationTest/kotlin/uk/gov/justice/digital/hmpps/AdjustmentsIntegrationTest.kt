@@ -32,7 +32,7 @@ class AdjustmentsIntegrationTest @Autowired constructor(
     @Test
     fun `get unpaid work adjustments`() {
         val crn = PersonGenerator.DEFAULT_PERSON.crn
-        val eventNumber = UPWGenerator.EVENT_1.number
+        val eventNumber = UPWGenerator.EVENT_2.number
         val response = mockMvc.get("/${crn}/event/${eventNumber}/adjustments") { withToken() }
             .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<Map<String, List<Map<String, Any?>>>>()
@@ -41,9 +41,9 @@ class AdjustmentsIntegrationTest @Autowired constructor(
         assertThat(adjustments).isNotNull
         assertThat(adjustments).hasSize(1)
         val adj = adjustments!!.first()
-        assertThat(adj["reference"]).isEqualTo(UPWGenerator.DEFAULT_CONTACT_EXTERNAL_REFERENCE.toString())
+        assertThat(adj["reference"]).isEqualTo(UPWGenerator.CONTACT_NO_ENFORCEMENT_2.reference().toString())
         assertThat(adj["adjustmentType"]).isEqualTo("NEGATIVE")
-        assertThat(adj["date"]).isEqualTo(UPWGenerator.DEFAULT_UPW_DETAILS_ADJUSTMENT_NEGATIVE.adjustmentDate.toString())
+        assertThat(adj["date"]).isEqualTo(UPWGenerator.GET_ADJUSTMENT_NEGATIVE.adjustmentDate.toString())
         assertThat(adj["adjustmentReasonType"]).isEqualTo(
             mapOf("code" to "OT", "name" to "Other")
         )
@@ -54,7 +54,7 @@ class AdjustmentsIntegrationTest @Autowired constructor(
     @Test
     fun `create upw adjustments`() {
         val crn = PersonGenerator.DEFAULT_PERSON.crn
-        val eventNumber = UPWGenerator.EVENT_1.number
+        val eventNumber = UPWGenerator.EVENT_2.number
         val username = UserGenerator.DEFAULT_USER.username
         val reference = UPWGenerator.CONTACT_NO_ENFORCEMENT_EXTERNAL_REFERENCE
         val adjustmentType = AdjustmentType.POSITIVE
