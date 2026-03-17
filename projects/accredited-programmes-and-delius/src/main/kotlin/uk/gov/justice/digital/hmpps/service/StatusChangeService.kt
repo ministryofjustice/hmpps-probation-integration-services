@@ -46,6 +46,7 @@ class StatusChangeService(
             component = component,
             date = occurredAt.toLocalDate(),
             startTime = occurredAt,
+            description = description,
             notes = notes,
             sensitive = false,
             provider = manager.team.provider,

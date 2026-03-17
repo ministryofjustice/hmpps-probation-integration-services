@@ -5,6 +5,7 @@ data class StatusInfo(
     val sourcedFromEntityType: EntityType,
     val sourcedFromEntityId: Long,
     val notes: String?,
+    val description: String,
 ) {
     enum class Status(val contactTypeCode: String) {
         AWAITING_ALLOCATION("EIBB"),
