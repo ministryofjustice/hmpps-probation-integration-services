@@ -52,7 +52,7 @@ class AdjustmentService(
                 adjustmentAmount = adjustment.adjustmentAmountMinutes.toLong(),
                 adjustmentDate = adjustment.date,
                 adjustmentType = adjustment.adjustmentType.code,
-                adjustmentReasonId = ReferenceDataRepository.getAdjustmentReason(adjustment.adjustmentReasonTypeCode).id,
+                adjustmentReasonId = referenceDataRepository.getAdjustmentReason(adjustment.adjustmentReasonTypeCode).id,
                 adjustedByUserId = user.id,
                 softDeleted = false,
                 createdDatetime = ZonedDateTime.now(),
