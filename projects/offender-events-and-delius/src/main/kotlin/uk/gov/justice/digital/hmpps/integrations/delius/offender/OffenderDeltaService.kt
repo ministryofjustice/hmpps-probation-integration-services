@@ -17,7 +17,7 @@ import java.time.temporal.ChronoUnit
 
 @Service
 class OffenderDeltaService(
-    @Value("\${offender-events.batch-size:50}")
+    @Value("\${poller.batch-size:50}")
     private val batchSize: Int,
     private val offenderDeltaRepository: OffenderDeltaRepository,
     private val contactRepository: ContactRepository,

@@ -1,12 +1,11 @@
 package uk.gov.justice.digital.hmpps
 
-import org.junit.jupiter.api.Assertions.assertEquals
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.*
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.bean.override.mockito.MockitoBean
 import uk.gov.justice.digital.hmpps.data.generator.OffenderDeltaGenerator
@@ -17,14 +16,12 @@ import uk.gov.justice.digital.hmpps.integrations.delius.offender.OffenderDeltaRe
 import uk.gov.justice.digital.hmpps.publisher.NotificationPublisher
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 
-@SpringBootTest(properties = ["spring.task.scheduling.enabled=false"])
-internal class OffenderDeltaPollerIntegrationTest @Autowired constructor(
-    @Value("\${messaging.producer.topic}") private val topicName: String,
+@SpringBootTest
+internal class TransactionIntegrationTest @Autowired constructor(
     private val offenderDeltaPoller: OffenderDeltaPoller,
     private val offenderDeltaRepository: OffenderDeltaRepository,
     private val domainEventRepository: DomainEventRepository,
 ) {
-
     @MockitoBean
     lateinit var notificationPublisher: NotificationPublisher
 
@@ -43,31 +40,15 @@ internal class OffenderDeltaPollerIntegrationTest @Autowired constructor(
     @Test
     fun `when all deltas prepare successfully then everything is committed`() {
         // GIVEN
-        val delta1 = OffenderDeltaGenerator.generate(
-            sourceTable = "OFFENDER",
-            sourceId = 99,
-            action = "UPSERT"
+        whenever(contactRepository.existsByIdAndVisorContactTrue(1001L)).thenReturn(true)
+        whenever(contactRepository.existsByIdAndSoftDeletedFalse(1001L)).thenReturn(true)
+        offenderDeltaRepository.saveAll(
+            listOf(
+                OffenderDeltaGenerator.generate(sourceTable = "OFFENDER", sourceId = 1000, action = "UPSERT"),
+                OffenderDeltaGenerator.generate(sourceTable = "CONTACT", sourceId = 1001, action = "UPSERT"),
+                OffenderDeltaGenerator.generate(sourceTable = "OFFENDER", sourceId = 1002, action = "UPSERT"),
+            )
         )
-
-        val delta2 = OffenderDeltaGenerator.generate(
-            sourceTable = "CONTACT",
-            sourceId = 101,
-            action = "UPSERT"
-        )
-
-        val delta3 = OffenderDeltaGenerator.generate(
-            sourceTable = "OFFENDER",
-            sourceId = 98,
-            action = "UPSERT"
-        )
-
-        offenderDeltaRepository.saveAll(listOf(delta1, delta2, delta3))
-
-        whenever(contactRepository.existsByIdAndVisorContactTrue(101L))
-            .thenReturn(true)
-
-        whenever(contactRepository.existsByIdAndSoftDeletedFalse(101L))
-            .thenReturn(true)
 
         // WHEN
         offenderDeltaPoller.poll()
@@ -75,48 +56,36 @@ internal class OffenderDeltaPollerIntegrationTest @Autowired constructor(
         // THEN
 
         // SNS messages published
-        verify(notificationPublisher, atLeast(1)).publish(any())
+        verify(notificationPublisher, atLeastOnce()).publish(any())
 
         // Telemetry recorded
         verify(telemetryService, atLeastOnce()).trackEvent(eq("OffenderEventPublished"), any(), any())
 
         // Domain events persisted
-        val domainEvents = domainEventRepository.findAll()
-        assertEquals(1, domainEvents.size)
-        assertEquals("probation-case.mappa-information.updated", domainEvents.first().type.code)
+        assertThat(domainEventRepository.findAll().map { it.type.code })
+            .isEqualTo(listOf("probation-case.mappa-information.updated"))
 
         // offender_delta records deleted
-        assertEquals(0, offenderDeltaRepository.count())
+        assertThat(offenderDeltaRepository.count()).isEqualTo(0)
     }
 
     @Test
     fun `when prepare fails then nothing is committed for any delta`() {
         // GIVEN
-        val delta1 = OffenderDeltaGenerator.generate(
-            sourceTable = "OFFENDER",
-            sourceId = 99,
-            action = "UPSERT"
+        whenever(contactRepository.existsByIdAndSoftDeletedFalse(2001L)).thenReturn(true)
+        whenever(contactRepository.existsByIdAndVisorContactTrue(2001L))
+            .thenThrow(RuntimeException("Simulated failure during prepare phase"))
+        offenderDeltaRepository.saveAll(
+            listOf(
+                OffenderDeltaGenerator.generate(sourceTable = "OFFENDER", sourceId = 2000, action = "UPSERT"),
+                OffenderDeltaGenerator.generate(sourceTable = "CONTACT", sourceId = 2001, action = "UPSERT"),
+                OffenderDeltaGenerator.generate(sourceTable = "OFFENDER", sourceId = 2002, action = "UPSERT"),
+            )
         )
-
-        val delta2 = OffenderDeltaGenerator.generate(
-            sourceTable = "CONTACT",
-            sourceId = 101,
-            action = "UPSERT"
-        )
-
-        val delta3 = OffenderDeltaGenerator.generate(
-            sourceTable = "OFFENDER",
-            sourceId = 98,
-            action = "UPSERT"
-        )
-
-        offenderDeltaRepository.saveAll(listOf(delta1, delta2, delta3))
 
         val idsBeforePoll = offenderDeltaRepository.findAll().map { it.id }.sorted()
         val domainEventsBefore = domainEventRepository.count()
 
-        whenever(contactRepository.existsByIdAndVisorContactTrue(101L))
-            .thenThrow(RuntimeException("Simulated failure during prepare phase"))
 
         // WHEN
         assertThrows(RuntimeException::class.java) { offenderDeltaPoller.poll() }
@@ -124,14 +93,13 @@ internal class OffenderDeltaPollerIntegrationTest @Autowired constructor(
         // THEN
 
         // No SNS publish at all
-        verify(notificationPublisher, times(0)).publish(any())
+        verify(notificationPublisher, never()).publish(any())
 
         // No domain events persisted
-        assertEquals(domainEventsBefore, domainEventRepository.count())
+        assertThat(domainEventRepository.count()).isEqualTo(domainEventsBefore)
 
         // Transaction rollback: offender_delta unchanged
         val idsAfterPoll = offenderDeltaRepository.findAll().map { it.id }.sorted()
-        assertEquals(3, offenderDeltaRepository.count())
-        assertEquals(idsBeforePoll, idsAfterPoll)
+        assertThat(idsAfterPoll).isEqualTo(idsBeforePoll)
     }
 }
