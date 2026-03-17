@@ -28,7 +28,12 @@ class AdjustmentService(
     private val referenceDataRepository: ReferenceDataRepository,
     private val userRepository: UserRepository,
 ) {
-    fun createAdjustments(adjustments: List<AdjustmentRequest>, crn: String, eventNumber: Int, username: String): List<AdjustmentPostResponse> {
+    fun createAdjustments(
+        adjustments: List<AdjustmentRequest>,
+        crn: String,
+        eventNumber: Int,
+        username: String
+    ): List<AdjustmentPostResponse> {
         val response = mutableListOf<AdjustmentPostResponse>()
         adjustments.forEach { adjustment ->
 
@@ -64,25 +69,27 @@ class AdjustmentService(
 
     fun getAdjustments(crn: String, eventNumber: Int): AdjustmentResponse {
         val adjustments = mapExternalReferenceToAdjustment(crn, eventNumber)
-        
-        return AdjustmentResponse( adjustments =
-            adjustments.map { (externalReference, it) ->
-            Adjustment(
-                id = it.id,
-                date = it.adjustmentDate,
-                reference = externalReference.substringAfterLast(":"),
-                adjustmentType = AdjustmentType.valueOf(it.adjustmentType),
-                adjustmentAmountMinutes = it.adjustmentAmount.toInt(),
-                adjustmentReasonType = AdjustmentReasonType(
-                    code = it.adjustmentReason.code, name = it.adjustmentReason.description
-                ),
 
-                )
-        })
+        return AdjustmentResponse(
+            adjustments =
+                adjustments.map { (externalReference, it) ->
+                    Adjustment(
+                        id = it.id,
+                        date = it.adjustmentDate,
+                        reference = externalReference.substringAfterLast(":"),
+                        adjustmentType = AdjustmentType.valueOf(it.adjustmentType),
+                        adjustmentAmountMinutes = it.adjustmentAmount.toInt(),
+                        adjustmentReasonType = AdjustmentReasonType(
+                            code = it.adjustmentReason.code, name = it.adjustmentReason.description
+                        ),
+
+                        )
+                })
     }
 
     fun mapExternalReferenceToAdjustment(crn: String, eventNumber: Int): Map<String, UnpaidWorkAdjustment> {
-        val adjustments = adjustmentRepository.findExternalReferenceAndAdjustmentByCrnAndEventNumber(crn, eventNumber.toString())
+        val adjustments =
+            adjustmentRepository.findExternalReferenceAndAdjustmentByCrnAndEventNumber(crn, eventNumber.toString())
         return adjustments.associate { row ->
             val externalReference = row[0] as String
             val adjustment = row[1] as UnpaidWorkAdjustment
@@ -97,7 +104,8 @@ class AdjustmentService(
     ) {
         val existingAdjustment = createUnpaidWorkAdjustmentRepository.findFirstById(adjustmentId)
             ?: throw NotFoundException("Adjustment not found for id $adjustmentId")
-        val userId = userRepository.findByUsername(username)?.id ?: throw NotFoundException("User not found for username $username")
+        val userId = userRepository.findByUsername(username)?.id
+            ?: throw NotFoundException("User not found for username $username")
         existingAdjustment.adjustmentType = adjustmentRequest.adjustmentType.code
         existingAdjustment.adjustmentAmount = adjustmentRequest.adjustmentAmountMinutes.toLong()
         existingAdjustment.adjustmentDate = adjustmentRequest.date
@@ -111,7 +119,8 @@ class AdjustmentService(
     fun deleteAdjustment(adjustmentId: Long, username: String) {
         val existingAdjustment = createUnpaidWorkAdjustmentRepository.findFirstById(adjustmentId)
             ?: throw IllegalArgumentException("Adjustment not found for id $adjustmentId")
-        val userId = userRepository.findByUsername(username)?.id ?: throw NotFoundException("User not found for username $username")
+        val userId = userRepository.findByUsername(username)?.id
+            ?: throw NotFoundException("User not found for username $username")
         existingAdjustment.softDeleted = true
         existingAdjustment.lastUpdatedDatetime = ZonedDateTime.now()
         existingAdjustment.lastUpdatedUserId = userId
