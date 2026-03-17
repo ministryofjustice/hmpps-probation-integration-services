@@ -6,9 +6,9 @@ import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc
 import uk.gov.justice.digital.hmpps.data.TestData
 import uk.gov.justice.digital.hmpps.integration.StatusInfo
 import uk.gov.justice.digital.hmpps.messaging.HmppsChannelManager
@@ -67,6 +67,7 @@ class StatusChangedEventIntegrationTest @Autowired constructor(
         }
         assertThat(contact).isNotNull
         assertThat(contact!!.requirement?.id).isEqualTo(TestData.REQUIREMENTS.first().id)
+        assertThat(contact.description).isEqualTo("Some description")
         assertThat(contact.notes).isEqualTo("Some notes about the being on the programme")
         assertThat(contact.externalReference).isNotNull
     }
@@ -82,7 +83,8 @@ class StatusChangedEventIntegrationTest @Autowired constructor(
                     newStatus = StatusInfo.Status.ON_PROGRAMME,
                     sourcedFromEntityType = StatusInfo.EntityType.REQUIREMENT,
                     sourcedFromEntityId = TestData.REQUIREMENTS.first().id,
-                    notes = "Some notes"
+                    notes = "Some notes",
+                    description = "Some description",
                 ),
             )
         }.isInstanceOf(IllegalArgumentException::class.java).hasMessage("CRN and component do not match")
