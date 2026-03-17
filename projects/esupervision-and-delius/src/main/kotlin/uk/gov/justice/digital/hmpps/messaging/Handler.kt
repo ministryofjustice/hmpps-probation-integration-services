@@ -61,6 +61,8 @@ class Handler(
 fun Notification<HmppsDomainEvent>.telemetry() = mapOf(
     "eventType" to eventType,
     "crn" to message.personReference.findCrn(),
+    "eventNumber" to message.eventNumber(),
+    "checkInUrl" to message.checkInUrl(),
 )
 
 fun HmppsDomainEvent.description() = when (eventType) {
@@ -70,3 +72,4 @@ fun HmppsDomainEvent.description() = when (eventType) {
 }
 
 fun HmppsDomainEvent.checkInUrl() = additionalInformation["checkInUrl"]?.toString()
+fun HmppsDomainEvent.eventNumber() = additionalInformation["eventNumber"]?.toString()
