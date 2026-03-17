@@ -16,6 +16,8 @@ import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractio
 import uk.gov.justice.digital.hmpps.integrations.delius.compliance.NsiRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.RequirementRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.*
+import uk.gov.justice.digital.hmpps.messaging.EventType
+import uk.gov.justice.digital.hmpps.messaging.Notifier
 import uk.gov.justice.digital.hmpps.utils.AppointmentTimeHelper
 import java.time.DayOfWeek
 import java.time.LocalDate
@@ -36,6 +38,8 @@ class SentenceAppointmentService(
     private val bankHolidayClient: BankHolidayClient,
     private val userService: UserService,
     private val outcomeService: AppointmentOutcomeService,
+    private val notifier: Notifier,
+    private val mappaCategoryResolverService: MappaCategoryResolverService,
 ) : AuditableService(auditedInteractionService) {
 
     private fun getOverlaps(
@@ -116,6 +120,11 @@ class SentenceAppointmentService(
             val saved = sentenceAppointmentRepository.save(createAppointment.withManager(om, userAndTeam, location))
             if (createAppointment.outcomeRecorded) {
                 outcomeService.recordOutcome(Outcome(saved.id!!, true, null, createAppointment.sensitive ?: false))
+            }
+
+            if (createAppointment.visorReport == true && saved.id != null) {
+                val category = mappaCategoryResolverService.resolveMappaCategory(om.person.id)
+                notifier.contactCreated(saved.id, true, category, crn, EventType.CREATED)
             }
 
             audit["contactId"] = saved.id!!

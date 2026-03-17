@@ -110,5 +110,9 @@ object TestData {
         sensitive = false,
         alertActive = false,
         notes = "testing update",
+        pickUp = CreateAppointmentPickUpData(
+            location = Code(UPWGenerator.DEFAULT_OFFICE_LOCATION.code),
+            time = LocalTime.of(9, 30)
+        ),
     )
 }

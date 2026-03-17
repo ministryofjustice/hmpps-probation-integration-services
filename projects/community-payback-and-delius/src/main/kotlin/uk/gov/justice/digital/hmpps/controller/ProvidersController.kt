@@ -29,13 +29,15 @@ class ProvidersController(
         @PathVariable providerCode: String,
         @PathVariable teamCode: String,
         @RequestParam typeCode: List<String> = emptyList(),
+        @RequestParam(defaultValue = "45") overdueDays: Int,
         @PageableDefault(page = 0, size = 10, sort = ["name"]) pageable: Pageable
     ) = providersService.getProjectsForTeam(
         teamCode, typeCode, pageable.mapSorts(
             "name" to "lower(project.name)",
             "overdueOutcomesCount" to "coalesce(appointment_stats.overdue_count, 0)",
             "oldestOverdueInDays" to "coalesce(appointment_stats.overdue_days, 0)"
-        )
+        ),
+        overdueDays
     )
 
     @GetMapping(value = ["/{providerCode}/teams/{teamCode}/sessions"])

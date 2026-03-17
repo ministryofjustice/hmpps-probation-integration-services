@@ -1,0 +1,46 @@
+{
+  "mappings": [
+    {
+      "request": {
+        "method": "POST",
+        "urlPattern": "/alfresco/uploadnew"
+      },
+      "response": {
+        "status": 201,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "jsonBody": {
+          "ID": "00000000-0000-0000-0000-000000000001"
+        }
+      }
+    },
+    {
+      "request": {
+        "method": "PUT",
+        "urlPattern": "/alfresco/lock/.+"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "request": {
+        "method": "PUT",
+        "urlPattern": "/alfresco/release/.+"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "request": {
+        "method": "DELETE",
+        "urlPattern": "/alfresco/deletehard/.+"
+      },
+      "response": {
+        "status": 200
+      }
+    }
+  ]
+}

@@ -6,8 +6,10 @@ import org.hibernate.annotations.FetchMode
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.NumericBooleanConverter
+import org.springframework.data.domain.PageRequest
 import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.jpa.repository.Query
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.ReferenceData
 
 @Immutable
@@ -46,8 +48,17 @@ interface RegistrationRepository : JpaRepository<Registration, Long> {
     @EntityGraph(attributePaths = ["type"])
     fun findByPersonId(personId: Long): List<Registration>
 
-    @EntityGraph(attributePaths = ["type", "category"])
-    fun findByPersonIdAndTypeCodeOrderByIdDesc(personId: Long, typeCode: String): List<Registration>
+    @Query(
+        """select case 
+       when r.category.code = 'M1' then 1
+       when r.category.code = 'M2' then 2
+       when r.category.code = 'M3' then 3
+       when r.category.code = 'M4' then 4
+       else 0 end
+        from Registration r
+        where r.personId = :personId and r.type.code = 'MAPP' order by r.id desc"""
+    )
+    fun findByMappaCategoryByPersonId(personId: Long, pageRequest: PageRequest = PageRequest.of(0, 1)): Int?
 }
 
 @Entity

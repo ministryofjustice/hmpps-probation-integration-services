@@ -1,10 +1,9 @@
 package uk.gov.justice.digital.hmpps
 
-import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
@@ -23,11 +22,11 @@ internal class UserIntegrationTest @Autowired constructor(
         mockMvc.get("/user/${user.username.lowercase()}") { withToken() }
             .andExpect {
                 status { is2xxSuccessful() }
-                jsonPath("$.username") { value(equalTo("TestUser")) }
-                jsonPath("$.staffCode") { value(equalTo("TEST002")) }
-                jsonPath("$.email") { value(equalTo("test@example.com")) }
-                jsonPath("$.homeArea.code") { value(equalTo("TST")) }
-                jsonPath("$.homeArea.name") { value(equalTo("Provider description")) }
+                jsonPath("$.username") { value("TestUser") }
+                jsonPath("$.staffCode") { value("TEST002") }
+                jsonPath("$.email") { value("test@example.com") }
+                jsonPath("$.homeArea.code") { value("TST") }
+                jsonPath("$.homeArea.name") { value("Provider description") }
             }
     }
 
@@ -39,9 +38,9 @@ internal class UserIntegrationTest @Autowired constructor(
         mockMvc.get("/user/${user.username}/access/${person.crn}") { withToken() }
             .andExpect {
                 status { is2xxSuccessful() }
-                jsonPath("$.userExcluded") { value(equalTo(false)) }
+                jsonPath("$.userExcluded") { value(false) }
                 jsonPath("$.exclusionMessage") { doesNotExist() }
-                jsonPath("$.userRestricted") { value(equalTo(false)) }
+                jsonPath("$.userRestricted") { value(false) }
                 jsonPath("$.restrictionMessage") { doesNotExist() }
             }
     }
@@ -54,9 +53,9 @@ internal class UserIntegrationTest @Autowired constructor(
         mockMvc.get("/user/${user.username}/access/${person.crn}") { withToken() }
             .andExpect {
                 status { is2xxSuccessful() }
-                jsonPath("$.userExcluded") { value(equalTo(true)) }
-                jsonPath("$.exclusionMessage") { value(equalTo(person.exclusionMessage)) }
-                jsonPath("$.userRestricted") { value(equalTo(false)) }
+                jsonPath("$.userExcluded") { value(true) }
+                jsonPath("$.exclusionMessage") { value(person.exclusionMessage) }
+                jsonPath("$.userRestricted") { value(false) }
                 jsonPath("$.restrictionMessage") { doesNotExist() }
             }
     }
@@ -69,9 +68,9 @@ internal class UserIntegrationTest @Autowired constructor(
         mockMvc.get("/user/${user.username}/access/${person.crn}") { withToken() }
             .andExpect {
                 status { is2xxSuccessful() }
-                jsonPath("$.userExcluded") { value(equalTo(false)) }
+                jsonPath("$.userExcluded") { value(false) }
                 jsonPath("$.exclusionMessage") { doesNotExist() }
-                jsonPath("$.userRestricted") { value(equalTo(false)) }
+                jsonPath("$.userRestricted") { value(false) }
                 jsonPath("$.restrictionMessage") { doesNotExist() }
             }
     }
@@ -84,10 +83,10 @@ internal class UserIntegrationTest @Autowired constructor(
         mockMvc.get("/user/${user.username}/access/${person.crn}") { withToken() }
             .andExpect {
                 status { is2xxSuccessful() }
-                jsonPath("$.userExcluded") { value(equalTo(false)) }
+                jsonPath("$.userExcluded") { value(false) }
                 jsonPath("$.exclusionMessage") { doesNotExist() }
-                jsonPath("$.userRestricted") { value(equalTo(true)) }
-                jsonPath("$.restrictionMessage") { value(equalTo(person.restrictionMessage)) }
+                jsonPath("$.userRestricted") { value(true) }
+                jsonPath("$.restrictionMessage") { value(person.restrictionMessage) }
             }
     }
 

@@ -72,6 +72,7 @@ class CommunityPaybackAppointmentsService(
             startTime = appointment.startTime,
             endTime = appointment.endTime,
             penaltyHours = penaltyTimeToHHmm(appointment.penaltyMinutes),
+            minutesCredited = appointment.minutesCredited,
             outcome = appointment.contact.outcome?.toCodeDescription(),
             enforcementAction = appointment.contact.latestEnforcementAction?.let { enforcementAction ->
                 AppointmentResponseEnforcementAction(
@@ -317,12 +318,14 @@ class CommunityPaybackAppointmentsService(
             attended = outcome?.attended
             complied = outcome?.complied
             notes = appointment.notes
+            pickUpTime = request.pickUp?.time
+            pickUpLocation = request.pickUp?.location?.code?.let { code -> officeLocationRepository.getByCode(code) }
         }
     }
 
     private fun UnpaidWorkAppointment.toAppointmentResponseCase(
         limitedAccess: CaseAccess
-    ) = AppointmentResponseCase(
+    ) = Case(
         crn = person.crn,
         name = PersonName(
             forename = person.forename,

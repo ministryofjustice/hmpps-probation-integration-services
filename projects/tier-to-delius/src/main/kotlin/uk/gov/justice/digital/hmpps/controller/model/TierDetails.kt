@@ -12,13 +12,15 @@ data class TierDetails(
     val rsrScore: Double?,
     val registrations: List<Registration>,
     val convictions: List<Conviction>,
-    val previousEnforcementActivity: Boolean
+    val previousEnforcementActivity: Boolean,
+    val latestReleaseDate: LocalDate?
 )
 
 data class Registration(
     val code: String,
     val description: String,
     val level: String?,
+    val category: String?,
     val date: LocalDate
 )
 

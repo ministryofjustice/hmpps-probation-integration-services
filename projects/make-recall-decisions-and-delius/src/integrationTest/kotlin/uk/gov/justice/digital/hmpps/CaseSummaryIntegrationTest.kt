@@ -3,8 +3,8 @@ package uk.gov.justice.digital.hmpps
 import org.hamcrest.Matchers.*
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.ResultActionsDsl
 import org.springframework.test.web.servlet.get
@@ -30,10 +30,10 @@ internal class CaseSummaryIntegrationTest @Autowired constructor(
         }
             .andExpect {
                 status { is2xxSuccessful() }
-                jsonPath("$.page.totalElements") { value(equalTo(1)) }
-                jsonPath("$.page.totalPages") { value(equalTo(1)) }
-                jsonPath("$.page.size") { value(equalTo(10)) }
-                jsonPath("$.page.number") { value(equalTo(0)) }
+                jsonPath("$.page.totalElements") { value(1) }
+                jsonPath("$.page.totalPages") { value(1) }
+                jsonPath("$.page.size") { value(10) }
+                jsonPath("$.page.number") { value(0) }
                 jsonPath("$.content") { value(hasSize<Int>(1)) }
             }
             .andExpectPersonalDetailsToMatch(person, prefix = "$.content[0]")
@@ -50,10 +50,10 @@ internal class CaseSummaryIntegrationTest @Autowired constructor(
         }
             .andExpect {
                 status { is2xxSuccessful() }
-                jsonPath("$.page.totalElements") { value(equalTo(1)) }
-                jsonPath("$.page.totalPages") { value(equalTo(1)) }
-                jsonPath("$.page.size") { value(equalTo(100)) }
-                jsonPath("$.page.number") { value(equalTo(2)) }
+                jsonPath("$.page.totalElements") { value(1) }
+                jsonPath("$.page.totalPages") { value(1) }
+                jsonPath("$.page.size") { value(100) }
+                jsonPath("$.page.number") { value(2) }
                 jsonPath("$.content") { value(hasSize<Int>(0)) }
             }
     }
@@ -74,10 +74,10 @@ internal class CaseSummaryIntegrationTest @Autowired constructor(
         mockMvc.get("/case-summary/${person.crn}/personal-details") { withToken() }
             .andExpect {
                 status { is2xxSuccessful() }
-                jsonPath("$.communityManager.staffCode") { value(equalTo(manager.staff.code)) }
-                jsonPath("$.mainAddress.addressNumber") { value(equalTo(address.addressNumber)) }
-                jsonPath("$.mainAddress.streetName") { value(equalTo(address.streetName)) }
-                jsonPath("$.mainAddress.noFixedAbode") { value(equalTo(address.noFixedAbode)) }
+                jsonPath("$.communityManager.staffCode") { value(manager.staff.code) }
+                jsonPath("$.mainAddress.addressNumber") { value(address.addressNumber) }
+                jsonPath("$.mainAddress.streetName") { value(address.streetName) }
+                jsonPath("$.mainAddress.noFixedAbode") { value(address.noFixedAbode) }
             }
             .andExpectPersonalDetailsToMatch(person)
     }
@@ -89,13 +89,13 @@ internal class CaseSummaryIntegrationTest @Autowired constructor(
         mockMvc.get("/case-summary/${person.crn}/overview") { withToken() }
             .andExpect {
                 status { is2xxSuccessful() }
-                jsonPath("$.registerFlags") { value(equalTo(listOf("MAPPA 1", "High RoSH"))) }
-                jsonPath("$.activeConvictions[0].number") { value(equalTo(event.number)) }
-                jsonPath("$.activeConvictions[0].mainOffence.description") { value(equalTo(event.mainOffence.offence.description)) }
-                jsonPath("$.activeConvictions[0].additionalOffences[0].description") { value(equalTo(event.additionalOffences[0].offence.description)) }
-                jsonPath("$.activeConvictions[0].sentence.isCustodial") { value(equalTo(true)) }
-                jsonPath("$.activeConvictions[0].sentence.custodialStatusCode") { value(equalTo(event.disposal!!.custody!!.status.code)) }
-                jsonPath("$.activeConvictions[0].sentence.sentenceExpiryDate") { value(equalTo("2023-01-01")) }
+                jsonPath("$.registerFlags") { value(arrayListOf("MAPPA 1", "High RoSH")) }
+                jsonPath("$.activeConvictions[0].number") { value(event.number) }
+                jsonPath("$.activeConvictions[0].mainOffence.description") { value(event.mainOffence.offence.description) }
+                jsonPath("$.activeConvictions[0].additionalOffences[0].description") { value(event.additionalOffences[0].offence.description) }
+                jsonPath("$.activeConvictions[0].sentence.isCustodial") { value(true) }
+                jsonPath("$.activeConvictions[0].sentence.custodialStatusCode") { value(event.disposal!!.custody!!.status.code) }
+                jsonPath("$.activeConvictions[0].sentence.sentenceExpiryDate") { value("2023-01-01") }
             }
             .andExpectPersonalDetailsToMatch(person)
     }
@@ -106,9 +106,9 @@ internal class CaseSummaryIntegrationTest @Autowired constructor(
         mockMvc.get("/case-summary/${person.crn}/mappa-and-rosh-history") { withToken() }
             .andExpect {
                 status { is2xxSuccessful() }
-                jsonPath("$.mappa.category") { value(equalTo(1)) }
-                jsonPath("$.roshHistory[0].type") { value(equalTo("RHRH")) }
-                jsonPath("$.roshHistory[0].typeDescription") { value(equalTo("High RoSH")) }
+                jsonPath("$.mappa.category") { value(1) }
+                jsonPath("$.roshHistory[0].type") { value("RHRH") }
+                jsonPath("$.roshHistory[0].typeDescription") { value("High RoSH") }
             }
             .andExpectPersonalDetailsToMatch(person)
     }
@@ -120,13 +120,13 @@ internal class CaseSummaryIntegrationTest @Autowired constructor(
         mockMvc.get("/case-summary/${person.crn}/licence-conditions") { withToken() }
             .andExpect {
                 status { is2xxSuccessful() }
-                jsonPath("$.activeConvictions[0].licenceConditions.size()") { value(equalTo(1)) }
-                jsonPath("$.activeConvictions[0].licenceConditions[0].startDate") { value(equalTo("2020-01-01")) }
+                jsonPath("$.activeConvictions[0].licenceConditions.size()") { value(1) }
+                jsonPath("$.activeConvictions[0].licenceConditions[0].startDate") { value("2020-01-01") }
                 jsonPath("$.activeConvictions[0].licenceConditions[0].mainCategory.description") {
-                    value(equalTo(event.disposal!!.licenceConditions[0].mainCategory.description))
+                    value(event.disposal!!.licenceConditions[0].mainCategory.description)
                 }
                 jsonPath("$.activeConvictions[0].licenceConditions[0].notes") {
-                    value(equalTo(event.disposal!!.licenceConditions[0].notes))
+                    value(event.disposal!!.licenceConditions[0].notes)
                 }
             }
             .andExpectPersonalDetailsToMatch(person)
@@ -151,17 +151,17 @@ internal class CaseSummaryIntegrationTest @Autowired constructor(
                         )
                     )
                 }
-                jsonPath("$.contacts[0].outcome") { value(equalTo(ContactGenerator.DEFAULT_OUTCOME.description)) }
-                jsonPath("$.contacts[1].type.code") { value(equalTo(ContactGenerator.SYSTEM_GENERATED_TYPE.code)) }
-                jsonPath("$.contacts[2].documents[*].name") { value(equalTo(listOf("doc1", "doc2"))) }
-                jsonPath("$.contacts[4].startDateTime") { value(equalTo("2022-01-01T12:00:00Z")) }
-                jsonPath("$.summary.hits") { value(equalTo(5)) }
-                jsonPath("$.summary.total") { value(equalTo(5)) }
-                jsonPath("$.summary.types.size()") { value(equalTo(3)) }
-                jsonPath("$.summary.types[0].description") { value(equalTo("AP Residence Plan Prepared")) }
-                jsonPath("$.summary.types[0].total") { value(equalTo(1)) }
-                jsonPath("$.summary.types[1].description") { value(equalTo("System-generated contact type")) }
-                jsonPath("$.summary.types[2].total") { value(equalTo(3)) }
+                jsonPath("$.contacts[0].outcome") { value(ContactGenerator.DEFAULT_OUTCOME.description) }
+                jsonPath("$.contacts[1].type.code") { value(ContactGenerator.SYSTEM_GENERATED_TYPE.code) }
+                jsonPath("$.contacts[2].documents[*].name") { value(arrayListOf("doc1", "doc2")) }
+                jsonPath("$.contacts[4].startDateTime") { value("2022-01-01T12:00:00Z") }
+                jsonPath("$.summary.hits") { value(5) }
+                jsonPath("$.summary.total") { value(5) }
+                jsonPath("$.summary.types.size()") { value(3) }
+                jsonPath("$.summary.types[0].description") { value("AP Residence Plan Prepared") }
+                jsonPath("$.summary.types[0].total") { value(1) }
+                jsonPath("$.summary.types[1].description") { value("System-generated contact type") }
+                jsonPath("$.summary.types[2].total") { value(3) }
             }
             .andExpectPersonalDetailsToMatch(person)
     }
@@ -174,9 +174,9 @@ internal class CaseSummaryIntegrationTest @Autowired constructor(
         }
             .andExpect {
                 status { is2xxSuccessful() }
-                jsonPath("$.contacts.*.notes") { value(equalTo(listOf("past"))) }
-                jsonPath("$.summary.hits") { value(equalTo(1)) }
-                jsonPath("$.summary.total") { value(equalTo(5)) }
+                jsonPath("$.contacts.*.notes") { value(arrayListOf("past")) }
+                jsonPath("$.summary.hits") { value(1) }
+                jsonPath("$.summary.total") { value(5) }
             }
     }
 
@@ -207,12 +207,12 @@ internal class CaseSummaryIntegrationTest @Autowired constructor(
             withToken()
         }.andExpect {
             status { is2xxSuccessful() }
-            jsonPath("$.mainAddress.addressNumber") { value(equalTo("123")) }
-            jsonPath("$.mainAddress.streetName") { value(equalTo("Fake Street")) }
-            jsonPath("$.mappa.level") { value(equalTo(2)) }
-            jsonPath("$.activeConvictions.size()") { value(equalTo(1)) }
-            jsonPath("$.activeCustodialConvictions.size()") { value(equalTo(1)) }
-            jsonPath("$.activeCustodialConvictions[0].sentence.startDate") { value(equalTo("2021-01-01")) }
+            jsonPath("$.mainAddress.addressNumber") { value("123") }
+            jsonPath("$.mainAddress.streetName") { value("Fake Street") }
+            jsonPath("$.mappa.level") { value(2) }
+            jsonPath("$.activeConvictions.size()") { value(1) }
+            jsonPath("$.activeCustodialConvictions.size()") { value(1) }
+            jsonPath("$.activeCustodialConvictions[0].sentence.startDate") { value("2021-01-01") }
         }.andExpectPersonalDetailsToMatch(person)
     }
 
@@ -220,19 +220,19 @@ internal class CaseSummaryIntegrationTest @Autowired constructor(
         person: Person,
         prefix: String = "$.personalDetails"
     ) = this.andExpect {
-        jsonPath("$prefix.name.forename") { value(equalTo(person.forename)) }
-        jsonPath("$prefix.name.middleName") { value(equalTo("${person.secondName} ${person.thirdName}")) }
-        jsonPath("$prefix.name.surname") { value(equalTo(person.surname)) }
-        jsonPath("$prefix.gender") { value(equalTo(person.gender.description)) }
-        jsonPath("$prefix.dateOfBirth") { value(equalTo(person.dateOfBirth.toString())) }
+        jsonPath("$prefix.name.forename") { value(person.forename) }
+        jsonPath("$prefix.name.middleName") { value("${person.secondName} ${person.thirdName}") }
+        jsonPath("$prefix.name.surname") { value(person.surname) }
+        jsonPath("$prefix.gender") { value(person.gender.description) }
+        jsonPath("$prefix.dateOfBirth") { value(person.dateOfBirth.toString()) }
 
-        jsonPath("$prefix.identifiers.nomsNumber") { value(equalTo(person.nomsNumber)) }
-        jsonPath("$prefix.identifiers.croNumber") { value(equalTo(person.croNumber)) }
-        jsonPath("$prefix.identifiers.pncNumber") { value(equalTo(person.pncNumber)) }
-        jsonPath("$prefix.identifiers.bookingNumber") { value(equalTo(person.mostRecentPrisonerNumber)) }
+        jsonPath("$prefix.identifiers.nomsNumber") { value(person.nomsNumber) }
+        jsonPath("$prefix.identifiers.croNumber") { value(person.croNumber) }
+        jsonPath("$prefix.identifiers.pncNumber") { value(person.pncNumber) }
+        jsonPath("$prefix.identifiers.bookingNumber") { value(person.mostRecentPrisonerNumber) }
 
-        jsonPath("$prefix.ethnicity") { value(equalTo(person.ethnicity!!.description)) }
-        jsonPath("$prefix.primaryLanguage") { value(equalTo(person.primaryLanguage!!.description)) }
+        jsonPath("$prefix.ethnicity") { value(person.ethnicity!!.description) }
+        jsonPath("$prefix.primaryLanguage") { value(person.primaryLanguage!!.description) }
     }
 }
 
