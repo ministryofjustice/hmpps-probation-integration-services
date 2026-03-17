@@ -75,9 +75,9 @@ class CaseControllerIntegrationTest @Autowired constructor(
         val response =
             mockMvc.get("/case/${PersonGenerator.DEFAULT_PERSON.crn}/summary?username=${username}") { withToken() }
                 .andExpect { status { isOk() } }
-                .andReturn().response.contentAsJson<Map<String, List<Map<String, Any>>>>()
+                .andReturn().response.contentAsJson<Map<String, Any>>()
 
-        val unpaidWorkDetails = response["unpaidWorkDetails"]
+        val unpaidWorkDetails = response["unpaidWorkDetails"] as? List<Map<String, Any>>
         assertThat(unpaidWorkDetails).isNotNull
         assertThat(unpaidWorkDetails).hasSize(5)
 

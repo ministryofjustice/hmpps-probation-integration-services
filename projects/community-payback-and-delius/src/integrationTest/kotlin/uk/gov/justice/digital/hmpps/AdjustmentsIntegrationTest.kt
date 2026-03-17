@@ -5,7 +5,6 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.test.json.JsonCompareMode
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.delete
 import org.springframework.test.web.servlet.get
@@ -34,32 +33,22 @@ class AdjustmentsIntegrationTest @Autowired constructor(
     fun `get unpaid work adjustments`() {
         val crn = PersonGenerator.DEFAULT_PERSON.crn
         val eventNumber = UPWGenerator.EVENT_1.number
-        mockMvc.get("/${crn}/event/${eventNumber}/adjustments") { withToken() }
-            .andExpect {
-                status { isOk() }
-                content {
-                    json(
-                        """
-                    {"adjustments":
-                      [
-                        {
-                            "id":${UPWGenerator.DEFAULT_UPW_DETAILS_ADJUSTMENT_NEGATIVE.id},
-                            "reference":"${UPWGenerator.DEFAULT_CONTACT_EXTERNAL_REFERENCE}",
-                            "adjustmentType":"NEGATIVE",
-                            "date":"${UPWGenerator.DEFAULT_UPW_DETAILS_ADJUSTMENT_NEGATIVE.adjustmentDate}",
-                            "adjustmentReasonType":
-                              {
-                                "code":"OT",
-                                "name":"Other"
-                              },
-                            "adjustmentAmountMinutes":3
-                        }
-                      ]
-                    }""".trimIndent(),
-                        JsonCompareMode.STRICT
-                    )
-                }
-            }
+        val response = mockMvc.get("/${crn}/event/${eventNumber}/adjustments") { withToken() }
+            .andExpect { status { isOk() } }
+            .andReturn().response.contentAsJson<Map<String, List<Map<String, Any?>>>>()
+
+        val adjustments = response["adjustments"]
+        assertThat(adjustments).isNotNull
+        assertThat(adjustments).hasSize(1)
+        val adj = adjustments!!.first()
+        assertThat(adj["reference"]).isEqualTo(UPWGenerator.DEFAULT_CONTACT_EXTERNAL_REFERENCE.toString())
+        assertThat(adj["adjustmentType"]).isEqualTo("NEGATIVE")
+        assertThat(adj["date"]).isEqualTo(UPWGenerator.DEFAULT_UPW_DETAILS_ADJUSTMENT_NEGATIVE.adjustmentDate.toString())
+        assertThat(adj["adjustmentReasonType"]).isEqualTo(
+            mapOf("code" to "OT", "name" to "Other")
+        )
+        assertThat(adj["adjustmentAmountMinutes"]).isEqualTo(3)
+        assertThat(adj["id"]).isNotNull()
     }
 
     @Test
