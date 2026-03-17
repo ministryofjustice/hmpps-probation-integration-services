@@ -144,6 +144,8 @@ components:
           type: string
         level:
           type: string
+        category:
+          type: string
         date:
           type: string
           format: date
@@ -184,6 +186,9 @@ components:
             $ref: "#/components/schemas/Conviction"
         previousEnforcementActivity:
           type: boolean
+        latestReleaseDate:
+          type: string
+          format: date
       required:
       - convictions
       - gender
