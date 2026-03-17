@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps
 
 import com.github.tomakehurst.wiremock.WireMockServer
 import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.verify
 import org.springframework.beans.factory.annotation.Autowired
@@ -22,8 +23,11 @@ import uk.gov.justice.digital.hmpps.entity.ContactRepository
 import uk.gov.justice.digital.hmpps.entity.ContactType
 import uk.gov.justice.digital.hmpps.message.MessageAttributes
 import uk.gov.justice.digital.hmpps.message.Notification
+import uk.gov.justice.digital.hmpps.message.PersonIdentifier
+import uk.gov.justice.digital.hmpps.message.PersonReference
 import uk.gov.justice.digital.hmpps.messaging.HmppsChannelManager
 import uk.gov.justice.digital.hmpps.model.PersonalDetails
+import uk.gov.justice.digital.hmpps.service.CheckInService
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.json
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
@@ -36,6 +40,7 @@ internal class IntegrationTest @Autowired constructor(
     private val mockMvc: MockMvc,
     private val channelManager: HmppsChannelManager,
     private val contactRepository: ContactRepository,
+    private val checkInService: CheckInService,
     private val wireMockServer: WireMockServer,
     @MockitoBean private val telemetryService: TelemetryService,
 ) {
@@ -58,6 +63,15 @@ internal class IntegrationTest @Autowired constructor(
         assertThat(contact.staff.id).isEqualTo(ProviderGenerator.DEFAULT_STAFF.id)
         assertThat(contact.isSensitive).isEqualTo(false)
         assertThat(contact.notes).isEqualTo("Review the online check in using the manage probation check ins service: https://esupervision/check-in/received")
+        verify(telemetryService).trackEvent(
+            "CheckInEventReceived",
+            mapOf(
+                "eventType" to "esupervision.check-in.received",
+                "crn" to PersonGenerator.DEFAULT_PERSON.crn,
+                "eventNumber" to EventGenerator.EVENT_2.number,
+                "checkInUrl" to "https://esupervision/check-in/received",
+            )
+        )
     }
 
     @Test
@@ -78,6 +92,49 @@ internal class IntegrationTest @Autowired constructor(
         assertThat(contact.staff.id).isEqualTo(ProviderGenerator.DEFAULT_STAFF.id)
         assertThat(contact.isSensitive).isEqualTo(false)
         assertThat(contact.notes).isEqualTo("Review the online check in using the manage probation check ins service: https://esupervision/check-in/expired")
+    }
+
+    @Test
+    fun `esupervision received falls back to most recent active event when event number is not provided`() {
+        val person = PersonGenerator.FALLBACK_EVENT_PERSON
+        val message = MessageGenerator.RECEIVED_A000001.copy(
+            personReference = PersonReference(listOf(PersonIdentifier("CRN", person.crn))),
+            additionalInformation = MessageGenerator.RECEIVED_A000001.additionalInformation - "eventNumber"
+        )
+        val notification =
+            Notification(message = message, attributes = MessageAttributes(eventType = message.eventType))
+
+        channelManager.getChannel(queueName).publishAndWait(notification)
+
+        val contact = contactRepository.findAll()
+            .single { it.person.id == person.id && it.description == "Online check in completed" }
+        assertThat(contact.event.id).isEqualTo(EventGenerator.FALLBACK_EVENT_2.id)
+    }
+
+    @Test
+    fun `esupervision received contact created when no active event exists`() {
+        val message = MessageGenerator.RECEIVED_A000004
+        val notification =
+            Notification(message = message, attributes = MessageAttributes(eventType = message.eventType))
+
+        channelManager.getChannel(queueName).publishAndWait(notification)
+
+        val contact = contactRepository.findAll()
+            .single { it.person.id == PersonGenerator.NO_ACTIVE_EVENT_PERSON.id && it.description == "Online check in completed" }
+        assertThat(contact.event.id).isEqualTo(EventGenerator.INACTIVE_EVENT.id)
+        assertThat(contact.event.active).isFalse()
+        assertThat(contact.notes).isEqualTo("Review the online check in using the manage probation check ins service: https://esupervision/check-in/received")
+    }
+
+    @Test
+    fun `esupervision received throws an error when no event number is provided and there is no active event`() {
+        val message = MessageGenerator.RECEIVED_A000004.copy(
+            additionalInformation = MessageGenerator.RECEIVED_A000004.additionalInformation - "eventNumber"
+        )
+
+        assertThatThrownBy { checkInService.handle(message) }
+            .isInstanceOf(IllegalStateException::class.java)
+            .hasMessage("Case does not have an active event")
     }
 
     @Test
@@ -155,7 +212,12 @@ internal class IntegrationTest @Autowired constructor(
 
         verify(telemetryService).trackEvent(
             "CheckInEventIgnored",
-            mapOf("eventType" to "esupervision.check-in.updated", "crn" to "INVALID")
+            mapOf(
+                "eventType" to "esupervision.check-in.updated",
+                "crn" to "INVALID",
+                "eventNumber" to EventGenerator.EVENT_2.number,
+                "checkInUrl" to null,
+            )
         )
     }
 
@@ -194,6 +256,17 @@ internal class IntegrationTest @Autowired constructor(
                           "mobile": "${PersonGenerator.DEFAULT_PERSON.mobile.toString()}",
                           "email": "${PersonGenerator.DEFAULT_PERSON.emailAddress}",
                           "events": [
+                            {
+                              "number": 1,
+                              "mainOffence": {
+                                "code": "03100",
+                                "description": "Aggravated burglary in a building other than a dwelling (including attempts)"
+                              },
+                              "sentence": {
+                                "date": "2025-12-01",
+                                "description": "ORA Adult Custody (inc PSS)"
+                              }
+                            },
                             {
                               "number": 2,
                               "mainOffence": {

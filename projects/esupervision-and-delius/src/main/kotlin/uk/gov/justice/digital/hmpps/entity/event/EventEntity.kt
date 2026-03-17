@@ -14,7 +14,7 @@ import java.time.LocalDate
 @Entity
 @Immutable
 @Table(name = "event")
-@SQLRestriction("active_flag = 1 and soft_deleted = 0")
+@SQLRestriction("soft_deleted = 0")
 class EventEntity(
     @Id
     @Column(name = "event_id")
@@ -47,5 +47,8 @@ class EventEntity(
 
 interface EventRepository : JpaRepository<EventEntity, Long> {
     @EntityGraph(attributePaths = ["disposal.type", "mainOffence.offence"])
-    fun findFirstByPersonCrnOrderByReferralDateDesc(crn: String): EventEntity?
+    fun findFirstByPersonCrnAndActiveTrueOrderByReferralDateDesc(crn: String): EventEntity?
+
+    @EntityGraph(attributePaths = ["disposal.type", "mainOffence.offence"])
+    fun findByPersonCrnAndNumber(crn: String, eventNumber: String): EventEntity?
 }

@@ -4,7 +4,8 @@
   "description": "An e-Supervision remote check-in was expired",
   "occurredAt": "2025-08-26T09:30:00+01:00",
   "additionalInformation": {
-    "checkInUrl": "https://esupervision/check-in/expired"
+    "checkInUrl": "https://esupervision/check-in/expired",
+    "eventNumber": "2"
   },
   "personReference": {
     "identifiers": [
