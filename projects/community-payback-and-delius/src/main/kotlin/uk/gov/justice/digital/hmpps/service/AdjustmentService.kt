@@ -25,7 +25,7 @@ class AdjustmentService(
     private val createUnpaidWorkAdjustmentRepository: CreateUnpaidWorkAdjustmentRepository,
     private val contactRepository: ContactRepository,
     private val unpaidWorkDetailsRepository: UpwDetailsRepository,
-    private val ReferenceDataRepository: ReferenceDataRepository,
+    private val referenceDataRepository: ReferenceDataRepository,
     private val userRepository: UserRepository,
 ) {
     fun createAdjustments(adjustments: List<AdjustmentRequest>, crn: String, eventNumber: Int, username: String): List<AdjustmentPostResponse> {
@@ -104,7 +104,7 @@ class AdjustmentService(
         existingAdjustment.lastUpdatedDatetime = ZonedDateTime.now()
         existingAdjustment.lastUpdatedUserId = userId
         existingAdjustment.adjustmentReasonId =
-            ReferenceDataRepository.getAdjustmentReason(adjustmentRequest.adjustmentReasonTypeCode).id
+            referenceDataRepository.getAdjustmentReason(adjustmentRequest.adjustmentReasonTypeCode).id
         createUnpaidWorkAdjustmentRepository.save(existingAdjustment)
     }
 
