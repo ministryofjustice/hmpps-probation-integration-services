@@ -72,9 +72,10 @@ class CaseControllerIntegrationTest @Autowired constructor(
     @Test
     fun `returns 200 when summary requested`() {
         val username = UserGenerator.DEFAULT_USER.username
-        val response = mockMvc.get("/case/${PersonGenerator.DEFAULT_PERSON.crn}/summary?username=${username}") { withToken() }
-            .andExpect { status { isOk() } }
-            .andReturn().response.contentAsJson<Map<String, List<Map<String, Any>>>>()
+        val response =
+            mockMvc.get("/case/${PersonGenerator.DEFAULT_PERSON.crn}/summary?username=${username}") { withToken() }
+                .andExpect { status { isOk() } }
+                .andReturn().response.contentAsJson<Map<String, List<Map<String, Any>>>>()
 
         val unpaidWorkDetails = response["unpaidWorkDetails"]
         assertThat(unpaidWorkDetails).isNotNull
