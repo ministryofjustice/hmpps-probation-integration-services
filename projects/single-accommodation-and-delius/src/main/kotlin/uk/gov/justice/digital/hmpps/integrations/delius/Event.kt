@@ -4,6 +4,7 @@ import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.NumericBooleanConverter
+import org.springframework.data.domain.PageRequest
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import java.time.LocalDate
@@ -102,14 +103,14 @@ class KeyDate(
 interface KeyDateRepository : JpaRepository<KeyDate, Long> {
     @Query(
         """
-        select kd from KeyDate kd
+        select kd.date from KeyDate kd
         join kd.custody c
         join c.disposal d
         join d.event e
         where e.personId = :personId
         and kd.type.code = 'EXP'
         order by kd.date desc
-    """
+    	"""
     )
-    fun findExpectedReleaseDates(personId: Long): List<KeyDate>
+    fun findExpectedReleaseDates(personId: Long, pageRequest: PageRequest = PageRequest.of(0, 1)): LocalDate?
 }

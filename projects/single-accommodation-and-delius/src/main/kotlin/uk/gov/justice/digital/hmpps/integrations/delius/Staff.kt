@@ -25,14 +25,6 @@ class Staff(
 
     @OneToOne(mappedBy = "staff")
     val user: StaffUser? = null,
-
-    @ManyToMany
-    @JoinTable(
-        name = "staff_team",
-        joinColumns = [JoinColumn(name = "staff_id")],
-        inverseJoinColumns = [JoinColumn(name = "team_id")]
-    )
-    val teams: List<Team>?,
 )
 
 @Entity
@@ -52,6 +44,6 @@ class StaffUser(
 )
 
 interface StaffRepository : JpaRepository<Staff, Long> {
-    @EntityGraph(attributePaths = ["user", "teams"])
+    @EntityGraph(attributePaths = ["user"])
     fun findByUserUsernameIgnoreCase(username: String): Staff?
 }

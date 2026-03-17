@@ -5,7 +5,6 @@ import jakarta.persistence.Entity
 import jakarta.persistence.Id
 import jakarta.persistence.Table
 import org.hibernate.annotations.Immutable
-import java.time.LocalDate
 
 @Immutable
 @Entity
@@ -20,8 +19,4 @@ class Team(
     val code: String,
 
     val description: String,
-
-    val startDate: LocalDate,
-
-    val endDate: LocalDate?,
 )
