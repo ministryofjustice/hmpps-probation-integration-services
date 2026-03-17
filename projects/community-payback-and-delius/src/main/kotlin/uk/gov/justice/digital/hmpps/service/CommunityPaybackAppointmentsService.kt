@@ -171,7 +171,7 @@ class CommunityPaybackAppointmentsService(
     }
 
     @Transactional
-    fun  createAppointments(
+    fun createAppointments(
         projectCode: String,
         requests: CreateAppointmentsRequest
     ): List<CreatedAppointment> = with(requests.appointments) {

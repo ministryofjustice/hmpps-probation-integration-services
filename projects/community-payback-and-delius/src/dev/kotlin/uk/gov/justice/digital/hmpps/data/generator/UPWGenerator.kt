@@ -526,19 +526,19 @@ object UPWGenerator {
         adjustmentDate: LocalDate = LocalDate.now(),
         adjustmentReason: ReferenceData = ReferenceDataGenerator.UPW_ADJUSTMENT_REASON_OTHER
     ) = CreateUnpaidWorkAdjustment(
-            id =id,
-            detailsId = upwDetailsId,
-            adjustmentAmount = adjustmentAmount,
-            adjustmentDate = adjustmentDate,
-            adjustmentType = adjustmentType,
-            adjustmentReasonId = adjustmentReason.id,
-            adjustedByUserId = 0L,
-            softDeleted = false,
-            createdDatetime = ZonedDateTime.now(),
-            createdByUserId = UserGenerator.DEFAULT_USER.id,
-            lastUpdatedDatetime = ZonedDateTime.now(),
-            lastUpdatedUserId = UserGenerator.DEFAULT_USER.id,
-            )
+        id = id,
+        detailsId = upwDetailsId,
+        adjustmentAmount = adjustmentAmount,
+        adjustmentDate = adjustmentDate,
+        adjustmentType = adjustmentType,
+        adjustmentReasonId = adjustmentReason.id,
+        adjustedByUserId = 0L,
+        softDeleted = false,
+        createdDatetime = ZonedDateTime.now(),
+        createdByUserId = UserGenerator.DEFAULT_USER.id,
+        lastUpdatedDatetime = ZonedDateTime.now(),
+        lastUpdatedUserId = UserGenerator.DEFAULT_USER.id,
+    )
 
     fun generateContact(
         id: Long = id(),

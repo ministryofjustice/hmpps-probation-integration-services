@@ -211,5 +211,4 @@ object DatasetGenerator {
         id: Long = IdGenerator.getAndIncrement(),
         code: String
     ) = Dataset(id, code)
-
 }

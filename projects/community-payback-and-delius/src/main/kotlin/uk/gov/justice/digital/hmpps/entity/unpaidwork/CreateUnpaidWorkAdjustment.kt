@@ -73,8 +73,8 @@ class CreateUnpaidWorkAdjustment(
     @Column(name = "partition_area_id")
     val partitionAreaId: Long = 0,
 
-) : Versioned
+    ) : Versioned
 
-interface CreateUnpaidWorkAdjustmentRepository : JpaRepository<CreateUnpaidWorkAdjustment, Long>{
+interface CreateUnpaidWorkAdjustmentRepository : JpaRepository<CreateUnpaidWorkAdjustment, Long> {
     fun findFirstById(id: Long): CreateUnpaidWorkAdjustment?
 }

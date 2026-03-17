@@ -31,12 +31,15 @@ class AdjustmentsIntegrationTest @Autowired constructor(
 ) {
 
     @Test
-    fun `get unpaid work adjustments`(){
+    fun `get unpaid work adjustments`() {
         val crn = PersonGenerator.DEFAULT_PERSON.crn
         val eventNumber = UPWGenerator.EVENT_1.number
         mockMvc.get("/${crn}/event/${eventNumber}/adjustments") { withToken() }
-            .andExpect { status { isOk() }
-                content { json("""
+            .andExpect {
+                status { isOk() }
+                content {
+                    json(
+                        """
                     {"adjustments":
                       [
                         {
@@ -53,7 +56,10 @@ class AdjustmentsIntegrationTest @Autowired constructor(
                         }
                       ]
                     }""".trimIndent(),
-                    JsonCompareMode.STRICT )}}
+                        JsonCompareMode.STRICT
+                    )
+                }
+            }
     }
 
     @Test
@@ -120,7 +126,7 @@ class AdjustmentsIntegrationTest @Autowired constructor(
         }.andExpect { status { isOk() } }.andReturn().response.contentAsJson<List<AdjustmentPostResponse>>()
         val idToDelete = postResponse.first().id
         mockMvc.delete("/adjustments/${idToDelete}?username=${username}") { withToken() }
-        .andExpect { status { isOk() } }
+            .andExpect { status { isOk() } }
         val deletedAdjustment = adjustmentRepository.findById(idToDelete)
         assertThat(deletedAdjustment).isEmpty()
     }

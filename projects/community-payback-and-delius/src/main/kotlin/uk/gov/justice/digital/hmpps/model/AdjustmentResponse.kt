@@ -2,7 +2,7 @@ package uk.gov.justice.digital.hmpps.model
 
 import java.time.LocalDate
 
-data class AdjustmentResponse (
+data class AdjustmentResponse(
     val adjustments: List<Adjustment>
 )
 

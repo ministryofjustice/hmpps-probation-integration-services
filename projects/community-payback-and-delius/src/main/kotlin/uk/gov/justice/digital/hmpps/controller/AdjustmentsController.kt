@@ -20,15 +20,18 @@ class AdjustmentsController(
     @GetMapping("/{crn}/event/{eventNumber}/adjustments")
     fun getAdjustments(
         @PathVariable crn: String,
-        @PathVariable eventNumber: Int) = adjustmentService.getAdjustments(crn, eventNumber)
+        @PathVariable eventNumber: Int
+    ) = adjustmentService.getAdjustments(crn, eventNumber)
 
     @PostMapping("/{crn}/event/{eventNumber}/adjustments")
     fun createAdjustments(
         @PathVariable crn: String,
         @PathVariable eventNumber: Int,
         @RequestParam username: String,
-        @RequestBody adjustmentRequest: List<AdjustmentRequest>) = adjustmentService.createAdjustments(
-        adjustmentRequest, crn, eventNumber, username)
+        @RequestBody adjustmentRequest: List<AdjustmentRequest>
+    ) = adjustmentService.createAdjustments(
+        adjustmentRequest, crn, eventNumber, username
+    )
 
     @PutMapping("/adjustments/{adjustmentId}")
     fun updateAdjustments(
@@ -41,6 +44,5 @@ class AdjustmentsController(
     fun deleteAdjustments(
         @PathVariable adjustmentId: Long,
         @RequestParam username: String,
-        ) = adjustmentService.deleteAdjustment(adjustmentId, username)
-
+    ) = adjustmentService.deleteAdjustment(adjustmentId, username)
 }

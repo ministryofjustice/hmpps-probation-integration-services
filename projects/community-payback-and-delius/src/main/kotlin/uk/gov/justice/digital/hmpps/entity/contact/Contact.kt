@@ -145,5 +145,9 @@ class Contact(
 }
 
 interface ContactRepository : JpaRepository<Contact, Long> {
-    fun findByExternalReferenceAndContactPersonCrnAndEventNumber(externalReference: String, crn: String, number: String): Contact?
+    fun findByExternalReferenceAndContactPersonCrnAndEventNumber(
+        externalReference: String,
+        crn: String,
+        number: String
+    ): Contact?
 }
