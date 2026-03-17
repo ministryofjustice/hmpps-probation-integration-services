@@ -9,6 +9,7 @@ import org.springframework.data.annotation.LastModifiedBy
 import org.springframework.data.annotation.LastModifiedDate
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.jpa.repository.Query
 import uk.gov.justice.digital.hmpps.entity.Versioned
 import uk.gov.justice.digital.hmpps.entity.person.Person
 import uk.gov.justice.digital.hmpps.entity.sentence.Event
@@ -145,6 +146,12 @@ class Contact(
 }
 
 interface ContactRepository : JpaRepository<Contact, Long> {
+    @Query(
+        "select c from Contact c " +
+            "where c.externalReference like concat('%', :externalReference) " +
+            "and c.contactPerson.crn = :crn " +
+            "and c.event.number = :number"
+    )
     fun findByExternalReferenceAndContactPersonCrnAndEventNumber(
         externalReference: String,
         crn: String,
