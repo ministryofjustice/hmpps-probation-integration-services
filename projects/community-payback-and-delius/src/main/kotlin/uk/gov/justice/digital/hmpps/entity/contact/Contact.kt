@@ -10,6 +10,7 @@ import org.springframework.data.annotation.LastModifiedDate
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import org.springframework.data.jpa.repository.JpaRepository
 import uk.gov.justice.digital.hmpps.entity.Versioned
+import uk.gov.justice.digital.hmpps.entity.person.Person
 import uk.gov.justice.digital.hmpps.entity.sentence.Event
 import uk.gov.justice.digital.hmpps.entity.staff.OfficeLocation
 import uk.gov.justice.digital.hmpps.entity.staff.Provider
@@ -68,8 +69,12 @@ class Contact(
     @Column(name = "linked_contact_id")
     val linkedContactId: Long? = null,
 
-    @Column(name = "offender_id")
-    val personId: Long,
+    @ManyToOne
+    @JoinColumn(name = "offender_id")
+    val contactPerson: Person,
+
+    @Column(name = "primary_key_id")
+    val primaryKeyId: Long? = null,
 
     @ManyToOne
     @JoinColumn(name = "event_id")
@@ -139,4 +144,6 @@ class Contact(
     fun reference() = externalReference?.let { UUID.fromString(it.takeLast(36)) }
 }
 
-interface ContactRepository : JpaRepository<Contact, Long>
+interface ContactRepository : JpaRepository<Contact, Long> {
+    fun findByExternalReferenceAndContactPersonCrnAndEventNumber(externalReference: String, crn: String, number: String): Contact?
+}

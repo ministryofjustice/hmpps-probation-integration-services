@@ -53,6 +53,7 @@ class Dataset(
         const val UPW_FREQUENCY = "UPW PROJECT FREQUENCY"
         const val UPW_PROJECT_CATEGORY = "UPW PROJECT CATEGORY"
         const val UPW_STATUS = "UPW STATUS"
+        const val UPW_ADJUSTMENT_REASON = "ORDER_LENGTH_ADJUSTMENT_REASON"
     }
 }
 
@@ -87,3 +88,7 @@ fun ReferenceDataRepository.getBehaviour(code: String): ReferenceData =
 fun ReferenceDataRepository.getStatus(code: String): ReferenceData =
     findByCodeAndDatasetCode(code, Dataset.UPW_STATUS)
         ?: throw NotFoundException(Dataset.UPW_STATUS, "code", code)
+
+fun ReferenceDataRepository.getAdjustmentReason(code: String): ReferenceData =
+    findByCodeAndDatasetCode(code, Dataset.UPW_ADJUSTMENT_REASON)
+        ?: throw NotFoundException(Dataset.UPW_ADJUSTMENT_REASON, "code", code)

@@ -77,6 +77,7 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
         save(DatasetGenerator.UPW_FREQUENCY_DATASET)
         save(DatasetGenerator.UPW_PROJECT_CATEGORY_DATASET)
         save(DatasetGenerator.UPW_STATUS)
+        save(DatasetGenerator.UPW_ADJUSTMENT_REASON)
         save(ReferenceDataGenerator.GROUP_PLACEMENT_PROJECT_TYPE)
         save(ReferenceDataGenerator.INDIVIDUAL_PLACEMENT_PROJECT_TYPE)
         save(ReferenceDataGenerator.ETE_PROJECT_TYPE)
@@ -103,6 +104,7 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
         save(ReferenceDataGenerator.UPW_STATUS_WORKING)
         save(ReferenceDataGenerator.UPW_STATUS_HOURS_COMPLETED)
         save(ReferenceDataGenerator.UPW_STATUS_UNALLOCATED)
+        save(ReferenceDataGenerator.UPW_ADJUSTMENT_REASON_OTHER)
     }
 
     fun loadUnpaidWorkData() {
