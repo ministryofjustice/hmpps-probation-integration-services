@@ -71,8 +71,13 @@ object ReferenceDataGenerator {
 
     val OTHER_REFERRAL_SOURCE = generateReferralSource("OTH")
     val MC05 = generateMoveOnCategory("MC05")
+
+    val SAFEGUARDING_FLAG = generate("3", ALL_DATASETS[DatasetCode.REGISTER_TYPE_FLAG]!!.id, "Safeguarding")
     val REGISTER_TYPES = RegisterType.Code.entries
-        .map { RegisterType(it.value, "Description of ${it.value}", IdGenerator.getAndIncrement()) }
+        .map {
+            val riskFlag = if (it == RegisterType.Code.MAPPA) null else SAFEGUARDING_FLAG
+            RegisterType(it.value, "Description of ${it.value}", riskFlag, IdGenerator.getAndIncrement())
+        }
         .associateBy { it.code }
 
     val REFERRAL_COMPLETED = generate("APRC", ALL_DATASETS[DatasetCode.NSI_OUTCOME]!!.id)

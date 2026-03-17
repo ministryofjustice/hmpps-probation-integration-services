@@ -76,6 +76,7 @@ data class Registration(
     val description: String,
     val startDate: LocalDate,
     val riskNotes: String? = null,
+    val riskFlagGroupDescription: String? = null,
 )
 
 data class Sentence(

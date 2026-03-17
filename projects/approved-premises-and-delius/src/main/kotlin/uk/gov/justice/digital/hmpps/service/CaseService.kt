@@ -1,7 +1,6 @@
 package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.stereotype.Service
-import uk.gov.justice.digital.hmpps.datetime.DeliusDateFormatter
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.DisposalRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.CommunityManager
@@ -14,7 +13,6 @@ import uk.gov.justice.digital.hmpps.integrations.delius.person.registration.enti
 import uk.gov.justice.digital.hmpps.integrations.delius.personalcircumstance.PersonalCircumstanceRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.personalcircumstance.entity.PersonalCircumstanceType
 import uk.gov.justice.digital.hmpps.model.*
-import java.time.LocalDate
 
 @Service
 class CaseService(
@@ -119,7 +117,8 @@ fun Registration.asRegistration() = uk.gov.justice.digital.hmpps.model.Registrat
     code = type.code,
     description = type.description,
     startDate = date,
-    riskNotes = notes
+    riskNotes = notes,
+    riskFlagGroupDescription = type.flag?.description
 )
 
 fun Registration.asMappa() = MappaDetail(
