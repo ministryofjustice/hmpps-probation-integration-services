@@ -54,7 +54,7 @@ class AdjustmentsIntegrationTest @Autowired constructor(
     @Test
     fun `create upw adjustments`() {
         val crn = PersonGenerator.DEFAULT_PERSON.crn
-        val eventNumber = UPWGenerator.EVENT_2.number
+        val eventNumber = UPWGenerator.EVENT_1.number
         val username = UserGenerator.DEFAULT_USER.username
         val reference = UPWGenerator.CONTACT_NO_ENFORCEMENT_EXTERNAL_REFERENCE
         val adjustmentType = AdjustmentType.POSITIVE
