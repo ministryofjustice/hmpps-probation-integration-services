@@ -4,14 +4,13 @@ import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.entity.ReferenceDataRepository
 import uk.gov.justice.digital.hmpps.entity.contact.ContactRepository
 import uk.gov.justice.digital.hmpps.entity.getAdjustmentReason
-import uk.gov.justice.digital.hmpps.entity.sentence.DisposalRepository
 import uk.gov.justice.digital.hmpps.entity.staff.UserRepository
 import uk.gov.justice.digital.hmpps.entity.unpaidwork.CreateUnpaidWorkAdjustment
 import uk.gov.justice.digital.hmpps.entity.unpaidwork.CreateUnpaidWorkAdjustmentRepository
 import uk.gov.justice.digital.hmpps.entity.unpaidwork.UnpaidWorkAdjustment
 import uk.gov.justice.digital.hmpps.entity.unpaidwork.UnpaidWorkAdjustmentRepository
-import uk.gov.justice.digital.hmpps.entity.unpaidwork.UnpaidWorkAppointmentRepository
 import uk.gov.justice.digital.hmpps.entity.unpaidwork.UpwDetailsRepository
+import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.model.Adjustment
 import uk.gov.justice.digital.hmpps.model.AdjustmentPostResponse
 import uk.gov.justice.digital.hmpps.model.AdjustmentReasonType
@@ -29,12 +28,7 @@ class AdjustmentService(
     private val ReferenceDataRepository: ReferenceDataRepository,
     private val userRepository: UserRepository,
 ) {
-    fun createAdjustments(
-        adjustments: List<AdjustmentRequest>,
-        crn: String,
-        eventNumber: Int,
-        username: String
-    ): List<AdjustmentPostResponse> {
+    fun createAdjustments(adjustments: List<AdjustmentRequest>, crn: String, eventNumber: Int, username: String): List<AdjustmentPostResponse> {
         val response = mutableListOf<AdjustmentPostResponse>()
         adjustments.forEach { adjustment ->
 
@@ -43,10 +37,10 @@ class AdjustmentService(
                 crn = crn,
                 number = eventNumber.toString()
             )
-                ?: throw IllegalArgumentException("Contact not found for reference ${adjustment.reference}, crn $crn and event number $eventNumber")
+                ?: throw NotFoundException("Contact not found for reference ${adjustment.reference}, crn $crn and event number $eventNumber")
             val upwDetails = unpaidWorkDetailsRepository.findByEventIdIn(listOf(contact.event!!.id)).first()
             val user = userRepository.findByUsername(username)
-                ?: throw IllegalArgumentException("User not found for username $username")
+                ?: throw NotFoundException("User not found for username $username")
             val adjustmentToSave = CreateUnpaidWorkAdjustment(
                 id = 0L,
                 detailsId = upwDetails.id,
@@ -70,27 +64,25 @@ class AdjustmentService(
 
     fun getAdjustments(crn: String, eventNumber: Int): AdjustmentResponse {
         val adjustments = mapExternalReferenceToAdjustment(crn, eventNumber)
+        
+        return AdjustmentResponse( adjustments =
+            adjustments.map { (externalReference, it) ->
+            Adjustment(
+                id = it.id,
+                date = it.adjustmentDate,
+                reference = externalReference.substringAfterLast(":"),
+                adjustmentType = AdjustmentType.valueOf(it.adjustmentType),
+                adjustmentAmountMinutes = it.adjustmentAmount.toInt(),
+                adjustmentReasonType = AdjustmentReasonType(
+                    code = it.adjustmentReason.code, name = it.adjustmentReason.description
+                ),
 
-        return AdjustmentResponse(
-            adjustments =
-                adjustments.map { (externalReference, it) ->
-                    Adjustment(
-                        id = it.id,
-                        date = it.adjustmentDate,
-                        reference = externalReference.substringAfterLast(":"),
-                        adjustmentType = AdjustmentType.valueOf(it.adjustmentType),
-                        adjustmentAmountMinutes = it.adjustmentAmount.toInt(),
-                        adjustmentReasonType = AdjustmentReasonType(
-                            code = it.adjustmentReason.code, name = it.adjustmentReason.description
-                        ),
-
-                        )
-                })
+                )
+        })
     }
 
     fun mapExternalReferenceToAdjustment(crn: String, eventNumber: Int): Map<String, UnpaidWorkAdjustment> {
-        val adjustments =
-            adjustmentRepository.findExternalReferenceAndAdjustmentByCrnAndEventNumber(crn, eventNumber.toString())
+        val adjustments = adjustmentRepository.findExternalReferenceAndAdjustmentByCrnAndEventNumber(crn, eventNumber.toString())
         return adjustments.associate { row ->
             val externalReference = row[0] as String
             val adjustment = row[1] as UnpaidWorkAdjustment
@@ -104,10 +96,13 @@ class AdjustmentService(
         username: String
     ) {
         val existingAdjustment = createUnpaidWorkAdjustmentRepository.findFirstById(adjustmentId)
-            ?: throw IllegalArgumentException("Adjustment not found for id $adjustmentId")
+            ?: throw NotFoundException("Adjustment not found for id $adjustmentId")
+        val userId = userRepository.findByUsername(username)?.id ?: throw NotFoundException("User not found for username $username")
         existingAdjustment.adjustmentType = adjustmentRequest.adjustmentType.code
         existingAdjustment.adjustmentAmount = adjustmentRequest.adjustmentAmountMinutes.toLong()
         existingAdjustment.adjustmentDate = adjustmentRequest.date
+        existingAdjustment.lastUpdatedDatetime = ZonedDateTime.now()
+        existingAdjustment.lastUpdatedUserId = userId
         existingAdjustment.adjustmentReasonId =
             ReferenceDataRepository.getAdjustmentReason(adjustmentRequest.adjustmentReasonTypeCode).id
         createUnpaidWorkAdjustmentRepository.save(existingAdjustment)
@@ -116,8 +111,7 @@ class AdjustmentService(
     fun deleteAdjustment(adjustmentId: Long, username: String) {
         val existingAdjustment = createUnpaidWorkAdjustmentRepository.findFirstById(adjustmentId)
             ?: throw IllegalArgumentException("Adjustment not found for id $adjustmentId")
-        val userId = userRepository.findByUsername(username)?.id
-            ?: throw IllegalArgumentException("User not found for username $username")
+        val userId = userRepository.findByUsername(username)?.id ?: throw NotFoundException("User not found for username $username")
         existingAdjustment.softDeleted = true
         existingAdjustment.lastUpdatedDatetime = ZonedDateTime.now()
         existingAdjustment.lastUpdatedUserId = userId

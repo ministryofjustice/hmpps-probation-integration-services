@@ -3,23 +3,16 @@ package uk.gov.justice.digital.hmpps.entity.unpaidwork
 import jakarta.persistence.*
 import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.NumericBooleanConverter
-import org.hibernate.type.YesNoConverter
 import org.springframework.data.annotation.CreatedBy
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedBy
 import org.springframework.data.annotation.LastModifiedDate
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import org.springframework.data.jpa.repository.JpaRepository
-import uk.gov.justice.digital.hmpps.entity.ReferenceData
 import uk.gov.justice.digital.hmpps.entity.Versioned
-import uk.gov.justice.digital.hmpps.entity.staff.OfficeLocation
-import uk.gov.justice.digital.hmpps.entity.staff.Staff
-import uk.gov.justice.digital.hmpps.entity.staff.Team
 import uk.gov.justice.digital.hmpps.jpa.GeneratedId
 import java.time.LocalDate
-import java.time.LocalTime
 import java.time.ZonedDateTime
-import java.util.*
 
 @Entity
 @Table(name = "upw_adjustment")
