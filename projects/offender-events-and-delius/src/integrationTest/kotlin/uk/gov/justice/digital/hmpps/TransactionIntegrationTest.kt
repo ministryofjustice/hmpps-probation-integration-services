@@ -86,7 +86,6 @@ internal class TransactionIntegrationTest @Autowired constructor(
         val idsBeforePoll = offenderDeltaRepository.findAll().map { it.id }.sorted()
         val domainEventsBefore = domainEventRepository.count()
 
-
         // WHEN
         assertThrows(RuntimeException::class.java) { offenderDeltaPoller.poll() }
 
