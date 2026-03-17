@@ -7,7 +7,7 @@ data class SessionResponse(
 
 data class SessionResponseAppointmentSummary(
     val id: Long,
-    val case: AppointmentResponseCase,
+    val case: Case,
     val outcome: CodeDescription?,
     val requirementProgress: RequirementProgress
 )

@@ -62,6 +62,10 @@ class RegisterType(
 
     val description: String,
 
+    @ManyToOne
+    @JoinColumn(name = "register_type_flag_id")
+    val flag: ReferenceData?,
+
     @Id
     @Column(name = "register_type_id")
     val id: Long

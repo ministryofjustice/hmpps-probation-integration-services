@@ -11,6 +11,7 @@ import org.springframework.test.web.servlet.get
 import uk.gov.justice.digital.hmpps.advice.ErrorResponse
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.UPWGenerator
+import uk.gov.justice.digital.hmpps.data.generator.UserGenerator
 import uk.gov.justice.digital.hmpps.model.ScheduleResponse
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
@@ -91,7 +92,7 @@ class CaseControllerIntegrationTest @Autowired constructor(
 
     @Test
     fun `returns 404 for unknown person`() {
-        mockMvc.get("/case/X999999/summary") { withToken() }
+        mockMvc.get("/case/X999999/summary?username=${UserGenerator.DEFAULT_USER.username}") { withToken() }
             .andExpect { status { isNotFound() } }
             .andReturn().response.contentAsJson<ErrorResponse>().also {
                 assertThat(it.message).contains("Person with crn of X999999 not found")

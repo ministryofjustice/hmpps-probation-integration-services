@@ -74,11 +74,11 @@ class UnpaidWorkAppointment(
     val allocation: UnpaidWorkAllocation?,
 
     @Column(name = "pick_up_time")
-    val pickUpTime: LocalTime?,
+    var pickUpTime: LocalTime?,
 
     @ManyToOne
     @JoinColumn(name = "pick_up_location_id")
-    val pickUpLocation: OfficeLocation?,
+    var pickUpLocation: OfficeLocation?,
 
     @Column(name = "penalty_time")
     var penaltyMinutes: Long?,

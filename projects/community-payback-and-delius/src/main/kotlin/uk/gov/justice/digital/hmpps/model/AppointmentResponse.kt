@@ -12,7 +12,7 @@ data class AppointmentResponse(
     val project: Project,
     @Deprecated("Use project.type instead", ReplaceWith("project.type"))
     val projectType: CodeName,
-    val case: AppointmentResponseCase,
+    val case: Case,
     val event: EventResponse,
     val supervisor: Supervisor,
     val team: CodeName,
@@ -33,16 +33,6 @@ data class AppointmentResponse(
     val updatedAt: ZonedDateTime,
     val sensitive: Boolean?,
     val alertActive: Boolean?
-)
-
-data class AppointmentResponseCase(
-    val crn: String,
-    val name: PersonName,
-    val dateOfBirth: LocalDate,
-    val currentExclusion: Boolean,
-    val exclusionMessage: String?,
-    val currentRestriction: Boolean,
-    val restrictionMessage: String?
 )
 
 data class AppointmentResponseEnforcementAction(
