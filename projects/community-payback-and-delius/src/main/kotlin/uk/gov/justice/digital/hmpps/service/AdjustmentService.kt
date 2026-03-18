@@ -42,7 +42,7 @@ class AdjustmentService(
         val upwDetails = unpaidWorkDetailsRepository.findByEventIdIn(listOf(event.id)).first()
         val user = userRepository.findByUsername(username)
             ?: throw NotFoundException("User not found for username $username")
-         return adjustments.map { adjustment ->
+        return adjustments.map { adjustment ->
             val adjustmentToSave = CreateUnpaidWorkAdjustment(
                 detailsId = upwDetails.id,
                 adjustmentAmount = adjustment.adjustmentAmountMinutes,
