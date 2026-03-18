@@ -13,7 +13,8 @@ class CaseListService(
     private val personManagerRepository: PersonManagerRepository,
     private val personRepository: PersonRepository,
     private val keyDateRepository: KeyDateRepository,
-    private val registrationRepository: RegistrationRepository
+    private val registrationRepository: RegistrationRepository,
+    private val userAccessService: UserAccessService
 ) {
     fun getCaseList(username: String): CaseListResponse {
         val staff = staffRepository.findByUserUsernameIgnoreCase(username) ?: throw NotFoundException(
@@ -27,18 +28,24 @@ class CaseListService(
         val roshLevels = registrationRepository.findByPersonIdInAndTypeCodeIn(personIds, RegisterType.ROSH_CODES)
             .groupBy { it.personId }
             .mapValues { (_, reg) -> CodeDescription(reg.first().type.code, reg.first().type.description) }
+
+        val crns = casesById.values.map { it.crn }
+        val limitedAccess = userAccessService.userAccessFor(username, crns).access.associateBy { it.crn }
+
         val responsibleCases = personManagers.mapNotNull {
             val person = casesById[it.personId] ?: return@mapNotNull null
+            val access = limitedAccess[person.crn]
+            val isLimitedAccess = access?.userExcluded == true || access?.userRestricted == true
             Case(
                 crn = person.crn,
-                name = Name(
+                name = if (isLimitedAccess) Name("*", null, "*") else Name(
                     person.firstName,
                     listOfNotNull(person.secondName, person.thirdName).joinToString(" "),
                     person.surname
                 ),
-                dateOfBirth = person.dateOfBirth,
-                nomsNumber = person.noms,
-                pncNumber = person.pnc,
+                dateOfBirth = if (isLimitedAccess) null else person.dateOfBirth,
+                nomsNumber = if (isLimitedAccess) "*" else person.noms,
+                pncNumber = if (isLimitedAccess) "*" else person.pnc,
                 staff = Officer(
                     name = Name(
                         forename = it.staff.forename,
@@ -52,14 +59,16 @@ class CaseListService(
                     code = it.team.code,
                     description = it.team.description
                 ),
-                gender = person.gender.description,
-                roshLevel = roshLevels[person.id],
-                expectedReleaseDate = keyDateRepository.findExpectedReleaseDates(person.id)
+                gender = if (isLimitedAccess) "*" else person.gender.description,
+                roshLevel = if (isLimitedAccess) null else roshLevels[person.id],
+                expectedReleaseDate = if (isLimitedAccess) null else keyDateRepository.findExpectedReleaseDates(person.id),
+                userExcluded = access?.userExcluded ?: false,
+                userRestricted = access?.userRestricted ?: false,
+                exclusionMessage = access?.exclusionMessage,
+                restrictionMessage = access?.restrictionMessage
             )
         }
 
-        return CaseListResponse(
-            responsibleCases
-        )
+        return CaseListResponse(responsibleCases)
     }
 }

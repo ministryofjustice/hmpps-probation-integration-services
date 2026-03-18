@@ -37,34 +37,114 @@ internal class SingleAccommodationIntegrationTest @Autowired constructor(
             .andExpect { status { is2xxSuccessful() } }
             .andReturn().response.contentAsJson<CaseListResponse>()
 
-        assertThat(response).isEqualTo(
-            CaseListResponse(
-                cases = listOf(
-                    Case(
-                        crn = person.crn,
-                        name = Name(
-                            forename = person.firstName,
-                            middleName = listOfNotNull(person.secondName, person.thirdName).joinToString(" "),
-                            surname = person.surname
-                        ),
-                        nomsNumber = person.noms,
-                        pncNumber = person.pnc,
-                        dateOfBirth = person.dateOfBirth,
-                        staff = Officer(
-                            name = Name(
-                                forename = staff.forename,
-                                middleName = staff.middleName,
-                                surname = staff.surname
-                            ),
-                            username = user.username,
-                            code = staff.code
-                        ),
-                        team = CodeDescription(code = team.code, description = team.description),
-                        gender = person.gender.description,
-                        roshLevel = CodeDescription("RHRH", "High RoSH"),
-                        expectedReleaseDate = KeyDateGenerator.EXPECTED_RELEASE.date
-                    )
-                )
+        assertThat(response.cases.size).isEqualTo(3)
+        val defaultCase = response.cases.first { it.crn == person.crn }
+        assertThat(defaultCase).isEqualTo(
+            Case(
+                crn = person.crn,
+                name = Name(
+                    forename = person.firstName,
+                    middleName = listOfNotNull(person.secondName, person.thirdName).joinToString(" "),
+                    surname = person.surname
+                ),
+                nomsNumber = person.noms,
+                pncNumber = person.pnc,
+                dateOfBirth = person.dateOfBirth,
+                staff = Officer(
+                    name = Name(
+                        forename = staff.forename,
+                        middleName = staff.middleName,
+                        surname = staff.surname
+                    ),
+                    username = user.username,
+                    code = staff.code
+                ),
+                team = CodeDescription(code = team.code, description = team.description),
+                gender = person.gender.description,
+                roshLevel = CodeDescription("RHRH", "High RoSH"),
+                expectedReleaseDate = KeyDateGenerator.EXPECTED_RELEASE.date,
+                userExcluded = false,
+                userRestricted = false,
+                exclusionMessage = null,
+                restrictionMessage = null
+            )
+        )
+    }
+
+    @Test
+    fun `excluded case returns masked personal data`() {
+        val user = UserGenerator.DEFAULT
+        val staff = StaffGenerator.DEFAULT
+        val team = TeamGenerator.DEFAULT
+
+        val response = mockMvc.get("/case-list/${user.username}") { withToken() }
+            .andExpect { status { is2xxSuccessful() } }
+            .andReturn().response.contentAsJson<CaseListResponse>()
+
+        val excludedCase = response.cases.first { it.crn == PersonGenerator.EXCLUDED.crn }
+        assertThat(excludedCase).isEqualTo(
+            Case(
+                crn = PersonGenerator.EXCLUDED.crn,
+                name = Name(forename = "*", middleName = null, surname = "*"),
+                nomsNumber = "*",
+                pncNumber = "*",
+                dateOfBirth = null,
+                staff = Officer(
+                    name = Name(
+                        forename = staff.forename,
+                        middleName = staff.middleName,
+                        surname = staff.surname
+                    ),
+                    username = user.username,
+                    code = staff.code
+                ),
+                team = CodeDescription(code = team.code, description = team.description),
+                gender = "*",
+                roshLevel = null,
+                expectedReleaseDate = null,
+                userExcluded = true,
+                userRestricted = false,
+                exclusionMessage = LimitedAccessGenerator.EXCLUDED_CASE.exclusionMessage,
+                restrictionMessage = null
+            )
+        )
+    }
+
+    @Test
+    fun `restricted case returns masked personal data`() {
+        val user = UserGenerator.DEFAULT
+        val staff = StaffGenerator.DEFAULT
+        val team = TeamGenerator.DEFAULT
+
+        val response = mockMvc.get("/case-list/${user.username}") { withToken() }
+            .andExpect { status { is2xxSuccessful() } }
+            .andReturn().response.contentAsJson<CaseListResponse>()
+
+        val restrictedCase = response.cases.first { it.crn == PersonGenerator.RESTRICTED.crn }
+        assertThat(restrictedCase).isEqualTo(
+            Case(
+                crn = PersonGenerator.RESTRICTED.crn,
+                name = Name(forename = "*", middleName = null, surname = "*"),
+                nomsNumber = "*",
+                pncNumber = "*",
+                dateOfBirth = null,
+                staff = Officer(
+                    name = Name(
+                        forename = staff.forename,
+                        middleName = staff.middleName,
+                        surname = staff.surname
+                    ),
+                    username = user.username,
+                    code = staff.code
+                ),
+                team = CodeDescription(code = team.code, description = team.description),
+                gender = "*",
+                roshLevel = null,
+                expectedReleaseDate = null,
+                userExcluded = false,
+                userRestricted = true,
+                exclusionMessage = null,
+                restrictionMessage = LimitedAccessGenerator.RESTRICTED_CASE.restrictionMessage
             )
         )
     }
