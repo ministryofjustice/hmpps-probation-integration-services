@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RestController
 import uk.gov.justice.digital.hmpps.service.RequirementsService
 
 @RestController
-class RequirementsController( private val requirementsService: RequirementsService) {
+class RequirementsController(private val requirementsService: RequirementsService) {
     @GetMapping("/requirements/{breachNoticeId}")
     @PreAuthorize("hasRole('PROBATION_API__COSSO__CASE_DETAILS')")
     fun getRequirements(@PathVariable breachNoticeId: String) =

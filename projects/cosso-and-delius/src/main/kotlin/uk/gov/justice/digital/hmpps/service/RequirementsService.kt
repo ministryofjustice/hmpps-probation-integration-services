@@ -39,5 +39,6 @@ class RequirementsService(
         )
     }
 
-    fun getBreachReasons(): List<ReferenceData> = referenceDataRepository.findAllByDataSetName(ReferenceDataSet.Code.BREACH_REASON.value)
+    fun getBreachReasons(): List<ReferenceData> =
+        referenceDataRepository.findAllByDataSetName(ReferenceDataSet.Code.BREACH_REASON.value)
 }

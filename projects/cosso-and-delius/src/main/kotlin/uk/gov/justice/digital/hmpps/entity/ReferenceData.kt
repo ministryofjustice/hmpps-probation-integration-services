@@ -46,11 +46,13 @@ class ReferenceDataSet(
 }
 
 interface ReferenceDataRepository : JpaRepository<ReferenceData, Long> {
-    @Query("""
+    @Query(
+        """
         select rd from ReferenceData rd
         join ReferenceDataSet ds on rd.dataSetId = ds.id
         where ds.name = :dataSetName
-    """)
+    """
+    )
     fun findAllByDataSetName(dataSetName: String): List<ReferenceData>
 }
 

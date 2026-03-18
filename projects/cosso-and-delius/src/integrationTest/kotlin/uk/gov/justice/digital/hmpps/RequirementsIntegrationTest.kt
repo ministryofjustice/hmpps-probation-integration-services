@@ -21,8 +21,8 @@ class RequirementsIntegrationTest @Autowired constructor(
     @Test
     fun `can get requirements and breach reasons`() {
         val uuid = DEFAULT_DOCUMENT_UUID.toString()
-        val response = mockMvc.get("/requirements/${uuid}") { withToken()}
-            .andExpect { status { isOk()} }
+        val response = mockMvc.get("/requirements/${uuid}") { withToken() }
+            .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<RequirementsResponse>()
         assertThat(response.requirements.size).isEqualTo(1)
         assertThat(response.breachReasons.size).isEqualTo(1)
@@ -33,7 +33,7 @@ class RequirementsIntegrationTest @Autowired constructor(
     @Test
     fun `returns 404 if cant find requirements`() {
         val uuid = "12345678-1234-1234-1234-123456789012"
-        mockMvc.get("/requirements/${uuid}") { withToken()}
+        mockMvc.get("/requirements/${uuid}") { withToken() }
             .andExpect { status { isNotFound() } }
     }
 }
