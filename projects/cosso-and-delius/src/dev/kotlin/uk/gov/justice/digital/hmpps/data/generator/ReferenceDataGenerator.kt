@@ -1,31 +1,37 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
 import uk.gov.justice.digital.hmpps.entity.ReferenceData
+import uk.gov.justice.digital.hmpps.entity.ReferenceDataSet
 
 object ReferenceDataGenerator {
+    val MISC_DATA_SET_ID = IdGenerator.getAndIncrement()
     val MR_TITLE = ReferenceData(
         id = IdGenerator.getAndIncrement(),
         code = "Mr",
         description = "Mr",
         selectable = true,
+        dataSetId = MISC_DATA_SET_ID
     )
     val MAIN_ADDRESS_STATUS = ReferenceData(
         id = IdGenerator.getAndIncrement(),
         code = "MAIN",
         description = "Main",
         selectable = true,
+        dataSetId = MISC_DATA_SET_ID
     )
     val LENGTH_UNITS_MONTHS = ReferenceData(
         id = IdGenerator.getAndIncrement(),
         code = "MONTHS",
         description = "Months",
         selectable = true,
+        dataSetId = MISC_DATA_SET_ID
     )
     val LENGTH_UNITS_DAYS = ReferenceData(
         id = IdGenerator.getAndIncrement(),
         code = "DAYS",
         description = "Days",
         selectable = true,
+        dataSetId = MISC_DATA_SET_ID
     )
 
     val SENTENCE_APPEARANCE_TYPE = ReferenceData(
@@ -33,6 +39,7 @@ object ReferenceDataGenerator {
         code = "S",
         description = "Sentence",
         selectable = true,
+        dataSetId = MISC_DATA_SET_ID
     )
 
     val DEFAULT_OUTCOME = ReferenceData(
@@ -40,6 +47,7 @@ object ReferenceDataGenerator {
         code = "PR",
         description = "Probation",
         selectable = true,
+        dataSetId = MISC_DATA_SET_ID
     )
 
     val DEFAULT_REQUIREMENT_SUBTYPE = ReferenceData(
@@ -47,5 +55,19 @@ object ReferenceDataGenerator {
         code = "PR2",
         description = "Probation2",
         selectable = true,
+        dataSetId = MISC_DATA_SET_ID
+    )
+
+    val BREACH_REASON_DATASET = ReferenceDataSet(
+        id = IdGenerator.getAndIncrement(),
+        name = "BREACH REASON"
+    )
+
+    val BREACH_REASON = ReferenceData(
+        id = IdGenerator.getAndIncrement(),
+        code = "Absent",
+        description = "Unauthorised absence",
+        selectable = true,
+        dataSetId = BREACH_REASON_DATASET.id
     )
 }

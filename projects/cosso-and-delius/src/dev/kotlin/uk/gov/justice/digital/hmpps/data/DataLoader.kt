@@ -37,6 +37,8 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
             ReferenceDataGenerator.DEFAULT_OUTCOME,
             ReferenceDataGenerator.DEFAULT_REQUIREMENT_SUBTYPE,
             ReferenceDataGenerator.SENTENCE_APPEARANCE_TYPE,
+            ReferenceDataGenerator.BREACH_REASON_DATASET,
+            ReferenceDataGenerator.BREACH_REASON,
             PersonAddressGenerator.DEFAULT_PERSON_MAIN_ADDRESS,
             EventGenerator.DEFAULT_EVENT,
             EventGenerator.MISSING_MAIN_OFFENCE_EVENT,

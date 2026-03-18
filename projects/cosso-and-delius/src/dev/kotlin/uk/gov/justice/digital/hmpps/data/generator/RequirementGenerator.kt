@@ -19,6 +19,7 @@ object RequirementGenerator {
 
     fun getRequirementType(typeDescription: String) = RequirementType(
         id = IdGenerator.getAndIncrement(),
+        code = typeDescription,
         description = typeDescription,
         units = ReferenceDataGenerator.LENGTH_UNITS_MONTHS,
         length2Units = ReferenceDataGenerator.LENGTH_UNITS_DAYS
