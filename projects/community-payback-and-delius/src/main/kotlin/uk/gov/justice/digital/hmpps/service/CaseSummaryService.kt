@@ -89,12 +89,11 @@ class CaseSummaryService(
     private fun getLaoStatus(crn: String, username: String?) =
         username?.let {
             userAccessService.caseAccessFor(username, crn)
-        } ?:
-        CaseAccess(
+        } ?: CaseAccess(
             crn = crn,
             userExcluded = true,
             userRestricted = true,
-            exclusionMessage =  "username not provided so cannot determine exclusion",
+            exclusionMessage = "username not provided so cannot determine exclusion",
             restrictionMessage = "username not provided so cannot determine restriction",
         )
 }
