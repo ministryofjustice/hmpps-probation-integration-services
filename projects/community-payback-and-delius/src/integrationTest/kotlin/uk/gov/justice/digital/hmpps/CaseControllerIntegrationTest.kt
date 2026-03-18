@@ -207,6 +207,18 @@ class CaseControllerIntegrationTest @Autowired constructor(
     }
 
     @Test
+    fun `returns 200 with restricted and excluded case summary if username not provided`() {
+        mockMvc.get("/case/${PersonGenerator.DEFAULT_PERSON.crn}/summary") { withToken() }
+            .andExpect {
+                status { isOk() }
+                jsonPath("$.case.currentExclusion") { value(true) }
+                jsonPath("$.case.exclusionMessage") { value("username not provided so cannot determine exclusion") }
+                jsonPath("$.case.currentRestriction") { value(true) }
+                jsonPath("$.case.restrictionMessage") { value("username not provided so cannot determine restriction") }
+            }
+    }
+
+    @Test
     fun `returns 404 for unknown person`() {
         mockMvc.get("/case/X999999/summary?username=${UserGenerator.DEFAULT_USER.username}") { withToken() }
             .andExpect { status { isNotFound() } }

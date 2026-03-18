@@ -26,10 +26,10 @@ class CaseSummaryService(
     private val userAccessService: UserAccessService,
     private val mainOffenceRepository: MainOffenceRepository,
 ) {
-    fun getSummaryForCase(crn: String, username: String): UnpaidWorkDetails {
+    fun getSummaryForCase(crn: String, username: String?): UnpaidWorkDetails {
         val person = personRepository.getByCrn(crn)
         val personId = person.id
-        val laoStatus = userAccessService.caseAccessFor(username, crn)
+        val laoStatus = getLaoStatus(crn, username)
         val events = eventRepository.getByPerson_Id(personId)
         val details = upwDetailsRepository.findByEventIdIn(events.map { it.id })
         val requiredMinutes = unpaidWorkAppointmentRepository
@@ -85,4 +85,16 @@ class CaseSummaryService(
         }
         return UnpaidWorkDetails(case, upwMinutes)
     }
+
+    private fun getLaoStatus(crn: String, username: String?) =
+        username?.let {
+            userAccessService.caseAccessFor(username, crn)
+        } ?:
+        CaseAccess(
+            crn = crn,
+            userExcluded = true,
+            userRestricted = true,
+            exclusionMessage =  "username not provided so cannot determine exclusion",
+            restrictionMessage = "username not provided so cannot determine restriction",
+        )
 }
