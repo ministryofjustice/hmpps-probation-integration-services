@@ -8,7 +8,6 @@ data class AdjustmentResponse(
 
 data class Adjustment(
     val id: Long,
-    val reference: String,
     val adjustmentType: AdjustmentType,
     val date: LocalDate,
     val adjustmentReasonType: AdjustmentReasonType,
@@ -21,8 +20,7 @@ data class AdjustmentReasonType(
 )
 
 data class AdjustmentPostResponse(
-    val id: Long,
-    val reference: String,
+    val id: Long
 )
 
 enum class AdjustmentType(val code: String) {

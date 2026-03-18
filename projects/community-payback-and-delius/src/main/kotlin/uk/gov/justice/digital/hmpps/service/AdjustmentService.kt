@@ -1,14 +1,13 @@
 package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.stereotype.Service
-import org.slf4j.LoggerFactory
 import uk.gov.justice.digital.hmpps.entity.ReferenceDataRepository
-import uk.gov.justice.digital.hmpps.entity.contact.ContactRepository
 import uk.gov.justice.digital.hmpps.entity.getAdjustmentReason
+import uk.gov.justice.digital.hmpps.entity.person.PersonRepository
+import uk.gov.justice.digital.hmpps.entity.sentence.EventRepository
 import uk.gov.justice.digital.hmpps.entity.staff.UserRepository
 import uk.gov.justice.digital.hmpps.entity.unpaidwork.CreateUnpaidWorkAdjustment
 import uk.gov.justice.digital.hmpps.entity.unpaidwork.CreateUnpaidWorkAdjustmentRepository
-import uk.gov.justice.digital.hmpps.entity.unpaidwork.UnpaidWorkAdjustment
 import uk.gov.justice.digital.hmpps.entity.unpaidwork.UnpaidWorkAdjustmentRepository
 import uk.gov.justice.digital.hmpps.entity.unpaidwork.UpwDetailsRepository
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
@@ -24,12 +23,12 @@ import java.time.ZonedDateTime
 class AdjustmentService(
     private val adjustmentRepository: UnpaidWorkAdjustmentRepository,
     private val createUnpaidWorkAdjustmentRepository: CreateUnpaidWorkAdjustmentRepository,
-    private val contactRepository: ContactRepository,
     private val unpaidWorkDetailsRepository: UpwDetailsRepository,
     private val referenceDataRepository: ReferenceDataRepository,
     private val userRepository: UserRepository,
+    private val personRepository: PersonRepository,
+    private val eventRepository: EventRepository,
 ) {
-    private val log = LoggerFactory.getLogger(this::class.java)
     fun createAdjustments(
         adjustments: List<AdjustmentRequest>,
         crn: String,
@@ -38,13 +37,10 @@ class AdjustmentService(
     ): List<AdjustmentPostResponse> {
         val response = mutableListOf<AdjustmentPostResponse>()
         adjustments.forEach { adjustment ->
-            val contact = contactRepository.findByExternalReferenceAndContactPersonCrnAndEventNumber(
-                externalReference = adjustment.reference.toString(),
-                crn = crn,
-                number = eventNumber.toString()
-            )
-                ?: throw NotFoundException("Contact not found for reference ${adjustment.reference}, crn $crn and event number $eventNumber")
-            val upwDetails = unpaidWorkDetailsRepository.findByEventIdIn(listOf(contact.event!!.id)).first()
+            val person = personRepository.findByCrn(crn) ?: throw NotFoundException("Person not found for CRN $crn")
+            val event = eventRepository.findByPersonIdAndNumberAndSoftDeletedIsFalse(person.id, eventNumber.toString())
+                ?: throw NotFoundException("Event not found for CRN $crn and event number $eventNumber")
+            val upwDetails = unpaidWorkDetailsRepository.findByEventIdIn(listOf(event.id)).first()
             val user = userRepository.findByUsername(username)
                 ?: throw NotFoundException("User not found for username $username")
             val adjustmentToSave = CreateUnpaidWorkAdjustment(
@@ -63,39 +59,27 @@ class AdjustmentService(
                 partitionAreaId = 0L,
             )
             val savedAdjustment = createUnpaidWorkAdjustmentRepository.save(adjustmentToSave)
-            response.add(AdjustmentPostResponse(savedAdjustment.id!!, adjustment.reference.toString()))
+            response.add(AdjustmentPostResponse(savedAdjustment.id!!))
         }
         return response
     }
 
     fun getAdjustments(crn: String, eventNumber: Int): AdjustmentResponse {
-        val adjustments = mapExternalReferenceToAdjustment(crn, eventNumber)
+        val adjustments = adjustmentRepository.findByCrnAndEventNumber(crn, eventNumber.toString())
 
         return AdjustmentResponse(
             adjustments =
-                adjustments.map { (externalReference, it) ->
+                adjustments.map { it ->
                     Adjustment(
                         id = it.id,
                         date = it.adjustmentDate,
-                        reference = externalReference.substringAfterLast(":"),
                         adjustmentType = AdjustmentType.valueOf(it.adjustmentType),
                         adjustmentAmountMinutes = it.adjustmentAmount.toInt(),
                         adjustmentReasonType = AdjustmentReasonType(
                             code = it.adjustmentReason.code, name = it.adjustmentReason.description
                         ),
-
                         )
                 })
-    }
-
-    fun mapExternalReferenceToAdjustment(crn: String, eventNumber: Int): Map<String, UnpaidWorkAdjustment> {
-        val adjustments =
-            adjustmentRepository.findExternalReferenceAndAdjustmentByCrnAndEventNumber(crn, eventNumber.toString())
-        return adjustments.associate { row ->
-            val externalReference = row[0] as String
-            val adjustment = row[1] as UnpaidWorkAdjustment
-            externalReference to adjustment
-        }
     }
 
     fun updateAdjustment(

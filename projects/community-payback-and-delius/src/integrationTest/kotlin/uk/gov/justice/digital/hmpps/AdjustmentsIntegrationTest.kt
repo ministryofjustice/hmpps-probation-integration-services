@@ -41,7 +41,6 @@ class AdjustmentsIntegrationTest @Autowired constructor(
         assertThat(adjustments).isNotNull
         assertThat(adjustments).hasSize(1)
         val adj = adjustments!!.first()
-        assertThat(adj["reference"]).isEqualTo(UPWGenerator.CONTACT_NO_ENFORCEMENT_2.reference().toString())
         assertThat(adj["adjustmentType"]).isEqualTo("NEGATIVE")
         assertThat(adj["date"]).isEqualTo(UPWGenerator.GET_ADJUSTMENT_NEGATIVE.adjustmentDate.toString())
         assertThat(adj["adjustmentReasonType"]).isEqualTo(
@@ -56,20 +55,17 @@ class AdjustmentsIntegrationTest @Autowired constructor(
         val crn = PersonGenerator.DEFAULT_PERSON.crn
         val eventNumber = UPWGenerator.EVENT_1.number
         val username = UserGenerator.DEFAULT_USER.username
-        val reference = UPWGenerator.CONTACT_NO_ENFORCEMENT_EXTERNAL_REFERENCE
         val adjustmentType = AdjustmentType.POSITIVE
         val adjustmentReasonTypeCode = "OT"
         val adjustmentAmountMinutes = 10
         val body = listOf(
             AdjustmentRequest(
-                reference = reference,
                 adjustmentType = adjustmentType,
                 date = LocalDate.now(),
                 adjustmentReasonTypeCode = adjustmentReasonTypeCode,
                 adjustmentAmountMinutes = adjustmentAmountMinutes
             ),
             AdjustmentRequest(
-                reference = reference,
                 adjustmentType = AdjustmentType.NEGATIVE,
                 date = LocalDate.now(),
                 adjustmentReasonTypeCode = adjustmentReasonTypeCode,
@@ -87,7 +83,6 @@ class AdjustmentsIntegrationTest @Autowired constructor(
         assertThat(response).hasSize(2)
         assertThat(response).allSatisfy {
             assertThat(it.id).isNotNull()
-            assertThat(it.reference).isEqualTo(reference.toString())
         }
     }
 
@@ -96,13 +91,11 @@ class AdjustmentsIntegrationTest @Autowired constructor(
         val crn = PersonGenerator.DEFAULT_PERSON.crn
         val eventNumber = UPWGenerator.EVENT_1.number
         val username = UserGenerator.DEFAULT_USER.username
-        val reference = UPWGenerator.CONTACT_NO_ENFORCEMENT_EXTERNAL_REFERENCE
         val adjustmentType = AdjustmentType.POSITIVE
         val adjustmentReasonTypeCode = "OT"
         val adjustmentAmountMinutes = 10
         val body = listOf(
             AdjustmentRequest(
-                reference = reference,
                 adjustmentType = adjustmentType,
                 date = LocalDate.now(),
                 adjustmentReasonTypeCode = adjustmentReasonTypeCode,
@@ -125,13 +118,11 @@ class AdjustmentsIntegrationTest @Autowired constructor(
         val crn = PersonGenerator.DEFAULT_PERSON.crn
         val eventNumber = UPWGenerator.EVENT_1.number
         val username = UserGenerator.DEFAULT_USER.username
-        val reference = UPWGenerator.CONTACT_NO_ENFORCEMENT_EXTERNAL_REFERENCE
         val adjustmentType = AdjustmentType.POSITIVE
         val adjustmentReasonTypeCode = "OT"
         val adjustmentAmountMinutes = 10
         val body = listOf(
             AdjustmentRequest(
-                reference = reference,
                 adjustmentType = adjustmentType,
                 date = LocalDate.now(),
                 adjustmentReasonTypeCode = adjustmentReasonTypeCode,
@@ -144,7 +135,6 @@ class AdjustmentsIntegrationTest @Autowired constructor(
         }.andReturn().response.contentAsJson<List<AdjustmentPostResponse>>()
         val idToUpdate = postResponse.first().id
         val updateBody = AdjustmentRequest(
-            reference = reference,
             adjustmentType = AdjustmentType.NEGATIVE,
             date = LocalDate.now(),
             adjustmentReasonTypeCode = adjustmentReasonTypeCode,

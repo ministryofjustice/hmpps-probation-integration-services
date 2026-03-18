@@ -18,8 +18,9 @@ class UnpaidWorkAdjustment(
     @Column(name = "upw_adjustment_id")
     val id: Long,
 
-    @Column(name = "upw_details_id")
-    val upwDetailsId: Long,
+    @ManyToOne
+    @JoinColumn(name = "upw_details_id")
+    val upwDetails: UnpaidWorkDetails,
 
     @Column(name = "adjustment_amount")
     var adjustmentAmount: Long,
@@ -42,15 +43,14 @@ class UnpaidWorkAdjustment(
 interface UnpaidWorkAdjustmentRepository : JpaRepository<UnpaidWorkAdjustment, Long> {
     @Query(
         """
-            select c.externalReference, a from UnpaidWorkAdjustment a
-            join UnpaidWorkDetails u on a.upwDetailsId = u.id
-            join Event e on u.disposal.event.id = e.id
-            join Contact c on c.contactPerson.id = e.person.id and c.primaryKeyId = e.id
-            where e.person.crn = :crn
-            and e.number = :eventNumber
+            select a from UnpaidWorkAdjustment a
+            where a.upwDetails.disposal.event.person.crn = :crn
+            and a.upwDetails.disposal.event.number = :eventNumber
             and a.softDeleted = false
+            and a.upwDetails.softDeleted = false
+            and a.upwDetails.disposal.softDeleted = false
         """
     )
-    fun findExternalReferenceAndAdjustmentByCrnAndEventNumber(crn: String, eventNumber: String): List<Array<Any>>
+    fun findByCrnAndEventNumber(crn: String, eventNumber: String): List<UnpaidWorkAdjustment>
     fun findFirstById(id: Long): UnpaidWorkAdjustment?
 }
