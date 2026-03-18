@@ -36,7 +36,7 @@ class CreateUnpaidWorkAdjustment(
     val detailsId: Long,
 
     @Column(name = "adjustment_amount")
-    var adjustmentAmount: Long,
+    var adjustmentAmount: Int,
     @Column(name = "adjustment_date")
     var adjustmentDate: LocalDate,
     @Column(name = "adjustment_type")
@@ -44,7 +44,6 @@ class CreateUnpaidWorkAdjustment(
     @Column(name = "adjustment_reason_id")
     var adjustmentReasonId: Long,
 
-    @CreatedBy
     val adjustedByUserId: Long,
 
     @Column(name = "soft_deleted", columnDefinition = "number")

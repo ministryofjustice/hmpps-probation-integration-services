@@ -8,10 +8,10 @@ data class AdjustmentResponse(
 
 data class Adjustment(
     val id: Long,
-    val adjustmentType: AdjustmentType,
+    val type: AdjustmentType,
     val date: LocalDate,
-    val adjustmentReasonType: AdjustmentReasonType,
-    val adjustmentAmountMinutes: Int
+    val reason: AdjustmentReasonType,
+    val minutes: Int
 )
 
 data class AdjustmentReasonType(

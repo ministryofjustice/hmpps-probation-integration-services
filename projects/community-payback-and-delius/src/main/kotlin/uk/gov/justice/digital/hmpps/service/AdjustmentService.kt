@@ -36,32 +36,24 @@ class AdjustmentService(
         username: String
     ): List<AdjustmentPostResponse> {
         val response = mutableListOf<AdjustmentPostResponse>()
-        adjustments.forEach { adjustment ->
-            val person = personRepository.findByCrn(crn) ?: throw NotFoundException("Person not found for CRN $crn")
-            val event = eventRepository.findByPersonIdAndNumberAndSoftDeletedIsFalse(person.id, eventNumber.toString())
-                ?: throw NotFoundException("Event not found for CRN $crn and event number $eventNumber")
-            val upwDetails = unpaidWorkDetailsRepository.findByEventIdIn(listOf(event.id)).first()
-            val user = userRepository.findByUsername(username)
-                ?: throw NotFoundException("User not found for username $username")
+        val person = personRepository.findByCrn(crn) ?: throw NotFoundException("Person not found for CRN $crn")
+        val event = eventRepository.findByPersonIdAndNumberAndSoftDeletedIsFalse(person.id, eventNumber.toString())
+            ?: throw NotFoundException("Event not found for CRN $crn and event number $eventNumber")
+        val upwDetails = unpaidWorkDetailsRepository.findByEventIdIn(listOf(event.id)).first()
+        val user = userRepository.findByUsername(username)
+            ?: throw NotFoundException("User not found for username $username")
+         return adjustments.map { adjustment ->
             val adjustmentToSave = CreateUnpaidWorkAdjustment(
-                id = 0L,
                 detailsId = upwDetails.id,
-                adjustmentAmount = adjustment.adjustmentAmountMinutes.toLong(),
+                adjustmentAmount = adjustment.adjustmentAmountMinutes,
                 adjustmentDate = adjustment.date,
                 adjustmentType = adjustment.adjustmentType.code,
                 adjustmentReasonId = referenceDataRepository.getAdjustmentReason(adjustment.adjustmentReasonTypeCode).id,
-                adjustedByUserId = user.id,
-                softDeleted = false,
-                createdDatetime = ZonedDateTime.now(),
-                lastUpdatedDatetime = ZonedDateTime.now(),
-                lastUpdatedUserId = user.id,
-                createdByUserId = user.id,
-                partitionAreaId = 0L,
+                adjustedByUserId = user.id
             )
             val savedAdjustment = createUnpaidWorkAdjustmentRepository.save(adjustmentToSave)
-            response.add(AdjustmentPostResponse(savedAdjustment.id!!))
+            AdjustmentPostResponse(savedAdjustment.id!!)
         }
-        return response
     }
 
     fun getAdjustments(crn: String, eventNumber: Int): AdjustmentResponse {
@@ -73,9 +65,9 @@ class AdjustmentService(
                     Adjustment(
                         id = it.id,
                         date = it.adjustmentDate,
-                        adjustmentType = AdjustmentType.valueOf(it.adjustmentType),
-                        adjustmentAmountMinutes = it.adjustmentAmount.toInt(),
-                        adjustmentReasonType = AdjustmentReasonType(
+                        type = AdjustmentType.valueOf(it.adjustmentType),
+                        minutes = it.adjustmentAmount.toInt(),
+                        reason = AdjustmentReasonType(
                             code = it.adjustmentReason.code, name = it.adjustmentReason.description
                         ),
                     )
@@ -92,9 +84,8 @@ class AdjustmentService(
         val userId = userRepository.findByUsername(username)?.id
             ?: throw NotFoundException("User not found for username $username")
         existingAdjustment.adjustmentType = adjustmentRequest.adjustmentType.code
-        existingAdjustment.adjustmentAmount = adjustmentRequest.adjustmentAmountMinutes.toLong()
+        existingAdjustment.adjustmentAmount = adjustmentRequest.adjustmentAmountMinutes
         existingAdjustment.adjustmentDate = adjustmentRequest.date
-        existingAdjustment.lastUpdatedDatetime = ZonedDateTime.now()
         existingAdjustment.lastUpdatedUserId = userId
         existingAdjustment.adjustmentReasonId =
             referenceDataRepository.getAdjustmentReason(adjustmentRequest.adjustmentReasonTypeCode).id
