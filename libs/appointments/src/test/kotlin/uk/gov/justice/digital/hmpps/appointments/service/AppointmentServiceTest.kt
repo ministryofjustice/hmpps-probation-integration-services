@@ -180,10 +180,9 @@ class AppointmentServiceTest {
             interactionCode = eq(BusinessInteractionCode.ADD_CONTACT),
             params = eq(
                 AuditedInteraction.Parameters(
-                    mutableMapOf(
-                        "offenderId" to TestData.PERSON.id,
-                        "contactId" to saved.id!!,
-                    )
+                    "offenderId" to TestData.PERSON.id,
+                    "contactId" to saved.id!!,
+                    "externalReference" to saved.externalReference!!,
                 )
             ),
             outcome = eq(AuditedInteraction.Outcome.SUCCESS),
@@ -224,6 +223,75 @@ class AppointmentServiceTest {
         assertThat(result.size).isEqualTo(2)
         assertThat(result[0].reference).isEqualTo("REF01")
         assertThat(result[1].reference).isEqualTo("REF02")
+    }
+
+    @Test
+    fun `delete appointment successful`() {
+        val existing = TestData.appointment()
+        whenever(appointmentRepository.findByExternalReferenceIn(listOf(existing.externalReference!!)))
+            .thenReturn(listOf(existing))
+
+        appointmentService.delete(existing.externalReference)
+
+        verify(appointmentRepository).softDeleteByExternalReferenceIn(listOf(existing.externalReference))
+        verify(auditedInteractionService).createAuditedInteraction(
+            interactionCode = eq(BusinessInteractionCode.DELETE_CONTACT),
+            params = eq(
+                AuditedInteraction.Parameters(
+                    "offenderId" to TestData.PERSON.id,
+                    "contactId" to existing.id!!,
+                    "externalReference" to existing.externalReference,
+                )
+            ),
+            outcome = eq(AuditedInteraction.Outcome.SUCCESS),
+            dateTime = any(),
+            username = anyOrNull()
+        )
+    }
+
+    @Test
+    fun `bulk delete appointments deduplicates references`() {
+        whenever(appointmentRepository.findByExternalReferenceIn(any())).thenReturn(
+            listOf(
+                TestData.appointment(externalReference = "REF01"),
+                TestData.appointment(externalReference = "REF02")
+            )
+        )
+
+        appointmentService.bulkDelete(listOf("REF01", "REF01", "REF02"))
+
+        verify(appointmentRepository).findByExternalReferenceIn(check<List<String>> {
+            assertThat(it).containsExactly("REF01", "REF02")
+        })
+        verify(appointmentRepository).softDeleteByExternalReferenceIn(check<List<String>> {
+            assertThat(it).containsExactly("REF01", "REF02")
+        })
+    }
+
+    @Test
+    fun `attempt to delete appointment that ended in the past`() {
+        val existing = TestData.appointment(date = LocalDate.now().minusDays(1))
+        whenever(appointmentRepository.findByExternalReferenceIn(listOf(existing.externalReference!!)))
+            .thenReturn(listOf(existing))
+
+        assertThatThrownBy { appointmentService.delete(existing.externalReference) }
+            .isInstanceOf(IllegalArgumentException::class.java)
+            .hasMessage("Cannot delete appointments that ended in the past or have an outcome")
+
+        verify(appointmentRepository, never()).softDeleteByExternalReferenceIn(any())
+    }
+
+    @Test
+    fun `attempt to delete appointment with outcome`() {
+        val existing = TestData.appointment(outcome = TestData.OUTCOME)
+        whenever(appointmentRepository.findByExternalReferenceIn(listOf(existing.externalReference!!)))
+            .thenReturn(listOf(existing))
+
+        assertThatThrownBy { appointmentService.delete(existing.externalReference) }
+            .isInstanceOf(IllegalArgumentException::class.java)
+            .hasMessage("Cannot delete appointments that ended in the past or have an outcome")
+
+        verify(appointmentRepository, never()).softDeleteByExternalReferenceIn(any())
     }
 
     @Test
@@ -334,10 +402,9 @@ class AppointmentServiceTest {
             interactionCode = eq(BusinessInteractionCode.UPDATE_CONTACT),
             params = eq(
                 AuditedInteraction.Parameters(
-                    mutableMapOf(
-                        "offenderId" to TestData.PERSON.id,
-                        "contactId" to result.id,
-                    )
+                    "offenderId" to TestData.PERSON.id,
+                    "contactId" to result.id,
+                    "externalReference" to existing.externalReference,
                 )
             ),
             outcome = eq(AuditedInteraction.Outcome.SUCCESS),

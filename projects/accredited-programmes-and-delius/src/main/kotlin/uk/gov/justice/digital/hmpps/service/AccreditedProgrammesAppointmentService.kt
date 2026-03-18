@@ -103,12 +103,8 @@ class AccreditedProgrammesAppointmentService(
         }
     }
 
-    fun delete(request: DeleteAppointmentsRequest) {
-        // TODO audit!
-        request.appointments.map { "${Contact.REFERENCE_PREFIX}${it.reference}" }.toSet()
-            .chunked(500)
-            .forEach { contactRepository.softDeleteByExternalReferenceIn(it.toSet()) }
-    }
+    fun delete(request: DeleteAppointmentsRequest) =
+        appointmentService.bulkDelete(request.appointments.map { "${Contact.REFERENCE_PREFIX}${it.reference}" })
 
     private fun Contact.asAppointment() = AppointmentResponse(
         crn = person.crn,
