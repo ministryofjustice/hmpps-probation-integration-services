@@ -45,10 +45,10 @@ class AdjustmentService(
         return adjustments.map { adjustment ->
             val adjustmentToSave = CreateUnpaidWorkAdjustment(
                 detailsId = upwDetails.id,
-                adjustmentAmount = adjustment.adjustmentAmountMinutes,
+                adjustmentAmount = adjustment.minutes,
                 adjustmentDate = adjustment.date,
-                adjustmentType = adjustment.adjustmentType.code,
-                adjustmentReasonId = referenceDataRepository.getAdjustmentReason(adjustment.adjustmentReasonTypeCode).id,
+                adjustmentType = adjustment.type.code,
+                adjustmentReasonId = referenceDataRepository.getAdjustmentReason(adjustment.reasonTypeCode).id,
                 adjustedByUserId = user.id
             )
             val savedAdjustment = createUnpaidWorkAdjustmentRepository.save(adjustmentToSave)
@@ -83,12 +83,12 @@ class AdjustmentService(
             ?: throw NotFoundException("Adjustment not found for id $adjustmentId")
         val userId = userRepository.findByUsername(username)?.id
             ?: throw NotFoundException("User not found for username $username")
-        existingAdjustment.adjustmentType = adjustmentRequest.adjustmentType.code
-        existingAdjustment.adjustmentAmount = adjustmentRequest.adjustmentAmountMinutes
+        existingAdjustment.adjustmentType = adjustmentRequest.type.code
+        existingAdjustment.adjustmentAmount = adjustmentRequest.minutes
         existingAdjustment.adjustmentDate = adjustmentRequest.date
         existingAdjustment.lastUpdatedUserId = userId
         existingAdjustment.adjustmentReasonId =
-            referenceDataRepository.getAdjustmentReason(adjustmentRequest.adjustmentReasonTypeCode).id
+            referenceDataRepository.getAdjustmentReason(adjustmentRequest.reasonTypeCode).id
         createUnpaidWorkAdjustmentRepository.save(existingAdjustment)
     }
 

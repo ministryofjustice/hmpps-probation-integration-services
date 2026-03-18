@@ -41,12 +41,12 @@ class AdjustmentsIntegrationTest @Autowired constructor(
         assertThat(adjustments).isNotNull
         assertThat(adjustments).hasSize(1)
         val adj = adjustments!!.first()
-        assertThat(adj["adjustmentType"]).isEqualTo("NEGATIVE")
+        assertThat(adj["type"]).isEqualTo("NEGATIVE")
         assertThat(adj["date"]).isEqualTo(UPWGenerator.GET_ADJUSTMENT_NEGATIVE.adjustmentDate.toString())
-        assertThat(adj["adjustmentReasonType"]).isEqualTo(
+        assertThat(adj["reason"]).isEqualTo(
             mapOf("code" to "OT", "name" to "Other")
         )
-        assertThat(adj["adjustmentAmountMinutes"]).isEqualTo(3)
+        assertThat(adj["minutes"]).isEqualTo(3)
         assertThat(adj["id"]).isNotNull()
     }
 
@@ -60,16 +60,16 @@ class AdjustmentsIntegrationTest @Autowired constructor(
         val adjustmentAmountMinutes = 10
         val body = listOf(
             AdjustmentRequest(
-                adjustmentType = adjustmentType,
+                type = adjustmentType,
                 date = LocalDate.now(),
-                adjustmentReasonTypeCode = adjustmentReasonTypeCode,
-                adjustmentAmountMinutes = adjustmentAmountMinutes
+                reasonTypeCode = adjustmentReasonTypeCode,
+                minutes = adjustmentAmountMinutes
             ),
             AdjustmentRequest(
-                adjustmentType = AdjustmentType.NEGATIVE,
+                type = AdjustmentType.NEGATIVE,
                 date = LocalDate.now(),
-                adjustmentReasonTypeCode = adjustmentReasonTypeCode,
-                adjustmentAmountMinutes = adjustmentAmountMinutes
+                reasonTypeCode = adjustmentReasonTypeCode,
+                minutes = adjustmentAmountMinutes
             )
         )
 
@@ -96,10 +96,10 @@ class AdjustmentsIntegrationTest @Autowired constructor(
         val adjustmentAmountMinutes = 10
         val body = listOf(
             AdjustmentRequest(
-                adjustmentType = adjustmentType,
+                type = adjustmentType,
                 date = LocalDate.now(),
-                adjustmentReasonTypeCode = adjustmentReasonTypeCode,
-                adjustmentAmountMinutes = adjustmentAmountMinutes
+                reasonTypeCode = adjustmentReasonTypeCode,
+                minutes = adjustmentAmountMinutes
             )
         )
         val postResponse = mockMvc.post("/${crn}/event/${eventNumber}/adjustments?username=${username}") {
@@ -123,10 +123,10 @@ class AdjustmentsIntegrationTest @Autowired constructor(
         val adjustmentAmountMinutes = 10
         val body = listOf(
             AdjustmentRequest(
-                adjustmentType = adjustmentType,
+                type = adjustmentType,
                 date = LocalDate.now(),
-                adjustmentReasonTypeCode = adjustmentReasonTypeCode,
-                adjustmentAmountMinutes = adjustmentAmountMinutes
+                reasonTypeCode = adjustmentReasonTypeCode,
+                minutes = adjustmentAmountMinutes
             )
         )
         val postResponse = mockMvc.post("/${crn}/event/${eventNumber}/adjustments?username=${username}") {
@@ -135,10 +135,10 @@ class AdjustmentsIntegrationTest @Autowired constructor(
         }.andReturn().response.contentAsJson<List<AdjustmentPostResponse>>()
         val idToUpdate = postResponse.first().id
         val updateBody = AdjustmentRequest(
-            adjustmentType = AdjustmentType.NEGATIVE,
+            type = AdjustmentType.NEGATIVE,
             date = LocalDate.now(),
-            adjustmentReasonTypeCode = adjustmentReasonTypeCode,
-            adjustmentAmountMinutes = adjustmentAmountMinutes + 20
+            reasonTypeCode = adjustmentReasonTypeCode,
+            minutes = adjustmentAmountMinutes + 20
         )
         mockMvc.put("/adjustments/${idToUpdate}?username=${username}") {
             withToken()
