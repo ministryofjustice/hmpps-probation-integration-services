@@ -1,5 +1,8 @@
 package uk.gov.justice.digital.hmpps.controller
 
+import io.swagger.v3.oas.annotations.Parameter
+import io.swagger.v3.oas.annotations.media.ArraySchema
+import io.swagger.v3.oas.annotations.media.Schema
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -25,6 +28,7 @@ class CaseController(
     @GetMapping("/{crn}/summary")
     fun getSummary(
         @PathVariable crn: String,
-        @RequestParam username: String
+        @Parameter(description = "If username isn't provided the LAO status cannot be determined and currentExclusion/currentRestriction will always be returned as true")
+        @RequestParam username: String?
     ) = caseSummaryService.getSummaryForCase(crn, username)
 }

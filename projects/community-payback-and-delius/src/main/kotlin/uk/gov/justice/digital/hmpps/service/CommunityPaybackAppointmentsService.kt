@@ -134,6 +134,7 @@ class CommunityPaybackAppointmentsService(
                 date = it.date,
                 startTime = it.startTime,
                 endTime = it.endTime,
+                minutesCredited = it.minutesCredited,
                 daysOverdue = daysOverdue,
                 case = it.toAppointmentResponseCase(limitedAccess),
                 eventNumber = it.details.disposal.event.number.toInt(),

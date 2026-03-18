@@ -6,5 +6,5 @@ import org.springframework.scheduling.annotation.EnableScheduling
 
 @Configuration
 @EnableScheduling
-@ConditionalOnProperty("poller.enabled")
+@ConditionalOnProperty("poller.enabled", matchIfMissing = true)
 class SchedulingConfig

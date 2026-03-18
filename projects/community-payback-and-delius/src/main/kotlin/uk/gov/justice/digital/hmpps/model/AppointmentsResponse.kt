@@ -8,6 +8,7 @@ data class AppointmentsResponse(
     val date: LocalDate,
     val startTime: LocalTime,
     val endTime: LocalTime,
+    val minutesCredited: Long?,
     val daysOverdue: Long?,
     val case: Case,
     val eventNumber: Int?,
