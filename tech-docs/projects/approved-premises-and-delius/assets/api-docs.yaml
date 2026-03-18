@@ -629,6 +629,8 @@ components:
           format: date
         riskNotes:
           type: string
+        riskFlagGroupDescription:
+          type: string
       required:
       - code
       - description

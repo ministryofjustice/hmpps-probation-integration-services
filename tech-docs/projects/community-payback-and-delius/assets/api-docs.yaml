@@ -1320,6 +1320,8 @@ components:
           $ref: "#/components/schemas/RequirementProgress"
         outcome:
           $ref: "#/components/schemas/CodeDescription"
+        notes:
+          type: string
       required:
       - case
       - date

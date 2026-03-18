@@ -14,13 +14,13 @@ servers:
 security:
 - hmpps-auth-token: []
 paths:
-  /example/{inputId}:
+  /case-list/{username}:
     get:
       tags:
-      - api-controller
-      operationId: handle
+      - single-accommodation-controller
+      operationId: getCaseList
       parameters:
-      - name: inputId
+      - name: username
         in: path
         required: true
         schema:
@@ -28,7 +28,88 @@ paths:
       responses:
         "200":
           description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CaseListResponse"
 components:
+  schemas:
+    Case:
+      type: object
+      properties:
+        crn:
+          type: string
+        name:
+          $ref: "#/components/schemas/Name"
+        nomsNumber:
+          type: string
+        pncNumber:
+          type: string
+        dateOfBirth:
+          type: string
+          format: date
+        staff:
+          $ref: "#/components/schemas/Officer"
+        team:
+          $ref: "#/components/schemas/CodeDescription"
+        gender:
+          type: string
+        roshLevel:
+          $ref: "#/components/schemas/CodeDescription"
+        expectedReleaseDate:
+          type: string
+          format: date
+      required:
+      - crn
+      - dateOfBirth
+      - gender
+      - name
+      - staff
+      - team
+    CaseListResponse:
+      type: object
+      properties:
+        cases:
+          type: array
+          items:
+            $ref: "#/components/schemas/Case"
+      required:
+      - cases
+    CodeDescription:
+      type: object
+      properties:
+        code:
+          type: string
+        description:
+          type: string
+      required:
+      - code
+      - description
+    Name:
+      type: object
+      properties:
+        forename:
+          type: string
+        middleName:
+          type: string
+        surname:
+          type: string
+      required:
+      - forename
+      - surname
+    Officer:
+      type: object
+      properties:
+        name:
+          $ref: "#/components/schemas/Name"
+        username:
+          type: string
+        code:
+          type: string
+      required:
+      - code
+      - name
+      - username
   securitySchemes:
     hmpps-auth-token:
       type: http
