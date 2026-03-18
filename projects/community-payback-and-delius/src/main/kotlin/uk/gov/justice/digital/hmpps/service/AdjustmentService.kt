@@ -78,7 +78,7 @@ class AdjustmentService(
                         adjustmentReasonType = AdjustmentReasonType(
                             code = it.adjustmentReason.code, name = it.adjustmentReason.description
                         ),
-                        )
+                    )
                 })
     }
 
