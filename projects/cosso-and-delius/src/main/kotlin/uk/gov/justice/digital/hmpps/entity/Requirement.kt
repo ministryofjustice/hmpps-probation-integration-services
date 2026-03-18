@@ -32,7 +32,11 @@ class RequirementEntity(
     val length2: Int?,
     @Column(name = "soft_deleted", columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)
-    val softDeleted: Boolean
+    val softDeleted: Boolean,
+    @Column(name = "active_flag", columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
+    val active: Boolean
+
 )
 
 @Entity
@@ -53,5 +57,6 @@ class RequirementType(
     )
 
 interface RequirementRepository : JpaRepository<RequirementEntity, Long> {
+    fun findAllByDisposalIdIn(disposalIds: List<Long>): List<RequirementEntity>
     fun getByDisposalId(disposalId: Long): List<RequirementEntity>
 }

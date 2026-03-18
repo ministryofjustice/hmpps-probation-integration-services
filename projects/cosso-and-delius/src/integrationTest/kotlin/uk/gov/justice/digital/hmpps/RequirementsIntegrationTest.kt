@@ -31,7 +31,7 @@ class RequirementsIntegrationTest @Autowired constructor(
     }
 
     @Test
-    fun `returns 404 if cant find requirements`() {
+    fun `returns 404 if can't find requirements`() {
         val uuid = "12345678-1234-1234-1234-123456789012"
         mockMvc.get("/requirements/${uuid}") { withToken() }
             .andExpect { status { isNotFound() } }

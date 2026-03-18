@@ -13,8 +13,8 @@ object RequirementGenerator {
         requirementSubType = ReferenceDataGenerator.DEFAULT_REQUIREMENT_SUBTYPE,
         length = 2,
         length2 = 1,
-        softDeleted = false
-
+        softDeleted = false,
+        active = true
     )
 
     fun getRequirementType(typeDescription: String) = RequirementType(

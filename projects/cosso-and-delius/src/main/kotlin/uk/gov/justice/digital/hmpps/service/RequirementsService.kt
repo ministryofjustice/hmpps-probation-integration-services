@@ -24,8 +24,8 @@ class RequirementsService(
     fun getRequirements(breachNoticeId: String): RequirementsResponse {
         val eventId = documentRepository.findEventIdFromDocument(cossoBreachNoticeUrn(UUID.fromString(breachNoticeId)))
             ?: throw NotFoundException("DocumentEntity", "breachNoticeId", breachNoticeId)
-        val disposals = disposalRepository.findByEventId(eventId)
-        val requirements = disposals.flatMap { requirementRepository.getByDisposalId(it.id) }
+        val disposals = disposalRepository.findByEventId(eventId).map { it.id }
+        val requirements = requirementRepository.findAllByDisposalIdIn(disposals).filter { it.active }
         val breachReasons = getBreachReasons()
         return RequirementsResponse(
             requirements = requirements.map {
@@ -40,5 +40,5 @@ class RequirementsService(
     }
 
     fun getBreachReasons(): List<ReferenceData> =
-        referenceDataRepository.findAllByDataSetName(ReferenceDataSet.Code.BREACH_REASON.value)
+        referenceDataRepository.findAllByDataSetName(ReferenceDataSet.Code.BREACH_REASON.value).filter { it.selectable }
 }
