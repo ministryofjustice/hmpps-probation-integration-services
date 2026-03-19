@@ -53,5 +53,6 @@ class DisposalType(
 )
 
 interface DisposalRepository : JpaRepository<Disposal, Long> {
+    fun findByEventId(eventId: Long): List<Disposal>
     fun findFirstByEventIdOrderByDisposalDate(eventId: Long): Disposal?
 }

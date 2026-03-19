@@ -32,6 +32,28 @@ object EventGenerator {
         disposal = null,
         mainOffence = MainOffence(id(), OffenceGenerator.BURGLARY)
     )
+    val INACTIVE_EVENT = generateEvent(
+        number = 1,
+        person = PersonGenerator.NO_ACTIVE_EVENT_PERSON,
+        referralDate = LocalDate.of(2026, 2, 1),
+        disposal = Disposal(id(), LocalDate.of(2026, 2, 1), COMMUNITY_ORDER),
+        mainOffence = MainOffence(id(), OffenceGenerator.BURGLARY),
+        active = false,
+    )
+    val FALLBACK_EVENT_1 = generateEvent(
+        number = 1,
+        person = PersonGenerator.FALLBACK_EVENT_PERSON,
+        referralDate = LocalDate.of(2026, 1, 1),
+        disposal = Disposal(id(), LocalDate.of(2026, 1, 1), COMMUNITY_ORDER),
+        mainOffence = MainOffence(id(), OffenceGenerator.BURGLARY),
+    )
+    val FALLBACK_EVENT_2 = generateEvent(
+        number = 2,
+        person = PersonGenerator.FALLBACK_EVENT_PERSON,
+        referralDate = LocalDate.of(2026, 4, 1),
+        disposal = Disposal(id(), LocalDate.of(2026, 4, 1), COMMUNITY_ORDER),
+        mainOffence = MainOffence(id(), OffenceGenerator.BURGLARY),
+    )
 
     fun generateEvent(
         number: Int,

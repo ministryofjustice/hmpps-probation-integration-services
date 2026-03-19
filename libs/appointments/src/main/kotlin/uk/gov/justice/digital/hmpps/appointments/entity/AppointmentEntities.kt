@@ -148,7 +148,7 @@ internal object AppointmentEntities {
 
         @Column(columnDefinition = "number")
         @Convert(converter = NumericBooleanConverter::class)
-        val softDeleted: Boolean = false,
+        var softDeleted: Boolean = false,
 
         // Audit
         @CreatedDate

@@ -4,6 +4,7 @@ import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.jpa.repository.Modifying
 import org.springframework.data.jpa.repository.Query
 import uk.gov.justice.digital.hmpps.appointments.entity.AppointmentEntities.Alert
 import uk.gov.justice.digital.hmpps.appointments.entity.AppointmentEntities.AppointmentContact
@@ -84,6 +85,10 @@ internal object AppointmentRepositories {
 
         fun schedulingConflictExists(appointment: AppointmentContact) =
             firstConflictingAppointment(appointment).hasContent()
+
+        @Modifying
+        @Query("update AppointmentContact c set c.softDeleted = true where c.externalReference in (:externalReference)")
+        fun softDeleteByExternalReferenceIn(externalReference: List<String>)
     }
 
     interface PersonRepository : JpaRepository<Person, Long> {

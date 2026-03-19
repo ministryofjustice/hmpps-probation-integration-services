@@ -8,15 +8,12 @@ import uk.gov.justice.digital.hmpps.integrations.delius.offender.OffenderDeltaSe
 @Service
 class OffenderDeltaPoller(private val service: OffenderDeltaService) {
     @Transactional
-    @Scheduled(fixedDelayString = "\${offender-events.fixed-delay:100}")
+    @Scheduled(fixedDelayString = "\${poller.fixed-delay:100}")
     fun poll() {
         val deltas = service.getDeltas()
-        if (deltas.isEmpty()) return
-
         deltas
             .flatMap { service.prepare(it) }
             .forEach(service::notify)
-
         service.deleteAll(deltas)
     }
 }

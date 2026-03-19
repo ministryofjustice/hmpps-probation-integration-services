@@ -13,12 +13,13 @@ object RequirementGenerator {
         requirementSubType = ReferenceDataGenerator.DEFAULT_REQUIREMENT_SUBTYPE,
         length = 2,
         length2 = 1,
-        softDeleted = false
-
+        softDeleted = false,
+        active = true
     )
 
     fun getRequirementType(typeDescription: String) = RequirementType(
         id = IdGenerator.getAndIncrement(),
+        code = typeDescription,
         description = typeDescription,
         units = ReferenceDataGenerator.LENGTH_UNITS_MONTHS,
         length2Units = ReferenceDataGenerator.LENGTH_UNITS_DAYS

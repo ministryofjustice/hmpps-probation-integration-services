@@ -10,7 +10,7 @@
           "Content-Type": "application/json"
         },
         "status": 200,
-        "body": "{\"newStatus\": \"BREACH\", \"sourcedFromEntityType\": \"LICENCE_CONDITION\", \"sourcedFromEntityId\": {{request.path.[2]}}, \"notes\": \"Some notes about the breach of the LC\"}",
+        "body": "{\"newStatus\": \"BREACH\", \"sourcedFromEntityType\": \"LICENCE_CONDITION\", \"sourcedFromEntityId\": {{request.path.[2]}}, \"notes\": \"Some notes about the breach of the LC\", \"description\": \"Some description\"}",
         "transformers": [
           "response-template"
         ]
@@ -26,7 +26,7 @@
           "Content-Type": "application/json"
         },
         "status": 200,
-        "body": "{\"newStatus\": \"ON_PROGRAMME\", \"sourcedFromEntityType\": \"REQUIREMENT\", \"sourcedFromEntityId\": {{request.path.[2]}}, \"notes\": \"Some notes about the being on the programme\"}",
+        "body": "{\"newStatus\": \"ON_PROGRAMME\", \"sourcedFromEntityType\": \"REQUIREMENT\", \"sourcedFromEntityId\": {{request.path.[2]}}, \"notes\": \"Some notes about the being on the programme\", \"description\": \"Some description\"}",
         "transformers": [
           "response-template"
         ]
@@ -42,7 +42,7 @@
           "Content-Type": "application/json"
         },
         "status": 200,
-        "body": "{\"newStatus\": \"PROGRAMME_COMPLETE\", \"sourcedFromEntityType\": \"REQUIREMENT\", \"sourcedFromEntityId\": {{request.path.[2]}}, \"notes\": \"Programme completed successfully\"}",
+        "body": "{\"newStatus\": \"PROGRAMME_COMPLETE\", \"sourcedFromEntityType\": \"REQUIREMENT\", \"sourcedFromEntityId\": {{request.path.[2]}}, \"notes\": \"Programme completed successfully\", \"description\": \"Some description\"}",
         "transformers": [
           "response-template"
         ]
@@ -58,7 +58,7 @@
           "Content-Type": "application/json"
         },
         "status": 200,
-        "body": "{\"newStatus\": \"PROGRAMME_COMPLETE\", \"sourcedFromEntityType\": \"LICENCE_CONDITION\", \"sourcedFromEntityId\": {{request.path.[2]}}, \"notes\": \"Programme completed successfully\"}",
+        "body": "{\"newStatus\": \"PROGRAMME_COMPLETE\", \"sourcedFromEntityType\": \"LICENCE_CONDITION\", \"sourcedFromEntityId\": {{request.path.[2]}}, \"notes\": \"Programme completed successfully\", \"description\": \"Some description\"}",
         "transformers": [
           "response-template"
         ]

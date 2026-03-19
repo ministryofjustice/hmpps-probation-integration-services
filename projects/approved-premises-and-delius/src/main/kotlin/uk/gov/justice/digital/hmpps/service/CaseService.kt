@@ -1,12 +1,13 @@
 package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.stereotype.Service
-import uk.gov.justice.digital.hmpps.datetime.DeliusDateFormatter
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
+import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.DisposalRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.CommunityManager
 import uk.gov.justice.digital.hmpps.integrations.delius.person.ProbationCase
 import uk.gov.justice.digital.hmpps.integrations.delius.person.ProbationCaseRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.person.contact.PersonalContactEntity
 import uk.gov.justice.digital.hmpps.integrations.delius.person.offence.entity.CaseOffence
 import uk.gov.justice.digital.hmpps.integrations.delius.person.offence.entity.MainOffenceRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.registration.entity.*
@@ -14,7 +15,6 @@ import uk.gov.justice.digital.hmpps.integrations.delius.person.registration.enti
 import uk.gov.justice.digital.hmpps.integrations.delius.personalcircumstance.PersonalCircumstanceRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.personalcircumstance.entity.PersonalCircumstanceType
 import uk.gov.justice.digital.hmpps.model.*
-import java.time.LocalDate
 
 @Service
 class CaseService(
@@ -23,6 +23,7 @@ class CaseService(
     private val offenceRepository: MainOffenceRepository,
     private val personalCircumstanceRepository: PersonalCircumstanceRepository,
     private val disposalRepository: DisposalRepository,
+    private val contactRepository: ContactRepository,
 ) {
     fun getCaseSummaries(ids: List<String>): CaseSummaries =
         CaseSummaries(probationCaseRepository.findByCrnInOrNomsIdIn(ids).map { it.summary() })
@@ -41,7 +42,13 @@ class CaseService(
                 eventNumber = disposal.event.number
             )
         }
-        return person.summary().withDetail(offences, registrations, circumstances.map { it.type.code }, sentences)
+        return person.summary().withDetail(
+            offences,
+            registrations,
+            circumstances.map { it.type.code },
+            sentences,
+            person.personalContacts
+        )
     }
 }
 
@@ -62,9 +69,31 @@ fun CaseSummary.withDetail(
     offences: List<CaseOffence>,
     registrations: List<Registration>,
     circumstances: List<String>,
-    sentences: List<Sentence>
+    sentences: List<Sentence>,
+    contacts: List<PersonalContactEntity>
 ): CaseDetail {
     val regMap = registrations.groupBy { it.type.code == RegisterType.Code.MAPPA.value }
+    val personalContacts = contacts.map {
+        PersonalContact(
+            relationship = it.relationship,
+            relationshipType = RelationshipType(it.relationshipType.code, it.relationshipType.description),
+            name = Name(it.forename, it.surname, listOf(it.middleName as String)),
+            mobileNumber = it.mobileNumber,
+            telephoneNumber = it.address?.telephoneNumber,
+            address = it.address?.let { address ->
+                Address(
+                    buildingName = address.buildingName,
+                    addressNumber = address.addressNumber,
+                    streetName = address.streetName,
+                    district = address.district,
+                    town = address.town,
+                    county = address.county,
+                    postcode = address.postcode
+                )
+            }
+        )
+    }
+
     return CaseDetail(
         this,
         offences.map { it.asOffence() },
@@ -72,7 +101,8 @@ fun CaseSummary.withDetail(
         regMap.mappa(),
         circumstances.isCareLeaver(),
         circumstances.isVeteran(),
-        sentences
+        sentences,
+        personalContacts
     )
 }
 
@@ -119,7 +149,8 @@ fun Registration.asRegistration() = uk.gov.justice.digital.hmpps.model.Registrat
     code = type.code,
     description = type.description,
     startDate = date,
-    riskNotes = notes
+    riskNotes = notes,
+    riskFlagGroupDescription = type.flag?.description
 )
 
 fun Registration.asMappa() = MappaDetail(

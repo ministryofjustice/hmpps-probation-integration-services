@@ -11,8 +11,12 @@ object PersonGenerator {
     val DEFAULT_PERSON = generatePerson("A000001")
     val PERSON_CONTACT_DETAILS_1 = generatePerson("A000002")
     val PERSON_CONTACT_DETAILS_2 = generatePerson("A000003")
+    val NO_ACTIVE_EVENT_PERSON = generatePerson("A000004")
+    val FALLBACK_EVENT_PERSON = generatePerson("A000005")
 
     val DEFAULT_COM = generatePersonManager(DEFAULT_PERSON)
+    val NO_ACTIVE_EVENT_COM = generatePersonManager(NO_ACTIVE_EVENT_PERSON)
+    val FALLBACK_EVENT_COM = generatePersonManager(FALLBACK_EVENT_PERSON)
 
     fun generatePerson(
         crn: String,

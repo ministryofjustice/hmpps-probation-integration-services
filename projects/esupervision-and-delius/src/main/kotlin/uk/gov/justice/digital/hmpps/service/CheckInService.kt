@@ -28,22 +28,24 @@ class CheckInService(
     private val contactRepository: ContactRepository,
     private val personRepository: PersonRepository,
 ) : AuditableService(auditedInteractionService) {
-    fun handle(de: HmppsDomainEvent) = audit(ADD_CONTACT) { audit ->
-        val detail = de.detailUrl?.let { deDetailService.getDetail<CheckInDetail>(de) }
-        val crn = requireNotNull(de.personReference.findCrn())
+    fun handle(domainEvent: HmppsDomainEvent) = audit(ADD_CONTACT) { audit ->
+        val detail = domainEvent.detailUrl?.let { deDetailService.getDetail<CheckInDetail>(domainEvent) }
+        val crn = requireNotNull(domainEvent.personReference.findCrn())
         val com = personManagerRepository.getByCrn(crn)
         audit["offenderId"] = com.person.id
-        val event = eventRepository.findFirstByPersonCrnOrderByReferralDateDesc(crn)
+        val event = domainEvent.additionalInformation["eventNumber"]
+            ?.let { eventRepository.findByPersonCrnAndNumber(crn, it as String) }
+            ?: eventRepository.findFirstByPersonCrnAndActiveTrueOrderByReferralDateDesc(crn)
             ?: throw IllegalStateException("Case does not have an active event")
         audit["eventId"] = event.id
-        val contact = contactRepository.save(de.createContact(com, event, detail))
+        val contact = contactRepository.save(domainEvent.createContact(com, event, detail))
         audit["contactId"] = contact.id
     }
 
-    fun update(de: HmppsDomainEvent) = audit(UPDATE_CONTACT) { audit ->
-        if (!personRepository.existsByCrn(requireNotNull(de.personReference.findCrn())))
+    fun update(domainEvent: HmppsDomainEvent) = audit(UPDATE_CONTACT) { audit ->
+        if (!personRepository.existsByCrn(requireNotNull(domainEvent.personReference.findCrn())))
             throw IgnorableMessageException("CRN not found")
-        val detail = de.detailUrl?.let { deDetailService.getDetail<CheckInDetail>(de) }
+        val detail = domainEvent.detailUrl?.let { deDetailService.getDetail<CheckInDetail>(domainEvent) }
         val uuid = requireNotNull(detail?.checkinUuid)
         val contact = contactRepository.getByExternalReferenceIn(Contact.externalReferencePrefixes.map { it + uuid })
         audit["contactId"] = contact.id

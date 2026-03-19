@@ -93,6 +93,19 @@ class AppointmentService internal constructor(
             .onEach { it.audit(BusinessInteractionCode.ADD_CONTACT) }
     }
 
+    fun delete(reference: String) = bulkDelete(listOf(reference))
+
+    fun bulkDelete(references: List<String>) {
+        val chunks = references.toSet().chunked(500)
+        val appointments = chunks.flatMap { appointmentRepository.findByExternalReferenceIn(it) }
+        require(appointments.all { Schedule(it).endsInFuture && it.outcome == null }) {
+            "Cannot delete appointments that ended in the past or have an outcome"
+        }
+
+        chunks.forEach { appointmentRepository.softDeleteByExternalReferenceIn(it) }
+        appointments.onEach { it.audit(BusinessInteractionCode.DELETE_CONTACT) }
+    }
+
     fun <T> update(request: T, init: UpdateBuilder<T>.() -> Unit) = bulkUpdate(listOf(request), init).single()
 
     fun <T> bulkUpdate(requests: List<T>, init: UpdateBuilder<T>.() -> Unit): List<Appointment> {
@@ -348,5 +361,8 @@ class AppointmentService internal constructor(
     private fun AppointmentContact.audit(interactionCode: BusinessInteractionCode) = audit(interactionCode) { audit ->
         audit["offenderId"] = personId
         audit["contactId"] = id!!
+        if (externalReference != null) {
+            audit["externalReference"] = externalReference
+        }
     }
 }

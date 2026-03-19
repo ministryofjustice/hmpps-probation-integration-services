@@ -10,6 +10,7 @@ import uk.gov.justice.digital.hmpps.data.generator.DatasetGenerator.HOSTEL_CODE
 import uk.gov.justice.digital.hmpps.data.generator.DatasetGenerator.NATIONALITY
 import uk.gov.justice.digital.hmpps.data.generator.DatasetGenerator.REGISTER_CATEGORY
 import uk.gov.justice.digital.hmpps.data.generator.DatasetGenerator.REGISTER_LEVEL
+import uk.gov.justice.digital.hmpps.data.generator.DatasetGenerator.RELATIONSHIP
 import uk.gov.justice.digital.hmpps.data.generator.DatasetGenerator.RELIGION
 import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referral.entity.MoveOnCategory
 import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referral.entity.ReferralSource
@@ -71,8 +72,13 @@ object ReferenceDataGenerator {
 
     val OTHER_REFERRAL_SOURCE = generateReferralSource("OTH")
     val MC05 = generateMoveOnCategory("MC05")
+
+    val SAFEGUARDING_FLAG = generate("3", ALL_DATASETS[DatasetCode.REGISTER_TYPE_FLAG]!!.id, "Safeguarding")
     val REGISTER_TYPES = RegisterType.Code.entries
-        .map { RegisterType(it.value, "Description of ${it.value}", IdGenerator.getAndIncrement()) }
+        .map {
+            val riskFlag = if (it == RegisterType.Code.MAPPA) null else SAFEGUARDING_FLAG
+            RegisterType(it.value, "Description of ${it.value}", riskFlag, IdGenerator.getAndIncrement())
+        }
         .associateBy { it.code }
 
     val REFERRAL_COMPLETED = generate("APRC", ALL_DATASETS[DatasetCode.NSI_OUTCOME]!!.id)
@@ -95,6 +101,7 @@ object ReferenceDataGenerator {
     val NON_MAPPA_CATEGORY = generate("RC07", REGISTER_CATEGORY.id, "Other category")
 
     val NSI_INITIAL_ALLOCATION = generate("IN1", ALL_DATASETS[DatasetCode.NM_ALLOCATION_REASON]!!.id)
+    val DOCTOR_RELATIONSHIP = generate("DOC", RELATIONSHIP.id, "Doctor")
 
     fun generate(
         code: String,
@@ -167,5 +174,6 @@ object DatasetGenerator {
     val RELIGION = ALL_DATASETS[DatasetCode.RELIGION]!!
     val REGISTER_CATEGORY = ALL_DATASETS[DatasetCode.REGISTER_CATEGORY]!!
     val REGISTER_LEVEL = ALL_DATASETS[DatasetCode.REGISTER_LEVEL]!!
+    val RELATIONSHIP = ALL_DATASETS[DatasetCode.RELATIONSHIP]!!
     fun all() = ALL_DATASETS.values
 }
