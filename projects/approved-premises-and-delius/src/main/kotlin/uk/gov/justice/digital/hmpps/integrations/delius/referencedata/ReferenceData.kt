@@ -62,6 +62,7 @@ enum class DatasetCode(val value: String) {
     SOURCE_TYPE("SOURCE TYPE"),
     STAFF_GRADE("OFFICER GRADE"),
     YES_NO("YES NO DONT KNOW"),
+    RELATIONSHIP("RELATIONSHIP"),
     REGISTER_TYPE_FLAG("REGISTER TYPE FLAG");
 
     companion object {
