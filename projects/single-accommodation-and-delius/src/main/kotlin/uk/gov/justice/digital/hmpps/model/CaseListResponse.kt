@@ -11,7 +11,7 @@ data class Case(
     val name: Name,
     val nomsNumber: String?,
     val pncNumber: String?,
-    val dateOfBirth: LocalDate?,
+    val dateOfBirth: LocalDate,
     val staff: Officer,
     val team: CodeDescription,
     val gender: String,

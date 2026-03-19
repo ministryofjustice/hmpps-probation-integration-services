@@ -35,17 +35,16 @@ class CaseListService(
         val responsibleCases = personManagers.mapNotNull {
             val person = casesById[it.personId] ?: return@mapNotNull null
             val access = limitedAccess[person.crn]
-            val isLimitedAccess = access?.userExcluded == true || access?.userRestricted == true
             Case(
                 crn = person.crn,
-                name = if (isLimitedAccess) Name("*", null, "*") else Name(
+                name = Name(
                     person.firstName,
                     listOfNotNull(person.secondName, person.thirdName).joinToString(" "),
                     person.surname
                 ),
-                dateOfBirth = if (isLimitedAccess) null else person.dateOfBirth,
-                nomsNumber = if (isLimitedAccess) "*" else person.noms,
-                pncNumber = if (isLimitedAccess) "*" else person.pnc,
+                dateOfBirth = person.dateOfBirth,
+                nomsNumber = person.noms,
+                pncNumber = person.pnc,
                 staff = Officer(
                     name = Name(
                         forename = it.staff.forename,
@@ -59,9 +58,9 @@ class CaseListService(
                     code = it.team.code,
                     description = it.team.description
                 ),
-                gender = if (isLimitedAccess) "*" else person.gender.description,
-                roshLevel = if (isLimitedAccess) null else roshLevels[person.id],
-                expectedReleaseDate = if (isLimitedAccess) null else keyDateRepository.findExpectedReleaseDates(person.id),
+                gender = person.gender.description,
+                roshLevel = roshLevels[person.id],
+                expectedReleaseDate = keyDateRepository.findExpectedReleaseDates(person.id),
                 userExcluded = access?.userExcluded ?: false,
                 userRestricted = access?.userRestricted ?: false,
                 exclusionMessage = access?.exclusionMessage,

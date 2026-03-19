@@ -72,8 +72,9 @@ internal class SingleAccommodationIntegrationTest @Autowired constructor(
     }
 
     @Test
-    fun `excluded case returns masked personal data`() {
+    fun `excluded case returns LAO fields`() {
         val user = UserGenerator.DEFAULT
+        val person = PersonGenerator.EXCLUDED
         val staff = StaffGenerator.DEFAULT
         val team = TeamGenerator.DEFAULT
 
@@ -81,14 +82,18 @@ internal class SingleAccommodationIntegrationTest @Autowired constructor(
             .andExpect { status { is2xxSuccessful() } }
             .andReturn().response.contentAsJson<CaseListResponse>()
 
-        val excludedCase = response.cases.first { it.crn == PersonGenerator.EXCLUDED.crn }
+        val excludedCase = response.cases.first { it.crn == person.crn }
         assertThat(excludedCase).isEqualTo(
             Case(
-                crn = PersonGenerator.EXCLUDED.crn,
-                name = Name(forename = "*", middleName = null, surname = "*"),
-                nomsNumber = "*",
-                pncNumber = "*",
-                dateOfBirth = null,
+                crn = person.crn,
+                name = Name(
+                    forename = person.firstName,
+                    middleName = listOfNotNull(person.secondName, person.thirdName).joinToString(" "),
+                    surname = person.surname
+                ),
+                nomsNumber = person.noms,
+                pncNumber = person.pnc,
+                dateOfBirth = person.dateOfBirth,
                 staff = Officer(
                     name = Name(
                         forename = staff.forename,
@@ -99,7 +104,7 @@ internal class SingleAccommodationIntegrationTest @Autowired constructor(
                     code = staff.code
                 ),
                 team = CodeDescription(code = team.code, description = team.description),
-                gender = "*",
+                gender = person.gender.description,
                 roshLevel = null,
                 expectedReleaseDate = null,
                 userExcluded = true,
@@ -111,8 +116,9 @@ internal class SingleAccommodationIntegrationTest @Autowired constructor(
     }
 
     @Test
-    fun `restricted case returns masked personal data`() {
+    fun `restricted case returns LAO fields`() {
         val user = UserGenerator.DEFAULT
+        val person = PersonGenerator.RESTRICTED
         val staff = StaffGenerator.DEFAULT
         val team = TeamGenerator.DEFAULT
 
@@ -120,14 +126,18 @@ internal class SingleAccommodationIntegrationTest @Autowired constructor(
             .andExpect { status { is2xxSuccessful() } }
             .andReturn().response.contentAsJson<CaseListResponse>()
 
-        val restrictedCase = response.cases.first { it.crn == PersonGenerator.RESTRICTED.crn }
+        val restrictedCase = response.cases.first { it.crn == person.crn }
         assertThat(restrictedCase).isEqualTo(
             Case(
-                crn = PersonGenerator.RESTRICTED.crn,
-                name = Name(forename = "*", middleName = null, surname = "*"),
-                nomsNumber = "*",
-                pncNumber = "*",
-                dateOfBirth = null,
+                crn = person.crn,
+                name = Name(
+                    forename = person.firstName,
+                    middleName = listOfNotNull(person.secondName, person.thirdName).joinToString(" "),
+                    surname = person.surname
+                ),
+                nomsNumber = person.noms,
+                pncNumber = person.pnc,
+                dateOfBirth = person.dateOfBirth,
                 staff = Officer(
                     name = Name(
                         forename = staff.forename,
@@ -138,7 +148,7 @@ internal class SingleAccommodationIntegrationTest @Autowired constructor(
                     code = staff.code
                 ),
                 team = CodeDescription(code = team.code, description = team.description),
-                gender = "*",
+                gender = person.gender.description,
                 roshLevel = null,
                 expectedReleaseDate = null,
                 userExcluded = false,
