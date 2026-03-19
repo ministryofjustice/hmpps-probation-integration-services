@@ -18,7 +18,6 @@ import uk.gov.justice.digital.hmpps.model.AdjustmentReasonType
 import uk.gov.justice.digital.hmpps.model.AdjustmentRequest
 import uk.gov.justice.digital.hmpps.model.AdjustmentResponse
 import uk.gov.justice.digital.hmpps.model.AdjustmentType
-import java.time.ZonedDateTime
 
 @Service
 class AdjustmentService(
