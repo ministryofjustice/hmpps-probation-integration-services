@@ -28,13 +28,12 @@ class AdjustmentsController(
         @PathVariable id: Long
     ) = adjustmentService.getAdjustment(id)
 
-
     @PostMapping("/adjustments")
     fun createAdjustments(
         @RequestParam username: String,
         @RequestBody adjustmentRequests: List<AdjustmentRequest>
     ) = adjustmentService.createAdjustments(
-        adjustmentRequests,  username
+        adjustmentRequests, username
     )
 
     @PutMapping("/adjustments/{adjustmentId}")

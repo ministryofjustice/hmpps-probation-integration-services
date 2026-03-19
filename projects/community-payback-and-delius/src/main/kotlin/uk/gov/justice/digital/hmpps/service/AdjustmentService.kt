@@ -36,8 +36,12 @@ class AdjustmentService(
         val user = userRepository.findByUsername(username)
             ?: throw NotFoundException("User not found for username $username")
         return adjustments.map { adjustment ->
-            val person = personRepository.findByCrn(adjustment.crn) ?: throw NotFoundException("Person not found for CRN $adjustment.crn")
-            val event = eventRepository.findByPersonIdAndNumberAndSoftDeletedIsFalse(person.id, adjustment.eventNumber.toString())
+            val person = personRepository.findByCrn(adjustment.crn)
+                ?: throw NotFoundException("Person not found for CRN $adjustment.crn")
+            val event = eventRepository.findByPersonIdAndNumberAndSoftDeletedIsFalse(
+                person.id,
+                adjustment.eventNumber.toString()
+            )
                 ?: throw NotFoundException("Event not found for CRN ${person.crn} and event number ${adjustment.eventNumber}")
             val upwDetails = unpaidWorkDetailsRepository.findByEventIdIn(listOf(event.id)).first()
             val adjustmentToSave = CreateUnpaidWorkAdjustment(
