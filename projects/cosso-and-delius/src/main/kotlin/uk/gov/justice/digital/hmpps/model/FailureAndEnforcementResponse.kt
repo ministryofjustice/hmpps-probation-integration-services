@@ -23,7 +23,7 @@ data class RegistrationResponse(
     val level: CodeAndDescription,
     val category: CodeAndDescription,
     val startDate: LocalDate,
-    val endData: LocalDate?,
+    val endDate: LocalDate?,
     val notes: String?,
     val documentsLinked: Boolean,
     val deregistered: Boolean,

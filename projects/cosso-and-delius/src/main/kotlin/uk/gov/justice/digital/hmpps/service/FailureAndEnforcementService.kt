@@ -14,41 +14,41 @@ import uk.gov.justice.digital.hmpps.model.RegistrationResponse
 import java.util.UUID
 
 @Service
-class FailureAndEnforcementService(
+class FailureAndEnforcementService (
     private val contactRepository: ContactRepository,
     private val registrationRepository: RegistrationRepository,
     private val documentRepository: DocumentRepository,
     private val personRepository: PersonRepository,
 ) {
     fun getFailuresAndEnforcement(crn: String, cossoId: String): FailureAndEnforcementResponse {
-        personRepository.findByCrn(crn) ?: throw NotFoundException("PersonEntity", "crn", crn)
+        val person = personRepository.findByCrn(crn) ?: throw NotFoundException("Person", "crn", crn)
+        val document = documentRepository.findByExternalReference(cossoBreachNoticeUrn(UUID.fromString(cossoId)))
+            ?: throw NotFoundException("DocumentEntity", "breachNoticeId", cossoId)
+        if (document.person.id != person.id) throw NotFoundException("DocumentEntity", "breachNoticeId", cossoId)
         val eventId = documentRepository.findEventIdFromDocument(cossoBreachNoticeUrn(UUID.fromString(cossoId)))
             ?: throw NotFoundException("DocumentEntity", "breachNoticeId", cossoId)
         val registrations = registrationRepository.findRegistrationsByCrn(crn, listOf("ALT7", "ALSH"))
         val contacts = contactRepository.findEnforceableByEventId(eventId)
         return FailureAndEnforcementResponse(
-            enforceableContacts = contacts.map {
-                ContactResponse(
-                    id = it.id,
-                    datetime = it.contactStartTime,
-                    description = it.contactType.description,
-                    type = CodeAndDescription(it.contactType.code, it.contactType.description),
-                    outcome = CodeAndDescription(it.contactOutcomeType.code, it.contactOutcomeType.description),
-                    notes = it.notes
-                )
-            },
-            registrations = registrations.map {
-                RegistrationResponse(
-                    id = it.id,
-                    type = CodeAndDescription(it.registerType.code, it.registerType.description),
-                    level = CodeAndDescription(it.registerLevel.code, it.registerLevel.description),
-                    category = CodeAndDescription(it.registerCategory.code, it.registerCategory.description),
-                    startDate = it.startDate,
-                    endData = it.endDate,
-                    notes = it.registrationNotes,
-                    documentsLinked = it.documentLinked,
-                    deregistered = it.deregistered,
-                )
+            enforceableContacts = contacts.map { ContactResponse(
+                id = it.id,
+                datetime = it.contactStartTime,
+                description = it.contactType.description,
+                type = CodeAndDescription(it.contactType.code, it.contactType.description),
+                outcome = CodeAndDescription(it.contactOutcomeType.code, it.contactOutcomeType.description),
+                notes = it.notes
+            ) },
+            registrations = registrations.map { RegistrationResponse(
+                id = it.id,
+                type = CodeAndDescription(it.registerType.code, it.registerType.description),
+                level = CodeAndDescription(it.registerLevel.code, it.registerLevel.description),
+                category = CodeAndDescription(it.registerCategory.code, it.registerCategory.description),
+                startDate = it.startDate,
+                endDate = it.endDate,
+                notes = it.registrationNotes,
+                documentsLinked = it.documentLinked,
+                deregistered = it.deregistered,
+            )
             }
         )
     }
