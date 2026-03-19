@@ -50,7 +50,7 @@ runs:
         password: ${{ github.token }}
 
     - name: Build Docker images
-      uses: docker/build-push-action@v6
+      uses: docker/build-push-action@v7
       id: build
       with:
         labels: GIT_BRANCH=${{ github.ref_name }}
@@ -98,7 +98,7 @@ runs:
       shell: bash
 
     - name: Push Docker images
-      uses: docker/build-push-action@v6
+      uses: docker/build-push-action@v7
       if: (steps.check-changes.outputs.projects != '[]' && inputs.push == 'true') || inputs.force == 'true'
       with:
         labels: GIT_BRANCH=${{ github.ref_name }}
