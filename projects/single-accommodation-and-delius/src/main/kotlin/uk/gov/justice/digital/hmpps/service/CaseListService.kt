@@ -13,7 +13,8 @@ class CaseListService(
     private val personManagerRepository: PersonManagerRepository,
     private val personRepository: PersonRepository,
     private val keyDateRepository: KeyDateRepository,
-    private val registrationRepository: RegistrationRepository
+    private val registrationRepository: RegistrationRepository,
+    private val userAccessService: UserAccessService
 ) {
     fun getCaseList(username: String): CaseListResponse {
         val staff = staffRepository.findByUserUsernameIgnoreCase(username) ?: throw NotFoundException(
@@ -27,8 +28,13 @@ class CaseListService(
         val roshLevels = registrationRepository.findByPersonIdInAndTypeCodeIn(personIds, RegisterType.ROSH_CODES)
             .groupBy { it.personId }
             .mapValues { (_, reg) -> CodeDescription(reg.first().type.code, reg.first().type.description) }
+
+        val crns = casesById.values.map { it.crn }
+        val limitedAccess = userAccessService.userAccessFor(username, crns).access.associateBy { it.crn }
+
         val responsibleCases = personManagers.mapNotNull {
             val person = casesById[it.personId] ?: return@mapNotNull null
+            val access = limitedAccess[person.crn]
             Case(
                 crn = person.crn,
                 name = Name(
@@ -54,12 +60,14 @@ class CaseListService(
                 ),
                 gender = person.gender.description,
                 roshLevel = roshLevels[person.id],
-                expectedReleaseDate = keyDateRepository.findExpectedReleaseDates(person.id)
+                expectedReleaseDate = keyDateRepository.findExpectedReleaseDates(person.id),
+                userExcluded = access?.userExcluded ?: false,
+                userRestricted = access?.userRestricted ?: false,
+                exclusionMessage = access?.exclusionMessage,
+                restrictionMessage = access?.restrictionMessage
             )
         }
 
-        return CaseListResponse(
-            responsibleCases
-        )
+        return CaseListResponse(responsibleCases)
     }
 }
