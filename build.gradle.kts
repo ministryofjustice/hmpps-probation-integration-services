@@ -9,8 +9,8 @@ import uk.gov.justice.digital.hmpps.plugins.JibConfigPlugin
 
 plugins {
     kotlin("jvm") version "2.3.20"
+    kotlin("plugin.noarg") version "2.3.20" apply false
     kotlin("plugin.spring") version "2.3.20" apply false
-    kotlin("plugin.jpa") version "2.3.20" apply false
     id("org.springframework.boot") version "4.0.3" apply false
     id("io.spring.dependency-management") version "1.1.7" apply false
     id("com.gorylenko.gradle-git-properties") version "2.5.7" apply false
@@ -68,7 +68,7 @@ subprojects {
         plugin("org.springframework.boot")
         plugin("io.spring.dependency-management")
         plugin("org.jetbrains.kotlin.jvm")
-        plugin("org.jetbrains.kotlin.plugin.jpa")
+        plugin("org.jetbrains.kotlin.plugin.noarg")
         plugin("org.jetbrains.kotlin.plugin.spring")
         plugin("jacoco")
         plugin("test-report-aggregation")
@@ -79,8 +79,6 @@ subprojects {
         plugin(JibConfigPlugin::class.java)
         plugin(ClassPathPlugin::class.java)
     }
-
-    extra["hibernate.version"] = "7.2.3.Final"
 
     tasks {
         withType<BootRun> {
@@ -106,6 +104,9 @@ subprojects {
 
     extensions.configure<NoArgExtension> {
         annotation("org.springframework.ldap.odm.annotations.Entry")
+        annotation("jakarta.persistence.Entity")
+        annotation("jakarta.persistence.Embeddable")
+        annotation("jakarta.persistence.MappedSuperclass")
     }
 
     if (!path.startsWith(":libs")) {
