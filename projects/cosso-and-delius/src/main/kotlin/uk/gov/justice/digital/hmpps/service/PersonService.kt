@@ -24,7 +24,7 @@ class PersonService(
         ldapTemplate.findAttributeByUsername(username, "userHomeArea")
             ?: throw IllegalArgumentException("No home area found for $username")
         val person = personRepository.findByCrn(crn).orNotFoundBy("crn", crn)
-        val addresses = personAddressRepository.findByPersonId(person.offenderId).map {
+        val addresses = personAddressRepository.findByPersonId(person.id).map {
             Address(
                 id = it.id,
                 status = it.status.code,
