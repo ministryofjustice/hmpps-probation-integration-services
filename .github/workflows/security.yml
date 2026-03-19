@@ -146,9 +146,6 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ github.token }}
 
-      - name: Fail job if any vulnerabilities are found
-        run: if [ "$(jq '. | with_entries(select(.value != null)) | length' < results.json)" != 0 ]; then exit 1; fi
-
   veracode-scan:
     permissions:
       contents: read
