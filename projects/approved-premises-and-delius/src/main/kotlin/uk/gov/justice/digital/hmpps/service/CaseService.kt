@@ -77,7 +77,7 @@ fun CaseSummary.withDetail(
         PersonalContact(
             relationship = it.relationship,
             relationshipType = RelationshipType(it.relationshipType.code, it.relationshipType.description),
-            name = Name(it.forename, it.surname, listOf(it.middleName as String)),
+            name = Name(it.forename, it.surname, listOfNotNull(it.middleName)),
             mobileNumber = it.mobileNumber,
             telephoneNumber = it.address?.telephoneNumber,
             address = it.address?.let { address ->
