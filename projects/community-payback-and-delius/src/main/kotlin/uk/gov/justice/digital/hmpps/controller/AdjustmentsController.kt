@@ -17,20 +17,24 @@ import uk.gov.justice.digital.hmpps.service.AdjustmentService
 class AdjustmentsController(
     private val adjustmentService: AdjustmentService
 ) {
-    @GetMapping("/{crn}/event/{eventNumber}/adjustments")
+    @GetMapping("/adjustments")
     fun getAdjustments(
-        @PathVariable crn: String,
-        @PathVariable eventNumber: Int
+        @RequestParam crn: String,
+        @RequestParam eventNumber: Int
     ) = adjustmentService.getAdjustments(crn, eventNumber)
 
-    @PostMapping("/{crn}/event/{eventNumber}/adjustments")
+    @GetMapping("/adjustments/{id}")
+    fun getAdjustment(
+        @PathVariable id: Long
+    ) = adjustmentService.getAdjustment(id)
+
+
+    @PostMapping("/adjustments")
     fun createAdjustments(
-        @PathVariable crn: String,
-        @PathVariable eventNumber: Int,
         @RequestParam username: String,
-        @RequestBody adjustmentRequest: List<AdjustmentRequest>
+        @RequestBody adjustmentRequests: List<AdjustmentRequest>
     ) = adjustmentService.createAdjustments(
-        adjustmentRequest, crn, eventNumber, username
+        adjustmentRequests,  username
     )
 
     @PutMapping("/adjustments/{adjustmentId}")

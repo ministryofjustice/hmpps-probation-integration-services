@@ -237,14 +237,13 @@ object UPWGenerator {
         startTime = LocalTime.of(9, 0),
         endTime = LocalTime.of(17, 0),
         date = LocalDate.now(),
-        person = PersonGenerator.DEFAULT_PERSON,
         officeLocation = DEFAULT_OFFICE_LOCATION,
         staff = StaffGenerator.DEFAULT_STAFF,
         team = TeamGenerator.DEFAULT_UPW_TEAM,
         provider = ProviderGenerator.DEFAULT_PROVIDER,
         alertsActive = true,
-        primaryKeyId = EVENT_1.id,
-        externalReference = UUID.randomUUID().toString()
+        externalReference = UUID.randomUUID().toString(),
+        personId = PersonGenerator.DEFAULT_PERSON.id
     )
 
     val CONTACT_NO_ENFORCEMENT = generateContact(
@@ -254,15 +253,14 @@ object UPWGenerator {
         startTime = LocalTime.of(10, 15),
         endTime = LocalTime.of(16, 30),
         date = LocalDate.now().minusDays(1),
-        person = PersonGenerator.DEFAULT_PERSON,
         officeLocation = DEFAULT_OFFICE_LOCATION,
         staff = StaffGenerator.DEFAULT_STAFF,
         team = TeamGenerator.DEFAULT_UPW_TEAM,
         provider = ProviderGenerator.DEFAULT_PROVIDER,
         event = EVENT_1,
         alertsActive = true,
-        primaryKeyId = EVENT_1.id,
-        externalReference = UUID.randomUUID().toString()
+        externalReference = UUID.randomUUID().toString(),
+        personId = PersonGenerator.DEFAULT_PERSON.id
     )
 
     val CONTACT_NO_ENFORCEMENT_2 = generateContact(
@@ -272,15 +270,14 @@ object UPWGenerator {
         startTime = LocalTime.of(10, 15),
         endTime = LocalTime.of(16, 30),
         date = LocalDate.now().minusDays(1),
-        person = PersonGenerator.DEFAULT_PERSON,
         officeLocation = DEFAULT_OFFICE_LOCATION,
         staff = StaffGenerator.DEFAULT_STAFF,
         team = TeamGenerator.DEFAULT_UPW_TEAM,
         provider = ProviderGenerator.DEFAULT_PROVIDER,
         event = EVENT_2,
         alertsActive = true,
-        primaryKeyId = EVENT_2.id,
-        externalReference = UUID.randomUUID().toString()
+        externalReference = UUID.randomUUID().toString(),
+        personId = PersonGenerator.DEFAULT_PERSON.id
     )
 
     val DEFAULT_UPW_APPOINTMENT = generateUpwAppointment(
@@ -388,7 +385,7 @@ object UPWGenerator {
             project = UPW_PROJECT_2,
             details = UPW_DETAILS_3,
             contact = generateContact(
-                person = PersonGenerator.DEFAULT_PERSON,
+                personId = PersonGenerator.DEFAULT_PERSON.id,
                 event = EVENT_2,
                 contactType = ReferenceDataGenerator.UPW_APPOINTMENT_TYPE,
                 latestEnforcementAction = null,
@@ -401,7 +398,6 @@ object UPWGenerator {
                 team = TeamGenerator.DEFAULT_UPW_TEAM,
                 provider = ProviderGenerator.DEFAULT_PROVIDER,
                 alertsActive = true,
-                primaryKeyId = 1L,
                 externalReference = UUID.randomUUID().toString(),
             ),
             contactOutcomeTypeId = null,
@@ -581,9 +577,8 @@ object UPWGenerator {
         sensitive: Boolean? = false,
         alertsActive: Boolean? = false,
         rowVersion: Long = 1,
-        person: Person,
-        primaryKeyId: Long,
         externalReference: String,
+        personId: Long,
     ) = Contact(
         id = id,
         rowVersion = rowVersion,
@@ -606,8 +601,7 @@ object UPWGenerator {
         notes = notes,
         sensitive = sensitive,
         alertActive = alertsActive,
-        contactPerson = person,
-        primaryKeyId = primaryKeyId,
+        personId = personId,
     )
 
     fun generateUpwAppointment(

@@ -30,10 +30,19 @@ class AdjustmentsIntegrationTest @Autowired constructor(
 ) {
 
     @Test
+    fun `get unpaid work adjustment`() {
+        val id = UPWGenerator.GET_ADJUSTMENT_NEGATIVE.id
+        val response = mockMvc.get("/adjustments/$id") { withToken() }
+            .andExpect { status { isOk() } }
+            .andReturn().response.contentAsJson<AdjustmentPostResponse>()
+        assertThat(response.id).isEqualTo(id)
+    }
+
+    @Test
     fun `get unpaid work adjustments`() {
         val crn = PersonGenerator.DEFAULT_PERSON.crn
         val eventNumber = UPWGenerator.EVENT_2.number
-        val response = mockMvc.get("/${crn}/event/${eventNumber}/adjustments") { withToken() }
+        val response = mockMvc.get("/adjustments?crn=${crn}&eventNumber=${eventNumber}") { withToken() }
             .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<Map<String, List<Map<String, Any?>>>>()
 
@@ -53,27 +62,31 @@ class AdjustmentsIntegrationTest @Autowired constructor(
     @Test
     fun `create upw adjustments`() {
         val crn = PersonGenerator.DEFAULT_PERSON.crn
-        val eventNumber = UPWGenerator.EVENT_1.number
+        val eventNumber = Integer.valueOf( UPWGenerator.EVENT_1.number)
         val username = UserGenerator.DEFAULT_USER.username
         val adjustmentType = AdjustmentType.POSITIVE
         val adjustmentReasonTypeCode = "OT"
         val adjustmentAmountMinutes = 10
         val body = listOf(
             AdjustmentRequest(
+                crn = crn,
+                eventNumber = eventNumber,
                 type = adjustmentType,
                 date = LocalDate.now(),
-                reasonTypeCode = adjustmentReasonTypeCode,
+                reason = adjustmentReasonTypeCode,
                 minutes = adjustmentAmountMinutes
             ),
             AdjustmentRequest(
+                crn = crn,
+                eventNumber = eventNumber,
                 type = AdjustmentType.NEGATIVE,
                 date = LocalDate.now(),
-                reasonTypeCode = adjustmentReasonTypeCode,
+                reason = adjustmentReasonTypeCode,
                 minutes = adjustmentAmountMinutes
             )
         )
 
-        val response = mockMvc.post("/${crn}/event/${eventNumber}/adjustments?username=${username}") {
+        val response = mockMvc.post("/adjustments?username=${username}") {
             withToken()
             json = body
         }
@@ -89,20 +102,22 @@ class AdjustmentsIntegrationTest @Autowired constructor(
     @Test
     fun `delete upw adjustment`() {
         val crn = PersonGenerator.DEFAULT_PERSON.crn
-        val eventNumber = UPWGenerator.EVENT_1.number
+        val eventNumber = Integer.valueOf(UPWGenerator.EVENT_1.number)
         val username = UserGenerator.DEFAULT_USER.username
         val adjustmentType = AdjustmentType.POSITIVE
         val adjustmentReasonTypeCode = "OT"
         val adjustmentAmountMinutes = 10
         val body = listOf(
             AdjustmentRequest(
+                crn = crn,
+                eventNumber = eventNumber,
                 type = adjustmentType,
                 date = LocalDate.now(),
-                reasonTypeCode = adjustmentReasonTypeCode,
+                reason = adjustmentReasonTypeCode,
                 minutes = adjustmentAmountMinutes
             )
         )
-        val postResponse = mockMvc.post("/${crn}/event/${eventNumber}/adjustments?username=${username}") {
+        val postResponse = mockMvc.post("/adjustments?username=${username}") {
             withToken()
             json = body
         }.andExpect { status { isOk() } }.andReturn().response.contentAsJson<List<AdjustmentPostResponse>>()
@@ -116,28 +131,32 @@ class AdjustmentsIntegrationTest @Autowired constructor(
     @Test
     fun `update upw adjustment`() {
         val crn = PersonGenerator.DEFAULT_PERSON.crn
-        val eventNumber = UPWGenerator.EVENT_1.number
+        val eventNumber = Integer.valueOf(UPWGenerator.EVENT_1.number)
         val username = UserGenerator.DEFAULT_USER.username
         val adjustmentType = AdjustmentType.POSITIVE
         val adjustmentReasonTypeCode = "OT"
         val adjustmentAmountMinutes = 10
         val body = listOf(
             AdjustmentRequest(
+                crn = crn,
+                eventNumber = eventNumber,
                 type = adjustmentType,
                 date = LocalDate.now(),
-                reasonTypeCode = adjustmentReasonTypeCode,
+                reason = adjustmentReasonTypeCode,
                 minutes = adjustmentAmountMinutes
             )
         )
-        val postResponse = mockMvc.post("/${crn}/event/${eventNumber}/adjustments?username=${username}") {
+        val postResponse = mockMvc.post("/adjustments?username=${username}") {
             withToken()
             json = body
         }.andReturn().response.contentAsJson<List<AdjustmentPostResponse>>()
         val idToUpdate = postResponse.first().id
         val updateBody = AdjustmentRequest(
+            crn = crn,
+            eventNumber = eventNumber,
             type = AdjustmentType.NEGATIVE,
             date = LocalDate.now(),
-            reasonTypeCode = adjustmentReasonTypeCode,
+            reason = adjustmentReasonTypeCode,
             minutes = adjustmentAmountMinutes + 20
         )
         mockMvc.put("/adjustments/${idToUpdate}?username=${username}") {

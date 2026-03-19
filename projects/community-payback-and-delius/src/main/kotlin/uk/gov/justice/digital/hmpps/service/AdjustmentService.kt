@@ -31,24 +31,21 @@ class AdjustmentService(
 ) {
     fun createAdjustments(
         adjustments: List<AdjustmentRequest>,
-        crn: String,
-        eventNumber: Int,
         username: String
     ): List<AdjustmentPostResponse> {
-        val response = mutableListOf<AdjustmentPostResponse>()
-        val person = personRepository.findByCrn(crn) ?: throw NotFoundException("Person not found for CRN $crn")
-        val event = eventRepository.findByPersonIdAndNumberAndSoftDeletedIsFalse(person.id, eventNumber.toString())
-            ?: throw NotFoundException("Event not found for CRN $crn and event number $eventNumber")
-        val upwDetails = unpaidWorkDetailsRepository.findByEventIdIn(listOf(event.id)).first()
         val user = userRepository.findByUsername(username)
             ?: throw NotFoundException("User not found for username $username")
         return adjustments.map { adjustment ->
+            val person = personRepository.findByCrn(adjustment.crn) ?: throw NotFoundException("Person not found for CRN $adjustment.crn")
+            val event = eventRepository.findByPersonIdAndNumberAndSoftDeletedIsFalse(person.id, adjustment.eventNumber.toString())
+                ?: throw NotFoundException("Event not found for CRN ${person.crn} and event number ${adjustment.eventNumber}")
+            val upwDetails = unpaidWorkDetailsRepository.findByEventIdIn(listOf(event.id)).first()
             val adjustmentToSave = CreateUnpaidWorkAdjustment(
                 detailsId = upwDetails.id,
                 adjustmentAmount = adjustment.minutes,
                 adjustmentDate = adjustment.date,
                 adjustmentType = adjustment.type.code,
-                adjustmentReasonId = referenceDataRepository.getAdjustmentReason(adjustment.reasonTypeCode).id,
+                adjustmentReasonId = referenceDataRepository.getAdjustmentReason(adjustment.reason).id,
                 adjustedByUserId = user.id
             )
             val savedAdjustment = createUnpaidWorkAdjustmentRepository.save(adjustmentToSave)
@@ -88,7 +85,7 @@ class AdjustmentService(
         existingAdjustment.adjustmentDate = adjustmentRequest.date
         existingAdjustment.lastUpdatedUserId = userId
         existingAdjustment.adjustmentReasonId =
-            referenceDataRepository.getAdjustmentReason(adjustmentRequest.reasonTypeCode).id
+            referenceDataRepository.getAdjustmentReason(adjustmentRequest.reason).id
         createUnpaidWorkAdjustmentRepository.save(existingAdjustment)
     }
 
@@ -101,5 +98,17 @@ class AdjustmentService(
         existingAdjustment.lastUpdatedDatetime = ZonedDateTime.now()
         existingAdjustment.lastUpdatedUserId = userId
         createUnpaidWorkAdjustmentRepository.save(existingAdjustment)
+    }
+
+    fun getAdjustment(id: Long): Adjustment {
+        val adjustment = adjustmentRepository.findById(id)
+            .orElseThrow { NotFoundException("Adjustment not found for id $id") }
+        return Adjustment(
+            id = adjustment.id,
+            date = adjustment.adjustmentDate,
+            type = AdjustmentType.valueOf(adjustment.adjustmentType),
+            reason = AdjustmentReasonType(adjustment.adjustmentReason.code, adjustment.adjustmentReason.description),
+            minutes = adjustment.adjustmentAmount.toInt()
+        )
     }
 }

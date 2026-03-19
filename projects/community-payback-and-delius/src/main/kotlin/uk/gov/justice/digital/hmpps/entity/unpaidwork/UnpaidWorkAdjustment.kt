@@ -46,9 +46,6 @@ interface UnpaidWorkAdjustmentRepository : JpaRepository<UnpaidWorkAdjustment, L
             select a from UnpaidWorkAdjustment a
             where a.upwDetails.disposal.event.person.crn = :crn
             and a.upwDetails.disposal.event.number = :eventNumber
-            and a.softDeleted = false
-            and a.upwDetails.softDeleted = false
-            and a.upwDetails.disposal.softDeleted = false
         """
     )
     fun findByCrnAndEventNumber(crn: String, eventNumber: String): List<UnpaidWorkAdjustment>

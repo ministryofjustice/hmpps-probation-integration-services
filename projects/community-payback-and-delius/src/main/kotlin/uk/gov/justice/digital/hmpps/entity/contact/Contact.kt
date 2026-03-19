@@ -70,12 +70,8 @@ class Contact(
     @Column(name = "linked_contact_id")
     val linkedContactId: Long? = null,
 
-    @ManyToOne
-    @JoinColumn(name = "offender_id")
-    val contactPerson: Person,
-
-    @Column(name = "primary_key_id")
-    val primaryKeyId: Long? = null,
+    @Column(name = "offender_id")
+    val personId: Long,
 
     @ManyToOne
     @JoinColumn(name = "event_id")
@@ -145,16 +141,4 @@ class Contact(
     fun reference() = externalReference?.let { UUID.fromString(it.takeLast(36)) }
 }
 
-interface ContactRepository : JpaRepository<Contact, Long> {
-    @Query(
-        "select c from Contact c " +
-            "where c.externalReference like concat('%', :externalReference) " +
-            "and c.contactPerson.crn = :crn " +
-            "and c.event.number = :number"
-    )
-    fun findByExternalReferenceAndContactPersonCrnAndEventNumber(
-        externalReference: String,
-        crn: String,
-        number: String
-    ): Contact?
-}
+interface ContactRepository : JpaRepository<Contact, Long>
