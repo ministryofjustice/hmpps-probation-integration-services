@@ -44,7 +44,7 @@ class CreateUnpaidWorkAdjustment(
     @Column(name = "adjustment_reason_id")
     var adjustmentReasonId: Long,
 
-    val adjustedByUserId: Long,
+    var adjustedByUserId: Long,
 
     @Column(name = "soft_deleted", columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)

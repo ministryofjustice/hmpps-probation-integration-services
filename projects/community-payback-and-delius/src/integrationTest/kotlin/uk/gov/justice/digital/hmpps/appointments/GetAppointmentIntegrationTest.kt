@@ -84,8 +84,7 @@ class GetAppointmentIntegrationTest @Autowired constructor(
         assertThat(response.appointmentSummaries.size).isEqualTo(1)
         assertThat(response.appointmentSummaries[0].case.crn).isEqualTo("Z000001")
         assertThat(response.appointmentSummaries[0].requirementProgress.requiredMinutes).isEqualTo(120 * 60)
-        assertThat(response.appointmentSummaries[0].requirementProgress).extracting("adjustments")
-            .isInstanceOf(Number::class.java)
+        assertThat(response.appointmentSummaries[0].requirementProgress.adjustments).isEqualTo(4)
     }
 
     @Test

@@ -129,6 +129,15 @@ object UPWGenerator {
         court = DEFAULT_COURT,
     )
 
+    val EVENT_ADJUSTMENT = generateEvent(
+        eventNumber = "1",
+        person = PersonGenerator.ADJUSTMENT_PERSON,
+        disposal = null,
+        referralDate = LocalDate.now().minusDays(1),
+        convictionDate = LocalDate.now().minusWeeks(1),
+        court = DEFAULT_COURT,
+    )
+
     val DEFAULT_OFFENCE = Offence(
         id = IdGenerator.getAndIncrement(),
         mainCategoryCode = "123",
@@ -208,7 +217,14 @@ object UPWGenerator {
         date = LocalDate.of(2026, 1, 5),
         event = EVENT_5,
     )
+    val DISPOSAL_ADJUSTMENT = generateDisposal(
+        length = 12,
+        disposalType = ReferenceDataGenerator.DEFAULT_DISPOSAL_TYPE,
+        date = LocalDate.of(2026, 1, 1),
+        event = EVENT_ADJUSTMENT,
+    )
 
+    val UPW_DETAILS_ADJUSTMENT = generateUpwDetails(disposal = DISPOSAL_ADJUSTMENT)
     val UPW_DETAILS_1 = generateUpwDetails(disposal = DISPOSAL_1)
     val UPW_DETAILS_2 = generateUpwDetails(disposal = DISPOSAL_2)
     val UPW_DETAILS_3 = generateUpwDetails(disposal = DISPOSAL_3)
@@ -263,7 +279,7 @@ object UPWGenerator {
         personId = PersonGenerator.DEFAULT_PERSON.id
     )
 
-    val CONTACT_NO_ENFORCEMENT_2 = generateContact(
+    val CONTACT_NO_ENFORCEMENT_ADJUSTMENT = generateContact(
         contactType = ReferenceDataGenerator.UPW_APPOINTMENT_TYPE,
         latestEnforcementAction = null,
         contactOutcome = null,
@@ -274,10 +290,10 @@ object UPWGenerator {
         staff = StaffGenerator.DEFAULT_STAFF,
         team = TeamGenerator.DEFAULT_UPW_TEAM,
         provider = ProviderGenerator.DEFAULT_PROVIDER,
-        event = EVENT_2,
+        event = EVENT_ADJUSTMENT,
         alertsActive = true,
         externalReference = UUID.randomUUID().toString(),
-        personId = PersonGenerator.DEFAULT_PERSON.id
+        personId = PersonGenerator.ADJUSTMENT_PERSON.id
     )
 
     val DEFAULT_UPW_APPOINTMENT = generateUpwAppointment(
@@ -458,6 +474,12 @@ object UPWGenerator {
 
     val GET_ADJUSTMENT_NEGATIVE = generateUPWAdjustment(
         upwDetailsId = UPW_DETAILS_2.id,
+        adjustmentAmount = 3,
+        adjustmentType = "NEGATIVE"
+    )
+
+    val ADJUSTMENT_NEGATIVE_FOR_ADJUSTMENT_PERSON = generateUPWAdjustment(
+        upwDetailsId = UPW_DETAILS_ADJUSTMENT.id,
         adjustmentAmount = 3,
         adjustmentType = "NEGATIVE"
     )

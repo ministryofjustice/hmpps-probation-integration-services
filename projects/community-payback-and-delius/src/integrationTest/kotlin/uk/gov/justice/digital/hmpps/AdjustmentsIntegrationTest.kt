@@ -14,8 +14,11 @@ import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.UPWGenerator
 import uk.gov.justice.digital.hmpps.data.generator.UserGenerator
 import uk.gov.justice.digital.hmpps.entity.unpaidwork.UnpaidWorkAdjustmentRepository
+import uk.gov.justice.digital.hmpps.model.Adjustment
 import uk.gov.justice.digital.hmpps.model.AdjustmentPostResponse
+import uk.gov.justice.digital.hmpps.model.AdjustmentReasonType
 import uk.gov.justice.digital.hmpps.model.AdjustmentRequest
+import uk.gov.justice.digital.hmpps.model.AdjustmentResponse
 import uk.gov.justice.digital.hmpps.model.AdjustmentType
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.json
@@ -31,38 +34,39 @@ class AdjustmentsIntegrationTest @Autowired constructor(
 
     @Test
     fun `get unpaid work adjustment`() {
-        val id = UPWGenerator.GET_ADJUSTMENT_NEGATIVE.id
+        val id = UPWGenerator.ADJUSTMENT_NEGATIVE_FOR_ADJUSTMENT_PERSON.id
         val response = mockMvc.get("/adjustments/$id") { withToken() }
             .andExpect { status { isOk() } }
-            .andReturn().response.contentAsJson<AdjustmentPostResponse>()
+            .andReturn().response.contentAsJson<Adjustment>()
         assertThat(response.id).isEqualTo(id)
+        assertThat(response.date).isEqualTo(UPWGenerator.ADJUSTMENT_NEGATIVE_FOR_ADJUSTMENT_PERSON.adjustmentDate)
+        assertThat(response.reason).isEqualTo(AdjustmentReasonType(code = "OT", name = "Other"))
+        assertThat(response.minutes).isEqualTo(3)
     }
 
     @Test
     fun `get unpaid work adjustments`() {
-        val crn = PersonGenerator.DEFAULT_PERSON.crn
-        val eventNumber = UPWGenerator.EVENT_2.number
+        val crn = PersonGenerator.ADJUSTMENT_PERSON.crn
+        val eventNumber = UPWGenerator.EVENT_ADJUSTMENT.number
         val response = mockMvc.get("/adjustments?crn=${crn}&eventNumber=${eventNumber}") { withToken() }
             .andExpect { status { isOk() } }
-            .andReturn().response.contentAsJson<Map<String, List<Map<String, Any?>>>>()
+            .andReturn().response.contentAsJson<AdjustmentResponse>()
 
-        val adjustments = response["adjustments"]
+        val adjustments = response.adjustments
         assertThat(adjustments).isNotNull
         assertThat(adjustments).hasSize(1)
-        val adj = adjustments!!.first()
-        assertThat(adj["type"]).isEqualTo("NEGATIVE")
-        assertThat(adj["date"]).isEqualTo(UPWGenerator.GET_ADJUSTMENT_NEGATIVE.adjustmentDate.toString())
-        assertThat(adj["reason"]).isEqualTo(
-            mapOf("code" to "OT", "name" to "Other")
-        )
-        assertThat(adj["minutes"]).isEqualTo(3)
-        assertThat(adj["id"]).isNotNull()
+        val adj = adjustments.first()
+        assertThat(adj.type).isEqualTo(AdjustmentType.NEGATIVE)
+        assertThat(adj.date).isEqualTo(UPWGenerator.GET_ADJUSTMENT_NEGATIVE.adjustmentDate)
+        assertThat(adj.reason).isEqualTo(AdjustmentReasonType(code = "OT", name = "Other"))
+        assertThat(adj.minutes).isEqualTo(3)
+        assertThat(adj.id).isNotNull()
     }
 
     @Test
     fun `create upw adjustments`() {
-        val crn = PersonGenerator.DEFAULT_PERSON.crn
-        val eventNumber = Integer.valueOf(UPWGenerator.EVENT_1.number)
+        val crn = PersonGenerator.ADJUSTMENT_PERSON.crn
+        val eventNumber = Integer.valueOf( UPWGenerator.EVENT_ADJUSTMENT.number)
         val username = UserGenerator.DEFAULT_USER.username
         val adjustmentType = AdjustmentType.POSITIVE
         val adjustmentReasonTypeCode = "OT"
@@ -101,8 +105,8 @@ class AdjustmentsIntegrationTest @Autowired constructor(
 
     @Test
     fun `delete upw adjustment`() {
-        val crn = PersonGenerator.DEFAULT_PERSON.crn
-        val eventNumber = Integer.valueOf(UPWGenerator.EVENT_1.number)
+        val crn = PersonGenerator.ADJUSTMENT_PERSON.crn
+        val eventNumber = Integer.valueOf(UPWGenerator.EVENT_ADJUSTMENT.number)
         val username = UserGenerator.DEFAULT_USER.username
         val adjustmentType = AdjustmentType.POSITIVE
         val adjustmentReasonTypeCode = "OT"
@@ -130,8 +134,8 @@ class AdjustmentsIntegrationTest @Autowired constructor(
 
     @Test
     fun `update upw adjustment`() {
-        val crn = PersonGenerator.DEFAULT_PERSON.crn
-        val eventNumber = Integer.valueOf(UPWGenerator.EVENT_1.number)
+        val crn = PersonGenerator.ADJUSTMENT_PERSON.crn
+        val eventNumber = Integer.valueOf(UPWGenerator.EVENT_ADJUSTMENT.number)
         val username = UserGenerator.DEFAULT_USER.username
         val adjustmentType = AdjustmentType.POSITIVE
         val adjustmentReasonTypeCode = "OT"

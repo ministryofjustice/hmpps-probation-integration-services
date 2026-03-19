@@ -11,6 +11,7 @@ import uk.gov.justice.digital.hmpps.entity.unpaidwork.CreateUnpaidWorkAdjustment
 import uk.gov.justice.digital.hmpps.entity.unpaidwork.UnpaidWorkAdjustmentRepository
 import uk.gov.justice.digital.hmpps.entity.unpaidwork.UpwDetailsRepository
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
+import uk.gov.justice.digital.hmpps.exception.NotFoundException.Companion.orNotFoundBy
 import uk.gov.justice.digital.hmpps.model.Adjustment
 import uk.gov.justice.digital.hmpps.model.AdjustmentPostResponse
 import uk.gov.justice.digital.hmpps.model.AdjustmentReasonType
@@ -36,12 +37,8 @@ class AdjustmentService(
         val user = userRepository.findByUsername(username)
             ?: throw NotFoundException("User not found for username $username")
         return adjustments.map { adjustment ->
-            val person = personRepository.findByCrn(adjustment.crn)
-                ?: throw NotFoundException("Person not found for CRN $adjustment.crn")
-            val event = eventRepository.findByPersonIdAndNumberAndSoftDeletedIsFalse(
-                person.id,
-                adjustment.eventNumber.toString()
-            )
+            val person = personRepository.findByCrn(adjustment.crn).orNotFoundBy("CRN", adjustment.crn)
+            val event = eventRepository.findByPersonIdAndNumberAndSoftDeletedIsFalse(person.id, adjustment.eventNumber.toString())
                 ?: throw NotFoundException("Event not found for CRN ${person.crn} and event number ${adjustment.eventNumber}")
             val upwDetails = unpaidWorkDetailsRepository.findByEventIdIn(listOf(event.id)).first()
             val adjustmentToSave = CreateUnpaidWorkAdjustment(
@@ -80,14 +77,12 @@ class AdjustmentService(
         adjustmentRequest: AdjustmentRequest,
         username: String
     ) {
-        val existingAdjustment = createUnpaidWorkAdjustmentRepository.findFirstById(adjustmentId)
-            ?: throw NotFoundException("Adjustment not found for id $adjustmentId")
-        val userId = userRepository.findByUsername(username)?.id
-            ?: throw NotFoundException("User not found for username $username")
+        val existingAdjustment = createUnpaidWorkAdjustmentRepository.findFirstById(adjustmentId).orNotFoundBy("Adjustment", adjustmentId)
+        val userId = userRepository.findByUsername(username)?.id.orNotFoundBy("User", username)
         existingAdjustment.adjustmentType = adjustmentRequest.type.code
         existingAdjustment.adjustmentAmount = adjustmentRequest.minutes
         existingAdjustment.adjustmentDate = adjustmentRequest.date
-        existingAdjustment.lastUpdatedUserId = userId
+        existingAdjustment.adjustedByUserId = userId
         existingAdjustment.adjustmentReasonId =
             referenceDataRepository.getAdjustmentReason(adjustmentRequest.reason).id
         createUnpaidWorkAdjustmentRepository.save(existingAdjustment)
@@ -95,18 +90,15 @@ class AdjustmentService(
 
     fun deleteAdjustment(adjustmentId: Long, username: String) {
         val existingAdjustment = createUnpaidWorkAdjustmentRepository.findFirstById(adjustmentId)
-            ?: throw IllegalArgumentException("Adjustment not found for id $adjustmentId")
+            .orNotFoundBy("Adjustment", adjustmentId)
         val userId = userRepository.findByUsername(username)?.id
-            ?: throw NotFoundException("User not found for username $username")
+            .orNotFoundBy("User", username)
         existingAdjustment.softDeleted = true
-        existingAdjustment.lastUpdatedDatetime = ZonedDateTime.now()
-        existingAdjustment.lastUpdatedUserId = userId
         createUnpaidWorkAdjustmentRepository.save(existingAdjustment)
     }
 
     fun getAdjustment(id: Long): Adjustment {
-        val adjustment = adjustmentRepository.findById(id)
-            .orElseThrow { NotFoundException("Adjustment not found for id $id") }
+        val adjustment = adjustmentRepository.findFirstById(id).orNotFoundBy("id", id)
         return Adjustment(
             id = adjustment.id,
             date = adjustment.adjustmentDate,
