@@ -9,6 +9,7 @@ import jakarta.persistence.ManyToOne
 import jakarta.persistence.Table
 import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.NumericBooleanConverter
+import org.hibernate.type.YesNoConverter
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import java.time.LocalDate
@@ -22,9 +23,11 @@ class Contact(
     @Column(name = "contact_id")
     val id: Long,
 
-    val contactDate: LocalDate,
+    @Column(name = "contact_date")
+    val date: LocalDate,
 
-    val contactStartTime: ZonedDateTime,
+    @Column(name = "contact_start_time")
+    val startTime: ZonedDateTime,
 
     val notes: String,
 
@@ -32,11 +35,11 @@ class Contact(
 
     @ManyToOne
     @JoinColumn(name = "contact_type_id")
-    val contactType: ContactType,
+    val type: ContactType,
 
     @ManyToOne
     @JoinColumn(name = "contact_outcome_type_id")
-    val contactOutcomeType: ContactOutcomeType,
+    val outcomeType: ContactOutcomeType,
 
     @Column(name = "soft_deleted", columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)
@@ -53,7 +56,8 @@ class ContactOutcomeType(
     val code: String,
     val description: String,
     @Column(name = "enforceable", columnDefinition = "char(1)")
-    val enforceable: String
+    @Convert(converter = YesNoConverter::class)
+    val enforceable: Boolean?,
 )
 
 @Entity
@@ -70,9 +74,9 @@ interface ContactRepository : JpaRepository<Contact, Long> {
     @Query(
         """
         select c from Contact c
-        join c.contactOutcomeType cot
+        join c.outcomeType cot
         where c.eventId = :eventId
-        and cot.enforceable = 'Y'
+        and cot.enforceable = true
     """
     )
     fun findEnforceableByEventId(eventId: Long): List<Contact>

@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.stereotype.Service
+import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.entity.ContactRepository
 import uk.gov.justice.digital.hmpps.entity.DocumentEntity.Companion.cossoBreachNoticeUrn
 import uk.gov.justice.digital.hmpps.entity.DocumentRepository
@@ -24,7 +25,7 @@ class FailureAndEnforcementService(
         val person = personRepository.findByCrn(crn) ?: throw NotFoundException("Person", "crn", crn)
         val document = documentRepository.findByExternalReference(cossoBreachNoticeUrn(UUID.fromString(cossoId)))
             ?: throw NotFoundException("DocumentEntity", "breachNoticeId", cossoId)
-        if (document.person.id != person.id) throw NotFoundException("DocumentEntity", "breachNoticeId", cossoId)
+        require (document.person.id == person.id) { "Document does not relate to person with CRN $crn" }
         val eventId = documentRepository.findEventIdFromDocument(cossoBreachNoticeUrn(UUID.fromString(cossoId)))
             ?: throw NotFoundException("DocumentEntity", "breachNoticeId", cossoId)
         val registrations = registrationRepository.findRegistrationsByCrn(crn, listOf("ALT7", "ALSH"))
@@ -33,21 +34,21 @@ class FailureAndEnforcementService(
             enforceableContacts = contacts.map {
                 ContactResponse(
                     id = it.id,
-                    datetime = it.contactStartTime,
-                    description = it.contactType.description,
-                    type = CodeAndDescription(it.contactType.code, it.contactType.description),
-                    outcome = CodeAndDescription(it.contactOutcomeType.code, it.contactOutcomeType.description),
+                    datetime = it.date.atTime(it.startTime.toLocalTime()).atZone(EuropeLondon),
+                    description = it.type.description,
+                    type = CodeAndDescription(it.type.code, it.type.description),
+                    outcome = CodeAndDescription(it.outcomeType.code, it.outcomeType.description),
                     notes = it.notes
                 )
             },
             registrations = registrations.map {
                 RegistrationResponse(
                     id = it.id,
-                    type = CodeAndDescription(it.registerType.code, it.registerType.description),
+                    type = CodeAndDescription(it.type.code, it.type.description),
                     level = CodeAndDescription(it.registerLevel.code, it.registerLevel.description),
                     category = CodeAndDescription(it.registerCategory.code, it.registerCategory.description),
                     startDate = it.startDate,
-                    endDate = it.endDate,
+                    endDate = it.deregistration?.date,
                     notes = it.registrationNotes,
                     documentsLinked = it.documentLinked,
                     deregistered = it.deregistered,

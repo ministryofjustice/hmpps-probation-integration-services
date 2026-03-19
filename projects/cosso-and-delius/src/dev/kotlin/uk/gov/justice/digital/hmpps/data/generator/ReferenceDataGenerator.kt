@@ -13,22 +13,6 @@ object ReferenceDataGenerator {
         dataSetId = MISC_DATA_SET_ID
     )
 
-    val DEFAULT_REGISTER_TYPE = ReferenceData(
-        id = IdGenerator.getAndIncrement(),
-        code = "ALT7",
-        description = "Suicide and Self Harm ALT7",
-        selectable = true,
-        dataSetId = MISC_DATA_SET_ID
-    )
-
-    val OTHER_REGISTER_TYPE = ReferenceData(
-        id = IdGenerator.getAndIncrement(),
-        code = "CD98",
-        description = "Some Other Registration",
-        selectable = true,
-        dataSetId = MISC_DATA_SET_ID
-    )
-
     val DEFAULT_REGISTER_LEVEL = ReferenceData(
         id = IdGenerator.getAndIncrement(),
         code = "HIGH",

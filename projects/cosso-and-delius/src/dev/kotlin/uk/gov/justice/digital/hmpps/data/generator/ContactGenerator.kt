@@ -13,7 +13,7 @@ object ContactGenerator {
         id = IdGenerator.getAndIncrement(),
         code = "ENF",
         description = "Enforceable",
-        enforceable = "Y"
+        enforceable = true
     )
 
     val DEFAULT_CONTACT_TYPE = ContactType(
@@ -25,11 +25,11 @@ object ContactGenerator {
     val DEFAULT_ENFORCEABLE_CONTACT = Contact(
         id = IdGenerator.getAndIncrement(),
         eventId = EventGenerator.DEFAULT_EVENT.eventId,
-        contactDate = LocalDate.now(),
-        contactStartTime = ZonedDateTime.of(LocalDate.now(), LocalTime.of(10, 0), ZoneId.systemDefault()),
+        date = LocalDate.now(),
+        startTime = ZonedDateTime.of(LocalDate.now(), LocalTime.of(10, 0), ZoneId.systemDefault()),
         softDeleted = false,
         notes = "Some notes",
-        contactOutcomeType = ENFORCEABLE_CONTACT_OUTCOME_TYPE,
-        contactType = DEFAULT_CONTACT_TYPE
+        outcomeType = ENFORCEABLE_CONTACT_OUTCOME_TYPE,
+        type = DEFAULT_CONTACT_TYPE
     )
 }
