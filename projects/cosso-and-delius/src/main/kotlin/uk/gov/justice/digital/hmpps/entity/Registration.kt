@@ -61,11 +61,13 @@ class Registration(
 )
 
 interface RegistrationRepository : JpaRepository<Registration, Long> {
-    @Query("""
+    @Query(
+        """
         select r from Registration r
         where r.registerType.code in :codes
         and r.person.crn = :crn
         and r.softDeleted = false
-    """)
+    """
+    )
     fun findRegistrationsByCrn(crn: String, codes: List<String>): List<Registration>
 }

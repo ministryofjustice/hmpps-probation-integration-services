@@ -51,5 +51,4 @@ class FailureAndEnforcementIntegrationTest @Autowired constructor(
         mockMvc.get("/failures-enforcements/$crn/$cossoId") { withToken() }
             .andExpect { status { isNotFound() } }
     }
-
 }

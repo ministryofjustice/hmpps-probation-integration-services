@@ -103,5 +103,4 @@ object ReferenceDataGenerator {
         selectable = true,
         dataSetId = BREACH_REASON_DATASET.id
     )
-
 }

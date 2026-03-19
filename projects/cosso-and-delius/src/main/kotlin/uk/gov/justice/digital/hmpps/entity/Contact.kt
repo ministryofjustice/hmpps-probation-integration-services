@@ -17,7 +17,7 @@ import java.time.ZonedDateTime
 @Entity
 @Table(name = "contact")
 @SQLRestriction("soft_deleted = 0")
-class Contact (
+class Contact(
     @Id
     @Column(name = "contact_id")
     val id: Long,
@@ -52,7 +52,7 @@ class ContactOutcomeType(
     val id: Long,
     val code: String,
     val description: String,
-    @Column(name ="enforceable", columnDefinition = "char(1)")
+    @Column(name = "enforceable", columnDefinition = "char(1)")
     val enforceable: String
 )
 
@@ -67,11 +67,13 @@ class ContactType(
 )
 
 interface ContactRepository : JpaRepository<Contact, Long> {
-    @Query("""
+    @Query(
+        """
         select c from Contact c
         join c.contactOutcomeType cot
         where c.eventId = :eventId
         and cot.enforceable = 'Y'
-    """)
+    """
+    )
     fun findEnforceableByEventId(eventId: Long): List<Contact>
 }

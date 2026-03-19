@@ -26,7 +26,7 @@ object ContactGenerator {
         id = IdGenerator.getAndIncrement(),
         eventId = EventGenerator.DEFAULT_EVENT.eventId,
         contactDate = LocalDate.now(),
-        contactStartTime = ZonedDateTime.of(LocalDate.now(), LocalTime.of(10, 0), ZoneId.systemDefault() ),
+        contactStartTime = ZonedDateTime.of(LocalDate.now(), LocalTime.of(10, 0), ZoneId.systemDefault()),
         softDeleted = false,
         notes = "Some notes",
         contactOutcomeType = ENFORCEABLE_CONTACT_OUTCOME_TYPE,
