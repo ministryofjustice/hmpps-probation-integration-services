@@ -9,9 +9,7 @@ import org.springframework.data.annotation.LastModifiedBy
 import org.springframework.data.annotation.LastModifiedDate
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import org.springframework.data.jpa.repository.JpaRepository
-import org.springframework.data.jpa.repository.Query
 import uk.gov.justice.digital.hmpps.entity.Versioned
-import uk.gov.justice.digital.hmpps.entity.person.Person
 import uk.gov.justice.digital.hmpps.entity.sentence.Event
 import uk.gov.justice.digital.hmpps.entity.staff.OfficeLocation
 import uk.gov.justice.digital.hmpps.entity.staff.Provider
