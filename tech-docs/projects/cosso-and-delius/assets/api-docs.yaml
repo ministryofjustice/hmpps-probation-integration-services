@@ -32,6 +32,24 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ResponsibleOfficerDetails"
+  /requirements/{breachNoticeId}:
+    get:
+      tags:
+      - requirements-controller
+      operationId: getRequirements
+      parameters:
+      - name: breachNoticeId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RequirementsResponse"
   /offence-details/{uuid}:
     get:
       tags:
@@ -147,6 +165,34 @@ components:
       required:
       - name
       - probationArea
+    CossoRequirement:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        type:
+          $ref: "#/components/schemas/CodeAndDescription"
+        subType:
+          $ref: "#/components/schemas/CodeAndDescription"
+      required:
+      - id
+      - subType
+      - type
+    RequirementsResponse:
+      type: object
+      properties:
+        requirements:
+          type: array
+          items:
+            $ref: "#/components/schemas/CossoRequirement"
+        breachReasons:
+          type: array
+          items:
+            $ref: "#/components/schemas/CodeAndDescription"
+      required:
+      - breachReasons
+      - requirements
     OffenceDetails:
       type: object
       properties:

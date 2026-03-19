@@ -370,7 +370,9 @@ paths:
           type: string
       - name: username
         in: query
-        required: true
+        description: If username isn't provided the LAO status cannot be determined
+          and currentExclusion/currentRestriction will always be returned as true
+        required: false
         schema:
           type: string
       responses:
@@ -1306,6 +1308,9 @@ components:
           type: string
         endTime:
           type: string
+        minutesCredited:
+          type: integer
+          format: int64
         daysOverdue:
           type: integer
           format: int64
