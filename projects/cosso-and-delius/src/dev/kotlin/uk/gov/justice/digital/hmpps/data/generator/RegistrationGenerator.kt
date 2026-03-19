@@ -19,7 +19,7 @@ object RegistrationGenerator {
     )
 
     val DEFAULT_OTHER_REGISTRATION_ID = IdGenerator.getAndIncrement()
-    
+
     var defaultOtherRegistration: Registration? = null
     var defaultOtherDeregistration: Deregistration? = null
 

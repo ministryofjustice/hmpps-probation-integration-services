@@ -25,7 +25,7 @@ class FailureAndEnforcementService(
         val person = personRepository.findByCrn(crn) ?: throw NotFoundException("Person", "crn", crn)
         val document = documentRepository.findByExternalReference(cossoBreachNoticeUrn(UUID.fromString(cossoId)))
             ?: throw NotFoundException("DocumentEntity", "breachNoticeId", cossoId)
-        require (document.person.id == person.id) { "Document does not relate to person with CRN $crn" }
+        require(document.person.id == person.id) { "Document does not relate to person with CRN $crn" }
         val eventId = documentRepository.findEventIdFromDocument(cossoBreachNoticeUrn(UUID.fromString(cossoId)))
             ?: throw NotFoundException("DocumentEntity", "breachNoticeId", cossoId)
         val registrations = registrationRepository.findRegistrationsByCrn(crn, listOf("ALT7", "ALSH"))
