@@ -66,7 +66,7 @@ class AdjustmentsIntegrationTest @Autowired constructor(
     @Test
     fun `create upw adjustments`() {
         val crn = PersonGenerator.ADJUSTMENT_PERSON.crn
-        val eventNumber = Integer.valueOf( UPWGenerator.EVENT_ADJUSTMENT.number)
+        val eventNumber = Integer.valueOf(UPWGenerator.EVENT_ADJUSTMENT.number)
         val username = UserGenerator.DEFAULT_USER.username
         val adjustmentType = AdjustmentType.POSITIVE
         val adjustmentReasonTypeCode = "OT"
