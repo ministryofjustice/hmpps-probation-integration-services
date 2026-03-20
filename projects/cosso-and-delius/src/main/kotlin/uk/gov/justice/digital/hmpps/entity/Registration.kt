@@ -25,6 +25,7 @@ class Registration(
     val id: Long,
 
     @ManyToOne
+    @JoinColumn(name = "offender_id")
     val person: Person,
 
     @Lob
