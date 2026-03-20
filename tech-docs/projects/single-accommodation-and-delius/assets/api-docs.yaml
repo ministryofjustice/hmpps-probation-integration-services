@@ -59,6 +59,14 @@ components:
         expectedReleaseDate:
           type: string
           format: date
+        userExcluded:
+          type: boolean
+        userRestricted:
+          type: boolean
+        exclusionMessage:
+          type: string
+        restrictionMessage:
+          type: string
       required:
       - crn
       - dateOfBirth
@@ -66,6 +74,8 @@ components:
       - name
       - staff
       - team
+      - userExcluded
+      - userRestricted
     CaseListResponse:
       type: object
       properties:

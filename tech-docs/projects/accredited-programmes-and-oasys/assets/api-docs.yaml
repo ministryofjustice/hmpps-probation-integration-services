@@ -120,19 +120,6 @@ components:
           type: boolean
         missingNode:
           type: boolean
-        pojo:
-          type: boolean
-        floatingPointNumber:
-          type: boolean
-        bigDecimal:
-          type: boolean
-        bigInteger:
-          type: boolean
-        textual:
-          type: boolean
-          deprecated: true
-        binary:
-          type: boolean
         nodeType:
           type: string
           enum:
@@ -146,6 +133,19 @@ components:
           - POJO
           - STRING
         integralNumber:
+          type: boolean
+        pojo:
+          type: boolean
+        floatingPointNumber:
+          type: boolean
+        bigDecimal:
+          type: boolean
+        bigInteger:
+          type: boolean
+        textual:
+          type: boolean
+          deprecated: true
+        binary:
           type: boolean
         boolean:
           type: boolean

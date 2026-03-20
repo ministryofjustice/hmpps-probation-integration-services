@@ -533,6 +533,23 @@ components:
       - name
       - probationArea
       - teams
+    Address:
+      type: object
+      properties:
+        buildingName:
+          type: string
+        addressNumber:
+          type: string
+        streetName:
+          type: string
+        district:
+          type: string
+        town:
+          type: string
+        county:
+          type: string
+        postcode:
+          type: string
     CaseDetail:
       type: object
       properties:
@@ -556,6 +573,10 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/Sentence"
+        personalContacts:
+          type: array
+          items:
+            $ref: "#/components/schemas/PersonalContact"
       required:
       - careLeaver
       - case
@@ -617,6 +638,25 @@ components:
       - main
       - mainCategoryDescription
       - subCategoryDescription
+    PersonalContact:
+      type: object
+      properties:
+        relationship:
+          type: string
+        relationshipType:
+          $ref: "#/components/schemas/RelationshipType"
+        name:
+          $ref: "#/components/schemas/Name"
+        telephoneNumber:
+          type: string
+        mobileNumber:
+          type: string
+        address:
+          $ref: "#/components/schemas/Address"
+      required:
+      - name
+      - relationship
+      - relationshipType
     Registration:
       type: object
       properties:
@@ -635,6 +675,16 @@ components:
       - code
       - description
       - startDate
+    RelationshipType:
+      type: object
+      properties:
+        code:
+          type: string
+        description:
+          type: string
+      required:
+      - code
+      - description
     Sentence:
       type: object
       properties:
