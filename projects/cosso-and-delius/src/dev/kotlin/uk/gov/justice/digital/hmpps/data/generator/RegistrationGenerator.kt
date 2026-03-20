@@ -27,7 +27,7 @@ object RegistrationGenerator {
         defaultOtherRegistration = Registration(
             id = DEFAULT_OTHER_REGISTRATION_ID,
             person = PersonGenerator.DEFAULT_PERSON,
-            registrationNotes = "Some registration notes",
+            notes = "Some registration notes",
             startDate = LocalDate.now().minusDays(20),
             deregistration = null, // will be set after creation
             softDeleted = false,
@@ -51,7 +51,7 @@ object RegistrationGenerator {
     val DEFAULT_ALT7_REGISTRATION = Registration(
         id = IdGenerator.getAndIncrement(),
         person = PersonGenerator.DEFAULT_PERSON,
-        registrationNotes = "Some registration notes",
+        notes = "Some registration notes",
         startDate = LocalDate.now().minusDays(20),
         deregistration = null,
         softDeleted = false,
