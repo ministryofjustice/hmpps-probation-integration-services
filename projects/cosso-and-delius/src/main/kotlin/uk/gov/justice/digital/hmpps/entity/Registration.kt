@@ -5,6 +5,7 @@ import jakarta.persistence.Convert
 import jakarta.persistence.Entity
 import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
+import jakarta.persistence.Lob
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.OneToOne
 import jakarta.persistence.Table
@@ -26,8 +27,9 @@ class Registration(
     @ManyToOne
     val person: Person,
 
+    @Lob
     @Column(name = "registration_notes")
-    val registrationNotes: String?,
+    val notes: String?,
 
     @Column(name = "registration_date")
     val startDate: LocalDate,

@@ -49,7 +49,7 @@ class FailureAndEnforcementService(
                     category = CodeAndDescription(it.registerCategory.code, it.registerCategory.description),
                     startDate = it.startDate,
                     endDate = it.deregistration?.date,
-                    notes = it.registrationNotes,
+                    notes = it.notes,
                     documentsLinked = it.documentLinked,
                     deregistered = it.deregistered,
                 )
