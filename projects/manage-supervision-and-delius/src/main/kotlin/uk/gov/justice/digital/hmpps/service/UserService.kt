@@ -15,6 +15,8 @@ import uk.gov.justice.digital.hmpps.api.model.appointment.CreateAppointment
 import uk.gov.justice.digital.hmpps.api.model.appointment.UserAppointment
 import uk.gov.justice.digital.hmpps.api.model.appointment.UserAppointments
 import uk.gov.justice.digital.hmpps.api.model.appointment.UserDiary
+import uk.gov.justice.digital.hmpps.api.model.contact.EnforcementContactItem
+import uk.gov.justice.digital.hmpps.api.model.contact.EnforcementContactResponse
 import uk.gov.justice.digital.hmpps.api.model.overview.Appointment
 import uk.gov.justice.digital.hmpps.api.model.user.*
 import uk.gov.justice.digital.hmpps.aspect.DeliusUserAspect
@@ -25,6 +27,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.caseload.CaseloadItem
 import uk.gov.justice.digital.hmpps.integrations.delius.caseload.CaseloadRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.caseload.TeamCaseloadItem
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.ContactRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.EnforcementAppointment
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.LdapUser
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.StaffUser
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.StaffUserRepository
@@ -265,6 +268,29 @@ class UserService(
         )?.get(0)?.toTeam()
     }
 
+    fun getEnforcementContacts(
+        username: String,
+        pageable: Pageable,
+        filterDueDate: Boolean
+    ): EnforcementContactResponse {
+        val user = getUser(username)
+        return user.staff?.let {
+            val contacts = contactRepository.findEnforcementContactsByUser(
+                user.staff.id,
+                if (filterDueDate) 1 else 0,
+                LocalDate.now().plusDays(1).format(DateTimeFormatter.ISO_LOCAL_DATE),
+                pageable
+            )
+            EnforcementContactResponse(
+                size = pageable.pageSize,
+                page = pageable.pageNumber,
+                totalResults = contacts.totalElements.toInt(),
+                totalPages = contacts.totalPages,
+                enforcementContacts = contacts.content.map { it.toEnforcementContactItem() }
+            )
+        } ?: EnforcementContactResponse(pageable.pageSize, pageable.pageNumber, 0, 0, emptyList())
+    }
+
     fun getUser(username: String) =
         userRepository.findUserByUsername(username) ?: throw NotFoundException("User", "username", username)
 
@@ -380,3 +406,16 @@ private fun AppointmentEntity.toUserAppointment() = UserAppointment(
 )
 
 fun ProbationAreaUser.toProvider() = Provider(id.provider.code, id.provider.description)
+
+private fun EnforcementAppointment.toEnforcementContactItem() = EnforcementContactItem(
+    caseName = Name(forename, listOfNotNull(secondName, thirdName).joinToString(" "), surname),
+    id = id,
+    crn = crn,
+    dob = dob.toLocalDate(),
+    appointmentType = contactDescription,
+    appointmentDate = contactDate.toLocalDate(),
+    appointmentOutcome = outcomeDescription,
+    enforcementAction = enforcementActionDescription,
+    evidenceDueDate = evidenceDueDate?.toLocalDate(),
+    deliusManaged = CreateAppointment.Type.entries.none { it.code == typeCode } || complied == 0 || rqmntMainCatCode == "F"
+)

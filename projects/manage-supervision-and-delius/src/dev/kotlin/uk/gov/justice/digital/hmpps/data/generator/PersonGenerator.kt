@@ -264,6 +264,23 @@ object PersonGenerator {
         PersonDetailsGenerator.PERSONAL_DETAILS.id
     )
 
+    val ENFORCEMENT_PERSON = generateOverview("ENF0001")
+    val ENFORCEMENT_CASELOAD_PERSON = generateCaseloadPerson(
+        ENFORCEMENT_PERSON.crn,
+        ENFORCEMENT_PERSON.forename,
+        ENFORCEMENT_PERSON.surname,
+        ENFORCEMENT_PERSON.secondName,
+        ENFORCEMENT_PERSON.id
+    )
+    val ENFORCEMENT_CASELOAD = Caseload(
+        id = IdGenerator.getAndIncrement(),
+        person = ENFORCEMENT_CASELOAD_PERSON,
+        staff = DEFAULT_STAFF,
+        team = DEFAULT_TEAM,
+        roleCode = "OM",
+        trustProviderFlag = true
+    )
+
     val RESCHEDULED_PERSON_1 = generateOverview("R345678", "App1", "Rescheduled")
     val RESCHEDULED_PERSON_2 = generateOverview("R345679", "App2", "Rescheduled")
     val RECREATE_APPT_PERSON_1 = generateOverview("R456789", "App1", "Recreated")
