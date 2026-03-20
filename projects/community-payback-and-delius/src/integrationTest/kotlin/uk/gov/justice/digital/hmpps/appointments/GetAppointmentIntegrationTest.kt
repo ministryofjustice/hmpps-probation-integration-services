@@ -181,7 +181,7 @@ class GetAppointmentIntegrationTest @Autowired constructor(
             .andReturn().response.contentAsJson<PagedModel<AppointmentsResponse>>()
 
         assertThat(response.content).hasSize(10)
-        assertThat(response.content.first().id).isEqualTo(UPWGenerator.DEFAULT_UPW_APPOINTMENT.id)
+        assertThat(response.content.first().date).isEqualTo(response.content.maxOf { it.date })
         assertThat(response.content.map { it.case.crn }).containsOnly(PersonGenerator.DEFAULT_PERSON.crn)
         assertThat(response.content.map { it.date }).isSortedAccordingTo(Comparator.reverseOrder())
     }

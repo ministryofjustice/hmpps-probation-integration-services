@@ -35,6 +35,13 @@ object PersonGenerator {
         dateOfBirth = LocalDate.of(1985, 3, 15)
     )
 
+    val ADJUSTMENT_PERSON = generatePerson(
+        crn = "A123456",
+        forename = "Adjustment",
+        surname = "Person",
+        dateOfBirth = LocalDate.of(1985, 3, 15)
+    )
+
     val RESTRICTED_PERSON = generatePerson(
         crn = "R123456",
         forename = "Restricted",

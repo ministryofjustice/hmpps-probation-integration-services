@@ -4,6 +4,10 @@ import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.NumericBooleanConverter
+import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.jpa.repository.Query
+import uk.gov.justice.digital.hmpps.entity.ReferenceData
+import java.time.LocalDate
 
 @Entity
 @Immutable
@@ -14,16 +18,36 @@ class UnpaidWorkAdjustment(
     @Column(name = "upw_adjustment_id")
     val id: Long,
 
-    @Column(name = "upw_details_id")
-    val upwDetailsId: Long,
+    @ManyToOne
+    @JoinColumn(name = "upw_details_id")
+    val upwDetails: UnpaidWorkDetails,
 
     @Column(name = "adjustment_amount")
-    val adjustmentAmount: Long,
+    var adjustmentAmount: Long,
+
+    @Column(name = "adjustment_date")
+    var adjustmentDate: LocalDate,
 
     @Column(name = "adjustment_type")
-    val adjustmentType: String,
+    var adjustmentType: String,
+
+    @JoinColumn(name = "adjustment_reason_id")
+    @ManyToOne
+    var adjustmentReason: ReferenceData,
 
     @Column(name = "soft_deleted")
     @Convert(converter = NumericBooleanConverter::class)
-    val softDeleted: Boolean = false
+    var softDeleted: Boolean = false
 )
+
+interface UnpaidWorkAdjustmentRepository : JpaRepository<UnpaidWorkAdjustment, Long> {
+    @Query(
+        """
+            select a from UnpaidWorkAdjustment a
+            where a.upwDetails.disposal.event.person.crn = :crn
+            and a.upwDetails.disposal.event.number = :eventNumber
+        """
+    )
+    fun findByCrnAndEventNumber(crn: String, eventNumber: String): List<UnpaidWorkAdjustment>
+    fun findFirstById(id: Long): UnpaidWorkAdjustment?
+}

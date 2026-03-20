@@ -118,6 +118,12 @@ object ReferenceDataGenerator {
         datasetId = DatasetGenerator.UPW_PROJECT_CATEGORY_DATASET.id
     )
 
+    val UPW_ADJUSTMENT_REASON_OTHER = generateReferenceData(
+        code = "OT",
+        description = "Other",
+        datasetId = DatasetGenerator.UPW_ADJUSTMENT_REASON.id
+    )
+
     val UPW_STATUS_WORKING = generateReferenceData(
         code = "WK",
         description = "Working",
@@ -200,6 +206,7 @@ object DatasetGenerator {
     val UPW_FREQUENCY_DATASET = generateDataset(code = Dataset.UPW_FREQUENCY)
     val UPW_PROJECT_CATEGORY_DATASET = generateDataset(code = Dataset.UPW_PROJECT_CATEGORY)
     val UPW_STATUS = generateDataset(code = Dataset.UPW_STATUS)
+    val UPW_ADJUSTMENT_REASON = generateDataset(code = Dataset.UPW_ADJUSTMENT_REASON)
     fun generateDataset(
         id: Long = IdGenerator.getAndIncrement(),
         code: String

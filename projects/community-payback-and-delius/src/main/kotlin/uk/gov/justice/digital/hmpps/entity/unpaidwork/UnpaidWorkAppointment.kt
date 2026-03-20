@@ -318,7 +318,8 @@ interface UnpaidWorkAppointmentRepository : JpaRepository<UnpaidWorkAppointment,
     @Query(
         """
         select a from UnpaidWorkAppointment a
-        left join a.contact.outcome o
+        left join a.contact c
+        left join c.outcome o
         where (:crn is null or a.person.crn = :crn)
           and (:fromDate is null or a.date >= :fromDate)
           and (:toDate is null or a.date <= :toDate)
@@ -326,7 +327,7 @@ interface UnpaidWorkAppointmentRepository : JpaRepository<UnpaidWorkAppointment,
           and (:projectTypeCodes is null or a.project.projectType.code in :projectTypeCodes)
           and (:eventNumber is null or a.details.disposal.event.number = :eventNumber)
           and (:outcomeCodes is null
-            or (o is null and "NO_OUTCOME" in :outcomeCodes)
+            or (o is null and 'NO_OUTCOME' in :outcomeCodes)
             or (o is not null and o.code in :outcomeCodes))
         """
     )

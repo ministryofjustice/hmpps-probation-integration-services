@@ -37,6 +37,7 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
         save(PersonGenerator.EXCLUDED_PERSON)
         save(PersonGenerator.RESTRICTED_PERSON)
         save(PersonGenerator.PERSON_2)
+        save(PersonGenerator.ADJUSTMENT_PERSON)
     }
 
     fun loadProviders() {
@@ -77,6 +78,7 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
         save(DatasetGenerator.UPW_FREQUENCY_DATASET)
         save(DatasetGenerator.UPW_PROJECT_CATEGORY_DATASET)
         save(DatasetGenerator.UPW_STATUS)
+        save(DatasetGenerator.UPW_ADJUSTMENT_REASON)
         save(ReferenceDataGenerator.GROUP_PLACEMENT_PROJECT_TYPE)
         save(ReferenceDataGenerator.INDIVIDUAL_PLACEMENT_PROJECT_TYPE)
         save(ReferenceDataGenerator.ETE_PROJECT_TYPE)
@@ -103,6 +105,7 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
         save(ReferenceDataGenerator.UPW_STATUS_WORKING)
         save(ReferenceDataGenerator.UPW_STATUS_HOURS_COMPLETED)
         save(ReferenceDataGenerator.UPW_STATUS_UNALLOCATED)
+        save(ReferenceDataGenerator.UPW_ADJUSTMENT_REASON_OTHER)
     }
 
     fun loadUnpaidWorkData() {
@@ -121,6 +124,7 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
         save(UPWGenerator.EVENT_3)
         save(UPWGenerator.EVENT_4)
         save(UPWGenerator.EVENT_5)
+        save(UPWGenerator.EVENT_ADJUSTMENT)
         save(UPWGenerator.EVENT_1_MAIN_OFFENCE)
         save(UPWGenerator.EVENT_2_MAIN_OFFENCE)
         save(UPWGenerator.EVENT_3_MAIN_OFFENCE)
@@ -131,14 +135,17 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
         save(UPWGenerator.DISPOSAL_3)
         save(UPWGenerator.DISPOSAL_4)
         save(UPWGenerator.DISPOSAL_5)
+        save(UPWGenerator.DISPOSAL_ADJUSTMENT)
         save(UPWGenerator.UPW_DETAILS_1)
         save(UPWGenerator.UPW_DETAILS_2)
         save(UPWGenerator.UPW_DETAILS_3)
         save(UPWGenerator.UPW_DETAILS_4)
         save(UPWGenerator.UPW_DETAILS_5)
+        save(UPWGenerator.UPW_DETAILS_ADJUSTMENT)
         save(UPWGenerator.DEFAULT_UPW_ALLOCATION)
         save(UPWGenerator.DEFAULT_CONTACT)
         save(UPWGenerator.CONTACT_NO_ENFORCEMENT)
+        save(UPWGenerator.CONTACT_NO_ENFORCEMENT_ADJUSTMENT)
         save(UPWGenerator.DEFAULT_UPW_APPOINTMENT)
         save(UPWGenerator.UPW_APPOINTMENT_WITHOUT_PICKUP)
         save(UPWGenerator.UPW_APPOINTMENT_NO_ENFORCEMENT)
@@ -151,6 +158,8 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
         save(UPWGenerator.LAO_RESTRICTED_UPW_APPOINTMENT)
         save(UPWGenerator.DEFAULT_UPW_DETAILS_ADJUSTMENT_NEGATIVE)
         save(UPWGenerator.DEFAULT_UPW_DETAILS_ADJUSTMENT_POSITIVE)
+        save(UPWGenerator.GET_ADJUSTMENT_NEGATIVE)
+        save(UPWGenerator.ADJUSTMENT_NEGATIVE_FOR_ADJUSTMENT_PERSON)
     }
 
     fun loadLimitedAccessData() {
