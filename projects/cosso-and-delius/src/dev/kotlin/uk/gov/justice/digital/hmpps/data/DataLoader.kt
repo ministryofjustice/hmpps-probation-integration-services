@@ -4,6 +4,7 @@ import org.springframework.stereotype.Component
 import uk.gov.justice.digital.hmpps.audit.BusinessInteraction
 import uk.gov.justice.digital.hmpps.audit.BusinessInteractionCode
 import uk.gov.justice.digital.hmpps.data.generator.AdditionalOffenceGenerator
+import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator
 import uk.gov.justice.digital.hmpps.data.generator.CourtAppearanceGenerator
 import uk.gov.justice.digital.hmpps.data.generator.DisposalGenerator
 import uk.gov.justice.digital.hmpps.data.generator.DocumentGenerator
@@ -15,6 +16,7 @@ import uk.gov.justice.digital.hmpps.data.generator.PersonAddressGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ProbationAreaGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator
+import uk.gov.justice.digital.hmpps.data.generator.RegistrationGenerator
 import uk.gov.justice.digital.hmpps.data.generator.RequirementGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ResponsibleOfficerGenerator
 import uk.gov.justice.digital.hmpps.data.generator.StaffGenerator
@@ -39,6 +41,10 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
             ReferenceDataGenerator.SENTENCE_APPEARANCE_TYPE,
             ReferenceDataGenerator.BREACH_REASON_DATASET,
             ReferenceDataGenerator.BREACH_REASON,
+            ReferenceDataGenerator.DEFAULT_REGISTER_LEVEL,
+            ReferenceDataGenerator.DEFAULT_REGISTER_CATEGORY,
+            ContactGenerator.DEFAULT_CONTACT_TYPE,
+            ContactGenerator.ENFORCEABLE_CONTACT_OUTCOME_TYPE,
             PersonAddressGenerator.DEFAULT_PERSON_MAIN_ADDRESS,
             EventGenerator.DEFAULT_EVENT,
             EventGenerator.MISSING_MAIN_OFFENCE_EVENT,
@@ -50,6 +56,12 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
             DocumentGenerator.MISSING_DISPOSAL_DOCUMENT,
             DocumentGenerator.DEFAULT_COSSO_DELETED,
             DocumentGenerator.DEFAULT_COSSO_CREATED,
+            ContactGenerator.DEFAULT_ENFORCEABLE_CONTACT,
+            RegistrationGenerator.DEFAULT_REGISTER_TYPE,
+            RegistrationGenerator.OTHER_REGISTER_TYPE,
+            RegistrationGenerator.DEFAULT_OTHER_DEREGISTRATION,
+            RegistrationGenerator.DEFAULT_ALT7_REGISTRATION,
+            RegistrationGenerator.DEFAULT_OTHER_REGISTRATION,
             MainOffenceGenerator.DEFAULT_MAIN_OFFENCE,
             MainOffenceGenerator.MISSING_COURT_APPEARANCE_MAIN_OFFENCE,
             MainOffenceGenerator.MISSING_DISPOSAL_MAIN_OFFENCE,

@@ -5,7 +5,7 @@ import java.time.LocalDate
 
 object PersonGenerator {
     val PERSON_NO_MAIN_ADDRESS = Person(
-        offenderId = IdGenerator.getAndIncrement(),
+        id = IdGenerator.getAndIncrement(),
         crn = "X123456",
         firstName = "Kyle",
         secondName = "Mark",
@@ -19,7 +19,7 @@ object PersonGenerator {
         softDeleted = false
     )
     val DEFAULT_PERSON = Person(
-        offenderId = IdGenerator.getAndIncrement(),
+        id = IdGenerator.getAndIncrement(),
         crn = "X123456",
         firstName = "Bob",
         secondName = "Tom",
@@ -33,7 +33,7 @@ object PersonGenerator {
         softDeleted = false
     )
     val PERSON_IN_PRISON = Person(
-        offenderId = IdGenerator.getAndIncrement(),
+        id = IdGenerator.getAndIncrement(),
         crn = "X123457",
         firstName = "Bob",
         secondName = "Tom",

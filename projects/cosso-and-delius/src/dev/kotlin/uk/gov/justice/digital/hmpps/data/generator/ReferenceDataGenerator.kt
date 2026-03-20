@@ -12,6 +12,23 @@ object ReferenceDataGenerator {
         selectable = true,
         dataSetId = MISC_DATA_SET_ID
     )
+
+    val DEFAULT_REGISTER_LEVEL = ReferenceData(
+        id = IdGenerator.getAndIncrement(),
+        code = "HIGH",
+        description = "Register Level High",
+        selectable = true,
+        dataSetId = MISC_DATA_SET_ID
+    )
+
+    val DEFAULT_REGISTER_CATEGORY = ReferenceData(
+        id = IdGenerator.getAndIncrement(),
+        code = "CAT1",
+        description = "Category 1",
+        selectable = true,
+        dataSetId = MISC_DATA_SET_ID
+    )
+
     val MAIN_ADDRESS_STATUS = ReferenceData(
         id = IdGenerator.getAndIncrement(),
         code = "MAIN",

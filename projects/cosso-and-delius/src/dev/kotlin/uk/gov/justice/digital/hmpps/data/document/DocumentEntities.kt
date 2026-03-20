@@ -47,7 +47,3 @@ class UpwDetails(@Id val upwDetailsId: Long, val disposalId: Long)
 @Immutable
 @Entity
 class UpwAppointment(@Id val upwAppointmentId: Long, val eventId: Long, val upwDetailsId: Long)
-
-@Immutable
-@Entity
-class Contact(@Id val contactId: Long, val eventId: Long)

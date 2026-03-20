@@ -32,6 +32,6 @@ class PersonAddress(
 )
 
 interface PersonAddressRepository : JpaRepository<PersonAddress, Long> {
-    @Query("SELECT a FROM PersonAddress a WHERE a.person.offenderId = :personId")
+    @Query("SELECT a FROM PersonAddress a WHERE a.person.id = :personId")
     fun findByPersonId(personId: Long): List<PersonAddress>
 }
