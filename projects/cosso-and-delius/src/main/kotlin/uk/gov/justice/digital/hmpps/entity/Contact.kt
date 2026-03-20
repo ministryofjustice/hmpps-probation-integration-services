@@ -16,7 +16,6 @@ import org.springframework.data.jpa.repository.Query
 import java.time.LocalDate
 import java.time.ZonedDateTime
 
-
 @Entity
 @Table(name = "contact")
 @SQLRestriction("soft_deleted = 0")
