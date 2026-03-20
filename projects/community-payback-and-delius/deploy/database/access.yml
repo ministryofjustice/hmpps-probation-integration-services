@@ -9,6 +9,7 @@ database:
       - enforcement
       - event
       - upw_appointment
+      - upw_adjustment
 
   audit:
     username: CommunityPaybackAndDelius
