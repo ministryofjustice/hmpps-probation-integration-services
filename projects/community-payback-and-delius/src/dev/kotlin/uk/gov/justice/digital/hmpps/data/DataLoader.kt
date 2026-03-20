@@ -58,6 +58,7 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
         save(TeamGenerator.NON_UPW_TEAM)
         save(TeamGenerator.END_DATED_TEAM)
         save(TeamGenerator.OTHER_PROVIDER_TEAM)
+        save(TeamGenerator.DEFAULT_TEAM_PICKUP_LOCATION)
     }
 
     fun loadStaff() {

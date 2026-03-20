@@ -10,10 +10,12 @@ import org.springframework.test.web.servlet.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import uk.gov.justice.digital.hmpps.advice.ErrorResponse
 import uk.gov.justice.digital.hmpps.data.generator.StaffGenerator
+import uk.gov.justice.digital.hmpps.data.generator.TeamGenerator
 import uk.gov.justice.digital.hmpps.data.generator.UPWGenerator
 import uk.gov.justice.digital.hmpps.model.ProvidersResponse
 import uk.gov.justice.digital.hmpps.model.SessionsResponse
 import uk.gov.justice.digital.hmpps.model.SupervisorsResponse
+import uk.gov.justice.digital.hmpps.model.TeamPickUpLocations
 import uk.gov.justice.digital.hmpps.model.TeamsResponse
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
@@ -180,5 +182,19 @@ class ProvidersIntegrationTest @Autowired constructor(
                 status { isOk() }
                 content { jsonPath("sessions.size()", 2) }
             }
+    }
+
+    @Test
+    fun `can get pickup locations by team`() {
+        val actual = mockMvc
+            .get("/providers/team/${TeamGenerator.OTHER_PROVIDER_TEAM.code}/locations") { withToken() }
+            .andExpect {
+                status { isOk() }
+            }
+            .andReturn().response.contentAsJson<TeamPickUpLocations>()
+        assertThat(actual.locations!!.size).isEqualTo(1)
+        assertThat(actual.locations!![0].description).isEqualTo("City Location")
+        assertThat(actual.locations!![0].code).isEqualTo("LOC0001")
+        assertThat(actual.locations!![0].postCode).isEqualTo("ZY98XW")
     }
 }

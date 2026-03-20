@@ -2,6 +2,10 @@ package uk.gov.justice.digital.hmpps.model
 
 import uk.gov.justice.digital.hmpps.entity.staff.OfficeLocation
 
+data class TeamPickUpLocations(
+    val locations: List<PickUpLocation>?
+)
+
 data class PickUpLocation(
     val code: String,
     val description: String,
