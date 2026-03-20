@@ -44,6 +44,7 @@ interface OfficeLocationRepository : JpaRepository<OfficeLocation, Long> {
     fun getByCode(code: String): OfficeLocation = findByCode(code).orNotFoundBy("OfficeLocationCode", code)
     fun getByCodeIn(codes: List<String>) =
         codes.toSet().let { codes -> findByCodeIn(codes).associateBy { it.code }.reportMissing(codes) }
+
     @NativeQuery(
         """
         select ol.office_location_id, 
