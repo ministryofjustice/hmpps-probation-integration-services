@@ -778,7 +778,7 @@ interface ContactRepository : JpaRepository<Contact, Long> {
                    case when c.complied = 'N' then 0 else 1 end as complied,
                    rtmc.code                as rqmntmaincatcode,
                    rco.description          as outcomedescription,
-                   ea.description          as enforcementactiondescription,
+                   ea.description           as enforcementactiondescription,
                    enf.response_date        as evidenceduedate
             from contact c
             join r_contact_type rct on rct.contact_type_id = c.contact_type_id
@@ -791,9 +791,9 @@ interface ContactRepository : JpaRepository<Contact, Long> {
             left join rqmnt r on r.rqmnt_id = c.rqmnt_id
             left join r_rqmnt_type_main_category rtmc on rtmc.rqmnt_type_main_category_id = r.rqmnt_type_main_category_id
             where c.soft_deleted = 0
-            and s.staff_id = :staffid
+            and s.staff_id = :staffId
             and c.complied = 'N'
-            and (:filterduedate = 0 or to_char(enf.response_date, 'YYYY-MM-DD') <= :duedatethreshold)
+            and (:filterDueDate = 0 or to_char(enf.response_date, 'YYYY-MM-DD') <= :dueDateThreshold)
         """,
         countQuery = """
             select count(1)
@@ -803,9 +803,9 @@ interface ContactRepository : JpaRepository<Contact, Long> {
             join caseload cl on s.staff_id = cl.staff_employee_id and c.offender_id = cl.offender_id and (cl.role_code = 'OM')
             join enforcement enf on enf.contact_id = c.contact_id and enf.soft_deleted = 0
             where c.soft_deleted = 0
-            and s.staff_id = :staffid
+            and s.staff_id = :staffId
             and c.complied = 'N'
-            and (:filterduedate = 0 or to_char(enf.response_date, 'YYYY-MM-DD') <= :duedatethreshold)
+            and (:filterDueDate = 0 or to_char(enf.response_date, 'YYYY-MM-DD') <= :dueDateThreshold)
         """,
         nativeQuery = true
     )
