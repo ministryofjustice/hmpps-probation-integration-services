@@ -14,6 +14,7 @@ import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import java.time.LocalDate
 import java.time.ZonedDateTime
+import jakarta.persistence.Lob
 
 @Entity
 @Table(name = "contact")
@@ -29,7 +30,9 @@ class Contact(
     @Column(name = "contact_start_time")
     val startTime: ZonedDateTime,
 
-    val notes: String,
+    @Lob
+    @Column(name = "notes")
+    val notes: String?,
 
     val eventId: Long,
 
