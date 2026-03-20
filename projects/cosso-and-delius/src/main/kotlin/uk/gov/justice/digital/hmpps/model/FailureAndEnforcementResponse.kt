@@ -14,7 +14,7 @@ data class ContactResponse(
     val description: String,
     val type: CodeAndDescription,
     val outcome: CodeAndDescription,
-    val notes: String,
+    val notes: String?,
 )
 
 data class RegistrationResponse(

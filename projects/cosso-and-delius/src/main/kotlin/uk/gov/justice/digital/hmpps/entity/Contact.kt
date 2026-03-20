@@ -5,6 +5,7 @@ import jakarta.persistence.Convert
 import jakarta.persistence.Entity
 import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
+import jakarta.persistence.Lob
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.Table
 import org.hibernate.annotations.SQLRestriction
@@ -29,7 +30,9 @@ class Contact(
     @Column(name = "contact_start_time")
     val startTime: ZonedDateTime,
 
-    val notes: String,
+    @Lob
+    @Column(name = "notes")
+    val notes: String?,
 
     val eventId: Long,
 
