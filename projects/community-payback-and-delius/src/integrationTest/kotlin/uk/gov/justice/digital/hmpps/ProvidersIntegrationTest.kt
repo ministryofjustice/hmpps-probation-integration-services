@@ -15,7 +15,7 @@ import uk.gov.justice.digital.hmpps.data.generator.UPWGenerator
 import uk.gov.justice.digital.hmpps.model.ProvidersResponse
 import uk.gov.justice.digital.hmpps.model.SessionsResponse
 import uk.gov.justice.digital.hmpps.model.SupervisorsResponse
-import uk.gov.justice.digital.hmpps.model.TeamPickUpLocations
+import uk.gov.justice.digital.hmpps.model.PickUpLocationsResponse
 import uk.gov.justice.digital.hmpps.model.TeamsResponse
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
@@ -191,10 +191,10 @@ class ProvidersIntegrationTest @Autowired constructor(
             .andExpect {
                 status { isOk() }
             }
-            .andReturn().response.contentAsJson<TeamPickUpLocations>()
-        assertThat(actual.locations!!.size).isEqualTo(1)
-        assertThat(actual.locations!![0].description).isEqualTo("City Location")
-        assertThat(actual.locations!![0].code).isEqualTo("LOC0001")
-        assertThat(actual.locations!![0].postCode).isEqualTo("ZY98XW")
+            .andReturn().response.contentAsJson<PickUpLocationsResponse>()
+        assertThat(actual.locations.size).isEqualTo(1)
+        assertThat(actual.locations[0].description).isEqualTo("City Location")
+        assertThat(actual.locations[0].code).isEqualTo("LOC0001")
+        assertThat(actual.locations[0].postCode).isEqualTo("ZY98XW")
     }
 }

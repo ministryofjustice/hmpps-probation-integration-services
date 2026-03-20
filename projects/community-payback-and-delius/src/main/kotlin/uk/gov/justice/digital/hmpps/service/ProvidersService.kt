@@ -78,10 +78,10 @@ class ProvidersService(
         return SessionsResponse(sessions.map { it.toModel() })
     }
 
-    fun getLocationsForTeam(teamCode: String): TeamPickUpLocations {
+    fun getLocationsForTeam(teamCode: String): PickUpLocationsResponse {
         val team = teamRepository.findTeamByCode(teamCode)
         val officeLocations = officeLocationRepository.getLocationsByTeam(team.id)
-        return TeamPickUpLocations(officeLocations.map {
+        return PickUpLocationsResponse(officeLocations.map {
             it.toPickUpLocation()
         })
     }

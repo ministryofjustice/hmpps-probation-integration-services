@@ -6,9 +6,8 @@ import jakarta.persistence.Id
 import jakarta.persistence.Table
 import org.hibernate.annotations.Immutable
 import org.springframework.data.jpa.repository.JpaRepository
-import org.springframework.data.jpa.repository.NativeQuery
+import org.springframework.data.jpa.repository.Query
 import uk.gov.justice.digital.hmpps.exception.NotFoundException.Companion.orNotFoundBy
-import uk.gov.justice.digital.hmpps.utils.Extensions
 import uk.gov.justice.digital.hmpps.utils.Extensions.reportMissing
 
 @Entity
@@ -44,8 +43,7 @@ interface OfficeLocationRepository : JpaRepository<OfficeLocation, Long> {
     fun getByCode(code: String): OfficeLocation = findByCode(code).orNotFoundBy("OfficeLocationCode", code)
     fun getByCodeIn(codes: List<String>) =
         codes.toSet().let { codes -> findByCodeIn(codes).associateBy { it.code }.reportMissing(codes) }
-
-    @NativeQuery(
+    @Query(
         """
         select ol.office_location_id, 
             ol.code, 
@@ -59,7 +57,7 @@ interface OfficeLocationRepository : JpaRepository<OfficeLocation, Long> {
         from office_location ol
         join team_office_location tol on tol.office_location_id = ol.office_location_id
         where tol.team_id = :teamId
-        """
+        """, nativeQuery = true
     )
     fun getLocationsByTeam(teamId: Long): List<OfficeLocation>
 }

@@ -2,8 +2,8 @@ package uk.gov.justice.digital.hmpps.model
 
 import uk.gov.justice.digital.hmpps.entity.staff.OfficeLocation
 
-data class TeamPickUpLocations(
-    val locations: List<PickUpLocation>?
+data class PickUpLocationsResponse(
+    val locations: List<PickUpLocation> = emptyList()
 )
 
 data class PickUpLocation(
