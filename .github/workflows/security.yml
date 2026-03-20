@@ -4,11 +4,6 @@ on:
   schedule:
     - cron: "30 5 * * MON-FRI" # Every weekday at 05:30 UTC
   workflow_dispatch:
-  push:
-    branches:
-      - main
-    paths:
-      - '**/.trivyignore'
 
 jobs:
   get-projects:
@@ -17,114 +12,6 @@ jobs:
     uses: ./.github/workflows/get-projects.yml
     with:
       projects: All
-
-  trivy-scan:
-    permissions:
-      contents: read
-      checks: write
-      id-token: write
-      issues: write
-      security-events: write
-    runs-on: ubuntu-latest
-    needs:
-      - get-projects
-    strategy:
-      fail-fast: false
-      matrix:
-        project: ${{ fromJSON(needs.get-projects.outputs.projects) }}
-    steps:
-      - uses: actions/checkout@v6
-
-      - name: Add new line to .trivyignore files
-        # to ensure files exist, and they can be merged correctly by Trivy
-        run: |
-          echo >> .trivyignore
-          echo >> projects/${{ matrix.project }}/.trivyignore
-
-      - name: Scan image
-        run: |
-          echo '{"version":"2.1.0","$schema":"https://json.schemastore.org/sarif-2.1.0.json","runs":[]}' > 'trivy-results.sarif'
-          echo 'trivy-action step removed — created empty SARIF stub'
-      - name: Upload Trivy scan results to GitHub Security tab
-        uses: github/codeql-action/upload-sarif@v4
-        if: always()
-        with:
-          sarif_file: 'trivy-results.sarif'
-
-      - name: Get Trivy results
-        run: |
-          echo '{"version":"2.1.0","$schema":"https://json.schemastore.org/sarif-2.1.0.json","runs":[]}' > 'trivy.json'
-          echo 'trivy-action step removed — created empty SARIF stub'
-      - name: Output results
-        run: |
-          jq -c '{"${{ matrix.project }}": .Results[].Vulnerabilities | select(. != null) | flatten}' trivy.json | tee results.json
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-
-      - uses: actions/upload-artifact@v7
-        with:
-          name: trivy-results-${{ matrix.project }}
-          path: results.json
-
-  trivy-merge:
-    permissions:
-      contents: read
-      checks: write
-      id-token: write
-      issues: write
-      security-events: write
-    runs-on: ubuntu-latest
-    needs:
-      - trivy-scan
-    steps:
-      - uses: actions/checkout@v6
-
-      - uses: actions/download-artifact@v7
-        with:
-          pattern: trivy-results-*
-          path: results
-
-      - name: Merge results
-        run: |
-          find results -maxdepth 2 -name results.json -exec cat {} \; | jq -c --slurp 'map(to_entries | map(.key as $matrix_key | .value | map_values({($matrix_key): .}))) | flatten | reduce .[] as $item ({}; . * $item)' | tee results.json
-
-      - name: Create GitHub issues
-        run: |
-          jq -c 'to_entries | map((.value // empty) + {Projects: [.key]})
-            | flatten 
-            | group_by(.VulnerabilityID) 
-            | map(reduce .[] as $vuln (.[0] + {Locations:[]}; .Projects += $vuln.Projects | .Locations += [$vuln.PkgName + ":" + $vuln.InstalledVersion + " (" + $vuln.PkgPath + ")"]))
-            | map_values({Title: .VulnerabilityID, Body: ("### " + .Title + "\n" + .PrimaryURL + "\n>" + .Description + "\n#### Projects:\n* " + (.Projects | sort | unique | join("\n* ")) + "\n#### Locations:\n* `" + (.Locations | sort | unique | join("`\n* `")) + "`\n#### References:\n* " + (.References | sort | unique | join("\n* ")))})
-            | .[]' < results.json \
-          | while read -r vulnerability; do
-            title=$(jq -r '.Title' <<< "$vulnerability")
-            jq -r '.Body' <<< "$vulnerability" | tee "${title}-body.json"
-            existing=$(gh issue list --state open --label dependencies --label security --search "$title" --json 'number' --jq '.[].number' | head -n1)
-            if [ -n "$existing" ]; then
-              echo "Issue '$title' already exists, updating body..."
-              gh issue edit "$existing" --body-file "${title}-body.json"
-            else
-              gh issue create --title "$title" --body-file "${title}-body.json" --label 'dependencies,security'
-            fi
-          done
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-
-      - name: Close GitHub issues
-        run: |
-          openissues="$(gh issue list --state open --label dependencies --label security | awk '{print $3}')"
-          scanresults="$(jq -r -c 'with_entries(select(.value != null)) | .[].VulnerabilityID' < results.json | sort -u)"
-          issuestoclose="$(comm -23 <(echo "$openissues" | sort -u) <(echo "$scanresults" | sort -u))" #print lines only present in first file
-          echo "openissues=$openissues"
-          echo "scanresults=$scanresults"
-          echo "issuestoclose=$issuestoclose"
-          for cve in $issuestoclose; do
-            echo "$cve is already resolved, removing matching issue..."
-            issuenumber=$(gh issue list --state open --label dependencies --label security --search "$cve" | awk '{print $1}')
-            echo "$issuenumber" | xargs -n1 gh issue close
-          done
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
 
   veracode-scan:
     permissions:
