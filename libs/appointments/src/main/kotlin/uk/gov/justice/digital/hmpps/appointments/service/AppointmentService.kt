@@ -95,7 +95,7 @@ class AppointmentService internal constructor(
 
     fun delete(reference: String) = bulkDelete(listOf(reference))
 
-    fun bulkDelete(references: List<String>) {
+    fun bulkDelete(references: List<String>): List<Appointment> {
         val chunks = references.toSet().chunked(500)
         val appointments = chunks.flatMap { appointmentRepository.findByExternalReferenceIn(it) }
         require(appointments.all { Schedule(it).endsInFuture && it.outcome == null }) {
@@ -104,6 +104,7 @@ class AppointmentService internal constructor(
 
         chunks.forEach { appointmentRepository.softDeleteByExternalReferenceIn(it) }
         appointments.onEach { it.audit(BusinessInteractionCode.DELETE_CONTACT) }
+        return appointments.map { Appointment(it) }
     }
 
     fun <T> update(request: T, init: UpdateBuilder<T>.() -> Unit) = bulkUpdate(listOf(request), init).single()
