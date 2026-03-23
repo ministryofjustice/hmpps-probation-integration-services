@@ -124,12 +124,12 @@ class AdjustmentsIntegrationTest @Autowired constructor(
                 minutes = adjustmentAmountMinutes
             )
         )
-        val postResponse = mockMvc.post("/adjustments") {
+        val postResponse = mockMvc.post("/adjustments?username=${username}") {
             withToken()
             json = body
         }.andExpect { status { isOk() } }.andReturn().response.contentAsJson<List<AdjustmentPostResponse>>()
         val idToDelete = postResponse.first().id
-        mockMvc.delete("/adjustments/${idToDelete}?username=${username}") { withToken() }
+        mockMvc.delete("/adjustments/${idToDelete}") { withToken() }
             .andExpect { status { isOk() } }
         val count = entityManager
             .createQuery("SELECT COUNT(a) FROM UnpaidWorkAdjustment a WHERE a.id = :id")
