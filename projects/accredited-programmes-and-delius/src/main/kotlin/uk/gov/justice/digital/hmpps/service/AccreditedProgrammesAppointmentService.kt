@@ -19,6 +19,7 @@ import uk.gov.justice.digital.hmpps.entity.staff.Team
 import uk.gov.justice.digital.hmpps.exception.NotFoundException.Companion.orNotFoundBy
 import uk.gov.justice.digital.hmpps.model.*
 import uk.gov.justice.digital.hmpps.repository.*
+import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 
 @Transactional
 @Service
@@ -30,6 +31,7 @@ class AccreditedProgrammesAppointmentService(
     private val contactTypeRepository: ContactTypeRepository,
     private val contactRepository: ContactRepository,
     private val appointmentService: AppointmentService,
+    private val telemetryService: TelemetryService,
 ) {
     fun getAppointments(request: GetAppointmentsRequest) = with(request) {
         require(toDate >= fromDate) { "toDate cannot be before fromDate" }
@@ -74,7 +76,7 @@ class AccreditedProgrammesAppointmentService(
                     notes = request.notes,
                     sensitive = request.sensitive
                 )
-            })
+            }).onEach { telemetryService.trackEvent("AppointmentCreated", it.telemetry()) }
 
             val teams = teamRepository.getAllByCodeIn(map { it.team.code })
             val staff = staffRepository.getAllByCodeIn(map { it.staff.code })
@@ -89,6 +91,7 @@ class AccreditedProgrammesAppointmentService(
                 } else null
             }
             contactRepository.saveAll(commencementContacts)
+                .onEach { telemetryService.trackEvent("ComponentCommenced", it.telemetry()) }
         }
     }
 
@@ -100,11 +103,12 @@ class AccreditedProgrammesAppointmentService(
             applyOutcome = { Outcome(it.outcome?.code) }
             appendNotes = { it.notes }
             flagAs = { copy(sensitive = it.sensitive) }
-        }
+        }.onEach { telemetryService.trackEvent("AppointmentUpdated", it.telemetry()) }
     }
 
     fun delete(request: DeleteAppointmentsRequest) =
         appointmentService.bulkDelete(request.appointments.map { "${Contact.REFERENCE_PREFIX}${it.reference}" })
+            .onEach { telemetryService.trackEvent("AppointmentDeleted", it.telemetry()) }
 
     private fun Contact.asAppointment() = AppointmentResponse(
         crn = person.crn,
@@ -149,6 +153,18 @@ class AccreditedProgrammesAppointmentService(
             )
         } else null
     }
+
+    private fun Appointment.telemetry() = mapOf(
+        "crn" to relatedTo.crn,
+        "contactId" to id.toString(),
+        "componentId" to (relatedTo.requirementId ?: relatedTo.licenceConditionId).toString()
+    )
+
+    private fun Contact.telemetry() = mapOf(
+        "crn" to person.crn,
+        "contactId" to id.toString(),
+        "componentId" to (requirement?.id ?: licenceCondition?.id).toString()
+    )
 }
 
 inline fun <reified T> Map<String, T>.reportMissing(codes: Set<String>) = also {
