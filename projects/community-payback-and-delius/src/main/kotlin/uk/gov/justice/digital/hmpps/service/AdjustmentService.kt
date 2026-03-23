@@ -96,8 +96,7 @@ class AdjustmentService(
             .orNotFoundBy("Adjustment", adjustmentId)
         val userId = userRepository.findByUsername(username)?.id
             .orNotFoundBy("User", username)
-        existingAdjustment.softDeleted = true
-        createUnpaidWorkAdjustmentRepository.save(existingAdjustment)
+        createUnpaidWorkAdjustmentRepository.delete(existingAdjustment)
     }
 
     fun getAdjustment(id: Long): Adjustment {
