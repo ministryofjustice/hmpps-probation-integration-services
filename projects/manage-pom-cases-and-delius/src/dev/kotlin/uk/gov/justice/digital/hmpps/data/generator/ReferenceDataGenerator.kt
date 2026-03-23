@@ -20,6 +20,7 @@ object ReferenceDataGenerator {
     val KEY_DATE_HANDOVER_TYPE = generate(KeyDate.TypeCode.HANDOVER_DATE.value, dataSetId = KEY_DATE_TYPE_DATASET.id)
     val KEY_DATE_HANDOVER_START_DATE_TYPE =
         generate(KeyDate.TypeCode.HANDOVER_START_DATE.value, dataSetId = KEY_DATE_TYPE_DATASET.id)
+    val ROSH = generate("RoSH")
 
     val ALL = listOf(
         DECISION_ENHANCED,
@@ -33,7 +34,8 @@ object ReferenceDataGenerator {
         KEY_DATE_HANDOVER_START_DATE_TYPE,
         ALLOCATION_AUTO,
         ALLOCATION_INA,
-        REG_CAT1
+        REG_CAT1,
+        ROSH
     )
 
     fun generateDataSet(name: String, id: Long = IdGenerator.getAndIncrement()) = ReferenceDataSet(name, id)
