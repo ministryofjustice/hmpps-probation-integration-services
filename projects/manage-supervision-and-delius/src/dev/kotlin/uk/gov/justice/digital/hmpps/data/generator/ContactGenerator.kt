@@ -139,6 +139,7 @@ object ContactGenerator {
     val E_SUPERVISION_TYPE = generateContactType("ESPCHI", true, "E Supervision", locationRequired = "N")
 
     val ACCEPTABLE_ABSENCE = generateOutcome("OUT", "Acceptable", false, true)
+    val FAILED_TO_COMPLY = generateOutcome("FTC", "Failed to Comply", false, false)
 
     val POSSIBLE_OUTCOME_1 =
         generateContactTypeOutcome(OTHER_CT.id, ACCEPTABLE_ABSENCE.id, OTHER_CT, ACCEPTABLE_ABSENCE)
@@ -207,6 +208,35 @@ object ContactGenerator {
 
     val COMMUNICATION_CATEGORY = generateContactCategory(OTHER_CT, COMMUNICATION_CATEGORY_RD)
 
+    val ENFORCEMENT_CONTACT_1 = generateContact(
+        PersonGenerator.ENFORCEMENT_PERSON,
+        APPT_CT_1,
+        ZonedDateTime.of(LocalDateTime.now(EuropeLondon).minusDays(3), EuropeLondon),
+        complied = false,
+        outcome = FAILED_TO_COMPLY
+    )
+    val ENFORCEMENT_CONTACT_2 = generateContact(
+        PersonGenerator.ENFORCEMENT_PERSON,
+        APPT_CT_1,
+        ZonedDateTime.of(LocalDateTime.now(EuropeLondon).minusDays(2), EuropeLondon),
+        complied = false,
+        outcome = FAILED_TO_COMPLY
+    )
+    val ENFORCEMENT_CONTACT_3 = generateContact(
+        PersonGenerator.ENFORCEMENT_PERSON,
+        APPT_CT_1,
+        ZonedDateTime.of(LocalDateTime.now(EuropeLondon).minusDays(1), EuropeLondon),
+        complied = false,
+        outcome = FAILED_TO_COMPLY
+    )
+
+    val WARNING_LETTER_ENFORCEMENT_ACTION =
+        generateEnforcementAction("EA02", "First Warning Letter Sent", BREACH_CONTACT_TYPE)
+
+    val ENFORCEMENT = generateEnforcement(ENFORCEMENT_CONTACT_1, ZonedDateTime.now(EuropeLondon).plusDays(7))
+    val DUE_SOON_ENFORCEMENT = generateEnforcement(ENFORCEMENT_CONTACT_2, ZonedDateTime.now(EuropeLondon).plusDays(1))
+    val OVERDUE_ENFORCEMENT = generateEnforcement(ENFORCEMENT_CONTACT_3, ZonedDateTime.now(EuropeLondon).minusDays(1))
+
     val CONTACT_DOCUMENT_1 = generateContactDocument(
         OVERVIEW.id,
         "B001",
@@ -259,6 +289,18 @@ object ContactGenerator {
         doc.workInProgress = workInProgress
         return doc
     }
+
+    fun generateEnforcement(
+        contact: Contact,
+        responseDate: ZonedDateTime? = null,
+        action: EnforcementAction? = WARNING_LETTER_ENFORCEMENT_ACTION,
+        id: Long = IdGenerator.getAndIncrement()
+    ) = Enforcement(
+        contact = contact,
+        responseDate = responseDate,
+        action = action,
+        id = id
+    )
 
     fun generateEnforcementAction(code: String, description: String, contactType: ContactType) =
         EnforcementAction(

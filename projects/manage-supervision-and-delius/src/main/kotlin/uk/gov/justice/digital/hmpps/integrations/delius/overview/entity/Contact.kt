@@ -339,6 +339,34 @@ class EnforcementAction(
     val id: Long = 0
 )
 
+@Immutable
+@Entity
+@Table(name = "enforcement")
+@SQLRestriction("soft_deleted = 0")
+class Enforcement(
+    @ManyToOne
+    @JoinColumn(name = "contact_id")
+    val contact: Contact,
+
+    @ManyToOne
+    @JoinColumn(name = "enforcement_action_id")
+    val action: EnforcementAction? = null,
+
+    @Column(name = "response_date")
+    val responseDate: ZonedDateTime? = null,
+
+    @Column(columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
+    val softDeleted: Boolean = false,
+
+    @Column(name = "partition_area_id")
+    val partitionAreaId: Long = 0,
+
+    @Id
+    @Column(name = "enforcement_id")
+    val id: Long = 0
+)
+
 enum class ContactOutcomeTypeCode(val value: String) {
     RESCHEDULED("RSSR"),
     RESCHEDULED_SR("RSSL"),
@@ -734,6 +762,59 @@ interface ContactRepository : JpaRepository<Contact, Long> {
         """
     )
     fun findAllUserAlerts(username: String, pageable: Pageable): Page<Contact>
+
+    @Query(
+        """
+            select o.first_name             as forename,
+                   o.second_name            as secondname,
+                   o.third_name             as thirdname,
+                   o.surname                as surname,
+                   o.date_of_birth_date     as dob,
+                   c.contact_id             as id,
+                   o.crn                    as crn,
+                   c.contact_date           as contact_date,
+                   rct.description          as contactdescription,
+                   rct.code                 as typecode,
+                   case when c.complied = 'N' then 0 else 1 end as complied,
+                   rtmc.code                as rqmntmaincatcode,
+                   rco.description          as outcomedescription,
+                   ea.description           as enforcementactiondescription,
+                   enf.response_date        as evidenceduedate
+            from contact c
+            join r_contact_type rct on rct.contact_type_id = c.contact_type_id
+            join offender o on o.offender_id = c.offender_id
+            join staff s on s.staff_id = c.staff_id
+            join caseload cl on s.staff_id = cl.staff_employee_id and c.offender_id = cl.offender_id and (cl.role_code = 'OM')
+            join enforcement enf on enf.contact_id = c.contact_id and enf.soft_deleted = 0
+            left join r_enforcement_action ea on ea.enforcement_action_id = enf.enforcement_action_id
+            left join r_contact_outcome_type rco on rco.contact_outcome_type_id = c.contact_outcome_type_id
+            left join rqmnt r on r.rqmnt_id = c.rqmnt_id
+            left join r_rqmnt_type_main_category rtmc on rtmc.rqmnt_type_main_category_id = r.rqmnt_type_main_category_id
+            where c.soft_deleted = 0
+            and s.staff_id = :staffId
+            and c.complied = 'N'
+            and (:filterDueDate = 0 or to_char(enf.response_date, 'YYYY-MM-DD') <= :dueDateThreshold)
+        """,
+        countQuery = """
+            select count(1)
+            from contact c
+            join r_contact_type rct on rct.contact_type_id = c.contact_type_id
+            join staff s on s.staff_id = c.staff_id
+            join caseload cl on s.staff_id = cl.staff_employee_id and c.offender_id = cl.offender_id and (cl.role_code = 'OM')
+            join enforcement enf on enf.contact_id = c.contact_id and enf.soft_deleted = 0
+            where c.soft_deleted = 0
+            and s.staff_id = :staffId
+            and c.complied = 'N'
+            and (:filterDueDate = 0 or to_char(enf.response_date, 'YYYY-MM-DD') <= :dueDateThreshold)
+        """,
+        nativeQuery = true
+    )
+    fun findEnforcementContactsByUser(
+        staffId: Long,
+        filterDueDate: Int,
+        dueDateThreshold: String,
+        pageable: Pageable
+    ): Page<EnforcementAppointment>
 }
 
 fun ContactRepository.getContact(id: Long) = findById(id).orElseThrow { NotFoundException("Contact", "id", id) }
@@ -760,6 +841,26 @@ interface Appointment {
     val complied: Int?
     val rqmntMainCatCode: String?
 }
+
+interface EnforcementAppointment {
+    val forename: String
+    val secondName: String?
+    val thirdName: String?
+    val surname: String
+    val dob: LocalDateTime
+    val id: Long
+    val crn: String
+    val contactDate: LocalDateTime
+    val contactDescription: String
+    val typeCode: String
+    val complied: Int?
+    val rqmntMainCatCode: String?
+    val outcomeDescription: String?
+    val enforcementActionDescription: String?
+    val evidenceDueDate: LocalDateTime?
+}
+
+interface EnforcementRepository : JpaRepository<Enforcement, Long>
 
 fun ContactRepository.getContact(personId: Long, contactId: Long): Contact =
     findByPersonIdAndId(personId, contactId) ?: throw NotFoundException("Contact", "contactId", contactId)
