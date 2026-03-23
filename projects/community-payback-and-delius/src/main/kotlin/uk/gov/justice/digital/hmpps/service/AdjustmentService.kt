@@ -94,7 +94,7 @@ class AdjustmentService(
     fun deleteAdjustment(adjustmentId: Long, username: String) {
         val existingAdjustment = createUnpaidWorkAdjustmentRepository.findFirstById(adjustmentId)
             .orNotFoundBy("Adjustment", adjustmentId)
-        val userId = userRepository.findByUsername(username)?.id
+        userRepository.findByUsername(username)?.id
             .orNotFoundBy("User", username)
         createUnpaidWorkAdjustmentRepository.delete(existingAdjustment)
     }
