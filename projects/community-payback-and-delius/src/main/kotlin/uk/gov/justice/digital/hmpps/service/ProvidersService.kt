@@ -17,7 +17,8 @@ class ProvidersService(
     private val probationAreaUserRepository: ProbationAreaUserRepository,
     private val userRepository: UserRepository,
     private val unpaidWorkAppointmentRepository: UnpaidWorkAppointmentRepository,
-    private val unpaidWorkProjectRepository: UnpaidWorkProjectRepository
+    private val unpaidWorkProjectRepository: UnpaidWorkProjectRepository,
+    private val officeLocationRepository: OfficeLocationRepository
 ) {
     fun getProvidersForUser(username: String): ProvidersResponse {
         userRepository.findByUsername(username)
@@ -75,5 +76,13 @@ class ProvidersService(
             unpaidWorkAppointmentRepository.getUnpaidWorkSessionDetails(team.id, startDate, endDate, typeCodes)
 
         return SessionsResponse(sessions.map { it.toModel() })
+    }
+
+    fun getLocationsForTeam(teamCode: String): PickUpLocationsResponse {
+        val team = teamRepository.findTeamByCode(teamCode)
+        val officeLocations = officeLocationRepository.getLocationsByTeam(team.id)
+        return PickUpLocationsResponse(officeLocations.map {
+            it.toPickUpLocation()
+        })
     }
 }

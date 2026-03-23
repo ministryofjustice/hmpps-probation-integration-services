@@ -7,6 +7,7 @@ import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
+import uk.gov.justice.digital.hmpps.entity.staff.OfficeLocationRepository
 import uk.gov.justice.digital.hmpps.entity.staff.ProbationAreaUserRepository
 import uk.gov.justice.digital.hmpps.entity.staff.TeamRepository
 import uk.gov.justice.digital.hmpps.entity.staff.UserRepository
@@ -30,6 +31,9 @@ internal class ProvidersServiceTest {
 
     @Mock
     lateinit var unpaidWorkProjectRepository: UnpaidWorkProjectRepository
+
+    @Mock
+    lateinit var officeLocationRepository: OfficeLocationRepository
 
     @InjectMocks
     lateinit var providersService: ProvidersService

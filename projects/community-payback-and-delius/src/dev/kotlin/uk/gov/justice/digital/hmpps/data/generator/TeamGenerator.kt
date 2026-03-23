@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
+import uk.gov.justice.digital.hmpps.data.entity.TeamOfficeLocation
 import uk.gov.justice.digital.hmpps.entity.staff.Provider
 import uk.gov.justice.digital.hmpps.entity.staff.Staff
 import uk.gov.justice.digital.hmpps.entity.staff.Team
@@ -38,6 +39,13 @@ object TeamGenerator {
         provider = ProviderGenerator.SECOND_PROVIDER,
         upwTeam = true
     )
+
+    val DEFAULT_TEAM_PICKUP_LOCATION by lazy {
+        TeamOfficeLocation(
+            teamId = OTHER_PROVIDER_TEAM.id,
+            officeLocationId = UPWGenerator.DEFAULT_OFFICE_LOCATION.id
+        )
+    }
 
     fun generateTeam(
         id: Long = IdGenerator.getAndIncrement(),

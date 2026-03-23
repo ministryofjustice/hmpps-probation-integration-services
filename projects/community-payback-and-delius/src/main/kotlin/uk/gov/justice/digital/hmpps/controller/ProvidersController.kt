@@ -48,4 +48,9 @@ class ProvidersController(
         @RequestParam endDate: LocalDate,
         @RequestParam typeCode: List<String> = emptyList(),
     ) = providersService.getSessions(teamCode, startDate, endDate, typeCode)
+
+    @GetMapping("/team/{teamCode}/locations")
+    fun getTeamLocations(
+        @PathVariable teamCode: String,
+    ) = providersService.getLocationsForTeam(teamCode)
 }
