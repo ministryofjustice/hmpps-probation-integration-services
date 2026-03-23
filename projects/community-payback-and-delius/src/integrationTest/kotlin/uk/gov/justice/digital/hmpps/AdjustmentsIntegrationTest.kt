@@ -124,7 +124,7 @@ class AdjustmentsIntegrationTest @Autowired constructor(
                 minutes = adjustmentAmountMinutes
             )
         )
-        val postResponse = mockMvc.post("/adjustments?username=${username}") {
+        val postResponse = mockMvc.post("/adjustments") {
             withToken()
             json = body
         }.andExpect { status { isOk() } }.andReturn().response.contentAsJson<List<AdjustmentPostResponse>>()

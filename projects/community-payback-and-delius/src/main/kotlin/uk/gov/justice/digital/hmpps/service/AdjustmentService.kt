@@ -80,8 +80,8 @@ class AdjustmentService(
         username: String
     ) {
         val existingAdjustment =
-            createUnpaidWorkAdjustmentRepository.findFirstById(adjustmentId).orNotFoundBy("Adjustment", adjustmentId)
-        val userId = userRepository.findByUsername(username)?.id.orNotFoundBy("User", username)
+            createUnpaidWorkAdjustmentRepository.findFirstById(adjustmentId).orNotFoundBy("id", adjustmentId)
+        val userId = userRepository.findByUsername(username)?.id.orNotFoundBy("username", username)
         existingAdjustment.adjustmentType = adjustmentRequest.type.code
         existingAdjustment.adjustmentAmount = adjustmentRequest.minutes
         existingAdjustment.adjustmentDate = adjustmentRequest.date
@@ -91,11 +91,9 @@ class AdjustmentService(
         createUnpaidWorkAdjustmentRepository.save(existingAdjustment)
     }
 
-    fun deleteAdjustment(adjustmentId: Long, username: String) {
+    fun deleteAdjustment(adjustmentId: Long) {
         val existingAdjustment = createUnpaidWorkAdjustmentRepository.findFirstById(adjustmentId)
-            .orNotFoundBy("Adjustment", adjustmentId)
-        userRepository.findByUsername(username)?.id
-            .orNotFoundBy("User", username)
+            .orNotFoundBy("id", adjustmentId)
         createUnpaidWorkAdjustmentRepository.delete(existingAdjustment)
     }
 
