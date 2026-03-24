@@ -7,12 +7,14 @@ import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.OneToOne
 import jakarta.persistence.Table
+import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.NumericBooleanConverter
 import org.springframework.data.jpa.repository.JpaRepository
 import java.time.LocalDate
 
 @Entity
+@Immutable
 @Table(name = "responsible_officer")
 @SQLRestriction("end_date is null")
 class ResponsibleOfficer(
@@ -38,6 +40,7 @@ class ResponsibleOfficer(
 )
 
 @Entity
+@Immutable
 @Table(name = "offender_manager")
 @SQLRestriction("soft_deleted = 0")
 class OffenderManager(
@@ -59,6 +62,7 @@ class OffenderManager(
 )
 
 @Entity
+@Immutable
 @Table(name = "prison_offender_manager")
 @SQLRestriction("soft_deleted = 0")
 class PrisonOffenderManager(
