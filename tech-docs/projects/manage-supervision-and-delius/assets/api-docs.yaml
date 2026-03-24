@@ -1609,6 +1609,44 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/PersonDocuments"
+  /contact/{username}/enforcements:
+    get:
+      tags:
+      - Contact
+      operationId: getEnforcementContacts
+      parameters:
+      - name: username
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: page
+        in: query
+        required: false
+        schema:
+          type: integer
+          format: int32
+          default: 0
+      - name: size
+        in: query
+        required: false
+        schema:
+          type: integer
+          format: int32
+          default: 10
+      - name: filterDueDate
+        in: query
+        required: false
+        schema:
+          type: boolean
+          default: false
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EnforcementContactResponse"
   /contact/types:
     get:
       tags:
@@ -4327,6 +4365,66 @@ components:
       - breaches
       - count
       - orders
+    EnforcementContactItem:
+      type: object
+      properties:
+        caseName:
+          $ref: "#/components/schemas/Name"
+        id:
+          type: integer
+          format: int64
+        crn:
+          type: string
+        dob:
+          type: string
+          format: date
+        appointmentType:
+          type: string
+        appointmentDate:
+          type: string
+          format: date
+        appointmentOutcome:
+          type: string
+        enforcementAction:
+          type: string
+        evidenceDueDate:
+          type: string
+          format: date
+        deliusManaged:
+          type: boolean
+      required:
+      - appointmentDate
+      - appointmentType
+      - caseName
+      - crn
+      - deliusManaged
+      - dob
+      - id
+    EnforcementContactResponse:
+      type: object
+      properties:
+        size:
+          type: integer
+          format: int32
+        page:
+          type: integer
+          format: int32
+        totalResults:
+          type: integer
+          format: int32
+        totalPages:
+          type: integer
+          format: int32
+        enforcementContacts:
+          type: array
+          items:
+            $ref: "#/components/schemas/EnforcementContactItem"
+      required:
+      - enforcementContacts
+      - page
+      - size
+      - totalPages
+      - totalResults
     ContactTypeResponse:
       type: object
       properties:

@@ -394,6 +394,24 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/TeamsResponse"
+  /providers/team/{teamCode}/locations:
+    get:
+      tags:
+      - providers-controller
+      operationId: getTeamLocations
+      parameters:
+      - name: teamCode
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PickUpLocationsResponse"
   /projects/{projectCode}:
     get:
       tags:
@@ -1061,6 +1079,37 @@ components:
             $ref: "#/components/schemas/CodeDescription"
       required:
       - teams
+    PickUpLocation:
+      type: object
+      properties:
+        code:
+          type: string
+        description:
+          type: string
+        streetName:
+          type: string
+        buildingName:
+          type: string
+        addressNumber:
+          type: string
+        townCity:
+          type: string
+        county:
+          type: string
+        postCode:
+          type: string
+      required:
+      - code
+      - description
+    PickUpLocationsResponse:
+      type: object
+      properties:
+        locations:
+          type: array
+          items:
+            $ref: "#/components/schemas/PickUpLocation"
+      required:
+      - locations
     Case:
       type: object
       properties:
@@ -1264,28 +1313,6 @@ components:
           type: string
         location:
           $ref: "#/components/schemas/PickUpLocation"
-    PickUpLocation:
-      type: object
-      properties:
-        code:
-          type: string
-        description:
-          type: string
-        streetName:
-          type: string
-        buildingName:
-          type: string
-        addressNumber:
-          type: string
-        townCity:
-          type: string
-        county:
-          type: string
-        postCode:
-          type: string
-      required:
-      - code
-      - description
     Offence:
       type: object
       properties:
