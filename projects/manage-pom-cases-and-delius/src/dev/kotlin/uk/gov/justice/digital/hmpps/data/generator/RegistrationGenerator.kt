@@ -16,7 +16,8 @@ object RegistrationGenerator {
     val TYPE_DASO = generateType("DASO", null)
     val TYPE_ROSH_MEDIUM = generateType("RMRH", ROSH)
 
-    fun generateType(code: String, referenceData: ReferenceData?, id: Long = IdGenerator.getAndIncrement()) = RegisterType(code, referenceData, id)
+    fun generateType(code: String, referenceData: ReferenceData?, id: Long = IdGenerator.getAndIncrement()) =
+        RegisterType(code, referenceData, id)
 
     fun generate(
         type: RegisterType,
