@@ -95,6 +95,46 @@ internal class BasicDetailsIntegrationTest @Autowired constructor(
     }
 
     @Test
+    fun `can retrieve user details for sign and send endpoint for prison offender manager`() {
+        val person = PersonGenerator.PERSON_NO_REGISTRATIONS
+        val user = UserGenerator.OFFICER_2
+        val ldapUser = ldapTemplate.findByUsername<LdapUser>(user.username)!!
+        val officeLocation = OfficeLocationGenerator.DEFAULT_2
+
+        val response = mockMvc.get("/sign-and-send/${person.crn}") {
+            withToken()
+        }
+            .andExpect { status { is2xxSuccessful() } }
+            .andReturn().response.contentAsJson<SignAndSendResponse>()
+
+        assertThat(response).isEqualTo(
+            SignAndSendResponse(
+                name = Name(
+                    ldapUser.firstName,
+                    null,
+                    ldapUser.surname
+                ),
+                telephoneNumber = ldapUser.telephoneNumber,
+                emailAddress = ldapUser.email,
+                addresses = listOf(
+                    OfficeAddress(
+                        id = officeLocation.id,
+                        status = null,
+                        officeDescription = officeLocation.description,
+                        buildingNumber = officeLocation.buildingNumber,
+                        buildingName = officeLocation.buildingName,
+                        streetName = officeLocation.streetName,
+                        townCity = officeLocation.townCity,
+                        district = officeLocation.district,
+                        county = officeLocation.county,
+                        postcode = officeLocation.postcode
+                    )
+                )
+            )
+        )
+    }
+
+    @Test
     fun `can retrieve crn from suicide risk form id successfully`() {
         val person = PersonGenerator.DEFAULT_PERSON
         val srfId = DocumentGenerator.SUICIDE_RISK_FORM_ID
