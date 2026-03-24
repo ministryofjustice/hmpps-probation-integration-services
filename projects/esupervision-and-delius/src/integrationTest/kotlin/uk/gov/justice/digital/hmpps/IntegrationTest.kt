@@ -386,6 +386,22 @@ internal class IntegrationTest @Autowired constructor(
     }
 
     @Test
+    fun `incorrect punctuation is allowed`() {
+        val testBody = PersonalDetails(
+            crn = PersonGenerator.PUNCTUATION_IN_NAME.crn,
+            name = uk.gov.justice.digital.hmpps.model.Name(
+                forename = "Joe",
+                surname = "OʼNeil" // note: using ʼ instead of '
+            ),
+            dateOfBirth = PersonGenerator.PUNCTUATION_IN_NAME.dateOfBirth
+        )
+        mockMvc.post("/case/{${PersonGenerator.PUNCTUATION_IN_NAME.crn}/validate-details") {
+            json = testBody
+            withToken()
+        }.andExpect { status { isOk() } }
+    }
+
+    @Test
     fun `validate an incorrect set of details and return a 400 response status code`() {
         val testBody = PersonalDetails(
             crn = PersonGenerator.DEFAULT_PERSON.crn,

@@ -13,6 +13,7 @@ object PersonGenerator {
     val PERSON_CONTACT_DETAILS_2 = generatePerson("A000003")
     val NO_ACTIVE_EVENT_PERSON = generatePerson("A000004")
     val FALLBACK_EVENT_PERSON = generatePerson("A000005")
+    val PUNCTUATION_IN_NAME = generatePerson("A000006", "Joe", "O'Neil")
 
     val DEFAULT_COM = generatePersonManager(DEFAULT_PERSON)
     val NO_ACTIVE_EVENT_COM = generatePersonManager(NO_ACTIVE_EVENT_PERSON)
@@ -20,8 +21,10 @@ object PersonGenerator {
 
     fun generatePerson(
         crn: String,
+        firstName: String = "John",
+        lastName: String = "Doe",
         id: Long = id()
-    ) = Person(id, crn, LocalDate.of(1985, 10, 1), "John", "Doe", "07123456789", "john@example.com")
+    ) = Person(id, crn, LocalDate.of(1985, 10, 1), firstName, lastName, "07123456789", "john@example.com")
 
     fun generatePersonManager(
         person: Person,

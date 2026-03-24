@@ -34,6 +34,7 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
             PersonGenerator.NO_ACTIVE_EVENT_COM,
             PersonGenerator.FALLBACK_EVENT_PERSON,
             PersonGenerator.FALLBACK_EVENT_COM,
+            PersonGenerator.PUNCTUATION_IN_NAME,
             OffenceGenerator.BURGLARY,
             EventGenerator.EVENT_1,
             EventGenerator.EVENT_2,
