@@ -119,7 +119,7 @@ internal class BasicDetailsIntegrationTest @Autowired constructor(
                 addresses = listOf(
                     OfficeAddress(
                         id = officeLocation.id,
-                        status = null,
+                        status = "Default",
                         officeDescription = officeLocation.description,
                         buildingNumber = officeLocation.buildingNumber,
                         buildingName = officeLocation.buildingName,

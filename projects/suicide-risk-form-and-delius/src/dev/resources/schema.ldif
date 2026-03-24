@@ -39,4 +39,4 @@ dn: cn=UserPreferences,cn=officer2,ou=Users,dc=moj,dc=com
 objectclass: top
 objectclass: UserPreferences
 cn: UserPreferences
-replyAddress: 1
+replyAddress: 2
