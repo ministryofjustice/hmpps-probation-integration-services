@@ -4,6 +4,7 @@ import org.springframework.ldap.core.LdapTemplate
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
+import uk.gov.justice.digital.hmpps.exception.NotFoundException.Companion.orNotFoundBy
 import uk.gov.justice.digital.hmpps.integrations.delius.*
 import uk.gov.justice.digital.hmpps.ldap.findByUsername
 import uk.gov.justice.digital.hmpps.ldap.findPreferenceByUsername
@@ -19,7 +20,9 @@ class DetailsService(
     private val staffRepository: StaffRepository,
     private val officeLocationRepository: OfficeLocationRepository,
     private val ldapTemplate: LdapTemplate,
-    private val documentRepository: DocumentRepository
+    private val documentRepository: DocumentRepository,
+    private val responsibleOfficerRepository: ResponsibleOfficerRepository,
+    private val userRepository: UserRepository
 ) {
     fun basicDetails(crn: String): BasicDetails {
         val person = personRepository.getByCrn(crn)
@@ -33,7 +36,13 @@ class DetailsService(
         )
     }
 
-    fun signAndSend(username: String): SignAndSendResponse {
+    fun signAndSend(crn: String): SignAndSendResponse {
+        val responsibleOfficer = responsibleOfficerRepository.findByPerson_Crn(crn).orNotFoundBy("crn", crn)
+        val offenderManager = responsibleOfficer.offenderManager
+        val prisonOffenderManager = responsibleOfficer.prisonOffenderManager
+        val staff = (offenderManager?.staff ?: prisonOffenderManager?.staff).orNotFoundBy("CRN", crn)
+        val username = userRepository.findByStaffId(staff.id)?.username.orNotFoundBy("staffId", staff.id)
+
         val ldapUser = ldapTemplate.findByUsername<LdapUser>(username)
             ?: throw NotFoundException("User", "username", username)
         requireNotNull(ldapUser.userHomeArea) { "No home area found for $username" }

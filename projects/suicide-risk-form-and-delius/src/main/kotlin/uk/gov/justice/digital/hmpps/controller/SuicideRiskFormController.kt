@@ -29,8 +29,8 @@ class SuicideRiskFormController(
         registrationsService.informationPage(crn)
 
     @PreAuthorize("hasRole('PROBATION_API__SUICIDE_RISK_FORM__CASE_DETAIL')")
-    @GetMapping(value = ["/sign-and-send/{username}"])
-    fun getSignAndSend(@PathVariable username: String): SignAndSendResponse = detailsService.signAndSend(username)
+    @GetMapping(value = ["/sign-and-send/{crn}"])
+    fun getSignAndSend(@PathVariable crn: String): SignAndSendResponse = detailsService.signAndSend(crn)
 
     @PreAuthorize("hasRole('PROBATION_API__SUICIDE_RISK_FORM__CASE_DETAIL')")
     @GetMapping(value = ["/case/{suicideRiskFormId}"])
