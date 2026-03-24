@@ -5,7 +5,6 @@ import uk.gov.justice.digital.hmpps.integrations.delius.ResponsibleOfficer
 
 object ResponsibleOfficerGenerator {
 
-
     val DEFAULT_OFFENDER_MANAGER = OffenderManager(
         id = IdGenerator.getAndIncrement(),
         person = PersonGenerator.DEFAULT_PERSON,
