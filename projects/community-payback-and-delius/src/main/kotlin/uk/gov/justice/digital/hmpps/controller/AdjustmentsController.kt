@@ -46,6 +46,5 @@ class AdjustmentsController(
     @DeleteMapping("/adjustments/{adjustmentId}")
     fun deleteAdjustments(
         @PathVariable adjustmentId: Long,
-        @RequestParam username: String,
-    ) = adjustmentService.deleteAdjustment(adjustmentId, username)
+    ) = adjustmentService.deleteAdjustment(adjustmentId)
 }

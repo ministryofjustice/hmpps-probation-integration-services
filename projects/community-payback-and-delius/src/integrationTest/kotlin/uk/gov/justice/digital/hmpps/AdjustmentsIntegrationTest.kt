@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps
 
+import jakarta.persistence.EntityManager
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -31,6 +32,8 @@ class AdjustmentsIntegrationTest @Autowired constructor(
     @Autowired private val mockMvc: MockMvc,
     private val adjustmentRepository: UnpaidWorkAdjustmentRepository
 ) {
+    @Autowired
+    lateinit var entityManager: EntityManager
 
     @Test
     fun `get unpaid work adjustment`() {
@@ -126,10 +129,13 @@ class AdjustmentsIntegrationTest @Autowired constructor(
             json = body
         }.andExpect { status { isOk() } }.andReturn().response.contentAsJson<List<AdjustmentPostResponse>>()
         val idToDelete = postResponse.first().id
-        mockMvc.delete("/adjustments/${idToDelete}?username=${username}") { withToken() }
+        mockMvc.delete("/adjustments/${idToDelete}") { withToken() }
             .andExpect { status { isOk() } }
-        val deletedAdjustment = adjustmentRepository.findById(idToDelete)
-        assertThat(deletedAdjustment).isEmpty()
+        val count = entityManager
+            .createQuery("SELECT COUNT(a) FROM UnpaidWorkAdjustment a WHERE a.id = :id")
+            .setParameter("id", idToDelete)
+            .singleResult as Long
+        assertThat(count).isEqualTo(0L)
     }
 
     @Test
