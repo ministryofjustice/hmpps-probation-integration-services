@@ -28,7 +28,6 @@ object ResponsibleOfficerGenerator {
         staff = DEFAULT_RO_STAFF
     )
 
-
     val DEFAULT_RESPONSIBLE_OFFICER =
         ResponsibleOfficer(
             id = IdGenerator.getAndIncrement(),

@@ -20,6 +20,6 @@ class User(
     val staff: Staff?,
 )
 
-interface UserRepository: JpaRepository<User, Long> {
+interface UserRepository : JpaRepository<User, Long> {
     fun findByStaffId(staffId: Long): User?
 }
