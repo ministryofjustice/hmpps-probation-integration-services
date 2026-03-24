@@ -355,12 +355,22 @@ class Enforcement(
     @Column(name = "response_date")
     val responseDate: ZonedDateTime? = null,
 
+    @Column(name = "action_taken_date")
+    val actionTakenDate: LocalDate? = null,
+
     @Column(columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean = false,
 
     @Column(name = "partition_area_id")
     val partitionAreaId: Long = 0,
+
+    @Column(name = "created_by_user_id")
+    val createdByUserId: Long? = null,
+
+    @ManyToOne
+    @JoinColumn(name = "created_by_user_id", insertable = false, updatable = false)
+    val createdByUser: User? = null,
 
     @Id
     @Column(name = "enforcement_id")
@@ -860,7 +870,9 @@ interface EnforcementAppointment {
     val evidenceDueDate: LocalDateTime?
 }
 
-interface EnforcementRepository : JpaRepository<Enforcement, Long>
+interface EnforcementRepository : JpaRepository<Enforcement, Long> {
+    fun findByContactIdOrderByActionTakenDateDesc(contactId: Long): List<Enforcement>
+}
 
 fun ContactRepository.getContact(personId: Long, contactId: Long): Contact =
     findByPersonIdAndId(personId, contactId) ?: throw NotFoundException("Contact", "contactId", contactId)

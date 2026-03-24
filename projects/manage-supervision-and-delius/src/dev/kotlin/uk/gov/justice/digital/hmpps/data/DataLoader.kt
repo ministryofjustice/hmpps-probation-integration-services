@@ -177,6 +177,8 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
             ContactGenerator.ENFORCEMENT,
             ContactGenerator.OVERDUE_ENFORCEMENT,
             ContactGenerator.DUE_SOON_ENFORCEMENT,
+            ContactGenerator.LINKED_ENFORCEMENT_1,
+            ContactGenerator.LINKED_ENFORCEMENT_2,
             ContactGenerator.COMMUNICATION_CATEGORY,
             ContactGenerator.CONTACT_DOCUMENT_1,
             ContactGenerator.CONTACT_DOCUMENT_2,

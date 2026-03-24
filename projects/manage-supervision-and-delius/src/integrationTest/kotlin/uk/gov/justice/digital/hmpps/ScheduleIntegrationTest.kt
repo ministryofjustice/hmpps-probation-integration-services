@@ -8,6 +8,7 @@ import org.junit.jupiter.params.provider.CsvSource
 import org.springframework.test.web.servlet.get
 import uk.gov.justice.digital.hmpps.api.model.Name
 import uk.gov.justice.digital.hmpps.api.model.activity.Component
+import uk.gov.justice.digital.hmpps.api.model.schedule.LinkedEnforcementAction
 import uk.gov.justice.digital.hmpps.api.model.schedule.NextAppointment
 import uk.gov.justice.digital.hmpps.api.model.schedule.PersonAppointment
 import uk.gov.justice.digital.hmpps.api.model.schedule.Schedule
@@ -166,6 +167,31 @@ class ScheduleIntegrationTest : IntegrationTestBase() {
         assertThat(res.appointment.description, equalTo("previous appointment"))
         assertThat(res.appointment.outcome, equalTo("Acceptable"))
         assertThat(res.appointment.appointmentNote, equalTo(expectedNote))
+    }
+
+    @Test
+    fun `enforcement actions linked to a contact are returned`() {
+        val person = OVERVIEW
+        val contactId = ContactGenerator.NEXT_APPT_CONTACT.id
+        val res = mockMvc.get("/schedule/${person.crn}/appointment/$contactId/enforcements") {
+            withDeliusUserToken("DeliusUser")
+        }
+            .andExpect { status { isOk() } }
+            .andReturn().response.contentAsJson<List<LinkedEnforcementAction>>()
+
+        assertThat(res.size, equalTo(2))
+        assertThat(res[0].enforcementId, equalTo(ContactGenerator.LINKED_ENFORCEMENT_1.id))
+        assertThat(
+            res[0].enforcementDescription,
+            equalTo(ContactGenerator.WARNING_LETTER_ENFORCEMENT_ACTION.description)
+        )
+        assertThat(res[0].enforcementDate, equalTo(ContactGenerator.LINKED_ENFORCEMENT_1.actionTakenDate))
+        assertThat(res[0].createdBy, equalTo(Name(ContactGenerator.USER.forename, null, ContactGenerator.USER.surname)))
+        assertThat(res[1].enforcementId, equalTo(ContactGenerator.LINKED_ENFORCEMENT_2.id))
+        assertThat(
+            res[1].createdBy,
+            equalTo(Name(ContactGenerator.USER_1.forename, null, ContactGenerator.USER_1.surname))
+        )
     }
 
     @Test
