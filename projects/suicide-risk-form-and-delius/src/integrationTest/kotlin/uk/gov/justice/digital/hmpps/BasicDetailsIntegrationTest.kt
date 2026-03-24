@@ -57,7 +57,7 @@ internal class BasicDetailsIntegrationTest @Autowired constructor(
     @Test
     fun `can retrieve user details for sign and send endpoint`() {
         val person = PersonGenerator.DEFAULT_PERSON
-        val user = ResponsibleOfficerGenerator.DEFAULT_RO_USER
+        val user = UserGenerator.DEFAULT
         val ldapUser = ldapTemplate.findByUsername<LdapUser>(user.username)!!
         val officeLocation = OfficeLocationGenerator.DEFAULT
 

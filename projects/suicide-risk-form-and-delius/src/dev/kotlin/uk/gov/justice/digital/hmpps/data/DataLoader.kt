@@ -20,14 +20,11 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
         save(PersonGenerator.DEFAULT_ADDRESS_STATUS)
         save(PersonGenerator.DEFAULT_PERSON)
         save(PersonGenerator.DEFAULT_ADDRESS)
-
         save(ProviderGenerator.N00)
         save(StaffGenerator.DEFAULT)
         save(UserGenerator.LIMITED_ACCESS_USER)
         save(UserGenerator.NON_LAO_USER)
         save(UserGenerator.DEFAULT)
-        save(ResponsibleOfficerGenerator.DEFAULT_RO_STAFF)
-        save(ResponsibleOfficerGenerator.DEFAULT_RO_USER)
         save(ResponsibleOfficerGenerator.DEFAULT_OFFENDER_MANAGER)
         save(ResponsibleOfficerGenerator.DEFAULT_RESPONSIBLE_OFFICER)
         save(PersonGenerator.RESTRICTION)
@@ -37,7 +34,6 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
         save(LimitedAccessGenerator.EXCLUSION)
         save(LimitedAccessGenerator.BOTH_RESTRICTION)
         save(LimitedAccessGenerator.BOTH_EXCLUSION)
-
         save(ReferenceDataGenerator.REGISTER_TYPE_FLAG_DATASET)
         save(ReferenceDataGenerator.SAFEGUARDING_FLAG)
         save(ReferenceDataGenerator.INFORMATION_FLAG)
