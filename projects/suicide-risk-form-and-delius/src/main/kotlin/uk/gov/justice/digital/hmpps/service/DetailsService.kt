@@ -17,7 +17,6 @@ import java.util.*
 @Transactional(readOnly = true)
 class DetailsService(
     private val personRepository: PersonRepository,
-    private val staffRepository: StaffRepository,
     private val officeLocationRepository: OfficeLocationRepository,
     private val ldapTemplate: LdapTemplate,
     private val documentRepository: DocumentRepository,
