@@ -118,15 +118,14 @@ interface RegistrationRepository : JpaRepository<Registration, Long> {
 
     @Query(
         """
-        SELECT registration
-            FROM Registration registration 
-            WHERE registration.type.referenceData.code = 'RoSH' 
-                AND registration.deRegistered = false
-                AND registration.person.crn = :personCrn
-            ORDER BY registration.date DESC
+        select registration
+            from Registration registration 
+            where registration.type.referenceData.code = 'RoSH' 
+                and registration.person.crn = :personCrn
+            order by registration.date desc
             """
     )
-    fun findRoshByPersonCrn(personCrn: String, pageable: Pageable): List<Registration>
+    fun findRoshByPersonCrn(personCrn: String, pageable: PageRequest = PageRequest.of(0, 1)): Registration?
 }
 
 fun RegistrationRepository.findMappaRegistration(personId: Long) =
