@@ -257,17 +257,6 @@ internal class IntegrationTest @Autowired constructor(
                           "email": "${PersonGenerator.DEFAULT_PERSON.emailAddress}",
                           "events": [
                             {
-                              "number": 1,
-                              "mainOffence": {
-                                "code": "03100",
-                                "description": "Aggravated burglary in a building other than a dwelling (including attempts)"
-                              },
-                              "sentence": {
-                                "date": "2025-12-01",
-                                "description": "ORA Adult Custody (inc PSS)"
-                              }
-                            },
-                            {
                               "number": 2,
                               "mainOffence": {
                                 "code": "03100",
@@ -332,6 +321,20 @@ internal class IntegrationTest @Autowired constructor(
         }.andExpect {
             status { isOk() }
             jsonPath("$.length()") { value(2) }
+        }
+    }
+
+    @Test
+    fun `get multiple contact details only returns active events`() {
+        mockMvc.post("/cases") {
+            json = listOf(PersonGenerator.DEFAULT_PERSON.crn)
+            withToken()
+        }.andExpect {
+            status { isOk() }
+            jsonPath("$.length()") { value(1) }
+            jsonPath("$[0].events.length()") { value(2) }
+            jsonPath("$[0].events[0].number") { value(2) }
+            jsonPath("$[0].events[1].number") { value(3) }
         }
     }
 

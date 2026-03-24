@@ -38,7 +38,8 @@ class Person(
     val emailAddress: String?,
 
     @OneToMany(mappedBy = "person")
-    val events: List<EventEntity> = emptyList(),
+    @SQLRestriction("active_flag = 1")
+    val activeEvents: List<EventEntity> = emptyList(),
 
     @Column(name = "soft_deleted", columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)
@@ -81,10 +82,10 @@ class PersonManager(
 )
 
 interface PersonManagerRepository : JpaRepository<PersonManager, Long> {
-    @EntityGraph(attributePaths = ["provider", "team.ldu.pdu", "staff.user", "person.events.disposal.type", "person.events.mainOffence.offence"])
+    @EntityGraph(attributePaths = ["provider", "team.ldu.pdu", "staff.user", "person.activeEvents.disposal.type", "person.activeEvents.mainOffence.offence"])
     fun findByPersonCrn(crn: String): PersonManager?
 
-    @EntityGraph(attributePaths = ["provider", "team.ldu.pdu", "staff.user", "person.events.disposal.type", "person.events.mainOffence.offence"])
+    @EntityGraph(attributePaths = ["provider", "team.ldu.pdu", "staff.user", "person.activeEvents.disposal.type", "person.activeEvents.mainOffence.offence"])
     fun findByPersonCrnIn(crns: List<String>): List<PersonManager>
     fun getByCrn(crn: String) = findByPersonCrn(crn).orIgnore { "CRN not found" }
 }

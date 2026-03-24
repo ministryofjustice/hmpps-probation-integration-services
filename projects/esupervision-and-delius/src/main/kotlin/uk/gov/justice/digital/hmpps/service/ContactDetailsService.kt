@@ -27,7 +27,7 @@ class ContactDetailsService(
                 ),
                 mobile = com.person.mobile,
                 email = com.person.emailAddress,
-                events = com.person.events.map { it.asEvent() },
+                events = com.person.activeEvents.map { it.asEvent() },
                 practitioner = com.asPractitioner { email }
             )
         }
@@ -48,7 +48,7 @@ class ContactDetailsService(
                     ),
                     mobile = com.person.mobile,
                     email = com.person.emailAddress,
-                    events = com.person.events.map { it.asEvent() },
+                    events = com.person.activeEvents.map { it.asEvent() },
                     practitioner = com.asPractitioner { emails[it] },
                 )
             }

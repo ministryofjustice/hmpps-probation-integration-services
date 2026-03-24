@@ -16,6 +16,7 @@ import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
 import uk.gov.justice.digital.hmpps.messaging.checkInUrl
 import uk.gov.justice.digital.hmpps.messaging.description
 import uk.gov.justice.digital.hmpps.messaging.detail.CheckInDetail
+import uk.gov.justice.digital.hmpps.messaging.eventNumber
 
 @Service
 @Transactional
@@ -33,8 +34,8 @@ class CheckInService(
         val crn = requireNotNull(domainEvent.personReference.findCrn())
         val com = personManagerRepository.getByCrn(crn)
         audit["offenderId"] = com.person.id
-        val event = domainEvent.additionalInformation["eventNumber"]
-            ?.let { eventRepository.findByPersonCrnAndNumber(crn, it as String) }
+        val event = domainEvent.eventNumber()
+            ?.let { eventRepository.findByPersonCrnAndNumber(crn, it) }
             ?: eventRepository.findFirstByPersonCrnAndActiveTrueOrderByReferralDateDesc(crn)
             ?: throw IllegalStateException("Case does not have an active event")
         audit["eventId"] = event.id
