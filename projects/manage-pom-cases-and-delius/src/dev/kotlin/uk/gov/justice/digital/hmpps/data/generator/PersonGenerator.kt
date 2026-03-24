@@ -16,6 +16,7 @@ object PersonGenerator {
     val CREATE_SENTENCE_CHANGED = generate("H123459", "A4096CY")
     val PERSON_NOT_FOUND = generate("H123410", "A4096DY")
     val PERSON_MULTIPLE_CUSTODIAL = generate("H123412", "A4096DX")
+    val PERSON_ROSH_REFERENCE = generate("M123456")
 
     fun generate(
         crn: String,

@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps
 
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
+import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
@@ -18,6 +19,7 @@ import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.Person
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
+import java.time.LocalDate
 
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = RANDOM_PORT)
@@ -58,6 +60,17 @@ internal class ApiIntegrationTest @Autowired constructor(
                 )
             )
         )
+    }
+
+    @Test
+    fun `successful retrieval of rosh registration`() {
+        val crn = "M123456"
+        val record = mockMvc.get("/case-records/$crn/risks/rosh") { withToken() }
+            .andExpect { status { is2xxSuccessful() } }
+            .andReturn().response.contentAsJson<RoshResponse>()
+
+        assertThat(record.startDate, equalTo(LocalDate.now().minusDays(1)))
+        assertThat(record.level, equalTo(RoshCode.MEDIUM.name))
     }
 
     companion object {

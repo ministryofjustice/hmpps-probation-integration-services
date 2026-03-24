@@ -22,7 +22,8 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
             listOf(
                 RegistrationGenerator.TYPE_MAPPA,
                 RegistrationGenerator.TYPE_OTH,
-                RegistrationGenerator.TYPE_DASO
+                RegistrationGenerator.TYPE_DASO,
+                RegistrationGenerator.TYPE_ROSH_MEDIUM
             )
         )
         saveAll(
@@ -60,7 +61,8 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
                 PersonGenerator.UPDATE_HANDOVER_AND_START,
                 PersonGenerator.CREATE_SENTENCE_CHANGED,
                 PersonGenerator.PERSON_NOT_FOUND,
-                PersonGenerator.PERSON_MULTIPLE_CUSTODIAL
+                PersonGenerator.PERSON_MULTIPLE_CUSTODIAL,
+                PersonGenerator.PERSON_ROSH_REFERENCE
             )
         )
         saveAll(
@@ -101,6 +103,12 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
                     RegistrationGenerator.TYPE_OTH,
                     ReferenceDataGenerator.LEVEL_M1,
                     LocalDate.now().minusDays(1)
+                ),
+                RegistrationGenerator.generate(
+                    type = RegistrationGenerator.TYPE_ROSH_MEDIUM,
+                    level = ReferenceDataGenerator.ROSH,
+                    date = LocalDate.now().minusDays(1),
+                    person = PersonGenerator.PERSON_ROSH_REFERENCE
                 )
             )
         )

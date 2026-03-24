@@ -65,6 +65,10 @@ class RegisterType(
 
     val code: String,
 
+    @OneToOne
+    @JoinColumn(name = "register_type_flag_id")
+    val referenceData: ReferenceData? = null,
+
     @Id
     @Column(name = "register_type_id")
     val id: Long
@@ -111,6 +115,17 @@ interface RegistrationRepository : JpaRepository<Registration, Long> {
     """
     )
     fun findActiveMappaRegistrationByOffenderId(offenderId: Long, pageable: Pageable): Page<Registration>
+
+    @Query(
+        """
+        select registration
+            from Registration registration 
+            where registration.type.referenceData.code = 'RoSH' 
+                and registration.person.crn = :personCrn
+            order by registration.date desc
+            """
+    )
+    fun findRoshByPersonCrn(personCrn: String, pageable: PageRequest = PageRequest.of(0, 1)): Registration?
 }
 
 fun RegistrationRepository.findMappaRegistration(personId: Long) =
