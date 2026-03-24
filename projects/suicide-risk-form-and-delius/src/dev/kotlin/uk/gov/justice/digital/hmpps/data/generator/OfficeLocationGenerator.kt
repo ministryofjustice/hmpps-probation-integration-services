@@ -16,4 +16,18 @@ object OfficeLocationGenerator {
         endDate = null,
         provider = ProviderGenerator.N00
     )
+
+    val DEFAULT_2 = OfficeLocation(
+        id = 2,
+        description = "Default Office2",
+        buildingName = null,
+        buildingNumber = "123",
+        streetName = "Default Street",
+        district = null,
+        townCity = "Default Town",
+        county = "Default County",
+        postcode = "AB1 2CD",
+        endDate = null,
+        provider = ProviderGenerator.N01
+    )
 }

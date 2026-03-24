@@ -21,3 +21,22 @@ objectclass: top
 objectclass: UserPreferences
 cn: UserPreferences
 replyAddress: 1
+
+dn: cn=officer2,ou=Users,dc=moj,dc=com
+cn: officer2
+objectclass: NDUser
+objectclass: inetOrgPerson
+objectclass: top
+givenName: Probation
+sn: Officer2
+userHomeArea: N01
+userSector: public
+mail: officer2@example.com
+telephoneNumber: 01234567891
+userPassword: secret
+
+dn: cn=UserPreferences,cn=officer2,ou=Users,dc=moj,dc=com
+objectclass: top
+objectclass: UserPreferences
+cn: UserPreferences
+replyAddress: 2

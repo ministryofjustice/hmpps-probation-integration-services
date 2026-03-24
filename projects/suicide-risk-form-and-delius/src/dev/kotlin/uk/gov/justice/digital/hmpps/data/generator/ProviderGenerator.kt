@@ -7,4 +7,9 @@ object ProviderGenerator {
         id = 1,
         code = "N00"
     )
+
+    val N01 = Provider(
+        id = 2,
+        code = "N01"
+    )
 }

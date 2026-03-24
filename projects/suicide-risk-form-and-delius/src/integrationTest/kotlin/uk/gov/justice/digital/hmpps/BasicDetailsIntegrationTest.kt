@@ -12,6 +12,7 @@ import org.springframework.test.web.servlet.get
 import uk.gov.justice.digital.hmpps.data.generator.DocumentGenerator
 import uk.gov.justice.digital.hmpps.data.generator.OfficeLocationGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
+import uk.gov.justice.digital.hmpps.data.generator.ResponsibleOfficerGenerator
 import uk.gov.justice.digital.hmpps.data.generator.UserGenerator
 import uk.gov.justice.digital.hmpps.integrations.delius.LdapUser
 import uk.gov.justice.digital.hmpps.integrations.delius.toAddress
@@ -55,11 +56,52 @@ internal class BasicDetailsIntegrationTest @Autowired constructor(
 
     @Test
     fun `can retrieve user details for sign and send endpoint`() {
+        val person = PersonGenerator.DEFAULT_PERSON
         val user = UserGenerator.DEFAULT
         val ldapUser = ldapTemplate.findByUsername<LdapUser>(user.username)!!
         val officeLocation = OfficeLocationGenerator.DEFAULT
 
-        val response = mockMvc.get("/sign-and-send/${user.username}") {
+        val response = mockMvc.get("/sign-and-send/${person.crn}") {
+            withToken()
+        }
+            .andExpect { status { is2xxSuccessful() } }
+            .andReturn().response.contentAsJson<SignAndSendResponse>()
+
+        assertThat(response).isEqualTo(
+            SignAndSendResponse(
+                name = Name(
+                    ldapUser.firstName,
+                    null,
+                    ldapUser.surname
+                ),
+                telephoneNumber = ldapUser.telephoneNumber,
+                emailAddress = ldapUser.email,
+                addresses = listOf(
+                    OfficeAddress(
+                        id = officeLocation.id,
+                        status = "Default",
+                        officeDescription = officeLocation.description,
+                        buildingNumber = officeLocation.buildingNumber,
+                        buildingName = officeLocation.buildingName,
+                        streetName = officeLocation.streetName,
+                        townCity = officeLocation.townCity,
+                        district = officeLocation.district,
+                        county = officeLocation.county,
+                        postcode = officeLocation.postcode
+                    )
+                )
+            )
+        )
+    }
+
+    @Test
+    fun `can retrieve user details for sign and send endpoint for prison offender manager`() {
+        val person = PersonGenerator.PERSON_NO_REGISTRATIONS
+        val user = UserGenerator.OFFICER_2
+        val ldapUser = ldapTemplate.findByUsername<LdapUser>(user.username)!!
+        val officeLocation = OfficeLocationGenerator.DEFAULT_2
+
+        val response = mockMvc.get("/sign-and-send/${person.crn}") {
             withToken()
         }
             .andExpect { status { is2xxSuccessful() } }

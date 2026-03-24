@@ -13,6 +13,12 @@ object UserGenerator {
         "officer",
         StaffGenerator.DEFAULT,
     )
+
+    val OFFICER_2 = User(
+        IdGenerator.getAndIncrement(),
+        "officer2",
+        StaffGenerator.OFFICER_2,
+    )
 }
 
 object StaffGenerator {
@@ -22,6 +28,15 @@ object StaffGenerator {
         firstName = "Probation",
         middleName = "PO",
         surname = "Officer",
+        user = null
+    )
+
+    val OFFICER_2 = Staff(
+        id = IdGenerator.getAndIncrement(),
+        code = "N00A002",
+        firstName = "Probation",
+        middleName = "PO",
+        surname = "Officer 2",
         user = null
     )
 }
