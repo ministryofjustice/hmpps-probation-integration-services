@@ -14,5 +14,8 @@ generic-service:
     INTEGRATIONS_PROBATION-SEARCH_URL: https://probation-offender-search-dev.hmpps.service.justice.gov.uk
     GOV_UK_URL: https://www.gov.uk
 
+  allowlist:
+    kpmg-pen-1: 195.68.59.72/29
+
 generic-prometheus-alerts:
   businessHoursOnly: true
