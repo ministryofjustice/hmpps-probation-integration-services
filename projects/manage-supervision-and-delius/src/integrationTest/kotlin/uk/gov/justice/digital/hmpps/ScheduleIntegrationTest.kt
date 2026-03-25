@@ -171,8 +171,8 @@ class ScheduleIntegrationTest : IntegrationTestBase() {
 
     @Test
     fun `contacts linked to a contact are returned`() {
-        val person = OVERVIEW
-        val contactId = ContactGenerator.NEXT_APPT_CONTACT.id
+        val person = PersonGenerator.ENFORCEMENT_PERSON
+        val contactId = ContactGenerator.INITIAL_CONTACT.id
         val res = mockMvc.get("/schedule/${person.crn}/appointment/$contactId/linked-contacts") {
             withDeliusUserToken("DeliusUser")
         }

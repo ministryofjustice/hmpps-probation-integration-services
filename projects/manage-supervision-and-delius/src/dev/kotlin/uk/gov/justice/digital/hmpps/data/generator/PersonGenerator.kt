@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.data.generator
 
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.DEFAULT_STAFF
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.DEFAULT_TEAM
+import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.ENFORCEMENT_STAFF
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.LIMITED_ACCESS_STAFF
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.STAFF_1
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.USER
@@ -264,7 +265,7 @@ object PersonGenerator {
         PersonDetailsGenerator.PERSONAL_DETAILS.id
     )
 
-    val ENFORCEMENT_PERSON = generateOverview("ENF0001")
+    val ENFORCEMENT_PERSON = generateOverview("E900001")
     val ENFORCEMENT_CASELOAD_PERSON = generateCaseloadPerson(
         ENFORCEMENT_PERSON.crn,
         ENFORCEMENT_PERSON.forename,
@@ -275,7 +276,7 @@ object PersonGenerator {
     val ENFORCEMENT_CASELOAD = Caseload(
         id = IdGenerator.getAndIncrement(),
         person = ENFORCEMENT_CASELOAD_PERSON,
-        staff = DEFAULT_STAFF,
+        staff = ENFORCEMENT_STAFF,
         team = DEFAULT_TEAM,
         roleCode = "OM",
         trustProviderFlag = true

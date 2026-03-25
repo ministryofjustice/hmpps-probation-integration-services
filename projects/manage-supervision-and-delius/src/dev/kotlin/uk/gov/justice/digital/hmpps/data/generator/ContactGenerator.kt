@@ -43,6 +43,7 @@ object ContactGenerator {
     val DEFAULT_STAFF = generateStaff("N01BDT1", "John", "Smith", emptyList())
     val STAFF_1 = generateStaff("N01BDT2", "Jim", "Brown", emptyList())
     val LIMITED_ACCESS_STAFF = generateStaff("N01BDT3", "Limited", "Access", emptyList())
+    val ENFORCEMENT_STAFF = generateStaff("N01BDT4", "Enforcement", "User", emptyList())
 
     val DEFAULT_TEAM = generateTeam(code = "TEAM11", description = "Main Team", staff = listOf(DEFAULT_STAFF, STAFF_1))
 
@@ -74,6 +75,14 @@ object ContactGenerator {
         surname = "Access",
         staff = LIMITED_ACCESS_STAFF,
         username = "LimitedAccess"
+    )
+
+    val ENFORCEMENT_USER = User(
+        id = IdGenerator.getAndIncrement(),
+        forename = "Enforcement",
+        surname = "User",
+        staff = ENFORCEMENT_STAFF,
+        username = "EnforcementUser"
     )
 
     val COMMUNICATION_CATEGORY_RD = ReferenceData(IdGenerator.getAndIncrement(), "LT", "Communication")
@@ -236,17 +245,22 @@ object ContactGenerator {
     val ENFORCEMENT = generateEnforcement(ENFORCEMENT_CONTACT_1, ZonedDateTime.now(EuropeLondon).plusDays(7))
     val DUE_SOON_ENFORCEMENT = generateEnforcement(ENFORCEMENT_CONTACT_2, ZonedDateTime.now(EuropeLondon).plusDays(1))
     val OVERDUE_ENFORCEMENT = generateEnforcement(ENFORCEMENT_CONTACT_3, ZonedDateTime.now(EuropeLondon).minusDays(1))
+    val INITIAL_CONTACT = generateContact(
+        PersonGenerator.ENFORCEMENT_PERSON,
+        APPT_CT_1,
+        ZonedDateTime.now(EuropeLondon).minusDays(14),
+    )
     val LINKED_CONTACT_1 = generateContact(
         PersonGenerator.ENFORCEMENT_PERSON,
         APPT_CT_1,
         ZonedDateTime.now(EuropeLondon).minusDays(3),
-        linkedContactId = NEXT_APPT_CONTACT.id
+        linkedContactId = INITIAL_CONTACT.id
     )
     val LINKED_CONTACT_2 = generateContact(
         PersonGenerator.ENFORCEMENT_PERSON,
         APPT_CT_2,
         ZonedDateTime.now(EuropeLondon).minusDays(8),
-        linkedContactId = NEXT_APPT_CONTACT.id
+        linkedContactId = INITIAL_CONTACT.id
     )
 
     val CONTACT_DOCUMENT_1 = generateContactDocument(
