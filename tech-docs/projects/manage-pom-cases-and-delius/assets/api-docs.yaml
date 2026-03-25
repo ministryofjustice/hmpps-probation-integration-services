@@ -59,6 +59,25 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+  /case-records/{crn}/risks/rosh:
+    get:
+      tags:
+      - rosh-resource
+      summary: Information on the ROSH level code
+      operationId: handle_1
+      parameters:
+      - name: crn
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RoshResponse"
   /case-records/{crn}/risks/mappa:
     get:
       tags:
@@ -173,6 +192,17 @@ components:
       required:
       - code
       - description
+    RoshResponse:
+      type: object
+      properties:
+        startDate:
+          type: string
+          format: date
+        level:
+          type: string
+      required:
+      - level
+      - startDate
     MappaDetail:
       type: object
       properties:
