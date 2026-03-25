@@ -45,5 +45,4 @@ internal class MessagingIntegrationTest : BaseIntegrationTest() {
             assertThat(contact.type.code).isEqualTo(CreateContact.Type.EmailTextToPoP.code)
         }
     }
-
 }
