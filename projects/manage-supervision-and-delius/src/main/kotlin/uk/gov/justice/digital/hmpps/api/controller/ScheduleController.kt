@@ -44,10 +44,10 @@ class ScheduleController(private val scheduleService: ScheduleService) {
     fun getContactNote(@PathVariable crn: String, @PathVariable contactId: Long, @PathVariable noteId: Int) =
         scheduleService.getPersonAppointment(crn, contactId, noteId)
 
-    @GetMapping("/appointment/{contactId}/enforcements")
-    @Operation(summary = "Gets enforcement actions linked to the passed in contact")
-    fun getEnforcementActions(@PathVariable crn: String, @PathVariable contactId: Long) =
-        scheduleService.getEnforcementActions(contactId)
+    @GetMapping("/appointment/{contactId}/linked-contacts")
+    @Operation(summary = "Gets contacts linked to the passed in contact")
+    fun getLinkedContacts(@PathVariable crn: String, @PathVariable contactId: Long) =
+        scheduleService.getLinkedContacts(contactId)
 
     @GetMapping("/next-appointment")
     @Operation(summary = "Gets the next appointment in the future and after the date of the passed in contact")

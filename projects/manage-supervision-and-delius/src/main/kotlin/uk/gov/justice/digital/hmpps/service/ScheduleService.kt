@@ -27,7 +27,6 @@ class ScheduleService(
     private val personRepository: PersonRepository,
     private val contactRepository: ContactRepository,
     private val comRepository: OffenderManagerRepository,
-    private val enforcementRepository: EnforcementRepository,
 ) {
 
     fun getPersonAppointment(crn: String, contactId: Long, noteId: Int? = null): PersonAppointment {
@@ -39,13 +38,13 @@ class ScheduleService(
         )
     }
 
-    fun getEnforcementActions(contactId: Long): List<LinkedEnforcementAction> =
-        enforcementRepository.findByContactIdOrderByActionTakenDateDesc(contactId).map { enforcement ->
-            LinkedEnforcementAction(
-                enforcementId = enforcement.id,
-                enforcementDescription = enforcement.action?.description,
-                enforcementDate = enforcement.actionTakenDate,
-                createdBy = enforcement.createdByUser?.let { Name(it.forename, null, it.surname) }
+    fun getLinkedContacts(contactId: Long): List<LinkedContact> =
+        contactRepository.findByLinkedContactIdOrderByDateDesc(contactId).map { contact ->
+            LinkedContact(
+                contactId = contact.id,
+                contactTypeDescription = contact.type.description,
+                contactDate = contact.date,
+                createdBy = contact.createdByUser?.let { Name(it.forename, null, it.surname) }
             )
         }
 

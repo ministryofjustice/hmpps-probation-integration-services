@@ -236,15 +236,17 @@ object ContactGenerator {
     val ENFORCEMENT = generateEnforcement(ENFORCEMENT_CONTACT_1, ZonedDateTime.now(EuropeLondon).plusDays(7))
     val DUE_SOON_ENFORCEMENT = generateEnforcement(ENFORCEMENT_CONTACT_2, ZonedDateTime.now(EuropeLondon).plusDays(1))
     val OVERDUE_ENFORCEMENT = generateEnforcement(ENFORCEMENT_CONTACT_3, ZonedDateTime.now(EuropeLondon).minusDays(1))
-    val LINKED_ENFORCEMENT_1 = generateEnforcement(
-        NEXT_APPT_CONTACT,
-        actionTakenDate = LocalDate.now().minusDays(5),
-        createdByUserId = USER.id
+    val LINKED_CONTACT_1 = generateContact(
+        PersonGenerator.ENFORCEMENT_PERSON,
+        APPT_CT_1,
+        ZonedDateTime.now(EuropeLondon).minusDays(3),
+        linkedContactId = NEXT_APPT_CONTACT.id
     )
-    val LINKED_ENFORCEMENT_2 = generateEnforcement(
-        NEXT_APPT_CONTACT,
-        actionTakenDate = LocalDate.now().minusDays(10),
-        createdByUserId = USER_1.id
+    val LINKED_CONTACT_2 = generateContact(
+        PersonGenerator.ENFORCEMENT_PERSON,
+        APPT_CT_2,
+        ZonedDateTime.now(EuropeLondon).minusDays(8),
+        linkedContactId = NEXT_APPT_CONTACT.id
     )
 
     val CONTACT_DOCUMENT_1 = generateContactDocument(
@@ -304,15 +306,11 @@ object ContactGenerator {
         contact: Contact,
         responseDate: ZonedDateTime? = null,
         action: EnforcementAction? = WARNING_LETTER_ENFORCEMENT_ACTION,
-        actionTakenDate: LocalDate? = null,
-        createdByUserId: Long? = null,
         id: Long = IdGenerator.getAndIncrement()
     ) = Enforcement(
         contact = contact,
         responseDate = responseDate,
         action = action,
-        actionTakenDate = actionTakenDate,
-        createdByUserId = createdByUserId,
         id = id
     )
 
@@ -344,6 +342,7 @@ object ContactGenerator {
         team: Team = DEFAULT_TEAM,
         staff: Staff = DEFAULT_STAFF,
         externalReference: String? = null,
+        linkedContactId: Long? = null,
     ) = Contact(
         id = IdGenerator.getAndIncrement(),
         person = person,
@@ -369,6 +368,7 @@ object ContactGenerator {
         licenceCondition = licenceCondition,
         alert = alert,
         externalReference = externalReference,
+        linkedContactId = linkedContactId,
     )
 
     fun generateContactAlert(contact: Contact, id: Long = IdGenerator.getAndIncrement()): ContactAlert =
