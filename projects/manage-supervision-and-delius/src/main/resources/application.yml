@@ -32,6 +32,10 @@ spring:
     base: ou=Users,dc=moj,dc=com
     base-environment:
       java.naming.ldap.derefAliases: never
+  cloud:
+    aws:
+      sqs:
+        queue-attributes-resolver: never-create
 
 oauth2.roles:
   - PROBATION_API__MANAGE_A_SUPERVISION__CASE_DETAIL
@@ -65,6 +69,7 @@ spring:
   ldap.embedded:
     base-dn: ${spring.ldap.base}
     validation.enabled: false
+
 
 messaging.producer.topic: domain-events
 
