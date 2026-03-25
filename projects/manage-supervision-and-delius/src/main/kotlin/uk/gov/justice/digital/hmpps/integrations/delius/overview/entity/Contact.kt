@@ -142,6 +142,13 @@ class Contact(
     @JoinColumn(name = "last_updated_user_id", insertable = false, updatable = false)
     val lastUpdatedUser: User? = null,
 
+    @ManyToOne
+    @JoinColumn(name = "created_by_user_id", insertable = false, updatable = false)
+    val createdByUser: User? = null,
+
+    @Column(name = "linked_contact_id")
+    val linkedContactId: Long? = null,
+
     @Column(name = "visor_contact")
     @Convert(converter = YesNoConverter::class)
     val isVisor: Boolean? = null,
@@ -389,6 +396,8 @@ enum class ContactCategoryCode(val value: String) {
 }
 
 interface ContactRepository : JpaRepository<Contact, Long> {
+
+    fun findByLinkedContactIdOrderByDateDesc(linkedContactId: Long): List<Contact>
 
     @Query(
         """

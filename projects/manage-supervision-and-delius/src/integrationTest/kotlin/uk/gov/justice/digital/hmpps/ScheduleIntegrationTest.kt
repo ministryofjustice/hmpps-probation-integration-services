@@ -8,6 +8,7 @@ import org.junit.jupiter.params.provider.CsvSource
 import org.springframework.test.web.servlet.get
 import uk.gov.justice.digital.hmpps.api.model.Name
 import uk.gov.justice.digital.hmpps.api.model.activity.Component
+import uk.gov.justice.digital.hmpps.api.model.schedule.LinkedContact
 import uk.gov.justice.digital.hmpps.api.model.schedule.NextAppointment
 import uk.gov.justice.digital.hmpps.api.model.schedule.PersonAppointment
 import uk.gov.justice.digital.hmpps.api.model.schedule.Schedule
@@ -166,6 +167,25 @@ class ScheduleIntegrationTest : IntegrationTestBase() {
         assertThat(res.appointment.description, equalTo("previous appointment"))
         assertThat(res.appointment.outcome, equalTo("Acceptable"))
         assertThat(res.appointment.appointmentNote, equalTo(expectedNote))
+    }
+
+    @Test
+    fun `contacts linked to a contact are returned`() {
+        val person = PersonGenerator.LINKED_CONTACT_PERSON
+        val contactId = ContactGenerator.INITIAL_CONTACT.id
+        val res = mockMvc.get("/schedule/${person.crn}/appointment/$contactId/linked-contacts") {
+            withDeliusUserToken("DeliusUser")
+        }
+            .andExpect { status { isOk() } }
+            .andReturn().response.contentAsJson<List<LinkedContact>>()
+
+        assertThat(res.size, equalTo(2))
+        assertThat(res[0].contactId, equalTo(ContactGenerator.LINKED_CONTACT_1.id))
+        assertThat(res[0].contactTypeDescription, equalTo(ContactGenerator.APPT_CT_1.description))
+        assertThat(res[0].contactDate, equalTo(ContactGenerator.LINKED_CONTACT_1.date))
+        assertThat(res[1].contactId, equalTo(ContactGenerator.LINKED_CONTACT_2.id))
+        assertThat(res[1].contactTypeDescription, equalTo(ContactGenerator.APPT_CT_2.description))
+        assertThat(res[1].contactDate, equalTo(ContactGenerator.LINKED_CONTACT_2.date))
     }
 
     @Test
