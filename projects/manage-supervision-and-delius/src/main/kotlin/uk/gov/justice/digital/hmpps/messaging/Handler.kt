@@ -57,6 +57,7 @@ class Handler(
         }
     }
 }
+
 val HmppsDomainEvent.id get() = additionalInformation["applicationId"] as String?
 
 fun HmppsDomainEvent.telemetry() = mapOf(

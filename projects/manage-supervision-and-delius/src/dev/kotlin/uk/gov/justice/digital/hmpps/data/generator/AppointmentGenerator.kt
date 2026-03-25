@@ -81,7 +81,7 @@ object AppointmentGenerator {
         softDeleted = false,
         notes = "Notes",
         sensitive = false,
-        staffId =  DEFAULT_STAFF.id,
+        staffId = DEFAULT_STAFF.id,
         teamId = DEFAULT_TEAM.id,
     )
 

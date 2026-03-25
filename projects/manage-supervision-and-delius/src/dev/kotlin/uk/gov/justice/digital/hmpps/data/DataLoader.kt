@@ -307,7 +307,7 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
         save(AppointmentGenerator.PERSON_APPOINTMENT)
         save(AppointmentGenerator.LATE_NIGHT_APPOINTMENT)
 
-        save( AppointmentGenerator.SMS_APPOINTMENT)
+        save(AppointmentGenerator.SMS_APPOINTMENT)
 
         saveAll(
             PersonGenerator.SMS_PERSON,
