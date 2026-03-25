@@ -31,6 +31,7 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
             ContactGenerator.DEFAULT_STAFF,
             ContactGenerator.LIMITED_ACCESS_STAFF,
             ContactGenerator.STAFF_1,
+            ContactGenerator.ENFORCEMENT_STAFF,
             ContactGenerator.DEFAULT_TEAM,
             ContactGenerator.LOCATION_BRK_1,
         )
@@ -42,6 +43,8 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
         save(ContactGenerator.USER_2)
 
         save(ContactGenerator.LIMITED_ACCESS_USER)
+
+        save(ContactGenerator.ENFORCEMENT_USER)
 
         saveAll(
             PersonGenerator.GENDER_MALE,
@@ -170,6 +173,7 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
             PersonGenerator.ENFORCEMENT_PERSON,
             PersonGenerator.ENFORCEMENT_CASELOAD_PERSON,
             PersonGenerator.ENFORCEMENT_CASELOAD,
+            PersonGenerator.LINKED_CONTACT_PERSON,
             ContactGenerator.ENFORCEMENT_CONTACT_1,
             ContactGenerator.ENFORCEMENT_CONTACT_2,
             ContactGenerator.ENFORCEMENT_CONTACT_3,
@@ -177,6 +181,9 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
             ContactGenerator.ENFORCEMENT,
             ContactGenerator.OVERDUE_ENFORCEMENT,
             ContactGenerator.DUE_SOON_ENFORCEMENT,
+            ContactGenerator.INITIAL_CONTACT,
+            ContactGenerator.LINKED_CONTACT_1,
+            ContactGenerator.LINKED_CONTACT_2,
             ContactGenerator.COMMUNICATION_CATEGORY,
             ContactGenerator.CONTACT_DOCUMENT_1,
             ContactGenerator.CONTACT_DOCUMENT_2,

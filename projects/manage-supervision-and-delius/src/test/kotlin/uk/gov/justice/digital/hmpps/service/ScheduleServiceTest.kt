@@ -16,6 +16,7 @@ import org.springframework.data.domain.Sort
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator
 import uk.gov.justice.digital.hmpps.data.generator.personalDetails.PersonDetailsGenerator.PERSONAL_DETAILS
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.ContactRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.EnforcementRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.PersonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.OffenderManagerRepository
 import uk.gov.justice.digital.hmpps.utils.Summary
@@ -31,6 +32,9 @@ internal class ScheduleServiceTest {
 
     @Mock
     lateinit var offenderManagerRepository: OffenderManagerRepository
+
+    @Mock
+    lateinit var enforcementRepository: EnforcementRepository
 
     @InjectMocks
     lateinit var service: ScheduleService

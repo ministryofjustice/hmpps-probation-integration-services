@@ -38,6 +38,16 @@ class ScheduleService(
         )
     }
 
+    fun getLinkedContacts(contactId: Long): List<LinkedContact> =
+        contactRepository.findByLinkedContactIdOrderByDateDesc(contactId).map { contact ->
+            LinkedContact(
+                contactId = contact.id,
+                contactTypeDescription = contact.type.description,
+                contactDate = contact.date,
+                createdBy = contact.createdByUser?.let { Name(it.forename, null, it.surname) }
+            )
+        }
+
     fun getPersonUpcomingSchedule(crn: String, pageable: Pageable): Schedule {
         val summary = personRepository.getSummary(crn)
         val appointments = contactRepository.getUpComingAppointments(summary.id, pageable)
