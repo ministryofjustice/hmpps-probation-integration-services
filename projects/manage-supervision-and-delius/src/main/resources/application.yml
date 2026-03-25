@@ -68,6 +68,10 @@ spring:
 
 messaging.producer.topic: domain-events
 
+messaging:
+  consumer.queue: message-queue
+  consumer.detail.urls: http://localhost:${dev.wiremock.port}
+
 dev:
   dataloader.enabled: true
   wiremock.enabled: true

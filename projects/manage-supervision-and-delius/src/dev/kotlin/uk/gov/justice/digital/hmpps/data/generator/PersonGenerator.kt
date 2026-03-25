@@ -264,6 +264,7 @@ object PersonGenerator {
         PersonDetailsGenerator.PERSONAL_DETAILS.id
     )
 
+    val SMS_PERSON = generateOverview("X012771")
     val ENFORCEMENT_PERSON = generateOverview("E900001")
     val ENFORCEMENT_CASELOAD_PERSON = generateCaseloadPerson(
         ENFORCEMENT_PERSON.crn,
