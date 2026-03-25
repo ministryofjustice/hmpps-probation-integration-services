@@ -1,0 +1,16 @@
+{
+  "request": {
+    "method": "GET",
+    "urlPath": "/sms/message/00000000-0000-0000-0000-000000000001"
+  },
+  "response": {
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "status": 200,
+    "jsonBody": {
+      "smsMessage": "This is a test message about your appointment",
+      "deliusExternalReference": "urn:uk:gov:hmpps:manage-supervision-service:appointment:00000000-0000-0000-0000-000000000002"
+    }
+  }
+}
