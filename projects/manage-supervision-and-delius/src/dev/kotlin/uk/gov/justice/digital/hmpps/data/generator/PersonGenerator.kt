@@ -2,7 +2,6 @@ package uk.gov.justice.digital.hmpps.data.generator
 
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.DEFAULT_STAFF
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.DEFAULT_TEAM
-import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.ENFORCEMENT_STAFF
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.LIMITED_ACCESS_STAFF
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.STAFF_1
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.USER
@@ -276,11 +275,13 @@ object PersonGenerator {
     val ENFORCEMENT_CASELOAD = Caseload(
         id = IdGenerator.getAndIncrement(),
         person = ENFORCEMENT_CASELOAD_PERSON,
-        staff = ENFORCEMENT_STAFF,
+        staff = DEFAULT_STAFF,
         team = DEFAULT_TEAM,
         roleCode = "OM",
         trustProviderFlag = true
     )
+
+    val LINKED_CONTACT_PERSON = generateOverview("E900002")
 
     val RESCHEDULED_PERSON_1 = generateOverview("R345678", "App1", "Rescheduled")
     val RESCHEDULED_PERSON_2 = generateOverview("R345679", "App2", "Rescheduled")

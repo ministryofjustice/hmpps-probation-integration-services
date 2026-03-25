@@ -173,6 +173,7 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
             PersonGenerator.ENFORCEMENT_PERSON,
             PersonGenerator.ENFORCEMENT_CASELOAD_PERSON,
             PersonGenerator.ENFORCEMENT_CASELOAD,
+            PersonGenerator.LINKED_CONTACT_PERSON,
             ContactGenerator.ENFORCEMENT_CONTACT_1,
             ContactGenerator.ENFORCEMENT_CONTACT_2,
             ContactGenerator.ENFORCEMENT_CONTACT_3,

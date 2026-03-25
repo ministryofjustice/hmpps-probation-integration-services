@@ -246,18 +246,18 @@ object ContactGenerator {
     val DUE_SOON_ENFORCEMENT = generateEnforcement(ENFORCEMENT_CONTACT_2, ZonedDateTime.now(EuropeLondon).plusDays(1))
     val OVERDUE_ENFORCEMENT = generateEnforcement(ENFORCEMENT_CONTACT_3, ZonedDateTime.now(EuropeLondon).minusDays(1))
     val INITIAL_CONTACT = generateContact(
-        PersonGenerator.ENFORCEMENT_PERSON,
+        PersonGenerator.LINKED_CONTACT_PERSON,
         APPT_CT_1,
         ZonedDateTime.now(EuropeLondon).minusDays(14),
     )
     val LINKED_CONTACT_1 = generateContact(
-        PersonGenerator.ENFORCEMENT_PERSON,
+        PersonGenerator.LINKED_CONTACT_PERSON,
         APPT_CT_1,
         ZonedDateTime.now(EuropeLondon).minusDays(3),
         linkedContactId = INITIAL_CONTACT.id
     )
     val LINKED_CONTACT_2 = generateContact(
-        PersonGenerator.ENFORCEMENT_PERSON,
+        PersonGenerator.LINKED_CONTACT_PERSON,
         APPT_CT_2,
         ZonedDateTime.now(EuropeLondon).minusDays(8),
         linkedContactId = INITIAL_CONTACT.id
