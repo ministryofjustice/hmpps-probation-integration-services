@@ -28,7 +28,6 @@ generic-service:
       MESSAGING_PRODUCER_TOPIC: topic_arn
     manage-supervision-and-delius-queue:
       MESSAGING_CONSUMER_QUEUE: QUEUE_NAME
-      MESSAGING_PRODUCER_QUEUE: QUEUE_NAME
 
 generic-prometheus-alerts:
   targetApplication: manage-supervision-and-delius

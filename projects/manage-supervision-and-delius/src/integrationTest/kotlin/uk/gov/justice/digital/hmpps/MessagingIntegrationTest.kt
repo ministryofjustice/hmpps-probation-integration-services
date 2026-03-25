@@ -41,6 +41,9 @@ internal class MessagingIntegrationTest : BaseIntegrationTest() {
         val pop = personRepository.findByCrn("X012771")
         val contacts = contactRepository.findByPersonId(pop!!.id)
         assertThat(contacts.size).isEqualTo(2)
-        assert(contacts.any { it.type.code == CreateContact.Type.EmailTextToPoP.code })
+        assertThat(contacts).anySatisfy { contact ->
+            assertThat(contact.type.code).isEqualTo(CreateContact.Type.EmailTextToPoP.code)
+        }
     }
+
 }
