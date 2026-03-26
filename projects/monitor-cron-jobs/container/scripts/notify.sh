@@ -46,7 +46,7 @@ for job_json in $(echo "$job_data" | jq -c '.[]'); do
     accessory: {
       type: "button",
       text: { type: "plain_text", text: $text },
-      url: ("https://app-logs.cloud-platform.service.justice.gov.uk/_dashboards/app/data-explorer/discover#?_a=(discover:(columns:!(log),sort:!()),metadata:(view:discover))&_g=(filters:!(),refreshInterval:(pause:!t,value:0),time:(from:now-1d,to:now))&_q=(filters:!((meta:(),query:(match_phrase:(kubernetes.namespace_name:hmpps-probation-integration-services-" + $env + "))),(meta:(),query:(match_phrase:(kubernetes.labels.batch_kubernetes_io%2Fjob-name:" + $name + ")))),query:())")
+      url: ("https://app-logs.cloud-platform.service.justice.gov.uk/_dashboards/app/data-explorer/discover#?_a=(discover:(columns:!(log),sort:!()),metadata:(indexPattern:bb90f230-0d2e-11ef-bf63-53113938c53a,view:discover))&_g=(filters:!(),refreshInterval:(pause:!t,value:0),time:(from:now-1d,to:now))&_q=(filters:!((meta:(),query:(match_phrase:(kubernetes.namespace_name:hmpps-probation-integration-services-" + $env + "))),(meta:(),query:(match_phrase:(kubernetes.labels.batch_kubernetes_io%2Fjob-name:" + $name + ")))),query:())")
     }
   }]'
   case "$status" in
