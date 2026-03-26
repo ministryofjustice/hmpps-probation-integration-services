@@ -1101,6 +1101,33 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/PersonAppointment"
+  /schedule/{crn}/appointment/{contactId}/linked-contacts:
+    get:
+      tags:
+      - Schedule
+      summary: Gets contacts linked to the passed in contact
+      operationId: getLinkedContacts
+      parameters:
+      - name: crn
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: contactId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/LinkedContact"
   /risk-flags/{crn}:
     get:
       tags:
@@ -3888,6 +3915,23 @@ components:
       required:
       - appointment
       - personSummary
+    LinkedContact:
+      type: object
+      properties:
+        contactId:
+          type: integer
+          format: int64
+        contactTypeDescription:
+          type: string
+        contactDate:
+          type: string
+          format: date
+        createdBy:
+          $ref: "#/components/schemas/Name"
+      required:
+      - contactDate
+      - contactId
+      - contactTypeDescription
     MappaDetail:
       type: object
       properties:
