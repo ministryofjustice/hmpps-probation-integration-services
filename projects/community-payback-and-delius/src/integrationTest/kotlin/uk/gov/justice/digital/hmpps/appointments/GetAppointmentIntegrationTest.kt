@@ -13,6 +13,8 @@ import uk.gov.justice.digital.hmpps.advice.ErrorResponse
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator
 import uk.gov.justice.digital.hmpps.data.generator.UPWGenerator
+import uk.gov.justice.digital.hmpps.data.generator.UPWGenerator.UPW_APPOINTMENT_NO_ENFORCEMENT
+import uk.gov.justice.digital.hmpps.data.generator.UPWGenerator.UPW_APPOINTMENT_WITHOUT_PICKUP
 import uk.gov.justice.digital.hmpps.data.generator.UPWGenerator.UPW_PROJECT_1
 import uk.gov.justice.digital.hmpps.data.generator.UserGenerator
 import uk.gov.justice.digital.hmpps.entity.contact.ContactRepository
@@ -238,5 +240,18 @@ class GetAppointmentIntegrationTest @Autowired constructor(
         assertThat(outcomeOnlyResponse.content).isNotEmpty.allSatisfy { assertThat(it.outcome?.code).isIn("F", null) }
 
         assertThat(response.page.totalElements).isGreaterThan(outcomeOnlyResponse.page.totalElements)
+    }
+
+    @Test
+    fun `can retrieve appointments by appointment IDs`() {
+        val appointmentId1 = UPW_APPOINTMENT_WITHOUT_PICKUP.id
+        val appointmentId2 = UPW_APPOINTMENT_NO_ENFORCEMENT.id
+
+        val response = mockMvc
+            .get("/appointments?username=${UserGenerator.DEFAULT_USER.username}&appointmentIds=$appointmentId1&appointmentIds=$appointmentId2") { withToken() }
+            .andExpect { status { is2xxSuccessful() } }
+            .andReturn().response.contentAsJson<PagedModel<AppointmentsResponse>>()
+
+        assertThat(response.content.map { it.id }).containsExactlyInAnyOrder(appointmentId1, appointmentId2)
     }
 }
