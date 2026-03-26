@@ -32,6 +32,13 @@ object EventGenerator {
         disposal = null,
         mainOffence = MainOffence(id(), OffenceGenerator.BURGLARY)
     )
+    val SENSITIVE_CONTACT_EVENT = generateEvent(
+        number = 1,
+        person = PersonGenerator.SENSITIVE_CONTACT,
+        referralDate = LocalDate.of(2026, 3, 1),
+        disposal = null,
+        mainOffence = MainOffence(id(), OffenceGenerator.BURGLARY)
+    )
     val INACTIVE_EVENT = generateEvent(
         number = 1,
         person = PersonGenerator.NO_ACTIVE_EVENT_PERSON,

@@ -1,0 +1,18 @@
+{
+  "eventType": "esupervision.check-in.received",
+  "version": 2,
+  "description": "An e-Supervision remote check-in was received",
+  "detailUrl": "http://localhost:{dev.wiremock.port}/e-supervision-api/checkin-submitted/23531be1-335a-428b-8097-d911bf199ae9",
+  "occurredAt": "2025-08-26T09:30:00+01:00",
+  "additionalInformation": {
+    "eventNumber": "2"
+  },
+  "personReference": {
+    "identifiers": [
+      {
+        "type": "CRN",
+        "value": "A000007"
+      }
+    ]
+  }
+}
