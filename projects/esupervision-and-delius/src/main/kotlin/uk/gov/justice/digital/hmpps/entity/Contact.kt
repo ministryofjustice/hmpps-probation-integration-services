@@ -71,11 +71,11 @@ class Contact(
     @SequenceGenerator(name = "contact_id_seq", sequenceName = "contact_id_seq", allocationSize = 1)
     @GeneratedId(generator = "contact_id_seq")
     val id: Long,
-) {
 
     @Column(name = "sensitive")
     @Convert(converter = YesNoConverter::class)
-    val isSensitive: Boolean = false
+    val isSensitive: Boolean
+) {
 
     @Version
     @Column(name = "row_version")

@@ -109,6 +109,7 @@ internal class IntegrationTest @Autowired constructor(
         val contact = contactRepository.findAll()
             .single { it.person.id == person.id && it.description == "Online check in completed" }
         assertThat(contact.event.id).isEqualTo(EventGenerator.FALLBACK_EVENT_2.id)
+        assertThat(contact.isSensitive).isEqualTo(false)
     }
 
     @Test
@@ -123,6 +124,7 @@ internal class IntegrationTest @Autowired constructor(
             .single { it.person.id == PersonGenerator.NO_ACTIVE_EVENT_PERSON.id && it.description == "Online check in completed" }
         assertThat(contact.event.id).isEqualTo(EventGenerator.INACTIVE_EVENT.id)
         assertThat(contact.event.active).isFalse()
+        assertThat(contact.isSensitive).isEqualTo(false)
         assertThat(contact.notes).isEqualTo("Review the online check in using the manage probation check ins service: https://esupervision/check-in/received")
     }
 
@@ -156,6 +158,18 @@ internal class IntegrationTest @Autowired constructor(
     }
 
     @Test
+    fun `esupervision received with detail url has sensitive flag`() {
+        val notification = prepEvent("esupervision-received-detail-url-A000007", wireMockServer.port())
+        channelManager.getChannel(queueName).publishAndWait(notification)
+
+        val contact = contactRepository.findAll().single {
+            it.externalReference == "urn:uk:gov:hmpps:esupervision:check-in:23531be1-335a-428b-8097-d911bf199ae9"
+        }
+
+        assertThat(contact.isSensitive).isEqualTo(true)
+    }
+
+    @Test
     fun `esupervision reviewed contact updated`() {
         val notification = prepEvent("esupervision-reviewed-A000001", wireMockServer.port())
         channelManager.getChannel(queueName).publishAndWait(notification)
@@ -163,6 +177,8 @@ internal class IntegrationTest @Autowired constructor(
         val contact = contactRepository.findAll().single {
             it.externalReference == "urn:uk:gov:hmpps:esupervision:check-in:8b8a8cf1-a8fe-42c4-879c-095bbed91466"
         }
+
+        assertThat(contact.isSensitive).isEqualTo(false)
         assertThat(contact.notes).isEqualTo(
             """
             |Existing Notes
@@ -179,6 +195,8 @@ internal class IntegrationTest @Autowired constructor(
         val contact = contactRepository.findAll().single {
             it.externalReference == "urn:uk:gov:hmpps:esupervision:check-in:a18648f4-46ec-4344-8e8e-ba15c18c3ab9"
         }
+
+        assertThat(contact.isSensitive).isEqualTo(false)
         assertThat(contact.notes).isEqualTo(
             """
             |Existing Notes
@@ -195,6 +213,8 @@ internal class IntegrationTest @Autowired constructor(
         val contact = contactRepository.findAll().single {
             it.externalReference == "urn:uk:gov:hmpps:esupervision:check-in-expiry:b5a4d4c6-15c5-4f54-8ec2-f7f38c6f8b23"
         }
+
+        assertThat(contact.isSensitive).isEqualTo(false)
         assertThat(contact.notes).isEqualTo(
             """
             |Existing Notes

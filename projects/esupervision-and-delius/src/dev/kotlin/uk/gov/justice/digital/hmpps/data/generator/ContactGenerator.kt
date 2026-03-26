@@ -10,11 +10,11 @@ import java.time.ZonedDateTime
 
 object ContactGenerator {
     val CONTACT_TO_REVIEW =
-        generateContact(externalReference = Contact.externalReferencePrefix(CHECK_IN_REVIEWED) + "8b8a8cf1-a8fe-42c4-879c-095bbed91466")
+        generateContact(externalReference = Contact.externalReferencePrefix(eventType = CHECK_IN_REVIEWED) + "8b8a8cf1-a8fe-42c4-879c-095bbed91466", isSensitive = false)
     val CONTACT_TO_UPDATE =
-        generateContact(externalReference = Contact.externalReferencePrefix(CHECK_IN_UPDATED) + "a18648f4-46ec-4344-8e8e-ba15c18c3ab9")
+        generateContact(externalReference = Contact.externalReferencePrefix(eventType = CHECK_IN_UPDATED) + "a18648f4-46ec-4344-8e8e-ba15c18c3ab9", isSensitive = false)
     val CONTACT_TO_UPDATE_EXPIRY =
-        generateContact(externalReference = Contact.externalReferencePrefix(CHECK_IN_EXPIRED) + "b5a4d4c6-15c5-4f54-8ec2-f7f38c6f8b23")
+        generateContact(externalReference = Contact.externalReferencePrefix(eventType = CHECK_IN_EXPIRED) + "b5a4d4c6-15c5-4f54-8ec2-f7f38c6f8b23", isSensitive = false)
 
     fun generateContact(
         person: Person = PersonGenerator.DEFAULT_PERSON,
@@ -29,7 +29,8 @@ object ContactGenerator {
         notes: String? = "Existing Notes",
         externalReference: String? = null,
         softDeleted: Boolean = false,
-        id: Long = 0
+        id: Long = 0,
+        isSensitive: Boolean,
     ) = Contact(
         person = person,
         event = event,
@@ -43,6 +44,7 @@ object ContactGenerator {
         notes = notes,
         externalReference = externalReference,
         softDeleted = softDeleted,
-        id = id
+        id = id,
+        isSensitive = isSensitive
     )
 }

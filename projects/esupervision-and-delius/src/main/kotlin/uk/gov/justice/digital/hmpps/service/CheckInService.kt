@@ -76,5 +76,6 @@ class CheckInService(
             externalReference = detail?.checkinUuid?.let { Contact.externalReferencePrefix(eventType) + it },
             softDeleted = false,
             id = 0,
+            isSensitive = detail?.let { detail.sensitive } ?: false
         )
 }
