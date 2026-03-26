@@ -101,6 +101,7 @@ class CommunityPaybackAppointmentsService(
         projectTypeCodes: List<String>?,
         outcomeCodes: List<String>?,
         eventNumber: String?,
+        appointmentIds: List<Long>?,
         pageable: Pageable
     ): PagedModel<AppointmentsResponse> {
         val appointments = unpaidWorkAppointmentRepository.findAppointments(
@@ -111,6 +112,7 @@ class CommunityPaybackAppointmentsService(
             projectTypeCodes,
             outcomeCodes,
             eventNumber,
+            appointmentIds,
             pageable
         )
         val upwDetailsIds = appointments.map { it.details.id }.distinct()

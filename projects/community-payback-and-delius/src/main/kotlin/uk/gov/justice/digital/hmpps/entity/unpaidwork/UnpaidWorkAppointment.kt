@@ -326,6 +326,7 @@ interface UnpaidWorkAppointmentRepository : JpaRepository<UnpaidWorkAppointment,
           and (:projectCodes is null or a.project.code in :projectCodes)
           and (:projectTypeCodes is null or a.project.projectType.code in :projectTypeCodes)
           and (:eventNumber is null or a.details.disposal.event.number = :eventNumber)
+          and (:appointmentIds is null or a.id in :appointmentIds)
           and (:outcomeCodes is null
             or (o is null and 'NO_OUTCOME' in :outcomeCodes)
             or (o is not null and o.code in :outcomeCodes))
@@ -339,6 +340,7 @@ interface UnpaidWorkAppointmentRepository : JpaRepository<UnpaidWorkAppointment,
         projectTypeCodes: List<String>?,
         outcomeCodes: List<String>?,
         eventNumber: String?,
+        appointmentIds: List<Long>?,
         pageable: Pageable
     ): Page<UnpaidWorkAppointment>
 }
