@@ -70,6 +70,21 @@ object AppointmentGenerator {
         USER.staff?.id!!
     )
 
+    val SMS_APPOINTMENT = SentenceAppointment(
+        person = PersonGenerator.SMS_PERSON,
+        type = APPOINTMENT_TYPES[0],
+        date = ZonedDateTime.of(2024, 11, 27, 9, 0, 0, 0, EuropeLondon).toLocalDate(),
+        startTime = ZonedDateTime.of(2024, 11, 27, 9, 0, 0, 0, EuropeLondon),
+        endTime = ZonedDateTime.of(2024, 11, 27, 10, 0, 0, 0, EuropeLondon),
+        externalReference = "urn:uk:gov:hmpps:manage-supervision-service:appointment:00000000-0000-0000-0000-000000000002",
+        description = "Description",
+        softDeleted = false,
+        notes = "Notes",
+        sensitive = false,
+        staffId = DEFAULT_STAFF.id,
+        teamId = DEFAULT_TEAM.id,
+    )
+
     fun generateAppointment(
         person: Person,
         start: ZonedDateTime,

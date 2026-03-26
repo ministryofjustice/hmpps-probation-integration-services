@@ -262,6 +262,8 @@ interface AppointmentRepository : JpaRepository<Appointment, Long> {
     """
     )
     fun findOverdueOutcomes(crn: String): List<Appointment>
+
+    fun findAppointmentByPerson_CrnAndExternalReference(crn: String, externalReference: String): Appointment?
 }
 
 fun AppointmentRepository.getAppointment(id: Long) =

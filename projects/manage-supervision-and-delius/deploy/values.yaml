@@ -26,6 +26,8 @@ generic-service:
       OAUTH2_CLIENT-SECRET: CLIENT_SECRET
     hmpps-domain-events-topic:
       MESSAGING_PRODUCER_TOPIC: topic_arn
+    manage-supervision-and-delius-queue:
+      MESSAGING_CONSUMER_QUEUE: QUEUE_NAME
 
 generic-prometheus-alerts:
   targetApplication: manage-supervision-and-delius

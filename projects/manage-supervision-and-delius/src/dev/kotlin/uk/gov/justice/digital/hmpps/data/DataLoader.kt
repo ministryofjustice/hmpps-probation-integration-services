@@ -300,6 +300,7 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
         save(PersonGenerator.CASELOAD_PERSON_1)
         save(PersonGenerator.CASELOAD_PERSON_2)
         save(PersonGenerator.CASELOAD_PERSON_3)
+        save(PersonGenerator.SMS_PERSON)
 
         save(PersonGenerator.CASELOAD_LIMITED_ACCESS_EXCLUSION)
         save(PersonGenerator.CASELOAD_LIMITED_ACCESS_RESTRICTION)
@@ -313,6 +314,8 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
 
         save(AppointmentGenerator.PERSON_APPOINTMENT)
         save(AppointmentGenerator.LATE_NIGHT_APPOINTMENT)
+
+        save(AppointmentGenerator.SMS_APPOINTMENT)
 
         saveAll(
             PersonGenerator.RESCHEDULED_PERSON_1,
