@@ -42,6 +42,7 @@ class ReferenceDataSet(
 ) {
     enum class Code(val value: String) {
         BREACH_REASON("BREACH REASON"),
+        AUTHORISED_EMAILS("AUTHORISED SRF EMAILS")
     }
 }
 
