@@ -41,8 +41,7 @@ class ReferenceDataSet(
     val id: Long
 ) {
     enum class Code(val value: String) {
-        BREACH_REASON("BREACH REASON"),
-        AUTHORISED_SRF_EMAILS("AUTHORISED SRF EMAILS")
+        BREACH_REASON("BREACH REASON")
     }
 }
 

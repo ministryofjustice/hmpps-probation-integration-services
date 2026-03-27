@@ -37,6 +37,24 @@ object ReferenceDataGenerator {
     val APPOINTMENT_CONTACT_TYPE = generateContactType("APPT1", attendanceContact = true)
     val APPOINTMENT_OUTCOME = generateContactOutcome("AOUT")
 
+    val AUTHORISED_SRF_EMAIL_DATASET = generateDataset(Dataset.AUTHORISED_SRF_EMAILS, IdGenerator.getAndIncrement())
+
+    val SRF_EMAIL_POLICE = generateReferenceData(
+        dataset = AUTHORISED_SRF_EMAIL_DATASET,
+        code = "P",
+        description = "police.gov.uk",
+        selectable = true,
+        id = IdGenerator.getAndIncrement()
+    )
+
+    val SRF_EMAIL_JUSTICE = generateReferenceData(
+        dataset = AUTHORISED_SRF_EMAIL_DATASET,
+        code = "J",
+        description = "justice.gov.uk",
+        selectable = true,
+        id = IdGenerator.getAndIncrement()
+    )
+
     fun generateDataset(code: String, id: Long = IdGenerator.getAndIncrement()) = Dataset(code, id)
 
     fun generateReferenceData(

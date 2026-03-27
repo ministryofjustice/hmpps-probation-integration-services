@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.integrations.delius
 import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.type.YesNoConverter
+import org.springframework.data.jpa.repository.JpaRepository
 
 @Entity
 @Immutable
@@ -40,6 +41,7 @@ class Dataset(
 ) {
     companion object {
         const val ADDRESS_STATUS = "ADDRESS STATUS"
+        const val AUTHORISED_SRF_EMAILS = "AUTHORISED SRF EMAILS"
     }
 
     override fun equals(other: Any?): Boolean {
@@ -54,4 +56,8 @@ class Dataset(
     override fun hashCode(): Int {
         return code.hashCode()
     }
+}
+
+interface ReferenceDataRepository: JpaRepository<ReferenceData, Long> {
+    fun findAllByDataset_Code(code: String): List<ReferenceData>
 }
