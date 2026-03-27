@@ -68,7 +68,7 @@ jobs:
     if: ${{ inputs.project_template != 'No template - I want to create the project from scratch' }}
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/create-github-app-token@v2
+      - uses: actions/create-github-app-token@v3
         id: app-token
         with:
           repositories: hmpps-probation-integration-services,hmpps-probation-integration-e2e-tests
@@ -263,7 +263,7 @@ jobs:
         env:
           project_name: ${{ inputs.project_name }}
 
-      - uses: actions/create-github-app-token@v2
+      - uses: actions/create-github-app-token@v3
         id: app-token
         with:
           repositories: cloud-platform-environments
@@ -367,7 +367,7 @@ jobs:
         env:
           project_name: ${{ inputs.project_name }}
 
-      - uses: actions/create-github-app-token@v2
+      - uses: actions/create-github-app-token@v3
         id: app-token
         with:
           repositories: cloud-platform-environments
