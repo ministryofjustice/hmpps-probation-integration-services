@@ -80,11 +80,32 @@ object ReferenceDataGenerator {
         name = "BREACH REASON"
     )
 
+    val SRF_EMAIL_DATASET = ReferenceDataSet(
+        id = IdGenerator.getAndIncrement(),
+        name = "AUTHORISED SRF EMAILS"
+    )
+
     val BREACH_REASON = ReferenceData(
         id = IdGenerator.getAndIncrement(),
         code = "Absent",
         description = "Unauthorised absence",
         selectable = true,
         dataSetId = BREACH_REASON_DATASET.id
+    )
+
+    val SRF_EMAIL_POLICE = ReferenceData(
+        id = IdGenerator.getAndIncrement(),
+        code = "P",
+        description = "police.gov.uk",
+        selectable = true,
+        dataSetId = SRF_EMAIL_DATASET.id
+    )
+
+    val SRF_EMAIL_JUSTICE = ReferenceData(
+        id = IdGenerator.getAndIncrement(),
+        code = "J",
+        description = "justice.gov.uk",
+        selectable = true,
+        dataSetId = SRF_EMAIL_DATASET.id
     )
 }
