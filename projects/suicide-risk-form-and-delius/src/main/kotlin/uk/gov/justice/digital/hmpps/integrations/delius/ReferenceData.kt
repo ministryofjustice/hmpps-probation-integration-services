@@ -58,6 +58,6 @@ class Dataset(
     }
 }
 
-interface ReferenceDataRepository : JpaRepository<ReferenceData, Long> {
-    fun findAllByDataset_Code(code: String): List<ReferenceData>
+interface ReferenceDataRepository: JpaRepository<ReferenceData, Long> {
+    fun findAllByDataset_CodeOrderByCode(code: String): List<ReferenceData>
 }

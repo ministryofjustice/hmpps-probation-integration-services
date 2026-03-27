@@ -18,7 +18,7 @@ internal class RecipientsPageIntegrationTest @Autowired constructor(
     @Test
     fun `can retrieve SRF email domains`() {
         val expectedResponse =
-            """{"authorisedEmails":[{"code":"P","description":"police.gov.uk"},{"code":"J","description":"justice.gov.uk"}]}"""
+            """{"authorisedEmails":[{"code":"J","description":"justice.gov.uk"},{"code":"P","description":"police.gov.uk"}]}"""
         mockMvc.get("/authorised-emails") { withToken() }
             .andExpect {
                 status { isOk() }
