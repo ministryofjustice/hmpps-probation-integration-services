@@ -9,8 +9,8 @@ import uk.gov.justice.digital.hmpps.model.EmailResponse
 @Service
 class EmailService(private val referenceDataRepository: ReferenceDataRepository) {
     fun getAuthorisedEmails(): EmailResponse = referenceDataRepository
-            .findAllByDataSetName(ReferenceDataSet.Code.AUTHORISED_SRF_EMAILS.value)
-            .filter { it.selectable }
-            .map { CodeAndDescription(it.code, it.description) }
-            .let { EmailResponse(it) }
+        .findAllByDataSetName(ReferenceDataSet.Code.AUTHORISED_SRF_EMAILS.value)
+        .filter { it.selectable }
+        .map { CodeAndDescription(it.code, it.description) }
+        .let { EmailResponse(it) }
 }
