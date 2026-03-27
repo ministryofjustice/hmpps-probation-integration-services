@@ -568,6 +568,14 @@ paths:
         required: false
         schema:
           type: string
+      - name: appointmentIds
+        in: query
+        required: false
+        schema:
+          type: array
+          items:
+            type: integer
+            format: int64
       - name: pageable
         in: query
         required: true
