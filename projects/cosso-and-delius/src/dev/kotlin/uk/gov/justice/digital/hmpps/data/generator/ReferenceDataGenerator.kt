@@ -93,7 +93,7 @@ object ReferenceDataGenerator {
         dataSetId = BREACH_REASON_DATASET.id
     )
 
-    val SRF_EMAIL_1 = ReferenceData(
+    val SRF_EMAIL_POLICE = ReferenceData(
         id = IdGenerator.getAndIncrement(),
         code = "P",
         description = "police.gov.uk",
@@ -101,7 +101,7 @@ object ReferenceDataGenerator {
         dataSetId = SRF_EMAIL_DATASET.id
     )
 
-    val SRF_EMAIL_2 = ReferenceData(
+    val SRF_EMAIL_JUSTICE = ReferenceData(
         id = IdGenerator.getAndIncrement(),
         code = "J",
         description = "justice.gov.uk",
