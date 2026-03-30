@@ -102,6 +102,7 @@ class CommunityPaybackAppointmentsService(
         outcomeCodes: List<String>?,
         eventNumber: String?,
         appointmentIds: List<Long>?,
+        references: List<String>?,
         pageable: Pageable
     ): PagedModel<AppointmentsResponse> {
         val appointments = unpaidWorkAppointmentRepository.findAppointments(
@@ -113,6 +114,7 @@ class CommunityPaybackAppointmentsService(
             outcomeCodes,
             eventNumber,
             appointmentIds,
+            references?.map { "$REFERENCE_PREFIX$it" },
             pageable
         )
         val upwDetailsIds = appointments.map { it.details.id }.distinct()
@@ -143,7 +145,8 @@ class CommunityPaybackAppointmentsService(
                 project = projectSummary,
                 requirementProgress = checkNotNull(minutes[it.details.id]),
                 outcome = outcome?.toCodeDescription(),
-                notes = it.contact.notes
+                notes = it.contact.notes,
+                externalReference = it.contact.externalReference?.removePrefix(REFERENCE_PREFIX),
             )
         })
     }
