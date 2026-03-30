@@ -12,5 +12,5 @@ interface UnpaidWorkAppointmentRepository : JpaRepository<UnpaidWorkAppointment,
         where a.details.disposalId = :disposalId 
         """
     )
-    fun countHoursAttended(disposalId: Long): Int
+    fun countHoursAttended(disposalId: Long): Int?
 }
