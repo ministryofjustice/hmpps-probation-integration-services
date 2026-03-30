@@ -7,7 +7,7 @@ import uk.gov.justice.digital.hmpps.service.EmailService
 
 @RestController
 class RecipientsPageController(private val emailService: EmailService) {
-    @PreAuthorize("hasRole('PROBATION_API__COSSO__CASE_DETAILS')")
+    @PreAuthorize("hasRole('PROBATION_API__SUICIDE_RISK_FORM__CASE_DETAIL')")
     @GetMapping("/authorised-emails")
     fun getAuthorisedEmails() = emailService.getAuthorisedEmails()
 }
