@@ -258,7 +258,7 @@ class GetAppointmentIntegrationTest @Autowired constructor(
 
     @Test
     fun `can retrieve appointments by external reference`() {
-        val externalReference = UPWGenerator.DEFAULT_CONTACT_EXTERNAL_REF_UUID.removePrefix(REFERENCE_PREFIX)
+        val externalReference = UPWGenerator.DEFAULT_CONTACT_EXTERNAL_REF_UUID
 
         val response = mockMvc
             .get("/appointments?username=${UserGenerator.DEFAULT_USER.username}&references=$externalReference") { withToken() }
