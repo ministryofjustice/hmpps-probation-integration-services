@@ -33,7 +33,7 @@ class SentenceService(
                             required = requirement.length,
                             completed = when (requirement.mainCategory.code) {
                                 RAR -> contactRepository.countRarDaysAttended(requirement.id)
-                                UPW -> unpaidWorkAppointmentRepository.countHoursAttended(requirement.disposal.id)
+                                UPW -> unpaidWorkAppointmentRepository.countHoursAttended(requirement.disposal.id) ?: 0
                                 else -> null
                             },
                             unit = requirement.length?.let { DurationUnit.ofCode(requirement.mainCategory.lengthUnits.code) },
