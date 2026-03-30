@@ -3,20 +3,23 @@ package uk.gov.justice.digital.hmpps
 import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc
 import org.springframework.test.json.JsonCompareMode
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
+import tools.jackson.databind.ObjectMapper
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
+import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.UPDATED_ZONED_DATETIME
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 import java.time.LocalDate
 
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = RANDOM_PORT)
 internal class CorePersonIntegrationTest(
-    @Autowired private val mockMvc: MockMvc
+    @Autowired private val mockMvc: MockMvc,
+    @Autowired private val objectMapper: ObjectMapper,
 ) {
 
     @Test
@@ -123,15 +126,14 @@ internal class CorePersonIntegrationTest(
                               "startDate": "${LocalDate.now().minusDays(30)}",
                               "endDate": "${LocalDate.now().minusDays(10)}",
                               "lastUpdatedBy": "User1",
-                              "lastUpdatedAt": "${PersonGenerator.UPDATED_ZONED_DATETIME.toLocalDateTime()}Z"
-                              
+                              "lastUpdatedAt": ${objectMapper.writeValueAsString(UPDATED_ZONED_DATETIME)}
                             },
                             {
                               "description": "Self-described religion",
                               "startDate": "${LocalDate.now().minusDays(10)}",
                               "endDate": "${LocalDate.now().minusDays(1)}",
                               "lastUpdatedBy": "User1",
-                              "lastUpdatedAt": "${PersonGenerator.UPDATED_ZONED_DATETIME.toLocalDateTime()}Z"
+                              "lastUpdatedAt": ${objectMapper.writeValueAsString(UPDATED_ZONED_DATETIME)}
                             }
                           ],
                           "religionDescription": "Self-described faith",
