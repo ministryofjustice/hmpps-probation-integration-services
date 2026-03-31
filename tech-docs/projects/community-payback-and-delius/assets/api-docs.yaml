@@ -576,6 +576,13 @@ paths:
           items:
             type: integer
             format: int64
+      - name: references
+        in: query
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
       - name: pageable
         in: query
         required: true
@@ -1507,6 +1514,8 @@ components:
         outcome:
           $ref: "#/components/schemas/CodeDescription"
         notes:
+          type: string
+        externalReference:
           type: string
       required:
       - case

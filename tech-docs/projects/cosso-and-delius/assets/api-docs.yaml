@@ -126,18 +126,6 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/PersonDetails"
-  /authorised-emails:
-    get:
-      tags:
-      - recipients-page-controller
-      operationId: getAuthorisedEmails
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/EmailResponse"
 components:
   schemas:
     CodeAndDescription:
@@ -417,15 +405,6 @@ components:
       - addresses
       - dateOfBirth
       - name
-    EmailResponse:
-      type: object
-      properties:
-        authorisedEmails:
-          type: array
-          items:
-            $ref: "#/components/schemas/CodeAndDescription"
-      required:
-      - authorisedEmails
   securitySchemes:
     hmpps-auth-token:
       type: http
