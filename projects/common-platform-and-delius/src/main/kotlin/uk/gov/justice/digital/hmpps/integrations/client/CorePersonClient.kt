@@ -9,8 +9,9 @@ import org.springframework.web.service.annotation.PutExchange
 import java.time.LocalDate
 
 interface CorePersonClient {
-    @GetExchange(value = "/person/commonplatform/{defendantId}")
-    fun findByDefendantId(@PathVariable defendantId: String): CorePersonRecord
+
+    @GetExchange(value = "/person/commonplatform/{defendantId}/match-details")
+    fun findMatchStatusByDefendantId(@PathVariable defendantId: String): CorePersonRecordStatusResponse
 
     @PutExchange(value = "/person/probation/{defendantId}")
     fun createPersonRecord(
@@ -19,13 +20,15 @@ interface CorePersonClient {
     ): ResponseEntity<Void>
 }
 
-data class CorePersonRecord(
-    val firstName: String,
-    val middleNames: String?,
-    val lastName: String,
-    val dateOfBirth: LocalDate?,
-    val identifiers: Identifiers,
+data class CorePersonRecordStatusResponse(
+    val matchStatus: CorePersonRecordMatchStatus
 )
+
+enum class CorePersonRecordMatchStatus() {
+    MATCH,
+    NO_MATCH,
+    POSSIBLE_MATCH
+}
 
 data class Identifiers(
     val crns: List<String> = emptyList(),
