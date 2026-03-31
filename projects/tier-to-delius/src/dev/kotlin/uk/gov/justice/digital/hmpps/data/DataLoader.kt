@@ -25,8 +25,8 @@ class DataLoader(
         save(ReferenceDataGenerator.generate("UD0", ReferenceDataSetGenerator.TIER))
         save(ReferenceDataGenerator.generate("UD2", ReferenceDataSetGenerator.TIER))
         save(ReferenceDataGenerator.generate("UC2", ReferenceDataSetGenerator.TIER))
-        save(ReferenceDataGenerator.generate("UA", ReferenceDataSetGenerator.TIER))
-        save(ReferenceDataGenerator.generate("UB", ReferenceDataSetGenerator.TIER))
+        save(ReferenceDataGenerator.generate("SPA", ReferenceDataSetGenerator.TIER))
+        save(ReferenceDataGenerator.generate("SPB", ReferenceDataSetGenerator.TIER))
         save(ReferenceDataGenerator.generate("ATS", ReferenceDataSetGenerator.TIER_CHANGE_REASON))
         save(ContactTypeGenerator.TIER_UPDATE)
     }

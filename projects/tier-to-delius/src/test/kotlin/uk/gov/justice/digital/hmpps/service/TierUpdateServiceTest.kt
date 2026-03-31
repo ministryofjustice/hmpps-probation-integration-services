@@ -19,6 +19,7 @@ import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataSetGenerator.TIE
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
+import uk.gov.justice.digital.hmpps.flags.FeatureFlags
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.Contact
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.ContactTypeRepository
@@ -36,7 +37,7 @@ import java.time.ZonedDateTime
 import java.time.ZonedDateTime.now
 
 @ExtendWith(MockitoExtension::class)
-internal class TierServiceTest {
+internal class TierUpdateServiceTest {
     @Mock
     lateinit var personRepository: PersonRepository
 
@@ -63,6 +64,9 @@ internal class TierServiceTest {
 
     @Mock
     lateinit var optimisationTables: OptimisationTables
+
+    @Mock
+    lateinit var featureFlags: FeatureFlags
 
     @InjectMocks
     lateinit var tierUpdateService: TierUpdateService

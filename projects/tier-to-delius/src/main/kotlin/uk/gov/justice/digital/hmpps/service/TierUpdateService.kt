@@ -7,6 +7,7 @@ import uk.gov.justice.digital.hmpps.datetime.DeliusDateTimeFormatter
 import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException
 import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException.Companion.orIgnore
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
+import uk.gov.justice.digital.hmpps.flags.FeatureFlags
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.Contact
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.ContactTypeCode
@@ -37,12 +38,14 @@ class TierUpdateService(
     private val teamRepository: TeamRepository,
     private val contactTypeRepository: ContactTypeRepository,
     private val optimisationTables: OptimisationTables,
+    private val featureFlags: FeatureFlags,
 ) {
     @Transactional
     fun updateTier(crn: String, tierCalculation: TierCalculation) {
         val person = personRepository.findByCrnAndSoftDeletedIsFalse(crn).orIgnore { "PersonNotFound" }
         optimisationTables.rebuild(person.id)
-        val tier = referenceDataRepository.getByCodeAndSetName("U${tierCalculation.tierScore}", "TIER")
+        val tierCodePrefix = if (featureFlags.enabled("tier-to-delius-v3")) "SP" else "U"
+        val tier = referenceDataRepository.getByCodeAndSetName("$tierCodePrefix${tierCalculation.tierScore}", "TIER")
         val changeReason = referenceDataRepository.getByCodeAndSetName("ATS", "TIER CHANGE REASON")
         val latestTier = managementTierRepository.findByIdPersonIdAndEndDateIsNull(person.id)
 
