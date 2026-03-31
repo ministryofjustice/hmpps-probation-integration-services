@@ -3,33 +3,33 @@
     {
       "request": {
         "method": "GET",
-        "url": "/hmpps-tier/crn/A000001/tier/123e4567-e89b-12d3-a456-426614174000"
+        "url": "/hmpps-tier/v3/crn/A000001/tier/123e4567-e89b-12d3-a456-426614174000"
       },
       "response": {
         "headers": {
           "Content-Type": "application/json"
         },
         "status": 200,
-        "bodyFileName": "get-tier-calculation.json"
+        "bodyFileName": "get-tier-calculation-v3.json"
       }
     },
     {
       "request": {
         "method": "GET",
-        "url": "/hmpps-tier/crn/A000001/tier/123e4567-e89b-12d3-a456-426614174001"
+        "url": "/hmpps-tier/v3/crn/A000001/tier/123e4567-e89b-12d3-a456-426614174001"
       },
       "response": {
         "headers": {
           "Content-Type": "application/json"
         },
         "status": 200,
-        "bodyFileName": "get-tier-calculation-update.json"
+        "bodyFileName": "get-tier-calculation-update-v3.json"
       }
     },
     {
       "request": {
         "method": "GET",
-        "url": "/hmpps-tier/crn/A000002/tier/123e4567-e89b-12d3-a456-426614174000"
+        "url": "/hmpps-tier/v3/crn/A999999/tier/123e4567-e89b-12d3-a456-426614174000"
       },
       "response": {
         "status": 404,
@@ -38,8 +38,8 @@
         },
         "jsonBody": {
           "status": 404,
-          "userMessage": "Resource with id [A000002] not found.",
-          "developerMessage": "Resource with id [A000002] not found."
+          "userMessage": "Resource with id [A999999] not found.",
+          "developerMessage": "Resource with id [A999999] not found."
         }
       }
     }

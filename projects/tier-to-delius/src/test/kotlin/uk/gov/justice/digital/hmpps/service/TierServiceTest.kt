@@ -1,11 +1,9 @@
 package uk.gov.justice.digital.hmpps.service
 
+import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.MatcherAssert.assertThat
-import org.junit.jupiter.api.Assertions
-import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.ArgumentCaptor
 import org.mockito.InjectMocks
@@ -19,6 +17,7 @@ import uk.gov.justice.digital.hmpps.audit.service.OptimisationTables
 import uk.gov.justice.digital.hmpps.data.generator.*
 import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataSetGenerator.TIER
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
+import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.Contact
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactRepository
@@ -32,7 +31,6 @@ import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceD
 import uk.gov.justice.digital.hmpps.integrations.delius.staff.StaffRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.team.TeamRepository
 import uk.gov.justice.digital.hmpps.integrations.tier.TierCalculation
-import uk.gov.justice.digital.hmpps.messaging.telemetryProperties
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import java.time.ZonedDateTime
 import java.time.ZonedDateTime.now
@@ -76,22 +74,18 @@ internal class TierServiceTest {
 
     @Test
     fun `should log to telemetry and not throw exception when person not found`() {
-        Assertions.assertDoesNotThrow {
-            tierUpdateService.updateTier(person.crn, tierCalculation)
-        }
-
-        verify(telemetryService).trackEvent("PersonNotFound", tierCalculation.telemetryProperties(person.crn))
+        assertThatThrownBy { tierUpdateService.updateTier(person.crn, tierCalculation) }
+            .isInstanceOf(IgnorableMessageException::class.java)
+            .hasMessage("PersonNotFound")
     }
 
     @Test
     fun `should throw exception when reference data not found`() {
         whenever(personRepository.findByCrnAndSoftDeletedIsFalse(person.crn)).thenReturn(person)
 
-        val exception = assertThrows<NotFoundException> {
-            tierUpdateService.updateTier(person.crn, tierCalculation)
-        }
-
-        assertEquals("TIER with code of UsomeTierCode not found", exception.message)
+        assertThatThrownBy { tierUpdateService.updateTier(person.crn, tierCalculation) }
+            .isInstanceOf(NotFoundException::class.java)
+            .hasMessage("TIER with code of UsomeTierCode not found")
     }
 
     @Test
@@ -100,11 +94,9 @@ internal class TierServiceTest {
         whenever(referenceDataRepository.findByCodeAndSetName("U${tierScore.code}", TIER.name))
             .thenReturn(tierScore)
 
-        val exception = assertThrows<NotFoundException> {
-            tierUpdateService.updateTier(person.crn, tierCalculation)
-        }
-
-        assertEquals("TIER CHANGE REASON with code of ATS not found", exception.message)
+        assertThatThrownBy { tierUpdateService.updateTier(person.crn, tierCalculation) }
+            .isInstanceOf(NotFoundException::class.java)
+            .hasMessage("TIER CHANGE REASON with code of ATS not found")
     }
 
     @Test
@@ -116,9 +108,9 @@ internal class TierServiceTest {
         whenever(referenceDataRepository.findByCodeAndSetName("ATS", ReferenceDataSetGenerator.TIER_CHANGE_REASON.name))
             .thenReturn(changeReason)
 
-        val exception = assertThrows<NotFoundException> { tierUpdateService.updateTier(person.crn, tierCalculation) }
-
-        assertEquals("PersonManager with crn of someCrn not found", exception.message)
+        assertThatThrownBy { tierUpdateService.updateTier(person.crn, tierCalculation) }
+            .isInstanceOf(NotFoundException::class.java)
+            .hasMessage("PersonManager with crn of someCrn not found")
     }
 
     @Test
@@ -130,11 +122,12 @@ internal class TierServiceTest {
         whenever(referenceDataRepository.findByCodeAndSetName("ATS", ReferenceDataSetGenerator.TIER_CHANGE_REASON.name))
             .thenReturn(changeReason)
 
-        tierUpdateService.updateTier(person.crn, tierCalculation)
+        assertThatThrownBy { tierUpdateService.updateTier(person.crn, tierCalculation) }
+            .isInstanceOf(IgnorableMessageException::class.java)
+            .hasMessage("UnchangedTierIgnored")
         verify(managementTierRepository, never()).save(any())
         verify(contactRepository, never()).save(any())
         verify(personRepository, never()).save(any())
-        verify(telemetryService).trackEvent("UnchangedTierIgnored", tierCalculation.telemetryProperties(person.crn))
     }
 
     @Test
@@ -155,13 +148,17 @@ internal class TierServiceTest {
                 )
             )
 
-        tierUpdateService.updateTier(
-            person.crn,
-            tierCalculation.copy(
-                tierScore = updatedTierScore.code,
-                calculationDate = currentTierDate.minusDays(1)
+        assertThatThrownBy {
+            tierUpdateService.updateTier(
+                person.crn,
+                tierCalculation.copy(
+                    tierScore = updatedTierScore.code,
+                    calculationDate = currentTierDate.minusDays(1)
+                )
             )
-        )
+        }
+            .isInstanceOf(IgnorableMessageException::class.java)
+            .hasMessage("OutOfOrderMessageIgnored")
         verify(managementTierRepository, never()).save(any())
         verify(contactRepository, never()).save(any())
         verify(personRepository, never()).save(any())
