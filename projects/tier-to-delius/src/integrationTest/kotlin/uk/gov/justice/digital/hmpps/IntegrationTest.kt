@@ -48,7 +48,7 @@ internal class IntegrationTest @Autowired constructor(
 
         channelManager.getChannel(queueName).publishAndWait(notification)
 
-        val expectedTier = referenceDataRepository.findByCodeAndSetName("UB", "TIER")!!
+        val expectedTier = referenceDataRepository.findByCodeAndSetName("SPB", "TIER")!!
         val expectedReason = referenceDataRepository.findByCodeAndSetName("ATS", "TIER CHANGE REASON")!!
 
         val person = personRepository.findByCrnAndSoftDeletedIsFalse(notification.message.personReference.findCrn()!!)!!
@@ -80,7 +80,7 @@ internal class IntegrationTest @Autowired constructor(
 
         channelManager.getChannel(queueName).publishAndWait(notification)
 
-        val expectedTier = referenceDataRepository.findByCodeAndSetName("UA", "TIER")!!
+        val expectedTier = referenceDataRepository.findByCodeAndSetName("SPA", "TIER")!!
         val person = personRepository.findByCrnAndSoftDeletedIsFalse(notification.message.personReference.findCrn()!!)!!
         assertThat(person.currentTier, equalTo(expectedTier.id))
 
