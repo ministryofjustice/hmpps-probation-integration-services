@@ -4,6 +4,8 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.audit.service.OptimisationTables
 import uk.gov.justice.digital.hmpps.datetime.DeliusDateTimeFormatter
+import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException
+import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException.Companion.orIgnore
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.Contact
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactRepository
@@ -23,8 +25,6 @@ import uk.gov.justice.digital.hmpps.integrations.delius.staff.getByCode
 import uk.gov.justice.digital.hmpps.integrations.delius.team.TeamRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.team.getByCode
 import uk.gov.justice.digital.hmpps.integrations.tier.TierCalculation
-import uk.gov.justice.digital.hmpps.messaging.telemetryProperties
-import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import java.time.ZonedDateTime
 
 @Service
@@ -36,25 +36,19 @@ class TierUpdateService(
     private val staffRepository: StaffRepository,
     private val teamRepository: TeamRepository,
     private val contactTypeRepository: ContactTypeRepository,
-    private val telemetryService: TelemetryService,
     private val optimisationTables: OptimisationTables,
 ) {
     @Transactional
     fun updateTier(crn: String, tierCalculation: TierCalculation) {
-        val person = personRepository.findByCrnAndSoftDeletedIsFalse(crn) ?: return let {
-            telemetryService.trackEvent("PersonNotFound", tierCalculation.telemetryProperties(crn))
-        }
+        val person = personRepository.findByCrnAndSoftDeletedIsFalse(crn).orIgnore { "PersonNotFound" }
         optimisationTables.rebuild(person.id)
         val tier = referenceDataRepository.getByCodeAndSetName("U${tierCalculation.tierScore}", "TIER")
         val changeReason = referenceDataRepository.getByCodeAndSetName("ATS", "TIER CHANGE REASON")
         val latestTier = managementTierRepository.findByIdPersonIdAndEndDateIsNull(person.id)
 
-        if (person.currentTier == tier.id) {
-            return telemetryService.trackEvent("UnchangedTierIgnored", tierCalculation.telemetryProperties(crn))
-        }
-
+        if (person.currentTier == tier.id) throw IgnorableMessageException("UnchangedTierIgnored")
         if (latestTier != null && !latestTier.id.dateChanged.isBefore(tierCalculation.calculationDate)) {
-            return telemetryService.trackEvent("OutOfOrderMessageIgnored", tierCalculation.telemetryProperties(crn))
+            throw IgnorableMessageException("OutOfOrderMessageIgnored")
         }
 
         latestTier?.also {

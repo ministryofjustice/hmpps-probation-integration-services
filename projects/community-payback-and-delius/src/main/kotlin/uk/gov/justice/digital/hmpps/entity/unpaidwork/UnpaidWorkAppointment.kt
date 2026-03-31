@@ -252,8 +252,8 @@ interface UnpaidWorkAppointmentRepository : JpaRepository<UnpaidWorkAppointment,
                 as "completedMinutes",
                 (select coalesce(sum(adjustment_amount), 0) from upw_adjustment where upw_adjustment.upw_details_id = upw_details.upw_details_id and adjustment_type = 'POSITIVE' and upw_adjustment.soft_deleted = 0) as positiveAdjustments,
                 (select coalesce(sum(adjustment_amount), 0) from upw_adjustment where upw_adjustment.upw_details_id = upw_details.upw_details_id and adjustment_type = 'NEGATIVE' and upw_adjustment.soft_deleted = 0) as negativeAdjustments
-            
-                
+
+
         from upw_details
         join disposal
              on disposal.disposal_id = upw_details.disposal_id
@@ -327,6 +327,7 @@ interface UnpaidWorkAppointmentRepository : JpaRepository<UnpaidWorkAppointment,
           and (:projectTypeCodes is null or a.project.projectType.code in :projectTypeCodes)
           and (:eventNumber is null or a.details.disposal.event.number = :eventNumber)
           and (:appointmentIds is null or a.id in :appointmentIds)
+          and (:references is null or c.externalReference in :references)
           and (:outcomeCodes is null
             or (o is null and 'NO_OUTCOME' in :outcomeCodes)
             or (o is not null and o.code in :outcomeCodes))
@@ -341,6 +342,7 @@ interface UnpaidWorkAppointmentRepository : JpaRepository<UnpaidWorkAppointment,
         outcomeCodes: List<String>?,
         eventNumber: String?,
         appointmentIds: List<Long>?,
+        references: List<String>?,
         pageable: Pageable
     ): Page<UnpaidWorkAppointment>
 }

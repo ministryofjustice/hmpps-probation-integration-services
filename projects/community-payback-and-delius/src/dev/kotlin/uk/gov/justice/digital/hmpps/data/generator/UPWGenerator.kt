@@ -16,6 +16,7 @@ import uk.gov.justice.digital.hmpps.entity.staff.Team
 import uk.gov.justice.digital.hmpps.entity.unpaidwork.*
 import uk.gov.justice.digital.hmpps.model.Behaviour
 import uk.gov.justice.digital.hmpps.model.WorkQuality
+import uk.gov.justice.digital.hmpps.service.CommunityPaybackAppointmentsService.Companion.REFERENCE_PREFIX
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.ZonedDateTime
@@ -246,6 +247,8 @@ object UPWGenerator {
         pickupLocation = DEFAULT_OFFICE_LOCATION,
     )
 
+    val DEFAULT_CONTACT_EXTERNAL_REF_UUID = UUID.randomUUID().toString()
+
     val DEFAULT_CONTACT = generateContact(
         contactType = ReferenceDataGenerator.UPW_APPOINTMENT_TYPE,
         latestEnforcementAction = ReferenceDataGenerator.ROM_ENFORCEMENT_ACTION,
@@ -258,9 +261,11 @@ object UPWGenerator {
         team = TeamGenerator.DEFAULT_UPW_TEAM,
         provider = ProviderGenerator.DEFAULT_PROVIDER,
         alertsActive = true,
-        externalReference = UUID.randomUUID().toString(),
+        externalReference = "$REFERENCE_PREFIX$DEFAULT_CONTACT_EXTERNAL_REF_UUID",
         personId = PersonGenerator.DEFAULT_PERSON.id
     )
+
+    val CONTACT_NO_ENFORCEMENT_EXTERNAL_REF_UUID = UUID.randomUUID().toString()
 
     val CONTACT_NO_ENFORCEMENT = generateContact(
         contactType = ReferenceDataGenerator.UPW_APPOINTMENT_TYPE,
@@ -275,9 +280,11 @@ object UPWGenerator {
         provider = ProviderGenerator.DEFAULT_PROVIDER,
         event = EVENT_1,
         alertsActive = true,
-        externalReference = UUID.randomUUID().toString(),
+        externalReference = "$REFERENCE_PREFIX$CONTACT_NO_ENFORCEMENT_EXTERNAL_REF_UUID",
         personId = PersonGenerator.DEFAULT_PERSON.id
     )
+
+    val CONTACT_NO_ENFORCEMENT_ADJUSTMENT_EXTERNAL_REF_UUID = UUID.randomUUID().toString()
 
     val CONTACT_NO_ENFORCEMENT_ADJUSTMENT = generateContact(
         contactType = ReferenceDataGenerator.UPW_APPOINTMENT_TYPE,
@@ -292,7 +299,7 @@ object UPWGenerator {
         provider = ProviderGenerator.DEFAULT_PROVIDER,
         event = EVENT_ADJUSTMENT,
         alertsActive = true,
-        externalReference = UUID.randomUUID().toString(),
+        externalReference = "$REFERENCE_PREFIX$CONTACT_NO_ENFORCEMENT_ADJUSTMENT_EXTERNAL_REF_UUID",
         personId = PersonGenerator.ADJUSTMENT_PERSON.id
     )
 

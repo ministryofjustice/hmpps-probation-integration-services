@@ -125,9 +125,9 @@ jobs:
         run: kubectl scale deploy '${{ matrix.project }}' --replicas "${{ inputs.action == 'enable' && '0' || '2' }}"
 
       - name: ${{ inputs.action == 'enable' && 'Block' || 'Unblock' }} ingresses
-        uses: nick-fields/retry@ce71cc2ab81d554ebbe88c79ab5975992d79ba08 # v3.0.2
+        uses: nick-fields/retry@ad984534de44a9489a53aefd81eb77f87c70dc60 # v4.0.0
         with:
-          max_attempts: 3 # Patching ingresses intermittently fails on MOJ Cloud Platform, so we retry this step
+          max_attempts: 10 # Patching ingresses intermittently fails on MOJ Cloud Platform, so we retry this step
           timeout_minutes: 15
           command: |
             ingress=$(kubectl get ingress -o jsonpath='{.items[*].metadata.name}' -l 'app=${{ matrix.project }}')
@@ -154,9 +154,9 @@ jobs:
 
       - name: Block updates
         if: inputs.action == 'enable' && matrix.project != 'hmpps-auth-and-delius' && matrix.project != 'probation-search-and-delius' # Note: hmpps-auth is excluded here to continue allowing 'POST /authenticate' requests, which are read-only
-        uses: nick-fields/retry@ce71cc2ab81d554ebbe88c79ab5975992d79ba08 # v3.0.2
+        uses: nick-fields/retry@ad984534de44a9489a53aefd81eb77f87c70dc60 # v4.0.0
         with:
-          max_attempts: 3 # Patching ingresses intermittently fails on MOJ Cloud Platform, so we retry this step
+          max_attempts: 10 # Patching ingresses intermittently fails on MOJ Cloud Platform, so we retry this step
           timeout_minutes: 15
           command: |
             ingress=$(kubectl get ingress -o jsonpath='{.items[*].metadata.name}' -l 'app=${{ matrix.project }}')
@@ -176,9 +176,9 @@ jobs:
 
       - name: Unblock updates
         if: inputs.action == 'disable' && matrix.project != 'hmpps-auth-and-delius' && matrix.project != 'probation-search-and-delius'
-        uses: nick-fields/retry@ce71cc2ab81d554ebbe88c79ab5975992d79ba08 # v3.0.2
+        uses: nick-fields/retry@ad984534de44a9489a53aefd81eb77f87c70dc60 # v4.0.0
         with:
-          max_attempts: 3 # Patching ingresses intermittently fails on MOJ Cloud Platform, so we retry this step
+          max_attempts: 10 # Patching ingresses intermittently fails on MOJ Cloud Platform, so we retry this step
           timeout_minutes: 15
           command: |
             ingress=$(kubectl get ingress -o jsonpath='{.items[*].metadata.name}' -l 'app=${{ matrix.project }}')
@@ -260,9 +260,10 @@ jobs:
           - topic-pi-community-payback-upw
           - hmpps_accredited_programmes_manage_and_deliver_devs
           - topic-pi-manage-people-on-probation
+          - topic-pi-manage-my-community-sentence
     steps:
       - name: Send message to Slack
-        uses: slackapi/slack-github-action@91efab103c0de0a537f72a35f6b8cda0ee76bf0a # v2.1.1
+        uses: slackapi/slack-github-action@af78098f536edbc4de71162a307590698245be95 # v3.0.1
         if: ${{ !contains(needs.*.result, 'failure') }}
         with:
           method: chat.postMessage
@@ -292,7 +293,7 @@ jobs:
             }
 
       - name: Send failure message to Slack
-        uses: slackapi/slack-github-action@91efab103c0de0a537f72a35f6b8cda0ee76bf0a # v2.1.1
+        uses: slackapi/slack-github-action@af78098f536edbc4de71162a307590698245be95 # v3.0.1
         if: ${{ contains(needs.*.result, 'failure') && matrix.channel == 'probation-integration-notifications' }}
         with:
           method: chat.postMessage

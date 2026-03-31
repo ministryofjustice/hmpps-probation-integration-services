@@ -1,5 +1,5 @@
 package uk.gov.justice.digital.hmpps.model
 
 data class EmailResponse(
-    val authorisedEmails: List<CodeAndDescription>
+    val authorisedEmails: List<CodedDescription>
 )
