@@ -49,7 +49,7 @@ class Handler(
                         type = CreateContact.Type.EmailTextToPoP.code,
                         staffCode = relatedAppointment.staff.code,
                         teamCode = relatedAppointment.team.code,
-                        notes = "SMS sent to MPOP with content: ${smsDetails.smsMessage}"
+                        notes = smsDetails.smsMessage
                     )
                 )
                 telemetryService.trackEvent("SmsContactCreated", notification.message.telemetry())
