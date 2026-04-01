@@ -114,21 +114,6 @@ components:
           type: boolean
         float:
           type: boolean
-        integralNumber:
-          type: boolean
-        pojo:
-          type: boolean
-        floatingPointNumber:
-          type: boolean
-        bigDecimal:
-          type: boolean
-        bigInteger:
-          type: boolean
-        textual:
-          type: boolean
-          deprecated: true
-        binary:
-          type: boolean
         valueNode:
           type: boolean
         container:
@@ -147,6 +132,21 @@ components:
           - OBJECT
           - POJO
           - STRING
+        integralNumber:
+          type: boolean
+        pojo:
+          type: boolean
+        floatingPointNumber:
+          type: boolean
+        bigDecimal:
+          type: boolean
+        bigInteger:
+          type: boolean
+        textual:
+          type: boolean
+          deprecated: true
+        binary:
+          type: boolean
         boolean:
           type: boolean
         double:
