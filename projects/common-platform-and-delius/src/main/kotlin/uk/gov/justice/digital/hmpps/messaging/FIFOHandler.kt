@@ -56,13 +56,8 @@ class FIFOHandler(
             }
 
             // Under 10-year-old validation
-            if (defendant.personDefendant == null
-                || defendant.personDefendant.personDetails.dateOfBirth == null
-                || YEARS.between(
-                    defendant.personDefendant.personDetails.dateOfBirth,
-                    LocalDate.now()
-                ) <= 10
-            ) {
+            val dateOfBirth = defendant.personDefendant?.personDetails?.dateOfBirth
+            if (dateOfBirth == null || YEARS.between(dateOfBirth, LocalDate.now()) <= 10) {
                 telemetryService.trackEvent("InvalidDateOfBirth", telemetryProperties)
                 return@forEach
             }
