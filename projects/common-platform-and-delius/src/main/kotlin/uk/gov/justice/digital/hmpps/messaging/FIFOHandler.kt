@@ -49,7 +49,7 @@ class FIFOHandler(
             val matchedPersonStatus = corePerson.findMatchStatusByDefendantId(defendant.id)
             val telemetryProperties = matchedPersonStatus.telemetryProperties + notification.telemetryProperties
 
-            // Defendant already has a CRN in core person service
+            // Defendant is matched with existing record in core person service
             if (matchedPersonStatus.matchStatus != CorePersonRecordMatchStatus.NO_MATCH) {
                 telemetryService.trackEvent("PersonAlreadyExists", telemetryProperties)
                 return@forEach
