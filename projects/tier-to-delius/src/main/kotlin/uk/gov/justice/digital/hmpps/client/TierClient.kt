@@ -8,6 +8,10 @@ interface TierClient {
     @GetExchange(value = "/v3/crn/{crn}/tier/{id}")
     fun tierV3(@PathVariable crn: String, @PathVariable id: String): TierCalculation
 
+
+
+
+
     @GetExchange(value = "/v2/crn/{crn}/tier/{id}")
     fun tierV2(@PathVariable crn: String, @PathVariable id: String): TierCalculation
 }
