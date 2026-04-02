@@ -7,7 +7,7 @@ inputs:
   body:
     description: The body of the pull request. Defaults to "Automated changes by a GitHub Actions workflow.", with a link to the current run.
   branch:
-    description: The pull request target branch name.
+    description: The pull request source branch name.
   commit-message:
     description: The message to use when committing changes.
   labels:
@@ -48,14 +48,12 @@ runs:
         body: ${{ inputs.body }}
         url: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
 
-    - name: Get repository info
-      run: |
-        echo "owner=$(gh repo view "$(git remote get-url origin)" --json owner --jq .owner.login)" | tee -a "$GITHUB_ENV"
-        echo "repository=$(gh repo view "$(git remote get-url origin)" --json name --jq .name)" | tee -a "$GITHUB_ENV"
+    - name: Create branch if it doesn't exist
+      run: git checkout "$branch_name" || git checkout -b "$branch_name"
       shell: bash
       working-directory: ${{ env.path }}
       env:
-        GITHUB_TOKEN: ${{ inputs.token }}
+        branch_name: ${{ inputs.branch }}
 
     - name: Git add
       run: |
@@ -72,15 +70,12 @@ runs:
         add_paths: ${{ inputs.add-paths }}
 
     - name: Commit and push
-      uses: dsanders11/github-app-commit-action@2bbcd331016d8c950b05a24b56e7eb9cb50d545e # v2.1.0
+      uses: step-security/github-api-commit-action@7f410c8d8804b8a52bed57a9a4ce22ccaf117154 # v1.0.0
       with:
-        owner: ${{ env.owner }}
-        repository: ${{ env.repository }}
-        working-directory: ${{ env.path }}
-        ref: ${{ inputs.branch }}
-        fail-on-no-changes: false
-        message: ${{ inputs.commit-message }}
-        token: ${{ inputs.token }}
+        commit-message: ${{ inputs.commit-message }}
+        create-branch-on-remote: true
+        success-if-no-changes: true
+        token: ${{ steps.app-token.outputs.token }}
 
     - name: Create pull request
       id: pr

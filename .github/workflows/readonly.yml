@@ -40,7 +40,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - if: inputs.environment != 'prod' && inputs.action == 'disable'
-        uses: actions/create-github-app-token@v3
+        uses: actions/create-github-app-token@f8d387b68d61c58ab83c6c016672934102569859 # v3.0.0
         id: app-token
         with:
           app-id: ${{ secrets.BOT_APP_ID }}
@@ -61,7 +61,7 @@ jobs:
     outputs:
       projects: ${{ steps.kubectl.outputs.projects }}
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       - uses: ./.github/actions/cloud-platform-auth
         with:
           api: ${{ secrets.KUBE_ENV_API }}
@@ -88,7 +88,7 @@ jobs:
     environment: ${{ inputs.environment }}
     needs: get-projects
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       - uses: ./.github/actions/cloud-platform-auth
         with:
           api: ${{ secrets.KUBE_ENV_API }}
@@ -112,7 +112,7 @@ jobs:
       matrix:
         project: ${{ fromJson(needs.get-projects.outputs.projects) }}
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       - uses: ./.github/actions/cloud-platform-auth
         with:
           api: ${{ secrets.KUBE_ENV_API }}
@@ -125,13 +125,17 @@ jobs:
         run: kubectl scale deploy '${{ matrix.project }}' --replicas "${{ inputs.action == 'enable' && '0' || '2' }}"
 
       - name: ${{ inputs.action == 'enable' && 'Block' || 'Unblock' }} ingresses
-        uses: nick-fields/retry@ad984534de44a9489a53aefd81eb77f87c70dc60 # v4.0.0
-        with:
-          max_attempts: 10 # Patching ingresses intermittently fails on MOJ Cloud Platform, so we retry this step
-          timeout_minutes: 15
-          command: |
-            ingress=$(kubectl get ingress -o jsonpath='{.items[*].metadata.name}' -l 'app=${{ matrix.project }}')
-            kubectl annotate ingress "$ingress" 'nginx.ingress.kubernetes.io/configuration-snippet=${{ inputs.action == 'enable' && 'limit_except GET { deny all; }' || '' }}' --overwrite 
+        run: | # Patching ingresses intermittently fails on MOJ Cloud Platform, so we retry this step
+          for i in {1..10}; do
+            echo "Attempt ${i}/10..."
+            ingress=$(kubectl get ingress -o jsonpath='{.items[*].metadata.name}' -l "app=$project") && \
+            kubectl annotate ingress "$ingress" "nginx.ingress.kubernetes.io/configuration-snippet=$snippet" --overwrite && \
+            exit 0 || sleep 10;
+          done
+          exit 1
+        env:
+          project: ${{ matrix.project }}
+          snippet: ${{ inputs.action == 'enable' && 'limit_except GET { deny all; }' || '' }}
 
   # Block updates at the ingress and switch to the standby database for read operations
   switch-database:
@@ -143,7 +147,7 @@ jobs:
       matrix:
         project: ${{ fromJson(needs.get-projects.outputs.projects) }}
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       - uses: ./.github/actions/cloud-platform-auth
         with:
           api: ${{ secrets.KUBE_ENV_API }}
@@ -154,13 +158,17 @@ jobs:
 
       - name: Block updates
         if: inputs.action == 'enable' && matrix.project != 'hmpps-auth-and-delius' && matrix.project != 'probation-search-and-delius' # Note: hmpps-auth is excluded here to continue allowing 'POST /authenticate' requests, which are read-only
-        uses: nick-fields/retry@ad984534de44a9489a53aefd81eb77f87c70dc60 # v4.0.0
-        with:
-          max_attempts: 10 # Patching ingresses intermittently fails on MOJ Cloud Platform, so we retry this step
-          timeout_minutes: 15
-          command: |
-            ingress=$(kubectl get ingress -o jsonpath='{.items[*].metadata.name}' -l 'app=${{ matrix.project }}')
-            kubectl annotate ingress "$ingress" 'nginx.ingress.kubernetes.io/configuration-snippet=limit_except GET { deny all; }' --overwrite
+        run: | # Patching ingresses intermittently fails on MOJ Cloud Platform, so we retry this step
+          for i in {1..10}; do
+            echo "Attempt ${i}/10..."
+            ingress=$(kubectl get ingress -o jsonpath='{.items[*].metadata.name}' -l "app=$project") && \
+            kubectl annotate ingress "$ingress" "nginx.ingress.kubernetes.io/configuration-snippet=$snippet" --overwrite && \
+            exit 0 || sleep 10;
+          done
+          exit 1
+        env:
+          project: ${{ matrix.project }}
+          snippet: limit_except GET { deny all; }
 
       - name: Switch to ${{ inputs.action == 'enable' && 'standby' || 'primary' }} database
         env:
@@ -176,13 +184,17 @@ jobs:
 
       - name: Unblock updates
         if: inputs.action == 'disable' && matrix.project != 'hmpps-auth-and-delius' && matrix.project != 'probation-search-and-delius'
-        uses: nick-fields/retry@ad984534de44a9489a53aefd81eb77f87c70dc60 # v4.0.0
-        with:
-          max_attempts: 10 # Patching ingresses intermittently fails on MOJ Cloud Platform, so we retry this step
-          timeout_minutes: 15
-          command: |
-            ingress=$(kubectl get ingress -o jsonpath='{.items[*].metadata.name}' -l 'app=${{ matrix.project }}')
-            kubectl annotate ingress "$ingress" 'nginx.ingress.kubernetes.io/configuration-snippet=' --overwrite
+        run: | # Patching ingresses intermittently fails on MOJ Cloud Platform, so we retry this step
+          for i in {1..10}; do
+            echo "Attempt ${i}/10..."
+            ingress=$(kubectl get ingress -o jsonpath='{.items[*].metadata.name}' -l "app=$project") && \
+            kubectl annotate ingress "$ingress" "nginx.ingress.kubernetes.io/configuration-snippet=$snippet" --overwrite && \
+            exit 0 || sleep 10;
+          done
+          exit 1
+        env:
+          project: ${{ matrix.project }}
+          snippet: ""
 
   ingress-alerts:
     runs-on: ubuntu-latest
@@ -192,7 +204,7 @@ jobs:
       matrix:
         project: ${{ fromJson(needs.get-projects.outputs.projects) }}
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       - uses: ./.github/actions/cloud-platform-auth
         with:
           api: ${{ secrets.KUBE_ENV_API }}
@@ -223,7 +235,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - if: inputs.environment != 'prod' && inputs.action == 'enable'
-        uses: actions/create-github-app-token@v3
+        uses: actions/create-github-app-token@f8d387b68d61c58ab83c6c016672934102569859 # v3.0.0
         id: app-token
         with:
           app-id: ${{ secrets.BOT_APP_ID }}

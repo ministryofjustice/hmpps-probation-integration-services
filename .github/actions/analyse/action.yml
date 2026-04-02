@@ -15,11 +15,11 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - uses: actions/checkout@v6
+    - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       with:
         fetch-depth: 0
 
-    - uses: actions/download-artifact@v7
+    - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
       with:
         pattern: test-results-*
         path: test-results
@@ -28,16 +28,23 @@ runs:
       run: for dir in test-results/*; do cp -R "$dir"/* .; done
       shell: bash
 
-    - name: Publish test reports
-      uses: mikepenz/action-junit-report@bccf2e31636835cf0874589931c4116687171386 # 6.4.0
+    - name: Publish unit test reports
+      uses: dorny/test-reporter@a43b3a5f7366b97d083190328d2c652e1a8b6aa2 # v3.0.0
       if: always() && github.actor != 'dependabot[bot]'
       with:
-        check_name: |-
-          Unit test results
-          Integration test results
-        report_paths: |-
-          **/build/test-results/test/TEST-*.xml
-          **/build/test-results/integrationTest/TEST-*.xml
+        name: Unit test results
+        path: '**/build/test-results/test/TEST-*.xml'
+        reporter: java-junit
+        only-summary: true
+
+    - name: Publish integration test reports
+      uses: dorny/test-reporter@a43b3a5f7366b97d083190328d2c652e1a8b6aa2 # v3.0.0
+      if: always() && github.actor != 'dependabot[bot]'
+      with:
+        name: Integration test results
+        path: '**/build/test-results/integrationTest/TEST-*.xml'
+        reporter: java-junit
+        only-summary: true
 
     - name: Set version
       id: version
