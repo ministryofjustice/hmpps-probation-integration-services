@@ -20,10 +20,8 @@ class RegistrationService(
                     description = it.type.description
                 )
             }
-        if (registrations.isEmpty()) {
-            if (!personRepository.existsByCrn(crn)) {
-                throw NotFoundException("person", "crn", crn)
-            }
+        if (registrations.isEmpty() && !personRepository.existsByCrn(crn)) {
+            throw NotFoundException("Person", "CRN", crn)
         }
         return RegistrationResponse(registrations)
     }
