@@ -114,6 +114,8 @@ components:
           type: boolean
         float:
           type: boolean
+        integralNumber:
+          type: boolean
         pojo:
           type: boolean
         floatingPointNumber:
@@ -145,8 +147,6 @@ components:
           - OBJECT
           - POJO
           - STRING
-        integralNumber:
-          type: boolean
         boolean:
           type: boolean
         double:
