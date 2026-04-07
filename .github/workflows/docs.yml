@@ -93,6 +93,7 @@ jobs:
       - build-docs
       - build-schema-spy
     permissions:
+      id-token: write
       pages: write
     environment:
       name: github-pages
