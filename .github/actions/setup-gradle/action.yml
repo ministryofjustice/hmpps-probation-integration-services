@@ -18,7 +18,7 @@ runs:
         distribution: temurin
 
     - name: Assume role for access to cache bucket
-      uses: aws-actions/configure-aws-credentials@8df5847569e6427dd6c4fb1cf565c83acfa8afa7
+      uses: aws-actions/configure-aws-credentials@ec61189d14ec14c8efccab744f656cffd0e33f37 # v6.1.0
       if: inputs.cache-role != ''
       with:
         aws-region: eu-west-2
@@ -43,7 +43,7 @@ runs:
       env:
         key: ${{ inputs.cache-encryption-key }}
 
-    - uses: gradle/actions/setup-gradle@39e147cb9de83bb9910b8ef8bd7fff0ee20fcd6f # v6.0.1
+    - uses: gradle/actions/setup-gradle@50e97c2cd7a37755bbfafc9c5b7cafaece252f6e # v6.1.0
       with:
         add-job-summary: 'on-failure'
         cache-encryption-key: ${{ env.GRADLE_ENCRYPTION_KEY }}
