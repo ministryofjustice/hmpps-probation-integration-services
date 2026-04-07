@@ -52,6 +52,7 @@ jobs:
           path: doc/tech-docs/docs
   
   build-schema-spy:
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' # do not trigger on push
     name: Build SchemaSpy report
     runs-on: ubuntu-latest
     environment: test
