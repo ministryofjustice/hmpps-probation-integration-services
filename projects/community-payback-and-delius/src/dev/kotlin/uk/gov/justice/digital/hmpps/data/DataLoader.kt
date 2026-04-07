@@ -25,6 +25,7 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
         loadUnpaidWorkData()
         loadLimitedAccessData()
         loadLinkedListData()
+        loadRegistrations()
     }
 
     fun loadUsers() {
@@ -107,6 +108,8 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
         save(ReferenceDataGenerator.UPW_STATUS_HOURS_COMPLETED)
         save(ReferenceDataGenerator.UPW_STATUS_UNALLOCATED)
         save(ReferenceDataGenerator.UPW_ADJUSTMENT_REASON_OTHER)
+        save(RegistrationGenerator.VULNERABLE_REGISTRATION_TYPE)
+        save(RegistrationGenerator.SELF_HARM_REGISTRATION_TYPE)
     }
 
     fun loadUnpaidWorkData() {
@@ -183,5 +186,10 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
     fun loadLinkedListData() {
         save(LinkedListGenerator.ELEARNING_ETE_LINKED_LIST)
         save(LinkedListGenerator.TRAINING_ETE_LINKED_LIST)
+    }
+
+    fun loadRegistrations() {
+        save(RegistrationGenerator.DEFAULT_PERSON_VULNERABLE_REGISTRATION)
+        save(RegistrationGenerator.DEFAULT_PERSON_SELF_HARM_REGISTRATION)
     }
 }
