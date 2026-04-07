@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.model
 
+import java.time.LocalDate
 import java.time.LocalTime
 import java.util.*
 
@@ -7,6 +8,7 @@ data class AppointmentOutcomeRequest(
     val version: UUID,
     val outcome: Code?,
     val supervisor: Code,
+    val date: LocalDate,
     val startTime: LocalTime,
     val endTime: LocalTime,
     val notes: String?,

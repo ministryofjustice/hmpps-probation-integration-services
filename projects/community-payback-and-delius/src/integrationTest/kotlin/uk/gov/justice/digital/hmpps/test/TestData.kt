@@ -97,6 +97,7 @@ object TestData {
 
     fun updateAppointment(id: Long) = AppointmentOutcomeRequest(
         version = UUID(1, 1),
+        date = LocalDate.now(),
         startTime = LocalTime.of(10, 0),
         endTime = LocalTime.of(18, 0),
         minutesCredited = 415,
