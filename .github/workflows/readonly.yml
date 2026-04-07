@@ -34,10 +34,14 @@ on:
           - enable
           - disable
 
+permissions: { }
+
 jobs:
   unblock-pipeline:
     name: Unblock deployment pipeline
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
     steps:
       - if: inputs.environment != 'prod' && inputs.action == 'disable'
         uses: actions/create-github-app-token@f8d387b68d61c58ab83c6c016672934102569859 # v3.0.0
@@ -60,6 +64,8 @@ jobs:
     needs: unblock-pipeline
     outputs:
       projects: ${{ steps.kubectl.outputs.projects }}
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       - uses: ./.github/actions/cloud-platform-auth
@@ -87,6 +93,8 @@ jobs:
     runs-on: ubuntu-latest
     environment: ${{ inputs.environment }}
     needs: get-projects
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       - uses: ./.github/actions/cloud-platform-auth
@@ -111,6 +119,8 @@ jobs:
     strategy:
       matrix:
         project: ${{ fromJson(needs.get-projects.outputs.projects) }}
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       - uses: ./.github/actions/cloud-platform-auth
@@ -145,7 +155,9 @@ jobs:
     needs: get-projects
     strategy:
       matrix:
-        project: ${{ fromJson(needs.get-projects.outputs.projects) }}
+        project: ${{ fromJSON(needs.get-projects.outputs.projects) }}
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       - uses: ./.github/actions/cloud-platform-auth
@@ -202,7 +214,9 @@ jobs:
     needs: get-projects
     strategy:
       matrix:
-        project: ${{ fromJson(needs.get-projects.outputs.projects) }}
+        project: ${{ fromJSON(needs.get-projects.outputs.projects) }}
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       - uses: ./.github/actions/cloud-platform-auth
@@ -233,6 +247,8 @@ jobs:
       - switch-database
     if: always() && !failure() && !cancelled()
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
     steps:
       - if: inputs.environment != 'prod' && inputs.action == 'enable'
         uses: actions/create-github-app-token@f8d387b68d61c58ab83c6c016672934102569859 # v3.0.0

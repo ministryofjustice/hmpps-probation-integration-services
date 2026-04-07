@@ -45,7 +45,7 @@ jobs:
           sudo chown -R "$USER:$USER" docs
         working-directory: doc/tech-docs
 
-      - name: Upload tech docs artifact
+      - name: Upload artifact
         uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
         with:
           name: tech-docs-site
@@ -68,7 +68,7 @@ jobs:
           namespace: ${{ secrets.KUBE_NAMESPACE }}
           token: ${{ secrets.KUBE_TOKEN }}
 
-      - name: Generate report
+      - name: Build
         run: tools/schema-spy/run.sh
         env:
           DB: ${{ secrets.SCHEMA_SPY_DB }}
@@ -78,7 +78,7 @@ jobs:
           DB_USERNAME: ${{ secrets.SCHEMA_SPY_USERNAME }}
           DB_PASSWORD: ${{ secrets.SCHEMA_SPY_PASSWORD }}
 
-      - name: Upload SchemaSpy artifact
+      - name: Upload artifact
         uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
         with:
           name: schema-spy-site

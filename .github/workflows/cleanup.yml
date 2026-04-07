@@ -1,5 +1,5 @@
 name: Cleanup
-# Delete old reports from GitHub Pages and delete unused images from GitHub Container Registry
+# Delete unused images from GitHub Container Registry
 # Note: GitHub retains deleted images for 30 days - to recover them, see: https://docs.github.com/en/rest/packages#restore-package-version-for-an-organization
 
 on:
@@ -18,6 +18,8 @@ jobs:
   delete-images:
     runs-on: ubuntu-latest
     needs: get-projects
+    permissions:
+      packages: write
     strategy:
       matrix:
         project: ${{ fromJSON(needs.get-projects.outputs.projects) }}
@@ -39,22 +41,3 @@ jobs:
           package-type: container
           min-versions-to-keep: 30
           ignore-versions: "^(?:test|test-prev|preprod|preprod-prev|prod|prod-prev|latest)$"
-
-  delete-reports:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-        with:
-          ref: gh-pages
-          fetch-depth: 0
-      - name: Delete Playwright reports older than 1 week
-        run: |
-          sudo apt update && sudo apt-get install -y git-filter-repo
-          git pull origin gh-pages
-          git-filter-repo \
-            --path 'tech-docs' \
-            --path 'schema-spy-report' \
-            --refs gh-pages \
-            --force
-          git gc --prune=now
-          git push origin gh-pages --force
