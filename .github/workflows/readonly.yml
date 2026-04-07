@@ -130,7 +130,7 @@ jobs:
             echo "Attempt ${i}/10..."
             ingress=$(kubectl get ingress -o jsonpath='{.items[*].metadata.name}' -l "app=$project") && \
             kubectl annotate ingress "$ingress" "nginx.ingress.kubernetes.io/configuration-snippet=$snippet" --overwrite && \
-            exit 0 || sleep 10;
+            exit 0 || sleep $((i * 10 + RANDOM % 5));
           done
           exit 1
         env:
@@ -163,7 +163,7 @@ jobs:
             echo "Attempt ${i}/10..."
             ingress=$(kubectl get ingress -o jsonpath='{.items[*].metadata.name}' -l "app=$project") && \
             kubectl annotate ingress "$ingress" "nginx.ingress.kubernetes.io/configuration-snippet=$snippet" --overwrite && \
-            exit 0 || sleep 10;
+            exit 0 || sleep $((i * 10 + RANDOM % 5));
           done
           exit 1
         env:
@@ -189,7 +189,7 @@ jobs:
             echo "Attempt ${i}/10..."
             ingress=$(kubectl get ingress -o jsonpath='{.items[*].metadata.name}' -l "app=$project") && \
             kubectl annotate ingress "$ingress" "nginx.ingress.kubernetes.io/configuration-snippet=$snippet" --overwrite && \
-            exit 0 || sleep 10;
+            exit 0 || sleep $((i * 10 + RANDOM % 5));
           done
           exit 1
         env:
