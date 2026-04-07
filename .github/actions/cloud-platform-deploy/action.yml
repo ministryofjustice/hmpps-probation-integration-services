@@ -85,13 +85,13 @@ runs:
       uses: azure/setup-helm@dda3372f752e03dde6b3237bc9431cdc2f7a02a2 # v5.0.0
 
     - name: Deploy
-      shell: bash
+      shell: bash # language=bash
       run: |
         yq -i ".appVersion = \"${VERSION}\"" "projects/${PROJECT}/deploy/Chart.yaml"
         helm dependency update "projects/${PROJECT}/deploy"
 
         set +o pipefail
-        for attempt in $(seq 1 $MAX_ATTEMPTS); do
+        for attempt in {1..10}; do
           echo "::group::Helm upgrade (attempt $attempt)"
           exec helm upgrade "${PROJECT}" "projects/${PROJECT}/deploy" \
             --history-max 10 \
@@ -115,7 +115,12 @@ runs:
           echo '::endgroup::'
         
           # Retry Helm upgrade if we get a timeout error from MOJ Cloud Platform
-          if [ $exit_code -eq 1 ] && grep -q timeout "helm-$attempt.log"; then continue; else exit $exit_code; fi
+          if [ $exit_code -eq 1 ] && grep -q timeout "helm-$attempt.log"; then 
+            sleep $((attempt * 10 + RANDOM % 5))
+            continue
+          else
+            exit $exit_code
+          fi
         done
         if [ $exit_code -ne 0 ]; then exit $exit_code; fi
       env:
