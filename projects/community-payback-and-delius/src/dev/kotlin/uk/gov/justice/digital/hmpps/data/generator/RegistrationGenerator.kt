@@ -28,7 +28,7 @@ object RegistrationGenerator {
             id = IdGenerator.getAndIncrement(),
             person = person,
             type = type,
-            deRegistered = false,
+            deregistered = false,
             category = null,
             softDeleted = false
         )

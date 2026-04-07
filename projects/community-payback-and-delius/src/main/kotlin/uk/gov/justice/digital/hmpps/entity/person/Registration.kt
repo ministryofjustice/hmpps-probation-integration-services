@@ -6,17 +6,14 @@ import jakarta.persistence.Entity
 import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
-import jakarta.persistence.OneToOne
 import jakarta.persistence.Table
 import org.hibernate.annotations.Fetch
 import org.hibernate.annotations.FetchMode
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.NumericBooleanConverter
-import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
 import uk.gov.justice.digital.hmpps.entity.ReferenceData
-import java.util.List
 
 @Immutable
 @Entity
@@ -35,7 +32,7 @@ class Registration(
 
     @Column(name = "deregistered", columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)
-    val deRegistered: Boolean,
+    val deregistered: Boolean,
 
     @ManyToOne
     @JoinColumn(name = "register_category_id")
