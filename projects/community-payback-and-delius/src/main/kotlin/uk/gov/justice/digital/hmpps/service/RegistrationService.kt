@@ -8,13 +8,13 @@ import uk.gov.justice.digital.hmpps.model.CodeDescription
 import uk.gov.justice.digital.hmpps.model.RegistrationResponse
 
 @Service
-class RegistrationService (
+class RegistrationService(
     private val personRepository: PersonRepository,
     private val registrationRepository: RegistrationRepository,
 ) {
     fun getRegistrations(crn: String): RegistrationResponse {
         personRepository.getByCrn(crn)
-        val registrations = registrationRepository.findByPerson_CrnOrderByType_Code(    crn).map {
+        val registrations = registrationRepository.findByPerson_CrnOrderByType_Code(crn).map {
             CodeDescription(
                 code = it.type.code,
                 description = it.type.description

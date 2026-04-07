@@ -115,18 +115,23 @@ class CaseControllerIntegrationTest @Autowired constructor(
 
     @Test
     fun `returns registrations for crn`() {
-        val expectedResponse = """{"registrations":[{"code":"RVLN","description":"Vulnerable person"},{"code":"SHRM","description":"Self harm"}]}"""
+        val expectedResponse =
+            """{"registrations":[{"code":"RVLN","description":"Vulnerable person"},{"code":"SHRM","description":"Self harm"}]}"""
         mockMvc.get("/case/${PersonGenerator.DEFAULT_PERSON.crn}/registrations") { withToken() }
-            .andExpect { status { isOk() }
-            content { json(expectedResponse, JsonCompareMode.STRICT) } }
+            .andExpect {
+                status { isOk() }
+                content { json(expectedResponse, JsonCompareMode.STRICT) }
+            }
     }
 
     @Test
     fun `crn with no registrations returns empty list`() {
         val expectedResponse = """{"registrations":[]}"""
         mockMvc.get("/case/${PersonGenerator.PERSON_2.crn}/registrations") { withToken() }
-            .andExpect { status { isOk() }
-            content { json(expectedResponse, JsonCompareMode.STRICT) } }
+            .andExpect {
+                status { isOk() }
+                content { json(expectedResponse, JsonCompareMode.STRICT) }
+            }
     }
 
     @Test
