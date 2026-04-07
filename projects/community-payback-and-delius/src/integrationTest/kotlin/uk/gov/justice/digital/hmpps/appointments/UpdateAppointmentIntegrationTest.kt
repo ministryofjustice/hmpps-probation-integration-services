@@ -23,6 +23,7 @@ import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.json
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 import uk.gov.justice.digital.hmpps.test.TestData
+import java.time.LocalDate
 import java.time.LocalTime
 import java.time.temporal.ChronoUnit.SECONDS
 import java.util.*
@@ -85,7 +86,7 @@ class UpdateAppointmentIntegrationTest @Autowired constructor(
 
         val appointment = unpaidWorkAppointmentRepository.getAppointment(original.id)
         assertThat(appointment).isNotNull
-        assertThat(appointment.date).isEqualTo(original.date)
+        assertThat(appointment.date).isEqualTo(LocalDate.now())
         assertThat(appointment.startTime).isEqualTo(LocalTime.of(10, 0))
         assertThat(appointment.endTime).isEqualTo(LocalTime.of(18, 0))
         assertThat(appointment.penaltyMinutes).isEqualTo(65)

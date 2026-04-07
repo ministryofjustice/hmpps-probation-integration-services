@@ -53,7 +53,7 @@ class UnpaidWorkAppointment(
     val softDeleted: Boolean = false,
 
     @Column(name = "appointment_date")
-    val date: LocalDate,
+    var date: LocalDate,
 
     @Column(name = "start_time")
     var startTime: LocalTime,
