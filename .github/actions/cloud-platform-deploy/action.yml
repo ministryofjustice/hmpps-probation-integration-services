@@ -43,7 +43,7 @@ inputs:
 runs:
   using: composite
   steps:
-    - uses: actions/checkout@v6
+    - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
     - name: Get environment details
       uses: ./.github/actions/get-env-details
@@ -53,20 +53,21 @@ runs:
 
     - name: Check if Gradle project
       id: gradle_file
-      uses: andstor/file-existence-action@076e0072799f4942c8bc574a82233e1e4d13e9d6 # v2
-      with:
-        files: projects/${{ inputs.project }}/build.gradle.kts
+      run: echo "exists=$([ -f "projects/$project/build.gradle.kts" ] && echo 'true' || echo 'false')" | tee -a "$GITHUB_OUTPUT"
+      shell: bash
+      env:
+        project: ${{ matrix.project }}
 
     - name: Get build info
       if: inputs.get-info-artifact == 'true' && steps.gradle_file.outputs.files_exists == 'true'
-      uses: actions/download-artifact@v8
+      uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
       with:
         name: build-info-${{ inputs.project }}
         path: projects/${{ inputs.project }}
 
     - name: Get git info
       if: inputs.get-info-artifact == 'true' && steps.gradle_file.outputs.files_exists == 'true'
-      uses: actions/download-artifact@v8
+      uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
       with:
         name: git-info-${{ inputs.project }}
         path: projects/${{ inputs.project }}
@@ -81,7 +82,7 @@ runs:
         token: ${{ inputs.token }}
 
     - name: Install Helm
-      uses: azure/setup-helm@1a275c3b69536ee54be43f2070a358922e12c8d4
+      uses: azure/setup-helm@dda3372f752e03dde6b3237bc9431cdc2f7a02a2 # v5.0.0
 
     - name: Deploy
       shell: bash

@@ -33,7 +33,7 @@ jobs:
     environment:
       name: ${{ inputs.environment }}
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       - uses: ./.github/actions/get-env-details
         id: env
         with:
@@ -49,9 +49,9 @@ jobs:
 
       - name: Check Chart.yaml file exists
         id: check_files
-        uses: andstor/file-existence-action@076e0072799f4942c8bc574a82233e1e4d13e9d6 # v2
-        with:
-          files: projects/${{ matrix.project }}/deploy/Chart.yaml
+        run: echo "exists=$([ -f "projects/$project/deploy/Chart.yaml" ] && echo 'true' || echo 'false')" | tee -a "$GITHUB_OUTPUT"
+        env:
+          project: ${{ matrix.project }}
 
       - name: Deploy to Cloud Platform
         if: ${{ steps.check_files.outputs.files_exists == 'true' && steps.enabled.outputs.enabled == 'true' }}
@@ -70,7 +70,7 @@ jobs:
           gradle-cache-encryption-key: ${{ secrets.GRADLE_ENCRYPTION_KEY }}
           get-info-artifact: ${{ github.event_name == 'workflow_dispatch' && 'false' || 'true' }} # No build artifact is available on manual deploy
 
-      - uses: docker/login-action@v4
+      - uses: docker/login-action@b45d80f862d83dbcd57f89517bcf500b2ab88fb2 # v4.0.0
         if: ${{ steps.check_files.outputs.files_exists == 'true' && steps.enabled.outputs.enabled == 'true' }}
         with:
           registry: ghcr.io
@@ -91,7 +91,7 @@ jobs:
 
       - name: Create Sentry release
         if: ${{ steps.check_files.outputs.files_exists == 'true' && steps.enabled.outputs.enabled == 'true' }}
-        uses: getsentry/action-release@v3
+        uses: getsentry/action-release@5657c9e888b4e2cc85f4d29143ea4131fde4a73a # v3.6.0
         env:
           SENTRY_ORG: ministryofjustice
           SENTRY_PROJECT: ${{ matrix.project }}

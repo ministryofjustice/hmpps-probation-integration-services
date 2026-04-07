@@ -24,7 +24,7 @@ jobs:
     needs:
       - get-projects
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       - uses: ./.github/actions/setup-gradle
         with:
           cache-role: ${{ secrets.GRADLE_CACHE_S3_ROLE_TO_ASSUME }}
@@ -58,7 +58,7 @@ jobs:
           VERACODE_API_KEY_4: ${{ secrets.HMPPS_VERACODE_API_KEY_4 }}
 
       - name: Upload to Veracode
-        uses: veracode/veracode-uploadandscan-action@0.2.11
+        uses: veracode/veracode-uploadandscan-action@ddca86b1d1d45639d1c414003f3495f71851cfe2 # 0.2.11
         with:
           appname: hmpps-probation-integration-services
           createprofile: false

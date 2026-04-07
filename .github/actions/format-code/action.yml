@@ -38,14 +38,14 @@ runs:
         token: ${{ inputs.token }}
 
     - name: Checkout pull request
-      uses: actions/checkout@v6
+      uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       if: github.event_name == 'pull_request'
       with:
         ref: ${{ github.event.pull_request.head.ref }}
         token: ${{ env.token }}
 
     - name: Checkout branch
-      uses: actions/checkout@v6
+      uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       if: github.event_name != 'pull_request'
       with:
         ref: ${{ github.ref }}
@@ -63,7 +63,7 @@ runs:
           curl -fsSL https://www.jetbrains.com/updates/updates.xml > /tmp/updates.xml
           version=$(xmllint --xpath 'string(//products/product[@name="IntelliJ IDEA"]/channel[@name="IntelliJ IDEA RELEASE"]/build[1]/@version)' /tmp/updates.xml)
         fi
-        echo "version=$version" >> $GITHUB_OUTPUT
+        echo "version=$version" | tee -a "$GITHUB_OUTPUT"
       env:
         version: ${{ inputs.idea_version }}
 
@@ -95,8 +95,8 @@ runs:
 
     - name: Commit and push
       if: inputs.dry == 'false'
-      uses: dsanders11/github-app-commit-action@2bbcd331016d8c950b05a24b56e7eb9cb50d545e # v2.1.0
+      uses: step-security/github-api-commit-action@7f410c8d8804b8a52bed57a9a4ce22ccaf117154 # v1.0.0
       with:
-        fail-on-no-changes: false
-        message: ${{ inputs.commit_message }}
+        success-if-no-changes: true
+        commit-message: ${{ inputs.commit_message }}
         token: ${{ env.token }}
