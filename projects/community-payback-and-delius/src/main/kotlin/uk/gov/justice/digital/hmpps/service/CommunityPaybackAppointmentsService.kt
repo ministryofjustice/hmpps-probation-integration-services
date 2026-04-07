@@ -302,7 +302,8 @@ class CommunityPaybackAppointmentsService(
 
         val appointment = appointmentService.update(request) {
             id = { unpaidWorkAppointment.contact.id }
-            amendDateTime = { copy(date = it.date, startTime = it.startTime, endTime = it.endTime, allowConflicts = true) }
+            amendDateTime =
+                { copy(date = it.date, startTime = it.startTime, endTime = it.endTime, allowConflicts = true) }
             applyOutcome = { copy(outcomeCode = it.outcome?.code) }
             reassign = { copy(staffCode = it.supervisor.code) }
             flagAs = { copy(alert = it.alertActive, sensitive = it.sensitive) }
