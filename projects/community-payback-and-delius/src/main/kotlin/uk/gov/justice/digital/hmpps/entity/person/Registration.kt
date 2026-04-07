@@ -13,7 +13,6 @@ import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.NumericBooleanConverter
 import org.springframework.data.jpa.repository.JpaRepository
-import uk.gov.justice.digital.hmpps.entity.ReferenceData
 
 @Immutable
 @Entity
@@ -33,10 +32,6 @@ class Registration(
     @Column(name = "deregistered", columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)
     val deregistered: Boolean,
-
-    @ManyToOne
-    @JoinColumn(name = "register_category_id")
-    val category: ReferenceData? = null,
 
     @Column(name = "soft_deleted", columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)
@@ -59,8 +54,6 @@ class RegisterType(
     val code: String,
 
     val description: String,
-
-    val colour: String,
 
     @Id
     @Column(name = "register_type_id")

@@ -9,15 +9,13 @@ object RegistrationGenerator {
     val VULNERABLE_REGISTRATION_TYPE = RegisterType(
         id = IdGenerator.getAndIncrement(),
         code = "RVLN",
-        description = "Vulnerable person",
-        colour = "Green"
+        description = "Vulnerable person"
     )
 
     val SELF_HARM_REGISTRATION_TYPE = RegisterType(
         id = IdGenerator.getAndIncrement(),
         code = "SHRM",
-        description = "Self harm",
-        colour = "Red"
+        description = "Self harm"
     )
 
     val DEFAULT_PERSON_VULNERABLE_REGISTRATION = createRegistration(DEFAULT_PERSON, VULNERABLE_REGISTRATION_TYPE)
@@ -29,7 +27,6 @@ object RegistrationGenerator {
             person = person,
             type = type,
             deregistered = false,
-            category = null,
             softDeleted = false
         )
     }
