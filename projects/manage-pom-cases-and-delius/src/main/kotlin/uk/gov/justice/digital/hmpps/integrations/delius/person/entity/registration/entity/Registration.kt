@@ -7,6 +7,7 @@ import org.hibernate.type.NumericBooleanConverter
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
+import uk.gov.justice.digital.hmpps.api.model.RoshLevel
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.Person
 import uk.gov.justice.digital.hmpps.integrations.delius.reference.entity.ReferenceData
 import java.time.LocalDate
@@ -105,8 +106,13 @@ interface RegistrationRepository : JpaRepository<Registration, Long> {
         join fetch r.type
         where r.person.id = :personId 
         and r.type.flag.code = '${RegisterType.ROSH_FLAG}' 
+        and r.type.code in (:roshTypes)
         order by r.date desc
         """
     )
-    fun findRoshRegistration(personId: Long, pageRequest: PageRequest = PageRequest.of(0, 1)): Registration?
+    fun findRoshRegistration(
+        personId: Long,
+        roshTypes: List<String> = RoshLevel.entries.map { it.code },
+        pageRequest: PageRequest = PageRequest.of(0, 1)
+    ): Registration?
 }
