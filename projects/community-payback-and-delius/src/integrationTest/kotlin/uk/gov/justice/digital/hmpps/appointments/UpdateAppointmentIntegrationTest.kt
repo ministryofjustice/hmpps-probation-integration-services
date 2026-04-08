@@ -87,8 +87,8 @@ class UpdateAppointmentIntegrationTest @Autowired constructor(
         val appointment = unpaidWorkAppointmentRepository.getAppointment(original.id)
         assertThat(appointment).isNotNull
         assertThat(appointment.date).isEqualTo(LocalDate.now())
-        assertThat(appointment.startTime).isEqualTo(LocalTime.of(LocalTime.now().hour-1, 0))
-        assertThat(appointment.endTime).isEqualTo(LocalTime.of(LocalTime.now().hour+7, 0))
+        assertThat(appointment.startTime).isEqualTo(LocalTime.of(LocalTime.now().hour - 1, 0))
+        assertThat(appointment.endTime).isEqualTo(LocalTime.of(LocalTime.now().hour + 7, 0))
         assertThat(appointment.penaltyMinutes).isEqualTo(65)
         assertThat(appointment.minutesCredited).isEqualTo(415)
         assertThat(appointment.project.code).isEqualTo(PROJECT)
