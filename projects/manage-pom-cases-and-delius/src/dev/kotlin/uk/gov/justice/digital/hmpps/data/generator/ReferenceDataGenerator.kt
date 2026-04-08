@@ -20,7 +20,7 @@ object ReferenceDataGenerator {
     val KEY_DATE_HANDOVER_TYPE = generate(KeyDate.TypeCode.HANDOVER_DATE.value, dataSetId = KEY_DATE_TYPE_DATASET.id)
     val KEY_DATE_HANDOVER_START_DATE_TYPE =
         generate(KeyDate.TypeCode.HANDOVER_START_DATE.value, dataSetId = KEY_DATE_TYPE_DATASET.id)
-    val ROSH = generate("RoSH")
+    val ROSH = generate("1")
 
     val ALL = listOf(
         DECISION_ENHANCED,

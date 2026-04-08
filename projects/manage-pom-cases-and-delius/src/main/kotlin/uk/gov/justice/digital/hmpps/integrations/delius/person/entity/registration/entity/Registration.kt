@@ -73,7 +73,7 @@ class RegisterType(
 ) {
     companion object {
         const val MAPPA_CODE = "MAPP"
-        const val ROSH_FLAG = "RoSH"
+        const val ROSH_FLAG = "1"
     }
 }
 
