@@ -37,10 +37,10 @@ fun Team.forManager() = Team(code, description, district?.forManager())
 
 fun Staff.name() = Name(listOfNotNull(forename, middleName).joinToString(" "), surname)
 fun PersonManager.manager() = if (staff.isUnallocated()) {
-        Manager(team.forManager())
-    } else {
-        Manager(team.forManager(), staff.code, staff.name(), staff.user?.email)
-    }
+    Manager(team.forManager())
+} else {
+    Manager(team.forManager(), staff.code, staff.name(), staff.user?.email)
+}
 
 fun Registration?.mappaLevel(): Int = when (this?.level?.code) {
     "M1" -> 1
