@@ -98,8 +98,8 @@ object TestData {
     fun updateAppointment(id: Long) = AppointmentOutcomeRequest(
         version = UUID(1, 1),
         date = LocalDate.now(),
-        startTime = LocalTime.of(LocalTime.now().hour - 1, 0),
-        endTime = LocalTime.of(LocalTime.now().hour + 7, 0),
+        startTime = LocalTime.of(LocalTime.now().minusHours(1).hour, 0),
+        endTime = LocalTime.of(LocalTime.now().plusHours(7).hour, 0),
         minutesCredited = 415,
         penaltyMinutes = 65,
         outcome = Code(ReferenceDataGenerator.ATTENDED_COMPLIED_CONTACT_OUTCOME.code),
@@ -113,7 +113,7 @@ object TestData {
         notes = "testing update",
         pickUp = CreateAppointmentPickUpData(
             location = Code(UPWGenerator.DEFAULT_OFFICE_LOCATION.code),
-            time = LocalTime.of(LocalTime.now().hour - 1, 30)
+            time = LocalTime.of(LocalTime.now().minusHours(1).hour, 30)
         ),
     )
 }
