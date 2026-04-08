@@ -2,14 +2,13 @@ package uk.gov.justice.digital.hmpps
 
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
-import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
 import uk.gov.justice.digital.hmpps.api.model.*
@@ -41,11 +40,11 @@ internal class ApiIntegrationTest @Autowired constructor(
             record,
             equalTo(
                 ProbationRecord(
-                    person.crn,
-                    person.nomsId!!,
-                    ReferenceDataGenerator.TIER_2.description,
-                    Resourcing.NORMAL,
-                    Manager(
+                    crn = person.crn,
+                    nomsId = person.nomsId!!,
+                    currentTier = ReferenceDataGenerator.TIER_2.description,
+                    resourcing = Resourcing.NORMAL,
+                    manager = Manager(
                         Team(
                             team.code,
                             team.description,
@@ -55,22 +54,12 @@ internal class ApiIntegrationTest @Autowired constructor(
                         Name(staff.forename, staff.surname),
                         "default.staff@moj.gov.uk"
                     ),
-                    2,
-                    false
+                    mappaLevel = 2,
+                    rosh = RoshResponse(LocalDate.now().minusDays(1), RoshLevel.MEDIUM),
+                    vloAssigned = false
                 )
             )
         )
-    }
-
-    @Test
-    fun `successful retrieval of rosh registration`() {
-        val crn = "M123456"
-        val record = mockMvc.get("/case-records/$crn/risks/rosh") { withToken() }
-            .andExpect { status { is2xxSuccessful() } }
-            .andReturn().response.contentAsJson<RoshResponse>()
-
-        assertThat(record.startDate, equalTo(LocalDate.now().minusDays(1)))
-        assertThat(record.level, equalTo(RoshCode.MEDIUM.name))
     }
 
     companion object {

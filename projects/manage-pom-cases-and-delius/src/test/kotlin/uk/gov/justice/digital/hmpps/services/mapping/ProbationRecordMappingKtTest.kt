@@ -8,12 +8,10 @@ import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
 import uk.gov.justice.digital.hmpps.api.model.Resourcing
+import uk.gov.justice.digital.hmpps.api.model.RoshLevel
 import uk.gov.justice.digital.hmpps.api.model.Team
-import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
-import uk.gov.justice.digital.hmpps.data.generator.PersonManagerGenerator
-import uk.gov.justice.digital.hmpps.data.generator.ProviderGenerator
-import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator
-import uk.gov.justice.digital.hmpps.data.generator.RegistrationGenerator
+import uk.gov.justice.digital.hmpps.data.generator.*
+import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator.ROSH
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonManager
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Staff
 import uk.gov.justice.digital.hmpps.set
@@ -26,10 +24,11 @@ internal class ProbationRecordMappingKtTest {
         val person = PersonGenerator.generate("J123456", "J00243U")
         PersonManagerGenerator.generate(person = person).also { person.set("managers", listOf(it)) }
 
-        val personRecord = person.record(null, null, false)
+        val personRecord = person.record(null, null, null, false)
         assertNull(personRecord.currentTier)
         assertNull(personRecord.resourcing)
         assertThat(personRecord.mappaLevel, equalTo(0))
+        assertNull(personRecord.rosh)
     }
 
     @ParameterizedTest
@@ -69,7 +68,18 @@ internal class ProbationRecordMappingKtTest {
             val rLevel = ReferenceDataGenerator.generate(it)
             RegistrationGenerator.generate(RegistrationGenerator.TYPE_MAPPA, rLevel, LocalDate.now())
         }
-        assertThat(registration.level(), equalTo(level))
+        assertThat(registration.mappaLevel(), equalTo(level))
+    }
+
+    @ParameterizedTest
+    @MethodSource("roshMapping")
+    fun `rosh mapping`(registerTypeCode: String?, expected: RoshLevel?) {
+        val registration = registerTypeCode?.let {
+            RegistrationGenerator.generate(
+                type = RegistrationGenerator.generateType(registerTypeCode, ROSH)
+            )
+        }
+        assertThat(registration?.toRoshResponse()?.level, equalTo(expected))
     }
 
     companion object {
@@ -90,5 +100,12 @@ internal class ProbationRecordMappingKtTest {
             Arguments.of("M3", 3),
             Arguments.of("T3", 0)
         )
+
+        @JvmStatic
+        fun roshMapping() = listOf(
+            Arguments.of(null, null)
+        ) + RoshLevel.entries.map {
+            Arguments.of(it.code, it)
+        }
     }
 }

@@ -56,7 +56,7 @@ runs:
         labels: GIT_BRANCH=${{ github.ref_name }}
         cache-from: type=gha,scope=${{ inputs.project }}
         cache-to: ${{ inputs.push == 'true' && format('type=gha,mode=max,scope={0}', inputs.project) || '' }}
-        context: "{{defaultContext}}:projects/${{ inputs.project }}/container"
+        context: ./projects/${{ inputs.project }}/container
         pull: true
         load: ${{ inputs.push != 'true' }}
         push: ${{ inputs.push == 'true' }}
@@ -104,7 +104,7 @@ runs:
         labels: GIT_BRANCH=${{ github.ref_name }}
         cache-from: type=gha,scope=${{ inputs.project }}
         cache-to: ${{ inputs.push == 'true' && format('type=gha,mode=max,scope={0}', inputs.project) || '' }}
-        context: "{{defaultContext}}:projects/${{ inputs.project }}/container"
+        context: ./projects/${{ inputs.project }}/container
         push: ${{ inputs.push }}
         provenance: false
         tags: |
