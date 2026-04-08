@@ -7,7 +7,8 @@ data class ProbationRecord(
     val resourcing: Resourcing?,
     val manager: Manager,
     val mappaLevel: Int,
-    val vloAssigned: Boolean
+    val rosh: RoshResponse?,
+    val vloAssigned: Boolean,
 )
 
 enum class Resourcing {
