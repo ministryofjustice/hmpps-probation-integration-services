@@ -4,9 +4,9 @@ import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
 import uk.gov.justice.digital.hmpps.api.model.MappaDetail
@@ -35,7 +35,7 @@ internal class MappaIntegrationTest @Autowired constructor(
         val mappa = mockMvc.get("/case-records/X123456/risks/mappa") { withToken() }
             .andExpect { status { isNotFound() } }
             .andReturn().response.contentAsJson<ErrorResponse>()
-        assertThat(mappa.message, equalTo("MAPPA details for offender not found"))
+        assertThat(mappa.message, equalTo("MappaDetail with crn of X123456 not found"))
     }
 
     @Test

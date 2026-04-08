@@ -1,9 +1,8 @@
 package uk.gov.justice.digital.hmpps.services
 
-import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.api.model.MappaDetail
-import uk.gov.justice.digital.hmpps.exception.NotFoundException
+import uk.gov.justice.digital.hmpps.exception.NotFoundException.Companion.orNotFoundBy
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.getByCrn
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.registration.entity.Registration
@@ -16,9 +15,7 @@ class MappaService(
 ) {
     fun getMappaDetail(crn: String): MappaDetail {
         val person = personRepository.getByCrn(crn)
-        return registrationRepository.findActiveMappaRegistrationByOffenderId(person.id, PageRequest.of(0, 1))
-            .firstOrNull()
-            ?.toMappa() ?: throw NotFoundException("MAPPA details for offender not found")
+        return registrationRepository.findMappaRegistration(person.id)?.toMappa().orNotFoundBy("crn", crn)
     }
 }
 

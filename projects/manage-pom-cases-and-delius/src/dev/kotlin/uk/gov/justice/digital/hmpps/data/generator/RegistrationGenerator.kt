@@ -16,13 +16,13 @@ object RegistrationGenerator {
     val TYPE_DASO = generateType("DASO", null)
     val TYPE_ROSH_MEDIUM = generateType("RMRH", ROSH)
 
-    fun generateType(code: String, referenceData: ReferenceData?, id: Long = IdGenerator.getAndIncrement()) =
-        RegisterType(code, referenceData, id)
+    fun generateType(code: String, flag: ReferenceData? = null, id: Long = IdGenerator.getAndIncrement()) =
+        RegisterType(code, flag, id)
 
     fun generate(
         type: RegisterType,
-        level: ReferenceData?,
-        date: LocalDate,
+        level: ReferenceData? = null,
+        date: LocalDate = LocalDate.now(),
         deRegistered: Boolean = false,
         softDeleted: Boolean = false,
         person: Person = PersonGenerator.DEFAULT,

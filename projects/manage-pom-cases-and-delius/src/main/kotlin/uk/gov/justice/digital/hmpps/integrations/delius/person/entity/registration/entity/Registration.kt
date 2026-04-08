@@ -4,9 +4,7 @@ import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.NumericBooleanConverter
-import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
-import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.Person
@@ -67,7 +65,7 @@ class RegisterType(
 
     @OneToOne
     @JoinColumn(name = "register_type_flag_id")
-    val referenceData: ReferenceData? = null,
+    val flag: ReferenceData? = null,
 
     @Id
     @Column(name = "register_type_id")
@@ -75,58 +73,40 @@ class RegisterType(
 ) {
     companion object {
         const val MAPPA_CODE = "MAPP"
+        const val ROSH_FLAG = "RoSH"
     }
 }
 
 interface RegistrationRepository : JpaRepository<Registration, Long> {
-
     @Query(
         """
-        select r from Registration r
-        join fetch r.type
-        join fetch r.level
-        where r.person.id = :personId and r.type.code = :code
-        order by r.date desc
-    """
-    )
-    fun findRegistrationsByTypeCode(
-        personId: Long,
-        code: String,
-        pageRequest: PageRequest = PageRequest.of(0, 1)
-    ): List<Registration>
-
-    @Query(
-        """
-            select count(r) > 0 from Registration r
-            where r.person.id = :personId
-            and r.type.code in ('DASO', 'INVI')
+        select count(r) > 0 from Registration r
+        where r.person.id = :personId
+        and r.type.code in ('DASO', 'INVI')
         """
     )
     fun hasVloAssigned(personId: Long): Boolean
 
     @Query(
         """
-        select registration from Registration registration
-        where registration.type.code = 'MAPP'
-        and registration.person.id = :offenderId
-        and registration.softDeleted = false
-        and registration.deRegistered = false
-        order by registration.createdDatetime desc
-    """
+        select r from Registration r
+        join fetch r.type
+        join fetch r.level
+        where r.person.id = :personId 
+        and r.type.code = '${RegisterType.MAPPA_CODE}'
+        order by r.date desc
+        """
     )
-    fun findActiveMappaRegistrationByOffenderId(offenderId: Long, pageable: Pageable): Page<Registration>
+    fun findMappaRegistration(personId: Long, pageRequest: PageRequest = PageRequest.of(0, 1)): Registration?
 
     @Query(
         """
-        select registration
-            from Registration registration 
-            where registration.type.referenceData.code = 'RoSH' 
-                and registration.person.crn = :personCrn
-            order by registration.date desc
-            """
+        select r from Registration r
+        join fetch r.type
+        where r.person.id = :personId 
+        and r.type.flag.code = '${RegisterType.ROSH_FLAG}' 
+        order by r.date desc
+        """
     )
-    fun findRoshByPersonCrn(personCrn: String, pageable: PageRequest = PageRequest.of(0, 1)): Registration?
+    fun findRoshRegistration(personId: Long, pageRequest: PageRequest = PageRequest.of(0, 1)): Registration?
 }
-
-fun RegistrationRepository.findMappaRegistration(personId: Long) =
-    findRegistrationsByTypeCode(personId, RegisterType.MAPPA_CODE).firstOrNull()

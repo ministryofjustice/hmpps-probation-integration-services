@@ -10,7 +10,5 @@ import uk.gov.justice.digital.hmpps.services.MappaService
 class MappaResource(val mappaService: MappaService) {
     @PreAuthorize("hasRole('PROBATION_API__MANAGE_POM_CASES__CASE_DETAIL')")
     @GetMapping(value = ["/case-records/{crn}/risks/mappa"])
-    fun getMappaDetails(
-        @PathVariable("crn") crn: String
-    ) = mappaService.getMappaDetail(crn)
+    fun getMappaDetails(@PathVariable crn: String) = mappaService.getMappaDetail(crn)
 }

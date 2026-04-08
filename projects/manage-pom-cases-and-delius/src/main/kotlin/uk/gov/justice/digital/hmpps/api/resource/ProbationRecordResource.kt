@@ -13,7 +13,7 @@ import uk.gov.justice.digital.hmpps.services.Identifier
 import uk.gov.justice.digital.hmpps.services.ProbationRecordService
 
 @RestController
-class ProbationRecordResource(val prService: ProbationRecordService) {
+class ProbationRecordResource(val probationRecordService: ProbationRecordService) {
     @PreAuthorize("hasRole('PROBATION_API__MANAGE_POM_CASES__CASE_DETAIL')")
     @GetMapping(value = ["/case-records/{identifier}"])
     @Operation(
@@ -37,7 +37,5 @@ class ProbationRecordResource(val prService: ProbationRecordService) {
             )
         ]
     )
-    fun handle(
-        @PathVariable("identifier") identifier: String
-    ) = prService.findByIdentifier(Identifier(identifier))
+    fun handle(@PathVariable identifier: String) = probationRecordService.findByIdentifier(Identifier(identifier))
 }

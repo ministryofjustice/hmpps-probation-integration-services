@@ -8,7 +8,6 @@ import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonRepo
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.getByCrn
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.getByNomsId
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.registration.entity.RegistrationRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.registration.entity.findMappaRegistration
 import uk.gov.justice.digital.hmpps.ldap.findEmailByUsername
 import uk.gov.justice.digital.hmpps.services.mapping.record
 
@@ -29,9 +28,10 @@ class ProbationRecordService(
             user.email = ldapTemplate.findEmailByUsername(it)
         }
         val decision = caseAllocationRepository.findLatestActiveDecision(person.id)
-        val registration = registrationRepository.findMappaRegistration(person.id)
+        val mappa = registrationRepository.findMappaRegistration(person.id)
+        val rosh = registrationRepository.findRoshRegistration(person.id)
         val vloAssigned = registrationRepository.hasVloAssigned(person.id)
-        return person.record(decision, registration, vloAssigned)
+        return person.record(decision, mappa, rosh, vloAssigned)
     }
 }
 
