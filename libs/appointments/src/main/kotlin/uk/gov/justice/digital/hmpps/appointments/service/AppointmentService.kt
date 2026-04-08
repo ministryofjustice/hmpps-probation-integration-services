@@ -156,7 +156,11 @@ class AppointmentService internal constructor(
 
     private fun <T> UpdatePipeline<T>.validateUpdates(updates: UpdateBuilder<T>) = onEach { (request, existing) ->
         val outcome = updates.applyOutcome?.invoke(Outcome(existing), request)?.outcomeCode
-        val amendDateTime = updates.amendDateTime?.invoke(Schedule(existing), request)
+        val amendDateTime = updates.amendDateTime?.invoke(Schedule(existing), request)?.apply {
+            require(endTime == null || startTime < endTime) {
+                "Start time must be before end time"
+            }
+        }
         require(amendDateTime == null || amendDateTime.endsInFuture || outcome != null) {
             "Outcome must be provided when amending an appointment in the past"
         }
