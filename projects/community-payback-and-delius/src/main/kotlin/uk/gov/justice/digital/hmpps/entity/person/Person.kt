@@ -89,6 +89,7 @@ fun PersonManagerRepository.getActiveManagerForPerson(personId: Long) =
     )
 
 interface PersonRepository : JpaRepository<Person, Long> {
+    fun existsByCrn(crn: String): Boolean
     fun findByCrn(crn: String): Person?
 }
 

@@ -112,4 +112,31 @@ class CaseControllerIntegrationTest @Autowired constructor(
                 assertThat(it.message).contains("Person with crn of X999999 not found")
             }
     }
+
+    @Test
+    fun `returns registrations for crn`() {
+        val expectedResponse =
+            """{"registrations":[{"code":"RVLN","description":"Vulnerable person"},{"code":"SHRM","description":"Self harm"}]}"""
+        mockMvc.get("/case/${PersonGenerator.DEFAULT_PERSON.crn}/registrations") { withToken() }
+            .andExpect {
+                status { isOk() }
+                content { json(expectedResponse, JsonCompareMode.STRICT) }
+            }
+    }
+
+    @Test
+    fun `crn with no registrations returns empty list`() {
+        val expectedResponse = """{"registrations":[]}"""
+        mockMvc.get("/case/${PersonGenerator.PERSON_2.crn}/registrations") { withToken() }
+            .andExpect {
+                status { isOk() }
+                content { json(expectedResponse, JsonCompareMode.STRICT) }
+            }
+    }
+
+    @Test
+    fun `unknown crn throws 404 for registration endpoint`() {
+        mockMvc.get("/case/X999999/registrations") { withToken() }
+            .andExpect { status { isNotFound() } }
+    }
 }
