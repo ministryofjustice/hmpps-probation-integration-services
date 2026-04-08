@@ -34,6 +34,7 @@ import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
 import uk.gov.justice.digital.hmpps.data.generator.IdGenerator.id
 import java.time.LocalDate
 import java.time.LocalTime.NOON
+import java.time.ZonedDateTime
 
 @ExtendWith(MockitoExtension::class)
 class AppointmentServiceTest {
@@ -655,6 +656,25 @@ class AppointmentServiceTest {
                 amendDateTime = { copy(startTime = NOON.plusHours(1), endTime = NOON) }
             }
         }.hasMessage("Start time must be before end time")
+    }
+
+    @Test
+    fun `attempt to update appointment with existing end time before start time`() {
+        val existing = TestData.appointment(
+            date = LocalDate.now().plusDays(1),
+            startTime = ZonedDateTime.now(),
+            endTime = ZonedDateTime.now().minusHours(1)
+        )
+        whenever(appointmentRepository.findByExternalReferenceIn(listOf(existing.externalReference!!)))
+            .thenReturn(listOf(existing))
+
+        appointmentService.update("REF01") {
+            reference = { it }
+            amendDateTime = { copy(startTime = NOON, endTime = NOON.plusHours(1)) }
+        }
+
+        assertThat(existing.startTime.toLocalTime()).isEqualTo(NOON)
+        assertThat(existing.endTime?.toLocalTime()).isEqualTo(NOON.plusHours(1))
     }
 
     @Test
