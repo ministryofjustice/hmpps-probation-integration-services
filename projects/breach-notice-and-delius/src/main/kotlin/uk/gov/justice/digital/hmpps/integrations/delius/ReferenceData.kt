@@ -93,7 +93,7 @@ class Dataset(
 }
 
 interface ReferenceDataRepository : JpaRepository<ReferenceData, Long> {
-    @EntityGraph(attributePaths = ["dataset"])
+    @EntityGraph(attributePaths = ["dataset", "linkedData"])
     fun findByDatasetCodeAndSelectableTrue(datasetCode: String): List<ReferenceData>
 }
 
