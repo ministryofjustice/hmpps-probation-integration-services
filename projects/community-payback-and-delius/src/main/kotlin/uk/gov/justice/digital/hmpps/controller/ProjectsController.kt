@@ -1,10 +1,14 @@
 package uk.gov.justice.digital.hmpps.controller
 
+import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.media.Content
+import io.swagger.v3.oas.annotations.media.Schema
+import io.swagger.v3.oas.annotations.responses.ApiResponse
 import jakarta.validation.Valid
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
-import uk.gov.justice.digital.hmpps.model.AppointmentOutcomeRequest
+import uk.gov.justice.digital.hmpps.model.UpdateAppointmentRequest
 import uk.gov.justice.digital.hmpps.model.CreateAppointmentsRequest
 import uk.gov.justice.digital.hmpps.service.CommunityPaybackAppointmentsService
 import uk.gov.justice.digital.hmpps.service.ProjectService
@@ -35,12 +39,23 @@ class ProjectsController(
         @RequestParam username: String
     ) = communityPaybackAppointmentsService.getSession(projectCode, date, username)
 
+    @PutMapping(value = ["/{projectCode}/appointments/{appointmentId}"])
+    fun updateAppointment(
+        @PathVariable projectCode: String,
+        @PathVariable appointmentId: Long,
+        @RequestBody appointmentOutcome: UpdateAppointmentRequest
+    ) = communityPaybackAppointmentsService.updateAppointment(projectCode, appointmentId, appointmentOutcome)
+
+    @Operation(
+        deprecated = true,
+        description = "Deprecated, should instead use PUT /projects/{projectCode}/appointments/{appointmentId}",
+    )
     @PutMapping(value = ["/{projectCode}/appointments/{appointmentId}/outcome"])
     fun updateAppointmentOutcome(
         @PathVariable projectCode: String,
         @PathVariable appointmentId: Long,
-        @RequestBody appointmentOutcome: AppointmentOutcomeRequest
-    ) = communityPaybackAppointmentsService.updateAppointmentOutcome(projectCode, appointmentId, appointmentOutcome)
+        @RequestBody appointmentOutcome: UpdateAppointmentRequest
+    ) = communityPaybackAppointmentsService.updateAppointment(projectCode, appointmentId, appointmentOutcome)
 
     @PostMapping(value = ["/{projectCode}/appointments"])
     fun createAppointments(

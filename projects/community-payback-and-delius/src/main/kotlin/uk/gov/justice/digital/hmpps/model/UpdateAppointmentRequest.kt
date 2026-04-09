@@ -4,7 +4,7 @@ import java.time.LocalDate
 import java.time.LocalTime
 import java.util.*
 
-data class AppointmentOutcomeRequest(
+data class UpdateAppointmentRequest(
     val version: UUID,
     val outcome: Code?,
     val supervisor: Code,

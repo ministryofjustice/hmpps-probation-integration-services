@@ -287,10 +287,10 @@ class CommunityPaybackAppointmentsService(
     }
 
     @Transactional
-    fun updateAppointmentOutcome(
+    fun updateAppointment(
         projectCode: String,
         appointmentId: Long,
-        request: AppointmentOutcomeRequest
+        request: UpdateAppointmentRequest
     ) {
         val unpaidWorkAppointment = unpaidWorkAppointmentRepository.getAppointment(appointmentId)
         unpaidWorkAppointment.validateVersion(request.version.mostSignificantBits)
