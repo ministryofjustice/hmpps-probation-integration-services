@@ -46,17 +46,18 @@ class FIFOHandler(
         }.ifEmpty { return }
 
         defendants.forEach { defendant ->
-            val matchedPerson = corePerson.findByDefendantId(defendant.id)
-            val telemetryProperties = matchedPerson.telemetryProperties + notification.telemetryProperties
+            val matchedPersonStatus = corePerson.findMatchStatusByDefendantId(defendant.id)
+            val telemetryProperties = matchedPersonStatus.telemetryProperties + notification.telemetryProperties
 
-            // Defendant already has a CRN in core person service
-            if (matchedPerson.identifiers.crns.isNotEmpty()) {
+            // Defendant is matched with existing record in core person service
+            if (matchedPersonStatus.matchStatus != CorePersonRecordMatchStatus.NO_MATCH) {
                 telemetryService.trackEvent("PersonAlreadyExists", telemetryProperties)
                 return@forEach
             }
 
             // Under 10-year-old validation
-            if (matchedPerson.dateOfBirth == null || YEARS.between(matchedPerson.dateOfBirth, LocalDate.now()) <= 10) {
+            val dateOfBirth = defendant.personDefendant?.personDetails?.dateOfBirth
+            if (dateOfBirth == null || YEARS.between(dateOfBirth, LocalDate.now()) <= 10) {
                 telemetryService.trackEvent("InvalidDateOfBirth", telemetryProperties)
                 return@forEach
             }
@@ -187,10 +188,9 @@ class FIFOHandler(
         insertRemandResult.insertPersonResult.address?.let { notifier.addressCreated(it) }
     }
 
-    private val CorePersonRecord.telemetryProperties
+    private val CorePersonRecordStatusResponse.telemetryProperties
         get() = mapOf(
-            "defendantIds" to identifiers.defendantIds.joinToString(", ", prefix = "[", postfix = "]"),
-            "crns" to identifiers.crns.joinToString(", ", prefix = "[", postfix = "]")
+            "matchStatus" to matchStatus.toString()
         )
 
     // Log sitting/hearing dates on incoming messages and set a flag if at least one date is in the future

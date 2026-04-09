@@ -16,8 +16,8 @@ import uk.gov.justice.digital.hmpps.dto.InsertRemandResult
 import uk.gov.justice.digital.hmpps.dto.OffenceAndPlea
 import uk.gov.justice.digital.hmpps.flags.FeatureFlags
 import uk.gov.justice.digital.hmpps.integrations.client.CorePersonClient
-import uk.gov.justice.digital.hmpps.integrations.client.CorePersonRecord
-import uk.gov.justice.digital.hmpps.integrations.client.Identifiers
+import uk.gov.justice.digital.hmpps.integrations.client.CorePersonRecordMatchStatus
+import uk.gov.justice.digital.hmpps.integrations.client.CorePersonRecordStatusResponse
 import uk.gov.justice.digital.hmpps.message.Notification
 import uk.gov.justice.digital.hmpps.service.OffenceService
 import uk.gov.justice.digital.hmpps.service.PersonService
@@ -71,7 +71,16 @@ internal class FIFOHandlerTest {
 
     @Test
     fun `does not insert person or address when match is found`() {
-        corePersonAlreadyHasCrn()
+        corePersonMatchStatusMatch()
+        val notification = Notification(message = MessageGenerator.COMMON_PLATFORM_EVENT)
+        handler.handle(notification)
+        verify(telemetryService).notificationReceived(notification)
+        verify(remandService, never()).insertPersonOnRemand(any())
+    }
+
+    @Test
+    fun `does not insert person or address when possible match is found`() {
+        corePersonMatchStatusPossibleMatch()
         val notification = Notification(message = MessageGenerator.COMMON_PLATFORM_EVENT)
         handler.handle(notification)
         verify(telemetryService).notificationReceived(notification)
@@ -120,7 +129,7 @@ internal class FIFOHandlerTest {
 
     @Test
     fun `Messages with future hearing dates are flagged correctly in app insights`() {
-        corePersonAlreadyHasCrn()
+        corePersonMatchStatusMatch()
         val notification = Notification(message = MessageGenerator.COMMON_PLATFORM_EVENT_FUTURE_HEARING_DATES)
         handler.handle(notification)
 
@@ -128,8 +137,7 @@ internal class FIFOHandlerTest {
         verify(telemetryService).trackEvent(
             "PersonAlreadyExists",
             mapOf(
-                "defendantIds" to "[00000000-0000-0000-0000-000000000000]",
-                "crns" to "[X123456]",
+                "matchStatus" to "MATCH",
                 "hearingId" to notification.message.hearing.id,
                 "hearingDates" to "2024-01-01T12:00Z[Europe/London], 2024-03-19T12:00Z[Europe/London], 2030-12-31T12:00Z[Europe/London]",
                 "futureHearingDate" to "true"
@@ -182,19 +190,23 @@ internal class FIFOHandlerTest {
     }
 
     private fun corePersonHasNoCrn(dob: LocalDate? = LocalDate.now().minusYears(21)) {
-        val person = CorePersonRecord(
-            "John", "Robert", "Smith",
-            dob,
-            Identifiers()
+        val personMatchStatus = CorePersonRecordStatusResponse(
+            matchStatus = CorePersonRecordMatchStatus.NO_MATCH
         )
-        whenever(corePersonClient.findByDefendantId(any())).thenReturn(person)
+        whenever(corePersonClient.findMatchStatusByDefendantId(any())).thenReturn(personMatchStatus)
     }
 
-    private fun corePersonAlreadyHasCrn() {
-        val person = CorePersonRecord(
-            "John", "Robert", "Smith", LocalDate.now().minusYears(21),
-            Identifiers(crns = listOf("X123456"), defendantIds = listOf("00000000-0000-0000-0000-000000000000"))
+    private fun corePersonMatchStatusMatch() {
+        val personMatchStatus = CorePersonRecordStatusResponse(
+            matchStatus = CorePersonRecordMatchStatus.MATCH
         )
-        whenever(corePersonClient.findByDefendantId(any())).thenReturn(person)
+        whenever(corePersonClient.findMatchStatusByDefendantId(any())).thenReturn(personMatchStatus)
+    }
+
+    private fun corePersonMatchStatusPossibleMatch() {
+        val personMatchStatus = CorePersonRecordStatusResponse(
+            matchStatus = CorePersonRecordMatchStatus.POSSIBLE_MATCH
+        )
+        whenever(corePersonClient.findMatchStatusByDefendantId(any())).thenReturn(personMatchStatus)
     }
 }
