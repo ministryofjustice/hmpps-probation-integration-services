@@ -12,7 +12,7 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - uses: actions/checkout@v6
+    - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
     - name: Get build info
       run: |
@@ -26,13 +26,13 @@ runs:
         PROJECT: ${{ inputs.project }}
 
     - name: Store build info
-      uses: actions/upload-artifact@v7
+      uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
       with:
         name: build-info-${{ inputs.project }}
         path: projects/${{ inputs.project }}/build-info.properties
 
     - name: Store git info
-      uses: actions/upload-artifact@v7
+      uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
       with:
         name: git-info-${{ inputs.project }}
         path: projects/${{ inputs.project }}/git.properties

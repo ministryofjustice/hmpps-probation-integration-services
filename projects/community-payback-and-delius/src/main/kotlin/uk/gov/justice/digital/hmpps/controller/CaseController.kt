@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import uk.gov.justice.digital.hmpps.service.CaseScheduleService
 import uk.gov.justice.digital.hmpps.service.CaseSummaryService
+import uk.gov.justice.digital.hmpps.service.RegistrationService
 
 @RestController
 @RequestMapping("/case")
@@ -18,6 +19,7 @@ import uk.gov.justice.digital.hmpps.service.CaseSummaryService
 class CaseController(
     private val caseScheduleService: CaseScheduleService,
     private val caseSummaryService: CaseSummaryService,
+    private val registrationService: RegistrationService,
 ) {
     @GetMapping("/{crn}/event/{eventNumber}/appointments/schedule")
     fun getSchedule(
@@ -31,4 +33,9 @@ class CaseController(
         @Parameter(description = "If username isn't provided the LAO status cannot be determined and currentExclusion/currentRestriction will always be returned as true")
         @RequestParam username: String?
     ) = caseSummaryService.getSummaryForCase(crn, username)
+
+    @GetMapping("/{crn}/registrations")
+    fun getRegistrations(
+        @PathVariable crn: String,
+    ) = registrationService.getRegistrations(crn)
 }

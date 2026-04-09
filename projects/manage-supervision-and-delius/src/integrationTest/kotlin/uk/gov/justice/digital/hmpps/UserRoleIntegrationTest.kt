@@ -23,4 +23,10 @@ class UserRoleIntegrationTest : IntegrationTestBase() {
 
         assertEquals(listOf("APBT001", "MAABT001"), response.roles)
     }
+
+    @Test
+    fun `will throw 404 for user not found`() {
+        mockMvc.get("/user/unknown") { withToken() }
+            .andExpect { status { isNotFound() } }
+    }
 }

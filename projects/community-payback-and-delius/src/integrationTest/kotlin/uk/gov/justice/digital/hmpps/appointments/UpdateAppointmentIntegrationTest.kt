@@ -23,6 +23,7 @@ import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.json
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 import uk.gov.justice.digital.hmpps.test.TestData
+import java.time.LocalDate
 import java.time.LocalTime
 import java.time.temporal.ChronoUnit.SECONDS
 import java.util.*
@@ -85,15 +86,15 @@ class UpdateAppointmentIntegrationTest @Autowired constructor(
 
         val appointment = unpaidWorkAppointmentRepository.getAppointment(original.id)
         assertThat(appointment).isNotNull
-        assertThat(appointment.date).isEqualTo(original.date)
-        assertThat(appointment.startTime).isEqualTo(LocalTime.of(10, 0))
-        assertThat(appointment.endTime).isEqualTo(LocalTime.of(18, 0))
+        assertThat(appointment.date).isEqualTo(LocalDate.now())
+        assertThat(appointment.startTime).isEqualTo(LocalTime.of(LocalTime.now().minusHours(1).hour, 0))
+        assertThat(appointment.endTime).isEqualTo(LocalTime.of(LocalTime.now().plusHours(7).hour, 0))
         assertThat(appointment.penaltyMinutes).isEqualTo(65)
         assertThat(appointment.minutesCredited).isEqualTo(415)
         assertThat(appointment.project.code).isEqualTo(PROJECT)
         assertThat(appointment.notes).isEqualTo("testing update")
         assertThat(appointment.lastUpdatedDatetime).isCloseTo(appointment.lastUpdatedDatetime, within(1, SECONDS))
-        assertThat(appointment.pickUpTime.toString()).isEqualTo("09:30")
+        assertThat(appointment.pickUpTime).isEqualTo(LocalTime.of(LocalTime.now().minusHours(1).hour, 30))
         assertThat(appointment.pickUpLocation?.code).isEqualTo(UPWGenerator.DEFAULT_OFFICE_LOCATION.code)
     }
 

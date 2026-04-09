@@ -62,7 +62,6 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
                 PersonGenerator.CREATE_SENTENCE_CHANGED,
                 PersonGenerator.PERSON_NOT_FOUND,
                 PersonGenerator.PERSON_MULTIPLE_CUSTODIAL,
-                PersonGenerator.PERSON_ROSH_REFERENCE
             )
         )
         saveAll(
@@ -108,7 +107,6 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
                     type = RegistrationGenerator.TYPE_ROSH_MEDIUM,
                     level = ReferenceDataGenerator.ROSH,
                     date = LocalDate.now().minusDays(1),
-                    person = PersonGenerator.PERSON_ROSH_REFERENCE
                 )
             )
         )

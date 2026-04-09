@@ -17,6 +17,10 @@ inputs:
   token:
     description: The KUBE_TOKEN
     required: true
+  serviceaccount:
+    description: The Kubernetes service account name
+    required: false
+    default: cd-serviceaccount
 
 runs:
   using: composite
@@ -27,8 +31,8 @@ runs:
         mkdir -p /home/runner/.kube/moj-cloud-platform
         echo "${cert}" > /home/runner/.kube/moj-cloud-platform/ca.crt
         kubectl config set-cluster "${cluster}" --certificate-authority=/home/runner/.kube/moj-cloud-platform/ca.crt --server="${api}"
-        kubectl config set-credentials cd-serviceaccount --token="${token}"
-        kubectl config set-context "${cluster}" --cluster="${cluster}" --user=cd-serviceaccount --namespace="${namespace}"
+        kubectl config set-credentials "${serviceaccount:-cd-serviceaccount}" --token="${token}"
+        kubectl config set-context "${cluster}" --cluster="${cluster}" --user="${serviceaccount:-cd-serviceaccount}" --namespace="${namespace}"
         kubectl config use-context "${cluster}"
       env:
         cert: ${{ inputs.cert }}

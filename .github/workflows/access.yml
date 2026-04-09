@@ -105,17 +105,19 @@ jobs:
         project: ${{ fromJSON(needs.get-projects.outputs.projects) }}
     environment: ${{ matrix.environment }}
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
       - name: Check if DB access is required
         id: check_file
-        uses: andstor/file-existence-action@076e0072799f4942c8bc574a82233e1e4d13e9d6 # v2
-        with:
-          files: projects/${{ matrix.project }}/deploy/database/access.yml
+        run: echo "exists=$([ -f "projects/$project/deploy/database/access.yml" ] && echo 'true' || echo 'false')" | tee -a "$GITHUB_OUTPUT"
+        env:
+          project: ${{ matrix.project }}
 
       - name: Disable audit user creation in preprod # user_ table records are automatically copied from prod to preprod within 1 hour of creation
         if: matrix.environment == 'preprod' && steps.check_file.outputs.files_exists == 'true'
-        run: yq -i '.database.audit.create_user = false' projects/${{ matrix.project }}/deploy/database/access.yml
+        run: yq -i '.database.audit.create_user = false' "projects/$project/deploy/database/access.yml"
+        env:
+          project: ${{ matrix.project }}
 
       - name: Authenticate to MOJ Cloud Platform
         if: steps.check_file.outputs.files_exists == 'true'
@@ -166,7 +168,7 @@ jobs:
       matrix:
         project: ${{ fromJSON(needs.get-projects.outputs.projects) }}
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       - name: Create issue for manual approval step
         run: |
           gh issue create \

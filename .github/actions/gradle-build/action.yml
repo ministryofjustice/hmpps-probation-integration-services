@@ -29,7 +29,7 @@ outputs:
 runs:
   using: "composite"
   steps:
-    - uses: actions/checkout@v6
+    - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
     - name: Set version
       id: version
@@ -54,16 +54,19 @@ runs:
 
     - name: Push
       if: inputs.push == 'true'
-      uses: nick-fields/retry@ad984534de44a9489a53aefd81eb77f87c70dc60 # v4.0.0
-      with:
-        max_attempts: 3 # Pushing lots of new image versions at once can result in GitHub rate-limiting so we retry this step
-        timeout_minutes: 15
-        # Configuration cache is not yet supported for Jib - see: https://github.com/GoogleContainerTools/jib/issues/3132
-        command: ./gradlew ${{ inputs.project }}:jib --no-configuration-cache
+      shell: bash # language=bash
+      run: | # Pushing lots of new image versions at once can result in GitHub rate-limiting, so we retry this step
+        for i in {1..3}; do
+          echo "Attempt ${i}/3..."
+          ./gradlew "${PROJECT}:jib" --no-configuration-cache && \
+          exit 0 || sleep $((i * 10 + RANDOM % 5));
+        done
+        exit 1
       env:
         GITHUB_USERNAME: ${{ github.actor }}
         GITHUB_PASSWORD: ${{ github.token }}
         FORCE_DEPLOY: ${{ inputs.force }}
+        PROJECT: ${{ inputs.project }}
 
     - name: Check changes
       shell: bash
@@ -77,13 +80,13 @@ runs:
         PROJECT: ${{ inputs.project }}
 
     - name: Store changes
-      uses: actions/upload-artifact@v7
+      uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
       with:
         name: changes-${{ inputs.project }}
         path: ${{ inputs.project }}-changes.json
 
     - name: Store test artifacts
-      uses: actions/upload-artifact@v7
+      uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
       with:
         name: test-results-${{ inputs.project }}
         path: |

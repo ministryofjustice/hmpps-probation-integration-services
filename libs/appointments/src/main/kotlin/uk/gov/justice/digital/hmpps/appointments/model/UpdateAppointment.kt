@@ -23,12 +23,6 @@ class UpdateAppointment {
             date.atTime(endTime ?: startTime).atZone(EuropeLondon) > ZonedDateTime.now(EuropeLondon)
         val startsInFuture: Boolean = date.atTime(startTime).atZone(EuropeLondon) > ZonedDateTime.now(EuropeLondon)
 
-        init {
-            require(endTime == null || startTime < endTime) {
-                "Start time must be before end time"
-            }
-        }
-
         internal constructor(entity: AppointmentContact) : this(
             date = entity.date,
             startTime = entity.startTime.toLocalTime(),
