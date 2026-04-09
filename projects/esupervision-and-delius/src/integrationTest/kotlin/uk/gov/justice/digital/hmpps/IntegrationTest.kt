@@ -4,6 +4,8 @@ import com.github.tomakehurst.wiremock.WireMockServer
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.ValueSource
 import org.mockito.kotlin.verify
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
@@ -19,12 +21,14 @@ import uk.gov.justice.digital.hmpps.data.generator.EventGenerator
 import uk.gov.justice.digital.hmpps.data.generator.MessageGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ProviderGenerator
+import uk.gov.justice.digital.hmpps.entity.ContactOutcome
 import uk.gov.justice.digital.hmpps.entity.ContactRepository
 import uk.gov.justice.digital.hmpps.entity.ContactType
 import uk.gov.justice.digital.hmpps.message.MessageAttributes
 import uk.gov.justice.digital.hmpps.message.Notification
 import uk.gov.justice.digital.hmpps.message.PersonIdentifier
 import uk.gov.justice.digital.hmpps.message.PersonReference
+import uk.gov.justice.digital.hmpps.messaging.Handler
 import uk.gov.justice.digital.hmpps.messaging.HmppsChannelManager
 import uk.gov.justice.digital.hmpps.model.PersonalDetails
 import uk.gov.justice.digital.hmpps.service.CheckInService
@@ -42,6 +46,7 @@ internal class IntegrationTest @Autowired constructor(
     private val contactRepository: ContactRepository,
     private val checkInService: CheckInService,
     private val wireMockServer: WireMockServer,
+    private val handler: Handler,
     @MockitoBean private val telemetryService: TelemetryService,
 ) {
 
@@ -70,6 +75,7 @@ internal class IntegrationTest @Autowired constructor(
                 "crn" to PersonGenerator.DEFAULT_PERSON.crn,
                 "eventNumber" to EventGenerator.EVENT_2.number,
                 "checkInUrl" to "https://esupervision/check-in/received",
+                "setupId" to null,
             )
         )
     }
@@ -134,7 +140,7 @@ internal class IntegrationTest @Autowired constructor(
             additionalInformation = MessageGenerator.RECEIVED_A000004.additionalInformation - "eventNumber"
         )
 
-        assertThatThrownBy { checkInService.handle(message) }
+        assertThatThrownBy { checkInService.receiveCheckIn(message) }
             .isInstanceOf(IllegalStateException::class.java)
             .hasMessage("Case does not have an active event")
     }
@@ -224,6 +230,94 @@ internal class IntegrationTest @Autowired constructor(
     }
 
     @Test
+    fun `esupervision setup completed contact created`() {
+        val message = MessageGenerator.SETUP_COMPLETED_A000001
+        val notification =
+            Notification(message = message, attributes = MessageAttributes(eventType = message.eventType))
+
+        channelManager.getChannel(queueName).publishAndWait(notification)
+
+        val contact = contactRepository.findAll().single {
+            it.externalReference == "urn:uk:gov:hmpps:esupervision:setup:05fb6498-897c-46b4-9614-57c1fc6647bd"
+        }
+
+        assertThat(contact.type.code).isEqualTo(ContactType.E_SUPERVISION_SETUP_COMPLETED)
+        assertThat(contact.outcome?.code).isEqualTo(ContactOutcome.SETUP_COMPLETED)
+        assertThat(contact.date).isEqualTo(notification.message.occurredAt.toLocalDate())
+        assertThat(contact.person.id).isEqualTo(PersonGenerator.DEFAULT_PERSON.id)
+        assertThat(contact.event.id).isEqualTo(EventGenerator.EVENT_2.id)
+        assertThat(contact.provider.id).isEqualTo(ProviderGenerator.DEFAULT_PROVIDER.id)
+        assertThat(contact.team.id).isEqualTo(ProviderGenerator.DEFAULT_TEAM.id)
+        assertThat(contact.staff.id).isEqualTo(ProviderGenerator.DEFAULT_STAFF.id)
+        assertThat(contact.description).isNull()
+        assertThat(contact.notes).isNull()
+        verify(telemetryService).trackEvent(
+            "CheckInSetupCompleted",
+            mapOf(
+                "eventType" to "esupervision.setup.completed",
+                "crn" to PersonGenerator.DEFAULT_PERSON.crn,
+                "eventNumber" to EventGenerator.EVENT_2.number,
+                "checkInUrl" to null,
+                "setupId" to "05fb6498-897c-46b4-9614-57c1fc6647bd",
+            )
+        )
+    }
+
+    @Test
+    fun `esupervision setup removed contact updated`() {
+        val originalContact = contactRepository.findAll().single {
+            it.externalReference == "urn:uk:gov:hmpps:esupervision:setup:5b487c04-974d-44ca-b8c2-c95053d82479"
+        }
+        assertThat(originalContact.outcome?.code).isEqualTo(ContactOutcome.SETUP_COMPLETED)
+
+        val removedEvent = prepMessage(MessageGenerator.SETUP_REMOVED_A000001)
+        channelManager.getChannel(queueName).publishAndWait(removedEvent)
+
+        val updatedContact = contactRepository.findAll().single { it.id == originalContact.id }
+        assertThat(updatedContact.id).isEqualTo(originalContact.id)
+        assertThat(updatedContact.type.code).isEqualTo(ContactType.E_SUPERVISION_SETUP_COMPLETED)
+        assertThat(updatedContact.outcome?.code).isEqualTo(ContactOutcome.SETUP_REMOVED)
+        assertThat(updatedContact.date).isEqualTo(originalContact.date)
+        assertThat(updatedContact.startTime).isEqualTo(originalContact.startTime)
+        verify(telemetryService).trackEvent(
+            "CheckInSetupRemoved",
+            mapOf(
+                "eventType" to "esupervision.setup.removed",
+                "crn" to PersonGenerator.DEFAULT_PERSON.crn,
+                "eventNumber" to EventGenerator.EVENT_2.number,
+                "checkInUrl" to null,
+                "setupId" to "5b487c04-974d-44ca-b8c2-c95053d82479",
+            )
+        )
+    }
+
+    @Test
+    fun `sentence terminated updates setup contact using event number when setup id is missing`() {
+        val originalContact = contactRepository.findAll()
+            .single { it.person.id == PersonGenerator.SENTENCE_TERMINATED_PERSON.id }
+        assertThat(originalContact.outcome?.code).isEqualTo(ContactOutcome.SETUP_COMPLETED)
+
+        val notification = prepMessage(MessageGenerator.SENTENCE_TERMINATED_A000008)
+        channelManager.getChannel(queueName).publishAndWait(notification)
+
+        val updatedContact = contactRepository.findAll().single { it.id == originalContact.id }
+        assertThat(updatedContact.outcome?.code).isEqualTo(ContactOutcome.SETUP_REMOVED)
+        assertThat(updatedContact.externalReference).isEqualTo(originalContact.externalReference)
+        assertThat(updatedContact.date).isEqualTo(originalContact.date)
+        assertThat(updatedContact.startTime).isEqualTo(originalContact.startTime)
+        verify(telemetryService).trackEvent(
+            "CheckInSetupRemoved",
+            mapOf(
+                "eventType" to "probation-case.sentence.terminated",
+                "crn" to PersonGenerator.SENTENCE_TERMINATED_PERSON.crn,
+                "eventNumber" to EventGenerator.SENTENCE_TERMINATED_EVENT.number,
+                "checkInUrl" to null,
+                "setupId" to null,
+            )
+        )
+    }
+
+    @Test
     fun `esupervision update for missing CRN ignored`() {
         val notification = prepEvent("esupervision-updated-A000001", wireMockServer.port())
         notification.message.personReference.identifiers[0].set("value", "INVALID")
@@ -233,12 +327,35 @@ internal class IntegrationTest @Autowired constructor(
         verify(telemetryService).trackEvent(
             "CheckInEventIgnored",
             mapOf(
+                "reason" to "CRN not found",
                 "eventType" to "esupervision.check-in.updated",
                 "crn" to "INVALID",
                 "eventNumber" to EventGenerator.EVENT_2.number,
                 "checkInUrl" to null,
+                "setupId" to null,
             )
         )
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = ["esupervision-updated-A000001", "esupervision-setup-removed-A000001"])
+    fun `incorrect CRN is rejected`(file: String) {
+        val notification = prepEvent(file, wireMockServer.port())
+        notification.message.personReference.identifiers[0].set("value", "A000007")
+        assertThatThrownBy { handler.handle(notification) }
+            .isInstanceOf(IllegalArgumentException::class.java)
+            .hasMessage("Case details mismatch")
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = ["esupervision-updated-A000001", "esupervision-setup-removed-A000001"])
+    fun `incorrect event number is rejected`(file: String) {
+        val notification = prepEvent(file, wireMockServer.port()).run {
+            copy(message = message.copy(additionalInformation = message.additionalInformation + mapOf("eventNumber" to "99")))
+        }
+        assertThatThrownBy { handler.handle(notification) }
+            .isInstanceOf(IllegalArgumentException::class.java)
+            .hasMessage("Case details mismatch")
     }
 
     @Test
