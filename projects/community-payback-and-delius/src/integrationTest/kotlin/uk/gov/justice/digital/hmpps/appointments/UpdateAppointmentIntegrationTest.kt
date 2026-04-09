@@ -45,7 +45,7 @@ class UpdateAppointmentIntegrationTest @Autowired constructor(
     @Test
     fun `404 if appointment id is invalid`() {
         mockMvc
-            .put("/projects/$PROJECT/appointments/9999/outcome") {
+            .put("/projects/$PROJECT/appointments/9999") {
                 withToken()
                 json = TestData.updateAppointment(9999)
             }
@@ -60,7 +60,7 @@ class UpdateAppointmentIntegrationTest @Autowired constructor(
         val original = unpaidWorkAppointmentRepository.getAppointment(UPWGenerator.UPW_APPOINTMENT_TO_UPDATE[0].id)
 
         mockMvc
-            .put("/projects/$PROJECT/appointments/${original.id}/outcome") {
+            .put("/projects/$PROJECT/appointments/${original.id}") {
                 withToken()
                 json = TestData.updateAppointment(original.id).copy(
                     version = UUID(original.rowVersion + 1, original.contact.rowVersion + 1)
@@ -79,7 +79,7 @@ class UpdateAppointmentIntegrationTest @Autowired constructor(
     fun `can update appointment outcome`() {
         val original = unpaidWorkAppointmentRepository.getAppointment(UPWGenerator.UPW_APPOINTMENT_TO_UPDATE[1].id)
 
-        mockMvc.put("/projects/$PROJECT/appointments/${original.id}/outcome") {
+        mockMvc.put("/projects/$PROJECT/appointments/${original.id}") {
             withToken()
             json = TestData.updateAppointment(original.id)
         }.andExpect { status { isOk() } }
@@ -109,7 +109,7 @@ class UpdateAppointmentIntegrationTest @Autowired constructor(
             it.event?.id == originalContact.event!!.id && it.contactType.code == REVIEW_ENFORCEMENT_STATUS.value
         })
 
-        mockMvc.put("/projects/$PROJECT/appointments/${original.id}/outcome") {
+        mockMvc.put("/projects/$PROJECT/appointments/${original.id}") {
             withToken()
             json = TestData.updateAppointment(original.id).copy(outcome = Code("F"))
         }.andExpect { status { is2xxSuccessful() } }
@@ -127,7 +127,7 @@ class UpdateAppointmentIntegrationTest @Autowired constructor(
     fun `enforcement created when complied is false`() {
         val original = unpaidWorkAppointmentRepository.getAppointment(UPWGenerator.UPW_APPOINTMENT_TO_UPDATE[2].id)
 
-        mockMvc.put("/projects/$PROJECT/appointments/${original.id}/outcome") {
+        mockMvc.put("/projects/$PROJECT/appointments/${original.id}") {
             withToken()
             json = TestData.updateAppointment(original.id).copy(outcome = Code("F"))
         }.andExpect { status { is2xxSuccessful() } }
@@ -140,7 +140,7 @@ class UpdateAppointmentIntegrationTest @Autowired constructor(
     fun `contact alert created when alertActive is true`() {
         val original = unpaidWorkAppointmentRepository.getAppointment(UPWGenerator.UPW_APPOINTMENT_TO_UPDATE[3].id)
 
-        mockMvc.put("/projects/$PROJECT/appointments/${original.id}/outcome") {
+        mockMvc.put("/projects/$PROJECT/appointments/${original.id}") {
             withToken()
             json = TestData.updateAppointment(original.id).copy(alertActive = true)
         }.andExpect { status { is2xxSuccessful() } }
@@ -152,7 +152,7 @@ class UpdateAppointmentIntegrationTest @Autowired constructor(
     fun `contact alert deleted when alertActive is false`() {
         val original = unpaidWorkAppointmentRepository.getAppointment(UPWGenerator.UPW_APPOINTMENT_TO_UPDATE[4].id)
 
-        mockMvc.put("/projects/$PROJECT/appointments/${original.id}/outcome") {
+        mockMvc.put("/projects/$PROJECT/appointments/${original.id}") {
             withToken()
             json = TestData.updateAppointment(original.id).copy(alertActive = true)
         }.andExpect { status { is2xxSuccessful() } }
@@ -161,7 +161,7 @@ class UpdateAppointmentIntegrationTest @Autowired constructor(
 
         val second = unpaidWorkAppointmentRepository.getAppointment(original.id)
 
-        mockMvc.put("/projects/$PROJECT/appointments/${second.id}/outcome") {
+        mockMvc.put("/projects/$PROJECT/appointments/${second.id}") {
             withToken()
             json = TestData.updateAppointment(original.id).copy(
                 version = UUID(second.rowVersion, second.contact.rowVersion),

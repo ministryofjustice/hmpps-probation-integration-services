@@ -95,7 +95,7 @@ object TestData {
         notes = "testing"
     )
 
-    fun updateAppointment(id: Long) = AppointmentOutcomeRequest(
+    fun updateAppointment(id: Long) = UpdateAppointmentRequest(
         version = UUID(1, 1),
         date = LocalDate.now(),
         startTime = LocalTime.of(LocalTime.now().minusHours(1).hour, 0),
