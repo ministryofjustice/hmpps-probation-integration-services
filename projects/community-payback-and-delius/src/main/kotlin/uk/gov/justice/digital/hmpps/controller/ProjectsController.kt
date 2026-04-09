@@ -46,17 +46,6 @@ class ProjectsController(
         @RequestBody appointmentOutcome: UpdateAppointmentRequest
     ) = communityPaybackAppointmentsService.updateAppointment(projectCode, appointmentId, appointmentOutcome)
 
-    @Operation(
-        deprecated = true,
-        description = "Deprecated, should instead use PUT /projects/{projectCode}/appointments/{appointmentId}",
-    )
-    @PutMapping(value = ["/{projectCode}/appointments/{appointmentId}/outcome"])
-    fun updateAppointmentOutcome(
-        @PathVariable projectCode: String,
-        @PathVariable appointmentId: Long,
-        @RequestBody appointmentOutcome: UpdateAppointmentRequest
-    ) = communityPaybackAppointmentsService.updateAppointment(projectCode, appointmentId, appointmentOutcome)
-
     @PostMapping(value = ["/{projectCode}/appointments"])
     fun createAppointments(
         @PathVariable projectCode: String,
