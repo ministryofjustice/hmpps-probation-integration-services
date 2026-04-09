@@ -63,12 +63,12 @@ class UserService(
 ) {
     fun getUserDetails(username: String): UserDetails {
         val ldapUser = ldapTemplate.findByUsername<LdapUser>(username)
-            ?: throw NotFoundException("Ldap User", "username", username)
+            ?: throw NotFoundException("User", "username", username)
         return ldapUser.toUserDetails()
     }
 
     private fun LdapUser.toUserDetails() = userRepository.findUserByUsername(username)?.let { toUserDetails(it.id) }
-        ?: throw NotFoundException("User entity", "username", username)
+        ?: throw NotFoundException("User", "username", username)
 
     private fun LdapUser.toUserDetails(userId: Long) = UserDetails(
         userId = userId,
