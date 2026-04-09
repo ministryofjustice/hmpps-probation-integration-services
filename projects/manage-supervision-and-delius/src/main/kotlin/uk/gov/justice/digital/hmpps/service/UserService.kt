@@ -61,7 +61,11 @@ class UserService(
     private val ldapTemplate: LdapTemplate,
     private val deliusUserAspect: DeliusUserAspect
 ) {
-    fun getUserDetails(username: String) = ldapTemplate.findByUsername<LdapUser>(username)?.toUserDetails()
+    fun getUserDetails(username: String): UserDetails {
+        val ldapUser = ldapTemplate.findByUsername<LdapUser>(username)
+            ?: throw NotFoundException("Ldap User", "username", username)
+        return ldapUser.toUserDetails()
+    }
 
     private fun LdapUser.toUserDetails() = userRepository.findUserByUsername(username)?.let { toUserDetails(it.id) }
         ?: throw NotFoundException("User entity", "username", username)
