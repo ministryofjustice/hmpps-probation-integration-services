@@ -25,6 +25,7 @@ data class MinimalSentence(
 
 data class MinimalOrder(
     val description: String,
+    val sentenceType: String,
     val startDate: LocalDate? = null,
     val endDate: LocalDate? = null,
 )

@@ -54,10 +54,17 @@ class SentenceService(
     fun getActiveSentences(crn: String, includeRarRequirements: Boolean): MinimalSentenceOverview {
         val person = personRepository.getPerson(crn)
         val activeEvents = getActiveSentences(person.id)
+        val sentenceTypes = courtAppearanceRepository.getCourtAppearancesByEventIn(activeEvents).map {
+            Pair(it.event.id, when (it.type.code) {
+                "S" -> "COMMUNITY"
+                else -> "PRE_SENTENCE"
+            })
+        }
 
         return MinimalSentenceOverview(
             personSummary = person.toSummary(),
-            activeEvents.map { it.toMinimalSentence(includeRarRequirements) }
+            activeEvents.map { event -> event.toMinimalSentence(includeRarRequirements,
+                sentenceTypes.firstOrNull { it.first == event.id }?.second ?: "PRE_SENTENCE") }
         )
     }
 
@@ -89,11 +96,11 @@ class SentenceService(
         disposal?.type?.description ?: "Pre-Sentence"
     )
 
-    fun Event.toMinimalSentence(includeRarRequirements: Boolean): MinimalSentence =
+    fun Event.toMinimalSentence(includeRarRequirements: Boolean, sentenceType: String): MinimalSentence =
         MinimalSentence(
             id,
             eventNumber,
-            disposal?.toMinimalOrder(),
+            disposal?.toMinimalOrder(sentenceType),
             licenceConditions = disposal?.let {
                 licenceConditionRepository.findAllByDisposalId(disposal.id).asMinimals()
             } ?: emptyList(),
@@ -269,7 +276,14 @@ fun formatNote(notes: String?, truncateNote: Boolean): List<NoteDetail> {
     } ?: listOf()
 }
 
-fun Disposal.toMinimalOrder(): MinimalOrder {
+fun Disposal.toMinimalOrder(sentenceType: String): MinimalOrder {
+    val sentenceTypeDescription = type.sentenceType?.let {
+        when (it) {
+            "NC", "SC" -> "CUSTODY"
+            else -> null
+        }
+    } ?: sentenceType
+
     val length = length?.let {
         when (lengthUnit?.code) {
             LengthUnit.YEARS.code -> it / 12
@@ -278,6 +292,7 @@ fun Disposal.toMinimalOrder(): MinimalOrder {
     }
 
     return MinimalOrder(type.description + (lengthUnit?.let { " (${length} ${it.description})" } ?: ""),
+        sentenceTypeDescription,
         date,
         expectedEndDate())
 }
