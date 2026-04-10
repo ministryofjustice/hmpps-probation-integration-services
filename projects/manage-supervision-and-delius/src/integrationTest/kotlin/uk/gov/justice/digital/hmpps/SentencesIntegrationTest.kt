@@ -51,7 +51,13 @@ class SentencesIntegrationTest : IntegrationTestBase() {
         val expected = MinimalSentenceOverview(
             PersonGenerator.OVERVIEW.toSummary(),
             listOf(
-                MinimalSentence(EVENT_2.id, EVENT_2.eventNumber),
+                MinimalSentence(
+                    id = EVENT_2.id,
+                    eventNumber = EVENT_2.eventNumber,
+                    order = MinimalOrder(
+                        description = "Pre-Sentence",
+                        sentenceType = "PRE_SENTENCE",
+                    )),
                 MinimalSentence(
                     id = EVENT_1.id,
                     EVENT_1.eventNumber,
@@ -86,15 +92,28 @@ class SentencesIntegrationTest : IntegrationTestBase() {
 
         assertEquals(PersonGenerator.CUSTODY_EVENT.eventNumber, custodySentence.eventNumber)
         assertEquals("Custody Sentence Type", custodySentence.order?.description)
-        assertEquals("CUSTODY", custodySentence.order?.type)
+        assertEquals("CUSTODY", custodySentence.order?.sentenceType)
     }
 
     @Test
-    fun `sentence type is null for a pre-sentence sentence`() {
+    fun `sentence type is pre-sentence for a pre-sentence sentence`() {
         val response = mockMvc.get("/sentences/${PersonGenerator.PRE_SENTENCE_PERSON.crn}") { withToken() }
             .andExpect { status { isOk() } }
-            .andReturn().response.contentAsString
-        println(response)
-        // TODO: add assertion(s)
+            .andReturn().response.contentAsJson<MinimalSentenceOverview>()
+
+        val expected = MinimalSentenceOverview(
+            personSummary = PersonGenerator.PRE_SENTENCE_PERSON.toSummary(),
+            sentences = listOf(
+                MinimalSentence(
+                    id = PersonGenerator.PRE_SENTENCE_EVENT.id,
+                    eventNumber = PersonGenerator.PRE_SENTENCE_EVENT.eventNumber,
+                    order = MinimalOrder(
+                        description = "Pre-Sentence",
+                        sentenceType = "PRE_SENTENCE",
+                    )
+                ))
+            )
+        assertEquals(expected, response)
+
     }
 }

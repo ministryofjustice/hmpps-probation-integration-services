@@ -12,6 +12,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.appointment.AppointmentR
 import uk.gov.justice.digital.hmpps.integrations.delius.compliance.Nsi
 import uk.gov.justice.digital.hmpps.integrations.delius.compliance.NsiRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.*
+import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.CourtAppearance
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.CourtAppearanceRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.LicenceConditionRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.LocationRepository
@@ -48,11 +49,7 @@ class AppointmentService(
         val sentenceTypes = courtAppearanceRepository.getCourtAppearancesByEventIn(activeEvents)
             .groupBy { it.event.id }
             .mapValues { (_, appearances) ->
-                when (appearances.maxWithOrNull(
-                    compareBy<CourtAppearance>(
-                        { it.appearanceDate },
-                        { it.type.code })
-                )?.type?.code) {
+                when (appearances.maxWithOrNull(compareBy<CourtAppearance>({ it.date }, { it.type.code }))?.type?.code) {
                     "S" -> "COMMUNITY"
                     else -> "PRE_SENTENCE"
                 }
