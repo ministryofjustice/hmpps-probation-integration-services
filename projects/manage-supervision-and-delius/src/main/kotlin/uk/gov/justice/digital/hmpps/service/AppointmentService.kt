@@ -49,7 +49,11 @@ class AppointmentService(
         val sentenceTypes = courtAppearanceRepository.getCourtAppearancesByEventIn(activeEvents)
             .groupBy { it.event.id }
             .mapValues { (_, appearances) ->
-                when (appearances.maxWithOrNull(compareBy<CourtAppearance>({ it.date }, { it.type.code }))?.type?.code) {
+                when (appearances.maxWithOrNull(
+                    compareBy<CourtAppearance>(
+                        { it.date },
+                        { it.type.code })
+                )?.type?.code) {
                     "S" -> "COMMUNITY"
                     else -> "PRE_SENTENCE"
                 }

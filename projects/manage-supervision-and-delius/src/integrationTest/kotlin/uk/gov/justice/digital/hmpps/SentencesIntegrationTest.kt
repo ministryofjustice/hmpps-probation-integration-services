@@ -57,7 +57,8 @@ class SentencesIntegrationTest : IntegrationTestBase() {
                     order = MinimalOrder(
                         description = "Pre-Sentence",
                         sentenceType = "PRE_SENTENCE",
-                    )),
+                    )
+                ),
                 MinimalSentence(
                     id = EVENT_1.id,
                     EVENT_1.eventNumber,
@@ -111,9 +112,9 @@ class SentencesIntegrationTest : IntegrationTestBase() {
                         description = "Pre-Sentence",
                         sentenceType = "PRE_SENTENCE",
                     )
-                ))
+                )
             )
+        )
         assertEquals(expected, response)
-
     }
 }
