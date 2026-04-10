@@ -68,7 +68,11 @@ class AppointmentIntegrationTest : IntegrationTestBase() {
             associatedWithPerson = false,
             emptyList(),
             listOf(
-                MinimalSentence(EVENT_2.id, EVENT_2.eventNumber, MinimalOrder("Pre-Sentence", SentenceType.PRE_SENTENCE)),
+                MinimalSentence(
+                    EVENT_2.id,
+                    EVENT_2.eventNumber,
+                    MinimalOrder("Pre-Sentence", SentenceType.PRE_SENTENCE)
+                ),
                 MinimalSentence(
                     id = EVENT_1.id,
                     eventNumber = EVENT_1.eventNumber,
