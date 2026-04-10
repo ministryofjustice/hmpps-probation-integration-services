@@ -151,7 +151,7 @@ class ContactOutcome(
     val code: String,
 ) {
     companion object {
-        const val SETUP_COMPLETED = "ESPC"
+        const val SETUP_COMPLETED = "ESPSC"
         const val SETUP_REMOVED = "ESPRD"
     }
 }

@@ -41,7 +41,7 @@ class CheckInService(
         val detail = requireNotNull(domainEvent.getDetail())
         val externalReferences = Contact.checkInExternalReferencePrefixes.map { it + detail.checkinUuid }
         val contact = contactRepository.getByExternalReferenceIn(externalReferences)
-        require(contact.person.crn == domainEvent.crn && contact.event.number == domainEvent.eventNumber) { "Case details mismatch" }
+        require(domainEvent matches contact) { "Case details mismatch" }
         contact.notes = listOfNotNull(contact.notes, detail.notes).joinToString(System.lineSeparator())
         contactRepository.save(contact).also { audit(it) }
     }
@@ -60,7 +60,7 @@ class CheckInService(
             val eventNumber = requireNotNull(domainEvent.eventNumber) { "No setupId or eventNumber" }
             contactRepository.findByPersonCrnAndEventNumberAndTypeCode(domainEvent.crn, eventNumber) ?: return@audit
         }
-        require(contact.person.crn == domainEvent.crn && contact.event.number == domainEvent.eventNumber) { "Case details mismatch" }
+        require(domainEvent matches contact) { "Case details mismatch" }
         contact.outcome = contactOutcomeRepository.getByCode(SETUP_REMOVED)
         contactRepository.save(contact).also { audit(it) }
     }
@@ -115,4 +115,7 @@ class CheckInService(
         this["offenderId"] = contact.person.id
         this["eventId"] = contact.event.id
     }
+
+    private infix fun HmppsDomainEvent.matches(contact: Contact) =
+        contact.person.crn == crn && (eventNumber == null || contact.event.number == eventNumber)
 }
