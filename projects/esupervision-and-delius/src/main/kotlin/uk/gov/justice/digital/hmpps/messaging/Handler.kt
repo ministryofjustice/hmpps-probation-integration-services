@@ -26,7 +26,10 @@ class Handler(
             Message(title = CHECK_IN_RECEIVED),
             Message(title = CHECK_IN_EXPIRED),
             Message(title = CHECK_IN_REVIEWED),
-            Message(title = CHECK_IN_UPDATED)
+            Message(title = CHECK_IN_UPDATED),
+            Message(title = SETUP_COMPLETED),
+            Message(title = SETUP_REMOVED),
+            Message(title = SENTENCE_TERMINATED),
         ]
     )
     override fun handle(notification: Notification<HmppsDomainEvent>) {
@@ -34,19 +37,32 @@ class Handler(
         try {
             when (notification.eventType) {
                 CHECK_IN_RECEIVED, CHECK_IN_EXPIRED -> {
-                    checkInService.handle(notification.message)
+                    checkInService.receiveCheckIn(notification.message)
                     telemetryService.trackEvent("CheckInEventReceived", notification.telemetry())
                 }
 
                 CHECK_IN_REVIEWED, CHECK_IN_UPDATED -> {
-                    checkInService.update(notification.message)
+                    checkInService.updateCheckIn(notification.message)
                     telemetryService.trackEvent("CheckInEventUpdated", notification.telemetry())
+                }
+
+                SETUP_COMPLETED -> {
+                    checkInService.completeSetup(notification.message)
+                    telemetryService.trackEvent("CheckInSetupCompleted", notification.telemetry())
+                }
+
+                SETUP_REMOVED, SENTENCE_TERMINATED -> {
+                    checkInService.removeSetup(notification.message)
+                    telemetryService.trackEvent("CheckInSetupRemoved", notification.telemetry())
                 }
 
                 else -> throw IllegalArgumentException("Unexpected event type: ${notification.eventType}")
             }
-        } catch (ie: IgnorableMessageException) {
-            telemetryService.trackEvent("CheckInEventIgnored", notification.telemetry() + ie.additionalProperties)
+        } catch (e: IgnorableMessageException) {
+            telemetryService.trackEvent(
+                "CheckInEventIgnored",
+                mapOf("reason" to e.message) + e.additionalProperties + notification.telemetry()
+            )
         }
     }
 
@@ -55,14 +71,18 @@ class Handler(
         const val CHECK_IN_EXPIRED = "esupervision.check-in.expired"
         const val CHECK_IN_REVIEWED = "esupervision.check-in.reviewed"
         const val CHECK_IN_UPDATED = "esupervision.check-in.updated"
+        const val SETUP_COMPLETED = "esupervision.setup.completed"
+        const val SETUP_REMOVED = "esupervision.setup.removed"
+        const val SENTENCE_TERMINATED = "probation-case.sentence.terminated"
     }
 }
 
 fun Notification<HmppsDomainEvent>.telemetry() = mapOf(
     "eventType" to eventType,
-    "crn" to message.personReference.findCrn(),
-    "eventNumber" to message.eventNumber(),
-    "checkInUrl" to message.checkInUrl(),
+    "crn" to message.crn,
+    "eventNumber" to message.eventNumber,
+    "checkInUrl" to message.checkInUrl,
+    "setupId" to message.setupId,
 )
 
 fun HmppsDomainEvent.description() = when (eventType) {
@@ -71,5 +91,7 @@ fun HmppsDomainEvent.description() = when (eventType) {
     else -> throw IllegalArgumentException("Unexpected event type: $eventType")
 }
 
-fun HmppsDomainEvent.checkInUrl() = additionalInformation["checkInUrl"]?.toString()
-fun HmppsDomainEvent.eventNumber() = additionalInformation["eventNumber"]?.toString()
+val HmppsDomainEvent.crn get() = requireNotNull(personReference.findCrn())
+val HmppsDomainEvent.checkInUrl get() = additionalInformation["checkInUrl"]?.toString()
+val HmppsDomainEvent.eventNumber get() = additionalInformation["eventNumber"]?.toString()
+val HmppsDomainEvent.setupId get() = additionalInformation["setupId"]?.toString()

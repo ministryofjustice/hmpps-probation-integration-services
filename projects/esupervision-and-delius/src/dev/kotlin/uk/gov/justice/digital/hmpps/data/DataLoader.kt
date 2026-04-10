@@ -18,6 +18,9 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
             BusinessInteraction(id(), BusinessInteractionCode.ADD_CONTACT.code, ZonedDateTime.now()),
             BusinessInteraction(id(), BusinessInteractionCode.UPDATE_CONTACT.code, ZonedDateTime.now()),
             ContactTypeGenerator.CT_ESPCHI,
+            ContactTypeGenerator.CT_ESPCHS,
+            ContactOutcomeGenerator.COT_ESPC,
+            ContactOutcomeGenerator.COT_ESPRD,
             ProviderGenerator.DEFAULT_PROVIDER,
             ProviderGenerator.DEFAULT_PDU,
             ProviderGenerator.DEFAULT_LDU,
@@ -37,6 +40,8 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
             PersonGenerator.PUNCTUATION_IN_NAME,
             PersonGenerator.SENSITIVE_CONTACT,
             PersonGenerator.SENSITIVE_CONTACT_MANAGER,
+            PersonGenerator.SENTENCE_TERMINATED_PERSON,
+            PersonGenerator.SENTENCE_TERMINATED_MANAGER,
             OffenceGenerator.BURGLARY,
             EventGenerator.EVENT_1,
             EventGenerator.EVENT_2,
@@ -49,9 +54,12 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
             EventGenerator.INACTIVE_EVENT,
             EventGenerator.FALLBACK_EVENT_1,
             EventGenerator.FALLBACK_EVENT_2,
+            EventGenerator.SENTENCE_TERMINATED_EVENT,
             ContactGenerator.CONTACT_TO_REVIEW,
             ContactGenerator.CONTACT_TO_UPDATE,
-            ContactGenerator.CONTACT_TO_UPDATE_EXPIRY
+            ContactGenerator.CONTACT_TO_UPDATE_EXPIRY,
+            ContactGenerator.SETUP_CONTACT_TO_UPDATE,
+            ContactGenerator.SENTENCE_TERMINATED_SETUP_CONTACT,
         )
     }
 }

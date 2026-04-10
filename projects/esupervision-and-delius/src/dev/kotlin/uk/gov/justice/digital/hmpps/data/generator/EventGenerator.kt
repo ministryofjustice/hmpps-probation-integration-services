@@ -61,6 +61,13 @@ object EventGenerator {
         disposal = Disposal(id(), LocalDate.of(2026, 4, 1), COMMUNITY_ORDER),
         mainOffence = MainOffence(id(), OffenceGenerator.BURGLARY),
     )
+    val SENTENCE_TERMINATED_EVENT = generateEvent(
+        number = 1,
+        person = PersonGenerator.SENTENCE_TERMINATED_PERSON,
+        referralDate = LocalDate.of(2026, 4, 1),
+        disposal = Disposal(id(), LocalDate.of(2026, 4, 1), COMMUNITY_ORDER),
+        mainOffence = MainOffence(id(), OffenceGenerator.BURGLARY),
+    )
 
     fun generateEvent(
         number: Int,

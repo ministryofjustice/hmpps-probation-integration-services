@@ -11,19 +11,21 @@ import org.springframework.data.annotation.LastModifiedDate
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import org.springframework.data.jpa.repository.JpaRepository
 import uk.gov.justice.digital.hmpps.entity.event.EventEntity
-import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.exception.NotFoundException.Companion.orNotFoundBy
 import uk.gov.justice.digital.hmpps.jpa.GeneratedId
 import uk.gov.justice.digital.hmpps.messaging.Handler.Companion.CHECK_IN_EXPIRED
 import uk.gov.justice.digital.hmpps.messaging.Handler.Companion.CHECK_IN_RECEIVED
 import uk.gov.justice.digital.hmpps.messaging.Handler.Companion.CHECK_IN_REVIEWED
 import uk.gov.justice.digital.hmpps.messaging.Handler.Companion.CHECK_IN_UPDATED
+import uk.gov.justice.digital.hmpps.messaging.Handler.Companion.SENTENCE_TERMINATED
+import uk.gov.justice.digital.hmpps.messaging.Handler.Companion.SETUP_COMPLETED
+import uk.gov.justice.digital.hmpps.messaging.Handler.Companion.SETUP_REMOVED
 import java.time.LocalDate
 import java.time.ZonedDateTime
 
-@EntityListeners(AuditingEntityListener::class)
 @Entity
 @Table(name = "contact")
+@EntityListeners(AuditingEntityListener::class)
 class Contact(
     @ManyToOne
     @JoinColumn("offender_id")
@@ -36,6 +38,10 @@ class Contact(
     @ManyToOne
     @JoinColumn(name = "contact_type_id")
     val type: ContactType,
+
+    @ManyToOne
+    @JoinColumn(name = "contact_outcome_type_id")
+    var outcome: ContactOutcome? = null,
 
     @Column(name = "contact_date")
     val date: LocalDate,
@@ -55,22 +61,22 @@ class Contact(
     @JoinColumn("staff_id")
     val staff: Staff,
 
-    val description: String,
+    val description: String? = null,
 
     @Lob
-    var notes: String?,
+    var notes: String? = null,
 
     val externalReference: String?,
 
     @Column(columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)
-    val softDeleted: Boolean,
+    val softDeleted: Boolean = false,
 
     @Id
     @Column(name = "contact_id", updatable = false)
     @SequenceGenerator(name = "contact_id_seq", sequenceName = "contact_id_seq", allocationSize = 1)
     @GeneratedId(generator = "contact_id_seq")
-    val id: Long,
+    val id: Long = 0,
 
     @Column(name = "sensitive")
     @Convert(converter = YesNoConverter::class)
@@ -111,10 +117,11 @@ class Contact(
         fun externalReferencePrefix(eventType: String): String = when (eventType) {
             CHECK_IN_RECEIVED, CHECK_IN_REVIEWED, CHECK_IN_UPDATED -> "urn:uk:gov:hmpps:esupervision:check-in:"
             CHECK_IN_EXPIRED -> "urn:uk:gov:hmpps:esupervision:check-in-expiry:"
+            SETUP_COMPLETED, SETUP_REMOVED, SENTENCE_TERMINATED -> "urn:uk:gov:hmpps:esupervision:setup:"
             else -> throw IllegalArgumentException("Unexpected event type: $eventType")
         }
 
-        val externalReferencePrefixes =
+        val checkInExternalReferencePrefixes =
             listOf("urn:uk:gov:hmpps:esupervision:check-in:", "urn:uk:gov:hmpps:esupervision:check-in-expiry:")
     }
 }
@@ -123,26 +130,53 @@ class Contact(
 @Entity
 @Table(name = "r_contact_type")
 class ContactType(
-    val code: String,
-
     @Id
     @Column(name = "contact_type_id")
     val id: Long,
+    val code: String,
 ) {
     companion object {
         const val E_SUPERVISION_CHECK_IN = "ESPCHI"
+        const val E_SUPERVISION_SETUP_COMPLETED = "ESPCHS"
+    }
+}
+
+@Immutable
+@Entity
+@Table(name = "r_contact_outcome_type")
+class ContactOutcome(
+    @Id
+    @Column(name = "contact_outcome_type_id")
+    val id: Long,
+    val code: String,
+) {
+    companion object {
+        const val SETUP_COMPLETED = "ESPC"
+        const val SETUP_REMOVED = "ESPRD"
     }
 }
 
 interface ContactTypeRepository : JpaRepository<ContactType, Long> {
     fun findByCode(code: String): ContactType?
+    fun getByCode(code: String) = findByCode(code).orNotFoundBy("code", code)
 }
 
-fun ContactTypeRepository.getByCode(code: String): ContactType =
-    findByCode(code) ?: throw NotFoundException("ContactType", "code", code)
+interface ContactOutcomeRepository : JpaRepository<ContactOutcome, Long> {
+    fun findByCode(code: String): ContactOutcome?
+    fun getByCode(code: String) = findByCode(code).orNotFoundBy("code", code)
+}
 
 interface ContactRepository : JpaRepository<Contact, Long> {
+    fun findByPersonCrnAndEventNumberAndTypeCode(
+        crn: String,
+        eventNumber: String,
+        typeCode: String = ContactType.E_SUPERVISION_SETUP_COMPLETED
+    ): Contact?
+
     fun findByExternalReferenceIn(externalReference: List<String>): Contact?
     fun getByExternalReferenceIn(externalReference: List<String>): Contact =
         findByExternalReferenceIn(externalReference).orNotFoundBy("externalReference", externalReference)
+
+    fun getByExternalReference(externalReference: String): Contact =
+        findByExternalReferenceIn(listOf(externalReference)).orNotFoundBy("externalReference", externalReference)
 }

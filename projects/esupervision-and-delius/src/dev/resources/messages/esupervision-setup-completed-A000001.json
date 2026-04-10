@@ -1,0 +1,18 @@
+{
+  "eventType": "esupervision.setup.completed",
+  "version": 1,
+  "description": "An e-Supervision setup was completed",
+  "occurredAt": "2026-04-01T09:30:00+01:00",
+  "additionalInformation": {
+    "eventNumber": "2",
+    "setupId": "05fb6498-897c-46b4-9614-57c1fc6647bd"
+  },
+  "personReference": {
+    "identifiers": [
+      {
+        "type": "CRN",
+        "value": "A000001"
+      }
+    ]
+  }
+}
