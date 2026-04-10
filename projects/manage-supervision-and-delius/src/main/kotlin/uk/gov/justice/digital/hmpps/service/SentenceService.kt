@@ -54,21 +54,21 @@ class SentenceService(
     fun getActiveSentences(crn: String, includeRarRequirements: Boolean): MinimalSentenceOverview {
         val person = personRepository.getPerson(crn)
         val activeEvents = getActiveSentences(person.id)
-        val sentenceTypes = courtAppearanceRepository.getCourtAppearancesByEventIn(activeEvents).map {
-            Pair(
-                it.event.id, when (it.type.code) {
-                    "S" -> "COMMUNITY"
+        val sentenceTypes = courtAppearanceRepository.getCourtAppearancesByEventIn(activeEvents)
+            .groupBy { it.event.id }
+            .mapValues { (_, appearances) ->
+                when {
+                    appearances.any { it.type.code == "S" } -> "COMMUNITY"
                     else -> "PRE_SENTENCE"
                 }
-            )
-        }
+            }
 
         return MinimalSentenceOverview(
             personSummary = person.toSummary(),
             activeEvents.map { event ->
                 event.toMinimalSentence(
                     includeRarRequirements,
-                    sentenceTypes.firstOrNull { it.first == event.id }?.second ?: "PRE_SENTENCE"
+                    sentenceTypes[event.id] ?: "PRE_SENTENCE"
                 )
             }
         )
@@ -106,7 +106,7 @@ class SentenceService(
         MinimalSentence(
             id,
             eventNumber,
-            disposal?.toMinimalOrder(sentenceType),
+            disposal?.toMinimalOrder(sentenceType) ?: MinimalOrder("Pre-Sentence", sentenceType),
             licenceConditions = disposal?.let {
                 licenceConditionRepository.findAllByDisposalId(disposal.id).asMinimals()
             } ?: emptyList(),

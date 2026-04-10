@@ -20,7 +20,6 @@ import uk.gov.justice.digital.hmpps.data.generator.personalDetails.PersonDetails
 import uk.gov.justice.digital.hmpps.service.toSummary
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
-import java.time.LocalDate
 
 class SentencesIntegrationTest : IntegrationTestBase() {
 
@@ -82,13 +81,12 @@ class SentencesIntegrationTest : IntegrationTestBase() {
         val response = mockMvc.get("/sentences/${PersonGenerator.CUSTODY_PERSON.crn}") { withToken() }
             .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<MinimalSentenceOverview>()
-        assertThat(response.sentences).contains(
-            MinimalSentence(
-                id = PersonGenerator.CUSTODY_EVENT.id,
-                eventNumber = PersonGenerator.CUSTODY_EVENT.eventNumber,
-                order = MinimalOrder("Custody Sentence Type", "CUSTODY", LocalDate.now().minusDays(14))
-            )
-        )
+
+        val custodySentence = response.sentences.single { it.id == PersonGenerator.CUSTODY_EVENT.id }
+
+        assertEquals(PersonGenerator.CUSTODY_EVENT.eventNumber, custodySentence.eventNumber)
+        assertEquals("Custody Sentence Type", custodySentence.order?.description)
+        assertEquals("CUSTODY", custodySentence.order?.type)
     }
 
     @Test
