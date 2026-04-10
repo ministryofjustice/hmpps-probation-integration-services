@@ -5,6 +5,7 @@ import uk.gov.justice.digital.hmpps.api.model.appointment.*
 import uk.gov.justice.digital.hmpps.api.model.sentence.MinimalOrder
 import uk.gov.justice.digital.hmpps.api.model.sentence.MinimalSentence
 import uk.gov.justice.digital.hmpps.api.model.sentence.ProviderOfficeLocation
+import uk.gov.justice.digital.hmpps.api.model.sentence.SentenceType
 import uk.gov.justice.digital.hmpps.api.model.user.Team
 import uk.gov.justice.digital.hmpps.api.model.user.TeamResponse
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
@@ -54,8 +55,8 @@ class AppointmentService(
                         { it.date },
                         { it.type.code })
                 )?.type?.code) {
-                    "S" -> "COMMUNITY"
-                    else -> "PRE_SENTENCE"
+                    "S" -> SentenceType.COMMUNITY
+                    else -> SentenceType.PRE_SENTENCE
                 }
             }
 
@@ -69,7 +70,7 @@ class AppointmentService(
             sentences = activeEvents.map { event ->
                 event.toMinimalSentence(
                     eventLevelNsis,
-                    sentenceTypes[event.id] ?: "PRE_SENTENCE"
+                    sentenceTypes[event.id] ?: SentenceType.PRE_SENTENCE
                 )
             }
         )
@@ -95,12 +96,12 @@ class AppointmentService(
                 .map { it.toLocationDetails() }
         )
 
-    fun Event.toMinimalSentence(eventLevelNsis: List<Nsi>, sentenceType: String): MinimalSentence {
+    fun Event.toMinimalSentence(eventLevelNsis: List<Nsi>, sentenceType: SentenceType): MinimalSentence {
         val filteredNsiList = eventLevelNsis.filter { nsi -> nsi.eventId == id }
         return MinimalSentence(
             id,
             eventNumber,
-            disposal?.toMinimalOrder(sentenceType) ?: MinimalOrder("Pre-Sentence", "PRE_SENTENCE"),
+            disposal?.toMinimalOrder(sentenceType) ?: MinimalOrder("Pre-Sentence", SentenceType.PRE_SENTENCE),
             filteredNsiList.map { it.toMinimalNsi() },
             licenceConditions = disposal?.let {
                 licenceConditionRepository.findAllByDisposalId(disposal.id).map {
