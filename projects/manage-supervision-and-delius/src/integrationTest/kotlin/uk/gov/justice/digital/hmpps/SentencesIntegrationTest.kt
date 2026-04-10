@@ -56,15 +56,14 @@ class SentencesIntegrationTest : IntegrationTestBase() {
                     eventNumber = EVENT_2.eventNumber,
                     order = MinimalOrder(
                         description = "Pre-Sentence",
-                        sentenceType = "PRE_SENTENCE",
-                    )
-                ),
+                        sentenceType = SentenceType.PRE_SENTENCE,
+                    )),
                 MinimalSentence(
                     id = EVENT_1.id,
                     EVENT_1.eventNumber,
                     order = MinimalOrder(
                         ACTIVE_ORDER.type.description + " (12 Months)",
-                        "COMMUNITY",
+                        SentenceType.COMMUNITY,
                         ACTIVE_ORDER.date
                     ),
                     licenceConditions = listOf(
@@ -93,7 +92,7 @@ class SentencesIntegrationTest : IntegrationTestBase() {
 
         assertEquals(PersonGenerator.CUSTODY_EVENT.eventNumber, custodySentence.eventNumber)
         assertEquals("Custody Sentence Type", custodySentence.order?.description)
-        assertEquals("CUSTODY", custodySentence.order?.sentenceType)
+        assertEquals(SentenceType.CUSTODY, custodySentence.order?.sentenceType)
     }
 
     @Test
@@ -110,11 +109,11 @@ class SentencesIntegrationTest : IntegrationTestBase() {
                     eventNumber = PersonGenerator.PRE_SENTENCE_EVENT.eventNumber,
                     order = MinimalOrder(
                         description = "Pre-Sentence",
-                        sentenceType = "PRE_SENTENCE",
+                        sentenceType = SentenceType.PRE_SENTENCE,
                     )
-                )
+                ))
             )
-        )
         assertEquals(expected, response)
+
     }
 }

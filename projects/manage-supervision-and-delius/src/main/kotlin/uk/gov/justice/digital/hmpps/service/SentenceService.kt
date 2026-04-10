@@ -58,8 +58,8 @@ class SentenceService(
             .groupBy { it.event.id }
             .mapValues { (_, appearances) ->
                 when {
-                    appearances.any { it.type.code == "S" } -> "COMMUNITY"
-                    else -> "PRE_SENTENCE"
+                    appearances.any { it.type.code == "S" } -> SentenceType.COMMUNITY
+                    else -> SentenceType.PRE_SENTENCE
                 }
             }
 
@@ -68,7 +68,7 @@ class SentenceService(
             activeEvents.map { event ->
                 event.toMinimalSentence(
                     includeRarRequirements,
-                    sentenceTypes[event.id] ?: "PRE_SENTENCE"
+                    sentenceTypes[event.id] ?: SentenceType.PRE_SENTENCE
                 )
             }
         )
@@ -102,7 +102,7 @@ class SentenceService(
         disposal?.type?.description ?: "Pre-Sentence"
     )
 
-    fun Event.toMinimalSentence(includeRarRequirements: Boolean, sentenceType: String): MinimalSentence =
+    fun Event.toMinimalSentence(includeRarRequirements: Boolean, sentenceType: SentenceType): MinimalSentence =
         MinimalSentence(
             id,
             eventNumber,
@@ -282,10 +282,10 @@ fun formatNote(notes: String?, truncateNote: Boolean): List<NoteDetail> {
     } ?: listOf()
 }
 
-fun Disposal.toMinimalOrder(sentenceType: String): MinimalOrder {
-    val sentenceTypeDescription = type.sentenceType?.let {
+fun Disposal.toMinimalOrder(sentenceType: SentenceType): MinimalOrder {
+    val sentenceTypeValue = type.sentenceType?.let {
         when (it) {
-            "NC", "SC" -> "CUSTODY"
+            "NC", "SC" -> SentenceType.CUSTODY
             else -> null
         }
     } ?: sentenceType
@@ -298,7 +298,7 @@ fun Disposal.toMinimalOrder(sentenceType: String): MinimalOrder {
     }
 
     return MinimalOrder(type.description + (lengthUnit?.let { " (${length} ${it.description})" } ?: ""),
-        sentenceTypeDescription,
+        sentenceTypeValue,
         date,
         expectedEndDate())
 }

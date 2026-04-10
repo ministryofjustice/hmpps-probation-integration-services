@@ -25,7 +25,7 @@ data class MinimalSentence(
 
 data class MinimalOrder(
     val description: String,
-    val sentenceType: String? = null,
+    val sentenceType: SentenceType? = null,
     val startDate: LocalDate? = null,
     val endDate: LocalDate? = null,
 )
@@ -37,3 +37,9 @@ data class NoteDetail(
     val note: String,
     val hasNoteBeenTruncated: Boolean? = null
 )
+
+enum class SentenceType {
+    COMMUNITY,
+    CUSTODY,
+    PRE_SENTENCE,
+}
