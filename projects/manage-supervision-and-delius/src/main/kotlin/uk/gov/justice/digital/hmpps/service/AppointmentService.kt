@@ -47,10 +47,12 @@ class AppointmentService(
         val (eventLevelNsis, personLevelNsis) = nsiRepository.findByPersonIdAndActiveIsTrue(person.id)
             .partition { it.eventId != null }
         val sentenceTypes = courtAppearanceRepository.getCourtAppearancesByEventIn(activeEvents).map {
-            Pair(it.event.id, when (it.type.code) {
-                "S" -> "COMMUNITY"
-                else -> "PRE_SENTENCE"
-            })
+            Pair(
+                it.event.id, when (it.type.code) {
+                    "S" -> "COMMUNITY"
+                    else -> "PRE_SENTENCE"
+                }
+            )
         }
 
         return ContactTypeAssociation(
@@ -60,8 +62,12 @@ class AppointmentService(
             personNsis = personLevelNsis.map {
                 it.toMinimalNsi()
             },
-            sentences = activeEvents.map { event -> event.toMinimalSentence(eventLevelNsis,
-                sentenceTypes.firstOrNull { it.first == event.id }?.second ?: "PRE_SENTENCE") }
+            sentences = activeEvents.map { event ->
+                event.toMinimalSentence(
+                    eventLevelNsis,
+                    sentenceTypes.firstOrNull { it.first == event.id }?.second ?: "PRE_SENTENCE"
+                )
+            }
         )
     }
 

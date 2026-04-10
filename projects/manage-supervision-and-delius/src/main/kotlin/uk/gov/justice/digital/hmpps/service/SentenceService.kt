@@ -55,16 +55,22 @@ class SentenceService(
         val person = personRepository.getPerson(crn)
         val activeEvents = getActiveSentences(person.id)
         val sentenceTypes = courtAppearanceRepository.getCourtAppearancesByEventIn(activeEvents).map {
-            Pair(it.event.id, when (it.type.code) {
-                "S" -> "COMMUNITY"
-                else -> "PRE_SENTENCE"
-            })
+            Pair(
+                it.event.id, when (it.type.code) {
+                    "S" -> "COMMUNITY"
+                    else -> "PRE_SENTENCE"
+                }
+            )
         }
 
         return MinimalSentenceOverview(
             personSummary = person.toSummary(),
-            activeEvents.map { event -> event.toMinimalSentence(includeRarRequirements,
-                sentenceTypes.firstOrNull { it.first == event.id }?.second ?: "PRE_SENTENCE") }
+            activeEvents.map { event ->
+                event.toMinimalSentence(
+                    includeRarRequirements,
+                    sentenceTypes.firstOrNull { it.first == event.id }?.second ?: "PRE_SENTENCE"
+                )
+            }
         )
     }
 

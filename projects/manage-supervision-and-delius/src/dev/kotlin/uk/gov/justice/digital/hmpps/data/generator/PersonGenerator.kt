@@ -40,7 +40,7 @@ object PersonGenerator {
         additionalOffences = emptyList(),
         court = CourtGenerator.BHAM,
         convictionDate = LocalDate.now(),
-        )
+    )
     val CUSTODY_EVENT = generateEvent(
         CUSTODY_PERSON,
         eventNumber = "1",
@@ -48,7 +48,7 @@ object PersonGenerator {
         additionalOffences = emptyList(),
         court = CourtGenerator.BHAM,
         convictionDate = LocalDate.now(),
-        )
+    )
     val CUSTODY_DISPOSAL = generateDisposal(CUSTODY_EVENT, type = CUSTODY_DISPOSAL_TYPE)
     val EVENT_1 = generateEvent(
         OVERVIEW,
