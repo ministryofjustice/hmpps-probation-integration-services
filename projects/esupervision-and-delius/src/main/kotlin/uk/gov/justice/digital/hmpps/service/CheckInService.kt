@@ -15,6 +15,7 @@ import uk.gov.justice.digital.hmpps.entity.audit.BusinessInteractionCode.ADD_CON
 import uk.gov.justice.digital.hmpps.entity.audit.BusinessInteractionCode.UPDATE_CONTACT
 import uk.gov.justice.digital.hmpps.entity.event.EventRepository
 import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException
+import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException.Companion.orIgnore
 import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
 import uk.gov.justice.digital.hmpps.messaging.*
 import uk.gov.justice.digital.hmpps.messaging.detail.CheckInDetail
@@ -58,7 +59,8 @@ class CheckInService(
             contactRepository.getByExternalReference(externalReference)
         } else {
             val eventNumber = requireNotNull(domainEvent.eventNumber) { "No setupId or eventNumber" }
-            contactRepository.findByPersonCrnAndEventNumberAndTypeCode(domainEvent.crn, eventNumber) ?: return@audit
+            contactRepository.findByPersonCrnAndEventNumberAndTypeCode(domainEvent.crn, eventNumber)
+                .orIgnore { "Setup not found" }
         }
         require(domainEvent matches contact) { "Case details mismatch" }
         contact.outcome = contactOutcomeRepository.getByCode(SETUP_REMOVED)
