@@ -49,7 +49,9 @@ object WarningGenerator {
     )
 
     val SENTENCE_TYPE_LINKED_CONDITIONS = listOf(
-        generateLinkedCondition(SENTENCE_TYPES.first { it.code == "CO" }, CONDITION_TYPES.first { it.code == "2IN12" }),
+        generateLinkedCondition(
+            SENTENCE_TYPES.first { it.code == "CO" },
+            CONDITION_TYPES.first { it.code == "2IN12" }),
         generateLinkedCondition(
             SENTENCE_TYPES.first { it.code == "PSS" },
             CONDITION_TYPES.first { it.code == "2IN12" }),
@@ -59,7 +61,9 @@ object WarningGenerator {
         generateLinkedCondition(
             SENTENCE_TYPES.first { it.code == "SSO" },
             CONDITION_TYPES.first { it.code == "3TOTAL" }),
-        generateLinkedCondition(SENTENCE_TYPES.first { it.code == "YO" }, CONDITION_TYPES.first { it.code == "3IN12" }),
+        generateLinkedCondition(
+            SENTENCE_TYPES.first { it.code == "YO" },
+            CONDITION_TYPES.first { it.code == "3IN12" }),
     )
 
     val ENFORCEABLE_CONTACT_TYPE = generateContactType("ENCT")
