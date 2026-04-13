@@ -41,11 +41,29 @@ object WarningGenerator {
     )
 
     val SENTENCE_TYPES = listOf(
-        generateSentenceType("CO", linkedCondition = CONDITION_TYPES.first { it.code == "2IN12" }),
-        generateSentenceType("PSS", linkedCondition = CONDITION_TYPES.first { it.code == "2IN12" }),
-        generateSentenceType("SDO", linkedCondition = CONDITION_TYPES.first { it.code == "2IN12" }),
-        generateSentenceType("SSO", linkedCondition = CONDITION_TYPES.first { it.code == "3TOTAL" }),
-        generateSentenceType("YO", linkedCondition = CONDITION_TYPES.first { it.code == "3IN12" }),
+        generateSentenceType("CO"),
+        generateSentenceType("PSS"),
+        generateSentenceType("SDO"),
+        generateSentenceType("SSO"),
+        generateSentenceType("YO"),
+    )
+
+    val SENTENCE_TYPE_LINKED_CONDITIONS = listOf(
+        generateLinkedCondition(
+            SENTENCE_TYPES.first { it.code == "CO" },
+            CONDITION_TYPES.first { it.code == "2IN12" }),
+        generateLinkedCondition(
+            SENTENCE_TYPES.first { it.code == "PSS" },
+            CONDITION_TYPES.first { it.code == "2IN12" }),
+        generateLinkedCondition(
+            SENTENCE_TYPES.first { it.code == "SDO" },
+            CONDITION_TYPES.first { it.code == "2IN12" }),
+        generateLinkedCondition(
+            SENTENCE_TYPES.first { it.code == "SSO" },
+            CONDITION_TYPES.first { it.code == "3TOTAL" }),
+        generateLinkedCondition(
+            SENTENCE_TYPES.first { it.code == "YO" },
+            CONDITION_TYPES.first { it.code == "3IN12" }),
     )
 
     val ENFORCEABLE_CONTACT_TYPE = generateContactType("ENCT")
@@ -91,7 +109,7 @@ object WarningGenerator {
         dataset: Dataset = DS_BREACH_NOTICE_TYPE,
         selectable: Boolean = true,
         id: Long = IdGenerator.getAndIncrement()
-    ) = generateReferenceData(dataset, code, description, selectable, setOf(), id)
+    ) = generateReferenceData(dataset, code, description, selectable, id)
 
     fun generateReason(
         code: String,
@@ -99,7 +117,7 @@ object WarningGenerator {
         dataset: Dataset = DS_BREACH_REASON,
         selectable: Boolean = true,
         id: Long = IdGenerator.getAndIncrement()
-    ) = generateReferenceData(dataset, code, description, selectable, setOf(), id)
+    ) = generateReferenceData(dataset, code, description, selectable, id)
 
     fun generateCondition(
         code: String,
@@ -107,16 +125,24 @@ object WarningGenerator {
         dataset: Dataset = DS_BREACH_CONDITION_TYPE,
         selectable: Boolean = true,
         id: Long = IdGenerator.getAndIncrement()
-    ) = generateReferenceData(dataset, code, description, selectable, setOf(), id)
+    ) = generateReferenceData(dataset, code, description, selectable, id)
 
     fun generateSentenceType(
         code: String,
         description: String = "Description of $code",
         dataset: Dataset = DS_BREACH_SENTENCE_TYPE,
-        linkedCondition: ReferenceData,
         selectable: Boolean = true,
         id: Long = IdGenerator.getAndIncrement()
-    ) = generateReferenceData(dataset, code, description, selectable, setOf(linkedCondition), id)
+    ) = generateReferenceData(dataset, code, description, selectable, id)
+
+    fun generateLinkedCondition(
+        sentenceType: ReferenceData,
+        condition: ReferenceData,
+    ) = LinkedList(
+        LinkedListId(sentenceType.id, condition.id),
+        sentenceType,
+        condition
+    )
 
     fun generateEnforceableContact(
         person: Person,

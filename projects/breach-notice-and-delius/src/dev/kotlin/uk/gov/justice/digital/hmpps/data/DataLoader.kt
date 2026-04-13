@@ -61,6 +61,7 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
             *WarningGenerator.CONDITION_TYPES.toTypedArray(),
             WarningGenerator.DS_BREACH_SENTENCE_TYPE,
             *WarningGenerator.SENTENCE_TYPES.toTypedArray(),
+            *WarningGenerator.SENTENCE_TYPE_LINKED_CONDITIONS.toTypedArray(),
             WarningGenerator.ENFORCEABLE_CONTACT_TYPE,
             WarningGenerator.ENFORCEABLE_CONTACT_OUTCOME,
             EventGenerator.DEFAULT_EVENT,

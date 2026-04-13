@@ -6,7 +6,7 @@ import org.hibernate.type.YesNoConverter
 import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
 import uk.gov.justice.digital.hmpps.model.CodedDescription
-import uk.gov.justice.digital.hmpps.model.SentenceType
+import java.io.Serializable
 
 @Immutable
 @Entity
@@ -25,14 +25,6 @@ class ReferenceData(
 
     @Convert(converter = YesNoConverter::class)
     val selectable: Boolean,
-
-    @ManyToMany
-    @JoinTable(
-        name = "r_linked_list",
-        joinColumns = [JoinColumn(name = "standard_reference_data1")],
-        inverseJoinColumns = [JoinColumn(name = "standard_reference_data2")]
-    )
-    val linkedData: Set<ReferenceData>,
 
     @Id
     @Column(name = "standard_reference_list_id")
@@ -97,9 +89,35 @@ interface ReferenceDataRepository : JpaRepository<ReferenceData, Long> {
     fun findByDatasetCodeAndSelectableTrue(datasetCode: String): List<ReferenceData>
 }
 
+@Embeddable
+data class LinkedListId(
+    @Column(name = "standard_reference_data1")
+    val data1: Long = 0,
+
+    @Column(name = "standard_reference_data2")
+    val data2: Long = 0,
+) : Serializable
+
+@Immutable
+@Entity
+@Table(name = "r_linked_list")
+class LinkedList(
+    @EmbeddedId
+    val id: LinkedListId,
+
+    @ManyToOne
+    @JoinColumn(name = "standard_reference_data1", insertable = false, updatable = false)
+    val data1: ReferenceData,
+
+    @ManyToOne
+    @JoinColumn(name = "standard_reference_data2", insertable = false, updatable = false)
+    val data2: ReferenceData,
+)
+
+interface LinkedListRepository : JpaRepository<LinkedList, LinkedListId> {
+    fun findByData1IdIn(data1Ids: List<Long>): List<LinkedList>
+}
+
 fun CodeAndDescription.codedDescription() = CodedDescription(code, description)
 fun List<CodeAndDescription>.codedDescriptions() =
     map(CodeAndDescription::codedDescription).sortedBy { it.description.lowercase() }
-
-fun ReferenceData.sentenceType() = SentenceType(code, description, linkedData.first().description)
-fun List<ReferenceData>.sentenceTypes() = map(ReferenceData::sentenceType).sortedBy { it.description }
