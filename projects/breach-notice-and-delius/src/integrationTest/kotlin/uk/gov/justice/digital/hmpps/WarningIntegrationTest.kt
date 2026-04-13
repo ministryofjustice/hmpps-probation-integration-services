@@ -15,8 +15,9 @@ import uk.gov.justice.digital.hmpps.data.generator.WarningGenerator.ENFORCEABLE_
 import uk.gov.justice.digital.hmpps.data.generator.WarningGenerator.NOTICE_TYPES
 import uk.gov.justice.digital.hmpps.data.generator.WarningGenerator.PSS_ENFORCEABLE_CONTACT
 import uk.gov.justice.digital.hmpps.data.generator.WarningGenerator.SENTENCE_TYPES
+import uk.gov.justice.digital.hmpps.data.generator.WarningGenerator.SENTENCE_TYPE_LINKED_CONDITIONS
 import uk.gov.justice.digital.hmpps.integrations.delius.codedDescriptions
-import uk.gov.justice.digital.hmpps.integrations.delius.sentenceTypes
+import uk.gov.justice.digital.hmpps.model.SentenceType
 import uk.gov.justice.digital.hmpps.model.WarningDetails
 import uk.gov.justice.digital.hmpps.model.WarningTypesResponse
 import uk.gov.justice.digital.hmpps.service.toEnforceableContact
@@ -37,7 +38,11 @@ internal class WarningIntegrationTest : BaseIntegrationTest() {
         assertThat(response).isEqualTo(
             WarningTypesResponse(
                 warningTypes = NOTICE_TYPES.filter { it.selectable }.codedDescriptions(),
-                sentenceTypes = SENTENCE_TYPES.sentenceTypes(),
+                sentenceTypes = SENTENCE_TYPE_LINKED_CONDITIONS.associate { it.id.data1 to it.data2.description }
+                    .let { linkedConditions ->
+                        SENTENCE_TYPES.map { SentenceType(it.code, it.description, linkedConditions[it.id] ?: "") }
+                            .sortedBy { it.description }
+                    },
                 defaultSentenceTypeCode = "PSS",
             )
         )

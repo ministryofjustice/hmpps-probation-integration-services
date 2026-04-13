@@ -6,6 +6,7 @@ import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.*
 import uk.gov.justice.digital.hmpps.integrations.delius.Document.Companion.breachNoticeUrn
 import uk.gov.justice.digital.hmpps.model.EnforceableContact
+import uk.gov.justice.digital.hmpps.model.SentenceType
 import uk.gov.justice.digital.hmpps.model.WarningDetails
 import uk.gov.justice.digital.hmpps.model.WarningTypesResponse
 import java.time.LocalDateTime
@@ -17,17 +18,24 @@ import java.util.*
 @Transactional(readOnly = true)
 class WarningService(
     private val rdRepository: ReferenceDataRepository,
+    private val linkedListRepository: LinkedListRepository,
     private val documentRepository: DocumentRepository,
     private val disposalRepository: DisposalRepository,
     private val contactRepository: ContactRepository,
 ) {
     fun getWarningTypes(crn: String, breachNoticeId: UUID): WarningTypesResponse {
         val disposal = crn.disposalForEvent(documentRepository.eventId(breachNoticeUrn(breachNoticeId)))
+        val sentenceTypeRefData = rdRepository.findByDatasetCodeAndSelectableTrue(Dataset.BREACH_SENTENCE_TYPE)
+        val linkedConditions = linkedListRepository.findByData1IdIn(sentenceTypeRefData.map { it.id })
+            .associate { it.id.data1 to it.data2.description }
+        val sentenceTypes = sentenceTypeRefData
+            .map { SentenceType(it.code, it.description, linkedConditions[it.id] ?: "") }
+            .sortedBy { it.description }
+
         return WarningTypesResponse(
             warningTypes = rdRepository
                 .findByDatasetCodeAndSelectableTrue(Dataset.BREACH_NOTICE_TYPE).codedDescriptions(),
-            sentenceTypes = rdRepository
-                .findByDatasetCodeAndSelectableTrue(Dataset.BREACH_SENTENCE_TYPE).sentenceTypes(),
+            sentenceTypes = sentenceTypes,
             defaultSentenceTypeCode = disposal.type.defaultSentenceTypeCode()
         )
     }

@@ -11,9 +11,8 @@ object ReferenceDataGenerator {
         code: String,
         description: String = "Description of $code",
         selectable: Boolean = true,
-        linkedData: Set<ReferenceData> = setOf(),
         id: Long = IdGenerator.getAndIncrement()
-    ) = ReferenceData(code, description, dataset, selectable, linkedData, id)
+    ) = ReferenceData(code, description, dataset, selectable, id)
 
     fun generateContactType(
         code: String,
