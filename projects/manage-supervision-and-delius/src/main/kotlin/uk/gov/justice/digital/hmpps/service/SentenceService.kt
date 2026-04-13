@@ -91,9 +91,9 @@ class SentenceService(
         disposal?.type?.description ?: "Pre-Sentence"
     )
 
-
     fun List<Event>.toMinimalSentences(includeRarRequirements: Boolean): List<MinimalSentence> {
-        val sentencingCourtAppearance = courtAppearanceRepository.getCourtAppearancesByEventIn(this).groupBy { it.event.id }
+        val sentencingCourtAppearance =
+            courtAppearanceRepository.getCourtAppearancesByEventIn(this).groupBy { it.event.id }
         return map { event ->
             val hasSentencingCourtAppearance: Boolean = sentencingCourtAppearance.containsKey(event.id)
             val sentenceType: SentenceType = when {
@@ -108,7 +108,11 @@ class SentenceService(
                 licenceConditions = event.disposal?.let { disposal ->
                     licenceConditionRepository.findAllByDisposalId(disposal.id).asMinimals()
                 } ?: emptyList(),
-                requirements = requirementRepository.getRequirements(event.id, event.eventNumber, includeRarRequirements).asMinimals {
+                requirements = requirementRepository.getRequirements(
+                    event.id,
+                    event.eventNumber,
+                    includeRarRequirements
+                ).asMinimals {
                     requirementService.getRar(it.disposal!!.id, it.mainCategory!!.code)
                 }
             )

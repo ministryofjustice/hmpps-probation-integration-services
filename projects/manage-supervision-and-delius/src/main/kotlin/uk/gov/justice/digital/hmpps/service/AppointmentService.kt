@@ -94,16 +94,20 @@ class AppointmentService(
             MinimalSentence(
                 id = event.id,
                 eventNumber = event.eventNumber,
-                order = event.disposal?.toMinimalOrder(sentenceType)?: MinimalOrder("Pre-Sentence", SentenceType.PRE_SENTENCE),
+                order = event.disposal?.toMinimalOrder(sentenceType) ?: MinimalOrder(
+                    "Pre-Sentence",
+                    SentenceType.PRE_SENTENCE
+                ),
                 nsis = filteredNsiList.map { it.toMinimalNsi() },
                 licenceConditions = event.disposal?.let {
                     licenceConditionRepository.findAllByDisposalId(event.disposal.id).map {
                         it.toMinimalLicenceCondition()
                     }
                 } ?: emptyList(),
-                requirements =  requirementRepository.getRequirements(event.id, event.eventNumber).filter { it.active }.asMinimals {
-                    requirementService.getRar(it.disposal!!.id, it.mainCategory!!.code)
-                }
+                requirements = requirementRepository.getRequirements(event.id, event.eventNumber).filter { it.active }
+                    .asMinimals {
+                        requirementService.getRar(it.disposal!!.id, it.mainCategory!!.code)
+                    }
             )
 
         }
