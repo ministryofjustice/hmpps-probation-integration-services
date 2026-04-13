@@ -114,13 +114,13 @@ jobs:
           project: ${{ matrix.project }}
 
       - name: Disable audit user creation in preprod # user_ table records are automatically copied from prod to preprod within 1 hour of creation
-        if: matrix.environment == 'preprod' && steps.check_file.outputs.files_exists == 'true'
+        if: matrix.environment == 'preprod' && steps.check_file.outputs.exists == 'true'
         run: yq -i '.database.audit.create_user = false' "projects/$project/deploy/database/access.yml"
         env:
           project: ${{ matrix.project }}
 
       - name: Authenticate to MOJ Cloud Platform
-        if: steps.check_file.outputs.files_exists == 'true'
+        if: steps.check_file.outputs.exists == 'true'
         uses: ./.github/actions/cloud-platform-auth
         with:
           api: ${{ secrets.KUBE_ENV_API }}
@@ -130,7 +130,7 @@ jobs:
           token: ${{ secrets.KUBE_TOKEN }}
 
       - name: Create initial credentials
-        if: steps.check_file.outputs.files_exists == 'true'
+        if: steps.check_file.outputs.exists == 'true'
         run: |
           if ! kubectl get secret "$PROJECT-database" > /dev/null; then
             kubectl create secret generic "$PROJECT-database" \
@@ -141,7 +141,7 @@ jobs:
           PROJECT: ${{ matrix.project }}
 
       - name: Configure database access (Delius AWS)
-        if: steps.check_file.outputs.files_exists == 'true' && !contains(fromJSON(env.modernisation-platform-environments), matrix.environment)
+        if: steps.check_file.outputs.exists == 'true' && !contains(fromJSON(env.modernisation-platform-environments), matrix.environment)
         uses: ./.github/actions/database-access-old
         with:
           project: ${{ matrix.project }}
@@ -151,7 +151,7 @@ jobs:
           aws-role-arn: ${{ secrets.AWS_ROLE_ARN }}
 
       - name: Configure database access (MOJ Modernisation Platform)
-        if: steps.check_file.outputs.files_exists == 'true' && contains(fromJSON(env.modernisation-platform-environments), matrix.environment)
+        if: steps.check_file.outputs.exists == 'true' && contains(fromJSON(env.modernisation-platform-environments), matrix.environment)
         uses: ./.github/actions/database-access-new
         with:
           project: ${{ matrix.project }}
