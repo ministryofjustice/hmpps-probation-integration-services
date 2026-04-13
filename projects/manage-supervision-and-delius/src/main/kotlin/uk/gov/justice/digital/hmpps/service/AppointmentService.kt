@@ -13,7 +13,6 @@ import uk.gov.justice.digital.hmpps.integrations.delius.appointment.AppointmentR
 import uk.gov.justice.digital.hmpps.integrations.delius.compliance.Nsi
 import uk.gov.justice.digital.hmpps.integrations.delius.compliance.NsiRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.*
-import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.CourtAppearance
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.CourtAppearanceRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.LicenceConditionRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.LocationRepository
@@ -80,7 +79,7 @@ class AppointmentService(
         )
 
     fun List<Event>.toMinimalSentences(eventLevelNsis: List<Nsi>): List<MinimalSentence> {
-        val sentencingCourtAppearances = courtAppearanceRepository.getCourtAppearancesByEventIn(this)
+        val sentencingCourtAppearances = courtAppearanceRepository.getCourtAppearancesByEventInAndType_Code(this, "S")
             .groupBy { it.event.id }
         return map { event ->
             val filteredNsiList = eventLevelNsis.filter { nsi -> nsi.eventId == event.id }
