@@ -54,23 +54,12 @@ class SentenceService(
     fun getActiveSentences(crn: String, includeRarRequirements: Boolean): MinimalSentenceOverview {
         val person = personRepository.getPerson(crn)
         val activeEvents = getActiveSentences(person.id)
-        val sentenceTypes = courtAppearanceRepository.getCourtAppearancesByEventIn(activeEvents)
-            .groupBy { it.event.id }
-            .mapValues { (_, appearances) ->
-                when {
-                    appearances.any { it.type.code == "S" } -> SentenceType.COMMUNITY
-                    else -> SentenceType.PRE_SENTENCE
-                }
-            }
+
+        activeEvents.toMinimalSentences(includeRarRequirements)
 
         return MinimalSentenceOverview(
             personSummary = person.toSummary(),
-            activeEvents.map { event ->
-                event.toMinimalSentence(
-                    includeRarRequirements,
-                    sentenceTypes[event.id] ?: SentenceType.PRE_SENTENCE
-                )
-            }
+            sentences = activeEvents.toMinimalSentences(includeRarRequirements)
         )
     }
 
@@ -102,18 +91,29 @@ class SentenceService(
         disposal?.type?.description ?: "Pre-Sentence"
     )
 
-    fun Event.toMinimalSentence(includeRarRequirements: Boolean, sentenceType: SentenceType): MinimalSentence =
-        MinimalSentence(
-            id,
-            eventNumber,
-            disposal?.toMinimalOrder(sentenceType) ?: MinimalOrder("Pre-Sentence", sentenceType),
-            licenceConditions = disposal?.let {
-                licenceConditionRepository.findAllByDisposalId(disposal.id).asMinimals()
-            } ?: emptyList(),
-            requirements = requirementRepository.getRequirements(id, eventNumber, includeRarRequirements).asMinimals {
-                requirementService.getRar(it.disposal!!.id, it.mainCategory!!.code)
+
+    fun List<Event>.toMinimalSentences(includeRarRequirements: Boolean): List<MinimalSentence> {
+        val sentencingCourtAppearance = courtAppearanceRepository.getCourtAppearancesByEventIn(this).groupBy { it.event.id }
+        return map { event ->
+            val hasSentencingCourtAppearance: Boolean = sentencingCourtAppearance.containsKey(event.id)
+            val sentenceType: SentenceType = when {
+                event.disposal?.type?.sentenceType in listOf("NC", "SC") -> SentenceType.CUSTODY
+                event.disposal != null || hasSentencingCourtAppearance -> SentenceType.COMMUNITY
+                else -> SentenceType.PRE_SENTENCE
             }
-        )
+            MinimalSentence(
+                event.id,
+                event.eventNumber,
+                event.disposal?.toMinimalOrder(sentenceType) ?: MinimalOrder("Pre-Sentence", sentenceType),
+                licenceConditions = event.disposal?.let { disposal ->
+                    licenceConditionRepository.findAllByDisposalId(disposal.id).asMinimals()
+                } ?: emptyList(),
+                requirements = requirementRepository.getRequirements(event.id, event.eventNumber, includeRarRequirements).asMinimals {
+                    requirementService.getRar(it.disposal!!.id, it.mainCategory!!.code)
+                }
+            )
+        }
+    }
 
     fun Event.toSentence(includeRarRequirements: Boolean): Sentence {
         val courtAppearance = courtAppearanceRepository.getFirstCourtAppearanceByEventIdOrderByDate(id)
@@ -283,12 +283,6 @@ fun formatNote(notes: String?, truncateNote: Boolean): List<NoteDetail> {
 }
 
 fun Disposal.toMinimalOrder(sentenceType: SentenceType): MinimalOrder {
-    val sentenceTypeValue = type.sentenceType?.let {
-        when (it) {
-            "NC", "SC" -> SentenceType.CUSTODY
-            else -> null
-        }
-    } ?: sentenceType
 
     val length = length?.let {
         when (lengthUnit?.code) {
@@ -298,7 +292,7 @@ fun Disposal.toMinimalOrder(sentenceType: SentenceType): MinimalOrder {
     }
 
     return MinimalOrder(type.description + (lengthUnit?.let { " (${length} ${it.description})" } ?: ""),
-        sentenceTypeValue,
+        sentenceType,
         date,
         expectedEndDate())
 }

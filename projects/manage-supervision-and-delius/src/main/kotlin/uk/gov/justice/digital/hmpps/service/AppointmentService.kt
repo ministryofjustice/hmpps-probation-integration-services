@@ -47,18 +47,6 @@ class AppointmentService(
         val activeEvents = sentenceService.getActiveSentences(person.id)
         val (eventLevelNsis, personLevelNsis) = nsiRepository.findByPersonIdAndActiveIsTrue(person.id)
             .partition { it.eventId != null }
-        val sentenceTypes = courtAppearanceRepository.getCourtAppearancesByEventIn(activeEvents)
-            .groupBy { it.event.id }
-            .mapValues { (_, appearances) ->
-                when (appearances.maxWithOrNull(
-                    compareBy<CourtAppearance>(
-                        { it.date },
-                        { it.type.code })
-                )?.type?.code) {
-                    "S" -> SentenceType.COMMUNITY
-                    else -> SentenceType.PRE_SENTENCE
-                }
-            }
 
         return ContactTypeAssociation(
             personSummary = person.toSummary(),
@@ -67,12 +55,7 @@ class AppointmentService(
             personNsis = personLevelNsis.map {
                 it.toMinimalNsi()
             },
-            sentences = activeEvents.map { event ->
-                event.toMinimalSentence(
-                    eventLevelNsis,
-                    sentenceTypes[event.id] ?: SentenceType.PRE_SENTENCE
-                )
-            }
+            sentences = activeEvents.toMinimalSentences(eventLevelNsis)
         )
     }
 
@@ -96,22 +79,34 @@ class AppointmentService(
                 .map { it.toLocationDetails() }
         )
 
-    fun Event.toMinimalSentence(eventLevelNsis: List<Nsi>, sentenceType: SentenceType): MinimalSentence {
-        val filteredNsiList = eventLevelNsis.filter { nsi -> nsi.eventId == id }
-        return MinimalSentence(
-            id,
-            eventNumber,
-            disposal?.toMinimalOrder(sentenceType) ?: MinimalOrder("Pre-Sentence", SentenceType.PRE_SENTENCE),
-            filteredNsiList.map { it.toMinimalNsi() },
-            licenceConditions = disposal?.let {
-                licenceConditionRepository.findAllByDisposalId(disposal.id).map {
-                    it.toMinimalLicenceCondition()
-                }
-            } ?: emptyList(),
-            requirements = requirementRepository.getRequirements(id, eventNumber).filter { it.active }.asMinimals {
-                requirementService.getRar(it.disposal!!.id, it.mainCategory!!.code)
+    fun List<Event>.toMinimalSentences(eventLevelNsis: List<Nsi>): List<MinimalSentence> {
+        val sentencingCourtAppearances = courtAppearanceRepository.getCourtAppearancesByEventIn(this)
+            .groupBy { it.event.id }
+        return map { event ->
+            val filteredNsiList = eventLevelNsis.filter { nsi -> nsi.eventId == event.id }
+            val hasSentencingCourtAppearance: Boolean = sentencingCourtAppearances.containsKey(event.id)
+            val sentenceType: SentenceType = when {
+                event.disposal?.type?.sentenceType in listOf("NC", "SC") -> SentenceType.CUSTODY
+                event.disposal != null || hasSentencingCourtAppearance -> SentenceType.COMMUNITY
+                else -> SentenceType.PRE_SENTENCE
             }
-        )
+
+            MinimalSentence(
+                id = event.id,
+                eventNumber = event.eventNumber,
+                order = event.disposal?.toMinimalOrder(sentenceType)?: MinimalOrder("Pre-Sentence", SentenceType.PRE_SENTENCE),
+                nsis = filteredNsiList.map { it.toMinimalNsi() },
+                licenceConditions = event.disposal?.let {
+                    licenceConditionRepository.findAllByDisposalId(event.disposal.id).map {
+                        it.toMinimalLicenceCondition()
+                    }
+                } ?: emptyList(),
+                requirements =  requirementRepository.getRequirements(event.id, event.eventNumber).filter { it.active }.asMinimals {
+                    requirementService.getRar(it.disposal!!.id, it.mainCategory!!.code)
+                }
+            )
+
+        }
     }
 
     fun Nsi.toMinimalNsi() = MinimalNsi(id, type.description + (subType?.let { " (${it.description})" } ?: ""))
