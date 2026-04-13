@@ -1,0 +1,48 @@
+
+style { ...@common/style.style }
+vars { ...@common/style.vars }
+** { ...@common/style.all-style }
+
+context-cosso: COSSO Context {
+  entities: Entities {
+    grid-columns: 3
+    case: Case details
+    deliveryAddress: Delivery address
+    offence: Offence details
+    sentence: Sentence
+    requirement: Requirement
+    breachReason: Breach reason
+    officer: Responsible officer
+    replyAddress: Reply address
+    enforceableContact: Enforceable contact
+    registration: Registration
+  }
+}
+
+context-delius: Delius Context {
+
+  interface: COSSO and Delius {
+    type: Anti-Corruption\nLayer
+  }
+
+  entities: Entities {
+    grid-columns: 4
+    pop: Person on probation
+    address: Address
+    event: Event
+    document: Document
+    disposal: Disposal
+    offence: Offence
+    appearance: Court appearance
+    requirement: Requirement
+    contact: Contact
+    registration: Registration
+    officer: Responsible officer
+    staff: Staff
+    area: Probation area
+    location: Office location
+    refdata: Reference data
+  }
+}
+
+context-cosso--context-delius.interface: Upstream\n\n\nDownstream
