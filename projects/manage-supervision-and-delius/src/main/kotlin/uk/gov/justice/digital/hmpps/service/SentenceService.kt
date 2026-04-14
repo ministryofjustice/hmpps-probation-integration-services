@@ -246,7 +246,6 @@ fun Event.toSentenceType(sentencingCourtAppearanceIds: List<Long>): SentenceType
     else -> SentenceType.PRE_SENTENCE
 }
 
-
 fun formatNote(notes: String?, truncateNote: Boolean): List<NoteDetail> {
     return notes?.takeIf { it.isNotEmpty() }?.let {
         val splitParam = "---------------------------------------------------------" + System.lineSeparator()
