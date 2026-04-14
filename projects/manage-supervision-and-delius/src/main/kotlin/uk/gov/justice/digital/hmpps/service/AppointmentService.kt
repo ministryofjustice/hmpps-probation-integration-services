@@ -79,11 +79,11 @@ class AppointmentService(
         )
 
     fun List<Event>.toMinimalSentences(eventLevelNsis: List<Nsi>): List<MinimalSentence> {
-        val sentencingCourtAppearanceIds = courtAppearanceRepository.getCourtAppearancesByEventInAndType_Code(this, "S")
-            .map { it.id }
+        val eventIdsWithSentenceAppearance = courtAppearanceRepository.getCourtAppearancesByEventInAndType_Code(this, "S")
+            .map { it.event.id }
         return map { event ->
             val filteredNsiList = eventLevelNsis.filter { nsi -> nsi.eventId == event.id }
-            val sentenceType = event.toSentenceType(sentencingCourtAppearanceIds)
+            val sentenceType = event.toSentenceType(eventIdsWithSentenceAppearance)
             MinimalSentence(
                 id = event.id,
                 eventNumber = event.eventNumber,
