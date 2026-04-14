@@ -92,15 +92,10 @@ class SentenceService(
     )
 
     fun List<Event>.toMinimalSentences(includeRarRequirements: Boolean): List<MinimalSentence> {
-        val sentencingCourtAppearance = courtAppearanceRepository.getCourtAppearancesByEventInAndType_Code(this, "S")
-            .groupBy { it.event.id }
+        val sentencingCourtAppearanceIds = courtAppearanceRepository.getCourtAppearancesByEventInAndType_Code(this, "S")
+            .map { it.id }
         return map { event ->
-            val hasSentencingCourtAppearance: Boolean = sentencingCourtAppearance.containsKey(event.id)
-            val sentenceType: SentenceType = when {
-                event.disposal?.type?.sentenceType in listOf("NC", "SC") -> SentenceType.CUSTODY
-                event.disposal != null || hasSentencingCourtAppearance -> SentenceType.COMMUNITY
-                else -> SentenceType.PRE_SENTENCE
-            }
+            val sentenceType = event.toSentenceType(sentencingCourtAppearanceIds)
             MinimalSentence(
                 event.id,
                 event.eventNumber,
@@ -245,6 +240,13 @@ class SentenceService(
     }
 }
 
+fun Event.toSentenceType(sentencingCourtAppearanceIds: List<Long>): SentenceType = when {
+    disposal?.type?.sentenceType in listOf("NC", "SC") -> SentenceType.CUSTODY
+    disposal != null || id in sentencingCourtAppearanceIds -> SentenceType.COMMUNITY
+    else -> SentenceType.PRE_SENTENCE
+}
+
+
 fun formatNote(notes: String?, truncateNote: Boolean): List<NoteDetail> {
     return notes?.takeIf { it.isNotEmpty() }?.let {
         val splitParam = "---------------------------------------------------------" + System.lineSeparator()
@@ -287,7 +289,6 @@ fun formatNote(notes: String?, truncateNote: Boolean): List<NoteDetail> {
 }
 
 fun Disposal.toMinimalOrder(sentenceType: SentenceType): MinimalOrder {
-
     val length = length?.let {
         when (lengthUnit?.code) {
             LengthUnit.YEARS.code -> it / 12
