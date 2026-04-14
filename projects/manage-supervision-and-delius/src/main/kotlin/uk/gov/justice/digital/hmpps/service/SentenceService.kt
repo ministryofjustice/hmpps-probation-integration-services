@@ -92,9 +92,7 @@ class SentenceService(
     )
 
     fun List<Event>.toMinimalSentences(includeRarRequirements: Boolean): List<MinimalSentence> {
-        val eventIdsWithSentenceAppearance =
-            courtAppearanceRepository.getCourtAppearancesByEventInAndType_Code(this, "S")
-                .map { it.event.id }
+        val eventIdsWithSentenceAppearance = courtAppearanceRepository.findEventIdsWithSentencingCourtAppearances(this)
         return map { event ->
             val sentenceType = event.toSentenceType(eventIdsWithSentenceAppearance)
             MinimalSentence(
