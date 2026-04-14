@@ -28,8 +28,8 @@ interface EventSentenceRepository : JpaRepository<Event, Long> {
 }
 
 interface CourtAppearanceRepository : JpaRepository<CourtAppearance, Long> {
-    @EntityGraph(attributePaths = ["event", "type"])
-    fun getCourtAppearancesByEventInAndType_Code(events: List<Event>, typeCode: String): List<CourtAppearance>
+    @Query("select c.event.id from CourtAppearance c where c.event in (:events) and c.type.code = 'S'")
+    fun findEventIdsWithSentencingCourtAppearances(events: List<Event>): List<Long>
     fun getFirstCourtAppearanceByEventIdOrderByDate(id: Long): CourtAppearance?
 }
 
