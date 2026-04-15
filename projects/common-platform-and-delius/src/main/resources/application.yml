@@ -27,6 +27,10 @@ spring:
   threads.virtual.enabled: true
 
 delius.db.username: CommonPlatformAndDelius # Should match value in [deploy/database/access.yml].
+messaging:
+  large:
+    message:
+      bucket: s3_large_messages_bucket_name
 
 management:
   endpoints.web:
