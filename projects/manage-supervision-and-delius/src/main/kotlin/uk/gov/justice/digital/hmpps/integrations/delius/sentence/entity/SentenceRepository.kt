@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity
 
+import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
@@ -27,6 +28,8 @@ interface EventSentenceRepository : JpaRepository<Event, Long> {
 }
 
 interface CourtAppearanceRepository : JpaRepository<CourtAppearance, Long> {
+    @Query("select c.event.id from CourtAppearance c where c.event in (:events) and c.type.code = 'S'")
+    fun findEventIdsWithSentencingCourtAppearances(events: List<Event>): List<Long>
     fun getFirstCourtAppearanceByEventIdOrderByDate(id: Long): CourtAppearance?
 }
 

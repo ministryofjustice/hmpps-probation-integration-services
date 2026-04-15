@@ -54,10 +54,9 @@ class SentenceService(
     fun getActiveSentences(crn: String, includeRarRequirements: Boolean): MinimalSentenceOverview {
         val person = personRepository.getPerson(crn)
         val activeEvents = getActiveSentences(person.id)
-
         return MinimalSentenceOverview(
             personSummary = person.toSummary(),
-            activeEvents.map { it.toMinimalSentence(includeRarRequirements) }
+            sentences = activeEvents.toMinimalSentences(includeRarRequirements)
         )
     }
 
@@ -89,18 +88,27 @@ class SentenceService(
         disposal?.type?.description ?: "Pre-Sentence"
     )
 
-    fun Event.toMinimalSentence(includeRarRequirements: Boolean): MinimalSentence =
-        MinimalSentence(
-            id,
-            eventNumber,
-            disposal?.toMinimalOrder(),
-            licenceConditions = disposal?.let {
-                licenceConditionRepository.findAllByDisposalId(disposal.id).asMinimals()
-            } ?: emptyList(),
-            requirements = requirementRepository.getRequirements(id, eventNumber, includeRarRequirements).asMinimals {
-                requirementService.getRar(it.disposal!!.id, it.mainCategory!!.code)
-            }
-        )
+    fun List<Event>.toMinimalSentences(includeRarRequirements: Boolean): List<MinimalSentence> {
+        val eventIdsWithSentenceAppearance = courtAppearanceRepository.findEventIdsWithSentencingCourtAppearances(this)
+        return map { event ->
+            val sentenceType = event.toSentenceType(eventIdsWithSentenceAppearance)
+            MinimalSentence(
+                event.id,
+                event.eventNumber,
+                event.disposal?.toMinimalOrder(sentenceType) ?: MinimalOrder("Pre-Sentence", sentenceType),
+                licenceConditions = event.disposal?.let { disposal ->
+                    licenceConditionRepository.findAllByDisposalId(disposal.id).asMinimals()
+                } ?: emptyList(),
+                requirements = requirementRepository.getRequirements(
+                    event.id,
+                    event.eventNumber,
+                    includeRarRequirements
+                ).asMinimals {
+                    requirementService.getRar(it.disposal!!.id, it.mainCategory!!.code)
+                }
+            )
+        }
+    }
 
     fun Event.toSentence(includeRarRequirements: Boolean): Sentence {
         val courtAppearance = courtAppearanceRepository.getFirstCourtAppearanceByEventIdOrderByDate(id)
@@ -228,6 +236,12 @@ class SentenceService(
     }
 }
 
+fun Event.toSentenceType(eventIdsWithSentenceCourtAppearance: List<Long>): SentenceType = when {
+    disposal?.type?.sentenceType in listOf("NC", "SC") -> SentenceType.CUSTODY
+    disposal != null || id in eventIdsWithSentenceCourtAppearance -> SentenceType.COMMUNITY
+    else -> SentenceType.PRE_SENTENCE
+}
+
 fun formatNote(notes: String?, truncateNote: Boolean): List<NoteDetail> {
     return notes?.takeIf { it.isNotEmpty() }?.let {
         val splitParam = "---------------------------------------------------------" + System.lineSeparator()
@@ -269,7 +283,7 @@ fun formatNote(notes: String?, truncateNote: Boolean): List<NoteDetail> {
     } ?: listOf()
 }
 
-fun Disposal.toMinimalOrder(): MinimalOrder {
+fun Disposal.toMinimalOrder(sentenceType: SentenceType): MinimalOrder {
     val length = length?.let {
         when (lengthUnit?.code) {
             LengthUnit.YEARS.code -> it / 12
@@ -278,6 +292,7 @@ fun Disposal.toMinimalOrder(): MinimalOrder {
     }
 
     return MinimalOrder(type.description + (lengthUnit?.let { " (${length} ${it.description})" } ?: ""),
+        sentenceType,
         date,
         expectedEndDate())
 }

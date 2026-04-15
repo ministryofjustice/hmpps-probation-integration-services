@@ -5,6 +5,7 @@ import uk.gov.justice.digital.hmpps.api.model.appointment.*
 import uk.gov.justice.digital.hmpps.api.model.sentence.MinimalOrder
 import uk.gov.justice.digital.hmpps.api.model.sentence.MinimalSentence
 import uk.gov.justice.digital.hmpps.api.model.sentence.ProviderOfficeLocation
+import uk.gov.justice.digital.hmpps.api.model.sentence.SentenceType
 import uk.gov.justice.digital.hmpps.api.model.user.Team
 import uk.gov.justice.digital.hmpps.api.model.user.TeamResponse
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
@@ -12,6 +13,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.appointment.AppointmentR
 import uk.gov.justice.digital.hmpps.integrations.delius.compliance.Nsi
 import uk.gov.justice.digital.hmpps.integrations.delius.compliance.NsiRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.*
+import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.CourtAppearanceRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.LicenceConditionRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.LocationRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.user.team.TeamRepository
@@ -30,6 +32,7 @@ class AppointmentService(
     private val nsiRepository: NsiRepository,
     private val locationRepository: LocationRepository,
     private val appointmentRepository: AppointmentRepository,
+    private val courtAppearanceRepository: CourtAppearanceRepository,
 ) {
 
     fun getProbationRecordsByContactType(crn: String, code: String): ContactTypeAssociation {
@@ -51,7 +54,7 @@ class AppointmentService(
             personNsis = personLevelNsis.map {
                 it.toMinimalNsi()
             },
-            sentences = activeEvents.map { it.toMinimalSentence(eventLevelNsis) }
+            sentences = activeEvents.toMinimalSentences(eventLevelNsis)
         )
     }
 
@@ -75,22 +78,32 @@ class AppointmentService(
                 .map { it.toLocationDetails() }
         )
 
-    fun Event.toMinimalSentence(eventLevelNsis: List<Nsi>): MinimalSentence {
-        val filteredNsiList = eventLevelNsis.filter { nsi -> nsi.eventId == id }
-        return MinimalSentence(
-            id,
-            eventNumber,
-            disposal?.toMinimalOrder() ?: MinimalOrder("Pre-Sentence"),
-            filteredNsiList.map { it.toMinimalNsi() },
-            licenceConditions = disposal?.let {
-                licenceConditionRepository.findAllByDisposalId(disposal.id).map {
-                    it.toMinimalLicenceCondition()
-                }
-            } ?: emptyList(),
-            requirements = requirementRepository.getRequirements(id, eventNumber).filter { it.active }.asMinimals {
-                requirementService.getRar(it.disposal!!.id, it.mainCategory!!.code)
-            }
-        )
+    fun List<Event>.toMinimalSentences(eventLevelNsis: List<Nsi>): List<MinimalSentence> {
+        val eventIdsWithSentenceAppearance =
+            courtAppearanceRepository.findEventIdsWithSentencingCourtAppearances(this)
+        return map { event ->
+            val filteredNsiList = eventLevelNsis.filter { nsi -> nsi.eventId == event.id }
+            val sentenceType = event.toSentenceType(eventIdsWithSentenceAppearance)
+            MinimalSentence(
+                id = event.id,
+                eventNumber = event.eventNumber,
+                order = event.disposal?.toMinimalOrder(sentenceType) ?: MinimalOrder(
+                    "Pre-Sentence",
+                    SentenceType.PRE_SENTENCE
+                ),
+                nsis = filteredNsiList.map { it.toMinimalNsi() },
+                licenceConditions = event.disposal?.let {
+                    licenceConditionRepository.findAllByDisposalId(event.disposal.id).map {
+                        it.toMinimalLicenceCondition()
+                    }
+                } ?: emptyList(),
+                requirements = requirementRepository.getRequirements(event.id, event.eventNumber).filter { it.active }
+                    .asMinimals {
+                        requirementService.getRar(it.disposal!!.id, it.mainCategory!!.code)
+                    }
+            )
+
+        }
     }
 
     fun Nsi.toMinimalNsi() = MinimalNsi(id, type.description + (subType?.let { " (${it.description})" } ?: ""))

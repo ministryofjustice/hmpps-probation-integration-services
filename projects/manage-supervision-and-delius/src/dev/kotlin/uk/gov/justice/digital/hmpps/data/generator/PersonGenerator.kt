@@ -30,6 +30,26 @@ object PersonGenerator {
     val MAPPA_LEVEL = ReferenceData(IdGenerator.getAndIncrement(), "M2", "M2 Desc")
     val OVERVIEW = generateOverview("X000004")
     val E_SUP_PERSON = generateOverview("E500700")
+    val CUSTODY_DISPOSAL_TYPE = generateDisposalType("CST", "Custody Sentence Type", "NC", 0)
+    val CUSTODY_PERSON = generateOverview(crn = "X123422", forename = "custody", surname = "person")
+    val PRE_SENTENCE_PERSON = generateOverview(crn = "X123423", forename = "pre sentence", surname = "person")
+    val PRE_SENTENCE_EVENT = generateEvent(
+        PRE_SENTENCE_PERSON,
+        eventNumber = "1",
+        notes = "Pre sentence notes",
+        additionalOffences = emptyList(),
+        court = CourtGenerator.BHAM,
+        convictionDate = LocalDate.now(),
+    )
+    val CUSTODY_EVENT = generateEvent(
+        CUSTODY_PERSON,
+        eventNumber = "1",
+        notes = "Custody notes",
+        additionalOffences = emptyList(),
+        court = CourtGenerator.BHAM,
+        convictionDate = LocalDate.now(),
+    )
+    val CUSTODY_DISPOSAL = generateDisposal(CUSTODY_EVENT, type = CUSTODY_DISPOSAL_TYPE)
     val EVENT_1 = generateEvent(
         OVERVIEW,
         eventNumber = "7654321",

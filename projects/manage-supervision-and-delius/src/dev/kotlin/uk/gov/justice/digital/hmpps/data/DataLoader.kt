@@ -65,6 +65,8 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
         saveAll(PersonGenerator.PERSONAL_CIRCUMSTANCES)
         save(PersonGenerator.OVERVIEW)
         save(PersonGenerator.E_SUP_PERSON)
+        save(PersonGenerator.CUSTODY_PERSON)
+        save(PersonGenerator.PRE_SENTENCE_PERSON)
         save(CourtGenerator.BHAM)
         save(PersonGenerator.EVENT_1)
         save(PersonGenerator.EVENT_2)
@@ -72,6 +74,9 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
         save(PersonGenerator.INACTIVE_EVENT_2)
         save(PersonGenerator.INACTIVE_EVENT_3)
         save(PersonGenerator.INACTIVE_EVENT_NO_TIME_UNIT)
+        save(PersonGenerator.CUSTODY_EVENT)
+        save(PersonGenerator.CUSTODY_DISPOSAL)
+        save(PersonGenerator.PRE_SENTENCE_EVENT)
 
         save(AdditionalSentenceGenerator.REF_DISQ)
         save(AdditionalSentenceGenerator.REF_FINE)
@@ -91,6 +96,7 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
         save(CourtReportGenerator.EVENT_DOCUMENT)
         save(CourtReportGenerator.COURT_DOCUMENT)
         save(CourtReportGenerator.COURT_REPORT)
+        save(CourtAppearanceGenerator.DEFAULT_APPEARANCE_TYPE)
         save(COURT_APPEARANCE)
 
         save(CourtReportGenerator.DEFAULT_TYPE)
@@ -132,6 +138,7 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
             OffenderManagerGenerator.PAU_USER_RECORD3,
             OffenderManagerGenerator.PAU_USER_RECORD4,
             PersonGenerator.DEFAULT_DISPOSAL_TYPE,
+            PersonGenerator.CUSTODY_DISPOSAL_TYPE,
             LicenceConditionGenerator.LIC_COND_MAIN_CAT,
             LicenceConditionGenerator.LIC_COND_SUB_CAT,
             LicenceConditionGenerator.LC_WITH_NOTES,

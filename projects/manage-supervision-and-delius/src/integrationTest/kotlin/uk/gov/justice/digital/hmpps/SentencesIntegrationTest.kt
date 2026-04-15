@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps
 
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.springframework.test.web.servlet.get
@@ -50,11 +51,22 @@ class SentencesIntegrationTest : IntegrationTestBase() {
         val expected = MinimalSentenceOverview(
             PersonGenerator.OVERVIEW.toSummary(),
             listOf(
-                MinimalSentence(EVENT_2.id, EVENT_2.eventNumber),
+                MinimalSentence(
+                    id = EVENT_2.id,
+                    eventNumber = EVENT_2.eventNumber,
+                    order = MinimalOrder(
+                        description = "Pre-Sentence",
+                        sentenceType = SentenceType.PRE_SENTENCE,
+                    )
+                ),
                 MinimalSentence(
                     id = EVENT_1.id,
                     EVENT_1.eventNumber,
-                    order = MinimalOrder(ACTIVE_ORDER.type.description + " (12 Months)", ACTIVE_ORDER.date),
+                    order = MinimalOrder(
+                        ACTIVE_ORDER.type.description + " (12 Months)",
+                        SentenceType.COMMUNITY,
+                        ACTIVE_ORDER.date
+                    ),
                     licenceConditions = listOf(
                         MinimalLicenceCondition(LC_WITH_NOTES.id, LIC_COND_MAIN_CAT.description, true),
                         MinimalLicenceCondition(LC_WITH_NOTES_WITHOUT_ADDED_BY.id, LIC_COND_MAIN_CAT.description, true),
@@ -68,7 +80,41 @@ class SentencesIntegrationTest : IntegrationTestBase() {
                 )
             )
         )
+        assertEquals(expected, response)
+    }
 
+    @Test
+    fun `sentence type is CUSTODY for a custodial sentence`() {
+        val response = mockMvc.get("/sentences/${PersonGenerator.CUSTODY_PERSON.crn}") { withToken() }
+            .andExpect { status { isOk() } }
+            .andReturn().response.contentAsJson<MinimalSentenceOverview>()
+
+        val custodySentence = response.sentences.single { it.id == PersonGenerator.CUSTODY_EVENT.id }
+
+        assertEquals(PersonGenerator.CUSTODY_EVENT.eventNumber, custodySentence.eventNumber)
+        assertEquals("Custody Sentence Type", custodySentence.order?.description)
+        assertEquals(SentenceType.CUSTODY, custodySentence.order?.sentenceType)
+    }
+
+    @Test
+    fun `sentence type is pre-sentence for a pre-sentence sentence`() {
+        val response = mockMvc.get("/sentences/${PersonGenerator.PRE_SENTENCE_PERSON.crn}") { withToken() }
+            .andExpect { status { isOk() } }
+            .andReturn().response.contentAsJson<MinimalSentenceOverview>()
+
+        val expected = MinimalSentenceOverview(
+            personSummary = PersonGenerator.PRE_SENTENCE_PERSON.toSummary(),
+            sentences = listOf(
+                MinimalSentence(
+                    id = PersonGenerator.PRE_SENTENCE_EVENT.id,
+                    eventNumber = PersonGenerator.PRE_SENTENCE_EVENT.eventNumber,
+                    order = MinimalOrder(
+                        description = "Pre-Sentence",
+                        sentenceType = SentenceType.PRE_SENTENCE,
+                    )
+                )
+            )
+        )
         assertEquals(expected, response)
     }
 }
