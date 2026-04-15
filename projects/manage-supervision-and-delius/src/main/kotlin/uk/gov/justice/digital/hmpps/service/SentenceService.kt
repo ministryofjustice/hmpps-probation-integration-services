@@ -54,9 +54,6 @@ class SentenceService(
     fun getActiveSentences(crn: String, includeRarRequirements: Boolean): MinimalSentenceOverview {
         val person = personRepository.getPerson(crn)
         val activeEvents = getActiveSentences(person.id)
-
-        activeEvents.toMinimalSentences(includeRarRequirements)
-
         return MinimalSentenceOverview(
             personSummary = person.toSummary(),
             sentences = activeEvents.toMinimalSentences(includeRarRequirements)
