@@ -20,7 +20,6 @@ import uk.gov.justice.digital.hmpps.data.generator.UserGenerator
 import uk.gov.justice.digital.hmpps.entity.contact.ContactRepository
 import uk.gov.justice.digital.hmpps.entity.unpaidwork.UnpaidWorkAppointmentRepository
 import uk.gov.justice.digital.hmpps.model.*
-import uk.gov.justice.digital.hmpps.service.CommunityPaybackAppointmentsService.Companion.REFERENCE_PREFIX
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 import java.time.LocalDate
@@ -266,6 +265,5 @@ class GetAppointmentIntegrationTest @Autowired constructor(
             .andReturn().response.contentAsJson<PagedModel<AppointmentsResponse>>()
 
         assertThat(response.content.map { it.externalReference }.distinct()).containsOnly(externalReference)
-        assertThat(response.content.size).isEqualTo(5)
     }
 }

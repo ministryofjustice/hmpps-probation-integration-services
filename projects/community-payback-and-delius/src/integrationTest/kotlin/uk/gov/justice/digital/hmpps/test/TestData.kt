@@ -7,6 +7,7 @@ import uk.gov.justice.digital.hmpps.data.generator.UPWGenerator
 import uk.gov.justice.digital.hmpps.model.*
 import java.time.LocalDate
 import java.time.LocalTime
+import java.time.temporal.ChronoUnit.SECONDS
 import java.util.*
 
 object TestData {
@@ -95,11 +96,17 @@ object TestData {
         notes = "testing"
     )
 
+    val startTime: LocalTime = LocalTime.of(LocalTime.now().minusHours(1).hour, 0)
+    val endTime: LocalTime = maxOf(
+        LocalTime.of(LocalTime.now().plusHours(7).hour, 0),
+        LocalTime.now().plusMinutes(1).truncatedTo(SECONDS)
+    )
+
     fun updateAppointment(id: Long) = UpdateAppointmentRequest(
         version = UUID(1, 1),
         date = LocalDate.now(),
-        startTime = LocalTime.of(LocalTime.now().minusHours(1).hour, 0),
-        endTime = LocalTime.of(LocalTime.now().plusHours(7).hour, 0),
+        startTime = startTime,
+        endTime = endTime,
         minutesCredited = 415,
         penaltyMinutes = 65,
         outcome = Code(ReferenceDataGenerator.ATTENDED_COMPLIED_CONTACT_OUTCOME.code),

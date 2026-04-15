@@ -20,7 +20,7 @@ import uk.gov.justice.digital.hmpps.service.CommunityPaybackAppointmentsService.
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.ZonedDateTime
-import java.util.UUID
+import java.util.*
 
 object UPWGenerator {
     val DEFAULT_ADDRESS = generateAddress(
@@ -69,7 +69,7 @@ object UPWGenerator {
         projectType = ReferenceDataGenerator.GROUP_PLACEMENT_PROJECT_TYPE
     )
 
-    val DEFAULT_UPW_PROJECT_AVAILABILITY = generateUpwProjectAvailability(
+    val UPW_PROJECT_AVAILABILITY_1 = generateUpwProjectAvailability(
         project = UPW_PROJECT_1,
         frequency = ReferenceDataGenerator.UPW_FREQUENCY_WEEKLY,
         startTime = LocalTime.of(9, 0),
@@ -77,7 +77,7 @@ object UPWGenerator {
         startDate = LocalDate.now(),
         endDate = LocalDate.now().plusMonths(4)
     )
-    val SECOND_UPW_PROJECT_AVAILABILITY = generateUpwProjectAvailability(
+    val UPW_PROJECT_AVAILABILITY_2 = generateUpwProjectAvailability(
         project = UPW_PROJECT_2,
     )
 
@@ -236,7 +236,7 @@ object UPWGenerator {
     val DEFAULT_UPW_ALLOCATION = generateUpwAllocation(
         details = UPW_DETAILS_1,
         project = UPW_PROJECT_1,
-        projectAvailability = DEFAULT_UPW_PROJECT_AVAILABILITY,
+        projectAvailability = UPW_PROJECT_AVAILABILITY_1,
         allocationDay = ReferenceDataGenerator.UPW_DAY_MONDAY,
         requestedFrequency = ReferenceDataGenerator.UPW_FREQUENCY_WEEKLY,
         startDate = LocalDate.now().minusDays(7),
@@ -443,7 +443,21 @@ object UPWGenerator {
         project = UPW_PROJECT_1,
         details = UPW_DETAILS_1,
         allocation = DEFAULT_UPW_ALLOCATION,
-        contact = DEFAULT_CONTACT,
+        contact = generateContact(
+            personId = PersonGenerator.DEFAULT_PERSON.id,
+            contactType = ReferenceDataGenerator.UPW_APPOINTMENT_TYPE,
+            latestEnforcementAction = null,
+            contactOutcome = null,
+            startTime = LocalTime.of(9, 0),
+            endTime = LocalTime.of(17, 0),
+            date = LocalDate.now().minusDays(7),
+            officeLocation = DEFAULT_OFFICE_LOCATION,
+            staff = StaffGenerator.DEFAULT_STAFF,
+            team = TeamGenerator.DEFAULT_UPW_TEAM,
+            provider = ProviderGenerator.DEFAULT_PROVIDER,
+            alertsActive = true,
+            externalReference = UUID.randomUUID().toString(),
+        ),
         pickupLocation = DEFAULT_OFFICE_LOCATION,
         pickupTime = LocalTime.of(9, 0),
         penaltyTime = 65L,
