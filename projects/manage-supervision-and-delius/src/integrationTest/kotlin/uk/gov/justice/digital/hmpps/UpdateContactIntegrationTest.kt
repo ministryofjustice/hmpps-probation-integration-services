@@ -6,14 +6,11 @@ import org.junit.jupiter.api.Test
 import org.springframework.http.MediaType
 import org.springframework.mock.web.MockMultipartFile
 import org.springframework.test.context.bean.override.mockito.MockitoBean
-import org.springframework.http.HttpMethod
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import uk.gov.justice.digital.hmpps.api.model.contact.UpdateContact
 import uk.gov.justice.digital.hmpps.service.DocumentsService
-import org.springframework.http.HttpHeaders
+import org.springframework.test.web.servlet.multipart
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator
-import uk.gov.justice.digital.hmpps.security.TokenHelper
+import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.objectMapper
 import java.time.ZonedDateTime
 
@@ -38,11 +35,15 @@ class UpdateContactIntegrationTest : IntegrationTestBase() {
             objectMapper.writeValueAsBytes(request)
         )
 
-        mockMvc.perform(
-            multipart(HttpMethod.PATCH, "/contact/${contact.id}")
-                .file(requestPart)
-                .header(HttpHeaders.AUTHORIZATION, "Bearer ${TokenHelper.TOKEN}")
-        ).andExpect(status().isOk)
+        mockMvc.multipart("/contact/${contact.id}") {
+            withToken()
+            file(requestPart)
+            with { request ->
+                request.method = "PATCH"
+                request
+            }
+        }
+            .andExpect { status { isOk() } }
     }
 
     @Test
@@ -61,12 +62,16 @@ class UpdateContactIntegrationTest : IntegrationTestBase() {
             objectMapper.writeValueAsBytes(request)
         )
 
-        mockMvc.perform(
-            multipart(HttpMethod.PATCH, "/contact/${contact.id}")
-                .file(filePart)
-                .file(requestPart)
-                .header(HttpHeaders.AUTHORIZATION, "Bearer ${TokenHelper.TOKEN}")
-        ).andExpect(status().isOk)
+        mockMvc.multipart("/contact/${contact.id}") {
+            withToken()
+            file(filePart)
+            file(requestPart)
+            with { request ->
+                request.method = "PATCH"
+                request
+            }
+        }
+            .andExpect { status { isOk() } }
     }
 
     @Test
@@ -82,11 +87,15 @@ class UpdateContactIntegrationTest : IntegrationTestBase() {
             objectMapper.writeValueAsBytes(request)
         )
 
-        mockMvc.perform(
-            multipart(HttpMethod.PATCH, "/contact/999999")
-                .file(requestPart)
-                .header(HttpHeaders.AUTHORIZATION, "Bearer ${TokenHelper.TOKEN}")
-        ).andExpect(status().isNotFound)
+        mockMvc.multipart("/contact/999999") {
+            withToken()
+            file(requestPart)
+            with { request ->
+                request.method = "PATCH"
+                request
+            }
+        }
+            .andExpect { status { isNotFound() } }
     }
 
     @Test
@@ -103,11 +112,15 @@ class UpdateContactIntegrationTest : IntegrationTestBase() {
             objectMapper.writeValueAsBytes(request)
         )
 
-        mockMvc.perform(
-            multipart(HttpMethod.PATCH, "/contact/${nonUpdatableContact.id}")
-                .file(requestPart)
-                .header(HttpHeaders.AUTHORIZATION, "Bearer ${TokenHelper.TOKEN}")
-        ).andExpect(status().isBadRequest)
+        mockMvc.multipart("/contact/${nonUpdatableContact.id}") {
+            withToken()
+            file(requestPart)
+            with { request ->
+                request.method = "PATCH"
+                request
+            }
+        }
+            .andExpect { status { isBadRequest() } }
     }
 
     @Test
@@ -123,11 +136,16 @@ class UpdateContactIntegrationTest : IntegrationTestBase() {
             objectMapper.writeValueAsBytes(request)
         )
 
-        mockMvc.perform(
-            multipart(HttpMethod.PATCH, "/contact/${contact.id}")
-                .file(requestPart)
-                .header(HttpHeaders.AUTHORIZATION, "Bearer ${TokenHelper.TOKEN}")
-        ).andExpect(status().isOk)
+        mockMvc.multipart("/contact/${contact.id}") {
+            withToken()
+            file(requestPart)
+            with { request ->
+                request.method = "PATCH"
+                request
+            }
+        }
+            .andExpect { status { isOk() } }
+
 
         val savedContact = contactRepository.findById(contact.id).get()
         assertThat(savedContact.notes?.contains("Appended note"), equalTo(true))
