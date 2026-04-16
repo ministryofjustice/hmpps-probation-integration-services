@@ -3,6 +3,9 @@ package uk.gov.justice.digital.hmpps
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.Test
+import org.mockito.kotlin.any
+import org.mockito.kotlin.eq
+import org.mockito.kotlin.verify
 import org.springframework.http.MediaType
 import org.springframework.mock.web.MockMultipartFile
 import org.springframework.test.context.bean.override.mockito.MockitoBean
@@ -72,6 +75,7 @@ class UpdateContactIntegrationTest : IntegrationTestBase() {
             }
         }
             .andExpect { status { isOk() } }
+        verify(documentsService).addDocument(any(), eq(contact.person.crn), eq(contact.id), eq(filePart))
     }
 
     @Test
@@ -148,5 +152,31 @@ class UpdateContactIntegrationTest : IntegrationTestBase() {
 
         val savedContact = contactRepository.findById(contact.id).get()
         assertThat(savedContact.notes?.contains("Appended note"), equalTo(true))
+    }
+
+    @Test
+    fun `sensitive flag is updated`() {
+        val request = UpdateContact(
+            dateTime = ZonedDateTime.now(),
+            notes = null,
+            sensitiveFlag = true
+        )
+        val requestPart = MockMultipartFile(
+            "request", "", MediaType.APPLICATION_JSON_VALUE,
+            objectMapper.writeValueAsBytes(request)
+        )
+        mockMvc.multipart("/contact/${contact.id}") {
+            withToken()
+            file(requestPart)
+            with { request ->
+                request.method = "PATCH"
+                request
+            }
+        }
+            .andExpect { status { isOk() } }
+        val savedContact = contactRepository.findById(contact.id).get()
+        assertThat(savedContact.sensitive, equalTo(true))
+
+
     }
 }

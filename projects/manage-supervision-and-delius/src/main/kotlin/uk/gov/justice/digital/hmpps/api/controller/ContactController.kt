@@ -49,10 +49,12 @@ class ContactController(
     )
 
     @PatchMapping("/{contactId}", consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
+    @WithDeliusUser
     fun updateContact(
         auth: Authentication,
         @PathVariable contactId: Long,
         @RequestPart("files") file: MultipartFile?,
         @RequestPart("request", required = true) @Valid request: UpdateContact
     ) = contactLogService.updateContactWithDocuments(auth.name, contactId, file, request)
+
 }

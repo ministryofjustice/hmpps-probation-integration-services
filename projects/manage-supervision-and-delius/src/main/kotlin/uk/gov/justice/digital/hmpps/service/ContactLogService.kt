@@ -160,13 +160,15 @@ class ContactLogService(
         isPersonLevelContact = offenderContact
     )
 
+    @Transactional
     fun updateContactWithDocuments(
         name: String,
         contactId: Long,
         file: MultipartFile?,
         request: UpdateContact
     ) {
-        val contact = contactRepository.getContact(contactId).orNotFoundBy("contactId", contactId)
+        val contact = contactRepository.getContact(contactId)
+        // if the contact type is not updatable throw an exception
         CreateContact.Type.entries.find { it.code == contact.type.code }
             ?: throw InvalidRequestException("Contact type ${contact.type.code} is not valid for update")
         contact.date = request.dateTime.toLocalDate()
@@ -175,11 +177,7 @@ class ContactLogService(
             documentsService.addDocument(name, contact.person.crn, contactId, file)
         }
         request.notes?.let { contact.appendNotes(it) }
-        request.sensitiveFlag?.let {
-            when {
-                true -> contact.sensitive = true
-            }
-        }
+        if (request.sensitiveFlag != null && request.sensitiveFlag) contact.sensitive = true
         contactRepository.save(contact)
     }
 }
