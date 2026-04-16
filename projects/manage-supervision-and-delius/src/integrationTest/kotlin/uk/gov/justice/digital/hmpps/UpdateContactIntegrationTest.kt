@@ -146,7 +146,6 @@ class UpdateContactIntegrationTest : IntegrationTestBase() {
         }
             .andExpect { status { isOk() } }
 
-
         val savedContact = contactRepository.findById(contact.id).get()
         assertThat(savedContact.notes?.contains("Appended note"), equalTo(true))
     }

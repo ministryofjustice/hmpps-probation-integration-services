@@ -54,6 +54,5 @@ class ContactController(
         @PathVariable contactId: Long,
         @RequestPart("files") file: MultipartFile?,
         @RequestPart("request", required = true) @Valid request: UpdateContact
-    ) =  contactLogService.updateContactWithDocuments(auth.name, contactId,  file, request)
-
+    ) = contactLogService.updateContactWithDocuments(auth.name, contactId, file, request)
 }

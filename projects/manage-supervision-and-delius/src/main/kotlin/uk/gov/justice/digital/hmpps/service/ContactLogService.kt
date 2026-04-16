@@ -175,7 +175,11 @@ class ContactLogService(
             documentsService.addDocument(name, contact.person.crn, contactId, file)
         }
         request.notes?.let { contact.appendNotes(it) }
-        request.sensitiveFlag?.let { when { true -> contact.sensitive = true } }
+        request.sensitiveFlag?.let {
+            when {
+                true -> contact.sensitive = true
+            }
+        }
         contactRepository.save(contact)
     }
 }

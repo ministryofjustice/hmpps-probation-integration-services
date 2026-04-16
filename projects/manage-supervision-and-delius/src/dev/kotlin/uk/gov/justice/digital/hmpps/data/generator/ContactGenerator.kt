@@ -315,7 +315,6 @@ object ContactGenerator {
             event = PersonGenerator.UPDATE_CONTACT_EVENT
         )
 
-
     fun generateContactDocument(
         personId: Long,
         alfrescoId: String,
