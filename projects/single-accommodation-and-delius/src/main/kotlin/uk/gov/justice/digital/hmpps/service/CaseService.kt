@@ -15,10 +15,10 @@ class CaseService(
     private val keyDateRepository: KeyDateRepository,
     private val userAccessService: UserAccessService
 ) {
-    fun getCase(crn: String): Case {
+    fun getCase(username: String, crn: String): Case {
         val person = personRepository.findByCrn(crn).orNotFoundBy("person", crn)
 
-        val manager = personManagerRepository.findByPersonIdAndActiveTrueAndSoftDeletedFalse(person.id)
+        val manager = personManagerRepository.findFirstByPersonIdAndActiveTrueAndSoftDeletedFalse(person.id)
             .orNotFoundBy("personId", person.id)
 
         val roshLevel = registrationRepository
@@ -26,7 +26,7 @@ class CaseService(
             .firstOrNull()
             ?.let { CodeDescription(it.type.code, it.type.description) }
 
-        val access = userAccessService.caseAccessFor(manager.staff.user?.username ?: "", crn)
+        val access = userAccessService.caseAccessFor(username, crn)
 
         return Case(
             crn = person.crn,
