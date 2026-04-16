@@ -38,4 +38,5 @@ class Person(
 
 interface PersonRepository : JpaRepository<Person, Long> {
     fun findByIdIn(ids: List<Long>): List<Person>
+    fun findByCrn(crn: String): Person?
 }

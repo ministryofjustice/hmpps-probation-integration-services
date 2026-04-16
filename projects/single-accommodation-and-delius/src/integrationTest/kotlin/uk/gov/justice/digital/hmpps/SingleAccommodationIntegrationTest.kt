@@ -70,6 +70,49 @@ internal class SingleAccommodationIntegrationTest @Autowired constructor(
             )
         )
     }
+//crn not found
+
+    @Test
+    fun `can retrieve case for user crn`() {
+        val person = PersonGenerator.DEFAULT
+        val staff = StaffGenerator.DEFAULT
+        val team = TeamGenerator.DEFAULT
+
+        val response = mockMvc.get("/case/${person.crn}") { withToken() }
+            .andExpect { status { is2xxSuccessful() } }
+            .andReturn().response.contentAsJson<Case>()
+
+        assertThat(response).isEqualTo(
+            Case(
+                crn = person.crn,
+                name = Name(
+                    forename = person.firstName,
+                    middleName = listOfNotNull(person.secondName, person.thirdName).joinToString(" ").ifEmpty { null },
+                    surname = person.surname
+                ),
+                nomsNumber = person.noms,
+                pncNumber = person.pnc,
+                dateOfBirth = person.dateOfBirth,
+                staff = Officer(
+                    name = Name(
+                        forename = staff.forename,
+                        middleName = staff.middleName,
+                        surname = staff.surname
+                    ),
+                    username = UserGenerator.DEFAULT.username,
+                    code = staff.code
+                ),
+                team = CodeDescription(code = team.code, description = team.description),
+                gender = person.gender.description,
+                roshLevel = CodeDescription("RHRH", "High RoSH"),
+                expectedReleaseDate = KeyDateGenerator.EXPECTED_RELEASE.date,
+                userExcluded = false,
+                userRestricted = false,
+                exclusionMessage = null,
+                restrictionMessage = null
+            )
+        )
+    }
 
     @Test
     fun `excluded case returns LAO fields`() {
