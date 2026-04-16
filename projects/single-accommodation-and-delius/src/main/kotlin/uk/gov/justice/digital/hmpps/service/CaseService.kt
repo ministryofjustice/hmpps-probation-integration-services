@@ -60,6 +60,5 @@ class CaseService(
             exclusionMessage = access.exclusionMessage,
             restrictionMessage = access.restrictionMessage
         )
-
     }
 }
