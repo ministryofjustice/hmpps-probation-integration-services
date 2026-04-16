@@ -115,6 +115,22 @@ internal class SingleAccommodationIntegrationTest @Autowired constructor(
     }
 
     @Test
+    fun `cant retrieve case for non existent user crn`() {
+        val person2 = PersonGenerator.CRNA000002
+
+        mockMvc.get("/case/${person2.crn}") { withToken() }
+            .andExpect { status { is4xxClientError() } }
+    }
+
+    @Test
+    fun `cant retrieve case for without token`() {
+        val person = PersonGenerator.DEFAULT
+
+        mockMvc.get("/case/${person.crn}")
+            .andExpect { status { is4xxClientError() } }
+    }
+
+    @Test
     fun `excluded case returns LAO fields`() {
         val user = UserGenerator.DEFAULT
         val person = PersonGenerator.EXCLUDED
