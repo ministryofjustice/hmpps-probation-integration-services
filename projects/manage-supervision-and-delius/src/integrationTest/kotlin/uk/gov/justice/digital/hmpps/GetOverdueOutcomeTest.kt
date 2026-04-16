@@ -22,6 +22,7 @@ class GetOverdueOutcomeTest : IntegrationTestBase() {
         with(response.content.first()) {
             assertThat(type).isEqualTo(OverdueOutcome.Type("COAP", "Description for COAP"))
             assertThat(date).isEqualTo(LocalDate.of(2024, 11, 27))
+            assertThat(staff.code).isEqualTo("N01BDT1")
         }
     }
 }

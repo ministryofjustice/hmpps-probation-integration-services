@@ -1,11 +1,13 @@
 package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.stereotype.Service
+import uk.gov.justice.digital.hmpps.api.model.Name
 import uk.gov.justice.digital.hmpps.api.model.appointment.*
 import uk.gov.justice.digital.hmpps.api.model.sentence.MinimalOrder
 import uk.gov.justice.digital.hmpps.api.model.sentence.MinimalSentence
 import uk.gov.justice.digital.hmpps.api.model.sentence.ProviderOfficeLocation
 import uk.gov.justice.digital.hmpps.api.model.sentence.SentenceType
+import uk.gov.justice.digital.hmpps.api.model.user.Staff
 import uk.gov.justice.digital.hmpps.api.model.user.Team
 import uk.gov.justice.digital.hmpps.api.model.user.TeamResponse
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
@@ -116,7 +118,11 @@ class AppointmentService(
                 OverdueOutcome.Type(it.type.code, it.type.description),
                 it.date,
                 it.startTime?.toLocalTime(),
-                it.endTime?.toLocalTime()
+                it.endTime?.toLocalTime(),
+                Staff(
+                    Name(forename = it.staff.forename, surname = it.staff.surname),
+                    it.staff.code
+                )
             )
         }.let(::OverdueOutcomeAppointments)
 }

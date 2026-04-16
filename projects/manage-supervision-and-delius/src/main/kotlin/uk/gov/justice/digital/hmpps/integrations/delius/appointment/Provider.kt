@@ -69,6 +69,12 @@ class AppointmentStaff(
     @Column(name = "officer_code", columnDefinition = "char(7)")
     val code: String,
 
+    @Column
+    val forename: String,
+
+    @Column
+    val surname: String,
+
     @Id
     @Column(name = "staff_id")
     val id: Long,
