@@ -70,7 +70,6 @@ internal class SingleAccommodationIntegrationTest @Autowired constructor(
             )
         )
     }
-//crn not found
 
     @Test
     fun `can retrieve case for user crn`() {
@@ -116,9 +115,7 @@ internal class SingleAccommodationIntegrationTest @Autowired constructor(
 
     @Test
     fun `cant retrieve case for non existent user crn`() {
-        val person2 = PersonGenerator.CRNA000002
-
-        mockMvc.get("/case/${person2.crn}") { withToken() }
+        mockMvc.get("/case/A000002") { withToken() }
             .andExpect { status { is4xxClientError() } }
     }
 
