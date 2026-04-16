@@ -12,16 +12,17 @@ interface ContactRepository : JpaRepository<Contact, Long> {
     @Query(
         """
         select c from Contact c
-        where c.type.code = '${ContactType.APPOINTMENT}'
+        where c.type.code in ('${ContactType.APPOINTMENT}', '${ContactType.IAPS_APPOINTMENT}')
         and (c.requirement.id in :requirementIds or c.licenceCondition.id in :licenceConditionIds)
-        and c.date >= :fromDate and c.date <= :toDate
+        and (:fromDate is null or c.date >= :fromDate)
+        and (:toDate is null or c.date <= :toDate)
         """
     )
     fun findAllByComponentIdInDateRange(
         requirementIds: List<Long>,
         licenceConditionIds: List<Long>,
-        fromDate: LocalDate,
-        toDate: LocalDate
+        fromDate: LocalDate?,
+        toDate: LocalDate?,
     ): List<Contact>
 
     fun findByExternalReference(externalReference: String): Contact?

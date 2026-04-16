@@ -86,24 +86,28 @@ object TestData {
     val TERMINATION_COMMUNITY_SENTENCE =
         DisposalGenerator.generate(TERMINATION_COMMUNITY_EVENT, COMMUNITY_ORDER_TYPE, 6, MONTHS)
 
-    val TWO_THIRDS_CONTACT_TYPE = ContactType(id(), ContactType.SUPERVISION_TWO_THIRDS_POINT, false)
-    val OTHER_CONTACT_TYPE = ContactType(id(), "OTHER", false)
+    val TWO_THIRDS_CONTACT_TYPE = ContactType(id(), ContactType.SUPERVISION_TWO_THIRDS_POINT, "Two-thirds point", false)
+    val OTHER_CONTACT_TYPE = ContactType(id(), "OTHER", "Something else", false)
     val TWO_THIRDS_CONTACT =
         CUSTODIAL_EVENT.contact(TWO_THIRDS_CONTACT_TYPE, LocalDate.of(2067, 1, 1), STAFF, TEAM, PROVIDER)
     val OTHER_CONTACT = CUSTODIAL_EVENT.contact(OTHER_CONTACT_TYPE, LocalDate.of(2000, 1, 1), STAFF, TEAM, PROVIDER)
 
-    val COMPONENT_TERMINATED_CONTACT_TYPE = ContactType(id(), ContactType.COMPONENT_TERMINATED, false)
-    val COMPONENT_TRANSFER_REJECTED_CONTACT_TYPE = ContactType(id(), ContactType.COMPONENT_TRANSFER_REJECTED, false)
-    val PRE_GROUP_ONE_TO_ONE_MEETING_CONTACT_TYPE = ContactType(id(), ContactType.PRE_GROUP_ONE_TO_ONE_MEETING, false)
-    val ORDER_COMPONENT_COMMENCED_CONTACT_TYPE = ContactType(id(), ContactType.ORDER_COMPONENT_COMMENCED, false)
+    val COMPONENT_TERMINATED_CONTACT_TYPE =
+        ContactType(id(), ContactType.COMPONENT_TERMINATED, "Component terminated", false)
+    val COMPONENT_TRANSFER_REJECTED_CONTACT_TYPE =
+        ContactType(id(), ContactType.COMPONENT_TRANSFER_REJECTED, "Component transfer rejected", false)
+    val PRE_GROUP_ONE_TO_ONE_MEETING_CONTACT_TYPE =
+        ContactType(id(), ContactType.PRE_GROUP_ONE_TO_ONE_MEETING, "Pre-group one-to-one meeting", false)
+    val ORDER_COMPONENT_COMMENCED_CONTACT_TYPE =
+        ContactType(id(), ContactType.ORDER_COMPONENT_COMMENCED, "Order component commenced", false)
 
     val ATTENDED_COMPLIED = ContactOutcome(id(), "ATTC", "Attended and Complied")
     val FAILED_TO_COMPLY =
         ContactOutcome(id(), "FTC", "Failed to comply", attended = false, complied = false, enforceable = true)
     val ACCEPTABLE_ABSENCE = ContactOutcome(id(), "AA", "Acceptable absence", attended = false, complied = true)
-    val REFER_TO_MANAGER_CONTACT_TYPE = ContactType(id(), "ROM", false)
+    val REFER_TO_MANAGER_CONTACT_TYPE = ContactType(id(), "ROM", "Refer to manager", false)
     val REFER_TO_MANAGER_ACTION = EnforcementAction(id(), "ROM", "Refer to manager", 7, REFER_TO_MANAGER_CONTACT_TYPE)
-    val ENFORCEMENT_REVIEW_CONTACT_TYPE = ContactType(id(), "ARWS", false)
+    val ENFORCEMENT_REVIEW_CONTACT_TYPE = ContactType(id(), "ARWS", "Review enforcement", false)
 
     val PSS_END_DATE_KEY_DATE_TYPE =
         ReferenceData(id(), KeyDate.POST_SENTENCE_SUPERVISION_END_DATE, "Post-sentence supervision end date", DATASET)
@@ -176,15 +180,18 @@ object TestData {
     val REGISTER_CATEGORY = ReferenceData(id(), "I3", "IOM - Fixed", DATASET)
     val REGISTRATION = RegistrationGenerator.generate(PERSON, REGISTER_TYPE, REGISTER_CATEGORY)
 
-    val APPOINTMENT_CONTACT_TYPE = ContactType(id(), ContactType.APPOINTMENT, true)
-    val STATUS_CONTACT_TYPES = StatusInfo.Status.entries.map { ContactType(id(), it.contactTypeCode, false) }
-    val THREE_WAY_MEETING_TYPE = ContactType(id(), ContactType.THREE_WAY_MEETING, false)
+    val APPOINTMENT_CONTACT_TYPE = ContactType(id(), ContactType.APPOINTMENT, "Accredited programme appointment", true)
+    val IAPS_APPOINTMENT_CONTACT_TYPE = ContactType(id(), ContactType.IAPS_APPOINTMENT, "IAPS appointment", true)
+    val STATUS_CONTACT_TYPES = StatusInfo.Status.entries.map { ContactType(id(), it.contactTypeCode, it.name, false) }
+    val THREE_WAY_MEETING_TYPE = ContactType(id(), ContactType.THREE_WAY_MEETING, "3-way meeting", false)
 
     val APPOINTMENTS = REQUIREMENTS.take(2).mapIndexed { idx, r ->
         r.contact(APPOINTMENT_CONTACT_TYPE, LocalDate.of(2030, 1, 1 + idx), STAFF, TEAM, PROVIDER)
     } + LICENCE_CONDITIONS.take(2).mapIndexed { idx, lc ->
         lc.contact(APPOINTMENT_CONTACT_TYPE, LocalDate.of(2030, 1, 1 + idx), STAFF, TEAM, PROVIDER)
     }
+    val LEGACY_APPOINTMENT =
+        REQUIREMENTS[0].contact(IAPS_APPOINTMENT_CONTACT_TYPE, LocalDate.of(2030, 1, 3), STAFF, TEAM, PROVIDER)
 
     val DOMAIN_EVENT_DATASET = Dataset(id(), "DOMAIN EVENT TYPE")
     val DOMAIN_EVENT_TYPES = listOf(

@@ -1,11 +1,13 @@
 package uk.gov.justice.digital.hmpps.test
 
 import com.fasterxml.jackson.annotation.JsonInclude
+import org.hamcrest.Matchers.equalTo
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
 import org.springframework.mock.web.MockHttpServletResponse
 import org.springframework.test.json.JsonCompareMode
 import org.springframework.test.web.servlet.MockHttpServletRequestDsl
+import org.springframework.test.web.servlet.MockMvcResultMatchersDsl
 import org.springframework.test.web.servlet.ResultActions
 import org.springframework.test.web.servlet.ResultActionsDsl
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder
@@ -65,4 +67,6 @@ object MockMvcExtensions {
             )
         }
     }
+
+    fun <T : Any> MockMvcResultMatchersDsl.jsonPath(expression: String, value: T) = jsonPath(expression, equalTo(value))
 }
