@@ -4,8 +4,8 @@ import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.within
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.put
 import uk.gov.justice.digital.hmpps.advice.ErrorResponse
@@ -87,8 +87,8 @@ class UpdateAppointmentIntegrationTest @Autowired constructor(
         val appointment = unpaidWorkAppointmentRepository.getAppointment(original.id)
         assertThat(appointment).isNotNull
         assertThat(appointment.date).isEqualTo(LocalDate.now())
-        assertThat(appointment.startTime).isEqualTo(LocalTime.of(LocalTime.now().minusHours(1).hour, 0))
-        assertThat(appointment.endTime).isEqualTo(LocalTime.of(LocalTime.now().plusHours(7).hour, 0))
+        assertThat(appointment.startTime).isEqualTo(TestData.startTime)
+        assertThat(appointment.endTime).isEqualTo(TestData.endTime)
         assertThat(appointment.penaltyMinutes).isEqualTo(65)
         assertThat(appointment.minutesCredited).isEqualTo(415)
         assertThat(appointment.project.code).isEqualTo(PROJECT)

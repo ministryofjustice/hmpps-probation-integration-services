@@ -47,7 +47,15 @@ class ProvidersController(
         @RequestParam startDate: LocalDate,
         @RequestParam endDate: LocalDate,
         @RequestParam typeCode: List<String> = emptyList(),
-    ) = providersService.getSessions(teamCode, startDate, endDate, typeCode)
+        @PageableDefault(page = 0, size = 10, sort = ["date", "projectName"]) pageable: Pageable
+    ) = providersService.getSessions(
+        teamCode, startDate, endDate, typeCode, pageable.mapSorts(
+            "projectName" to """lower("projectName")""",
+            "date" to """"appointmentDate"""",
+            "allocatedCount" to """coalesce("allocatedCount", 0)""",
+            "outcomeCount" to """coalesce("outcomeCount", 0)"""
+        )
+    )
 
     @GetMapping("/team/{teamCode}/locations")
     fun getTeamLocations(

@@ -188,6 +188,7 @@ interface UpwMinutesDto {
 interface UnpaidWorkAppointmentRepository : JpaRepository<UnpaidWorkAppointment, Long> {
     @Query(
         """
+        select * from (
         with uwp as ( select uwp1.upw_project_id, uwp1.name upw_project_name, uwp1.code upw_project_code
                       from upw_project uwp1,
                            upw_project_availability uwpav,
@@ -216,7 +217,7 @@ interface UnpaidWorkAppointmentRepository : JpaRepository<UnpaidWorkAppointment,
         left join contact c on c.contact_id = uwa.contact_id
         left join r_enforcement_action enf on enf.enforcement_action_id = c.latest_enforcement_action_id
         group by uwp.upw_project_id, uwp.upw_project_name, uwp.upw_project_code, uwa.appointment_date
-        order by uwa.appointment_date asc, uwp.upw_project_name
+        ) sessions
         """, nativeQuery = true
     )
     fun getUnpaidWorkSessionDetails(
@@ -224,8 +225,9 @@ interface UnpaidWorkAppointmentRepository : JpaRepository<UnpaidWorkAppointment,
         startDate: LocalDate,
         endDate: LocalDate,
         typeCodes: List<String>,
+        pageable: Pageable,
         typeCodesCount: Int = typeCodes.count()
-    ): List<UnpaidWorkSessionDto>
+    ): Page<UnpaidWorkSessionDto>
 
     fun getUpwAppointmentById(appointmentId: Long): UnpaidWorkAppointment?
 
@@ -310,9 +312,9 @@ interface UnpaidWorkAppointmentRepository : JpaRepository<UnpaidWorkAppointment,
     fun getOutcomeStats(
         teamCode: String,
         typeCodes: List<String>,
+        overdueDays: Int,
         pageable: Pageable,
         typeCodesCount: Int = typeCodes.count(),
-        overdueDays: Int = 45
     ): Page<Triple<Long, Int, Int>>
 
     @Query(

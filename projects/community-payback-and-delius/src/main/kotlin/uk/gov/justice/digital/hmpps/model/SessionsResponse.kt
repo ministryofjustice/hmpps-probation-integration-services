@@ -1,10 +1,14 @@
 package uk.gov.justice.digital.hmpps.model
 
+import org.springframework.data.domain.Page
+import org.springframework.data.web.PagedModel
 import java.time.LocalDate
 
-data class SessionsResponse(
-    val sessions: List<Session>
-)
+class SessionsResponse(
+    @Deprecated("Use 'content' field for paged results", replaceWith = ReplaceWith("content"))
+    val sessions: List<Session>,
+    page: Page<Session>,
+) : PagedModel<Session>(page)
 
 data class Session(
     val project: CodeDescription,
