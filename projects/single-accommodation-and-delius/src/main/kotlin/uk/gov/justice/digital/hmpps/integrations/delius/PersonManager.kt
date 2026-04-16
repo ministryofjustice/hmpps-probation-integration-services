@@ -37,5 +37,5 @@ class PersonManager(
 
 interface PersonManagerRepository : JpaRepository<PersonManager, Long> {
     fun findByStaffIdAndActiveTrue(staffId: Long): List<PersonManager>
-    fun findByPersonIdAndActiveTrueAndSoftDeletedFalse(personId: Long): PersonManager?
+    fun findFirstByPersonIdAndActiveTrueAndSoftDeletedFalse(personId: Long): PersonManager?
 }
