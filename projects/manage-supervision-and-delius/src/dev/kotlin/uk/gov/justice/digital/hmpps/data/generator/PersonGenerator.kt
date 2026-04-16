@@ -33,6 +33,8 @@ object PersonGenerator {
     val CUSTODY_DISPOSAL_TYPE = generateDisposalType("CST", "Custody Sentence Type", "NC", 0)
     val CUSTODY_PERSON = generateOverview(crn = "X123422", forename = "custody", surname = "person")
     val PRE_SENTENCE_PERSON = generateOverview(crn = "X123423", forename = "pre sentence", surname = "person")
+    val UPDATE_PERSON = generateOverview("U000001")
+    val UPDATE_CONTACT_EVENT = generateEvent(UPDATE_PERSON, eventNumber = "1", notes = "Update contact notes", additionalOffences = emptyList())
     val PRE_SENTENCE_EVENT = generateEvent(
         PRE_SENTENCE_PERSON,
         eventNumber = "1",

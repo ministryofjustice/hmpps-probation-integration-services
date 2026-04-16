@@ -2,16 +2,19 @@ package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import org.springframework.web.multipart.MultipartFile
 import uk.gov.justice.digital.hmpps.api.model.contact.ContactTypeResponse
 import uk.gov.justice.digital.hmpps.api.model.contact.ContactTypesResponse
 import uk.gov.justice.digital.hmpps.api.model.contact.CreateContact
 import uk.gov.justice.digital.hmpps.api.model.contact.CreateContactResponse
+import uk.gov.justice.digital.hmpps.api.model.contact.UpdateContact
 import uk.gov.justice.digital.hmpps.aspect.UserContext
 import uk.gov.justice.digital.hmpps.audit.service.AuditableService
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.exception.InvalidRequestException
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
+import uk.gov.justice.digital.hmpps.exception.NotFoundException.Companion.orNotFoundBy
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractionCode
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.ContactTypeRequirementTypeRepository
@@ -37,7 +40,8 @@ class ContactLogService(
     private val teamRepository: TeamRepository,
     private val contactTypeRequirementTypeRepository: ContactTypeRequirementTypeRepository,
     private val notifier: Notifier,
-    private val mappaCategoryResolverService: MappaCategoryResolverService
+    private val mappaCategoryResolverService: MappaCategoryResolverService,
+    private val documentsService: DocumentsService
 ) : AuditableService(auditedInteractionService) {
 
     @Transactional
@@ -155,4 +159,23 @@ class ContactLogService(
         description = description,
         isPersonLevelContact = offenderContact
     )
+
+    fun updateContactWithDocuments(
+        name: String,
+        contactId: Long,
+        file: MultipartFile?,
+        request: UpdateContact
+    ) {
+        val contact = contactRepository.getContact(contactId).orNotFoundBy("contactId", contactId)
+        CreateContact.Type.entries.find { it.code == contact.type.code }
+            ?: throw InvalidRequestException("Contact type ${contact.type.code} is not valid for update")
+        contact.date = request.dateTime.toLocalDate()
+        contact.startTime = request.dateTime
+        file?.let {
+            documentsService.addDocument(name, contact.person.crn, contactId, file)
+        }
+        request.notes?.let { contact.appendNotes(it) }
+        request.sensitiveFlag?.let { when { true -> contact.sensitive = true } }
+        contactRepository.save(contact)
+    }
 }

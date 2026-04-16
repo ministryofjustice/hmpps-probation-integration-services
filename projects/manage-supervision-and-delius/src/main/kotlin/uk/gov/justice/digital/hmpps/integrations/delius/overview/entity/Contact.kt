@@ -57,10 +57,10 @@ class Contact(
     val type: ContactType,
 
     @Column(name = "contact_date")
-    val date: LocalDate = LocalDate.now(),
+    var date: LocalDate = LocalDate.now(),
 
     @Column(name = "contact_start_time")
-    val startTime: ZonedDateTime? = ZonedDateTime.now(EuropeLondon),
+    var startTime: ZonedDateTime? = ZonedDateTime.now(EuropeLondon),
 
     @Column(name = "rar_activity", length = 1)
     @Convert(converter = YesNoConverter::class)
@@ -72,7 +72,7 @@ class Contact(
 
     @Column(name = "sensitive")
     @Convert(converter = YesNoConverter::class)
-    val sensitive: Boolean? = null,
+    var sensitive: Boolean? = null,
 
     @Column(name = "complied")
     @Convert(converter = YesNoConverter::class)
@@ -166,9 +166,11 @@ class Contact(
     val partitionAreaId: Long = 0
 ) {
 
-    fun startDateTime(): ZonedDateTime =
-        if (startTime != null) ZonedDateTime.of(date, startTime.toLocalTime(), EuropeLondon) else
-            ZonedDateTime.of(date, date.atStartOfDay().toLocalTime(), EuropeLondon)
+    fun startDateTime(): ZonedDateTime {
+        val startTime = startTime
+        return if (startTime != null) ZonedDateTime.of(date, startTime.toLocalTime(), EuropeLondon)
+        else ZonedDateTime.of(date, date.atStartOfDay().toLocalTime(), EuropeLondon)
+    }
 
     fun endDateTime(): ZonedDateTime? =
         if (endTime != null) ZonedDateTime.of(date, endTime.toLocalTime(), EuropeLondon) else null

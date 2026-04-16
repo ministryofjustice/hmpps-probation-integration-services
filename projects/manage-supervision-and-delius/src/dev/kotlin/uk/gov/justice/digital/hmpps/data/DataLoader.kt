@@ -8,6 +8,7 @@ import uk.gov.justice.digital.hmpps.data.generator.personalDetails.PersonDetails
 import uk.gov.justice.digital.hmpps.data.loader.BaseDataLoader
 import uk.gov.justice.digital.hmpps.data.manager.DataManager
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractionCode
+import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.Person
 import java.time.ZonedDateTime
 
 @Component
@@ -67,9 +68,11 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
         save(PersonGenerator.E_SUP_PERSON)
         save(PersonGenerator.CUSTODY_PERSON)
         save(PersonGenerator.PRE_SENTENCE_PERSON)
+        save(PersonGenerator.UPDATE_PERSON)
         save(CourtGenerator.BHAM)
         save(PersonGenerator.EVENT_1)
         save(PersonGenerator.EVENT_2)
+        save(PersonGenerator.UPDATE_CONTACT_EVENT)
         save(PersonGenerator.INACTIVE_EVENT_1)
         save(PersonGenerator.INACTIVE_EVENT_2)
         save(PersonGenerator.INACTIVE_EVENT_3)
@@ -195,6 +198,8 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
             ContactGenerator.CONTACT_DOCUMENT_1,
             ContactGenerator.CONTACT_DOCUMENT_2,
             ContactGenerator.CONTACT_DOCUMENT_3,
+            ContactGenerator.UPDATABLE_CONTACT,
+            ContactGenerator.NON_UPDATABLE_CONTACT,
             PersonGenerator.OFFENCE_1,
             PersonGenerator.MAIN_OFFENCE_1,
             PersonGenerator.OFFENCE_2,
@@ -245,7 +250,7 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
             CustodyGenerator.RELEASE_1,
             CustodyGenerator.RELEASE_2,
             CustodyGenerator.RELEASE_3,
-            ContactGenerator.RQMNT_CONTACT_TYPE
+            ContactGenerator.RQMNT_CONTACT_TYPE,
         )
         personalDetailsData()
     }
