@@ -20,7 +20,7 @@ class CaseService(
         val person = personRepository.findByCrn(crn).orNotFoundBy("person", crn)
 
         val manager = personManagerRepository.findByPersonIdAndActiveTrueAndSoftDeletedFalse(person.id)
-            .orNotFoundBy("PersonManager", person.id)
+            .orNotFoundBy("personId", person.id)
 
         val roshLevel = registrationRepository
             .findByPersonIdInAndTypeCodeIn(listOf(person.id), RegisterType.ROSH_CODES)
