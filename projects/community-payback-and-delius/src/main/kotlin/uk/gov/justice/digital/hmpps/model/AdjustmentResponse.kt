@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.model
 
 import java.time.LocalDate
+import java.util.*
 
 data class AdjustmentResponse(
     val adjustments: List<Adjustment>
@@ -8,19 +9,16 @@ data class AdjustmentResponse(
 
 data class Adjustment(
     val id: Long,
+    val reference: UUID?,
     val type: AdjustmentType,
     val date: LocalDate,
-    val reason: AdjustmentReasonType,
+    val reason: CodeName,
     val minutes: Int
 )
 
-data class AdjustmentReasonType(
-    val code: String,
-    val name: String
-)
-
 data class AdjustmentPostResponse(
-    val id: Long
+    val id: Long,
+    val reference: UUID?,
 )
 
 enum class AdjustmentType(val code: String) {

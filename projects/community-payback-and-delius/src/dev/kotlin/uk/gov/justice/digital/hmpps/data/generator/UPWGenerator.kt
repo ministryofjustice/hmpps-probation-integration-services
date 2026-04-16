@@ -16,11 +16,12 @@ import uk.gov.justice.digital.hmpps.entity.staff.Team
 import uk.gov.justice.digital.hmpps.entity.unpaidwork.*
 import uk.gov.justice.digital.hmpps.model.Behaviour
 import uk.gov.justice.digital.hmpps.model.WorkQuality
-import uk.gov.justice.digital.hmpps.service.CommunityPaybackAppointmentsService.Companion.REFERENCE_PREFIX
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.ZonedDateTime
 import java.util.*
+import uk.gov.justice.digital.hmpps.service.AdjustmentService.Companion.REFERENCE_PREFIX as ADJUSTMENT_REFERENCE_PREFIX
+import uk.gov.justice.digital.hmpps.service.CommunityPaybackAppointmentsService.Companion.REFERENCE_PREFIX as APPOINTMENT_REFERENCE_PREFIX
 
 object UPWGenerator {
     val DEFAULT_ADDRESS = generateAddress(
@@ -261,7 +262,7 @@ object UPWGenerator {
         team = TeamGenerator.DEFAULT_UPW_TEAM,
         provider = ProviderGenerator.DEFAULT_PROVIDER,
         alertsActive = true,
-        externalReference = "$REFERENCE_PREFIX$DEFAULT_CONTACT_EXTERNAL_REF_UUID",
+        externalReference = "$APPOINTMENT_REFERENCE_PREFIX$DEFAULT_CONTACT_EXTERNAL_REF_UUID",
         personId = PersonGenerator.DEFAULT_PERSON.id
     )
 
@@ -280,7 +281,7 @@ object UPWGenerator {
         provider = ProviderGenerator.DEFAULT_PROVIDER,
         event = EVENT_1,
         alertsActive = true,
-        externalReference = "$REFERENCE_PREFIX$CONTACT_NO_ENFORCEMENT_EXTERNAL_REF_UUID",
+        externalReference = "$APPOINTMENT_REFERENCE_PREFIX$CONTACT_NO_ENFORCEMENT_EXTERNAL_REF_UUID",
         personId = PersonGenerator.DEFAULT_PERSON.id
     )
 
@@ -299,7 +300,7 @@ object UPWGenerator {
         provider = ProviderGenerator.DEFAULT_PROVIDER,
         event = EVENT_ADJUSTMENT,
         alertsActive = true,
-        externalReference = "$REFERENCE_PREFIX$CONTACT_NO_ENFORCEMENT_ADJUSTMENT_EXTERNAL_REF_UUID",
+        externalReference = "$APPOINTMENT_REFERENCE_PREFIX$CONTACT_NO_ENFORCEMENT_ADJUSTMENT_EXTERNAL_REF_UUID",
         personId = PersonGenerator.ADJUSTMENT_PERSON.id
     )
 
@@ -482,25 +483,25 @@ object UPWGenerator {
     )
 
     val DEFAULT_UPW_DETAILS_ADJUSTMENT_POSITIVE = generateUPWAdjustment(
-        upwDetailsId = UPW_DETAILS_1.id,
+        upwDetails = UPW_DETAILS_1,
         adjustmentAmount = 7,
         adjustmentType = "POSITIVE"
     )
 
     val DEFAULT_UPW_DETAILS_ADJUSTMENT_NEGATIVE = generateUPWAdjustment(
-        upwDetailsId = UPW_DETAILS_1.id,
+        upwDetails = UPW_DETAILS_1,
         adjustmentAmount = 3,
         adjustmentType = "NEGATIVE"
     )
 
     val GET_ADJUSTMENT_NEGATIVE = generateUPWAdjustment(
-        upwDetailsId = UPW_DETAILS_2.id,
+        upwDetails = UPW_DETAILS_2,
         adjustmentAmount = 3,
         adjustmentType = "NEGATIVE"
     )
 
     val ADJUSTMENT_NEGATIVE_FOR_ADJUSTMENT_PERSON = generateUPWAdjustment(
-        upwDetailsId = UPW_DETAILS_ADJUSTMENT.id,
+        upwDetails = UPW_DETAILS_ADJUSTMENT,
         adjustmentAmount = 3,
         adjustmentType = "NEGATIVE"
     )
@@ -579,19 +580,21 @@ object UPWGenerator {
 
     fun generateUPWAdjustment(
         id: Long = IdGenerator.getAndIncrement(),
-        upwDetailsId: Long,
+        upwDetails: UnpaidWorkDetails,
         adjustmentAmount: Int,
         adjustmentType: String,
         adjustmentDate: LocalDate = LocalDate.now(),
-        adjustmentReason: ReferenceData = ReferenceDataGenerator.UPW_ADJUSTMENT_REASON_OTHER
-    ) = CreateUnpaidWorkAdjustment(
+        adjustmentReason: ReferenceData = ReferenceDataGenerator.UPW_ADJUSTMENT_REASON_OTHER,
+        reference: UUID = UUID.randomUUID(),
+    ) = UnpaidWorkAdjustment(
         id = id,
-        detailsId = upwDetailsId,
-        adjustmentAmount = adjustmentAmount,
-        adjustmentDate = adjustmentDate,
-        adjustmentType = adjustmentType,
-        adjustmentReasonId = adjustmentReason.id,
+        upwDetails = upwDetails,
+        amount = adjustmentAmount,
+        date = adjustmentDate,
+        type = adjustmentType,
+        reason = adjustmentReason,
         adjustedByUserId = 0L,
+        externalReference = "$ADJUSTMENT_REFERENCE_PREFIX$reference",
         softDeleted = false,
         createdDatetime = ZonedDateTime.now(),
         createdByUserId = UserGenerator.DEFAULT_USER.id,

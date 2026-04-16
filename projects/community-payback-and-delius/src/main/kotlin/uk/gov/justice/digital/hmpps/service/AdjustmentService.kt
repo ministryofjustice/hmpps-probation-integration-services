@@ -6,23 +6,17 @@ import uk.gov.justice.digital.hmpps.entity.getAdjustmentReason
 import uk.gov.justice.digital.hmpps.entity.person.PersonRepository
 import uk.gov.justice.digital.hmpps.entity.sentence.EventRepository
 import uk.gov.justice.digital.hmpps.entity.staff.UserRepository
-import uk.gov.justice.digital.hmpps.entity.unpaidwork.CreateUnpaidWorkAdjustment
-import uk.gov.justice.digital.hmpps.entity.unpaidwork.CreateUnpaidWorkAdjustmentRepository
+import uk.gov.justice.digital.hmpps.entity.unpaidwork.UnpaidWorkAdjustment
 import uk.gov.justice.digital.hmpps.entity.unpaidwork.UnpaidWorkAdjustmentRepository
 import uk.gov.justice.digital.hmpps.entity.unpaidwork.UpwDetailsRepository
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.exception.NotFoundException.Companion.orNotFoundBy
-import uk.gov.justice.digital.hmpps.model.Adjustment
-import uk.gov.justice.digital.hmpps.model.AdjustmentPostResponse
-import uk.gov.justice.digital.hmpps.model.AdjustmentReasonType
-import uk.gov.justice.digital.hmpps.model.AdjustmentRequest
-import uk.gov.justice.digital.hmpps.model.AdjustmentResponse
-import uk.gov.justice.digital.hmpps.model.AdjustmentType
+import uk.gov.justice.digital.hmpps.model.*
+import java.util.*
 
 @Service
 class AdjustmentService(
     private val adjustmentRepository: UnpaidWorkAdjustmentRepository,
-    private val createUnpaidWorkAdjustmentRepository: CreateUnpaidWorkAdjustmentRepository,
     private val unpaidWorkDetailsRepository: UpwDetailsRepository,
     private val referenceDataRepository: ReferenceDataRepository,
     private val userRepository: UserRepository,
@@ -30,81 +24,119 @@ class AdjustmentService(
     private val eventRepository: EventRepository,
 ) {
     fun createAdjustments(
-        adjustments: List<AdjustmentRequest>,
+        requests: List<CreateAdjustmentRequest>,
         username: String
     ): List<AdjustmentPostResponse> {
-        val user = userRepository.findByUsername(username)
-            ?: throw NotFoundException("User not found for username $username")
-        return adjustments.map { adjustment ->
-            val person = personRepository.findByCrn(adjustment.crn).orNotFoundBy("CRN", adjustment.crn)
+        val user = userRepository.findByUsername(username).orNotFoundBy("username", username)
+        return requests.map { request ->
+            val person = personRepository.findByCrn(request.crn).orNotFoundBy("CRN", request.crn)
             val event = eventRepository.findByPersonIdAndNumberAndSoftDeletedIsFalse(
                 person.id,
-                adjustment.eventNumber.toString()
+                request.eventNumber.toString()
             )
-                ?: throw NotFoundException("Event not found for CRN ${person.crn} and event number ${adjustment.eventNumber}")
+                ?: throw NotFoundException("Event not found for CRN ${person.crn} and event number ${request.eventNumber}")
             val upwDetails = unpaidWorkDetailsRepository.findByEventIdIn(listOf(event.id)).first()
-            val adjustmentToSave = CreateUnpaidWorkAdjustment(
-                detailsId = upwDetails.id,
-                adjustmentAmount = adjustment.minutes,
-                adjustmentDate = adjustment.date,
-                adjustmentType = adjustment.type.code,
-                adjustmentReasonId = referenceDataRepository.getAdjustmentReason(adjustment.reason).id,
-                adjustedByUserId = user.id
+            val adjustment = adjustmentRepository.save(
+                UnpaidWorkAdjustment(
+                    upwDetails = upwDetails,
+                    amount = request.minutes,
+                    date = request.date,
+                    type = request.type.code,
+                    reason = referenceDataRepository.getAdjustmentReason(request.reason),
+                    adjustedByUserId = user.id,
+                    externalReference = "$REFERENCE_PREFIX${request.reference}"
+                )
             )
-            val savedAdjustment = createUnpaidWorkAdjustmentRepository.save(adjustmentToSave)
-            AdjustmentPostResponse(savedAdjustment.id!!)
+            AdjustmentPostResponse(adjustment.id!!, adjustment.reference()!!)
         }
     }
 
     fun getAdjustments(crn: String, eventNumber: Int): AdjustmentResponse {
         val adjustments = adjustmentRepository.findByCrnAndEventNumber(crn, eventNumber.toString())
 
-        return AdjustmentResponse(
-            adjustments =
-                adjustments.map { it ->
-                    Adjustment(
-                        id = it.id,
-                        date = it.adjustmentDate,
-                        type = AdjustmentType.valueOf(it.adjustmentType),
-                        minutes = it.adjustmentAmount.toInt(),
-                        reason = AdjustmentReasonType(
-                            code = it.adjustmentReason.code, name = it.adjustmentReason.description
-                        ),
-                    )
-                })
+        return AdjustmentResponse(adjustments.map {
+            Adjustment(
+                id = it.id!!,
+                reference = it.reference(),
+                date = it.date,
+                type = AdjustmentType.valueOf(it.type),
+                minutes = it.amount,
+                reason = CodeName(name = it.reason.description, code = it.reason.code),
+            )
+        })
+    }
+
+    @Deprecated("Pass a reference instead of an internal id")
+    fun updateAdjustment(
+        id: Long,
+        adjustmentRequest: UpdateAdjustmentRequest,
+        username: String
+    ) {
+        val existingAdjustment = adjustmentRepository.findFirstById(id).orNotFoundBy("id", id)
+        val user = userRepository.findByUsername(username).orNotFoundBy("username", username)
+        existingAdjustment.type = adjustmentRequest.type.code
+        existingAdjustment.amount = adjustmentRequest.minutes
+        existingAdjustment.date = adjustmentRequest.date
+        existingAdjustment.adjustedByUserId = user.id
+        existingAdjustment.reason = referenceDataRepository.getAdjustmentReason(adjustmentRequest.reason)
+        adjustmentRepository.save(existingAdjustment)
     }
 
     fun updateAdjustment(
-        adjustmentId: Long,
-        adjustmentRequest: AdjustmentRequest,
+        reference: UUID,
+        adjustmentRequest: UpdateAdjustmentRequest,
         username: String
     ) {
-        val existingAdjustment =
-            createUnpaidWorkAdjustmentRepository.findFirstById(adjustmentId).orNotFoundBy("id", adjustmentId)
-        val userId = userRepository.findByUsername(username)?.id.orNotFoundBy("username", username)
-        existingAdjustment.adjustmentType = adjustmentRequest.type.code
-        existingAdjustment.adjustmentAmount = adjustmentRequest.minutes
-        existingAdjustment.adjustmentDate = adjustmentRequest.date
-        existingAdjustment.adjustedByUserId = userId
-        existingAdjustment.adjustmentReasonId =
-            referenceDataRepository.getAdjustmentReason(adjustmentRequest.reason).id
-        createUnpaidWorkAdjustmentRepository.save(existingAdjustment)
+        val existingAdjustment = adjustmentRepository.findByReference(reference).orNotFoundBy("reference", reference)
+        val user = userRepository.findByUsername(username).orNotFoundBy("username", username)
+        existingAdjustment.type = adjustmentRequest.type.code
+        existingAdjustment.amount = adjustmentRequest.minutes
+        existingAdjustment.date = adjustmentRequest.date
+        existingAdjustment.adjustedByUserId = user.id
+        existingAdjustment.reason = referenceDataRepository.getAdjustmentReason(adjustmentRequest.reason)
+        adjustmentRepository.save(existingAdjustment)
     }
 
-    fun deleteAdjustment(adjustmentId: Long) {
-        val existingAdjustment = createUnpaidWorkAdjustmentRepository.findFirstById(adjustmentId)
-            .orNotFoundBy("id", adjustmentId)
-        createUnpaidWorkAdjustmentRepository.delete(existingAdjustment)
+    @Deprecated("Pass a reference instead of an internal id")
+    fun deleteAdjustment(id: Long) {
+        val existingAdjustment = adjustmentRepository.findFirstById(id).orNotFoundBy("id", id)
+        adjustmentRepository.delete(existingAdjustment)
     }
 
+    fun deleteAdjustment(reference: UUID) {
+        val existingAdjustment = adjustmentRepository.findByReference(reference).orNotFoundBy("reference", reference)
+        adjustmentRepository.delete(existingAdjustment)
+    }
+
+    @Deprecated("Pass a reference instead of an internal id")
     fun getAdjustment(id: Long): Adjustment {
         val adjustment = adjustmentRepository.findFirstById(id).orNotFoundBy("id", id)
         return Adjustment(
-            id = adjustment.id,
-            date = adjustment.adjustmentDate,
-            type = AdjustmentType.valueOf(adjustment.adjustmentType),
-            reason = AdjustmentReasonType(adjustment.adjustmentReason.code, adjustment.adjustmentReason.description),
-            minutes = adjustment.adjustmentAmount.toInt()
+            id = adjustment.id!!,
+            reference = adjustment.reference(),
+            type = AdjustmentType.valueOf(adjustment.type),
+            date = adjustment.date,
+            reason = CodeName(name = adjustment.reason.description, code = adjustment.reason.code),
+            minutes = adjustment.amount,
         )
+    }
+
+    fun getAdjustment(reference: UUID): Adjustment {
+        val adjustment = adjustmentRepository.findByReference(reference).orNotFoundBy("reference", reference)
+        return Adjustment(
+            id = adjustment.id!!,
+            reference = adjustment.reference(),
+            type = AdjustmentType.valueOf(adjustment.type),
+            date = adjustment.date,
+            reason = CodeName(name = adjustment.reason.description, code = adjustment.reason.code),
+            minutes = adjustment.amount,
+        )
+    }
+
+    fun UnpaidWorkAdjustment.reference() =
+        externalReference?.removePrefix(REFERENCE_PREFIX)?.let { UUID.fromString(it) }
+
+    companion object {
+        const val REFERENCE_PREFIX = "urn:uk:gov:hmpps:community-payback:adjustment:"
     }
 }
