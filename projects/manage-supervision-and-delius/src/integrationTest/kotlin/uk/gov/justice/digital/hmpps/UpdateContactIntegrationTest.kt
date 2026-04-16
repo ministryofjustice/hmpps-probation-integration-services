@@ -176,7 +176,5 @@ class UpdateContactIntegrationTest : IntegrationTestBase() {
             .andExpect { status { isOk() } }
         val savedContact = contactRepository.findById(contact.id).get()
         assertThat(savedContact.sensitive, equalTo(true))
-
-
     }
 }
