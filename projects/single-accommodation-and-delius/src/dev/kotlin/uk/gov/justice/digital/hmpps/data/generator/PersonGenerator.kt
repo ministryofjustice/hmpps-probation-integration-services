@@ -17,6 +17,18 @@ object PersonGenerator {
         noms = "A0001AA",
         pnc = "2004/0000001P"
     )
+    val CRNA000002 = Person(
+        id = IdGenerator.getAndIncrement(),
+        crn = "A000002",
+        firstName = "Bob",
+        secondName = null,
+        thirdName = null,
+        surname = "Smith",
+        dateOfBirth = LocalDate.of(1980, 1, 1),
+        gender = ReferenceDataGenerator.GENDER_MALE,
+        noms = "A0001AA",
+        pnc = "2004/0000001P"
+    )
     val EXCLUDED = Person(
         id = IdGenerator.getAndIncrement(),
         crn = "E123456",
