@@ -5,6 +5,7 @@ import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.NumericBooleanConverter
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.Event
+import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.ReferenceData
 import java.time.LocalDate
 
 @Entity
@@ -17,6 +18,10 @@ class CourtAppearance(
 
     @Column(name = "appearance_date")
     val date: LocalDate,
+
+    @ManyToOne
+    @JoinColumn(name = "appearance_type_id")
+    val type: ReferenceData,
 
     @JoinColumn(name = "court_id")
     @ManyToOne

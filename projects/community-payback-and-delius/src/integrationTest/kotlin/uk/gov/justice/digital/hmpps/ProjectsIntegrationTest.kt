@@ -9,8 +9,8 @@ import org.springframework.test.json.JsonCompareMode
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
 import uk.gov.justice.digital.hmpps.advice.ErrorResponse
-import uk.gov.justice.digital.hmpps.data.generator.UPWGenerator.DEFAULT_UPW_PROJECT_AVAILABILITY
 import uk.gov.justice.digital.hmpps.data.generator.UPWGenerator.UPW_PROJECT_1
+import uk.gov.justice.digital.hmpps.data.generator.UPWGenerator.UPW_PROJECT_AVAILABILITY_1
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 
@@ -67,8 +67,8 @@ class ProjectsIntegrationTest @Autowired constructor(
                             {
                               "frequency": "Weekly",
                               "dayOfWeek": "MONDAY",
-                              "startDateInclusive": "${DEFAULT_UPW_PROJECT_AVAILABILITY.startDate}",
-                              "endDateExclusive": "${DEFAULT_UPW_PROJECT_AVAILABILITY.endDate}"
+                              "startDateInclusive": "${UPW_PROJECT_AVAILABILITY_1.startDate}",
+                              "endDateExclusive": "${UPW_PROJECT_AVAILABILITY_1.endDate}"
                             }
                           ]
                         }

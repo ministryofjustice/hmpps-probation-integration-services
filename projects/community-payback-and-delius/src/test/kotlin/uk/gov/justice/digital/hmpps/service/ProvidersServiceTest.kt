@@ -7,6 +7,7 @@ import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
+import org.springframework.data.domain.Pageable
 import uk.gov.justice.digital.hmpps.entity.staff.OfficeLocationRepository
 import uk.gov.justice.digital.hmpps.entity.staff.ProbationAreaUserRepository
 import uk.gov.justice.digital.hmpps.entity.staff.TeamRepository
@@ -41,7 +42,13 @@ internal class ProvidersServiceTest {
     @Test
     fun `getSessions startDate and endDate must be within 7 days`() {
         val exception = assertThrows<IllegalArgumentException> {
-            providersService.getSessions("N01UPW", LocalDate.now().minusDays(8), LocalDate.now(), emptyList())
+            providersService.getSessions(
+                "N01UPW",
+                LocalDate.now().minusDays(8),
+                LocalDate.now(),
+                emptyList(),
+                Pageable.unpaged()
+            )
         }
 
         assertThat(exception.message).isEqualTo("Date range cannot be greater than 7 days")

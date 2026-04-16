@@ -12,10 +12,9 @@ import uk.gov.justice.digital.hmpps.advice.ErrorResponse
 import uk.gov.justice.digital.hmpps.data.generator.StaffGenerator
 import uk.gov.justice.digital.hmpps.data.generator.TeamGenerator
 import uk.gov.justice.digital.hmpps.data.generator.UPWGenerator
-import uk.gov.justice.digital.hmpps.model.ProvidersResponse
-import uk.gov.justice.digital.hmpps.model.SessionsResponse
-import uk.gov.justice.digital.hmpps.model.SupervisorsResponse
 import uk.gov.justice.digital.hmpps.model.PickUpLocationsResponse
+import uk.gov.justice.digital.hmpps.model.ProvidersResponse
+import uk.gov.justice.digital.hmpps.model.SupervisorsResponse
 import uk.gov.justice.digital.hmpps.model.TeamsResponse
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
@@ -81,15 +80,15 @@ class ProvidersIntegrationTest @Autowired constructor(
     @Test
     fun `can retrieve all upw projects for provider and team`() {
         mockMvc
-            .get("/providers/N02/teams/N02UP2/projects?typeCode=ET1&page=0&size=10") { withToken() }
+            .get("/providers/N01/teams/N01UPW/projects?sort=name,asc") { withToken() }
             .andExpect {
                 status { isOk() }
-                jsonPath("$.content.length()") { value(1) }
-                jsonPath("$.content[0].project.code") { value(UPWGenerator.UPW_PROJECT_2.code) }
-                jsonPath("$.content[0].project.type.code") { value("ET1") }
-                jsonPath("$.content[0].project.team.code") { value("N02UP2") }
-                jsonPath("$.content[0].overdueOutcomesCount") { value(11) }
-                jsonPath("$.content[0].oldestOverdueInDays") { value(1) }
+                jsonPath("$.content.length()") { value(2) }
+                jsonPath("$.content[0].project.code") { value(UPWGenerator.UPW_PROJECT_1.code) }
+                jsonPath("$.content[0].project.type.code") { value("I") }
+                jsonPath("$.content[0].project.team.code") { value("N01UPW") }
+                jsonPath("$.content[0].overdueOutcomesCount") { value(1) }
+                jsonPath("$.content[0].oldestOverdueInDays") { value(7) }
             }
     }
 
@@ -127,7 +126,7 @@ class ProvidersIntegrationTest @Autowired constructor(
     }
 
     @Test
-    fun `invalid sort property returns bad request`() {
+    fun `invalid projects sort property returns bad request`() {
         mockMvc
             .get("/providers/N01/teams/N01UPW/projects?sort=INVALID") { withToken() }
             .andExpect { status { isBadRequest() } }
@@ -137,51 +136,92 @@ class ProvidersIntegrationTest @Autowired constructor(
     }
 
     @Test
-    fun `can retrieve all upw sessions for provider and team`() {
-        val response = mockMvc
-            .get(
-                "/providers/N01/teams/N01UPW/sessions" +
-                    "?startDate=${LocalDate.now().minusDays(3)}&endDate=${LocalDate.now().plusDays(3)}"
-            ) { withToken() }
-            .andExpect { status { isOk() } }
-            .andReturn().response.contentAsJson<SessionsResponse>()
+    fun `can paginate upw sessions`() {
+        mockMvc
+            .getSessions("N01", "N01UPW")
+            .andExpect {
+                content {
+                    jsonPath("content.size()", 2)
+                    jsonPath("sessions.size()", 2)
+                    jsonPath("page.number", 0)
+                    jsonPath("page.size", 10)
+                    jsonPath("page.totalElements", 2)
+                    jsonPath("page.totalPages", 1)
+                }
+            }
+        mockMvc
+            .getSessions("N01", "N01UPW", mapOf("pageSize" to 1))
+            .andExpect {
+                content {
+                    jsonPath("content.size()", 1)
+                    jsonPath("sessions.size()", 1)
+                    jsonPath("page.number", 0)
+                    jsonPath("page.size", 1)
+                    jsonPath("page.totalElements", 2)
+                    jsonPath("page.totalPages", 1)
+                }
+            }
+    }
 
-        assertThat(response.sessions.size).isEqualTo(2)
-        assertThat(response.sessions.map { it.date }).isEqualTo(listOf(LocalDate.now(), LocalDate.now().plusDays(1)))
+    @Test
+    fun `can sort sessions by date`() {
+        mockMvc
+            .getSessions("N01", "N01UPW", mapOf("sort" to "date,desc"))
+            .andExpect { content { jsonPath("content[*].date", listOf(LocalDate.now().plusDays(1), LocalDate.now())) } }
+        mockMvc
+            .getSessions("N01", "N01UPW", mapOf("sort" to "date,asc"))
+            .andExpect { content { jsonPath("content[*].date", listOf(LocalDate.now(), LocalDate.now().plusDays(1))) } }
+    }
+
+    @Test
+    fun `can sort sessions by allocated count`() {
+        mockMvc
+            .getSessions("N02", "N02UP2", mapOf("sort" to "allocatedCount,desc"))
+            .andExpect { content { jsonPath("content[*].allocatedCount", listOf(2, 1)) } }
+        mockMvc
+            .getSessions("N02", "N02UP2", mapOf("sort" to "allocatedCount,asc"))
+            .andExpect { content { jsonPath("content[*].allocatedCount", listOf(1, 2)) } }
+    }
+
+    @Test
+    fun `can sort sessions by outcome count`() {
+        mockMvc
+            .getSessions("N01", "N01UPW", mapOf("sort" to "outcomeCount,desc"))
+            .andExpect { content { jsonPath("content[*].date", listOf(1, 0)) } }
+        mockMvc
+            .getSessions("N01", "N01UPW", mapOf("sort" to "outcomeCount,asc"))
+            .andExpect { content { jsonPath("content[*].date", listOf(0, 1)) } }
+    }
+
+    @Test
+    fun `invalid sessions sort property returns bad request`() {
+        mockMvc
+            .get("/providers/N01/teams/N01UPW/sessions?startDate=2000-01-01&endDate=2000-01-02&sort=INVALID") { withToken() }
+            .andExpect { status { isBadRequest() } }
+            .andReturn().response.contentAsJson<ErrorResponse>().run {
+                assertThat(message).isEqualTo("Unsupported sort: INVALID")
+            }
     }
 
     @Test
     fun `can filter sessions by project type codes`() {
-        val startDate = LocalDate.now().minusDays(3)
-        val endDate = LocalDate.now().plusDays(3)
+        mockMvc
+            .getSessions("N01", "N01UPW", mapOf("typeCode" to "G"))
+            .andExpect { content { jsonPath("content.size()", 2) } }
 
         mockMvc
-            .get("/providers/N01/teams/N01UPW/sessions?startDate=$startDate&endDate=$endDate&typeCode=G") { withToken() }
-            .andExpect {
-                status { isOk() }
-                content { jsonPath("sessions.size()", 2) }
-            }
-
-        mockMvc
-            .get("/providers/N01/teams/N01UPW/sessions?startDate=$startDate&endDate=$endDate&typeCode=I") { withToken() }
-            .andExpect {
-                status { isOk() }
-                content { jsonPath("sessions.size()", 0) }
-            }
+            .getSessions("N01", "N01UPW", mapOf("typeCode" to "I"))
+            .andExpect { content { jsonPath("content.size()", 0) } }
     }
 
     @Test
     fun `can filter sessions by project type codes and overdueDays`() {
-        val startDate = LocalDate.now().minusDays(3)
-        val endDate = LocalDate.now().plusDays(3)
-        val overdueDays = 100
-
         mockMvc
-            .get("/providers/N01/teams/N01UPW/sessions?startDate=$startDate&endDate=$endDate&typeCode=G&overdueDays=$overdueDays") { withToken() }
-            .andExpect {
-                status { isOk() }
-                content { jsonPath("sessions.size()", 2) }
-            }
+            .getSessions("N01", "N01UPW", mapOf("overdueDays" to 8))
+            .andExpect { content { jsonPath("content.size()", 3) } }
+        mockMvc
+            .getSessions("N01", "N01UPW", mapOf("overdueDays" to 6))
+            .andExpect { content { jsonPath("content.size()", 2) } }
     }
 
     @Test
@@ -197,4 +237,17 @@ class ProvidersIntegrationTest @Autowired constructor(
         assertThat(actual.locations[0].code).isEqualTo("LOC0001")
         assertThat(actual.locations[0].postCode).isEqualTo("ZY98XW")
     }
+
+    private fun MockMvc.getSessions(
+        providerCode: String,
+        teamCode: String,
+        queryParameters: Map<String, Any> = emptyMap(),
+        startDate: LocalDate = LocalDate.now().minusDays(3),
+        endDate: LocalDate = LocalDate.now().plusDays(3),
+    ) = get("/providers/$providerCode/teams/$teamCode/sessions?") {
+        queryParam("startDate", startDate.toString())
+        queryParam("endDate", endDate.toString())
+        queryParameters.entries.forEach { queryParam(it.key, it.value.toString()) }
+        withToken()
+    }.andExpect { status { isOk() } }
 }

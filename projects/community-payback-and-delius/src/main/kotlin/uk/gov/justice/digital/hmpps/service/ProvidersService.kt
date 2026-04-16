@@ -56,7 +56,7 @@ class ProvidersService(
         overdueDays: Int
     ): PagedModel<ProjectOutcomeStats> {
         val stats =
-            unpaidWorkAppointmentRepository.getOutcomeStats(teamCode, typeCodes, pageable, overdueDays = overdueDays)
+            unpaidWorkAppointmentRepository.getOutcomeStats(teamCode, typeCodes, overdueDays, pageable)
         val projects = unpaidWorkProjectRepository.findAllByIdIn(stats.content.map { (id) -> id }).associateBy { it.id }
         return stats.map { (id, overdueCount, overdueDays) ->
             ProjectOutcomeStats(Project(projects.getValue(id)), overdueCount, overdueDays)
@@ -67,15 +67,30 @@ class ProvidersService(
         teamCode: String,
         startDate: LocalDate,
         endDate: LocalDate,
-        typeCodes: List<String>
+        typeCodes: List<String>,
+        pageable: Pageable
     ): SessionsResponse {
         require(ChronoUnit.DAYS.between(startDate, endDate) <= 7) { "Date range cannot be greater than 7 days" }
 
         val team = teamRepository.findTeamByCode(teamCode)
+        val unpaged = Pageable.unpaged(pageable.sort)
+        val deprecatedAllSessions =
+            unpaidWorkAppointmentRepository.getUnpaidWorkSessionDetails(team.id, startDate, endDate, typeCodes, unpaged)
         val sessions =
-            unpaidWorkAppointmentRepository.getUnpaidWorkSessionDetails(team.id, startDate, endDate, typeCodes)
+            unpaidWorkAppointmentRepository.getUnpaidWorkSessionDetails(
+                team.id,
+                startDate,
+                endDate,
+                typeCodes,
+                pageable
+            )
 
-        return SessionsResponse(sessions.map { it.toModel() })
+        return SessionsResponse(
+            sessions = deprecatedAllSessions.map { it.toModel() }.toList(),
+            page = sessions.map { it.toModel() }
+        )
+        // TODO replace above with the following once Community Payback service has migrated
+        // return PagedModel(sessions.map { it.toModel() })
     }
 
     fun getLocationsForTeam(teamCode: String): PickUpLocationsResponse {
