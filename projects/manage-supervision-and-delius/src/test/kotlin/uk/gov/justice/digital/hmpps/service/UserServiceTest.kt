@@ -39,6 +39,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.caseload.CaseloadReposit
 import uk.gov.justice.digital.hmpps.integrations.delius.caseload.TeamCaseloadItem
 import uk.gov.justice.digital.hmpps.integrations.delius.caseload.entity.Caseload
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.Appointment
+import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.BoroughRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.StaffAndRole
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.StaffUserRepository
@@ -78,6 +79,9 @@ internal class UserServiceTest {
 
     @Mock
     lateinit var probationAreaUserRepository: ProbationAreaUserRepository
+
+    @Mock
+    lateinit var boroughRepository: BoroughRepository
 
     @Mock
     lateinit var userAspect: DeliusUserAspect
