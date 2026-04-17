@@ -11,14 +11,15 @@ class ContactType(
     @Id
     @Column(name = "contact_type_id")
     val id: Long,
-
     val code: String,
+    val description: String,
 
     @Column(name = "national_standards_contact")
     @Convert(converter = YesNoConverter::class)
     val nationalStandards: Boolean,
 ) {
     companion object {
+        const val IAPS_APPOINTMENT = "CAPX"
         const val APPOINTMENT = "CAPY"
         const val THREE_WAY_MEETING = "CAPZ"
         const val PRE_GROUP_ONE_TO_ONE_MEETING = "CAPW"

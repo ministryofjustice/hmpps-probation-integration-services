@@ -58,7 +58,7 @@ object ContactGenerator {
         team = team,
         provider = provider,
         notes = "Some appointment notes",
-        externalReference = "${Contact.REFERENCE_PREFIX}:${UUID.randomUUID()}",
+        externalReference = "${Contact.REFERENCE_PREFIX}${UUID.randomUUID()}",
         sensitive = false,
     )
 
@@ -82,7 +82,7 @@ object ContactGenerator {
         team = team,
         provider = provider,
         notes = "Some appointment notes",
-        externalReference = "${Contact.REFERENCE_PREFIX}:${UUID.randomUUID()}",
+        externalReference = "${Contact.REFERENCE_PREFIX}${UUID.randomUUID()}",
         sensitive = false,
     )
 }

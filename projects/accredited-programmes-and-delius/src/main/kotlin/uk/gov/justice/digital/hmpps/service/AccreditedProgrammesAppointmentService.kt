@@ -34,7 +34,7 @@ class AccreditedProgrammesAppointmentService(
     private val telemetryService: TelemetryService,
 ) {
     fun getAppointments(request: GetAppointmentsRequest) = with(request) {
-        require(toDate >= fromDate) { "toDate cannot be before fromDate" }
+        require(toDate == null || fromDate == null || toDate >= fromDate) { "toDate cannot be before fromDate" }
         require(requirementIds.isNotEmpty() || licenceConditionIds.isNotEmpty()) {
             "at least one requirementId or licenceConditionId must be provided"
         }
@@ -111,13 +111,17 @@ class AccreditedProgrammesAppointmentService(
             .onEach { telemetryService.trackEvent("AppointmentDeleted", it.telemetry()) }
 
     private fun Contact.asAppointment() = AppointmentResponse(
+        id = id,
+        reference = externalReference?.removePrefix(Contact.REFERENCE_PREFIX),
         crn = person.crn,
-        reference = externalReference?.takeLast(36),
         requirementId = requirement?.id,
         licenceConditionId = licenceCondition?.id,
         date = date,
         startTime = startTime,
         endTime = endTime,
+        createdAt = createdDatetime,
+        updatedAt = lastUpdatedDatetime,
+        type = CodedValue(type.code, type.description),
         outcome = outcome?.let { AppointmentOutcome(it.code, it.description, it.attended, it.complied) },
         location = location?.let { CodedValue(it.code, it.description) },
         staff = staff.toProbationPractitioner { null },
