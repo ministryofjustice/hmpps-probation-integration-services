@@ -170,7 +170,9 @@ class ContactLogService(
         contact.date = request.dateTime.toLocalDate()
         contact.startTime = request.dateTime
         request.notes?.let { contact.appendNotes(it) }
-        if ((request.sensitiveFlag != null) && (!request.sensitiveFlag && contact.sensitive!!)) throw InvalidRequestException("Cannot un-flag a sensitive contact")
+        if ((request.sensitiveFlag != null) && (!request.sensitiveFlag && contact.sensitive!!)) throw InvalidRequestException(
+            "Cannot un-flag a sensitive contact"
+        )
         if (request.sensitiveFlag != null && request.sensitiveFlag) contact.sensitive = true
         contactRepository.save(contact)
     }

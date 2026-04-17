@@ -51,5 +51,4 @@ class ContactController(
         @PathVariable contactId: Long,
         @RequestBody request: UpdateContact,
     ) = contactLogService.updateContact(contactId, request)
-
 }
