@@ -2,8 +2,7 @@ package uk.gov.justice.digital.hmpps
 
 import com.github.tomakehurst.wiremock.WireMockServer
 import org.hamcrest.MatcherAssert.assertThat
-import org.hamcrest.Matchers.containsString
-import org.hamcrest.Matchers.equalTo
+import org.hamcrest.Matchers.*
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation
@@ -23,19 +22,15 @@ import uk.gov.justice.digital.hmpps.integrations.approvedpremises.EventDetails
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.PersonArrived
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.PersonDeparted
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.SERVICE_URN_BASE
-import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referral.entity.PreferredResidence
-import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referral.entity.PreferredResidenceRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referral.entity.ReferralRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referral.entity.ResidenceRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referral.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.outcome.ContactOutcome
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.ContactTypeCode
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.ContactTypeCode.CASE_ALLOCATED
-import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.entity.NsiManagerRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.entity.NsiRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.entity.NsiStatusCode
-import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.entity.NsiTypeCode
+import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.entity.*
+import uk.gov.justice.digital.hmpps.integrations.delius.person.PersonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.address.PersonAddressRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.person.getByCrn
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ApprovedPremisesCategoryCode
 import uk.gov.justice.digital.hmpps.integrations.delius.staff.StaffRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.staff.getByCode
@@ -46,7 +41,6 @@ import uk.gov.justice.digital.hmpps.messaging.telemetryProperties
 import uk.gov.justice.digital.hmpps.resourceloader.ResourceLoader
 import uk.gov.justice.digital.hmpps.service.EXT_REF_BOOKING_PREFIX
 import uk.gov.justice.digital.hmpps.service.EXT_REF_PREARRIVAL_PREFIX
-import uk.gov.justice.digital.hmpps.service.EXT_REF_REHABILITATIVE_ACTIVITY_PREFIX
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import uk.gov.justice.digital.hmpps.test.CustomMatchers.isSameTimeAs
 import java.time.LocalDate
@@ -64,8 +58,12 @@ internal class MessagingIntegrationTest @Autowired constructor(
     private val referralRepository: ReferralRepository,
     private val residenceRepository: ResidenceRepository,
     private val preferredResidenceRepository: PreferredResidenceRepository,
+    private val personRepository: PersonRepository,
+    private val eventRepository: EventRepository,
     private val staffRepository: StaffRepository,
-    private val nsiManagerRepository: NsiManagerRepository
+    private val nsiManagerRepository: NsiManagerRepository,
+    private val nsiStatusRepository: NsiStatusRepository,
+    private val nsiTypeRepository: NsiTypeRepository,
 ) {
 
     @MockitoBean
@@ -318,40 +316,10 @@ internal class MessagingIntegrationTest @Autowired constructor(
                 assertThat(nsiReferralContact.alert, equalTo(false))
             }
 
-        // And a rehabilitative activity NSI is created
-        nsiRepository.findAll()
-            .single { it.person.crn == event.message.crn() && it.type.code == NsiTypeCode.REHABILITATIVE_ACTIVITY.code }
-            .let { nsi ->
-                assertThat(
-                    nsi.notes,
-                    equalTo(
-                        """
-                        Arrived a day late due to rail strike. Informed in advance by COM.
-        
-                        For more details, click here: https://approved-premises-dev.hmpps.service.justice.gov.uk/applications/484b8b5e-6c3b-4400-b200-425bbe410713
-                        """.trimIndent()
-                    )
-                )
-                assertThat(nsi.person.id, equalTo(PersonGenerator.DEFAULT.id))
-                assertThat(nsi.event?.id, equalTo(PersonGenerator.EVENT.id))
-                assertThat(nsi.externalReference, equalTo(EXT_REF_REHABILITATIVE_ACTIVITY_PREFIX + details.bookingId))
-                assertThat(nsi.referralDate, equalTo(details.applicationSubmittedOn))
-                assertThat(nsi.status.code, equalTo(NsiStatusCode.ACTIVE.code))
-                assertNotNull(nsi.actualStartDate)
-                assertThat(nsi.actualStartDate, isSameTimeAs(details.arrivedAt))
-
-                val nsiReferralContact = contactRepository.findAll()
-                    .single { it.nsiId == nsi.id && it.type.code == ContactTypeCode.NSI_REFERRAL.code }
-                assertThat(nsiReferralContact.date, equalTo(details.arrivedAt.toLocalDate()))
-                assertThat(nsiReferralContact.eventId, equalTo(PersonGenerator.EVENT.id))
-                assertThat(nsiReferralContact.alert, equalTo(false))
-
-                val nsiStatusChangeContact =
-                    contactRepository.findAll().single { it.nsiId == nsi.id && it.type.code == "SMLI001" }
-                assertThat(nsiStatusChangeContact.date, equalTo(details.arrivedAt.toLocalDate()))
-                assertThat(nsiStatusChangeContact.eventId, equalTo(PersonGenerator.EVENT.id))
-                assertThat(nsiStatusChangeContact.alert, equalTo(false))
-            }
+        // And a rehabilitative activity NSI is not created
+        val rehabilitativeActivityNsis = nsiRepository.findAll()
+            .filter { it.person.crn == event.message.crn() && it.type.code == NsiTypeCode.REHABILITATIVE_ACTIVITY.code }
+        assertThat(rehabilitativeActivityNsis, empty())
 
         // And the main address is updated to be that of the approved premises - consequently any existing main address is made previous
         val addresses = personAddressRepository.findAll().filter { it.personId == PersonGenerator.DEFAULT.id }
@@ -424,6 +392,22 @@ internal class MessagingIntegrationTest @Autowired constructor(
         val event = prepEvent("person-departed", wireMockServer.port())
         val departure = ResourceLoader.file<EventDetails<PersonDeparted>>("approved-premises-person-departed")
         val details = departure.eventDetails
+        val person = personRepository.getByCrn(event.message.crn())
+        val existingRehabilitativeActivityNsis = nsiRepository.saveAll(
+            List(3) {
+                Nsi(
+                    person = personRepository.getByCrn(event.message.crn()),
+                    event = eventRepository.getEvent(person.id, details.eventNumber),
+                    type = nsiTypeRepository.getByCode(NsiTypeCode.REHABILITATIVE_ACTIVITY.code),
+                    status = nsiStatusRepository.getByCode(NsiStatusCode.ACTIVE.code),
+                    referralDate = details.departedAt.toLocalDate().minusDays(14),
+                    expectedStartDate = details.departedAt.toLocalDate().minusDays(7),
+                    expectedEndDate = details.departedAt.toLocalDate().plusDays(14),
+                    actualStartDate = details.departedAt.minusDays(it.toLong()),
+                    notes = "Existing rehabilitative activity NSI $it"
+                )
+            }
+        ).map { it.id }
 
         channelManager.getChannel(queueName).publishAndWait(event)
 
@@ -464,16 +448,22 @@ internal class MessagingIntegrationTest @Autowired constructor(
             assertThat(nsiTerminatedContact.date, equalTo(LocalDate.of(2023, 1, 16)))
         }
 
-        nsiRepository.findByPersonIdAndExternalReference(
-            departureContact.person.id,
-            EXT_REF_REHABILITATIVE_ACTIVITY_PREFIX + details.bookingId
-        ).let { nsi ->
-            assertNotNull(nsi)
-            assertNotNull(nsi!!.actualEndDate)
+        // Any existing RA NSIs are terminated
+        val rehabilitativeActivityNsis = nsiRepository.findAllById(existingRehabilitativeActivityNsis)
+        assertThat(rehabilitativeActivityNsis, hasSize(existingRehabilitativeActivityNsis.size))
+        rehabilitativeActivityNsis.forEach { nsi ->
+            assertNotNull(nsi.actualEndDate)
             assertThat(nsi.actualEndDate, isSameTimeAs(details.departedAt))
             assertThat(nsi.active, equalTo(false))
             assertThat(nsi.outcome!!.code, equalTo("GRAS1"))
             assertThat(nsi.status.code, equalTo("COMP"))
+
+            val nsiTerminatedContact = contactRepository.findAll()
+                .single { it.nsiId == nsi.id && it.type.code == ContactTypeCode.NSI_TERMINATED.code }
+            assertThat(nsiTerminatedContact.alert, equalTo(false))
+            assertThat(nsiTerminatedContact.notes, equalTo("NSI Terminated with Outcome: Description of GRAS1"))
+            assertThat(nsiTerminatedContact.eventId, equalTo(PersonGenerator.EVENT.id))
+            assertThat(nsiTerminatedContact.date, equalTo(LocalDate.of(2023, 1, 16)))
         }
 
         val addresses = personAddressRepository.findAll().filter { it.personId == PersonGenerator.DEFAULT.id }
