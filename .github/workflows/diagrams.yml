@@ -35,7 +35,7 @@ jobs:
           git add doc/tech-docs/source/images
 
       - name: Commit and push
-        uses: step-security/github-api-commit-action@7f410c8d8804b8a52bed57a9a4ce22ccaf117154 # v1.0.0
+        uses: grafana/github-api-commit-action@b1d81091e8480dd11fcea8bc1f0ab977a0376ca5 # v1.0.0
         with:
           success-if-no-changes: true
           commit-message: Generate images from diagrams
