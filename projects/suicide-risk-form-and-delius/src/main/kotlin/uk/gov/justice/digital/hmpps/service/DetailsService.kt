@@ -40,22 +40,25 @@ class DetailsService(
         val offenderManager = responsibleOfficer.offenderManager
         val prisonOffenderManager = responsibleOfficer.prisonOffenderManager
         val staff = (offenderManager?.staff ?: prisonOffenderManager?.staff).orNotFoundBy("CRN", crn)
-        val username = userRepository.findByStaffId(staff.id)?.username.orNotFoundBy("staffId", staff.id)
 
-        val ldapUser = ldapTemplate.findByUsername<LdapUser>(username)
-            ?: throw NotFoundException("User", "username", username)
-        requireNotNull(ldapUser.userHomeArea) { "No home area found for $username" }
+        val ldapUser = userRepository.findByStaffId(staff.id)?.let {
+            ldapTemplate.findByUsername<LdapUser>(it.username)
+        }
 
-        val defaultReplyAddress = ldapTemplate.findPreferenceByUsername(username, "replyAddress")?.toLongOrNull()
-        val officeLocations = officeLocationRepository.findAllByProviderCode(ldapUser.userHomeArea)
+        val addresses = ldapUser?.userHomeArea?.let { homeArea ->
+            val defaultReplyAddress =
+                ldapTemplate.findPreferenceByUsername(ldapUser.username, "replyAddress")?.toLongOrNull()
+
+            officeLocationRepository.findAllByProviderCode(ldapUser.userHomeArea).map {
+                it.toAddress().copy(status = if (it.id == defaultReplyAddress) "Default" else null)
+            }
+        } ?: emptyList()
 
         return SignAndSendResponse(
-            name = ldapUser.name(),
-            telephoneNumber = ldapUser.telephoneNumber,
-            emailAddress = ldapUser.email,
-            addresses = officeLocations.map {
-                it.toAddress().copy(status = if (it.id == defaultReplyAddress) "Default" else null)
-            },
+            name = ldapUser?.name() ?: staff.name(),
+            telephoneNumber = ldapUser?.telephoneNumber,
+            emailAddress = ldapUser?.email,
+            addresses = addresses,
         )
     }
 

@@ -10,6 +10,7 @@ object PersonGenerator {
 
     val DEFAULT_PERSON = generatePerson(crn = "A000001")
     val PERSON_NO_REGISTRATIONS = generatePerson(crn = "A000002")
+    val PERSON_NO_USER = generatePerson(crn = "A000003")
 
     val DS_ADDRESS_STATUS = ReferenceDataGenerator.generateDataset(Dataset.ADDRESS_STATUS)
     val DEFAULT_ADDRESS_STATUS = ReferenceDataGenerator.generateReferenceData(DS_ADDRESS_STATUS, "ADS1")
