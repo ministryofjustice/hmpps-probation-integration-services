@@ -130,20 +130,20 @@ internal class SingleAccommodationIntegrationTest @Autowired constructor(
         assertThat(response.restrictionMessage).isNull()
     }
 
-//    @Test
-//    fun `can retrieve restricted case for user crn with LAO fields`() {
-//        val user = UserGenerator.DEFAULT
-//        val person = PersonGenerator.RESTRICTED
-//
-//        val response = mockMvc.get("/case/${user.username}/${person.crn}") { withToken() }
-//            .andExpect { status { is2xxSuccessful() } }
-//            .andReturn().response.contentAsJson<Case>()
-//
-//        assertThat(response.userExcluded).isFalse()
-//        assertThat(response.userRestricted).isTrue()
-//        assertThat(response.exclusionMessage).isNull()
-//        assertThat(response.restrictionMessage).isNotNull()
-//    }
+    @Test
+    fun `can retrieve restricted case for user crn with LAO fields`() {
+        val user = UserGenerator.DEFAULT
+        val person = PersonGenerator.RESTRICTED
+
+        val response = mockMvc.get("/case/${user.username}/${person.crn}") { withToken() }
+            .andExpect { status { is2xxSuccessful() } }
+            .andReturn().response.contentAsJson<Case>()
+
+        assertThat(response.userExcluded).isFalse()
+        assertThat(response.userRestricted).isTrue()
+        assertThat(response.exclusionMessage).isNull()
+        assertThat(response.restrictionMessage).isNotNull()
+    }
 
     @Test
     fun `can't retrieve case for non existent user crn`() {

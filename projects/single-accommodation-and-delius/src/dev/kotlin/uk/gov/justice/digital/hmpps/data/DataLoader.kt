@@ -29,8 +29,6 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
         save(KeyDateGenerator.EXPECTED_RELEASE)
         save(RegistrationGenerator.DEFAULT)
         save(LimitedAccessGenerator.RESTRICTED_USER)
-        save(LimitedAccessGenerator.EXCLUDED_CASE)
-        save(LimitedAccessGenerator.RESTRICTED_CASE)
         save(LimitedAccessGenerator.generateExclusion(LimitedAccessGenerator.EXCLUDED_CASE))
         save(LimitedAccessGenerator.generateRestriction(LimitedAccessGenerator.RESTRICTED_CASE))
     }

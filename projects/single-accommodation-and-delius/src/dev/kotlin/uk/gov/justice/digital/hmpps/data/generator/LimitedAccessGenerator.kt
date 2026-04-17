@@ -10,12 +10,12 @@ object LimitedAccessGenerator {
     val EXCLUDED_USER = generateLaoUser(UserGenerator.DEFAULT.username, UserGenerator.DEFAULT.id)
     val RESTRICTED_USER = generateLaoUser("OtherUser")
     val EXCLUDED_CASE = generateLaoPerson(
-        id = IdGenerator.getAndIncrement(), crn = "E123456",
+        id = PersonGenerator.EXCLUDED.id, crn = "E123456",
         exclusionMessage = "This case is excluded.",
         restrictionMessage = null
     )
     val RESTRICTED_CASE = generateLaoPerson(
-        id = IdGenerator.getAndIncrement(), crn = "R123456",
+        id = PersonGenerator.RESTRICTED.id, crn = "R123456",
         exclusionMessage = null,
         restrictionMessage = "This case is restricted."
     )
