@@ -13,7 +13,6 @@ import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referra
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.outcome.ContactOutcome
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.ContactTypeCode
 import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.entity.*
-import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.entity.NsiStatusCode.ACTIVE
 import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.entity.NsiStatusCode.IN_RESIDENCE
 import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.entity.NsiTypeCode.APPROVED_PREMISES_RESIDENCE
 import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.entity.NsiTypeCode.REHABILITATIVE_ACTIVITY
@@ -71,7 +70,6 @@ class NsiService(
             val event = eventRepository.getEvent(person.id, details.eventNumber)
             val residence = referralService.personArrived(person, ap, details)
             event.createNsi(APPROVED_PREMISES_RESIDENCE, IN_RESIDENCE, details, details.residencyRef(), staff, team)
-            event.createNsi(REHABILITATIVE_ACTIVITY, ACTIVE, details, details.rehabilitativeActivityRef(), staff, team)
             contactService.createContact(
                 ContactDetails(
                     date = details.arrivedAt,
