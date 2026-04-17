@@ -28,6 +28,7 @@ object PersonGenerator {
         gender = ReferenceDataGenerator.GENDER_MALE,
         noms = "E0001AA",
         pnc = "2005/0000001E",
+        exclusionMessage = "This case is excluded.",
     )
     val RESTRICTED = Person(
         id = IdGenerator.getAndIncrement(),
@@ -40,6 +41,7 @@ object PersonGenerator {
         gender = ReferenceDataGenerator.GENDER_MALE,
         noms = "R0001AA",
         pnc = "2006/0000001R",
+        restrictionMessage = "This case is restricted.",
     )
 }
 
