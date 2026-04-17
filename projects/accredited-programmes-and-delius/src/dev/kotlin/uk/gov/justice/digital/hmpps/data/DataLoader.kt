@@ -65,6 +65,7 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
         save(TestData.TWO_THIRDS_CONTACT_TYPE)
         save(TestData.OTHER_CONTACT_TYPE)
         save(TestData.APPOINTMENT_CONTACT_TYPE)
+        save(TestData.IAPS_APPOINTMENT_CONTACT_TYPE)
         save(TestData.THREE_WAY_MEETING_TYPE)
         save(TestData.REFER_TO_MANAGER_CONTACT_TYPE)
         save(TestData.ENFORCEMENT_REVIEW_CONTACT_TYPE)
@@ -106,6 +107,7 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
         save(TestData.TWO_THIRDS_CONTACT)
         save(TestData.OTHER_CONTACT)
         save(TestData.TERMINATION_CONTACT)
+        save(TestData.LEGACY_APPOINTMENT)
         saveAll(TestData.APPOINTMENTS)
     }
 }

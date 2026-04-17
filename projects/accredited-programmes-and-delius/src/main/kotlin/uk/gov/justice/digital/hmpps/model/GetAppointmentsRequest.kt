@@ -8,6 +8,6 @@ data class GetAppointmentsRequest(
     val requirementIds: List<Long>,
     @Size(max = 500)
     val licenceConditionIds: List<Long>,
-    val fromDate: LocalDate,
-    val toDate: LocalDate,
+    val fromDate: LocalDate?,
+    val toDate: LocalDate?,
 )

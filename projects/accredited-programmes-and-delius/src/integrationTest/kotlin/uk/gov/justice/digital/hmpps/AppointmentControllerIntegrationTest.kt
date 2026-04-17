@@ -2,15 +2,15 @@ package uk.gov.justice.digital.hmpps
 
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
+import org.hamcrest.Matchers.*
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.EnumSource
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc
 import org.springframework.data.repository.findByIdOrNull
-import org.springframework.test.json.JsonCompareMode
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.delete
 import org.springframework.test.web.servlet.post
@@ -101,104 +101,86 @@ internal class AppointmentControllerIntegrationTest @Autowired constructor(
 
     @Test
     fun `get appointments success`() {
+        val requirementIds = REQUIREMENTS.map { it.id }
+        val licenceConditionIds = LICENCE_CONDITIONS.map { it.id }
+        val fromDate = LocalDate.of(2030, 1, 1)
+        val toDate = LocalDate.of(2030, 12, 31)
+
+        val response = mockMvc.post("/appointments/search") {
+            withToken()
+            json = GetAppointmentsRequest(
+                requirementIds = requirementIds,
+                licenceConditionIds = licenceConditionIds,
+                fromDate = fromDate,
+                toDate = toDate,
+            )
+        }.andExpect { status { isOk() } }.andReturn().response.contentAsJson<GetAppointmentsResponse>()
+
+        val appointments = response.content.getValue("A000001")
+        assertThat(appointments).isNotEmpty
+        assertThat(appointments).allSatisfy { appointment ->
+            assertThat(appointment.date).isBetween(fromDate, toDate)
+            assertThat(listOfNotNull(appointment.requirementId, appointment.licenceConditionId)).hasSize(1)
+        }
+        assertThat(appointments.mapNotNull { it.requirementId }).allMatch(requirementIds::contains)
+        assertThat(appointments.mapNotNull { it.licenceConditionId }).allMatch(licenceConditionIds::contains)
+
+        with(appointments.first()) {
+            val expected = contactRepository.findByIdOrNull(id)!!
+            assertThat(reference).isEqualTo(expected.externalReference?.takeLast(36))
+            assertThat(crn).isEqualTo(expected.person.crn)
+            assertThat(requirementId).isEqualTo(expected.requirement?.id)
+            assertThat(licenceConditionId).isEqualTo(expected.licenceCondition?.id)
+            assertThat(date).isEqualTo(expected.date)
+            assertThat(startTime).isEqualTo(expected.startTime)
+            assertThat(endTime).isEqualTo(expected.endTime)
+            assertThat(createdAt).isEqualTo(expected.createdDatetime)
+            assertThat(updatedAt).isEqualTo(expected.lastUpdatedDatetime)
+            assertThat(type.code).isEqualTo(expected.type.code)
+            assertThat(type.description).isEqualTo(expected.type.description)
+            assertThat(outcome?.code).isEqualTo(expected.outcome?.code)
+            assertThat(outcome?.description).isEqualTo(expected.outcome?.description)
+            assertThat(location?.code).isEqualTo(expected.location?.code)
+            assertThat(location?.description).isEqualTo(expected.location?.description)
+            assertThat(staff.code).isEqualTo(expected.staff.code)
+            assertThat(staff.name.forename).isEqualTo(expected.staff.forename)
+            assertThat(staff.name.surname).isEqualTo(expected.staff.surname)
+            assertThat(team.code).isEqualTo(expected.team.code)
+            assertThat(team.description).isEqualTo(expected.team.description)
+            assertThat(notes).isEqualTo(expected.notes)
+            assertThat(sensitive).isEqualTo(expected.sensitive)
+        }
+    }
+
+    @Test
+    fun `get appointments without start date`() {
         mockMvc.post("/appointments/search") {
             withToken()
             json = GetAppointmentsRequest(
-                requirementIds = TestData.REQUIREMENTS.map { it.id },
-                licenceConditionIds = TestData.LICENCE_CONDITIONS.map { it.id },
-                fromDate = LocalDate.of(2030, 1, 1),
-                toDate = LocalDate.of(2030, 12, 31),
+                requirementIds = REQUIREMENTS.map { it.id },
+                licenceConditionIds = LICENCE_CONDITIONS.map { it.id },
+                fromDate = null,
+                toDate = LocalDate.of(2030, 1, 1),
             )
         }.andExpect {
             status { isOk() }
-            content {
-                json(
-                    """
-                    {
-                      "content": {
-                        "A000001": [
-                          {
-                            "crn": "A000001",
-                            "reference": "${TestData.APPOINTMENTS[0].externalReference?.takeLast(36)}",
-                            "requirementId": ${TestData.REQUIREMENTS[0].id},
-                            "date": "${TestData.APPOINTMENTS[0].date}",
-                            "staff": {
-                              "name": {
-                                "forename": "Forename",
-                                "surname": "Surname"
-                              },
-                              "code": "STAFF01"
-                            },
-                            "team": {
-                              "code": "TEAM01",
-                              "description": "Test Team"
-                            },
-                            "notes": "Some appointment notes",
-                            "sensitive": false
-                          },
-                          {
-                            "crn": "A000001",
-                            "reference": "${TestData.APPOINTMENTS[2].externalReference?.takeLast(36)}",
-                            "licenceConditionId": ${TestData.LICENCE_CONDITIONS[0].id},
-                            "date": "${TestData.APPOINTMENTS[2].date}",
-                            "staff": {
-                              "name": {
-                                "forename": "Forename",
-                                "surname": "Surname"
-                              },
-                              "code": "STAFF01"
-                            },
-                            "team": {
-                              "code": "TEAM01",
-                              "description": "Test Team"
-                            },
-                            "notes": "Some appointment notes",
-                            "sensitive": false
-                          },
-                          {
-                            "crn": "A000001",
-                            "reference": "${TestData.APPOINTMENTS[1].externalReference?.takeLast(36)}",
-                            "requirementId": ${TestData.REQUIREMENTS[1].id},
-                            "date": "${TestData.APPOINTMENTS[1].date}",
-                            "staff": {
-                              "name": {
-                                "forename": "Forename",
-                                "surname": "Surname"
-                              },
-                              "code": "STAFF01"
-                            },
-                            "team": {
-                              "code": "TEAM01",
-                              "description": "Test Team"
-                            },
-                            "notes": "Some appointment notes",
-                            "sensitive": false
-                          },
-                          {
-                            "crn": "A000001",
-                            "reference": "${TestData.APPOINTMENTS[3].externalReference?.takeLast(36)}",
-                            "licenceConditionId": ${TestData.LICENCE_CONDITIONS[1].id},
-                            "date": "${TestData.APPOINTMENTS[3].date}",
-                            "staff": {
-                              "name": {
-                                "forename": "Forename",
-                                "surname": "Surname"
-                              },
-                              "code": "STAFF01"
-                            },
-                            "team": {
-                              "code": "TEAM01",
-                              "description": "Test Team"
-                            },
-                            "notes": "Some appointment notes",
-                            "sensitive": false
-                          }
-                        ]
-                      }
-                    }
-                    """.trimIndent(), JsonCompareMode.STRICT
-                )
-            }
+            jsonPath("content.A000001[*].date", everyItem(lessThanOrEqualTo("2030-01-01")))
+        }
+    }
+
+    @Test
+    fun `get appointments without end date`() {
+        mockMvc.post("/appointments/search") {
+            withToken()
+            json = GetAppointmentsRequest(
+                requirementIds = REQUIREMENTS.map { it.id },
+                licenceConditionIds = LICENCE_CONDITIONS.map { it.id },
+                fromDate = LocalDate.of(2030, 1, 2),
+                toDate = null,
+            )
+        }.andExpect {
+            status { isOk() }
+            jsonPath("content.A000001[*].date", everyItem(greaterThanOrEqualTo("2030-01-02")))
         }
     }
 

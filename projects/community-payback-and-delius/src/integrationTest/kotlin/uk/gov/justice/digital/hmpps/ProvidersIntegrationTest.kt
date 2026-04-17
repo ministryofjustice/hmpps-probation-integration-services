@@ -1,13 +1,14 @@
 package uk.gov.justice.digital.hmpps
 
 import org.assertj.core.api.Assertions.assertThat
+import org.hamcrest.Matchers.hasItem
+import org.hamcrest.Matchers.not
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import uk.gov.justice.digital.hmpps.advice.ErrorResponse
 import uk.gov.justice.digital.hmpps.data.generator.StaffGenerator
 import uk.gov.justice.digital.hmpps.data.generator.TeamGenerator
@@ -17,6 +18,7 @@ import uk.gov.justice.digital.hmpps.model.ProvidersResponse
 import uk.gov.justice.digital.hmpps.model.SupervisorsResponse
 import uk.gov.justice.digital.hmpps.model.TeamsResponse
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
+import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.jsonPath
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 import java.time.LocalDate
 
@@ -93,6 +95,26 @@ class ProvidersIntegrationTest @Autowired constructor(
     }
 
     @Test
+    fun `can set maximum for overdueDays`() {
+        mockMvc
+            .get("/providers/N01/teams/N01UPW/projects?overdueDays=8") { withToken() }
+            .andExpect {
+                content {
+                    jsonPath("content.size()", 2)
+                    jsonPath("content[*].oldestOverdueInDays", hasItem(7))
+                }
+            }
+        mockMvc
+            .get("/providers/N01/teams/N01UPW/projects?overdueDays=6") { withToken() }
+            .andExpect {
+                content {
+                    jsonPath("content.size()", 2)
+                    jsonPath("content[*].oldestOverdueInDays", not(hasItem(7)))
+                }
+            }
+    }
+
+    @Test
     fun `can sort projects by name`() {
         mockMvc
             .get("/providers/N01/teams/N01UPW/projects?typeCode=I&sort=name,asc") { withToken() }
@@ -150,27 +172,28 @@ class ProvidersIntegrationTest @Autowired constructor(
                 }
             }
         mockMvc
-            .getSessions("N01", "N01UPW", mapOf("pageSize" to 1))
+            .getSessions("N01", "N01UPW", mapOf("size" to 1))
             .andExpect {
                 content {
                     jsonPath("content.size()", 1)
-                    jsonPath("sessions.size()", 1)
+                    jsonPath("sessions.size()", 2)
                     jsonPath("page.number", 0)
                     jsonPath("page.size", 1)
                     jsonPath("page.totalElements", 2)
-                    jsonPath("page.totalPages", 1)
+                    jsonPath("page.totalPages", 2)
                 }
             }
     }
 
     @Test
     fun `can sort sessions by date`() {
+        val expected = listOf(LocalDate.now().plusDays(1).toString(), LocalDate.now().toString())
         mockMvc
             .getSessions("N01", "N01UPW", mapOf("sort" to "date,desc"))
-            .andExpect { content { jsonPath("content[*].date", listOf(LocalDate.now().plusDays(1), LocalDate.now())) } }
+            .andExpect { content { jsonPath("content[*].date", expected) } }
         mockMvc
             .getSessions("N01", "N01UPW", mapOf("sort" to "date,asc"))
-            .andExpect { content { jsonPath("content[*].date", listOf(LocalDate.now(), LocalDate.now().plusDays(1))) } }
+            .andExpect { content { jsonPath("content[*].date", expected.reversed()) } }
     }
 
     @Test
@@ -187,10 +210,10 @@ class ProvidersIntegrationTest @Autowired constructor(
     fun `can sort sessions by outcome count`() {
         mockMvc
             .getSessions("N01", "N01UPW", mapOf("sort" to "outcomeCount,desc"))
-            .andExpect { content { jsonPath("content[*].date", listOf(1, 0)) } }
+            .andExpect { content { jsonPath("content[*].outcomeCount", listOf(2, 1)) } }
         mockMvc
             .getSessions("N01", "N01UPW", mapOf("sort" to "outcomeCount,asc"))
-            .andExpect { content { jsonPath("content[*].date", listOf(0, 1)) } }
+            .andExpect { content { jsonPath("content[*].outcomeCount", listOf(1, 2)) } }
     }
 
     @Test
@@ -206,22 +229,12 @@ class ProvidersIntegrationTest @Autowired constructor(
     @Test
     fun `can filter sessions by project type codes`() {
         mockMvc
-            .getSessions("N01", "N01UPW", mapOf("typeCode" to "G"))
-            .andExpect { content { jsonPath("content.size()", 2) } }
-
-        mockMvc
             .getSessions("N01", "N01UPW", mapOf("typeCode" to "I"))
-            .andExpect { content { jsonPath("content.size()", 0) } }
-    }
-
-    @Test
-    fun `can filter sessions by project type codes and overdueDays`() {
-        mockMvc
-            .getSessions("N01", "N01UPW", mapOf("overdueDays" to 8))
-            .andExpect { content { jsonPath("content.size()", 3) } }
-        mockMvc
-            .getSessions("N01", "N01UPW", mapOf("overdueDays" to 6))
             .andExpect { content { jsonPath("content.size()", 2) } }
+
+        mockMvc
+            .getSessions("N01", "N01UPW", mapOf("typeCode" to "G"))
+            .andExpect { content { jsonPath("content.size()", 0) } }
     }
 
     @Test
