@@ -34,4 +34,19 @@ object ResponsibleOfficerGenerator {
             offenderManager = null,
             prisonOffenderManager = DEFAULT_PRISON_OFFENDER_MANAGER,
         )
+
+    val NO_USER_OFFENDER_MANAGER = OffenderManager(
+        id = IdGenerator.getAndIncrement(),
+        person = PersonGenerator.PERSON_NO_USER,
+        staff = StaffGenerator.OFFICER_NO_USER,
+    )
+
+    val NO_USER_RESPONSIBLE_OFFICER =
+        ResponsibleOfficer(
+            id = IdGenerator.getAndIncrement(),
+            person = PersonGenerator.PERSON_NO_USER,
+            offenderManager = NO_USER_OFFENDER_MANAGER,
+            prisonOffenderManager = null,
+            endDate = null
+        )
 }

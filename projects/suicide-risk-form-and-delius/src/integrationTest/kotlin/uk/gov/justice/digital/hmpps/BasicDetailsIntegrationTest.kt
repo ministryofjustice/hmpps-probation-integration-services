@@ -4,17 +4,14 @@ import com.github.tomakehurst.wiremock.WireMockServer
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc
 import org.springframework.ldap.core.LdapTemplate
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
-import uk.gov.justice.digital.hmpps.data.generator.DocumentGenerator
-import uk.gov.justice.digital.hmpps.data.generator.OfficeLocationGenerator
-import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
-import uk.gov.justice.digital.hmpps.data.generator.ResponsibleOfficerGenerator
-import uk.gov.justice.digital.hmpps.data.generator.UserGenerator
+import uk.gov.justice.digital.hmpps.data.generator.*
 import uk.gov.justice.digital.hmpps.integrations.delius.LdapUser
+import uk.gov.justice.digital.hmpps.integrations.delius.name
 import uk.gov.justice.digital.hmpps.integrations.delius.toAddress
 import uk.gov.justice.digital.hmpps.ldap.findByUsername
 import uk.gov.justice.digital.hmpps.model.*
@@ -130,6 +127,27 @@ internal class BasicDetailsIntegrationTest @Autowired constructor(
                         postcode = officeLocation.postcode
                     )
                 )
+            )
+        )
+    }
+
+    @Test
+    fun `returns empty fields for sign and send endpoint when staff has no user record`() {
+        val person = PersonGenerator.PERSON_NO_USER
+        val staff = StaffGenerator.OFFICER_NO_USER
+
+        val response = mockMvc.get("/sign-and-send/${person.crn}") {
+            withToken()
+        }
+            .andExpect { status { is2xxSuccessful() } }
+            .andReturn().response.contentAsJson<SignAndSendResponse>()
+
+        assertThat(response).isEqualTo(
+            SignAndSendResponse(
+                name = staff.name(),
+                telephoneNumber = null,
+                emailAddress = null,
+                addresses = emptyList()
             )
         )
     }
