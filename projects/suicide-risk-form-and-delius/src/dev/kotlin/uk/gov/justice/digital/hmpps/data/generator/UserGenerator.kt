@@ -39,4 +39,13 @@ object StaffGenerator {
         surname = "Officer 2",
         user = null
     )
+
+    val OFFICER_NO_USER = Staff(
+        id = IdGenerator.getAndIncrement(),
+        code = "N00A003",
+        firstName = "Probation",
+        middleName = "PO",
+        surname = "Officer No User",
+        user = null
+    )
 }
