@@ -81,7 +81,7 @@ jobs:
         id: app-token
         with:
           repositories: hmpps-probation-integration-services,hmpps-probation-integration-e2e-tests
-          app-id: ${{ secrets.BOT_APP_ID }}
+          client-id: ${{ secrets.BOT_APP_ID }}
           private-key: ${{ secrets.BOT_APP_PRIVATE_KEY }}
 
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
@@ -285,7 +285,7 @@ jobs:
         id: app-token
         with:
           repositories: cloud-platform-environments
-          app-id: ${{ secrets.BOT_EXTERNAL_REPOS_APP_ID }}
+          client-id: ${{ secrets.BOT_EXTERNAL_REPOS_APP_ID }}
           private-key: ${{ secrets.BOT_EXTERNAL_REPOS_APP_PRIVATE_KEY }}
 
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
@@ -394,7 +394,7 @@ jobs:
         id: app-token
         with:
           repositories: cloud-platform-environments
-          app-id: ${{ secrets.BOT_EXTERNAL_REPOS_APP_ID }}
+          client-id: ${{ secrets.BOT_EXTERNAL_REPOS_APP_ID }}
           private-key: ${{ secrets.BOT_EXTERNAL_REPOS_APP_PRIVATE_KEY }}
 
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
