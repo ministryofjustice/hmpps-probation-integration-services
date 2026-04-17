@@ -40,17 +40,19 @@ class DetailsService(
         val offenderManager = responsibleOfficer.offenderManager
         val prisonOffenderManager = responsibleOfficer.prisonOffenderManager
         val staff = (offenderManager?.staff ?: prisonOffenderManager?.staff).orNotFoundBy("CRN", crn)
-        val (ldapUser, addresses) = userRepository.findByStaffId(staff.id)?.let { user ->
-            val ldapUser = ldapTemplate.findByUsername<LdapUser>(user.username)
+
+        val ldapUser = userRepository.findByStaffId(staff.id)?.let {
+            ldapTemplate.findByUsername<LdapUser>(it.username)
+        }
+
+        val addresses = ldapUser?.userHomeArea?.let { homeArea ->
             val defaultReplyAddress =
-                ldapTemplate.findPreferenceByUsername(user.username, "replyAddress")?.toLongOrNull()
-            val addresses = if (ldapUser?.userHomeArea != null) {
-                officeLocationRepository.findAllByProviderCode(ldapUser.userHomeArea).map {
-                    it.toAddress().copy(status = if (it.id == defaultReplyAddress) "Default" else null)
-                }
-            } else emptyList()
-            Pair(ldapUser, addresses)
-        } ?: Pair(null, emptyList())
+                ldapTemplate.findPreferenceByUsername(ldapUser.username, "replyAddress")?.toLongOrNull()
+
+            officeLocationRepository.findAllByProviderCode(ldapUser.userHomeArea).map {
+                it.toAddress().copy(status = if (it.id == defaultReplyAddress) "Default" else null)
+            }
+        } ?: emptyList()
 
         return SignAndSendResponse(
             name = ldapUser?.name() ?: staff.name(),
