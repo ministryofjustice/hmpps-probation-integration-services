@@ -463,8 +463,9 @@ object ContactGenerator {
 fun generateBorough(
     code: String,
     description: String = "Description of $code",
+    provider: Provider = DEFAULT_PROVIDER,
     id: Long = IdGenerator.getAndIncrement(),
-) = Borough(code, description, id)
+) = Borough(code, description, provider, id)
 
 fun generateDistrict(
     code: String,

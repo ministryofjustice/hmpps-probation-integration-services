@@ -26,6 +26,7 @@ import uk.gov.justice.digital.hmpps.exception.NotFoundException.Companion.orNotF
 import uk.gov.justice.digital.hmpps.integrations.delius.caseload.CaseloadItem
 import uk.gov.justice.digital.hmpps.integrations.delius.caseload.CaseloadRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.caseload.TeamCaseloadItem
+import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.BoroughRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.EnforcementAppointment
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.LdapUser
@@ -58,6 +59,7 @@ class UserService(
     private val userAccessService: UserAccessService,
     private val contactRepository: ContactRepository,
     private val probationAreaUserRepository: ProbationAreaUserRepository,
+    private val boroughRepository: BoroughRepository,
     private val ldapTemplate: LdapTemplate,
     private val deliusUserAspect: DeliusUserAspect
 ) {
@@ -77,7 +79,10 @@ class UserService(
         surname = surname,
         email = email,
         enabled = enabled,
-        roles = getUserRoles(dn)
+        roles = getUserRoles(dn),
+        staff = getUserPdus(userId)?.let { pdus ->
+            StaffDetails(pdus.map { ProbationDeliveryUnit(it.code, it.description) })
+        }
     )
 
     private fun getUserRoles(name: javax.naming.Name): List<String> = ldapTemplate.search(
@@ -87,6 +92,10 @@ class UserService(
             .filter("(|(objectclass=NDRole)(objectclass=NDRoleAssociation))"),
         AttributesMapper { it["cn"].get().toString() }
     )
+
+    private fun getUserPdus(userId: Long) = userRepository.findUserById(userId).staff?.let {
+        boroughRepository.findAllByProvider_Id(it.provider.id)
+    }
 
     @Transactional
     fun getUserCaseload(username: String, pageable: Pageable): StaffCaseload {

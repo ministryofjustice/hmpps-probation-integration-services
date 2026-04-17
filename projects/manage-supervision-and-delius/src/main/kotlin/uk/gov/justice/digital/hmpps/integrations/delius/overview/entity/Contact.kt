@@ -980,7 +980,15 @@ class Borough(
 
     val description: String,
 
+    @ManyToOne
+    @JoinColumn(name = "probation_area_id")
+    val provider: Provider,
+
     @Id
     @Column(name = "borough_id")
     val id: Long
 )
+
+interface BoroughRepository : CrudRepository<Borough, Long> {
+    fun findAllByProvider_Id(providerId: Long): List<Borough>
+}

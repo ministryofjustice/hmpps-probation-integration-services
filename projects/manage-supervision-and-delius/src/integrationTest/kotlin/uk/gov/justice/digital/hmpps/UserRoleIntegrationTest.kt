@@ -22,6 +22,7 @@ class UserRoleIntegrationTest : IntegrationTestBase() {
             .andReturn().response.contentAsJson<UserDetails>()
 
         assertEquals(listOf("APBT001", "MAABT001"), response.roles)
+        assertEquals(2, response.staff!!.probationDeliveryUnits.size)
     }
 
     @Test

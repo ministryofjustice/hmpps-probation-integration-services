@@ -14,7 +14,7 @@ import java.time.ZonedDateTime
 
 object OffenderManagerGenerator {
 
-    val BOROUGH = Borough("LTS_ALL", "Leicestershire All", IdGenerator.getAndIncrement())
+    val BOROUGH = Borough("LTS_ALL", "Leicestershire All", DEFAULT_PROVIDER, IdGenerator.getAndIncrement())
     val DISTRICT = District("LTS_ALL", "Leicestershire All", BOROUGH, IdGenerator.getAndIncrement())
     val TEAM = Team(
         123,
