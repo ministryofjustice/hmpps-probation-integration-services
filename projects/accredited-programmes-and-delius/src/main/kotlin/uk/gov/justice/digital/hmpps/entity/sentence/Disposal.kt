@@ -43,9 +43,11 @@ class Disposal(
     val enteredExpectedEndDate: LocalDate?,
 
     @OneToMany(mappedBy = "disposal")
+    @SQLRestriction("active_flag = 1")
     val licenceConditions: List<LicenceCondition>,
 
     @OneToMany(mappedBy = "disposal")
+    @SQLRestriction("active_flag = 1")
     val requirements: List<Requirement>,
 
     @OneToOne(mappedBy = "disposal")

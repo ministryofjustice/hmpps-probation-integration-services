@@ -14,13 +14,14 @@ object LicenceConditionGenerator {
         mainCategory: LicenceConditionMainCategory,
         subCategory: ReferenceData? = null,
         startDate: ZonedDateTime = ZonedDateTime.of(2025, 1, 1, 12, 0, 0, 0, EuropeLondon),
+        active: Boolean = true,
     ) = LicenceCondition(
         id = id(),
         mainCategory = mainCategory,
         subCategory = subCategory,
         disposal = disposal,
         startDate = startDate,
-        active = true,
+        active = active,
         softDeleted = false,
     )
 }

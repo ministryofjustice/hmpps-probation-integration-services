@@ -15,7 +15,8 @@ object RequirementGenerator {
         subCategory: ReferenceData? = null,
         startDate: ZonedDateTime = ZonedDateTime.of(2025, 1, 1, 12, 0, 0, 0, EuropeLondon),
         terminationDate: ZonedDateTime? = null,
-        pendingTransfer: Boolean = false
+        pendingTransfer: Boolean = false,
+        active: Boolean = true,
     ) = Requirement(
         id = id(),
         mainCategory = mainCategory,
@@ -24,7 +25,7 @@ object RequirementGenerator {
         startDate = startDate,
         terminationDate = terminationDate,
         pendingTransfer = pendingTransfer,
-        active = true,
+        active = active,
         softDeleted = false,
     )
 }
