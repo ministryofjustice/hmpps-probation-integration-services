@@ -2,7 +2,6 @@ package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import org.springframework.web.multipart.MultipartFile
 import uk.gov.justice.digital.hmpps.api.model.contact.ContactTypeResponse
 import uk.gov.justice.digital.hmpps.api.model.contact.ContactTypesResponse
 import uk.gov.justice.digital.hmpps.api.model.contact.CreateContact
@@ -14,7 +13,6 @@ import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.exception.InvalidRequestException
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
-import uk.gov.justice.digital.hmpps.exception.NotFoundException.Companion.orNotFoundBy
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractionCode
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.ContactTypeRequirementTypeRepository
@@ -161,10 +159,8 @@ class ContactLogService(
     )
 
     @Transactional
-    fun updateContactWithDocuments(
-        name: String,
+    fun updateContact(
         contactId: Long,
-        file: MultipartFile?,
         request: UpdateContact
     ) {
         val contact = contactRepository.getContact(contactId)
@@ -173,10 +169,8 @@ class ContactLogService(
             ?: throw InvalidRequestException("Contact type ${contact.type.code} is not valid for update")
         contact.date = request.dateTime.toLocalDate()
         contact.startTime = request.dateTime
-        file?.let {
-            documentsService.addDocument(name, contact.person.crn, contactId, file)
-        }
         request.notes?.let { contact.appendNotes(it) }
+        if ((request.sensitiveFlag != null) && (!request.sensitiveFlag && contact.sensitive!!)) throw InvalidRequestException("Cannot un-flag a sensitive contact")
         if (request.sensitiveFlag != null && request.sensitiveFlag) contact.sensitive = true
         contactRepository.save(contact)
     }

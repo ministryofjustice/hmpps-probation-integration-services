@@ -5,11 +5,8 @@ import jakarta.validation.Valid
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
 import org.springframework.http.HttpStatus
-import org.springframework.http.MediaType
 import org.springframework.security.access.prepost.PreAuthorize
-import org.springframework.security.core.Authentication
 import org.springframework.web.bind.annotation.*
-import org.springframework.web.multipart.MultipartFile
 import uk.gov.justice.digital.hmpps.api.model.contact.CreateContact
 import uk.gov.justice.digital.hmpps.api.model.contact.UpdateContact
 import uk.gov.justice.digital.hmpps.aspect.WithDeliusUser
@@ -48,12 +45,11 @@ class ContactController(
         filterDueDate
     )
 
-    @PatchMapping("/{contactId}", consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
+    @PatchMapping("/{contactId}")
     @WithDeliusUser
     fun updateContact(
-        auth: Authentication,
         @PathVariable contactId: Long,
-        @RequestPart("files") file: MultipartFile?,
-        @RequestPart("request", required = true) @Valid request: UpdateContact
-    ) = contactLogService.updateContactWithDocuments(auth.name, contactId, file, request)
+        @RequestBody request: UpdateContact,
+    ) = contactLogService.updateContact(contactId, request)
+
 }

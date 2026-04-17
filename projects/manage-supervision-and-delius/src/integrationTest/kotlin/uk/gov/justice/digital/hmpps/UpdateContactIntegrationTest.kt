@@ -1,81 +1,32 @@
 package uk.gov.justice.digital.hmpps
 
-import org.hamcrest.MatcherAssert.assertThat
-import org.hamcrest.Matchers.equalTo
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
-import org.mockito.kotlin.any
-import org.mockito.kotlin.eq
-import org.mockito.kotlin.verify
-import org.springframework.http.MediaType
-import org.springframework.mock.web.MockMultipartFile
-import org.springframework.test.context.bean.override.mockito.MockitoBean
+import org.springframework.test.web.servlet.patch
 import uk.gov.justice.digital.hmpps.api.model.contact.UpdateContact
-import uk.gov.justice.digital.hmpps.service.DocumentsService
-import org.springframework.test.web.servlet.multipart
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator
+import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.json
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
-import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.objectMapper
 import java.time.ZonedDateTime
 
 class UpdateContactIntegrationTest : IntegrationTestBase() {
-
-    @MockitoBean
-    lateinit var documentsService: DocumentsService
 
     private val contact = ContactGenerator.UPDATABLE_CONTACT
     private val nonUpdatableContact = ContactGenerator.NON_UPDATABLE_CONTACT
 
     @Test
-    fun `update contact without files returns 200`() {
+    fun `update contact returns 200`() {
         val request = UpdateContact(
             dateTime = ZonedDateTime.now(),
             notes = "Updated notes",
             sensitiveFlag = null
         )
 
-        val requestPart = MockMultipartFile(
-            "request", "", MediaType.APPLICATION_JSON_VALUE,
-            objectMapper.writeValueAsBytes(request)
-        )
-
-        mockMvc.multipart("/contact/${contact.id}") {
+        mockMvc.patch("/contact/${contact.id}") {
             withToken()
-            file(requestPart)
-            with { request ->
-                request.method = "PATCH"
-                request
-            }
+            json = request
         }
             .andExpect { status { isOk() } }
-    }
-
-    @Test
-    fun `update contact with a file returns 200`() {
-        val request = UpdateContact(
-            dateTime = ZonedDateTime.now(),
-            notes = "Notes with file",
-            sensitiveFlag = null
-        )
-
-        val filePart = MockMultipartFile(
-            "files", "test.pdf", MediaType.APPLICATION_PDF_VALUE, "pdf content".toByteArray()
-        )
-        val requestPart = MockMultipartFile(
-            "request", "", MediaType.APPLICATION_JSON_VALUE,
-            objectMapper.writeValueAsBytes(request)
-        )
-
-        mockMvc.multipart("/contact/${contact.id}") {
-            withToken()
-            file(filePart)
-            file(requestPart)
-            with { request ->
-                request.method = "PATCH"
-                request
-            }
-        }
-            .andExpect { status { isOk() } }
-        verify(documentsService).addDocument(any(), eq(contact.person.crn), eq(contact.id), eq(filePart))
     }
 
     @Test
@@ -86,18 +37,9 @@ class UpdateContactIntegrationTest : IntegrationTestBase() {
             sensitiveFlag = null
         )
 
-        val requestPart = MockMultipartFile(
-            "request", "", MediaType.APPLICATION_JSON_VALUE,
-            objectMapper.writeValueAsBytes(request)
-        )
-
-        mockMvc.multipart("/contact/999999") {
+        mockMvc.patch("/contact/987322642") {
             withToken()
-            file(requestPart)
-            with { request ->
-                request.method = "PATCH"
-                request
-            }
+            json = request
         }
             .andExpect { status { isNotFound() } }
     }
@@ -111,18 +53,10 @@ class UpdateContactIntegrationTest : IntegrationTestBase() {
             sensitiveFlag = null
         )
 
-        val requestPart = MockMultipartFile(
-            "request", "", MediaType.APPLICATION_JSON_VALUE,
-            objectMapper.writeValueAsBytes(request)
-        )
 
-        mockMvc.multipart("/contact/${nonUpdatableContact.id}") {
+        mockMvc.patch("/contact/${nonUpdatableContact.id}") {
             withToken()
-            file(requestPart)
-            with { request ->
-                request.method = "PATCH"
-                request
-            }
+            json = request
         }
             .andExpect { status { isBadRequest() } }
     }
@@ -135,46 +69,43 @@ class UpdateContactIntegrationTest : IntegrationTestBase() {
             sensitiveFlag = null
         )
 
-        val requestPart = MockMultipartFile(
-            "request", "", MediaType.APPLICATION_JSON_VALUE,
-            objectMapper.writeValueAsBytes(request)
-        )
 
-        mockMvc.multipart("/contact/${contact.id}") {
+        mockMvc.patch("/contact/${contact.id}") {
             withToken()
-            file(requestPart)
-            with { request ->
-                request.method = "PATCH"
-                request
-            }
+            json = request
         }
             .andExpect { status { isOk() } }
 
         val savedContact = contactRepository.findById(contact.id).get()
-        assertThat(savedContact.notes?.contains("Appended note"), equalTo(true))
+        assertThat(savedContact.notes!!).contains("Appended note")
     }
 
     @Test
-    fun `sensitive flag is updated`() {
+    fun `sensitive flag is updated but wont clear existing value if set to true`() {
         val request = UpdateContact(
             dateTime = ZonedDateTime.now(),
             notes = null,
             sensitiveFlag = true
         )
-        val requestPart = MockMultipartFile(
-            "request", "", MediaType.APPLICATION_JSON_VALUE,
-            objectMapper.writeValueAsBytes(request)
-        )
-        mockMvc.multipart("/contact/${contact.id}") {
+
+        mockMvc.patch("/contact/${contact.id}") {
             withToken()
-            file(requestPart)
-            with { request ->
-                request.method = "PATCH"
-                request
-            }
+            json = request
         }
             .andExpect { status { isOk() } }
         val savedContact = contactRepository.findById(contact.id).get()
-        assertThat(savedContact.sensitive, equalTo(true))
+        assertThat(savedContact.sensitive!!).isTrue
+
+        val request2 = UpdateContact(
+            dateTime = ZonedDateTime.now(),
+            notes = null,
+            sensitiveFlag = false
+        )
+
+        mockMvc.patch("/contact/${contact.id}") {
+            withToken()
+            json = request2
+        }
+            .andExpect { status { isBadRequest() } }
     }
 }
