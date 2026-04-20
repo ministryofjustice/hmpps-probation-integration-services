@@ -39,7 +39,6 @@ class ContactLogService(
     private val contactTypeRequirementTypeRepository: ContactTypeRequirementTypeRepository,
     private val notifier: Notifier,
     private val mappaCategoryResolverService: MappaCategoryResolverService,
-    private val documentsService: DocumentsService
 ) : AuditableService(auditedInteractionService) {
 
     @Transactional
@@ -170,10 +169,10 @@ class ContactLogService(
         contact.date = request.dateTime.toLocalDate()
         contact.startTime = request.dateTime
         request.notes?.let { contact.appendNotes(it) }
-        if ((request.sensitiveFlag != null) && (!request.sensitiveFlag && contact.sensitive!!)) throw InvalidRequestException(
-            "Cannot un-flag a sensitive contact"
-        )
-        if (request.sensitiveFlag != null && request.sensitiveFlag) contact.sensitive = true
+        request.sensitiveFlag?.let {
+            require(it && contact.sensitive ?: false) { "Cannot un-flag a sensitive contact" }
+            contact.sensitive = true
+        }
         contactRepository.save(contact)
     }
 }
