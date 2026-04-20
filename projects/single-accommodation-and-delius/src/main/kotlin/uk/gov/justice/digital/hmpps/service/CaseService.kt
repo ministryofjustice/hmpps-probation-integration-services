@@ -16,7 +16,7 @@ class CaseService(
     private val userAccessService: UserAccessService
 ) {
     fun getCase(username: String, crn: String): Case {
-        val person = personRepository.findByCrn(crn).orNotFoundBy("person", crn)
+        val person = personRepository.findByCrn(crn).orNotFoundBy("CRN", crn)
 
         val manager = personManagerRepository.findFirstByPersonIdAndActiveTrueAndSoftDeletedFalse(person.id)
             .orNotFoundBy("personId", person.id)
