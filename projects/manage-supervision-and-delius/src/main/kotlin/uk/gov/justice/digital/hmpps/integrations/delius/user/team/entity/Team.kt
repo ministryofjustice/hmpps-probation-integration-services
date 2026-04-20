@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.integrations.delius.user.team.entity
 
 import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
+import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.District
 import uk.gov.justice.digital.hmpps.integrations.delius.user.entity.Provider
 import uk.gov.justice.digital.hmpps.integrations.delius.user.staff.entity.Staff
 import java.time.LocalDate
@@ -30,6 +31,10 @@ class Team(
     @JoinColumn(name = "probation_area_id")
     @ManyToOne
     val provider: Provider,
+
+    @JoinColumn(name = "district_id")
+    @ManyToOne
+    val district: District,
 
     @Column(name = "start_date")
     val startDate: LocalDate,

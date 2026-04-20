@@ -22,6 +22,7 @@ import uk.gov.justice.digital.hmpps.api.model.appointment.UserDiary
 import uk.gov.justice.digital.hmpps.api.model.user.DefaultUserDetails
 import uk.gov.justice.digital.hmpps.api.model.user.UserProviderResponse
 import uk.gov.justice.digital.hmpps.aspect.DeliusUserAspect
+import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.DEFAULT_DISTRICT
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.DEFAULT_PROVIDER
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.DEFAULT_STAFF
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.DEFAULT_TEAM
@@ -39,6 +40,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.caseload.CaseloadReposit
 import uk.gov.justice.digital.hmpps.integrations.delius.caseload.TeamCaseloadItem
 import uk.gov.justice.digital.hmpps.integrations.delius.caseload.entity.Caseload
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.Appointment
+import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.BoroughRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.StaffAndRole
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.StaffUserRepository
@@ -78,6 +80,9 @@ internal class UserServiceTest {
 
     @Mock
     lateinit var probationAreaUserRepository: ProbationAreaUserRepository
+
+    @Mock
+    lateinit var boroughRepository: BoroughRepository
 
     @Mock
     lateinit var userAspect: DeliusUserAspect
@@ -160,8 +165,24 @@ internal class UserServiceTest {
         val staffRole = StaffRole("code", "username", "surname", "forename", "role")
 
         val teams = listOf(
-            Team(1, "t01", "team1", listOf(DEFAULT_STAFF, STAFF_1), DEFAULT_PROVIDER, LocalDate.now()),
-            Team(2, "t02", "team2", listOf(DEFAULT_STAFF, STAFF_1), DEFAULT_PROVIDER, LocalDate.now()),
+            Team(
+                1,
+                "t01",
+                "team1",
+                listOf(DEFAULT_STAFF, STAFF_1),
+                DEFAULT_PROVIDER,
+                DEFAULT_DISTRICT,
+                LocalDate.now()
+            ),
+            Team(
+                2,
+                "t02",
+                "team2",
+                listOf(DEFAULT_STAFF, STAFF_1),
+                DEFAULT_PROVIDER,
+                DEFAULT_DISTRICT,
+                LocalDate.now()
+            ),
             DEFAULT_TEAM
         )
         whenever(ldapTemplate.search(any(), any<AttributesMapper<String?>>()))
@@ -204,8 +225,24 @@ internal class UserServiceTest {
         val staffRole = StaffRole("code", "username", "surname", "forename", "role")
 
         val teams = listOf(
-            Team(1, "t01", "team1", listOf(DEFAULT_STAFF, STAFF_1), DEFAULT_PROVIDER, LocalDate.now()),
-            Team(2, "t02", "team2", listOf(DEFAULT_STAFF, STAFF_1), DEFAULT_PROVIDER, LocalDate.now()),
+            Team(
+                1,
+                "t01",
+                "team1",
+                listOf(DEFAULT_STAFF, STAFF_1),
+                DEFAULT_PROVIDER,
+                DEFAULT_DISTRICT,
+                LocalDate.now()
+            ),
+            Team(
+                2,
+                "t02",
+                "team2",
+                listOf(DEFAULT_STAFF, STAFF_1),
+                DEFAULT_PROVIDER,
+                DEFAULT_DISTRICT,
+                LocalDate.now()
+            ),
             DEFAULT_TEAM
         )
 
@@ -250,7 +287,7 @@ internal class UserServiceTest {
 
         val staffRole = StaffRole("code", "username", "surname", "forename", "role")
         val teams = listOf(
-            Team(1, "t01", "team1", listOf(DEFAULT_STAFF, STAFF_1), DEFAULT_PROVIDER, LocalDate.now())
+            Team(1, "t01", "team1", listOf(DEFAULT_STAFF, STAFF_1), DEFAULT_PROVIDER, DEFAULT_DISTRICT, LocalDate.now())
         )
 
         whenever(ldapTemplate.search(any(), any<AttributesMapper<String?>>()))
@@ -288,7 +325,7 @@ internal class UserServiceTest {
 
         val staffRole = StaffRole("code", "username", "surname", "forename", "role")
         val teams = listOf(
-            Team(1, "t01", "team1", listOf(DEFAULT_STAFF, STAFF_1), DEFAULT_PROVIDER, LocalDate.now())
+            Team(1, "t01", "team1", listOf(DEFAULT_STAFF, STAFF_1), DEFAULT_PROVIDER, DEFAULT_DISTRICT, LocalDate.now())
         )
 
         whenever(ldapTemplate.search(any(), any<AttributesMapper<String?>>()))

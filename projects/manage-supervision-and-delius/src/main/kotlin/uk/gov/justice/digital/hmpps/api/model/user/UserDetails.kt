@@ -7,5 +7,15 @@ data class UserDetails(
     val surname: String,
     val email: String?,
     val enabled: Boolean,
-    val roles: List<String>
+    val roles: List<String>,
+    val staff: StaffDetails?
+)
+
+data class StaffDetails(
+    val probationDeliveryUnits: List<ProbationDeliveryUnit>
+)
+
+data class ProbationDeliveryUnit(
+    val code: String,
+    val description: String
 )

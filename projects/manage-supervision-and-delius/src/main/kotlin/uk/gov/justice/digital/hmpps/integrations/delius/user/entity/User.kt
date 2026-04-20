@@ -44,6 +44,8 @@ interface UserRepository : JpaRepository<User, Long> {
 
     @Query("select u from User u where upper(u.username) = upper(:username)")
     fun findUserByUsername(username: String): User?
+
+    fun findUserById(userId: Long): User
 }
 
 fun UserRepository.getUser(username: String) =

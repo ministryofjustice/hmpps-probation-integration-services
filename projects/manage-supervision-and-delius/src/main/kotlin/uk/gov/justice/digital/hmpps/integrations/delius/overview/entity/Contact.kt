@@ -980,7 +980,23 @@ class Borough(
 
     val description: String,
 
+    @ManyToOne
+    @JoinColumn(name = "probation_area_id")
+    val provider: Provider,
+
     @Id
     @Column(name = "borough_id")
     val id: Long
 )
+
+interface BoroughRepository : JpaRepository<Borough, Long> {
+    @Query(
+        """
+            select distinct t.district.borough 
+            from Team t 
+            join t.staff s 
+            where s.id = :staffId
+        """
+    )
+    fun findAllByStaffId(staffId: Long): List<Borough>
+}

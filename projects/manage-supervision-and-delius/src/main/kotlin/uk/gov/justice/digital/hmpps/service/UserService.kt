@@ -19,6 +19,7 @@ import uk.gov.justice.digital.hmpps.api.model.contact.EnforcementContactItem
 import uk.gov.justice.digital.hmpps.api.model.contact.EnforcementContactResponse
 import uk.gov.justice.digital.hmpps.api.model.overview.Appointment
 import uk.gov.justice.digital.hmpps.api.model.user.*
+import uk.gov.justice.digital.hmpps.api.model.user.Provider
 import uk.gov.justice.digital.hmpps.aspect.DeliusUserAspect
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
@@ -26,16 +27,14 @@ import uk.gov.justice.digital.hmpps.exception.NotFoundException.Companion.orNotF
 import uk.gov.justice.digital.hmpps.integrations.delius.caseload.CaseloadItem
 import uk.gov.justice.digital.hmpps.integrations.delius.caseload.CaseloadRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.caseload.TeamCaseloadItem
+import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.BoroughRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.EnforcementAppointment
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.LdapUser
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.StaffUser
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.StaffUserRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.getUser
-import uk.gov.justice.digital.hmpps.integrations.delius.user.entity.ProbationAreaUser
-import uk.gov.justice.digital.hmpps.integrations.delius.user.entity.ProbationAreaUserRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.user.entity.UserRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.user.entity.getUser
+import uk.gov.justice.digital.hmpps.integrations.delius.user.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.user.staff.StaffRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.user.team.*
 import uk.gov.justice.digital.hmpps.ldap.findAttributeByUsername
@@ -58,6 +57,7 @@ class UserService(
     private val userAccessService: UserAccessService,
     private val contactRepository: ContactRepository,
     private val probationAreaUserRepository: ProbationAreaUserRepository,
+    private val boroughRepository: BoroughRepository,
     private val ldapTemplate: LdapTemplate,
     private val deliusUserAspect: DeliusUserAspect
 ) {
@@ -67,17 +67,20 @@ class UserService(
         return ldapUser.toUserDetails()
     }
 
-    private fun LdapUser.toUserDetails() = userRepository.findUserByUsername(username)?.let { toUserDetails(it.id) }
+    private fun LdapUser.toUserDetails() = userRepository.findUserByUsername(username)?.let { toUserDetails(it) }
         ?: throw NotFoundException("User", "username", username)
 
-    private fun LdapUser.toUserDetails(userId: Long) = UserDetails(
-        userId = userId,
+    private fun LdapUser.toUserDetails(user: User) = UserDetails(
+        userId = user.id,
         username = username,
         firstName = forename,
         surname = surname,
         email = email,
         enabled = enabled,
-        roles = getUserRoles(dn)
+        roles = getUserRoles(dn),
+        staff = getUserPdus(user)?.let { pdus ->
+            StaffDetails(pdus.map { ProbationDeliveryUnit(it.code, it.description) })
+        }
     )
 
     private fun getUserRoles(name: javax.naming.Name): List<String> = ldapTemplate.search(
@@ -87,6 +90,10 @@ class UserService(
             .filter("(|(objectclass=NDRole)(objectclass=NDRoleAssociation))"),
         AttributesMapper { it["cn"].get().toString() }
     )
+
+    private fun getUserPdus(user: User) = user.staff?.let {
+        boroughRepository.findAllByStaffId(it.id)
+    }
 
     @Transactional
     fun getUserCaseload(username: String, pageable: Pageable): StaffCaseload {

@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.data.generator
 
 import uk.gov.justice.digital.hmpps.data.generator.AppointmentGenerator.generateContactTypeOutcome
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.DEFAULT_BOROUGH
+import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.DEFAULT_DISTRICT
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.DEFAULT_PROVIDER
 import uk.gov.justice.digital.hmpps.data.generator.LicenceConditionGenerator.LONG_NOTE
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.E_SUP_PERSON
@@ -463,8 +464,9 @@ object ContactGenerator {
 fun generateBorough(
     code: String,
     description: String = "Description of $code",
+    provider: Provider = DEFAULT_PROVIDER,
     id: Long = IdGenerator.getAndIncrement(),
-) = Borough(code, description, id)
+) = Borough(code, description, provider, id)
 
 fun generateDistrict(
     code: String,
@@ -492,7 +494,8 @@ fun generateTeam(
     description = description,
     staff = staff,
     startDate = LocalDate.now(),
-    provider = DEFAULT_PROVIDER
+    provider = DEFAULT_PROVIDER,
+    district = DEFAULT_DISTRICT
 )
 
 fun generateStaff(
