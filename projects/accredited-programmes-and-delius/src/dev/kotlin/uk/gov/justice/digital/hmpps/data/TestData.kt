@@ -126,6 +126,7 @@ object TestData {
     val LICENCE_CONDITIONS = listOf(
         LicenceConditionGenerator.generate(CUSTODIAL_SENTENCE, LICENCE_CONDITION_MAIN_TYPE),
         LicenceConditionGenerator.generate(CUSTODIAL_SENTENCE, LICENCE_CONDITION_MAIN_TYPE, LICENCE_CONDITION_SUB_TYPE),
+        LicenceConditionGenerator.generate(CUSTODIAL_SENTENCE, LICENCE_CONDITION_MAIN_TYPE, active = false),
     )
     val LICENCE_CONDITION_MANAGERS = LICENCE_CONDITIONS.map { LicenceConditionManager(id(), it, STAFF, TEAM) }
 
@@ -140,6 +141,7 @@ object TestData {
         RequirementGenerator.generate(COMMUNITY_SENTENCE, REQUIREMENT_MAIN_TYPE),
         RequirementGenerator.generate(COMMUNITY_SENTENCE, REQUIREMENT_MAIN_TYPE, REQUIREMENT_SUB_TYPE),
         RequirementGenerator.generate(CA_COMMUNITY_SENTENCE, REQUIREMENT_MAIN_TYPE, REQUIREMENT_SUB_TYPE),
+        RequirementGenerator.generate(COMMUNITY_SENTENCE, REQUIREMENT_MAIN_TYPE, active = false),
     )
     val REQUIREMENT_MANAGERS = REQUIREMENTS.map { RequirementManager(id(), it, STAFF, TEAM) }
 
@@ -185,9 +187,9 @@ object TestData {
     val STATUS_CONTACT_TYPES = StatusInfo.Status.entries.map { ContactType(id(), it.contactTypeCode, it.name, false) }
     val THREE_WAY_MEETING_TYPE = ContactType(id(), ContactType.THREE_WAY_MEETING, "3-way meeting", false)
 
-    val APPOINTMENTS = REQUIREMENTS.take(2).mapIndexed { idx, r ->
+    val APPOINTMENTS = REQUIREMENTS.mapIndexed { idx, r ->
         r.contact(APPOINTMENT_CONTACT_TYPE, LocalDate.of(2030, 1, 1 + idx), STAFF, TEAM, PROVIDER)
-    } + LICENCE_CONDITIONS.take(2).mapIndexed { idx, lc ->
+    } + LICENCE_CONDITIONS.mapIndexed { idx, lc ->
         lc.contact(APPOINTMENT_CONTACT_TYPE, LocalDate.of(2030, 1, 1 + idx), STAFF, TEAM, PROVIDER)
     }
     val LEGACY_APPOINTMENT =

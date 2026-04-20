@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.repository
 
+import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Modifying
 import org.springframework.data.jpa.repository.Query
@@ -17,6 +18,48 @@ interface ContactRepository : JpaRepository<Contact, Long> {
         and (:fromDate is null or c.date >= :fromDate)
         and (:toDate is null or c.date <= :toDate)
         """
+    )
+    @EntityGraph(
+        attributePaths = [
+            "person",
+            "type",
+            "outcome",
+            "location",
+            "provider",
+            "event.person.gender.dataset",
+            "event.person.ethnicity.dataset",
+            "event.person.manager",
+            "event.disposal.custody",
+            "event.disposal.type",
+            "event.twoThirdsContacts",
+            "requirement.mainCategory",
+            "requirement.subCategory",
+            "requirement.disposal.type",
+            "requirement.manager",
+            "requirement.terminationReason",
+            "requirement.disposal.lengthUnits",
+            "requirement.disposal.event.person.gender.dataset",
+            "requirement.disposal.event.person.ethnicity.dataset",
+            "requirement.disposal.event.person.manager.staff.user",
+            "requirement.disposal.event.person.manager.team.localAdminUnit.probationDeliveryUnit",
+            "requirement.disposal.event.person.manager.team.provider",
+            "requirement.disposal.custody",
+            "licenceCondition.mainCategory",
+            "licenceCondition.subCategory",
+            "licenceCondition.disposal.type",
+            "licenceCondition.manager",
+            "licenceCondition.terminationReason",
+            "licenceCondition.disposal.lengthUnits",
+            "licenceCondition.disposal.event.person.gender.dataset",
+            "licenceCondition.disposal.event.person.ethnicity.dataset",
+            "licenceCondition.disposal.event.person.manager.staff.user",
+            "licenceCondition.disposal.event.person.manager.team.localAdminUnit.probationDeliveryUnit",
+            "licenceCondition.disposal.event.person.manager.team.provider",
+            "licenceCondition.disposal.custody",
+            "team.localAdminUnit.probationDeliveryUnit",
+            "team.provider",
+            "createdByUser.staff",
+        ]
     )
     fun findAllByComponentIdInDateRange(
         requirementIds: List<Long>,

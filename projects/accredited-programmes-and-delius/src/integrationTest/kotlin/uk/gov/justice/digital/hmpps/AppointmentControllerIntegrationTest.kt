@@ -129,6 +129,7 @@ internal class AppointmentControllerIntegrationTest @Autowired constructor(
             val expected = contactRepository.findByIdOrNull(id)!!
             assertThat(reference).isEqualTo(expected.externalReference?.takeLast(36))
             assertThat(crn).isEqualTo(expected.person.crn)
+            assertThat(listOfNotNull(requirementId, licenceConditionId)).hasSize(1)
             assertThat(requirementId).isEqualTo(expected.requirement?.id)
             assertThat(licenceConditionId).isEqualTo(expected.licenceCondition?.id)
             assertThat(date).isEqualTo(expected.date)

@@ -17,7 +17,7 @@ import java.time.ZonedDateTime
 
 @Entity
 @Table(name = "lic_condition")
-@SQLRestriction("soft_deleted = 0 and active_flag = 1")
+@SQLRestriction("soft_deleted = 0")
 @EntityListeners(AuditingEntityListener::class)
 class LicenceCondition(
     @Id

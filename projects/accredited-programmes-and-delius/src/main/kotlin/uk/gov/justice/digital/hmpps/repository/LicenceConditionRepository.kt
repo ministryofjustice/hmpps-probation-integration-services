@@ -12,20 +12,21 @@ interface LicenceConditionRepository : JpaRepository<LicenceCondition, Long> {
         attributePaths = [
             "mainCategory",
             "subCategory",
+            "manager",
+            "terminationReason",
             "disposal.type",
             "disposal.lengthUnits",
-            "disposal.event.person.gender",
-            "disposal.event.person.ethnicity",
+            "disposal.event.person.gender.dataset",
+            "disposal.event.person.ethnicity.dataset",
             "disposal.event.person.manager.staff.user",
             "disposal.event.person.manager.team.localAdminUnit.probationDeliveryUnit",
             "disposal.event.person.manager.team.provider",
-            "disposal.custody"
+            "disposal.custody",
         ]
     )
-    fun findAllByIdIn(licenceConditionIds: Set<Long>): List<LicenceCondition>
+    fun findAllByIdInAndActiveTrue(licenceConditionIds: Set<Long>): List<LicenceCondition>
+
+    fun findByIdOrNotFound(id: Long) = findByIdOrNull(id).orNotFoundBy("id", id)
+    fun getAllByCodeIn(ids: List<Long>) =
+        ids.toSet().let { ids -> findAllByIdInAndActiveTrue(ids).associateBy { it.id }.reportMissingIds(ids) }
 }
-
-fun LicenceConditionRepository.findByIdOrNotFound(id: Long) = findByIdOrNull(id).orNotFoundBy("id", id)
-
-fun LicenceConditionRepository.getAllByCodeIn(ids: List<Long>) =
-    ids.toSet().let { ids -> findAllByIdIn(ids).associateBy { it.id }.reportMissingIds(ids) }
