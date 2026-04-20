@@ -990,5 +990,11 @@ class Borough(
 )
 
 interface BoroughRepository : CrudRepository<Borough, Long> {
-    fun findAllByProvider_Id(providerId: Long): List<Borough>
+    @Query(
+        "select distinct t.district.borough " +
+            "from Team t " +
+            "join t.staff s " +
+            "where s.id = :staffId"
+    )
+    fun findAllByStaffId(staffId: Long): List<Borough>
 }
