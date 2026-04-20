@@ -71,6 +71,7 @@ runs:
 
     - name: Commit and push
       uses: grafana/github-api-commit-action@b1d81091e8480dd11fcea8bc1f0ab977a0376ca5 # v1.0.0
+      working-directory: ${{ env.path }}
       with:
         commit-message: ${{ inputs.commit-message }}
         create-branch-on-remote: true
