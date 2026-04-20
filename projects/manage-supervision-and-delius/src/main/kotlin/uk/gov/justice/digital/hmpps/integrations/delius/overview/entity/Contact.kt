@@ -989,12 +989,14 @@ class Borough(
     val id: Long
 )
 
-interface BoroughRepository : CrudRepository<Borough, Long> {
+interface BoroughRepository : JpaRepository<Borough, Long> {
     @Query(
-        "select distinct t.district.borough " +
-            "from Team t " +
-            "join t.staff s " +
-            "where s.id = :staffId"
+        """
+            select distinct t.district.borough 
+            from Team t 
+            join t.staff s 
+            where s.id = :staffId
+        """
     )
     fun findAllByStaffId(staffId: Long): List<Borough>
 }
