@@ -1,10 +1,11 @@
 package uk.gov.justice.digital.hmpps.service
 
 import jakarta.persistence.EntityManager
-import jakarta.transaction.Transactional
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.http.MediaType
 import org.springframework.http.client.MultipartBodyBuilder
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.audit.BusinessInteractionCode
 import uk.gov.justice.digital.hmpps.audit.entity.AuditedInteraction
 import uk.gov.justice.digital.hmpps.audit.service.AuditableService
@@ -15,14 +16,15 @@ import uk.gov.justice.digital.hmpps.entity.Document
 import uk.gov.justice.digital.hmpps.entity.Document.Companion.psrUrn
 import uk.gov.justice.digital.hmpps.entity.DocumentRepository
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
+import uk.gov.justice.digital.hmpps.exception.NotFoundException.Companion.orNotFoundBy
 import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
 import uk.gov.justice.digital.hmpps.messaging.psrId
 import uk.gov.justice.digital.hmpps.messaging.username
 import uk.gov.justice.digital.hmpps.user.AuditUserService
-import java.time.LocalDate
 import java.time.ZonedDateTime
 
 @Service
+@Transactional
 class DocumentService(
     auditedInteractionService: AuditedInteractionService,
     private val documentRepository: DocumentRepository,
@@ -45,28 +47,27 @@ class DocumentService(
         alfrescoUploadClient.delete(previousAlfrescoId)
         document.alfrescoId = alfrescoUploadClient.upload(document.toMultipart(file)).id
         documentRepository.save(document)
-        updateCourtReport(document.courtReport.id)
+        updateCourtReport(document.courtReport.id, event.occurredAt)
     }
 
-    fun updateCourtReport(courtReportId: Long) {
-        val courtReport = courtReportRepository.findById(courtReportId)
-            .orElseThrow { NotFoundException("CourtReport", "id", courtReportId) }
-        courtReport.completedDate = LocalDate.now()
-        courtReportRepository.save(courtReport)
+    fun updateCourtReport(id: Long, occurredAt: ZonedDateTime) {
+        courtReportRepository.findByIdOrNull(id).orNotFoundBy("id", id).apply {
+            completedDate = occurredAt.toLocalDate()
+        }
     }
 
     private fun getDocument(event: HmppsDomainEvent, audit: AuditedInteraction.Parameters): Document {
         val urn = psrUrn(event.psrId)
         return documentRepository.findByExternalReference(urn)?.also {
             audit["documentId"] = it.id
-            audit["alfrescoDocumentId"] = it.alfrescoId ?: "Alfresco document not yet uploaded"
+            audit["alfrescoDocumentId"] = it.alfrescoId
             audit["entityId"] = it.courtReport.id
             audit["tableName"] = it.tableName
             audit["externalReference"] = urn
         } ?: throw NotFoundException("Document", "externalReference", urn)
     }
 
-    private fun uk.gov.justice.digital.hmpps.entity.Document.toMultipart(file: ByteArray) =
+    private fun Document.toMultipart(file: ByteArray) =
         MultipartBodyBuilder().apply {
             part("CRN", person.crn, MediaType.TEXT_PLAIN)
             part("fileName", name, MediaType.TEXT_PLAIN)

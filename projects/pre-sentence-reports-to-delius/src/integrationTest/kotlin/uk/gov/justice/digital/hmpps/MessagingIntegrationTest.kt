@@ -15,7 +15,6 @@ import uk.gov.justice.digital.hmpps.data.generator.UserGenerator
 import uk.gov.justice.digital.hmpps.entity.CourtReportRepository
 import uk.gov.justice.digital.hmpps.entity.DocumentRepository
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryMessagingExtensions.notificationReceived
-import java.time.LocalDate
 import java.time.ZonedDateTime
 import java.time.temporal.ChronoUnit
 
@@ -107,7 +106,8 @@ internal class MessagingIntegrationTest @Autowired constructor(
         assertThat(document.lastUpdatedUserId).isEqualTo(UserGenerator.TEST_USER.id)
         // check the court report is marked as completed
         val courtReport = courtReportRepository.findById(FINAL_DOCUMENT.courtReport.id).get()
-        assertThat(courtReport.completedDate).isCloseTo(LocalDate.now(), within(1, ChronoUnit.DAYS))
+        assertThat(courtReport.completedDate).isEqualTo(notification.message.occurredAt.toLocalDate())
+        assertThat(courtReport.lastUpdatedDatetime).isNotEqualTo(courtReport.createdDatetime)
 
         // And the file is uploaded to Alfresco
         wireMockServer.verify(
