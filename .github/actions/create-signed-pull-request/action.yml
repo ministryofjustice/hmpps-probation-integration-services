@@ -76,7 +76,7 @@ runs:
         create-branch-on-remote: true
         success-if-no-changes: true
         working-directory: ${{ env.path }}
-        token: ${{ steps.app-token.outputs.token }}
+        token: ${{ inputs.token }}
 
     - name: Create pull request
       id: pr
