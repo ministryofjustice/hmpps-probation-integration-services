@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.config
 import com.amazon.sqs.javamessaging.AmazonSQSExtendedAsyncClient
 import com.amazon.sqs.javamessaging.ExtendedAsyncClientConfiguration
 import io.awspring.cloud.autoconfigure.core.AwsClientBuilderConfigurer
+import io.awspring.cloud.sqs.config.SqsMessageListenerContainerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.context.annotation.Bean
@@ -28,4 +29,10 @@ class ExtendedSqsConfig(
             .withPayloadSupportEnabled(s3AsyncClient, bucketName)
         return AmazonSQSExtendedAsyncClient(sqsBase, extendedConfig)
     }
+
+    @Bean(name = ["defaultSqsListenerContainerFactory"])
+    fun sqsListenerContainerFactory(sqsAsyncClient: SqsAsyncClient): SqsMessageListenerContainerFactory<Any> =
+        SqsMessageListenerContainerFactory.builder<Any>()
+            .sqsAsyncClient(sqsAsyncClient)
+            .build()
 }
