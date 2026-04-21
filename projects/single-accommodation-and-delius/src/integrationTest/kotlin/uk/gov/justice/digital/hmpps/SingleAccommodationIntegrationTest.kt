@@ -44,7 +44,7 @@ internal class SingleAccommodationIntegrationTest @Autowired constructor(
                 crn = person.crn,
                 name = Name(
                     forename = person.firstName,
-                    middleName = listOfNotNull(person.secondName, person.thirdName).joinToString(" "),
+                    middleName = listOfNotNull(person.secondName, person.thirdName).joinToString(" ").ifEmpty { null },
                     surname = person.surname
                 ),
                 nomsNumber = person.noms,
@@ -72,6 +72,97 @@ internal class SingleAccommodationIntegrationTest @Autowired constructor(
     }
 
     @Test
+    fun `can retrieve case for user crn`() {
+        val user = UserGenerator.DEFAULT
+        val person = PersonGenerator.DEFAULT
+        val staff = StaffGenerator.DEFAULT
+        val team = TeamGenerator.DEFAULT
+
+        val response = mockMvc.get("/case/${user.username}/${person.crn}") { withToken() }
+            .andExpect { status { is2xxSuccessful() } }
+            .andReturn().response.contentAsJson<Case>()
+
+        assertThat(response).isEqualTo(
+            Case(
+                crn = person.crn,
+                name = Name(
+                    forename = person.firstName,
+                    middleName = listOfNotNull(person.secondName, person.thirdName).joinToString(" ").ifEmpty { null },
+                    surname = person.surname
+                ),
+                nomsNumber = person.noms,
+                pncNumber = person.pnc,
+                dateOfBirth = person.dateOfBirth,
+                staff = Officer(
+                    name = Name(
+                        forename = staff.forename,
+                        middleName = staff.middleName,
+                        surname = staff.surname
+                    ),
+                    username = UserGenerator.DEFAULT.username,
+                    code = staff.code
+                ),
+                team = CodeDescription(code = team.code, description = team.description),
+                gender = person.gender.description,
+                roshLevel = CodeDescription("RHRH", "High RoSH"),
+                expectedReleaseDate = KeyDateGenerator.EXPECTED_RELEASE.date,
+                userExcluded = false,
+                userRestricted = false,
+                exclusionMessage = null,
+                restrictionMessage = null
+            )
+        )
+    }
+
+    @Test
+    fun `can retrieve excluded case for user crn with LAO fields`() {
+        val user = UserGenerator.DEFAULT
+        val person = PersonGenerator.EXCLUDED
+
+        val response = mockMvc.get("/case/${user.username}/${person.crn}") { withToken() }
+            .andExpect { status { is2xxSuccessful() } }
+            .andReturn().response.contentAsJson<Case>()
+
+
+        assertThat(response.userExcluded).isTrue()
+        assertThat(response.userRestricted).isFalse()
+        assertThat(response.exclusionMessage).isNotNull()
+        assertThat(response.restrictionMessage).isNull()
+    }
+
+    @Test
+    fun `can retrieve restricted case for user crn with LAO fields`() {
+        val user = UserGenerator.DEFAULT
+        val person = PersonGenerator.RESTRICTED
+
+        val response = mockMvc.get("/case/${user.username}/${person.crn}") { withToken() }
+            .andExpect { status { is2xxSuccessful() } }
+            .andReturn().response.contentAsJson<Case>()
+
+        assertThat(response.userExcluded).isFalse()
+        assertThat(response.userRestricted).isTrue()
+        assertThat(response.exclusionMessage).isNull()
+        assertThat(response.restrictionMessage).isNotNull()
+    }
+
+    @Test
+    fun `can't retrieve case for non existent user crn`() {
+        val user = UserGenerator.DEFAULT
+
+        mockMvc.get("/case/${user.username}/A000002") { withToken() }
+            .andExpect { status { isNotFound() } }
+    }
+
+    @Test
+    fun `can't retrieve case without token`() {
+        val user = UserGenerator.DEFAULT
+        val person = PersonGenerator.DEFAULT
+
+        mockMvc.get("/case/${user.username}/${person.crn}")
+            .andExpect { status { isUnauthorized() } }
+    }
+
+    @Test
     fun `excluded case returns LAO fields`() {
         val user = UserGenerator.DEFAULT
         val person = PersonGenerator.EXCLUDED
@@ -88,7 +179,7 @@ internal class SingleAccommodationIntegrationTest @Autowired constructor(
                 crn = person.crn,
                 name = Name(
                     forename = person.firstName,
-                    middleName = listOfNotNull(person.secondName, person.thirdName).joinToString(" "),
+                    middleName = listOfNotNull(person.secondName, person.thirdName).joinToString(" ").ifEmpty { null },
                     surname = person.surname
                 ),
                 nomsNumber = person.noms,
@@ -132,7 +223,7 @@ internal class SingleAccommodationIntegrationTest @Autowired constructor(
                 crn = person.crn,
                 name = Name(
                     forename = person.firstName,
-                    middleName = listOfNotNull(person.secondName, person.thirdName).joinToString(" "),
+                    middleName = listOfNotNull(person.secondName, person.thirdName).joinToString(" ").ifEmpty { null },
                     surname = person.surname
                 ),
                 nomsNumber = person.noms,

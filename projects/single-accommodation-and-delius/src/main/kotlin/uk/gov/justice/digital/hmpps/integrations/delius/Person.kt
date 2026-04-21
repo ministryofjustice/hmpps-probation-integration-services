@@ -34,8 +34,13 @@ class Person(
 
     @Column(name = "pnc_number", columnDefinition = "char(13)")
     val pnc: String?,
+
+    val exclusionMessage: String? = null,
+
+    val restrictionMessage: String? = null,
 )
 
 interface PersonRepository : JpaRepository<Person, Long> {
     fun findByIdIn(ids: List<Long>): List<Person>
+    fun findByCrn(crn: String): Person?
 }

@@ -8,9 +8,13 @@ import uk.gov.justice.digital.hmpps.service.CaseListService
 
 @RestController
 class SingleAccommodationController(
-    private val caseListService: CaseListService
+    private val caseListService: CaseListService,
 ) {
     @PreAuthorize("hasRole('PROBATION_API__SINGLE_ACCOMMODATION__CASE_LIST')")
     @GetMapping(value = ["/case-list/{username}"])
     fun getCaseList(@PathVariable username: String) = caseListService.getCaseList(username)
+
+    @PreAuthorize("hasRole('PROBATION_API__SINGLE_ACCOMMODATION__CASE_LIST')")
+    @GetMapping(value = ["/case/{username}/{crn}"])
+    fun getCase(@PathVariable crn: String, @PathVariable username: String) = caseListService.getCase(username, crn)
 }
