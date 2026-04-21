@@ -11,6 +11,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Conditional
 import org.springframework.context.annotation.Configuration
+import org.springframework.context.annotation.Lazy
 import org.springframework.context.annotation.Primary
 import software.amazon.awssdk.services.s3.S3AsyncClient
 import software.amazon.awssdk.services.s3.S3Client
@@ -34,7 +35,7 @@ class ExtendedSqsConfig(
 
     @Bean
     @Primary
-    fun extendedSqsAsyncClient(sqsAsyncClient: SqsAsyncClient): SqsAsyncClient {
+    fun extendedSqsAsyncClient(@Lazy sqsAsyncClient: SqsAsyncClient): SqsAsyncClient {
         val s3AsyncClient = S3AsyncClient.builder().build()
         val extendedConfig = ExtendedAsyncClientConfiguration()
             .withPayloadSupportEnabled(s3AsyncClient, bucketName)
