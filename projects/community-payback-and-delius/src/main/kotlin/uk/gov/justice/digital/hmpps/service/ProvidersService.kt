@@ -7,6 +7,7 @@ import uk.gov.justice.digital.hmpps.entity.staff.*
 import uk.gov.justice.digital.hmpps.entity.unpaidwork.UnpaidWorkAppointmentRepository
 import uk.gov.justice.digital.hmpps.entity.unpaidwork.UnpaidWorkProjectRepository
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
+import uk.gov.justice.digital.hmpps.exception.NotFoundException.Companion.orNotFoundBy
 import uk.gov.justice.digital.hmpps.model.*
 import java.time.LocalDate
 import java.time.temporal.ChronoUnit
@@ -72,7 +73,7 @@ class ProvidersService(
     ): SessionsResponse {
         require(ChronoUnit.DAYS.between(startDate, endDate) <= 7) { "Date range cannot be greater than 7 days" }
 
-        val team = teamRepository.findTeamByCode(teamCode)
+        val team = teamRepository.findTeamByCode(teamCode).orNotFoundBy("code", teamCode)
         val unpaged = Pageable.unpaged(pageable.sort)
         val deprecatedAllSessions =
             unpaidWorkAppointmentRepository.getUnpaidWorkSessionDetails(team.id, startDate, endDate, typeCodes, unpaged)
@@ -94,7 +95,7 @@ class ProvidersService(
     }
 
     fun getLocationsForTeam(teamCode: String): PickUpLocationsResponse {
-        val team = teamRepository.findTeamByCode(teamCode)
+        val team = teamRepository.findTeamByCode(teamCode).orNotFoundBy("code", teamCode)
         val officeLocations = officeLocationRepository.getLocationsByTeam(team.id)
         return PickUpLocationsResponse(officeLocations.map {
             it.toPickUpLocation()
