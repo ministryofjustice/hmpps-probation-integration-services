@@ -44,7 +44,7 @@ internal class SingleAccommodationIntegrationTest @Autowired constructor(
                 crn = person.crn,
                 name = Name(
                     forename = person.firstName,
-                    middleName = listOfNotNull(person.secondName, person.thirdName).joinToString(" "),
+                    middleName = listOfNotNull(person.secondName, person.thirdName).joinToString(" ").ifEmpty { null },
                     surname = person.surname
                 ),
                 nomsNumber = person.noms,
@@ -179,7 +179,7 @@ internal class SingleAccommodationIntegrationTest @Autowired constructor(
                 crn = person.crn,
                 name = Name(
                     forename = person.firstName,
-                    middleName = listOfNotNull(person.secondName, person.thirdName).joinToString(" "),
+                    middleName = listOfNotNull(person.secondName, person.thirdName).joinToString(" ").ifEmpty { null },
                     surname = person.surname
                 ),
                 nomsNumber = person.noms,
@@ -223,7 +223,7 @@ internal class SingleAccommodationIntegrationTest @Autowired constructor(
                 crn = person.crn,
                 name = Name(
                     forename = person.firstName,
-                    middleName = listOfNotNull(person.secondName, person.thirdName).joinToString(" "),
+                    middleName = listOfNotNull(person.secondName, person.thirdName).joinToString(" ").ifEmpty { null },
                     surname = person.surname
                 ),
                 nomsNumber = person.noms,

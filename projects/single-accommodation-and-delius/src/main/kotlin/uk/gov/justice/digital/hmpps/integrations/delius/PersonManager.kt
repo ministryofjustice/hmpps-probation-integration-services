@@ -1,11 +1,13 @@
 package uk.gov.justice.digital.hmpps.integrations.delius
 
 import jakarta.persistence.*
+import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.NumericBooleanConverter
 import org.springframework.data.jpa.repository.JpaRepository
 
 @Entity
 @Table(name = "offender_manager")
+@SQLRestriction("soft_deleted = 0 and active_flag = 1")
 class PersonManager(
 
     @Id
@@ -36,6 +38,6 @@ class PersonManager(
 )
 
 interface PersonManagerRepository : JpaRepository<PersonManager, Long> {
-    fun findByStaffIdAndActiveTrue(staffId: Long): List<PersonManager>
-    fun findFirstByPersonIdAndActiveTrueAndSoftDeletedFalse(personId: Long): PersonManager?
+    fun findByStaffId(staffId: Long): List<PersonManager>
+    fun findFirstByPersonId(personId: Long): PersonManager?
 }
