@@ -4,6 +4,7 @@ database:
     password_key: /pre-sentence-reports-to-delius/db-password
     tables:
       - audited_interaction
+      - court_report
       - document
 
   audit:
