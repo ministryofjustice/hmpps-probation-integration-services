@@ -32,7 +32,9 @@ import uk.gov.justice.digital.hmpps.appointments.test.TestData.FTC_OUTCOME
 import uk.gov.justice.digital.hmpps.audit.entity.AuditedInteraction
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
 import uk.gov.justice.digital.hmpps.data.generator.IdGenerator.id
+import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import java.time.LocalDate
+import java.time.LocalTime
 import java.time.LocalTime.NOON
 import java.time.ZonedDateTime
 
@@ -711,6 +713,93 @@ class AppointmentServiceTest {
 
         assertThat(existing.externalReference).isEqualTo("REF01")
         assertThat(existing.outcome).isEqualTo(TestData.OUTCOME)
+    }
+
+    @Test
+    fun `amend appointment with outcome succeeds when reducing duration is allowed`() {
+        val date = LocalDate.now().plusDays(1)
+        val existing = TestData.appointment(
+            date = date,
+            startTime = date.atTime(9, 0).atZone(EuropeLondon),
+            endTime = date.atTime(14, 0).atZone(EuropeLondon),
+            outcome = TestData.OUTCOME
+        )
+        whenever(appointmentRepository.findByExternalReferenceIn(listOf(existing.externalReference!!)))
+            .thenReturn(listOf(existing))
+
+        appointmentService.update(existing) {
+            reference = { existing.externalReference }
+            amendDateTime = { copy(endTime = LocalTime.of(13, 0), allowDurationReduction = true) }
+        }
+
+        assertThat(existing.startTime.toLocalTime()).isEqualTo(LocalTime.of(9, 0))
+        assertThat(existing.endTime?.toLocalTime()).isEqualTo(LocalTime.of(13, 0))
+        assertThat(existing.outcome).isEqualTo(TestData.OUTCOME)
+    }
+
+    @Test
+    fun `amend past appointment succeeds when reducing duration is allowed`() {
+        val date = LocalDate.now().minusDays(1)
+        val existing = TestData.appointment(
+            date = date,
+            startTime = date.atTime(9, 0).atZone(EuropeLondon),
+            endTime = date.atTime(14, 0).atZone(EuropeLondon)
+        )
+        whenever(appointmentRepository.findByExternalReferenceIn(listOf(existing.externalReference!!)))
+            .thenReturn(listOf(existing))
+
+        appointmentService.update(existing) {
+            reference = { existing.externalReference }
+            amendDateTime = { copy(endTime = LocalTime.of(13, 0), allowDurationReduction = true) }
+        }
+
+        assertThat(existing.endTime?.toLocalTime()).isEqualTo(LocalTime.of(13, 0))
+        assertThat(existing.outcome).isEqualTo(null)
+    }
+
+    @Test
+    fun `attempt to extend appointment with outcome when reducing duration is allowed`() {
+        val date = LocalDate.now().plusDays(1)
+        val existing = TestData.appointment(
+            date = date,
+            startTime = date.atTime(9, 0).atZone(EuropeLondon),
+            endTime = date.atTime(14, 0).atZone(EuropeLondon),
+            outcome = TestData.OUTCOME
+        )
+
+        whenever(appointmentRepository.findByExternalReferenceIn(listOf(existing.externalReference!!)))
+            .thenReturn(listOf(existing))
+
+        assertThatThrownBy {
+            appointmentService.update(existing) {
+                reference = { existing.externalReference }
+                amendDateTime = { copy(endTime = LocalTime.of(15, 0), allowDurationReduction = true) }
+            }
+        }
+            .isInstanceOf(IllegalArgumentException::class.java)
+            .hasMessage("Appointment with outcome cannot be rescheduled")
+    }
+
+    @Test
+    fun `attempt to extend past appointment when reducing duration is allowed`() {
+        val date = LocalDate.now().minusDays(1)
+        val existing = TestData.appointment(
+            date = date,
+            startTime = date.atTime(9, 0).atZone(EuropeLondon),
+            endTime = date.atTime(10, 0).atZone(EuropeLondon)
+        )
+
+        whenever(appointmentRepository.findByExternalReferenceIn(listOf(existing.externalReference!!)))
+            .thenReturn(listOf(existing))
+
+        assertThatThrownBy {
+            appointmentService.update(existing) {
+                reference = { existing.externalReference }
+                amendDateTime = { copy(endTime = LocalTime.of(11, 0), allowDurationReduction = true) }
+            }
+        }
+            .isInstanceOf(IllegalArgumentException::class.java)
+            .hasMessage("Outcome must be provided when amending an appointment in the past")
     }
 
     private fun mockCreateReferenceData() {

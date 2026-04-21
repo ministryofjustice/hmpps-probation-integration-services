@@ -18,6 +18,7 @@ class UpdateAppointment {
         val startTime: LocalTime,
         val endTime: LocalTime?,
         val allowConflicts: Boolean = false,
+        val allowDurationReduction: Boolean = false,
     ) {
         val endsInFuture: Boolean =
             date.atTime(endTime ?: startTime).atZone(EuropeLondon) > ZonedDateTime.now(EuropeLondon)
@@ -36,11 +37,21 @@ class UpdateAppointment {
             allowConflicts = recreate.allowConflicts
         )
 
-        infix fun isSameDateAndTimeAs(other: Schedule) =
+        internal infix fun isSameDateAndTimeAs(other: Schedule) =
             date == other.date && startTime == other.startTime && endTime == other.endTime
 
         internal infix fun isSameDateAndTimeAs(other: AppointmentContact) =
             this isSameDateAndTimeAs Schedule(other)
+
+        internal infix fun isDurationReductionOf(other: Schedule) =
+            date == other.date && startTime == other.startTime &&
+                endTime != null && other.endTime != null && endTime < other.endTime
+
+        internal infix fun isDurationReductionOf(other: AppointmentContact) =
+            this isDurationReductionOf Schedule(other)
+
+        internal infix fun isAllowedDurationReductionOf(existing: AppointmentContact) =
+            allowDurationReduction && this isDurationReductionOf existing
     }
 
     data class Recreate(
