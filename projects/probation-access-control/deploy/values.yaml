@@ -1,0 +1,23 @@
+# Common values
+generic-service:
+  productId: HMPPS518
+  nameOverride: probation-access-control
+
+  image:
+    repository: ghcr.io/ministryofjustice/hmpps-probation-integration-services/probation-access-control
+
+  ingress:
+    tlsSecretName: probation-access-control-cert
+
+  namespace_secrets:
+    common:
+      SPRING_DATASOURCE_URL: DB_URL
+    probation-access-control-database:
+      SPRING_DATASOURCE_USERNAME: DB_USERNAME
+      SPRING_DATASOURCE_PASSWORD: DB_PASSWORD
+    probation-access-control-sentry:
+      SENTRY_DSN: SENTRY_DSN
+
+generic-prometheus-alerts:
+  targetApplication: probation-access-control
+
