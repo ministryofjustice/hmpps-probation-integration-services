@@ -1,9 +1,7 @@
 package uk.gov.justice.digital.hmpps.config
 
 import com.amazon.sqs.javamessaging.AmazonSQSExtendedAsyncClient
-import com.amazon.sqs.javamessaging.AmazonSQSExtendedClient
 import com.amazon.sqs.javamessaging.ExtendedAsyncClientConfiguration
-import com.amazon.sqs.javamessaging.ExtendedClientConfiguration
 import io.awspring.cloud.sqs.config.SqsBootstrapConfiguration
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.beans.factory.annotation.Value
@@ -16,7 +14,6 @@ import org.springframework.context.annotation.Primary
 import software.amazon.awssdk.services.s3.S3AsyncClient
 import software.amazon.awssdk.services.s3.S3Client
 import software.amazon.awssdk.services.sqs.SqsAsyncClient
-import software.amazon.awssdk.services.sqs.SqsClient
 
 @Configuration
 @Conditional(AwsCondition::class)
@@ -26,13 +23,6 @@ class ExtendedSqsConfig(
     private val s3Client: S3Client,
     @Value("\${messaging.large-message.bucket}") private val bucketName: String
 ) {
-    @Bean
-    fun extendedSqsClient(@Qualifier("sqsClient") sqsClient: SqsClient): AmazonSQSExtendedClient {
-        val config = ExtendedClientConfiguration()
-            .withPayloadSupportEnabled(s3Client, bucketName)
-        return AmazonSQSExtendedClient(sqsClient, config)
-    }
-
     @Bean
     @Primary
     fun extendedSqsAsyncClient(@Qualifier("sqsAsyncClient") sqsAsyncClient: SqsAsyncClient): SqsAsyncClient {
