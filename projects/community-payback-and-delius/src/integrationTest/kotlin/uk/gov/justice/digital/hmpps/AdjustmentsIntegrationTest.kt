@@ -43,6 +43,19 @@ class AdjustmentsIntegrationTest @Autowired constructor(
     }
 
     @Test
+    fun `get unpaid work adjustment by internal id`() {
+        val adjustment = UPWGenerator.ADJUSTMENT_NEGATIVE_FOR_ADJUSTMENT_PERSON
+        val response = mockMvc.get("/adjustments/${adjustment.id}") { withToken() }
+            .andExpect { status { isOk() } }
+            .andReturn().response.contentAsJson<Adjustment>()
+
+        assertThat(response.id).isEqualTo(adjustment.id)
+        assertThat(response.reference.toString()).isEqualTo(
+            adjustment.externalReference!!.removePrefix(REFERENCE_PREFIX)
+        )
+    }
+
+    @Test
     fun `get unpaid work adjustments`() {
         val crn = PersonGenerator.ADJUSTMENT_PERSON.crn
         val eventNumber = UPWGenerator.EVENT_ADJUSTMENT.number
@@ -180,7 +193,46 @@ class AdjustmentsIntegrationTest @Autowired constructor(
         assertThat(updatedAdjustment.type).isEqualTo(AdjustmentType.NEGATIVE.name)
     }
 
-    private fun adjustmentReference(externalReference: String): UUID = UUID.fromString(
-        externalReference.substringAfterLast(":")
-    )
+    @Test
+    fun `update upw adjustment by internal id`() {
+        val crn = PersonGenerator.ADJUSTMENT_PERSON.crn
+        val eventNumber = UPWGenerator.EVENT_ADJUSTMENT.number.toInt()
+        val username = UserGenerator.DEFAULT_USER.username
+
+        val createdAdjustment = mockMvc.post("/adjustments?username=${username}") {
+            withToken()
+            json = listOf(
+                CreateAdjustmentRequest(
+                    reference = UUID.randomUUID(),
+                    crn = crn,
+                    eventNumber = eventNumber,
+                    type = AdjustmentType.POSITIVE,
+                    date = LocalDate.now(),
+                    reason = "OT",
+                    minutes = 10
+                )
+            )
+        }
+            .andExpect { status { isOk() } }
+            .andReturn().response.contentAsJson<List<AdjustmentPostResponse>>().first()
+
+        mockMvc.put("/adjustments/${createdAdjustment.id}?username=${username}") {
+            withToken()
+            json = UpdateAdjustmentRequest(
+                crn = crn,
+                eventNumber = eventNumber,
+                type = AdjustmentType.NEGATIVE,
+                date = LocalDate.now(),
+                reason = "OT",
+                minutes = 30
+            )
+        }.andExpect { status { isOk() } }
+        val updatedAdjustment = adjustmentRepository.findFirstById(createdAdjustment.id)!!
+        assertThat(updatedAdjustment.amount).isEqualTo(30)
+        assertThat(updatedAdjustment.type).isEqualTo(AdjustmentType.NEGATIVE.name)
+
+        mockMvc.delete("/adjustments/${createdAdjustment.id}") { withToken() }.andExpect { status { isOk() } }
+        val deletedAdjustment = adjustmentRepository.findFirstById(createdAdjustment.id)
+        assertThat(deletedAdjustment).isNull()
+    }
 }

@@ -24,7 +24,7 @@ class AdjustmentsController(
         @PathVariable id: Long
     ) = adjustmentService.getAdjustment(id)
 
-    @GetMapping("/adjustments/{reference}")
+    @GetMapping("/adjustments/{reference:[0-9a-fA-F-]{36}}")
     fun getAdjustment(
         @PathVariable reference: UUID
     ) = adjustmentService.getAdjustment(reference)
@@ -45,7 +45,7 @@ class AdjustmentsController(
         @RequestBody adjustmentRequest: UpdateAdjustmentRequest
     ) = adjustmentService.updateAdjustment(id, adjustmentRequest, username)
 
-    @PutMapping("/adjustments/{reference}")
+    @PutMapping("/adjustments/{reference:[0-9a-fA-F-]{36}}")
     fun updateAdjustments(
         @PathVariable reference: UUID,
         @RequestParam username: String,
@@ -57,7 +57,7 @@ class AdjustmentsController(
         @PathVariable id: Long,
     ) = adjustmentService.deleteAdjustment(id)
 
-    @DeleteMapping("/adjustments/{reference}")
+    @DeleteMapping("/adjustments/{reference:[0-9a-fA-F-]{36}}")
     fun deleteAdjustments(
         @PathVariable reference: UUID,
     ) = adjustmentService.deleteAdjustment(reference)
