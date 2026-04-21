@@ -1,0 +1,216 @@
+name: 'GitHub API commit'
+description: 'Commits changes to your repository via the GitHub API instead of git commands. Fork of grafana/github-api-commit-action'
+inputs:
+  commit-message:
+    required: true
+    description: 'The commit message'
+    default: 'Commit performed by grafana/github-api-commit-action'
+  create-branch-on-remote:
+    required: true
+    description: 'Whether to create the branch on remote if it does not exist already: true/false'
+    default: 'false'
+  stage-all-files:
+    required: true
+    description: 'Whether to additionally stage all changed files in the repo prior to committing: true/false'
+    default: 'false'
+  success-if-no-changes:
+    required: true
+    description: 'Whether to return success if no changes are detected: true/false'
+    default: 'false'
+  token:
+    required: true
+    description: 'GitHub access token with permissions to write to repo'
+  working-directory:
+    required: false
+    description: 'Directory to run git commands in'
+    default: ${{ github.workspace }}
+outputs:
+  commit-response:
+    description: 'The response from the graphql query'
+    value: ${{ steps.commit-changes.outputs.commit_response }}
+runs:
+  using: 'composite'
+  steps:
+    - name: Setup commit context
+      shell: bash
+      id: commit-context
+      working-directory: ${{ inputs.working-directory }}
+      run: |
+        # Get the remote URL (default "origin")
+        REMOTE_URL=$(git remote get-url origin)
+        echo "Remote URL: $REMOTE_URL"
+
+        # Parse the owner and repo using regex
+        if [[ "$REMOTE_URL" =~ (.*?)github\.com[:/](.+)/(.+?)(\.git)?$ ]]; then
+          OWNER=${BASH_REMATCH[2]}
+          REPO=${BASH_REMATCH[3]}
+          BRANCH=$(git branch --show-current)
+          echo "repo=$OWNER/$REPO" >> $GITHUB_OUTPUT
+          echo "branch=$BRANCH" >> $GITHUB_OUTPUT
+        else
+          echo "ERROR: Invalid GitHub remote URL"
+          exit 1
+        fi
+
+    - name: Stage all files
+      if: inputs.stage-all-files == 'true'
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      run: git add .
+
+    - name: Create branch on remote
+      if: inputs.create-branch-on-remote == 'true'
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      run: |
+        onRemote=$(git ls-remote --heads https://x-access-token:${GH_TOKEN}@github.com/${REPO}.git ${BRANCH})
+        if [[ -z "$onRemote" ]]; then
+          git push --set-upstream https://x-access-token:${GH_TOKEN}@github.com/${REPO}.git ${BRANCH}
+        fi
+      env:
+        BRANCH: ${{ steps.commit-context.outputs.branch }}
+        REPO: ${{ steps.commit-context.outputs.repo }}
+        GH_TOKEN: ${{ inputs.token }}
+
+    - name: Get file additions and deletions
+      id: additions-and-deletions
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      run: |
+        status_output=$(git status --porcelain=v2 --branch --untracked-files=no)
+
+        staged_additions=()
+        staged_deletions=()
+
+        echo ""
+        while IFS= read -r line; do
+          if [[ "$line" == 1* ]]; then
+            status=$(echo "$line" | awk '{print $2}')
+            filepath=$(echo "$line" | awk '{print $NF}')
+
+            echo "status: $status"
+            echo "filepath: $filepath"
+        
+            # Only include files that are staged in the index with no additional changes i.e. 'M.' and 'A.'
+            if [[ "$status" == "M." || "$status" == "A." ]]; then
+              staged_additions+=("$filepath")
+            fi
+
+            if [[ "$status" == "D." ]]; then
+              staged_deletions+=("$filepath")
+            fi
+          fi
+        
+          # Renames or copies start with 2
+          if [[ "$line" == 2* ]]; then
+            status=$(echo "$line" | awk '{print $2}')
+            oldFilepath=$(echo "$line" | awk '{print $NF}')
+            newFilepath=$(echo "$line" | awk '{print $(NF-1)}')
+
+            echo "status: $status"
+            echo "old-filepath: $oldFilepath"
+            echo "new-filepath: $newFilepath"
+
+            if [[ "$status" == "R." ]]; then
+              staged_deletions+=("$oldFilepath")
+              staged_additions+=("$newFilepath")
+            fi
+          fi
+        done <<< "$status_output"
+        echo ""
+
+        contents_dir="$(mktemp -d -p $RUNNER_TEMP)"
+        echo "contents_dir=$contents_dir" >> $GITHUB_OUTPUT
+
+        additions=""
+        for filepath in "${staged_additions[@]}"; do
+          contents_file="$(mktemp --tmpdir=$contents_dir temp-file-XXXXXX)"
+          cat "$filepath" | base64 | tr -d '\n' > "$contents_file" # Encode file content in Base64
+
+          additions+=" -F \"fileAdditions[][path]=$filepath\" -F \"fileAdditions[][contents]=@$contents_file\" "
+        done
+
+        deletions=""
+        for filepath in "${staged_deletions[@]}"; do
+          deletions+=" -F \"fileDeletions[][path]=$filepath\" "
+        done
+
+        if [[ "$additions" == "" && "$deletions" == "" ]]; then
+          echo "No changes to commit"
+          echo "any_changed=false"  >> $GITHUB_OUTPUT
+
+          if [[ "${SUCCESS_IF_NO_CHANGES}" == "true" ]]; then
+            exit 0
+          else
+            exit 1
+          fi
+        fi
+
+        if [[ "$additions" == "" ]]; then
+          additions=" -F fileAdditions[] "
+        fi
+
+        if [[ "$deletions" == "" ]]; then
+          deletions=" -F fileDeletions[] "
+        fi
+        
+        # Set outputs for the next step
+        echo "any_changed=true"  >> $GITHUB_OUTPUT
+        echo "additions=$additions" >> $GITHUB_OUTPUT
+        echo "deletions=$deletions" >> $GITHUB_OUTPUT
+      env:
+        SUCCESS_IF_NO_CHANGES: ${{ inputs.success-if-no-changes }}
+
+    - name: Commit changes
+      if: ${{ steps.additions-and-deletions.outputs.any_changed == 'true' }}
+      shell: bash
+      id: commit-changes
+      working-directory: ${{ inputs.working-directory }}
+      run: |
+        branch_oid=$(git ls-remote https://x-access-token:${GH_TOKEN}@github.com/${REPO}.git refs/heads/${BRANCH} | awk '{ print $1 }')
+
+        if [ -n "$branch_oid" ]; then
+          head_oid=$branch_oid # Use remote OID of the current branch
+        else
+          head_oid=$(git ls-remote https://x-access-token:${GH_TOKEN}@github.com/${REPO}.git HEAD | awk '{ print $1 }') # Fallback to HEAD
+        fi
+
+        graphql_query='mutation(
+            $repo: String!,
+            $branch: String!,
+            $commitMessage: String!,
+            $expectedHeadOid: GitObjectID!,
+            $fileAdditions: [FileAddition!]!,
+            $fileDeletions: [FileDeletion!]!) {
+          createCommitOnBranch(
+            input: {
+              branch: {
+                repositoryNameWithOwner: $repo,
+                branchName: $branch
+              },
+              message: { headline: $commitMessage },
+              fileChanges: {
+                additions: $fileAdditions,
+                deletions: $fileDeletions
+              },
+              expectedHeadOid: $expectedHeadOid
+            }
+          ){
+            commit {
+              url,
+              changedFilesIfAvailable
+            }
+          }
+        }'
+
+        echo $graphql_query
+        
+        # re: zizmor[template-injection] - Converting to env vars prevents the parameters from being injected into the command correctly
+        response=$(gh api graphql -F "repo=${REPO}" -F "branch=${BRANCH}" -F "commitMessage=${COMMIT_MESSAGE}" -F "expectedHeadOid=$head_oid" ${{ steps.additions-and-deletions.outputs.additions }} ${{ steps.additions-and-deletions.outputs.deletions }} -F "query=$graphql_query")
+        echo "commit_response=$response" >> $GITHUB_OUTPUT
+      env:
+        GH_TOKEN: ${{ inputs.token }}
+        BRANCH: ${{ steps.commit-context.outputs.branch }}
+        REPO: ${{ steps.commit-context.outputs.repo }}
+        COMMIT_MESSAGE: ${{ inputs.commit-message }}
+        TEMP_CONTENTS_DIR: ${{ steps.additions-and-deletions.outputs.contents_dir }}

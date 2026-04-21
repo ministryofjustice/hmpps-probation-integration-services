@@ -70,12 +70,12 @@ runs:
         add_paths: ${{ inputs.add-paths }}
 
     - name: Commit and push
-      uses: grafana/github-api-commit-action@b1d81091e8480dd11fcea8bc1f0ab977a0376ca5 # v1.0.0
-      working-directory: ${{ env.path }}
+      uses: ./.github/actions/github-api-commit
       with:
         commit-message: ${{ inputs.commit-message }}
         create-branch-on-remote: true
         success-if-no-changes: true
+        working-directory: ${{ env.path }}
         token: ${{ steps.app-token.outputs.token }}
 
     - name: Create pull request
