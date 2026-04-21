@@ -81,9 +81,7 @@ runs:
     - name: Create pull request
       id: pr
       run: |
-        git fetch origin "$branch"
-        git checkout "$branch"
-        url=$(gh pr create --title "$commit_message" --body "$body" --label "$labels")
+        url=$(gh pr create --head "$branch" --title "$commit_message" --body "$body" --label "$labels")
         echo "pull-request-url=$url" | tee -a "$GITHUB_OUTPUT"
         echo "pull-request-number=$(gh pr view "$url" --json number --jq .number)" | tee -a "$GITHUB_OUTPUT"
         echo "pull-request-head-sha=$(gh pr view "$url" --json headRefOid --jq .headRefOid)" | tee -a "$GITHUB_OUTPUT"
