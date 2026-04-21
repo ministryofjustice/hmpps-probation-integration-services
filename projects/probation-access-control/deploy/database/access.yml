@@ -1,0 +1,9 @@
+database:
+  access:
+    username_key: /probation-access-control/db-username
+    password_key: /probation-access-control/db-password
+
+  audit:
+    username: ProbationAccessControl
+    forename: Probation Integration # TODO change this to something meaningful for your service
+    surname: Service
