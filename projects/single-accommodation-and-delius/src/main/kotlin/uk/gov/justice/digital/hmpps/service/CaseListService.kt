@@ -35,7 +35,7 @@ class CaseListService(
 
         val responsibleCases = personManagers.mapNotNull {
             val person = casesById[it.personId] ?: return@mapNotNull null
-            val access = checkNotNull(limitedAccess[person.crn]) {"Access not found for CRN ${person.crn}" }
+            val access = checkNotNull(limitedAccess[person.crn]) { "Access not found for CRN ${person.crn}" }
             val roshLevel = roshLevels[person.id]
             toCase(person, it, access, roshLevel)
         }
@@ -59,43 +59,40 @@ class CaseListService(
         return toCase(person, manager, access, roshLevel)
     }
 
-
     private fun toCase(
         person: Person,
         manager: PersonManager,
         access: CaseAccess,
         roshLevel: CodeDescription?
-    )= Case(
-            crn = person.crn,
+    ) = Case(
+        crn = person.crn,
+        name = Name(
+            forename = person.firstName,
+            middleName = listOfNotNull(person.secondName, person.thirdName).joinToString(" ").ifEmpty { null },
+            surname = person.surname
+        ),
+        dateOfBirth = person.dateOfBirth,
+        nomsNumber = person.noms,
+        pncNumber = person.pnc,
+        staff = Officer(
             name = Name(
-                forename = person.firstName,
-                middleName = listOfNotNull(person.secondName, person.thirdName).joinToString(" ").ifEmpty { null },
-                surname = person.surname
+                forename = manager.staff.forename,
+                middleName = manager.staff.middleName,
+                surname = manager.staff.surname
             ),
-            dateOfBirth = person.dateOfBirth,
-            nomsNumber = person.noms,
-            pncNumber = person.pnc,
-            staff = Officer(
-                name = Name(
-                    forename = manager.staff.forename,
-                    middleName = manager.staff.middleName,
-                    surname = manager.staff.surname
-                ),
-                username = manager.staff.user?.username ?: "",
-                code = manager.staff.code
-            ),
-            team = CodeDescription(
-                code = manager.team.code,
-                description = manager.team.description
-            ),
-            gender = person.gender.description,
-            roshLevel = roshLevel,
-            expectedReleaseDate = keyDateRepository.findExpectedReleaseDates(person.id),
-            userExcluded = access.userExcluded,
-            userRestricted = access.userRestricted,
-            exclusionMessage = access.exclusionMessage,
-            restrictionMessage = access.restrictionMessage
-        )
-
-
+            username = manager.staff.user?.username ?: "",
+            code = manager.staff.code
+        ),
+        team = CodeDescription(
+            code = manager.team.code,
+            description = manager.team.description
+        ),
+        gender = person.gender.description,
+        roshLevel = roshLevel,
+        expectedReleaseDate = keyDateRepository.findExpectedReleaseDates(person.id),
+        userExcluded = access.userExcluded,
+        userRestricted = access.userRestricted,
+        exclusionMessage = access.exclusionMessage,
+        restrictionMessage = access.restrictionMessage
+    )
 }
