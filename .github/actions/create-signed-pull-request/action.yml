@@ -94,4 +94,4 @@ runs:
         body: ${{ env.body }}
         commit_message: ${{ inputs.commit-message }}
         labels: ${{ inputs.labels }}
-        GITHUB_TOKEN: ${{ inputs.token }}
+        GH_TOKEN: ${{ inputs.token }}
