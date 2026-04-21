@@ -11,7 +11,10 @@ import org.springframework.context.annotation.Conditional
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Primary
 import software.amazon.awssdk.services.s3.S3AsyncClient
+import software.amazon.awssdk.services.s3.S3Client
 import software.amazon.awssdk.services.sqs.SqsAsyncClient
+import software.amazon.payloadoffloading.S3BackedPayloadStore
+import software.amazon.payloadoffloading.S3Dao
 
 @Configuration
 @Conditional(AwsCondition::class)
@@ -28,6 +31,15 @@ class ExtendedSqsConfig(
         val extendedConfig = ExtendedAsyncClientConfiguration()
             .withPayloadSupportEnabled(s3AsyncClient, bucketName)
         return AmazonSQSExtendedAsyncClient(sqsBase, extendedConfig)
+    }
+
+    @Bean
+    fun largeMessagePayloadStore(): S3BackedPayloadStore {
+        val s3Client = awsClientBuilderConfigurer.configure(S3Client.builder()).build()
+        return S3BackedPayloadStore(
+            S3Dao(s3Client),
+            bucketName
+        )
     }
 
     @Bean(name = ["defaultSqsListenerContainerFactory"])
