@@ -27,7 +27,7 @@ class ExtendedSqsConfig(
     @Value("\${messaging.large-message.bucket}") private val bucketName: String
 ) {
     @Bean
-    fun extendedSqsClient(sqsClient: SqsClient): AmazonSQSExtendedClient {
+    fun extendedSqsClient(@Lazy sqsClient: SqsClient): AmazonSQSExtendedClient {
         val config = ExtendedClientConfiguration()
             .withPayloadSupportEnabled(s3Client, bucketName)
         return AmazonSQSExtendedClient(sqsClient, config)
