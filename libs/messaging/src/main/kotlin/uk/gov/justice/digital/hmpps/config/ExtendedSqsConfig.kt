@@ -5,6 +5,7 @@ import com.amazon.sqs.javamessaging.ExtendedAsyncClientConfiguration
 import io.awspring.cloud.sqs.config.SqsBootstrapConfiguration
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.boot.autoconfigure.AutoConfigureAfter
 import org.springframework.boot.autoconfigure.AutoConfigureBefore
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.context.annotation.Bean
@@ -18,7 +19,8 @@ import software.amazon.awssdk.services.sqs.SqsAsyncClient
 @Configuration
 @Conditional(AwsCondition::class)
 @ConditionalOnProperty("messaging.large-message.bucket")
-@AutoConfigureBefore(SqsBootstrapConfiguration::class)
+@AutoConfigureAfter(SqsBootstrapConfiguration::class)
+@AutoConfigureBefore(name = ["io.awspring.cloud.autoconfigure.sqs.SqsAutoConfiguration"])
 class ExtendedSqsConfig(
     private val s3Client: S3Client,
     @Value("\${messaging.large-message.bucket}") private val bucketName: String
