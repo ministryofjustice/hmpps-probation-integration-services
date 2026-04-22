@@ -12,9 +12,11 @@ import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 
 @Primary
 @Component
-class Converter(objectMapper: ObjectMapper,
+class Converter(
+    objectMapper: ObjectMapper,
     private val telemetryService: TelemetryService,
-    @Autowired(required = false) payloadStore: S3BackedPayloadStore? = null) :
+    @Autowired(required = false) payloadStore: S3BackedPayloadStore? = null
+) :
     NotificationConverter<CommonPlatformHearing>(objectMapper, payloadStore) {
     override fun getMessageType() = CommonPlatformHearing::class
 

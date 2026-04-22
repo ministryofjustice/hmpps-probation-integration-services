@@ -10,7 +10,6 @@ import kotlin.reflect.KClass
 private fun String.isS3Pointer() =
     trimStart().startsWith("[\"software.amazon.payloadoffloading.PayloadS3Pointer\"")
 
-
 abstract class NotificationConverter<T : Any>(
     val objectMapper: ObjectMapper,
     private val payloadStore: S3BackedPayloadStore? = null
