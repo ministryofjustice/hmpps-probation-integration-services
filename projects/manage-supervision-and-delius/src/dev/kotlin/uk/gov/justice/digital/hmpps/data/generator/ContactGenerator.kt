@@ -294,6 +294,28 @@ object ContactGenerator {
         workInProgress = true
     )
 
+    val UPDATABLE_CONTACT =
+        generateContact(
+            person = PersonGenerator.UPDATE_PERSON,
+            contactType = ContactGenerator.EMAIL_POP_CT,
+            startDateTime = ZonedDateTime.of(LocalDate.now().atTime(10, 0), EuropeLondon),
+            notes = "Original notes",
+            staff = DEFAULT_STAFF,
+            team = DEFAULT_TEAM,
+            event = PersonGenerator.UPDATE_CONTACT_EVENT
+        )
+
+    // Uses APPT_CT_1 (code "C089") which is NOT in CreateContact.Type — invalid for update
+    val NON_UPDATABLE_CONTACT =
+        generateContact(
+            person = PersonGenerator.UPDATE_PERSON,
+            contactType = ContactGenerator.APPT_CT_1,
+            startDateTime = ZonedDateTime.of(LocalDate.now().atTime(11, 0), EuropeLondon),
+            staff = DEFAULT_STAFF,
+            team = DEFAULT_TEAM,
+            event = PersonGenerator.UPDATE_CONTACT_EVENT
+        )
+
     fun generateContactDocument(
         personId: Long,
         alfrescoId: String,

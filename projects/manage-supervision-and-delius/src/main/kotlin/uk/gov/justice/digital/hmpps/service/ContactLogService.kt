@@ -6,6 +6,7 @@ import uk.gov.justice.digital.hmpps.api.model.contact.ContactTypeResponse
 import uk.gov.justice.digital.hmpps.api.model.contact.ContactTypesResponse
 import uk.gov.justice.digital.hmpps.api.model.contact.CreateContact
 import uk.gov.justice.digital.hmpps.api.model.contact.CreateContactResponse
+import uk.gov.justice.digital.hmpps.api.model.contact.UpdateContact
 import uk.gov.justice.digital.hmpps.aspect.UserContext
 import uk.gov.justice.digital.hmpps.audit.service.AuditableService
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
@@ -37,7 +38,7 @@ class ContactLogService(
     private val teamRepository: TeamRepository,
     private val contactTypeRequirementTypeRepository: ContactTypeRequirementTypeRepository,
     private val notifier: Notifier,
-    private val mappaCategoryResolverService: MappaCategoryResolverService
+    private val mappaCategoryResolverService: MappaCategoryResolverService,
 ) : AuditableService(auditedInteractionService) {
 
     @Transactional
@@ -155,4 +156,21 @@ class ContactLogService(
         description = description,
         isPersonLevelContact = offenderContact
     )
+
+    @Transactional
+    fun updateContact(
+        contactId: Long,
+        request: UpdateContact
+    ) {
+        val contact = contactRepository.getContact(contactId)
+        // if the contact type is not updatable throw an exception
+        CreateContact.Type.entries.find { it.code == contact.type.code }
+            ?: throw InvalidRequestException("Contact type ${contact.type.code} is not valid for update")
+        contact.date = request.dateTime.toLocalDate()
+        contact.startTime = request.dateTime
+        request.notes?.let { contact.appendNotes(it) }
+        require(contact.sensitive != true || request.sensitiveFlag == true) { "Cannot un-flag a sensitive contact" }
+        contact.sensitive = request.sensitiveFlag
+        contactRepository.save(contact)
+    }
 }
