@@ -35,7 +35,7 @@ class HmppsAuthInterceptor(
             .withClientRegistrationId(registrationId)
             .principal(authentication)
             .build()
-        return clientManager.authorize(request)?.accessToken?.tokenValue
+        return clientManager.authorize(request)?.accessToken?.tokenValue?.takeIf { it.isNotEmpty() }
             ?: throw OAuth2AuthenticationException("Unable to retrieve access token")
     }
 }
