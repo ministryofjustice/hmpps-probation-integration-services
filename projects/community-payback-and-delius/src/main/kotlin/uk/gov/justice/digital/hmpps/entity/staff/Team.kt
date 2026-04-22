@@ -84,7 +84,7 @@ interface TeamRepository : JpaRepository<Team, Long> {
     )
     fun findStaffByTeamCode(teamCode: String): List<Staff>
 
-    fun findTeamByCode(teamCode: String): Team
+    fun findTeamByCode(teamCode: String): Team?
 }
 
 fun Team.toCodeDescription() = CodeDescription(
