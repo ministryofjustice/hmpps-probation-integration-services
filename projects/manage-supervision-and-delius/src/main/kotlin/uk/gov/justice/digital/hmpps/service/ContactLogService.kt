@@ -170,7 +170,7 @@ class ContactLogService(
         contact.startTime = request.dateTime
         request.notes?.let { contact.appendNotes(it) }
         require(contact.sensitive != true || request.sensitiveFlag == true) { "Cannot un-flag a sensitive contact" }
-            contact.sensitive = request.sensitiveFlag
+        contact.sensitive = request.sensitiveFlag
         contactRepository.save(contact)
     }
 }
