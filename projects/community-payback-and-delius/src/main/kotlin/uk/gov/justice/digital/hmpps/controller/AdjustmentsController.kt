@@ -1,16 +1,11 @@
 package uk.gov.justice.digital.hmpps.controller
 
 import org.springframework.security.access.prepost.PreAuthorize
-import org.springframework.web.bind.annotation.DeleteMapping
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.PutMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestParam
-import org.springframework.web.bind.annotation.RestController
-import uk.gov.justice.digital.hmpps.model.AdjustmentRequest
+import org.springframework.web.bind.annotation.*
+import uk.gov.justice.digital.hmpps.model.CreateAdjustmentRequest
+import uk.gov.justice.digital.hmpps.model.UpdateAdjustmentRequest
 import uk.gov.justice.digital.hmpps.service.AdjustmentService
+import java.util.*
 
 @RestController
 @PreAuthorize("hasRole('PROBATION_API__COMMUNITY_PAYBACK__CASE_DETAIL')")
@@ -23,28 +18,47 @@ class AdjustmentsController(
         @RequestParam eventNumber: Int
     ) = adjustmentService.getAdjustments(crn, eventNumber)
 
-    @GetMapping("/adjustments/{id}")
-    fun getAdjustment(
+    @Deprecated("Pass a reference instead of an internal id", replaceWith = ReplaceWith("getAdjustment"))
+    @GetMapping("/adjustments/{id:\\d+}")
+    fun getAdjustmentByInternalId(
         @PathVariable id: Long
     ) = adjustmentService.getAdjustment(id)
+
+    @GetMapping("/adjustments/{reference:[0-9a-fA-F-]{36}}")
+    fun getAdjustment(
+        @PathVariable reference: UUID
+    ) = adjustmentService.getAdjustment(reference)
 
     @PostMapping("/adjustments")
     fun createAdjustments(
         @RequestParam username: String,
-        @RequestBody adjustmentRequests: List<AdjustmentRequest>
+        @RequestBody adjustmentRequests: List<CreateAdjustmentRequest>
     ) = adjustmentService.createAdjustments(
         adjustmentRequests, username
     )
 
-    @PutMapping("/adjustments/{adjustmentId}")
-    fun updateAdjustments(
-        @PathVariable adjustmentId: Long,
+    @Deprecated("Pass a reference instead of an internal id", replaceWith = ReplaceWith("updateAdjustments"))
+    @PutMapping("/adjustments/{id:\\d+}")
+    fun updateAdjustmentsByInternalId(
+        @PathVariable id: Long,
         @RequestParam username: String,
-        @RequestBody adjustmentRequest: AdjustmentRequest
-    ) = adjustmentService.updateAdjustment(adjustmentId, adjustmentRequest, username)
+        @RequestBody adjustmentRequest: UpdateAdjustmentRequest
+    ) = adjustmentService.updateAdjustment(id, adjustmentRequest, username)
 
-    @DeleteMapping("/adjustments/{adjustmentId}")
+    @PutMapping("/adjustments/{reference:[0-9a-fA-F-]{36}}")
+    fun updateAdjustments(
+        @PathVariable reference: UUID,
+        @RequestParam username: String,
+        @RequestBody adjustmentRequest: UpdateAdjustmentRequest
+    ) = adjustmentService.updateAdjustment(reference, adjustmentRequest, username)
+
+    @DeleteMapping("/adjustments/{id:\\d+}")
     fun deleteAdjustments(
-        @PathVariable adjustmentId: Long,
-    ) = adjustmentService.deleteAdjustment(adjustmentId)
+        @PathVariable id: Long,
+    ) = adjustmentService.deleteAdjustment(id)
+
+    @DeleteMapping("/adjustments/{reference:[0-9a-fA-F-]{36}}")
+    fun deleteAdjustments(
+        @PathVariable reference: UUID,
+    ) = adjustmentService.deleteAdjustment(reference)
 }
