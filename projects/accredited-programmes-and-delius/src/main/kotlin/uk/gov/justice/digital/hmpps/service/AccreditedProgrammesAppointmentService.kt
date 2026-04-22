@@ -61,6 +61,7 @@ class AccreditedProgrammesAppointmentService(
                     reference = "${Contact.REFERENCE_PREFIX}${request.reference}",
                     typeCode = request.type.code,
                     relatedTo = ReferencedEntities(
+                        crn = component.disposal.event.person.crn,
                         personId = component.disposal.event.person.id,
                         eventId = component.disposal.event.id,
                         requirementId = request.requirementId,
