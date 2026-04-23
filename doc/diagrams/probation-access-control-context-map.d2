@@ -1,0 +1,26 @@
+style { ...@common/style.style }
+vars { ...@common/style.vars }
+** { ...@common/style.all-style }
+
+context-access-control: Probation Access Control Context {
+  entities: Entities {
+    person: Case Access
+  }
+}
+
+context-delius: Delius Context {
+
+  interface: Probation Access Control {
+    type: Anti-Corruption\nLayer
+  }
+
+  entities: Entities {
+    person: Person on Probation
+    user: User
+    restriction: Restriction
+    exclusion: Exclusion
+  }
+}
+
+context-access-control--context-delius.interface: Upstream\n\n\nDownstream
+
