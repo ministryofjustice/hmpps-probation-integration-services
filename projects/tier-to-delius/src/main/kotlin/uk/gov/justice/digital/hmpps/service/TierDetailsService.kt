@@ -57,6 +57,7 @@ class TierDetailsService(
             convictions = convictions,
             previousEnforcementActivity = nsiRepository.previousEnforcementActivity(case.id),
             latestReleaseDate = latestReleaseDate,
+            hasActiveEvent = eventEntities.isNotEmpty()
         )
     }
 
