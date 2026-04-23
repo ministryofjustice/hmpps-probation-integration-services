@@ -15,6 +15,7 @@ import software.amazon.awssdk.services.s3.S3Client
 import software.amazon.awssdk.services.sqs.SqsAsyncClient
 import software.amazon.payloadoffloading.S3BackedPayloadStore
 import software.amazon.payloadoffloading.S3Dao
+import uk.gov.justice.digital.hmpps.logging.Logger.logger
 
 @Configuration
 @Conditional(AwsCondition::class)
@@ -36,6 +37,7 @@ class ExtendedSqsConfig(
     @Bean
     fun largeMessagePayloadStore(): S3BackedPayloadStore {
         val s3Client = awsClientBuilderConfigurer.configure(S3Client.builder()).build()
+        logger().info("Using S3 bucket {} for large message payload storage", bucketName)
         return S3BackedPayloadStore(
             S3Dao(s3Client),
             bucketName
