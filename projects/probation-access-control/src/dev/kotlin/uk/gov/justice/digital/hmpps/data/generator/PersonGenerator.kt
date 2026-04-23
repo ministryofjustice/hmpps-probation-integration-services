@@ -6,6 +6,11 @@ object PersonGenerator {
     val DEFAULT = generateLaoPerson(crn = "X123456")
     val EXCLUDED = generateLaoPerson(crn = "E123456", exclusionMessage = "This case is excluded.")
     val RESTRICTED = generateLaoPerson(crn = "R123456", restrictionMessage = "This case is restricted.")
+    val BOTH = generateLaoPerson(
+        crn = "B123456",
+        exclusionMessage = "This case is excluded.",
+        restrictionMessage = "This case is restricted."
+    )
 
     private fun generateLaoPerson(
         id: Long = IdGenerator.getAndIncrement(),

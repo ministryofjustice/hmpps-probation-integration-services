@@ -17,7 +17,10 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
         save(PersonGenerator.DEFAULT)
         save(PersonGenerator.EXCLUDED)
         save(PersonGenerator.RESTRICTED)
+        save(PersonGenerator.BOTH)
         save(LimitedAccessGenerator.EXCLUSION)
         save(LimitedAccessGenerator.RESTRICTION)
+        save(LimitedAccessGenerator.BOTH_EXCLUSION)
+        save(LimitedAccessGenerator.BOTH_RESTRICTION)
     }
 }

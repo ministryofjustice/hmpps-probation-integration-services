@@ -32,14 +32,81 @@ internal class UserAccessIntegrationTest @Autowired constructor(
     lateinit var telemetryService: TelemetryService
 
     @Test
-    fun `can retrieve user access details for single crn`() {
+    fun `can retrieve user exclusion details for a single crn`() {
         val user = UserGenerator.DEFAULT
         val person = PersonGenerator.EXCLUDED
         val response = mockMvc.get("/user/${user.username}/access/${person.crn}") { withToken() }
             .andExpect { status { is2xxSuccessful() } }
             .andReturn().response.contentAsJson<CaseAccess>()
 
-        assertThat(response.userExcluded, equalTo(true))
+        assertThat(
+            response,
+            equalTo(
+                CaseAccess(
+                    person.crn,
+                    userExcluded = true,
+                    userRestricted = false,
+                    exclusionMessage = person.exclusionMessage
+                )
+            )
+        )
+    }
+
+    @Test
+    fun `can retrieve user restriction details for a single crn`() {
+        val user = UserGenerator.DEFAULT
+        val person = PersonGenerator.RESTRICTED
+        val response = mockMvc.get("/user/${user.username}/access/${person.crn}") { withToken() }
+            .andExpect { status { is2xxSuccessful() } }
+            .andReturn().response.contentAsJson<CaseAccess>()
+
+        assertThat(
+            response,
+            equalTo(
+                CaseAccess(
+                    person.crn,
+                    userExcluded = false,
+                    userRestricted = true,
+                    restrictionMessage = person.restrictionMessage
+                )
+            )
+        )
+    }
+
+    @Test
+    fun `can retrieve user exclusion and restriction details for a single crn`() {
+        val user = UserGenerator.DEFAULT
+        val person = PersonGenerator.BOTH
+        val response = mockMvc.get("/user/${user.username}/access/${person.crn}") { withToken() }
+            .andExpect { status { is2xxSuccessful() } }
+            .andReturn().response.contentAsJson<CaseAccess>()
+
+        assertThat(
+            response,
+            equalTo(
+                CaseAccess(
+                    person.crn,
+                    userExcluded = true,
+                    userRestricted = true,
+                    exclusionMessage = person.exclusionMessage,
+                    restrictionMessage = person.restrictionMessage
+                )
+            )
+        )
+    }
+
+    @Test
+    fun `can retrieve user details without excluson or restriction`() {
+        val user = UserGenerator.DEFAULT
+        val person = PersonGenerator.DEFAULT
+        val response = mockMvc.get("/user/${user.username}/access/${person.crn}") { withToken() }
+            .andExpect { status { is2xxSuccessful() } }
+            .andReturn().response.contentAsJson<CaseAccess>()
+
+        assertThat(
+            response,
+            equalTo(CaseAccess(person.crn, userExcluded = false, userRestricted = false))
+        )
     }
 
     @Test

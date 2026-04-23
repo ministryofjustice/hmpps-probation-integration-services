@@ -18,6 +18,16 @@ object LimitedAccessGenerator {
         user = UserGenerator.RESTRICTED
     )
 
+    val BOTH_EXCLUSION = generateExclusion(
+        person = PersonGenerator.BOTH,
+        user = UserGenerator.DEFAULT
+    )
+
+    val BOTH_RESTRICTION = generateRestriction(
+        person = PersonGenerator.BOTH,
+        user = UserGenerator.RESTRICTED
+    )
+
     fun generateExclusion(
         person: LimitedAccessPerson,
         user: LimitedAccessUser,
