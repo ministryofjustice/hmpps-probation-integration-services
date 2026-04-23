@@ -13,7 +13,8 @@ data class TierDetails(
     val registrations: List<Registration>,
     val convictions: List<Conviction>,
     val previousEnforcementActivity: Boolean,
-    val latestReleaseDate: LocalDate?
+    val latestReleaseDate: LocalDate?,
+    val hasActiveEvent: Boolean
 )
 
 data class Registration(
