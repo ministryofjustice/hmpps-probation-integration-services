@@ -23,7 +23,8 @@ class CaseListService(
             "username",
             username
         )
-        val personManagers = personManagerRepository.findByStaffId(staff.id)
+        val teamIds = staff.teams.map { it.id }
+        val personManagers = if (teamIds.isNotEmpty()) personManagerRepository.findByTeamIdIn(teamIds) else emptyList()
         val personIds = personManagers.map { it.personId }
         val casesById = personRepository.findByIdIn(personIds).associateBy { it.id }
         val roshLevels = registrationRepository.findByPersonIdInAndTypeCodeIn(personIds, RegisterType.ROSH_CODES)
