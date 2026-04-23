@@ -27,7 +27,7 @@ internal class SingleAccommodationIntegrationTest @Autowired constructor(
     lateinit var telemetryService: TelemetryService
 
     @Test
-    fun `can retrieve case list for user`() {
+    fun `can retrieve case list for user's team`() {
         val user = UserGenerator.DEFAULT
         val person = PersonGenerator.DEFAULT
         val staff = StaffGenerator.DEFAULT
@@ -37,7 +37,9 @@ internal class SingleAccommodationIntegrationTest @Autowired constructor(
             .andExpect { status { is2xxSuccessful() } }
             .andReturn().response.contentAsJson<CaseListResponse>()
 
-        assertThat(response.cases.size).isEqualTo(3)
+        assertThat(response.cases.size).isEqualTo(4)
+        assertThat(response.cases.any { it.crn == PersonGenerator.TEAM.crn && it.staff.code == StaffGenerator.TEAM_STAFF.code }).isTrue()
+        assertThat(response.cases.none { it.crn == PersonGenerator.OTHER_TEAM.crn }).isTrue()
         val defaultCase = response.cases.first { it.crn == person.crn }
         assertThat(defaultCase).isEqualTo(
             Case(

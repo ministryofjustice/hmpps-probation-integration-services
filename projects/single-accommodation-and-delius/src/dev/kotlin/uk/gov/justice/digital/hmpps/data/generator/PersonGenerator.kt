@@ -45,6 +45,30 @@ object PersonGenerator {
         exclusionMessage = null,
         restrictionMessage = "This case is restricted."
     )
+    val TEAM = Person(
+        id = IdGenerator.getAndIncrement(),
+        crn = "A000002",
+        firstName = "Team",
+        secondName = null,
+        thirdName = null,
+        surname = "Person",
+        dateOfBirth = LocalDate.of(1980, 6, 15),
+        gender = ReferenceDataGenerator.GENDER_MALE,
+        noms = "A0002AA",
+        pnc = "2010/00000001"
+    )
+    val OTHER_TEAM = Person(
+        id = IdGenerator.getAndIncrement(),
+        crn = "A000003",
+        firstName = "Other Team",
+        secondName = null,
+        thirdName = null,
+        surname = "Person",
+        dateOfBirth = LocalDate.of(1980, 6, 18),
+        gender = ReferenceDataGenerator.GENDER_MALE,
+        noms = "A0003AA",
+        pnc = "2010/00000002"
+    )
 }
 
 object PersonManagerGenerator {
@@ -71,6 +95,24 @@ object PersonManagerGenerator {
         personId = PersonGenerator.RESTRICTED.id,
         team = TeamGenerator.DEFAULT,
         staff = StaffGenerator.DEFAULT,
+        probationAreaId = ProviderGenerator.DEFAULT.id,
+        active = true,
+        softDeleted = false
+    )
+    val TEAM_MANAGER = PersonManager(
+        id = IdGenerator.getAndIncrement(),
+        personId = PersonGenerator.TEAM.id,
+        team = TeamGenerator.DEFAULT,
+        staff = StaffGenerator.TEAM_STAFF,
+        probationAreaId = ProviderGenerator.DEFAULT.id,
+        active = true,
+        softDeleted = false
+    )
+    val OTHER_TEAM_MANAGER = PersonManager(
+        id = IdGenerator.getAndIncrement(),
+        personId = PersonGenerator.OTHER_TEAM.id,
+        team = TeamGenerator.OTHER_TEAM,
+        staff = StaffGenerator.OTHER_TEAM_STAFF,
         probationAreaId = ProviderGenerator.DEFAULT.id,
         active = true,
         softDeleted = false
