@@ -24,6 +24,7 @@ class GetProbationPractitionerTest : IntegrationTestBase() {
                 ProbationPractitioner(
                     "N01PEPA",
                     ProbationPractitioner.Name("Peter", "Parker"),
+                    "peter.parker@moj.gov.uk",
                     ProbationPractitioner.Provider("N01", "Description of N01"),
                     ProbationPractitioner.Team("N07T02", "OMU B"),
                     false,
