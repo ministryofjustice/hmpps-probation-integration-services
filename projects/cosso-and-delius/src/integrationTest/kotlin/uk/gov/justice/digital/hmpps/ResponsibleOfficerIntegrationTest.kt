@@ -22,7 +22,7 @@ class ResponsibleOfficerIntegrationTest @Autowired constructor(
         val crn = DEFAULT_PERSON.crn
         val expectedResponse =
             """{"name":{"forename":"John","middleName":"Bob","surname":"Smith"},"emailAddress":"john.smith@moj.gov.uk","telephoneNumber":"07247764536","probationArea":{"code":"N02","description":"DEFAULT_PROBATION_AREA"},"replyAddress":{"id":10001099,"officeDescription":"Main Office","buildingName":"The Office Block","buildingNumber":"1","streetName":"The Street","townCity":"The Town","district":"The District","county":"The County","postcode":"AA1 1AA"}}"""
-        mockMvc.get("/responsible-officer-details/$crn") { withToken() }
+        mockMvc.get("/responsible-officer/$crn") { withToken() }
             .andExpect {
                 status { isOk() }
                 content {
@@ -38,7 +38,7 @@ class ResponsibleOfficerIntegrationTest @Autowired constructor(
         val crn = PERSON_IN_PRISON.crn
         val expectedResponse =
             """{"name":{"forename":"John","middleName":"Bob","surname":"Smith"},"emailAddress":"john.smith@moj.gov.uk","telephoneNumber":"07247764536","probationArea":{"code":"N02","description":"DEFAULT_PROBATION_AREA"},"replyAddress":{"id":10001099,"officeDescription":"Main Office","buildingName":"The Office Block","buildingNumber":"1","streetName":"The Street","townCity":"The Town","district":"The District","county":"The County","postcode":"AA1 1AA"}}"""
-        mockMvc.get("/responsible-officer-details/$crn") { withToken() }
+        mockMvc.get("/responsible-officer/$crn") { withToken() }
             .andExpect {
                 status { isOk() }
                 content {
