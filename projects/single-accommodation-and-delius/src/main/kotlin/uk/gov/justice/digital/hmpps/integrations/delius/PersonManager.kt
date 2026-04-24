@@ -39,5 +39,6 @@ class PersonManager(
 
 interface PersonManagerRepository : JpaRepository<PersonManager, Long> {
     fun findByStaffId(staffId: Long): List<PersonManager>
+    fun findByTeamIdIn(teamIds: List<Long>): List<PersonManager>
     fun findFirstByPersonId(personId: Long): PersonManager?
 }
