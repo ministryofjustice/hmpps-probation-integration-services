@@ -9,7 +9,7 @@ import uk.gov.justice.digital.hmpps.service.ResponsibleOfficerService
 @RestController
 class ResponsibleOfficerController(val responsibleOfficerService: ResponsibleOfficerService) {
     @PreAuthorize("hasRole('PROBATION_API__COSSO__CASE_DETAILS')")
-    @GetMapping(value = ["/responsible-officer-details/{crn}"])
+    @GetMapping(value = ["/responsible-officer/{crn}"])
     fun getResponsibleOfficerDetails(@PathVariable crn: String) =
         responsibleOfficerService.getResponsibleOfficerDetails(crn)
 }
