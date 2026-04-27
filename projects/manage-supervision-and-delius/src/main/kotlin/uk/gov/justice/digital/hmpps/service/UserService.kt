@@ -39,6 +39,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.user.staff.StaffReposito
 import uk.gov.justice.digital.hmpps.integrations.delius.user.team.*
 import uk.gov.justice.digital.hmpps.ldap.findAttributeByUsername
 import uk.gov.justice.digital.hmpps.ldap.findByUsername
+import uk.gov.justice.digital.hmpps.ldap.findEmailByUsernames
 import uk.gov.justice.digital.hmpps.ldap.findPreferenceByUsername
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -244,7 +245,13 @@ class UserService(
         val teams = teamRepository.findByProviderCode(regionSearch).map { it.toTeam() }
 
         val teamSearch = team ?: defaultTeam?.code ?: teams.first().code
-        val users = staffUserRepository.findStaffByTeam(teamSearch).map { it.toUser() }
+        val staffInTeam = staffUserRepository.findStaffByTeam(teamSearch)
+        val emailsByUsername = ldapTemplate.findEmailByUsernames(
+            staffInTeam.map { it.username }.filter { it != "Unallocated" }
+        )
+        val users = staffInTeam.map { staff ->
+            staff.toUser(email = emailsByUsername[staff.username])
+        }
         val defaultUser = staffUserRepository.getUser(username)
 
         return UserProviderResponse(

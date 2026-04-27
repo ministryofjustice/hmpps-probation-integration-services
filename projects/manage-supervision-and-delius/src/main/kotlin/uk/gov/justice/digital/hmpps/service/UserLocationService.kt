@@ -25,7 +25,12 @@ class UserLocationService(private val staffUserRepository: StaffUserRepository) 
 fun Location.toLocationDetails(): LocationDetails =
     LocationDetails(id, code.trim(), description, Address(buildingNumber, streetName, townCity, county, postcode))
 
-fun StaffAndRole.toUser(): User =
-    User(code, username, if (username != "Unallocated") "$forename $surname (${role})" else username)
+fun StaffAndRole.toUser(email: String? = null): User =
+    User(
+        code, username, if (username != "Unallocated") "$forename $surname (${role})" else username,
+        email = email,
+        name = Name (forename, surname = surname)
+    )
 
-fun StaffUser.toUser(): User = User(staff!!.code, username, "$forename $surname (${staff.role!!.description})")
+fun StaffUser.toUser(): User = User(staff!!.code, username, "$forename $surname (${staff.role!!.description})",
+    email = email, name = Name (forename, surname = surname))
