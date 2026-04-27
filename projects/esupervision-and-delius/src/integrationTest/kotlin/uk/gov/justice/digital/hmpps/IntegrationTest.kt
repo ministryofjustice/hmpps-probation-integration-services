@@ -202,7 +202,7 @@ internal class IntegrationTest @Autowired constructor(
             it.externalReference == "urn:uk:gov:hmpps:esupervision:check-in:a18648f4-46ec-4344-8e8e-ba15c18c3ab9"
         }
 
-        assertThat(contact.isSensitive).isEqualTo(false)
+        assertThat(contact.isSensitive).isEqualTo(true)
         assertThat(contact.notes).isEqualTo(
             """
             |Existing Notes

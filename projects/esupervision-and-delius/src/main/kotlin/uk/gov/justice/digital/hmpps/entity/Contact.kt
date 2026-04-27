@@ -80,7 +80,7 @@ class Contact(
 
     @Column(name = "sensitive")
     @Convert(converter = YesNoConverter::class)
-    val isSensitive: Boolean = false
+    var isSensitive: Boolean? = false
 ) {
 
     @Version
