@@ -3,7 +3,11 @@ package uk.gov.justice.digital.hmpps.model
 import java.time.LocalDate
 
 data class CaseListResponse(
-    val cases: List<Case>
+    val cases: List<Case>,
+    val totalElements: Long,
+    val totalPages: Int,
+    val page: Int,
+    val size: Int,
 )
 
 data class Case(

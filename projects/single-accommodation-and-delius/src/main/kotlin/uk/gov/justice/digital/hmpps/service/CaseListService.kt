@@ -1,5 +1,7 @@
 package uk.gov.justice.digital.hmpps.service
 
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
@@ -18,14 +20,19 @@ class CaseListService(
     private val registrationRepository: RegistrationRepository,
     private val userAccessService: UserAccessService
 ) {
-    fun getCaseList(username: String): CaseListResponse {
+    fun getCaseList(username: String, pageable: PageRequest): CaseListResponse {
         val staff = staffRepository.findByUserUsernameIgnoreCase(username) ?: throw NotFoundException(
             "Staff",
             "username",
             username
         )
         val teamIds = staff.teams.map { it.id }
-        val personManagers = if (teamIds.isNotEmpty()) personManagerRepository.findByTeamIdIn(teamIds) else emptyList()
+        val personManagersPageable = if (teamIds.isNotEmpty()) {
+            personManagerRepository.findByTeamIdIn(teamIds, pageable)
+        } else {
+            Page.empty(pageable)
+        }
+        val personManagers = personManagersPageable.content
         val personIds = personManagers.map { it.personId }
         val casesById = personRepository.findByIdIn(personIds).associateBy { it.id }
         val roshLevels = registrationRepository.findByPersonIdInAndTypeCodeIn(personIds, RegisterType.ROSH_CODES)
@@ -44,7 +51,13 @@ class CaseListService(
             toCase(person, it, access, roshLevel, expectedReleaseDates[person.id])
         }
 
-        return CaseListResponse(responsibleCases)
+        return CaseListResponse(
+            cases = responsibleCases,
+            totalElements = personManagersPageable.totalElements,
+            totalPages = personManagersPageable.totalPages,
+            page = pageable.pageNumber,
+            size = pageable.pageSize,
+        )
     }
 
     fun getCase(username: String, crn: String): Case {

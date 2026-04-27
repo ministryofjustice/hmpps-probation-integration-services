@@ -3,6 +3,8 @@ package uk.gov.justice.digital.hmpps.integrations.delius
 import jakarta.persistence.*
 import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.NumericBooleanConverter
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.repository.JpaRepository
 
 @Entity
@@ -39,6 +41,6 @@ class PersonManager(
 
 interface PersonManagerRepository : JpaRepository<PersonManager, Long> {
     fun findByStaffId(staffId: Long): List<PersonManager>
-    fun findByTeamIdIn(teamIds: List<Long>): List<PersonManager>
+    fun findByTeamIdIn(teamIds: List<Long>, pageable: Pageable): Page<PersonManager>
     fun findFirstByPersonId(personId: Long): PersonManager?
 }
