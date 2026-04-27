@@ -113,4 +113,22 @@ interface KeyDateRepository : JpaRepository<KeyDate, Long> {
     	"""
     )
     fun findExpectedReleaseDates(personId: Long, pageRequest: PageRequest = PageRequest.of(0, 1)): LocalDate?
+
+    @Query(
+        """
+        select e.personId as personId, max(kd.date) as releaseDate from KeyDate kd
+        join kd.custody c
+        join c.disposal d
+        join d.event e
+        where e.personId in :personIds
+        and kd.type.code = 'EXP'
+        group by e.personId
+        """
+    )
+    fun findExpectedReleaseDatesByPersonIdIn(personIds: List<Long>): List<PersonIdAndDate>
+}
+
+interface PersonIdAndDate {
+    val personId: Long
+    val releaseDate: LocalDate?
 }
