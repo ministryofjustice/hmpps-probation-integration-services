@@ -44,6 +44,7 @@ class CheckInService(
         val contact = contactRepository.getByExternalReferenceIn(externalReferences)
         require(domainEvent matches contact) { "Case details mismatch" }
         contact.notes = listOfNotNull(contact.notes, detail.notes).joinToString(System.lineSeparator())
+        contact.isSensitive = detail.sensitive || contact.isSensitive == true
         contactRepository.save(contact).also { audit(it) }
     }
 

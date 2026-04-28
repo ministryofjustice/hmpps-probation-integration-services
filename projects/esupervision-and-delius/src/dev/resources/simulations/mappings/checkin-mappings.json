@@ -62,7 +62,7 @@
           "Content-Type": "application/json"
         },
         "status": 200,
-        "body": "{\"checkinUuid\": \"a18648f4-46ec-4344-8e8e-ba15c18c3ab9\", \"notes\": \"Check-in updated\", \"sensitive\": false}"
+        "body": "{\"checkinUuid\": \"a18648f4-46ec-4344-8e8e-ba15c18c3ab9\", \"notes\": \"Check-in updated\", \"sensitive\": true}"
       }
     },
     {
