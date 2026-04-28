@@ -266,7 +266,7 @@ class UserService(
         return DefaultUserDetails(
             default.username,
             default.staff?.code,
-            providers.first { it.code == homeArea }.name,
+            providers.firstOrNull { it.code == homeArea }?.name.orNotFoundBy("code", homeArea),
             team?.description
         )
     }

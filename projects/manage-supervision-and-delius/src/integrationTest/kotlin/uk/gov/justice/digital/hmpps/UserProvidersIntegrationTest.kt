@@ -29,6 +29,12 @@ class UserProvidersIntegrationTest : IntegrationTestBase() {
             .andExpect { status { isUnauthorized() } }
     }
 
+    @Test
+    fun `returns 404 when user home area is not in their list of providers`() {
+        mockMvc.get("/user/no-home-match/providers") { withToken() }
+            .andExpect { status { isNotFound() } }
+    }
+
     @ParameterizedTest
     @MethodSource("providerRequests")
     fun `get user providers`(uri: String, expected: UserProviderResponse) {
