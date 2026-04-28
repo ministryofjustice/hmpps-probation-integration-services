@@ -84,13 +84,13 @@ dependencyResolutionManagement {
     versionCatalogs {
         create("libs") {
             library("asyncapi", "org.openfolder:kotlin-asyncapi-spring-web:3.2.2")
-            library("aws-s3", "io.awspring.cloud:spring-cloud-aws-starter-s3:4.0.0")
-            library("aws-autoconfigure", "io.awspring.cloud:spring-cloud-aws-autoconfigure:4.0.0")
-            library("aws-query-protocol", "software.amazon.awssdk:aws-query-protocol:2.42.36")
-            library("aws-sns", "io.awspring.cloud:spring-cloud-aws-starter-sns:4.0.0")
-            library("aws-sqs", "io.awspring.cloud:spring-cloud-aws-starter-sqs:4.0.0")
-            library("aws-starter", "io.awspring.cloud:spring-cloud-aws-starter:4.0.0")
-            library("aws-sts", "software.amazon.awssdk:sts:2.42.36")
+            library("aws-s3", "io.awspring.cloud:spring-cloud-aws-starter-s3:4.0.1")
+            library("aws-autoconfigure", "io.awspring.cloud:spring-cloud-aws-autoconfigure:4.0.1")
+            library("aws-query-protocol", "software.amazon.awssdk:aws-query-protocol:2.42.41")
+            library("aws-sns", "io.awspring.cloud:spring-cloud-aws-starter-sns:4.0.1")
+            library("aws-sqs", "io.awspring.cloud:spring-cloud-aws-starter-sqs:4.0.1")
+            library("aws-starter", "io.awspring.cloud:spring-cloud-aws-starter:4.0.1")
+            library("aws-sts", "software.amazon.awssdk:sts:2.42.41")
             library("azure-app-insights", "com.microsoft.azure:applicationinsights-web:3.7.8")
             library("azure-identity", "com.azure:azure-identity:1.18.2")
             library("flipt", "io.flipt:flipt-client-java:1.3.1")
@@ -100,12 +100,12 @@ dependencyResolutionManagement {
             library("mockito-kotlin", "org.mockito.kotlin:mockito-kotlin:6.3.0")
             library("notify", "uk.gov.service.notify:notifications-java-client:6.0.0-RELEASE")
             library("opensearch", "org.opensearch.client:opensearch-java:3.8.0")
-            library("opensearch-starter", "org.opensearch.client:spring-data-opensearch-starter:2.0.5")
+            library("opensearch-starter", "org.opensearch.client:spring-data-opensearch-starter:2.0.6")
             library(
                 "opentelemetry-annotations",
-                "io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:2.26.1"
+                "io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:2.27.0"
             )
-            library("sentry", "io.sentry:sentry-spring-boot-4:8.39.1")
+            library("sentry", "io.sentry:sentry-spring-boot-4:8.40.0")
             library("springdoc", "org.springdoc:springdoc-openapi-starter-webmvc-ui:3.0.1")
             library("wiremock", "org.wiremock:wiremock-standalone:3.13.2")
 
@@ -121,7 +121,7 @@ dependencyResolutionManagement {
 }
 
 plugins {
-    id("com.gradle.develocity") version "4.4.0"
+    id("com.gradle.develocity") version "4.4.1"
     id("com.github.burrunan.s3-build-cache") version "1.9.5"
 }
 
