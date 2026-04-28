@@ -13,12 +13,15 @@ import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
 import uk.gov.justice.digital.hmpps.api.model.Name
 import uk.gov.justice.digital.hmpps.api.model.PersonSummary
+import uk.gov.justice.digital.hmpps.api.model.personalDetails.Document
 import uk.gov.justice.digital.hmpps.api.model.schedule.PersonAppointment
 import uk.gov.justice.digital.hmpps.api.model.schedule.Schedule
 import uk.gov.justice.digital.hmpps.api.model.schedule.PersonSchedule
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator
+import uk.gov.justice.digital.hmpps.data.generator.DocumentGenerator
 import uk.gov.justice.digital.hmpps.service.ScheduleService
 import uk.gov.justice.digital.hmpps.service.toActivity
+import uk.gov.justice.digital.hmpps.service.toDocument
 import java.time.LocalDate
 
 @ExtendWith(MockitoExtension::class)
@@ -101,9 +104,11 @@ internal class ScheduleControllerTest {
     fun `calls get get appointment function `() {
         val crn = "X000005"
         val id = ContactGenerator.PREVIOUS_APPT_CONTACT_ABSENT.id
+        val doc: Document = DocumentGenerator.DEFAULT_DOCUMENT_FOR_CONTACT.toDocument()
         val expectedResponse = PersonAppointment(
             personSummary = personSummary,
-            appointment = ContactGenerator.PREVIOUS_APPT_CONTACT_ABSENT.toActivity()
+            appointment = ContactGenerator.PREVIOUS_APPT_CONTACT_ABSENT.toActivity(),
+            documents = listOf(doc)
         )
         whenever(scheduleService.getPersonAppointment(crn, id)).thenReturn(expectedResponse)
         val res = controller.getContact(crn, id)

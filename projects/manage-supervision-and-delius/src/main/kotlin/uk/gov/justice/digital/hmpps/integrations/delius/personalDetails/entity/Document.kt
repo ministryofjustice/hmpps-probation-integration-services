@@ -297,6 +297,7 @@ interface DocumentsRepository : JpaRepository<DocumentEntity, Long> {
         keywords: String? = null,
         pageable: Pageable
     ): Page<DocumentEntity>
+
 }
 
 @Entity(name = "Prison")
@@ -421,6 +422,8 @@ interface CourtDocumentDetails {
 
 interface DocumentRepository : JpaRepository<Document, Long> {
     fun findByPersonId(personId: Long): List<PersonDocument>
+
+    fun findByTypeAndPrimaryKeyId(type: String, primaryKeyId: Long): List<Document>
 
     @Query("select d.name from Document d join Person p on p.id = d.personId and p.crn = :crn and d.alfrescoId = :alfrescoId")
     fun findNameByPersonCrnAndAlfrescoId(crn: String, alfrescoId: String): String?

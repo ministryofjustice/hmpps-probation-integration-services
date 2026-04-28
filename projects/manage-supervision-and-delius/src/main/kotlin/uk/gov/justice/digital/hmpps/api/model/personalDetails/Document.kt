@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.api.model.personalDetails
 
+import uk.gov.justice.digital.hmpps.api.model.Name
 import uk.gov.justice.digital.hmpps.api.model.PersonSummary
 import uk.gov.justice.digital.hmpps.service.DocumentLevelCode
 import java.time.LocalDateTime
@@ -9,7 +10,8 @@ data class Document(
     val id: String,
     val name: String,
     val createdAt: ZonedDateTime?,
-    val lastUpdated: ZonedDateTime?
+    val lastUpdated: ZonedDateTime?,
+    val author: Name? = null,
 )
 
 data class PersonDocuments(
