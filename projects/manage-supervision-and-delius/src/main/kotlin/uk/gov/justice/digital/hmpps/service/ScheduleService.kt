@@ -36,9 +36,8 @@ class ScheduleService(
     fun getPersonAppointment(crn: String, contactId: Long, noteId: Int? = null): PersonAppointment {
         val summary = personRepository.getSummary(crn)
         val contact = contactRepository.getContact(summary.id, contactId)
-        val documents = documentRepository.findAll()
+        val documents = documentRepository.findByTableNameAndPrimaryKeyId("CONTACT", contact.id)
             .filterIsInstance<ContactDocument>()
-            .filter { it.primaryKeyId == contactId }
         val documentAuthorUserIds = documents.mapNotNull { it.lastUpdatedUserId ?: it.createdByUserId }
         val documentUsersById = userRepository.findAllById(documentAuthorUserIds.toSet()).associateBy { it.id }
         val apptDocuments = documents
@@ -236,7 +235,7 @@ fun Contact.toActivity(noteId: Int? = null) = Activity(
 
 fun uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.Document.toDocument(author: Name? = null) =
     Document(
-        id = id.toString(),
+        id = alfrescoId,
         name = name,
         createdAt = createdAt,
         lastUpdated = lastUpdated,

@@ -79,7 +79,7 @@ internal class ScheduleServiceTest {
         val expectedContact = ContactGenerator.NEXT_APPT_CONTACT
         whenever(personRepository.findSummary(crn)).thenReturn(personSummary)
         whenever(contactRepository.findByPersonIdAndId(any(), any())).thenReturn(expectedContact)
-        whenever(documentRepository.findByTypeAndPrimaryKeyId(any(), any())).thenReturn(emptyList())
+        // whenever(documentRepository.findByTypeAndPrimaryKeyId(any(), any())).thenReturn(emptyList())
         whenever(userRepository.findAllById(any())).thenReturn(emptyList())
         val res = service.getPersonAppointment(crn, ContactGenerator.NEXT_APPT_CONTACT.id)
         assertThat(res.personSummary, equalTo(PERSONAL_DETAILS.toSummary()))
