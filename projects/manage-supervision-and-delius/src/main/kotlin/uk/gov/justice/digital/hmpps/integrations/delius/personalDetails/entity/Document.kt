@@ -422,6 +422,15 @@ interface CourtDocumentDetails {
 interface DocumentRepository : JpaRepository<Document, Long> {
     fun findByPersonId(personId: Long): List<PersonDocument>
 
+    @Query(
+        """
+            SELECT *
+            FROM DOCUMENT
+            WHERE TABLE_NAME = :type
+            AND PRIMARY_KEY_ID = :primaryKeyId
+        """,
+        nativeQuery = true,
+    )
     fun findByTypeAndPrimaryKeyId(type: String, primaryKeyId: Long): List<Document>
 
     @Query("select d.name from Document d join Person p on p.id = d.personId and p.crn = :crn and d.alfrescoId = :alfrescoId")

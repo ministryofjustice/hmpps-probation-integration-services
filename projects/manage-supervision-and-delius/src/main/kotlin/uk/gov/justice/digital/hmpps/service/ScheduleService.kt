@@ -36,13 +36,18 @@ class ScheduleService(
     fun getPersonAppointment(crn: String, contactId: Long, noteId: Int? = null): PersonAppointment {
         val summary = personRepository.getSummary(crn)
         val contact = contactRepository.getContact(summary.id, contactId)
-        val documents = documentRepository.findByTypeAndPrimaryKeyId("Contact", contactId)
-        val documentUpdatedUserIds = documents.mapNotNull { it.lastUpdatedUserId ?: it.createdByUserId }
-        val documentUsers = userRepository.findAllById(documentUpdatedUserIds.toSet())
+        val documents = documentRepository.findAll()
+            .filterIsInstance<ContactDocument>()
+            .filter { it.primaryKeyId == contactId }
+        val documentAuthorUserIds = documents.mapNotNull { it.lastUpdatedUserId ?: it.createdByUserId }
+        val documentUsersById = userRepository.findAllById(documentAuthorUserIds.toSet()).associateBy { it.id }
         val apptDocuments = documents
             .map { document ->
-                val author = documentUsers.firstOrNull { it.id == document.lastUpdatedUserId }?.let {
-                    Name(it.forename, null, it.surname)
+                val effectiveUserId = document.lastUpdatedUserId ?: document.createdByUserId
+                val author = effectiveUserId?.let { userId ->
+                    documentUsersById[userId]?.let { user ->
+                        Name(user.forename, null, user.surname)
+                    }
                 }
                 document.toDocument(author)
             }
