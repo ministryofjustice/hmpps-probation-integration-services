@@ -45,7 +45,7 @@ class ScheduleService(
                     Name(it.forename, null, it.surname)
                 }
                 document.toDocument(author)
-        }
+            }
         return PersonAppointment(
             personSummary = summary.toPersonSummary(),
             appointment = contact.toActivity(noteId),
@@ -229,7 +229,7 @@ fun Contact.toActivity(noteId: Int? = null) = Activity(
     externalReference = externalReference
 )
 
-fun uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.Document.toDocument(author : Name? = null) =
+fun uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.Document.toDocument(author: Name? = null) =
     Document(
         id = id.toString(),
         name = name,

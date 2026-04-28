@@ -297,7 +297,6 @@ interface DocumentsRepository : JpaRepository<DocumentEntity, Long> {
         keywords: String? = null,
         pageable: Pageable
     ): Page<DocumentEntity>
-
 }
 
 @Entity(name = "Prison")

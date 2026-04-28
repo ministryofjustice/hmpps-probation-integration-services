@@ -17,7 +17,6 @@ object DocumentGenerator {
         ContactGenerator.PREVIOUS_APPT_CONTACT_ABSENT.id
     )
 
-
     fun generateDocument(
         contact: Contact,
         personId: Long,
