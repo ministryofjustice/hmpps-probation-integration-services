@@ -1,11 +1,14 @@
 package uk.gov.justice.digital.hmpps.service
 
+import com.microsoft.applicationinsights.TelemetryClient
+import org.springframework.ldap.core.LdapTemplate
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.api.model.sentence.*
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.*
+import uk.gov.justice.digital.hmpps.ldap.findEmailByUsernames
 
 @Service
-class UserLocationService(private val staffUserRepository: StaffUserRepository) {
+class UserLocationService(private val staffUserRepository: StaffUserRepository, private val ldapTemplate: LdapTemplate) {
 
     fun getUserOfficeLocations(username: String): UserOfficeLocation {
         val user = staffUserRepository.getUser(username)
@@ -18,8 +21,19 @@ class UserLocationService(private val staffUserRepository: StaffUserRepository) 
         )
     }
 
-    fun getStaffByTeam(code: String): StaffTeam =
-        StaffTeam(staffUserRepository.findStaffByTeam(code).map { it.toUser() })
+    fun getStaffByTeam(code: String): StaffTeam {
+        val staffInTeam = staffUserRepository.findStaffByTeam(code)
+        val emailsByUsername = ldapTemplate.findEmailByUsernames(
+            staffInTeam.map { it.username }.filter { it != "Unallocated" }
+        )
+
+        return StaffTeam(
+            staffInTeam.map { staff ->
+                staff.toUser(email = emailsByUsername[staff.username] ?: staff.email)
+            }
+        )
+    }
+
 }
 
 fun Location.toLocationDetails(): LocationDetails =
