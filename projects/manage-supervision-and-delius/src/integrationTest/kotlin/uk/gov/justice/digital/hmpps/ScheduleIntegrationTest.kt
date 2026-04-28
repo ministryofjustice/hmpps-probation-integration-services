@@ -192,8 +192,10 @@ class ScheduleIntegrationTest : IntegrationTestBase() {
             .andReturn().response.contentAsJson<PersonAppointment>()
 
         assertThat(res.appointment.documents.size, equalTo(3))
-        assertThat(res.appointment.documents.map { it.name },
-            equalTo(listOf("contact.doc", "contact2.doc", "dic.doc")))
+        assertThat(
+            res.appointment.documents.map { it.name },
+            equalTo(listOf("contact.doc", "contact2.doc", "dic.doc"))
+        )
     }
 
     @Test
