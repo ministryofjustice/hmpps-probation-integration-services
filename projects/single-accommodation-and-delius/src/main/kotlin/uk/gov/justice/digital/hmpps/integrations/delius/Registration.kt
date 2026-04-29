@@ -4,6 +4,8 @@ import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.NumericBooleanConverter
+import org.springframework.data.jpa.repository.EntityGraph
+import org.springframework.data.jpa.repository.JpaRepository
 
 @Entity
 @Immutable
@@ -45,4 +47,9 @@ class RegisterType(
     companion object {
         val ROSH_CODES = listOf("RLRH", "RMRH", "RHRH", "RVHR")
     }
+}
+
+interface RegistrationRepository : JpaRepository<Registration, Long> {
+    @EntityGraph(attributePaths = ["type"])
+    fun findByPersonIdInAndTypeCodeIn(personIds: List<Long>, typeCodes: List<String>): List<Registration>
 }

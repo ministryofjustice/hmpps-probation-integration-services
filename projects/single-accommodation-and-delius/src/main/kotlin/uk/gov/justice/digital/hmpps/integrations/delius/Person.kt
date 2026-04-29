@@ -55,6 +55,6 @@ interface PersonRepository : JpaRepository<Person, Long> {
     @EntityGraph(attributePaths = ["gender", "manager.team", "manager.staff.user", "roshRegistrations.person", "roshRegistrations.type"])
     fun findByCrn(crn: String): Person?
 
-    @EntityGraph(attributePaths = ["gender", "manager.team", "manager.staff.user", "roshRegistrations.person", "roshRegistrations.type"])
+    @EntityGraph(attributePaths = ["gender", "manager.team", "manager.staff.user"])
     fun findByManagerTeamIdIn(teamIds: List<Long>, pageable: Pageable): Page<Person>
 }

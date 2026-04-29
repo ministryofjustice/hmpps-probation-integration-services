@@ -5,10 +5,7 @@ import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.exception.NotFoundException.Companion.orNotFoundBy
-import uk.gov.justice.digital.hmpps.integrations.delius.KeyDateRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.Person
-import uk.gov.justice.digital.hmpps.integrations.delius.PersonRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.StaffRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.*
 import uk.gov.justice.digital.hmpps.model.*
 import java.time.LocalDate
 
@@ -18,6 +15,7 @@ class CaseListService(
     private val staffRepository: StaffRepository,
     private val personRepository: PersonRepository,
     private val keyDateRepository: KeyDateRepository,
+    private val registrationRepository: RegistrationRepository,
     private val userAccessService: UserAccessService,
 ) {
     fun getCaseList(username: String, pageable: PageRequest): CaseListResponse {
@@ -28,14 +26,18 @@ class CaseListService(
         else Page.empty(pageable)
 
         val cases = casesPageable.content
+        val personIds = cases.map { it.id }
         val limitedAccess =
             userAccessService.userAccessFor(username, cases.map { it.crn }).access.associateBy { it.crn }
-        val expectedReleaseDates = keyDateRepository.findExpectedReleaseDatesByPersonIdIn(cases.map { it.id })
+        val expectedReleaseDates = keyDateRepository.findExpectedReleaseDatesByPersonIdIn(personIds)
             .associate { it.personId to it.releaseDate }
+        val roshLevels = registrationRepository.findByPersonIdInAndTypeCodeIn(personIds, RegisterType.ROSH_CODES)
+            .groupBy { it.person?.id }
+            .mapValues { (_, reg) -> CodeDescription(reg.first().type.code, reg.first().type.description) }
 
         val responsibleCases = cases.map { person ->
             val access = checkNotNull(limitedAccess[person.crn]) { "Access not found for CRN ${person.crn}" }
-            person.toCase(access, expectedReleaseDates[person.id])
+            person.toCase(access, roshLevels[person.id], expectedReleaseDates[person.id])
         }
 
         return CaseListResponse(
@@ -50,12 +52,15 @@ class CaseListService(
     fun getCase(username: String, crn: String): Case {
         val person = personRepository.findByCrn(crn).orNotFoundBy("CRN", crn)
         val access = userAccessService.caseAccessFor(username, crn)
-        return person.toCase(access, keyDateRepository.findExpectedReleaseDates(person.id))
+        val roshLevel = person.roshRegistrations.firstOrNull()
+            ?.let { CodeDescription(it.type.code, it.type.description) }
+        return person.toCase(access, roshLevel, keyDateRepository.findExpectedReleaseDates(person.id))
     }
 
     private fun Person.toCase(
         access: CaseAccess,
-        expectedReleaseDate: LocalDate?
+        roshLevel: CodeDescription?,
+        expectedReleaseDate: LocalDate?,
     ) = Case(
         crn = crn,
         name = Name(
@@ -80,7 +85,7 @@ class CaseListService(
             description = manager.team.description
         ),
         gender = gender.description,
-        roshLevel = roshRegistrations.firstOrNull()?.let { CodeDescription(it.type.code, it.type.description) },
+        roshLevel = roshLevel,
         expectedReleaseDate = expectedReleaseDate,
         userExcluded = access.userExcluded,
         userRestricted = access.userRestricted,
