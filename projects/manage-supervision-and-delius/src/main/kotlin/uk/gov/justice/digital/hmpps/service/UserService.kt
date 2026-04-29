@@ -59,7 +59,8 @@ class UserService(
     private val probationAreaUserRepository: ProbationAreaUserRepository,
     private val boroughRepository: BoroughRepository,
     private val ldapTemplate: LdapTemplate,
-    private val deliusUserAspect: DeliusUserAspect
+    private val deliusUserAspect: DeliusUserAspect,
+    private val providerRepository: ProviderRepository
 ) {
     fun getUserDetails(username: String): UserDetails {
         val ldapUser = ldapTemplate.findByUsername<LdapUser>(username)
@@ -232,8 +233,12 @@ class UserService(
         val homeArea = ldapTemplate.findAttributeByUsername(username, "userHomeArea")
             ?: throw NotFoundException("No home area found for $username")
 
+        val homeProvider = providerRepository.findByCode(homeArea)?.toProvider()
+            ?: throw NotFoundException("Provider", "code", homeArea)
+        
         val providers = probationAreaUserRepository.findByUsername(username)
             .map { it.toProvider() }
+            .let { if (it.none { p -> p.code == homeArea }) it + homeProvider else it }
 
         val regionSearch = region ?: homeArea
 
@@ -266,7 +271,7 @@ class UserService(
         return DefaultUserDetails(
             default.username,
             default.staff?.code,
-            providers.firstOrNull { it.code == homeArea }?.name.orNotFoundBy("code", homeArea),
+            providers.first { it.code == homeArea }.name,
             team?.description
         )
     }
@@ -417,6 +422,8 @@ private fun AppointmentEntity.toUserAppointment() = UserAppointment(
 )
 
 fun ProbationAreaUser.toProvider() = Provider(id.provider.code, id.provider.description)
+
+fun uk.gov.justice.digital.hmpps.integrations.delius.user.entity.Provider.toProvider() = Provider(code, description)
 
 private fun EnforcementAppointment.toEnforcementContactItem() = EnforcementContactItem(
     caseName = Name(forename, listOfNotNull(secondName, thirdName).joinToString(" "), surname),
