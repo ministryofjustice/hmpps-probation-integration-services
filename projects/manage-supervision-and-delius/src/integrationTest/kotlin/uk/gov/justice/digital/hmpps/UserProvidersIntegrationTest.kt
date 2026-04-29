@@ -1,5 +1,7 @@
 package uk.gov.justice.digital.hmpps
 
+import org.hamcrest.MatcherAssert.assertThat
+import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
@@ -28,6 +30,33 @@ class UserProvidersIntegrationTest : IntegrationTestBase() {
     fun `unauthorized status returned`() {
         mockMvc.get("/user/user1/providers")
             .andExpect { status { isUnauthorized() } }
+    }
+
+    @Test
+    fun `returns 404 when user home area is not in their list of providers`() {
+        mockMvc.get("/user/no-home-match/providers") { withToken() }
+            .andExpect { status { isNotFound() } }
+    }
+
+    @Test
+    fun `returns 200 and includes home provider when home area is in existing providers`() {
+        // peter-parker has homeArea=N01 and N01 is already in their PAU records — line 233/4 branch
+        val response = mockMvc.get("/user/peter-parker/providers") { withToken() }
+            .andExpect { status { isOk() } }
+            .andReturn().response.contentAsJson<UserProviderResponse>()
+
+        assertThat(response.providers.any { it.code == DEFAULT_PROVIDER.code }, equalTo(true))
+    }
+
+    @Test
+    fun `returns 200 and adds home provider when home area is not in existing providers but exists in db`() {
+        // w01-home has homeArea=W01 but only N01 in PAU records — else branch lines 238-241
+        val response = mockMvc.get("/user/w01-home/providers") { withToken() }
+            .andExpect { status { isOk() } }
+            .andReturn().response.contentAsJson<UserProviderResponse>()
+
+        assertThat(response.providers.any { it.code == OffenderManagerGenerator.PROVIDER_2.code }, equalTo(true))
+        assertThat(response.providers.any { it.code == DEFAULT_PROVIDER.code }, equalTo(true))
     }
 
     @ParameterizedTest

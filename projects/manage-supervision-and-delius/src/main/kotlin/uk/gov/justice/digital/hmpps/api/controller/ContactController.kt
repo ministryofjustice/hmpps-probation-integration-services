@@ -33,6 +33,11 @@ class ContactController(
     @GetMapping("/types")
     fun getContactTypes() = contactLogService.getContactTypes()
 
+    @GetMapping("/types/{typeCode}/outcomes")
+    fun getContactOutcomesForType(
+        @PathVariable typeCode: String
+    ) = contactLogService.getContactOutcomesForType(typeCode)
+
     @GetMapping("/{username}/enforcements")
     fun getEnforcementContacts(
         @PathVariable username: String,

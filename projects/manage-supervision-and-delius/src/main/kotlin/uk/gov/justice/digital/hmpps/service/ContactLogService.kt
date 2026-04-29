@@ -2,6 +2,8 @@ package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import uk.gov.justice.digital.hmpps.api.model.CodeAndDescription
+import uk.gov.justice.digital.hmpps.api.model.contact.ContactOutcomes
 import uk.gov.justice.digital.hmpps.api.model.contact.ContactTypeResponse
 import uk.gov.justice.digital.hmpps.api.model.contact.ContactTypesResponse
 import uk.gov.justice.digital.hmpps.api.model.contact.CreateContact
@@ -173,4 +175,10 @@ class ContactLogService(
         contact.sensitive = request.sensitiveFlag
         contactRepository.save(contact)
     }
+
+    fun getContactOutcomesForType(typeCode: String): ContactOutcomes =
+        ContactOutcomes(
+            contactTypeRepository.findSelectableOutcomesByTypeCode(typeCode)
+                .map { CodeAndDescription(it.code, it.description) }
+        )
 }

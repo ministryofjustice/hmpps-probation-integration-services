@@ -45,6 +45,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.ContactR
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.StaffAndRole
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.StaffUserRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.user.entity.ProbationAreaUserRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.user.entity.ProviderRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.user.entity.UserRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.user.staff.StaffRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.user.team.TeamRepository
@@ -89,6 +90,9 @@ internal class UserServiceTest {
 
     @Mock
     lateinit var ldapTemplate: LdapTemplate
+
+    @Mock
+    lateinit var providerRepository: ProviderRepository
 
     @InjectMocks
     lateinit var service: UserService
@@ -205,7 +209,7 @@ internal class UserServiceTest {
                 DEFAULT_PROVIDER.description,
                 DEFAULT_TEAM.description
             ),
-            probationAreaUsers.map { it.toProvider() },
+            probationAreaUsers.map { it.toProvider() }.sortedBy { it.code },
             teams.map { it.toTeam() },
             listOf(staffRole.toUser())
         )
@@ -272,7 +276,7 @@ internal class UserServiceTest {
                 DEFAULT_PROVIDER.description,
                 teams[0].description
             ),
-            probationAreaUsers.map { it.toProvider() },
+            probationAreaUsers.map { it.toProvider() }.sortedBy { it.code },
             teams.map { it.toTeam() },
             listOf(staffRole.toUser())
         )
@@ -302,7 +306,6 @@ internal class UserServiceTest {
         whenever(teamRepository.findByProviderCode(PROVIDER_2.code)).thenReturn(teams)
         whenever(staffUserRepository.findStaffByTeam(TEAM_1.code)).thenReturn(listOf(staffRole))
         whenever(staffUserRepository.findByUsername(STAFF_USER_1.username)).thenReturn(STAFF_USER_1)
-
         whenever(teamRepository.findTeamById(7)).thenReturn(DEFAULT_TEAM)
         val expected = UserProviderResponse(
             DefaultUserDetails(
