@@ -241,7 +241,13 @@ class ContactType(
     @Column
     val description: String,
 
-    @OneToMany(mappedBy = "id.contactTypeId", fetch = FetchType.LAZY)
+    @OneToMany(fetch = FetchType.LAZY)
+    @JoinColumn(
+        name = "contact_type_id",
+        referencedColumnName = "contact_type_id",
+        insertable = false,
+        updatable = false
+    )
     val categories: List<ContactCategory> = emptyList(),
 
     @Column(name = "sgc_flag", columnDefinition = "number")
@@ -283,6 +289,17 @@ interface ContactTypeRepository : CrudRepository<ContactType, Long> {
         """
     )
     fun findByCodeIn(values: List<String>): List<ContactType>
+
+    @Query(
+        """
+            SELECT co.* FROM r_contact_outcome_type co
+            JOIN r_contact_type_outcome cto ON cto.contact_outcome_type_id = co.contact_outcome_type_id
+            JOIN r_contact_type ct ON ct.contact_type_id = cto.contact_type_id
+            WHERE ct.code = :typeCode AND co.selectable = 'Y'
+        """,
+        nativeQuery = true
+    )
+    fun findSelectableOutcomesByTypeCode(typeCode: String): List<ContactOutcome>
 }
 
 fun ContactTypeRepository.getContactType(code: String) =
