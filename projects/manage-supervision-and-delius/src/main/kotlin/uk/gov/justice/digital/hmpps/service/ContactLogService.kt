@@ -180,4 +180,5 @@ class ContactLogService(
         ContactOutcomes(
             contactTypeRepository.findSelectableOutcomesByTypeCode(typeCode)
                 .map { CodeAndDescription(it.code, it.description) }
-        )}
+        )
+}
