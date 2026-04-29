@@ -4,9 +4,11 @@ import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.exception.NotFoundException.Companion.orNotFoundBy
-import uk.gov.justice.digital.hmpps.integrations.delius.*
+import uk.gov.justice.digital.hmpps.integrations.delius.KeyDateRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.Person
+import uk.gov.justice.digital.hmpps.integrations.delius.PersonRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.StaffRepository
 import uk.gov.justice.digital.hmpps.model.*
 import java.time.LocalDate
 
@@ -14,47 +16,32 @@ import java.time.LocalDate
 @Transactional(readOnly = true)
 class CaseListService(
     private val staffRepository: StaffRepository,
-    private val personManagerRepository: PersonManagerRepository,
     private val personRepository: PersonRepository,
     private val keyDateRepository: KeyDateRepository,
-    private val registrationRepository: RegistrationRepository,
-    private val userAccessService: UserAccessService
+    private val userAccessService: UserAccessService,
 ) {
     fun getCaseList(username: String, pageable: PageRequest): CaseListResponse {
-        val staff = staffRepository.findByUserUsernameIgnoreCase(username) ?: throw NotFoundException(
-            "Staff",
-            "username",
-            username
-        )
+        val staff = staffRepository.findByUserUsernameIgnoreCase(username).orNotFoundBy("username", username)
         val teamIds = staff.teams.map { it.id }
-        val personManagersPageable = if (teamIds.isNotEmpty()) {
-            personManagerRepository.findByTeamIdIn(teamIds, pageable)
-        } else {
-            Page.empty(pageable)
-        }
-        val personManagers = personManagersPageable.content
-        val personIds = personManagers.map { it.personId }
-        val casesById = personRepository.findByIdIn(personIds).associateBy { it.id }
-        val roshLevels = registrationRepository.findByPersonIdInAndTypeCodeIn(personIds, RegisterType.ROSH_CODES)
-            .groupBy { it.personId }
-            .mapValues { (_, reg) -> CodeDescription(reg.first().type.code, reg.first().type.description) }
+        val casesPageable = if (teamIds.isNotEmpty())
+            personRepository.findByManagerTeamIdIn(teamIds, pageable)
+        else Page.empty(pageable)
 
-        val crns = casesById.values.map { it.crn }
-        val limitedAccess = userAccessService.userAccessFor(username, crns).access.associateBy { it.crn }
-        val expectedReleaseDates = keyDateRepository.findExpectedReleaseDatesByPersonIdIn(personIds)
+        val cases = casesPageable.content
+        val limitedAccess =
+            userAccessService.userAccessFor(username, cases.map { it.crn }).access.associateBy { it.crn }
+        val expectedReleaseDates = keyDateRepository.findExpectedReleaseDatesByPersonIdIn(cases.map { it.id })
             .associate { it.personId to it.releaseDate }
 
-        val responsibleCases = personManagers.mapNotNull {
-            val person = casesById[it.personId] ?: return@mapNotNull null
+        val responsibleCases = cases.map { person ->
             val access = checkNotNull(limitedAccess[person.crn]) { "Access not found for CRN ${person.crn}" }
-            val roshLevel = roshLevels[person.id]
-            toCase(person, it, access, roshLevel, expectedReleaseDates[person.id])
+            person.toCase(access, expectedReleaseDates[person.id])
         }
 
         return CaseListResponse(
             cases = responsibleCases,
-            totalElements = personManagersPageable.totalElements,
-            totalPages = personManagersPageable.totalPages,
+            totalElements = casesPageable.totalElements,
+            totalPages = casesPageable.totalPages,
             page = pageable.pageNumber,
             size = pageable.pageSize,
         )
@@ -62,36 +49,23 @@ class CaseListService(
 
     fun getCase(username: String, crn: String): Case {
         val person = personRepository.findByCrn(crn).orNotFoundBy("CRN", crn)
-
-        val manager = personManagerRepository.findFirstByPersonId(person.id)
-            .orNotFoundBy("personId", person.id)
-
-        val roshLevel = registrationRepository
-            .findByPersonIdInAndTypeCodeIn(listOf(person.id), RegisterType.ROSH_CODES)
-            .firstOrNull()
-            ?.let { CodeDescription(it.type.code, it.type.description) }
-
         val access = userAccessService.caseAccessFor(username, crn)
-
-        return toCase(person, manager, access, roshLevel, keyDateRepository.findExpectedReleaseDates(person.id))
+        return person.toCase(access, keyDateRepository.findExpectedReleaseDates(person.id))
     }
 
-    private fun toCase(
-        person: Person,
-        manager: PersonManager,
+    private fun Person.toCase(
         access: CaseAccess,
-        roshLevel: CodeDescription?,
         expectedReleaseDate: LocalDate?
     ) = Case(
-        crn = person.crn,
+        crn = crn,
         name = Name(
-            forename = person.firstName,
-            middleName = listOfNotNull(person.secondName, person.thirdName).joinToString(" ").ifEmpty { null },
-            surname = person.surname
+            forename = firstName,
+            middleName = listOfNotNull(secondName, thirdName).joinToString(" ").ifEmpty { null },
+            surname = surname
         ),
-        dateOfBirth = person.dateOfBirth,
-        nomsNumber = person.noms,
-        pncNumber = person.pnc,
+        dateOfBirth = dateOfBirth,
+        nomsNumber = noms,
+        pncNumber = pnc,
         staff = Officer(
             name = Name(
                 forename = manager.staff.forename,
@@ -105,8 +79,8 @@ class CaseListService(
             code = manager.team.code,
             description = manager.team.description
         ),
-        gender = person.gender.description,
-        roshLevel = roshLevel,
+        gender = gender.description,
+        roshLevel = roshRegistrations.firstOrNull()?.let { CodeDescription(it.type.code, it.type.description) },
         expectedReleaseDate = expectedReleaseDate,
         userExcluded = access.userExcluded,
         userRestricted = access.userRestricted,
