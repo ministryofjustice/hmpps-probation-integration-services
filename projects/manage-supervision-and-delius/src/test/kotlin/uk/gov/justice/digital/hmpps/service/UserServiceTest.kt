@@ -45,6 +45,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.ContactR
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.StaffAndRole
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.StaffUserRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.user.entity.ProbationAreaUserRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.user.entity.ProviderRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.user.entity.UserRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.user.staff.StaffRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.user.team.TeamRepository
@@ -89,6 +90,9 @@ internal class UserServiceTest {
 
     @Mock
     lateinit var ldapTemplate: LdapTemplate
+
+    @Mock
+    lateinit var providerRepository: ProviderRepository
 
     @InjectMocks
     lateinit var service: UserService
@@ -188,6 +192,7 @@ internal class UserServiceTest {
         whenever(ldapTemplate.search(any(), any<AttributesMapper<String?>>()))
             .thenReturn(listOf(OffenderManagerGenerator.PAU_USER_RECORD1.id.provider.code))
             .thenReturn(listOf("7"))
+        whenever(providerRepository.findByCode("N01")).thenReturn(DEFAULT_PROVIDER)
 
         whenever(probationAreaUserRepository.findByUsername(STAFF_USER_1.username)).thenReturn(probationAreaUsers)
         whenever(teamRepository.findTeamById(7)).thenReturn(DEFAULT_TEAM)
@@ -248,7 +253,7 @@ internal class UserServiceTest {
 
         whenever(ldapTemplate.search(any(), any<AttributesMapper<String?>>()))
             .thenReturn(listOf(OffenderManagerGenerator.PAU_USER_RECORD1.id.provider.code))
-
+        whenever(providerRepository.findByCode("N01")).thenReturn(DEFAULT_PROVIDER)
         whenever(probationAreaUserRepository.findByUsername(STAFF_USER_1.username)).thenReturn(probationAreaUsers)
         whenever(teamRepository.findByProviderCode(OffenderManagerGenerator.PAU_USER_RECORD1.id.provider.code)).thenReturn(
             teams
@@ -298,7 +303,7 @@ internal class UserServiceTest {
         whenever(teamRepository.findByProviderCode(PROVIDER_2.code)).thenReturn(teams)
         whenever(staffUserRepository.findStaffByTeam(TEAM_1.code)).thenReturn(listOf(staffRole))
         whenever(staffUserRepository.findByUsername(STAFF_USER_1.username)).thenReturn(STAFF_USER_1)
-
+        whenever(providerRepository.findByCode("N01")).thenReturn(DEFAULT_PROVIDER)
         whenever(teamRepository.findTeamById(7)).thenReturn(DEFAULT_TEAM)
         val expected = UserProviderResponse(
             DefaultUserDetails(
@@ -330,7 +335,7 @@ internal class UserServiceTest {
 
         whenever(ldapTemplate.search(any(), any<AttributesMapper<String?>>()))
             .thenReturn(listOf(OffenderManagerGenerator.PAU_USER_RECORD1.id.provider.code))
-
+        whenever(providerRepository.findByCode("N01")).thenReturn(DEFAULT_PROVIDER)
         whenever(probationAreaUserRepository.findByUsername(STAFF_USER_1.username)).thenReturn(probationAreaUsers)
         whenever(teamRepository.findByProviderCode(PROVIDER_3.code)).thenReturn(teams)
         whenever(staffUserRepository.findStaffByTeam("t01")).thenReturn(listOf(staffRole))
