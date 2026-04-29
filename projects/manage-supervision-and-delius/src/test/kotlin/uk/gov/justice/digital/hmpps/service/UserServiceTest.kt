@@ -162,7 +162,7 @@ internal class UserServiceTest {
             OffenderManagerGenerator.PAU_USER_RECORD4,
         )
 
-        val staffRole = StaffRole("code", "username", "surname", "forename", "role")
+        val staffRole = StaffRole("code", "username", "surname", "forename", null,"role")
 
         val teams = listOf(
             Team(
@@ -185,9 +185,10 @@ internal class UserServiceTest {
             ),
             DEFAULT_TEAM
         )
-        whenever(ldapTemplate.search(any(), any<AttributesMapper<String?>>()))
-            .thenReturn(listOf(OffenderManagerGenerator.PAU_USER_RECORD1.id.provider.code))
-            .thenReturn(listOf("7"))
+        whenever(ldapTemplate.search(any(), any<AttributesMapper<Any?>>()))
+            .thenReturn(listOf(OffenderManagerGenerator.PAU_USER_RECORD1.id.provider.code)) // homeArea
+            .thenReturn(listOf("7"))                                                         // defaultTeam
+            .thenReturn(listOf("username" to null))
 
         whenever(probationAreaUserRepository.findByUsername(STAFF_USER_1.username)).thenReturn(probationAreaUsers)
         whenever(teamRepository.findTeamById(7)).thenReturn(DEFAULT_TEAM)
@@ -222,7 +223,7 @@ internal class UserServiceTest {
             OffenderManagerGenerator.PAU_USER_RECORD4,
         )
 
-        val staffRole = StaffRole("code", "username", "surname", "forename", "role")
+        val staffRole = StaffRole("code", "username", "surname", "forename", null,"role")
 
         val teams = listOf(
             Team(
@@ -246,8 +247,10 @@ internal class UserServiceTest {
             DEFAULT_TEAM
         )
 
-        whenever(ldapTemplate.search(any(), any<AttributesMapper<String?>>()))
-            .thenReturn(listOf(OffenderManagerGenerator.PAU_USER_RECORD1.id.provider.code))
+        whenever(ldapTemplate.search(any(), any<AttributesMapper<Any?>>()))
+            .thenReturn(listOf(OffenderManagerGenerator.PAU_USER_RECORD1.id.provider.code)) // homeArea
+            .thenReturn(emptyList())                                                         // no defaultTeam
+            .thenReturn(listOf("username" to null))                                          // email lookup
 
         whenever(probationAreaUserRepository.findByUsername(STAFF_USER_1.username)).thenReturn(probationAreaUsers)
         whenever(teamRepository.findByProviderCode(OffenderManagerGenerator.PAU_USER_RECORD1.id.provider.code)).thenReturn(
@@ -280,19 +283,20 @@ internal class UserServiceTest {
 
     @Test
     fun `get user providers with region and team query parameters`() {
-
         val probationAreaUsers = listOf(
             OffenderManagerGenerator.PAU_USER_RECORD1
         )
 
-        val staffRole = StaffRole("code", "username", "surname", "forename", "role")
+        val staffRole = StaffRole("code", "username", "surname", "forename", null, "role")
         val teams = listOf(
             Team(1, "t01", "team1", listOf(DEFAULT_STAFF, STAFF_1), DEFAULT_PROVIDER, DEFAULT_DISTRICT, LocalDate.now())
         )
 
-        whenever(ldapTemplate.search(any(), any<AttributesMapper<String?>>()))
-            .thenReturn(listOf(OffenderManagerGenerator.PAU_USER_RECORD1.id.provider.code))
-            .thenReturn(listOf("7"))
+        // Mock for homeArea lookup (returns String)
+        whenever(ldapTemplate.search(any(), any<AttributesMapper<Any?>>()))
+            .thenReturn(listOf(OffenderManagerGenerator.PAU_USER_RECORD1.id.provider.code)) // homeArea (String)
+            .thenReturn(listOf("username" to null))                                          // email lookup (Pair)
+            .thenReturn(listOf("7"))                                                         // defaultTeam preference (String)
 
         whenever(probationAreaUserRepository.findByUsername(STAFF_USER_1.username)).thenReturn(probationAreaUsers)
         whenever(teamRepository.findByProviderCode(PROVIDER_2.code)).thenReturn(teams)
@@ -318,28 +322,21 @@ internal class UserServiceTest {
 
     @Test
     fun `get user providers with region query parameter`() {
-
-        val probationAreaUsers = listOf(
-            OffenderManagerGenerator.PAU_USER_RECORD1
-        )
-
-        val staffRole = StaffRole("code", "username", "surname", "forename", "role")
+        val probationAreaUsers = listOf(OffenderManagerGenerator.PAU_USER_RECORD1)
+        val staffRole = StaffRole("code", "username", "surname", "forename", null, "role")
         val teams = listOf(
             Team(1, "t01", "team1", listOf(DEFAULT_STAFF, STAFF_1), DEFAULT_PROVIDER, DEFAULT_DISTRICT, LocalDate.now())
         )
 
-        whenever(ldapTemplate.search(any(), any<AttributesMapper<String?>>()))
-            .thenReturn(listOf(OffenderManagerGenerator.PAU_USER_RECORD1.id.provider.code))
+        whenever(ldapTemplate.search(any(), any<AttributesMapper<Any?>>()))
+            .thenReturn(listOf(OffenderManagerGenerator.PAU_USER_RECORD1.id.provider.code)) // homeArea (String)
+            .thenReturn(listOf("username" to null))                                          // email lookup (Pair)
+            .thenReturn(emptyList())                                                         // defaultTeam preference (no value)
 
         whenever(probationAreaUserRepository.findByUsername(STAFF_USER_1.username)).thenReturn(probationAreaUsers)
         whenever(teamRepository.findByProviderCode(PROVIDER_3.code)).thenReturn(teams)
         whenever(staffUserRepository.findStaffByTeam("t01")).thenReturn(listOf(staffRole))
-        whenever(
-            teamRepository.findTeamsByUsernameAndProviderCode(
-                STAFF_USER_1.username,
-                OffenderManagerGenerator.PAU_USER_RECORD1.id.provider.code
-            )
-        ).thenReturn(emptyList())
+        whenever(teamRepository.findTeamsByUsernameAndProviderCode(STAFF_USER_1.username, OffenderManagerGenerator.PAU_USER_RECORD1.id.provider.code)).thenReturn(emptyList())
         whenever(staffUserRepository.findByUsername(STAFF_USER_1.username)).thenReturn(STAFF_USER_1)
 
         val expected = UserProviderResponse(
@@ -407,6 +404,7 @@ internal class UserServiceTest {
         val _username: String,
         val _surname: String,
         val _forename: String,
+        override val email: String?,
         val _role: String,
     ) : StaffAndRole {
         override val code: String
