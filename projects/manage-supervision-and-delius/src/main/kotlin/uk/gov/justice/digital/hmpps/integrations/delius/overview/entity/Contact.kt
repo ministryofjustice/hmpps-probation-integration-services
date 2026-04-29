@@ -240,8 +240,9 @@ class ContactType(
 
     @Column
     val description: String,
-
-    @OneToMany(mappedBy = "id.contactTypeId", fetch = FetchType.LAZY)
+    
+    @OneToMany(fetch = FetchType.LAZY)
+    @JoinColumn(name = "contact_type_id", referencedColumnName = "contact_type_id", insertable = false, updatable = false)
     val categories: List<ContactCategory> = emptyList(),
 
     @Column(name = "sgc_flag", columnDefinition = "number")
@@ -283,10 +284,30 @@ interface ContactTypeRepository : CrudRepository<ContactType, Long> {
         """
     )
     fun findByCodeIn(values: List<String>): List<ContactType>
+
+    @Query(
+        """
+            SELECT cto.outcome
+            FROM uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.ContactTypeOutcome cto
+            WHERE cto.type.code = :typeCode AND cto.outcome.selectable = true
+        """
+    )
+    fun findSelectableOutcomesByTypeCode(typeCode: String): List<ContactOutcome>
 }
 
 fun ContactTypeRepository.getContactType(code: String) =
     findByCode(code) ?: throw NotFoundException("ContactType", "code", code)
+
+@Immutable
+@Entity(name = "ContactOutcomeType")
+@Table(name = "r_contact_outcome_type")
+class ContactTypeOutcome(
+    @Id
+    @Column(name = "contact_outcome_type_id")
+    val id: Long,
+    val code: String,
+    val description: String,
+)
 
 @Immutable
 @Entity

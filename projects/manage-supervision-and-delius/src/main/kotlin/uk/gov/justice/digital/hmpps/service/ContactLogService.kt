@@ -2,6 +2,8 @@ package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import uk.gov.justice.digital.hmpps.api.model.CodeAndDescription
+import uk.gov.justice.digital.hmpps.api.model.contact.ContactOutcomes
 import uk.gov.justice.digital.hmpps.api.model.contact.ContactTypeResponse
 import uk.gov.justice.digital.hmpps.api.model.contact.ContactTypesResponse
 import uk.gov.justice.digital.hmpps.api.model.contact.CreateContact
@@ -13,6 +15,7 @@ import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.exception.InvalidRequestException
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
+import uk.gov.justice.digital.hmpps.exception.NotFoundException.Companion.orNotFoundBy
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractionCode
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.ContactTypeRequirementTypeRepository
@@ -172,5 +175,13 @@ class ContactLogService(
         require(contact.sensitive != true || request.sensitiveFlag == true) { "Cannot un-flag a sensitive contact" }
         contact.sensitive = request.sensitiveFlag
         contactRepository.save(contact)
+    }
+
+    fun getContactOutcomesForType(typeCode: String): ContactOutcomes {
+        contactTypeRepository.getContactType(typeCode)
+        return ContactOutcomes(
+            contactTypeRepository.findSelectableOutcomesByTypeCode(typeCode)
+                .map { CodeAndDescription(it.code, it.description) }
+        )
     }
 }
