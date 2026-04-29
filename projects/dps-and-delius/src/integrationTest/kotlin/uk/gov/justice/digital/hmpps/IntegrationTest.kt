@@ -76,7 +76,7 @@ internal class IntegrationTest @Autowired constructor(private val mockMvc: MockM
                     string("Content-Type", "application/msword;charset=UTF-8")
                     string(
                         "Content-Disposition",
-                        "attachment; filename=\"OFFENDER-related_document\"; filename*=UTF-8''OFFENDER-related%20document"
+                        "attachment; filename=\"OFFENDER-related document\"; filename*=UTF-8''OFFENDER-related%20document"
                     )
                     doesNotExist("Custom-Alfresco-Header")
                 }
