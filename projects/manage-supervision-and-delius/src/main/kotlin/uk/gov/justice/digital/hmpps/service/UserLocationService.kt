@@ -8,7 +8,10 @@ import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.*
 import uk.gov.justice.digital.hmpps.ldap.findEmailByUsernames
 
 @Service
-class UserLocationService(private val staffUserRepository: StaffUserRepository, private val ldapTemplate: LdapTemplate) {
+class UserLocationService(
+    private val staffUserRepository: StaffUserRepository,
+    private val ldapTemplate: LdapTemplate
+) {
 
     fun getUserOfficeLocations(username: String): UserOfficeLocation {
         val user = staffUserRepository.getUser(username)
@@ -33,7 +36,6 @@ class UserLocationService(private val staffUserRepository: StaffUserRepository, 
             }
         )
     }
-
 }
 
 fun Location.toLocationDetails(): LocationDetails =
@@ -43,8 +45,10 @@ fun StaffAndRole.toUser(email: String? = null): User =
     User(
         code, username, if (username != "Unallocated") "$forename $surname (${role})" else username,
         email = email,
-        name = Name (forename, surname = surname)
+        name = Name(forename, surname = surname)
     )
 
-fun StaffUser.toUser(): User = User(staff!!.code, username, "$forename $surname (${staff.role!!.description})",
-    email = email, name = Name (forename, surname = surname))
+fun StaffUser.toUser(): User = User(
+    staff!!.code, username, "$forename $surname (${staff.role!!.description})",
+    email = email, name = Name(forename, surname = surname)
+)

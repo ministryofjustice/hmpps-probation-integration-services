@@ -1,6 +1,5 @@
 package uk.gov.justice.digital.hmpps.api.model.personalDetails
 
-
 data class ProbationPractitioner(
     val code: String,
     val name: Name,

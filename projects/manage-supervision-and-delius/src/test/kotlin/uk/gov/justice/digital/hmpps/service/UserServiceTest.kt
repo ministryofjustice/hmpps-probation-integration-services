@@ -166,7 +166,7 @@ internal class UserServiceTest {
             OffenderManagerGenerator.PAU_USER_RECORD4,
         )
 
-        val staffRole = StaffRole("code", "username", "surname", "forename", null,"role")
+        val staffRole = StaffRole("code", "username", "surname", "forename", null, "role")
 
         val teams = listOf(
             Team(
@@ -227,7 +227,7 @@ internal class UserServiceTest {
             OffenderManagerGenerator.PAU_USER_RECORD4,
         )
 
-        val staffRole = StaffRole("code", "username", "surname", "forename", null,"role")
+        val staffRole = StaffRole("code", "username", "surname", "forename", null, "role")
 
         val teams = listOf(
             Team(
@@ -339,7 +339,12 @@ internal class UserServiceTest {
         whenever(probationAreaUserRepository.findByUsername(STAFF_USER_1.username)).thenReturn(probationAreaUsers)
         whenever(teamRepository.findByProviderCode(PROVIDER_3.code)).thenReturn(teams)
         whenever(staffUserRepository.findStaffByTeam("t01")).thenReturn(listOf(staffRole))
-        whenever(teamRepository.findTeamsByUsernameAndProviderCode(STAFF_USER_1.username, OffenderManagerGenerator.PAU_USER_RECORD1.id.provider.code)).thenReturn(emptyList())
+        whenever(
+            teamRepository.findTeamsByUsernameAndProviderCode(
+                STAFF_USER_1.username,
+                OffenderManagerGenerator.PAU_USER_RECORD1.id.provider.code
+            )
+        ).thenReturn(emptyList())
         whenever(staffUserRepository.findByUsername(STAFF_USER_1.username)).thenReturn(STAFF_USER_1)
 
         val expected = UserProviderResponse(

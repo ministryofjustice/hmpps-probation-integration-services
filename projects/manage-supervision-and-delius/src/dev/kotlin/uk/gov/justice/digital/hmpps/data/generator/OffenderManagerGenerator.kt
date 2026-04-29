@@ -78,8 +78,13 @@ object OffenderManagerGenerator {
         startDate = LocalDate.now().minusDays(2)
     )
 
-    val STAFF_USER_1 = StaffUser(IdGenerator.getAndIncrement(), STAFF_1, "peter-parker", "peter", surname = "parker").apply { email = "peter.parker@moj.gov.uk" }
-    val STAFF_USER_2 = StaffUser(IdGenerator.getAndIncrement(), STAFF_2, "bwayne", "bruce", surname = "wayne").apply { email = "bruce.wayne@moj.gov.uk" }
+    val STAFF_USER_1 =
+        StaffUser(IdGenerator.getAndIncrement(), STAFF_1, "peter-parker", "peter", surname = "parker").apply {
+            email = "peter.parker@moj.gov.uk"
+        }
+    val STAFF_USER_2 = StaffUser(IdGenerator.getAndIncrement(), STAFF_2, "bwayne", "bruce", surname = "wayne").apply {
+        email = "bruce.wayne@moj.gov.uk"
+    }
     val STAFF_USER_3 = StaffUser(IdGenerator.getAndIncrement(), STAFF_3, "ckent", "clark", surname = "kent")
     val PI_USER = StaffUser(
         IdGenerator.getAndIncrement(),
