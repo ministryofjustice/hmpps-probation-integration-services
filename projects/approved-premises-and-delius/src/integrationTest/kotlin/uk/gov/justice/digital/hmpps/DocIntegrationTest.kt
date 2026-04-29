@@ -3,8 +3,8 @@ package uk.gov.justice.digital.hmpps
 import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc
 import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
@@ -33,7 +33,7 @@ internal class DocIntegrationTest(
                     string("Content-Type", "application/octet-stream")
                     string(
                         "Content-Disposition",
-                        "attachment; filename=\"=?UTF-8?Q?test.doc?=\"; filename*=UTF-8''test.doc"
+                        "attachment; filename=\"test.doc\"; filename*=UTF-8''test.doc"
                     )
                     doesNotExist("Custom-Alfresco-Header")
                 }
