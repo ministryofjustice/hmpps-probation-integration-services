@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.integrations.delius.user.entity
 import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.type.YesNoConverter
+import org.springframework.data.jpa.repository.JpaRepository
 import java.time.LocalDate
 
 @Immutable
@@ -24,3 +25,7 @@ class Provider(
     @Convert(converter = YesNoConverter::class)
     val selectable: Boolean = true
 )
+
+interface ProviderRepository : JpaRepository<Provider, Long> {
+    fun findByCode(code: String): Provider?
+}
