@@ -141,6 +141,8 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
             OffenderManagerGenerator.PAU_USER_RECORD4,
             OffenderManagerGenerator.STAFF_USER_NO_HOME_MATCH,
             OffenderManagerGenerator.PAU_USER_RECORD_NO_HOME_MATCH,
+            OffenderManagerGenerator.STAFF_USER_W01_HOME,
+            OffenderManagerGenerator.PAU_USER_RECORD_W01_HOME,
             PersonGenerator.DEFAULT_DISPOSAL_TYPE,
             PersonGenerator.CUSTODY_DISPOSAL_TYPE,
             LicenceConditionGenerator.LIC_COND_MAIN_CAT,

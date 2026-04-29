@@ -38,6 +38,21 @@ objectclass: UserPreferences
 cn: UserPreferences
 defaultTeam: 123
 
+dn: cn=w01-home,ou=Users,dc=moj,dc=com
+objectclass: top
+objectclass: inetOrgPerson
+cn: w01-home
+sn: HomeUser
+givenname: W01
+mail: w01.home@moj.gov.uk
+userHomeArea: W01
+
+dn: cn=UserPreferences,cn=w01-home,ou=Users,dc=moj,dc=com
+objectclass: top
+objectclass: UserPreferences
+cn: UserPreferences
+defaultTeam: 123
+
 dn: cn=UserPreferences,cn=peter-parker,ou=Users,dc=moj,dc=com
 objectclass: top
 objectclass: UserPreferences

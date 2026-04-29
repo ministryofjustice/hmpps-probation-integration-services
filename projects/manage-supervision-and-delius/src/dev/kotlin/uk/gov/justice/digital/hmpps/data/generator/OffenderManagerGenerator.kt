@@ -102,6 +102,11 @@ object OffenderManagerGenerator {
     val PAU_USER_RECORD_NO_HOME_MATCH =
         ProbationAreaUser(ProbationAreaUserId(STAFF_USER_NO_HOME_MATCH, DEFAULT_PROVIDER))
 
+    val STAFF_USER_W01_HOME =
+        StaffUser(IdGenerator.getAndIncrement(), username = "w01-home", forename = "W01", surname = "HomeUser")
+    val PAU_USER_RECORD_W01_HOME =
+        ProbationAreaUser(ProbationAreaUserId(STAFF_USER_W01_HOME, DEFAULT_PROVIDER))
+
     val DEFAULT_LOCATION =
         Location(
             IdGenerator.getAndIncrement(),
