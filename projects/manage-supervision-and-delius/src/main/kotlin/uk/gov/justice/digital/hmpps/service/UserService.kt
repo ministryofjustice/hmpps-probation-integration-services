@@ -235,7 +235,7 @@ class UserService(
 
         val homeProvider = providerRepository.findByCode(homeArea)?.toProvider()
             ?: throw NotFoundException("Provider", "code", homeArea)
-        
+
         val providers = probationAreaUserRepository.findByUsername(username)
             .map { it.toProvider() }
             .let { if (it.none { p -> p.code == homeArea }) it + homeProvider else it }
