@@ -233,12 +233,15 @@ class UserService(
         val homeArea = ldapTemplate.findAttributeByUsername(username, "userHomeArea")
             ?: throw NotFoundException("No home area found for $username")
 
-        val homeProvider = providerRepository.findByCode(homeArea)?.toProvider()
-            ?: throw NotFoundException("Provider", "code", homeArea)
-
-        val providers = probationAreaUserRepository.findByUsername(username)
+        val existingProviders = probationAreaUserRepository.findByUsername(username)
             .map { it.toProvider() }
-            .let { if (it.none { p -> p.code == homeArea }) it + homeProvider else it }
+        val providers = if (existingProviders.any { it.code == homeArea }) {
+            existingProviders.sortedBy { it.name }
+        } else {
+            val homeProvider = providerRepository.findByCode(homeArea)?.toProvider()
+                ?: throw NotFoundException("Provider", "code", homeArea)
+            (existingProviders + homeProvider).sortedBy { it.name }
+        }
 
         val regionSearch = region ?: homeArea
 

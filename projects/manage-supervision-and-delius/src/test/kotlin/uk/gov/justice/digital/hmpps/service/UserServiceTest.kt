@@ -192,7 +192,6 @@ internal class UserServiceTest {
         whenever(ldapTemplate.search(any(), any<AttributesMapper<String?>>()))
             .thenReturn(listOf(OffenderManagerGenerator.PAU_USER_RECORD1.id.provider.code))
             .thenReturn(listOf("7"))
-        whenever(providerRepository.findByCode("N01")).thenReturn(DEFAULT_PROVIDER)
 
         whenever(probationAreaUserRepository.findByUsername(STAFF_USER_1.username)).thenReturn(probationAreaUsers)
         whenever(teamRepository.findTeamById(7)).thenReturn(DEFAULT_TEAM)
@@ -209,7 +208,7 @@ internal class UserServiceTest {
                 DEFAULT_PROVIDER.description,
                 DEFAULT_TEAM.description
             ),
-            probationAreaUsers.map { it.toProvider() },
+            probationAreaUsers.map { it.toProvider() }.sortedBy { it.code },
             teams.map { it.toTeam() },
             listOf(staffRole.toUser())
         )
@@ -253,7 +252,6 @@ internal class UserServiceTest {
 
         whenever(ldapTemplate.search(any(), any<AttributesMapper<String?>>()))
             .thenReturn(listOf(OffenderManagerGenerator.PAU_USER_RECORD1.id.provider.code))
-        whenever(providerRepository.findByCode("N01")).thenReturn(DEFAULT_PROVIDER)
         whenever(probationAreaUserRepository.findByUsername(STAFF_USER_1.username)).thenReturn(probationAreaUsers)
         whenever(teamRepository.findByProviderCode(OffenderManagerGenerator.PAU_USER_RECORD1.id.provider.code)).thenReturn(
             teams
@@ -274,7 +272,7 @@ internal class UserServiceTest {
                 DEFAULT_PROVIDER.description,
                 teams[0].description
             ),
-            probationAreaUsers.map { it.toProvider() },
+            probationAreaUsers.map { it.toProvider() }.sortedBy { it.code },
             teams.map { it.toTeam() },
             listOf(staffRole.toUser())
         )
@@ -303,7 +301,6 @@ internal class UserServiceTest {
         whenever(teamRepository.findByProviderCode(PROVIDER_2.code)).thenReturn(teams)
         whenever(staffUserRepository.findStaffByTeam(TEAM_1.code)).thenReturn(listOf(staffRole))
         whenever(staffUserRepository.findByUsername(STAFF_USER_1.username)).thenReturn(STAFF_USER_1)
-        whenever(providerRepository.findByCode("N01")).thenReturn(DEFAULT_PROVIDER)
         whenever(teamRepository.findTeamById(7)).thenReturn(DEFAULT_TEAM)
         val expected = UserProviderResponse(
             DefaultUserDetails(
@@ -335,7 +332,6 @@ internal class UserServiceTest {
 
         whenever(ldapTemplate.search(any(), any<AttributesMapper<String?>>()))
             .thenReturn(listOf(OffenderManagerGenerator.PAU_USER_RECORD1.id.provider.code))
-        whenever(providerRepository.findByCode("N01")).thenReturn(DEFAULT_PROVIDER)
         whenever(probationAreaUserRepository.findByUsername(STAFF_USER_1.username)).thenReturn(probationAreaUsers)
         whenever(teamRepository.findByProviderCode(PROVIDER_3.code)).thenReturn(teams)
         whenever(staffUserRepository.findStaffByTeam("t01")).thenReturn(listOf(staffRole))

@@ -30,7 +30,7 @@ class UserProvidersIntegrationTest : IntegrationTestBase() {
     }
 
     @Test
-    fun `returns 404 when user home area is not in their list of providers`() {
+    fun `returns 404 when user home area provider does not exist`() {
         mockMvc.get("/user/no-home-match/providers") { withToken() }
             .andExpect { status { isNotFound() } }
     }
