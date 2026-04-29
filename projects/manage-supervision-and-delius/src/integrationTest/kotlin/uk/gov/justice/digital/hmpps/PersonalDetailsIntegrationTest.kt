@@ -193,7 +193,7 @@ class PersonalDetailsIntegrationTest : IntegrationTestBase() {
                 header {
                     string(
                         "Content-Disposition",
-                        "attachment; filename=\"=?UTF-8?Q?induction.doc?=\"; filename*=UTF-8''induction.doc"
+                        "attachment; filename=\"induction.doc\"; filename*=UTF-8''induction.doc"
                     )
                 }
                 header {
