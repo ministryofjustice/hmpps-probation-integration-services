@@ -13,10 +13,13 @@ import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 class ContactOutcomesIntegrationTest : IntegrationTestBase() {
 
     @Test
-    fun `returns 404 when contact type code does not exist`() {
-        mockMvc.get("/contact/types/INVALID/outcomes") {
+    fun `returns empty outcomes list when contact type code does not exist`() {
+        val response = mockMvc.get("/contact/types/INVALID/outcomes") {
             withToken()
-        }.andExpect { status { isNotFound() } }
+        }.andExpect { status { isOk() } }
+            .andReturn().response.contentAsJson<ContactOutcomes>()
+
+        assertThat(response.outcomes, hasSize(0))
     }
 
     @Test

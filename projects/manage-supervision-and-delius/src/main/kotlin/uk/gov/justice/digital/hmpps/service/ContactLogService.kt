@@ -15,7 +15,6 @@ import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.exception.InvalidRequestException
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
-import uk.gov.justice.digital.hmpps.exception.NotFoundException.Companion.orNotFoundBy
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractionCode
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.ContactTypeRequirementTypeRepository
@@ -177,11 +176,8 @@ class ContactLogService(
         contactRepository.save(contact)
     }
 
-    fun getContactOutcomesForType(typeCode: String): ContactOutcomes {
-        contactTypeRepository.getContactType(typeCode)
-        return ContactOutcomes(
+    fun getContactOutcomesForType(typeCode: String): ContactOutcomes =
+        ContactOutcomes(
             contactTypeRepository.findSelectableOutcomesByTypeCode(typeCode)
                 .map { CodeAndDescription(it.code, it.description) }
-        )
-    }
-}
+        )}

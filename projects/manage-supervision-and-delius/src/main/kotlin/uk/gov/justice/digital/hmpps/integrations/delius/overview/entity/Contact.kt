@@ -292,27 +292,18 @@ interface ContactTypeRepository : CrudRepository<ContactType, Long> {
 
     @Query(
         """
-            SELECT cto.outcome
-            FROM uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.ContactTypeOutcome cto
-            WHERE cto.type.code = :typeCode AND cto.outcome.selectable = true
-        """
+            SELECT co.* FROM r_contact_outcome_type co
+            JOIN r_contact_type_outcome cto ON cto.contact_outcome_type_id = co.contact_outcome_type_id
+            JOIN r_contact_type ct ON ct.contact_type_id = cto.contact_type_id
+            WHERE ct.code = :typeCode AND co.selectable = 'Y'
+        """,
+        nativeQuery = true
     )
     fun findSelectableOutcomesByTypeCode(typeCode: String): List<ContactOutcome>
 }
 
 fun ContactTypeRepository.getContactType(code: String) =
     findByCode(code) ?: throw NotFoundException("ContactType", "code", code)
-
-@Immutable
-@Entity(name = "ContactOutcomeType")
-@Table(name = "r_contact_outcome_type")
-class ContactTypeOutcome(
-    @Id
-    @Column(name = "contact_outcome_type_id")
-    val id: Long,
-    val code: String,
-    val description: String,
-)
 
 @Immutable
 @Entity
