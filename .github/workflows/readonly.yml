@@ -289,6 +289,7 @@ jobs:
           - hmpps_accredited_programmes_manage_and_deliver_devs
           - topic-pi-manage-people-on-probation
           - topic-pi-manage-my-community-sentence
+          - topic-hmpps-external-api-and-delius
     steps:
       - name: Send message to Slack
         uses: slackapi/slack-github-action@03ea5433c137af7c0495bc0cad1af10403fc800c # v3.0.2
