@@ -95,6 +95,7 @@ fun Disposal.asModel() = Sentence(
 
 fun PersonAddress.asAddress() = postcode?.let {
     Address(
+        id = id,
         fullAddress = listOf(
             buildingName,
             listOf(addressNumber, streetName).trimAndJoin(" "),

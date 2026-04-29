@@ -161,6 +161,7 @@ internal class CorePersonIntegrationTest(
                           ],
                           "addresses": [
                             {
+                              "id": ${PersonGenerator.FULL_PERSON_ADDRESSES[0].id},
                               "fullAddress": "1 Main Street, London, PC1 1TS",
                               "addressNumber": "1",
                               "streetName": "Main Street",
@@ -178,6 +179,7 @@ internal class CorePersonIntegrationTest(
                               "startDate": "${LocalDate.now().minusDays(30)}"
                             },
                             {
+                              "id": ${PersonGenerator.FULL_PERSON_ADDRESSES[1].id},
                               "fullAddress": "NF1 1NF",
                               "postcode": "NF1 1NF",
                               "noFixedAbode": true,
