@@ -76,22 +76,4 @@ data class ReligionHistory(
 
 data class Alias(val name: Name, val dateOfBirth: LocalDate, val gender: CodeDescription?)
 
-data class Address(
-    val fullAddress: String,
-    val buildingName: String?,
-    val addressNumber: String?,
-    val streetName: String?,
-    val district: String?,
-    val townCity: String?,
-    val county: String?,
-    val postcode: String,
-    val uprn: Long?,
-    val telephoneNumber: String?,
-    val noFixedAbode: Boolean,
-    val status: CodeDescription,
-    val notes: String?,
-    val startDate: LocalDate,
-    val endDate: LocalDate?,
-)
-
 data class Sentence(val date: LocalDate, val active: Boolean)
