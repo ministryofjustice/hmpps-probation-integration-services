@@ -315,7 +315,6 @@ class ContactTypeOutcome(
     val description: String,
 )
 
-
 @Immutable
 @Entity
 @Table(name = "r_contact_typecontact_category")

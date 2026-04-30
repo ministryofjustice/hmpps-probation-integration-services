@@ -152,7 +152,6 @@ fun Contact.toActivityOverview(): Activity {
     )
 }
 
-
 fun Contact.toActivity(noteId: Int? = null): Activity {
     val outcome = outcome
     return Activity(

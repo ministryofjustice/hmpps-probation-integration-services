@@ -190,18 +190,20 @@ class ContactLogService(
     fun updateContactOutcome(contactId: Long, request: UpdateContactOutcome) {
         var contact = contactRepository.getContact(contactId)
         val contactType = contact.type.code
-        val contactOutcome = contactTypeRepository.findSelectableOutcomesByTypeCode(contactType).firstOrNull { it.code == request.outcomeCode }
+        val contactOutcome = contactTypeRepository.findSelectableOutcomesByTypeCode(contactType)
+            .firstOrNull { it.code == request.outcomeCode }
             .orNotFoundBy("code", contactType)
 
         request.notes.let { contact.appendNotes(it) }
 
         if (request.alert) {
-            val personManager = offenderManagerRepository.findOffenderManagersByPersonIdAndActiveIsTrue(contact.person.id)
-                ?: throw NotFoundException(
-                    "PersonManager",
-                    "personId",
-                    contact.person.id
-                )
+            val personManager =
+                offenderManagerRepository.findOffenderManagersByPersonIdAndActiveIsTrue(contact.person.id)
+                    ?: throw NotFoundException(
+                        "PersonManager",
+                        "personId",
+                        contact.person.id
+                    )
             contactAlertRepository.save(
                 ContactAlert(
                     contact = contact,
@@ -219,13 +221,14 @@ class ContactLogService(
             contact.alert = false
         }
 
-        require(contact.sensitive != true || request.sensitive== true) { "Cannot un-flag a sensitive contact" }
+        require(contact.sensitive != true || request.sensitive == true) { "Cannot un-flag a sensitive contact" }
         contact.sensitive = request.sensitive
         contact.date = request.date
         contact.startTime = ZonedDateTime.ofLocal(request.date.atTime(request.time), EuropeLondon, null)
         contact.outcome = contactOutcome
         if (request.enforcementActionCode != null) {
-            val enforcementAction = enforcementActionsRepository.findByContactType(contact.type). firstOrNull { it.code == request.enforcementActionCode }
+            val enforcementAction = enforcementActionsRepository.findByContactType(contact.type)
+                .firstOrNull { it.code == request.enforcementActionCode }
                 .orNotFoundBy("code", contactType)
             val enforcement = Enforcement(
                 contact = contact,
@@ -238,5 +241,4 @@ class ContactLogService(
         }
         contactRepository.save(contact)
     }
-
 }
