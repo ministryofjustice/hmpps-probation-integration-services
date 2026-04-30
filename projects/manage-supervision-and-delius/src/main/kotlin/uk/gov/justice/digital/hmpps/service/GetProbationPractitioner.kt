@@ -9,6 +9,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.getByCrn
 import uk.gov.justice.digital.hmpps.ldap.findEmailByUsername
 import org.slf4j.LoggerFactory
 import org.springframework.ldap.NameNotFoundException
+import uk.gov.justice.digital.hmpps.exception.NotFoundException
 
 @Service
 class GetProbationPractitioner(
@@ -26,7 +27,7 @@ class GetProbationPractitioner(
         val email = username?.let { u ->
             try {
                 ldapTemplate.findEmailByUsername(u)
-            } catch (_: NameNotFoundException) {
+            } catch (_: NotFoundException) {
                 null
             } catch (ex: RuntimeException) {
                 log.warn("Failed to look up LDAP email for username={}", u, ex)
