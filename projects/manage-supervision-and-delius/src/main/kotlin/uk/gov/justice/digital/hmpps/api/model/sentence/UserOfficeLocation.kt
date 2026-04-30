@@ -18,8 +18,8 @@ data class User(
     val staffCode: String,
     val username: String,
     val nameAndRole: String,
-    val email: String? = null,
-    val name: Name
+    val name: Name,
+    val email: String? = null
 )
 
 data class Name(
