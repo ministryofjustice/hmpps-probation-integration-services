@@ -47,6 +47,7 @@ import java.time.LocalTime
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.Appointment as AppointmentEntity
+import org.slf4j.LoggerFactory
 
 @Service
 class UserService(
@@ -63,6 +64,10 @@ class UserService(
     private val deliusUserAspect: DeliusUserAspect,
     private val providerRepository: ProviderRepository
 ) {
+    companion object {
+        private val log = LoggerFactory.getLogger(UserService::class.java)
+    }
+
     fun getUserDetails(username: String): UserDetails {
         val ldapUser = ldapTemplate.findByUsername<LdapUser>(username)
             ?: throw NotFoundException("User", "username", username)
@@ -254,11 +259,13 @@ class UserService(
 
         val teamSearch = team ?: defaultTeam?.code ?: teams.first().code
         val staffInTeam = staffUserRepository.findStaffByTeam(teamSearch)
-        val emailsByUsername = runCatching {
-            ldapTemplate.findEmailByUsernames(
-                staffInTeam.map { it.username }.filter { it != "Unallocated" }
-            )
-        }.getOrDefault(emptyMap())
+        val usernames = staffInTeam.map { it.username }.filter { it != "Unallocated" }
+        val emailsByUsername = try {
+            ldapTemplate.findEmailByUsernames(usernames)
+        } catch (ex: RuntimeException) {
+            log.warn("Failed LDAP email lookup for teamCode={} usernames={}", teamSearch, usernames, ex)
+            emptyMap()
+        }
         val users = staffInTeam.map { staff ->
             staff.toUser(email = emailsByUsername[staff.username])
         }
