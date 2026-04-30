@@ -18,6 +18,7 @@ class GetProbationPractitioner(
     companion object {
         private val log = LoggerFactory.getLogger(GetProbationPractitioner::class.java)
     }
+
     fun forCrn(crn: String): ProbationPractitioner {
         val offenderManager = ppRepository.getByCrn(crn)
         val username = offenderManager.staff.user?.username
