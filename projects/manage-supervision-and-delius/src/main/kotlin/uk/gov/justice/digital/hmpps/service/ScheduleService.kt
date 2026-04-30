@@ -112,107 +112,114 @@ fun OfficeLocation.toOfficeAddress() = OfficeAddress.from(
     telephoneNumber = telephoneNumber,
 )
 
-fun Contact.toActivityOverview() = Activity(
-    id = id,
-    type = type.description,
-    isNationalStandard = type.nationalStandardsContact,
-    isSensitive = sensitive,
-    didTheyComply = complied,
-    acceptableAbsence = outcome?.outcomeAttendance == false && outcome.outcomeCompliantAcceptable == true,
-    acceptableAbsenceReason = if (outcome?.outcomeAttendance == false && outcome.outcomeCompliantAcceptable == true)
-        outcome.description else null,
-    absentWaitingEvidence = attended == false && outcome == null,
-    startDateTime = startDateTime(),
-    endDateTime = endDateTime(),
-    hasOutcome = hasARequiredOutcome(),
-    isInitial = isInitial(),
-    lastUpdated = lastUpdated,
-    lastUpdatedBy = Name(forename = lastUpdatedUser!!.forename, surname = lastUpdatedUser.surname),
-    wasAbsent = outcome?.outcomeAttendance == false,
-    nonComplianceReason = if (outcome?.outcomeCompliantAcceptable == false) type.description else null,
-    countsTowardsRAR = rarActivity,
-    rescheduled = rescheduledPop(),
-    rescheduledStaff = rescheduledPop() || rescheduledStaff(),
-    rescheduledPop = rescheduledPop(),
-    rearrangeOrCancelReason = if (rescheduled()) outcome?.description else null,
-    isAppointment = type.attendanceContact,
-    action = action?.description,
-    isSystemContact = type.systemGenerated,
-    isEmailOrTextFromPop = isEmailOrTextFromPop(),
-    isEmailOrTextToPop = isEmailOrTextToPop(),
-    isPhoneCallFromPop = isPhoneCallFromPop(),
-    isPhoneCallToPop = isPhoneCallToPop(),
-    isCommunication = isCommunication(),
-    description = description,
-    outcome = outcome?.description,
-    deliusManaged = CreateAppointment.Type.entries.none { it.code == type.code } || complied == false || requirement?.mainCategory?.code == "F",
-    esupervisionId = eSupervisionId()
-)
+fun Contact.toActivityOverview(): Activity {
+    val outcome = outcome
+    return Activity(
+        id = id,
+        type = type.description,
+        isNationalStandard = type.nationalStandardsContact,
+        isSensitive = sensitive,
+        didTheyComply = complied,
+        acceptableAbsence = outcome?.outcomeAttendance == false && outcome.outcomeCompliantAcceptable == true,
+        acceptableAbsenceReason = if (outcome?.outcomeAttendance == false && outcome.outcomeCompliantAcceptable == true)
+            outcome.description else null,
+        absentWaitingEvidence = attended == false && outcome == null,
+        startDateTime = startDateTime(),
+        endDateTime = endDateTime(),
+        hasOutcome = hasARequiredOutcome(),
+        isInitial = isInitial(),
+        lastUpdated = lastUpdated,
+        lastUpdatedBy = Name(forename = lastUpdatedUser!!.forename, surname = lastUpdatedUser.surname),
+        wasAbsent = outcome?.outcomeAttendance == false,
+        nonComplianceReason = if (outcome?.outcomeCompliantAcceptable == false) type.description else null,
+        countsTowardsRAR = rarActivity,
+        rescheduled = rescheduledPop(),
+        rescheduledStaff = rescheduledPop() || rescheduledStaff(),
+        rescheduledPop = rescheduledPop(),
+        rearrangeOrCancelReason = if (rescheduled()) outcome?.description else null,
+        isAppointment = type.attendanceContact,
+        action = action?.description,
+        isSystemContact = type.systemGenerated,
+        isEmailOrTextFromPop = isEmailOrTextFromPop(),
+        isEmailOrTextToPop = isEmailOrTextToPop(),
+        isPhoneCallFromPop = isPhoneCallFromPop(),
+        isPhoneCallToPop = isPhoneCallToPop(),
+        isCommunication = isCommunication(),
+        description = description,
+        outcome = outcome?.description,
+        deliusManaged = CreateAppointment.Type.entries.none { it.code == type.code } || complied == false || requirement?.mainCategory?.code == "F",
+        esupervisionId = eSupervisionId()
+    )
+}
 
-fun Contact.toActivity(noteId: Int? = null) = Activity(
-    id = id,
-    type = type.description,
-    isNationalStandard = type.nationalStandardsContact,
-    isSensitive = sensitive,
-    didTheyComply = if (type.attendanceContact) {
-        complied
-    } else null,
-    acceptableAbsence = outcome?.outcomeAttendance == false && outcome.outcomeCompliantAcceptable == true,
-    acceptableAbsenceReason = if (outcome?.outcomeAttendance == false && outcome.outcomeCompliantAcceptable == true)
-        outcome.description else null,
-    absentWaitingEvidence = attended == false && outcome == null,
-    documents = documents.map { it.toDocument() },
-    startDateTime = startDateTime(),
-    endDateTime = endDateTime(),
-    hasOutcome = hasARequiredOutcome(),
-    isInitial = isInitial(),
-    lastUpdated = lastUpdated,
-    lastUpdatedBy = Name(forename = lastUpdatedUser!!.forename, surname = lastUpdatedUser.surname),
-    wasAbsent = outcome?.outcomeAttendance == false,
-    nonComplianceReason = if (outcome?.outcomeCompliantAcceptable == false) type.description else null,
-    appointmentNotes = if (noteId == null) formatNote(notes, true) else null,
-    appointmentNote = if (noteId != null) formatNote(notes, false).elementAtOrNull(noteId) else null,
-    location = location?.toOfficeAddress(),
-    officer = staff?.let {
-        Manager(
-            it.code,
-            Name(forename = it.forename, surname = it.surname),
-            team!!.code,
-            team.provider.code,
-            it.user?.username
-        )
-    },
-    isRarRelated = requirement?.mainCategory?.code == "F",
-    rarCategory = requirement?.mainCategory?.description,
-    rarToolKit = requirement?.mainCategory?.description,
-    countsTowardsRAR = rarActivity,
-    rescheduled = rescheduledPop(),
-    rescheduledStaff = rescheduledPop() || rescheduledStaff(),
-    rescheduledPop = rescheduledPop(),
-    rearrangeOrCancelReason = if (rescheduled()) outcome?.description else null,
-    rescheduledBy = if (rescheduled()) Name(
-        forename = lastUpdatedUser.forename,
-        surname = lastUpdatedUser.surname
-    ) else null,
-    isAppointment = type.attendanceContact,
-    action = action?.description,
-    isSystemContact = type.systemGenerated,
-    isEmailOrTextFromPop = isEmailOrTextFromPop(),
-    isEmailOrTextToPop = isEmailOrTextToPop(),
-    isPhoneCallFromPop = isPhoneCallFromPop(),
-    isPhoneCallToPop = isPhoneCallToPop(),
-    isCommunication = isCommunication(),
-    eventNumber = event?.eventNumber,
-    description = description,
-    outcome = outcome?.description,
-    deliusManaged = CreateAppointment.Type.entries.none { it.code == type.code } || complied == false || requirement?.mainCategory?.code == "F",
-    isVisor = isVisor,
-    eventId = event?.id,
-    component = requirement?.asComponent() ?: licenceCondition?.asComponent(),
-    nsiId = nsiId,
-    esupervisionId = eSupervisionId(),
-    externalReference = externalReference
-)
+
+fun Contact.toActivity(noteId: Int? = null): Activity {
+    val outcome = outcome
+    return Activity(
+        id = id,
+        type = type.description,
+        isNationalStandard = type.nationalStandardsContact,
+        isSensitive = sensitive,
+        didTheyComply = if (type.attendanceContact) {
+            complied
+        } else null,
+        acceptableAbsence = outcome?.outcomeAttendance == false && outcome.outcomeCompliantAcceptable == true,
+        acceptableAbsenceReason = if (outcome?.outcomeAttendance == false && outcome.outcomeCompliantAcceptable == true)
+            outcome.description else null,
+        absentWaitingEvidence = attended == false && outcome == null,
+        documents = documents.map { it.toDocument() },
+        startDateTime = startDateTime(),
+        endDateTime = endDateTime(),
+        hasOutcome = hasARequiredOutcome(),
+        isInitial = isInitial(),
+        lastUpdated = lastUpdated,
+        lastUpdatedBy = Name(forename = lastUpdatedUser!!.forename, surname = lastUpdatedUser.surname),
+        wasAbsent = outcome?.outcomeAttendance == false,
+        nonComplianceReason = if (outcome?.outcomeCompliantAcceptable == false) type.description else null,
+        appointmentNotes = if (noteId == null) formatNote(notes, true) else null,
+        appointmentNote = if (noteId != null) formatNote(notes, false).elementAtOrNull(noteId) else null,
+        location = location?.toOfficeAddress(),
+        officer = staff?.let {
+            Manager(
+                it.code,
+                Name(forename = it.forename, surname = it.surname),
+                team!!.code,
+                team.provider.code,
+                it.user?.username
+            )
+        },
+        isRarRelated = requirement?.mainCategory?.code == "F",
+        rarCategory = requirement?.mainCategory?.description,
+        rarToolKit = requirement?.mainCategory?.description,
+        countsTowardsRAR = rarActivity,
+        rescheduled = rescheduledPop(),
+        rescheduledStaff = rescheduledPop() || rescheduledStaff(),
+        rescheduledPop = rescheduledPop(),
+        rearrangeOrCancelReason = if (rescheduled()) outcome?.description else null,
+        rescheduledBy = if (rescheduled()) Name(
+            forename = lastUpdatedUser.forename,
+            surname = lastUpdatedUser.surname
+        ) else null,
+        isAppointment = type.attendanceContact,
+        action = action?.description,
+        isSystemContact = type.systemGenerated,
+        isEmailOrTextFromPop = isEmailOrTextFromPop(),
+        isEmailOrTextToPop = isEmailOrTextToPop(),
+        isPhoneCallFromPop = isPhoneCallFromPop(),
+        isPhoneCallToPop = isPhoneCallToPop(),
+        isCommunication = isCommunication(),
+        eventNumber = event?.eventNumber,
+        description = description,
+        outcome = outcome?.description,
+        deliusManaged = CreateAppointment.Type.entries.none { it.code == type.code } || complied == false || requirement?.mainCategory?.code == "F",
+        isVisor = isVisor,
+        eventId = event?.id,
+        component = requirement?.asComponent() ?: licenceCondition?.asComponent(),
+        nsiId = nsiId,
+        esupervisionId = eSupervisionId(),
+        externalReference = externalReference
+    )
+}
 
 fun ContactDocument.toDocument() =
     Document(id = alfrescoId, name = name, createdAt = createdAt, lastUpdated = lastUpdated)

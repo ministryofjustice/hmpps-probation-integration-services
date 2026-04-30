@@ -9,6 +9,7 @@ import java.time.ZonedDateTime
 class UpdateAppointment {
     data class Outcome(
         val outcomeCode: String?,
+        val enforcementActionCode: String? = null,
     ) {
         internal constructor(entity: AppointmentContact) : this(entity.outcome?.code)
     }

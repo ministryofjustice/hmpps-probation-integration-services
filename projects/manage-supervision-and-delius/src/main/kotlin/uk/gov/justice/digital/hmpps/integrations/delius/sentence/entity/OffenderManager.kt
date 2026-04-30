@@ -18,6 +18,8 @@ import kotlin.jvm.Transient
 
 @Entity
 @Immutable
+@Table(name = "offender_manager")
+@SQLRestriction("soft_deleted = 0 and active_flag = 1")
 class OffenderManager(
     @Id
     @Column(name = "offender_manager_id")

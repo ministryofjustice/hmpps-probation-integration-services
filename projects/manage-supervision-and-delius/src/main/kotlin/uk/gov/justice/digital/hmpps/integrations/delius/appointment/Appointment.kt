@@ -71,6 +71,7 @@ class Appointment(
 
     sendToVisor: Boolean?,
 
+    @Column(name = "external_reference")
     val externalReference: String?,
 
     @Column(name = "soft_deleted", columnDefinition = "number", nullable = false)
@@ -83,6 +84,9 @@ class Appointment(
     val id: Long? = null
 ) {
     var partitionAreaId: Long = 0
+
+    @Column(name = "trust_provider_team_id")
+    val trustProviderTeamId: Long = 0
 
     @Version
     @Column(name = "row_version")
@@ -178,7 +182,7 @@ class Appointment(
 }
 
 @Immutable
-@Entity
+@Entity(name = "MsAppointmentType")
 @Table(name = "r_contact_type")
 class AppointmentType(
     @Column
@@ -196,7 +200,7 @@ class AppointmentType(
 )
 
 @Immutable
-@Entity
+@Entity(name = "AppointmentContactOutcome")
 @Table(name = "r_contact_outcome_type")
 class AppointmentOutcome(
     val code: String,

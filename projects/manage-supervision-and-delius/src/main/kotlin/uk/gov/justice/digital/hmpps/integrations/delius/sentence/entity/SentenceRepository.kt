@@ -41,8 +41,16 @@ interface OffenderManagerRepository : JpaRepository<OffenderManager, Long> {
 
     fun findByPersonCrnAndSoftDeletedIsFalseAndActiveIsTrue(crn: String): OffenderManager?
 
-    fun countOffenderManagersByPersonAndActiveIsFalse(person: Person): Long
+    @Query(
+        value = "select count(*) from offender_manager where offender_id = :personId and active_flag = 0 and soft_deleted = 0",
+        nativeQuery = true
+    )
+    fun countOffenderManagersByPersonAndActiveIsFalse(personId: Long): Long
 
+    @Query(
+        value = "select * from offender_manager where offender_id = :id and active_flag = 0 and soft_deleted = 0",
+        nativeQuery = true
+    )
     fun findOffenderManagersByPersonIdAndActiveIsFalse(id: Long): List<OffenderManager>
 
     fun findOffenderManagersByPersonIdAndActiveIsTrue(id: Long): OffenderManager?

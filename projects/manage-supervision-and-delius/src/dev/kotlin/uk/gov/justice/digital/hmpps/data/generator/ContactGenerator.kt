@@ -356,7 +356,8 @@ object ContactGenerator {
             id = IdGenerator.getAndIncrement(),
             code = code,
             description = description,
-            contactType = contactType
+            contactType = contactType,
+            responseByPeriod = 0
         )
 
     fun generateContact(

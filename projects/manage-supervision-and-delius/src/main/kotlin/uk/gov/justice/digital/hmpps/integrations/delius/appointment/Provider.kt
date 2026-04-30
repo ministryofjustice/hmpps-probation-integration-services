@@ -7,7 +7,7 @@ import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import java.time.LocalDate
 
 @Immutable
-@Entity
+@Entity(name = "MsAppointmentProvider")
 @Table(name = "probation_area")
 class AppointmentProvider(
     @Column(name = "code", columnDefinition = "char(3)")
@@ -19,7 +19,7 @@ class AppointmentProvider(
 )
 
 @Immutable
-@Entity
+@Entity(name = "MsAppointmentTeam")
 @Table(name = "team")
 class AppointmentTeam(
     @JoinColumn(name = "probation_area_id")
@@ -63,7 +63,7 @@ class AppointmentLocation(
 }
 
 @Immutable
-@Entity
+@Entity(name = "MsAppointmentStaff")
 @Table(name = "staff")
 class AppointmentStaff(
     @Column(name = "officer_code", columnDefinition = "char(7)")

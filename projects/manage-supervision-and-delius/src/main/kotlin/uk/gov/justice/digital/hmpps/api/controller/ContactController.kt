@@ -9,6 +9,7 @@ import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
 import uk.gov.justice.digital.hmpps.api.model.contact.CreateContact
 import uk.gov.justice.digital.hmpps.api.model.contact.UpdateContact
+import uk.gov.justice.digital.hmpps.api.model.contact.UpdateContactOutcome
 import uk.gov.justice.digital.hmpps.aspect.WithDeliusUser
 import uk.gov.justice.digital.hmpps.service.ContactLogService
 import uk.gov.justice.digital.hmpps.service.UserService
@@ -56,4 +57,11 @@ class ContactController(
         @PathVariable contactId: Long,
         @RequestBody request: UpdateContact,
     ) = contactLogService.updateContact(contactId, request)
+
+    @PutMapping("/{contactId}")
+    @WithDeliusUser
+    fun updateContactOutcome(
+        @PathVariable contactId: Long,
+        @RequestBody request: UpdateContactOutcome,
+    ) = contactLogService.updateContactOutcome(contactId, request)
 }

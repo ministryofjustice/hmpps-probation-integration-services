@@ -80,7 +80,7 @@ class Contact(
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "contact_outcome_type_id")
-    val outcome: ContactOutcome? = null,
+    var outcome: ContactOutcome? = null,
 
     @OneToMany(mappedBy = "contact", fetch = FetchType.LAZY)
     val documents: List<ContactDocument> = emptyList(),
@@ -91,6 +91,7 @@ class Contact(
 
     notes: String?,
 
+    @Column(name = "nsi_id")
     val nsiId: Long? = null,
 
     val description: String? = null,
@@ -157,11 +158,15 @@ class Contact(
     @Column(name = "alert_active")
     var alert: Boolean? = false,
 
+    @Column(name = "external_reference")
     val externalReference: String? = null,
 
     @Column(name = "soft_deleted", columnDefinition = "number", nullable = false)
     @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean = false,
+
+    @Column(name = "trust_provider_team_id")
+    val trustProviderTeamId: Long = 0,
 
     val partitionAreaId: Long = 0
 ) {
@@ -241,13 +246,7 @@ class ContactType(
     @Column
     val description: String,
 
-    @OneToMany(fetch = FetchType.LAZY)
-    @JoinColumn(
-        name = "contact_type_id",
-        referencedColumnName = "contact_type_id",
-        insertable = false,
-        updatable = false
-    )
+    @OneToMany(mappedBy = "id.contactTypeId", fetch = FetchType.LAZY)
     val categories: List<ContactCategory> = emptyList(),
 
     @Column(name = "sgc_flag", columnDefinition = "number")
@@ -306,6 +305,18 @@ fun ContactTypeRepository.getContactType(code: String) =
     findByCode(code) ?: throw NotFoundException("ContactType", "code", code)
 
 @Immutable
+@Entity(name = "ContactOutcomeType")
+@Table(name = "r_contact_outcome_type")
+class ContactTypeOutcome(
+    @Id
+    @Column(name = "contact_outcome_type_id")
+    val id: Long,
+    val code: String,
+    val description: String,
+)
+
+
+@Immutable
 @Entity
 @Table(name = "r_contact_typecontact_category")
 class ContactCategory(
@@ -355,6 +366,11 @@ class ContactOutcome(
 class EnforcementAction(
     val code: String,
     val description: String,
+    val responseByPeriod: Long? = null,
+
+    @Column(name = "selectable")
+    @Convert(converter = YesNoConverter::class)
+    val selectable: Boolean = false,
 
     @ManyToOne
     @JoinColumn(name = "contact_type_id")
@@ -1019,3 +1035,8 @@ interface BoroughRepository : JpaRepository<Borough, Long> {
     )
     fun findAllByStaffId(staffId: Long): List<Borough>
 }
+
+interface EnforcementActionsRepository : JpaRepository<EnforcementAction, Long> {
+    fun findByContactType(contactType: ContactType): List<EnforcementAction>
+}
+
