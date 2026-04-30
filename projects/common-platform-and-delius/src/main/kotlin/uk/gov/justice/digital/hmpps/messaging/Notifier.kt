@@ -60,7 +60,9 @@ class Notifier(
                         "addressId" to personAddress.id.toString()
                     )
                 ),
-                attributes = MessageAttributes("probation-case.address.created")
+                attributes = MessageAttributes("probation-case.address.created").apply {
+                    set("eventSource", "delius")
+                }
             )
         )
     }

@@ -10,6 +10,7 @@ import tools.jackson.module.kotlin.readValue
 import uk.gov.justice.digital.hmpps.integrations.delius.DomainEvent
 import uk.gov.justice.digital.hmpps.integrations.delius.DomainEventRepository
 import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
+import uk.gov.justice.digital.hmpps.message.MessageAttributes
 import uk.gov.justice.digital.hmpps.message.Notification
 import uk.gov.justice.digital.hmpps.publisher.NotificationPublisher
 import uk.gov.justice.digital.hmpps.service.enhancement.NotificationEnhancer
@@ -49,6 +50,8 @@ class DomainEventService(
 
     fun DomainEvent.asNotification() = Notification<HmppsDomainEvent>(
         message = objectMapper.readValue(messageBody),
-        attributes = objectMapper.readValue(messageAttributes)
+        attributes = objectMapper.readValue<MessageAttributes>(messageAttributes).apply {
+            set("eventSource", "delius")
+        }
     )
 }

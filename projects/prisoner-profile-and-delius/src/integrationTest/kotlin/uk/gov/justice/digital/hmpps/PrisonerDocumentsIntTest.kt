@@ -97,7 +97,7 @@ internal class PrisonerDocumentsIntTest @Autowired constructor(
                     string("Content-Type", "application/msword;charset=UTF-8")
                     string(
                         "Content-Disposition",
-                        "attachment; filename=\"=?UTF-8?Q?OFFENDER-related_document?=\"; filename*=UTF-8''OFFENDER-related%20document"
+                        "attachment; filename=\"OFFENDER-related document\"; filename*=UTF-8''OFFENDER-related%20document"
                     )
                     doesNotExist("Custom-Alfresco-Header")
                 }

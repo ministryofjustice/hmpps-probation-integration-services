@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.messaging
 
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -38,7 +39,12 @@ class NotifierTest {
     fun `test address created notification`(output: CapturedOutput) {
         doNothing().whenever(topicPublisher).publish(any<Notification<*>>())
         notifier.addressCreated(PersonAddressGenerator.MAIN_ADDRESS)
-        verify(topicPublisher, times(1)).publish(any<Notification<*>>())
+
+        verify(topicPublisher, times(1)).publish(check {
+            assertThat("probation-case.address.created").isEqualTo(it.eventType)
+            assertThat(it.attributes["eventSource"]?.value).isEqualTo("delius")
+        })
+
         verifyNoMoreInteractions(topicPublisher)
     }
 }

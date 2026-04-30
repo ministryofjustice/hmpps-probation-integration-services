@@ -3,7 +3,6 @@ package uk.gov.justice.digital.hmpps.integrations.delius
 import jakarta.persistence.*
 import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.NumericBooleanConverter
-import org.springframework.data.jpa.repository.JpaRepository
 
 @Entity
 @Table(name = "offender_manager")
@@ -14,8 +13,9 @@ class PersonManager(
     @Column(name = "offender_manager_id")
     val id: Long,
 
-    @Column(name = "offender_id")
-    val personId: Long,
+    @OneToOne
+    @JoinColumn(name = "offender_id")
+    val person: Person? = null,
 
     @ManyToOne
     @JoinColumn(name = "team_id")
@@ -36,9 +36,3 @@ class PersonManager(
     @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean = false
 )
-
-interface PersonManagerRepository : JpaRepository<PersonManager, Long> {
-    fun findByStaffId(staffId: Long): List<PersonManager>
-    fun findByTeamIdIn(teamIds: List<Long>): List<PersonManager>
-    fun findFirstByPersonId(personId: Long): PersonManager?
-}

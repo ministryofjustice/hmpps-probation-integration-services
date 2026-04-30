@@ -4,9 +4,9 @@ import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc
 import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
@@ -63,7 +63,7 @@ internal class DocumentsIntegrationTest @Autowired constructor(
 
                     string(
                         "Content-Disposition",
-                        "attachment; filename=\"=?UTF-8?Q?filename.txt?=\"; filename*=UTF-8''filename.txt"
+                        "attachment; filename=\"filename.txt\"; filename*=UTF-8''filename.txt"
                     )
 
                     doesNotExist("Custom-Alfresco-Header")

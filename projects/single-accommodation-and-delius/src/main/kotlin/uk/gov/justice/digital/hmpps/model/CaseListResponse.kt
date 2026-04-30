@@ -1,9 +1,11 @@
 package uk.gov.justice.digital.hmpps.model
 
+import org.springframework.data.web.PagedModel
 import java.time.LocalDate
 
 data class CaseListResponse(
-    val cases: List<Case>
+    val cases: List<Case>,
+    val page: PagedModel.PageMetadata
 )
 
 data class Case(
