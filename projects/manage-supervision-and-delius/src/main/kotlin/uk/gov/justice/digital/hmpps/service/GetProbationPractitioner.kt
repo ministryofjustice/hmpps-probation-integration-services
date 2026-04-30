@@ -2,7 +2,6 @@ package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.api.model.personalDetails.ProbationPractitioner
-import uk.gov.justice.digital.hmpps.api.model.user.UserDetails
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.OffenderManager
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.OffenderManagerRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.getByCrn
