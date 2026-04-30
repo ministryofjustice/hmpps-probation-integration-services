@@ -254,9 +254,11 @@ class UserService(
 
         val teamSearch = team ?: defaultTeam?.code ?: teams.first().code
         val staffInTeam = staffUserRepository.findStaffByTeam(teamSearch)
-        val emailsByUsername = ldapTemplate.findEmailByUsernames(
-            staffInTeam.map { it.username }.filter { it != "Unallocated" }
-        )
+        val emailsByUsername = runCatching {
+            ldapTemplate.findEmailByUsernames(
+                staffInTeam.map { it.username }.filter { it != "Unallocated" }
+            )
+        }.getOrDefault(emptyMap())
         val users = staffInTeam.map { staff ->
             staff.toUser(email = emailsByUsername[staff.username])
         }
