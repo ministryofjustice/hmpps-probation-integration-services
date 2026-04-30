@@ -32,18 +32,10 @@ class CaseListService(
             userAccessService.userAccessFor(username, cases.map { it.crn }).access.associateBy { it.crn }
         val expectedReleaseDates = keyDateRepository.findExpectedReleaseDatesByPersonIdIn(personIds)
             .associate { it.personId to it.releaseDate }
-        val roshLevels = cases.associate { reg ->
-            reg.id to reg.roshRegistrations.firstOrNull()?.type?.let {
-                CodeDescription(
-                    it.code,
-                    it.description
-                )
-            }
-        }
 
         val responsibleCases = cases.map { person ->
             val access = checkNotNull(limitedAccess[person.crn]) { "Access not found for CRN ${person.crn}" }
-            person.toCase(access, roshLevels[person.id], expectedReleaseDates[person.id])
+            person.toCase(access, expectedReleaseDates[person.id])
         }
 
         return CaseListResponse(
@@ -62,12 +54,11 @@ class CaseListService(
         val access = userAccessService.caseAccessFor(username, crn)
         val roshLevel = person.roshRegistrations.firstOrNull()
             ?.let { CodeDescription(it.type.code, it.type.description) }
-        return person.toCase(access, roshLevel, keyDateRepository.findExpectedReleaseDates(person.id))
+        return person.toCase(access, keyDateRepository.findExpectedReleaseDates(person.id))
     }
 
     private fun Person.toCase(
         access: CaseAccess,
-        roshLevel: CodeDescription?,
         expectedReleaseDate: LocalDate?,
     ) = Case(
         crn = crn,
@@ -93,7 +84,7 @@ class CaseListService(
             description = manager.team.description
         ),
         gender = gender.description,
-        roshLevel = roshLevel,
+        roshLevel = roshRegistrations.firstOrNull()?.type?.let { CodeDescription(it.code, it.description) },
         expectedReleaseDate = expectedReleaseDate,
         userExcluded = access.userExcluded,
         userRestricted = access.userRestricted,
