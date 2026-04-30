@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
+import org.springframework.data.web.PagedModel.PageMetadata
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.exception.NotFoundException.Companion.orNotFoundBy
@@ -31,9 +32,14 @@ class CaseListService(
             userAccessService.userAccessFor(username, cases.map { it.crn }).access.associateBy { it.crn }
         val expectedReleaseDates = keyDateRepository.findExpectedReleaseDatesByPersonIdIn(personIds)
             .associate { it.personId to it.releaseDate }
-        val roshLevels = registrationRepository.findByPersonIdInAndTypeCodeIn(personIds, RegisterType.ROSH_CODES)
-            .groupBy { it.person?.id }
-            .mapValues { (_, reg) -> CodeDescription(reg.first().type.code, reg.first().type.description) }
+        val roshLevels = cases.associate { reg ->
+            reg.id to reg.roshRegistrations.firstOrNull()?.type?.let {
+                CodeDescription(
+                    it.code,
+                    it.description
+                )
+            }
+        }
 
         val responsibleCases = cases.map { person ->
             val access = checkNotNull(limitedAccess[person.crn]) { "Access not found for CRN ${person.crn}" }
@@ -42,10 +48,12 @@ class CaseListService(
 
         return CaseListResponse(
             cases = responsibleCases,
-            totalElements = casesPageable.totalElements,
-            totalPages = casesPageable.totalPages,
-            page = pageable.pageNumber,
-            size = pageable.pageSize,
+            page = PageMetadata(
+                pageable.pageSize.toLong(),
+                pageable.pageNumber.toLong(),
+                casesPageable.totalElements,
+                casesPageable.totalPages.toLong()
+            )
         )
     }
 
