@@ -30,10 +30,13 @@ class UserLocationService(
     fun getStaffByTeam(code: String): StaffTeam {
         val staffInTeam = staffUserRepository.findStaffByTeam(code)
         val usernames = staffInTeam.map { it.username }.filter { it != "Unallocated" }
-        val emailsByUsername = try {
+        val emailsByUsername = if (usernames.isEmpty()) {
+            emptyMap()
+        } else try {
             ldapTemplate.findEmailByUsernames(usernames)
-        } catch (ex: RuntimeException) {
-            log.warn("Failed LDAP email lookup for teamCode and usernames. ", ex)
+            } catch (ex: RuntimeException) {
+            log.warn("Failed LDAP email lookup for teamCode={} and usernamesCount={}",
+                code, usernames.size, ex)
             emptyMap()
         }
 
