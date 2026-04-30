@@ -7,17 +7,32 @@ import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.Offender
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.OffenderManagerRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.getByCrn
 import uk.gov.justice.digital.hmpps.ldap.findEmailByUsername
+import org.slf4j.LoggerFactory
+import org.springframework.ldap.NameNotFoundException
 
 @Service
 class GetProbationPractitioner(
     private val ppRepository: OffenderManagerRepository,
     private val ldapTemplate: LdapTemplate
 ) {
+    companion object {
+        private val log = LoggerFactory.getLogger(GetProbationPractitioner::class.java)
+    }
     fun forCrn(crn: String): ProbationPractitioner {
         val offenderManager = ppRepository.getByCrn(crn)
-        val email = offenderManager.staff.user?.username?.let { username ->
-            runCatching { ldapTemplate.findEmailByUsername(username) }.getOrNull()
+        val username = offenderManager.staff.user?.username
+
+        val email = username?.let { u ->
+            try {
+                ldapTemplate.findEmailByUsername(u)
+            } catch (_: NameNotFoundException) {
+                null
+            } catch (ex: RuntimeException) {
+                log.warn("Failed to look up LDAP email for username={}", u, ex)
+                null
+            }
         }
+
         return offenderManager.asProbationPractitioner(email)
     }
 }
