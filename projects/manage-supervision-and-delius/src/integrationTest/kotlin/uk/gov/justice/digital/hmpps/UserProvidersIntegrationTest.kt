@@ -90,24 +90,25 @@ class UserProvidersIntegrationTest : IntegrationTestBase() {
                 STAFF_USER_1.staff!!.code,
                 STAFF_USER_1.username,
                 "${STAFF_USER_1.forename} ${STAFF_USER_1.surname} (${STAFF_USER_1.staff!!.role!!.description})",
-                "peter.parker@moj.gov.uk",
                 Name(
                     STAFF_USER_1.forename,
                     STAFF_USER_1.forename2,
                     STAFF_USER_1.surname
-                )
-            ),
+                ),
+                "peter.parker@moj.gov.uk",
+                ),
             unallocatedUser,
             User(
                 STAFF_USER_2.staff!!.code,
                 STAFF_USER_2.username,
                 "${STAFF_USER_2.forename} ${STAFF_USER_2.surname} (${STAFF_USER_2.staff!!.role!!.description})",
-                "bruce.wayne@moj.gov.uk",
                 Name(
                     STAFF_USER_2.forename,
                     STAFF_USER_2.forename2,
                     STAFF_USER_2.surname
-                )
+                ),
+                "bruce.wayne@moj.gov.uk",
+
             ),
         )
 
@@ -161,4 +162,4 @@ class UserProvidersIntegrationTest : IntegrationTestBase() {
     }
 }
 
-val unallocatedUser = User("Unallocated", "Unallocated", "Unallocated", null, Name("Unallocated", null, "Unallocated"))
+val unallocatedUser = User("Unallocated", "Unallocated", "Unallocated", Name("Unallocated", null, "Unallocated"), null)
