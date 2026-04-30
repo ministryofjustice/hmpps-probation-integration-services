@@ -37,6 +37,11 @@ internal class AddressIntegrationTest(@Autowired private val mockMvc: MockMvc) {
                             "code": "M",
                             "description": "Main Address"
                           },
+                          "type": {
+                            "code": "A01C",
+                            "description": "Rental accommodation - private rental"
+                          },
+                          "typeVerified": true,
                           "notes": "Some notes about this address",
                           "startDate": "${PersonGenerator.FULL_PERSON_ADDRESSES[0].startDate}"
                         }

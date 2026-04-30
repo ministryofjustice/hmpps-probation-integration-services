@@ -16,6 +16,8 @@ data class Address(
     val telephoneNumber: String?,
     val noFixedAbode: Boolean,
     val status: CodeDescription,
+    val type: CodeDescription?,
+    val typeVerified: Boolean?,
     val notes: String?,
     val startDate: LocalDate,
     val endDate: LocalDate?,
