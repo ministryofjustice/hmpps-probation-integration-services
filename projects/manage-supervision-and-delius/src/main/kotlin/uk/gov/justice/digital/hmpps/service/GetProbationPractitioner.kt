@@ -1,20 +1,22 @@
 package uk.gov.justice.digital.hmpps.service
 
+import org.springframework.ldap.core.LdapTemplate
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.api.model.personalDetails.ProbationPractitioner
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.OffenderManager
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.OffenderManagerRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.getByCrn
+import uk.gov.justice.digital.hmpps.ldap.findEmailByUsername
 
 @Service
 class GetProbationPractitioner(
     private val ppRepository: OffenderManagerRepository,
-    private val userService: UserService
+    private val ldapTemplate: LdapTemplate
 ) {
     fun forCrn(crn: String): ProbationPractitioner {
         val offenderManager = ppRepository.getByCrn(crn)
         val email = offenderManager.staff.user?.username?.let { username ->
-            runCatching { userService.getUserDetails(username).email }.getOrNull()
+            runCatching { ldapTemplate.findEmailByUsername(username) }.getOrNull()
         }
         return offenderManager.asProbationPractitioner(email)
     }
