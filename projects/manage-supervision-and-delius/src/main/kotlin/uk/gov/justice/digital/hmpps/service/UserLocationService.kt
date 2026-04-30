@@ -33,7 +33,7 @@ class UserLocationService(
         val emailsByUsername = try {
             ldapTemplate.findEmailByUsernames(usernames)
         } catch (ex: RuntimeException) {
-            log.warn("Failed LDAP email lookup for teamCode={} usernames={}", code, usernames, ex)
+            log.warn("Failed LDAP email lookup for teamCode and usernames. ", ex)
             emptyMap()
         }
 
