@@ -1,6 +1,5 @@
 package uk.gov.justice.digital.hmpps.service
 
-import com.microsoft.applicationinsights.TelemetryClient
 import org.springframework.ldap.core.LdapTemplate
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.api.model.sentence.*
@@ -50,5 +49,5 @@ fun StaffAndRole.toUser(email: String? = null): User =
 
 fun StaffUser.toUser(): User = User(
     staff!!.code, username, "$forename $surname (${staff.role!!.description})",
-    email = email, name = Name(forename, surname = surname)
+    email = email, name = Name(forename, forename2, surname = surname)
 )
