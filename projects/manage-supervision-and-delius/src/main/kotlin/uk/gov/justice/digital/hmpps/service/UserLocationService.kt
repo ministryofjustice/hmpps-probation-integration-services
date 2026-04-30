@@ -34,9 +34,11 @@ class UserLocationService(
             emptyMap()
         } else try {
             ldapTemplate.findEmailByUsernames(usernames)
-            } catch (ex: RuntimeException) {
-            log.warn("Failed LDAP email lookup for teamCode={} and usernamesCount={}",
-                code, usernames.size, ex)
+        } catch (ex: RuntimeException) {
+            log.warn(
+                "Failed LDAP email lookup for teamCode={} and usernamesCount={}",
+                code, usernames.size, ex
+            )
             emptyMap()
         }
 
