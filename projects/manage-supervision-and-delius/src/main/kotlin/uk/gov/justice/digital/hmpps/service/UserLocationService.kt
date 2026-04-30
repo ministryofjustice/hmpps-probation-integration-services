@@ -5,12 +5,16 @@ import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.api.model.sentence.*
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.*
 import uk.gov.justice.digital.hmpps.ldap.findEmailByUsernames
+import org.slf4j.LoggerFactory
 
 @Service
 class UserLocationService(
     private val staffUserRepository: StaffUserRepository,
     private val ldapTemplate: LdapTemplate
 ) {
+    companion object {
+        private val log = LoggerFactory.getLogger(UserLocationService::class.java)
+    }
 
     fun getUserOfficeLocations(username: String): UserOfficeLocation {
         val user = staffUserRepository.getUser(username)
@@ -25,11 +29,13 @@ class UserLocationService(
 
     fun getStaffByTeam(code: String): StaffTeam {
         val staffInTeam = staffUserRepository.findStaffByTeam(code)
-        val emailsByUsername = runCatching {
-            ldapTemplate.findEmailByUsernames(
-                staffInTeam.map { it.username }.filter { it != "Unallocated" }
-            )
-        }.getOrDefault(emptyMap())
+        val usernames = staffInTeam.map { it.username }.filter { it != "Unallocated" }
+        val emailsByUsername = try {
+            ldapTemplate.findEmailByUsernames(usernames)
+        } catch (ex: RuntimeException) {
+            log.warn("Failed LDAP email lookup for teamCode={} usernames={}", code, usernames, ex)
+            emptyMap()
+        }
 
         return StaffTeam(
             staffInTeam.map { staff ->
