@@ -6,7 +6,6 @@ import uk.gov.justice.digital.hmpps.api.model.user.UserDetails
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.OffenderManager
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.OffenderManagerRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.getByCrn
-import uk.gov.justice.digital.hmpps.integrations.delius.user.entity.User
 
 @Service
 class GetProbationPractitioner(
@@ -15,15 +14,17 @@ class GetProbationPractitioner(
 ) {
     fun forCrn(crn: String): ProbationPractitioner {
         val offenderManager = ppRepository.getByCrn(crn)
-        val user = userService.getUserDetails(username = offenderManager.staff.user?.username!!)
-        return offenderManager.asProbationPractitioner(user)
+        val email = offenderManager.staff.user?.username?.let { username ->
+            runCatching { userService.getUserDetails(username).email }.getOrNull()
+        }
+        return offenderManager.asProbationPractitioner(email)
     }
 }
 
-private fun OffenderManager.asProbationPractitioner(user: UserDetails): ProbationPractitioner = ProbationPractitioner(
+private fun OffenderManager.asProbationPractitioner(email: String?): ProbationPractitioner = ProbationPractitioner(
     staff.code,
     ProbationPractitioner.Name(staff.forename, staff.surname),
-    user.email,
+    email,
     ProbationPractitioner.Provider(provider.code, provider.description),
     ProbationPractitioner.Team(team.code, team.description),
     staff.isUnallocated(),
