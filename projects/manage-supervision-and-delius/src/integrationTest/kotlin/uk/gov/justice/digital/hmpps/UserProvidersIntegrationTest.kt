@@ -108,8 +108,7 @@ class UserProvidersIntegrationTest : IntegrationTestBase() {
                     STAFF_USER_2.surname
                 ),
                 "bruce.wayne@moj.gov.uk",
-
-                ),
+            ),
         )
 
         @JvmStatic
