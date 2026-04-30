@@ -52,8 +52,6 @@ class CaseListService(
     fun getCase(username: String, crn: String): Case {
         val person = personRepository.findByCrn(crn).orNotFoundBy("CRN", crn)
         val access = userAccessService.caseAccessFor(username, crn)
-        val roshLevel = person.roshRegistrations.firstOrNull()
-            ?.let { CodeDescription(it.type.code, it.type.description) }
         return person.toCase(access, keyDateRepository.findExpectedReleaseDates(person.id))
     }
 
