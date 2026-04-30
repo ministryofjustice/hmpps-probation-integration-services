@@ -3,24 +3,7 @@ package uk.gov.justice.digital.hmpps.data
 import org.springframework.stereotype.Component
 import uk.gov.justice.digital.hmpps.audit.BusinessInteraction
 import uk.gov.justice.digital.hmpps.audit.BusinessInteractionCode
-import uk.gov.justice.digital.hmpps.data.generator.AdditionalOffenceGenerator
-import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator
-import uk.gov.justice.digital.hmpps.data.generator.CourtAppearanceGenerator
-import uk.gov.justice.digital.hmpps.data.generator.DisposalGenerator
-import uk.gov.justice.digital.hmpps.data.generator.DocumentGenerator
-import uk.gov.justice.digital.hmpps.data.generator.EventGenerator
-import uk.gov.justice.digital.hmpps.data.generator.IdGenerator
-import uk.gov.justice.digital.hmpps.data.generator.MainOffenceGenerator
-import uk.gov.justice.digital.hmpps.data.generator.OfficeLocationGenerator
-import uk.gov.justice.digital.hmpps.data.generator.PersonAddressGenerator
-import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
-import uk.gov.justice.digital.hmpps.data.generator.ProbationAreaGenerator
-import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator
-import uk.gov.justice.digital.hmpps.data.generator.RegistrationGenerator
-import uk.gov.justice.digital.hmpps.data.generator.RequirementGenerator
-import uk.gov.justice.digital.hmpps.data.generator.ResponsibleOfficerGenerator
-import uk.gov.justice.digital.hmpps.data.generator.StaffGenerator
-import uk.gov.justice.digital.hmpps.data.generator.UserGenerator
+import uk.gov.justice.digital.hmpps.data.generator.*
 import uk.gov.justice.digital.hmpps.data.loader.BaseDataLoader
 import uk.gov.justice.digital.hmpps.data.manager.DataManager
 import java.time.ZonedDateTime
@@ -77,6 +60,8 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
             ResponsibleOfficerGenerator.DEFAULT_PROBATION_RESPONSIBLE_OFFICER,
             ResponsibleOfficerGenerator.DEFAULT_PRISON_OFFENDER_MANAGER,
             ResponsibleOfficerGenerator.DEFAULT_PRISON_RESPONSIBLE_OFFICER,
+            ResponsibleOfficerGenerator.PROBATION_MANAGER_WITHOUT_USER,
+            ResponsibleOfficerGenerator.RESPONSIBLE_OFFICER_WITHOUT_USER,
             OfficeLocationGenerator.DEFAULT_OFFICE_LOCATION,
         )
     }

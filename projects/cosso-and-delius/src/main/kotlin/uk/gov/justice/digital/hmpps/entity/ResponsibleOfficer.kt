@@ -1,12 +1,6 @@
 package uk.gov.justice.digital.hmpps.entity
 
-import jakarta.persistence.Column
-import jakarta.persistence.Convert
-import jakarta.persistence.Entity
-import jakarta.persistence.Id
-import jakarta.persistence.JoinColumn
-import jakarta.persistence.OneToOne
-import jakarta.persistence.Table
+import jakarta.persistence.*
 import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.NumericBooleanConverter
 import org.springframework.data.jpa.repository.JpaRepository
@@ -49,7 +43,7 @@ class OffenderManager(
     @JoinColumn(name = "offender_id")
     val person: Person,
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "probation_area_id")
     val probationArea: ProbationArea,
 
@@ -86,7 +80,7 @@ class PrisonOffenderManager(
 )
 
 interface ResponsibleOfficerRepository : JpaRepository<ResponsibleOfficer, Long> {
-    fun findByPerson_Crn(crn: String): ResponsibleOfficer?
+    fun findByPersonCrn(crn: String): ResponsibleOfficer?
 }
 
 

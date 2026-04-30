@@ -10,6 +10,7 @@ import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.DEFAULT_PERSON
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.PERSON_IN_PRISON
+import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.PERSON_WITH_RESPONSIBLE_OFFICER_WITHOUT_USER
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 
 @AutoConfigureMockMvc
@@ -20,30 +21,102 @@ class ResponsibleOfficerIntegrationTest @Autowired constructor(
     @Test
     fun `can get responsible officer details for probation om`() {
         val crn = DEFAULT_PERSON.crn
-        val expectedResponse =
-            """{"name":{"forename":"John","middleName":"Bob","surname":"Smith"},"emailAddress":"john.smith@moj.gov.uk","telephoneNumber":"07247764536","probationArea":{"code":"N02","description":"DEFAULT_PROBATION_AREA"},"replyAddress":{"id":10001099,"officeDescription":"Main Office","buildingName":"The Office Block","buildingNumber":"1","streetName":"The Street","townCity":"The Town","district":"The District","county":"The County","postcode":"AA1 1AA"}}"""
         mockMvc.get("/responsible-officer/$crn") { withToken() }
             .andExpect {
                 status { isOk() }
                 content {
                     json(
-                        expectedResponse, JsonCompareMode.STRICT
+                        """
+                        {
+                          "name": {
+                            "forename": "John",
+                            "middleName": "Bob",
+                            "surname": "Smith"
+                          },
+                          "emailAddress": "john.smith@moj.gov.uk",
+                          "telephoneNumber": "07247764536",
+                          "probationArea": {
+                            "code": "N02",
+                            "description": "DEFAULT_PROBATION_AREA"
+                          },
+                          "replyAddress": {
+                            "id": 10001099,
+                            "officeDescription": "Main Office",
+                            "buildingName": "The Office Block",
+                            "buildingNumber": "1",
+                            "streetName": "The Street",
+                            "townCity": "The Town",
+                            "district": "The District",
+                            "county": "The County",
+                            "postcode": "AA1 1AA"
+                          }
+                        }
+                        """, JsonCompareMode.STRICT
                     )
                 }
             }
     }
 
     @Test
-    fun `can get responsible officer details for non probation om`() {
+    fun `can get responsible officer details for prison om`() {
         val crn = PERSON_IN_PRISON.crn
-        val expectedResponse =
-            """{"name":{"forename":"John","middleName":"Bob","surname":"Smith"},"emailAddress":"john.smith@moj.gov.uk","telephoneNumber":"07247764536","probationArea":{"code":"N02","description":"DEFAULT_PROBATION_AREA"},"replyAddress":{"id":10001099,"officeDescription":"Main Office","buildingName":"The Office Block","buildingNumber":"1","streetName":"The Street","townCity":"The Town","district":"The District","county":"The County","postcode":"AA1 1AA"}}"""
         mockMvc.get("/responsible-officer/$crn") { withToken() }
             .andExpect {
                 status { isOk() }
                 content {
                     json(
-                        expectedResponse, JsonCompareMode.STRICT
+                        """
+                        {
+                          "name": {
+                            "forename": "John",
+                            "middleName": "Bob",
+                            "surname": "Smith"
+                          },
+                          "emailAddress": "john.smith@moj.gov.uk",
+                          "telephoneNumber": "07247764536",
+                          "probationArea": {
+                            "code": "N02",
+                            "description": "DEFAULT_PROBATION_AREA"
+                          },
+                          "replyAddress": {
+                            "id": 10001099,
+                            "officeDescription": "Main Office",
+                            "buildingName": "The Office Block",
+                            "buildingNumber": "1",
+                            "streetName": "The Street",
+                            "townCity": "The Town",
+                            "district": "The District",
+                            "county": "The County",
+                            "postcode": "AA1 1AA"
+                          }
+                        }
+                        """, JsonCompareMode.STRICT
+                    )
+                }
+            }
+    }
+
+    @Test
+    fun `can get responsible officer details when user is missing`() {
+        val crn = PERSON_WITH_RESPONSIBLE_OFFICER_WITHOUT_USER.crn
+        mockMvc.get("/responsible-officer/$crn") { withToken() }
+            .andExpect {
+                status { isOk() }
+                content {
+                    json(
+                        """
+                        {
+                          "name": {
+                            "forename": "Jane",
+                            "middleName": "Mary",
+                            "surname": "Doe"
+                          },
+                          "probationArea": {
+                            "code": "N02",
+                            "description": "DEFAULT_PROBATION_AREA"
+                          }
+                        }
+                        """, JsonCompareMode.STRICT
                     )
                 }
             }
