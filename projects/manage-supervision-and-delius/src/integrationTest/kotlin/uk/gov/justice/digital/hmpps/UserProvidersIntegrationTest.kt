@@ -96,7 +96,7 @@ class UserProvidersIntegrationTest : IntegrationTestBase() {
                     STAFF_USER_1.surname
                 ),
                 "peter.parker@moj.gov.uk",
-                ),
+            ),
             unallocatedUser,
             User(
                 STAFF_USER_2.staff!!.code,
@@ -109,7 +109,7 @@ class UserProvidersIntegrationTest : IntegrationTestBase() {
                 ),
                 "bruce.wayne@moj.gov.uk",
 
-            ),
+                ),
         )
 
         @JvmStatic
