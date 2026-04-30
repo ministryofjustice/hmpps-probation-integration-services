@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.service
 
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -54,7 +55,9 @@ class DomainEventServiceTest {
             )
         )
 
-        verify(notificationPublisher, times(2)).publish(any())
+        verify(notificationPublisher, times(2)).publish(check {
+            assertThat(it.attributes["eventSource"]?.value).isEqualTo("delius")
+        })
     }
 
     @Test

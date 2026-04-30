@@ -35,7 +35,9 @@ class Notifier(@Qualifier("topicPublisher") private val topicPublisher: Notifica
                         "addressId" to addressId
                     )
                 ),
-                attributes = MessageAttributes("probation-case.address.created")
+                attributes = MessageAttributes("probation-case.address.created").apply {
+                    set("eventSource", "delius")
+                }
             )
         )
     }
@@ -57,7 +59,9 @@ class Notifier(@Qualifier("topicPublisher") private val topicPublisher: Notifica
                         "addressId" to addressId
                     )
                 ),
-                attributes = MessageAttributes("probation-case.address.updated")
+                attributes = MessageAttributes("probation-case.address.updated").apply {
+                    set("eventSource", "delius")
+                }
             )
         )
     }
