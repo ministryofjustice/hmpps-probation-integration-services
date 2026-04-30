@@ -25,9 +25,11 @@ class UserLocationService(
 
     fun getStaffByTeam(code: String): StaffTeam {
         val staffInTeam = staffUserRepository.findStaffByTeam(code)
-        val emailsByUsername = runCatching { ldapTemplate.findEmailByUsernames(
-            staffInTeam.map { it.username }.filter { it != "Unallocated" }
-        )}.getOrDefault(emptyMap())
+        val emailsByUsername = runCatching {
+            ldapTemplate.findEmailByUsernames(
+                staffInTeam.map { it.username }.filter { it != "Unallocated" }
+            )
+        }.getOrDefault(emptyMap())
 
         return StaffTeam(
             staffInTeam.map { staff ->
