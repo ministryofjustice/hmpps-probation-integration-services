@@ -8,7 +8,6 @@ import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.Offender
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.getByCrn
 import uk.gov.justice.digital.hmpps.ldap.findEmailByUsername
 import org.slf4j.LoggerFactory
-import org.springframework.ldap.NameNotFoundException
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 
 @Service
