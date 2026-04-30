@@ -1,12 +1,14 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
+import uk.gov.justice.digital.hmpps.data.generator.IdGenerator.id
 import uk.gov.justice.digital.hmpps.integrations.delius.Person
 import uk.gov.justice.digital.hmpps.integrations.delius.PersonManager
+import uk.gov.justice.digital.hmpps.integrations.delius.Registration
 import java.time.LocalDate
 
 object PersonGenerator {
     val DEFAULT = Person(
-        id = IdGenerator.getAndIncrement(),
+        id = id(),
         crn = "A000001",
         firstName = "Bob",
         secondName = null,
@@ -15,10 +17,22 @@ object PersonGenerator {
         dateOfBirth = LocalDate.of(1980, 1, 1),
         gender = ReferenceDataGenerator.GENDER_MALE,
         noms = "A0001AA",
-        pnc = "2004/0000001P"
+        pnc = "2004/0000001P",
+        manager = PersonManager(
+            id = id(),
+            team = TeamGenerator.DEFAULT,
+            staff = StaffGenerator.DEFAULT,
+            probationAreaId = ProviderGenerator.DEFAULT.id,
+        ),
+        roshRegistrations = listOf(
+            Registration(
+                id = id(),
+                type = RegisterTypeGenerator.HIGH_ROSH
+            )
+        )
     )
     val EXCLUDED = Person(
-        id = IdGenerator.getAndIncrement(),
+        id = id(),
         crn = "E123456",
         firstName = "Excluded",
         secondName = null,
@@ -29,10 +43,17 @@ object PersonGenerator {
         noms = "E0001AA",
         pnc = "2005/0000001E",
         exclusionMessage = "This case is excluded.",
-        restrictionMessage = null
+        restrictionMessage = null,
+        manager = PersonManager(
+            id = id(),
+            team = TeamGenerator.DEFAULT,
+            staff = StaffGenerator.DEFAULT,
+            probationAreaId = ProviderGenerator.DEFAULT.id,
+        ),
+        roshRegistrations = emptyList(),
     )
     val RESTRICTED = Person(
-        id = IdGenerator.getAndIncrement(),
+        id = id(),
         crn = "R123456",
         firstName = "Restricted",
         secondName = null,
@@ -43,10 +64,17 @@ object PersonGenerator {
         noms = "R0001AA",
         pnc = "2006/0000001R",
         exclusionMessage = null,
-        restrictionMessage = "This case is restricted."
+        restrictionMessage = "This case is restricted.",
+        manager = PersonManager(
+            id = id(),
+            team = TeamGenerator.DEFAULT,
+            staff = StaffGenerator.DEFAULT,
+            probationAreaId = ProviderGenerator.DEFAULT.id,
+        ),
+        roshRegistrations = emptyList(),
     )
     val TEAM = Person(
-        id = IdGenerator.getAndIncrement(),
+        id = id(),
         crn = "A000002",
         firstName = "Team",
         secondName = null,
@@ -55,10 +83,17 @@ object PersonGenerator {
         dateOfBirth = LocalDate.of(1980, 6, 15),
         gender = ReferenceDataGenerator.GENDER_MALE,
         noms = "A0002AA",
-        pnc = "2010/00000001"
+        pnc = "2010/00000001",
+        manager = PersonManager(
+            id = id(),
+            team = TeamGenerator.DEFAULT,
+            staff = StaffGenerator.TEAM_STAFF,
+            probationAreaId = ProviderGenerator.DEFAULT.id,
+        ),
+        roshRegistrations = emptyList(),
     )
     val OTHER_TEAM = Person(
-        id = IdGenerator.getAndIncrement(),
+        id = id(),
         crn = "A000003",
         firstName = "Other Team",
         secondName = null,
@@ -67,54 +102,13 @@ object PersonGenerator {
         dateOfBirth = LocalDate.of(1980, 6, 18),
         gender = ReferenceDataGenerator.GENDER_MALE,
         noms = "A0003AA",
-        pnc = "2010/00000002"
-    )
-}
-
-object PersonManagerGenerator {
-    val DEFAULT = PersonManager(
-        id = IdGenerator.getAndIncrement(),
-        personId = PersonGenerator.DEFAULT.id,
-        team = TeamGenerator.DEFAULT,
-        staff = StaffGenerator.DEFAULT,
-        probationAreaId = ProviderGenerator.DEFAULT.id,
-        active = true,
-        softDeleted = false
-    )
-    val EXCLUDED = PersonManager(
-        id = IdGenerator.getAndIncrement(),
-        personId = PersonGenerator.EXCLUDED.id,
-        team = TeamGenerator.DEFAULT,
-        staff = StaffGenerator.DEFAULT,
-        probationAreaId = ProviderGenerator.DEFAULT.id,
-        active = true,
-        softDeleted = false
-    )
-    val RESTRICTED = PersonManager(
-        id = IdGenerator.getAndIncrement(),
-        personId = PersonGenerator.RESTRICTED.id,
-        team = TeamGenerator.DEFAULT,
-        staff = StaffGenerator.DEFAULT,
-        probationAreaId = ProviderGenerator.DEFAULT.id,
-        active = true,
-        softDeleted = false
-    )
-    val TEAM_MANAGER = PersonManager(
-        id = IdGenerator.getAndIncrement(),
-        personId = PersonGenerator.TEAM.id,
-        team = TeamGenerator.DEFAULT,
-        staff = StaffGenerator.TEAM_STAFF,
-        probationAreaId = ProviderGenerator.DEFAULT.id,
-        active = true,
-        softDeleted = false
-    )
-    val OTHER_TEAM_MANAGER = PersonManager(
-        id = IdGenerator.getAndIncrement(),
-        personId = PersonGenerator.OTHER_TEAM.id,
-        team = TeamGenerator.OTHER_TEAM,
-        staff = StaffGenerator.OTHER_TEAM_STAFF,
-        probationAreaId = ProviderGenerator.DEFAULT.id,
-        active = true,
-        softDeleted = false
+        pnc = "2010/00000002",
+        manager = PersonManager(
+            id = id(),
+            team = TeamGenerator.OTHER_TEAM,
+            staff = StaffGenerator.OTHER_TEAM_STAFF,
+            probationAreaId = ProviderGenerator.DEFAULT.id,
+        ),
+        roshRegistrations = emptyList(),
     )
 }

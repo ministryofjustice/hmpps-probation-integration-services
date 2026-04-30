@@ -16,8 +16,9 @@ class Registration(
     @Column(name = "registration_id")
     val id: Long,
 
-    @Column(name = "offender_id")
-    val personId: Long,
+    @ManyToOne
+    @JoinColumn(name = "offender_id")
+    val person: Person? = null,
 
     @ManyToOne
     @JoinColumn(name = "register_type_id")

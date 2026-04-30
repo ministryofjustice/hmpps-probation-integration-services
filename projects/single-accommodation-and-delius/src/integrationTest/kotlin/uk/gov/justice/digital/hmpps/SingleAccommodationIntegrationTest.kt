@@ -38,6 +38,10 @@ internal class SingleAccommodationIntegrationTest @Autowired constructor(
             .andReturn().response.contentAsJson<CaseListResponse>()
 
         assertThat(response.cases.size).isEqualTo(4)
+        assertThat(response.page.totalElements).isEqualTo(4)
+        assertThat(response.page.totalPages).isEqualTo(1)
+        assertThat(response.page.number).isEqualTo(0)
+        assertThat(response.page.size).isEqualTo(50)
         assertThat(response.cases.any { it.crn == PersonGenerator.TEAM.crn && it.staff.code == StaffGenerator.TEAM_STAFF.code }).isTrue()
         assertThat(response.cases.none { it.crn == PersonGenerator.OTHER_TEAM.crn }).isTrue()
         val defaultCase = response.cases.first { it.crn == person.crn }
@@ -71,6 +75,31 @@ internal class SingleAccommodationIntegrationTest @Autowired constructor(
                 restrictionMessage = null
             )
         )
+    }
+
+    @Test
+    fun `can paginate case list`() {
+        val user = UserGenerator.DEFAULT
+
+        val firstPage = mockMvc.get("/case-list/${user.username}?page=0&size=2") { withToken() }
+            .andExpect { status { is2xxSuccessful() } }
+            .andReturn().response.contentAsJson<CaseListResponse>()
+
+        assertThat(firstPage.cases.size).isEqualTo(2)
+        assertThat(firstPage.page.totalElements).isEqualTo(4)
+        assertThat(firstPage.page.totalPages).isEqualTo(2)
+        assertThat(firstPage.page.number).isEqualTo(0)
+        assertThat(firstPage.page.size).isEqualTo(2)
+
+        val secondPage = mockMvc.get("/case-list/${user.username}?page=1&size=2") { withToken() }
+            .andExpect { status { is2xxSuccessful() } }
+            .andReturn().response.contentAsJson<CaseListResponse>()
+
+        assertThat(secondPage.cases.size).isEqualTo(2)
+        assertThat(secondPage.page.totalElements).isEqualTo(4)
+        assertThat(secondPage.page.totalPages).isEqualTo(2)
+        assertThat(secondPage.page.number).isEqualTo(1)
+        assertThat(secondPage.page.size).isEqualTo(2)
     }
 
     @Test

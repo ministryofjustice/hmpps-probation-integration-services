@@ -2,6 +2,10 @@ package uk.gov.justice.digital.hmpps.integrations.delius
 
 import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
+import org.hibernate.annotations.SQLRestriction
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
+import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
 import java.time.LocalDate
 
@@ -29,6 +33,13 @@ class Person(
     @JoinColumn(name = "gender_id")
     val gender: ReferenceData,
 
+    @OneToOne(mappedBy = "person")
+    val manager: PersonManager,
+
+    @OneToMany(mappedBy = "person")
+    @SQLRestriction("register_type_id in (select register_type_id from r_register_type where r_register_type.code in ('RLRH', 'RMRH', 'RHRH', 'RVHR'))")
+    val roshRegistrations: List<Registration>,
+
     @Column(name = "noms_number", columnDefinition = "char(7)")
     val noms: String?,
 
@@ -41,6 +52,9 @@ class Person(
 )
 
 interface PersonRepository : JpaRepository<Person, Long> {
-    fun findByIdIn(ids: List<Long>): List<Person>
+    @EntityGraph(attributePaths = ["gender", "manager.team", "manager.staff.user", "roshRegistrations.person", "roshRegistrations.type"])
     fun findByCrn(crn: String): Person?
+
+    @EntityGraph(attributePaths = ["gender", "manager.team", "manager.staff.user"])
+    fun findByManagerTeamIdIn(teamIds: List<Long>, pageable: Pageable): Page<Person>
 }
