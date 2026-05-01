@@ -6,17 +6,19 @@ import jakarta.persistence.Id
 import jakarta.persistence.Table
 import org.hibernate.annotations.Immutable
 
-@Immutable
 @Entity
-@Table(name = "r_standard_reference_list")
-class ReferenceData(
+@Immutable
+@Table(name = "r_reference_data_master")
+class Dataset(
     @Id
-    @Column(name = "standard_reference_list_id")
-    val id: Long,
-    @Column(name = "code_value")
-    val code: String,
-    @Column(name = "code_description")
-    val description: String,
     @Column(name = "reference_data_master_id")
-    val datasetId: Long,
-)
+    val id: Long,
+
+    @Column(name = "code_set_name")
+    val code: String
+) {
+    companion object {
+        const val ADDRESS_TYPE = "ADDRESS TYPE"
+        const val ADDRESS_STATUS = "ADDRESS STATUS"
+    }
+}

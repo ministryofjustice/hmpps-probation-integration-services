@@ -8,12 +8,16 @@ import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc
 import org.springframework.test.json.JsonCompareMode
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
+import tools.jackson.databind.ObjectMapper
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = RANDOM_PORT)
-internal class AddressIntegrationTest(@Autowired private val mockMvc: MockMvc) {
+internal class AddressIntegrationTest @Autowired constructor(
+    private val mockMvc: MockMvc,
+    private val objectMapper: ObjectMapper,
+) {
     @Test
     fun `correctly returns address by id`() {
         mockMvc.get("/address/${PersonGenerator.FULL_PERSON_ADDRESSES[0].id}") { withToken() }
@@ -43,7 +47,8 @@ internal class AddressIntegrationTest(@Autowired private val mockMvc: MockMvc) {
                           },
                           "typeVerified": true,
                           "notes": "Some notes about this address",
-                          "startDate": "${PersonGenerator.FULL_PERSON_ADDRESSES[0].startDate}"
+                          "startDateTime": ${objectMapper.writeValueAsString(PersonGenerator.FULL_PERSON_ADDRESSES[0].startDate)},
+                          "startDate": "${PersonGenerator.FULL_PERSON_ADDRESSES[0].startDate!!.toLocalDate()}"
                         }
                         """.trimIndent(),
                         JsonCompareMode.STRICT,

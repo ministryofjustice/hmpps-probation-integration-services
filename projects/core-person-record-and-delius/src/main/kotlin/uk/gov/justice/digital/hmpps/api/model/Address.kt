@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.api.model
 
 import java.time.LocalDate
+import java.time.ZonedDateTime
 
 data class Address(
     val id: Long,
@@ -19,6 +20,8 @@ data class Address(
     val type: CodeDescription?,
     val typeVerified: Boolean?,
     val notes: String?,
-    val startDate: LocalDate,
-    val endDate: LocalDate?,
+    val startDateTime: ZonedDateTime?,
+    val endDateTime: ZonedDateTime?,
+    val startDate: LocalDate? = startDateTime?.toLocalDate(),
+    val endDate: LocalDate? = endDateTime?.toLocalDate(),
 )
