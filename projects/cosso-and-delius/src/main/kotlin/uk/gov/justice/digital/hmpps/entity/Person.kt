@@ -30,7 +30,7 @@ class Person(
     val emailAddress: String? = null,
     @Column(name = "soft_deleted", columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)
-    val softDeleted: Boolean
+    val softDeleted: Boolean = false
 
 ) {
     fun middleName() = listOfNotNull(secondName, thirdName).joinToString(" ")
