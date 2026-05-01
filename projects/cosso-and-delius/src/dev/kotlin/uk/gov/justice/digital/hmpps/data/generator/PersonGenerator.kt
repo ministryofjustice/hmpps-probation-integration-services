@@ -1,11 +1,12 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
+import uk.gov.justice.digital.hmpps.data.generator.IdGenerator.id
 import uk.gov.justice.digital.hmpps.entity.Person
 import java.time.LocalDate
 
 object PersonGenerator {
     val PERSON_NO_MAIN_ADDRESS = Person(
-        id = IdGenerator.getAndIncrement(),
+        id = id(),
         crn = "X123456",
         firstName = "Kyle",
         secondName = "Mark",
@@ -16,10 +17,9 @@ object PersonGenerator {
         title = ReferenceDataGenerator.MR_TITLE,
         dateOfBirth = LocalDate.of(1985, 3, 2),
         emailAddress = "example2@example.com",
-        softDeleted = false
     )
     val DEFAULT_PERSON = Person(
-        id = IdGenerator.getAndIncrement(),
+        id = id(),
         crn = "X123456",
         firstName = "Bob",
         secondName = "Tom",
@@ -30,10 +30,9 @@ object PersonGenerator {
         title = ReferenceDataGenerator.MR_TITLE,
         dateOfBirth = LocalDate.of(1980, 1, 1),
         emailAddress = "example@example.com",
-        softDeleted = false
     )
     val PERSON_IN_PRISON = Person(
-        id = IdGenerator.getAndIncrement(),
+        id = id(),
         crn = "X123457",
         firstName = "Bob",
         secondName = "Tom",
@@ -44,6 +43,14 @@ object PersonGenerator {
         title = ReferenceDataGenerator.MR_TITLE,
         dateOfBirth = LocalDate.of(1986, 2, 3),
         emailAddress = "inPrison@example.com",
-        softDeleted = false
+    )
+    val PERSON_WITH_RESPONSIBLE_OFFICER_WITHOUT_USER = Person(
+        id = id(),
+        crn = "X123459",
+        firstName = "Sam",
+        secondName = "Alex",
+        thirdName = "Lee",
+        surname = "Taylor",
+        dateOfBirth = LocalDate.of(1988, 4, 5),
     )
 }
