@@ -9,6 +9,7 @@ database:
       - offender_address
       - audited_interaction
       - document
+      - enforcement
 
   audit:
     username: ManageSupervisionAndDelius
