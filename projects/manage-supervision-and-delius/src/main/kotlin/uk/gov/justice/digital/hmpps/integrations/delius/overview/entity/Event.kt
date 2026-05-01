@@ -11,7 +11,6 @@ import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.Court
 import java.time.LocalDate
 import java.time.ZonedDateTime
 
-@Immutable
 @Entity
 @Table(name = "event")
 @SQLRestriction("soft_deleted = 0")
@@ -32,6 +31,9 @@ class Event(
 
     @Column(name = "event_number")
     val eventNumber: String,
+
+    @Column(name = "ftc_count")
+    var ftcCount: Long?,
 
     @Column(name = "in_breach", columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)

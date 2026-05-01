@@ -8,7 +8,7 @@ import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
 
 @Immutable
-@Entity
+@Entity(name = "MsAppointmentPerson")
 @Table(name = "offender")
 @SQLRestriction("soft_deleted = 0")
 class AppointmentPerson(

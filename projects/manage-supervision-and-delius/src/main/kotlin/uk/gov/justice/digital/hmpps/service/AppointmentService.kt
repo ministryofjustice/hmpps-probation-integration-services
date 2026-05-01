@@ -22,7 +22,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.user.team.TeamRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.ContactType as ContactTypeEntity
 import uk.gov.justice.digital.hmpps.integrations.delius.user.team.entity.Team as TeamEntity
 
-@Service
+@Service("manageSupervisionAppointmentService")
 class AppointmentService(
     private val personRepository: PersonRepository,
     private val contactTypeRepository: ContactTypeRepository,

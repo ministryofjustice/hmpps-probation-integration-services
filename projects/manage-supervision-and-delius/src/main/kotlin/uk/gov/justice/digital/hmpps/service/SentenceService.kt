@@ -72,7 +72,7 @@ class SentenceService(
                 inactiveEvents.count(),
                 getMostRecentTerminatedDateFromInactiveEvents(inactiveEvents),
                 nsiRepository.breachCountForEvents(inactiveEvents.map { it.id }.toSet()),
-                offenderManagerRepository.countOffenderManagersByPersonAndActiveIsFalse(person)
+                offenderManagerRepository.countOffenderManagersByPersonAndActiveIsFalse(person.id)
             )
         )
     }

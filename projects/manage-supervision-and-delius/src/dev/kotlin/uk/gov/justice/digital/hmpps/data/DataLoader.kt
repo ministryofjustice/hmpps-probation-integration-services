@@ -19,6 +19,7 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
         BusinessInteractionCode.entries.forEach {
             save(BusinessInteraction(IdGenerator.getAndIncrement(), it.code, ZonedDateTime.now()))
         }
+
         saveAll(
             AppointmentGenerator.ATTENDED_COMPLIED,
             AppointmentGenerator.POP_RESCHEDULED_OUTCOME,
@@ -256,6 +257,35 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
             ContactGenerator.RQMNT_CONTACT_TYPE,
         )
         personalDetailsData()
+
+        saveAll(
+            UpdateContactOutcomeGenerator.PROVIDER,
+            UpdateContactOutcomeGenerator.BOROUGH,
+            UpdateContactOutcomeGenerator.DISTRICT,
+            UpdateContactOutcomeGenerator.STAFF,
+            UpdateContactOutcomeGenerator.TEAM,
+        )
+        save(UpdateContactOutcomeGenerator.USER)
+        saveAll(
+            UpdateContactOutcomeGenerator.PERSON,
+            UpdateContactOutcomeGenerator.PERSON_NO_MANAGER,
+            UpdateContactOutcomeGenerator.EVENT,
+            UpdateContactOutcomeGenerator.CONTACT_TYPE,
+            UpdateContactOutcomeGenerator.OUTCOME,
+            UpdateContactOutcomeGenerator.CONTACT_TYPE_OUTCOME,
+            UpdateContactOutcomeGenerator.ENFORCEMENT_ACTION,
+            UpdateContactOutcomeGenerator.CONTACT_1,
+            UpdateContactOutcomeGenerator.CONTACT_2,
+            UpdateContactOutcomeGenerator.CONTACT_3,
+            UpdateContactOutcomeGenerator.CONTACT_4,
+            UpdateContactOutcomeGenerator.CONTACT_NO_MANAGER,
+        )
+        saveAll(
+            UpdateContactOutcomeGenerator.OM_STAFF,
+            UpdateContactOutcomeGenerator.OM_TEAM,
+        )
+        save(UpdateContactOutcomeGenerator.RESPONSIBLE_OFFICER)
+        save(UpdateContactOutcomeGenerator.OFFENDER_MANAGER)
     }
 
     fun personalDetailsData() {

@@ -56,6 +56,7 @@ class SentenceAppointment(
     @Column(name = "probation_area_id")
     val probationAreaId: Long? = null,
 
+    @Column(name = "external_reference")
     val externalReference: String? = null,
 
     @Column(name = "description")
@@ -70,6 +71,7 @@ class SentenceAppointment(
     @Column(name = "lic_condition_id")
     val licConditionId: Long? = null,
 
+    @Column(name = "nsi_id")
     val nsiId: Long? = null,
 
     @Column(name = "soft_deleted", columnDefinition = "number", nullable = false)
@@ -125,6 +127,9 @@ class SentenceAppointment(
     @LastModifiedBy
     @Column(name = "last_updated_user_id")
     var lastUpdatedUserId: Long? = null
+
+    @Column(name = "trust_provider_team_id")
+    val trustProviderTeamId: Long = 0
 }
 
 interface StaffAppointment {

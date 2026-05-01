@@ -3,18 +3,14 @@ package uk.gov.justice.digital.hmpps.service
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.api.model.CodeAndDescription
-import uk.gov.justice.digital.hmpps.api.model.contact.ContactOutcomes
-import uk.gov.justice.digital.hmpps.api.model.contact.ContactTypeResponse
-import uk.gov.justice.digital.hmpps.api.model.contact.ContactTypesResponse
-import uk.gov.justice.digital.hmpps.api.model.contact.CreateContact
-import uk.gov.justice.digital.hmpps.api.model.contact.CreateContactResponse
-import uk.gov.justice.digital.hmpps.api.model.contact.UpdateContact
+import uk.gov.justice.digital.hmpps.api.model.contact.*
 import uk.gov.justice.digital.hmpps.aspect.UserContext
 import uk.gov.justice.digital.hmpps.audit.service.AuditableService
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.exception.InvalidRequestException
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
+import uk.gov.justice.digital.hmpps.exception.NotFoundException.Companion.orNotFoundBy
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractionCode
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.ContactTypeRequirementTypeRepository
@@ -25,6 +21,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.user.team.TeamRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.user.team.getTeam
 import uk.gov.justice.digital.hmpps.messaging.EventType
 import uk.gov.justice.digital.hmpps.messaging.Notifier
+import java.time.ZonedDateTime
 
 @Service
 class ContactLogService(
@@ -41,6 +38,8 @@ class ContactLogService(
     private val contactTypeRequirementTypeRepository: ContactTypeRequirementTypeRepository,
     private val notifier: Notifier,
     private val mappaCategoryResolverService: MappaCategoryResolverService,
+    private val enforcementRepository: EnforcementRepository,
+    private val enforcementActionsRepository: EnforcementActionsRepository,
 ) : AuditableService(auditedInteractionService) {
 
     @Transactional
@@ -165,7 +164,6 @@ class ContactLogService(
         request: UpdateContact
     ) {
         val contact = contactRepository.getContact(contactId)
-        // if the contact type is not updatable throw an exception
         CreateContact.Type.entries.find { it.code == contact.type.code }
             ?: throw InvalidRequestException("Contact type ${contact.type.code} is not valid for update")
         contact.date = request.dateTime.toLocalDate()
@@ -181,4 +179,63 @@ class ContactLogService(
             contactTypeRepository.findSelectableOutcomesByTypeCode(typeCode)
                 .map { CodeAndDescription(it.code, it.description) }
         )
+
+    @Transactional
+    fun updateContactOutcome(contactId: Long, request: UpdateContactOutcome) {
+        var contact = contactRepository.getContact(contactId)
+        val contactType = contact.type.code
+        val contactOutcome = contactTypeRepository.findSelectableOutcomesByTypeCode(contactType)
+            .firstOrNull { it.code == request.outcomeCode }
+            .orNotFoundBy("code", request.outcomeCode)
+
+        request.notes.let { contact.appendNotes(it) }
+
+        if (request.alert && contact.alert != true) {
+            val personManager =
+                offenderManagerRepository.findOffenderManagersByPersonIdAndActiveIsTrue(contact.person.id)
+                    ?: throw NotFoundException(
+                        "PersonManager",
+                        "personId",
+                        contact.person.id
+                    )
+            contactAlertRepository.save(
+                ContactAlert(
+                    contact = contact,
+                    typeId = contact.type.id,
+                    personId = contact.person.id,
+                    personManagerId = personManager.id,
+                    staff = personManager.staff,
+                    teamId = personManager.team.id
+                )
+            )
+            contact.alert = true
+        } else if (!request.alert && contact.alert == true) {
+            val existingAlerts = contactAlertRepository.findByContactId(contact.id)
+            if (existingAlerts.isNotEmpty()) {
+                contactAlertRepository.deleteByContactIdIn(listOf(contact.id))
+            }
+            contact.alert = false
+        }
+
+
+        require(contact.sensitive != true || request.sensitive == true) { "Cannot un-flag a sensitive contact" }
+        contact.sensitive = request.sensitive
+        contact.date = request.date
+        contact.startTime = ZonedDateTime.ofLocal(request.date.atTime(request.time), EuropeLondon, null)
+        contact.outcome = contactOutcome
+        if (request.enforcementActionCode != null) {
+            val enforcementAction = enforcementActionsRepository.findByContactType(contact.type)
+                .firstOrNull { it.code == request.enforcementActionCode }
+                .orNotFoundBy("code", request.enforcementActionCode)
+            val enforcement = Enforcement(
+                contact = contact,
+                action = enforcementAction,
+                responseDate = enforcementAction.responseByPeriod.let { contact.startTime?.plusDays(it ?: 0) }
+            )
+            enforcementRepository.save(enforcement)
+            val event = contact.event
+            event?.run { ftcCount = (ftcCount ?: 0) + 1 }
+        }
+        contactRepository.save(contact)
+    }
 }
