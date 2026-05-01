@@ -175,6 +175,11 @@ internal class CorePersonIntegrationTest(
                                 "code": "M",
                                 "description": "Main Address"
                               },
+                              "type": {
+                                "code": "A01C",
+                                "description": "Rental accommodation - private rental"
+                              },
+                              "typeVerified": true,
                               "notes": "Some notes about this address",
                               "startDate": "${LocalDate.now().minusDays(30)}"
                             },
@@ -186,6 +191,10 @@ internal class CorePersonIntegrationTest(
                               "status": {
                                 "code": "P",
                                 "description": "Previous Address"
+                              },
+                              "type": {
+                                "code": "A01C",
+                                "description": "Rental accommodation - private rental"
                               },
                               "startDate": "${LocalDate.now().minusDays(60)}",
                               "endDate": "${LocalDate.now().minusDays(30)}"

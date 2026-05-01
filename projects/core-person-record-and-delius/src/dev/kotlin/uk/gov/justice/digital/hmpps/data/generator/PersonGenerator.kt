@@ -23,6 +23,8 @@ object PersonGenerator {
     val TITLE = generateReferenceData("TIT")
     val PREVIOUS_ADDRESS = generateReferenceData("P", "Previous Address")
     val MAIN_ADDRESS = generateReferenceData("M", "Main Address")
+    val PRIVATE_RENTAL = generateReferenceData("A01C", "Rental accommodation - private rental")
+    val HOMELESS = generateReferenceData("A08", "Homeless")
     val SEXUAL_ORIENTATION = generateReferenceData("SEO")
     val DRIVERS_LICENCE = generateReferenceData("DRL", "Drivers Licence")
     val RELIGION_HISTORY =
@@ -133,6 +135,8 @@ object PersonGenerator {
         generateAddress(
             personId = FULL_PERSON_ID,
             status = MAIN_ADDRESS,
+            type = PRIVATE_RENTAL,
+            typeVerified = true,
             addressNumber = "1",
             buildingName = null,
             streetName = "Main Street",
@@ -270,6 +274,8 @@ object PersonGenerator {
     fun generateAddress(
         personId: Long,
         status: ReferenceData,
+        type: ReferenceData? = PRIVATE_RENTAL,
+        typeVerified: Boolean? = null,
         addressNumber: String? = null,
         buildingName: String? = null,
         streetName: String? = null,
@@ -288,6 +294,8 @@ object PersonGenerator {
     ) = PersonAddress(
         personId = personId,
         status = status,
+        type = type,
+        typeVerified = typeVerified,
         addressNumber = addressNumber,
         buildingName = buildingName,
         streetName = streetName,

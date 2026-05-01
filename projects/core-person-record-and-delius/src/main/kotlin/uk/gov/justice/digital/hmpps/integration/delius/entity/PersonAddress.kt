@@ -16,9 +16,6 @@ import java.time.LocalDate
 class PersonAddress(
     @Column(name = "offender_id")
     val personId: Long,
-    @ManyToOne
-    @JoinColumn(name = "address_status_id")
-    val status: ReferenceData,
     val addressNumber: String?,
     var buildingName: String?,
     var streetName: String?,
@@ -34,6 +31,13 @@ class PersonAddress(
     val notes: String?,
     val startDate: LocalDate,
     val endDate: LocalDate?,
+    @ManyToOne
+    @JoinColumn(name = "address_status_id")
+    val status: ReferenceData,
+    @ManyToOne
+    @JoinColumn(name = "address_type_id")
+    val type: ReferenceData?,
+    val typeVerified: Boolean?,
     @Column(name = "soft_deleted", columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean,
@@ -43,8 +47,6 @@ class PersonAddress(
 )
 
 interface AddressRepository : JpaRepository<PersonAddress, Long> {
-    @EntityGraph(attributePaths = ["status"])
-    fun findAllByPersonIdOrderByStartDateDesc(
-        personId: Long
-    ): List<PersonAddress>
+    @EntityGraph(attributePaths = ["status", "type"])
+    fun findAllByPersonIdOrderByStartDateDesc(personId: Long): List<PersonAddress>
 }
