@@ -210,7 +210,7 @@ interface StaffUserRepository : JpaRepository<StaffUser, Long> {
                     s.officer_code as code,
                     u.surname as surname, 
                     u.forename as forename, 
-                    u.EMAIL_ADDRESS as email,
+                    null as email,
                     rsrl.CODE_DESCRIPTION as role
             FROM user_ u
             JOIN STAFF s ON s.STAFF_ID = u.STAFF_ID
