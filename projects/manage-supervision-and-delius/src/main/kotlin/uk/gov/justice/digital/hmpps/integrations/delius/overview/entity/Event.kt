@@ -11,7 +11,6 @@ import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.Court
 import java.time.LocalDate
 import java.time.ZonedDateTime
 
-@Immutable
 @Entity
 @Table(name = "event")
 @SQLRestriction("soft_deleted = 0")

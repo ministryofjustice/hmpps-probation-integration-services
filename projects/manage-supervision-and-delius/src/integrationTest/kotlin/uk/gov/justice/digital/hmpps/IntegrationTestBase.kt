@@ -16,6 +16,8 @@ import uk.gov.justice.digital.hmpps.audit.repository.BusinessInteractionReposito
 import uk.gov.justice.digital.hmpps.integrations.delius.appointment.AppointmentRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.ContactAlertRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.ContactRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.EnforcementRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.EventRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.DocumentRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.SentenceAppointmentRepository
 import uk.gov.justice.digital.hmpps.messaging.HmppsChannelManager
@@ -44,6 +46,12 @@ open class IntegrationTestBase {
 
     @Autowired
     protected lateinit var contactRepository: ContactRepository
+
+    @Autowired
+    lateinit var enforcementRepository: EnforcementRepository
+
+    @Autowired
+    lateinit var eventRepository: EventRepository
 
     @Autowired
     protected lateinit var contactAlertRepository: ContactAlertRepository

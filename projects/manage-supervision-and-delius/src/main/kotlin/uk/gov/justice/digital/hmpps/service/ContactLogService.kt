@@ -3,13 +3,7 @@ package uk.gov.justice.digital.hmpps.service
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.api.model.CodeAndDescription
-import uk.gov.justice.digital.hmpps.api.model.contact.ContactOutcomes
-import uk.gov.justice.digital.hmpps.api.model.contact.ContactTypeResponse
-import uk.gov.justice.digital.hmpps.api.model.contact.ContactTypesResponse
-import uk.gov.justice.digital.hmpps.api.model.contact.CreateContact
-import uk.gov.justice.digital.hmpps.api.model.contact.CreateContactResponse
-import uk.gov.justice.digital.hmpps.api.model.contact.UpdateContact
-import uk.gov.justice.digital.hmpps.api.model.contact.UpdateContactOutcome
+import uk.gov.justice.digital.hmpps.api.model.contact.*
 import uk.gov.justice.digital.hmpps.aspect.UserContext
 import uk.gov.justice.digital.hmpps.audit.service.AuditableService
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
@@ -192,11 +186,11 @@ class ContactLogService(
         val contactType = contact.type.code
         val contactOutcome = contactTypeRepository.findSelectableOutcomesByTypeCode(contactType)
             .firstOrNull { it.code == request.outcomeCode }
-            .orNotFoundBy("code", contactType)
+            .orNotFoundBy("code", request.outcomeCode)
 
         request.notes.let { contact.appendNotes(it) }
 
-        if (request.alert) {
+        if (request.alert && contact.alert != true) {
             val personManager =
                 offenderManagerRepository.findOffenderManagersByPersonIdAndActiveIsTrue(contact.person.id)
                     ?: throw NotFoundException(
@@ -215,11 +209,14 @@ class ContactLogService(
                 )
             )
             contact.alert = true
-        } else {
+        } else if (!request.alert && contact.alert == true) {
             val existingAlerts = contactAlertRepository.findByContactId(contact.id)
-            contactAlertRepository.deleteByContactIdIn(existingAlerts.map { it.id })
+            if (existingAlerts.isNotEmpty()) {
+                contactAlertRepository.deleteByContactIdIn(listOf(contact.id))
+            }
             contact.alert = false
         }
+
 
         require(contact.sensitive != true || request.sensitive == true) { "Cannot un-flag a sensitive contact" }
         contact.sensitive = request.sensitive
@@ -229,7 +226,7 @@ class ContactLogService(
         if (request.enforcementActionCode != null) {
             val enforcementAction = enforcementActionsRepository.findByContactType(contact.type)
                 .firstOrNull { it.code == request.enforcementActionCode }
-                .orNotFoundBy("code", contactType)
+                .orNotFoundBy("code", request.enforcementActionCode)
             val enforcement = Enforcement(
                 contact = contact,
                 action = enforcementAction,

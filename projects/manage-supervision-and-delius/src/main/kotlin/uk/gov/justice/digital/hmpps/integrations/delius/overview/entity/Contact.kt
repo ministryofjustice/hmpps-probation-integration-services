@@ -246,7 +246,8 @@ class ContactType(
     @Column
     val description: String,
 
-    @OneToMany(mappedBy = "id.contactTypeId", fetch = FetchType.LAZY)
+    @OneToMany(fetch = FetchType.LAZY)
+    @JoinColumn(name = "contact_type_id", referencedColumnName = "contact_type_id", insertable = false, updatable = false)
     val categories: List<ContactCategory> = emptyList(),
 
     @Column(name = "sgc_flag", columnDefinition = "number")
@@ -384,6 +385,7 @@ class EnforcementAction(
 @Entity
 @Table(name = "enforcement")
 @SQLRestriction("soft_deleted = 0")
+@SequenceGenerator(name = "enforcement_id_seq", sequenceName = "enforcement_id_seq", allocationSize = 1)
 class Enforcement(
     @ManyToOne
     @JoinColumn(name = "contact_id")
@@ -404,6 +406,7 @@ class Enforcement(
     val partitionAreaId: Long = 0,
 
     @Id
+    @GeneratedId(generator = "enforcement_id_seq")
     @Column(name = "enforcement_id")
     val id: Long = 0
 )

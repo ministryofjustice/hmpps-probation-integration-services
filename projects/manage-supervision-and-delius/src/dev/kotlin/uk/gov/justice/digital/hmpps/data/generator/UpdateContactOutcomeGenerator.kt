@@ -5,6 +5,8 @@ import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.OffenderManager
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.ResponsibleOfficer
+import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.Staff as OffenderManagerStaff
+import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.Team as OffenderManagerTeam
 import uk.gov.justice.digital.hmpps.integrations.delius.user.entity.User
 import uk.gov.justice.digital.hmpps.integrations.delius.user.staff.entity.Staff
 import uk.gov.justice.digital.hmpps.integrations.delius.user.team.entity.Team
@@ -89,12 +91,61 @@ object UpdateContactOutcomeGenerator {
         event = EVENT
     )
 
+    val ENFORCEMENT_ACTION = ContactGenerator.generateEnforcementAction("UCOENF1", "UCO Enforcement Action", CONTACT_TYPE)
+
+    val CONTACT_3 = ContactGenerator.generateContact(
+        PERSON,
+        CONTACT_TYPE,
+        ZonedDateTime.of(LocalDateTime.now(EuropeLondon).plusHours(5), EuropeLondon),
+        team = TEAM,
+        staff = STAFF,
+        event = EVENT
+    )
+
+    val CONTACT_4 = ContactGenerator.generateContact(
+        PERSON,
+        CONTACT_TYPE,
+        ZonedDateTime.of(LocalDateTime.now(EuropeLondon).plusHours(6), EuropeLondon),
+        team = TEAM,
+        staff = STAFF,
+        event = EVENT
+    )
+
+    val PERSON_NO_MANAGER = PersonGenerator.generateOverview("UCO0002", forename = "NoManager", surname = "Person")
+
+    val CONTACT_NO_MANAGER = ContactGenerator.generateContact(
+        PERSON_NO_MANAGER,
+        CONTACT_TYPE,
+        ZonedDateTime.of(LocalDateTime.now(EuropeLondon).plusHours(7), EuropeLondon),
+        team = TEAM,
+        staff = STAFF,
+        event = EVENT
+    )
+
+    val OM_STAFF = OffenderManagerStaff(
+        id = IdGenerator.getAndIncrement(),
+        code = "UCOM001",
+        forename = "UCO",
+        surname = "Manager",
+        provider = PROVIDER,
+        startDate = LocalDate.now()
+    )
+
+    val OM_TEAM = OffenderManagerTeam(
+        id = IdGenerator.getAndIncrement(),
+        district = DISTRICT,
+        provider = PROVIDER,
+        code = "UCOOMT",
+        description = "UCO OffenderManager Team",
+        startDate = LocalDate.now()
+    )
+
     val OFFENDER_MANAGER = OffenderManager(
         id = IdGenerator.getAndIncrement(),
         person = PERSON,
-        provider = ContactGenerator.DEFAULT_PROVIDER,
-        team = OffenderManagerGenerator.TEAM,
-        staff = OffenderManagerGenerator.STAFF_1,
+        provider = PROVIDER,
+        team = OM_TEAM,
+        staff = OM_STAFF,
         allocationDate = LocalDate.now(),
         lastUpdated = ZonedDateTime.now()
     )
@@ -103,7 +154,7 @@ object UpdateContactOutcomeGenerator {
         id = IdGenerator.getAndIncrement(),
         personId = PERSON.id,
         startDate = ZonedDateTime.now(),
-        endDate = ZonedDateTime.now(),
+        endDate = null,
         offenderManagerId = OFFENDER_MANAGER.id
     )
 }

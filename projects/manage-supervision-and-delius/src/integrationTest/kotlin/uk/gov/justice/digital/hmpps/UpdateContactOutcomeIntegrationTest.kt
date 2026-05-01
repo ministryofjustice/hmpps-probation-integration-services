@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.containsString
 import org.hamcrest.Matchers.equalTo
+import org.hamcrest.Matchers.notNullValue
 import org.junit.jupiter.api.Test
 import org.springframework.test.web.servlet.put
 import uk.gov.justice.digital.hmpps.api.model.contact.UpdateContactOutcome
@@ -105,5 +106,71 @@ class UpdateContactOutcomeIntegrationTest : IntegrationTestBase() {
         assertThat(updated.notes, containsString("Sensitive outcome notes"))
         assertThat(updated.alert, equalTo(true))
         assertThat(updated.sensitive, equalTo(true))
+    }
+
+    @Test
+    fun `setting alert with no active person manager returns not found`() {
+        mockMvc.put("/contact/${UpdateContactOutcomeGenerator.CONTACT_NO_MANAGER.id}") {
+            withToken()
+            json = UpdateContactOutcome(
+                date = LocalDate.now().plusDays(1),
+                time = LocalTime.of(10, 0),
+                outcomeCode = UpdateContactOutcomeGenerator.OUTCOME.code,
+                enforcementActionCode = null,
+                notes = "Alert notes",
+                alert = true,
+                sensitive = false
+            )
+        }.andExpect { status { isNotFound() } }
+    }
+
+    @Test
+    fun `successfully creates enforcement action on contact outcome update`() {
+        mockMvc.put("/contact/${UpdateContactOutcomeGenerator.CONTACT_3.id}") {
+            withToken()
+            json = UpdateContactOutcome(
+                date = LocalDate.now().plusDays(1),
+                time = LocalTime.of(11, 0),
+                outcomeCode = UpdateContactOutcomeGenerator.OUTCOME.code,
+                enforcementActionCode = UpdateContactOutcomeGenerator.ENFORCEMENT_ACTION.code,
+                notes = "Enforcement notes",
+                alert = false,
+                sensitive = false
+            )
+        }.andExpect { status { isOk() } }
+
+        val enforcements = enforcementRepository.findAll().filter {
+            it.contact.id == UpdateContactOutcomeGenerator.CONTACT_3.id
+        }
+        assertThat(enforcements.size, equalTo(1))
+        assertThat(enforcements[0].action?.code, equalTo(UpdateContactOutcomeGenerator.ENFORCEMENT_ACTION.code))
+        assertThat(enforcements[0].responseDate, notNullValue())
+    }
+
+    @Test
+    fun `ftc count is incremented when enforcement action is applied`() {
+        val ftcBefore = transactionTemplate.execute {
+            entityManager.clear()
+            eventRepository.findById(UpdateContactOutcomeGenerator.EVENT.id).get().ftcCount ?: 0L
+        }!!
+
+        mockMvc.put("/contact/${UpdateContactOutcomeGenerator.CONTACT_4.id}") {
+            withToken()
+            json = UpdateContactOutcome(
+                date = LocalDate.now().plusDays(2),
+                time = LocalTime.of(12, 0),
+                outcomeCode = UpdateContactOutcomeGenerator.OUTCOME.code,
+                enforcementActionCode = UpdateContactOutcomeGenerator.ENFORCEMENT_ACTION.code,
+                notes = "FTC increment notes",
+                alert = false,
+                sensitive = false
+            )
+        }.andExpect { status { isOk() } }
+
+        val ftcAfter = transactionTemplate.execute {
+            entityManager.clear()
+            eventRepository.findById(UpdateContactOutcomeGenerator.EVENT.id).get().ftcCount ?: 0L
+        }!!
+        assertThat(ftcAfter, equalTo(ftcBefore + 1))
     }
 }
