@@ -79,7 +79,7 @@ on:
       - 'projects/**/deploy/database/access.yml'
 
 env:
-  modernisation-platform-environments: '["test"]'
+  modernisation-platform-environments: '["test", "preprod"]'
 
 jobs:
   get-projects:
