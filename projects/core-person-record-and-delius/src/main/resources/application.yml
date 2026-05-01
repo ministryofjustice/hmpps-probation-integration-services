@@ -60,8 +60,8 @@ messaging.consumer.detail.urls: http://localhost:${dev.wiremock.port}
 integrations.core-person-record.url: http://localhost:${dev.wiremock.port}/core-person-record
 
 oauth2:
-  client-id: accredited-programmes-and-delius
-  client-secret: accredited-programmes-and-delius
+  client-id: core-person-record-and-delius
+  client-secret: core-person-record-and-delius
 
 logging.level:
   uk.gov.justice.digital.hmpps: DEBUG
