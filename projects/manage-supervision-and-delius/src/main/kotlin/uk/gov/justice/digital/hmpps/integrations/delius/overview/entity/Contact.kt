@@ -247,7 +247,12 @@ class ContactType(
     val description: String,
 
     @OneToMany(fetch = FetchType.LAZY)
-    @JoinColumn(name = "contact_type_id", referencedColumnName = "contact_type_id", insertable = false, updatable = false)
+    @JoinColumn(
+        name = "contact_type_id",
+        referencedColumnName = "contact_type_id",
+        insertable = false,
+        updatable = false
+    )
     val categories: List<ContactCategory> = emptyList(),
 
     @Column(name = "sgc_flag", columnDefinition = "number")

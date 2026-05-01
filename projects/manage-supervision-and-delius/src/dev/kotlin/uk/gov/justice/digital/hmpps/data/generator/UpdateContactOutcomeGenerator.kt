@@ -91,7 +91,8 @@ object UpdateContactOutcomeGenerator {
         event = EVENT
     )
 
-    val ENFORCEMENT_ACTION = ContactGenerator.generateEnforcementAction("UCOENF1", "UCO Enforcement Action", CONTACT_TYPE)
+    val ENFORCEMENT_ACTION =
+        ContactGenerator.generateEnforcementAction("UCOENF1", "UCO Enforcement Action", CONTACT_TYPE)
 
     val CONTACT_3 = ContactGenerator.generateContact(
         PERSON,
