@@ -2,6 +2,9 @@ database:
   access:
     username_key: /core-person-record-and-delius/db-username
     password_key: /core-person-record-and-delius/db-password
+    tables:
+      - audited_interaction
+      - offender_address
 
   audit:
     username: CorePersonRecordAndDelius

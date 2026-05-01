@@ -1,0 +1,27 @@
+{
+  "cprAddressId": "cpr-address-updated",
+  "deliusAddressId": 90000001,
+  "noFixedAbode": false,
+  "startDate": "2026-03-04T10:15:30Z",
+  "endDate": "2026-04-05T11:45:00Z",
+  "postcode": "UP2 2BB",
+  "subBuildingName": "Flat 4",
+  "buildingName": "Updated House",
+  "buildingNumber": "22",
+  "thoroughfareName": "Updated Street",
+  "dependentLocality": "Updated District",
+  "postTown": "Updated Town",
+  "uprn": "100020002",
+  "status": {
+    "code": "P",
+    "description": "Previous Address"
+  },
+  "comment": "Updated from CPR",
+  "usages": [
+    {
+      "code": "A01C",
+      "description": "Rental accommodation - private rental",
+      "isActive": true
+    }
+  ]
+}

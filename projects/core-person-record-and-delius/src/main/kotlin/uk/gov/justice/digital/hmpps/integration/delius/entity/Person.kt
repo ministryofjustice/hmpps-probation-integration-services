@@ -8,6 +8,7 @@ import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.jpa.repository.Query
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import java.time.LocalDate
 import java.util.*
@@ -113,6 +114,9 @@ data class Person(
 )
 
 interface PersonRepository : JpaRepository<Person, Long> {
+    @Query("select p.id from Person p where p.crn = :crn")
+    fun findIdByCrn(crn: String): Long?
+
     @EntityGraph(value = "person-with-ref-data")
     fun findByCrn(crn: String): Person?
 

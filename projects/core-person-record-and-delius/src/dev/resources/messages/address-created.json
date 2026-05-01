@@ -1,0 +1,17 @@
+{
+  "eventType": "core-person-record.probation.address.created",
+  "version": 1,
+  "description": "A probation address has been created in the core person record",
+  "occurredAt": "2026-05-01T12:00:00+01:00",
+  "additionalInformation": {
+    "cprAddressId": "cpr-address-created"
+  },
+  "personReference": {
+    "identifiers": [
+      {
+        "type": "CRN",
+        "value": "U123456"
+      }
+    ]
+  }
+}

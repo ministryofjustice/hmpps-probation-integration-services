@@ -1,0 +1,8 @@
+{
+  "cprAddressId": "cpr-address-deleted",
+  "deliusAddressId": 90000002,
+  "status": {
+    "code": "M",
+    "description": "Main Address"
+  }
+}

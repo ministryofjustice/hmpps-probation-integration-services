@@ -1,0 +1,25 @@
+{
+  "cprAddressId": "cpr-address-created",
+  "noFixedAbode": false,
+  "startDate": "2026-02-03T09:15:30Z",
+  "postcode": "CR1 1AA",
+  "subBuildingName": "Flat 2",
+  "buildingName": "Creation House",
+  "buildingNumber": "14",
+  "thoroughfareName": "Created Street",
+  "dependentLocality": "Created District",
+  "postTown": "Created Town",
+  "uprn": "100010001",
+  "status": {
+    "code": "M",
+    "description": "Main Address"
+  },
+  "comment": "Created from CPR",
+  "usages": [
+    {
+      "code": "A01C",
+      "description": "Rental accommodation - private rental",
+      "isActive": true
+    }
+  ]
+}

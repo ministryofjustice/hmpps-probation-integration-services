@@ -1,0 +1,43 @@
+{
+  "mappings": [
+    {
+      "request": {
+        "method": "GET",
+        "urlPath": "/core-person-record/person/probation-integration/U123456/address/cpr-address-created"
+      },
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "bodyFileName": "core-person-record-address-created.json"
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "urlPath": "/core-person-record/person/probation-integration/U123456/address/cpr-address-updated"
+      },
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "bodyFileName": "core-person-record-address-updated.json"
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "urlPath": "/core-person-record/person/probation-integration/U123456/address/cpr-address-deleted"
+      },
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "bodyFileName": "core-person-record-address-deleted.json"
+      }
+    }
+  ]
+}

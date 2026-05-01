@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
 import uk.gov.justice.digital.hmpps.data.generator.IdGenerator.id
+import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.integration.delius.entity.*
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -10,9 +11,13 @@ import java.time.temporal.ChronoUnit
 object PersonGenerator {
     val FULL_PERSON_ID = IdGenerator.getAndIncrement()
     val MIN_PERSON_ID = IdGenerator.getAndIncrement()
+    val UPDATABLE_PERSON_ID = IdGenerator.getAndIncrement()
     val UPDATER_USER_ID = IdGenerator.getAndIncrement()
     val UPDATED_ZONED_DATETIME = ZonedDateTime.now().minusDays(1).truncatedTo(ChronoUnit.SECONDS)
     val RELIGION_HISTORY_UPDATER = generateUpdaterUser(UPDATER_USER_ID, "User1")
+    val DEFAULT_DATASET = Dataset(IdGenerator.getAndIncrement(), "DEFAULT")
+    val ADDRESS_STATUS = Dataset(IdGenerator.getAndIncrement(), Dataset.ADDRESS_STATUS)
+    val ADDRESS_TYPE = Dataset(IdGenerator.getAndIncrement(), Dataset.ADDRESS_TYPE)
     val ETHNICITY = generateReferenceData("ETH")
     val RELIGION = generateReferenceData("REL")
     val RELIGION_HX = generateReferenceData("REL_HX")
@@ -21,10 +26,9 @@ object PersonGenerator {
     val NATIONALITY = generateReferenceData("NAT")
     val SECOND_NATIONALITY = NATIONALITY
     val TITLE = generateReferenceData("TIT")
-    val PREVIOUS_ADDRESS = generateReferenceData("P", "Previous Address")
-    val MAIN_ADDRESS = generateReferenceData("M", "Main Address")
-    val PRIVATE_RENTAL = generateReferenceData("A01C", "Rental accommodation - private rental")
-    val HOMELESS = generateReferenceData("A08", "Homeless")
+    val PREVIOUS_ADDRESS = generateReferenceData("P", "Previous Address", ADDRESS_STATUS)
+    val MAIN_ADDRESS = generateReferenceData("M", "Main Address", ADDRESS_STATUS)
+    val PRIVATE_RENTAL = generateReferenceData("A01C", "Rental accommodation - private rental", ADDRESS_TYPE)
     val SEXUAL_ORIENTATION = generateReferenceData("SEO")
     val DRIVERS_LICENCE = generateReferenceData("DRL", "Drivers Licence")
     val RELIGION_HISTORY =
@@ -116,6 +120,13 @@ object PersonGenerator {
         restrictionMessage = "This case is restricted because ...",
         id = FULL_PERSON_ID
     )
+    val UPDATABLE_PERSON = generatePerson(
+        "U123456",
+        firstname = "Domain",
+        surname = "Events",
+        dateOfBirth = LocalDate.of(1988, 4, 12),
+        id = UPDATABLE_PERSON_ID
+    )
 
     val FULL_PERSON_ALIASES = listOf(
         generateAlias(
@@ -159,6 +170,35 @@ object PersonGenerator {
         )
     )
 
+    val UPDATABLE_PERSON_ADDRESSES = listOf(
+        generateAddress(
+            id = 90000001, // to match ID in WireMock mapping
+            personId = UPDATABLE_PERSON_ID,
+            status = MAIN_ADDRESS,
+            type = PRIVATE_RENTAL,
+            addressNumber = "10",
+            streetName = "Original Street",
+            district = "Original District",
+            townCity = "Original Town",
+            postcode = "UP1 1AA",
+            telephoneNumber = "020 0000 0001",
+            notes = "Existing update notes",
+            startDate = LocalDate.of(2026, 1, 1),
+        ),
+        generateAddress(
+            id = 90000002, // to match ID in WireMock mapping
+            personId = UPDATABLE_PERSON_ID,
+            status = MAIN_ADDRESS,
+            type = PRIVATE_RENTAL,
+            addressNumber = "20",
+            streetName = "Delete Street",
+            district = "Delete District",
+            townCity = "Delete Town",
+            postcode = "DL1 1AA",
+            startDate = LocalDate.of(2026, 1, 2),
+        )
+    )
+
     val FULL_PERSON_IDENTIFIERS = listOf(
         AdditionalIdentifier(
             id = id(),
@@ -188,8 +228,9 @@ object PersonGenerator {
     fun generateReferenceData(
         code: String,
         description: String = "Description of $code",
+        dataset: Dataset = DEFAULT_DATASET,
         id: Long = IdGenerator.getAndIncrement()
-    ) = ReferenceData(code, description, id)
+    ) = ReferenceData(id, code, description, dataset.id)
 
     fun generatePerson(
         crn: String,
@@ -307,8 +348,8 @@ object PersonGenerator {
         noFixedAbode = noFixedAbode,
         telephoneNumber = telephoneNumber,
         notes = notes,
-        startDate = startDate,
-        endDate = endDate,
+        startDate = startDate.atStartOfDay(EuropeLondon),
+        endDate = endDate?.atStartOfDay(EuropeLondon),
         softDeleted = softDeleted,
         id = id,
     )

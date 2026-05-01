@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps
 
+import org.hamcrest.Matchers.containsInAnyOrder
 import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -181,7 +182,8 @@ internal class CorePersonIntegrationTest(
                               },
                               "typeVerified": true,
                               "notes": "Some notes about this address",
-                              "startDate": "${LocalDate.now().minusDays(30)}"
+                              "startDateTime": ${objectMapper.writeValueAsString(PersonGenerator.FULL_PERSON_ADDRESSES[0].startDate)},
+                              "startDate": "${PersonGenerator.FULL_PERSON_ADDRESSES[0].startDate!!.toLocalDate()}"
                             },
                             {
                               "id": ${PersonGenerator.FULL_PERSON_ADDRESSES[1].id},
@@ -196,8 +198,10 @@ internal class CorePersonIntegrationTest(
                                 "code": "A01C",
                                 "description": "Rental accommodation - private rental"
                               },
-                              "startDate": "${LocalDate.now().minusDays(60)}",
-                              "endDate": "${LocalDate.now().minusDays(30)}"
+                              "startDateTime": ${objectMapper.writeValueAsString(PersonGenerator.FULL_PERSON_ADDRESSES[1].startDate)},
+                              "endDateTime": ${objectMapper.writeValueAsString(PersonGenerator.FULL_PERSON_ADDRESSES[1].endDate)},
+                              "startDate": "${PersonGenerator.FULL_PERSON_ADDRESSES[1].startDate!!.toLocalDate()}",
+                              "endDate": "${PersonGenerator.FULL_PERSON_ADDRESSES[1].endDate!!.toLocalDate()}"
                             }
                           ],
                           "excludedFrom": {
@@ -235,14 +239,20 @@ internal class CorePersonIntegrationTest(
 
     @Test
     fun `correctly returns all cases`() {
-        mockMvc.get("/all-probation-cases?sort=crn,desc") {
-            withToken()
-        }
+        mockMvc
+            .get("/all-probation-cases?sort=crn,desc") { withToken() }
             .andExpect {
                 status { is2xxSuccessful() }
-                jsonPath("page.totalElements") { value(equalTo(2)) }
-                jsonPath("content[0].identifiers.crn") { value(equalTo(PersonGenerator.MIN_PERSON.crn)) }
-                jsonPath("content[1].identifiers.crn") { value(equalTo(PersonGenerator.FULL_PERSON.crn)) }
+                jsonPath("page.totalElements") { value(equalTo(3)) }
+                jsonPath("content[*].identifiers.crn") {
+                    value(
+                        containsInAnyOrder(
+                            PersonGenerator.MIN_PERSON.crn,
+                            PersonGenerator.FULL_PERSON.crn,
+                            PersonGenerator.UPDATABLE_PERSON.crn
+                        )
+                    )
+                }
             }
     }
 }

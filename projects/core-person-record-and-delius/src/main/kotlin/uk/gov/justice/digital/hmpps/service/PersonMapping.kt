@@ -95,7 +95,7 @@ fun Disposal.asModel() = Sentence(
 
 fun PersonAddress.asAddress() = postcode?.let {
     Address(
-        id = id,
+        id = id!!,
         fullAddress = listOf(
             buildingName,
             listOf(addressNumber, streetName).trimAndJoin(" "),
@@ -118,8 +118,8 @@ fun PersonAddress.asAddress() = postcode?.let {
         type = type?.asCodeDescription(),
         typeVerified = typeVerified,
         notes = notes,
-        startDate = startDate,
-        endDate = endDate,
+        startDateTime = startDate,
+        endDateTime = endDate,
     )
 }
 
