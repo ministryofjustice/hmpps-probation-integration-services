@@ -36,24 +36,17 @@ class ScheduleService(
     fun getPersonAppointment(crn: String, contactId: Long, noteId: Int? = null): PersonAppointment {
         val summary = personRepository.getSummary(crn)
         val contact = contactRepository.getContact(summary.id, contactId)
-        val documents = documentRepository.findByTableNameAndPrimaryKeyId("CONTACT", contact.id)
-            .filterIsInstance<ContactDocument>()
-        val documentAuthorUserIds = documents.mapNotNull { it.lastUpdatedUserId ?: it.createdByUserId }
-        val documentUsersById = userRepository.findAllById(documentAuthorUserIds.toSet()).associateBy { it.id }
-        val apptDocuments = documents
-            .map { document ->
-                val effectiveUserId = document.lastUpdatedUserId ?: document.createdByUserId
-                val author = effectiveUserId?.let { userId ->
-                    documentUsersById[userId]?.let { user ->
-                        Name(user.forename, null, user.surname)
-                    }
-                }
-                document.toDocument(author)
-            }
+        val documents = contact.documents
+        val authors = userRepository.findAllById(documents.mapNotNull { it.authorId() }.toSet())
+            .associateBy { it.id }
         return PersonAppointment(
             personSummary = summary.toPersonSummary(),
             appointment = contact.toActivity(noteId),
-            documents = apptDocuments
+            documents = documents.map { document ->
+                val author = document.authorId()?.let { authors[it] }
+                    ?.let { Name(it.forename, null, it.surname) }
+                document.toDocument(author)
+            }
         )
     }
 
@@ -244,6 +237,8 @@ fun uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.Docu
 
 fun ContactDocument.toDocument() =
     Document(id = alfrescoId, name = name, createdAt = createdAt, lastUpdated = lastUpdated)
+
+fun ContactDocument.authorId() = lastUpdatedUserId ?: createdByUserId
 
 fun OffenderManager.asPersonManager(): PersonManager = with(staff) {
     PersonManager(Name(forename, null, surname))
