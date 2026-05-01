@@ -37,6 +37,7 @@ class PersonAddress(
     @ManyToOne
     @JoinColumn(name = "address_type_id")
     val type: ReferenceData?,
+    @Convert(converter = YesNoConverter::class)
     val typeVerified: Boolean?,
     @Column(name = "soft_deleted", columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)
