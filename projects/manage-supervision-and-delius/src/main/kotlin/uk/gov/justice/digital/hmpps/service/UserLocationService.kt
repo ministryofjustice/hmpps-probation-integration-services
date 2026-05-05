@@ -48,7 +48,7 @@ class UserLocationService(
 
         return StaffTeam(
             staffInTeam.map { staff ->
-                staff.toUser(email = emailsByUsername[staff.username] ?: staff.email)
+                staff.toUser(email = emailsByUsername[staff.username])
             }
         )
     }
