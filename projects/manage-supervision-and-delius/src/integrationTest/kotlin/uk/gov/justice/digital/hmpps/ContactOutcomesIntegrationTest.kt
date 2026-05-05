@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test
 import org.springframework.test.web.servlet.get
 import uk.gov.justice.digital.hmpps.api.model.contact.ContactOutcomes
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator
+import uk.gov.justice.digital.hmpps.data.generator.UpdateContactOutcomeGenerator
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 
@@ -47,6 +48,33 @@ class ContactOutcomesIntegrationTest : IntegrationTestBase() {
             .andReturn().response.contentAsJson<ContactOutcomes>()
 
         assertThat(response.outcomes, hasSize(0))
+    }
+
+    @Test
+    fun `returns outcomes and linked enforcement actions for a valid contact type`() {
+        val typeCode = UpdateContactOutcomeGenerator.CONTACT_TYPE.code // "CCON"
+
+        val response = mockMvc.get("/contact/types/$typeCode/outcomes") {
+            withToken()
+        }.andExpect { status { isOk() } }
+            .andReturn().response.contentAsJson<ContactOutcomes>()
+
+        assertThat(response.outcomes, hasSize(1))
+        assertThat(response.outcomes[0].code, equalTo(UpdateContactOutcomeGenerator.OUTCOME.code))
+        assertThat(response.outcomes[0].description, equalTo(UpdateContactOutcomeGenerator.OUTCOME.description))
+        assertThat(response.outcomes[0].enforcementActions, hasSize(1))
+        assertThat(
+            response.outcomes[0].enforcementActions[0].code,
+            equalTo(UpdateContactOutcomeGenerator.ENFORCEMENT_ACTION.code)
+        )
+        assertThat(
+            response.outcomes[0].enforcementActions[0].description,
+            equalTo(UpdateContactOutcomeGenerator.ENFORCEMENT_ACTION.description)
+        )
+        assertThat(
+            response.outcomes[0].enforcementActions[0].defaultResponsePeriodDays,
+            equalTo(UpdateContactOutcomeGenerator.ENFORCEMENT_ACTION.responseByPeriod)
+        )
     }
 }
 

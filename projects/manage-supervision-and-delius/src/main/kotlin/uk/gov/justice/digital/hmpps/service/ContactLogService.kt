@@ -2,7 +2,6 @@ package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import uk.gov.justice.digital.hmpps.api.model.CodeAndDescription
 import uk.gov.justice.digital.hmpps.api.model.contact.*
 import uk.gov.justice.digital.hmpps.aspect.UserContext
 import uk.gov.justice.digital.hmpps.audit.service.AuditableService
@@ -223,11 +222,24 @@ class ContactLogService(
         contactRepository.save(contact)
     }
 
-    fun getContactOutcomesForType(typeCode: String): ContactOutcomes =
-        ContactOutcomes(
-            contactTypeRepository.findSelectableOutcomesByTypeCode(typeCode)
-                .map { CodeAndDescription(it.code, it.description) }
-        )
+    fun getContactOutcomesForType(typeCode: String): ContactOutcomes = ContactOutcomes(
+        contactTypeRepository.findSelectableOutcomesByTypeCode(typeCode)
+            .map {
+                val enforcementActions = enforcementActionsRepository
+                    .findByContactOutcomeId(it.id)
+                ContactOutcomeResponse(
+                    code = it.code,
+                    description = it.description,
+                    enforcementActions = enforcementActions.map { ea ->
+                        EnforcementActionResponse(
+                            code = ea.code,
+                            description = ea.description,
+                            defaultResponsePeriodDays = ea.responseByPeriod
+                        )
+                    }
+                )
+            }
+    )
 
     @Transactional
     fun updateContactOutcome(contactId: Long, request: UpdateContactOutcome) {
