@@ -16,9 +16,10 @@ import org.springframework.data.domain.Sort
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator
 import uk.gov.justice.digital.hmpps.data.generator.personalDetails.PersonDetailsGenerator.PERSONAL_DETAILS
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.ContactRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.EnforcementRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.PersonRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.DocumentRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.OffenderManagerRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.user.entity.UserRepository
 import uk.gov.justice.digital.hmpps.utils.Summary
 
 @ExtendWith(MockitoExtension::class)
@@ -34,7 +35,10 @@ internal class ScheduleServiceTest {
     lateinit var offenderManagerRepository: OffenderManagerRepository
 
     @Mock
-    lateinit var enforcementRepository: EnforcementRepository
+    lateinit var documentRepository: DocumentRepository
+
+    @Mock
+    lateinit var userRepository: UserRepository
 
     @InjectMocks
     lateinit var service: ScheduleService
@@ -75,10 +79,10 @@ internal class ScheduleServiceTest {
         val expectedContact = ContactGenerator.NEXT_APPT_CONTACT
         whenever(personRepository.findSummary(crn)).thenReturn(personSummary)
         whenever(contactRepository.findByPersonIdAndId(any(), any())).thenReturn(expectedContact)
+        // whenever(documentRepository.findByTypeAndPrimaryKeyId(any(), any())).thenReturn(emptyList())
+        whenever(userRepository.findAllById(any())).thenReturn(emptyList())
         val res = service.getPersonAppointment(crn, ContactGenerator.NEXT_APPT_CONTACT.id)
-        assertThat(
-            res.personSummary, equalTo(PERSONAL_DETAILS.toSummary())
-        )
+        assertThat(res.personSummary, equalTo(PERSONAL_DETAILS.toSummary()))
         assertThat(res.appointment, equalTo(expectedContact.toActivity()))
     }
 

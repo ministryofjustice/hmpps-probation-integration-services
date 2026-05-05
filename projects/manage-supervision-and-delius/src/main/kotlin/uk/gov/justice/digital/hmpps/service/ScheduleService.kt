@@ -14,10 +14,12 @@ import uk.gov.justice.digital.hmpps.api.model.user.PersonManager
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.ContactDocument
+import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.DocumentRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.LicenceCondition
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.OffenderManager
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.OffenderManagerRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.getByCrn
+import uk.gov.justice.digital.hmpps.integrations.delius.user.entity.UserRepository
 import java.time.ZonedDateTime
 import java.util.*
 
@@ -27,14 +29,24 @@ class ScheduleService(
     private val personRepository: PersonRepository,
     private val contactRepository: ContactRepository,
     private val comRepository: OffenderManagerRepository,
+    private val documentRepository: DocumentRepository,
+    private val userRepository: UserRepository
 ) {
 
     fun getPersonAppointment(crn: String, contactId: Long, noteId: Int? = null): PersonAppointment {
         val summary = personRepository.getSummary(crn)
         val contact = contactRepository.getContact(summary.id, contactId)
+        val documents = contact.documents
+        val authors = userRepository.findAllById(documents.mapNotNull { it.authorId() }.toSet())
+            .associateBy { it.id }
         return PersonAppointment(
             personSummary = summary.toPersonSummary(),
-            appointment = contact.toActivity(noteId)
+            appointment = contact.toActivity(noteId),
+            documents = documents.map { document ->
+                val author = document.authorId()?.let { authors[it] }
+                    ?.let { Name(it.forename, null, it.surname) }
+                document.toDocument(author)
+            }
         )
     }
 
@@ -220,8 +232,19 @@ fun Contact.toActivity(noteId: Int? = null): Activity {
     )
 }
 
+fun uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.Document.toDocument(author: Name? = null) =
+    Document(
+        id = alfrescoId,
+        name = name,
+        createdAt = createdAt,
+        lastUpdated = lastUpdated,
+        author = author
+    )
+
 fun ContactDocument.toDocument() =
     Document(id = alfrescoId, name = name, createdAt = createdAt, lastUpdated = lastUpdated)
+
+fun ContactDocument.authorId() = lastUpdatedUserId ?: createdByUserId
 
 fun OffenderManager.asPersonManager(): PersonManager = with(staff) {
     PersonManager(Name(forename, null, surname))

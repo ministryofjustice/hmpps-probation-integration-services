@@ -170,6 +170,46 @@ class ScheduleIntegrationTest : IntegrationTestBase() {
     }
 
     @Test
+    fun `appointment not found when contact id does not exist`() {
+        val person = OVERVIEW
+        mockMvc.get("/schedule/${person.crn}/appointment/999999") { withDeliusUserToken("DeliusUser") }
+            .andExpect { status { isNotFound() } }
+    }
+
+    @Test
+    fun `appointment not found when crn does not exist`() {
+        mockMvc.get("/schedule/X999999/appointment/${ContactGenerator.NEXT_APPT_CONTACT.id}") {
+            withDeliusUserToken("DeliusUser")
+        }.andExpect { status { isNotFound() } }
+    }
+
+    @Test
+    fun `appointment documents contain correct names and alfresco ids`() {
+        val person = OVERVIEW
+        val id = ContactGenerator.NEXT_APPT_CONTACT.id
+        val res = mockMvc.get("/schedule/${person.crn}/appointment/$id") { withDeliusUserToken("DeliusUser") }
+            .andExpect { status { isOk() } }
+            .andReturn().response.contentAsJson<PersonAppointment>()
+
+        assertThat(res.appointment.documents.size, equalTo(3))
+        assertThat(
+            res.appointment.documents.map { it.name },
+            equalTo(listOf("contact.doc", "contact2.doc", "dic.doc"))
+        )
+    }
+
+    @Test
+    fun `appointment with no documents returns empty document list`() {
+        val person = OVERVIEW
+        val id = ContactGenerator.PREVIOUS_APPT_CONTACT_ABSENT.id
+        val res = mockMvc.get("/schedule/${person.crn}/appointment/$id") { withDeliusUserToken("DeliusUser") }
+            .andExpect { status { isOk() } }
+            .andReturn().response.contentAsJson<PersonAppointment>()
+
+        assertThat(res.appointment.documents.size, equalTo(0))
+    }
+
+    @Test
     fun `contacts linked to a contact are returned`() {
         val person = PersonGenerator.LINKED_CONTACT_PERSON
         val contactId = ContactGenerator.INITIAL_CONTACT.id
