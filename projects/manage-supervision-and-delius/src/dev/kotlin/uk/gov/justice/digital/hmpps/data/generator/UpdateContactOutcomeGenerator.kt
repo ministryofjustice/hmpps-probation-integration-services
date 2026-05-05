@@ -2,17 +2,19 @@ package uk.gov.justice.digital.hmpps.data.generator
 
 import uk.gov.justice.digital.hmpps.data.generator.AppointmentGenerator.generateContactTypeOutcome
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
-import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.*
+import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.ContactType
+import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.EnforcementActionContactOutcome
+import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.EnforcementActionContactOutcomeId
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.OffenderManager
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.ResponsibleOfficer
-import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.Staff as OffenderManagerStaff
-import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.Team as OffenderManagerTeam
 import uk.gov.justice.digital.hmpps.integrations.delius.user.entity.User
 import uk.gov.justice.digital.hmpps.integrations.delius.user.staff.entity.Staff
 import uk.gov.justice.digital.hmpps.integrations.delius.user.team.entity.Team
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.ZonedDateTime
+import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.Staff as OffenderManagerStaff
+import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.Team as OffenderManagerTeam
 
 object UpdateContactOutcomeGenerator {
 
@@ -61,7 +63,7 @@ object UpdateContactOutcomeGenerator {
 
     val CONTACT_TYPE = ContactType(
         id = IdGenerator.getAndIncrement(),
-        code = "UCOCTC1",
+        code = "CCON",
         attendanceContact = true,
         description = "Update Contact Outcome Type",
         contactOutcomeFlag = true,
@@ -93,6 +95,13 @@ object UpdateContactOutcomeGenerator {
 
     val ENFORCEMENT_ACTION =
         ContactGenerator.generateEnforcementAction("UCOENF1", "UCO Enforcement Action", CONTACT_TYPE)
+
+    val ENFORCEMENT_ACTION_OUTCOME_TYPE = EnforcementActionContactOutcome(
+        EnforcementActionContactOutcomeId(
+            enforcementActionId = ENFORCEMENT_ACTION.id,
+            contactOutcomeTypeId = OUTCOME.id
+        )
+    )
 
     val CONTACT_3 = ContactGenerator.generateContact(
         PERSON,

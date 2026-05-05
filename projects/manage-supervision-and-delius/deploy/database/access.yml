@@ -10,6 +10,7 @@ database:
       - audited_interaction
       - document
       - enforcement
+      - r_enf_act_contact_out_type
 
   audit:
     username: ManageSupervisionAndDelius
