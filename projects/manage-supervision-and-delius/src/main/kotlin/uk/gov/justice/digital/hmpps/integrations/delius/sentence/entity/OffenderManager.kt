@@ -222,7 +222,7 @@ interface StaffUserRepository : JpaRepository<StaffUser, Long> {
             AND (s.END_DATE IS NULL OR s.END_DATE > CURRENT_DATE)
             AND t.CODE = :teamCode
             UNION
-            SELECT 'Unallocated', 'Unallocated', 'Unallocated', 'Unallocated', null, 'Unallocated'
+            SELECT 'Unallocated', 'Unallocated', 'Unallocated', 'Unallocated', null, null, 'Unallocated'
             FROM dual)
             ORDER BY Upper(surname)
           """, nativeQuery = true
