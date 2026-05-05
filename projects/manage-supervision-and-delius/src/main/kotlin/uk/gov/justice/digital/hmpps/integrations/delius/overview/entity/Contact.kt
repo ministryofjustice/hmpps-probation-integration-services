@@ -1050,7 +1050,7 @@ interface EnforcementActionsRepository : JpaRepository<EnforcementAction, Long> 
         """
         select ea.* from r_enforcement_action ea
         join r_enf_act_contact_out_type eaco on eaco.enforcement_action_id = ea.enforcement_action_id
-        where eaco.contact_outcome_type_id = :outcomeid
+        where eaco.contact_outcome_type_id = ?1
         """,
         nativeQuery = true
     )
