@@ -1045,5 +1045,33 @@ interface BoroughRepository : JpaRepository<Borough, Long> {
 
 interface EnforcementActionsRepository : JpaRepository<EnforcementAction, Long> {
     fun findByContactType(contactType: ContactType): List<EnforcementAction>
+
+    @Query(
+        """
+        select ea.* from r_enforcement_action ea
+        join r_enf_act_contact_out_type eaco on eaco.enforcement_action_id = ea.enforcement_action_id
+        where eaco.contact_outcome_type_id = ?1
+        """,
+        nativeQuery = true
+    )
+    fun findByContactOutcomeId(outcomeId: Long): List<EnforcementAction>
 }
+
+@Entity
+@Table(name = "r_enf_act_contact_out_type")
+class EnforcementActionContactOutcome(
+    @EmbeddedId
+    val id: EnforcementActionContactOutcomeId
+)
+
+@Embeddable
+class EnforcementActionContactOutcomeId(
+    @Column(name = "enforcement_action_id")
+    val enforcementActionId: Long,
+    @Column(name = "contact_outcome_type_id")
+    val contactOutcomeTypeId: Long
+) : Serializable
+
+interface EnforcementActionContactOutcomeRepository :
+    JpaRepository<EnforcementActionContactOutcome, EnforcementActionContactOutcomeId>
 

@@ -21,7 +21,10 @@ import uk.gov.justice.digital.hmpps.integrations.delius.user.team.TeamRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.user.team.getTeam
 import uk.gov.justice.digital.hmpps.messaging.EventType
 import uk.gov.justice.digital.hmpps.messaging.Notifier
+import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
 
 @Service
 class ContactLogService(
@@ -69,6 +72,16 @@ class ContactLogService(
                 requirementRepository.getRequirement(it)
             }
 
+            val contactOutcome = createContact.outcomeCode?.let { code ->
+                contactTypeRepository.findSelectableOutcomesByTypeCode(contactType.code)
+                    .firstOrNull { it.code == code }
+                    .orNotFoundBy("code", code)
+            }
+
+            if (createContact.enforcementActionCode != null && contactOutcome == null) {
+                throw InvalidRequestException("outcome is required when an enforcement action is provided")
+            }
+
             val savedContact = contactRepository.save(
                 Contact(
                     date = createContact.date,
@@ -76,6 +89,7 @@ class ContactLogService(
                     person = person,
                     type = contactType,
                     description = createContact.description,
+                    outcome = contactOutcome,
                     event = event,
                     requirement = requirement,
                     staff = staff,
@@ -83,7 +97,7 @@ class ContactLogService(
                     provider = team.provider,
                     notes = """
                     ${createContact.notes}
-                    
+
                     This contact was created in the Manage people on probation service.
                 """.trimIndent(),
                     alert = createContact.alert,
@@ -91,6 +105,41 @@ class ContactLogService(
                     isVisor = createContact.visorReport
                 )
             )
+
+            if (createContact.enforcementActionCode != null) {
+                val enforcementAction = enforcementActionsRepository
+                    .findByContactOutcomeId(contactOutcome!!.id)
+                    .firstOrNull { it.code == createContact.enforcementActionCode }
+                    .orNotFoundBy("code", createContact.enforcementActionCode)
+                enforcementRepository.save(
+                    Enforcement(
+                        contact = savedContact,
+                        action = enforcementAction,
+                        responseDate = enforcementAction.responseByPeriod.let {
+                            savedContact.startTime?.plusDays(it ?: 0)
+                        }
+                    )
+                )
+                contactRepository.save(
+                    Contact(
+                        person = person,
+                        event = event,
+                        requirement = requirement,
+                        type = enforcementAction.contactType,
+                        date = LocalDate.now(),
+                        startTime = ZonedDateTime.now(EuropeLondon),
+                        staff = staff,
+                        team = team,
+                        provider = team.provider,
+                        linkedContactId = savedContact.id,
+                        notes = """
+                            ${DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm").format(LocalDateTime.now())}
+                            Enforcement Action: ${enforcementAction.description}
+                        """.trimIndent()
+                    )
+                )
+                savedContact.event?.run { ftcCount = (ftcCount ?: 0) + 1 }
+            }
 
             val category = mappaCategoryResolverService.resolveMappaCategory(person.id)
 

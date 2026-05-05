@@ -12,6 +12,7 @@ import uk.gov.justice.digital.hmpps.api.model.contact.CreateContactResponse
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator
 import uk.gov.justice.digital.hmpps.data.generator.OffenderManagerGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
+import uk.gov.justice.digital.hmpps.data.generator.UpdateContactOutcomeGenerator
 import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
 import uk.gov.justice.digital.hmpps.test.CustomMatchers.isCloseTo
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
@@ -295,10 +296,10 @@ class ContactLogIntegrationTest : IntegrationTestBase() {
             .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<ContactTypesResponse>()
 
-        assertThat(response.contactTypes.size, equalTo(3))
+        assertThat(response.contactTypes.size, equalTo(4))
         assertThat(
             response.contactTypes.map { it.code }.toSet(),
-            equalTo(setOf("CMOB", "C326", "C204"))
+            equalTo(setOf("CMOB", "C326", "C204", "CCON"))
         )
 
         assertThat(
@@ -309,6 +310,122 @@ class ContactLogIntegrationTest : IntegrationTestBase() {
             response.contactTypes.first { it.code == "C326" }.isPersonLevelContact,
             equalTo(false)
         )
+    }
+
+    @Test
+    fun `invalid outcome code returns not found`() {
+        mockMvc.post("/contact/${UpdateContactOutcomeGenerator.PERSON.crn}") {
+            withToken()
+            json = CreateContact(
+                date = LocalDate.of(2023, 1, 1),
+                time = LocalTime.of(10, 0),
+                staffCode = UpdateContactOutcomeGenerator.STAFF.code,
+                teamCode = UpdateContactOutcomeGenerator.TEAM.code,
+                type = UpdateContactOutcomeGenerator.CONTACT_TYPE.code,
+                eventId = UpdateContactOutcomeGenerator.EVENT.id,
+                outcomeCode = "INVALID"
+            )
+        }.andExpect { status { isNotFound() } }
+    }
+
+    @Test
+    fun `updates contact with valid outcome`() {
+        val response = mockMvc.post("/contact/${UpdateContactOutcomeGenerator.PERSON.crn}") {
+            withToken()
+            json = CreateContact(
+                date = LocalDate.of(2023, 1, 1),
+                time = LocalTime.of(10, 0),
+                staffCode = UpdateContactOutcomeGenerator.STAFF.code,
+                teamCode = UpdateContactOutcomeGenerator.TEAM.code,
+                type = UpdateContactOutcomeGenerator.CONTACT_TYPE.code,
+                eventId = UpdateContactOutcomeGenerator.EVENT.id,
+                outcomeCode = UpdateContactOutcomeGenerator.OUTCOME.code
+            )
+        }
+            .andExpect { status { isCreated() } }
+            .andReturn().response.contentAsJson<CreateContactResponse>()
+
+        val savedContact = contactRepository.findById(response.id).get()
+        assertThat(savedContact.outcome?.code, equalTo(UpdateContactOutcomeGenerator.OUTCOME.code))
+
+        channelManager.getChannel(topicName).pollFor(1)
+    }
+
+    @Test
+    fun `enforcement action without outcome returns bad request`() {
+        mockMvc.post("/contact/${UpdateContactOutcomeGenerator.PERSON.crn}") {
+            withToken()
+            json = CreateContact(
+                date = LocalDate.of(2023, 1, 1),
+                time = LocalTime.of(10, 0),
+                staffCode = UpdateContactOutcomeGenerator.STAFF.code,
+                teamCode = UpdateContactOutcomeGenerator.TEAM.code,
+                type = UpdateContactOutcomeGenerator.CONTACT_TYPE.code,
+                eventId = UpdateContactOutcomeGenerator.EVENT.id,
+                enforcementActionCode = UpdateContactOutcomeGenerator.ENFORCEMENT_ACTION.code
+            )
+        }.andExpect { status { isBadRequest() } }
+    }
+
+    @Test
+    fun `invalid enforcement action code returns not found`() {
+        mockMvc.post("/contact/${UpdateContactOutcomeGenerator.PERSON.crn}") {
+            withToken()
+            json = CreateContact(
+                date = LocalDate.of(2023, 1, 1),
+                time = LocalTime.of(10, 0),
+                staffCode = UpdateContactOutcomeGenerator.STAFF.code,
+                teamCode = UpdateContactOutcomeGenerator.TEAM.code,
+                type = UpdateContactOutcomeGenerator.CONTACT_TYPE.code,
+                eventId = UpdateContactOutcomeGenerator.EVENT.id,
+                outcomeCode = UpdateContactOutcomeGenerator.OUTCOME.code,
+                enforcementActionCode = "INVALID"
+            )
+        }.andExpect { status { isNotFound() } }
+    }
+
+    @Test
+    fun `create enforcement with valid enforcement action`() {
+        val ftcBefore = transactionTemplate.execute {
+            entityManager.clear()
+            eventRepository.findById(UpdateContactOutcomeGenerator.EVENT.id).get().ftcCount ?: 0L
+        }!!
+
+        val response = mockMvc.post("/contact/${UpdateContactOutcomeGenerator.PERSON.crn}") {
+            withToken()
+            json = CreateContact(
+                date = LocalDate.of(2023, 1, 1),
+                time = LocalTime.of(10, 0),
+                staffCode = UpdateContactOutcomeGenerator.STAFF.code,
+                teamCode = UpdateContactOutcomeGenerator.TEAM.code,
+                type = UpdateContactOutcomeGenerator.CONTACT_TYPE.code,
+                eventId = UpdateContactOutcomeGenerator.EVENT.id,
+                outcomeCode = UpdateContactOutcomeGenerator.OUTCOME.code,
+                enforcementActionCode = UpdateContactOutcomeGenerator.ENFORCEMENT_ACTION.code
+            )
+        }
+            .andExpect { status { isCreated() } }
+            .andReturn().response.contentAsJson<CreateContactResponse>()
+
+        val enforcements = enforcementRepository.findAll().filter { it.contact.id == response.id }
+
+        assertThat(enforcements.size, equalTo(1))
+        assertThat(enforcements[0].action?.code, equalTo(UpdateContactOutcomeGenerator.ENFORCEMENT_ACTION.code))
+        assertThat(enforcements[0].responseDate, Matchers.notNullValue())
+
+        val linkedContacts = contactRepository.findByLinkedContactIdOrderByDateDesc(response.id)
+
+        assertThat(linkedContacts.size, equalTo(1))
+        assertThat(
+            linkedContacts[0].type.code,
+            equalTo(UpdateContactOutcomeGenerator.ENFORCEMENT_ACTION.contactType.code)
+        )
+
+        val ftcAfter = eventRepository.findById(UpdateContactOutcomeGenerator.EVENT.id).get().ftcCount
+
+        assertThat(ftcAfter, equalTo(ftcBefore + 1))
+
+        channelManager.getChannel(topicName).pollFor(1)
     }
 
     @Test

@@ -274,6 +274,7 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
             UpdateContactOutcomeGenerator.OUTCOME,
             UpdateContactOutcomeGenerator.CONTACT_TYPE_OUTCOME,
             UpdateContactOutcomeGenerator.ENFORCEMENT_ACTION,
+            UpdateContactOutcomeGenerator.ENFORCEMENT_ACTION_OUTCOME_TYPE,
             UpdateContactOutcomeGenerator.CONTACT_1,
             UpdateContactOutcomeGenerator.CONTACT_2,
             UpdateContactOutcomeGenerator.CONTACT_3,

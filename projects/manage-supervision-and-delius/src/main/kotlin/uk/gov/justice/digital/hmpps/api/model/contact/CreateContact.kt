@@ -9,6 +9,8 @@ data class CreateContact(
     val staffCode: String,
     val teamCode: String,
     val type: String,
+    val outcomeCode: String? = null,
+    val enforcementActionCode: String? = null,
     val eventId: Long? = null,
     val requirementId: Long? = null,
     val description: String? = null,
