@@ -260,11 +260,17 @@ class UserService(
         val teamSearch = team ?: defaultTeam?.code ?: teams.first().code
         val staffInTeam = staffUserRepository.findStaffByTeam(teamSearch)
         val usernames = staffInTeam.map { it.username }.filter { it != "Unallocated" }
-        val emailsByUsername = try {
-            ldapTemplate.findEmailByUsernames(usernames)
-        } catch (ex: RuntimeException) {
-            log.warn("Failed LDAP email lookup for usernames ", ex)
+        val emailsByUsername =
+        if (usernames.isEmpty()) {
             emptyMap()
+        }
+        else {
+            try {
+                ldapTemplate.findEmailByUsernames(usernames)
+            } catch (ex: NotFoundException) {
+                log.warn("Failed LDAP email lookup for usernames ", ex)
+                emptyMap()
+            }
         }
         val users = staffInTeam.map { staff ->
             staff.toUser(email = emailsByUsername[staff.username])
