@@ -47,7 +47,7 @@ import java.time.LocalTime
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.Appointment as AppointmentEntity
-import org.slf4j.LoggerFactory
+import uk.gov.justice.digital.hmpps.logging.Logger.logger
 
 @Service
 class UserService(
@@ -65,7 +65,7 @@ class UserService(
     private val providerRepository: ProviderRepository
 ) {
     companion object {
-        private val log = LoggerFactory.getLogger(UserService::class.java)
+        private val log = logger()
     }
 
     fun getUserDetails(username: String): UserDetails {

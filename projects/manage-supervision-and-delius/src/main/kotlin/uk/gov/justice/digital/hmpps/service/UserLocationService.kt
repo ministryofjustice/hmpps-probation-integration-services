@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.api.model.sentence.*
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.*
 import uk.gov.justice.digital.hmpps.ldap.findEmailByUsernames
-import org.slf4j.LoggerFactory
+import uk.gov.justice.digital.hmpps.logging.Logger.logger
 
 @Service
 class UserLocationService(
@@ -13,7 +13,7 @@ class UserLocationService(
     private val ldapTemplate: LdapTemplate
 ) {
     companion object {
-        private val log = LoggerFactory.getLogger(UserLocationService::class.java)
+        private val log = logger()
     }
 
     fun getUserOfficeLocations(username: String): UserOfficeLocation {

@@ -7,7 +7,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.Offender
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.OffenderManagerRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.getByCrn
 import uk.gov.justice.digital.hmpps.ldap.findEmailByUsername
-import org.slf4j.LoggerFactory
+import uk.gov.justice.digital.hmpps.logging.Logger.logger
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 
 @Service
@@ -16,7 +16,7 @@ class GetProbationPractitioner(
     private val ldapTemplate: LdapTemplate
 ) {
     companion object {
-        private val log = LoggerFactory.getLogger(GetProbationPractitioner::class.java)
+        private val log = logger()
     }
 
     fun forCrn(crn: String): ProbationPractitioner {
