@@ -266,7 +266,7 @@ class UserService(
             } else {
                 try {
                     ldapTemplate.findEmailByUsernames(usernames)
-                } catch (ex: NotFoundException) {
+                } catch (ex: RuntimeException) {
                     log.warn("Failed LDAP email lookup for usernames ", ex)
                     emptyMap()
                 }
