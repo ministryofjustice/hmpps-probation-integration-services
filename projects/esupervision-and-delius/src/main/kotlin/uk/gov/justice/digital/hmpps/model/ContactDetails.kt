@@ -9,6 +9,7 @@ data class ContactDetails(
     val email: String?,
     val events: List<Event>,
     val practitioner: Practitioner,
+    val contactSuspended: Boolean,
 )
 
 data class Name(val forename: String, val surname: String)

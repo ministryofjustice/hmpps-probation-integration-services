@@ -4,6 +4,8 @@ import org.springframework.ldap.core.LdapTemplate
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.entity.PersonManager
 import uk.gov.justice.digital.hmpps.entity.PersonManagerRepository
+import uk.gov.justice.digital.hmpps.entity.RegisterType
+import uk.gov.justice.digital.hmpps.entity.RegistrationRepository
 import uk.gov.justice.digital.hmpps.entity.Team
 import uk.gov.justice.digital.hmpps.entity.event.EventEntity
 import uk.gov.justice.digital.hmpps.entity.name
@@ -14,6 +16,7 @@ import uk.gov.justice.digital.hmpps.model.*
 @Service
 class ContactDetailsService(
     val comRepository: PersonManagerRepository,
+    val registrationRepository: RegistrationRepository,
     val ldapTemplate: LdapTemplate,
 ) {
     fun getContactDetailsForCrn(crn: String) =
@@ -28,7 +31,11 @@ class ContactDetailsService(
                 mobile = com.person.mobile,
                 email = com.person.emailAddress,
                 events = com.person.activeEvents.map { it.asEvent() },
-                practitioner = com.asPractitioner { email }
+                practitioner = com.asPractitioner { email },
+                contactSuspended = registrationRepository.existsByPersonIdAndTypeCode(
+                    com.person.id,
+                    RegisterType.CONTACT_SUSPENDED_TYPE_CODE
+                ),
             )
         }
 
@@ -38,6 +45,14 @@ class ContactDetailsService(
                 .takeIf { it.isNotEmpty() }
                 ?.let { usernames -> ldapTemplate.findEmailByUsernames(usernames) }
                 ?: emptyMap()
+
+            val casesWithContactSuspended = coms.map { it.person.id }
+                .takeIf { it.isNotEmpty() }
+                ?.let {
+                    registrationRepository.findPersonIdsWithActiveType(it, RegisterType.CONTACT_SUSPENDED_TYPE_CODE)
+                        .toSet()
+                }
+                ?: emptySet()
 
             coms.map { com ->
                 ContactDetails(
@@ -50,6 +65,7 @@ class ContactDetailsService(
                     email = com.person.emailAddress,
                     events = com.person.activeEvents.map { it.asEvent() },
                     practitioner = com.asPractitioner { emails[it] },
+                    contactSuspended = com.person.id in casesWithContactSuspended,
                 )
             }
         }
