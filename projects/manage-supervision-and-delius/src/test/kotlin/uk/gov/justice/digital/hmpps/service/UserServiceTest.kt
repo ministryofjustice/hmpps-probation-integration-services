@@ -412,7 +412,7 @@ internal class UserServiceTest {
         val _username: String,
         val _surname: String,
         val _forename: String,
-        override val email: String?,
+        val email: String?,
         val _role: String,
     ) : StaffAndRole {
         override val code: String
