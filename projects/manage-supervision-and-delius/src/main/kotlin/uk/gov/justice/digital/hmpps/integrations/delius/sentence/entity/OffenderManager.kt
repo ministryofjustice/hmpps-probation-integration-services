@@ -205,13 +205,12 @@ interface StaffUserRepository : JpaRepository<StaffUser, Long> {
 
     @Query(
         """
-            SELECT code, username, surname, forename, middlename, email, role FROM (
+            SELECT code, username, surname, forename, middlename, role FROM (
             SELECT  u.DISTINGUISHED_NAME as username, 
                     s.officer_code as code,
                     u.surname as surname, 
                     u.forename as forename, 
                     u.forename2 as middlename,
-                    null as email,
                     rsrl.CODE_DESCRIPTION as role
             FROM user_ u
             JOIN STAFF s ON s.STAFF_ID = u.STAFF_ID
@@ -222,7 +221,7 @@ interface StaffUserRepository : JpaRepository<StaffUser, Long> {
             AND (s.END_DATE IS NULL OR s.END_DATE > CURRENT_DATE)
             AND t.CODE = :teamCode
             UNION
-            SELECT 'Unallocated', 'Unallocated', 'Unallocated', 'Unallocated', null, null, 'Unallocated'
+            SELECT 'Unallocated', 'Unallocated', 'Unallocated', 'Unallocated', null, 'Unallocated'
             FROM dual)
             ORDER BY Upper(surname)
           """, nativeQuery = true
