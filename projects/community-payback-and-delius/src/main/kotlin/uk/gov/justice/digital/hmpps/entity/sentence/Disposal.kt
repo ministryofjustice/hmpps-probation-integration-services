@@ -24,7 +24,7 @@ class Disposal(
     @Column(name = "disposal_date")
     val date: LocalDate,
 
-    val length: Long,
+    val length: Long?,
 
     @OneToOne
     @JoinColumn(name = "event_id")

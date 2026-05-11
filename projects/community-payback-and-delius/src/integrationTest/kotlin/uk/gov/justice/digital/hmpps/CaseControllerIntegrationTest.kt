@@ -77,7 +77,7 @@ class CaseControllerIntegrationTest @Autowired constructor(
                 .andExpect { status { isOk() } }
                 .andReturn().response.contentAsJson<Map<String, Any>>()
 
-        val unpaidWorkDetails = response["unpaidWorkDetails"] as? List<Map<String, Any>>
+        val unpaidWorkDetails = response["unpaidWorkDetails"] as? List<*>
         assertThat(unpaidWorkDetails).isNotNull
         assertThat(unpaidWorkDetails).hasSize(5)
 
