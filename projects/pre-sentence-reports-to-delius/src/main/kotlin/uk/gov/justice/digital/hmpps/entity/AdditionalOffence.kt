@@ -9,12 +9,18 @@ import java.time.LocalDate
 class AdditionalOffence(
     @Id
     @Column(name = "additional_offence_id")
-    val additionalOffenceId: Long,
-    val offenceDate: LocalDate,
-    val eventId: Long,
+    val id: Long,
+
+    @Column(name = "offence_date")
+    val date: LocalDate?,
+
+    @OneToOne
+    @JoinColumn(name = "event_id")
+    val event: Event,
+
     @OneToOne
     @JoinColumn(name = "offence_id")
-    val offence: OffenceEntity
+    val offence: OffenceEntity,
 )
 
 interface AdditionalOffenceRepository : JpaRepository<AdditionalOffence, Long> {
