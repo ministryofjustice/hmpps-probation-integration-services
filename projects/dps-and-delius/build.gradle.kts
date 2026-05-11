@@ -6,6 +6,7 @@ dependencies {
     implementation(project(":libs:audit"))
     implementation(project(":libs:commons"))
     implementation(project(":libs:document-management"))
+    implementation(project(":libs:limited-access"))
     implementation(project(":libs:oauth-server"))
 
     implementation("org.springframework.boot:spring-boot-starter-actuator")

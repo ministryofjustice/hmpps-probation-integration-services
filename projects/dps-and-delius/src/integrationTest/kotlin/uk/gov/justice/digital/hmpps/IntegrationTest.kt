@@ -9,6 +9,7 @@ import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
 import org.springframework.util.ResourceUtils
+import uk.gov.justice.digital.hmpps.data.generator.LimitedAccessGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 
@@ -59,6 +60,24 @@ internal class IntegrationTest @Autowired constructor(private val mockMvc: MockM
                 jsonPath("documents[1].type") { value("Contact related document") }
                 jsonPath("documents[0].type") { value("Non Statutory Intervention related document") }
             }
+    }
+
+    @Test
+    fun `excluded case returns 403`() {
+        mockMvc.get("/case/${LimitedAccessGenerator.EXCLUDED_PERSON_RECORD.nomisId}/documents") { withToken() }
+            .andExpect { status { isForbidden() } }
+    }
+
+    @Test
+    fun `restricted case returns 403`() {
+        mockMvc.get("/case/${LimitedAccessGenerator.RESTRICTED_PERSON_RECORD.nomisId}/documents") { withToken() }
+            .andExpect { status { isForbidden() } }
+    }
+
+    @Test
+    fun `unrestricted case returns 200`() {
+        mockMvc.get("/case/${PersonGenerator.DEFAULT.nomisId}/documents") { withToken() }
+            .andExpect { status { isOk() } }
     }
 
     @Test
