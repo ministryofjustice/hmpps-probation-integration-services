@@ -33,7 +33,7 @@ class Event(
 
     @ManyToOne
     @JoinColumn(name = "court_id")
-    val court: Court,
+    val court: Court?,
 
     val referralDate: LocalDate,
     val convictionDate: LocalDate,

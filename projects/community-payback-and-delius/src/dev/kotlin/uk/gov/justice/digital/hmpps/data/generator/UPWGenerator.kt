@@ -128,7 +128,7 @@ object UPWGenerator {
         disposal = null,
         referralDate = LocalDate.now().minusDays(1),
         convictionDate = LocalDate.now().minusWeeks(1),
-        court = DEFAULT_COURT,
+        court = null,
     )
 
     val EVENT_ADJUSTMENT = generateEvent(
@@ -782,7 +782,7 @@ object UPWGenerator {
         disposal: Disposal?,
         referralDate: LocalDate,
         convictionDate: LocalDate,
-        court: Court = DEFAULT_COURT
+        court: Court? = DEFAULT_COURT
     ) = Event(
         id = id,
         number = eventNumber,
