@@ -9,12 +9,7 @@ import uk.gov.justice.digital.hmpps.entity.unpaidwork.LinkedListRepository
 import uk.gov.justice.digital.hmpps.entity.unpaidwork.UnpaidWorkAppointmentRepository
 import uk.gov.justice.digital.hmpps.entity.unpaidwork.UpwDetailsRepository
 import uk.gov.justice.digital.hmpps.exception.NotFoundException.Companion.orNotFoundBy
-import uk.gov.justice.digital.hmpps.model.Case
-import uk.gov.justice.digital.hmpps.model.CodeDescription
-import uk.gov.justice.digital.hmpps.model.Offence
-import uk.gov.justice.digital.hmpps.model.PersonName
-import uk.gov.justice.digital.hmpps.model.UnpaidWorkDetails
-import uk.gov.justice.digital.hmpps.model.UnpaidWorkMinutes
+import uk.gov.justice.digital.hmpps.model.*
 
 @Service
 class CaseSummaryService(
@@ -71,10 +66,7 @@ class CaseSummaryService(
                 upwStatus = detail.status?.description,
                 referralDate = disposal.event.referralDate,
                 convictionDate = disposal.event.convictionDate,
-                court = CodeDescription(
-                    code = detail.disposal.event.court.code,
-                    description = detail.disposal.event.court.courtName
-                ),
+                court = detail.disposal.event.court?.let { CodeDescription(it.code, it.courtName) },
                 mainOffence = Offence(
                     date = mainOffence.offenceDate,
                     count = mainOffence.offenceCount,

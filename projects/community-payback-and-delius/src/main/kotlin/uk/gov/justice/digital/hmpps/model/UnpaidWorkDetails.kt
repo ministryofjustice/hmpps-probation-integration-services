@@ -18,7 +18,7 @@ data class UnpaidWorkMinutes(
     val upwStatus: String?,
     val referralDate: LocalDate,
     val convictionDate: LocalDate,
-    val court: CodeDescription,
+    val court: CodeDescription?,
     val mainOffence: Offence
 )
 
