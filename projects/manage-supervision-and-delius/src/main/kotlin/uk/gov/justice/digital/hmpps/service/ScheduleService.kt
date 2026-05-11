@@ -39,7 +39,7 @@ class ScheduleService(
         val summary = personRepository.getSummary(crn)
         val contact = contactRepository.getContact(summary.id, contactId)
         val documents = contact.documents
-        val enforcement = enforcementRepository.findEnforcementByContactId(contactId).firstOrNull()
+        val enforcement = enforcementRepository.findFirstByContactIdOrderByIdDesc(contactId)
         val authors = userRepository.findAllById(documents.mapNotNull { it.authorId() }.toSet())
             .associateBy { it.id }
         return PersonAppointment(

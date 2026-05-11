@@ -912,7 +912,7 @@ interface EnforcementAppointment {
 }
 
 interface EnforcementRepository : JpaRepository<Enforcement, Long> {
-    fun findEnforcementByContactId(contactId: Long): List<Enforcement>
+    fun findFirstByContactIdOrderByIdDesc(contactId: Long): Enforcement?
 }
 
 fun ContactRepository.getContact(personId: Long, contactId: Long): Contact =
