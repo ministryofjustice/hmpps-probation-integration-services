@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.data
 import org.springframework.stereotype.Component
 import uk.gov.justice.digital.hmpps.data.generator.DocumentGenerator
 import uk.gov.justice.digital.hmpps.data.generator.EventGenerator
+import uk.gov.justice.digital.hmpps.data.generator.LimitedAccessGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.UserGenerator
 import uk.gov.justice.digital.hmpps.data.loader.BaseDataLoader
@@ -14,6 +15,13 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
 
     override fun setupData() {
         save(PersonGenerator.DEFAULT)
+        save(LimitedAccessGenerator.LAO_USER)
+        save(LimitedAccessGenerator.EXCLUDED_PERSON)
+        save(LimitedAccessGenerator.RESTRICTED_PERSON)
+        save(LimitedAccessGenerator.EXCLUDED_PERSON_RECORD)
+        save(LimitedAccessGenerator.RESTRICTED_PERSON_RECORD)
+        save(LimitedAccessGenerator.EXCLUSION)
+        save(LimitedAccessGenerator.RESTRICTION)
         save(EventGenerator.EVENT)
         save(EventGenerator.UNSENTENCED_EVENT)
         save(EventGenerator.DISPOSAL)
