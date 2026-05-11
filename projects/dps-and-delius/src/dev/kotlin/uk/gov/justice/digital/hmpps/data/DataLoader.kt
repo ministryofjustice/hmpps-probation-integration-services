@@ -16,8 +16,6 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
     override fun setupData() {
         save(PersonGenerator.DEFAULT)
         save(LimitedAccessGenerator.LAO_USER)
-        save(LimitedAccessGenerator.EXCLUDED_PERSON)
-        save(LimitedAccessGenerator.RESTRICTED_PERSON)
         save(LimitedAccessGenerator.EXCLUDED_PERSON_RECORD)
         save(LimitedAccessGenerator.RESTRICTED_PERSON_RECORD)
         save(LimitedAccessGenerator.EXCLUSION)
