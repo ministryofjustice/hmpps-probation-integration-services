@@ -33,8 +33,10 @@ object LimitedAccessGenerator {
         softDeleted = false
     )
 
-    private val EXCLUDED_LAO_PERSON = LimitedAccessPerson("E000001", "This case is excluded", null, EXCLUDED_PERSON_RECORD.id)
-    private val RESTRICTED_LAO_PERSON = LimitedAccessPerson("R000001", null, "This case is restricted", RESTRICTED_PERSON_RECORD.id)
+    private val EXCLUDED_LAO_PERSON =
+        LimitedAccessPerson("E000001", "This case is excluded", null, EXCLUDED_PERSON_RECORD.id)
+    private val RESTRICTED_LAO_PERSON =
+        LimitedAccessPerson("R000001", null, "This case is restricted", RESTRICTED_PERSON_RECORD.id)
 
     val EXCLUSION = Exclusion(
         person = EXCLUDED_LAO_PERSON,
