@@ -13,6 +13,7 @@ import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.UPWGenerator
 import uk.gov.justice.digital.hmpps.data.generator.UserGenerator
 import uk.gov.justice.digital.hmpps.model.ScheduleResponse
+import uk.gov.justice.digital.hmpps.model.UnpaidWorkDetails
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 
@@ -75,21 +76,14 @@ class CaseControllerIntegrationTest @Autowired constructor(
         val response =
             mockMvc.get("/case/${PersonGenerator.DEFAULT_PERSON.crn}/summary?username=${username}") { withToken() }
                 .andExpect { status { isOk() } }
-                .andReturn().response.contentAsJson<Map<String, Any>>()
+                .andReturn().response.contentAsJson<UnpaidWorkDetails>()
 
-        val unpaidWorkDetails = response["unpaidWorkDetails"] as? List<Map<String, Any>>
-        assertThat(unpaidWorkDetails).isNotNull
-        assertThat(unpaidWorkDetails).hasSize(5)
-
-        unpaidWorkDetails!!.forEachIndexed { idx, detail ->
-            assertThat(detail["eventNumber"]).isEqualTo(idx + 1)
-            assertThat(detail["requiredMinutes"]).isInstanceOf(Number::class.java)
-            assertThat(detail["completedMinutes"]).isInstanceOf(Number::class.java)
-            assertThat(detail["completedEteMinutes"]).isInstanceOf(Number::class.java)
-            // Only check that 'adjustments' is present and is a number
-            assertThat(detail).containsKey("adjustments")
-            assertThat(detail["adjustments"]).isInstanceOf(Number::class.java)
-        }
+        assertThat(response.unpaidWorkDetails).hasSize(5)
+        assertThat(response.unpaidWorkDetails.map { it.eventNumber.toInt() }).isEqualTo((1..5).toList())
+        assertThat(response.unpaidWorkDetails[0].requiredMinutes).isEqualTo(7200)
+        assertThat(response.unpaidWorkDetails[0].completedMinutes).isEqualTo(870)
+        assertThat(response.unpaidWorkDetails[0].completedEteMinutes).isEqualTo(0)
+        assertThat(response.unpaidWorkDetails[0].adjustments).isEqualTo(4)
     }
 
     @Test
