@@ -8,6 +8,7 @@ import uk.gov.justice.digital.hmpps.api.model.Name
 import uk.gov.justice.digital.hmpps.api.model.activity.Activity
 import uk.gov.justice.digital.hmpps.api.model.activity.Component
 import uk.gov.justice.digital.hmpps.api.model.appointment.CreateAppointment
+import uk.gov.justice.digital.hmpps.api.model.compliance.EnforcementAction
 import uk.gov.justice.digital.hmpps.api.model.personalDetails.Document
 import uk.gov.justice.digital.hmpps.api.model.schedule.*
 import uk.gov.justice.digital.hmpps.api.model.user.PersonManager
@@ -29,8 +30,7 @@ class ScheduleService(
     private val personRepository: PersonRepository,
     private val contactRepository: ContactRepository,
     private val comRepository: OffenderManagerRepository,
-    private val documentRepository: DocumentRepository,
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
 ) {
 
     fun getPersonAppointment(crn: String, contactId: Long, noteId: Int? = null): PersonAppointment {
@@ -46,6 +46,13 @@ class ScheduleService(
                 val author = document.authorId()?.let { authors[it] }
                     ?.let { Name(it.forename, null, it.surname) }
                 document.toDocument(author)
+            },
+            enforcementAction = contact.enforcement?.let {
+                EnforcementAction(
+                    code = it.action?.code,
+                    description = it.action?.description,
+                    responseByDate = it.responseDate?.toLocalDate()
+                )
             }
         )
     }

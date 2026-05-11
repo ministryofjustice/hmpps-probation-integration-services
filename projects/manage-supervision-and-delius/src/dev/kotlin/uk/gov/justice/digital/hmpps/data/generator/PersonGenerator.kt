@@ -311,6 +311,14 @@ object PersonGenerator {
 
     val LINKED_CONTACT_PERSON = generateOverview("E900002")
 
+    val ENFORCEMENT_APPOINTMENT_PERSON = generateOverview("E900003")
+    val ENFORCEMENT_APPOINTMENT_EVENT = generateEvent(
+        ENFORCEMENT_APPOINTMENT_PERSON,
+        eventNumber = "1",
+        notes = "enforcement appointment test",
+        additionalOffences = emptyList()
+    )
+
     val RESCHEDULED_PERSON_1 = generateOverview("R345678", "App1", "Rescheduled")
     val RESCHEDULED_PERSON_2 = generateOverview("R345679", "App2", "Rescheduled")
     val RECREATE_APPT_PERSON_1 = generateOverview("R456789", "App1", "Recreated")

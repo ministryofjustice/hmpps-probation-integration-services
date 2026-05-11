@@ -229,6 +229,20 @@ class ScheduleIntegrationTest : IntegrationTestBase() {
     }
 
     @Test
+    fun `enforcement action is returned for appointment`() {
+        val person = PersonGenerator.ENFORCEMENT_APPOINTMENT_PERSON
+        val contactId = ContactGenerator.ENFORCEMENT_APPOINTMENT_CONTACT.id
+        val res = mockMvc.get("/schedule/${person.crn}/appointment/$contactId") { withDeliusUserToken("DeliusUser") }
+            .andExpect { status { isOk() } }
+            .andReturn().response.contentAsJson<PersonAppointment>()
+
+        val enforcement = ContactGenerator.ENFORCEMENT_APPOINTMENT_ENFORCEMENT
+        assertThat(res.enforcementAction?.code, equalTo(enforcement.action?.code))
+        assertThat(res.enforcementAction?.description, equalTo(enforcement.action?.description))
+        assertThat(res.enforcementAction?.responseByDate, equalTo(enforcement.responseDate?.toLocalDate()))
+    }
+
+    @Test
     fun `next appointment is returned`() {
         val person = OVERVIEW
         val id = ContactGenerator.PREVIOUS_APPT_CONTACT_ABSENT.id

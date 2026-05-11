@@ -89,6 +89,9 @@ class Contact(
     @JoinColumn(name = "latest_enforcement_action_id", referencedColumnName = "enforcement_action_id")
     val action: EnforcementAction? = null,
 
+    @OneToOne(mappedBy = "contact", fetch = FetchType.LAZY)
+    val enforcement: Enforcement? = null,
+
     notes: String?,
 
     @Column(name = "nsi_id")
@@ -392,7 +395,7 @@ class EnforcementAction(
 @SQLRestriction("soft_deleted = 0")
 @SequenceGenerator(name = "enforcement_id_seq", sequenceName = "enforcement_id_seq", allocationSize = 1)
 class Enforcement(
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "contact_id")
     val contact: Contact,
 
