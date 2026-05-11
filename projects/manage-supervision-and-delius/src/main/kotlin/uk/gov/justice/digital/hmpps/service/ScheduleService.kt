@@ -8,6 +8,7 @@ import uk.gov.justice.digital.hmpps.api.model.Name
 import uk.gov.justice.digital.hmpps.api.model.activity.Activity
 import uk.gov.justice.digital.hmpps.api.model.activity.Component
 import uk.gov.justice.digital.hmpps.api.model.appointment.CreateAppointment
+import uk.gov.justice.digital.hmpps.api.model.compliance.EnforcementAction
 import uk.gov.justice.digital.hmpps.api.model.personalDetails.Document
 import uk.gov.justice.digital.hmpps.api.model.schedule.*
 import uk.gov.justice.digital.hmpps.api.model.user.PersonManager
@@ -30,13 +31,15 @@ class ScheduleService(
     private val contactRepository: ContactRepository,
     private val comRepository: OffenderManagerRepository,
     private val documentRepository: DocumentRepository,
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
+    private val enforcementRepository: EnforcementRepository,
 ) {
 
     fun getPersonAppointment(crn: String, contactId: Long, noteId: Int? = null): PersonAppointment {
         val summary = personRepository.getSummary(crn)
         val contact = contactRepository.getContact(summary.id, contactId)
         val documents = contact.documents
+        val enforcement = enforcementRepository.findEnforcementByContactId(contactId).firstOrNull()
         val authors = userRepository.findAllById(documents.mapNotNull { it.authorId() }.toSet())
             .associateBy { it.id }
         return PersonAppointment(
@@ -46,6 +49,13 @@ class ScheduleService(
                 val author = document.authorId()?.let { authors[it] }
                     ?.let { Name(it.forename, null, it.surname) }
                 document.toDocument(author)
+            },
+            enforcementAction = enforcement?.let {
+                EnforcementAction(
+                    code = it.action?.code,
+                    description = it.action?.description,
+                    responseByDate = it.responseDate?.toLocalDate()
+                )
             }
         )
     }

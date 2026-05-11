@@ -911,7 +911,9 @@ interface EnforcementAppointment {
     val evidenceDueDate: LocalDateTime?
 }
 
-interface EnforcementRepository : JpaRepository<Enforcement, Long>
+interface EnforcementRepository : JpaRepository<Enforcement, Long> {
+    fun findEnforcementByContactId(contactId: Long): List<Enforcement>
+}
 
 fun ContactRepository.getContact(personId: Long, contactId: Long): Contact =
     findByPersonIdAndId(personId, contactId) ?: throw NotFoundException("Contact", "contactId", contactId)
