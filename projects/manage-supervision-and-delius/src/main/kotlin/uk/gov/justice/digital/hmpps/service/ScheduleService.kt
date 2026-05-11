@@ -30,16 +30,13 @@ class ScheduleService(
     private val personRepository: PersonRepository,
     private val contactRepository: ContactRepository,
     private val comRepository: OffenderManagerRepository,
-    private val documentRepository: DocumentRepository,
     private val userRepository: UserRepository,
-    private val enforcementRepository: EnforcementRepository,
 ) {
 
     fun getPersonAppointment(crn: String, contactId: Long, noteId: Int? = null): PersonAppointment {
         val summary = personRepository.getSummary(crn)
         val contact = contactRepository.getContact(summary.id, contactId)
         val documents = contact.documents
-        val enforcement = enforcementRepository.findFirstByContactIdOrderByIdDesc(contactId)
         val authors = userRepository.findAllById(documents.mapNotNull { it.authorId() }.toSet())
             .associateBy { it.id }
         return PersonAppointment(
@@ -50,7 +47,7 @@ class ScheduleService(
                     ?.let { Name(it.forename, null, it.surname) }
                 document.toDocument(author)
             },
-            enforcementAction = enforcement?.let {
+            enforcementAction = contact.enforcement?.let {
                 EnforcementAction(
                     code = it.action?.code,
                     description = it.action?.description,
