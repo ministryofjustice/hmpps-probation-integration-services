@@ -6,9 +6,9 @@ import org.junit.jupiter.api.Test
 import org.mockito.kotlin.verify
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.test.context.bean.override.mockito.MockitoSpyBean
 import uk.gov.justice.digital.hmpps.data.RequirementTransferRepository
@@ -78,7 +78,7 @@ class ComponentTerminationIntegrationTest @Autowired constructor(
         // Verify termination contact was created
         val terminationContact =
             assertNotNull(contacts.firstOrNull { it.type.code == ContactType.COMPONENT_TERMINATED })
-        assertThat(terminationContact.notes).isEqualTo("Requirement terminated on ${terminationDate.toDeliusDate()} with termination reason of \"Description of REQUIREMENT TERMINATION REASON\" following notification from the Accredited Programmes – Intervention Service")
+        assertThat(terminationContact.notes).isEqualTo("Requirement terminated on ${terminationDate.toDeliusDate()} with termination reason of \"Description of 51\" following notification from the Accredited Programmes – Intervention Service")
         assertThat(terminationContact.staff.id).isEqualTo(TestData.STAFF.id)
         assertThat(terminationContact.team.id).isEqualTo(TestData.TEAM.id)
 
@@ -142,7 +142,7 @@ class ComponentTerminationIntegrationTest @Autowired constructor(
         // Verify termination contact was created
         val terminationContact =
             assertNotNull(contacts.firstOrNull { it.type.code == ContactType.COMPONENT_TERMINATED })
-        assertThat(terminationContact.notes).isEqualTo("Licence Condition terminated on ${terminationDate.toDeliusDate()} with termination reason of \"Description of LICENCE CONDITION TERMINATION REASON\" following notification from the Accredited Programmes – Intervention Service")
+        assertThat(terminationContact.notes).isEqualTo("Licence Condition terminated on ${terminationDate.toDeliusDate()} with termination reason of \"Description of 51\" following notification from the Accredited Programmes – Intervention Service")
         assertThat(terminationContact.staff.id).isEqualTo(TestData.STAFF.id)
         assertThat(terminationContact.team.id).isEqualTo(TestData.TEAM.id)
 
@@ -287,9 +287,9 @@ class ComponentTerminationIntegrationTest @Autowired constructor(
         assertThat(transferContact.date).isEqualTo(terminationDate.toLocalDate())
         assertThat(transferContact.notes).isEqualTo(
             """
-            Transfer Status: Description of TRANSFER STATUS
+            Transfer Status: Description of TR
             Transfer Reason: null
-            Rejection Reason: Description of REQUIREMENT AREA TRANSFER REJECTION REASON
+            Rejection Reason: Description of TE
             Owning Provider: Test Provider
             Receiving Provider: Test Provider
             Notes: 
