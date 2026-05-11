@@ -2,13 +2,8 @@ package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.ldap.core.LdapTemplate
 import org.springframework.stereotype.Service
-import uk.gov.justice.digital.hmpps.entity.PersonManager
-import uk.gov.justice.digital.hmpps.entity.PersonManagerRepository
-import uk.gov.justice.digital.hmpps.entity.RegisterType
-import uk.gov.justice.digital.hmpps.entity.RegistrationRepository
-import uk.gov.justice.digital.hmpps.entity.Team
+import uk.gov.justice.digital.hmpps.entity.*
 import uk.gov.justice.digital.hmpps.entity.event.EventEntity
-import uk.gov.justice.digital.hmpps.entity.name
 import uk.gov.justice.digital.hmpps.ldap.findEmailByUsername
 import uk.gov.justice.digital.hmpps.ldap.findEmailByUsernames
 import uk.gov.justice.digital.hmpps.model.*
@@ -50,7 +45,6 @@ class ContactDetailsService(
                 .takeIf { it.isNotEmpty() }
                 ?.let {
                     registrationRepository.findPersonIdsWithActiveType(it, RegisterType.CONTACT_SUSPENDED_TYPE_CODE)
-                        .toSet()
                 }
                 ?: emptySet()
 

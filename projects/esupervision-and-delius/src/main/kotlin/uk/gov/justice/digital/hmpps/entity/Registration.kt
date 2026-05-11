@@ -52,5 +52,5 @@ interface RegistrationRepository : JpaRepository<Registration, Long> {
     fun existsByPersonIdAndTypeCode(personId: Long, typeCode: String): Boolean
 
     @Query("select r.personId from Registration r where r.personId in :personIds and r.type.code = :typeCode")
-    fun findPersonIdsWithActiveType(personIds: Collection<Long>, typeCode: String): List<Long>
+    fun findPersonIdsWithActiveType(personIds: Collection<Long>, typeCode: String): Set<Long>
 }
