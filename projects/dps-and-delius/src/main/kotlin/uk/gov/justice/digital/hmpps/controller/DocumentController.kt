@@ -20,11 +20,11 @@ class DocumentController(private val documentService: DocumentService) {
             to in the probation case (e.g. a court appearance, an event, etc).
         """
     )
-    fun getDocuments(@PathVariable nomisId: String, authentication: Authentication) =
-        documentService.getDocumentsForCase(nomisId, authentication.name)
+    fun getDocuments(@PathVariable nomisId: String) =
+        documentService.getDocumentsForCase(nomisId)
 
     @GetMapping(value = ["/document/{id}"])
     @Operation(summary = "Download document content")
-    fun downloadDocument(@PathVariable id: String, authentication: Authentication) =
-        documentService.downloadDocument(id, authentication.name)
+    fun downloadDocument(@PathVariable id: String) =
+        documentService.downloadDocument(id)
 }

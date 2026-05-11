@@ -21,19 +21,19 @@ class DocumentService(
     private val alfrescoClient: AlfrescoClient,
     private val limitedAccessService: UserAccessService,
 ) {
-    fun downloadDocument(id: String, username: String): ResponseEntity<StreamingResponseBody> {
+    fun downloadDocument(id: String): ResponseEntity<StreamingResponseBody> {
         val document =
             documentRepository.findByAlfrescoId(id) ?: throw NotFoundException("Document", "alfrescoId", id)
         val person = personRepository.findById(document.personId)
             .orElseThrow { NotFoundException("Person", "id", document.personId) }
-        checkForLao(person.crn, username)
+        checkForLao(person.crn)
         return alfrescoClient.streamDocument(id, document.name)
     }
 
     @Transactional
-    fun getDocumentsForCase(nomisId: String, username: String) =
+    fun getDocumentsForCase(nomisId: String) =
         personRepository.findByNomisId(nomisId)?.let { person ->
-            checkForLao(person.crn, username)
+            checkForLao(person.crn)
             val documents = documentRepository.getPersonAndEventDocuments(person.id)
             val eventDocuments = documents.filter { it.relatesToEvent() }.groupBy { it.eventId }
             ProbationDocumentsResponse(
@@ -78,11 +78,11 @@ class DocumentService(
     private val Disposal.description get() = "${type.description}${lengthString?.let { " ($it)" } ?: ""}"
     private val Disposal.lengthString get() = length?.let { "$length ${lengthUnits!!.description}" }
     private fun List<CourtAppearance>.latestOutcome() = filter { it.outcome != null }.maxByOrNull { it.date }?.outcome
-    private fun checkForLao(crn: String, username: String) {
+    private fun checkForLao(crn: String) {
         val limitedAccessInfo = limitedAccessService.checkLimitedAccessFor(listOf(crn))
         limitedAccessInfo.access.firstOrNull { it.crn == crn }?.let { limitedAccess ->
             if (limitedAccess.userExcluded || limitedAccess.userRestricted) {
-                throw AccessDeniedException("Access Denied for user $username to case with crn ${crn}")
+                throw AccessDeniedException("Access Denied for case with crn ${crn}")
             }
         }
     }
