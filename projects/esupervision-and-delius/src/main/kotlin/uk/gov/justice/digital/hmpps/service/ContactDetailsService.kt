@@ -2,11 +2,8 @@ package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.ldap.core.LdapTemplate
 import org.springframework.stereotype.Service
-import uk.gov.justice.digital.hmpps.entity.PersonManager
-import uk.gov.justice.digital.hmpps.entity.PersonManagerRepository
-import uk.gov.justice.digital.hmpps.entity.Team
+import uk.gov.justice.digital.hmpps.entity.*
 import uk.gov.justice.digital.hmpps.entity.event.EventEntity
-import uk.gov.justice.digital.hmpps.entity.name
 import uk.gov.justice.digital.hmpps.ldap.findEmailByUsername
 import uk.gov.justice.digital.hmpps.ldap.findEmailByUsernames
 import uk.gov.justice.digital.hmpps.model.*
@@ -14,6 +11,7 @@ import uk.gov.justice.digital.hmpps.model.*
 @Service
 class ContactDetailsService(
     val comRepository: PersonManagerRepository,
+    val registrationRepository: RegistrationRepository,
     val ldapTemplate: LdapTemplate,
 ) {
     fun getContactDetailsForCrn(crn: String) =
@@ -28,16 +26,29 @@ class ContactDetailsService(
                 mobile = com.person.mobile,
                 email = com.person.emailAddress,
                 events = com.person.activeEvents.map { it.asEvent() },
-                practitioner = com.asPractitioner { email }
+                practitioner = com.asPractitioner { email },
+                contactSuspended = registrationRepository.existsByPersonIdAndTypeCode(
+                    com.person.id,
+                    RegisterType.CONTACT_SUSPENDED_TYPE_CODE
+                ),
             )
         }
 
     fun getContactDetailsForCrns(crns: List<String>): List<ContactDetails> {
         return comRepository.findByPersonCrnIn(crns).let { coms ->
-            val emails = coms.mapNotNull { it.staff.user?.username }
-                .takeIf { it.isNotEmpty() }
-                ?.let { usernames -> ldapTemplate.findEmailByUsernames(usernames) }
-                ?: emptyMap()
+            val usernames = coms.mapNotNull { it.staff.user?.username }
+            val emails = if (usernames.isNotEmpty()) {
+                ldapTemplate.findEmailByUsernames(usernames)
+            } else {
+                emptyMap()
+            }
+
+            val personIds = coms.map { it.person.id }
+            val casesWithContactSuspended = if (personIds.isNotEmpty()) {
+                registrationRepository.findPersonIdsWithActiveType(personIds, RegisterType.CONTACT_SUSPENDED_TYPE_CODE)
+            } else {
+                emptySet()
+            }
 
             coms.map { com ->
                 ContactDetails(
@@ -50,6 +61,7 @@ class ContactDetailsService(
                     email = com.person.emailAddress,
                     events = com.person.activeEvents.map { it.asEvent() },
                     practitioner = com.asPractitioner { emails[it] },
+                    contactSuspended = com.person.id in casesWithContactSuspended,
                 )
             }
         }

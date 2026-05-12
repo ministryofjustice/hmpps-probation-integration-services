@@ -431,7 +431,8 @@ internal class IntegrationTest @Autowired constructor(
                               "code": "${ProviderGenerator.DEFAULT_PROVIDER.code}",
                               "description": "${ProviderGenerator.DEFAULT_PROVIDER.description}"
                             }
-                          }
+                          },
+                          "contactSuspended": false
                         }
                         """.trimIndent(),
                         JsonCompareMode.STRICT,
@@ -487,6 +488,46 @@ internal class IntegrationTest @Autowired constructor(
         }.andExpect {
             status { isOk() }
             jsonPath("$.length()") { value(1) }
+        }
+    }
+
+    @Test
+    fun `get contact details returns contactSuspended true when active contact suspended registration exists`() {
+        mockMvc.get("/case/${PersonGenerator.PERSON_CONTACT_DETAILS_2.crn}") { withToken() }
+            .andExpect {
+                status { isOk() }
+                jsonPath("$.contactSuspended") { value(true) }
+            }
+    }
+
+    @Test
+    fun `get contact details returns contactSuspended false when contact suspended registration is deregistered`() {
+        mockMvc.get("/case/${PersonGenerator.PERSON_CONTACT_DETAILS_1.crn}") { withToken() }
+            .andExpect {
+                status { isOk() }
+                jsonPath("$.contactSuspended") { value(false) }
+            }
+    }
+
+    @Test
+    fun `get multiple cases returns contactSuspended true for contact suspended registration case`() {
+        mockMvc.post("/cases") {
+            json = listOf(PersonGenerator.PERSON_CONTACT_DETAILS_2.crn)
+            withToken()
+        }.andExpect {
+            status { isOk() }
+            jsonPath("$[0].contactSuspended") { value(true) }
+        }
+    }
+
+    @Test
+    fun `get cases with invalid crn returns valid but empty response`() {
+        mockMvc.post("/cases") {
+            json = listOf("Z999999")
+            withToken()
+        }.andExpect {
+            status { isOk() }
+            content { json("[]") }
         }
     }
 

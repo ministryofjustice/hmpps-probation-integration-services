@@ -17,6 +17,7 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
         saveAll(
             BusinessInteraction(id(), BusinessInteractionCode.ADD_CONTACT.code, ZonedDateTime.now()),
             BusinessInteraction(id(), BusinessInteractionCode.UPDATE_CONTACT.code, ZonedDateTime.now()),
+            RegistrationGenerator.CONTACT_SUSPENDED_TYPE,
             ContactTypeGenerator.CT_ESPCHI,
             ContactTypeGenerator.CT_ESPCHS,
             ContactOutcomeGenerator.COT_ESPC,
@@ -60,6 +61,8 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
             ContactGenerator.CONTACT_TO_UPDATE_EXPIRY,
             ContactGenerator.SETUP_CONTACT_TO_UPDATE,
             ContactGenerator.SENTENCE_TERMINATED_SETUP_CONTACT,
+            RegistrationGenerator.CONTACT_SUSPENDED_REGISTRATION,
+            RegistrationGenerator.DEREGISTERED_PRC_REGISTRATION,
         )
     }
 }
