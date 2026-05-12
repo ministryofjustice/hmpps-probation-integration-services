@@ -36,7 +36,7 @@ class Event(
     val court: Court?,
 
     val referralDate: LocalDate,
-    val convictionDate: LocalDate,
+    val convictionDate: LocalDate?,
 
     @Column(columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)
