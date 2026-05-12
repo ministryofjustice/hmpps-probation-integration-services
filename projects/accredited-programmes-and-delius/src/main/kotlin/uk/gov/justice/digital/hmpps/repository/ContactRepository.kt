@@ -77,7 +77,7 @@ interface ContactRepository : JpaRepository<Contact, Long> {
         where c.requirement.id = :id
         and c.date > :date
         and c.outcome is null
-        and c.createdByUser.systemUser = false
+        and exists (select 1 from User u where u.id = c.createdByUserId and u.systemUser = false)
         """
     )]
     fun deleteFutureRequirementContacts(id: Long, date: LocalDate)
@@ -89,7 +89,7 @@ interface ContactRepository : JpaRepository<Contact, Long> {
         where c.licenceCondition.id = :id
         and c.date > :date
         and c.outcome is null
-        and c.createdByUser.systemUser = false
+        and exists (select 1 from User u where u.id = c.createdByUserId and u.systemUser = false)
         """
     )]
     fun deleteFutureLicenceConditionContacts(id: Long, date: LocalDate)
