@@ -127,7 +127,7 @@ object UPWGenerator {
         person = PersonGenerator.DEFAULT_PERSON,
         disposal = null,
         referralDate = LocalDate.now().minusDays(1),
-        convictionDate = LocalDate.now().minusWeeks(1),
+        convictionDate = null,
         court = null,
     )
 
@@ -151,7 +151,7 @@ object UPWGenerator {
 
     val EVENT_1_MAIN_OFFENCE = MainOffence(
         id = IdGenerator.getAndIncrement(),
-        offenceDate = EVENT_1.convictionDate.minusMonths(3),
+        offenceDate = EVENT_1.convictionDate!!.minusMonths(3),
         offenceCount = 1,
         event = EVENT_1,
         offence = DEFAULT_OFFENCE
@@ -159,7 +159,7 @@ object UPWGenerator {
 
     val EVENT_2_MAIN_OFFENCE = MainOffence(
         id = IdGenerator.getAndIncrement(),
-        offenceDate = EVENT_2.convictionDate.minusMonths(3),
+        offenceDate = EVENT_2.convictionDate!!.minusMonths(3),
         offenceCount = 1,
         event = EVENT_2,
         offence = DEFAULT_OFFENCE
@@ -167,7 +167,7 @@ object UPWGenerator {
 
     val EVENT_3_MAIN_OFFENCE = MainOffence(
         id = IdGenerator.getAndIncrement(),
-        offenceDate = EVENT_3.convictionDate.minusMonths(3),
+        offenceDate = EVENT_3.convictionDate!!.minusMonths(3),
         offenceCount = 1,
         event = EVENT_3,
         offence = DEFAULT_OFFENCE
@@ -175,7 +175,7 @@ object UPWGenerator {
 
     val EVENT_4_MAIN_OFFENCE = MainOffence(
         id = IdGenerator.getAndIncrement(),
-        offenceDate = EVENT_4.convictionDate.minusMonths(3),
+        offenceDate = EVENT_4.convictionDate!!.minusMonths(3),
         offenceCount = 1,
         event = EVENT_4,
         offence = DEFAULT_OFFENCE
@@ -183,7 +183,7 @@ object UPWGenerator {
 
     val EVENT_5_MAIN_OFFENCE = MainOffence(
         id = IdGenerator.getAndIncrement(),
-        offenceDate = EVENT_5.convictionDate.minusMonths(3),
+        offenceDate = LocalDate.of(2024, 1, 1),
         offenceCount = 1,
         event = EVENT_5,
         offence = DEFAULT_OFFENCE
@@ -781,7 +781,7 @@ object UPWGenerator {
         person: Person,
         disposal: Disposal?,
         referralDate: LocalDate,
-        convictionDate: LocalDate,
+        convictionDate: LocalDate?,
         court: Court? = DEFAULT_COURT
     ) = Event(
         id = id,
