@@ -11,8 +11,6 @@ import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 
 class GetProbationPractitionerTest : IntegrationTestBase() {
 
-
-
     @Test
     fun `can retrieve PP details`() {
 
@@ -43,7 +41,5 @@ class GetProbationPractitionerTest : IntegrationTestBase() {
         val person = PersonGenerator.RECREATE_PPCRN_PERSON_3
         mockMvc.get("/case/${person.crn}/probation-practitioner") { withToken() }
             .andExpect { status { isNotFound() } }
-
     }
-
 }
