@@ -32,7 +32,6 @@
       "reviewSpDate": null,
       "initialSpDate": null,
       "reviewNum": "01",
-      "currentConcernsBreachOfTrust": "Yes",
       "currentControlBehaveTrust": "Yes",
       "concernsEscapeAbscond": "Yes",
       "concernsVulnerability": "Yes",

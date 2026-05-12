@@ -32,11 +32,9 @@
       "riskPublicCommunity": "High",
       "riskChildrenCustody": "Low",
       "riskChildrenCommunity": "Low",
-      "currentConcernsBreachOfTrust": "Yes",
       "currentControlBehaveTrust": "Yes",
       "concernsEscapeAbscond": "Yes",
-      "currentConcernsVulnerablity": "Yes",
-      "concernsCopingInCustody": "No",
+      "concernsVulnerability": "Yes",
       "concernsCopingInCustody": "Yes",
       "concernsRiskOfSelfHarm": "Yes",
       "weightedScores": {
