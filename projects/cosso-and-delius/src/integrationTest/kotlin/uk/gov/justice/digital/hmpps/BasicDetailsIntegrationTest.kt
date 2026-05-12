@@ -29,6 +29,7 @@ internal class BasicDetailsIntegrationTest @Autowired constructor(
         assertThat(result.name.surname).isEqualTo("Jones")
         assertThat(result.title).isEqualTo("Mr")
         assertThat(result.name.middleName).isEqualTo("Tom Billy")
+        assertThat(result.addresses.get(0).status).isEqualTo("Main")
     }
 
     @Test
