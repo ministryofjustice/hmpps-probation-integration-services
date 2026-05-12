@@ -91,8 +91,8 @@ object OffenderManagerGenerator {
             //expected from LDAP
             .apply { email = "peter.parker@moj.gov.uk" }
     val STAFF_USER_2 = StaffUser(IdGenerator.getAndIncrement(), STAFF_2, "bwayne", "bruce", surname = "wayne")
-            //expected from LDAP
-            .apply { email = "bruce.wayne@moj.gov.uk" }
+        //expected from LDAP
+        .apply { email = "bruce.wayne@moj.gov.uk" }
     val STAFF_USER_3 = StaffUser(IdGenerator.getAndIncrement(), STAFF_3, "ckent", "clark", surname = "kent")
     val PI_USER = StaffUser(
         IdGenerator.getAndIncrement(),
