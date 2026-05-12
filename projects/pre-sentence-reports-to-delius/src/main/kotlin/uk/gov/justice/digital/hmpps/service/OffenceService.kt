@@ -18,7 +18,7 @@ class OffenceService(
             ?: throw NotFoundException("No offences found for CRN $crn and event $event")
         val additionalOffences = additionalOffenceRepository.findAllByEventId(mainOffence.event.id).map {
             Offence(
-                it.offenceDate,
+                it.date,
                 CodeAndDescription(it.offence.mainCategoryCode.trim(), it.offence.mainCategoryDescription),
                 CodeAndDescription(it.offence.subCategoryCode.trim(), it.offence.subCategoryDescription)
             )
