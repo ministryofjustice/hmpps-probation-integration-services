@@ -35,8 +35,10 @@ class DetailsService(
     }
 
     fun signAndSend(crn: String): SignAndSendResponse {
+        personRepository.getByCrn(crn)
+
         val responsibleOfficer = responsibleOfficerRepository.findByPerson_Crn(crn)
-            ?: throw NotFoundException("Person", "CRN", crn)
+            ?: throw NotFoundException("ResponsibleOfficer", "CRN", crn)
         val offenderManager = responsibleOfficer.offenderManager
         val prisonOffenderManager = responsibleOfficer.prisonOffenderManager
         val staff = (offenderManager?.staff ?: prisonOffenderManager?.staff)
