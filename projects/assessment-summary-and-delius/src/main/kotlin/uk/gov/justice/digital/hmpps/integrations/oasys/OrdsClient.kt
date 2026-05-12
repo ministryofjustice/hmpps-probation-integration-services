@@ -23,14 +23,12 @@ data class AssessmentSummary(
     @JsonFormat(pattern = "[yyyy-MM-dd][dd/MM/yyyy]") // temporary until oasys bug fixed, should not be used for responses
     val reviewSpDate: LocalDate? = null,
     val reviewNum: String? = null,
-    val currentConcernsBreachOfTrust: String? = null,
-    val currentConcernsCustody: String? = null,
-    val currentConcernsDisruptive: String? = null,
-    val currentConcernsEscape: String? = null,
-    val currentConcernsHostel: String? = null,
-    val currentConcernsRiskOfSelfHarm: String? = null,
-    val currentConcernsRiskOfSuicide: String? = null,
-    val currentConcernsVulnerablity: String? = null,
+    val concernsRiskOfSuicide: String? = null,
+    val concernsRiskOfSelfHarm: String? = null,
+    val concernsCopingInCustody: String? = null,
+    val concernsVulnerability: String? = null,
+    val concernsEscapeAbscond: String? = null,
+    val currentControlBehaveTrust: String? = null,
     val riskKnownAdultCommunity: String? = null,
     val riskChildrenCommunity: String? = null,
     val riskChildrenCustody: String? = null,
@@ -66,17 +64,15 @@ data class AssessmentSummary(
 
     /*
         Order of Concerns has to match Delius read order:
-        Suicide, Harm, Custody, Hostel, Vulnerability, Abscond, Disruptive Behaviour, Breach of Trust
+        Suicide, SelfHarm, Custody, Vulnerability, Abscond, Behave Trust
     */
     val concernFlags: List<String> = listOf(
-        currentConcernsRiskOfSuicide,
-        currentConcernsRiskOfSelfHarm,
-        currentConcernsCustody,
-        currentConcernsHostel,
-        currentConcernsVulnerablity,
-        currentConcernsEscape,
-        currentConcernsDisruptive,
-        currentConcernsBreachOfTrust
+        concernsRiskOfSuicide,
+        concernsRiskOfSelfHarm,
+        concernsCopingInCustody,
+        concernsVulnerability,
+        concernsEscapeAbscond,
+        currentControlBehaveTrust,
     ).map {
         when (it?.first()?.uppercase()) {
             "Y" -> "YES"

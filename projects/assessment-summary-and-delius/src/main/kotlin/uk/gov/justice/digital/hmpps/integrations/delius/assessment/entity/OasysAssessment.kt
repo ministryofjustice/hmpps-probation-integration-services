@@ -144,7 +144,7 @@ class OasysAssessment(
 
     companion object {
         val RISK_FLAGS_PATTERN: Regex = "^([VvHhMmLlNn],){8}[VvHhMmLlNn]$".toRegex()
-        val CONCERN_FLAGS_PATTERN: Regex = "^((NO|YES|DK),){7}(NO|YES|DK)$".toRegex()
+        val CONCERN_FLAGS_PATTERN: Regex = "^((NO|YES|DK),){5}(NO|YES|DK)$".toRegex()
     }
 
     private fun WeightedScores.asSectionScores(): List<Pair<Long, Long>> = listOfNotNull(
