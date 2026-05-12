@@ -1,0 +1,39 @@
+{
+  "probNumber": "A000017",
+  "assessments": [
+    {
+      "assessmentPk": 17,
+      "assessmentType": "LAYER3",
+      "dateCompleted": "2024-03-15T10:00:00",
+      "initiationDate": "2024-03-15T09:00:00",
+      "assessmentStatus": "COMPLETE",
+      "concernsRiskOfSuicide": "Yes",
+      "concernsRiskOfSelfHarm": "No",
+      "concernsCopingInCustody": "Yes",
+      "concernsVulnerability": "No",
+      "concernsEscapeAbscond": "Yes",
+      "currentControlBehaveTrust": "No",
+      "riskChildrenCommunity": null,
+      "riskChildrenCustody": null,
+      "riskPublicCommunity": null,
+      "riskPublicCustody": null,
+      "riskKnownAdultCommunity": null,
+      "riskKnownAdultCustody": null,
+      "riskStaffCommunity": null,
+      "riskStaffCustody": null,
+      "riskPrisonersCustody": null,
+      "reviewNum": null,
+      "weightedScores": {},
+      "furtherInformation": {
+        "totWeightedScore": 50,
+        "assessorName": "Test Assessor",
+        "cmsEventNumber": 1
+      },
+      "ogpOvp": {},
+      "offences": [],
+      "sentencePlan": null,
+      "newActuarialPredictors": {}
+    }
+  ]
+}
+

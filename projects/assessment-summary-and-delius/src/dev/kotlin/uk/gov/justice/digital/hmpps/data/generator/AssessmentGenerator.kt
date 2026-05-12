@@ -22,7 +22,7 @@ object AssessmentGenerator {
         description: String? = "Oasys Assessment",
         assessedBy: String? = "John Smith",
         riskFlags: String? = "M,N,M,L,N,L,L,H,N",
-        concernFlags: String? = "YES,NO,NO,DK,YES,NO,NO,YES",
+        concernFlags: String? = "YES,NO,NO,DK,YES,NO,YES,NO",
         dateCreated: LocalDate = date,
         dateReceived: LocalDate = LocalDate.now().minusDays(2),
         initialSentencePlanDate: LocalDate? = null,
