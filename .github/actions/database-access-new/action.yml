@@ -23,7 +23,7 @@ runs:
     - name: Replace template vars in SQL script
       shell: bash
       run: |
-        pip install jinja2-cli
+        pip install 'jinja2-cli>=1.0,<2.0'
         jinja2 \
           -D "username=$(kubectl get secret "${project}-database" -o json | jq -r '.data.DB_USERNAME | @base64d')" \
           -D "password=$(kubectl get secret "${project}-database" -o json | jq -r '.data.DB_PASSWORD | @base64d')" \
