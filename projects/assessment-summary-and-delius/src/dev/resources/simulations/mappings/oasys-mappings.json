@@ -211,6 +211,19 @@
     {
       "request": {
         "method": "GET",
+        "urlPath": "/eor/oasys/ass/asssumm/A000017/ALLOW/17/COMPLETE"
+      },
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "bodyFileName": "A000017-concern-flags.json"
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
         "urlPattern": "/eor/oasys/ass/sectionroshsumm/ALLOW/.+"
       },
       "response": {

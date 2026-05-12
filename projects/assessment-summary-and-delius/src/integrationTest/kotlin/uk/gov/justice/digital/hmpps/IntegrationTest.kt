@@ -661,6 +661,32 @@ internal class IntegrationTest @Autowired constructor(
         assertThat(assessment?.svrpStaticDynamic, equalTo("S"))
     }
 
+    @Test
+    fun `concern flags are correctly mapped and persisted from oasys concern fields`() {
+        val person = PersonGenerator.CONCERN_FLAGS
+        val message = notification<HmppsDomainEvent>("assessment-summary-produced").withCrn(person.crn)
+
+        channelManager.getChannel(queueName).publishAndWait(message)
+
+        val assessment = oasysAssessmentRepository.findAll().firstOrNull { it.person.id == person.id }
+        assertThat(assessment, notNullValue())
+
+        /*
+         * Concern flags order matches Delius read order:
+         * Suicide, Harm, Custody, Hostel (custody dup), Vulnerability, Abscond,
+         * Disruptive Behaviour (trust dup), Breach of Trust
+         *
+         * OASys values from stub:
+         *   concernsRiskOfSuicide      = "Yes" -> YES
+         *   concernsRiskOfSelfHarm     = "No"  -> NO
+         *   concernsCopingInCustody    = "Yes" -> YES (Custody + Hostel)
+         *   concernsVulnerability      = "No"  -> NO
+         *   concernsEscapeAbscond      = "Yes" -> YES
+         *   currentControlBehaveTrust  = "No"  -> NO (Disruptive Behaviour + Breach of Trust)
+         */
+        assertThat(assessment?.concernFlags, equalTo("YES,NO,YES,YES,NO,YES,NO,NO"))
+    }
+
     private fun Notification<HmppsDomainEvent>.withCrn(crn: String): Notification<HmppsDomainEvent> {
         val oasysId = crn.drop(1).toInt()
         return this.copy(
