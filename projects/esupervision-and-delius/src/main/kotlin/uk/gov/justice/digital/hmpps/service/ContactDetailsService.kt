@@ -36,17 +36,19 @@ class ContactDetailsService(
 
     fun getContactDetailsForCrns(crns: List<String>): List<ContactDetails> {
         return comRepository.findByPersonCrnIn(crns).let { coms ->
-            val emails = coms.mapNotNull { it.staff.user?.username }
-                .takeIf { it.isNotEmpty() }
-                ?.let { usernames -> ldapTemplate.findEmailByUsernames(usernames) }
-                ?: emptyMap()
+            val usernames = coms.mapNotNull { it.staff.user?.username }
+            val emails = if (usernames.isNotEmpty()) {
+                ldapTemplate.findEmailByUsernames(usernames)
+            } else {
+                emptyMap()
+            }
 
-            val casesWithContactSuspended = coms.map { it.person.id }
-                .takeIf { it.isNotEmpty() }
-                ?.let {
-                    registrationRepository.findPersonIdsWithActiveType(it, RegisterType.CONTACT_SUSPENDED_TYPE_CODE)
-                }
-                ?: emptySet()
+            val personIds = coms.map { it.person.id }
+            val casesWithContactSuspended = if (personIds.isNotEmpty()) {
+                registrationRepository.findPersonIdsWithActiveType(personIds, RegisterType.CONTACT_SUSPENDED_TYPE_CODE)
+            } else {
+                emptySet()
+            }
 
             coms.map { com ->
                 ContactDetails(
