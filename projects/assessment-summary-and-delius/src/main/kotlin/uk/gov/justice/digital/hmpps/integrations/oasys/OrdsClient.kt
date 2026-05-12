@@ -64,14 +64,16 @@ data class AssessmentSummary(
 
     /*
         Order of Concerns has to match Delius read order:
-        Suicide, SelfHarm, Custody, Vulnerability, Abscond, Behave Trust
+        Suicide, Harm, Custody, Hostel, Vulnerability, Abscond, Disruptive Behaviour, Breach of Trust
     */
     val concernFlags: List<String> = listOf(
         concernsRiskOfSuicide,
         concernsRiskOfSelfHarm,
         concernsCopingInCustody,
+        concernsCopingInCustody,
         concernsVulnerability,
         concernsEscapeAbscond,
+        currentControlBehaveTrust,
         currentControlBehaveTrust,
     ).map {
         when (it?.first()?.uppercase()) {
