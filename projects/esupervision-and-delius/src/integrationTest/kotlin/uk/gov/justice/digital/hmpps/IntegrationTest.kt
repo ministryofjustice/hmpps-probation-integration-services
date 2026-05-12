@@ -21,7 +21,6 @@ import uk.gov.justice.digital.hmpps.data.generator.EventGenerator
 import uk.gov.justice.digital.hmpps.data.generator.MessageGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ProviderGenerator
-import uk.gov.justice.digital.hmpps.data.generator.RegistrationGenerator
 import uk.gov.justice.digital.hmpps.entity.ContactOutcome
 import uk.gov.justice.digital.hmpps.entity.ContactRepository
 import uk.gov.justice.digital.hmpps.entity.ContactType
@@ -518,6 +517,17 @@ internal class IntegrationTest @Autowired constructor(
         }.andExpect {
             status { isOk() }
             jsonPath("$[0].contactSuspended") { value(true) }
+        }
+    }
+
+    @Test
+    fun `get cases with invalid crn returns valid but empty response`() {
+        mockMvc.post("/cases") {
+            json = listOf("Z999999")
+            withToken()
+        }.andExpect {
+            status { isOk() }
+            content { json("[]") }
         }
     }
 
