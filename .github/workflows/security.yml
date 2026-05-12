@@ -13,7 +13,7 @@ jobs:
     with:
       projects: All
 
-  veracode-scan:
+  snyk-scan:
     permissions:
       contents: read
       checks: write
@@ -23,48 +23,87 @@ jobs:
     runs-on: ubuntu-latest
     needs:
       - get-projects
+    strategy:
+      fail-fast: false
+      matrix:
+        project: ${{ fromJSON(needs.get-projects.outputs.projects) }}
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       - uses: ./.github/actions/setup-gradle
         with:
           cache-role: ${{ secrets.GRADLE_CACHE_S3_ROLE_TO_ASSUME }}
           cache-encryption-key: ${{ secrets.GRADLE_ENCRYPTION_KEY }}
-
-      - name: Build jars
-        run: ./gradlew jar
-
-      - name: Package jars
-        run: find . -name '*.jar' | zip -r package.zip -@
-
-      - name: Select an API key
+      - uses: snyk/actions/setup@9adf32b1121593767fc3c057af55b55db032dc04 # v1.0.0
+      - name: Snyk scan
+        continue-on-error: true
+        # language=bash
         run: |
-          echo "Randomly picking 1 of 5 api keys, to help avoid veracode API rate limits."
-          X=$(( RANDOM % 5 ))
-          VERACODE_API_ID_X="VERACODE_API_ID_${X}"
-          VERACODE_API_KEY_X="VERACODE_API_KEY_${X}"
-          echo VERACODE_API_ID="${!VERACODE_API_ID_X}" >> $GITHUB_ENV
-          echo VERACODE_API_KEY="${!VERACODE_API_KEY_X}" >> $GITHUB_ENV
-          echo "Using VERACODE_API_ID_${X} from pool (${VERACODE_API_ID:0:5}...)"
+          snyk auth --client-id "$CLIENT_ID" --client-secret "$CLIENT_SECRET"
+          snyk container test \
+            --severity-threshold=high \
+            --json-file-output=snyk-results.json \
+            --sarif-file-output=snyk-results.sarif \
+            "ghcr.io/ministryofjustice/hmpps-probation-integration-services/${{ matrix.project }}:latest"
         env:
-          VERACODE_API_ID_0: ${{ secrets.HMPPS_VERACODE_API_ID_0 }}
-          VERACODE_API_ID_1: ${{ secrets.HMPPS_VERACODE_API_ID_1 }}
-          VERACODE_API_ID_2: ${{ secrets.HMPPS_VERACODE_API_ID_2 }}
-          VERACODE_API_ID_3: ${{ secrets.HMPPS_VERACODE_API_ID_3 }}
-          VERACODE_API_ID_4: ${{ secrets.HMPPS_VERACODE_API_ID_4 }}
-          VERACODE_API_KEY_0: ${{ secrets.HMPPS_VERACODE_API_KEY_0 }}
-          VERACODE_API_KEY_1: ${{ secrets.HMPPS_VERACODE_API_KEY_1 }}
-          VERACODE_API_KEY_2: ${{ secrets.HMPPS_VERACODE_API_KEY_2 }}
-          VERACODE_API_KEY_3: ${{ secrets.HMPPS_VERACODE_API_KEY_3 }}
-          VERACODE_API_KEY_4: ${{ secrets.HMPPS_VERACODE_API_KEY_4 }}
+          PROJECT: ${{ matrix.project }}
+          CLIENT_ID: ${{ secrets.SNYK_CLIENT_ID }}
+          CLIENT_SECRET: ${{ secrets.SNYK_CLIENT_SECRET }}
 
-      - name: Upload to Veracode
-        uses: veracode/veracode-uploadandscan-action@ddca86b1d1d45639d1c414003f3495f71851cfe2 # 0.2.11
+      - name: Upload scan results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@7434149006143a4d75b82a2f411ef15b03ccc2d7 # v4.35.4
         with:
-          appname: hmpps-probation-integration-services
-          createprofile: false
-          deleteincompletescan: 2 # force delete any incomplete scans
-          filepath: package.zip
-          vid: ${{ env.VERACODE_API_ID }}
-          vkey: ${{ env.VERACODE_API_KEY }}
+          sarif_file: snyk-results.sarif
 
-
+#  veracode-scan:
+#    permissions:
+#      contents: read
+#      checks: write
+#      id-token: write
+#      issues: write
+#      security-events: write
+#    runs-on: ubuntu-latest
+#    needs:
+#      - get-projects
+#    steps:
+#      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+#      - uses: ./.github/actions/setup-gradle
+#        with:
+#          cache-role: ${{ secrets.GRADLE_CACHE_S3_ROLE_TO_ASSUME }}
+#          cache-encryption-key: ${{ secrets.GRADLE_ENCRYPTION_KEY }}
+#
+#      - name: Build jars
+#        run: ./gradlew jar
+#
+#      - name: Package jars
+#        run: find . -name '*.jar' | zip -r package.zip -@
+#
+#      - name: Select an API key
+#        run: |
+#          echo "Randomly picking 1 of 5 api keys, to help avoid veracode API rate limits."
+#          X=$(( RANDOM % 5 ))
+#          VERACODE_API_ID_X="VERACODE_API_ID_${X}"
+#          VERACODE_API_KEY_X="VERACODE_API_KEY_${X}"
+#          echo VERACODE_API_ID="${!VERACODE_API_ID_X}" >> $GITHUB_ENV
+#          echo VERACODE_API_KEY="${!VERACODE_API_KEY_X}" >> $GITHUB_ENV
+#          echo "Using VERACODE_API_ID_${X} from pool (${VERACODE_API_ID:0:5}...)"
+#        env:
+#          VERACODE_API_ID_0: ${{ secrets.HMPPS_VERACODE_API_ID_0 }}
+#          VERACODE_API_ID_1: ${{ secrets.HMPPS_VERACODE_API_ID_1 }}
+#          VERACODE_API_ID_2: ${{ secrets.HMPPS_VERACODE_API_ID_2 }}
+#          VERACODE_API_ID_3: ${{ secrets.HMPPS_VERACODE_API_ID_3 }}
+#          VERACODE_API_ID_4: ${{ secrets.HMPPS_VERACODE_API_ID_4 }}
+#          VERACODE_API_KEY_0: ${{ secrets.HMPPS_VERACODE_API_KEY_0 }}
+#          VERACODE_API_KEY_1: ${{ secrets.HMPPS_VERACODE_API_KEY_1 }}
+#          VERACODE_API_KEY_2: ${{ secrets.HMPPS_VERACODE_API_KEY_2 }}
+#          VERACODE_API_KEY_3: ${{ secrets.HMPPS_VERACODE_API_KEY_3 }}
+#          VERACODE_API_KEY_4: ${{ secrets.HMPPS_VERACODE_API_KEY_4 }}
+#
+#      - name: Upload to Veracode
+#        uses: veracode/veracode-uploadandscan-action@ddca86b1d1d45639d1c414003f3495f71851cfe2 # 0.2.11
+#        with:
+#          appname: hmpps-probation-integration-services
+#          createprofile: false
+#          deleteincompletescan: 2 # force delete any incomplete scans
+#          filepath: package.zip
+#          vid: ${{ env.VERACODE_API_ID }}
+#          vkey: ${{ env.VERACODE_API_KEY }}
