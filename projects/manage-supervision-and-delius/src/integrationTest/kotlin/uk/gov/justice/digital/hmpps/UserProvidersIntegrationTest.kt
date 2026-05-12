@@ -8,6 +8,7 @@ import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
 import org.springframework.test.web.servlet.get
+import uk.gov.justice.digital.hmpps.api.model.sentence.Name
 import uk.gov.justice.digital.hmpps.api.model.sentence.User
 import uk.gov.justice.digital.hmpps.api.model.user.DefaultUserDetails
 import uk.gov.justice.digital.hmpps.api.model.user.Provider
@@ -88,13 +89,25 @@ class UserProvidersIntegrationTest : IntegrationTestBase() {
             User(
                 STAFF_USER_1.staff!!.code,
                 STAFF_USER_1.username,
-                "${STAFF_USER_1.forename} ${STAFF_USER_1.surname} (${STAFF_USER_1.staff!!.role!!.description})"
+                "${STAFF_USER_1.forename} ${STAFF_USER_1.surname} (${STAFF_USER_1.staff!!.role!!.description})",
+                Name(
+                    STAFF_USER_1.forename,
+                    STAFF_USER_1.forename2,
+                    STAFF_USER_1.surname
+                ),
+                "peter.parker@moj.gov.uk",
             ),
             unallocatedUser,
             User(
                 STAFF_USER_2.staff!!.code,
                 STAFF_USER_2.username,
-                "${STAFF_USER_2.forename} ${STAFF_USER_2.surname} (${STAFF_USER_2.staff!!.role!!.description})"
+                "${STAFF_USER_2.forename} ${STAFF_USER_2.surname} (${STAFF_USER_2.staff!!.role!!.description})",
+                Name(
+                    STAFF_USER_2.forename,
+                    STAFF_USER_2.forename2,
+                    STAFF_USER_2.surname
+                ),
+                "bruce.wayne@moj.gov.uk",
             ),
         )
 
@@ -148,4 +161,4 @@ class UserProvidersIntegrationTest : IntegrationTestBase() {
     }
 }
 
-val unallocatedUser = User("Unallocated", "Unallocated", "Unallocated")
+val unallocatedUser = User("Unallocated", "Unallocated", "Unallocated", Name("Unallocated", null, "Unallocated"), null)

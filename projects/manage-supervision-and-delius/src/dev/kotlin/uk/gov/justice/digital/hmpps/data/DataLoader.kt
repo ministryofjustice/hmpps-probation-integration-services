@@ -60,6 +60,7 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
             save(it.type)
             save(it.subType)
         }
+        save(PersonGenerator.RECREATE_PPCRN_PERSON_3)
 
         saveAll(PersonGenerator.DISABILITIES)
         saveAll(PersonGenerator.PROVISIONS)
@@ -116,6 +117,7 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
             OffenderManagerGenerator.STAFF_2,
             OffenderManagerGenerator.STAFF_3,
             OffenderManagerGenerator.STAFF_4,
+            OffenderManagerGenerator.STAFF_5,
             OffenderManagerGenerator.STAFF_USER_1,
             OffenderManagerGenerator.STAFF_USER_2,
             OffenderManagerGenerator.STAFF_USER_3,

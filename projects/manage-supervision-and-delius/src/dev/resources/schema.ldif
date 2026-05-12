@@ -23,6 +23,15 @@ mail: bruce.wayne@moj.gov.uk
 telephoneNumber: 07321165777
 userHomeArea: N01
 
+dn: cn=jdyer,ou=Users,dc=moj,dc=com
+objectclass: top
+objectclass: inetOrgPerson
+cn: jdyer
+sn: dyer
+givenname: john
+telephoneNumber: 07321165778
+userHomeArea: N01
+
 dn: cn=no-home-match,ou=Users,dc=moj,dc=com
 objectclass: top
 objectclass: inetOrgPerson

@@ -77,9 +77,22 @@ object OffenderManagerGenerator {
         DEFAULT_PROVIDER,
         startDate = LocalDate.now().minusDays(2)
     )
+    val STAFF_5 = Staff(
+        IdGenerator.getAndIncrement(),
+        "jdyer",
+        "john",
+        "dyer",
+        DEFAULT_PROVIDER,
+        startDate = LocalDate.now().minusDays(2)
+    )
 
-    val STAFF_USER_1 = StaffUser(IdGenerator.getAndIncrement(), STAFF_1, "peter-parker", "peter", surname = "parker")
+    val STAFF_USER_1 =
+        StaffUser(IdGenerator.getAndIncrement(), STAFF_1, "peter-parker", "peter", surname = "parker")
+            //expected from LDAP
+            .apply { email = "peter.parker@moj.gov.uk" }
     val STAFF_USER_2 = StaffUser(IdGenerator.getAndIncrement(), STAFF_2, "bwayne", "bruce", surname = "wayne")
+            //expected from LDAP
+            .apply { email = "bruce.wayne@moj.gov.uk" }
     val STAFF_USER_3 = StaffUser(IdGenerator.getAndIncrement(), STAFF_3, "ckent", "clark", surname = "kent")
     val PI_USER = StaffUser(
         IdGenerator.getAndIncrement(),
@@ -132,6 +145,17 @@ object OffenderManagerGenerator {
             DEFAULT_PROVIDER,
             TEAM,
             STAFF_1,
+            LocalDate.of(2025, 2, 10),
+            lastUpdated = ZonedDateTime.of(LocalDate.of(2025, 2, 10), LocalTime.NOON, EuropeLondon)
+        )
+
+    val OFFENDER_MANAGER_MISSING_EMAIL =
+        OffenderManager(
+            IdGenerator.getAndIncrement(),
+            PersonGenerator.RECREATE_PPCRN_PERSON_3,
+            DEFAULT_PROVIDER,
+            TEAM,
+            STAFF_5,
             LocalDate.of(2025, 2, 10),
             lastUpdated = ZonedDateTime.of(LocalDate.of(2025, 2, 10), LocalTime.NOON, EuropeLondon)
         )

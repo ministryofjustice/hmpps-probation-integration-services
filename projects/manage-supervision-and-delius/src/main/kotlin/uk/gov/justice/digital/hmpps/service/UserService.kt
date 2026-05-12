@@ -39,6 +39,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.user.staff.StaffReposito
 import uk.gov.justice.digital.hmpps.integrations.delius.user.team.*
 import uk.gov.justice.digital.hmpps.ldap.findAttributeByUsername
 import uk.gov.justice.digital.hmpps.ldap.findByUsername
+import uk.gov.justice.digital.hmpps.ldap.findEmailByUsernames
 import uk.gov.justice.digital.hmpps.ldap.findPreferenceByUsername
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -46,6 +47,7 @@ import java.time.LocalTime
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.Appointment as AppointmentEntity
+import uk.gov.justice.digital.hmpps.logging.Logger.logger
 
 @Service
 class UserService(
@@ -60,8 +62,13 @@ class UserService(
     private val boroughRepository: BoroughRepository,
     private val ldapTemplate: LdapTemplate,
     private val deliusUserAspect: DeliusUserAspect,
-    private val providerRepository: ProviderRepository
+    private val providerRepository: ProviderRepository,
+    private val userLocationService: UserLocationService
 ) {
+    companion object {
+        private val log = logger()
+    }
+
     fun getUserDetails(username: String): UserDetails {
         val ldapUser = ldapTemplate.findByUsername<LdapUser>(username)
             ?: throw NotFoundException("User", "username", username)
@@ -252,7 +259,17 @@ class UserService(
         val teams = teamRepository.findByProviderCode(regionSearch).map { it.toTeam() }
 
         val teamSearch = team ?: defaultTeam?.code ?: teams.first().code
-        val users = staffUserRepository.findStaffByTeam(teamSearch).map { it.toUser() }
+        val staffInTeam = staffUserRepository.findStaffByTeam(teamSearch)
+        val usernames = staffInTeam.map { it.username }.filter { it != "Unallocated" }
+        val emailsByUsername =
+            if (usernames.isEmpty()) {
+                emptyMap()
+            } else {
+                ldapTemplate.findEmailByUsernames(usernames)
+            }
+        val users = staffInTeam.map { staff ->
+            staff.toUser(email = emailsByUsername[staff.username])
+        }
         val defaultUser = staffUserRepository.getUser(username)
 
         return UserProviderResponse(

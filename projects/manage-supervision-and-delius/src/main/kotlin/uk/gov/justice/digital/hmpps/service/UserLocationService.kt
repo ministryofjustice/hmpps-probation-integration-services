@@ -1,11 +1,20 @@
 package uk.gov.justice.digital.hmpps.service
 
+import org.springframework.ldap.core.LdapTemplate
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.api.model.sentence.*
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.*
+import uk.gov.justice.digital.hmpps.ldap.findEmailByUsernames
+import uk.gov.justice.digital.hmpps.logging.Logger.logger
 
 @Service
-class UserLocationService(private val staffUserRepository: StaffUserRepository) {
+class UserLocationService(
+    private val staffUserRepository: StaffUserRepository,
+    private val ldapTemplate: LdapTemplate
+) {
+    companion object {
+        private val log = logger()
+    }
 
     fun getUserOfficeLocations(username: String): UserOfficeLocation {
         val user = staffUserRepository.getUser(username)
@@ -18,14 +27,34 @@ class UserLocationService(private val staffUserRepository: StaffUserRepository) 
         )
     }
 
-    fun getStaffByTeam(code: String): StaffTeam =
-        StaffTeam(staffUserRepository.findStaffByTeam(code).map { it.toUser() })
+    fun getStaffByTeam(code: String): StaffTeam {
+        val staffInTeam = staffUserRepository.findStaffByTeam(code)
+        val usernames = staffInTeam.map { it.username }.filter { it != "Unallocated" }
+        val emailsByUsername = if (usernames.isEmpty()) {
+            emptyMap()
+        } else {
+            ldapTemplate.findEmailByUsernames(usernames)
+        }
+
+        return StaffTeam(
+            staffInTeam.map { staff ->
+                staff.toUser(email = emailsByUsername[staff.username])
+            }
+        )
+    }
 }
 
 fun Location.toLocationDetails(): LocationDetails =
     LocationDetails(id, code.trim(), description, Address(buildingNumber, streetName, townCity, county, postcode))
 
-fun StaffAndRole.toUser(): User =
-    User(code, username, if (username != "Unallocated") "$forename $surname (${role})" else username)
+fun StaffAndRole.toUser(email: String? = null): User =
+    User(
+        code, username, if (username != "Unallocated") "$forename $surname (${role})" else username,
+        email = email,
+        name = Name(forename, surname = surname)
+    )
 
-fun StaffUser.toUser(): User = User(staff!!.code, username, "$forename $surname (${staff.role!!.description})")
+fun StaffUser.toUser(): User = User(
+    staff!!.code, username, "$forename $surname (${staff.role!!.description})",
+    email = email, name = Name(forename, forename2, surname = surname)
+)
