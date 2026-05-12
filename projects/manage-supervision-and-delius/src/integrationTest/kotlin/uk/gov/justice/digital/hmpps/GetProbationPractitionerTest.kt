@@ -3,17 +3,11 @@ package uk.gov.justice.digital.hmpps
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.jupiter.api.Test
-import org.mockito.kotlin.whenever
-import org.springframework.ldap.NameNotFoundException
-import org.springframework.ldap.core.AttributesMapper
 import org.springframework.test.web.servlet.get
 import uk.gov.justice.digital.hmpps.api.model.personalDetails.ProbationPractitioner
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
-import org.springframework.ldap.core.LdapTemplate
-import org.springframework.test.context.bean.override.mockito.MockitoBean
-import org.mockito.kotlin.any
 
 class GetProbationPractitionerTest : IntegrationTestBase() {
 

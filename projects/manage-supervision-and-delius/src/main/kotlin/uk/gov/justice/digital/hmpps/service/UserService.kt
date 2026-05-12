@@ -62,13 +62,8 @@ class UserService(
     private val boroughRepository: BoroughRepository,
     private val ldapTemplate: LdapTemplate,
     private val deliusUserAspect: DeliusUserAspect,
-    private val providerRepository: ProviderRepository,
-    private val userLocationService: UserLocationService
+    private val providerRepository: ProviderRepository
 ) {
-    companion object {
-        private val log = logger()
-    }
-
     fun getUserDetails(username: String): UserDetails {
         val ldapUser = ldapTemplate.findByUsername<LdapUser>(username)
             ?: throw NotFoundException("User", "username", username)
