@@ -24,19 +24,10 @@ class UserLocationService(
 
     fun getStaffByTeam(code: String): StaffTeam {
         val staffInTeam = staffUserRepository.findStaffByTeam(code)
-        val usernames = staffInTeam.map { it.username }.filter { it != "Unallocated" }
-        val emailsByUsername = if (usernames.isEmpty()) {
-            emptyMap()
-        } else {
-            ldapTemplate.findEmailByUsernames(usernames)
-        }
-
-        return StaffTeam(
-            staffInTeam.map { staff ->
-                staff.toUser(email = emailsByUsername[staff.username])
-            }
-        )
+        val emailsByUsername = ldapTemplate.fetchEmailsByStaff(staffInTeam)
+        return StaffTeam(staffInTeam.map { it.toUser(email = emailsByUsername[it.username]) })
     }
+
 }
 
 fun Location.toLocationDetails(): LocationDetails =
@@ -53,3 +44,8 @@ fun StaffUser.toUser(): User = User(
     staff!!.code, username, "$forename $surname (${staff.role!!.description})",
     email = email, name = Name(forename, forename2, surname = surname)
 )
+
+fun LdapTemplate.fetchEmailsByStaff(staff: List<StaffAndRole>): Map<String, String?> {
+    val usernames = staff.map { it.username }.filter { it != "Unallocated" }
+    return if (usernames.isEmpty()) emptyMap() else findEmailByUsernames(usernames)
+}

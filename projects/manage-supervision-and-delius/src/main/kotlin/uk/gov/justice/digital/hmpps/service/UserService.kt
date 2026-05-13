@@ -46,6 +46,7 @@ import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
+import kotlin.text.get
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.Appointment as AppointmentEntity
 
 @Service
@@ -254,13 +255,7 @@ class UserService(
 
         val teamSearch = team ?: defaultTeam?.code ?: teams.first().code
         val staffInTeam = staffUserRepository.findStaffByTeam(teamSearch)
-        val usernames = staffInTeam.map { it.username }.filter { it != "Unallocated" }
-        val emailsByUsername =
-            if (usernames.isEmpty()) {
-                emptyMap()
-            } else {
-                ldapTemplate.findEmailByUsernames(usernames)
-            }
+        val emailsByUsername = ldapTemplate.fetchEmailsByStaff(staffInTeam)
         val users = staffInTeam.map { staff ->
             staff.toUser(email = emailsByUsername[staff.username])
         }
