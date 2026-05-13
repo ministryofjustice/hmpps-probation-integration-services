@@ -10,4 +10,9 @@ object UserGenerator {
         username = "officer",
         staff = StaffGenerator.DEFAULT,
     )
+    val OTHER = StaffUser(
+        id = IdGenerator.getAndIncrement(),
+        username = "bothteamsofficer",
+        staff = StaffGenerator.BOTH_TEAMS_STAFF,
+    )
 }

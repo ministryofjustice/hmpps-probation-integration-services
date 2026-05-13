@@ -28,6 +28,14 @@ object StaffGenerator {
         surname = "Officer",
         teams = listOf(TeamGenerator.OTHER_TEAM),
     )
+    val BOTH_TEAMS_STAFF = Staff(
+        id = IdGenerator.getAndIncrement(),
+        code = "N00A021",
+        forename = "Both",
+        middleName = "Team",
+        surname = "Staff",
+        teams = listOf(TeamGenerator.DEFAULT, TeamGenerator.OTHER_TEAM),
+    )
 }
 
 object TeamGenerator {

@@ -72,9 +72,33 @@ internal class SingleAccommodationIntegrationTest @Autowired constructor(
                 userExcluded = false,
                 userRestricted = false,
                 exclusionMessage = null,
-                restrictionMessage = null
+                restrictionMessage = null,
+                isLimitedAccess = false
             )
         )
+    }
+
+    @Test
+    fun `can retrieve case list for all of user's teams`() {
+        val user = UserGenerator.OTHER
+        val otherTeamExcludedPerson = PersonGenerator.EXCLUDED
+        val otherTeamRestrictedPerson = PersonGenerator.RESTRICTED
+
+        val response = mockMvc.get("/case-list/${user.username}") { withToken() }
+            .andExpect { status { is2xxSuccessful() } }
+            .andReturn().response.contentAsJson<CaseListResponse>()
+
+        assertThat(response.cases.size).isEqualTo(5)
+
+        val otherTeamExcludedCase = response.cases.single { it.crn == otherTeamExcludedPerson.crn }
+        assertThat(otherTeamExcludedCase.userExcluded).isFalse()
+        assertThat(otherTeamExcludedCase.userRestricted).isFalse()
+        assertThat(otherTeamExcludedCase.isLimitedAccess).isTrue()
+
+        val otherTeamRestrictedCase = response.cases.single { it.crn == otherTeamRestrictedPerson.crn }
+        assertThat(otherTeamRestrictedCase.userExcluded).isFalse()
+        assertThat(otherTeamRestrictedCase.userRestricted).isTrue()
+        assertThat(otherTeamRestrictedCase.isLimitedAccess).isTrue()
     }
 
     @Test
@@ -140,7 +164,8 @@ internal class SingleAccommodationIntegrationTest @Autowired constructor(
                 userExcluded = false,
                 userRestricted = false,
                 exclusionMessage = null,
-                restrictionMessage = null
+                restrictionMessage = null,
+                isLimitedAccess = false,
             )
         )
     }
@@ -159,6 +184,7 @@ internal class SingleAccommodationIntegrationTest @Autowired constructor(
         assertThat(response.userRestricted).isFalse()
         assertThat(response.exclusionMessage).isNotNull()
         assertThat(response.restrictionMessage).isNull()
+        assertThat(response.isLimitedAccess).isTrue()
     }
 
     @Test
@@ -174,6 +200,7 @@ internal class SingleAccommodationIntegrationTest @Autowired constructor(
         assertThat(response.userRestricted).isTrue()
         assertThat(response.exclusionMessage).isNull()
         assertThat(response.restrictionMessage).isNotNull()
+        assertThat(response.isLimitedAccess).isTrue()
     }
 
     @Test
@@ -232,7 +259,8 @@ internal class SingleAccommodationIntegrationTest @Autowired constructor(
                 userExcluded = true,
                 userRestricted = false,
                 exclusionMessage = LimitedAccessGenerator.EXCLUDED_CASE.exclusionMessage,
-                restrictionMessage = null
+                restrictionMessage = null,
+                isLimitedAccess = true,
             )
         )
     }
@@ -276,7 +304,8 @@ internal class SingleAccommodationIntegrationTest @Autowired constructor(
                 userExcluded = false,
                 userRestricted = true,
                 exclusionMessage = null,
-                restrictionMessage = LimitedAccessGenerator.RESTRICTED_CASE.restrictionMessage
+                restrictionMessage = LimitedAccessGenerator.RESTRICTED_CASE.restrictionMessage,
+                isLimitedAccess = true,
             )
         )
     }
