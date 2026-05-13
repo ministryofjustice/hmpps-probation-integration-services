@@ -291,6 +291,21 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
         )
         save(UpdateContactOutcomeGenerator.RESPONSIBLE_OFFICER)
         save(UpdateContactOutcomeGenerator.OFFENDER_MANAGER)
+
+        saveAll(
+            UnallocatedAlertGenerator.PROVIDER,
+            UnallocatedAlertGenerator.BOROUGH,
+            UnallocatedAlertGenerator.DISTRICT,
+            UnallocatedAlertGenerator.STAFF,
+            UnallocatedAlertGenerator.STAFF_USER,
+            UnallocatedAlertGenerator.TEAM,
+            UnallocatedAlertGenerator.PERSON,
+            UnallocatedAlertGenerator.EVENT,
+            UnallocatedAlertGenerator.RESPONSIBLE_OFFICER,
+            UnallocatedAlertGenerator.OFFENDER_MANAGER,
+            UnallocatedAlertGenerator.ALERT_CONTACT,
+            UnallocatedAlertGenerator.CONTACT_ALERT,
+        )
     }
 
     fun personalDetailsData() {

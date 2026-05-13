@@ -60,5 +60,5 @@ private fun Contact.toUserAlert(noteId: Int? = null): UserAlert = UserAlert(
     description,
     if (noteId == null) formatNote(notes, true) else listOf(),
     noteId?.let { formatNote(notes, false).takeIf { it.size > noteId }?.get(noteId) },
-    Staff(Name(staff!!.forename, surname = staff.surname), staff.code)
+    staff?.let { Staff(Name(it.forename, surname = it.surname), it.code) }
 )
