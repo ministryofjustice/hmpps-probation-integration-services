@@ -78,7 +78,8 @@ fun CaseSummary.withDetail(
         val relationshipTypeCategory = it.relationshipTypeCategory.orNotFoundBy("Category", it.relationshipType)
         PersonalContact(
             relationship = it.relationship,
-            relationshipType = RelationshipType(it.relationshipType.code, it.relationshipType.description,
+            relationshipType = RelationshipType(
+                it.relationshipType.code, it.relationshipType.description,
                 RelationshipTypeCategory(relationshipTypeCategory.code, relationshipTypeCategory.description)
             ),
             name = Name(it.forename, it.surname, listOfNotNull(it.middleName)),
