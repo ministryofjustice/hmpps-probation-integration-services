@@ -498,6 +498,16 @@ internal class AppointmentControllerIntegrationTest @Autowired constructor(
         assertThat(appointment.outcome?.code).isEqualTo("FTC")
         assertThat(appointment.event?.ftcCount).isEqualTo(2)
         assertThat(appointment.enforcement).isTrue
+        assertThat(appointment.notes).matches(
+            """
+            Some notes
+            
+            \d{2}/\d{2}/\d{4} \d{2}:\d{2}
+            Enforcement Action: Refer to manager
+
+            Some appended notes
+            """.trimIndent()
+        )
         val enforcementAction = enforcementActionRepository.findByIdOrNull(appointment.enforcementActionId!!)!!
         assertThat(enforcementAction.code).isEqualTo("ROM")
         val enforcement = enforcementRepository.findAll().single { it.contact.id == appointment.id }
@@ -506,14 +516,6 @@ internal class AppointmentControllerIntegrationTest @Autowired constructor(
         val enforcementContacts = contactRepository.findAll()
             .filter { it.person.crn == appointment.person.crn && it.type.code == enforcementAction.contactType.code }
         assertThat(enforcementContacts).hasSize(2)
-        assertThat(enforcementContacts[0].notes).matches(
-            """
-            Some notes
-            
-            \d{2}/\d{2}/\d{4} \d{2}:\d{2}
-            Enforcement Action: Refer to manager
-            """.trimIndent()
-        )
         val enforcementReviews =
             contactRepository.findAll().filter { it.person.crn == appointment.person.crn && it.type.code == "ARWS" }
         assertThat(enforcementReviews).hasSize(1)

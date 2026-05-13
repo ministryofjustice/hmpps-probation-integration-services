@@ -41,6 +41,13 @@ internal class EnforcementService(
                 )
             )
             createEnforcementActionContact(action)
+            notes = listOfNotNull(
+                notes,
+                """
+                ${DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm").format(LocalDateTime.now())}
+                Enforcement Action: ${action.description}
+                """.trimIndent()
+            ).joinToString("\n\n")
         }
     }
 
@@ -73,13 +80,6 @@ internal class EnforcementService(
                 team = team,
                 staff = staff,
                 officeLocation = officeLocation,
-                notes = listOfNotNull(
-                    notes,
-                    """
-                        ${DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm").format(LocalDateTime.now())}
-                        Enforcement Action: ${action.description}
-                    """.trimIndent()
-                ).joinToString("\n\n"),
             )
         )
     }
