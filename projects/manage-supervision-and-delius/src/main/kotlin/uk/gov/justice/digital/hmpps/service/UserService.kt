@@ -39,14 +39,12 @@ import uk.gov.justice.digital.hmpps.integrations.delius.user.staff.StaffReposito
 import uk.gov.justice.digital.hmpps.integrations.delius.user.team.*
 import uk.gov.justice.digital.hmpps.ldap.findAttributeByUsername
 import uk.gov.justice.digital.hmpps.ldap.findByUsername
-import uk.gov.justice.digital.hmpps.ldap.findEmailByUsernames
 import uk.gov.justice.digital.hmpps.ldap.findPreferenceByUsername
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
-import kotlin.text.get
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.Appointment as AppointmentEntity
 
 @Service

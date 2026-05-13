@@ -35,13 +35,13 @@ fun Location.toLocationDetails(): LocationDetails =
 
 fun StaffAndRole.toUser(email: String? = null): User =
     User(
-        code, username, if (username != "Unallocated") "$forename $surname (${role})" else username,
+        code.trimEnd(), username, if (username != "Unallocated") "$forename $surname (${role})" else username,
         email = email,
         name = Name(forename, surname = surname)
     )
 
 fun StaffUser.toUser(): User = User(
-    staff!!.code, username, "$forename $surname (${staff.role!!.description})",
+    staff!!.code.trimEnd(), username, "$forename $surname (${staff.role!!.description})",
     email = email, name = Name(forename, forename2, surname = surname)
 )
 

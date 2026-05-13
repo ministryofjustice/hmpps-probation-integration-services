@@ -53,7 +53,7 @@ class GetProbationPractitionerTest : IntegrationTestBase() {
                     ProbationPractitioner.Provider("N01", "Description of N01"),
                     ProbationPractitioner.Team("N07T02", "OMU B"),
                     false,
-                    null
+                    "jdyer"
                 )
             )
         )

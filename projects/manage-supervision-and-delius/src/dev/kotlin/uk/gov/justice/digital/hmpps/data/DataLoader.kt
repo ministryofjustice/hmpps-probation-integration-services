@@ -121,6 +121,7 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
             OffenderManagerGenerator.STAFF_USER_1,
             OffenderManagerGenerator.STAFF_USER_2,
             OffenderManagerGenerator.STAFF_USER_3,
+            OffenderManagerGenerator.STAFF_USER_5,
             OffenderManagerGenerator.PI_USER,
             OffenderManagerGenerator.STAFF_TEAM,
             OffenderManagerGenerator.STAFF_TEAM_1,

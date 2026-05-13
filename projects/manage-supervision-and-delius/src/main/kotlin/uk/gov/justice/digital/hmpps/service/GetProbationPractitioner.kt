@@ -7,7 +7,6 @@ import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.Offender
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.OffenderManagerRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.getByCrn
 import uk.gov.justice.digital.hmpps.ldap.findEmailByUsername
-import uk.gov.justice.digital.hmpps.exception.NotFoundException.Companion.orNotFoundBy
 
 @Service
 class GetProbationPractitioner(
