@@ -47,7 +47,6 @@ import java.time.LocalTime
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.Appointment as AppointmentEntity
-import uk.gov.justice.digital.hmpps.logging.Logger.logger
 
 @Service
 class UserService(
