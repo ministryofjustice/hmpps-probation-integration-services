@@ -40,8 +40,11 @@ data class PersonalContact(
 
 data class RelationshipType(
     val code: String,
-    val description: String
+    val description: String,
+    val category: RelationshipTypeCategory
 )
+
+data class RelationshipTypeCategory(val code: String, val description: String)
 
 data class Address(
     val buildingName: String?,

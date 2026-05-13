@@ -24,7 +24,10 @@ class ReferenceData(
 
     @Convert(converter = YesNoConverter::class)
     val selectable: Boolean
-)
+) {
+    @OneToMany(mappedBy = "data1")
+    val linkedTypes: List<ReferenceDataLink> = emptyList()
+}
 
 @Immutable
 @Entity

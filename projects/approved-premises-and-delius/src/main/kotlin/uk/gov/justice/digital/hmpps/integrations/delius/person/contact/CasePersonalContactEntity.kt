@@ -59,4 +59,7 @@ class PersonalContactEntity(
     @Column(updatable = false, columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean = false
-)
+) {
+    val relationshipTypeCategory: ReferenceData?
+        get() = relationshipType.linkedTypes.firstOrNull()?.data2
+}

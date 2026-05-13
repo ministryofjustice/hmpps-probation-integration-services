@@ -29,6 +29,8 @@ class DataLoader(
         save(ReferenceDataGenerator.NSI_INITIAL_ALLOCATION)
         save(AddressGenerator.DEFAULT_ADDRESS_ENTITY)
         save(ReferenceDataGenerator.DOCTOR_RELATIONSHIP)
+        save(ReferenceDataGenerator.DOCTOR_RELATIONSHIP_LINKED_TYPE)
+        save(ReferenceDataGenerator.DOCTOR_RELATIONSHIP_LINK)
         save(PersonalContactGenerator.CASE_COMPLEX_DOCTOR)
 
         saveAll(AddressGenerator.ALL_ADDRESSES)

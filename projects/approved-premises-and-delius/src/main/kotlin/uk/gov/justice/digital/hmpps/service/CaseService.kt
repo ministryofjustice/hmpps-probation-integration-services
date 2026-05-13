@@ -76,7 +76,9 @@ fun CaseSummary.withDetail(
     val personalContacts = contacts.map {
         PersonalContact(
             relationship = it.relationship,
-            relationshipType = RelationshipType(it.relationshipType.code, it.relationshipType.description),
+            relationshipType = RelationshipType(it.relationshipType.code, it.relationshipType.description,
+                RelationshipTypeCategory(it.relationshipTypeCategory!!.code, it.relationshipTypeCategory!!.description)
+            ),
             name = Name(it.forename, it.surname, listOfNotNull(it.middleName)),
             mobileNumber = it.mobileNumber,
             telephoneNumber = it.address?.telephoneNumber,
