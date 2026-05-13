@@ -15,7 +15,7 @@ data class UserAlert(
     val description: String?,
     val alertNotes: List<NoteDetail>,
     val alertNote: NoteDetail?,
-    val officer: Staff
+    val officer: Staff?
 )
 
 data class UserAlertType(val description: String, val editable: Boolean)
