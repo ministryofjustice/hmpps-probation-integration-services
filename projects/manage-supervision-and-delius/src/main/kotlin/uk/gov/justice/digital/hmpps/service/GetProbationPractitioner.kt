@@ -18,7 +18,7 @@ class GetProbationPractitioner(
         val offenderManager = ppRepository.getByCrn(crn)
         val username = offenderManager.staff.user?.username
         val email = username?.let {
-            ldapTemplate.findEmailByUsername(it).orNotFoundBy("username", it)
+            ldapTemplate.findEmailByUsername(it)
         }
         return offenderManager.asProbationPractitioner(email)
     }

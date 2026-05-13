@@ -62,8 +62,8 @@ class GetProbationPractitionerTest : IntegrationTestBase() {
     @Test
     fun `returns 404 when PP not found for the corresponding CRN`() {
 
-        val person = PersonGenerator.RECREATE_PPCRN_PERSON_3
-        mockMvc.get("/case/12345/probation-practitioner") { withToken() }
+        val unknownCrn = "12345"
+        mockMvc.get("/case/${unknownCrn}/probation-practitioner") { withToken() }
             .andExpect { status { isNotFound() } }
     }
 }
