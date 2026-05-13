@@ -40,17 +40,18 @@ class EnforcementServiceTest() {
         verify(appointmentRepository).save(check<AppointmentContact> {
             assertThat(it.type).isEqualTo(TestData.ACTION.type)
             assertThat(it.linkedContact).isEqualTo(appointment)
-            assertThat(it.notes).matches(
-                """
-                Some notes
-                
-                \d{2}/\d{2}/\d{4} \d{2}:\d{2}
-                Enforcement Action: Action 1
-                """.trimIndent()
-            )
+            assertThat(it.notes).isNull()
         })
         assertThat(appointment.enforcement).isEqualTo(true)
         assertThat(appointment.enforcementActionId).isEqualTo(TestData.ACTION.id)
+        assertThat(appointment.notes).matches(
+            """
+            Some notes
+            
+            \d{2}/\d{2}/\d{4} \d{2}:\d{2}
+            Enforcement Action: Action 1
+            """.trimIndent()
+        )
     }
 
     @Test
