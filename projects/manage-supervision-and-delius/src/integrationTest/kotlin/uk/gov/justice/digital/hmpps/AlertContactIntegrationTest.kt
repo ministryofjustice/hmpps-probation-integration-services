@@ -20,6 +20,7 @@ import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 import java.time.LocalDate
 import java.time.ZonedDateTime
 import java.time.temporal.ChronoUnit.SECONDS
+import uk.gov.justice.digital.hmpps.data.generator.UnallocatedAlertGenerator
 import uk.gov.justice.digital.hmpps.integrations.delius.user.staff.entity.Staff as StaffEntity
 
 class AlertContactIntegrationTest : IntegrationTestBase() {
@@ -116,6 +117,16 @@ class AlertContactIntegrationTest : IntegrationTestBase() {
             "Non attendance contact type",
             "Breach Contact Type"
         )
+    }
+
+    @Test
+    fun `returns unallocated officer when contact has no staff`() {
+        val response = mockMvc.get("/alerts") { withUserToken(UnallocatedAlertGenerator.STAFF_USER.username) }
+            .andExpect { status { isOk() } }
+            .andReturn().response.contentAsJson<UserAlerts>()
+
+        val alert = response.content.single { it.id == UnallocatedAlertGenerator.ALERT_CONTACT.id }
+        assertThat(alert.officer).isNull()
     }
 
     @Test
