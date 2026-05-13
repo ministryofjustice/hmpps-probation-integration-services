@@ -4,7 +4,6 @@ import org.springframework.ldap.core.LdapTemplate
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
-import uk.gov.justice.digital.hmpps.exception.NotFoundException.Companion.orNotFoundBy
 import uk.gov.justice.digital.hmpps.integrations.delius.*
 import uk.gov.justice.digital.hmpps.ldap.findByUsername
 import uk.gov.justice.digital.hmpps.ldap.findPreferenceByUsername
@@ -36,10 +35,14 @@ class DetailsService(
     }
 
     fun signAndSend(crn: String): SignAndSendResponse {
-        val responsibleOfficer = responsibleOfficerRepository.findByPerson_Crn(crn).orNotFoundBy("crn", crn)
+        personRepository.getByCrn(crn)
+
+        val responsibleOfficer = responsibleOfficerRepository.findByPerson_Crn(crn)
+            ?: throw NotFoundException("ResponsibleOfficer", "CRN", crn)
         val offenderManager = responsibleOfficer.offenderManager
         val prisonOffenderManager = responsibleOfficer.prisonOffenderManager
-        val staff = (offenderManager?.staff ?: prisonOffenderManager?.staff).orNotFoundBy("CRN", crn)
+        val staff = (offenderManager?.staff ?: prisonOffenderManager?.staff)
+            ?: throw NotFoundException("Person", "CRN", crn)
 
         val ldapUser = userRepository.findByStaffId(staff.id)?.let {
             ldapTemplate.findByUsername<LdapUser>(it.username)
