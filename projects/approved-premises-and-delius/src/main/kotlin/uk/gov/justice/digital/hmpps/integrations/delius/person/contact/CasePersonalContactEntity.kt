@@ -61,5 +61,5 @@ class PersonalContactEntity(
     val softDeleted: Boolean = false
 ) {
     val relationshipTypeCategory: ReferenceData?
-        get() = relationshipType.linkedTypes.firstOrNull()?.data2
+        get() = relationshipType.linkedTypes.singleOrNull()?.data2
 }
