@@ -162,4 +162,32 @@ class AppointmentIntegrationTest : IntegrationTestBase() {
         )
         assertEquals(expected, response)
     }
+
+    @Test
+    fun `get staff for unknown team code`() {
+        val response = mockMvc.get("/appointment/staff/team/12345") { withToken() }
+            .andExpect { status { isOk() } }
+            .andReturn().response.contentAsJson<StaffTeam>()
+
+        val expected = StaffTeam(
+            listOf(
+                unallocatedUser,
+            )
+        )
+        assertEquals(expected, response)
+    }
+
+    @Test
+    fun `get staff for team with no members`() {
+        val response = mockMvc.get("/appointment/staff/team/${OffenderManagerGenerator.TEAM_2.code}") { withToken() }
+            .andExpect { status { isOk() } }
+            .andReturn().response.contentAsJson<StaffTeam>()
+
+        val expected = StaffTeam(
+            listOf(
+                unallocatedUser,
+            )
+        )
+        assertEquals(expected, response)
+    }
 }

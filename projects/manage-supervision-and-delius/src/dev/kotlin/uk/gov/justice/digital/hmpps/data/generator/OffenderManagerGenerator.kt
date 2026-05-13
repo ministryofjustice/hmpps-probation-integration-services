@@ -94,6 +94,7 @@ object OffenderManagerGenerator {
         //expected from LDAP
         .apply { email = "bruce.wayne@moj.gov.uk" }
     val STAFF_USER_3 = StaffUser(IdGenerator.getAndIncrement(), STAFF_3, "ckent", "clark", surname = "kent")
+    val STAFF_USER_5 = StaffUser(IdGenerator.getAndIncrement(), STAFF_5, "jdyer", "john", surname = "dyer")
     val PI_USER = StaffUser(
         IdGenerator.getAndIncrement(),
         username = "probation-integration-dev",
@@ -239,5 +240,13 @@ object OffenderManagerGenerator {
         startDate = ZonedDateTime.now(),
         endDate = ZonedDateTime.now(),
         offenderManagerId = OFFENDER_MANAGER_UNALLOCATED.id
+    )
+
+    val RESPONSIBLE_OFFICER_OM_MISSING_EMAIL = ResponsibleOfficer(
+        IdGenerator.getAndIncrement(),
+        PersonGenerator.RECREATE_PPCRN_PERSON_3.id,
+        startDate = ZonedDateTime.now(),
+        endDate = ZonedDateTime.now(),
+        offenderManagerId = OFFENDER_MANAGER_MISSING_EMAIL.id
     )
 }

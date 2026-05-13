@@ -17,13 +17,15 @@ class GetProbationPractitioner(
     fun forCrn(crn: String): ProbationPractitioner {
         val offenderManager = ppRepository.getByCrn(crn)
         val username = offenderManager.staff.user?.username
-        val email = ldapTemplate.findEmailByUsername(username!!).orNotFoundBy("username", username)
+        val email = username?.let {
+            ldapTemplate.findEmailByUsername(it).orNotFoundBy("username", it)
+        }
         return offenderManager.asProbationPractitioner(email)
     }
 }
 
 private fun OffenderManager.asProbationPractitioner(email: String?): ProbationPractitioner = ProbationPractitioner(
-    staff.code,
+    staff.code.trimEnd(),
     ProbationPractitioner.Name(staff.forename, staff.surname),
     email,
     ProbationPractitioner.Provider(provider.code, provider.description),

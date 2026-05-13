@@ -74,6 +74,12 @@ objectclass: UserPreferences
 cn: UserPreferences
 defaultTeam:
 
+dn: cn=UserPreferences,cn=jdyer,ou=Users,dc=moj,dc=com
+objectclass: top
+objectclass: UserPreferences
+cn: UserPreferences
+defaultTeam:
+
 dn: cn=MAABT001,cn=peter-parker,ou=Users,dc=moj,dc=com
 objectclass: NDRoleAssociation
 objectclass: alias

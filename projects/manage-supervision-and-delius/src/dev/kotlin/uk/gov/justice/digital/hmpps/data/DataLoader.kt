@@ -130,6 +130,8 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
             OffenderManagerGenerator.RESPONSIBLE_OFFICER_OM_UNALLOCATED,
             OffenderManagerGenerator.OFFENDER_MANAGER_INACTIVE,
             OffenderManagerGenerator.OFFENDER_MANAGER_UNALLOCATED,
+            OffenderManagerGenerator.RESPONSIBLE_OFFICER_OM_MISSING_EMAIL,
+            OffenderManagerGenerator.OFFENDER_MANAGER_MISSING_EMAIL,
             OffenderManagerGenerator.PRISON_OFFENDER_MANAGER_ACTIVE,
             OffenderManagerGenerator.PRISON_OFFENDER_MANAGER_INACTIVE,
             OffenderManagerGenerator.RESPONSIBLE_OFFICER,
