@@ -89,7 +89,7 @@ class Contact(
     @JoinColumn(name = "latest_enforcement_action_id", referencedColumnName = "enforcement_action_id")
     val action: EnforcementAction? = null,
 
-    @OneToOne(mappedBy = "contact", fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "contact")
     val enforcement: Enforcement? = null,
 
     notes: String?,
@@ -470,6 +470,9 @@ interface ContactRepository : JpaRepository<Contact, Long> {
         left join fetch e.mainOffence mo
         left join fetch mo.offence moo
         left join fetch rqmnt.subCategory rsc
+        left join fetch c.enforcement enf
+        left join fetch enf.action ea
+        left join fetch ea.contactType
         where c.person.id = :personId
         order by c.date desc, c.startTime desc 
     """
