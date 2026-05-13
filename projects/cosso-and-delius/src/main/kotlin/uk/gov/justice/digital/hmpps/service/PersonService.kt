@@ -27,7 +27,7 @@ class PersonService(
         val addresses = personAddressRepository.findByPersonId(person.id).map {
             Address(
                 id = it.id,
-                status = it.status.code,
+                status = it.status.description,
                 buildingName = it.buildingName,
                 buildingNumber = it.addressNumber,
                 streetName = it.streetName,
