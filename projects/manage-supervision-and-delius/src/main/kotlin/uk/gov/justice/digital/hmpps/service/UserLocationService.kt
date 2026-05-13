@@ -27,7 +27,6 @@ class UserLocationService(
         val emailsByUsername = ldapTemplate.fetchEmailsByStaff(staffInTeam)
         return StaffTeam(staffInTeam.map { it.toUser(email = emailsByUsername[it.username]) })
     }
-
 }
 
 fun Location.toLocationDetails(): LocationDetails =
