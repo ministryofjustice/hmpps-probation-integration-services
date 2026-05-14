@@ -20,6 +20,8 @@ import uk.gov.justice.digital.hmpps.integrations.delius.person.registration.enti
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ApprovedPremisesCategoryCode
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.Dataset
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.DatasetCode
+import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceDataLink
+import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceDataLinkId
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceData
 
 object ReferenceDataGenerator {
@@ -102,6 +104,8 @@ object ReferenceDataGenerator {
 
     val NSI_INITIAL_ALLOCATION = generate("IN1", ALL_DATASETS[DatasetCode.NM_ALLOCATION_REASON]!!.id)
     val DOCTOR_RELATIONSHIP = generate("DOC", RELATIONSHIP.id, "Doctor")
+    val DOCTOR_RELATIONSHIP_LINKED_TYPE = generate("DOC_LINKED", RELATIONSHIP.id, "Doctor Linked Type")
+    val DOCTOR_RELATIONSHIP_LINK = generateLinkedList(DOCTOR_RELATIONSHIP, DOCTOR_RELATIONSHIP_LINKED_TYPE)
 
     fun generate(
         code: String,
@@ -159,6 +163,8 @@ object ReferenceDataGenerator {
 
     fun generateReferralSource(code: String, id: Long = IdGenerator.getAndIncrement()) = ReferralSource(id, code)
     fun generateMoveOnCategory(code: String, id: Long = IdGenerator.getAndIncrement()) = MoveOnCategory(id, code)
+    fun generateLinkedList(data1: ReferenceData, data2: ReferenceData) =
+        ReferenceDataLink(ReferenceDataLinkId(data1.id, data2.id), data1, data2)
 }
 
 object DatasetGenerator {

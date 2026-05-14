@@ -160,6 +160,8 @@ class ProbationCaseIntegrationTest(
             assertThat(contact.relationship, equalTo("Captains mate"))
             assertThat(contact.relationshipType.code, equalTo("DOC"))
             assertThat(contact.relationshipType.description, equalTo("Doctor"))
+            assertThat(contact.relationshipType.category.code, equalTo("DOC_LINKED"))
+            assertThat(contact.relationshipType.category.description, equalTo("Doctor Linked Type"))
         }
     }
 }
