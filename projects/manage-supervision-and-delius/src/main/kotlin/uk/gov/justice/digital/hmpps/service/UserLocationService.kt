@@ -36,7 +36,9 @@ private fun String.normalisedStaffCode(): String = trimEnd()
 
 fun StaffAndRole.toUser(email: String? = null): User =
     User(
-        code.normalisedStaffCode(), username, if (username != "Unallocated") "$forename $surname (${role})" else username,
+        code.normalisedStaffCode(),
+        username,
+        if (username != "Unallocated") "$forename $surname (${role})" else username,
         email = email,
         name = Name(forename, surname = surname)
     )
