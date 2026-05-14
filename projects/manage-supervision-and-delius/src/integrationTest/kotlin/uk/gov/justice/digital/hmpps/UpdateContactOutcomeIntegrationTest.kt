@@ -152,7 +152,7 @@ class UpdateContactOutcomeIntegrationTest : IntegrationTestBase() {
         val ftcBefore = transactionTemplate.execute {
             entityManager.clear()
             eventRepository.findById(UpdateContactOutcomeGenerator.EVENT.id).get().ftcCount ?: 0L
-        }!!
+        }
 
         mockMvc.put("/contact/${UpdateContactOutcomeGenerator.CONTACT_4.id}") {
             withToken()
@@ -170,7 +170,7 @@ class UpdateContactOutcomeIntegrationTest : IntegrationTestBase() {
         val ftcAfter = transactionTemplate.execute {
             entityManager.clear()
             eventRepository.findById(UpdateContactOutcomeGenerator.EVENT.id).get().ftcCount ?: 0L
-        }!!
+        }
         assertThat(ftcAfter, equalTo(ftcBefore + 1))
     }
 }
