@@ -13,6 +13,7 @@ class GetProbationPractitionerTest : IntegrationTestBase() {
 
     @Test
     fun `can retrieve PP details`() {
+
         val person = PersonGenerator.OVERVIEW
         val res = mockMvc.get("/case/${person.crn}/probation-practitioner") { withToken() }
             .andExpect { status { isOk() } }
@@ -24,6 +25,7 @@ class GetProbationPractitionerTest : IntegrationTestBase() {
                 ProbationPractitioner(
                     "N01PEPA",
                     ProbationPractitioner.Name("Peter", "Parker"),
+                    "peter.parker@moj.gov.uk",
                     ProbationPractitioner.Provider("N01", "Description of N01"),
                     ProbationPractitioner.Team("N07T02", "OMU B"),
                     false,
@@ -31,5 +33,37 @@ class GetProbationPractitionerTest : IntegrationTestBase() {
                 )
             )
         )
+    }
+
+    @Test
+    fun `can retrieve PP details without email address in ldap record`() {
+
+        val person = PersonGenerator.RECREATE_PPCRN_PERSON_3
+        val res = mockMvc.get("/case/${person.crn}/probation-practitioner") { withToken() }
+            .andExpect { status { isOk() } }
+            .andReturn().response.contentAsJson<ProbationPractitioner>()
+
+        assertThat(
+            res,
+            equalTo(
+                ProbationPractitioner(
+                    "jdyer",
+                    ProbationPractitioner.Name("john", "dyer"),
+                    null,
+                    ProbationPractitioner.Provider("N01", "Description of N01"),
+                    ProbationPractitioner.Team("N07T02", "OMU B"),
+                    false,
+                    "jdyer"
+                )
+            )
+        )
+    }
+
+    @Test
+    fun `returns 404 when PP not found in repository or in LDAP for the corresponding CRN`() {
+
+        val person = PersonGenerator.RECREATE_PPCRN_PERSON_4
+        mockMvc.get("/case/${person.crn}/probation-practitioner") { withToken() }
+            .andExpect { status { isNotFound() } }
     }
 }
