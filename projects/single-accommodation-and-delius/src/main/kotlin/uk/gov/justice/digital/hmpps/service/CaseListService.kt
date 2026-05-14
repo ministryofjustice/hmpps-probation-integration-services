@@ -74,7 +74,7 @@ class CaseListService(
     private fun Person.toCase(
         access: CaseAccess,
         expectedReleaseDate: LocalDate?,
-        isLimitedAccess: Boolean,
+        limitedAccess: Boolean,
     ) = Case(
         crn = crn,
         name = Name(
@@ -105,6 +105,6 @@ class CaseListService(
         userRestricted = access.userRestricted,
         exclusionMessage = access.exclusionMessage,
         restrictionMessage = access.restrictionMessage,
-        isLimitedAccess = isLimitedAccess,
+        limitedAccess = limitedAccess,
     )
 }
