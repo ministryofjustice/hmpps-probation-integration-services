@@ -10,11 +10,11 @@ import uk.gov.justice.digital.hmpps.ldap.findEmailByUsername
 
 @Service
 class GetProbationPractitioner(
-    private val omRepository: OffenderManagerRepository,
+    private val offenderManagerRepository: OffenderManagerRepository,
     private val ldapTemplate: LdapTemplate
 ) {
     fun forCrn(crn: String): ProbationPractitioner {
-        val offenderManager = omRepository.getByCrn(crn)
+        val offenderManager = offenderManagerRepository.getByCrn(crn)
         val username = offenderManager.staff.user?.username
         val email = username?.let {
             ldapTemplate.findEmailByUsername(it)

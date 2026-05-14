@@ -33,7 +33,6 @@ import uk.gov.justice.digital.hmpps.service.toSummary
 import uk.gov.justice.digital.hmpps.service.toUser
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
-import kotlin.collections.copy
 
 class AppointmentIntegrationTest : IntegrationTestBase() {
 
