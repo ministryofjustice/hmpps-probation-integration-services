@@ -73,7 +73,7 @@ internal class SingleAccommodationIntegrationTest @Autowired constructor(
                 userRestricted = false,
                 exclusionMessage = null,
                 restrictionMessage = null,
-                LimitedAccess = false
+                limitedAccess = false
             )
         )
     }
@@ -165,7 +165,7 @@ internal class SingleAccommodationIntegrationTest @Autowired constructor(
                 userRestricted = false,
                 exclusionMessage = null,
                 restrictionMessage = null,
-                isLimitedAccess = false,
+                limitedAccess = false,
             )
         )
     }
@@ -184,7 +184,7 @@ internal class SingleAccommodationIntegrationTest @Autowired constructor(
         assertThat(response.userRestricted).isFalse()
         assertThat(response.exclusionMessage).isNotNull()
         assertThat(response.restrictionMessage).isNull()
-        assertThat(response.isLimitedAccess).isTrue()
+        assertThat(response.limitedAccess).isTrue()
     }
 
     @Test
@@ -200,7 +200,7 @@ internal class SingleAccommodationIntegrationTest @Autowired constructor(
         assertThat(response.userRestricted).isTrue()
         assertThat(response.exclusionMessage).isNull()
         assertThat(response.restrictionMessage).isNotNull()
-        assertThat(response.isLimitedAccess).isTrue()
+        assertThat(response.limitedAccess).isTrue()
     }
 
     @Test
@@ -260,7 +260,7 @@ internal class SingleAccommodationIntegrationTest @Autowired constructor(
                 userRestricted = false,
                 exclusionMessage = LimitedAccessGenerator.EXCLUDED_CASE.exclusionMessage,
                 restrictionMessage = null,
-                isLimitedAccess = true,
+                limitedAccess = true,
             )
         )
     }
@@ -305,7 +305,7 @@ internal class SingleAccommodationIntegrationTest @Autowired constructor(
                 userRestricted = true,
                 exclusionMessage = null,
                 restrictionMessage = LimitedAccessGenerator.RESTRICTED_CASE.restrictionMessage,
-                isLimitedAccess = true,
+                limitedAccess = true,
             )
         )
     }
