@@ -12,7 +12,7 @@ import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 class GetProbationPractitionerTest : IntegrationTestBase() {
 
     @Test
-    fun `can retrieve PP details`() {
+    fun `can retrieve probation practitioner details`() {
         val person = PersonGenerator.OVERVIEW
         val res = mockMvc.get("/case/${person.crn}/probation-practitioner") { withToken() }
             .andExpect { status { isOk() } }
@@ -35,7 +35,7 @@ class GetProbationPractitionerTest : IntegrationTestBase() {
     }
 
     @Test
-    fun `can retrieve PP details without email address in ldap record`() {
+    fun `can retrieve probation practitioner details without email address in ldap record`() {
         val person = PersonGenerator.RECREATE_PPCRN_PERSON_3
         val res = mockMvc.get("/case/${person.crn}/probation-practitioner") { withToken() }
             .andExpect { status { isOk() } }
@@ -58,7 +58,7 @@ class GetProbationPractitionerTest : IntegrationTestBase() {
     }
 
     @Test
-    fun `returns 404 when PP not found for the corresponding CRN`() {
+    fun `returns 404 when probation practitioner not found for the corresponding CRN`() {
         val person = PersonGenerator.RECREATE_PPCRN_PERSON_4
         mockMvc.get("/case/${person.crn}/probation-practitioner") { withToken() }
             .andExpect { status { isNotFound() } }
