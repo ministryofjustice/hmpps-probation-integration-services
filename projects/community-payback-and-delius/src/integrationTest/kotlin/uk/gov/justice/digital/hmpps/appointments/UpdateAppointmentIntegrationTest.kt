@@ -6,17 +6,22 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.put
+import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.advice.ErrorResponse
 import uk.gov.justice.digital.hmpps.data.entity.ContactAlertRepository
 import uk.gov.justice.digital.hmpps.data.entity.EnforcementRepository
 import uk.gov.justice.digital.hmpps.data.generator.UPWGenerator
 import uk.gov.justice.digital.hmpps.data.generator.UPWGenerator.UPW_PROJECT_2
+import uk.gov.justice.digital.hmpps.entity.ReferenceDataRepository
 import uk.gov.justice.digital.hmpps.entity.contact.ContactRepository
 import uk.gov.justice.digital.hmpps.entity.contact.ContactType.Code.REVIEW_ENFORCEMENT_STATUS
+import uk.gov.justice.digital.hmpps.entity.getStatus
 import uk.gov.justice.digital.hmpps.entity.sentence.EventRepository
 import uk.gov.justice.digital.hmpps.entity.unpaidwork.UnpaidWorkAppointmentRepository
+import uk.gov.justice.digital.hmpps.entity.unpaidwork.UpwDetailsRepository
 import uk.gov.justice.digital.hmpps.entity.unpaidwork.getAppointment
 import uk.gov.justice.digital.hmpps.model.Code
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
@@ -37,6 +42,8 @@ class UpdateAppointmentIntegrationTest @Autowired constructor(
     private val enforcementRepository: EnforcementRepository,
     private val eventRepository: EventRepository,
     private val contactRepository: ContactRepository,
+    private val upwDetailsRepository: UpwDetailsRepository,
+    private val referenceDataRepository: ReferenceDataRepository,
 ) {
     companion object {
         val PROJECT = UPW_PROJECT_2.code
@@ -173,5 +180,21 @@ class UpdateAppointmentIntegrationTest @Autowired constructor(
 
         assertThat(alertCreated).isNotEmpty
         assertThat(alertDeleted).isEmpty()
+    }
+
+    @Test
+    @Transactional
+    fun `updating appointment with a status code of 'WK' and hours all worked changes to 'HC'`() {
+        val original = unpaidWorkAppointmentRepository.getAppointment(UPWGenerator.UPW_APPOINTMENT_TO_UPDATE[5].id)
+        upwDetailsRepository.save(original.details.apply { status = referenceDataRepository.getStatus("WK") })
+        assertThat(upwDetailsRepository.findByIdOrNull(original.details.id)?.status?.code).isEqualTo("WK")
+
+        mockMvc.put("/projects/$PROJECT/appointments/${original.id}") {
+            withToken()
+            json = TestData.updateAppointment(original.id)
+        }.andExpect { status { isOk() } }
+
+        val actualStatus = unpaidWorkAppointmentRepository.getAppointment(original.id).details.status?.code
+        assertThat(actualStatus).isEqualTo("HC")
     }
 }
