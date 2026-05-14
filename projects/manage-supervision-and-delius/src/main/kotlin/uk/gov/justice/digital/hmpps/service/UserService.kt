@@ -252,7 +252,11 @@ class UserService(
         val teams = teamRepository.findByProviderCode(regionSearch).map { it.toTeam() }
 
         val teamSearch = team ?: defaultTeam?.code ?: teams.first().code
-        val users = staffUserRepository.findStaffByTeam(teamSearch).map { it.toUser() }
+        val staffInTeam = staffUserRepository.findStaffByTeam(teamSearch)
+        val emailsByUsername = ldapTemplate.fetchEmailsByStaff(staffInTeam)
+        val users = staffInTeam.map { staff ->
+            staff.toUser(email = emailsByUsername[staff.username])
+        }
         val defaultUser = staffUserRepository.getUser(username)
 
         return UserProviderResponse(

@@ -60,6 +60,8 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
             save(it.type)
             save(it.subType)
         }
+        save(PersonGenerator.RECREATE_PPCRN_PERSON_3)
+        save(PersonGenerator.RECREATE_PPCRN_PERSON_4)
 
         saveAll(PersonGenerator.DISABILITIES)
         saveAll(PersonGenerator.PROVISIONS)
@@ -116,9 +118,11 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
             OffenderManagerGenerator.STAFF_2,
             OffenderManagerGenerator.STAFF_3,
             OffenderManagerGenerator.STAFF_4,
+            OffenderManagerGenerator.STAFF_5,
             OffenderManagerGenerator.STAFF_USER_1,
             OffenderManagerGenerator.STAFF_USER_2,
             OffenderManagerGenerator.STAFF_USER_3,
+            OffenderManagerGenerator.STAFF_USER_5,
             OffenderManagerGenerator.PI_USER,
             OffenderManagerGenerator.STAFF_TEAM,
             OffenderManagerGenerator.STAFF_TEAM_1,
@@ -128,6 +132,8 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
             OffenderManagerGenerator.RESPONSIBLE_OFFICER_OM_UNALLOCATED,
             OffenderManagerGenerator.OFFENDER_MANAGER_INACTIVE,
             OffenderManagerGenerator.OFFENDER_MANAGER_UNALLOCATED,
+            OffenderManagerGenerator.RESPONSIBLE_OFFICER_OM_MISSING_EMAIL,
+            OffenderManagerGenerator.OFFENDER_MANAGER_MISSING_EMAIL,
             OffenderManagerGenerator.PRISON_OFFENDER_MANAGER_ACTIVE,
             OffenderManagerGenerator.PRISON_OFFENDER_MANAGER_INACTIVE,
             OffenderManagerGenerator.RESPONSIBLE_OFFICER,

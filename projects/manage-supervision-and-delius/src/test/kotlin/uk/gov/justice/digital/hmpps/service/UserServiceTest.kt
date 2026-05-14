@@ -189,9 +189,10 @@ internal class UserServiceTest {
             ),
             DEFAULT_TEAM
         )
-        whenever(ldapTemplate.search(any(), any<AttributesMapper<String?>>()))
-            .thenReturn(listOf(OffenderManagerGenerator.PAU_USER_RECORD1.id.provider.code))
-            .thenReturn(listOf("7"))
+        whenever(ldapTemplate.search(any(), any<AttributesMapper<Any?>>()))
+            .thenReturn(listOf(OffenderManagerGenerator.PAU_USER_RECORD1.id.provider.code)) // homeArea
+            .thenReturn(listOf("7"))                                                         // defaultTeam
+            .thenReturn(listOf("username" to null))
 
         whenever(probationAreaUserRepository.findByUsername(STAFF_USER_1.username)).thenReturn(probationAreaUsers)
         whenever(teamRepository.findTeamById(7)).thenReturn(DEFAULT_TEAM)
@@ -250,8 +251,11 @@ internal class UserServiceTest {
             DEFAULT_TEAM
         )
 
-        whenever(ldapTemplate.search(any(), any<AttributesMapper<String?>>()))
-            .thenReturn(listOf(OffenderManagerGenerator.PAU_USER_RECORD1.id.provider.code))
+        whenever(ldapTemplate.search(any(), any<AttributesMapper<Any?>>()))
+            .thenReturn(listOf(OffenderManagerGenerator.PAU_USER_RECORD1.id.provider.code)) // homeArea
+            .thenReturn(emptyList())                                                         // no defaultTeam
+            .thenReturn(listOf("username" to null))                                          // email lookup
+
         whenever(probationAreaUserRepository.findByUsername(STAFF_USER_1.username)).thenReturn(probationAreaUsers)
         whenever(teamRepository.findByProviderCode(OffenderManagerGenerator.PAU_USER_RECORD1.id.provider.code)).thenReturn(
             teams
@@ -283,7 +287,6 @@ internal class UserServiceTest {
 
     @Test
     fun `get user providers with region and team query parameters`() {
-
         val probationAreaUsers = listOf(
             OffenderManagerGenerator.PAU_USER_RECORD1
         )
@@ -293,8 +296,10 @@ internal class UserServiceTest {
             Team(1, "t01", "team1", listOf(DEFAULT_STAFF, STAFF_1), DEFAULT_PROVIDER, DEFAULT_DISTRICT, LocalDate.now())
         )
 
-        whenever(ldapTemplate.search(any(), any<AttributesMapper<String?>>()))
-            .thenReturn(listOf(OffenderManagerGenerator.PAU_USER_RECORD1.id.provider.code))
+        // Mock for homeArea lookup (returns String)
+        whenever(ldapTemplate.search(any(), any<AttributesMapper<Any?>>()))
+            .thenReturn(listOf(OffenderManagerGenerator.PAU_USER_RECORD1.id.provider.code)) // homeArea (String)
+            .thenReturn(listOf("username" to null)) // email lookup (Pair)
             .thenReturn(listOf("7"))
 
         whenever(probationAreaUserRepository.findByUsername(STAFF_USER_1.username)).thenReturn(probationAreaUsers)
@@ -320,18 +325,17 @@ internal class UserServiceTest {
 
     @Test
     fun `get user providers with region query parameter`() {
-
-        val probationAreaUsers = listOf(
-            OffenderManagerGenerator.PAU_USER_RECORD1
-        )
-
+        val probationAreaUsers = listOf(OffenderManagerGenerator.PAU_USER_RECORD1)
         val staffRole = StaffRole("code", "username", "surname", "forename", "role")
         val teams = listOf(
             Team(1, "t01", "team1", listOf(DEFAULT_STAFF, STAFF_1), DEFAULT_PROVIDER, DEFAULT_DISTRICT, LocalDate.now())
         )
 
-        whenever(ldapTemplate.search(any(), any<AttributesMapper<String?>>()))
-            .thenReturn(listOf(OffenderManagerGenerator.PAU_USER_RECORD1.id.provider.code))
+        whenever(ldapTemplate.search(any(), any<AttributesMapper<Any?>>()))
+            .thenReturn(listOf(OffenderManagerGenerator.PAU_USER_RECORD1.id.provider.code)) // homeArea (String)
+            .thenReturn(listOf("username" to null))                                          // email lookup (Pair)
+            .thenReturn(emptyList())                                                         // defaultTeam preference (no value)
+
         whenever(probationAreaUserRepository.findByUsername(STAFF_USER_1.username)).thenReturn(probationAreaUsers)
         whenever(teamRepository.findByProviderCode(PROVIDER_3.code)).thenReturn(teams)
         whenever(staffUserRepository.findStaffByTeam("t01")).thenReturn(listOf(staffRole))

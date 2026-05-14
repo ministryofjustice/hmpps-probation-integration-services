@@ -12,7 +12,7 @@ import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 class GetProbationPractitionerTest : IntegrationTestBase() {
 
     @Test
-    fun `can retrieve PP details`() {
+    fun `can retrieve probation practitioner details`() {
         val person = PersonGenerator.OVERVIEW
         val res = mockMvc.get("/case/${person.crn}/probation-practitioner") { withToken() }
             .andExpect { status { isOk() } }
@@ -27,9 +27,40 @@ class GetProbationPractitionerTest : IntegrationTestBase() {
                     ProbationPractitioner.Provider("N01", "Description of N01"),
                     ProbationPractitioner.Team("N07T02", "OMU B"),
                     false,
-                    "peter-parker"
+                    "peter-parker",
+                    "peter.parker@moj.gov.uk",
                 )
             )
         )
+    }
+
+    @Test
+    fun `can retrieve probation practitioner details without email address in ldap record`() {
+        val person = PersonGenerator.RECREATE_PPCRN_PERSON_3
+        val res = mockMvc.get("/case/${person.crn}/probation-practitioner") { withToken() }
+            .andExpect { status { isOk() } }
+            .andReturn().response.contentAsJson<ProbationPractitioner>()
+
+        assertThat(
+            res,
+            equalTo(
+                ProbationPractitioner(
+                    "jdyer",
+                    ProbationPractitioner.Name("john", "dyer"),
+                    ProbationPractitioner.Provider("N01", "Description of N01"),
+                    ProbationPractitioner.Team("N07T02", "OMU B"),
+                    false,
+                    "jdyer",
+                    null,
+                )
+            )
+        )
+    }
+
+    @Test
+    fun `returns 404 when probation practitioner not found for the corresponding CRN`() {
+        val person = PersonGenerator.RECREATE_PPCRN_PERSON_4
+        mockMvc.get("/case/${person.crn}/probation-practitioner") { withToken() }
+            .andExpect { status { isNotFound() } }
     }
 }

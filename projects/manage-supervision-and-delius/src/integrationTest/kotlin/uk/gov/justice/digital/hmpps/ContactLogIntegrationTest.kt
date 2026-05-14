@@ -389,7 +389,7 @@ class ContactLogIntegrationTest : IntegrationTestBase() {
         val ftcBefore = transactionTemplate.execute {
             entityManager.clear()
             eventRepository.findById(UpdateContactOutcomeGenerator.EVENT.id).get().ftcCount ?: 0L
-        }!!
+        }
 
         val response = mockMvc.post("/contact/${UpdateContactOutcomeGenerator.PERSON.crn}") {
             withToken()
@@ -454,7 +454,7 @@ class ContactLogIntegrationTest : IntegrationTestBase() {
         assertThat(event.personReference.identifiers.first().value, equalTo(PersonGenerator.PERSON_1.crn))
         assertThat(event.additionalInformation["contactId"], equalTo(response.id))
 
-        val mapps = event.additionalInformation["mapps"] as Map<String, Any>
+        val mapps = event.additionalInformation["mapps"] as Map<*, *>
         assertThat(mapps["export"], equalTo(true))
         assertThat(mapps["category"], equalTo(0))
     }

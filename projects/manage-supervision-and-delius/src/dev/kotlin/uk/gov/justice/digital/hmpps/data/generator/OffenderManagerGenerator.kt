@@ -77,10 +77,20 @@ object OffenderManagerGenerator {
         DEFAULT_PROVIDER,
         startDate = LocalDate.now().minusDays(2)
     )
+    val STAFF_5 = Staff(
+        IdGenerator.getAndIncrement(),
+        "jdyer",
+        "john",
+        "dyer",
+        DEFAULT_PROVIDER,
+        startDate = LocalDate.now().minusDays(2)
+    )
 
-    val STAFF_USER_1 = StaffUser(IdGenerator.getAndIncrement(), STAFF_1, "peter-parker", "peter", surname = "parker")
+    val STAFF_USER_1 =
+        StaffUser(IdGenerator.getAndIncrement(), STAFF_1, "peter-parker", "peter", surname = "parker")
     val STAFF_USER_2 = StaffUser(IdGenerator.getAndIncrement(), STAFF_2, "bwayne", "bruce", surname = "wayne")
     val STAFF_USER_3 = StaffUser(IdGenerator.getAndIncrement(), STAFF_3, "ckent", "clark", surname = "kent")
+    val STAFF_USER_5 = StaffUser(IdGenerator.getAndIncrement(), STAFF_5, "jdyer", "john", surname = "dyer")
     val PI_USER = StaffUser(
         IdGenerator.getAndIncrement(),
         username = "probation-integration-dev",
@@ -132,6 +142,17 @@ object OffenderManagerGenerator {
             DEFAULT_PROVIDER,
             TEAM,
             STAFF_1,
+            LocalDate.of(2025, 2, 10),
+            lastUpdated = ZonedDateTime.of(LocalDate.of(2025, 2, 10), LocalTime.NOON, EuropeLondon)
+        )
+
+    val OFFENDER_MANAGER_MISSING_EMAIL =
+        OffenderManager(
+            IdGenerator.getAndIncrement(),
+            PersonGenerator.RECREATE_PPCRN_PERSON_3,
+            DEFAULT_PROVIDER,
+            TEAM,
+            STAFF_5,
             LocalDate.of(2025, 2, 10),
             lastUpdated = ZonedDateTime.of(LocalDate.of(2025, 2, 10), LocalTime.NOON, EuropeLondon)
         )
@@ -215,5 +236,13 @@ object OffenderManagerGenerator {
         startDate = ZonedDateTime.now(),
         endDate = ZonedDateTime.now(),
         offenderManagerId = OFFENDER_MANAGER_UNALLOCATED.id
+    )
+
+    val RESPONSIBLE_OFFICER_OM_MISSING_EMAIL = ResponsibleOfficer(
+        IdGenerator.getAndIncrement(),
+        PersonGenerator.RECREATE_PPCRN_PERSON_3.id,
+        startDate = ZonedDateTime.now(),
+        endDate = ZonedDateTime.now(),
+        offenderManagerId = OFFENDER_MANAGER_MISSING_EMAIL.id
     )
 }
