@@ -1,9 +1,9 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
-import uk.gov.justice.digital.hmpps.data.entity.TeamOfficeLocation
 import uk.gov.justice.digital.hmpps.entity.staff.Provider
 import uk.gov.justice.digital.hmpps.entity.staff.Staff
 import uk.gov.justice.digital.hmpps.entity.staff.Team
+import uk.gov.justice.digital.hmpps.entity.staff.TeamOfficeLocation
 import java.time.LocalDate
 
 object TeamGenerator {

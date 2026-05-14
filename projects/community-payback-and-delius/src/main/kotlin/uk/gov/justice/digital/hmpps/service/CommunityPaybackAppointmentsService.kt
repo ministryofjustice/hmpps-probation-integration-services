@@ -96,28 +96,26 @@ class CommunityPaybackAppointmentsService(
     fun getAppointments(
         username: String,
         crn: String?,
+        eventNumber: String?,
         fromDate: LocalDate?,
         toDate: LocalDate?,
         projectCodes: List<String>?,
         projectTypeCodes: List<String>?,
         outcomeCodes: List<String>?,
-        eventNumber: String?,
         appointmentIds: List<Long>?,
         references: List<String>?,
         pageable: Pageable
     ): PagedModel<AppointmentsResponse> {
-        val appointments = unpaidWorkAppointmentRepository.findAppointments(
-            crn,
-            fromDate,
-            toDate,
-            projectCodes,
-            projectTypeCodes,
-            outcomeCodes,
-            eventNumber,
-            appointmentIds,
-            references?.map { "$REFERENCE_PREFIX$it" },
-            pageable
-        )
+        val appointments =
+            if (appointmentIds != null &&
+                listOf(references, crn, eventNumber, fromDate, toDate, projectCodes, projectTypeCodes, outcomeCodes)
+                    .all { it == null }
+            ) {
+                unpaidWorkAppointmentRepository.findAllByIdIn(appointmentIds, pageable)
+            } else unpaidWorkAppointmentRepository.findAppointments(
+                crn, eventNumber, fromDate, toDate, projectCodes, projectTypeCodes, outcomeCodes,
+                appointmentIds, references?.map { "$REFERENCE_PREFIX$it" }, pageable
+            )
         val upwDetailsIds = appointments.map { it.details.id }.distinct()
         val crns = appointments.map { it.person.crn }.distinct()
         val minutes = unpaidWorkAppointmentRepository.getUpwRequiredAndCompletedMinutes(upwDetailsIds)

@@ -12,6 +12,7 @@ import org.springframework.data.annotation.LastModifiedDate
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
+import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import uk.gov.justice.digital.hmpps.entity.ReferenceData
@@ -35,6 +36,90 @@ import java.util.*
 @Table(name = "upw_appointment")
 @SQLRestriction("soft_deleted = 0")
 @EntityListeners(AuditingEntityListener::class)
+@NamedEntityGraph(
+    name = "UnpaidWorkAppointment.all",
+    includeAllAttributes = true,
+    attributeNodes = [
+        NamedAttributeNode(value = "project", subgraph = "project"),
+        NamedAttributeNode(value = "details", subgraph = "details"),
+        NamedAttributeNode(value = "allocation", subgraph = "allocation"),
+        NamedAttributeNode(value = "pickUpLocation"),
+        NamedAttributeNode(value = "contact", subgraph = "contact"),
+        NamedAttributeNode(value = "person"),
+        NamedAttributeNode(value = "staff", subgraph = "staff"),
+        NamedAttributeNode(value = "team", subgraph = "team"),
+        NamedAttributeNode(value = "workQuality"),
+        NamedAttributeNode(value = "behaviour"),
+    ],
+    subgraphs = [
+        NamedSubgraph(
+            name = "project",
+            attributeNodes = [
+                NamedAttributeNode(value = "team", subgraph = "team"),
+                NamedAttributeNode(value = "projectType"),
+                NamedAttributeNode(value = "placementAddress"),
+                NamedAttributeNode(value = "beneficiaryContactAddress"),
+            ]
+        ),
+        NamedSubgraph(
+            name = "details",
+            attributeNodes = [
+                NamedAttributeNode(value = "disposal", subgraph = "disposal"),
+                NamedAttributeNode(value = "status"),
+            ]
+        ),
+        NamedSubgraph(
+            name = "disposal",
+            attributeNodes = [
+                NamedAttributeNode(value = "event", subgraph = "event"),
+                NamedAttributeNode(value = "type"),
+            ]
+        ),
+        NamedSubgraph(
+            name = "event",
+            attributeNodes = [NamedAttributeNode(value = "court")]
+        ),
+        NamedSubgraph(
+            name = "allocation",
+            attributeNodes = [
+                NamedAttributeNode(value = "details", subgraph = "details"),
+                NamedAttributeNode(value = "project", subgraph = "project"),
+                NamedAttributeNode(value = "projectAvailability", subgraph = "projectAvailability"),
+                NamedAttributeNode(value = "allocationDay"),
+                NamedAttributeNode(value = "requestedFrequency"),
+                NamedAttributeNode(value = "pickUpLocation"),
+            ]
+        ),
+        NamedSubgraph(
+            name = "projectAvailability",
+            attributeNodes = [
+                NamedAttributeNode(value = "project"),
+                NamedAttributeNode(value = "dayOfWeek"),
+                NamedAttributeNode(value = "frequency"),
+            ]
+        ),
+        NamedSubgraph(
+            name = "contact",
+            attributeNodes = [
+                NamedAttributeNode(value = "contactType"),
+                NamedAttributeNode(value = "outcome"),
+                NamedAttributeNode(value = "latestEnforcementAction", subgraph = "enforcementAction"),
+            ]
+        ),
+        NamedSubgraph(
+            name = "enforcementAction",
+            attributeNodes = [NamedAttributeNode(value = "contactType")]
+        ),
+        NamedSubgraph(
+            name = "staff",
+            attributeNodes = [NamedAttributeNode(value = "grade")]
+        ),
+        NamedSubgraph(
+            name = "team",
+            attributeNodes = [NamedAttributeNode(value = "provider")]
+        ),
+    ]
+)
 class UnpaidWorkAppointment(
     @Id
     @Column(name = "upw_appointment_id")
@@ -255,8 +340,10 @@ interface UnpaidWorkAppointmentRepository : JpaRepository<UnpaidWorkAppointment,
         typeCodesCount: Int = typeCodes.count()
     ): Page<UnpaidWorkSessionDto>
 
+    @EntityGraph(value = "UnpaidWorkAppointment.all")
     fun getUpwAppointmentById(appointmentId: Long): UnpaidWorkAppointment?
 
+    @EntityGraph(value = "UnpaidWorkAppointment.all")
     fun findByDateAndProjectCodeAndDetailsSoftDeletedFalse(
         appointmentDate: LocalDate,
         projectCode: String
@@ -278,8 +365,8 @@ interface UnpaidWorkAppointmentRepository : JpaRepository<UnpaidWorkAppointment,
                     (select sum(appts.minutes_credited) from upw_appointment appts where appts.upw_details_id = upw_details.upw_details_id and appts.soft_deleted = 0),
                     0)
                 as "completedMinutes",
-                (select coalesce(sum(adjustment_amount), 0) from upw_adjustment where upw_adjustment.upw_details_id = upw_details.upw_details_id and adjustment_type = 'POSITIVE' and upw_adjustment.soft_deleted = 0) as positiveAdjustments,
-                (select coalesce(sum(adjustment_amount), 0) from upw_adjustment where upw_adjustment.upw_details_id = upw_details.upw_details_id and adjustment_type = 'NEGATIVE' and upw_adjustment.soft_deleted = 0) as negativeAdjustments
+                (select coalesce(sum(adjustment_amount), 0) from upw_adjustment where upw_adjustment.upw_details_id = upw_details.upw_details_id and adjustment_type = 'POSITIVE' and upw_adjustment.soft_deleted = 0) as positiveadjustments,
+                (select coalesce(sum(adjustment_amount), 0) from upw_adjustment where upw_adjustment.upw_details_id = upw_details.upw_details_id and adjustment_type = 'NEGATIVE' and upw_adjustment.soft_deleted = 0) as negativeadjustments
 
 
         from upw_details
@@ -302,8 +389,10 @@ interface UnpaidWorkAppointmentRepository : JpaRepository<UnpaidWorkAppointment,
         and a.details.disposal.softDeleted = false
     """
     )
+    @EntityGraph(value = "UnpaidWorkAppointment.all")
     fun findByEventId(eventId: Long): List<UnpaidWorkAppointment>
 
+    @EntityGraph(value = "UnpaidWorkAppointment.all")
     fun findByDetailsDisposalEventIdInAndProjectProjectTypeCodeIn(
         eventIds: Collection<Long>,
         projectTypeCodes: Collection<String>
@@ -346,33 +435,37 @@ interface UnpaidWorkAppointmentRepository : JpaRepository<UnpaidWorkAppointment,
     @Query(
         """
         select a from UnpaidWorkAppointment a
-        left join a.contact c
-        left join c.outcome o
+        join fetch a.contact c
+        left join fetch a.contact.outcome o
         where (:crn is null or a.person.crn = :crn)
+          and (:eventNumber is null or a.details.disposal.event.number = :eventNumber)
           and (:fromDate is null or a.date >= :fromDate)
           and (:toDate is null or a.date <= :toDate)
           and (:projectCodes is null or a.project.code in :projectCodes)
           and (:projectTypeCodes is null or a.project.projectType.code in :projectTypeCodes)
-          and (:eventNumber is null or a.details.disposal.event.number = :eventNumber)
           and (:appointmentIds is null or a.id in :appointmentIds)
-          and (:references is null or c.externalReference in :references)
+          and (:references is null or (c.externalReference is not null and c.externalReference in :references))
           and (:outcomeCodes is null
             or (o is null and 'NO_OUTCOME' in :outcomeCodes)
             or (o is not null and o.code in :outcomeCodes))
         """
     )
+    @EntityGraph(value = "UnpaidWorkAppointment.all")
     fun findAppointments(
         crn: String?,
+        eventNumber: String?,
         fromDate: LocalDate?,
         toDate: LocalDate?,
         projectCodes: List<String>?,
         projectTypeCodes: List<String>?,
         outcomeCodes: List<String>?,
-        eventNumber: String?,
         appointmentIds: List<Long>?,
         references: List<String>?,
-        pageable: Pageable
+        pageable: Pageable,
     ): Page<UnpaidWorkAppointment>
+
+    @EntityGraph(value = "UnpaidWorkAppointment.all")
+    fun findAllByIdIn(appointmentIds: List<Long>?, pageable: Pageable): Page<UnpaidWorkAppointment>
 }
 
 fun UnpaidWorkAppointmentRepository.getAppointment(id: Long) =
