@@ -299,7 +299,8 @@ internal class UserServiceTest {
         // Mock for homeArea lookup (returns String)
         whenever(ldapTemplate.search(any(), any<AttributesMapper<Any?>>()))
             .thenReturn(listOf(OffenderManagerGenerator.PAU_USER_RECORD1.id.provider.code)) // homeArea (String)
-            .thenReturn(listOf("username" to null))                                         // email lookup (Pair)
+            .thenReturn(listOf("username" to null)) // email lookup (Pair)
+            .thenReturn(listOf("7"))
 
         whenever(probationAreaUserRepository.findByUsername(STAFF_USER_1.username)).thenReturn(probationAreaUsers)
         whenever(teamRepository.findByProviderCode(PROVIDER_2.code)).thenReturn(teams)
