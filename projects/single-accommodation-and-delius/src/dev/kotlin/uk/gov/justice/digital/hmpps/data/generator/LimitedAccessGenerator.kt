@@ -8,7 +8,7 @@ import java.time.LocalDateTime
 
 object LimitedAccessGenerator {
     val EXCLUDED_USER = generateLaoUser(UserGenerator.DEFAULT.username, UserGenerator.DEFAULT.id)
-    val RESTRICTED_USER = generateLaoUser("OtherUser")
+    val RESTRICTED_USER = generateLaoUser(UserGenerator.OTHER.username, UserGenerator.OTHER.id)
     val EXCLUDED_CASE = generateLaoPerson(
         id = PersonGenerator.EXCLUDED.id, crn = "E123456",
         exclusionMessage = "This case is excluded.",

@@ -22,7 +22,8 @@ data class Case(
     val userExcluded: Boolean,
     val userRestricted: Boolean,
     val exclusionMessage: String?,
-    val restrictionMessage: String?
+    val restrictionMessage: String?,
+    val isLimitedAccess: Boolean,
 )
 
 data class Name(

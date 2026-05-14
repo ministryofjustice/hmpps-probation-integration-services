@@ -6,7 +6,10 @@ import org.springframework.data.web.PagedModel.PageMetadata
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.exception.NotFoundException.Companion.orNotFoundBy
-import uk.gov.justice.digital.hmpps.integrations.delius.*
+import uk.gov.justice.digital.hmpps.integrations.delius.KeyDateRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.Person
+import uk.gov.justice.digital.hmpps.integrations.delius.PersonRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.StaffRepository
 import uk.gov.justice.digital.hmpps.model.*
 import java.time.LocalDate
 
@@ -16,7 +19,6 @@ class CaseListService(
     private val staffRepository: StaffRepository,
     private val personRepository: PersonRepository,
     private val keyDateRepository: KeyDateRepository,
-    private val registrationRepository: RegistrationRepository,
     private val userAccessService: UserAccessService,
 ) {
     fun getCaseList(username: String, pageable: PageRequest): CaseListResponse {
@@ -28,14 +30,20 @@ class CaseListService(
 
         val cases = casesPageable.content
         val personIds = cases.map { it.id }
-        val limitedAccess =
-            userAccessService.userAccessFor(username, cases.map { it.crn }).access.associateBy { it.crn }
+        val crns = cases.map { it.crn }
+
+        val userLimitedAccess =
+            userAccessService.userAccessFor(username, crns).access.associateBy { it.crn }
+        val caseLimitedAccess =
+            userAccessService.checkLimitedAccessFor(crns).access.associate { it.crn to it.isLimitedAccess() }
+
         val expectedReleaseDates = keyDateRepository.findExpectedReleaseDatesByPersonIdIn(personIds)
             .associate { it.personId to it.releaseDate }
 
         val responsibleCases = cases.map { person ->
-            val access = checkNotNull(limitedAccess[person.crn]) { "Access not found for CRN ${person.crn}" }
-            person.toCase(access, expectedReleaseDates[person.id])
+            val access = checkNotNull(userLimitedAccess[person.crn]) { "Access not found for CRN ${person.crn}" }
+            val isLimitedAccessCase = caseLimitedAccess[person.crn] ?: false
+            person.toCase(access, expectedReleaseDates[person.id], isLimitedAccessCase)
         }
 
         return CaseListResponse(
@@ -52,12 +60,21 @@ class CaseListService(
     fun getCase(username: String, crn: String): Case {
         val person = personRepository.findByCrn(crn).orNotFoundBy("CRN", crn)
         val access = userAccessService.caseAccessFor(username, crn)
-        return person.toCase(access, keyDateRepository.findExpectedReleaseDates(person.id))
+        val caseLimitedAccess =
+            userAccessService.checkLimitedAccessFor(listOf(crn)).access.single { it.crn == crn }.isLimitedAccess()
+        return person.toCase(
+            access,
+            keyDateRepository.findExpectedReleaseDates(person.id),
+            caseLimitedAccess
+        )
     }
+
+    private fun CaseAccess.isLimitedAccess() = this.userExcluded || this.userRestricted
 
     private fun Person.toCase(
         access: CaseAccess,
         expectedReleaseDate: LocalDate?,
+        isLimitedAccess: Boolean,
     ) = Case(
         crn = crn,
         name = Name(
@@ -87,6 +104,7 @@ class CaseListService(
         userExcluded = access.userExcluded,
         userRestricted = access.userRestricted,
         exclusionMessage = access.exclusionMessage,
-        restrictionMessage = access.restrictionMessage
+        restrictionMessage = access.restrictionMessage,
+        isLimitedAccess = isLimitedAccess,
     )
 }
