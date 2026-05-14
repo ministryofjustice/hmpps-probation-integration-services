@@ -731,7 +731,10 @@ object UPWGenerator {
         town: String? = null,
         county: String? = null,
         postcode: String? = null
-    ) = OfficeLocation(id, code, description, buildingName, addressNumber, streetName, town, county, postcode)
+    ) = OfficeLocation(
+        id, code, description, buildingName, addressNumber, streetName, town, county, postcode,
+        ProviderGenerator.DEFAULT_PROVIDER, ZonedDateTime.now().minusDays(7), null
+    )
 
     fun generateRequirement(
         id: Long = IdGenerator.getAndIncrement(),
