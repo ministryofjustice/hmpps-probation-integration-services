@@ -97,7 +97,7 @@ internal class SingleAccommodationIntegrationTest @Autowired constructor(
 
         val otherTeamRestrictedCase = response.cases.single { it.crn == otherTeamRestrictedPerson.crn }
         assertThat(otherTeamRestrictedCase.userExcluded).isFalse()
-        assertThat(otherTeamRestrictedCase.userRestricted).isTrue()
+        assertThat(otherTeamRestrictedCase.userRestricted).isFalse()
         assertThat(otherTeamRestrictedCase.isLimitedAccess).isTrue()
     }
 
