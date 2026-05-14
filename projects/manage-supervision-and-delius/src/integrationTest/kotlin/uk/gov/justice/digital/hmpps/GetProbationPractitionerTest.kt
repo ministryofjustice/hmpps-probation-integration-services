@@ -24,11 +24,11 @@ class GetProbationPractitionerTest : IntegrationTestBase() {
                 ProbationPractitioner(
                     "N01PEPA",
                     ProbationPractitioner.Name("Peter", "Parker"),
-                    "peter.parker@moj.gov.uk",
                     ProbationPractitioner.Provider("N01", "Description of N01"),
                     ProbationPractitioner.Team("N07T02", "OMU B"),
                     false,
-                    "peter-parker"
+                    "peter-parker",
+                    "peter.parker@moj.gov.uk",
                 )
             )
         )
@@ -47,11 +47,11 @@ class GetProbationPractitionerTest : IntegrationTestBase() {
                 ProbationPractitioner(
                     "jdyer",
                     ProbationPractitioner.Name("john", "dyer"),
-                    null,
                     ProbationPractitioner.Provider("N01", "Description of N01"),
                     ProbationPractitioner.Team("N07T02", "OMU B"),
                     false,
-                    "jdyer"
+                    "jdyer",
+                    null,
                 )
             )
         )

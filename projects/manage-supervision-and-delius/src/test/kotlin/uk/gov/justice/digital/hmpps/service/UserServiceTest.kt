@@ -166,7 +166,7 @@ internal class UserServiceTest {
             OffenderManagerGenerator.PAU_USER_RECORD4,
         )
 
-        val staffRole = StaffRole("code", "username", "surname", "forename", null, "role")
+        val staffRole = StaffRole("code", "username", "surname", "forename", "role")
 
         val teams = listOf(
             Team(
@@ -227,7 +227,7 @@ internal class UserServiceTest {
             OffenderManagerGenerator.PAU_USER_RECORD4,
         )
 
-        val staffRole = StaffRole("code", "username", "surname", "forename", null, "role")
+        val staffRole = StaffRole("code", "username", "surname", "forename", "role")
 
         val teams = listOf(
             Team(
@@ -291,7 +291,7 @@ internal class UserServiceTest {
             OffenderManagerGenerator.PAU_USER_RECORD1
         )
 
-        val staffRole = StaffRole("code", "username", "surname", "forename", null, "role")
+        val staffRole = StaffRole("code", "username", "surname", "forename", "role")
         val teams = listOf(
             Team(1, "t01", "team1", listOf(DEFAULT_STAFF, STAFF_1), DEFAULT_PROVIDER, DEFAULT_DISTRICT, LocalDate.now())
         )
@@ -299,8 +299,7 @@ internal class UserServiceTest {
         // Mock for homeArea lookup (returns String)
         whenever(ldapTemplate.search(any(), any<AttributesMapper<Any?>>()))
             .thenReturn(listOf(OffenderManagerGenerator.PAU_USER_RECORD1.id.provider.code)) // homeArea (String)
-            .thenReturn(listOf("username" to null))                                          // email lookup (Pair)
-            .thenReturn(listOf("7"))                                                         // defaultTeam preference (String)
+            .thenReturn(listOf("username" to null))                                         // email lookup (Pair)
 
         whenever(probationAreaUserRepository.findByUsername(STAFF_USER_1.username)).thenReturn(probationAreaUsers)
         whenever(teamRepository.findByProviderCode(PROVIDER_2.code)).thenReturn(teams)
@@ -326,7 +325,7 @@ internal class UserServiceTest {
     @Test
     fun `get user providers with region query parameter`() {
         val probationAreaUsers = listOf(OffenderManagerGenerator.PAU_USER_RECORD1)
-        val staffRole = StaffRole("code", "username", "surname", "forename", null, "role")
+        val staffRole = StaffRole("code", "username", "surname", "forename", "role")
         val teams = listOf(
             Team(1, "t01", "team1", listOf(DEFAULT_STAFF, STAFF_1), DEFAULT_PROVIDER, DEFAULT_DISTRICT, LocalDate.now())
         )
@@ -412,7 +411,6 @@ internal class UserServiceTest {
         val _username: String,
         val _surname: String,
         val _forename: String,
-        val email: String?,
         val _role: String,
     ) : StaffAndRole {
         override val code: String

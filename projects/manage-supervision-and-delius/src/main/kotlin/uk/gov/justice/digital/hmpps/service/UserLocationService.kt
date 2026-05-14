@@ -32,7 +32,7 @@ class UserLocationService(
 fun Location.toLocationDetails(): LocationDetails =
     LocationDetails(id, code.trim(), description, Address(buildingNumber, streetName, townCity, county, postcode))
 
-private fun String.normalisedStaffCode(): String = trimEnd()
+fun String.normalisedStaffCode(): String = trimEnd()
 
 fun StaffAndRole.toUser(email: String? = null): User =
     User(

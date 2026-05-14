@@ -3,11 +3,11 @@ package uk.gov.justice.digital.hmpps.api.model.personalDetails
 data class ProbationPractitioner(
     val code: String,
     val name: Name,
-    val email: String? = null,
     val provider: Provider,
     val team: Team,
     val unallocated: Boolean,
-    val username: String?
+    val username: String?,
+    val email: String? = null,
 ) {
     data class Name(val forename: String, val surname: String)
     data class Provider(val code: String, val name: String)
