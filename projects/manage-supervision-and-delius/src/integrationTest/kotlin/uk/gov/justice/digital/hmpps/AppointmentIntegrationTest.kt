@@ -33,6 +33,7 @@ import uk.gov.justice.digital.hmpps.service.toSummary
 import uk.gov.justice.digital.hmpps.service.toUser
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
+import kotlin.collections.copy
 
 class AppointmentIntegrationTest : IntegrationTestBase() {
 
@@ -155,11 +156,12 @@ class AppointmentIntegrationTest : IntegrationTestBase() {
 
         val expected = StaffTeam(
             listOf(
-                OffenderManagerGenerator.STAFF_USER_1.toUser(),
+                OffenderManagerGenerator.STAFF_USER_1.toUser().copy(email = "peter.parker@moj.gov.uk"),
                 unallocatedUser,
-                OffenderManagerGenerator.STAFF_USER_2.toUser(),
+                OffenderManagerGenerator.STAFF_USER_2.toUser().copy(email = "bruce.wayne@moj.gov.uk"),
             )
         )
+
         assertEquals(expected, response)
     }
 

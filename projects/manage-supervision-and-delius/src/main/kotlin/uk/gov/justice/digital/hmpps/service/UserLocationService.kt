@@ -40,12 +40,12 @@ fun StaffAndRole.toUser(email: String? = null): User =
         username,
         if (username != "Unallocated") "$forename $surname (${role})" else username,
         email = email,
-        name = Name(forename, surname = surname)
+        name = Name(forename = forename, surname = surname)
     )
 
 fun StaffUser.toUser(): User = User(
     staff!!.code.normalisedStaffCode(), username, "$forename $surname (${staff.role!!.description})",
-    email = email, name = Name(forename, forename2, surname = surname)
+    email = email, name = Name(forename = forename, middleName = forename2, surname = surname)
 )
 
 fun LdapTemplate.fetchEmailsByStaff(staff: List<StaffAndRole>): Map<String, String?> {
