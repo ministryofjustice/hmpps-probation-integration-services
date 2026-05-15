@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.data.entity
+package uk.gov.justice.digital.hmpps.entity.staff
 
 import jakarta.persistence.Entity
 import jakarta.persistence.Id
