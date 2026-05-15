@@ -5,6 +5,7 @@ import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.Test
 import org.springframework.test.web.servlet.get
 import uk.gov.justice.digital.hmpps.api.model.compliance.PersonCompliance
+import uk.gov.justice.digital.hmpps.data.generator.MonthsFilterGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.INACTIVE_EVENT_1
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.INACTIVE_ORDER_2
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.OVERVIEW
@@ -52,5 +53,27 @@ class ComplianceIntegrationTest : IntegrationTestBase() {
     fun `unauthorized status returned`() {
         mockMvc.get("/compliance/X123456")
             .andExpect { status { isUnauthorized() } }
+    }
+
+    @Test
+    fun `months filter excludes events created before the cutoff`() {
+        val crn = MonthsFilterGenerator.PERSON.crn
+
+        // With months=0 (no filter), both the recent and old events should be returned
+        val unfiltered = mockMvc.get("/compliance/$crn?months=0") { withToken() }
+            .andExpect { status { isOk() } }
+            .andReturn().response.contentAsJson<PersonCompliance>()
+        val unfilteredEventNumbers = unfiltered.currentSentences.map { it.eventNumber }
+        assertThat(unfilteredEventNumbers.contains(MonthsFilterGenerator.RECENT_EVENT.eventNumber), equalTo(true))
+        assertThat(unfilteredEventNumbers.contains(MonthsFilterGenerator.OLD_EVENT.eventNumber), equalTo(true))
+
+        // With months=6, only the recent event (created now) should be returned;
+        // the old event (created 13 months ago) should be excluded
+        val filtered = mockMvc.get("/compliance/$crn?months=6") { withToken() }
+            .andExpect { status { isOk() } }
+            .andReturn().response.contentAsJson<PersonCompliance>()
+        val filteredEventNumbers = filtered.currentSentences.map { it.eventNumber }
+        assertThat(filteredEventNumbers.contains(MonthsFilterGenerator.RECENT_EVENT.eventNumber), equalTo(true))
+        assertThat(filteredEventNumbers.contains(MonthsFilterGenerator.OLD_EVENT.eventNumber), equalTo(false))
     }
 }

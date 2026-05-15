@@ -374,7 +374,8 @@ object PersonGenerator {
         disposal: Disposal? = null,
         mainOffence: MainOffence? = null,
         notes: String,
-        additionalOffences: List<AdditionalOffence>
+        additionalOffences: List<AdditionalOffence>,
+        dateCreated: ZonedDateTime = ZonedDateTime.now()
     ) =
         Event(
             id,
@@ -388,7 +389,7 @@ object PersonGenerator {
             mainOffence = mainOffence,
             notes = notes,
             additionalOffences = additionalOffences,
-            dateCreated = ZonedDateTime.now(),
+            dateCreated = dateCreated,
             lastUpdatedDateTime = ZonedDateTime.now(),
             ftcCount = null
         )
@@ -646,6 +647,7 @@ object PersonGenerator {
         notes: String?,
         createdDate: ZonedDateTime,
     ) = RegistrationReview(riskFlag, date, reviewDue, notes, true, false, createdDate, IdGenerator.getAndIncrement())
+
 
     val NSI_BREACH_TYPE = generateNsiType("BRE")
     val NSI_OPD_TYPE = generateNsiType("OPD1")

@@ -68,6 +68,10 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
         saveAll(PersonGenerator.PERSONAL_CIRCUMSTANCES)
         save(PersonGenerator.OVERVIEW)
         save(PersonGenerator.E_SUP_PERSON)
+        save(MonthsFilterGenerator.GENDER)
+        save(MonthsFilterGenerator.PERSON)
+        save(MonthsFilterGenerator.RECENT_EVENT)
+        save(MonthsFilterGenerator.OLD_EVENT)
         save(PersonGenerator.CUSTODY_PERSON)
         save(PersonGenerator.PRE_SENTENCE_PERSON)
         save(PersonGenerator.UPDATE_PERSON)
@@ -152,6 +156,9 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
             OffenderManagerGenerator.PAU_USER_RECORD_W01_HOME,
             PersonGenerator.DEFAULT_DISPOSAL_TYPE,
             PersonGenerator.CUSTODY_DISPOSAL_TYPE,
+            MonthsFilterGenerator.DISPOSAL_TYPE,
+            MonthsFilterGenerator.RECENT_DISPOSAL,
+            MonthsFilterGenerator.OLD_DISPOSAL,
             LicenceConditionGenerator.LIC_COND_MAIN_CAT,
             LicenceConditionGenerator.LIC_COND_SUB_CAT,
             LicenceConditionGenerator.LC_WITH_NOTES,
@@ -222,6 +229,10 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
             PersonGenerator.MAIN_OFFENCE_3,
             PersonGenerator.OFFENCE_4,
             PersonGenerator.MAIN_OFFENCE_4,
+            MonthsFilterGenerator.RECENT_OFFENCE,
+            MonthsFilterGenerator.OLD_OFFENCE,
+            MonthsFilterGenerator.RECENT_MAIN_OFFENCE,
+            MonthsFilterGenerator.OLD_MAIN_OFFENCE,
             PersonGenerator.MAIN_OFFENCE_5,
             PersonGenerator.MAIN_OFFENCE_6,
             PersonGenerator.ADD_OFF_1,

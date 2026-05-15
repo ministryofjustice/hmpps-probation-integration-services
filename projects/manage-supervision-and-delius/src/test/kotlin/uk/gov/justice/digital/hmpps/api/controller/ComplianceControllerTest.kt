@@ -62,8 +62,8 @@ internal class ComplianceControllerTest {
             currentSentences = listOf(sentenceCompliance),
             previousOrders = previousOrders
         )
-        whenever(complianceService.getPersonCompliance(crn)).thenReturn(expectedResponse)
-        val res = controller.getPersonCompliance(crn)
+        whenever(complianceService.getPersonCompliance(crn, 0)).thenReturn(expectedResponse)
+        val res = controller.getPersonCompliance(crn, 0)
         assertThat(res, equalTo(expectedResponse))
     }
 }

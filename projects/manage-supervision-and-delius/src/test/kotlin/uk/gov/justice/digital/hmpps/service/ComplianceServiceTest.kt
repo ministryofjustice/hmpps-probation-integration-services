@@ -149,7 +149,7 @@ internal class ComplianceServiceTest {
 
         whenever(eventRepository.findByPersonId(OVERVIEW.id)).thenReturn(events)
 
-        val res = service.getPersonCompliance(crn)
+        val res = service.getPersonCompliance(crn, 0)
         assertThat(res.personSummary, equalTo(OVERVIEW.toSummary()))
         assertThat(res.currentSentences.size, equalTo(2))
         assertThat(res.previousOrders.breaches, equalTo(2))
@@ -196,7 +196,7 @@ internal class ComplianceServiceTest {
 
         whenever(personRepository.findSummary(crn)).thenReturn(personSummary)
 
-        val res = service.getPersonCompliance(crn)
+        val res = service.getPersonCompliance(crn, 0)
         assertThat(res.currentSentences.size, equalTo(2))
         assertThat(res.previousOrders, equalTo(PreviousOrders(0, 0, null, emptyList())))
     }

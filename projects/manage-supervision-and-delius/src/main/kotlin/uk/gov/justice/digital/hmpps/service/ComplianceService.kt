@@ -13,6 +13,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.compliance.NsiRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.compliance.getAllBreaches
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.*
 import java.time.LocalDate
+import java.time.ZonedDateTime
 
 @Service
 class ComplianceService(
@@ -20,14 +21,18 @@ class ComplianceService(
     private val eventRepository: EventRepository,
     private val nsiRepository: NsiRepository,
     private val activityService: ActivityService,
-    private val requirementService: RequirementService
+    private val requirementService: RequirementService,
 ) {
 
     @Transactional
-    fun getPersonCompliance(crn: String): PersonCompliance {
+    fun getPersonCompliance(crn: String, months: Int): PersonCompliance {
 
         val summary = personRepository.getSummary(crn)
-        val events = eventRepository.findByPersonId(summary.id)
+        val events = when (months) {
+            0 -> eventRepository.findByPersonId(summary.id)
+            else -> eventRepository.findByPersonIdAndDateCreatedAfter(summary.id,
+                ZonedDateTime.now().minusMonths(months.toLong()))
+        }
         val currentSentences = events.filter { !it.isInactiveEvent() }
 
         val allActiveSentenceActivity =
@@ -70,7 +75,7 @@ class ComplianceService(
                 activity = toActivityCounts(
                     rarActivity(
                         eventNumber
-                    )
+                    ),
                 ),
                 compliance = toSentenceCompliance(sentenceActivity(eventNumber), breachesForSentence(id))
             )
@@ -122,7 +127,7 @@ fun toActivityCounts(activities: List<Activity>) = ActivityCount(
     rescheduledByStaffCount = activities.count { it.rescheduled && it.rescheduledStaff },
     rescheduledCount = activities.count { it.rescheduled },
     unacceptableAbsenceCount = activities.count { it.isPastAppointment && it.wasAbsent == true && it.acceptableAbsence == false },
-    acceptableAbsenceCount = activities.count { it.isPastAppointment && it.wasAbsent == true && it.acceptableAbsence == true }
+    acceptableAbsenceCount = activities.count { it.isPastAppointment && it.wasAbsent == true && it.acceptableAbsence == true },
 )
 
 fun toSentenceCompliance(activities: List<Activity>, breaches: List<Nsi>) = Compliance(
