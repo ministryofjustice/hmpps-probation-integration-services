@@ -648,7 +648,6 @@ object PersonGenerator {
         createdDate: ZonedDateTime,
     ) = RegistrationReview(riskFlag, date, reviewDue, notes, true, false, createdDate, IdGenerator.getAndIncrement())
 
-
     val NSI_BREACH_TYPE = generateNsiType("BRE")
     val NSI_OPD_TYPE = generateNsiType("OPD1")
     val NSI_OPD_SUB_TYPE = ReferenceData(IdGenerator.getAndIncrement(), "OPD11", "OPD1 subtype")

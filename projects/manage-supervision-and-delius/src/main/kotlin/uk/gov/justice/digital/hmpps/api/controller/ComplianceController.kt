@@ -18,6 +18,8 @@ class ComplianceController(private val complianceService: ComplianceService) {
 
     @GetMapping
     @Operation(summary = "Gets all compliance info for a person")
-    fun getPersonCompliance(@PathVariable crn: String,
-        @RequestParam(defaultValue = "0") months: Int) = complianceService.getPersonCompliance(crn, months)
+    fun getPersonCompliance(
+        @PathVariable crn: String,
+        @RequestParam(defaultValue = "0") months: Int
+    ) = complianceService.getPersonCompliance(crn, months)
 }

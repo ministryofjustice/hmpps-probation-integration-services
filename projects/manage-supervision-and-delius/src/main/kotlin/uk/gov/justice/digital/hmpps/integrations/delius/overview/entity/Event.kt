@@ -85,7 +85,6 @@ interface EventRepository : JpaRepository<Event, Long> {
     )
     fun findByPersonId(personId: Long): List<Event>
 
-
     @Query(
         "SELECT e FROM Event e " +
             "LEFT JOIN FETCH e.disposal d " +

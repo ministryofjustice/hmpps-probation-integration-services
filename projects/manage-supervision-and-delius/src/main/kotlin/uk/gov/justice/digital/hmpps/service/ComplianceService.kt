@@ -30,8 +30,10 @@ class ComplianceService(
         val summary = personRepository.getSummary(crn)
         val events = when (months) {
             0 -> eventRepository.findByPersonId(summary.id)
-            else -> eventRepository.findByPersonIdAndDateCreatedAfter(summary.id,
-                ZonedDateTime.now().minusMonths(months.toLong()))
+            else -> eventRepository.findByPersonIdAndDateCreatedAfter(
+                summary.id,
+                ZonedDateTime.now().minusMonths(months.toLong())
+            )
         }
         val currentSentences = events.filter { !it.isInactiveEvent() }
 
