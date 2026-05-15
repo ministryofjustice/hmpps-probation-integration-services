@@ -23,7 +23,7 @@ class DocumentService(
     private val limitedAccessService: UserAccessService,
     private val featureFlags: FeatureFlags,
 ) {
-    companion object{
+    companion object {
         const val FLIPT_KEY = "dps_lao_restriction"
     }
 
