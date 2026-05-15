@@ -23,6 +23,7 @@ import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.exception.NotFoundException.Companion.orNotFoundBy
 import uk.gov.justice.digital.hmpps.model.*
 import java.time.LocalDate
+import java.time.ZonedDateTime
 import java.time.temporal.ChronoUnit
 import java.util.*
 
@@ -315,7 +316,10 @@ class CommunityPaybackAppointmentsService(
             currentStatus == "UN" -> "WK"
             else -> return
         }
-        upwDetailsRepository.save(details.apply { status = referenceDataRepository.getStatus(statusCode) })
+        upwDetailsRepository.save(details.apply {
+            status = referenceDataRepository.getStatus(statusCode)
+            statusDate = ZonedDateTime.now()
+        })
     }
 
     private fun UnpaidWorkAppointment.toAppointmentResponseCase(

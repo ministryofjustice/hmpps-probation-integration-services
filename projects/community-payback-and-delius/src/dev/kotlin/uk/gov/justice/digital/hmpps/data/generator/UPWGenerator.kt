@@ -573,9 +573,11 @@ object UPWGenerator {
         disposal: Disposal,
         softDeleted: Boolean = false,
         status: ReferenceData? = null,
+        statusDate: ZonedDateTime = ZonedDateTime.now(),
     ) = UnpaidWorkDetails(
         id = id, disposal = disposal, softDeleted = softDeleted,
-        status = status
+        status = status,
+        statusDate = statusDate
     )
 
     fun generateUPWAdjustment(
