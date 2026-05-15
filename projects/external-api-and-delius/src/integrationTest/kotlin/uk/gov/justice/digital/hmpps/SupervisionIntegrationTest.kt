@@ -25,6 +25,9 @@ internal class SupervisionIntegrationTest : BaseIntegrationTest() {
         Assertions.assertEquals(review, response.mappaDetail?.reviewDate)
         Assertions.assertEquals("Months", response.supervisions[0].sentence?.lengthUnits?.name)
         Assertions.assertEquals(null, response.supervisions[1].sentence?.lengthUnits)
+        Assertions.assertTrue(response.dynamicRisks.any {
+            it.code == "ALSH" && it.description.isNotEmpty() && it.startDate != null
+        })
     }
 
     @Test

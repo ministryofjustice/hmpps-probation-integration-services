@@ -76,6 +76,7 @@ class RegisterType(
         const val VERY_HIGH_ROSH_CODE = "RVRH" // Very high risk of serious harm
         const val SERIOUS_FURTHER_OFFENCE_CODE = "ASFO" // Subject to SFO review/investigation
         const val WARRANT_SUMMONS_CODE = "WRSM" // Outstanding warrant or summons
+        const val SUICIDE_SELFHARM_CODE = "ALSH" // Suicide or Self-Harm
     }
 }
 
@@ -128,6 +129,7 @@ fun RegistrationRepository.findDynamicRiskRegistrations(personId: Long) = findBy
         RegisterType.MED_ROSH_CODE,
         RegisterType.HIGH_ROSH_CODE,
         RegisterType.VERY_HIGH_ROSH_CODE,
+        RegisterType.SUICIDE_SELFHARM_CODE,
     )
 )
 
