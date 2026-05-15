@@ -1,16 +1,20 @@
 package uk.gov.justice.digital.hmpps
 
 import jakarta.persistence.EntityManager
+import jakarta.transaction.Transactional
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.test.web.servlet.*
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
+import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator
 import uk.gov.justice.digital.hmpps.data.generator.UPWGenerator
 import uk.gov.justice.digital.hmpps.data.generator.UserGenerator
 import uk.gov.justice.digital.hmpps.entity.unpaidwork.UnpaidWorkAdjustmentRepository
+import uk.gov.justice.digital.hmpps.entity.unpaidwork.UpwDetailsRepository
 import uk.gov.justice.digital.hmpps.model.*
 import uk.gov.justice.digital.hmpps.service.AdjustmentService.Companion.REFERENCE_PREFIX
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
@@ -23,7 +27,8 @@ import java.util.*
 @AutoConfigureMockMvc
 class AdjustmentsIntegrationTest @Autowired constructor(
     @Autowired private val mockMvc: MockMvc,
-    private val adjustmentRepository: UnpaidWorkAdjustmentRepository
+    private val adjustmentRepository: UnpaidWorkAdjustmentRepository,
+    private val upwDetailsRepository: UpwDetailsRepository,
 ) {
     @Autowired
     lateinit var entityManager: EntityManager
@@ -40,19 +45,6 @@ class AdjustmentsIntegrationTest @Autowired constructor(
         assertThat(response.date).isEqualTo(UPWGenerator.ADJUSTMENT_NEGATIVE_FOR_ADJUSTMENT_PERSON.date)
         assertThat(response.reason).isEqualTo(CodeName(name = "Other", code = "OT"))
         assertThat(response.minutes).isEqualTo(3)
-    }
-
-    @Test
-    fun `get unpaid work adjustment by internal id`() {
-        val adjustment = UPWGenerator.ADJUSTMENT_NEGATIVE_FOR_ADJUSTMENT_PERSON
-        val response = mockMvc.get("/adjustments/${adjustment.id}") { withToken() }
-            .andExpect { status { isOk() } }
-            .andReturn().response.contentAsJson<Adjustment>()
-
-        assertThat(response.id).isEqualTo(adjustment.id)
-        assertThat(response.reference.toString()).isEqualTo(
-            adjustment.externalReference!!.removePrefix(REFERENCE_PREFIX)
-        )
     }
 
     @Test
@@ -194,45 +186,104 @@ class AdjustmentsIntegrationTest @Autowired constructor(
     }
 
     @Test
-    fun `update upw adjustment by internal id`() {
-        val crn = PersonGenerator.ADJUSTMENT_PERSON.crn
-        val eventNumber = UPWGenerator.EVENT_ADJUSTMENT.number.toInt()
-        val username = UserGenerator.DEFAULT_USER.username
+    @Transactional
+    fun `creating an adjustment updates UPW status when hours are completed`() {
+        val reference = UUID.randomUUID()
+        val beingWorkedEvent = UPWGenerator.EVENT_5
+        val beingWorkedDetails = UPWGenerator.UPW_DETAILS_5
+        assertThat(upwDetailsRepository.findByIdOrNull(beingWorkedDetails.id)?.status?.code).isEqualTo("WK")
 
-        val createdAdjustment = mockMvc.post("/adjustments?username=${username}") {
+        mockMvc.post("/adjustments?username=${UserGenerator.DEFAULT_USER.username}") {
             withToken()
             json = listOf(
                 CreateAdjustmentRequest(
-                    reference = UUID.randomUUID(),
-                    crn = crn,
-                    eventNumber = eventNumber,
-                    type = AdjustmentType.POSITIVE,
+                    reference = reference,
+                    crn = beingWorkedEvent.person.crn,
+                    eventNumber = beingWorkedEvent.number.toInt(),
                     date = LocalDate.now(),
-                    reason = "OT",
-                    minutes = 10
+                    reason = ReferenceDataGenerator.UPW_ADJUSTMENT_REASON_OTHER.code,
+                    type = AdjustmentType.NEGATIVE,
+                    minutes = 100000,
                 )
             )
-        }
-            .andExpect { status { isOk() } }
-            .andReturn().response.contentAsJson<List<AdjustmentPostResponse>>().first()
+        }.andExpect { status { isOk() } }
 
-        mockMvc.put("/adjustments/${createdAdjustment.id}?username=${username}") {
+        assertThat(upwDetailsRepository.findByIdOrNull(beingWorkedDetails.id)?.status?.code).isEqualTo("HC")
+    }
+
+    @Test
+    @Transactional
+    fun `updating an adjustment updates UPW status when hours are completed`() {
+        val reference = UUID.randomUUID()
+        val beingWorkedEvent = UPWGenerator.EVENT_5
+        val beingWorkedDetails = UPWGenerator.UPW_DETAILS_5
+        assertThat(upwDetailsRepository.findByIdOrNull(beingWorkedDetails.id)?.status?.code).isEqualTo("WK")
+
+        mockMvc.post("/adjustments?username=${UserGenerator.DEFAULT_USER.username}") {
             withToken()
-            json = UpdateAdjustmentRequest(
-                crn = crn,
-                eventNumber = eventNumber,
-                type = AdjustmentType.NEGATIVE,
-                date = LocalDate.now(),
-                reason = "OT",
-                minutes = 30
+            json = listOf(
+                CreateAdjustmentRequest(
+                    reference = reference,
+                    crn = beingWorkedEvent.person.crn,
+                    eventNumber = beingWorkedEvent.number.toInt(),
+                    date = LocalDate.now(),
+                    reason = ReferenceDataGenerator.UPW_ADJUSTMENT_REASON_OTHER.code,
+                    type = AdjustmentType.POSITIVE,
+                    minutes = 1,
+                )
             )
         }.andExpect { status { isOk() } }
-        val updatedAdjustment = adjustmentRepository.findFirstById(createdAdjustment.id)!!
-        assertThat(updatedAdjustment.amount).isEqualTo(30)
-        assertThat(updatedAdjustment.type).isEqualTo(AdjustmentType.NEGATIVE.name)
+        assertThat(upwDetailsRepository.findByIdOrNull(beingWorkedDetails.id)?.status?.code).isEqualTo("WK")
 
-        mockMvc.delete("/adjustments/${createdAdjustment.id}") { withToken() }.andExpect { status { isOk() } }
-        val deletedAdjustment = adjustmentRepository.findFirstById(createdAdjustment.id)
-        assertThat(deletedAdjustment).isNull()
+        mockMvc.put("/adjustments/$reference?username=${UserGenerator.DEFAULT_USER.username}") {
+            withToken()
+            json = UpdateAdjustmentRequest(
+                crn = beingWorkedEvent.person.crn,
+                eventNumber = beingWorkedEvent.number.toInt(),
+                date = LocalDate.now(),
+                reason = ReferenceDataGenerator.UPW_ADJUSTMENT_REASON_OTHER.code,
+                type = AdjustmentType.NEGATIVE,
+                minutes = 100000,
+            )
+        }.andExpect { status { isOk() } }
+        assertThat(upwDetailsRepository.findByIdOrNull(beingWorkedDetails.id)?.status?.code).isEqualTo("HC")
+    }
+
+    @Test
+    @Transactional
+    fun `deleting an adjustment updates UPW status when hours are completed`() {
+        val positiveReference = UUID.randomUUID()
+        val negativeReference = UUID.randomUUID()
+        val beingWorkedEvent = UPWGenerator.EVENT_5
+        val beingWorkedDetails = UPWGenerator.UPW_DETAILS_5
+        assertThat(upwDetailsRepository.findByIdOrNull(beingWorkedDetails.id)?.status?.code).isEqualTo("WK")
+
+        mockMvc.post("/adjustments?username=${UserGenerator.DEFAULT_USER.username}") {
+            withToken()
+            json = listOf(
+                CreateAdjustmentRequest(
+                    reference = positiveReference,
+                    crn = beingWorkedEvent.person.crn,
+                    eventNumber = beingWorkedEvent.number.toInt(),
+                    date = LocalDate.now(),
+                    reason = ReferenceDataGenerator.UPW_ADJUSTMENT_REASON_OTHER.code,
+                    type = AdjustmentType.POSITIVE,
+                    minutes = 100001,
+                ),
+                CreateAdjustmentRequest(
+                    reference = negativeReference,
+                    crn = beingWorkedEvent.person.crn,
+                    eventNumber = beingWorkedEvent.number.toInt(),
+                    date = LocalDate.now(),
+                    reason = ReferenceDataGenerator.UPW_ADJUSTMENT_REASON_OTHER.code,
+                    type = AdjustmentType.NEGATIVE,
+                    minutes = 100000,
+                )
+            )
+        }.andExpect { status { isOk() } }
+        assertThat(upwDetailsRepository.findByIdOrNull(beingWorkedDetails.id)?.status?.code).isEqualTo("WK")
+
+        mockMvc.delete("/adjustments/$positiveReference") { withToken() }.andExpect { status { isOk() } }
+        assertThat(upwDetailsRepository.findByIdOrNull(beingWorkedDetails.id)?.status?.code).isEqualTo("HC")
     }
 }
