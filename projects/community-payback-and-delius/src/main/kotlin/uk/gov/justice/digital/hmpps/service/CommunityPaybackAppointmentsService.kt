@@ -244,7 +244,7 @@ class CommunityPaybackAppointmentsService(
                 )
             }
             .also(createUnpaidWorkAppointmentRepository::saveAll)
-            .also { upwDetails.values.onEach { it.updateStatus() } }
+            .also { upwDetails.values.onEach { updateStatus(it) } }
             .map { CreatedAppointment(id = it.id!!, reference = it.reference!!) }
     }
 
@@ -290,8 +290,32 @@ class CommunityPaybackAppointmentsService(
             notes = appointment.notes
             pickUpTime = request.pickUp?.time
             pickUpLocation = request.pickUp?.location?.code?.let { code -> officeLocationRepository.getByCode(code) }
-            details.updateStatus()
+            updateStatus(details)
         }
+    }
+
+    fun updateStatus(details: UnpaidWorkDetails) {
+        val upwMinutesDtos = unpaidWorkAppointmentRepository
+            .getUpwRequiredAndCompletedMinutes(listOf(details.id))
+        val progress = RequirementProgress(
+            requiredMinutes = upwMinutesDtos.sumOf { it.requiredMinutes },
+            completedMinutes = upwMinutesDtos.sumOf { it.completedMinutes },
+            adjustments = upwMinutesDtos.sumOf { it.positiveAdjustments - it.negativeAdjustments }
+        )
+        val remainingMinutes = progress.requiredMinutes + progress.adjustments - progress.completedMinutes
+        val currentStatus = details.status?.code
+        /*
+        if remaining minutes are 0 or less, then add the completed status 'HC'
+        if the current status is null or 'UN' (unallocated) then add the status 'WK' (work in progress)
+        else if the status is any other value then keep the status as is
+         */
+        val statusCode = when {
+            remainingMinutes <= 0L -> "HC"
+            currentStatus == null -> "WK"
+            currentStatus == "UN" -> "WK"
+            else -> return
+        }
+        upwDetailsRepository.save(details.apply { status = referenceDataRepository.getStatus(statusCode) })
     }
 
     private fun UnpaidWorkAppointment.toAppointmentResponseCase(
@@ -309,30 +333,6 @@ class CommunityPaybackAppointmentsService(
         currentRestriction = limitedAccess.userRestricted,
         restrictionMessage = limitedAccess.restrictionMessage,
     )
-
-    private fun UnpaidWorkDetails.updateStatus() {
-        val upwMinutesDtos = unpaidWorkAppointmentRepository
-            .getUpwRequiredAndCompletedMinutes(listOf(id))
-        val progress = RequirementProgress(
-            requiredMinutes = upwMinutesDtos.sumOf { it.requiredMinutes },
-            completedMinutes = upwMinutesDtos.sumOf { it.completedMinutes },
-            adjustments = upwMinutesDtos.sumOf { it.positiveAdjustments - it.negativeAdjustments }
-        )
-        val remainingMinutes = progress.requiredMinutes + progress.adjustments - progress.completedMinutes
-        val currentStatus = status?.code
-        /*
-        if remaining minutes are 0 or less, then add the completed status 'HC'
-        if the current status is null or 'UN' (unallocated) then add the status 'WK' (work in progress)
-        else if the status is any other value then keep the status as is
-         */
-        val statusCode = when {
-            remainingMinutes <= 0L -> "HC"
-            currentStatus == null -> "WK"
-            currentStatus == "UN" -> "WK"
-            else -> return
-        }
-        status = referenceDataRepository.getStatus(statusCode)
-    }
 
     private fun penaltyTimeToHHmm(minutes: Long?): String {
         if (minutes == null || minutes == 0L) return "00:00"

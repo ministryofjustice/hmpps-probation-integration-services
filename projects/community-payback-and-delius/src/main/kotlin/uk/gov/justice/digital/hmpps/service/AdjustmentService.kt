@@ -9,7 +9,6 @@ import uk.gov.justice.digital.hmpps.entity.staff.UserRepository
 import uk.gov.justice.digital.hmpps.entity.unpaidwork.UnpaidWorkAdjustment
 import uk.gov.justice.digital.hmpps.entity.unpaidwork.UnpaidWorkAdjustmentRepository
 import uk.gov.justice.digital.hmpps.entity.unpaidwork.UpwDetailsRepository
-import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.exception.NotFoundException.Companion.orNotFoundBy
 import uk.gov.justice.digital.hmpps.model.*
 import java.util.*
@@ -22,23 +21,20 @@ class AdjustmentService(
     private val userRepository: UserRepository,
     private val personRepository: PersonRepository,
     private val eventRepository: EventRepository,
+    private val communityPaybackAppointmentsService: CommunityPaybackAppointmentsService,
 ) {
     fun createAdjustments(
         requests: List<CreateAdjustmentRequest>,
         username: String
     ): List<AdjustmentPostResponse> {
         val user = userRepository.findByUsername(username).orNotFoundBy("username", username)
+        val events = eventRepository.getEventIds(requests.map { it.crn to it.eventNumber })
+        val upwDetails = unpaidWorkDetailsRepository.getByEventIdIn(events.values)
         return requests.map { request ->
-            val person = personRepository.findByCrn(request.crn).orNotFoundBy("CRN", request.crn)
-            val event = eventRepository.findByPersonIdAndNumberAndSoftDeletedIsFalse(
-                person.id,
-                request.eventNumber.toString()
-            )
-                ?: throw NotFoundException("Event not found for CRN ${person.crn} and event number ${request.eventNumber}")
-            val upwDetails = unpaidWorkDetailsRepository.findByEventIdIn(listOf(event.id)).first()
+            val eventId = checkNotNull(events[request.crn to request.eventNumber])
             val adjustment = adjustmentRepository.save(
                 UnpaidWorkAdjustment(
-                    upwDetails = upwDetails,
+                    upwDetails = checkNotNull(upwDetails[eventId]),
                     amount = request.minutes,
                     date = request.date,
                     type = request.type.code,
@@ -48,7 +44,7 @@ class AdjustmentService(
                 )
             )
             AdjustmentPostResponse(adjustment.id!!, adjustment.reference()!!)
-        }
+        }.also { upwDetails.values.onEach { communityPaybackAppointmentsService.updateStatus(it) } }
     }
 
     fun getAdjustments(crn: String, eventNumber: Int): AdjustmentResponse {
@@ -66,22 +62,6 @@ class AdjustmentService(
         })
     }
 
-    @Deprecated("Pass a reference instead of an internal id")
-    fun updateAdjustment(
-        id: Long,
-        adjustmentRequest: UpdateAdjustmentRequest,
-        username: String
-    ) {
-        val existingAdjustment = adjustmentRepository.findFirstById(id).orNotFoundBy("id", id)
-        val user = userRepository.findByUsername(username).orNotFoundBy("username", username)
-        existingAdjustment.type = adjustmentRequest.type.code
-        existingAdjustment.amount = adjustmentRequest.minutes
-        existingAdjustment.date = adjustmentRequest.date
-        existingAdjustment.adjustedByUserId = user.id
-        existingAdjustment.reason = referenceDataRepository.getAdjustmentReason(adjustmentRequest.reason)
-        adjustmentRepository.save(existingAdjustment)
-    }
-
     fun updateAdjustment(
         reference: UUID,
         adjustmentRequest: UpdateAdjustmentRequest,
@@ -95,36 +75,19 @@ class AdjustmentService(
         existingAdjustment.adjustedByUserId = user.id
         existingAdjustment.reason = referenceDataRepository.getAdjustmentReason(adjustmentRequest.reason)
         adjustmentRepository.save(existingAdjustment)
-    }
-
-    @Deprecated("Pass a reference instead of an internal id")
-    fun deleteAdjustment(id: Long) {
-        val existingAdjustment = adjustmentRepository.findFirstById(id).orNotFoundBy("id", id)
-        adjustmentRepository.delete(existingAdjustment)
+        communityPaybackAppointmentsService.updateStatus(existingAdjustment.upwDetails)
     }
 
     fun deleteAdjustment(reference: UUID) {
         val existingAdjustment = adjustmentRepository.findByReference(reference).orNotFoundBy("reference", reference)
         adjustmentRepository.delete(existingAdjustment)
-    }
-
-    @Deprecated("Pass a reference instead of an internal id")
-    fun getAdjustment(id: Long): Adjustment {
-        val adjustment = adjustmentRepository.findFirstById(id).orNotFoundBy("id", id)
-        return Adjustment(
-            id = adjustment.id!!,
-            reference = adjustment.reference(),
-            type = AdjustmentType.valueOf(adjustment.type),
-            date = adjustment.date,
-            reason = CodeName(name = adjustment.reason.description, code = adjustment.reason.code),
-            minutes = adjustment.amount,
-        )
+        communityPaybackAppointmentsService.updateStatus(existingAdjustment.upwDetails)
     }
 
     fun getAdjustment(reference: UUID): Adjustment {
         val adjustment = adjustmentRepository.findByReference(reference).orNotFoundBy("reference", reference)
         return Adjustment(
-            id = adjustment.id!!,
+            id = checkNotNull(adjustment.id),
             reference = adjustment.reference(),
             type = AdjustmentType.valueOf(adjustment.type),
             date = adjustment.date,

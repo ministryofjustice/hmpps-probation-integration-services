@@ -18,12 +18,6 @@ class AdjustmentsController(
         @RequestParam eventNumber: Int
     ) = adjustmentService.getAdjustments(crn, eventNumber)
 
-    @Deprecated("Pass a reference instead of an internal id", replaceWith = ReplaceWith("getAdjustment"))
-    @GetMapping("/adjustments/{id:\\d+}")
-    fun getAdjustmentByInternalId(
-        @PathVariable id: Long
-    ) = adjustmentService.getAdjustment(id)
-
     @GetMapping("/adjustments/{reference:[0-9a-fA-F-]{36}}")
     fun getAdjustment(
         @PathVariable reference: UUID
@@ -33,17 +27,7 @@ class AdjustmentsController(
     fun createAdjustments(
         @RequestParam username: String,
         @RequestBody adjustmentRequests: List<CreateAdjustmentRequest>
-    ) = adjustmentService.createAdjustments(
-        adjustmentRequests, username
-    )
-
-    @Deprecated("Pass a reference instead of an internal id", replaceWith = ReplaceWith("updateAdjustments"))
-    @PutMapping("/adjustments/{id:\\d+}")
-    fun updateAdjustmentsByInternalId(
-        @PathVariable id: Long,
-        @RequestParam username: String,
-        @RequestBody adjustmentRequest: UpdateAdjustmentRequest
-    ) = adjustmentService.updateAdjustment(id, adjustmentRequest, username)
+    ) = adjustmentService.createAdjustments(adjustmentRequests, username)
 
     @PutMapping("/adjustments/{reference:[0-9a-fA-F-]{36}}")
     fun updateAdjustments(
@@ -51,11 +35,6 @@ class AdjustmentsController(
         @RequestParam username: String,
         @RequestBody adjustmentRequest: UpdateAdjustmentRequest
     ) = adjustmentService.updateAdjustment(reference, adjustmentRequest, username)
-
-    @DeleteMapping("/adjustments/{id:\\d+}")
-    fun deleteAdjustments(
-        @PathVariable id: Long,
-    ) = adjustmentService.deleteAdjustment(id)
 
     @DeleteMapping("/adjustments/{reference:[0-9a-fA-F-]{36}}")
     fun deleteAdjustments(
