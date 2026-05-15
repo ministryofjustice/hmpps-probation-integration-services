@@ -12,6 +12,7 @@ import uk.gov.justice.digital.hmpps.client.ProbationSearchClient
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.PersonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.getSummary
+import java.time.ZonedDateTime
 
 @Service
 class ActivityService(
@@ -65,8 +66,15 @@ class ActivityService(
     }
 
     @Transactional
-    fun getPersonSentenceActivity(personId: Long, eventId: List<Long>): List<Activity> {
-        return contactRepository.findByPersonIdAndEventIdIn(personId, eventId).map { it.toActivity() }
+    fun getPersonSentenceActivity(personId: Long, eventId: List<Long>, months: Int): List<Activity> {
+        return when (months) {
+            0 -> contactRepository.findByPersonIdAndEventIdIn(personId, eventId)
+            else -> contactRepository.findByPersonIdAndEventIdInAndCreatedDateTimeAfter(
+                personId,
+                eventId,
+                ZonedDateTime.now().minusMonths(months.toLong())
+            )
+        }.map { it.toActivity() }
     }
 }
 

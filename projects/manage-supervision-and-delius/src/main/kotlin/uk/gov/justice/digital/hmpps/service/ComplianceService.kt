@@ -20,22 +20,29 @@ class ComplianceService(
     private val eventRepository: EventRepository,
     private val nsiRepository: NsiRepository,
     private val activityService: ActivityService,
-    private val requirementService: RequirementService
+    private val requirementService: RequirementService,
 ) {
 
     @Transactional
-    fun getPersonCompliance(crn: String): PersonCompliance {
+    fun getPersonCompliance(crn: String, months: Int): PersonCompliance {
+        require(months in 0..120) { "Months must be between 0 and 120" }
 
         val summary = personRepository.getSummary(crn)
         val events = eventRepository.findByPersonId(summary.id)
+
         val currentSentences = events.filter { !it.isInactiveEvent() }
 
+        val cutoff = if (months > 0) LocalDate.now().minusMonths(months.toLong()) else null
+
         val allActiveSentenceActivity =
-            activityService.getPersonSentenceActivity(summary.id, currentSentences.map { it.id })
+            activityService.getPersonSentenceActivity(summary.id, currentSentences.map { it.id }, months)
         val allBreaches = nsiRepository.getAllBreaches(summary.id)
+        val windowedBreaches = if (cutoff != null) {
+            allBreaches.filter { it.startDate()?.let { d -> !d.isBefore(cutoff) } == true }
+        } else allBreaches
         val previousOrders = events.filter { it.isInactiveEvent() }
 
-        fun breachesForSentence(eventId: Long) = allBreaches.filter { (it.eventId == eventId) }
+        fun breachesForSentence(eventId: Long) = windowedBreaches.filter { it.eventId == eventId }
         fun activeBreachCountForSentence(eventId: Long) =
             allBreaches.firstOrNull { it.eventId == eventId && it.active }
 
@@ -70,7 +77,7 @@ class ComplianceService(
                 activity = toActivityCounts(
                     rarActivity(
                         eventNumber
-                    )
+                    ),
                 ),
                 compliance = toSentenceCompliance(sentenceActivity(eventNumber), breachesForSentence(id))
             )
@@ -79,8 +86,7 @@ class ComplianceService(
             personSummary = summary.toPersonSummary(),
             currentSentences = currentSentences.mapNotNull { it.toSentenceCompliance() },
             previousOrders = PreviousOrders(
-                breaches = previousOrders.flatMap { breachesForSentence(it.id) }.count(),
-                count = previousOrders.size,
+                breaches = previousOrders.flatMap { breachesForSentence(it.id) }.count(), count = previousOrders.size,
                 lastEndedDate = previousOrders.firstOrNull()?.disposal?.terminationDate,
                 orders = previousOrders.filter {
                     // only display those within the last two years
@@ -122,7 +128,7 @@ fun toActivityCounts(activities: List<Activity>) = ActivityCount(
     rescheduledByStaffCount = activities.count { it.rescheduled && it.rescheduledStaff },
     rescheduledCount = activities.count { it.rescheduled },
     unacceptableAbsenceCount = activities.count { it.isPastAppointment && it.wasAbsent == true && it.acceptableAbsence == false },
-    acceptableAbsenceCount = activities.count { it.isPastAppointment && it.wasAbsent == true && it.acceptableAbsence == true }
+    acceptableAbsenceCount = activities.count { it.isPastAppointment && it.wasAbsent == true && it.acceptableAbsence == true },
 )
 
 fun toSentenceCompliance(activities: List<Activity>, breaches: List<Nsi>) = Compliance(
