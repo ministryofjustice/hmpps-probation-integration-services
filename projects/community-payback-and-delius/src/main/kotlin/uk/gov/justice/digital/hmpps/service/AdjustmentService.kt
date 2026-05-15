@@ -4,7 +4,6 @@ import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.entity.ReferenceDataRepository
 import uk.gov.justice.digital.hmpps.entity.getAdjustmentReason
 import uk.gov.justice.digital.hmpps.entity.person.PersonRepository
-import uk.gov.justice.digital.hmpps.entity.person.getByCrn
 import uk.gov.justice.digital.hmpps.entity.sentence.EventRepository
 import uk.gov.justice.digital.hmpps.entity.staff.UserRepository
 import uk.gov.justice.digital.hmpps.entity.unpaidwork.UnpaidWorkAdjustment
@@ -32,11 +31,10 @@ class AdjustmentService(
         val events = eventRepository.getEventIds(requests.map { it.crn to it.eventNumber })
         val upwDetails = unpaidWorkDetailsRepository.getByEventIdIn(events.values)
         return requests.map { request ->
-            val person = personRepository.getByCrn(request.crn)
-            val eventId = events[person.crn to request.eventNumber]!!
+            val eventId = checkNotNull(events[request.crn to request.eventNumber])
             val adjustment = adjustmentRepository.save(
                 UnpaidWorkAdjustment(
-                    upwDetails = upwDetails[eventId]!!,
+                    upwDetails = checkNotNull(upwDetails[eventId]),
                     amount = request.minutes,
                     date = request.date,
                     type = request.type.code,
@@ -89,7 +87,7 @@ class AdjustmentService(
     fun getAdjustment(reference: UUID): Adjustment {
         val adjustment = adjustmentRepository.findByReference(reference).orNotFoundBy("reference", reference)
         return Adjustment(
-            id = adjustment.id!!,
+            id = checkNotNull(adjustment.id),
             reference = adjustment.reference(),
             type = AdjustmentType.valueOf(adjustment.type),
             date = adjustment.date,
