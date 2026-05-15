@@ -483,6 +483,8 @@ interface ContactRepository : JpaRepository<Contact, Long> {
 
     fun findByPersonIdAndEventIdIn(personId: Long, eventId: List<Long>): List<Contact>
 
+    fun findByPersonIdAndEventIdInAndCreatedDateTimeAfter(personId: Long, eventId: List<Long>, dateTime: ZonedDateTime): List<Contact>
+
     fun findByPersonIdAndId(personId: Long, id: Long): Contact?
 
     @Query(

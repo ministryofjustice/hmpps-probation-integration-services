@@ -1,9 +1,13 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
+import uk.gov.justice.digital.hmpps.integrations.delius.compliance.Nsi
+import uk.gov.justice.digital.hmpps.integrations.delius.compliance.NsiStatus
+import uk.gov.justice.digital.hmpps.integrations.delius.compliance.NsiType
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.ReferenceData
 import java.time.LocalDate
 import java.time.ZonedDateTime
+import java.time.temporal.ChronoUnit
 
 /**
  * Completely self-contained test data used only by the months filter integration test.
@@ -134,6 +138,44 @@ object MonthsFilterGenerator {
         active = true,
         softDeleted = false,
         id = IdGenerator.getAndIncrement()
+    )
+
+    // NSI (breach) data — used to verify the months filter applies to breach counts
+    val NSI_BREACH_TYPE = NsiType(
+        code = "BRE",
+        description = "Breach (months filter)",
+        id = IdGenerator.getAndIncrement()
+    )
+    val NSI_STATUS = NsiStatus(
+        id = IdGenerator.getAndIncrement(),
+        code = "MF_STATUS",
+        description = "Months Filter NSI Status"
+    )
+
+    /** Breach that started within the 6-month window */
+    val RECENT_BREACH = Nsi(
+        id = IdGenerator.getAndIncrement(),
+        personId = PERSON.id,
+        eventId = RECENT_EVENT.id,
+        type = NSI_BREACH_TYPE,
+        nsiStatus = NSI_STATUS,
+        actualStartDate = LocalDate.now().minusMonths(2),
+        expectedStartDate = LocalDate.now().minusMonths(2),
+        active = false,
+        lastUpdated = ZonedDateTime.now().minusMonths(2).truncatedTo(ChronoUnit.SECONDS)
+    )
+
+    /** Breach that started outside the 6-month window */
+    val OLD_BREACH = Nsi(
+        id = IdGenerator.getAndIncrement(),
+        personId = PERSON.id,
+        eventId = OLD_EVENT.id,
+        type = NSI_BREACH_TYPE,
+        nsiStatus = NSI_STATUS,
+        actualStartDate = LocalDate.now().minusMonths(10),
+        expectedStartDate = LocalDate.now().minusMonths(10),
+        active = false,
+        lastUpdated = ZonedDateTime.now().minusMonths(10).truncatedTo(ChronoUnit.SECONDS)
     )
 }
 

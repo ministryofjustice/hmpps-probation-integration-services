@@ -56,24 +56,34 @@ class ComplianceIntegrationTest : IntegrationTestBase() {
     }
 
     @Test
-    fun `months filter excludes events created before the cutoff`() {
+    fun `months filter scopes activity and breach counts to the time window`() {
         val crn = MonthsFilterGenerator.PERSON.crn
 
-        // With months=0 (no filter), both the recent and old events should be returned
+        // With months=0 (no filter) both events appear and both breaches are counted
         val unfiltered = mockMvc.get("/compliance/$crn?months=0") { withToken() }
             .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<PersonCompliance>()
+
         val unfilteredEventNumbers = unfiltered.currentSentences.map { it.eventNumber }
         assertThat(unfilteredEventNumbers.contains(MonthsFilterGenerator.RECENT_EVENT.eventNumber), equalTo(true))
         assertThat(unfilteredEventNumbers.contains(MonthsFilterGenerator.OLD_EVENT.eventNumber), equalTo(true))
 
-        // With months=6, only the recent event (created now) should be returned;
-        // the old event (created 13 months ago) should be excluded
+        // Both breaches are counted — one on each sentence
+        val unfilteredTotalBreaches = unfiltered.currentSentences.sumOf { it.compliance.currentBreaches }
+        assertThat(unfilteredTotalBreaches, equalTo(2))
+
+        // With months=6, both events still appear (events are never filtered)
+        // but only the recent breach (2 months ago) is within the window;
+        // the old breach (10 months ago) is excluded from counts
         val filtered = mockMvc.get("/compliance/$crn?months=6") { withToken() }
             .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<PersonCompliance>()
+
         val filteredEventNumbers = filtered.currentSentences.map { it.eventNumber }
         assertThat(filteredEventNumbers.contains(MonthsFilterGenerator.RECENT_EVENT.eventNumber), equalTo(true))
-        assertThat(filteredEventNumbers.contains(MonthsFilterGenerator.OLD_EVENT.eventNumber), equalTo(false))
+        assertThat(filteredEventNumbers.contains(MonthsFilterGenerator.OLD_EVENT.eventNumber), equalTo(true))
+
+        val filteredTotalBreaches = filtered.currentSentences.sumOf { it.compliance.currentBreaches }
+        assertThat(filteredTotalBreaches, equalTo(1))
     }
 }

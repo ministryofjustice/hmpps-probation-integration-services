@@ -85,21 +85,6 @@ interface EventRepository : JpaRepository<Event, Long> {
     )
     fun findByPersonId(personId: Long): List<Event>
 
-    @Query(
-        "SELECT e FROM Event e " +
-            "LEFT JOIN FETCH e.disposal d " +
-            "LEFT JOIN FETCH d.type t  " +
-            "LEFT JOIN FETCH e.mainOffence m " +
-            "LEFT JOIN FETCH e.additionalOffences ao " +
-            "LEFT JOIN FETCH m.offence mo " +
-            "LEFT JOIN FETCH ao.offence aoo " +
-            "LEFT JOIN FETCH d.terminationReason tr " +
-            "LEFT JOIN FETCH d.lengthUnit lu " +
-            "WHERE e.personId = :personId AND e.dateCreated >= :date " +
-            "ORDER BY e.dateCreated DESC"
-    )
-    fun findByPersonIdAndDateCreatedAfter(personId: Long, date: ZonedDateTime): List<Event>
-
     fun findByIdAndActiveIsTrue(eventId: Long): Event?
 }
 

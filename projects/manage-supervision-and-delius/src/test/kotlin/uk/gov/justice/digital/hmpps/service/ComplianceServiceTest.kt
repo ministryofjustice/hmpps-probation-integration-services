@@ -137,7 +137,7 @@ internal class ComplianceServiceTest {
             )
         )
 
-        whenever(activityService.getPersonSentenceActivity(any(), any())).thenReturn(
+        whenever(activityService.getPersonSentenceActivity(any(), any(), any())).thenReturn(
             listOfNotNull(
                 ContactGenerator.NEXT_APPT_CONTACT.toActivity(),
                 ContactGenerator.FIRST_NON_APPT_CONTACT.toActivity(),
