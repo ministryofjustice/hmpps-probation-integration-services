@@ -25,7 +25,7 @@ class ComplianceService(
 
     @Transactional
     fun getPersonCompliance(crn: String, months: Int): PersonCompliance {
-        if (months < 0 || months > 120) throw IllegalArgumentException("Months must be between 0 and 120")
+        require(months in 0..120) { "Months must be between 0 and 120" }
 
         val summary = personRepository.getSummary(crn)
         val events = eventRepository.findByPersonId(summary.id)

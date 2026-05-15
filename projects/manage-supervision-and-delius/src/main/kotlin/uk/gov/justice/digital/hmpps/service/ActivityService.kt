@@ -68,13 +68,13 @@ class ActivityService(
     @Transactional
     fun getPersonSentenceActivity(personId: Long, eventId: List<Long>, months: Int): List<Activity> {
         return when (months) {
-            0 -> contactRepository.findByPersonIdAndEventIdIn(personId, eventId).map { it.toActivity() }
+            0 -> contactRepository.findByPersonIdAndEventIdIn(personId, eventId)
             else -> contactRepository.findByPersonIdAndEventIdInAndCreatedDateTimeAfter(
                 personId,
                 eventId,
                 ZonedDateTime.now().minusMonths(months.toLong())
-            ).map { it.toActivity() }
-        }
+            )
+        }.map { it.toActivity() }
     }
 }
 
