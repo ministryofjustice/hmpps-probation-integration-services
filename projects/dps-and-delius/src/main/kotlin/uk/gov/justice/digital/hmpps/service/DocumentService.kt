@@ -23,7 +23,9 @@ class DocumentService(
     private val limitedAccessService: UserAccessService,
     private val featureFlags: FeatureFlags,
 ) {
-    private val FLIPT_KEY = "dps_lao_restriction"
+    companion object{
+        const val FLIPT_KEY = "dps_lao_restriction"
+    }
 
     fun downloadDocument(id: String): ResponseEntity<StreamingResponseBody> {
         val document =
