@@ -24,6 +24,9 @@ class UnpaidWorkDetails(
     @Column(name = "upw_details_id")
     val id: Long,
 
+    @Version
+    var rowVersion: Long = 0,
+
     @ManyToOne
     @JoinColumn(name = "disposal_id")
     val disposal: Disposal,
