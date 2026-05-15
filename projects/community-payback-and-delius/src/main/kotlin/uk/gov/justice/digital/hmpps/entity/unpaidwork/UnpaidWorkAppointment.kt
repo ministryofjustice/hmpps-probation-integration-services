@@ -11,6 +11,7 @@ import org.springframework.data.annotation.LastModifiedBy
 import org.springframework.data.annotation.LastModifiedDate
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
+import org.springframework.data.jpa.domain.Specification
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
@@ -26,6 +27,8 @@ import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.model.CodeDescription
 import uk.gov.justice.digital.hmpps.model.RequirementProgress
 import uk.gov.justice.digital.hmpps.model.Session
+import uk.gov.justice.digital.hmpps.utils.Extensions.allOfNotNull
+import uk.gov.justice.digital.hmpps.utils.Extensions.optionalFilter
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
@@ -432,25 +435,9 @@ interface UnpaidWorkAppointmentRepository : JpaRepository<UnpaidWorkAppointment,
         typeCodesCount: Int = typeCodes.count(),
     ): Page<Triple<Long, Int, Int>>
 
-    @Query(
-        """
-        select a from UnpaidWorkAppointment a
-        join fetch a.contact c
-        left join fetch a.contact.outcome o
-        where (:crn is null or a.person.crn = :crn)
-          and (:eventNumber is null or a.details.disposal.event.number = :eventNumber)
-          and (:fromDate is null or a.date >= :fromDate)
-          and (:toDate is null or a.date <= :toDate)
-          and (:projectCodes is null or a.project.code in :projectCodes)
-          and (:projectTypeCodes is null or a.project.projectType.code in :projectTypeCodes)
-          and (:appointmentIds is null or a.id in :appointmentIds)
-          and (:references is null or (c.externalReference is not null and c.externalReference in :references))
-          and (:outcomeCodes is null
-            or (o is null and 'NO_OUTCOME' in :outcomeCodes)
-            or (o is not null and o.code in :outcomeCodes))
-        """
-    )
     @EntityGraph(value = "UnpaidWorkAppointment.all")
+    fun findAll(spec: Specification<UnpaidWorkAppointment>, pageable: Pageable): Page<UnpaidWorkAppointment>
+
     fun findAppointments(
         crn: String?,
         eventNumber: String?,
@@ -462,10 +449,20 @@ interface UnpaidWorkAppointmentRepository : JpaRepository<UnpaidWorkAppointment,
         appointmentIds: List<Long>?,
         references: List<String>?,
         pageable: Pageable,
-    ): Page<UnpaidWorkAppointment>
-
-    @EntityGraph(value = "UnpaidWorkAppointment.all")
-    fun findAllByIdIn(appointmentIds: List<Long>?, pageable: Pageable): Page<UnpaidWorkAppointment>
+    ): Page<UnpaidWorkAppointment> = findAll(
+        allOfNotNull(
+            optionalFilter("id", appointmentIds) { it.`in`(appointmentIds) },
+            optionalFilter("contact.externalReference", references) { it.`in`(references) },
+            optionalFilter("person.crn", crn) { it.equalTo(crn) },
+            optionalFilter("details.disposal.event.number", eventNumber) { it.equalTo(eventNumber) },
+            optionalFilter("date", fromDate) { greaterThanOrEqualTo(it, fromDate) },
+            optionalFilter("date", toDate) { lessThanOrEqualTo(it, toDate) },
+            optionalFilter("project.code", projectCodes) { it.`in`(projectCodes) },
+            optionalFilter("project.projectType.code", projectTypeCodes) { it.`in`(projectTypeCodes) },
+            optionalFilter("contact.outcome.code", outcomeCodes) { coalesce(it, "NO_OUTCOME").`in`(outcomeCodes) },
+        ),
+        pageable
+    )
 }
 
 fun UnpaidWorkAppointmentRepository.getAppointment(id: Long) =

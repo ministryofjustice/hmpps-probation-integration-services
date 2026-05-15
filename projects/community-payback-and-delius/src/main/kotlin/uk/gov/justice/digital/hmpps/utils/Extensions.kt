@@ -1,9 +1,13 @@
 package uk.gov.justice.digital.hmpps.utils
 
+import jakarta.persistence.criteria.*
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort
 import org.springframework.data.jpa.domain.JpaSort
+import org.springframework.data.jpa.domain.Specification
+import org.springframework.data.jpa.domain.Specification.allOf
+import uk.gov.justice.digital.hmpps.entity.unpaidwork.UnpaidWorkAppointment
 
 object Extensions {
     inline fun <K, reified V> Map<K, V>.reportMissing(required: Set<K>) = also {
@@ -18,4 +22,15 @@ object Extensions {
             JpaSort.unsafe(order.direction, property)
         }.fold(Sort.unsorted()) { acc, sort -> if (acc.isUnsorted) sort else acc.and(sort) })
     }
+
+    private fun <T> From<*, *>.getNested(name: String) = name.split(".").let { parts ->
+        parts.dropLast(1).fold(this) { path, part -> path.join<Any, Any>(part, JoinType.LEFT) }
+            .get<T>(parts.last())
+    }
+
+    fun <T> optionalFilter(nestedPath: String, value: T?, block: CriteriaBuilder.(Path<T>) -> Predicate) =
+        value?.let { Specification<UnpaidWorkAppointment> { root, _, cb -> cb.block(root.getNested(nestedPath)) } }
+
+    fun <T : Any> allOfNotNull(vararg specifications: Specification<T>?) =
+        allOf(specifications.filterNotNull())
 }

@@ -1,6 +1,5 @@
 package uk.gov.justice.digital.hmpps.service
 
-import org.apache.commons.lang3.ObjectUtils.allNull
 import org.springframework.data.domain.Pageable
 import org.springframework.data.web.PagedModel
 import org.springframework.orm.ObjectOptimisticLockingFailureException
@@ -108,15 +107,10 @@ class CommunityPaybackAppointmentsService(
         references: List<String>?,
         pageable: Pageable
     ): PagedModel<AppointmentsResponse> {
-        val appointments =
-            if (appointmentIds != null &&
-                allNull(references, crn, eventNumber, fromDate, toDate, projectCodes, projectTypeCodes, outcomeCodes)
-            ) {
-                unpaidWorkAppointmentRepository.findAllByIdIn(appointmentIds, pageable)
-            } else unpaidWorkAppointmentRepository.findAppointments(
-                crn, eventNumber, fromDate, toDate, projectCodes, projectTypeCodes, outcomeCodes,
-                appointmentIds, references?.map { "$REFERENCE_PREFIX$it" }, pageable
-            )
+        val appointments = unpaidWorkAppointmentRepository.findAppointments(
+            crn, eventNumber, fromDate, toDate, projectCodes, projectTypeCodes, outcomeCodes,
+            appointmentIds, references?.map { "$REFERENCE_PREFIX$it" }, pageable
+        )
         val upwDetailsIds = appointments.map { it.details.id }.distinct()
         val crns = appointments.map { it.person.crn }.distinct()
         val minutes = unpaidWorkAppointmentRepository.getUpwRequiredAndCompletedMinutes(upwDetailsIds)
