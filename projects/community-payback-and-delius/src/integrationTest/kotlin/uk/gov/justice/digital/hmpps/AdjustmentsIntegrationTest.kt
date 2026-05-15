@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps
 import jakarta.persistence.EntityManager
 import jakarta.transaction.Transactional
 import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions.within
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
@@ -21,6 +22,8 @@ import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.json
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 import java.time.LocalDate
+import java.time.ZonedDateTime
+import java.time.temporal.ChronoUnit.SECONDS
 import java.util.*
 
 @SpringBootTest
@@ -235,6 +238,7 @@ class AdjustmentsIntegrationTest @Autowired constructor(
         }.andExpect { status { isOk() } }
         assertThat(upwDetailsRepository.findByIdOrNull(beingWorkedDetails.id)?.status?.code).isEqualTo("WK")
 
+        val statusUpdateStarted = ZonedDateTime.now()
         mockMvc.put("/adjustments/$reference?username=${UserGenerator.DEFAULT_USER.username}") {
             withToken()
             json = UpdateAdjustmentRequest(
@@ -284,6 +288,8 @@ class AdjustmentsIntegrationTest @Autowired constructor(
         assertThat(upwDetailsRepository.findByIdOrNull(beingWorkedDetails.id)?.status?.code).isEqualTo("WK")
 
         mockMvc.delete("/adjustments/$positiveReference") { withToken() }.andExpect { status { isOk() } }
-        assertThat(upwDetailsRepository.findByIdOrNull(beingWorkedDetails.id)?.status?.code).isEqualTo("HC")
+        val details = upwDetailsRepository.findByIdOrNull(beingWorkedDetails.id)
+        assertThat(details?.status?.code).isEqualTo("HC")
+        assertThat(details?.statusDate).isCloseTo(ZonedDateTime.now(), within(1, SECONDS))
     }
 }
