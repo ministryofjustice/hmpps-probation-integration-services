@@ -14,7 +14,6 @@ import uk.gov.justice.digital.hmpps.integrations.delius.compliance.getAllBreache
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.*
 import java.time.LocalDate
 
-
 @Service
 class ComplianceService(
     private val personRepository: PersonRepository,
@@ -30,7 +29,7 @@ class ComplianceService(
 
         val summary = personRepository.getSummary(crn)
         val events = eventRepository.findByPersonId(summary.id)
-        
+
         val currentSentences = events.filter { !it.isInactiveEvent() }
 
         val cutoff = if (months > 0) LocalDate.now().minusMonths(months.toLong()) else null
@@ -87,7 +86,7 @@ class ComplianceService(
             personSummary = summary.toPersonSummary(),
             currentSentences = currentSentences.mapNotNull { it.toSentenceCompliance() },
             previousOrders = PreviousOrders(
-                breaches = previousOrders.flatMap { breachesForSentence(it.id) }.count(),                count = previousOrders.size,
+                breaches = previousOrders.flatMap { breachesForSentence(it.id) }.count(), count = previousOrders.size,
                 lastEndedDate = previousOrders.firstOrNull()?.disposal?.terminationDate,
                 orders = previousOrders.filter {
                     // only display those within the last two years
