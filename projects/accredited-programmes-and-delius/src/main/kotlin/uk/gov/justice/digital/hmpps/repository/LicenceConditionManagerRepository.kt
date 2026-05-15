@@ -9,7 +9,8 @@ interface LicenceConditionManagerRepository : JpaRepository<LicenceConditionMana
         attributePaths = [
             "staff.user",
             "team.localAdminUnit.probationDeliveryUnit",
-            "team.officeLocations"
+            "team.officeLocations",
+            "licenceCondition.disposal.event.number"
         ]
     )
     fun findByLicenceConditionId(licenceConditionId: Long): LicenceConditionManager?

@@ -9,7 +9,8 @@ interface RequirementManagerRepository : JpaRepository<RequirementManager, Long>
         attributePaths = [
             "staff.user",
             "team.localAdminUnit.probationDeliveryUnit",
-            "team.officeLocations"
+            "team.officeLocations",
+            "requirement.disposal.event.number"
         ]
     )
     fun findByRequirementId(requirementId: Long): RequirementManager?
