@@ -415,7 +415,7 @@ class ContactLogIntegrationTest : IntegrationTestBase() {
 
         val linkedContacts = contactRepository.findByLinkedContactIdOrderByDateDesc(response.id)
 
-        assertThat(linkedContacts.size, equalTo(1))
+        assertThat(linkedContacts.size, equalTo(2))
         assertThat(
             linkedContacts[0].type.code,
             equalTo(UpdateContactOutcomeGenerator.ENFORCEMENT_ACTION.contactType.code)

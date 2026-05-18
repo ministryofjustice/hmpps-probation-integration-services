@@ -40,7 +40,7 @@ class Event(
     val inBreach: Boolean,
 
     @Column(name = "breach_end")
-    val breachEnd: LocalDate?,
+    val breachEnd: LocalDate? = null,
 
     @OneToOne(mappedBy = "event")
     val disposal: Disposal? = null,
