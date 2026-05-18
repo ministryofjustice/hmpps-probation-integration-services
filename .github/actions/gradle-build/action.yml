@@ -44,6 +44,14 @@ runs:
         cache-role: ${{ inputs.gradle-cache-role }}
         cache-encryption-key: ${{ inputs.gradle-cache-encryption-key }}
 
+    - name: Initialize CodeQL
+      uses: github/codeql-action/init@9e0d7b8d25671d64c341c19c0152d693099fb5ba # v4.35.5
+      with:
+        languages: java-kotlin
+        config: |
+          paths:
+            - "${{ inputs.project }}"
+
     - name: Build
       shell: bash
       run: ./gradlew "${PROJECT}:check"
@@ -51,6 +59,11 @@ runs:
         PROJECT: ${{ inputs.project }}
         SPRING_PROFILES_ACTIVE: oracle
         TZ: Europe/London
+
+    - name: Perform CodeQL Analysis
+      uses: github/codeql-action/analyze@9e0d7b8d25671d64c341c19c0152d693099fb5ba # v4.35.5
+      with:
+        category: "/language:java-kotlin"
 
     - name: Push
       if: inputs.push == 'true'

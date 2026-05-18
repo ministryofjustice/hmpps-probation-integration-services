@@ -38,6 +38,7 @@ jobs:
       contents: read
       id-token: write
       packages: write
+      security-events: write
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
