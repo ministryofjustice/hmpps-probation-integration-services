@@ -137,7 +137,37 @@ class ContactLogService(
                         """.trimIndent()
                     )
                 )
-                savedContact.event?.run { ftcCount = (ftcCount ?: 0) + 1 }
+                // increment ftcCount using logic from appts library
+                contactRepository.countFailureToComply(event!!).takeIf { it > 0 }?.let { ftcCount ->
+                    event.ftcCount = ftcCount
+                    eventRepository.save(event)
+                }
+                savedContact.event?.run {
+                    ftcCount = (ftcCount ?: 0) + 1
+                    val ftcLimit = event.disposal?.type?.ftcLimit
+                    contactRepository.save(savedContact)
+                    if ((ftcCount ?: 1) > (ftcLimit ?: 0) ){
+                        val reviewType = contactTypeRepository.findByCode(enforcementAction.contactType.code)
+                            ?: throw NotFoundException("ContactType", "code", enforcementAction.contactType.code)
+                        contactRepository.save(
+                            Contact(
+                                linkedContactId = savedContact.id,
+                                type = reviewType,
+                                date = LocalDate.now(),
+                                startTime = ZonedDateTime.now(EuropeLondon),
+                                person = person,
+                                event = event,
+                                staff = staff,
+                                team = team,
+                                provider = team.provider,
+                                notes = """
+                                    ${DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm").format(LocalDateTime.now())}
+                                    Auto-generated enforcement review due to failure to comply count exceeding limit of $ftcLimit.
+                                """.trimIndent()
+                            )
+                        )
+                    }
+                }
             }
 
             val category = mappaCategoryResolverService.resolveMappaCategory(person.id)

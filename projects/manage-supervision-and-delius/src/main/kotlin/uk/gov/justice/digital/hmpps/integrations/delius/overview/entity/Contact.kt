@@ -489,6 +489,22 @@ interface ContactRepository : JpaRepository<Contact, Long> {
         dateTime: ZonedDateTime
     ): List<Contact>
 
+    @Query(
+        """
+            select count(distinct c.date)
+            from Contact c
+            where c.event.id = :eventId
+            and c.complied = false
+            and c.type.nationalStandardsContact = true
+            and (:lastResetDate is null or c.date >= :lastResetDate)
+            """
+    )
+    fun countFailureToComply(
+        event: Event,
+        eventId: Long = event.id,
+        lastResetDate: LocalDate? = listOfNotNull(event.breachEnd, event.disposal?.date).maxOrNull()
+    ): Long
+
     fun findByPersonIdAndId(personId: Long, id: Long): Contact?
 
     @Query(
@@ -1086,4 +1102,3 @@ class EnforcementActionContactOutcomeId(
 
 interface EnforcementActionContactOutcomeRepository :
     JpaRepository<EnforcementActionContactOutcome, EnforcementActionContactOutcomeId>
-

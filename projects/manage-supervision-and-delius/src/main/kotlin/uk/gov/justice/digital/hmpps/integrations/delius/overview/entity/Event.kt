@@ -39,6 +39,9 @@ class Event(
     @Convert(converter = NumericBooleanConverter::class)
     val inBreach: Boolean,
 
+    @Column(name = "breach_end")
+    val breachEnd: LocalDate?,
+
     @OneToOne(mappedBy = "event")
     val disposal: Disposal? = null,
 
