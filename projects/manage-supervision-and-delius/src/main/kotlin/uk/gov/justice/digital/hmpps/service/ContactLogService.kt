@@ -43,6 +43,9 @@ class ContactLogService(
     private val enforcementRepository: EnforcementRepository,
     private val enforcementActionsRepository: EnforcementActionsRepository,
 ) : AuditableService(auditedInteractionService) {
+    companion object {
+        const val REVIEW_ENFORCEMENT_STATUS = "ARWS"
+    }
 
     @Transactional
     fun createContact(
@@ -137,18 +140,16 @@ class ContactLogService(
                         """.trimIndent()
                     )
                 )
-                // increment ftcCount using logic from appts library
-                contactRepository.countFailureToComply(event!!).takeIf { it > 0 }?.let { ftcCount ->
-                    event.ftcCount = ftcCount
-                    eventRepository.save(event)
-                }
                 savedContact.event?.run {
-                    ftcCount = (ftcCount ?: 0) + 1
-                    val ftcLimit = event.disposal?.type?.ftcLimit
+                    event?.ftcCount = ftcCount++
+                    eventRepository.save(event)
+                    val ftcLimit = event?.disposal?.type?.ftcLimit
                     contactRepository.save(savedContact)
-                    if ((ftcCount ?: 1) > (ftcLimit ?: 0)) {
-                        val reviewType = contactTypeRepository.findByCode(enforcementAction.contactType.code)
-                            ?: throw NotFoundException("ContactType", "code", enforcementAction.contactType.code)
+                    val enforcementReviewDoesNotExist = event?.let {
+                        contactRepository.enforcementReviewExists(it.id, it.breachEnd, REVIEW_ENFORCEMENT_STATUS)
+                    } ?: true
+                    if (ftcCount > (ftcLimit ?: 0) && enforcementReviewDoesNotExist ) {
+                        val reviewType = contactTypeRepository.getContactType(REVIEW_ENFORCEMENT_STATUS)
                         contactRepository.save(
                             Contact(
                                 linkedContactId = savedContact.id,
@@ -160,10 +161,7 @@ class ContactLogService(
                                 staff = staff,
                                 team = team,
                                 provider = team.provider,
-                                notes = """
-                                    ${DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm").format(LocalDateTime.now())}
-                                    Auto-generated enforcement review due to failure to comply count exceeding limit of $ftcLimit.
-                                """.trimIndent()
+                                notes = null,
                             )
                         )
                     }

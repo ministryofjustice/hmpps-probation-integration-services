@@ -33,7 +33,7 @@ class Event(
     val eventNumber: String,
 
     @Column(name = "ftc_count")
-    var ftcCount: Long?,
+    var ftcCount: Long,
 
     @Column(name = "in_breach", columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)

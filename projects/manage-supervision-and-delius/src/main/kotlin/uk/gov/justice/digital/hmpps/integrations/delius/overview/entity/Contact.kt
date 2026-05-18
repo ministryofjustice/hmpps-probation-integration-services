@@ -490,6 +490,21 @@ interface ContactRepository : JpaRepository<Contact, Long> {
     ): List<Contact>
 
     @Query(
+        """ 
+             select count(c.id) > 0 from Contact c 
+             where c.event.id = :eventId 
+             and c.type.code = :typeCode 
+             and c.outcome is null 
+             and (:since is null or c.date >= :since) 
+             """
+    )
+    fun enforcementReviewExists(
+        eventId: Long,
+        since: LocalDate?,
+        typeCode: String,
+    ): Boolean
+
+    @Query(
         """
             select count(distinct c.date)
             from Contact c
