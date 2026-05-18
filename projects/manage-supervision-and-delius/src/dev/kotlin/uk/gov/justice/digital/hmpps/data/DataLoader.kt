@@ -295,6 +295,7 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
             UpdateContactOutcomeGenerator.PERSON,
             UpdateContactOutcomeGenerator.PERSON_NO_MANAGER,
             UpdateContactOutcomeGenerator.EVENT,
+            UpdateContactOutcomeGenerator.ARWS_CONTACT_TYPE,
             UpdateContactOutcomeGenerator.CONTACT_TYPE,
             UpdateContactOutcomeGenerator.OUTCOME,
             UpdateContactOutcomeGenerator.CONTACT_TYPE_OUTCOME,

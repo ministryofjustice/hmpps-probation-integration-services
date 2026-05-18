@@ -141,14 +141,13 @@ class ContactLogService(
                     )
                 )
                 savedContact.event?.run {
-                    event?.ftcCount = ftcCount++
-                    eventRepository.save(event)
-                    val ftcLimit = event?.disposal?.type?.ftcLimit
+                    event?.ftcCount = ++ftcCount
+                    val ftcLimit = event?.disposal?.type?.ftcLimit ?: return@run
                     contactRepository.save(savedContact)
                     val enforcementReviewDoesNotExist = event?.let {
-                        contactRepository.enforcementReviewExists(it.id, it.breachEnd, REVIEW_ENFORCEMENT_STATUS)
+                        !contactRepository.enforcementReviewExists(it.id, it.breachEnd, REVIEW_ENFORCEMENT_STATUS)
                     } ?: true
-                    if (ftcCount > (ftcLimit ?: 0) && enforcementReviewDoesNotExist) {
+                    if (ftcCount > ftcLimit && enforcementReviewDoesNotExist) {
                         val reviewType = contactTypeRepository.getContactType(REVIEW_ENFORCEMENT_STATUS)
                         contactRepository.save(
                             Contact(

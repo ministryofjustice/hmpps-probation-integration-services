@@ -61,6 +61,16 @@ object UpdateContactOutcomeGenerator {
         additionalOffences = emptyList()
     )
 
+    val ARWS_CONTACT_TYPE = ContactType(
+        id = IdGenerator.getAndIncrement(),
+        code = "ARWS",
+        attendanceContact = false,
+        description = "Review Enforcement Status",
+        contactOutcomeFlag = false,
+        locationRequired = "N",
+        editable = false
+    )
+
     val CONTACT_TYPE = ContactType(
         id = IdGenerator.getAndIncrement(),
         code = "CCON",
