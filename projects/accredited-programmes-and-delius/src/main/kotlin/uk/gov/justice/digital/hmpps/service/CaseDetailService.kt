@@ -89,7 +89,8 @@ class CaseDetailService(
                 probationDeliveryUnit = manager.team.localAdminUnit.probationDeliveryUnit.toCodedValue(),
                 officeLocations = manager.team.officeLocations.map { it.toCodedValue() }
             ),
-            probationDeliveryUnits = manager.team.pduOfficeLocations()
+            probationDeliveryUnits = manager.team.pduOfficeLocations(),
+            eventNumber = manager.requirement.disposal.event.number
         )
     } ?: throw NotFoundException("Requirement", "id", id)
 
@@ -102,7 +103,8 @@ class CaseDetailService(
                     probationDeliveryUnit = manager.team.localAdminUnit.probationDeliveryUnit.toCodedValue(),
                     officeLocations = manager.team.officeLocations.map { it.toCodedValue() }
                 ),
-                probationDeliveryUnits = manager.team.pduOfficeLocations()
+                probationDeliveryUnits = manager.team.pduOfficeLocations(),
+                eventNumber = manager.licenceCondition.disposal.event.number
             )
         } ?: throw NotFoundException("LicenceCondition", "id", id)
 

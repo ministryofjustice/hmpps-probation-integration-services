@@ -2,9 +2,9 @@ package uk.gov.justice.digital.hmpps
 
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc
 import org.springframework.test.json.JsonCompareMode
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
@@ -292,7 +292,8 @@ internal class CaseControllerIntegrationTest(
                             }
                           ]
                         }
-                      ]
+                      ],
+                      "eventNumber": "3"
                     }
                     """.trimIndent(),
                     JsonCompareMode.STRICT
@@ -346,7 +347,8 @@ internal class CaseControllerIntegrationTest(
                             }
                           ]
                         }
-                      ]
+                      ],
+                      "eventNumber": "1"
                     }
                     """.trimIndent(),
                     JsonCompareMode.STRICT
