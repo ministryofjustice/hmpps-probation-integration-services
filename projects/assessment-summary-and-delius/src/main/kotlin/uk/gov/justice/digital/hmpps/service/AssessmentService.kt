@@ -161,7 +161,7 @@ private fun AssessmentSummary.contactDetail() =
             "LOCKED_INCOMPLETE" -> ContactType.Code.OASYS_ASSESSMENT_LOCKED_INCOMPLETE
             else -> throw IllegalArgumentException("Unexpected assessment status: $assessmentStatus")
         },
-        dateCompleted ?: initiationDate,
+        (dateCompleted ?: initiationDate).toLocalDate(),
         "Reason for Assessment: ${furtherInformation.pOAssessmentDesc}",
         "urn:uk:gov:hmpps:oasys:assessment:${assessmentPk}"
     )

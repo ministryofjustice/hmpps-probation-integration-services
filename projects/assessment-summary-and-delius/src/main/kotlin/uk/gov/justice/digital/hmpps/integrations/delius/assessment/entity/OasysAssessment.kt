@@ -19,6 +19,7 @@ import uk.gov.justice.digital.hmpps.jpa.GeneratedId
 import java.io.Serializable
 import java.math.BigDecimal
 import java.time.LocalDate
+import java.time.LocalDateTime
 
 @Entity
 @Table(name = "oasys_assessment")
@@ -29,7 +30,7 @@ class OasysAssessment(
     val oasysId: String,
 
     @Column(name = "assessment_date")
-    val date: LocalDate,
+    val date: LocalDateTime,
 
     @ManyToOne
     @JoinColumn(name = "offender_id")
@@ -59,7 +60,7 @@ class OasysAssessment(
     val riskFlags: String?,
     val concernFlags: String?,
 
-    val dateCreated: LocalDate,
+    val dateCreated: LocalDateTime,
     @Column(name = "assessment_received_date")
     val dateReceived: LocalDate,
     val initialSentencePlanDate: LocalDate?,

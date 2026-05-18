@@ -50,6 +50,7 @@ import uk.gov.justice.digital.hmpps.service.AssessmentSubmitted.Companion.UPDATE
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import java.math.BigDecimal
 import java.time.LocalDate
+import java.time.LocalDateTime
 import kotlin.collections.firstOrNull
 
 @SpringBootTest
@@ -110,7 +111,7 @@ internal class IntegrationTest @Autowired constructor(
         assertThat(assessment?.court?.code, equalTo("CRT150"))
         assertThat(assessment?.offence?.code, equalTo("80400"))
         assertThat(assessment?.assessedBy, equalTo("John Smith"))
-        assertThat(assessment?.date, equalTo(LocalDate.parse("2023-12-07")))
+        assertThat(assessment?.date, equalTo(LocalDateTime.parse("2023-12-07T12:22:44")))
         assertThat(assessment?.totalScore, equalTo(76))
         assertThat(assessment?.initialSentencePlanDate, equalTo(LocalDate.of(2024, 2, 12)))
         assertThat(assessment?.sentencePlanReviewDate, equalTo(LocalDate.of(2024, 8, 12)))
@@ -118,7 +119,7 @@ internal class IntegrationTest @Autowired constructor(
 
         val contact = contactRepository.findAll()
             .single { it.person.id == person.id && it.type.code == ContactType.Code.OASYS_ASSESSMENT_LOCKED_INCOMPLETE.value }
-        assertThat(contact.date, equalTo(assessment?.date))
+        assertThat(contact.date, equalTo(assessment?.date?.toLocalDate()))
         assertThat(contact.externalReference, equalTo("urn:uk:gov:hmpps:oasys:assessment:${assessment?.oasysId}"))
         assertThat(contact.copyToVisor, equalTo(false))
         assertThat(contact.visorExported, equalTo(null))
@@ -171,12 +172,12 @@ internal class IntegrationTest @Autowired constructor(
         assertThat(assessment.court?.code, equalTo("CRT150"))
         assertThat(assessment.offence?.code, equalTo("80400"))
         assertThat(assessment.assessedBy, equalTo("John Smith"))
-        assertThat(assessment.date, equalTo(LocalDate.parse("2023-12-07")))
+        assertThat(assessment.date, equalTo(LocalDateTime.parse("2023-12-07T12:22:44")))
         assertThat(assessment.totalScore, equalTo(94))
         assertThat(assessment.status?.code, equalTo("C"))
 
         val contact = assessment.contact
-        assertThat(contact.date, equalTo(assessment.date))
+        assertThat(contact.date, equalTo(assessment?.date?.toLocalDate()))
         assertThat(contact.type.code, equalTo(ContactType.Code.OASYS_ASSESSMENT_COMPLETE.value))
         assertThat(contact.externalReference, equalTo("urn:uk:gov:hmpps:oasys:assessment:${assessment.oasysId}"))
         assertThat(contact.copyToVisor, equalTo(true))
@@ -239,7 +240,7 @@ internal class IntegrationTest @Autowired constructor(
             assertThat(assessment?.court?.code, equalTo("LVRPCC"))
             assertThat(assessment?.offence?.code, equalTo("00857"))
             assertThat(assessment?.assessedBy, equalTo("R. L. Name"))
-            assertThat(assessment?.date, equalTo(LocalDate.parse("2023-12-15")))
+            assertThat(assessment?.date, equalTo(LocalDateTime.parse("2023-12-15T08:34:44")))
             assertThat(assessment?.totalScore, equalTo(88))
             assertThat(assessment?.status?.code, equalTo("C"))
 
@@ -280,12 +281,12 @@ internal class IntegrationTest @Autowired constructor(
         assertThat(assessment.court?.code, equalTo("LVRPCC"))
         assertThat(assessment.offence?.code, equalTo("00857"))
         assertThat(assessment.assessedBy, equalTo("LevelTwo CentralSupport"))
-        assertThat(assessment.date, equalTo(LocalDate.parse("2023-12-15")))
+        assertThat(assessment.date, equalTo(LocalDateTime.parse("2023-12-15T08:34:44")))
         assertThat(assessment.totalScore, equalTo(108))
         assertThat(assessment.status?.code, equalTo("C"))
 
         val contact = assessment.contact
-        assertThat(contact.date, equalTo(assessment.date))
+        assertThat(contact.date, equalTo(assessment?.date?.toLocalDate()))
         assertThat(contact.type.code, equalTo(ContactType.Code.OASYS_ASSESSMENT_COMPLETE.value))
         assertThat(contact.externalReference, equalTo("urn:uk:gov:hmpps:oasys:assessment:${assessment.oasysId}"))
         assertThat(contact.copyToVisor, equalTo(true))
@@ -604,7 +605,7 @@ internal class IntegrationTest @Autowired constructor(
         val assessment = oasysAssessmentRepository.findAll().firstOrNull { it.person.id == person.id }
         val contact = contactRepository.findAll()
             .single { it.person.id == person.id && it.type.code == ContactType.Code.OASYS_ASSESSMENT_LOCKED_INCOMPLETE.value }
-        assertThat(contact.date, equalTo(assessment?.date))
+        assertThat(contact.date, equalTo(assessment?.date?.toLocalDate()))
         assertThat(contact.externalReference, equalTo("urn:uk:gov:hmpps:oasys:assessment:${assessment?.oasysId}"))
 
         val registrationDomainEvents = domainEventRepository.findAll()
