@@ -36,7 +36,7 @@ runs:
     - name: Run SQL script
       shell: bash
       run: |
-        instance_id=$(aws ec2 describe-instances --filters 'Name=tag:database,Values=delius_primarydb' --query 'Reservations[0].Instances[].InstanceId' --output text)
+        instance_id=$(aws ec2 describe-instances --filters "Name=tag:database,Values=delius_primarydb" "Name=tag:delius-environment,Values=$environment" --query 'Reservations[0].Instances[].InstanceId' --output text)
         command_id=$(
           aws ssm send-command \
             --document-name "AWS-RunShellScript" \
@@ -51,3 +51,5 @@ runs:
         aws ssm wait command-executed --command-id "$command_id" --instance-id "$instance_id"
         echo "Completed with status: $(aws ssm get-command-invocation --command-id "$command_id" --instance-id "$instance_id" --query "Status" --output text)"
         exit $(aws ssm get-command-invocation --command-id "$command_id" --instance-id "$instance_id" --query "ResponseCode" --output text)
+      env:
+        environment: ${{ inputs.environment }}
