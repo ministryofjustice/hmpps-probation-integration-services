@@ -9,3 +9,10 @@ interface PersonRepository : JpaRepository<Person, Long> {
 
 fun PersonRepository.getByCrn(crn: String) =
     findByCrnAndSoftDeletedIsFalse(crn) ?: throw NotFoundException("Person", "crn", crn)
+
+interface PersonOffenderRepository : JpaRepository<PersonFull, Long> {
+    fun findByCrnAndSoftDeletedIsFalse(crn: String): PersonFull?
+}
+
+fun PersonOffenderRepository.getByCrn(crn: String) =
+    findByCrnAndSoftDeletedIsFalse(crn) ?: throw NotFoundException("PersonOffender", "crn", crn)

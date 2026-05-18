@@ -246,4 +246,12 @@ object AddressGenerator {
         startDate = startDate,
         id = id()
     )
+
+    val OFFENDER_PERSON_ADDRESS = generatePersonAddress(
+        personId = PersonGenerator.DEFAULT_FULL.id,
+        addressNumber = "16",
+        streetName = "Hope Street",
+        postcode = "MB03 3PS",
+        telephoneNumber = "01234567716"
+    )
 }
