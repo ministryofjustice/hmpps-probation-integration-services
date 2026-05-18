@@ -146,7 +146,7 @@ class ContactLogService(
                     ftcCount = (ftcCount ?: 0) + 1
                     val ftcLimit = event.disposal?.type?.ftcLimit
                     contactRepository.save(savedContact)
-                    if ((ftcCount ?: 1) > (ftcLimit ?: 0) ){
+                    if ((ftcCount ?: 1) > (ftcLimit ?: 0)) {
                         val reviewType = contactTypeRepository.findByCode(enforcementAction.contactType.code)
                             ?: throw NotFoundException("ContactType", "code", enforcementAction.contactType.code)
                         contactRepository.save(
