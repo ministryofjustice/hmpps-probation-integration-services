@@ -107,6 +107,11 @@ class DataLoader(
         save(personManagerStaff)
         val person = PersonGenerator.DEFAULT
         save(person)
+        save(PersonGenerator.DEFAULT_FULL)
+        save(PersonGenerator.DISABILITY)
+        save(PersonGenerator.PROVISION)
+        save(OffenderAliasGenerator.DEFAULT)
+        save(AddressGenerator.OFFENDER_PERSON_ADDRESS)
         save(PersonGenerator.PERSON_INACTIVE_EVENT)
         save(
             PersonManagerGenerator.generate(

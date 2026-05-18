@@ -3,15 +3,24 @@ package uk.gov.justice.digital.hmpps.data.generator
 import uk.gov.justice.digital.hmpps.data.generator.DatasetGenerator.ADDRESS_STATUS
 import uk.gov.justice.digital.hmpps.data.generator.DatasetGenerator.ADDRESS_TYPE
 import uk.gov.justice.digital.hmpps.data.generator.DatasetGenerator.ALL_DATASETS
+import uk.gov.justice.digital.hmpps.data.generator.DatasetGenerator.DISABILITY_CONDITION
+import uk.gov.justice.digital.hmpps.data.generator.DatasetGenerator.DISABILITY_TYPE
 import uk.gov.justice.digital.hmpps.data.generator.DatasetGenerator.ETHNICITY
 import uk.gov.justice.digital.hmpps.data.generator.DatasetGenerator.GENDER
 import uk.gov.justice.digital.hmpps.data.generator.DatasetGenerator.GENDER_IDENTITY
 import uk.gov.justice.digital.hmpps.data.generator.DatasetGenerator.HOSTEL_CODE
+import uk.gov.justice.digital.hmpps.data.generator.DatasetGenerator.IMMIGRATION_STATUS
+import uk.gov.justice.digital.hmpps.data.generator.DatasetGenerator.LANGUAGE
 import uk.gov.justice.digital.hmpps.data.generator.DatasetGenerator.NATIONALITY
+import uk.gov.justice.digital.hmpps.data.generator.DatasetGenerator.PROVISION_CATEGORY
+import uk.gov.justice.digital.hmpps.data.generator.DatasetGenerator.PROVISION_TYPE
 import uk.gov.justice.digital.hmpps.data.generator.DatasetGenerator.REGISTER_CATEGORY
 import uk.gov.justice.digital.hmpps.data.generator.DatasetGenerator.REGISTER_LEVEL
 import uk.gov.justice.digital.hmpps.data.generator.DatasetGenerator.RELATIONSHIP
 import uk.gov.justice.digital.hmpps.data.generator.DatasetGenerator.RELIGION
+import uk.gov.justice.digital.hmpps.data.generator.DatasetGenerator.SEXUAL_ORIENTATION
+import uk.gov.justice.digital.hmpps.data.generator.DatasetGenerator.TIER
+import uk.gov.justice.digital.hmpps.data.generator.DatasetGenerator.TITLE
 import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referral.entity.MoveOnCategory
 import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referral.entity.ReferralSource
 import uk.gov.justice.digital.hmpps.integrations.delius.person.registration.entity.Category
@@ -106,6 +115,15 @@ object ReferenceDataGenerator {
     val DOCTOR_RELATIONSHIP = generate("DOC", RELATIONSHIP.id, "Doctor")
     val DOCTOR_RELATIONSHIP_LINKED_TYPE = generate("DOC_LINKED", RELATIONSHIP.id, "Doctor Linked Type")
     val DOCTOR_RELATIONSHIP_LINK = generateLinkedList(DOCTOR_RELATIONSHIP, DOCTOR_RELATIONSHIP_LINKED_TYPE)
+    val DEFAULT_TIER = generate("B2", TIER.id, "B2")
+    val IMMIGRATION_STATUS_REFUGEE = generate("REF", IMMIGRATION_STATUS.id, "Refugee")
+    val DISABILITY_TYPE_1 = generate("DIS1", DISABILITY_TYPE.id, "Disability type 1")
+    val DISABILITY_CONDITION_1 = generate("DISCON1", DISABILITY_CONDITION.id, "Disability Condition 1")
+    val PROVISION_TYPE_1 = generate("PROVTYPE1", PROVISION_TYPE.id, "Provision type 1")
+    val PROVISION_CATEGORY_1 = generate("PROVCAT1", PROVISION_CATEGORY.id, "Provision category 1")
+    val TITLE_DR = generate("DR", TITLE.id, "Dr")
+    val LANGUAGE_ENGLISH = generate("ENG", LANGUAGE.id, "English")
+    val SEXUAL_ORIENTATION_OTHER = generate("OTH", SEXUAL_ORIENTATION.id, "Other")
 
     fun generate(
         code: String,
@@ -181,5 +199,14 @@ object DatasetGenerator {
     val REGISTER_CATEGORY = ALL_DATASETS[DatasetCode.REGISTER_CATEGORY]!!
     val REGISTER_LEVEL = ALL_DATASETS[DatasetCode.REGISTER_LEVEL]!!
     val RELATIONSHIP = ALL_DATASETS[DatasetCode.RELATIONSHIP]!!
+    val IMMIGRATION_STATUS = ALL_DATASETS[DatasetCode.IMMIGRATION_STATUS]!!
+    val TIER = ALL_DATASETS[DatasetCode.TIER]!!
+    val DISABILITY_TYPE = ALL_DATASETS[DatasetCode.DISABILITY_TYPE]!!
+    val DISABILITY_CONDITION = ALL_DATASETS[DatasetCode.DISABILITY_CONDITION]!!
+    val PROVISION_TYPE = ALL_DATASETS[DatasetCode.PROVISION_TYPE]!!
+    val PROVISION_CATEGORY = ALL_DATASETS[DatasetCode.PROVISION_CATEGORY]!!
+    val TITLE = ALL_DATASETS[DatasetCode.TITLE]!!
+    val LANGUAGE = ALL_DATASETS[DatasetCode.LANGUAGE]!!
+    val SEXUAL_ORIENTATION = ALL_DATASETS[DatasetCode.SEXUAL_ORIENTATION]!!
     fun all() = ALL_DATASETS.values
 }
