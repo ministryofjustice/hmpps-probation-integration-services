@@ -148,7 +148,7 @@ class ContactLogService(
                     val enforcementReviewDoesNotExist = event?.let {
                         contactRepository.enforcementReviewExists(it.id, it.breachEnd, REVIEW_ENFORCEMENT_STATUS)
                     } ?: true
-                    if (ftcCount > (ftcLimit ?: 0) && enforcementReviewDoesNotExist ) {
+                    if (ftcCount > (ftcLimit ?: 0) && enforcementReviewDoesNotExist) {
                         val reviewType = contactTypeRepository.getContactType(REVIEW_ENFORCEMENT_STATUS)
                         contactRepository.save(
                             Contact(
