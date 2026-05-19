@@ -8,8 +8,6 @@ import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.ContactT
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.Enforcement
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.EnforcementActionsRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.EnforcementRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.EventRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.RequirementRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.getContactType
 import uk.gov.justice.digital.hmpps.exception.NotFoundException.Companion.orNotFoundBy
 import uk.gov.justice.digital.hmpps.integrations.delius.user.staff.StaffRepository
@@ -28,8 +26,6 @@ class ContactEnforcementService(
     private val contactTypeRepository: ContactTypeRepository,
     private val enforcementRepository: EnforcementRepository,
     private val enforcementActionsRepository: EnforcementActionsRepository,
-    private val eventRepository: EventRepository,
-    private val requirementRepository: RequirementRepository,
     private val staffRepository: StaffRepository,
     private val teamRepository: TeamRepository,
 ) {
