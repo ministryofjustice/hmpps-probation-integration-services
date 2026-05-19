@@ -199,10 +199,6 @@ class UpdateContactOutcomeIntegrationTest : IntegrationTestBase() {
             equalTo(UpdateContactOutcomeGenerator.ENFORCEMENT_ACTION.contactType.code)
         )
         assertThat(linkedContacts[0].event?.id, equalTo(UpdateContactOutcomeGenerator.EVENT.id))
-        assertThat(
-            linkedContacts[0].notes,
-            containsString("Enforcement Action: ${UpdateContactOutcomeGenerator.ENFORCEMENT_ACTION.description}")
-        )
     }
 
     @Test

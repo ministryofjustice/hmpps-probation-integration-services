@@ -34,14 +34,11 @@ class ContactEnforcementService(
     private val teamRepository: TeamRepository,
 ) {
     fun updateEnforcementActionForContact(contact: Contact, enforcementActionCode: String) {
-        val person = contact.person
         val staffCode = contact.staff?.code.orNotFoundBy("Contact", contact.id)
         val teamCode = contact.team?.code.orNotFoundBy("Contact", contact.id)
         val staff = staffRepository.getStaffByCode(staffCode)
         val team = teamRepository.getTeam(teamCode)
-        val event = contact.event?.id?.let { eventRepository.findById(it).orElse(null) }
-        val requirement = contact.requirement?.id?.let { requirementRepository.findById(it).orElse(null) }
-        val contactOutcome = contact.outcome.orNotFoundBy("contactId", contact.id)
+        val contactOutcome = contact.outcome.orNotFoundBy( "contactId", contact.id)
         val enforcementAction = enforcementActionsRepository.findByContactOutcomeId(contactOutcome.id)
             .firstOrNull { it.code == enforcementActionCode }.orNotFoundBy(
                 "EnforcementActionCode",
@@ -51,16 +48,14 @@ class ContactEnforcementService(
             Enforcement(
                 contact = contact,
                 action = enforcementAction,
-                responseDate = enforcementAction.responseByPeriod.let {
-                    contact.startTime?.plusDays(it ?: 0)
-                }
+                responseDate = contact.startTime?.plusDays(enforcementAction.responseByPeriod ?: 0)
             )
         )
         contactRepository.save(
             Contact(
-                person = person,
-                event = event,
-                requirement = requirement,
+                person = contact.person,
+                event = contact.event,
+                requirement = contact.requirement,
                 type = enforcementAction.contactType,
                 date = LocalDate.now(),
                 startTime = ZonedDateTime.now(EuropeLondon),
@@ -68,17 +63,19 @@ class ContactEnforcementService(
                 team = team,
                 provider = team.provider,
                 linkedContactId = contact.id,
-                notes = """
-                            ${DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm").format(LocalDateTime.now())}
-                            Enforcement Action: ${enforcementAction.description}
-                        """.trimIndent()
+                notes = null,
+                licenceCondition = contact.licenceCondition,
+                nsiId = contact.nsiId,
             )
         )
-        event?.run {
-            ftcCount = ftcCount?.plus(1)
-            eventRepository.save(this)
+        contactRepository.save(contact.apply { this.notes = """
+                            ${DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm").format(LocalDateTime.now())}
+                            Enforcement Action: ${enforcementAction.description}
+                        """.trimIndent() })
+        contact.event?.run {
+            ftcCount = contactRepository.countFailureToComply(this).plus(1)
             val ftcLimit = disposal?.type?.ftcLimit ?: return@run
-            if (ftcCount!! > ftcLimit && !contactRepository.enforcementReviewExists(
+            if (ftcCount > ftcLimit && !contactRepository.enforcementReviewExists(
                     id,
                     breachEnd,
                     REVIEW_ENFORCEMENT_STATUS
@@ -91,12 +88,15 @@ class ContactEnforcementService(
                         type = reviewType,
                         date = LocalDate.now(),
                         startTime = ZonedDateTime.now(EuropeLondon),
-                        person = person,
+                        person = contact.person,
                         event = this,
                         staff = staff,
                         team = team,
                         provider = team.provider,
                         notes = null,
+                        requirement = contact.requirement,
+                        licenceCondition = contact.licenceCondition,
+                        nsiId = contact.nsiId,
                     )
                 )
             }

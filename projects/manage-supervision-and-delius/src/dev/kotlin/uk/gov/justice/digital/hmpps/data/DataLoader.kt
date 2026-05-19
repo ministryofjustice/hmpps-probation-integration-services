@@ -315,6 +315,8 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
             UpdateContactOutcomeGenerator.FTC_DISPOSAL_TYPE,
             UpdateContactOutcomeGenerator.FTC_EVENT,
             UpdateContactOutcomeGenerator.FTC_DISPOSAL,
+            UpdateContactOutcomeGenerator.FTC_NS_CONTACT_TYPE,
+            UpdateContactOutcomeGenerator.FTC_PRIOR_CONTACT,
             UpdateContactOutcomeGenerator.CONTACT_7,
             UpdateContactOutcomeGenerator.CONTACT_NO_MANAGER,
         )
