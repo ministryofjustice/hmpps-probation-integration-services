@@ -7,11 +7,11 @@ import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.ContactR
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.ContactTypeRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.Enforcement
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.EnforcementActionsRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.getEnforcementActionByCode
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.EnforcementRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.EventRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.RequirementRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.getContactType
+import uk.gov.justice.digital.hmpps.exception.NotFoundException.Companion.orNotFoundBy
 import uk.gov.justice.digital.hmpps.integrations.delius.user.staff.StaffRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.user.staff.getStaffByCode
 import uk.gov.justice.digital.hmpps.integrations.delius.user.team.TeamRepository
@@ -35,11 +35,18 @@ class ContactEnforcementService(
 ) {
     fun updateEnforcementActionForContact(contact: Contact, enforcementActionCode: String) {
         val person = contact.person
-        val staff = staffRepository.getStaffByCode(contact.staff?.code!!)
-        val team = teamRepository.getTeam(contact.team?.code!!)
+        val staffCode = contact.staff?.code.orNotFoundBy("Contact", contact.id)
+        val teamCode = contact.team?.code.orNotFoundBy("Contact", contact.id)
+        val staff = staffRepository.getStaffByCode(staffCode)
+        val team = teamRepository.getTeam(teamCode)
         val event = contact.event?.id?.let { eventRepository.findById(it).orElse(null) }
         val requirement = contact.requirement?.id?.let { requirementRepository.findById(it).orElse(null) }
-        val enforcementAction = enforcementActionsRepository.getEnforcementActionByCode(enforcementActionCode)
+        val contactOutcome = contact.outcome.orNotFoundBy( "contactId", contact.id)
+        val enforcementAction = enforcementActionsRepository.findByContactOutcomeId(contactOutcome.id)
+            .firstOrNull { it.code == enforcementActionCode }.orNotFoundBy(
+                "EnforcementActionCode",
+                enforcementActionCode
+            )
         enforcementRepository.save(
             Enforcement(
                 contact = contact,
@@ -68,10 +75,10 @@ class ContactEnforcementService(
             )
         )
         event?.run {
-            ftcCount = ftcCount + 1
+            ftcCount = ftcCount?.plus(1)
             eventRepository.save(this)
             val ftcLimit = disposal?.type?.ftcLimit ?: return@run
-            if (ftcCount > ftcLimit && !contactRepository.enforcementReviewExists(
+            if (ftcCount!! > ftcLimit && !contactRepository.enforcementReviewExists(
                     id,
                     breachEnd,
                     REVIEW_ENFORCEMENT_STATUS
