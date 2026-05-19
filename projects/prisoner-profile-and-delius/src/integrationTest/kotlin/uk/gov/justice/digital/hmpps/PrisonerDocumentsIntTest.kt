@@ -152,6 +152,16 @@ internal class PrisonerDocumentsIntTest @Autowired constructor(
     }
 
     @Test
+    fun `get documents succeeds when lao flag enabled and case has no restrictions`() {
+        whenever(featureFlags.enabled(FLIPT_KEY)).thenReturn(true)
+        mockMvc.get("/probation-cases/${PersonGenerator.DEFAULT.nomisId}/documents") {
+            withToken()
+        }.andExpect {
+            status { isOk() }
+        }
+    }
+
+    @Test
     fun `download document returns 403 when lao flag enabled and user is excluded from case`() {
         whenever(featureFlags.enabled(FLIPT_KEY)).thenReturn(true)
         mockMvc.get("/document/${LimitedAccessGenerator.LAO_EXCLUDED_PERSON_DOCUMENT.alfrescoId}") {
@@ -160,5 +170,21 @@ internal class PrisonerDocumentsIntTest @Autowired constructor(
         }.andExpect {
             status { isForbidden() }
         }
+    }
+
+    @Test
+    fun `download document succeeds when lao flag enabled and case has no restrictions`() {
+        whenever(featureFlags.enabled(FLIPT_KEY)).thenReturn(true)
+        mockMvc.get("/document/00000000-0000-0000-0000-000000000001") {
+            accept = MediaType.APPLICATION_OCTET_STREAM
+            withToken()
+        }
+            .andExpect {
+                request { asyncStarted() }
+            }
+            .asyncDispatch()
+            .andExpect {
+                status { is2xxSuccessful() }
+            }
     }
 }
