@@ -187,6 +187,26 @@ object UpdateContactOutcomeGenerator {
         outcome = OUTCOME
     )
 
+    // Event with a disposal whose ftcLimit is 1 and ftcCount already at 1 — next enforcement triggers ARWS review
+    val FTC_DISPOSAL_TYPE = PersonGenerator.generateDisposalType("UCOFTC", "UCO FTC Disposal Type", ftcLimit = 1)
+    val FTC_EVENT = PersonGenerator.generateEvent(
+        PERSON,
+        eventNumber = "2",
+        notes = "FTC limit event",
+        additionalOffences = emptyList(),
+    ).also { it.ftcCount = 1 }
+    val FTC_DISPOSAL = PersonGenerator.generateDisposal(FTC_EVENT, type = FTC_DISPOSAL_TYPE)
+
+    val CONTACT_7 = ContactGenerator.generateContact(
+        PERSON,
+        CONTACT_TYPE,
+        ZonedDateTime.of(LocalDateTime.now(EuropeLondon).plusHours(10), EuropeLondon),
+        team = TEAM,
+        staff = STAFF,
+        event = FTC_EVENT,
+        outcome = OUTCOME
+    )
+
     val PERSON_NO_MANAGER = PersonGenerator.generateOverview("UCO0002", forename = "NoManager", surname = "Person")
 
     val CONTACT_NO_MANAGER = ContactGenerator.generateContact(

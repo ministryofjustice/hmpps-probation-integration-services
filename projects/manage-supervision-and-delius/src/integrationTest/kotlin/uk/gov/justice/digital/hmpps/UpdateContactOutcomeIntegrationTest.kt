@@ -10,6 +10,7 @@ import org.springframework.test.web.servlet.put
 import uk.gov.justice.digital.hmpps.api.model.contact.UpdateContactOutcome
 import uk.gov.justice.digital.hmpps.data.generator.IdGenerator
 import uk.gov.justice.digital.hmpps.data.generator.UpdateContactOutcomeGenerator
+import uk.gov.justice.digital.hmpps.service.ContactLogService
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.json
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 import java.time.LocalDate
@@ -232,5 +233,32 @@ class UpdateContactOutcomeIntegrationTest : IntegrationTestBase() {
             contactRepository.findByLinkedContactIdOrderByDateDesc(UpdateContactOutcomeGenerator.CONTACT_5.id)
         assertThat(linkedContacts.size, equalTo(1))
         assertThat(linkedContacts[0].event, Matchers.nullValue())
+    }
+
+    @Test
+    fun `enforcement review contact created when ftc count exceeds limit`() {
+        mockMvc.put("/contact/${UpdateContactOutcomeGenerator.CONTACT_7.id}") {
+            withToken()
+            json = UpdateContactOutcome(
+                date = LocalDate.now().plusDays(4),
+                time = LocalTime.of(10, 0),
+                outcomeCode = UpdateContactOutcomeGenerator.OUTCOME.code,
+                enforcementActionCode = UpdateContactOutcomeGenerator.ENFORCEMENT_ACTION.code,
+                notes = "FTC review notes",
+                alert = false,
+                sensitive = false
+            )
+        }.andExpect { status { isOk() } }
+
+        val ftcAfter = transactionTemplate.execute {
+            entityManager.clear()
+            eventRepository.findById(UpdateContactOutcomeGenerator.FTC_EVENT.id).get().ftcCount
+        }
+        assertThat(ftcAfter, equalTo(2L))
+
+        // Enforcement action linked contact + ARWS review contact
+        val linkedContacts = contactRepository.findByLinkedContactIdOrderByDateDesc(UpdateContactOutcomeGenerator.CONTACT_7.id)
+        assertThat(linkedContacts.size, equalTo(2))
+        assertThat(linkedContacts.any { it.type.code == ContactLogService.REVIEW_ENFORCEMENT_STATUS }, equalTo(true))
     }
 }

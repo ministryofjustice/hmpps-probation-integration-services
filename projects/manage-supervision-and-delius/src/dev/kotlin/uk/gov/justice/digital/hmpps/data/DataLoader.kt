@@ -312,6 +312,10 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
             UpdateContactOutcomeGenerator.CONTACT_4,
             UpdateContactOutcomeGenerator.CONTACT_5,
             UpdateContactOutcomeGenerator.CONTACT_6,
+            UpdateContactOutcomeGenerator.FTC_DISPOSAL_TYPE,
+            UpdateContactOutcomeGenerator.FTC_EVENT,
+            UpdateContactOutcomeGenerator.FTC_DISPOSAL,
+            UpdateContactOutcomeGenerator.CONTACT_7,
             UpdateContactOutcomeGenerator.CONTACT_NO_MANAGER,
         )
         saveAll(
