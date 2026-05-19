@@ -174,9 +174,5 @@ interface DocumentRepository : JpaRepository<DocumentEntity, Long> {
     )
     fun getPersonAndEventDocuments(personId: Long): List<Document>
 
-    @Query("select d.name from DocumentEntity d where d.alfrescoId = :alfrescoId")
-    fun findNameByAlfrescoId(alfrescoId: String): String?
-
-    @Query("select d from DocumentEntity d where d.alfrescoId = :alfrescoId")
-    fun findDocumentByAlfrescoId(alfrescoId: String): DocumentEntity?
+    fun findByAlfrescoId(alfrescoId: String): DocumentEntity?
 }
