@@ -190,11 +190,18 @@ class UpdateContactOutcomeIntegrationTest : IntegrationTestBase() {
             )
         }.andExpect { status { isOk() } }
 
-        val linkedContacts = contactRepository.findByLinkedContactIdOrderByDateDesc(UpdateContactOutcomeGenerator.CONTACT_6.id)
+        val linkedContacts =
+            contactRepository.findByLinkedContactIdOrderByDateDesc(UpdateContactOutcomeGenerator.CONTACT_6.id)
         assertThat(linkedContacts.size, equalTo(1))
-        assertThat(linkedContacts[0].type.code, equalTo(UpdateContactOutcomeGenerator.ENFORCEMENT_ACTION.contactType.code))
+        assertThat(
+            linkedContacts[0].type.code,
+            equalTo(UpdateContactOutcomeGenerator.ENFORCEMENT_ACTION.contactType.code)
+        )
         assertThat(linkedContacts[0].event?.id, equalTo(UpdateContactOutcomeGenerator.EVENT.id))
-        assertThat(linkedContacts[0].notes, containsString("Enforcement Action: ${UpdateContactOutcomeGenerator.ENFORCEMENT_ACTION.description}"))
+        assertThat(
+            linkedContacts[0].notes,
+            containsString("Enforcement Action: ${UpdateContactOutcomeGenerator.ENFORCEMENT_ACTION.description}")
+        )
     }
 
     @Test
@@ -216,9 +223,13 @@ class UpdateContactOutcomeIntegrationTest : IntegrationTestBase() {
             it.contact.id == UpdateContactOutcomeGenerator.CONTACT_5.id
         }
         assertThat(enforcements.size, equalTo(1))
-        assertThat(enforcements[0].action?.code, equalTo(UpdateContactOutcomeGenerator.PERSON_LEVEL_ENFORCEMENT_ACTION.code))
+        assertThat(
+            enforcements[0].action?.code,
+            equalTo(UpdateContactOutcomeGenerator.PERSON_LEVEL_ENFORCEMENT_ACTION.code)
+        )
 
-        val linkedContacts = contactRepository.findByLinkedContactIdOrderByDateDesc(UpdateContactOutcomeGenerator.CONTACT_5.id)
+        val linkedContacts =
+            contactRepository.findByLinkedContactIdOrderByDateDesc(UpdateContactOutcomeGenerator.CONTACT_5.id)
         assertThat(linkedContacts.size, equalTo(1))
         assertThat(linkedContacts[0].event, Matchers.nullValue())
     }

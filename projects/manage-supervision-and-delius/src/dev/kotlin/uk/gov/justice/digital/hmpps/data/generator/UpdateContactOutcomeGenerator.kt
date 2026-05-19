@@ -147,7 +147,12 @@ object UpdateContactOutcomeGenerator {
     val PERSON_LEVEL_OUTCOME = ContactGenerator.generateOutcome("UPLOUT", "UCO Person Level Outcome", false, true)
 
     val PERSON_LEVEL_CONTACT_TYPE_OUTCOME =
-        generateContactTypeOutcome(PERSON_LEVEL_CONTACT_TYPE.id, PERSON_LEVEL_OUTCOME.id, PERSON_LEVEL_CONTACT_TYPE, PERSON_LEVEL_OUTCOME)
+        generateContactTypeOutcome(
+            PERSON_LEVEL_CONTACT_TYPE.id,
+            PERSON_LEVEL_OUTCOME.id,
+            PERSON_LEVEL_CONTACT_TYPE,
+            PERSON_LEVEL_OUTCOME
+        )
 
     val PERSON_LEVEL_ENFORCEMENT_ACTION =
         ContactGenerator.generateEnforcementAction("UCOPENF", "UCO Person Level Enforcement", CONTACT_TYPE)
