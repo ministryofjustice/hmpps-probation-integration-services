@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps
 
 import com.github.tomakehurst.wiremock.WireMockServer
 import jakarta.persistence.EntityManager
+import org.junit.jupiter.api.BeforeEach
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc
@@ -73,6 +74,12 @@ open class IntegrationTestBase {
 
     @Autowired
     lateinit var channelManager: HmppsChannelManager
+
+    @BeforeEach
+    fun drainChannel() {
+        val channel = channelManager.getChannel(topicName)
+        while (channel.receive() != null) { /* drain */ }
+    }
 
     @MockitoBean
     lateinit var mappaCategoryResolverService: MappaCategoryResolverService

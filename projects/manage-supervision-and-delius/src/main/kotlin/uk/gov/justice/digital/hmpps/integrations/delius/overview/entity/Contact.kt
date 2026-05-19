@@ -19,6 +19,7 @@ import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.CrudRepository
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
+import uk.gov.justice.digital.hmpps.exception.NotFoundException.Companion.orNotFoundBy
 import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.ContactDocument
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.ReferenceData
 import uk.gov.justice.digital.hmpps.integrations.delius.user.entity.Provider
@@ -1098,7 +1099,11 @@ interface EnforcementActionsRepository : JpaRepository<EnforcementAction, Long> 
         nativeQuery = true
     )
     fun findByContactOutcomeId(outcomeId: Long): List<EnforcementAction>
+    fun findEnforcementActionByCode(code: String): MutableList<EnforcementAction>
 }
+
+fun EnforcementActionsRepository.getEnforcementActionByCode(code: String): EnforcementAction =
+    findEnforcementActionByCode(code).firstOrNull().orNotFoundBy("code", code)
 
 @Entity
 @Table(name = "r_enf_act_contact_out_type")

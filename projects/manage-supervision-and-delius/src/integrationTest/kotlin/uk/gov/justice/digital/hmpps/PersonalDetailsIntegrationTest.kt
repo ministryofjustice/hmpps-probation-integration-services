@@ -82,6 +82,9 @@ class PersonalDetailsIntegrationTest : IntegrationTestBase() {
         deliusUserAspect.set("namedParameterJdbcTemplate", namedParameterJdbcTemplate)
         Mockito.reset(jdbcTemplate);
         Mockito.reset(namedParameterJdbcTemplate)
+        // Drain any leftover messages from previous tests
+        val channel = channelManager.getChannel(topicName)
+        while (channel.receive() != null) { /* drain */ }
     }
 
     @Test
