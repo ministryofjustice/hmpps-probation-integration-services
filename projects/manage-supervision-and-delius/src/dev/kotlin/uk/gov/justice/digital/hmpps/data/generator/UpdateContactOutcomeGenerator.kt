@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.data.generator
 
 import uk.gov.justice.digital.hmpps.data.generator.AppointmentGenerator.generateContactTypeOutcome
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
+import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.Contact
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.ContactType
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.EnforcementActionContactOutcome
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.EnforcementActionContactOutcomeId
@@ -129,6 +130,56 @@ object UpdateContactOutcomeGenerator {
         team = TEAM,
         staff = STAFF,
         event = EVENT
+    )
+
+    // A person-level contact type (offenderContact = true) — not linked to an event
+    val PERSON_LEVEL_CONTACT_TYPE = ContactType(
+        id = IdGenerator.getAndIncrement(),
+        code = "UPCT",
+        attendanceContact = false,
+        description = "UCO Person Level Contact Type",
+        contactOutcomeFlag = true,
+        locationRequired = "N",
+        editable = true,
+        offenderContact = true
+    )
+
+    val PERSON_LEVEL_OUTCOME = ContactGenerator.generateOutcome("UPLOUT", "UCO Person Level Outcome", false, true)
+
+    val PERSON_LEVEL_CONTACT_TYPE_OUTCOME =
+        generateContactTypeOutcome(PERSON_LEVEL_CONTACT_TYPE.id, PERSON_LEVEL_OUTCOME.id, PERSON_LEVEL_CONTACT_TYPE, PERSON_LEVEL_OUTCOME)
+
+    val PERSON_LEVEL_ENFORCEMENT_ACTION =
+        ContactGenerator.generateEnforcementAction("UCOPENF", "UCO Person Level Enforcement", CONTACT_TYPE)
+
+    val PERSON_LEVEL_ENFORCEMENT_ACTION_OUTCOME_TYPE = EnforcementActionContactOutcome(
+        EnforcementActionContactOutcomeId(
+            enforcementActionId = PERSON_LEVEL_ENFORCEMENT_ACTION.id,
+            contactOutcomeTypeId = PERSON_LEVEL_OUTCOME.id
+        )
+    )
+
+    val CONTACT_5 = Contact(
+        id = IdGenerator.getAndIncrement(),
+        person = PERSON,
+        type = PERSON_LEVEL_CONTACT_TYPE,
+        date = ZonedDateTime.of(LocalDateTime.now(EuropeLondon).plusHours(8), EuropeLondon).toLocalDate(),
+        startTime = ZonedDateTime.of(LocalDateTime.now(EuropeLondon).plusHours(8), EuropeLondon),
+        team = TEAM,
+        staff = STAFF,
+        event = null,
+        outcome = PERSON_LEVEL_OUTCOME,
+        notes = null,
+    )
+
+    val CONTACT_6 = ContactGenerator.generateContact(
+        PERSON,
+        CONTACT_TYPE,
+        ZonedDateTime.of(LocalDateTime.now(EuropeLondon).plusHours(9), EuropeLondon),
+        team = TEAM,
+        staff = STAFF,
+        event = EVENT,
+        outcome = OUTCOME
     )
 
     val PERSON_NO_MANAGER = PersonGenerator.generateOverview("UCO0002", forename = "NoManager", surname = "Person")
