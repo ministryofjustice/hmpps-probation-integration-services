@@ -694,10 +694,12 @@ internal class IntegrationTest @Autowired constructor(
     fun `two assessments on the same date are ordered by time descending`() {
         val person = personRepository.getByCrn(PersonGenerator.SAME_DAY_DIFFERENT_TIMES.crn)
 
-        val message1 = notification<HmppsDomainEvent>("assessment-summary-produced").withCrnAndAssessmentId(person.crn, 18)
+        val message1 =
+            notification<HmppsDomainEvent>("assessment-summary-produced").withCrnAndAssessmentId(person.crn, 18)
         channelManager.getChannel(queueName).publishAndWait(message1)
 
-        val message2 = notification<HmppsDomainEvent>("assessment-summary-produced").withCrnAndAssessmentId(person.crn, 181)
+        val message2 =
+            notification<HmppsDomainEvent>("assessment-summary-produced").withCrnAndAssessmentId(person.crn, 181)
         channelManager.getChannel(queueName).publishAndWait(message2)
 
         val assessments = oasysAssessmentRepository
@@ -708,10 +710,14 @@ internal class IntegrationTest @Autowired constructor(
 
         assertThat(assessments.map { it.oasysId }, equalTo(listOf("181", "18")))
 
-        assertThat(assessments.map { it.date.toLocalDate() }.distinct(),
-            equalTo(listOf(LocalDate.parse("2024-03-15"))))
+        assertThat(
+            assessments.map { it.date.toLocalDate() }.distinct(),
+            equalTo(listOf(LocalDate.parse("2024-03-15")))
+        )
 
-        assertThat(assessments.map { it.date }, equalTo(listOf(
+        assertThat(
+            assessments.map { it.date }, equalTo(
+                listOf(
                     LocalDateTime.parse("2024-03-15T17:30:00"),
                     LocalDateTime.parse("2024-03-15T09:00:00")
                 )
@@ -742,7 +748,6 @@ internal class IntegrationTest @Autowired constructor(
             )
         )
     }
-
 
     private fun Person.oasysId() = crn.drop(1).toInt().toString()
 

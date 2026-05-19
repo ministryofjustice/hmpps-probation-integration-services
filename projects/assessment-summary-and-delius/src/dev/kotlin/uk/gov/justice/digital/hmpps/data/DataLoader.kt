@@ -114,7 +114,8 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
                 externalReference = externalReference
             )
         )
-        val assessment = AssessmentGenerator.generate(this, contact, LocalDateTime.parse("2013-06-07T00:00:00"), oasysId = oasysId)
+        val assessment =
+            AssessmentGenerator.generate(this, contact, LocalDateTime.parse("2013-06-07T00:00:00"), oasysId = oasysId)
         save(assessment)
         return this
     }
