@@ -10,6 +10,7 @@ import uk.gov.justice.digital.hmpps.data.generator.CommunityManagerGenerator.UNA
 import uk.gov.justice.digital.hmpps.data.generator.CommunityManagerGenerator.generateCommunityManager
 import uk.gov.justice.digital.hmpps.data.generator.DocumentGenerator
 import uk.gov.justice.digital.hmpps.data.generator.EventGenerator
+import uk.gov.justice.digital.hmpps.data.generator.LimitedAccessGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.UserGenerator
 import uk.gov.justice.digital.hmpps.data.loader.BaseDataLoader
@@ -37,6 +38,7 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
             )
         )
         saveAll(documentData())
+        saveAll(laoData())
     }
 
     fun documentData() = listOfNotNull(
@@ -77,5 +79,15 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
         DocumentGenerator.EVENT_CONTACT,
         DocumentGenerator.OFFENDER_NSI,
         DocumentGenerator.EVENT_NSI
+    )
+
+    fun laoData() = listOf(
+        LimitedAccessGenerator.LAO_EXCLUDED_PERSON,
+        LimitedAccessGenerator.LAO_RESTRICTED_PERSON,
+        LimitedAccessGenerator.EXCLUDED_LAO_USER,
+        LimitedAccessGenerator.RESTRICTED_LAO_USER,
+        LimitedAccessGenerator.LAO_EXCLUSION,
+        LimitedAccessGenerator.LAO_RESTRICTION,
+        LimitedAccessGenerator.LAO_EXCLUDED_PERSON_DOCUMENT,
     )
 }

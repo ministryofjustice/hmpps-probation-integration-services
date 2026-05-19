@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.http.ResponseEntity
+import org.springframework.security.access.AccessDeniedException
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody
@@ -11,23 +12,32 @@ import uk.gov.justice.digital.hmpps.api.model.ProbationDocumentsResponse
 import uk.gov.justice.digital.hmpps.client.AlfrescoClient
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
+import uk.gov.justice.digital.hmpps.flags.FeatureFlags
 import uk.gov.justice.digital.hmpps.integrations.delius.documents.entity.*
 
 @Service
 class DocumentService(
     private val personRepository: PersonRepository,
     private val documentRepository: DocumentRepository,
-    private val alfrescoClient: AlfrescoClient
+    private val alfrescoClient: AlfrescoClient,
+    private val limitedAccessService: UserAccessService,
+    private val featureFlags: FeatureFlags,
 ) {
+    companion object {
+        const val FLIPT_KEY = "dps_lao_restriction"
+    }
+
     fun downloadDocument(id: String): ResponseEntity<StreamingResponseBody> {
-        val filename =
-            documentRepository.findNameByAlfrescoId(id) ?: throw NotFoundException("Document", "alfrescoId", id)
-        return alfrescoClient.streamDocument(id, filename)
+        val document =
+            documentRepository.findDocumentByAlfrescoId(id) ?: throw NotFoundException("Document", "alfrescoId", id)
+        if (featureFlags.enabled(FLIPT_KEY)) checkForLao(personRepository.findById(document.personId).orElseThrow { NotFoundException("Person", "id", document.personId) }.crn)
+        return alfrescoClient.streamDocument(id, document.name)
     }
 
     @Transactional
     fun getDocumentsForCase(nomisId: String): ProbationDocumentsResponse =
         personRepository.findByNomisId(nomisId)?.let { person ->
+            if (featureFlags.enabled(FLIPT_KEY)) checkForLao(person.crn)
             val documents = documentRepository.getPersonAndEventDocuments(person.id)
             val eventDocuments = documents.filter { it.relatesToEvent() }.groupBy { it.eventId!! }
             ProbationDocumentsResponse(
@@ -72,4 +82,12 @@ class DocumentService(
     private fun List<CourtAppearance>.latestOutcome() = filter { it.outcome != null }.maxByOrNull { it.date }?.outcome
     private val Disposal.lengthString get() = length?.let { "$length ${lengthUnits!!.description}" }
     private val Disposal.description get() = "${type.description}${lengthString?.let { " ($it)" } ?: ""}"
+    private fun checkForLao(crn: String) {
+        val limitedAccessInfo = limitedAccessService.checkLimitedAccessFor(listOf(crn))
+        limitedAccessInfo.access.firstOrNull { it.crn == crn }?.let { limitedAccess ->
+            if (limitedAccess.userExcluded || limitedAccess.userRestricted) {
+                throw AccessDeniedException("Access Denied for case with crn ${crn}")
+            }
+        }
+    }
 }

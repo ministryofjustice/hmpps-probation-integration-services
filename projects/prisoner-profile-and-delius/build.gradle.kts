@@ -5,6 +5,7 @@ apply(plugin = "com.google.cloud.tools.jib")
 dependencies {
     implementation(project(":libs:audit"))
     implementation(project(":libs:commons"))
+    implementation(project(":libs:limited-access"))
     implementation(project(":libs:oauth-server"))
     implementation(project(":libs:document-management"))
 
