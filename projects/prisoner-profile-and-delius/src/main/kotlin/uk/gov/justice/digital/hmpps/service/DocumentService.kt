@@ -30,7 +30,10 @@ class DocumentService(
     fun downloadDocument(id: String): ResponseEntity<StreamingResponseBody> {
         val document =
             documentRepository.findDocumentByAlfrescoId(id) ?: throw NotFoundException("Document", "alfrescoId", id)
-        if (featureFlags.enabled(FLIPT_KEY)) checkForLao(personRepository.findById(document.personId).orElseThrow { NotFoundException("Person", "id", document.personId) }.crn)
+        if (featureFlags.enabled(FLIPT_KEY)) checkForLao(
+            personRepository.findById(document.personId)
+                .orElseThrow { NotFoundException("Person", "id", document.personId) }.crn
+        )
         return alfrescoClient.streamDocument(id, document.name)
     }
 
