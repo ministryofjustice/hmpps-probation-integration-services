@@ -38,7 +38,7 @@ class ContactEnforcementService(
         val teamCode = contact.team?.code.orNotFoundBy("Contact", contact.id)
         val staff = staffRepository.getStaffByCode(staffCode)
         val team = teamRepository.getTeam(teamCode)
-        val contactOutcome = contact.outcome.orNotFoundBy( "contactId", contact.id)
+        val contactOutcome = contact.outcome.orNotFoundBy("contactId", contact.id)
         val enforcementAction = enforcementActionsRepository.findByContactOutcomeId(contactOutcome.id)
             .firstOrNull { it.code == enforcementActionCode }.orNotFoundBy(
                 "EnforcementActionCode",
@@ -68,10 +68,12 @@ class ContactEnforcementService(
                 nsiId = contact.nsiId,
             )
         )
-        contactRepository.save(contact.apply { this.notes = """
+        contactRepository.save(contact.apply {
+            this.notes = """
                             ${DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm").format(LocalDateTime.now())}
                             Enforcement Action: ${enforcementAction.description}
-                        """.trimIndent() })
+                        """.trimIndent()
+        })
         contact.event?.run {
             ftcCount = contactRepository.countFailureToComply(this).plus(1)
             val ftcLimit = disposal?.type?.ftcLimit ?: return@run
