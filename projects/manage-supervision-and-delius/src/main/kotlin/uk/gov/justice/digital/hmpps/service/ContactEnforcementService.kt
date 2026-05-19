@@ -41,7 +41,7 @@ class ContactEnforcementService(
         val team = teamRepository.getTeam(teamCode)
         val event = contact.event?.id?.let { eventRepository.findById(it).orElse(null) }
         val requirement = contact.requirement?.id?.let { requirementRepository.findById(it).orElse(null) }
-        val contactOutcome = contact.outcome.orNotFoundBy( "contactId", contact.id)
+        val contactOutcome = contact.outcome.orNotFoundBy("contactId", contact.id)
         val enforcementAction = enforcementActionsRepository.findByContactOutcomeId(contactOutcome.id)
             .firstOrNull { it.code == enforcementActionCode }.orNotFoundBy(
                 "EnforcementActionCode",
