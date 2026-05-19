@@ -257,7 +257,8 @@ class UpdateContactOutcomeIntegrationTest : IntegrationTestBase() {
         assertThat(ftcAfter, equalTo(2L))
 
         // Enforcement action linked contact + ARWS review contact
-        val linkedContacts = contactRepository.findByLinkedContactIdOrderByDateDesc(UpdateContactOutcomeGenerator.CONTACT_7.id)
+        val linkedContacts =
+            contactRepository.findByLinkedContactIdOrderByDateDesc(UpdateContactOutcomeGenerator.CONTACT_7.id)
         assertThat(linkedContacts.size, equalTo(2))
         assertThat(linkedContacts.any { it.type.code == ContactLogService.REVIEW_ENFORCEMENT_STATUS }, equalTo(true))
     }
