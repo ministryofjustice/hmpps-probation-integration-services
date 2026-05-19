@@ -100,9 +100,9 @@ fun PersonFull.toOtherIds() = OtherIds(
 fun PersonFull.toEmailAddresses(): List<String> = listOfNotNull(emailAddress)
 
 fun PersonFull.toPhoneNumbers(): List<PhoneNumber> = listOfNotNull(
-        if (telephoneNumber != null) PhoneNumber(telephoneNumber, PhoneTypes.TELEPHONE.name) else null,
-        if (mobileNumber != null) PhoneNumber(mobileNumber, PhoneTypes.MOBILE.name) else null
-    )
+    if (telephoneNumber != null) PhoneNumber(telephoneNumber, PhoneTypes.TELEPHONE.name) else null,
+    if (mobileNumber != null) PhoneNumber(mobileNumber, PhoneTypes.MOBILE.name) else null
+)
 
 fun PersonFull.toContactDetails() = OffenderContactDetails(
     allowSMS = allowSms,
