@@ -52,6 +52,8 @@ import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.LocalDateTime
 import kotlin.collections.firstOrNull
+import org.springframework.data.domain.Sort
+import kotlin.collections.copy
 
 @SpringBootTest
 @DirtiesContext
@@ -688,6 +690,37 @@ internal class IntegrationTest @Autowired constructor(
         assertThat(assessment?.concernFlags, equalTo("YES,NO,YES,YES,NO,YES,NO,NO"))
     }
 
+    @Test
+    fun `two assessments on the same date are ordered by time descending`() {
+        val person = personRepository.getByCrn(PersonGenerator.SAME_DAY_DIFFERENT_TIMES.crn)
+
+        val message1 = notification<HmppsDomainEvent>("assessment-summary-produced").withCrnAndAssessmentId(person.crn, 18)
+        channelManager.getChannel(queueName).publishAndWait(message1)
+
+        val message2 = notification<HmppsDomainEvent>("assessment-summary-produced").withCrnAndAssessmentId(person.crn, 181)
+        channelManager.getChannel(queueName).publishAndWait(message2)
+
+        val assessments = oasysAssessmentRepository
+            .findAll(Sort.by(Sort.Direction.DESC, "date"))
+            .filter { it.person.id == person.id }
+
+        assertThat(assessments.size, equalTo(2))
+
+        assertThat(assessments.map { it.oasysId }, equalTo(listOf("181", "18")))
+
+        assertThat(assessments.map { it.date.toLocalDate() }.distinct(),
+            equalTo(listOf(LocalDate.parse("2024-03-15"))))
+
+        assertThat(assessments.map { it.date }, equalTo(listOf(
+                    LocalDateTime.parse("2024-03-15T17:30:00"),
+                    LocalDateTime.parse("2024-03-15T09:00:00")
+                )
+            )
+        )
+
+        assertThat(assessments[0].date.isAfter(assessments[1].date), equalTo(true))
+    }
+
     private fun Notification<HmppsDomainEvent>.withCrn(crn: String): Notification<HmppsDomainEvent> {
         val oasysId = crn.drop(1).toInt()
         return this.copy(
@@ -697,6 +730,19 @@ internal class IntegrationTest @Autowired constructor(
             )
         )
     }
+
+    private fun Notification<HmppsDomainEvent>.withCrnAndAssessmentId(
+        crn: String,
+        assessmentId: Int
+    ): Notification<HmppsDomainEvent> {
+        return this.copy(
+            message = this.message.copy(
+                detailUrl = "http://localhost:${wireMockServer.port()}/eor/oasys/ass/asssumm/$crn/ALLOW/$assessmentId/COMPLETE",
+                personReference = PersonReference(listOf(PersonIdentifier("CRN", crn)))
+            )
+        )
+    }
+
 
     private fun Person.oasysId() = crn.drop(1).toInt().toString()
 
