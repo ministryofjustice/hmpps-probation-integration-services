@@ -2,16 +2,22 @@ package uk.gov.justice.digital.hmpps
 
 import com.github.tomakehurst.wiremock.WireMockServer
 import org.hamcrest.Matchers.equalTo
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.mockito.kotlin.whenever
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc
 import org.springframework.http.MediaType
+import org.springframework.test.context.bean.override.mockito.MockitoBean
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
 import org.springframework.util.ResourceUtils
+import uk.gov.justice.digital.hmpps.data.generator.LimitedAccessGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
+import uk.gov.justice.digital.hmpps.flags.FeatureFlags
+import uk.gov.justice.digital.hmpps.service.DocumentService.Companion.FLIPT_KEY
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 
 @AutoConfigureMockMvc
@@ -20,6 +26,14 @@ internal class PrisonerDocumentsIntTest @Autowired constructor(
     private val mockMvc: MockMvc,
     private val wireMockServer: WireMockServer
 ) {
+
+    @MockitoBean
+    lateinit var featureFlags: FeatureFlags
+
+    @BeforeEach
+    fun setUp() {
+        whenever(featureFlags.enabled(FLIPT_KEY)).thenReturn(false)
+    }
 
     @Test
     fun `non-existent case returns 404`() {
@@ -104,6 +118,73 @@ internal class PrisonerDocumentsIntTest @Autowired constructor(
                 content {
                     bytes(ResourceUtils.getFile("classpath:simulations/__files/document.pdf").readBytes())
                 }
+            }
+    }
+
+    @Test
+    fun `get documents returns 403 when lao flag enabled and user is excluded from case`() {
+        whenever(featureFlags.enabled(FLIPT_KEY)).thenReturn(true)
+        mockMvc.get("/probation-cases/${LimitedAccessGenerator.LAO_EXCLUDED_PERSON.nomisId}/documents") {
+            withToken()
+        }.andExpect {
+            status { isForbidden() }
+        }
+    }
+
+    @Test
+    fun `get documents returns 403 when lao flag enabled and case is restricted`() {
+        whenever(featureFlags.enabled(FLIPT_KEY)).thenReturn(true)
+        mockMvc.get("/probation-cases/${LimitedAccessGenerator.LAO_RESTRICTED_PERSON.nomisId}/documents") {
+            withToken()
+        }.andExpect {
+            status { isForbidden() }
+        }
+    }
+
+    @Test
+    fun `get documents succeeds when lao flag disabled even if case is excluded`() {
+        whenever(featureFlags.enabled(FLIPT_KEY)).thenReturn(false)
+        mockMvc.get("/probation-cases/${LimitedAccessGenerator.LAO_EXCLUDED_PERSON.nomisId}/documents") {
+            withToken()
+        }.andExpect {
+            status { isOk() }
+        }
+    }
+
+    @Test
+    fun `get documents succeeds when lao flag enabled and case has no restrictions`() {
+        whenever(featureFlags.enabled(FLIPT_KEY)).thenReturn(true)
+        mockMvc.get("/probation-cases/${PersonGenerator.DEFAULT.nomisId}/documents") {
+            withToken()
+        }.andExpect {
+            status { isOk() }
+        }
+    }
+
+    @Test
+    fun `download document returns 403 when lao flag enabled and user is excluded from case`() {
+        whenever(featureFlags.enabled(FLIPT_KEY)).thenReturn(true)
+        mockMvc.get("/document/${LimitedAccessGenerator.LAO_EXCLUDED_PERSON_DOCUMENT.alfrescoId}") {
+            accept = MediaType.APPLICATION_OCTET_STREAM
+            withToken()
+        }.andExpect {
+            status { isForbidden() }
+        }
+    }
+
+    @Test
+    fun `download document succeeds when lao flag enabled and case has no restrictions`() {
+        whenever(featureFlags.enabled(FLIPT_KEY)).thenReturn(true)
+        mockMvc.get("/document/00000000-0000-0000-0000-000000000001") {
+            accept = MediaType.APPLICATION_OCTET_STREAM
+            withToken()
+        }
+            .andExpect {
+                request { asyncStarted() }
+            }
+            .asyncDispatch()
+            .andExpect {
+                status { is2xxSuccessful() }
             }
     }
 }
