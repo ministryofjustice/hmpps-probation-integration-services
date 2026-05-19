@@ -109,7 +109,10 @@ class ContactLogService(
             )
 
             if (createContact.enforcementActionCode != null) {
-                contactEnforcementService.updateEnforcementActionForContact(savedContact, createContact.enforcementActionCode)
+                contactEnforcementService.updateEnforcementActionForContact(
+                    savedContact,
+                    createContact.enforcementActionCode
+                )
             }
 
             val category = mappaCategoryResolverService.resolveMappaCategory(person.id)

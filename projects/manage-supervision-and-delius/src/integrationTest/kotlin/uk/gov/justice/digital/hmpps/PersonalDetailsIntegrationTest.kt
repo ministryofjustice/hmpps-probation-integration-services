@@ -84,7 +84,8 @@ class PersonalDetailsIntegrationTest : IntegrationTestBase() {
         Mockito.reset(namedParameterJdbcTemplate)
         // Drain any leftover messages from previous tests
         val channel = channelManager.getChannel(topicName)
-        while (channel.receive() != null) { /* drain */ }
+        while (channel.receive() != null) { /* drain */
+        }
     }
 
     @Test

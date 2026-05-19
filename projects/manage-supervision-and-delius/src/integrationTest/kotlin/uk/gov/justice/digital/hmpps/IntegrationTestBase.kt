@@ -78,7 +78,8 @@ open class IntegrationTestBase {
     @BeforeEach
     fun drainChannel() {
         val channel = channelManager.getChannel(topicName)
-        while (channel.receive() != null) { /* drain */ }
+        while (channel.receive() != null) { /* drain */
+        }
     }
 
     @MockitoBean
