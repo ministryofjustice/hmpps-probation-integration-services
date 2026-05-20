@@ -741,7 +741,6 @@ internal class IntegrationTest @Autowired constructor(
         assertThat(assessments[0].date.isAfter(assessments[1].date), equalTo(true))
     }
 
-
     private fun Notification<HmppsDomainEvent>.withCrn(crn: String): Notification<HmppsDomainEvent> {
         val oasysId = crn.drop(1).toInt()
         return this.copy(
