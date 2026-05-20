@@ -19,6 +19,7 @@ import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.CrudRepository
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
+import uk.gov.justice.digital.hmpps.exception.NotFoundException.Companion.orNotFoundBy
 import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.ContactDocument
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.ReferenceData
 import uk.gov.justice.digital.hmpps.integrations.delius.user.entity.Provider
@@ -68,7 +69,7 @@ class Contact(
 
     @Column(name = "attended")
     @Convert(converter = YesNoConverter::class)
-    val attended: Boolean? = null,
+    var attended: Boolean? = null,
 
     @Column(name = "sensitive")
     @Convert(converter = YesNoConverter::class)
@@ -76,7 +77,7 @@ class Contact(
 
     @Column(name = "complied")
     @Convert(converter = YesNoConverter::class)
-    val complied: Boolean? = null,
+    var complied: Boolean? = null,
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "contact_outcome_type_id")
@@ -488,6 +489,37 @@ interface ContactRepository : JpaRepository<Contact, Long> {
         eventId: List<Long>,
         dateTime: ZonedDateTime
     ): List<Contact>
+
+    @Query(
+        """ 
+             select count(c.id) > 0 from Contact c 
+             where c.event.id = :eventId 
+             and c.type.code = :typeCode 
+             and c.outcome is null 
+             and (:since is null or c.date >= :since) 
+             """
+    )
+    fun enforcementReviewExists(
+        eventId: Long,
+        since: LocalDate?,
+        typeCode: String,
+    ): Boolean
+
+    @Query(
+        """
+            select count(distinct c.date)
+            from Contact c
+            where c.event.id = :eventId
+            and c.complied = false
+            and c.type.nationalStandardsContact = true
+            and (:lastResetDate is null or c.date >= :lastResetDate)
+            """
+    )
+    fun countFailureToComply(
+        event: Event,
+        eventId: Long = event.id,
+        lastResetDate: LocalDate? = listOfNotNull(event.breachEnd, event.disposal?.date).maxOrNull()
+    ): Long
 
     fun findByPersonIdAndId(personId: Long, id: Long): Contact?
 
@@ -1067,7 +1099,11 @@ interface EnforcementActionsRepository : JpaRepository<EnforcementAction, Long> 
         nativeQuery = true
     )
     fun findByContactOutcomeId(outcomeId: Long): List<EnforcementAction>
+    fun findEnforcementActionByCode(code: String): MutableList<EnforcementAction>
 }
+
+fun EnforcementActionsRepository.getEnforcementActionByCode(code: String): EnforcementAction =
+    findEnforcementActionByCode(code).firstOrNull().orNotFoundBy("code", code)
 
 @Entity
 @Table(name = "r_enf_act_contact_out_type")
@@ -1086,4 +1122,3 @@ class EnforcementActionContactOutcomeId(
 
 interface EnforcementActionContactOutcomeRepository :
     JpaRepository<EnforcementActionContactOutcome, EnforcementActionContactOutcomeId>
-

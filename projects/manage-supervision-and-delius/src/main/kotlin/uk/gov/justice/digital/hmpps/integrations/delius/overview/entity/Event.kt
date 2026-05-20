@@ -33,11 +33,14 @@ class Event(
     val eventNumber: String,
 
     @Column(name = "ftc_count")
-    var ftcCount: Long?,
+    var ftcCount: Long,
 
     @Column(name = "in_breach", columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)
     val inBreach: Boolean,
+
+    @Column(name = "breach_end")
+    val breachEnd: LocalDate? = null,
 
     @OneToOne(mappedBy = "event")
     val disposal: Disposal? = null,

@@ -381,7 +381,7 @@ class ContactLogIntegrationTest : IntegrationTestBase() {
                 outcomeCode = UpdateContactOutcomeGenerator.OUTCOME.code,
                 enforcementActionCode = "INVALID"
             )
-        }.andExpect { status { isNotFound() } }
+        }.andExpect { status { isBadRequest() } }
     }
 
     @Test

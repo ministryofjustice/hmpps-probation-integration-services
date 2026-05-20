@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.data.generator
 
 import uk.gov.justice.digital.hmpps.data.generator.AppointmentGenerator.generateContactTypeOutcome
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
+import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.Contact
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.ContactType
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.EnforcementActionContactOutcome
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.EnforcementActionContactOutcomeId
@@ -61,6 +62,16 @@ object UpdateContactOutcomeGenerator {
         additionalOffences = emptyList()
     )
 
+    val ARWS_CONTACT_TYPE = ContactType(
+        id = IdGenerator.getAndIncrement(),
+        code = "ARWS",
+        attendanceContact = false,
+        description = "Review Enforcement Status",
+        contactOutcomeFlag = false,
+        locationRequired = "N",
+        editable = false
+    )
+
     val CONTACT_TYPE = ContactType(
         id = IdGenerator.getAndIncrement(),
         code = "CCON",
@@ -68,10 +79,11 @@ object UpdateContactOutcomeGenerator {
         description = "Update Contact Outcome Type",
         contactOutcomeFlag = true,
         locationRequired = "N",
-        editable = true
+        editable = true,
+        nationalStandardsContact = true
     )
 
-    val OUTCOME = ContactGenerator.generateOutcome("UCOOUT", "UCO Acceptable Absence", false, true)
+    val OUTCOME = ContactGenerator.generateOutcome("UCOOUT", "UCO Non-Compliant", false, false)
 
     val CONTACT_TYPE_OUTCOME = generateContactTypeOutcome(CONTACT_TYPE.id, OUTCOME.id, CONTACT_TYPE, OUTCOME)
 
@@ -119,6 +131,92 @@ object UpdateContactOutcomeGenerator {
         team = TEAM,
         staff = STAFF,
         event = EVENT
+    )
+
+    // A person-level contact type (offenderContact = true) — not linked to an event
+    val PERSON_LEVEL_CONTACT_TYPE = ContactType(
+        id = IdGenerator.getAndIncrement(),
+        code = "UPCT",
+        attendanceContact = false,
+        description = "UCO Person Level Contact Type",
+        contactOutcomeFlag = true,
+        locationRequired = "N",
+        editable = true,
+        offenderContact = true
+    )
+
+    val PERSON_LEVEL_OUTCOME = ContactGenerator.generateOutcome("UPLOUT", "UCO Person Level Outcome", false, true)
+
+    val PERSON_LEVEL_CONTACT_TYPE_OUTCOME =
+        generateContactTypeOutcome(
+            PERSON_LEVEL_CONTACT_TYPE.id,
+            PERSON_LEVEL_OUTCOME.id,
+            PERSON_LEVEL_CONTACT_TYPE,
+            PERSON_LEVEL_OUTCOME
+        )
+
+    val PERSON_LEVEL_ENFORCEMENT_ACTION =
+        ContactGenerator.generateEnforcementAction("UCOPENF", "UCO Person Level Enforcement", CONTACT_TYPE)
+
+    val PERSON_LEVEL_ENFORCEMENT_ACTION_OUTCOME_TYPE = EnforcementActionContactOutcome(
+        EnforcementActionContactOutcomeId(
+            enforcementActionId = PERSON_LEVEL_ENFORCEMENT_ACTION.id,
+            contactOutcomeTypeId = PERSON_LEVEL_OUTCOME.id
+        )
+    )
+
+    val CONTACT_5 = Contact(
+        id = IdGenerator.getAndIncrement(),
+        person = PERSON,
+        type = PERSON_LEVEL_CONTACT_TYPE,
+        date = ZonedDateTime.of(LocalDateTime.now(EuropeLondon).plusHours(8), EuropeLondon).toLocalDate(),
+        startTime = ZonedDateTime.of(LocalDateTime.now(EuropeLondon).plusHours(8), EuropeLondon),
+        team = TEAM,
+        staff = STAFF,
+        event = null,
+        outcome = PERSON_LEVEL_OUTCOME,
+        notes = null,
+    )
+
+    val CONTACT_6 = ContactGenerator.generateContact(
+        PERSON,
+        CONTACT_TYPE,
+        ZonedDateTime.of(LocalDateTime.now(EuropeLondon).plusHours(9), EuropeLondon),
+        team = TEAM,
+        staff = STAFF,
+        event = EVENT,
+        outcome = OUTCOME
+    )
+
+    // Event with a disposal whose ftcLimit is 1 and ftcCount already at 1 — next enforcement triggers ARWS review
+    val FTC_DISPOSAL_TYPE = PersonGenerator.generateDisposalType("UCOFTC", "UCO FTC Disposal Type", ftcLimit = 1)
+    val FTC_EVENT = PersonGenerator.generateEvent(
+        PERSON,
+        eventNumber = "2",
+        notes = "FTC limit event",
+        additionalOffences = emptyList(),
+    ).also { it.ftcCount = 1 }
+    val FTC_DISPOSAL = PersonGenerator.generateDisposal(FTC_EVENT, type = FTC_DISPOSAL_TYPE)
+
+    // A pre-existing non-compliant contact on FTC_EVENT so countFailureToComply returns 1 before the test call
+    val FTC_PRIOR_CONTACT = ContactGenerator.generateContact(
+        PERSON,
+        CONTACT_TYPE,
+        ZonedDateTime.of(LocalDateTime.now(EuropeLondon).minusDays(1), EuropeLondon),
+        complied = false,
+        team = TEAM,
+        staff = STAFF,
+        event = FTC_EVENT,
+    )
+
+    val CONTACT_7 = ContactGenerator.generateContact(
+        PERSON,
+        CONTACT_TYPE,
+        ZonedDateTime.of(LocalDateTime.now(EuropeLondon).plusHours(10), EuropeLondon),
+        team = TEAM,
+        staff = STAFF,
+        event = FTC_EVENT,
+        outcome = OUTCOME
     )
 
     val PERSON_NO_MANAGER = PersonGenerator.generateOverview("UCO0002", forename = "NoManager", surname = "Person")

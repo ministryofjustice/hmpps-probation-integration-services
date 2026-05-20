@@ -391,7 +391,7 @@ object PersonGenerator {
             additionalOffences = additionalOffences,
             dateCreated = dateCreated,
             lastUpdatedDateTime = ZonedDateTime.now(),
-            ftcCount = null
+            ftcCount = 0
         )
 
     val DISABILITIES: List<Disability> = listOf(

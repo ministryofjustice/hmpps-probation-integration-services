@@ -40,9 +40,12 @@ class ContactLogService(
     private val contactTypeRequirementTypeRepository: ContactTypeRequirementTypeRepository,
     private val notifier: Notifier,
     private val mappaCategoryResolverService: MappaCategoryResolverService,
-    private val enforcementRepository: EnforcementRepository,
     private val enforcementActionsRepository: EnforcementActionsRepository,
+    private val contactEnforcementService: ContactEnforcementService,
 ) : AuditableService(auditedInteractionService) {
+    companion object {
+        const val REVIEW_ENFORCEMENT_STATUS = "ARWS"
+    }
 
     @Transactional
     fun createContact(
@@ -101,43 +104,17 @@ class ContactLogService(
                 """.trimIndent(),
                     alert = createContact.alert,
                     sensitive = createContact.sensitive,
-                    isVisor = createContact.visorReport
+                    isVisor = createContact.visorReport,
+                    attended = contactOutcome?.outcomeAttendance,
+                    complied = contactOutcome?.outcomeCompliantAcceptable
                 )
             )
 
             if (createContact.enforcementActionCode != null) {
-                val enforcementAction = enforcementActionsRepository
-                    .findByContactOutcomeId(contactOutcome!!.id)
-                    .firstOrNull { it.code == createContact.enforcementActionCode }
-                    .orNotFoundBy("code", createContact.enforcementActionCode)
-                enforcementRepository.save(
-                    Enforcement(
-                        contact = savedContact,
-                        action = enforcementAction,
-                        responseDate = enforcementAction.responseByPeriod.let {
-                            savedContact.startTime?.plusDays(it ?: 0)
-                        }
-                    )
+                contactEnforcementService.updateEnforcementActionForContact(
+                    savedContact,
+                    createContact.enforcementActionCode
                 )
-                contactRepository.save(
-                    Contact(
-                        person = person,
-                        event = event,
-                        requirement = requirement,
-                        type = enforcementAction.contactType,
-                        date = LocalDate.now(),
-                        startTime = ZonedDateTime.now(EuropeLondon),
-                        staff = staff,
-                        team = team,
-                        provider = team.provider,
-                        linkedContactId = savedContact.id,
-                        notes = """
-                            ${DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm").format(LocalDateTime.now())}
-                            Enforcement Action: ${enforcementAction.description}
-                        """.trimIndent()
-                    )
-                )
-                savedContact.event?.run { ftcCount = (ftcCount ?: 0) + 1 }
             }
 
             val category = mappaCategoryResolverService.resolveMappaCategory(person.id)
@@ -278,25 +255,16 @@ class ContactLogService(
             contact.alert = false
         }
 
-
         require(contact.sensitive != true || request.sensitive == true) { "Cannot un-flag a sensitive contact" }
         contact.sensitive = request.sensitive
         contact.date = request.date
         contact.startTime = ZonedDateTime.ofLocal(request.date.atTime(request.time), EuropeLondon, null)
         contact.outcome = contactOutcome
-        if (request.enforcementActionCode != null) {
-            val enforcementAction = enforcementActionsRepository.findByContactType(contact.type)
-                .firstOrNull { it.code == request.enforcementActionCode }
-                .orNotFoundBy("code", request.enforcementActionCode)
-            val enforcement = Enforcement(
-                contact = contact,
-                action = enforcementAction,
-                responseDate = enforcementAction.responseByPeriod.let { contact.startTime?.plusDays(it ?: 0) }
-            )
-            enforcementRepository.save(enforcement)
-            val event = contact.event
-            event?.run { ftcCount = (ftcCount ?: 0) + 1 }
-        }
+        contact.attended = contactOutcome.outcomeAttendance
+        contact.complied = contactOutcome.outcomeCompliantAcceptable
         contactRepository.save(contact)
+        if (request.enforcementActionCode != null) {
+            contactEnforcementService.updateEnforcementActionForContact(contact, request.enforcementActionCode)
+        }
     }
 }

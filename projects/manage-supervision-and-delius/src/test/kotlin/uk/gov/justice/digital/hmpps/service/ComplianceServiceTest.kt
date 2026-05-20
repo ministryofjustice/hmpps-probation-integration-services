@@ -80,7 +80,7 @@ internal class ComplianceServiceTest {
                 notes = "",
                 dateCreated = ZonedDateTime.now(),
                 lastUpdatedDateTime = ZonedDateTime.now(),
-                ftcCount = null,
+                ftcCount = 0,
             ),
             Event(
                 id = BREACH_PREVIOUS_ORDER_2.eventId ?: 0,
@@ -94,7 +94,7 @@ internal class ComplianceServiceTest {
                 notes = "",
                 dateCreated = ZonedDateTime.now(),
                 lastUpdatedDateTime = ZonedDateTime.now(),
-                ftcCount = null,
+                ftcCount = 0,
             ),
             Event(
                 id = 3,
@@ -109,7 +109,7 @@ internal class ComplianceServiceTest {
                 notes = "",
                 dateCreated = ZonedDateTime.now(),
                 lastUpdatedDateTime = ZonedDateTime.now(),
-                ftcCount = null,
+                ftcCount = 0,
             ),
             Event(
                 id = 4,
@@ -124,7 +124,7 @@ internal class ComplianceServiceTest {
                 notes = "",
                 dateCreated = ZonedDateTime.now(),
                 lastUpdatedDateTime = ZonedDateTime.now(),
-                ftcCount = null,
+                ftcCount = 0,
             ),
         )
 
@@ -173,7 +173,7 @@ internal class ComplianceServiceTest {
                 notes = "",
                 dateCreated = ZonedDateTime.now(),
                 lastUpdatedDateTime = ZonedDateTime.now(),
-                ftcCount = null,
+                ftcCount = 0,
             ),
             Event(
                 id = 4,
@@ -188,7 +188,7 @@ internal class ComplianceServiceTest {
                 notes = "",
                 dateCreated = ZonedDateTime.now(),
                 lastUpdatedDateTime = ZonedDateTime.now(),
-                ftcCount = null,
+                ftcCount = 0,
             ),
         )
 
