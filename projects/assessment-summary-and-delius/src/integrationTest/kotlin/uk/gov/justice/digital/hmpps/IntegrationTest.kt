@@ -52,6 +52,7 @@ import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.LocalDateTime
 import kotlin.collections.firstOrNull
+import kotlin.text.get
 
 @SpringBootTest
 @DirtiesContext
@@ -695,10 +696,20 @@ internal class IntegrationTest @Autowired constructor(
         val message1 =
             notification<HmppsDomainEvent>("assessment-summary-produced").withCrnAndAssessmentId(person.crn, 18)
         channelManager.getChannel(queueName).publishAndWait(message1)
+        verify(telemetryService, timeout(5000)).trackEvent(
+            eq("AssessmentSummarySuccess"),
+            check { assertThat(it["assessmentId"], equalTo("18")) },
+            anyMap()
+        )
 
         val message2 =
             notification<HmppsDomainEvent>("assessment-summary-produced").withCrnAndAssessmentId(person.crn, 181)
         channelManager.getChannel(queueName).publishAndWait(message2)
+        verify(telemetryService, timeout(5000)).trackEvent(
+            eq("AssessmentSummarySuccess"),
+            check { assertThat(it["assessmentId"], equalTo("181")) },
+            anyMap()
+        )
 
         val assessments = oasysAssessmentRepository.findByPersonIdOrderByDateDesc(person.id)
 
