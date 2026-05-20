@@ -53,6 +53,7 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import kotlin.collections.firstOrNull
 import kotlin.collections.get
+import kotlin.text.clear
 import kotlin.text.get
 
 @SpringBootTest
@@ -711,8 +712,11 @@ internal class IntegrationTest @Autowired constructor(
                 "LOCKED_INCOMPLETE"
             )
         channelManager.getChannel(queueName).publishAndWait(message2)
-
-        val assessments = oasysAssessmentRepository.findByPersonIdOrderByDateDesc(person.id)
+        
+        val assessments = transactionTemplate.execute {
+            entityManager.clear()
+            oasysAssessmentRepository.findByPersonIdOrderByDateDesc(person.id)
+        }!!
 
         assertThat(assessments.size, equalTo(2))
         assertThat(assessments.map { it.oasysId }, equalTo(listOf("181", "18")))
