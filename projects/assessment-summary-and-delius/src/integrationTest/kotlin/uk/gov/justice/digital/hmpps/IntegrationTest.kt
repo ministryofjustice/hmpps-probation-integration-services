@@ -701,6 +701,7 @@ internal class IntegrationTest @Autowired constructor(
             check { assertThat(it["assessmentId"], equalTo("18")) },
             anyMap()
         )
+        clearInvocations(telemetryService)
 
         val message2 =
             notification<HmppsDomainEvent>("assessment-summary-produced").withCrnAndAssessmentId(person.crn, 181)
