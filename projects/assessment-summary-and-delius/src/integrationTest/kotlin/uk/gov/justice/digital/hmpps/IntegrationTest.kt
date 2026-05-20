@@ -693,7 +693,11 @@ internal class IntegrationTest @Autowired constructor(
         val person = personRepository.getByCrn(PersonGenerator.SAME_DAY_DIFFERENT_TIMES.crn)
 
         val message1 =
-            notification<HmppsDomainEvent>("assessment-summary-produced").withCrnAndAssessmentId(person.crn, 18, "LOCKED_INCOMPLETE")
+            notification<HmppsDomainEvent>("assessment-summary-produced").withCrnAndAssessmentId(
+                person.crn,
+                18,
+                "LOCKED_INCOMPLETE"
+            )
         channelManager.getChannel(queueName).publishAndWait(message1)
         verify(telemetryService, timeout(5000)).trackEvent(
             eq("AssessmentSummarySuccess"),
@@ -703,7 +707,11 @@ internal class IntegrationTest @Autowired constructor(
         clearInvocations(telemetryService)
 
         val message2 =
-            notification<HmppsDomainEvent>("assessment-summary-produced").withCrnAndAssessmentId(person.crn, 181, "LOCKED_INCOMPLETE")
+            notification<HmppsDomainEvent>("assessment-summary-produced").withCrnAndAssessmentId(
+                person.crn,
+                181,
+                "LOCKED_INCOMPLETE"
+            )
         channelManager.getChannel(queueName).publishAndWait(message2)
         verify(telemetryService, timeout(5000)).trackEvent(
             eq("AssessmentSummarySuccess"),
