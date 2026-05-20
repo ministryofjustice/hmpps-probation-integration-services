@@ -79,7 +79,8 @@ object UpdateContactOutcomeGenerator {
         description = "Update Contact Outcome Type",
         contactOutcomeFlag = true,
         locationRequired = "N",
-        editable = true
+        editable = true,
+        nationalStandardsContact = true
     )
 
     val OUTCOME = ContactGenerator.generateOutcome("UCOOUT", "UCO Acceptable Absence", false, true)
@@ -197,22 +198,10 @@ object UpdateContactOutcomeGenerator {
     ).also { it.ftcCount = 1 }
     val FTC_DISPOSAL = PersonGenerator.generateDisposal(FTC_EVENT, type = FTC_DISPOSAL_TYPE)
 
-    // A national standards contact type needed for countFailureToComply query
-    val FTC_NS_CONTACT_TYPE = ContactType(
-        id = IdGenerator.getAndIncrement(),
-        code = "UCONSFT",
-        attendanceContact = true,
-        description = "UCO NS FTC Contact Type",
-        contactOutcomeFlag = true,
-        locationRequired = "N",
-        editable = true,
-        nationalStandardsContact = true
-    )
-
-    // A pre-existing non-compliant contact on FTC_EVENT so countFailureToComply returns 1
+    // A pre-existing non-compliant contact on FTC_EVENT so countFailureToComply returns 1 before the test call
     val FTC_PRIOR_CONTACT = ContactGenerator.generateContact(
         PERSON,
-        FTC_NS_CONTACT_TYPE,
+        CONTACT_TYPE,
         ZonedDateTime.of(LocalDateTime.now(EuropeLondon).minusDays(1), EuropeLondon),
         complied = false,
         team = TEAM,

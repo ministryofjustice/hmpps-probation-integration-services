@@ -77,7 +77,7 @@ class Contact(
 
     @Column(name = "complied")
     @Convert(converter = YesNoConverter::class)
-    val complied: Boolean? = null,
+    var complied: Boolean? = null,
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "contact_outcome_type_id")
@@ -218,7 +218,7 @@ class Contact(
 
     @Lob
     var notes: String? = notes
-        internal set
+        private set
 
     fun appendNotes(additionalNotes: String) {
         notes = notes?.plus(System.lineSeparator() + additionalNotes) ?: additionalNotes

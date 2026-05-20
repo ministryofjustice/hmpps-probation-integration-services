@@ -75,13 +75,6 @@ open class IntegrationTestBase {
     @Autowired
     lateinit var channelManager: HmppsChannelManager
 
-    @BeforeEach
-    fun drainChannel() {
-        val channel = channelManager.getChannel(topicName)
-        while (channel.receive() != null) { /* drain */
-        }
-    }
-
     @MockitoBean
     lateinit var mappaCategoryResolverService: MappaCategoryResolverService
 }

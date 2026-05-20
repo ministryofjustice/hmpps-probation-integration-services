@@ -177,7 +177,7 @@ class UpdateContactOutcomeIntegrationTest : IntegrationTestBase() {
     }
 
     @Test
-    fun `enforcement action creates linked contact with correct notes`() {
+    fun `enforcement action creates linked contact`() {
         mockMvc.put("/contact/${UpdateContactOutcomeGenerator.CONTACT_6.id}") {
             withToken()
             json = UpdateContactOutcome(

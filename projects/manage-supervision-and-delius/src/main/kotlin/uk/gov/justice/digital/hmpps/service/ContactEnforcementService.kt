@@ -10,10 +10,6 @@ import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.Enforcem
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.EnforcementRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.getContactType
 import uk.gov.justice.digital.hmpps.exception.NotFoundException.Companion.orNotFoundBy
-import uk.gov.justice.digital.hmpps.integrations.delius.user.staff.StaffRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.user.staff.getStaffByCode
-import uk.gov.justice.digital.hmpps.integrations.delius.user.team.TeamRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.user.team.getTeam
 import uk.gov.justice.digital.hmpps.service.ContactLogService.Companion.REVIEW_ENFORCEMENT_STATUS
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -26,14 +22,8 @@ class ContactEnforcementService(
     private val contactTypeRepository: ContactTypeRepository,
     private val enforcementRepository: EnforcementRepository,
     private val enforcementActionsRepository: EnforcementActionsRepository,
-    private val staffRepository: StaffRepository,
-    private val teamRepository: TeamRepository,
 ) {
     fun updateEnforcementActionForContact(contact: Contact, enforcementActionCode: String) {
-        val staffCode = contact.staff?.code.orNotFoundBy("Contact", contact.id)
-        val teamCode = contact.team?.code.orNotFoundBy("Contact", contact.id)
-        val staff = staffRepository.getStaffByCode(staffCode)
-        val team = teamRepository.getTeam(teamCode)
         val contactOutcome = contact.outcome.orNotFoundBy("contactId", contact.id)
         val enforcementAction = enforcementActionsRepository.findByContactOutcomeId(contactOutcome.id)
             .firstOrNull { it.code == enforcementActionCode }.orNotFoundBy(
@@ -55,9 +45,9 @@ class ContactEnforcementService(
                 type = enforcementAction.contactType,
                 date = LocalDate.now(),
                 startTime = ZonedDateTime.now(EuropeLondon),
-                staff = staff,
-                team = team,
-                provider = team.provider,
+                staff = contact.staff,
+                team = contact.team,
+                provider = contact.team?.provider,
                 linkedContactId = contact.id,
                 notes = null,
                 licenceCondition = contact.licenceCondition,
@@ -65,13 +55,14 @@ class ContactEnforcementService(
             )
         )
         contactRepository.save(contact.apply {
-            this.notes = """
+            this.complied = false
+            this.appendNotes( """
                             ${DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm").format(LocalDateTime.now())}
                             Enforcement Action: ${enforcementAction.description}
-                        """.trimIndent()
+                        """.trimIndent())
         })
         contact.event?.run {
-            ftcCount = contactRepository.countFailureToComply(this).plus(1)
+            ftcCount = contactRepository.countFailureToComply(this)
             val ftcLimit = disposal?.type?.ftcLimit ?: return@run
             if (ftcCount > ftcLimit && !contactRepository.enforcementReviewExists(
                     id,
@@ -88,9 +79,9 @@ class ContactEnforcementService(
                         startTime = ZonedDateTime.now(EuropeLondon),
                         person = contact.person,
                         event = this,
-                        staff = staff,
-                        team = team,
-                        provider = team.provider,
+                        staff = contact.staff,
+                        team = contact.team,
+                        provider = contact.team?.provider,
                         notes = null,
                         requirement = contact.requirement,
                         licenceCondition = contact.licenceCondition,
