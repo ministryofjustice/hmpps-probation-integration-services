@@ -64,6 +64,7 @@ jobs:
     needs: unblock-pipeline
     outputs:
       projects: ${{ steps.kubectl.outputs.projects }}
+      read_write_projects: ${{ steps.kubectl.outputs.read_write_projects }}
     permissions:
       contents: read
     steps:
@@ -77,7 +78,7 @@ jobs:
           token: ${{ secrets.KUBE_TOKEN }}
       - id: kubectl
         run: |
-          json=$(
+          projects=$(
             kubectl get deployments -o jsonpath='{.items[*].metadata.name}' | xargs -n1 \
             | grep -v delius-database \
             | grep -v domain-events-and-delius \
@@ -85,7 +86,18 @@ jobs:
             | grep -v opensearch-proxy \
             | jq --raw-input . | jq --slurp --compact-output .
           )
-          echo "projects=$json" | tee -a "$GITHUB_OUTPUT"
+          echo "projects=$projects" | tee -a "$GITHUB_OUTPUT"
+
+          read_write_projects=$(
+            jq --raw-output '.[]' <<< "$json" | while read -r project; do
+              access_file="projects/$project/deploy/database/access.yml"
+              if [ ! -f "$access_file" ]; then continue; fi
+              if [ "$(yq '(.database.access.tables // [] | map(select(downcase != "audited_interaction")) | length)' "$access_file")" -gt 0 ]; then
+                echo "$project"
+              fi
+            done | jq --raw-input . | jq --slurp --compact-output .
+          )
+          echo "read_write_projects=$read_write_projects" | tee -a "$GITHUB_OUTPUT"
 
   # Event publishers always require write access to the DB, so stop them while in read-only mode
   event-publishers:
@@ -155,11 +167,12 @@ jobs:
     needs: get-projects
     strategy:
       matrix:
-        project: ${{ fromJSON(needs.get-projects.outputs.projects) }}
+        project: ${{ fromJSON(needs.get-projects.outputs.read_write_projects) }}
     permissions:
       contents: read
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
       - uses: ./.github/actions/cloud-platform-auth
         with:
           api: ${{ secrets.KUBE_ENV_API }}
@@ -169,7 +182,7 @@ jobs:
           token: ${{ secrets.KUBE_TOKEN }}
 
       - name: Block updates
-        if: inputs.action == 'enable' && matrix.project != 'hmpps-auth-and-delius' && matrix.project != 'probation-search-and-delius' # Note: hmpps-auth is excluded here to continue allowing 'POST /authenticate' requests, which are read-only
+        if: inputs.action == 'enable'
         run: | # Patching ingresses intermittently fails on MOJ Cloud Platform, so we retry this step
           for i in {1..10}; do
             echo "Attempt ${i}/10..."
@@ -195,7 +208,7 @@ jobs:
           | kubectl apply -f -
 
       - name: Unblock updates
-        if: inputs.action == 'disable' && matrix.project != 'hmpps-auth-and-delius' && matrix.project != 'probation-search-and-delius'
+        if: inputs.action == 'disable'
         run: | # Patching ingresses intermittently fails on MOJ Cloud Platform, so we retry this step
           for i in {1..10}; do
             echo "Attempt ${i}/10..."
@@ -363,4 +376,3 @@ jobs:
                 }
               ]
             }
-
