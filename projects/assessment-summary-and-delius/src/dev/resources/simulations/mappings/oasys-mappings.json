@@ -224,7 +224,7 @@
     {
       "request": {
         "method": "GET",
-        "urlPath": "/eor/oasys/ass/asssumm/A000018/ALLOW/18/COMPLETE"
+        "urlPath": "/eor/oasys/ass/asssumm/A000018/ALLOW/18/LOCKED_INCOMPLETE"
       },
       "response": {
         "headers": {
@@ -237,7 +237,7 @@
     {
       "request": {
         "method": "GET",
-        "urlPath": "/eor/oasys/ass/asssumm/A000018/ALLOW/181/COMPLETE"
+        "urlPath": "/eor/oasys/ass/asssumm/A000018/ALLOW/181/LOCKED_INCOMPLETE"
       },
       "response": {
         "headers": {

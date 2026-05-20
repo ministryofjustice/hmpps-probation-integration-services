@@ -52,7 +52,6 @@ import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.LocalDateTime
 import kotlin.collections.firstOrNull
-import kotlin.text.get
 
 @SpringBootTest
 @DirtiesContext
@@ -694,7 +693,7 @@ internal class IntegrationTest @Autowired constructor(
         val person = personRepository.getByCrn(PersonGenerator.SAME_DAY_DIFFERENT_TIMES.crn)
 
         val message1 =
-            notification<HmppsDomainEvent>("assessment-summary-produced").withCrnAndAssessmentId(person.crn, 18)
+            notification<HmppsDomainEvent>("assessment-summary-produced").withCrnAndAssessmentId(person.crn, 18, "LOCKED_INCOMPLETE")
         channelManager.getChannel(queueName).publishAndWait(message1)
         verify(telemetryService, timeout(5000)).trackEvent(
             eq("AssessmentSummarySuccess"),
@@ -704,7 +703,7 @@ internal class IntegrationTest @Autowired constructor(
         clearInvocations(telemetryService)
 
         val message2 =
-            notification<HmppsDomainEvent>("assessment-summary-produced").withCrnAndAssessmentId(person.crn, 181)
+            notification<HmppsDomainEvent>("assessment-summary-produced").withCrnAndAssessmentId(person.crn, 181, "LOCKED_INCOMPLETE")
         channelManager.getChannel(queueName).publishAndWait(message2)
         verify(telemetryService, timeout(5000)).trackEvent(
             eq("AssessmentSummarySuccess"),
@@ -747,11 +746,12 @@ internal class IntegrationTest @Autowired constructor(
 
     private fun Notification<HmppsDomainEvent>.withCrnAndAssessmentId(
         crn: String,
-        assessmentId: Int
+        assessmentId: Int,
+        status: String = "COMPLETE"
     ): Notification<HmppsDomainEvent> {
         return this.copy(
             message = this.message.copy(
-                detailUrl = "http://localhost:${wireMockServer.port()}/eor/oasys/ass/asssumm/$crn/ALLOW/$assessmentId/COMPLETE",
+                detailUrl = "http://localhost:${wireMockServer.port()}/eor/oasys/ass/asssumm/$crn/ALLOW/$assessmentId/$status",
                 personReference = PersonReference(listOf(PersonIdentifier("CRN", crn)))
             )
         )
