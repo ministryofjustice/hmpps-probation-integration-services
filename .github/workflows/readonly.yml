@@ -18,7 +18,6 @@ on:
     inputs:
       environment:
         description: Environment
-        default: prod
         required: true
         type: choice
         options:
@@ -89,7 +88,7 @@ jobs:
           echo "projects=$projects" | tee -a "$GITHUB_OUTPUT"
 
           read_write_projects=$(
-            jq --raw-output '.[]' <<< "$json" | while read -r project; do
+            jq --raw-output '.[]' <<< "$projects" | while read -r project; do
               access_file="projects/$project/deploy/database/access.yml"
               if [ ! -f "$access_file" ]; then continue; fi
               if [ "$(yq '(.database.access.tables // [] | map(select(downcase != "audited_interaction")) | length)' "$access_file")" -gt 0 ]; then
