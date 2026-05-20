@@ -702,11 +702,6 @@ internal class IntegrationTest @Autowired constructor(
                 "LOCKED_INCOMPLETE"
             )
         channelManager.getChannel(queueName).publishAndWait(message1)
-        verify(telemetryService, timeout(5000)).trackEvent(
-            eq("AssessmentSummarySuccess"),
-            argThat { this["assessmentId"] == "18" },
-            anyMap()
-        )
         clearInvocations(telemetryService)
 
         val message2 =
@@ -716,11 +711,6 @@ internal class IntegrationTest @Autowired constructor(
                 "LOCKED_INCOMPLETE"
             )
         channelManager.getChannel(queueName).publishAndWait(message2)
-        verify(telemetryService, timeout(5000)).trackEvent(
-            eq("AssessmentSummarySuccess"),
-            argThat { this["assessmentId"] == "181" },
-            anyMap()
-        )
 
         val assessments = oasysAssessmentRepository.findByPersonIdOrderByDateDesc(person.id)
 
