@@ -703,6 +703,11 @@ internal class IntegrationTest @Autowired constructor(
                 "LOCKED_INCOMPLETE"
             )
         channelManager.getChannel(queueName).publishAndWait(message1)
+        verify(telemetryService, timeout(5000)).trackEvent(
+            eq("AssessmentSummarySuccess"),
+            argThat<Map<String, String>> { this["assessmentId"] == "18" },
+            anyMap()
+        )
         clearInvocations(telemetryService)
 
         val message2 =
@@ -712,6 +717,39 @@ internal class IntegrationTest @Autowired constructor(
                 "LOCKED_INCOMPLETE"
             )
         channelManager.getChannel(queueName).publishAndWait(message2)
+        verify(telemetryService, timeout(5000)).trackEvent(
+            eq("AssessmentSummarySuccess"),
+            argThat<Map<String, String>> { this["assessmentId"] == "181" },
+            anyMap()
+        )
+
+// --- DIAGNOSTICS START ---
+        println("WireMock served URLs:")
+        val servedUrls = wireMockServer.getAllServeEvents().map { it.request.url }
+        println(servedUrls)
+        assertThat("WireMock should have served both assessment URLs", servedUrls, hasItems(
+            "/eor/oasys/ass/asssumm/${PersonGenerator.SAME_DAY_DIFFERENT_TIMES.crn}/ALLOW/18/LOCKED_INCOMPLETE",
+            "/eor/oasys/ass/asssumm/${PersonGenerator.SAME_DAY_DIFFERENT_TIMES.crn}/ALLOW/181/LOCKED_INCOMPLETE"
+        ))
+
+        println("Telemetry invocations (count=${mockingDetails(telemetryService).invocations.size}):")
+        mockingDetails(telemetryService).invocations.forEach { inv ->
+            println("  inv: ${inv.method.name} args=${inv.arguments}")
+        }
+
+// Raw DB rows for that person: (run inside a transaction to see committed rows)
+        val rawRows = transactionTemplate.execute {
+            entityManager.clear()
+            @Suppress("UNCHECKED_CAST")
+            val rows = entityManager.createNativeQuery(
+                "select oasys_id, to_char(assessment_date,'YYYY-MM-DD\"T\"HH24:MI:SS') from oasys_assessment where offender_id = :personId order by assessment_date desc"
+            )
+                .setParameter("personId", person.id)
+                .resultList as List<*>
+            rows
+        } ?: emptyList<Any>()
+        println("Raw oasys_assessment rows for person ${person.id}: $rawRows")
+// --- DIAGNOSTICS END ---
 
         val assessments = transactionTemplate.execute {
             entityManager.clear()
