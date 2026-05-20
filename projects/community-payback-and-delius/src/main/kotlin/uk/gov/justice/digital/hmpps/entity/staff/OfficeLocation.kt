@@ -33,34 +33,38 @@ class OfficeLocation(
 )
 
 interface OfficeLocationRepository : JpaRepository<OfficeLocation, Long> {
-    fun findByCodeInAndEndDateIsNullOrEndDateAfterAndProviderSelectableIsTrue(
-        codes: Collection<String>,
-        now: ZonedDateTime = ZonedDateTime.now()
-    ): List<OfficeLocation>
+    @Query(
+        """
+        select ol from OfficeLocation ol 
+        where ol.code in (:codes)
+          and (ol.endDate is null or ol.endDate > current_date) 
+          and ol.provider.selectable = true
+        """
+    )
+    fun findByCodeIn(codes: Collection<String>): List<OfficeLocation>
 
-    fun findByCodeAndEndDateIsNullOrEndDateAfterAndProviderSelectableIsTrue(
-        code: String,
-        now: ZonedDateTime = ZonedDateTime.now()
-    ): OfficeLocation?
+    @Query(
+        """
+        select ol from OfficeLocation ol 
+        where ol.code = :code
+          and (ol.endDate is null or ol.endDate > current_date) 
+          and ol.provider.selectable = true
+        """
+    )
+    fun findByCode(code: String): OfficeLocation?
 
-    fun getByCode(code: String): OfficeLocation =
-        findByCodeAndEndDateIsNullOrEndDateAfterAndProviderSelectableIsTrue(code).orNotFoundBy(
-            "OfficeLocationCode",
-            code
-        )
+    fun getByCode(code: String): OfficeLocation = findByCode(code).orNotFoundBy("code", code)
 
     fun getByCodeIn(codes: List<String>) = codes.toSet().let { codes ->
-        findByCodeInAndEndDateIsNullOrEndDateAfterAndProviderSelectableIsTrue(codes).associateBy { it.code }
-            .reportMissing(codes)
+        findByCodeIn(codes).associateBy { it.code }.reportMissing(codes)
     }
 
     @Query(
         """
-        select ol
-        from OfficeLocation ol
+        select ol from OfficeLocation ol
         join TeamOfficeLocation tol on tol.officeLocationId = ol.id
         where tol.teamId = :teamId
-        and ol.endDate is null or ol.endDate > current_date
+        and (ol.endDate is null or ol.endDate > current_date)
         and ol.provider.selectable = true
         """
     )
