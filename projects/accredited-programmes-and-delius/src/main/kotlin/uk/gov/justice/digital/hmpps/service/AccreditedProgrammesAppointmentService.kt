@@ -163,14 +163,20 @@ class AccreditedProgrammesAppointmentService(
 
     private fun Appointment.telemetry() = mapOf(
         "crn" to relatedTo.crn,
+        "type" to if (relatedTo.requirementId == null) "LicenceCondition" else "Requirement",
         "contactId" to id.toString(),
-        "componentId" to (relatedTo.requirementId ?: relatedTo.licenceConditionId).toString()
+        "componentId" to (relatedTo.requirementId ?: relatedTo.licenceConditionId).toString(),
+        "typeCode" to typeCode,
+        "outcomeCode" to outcomeCode,
     )
 
     private fun Contact.telemetry() = mapOf(
         "crn" to person.crn,
+        "type" to if (requirement == null) "LicenceCondition" else "Requirement",
         "contactId" to id.toString(),
-        "componentId" to (requirement?.id ?: licenceCondition?.id).toString()
+        "componentId" to (requirement?.id ?: licenceCondition?.id).toString(),
+        "typeCode" to type.code,
+        "outcomeCode" to outcome?.code,
     )
 }
 
