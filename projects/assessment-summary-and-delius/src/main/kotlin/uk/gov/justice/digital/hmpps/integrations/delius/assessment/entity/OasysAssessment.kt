@@ -8,6 +8,8 @@ import org.hibernate.type.YesNoConverter
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.repository.query.Param
+import org.springframework.data.jpa.repository.Query
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.Contact
 import uk.gov.justice.digital.hmpps.integrations.delius.court.entity.Court
 import uk.gov.justice.digital.hmpps.integrations.delius.court.entity.Offence
@@ -195,5 +197,6 @@ interface OasysAssessmentRepository : JpaRepository<OasysAssessment, Long> {
     @EntityGraph(attributePaths = ["sectionScores"])
     fun findByOasysId(oasysId: String): OasysAssessment?
 
-    fun findByPersonIdOrderByDateDesc(personId: Long): List<OasysAssessment>
+    @Query("select o from OasysAssessment o where o.person.id = :personId order by o.date desc")
+    fun findByPersonIdOrderByDateDesc(@Param("personId") personId: Long): List<OasysAssessment>
 }
