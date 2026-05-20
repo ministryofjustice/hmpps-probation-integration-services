@@ -104,7 +104,9 @@ class ContactLogService(
                 """.trimIndent(),
                     alert = createContact.alert,
                     sensitive = createContact.sensitive,
-                    isVisor = createContact.visorReport
+                    isVisor = createContact.visorReport,
+                    attended = contactOutcome?.outcomeAttendance,
+                    complied = contactOutcome?.outcomeCompliantAcceptable
                 )
             )
 
@@ -258,9 +260,11 @@ class ContactLogService(
         contact.date = request.date
         contact.startTime = ZonedDateTime.ofLocal(request.date.atTime(request.time), EuropeLondon, null)
         contact.outcome = contactOutcome
+        contact.attended = contactOutcome.outcomeAttendance
+        contact.complied = contactOutcome.outcomeCompliantAcceptable
+        contactRepository.save(contact)
         if (request.enforcementActionCode != null) {
             contactEnforcementService.updateEnforcementActionForContact(contact, request.enforcementActionCode)
         }
-        contactRepository.save(contact)
     }
 }

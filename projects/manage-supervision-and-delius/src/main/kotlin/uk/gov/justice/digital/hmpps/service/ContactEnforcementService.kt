@@ -25,11 +25,8 @@ class ContactEnforcementService(
 ) {
     fun updateEnforcementActionForContact(contact: Contact, enforcementActionCode: String) {
         val contactOutcome = contact.outcome.orNotFoundBy("contactId", contact.id)
-        val enforcementAction = enforcementActionsRepository.findByContactOutcomeId(contactOutcome.id)
-            .firstOrNull { it.code == enforcementActionCode }.orNotFoundBy(
-                "EnforcementActionCode",
-                enforcementActionCode
-            )
+        val enforcementAction = requireNotNull(enforcementActionsRepository.findByContactOutcomeId(contactOutcome.id)
+            .firstOrNull { it.code == enforcementActionCode }) { "Enforcement action not valid for outcome" }
         enforcementRepository.save(
             Enforcement(
                 contact = contact,
@@ -55,14 +52,10 @@ class ContactEnforcementService(
             )
         )
         contactRepository.save(contact.apply {
-            this.attended = contactOutcome.outcomeAttendance
-            this.complied = contactOutcome.outcomeCompliantAcceptable
-            this.appendNotes(
-                """
+            this.appendNotes( """
                             ${DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm").format(LocalDateTime.now())}
                             Enforcement Action: ${enforcementAction.description}
-                        """.trimIndent()
-            )
+                        """.trimIndent())
         })
         contact.event?.run {
             ftcCount = contactRepository.countFailureToComply(this)

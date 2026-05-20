@@ -63,7 +63,7 @@ class UpdateContactOutcomeIntegrationTest : IntegrationTestBase() {
                 alert = false,
                 sensitive = false
             )
-        }.andExpect { status { isNotFound() } }
+        }.andExpect { status { isBadRequest() } }
     }
 
     @Test
