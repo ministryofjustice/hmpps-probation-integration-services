@@ -69,7 +69,7 @@ class Contact(
 
     @Column(name = "attended")
     @Convert(converter = YesNoConverter::class)
-    val attended: Boolean? = null,
+    var attended: Boolean? = null,
 
     @Column(name = "sensitive")
     @Convert(converter = YesNoConverter::class)

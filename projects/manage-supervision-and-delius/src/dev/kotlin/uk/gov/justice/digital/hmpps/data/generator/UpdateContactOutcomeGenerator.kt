@@ -83,7 +83,7 @@ object UpdateContactOutcomeGenerator {
         nationalStandardsContact = true
     )
 
-    val OUTCOME = ContactGenerator.generateOutcome("UCOOUT", "UCO Acceptable Absence", false, true)
+    val OUTCOME = ContactGenerator.generateOutcome("UCOOUT", "UCO Non-Compliant", false, false)
 
     val CONTACT_TYPE_OUTCOME = generateContactTypeOutcome(CONTACT_TYPE.id, OUTCOME.id, CONTACT_TYPE, OUTCOME)
 

@@ -55,13 +55,12 @@ class ContactEnforcementService(
             )
         )
         contactRepository.save(contact.apply {
-            this.complied = false
-            this.appendNotes(
-                """
+            this.attended = contactOutcome.outcomeAttendance
+            this.complied = contactOutcome.outcomeCompliantAcceptable
+            this.appendNotes( """
                             ${DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm").format(LocalDateTime.now())}
                             Enforcement Action: ${enforcementAction.description}
-                        """.trimIndent()
-            )
+                        """.trimIndent())
         })
         contact.event?.run {
             ftcCount = contactRepository.countFailureToComply(this)
