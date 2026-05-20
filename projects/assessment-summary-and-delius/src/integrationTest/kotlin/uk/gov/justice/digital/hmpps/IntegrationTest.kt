@@ -52,6 +52,8 @@ import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.LocalDateTime
 import kotlin.collections.firstOrNull
+import kotlin.collections.get
+import kotlin.text.get
 
 @SpringBootTest
 @DirtiesContext
@@ -690,6 +692,7 @@ internal class IntegrationTest @Autowired constructor(
 
     @Test
     fun `two assessments on the same date are ordered by time descending`() {
+        clearInvocations(telemetryService)
         val person = personRepository.getByCrn(PersonGenerator.SAME_DAY_DIFFERENT_TIMES.crn)
 
         val message1 =
@@ -701,7 +704,7 @@ internal class IntegrationTest @Autowired constructor(
         channelManager.getChannel(queueName).publishAndWait(message1)
         verify(telemetryService, timeout(5000)).trackEvent(
             eq("AssessmentSummarySuccess"),
-            check { assertThat(it["assessmentId"], equalTo("18")) },
+            argThat { this["assessmentId"] == "18" },
             anyMap()
         )
         clearInvocations(telemetryService)
@@ -715,21 +718,18 @@ internal class IntegrationTest @Autowired constructor(
         channelManager.getChannel(queueName).publishAndWait(message2)
         verify(telemetryService, timeout(5000)).trackEvent(
             eq("AssessmentSummarySuccess"),
-            check { assertThat(it["assessmentId"], equalTo("181")) },
+            argThat { this["assessmentId"] == "181" },
             anyMap()
         )
 
         val assessments = oasysAssessmentRepository.findByPersonIdOrderByDateDesc(person.id)
 
         assertThat(assessments.size, equalTo(2))
-
         assertThat(assessments.map { it.oasysId }, equalTo(listOf("181", "18")))
-
         assertThat(
             assessments.map { it.date.toLocalDate() }.distinct(),
             equalTo(listOf(LocalDate.parse("2024-03-15")))
         )
-
         assertThat(
             assessments.map { it.date }, equalTo(
                 listOf(
@@ -738,9 +738,9 @@ internal class IntegrationTest @Autowired constructor(
                 )
             )
         )
-
         assertThat(assessments[0].date.isAfter(assessments[1].date), equalTo(true))
     }
+
 
     private fun Notification<HmppsDomainEvent>.withCrn(crn: String): Notification<HmppsDomainEvent> {
         val oasysId = crn.drop(1).toInt()
