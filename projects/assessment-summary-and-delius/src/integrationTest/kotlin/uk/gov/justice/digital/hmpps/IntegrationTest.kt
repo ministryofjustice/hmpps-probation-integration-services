@@ -52,8 +52,6 @@ import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.LocalDateTime
 import kotlin.collections.firstOrNull
-import org.springframework.data.domain.Sort
-import kotlin.collections.copy
 
 @SpringBootTest
 @DirtiesContext
@@ -702,9 +700,7 @@ internal class IntegrationTest @Autowired constructor(
             notification<HmppsDomainEvent>("assessment-summary-produced").withCrnAndAssessmentId(person.crn, 181)
         channelManager.getChannel(queueName).publishAndWait(message2)
 
-        val assessments = oasysAssessmentRepository
-            .findAll(Sort.by(Sort.Direction.DESC, "date"))
-            .filter { it.person.id == person.id }
+        val assessments = oasysAssessmentRepository.findByPersonIdOrderByDateDesc(person.id)
 
         assertThat(assessments.size, equalTo(2))
 

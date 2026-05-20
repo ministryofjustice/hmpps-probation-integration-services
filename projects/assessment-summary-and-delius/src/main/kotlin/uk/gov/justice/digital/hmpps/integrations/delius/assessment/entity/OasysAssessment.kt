@@ -194,4 +194,6 @@ class SectionScoreId(
 interface OasysAssessmentRepository : JpaRepository<OasysAssessment, Long> {
     @EntityGraph(attributePaths = ["sectionScores"])
     fun findByOasysId(oasysId: String): OasysAssessment?
+
+    fun findByPersonIdOrderByDateDesc(personId: Long): List<OasysAssessment>
 }
