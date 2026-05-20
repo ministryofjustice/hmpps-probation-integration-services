@@ -727,10 +727,12 @@ internal class IntegrationTest @Autowired constructor(
         println("WireMock served URLs:")
         val servedUrls = wireMockServer.getAllServeEvents().map { it.request.url }
         println(servedUrls)
-        assertThat("WireMock should have served both assessment URLs", servedUrls, hasItems(
-            "/eor/oasys/ass/asssumm/${PersonGenerator.SAME_DAY_DIFFERENT_TIMES.crn}/ALLOW/18/LOCKED_INCOMPLETE",
-            "/eor/oasys/ass/asssumm/${PersonGenerator.SAME_DAY_DIFFERENT_TIMES.crn}/ALLOW/181/LOCKED_INCOMPLETE"
-        ))
+        assertThat(
+            "WireMock should have served both assessment URLs", servedUrls, hasItems(
+                "/eor/oasys/ass/asssumm/${PersonGenerator.SAME_DAY_DIFFERENT_TIMES.crn}/ALLOW/18/LOCKED_INCOMPLETE",
+                "/eor/oasys/ass/asssumm/${PersonGenerator.SAME_DAY_DIFFERENT_TIMES.crn}/ALLOW/181/LOCKED_INCOMPLETE"
+            )
+        )
 
         println("Telemetry invocations (count=${mockingDetails(telemetryService).invocations.size}):")
         mockingDetails(telemetryService).invocations.forEach { inv ->
