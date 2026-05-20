@@ -50,6 +50,7 @@ import uk.gov.justice.digital.hmpps.service.AssessmentSubmitted.Companion.UPDATE
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import java.math.BigDecimal
 import java.time.LocalDate
+import java.time.LocalDateTime
 import kotlin.collections.firstOrNull
 
 @SpringBootTest
@@ -110,7 +111,7 @@ internal class IntegrationTest @Autowired constructor(
         assertThat(assessment?.court?.code, equalTo("CRT150"))
         assertThat(assessment?.offence?.code, equalTo("80400"))
         assertThat(assessment?.assessedBy, equalTo("John Smith"))
-        assertThat(assessment?.date, equalTo(LocalDate.parse("2023-12-07")))
+        assertThat(assessment?.date, equalTo(LocalDateTime.parse("2023-12-07T12:22:44")))
         assertThat(assessment?.totalScore, equalTo(76))
         assertThat(assessment?.initialSentencePlanDate, equalTo(LocalDate.of(2024, 2, 12)))
         assertThat(assessment?.sentencePlanReviewDate, equalTo(LocalDate.of(2024, 8, 12)))
@@ -118,7 +119,7 @@ internal class IntegrationTest @Autowired constructor(
 
         val contact = contactRepository.findAll()
             .single { it.person.id == person.id && it.type.code == ContactType.Code.OASYS_ASSESSMENT_LOCKED_INCOMPLETE.value }
-        assertThat(contact.date, equalTo(assessment?.date))
+        assertThat(contact.date, equalTo(assessment?.date?.toLocalDate()))
         assertThat(contact.externalReference, equalTo("urn:uk:gov:hmpps:oasys:assessment:${assessment?.oasysId}"))
         assertThat(contact.copyToVisor, equalTo(false))
         assertThat(contact.visorExported, equalTo(null))
@@ -171,12 +172,12 @@ internal class IntegrationTest @Autowired constructor(
         assertThat(assessment.court?.code, equalTo("CRT150"))
         assertThat(assessment.offence?.code, equalTo("80400"))
         assertThat(assessment.assessedBy, equalTo("John Smith"))
-        assertThat(assessment.date, equalTo(LocalDate.parse("2023-12-07")))
+        assertThat(assessment.date, equalTo(LocalDateTime.parse("2023-12-07T12:22:44")))
         assertThat(assessment.totalScore, equalTo(94))
         assertThat(assessment.status?.code, equalTo("C"))
 
         val contact = assessment.contact
-        assertThat(contact.date, equalTo(assessment.date))
+        assertThat(contact.date, equalTo(assessment?.date?.toLocalDate()))
         assertThat(contact.type.code, equalTo(ContactType.Code.OASYS_ASSESSMENT_COMPLETE.value))
         assertThat(contact.externalReference, equalTo("urn:uk:gov:hmpps:oasys:assessment:${assessment.oasysId}"))
         assertThat(contact.copyToVisor, equalTo(true))
@@ -239,7 +240,7 @@ internal class IntegrationTest @Autowired constructor(
             assertThat(assessment?.court?.code, equalTo("LVRPCC"))
             assertThat(assessment?.offence?.code, equalTo("00857"))
             assertThat(assessment?.assessedBy, equalTo("R. L. Name"))
-            assertThat(assessment?.date, equalTo(LocalDate.parse("2023-12-15")))
+            assertThat(assessment?.date, equalTo(LocalDateTime.parse("2023-12-15T08:34:44")))
             assertThat(assessment?.totalScore, equalTo(88))
             assertThat(assessment?.status?.code, equalTo("C"))
 
@@ -280,12 +281,12 @@ internal class IntegrationTest @Autowired constructor(
         assertThat(assessment.court?.code, equalTo("LVRPCC"))
         assertThat(assessment.offence?.code, equalTo("00857"))
         assertThat(assessment.assessedBy, equalTo("LevelTwo CentralSupport"))
-        assertThat(assessment.date, equalTo(LocalDate.parse("2023-12-15")))
+        assertThat(assessment.date, equalTo(LocalDateTime.parse("2023-12-15T08:34:44")))
         assertThat(assessment.totalScore, equalTo(108))
         assertThat(assessment.status?.code, equalTo("C"))
 
         val contact = assessment.contact
-        assertThat(contact.date, equalTo(assessment.date))
+        assertThat(contact.date, equalTo(assessment?.date?.toLocalDate()))
         assertThat(contact.type.code, equalTo(ContactType.Code.OASYS_ASSESSMENT_COMPLETE.value))
         assertThat(contact.externalReference, equalTo("urn:uk:gov:hmpps:oasys:assessment:${assessment.oasysId}"))
         assertThat(contact.copyToVisor, equalTo(true))
@@ -604,7 +605,7 @@ internal class IntegrationTest @Autowired constructor(
         val assessment = oasysAssessmentRepository.findAll().firstOrNull { it.person.id == person.id }
         val contact = contactRepository.findAll()
             .single { it.person.id == person.id && it.type.code == ContactType.Code.OASYS_ASSESSMENT_LOCKED_INCOMPLETE.value }
-        assertThat(contact.date, equalTo(assessment?.date))
+        assertThat(contact.date, equalTo(assessment?.date?.toLocalDate()))
         assertThat(contact.externalReference, equalTo("urn:uk:gov:hmpps:oasys:assessment:${assessment?.oasysId}"))
 
         val registrationDomainEvents = domainEventRepository.findAll()
@@ -687,11 +688,78 @@ internal class IntegrationTest @Autowired constructor(
         assertThat(assessment?.concernFlags, equalTo("YES,NO,YES,YES,NO,YES,NO,NO"))
     }
 
+    @Test
+    fun `two assessments on the same date are ordered by time descending`() {
+        clearInvocations(telemetryService)
+        val person = personRepository.getByCrn(PersonGenerator.SAME_DAY_DIFFERENT_TIMES.crn)
+
+        val message1 =
+            notification<HmppsDomainEvent>("assessment-summary-produced").withCrnAndAssessmentId(
+                person.crn,
+                18,
+                "LOCKED_INCOMPLETE"
+            )
+        channelManager.getChannel(queueName).publishAndWait(message1)
+        verify(telemetryService, timeout(5000)).trackEvent(
+            eq("AssessmentSummarySuccess"),
+            argThat<Map<String, String>> { this["assessmentId"] == "18" },
+            anyMap()
+        )
+        clearInvocations(telemetryService)
+
+        val message2 =
+            notification<HmppsDomainEvent>("assessment-summary-produced").withCrnAndAssessmentId(
+                person.crn,
+                181,
+                "LOCKED_INCOMPLETE"
+            )
+        channelManager.getChannel(queueName).publishAndWait(message2)
+        verify(telemetryService, timeout(5000)).trackEvent(
+            eq("AssessmentSummarySuccess"),
+            argThat<Map<String, String>> { this["assessmentId"] == "181" },
+            anyMap()
+        )
+
+        val assessments = transactionTemplate.execute {
+            entityManager.clear()
+            oasysAssessmentRepository.findByPersonIdOrderByDateDesc(person.id)
+        }!!
+
+        assertThat(assessments.size, equalTo(2))
+        assertThat(assessments.map { it.oasysId }, equalTo(listOf("181", "18")))
+        assertThat(
+            assessments.map { it.date.toLocalDate() }.distinct(),
+            equalTo(listOf(LocalDate.parse("2024-03-15")))
+        )
+        assertThat(
+            assessments.map { it.date }, equalTo(
+                listOf(
+                    LocalDateTime.parse("2024-03-15T17:30:00"),
+                    LocalDateTime.parse("2024-03-15T09:00:00")
+                )
+            )
+        )
+        assertThat(assessments[0].date.isAfter(assessments[1].date), equalTo(true))
+    }
+
     private fun Notification<HmppsDomainEvent>.withCrn(crn: String): Notification<HmppsDomainEvent> {
         val oasysId = crn.drop(1).toInt()
         return this.copy(
             message = this.message.copy(
                 detailUrl = "http://localhost:${wireMockServer.port()}/eor/oasys/ass/asssumm/$crn/ALLOW/${oasysId}/COMPLETE",
+                personReference = PersonReference(listOf(PersonIdentifier("CRN", crn)))
+            )
+        )
+    }
+
+    private fun Notification<HmppsDomainEvent>.withCrnAndAssessmentId(
+        crn: String,
+        assessmentId: Int,
+        status: String = "COMPLETE"
+    ): Notification<HmppsDomainEvent> {
+        return this.copy(
+            message = this.message.copy(
+                detailUrl = "http://localhost:${wireMockServer.port()}/eor/oasys/ass/asssumm/$crn/ALLOW/$assessmentId/$status",
                 personReference = PersonReference(listOf(PersonIdentifier("CRN", crn)))
             )
         )

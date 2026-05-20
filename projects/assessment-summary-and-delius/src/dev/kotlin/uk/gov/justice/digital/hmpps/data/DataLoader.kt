@@ -17,6 +17,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.Person
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.RegisterType
 import uk.gov.justice.digital.hmpps.set
 import java.time.LocalDate
+import java.time.LocalDateTime
 
 @Component
 class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
@@ -89,6 +90,7 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
         PersonGenerator.OGRS4_TEST.withEvent()
         PersonGenerator.OGRS4_TEST_OGRS4_VALUES.withEvent()
         PersonGenerator.CONCERN_FLAGS.withEvent()
+        PersonGenerator.SAME_DAY_DIFFERENT_TIMES.withEvent()
     }
 
     private fun Person.withEvent(softDeleted: Boolean = false, custodial: Boolean = false): Person {
@@ -112,7 +114,8 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
                 externalReference = externalReference
             )
         )
-        val assessment = AssessmentGenerator.generate(this, contact, LocalDate.parse("2013-06-07"), oasysId = oasysId)
+        val assessment =
+            AssessmentGenerator.generate(this, contact, LocalDateTime.parse("2013-06-07T00:00:00"), oasysId = oasysId)
         save(assessment)
         return this
     }

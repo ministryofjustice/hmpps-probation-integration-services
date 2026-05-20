@@ -8,13 +8,14 @@ import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.Person
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.ReferenceData
 import java.math.BigDecimal
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.util.*
 
 object AssessmentGenerator {
     fun generate(
         person: Person,
         contact: Contact,
-        date: LocalDate = LocalDate.now().minusDays(7),
+        date: LocalDateTime = LocalDateTime.now().minusDays(7),
         eventNumber: String = "1",
         court: Court? = null,
         offence: Offence? = null,
@@ -23,7 +24,7 @@ object AssessmentGenerator {
         assessedBy: String? = "John Smith",
         riskFlags: String? = "M,N,M,L,N,L,L,H,N",
         concernFlags: String? = "YES,NO,NO,DK,YES,NO,YES,NO",
-        dateCreated: LocalDate = date,
+        dateCreated: LocalDateTime = date,
         dateReceived: LocalDate = LocalDate.now().minusDays(2),
         initialSentencePlanDate: LocalDate? = null,
         sentencePlanReviewDate: LocalDate? = null,

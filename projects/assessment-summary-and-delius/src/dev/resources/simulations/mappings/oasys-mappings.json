@@ -224,6 +224,32 @@
     {
       "request": {
         "method": "GET",
+        "urlPath": "/eor/oasys/ass/asssumm/A000018/ALLOW/18/LOCKED_INCOMPLETE"
+      },
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "bodyFileName": "A000018-same-day-early.json"
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "urlPath": "/eor/oasys/ass/asssumm/A000018/ALLOW/181/LOCKED_INCOMPLETE"
+      },
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "bodyFileName": "A000018-same-day-late.json"
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
         "urlPattern": "/eor/oasys/ass/sectionroshsumm/ALLOW/.+"
       },
       "response": {
