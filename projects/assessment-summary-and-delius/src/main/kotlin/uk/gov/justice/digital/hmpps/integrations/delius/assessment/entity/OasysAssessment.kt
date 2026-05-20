@@ -8,6 +8,8 @@ import org.hibernate.type.YesNoConverter
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.repository.query.Param
+import org.springframework.data.jpa.repository.Query
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.Contact
 import uk.gov.justice.digital.hmpps.integrations.delius.court.entity.Court
 import uk.gov.justice.digital.hmpps.integrations.delius.court.entity.Offence
@@ -19,6 +21,7 @@ import uk.gov.justice.digital.hmpps.jpa.GeneratedId
 import java.io.Serializable
 import java.math.BigDecimal
 import java.time.LocalDate
+import java.time.LocalDateTime
 
 @Entity
 @Table(name = "oasys_assessment")
@@ -29,7 +32,7 @@ class OasysAssessment(
     val oasysId: String,
 
     @Column(name = "assessment_date")
-    val date: LocalDate,
+    val date: LocalDateTime,
 
     @ManyToOne
     @JoinColumn(name = "offender_id")
@@ -59,7 +62,7 @@ class OasysAssessment(
     val riskFlags: String?,
     val concernFlags: String?,
 
-    val dateCreated: LocalDate,
+    val dateCreated: LocalDateTime,
     @Column(name = "assessment_received_date")
     val dateReceived: LocalDate,
     val initialSentencePlanDate: LocalDate?,
@@ -193,4 +196,7 @@ class SectionScoreId(
 interface OasysAssessmentRepository : JpaRepository<OasysAssessment, Long> {
     @EntityGraph(attributePaths = ["sectionScores"])
     fun findByOasysId(oasysId: String): OasysAssessment?
+
+    @Query("select o from OasysAssessment o where o.person.id = :personId order by o.date desc")
+    fun findByPersonIdOrderByDateDesc(@Param("personId") personId: Long): List<OasysAssessment>
 }

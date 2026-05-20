@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.service.annotation.GetExchange
 import java.math.BigDecimal
 import java.time.LocalDate
+import java.time.LocalDateTime
 
 interface OrdsClient {
     @GetExchange(url = "/ass/sectionroshsumm/ALLOW/{assessmentPk}")
@@ -15,8 +16,8 @@ interface OrdsClient {
 data class AssessmentSummary(
     val assessmentPk: Long,
     val assessmentType: String,
-    val dateCompleted: LocalDate?,
-    val initiationDate: LocalDate,
+    val dateCompleted: LocalDateTime?,
+    val initiationDate: LocalDateTime,
     val assessmentStatus: String,
     @JsonFormat(pattern = "[yyyy-MM-dd][dd/MM/yyyy]") // temporary until oasys bug fixed, should not be used for responses
     val initialSpDate: LocalDate? = null,
