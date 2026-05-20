@@ -712,7 +712,7 @@ internal class IntegrationTest @Autowired constructor(
                 "LOCKED_INCOMPLETE"
             )
         channelManager.getChannel(queueName).publishAndWait(message2)
-        
+
         val assessments = transactionTemplate.execute {
             entityManager.clear()
             oasysAssessmentRepository.findByPersonIdOrderByDateDesc(person.id)
