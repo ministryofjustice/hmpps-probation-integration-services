@@ -1,0 +1,33 @@
+{
+  "probNumber": "A000018",
+  "assessments": [
+    {
+      "assessmentPk": 18,
+      "assessmentType": "LAYER3",
+      "dateCompleted": "2024-03-15T09:00:00",
+      "initiationDate": "2024-03-15T08:00:00",
+      "assessmentStatus": "LOCKED_INCOMPLETE",
+      "riskChildrenCommunity": null,
+      "riskChildrenCustody": null,
+      "riskPublicCommunity": null,
+      "riskPublicCustody": null,
+      "riskKnownAdultCommunity": null,
+      "riskKnownAdultCustody": null,
+      "riskStaffCommunity": null,
+      "riskStaffCustody": null,
+      "riskPrisonersCustody": null,
+      "reviewNum": null,
+      "weightedScores": {},
+      "furtherInformation": {
+        "totWeightedScore": 40,
+        "pOAssessmentDesc": "Review",
+        "assessorName": "Morning Assessor",
+        "cmsEventNumber": 1
+      },
+      "ogpOvp": {},
+      "offences": [],
+      "sentencePlan": null,
+      "newActuarialPredictors": {}
+    }
+  ]
+}
