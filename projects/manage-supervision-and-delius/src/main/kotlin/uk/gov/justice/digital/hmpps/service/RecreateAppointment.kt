@@ -81,6 +81,9 @@ class RecreateAppointment(
                 newLocation to notes
             } else null
         } ?: (location to null)
+        val outcome = if (request.outcomeRecorded) {
+            outcomeRepository.getByCode(ATTENDED_COMPLIED.value)
+        } else null
 
         return Appointment(
             person = person,
@@ -92,9 +95,8 @@ class RecreateAppointment(
             startTime = ZonedDateTime.of(request.date, request.startTime, EuropeLondon),
             endTime = ZonedDateTime.of(request.date, request.endTime, EuropeLondon),
             provider = team.provider,
-            outcome = if (request.outcomeRecorded) {
-                outcomeRepository.getByCode(ATTENDED_COMPLIED.value)
-            } else null,
+            outcome = outcome,
+            complied = outcome?.acceptable,
             rarActivity = rarActivity,
             notes = notes,
             sensitive = sensitive == true || request.sensitive == true,
