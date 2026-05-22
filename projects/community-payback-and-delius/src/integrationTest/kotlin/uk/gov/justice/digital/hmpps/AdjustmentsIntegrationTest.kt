@@ -192,8 +192,8 @@ class AdjustmentsIntegrationTest @Autowired constructor(
     @Transactional
     fun `creating an adjustment updates UPW status when hours are completed`() {
         val reference = UUID.randomUUID()
-        val beingWorkedEvent = UPWGenerator.EVENT_5
-        val beingWorkedDetails = UPWGenerator.UPW_DETAILS_5
+        val beingWorkedEvent = UPWGenerator.EVENT_6
+        val beingWorkedDetails = UPWGenerator.UPW_DETAILS_6
         assertThat(upwDetailsRepository.findByIdOrNull(beingWorkedDetails.id)?.status?.code).isEqualTo("WK")
 
         mockMvc.post("/adjustments?username=${UserGenerator.DEFAULT_USER.username}") {
@@ -218,8 +218,8 @@ class AdjustmentsIntegrationTest @Autowired constructor(
     @Transactional
     fun `updating an adjustment updates UPW status when hours are completed`() {
         val reference = UUID.randomUUID()
-        val beingWorkedEvent = UPWGenerator.EVENT_5
-        val beingWorkedDetails = UPWGenerator.UPW_DETAILS_5
+        val beingWorkedEvent = UPWGenerator.EVENT_6
+        val beingWorkedDetails = UPWGenerator.UPW_DETAILS_6
         assertThat(upwDetailsRepository.findByIdOrNull(beingWorkedDetails.id)?.status?.code).isEqualTo("WK")
 
         mockMvc.post("/adjustments?username=${UserGenerator.DEFAULT_USER.username}") {
@@ -258,8 +258,8 @@ class AdjustmentsIntegrationTest @Autowired constructor(
     fun `deleting an adjustment updates UPW status when hours are completed`() {
         val positiveReference = UUID.randomUUID()
         val negativeReference = UUID.randomUUID()
-        val beingWorkedEvent = UPWGenerator.EVENT_5
-        val beingWorkedDetails = UPWGenerator.UPW_DETAILS_5
+        val beingWorkedEvent = UPWGenerator.EVENT_6
+        val beingWorkedDetails = UPWGenerator.UPW_DETAILS_6
         assertThat(upwDetailsRepository.findByIdOrNull(beingWorkedDetails.id)?.status?.code).isEqualTo("WK")
 
         mockMvc.post("/adjustments?username=${UserGenerator.DEFAULT_USER.username}") {
@@ -297,8 +297,8 @@ class AdjustmentsIntegrationTest @Autowired constructor(
     @Transactional
     fun `creating an adjustment that would result in negative remaining minutes returns bad request and does not persist changes`() {
         val reference = UUID.randomUUID()
-        val beingWorkedEvent = UPWGenerator.EVENT_5
-        val beingWorkedDetails = UPWGenerator.UPW_DETAILS_5
+        val beingWorkedEvent = UPWGenerator.EVENT_6
+        val beingWorkedDetails = UPWGenerator.UPW_DETAILS_6
 
         assertThat(upwDetailsRepository.findByIdOrNull(beingWorkedDetails.id)?.status?.code).isEqualTo("WK")
 
@@ -333,8 +333,8 @@ class AdjustmentsIntegrationTest @Autowired constructor(
     @Transactional
     fun `updating an adjustment that would result in negative remaining minutes returns bad request and does not persist changes`() {
         val reference = UUID.randomUUID()
-        val beingWorkedEvent = UPWGenerator.EVENT_5
-        val beingWorkedDetails = UPWGenerator.UPW_DETAILS_5
+        val beingWorkedEvent = UPWGenerator.EVENT_6
+        val beingWorkedDetails = UPWGenerator.UPW_DETAILS_6
         assertThat(upwDetailsRepository.findByIdOrNull(beingWorkedDetails.id)?.status?.code).isEqualTo("WK")
 
         mockMvc.post("/adjustments?username=${UserGenerator.DEFAULT_USER.username}") {
@@ -387,8 +387,8 @@ class AdjustmentsIntegrationTest @Autowired constructor(
         val positiveReference = UUID.randomUUID()
         val negativeReference = UUID.randomUUID()
 
-        val beingWorkedEvent = UPWGenerator.EVENT_5
-        val beingWorkedDetails = UPWGenerator.UPW_DETAILS_5
+        val beingWorkedEvent = UPWGenerator.EVENT_6
+        val beingWorkedDetails = UPWGenerator.UPW_DETAILS_6
 
         assertThat(upwDetailsRepository.findByIdOrNull(beingWorkedDetails.id)?.status?.code).isEqualTo("WK")
 

@@ -78,8 +78,8 @@ class CaseControllerIntegrationTest @Autowired constructor(
                 .andExpect { status { isOk() } }
                 .andReturn().response.contentAsJson<UnpaidWorkDetails>()
 
-        assertThat(response.unpaidWorkDetails).hasSize(5)
-        assertThat(response.unpaidWorkDetails.map { it.eventNumber.toInt() }).isEqualTo((1..5).toList())
+        assertThat(response.unpaidWorkDetails).hasSize(6)
+        assertThat(response.unpaidWorkDetails.map { it.eventNumber.toInt() }).isEqualTo((1..6).toList())
         assertThat(response.unpaidWorkDetails[0].requiredMinutes).isEqualTo(7200)
         assertThat(response.unpaidWorkDetails[0].completedMinutes).isEqualTo(870)
         assertThat(response.unpaidWorkDetails[0].completedEteMinutes).isEqualTo(0)
