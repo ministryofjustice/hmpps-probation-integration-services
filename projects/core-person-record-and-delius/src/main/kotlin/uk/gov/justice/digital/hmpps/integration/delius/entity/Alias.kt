@@ -4,6 +4,7 @@ import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.NumericBooleanConverter
+import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
 import java.time.LocalDate
 
@@ -32,5 +33,9 @@ class Alias(
 )
 
 interface AliasRepository : JpaRepository<Alias, Long> {
+    @EntityGraph(attributePaths = ["gender"])
     fun findByPersonId(personId: Long): List<Alias>
+
+    @EntityGraph(attributePaths = ["gender"])
+    fun findByPersonIdIn(personId: Collection<Long>): List<Alias>
 }

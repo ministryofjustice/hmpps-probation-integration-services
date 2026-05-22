@@ -35,4 +35,5 @@ class Disposal(
 
 interface DisposalRepository : JpaRepository<Disposal, Long> {
     fun findByPersonId(personId: Long): List<Disposal>
+    fun findByPersonIdIn(personId: Collection<Long>): List<Disposal>
 }
