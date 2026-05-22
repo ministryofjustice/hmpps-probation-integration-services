@@ -12,7 +12,7 @@ import java.time.LocalDate
 
 @Entity
 @Immutable
-@SQLRestriction("active_flag = 1 and soft_deleted = 0")
+@SQLRestriction("soft_deleted = 0")
 class Disposal(
     @Id
     @Column(name = "disposal_id")
