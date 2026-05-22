@@ -482,6 +482,16 @@ object UPWGenerator {
         disposal = DISPOSAL_4
     )
 
+    val FIFTH_RQMNT = generateRequirement(
+        length = 1,
+        disposal = DISPOSAL_5
+    )
+
+    val ADJUSTMENT_RQMNT = generateRequirement(
+        length = 100000,
+        disposal = DISPOSAL_ADJUSTMENT
+    )
+
     val DEFAULT_UPW_DETAILS_ADJUSTMENT_POSITIVE = generateUPWAdjustment(
         upwDetails = UPW_DETAILS_1,
         adjustmentAmount = 7,
