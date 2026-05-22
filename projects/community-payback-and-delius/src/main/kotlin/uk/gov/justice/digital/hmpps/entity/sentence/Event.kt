@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.entity.sentence
 
 import jakarta.persistence.*
+import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.NumericBooleanConverter
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource
@@ -12,6 +13,7 @@ import java.time.LocalDate
 
 @Entity
 @Table(name = "event")
+@SQLRestriction("active_flag = 1 and soft_deleted = 0")
 class Event(
     @Id
     @Column(name = "event_id")
@@ -40,20 +42,24 @@ class Event(
 
     @Column(columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)
+    val activeFlag: Boolean = true,
+
+    @Column(columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean = false
 )
 
 interface EventRepository : JpaRepository<Event, Long>, EventIdRepository {
-    fun findByPersonIdAndNumberAndSoftDeletedIsFalse(personId: Long, eventNumber: String): Event?
+    fun findByPersonIdAndNumber(personId: Long, eventNumber: String): Event?
 
     fun getByPersonAndEventNumber(personId: Long, eventNumber: String) =
-        findByPersonIdAndNumberAndSoftDeletedIsFalse(personId, eventNumber)
+        findByPersonIdAndNumber(personId, eventNumber)
             ?: throw NotFoundException("Event", "event number", eventNumber)
 
     fun getEventIds(pairs: List<Pair<String, Int>>) = findAllByPersonAndEventNumber(pairs)
         .associate { (crn, eventNumber, eventId) -> (crn to eventNumber) to eventId }
 
-    fun getByPerson_Id(personId: Long): MutableList<Event>
+    fun getByPersonId(personId: Long): List<Event>
 }
 
 interface EventIdRepository {

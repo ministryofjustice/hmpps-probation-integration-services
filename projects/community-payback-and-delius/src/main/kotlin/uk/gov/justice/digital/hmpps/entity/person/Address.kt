@@ -2,11 +2,13 @@ package uk.gov.justice.digital.hmpps.entity.person
 
 import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
+import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.NumericBooleanConverter
 
 @Entity
-@Table(name = "address")
 @Immutable
+@Table(name = "address")
+@SQLRestriction("soft_deleted = 0")
 class Address(
     @Id
     @Column(name = "address_id")

@@ -1,7 +1,7 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
+import uk.gov.justice.digital.hmpps.data.entity.PersonManager
 import uk.gov.justice.digital.hmpps.entity.person.Person
-import uk.gov.justice.digital.hmpps.entity.person.PersonManager
 import uk.gov.justice.digital.hmpps.entity.staff.Staff
 import uk.gov.justice.digital.hmpps.entity.staff.Team
 import java.time.LocalDate
