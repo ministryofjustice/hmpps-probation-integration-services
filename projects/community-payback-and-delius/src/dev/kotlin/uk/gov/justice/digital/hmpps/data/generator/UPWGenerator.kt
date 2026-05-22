@@ -197,7 +197,7 @@ object UPWGenerator {
         offence = DEFAULT_OFFENCE
     )
 
-   val EVENT_6_MAIN_OFFENCE = MainOffence(
+    val EVENT_6_MAIN_OFFENCE = MainOffence(
         id = IdGenerator.getAndIncrement(),
         offenceDate = LocalDate.of(2024, 1, 1),
         offenceCount = 1,
