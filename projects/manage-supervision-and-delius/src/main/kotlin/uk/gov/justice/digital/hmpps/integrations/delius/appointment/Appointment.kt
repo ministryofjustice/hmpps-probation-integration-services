@@ -85,7 +85,12 @@ class Appointment(
 
     @Column(name = "complied", length = 1)
     @Convert(converter = YesNoConverter::class)
-    var complied: Boolean? = null
+    var complied: Boolean? = null,
+
+    @Column(name = "attended", length = 1)
+    @Convert(converter = YesNoConverter::class)
+    var attended: Boolean? = null
+
 ) {
     var partitionAreaId: Long = 0
 
@@ -172,6 +177,7 @@ class Appointment(
             rarActivity = false
         }
         this.complied = outcome.acceptable
+        this.attended = outcome.attendance
         // TODO handle non-compliant outcomes - current use case only includes compliant reschedule outcome
     }
 

@@ -403,6 +403,7 @@ class RecreateAppointmentIntegrationTest : IntegrationTestBase() {
         val originalAppointment = appointmentRepository.getAppointment(original.id!!)
         assertThat(originalAppointment.outcome?.code).isEqualTo(SERVICE_RESCHEDULED_OUTCOME.code)
         assertThat(originalAppointment.complied).isEqualTo(SERVICE_RESCHEDULED_OUTCOME.outcomeCompliantAcceptable)
+        assertThat(originalAppointment.attended).isEqualTo(SERVICE_RESCHEDULED_OUTCOME.outcomeAttendance)
 
         val newAppointment = appointmentRepository.getAppointment(recreated.id)
         assertThat(newAppointment.date).isEqualTo(request.date)
@@ -410,6 +411,7 @@ class RecreateAppointmentIntegrationTest : IntegrationTestBase() {
         assertThat(newAppointment.endTime?.toLocalTime()).isCloseTo(request.endTime, within(1, ChronoUnit.SECONDS))
         assertThat(newAppointment.outcome?.code).isEqualTo(ATTENDED_COMPLIED.code)
         assertThat(newAppointment.complied).isEqualTo(ATTENDED_COMPLIED.outcomeCompliantAcceptable)
+        assertThat(newAppointment.attended).isEqualTo(ATTENDED_COMPLIED.outcomeAttendance)
         assertThat(newAppointment.notes).isEqualTo("Notes on the original appointment\n\nAppointment was held in the past")
     }
 
@@ -440,11 +442,13 @@ class RecreateAppointmentIntegrationTest : IntegrationTestBase() {
         val originalAppointment = appointmentRepository.getAppointment(original.id!!)
         assertThat(originalAppointment.outcome?.code).isEqualTo(POP_RESCHEDULED_OUTCOME.code)
         assertThat(originalAppointment.complied).isEqualTo(POP_RESCHEDULED_OUTCOME.outcomeCompliantAcceptable)
+        assertThat(originalAppointment.attended).isEqualTo(POP_RESCHEDULED_OUTCOME.outcomeAttendance)
 
         val newAppointment = appointmentRepository.getAppointment(recreated.id)
         assertThat(newAppointment.date).isEqualTo(request.date)
         assertThat(newAppointment.outcome?.code).isEqualTo(ATTENDED_COMPLIED.code)
         assertThat(newAppointment.complied).isEqualTo(ATTENDED_COMPLIED.outcomeCompliantAcceptable)
+        assertThat(newAppointment.attended).isEqualTo(ATTENDED_COMPLIED.outcomeAttendance)
     }
 
     private fun recreateRequest(

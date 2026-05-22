@@ -97,6 +97,7 @@ class RecreateAppointment(
             provider = team.provider,
             outcome = outcome,
             complied = outcome?.acceptable,
+            attended = outcome?.attendance,
             rarActivity = rarActivity,
             notes = notes,
             sensitive = sensitive == true || request.sensitive == true,
