@@ -58,7 +58,7 @@ object PersonGenerator {
             personId = personId,
             startDate = startDate,
             endDate = endDate,
-            referenceData = RELIGION_HX,
+            religion = RELIGION_HX,
             lastUpdatedBy = RELIGION_HISTORY_UPDATER,
             lastUpdatedAt = UPDATED_ZONED_DATETIME
         )

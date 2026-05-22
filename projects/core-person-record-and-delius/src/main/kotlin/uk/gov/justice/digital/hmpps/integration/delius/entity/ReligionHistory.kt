@@ -20,7 +20,7 @@ class ReligionHistory(
 
     @ManyToOne
     @JoinColumn(name = "religion_id")
-    val referenceData: ReferenceData? = null,
+    val religion: ReferenceData? = null,
 
     @Column(name = "religion_description")
     val religionDescription: String? = null,
@@ -40,8 +40,9 @@ class ReligionHistory(
 )
 
 interface ReligionHistoryRepository : JpaRepository<ReligionHistory, Long> {
-    @EntityGraph(attributePaths = ["referenceData"])
-    fun findAllByPersonId(
-        personId: Long
-    ): List<ReligionHistory>
+    @EntityGraph(attributePaths = ["religion", "lastUpdatedBy"])
+    fun findAllByPersonId(personId: Long): List<ReligionHistory>
+
+    @EntityGraph(attributePaths = ["religion", "lastUpdatedBy"])
+    fun findAllByPersonIdIn(personId: Collection<Long>): List<ReligionHistory>
 }

@@ -61,8 +61,8 @@ fun Person.name() =
     )
 
 fun uk.gov.justice.digital.hmpps.integration.delius.entity.ReligionHistory.asModel() = ReligionHistory(
-    code = referenceData?.code,
-    description = referenceData?.description ?: religionDescription,
+    code = religion?.code,
+    description = religion?.description ?: religionDescription,
     startDate = startDate,
     endDate = endDate,
     lastUpdatedBy = lastUpdatedBy.distinguishedName,

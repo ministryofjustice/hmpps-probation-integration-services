@@ -4,6 +4,7 @@ import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.NumericBooleanConverter
+import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
 
 @Entity
@@ -30,5 +31,9 @@ class AdditionalIdentifier(
 )
 
 interface AdditionalIdentifierRepository : JpaRepository<AdditionalIdentifier, Long> {
+    @EntityGraph(attributePaths = ["type"])
     fun findByPersonId(personId: Long): List<AdditionalIdentifier>
+
+    @EntityGraph(attributePaths = ["type"])
+    fun findByPersonIdIn(personId: Collection<Long>): List<AdditionalIdentifier>
 }
