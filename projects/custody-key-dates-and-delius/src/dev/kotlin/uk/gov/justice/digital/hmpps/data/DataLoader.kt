@@ -71,6 +71,20 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
         createPersonWithKeyDates(PersonGenerator.PERSON_WITH_KEYDATES, "38340A", keyDateTypes)
 
         createPersonWithKeyDates(PersonGenerator.PERSON_WITH_KEYDATES_BY_CRN, "48340A", keyDateTypes)
+
+        save(SentenceGenerator.PSS_DISPOSAL_TYPE)
+        val pssPerson = save(PersonGenerator.PSS_PERSON)
+        val pssEvent = save(generateEvent(pssPerson, "1"))
+        save(generateOrderManager(pssEvent))
+        val pssDisposal = save(generateDisposal(pssEvent, SentenceGenerator.PSS_DISPOSAL_TYPE))
+        save(
+            generateCustodialSentence(
+                ReferenceDataGenerator.DEFAULT_CUSTODY_STATUS,
+                pssDisposal,
+                "68340A"
+            )
+        )
+
     }
 
     private fun createPersonWithKeyDates(

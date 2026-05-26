@@ -22,7 +22,9 @@ import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.CustodyRepo
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.contact.ContactRepository
 import uk.gov.justice.digital.hmpps.message.MessageAttributes
 import uk.gov.justice.digital.hmpps.message.Notification
+import uk.gov.justice.digital.hmpps.messaging.CustodyDateChanged
 import uk.gov.justice.digital.hmpps.messaging.HmppsChannelManager
+import uk.gov.justice.digital.hmpps.resourceloader.ResourceLoader
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryMessagingExtensions.notificationReceived
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import java.time.LocalDate
@@ -171,4 +173,36 @@ internal class IntegrationTest @Autowired constructor(
     }
 
     private fun Custody.keyDate(code: String) = keyDates.firstOrNull { it.type.code == code }
+
+    @Test
+    fun `PSSED key date is added when disposal type has pss requirement`() {
+        val noms = PersonGenerator.PSS_PERSON.nomsId
+        val notification = Notification(
+            message = MessageGenerator.SENTENCE_DATE_CHANGED,
+            attributes = MessageAttributes(eventType = "SENTENCE_DATES-CHANGED")
+        )
+        // Override to use PSS person's booking
+        val pssNotification = notification.copy(
+            message = ResourceLoader.message<CustodyDateChanged>("sentence-date-changed-pss")
+        )
+        channelManager.getChannel(queueName).publishAndWait(pssNotification)
+
+        val custodyId = custodyRepository.findCustodyId(PersonGenerator.PSS_PERSON.id, "68340A").first()
+        val custody = custodyRepository.findCustodyById(custodyId)
+        val pssed = custody.keyDates.firstOrNull { it.type.code == "PSSED" }
+        assertNotNull(pssed)
+        assertThat(pssed!!.date, equalTo(LocalDate.parse("2026-06-15")))
+    }
+
+    @Test
+    fun `PSSED key date is not added when disposal type does not have pss requirement`() {
+        val notification = Notification(message = MessageGenerator.SENTENCE_DATE_CHANGED)
+        channelManager.getChannel(queueName).publishAndWait(notification)
+
+        val custodyId = custodyRepository.findCustodyId(PersonGenerator.DEFAULT.id, "58340A").first()
+        val custody = custodyRepository.findCustodyById(custodyId)
+        val pssed = custody.keyDates.firstOrNull { it.type.code == "PSSED" }
+        assertThat(pssed, equalTo(null))
+    }
+
 }

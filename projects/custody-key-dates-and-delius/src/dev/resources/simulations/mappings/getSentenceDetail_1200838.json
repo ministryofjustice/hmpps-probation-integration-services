@@ -1,0 +1,15 @@
+{
+  "mappings": [
+    {
+      "request": {
+        "method": "GET",
+        "urlPath": "/api/offender-sentences/booking/1200838/sentenceDetail"
+      },
+      "response": {
+        "status": 200,
+        "headers": { "Content-Type": "application/json" },
+        "bodyFileName": "sentence_detail_1200838.json"
+      }
+    }
+  ]
+}
