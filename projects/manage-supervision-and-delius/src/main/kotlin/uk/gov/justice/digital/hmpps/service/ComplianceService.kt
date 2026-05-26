@@ -128,10 +128,10 @@ class ComplianceService(
         val currentSentences = events.filter { !it.isInactiveEvent() }
         val allActiveSentenceContacts =
             when (months) {
-                0 -> contactRepository.findByPersonIdAndEventIdIn(summary.id, currentSentences.map { it.id })
-                else -> contactRepository.findByPersonIdAndEventIdInAndCreatedDateTimeAfter(
+                0 -> contactRepository.findByPersonIdAndEventIdInAndTypeAttendanceContactTrue(summary.id, currentSentences.map { it.id })
+                else -> contactRepository.findByPersonIdAndEventIdInAndDateAfterAndTypeAttendanceContactTrue(
                     summary.id, currentSentences.map { it.id },
-                    ZonedDateTime.now().minusMonths(months.toLong())
+                    LocalDate.now().minusMonths(months.toLong())
                 )
             }.filter { it.type.attendanceContact == true }
 

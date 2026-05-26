@@ -62,7 +62,7 @@ class NonComplianceDetailIntegrationTest : IntegrationTestBase() {
     }
 
     @Test
-    fun `months filter limits results to contacts created within the window`() {
+    fun `months filter limits results to contacts with a contact date within the window`() {
         val crn = PersonGenerator.NON_COMPLIANCE_PERSON.crn
 
         // months=0 returns all contacts — all four non-compliant contacts (including the old one) should appear
@@ -75,7 +75,7 @@ class NonComplianceDetailIntegrationTest : IntegrationTestBase() {
             unfiltered.attendedButDidNotComply.size
         assertThat(totalUnfiltered, equalTo(4))
 
-        // months=6 excludes the contact created 10 months ago, so only 3 remain
+        // months=6 excludes the contact with a contact date 14 months ago, so only 3 remain
         val filtered = mockMvc.get("/compliance/non-compliance-detail/$crn?months=6") { withToken() }
             .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<NonComplianceResponse>()
