@@ -72,6 +72,35 @@ on:
           # ^ add new projects here
           # GitHub Actions doesn't support dynamic choices, we must add each project here to enable manual deployments
           # See https://github.com/community/community/discussions/11795
+  workflow_call:
+    inputs:
+      projects:
+        description: Project
+        type: string
+        required: true
+    secrets:
+      KUBE_ENV_API:
+        required: true
+      KUBE_CERT:
+        required: true
+      KUBE_CLUSTER:
+        required: true
+      KUBE_NAMESPACE:
+        required: true
+      KUBE_TOKEN:
+        required: true
+      MODERNISATION_PLATFORM_AWS_ACCOUNT_ID:
+        description: AWS account ID for Modernisation Platform
+        required: true
+      AWS_ACCESS_KEY_ID:
+        description: AWS credentials for legacy Delius database access
+        required: true
+      AWS_SECRET_ACCESS_KEY:
+        description: AWS credentials for legacy Delius database access
+        required: true
+      AWS_ROLE_ARN:
+        description: AWS credentials for legacy Delius database access
+        required: true
   push:
     branches:
       - main
@@ -122,7 +151,7 @@ jobs:
 
       - name: Authenticate to MOJ Cloud Platform
         if: steps.check_file.outputs.exists == 'true'
-        uses: ./.github/actions/cloud-platform-auth
+        uses: ministryofjustice/hmpps-probation-integration-services/.github/actions/cloud-platform-auth@main
         with:
           api: ${{ secrets.KUBE_ENV_API }}
           cert: ${{ secrets.KUBE_CERT }}
@@ -143,7 +172,7 @@ jobs:
 
       - name: Configure database access (Delius AWS)
         if: steps.check_file.outputs.exists == 'true' && !contains(fromJSON(env.modernisation-platform-environments), matrix.environment)
-        uses: ./.github/actions/database-access-old
+        uses: ministryofjustice/hmpps-probation-integration-services/.github/actions/database-access-old@main
         with:
           project: ${{ matrix.project }}
           environment: ${{ matrix.environment }}
@@ -153,7 +182,7 @@ jobs:
 
       - name: Configure database access (MOJ Modernisation Platform)
         if: steps.check_file.outputs.exists == 'true' && contains(fromJSON(env.modernisation-platform-environments), matrix.environment)
-        uses: ./.github/actions/database-access-new
+        uses: ministryofjustice/hmpps-probation-integration-services/.github/actions/database-access-new@main
         with:
           project: ${{ matrix.project }}
           environment: ${{ matrix.environment }}
