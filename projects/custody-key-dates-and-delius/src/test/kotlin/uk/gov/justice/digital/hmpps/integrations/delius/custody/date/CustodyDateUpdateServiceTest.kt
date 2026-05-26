@@ -162,14 +162,22 @@ internal class CustodyDateUpdateServiceTest {
             .thenReturn(listOf(custody.id))
         whenever(custodyRepository.findForUpdate(custody.id)).thenReturn(custody.id)
         whenever(custodyRepository.findCustodyById(custody.id)).thenReturn(custody)
-        whenever(referenceDataRepository.findByDatasetAndCode(DatasetCode.KEY_DATE_TYPE, CustodyDateType.POST_SENTENCE_SUPERVISION_END_DATE.code))
+        whenever(
+            referenceDataRepository.findByDatasetAndCode(
+                DatasetCode.KEY_DATE_TYPE,
+                CustodyDateType.POST_SENTENCE_SUPERVISION_END_DATE.code
+            )
+        )
             .thenReturn(pssedRef)
 
         custodyDateUpdateService.updateCustodyKeyDates(bookingId = booking.id)
 
         verify(keyDateRepository).saveAll(
             check<List<KeyDate>> { saved ->
-                assertThat(saved.any { it.type.code == CustodyDateType.POST_SENTENCE_SUPERVISION_END_DATE.code }, equalTo(true))
+                assertThat(
+                    saved.any { it.type.code == CustodyDateType.POST_SENTENCE_SUPERVISION_END_DATE.code },
+                    equalTo(true)
+                )
             }
         )
     }
