@@ -204,5 +204,4 @@ internal class IntegrationTest @Autowired constructor(
         val pssed = custody.keyDates.firstOrNull { it.type.code == "PSSED" }
         assertThat(pssed, equalTo(null))
     }
-
 }

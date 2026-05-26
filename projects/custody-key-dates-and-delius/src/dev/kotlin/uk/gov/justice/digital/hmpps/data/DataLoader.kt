@@ -84,7 +84,6 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
                 "68340A"
             )
         )
-
     }
 
     private fun createPersonWithKeyDates(
