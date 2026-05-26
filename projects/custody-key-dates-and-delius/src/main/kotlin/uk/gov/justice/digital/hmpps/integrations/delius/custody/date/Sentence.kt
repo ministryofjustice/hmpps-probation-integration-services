@@ -74,8 +74,12 @@ data class DisposalType(
 
     @Column
     val requiredInformation: String,
+
+    @Column(name = "pss_rqmnt")
+    val pssRequirement: String? = null,
 ) {
     val determinateSentence: Boolean get() = requiredInformation == "L1"
+    val pssRequired: Boolean get() = pssRequirement == "Y"
 }
 
 @Immutable
