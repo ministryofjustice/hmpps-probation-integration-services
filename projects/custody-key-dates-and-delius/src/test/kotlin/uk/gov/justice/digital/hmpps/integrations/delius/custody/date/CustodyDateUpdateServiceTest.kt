@@ -14,12 +14,14 @@ import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.*
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
+import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator
 import uk.gov.justice.digital.hmpps.data.generator.SentenceGenerator
 import uk.gov.justice.digital.hmpps.data.generator.SentenceGenerator.generateCustodialSentence
 import uk.gov.justice.digital.hmpps.data.generator.SentenceGenerator.generateDisposal
 import uk.gov.justice.digital.hmpps.data.generator.SentenceGenerator.generateDisposalType
 import uk.gov.justice.digital.hmpps.data.generator.SentenceGenerator.generateEvent
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.contact.ContactService
+import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.reference.DatasetCode
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.reference.ReferenceDataRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.PersonRepository
 import uk.gov.justice.digital.hmpps.integrations.prison.Booking
@@ -140,6 +142,68 @@ internal class CustodyDateUpdateServiceTest {
 
         verify(keyDateRepository, never()).saveAll(anyList())
         verify(keyDateRepository, never()).deleteAll(anyList())
+    }
+
+    @Test
+    fun `PSSED is included when disposal type has PSS_RQMNT Y`() {
+        val booking = Booking(127, "FG37K", true, PersonGenerator.DEFAULT.nomsId!!)
+        val pssDate = LocalDate.of(2025, 6, 1)
+        val custody = generateCustodialSentence(
+            disposal = generateDisposal(generateEvent(), generateDisposalType(pssRequirement = true)),
+            bookingRef = booking.bookingNo
+        )
+        val pssedRef = ReferenceDataGenerator.KEY_DATE_TYPES[CustodyDateType.POST_SENTENCE_SUPERVISION_END_DATE.code]!!
+
+        whenever(prisonApi.getSentenceDetail(booking.id)).thenReturn(SentenceDetail(postSentenceSupervisionEndDate = pssDate))
+        whenever(prisonApi.getBooking(booking.id, basicInfo = false, extraInfo = true)).thenReturn(booking)
+        whenever(personRepository.findByNomsIdIgnoreCaseAndSoftDeletedIsFalse(booking.offenderNo))
+            .thenReturn(PersonGenerator.DEFAULT)
+        whenever(custodyRepository.findCustodyId(PersonGenerator.DEFAULT.id, booking.bookingNo))
+            .thenReturn(listOf(custody.id))
+        whenever(custodyRepository.findForUpdate(custody.id)).thenReturn(custody.id)
+        whenever(custodyRepository.findCustodyById(custody.id)).thenReturn(custody)
+        whenever(
+            referenceDataRepository.findByDatasetAndCode(
+                DatasetCode.KEY_DATE_TYPE,
+                CustodyDateType.POST_SENTENCE_SUPERVISION_END_DATE.code
+            )
+        )
+            .thenReturn(pssedRef)
+
+        custodyDateUpdateService.updateCustodyKeyDates(bookingId = booking.id)
+
+        verify(keyDateRepository).saveAll(
+            check<List<KeyDate>> { saved ->
+                assertThat(
+                    saved.any { it.type.code == CustodyDateType.POST_SENTENCE_SUPERVISION_END_DATE.code },
+                    equalTo(true)
+                )
+            }
+        )
+    }
+
+    @Test
+    fun `PSSED is excluded when disposal type does not have PSS_RQMNT Y`() {
+        val booking = Booking(127, "FG37K", true, PersonGenerator.DEFAULT.nomsId!!)
+        val pssDate = LocalDate.of(2025, 6, 1)
+        val custody = generateCustodialSentence(
+            disposal = generateDisposal(generateEvent(), generateDisposalType(pssRequirement = null)),
+            bookingRef = booking.bookingNo
+        )
+
+        whenever(prisonApi.getSentenceDetail(booking.id)).thenReturn(SentenceDetail(postSentenceSupervisionEndDate = pssDate))
+        whenever(prisonApi.getBooking(booking.id, basicInfo = false, extraInfo = true)).thenReturn(booking)
+        whenever(personRepository.findByNomsIdIgnoreCaseAndSoftDeletedIsFalse(booking.offenderNo))
+            .thenReturn(PersonGenerator.DEFAULT)
+        whenever(custodyRepository.findCustodyId(PersonGenerator.DEFAULT.id, booking.bookingNo))
+            .thenReturn(listOf(custody.id))
+        whenever(custodyRepository.findForUpdate(custody.id)).thenReturn(custody.id)
+        whenever(custodyRepository.findCustodyById(custody.id)).thenReturn(custody)
+
+        custodyDateUpdateService.updateCustodyKeyDates(bookingId = booking.id)
+
+        verify(keyDateRepository, never()).saveAll(anyList())
+        verify(telemetryService).trackEvent(eq("KeyDatesUnchanged"), any(), any())
     }
 
     @Test

@@ -1,0 +1,8 @@
+{
+  "Type": "Notification",
+  "MessageId": "30e13002-d1be-56e7-be8c-66cdd7e23342",
+  "Message": "{\"eventType\":\"SENTENCE_DATES-CHANGED\",\"eventDatetime\":\"2020-02-25T11:24:32.935401\",\"bookingId\":1200838,\"sentenceCalculationId\":5628784,\"nomisEventType\":\"S2_RESULT\"}",
+  "MessageAttributes": {
+    "eventType": { "Type": "String", "Value": "SENTENCE_DATES-CHANGED" }
+  }
+}
