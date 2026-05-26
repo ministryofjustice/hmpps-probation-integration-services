@@ -3,7 +3,7 @@
     {
       "request": {
         "method": "GET",
-        "urlPath": "/api/offender-sentences/booking/1200838/sentenceDetail"
+        "urlPath": "/api/bookings/1200838/sentenceDetail"
       },
       "response": {
         "status": 200,
