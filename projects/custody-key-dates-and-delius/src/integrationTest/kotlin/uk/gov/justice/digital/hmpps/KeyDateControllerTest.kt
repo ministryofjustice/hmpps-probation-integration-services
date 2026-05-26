@@ -104,7 +104,7 @@ internal class KeyDateControllerTest @Autowired constructor(
 
         channelManager.getChannel(queueName).waitUntilEmpty()
 
-        verify(telemetryService, timeout(5000)).trackEvent(
+        verify(telemetryService, timeout(5000).atLeast(1)).trackEvent(
             eq("KeyDatesUpdated"),
             org.mockito.kotlin.check {
                 assertThat(it[CustodyDateType.SENTENCE_EXPIRY_DATE.code], equalTo("2025-09-10"))

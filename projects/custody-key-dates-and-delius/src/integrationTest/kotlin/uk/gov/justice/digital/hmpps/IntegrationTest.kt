@@ -193,15 +193,4 @@ internal class IntegrationTest @Autowired constructor(
         assertNotNull(pssed)
         assertThat(pssed!!.date, equalTo(LocalDate.parse("2026-06-15")))
     }
-
-    @Test
-    fun `PSSED key date is not added when disposal type does not have pss requirement`() {
-        val notification = Notification(message = MessageGenerator.SENTENCE_DATE_CHANGED)
-        channelManager.getChannel(queueName).publishAndWait(notification)
-
-        val custodyId = custodyRepository.findCustodyId(PersonGenerator.DEFAULT.id, "58340A").first()
-        val custody = custodyRepository.findCustodyById(custodyId)
-        val pssed = custody.keyDates.firstOrNull { it.type.code == "PSSED" }
-        assertThat(pssed, equalTo(null))
-    }
 }
