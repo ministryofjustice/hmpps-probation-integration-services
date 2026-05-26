@@ -221,6 +221,7 @@ object PersonGenerator {
         startDate = LocalDate.now().minusDays(1),
     )
 
+
     val REQUIREMENT_CONTACT_1 = ContactGenerator.generateContact(
         OVERVIEW,
         ContactGenerator.APPT_CT_1,
@@ -316,6 +317,14 @@ object PersonGenerator {
         ENFORCEMENT_APPOINTMENT_PERSON,
         eventNumber = "1",
         notes = "enforcement appointment test",
+        additionalOffences = emptyList()
+    )
+
+    val NON_COMPLIANCE_PERSON = generateOverview("NC00001", forename = "NonCompliance", surname = "TestPerson")
+    val NON_COMPLIANCE_EVENT = generateEvent(
+        NON_COMPLIANCE_PERSON,
+        eventNumber = "1",
+        notes = "non-compliance detail test",
         additionalOffences = emptyList()
     )
 

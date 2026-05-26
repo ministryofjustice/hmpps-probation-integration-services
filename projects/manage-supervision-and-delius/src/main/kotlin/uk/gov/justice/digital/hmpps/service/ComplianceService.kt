@@ -2,8 +2,11 @@ package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import uk.gov.justice.digital.hmpps.api.model.CodeAndDescription
 import uk.gov.justice.digital.hmpps.api.model.activity.Activity
 import uk.gov.justice.digital.hmpps.api.model.compliance.Breach
+import uk.gov.justice.digital.hmpps.api.model.compliance.NonComplianceDetail
+import uk.gov.justice.digital.hmpps.api.model.compliance.NonComplianceResponse
 import uk.gov.justice.digital.hmpps.api.model.compliance.PersonCompliance
 import uk.gov.justice.digital.hmpps.api.model.compliance.SentenceCompliance
 import uk.gov.justice.digital.hmpps.api.model.overview.*
@@ -13,6 +16,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.compliance.NsiRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.compliance.getAllBreaches
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.*
 import java.time.LocalDate
+import java.time.ZonedDateTime
 
 @Service
 class ComplianceService(
@@ -21,6 +25,7 @@ class ComplianceService(
     private val nsiRepository: NsiRepository,
     private val activityService: ActivityService,
     private val requirementService: RequirementService,
+    private val contactRepository: ContactRepository,
 ) {
 
     @Transactional
@@ -114,6 +119,45 @@ class ComplianceService(
             breaches = breachCount,
             status = terminationReason?.description
         )
+
+    fun getPersonComplianceDetail(crn: String, months: Int): NonComplianceResponse {
+        require(months in 0..120) { "Months must be between 0 and 120" }
+        val summary = personRepository.getSummary(crn)
+        val events = eventRepository.findByPersonId(summary.id)
+        val currentSentences = events.filter { !it.isInactiveEvent() }
+        val allActiveSentenceContacts =
+            when (months) {
+            0 -> contactRepository.findByPersonIdAndEventIdIn(summary.id, currentSentences.map { it.id })
+            else -> contactRepository.findByPersonIdAndEventIdInAndCreatedDateTimeAfter(summary.id, currentSentences.map { it.id },
+                ZonedDateTime.now().minusMonths(months.toLong()))
+            }
+        fun Contact.toNonComplianceDetail() = NonComplianceDetail(
+            contactId = id,
+            eventNumber = event!!.eventNumber,
+            eventId = event.id,
+            type = CodeAndDescription(type.code, type.description),
+            date = date
+        )
+
+        val grouped = allActiveSentenceContacts.groupBy { contact ->
+            val attended = contact.outcome?.outcomeAttendance
+            val compliant = contact.outcome?.outcomeCompliantAcceptable
+            when {
+                attended == false && compliant == true  -> NonComplianceType.ACCEPTABLE_ABSENCE
+                attended == false && compliant == false -> NonComplianceType.UNACCEPTABLE_ABSENCE
+                attended == true  && compliant == false -> NonComplianceType.ATTENDED_BUT_DID_NOT_COMPLY
+                else -> null
+            }
+        }
+
+        fun contactsOf(type: NonComplianceType) = grouped[type]?.map { it.toNonComplianceDetail() } ?: emptyList()
+
+        return NonComplianceResponse(
+            acceptableAbsence = contactsOf(NonComplianceType.ACCEPTABLE_ABSENCE),
+            unacceptableAbsence = contactsOf(NonComplianceType.UNACCEPTABLE_ABSENCE),
+            attendedButDidNotComply = contactsOf(NonComplianceType.ATTENDED_BUT_DID_NOT_COMPLY)
+        )
+    }
 }
 
 fun toActivityCounts(activities: List<Activity>) = ActivityCount(
@@ -138,6 +182,9 @@ fun toSentenceCompliance(activities: List<Activity>, breaches: List<Nsi>) = Comp
     currentBreaches = breaches.count(),
     failureToComplyCount = activities.count { it.isPastAppointment && it.didTheyComply == false }
 )
+
+enum class NonComplianceType { ACCEPTABLE_ABSENCE, UNACCEPTABLE_ABSENCE, ATTENDED_BUT_DID_NOT_COMPLY }
+
 
 
 
