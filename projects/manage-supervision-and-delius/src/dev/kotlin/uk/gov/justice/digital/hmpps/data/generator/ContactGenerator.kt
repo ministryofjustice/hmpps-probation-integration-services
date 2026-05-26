@@ -395,6 +395,7 @@ object ContactGenerator {
         staff: Staff = DEFAULT_STAFF,
         externalReference: String? = null,
         linkedContactId: Long? = null,
+        createdDateTime: ZonedDateTime = ZonedDateTime.now().minusDays(1),
     ) = Contact(
         id = IdGenerator.getAndIncrement(),
         person = person,
@@ -406,7 +407,7 @@ object ContactGenerator {
         sensitive = sensitive,
         complied = complied,
         requirement = requirement,
-        createdDateTime = ZonedDateTime.now().minusDays(1),
+        createdDateTime = createdDateTime,
         lastUpdated = ZonedDateTime.now().minusDays(1),
         lastUpdatedUser = USER,
         team = team,

@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.data
 
+import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.stereotype.Component
 import uk.gov.justice.digital.hmpps.audit.BusinessInteraction
 import uk.gov.justice.digital.hmpps.data.generator.*
@@ -8,10 +9,11 @@ import uk.gov.justice.digital.hmpps.data.generator.personalDetails.PersonDetails
 import uk.gov.justice.digital.hmpps.data.loader.BaseDataLoader
 import uk.gov.justice.digital.hmpps.data.manager.DataManager
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractionCode
+import java.sql.Timestamp
 import java.time.ZonedDateTime
 
 @Component
-class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
+class DataLoader(dataManager: DataManager, private val jdbcTemplate: JdbcTemplate) : BaseDataLoader(dataManager) {
     override fun systemUser() = UserGenerator.AUDIT_USER
 
     override fun setupData() {
@@ -285,6 +287,13 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
             CustodyGenerator.RELEASE_2,
             CustodyGenerator.RELEASE_3,
             ContactGenerator.RQMNT_CONTACT_TYPE,
+        )
+        // Save the old contact then backdate its created_datetime via JDBC to bypass @CreatedDate auditing
+        save(NonComplianceGenerator.OLD_UNACCEPTABLE_ABSENCE_CONTACT)
+        jdbcTemplate.update(
+            "UPDATE contact SET created_datetime = ? WHERE contact_id = ?",
+            Timestamp.from(ZonedDateTime.now().minusMonths(14).toInstant()),
+            NonComplianceGenerator.OLD_UNACCEPTABLE_ABSENCE_CONTACT.id
         )
         personalDetailsData()
 

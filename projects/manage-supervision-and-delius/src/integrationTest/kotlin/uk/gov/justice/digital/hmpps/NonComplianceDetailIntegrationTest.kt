@@ -17,7 +17,8 @@ class NonComplianceDetailIntegrationTest : IntegrationTestBase() {
     fun `non-compliance detail is grouped into the three categories correctly`() {
         val crn = PersonGenerator.NON_COMPLIANCE_PERSON.crn
         val event = PersonGenerator.NON_COMPLIANCE_EVENT
-        val res = mockMvc.get("/compliance/non-compliance-detail/$crn") { withToken() }
+        // Use months=6 so the contact created 10 months ago is excluded, leaving exactly one per category
+        val res = mockMvc.get("/compliance/non-compliance-detail/$crn?months=6") { withToken() }
             .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<NonComplianceResponse>()
 
@@ -54,7 +55,8 @@ class NonComplianceDetailIntegrationTest : IntegrationTestBase() {
     @Test
     fun `months filter limits results to contacts created within the window`() {
         val crn = PersonGenerator.NON_COMPLIANCE_PERSON.crn
-        // months=0 returns all contacts — all three non-compliant contacts should appear
+
+        // months=0 returns all contacts — all four non-compliant contacts (including the old one) should appear
         val unfiltered = mockMvc.get("/compliance/non-compliance-detail/$crn?months=0") { withToken() }
             .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<NonComplianceResponse>()
@@ -62,7 +64,22 @@ class NonComplianceDetailIntegrationTest : IntegrationTestBase() {
         val totalUnfiltered = unfiltered.acceptableAbsence.size +
             unfiltered.unacceptableAbsence.size +
             unfiltered.attendedButDidNotComply.size
-        assertThat(totalUnfiltered, equalTo(3))
+        assertThat(totalUnfiltered, equalTo(4))
+
+        // months=6 excludes the contact created 10 months ago, so only 3 remain
+        val filtered = mockMvc.get("/compliance/non-compliance-detail/$crn?months=6") { withToken() }
+            .andExpect { status { isOk() } }
+            .andReturn().response.contentAsJson<NonComplianceResponse>()
+
+        val totalFiltered = filtered.acceptableAbsence.size +
+            filtered.unacceptableAbsence.size +
+            filtered.attendedButDidNotComply.size
+        assertThat(totalFiltered, equalTo(3))
+
+        // and specifically the old contact is absent
+        val filteredIds = (filtered.acceptableAbsence + filtered.unacceptableAbsence + filtered.attendedButDidNotComply)
+            .map { it.contactId }
+        assertThat(filteredIds.contains(NonComplianceGenerator.OLD_UNACCEPTABLE_ABSENCE_CONTACT.id), equalTo(false))
     }
 
     @Test

@@ -39,5 +39,17 @@ object NonComplianceGenerator {
         outcome = null,
         event = PersonGenerator.NON_COMPLIANCE_EVENT,
     )
-}
 
+    /**
+     * An unacceptable absence created 14 months ago — well outside a 6-month window.
+     * Used to verify the months filter excludes stale contacts.
+     */
+    val OLD_UNACCEPTABLE_ABSENCE_CONTACT = ContactGenerator.generateContact(
+        person = PersonGenerator.NON_COMPLIANCE_PERSON,
+        contactType = ContactGenerator.APPT_CT_1,
+        startDateTime = ZonedDateTime.of(LocalDateTime.now(EuropeLondon).minusMonths(14), EuropeLondon),
+        outcome = ContactGenerator.FAILED_TO_COMPLY,
+        event = PersonGenerator.NON_COMPLIANCE_EVENT,
+        createdDateTime = ZonedDateTime.now(EuropeLondon).minusMonths(14),
+    )
+}

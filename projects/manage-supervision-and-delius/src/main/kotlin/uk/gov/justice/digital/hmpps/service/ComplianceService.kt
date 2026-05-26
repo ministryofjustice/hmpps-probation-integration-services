@@ -120,6 +120,7 @@ class ComplianceService(
             status = terminationReason?.description
         )
 
+    @Transactional
     fun getPersonComplianceDetail(crn: String, months: Int): NonComplianceResponse {
         require(months in 0..120) { "Months must be between 0 and 120" }
         val summary = personRepository.getSummary(crn)
@@ -130,7 +131,7 @@ class ComplianceService(
             0 -> contactRepository.findByPersonIdAndEventIdIn(summary.id, currentSentences.map { it.id })
             else -> contactRepository.findByPersonIdAndEventIdInAndCreatedDateTimeAfter(summary.id, currentSentences.map { it.id },
                 ZonedDateTime.now().minusMonths(months.toLong()))
-            }
+            }.filter { it.type.attendanceContact == true }
         fun Contact.toNonComplianceDetail() = NonComplianceDetail(
             contactId = id,
             eventNumber = event!!.eventNumber,
