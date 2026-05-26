@@ -19,6 +19,7 @@ import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.BREACH_PREVIO
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.INACTIVE_ORDER_1
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.OVERVIEW
 import uk.gov.justice.digital.hmpps.integrations.delius.compliance.NsiRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.Event
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.EventRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.PersonRepository
@@ -47,6 +48,9 @@ internal class ComplianceServiceTest {
 
     @Mock
     lateinit var requirementService: RequirementService
+
+    @Mock
+    lateinit var contactRepository: ContactRepository
 
     @InjectMocks
     lateinit var service: ComplianceService
