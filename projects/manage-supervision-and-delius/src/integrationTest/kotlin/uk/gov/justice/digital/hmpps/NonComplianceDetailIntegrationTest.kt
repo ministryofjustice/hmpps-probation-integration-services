@@ -27,16 +27,25 @@ class NonComplianceDetailIntegrationTest : IntegrationTestBase() {
         assertThat(res.acceptableAbsence[0].contactId, equalTo(NonComplianceGenerator.ACCEPTABLE_ABSENCE_CONTACT.id))
         assertThat(res.acceptableAbsence[0].eventNumber, equalTo(event.eventNumber))
         assertThat(res.acceptableAbsence[0].eventId, equalTo(event.id))
-        assertThat(res.acceptableAbsence[0].type.code, equalTo(NonComplianceGenerator.ACCEPTABLE_ABSENCE_CONTACT.type.code))
+        assertThat(
+            res.acceptableAbsence[0].type.code,
+            equalTo(NonComplianceGenerator.ACCEPTABLE_ABSENCE_CONTACT.type.code)
+        )
         assertThat(res.acceptableAbsence[0].date, equalTo(NonComplianceGenerator.ACCEPTABLE_ABSENCE_CONTACT.date))
 
         // one unacceptable absence
         assertThat(res.unacceptableAbsence, hasSize(1))
-        assertThat(res.unacceptableAbsence[0].contactId, equalTo(NonComplianceGenerator.UNACCEPTABLE_ABSENCE_CONTACT.id))
+        assertThat(
+            res.unacceptableAbsence[0].contactId,
+            equalTo(NonComplianceGenerator.UNACCEPTABLE_ABSENCE_CONTACT.id)
+        )
 
         // one attended but did not comply
         assertThat(res.attendedButDidNotComply, hasSize(1))
-        assertThat(res.attendedButDidNotComply[0].contactId, equalTo(NonComplianceGenerator.ATTENDED_NOT_COMPLY_CONTACT.id))
+        assertThat(
+            res.attendedButDidNotComply[0].contactId,
+            equalTo(NonComplianceGenerator.ATTENDED_NOT_COMPLY_CONTACT.id)
+        )
     }
 
     @Test

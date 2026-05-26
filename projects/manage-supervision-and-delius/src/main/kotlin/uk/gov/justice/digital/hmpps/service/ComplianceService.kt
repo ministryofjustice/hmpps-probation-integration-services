@@ -128,10 +128,13 @@ class ComplianceService(
         val currentSentences = events.filter { !it.isInactiveEvent() }
         val allActiveSentenceContacts =
             when (months) {
-            0 -> contactRepository.findByPersonIdAndEventIdIn(summary.id, currentSentences.map { it.id })
-            else -> contactRepository.findByPersonIdAndEventIdInAndCreatedDateTimeAfter(summary.id, currentSentences.map { it.id },
-                ZonedDateTime.now().minusMonths(months.toLong()))
+                0 -> contactRepository.findByPersonIdAndEventIdIn(summary.id, currentSentences.map { it.id })
+                else -> contactRepository.findByPersonIdAndEventIdInAndCreatedDateTimeAfter(
+                    summary.id, currentSentences.map { it.id },
+                    ZonedDateTime.now().minusMonths(months.toLong())
+                )
             }.filter { it.type.attendanceContact == true }
+
         fun Contact.toNonComplianceDetail() = NonComplianceDetail(
             contactId = id,
             eventNumber = event!!.eventNumber,
@@ -144,9 +147,9 @@ class ComplianceService(
             val attended = contact.outcome?.outcomeAttendance
             val compliant = contact.outcome?.outcomeCompliantAcceptable
             when {
-                attended == false && compliant == true  -> NonComplianceType.ACCEPTABLE_ABSENCE
+                attended == false && compliant == true -> NonComplianceType.ACCEPTABLE_ABSENCE
                 attended == false && compliant == false -> NonComplianceType.UNACCEPTABLE_ABSENCE
-                attended == true  && compliant == false -> NonComplianceType.ATTENDED_BUT_DID_NOT_COMPLY
+                attended == true && compliant == false -> NonComplianceType.ATTENDED_BUT_DID_NOT_COMPLY
                 else -> null
             }
         }

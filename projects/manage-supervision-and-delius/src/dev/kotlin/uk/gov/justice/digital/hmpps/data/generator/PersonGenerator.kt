@@ -221,7 +221,6 @@ object PersonGenerator {
         startDate = LocalDate.now().minusDays(1),
     )
 
-
     val REQUIREMENT_CONTACT_1 = ContactGenerator.generateContact(
         OVERVIEW,
         ContactGenerator.APPT_CT_1,
