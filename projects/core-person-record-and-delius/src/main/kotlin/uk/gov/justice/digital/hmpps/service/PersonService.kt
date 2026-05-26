@@ -33,7 +33,7 @@ class PersonService(
         religionHistory: List<ReligionHistory> = religionHistoryRepository.findAllByPersonId(id),
     ) = this.detail(
         aliases = aliases.map(Alias::asModel),
-        addresses = addresses.mapNotNull(PersonAddress::asAddress),
+        addresses = addresses.map(PersonAddress::asAddress),
         exclusions = exclusions.exclusionsAsLimitedAccess(exclusionMessage),
         restrictions = restrictions.restrictionsAsLimitedAccess(restrictionMessage),
         sentences = sentences.map(Disposal::asModel),

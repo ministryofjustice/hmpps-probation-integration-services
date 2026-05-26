@@ -167,6 +167,13 @@ object PersonGenerator {
             noFixedAbode = true,
             startDate = LocalDate.now().minusDays(60),
             endDate = LocalDate.now().minusDays(30),
+        ),
+        generateAddress(
+            personId = FULL_PERSON_ID,
+            status = PREVIOUS_ADDRESS,
+            streetName = "No postcode",
+            startDate = LocalDate.now().minusDays(90),
+            endDate = LocalDate.now().minusDays(60),
         )
     )
 

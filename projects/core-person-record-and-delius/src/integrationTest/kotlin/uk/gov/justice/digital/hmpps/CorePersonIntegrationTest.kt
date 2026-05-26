@@ -89,7 +89,7 @@ internal class CorePersonIntegrationTest(
                             "preferred": "Freddy"
                           },
                           "dateOfBirth": "1975-07-15",
-                          "dateOfDeath": "2015-08-15", 
+                          "dateOfDeath": "2015-08-15",
                           "title": {
                             "code": "TIT",
                             "description": "Description of TIT"
@@ -202,6 +202,24 @@ internal class CorePersonIntegrationTest(
                               "endDateTime": ${objectMapper.writeValueAsString(PersonGenerator.FULL_PERSON_ADDRESSES[1].endDate)},
                               "startDate": "${PersonGenerator.FULL_PERSON_ADDRESSES[1].startDate!!.toLocalDate()}",
                               "endDate": "${PersonGenerator.FULL_PERSON_ADDRESSES[1].endDate!!.toLocalDate()}"
+                            },
+                            {
+                              "id": ${PersonGenerator.FULL_PERSON_ADDRESSES[2].id},
+                              "fullAddress": "No postcode",
+                              "streetName": "No postcode",
+                              "noFixedAbode": false,
+                              "status": {
+                                "code": "P",
+                                "description": "Previous Address"
+                              },
+                              "type": {
+                                "code": "A01C",
+                                "description": "Rental accommodation - private rental"
+                              },
+                              "startDateTime": ${objectMapper.writeValueAsString(PersonGenerator.FULL_PERSON_ADDRESSES[2].startDate)},
+                              "endDateTime": ${objectMapper.writeValueAsString(PersonGenerator.FULL_PERSON_ADDRESSES[2].endDate)},
+                              "startDate": "${PersonGenerator.FULL_PERSON_ADDRESSES[2].startDate!!.toLocalDate()}",
+                              "endDate": "${PersonGenerator.FULL_PERSON_ADDRESSES[2].endDate!!.toLocalDate()}"
                             }
                           ],
                           "excludedFrom": {
