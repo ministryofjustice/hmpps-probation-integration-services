@@ -1,7 +1,6 @@
 package uk.gov.justice.digital.hmpps.model
 
 import uk.gov.justice.digital.hmpps.entity.unpaidwork.UnpaidWorkProject
-import uk.gov.justice.digital.hmpps.entity.unpaidwork.UnpaidWorkProjectAvailability
 import java.time.LocalDate
 
 data class Project(
@@ -32,7 +31,7 @@ data class Project(
             telephoneNumber = entity.beneficiaryContactAddress?.telephoneNumber,
             location = entity.beneficiaryContactAddress?.let { ProjectAddress(it) }
         ),
-        hiVisRequired = entity.hiVisRequired,
+        hiVisRequired = entity.hiVisRequired ?: false,
         expectedEndDateExclusive = entity.expectedEndDate,
         actualEndDateExclusive = entity.completionDate,
         availability = entity.availability.map { it.toProjectAvailabilityDetails() }
