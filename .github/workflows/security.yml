@@ -44,7 +44,7 @@ jobs:
           CLIENT_SECRET: ${{ secrets.SNYK_CLIENT_SECRET }}
 
       - name: Upload scan results to GitHub Security tab
-        uses: github/codeql-action/upload-sarif@7434149006143a4d75b82a2f411ef15b03ccc2d7 # v4.35.4
+        uses: github/codeql-action/upload-sarif@7211b7c8077ea37d8641b6271f6a365a22a5fbfa # v4.36.0
         with:
           sarif_file: snyk-results.sarif
 
