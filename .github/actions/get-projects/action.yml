@@ -22,14 +22,32 @@ runs:
     - name: Output changed projects
       id: check-changes
       if: inputs.projects == 'Changed'
-      uses: ./.github/actions/check-changes
+      uses: ministryofjustice/hmpps-probation-integration-services/.github/actions/check-changes@main
       with:
         filters: ${{ inputs.change-filters }}
 
     - name: Parse and map project list
       id: parse
       if: inputs.projects != 'Changed'
-      run: ./.github/actions/get-projects/parse-projects.sh
+      shell: bash # language=bash
+      run: |
+        all_projects="$(find projects -mindepth 1 -maxdepth 1 -printf "%f\n" | jq --raw-input . | jq --slurp --compact-output .)"
+        
+        if [ "$INPUT" == 'All' ]
+          # Return all projects
+          then output="$all_projects"
+        elif jq <<< "$INPUT" &>/dev/null
+          # Input is already JSON
+          then output="$INPUT"
+        else 
+          # Input is not JSON, so wrap it in a JSON array
+          output="$(jq --compact-output -n --arg INPUT "$INPUT" '[$INPUT]')"
+        fi
+        
+        # Filter to existing projects and sort alphabetically
+        output="$(jq --compact-output -n --argjson A "$output" --argjson B "$all_projects" '$A - ($A - $B) | sort')"
+        
+        # Output
+        echo "projects=$output" | tee -a "$GITHUB_OUTPUT"
       env:
         INPUT: ${{ inputs.projects }}
-      shell: bash
