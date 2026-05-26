@@ -149,7 +149,7 @@ internal class CustodyDateUpdateServiceTest {
         val booking = Booking(127, "FG37K", true, PersonGenerator.DEFAULT.nomsId!!)
         val pssDate = LocalDate.of(2025, 6, 1)
         val custody = generateCustodialSentence(
-            disposal = generateDisposal(generateEvent(), generateDisposalType(pssRequirement = "Y")),
+            disposal = generateDisposal(generateEvent(), generateDisposalType(pssRequirement = true)),
             bookingRef = booking.bookingNo
         )
         val pssedRef = ReferenceDataGenerator.KEY_DATE_TYPES[CustodyDateType.POST_SENTENCE_SUPERVISION_END_DATE.code]!!

@@ -4,6 +4,7 @@ import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.NumericBooleanConverter
+import org.hibernate.type.YesNoConverter
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.reference.ReferenceData
 import uk.gov.justice.digital.hmpps.integrations.delius.person.Person
 import java.time.LocalDate
@@ -76,10 +77,10 @@ data class DisposalType(
     val requiredInformation: String,
 
     @Column(name = "pss_rqmnt")
-    val pssRequirement: String? = null,
+    @Convert(converter = YesNoConverter::class)
+    val pssRequirement: Boolean? = null,
 ) {
     val determinateSentence: Boolean get() = requiredInformation == "L1"
-    val pssRequired: Boolean get() = pssRequirement == "Y"
 }
 
 @Immutable
