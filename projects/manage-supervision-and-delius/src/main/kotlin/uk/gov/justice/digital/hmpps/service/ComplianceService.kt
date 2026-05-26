@@ -133,7 +133,7 @@ class ComplianceService(
                     summary.id, currentSentences.map { it.id },
                     LocalDate.now().minusMonths(months.toLong())
                 )
-            }.filter { it.type.attendanceContact == true }
+            }
 
         fun Contact.toNonComplianceDetail() = NonComplianceDetail(
             contactId = id,
