@@ -93,35 +93,33 @@ fun Disposal.asModel() = Sentence(
     active
 )
 
-fun PersonAddress.asAddress() = postcode?.let {
-    Address(
-        id = id!!,
-        fullAddress = listOf(
-            buildingName,
-            listOf(addressNumber, streetName).trimAndJoin(" "),
-            district,
-            townCity,
-            county,
-            postcode
-        ).trimAndJoin(),
-        buildingName = buildingName,
-        addressNumber = addressNumber,
-        streetName = streetName,
-        district = district,
-        townCity = townCity,
-        county = county,
-        postcode = postcode,
-        uprn = uprn,
-        telephoneNumber = telephoneNumber,
-        noFixedAbode = noFixedAbode,
-        status = status.asCodeDescription(),
-        type = type?.asCodeDescription(),
-        typeVerified = typeVerified,
-        notes = notes,
-        startDateTime = startDate,
-        endDateTime = endDate,
-    )
-}
+fun PersonAddress.asAddress() = Address(
+    id = id!!,
+    fullAddress = listOf(
+        buildingName,
+        listOf(addressNumber, streetName).trimAndJoin(" "),
+        district,
+        townCity,
+        county,
+        postcode
+    ).trimAndJoin(),
+    buildingName = buildingName,
+    addressNumber = addressNumber,
+    streetName = streetName,
+    district = district,
+    townCity = townCity,
+    county = county,
+    postcode = postcode,
+    uprn = uprn,
+    telephoneNumber = telephoneNumber,
+    noFixedAbode = noFixedAbode,
+    status = status.asCodeDescription(),
+    type = type?.asCodeDescription(),
+    typeVerified = typeVerified,
+    notes = notes,
+    startDateTime = startDate,
+    endDateTime = endDate,
+)
 
 private fun List<String?>.trimAndJoin(separator: String = ", ") =
     filterNotNull().filter { it.isNotBlank() }.joinToString(separator) { it.trim() }
