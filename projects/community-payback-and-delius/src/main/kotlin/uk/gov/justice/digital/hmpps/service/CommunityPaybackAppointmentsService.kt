@@ -290,8 +290,21 @@ class CommunityPaybackAppointmentsService(
     }
 
     fun updateStatus(details: UnpaidWorkDetails) {
-        val remainingMinutes = calculateRemainingMinutes(details)
-        val currentStatus = details.status?.code/*
+        val upwMinutesDtos = unpaidWorkAppointmentRepository
+            .getUpwRequiredAndCompletedMinutes(listOf(details.id))
+        val progress = RequirementProgress(
+            requiredMinutes = upwMinutesDtos.sumOf { it.requiredMinutes },
+            completedMinutes = upwMinutesDtos.sumOf { it.completedMinutes },
+            adjustments = upwMinutesDtos.sumOf { it.positiveAdjustments - it.negativeAdjustments }
+        )
+        val remainingMinutes = progress.requiredMinutes + progress.adjustments - progress.completedMinutes
+
+        require(remainingMinutes >= 0) {
+            "Adjustment would result in negative remaining unpaid work minutes. ($remainingMinutes)"
+        }
+
+        val currentStatus = details.status?.code
+        /*
         if remaining minutes are 0 or less, then add the completed status 'HC'
         if the current status is null or 'UN' (unallocated) then add the status 'WK' (work in progress)
         else if the status is any other value then keep the status as is
@@ -306,44 +319,6 @@ class CommunityPaybackAppointmentsService(
             status = referenceDataRepository.getStatus(statusCode)
             statusDate = ZonedDateTime.now()
         })
-    }
-
-    fun validateRemainingMinutes(remainingMinutes: Long) {
-        require(remainingMinutes >= 0) {
-            "Adjustment would result in negative remaining unpaid work minutes. ($remainingMinutes)"
-        }
-    }
-
-    fun calculateRemainingMinutes(details: UnpaidWorkDetails): Long {
-        val upwMinutesDtos = unpaidWorkAppointmentRepository.getUpwRequiredAndCompletedMinutes(listOf(details.id))
-        val progress = RequirementProgress(
-            requiredMinutes = upwMinutesDtos.sumOf { it.requiredMinutes },
-            completedMinutes = upwMinutesDtos.sumOf { it.completedMinutes },
-            adjustments = upwMinutesDtos.sumOf { it.positiveAdjustments - it.negativeAdjustments })
-        return progress.requiredMinutes + progress.adjustments - progress.completedMinutes
-    }
-
-    fun projectedRemainingMinutes(
-        details: UnpaidWorkDetails,
-        newAmount: Long? = null,
-        newType: AdjustmentType? = null,
-        existingAmount: Long? = null,
-        existingType: AdjustmentType? = null,
-    ): Long {
-        val currentRemainingMinutes = calculateRemainingMinutes(details)
-        val remainingWithoutExistingAdjustment = if (existingAmount != null && existingType != null) {
-            when (existingType) {
-                AdjustmentType.POSITIVE -> currentRemainingMinutes - existingAmount
-                AdjustmentType.NEGATIVE -> currentRemainingMinutes + existingAmount
-            }
-        } else currentRemainingMinutes
-
-        return if (newAmount != null && newType != null) {
-            when (newType) {
-                AdjustmentType.POSITIVE -> remainingWithoutExistingAdjustment + newAmount
-                AdjustmentType.NEGATIVE -> remainingWithoutExistingAdjustment - newAmount
-            }
-        } else remainingWithoutExistingAdjustment
     }
 
     private fun UnpaidWorkAppointment.toAppointmentResponseCase(

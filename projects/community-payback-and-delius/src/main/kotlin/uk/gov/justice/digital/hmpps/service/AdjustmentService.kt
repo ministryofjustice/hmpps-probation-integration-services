@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.entity.ReferenceDataRepository
 import uk.gov.justice.digital.hmpps.entity.getAdjustmentReason
 import uk.gov.justice.digital.hmpps.entity.person.PersonRepository
@@ -14,6 +15,7 @@ import uk.gov.justice.digital.hmpps.model.*
 import java.util.*
 
 @Service
+@Transactional()
 class AdjustmentService(
     private val adjustmentRepository: UnpaidWorkAdjustmentRepository,
     private val unpaidWorkDetailsRepository: UpwDetailsRepository,
@@ -32,17 +34,9 @@ class AdjustmentService(
         val upwDetails = unpaidWorkDetailsRepository.getByEventIdIn(events.values)
         return requests.map { request ->
             val eventId = checkNotNull(events[request.crn to request.eventNumber])
-            val details = checkNotNull(upwDetails[eventId])
-            val projectedRemainingMinutes = communityPaybackAppointmentsService.projectedRemainingMinutes(
-                details = details,
-                newAmount = request.minutes.toLong(),
-                newType = request.type,
-            )
-            communityPaybackAppointmentsService.validateRemainingMinutes(projectedRemainingMinutes)
-
             val adjustment = adjustmentRepository.save(
                 UnpaidWorkAdjustment(
-                    upwDetails = details,
+                    upwDetails = checkNotNull(upwDetails[eventId]),
                     amount = request.minutes,
                     date = request.date,
                     type = request.type.code,
@@ -77,14 +71,6 @@ class AdjustmentService(
     ) {
         val existingAdjustment = adjustmentRepository.findByReference(reference).orNotFoundBy("reference", reference)
         val user = userRepository.findByUsername(username).orNotFoundBy("username", username)
-        val projectedRemainingMinutes = communityPaybackAppointmentsService.projectedRemainingMinutes(
-            details = existingAdjustment.upwDetails,
-            newAmount = adjustmentRequest.minutes.toLong(),
-            newType = adjustmentRequest.type,
-            existingAmount = existingAdjustment.amount.toLong(),
-            existingType = AdjustmentType.valueOf(existingAdjustment.type),
-        )
-        communityPaybackAppointmentsService.validateRemainingMinutes(projectedRemainingMinutes)
         existingAdjustment.type = adjustmentRequest.type.code
         existingAdjustment.amount = adjustmentRequest.minutes
         existingAdjustment.date = adjustmentRequest.date
@@ -96,12 +82,6 @@ class AdjustmentService(
 
     fun deleteAdjustment(reference: UUID) {
         val existingAdjustment = adjustmentRepository.findByReference(reference).orNotFoundBy("reference", reference)
-        val projectedRemainingMinutes = communityPaybackAppointmentsService.projectedRemainingMinutes(
-            details = existingAdjustment.upwDetails,
-            existingAmount = existingAdjustment.amount.toLong(),
-            existingType = AdjustmentType.valueOf(existingAdjustment.type),
-        )
-        communityPaybackAppointmentsService.validateRemainingMinutes(projectedRemainingMinutes)
         adjustmentRepository.delete(existingAdjustment)
         communityPaybackAppointmentsService.updateStatus(existingAdjustment.upwDetails)
     }

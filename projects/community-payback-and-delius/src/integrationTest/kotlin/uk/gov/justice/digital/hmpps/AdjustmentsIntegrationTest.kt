@@ -4,6 +4,7 @@ import jakarta.persistence.EntityManager
 import jakarta.transaction.Transactional
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.within
+import org.hamcrest.Matchers.containsString
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
@@ -315,14 +316,9 @@ class AdjustmentsIntegrationTest @Autowired constructor(
                     minutes = 100000,
                 )
             )
-        }.andExpect { status { isBadRequest() } }.andExpect {
-            content {
-                string(
-                    org.hamcrest.Matchers.containsString(
-                        "Adjustment would result in negative remaining unpaid work minutes"
-                    )
-                )
-            }
+        }.andExpect {
+            status { isBadRequest() }
+            content { jsonPath("$.message") { containsString("Adjustment would result in negative remaining unpaid work minutes") } }
         }
         assertThat(upwDetailsRepository.findByIdOrNull(beingWorkedDetails.id)?.status?.code).isEqualTo("WK")
         val adjustment = adjustmentRepository.findByReference(reference)
@@ -366,14 +362,9 @@ class AdjustmentsIntegrationTest @Autowired constructor(
                 type = AdjustmentType.NEGATIVE,
                 minutes = 100000,
             )
-        }.andExpect { status { isBadRequest() } }.andExpect {
-            content {
-                string(
-                    org.hamcrest.Matchers.containsString(
-                        "Adjustment would result in negative remaining unpaid work minutes"
-                    )
-                )
-            }
+        }.andExpect {
+            status { isBadRequest() }
+            content { jsonPath("$.message") { containsString("Adjustment would result in negative remaining unpaid work minutes") } }
         }
         assertThat(upwDetailsRepository.findByIdOrNull(beingWorkedDetails.id)?.status?.code).isEqualTo("WK")
         val adjustmentAfterFailure = adjustmentRepository.findByReference(reference)!!
@@ -420,14 +411,9 @@ class AdjustmentsIntegrationTest @Autowired constructor(
 
         mockMvc.delete("/adjustments/$positiveReference") {
             withToken()
-        }.andExpect { status { isBadRequest() } }.andExpect {
-            content {
-                string(
-                    org.hamcrest.Matchers.containsString(
-                        "Adjustment would result in negative remaining unpaid work minutes"
-                    )
-                )
-            }
+        }.andExpect {
+            status { isBadRequest() }
+            content { jsonPath("$.message") { containsString("Adjustment would result in negative remaining unpaid work minutes") } }
         }
 
         assertThat(upwDetailsRepository.findByIdOrNull(beingWorkedDetails.id)?.status?.code).isEqualTo("WK")
