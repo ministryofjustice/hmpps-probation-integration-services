@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.data
 
+import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.stereotype.Component
 import uk.gov.justice.digital.hmpps.audit.BusinessInteraction
 import uk.gov.justice.digital.hmpps.data.generator.*
@@ -8,10 +9,11 @@ import uk.gov.justice.digital.hmpps.data.generator.personalDetails.PersonDetails
 import uk.gov.justice.digital.hmpps.data.loader.BaseDataLoader
 import uk.gov.justice.digital.hmpps.data.manager.DataManager
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractionCode
+import java.sql.Timestamp
 import java.time.ZonedDateTime
 
 @Component
-class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
+class DataLoader(dataManager: DataManager, private val jdbcTemplate: JdbcTemplate) : BaseDataLoader(dataManager) {
     override fun systemUser() = UserGenerator.AUDIT_USER
 
     override fun setupData() {
@@ -191,6 +193,7 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
             ContactGenerator.FIRST_APPT_CONTACT,
             ContactGenerator.ACCEPTABLE_ABSENCE,
             ContactGenerator.FAILED_TO_COMPLY,
+            ContactGenerator.ATTENDED_NOT_COMPLY_OUTCOME,
             ContactGenerator.POSSIBLE_OUTCOME_1,
             ContactGenerator.POSSIBLE_OUTCOME_2,
             ContactGenerator.POSSIBLE_OUTCOME_3,
@@ -203,8 +206,8 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
             PersonGenerator.LINKED_CONTACT_PERSON,
             PersonGenerator.ENFORCEMENT_APPOINTMENT_PERSON,
             PersonGenerator.ENFORCEMENT_APPOINTMENT_EVENT,
-            ContactGenerator.ENFORCEMENT_CONTACT_1,
-            ContactGenerator.ENFORCEMENT_CONTACT_2,
+            PersonGenerator.NON_COMPLIANCE_PERSON,
+            PersonGenerator.NON_COMPLIANCE_EVENT,
             ContactGenerator.ENFORCEMENT_CONTACT_3,
             ContactGenerator.WARNING_LETTER_ENFORCEMENT_ACTION,
             ContactGenerator.ENFORCEMENT,
@@ -221,6 +224,10 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
             ContactGenerator.CONTACT_DOCUMENT_3,
             ContactGenerator.UPDATABLE_CONTACT,
             ContactGenerator.NON_UPDATABLE_CONTACT,
+            NonComplianceGenerator.ACCEPTABLE_ABSENCE_CONTACT,
+            NonComplianceGenerator.UNACCEPTABLE_ABSENCE_CONTACT,
+            NonComplianceGenerator.ATTENDED_NOT_COMPLY_CONTACT,
+            NonComplianceGenerator.COMPLIANT_CONTACT,
             PersonGenerator.OFFENCE_1,
             PersonGenerator.MAIN_OFFENCE_1,
             PersonGenerator.OFFENCE_2,
@@ -280,6 +287,13 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
             CustodyGenerator.RELEASE_2,
             CustodyGenerator.RELEASE_3,
             ContactGenerator.RQMNT_CONTACT_TYPE,
+        )
+        // Save the old contact then backdate its created_datetime via JDBC to bypass @CreatedDate auditing
+        save(NonComplianceGenerator.OLD_UNACCEPTABLE_ABSENCE_CONTACT)
+        jdbcTemplate.update(
+            "UPDATE contact SET created_datetime = ? WHERE contact_id = ?",
+            Timestamp.from(ZonedDateTime.now().minusMonths(14).toInstant()),
+            NonComplianceGenerator.OLD_UNACCEPTABLE_ABSENCE_CONTACT.id
         )
         personalDetailsData()
 

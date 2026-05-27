@@ -150,6 +150,7 @@ object ContactGenerator {
 
     val ACCEPTABLE_ABSENCE = generateOutcome("OUT", "Acceptable", false, true)
     val FAILED_TO_COMPLY = generateOutcome("FTC", "Failed to Comply", false, false)
+    val ATTENDED_NOT_COMPLY_OUTCOME = generateOutcome("ANC", "Attended but did not comply", true, false)
 
     val POSSIBLE_OUTCOME_1 =
         generateContactTypeOutcome(OTHER_CT.id, ACCEPTABLE_ABSENCE.id, OTHER_CT, ACCEPTABLE_ABSENCE)
@@ -392,6 +393,7 @@ object ContactGenerator {
         staff: Staff = DEFAULT_STAFF,
         externalReference: String? = null,
         linkedContactId: Long? = null,
+        createdDateTime: ZonedDateTime = ZonedDateTime.now().minusDays(1),
     ) = Contact(
         id = IdGenerator.getAndIncrement(),
         person = person,
@@ -403,7 +405,7 @@ object ContactGenerator {
         sensitive = sensitive,
         complied = complied,
         requirement = requirement,
-        createdDateTime = ZonedDateTime.now().minusDays(1),
+        createdDateTime = createdDateTime,
         lastUpdated = ZonedDateTime.now().minusDays(1),
         lastUpdatedUser = USER,
         team = team,
