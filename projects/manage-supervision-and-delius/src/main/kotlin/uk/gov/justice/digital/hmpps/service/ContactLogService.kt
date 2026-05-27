@@ -227,7 +227,7 @@ class ContactLogService(
             .firstOrNull { it.code == request.outcomeCode }
             .orNotFoundBy("code", request.outcomeCode)
 
-        if(contact.complied == false && contactOutcome.outcomeCompliantAcceptable == true) {
+        if (contact.complied == false && contactOutcome.outcomeCompliantAcceptable == true) {
             enforcementRepository.deleteAllByContactId(contact.id)
             contact = contactRepository.getContact(contact.id)
         }

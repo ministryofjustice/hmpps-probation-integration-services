@@ -313,14 +313,25 @@ object UpdateContactOutcomeGenerator {
         nationalStandardsContact = true
     )
 
-    val CMP_NON_COMPLIANT_OUTCOME = ContactGenerator.generateOutcome("UCCNCO", "UCC Non-Compliant Outcome", false, false)
+    val CMP_NON_COMPLIANT_OUTCOME =
+        ContactGenerator.generateOutcome("UCCNCO", "UCC Non-Compliant Outcome", false, false)
     val CMP_COMPLIANT_OUTCOME = ContactGenerator.generateOutcome("UCCCMP", "UCC Compliant Outcome", true, true)
 
     val CMP_CONTACT_TYPE_NON_COMPLIANT_OUTCOME =
-        generateContactTypeOutcome(CMP_CONTACT_TYPE.id, CMP_NON_COMPLIANT_OUTCOME.id, CMP_CONTACT_TYPE, CMP_NON_COMPLIANT_OUTCOME)
+        generateContactTypeOutcome(
+            CMP_CONTACT_TYPE.id,
+            CMP_NON_COMPLIANT_OUTCOME.id,
+            CMP_CONTACT_TYPE,
+            CMP_NON_COMPLIANT_OUTCOME
+        )
 
     val CMP_CONTACT_TYPE_COMPLIANT_OUTCOME =
-        generateContactTypeOutcome(CMP_CONTACT_TYPE.id, CMP_COMPLIANT_OUTCOME.id, CMP_CONTACT_TYPE, CMP_COMPLIANT_OUTCOME)
+        generateContactTypeOutcome(
+            CMP_CONTACT_TYPE.id,
+            CMP_COMPLIANT_OUTCOME.id,
+            CMP_CONTACT_TYPE,
+            CMP_COMPLIANT_OUTCOME
+        )
 
     val CMP_ENFORCEMENT_ACTION =
         ContactGenerator.generateEnforcementAction("UCCENF1", "UCC Enforcement Action", CMP_CONTACT_TYPE)
