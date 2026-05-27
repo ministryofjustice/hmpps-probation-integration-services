@@ -15,7 +15,7 @@ import uk.gov.justice.digital.hmpps.model.*
 import java.util.*
 
 @Service
-@Transactional()
+@Transactional
 class AdjustmentService(
     private val adjustmentRepository: UnpaidWorkAdjustmentRepository,
     private val unpaidWorkDetailsRepository: UpwDetailsRepository,
