@@ -7,7 +7,7 @@ import org.hibernate.type.NumericBooleanConverter
 import uk.gov.justice.digital.hmpps.entity.staff.CommunityManager
 import uk.gov.justice.digital.hmpps.model.Name
 import java.time.LocalDate
-import java.time.LocalDateTime
+import java.time.ZonedDateTime
 
 @Entity
 @Immutable
@@ -31,7 +31,7 @@ class Person(
     @Column(name = "e_mail_address")
     val emailAddress: String? = null,
     @Column(name = "last_updated_datetime")
-    val lastUpdatedDatetime: LocalDateTime? = null,
+    val lastUpdatedDatetime: ZonedDateTime? = null,
     @OneToOne(mappedBy = "person")
     val manager: CommunityManager,
     @Column(name = "soft_deleted", columnDefinition = "number")

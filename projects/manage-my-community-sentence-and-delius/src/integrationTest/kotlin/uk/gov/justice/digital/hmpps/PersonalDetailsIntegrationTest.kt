@@ -48,7 +48,7 @@ internal class PersonalDetailsIntegrationTest @Autowired constructor(private val
                           },
                           "preferredName": "Tester",
                           "dateOfBirth": "1990-01-01",
-                          "lastUpdatedAt": "2025-05-01T09:15:00",
+                          "lastUpdatedAt": "2025-05-01T09:15:00+01:00",
                           "mainAddress": {
                             "houseNumber": "1",
                             "buildingName": "My Building",
@@ -57,7 +57,7 @@ internal class PersonalDetailsIntegrationTest @Autowired constructor(private val
                             "district": "My District",
                             "county": "My County",
                             "postcode": "TE1 1ST",
-                            "lastUpdatedAt": "2025-04-12T11:15:00"
+                            "lastUpdatedAt": "2025-04-12T11:15:00+01:00"
                           },
                           "telephoneNumber": "01000000001",
                           "mobileNumber": "07111111111",
@@ -71,7 +71,7 @@ internal class PersonalDetailsIntegrationTest @Autowired constructor(private val
                               "relationship": "Sister",
                               "mobileNumber": "07333333333",
                               "emailAddress": "joe.bloggs@example.com",
-                              "lastUpdatedAt": "2025-03-10T14:30:00"
+                              "lastUpdatedAt": "2025-03-10T14:30:00Z"
                             }
                           ],
                           "practitioner": {
