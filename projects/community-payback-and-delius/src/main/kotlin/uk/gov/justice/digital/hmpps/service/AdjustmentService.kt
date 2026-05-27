@@ -46,7 +46,7 @@ class AdjustmentService(
                 )
             )
             AdjustmentPostResponse(adjustment.id!!, adjustment.reference()!!)
-        }.also { upwDetails.values.onEach { communityPaybackAppointmentsService.updateStatus(it) } }
+        }.also { upwDetails.values.onEach { communityPaybackAppointmentsService.updateStatusForAdjustment(it) } }
     }
 
     fun getAdjustments(crn: String, eventNumber: Int): AdjustmentResponse {
@@ -77,13 +77,13 @@ class AdjustmentService(
         existingAdjustment.adjustedByUserId = user.id
         existingAdjustment.reason = referenceDataRepository.getAdjustmentReason(adjustmentRequest.reason)
         adjustmentRepository.save(existingAdjustment)
-        communityPaybackAppointmentsService.updateStatus(existingAdjustment.upwDetails)
+        communityPaybackAppointmentsService.updateStatusForAdjustment(existingAdjustment.upwDetails)
     }
 
     fun deleteAdjustment(reference: UUID) {
         val existingAdjustment = adjustmentRepository.findByReference(reference).orNotFoundBy("reference", reference)
         adjustmentRepository.delete(existingAdjustment)
-        communityPaybackAppointmentsService.updateStatus(existingAdjustment.upwDetails)
+        communityPaybackAppointmentsService.updateStatusForAdjustment(existingAdjustment.upwDetails)
     }
 
     fun getAdjustment(reference: UUID): Adjustment {

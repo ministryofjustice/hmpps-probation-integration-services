@@ -299,6 +299,34 @@ class CommunityPaybackAppointmentsService(
         )
         val remainingMinutes = progress.requiredMinutes + progress.adjustments - progress.completedMinutes
 
+        val currentStatus = details.status?.code
+        /*
+        if remaining minutes are 0 or less, then add the completed status 'HC'
+        if the current status is null or 'UN' (unallocated) then add the status 'WK' (work in progress)
+        else if the status is any other value then keep the status as is
+         */
+        val statusCode = when {
+            remainingMinutes <= 0L -> "HC"
+            currentStatus == null -> "WK"
+            currentStatus == "UN" -> "WK"
+            else -> return
+        }
+        upwDetailsRepository.save(details.apply {
+            status = referenceDataRepository.getStatus(statusCode)
+            statusDate = ZonedDateTime.now()
+        })
+    }
+
+    fun updateStatusForAdjustment(details: UnpaidWorkDetails) {
+        val upwMinutesDtos = unpaidWorkAppointmentRepository
+            .getUpwRequiredAndCompletedMinutes(listOf(details.id))
+        val progress = RequirementProgress(
+            requiredMinutes = upwMinutesDtos.sumOf { it.requiredMinutes },
+            completedMinutes = upwMinutesDtos.sumOf { it.completedMinutes },
+            adjustments = upwMinutesDtos.sumOf { it.positiveAdjustments - it.negativeAdjustments }
+        )
+        val remainingMinutes = progress.requiredMinutes + progress.adjustments - progress.completedMinutes
+
         require(remainingMinutes >= 0) {
             "Adjustment would result in negative remaining unpaid work minutes. ($remainingMinutes)"
         }

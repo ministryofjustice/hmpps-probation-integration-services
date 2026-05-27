@@ -139,6 +139,15 @@ object UPWGenerator {
         court = null,
     )
 
+    val EVENT_7 = generateEvent(
+        eventNumber = "7",
+        person = PersonGenerator.DEFAULT_PERSON,
+        disposal = null,
+        referralDate = LocalDate.now().minusDays(1),
+        convictionDate = null,
+        court = null,
+    )
+
     val EVENT_ADJUSTMENT = generateEvent(
         eventNumber = "1",
         person = PersonGenerator.ADJUSTMENT_PERSON,
@@ -205,6 +214,14 @@ object UPWGenerator {
         offence = DEFAULT_OFFENCE
     )
 
+    val EVENT_7_MAIN_OFFENCE = MainOffence(
+        id = IdGenerator.getAndIncrement(),
+        offenceDate = LocalDate.of(2024, 1, 1),
+        offenceCount = 1,
+        event = EVENT_7,
+        offence = DEFAULT_OFFENCE
+    )
+
     val DISPOSAL_1 = generateDisposal(
         length = 12,
         disposalType = ReferenceDataGenerator.DEFAULT_DISPOSAL_TYPE,
@@ -241,6 +258,12 @@ object UPWGenerator {
         date = LocalDate.of(2026, 1, 5),
         event = EVENT_6,
     )
+    val DISPOSAL_7 = generateDisposal(
+        length = 12,
+        disposalType = ReferenceDataGenerator.DEFAULT_DISPOSAL_TYPE,
+        date = LocalDate.of(2026, 1, 5),
+        event = EVENT_7,
+    )
     val DISPOSAL_ADJUSTMENT = generateDisposal(
         length = 12,
         disposalType = ReferenceDataGenerator.DEFAULT_DISPOSAL_TYPE,
@@ -256,6 +279,7 @@ object UPWGenerator {
         generateUpwDetails(disposal = DISPOSAL_4, status = ReferenceDataGenerator.UPW_STATUS_UNALLOCATED)
     val UPW_DETAILS_5 = generateUpwDetails(disposal = DISPOSAL_5, status = ReferenceDataGenerator.UPW_STATUS_WORKING)
     val UPW_DETAILS_6 = generateUpwDetails(disposal = DISPOSAL_6, status = ReferenceDataGenerator.UPW_STATUS_WORKING)
+    val UPW_DETAILS_7 = generateUpwDetails(disposal = DISPOSAL_7, status = ReferenceDataGenerator.UPW_STATUS_WORKING)
 
     val DEFAULT_UPW_ALLOCATION = generateUpwAllocation(
         details = UPW_DETAILS_1,
@@ -508,6 +532,10 @@ object UPWGenerator {
     val SIXTH_RQMNT = generateRequirement(
         length = 1,
         disposal = DISPOSAL_6
+    )
+    val SEVENTH_RQMNT = generateRequirement(
+        length = 60,
+        disposal = DISPOSAL_7
     )
 
     val ADJUSTMENT_RQMNT = generateRequirement(
