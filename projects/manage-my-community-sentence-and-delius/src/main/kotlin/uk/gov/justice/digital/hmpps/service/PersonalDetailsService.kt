@@ -29,6 +29,7 @@ class PersonalDetailsService(
             name = person.name(),
             preferredName = person.preferredName,
             dateOfBirth = person.dateOfBirth,
+            lastUpdatedAt = person.lastUpdatedDatetime,
             mainAddress = mainAddress?.toModel(),
             telephoneNumber = person.telephoneNumber,
             mobileNumber = person.mobileNumber,

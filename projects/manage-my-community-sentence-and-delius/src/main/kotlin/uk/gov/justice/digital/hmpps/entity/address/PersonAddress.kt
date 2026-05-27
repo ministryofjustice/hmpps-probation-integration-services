@@ -7,6 +7,7 @@ import org.hibernate.type.YesNoConverter
 import uk.gov.justice.digital.hmpps.entity.Person
 import uk.gov.justice.digital.hmpps.entity.ReferenceData
 import java.time.LocalDate
+import java.time.LocalDateTime
 
 @Entity
 @Table(name = "offender_address")
@@ -32,7 +33,8 @@ class PersonAddress(
     @Convert(converter = YesNoConverter::class)
     val noFixedAbode: Boolean? = false,
     val endDate: LocalDate? = null,
-
+    @Column(name = "last_updated_datetime")
+    val lastUpdatedDatetime: LocalDateTime? = null,
     @Column(columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean = false

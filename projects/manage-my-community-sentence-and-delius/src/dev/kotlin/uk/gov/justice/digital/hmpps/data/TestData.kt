@@ -34,6 +34,7 @@ import uk.gov.justice.digital.hmpps.entity.staff.Team
 import uk.gov.justice.digital.hmpps.entity.unpaidwork.UnpaidWorkAppointment
 import uk.gov.justice.digital.hmpps.entity.unpaidwork.UnpaidWorkDetails
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.LocalTime
 
 object TestData {
@@ -97,6 +98,7 @@ object TestData {
             mobileNumber = "07111111111",
             emailAddress = "person.one@example.com",
             manager = CommunityManager(id(), StaffData.STAFF, TeamData.TEAM),
+            lastUpdatedDatetime = LocalDateTime.of(2025, 5, 1, 9, 15, 0),
         )
 
         val BASIC = Person(
@@ -121,7 +123,8 @@ object TestData {
             town = "My Town",
             district = "My District",
             county = "My County",
-            postcode = "TE1 1ST"
+            postcode = "TE1 1ST",
+            lastUpdatedDatetime = LocalDateTime.of(2025, 4, 12, 11, 15, 0),
         )
         val PREV_ADDRESS = PersonAddress(
             id = id(),
@@ -143,6 +146,7 @@ object TestData {
             mobileNumber = "07333333333",
             emailAddress = "joe.bloggs@example.com",
             startDate = LocalDate.of(2020, 1, 1),
+            lastUpdatedDatetime = LocalDateTime.of(2025, 3, 10, 14, 30, 0),
         )
     }
 
