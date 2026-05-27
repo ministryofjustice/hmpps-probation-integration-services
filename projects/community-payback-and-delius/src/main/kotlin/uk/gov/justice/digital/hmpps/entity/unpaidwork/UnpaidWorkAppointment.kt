@@ -106,6 +106,7 @@ import java.util.*
             attributeNodes = [
                 NamedAttributeNode(value = "contactType"),
                 NamedAttributeNode(value = "outcome"),
+                NamedAttributeNode(value = "event"),
                 NamedAttributeNode(value = "latestEnforcementAction", subgraph = "enforcementAction"),
             ]
         ),
