@@ -325,6 +325,30 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
         )
         save(UpdateContactOutcomeGenerator.RESPONSIBLE_OFFICER)
         save(UpdateContactOutcomeGenerator.OFFENDER_MANAGER)
+        saveAll(
+            UpdateContactOutcomeGenerator.CMP_PROVIDER,
+            UpdateContactOutcomeGenerator.CMP_BOROUGH,
+            UpdateContactOutcomeGenerator.CMP_DISTRICT,
+            UpdateContactOutcomeGenerator.CMP_STAFF,
+            UpdateContactOutcomeGenerator.CMP_TEAM,
+            UpdateContactOutcomeGenerator.CMP_PERSON,
+            UpdateContactOutcomeGenerator.CMP_EVENT,
+            UpdateContactOutcomeGenerator.CMP_CONTACT_TYPE,
+            UpdateContactOutcomeGenerator.CMP_NON_COMPLIANT_OUTCOME,
+            UpdateContactOutcomeGenerator.CMP_COMPLIANT_OUTCOME,
+            UpdateContactOutcomeGenerator.CMP_CONTACT_TYPE_NON_COMPLIANT_OUTCOME,
+            UpdateContactOutcomeGenerator.CMP_CONTACT_TYPE_COMPLIANT_OUTCOME,
+            UpdateContactOutcomeGenerator.CMP_ENFORCEMENT_ACTION,
+            UpdateContactOutcomeGenerator.CMP_ENFORCEMENT_ACTION_OUTCOME_TYPE,
+            UpdateContactOutcomeGenerator.CMP_OM_STAFF,
+            UpdateContactOutcomeGenerator.CMP_OM_TEAM,
+        )
+        save(UpdateContactOutcomeGenerator.CMP_RESPONSIBLE_OFFICER)
+        save(UpdateContactOutcomeGenerator.CMP_OFFENDER_MANAGER)
+        saveAll(
+            UpdateContactOutcomeGenerator.CONTACT_8,
+            UpdateContactOutcomeGenerator.ENFORCEMENT_FOR_CONTACT_8,
+        )
 
         saveAll(
             UnallocatedAlertGenerator.PROVIDER,
