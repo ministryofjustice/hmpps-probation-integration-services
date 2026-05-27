@@ -15,6 +15,7 @@ import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.jpa.repository.Modifying
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.CrudRepository
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
@@ -956,6 +957,8 @@ interface EnforcementAppointment {
 }
 
 interface EnforcementRepository : JpaRepository<Enforcement, Long> {
+    @Modifying(clearAutomatically = true)
+    @Query("delete from enforcement where contact_id = :contactId", nativeQuery = true)
     fun deleteAllByContactId(contactId: Long)
 }
 

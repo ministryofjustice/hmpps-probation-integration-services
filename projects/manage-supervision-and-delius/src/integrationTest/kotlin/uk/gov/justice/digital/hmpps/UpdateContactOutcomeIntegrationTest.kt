@@ -232,7 +232,8 @@ class UpdateContactOutcomeIntegrationTest : IntegrationTestBase() {
     }
 
     @Test
-    fun `enforcement review contact created when ftc count exceeds limit`() {        mockMvc.put("/contact/${UpdateContactOutcomeGenerator.CONTACT_7.id}") {
+    fun `enforcement review contact created when ftc count exceeds limit`() {
+        mockMvc.put("/contact/${UpdateContactOutcomeGenerator.CONTACT_7.id}") {
             withToken()
             json = UpdateContactOutcome(
                 date = LocalDate.now().plusDays(4),

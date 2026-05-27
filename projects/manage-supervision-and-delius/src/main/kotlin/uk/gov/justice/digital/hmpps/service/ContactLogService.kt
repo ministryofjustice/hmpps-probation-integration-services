@@ -1,6 +1,5 @@
 package uk.gov.justice.digital.hmpps.service
 
-import jakarta.persistence.EntityManager
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.api.model.contact.*
@@ -44,7 +43,6 @@ class ContactLogService(
     private val enforcementActionsRepository: EnforcementActionsRepository,
     private val contactEnforcementService: ContactEnforcementService,
     private val enforcementRepository: EnforcementRepository,
-    private val entityManager: EntityManager,
 ) : AuditableService(auditedInteractionService) {
     companion object {
         const val REVIEW_ENFORCEMENT_STATUS = "ARWS"
@@ -231,8 +229,6 @@ class ContactLogService(
 
         if(contact.complied == false && contactOutcome.outcomeCompliantAcceptable == true) {
             enforcementRepository.deleteAllByContactId(contact.id)
-            entityManager.detach(contact)
-            entityManager.flush()
             contact = contactRepository.getContact(contact.id)
         }
 
