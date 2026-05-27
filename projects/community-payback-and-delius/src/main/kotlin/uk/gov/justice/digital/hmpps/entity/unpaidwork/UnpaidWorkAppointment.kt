@@ -28,6 +28,7 @@ import uk.gov.justice.digital.hmpps.model.CodeDescription
 import uk.gov.justice.digital.hmpps.model.RequirementProgress
 import uk.gov.justice.digital.hmpps.model.Session
 import uk.gov.justice.digital.hmpps.utils.Extensions.allOfNotNull
+import uk.gov.justice.digital.hmpps.utils.Extensions.filter
 import uk.gov.justice.digital.hmpps.utils.Extensions.optionalFilter
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -452,6 +453,7 @@ interface UnpaidWorkAppointmentRepository : JpaRepository<UnpaidWorkAppointment,
         pageable: Pageable,
     ): Page<UnpaidWorkAppointment> = findAll(
         allOfNotNull(
+            filter<String>("details.disposal.event.number") { it.isNotNull },
             optionalFilter("id", appointmentIds) { it.`in`(appointmentIds) },
             optionalFilter("contact.externalReference", references) { it.`in`(references) },
             optionalFilter("person.crn", crn) { it.equalTo(crn) },

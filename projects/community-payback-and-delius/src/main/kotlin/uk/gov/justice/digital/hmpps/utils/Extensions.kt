@@ -28,8 +28,11 @@ object Extensions {
             .get<T>(parts.last())
     }
 
+    fun <T> filter(nestedPath: String, block: CriteriaBuilder.(Path<T>) -> Predicate) =
+        Specification<UnpaidWorkAppointment> { root, _, cb -> cb.block(root.getNested(nestedPath)) }
+
     fun <T> optionalFilter(nestedPath: String, value: T?, block: CriteriaBuilder.(Path<T>) -> Predicate) =
-        value?.let { Specification<UnpaidWorkAppointment> { root, _, cb -> cb.block(root.getNested(nestedPath)) } }
+        value?.let { filter(nestedPath, block) }
 
     fun <T : Any> allOfNotNull(vararg specifications: Specification<T>?) =
         allOf(specifications.filterNotNull())
