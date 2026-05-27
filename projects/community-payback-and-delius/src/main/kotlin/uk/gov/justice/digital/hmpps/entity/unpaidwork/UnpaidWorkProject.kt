@@ -41,7 +41,7 @@ class UnpaidWorkProject(
 
     @Convert(converter = YesNoConverter::class)
     @Column(name = "high_visibility_vest_required")
-    val hiVisRequired: Boolean,
+    val hiVisRequired: Boolean?,
 
     val expectedEndDate: LocalDate?,
 

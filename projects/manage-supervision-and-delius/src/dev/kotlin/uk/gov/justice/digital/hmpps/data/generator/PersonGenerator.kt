@@ -319,6 +319,14 @@ object PersonGenerator {
         additionalOffences = emptyList()
     )
 
+    val NON_COMPLIANCE_PERSON = generateOverview("NC00001", forename = "NonCompliance", surname = "TestPerson")
+    val NON_COMPLIANCE_EVENT = generateEvent(
+        NON_COMPLIANCE_PERSON,
+        eventNumber = "1",
+        notes = "non-compliance detail test",
+        additionalOffences = emptyList()
+    )
+
     val RESCHEDULED_PERSON_1 = generateOverview("R345678", "App1", "Rescheduled")
     val RESCHEDULED_PERSON_2 = generateOverview("R345679", "App2", "Rescheduled")
     val RECREATE_APPT_PERSON_1 = generateOverview("R456789", "App1", "Recreated")

@@ -11,7 +11,7 @@ import uk.gov.justice.digital.hmpps.entity.contact.ContactType.Companion.SUPERVI
 import java.time.LocalDate
 
 @Entity
-@SQLRestriction("active_flag = 1 and soft_deleted = 0")
+@SQLRestriction("soft_deleted = 0")
 @EntityListeners(AuditingEntityListener::class)
 class Event(
     @Id

@@ -12,14 +12,21 @@ import uk.gov.justice.digital.hmpps.service.ComplianceService
 
 @RestController
 @Tag(name = "Compliance")
-@RequestMapping("/compliance/{crn}")
+@RequestMapping("/compliance")
 @PreAuthorize("hasRole('PROBATION_API__MANAGE_A_SUPERVISION__CASE_DETAIL')")
 class ComplianceController(private val complianceService: ComplianceService) {
 
-    @GetMapping
+    @GetMapping("/{crn}")
     @Operation(summary = "Gets all compliance info for a person")
     fun getPersonCompliance(
         @PathVariable crn: String,
         @RequestParam(defaultValue = "0") months: Int
     ) = complianceService.getPersonCompliance(crn, months)
+
+    @GetMapping("/non-compliance-detail/{crn}")
+    @Operation(summary = "Get all non compliance detail for a person")
+    fun getPersonDetails(
+        @PathVariable crn: String,
+        @RequestParam(defaultValue = "0") months: Int
+    ) = complianceService.getPersonComplianceDetail(crn, months)
 }

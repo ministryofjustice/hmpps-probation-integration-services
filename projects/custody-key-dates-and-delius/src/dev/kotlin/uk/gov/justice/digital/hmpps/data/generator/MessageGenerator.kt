@@ -7,4 +7,5 @@ import uk.gov.justice.digital.hmpps.resourceloader.ResourceLoader
 object MessageGenerator {
     val SENTENCE_DATE_CHANGED = ResourceLoader.message<CustodyDateChanged>("sentence-date-changed")
     val SENTENCE_CHANGED = ResourceLoader.message<ProbationOffenderEvent>("sentence-changed")
+    val SENTENCE_DATE_CHANGED_PSS = ResourceLoader.message<CustodyDateChanged>("sentence-date-changed-pss")
 }

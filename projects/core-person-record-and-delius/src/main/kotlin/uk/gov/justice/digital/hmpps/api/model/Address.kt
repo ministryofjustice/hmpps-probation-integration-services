@@ -12,7 +12,7 @@ data class Address(
     val district: String?,
     val townCity: String?,
     val county: String?,
-    val postcode: String,
+    val postcode: String?,
     val uprn: Long?,
     val telephoneNumber: String?,
     val noFixedAbode: Boolean,

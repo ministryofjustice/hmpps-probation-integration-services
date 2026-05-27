@@ -25,5 +25,8 @@ class PersonResource(private val personService: PersonService) {
     }
 
     @GetMapping(value = ["/all-probation-cases"])
-    fun getPersonDetails(pageable: Pageable) = PagedModel(personService.getAllPersonDetails(pageable))
+    fun getPersonDetails(pageable: Pageable): PagedModel<PersonDetail> {
+        require(pageable.pageSize <= 1000) { "Maximum page size is 1000" }
+        return PagedModel(personService.getAllPersonDetails(pageable))
+    }
 }

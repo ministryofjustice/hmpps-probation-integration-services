@@ -104,7 +104,6 @@ object ReferenceDataGenerator {
     val DEFAULT_DISPOSAL_TYPE = generateDisposalType(
         code = "100",
         description = "Community Order",
-        preCja2003 = false,
         ftcLimit = 0
     )
 
@@ -189,8 +188,7 @@ object ReferenceDataGenerator {
         code: String,
         description: String,
         ftcLimit: Long? = 3,
-        preCja2003: Boolean = false
-    ) = DisposalType(id, code, description, ftcLimit, preCja2003)
+    ) = DisposalType(id, code, description, ftcLimit)
 
     fun generateUpwDay(
         id: Long = IdGenerator.getAndIncrement(),

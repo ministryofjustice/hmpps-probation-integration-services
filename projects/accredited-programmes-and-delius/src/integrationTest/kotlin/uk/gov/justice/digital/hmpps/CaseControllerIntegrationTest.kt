@@ -112,6 +112,10 @@ internal class CaseControllerIntegrationTest(
                         {
                           "code": "TEST",
                           "description": "To only attend specific places."
+                        },
+                        {
+                          "code": "NLC8",
+                          "description": "Freedom of movement"
                         }
                       ],
                       "requirements": [],
@@ -162,6 +166,10 @@ internal class CaseControllerIntegrationTest(
                         },
                         {
                           "code": "ALCTRT",
+                          "description": "Alcohol Treatment"
+                        },
+                        {
+                          "code": "H",
                           "description": "Alcohol Treatment"
                         }
                       ],

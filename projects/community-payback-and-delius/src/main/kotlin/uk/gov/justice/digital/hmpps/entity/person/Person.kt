@@ -2,16 +2,16 @@ package uk.gov.justice.digital.hmpps.entity.person
 
 import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
+import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.NumericBooleanConverter
 import org.springframework.data.jpa.repository.JpaRepository
-import uk.gov.justice.digital.hmpps.entity.staff.Staff
-import uk.gov.justice.digital.hmpps.entity.staff.Team
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import java.time.LocalDate
 
 @Entity
-@Table(name = "offender")
 @Immutable
+@Table(name = "offender")
+@SQLRestriction("soft_deleted = 0")
 class Person(
     @Id
     @Column(name = "offender_id")
@@ -47,46 +47,10 @@ class Person(
 
     val restrictionMessage: String? = null,
 
-    )
-
-@Entity
-@Immutable
-@Table(name = "offender_manager")
-class PersonManager(
-    @Id
-    @Column(name = "offender_manager_id", nullable = false)
-    val id: Long,
-
-    @Column(name = "offender_id", nullable = false)
-    val personId: Long,
-
-    @ManyToOne
-    @JoinColumn(name = "allocation_staff_id", nullable = false)
-    val staff: Staff,
-
-    @ManyToOne
-    @JoinColumn(name = "team_id", nullable = false)
-    val team: Team,
-
-    @Column(name = "active_flag", columnDefinition = "number")
+    @Column(columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)
-    val active: Boolean = true,
-
-    @Column(columnDefinition = "number", nullable = false)
-    @Convert(converter = NumericBooleanConverter::class)
-    val softDeleted: Boolean = false
+    val softDeleted: Boolean = false,
 )
-
-interface PersonManagerRepository : JpaRepository<PersonManager, Long> {
-    fun findByPersonIdAndActiveIsTrueAndSoftDeletedIsFalse(personId: Long): PersonManager?
-}
-
-fun PersonManagerRepository.getActiveManagerForPerson(personId: Long) =
-    findByPersonIdAndActiveIsTrueAndSoftDeletedIsFalse(personId) ?: throw NotFoundException(
-        "PersonManager",
-        "personId",
-        personId
-    )
 
 interface PersonRepository : JpaRepository<Person, Long> {
     fun existsByCrn(crn: String): Boolean

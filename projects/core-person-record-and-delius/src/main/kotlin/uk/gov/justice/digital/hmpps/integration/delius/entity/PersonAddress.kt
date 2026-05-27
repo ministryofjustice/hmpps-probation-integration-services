@@ -69,4 +69,7 @@ class PersonAddress(
 interface AddressRepository : JpaRepository<PersonAddress, Long> {
     @EntityGraph(attributePaths = ["status", "type"])
     fun findAllByPersonIdOrderByStartDateDesc(personId: Long): List<PersonAddress>
+
+    @EntityGraph(attributePaths = ["status", "type"])
+    fun findAllByPersonIdInOrderByStartDateDesc(personId: Collection<Long>): List<PersonAddress>
 }

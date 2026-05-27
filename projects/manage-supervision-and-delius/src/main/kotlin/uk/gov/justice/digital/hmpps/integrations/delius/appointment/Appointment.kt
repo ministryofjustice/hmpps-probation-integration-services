@@ -81,7 +81,16 @@ class Appointment(
     @Id
     @GeneratedId(generator = "contact_id_generator")
     @Column(name = "contact_id")
-    val id: Long? = null
+    val id: Long? = null,
+
+    @Column(name = "complied", length = 1)
+    @Convert(converter = YesNoConverter::class)
+    var complied: Boolean? = null,
+
+    @Column(name = "attended", length = 1)
+    @Convert(converter = YesNoConverter::class)
+    var attended: Boolean? = null
+
 ) {
     var partitionAreaId: Long = 0
 
@@ -167,6 +176,8 @@ class Appointment(
         if (outcome.attendance != true) {
             rarActivity = false
         }
+        this.complied = outcome.acceptable
+        this.attended = outcome.attendance
         // TODO handle non-compliant outcomes - current use case only includes compliant reschedule outcome
     }
 

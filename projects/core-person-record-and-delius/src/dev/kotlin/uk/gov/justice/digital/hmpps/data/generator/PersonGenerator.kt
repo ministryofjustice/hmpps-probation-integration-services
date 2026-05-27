@@ -58,7 +58,7 @@ object PersonGenerator {
             personId = personId,
             startDate = startDate,
             endDate = endDate,
-            referenceData = RELIGION_HX,
+            religion = RELIGION_HX,
             lastUpdatedBy = RELIGION_HISTORY_UPDATER,
             lastUpdatedAt = UPDATED_ZONED_DATETIME
         )
@@ -167,6 +167,13 @@ object PersonGenerator {
             noFixedAbode = true,
             startDate = LocalDate.now().minusDays(60),
             endDate = LocalDate.now().minusDays(30),
+        ),
+        generateAddress(
+            personId = FULL_PERSON_ID,
+            status = PREVIOUS_ADDRESS,
+            streetName = "No postcode",
+            startDate = LocalDate.now().minusDays(90),
+            endDate = LocalDate.now().minusDays(60),
         )
     )
 

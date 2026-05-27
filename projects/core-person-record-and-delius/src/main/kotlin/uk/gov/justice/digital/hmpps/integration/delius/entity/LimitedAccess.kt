@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.integration.delius.entity
 import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
+import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
 import java.time.LocalDateTime
 
@@ -57,9 +58,17 @@ class LimitedAccessUser(
 )
 
 interface ExclusionRepository : JpaRepository<Exclusion, Long> {
+    @EntityGraph(attributePaths = ["user"])
     fun findByPersonId(personId: Long): List<Exclusion>
+
+    @EntityGraph(attributePaths = ["user"])
+    fun findByPersonIdIn(personId: Collection<Long>): List<Exclusion>
 }
 
 interface RestrictionRepository : JpaRepository<Restriction, Long> {
+    @EntityGraph(attributePaths = ["user"])
     fun findByPersonId(personId: Long): List<Restriction>
+
+    @EntityGraph(attributePaths = ["user"])
+    fun findByPersonIdIn(personId: Collection<Long>): List<Restriction>
 }

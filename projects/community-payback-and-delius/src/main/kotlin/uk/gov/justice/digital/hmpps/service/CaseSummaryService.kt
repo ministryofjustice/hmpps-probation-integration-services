@@ -25,7 +25,7 @@ class CaseSummaryService(
         val person = personRepository.getByCrn(crn)
         val personId = person.id
         val laoStatus = getLaoStatus(crn, username)
-        val events = eventRepository.getByPerson_Id(personId)
+        val events = eventRepository.getByPersonId(personId)
         val details = upwDetailsRepository.findByEventIdIn(events.map { it.id })
         val requiredMinutes = unpaidWorkAppointmentRepository
             .getUpwRequiredAndCompletedMinutes(details.map { it.id })

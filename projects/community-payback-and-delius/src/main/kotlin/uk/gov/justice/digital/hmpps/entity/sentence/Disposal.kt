@@ -5,13 +5,11 @@ import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.NumericBooleanConverter
 import org.hibernate.type.YesNoConverter
-import org.springframework.data.jpa.repository.JpaRepository
 import java.time.LocalDate
 
 @Entity
-@Table(name = "disposal")
 @Immutable
-@SQLRestriction(value = "soft_deleted = 0")
+@SQLRestriction("soft_deleted = 0")
 class Disposal(
     @Id
     @Column(name = "disposal_id")
@@ -54,7 +52,3 @@ class DisposalType(
     @Convert(converter = YesNoConverter::class)
     val preCja2003: Boolean = false
 )
-
-interface DisposalRepository : JpaRepository<Disposal, Long> {
-    fun findByEventId(eventId: Long): Disposal?
-}
