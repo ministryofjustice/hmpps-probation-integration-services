@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.model
 import uk.gov.justice.digital.hmpps.entity.appointment.Contact
 import uk.gov.justice.digital.hmpps.model.Address.Companion.toModel
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.LocalTime
 
 data class Appointment(
@@ -15,6 +16,9 @@ data class Appointment(
     val location: Address?,
     val attended: Boolean?,
     val complied: Boolean?,
+    val outcome: String?,
+    val nationalStandards: Boolean?,
+    val lastUpdatedAt: LocalDateTime?
 ) {
     companion object {
         fun Contact.toAppointment() = Appointment(
@@ -27,6 +31,9 @@ data class Appointment(
             location = location?.toModel(),
             attended = attended,
             complied = complied,
+            outcome = outcome?.description,
+            nationalStandards = type.nationalStandards,
+            lastUpdatedAt = lastUpdatedDatetime.toLocalDateTime()
         )
     }
 }

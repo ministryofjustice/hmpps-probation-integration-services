@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.data
 
+import uk.gov.justice.digital.hmpps.data.TestData.ReferenceData.ATTENDED_COMPLIED_OUTCOME
 import uk.gov.justice.digital.hmpps.data.TestData.ReferenceData.COMMUNITY_ORDER
 import uk.gov.justice.digital.hmpps.data.TestData.ReferenceData.LICENCE_CONDITION_CATEGORY
 import uk.gov.justice.digital.hmpps.data.TestData.ReferenceData.LICENCE_CONDITION_SUBCATEGORY
@@ -18,6 +19,7 @@ import uk.gov.justice.digital.hmpps.entity.ReferenceData
 import uk.gov.justice.digital.hmpps.entity.address.OfficeLocation
 import uk.gov.justice.digital.hmpps.entity.address.PersonAddress
 import uk.gov.justice.digital.hmpps.entity.appointment.Contact
+import uk.gov.justice.digital.hmpps.entity.appointment.ContactOutcome
 import uk.gov.justice.digital.hmpps.entity.appointment.ContactType
 import uk.gov.justice.digital.hmpps.entity.sentence.Disposal
 import uk.gov.justice.digital.hmpps.entity.sentence.DisposalType
@@ -35,6 +37,8 @@ import uk.gov.justice.digital.hmpps.entity.unpaidwork.UnpaidWorkAppointment
 import uk.gov.justice.digital.hmpps.entity.unpaidwork.UnpaidWorkDetails
 import java.time.LocalDate
 import java.time.LocalTime
+import java.time.ZoneId
+import java.time.ZonedDateTime
 
 object TestData {
     object ReferenceData {
@@ -60,6 +64,7 @@ object TestData {
             code = "ALC",
             description = "You must not drink any alcohol until [END DATE]. You will need to wear an electronic tag all the time so we can check this."
         )
+        val ATTENDED_COMPLIED_OUTCOME = ContactOutcome(id(), "ATTC", "Attended - Complied")
     }
 
     object TeamData {
@@ -219,6 +224,7 @@ object TestData {
             attended = attended,
             complied = complied,
             rarActivity = true,
+            lastUpdatedDatetime = ZonedDateTime.now(),
         )
     }
 
@@ -241,6 +247,7 @@ object TestData {
             LocalDate.of(2020, 1, 1), LocalTime.of(15, 0), LocalTime.of(15, 30),
             description = "Past appointment - attended",
             attended = true, complied = true,
+            outcome = ATTENDED_COMPLIED_OUTCOME
         )
         val PAST_2 = generate(
             LocalDate.of(2020, 1, 1), LocalTime.of(10, 0), LocalTime.of(10, 45),
@@ -257,6 +264,7 @@ object TestData {
             location: OfficeLocation? = TeamData.OFFICE,
             attended: Boolean? = null,
             complied: Boolean? = null,
+            outcome: ContactOutcome? = null,
         ) = Contact(
             id = id(),
             personId = PersonData.DEFAULT.id,
@@ -269,6 +277,8 @@ object TestData {
             staff = StaffData.STAFF,
             attended = attended,
             complied = complied,
+            outcome = outcome,
+            lastUpdatedDatetime = ZonedDateTime.of(2024, 1, 1, 0, 0, 0, 0, ZoneId.of("UTC"))
         )
     }
 }
