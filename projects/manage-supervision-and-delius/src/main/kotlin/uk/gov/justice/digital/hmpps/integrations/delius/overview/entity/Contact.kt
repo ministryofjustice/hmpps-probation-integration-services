@@ -15,7 +15,6 @@ import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import org.springframework.data.jpa.repository.JpaRepository
-import org.springframework.data.jpa.repository.Modifying
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.CrudRepository
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
@@ -92,7 +91,7 @@ class Contact(
     val action: EnforcementAction? = null,
 
     @OneToOne(mappedBy = "contact")
-    val enforcement: Enforcement? = null,
+    var enforcement: Enforcement? = null,
 
     notes: String?,
 
@@ -956,11 +955,7 @@ interface EnforcementAppointment {
     val evidenceDueDate: LocalDateTime?
 }
 
-interface EnforcementRepository : JpaRepository<Enforcement, Long> {
-    @Modifying(clearAutomatically = true)
-    @Query("delete from enforcement where contact_id = :contactId", nativeQuery = true)
-    fun deleteAllByContactId(contactId: Long)
-}
+interface EnforcementRepository : JpaRepository<Enforcement, Long>
 
 fun ContactRepository.getContact(personId: Long, contactId: Long): Contact =
     findByPersonIdAndId(personId, contactId) ?: throw NotFoundException("Contact", "contactId", contactId)
