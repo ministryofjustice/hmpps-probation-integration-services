@@ -110,7 +110,8 @@ object TestData {
             dateOfBirth = LocalDate.of(1980, 1, 1),
             mobileNumber = "07222222222",
             manager = CommunityManager(id(), StaffData.STAFF_WITHOUT_USER, TeamData.TEAM),
-        )
+            lastUpdatedDatetime = ZonedDateTime.of(2025, 5, 1, 9, 15, 0, 0, ZoneId.of("UTC")),
+       )
     }
 
     object AddressData {
@@ -133,6 +134,7 @@ object TestData {
             status = ReferenceData.PREV_ADDRESS_STATUS,
             noFixedAbode = true,
             postcode = "NF1 1NF",
+            lastUpdatedDatetime = ZonedDateTime.of(2025, 5, 1, 9, 15, 0, 0, ZoneId.of("UTC")),
         )
     }
 

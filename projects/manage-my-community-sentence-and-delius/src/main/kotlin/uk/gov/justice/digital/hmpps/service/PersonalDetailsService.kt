@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.ldap.findAttributeByUsername
 import uk.gov.justice.digital.hmpps.model.Address.Companion.toModel
 import uk.gov.justice.digital.hmpps.model.Manager
+import uk.gov.justice.digital.hmpps.model.OfficeAddress.Companion.toModel
 import uk.gov.justice.digital.hmpps.model.PersonalContact.Companion.toModel
 import uk.gov.justice.digital.hmpps.model.PersonalDetails
 import uk.gov.justice.digital.hmpps.model.Team

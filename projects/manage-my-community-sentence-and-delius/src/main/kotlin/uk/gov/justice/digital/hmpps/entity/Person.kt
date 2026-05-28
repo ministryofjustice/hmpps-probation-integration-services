@@ -31,7 +31,7 @@ class Person(
     @Column(name = "e_mail_address")
     val emailAddress: String? = null,
     @Column(name = "last_updated_datetime")
-    val lastUpdatedDatetime: ZonedDateTime? = null,
+    val lastUpdatedDatetime: ZonedDateTime,
     @OneToOne(mappedBy = "person")
     val manager: CommunityManager,
     @Column(name = "soft_deleted", columnDefinition = "number")

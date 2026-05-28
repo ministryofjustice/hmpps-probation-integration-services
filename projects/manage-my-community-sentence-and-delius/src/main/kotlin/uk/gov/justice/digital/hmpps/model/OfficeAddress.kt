@@ -1,10 +1,8 @@
 package uk.gov.justice.digital.hmpps.model
 
 import uk.gov.justice.digital.hmpps.entity.address.OfficeLocation
-import uk.gov.justice.digital.hmpps.entity.address.PersonAddress
-import java.time.ZonedDateTime
 
-data class Address(
+data class OfficeAddress(
     val houseNumber: String?,
     val buildingName: String?,
     val street: String?,
@@ -12,18 +10,16 @@ data class Address(
     val district: String?,
     val county: String?,
     val postcode: String?,
-    val lastUpdatedAt: ZonedDateTime,
 ) {
     companion object {
-        fun PersonAddress.toModel() = Address(
-            houseNumber = addressNumber,
+        fun OfficeLocation.toModel() = OfficeAddress(
+            houseNumber = buildingNumber,
             buildingName = buildingName,
             street = streetName,
             town = town,
             district = district,
             county = county,
             postcode = postcode,
-            lastUpdatedAt = lastUpdatedDatetime,
         )
     }
 }

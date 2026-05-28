@@ -8,7 +8,7 @@ data class PersonalContact(
     val relationship: String,
     val mobileNumber: String?,
     val emailAddress: String?,
-    val lastUpdatedAt: ZonedDateTime? = null,
+    val lastUpdatedAt: ZonedDateTime,
 ) {
     companion object {
         fun PersonalContactEntity.toModel() = PersonalContact(

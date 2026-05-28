@@ -34,7 +34,7 @@ class PersonAddress(
     val noFixedAbode: Boolean? = false,
     val endDate: LocalDate? = null,
     @Column(name = "last_updated_datetime")
-    val lastUpdatedDatetime: ZonedDateTime? = null,
+    val lastUpdatedDatetime: ZonedDateTime,
     @Column(columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean = false

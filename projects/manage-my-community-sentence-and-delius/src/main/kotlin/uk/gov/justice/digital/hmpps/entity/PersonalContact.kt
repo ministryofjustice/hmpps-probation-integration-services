@@ -29,7 +29,7 @@ class PersonalContact(
     val startDate: LocalDate? = null,
     val endDate: LocalDate? = null,
     @Column(name = "last_updated_datetime")
-    val lastUpdatedDatetime: ZonedDateTime? = null,
+    val lastUpdatedDatetime: ZonedDateTime,
     @Column(name = "soft_deleted", columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean = false,
