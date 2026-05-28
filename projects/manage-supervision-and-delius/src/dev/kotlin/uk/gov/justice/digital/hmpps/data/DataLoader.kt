@@ -362,6 +362,8 @@ class DataLoader(dataManager: DataManager, private val jdbcTemplate: JdbcTemplat
         saveAll(
             UpdateContactOutcomeGenerator.CONTACT_8,
             UpdateContactOutcomeGenerator.ENFORCEMENT_FOR_CONTACT_8,
+            UpdateContactOutcomeGenerator.CONTACT_9,
+            UpdateContactOutcomeGenerator.CONTACT_10,
         )
 
         saveAll(

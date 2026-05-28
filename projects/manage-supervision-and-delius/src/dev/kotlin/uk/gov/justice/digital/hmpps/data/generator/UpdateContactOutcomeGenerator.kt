@@ -395,4 +395,27 @@ object UpdateContactOutcomeGenerator {
         contact = CONTACT_8,
         action = CMP_ENFORCEMENT_ACTION
     )
+
+    // Contact with a pre-existing outcome — used to verify that a null outcomeCode does NOT update the outcome
+    val CONTACT_9 = ContactGenerator.generateContact(
+        PERSON,
+        CONTACT_TYPE,
+        ZonedDateTime.of(LocalDateTime.now(EuropeLondon).plusHours(11), EuropeLondon),
+        team = TEAM,
+        staff = STAFF,
+        event = EVENT,
+        outcome = OUTCOME
+    )
+
+    // Contact with alert=true — used to verify that a null alert value leaves the alert state unchanged
+    val CONTACT_10 = ContactGenerator.generateContact(
+        PERSON,
+        CONTACT_TYPE,
+        ZonedDateTime.of(LocalDateTime.now(EuropeLondon).plusHours(12), EuropeLondon),
+        team = TEAM,
+        staff = STAFF,
+        event = EVENT,
+        outcome = OUTCOME,
+        alert = true
+    )
 }
