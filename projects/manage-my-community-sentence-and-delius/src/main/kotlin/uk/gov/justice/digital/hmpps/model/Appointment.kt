@@ -1,7 +1,6 @@
 package uk.gov.justice.digital.hmpps.model
 
 import uk.gov.justice.digital.hmpps.entity.appointment.Contact
-import uk.gov.justice.digital.hmpps.model.Address.Companion.toModel
 import uk.gov.justice.digital.hmpps.model.OfficeAddress.Companion.toModel
 import java.time.LocalDate
 import java.time.LocalTime

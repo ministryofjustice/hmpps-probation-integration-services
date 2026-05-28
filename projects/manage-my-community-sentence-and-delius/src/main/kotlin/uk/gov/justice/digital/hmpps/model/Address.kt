@@ -1,6 +1,5 @@
 package uk.gov.justice.digital.hmpps.model
 
-import uk.gov.justice.digital.hmpps.entity.address.OfficeLocation
 import uk.gov.justice.digital.hmpps.entity.address.PersonAddress
 import java.time.ZonedDateTime
 
