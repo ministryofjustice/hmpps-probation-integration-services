@@ -220,7 +220,7 @@ class ContactLogService(
 
     @Transactional
     fun updateContactOutcome(contactId: Long, request: UpdateContactOutcome) {
-        var contact = contactRepository.getContact(contactId)
+        val contact = contactRepository.getContact(contactId)
         val contactType = contact.type.code
         val contactOutcome = contactTypeRepository.findSelectableOutcomesByTypeCode(contactType)
             .firstOrNull { it.code == request.outcomeCode }
@@ -233,7 +233,6 @@ class ContactLogService(
             )
             contact.enforcement?.let { enforcementRepository.delete(it) }
             contact.enforcement = null
-            contact = contactRepository.getContact(contact.id)
         }
 
         request.notes.let { contact.appendNotes(it) }
