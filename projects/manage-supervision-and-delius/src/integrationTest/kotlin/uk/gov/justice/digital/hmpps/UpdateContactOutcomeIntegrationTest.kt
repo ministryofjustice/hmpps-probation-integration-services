@@ -261,7 +261,8 @@ class UpdateContactOutcomeIntegrationTest : IntegrationTestBase() {
 
     @Test
     fun `null outcome code leaves existing outcome unchanged`() {
-        val originalOutcomeCode = contactRepository.findById(UpdateContactOutcomeGenerator.CONTACT_9.id).get().outcome?.code
+        val originalOutcomeCode =
+            contactRepository.findById(UpdateContactOutcomeGenerator.CONTACT_9.id).get().outcome?.code
 
         mockMvc.put("/contact/${UpdateContactOutcomeGenerator.CONTACT_9.id}") {
             withToken()
