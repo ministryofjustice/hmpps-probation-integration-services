@@ -91,7 +91,7 @@ class Contact(
     val action: EnforcementAction? = null,
 
     @OneToOne(mappedBy = "contact")
-    val enforcement: Enforcement? = null,
+    var enforcement: Enforcement? = null,
 
     notes: String?,
 

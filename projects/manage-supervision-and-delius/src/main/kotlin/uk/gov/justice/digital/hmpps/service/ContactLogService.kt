@@ -20,10 +20,8 @@ import uk.gov.justice.digital.hmpps.integrations.delius.user.team.TeamRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.user.team.getTeam
 import uk.gov.justice.digital.hmpps.messaging.EventType
 import uk.gov.justice.digital.hmpps.messaging.Notifier
-import java.time.LocalDate
-import java.time.LocalDateTime
+import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import java.time.ZonedDateTime
-import java.time.format.DateTimeFormatter
 
 @Service
 class ContactLogService(
@@ -42,6 +40,8 @@ class ContactLogService(
     private val mappaCategoryResolverService: MappaCategoryResolverService,
     private val enforcementActionsRepository: EnforcementActionsRepository,
     private val contactEnforcementService: ContactEnforcementService,
+    private val enforcementRepository: EnforcementRepository,
+    private val telemetryService: TelemetryService,
 ) : AuditableService(auditedInteractionService) {
     companion object {
         const val REVIEW_ENFORCEMENT_STATUS = "ARWS"
@@ -220,13 +220,23 @@ class ContactLogService(
 
     @Transactional
     fun updateContactOutcome(contactId: Long, request: UpdateContactOutcome) {
-        var contact = contactRepository.getContact(contactId)
+        val contact = contactRepository.getContact(contactId)
         val contactType = contact.type.code
         val contactOutcome = contactTypeRepository.findSelectableOutcomesByTypeCode(contactType)
             .firstOrNull { it.code == request.outcomeCode }
             .orNotFoundBy("code", request.outcomeCode)
 
+        if (contact.complied == false && contactOutcome.outcomeCompliantAcceptable == true) {
+            telemetryService.trackEvent(
+                "remove enforcement for a compliant contact",
+                mapOf("crn" to contact.person.crn, "contactId" to contactId.toString())
+            )
+            contact.enforcement?.let { enforcementRepository.delete(it) }
+            contact.enforcement = null
+        }
+
         request.notes.let { contact.appendNotes(it) }
+
 
         if (request.alert && contact.alert != true) {
             val personManager =
