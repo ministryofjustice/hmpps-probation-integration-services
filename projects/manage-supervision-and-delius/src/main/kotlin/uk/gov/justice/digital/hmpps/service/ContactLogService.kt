@@ -227,8 +227,10 @@ class ContactLogService(
             .orNotFoundBy("code", request.outcomeCode)
 
         if (contact.complied == false && contactOutcome.outcomeCompliantAcceptable == true) {
-            telemetryService.trackEvent("remove enforcement for a compliant contact",
-                mapOf("crn" to contact.person.crn, "contactId" to contactId.toString()))
+            telemetryService.trackEvent(
+                "remove enforcement for a compliant contact",
+                mapOf("crn" to contact.person.crn, "contactId" to contactId.toString())
+            )
             contact.enforcement?.let { enforcementRepository.delete(it) }
             contact.enforcement = null
             contact = contactRepository.getContact(contact.id)
