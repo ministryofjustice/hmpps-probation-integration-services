@@ -185,9 +185,23 @@ object TestData {
                 lastUpdatedDatetime = ZonedDateTime.of(2026, 2, 15, 10, 0, 0, 0, ZoneId.of("UTC")),
             )
         val UPW_REQUIREMENT =
-            Requirement(id(), length = 10, DISPOSAL, UPW_REQUIREMENT_CATEGORY, UPW_REQUIREMENT_SUBCATEGORY, lastUpdatedDatetime = ZonedDateTime.of(2026, 2, 15, 10, 0, 0, 0, ZoneId.of("UTC")))
+            Requirement(
+                id(),
+                length = 10,
+                DISPOSAL,
+                UPW_REQUIREMENT_CATEGORY,
+                UPW_REQUIREMENT_SUBCATEGORY,
+                lastUpdatedDatetime = ZonedDateTime.of(2026, 2, 15, 10, 0, 0, 0, ZoneId.of("UTC"))
+            )
         val RAR_REQUIREMENT =
-            Requirement(id(), length = 15, DISPOSAL, RAR_REQUIREMENT_CATEGORY, RAR_REQUIREMENT_SUBCATEGORY, lastUpdatedDatetime = ZonedDateTime.of(2026, 2, 15, 10, 0, 0, 0, ZoneId.of("UTC")))
+            Requirement(
+                id(),
+                length = 15,
+                DISPOSAL,
+                RAR_REQUIREMENT_CATEGORY,
+                RAR_REQUIREMENT_SUBCATEGORY,
+                lastUpdatedDatetime = ZonedDateTime.of(2026, 2, 15, 10, 0, 0, 0, ZoneId.of("UTC"))
+            )
     }
 
     object LicenceConditionData {
