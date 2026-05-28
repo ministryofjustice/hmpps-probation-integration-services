@@ -209,7 +209,10 @@ class CreateAppointmentIntegrationTest @Autowired constructor(
 
     @Test
     fun `creating an appointment in the past with an outcome is allowed`() {
-        val request = TestData.createAppointmentWithOutcome().copy(date = LocalDate.now().minusDays(1))
+        val request = TestData.createAppointmentWithOutcome().copy(
+            date = LocalDate.now().minusDays(1),
+            minutesCredited = 0L
+        )
 
         val created = mockMvc
             .post("/projects/$PROJECT/appointments") {
@@ -292,7 +295,8 @@ class CreateAppointmentIntegrationTest @Autowired constructor(
     @Test
     fun `creating an appointment with out a supervisor defaults to unallocated`() {
         val request = TestData.createAppointmentWithOutcome().copy(
-            supervisor = null
+            supervisor = null,
+            minutesCredited = 0L
         )
 
         val created = mockMvc

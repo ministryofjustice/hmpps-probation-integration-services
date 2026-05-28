@@ -297,6 +297,11 @@ class CommunityPaybackAppointmentsService(
             adjustments = upwMinutesDtos.sumOf { it.positiveAdjustments - it.negativeAdjustments }
         )
         val remainingMinutes = progress.requiredMinutes + progress.adjustments - progress.completedMinutes
+
+        require(remainingMinutes >= 0) {
+            "Adjustment/Appointment would result in negative remaining unpaid work minutes. ($remainingMinutes)"
+        }
+
         val currentStatus = details.status?.code
         /*
         if remaining minutes are 0 or less, then add the completed status 'HC'

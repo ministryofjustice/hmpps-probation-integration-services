@@ -4,6 +4,7 @@ import jakarta.persistence.EntityManager
 import jakarta.transaction.Transactional
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.within
+import org.hamcrest.Matchers.containsString
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
@@ -192,8 +193,8 @@ class AdjustmentsIntegrationTest @Autowired constructor(
     @Transactional
     fun `creating an adjustment updates UPW status when hours are completed`() {
         val reference = UUID.randomUUID()
-        val beingWorkedEvent = UPWGenerator.EVENT_5
-        val beingWorkedDetails = UPWGenerator.UPW_DETAILS_5
+        val beingWorkedEvent = UPWGenerator.EVENT_7
+        val beingWorkedDetails = UPWGenerator.UPW_DETAILS_7
         assertThat(upwDetailsRepository.findByIdOrNull(beingWorkedDetails.id)?.status?.code).isEqualTo("WK")
 
         mockMvc.post("/adjustments?username=${UserGenerator.DEFAULT_USER.username}") {
@@ -206,7 +207,7 @@ class AdjustmentsIntegrationTest @Autowired constructor(
                     date = LocalDate.now(),
                     reason = ReferenceDataGenerator.UPW_ADJUSTMENT_REASON_OTHER.code,
                     type = AdjustmentType.NEGATIVE,
-                    minutes = 100000,
+                    minutes = 3600,
                 )
             )
         }.andExpect { status { isOk() } }
@@ -218,8 +219,8 @@ class AdjustmentsIntegrationTest @Autowired constructor(
     @Transactional
     fun `updating an adjustment updates UPW status when hours are completed`() {
         val reference = UUID.randomUUID()
-        val beingWorkedEvent = UPWGenerator.EVENT_5
-        val beingWorkedDetails = UPWGenerator.UPW_DETAILS_5
+        val beingWorkedEvent = UPWGenerator.EVENT_7
+        val beingWorkedDetails = UPWGenerator.UPW_DETAILS_7
         assertThat(upwDetailsRepository.findByIdOrNull(beingWorkedDetails.id)?.status?.code).isEqualTo("WK")
 
         mockMvc.post("/adjustments?username=${UserGenerator.DEFAULT_USER.username}") {
@@ -247,7 +248,7 @@ class AdjustmentsIntegrationTest @Autowired constructor(
                 date = LocalDate.now(),
                 reason = ReferenceDataGenerator.UPW_ADJUSTMENT_REASON_OTHER.code,
                 type = AdjustmentType.NEGATIVE,
-                minutes = 100000,
+                minutes = 3600,
             )
         }.andExpect { status { isOk() } }
         assertThat(upwDetailsRepository.findByIdOrNull(beingWorkedDetails.id)?.status?.code).isEqualTo("HC")
@@ -258,8 +259,8 @@ class AdjustmentsIntegrationTest @Autowired constructor(
     fun `deleting an adjustment updates UPW status when hours are completed`() {
         val positiveReference = UUID.randomUUID()
         val negativeReference = UUID.randomUUID()
-        val beingWorkedEvent = UPWGenerator.EVENT_5
-        val beingWorkedDetails = UPWGenerator.UPW_DETAILS_5
+        val beingWorkedEvent = UPWGenerator.EVENT_7
+        val beingWorkedDetails = UPWGenerator.UPW_DETAILS_7
         assertThat(upwDetailsRepository.findByIdOrNull(beingWorkedDetails.id)?.status?.code).isEqualTo("WK")
 
         mockMvc.post("/adjustments?username=${UserGenerator.DEFAULT_USER.username}") {
@@ -281,7 +282,7 @@ class AdjustmentsIntegrationTest @Autowired constructor(
                     date = LocalDate.now(),
                     reason = ReferenceDataGenerator.UPW_ADJUSTMENT_REASON_OTHER.code,
                     type = AdjustmentType.NEGATIVE,
-                    minutes = 100000,
+                    minutes = 3600,
                 )
             )
         }.andExpect { status { isOk() } }
@@ -291,5 +292,131 @@ class AdjustmentsIntegrationTest @Autowired constructor(
         val details = upwDetailsRepository.findByIdOrNull(beingWorkedDetails.id)
         assertThat(details?.status?.code).isEqualTo("HC")
         assertThat(details?.statusDate).isCloseTo(ZonedDateTime.now(), within(1, SECONDS))
+    }
+
+    @Test
+    fun `creating an adjustment that would result in negative remaining minutes returns bad request and does not persist changes`() {
+        val reference = UUID.randomUUID()
+        val beingWorkedEvent = UPWGenerator.EVENT_7
+        val beingWorkedDetails = UPWGenerator.UPW_DETAILS_7
+
+        assertThat(upwDetailsRepository.findByIdOrNull(beingWorkedDetails.id)?.status?.code).isEqualTo("WK")
+
+        mockMvc.post("/adjustments?username=${UserGenerator.DEFAULT_USER.username}") {
+            withToken()
+            json = listOf(
+                CreateAdjustmentRequest(
+                    reference = reference,
+                    crn = beingWorkedEvent.person.crn,
+                    eventNumber = beingWorkedEvent.number.toInt(),
+                    date = LocalDate.now(),
+                    reason = ReferenceDataGenerator.UPW_ADJUSTMENT_REASON_OTHER.code,
+                    type = AdjustmentType.NEGATIVE,
+                    minutes = 100000,
+                )
+            )
+        }.andExpect {
+            status { isBadRequest() }
+            content { jsonPath("$.message") { containsString("Adjustment/Appointment would result in negative remaining unpaid work minutes") } }
+        }
+        assertThat(upwDetailsRepository.findByIdOrNull(beingWorkedDetails.id)?.status?.code).isEqualTo("WK")
+        val adjustment = adjustmentRepository.findByReference(reference)
+        assertThat(adjustment).isNull()
+    }
+
+    @Test
+    fun `updating an adjustment that would result in negative remaining minutes returns bad request and does not persist changes`() {
+        val reference = UUID.randomUUID()
+        val beingWorkedEvent = UPWGenerator.EVENT_6
+        val beingWorkedDetails = UPWGenerator.UPW_DETAILS_6
+        assertThat(upwDetailsRepository.findByIdOrNull(beingWorkedDetails.id)?.status?.code).isEqualTo("WK")
+
+        mockMvc.post("/adjustments?username=${UserGenerator.DEFAULT_USER.username}") {
+            withToken()
+            json = listOf(
+                CreateAdjustmentRequest(
+                    reference = reference,
+                    crn = beingWorkedEvent.person.crn,
+                    eventNumber = beingWorkedEvent.number.toInt(),
+                    date = LocalDate.now(),
+                    reason = ReferenceDataGenerator.UPW_ADJUSTMENT_REASON_OTHER.code,
+                    type = AdjustmentType.POSITIVE,
+                    minutes = 1,
+                )
+            )
+        }.andExpect { status { isOk() } }
+
+        val originalAdjustment = adjustmentRepository.findByReference(reference)!!
+        assertThat(originalAdjustment.type).isEqualTo(AdjustmentType.POSITIVE.code)
+        assertThat(originalAdjustment.amount).isEqualTo(1)
+
+        mockMvc.put("/adjustments/$reference?username=${UserGenerator.DEFAULT_USER.username}") {
+            withToken()
+            json = UpdateAdjustmentRequest(
+                crn = beingWorkedEvent.person.crn,
+                eventNumber = beingWorkedEvent.number.toInt(),
+                date = LocalDate.now(),
+                reason = ReferenceDataGenerator.UPW_ADJUSTMENT_REASON_OTHER.code,
+                type = AdjustmentType.NEGATIVE,
+                minutes = 100000,
+            )
+        }.andExpect {
+            status { isBadRequest() }
+            content { jsonPath("$.message") { containsString("Adjustment/Appointment would result in negative remaining unpaid work minutes") } }
+        }
+        assertThat(upwDetailsRepository.findByIdOrNull(beingWorkedDetails.id)?.status?.code).isEqualTo("WK")
+        val adjustmentAfterFailure = adjustmentRepository.findByReference(reference)!!
+        assertThat(adjustmentAfterFailure.type).isEqualTo(AdjustmentType.POSITIVE.code)
+        assertThat(adjustmentAfterFailure.amount).isEqualTo(1)
+    }
+
+    @Test
+    fun `deleting an adjustment that would result in negative remaining minutes returns bad request and does not persist changes`() {
+        val positiveReference = UUID.randomUUID()
+        val negativeReference = UUID.randomUUID()
+
+        val beingWorkedEvent = UPWGenerator.EVENT_6
+        val beingWorkedDetails = UPWGenerator.UPW_DETAILS_6
+
+        assertThat(upwDetailsRepository.findByIdOrNull(beingWorkedDetails.id)?.status?.code).isEqualTo("WK")
+
+        mockMvc.post("/adjustments?username=${UserGenerator.DEFAULT_USER.username}") {
+            withToken()
+            json = listOf(
+                CreateAdjustmentRequest(
+                    reference = positiveReference,
+                    crn = beingWorkedEvent.person.crn,
+                    eventNumber = beingWorkedEvent.number.toInt(),
+                    date = LocalDate.now(),
+                    reason = ReferenceDataGenerator.UPW_ADJUSTMENT_REASON_OTHER.code,
+                    type = AdjustmentType.POSITIVE,
+                    minutes = 100,
+                ), CreateAdjustmentRequest(
+                    reference = negativeReference,
+                    crn = beingWorkedEvent.person.crn,
+                    eventNumber = beingWorkedEvent.number.toInt(),
+                    date = LocalDate.now(),
+                    reason = ReferenceDataGenerator.UPW_ADJUSTMENT_REASON_OTHER.code,
+                    type = AdjustmentType.NEGATIVE,
+                    minutes = 90,
+                )
+            )
+        }.andExpect { status { isOk() } }
+
+        val positiveAdjustment = adjustmentRepository.findByReference(positiveReference)
+        assertThat(positiveAdjustment).isNotNull()
+
+        mockMvc.delete("/adjustments/$positiveReference") {
+            withToken()
+        }.andExpect {
+            status { isBadRequest() }
+            content { jsonPath("$.message") { containsString("Adjustment/Appointment would result in negative remaining unpaid work minutes") } }
+        }
+
+        assertThat(upwDetailsRepository.findByIdOrNull(beingWorkedDetails.id)?.status?.code).isEqualTo("WK")
+        val adjustmentAfterFailure = adjustmentRepository.findByReference(positiveReference)
+        assertThat(adjustmentAfterFailure).isNotNull()
+        assertThat(adjustmentAfterFailure!!.type).isEqualTo(AdjustmentType.POSITIVE.code)
+        assertThat(adjustmentAfterFailure.amount).isEqualTo(100)
     }
 }

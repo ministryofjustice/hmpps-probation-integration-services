@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.entity.ReferenceDataRepository
 import uk.gov.justice.digital.hmpps.entity.getAdjustmentReason
 import uk.gov.justice.digital.hmpps.entity.person.PersonRepository
@@ -14,6 +15,7 @@ import uk.gov.justice.digital.hmpps.model.*
 import java.util.*
 
 @Service
+@Transactional
 class AdjustmentService(
     private val adjustmentRepository: UnpaidWorkAdjustmentRepository,
     private val unpaidWorkDetailsRepository: UpwDetailsRepository,
