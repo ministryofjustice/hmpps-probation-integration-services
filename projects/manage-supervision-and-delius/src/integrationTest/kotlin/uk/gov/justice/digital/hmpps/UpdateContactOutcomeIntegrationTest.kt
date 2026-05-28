@@ -35,7 +35,7 @@ class UpdateContactOutcomeIntegrationTest : IntegrationTestBase() {
     }
 
     @Test
-    fun `unknown outcome code returns 200`() {
+    fun `unknown outcome code returns not found`() {
         mockMvc.put("/contact/${UpdateContactOutcomeGenerator.CONTACT_1.id}") {
             withToken()
             json = UpdateContactOutcome(
@@ -47,7 +47,7 @@ class UpdateContactOutcomeIntegrationTest : IntegrationTestBase() {
                 alert = false,
                 sensitive = false
             )
-        }.andExpect { status { isOk() } }
+        }.andExpect { status { isNotFound() } }
     }
 
     @Test

@@ -222,9 +222,11 @@ class ContactLogService(
     fun updateContactOutcome(contactId: Long, request: UpdateContactOutcome) {
         val contact = contactRepository.getContact(contactId)
         val contactType = contact.type.code
-        val contactOutcome = contactTypeRepository.findSelectableOutcomesByTypeCode(contactType)
-            .firstOrNull { it.code == request.outcomeCode }
-
+        val contactOutcome = request.outcomeCode?.let { requestOutcomeCode ->
+            contactTypeRepository.findSelectableOutcomesByTypeCode(contactType)
+                .firstOrNull { it.code == requestOutcomeCode }
+                .orNotFoundBy("code", requestOutcomeCode)
+        }
         if (contact.complied == false && contactOutcome?.outcomeCompliantAcceptable == true) {
             telemetryService.trackEvent(
                 "remove enforcement for a compliant contact",
