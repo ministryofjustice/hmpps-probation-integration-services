@@ -4,10 +4,12 @@ import jakarta.persistence.*
 import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.NumericBooleanConverter
 import org.hibernate.type.YesNoConverter
+import org.springframework.data.annotation.LastModifiedDate
 import uk.gov.justice.digital.hmpps.entity.address.OfficeLocation
 import uk.gov.justice.digital.hmpps.entity.staff.Staff
 import java.time.LocalDate
 import java.time.LocalTime
+import java.time.ZonedDateTime
 
 @Entity
 @SQLRestriction("soft_deleted = 0 and (sensitive is null or sensitive <> 'Y')")
@@ -27,6 +29,9 @@ class Contact(
     @JoinColumn(name = "contact_type_id")
     val type: ContactType,
     val description: String? = null,
+    @ManyToOne
+    @JoinColumn(name = "contact_outcome_type_id")
+    val outcome: ContactOutcome? = null,
     @Column(name = "nsi_id")
     val nsiId: Long? = null,
     @Convert(converter = YesNoConverter::class)
@@ -46,4 +51,7 @@ class Contact(
     @Column(columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean = false,
+    @LastModifiedDate
+    @Column(name = "last_updated_datetime")
+    var lastUpdatedDatetime: ZonedDateTime
 )

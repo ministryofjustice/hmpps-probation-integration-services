@@ -26,6 +26,7 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
             TestData.ReferenceData.RAR_REQUIREMENT_SUBCATEGORY,
             TestData.ReferenceData.LICENCE_CONDITION_CATEGORY,
             TestData.ReferenceData.LICENCE_CONDITION_SUBCATEGORY,
+            TestData.ReferenceData.ATTENDED_COMPLIED_OUTCOME,
             TestData.TeamData.OFFICE,
             TestData.TeamData.TEAM,
             TestData.StaffData.STAFF,

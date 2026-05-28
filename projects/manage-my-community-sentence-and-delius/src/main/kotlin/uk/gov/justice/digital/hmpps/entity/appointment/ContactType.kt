@@ -15,4 +15,7 @@ class ContactType(
     @Column(name = "attendance_contact")
     @Convert(converter = YesNoConverter::class)
     val attendance: Boolean,
+    @Column(name = "national_standards_contact")
+    @Convert(converter = YesNoConverter::class)
+    val nationalStandards: Boolean = false
 )

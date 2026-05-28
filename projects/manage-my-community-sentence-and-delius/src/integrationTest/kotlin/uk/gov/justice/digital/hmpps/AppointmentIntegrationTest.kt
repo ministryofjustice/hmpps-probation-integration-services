@@ -53,7 +53,9 @@ internal class AppointmentIntegrationTest @Autowired constructor(private val moc
                                 "district": "Test District",
                                 "county": "Test County",
                                 "postcode": "TE1 1ST"
-                              }
+                              },
+                              "nationalStandards": false,
+                              "lastUpdatedAt": "2024-01-01T00:00:00Z"
                             },
                             {
                               "date": "2050-01-01",
@@ -66,7 +68,9 @@ internal class AppointmentIntegrationTest @Autowired constructor(private val moc
                                   "forename": "Test",
                                   "surname": "Staff"
                                 }
-                              }
+                              },
+                              "nationalStandards": false,
+                              "lastUpdatedAt": "2024-01-01T00:00:00Z"
                             }
                           ],
                           "page": {
@@ -115,7 +119,10 @@ internal class AppointmentIntegrationTest @Autowired constructor(private val moc
                                 "postcode": "TE1 1ST"
                               },
                               "attended": true,
-                              "complied": true
+                              "complied": true,
+                              "outcome": "Attended - Complied",
+                              "nationalStandards": false,
+                              "lastUpdatedAt": "2024-01-01T00:00:00Z"
                             },
                             {
                               "date": "2020-01-01",
@@ -139,7 +146,9 @@ internal class AppointmentIntegrationTest @Autowired constructor(private val moc
                                 "postcode": "TE1 1ST"
                               },
                               "attended": false,
-                              "complied": false
+                              "complied": false,
+                              "nationalStandards": false,
+                              "lastUpdatedAt": "2024-01-01T00:00:00Z"
                             }
                           ],
                           "page": {
@@ -177,7 +186,9 @@ internal class AppointmentIntegrationTest @Autowired constructor(private val moc
                                   "forename": "Test",
                                   "surname": "Staff"
                                 }
-                              }
+                              },
+                              "nationalStandards": false,
+                              "lastUpdatedAt": "2024-01-01T00:00:00Z"
                             }
                           ],
                           "page": {
