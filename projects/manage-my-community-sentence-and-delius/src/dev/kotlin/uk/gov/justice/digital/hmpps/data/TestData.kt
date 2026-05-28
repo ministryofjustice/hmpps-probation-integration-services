@@ -35,6 +35,8 @@ import uk.gov.justice.digital.hmpps.entity.unpaidwork.UnpaidWorkAppointment
 import uk.gov.justice.digital.hmpps.entity.unpaidwork.UnpaidWorkDetails
 import java.time.LocalDate
 import java.time.LocalTime
+import java.time.ZoneId
+import java.time.ZonedDateTime
 
 object TestData {
     object ReferenceData {
@@ -97,6 +99,7 @@ object TestData {
             mobileNumber = "07111111111",
             emailAddress = "person.one@example.com",
             manager = CommunityManager(id(), StaffData.STAFF, TeamData.TEAM),
+            lastUpdatedDatetime = ZonedDateTime.of(2025, 5, 1, 9, 15, 0, 0, ZoneId.of("UTC")),
         )
 
         val BASIC = Person(
@@ -107,6 +110,7 @@ object TestData {
             dateOfBirth = LocalDate.of(1980, 1, 1),
             mobileNumber = "07222222222",
             manager = CommunityManager(id(), StaffData.STAFF_WITHOUT_USER, TeamData.TEAM),
+            lastUpdatedDatetime = ZonedDateTime.of(2025, 5, 1, 9, 15, 0, 0, ZoneId.of("UTC")),
         )
     }
 
@@ -121,7 +125,8 @@ object TestData {
             town = "My Town",
             district = "My District",
             county = "My County",
-            postcode = "TE1 1ST"
+            postcode = "TE1 1ST",
+            lastUpdatedDatetime = ZonedDateTime.of(2025, 4, 12, 11, 15, 0, 0, ZoneId.of("UTC")),
         )
         val PREV_ADDRESS = PersonAddress(
             id = id(),
@@ -129,6 +134,7 @@ object TestData {
             status = ReferenceData.PREV_ADDRESS_STATUS,
             noFixedAbode = true,
             postcode = "NF1 1NF",
+            lastUpdatedDatetime = ZonedDateTime.of(2025, 5, 1, 9, 15, 0, 0, ZoneId.of("UTC")),
         )
     }
 
@@ -143,6 +149,7 @@ object TestData {
             mobileNumber = "07333333333",
             emailAddress = "joe.bloggs@example.com",
             startDate = LocalDate.of(2020, 1, 1),
+            lastUpdatedDatetime = ZonedDateTime.of(2025, 3, 10, 14, 30, 0, 0, ZoneId.of("UTC"))
         )
     }
 

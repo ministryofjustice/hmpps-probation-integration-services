@@ -48,6 +48,7 @@ internal class PersonalDetailsIntegrationTest @Autowired constructor(private val
                           },
                           "preferredName": "Tester",
                           "dateOfBirth": "1990-01-01",
+                          "lastUpdatedAt": "2025-05-01T10:15:00+01:00",
                           "mainAddress": {
                             "houseNumber": "1",
                             "buildingName": "My Building",
@@ -55,7 +56,8 @@ internal class PersonalDetailsIntegrationTest @Autowired constructor(private val
                             "town": "My Town",
                             "district": "My District",
                             "county": "My County",
-                            "postcode": "TE1 1ST"
+                            "postcode": "TE1 1ST",
+                            "lastUpdatedAt": "2025-04-12T12:15:00+01:00"
                           },
                           "telephoneNumber": "01000000001",
                           "mobileNumber": "07111111111",
@@ -68,7 +70,8 @@ internal class PersonalDetailsIntegrationTest @Autowired constructor(private val
                               },
                               "relationship": "Sister",
                               "mobileNumber": "07333333333",
-                              "emailAddress": "joe.bloggs@example.com"
+                              "emailAddress": "joe.bloggs@example.com",
+                              "lastUpdatedAt": "2025-03-10T14:30:00Z"
                             }
                           ],
                           "practitioner": {
@@ -106,6 +109,7 @@ internal class PersonalDetailsIntegrationTest @Autowired constructor(private val
             jsonPath("$.mainAddress") { doesNotExist() }
             jsonPath("$.emergencyContacts.length()") { value(0) }
             jsonPath("$.practitioner.telephoneNumber") { doesNotExist() }
+            jsonPath("$.lastUpdatedAt") { isNotEmpty() }
         }
     }
 }

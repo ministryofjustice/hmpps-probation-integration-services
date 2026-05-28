@@ -6,6 +6,7 @@ import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.NumericBooleanConverter
 import uk.gov.justice.digital.hmpps.model.Name
 import java.time.LocalDate
+import java.time.ZonedDateTime
 
 @Entity
 @Immutable
@@ -27,7 +28,8 @@ class PersonalContact(
     val emailAddress: String?,
     val startDate: LocalDate? = null,
     val endDate: LocalDate? = null,
-
+    @Column(name = "last_updated_datetime")
+    val lastUpdatedDatetime: ZonedDateTime,
     @Column(name = "soft_deleted", columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean = false,

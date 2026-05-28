@@ -1,7 +1,7 @@
 package uk.gov.justice.digital.hmpps.model
 
 import uk.gov.justice.digital.hmpps.entity.appointment.Contact
-import uk.gov.justice.digital.hmpps.model.Address.Companion.toModel
+import uk.gov.justice.digital.hmpps.model.OfficeAddress.Companion.toModel
 import java.time.LocalDate
 import java.time.LocalTime
 
@@ -12,7 +12,7 @@ data class Appointment(
     val type: String,
     val description: String?,
     val practitioner: Practitioner,
-    val location: Address?,
+    val location: OfficeAddress?,
     val attended: Boolean?,
     val complied: Boolean?,
 ) {

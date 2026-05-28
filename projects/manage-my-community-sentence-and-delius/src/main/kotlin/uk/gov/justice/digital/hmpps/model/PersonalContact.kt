@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.model
 
+import java.time.ZonedDateTime
 import uk.gov.justice.digital.hmpps.entity.PersonalContact as PersonalContactEntity
 
 data class PersonalContact(
@@ -7,6 +8,7 @@ data class PersonalContact(
     val relationship: String,
     val mobileNumber: String?,
     val emailAddress: String?,
+    val lastUpdatedAt: ZonedDateTime,
 ) {
     companion object {
         fun PersonalContactEntity.toModel() = PersonalContact(
@@ -14,6 +16,7 @@ data class PersonalContact(
             relationship = relationship,
             mobileNumber = mobileNumber,
             emailAddress = emailAddress,
+            lastUpdatedAt = lastUpdatedDatetime,
         )
     }
 }
