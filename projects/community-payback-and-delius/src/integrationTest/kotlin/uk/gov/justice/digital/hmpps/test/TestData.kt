@@ -30,7 +30,7 @@ object TestData {
         alertActive = false,
         notes = "testing",
         minutesCredited = 0L
-        )
+    )
 
     fun createAppointmentWithStatus() = CreateAppointmentRequest(
         reference = UUID.randomUUID(),
