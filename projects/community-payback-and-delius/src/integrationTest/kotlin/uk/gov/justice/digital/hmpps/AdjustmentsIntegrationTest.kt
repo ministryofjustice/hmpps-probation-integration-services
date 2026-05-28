@@ -317,7 +317,7 @@ class AdjustmentsIntegrationTest @Autowired constructor(
             )
         }.andExpect {
             status { isBadRequest() }
-            content { jsonPath("$.message") { containsString("Adjustment would result in negative remaining unpaid work minutes") } }
+            content { jsonPath("$.message") { containsString("Adjustment/Appointment would result in negative remaining unpaid work minutes") } }
         }
         assertThat(upwDetailsRepository.findByIdOrNull(beingWorkedDetails.id)?.status?.code).isEqualTo("WK")
         val adjustment = adjustmentRepository.findByReference(reference)
@@ -362,7 +362,7 @@ class AdjustmentsIntegrationTest @Autowired constructor(
             )
         }.andExpect {
             status { isBadRequest() }
-            content { jsonPath("$.message") { containsString("Adjustment would result in negative remaining unpaid work minutes") } }
+            content { jsonPath("$.message") { containsString("Adjustment/Appointment would result in negative remaining unpaid work minutes") } }
         }
         assertThat(upwDetailsRepository.findByIdOrNull(beingWorkedDetails.id)?.status?.code).isEqualTo("WK")
         val adjustmentAfterFailure = adjustmentRepository.findByReference(reference)!!
@@ -410,7 +410,7 @@ class AdjustmentsIntegrationTest @Autowired constructor(
             withToken()
         }.andExpect {
             status { isBadRequest() }
-            content { jsonPath("$.message") { containsString("Adjustment would result in negative remaining unpaid work minutes") } }
+            content { jsonPath("$.message") { containsString("Adjustment/Appointment would result in negative remaining unpaid work minutes") } }
         }
 
         assertThat(upwDetailsRepository.findByIdOrNull(beingWorkedDetails.id)?.status?.code).isEqualTo("WK")

@@ -28,8 +28,9 @@ object TestData {
         behaviour = null,
         sensitive = false,
         alertActive = false,
-        notes = "testing"
-    )
+        notes = "testing",
+        minutesCredited = 0L
+        )
 
     fun createAppointmentWithStatus() = CreateAppointmentRequest(
         reference = UUID.randomUUID(),
@@ -107,7 +108,7 @@ object TestData {
         date = LocalDate.now(),
         startTime = startTime,
         endTime = endTime,
-        minutesCredited = 415,
+        minutesCredited = 0L,
         penaltyMinutes = 65,
         outcome = Code(ReferenceDataGenerator.ATTENDED_COMPLIED_CONTACT_OUTCOME.code),
         hiVisWorn = true,

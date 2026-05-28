@@ -165,6 +165,7 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
         save(UPWGenerator.OVERDUE_APPOINTMENT)
         save(UPWGenerator.DEFAULT_RQMNT)
         save(UPWGenerator.SECOND_RQMNT)
+        save(UPWGenerator.THIRD_RQMNT)
         save(UPWGenerator.FOURTH_RQMNT)
         save(UPWGenerator.SIXTH_RQMNT)
         save(UPWGenerator.SEVENTH_RQMNT)

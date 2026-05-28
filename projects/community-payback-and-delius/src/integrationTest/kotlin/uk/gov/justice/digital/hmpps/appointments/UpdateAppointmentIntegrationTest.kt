@@ -97,7 +97,7 @@ class UpdateAppointmentIntegrationTest @Autowired constructor(
         assertThat(appointment.startTime).isEqualTo(TestData.startTime)
         assertThat(appointment.endTime).isEqualTo(TestData.endTime)
         assertThat(appointment.penaltyMinutes).isEqualTo(65)
-        assertThat(appointment.minutesCredited).isEqualTo(415)
+        assertThat(appointment.minutesCredited).isEqualTo(0L)
         assertThat(appointment.project.code).isEqualTo(PROJECT)
         assertThat(appointment.notes).isEqualTo("testing update")
         assertThat(appointment.lastUpdatedDatetime).isCloseTo(appointment.lastUpdatedDatetime, within(1, SECONDS))
