@@ -71,12 +71,62 @@ internal class AppointmentIntegrationTest @Autowired constructor(private val moc
                               },
                               "nationalStandards": false,
                               "lastUpdatedAt": "2024-01-01T00:00:00Z"
+                            },
+                            {
+                              "date": "2050-01-01",
+                              "startTime": "12:30:00",
+                              "endTime": "13:15:00",
+                              "type": "Office Appointment",
+                              "description": "Future UPW Appointment",
+                              "practitioner": {
+                                "name": {
+                                  "forename": "Test",
+                                  "surname": "Staff"
+                                }
+                              },
+                              "location": {
+                                "houseNumber": "123",
+                                "buildingName": "Building name",
+                                "street": "High Street",
+                                "town": "Test Town",
+                                "district": "Test District",
+                                "county": "Test County",
+                                "postcode": "TE1 1ST"
+                              },
+                              "attended": false,
+                              "complied": false,
+                              "nationalStandards": false,
+                              "lastUpdatedAt": "2024-01-01T00:00:00Z",
+                              "unpaidWork": {
+                                "pickUpLocation": {
+                                  "houseNumber": "123",
+                                  "buildingName": "Building name",
+                                  "street": "High Street",
+                                  "town": "Test Town",
+                                  "district": "Test District",
+                                  "county": "Test County",
+                                  "postcode": "TE1 1ST"
+                                },
+                                "project": {
+                                  "code": "PRJ1",
+                                  "description": "Project 1",
+                                  "address": {
+                                    "houseNumber": "1",
+                                    "buildingName": "Building Name",
+                                    "street": "Street",
+                                    "town": "Town",
+                                    "district": "District",
+                                    "county": "County",
+                                    "postcode": "NE1 2SW"
+                                  }
+                                }
+                              }
                             }
                           ],
                           "page": {
                             "size": 10,
                             "number": 0,
-                            "totalElements": 2,
+                            "totalElements": 3,
                             "totalPages": 1
                           }
                         }
@@ -126,6 +176,56 @@ internal class AppointmentIntegrationTest @Autowired constructor(private val moc
                             },
                             {
                               "date": "2020-01-01",
+                              "startTime": "12:30:00",
+                              "endTime": "13:15:00",
+                              "type": "Office Appointment",
+                              "description": "Past UPW Appointment",
+                              "practitioner": {
+                                "name": {
+                                  "forename": "Test",
+                                  "surname": "Staff"
+                                }
+                              },
+                              "location": {
+                                "houseNumber": "123",
+                                "buildingName": "Building name",
+                                "street": "High Street",
+                                "town": "Test Town",
+                                "district": "Test District",
+                                "county": "Test County",
+                                "postcode": "TE1 1ST"
+                              },
+                              "attended": false,
+                              "complied": false,
+                              "nationalStandards": false,
+                              "lastUpdatedAt": "2024-01-01T00:00:00Z",
+                              "unpaidWork": {
+                                "pickUpLocation": {
+                                  "houseNumber": "123",
+                                  "buildingName": "Building name",
+                                  "street": "High Street",
+                                  "town": "Test Town",
+                                  "district": "Test District",
+                                  "county": "Test County",
+                                  "postcode": "TE1 1ST"
+                                },
+                                "project": {
+                                  "code": "PRJ1",
+                                  "description": "Project 1",
+                                  "address": {
+                                    "houseNumber": "1",
+                                    "buildingName": "Building Name",
+                                    "street": "Street",
+                                    "town": "Town",
+                                    "district": "District",
+                                    "county": "County",
+                                    "postcode": "NE1 2SW"
+                                  }
+                                }
+                              }
+                            },
+                            {
+                              "date": "2020-01-01",
                               "startTime": "10:00:00",
                               "endTime": "10:45:00",
                               "type": "Office Appointment",
@@ -154,7 +254,7 @@ internal class AppointmentIntegrationTest @Autowired constructor(private val moc
                           "page": {
                             "size": 10,
                             "number": 0,
-                            "totalElements": 2,
+                            "totalElements": 3,
                             "totalPages": 1
                           }
                         }
@@ -194,8 +294,8 @@ internal class AppointmentIntegrationTest @Autowired constructor(private val moc
                           "page": {
                             "size": 1,
                             "number": 1,
-                            "totalElements": 2,
-                            "totalPages": 2
+                            "totalElements": 3,
+                            "totalPages": 3
                           }
                         }
                         """.trimIndent(),

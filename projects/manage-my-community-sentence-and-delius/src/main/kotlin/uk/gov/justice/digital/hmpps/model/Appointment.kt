@@ -1,7 +1,9 @@
 package uk.gov.justice.digital.hmpps.model
 
 import uk.gov.justice.digital.hmpps.entity.appointment.Contact
+import uk.gov.justice.digital.hmpps.entity.unpaidwork.UnpaidWorkAppointment
 import uk.gov.justice.digital.hmpps.model.OfficeAddress.Companion.toModel
+import uk.gov.justice.digital.hmpps.model.UpwResponse.Companion.toResponse
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.ZonedDateTime
@@ -18,10 +20,11 @@ data class Appointment(
     val complied: Boolean?,
     val outcome: String?,
     val nationalStandards: Boolean,
-    val lastUpdatedAt: ZonedDateTime
+    val lastUpdatedAt: ZonedDateTime,
+    val unpaidWork: UpwResponse?
 ) {
     companion object {
-        fun Contact.toAppointment() = Appointment(
+        fun Contact.toAppointment(unpaidWorkAppointment: UnpaidWorkAppointment?) = Appointment(
             date = date,
             startTime = startTime,
             endTime = endTime,
@@ -33,7 +36,8 @@ data class Appointment(
             complied = complied,
             outcome = outcome?.description,
             nationalStandards = type.nationalStandards,
-            lastUpdatedAt = lastUpdatedDatetime
+            lastUpdatedAt = lastUpdatedDatetime,
+            unpaidWork = unpaidWorkAppointment?.toResponse()
         )
     }
 }
