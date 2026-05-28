@@ -265,4 +265,134 @@ object UpdateContactOutcomeGenerator {
         endDate = null,
         offenderManagerId = OFFENDER_MANAGER.id
     )
+
+    // --- Completely fresh data for enforcement-deletion-on-compliant-outcome test ---
+
+    val CMP_PROVIDER = generateProvider("UCC", selectable = true)
+    val CMP_BOROUGH = generateBorough("UCCB", provider = CMP_PROVIDER)
+    val CMP_DISTRICT = generateDistrict("UCCD", borough = CMP_BOROUGH)
+
+    val CMP_STAFF = Staff(
+        code = "UCCST1",
+        forename = "Compliant",
+        surname = "Staff",
+        provider = CMP_PROVIDER,
+        caseLoad = emptyList(),
+        teams = emptyList(),
+        user = null,
+        id = IdGenerator.getAndIncrement()
+    )
+
+    val CMP_TEAM = Team(
+        id = IdGenerator.getAndIncrement(),
+        code = "UCCTM1",
+        description = "UCO Compliant Test Team",
+        staff = listOf(CMP_STAFF),
+        provider = CMP_PROVIDER,
+        district = CMP_DISTRICT,
+        startDate = LocalDate.now()
+    )
+
+    val CMP_PERSON = PersonGenerator.generateOverview("UCO0003", forename = "Compliant", surname = "TestPerson")
+
+    val CMP_EVENT = PersonGenerator.generateEvent(
+        CMP_PERSON,
+        eventNumber = "1",
+        notes = "Compliant outcome test event",
+        additionalOffences = emptyList()
+    )
+
+    val CMP_CONTACT_TYPE = ContactType(
+        id = IdGenerator.getAndIncrement(),
+        code = "UCCC",
+        attendanceContact = true,
+        description = "UCO Compliant Contact Type",
+        contactOutcomeFlag = true,
+        locationRequired = "N",
+        editable = true,
+        nationalStandardsContact = true
+    )
+
+    val CMP_NON_COMPLIANT_OUTCOME =
+        ContactGenerator.generateOutcome("UCCNCO", "UCC Non-Compliant Outcome", false, false)
+    val CMP_COMPLIANT_OUTCOME = ContactGenerator.generateOutcome("UCCCMP", "UCC Compliant Outcome", true, true)
+
+    val CMP_CONTACT_TYPE_NON_COMPLIANT_OUTCOME =
+        generateContactTypeOutcome(
+            CMP_CONTACT_TYPE.id,
+            CMP_NON_COMPLIANT_OUTCOME.id,
+            CMP_CONTACT_TYPE,
+            CMP_NON_COMPLIANT_OUTCOME
+        )
+
+    val CMP_CONTACT_TYPE_COMPLIANT_OUTCOME =
+        generateContactTypeOutcome(
+            CMP_CONTACT_TYPE.id,
+            CMP_COMPLIANT_OUTCOME.id,
+            CMP_CONTACT_TYPE,
+            CMP_COMPLIANT_OUTCOME
+        )
+
+    val CMP_ENFORCEMENT_ACTION =
+        ContactGenerator.generateEnforcementAction("UCCENF1", "UCC Enforcement Action", CMP_CONTACT_TYPE)
+
+    val CMP_ENFORCEMENT_ACTION_OUTCOME_TYPE = EnforcementActionContactOutcome(
+        EnforcementActionContactOutcomeId(
+            enforcementActionId = CMP_ENFORCEMENT_ACTION.id,
+            contactOutcomeTypeId = CMP_NON_COMPLIANT_OUTCOME.id
+        )
+    )
+
+    val CMP_OM_STAFF = OffenderManagerStaff(
+        id = IdGenerator.getAndIncrement(),
+        code = "UCCOMS1",
+        forename = "UCC",
+        surname = "OffenderManager",
+        provider = CMP_PROVIDER,
+        startDate = LocalDate.now()
+    )
+
+    val CMP_OM_TEAM = OffenderManagerTeam(
+        id = IdGenerator.getAndIncrement(),
+        district = CMP_DISTRICT,
+        provider = CMP_PROVIDER,
+        code = "UCCOMT",
+        description = "UCC OffenderManager Team",
+        startDate = LocalDate.now()
+    )
+
+    val CMP_OFFENDER_MANAGER = OffenderManager(
+        id = IdGenerator.getAndIncrement(),
+        person = CMP_PERSON,
+        provider = CMP_PROVIDER,
+        team = CMP_OM_TEAM,
+        staff = CMP_OM_STAFF,
+        allocationDate = LocalDate.now(),
+        lastUpdated = ZonedDateTime.now()
+    )
+
+    val CMP_RESPONSIBLE_OFFICER = ResponsibleOfficer(
+        id = IdGenerator.getAndIncrement(),
+        personId = CMP_PERSON.id,
+        startDate = ZonedDateTime.now(),
+        endDate = null,
+        offenderManagerId = CMP_OFFENDER_MANAGER.id
+    )
+
+    // Contact with complied=false and a pre-existing enforcement — updating to compliant outcome should delete the enforcement
+    val CONTACT_8 = ContactGenerator.generateContact(
+        CMP_PERSON,
+        CMP_CONTACT_TYPE,
+        ZonedDateTime.of(LocalDateTime.now(EuropeLondon).plusHours(1), EuropeLondon),
+        complied = false,
+        team = CMP_TEAM,
+        staff = CMP_STAFF,
+        event = CMP_EVENT,
+        outcome = CMP_NON_COMPLIANT_OUTCOME
+    )
+
+    val ENFORCEMENT_FOR_CONTACT_8 = ContactGenerator.generateEnforcement(
+        contact = CONTACT_8,
+        action = CMP_ENFORCEMENT_ACTION
+    )
 }

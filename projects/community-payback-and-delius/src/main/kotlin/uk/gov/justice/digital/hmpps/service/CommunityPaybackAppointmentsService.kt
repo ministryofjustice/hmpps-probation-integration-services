@@ -27,6 +27,7 @@ import java.time.temporal.ChronoUnit
 import java.util.*
 
 @Service
+@Transactional
 class CommunityPaybackAppointmentsService(
     private val unpaidWorkProjectRepository: UnpaidWorkProjectRepository,
     private val unpaidWorkAppointmentRepository: UnpaidWorkAppointmentRepository,
@@ -170,7 +171,6 @@ class CommunityPaybackAppointmentsService(
         )
     }
 
-    @Transactional
     fun createAppointments(
         projectCode: String,
         requests: CreateAppointmentsRequest
@@ -243,7 +243,6 @@ class CommunityPaybackAppointmentsService(
             .map { CreatedAppointment(id = it.id!!, reference = it.reference!!) }
     }
 
-    @Transactional
     fun updateAppointment(
         projectCode: String,
         appointmentId: Long,

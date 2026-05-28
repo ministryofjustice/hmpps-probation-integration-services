@@ -258,4 +258,38 @@ class UpdateContactOutcomeIntegrationTest : IntegrationTestBase() {
         assertThat(linkedContacts.size, equalTo(2))
         assertThat(linkedContacts.any { it.type.code == ContactLogService.REVIEW_ENFORCEMENT_STATUS }, equalTo(true))
     }
+
+    @Test
+    fun `existing enforcement is deleted when outcome is updated to compliant`() {
+        // Verify the enforcement exists before the update
+        val enforcementsBefore = enforcementRepository.findAll().filter {
+            it.contact.id == UpdateContactOutcomeGenerator.CONTACT_8.id
+        }
+        assertThat(enforcementsBefore.size, equalTo(1))
+
+        mockMvc.put("/contact/${UpdateContactOutcomeGenerator.CONTACT_8.id}") {
+            withToken()
+            json = UpdateContactOutcome(
+                date = LocalDate.now().plusDays(1),
+                time = LocalTime.of(10, 0),
+                outcomeCode = UpdateContactOutcomeGenerator.CMP_COMPLIANT_OUTCOME.code,
+                enforcementActionCode = null,
+                notes = "Changing outcome to compliant",
+                alert = false,
+                sensitive = false
+            )
+        }.andExpect { status { isOk() } }
+
+        val enforcementsAfter = transactionTemplate.execute {
+            entityManager.clear()
+            enforcementRepository.findAll().filter {
+                it.contact.id == UpdateContactOutcomeGenerator.CONTACT_8.id
+            }
+        }
+        assertThat(enforcementsAfter?.size, equalTo(0))
+
+        val updated = contactRepository.findById(UpdateContactOutcomeGenerator.CONTACT_8.id).get()
+        assertThat(updated.outcome?.code, equalTo(UpdateContactOutcomeGenerator.CMP_COMPLIANT_OUTCOME.code))
+        assertThat(updated.complied, equalTo(true))
+    }
 }
