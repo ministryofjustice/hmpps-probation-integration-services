@@ -224,9 +224,8 @@ class ContactLogService(
         val contactType = contact.type.code
         val contactOutcome = contactTypeRepository.findSelectableOutcomesByTypeCode(contactType)
             .firstOrNull { it.code == request.outcomeCode }
-            .orNotFoundBy("code", request.outcomeCode)
 
-        if (contact.complied == false && contactOutcome.outcomeCompliantAcceptable == true) {
+        if (contact.complied == false && contactOutcome?.outcomeCompliantAcceptable == true) {
             telemetryService.trackEvent(
                 "remove enforcement for a compliant contact",
                 mapOf("crn" to contact.person.crn, "contactId" to contactId.toString())
@@ -238,7 +237,7 @@ class ContactLogService(
         request.notes.let { contact.appendNotes(it) }
 
 
-        if (request.alert && contact.alert != true) {
+        if (request.alert == true && contact.alert != true) {
             val personManager =
                 offenderManagerRepository.findOffenderManagersByPersonIdAndActiveIsTrue(contact.person.id)
                     ?: throw NotFoundException(
@@ -257,7 +256,7 @@ class ContactLogService(
                 )
             )
             contact.alert = true
-        } else if (!request.alert && contact.alert == true) {
+        } else if (request.alert == false && contact.alert == true) {
             val existingAlerts = contactAlertRepository.findByContactId(contact.id)
             if (existingAlerts.isNotEmpty()) {
                 contactAlertRepository.deleteByContactIdIn(listOf(contact.id))
@@ -269,9 +268,12 @@ class ContactLogService(
         contact.sensitive = request.sensitive
         contact.date = request.date
         contact.startTime = ZonedDateTime.ofLocal(request.date.atTime(request.time), EuropeLondon, null)
-        contact.outcome = contactOutcome
-        contact.attended = contactOutcome.outcomeAttendance
-        contact.complied = contactOutcome.outcomeCompliantAcceptable
+        contactOutcome?.let {
+            contact.outcome = contactOutcome
+            contact.attended = contactOutcome.outcomeAttendance
+            contact.complied = contactOutcome.outcomeCompliantAcceptable
+        }
+
         contactRepository.save(contact)
         if (request.enforcementActionCode != null) {
             contactEnforcementService.updateEnforcementActionForContact(contact, request.enforcementActionCode)

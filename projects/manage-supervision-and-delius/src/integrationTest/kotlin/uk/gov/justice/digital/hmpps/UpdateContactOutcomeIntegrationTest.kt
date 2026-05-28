@@ -35,7 +35,7 @@ class UpdateContactOutcomeIntegrationTest : IntegrationTestBase() {
     }
 
     @Test
-    fun `unknown outcome code returns not found`() {
+    fun `unknown outcome code returns 200`() {
         mockMvc.put("/contact/${UpdateContactOutcomeGenerator.CONTACT_1.id}") {
             withToken()
             json = UpdateContactOutcome(
@@ -47,7 +47,7 @@ class UpdateContactOutcomeIntegrationTest : IntegrationTestBase() {
                 alert = false,
                 sensitive = false
             )
-        }.andExpect { status { isNotFound() } }
+        }.andExpect { status { isOk() } }
     }
 
     @Test
@@ -257,6 +257,51 @@ class UpdateContactOutcomeIntegrationTest : IntegrationTestBase() {
             contactRepository.findByLinkedContactIdOrderByDateDesc(UpdateContactOutcomeGenerator.CONTACT_7.id)
         assertThat(linkedContacts.size, equalTo(2))
         assertThat(linkedContacts.any { it.type.code == ContactLogService.REVIEW_ENFORCEMENT_STATUS }, equalTo(true))
+    }
+
+    @Test
+    fun `null outcome code leaves existing outcome unchanged`() {
+        val originalOutcomeCode = contactRepository.findById(UpdateContactOutcomeGenerator.CONTACT_9.id).get().outcome?.code
+
+        mockMvc.put("/contact/${UpdateContactOutcomeGenerator.CONTACT_9.id}") {
+            withToken()
+            json = UpdateContactOutcome(
+                date = LocalDate.now().plusDays(1),
+                time = LocalTime.of(10, 0),
+                outcomeCode = null,
+                enforcementActionCode = null,
+                notes = "Notes without changing outcome",
+                alert = false,
+                sensitive = false
+            )
+        }.andExpect { status { isOk() } }
+
+        val updated = contactRepository.findById(UpdateContactOutcomeGenerator.CONTACT_9.id).get()
+        assertThat(updated.outcome?.code, equalTo(originalOutcomeCode))
+        assertThat(updated.notes, containsString("Notes without changing outcome"))
+    }
+
+    @Test
+    fun `null alert leaves existing alert state unchanged`() {
+        val before = contactRepository.findById(UpdateContactOutcomeGenerator.CONTACT_10.id).get()
+        assertThat(before.alert, equalTo(true))
+
+        mockMvc.put("/contact/${UpdateContactOutcomeGenerator.CONTACT_10.id}") {
+            withToken()
+            json = UpdateContactOutcome(
+                date = LocalDate.now().plusDays(1),
+                time = LocalTime.of(10, 0),
+                outcomeCode = UpdateContactOutcomeGenerator.OUTCOME.code,
+                enforcementActionCode = null,
+                notes = "Notes without changing alert",
+                alert = null,
+                sensitive = false
+            )
+        }.andExpect { status { isOk() } }
+
+        val updated = contactRepository.findById(UpdateContactOutcomeGenerator.CONTACT_10.id).get()
+        assertThat(updated.alert, equalTo(true))
+        assertThat(updated.notes, containsString("Notes without changing alert"))
     }
 
     @Test
