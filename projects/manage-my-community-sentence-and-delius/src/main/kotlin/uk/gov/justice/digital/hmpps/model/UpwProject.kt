@@ -15,5 +15,4 @@ data class UpwProject(
             address = placementAddress?.toModel()
         )
     }
-
 }
