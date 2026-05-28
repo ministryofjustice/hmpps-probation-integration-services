@@ -10,7 +10,7 @@ data class Overview(
     val personalDetails: PersonalDetails,
     val previousOrders: PreviousOrders,
     val schedule: Schedule,
-    val sentences: List<Sentence>,
+    val sentences: List<OverviewSentence>,
     val registrations: List<String>,
     val mappa: MappaDetail? = null
 )

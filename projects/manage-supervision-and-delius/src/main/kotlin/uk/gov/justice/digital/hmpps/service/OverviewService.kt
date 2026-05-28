@@ -72,7 +72,7 @@ class OverviewService(
         Order(description = type.description, length = length, startDate = date, endDate = expectedEndDate())
 
     fun Event.toSentence() = mainOffence?.offence?.let { offence ->
-        Sentence(
+        OverviewSentence(
             mainOffence = offence.toOffence(),
             eventNumber = eventNumber,
             additionalOffences = additionalOffences.map { it.offence.toOffence() },
