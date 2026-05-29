@@ -26,6 +26,7 @@ class SentenceService(
                     type = it.type.description,
                     startDate = it.date,
                     expectedEndDate = it.enteredExpectedEndDate ?: it.expectedEndDate,
+                    lastUpdatedAt = it.lastUpdatedDatetime,
                     requirements = it.requirements.map { requirement ->
                         Requirement(
                             type = requirement.mainCategory.description,
@@ -37,6 +38,12 @@ class SentenceService(
                                 else -> null
                             },
                             unit = requirement.length?.let { DurationUnit.ofCode(requirement.mainCategory.lengthUnits.code) },
+                            imposedDate = requirement.imposedDate,
+                            expectedStartDate = requirement.expectedStartDate,
+                            expectedEndDate = requirement.expectedEndDate,
+                            actualStartDate = requirement.actualStartDate,
+                            actualEndDate = requirement.actualEndDate,
+                            lastUpdatedAt = requirement.lastUpdatedDatetime,
                         )
                     },
                     licenceConditions = it.licenceConditions.map { licenceCondition ->
