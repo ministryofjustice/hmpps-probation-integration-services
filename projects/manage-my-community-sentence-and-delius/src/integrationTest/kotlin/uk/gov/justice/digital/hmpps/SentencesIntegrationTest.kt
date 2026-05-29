@@ -46,7 +46,7 @@ internal class SentencesIntegrationTest @Autowired constructor(private val mockM
                                   "type": "Unpaid Work",
                                   "description": "Regular",
                                   "required": 10,
-                                  "completed": 3,
+                                  "completed": 6,
                                   "unit": "HOURS"
                                 },
                                 {
