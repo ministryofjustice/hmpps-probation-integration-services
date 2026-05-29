@@ -7,6 +7,7 @@ import org.hibernate.type.YesNoConverter
 import org.springframework.data.annotation.LastModifiedDate
 import uk.gov.justice.digital.hmpps.entity.address.OfficeLocation
 import uk.gov.justice.digital.hmpps.entity.staff.Staff
+import uk.gov.justice.digital.hmpps.entity.unpaidwork.UnpaidWorkAppointment
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.ZonedDateTime
@@ -53,5 +54,7 @@ class Contact(
     val softDeleted: Boolean = false,
     @LastModifiedDate
     @Column(name = "last_updated_datetime")
-    var lastUpdatedDatetime: ZonedDateTime
+    var lastUpdatedDatetime: ZonedDateTime,
+    @OneToOne(mappedBy = "contact")
+    var unpaidWorkAppointment: UnpaidWorkAppointment? = null
 )

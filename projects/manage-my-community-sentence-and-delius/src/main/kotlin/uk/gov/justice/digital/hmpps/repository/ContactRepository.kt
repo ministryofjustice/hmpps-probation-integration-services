@@ -18,7 +18,17 @@ interface ContactRepository : JpaRepository<Contact, Long> {
         order by c.date asc, c.startTime asc
         """
     )
-    @EntityGraph(attributePaths = ["type", "staff.user", "location"])
+    @EntityGraph(
+        attributePaths = [
+            "type",
+            "staff.user",
+            "location",
+            "unpaidWorkAppointment",
+            "unpaidWorkAppointment.pickUpLocation",
+            "unpaidWorkAppointment.project",
+            "unpaidWorkAppointment.project.placementAddress"
+        ]
+    )
     fun findFutureAppointments(personId: Long, pageable: Pageable): Page<Contact>
 
     @Query(
@@ -31,8 +41,17 @@ interface ContactRepository : JpaRepository<Contact, Long> {
         order by c.date desc, c.startTime desc
         """
     )
-    @EntityGraph(attributePaths = ["type", "staff.user", "location"])
-    fun findPastAppointments(personId: Long, pageable: Pageable): Page<Contact>
+    @EntityGraph(
+        attributePaths = [
+            "type",
+            "staff.user",
+            "location",
+            "unpaidWorkAppointment",
+            "unpaidWorkAppointment.pickUpLocation",
+            "unpaidWorkAppointment.project",
+            "unpaidWorkAppointment.project.placementAddress"
+        ]
+    )    fun findPastAppointments(personId: Long, pageable: Pageable): Page<Contact>
 
     @Query(
         """

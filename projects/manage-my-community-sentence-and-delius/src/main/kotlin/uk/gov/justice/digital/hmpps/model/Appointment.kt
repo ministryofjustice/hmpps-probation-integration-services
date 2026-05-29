@@ -3,7 +3,7 @@ package uk.gov.justice.digital.hmpps.model
 import uk.gov.justice.digital.hmpps.entity.appointment.Contact
 import uk.gov.justice.digital.hmpps.entity.unpaidwork.UnpaidWorkAppointment
 import uk.gov.justice.digital.hmpps.model.OfficeAddress.Companion.toModel
-import uk.gov.justice.digital.hmpps.model.UpwResponse.Companion.toResponse
+import uk.gov.justice.digital.hmpps.model.UpwResponse.Companion.toModel
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.ZonedDateTime
@@ -37,7 +37,7 @@ data class Appointment(
             outcome = outcome?.description,
             nationalStandards = type.nationalStandards,
             lastUpdatedAt = lastUpdatedDatetime,
-            unpaidWork = unpaidWorkAppointment?.toResponse()
+            unpaidWork = unpaidWorkAppointment?.toModel()
         )
     }
 }

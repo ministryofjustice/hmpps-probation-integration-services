@@ -20,7 +20,7 @@ class UnpaidWorkAppointment(
     @Column(columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean = false,
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "contact_id")
     val contact: Contact,
     @ManyToOne

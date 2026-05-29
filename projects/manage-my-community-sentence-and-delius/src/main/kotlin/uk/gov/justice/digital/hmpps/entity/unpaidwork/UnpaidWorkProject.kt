@@ -2,7 +2,6 @@ package uk.gov.justice.digital.hmpps.entity.unpaidwork
 
 import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
-import org.springframework.data.jpa.repository.JpaRepository
 import uk.gov.justice.digital.hmpps.entity.address.Address
 
 @Entity
@@ -21,5 +20,3 @@ class UnpaidWorkProject(
     @JoinColumn(name = "placement_address_id")
     val placementAddress: Address?,
 )
-
-interface UnpaidWorkProjectRepository : JpaRepository<UnpaidWorkProject, Long>

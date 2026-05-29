@@ -18,16 +18,12 @@ class AppointmentService(
     fun getFutureAppointments(crn: String, pageable: Pageable): PagedModel<Appointment> {
         val personId = personRepository.getIdByCrn(crn)
         val contacts = contactRepository.findFutureAppointments(personId, pageable)
-        val upwAppointments = upwWorkAppointmentRepository.findAllByContactIdIn(contacts.map { it.id }.toList())
-            .associateBy { it.contact.id }
-        return PagedModel(contacts.map { it.toAppointment(upwAppointments[it.id]) })
+        return PagedModel(contacts.map { it.toAppointment(it.unpaidWorkAppointment) })
     }
 
     fun getPastAppointments(crn: String, pageable: Pageable): PagedModel<Appointment> {
         val personId = personRepository.getIdByCrn(crn)
         val contacts = contactRepository.findPastAppointments(personId, pageable)
-        val upwAppointments = upwWorkAppointmentRepository.findAllByContactIdIn(contacts.map { it.id }.toList())
-            .associateBy { it.contact.id }
-        return PagedModel(contacts.map { it.toAppointment(upwAppointments[it.id]) })
+        return PagedModel(contacts.map { it.toAppointment(it.unpaidWorkAppointment) })
     }
 }

@@ -13,6 +13,4 @@ interface UnpaidWorkAppointmentRepository : JpaRepository<UnpaidWorkAppointment,
         """
     )
     fun countHoursAttended(disposalId: Long): Int?
-
-    fun findAllByContactIdIn(contactIds: List<Long>): List<UnpaidWorkAppointment>
 }

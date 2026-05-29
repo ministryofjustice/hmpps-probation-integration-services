@@ -9,7 +9,7 @@ data class UpwResponse(
     val project: UpwProject,
 ) {
     companion object {
-        fun UnpaidWorkAppointment.toResponse() = UpwResponse(
+        fun UnpaidWorkAppointment.toModel() = UpwResponse(
             pickUpLocation = pickUpLocation?.toModel(),
             project = project.toModel(),
         )
