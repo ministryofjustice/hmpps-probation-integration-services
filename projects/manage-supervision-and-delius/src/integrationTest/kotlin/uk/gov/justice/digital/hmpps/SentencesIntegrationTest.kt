@@ -1,6 +1,5 @@
 package uk.gov.justice.digital.hmpps
 
-import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.springframework.test.web.servlet.get
@@ -80,7 +79,25 @@ class SentencesIntegrationTest : IntegrationTestBase() {
                 )
             )
         )
-        assertEquals(expected, response)
+
+        assertEquals(
+            expected.copy(
+                sentences = expected.sentences
+                    .map { it.copy(
+                        licenceConditions = it.licenceConditions.sortedBy { lc -> lc.id },
+                        requirements = it.requirements.sortedBy { r -> r.id }
+                    )}
+                    .sortedBy { it.id }
+            ),
+            response.copy(
+                sentences = response.sentences
+                    .map { it.copy(
+                        licenceConditions = it.licenceConditions.sortedBy { lc -> lc.id },
+                        requirements = it.requirements.sortedBy { r -> r.id }
+                    )}
+                    .sortedBy { it.id }
+            )
+        )
     }
 
     @Test
