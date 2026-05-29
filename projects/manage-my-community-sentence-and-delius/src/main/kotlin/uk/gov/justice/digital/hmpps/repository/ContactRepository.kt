@@ -51,7 +51,8 @@ interface ContactRepository : JpaRepository<Contact, Long> {
             "unpaidWorkAppointment.project",
             "unpaidWorkAppointment.project.placementAddress"
         ]
-    )    fun findPastAppointments(personId: Long, pageable: Pageable): Page<Contact>
+    )
+    fun findPastAppointments(personId: Long, pageable: Pageable): Page<Contact>
 
     @Query(
         """
