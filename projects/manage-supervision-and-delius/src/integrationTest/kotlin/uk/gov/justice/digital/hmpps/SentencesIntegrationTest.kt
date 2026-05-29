@@ -79,25 +79,7 @@ class SentencesIntegrationTest : IntegrationTestBase() {
                 )
             )
         )
-
-        assertEquals(
-            expected.copy(
-                sentences = expected.sentences
-                    .map { it.copy(
-                        licenceConditions = it.licenceConditions.sortedBy { lc -> lc.id },
-                        requirements = it.requirements.sortedBy { r -> r.id }
-                    )}
-                    .sortedBy { it.id }
-            ),
-            response.copy(
-                sentences = response.sentences
-                    .map { it.copy(
-                        licenceConditions = it.licenceConditions.sortedBy { lc -> lc.id },
-                        requirements = it.requirements.sortedBy { r -> r.id }
-                    )}
-                    .sortedBy { it.id }
-            )
-        )
+        assertEquals(expected, response)
     }
 
     @Test
