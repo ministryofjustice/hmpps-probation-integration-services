@@ -182,16 +182,39 @@ object TestData {
             date = LocalDate.of(2024, 1, 1),
             expectedEndDate = LocalDate.of(2025, 1, 1),
             enteredExpectedEndDate = LocalDate.of(2025, 6, 1),
+            lastUpdatedDatetime = ZonedDateTime.of(2026, 3, 1, 12, 0, 0, 0, ZoneId.of("UTC")),
         )
     }
 
     object RequirementData {
         val REQUIREMENT =
-            Requirement(id(), length = null, DISPOSAL, REQUIREMENT_CATEGORY, REQUIREMENT_SUBCATEGORY)
+            Requirement(
+                id(), length = null, DISPOSAL, REQUIREMENT_CATEGORY, REQUIREMENT_SUBCATEGORY,
+                imposedDate = LocalDate.of(2024, 1, 1),
+                expectedStartDate = LocalDate.of(2024, 1, 15),
+                expectedEndDate = LocalDate.of(2025, 1, 1),
+                actualStartDate = LocalDate.of(2024, 2, 1),
+                actualEndDate = LocalDate.of(2025, 2, 1),
+                lastUpdatedDatetime = ZonedDateTime.of(2026, 2, 15, 10, 0, 0, 0, ZoneId.of("UTC")),
+            )
         val UPW_REQUIREMENT =
-            Requirement(id(), length = 10, DISPOSAL, UPW_REQUIREMENT_CATEGORY, UPW_REQUIREMENT_SUBCATEGORY)
+            Requirement(
+                id(),
+                length = 10,
+                DISPOSAL,
+                UPW_REQUIREMENT_CATEGORY,
+                UPW_REQUIREMENT_SUBCATEGORY,
+                lastUpdatedDatetime = ZonedDateTime.of(2026, 2, 15, 10, 0, 0, 0, ZoneId.of("UTC"))
+            )
         val RAR_REQUIREMENT =
-            Requirement(id(), length = 15, DISPOSAL, RAR_REQUIREMENT_CATEGORY, RAR_REQUIREMENT_SUBCATEGORY)
+            Requirement(
+                id(),
+                length = 15,
+                DISPOSAL,
+                RAR_REQUIREMENT_CATEGORY,
+                RAR_REQUIREMENT_SUBCATEGORY,
+                lastUpdatedDatetime = ZonedDateTime.of(2026, 2, 15, 10, 0, 0, 0, ZoneId.of("UTC"))
+            )
     }
 
     object LicenceConditionData {

@@ -7,6 +7,7 @@ import org.hibernate.type.NumericBooleanConverter
 import uk.gov.justice.digital.hmpps.entity.sentence.licencecondition.LicenceCondition
 import uk.gov.justice.digital.hmpps.entity.sentence.requirement.Requirement
 import java.time.LocalDate
+import java.time.ZonedDateTime
 
 @Entity
 @Immutable
@@ -27,6 +28,8 @@ class Disposal(
     val expectedEndDate: LocalDate,
     @Column(name = "entered_notional_end_date")
     val enteredExpectedEndDate: LocalDate?,
+    @Column(name = "last_updated_datetime")
+    val lastUpdatedDatetime: ZonedDateTime,
     @OneToMany(mappedBy = "disposal")
     val licenceConditions: List<LicenceCondition> = emptyList(),
     @OneToMany(mappedBy = "disposal")

@@ -37,10 +37,17 @@ internal class SentencesIntegrationTest @Autowired constructor(private val mockM
                               "type": "Community Order",
                               "startDate": "2024-01-01",
                               "expectedEndDate": "2025-06-01",
+                              "lastUpdatedAt": "2026-03-01T12:00:00Z",
                               "requirements": [
                                 {
                                   "type": "Court - Accredited Programme",
-                                  "description": "Building Choices"
+                                  "description": "Building Choices",
+                                  "imposedDate": "2024-01-01",
+                                  "expectedStartDate": "2024-01-15",
+                                  "expectedEndDate": "2025-01-01",
+                                  "actualStartDate": "2024-02-01",
+                                  "actualEndDate": "2025-02-01",
+                                  "lastUpdatedAt": "2026-02-15T10:00:00Z"
                                 },
                                 {
                                   "type": "Unpaid Work",
@@ -54,7 +61,8 @@ internal class SentencesIntegrationTest @Autowired constructor(private val mockM
                                   "description": "Rehabilitation Activity Requirement (RAR)",
                                   "required": 15,
                                   "completed": 2,
-                                  "unit": "DAYS"
+                                  "unit": "DAYS",
+                                  "lastUpdatedAt": "2026-02-15T10:00:00Z"
                                 }
                               ],
                               "licenceConditions": [
