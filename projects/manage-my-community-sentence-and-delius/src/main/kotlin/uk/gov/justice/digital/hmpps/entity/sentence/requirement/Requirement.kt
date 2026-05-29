@@ -6,6 +6,8 @@ import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.NumericBooleanConverter
 import uk.gov.justice.digital.hmpps.entity.ReferenceData
 import uk.gov.justice.digital.hmpps.entity.sentence.Disposal
+import java.time.LocalDate
+import java.time.ZonedDateTime
 
 @Entity
 @Immutable
@@ -25,6 +27,18 @@ class Requirement(
     @ManyToOne
     @JoinColumn(name = "rqmnt_type_sub_category_id")
     val subCategory: ReferenceData?,
+    @Column(name = "imposed_date")
+    val imposedDate: LocalDate? = null,
+    @Column(name = "expected_start_date")
+    val expectedStartDate: LocalDate? = null,
+    @Column(name = "expected_end_date")
+    val expectedEndDate: LocalDate? = null,
+    @Column(name = "commencement_date")
+    val actualStartDate: LocalDate? = null,
+    @Column(name = "termination_date")
+    val actualEndDate: LocalDate? = null,
+    @Column(name = "last_updated_datetime")
+    val lastUpdatedDatetime: ZonedDateTime,
     @Column(columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)
     val activeFlag: Boolean = true,
