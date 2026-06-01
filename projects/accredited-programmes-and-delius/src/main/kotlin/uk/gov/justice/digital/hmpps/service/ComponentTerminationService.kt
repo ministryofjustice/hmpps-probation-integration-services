@@ -32,7 +32,7 @@ class ComponentTerminationService(
 ) {
     fun terminate(crn: String, detail: ReferralCompletion): Result {
         val component = detail.getComponent(crn)
-        val completedDate = detail.requirementCompletedAt.atZone(EuropeLondon)
+        val completedDate = detail.licReqCompletedAt.atZone(EuropeLondon)
         if (listOfNotNull(component.startDate, component.commencementDate).max() > completedDate) {
             return Result(
                 ComponentTerminationRejected,
@@ -64,8 +64,8 @@ class ComponentTerminationService(
     }
 
     private fun ReferralCompletion.getComponent(crn: String): SentenceComponent = when (sourcedFromEntityType) {
-        EntityType.LICENCE_CONDITION -> licenceConditionRepository.findByIdOrNotFound(requirementId.toLong())
-        EntityType.REQUIREMENT -> requirementRepository.findByIdOrNotFound(requirementId.toLong())
+        EntityType.LICENCE_CONDITION -> licenceConditionRepository.findByIdOrNotFound(licReqId.toLong())
+        EntityType.REQUIREMENT -> requirementRepository.findByIdOrNotFound(licReqId.toLong())
     }.also { require(crn == it.disposal.event.person.crn) { "CRN and component do not match" } }
 
     private fun SentenceComponent.deleteFutureContacts(date: ZonedDateTime) = also {
