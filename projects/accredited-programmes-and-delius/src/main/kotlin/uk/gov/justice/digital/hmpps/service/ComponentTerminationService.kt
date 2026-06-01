@@ -1,6 +1,8 @@
 package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
+import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.datetime.toDeliusDate
 import uk.gov.justice.digital.hmpps.entity.ReferenceData
 import uk.gov.justice.digital.hmpps.entity.contact.Contact
@@ -11,50 +13,60 @@ import uk.gov.justice.digital.hmpps.entity.sentence.component.Requirement
 import uk.gov.justice.digital.hmpps.entity.sentence.component.SentenceComponent
 import uk.gov.justice.digital.hmpps.entity.sentence.component.transfer.RejectedTransferDiary
 import uk.gov.justice.digital.hmpps.entity.sentence.component.transfer.Transfer
+import uk.gov.justice.digital.hmpps.integration.EntityType
+import uk.gov.justice.digital.hmpps.integration.ReferralCompletion
 import uk.gov.justice.digital.hmpps.repository.*
-import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
+import uk.gov.justice.digital.hmpps.service.ComponentTerminationService.Result.ResultName.*
 import java.time.ZonedDateTime
 
+@Transactional
 @Service
 class ComponentTerminationService(
+    private val licenceConditionRepository: LicenceConditionRepository,
+    private val requirementRepository: RequirementRepository,
     private val contactTypeRepository: ContactTypeRepository,
     private val contactRepository: ContactRepository,
     private val referenceDataRepository: ReferenceDataRepository,
     private val rejectedTransferDiaryRepository: RejectedTransferDiaryRepository,
-    private val telemetryService: TelemetryService,
     private val domainEventService: DomainEventService,
 ) {
-    fun terminate(component: SentenceComponent, occurredAt: ZonedDateTime) {
-        if (listOfNotNull(component.startDate, component.commencementDate).max() > occurredAt) {
-            telemetryService.trackEvent(
-                "ComponentTerminationRejected",
+    fun terminate(crn: String, detail: ReferralCompletion): Result {
+        val component = detail.getComponent(crn)
+        val completedDate = detail.requirementCompletedAt.atZone(EuropeLondon)
+        if (listOfNotNull(component.startDate, component.commencementDate).max() > completedDate) {
+            return Result(
+                ComponentTerminationRejected,
                 component.telemetry(
                     "reason" to "Programme completion occurred earlier than the start date",
-                    "occurredAt" to occurredAt.toString()
+                    "completedDate" to completedDate.toString()
                 )
             )
-            return
         }
 
         if (component.terminationDate == null) {
             component
                 .apply {
-                    terminationDate = occurredAt
+                    terminationDate = completedDate
                     terminationReason = referenceDataRepository.getByCode(component.completedReason)
                     pendingTransfer = false
                 }
-                .deleteFutureContacts(occurredAt)
-                .createTerminationContact(occurredAt)
-                .terminatePendingTransfers(occurredAt)
+                .deleteFutureContacts(completedDate)
+                .createTerminationContact(completedDate)
+                .terminatePendingTransfers(completedDate)
                 .publishTerminationDomainEvent()
-            telemetryService.trackEvent("ComponentTerminated", component.telemetry())
+            return Result(ComponentTerminated, component.telemetry())
         } else {
             component
-                .apply { terminationDate = occurredAt }
-                .updateTerminationContactDate(occurredAt)
-            telemetryService.trackEvent("ComponentTerminationUpdated", component.telemetry())
+                .apply { terminationDate = completedDate }
+                .updateTerminationContactDate(completedDate)
+            return Result(ComponentTerminationUpdated, component.telemetry())
         }
     }
+
+    private fun ReferralCompletion.getComponent(crn: String): SentenceComponent = when (sourcedFromEntityType) {
+        EntityType.LICENCE_CONDITION -> licenceConditionRepository.findByIdOrNotFound(requirementId.toLong())
+        EntityType.REQUIREMENT -> requirementRepository.findByIdOrNotFound(requirementId.toLong())
+    }.also { require(crn == it.disposal.event.person.crn) { "CRN and component do not match" } }
 
     private fun SentenceComponent.deleteFutureContacts(date: ZonedDateTime) = also {
         when (this) {
@@ -178,4 +190,15 @@ class ComponentTerminationService(
         "commencementDate" to commencementDate?.toString(),
         "terminationDate" to terminationDate?.toString(),
     )
+
+    data class Result(
+        val name: ResultName,
+        val data: Map<String, String?> = emptyMap()
+    ) {
+        enum class ResultName {
+            ComponentTerminated,
+            ComponentTerminationUpdated,
+            ComponentTerminationRejected,
+        }
+    }
 }

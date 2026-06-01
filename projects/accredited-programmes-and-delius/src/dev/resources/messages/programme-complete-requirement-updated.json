@@ -1,0 +1,12 @@
+{
+  "Type": "Notification",
+  "MessageId": "ae06c49e-1f41-4b9f-b2f2-dcca610d02cd",
+  "Message": "{\"eventType\":\"accredited-programmes-community.programme.complete\",\"version\":1,\"description\":\"Programme complete\",\"detailUrl\":\"http://localhost:{dev.wiremock.port}/accredited-programmes-api/programme-complete-requirement-updated/:id\",\"occurredAt\":\"2026-01-01T12:00:00.000Z\",\"additionalInformation\":{},\"personReference\":{\"identifiers\":[{\"type\":\"CRN\",\"value\":\"A000003\"}]}}",
+  "Timestamp": "2026-01-01T12:00:00.000Z",
+  "MessageAttributes": {
+    "eventType": {
+      "Type": "String",
+      "Value": "accredited-programmes-community.programme.complete"
+    }
+  }
+}
