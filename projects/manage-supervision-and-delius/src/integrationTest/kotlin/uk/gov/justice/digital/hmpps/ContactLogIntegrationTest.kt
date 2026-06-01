@@ -21,7 +21,6 @@ import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.json
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 import java.time.LocalDate
 import java.time.LocalTime
-import kotlin.text.get
 
 class ContactLogIntegrationTest : IntegrationTestBase() {
 

@@ -23,7 +23,6 @@ import uk.gov.justice.digital.hmpps.messaging.Notifier
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
-import kotlin.text.format
 
 @Service
 class ContactLogService(
