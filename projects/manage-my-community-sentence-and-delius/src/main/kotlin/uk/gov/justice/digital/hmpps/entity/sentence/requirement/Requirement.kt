@@ -27,7 +27,7 @@ class Requirement(
     @ManyToOne
     @JoinColumn(name = "rqmnt_type_sub_category_id")
     val subCategory: ReferenceData?,
-    @Column(name = "imposed_date")
+    @Column(name = "start_date")
     val imposedDate: LocalDate? = null,
     @Column(name = "expected_start_date")
     val expectedStartDate: LocalDate? = null,
