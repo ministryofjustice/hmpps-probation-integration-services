@@ -15,6 +15,7 @@ import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.json
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 import java.time.LocalDate
 import java.time.LocalTime
+import kotlin.text.get
 
 class UpdateContactOutcomeIntegrationTest : IntegrationTestBase() {
 
@@ -148,6 +149,36 @@ class UpdateContactOutcomeIntegrationTest : IntegrationTestBase() {
         assertThat(enforcements[0].action?.code, equalTo(UpdateContactOutcomeGenerator.ENFORCEMENT_ACTION.code))
         assertThat(enforcements[0].responseDate, notNullValue())
     }
+
+    @Test
+    fun `non-compliant outcome note contains enforcement action text followed by user note and PI footer`() {
+        val enforcementText = "Case administrator will send a warning letter"
+        val userNote = "Discussed non-compliance with probationer"
+        val combinedNotes = "$enforcementText\n$userNote"
+
+        mockMvc.put("/contact/${UpdateContactOutcomeGenerator.CONTACT_1.id}") {
+            withToken()
+            json = UpdateContactOutcome(
+                date = LocalDate.now().plusDays(1),
+                time = LocalTime.of(10, 0),
+                outcomeCode = UpdateContactOutcomeGenerator.OUTCOME.code,
+                enforcementActionCode = UpdateContactOutcomeGenerator.ENFORCEMENT_ACTION.code,
+                notes = combinedNotes,
+                alert = false,
+                sensitive = false
+            )
+        }.andExpect { status { isOk() } }
+
+        val updated = contactRepository.findById(UpdateContactOutcomeGenerator.CONTACT_1.id).get()
+        val notes = updated.notes ?: ""
+        val enforcementIndex = notes.indexOf(enforcementText)
+        val userNoteIndex = notes.indexOf(userNote)
+        val footerIndex = notes.indexOf("This contact/note was automatically updated via the Manage people on probation integration service on")
+        assertThat("enforcement text appears before user note", enforcementIndex < userNoteIndex, equalTo(true))
+        assertThat("user note appears before PI footer", userNoteIndex < footerIndex, equalTo(true))
+        assertThat("PI footer is present", footerIndex > -1, equalTo(true))
+    }
+
 
     @Test
     fun `ftc count is incremented when enforcement action is applied`() {

@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps
 
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers
+import org.hamcrest.Matchers.containsString
 import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.Test
 import org.springframework.test.web.servlet.get
@@ -20,6 +21,7 @@ import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.json
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 import java.time.LocalDate
 import java.time.LocalTime
+import kotlin.text.get
 
 class ContactLogIntegrationTest : IntegrationTestBase() {
 
@@ -419,6 +421,12 @@ class ContactLogIntegrationTest : IntegrationTestBase() {
         assertThat(
             linkedContacts[0].type.code,
             equalTo(UpdateContactOutcomeGenerator.ENFORCEMENT_ACTION.contactType.code)
+        )
+
+        val savedContact = contactRepository.findById(response.id).get()
+        assertThat(
+            savedContact.notes,
+            containsString("This contact/note was automatically updated via the Manage people on probation integration service on")
         )
 
         val ftcAfter = eventRepository.findById(UpdateContactOutcomeGenerator.EVENT.id).get().ftcCount

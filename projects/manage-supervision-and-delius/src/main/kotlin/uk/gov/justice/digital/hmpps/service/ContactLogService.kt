@@ -22,6 +22,8 @@ import uk.gov.justice.digital.hmpps.messaging.EventType
 import uk.gov.justice.digital.hmpps.messaging.Notifier
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
+import kotlin.text.format
 
 @Service
 class ContactLogService(
@@ -97,11 +99,18 @@ class ContactLogService(
                     staff = staff,
                     team = team,
                     provider = team.provider,
-                    notes = """
-                    ${createContact.notes}
-
-                    This contact was created in the Manage people on probation service.
-                """.trimIndent(),
+                    notes = buildString {
+                        append(createContact.notes)
+                        if (contactOutcome?.outcomeCompliantAcceptable == false && createContact.enforcementActionCode != null) {
+                            append(System.lineSeparator())
+                            append(System.lineSeparator())
+                            append("This contact/note was automatically updated via the Manage people on probation integration service on ${ZonedDateTime.now(EuropeLondon).format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy 'at' HH:mm"))}.")
+                        } else {
+                            append(System.lineSeparator())
+                            append(System.lineSeparator())
+                            append("This contact was created in the Manage people on probation service.")
+                        }
+                    }.trimIndent(),
                     alert = createContact.alert,
                     sensitive = createContact.sensitive,
                     isVisor = createContact.visorReport,
@@ -236,8 +245,17 @@ class ContactLogService(
             contact.enforcement = null
         }
 
-        request.notes.let { contact.appendNotes(it) }
-
+        if (contactOutcome?.outcomeCompliantAcceptable == false && request.enforcementActionCode != null) {
+            val timestampedNotes = buildString {
+                append(request.notes)
+                append(System.lineSeparator())
+                append(System.lineSeparator())
+                append("This contact/note was automatically updated via the Manage people on probation integration service on ${ZonedDateTime.now(EuropeLondon).format(DateTimeFormatter.ofPattern("dd/MM/yyyy 'at' HH:mm"))}.")
+            }
+            contact.appendNotes(timestampedNotes)
+        } else {
+            contact.appendNotes(request.notes)
+        }
 
         if (request.alert == true && contact.alert != true) {
             val personManager =
