@@ -104,7 +104,13 @@ class ContactLogService(
                         if (contactOutcome?.outcomeCompliantAcceptable == false && createContact.enforcementActionCode != null) {
                             append(System.lineSeparator())
                             append(System.lineSeparator())
-                            append("This contact/note was automatically updated via the Manage people on probation integration service on ${ZonedDateTime.now(EuropeLondon).format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy 'at' HH:mm"))}.")
+                            append(
+                                "This contact/note was automatically updated via the Manage people on probation integration service on ${
+                                    ZonedDateTime.now(
+                                        EuropeLondon
+                                    ).format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy 'at' HH:mm"))
+                                }."
+                            )
                         } else {
                             append(System.lineSeparator())
                             append(System.lineSeparator())
@@ -250,7 +256,13 @@ class ContactLogService(
                 append(request.notes)
                 append(System.lineSeparator())
                 append(System.lineSeparator())
-                append("This contact/note was automatically updated via the Manage people on probation integration service on ${ZonedDateTime.now(EuropeLondon).format(DateTimeFormatter.ofPattern("dd/MM/yyyy 'at' HH:mm"))}.")
+                append(
+                    "This contact/note was automatically updated via the Manage people on probation integration service on ${
+                        ZonedDateTime.now(
+                            EuropeLondon
+                        ).format(DateTimeFormatter.ofPattern("dd/MM/yyyy 'at' HH:mm"))
+                    }."
+                )
             }
             contact.appendNotes(timestampedNotes)
         } else {

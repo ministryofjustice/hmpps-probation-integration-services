@@ -173,12 +173,12 @@ class UpdateContactOutcomeIntegrationTest : IntegrationTestBase() {
         val notes = updated.notes ?: ""
         val enforcementIndex = notes.indexOf(enforcementText)
         val userNoteIndex = notes.indexOf(userNote)
-        val footerIndex = notes.indexOf("This contact/note was automatically updated via the Manage people on probation integration service on")
+        val footerIndex =
+            notes.indexOf("This contact/note was automatically updated via the Manage people on probation integration service on")
         assertThat("enforcement text appears before user note", enforcementIndex < userNoteIndex, equalTo(true))
         assertThat("user note appears before PI footer", userNoteIndex < footerIndex, equalTo(true))
         assertThat("PI footer is present", footerIndex > -1, equalTo(true))
     }
-
 
     @Test
     fun `ftc count is incremented when enforcement action is applied`() {
