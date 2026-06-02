@@ -70,7 +70,7 @@ object PersonDetailsGenerator {
     val DISABILITY_1 = Disability(
         id(),
         personId = PERSONAL_DETAILS.id,
-        type =DISABILITY_1_RD,
+        type = DISABILITY_1_RD,
         startDate = LocalDate.now().minusDays(1),
         lastUpdated = LocalDate.now().minusDays(1),
         lastUpdatedUser = USER,
