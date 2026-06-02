@@ -106,7 +106,14 @@ object TestData {
         ContactOutcome(id(), "FTC", "Failed to comply", attended = false, complied = false, enforceable = true)
     val ACCEPTABLE_ABSENCE = ContactOutcome(id(), "AA", "Acceptable absence", attended = false, complied = true)
     val REFER_TO_MANAGER_CONTACT_TYPE = ContactType(id(), "ROM", "Refer to manager", false)
-    val REFER_TO_MANAGER_ACTION = EnforcementAction(id(), "ROM", "Refer to manager", 7, outstandingContactAction = true, REFER_TO_MANAGER_CONTACT_TYPE)
+    val REFER_TO_MANAGER_ACTION = EnforcementAction(
+        id(),
+        "ROM",
+        "Refer to manager",
+        7,
+        outstandingContactAction = true,
+        REFER_TO_MANAGER_CONTACT_TYPE
+    )
     val ENFORCEMENT_REVIEW_CONTACT_TYPE = ContactType(id(), "ARWS", "Review enforcement", false)
 
     val PSS_END_DATE_KEY_DATE_TYPE =
