@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.data
 
 import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
+import org.hibernate.type.YesNoConverter
 import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.NumericBooleanConverter
 import org.springframework.data.annotation.CreatedBy
@@ -80,6 +81,9 @@ class EnforcementAction(
     val code: String,
     val description: String,
     val responseByPeriod: Long?,
+
+    @Convert(converter = YesNoConverter::class)
+    val outstandingContactAction: Boolean? = null,
 
     @ManyToOne
     @JoinColumn(name = "contact_type_id")
