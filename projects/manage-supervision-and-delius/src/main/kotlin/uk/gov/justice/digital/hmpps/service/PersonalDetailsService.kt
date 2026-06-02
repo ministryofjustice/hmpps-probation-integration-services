@@ -384,6 +384,7 @@ class PersonalDetailsService(
                     disabilityEntity.type.description,
                     disabilityNote = formatNote(disabilityEntity.notes, false).elementAtOrNull(noteId),
                     startDate = disabilityEntity.startDate,
+                    condition = disabilityEntity.condition?.description,
                     lastUpdated = disabilityEntity.lastUpdated,
                     lastUpdatedBy = Name(
                         forename = disabilityEntity.lastUpdatedUser.forename,
@@ -432,7 +433,8 @@ fun uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.Disability.
         disabilityNotes = formatNote(notes, true),
         startDate = startDate,
         lastUpdated = lastUpdated,
-        lastUpdatedBy = Name(forename = lastUpdatedUser.forename, surname = lastUpdatedUser.surname)
+        lastUpdatedBy = Name(forename = lastUpdatedUser.forename, surname = lastUpdatedUser.surname),
+        condition = condition?.description
     )
 
 fun PersonalContactEntity.toContact(singleNote: Boolean = false, noteId: Int? = null) = PersonalContact(

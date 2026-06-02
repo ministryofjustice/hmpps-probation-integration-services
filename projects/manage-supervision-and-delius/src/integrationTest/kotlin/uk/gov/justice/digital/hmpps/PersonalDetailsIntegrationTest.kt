@@ -33,8 +33,10 @@ import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.USER
 import uk.gov.justice.digital.hmpps.data.generator.UserGenerator.AUDIT_USER
 import uk.gov.justice.digital.hmpps.data.generator.personalDetails.PersonDetailsGenerator
 import uk.gov.justice.digital.hmpps.data.generator.personalDetails.PersonDetailsGenerator.ALIAS_1
+import uk.gov.justice.digital.hmpps.data.generator.personalDetails.PersonDetailsGenerator.CONDITION_1_RD
 import uk.gov.justice.digital.hmpps.data.generator.personalDetails.PersonDetailsGenerator.DISABILITY_1
 import uk.gov.justice.digital.hmpps.data.generator.personalDetails.PersonDetailsGenerator.DISABILITY_2
+import uk.gov.justice.digital.hmpps.data.generator.personalDetails.PersonDetailsGenerator.DISABILITY_3
 import uk.gov.justice.digital.hmpps.data.generator.personalDetails.PersonDetailsGenerator.PERSONAL_CIRC_1
 import uk.gov.justice.digital.hmpps.data.generator.personalDetails.PersonDetailsGenerator.PERSONAL_CIRC_2
 import uk.gov.justice.digital.hmpps.data.generator.personalDetails.PersonDetailsGenerator.PERSONAL_CIRC_PREV
@@ -369,6 +371,7 @@ class PersonalDetailsIntegrationTest : IntegrationTestBase() {
         assertThat(res.personSummary, equalTo(person.toSummary()))
         assertThat(res.disabilities!![0], equalTo(DISABILITY_1.toDisability(0)))
         assertThat(res.disabilities!![1], equalTo(DISABILITY_2.toDisability(1)))
+        assertThat(res.disabilities!![2], equalTo(DISABILITY_3.toDisability(2)))
     }
 
     @Test
@@ -410,6 +413,31 @@ class PersonalDetailsIntegrationTest : IntegrationTestBase() {
         )
 
         val res = mockMvc.get("/personal-details/${person.crn}/disability/0/note/10") {
+            withToken()
+        }
+            .andExpect { status { isOk() } }
+            .andReturn().response.contentAsJson<DisabilityOverview>()
+
+        assertThat(res, equalTo(expected))
+    }
+
+    @Test
+    fun `disability with condition`() {
+        val person = PERSONAL_DETAILS
+
+        val expected = DisabilityOverview(
+            person.toSummary(),
+            disability = Disability(
+                2,
+                DISABILITY_3.type.description,
+                startDate = DISABILITY_3.startDate,
+                lastUpdated = DISABILITY_3.lastUpdated,
+                lastUpdatedBy = Name(forename = USER.forename, surname = USER.surname),
+                condition = CONDITION_1_RD.description
+            )
+        )
+
+        val res = mockMvc.get("/personal-details/${person.crn}/disability/2/note/10") {
             withToken()
         }
             .andExpect { status { isOk() } }

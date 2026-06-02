@@ -56,6 +56,8 @@ object PersonDetailsGenerator {
 
     val DISABILITY_1_RD = ReferenceData(id(), "D20", "Some Illness")
     val DISABILITY_2_RD = ReferenceData(id(), "D20", "Blind")
+    val DISABILITY_3_RD = ReferenceData(id(), "D01", "Other")
+    val CONDITION_1_RD = ReferenceData(id(), "DO01", "Not listed elsewhere (explain)")
     val PERSONAL_CIRCUMSTANCE_1_RD = PersonalCircumstanceType(id(), "E02", "Employed")
     val PERSONAL_CIRCUMSTANCE_SUBTYPE_1 =
         PersonalCircumstanceSubType(id(), "Full-time employed (30 or more hours per week")
@@ -86,6 +88,15 @@ object PersonDetailsGenerator {
         LocalDate.now().minusDays(2),
         LocalDate.now().minusDays(2),
         USER,
+    )
+    val DISABILITY_3 = Disability(
+        id(),
+        PERSONAL_DETAILS.id,
+        DISABILITY_3_RD,
+        LocalDate.now().minusDays(2),
+        LocalDate.now().minusDays(2),
+        USER,
+        condition = CONDITION_1_RD,
     )
 
     val PROVISION_1 = Provision(
