@@ -295,8 +295,7 @@ class ContactLogService(
         }
     }
 
-
-    private fun createNonComplianceFooter(): String{
+    private fun createNonComplianceFooter(): String {
         return buildString {
             append(System.lineSeparator())
             append(System.lineSeparator())
@@ -309,7 +308,4 @@ class ContactLogService(
             )
         }
     }
-
-
-
 }
