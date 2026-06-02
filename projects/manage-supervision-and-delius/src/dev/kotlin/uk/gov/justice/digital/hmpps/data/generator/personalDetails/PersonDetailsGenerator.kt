@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.data.generator.personalDetails
 
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.USER
+import uk.gov.justice.digital.hmpps.data.generator.IdGenerator
 import uk.gov.justice.digital.hmpps.data.generator.IdGenerator.id
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.*
@@ -68,12 +69,12 @@ object PersonDetailsGenerator {
 
     val DISABILITY_1 = Disability(
         id(),
-        PERSONAL_DETAILS.id,
-        DISABILITY_1_RD,
-        LocalDate.now().minusDays(1),
-        LocalDate.now().minusDays(1),
-        USER,
-        """
+        personId = PERSONAL_DETAILS.id,
+        type =DISABILITY_1_RD,
+        startDate = LocalDate.now().minusDays(1),
+        lastUpdated = LocalDate.now().minusDays(1),
+        lastUpdatedUser = USER,
+        notes = """
             Comment added by Harry Kane on 29/10/2024 at 14:39
             Note 1
             ---------------------------------------------------------
@@ -83,11 +84,11 @@ object PersonDetailsGenerator {
     )
     val DISABILITY_2 = Disability(
         id(),
-        PERSONAL_DETAILS.id,
-        DISABILITY_2_RD,
-        LocalDate.now().minusDays(2),
-        LocalDate.now().minusDays(2),
-        USER,
+        personId = PERSONAL_DETAILS.id,
+        type = DISABILITY_2_RD,
+        startDate = LocalDate.now().minusDays(2),
+        lastUpdated = LocalDate.now().minusDays(2),
+        lastUpdatedUser = USER
     )
     val DISABILITY_3 = Disability(
         id(),
