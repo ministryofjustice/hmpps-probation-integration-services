@@ -22,5 +22,5 @@ data class CanonicalAddress(
     val status: CanonicalAddressStatus,
     val comment: String? = null,
     val usages: List<CanonicalAddressUsage> = emptyList(),
-    val typeVerified: Boolean = false,
+    val typeVerified: Boolean? = null,
 )
