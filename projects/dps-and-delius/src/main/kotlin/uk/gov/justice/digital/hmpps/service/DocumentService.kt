@@ -28,12 +28,10 @@ class DocumentService(
     }
 
     fun downloadDocument(id: String): ResponseEntity<StreamingResponseBody> {
-        val document =
-            documentRepository.findByAlfrescoId(id) ?: throw NotFoundException("Document", "alfrescoId", id)
-        val person = personRepository.findById(document.personId)
-            .orElseThrow { NotFoundException("Person", "id", document.personId) }
-        if (featureFlags.enabled(FLIPT_KEY)) checkForLao(person.crn)
-        return alfrescoClient.streamDocument(id, document.name)
+        val (name, crn) = documentRepository.findNameAndCrnByAlfrescoId(id)
+            ?: throw NotFoundException("Document", "alfrescoId", id)
+        if (featureFlags.enabled(FLIPT_KEY)) checkForLao(crn)
+        return alfrescoClient.streamDocument(id, name)
     }
 
     @Transactional
@@ -88,7 +86,7 @@ class DocumentService(
         val limitedAccessInfo = limitedAccessService.checkLimitedAccessFor(listOf(crn))
         limitedAccessInfo.access.firstOrNull { it.crn == crn }?.let { limitedAccess ->
             if (limitedAccess.userExcluded || limitedAccess.userRestricted) {
-                throw AccessDeniedException("Access Denied for case with crn ${crn}")
+                throw AccessDeniedException("Access Denied for case with crn $crn")
             }
         }
     }

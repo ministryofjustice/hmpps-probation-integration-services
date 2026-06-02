@@ -35,13 +35,13 @@ class DocumentEntity(
     val tableName: String,
 
     @Column(name = "created_datetime")
-    val createdAt: ZonedDateTime,
+    val createdAt: ZonedDateTime?,
 
     @Column
-    val createdByUserId: Long = 0,
+    val createdByUserId: Long? = 0,
 
     @Column
-    val lastUpdatedUserId: Long = 0,
+    val lastUpdatedUserId: Long? = 0,
 
     @Column(columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)
@@ -173,6 +173,6 @@ interface DocumentRepository : JpaRepository<DocumentEntity, Long> {
     )
     fun getPersonAndEventDocuments(personId: Long): List<Document>
 
-    @Query("select d from DocumentEntity d where d.alfrescoId = :alfrescoId")
-    fun findByAlfrescoId(alfrescoId: String): DocumentEntity?
+    @Query("select d.name, p.crn from DocumentEntity d join Person p on p.id = d.personId where d.alfrescoId = :alfrescoId")
+    fun findNameAndCrnByAlfrescoId(alfrescoId: String): Pair<String, String>?
 }

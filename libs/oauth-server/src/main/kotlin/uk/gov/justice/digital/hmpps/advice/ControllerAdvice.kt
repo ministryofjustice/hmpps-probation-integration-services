@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.advice
 
+import io.opentelemetry.api.trace.Span
 import jakarta.validation.ConstraintViolationException
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass
 import org.springframework.dao.DataIntegrityViolationException
@@ -56,6 +57,7 @@ class ControllerAdvice {
     fun handle(e: IllegalArgumentException) = ResponseEntity
         .status(BAD_REQUEST)
         .body(ErrorResponse(status = BAD_REQUEST.value(), message = e.message))
+        .also { Span.current().recordException(e) }
 }
 
 @RestControllerAdvice(basePackages = ["uk.gov.justice.digital.hmpps"])
