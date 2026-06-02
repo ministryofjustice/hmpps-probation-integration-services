@@ -11,7 +11,7 @@ enum class RoshLevel(val code: String) {
     LOW("RLRH"),
     MEDIUM("RMRH"),
     HIGH("RHRH"),
-    VERY_HIGH("RVRH");
+    VERY_HIGH("RVHR");
 
     companion object {
         fun fromCode(code: String): RoshLevel = entries.first { it.code == code }
