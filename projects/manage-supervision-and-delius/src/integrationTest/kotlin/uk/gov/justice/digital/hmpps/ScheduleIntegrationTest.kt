@@ -137,9 +137,10 @@ class ScheduleIntegrationTest : IntegrationTestBase() {
     fun `individual appointment returns alert field as true`() {
 
         val contact = ContactGenerator.APPT_CONTACT_WITH_ALERT
-        val res = mockMvc.get("/schedule/${contact.person.crn}/appointment/${contact.id}") { withDeliusUserToken("DeliusUser") }
-            .andExpect { status { isOk() } }
-            .andReturn().response.contentAsJson<PersonAppointment>()
+        val res =
+            mockMvc.get("/schedule/${contact.person.crn}/appointment/${contact.id}") { withDeliusUserToken("DeliusUser") }
+                .andExpect { status { isOk() } }
+                .andReturn().response.contentAsJson<PersonAppointment>()
         assertThat(res.appointment.alert, equalTo(true))
     }
 
