@@ -4,28 +4,25 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.entity.contact.Contact
 import uk.gov.justice.digital.hmpps.entity.sentence.component.SentenceComponent
+import uk.gov.justice.digital.hmpps.integration.EntityType
 import uk.gov.justice.digital.hmpps.integration.StatusInfo
-import uk.gov.justice.digital.hmpps.integration.StatusInfo.EntityType
-import uk.gov.justice.digital.hmpps.integration.StatusInfo.Status
 import uk.gov.justice.digital.hmpps.repository.*
+import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import java.time.ZonedDateTime
 import java.util.*
 
-@Transactional
 @Service
+@Transactional
 class StatusChangeService(
     private val licenceConditionRepository: LicenceConditionRepository,
     private val requirementRepository: RequirementRepository,
     private val contactTypeRepository: ContactTypeRepository,
     private val contactRepository: ContactRepository,
-    private val componentTerminationService: ComponentTerminationService
+    private val telemetryService: TelemetryService
 ) {
     fun statusChanged(messageId: UUID, crn: String, occurredAt: ZonedDateTime, info: StatusInfo) {
         val component = info.getComponent(crn)
         contactRepository.save(info.asStatusChangeContact(messageId, component, occurredAt))
-        if (info.newStatus == Status.PROGRAMME_COMPLETE) {
-            componentTerminationService.terminate(component, occurredAt)
-        }
     }
 
     private fun StatusInfo.getComponent(crn: String): SentenceComponent = when (sourcedFromEntityType) {

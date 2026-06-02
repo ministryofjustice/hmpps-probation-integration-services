@@ -10,6 +10,7 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc
 import uk.gov.justice.digital.hmpps.data.TestData
+import uk.gov.justice.digital.hmpps.integration.EntityType
 import uk.gov.justice.digital.hmpps.integration.StatusInfo
 import uk.gov.justice.digital.hmpps.messaging.HmppsChannelManager
 import uk.gov.justice.digital.hmpps.repository.ContactRepository
@@ -81,7 +82,7 @@ class StatusChangedEventIntegrationTest @Autowired constructor(
                 occurredAt = ZonedDateTime.now(),
                 info = StatusInfo(
                     newStatus = StatusInfo.Status.ON_PROGRAMME,
-                    sourcedFromEntityType = StatusInfo.EntityType.REQUIREMENT,
+                    sourcedFromEntityType = EntityType.REQUIREMENT,
                     sourcedFromEntityId = TestData.REQUIREMENTS.first().id,
                     notes = "Some notes",
                     description = "Some description",

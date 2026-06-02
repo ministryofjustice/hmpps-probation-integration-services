@@ -21,8 +21,4 @@ data class StatusInfo(
         SUITABLE_BUT_NOT_READY("EIBC"),
         WITHDRAWN("EIBK"),
     }
-
-    enum class EntityType {
-        LICENCE_CONDITION, REQUIREMENT
-    }
 }

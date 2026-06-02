@@ -18,7 +18,6 @@ import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.datetime.toDeliusDate
 import uk.gov.justice.digital.hmpps.entity.ReferenceData
 import uk.gov.justice.digital.hmpps.entity.contact.ContactType
-import uk.gov.justice.digital.hmpps.integration.StatusInfo.Status.PROGRAMME_COMPLETE
 import uk.gov.justice.digital.hmpps.messaging.HmppsChannelManager
 import uk.gov.justice.digital.hmpps.repository.ContactRepository
 import uk.gov.justice.digital.hmpps.repository.LicenceConditionRepository
@@ -44,7 +43,7 @@ class ComponentTerminationIntegrationTest @Autowired constructor(
 ) {
     @Test
     fun `requirement terminated when programme completed`() {
-        val event = prepMessage("status-changed-programme-complete-requirement", wireMockServer.port())
+        val event = prepMessage("programme-complete-requirement", wireMockServer.port())
         val terminationDate = event.message.occurredAt
 
         // Create a future appointment contact
@@ -68,12 +67,6 @@ class ComponentTerminationIntegrationTest @Autowired constructor(
 
         val contacts =
             contactRepository.findAll().filter { it.requirement?.id == TestData.TERMINATION_REQUIREMENTS[0].id }
-
-        // Verify status contact was created
-        val statusContact =
-            assertNotNull(contacts.singleOrNull { it.type.code == PROGRAMME_COMPLETE.contactTypeCode })
-        assertThat(statusContact.notes).isEqualTo("Programme completed successfully")
-        assertThat(statusContact.externalReference).startsWith("urn:uk:gov:hmpps:accredited-programmes-service:")
 
         // Verify termination contact was created
         val terminationContact =
@@ -108,7 +101,7 @@ class ComponentTerminationIntegrationTest @Autowired constructor(
 
     @Test
     fun `licence condition terminated when programme completed`() {
-        val event = prepMessage("status-changed-programme-complete-licence-condition", wireMockServer.port())
+        val event = prepMessage("programme-complete-licence-condition", wireMockServer.port())
         val terminationDate = event.message.occurredAt
 
         // Create a future appointment contact
@@ -132,12 +125,6 @@ class ComponentTerminationIntegrationTest @Autowired constructor(
 
         val contacts =
             contactRepository.findAll().filter { it.licenceCondition?.id == TestData.TERMINATION_LICENCE_CONDITION.id }
-
-        // Verify status contact was created
-        val statusContact =
-            assertNotNull(contacts.singleOrNull { it.type.code == PROGRAMME_COMPLETE.contactTypeCode })
-        assertThat(statusContact.notes).isEqualTo("Programme completed successfully")
-        assertThat(statusContact.externalReference).startsWith("urn:uk:gov:hmpps:accredited-programmes-service:")
 
         // Verify termination contact was created
         val terminationContact =
@@ -173,7 +160,7 @@ class ComponentTerminationIntegrationTest @Autowired constructor(
 
     @Test
     fun `termination date updated if already terminated`() {
-        val event = prepMessage("status-changed-programme-complete-requirement", wireMockServer.port())
+        val event = prepMessage("programme-complete-requirement-updated", wireMockServer.port())
         val newTerminationDate = ZonedDateTime.of(2026, 1, 1, 12, 0, 0, 0, EuropeLondon)
         assertThat(TestData.TERMINATION_REQUIREMENTS[2].terminationDate)
             .isEqualTo(ZonedDateTime.of(2030, 1, 1, 12, 0, 0, 0, EuropeLondon))
@@ -181,8 +168,7 @@ class ComponentTerminationIntegrationTest @Autowired constructor(
         channelManager.getChannel(queueName).publishAndWait(
             event.copy(
                 message = event.message.copy(
-                    detailUrl = event.message.detailUrl?.replace(":id", "${TestData.TERMINATION_REQUIREMENTS[2].id}"),
-                    occurredAt = newTerminationDate
+                    detailUrl = event.message.detailUrl?.replace(":id", "${TestData.TERMINATION_REQUIREMENTS[2].id}")
                 )
             )
         )
@@ -216,13 +202,12 @@ class ComponentTerminationIntegrationTest @Autowired constructor(
 
     @Test
     fun `termination rejected when termination date before start date`() {
-        val event = prepMessage("status-changed-programme-complete-requirement", wireMockServer.port())
+        val event = prepMessage("programme-complete-requirement-before-start", wireMockServer.port())
 
         channelManager.getChannel(queueName).publishAndWait(
             event.copy(
                 message = event.message.copy(
-                    detailUrl = event.message.detailUrl?.replace(":id", "${TestData.TERMINATION_REQUIREMENTS[1].id}"),
-                    occurredAt = ZonedDateTime.of(2024, 1, 1, 14, 30, 0, 0, EuropeLondon)
+                    detailUrl = event.message.detailUrl?.replace(":id", "${TestData.TERMINATION_REQUIREMENTS[1].id}")
                 )
             )
         )
@@ -231,7 +216,7 @@ class ComponentTerminationIntegrationTest @Autowired constructor(
             "ComponentTerminationRejected",
             mapOf(
                 "reason" to "Programme completion occurred earlier than the start date",
-                "occurredAt" to "2024-01-01T14:30Z[Europe/London]",
+                "completedDate" to "2024-01-01T14:30Z[Europe/London]",
                 "type" to "Requirement",
                 "id" to TestData.TERMINATION_REQUIREMENTS[1].id.toString(),
                 "crn" to "A000003",
@@ -245,7 +230,7 @@ class ComponentTerminationIntegrationTest @Autowired constructor(
 
     @Test
     fun `pending requirement transfer rejected and diary entry created on termination`() {
-        val event = prepMessage("status-changed-programme-complete-requirement", wireMockServer.port())
+        val event = prepMessage("programme-complete-requirement", wireMockServer.port())
         val terminationDate = event.message.occurredAt
 
         channelManager.getChannel(queueName).publishAndWait(
