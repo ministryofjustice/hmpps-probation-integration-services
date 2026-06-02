@@ -24,5 +24,15 @@ data class Address(
             postcode = postcode,
             lastUpdatedAt = lastUpdatedDatetime,
         )
+
+        fun uk.gov.justice.digital.hmpps.entity.address.Address.toModel() = OfficeAddress(
+            houseNumber = addressNumber,
+            buildingName = buildingName,
+            street = streetName,
+            town = town,
+            district = district,
+            county = county,
+            postcode = postcode,
+        )
     }
 }

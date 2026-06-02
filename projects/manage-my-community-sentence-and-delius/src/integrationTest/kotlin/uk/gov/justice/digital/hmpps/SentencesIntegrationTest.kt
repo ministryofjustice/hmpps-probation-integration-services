@@ -53,9 +53,9 @@ internal class SentencesIntegrationTest @Autowired constructor(private val mockM
                                   "type": "Unpaid Work",
                                   "description": "Regular",
                                   "required": 10,
-                                  "completed": 3,
+                                  "completed": 6,
                                   "unit": "HOURS",
-                                  "lastUpdatedAt": "2026-02-15T10:00:00Z"
+                                  "lastUpdatedAt":"2026-02-15T10:00:00Z"
                                 },
                                 {
                                   "type": "Rehabilitation Activity Requirement (RAR)",

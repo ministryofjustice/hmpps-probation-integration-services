@@ -7,19 +7,23 @@ import uk.gov.justice.digital.hmpps.model.Appointment
 import uk.gov.justice.digital.hmpps.model.Appointment.Companion.toAppointment
 import uk.gov.justice.digital.hmpps.repository.ContactRepository
 import uk.gov.justice.digital.hmpps.repository.PersonRepository
+import uk.gov.justice.digital.hmpps.repository.UnpaidWorkAppointmentRepository
 
 @Service
 class AppointmentService(
     private val contactRepository: ContactRepository,
     private val personRepository: PersonRepository,
+    private val upwWorkAppointmentRepository: UnpaidWorkAppointmentRepository,
 ) {
     fun getFutureAppointments(crn: String, pageable: Pageable): PagedModel<Appointment> {
         val personId = personRepository.getIdByCrn(crn)
-        return PagedModel(contactRepository.findFutureAppointments(personId, pageable).map { it.toAppointment() })
+        val contacts = contactRepository.findFutureAppointments(personId, pageable)
+        return PagedModel(contacts.map { it.toAppointment(it.unpaidWorkAppointment) })
     }
 
     fun getPastAppointments(crn: String, pageable: Pageable): PagedModel<Appointment> {
         val personId = personRepository.getIdByCrn(crn)
-        return PagedModel(contactRepository.findPastAppointments(personId, pageable).map { it.toAppointment() })
+        val contacts = contactRepository.findPastAppointments(personId, pageable)
+        return PagedModel(contacts.map { it.toAppointment(it.unpaidWorkAppointment) })
     }
 }
