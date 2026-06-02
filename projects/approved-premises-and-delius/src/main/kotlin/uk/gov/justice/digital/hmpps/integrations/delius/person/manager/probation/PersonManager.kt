@@ -29,7 +29,7 @@ class PersonManager(
     @Convert(converter = NumericBooleanConverter::class)
     val active: Boolean = true,
 
-    @Column(columnDefinition = "number", nullable = false)
+    @Column(name = "soft_deleted", columnDefinition = "number", nullable = false)
     @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean = false
 )
