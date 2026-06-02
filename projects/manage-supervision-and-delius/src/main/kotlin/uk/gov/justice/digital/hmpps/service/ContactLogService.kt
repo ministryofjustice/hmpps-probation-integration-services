@@ -101,21 +101,13 @@ class ContactLogService(
                     notes = buildString {
                         append(createContact.notes)
                         if (contactOutcome?.outcomeCompliantAcceptable == false && createContact.enforcementActionCode != null) {
-                            append(System.lineSeparator())
-                            append(System.lineSeparator())
-                            append(
-                                "This contact/note was automatically updated via the Manage people on probation integration service on ${
-                                    ZonedDateTime.now(
-                                        EuropeLondon
-                                    ).format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy 'at' HH:mm"))
-                                }."
-                            )
+                            append(createNonComplianceFooter())
                         } else {
                             append(System.lineSeparator())
                             append(System.lineSeparator())
                             append("This contact was created in the Manage people on probation service.")
                         }
-                    }.trimIndent(),
+                    },
                     alert = createContact.alert,
                     sensitive = createContact.sensitive,
                     isVisor = createContact.visorReport,
@@ -253,15 +245,7 @@ class ContactLogService(
         if (contactOutcome?.outcomeCompliantAcceptable == false && request.enforcementActionCode != null) {
             val timestampedNotes = buildString {
                 append(request.notes)
-                append(System.lineSeparator())
-                append(System.lineSeparator())
-                append(
-                    "This contact/note was automatically updated via the Manage people on probation integration service on ${
-                        ZonedDateTime.now(
-                            EuropeLondon
-                        ).format(DateTimeFormatter.ofPattern("dd/MM/yyyy 'at' HH:mm"))
-                    }."
-                )
+                append(createNonComplianceFooter())
             }
             contact.appendNotes(timestampedNotes)
         } else {
@@ -310,4 +294,22 @@ class ContactLogService(
             contactEnforcementService.updateEnforcementActionForContact(contact, request.enforcementActionCode)
         }
     }
+
+
+    private fun createNonComplianceFooter(): String{
+        return buildString {
+            append(System.lineSeparator())
+            append(System.lineSeparator())
+            append(
+                "This contact/note was automatically updated via the Manage people on probation integration service on ${
+                    ZonedDateTime.now(
+                        EuropeLondon
+                    ).format(DateTimeFormatter.ofPattern("dd/MM/yyyy 'at' HH:mm"))
+                }."
+            )
+        }
+    }
+
+
+
 }
