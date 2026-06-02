@@ -50,7 +50,7 @@ class Disability(
     @ManyToOne
     @JoinColumn(name = "disability_condition_id")
     val condition: ReferenceData? = null,
-    )
+)
 
 interface DisabilityRepository : JpaRepository<Disability, Long> {
 
