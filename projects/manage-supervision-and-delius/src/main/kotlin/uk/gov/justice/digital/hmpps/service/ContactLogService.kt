@@ -22,6 +22,7 @@ import uk.gov.justice.digital.hmpps.messaging.EventType
 import uk.gov.justice.digital.hmpps.messaging.Notifier
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
 
 @Service
 class ContactLogService(
@@ -97,11 +98,16 @@ class ContactLogService(
                     staff = staff,
                     team = team,
                     provider = team.provider,
-                    notes = """
-                    ${createContact.notes}
-
-                    This contact was created in the Manage people on probation service.
-                """.trimIndent(),
+                    notes = buildString {
+                        append(createContact.notes)
+                        if (contactOutcome?.outcomeCompliantAcceptable == false && createContact.enforcementActionCode != null) {
+                            append(createNonComplianceFooter())
+                        } else {
+                            append(System.lineSeparator())
+                            append(System.lineSeparator())
+                            append("This contact was created in the Manage people on probation service.")
+                        }
+                    },
                     alert = createContact.alert,
                     sensitive = createContact.sensitive,
                     isVisor = createContact.visorReport,
@@ -236,8 +242,15 @@ class ContactLogService(
             contact.enforcement = null
         }
 
-        request.notes.let { contact.appendNotes(it) }
-
+        if (contactOutcome?.outcomeCompliantAcceptable == false && request.enforcementActionCode != null) {
+            val timestampedNotes = buildString {
+                append(request.notes)
+                append(createNonComplianceFooter())
+            }
+            contact.appendNotes(timestampedNotes)
+        } else {
+            contact.appendNotes(request.notes)
+        }
 
         if (request.alert == true && contact.alert != true) {
             val personManager =
@@ -279,6 +292,20 @@ class ContactLogService(
         contactRepository.save(contact)
         if (request.enforcementActionCode != null) {
             contactEnforcementService.updateEnforcementActionForContact(contact, request.enforcementActionCode)
+        }
+    }
+
+    private fun createNonComplianceFooter(): String {
+        return buildString {
+            append(System.lineSeparator())
+            append(System.lineSeparator())
+            append(
+                "This contact/note was automatically updated via the Manage people on probation integration service on ${
+                    ZonedDateTime.now(
+                        EuropeLondon
+                    ).format(DateTimeFormatter.ofPattern("dd/MM/yyyy 'at' HH:mm"))
+                }."
+            )
         }
     }
 }
