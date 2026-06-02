@@ -101,7 +101,12 @@ object EnforcementFlagGenerator {
         ContactGenerator.generateOutcome("EFGOUT", "EFG Outcome matching CT code", false, false)
 
     val CONTACT_TYPE_OUTCOME =
-        generateContactTypeOutcome(CONTACT_TYPE.id, OUTCOME_MATCHING_CONTACT_TYPE.id, CONTACT_TYPE, OUTCOME_MATCHING_CONTACT_TYPE)
+        generateContactTypeOutcome(
+            CONTACT_TYPE.id,
+            OUTCOME_MATCHING_CONTACT_TYPE.id,
+            CONTACT_TYPE,
+            OUTCOME_MATCHING_CONTACT_TYPE
+        )
 
     /**
      * Contact with no outcome — when setEnforcementFlag is called with OUTCOME_MATCHING_CONTACT_TYPE,

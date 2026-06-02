@@ -418,7 +418,8 @@ class AppointmentServiceTest {
 
     @Test
     fun `sets enforcement flag to true when outcome required but no outcome provided`() {
-        val typeRequiringOutcome = Type(id(), "TYPEREQ", outcomeRequired = true, attendance = true, nationalStandards = true)
+        val typeRequiringOutcome =
+            Type(id(), "TYPEREQ", outcomeRequired = true, attendance = true, nationalStandards = true)
         val existing = TestData.appointment(type = typeRequiringOutcome)
         existing.outcome = TestData.OUTCOME // give it an existing outcome so the same-code check doesn't short-circuit
 

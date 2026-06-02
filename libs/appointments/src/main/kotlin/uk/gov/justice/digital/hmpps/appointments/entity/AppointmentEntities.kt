@@ -442,7 +442,6 @@ internal object AppointmentEntities {
         @Convert(converter = YesNoConverter::class)
         val outstandingContactAction: Boolean? = null,
 
-
         @ManyToOne
         @JoinColumn(name = "contact_type_id")
         val type: Type,

@@ -33,7 +33,14 @@ class EnforcementServiceTest() {
 
     @Test
     fun `sets enforcement flag to true when action has outstandingContactAction`() {
-        val actionWithOutstanding = AppointmentEntities.EnforcementAction(id(), "ACT02", "Action 2", 7, outstandingContactAction = true, TestData.TYPE)
+        val actionWithOutstanding = AppointmentEntities.EnforcementAction(
+            id(),
+            "ACT02",
+            "Action 2",
+            7,
+            outstandingContactAction = true,
+            TestData.TYPE
+        )
         val appointment = TestData.appointment()
         whenever(enforcementRepository.existsByContactId(appointment.id!!)).thenReturn(true)
 
@@ -45,7 +52,14 @@ class EnforcementServiceTest() {
 
     @Test
     fun `sets enforcement flag to null when action does not have outstandingContactAction`() {
-        val actionWithoutOutstanding = AppointmentEntities.EnforcementAction(id(), "ACT03", "Action 3", 7, outstandingContactAction = false, TestData.TYPE)
+        val actionWithoutOutstanding = AppointmentEntities.EnforcementAction(
+            id(),
+            "ACT03",
+            "Action 3",
+            7,
+            outstandingContactAction = false,
+            TestData.TYPE
+        )
         val appointment = TestData.appointment()
         whenever(enforcementRepository.existsByContactId(appointment.id!!)).thenReturn(true)
 
@@ -57,7 +71,14 @@ class EnforcementServiceTest() {
 
     @Test
     fun `sets enforcement flag to null when outstandingContactAction is null`() {
-        val actionNullOutstanding = AppointmentEntities.EnforcementAction(id(), "ACT04", "Action 4", 7, outstandingContactAction = null, TestData.TYPE)
+        val actionNullOutstanding = AppointmentEntities.EnforcementAction(
+            id(),
+            "ACT04",
+            "Action 4",
+            7,
+            outstandingContactAction = null,
+            TestData.TYPE
+        )
         val appointment = TestData.appointment()
         whenever(enforcementRepository.existsByContactId(appointment.id!!)).thenReturn(true)
 
