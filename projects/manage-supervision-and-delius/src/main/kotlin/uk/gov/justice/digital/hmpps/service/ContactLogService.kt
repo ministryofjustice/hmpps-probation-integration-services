@@ -289,7 +289,8 @@ class ContactLogService(
         contact.complied = contactOutcome.outcomeCompliantAcceptable
         contactRepository.save(contact)
         if (request.enforcementActionCode != null) {
-            val appliedAction = contactEnforcementService.updateEnforcementActionForContact(contact, request.enforcementActionCode)
+            val appliedAction =
+                contactEnforcementService.updateEnforcementActionForContact(contact, request.enforcementActionCode)
             setEnforcementFlag(contact, appliedAction)
         } else {
             setEnforcementFlag(contact)
