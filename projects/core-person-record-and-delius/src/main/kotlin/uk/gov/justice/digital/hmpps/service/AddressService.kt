@@ -69,7 +69,7 @@ class AddressService(
         status = requireNotNull(status.code?.let { referenceDataRepository.getAddressStatus(it) }) { "Address status is required" },
         type = usages.filter { it.isActive }.apply { require(size <= 1) { "Cannot handle multiple address types" } }
             .singleOrNull()?.usageCode?.code?.let { referenceDataRepository.getAddressType(it) },
-        typeVerified = null,
+        typeVerified = typeVerified,
     )
 
     private fun PersonAddress.trackEvent(name: String, vararg properties: Pair<String, String>) {
