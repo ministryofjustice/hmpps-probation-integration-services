@@ -75,6 +75,7 @@ class AppointmentService internal constructor(
                     staff = staff[request.staffCode].orNotFoundBy("code", request.staffCode),
                     officeLocation = request.locationCode?.let { code -> locations[code].orNotFoundBy("code", code) },
                     type = types[request.typeCode].orNotFoundBy("code", request.typeCode),
+
                     notes = request.notes,
                 ).checkForSchedulingConflicts(
                     allowConflicts = request.allowConflicts
@@ -300,6 +301,10 @@ class AppointmentService internal constructor(
     ) = apply {
         if (this.outcome?.code == outcome?.code) return@apply
 
+        if (type.outcomeRequired == true && outcome == null) {
+            enforcement = true
+        }
+
         require(this.outcome == null && outcome != null) {
             "Outcome cannot be amended"
         }
@@ -313,6 +318,8 @@ class AppointmentService internal constructor(
         complied = outcome.complied
         if (outcome.complied == false && outcome.enforceable == true) {
             enforcementService.applyEnforcementAction(this, enforcementAction, enforcementReviewType)
+        } else {
+            enforcement = null
         }
     }
 

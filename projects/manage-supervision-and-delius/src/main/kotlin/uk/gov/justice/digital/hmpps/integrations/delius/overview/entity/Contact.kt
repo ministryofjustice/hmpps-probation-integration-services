@@ -93,6 +93,10 @@ class Contact(
     @OneToOne(mappedBy = "contact")
     var enforcement: Enforcement? = null,
 
+    @Column(name = "enforcement")
+    @Convert(converter = NumericBooleanConverter::class)
+    var enforcementFlag: Boolean? = null,
+
     notes: String?,
 
     @Column(name = "nsi_id")
@@ -376,6 +380,10 @@ class EnforcementAction(
     val code: String,
     val description: String,
     val responseByPeriod: Long? = null,
+
+    @Column(name = "outstanding_contact_action")
+    @Convert(converter = YesNoConverter::class)
+    val outstandingContactAction: Boolean? = null,
 
     @Column(name = "selectable")
     @Convert(converter = YesNoConverter::class)

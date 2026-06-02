@@ -32,7 +32,7 @@ internal object TestData {
     val TEAM = Team(id(), "T01", "Team 1", PROVIDER)
     val STAFF = Staff(id(), "S01")
     val OFFICE_LOCATION = OfficeLocation(id(), "LOC1")
-    val ACTION = AppointmentEntities.EnforcementAction(id(), "ACT01", "Action 1", 7, TYPE)
+    val ACTION = AppointmentEntities.EnforcementAction(id(), "ACT01", "Action 1", 7, outstandingContactAction = true, TYPE)
 
     fun createAppointment(
         reference: String = "REF01",

@@ -101,6 +101,10 @@ class SentenceAppointment(
     @Convert(converter = YesNoConverter::class)
     var visorContact: Boolean? = null,
 
+    @Column(name = "enforcement")
+    @Convert(converter = NumericBooleanConverter::class)
+    var enforcementFlag: Boolean? = null,
+
     @Id
     @GeneratedId(generator = "contact_id_generator")
     @Column(name = "contact_id")
