@@ -120,6 +120,8 @@ class SentenceAppointmentService(
             val saved = sentenceAppointmentRepository.save(createAppointment.withManager(om, userAndTeam, location))
             if (createAppointment.outcomeRecorded) {
                 outcomeService.recordOutcome(Outcome(saved.id!!, true, null, createAppointment.sensitive ?: false))
+            } else if (saved.type.contactOutcomeFlag == true) {
+                saved.enforcementFlag = true
             }
 
             if (createAppointment.visorReport == true && saved.id != null) {
@@ -213,6 +215,6 @@ class SentenceAppointmentService(
         officeLocationId = location?.id,
         notes = notes,
         sensitive = sensitive,
-        visorContact = visorReport
+        visorContact = visorReport,
     )
 }

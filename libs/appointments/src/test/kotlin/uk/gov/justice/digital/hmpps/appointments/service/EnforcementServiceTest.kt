@@ -7,12 +7,14 @@ import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.*
+import uk.gov.justice.digital.hmpps.appointments.entity.AppointmentEntities
 import uk.gov.justice.digital.hmpps.appointments.entity.AppointmentEntities.AppointmentContact
 import uk.gov.justice.digital.hmpps.appointments.entity.AppointmentEntities.Type.Companion.REVIEW_ENFORCEMENT_STATUS
 import uk.gov.justice.digital.hmpps.appointments.repository.AppointmentRepositories.AppointmentRepository
 import uk.gov.justice.digital.hmpps.appointments.repository.AppointmentRepositories.EnforcementRepository
 import uk.gov.justice.digital.hmpps.appointments.repository.AppointmentRepositories.EventRepository
 import uk.gov.justice.digital.hmpps.appointments.test.TestData
+import uk.gov.justice.digital.hmpps.data.generator.IdGenerator.id
 import uk.gov.justice.digital.hmpps.set
 
 @ExtendWith(MockitoExtension::class)
@@ -28,6 +30,62 @@ class EnforcementServiceTest() {
 
     @InjectMocks
     private lateinit var enforcementService: EnforcementService
+
+    @Test
+    fun `sets enforcement flag to true when action has outstandingContactAction`() {
+        val actionWithOutstanding = AppointmentEntities.EnforcementAction(
+            id(),
+            "ACT02",
+            "Action 2",
+            7,
+            outstandingContactAction = true,
+            TestData.TYPE
+        )
+        val appointment = TestData.appointment()
+        whenever(enforcementRepository.existsByContactId(appointment.id!!)).thenReturn(true)
+
+        enforcementService.applyEnforcementAction(appointment, actionWithOutstanding, TestData.REVIEW_TYPE)
+
+        assertThat(appointment.enforcement).isTrue()
+        assertThat(appointment.enforcementActionId).isEqualTo(actionWithOutstanding.id)
+    }
+
+    @Test
+    fun `sets enforcement flag to null when action does not have outstandingContactAction`() {
+        val actionWithoutOutstanding = AppointmentEntities.EnforcementAction(
+            id(),
+            "ACT03",
+            "Action 3",
+            7,
+            outstandingContactAction = false,
+            TestData.TYPE
+        )
+        val appointment = TestData.appointment()
+        whenever(enforcementRepository.existsByContactId(appointment.id!!)).thenReturn(true)
+
+        enforcementService.applyEnforcementAction(appointment, actionWithoutOutstanding, TestData.REVIEW_TYPE)
+
+        assertThat(appointment.enforcement).isNull()
+        assertThat(appointment.enforcementActionId).isEqualTo(actionWithoutOutstanding.id)
+    }
+
+    @Test
+    fun `sets enforcement flag to null when outstandingContactAction is null`() {
+        val actionNullOutstanding = AppointmentEntities.EnforcementAction(
+            id(),
+            "ACT04",
+            "Action 4",
+            7,
+            outstandingContactAction = null,
+            TestData.TYPE
+        )
+        val appointment = TestData.appointment()
+        whenever(enforcementRepository.existsByContactId(appointment.id!!)).thenReturn(true)
+
+        enforcementService.applyEnforcementAction(appointment, actionNullOutstanding, TestData.REVIEW_TYPE)
+
+        assertThat(appointment.enforcement).isNull()
+    }
 
     @Test
     fun `creates enforcement and contact if it doesn't exist`() {

@@ -417,6 +417,69 @@ class AppointmentServiceTest {
     }
 
     @Test
+    fun `sets enforcement flag to true when outcome required but no outcome provided`() {
+        val typeRequiringOutcome =
+            Type(id(), "TYPEREQ", outcomeRequired = true, attendance = true, nationalStandards = true)
+        val existing = TestData.appointment(type = typeRequiringOutcome)
+
+        whenever(appointmentRepository.findByExternalReferenceIn(listOf(existing.externalReference!!)))
+            .thenReturn(listOf(existing))
+        whenever(outcomeRepository.findAllByCodeIn(emptySet())).thenReturn(emptyList())
+        mockEnforcementReferenceData()
+
+        appointmentService.update(existing) {
+            reference = { existing.externalReference }
+            applyOutcome = { Outcome(null) }
+        }
+
+        assertThat(existing.enforcement).isTrue()
+        assertThat(existing.outcome).isNull()
+    }
+
+    @Test
+    fun `throws a descriptive error when attempting to clear a required outcome`() {
+        val typeRequiringOutcome =
+            Type(id(), "TYPEREQ", outcomeRequired = true, attendance = true, nationalStandards = true)
+        // Existing contact already has an outcome - attempting to clear it on a type that requires one
+        val existing = TestData.appointment(type = typeRequiringOutcome, outcome = TestData.OUTCOME)
+
+        whenever(appointmentRepository.findByExternalReferenceIn(listOf(existing.externalReference!!)))
+            .thenReturn(listOf(existing))
+        whenever(outcomeRepository.findAllByCodeIn(emptySet())).thenReturn(emptyList())
+        mockEnforcementReferenceData()
+
+        assertThatThrownBy {
+            appointmentService.update(existing) {
+                reference = { existing.externalReference }
+                applyOutcome = { Outcome(null) }
+            }
+        }.isInstanceOf(IllegalArgumentException::class.java)
+            .hasMessage("Outcome is required for contact type TYPEREQ")
+
+        assertThat(existing.outcome).isEqualTo(TestData.OUTCOME)
+    }
+
+    @Test
+    fun `clears enforcement flag when compliant outcome applied`() {
+        val existing = TestData.appointment()
+        existing.enforcement = true
+
+        whenever(appointmentRepository.findByExternalReferenceIn(listOf(existing.externalReference!!)))
+            .thenReturn(listOf(existing))
+        whenever(outcomeRepository.findAllByCodeIn(setOf(TestData.OUTCOME.code))).thenReturn(listOf(TestData.OUTCOME))
+        mockEnforcementReferenceData()
+
+        appointmentService.update(existing) {
+            reference = { existing.externalReference }
+            applyOutcome = { Outcome(TestData.OUTCOME.code) }
+        }
+
+        assertThat(existing.enforcement).isNull()
+        assertThat(existing.outcome).isEqualTo(TestData.OUTCOME)
+        verifyNoInteractions(enforcementService)
+    }
+
+    @Test
     fun `update appointment apply outcome`() {
         val existing = TestData.appointment(date = LocalDate.now().minusDays(1))
 

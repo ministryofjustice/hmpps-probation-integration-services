@@ -187,6 +187,10 @@ internal object AppointmentEntities {
 
         override val code: String,
 
+        @Column(name = "contact_outcome_flag")
+        @Convert(converter = YesNoConverter::class)
+        val outcomeRequired: Boolean? = null,
+
         @Column(name = "attendance_contact")
         @Convert(converter = YesNoConverter::class)
         val attendance: Boolean? = null,
@@ -434,6 +438,9 @@ internal object AppointmentEntities {
         override val code: String,
         val description: String,
         val responseByPeriod: Long?,
+
+        @Convert(converter = YesNoConverter::class)
+        val outstandingContactAction: Boolean? = null,
 
         @ManyToOne
         @JoinColumn(name = "contact_type_id")

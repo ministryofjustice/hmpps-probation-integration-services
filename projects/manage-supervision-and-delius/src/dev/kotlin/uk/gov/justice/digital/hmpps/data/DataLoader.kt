@@ -367,6 +367,32 @@ class DataLoader(dataManager: DataManager, private val jdbcTemplate: JdbcTemplat
         )
 
         saveAll(
+            EnforcementFlagGenerator.PROVIDER,
+            EnforcementFlagGenerator.BOROUGH,
+            EnforcementFlagGenerator.DISTRICT,
+            EnforcementFlagGenerator.STAFF,
+            EnforcementFlagGenerator.TEAM,
+        )
+        save(EnforcementFlagGenerator.USER)
+        saveAll(
+            EnforcementFlagGenerator.PERSON,
+            EnforcementFlagGenerator.EVENT,
+            EnforcementFlagGenerator.OUTCOME_CODE_CONTACT_TYPE,
+            EnforcementFlagGenerator.CONTACT_TYPE,
+            EnforcementFlagGenerator.OUTCOME_MATCHING_CONTACT_TYPE,
+            EnforcementFlagGenerator.CONTACT_TYPE_OUTCOME,
+            EnforcementFlagGenerator.OUTSTANDING_ENFORCEMENT_ACTION,
+            EnforcementFlagGenerator.OUTSTANDING_EA_OUTCOME_LINK,
+            EnforcementFlagGenerator.CONTACT_NO_OUTCOME,
+            EnforcementFlagGenerator.CONTACT_WITH_OUTSTANDING_ACTION_NO_OUTCOME,
+            EnforcementFlagGenerator.CONTACT_WITH_OUTSTANDING_ACTION,
+            EnforcementFlagGenerator.OM_STAFF,
+            EnforcementFlagGenerator.OM_TEAM,
+        )
+        save(EnforcementFlagGenerator.RESPONSIBLE_OFFICER)
+        save(EnforcementFlagGenerator.OFFENDER_MANAGER)
+
+        saveAll(
             UnallocatedAlertGenerator.PROVIDER,
             UnallocatedAlertGenerator.BOROUGH,
             UnallocatedAlertGenerator.DISTRICT,
