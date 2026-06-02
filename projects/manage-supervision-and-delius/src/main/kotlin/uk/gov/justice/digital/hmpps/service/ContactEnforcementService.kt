@@ -6,6 +6,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.Contact
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.ContactTypeRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.Enforcement
+import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.EnforcementAction
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.EnforcementActionsRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.EnforcementRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.getContactType
@@ -23,7 +24,7 @@ class ContactEnforcementService(
     private val enforcementRepository: EnforcementRepository,
     private val enforcementActionsRepository: EnforcementActionsRepository,
 ) {
-    fun updateEnforcementActionForContact(contact: Contact, enforcementActionCode: String) {
+    fun updateEnforcementActionForContact(contact: Contact, enforcementActionCode: String): EnforcementAction {
         val contactOutcome = contact.outcome.orNotFoundBy("contactId", contact.id)
         val enforcementAction = requireNotNull(
             enforcementActionsRepository.findByContactOutcomeId(contactOutcome.id)
@@ -89,5 +90,6 @@ class ContactEnforcementService(
                 )
             }
         }
+        return enforcementAction
     }
 }

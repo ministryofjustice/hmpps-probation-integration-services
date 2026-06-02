@@ -421,7 +421,27 @@ class AppointmentServiceTest {
         val typeRequiringOutcome =
             Type(id(), "TYPEREQ", outcomeRequired = true, attendance = true, nationalStandards = true)
         val existing = TestData.appointment(type = typeRequiringOutcome)
-        existing.outcome = TestData.OUTCOME // give it an existing outcome so the same-code check doesn't short-circuit
+
+        whenever(appointmentRepository.findByExternalReferenceIn(listOf(existing.externalReference!!)))
+            .thenReturn(listOf(existing))
+        whenever(outcomeRepository.findAllByCodeIn(emptySet())).thenReturn(emptyList())
+        mockEnforcementReferenceData()
+
+        appointmentService.update(existing) {
+            reference = { existing.externalReference }
+            applyOutcome = { Outcome(null) }
+        }
+
+        assertThat(existing.enforcement).isTrue()
+        assertThat(existing.outcome).isNull()
+    }
+
+    @Test
+    fun `throws a descriptive error when attempting to clear a required outcome`() {
+        val typeRequiringOutcome =
+            Type(id(), "TYPEREQ", outcomeRequired = true, attendance = true, nationalStandards = true)
+        // Existing contact already has an outcome - attempting to clear it on a type that requires one
+        val existing = TestData.appointment(type = typeRequiringOutcome, outcome = TestData.OUTCOME)
 
         whenever(appointmentRepository.findByExternalReferenceIn(listOf(existing.externalReference!!)))
             .thenReturn(listOf(existing))
@@ -434,8 +454,9 @@ class AppointmentServiceTest {
                 applyOutcome = { Outcome(null) }
             }
         }.isInstanceOf(IllegalArgumentException::class.java)
+            .hasMessage("Outcome is required for contact type TYPEREQ")
 
-        assertThat(existing.enforcement).isTrue()
+        assertThat(existing.outcome).isEqualTo(TestData.OUTCOME)
     }
 
     @Test

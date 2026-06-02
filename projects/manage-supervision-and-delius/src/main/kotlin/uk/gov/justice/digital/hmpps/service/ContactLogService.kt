@@ -111,13 +111,14 @@ class ContactLogService(
             )
 
             if (createContact.enforcementActionCode != null) {
-                contactEnforcementService.updateEnforcementActionForContact(
+                val appliedAction = contactEnforcementService.updateEnforcementActionForContact(
                     savedContact,
                     createContact.enforcementActionCode
                 )
+                setEnforcementFlag(savedContact, appliedAction)
+            } else {
+                setEnforcementFlag(savedContact)
             }
-
-            setEnforcementFlag(savedContact, contactOutcome)
 
             val category = mappaCategoryResolverService.resolveMappaCategory(person.id)
 
@@ -140,10 +141,6 @@ class ContactLogService(
                         teamId = personManager.team.id
                     )
                 )
-            }
-
-            if (savedContact.outcome != null) {
-                setEnforcementFlag(savedContact, savedContact.outcome)
             }
             return@audit CreateContactResponse(savedContact.id)
         }
@@ -201,7 +198,7 @@ class ContactLogService(
         request.notes?.let { contact.appendNotes(it) }
         require(contact.sensitive != true || request.sensitiveFlag == true) { "Cannot un-flag a sensitive contact" }
         contact.sensitive = request.sensitiveFlag
-        setEnforcementFlag(contact, contact.outcome)
+        setEnforcementFlag(contact)
         contactRepository.save(contact)
     }
 
@@ -226,13 +223,12 @@ class ContactLogService(
 
     private fun setEnforcementFlag(
         contact: Contact,
-        contactOutcome: ContactOutcome?
+        appliedAction: EnforcementAction? = contact.action,
     ) {
-        val contactType = contactOutcome?.let { contactTypeRepository.findByCode(it.code) }
-        if (contactType?.contactOutcomeFlag == true && contact.outcome == null) {
+        if (contact.type.contactOutcomeFlag == true && contact.outcome == null) {
             contact.enforcementFlag = true
         }
-        if (contact.action != null && contact.action.outstandingContactAction == true) {
+        if (appliedAction != null && appliedAction.outstandingContactAction == true) {
             contact.enforcementFlag = true
         }
     }
@@ -293,8 +289,10 @@ class ContactLogService(
         contact.complied = contactOutcome.outcomeCompliantAcceptable
         contactRepository.save(contact)
         if (request.enforcementActionCode != null) {
-            contactEnforcementService.updateEnforcementActionForContact(contact, request.enforcementActionCode)
+            val appliedAction = contactEnforcementService.updateEnforcementActionForContact(contact, request.enforcementActionCode)
+            setEnforcementFlag(contact, appliedAction)
+        } else {
+            setEnforcementFlag(contact)
         }
-        setEnforcementFlag(contact, contactOutcome)
     }
 }

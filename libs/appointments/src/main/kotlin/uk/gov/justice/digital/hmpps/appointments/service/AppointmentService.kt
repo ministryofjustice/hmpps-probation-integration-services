@@ -299,15 +299,21 @@ class AppointmentService internal constructor(
         enforcementAction: EnforcementAction,
         enforcementReviewType: Type
     ) = apply {
+        if (outcome == null && type.outcomeRequired == true) {
+            require(this.outcome == null) {
+                "Outcome is required for contact type ${type.code}"
+            }
+            enforcement = true
+            return@apply
+        }
+
         if (this.outcome?.code == outcome?.code) return@apply
 
-        if (type.outcomeRequired == true && outcome == null) {
-            enforcement = true
-        }
 
         require(this.outcome == null && outcome != null) {
             "Outcome cannot be amended"
         }
+
 
         require(!Schedule(this).startsInFuture || (outcome.attended == false && outcome.complied == true)) {
             "Only permissible absences can be recorded for a future attendance"
