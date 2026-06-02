@@ -18,5 +18,6 @@ data class Disability(
     val disabilityNote: NoteDetail? = null,
     val startDate: LocalDate,
     val lastUpdated: LocalDate,
-    val lastUpdatedBy: Name
+    val lastUpdatedBy: Name,
+    val condition: String? = null,
 )
