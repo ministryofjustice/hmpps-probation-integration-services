@@ -58,6 +58,7 @@ class AppointmentService internal constructor(
 
         appointmentRepository
             .saveAll(map { request ->
+                val type = types[request.typeCode].orNotFoundBy("code", request.typeCode)
                 AppointmentContact(
                     externalReference = request.reference,
                     personId = requireNotNull(request.relatedTo.personId ?: personIds[request.relatedTo.crn]?.id) {
@@ -75,7 +76,7 @@ class AppointmentService internal constructor(
                     staff = staff[request.staffCode].orNotFoundBy("code", request.staffCode),
                     officeLocation = request.locationCode?.let { code -> locations[code].orNotFoundBy("code", code) },
                     type = types[request.typeCode].orNotFoundBy("code", request.typeCode),
-
+                    enforcement = type.outcomeRequired == true,
                     notes = request.notes,
                 ).checkForSchedulingConflicts(
                     allowConflicts = request.allowConflicts
@@ -299,21 +300,11 @@ class AppointmentService internal constructor(
         enforcementAction: EnforcementAction,
         enforcementReviewType: Type
     ) = apply {
-        if (outcome == null && type.outcomeRequired == true) {
-            require(this.outcome == null) {
-                "Outcome is required for contact type ${type.code}"
-            }
-            enforcement = true
-            return@apply
-        }
-
         if (this.outcome?.code == outcome?.code) return@apply
-
 
         require(this.outcome == null && outcome != null) {
             "Outcome cannot be amended"
         }
-
 
         require(!Schedule(this).startsInFuture || (outcome.attended == false && outcome.complied == true)) {
             "Only permissible absences can be recorded for a future attendance"
