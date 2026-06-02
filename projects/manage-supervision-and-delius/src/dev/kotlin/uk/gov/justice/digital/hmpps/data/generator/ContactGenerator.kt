@@ -7,6 +7,12 @@ import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.DEFAULT_PROV
 import uk.gov.justice.digital.hmpps.data.generator.LicenceConditionGenerator.LONG_NOTE
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.E_SUP_PERSON
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.OVERVIEW
+import uk.gov.justice.digital.hmpps.data.generator.UpdateContactOutcomeGenerator.CONTACT_TYPE
+import uk.gov.justice.digital.hmpps.data.generator.UpdateContactOutcomeGenerator.EVENT
+import uk.gov.justice.digital.hmpps.data.generator.UpdateContactOutcomeGenerator.OUTCOME
+import uk.gov.justice.digital.hmpps.data.generator.UpdateContactOutcomeGenerator.PERSON
+import uk.gov.justice.digital.hmpps.data.generator.UpdateContactOutcomeGenerator.STAFF
+import uk.gov.justice.digital.hmpps.data.generator.UpdateContactOutcomeGenerator.TEAM
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.integrations.delius.caseload.entity.Caseload
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.*
@@ -208,6 +214,8 @@ object ContactGenerator {
         OTHER_CT,
         ZonedDateTime.of(LocalDateTime.now(EuropeLondon).minusDays(10), EuropeLondon),
     )
+
+    val APPT_CONTACT_WITH_ALERT = UpdateContactOutcomeGenerator.CONTACT_10
 
     val E_SUPERVISION_ID: UUID = UUID.randomUUID()
     val E_SUPERVISION_CONTACT = generateContact(

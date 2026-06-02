@@ -235,7 +235,8 @@ fun Contact.toActivity(noteId: Int? = null): Activity {
         component = requirement?.asComponent() ?: licenceCondition?.asComponent(),
         nsiId = nsiId,
         esupervisionId = eSupervisionId(),
-        externalReference = externalReference
+        externalReference = externalReference,
+        alert = alert
     )
 }
 

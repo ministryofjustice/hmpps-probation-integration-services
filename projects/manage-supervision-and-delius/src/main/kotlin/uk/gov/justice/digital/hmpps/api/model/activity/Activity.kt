@@ -59,7 +59,8 @@ data class Activity(
     val component: Component? = null,
     val nsiId: Long? = null,
     val esupervisionId: UUID? = null,
-    val externalReference: String? = null
+    val externalReference: String? = null,
+    val alert: Boolean? = null
 )
 
 data class Component(val id: Long, val description: String, val type: Type) {
