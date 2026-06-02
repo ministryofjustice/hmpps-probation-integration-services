@@ -1,6 +1,5 @@
 package uk.gov.justice.digital.hmpps
 
-import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.springframework.test.web.servlet.get

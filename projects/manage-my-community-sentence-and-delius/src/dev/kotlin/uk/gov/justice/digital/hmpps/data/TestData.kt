@@ -16,6 +16,7 @@ import uk.gov.justice.digital.hmpps.data.generator.IdGenerator.id
 import uk.gov.justice.digital.hmpps.entity.Person
 import uk.gov.justice.digital.hmpps.entity.PersonalContact
 import uk.gov.justice.digital.hmpps.entity.ReferenceData
+import uk.gov.justice.digital.hmpps.entity.address.Address
 import uk.gov.justice.digital.hmpps.entity.address.OfficeLocation
 import uk.gov.justice.digital.hmpps.entity.address.PersonAddress
 import uk.gov.justice.digital.hmpps.entity.appointment.Contact
@@ -35,6 +36,7 @@ import uk.gov.justice.digital.hmpps.entity.staff.StaffUser
 import uk.gov.justice.digital.hmpps.entity.staff.Team
 import uk.gov.justice.digital.hmpps.entity.unpaidwork.UnpaidWorkAppointment
 import uk.gov.justice.digital.hmpps.entity.unpaidwork.UnpaidWorkDetails
+import uk.gov.justice.digital.hmpps.entity.unpaidwork.UnpaidWorkProject
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.ZoneId
@@ -139,6 +141,17 @@ object TestData {
             postcode = "NF1 1NF",
             lastUpdatedDatetime = ZonedDateTime.of(2025, 5, 1, 9, 15, 0, 0, ZoneId.of("UTC")),
         )
+        val PLACEMENT_ADDRESS = Address(
+            id = id(),
+            buildingName = "Building Name",
+            addressNumber = "1",
+            streetName = "Street",
+            town = "Town",
+            county = "County",
+            district = "District",
+            postcode = "NE1 2SW",
+            telephoneNumber = null
+        )
     }
 
     object EmergencyContactData {
@@ -218,7 +231,24 @@ object TestData {
 
     object UnpaidWorkData {
         val UNPAID_WORK_DETAILS = UnpaidWorkDetails(id(), DISPOSAL.id)
-        val UNPAID_WORK_APPOINTMENT = UnpaidWorkAppointment(id(), UNPAID_WORK_DETAILS, minutesCredited = 180)
+        val UNPAID_WORK_PROJECT_1 = UnpaidWorkProject(
+            id = id(),
+            name = "Project 1",
+            code = "PRJ1",
+            placementAddress = AddressData.PLACEMENT_ADDRESS
+        )
+        val PAST_UNPAID_WORK_APPOINTMENT = UnpaidWorkAppointment(
+            id(), UNPAID_WORK_DETAILS, minutesCredited = 180,
+            contact = AppointmentData.PAST_UPW_CONTACT_1,
+            pickUpLocation = TeamData.OFFICE,
+            project = UNPAID_WORK_PROJECT_1
+        )
+        val FUTURE_UNPAID_WORK_APPOINTMENT = UnpaidWorkAppointment(
+            id(), UNPAID_WORK_DETAILS, minutesCredited = 180,
+            contact = AppointmentData.FUTURE_UPW_CONTACT_1,
+            pickUpLocation = TeamData.OFFICE,
+            project = UNPAID_WORK_PROJECT_1
+        )
     }
 
     object RarData {
@@ -280,6 +310,16 @@ object TestData {
         val PAST_2 = generate(
             LocalDate.of(2020, 1, 1), LocalTime.of(10, 0), LocalTime.of(10, 45),
             description = "Past appointment - not attended",
+            attended = false, complied = false,
+        )
+        val PAST_UPW_CONTACT_1 = generate(
+            LocalDate.of(2020, 1, 1), LocalTime.of(12, 30), LocalTime.of(13, 15),
+            description = "Past UPW Appointment",
+            attended = false, complied = false,
+        )
+        val FUTURE_UPW_CONTACT_1 = generate(
+            LocalDate.of(2050, 1, 1), LocalTime.of(12, 30), LocalTime.of(13, 15),
+            description = "Future UPW Appointment",
             attended = false, complied = false,
         )
 
