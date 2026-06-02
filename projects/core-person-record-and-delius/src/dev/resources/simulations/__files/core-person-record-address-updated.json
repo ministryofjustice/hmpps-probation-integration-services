@@ -23,5 +23,6 @@
       "description": "Rental accommodation - private rental",
       "isActive": true
     }
-  ]
+  ],
+  "typeVerified": true
 }
