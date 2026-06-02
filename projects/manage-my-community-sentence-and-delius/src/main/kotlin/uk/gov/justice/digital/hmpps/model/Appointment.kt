@@ -1,7 +1,6 @@
 package uk.gov.justice.digital.hmpps.model
 
 import uk.gov.justice.digital.hmpps.entity.appointment.Contact
-import uk.gov.justice.digital.hmpps.entity.unpaidwork.UnpaidWorkAppointment
 import uk.gov.justice.digital.hmpps.model.OfficeAddress.Companion.toModel
 import uk.gov.justice.digital.hmpps.model.UpwResponse.Companion.toModel
 import java.time.LocalDate
@@ -24,7 +23,7 @@ data class Appointment(
     val unpaidWork: UpwResponse?
 ) {
     companion object {
-        fun Contact.toAppointment(unpaidWorkAppointment: UnpaidWorkAppointment?) = Appointment(
+        fun Contact.toAppointment() = Appointment(
             date = date,
             startTime = startTime,
             endTime = endTime,
