@@ -236,7 +236,7 @@ fun Contact.toActivity(noteId: Int? = null): Activity {
         nsiId = nsiId,
         esupervisionId = eSupervisionId(),
         externalReference = externalReference,
-        alert = alert
+        alert = (alert == true)
     )
 }
 

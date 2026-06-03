@@ -60,7 +60,7 @@ data class Activity(
     val nsiId: Long? = null,
     val esupervisionId: UUID? = null,
     val externalReference: String? = null,
-    val alert: Boolean? = null
+    val alert: Boolean = false
 )
 
 data class Component(val id: Long, val description: String, val type: Type) {
