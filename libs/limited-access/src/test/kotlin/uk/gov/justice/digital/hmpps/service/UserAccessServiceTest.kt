@@ -161,7 +161,6 @@ internal class UserAccessServiceTest {
         override val until: ZonedDateTime = ZonedDateTime.now().plusDays(30)
     }
 
-
     private fun givenLimitedAccessResults() =
         listOf(
             object : PersonAccess {
