@@ -23,10 +23,11 @@ fun List<Requirement>.asMinimals(rar: (Requirement) -> Rar?): List<MinimalRequir
     rSort().map { it.toMinimalRequirement(rar) }
 
 fun Requirement.toMinimalRequirement(rar: (Requirement) -> Rar?): MinimalRequirement {
+    val category = mainCategory!!
     return MinimalRequirement(
         id,
-        mainCategory!!.code,
-        populateRequirementDescription(mainCategory.description, subCategory?.description, length, rar(this)),
+        category.code,
+        populateRequirementDescription(category.description, subCategory?.description, length, rar(this)),
         active
     )
 }
