@@ -5,8 +5,18 @@ import uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.LicenceCo
 import java.time.LocalDate
 
 object LicenceConditionGenerator {
-    val MAIN_CATEGORY = ReferenceData(IdGenerator.getAndIncrement(), "LC01", "Licence Condition Main Category", DatasetGenerator.LIC_COND_TYPE_MAIN_CAT)
-    val SUB_CATEGORY = ReferenceData(IdGenerator.getAndIncrement(), "LS01", "Licence Condition Sub Category", DatasetGenerator.LIC_COND_TYPE_SUB_CAT)
+    val MAIN_CATEGORY = ReferenceData(
+        IdGenerator.getAndIncrement(),
+        "LC01",
+        "Licence Condition Main Category",
+        DatasetGenerator.LIC_COND_TYPE_MAIN_CAT
+    )
+    val SUB_CATEGORY = ReferenceData(
+        IdGenerator.getAndIncrement(),
+        "LS01",
+        "Licence Condition Sub Category",
+        DatasetGenerator.LIC_COND_TYPE_SUB_CAT
+    )
 
     fun generate(
         disposalId: Long,
