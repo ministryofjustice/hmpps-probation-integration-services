@@ -75,7 +75,8 @@ class AccreditedProgrammesAppointmentService(
                     staffCode = request.staff.code,
                     teamCode = request.team.code,
                     notes = request.notes,
-                    sensitive = request.sensitive
+                    sensitive = request.sensitive,
+                    allowConflicts = true,
                 )
             }).onEach { telemetryService.trackEvent("AppointmentCreated", it.telemetry()) }
 
