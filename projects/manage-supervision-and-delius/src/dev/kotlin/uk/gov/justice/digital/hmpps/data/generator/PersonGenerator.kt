@@ -405,19 +405,21 @@ object PersonGenerator {
     val DISABILITIES: List<Disability> = listOf(
         Disability(
             IdGenerator.getAndIncrement(),
-            OVERVIEW.id,
-            ReferenceData(IdGenerator.getAndIncrement(), "D01", "Mental Illness"),
-            LocalDate.now().minusDays(1),
-            LocalDate.now().minusDays(1),
-            USER
+            personId = OVERVIEW.id,
+            type = ReferenceData(IdGenerator.getAndIncrement(), "D01", "Mental Illness"),
+            startDate = LocalDate.now().minusDays(1),
+            lastUpdated = LocalDate.now().minusDays(1),
+            lastUpdatedUser = USER,
+            condition = ReferenceData(IdGenerator.getAndIncrement(), "C01", "Condition 1")
         ),
         Disability(
             IdGenerator.getAndIncrement(),
-            OVERVIEW.id,
-            ReferenceData(IdGenerator.getAndIncrement(), "D02", "Visual Impairment"),
-            LocalDate.now(),
-            LocalDate.now().minusDays(1),
-            USER
+            personId = OVERVIEW.id,
+            type = ReferenceData(IdGenerator.getAndIncrement(), "D02", "Visual Impairment"),
+            startDate = LocalDate.now(),
+            lastUpdated = LocalDate.now().minusDays(1),
+            lastUpdatedUser = USER,
+            condition = ReferenceData(IdGenerator.getAndIncrement(), "C02", "Condition 2")
         )
     )
 

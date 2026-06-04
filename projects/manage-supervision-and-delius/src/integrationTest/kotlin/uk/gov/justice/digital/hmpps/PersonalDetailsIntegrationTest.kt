@@ -470,6 +470,33 @@ class PersonalDetailsIntegrationTest : IntegrationTestBase() {
     }
 
     @Test
+    fun `personal details disabilities with null condition fall back to type description`() {
+        val person = PERSONAL_DETAILS
+        val res = mockMvc.get("/personal-details/${person.crn}") {
+            withToken()
+        }
+            .andExpect { status { isOk() } }
+            .andReturn().response.contentAsJson<PersonalDetails>()
+
+        // DISABILITY_1 and DISABILITY_2 have no condition - should fall back to type.description
+        assertThat(res.disabilities.disabilities[0], equalTo(DISABILITY_1.type.description))
+        assertThat(res.disabilities.disabilities[1], equalTo(DISABILITY_2.type.description))
+    }
+
+    @Test
+    fun `personal details disabilities with condition use condition description`() {
+        val person = PERSONAL_DETAILS
+        val res = mockMvc.get("/personal-details/${person.crn}") {
+            withToken()
+        }
+            .andExpect { status { isOk() } }
+            .andReturn().response.contentAsJson<PersonalDetails>()
+
+        // DISABILITY_3 has a condition - should use condition.description
+        assertThat(res.disabilities.disabilities[2], equalTo(CONDITION_1_RD.description))
+    }
+
+    @Test
     fun `provisions are returned`() {
         val person = PERSONAL_DETAILS
         val res = mockMvc.get("/personal-details/${person.crn}/provisions") {

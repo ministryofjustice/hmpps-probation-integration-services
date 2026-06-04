@@ -226,7 +226,7 @@ class PersonalDetailsService(
                 }),
             disabilities = Disabilities(
                 lastUpdated = disabilities.maxOfOrNull { it.lastUpdated },
-                disabilities = disabilities.map { it.type.description }),
+                disabilities = disabilities.map { it.condition?.description ?: it.type.description }),
             provisions = Provisions(
                 lastUpdated = provisions.maxOfOrNull { it.lastUpdated },
                 provisions = provisions.map { it.type.description }),
