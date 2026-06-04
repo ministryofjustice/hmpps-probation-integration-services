@@ -14,6 +14,7 @@ import uk.gov.justice.digital.hmpps.api.model.*
 import uk.gov.justice.digital.hmpps.data.generator.AddressGenerator
 import uk.gov.justice.digital.hmpps.data.generator.DocumentGenerator
 import uk.gov.justice.digital.hmpps.data.generator.EventGenerator
+import uk.gov.justice.digital.hmpps.data.generator.LicenceConditionGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
@@ -117,5 +118,10 @@ class CaseViewIntegrationTest @Autowired constructor(
                 )
             )
         )
+        assertThat(cv.licenceConditions!!.size, equalTo(1))
+        val lc = cv.licenceConditions!![0]
+        assertThat(lc.mainCategory, equalTo(LicenceConditionGenerator.MAIN_CATEGORY.description))
+        assertThat(lc.subCategory, equalTo(LicenceConditionGenerator.SUB_CATEGORY.description))
+        assertThat(lc.active, equalTo(true))
     }
 }

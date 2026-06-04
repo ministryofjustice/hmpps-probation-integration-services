@@ -9,6 +9,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.document.DocumentReposit
 import uk.gov.justice.digital.hmpps.integrations.delius.document.entity.Document
 import uk.gov.justice.digital.hmpps.integrations.delius.document.entity.DocumentType
 import uk.gov.justice.digital.hmpps.integrations.delius.event.EventRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.DisposalRepository
 
 @Service
 class CaseViewService(
@@ -17,7 +18,8 @@ class CaseViewService(
     private val additionalOffenceRepository: CaseViewAdditionalOffenceRepository,
     private val requirementRepository: CaseViewRequirementRepository,
     private val contactRepository: ContactRepository,
-    private val documentRepository: DocumentRepository
+    private val documentRepository: DocumentRepository,
+    private val disposalRepository: DisposalRepository,
 ) {
     fun caseView(crn: String, eventNumber: String): CaseView {
         val person = personRepository.getByCrn(crn)
@@ -30,6 +32,18 @@ class CaseViewService(
         val cpsPack = docs[DocumentType.CPS_PACK]
         val preCon = docs[DocumentType.PREVIOUS_CONVICTION]
         val courtReport = documentRepository.findLatestCourtReport(person.id)
+        val licenceConditions = disposalRepository.findAllLicenceConditionsForPersonAndEvent(person.id, eventNumber)
+            .map {
+                LicenceCondition(
+                    id = it.id,
+                    startDate = it.startDate,
+                    mainCategory = it.mainCategory.description,
+                    subCategory = it.subCategory?.description,
+                    commencementDate = it.commenceDate,
+                    terminationDate = it.terminationDate,
+                    active = it.activeFlag
+                )
+            }
         return CaseView(
             person.name(),
             person.dateOfBirth,
@@ -41,7 +55,8 @@ class CaseViewService(
             requirements.map { it.toCvRequirement() },
             cpsPack?.toCvDocument(),
             preCon?.toCvDocument(),
-            courtReport?.toCvDocument()
+            courtReport?.toCvDocument(),
+            licenceConditions,
         )
     }
 

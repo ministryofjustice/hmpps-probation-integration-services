@@ -60,5 +60,6 @@ class CaseViewDataLoader(private val dataManager: DataManager, private val entit
                 DocumentGenerator.COURT_REPORT
             )
         )
+        dataManager.save(LicenceConditionGenerator.generate(disposalId = disposal.id))
     }
 }

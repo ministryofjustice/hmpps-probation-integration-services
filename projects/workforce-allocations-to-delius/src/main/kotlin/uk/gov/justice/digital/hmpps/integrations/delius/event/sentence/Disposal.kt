@@ -47,7 +47,11 @@ class Disposal(
     val softDeleted: Boolean = false,
 
     @Column
-    val terminationDate: ZonedDateTime? = null
+    val terminationDate: ZonedDateTime? = null,
+
+    @OneToMany
+    @JoinColumn(name = "disposal_id")
+    val licenceConditions: List<LicenceCondition> = emptyList()
 ) {
     val length
         get() = "$entryLength ${entryLengthUnit?.description}"

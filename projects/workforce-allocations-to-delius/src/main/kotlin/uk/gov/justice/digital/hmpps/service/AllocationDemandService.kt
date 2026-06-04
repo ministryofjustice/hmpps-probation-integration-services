@@ -135,7 +135,18 @@ class AllocationDemandService(
     fun getUnallocatedEvents(crn: String): UnallocatedEventsResponse {
         val person = personRepository.getByCrnAndSoftDeletedFalse(crn)
         val events = disposalRepository.findAllUnallocatedActiveEvents(person.id)
-        return UnallocatedEventsResponse(person.crn, person.name(), events)
+        val licenceConditions = disposalRepository.findAllLicenceConditionsForCrn(person.id).map {
+            uk.gov.justice.digital.hmpps.api.model.LicenceCondition(
+                id = it.id,
+                mainCategory = it.mainCategory.description,
+                subCategory = it.subCategory?.description,
+                startDate = it.startDate,
+                commencementDate = it.commenceDate,
+                terminationDate = it.terminationDate,
+                active = it.activeFlag
+            )
+        }
+        return UnallocatedEventsResponse(person.crn, person.name(), events, licenceConditions)
     }
 
     fun getAllocationDemandStaff(

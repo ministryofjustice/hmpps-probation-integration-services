@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps
 
+import org.hamcrest.MatcherAssert.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.MethodSource
@@ -14,6 +15,7 @@ import org.springframework.test.web.servlet.post
 import uk.gov.justice.digital.hmpps.api.model.*
 import uk.gov.justice.digital.hmpps.data.generator.*
 import uk.gov.justice.digital.hmpps.integrations.delius.allocations.AllocationDemandRepository
+import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.json
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 import java.time.LocalDate
@@ -131,6 +133,22 @@ class AllocationDemandIntegrationTest @Autowired constructor(
                 jsonPath("$.activeEvents[0].teamCode") { value(TeamGenerator.DEFAULT.code) }
                 jsonPath("$.activeEvents[0].providerCode") { value(ProviderGenerator.DEFAULT.code) }
             }
+    }
+
+    @Test
+    fun `unallocated events includes licence conditions`() {
+        val person = PersonGenerator.DEFAULT
+        val response = mockMvc.get("/allocation-demand/${person.crn}/unallocated-events") {
+            withToken()
+        }
+            .andExpect { status { is2xxSuccessful() } }
+            .andReturn().response.contentAsJson<UnallocatedEventsResponse>()
+
+        assertThat(response.licenceConditions.size, org.hamcrest.Matchers.greaterThanOrEqualTo(1))
+        val lc = response.licenceConditions[0]
+        assertThat(lc.mainCategory, org.hamcrest.Matchers.equalTo(LicenceConditionGenerator.MAIN_CATEGORY.description))
+        assertThat(lc.subCategory, org.hamcrest.Matchers.equalTo(LicenceConditionGenerator.SUB_CATEGORY.description))
+        assertThat(lc.active, org.hamcrest.Matchers.equalTo(true))
     }
 
     @Test

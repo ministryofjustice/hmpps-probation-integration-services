@@ -46,6 +46,26 @@ interface DisposalRepository : JpaRepository<Disposal, Long> {
     )
     fun findAllUnallocatedActiveEvents(personId: Long): List<ActiveEvent>
 
+    @Query("""
+        select d.licenceConditions from Disposal d
+        join d.event e
+        where e.person.id = :personId
+        and e.active = true and d.active = true
+        and e.softDeleted = false and d.softDeleted = false
+    """)
+    fun findAllLicenceConditionsForCrn(personId: Long): List<LicenceCondition>
+
+    @Query("""
+        select d.licenceConditions from Disposal d
+        join d.event e
+        where e.person.id = :personId
+        and e.number = :eventNumber
+        and e.active = true and d.active = true
+        and e.softDeleted = false and d.softDeleted = false
+    """)
+    fun findAllLicenceConditionsForPersonAndEvent(personId: Long, eventNumber: String): List<LicenceCondition>
+
+
     @Query(
         """
         select new uk.gov.justice.digital.hmpps.api.model.AllocationDemandSentence(

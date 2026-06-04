@@ -37,7 +37,9 @@ class DataLoader(
             DatasetGenerator.ADDRESS_TYPE,
             DatasetGenerator.ADDRESS_STATUS,
             DatasetGenerator.COURT_APPEARANCE_TYPE,
-            DatasetGenerator.REGISTER_TYPE_FLAG
+            DatasetGenerator.REGISTER_TYPE_FLAG,
+            DatasetGenerator.LIC_COND_TYPE_MAIN_CAT,
+            DatasetGenerator.LIC_COND_TYPE_SUB_CAT
         )
 
         saveAll(
@@ -59,6 +61,11 @@ class DataLoader(
             ReferenceDataGenerator.ADDRESS_STATUS_MAIN,
             ReferenceDataGenerator.ADDRESS_STATUS_PREVIOUS,
             ReferenceDataGenerator.SENTENCE_APPEARANCE
+        )
+
+        saveAll(
+            LicenceConditionGenerator.MAIN_CATEGORY,
+            LicenceConditionGenerator.SUB_CATEGORY
         )
 
         saveAll(

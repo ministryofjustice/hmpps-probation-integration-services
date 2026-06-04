@@ -39,6 +39,7 @@ class PersonAllocationDataLoader(private val dataManager: DataManager) {
 
         dataManager.save(DisposalGenerator.DEFAULT.type)
         dataManager.saveAll(listOf(DisposalGenerator.DEFAULT, DisposalGenerator.INACTIVE))
+        dataManager.save(LicenceConditionGenerator.generate(disposalId = DisposalGenerator.DEFAULT.id))
         RequirementManagerGenerator.DEFAULT = createRequirementWithManager(RequirementGenerator.DEFAULT)
         RequirementManagerGenerator.NEW = createRequirementWithManager(RequirementGenerator.NEW)
         RequirementManagerGenerator.HISTORIC = createRequirementWithManager(RequirementGenerator.HISTORIC)

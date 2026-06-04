@@ -14,7 +14,8 @@ data class CaseView(
     val requirements: List<CvRequirement>,
     val cpsPack: CvDocument? = null,
     val preConvictionDocument: CvDocument? = null,
-    val courtReport: CvDocument? = null
+    val courtReport: CvDocument? = null,
+    val licenceConditions: List<LicenceCondition>? = null
 ) {
     val age: Int
         get() = Period.between(dateOfBirth, LocalDate.now()).years
