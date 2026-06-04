@@ -29,6 +29,7 @@ class LicenceConditionService(
 fun EntityLicenceCondition.toLicenceCondition() =
     LicenceCondition(
         id,
+        mainCategory.code,
         mainCategory.description,
         subCategory?.description,
         imposedReleasedDate,
@@ -40,6 +41,7 @@ fun EntityLicenceCondition.toLicenceCondition() =
 fun EntityLicenceCondition.toLicenceConditionSingleNote(noteId: Int, truncateNote: Boolean) =
     LicenceCondition(
         id,
+        mainCategory.code,
         mainCategory.description,
         subCategory?.description,
         imposedReleasedDate,

@@ -49,6 +49,7 @@ class LicenceConditionIntegrationTest : IntegrationTestBase() {
             PersonGenerator.OVERVIEW.toSummary(),
             LicenceCondition(
                 LC_WITH_NOTES.id,
+                LIC_COND_MAIN_CAT.code,
                 LIC_COND_MAIN_CAT.description,
                 LIC_COND_SUB_CAT.description,
                 LocalDate.now().minusDays(7),
@@ -73,6 +74,7 @@ class LicenceConditionIntegrationTest : IntegrationTestBase() {
             PersonGenerator.OVERVIEW.toSummary(),
             LicenceCondition(
                 LC_WITH_NOTES.id,
+                LIC_COND_MAIN_CAT.code,
                 LIC_COND_MAIN_CAT.description,
                 LIC_COND_SUB_CAT.description,
                 LocalDate.now().minusDays(7),

@@ -149,6 +149,7 @@ class SentenceIntegrationTest : IntegrationTestBase() {
                 listOf(
                     LicenceCondition(
                         LC_WITH_NOTES.id,
+                        LIC_COND_MAIN_CAT.code,
                         LIC_COND_MAIN_CAT.description,
                         LIC_COND_SUB_CAT.description,
                         LocalDate.now().minusDays(7),
@@ -179,6 +180,7 @@ class SentenceIntegrationTest : IntegrationTestBase() {
                     ),
                     LicenceCondition(
                         LC_WITH_NOTES_WITHOUT_ADDED_BY.id,
+                        LIC_COND_MAIN_CAT.code,
                         LIC_COND_MAIN_CAT.description,
                         LIC_COND_SUB_CAT.description,
                         LocalDate.now().minusDays(7),
@@ -194,6 +196,7 @@ class SentenceIntegrationTest : IntegrationTestBase() {
                     ),
                     LicenceCondition(
                         LC_WITH_1500_CHAR_NOTE.id,
+                        LIC_COND_MAIN_CAT.code,
                         LIC_COND_MAIN_CAT.description,
                         LIC_COND_SUB_CAT.description,
                         LocalDate.now().minusDays(7),
@@ -222,6 +225,7 @@ class SentenceIntegrationTest : IntegrationTestBase() {
                     ),
                     LicenceCondition(
                         LC_WITHOUT_NOTES.id,
+                        LIC_COND_MAIN_CAT.code,
                         LIC_COND_MAIN_CAT.description,
                         imposedReleasedDate = LocalDate.now().minusDays(14),
                         licenceConditionNotes = listOf(),

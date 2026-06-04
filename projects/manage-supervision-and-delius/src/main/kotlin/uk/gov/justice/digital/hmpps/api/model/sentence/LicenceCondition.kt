@@ -5,6 +5,7 @@ import java.time.LocalDate
 
 data class LicenceCondition(
     val id: Long,
+    val code: String,
     val mainDescription: String,
     val subTypeDescription: String? = null,
     val imposedReleasedDate: LocalDate,
