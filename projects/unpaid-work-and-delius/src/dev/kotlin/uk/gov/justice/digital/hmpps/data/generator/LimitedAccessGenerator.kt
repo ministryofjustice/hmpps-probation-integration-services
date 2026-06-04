@@ -6,25 +6,27 @@ import uk.gov.justice.digital.hmpps.entity.LimitedAccessPerson
 import uk.gov.justice.digital.hmpps.entity.LimitedAccessUser
 import uk.gov.justice.digital.hmpps.entity.Restriction
 import uk.gov.justice.digital.hmpps.user.AuditUser
-import java.time.LocalDateTime
+import java.time.ZonedDateTime
 
 object LimitedAccessGenerator {
     val EXCLUSION = generateExclusion(CaseGenerator.EXCLUSION)
-    val RESTRICTION = generateRestriction(CaseGenerator.RESTRICTION, endDateTime = LocalDateTime.now().plusHours(1))
+    val RESTRICTION = generateRestriction(CaseGenerator.RESTRICTION, endDateTime = ZonedDateTime.now().plusHours(1))
 
     fun generateExclusion(
         person: CaseEntity,
         user: AuditUser = UserGenerator.LIMITED_ACCESS_USER,
-        endDateTime: LocalDateTime? = null,
+        start: ZonedDateTime = ZonedDateTime.now(),
+        endDateTime: ZonedDateTime? = null,
         id: Long = IdGenerator.getAndIncrement()
-    ) = Exclusion(person.limitedAccess(), user.limitedAccess(), endDateTime, id)
+    ) = Exclusion(person.limitedAccess(), user.limitedAccess(), start, endDateTime, id)
 
     fun generateRestriction(
         person: CaseEntity,
         user: AuditUser = UserGenerator.AUDIT_USER,
-        endDateTime: LocalDateTime? = null,
+        start: ZonedDateTime = ZonedDateTime.now(),
+        endDateTime: ZonedDateTime? = null,
         id: Long = IdGenerator.getAndIncrement()
-    ) = Restriction(person.limitedAccess(), user.limitedAccess(), endDateTime, id)
+    ) = Restriction(person.limitedAccess(), user.limitedAccess(), start, endDateTime, id)
 
     private fun CaseEntity.limitedAccess() = LimitedAccessPerson(crn, exclusionMessage, restrictionMessage, id)
     private fun AuditUser.limitedAccess() = LimitedAccessUser(username, id)

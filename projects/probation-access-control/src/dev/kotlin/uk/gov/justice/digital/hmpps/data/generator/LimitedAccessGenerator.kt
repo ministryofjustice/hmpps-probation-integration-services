@@ -4,8 +4,6 @@ import uk.gov.justice.digital.hmpps.entity.Exclusion
 import uk.gov.justice.digital.hmpps.entity.LimitedAccessPerson
 import uk.gov.justice.digital.hmpps.entity.LimitedAccessUser
 import uk.gov.justice.digital.hmpps.entity.Restriction
-import java.time.LocalDate
-import java.time.LocalDateTime
 import java.time.ZonedDateTime
 
 object LimitedAccessGenerator {

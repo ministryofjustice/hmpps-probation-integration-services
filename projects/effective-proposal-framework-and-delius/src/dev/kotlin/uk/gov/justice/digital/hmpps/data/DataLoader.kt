@@ -8,6 +8,7 @@ import uk.gov.justice.digital.hmpps.data.manager.DataManager
 import uk.gov.justice.digital.hmpps.entity.Exclusion
 import uk.gov.justice.digital.hmpps.entity.Restriction
 import java.time.LocalDate
+import java.time.ZonedDateTime
 
 @Component
 class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
@@ -43,12 +44,14 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
             Exclusion(
                 PersonGenerator.EXCLUDED.asLaoPerson(),
                 UserGenerator.JOHN_SMITH.asLaoUser(),
+                ZonedDateTime.now(),
                 null,
                 IdGenerator.getAndIncrement()
             ),
             Restriction(
                 PersonGenerator.RESTRICTED.asLaoPerson(),
                 UserGenerator.JOHN_SMITH.asLaoUser(),
+                ZonedDateTime.now(),
                 null,
                 IdGenerator.getAndIncrement()
             ),

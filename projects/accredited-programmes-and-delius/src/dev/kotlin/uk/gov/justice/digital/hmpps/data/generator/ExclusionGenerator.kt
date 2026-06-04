@@ -6,12 +6,14 @@ import uk.gov.justice.digital.hmpps.entity.LimitedAccessPerson
 import uk.gov.justice.digital.hmpps.entity.LimitedAccessUser
 import uk.gov.justice.digital.hmpps.entity.Person
 import uk.gov.justice.digital.hmpps.entity.staff.User
+import java.time.ZonedDateTime
 
 object ExclusionGenerator {
     fun generate(person: Person, user: User) = Exclusion(
         person = LimitedAccessPerson(person.crn, person.exclusionMessage, person.restrictionMessage, person.id),
         user = LimitedAccessUser(user.username, user.id),
         end = null,
-        id = id()
+        id = id(),
+        start = ZonedDateTime.now(),
     )
 }

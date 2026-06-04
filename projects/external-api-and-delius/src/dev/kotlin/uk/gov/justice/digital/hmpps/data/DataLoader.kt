@@ -27,7 +27,7 @@ import uk.gov.justice.digital.hmpps.model.Category
 import uk.gov.justice.digital.hmpps.model.Level
 import uk.gov.justice.digital.hmpps.user.AuditUser
 import java.time.LocalDate
-import java.time.LocalDateTime
+import java.time.ZonedDateTime
 
 @Component
 class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
@@ -137,7 +137,7 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
             generateRestriction(
                 PersonGenerator.RESTRICTION,
                 user = AuditUser(JS_USER.id, JS_USER.username),
-                endDateTime = LocalDateTime.now().plusDays(1)
+                endDateTime = ZonedDateTime.now().plusDays(1)
             )
         )
     }
