@@ -6,6 +6,7 @@ import uk.gov.justice.digital.hmpps.entity.LimitedAccessUser
 import uk.gov.justice.digital.hmpps.entity.Restriction
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.ZonedDateTime
 
 object LimitedAccessGenerator {
 
@@ -32,16 +33,16 @@ object LimitedAccessGenerator {
     fun generateExclusion(
         person: LimitedAccessPerson,
         user: LimitedAccessUser,
-        start: LocalDate = LocalDate.now().minusDays(1),
-        endDateTime: LocalDateTime? = null,
+        start: ZonedDateTime = ZonedDateTime.now().minusDays(1),
+        endDateTime: ZonedDateTime? = null,
         id: Long = IdGenerator.getAndIncrement()
     ) = Exclusion(person, user, start, endDateTime, id)
 
     fun generateRestriction(
         person: LimitedAccessPerson,
         user: LimitedAccessUser,
-        start: LocalDateTime = LocalDateTime.now().minusDays(1),
-        endDateTime: LocalDateTime? = null,
+        start: ZonedDateTime = ZonedDateTime.now().minusDays(1),
+        endDateTime: ZonedDateTime? = null,
         id: Long = IdGenerator.getAndIncrement()
     ) = Restriction(person, user, start, endDateTime, id)
 }

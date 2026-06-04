@@ -8,10 +8,6 @@ import java.time.ZonedDateTime
 
 @Service
 class UserAccessService(private val uar: UserAccessRepository) {
-    companion object {
-        private val LONDON: ZoneId = ZoneId.of("Europe/London")
-    }
-
     fun caseAccessFor(username: String, crn: String) =
         userAccessFor(username, listOf(crn)).access.first { it.crn == crn }
 
@@ -37,15 +33,15 @@ class UserAccessService(private val uar: UserAccessRepository) {
             excludedFrom = exclusions.map {
                 LaoDetail(
                     it.username,
-                    it.start.atStartOfDay(LONDON),
-                    it.end?.atZone(LONDON)
+                    it.since,
+                    it.until
                 )
             }.ifEmpty { null },
             restrictedTo = restrictions.map {
                 LaoDetail(
                     it.username,
-                    it.since.atZone(LONDON),
-                    it.until?.atZone(LONDON)
+                    it.since,
+                    it.until
                 )
             }.ifEmpty { null },
             exclusionMessage = person?.exclusionMessage,

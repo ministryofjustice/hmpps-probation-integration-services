@@ -17,6 +17,7 @@ import uk.gov.justice.digital.hmpps.entity.RestrictionDetail
 import uk.gov.justice.digital.hmpps.entity.UserAccessRepository
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.ZonedDateTime
 
 @ExtendWith(MockitoExtension::class)
 internal class UserAccessServiceTest {
@@ -148,14 +149,14 @@ internal class UserAccessServiceTest {
 
     private fun stubExclusionDetail(username: String) = object : ExclusionDetail {
         override val username = username
-        override val start: LocalDate = LocalDate.now().minusDays(1)
-        override val end: LocalDateTime? = null
+        override val since: ZonedDateTime = ZonedDateTime.now().minusDays(1)
+        override val until: ZonedDateTime? = null
     }
 
     private fun stubRestrictionDetail(username: String) = object : RestrictionDetail {
         override val username = username
-        override val since: LocalDateTime = LocalDateTime.now().minusDays(1)
-        override val until: LocalDateTime? = null
+        override val since: ZonedDateTime = ZonedDateTime.now().minusDays(1)
+        override val until: ZonedDateTime? = null
     }
 
     private fun givenLimitedAccessResults() =

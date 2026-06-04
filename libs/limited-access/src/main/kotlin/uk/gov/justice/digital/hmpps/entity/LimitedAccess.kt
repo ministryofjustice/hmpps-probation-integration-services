@@ -21,18 +21,15 @@ class Exclusion(
     val user: LimitedAccessUser,
 
     @Column(name = "exclusion_date")
-    val start: LocalDate,
+    val start: ZonedDateTime,
 
     @Column(name = "exclusion_end_time")
-    val end: LocalDateTime?,
+    val end: ZonedDateTime?,
 
     @Id
     @Column(name = "exclusion_id")
     val id: Long
-) {
-    constructor(person: LimitedAccessPerson, user: LimitedAccessUser, end: LocalDateTime?, id: Long) :
-        this(person, user, LocalDate.now(), end, id)
-}
+)
 
 @Immutable
 @Entity
@@ -47,19 +44,15 @@ class Restriction(
     val user: LimitedAccessUser,
 
     @Column(name = "restriction_time")
-    val start: LocalDateTime,
+    val start: ZonedDateTime,
 
     @Column(name = "restriction_end_time")
-    val end: LocalDateTime?,
+    val end: ZonedDateTime?,
 
     @Id
     @Column(name = "restriction_id")
     val id: Long
-) {
-    // Secondary constructor preserving the pre-start signature used by existing call sites
-    constructor(person: LimitedAccessPerson, user: LimitedAccessUser, end: LocalDateTime?, id: Long) :
-        this(person, user, LocalDateTime.now(), end, id)
-}
+)
 
 @Immutable
 @Entity
@@ -110,7 +103,7 @@ interface UserAccessRepository : JpaRepository<LimitedAccessUser, Long> {
 
     @Query(
         """
-        select e.user.username as username, e.start as start, e.end as end
+        select e.user.username as username, e.start as since, e.end as until
         from Exclusion e
         where e.person.crn = :crn
         and (e.end is null or e.end > current_date)
@@ -155,12 +148,12 @@ interface PersonAccess {
 
 interface RestrictionDetail {
     val username: String
-    val since: LocalDateTime
-    val until: LocalDateTime?
+    val since: ZonedDateTime
+    val until: ZonedDateTime?
 }
 
 interface ExclusionDetail {
     val username: String
-    val start: LocalDate
-    val end: LocalDateTime?
+    val since: ZonedDateTime
+    val until: ZonedDateTime?
 }
