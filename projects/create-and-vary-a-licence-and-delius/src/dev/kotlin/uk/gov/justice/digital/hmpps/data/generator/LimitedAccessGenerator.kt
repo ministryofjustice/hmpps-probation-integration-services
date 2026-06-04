@@ -24,6 +24,13 @@ object LimitedAccessGenerator {
         restrictionMessage = "You do not have access to this person.",
         id = 2L
     )
-    val LAO_EXCLUSION = Exclusion(LAO_EXCLUDED_PERSON, LAO_EXCLUDED_USER, ZonedDateTime.now(), null, IdGenerator.getAndIncrement())
-    val LAO_RESTRICTION = Restriction(LAO_RESTRICTED_PERSON, LAO_RESTRICTED_USER, ZonedDateTime.now(), null, IdGenerator.getAndIncrement())
+    val LAO_EXCLUSION =
+        Exclusion(LAO_EXCLUDED_PERSON, LAO_EXCLUDED_USER, ZonedDateTime.now(), null, IdGenerator.getAndIncrement())
+    val LAO_RESTRICTION = Restriction(
+        LAO_RESTRICTED_PERSON,
+        LAO_RESTRICTED_USER,
+        ZonedDateTime.now(),
+        null,
+        IdGenerator.getAndIncrement()
+    )
 }
