@@ -29,7 +29,10 @@ class Exclusion(
     @Id
     @Column(name = "exclusion_id")
     val id: Long
-)
+) {
+    constructor(person: LimitedAccessPerson, user: LimitedAccessUser, end: LocalDateTime?, id: Long) :
+        this(person, user, LocalDate.now(), end, id)
+}
 
 @Immutable
 @Entity
@@ -44,7 +47,7 @@ class Restriction(
     val user: LimitedAccessUser,
 
     @Column(name = "restriction_time")
-    val start: ZonedDateTime,
+    val start: LocalDateTime,
 
     @Column(name = "restriction_end_time")
     val end: LocalDateTime?,
@@ -52,7 +55,11 @@ class Restriction(
     @Id
     @Column(name = "restriction_id")
     val id: Long
-)
+) {
+    // Secondary constructor preserving the pre-start signature used by existing call sites
+    constructor(person: LimitedAccessPerson, user: LimitedAccessUser, end: LocalDateTime?, id: Long) :
+        this(person, user, LocalDateTime.now(), end, id)
+}
 
 @Immutable
 @Entity
@@ -148,8 +155,8 @@ interface PersonAccess {
 
 interface RestrictionDetail {
     val username: String
-    val since: ZonedDateTime
-    val until: ZonedDateTime?
+    val since: LocalDateTime
+    val until: LocalDateTime?
 }
 
 interface ExclusionDetail {

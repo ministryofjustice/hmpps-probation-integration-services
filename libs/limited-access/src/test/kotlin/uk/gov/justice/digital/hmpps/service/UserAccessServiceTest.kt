@@ -11,13 +11,12 @@ import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.whenever
 import uk.gov.justice.digital.hmpps.entity.ExclusionDetail
-import uk.gov.justice.digital.hmpps.entity.RestrictionDetail
 import uk.gov.justice.digital.hmpps.entity.LimitedAccessUser
 import uk.gov.justice.digital.hmpps.entity.PersonAccess
+import uk.gov.justice.digital.hmpps.entity.RestrictionDetail
 import uk.gov.justice.digital.hmpps.entity.UserAccessRepository
 import java.time.LocalDate
 import java.time.LocalDateTime
-import java.time.ZonedDateTime
 
 @ExtendWith(MockitoExtension::class)
 internal class UserAccessServiceTest {
@@ -77,11 +76,9 @@ internal class UserAccessServiceTest {
 
     @Test
     fun `allCaseAccessForCrn returns exclusions and restrictions`() {
-        val exclusions = listOf(stubExclusionDetail("excluded-user"))
-        val restrictions = listOf(stubLaoDetail("restricted-user"))
         whenever(uar.findLimitedAccessPersonByCrn("B123456")).thenReturn(null)
-        whenever(uar.getExclusionsForCrn("B123456")).thenReturn(exclusions)
-        whenever(uar.getRestrictionsForCrn("B123456")).thenReturn(restrictions)
+        whenever(uar.getExclusionsForCrn("B123456")).thenReturn(listOf(stubExclusionDetail("excluded-user")))
+        whenever(uar.getRestrictionsForCrn("B123456")).thenReturn(listOf(stubRestrictionDetail("restricted-user")))
 
         val res = userAccessService.allCaseAccessForCrn("B123456")
 
@@ -123,7 +120,7 @@ internal class UserAccessServiceTest {
     fun `allCaseAccessForCrn returns only restrictions when no exclusions`() {
         whenever(uar.findLimitedAccessPersonByCrn("R123456")).thenReturn(null)
         whenever(uar.getExclusionsForCrn("R123456")).thenReturn(emptyList())
-        whenever(uar.getRestrictionsForCrn("R123456")).thenReturn(listOf(stubLaoDetail("restricted-user")))
+        whenever(uar.getRestrictionsForCrn("R123456")).thenReturn(listOf(stubRestrictionDetail("restricted-user")))
 
         val res = userAccessService.allCaseAccessForCrn("R123456")
 
@@ -155,10 +152,10 @@ internal class UserAccessServiceTest {
         override val end: LocalDateTime? = null
     }
 
-    private fun stubLaoDetail(username: String) = object : RestrictionDetail {
+    private fun stubRestrictionDetail(username: String) = object : RestrictionDetail {
         override val username = username
-        override val since: ZonedDateTime = ZonedDateTime.now()
-        override val until: ZonedDateTime = ZonedDateTime.now().plusDays(30)
+        override val since: LocalDateTime = LocalDateTime.now().minusDays(1)
+        override val until: LocalDateTime? = null
     }
 
     private fun givenLimitedAccessResults() =

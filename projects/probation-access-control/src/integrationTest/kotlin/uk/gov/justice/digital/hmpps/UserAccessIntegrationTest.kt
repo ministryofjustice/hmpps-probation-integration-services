@@ -12,7 +12,6 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
 import org.springframework.test.web.servlet.post
-import uk.gov.justice.digital.hmpps.data.generator.LimitedAccessGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.UserGenerator
 import uk.gov.justice.digital.hmpps.service.AllCaseAccess
@@ -213,7 +212,7 @@ internal class UserAccessIntegrationTest @Autowired constructor(
     }
 
     @Test
-    fun `returns empty lists for a case with no exclusions or restrictions`() {
+    fun `returns null lists for a case with no exclusions or restrictions`() {
         val person = PersonGenerator.DEFAULT
         val response = mockMvc.get("/case/${person.crn}/access") { withToken() }
             .andExpect { status { is2xxSuccessful() } }
