@@ -28,6 +28,6 @@ class OffenceEntity(
     @Column
     val subCategoryDescription: String,
 ) {
-    fun toOffence(date: LocalDate) =
+    fun toOffence(date: LocalDate?) =
         Offence(date, mainCategoryCode, mainCategoryDescription, subCategoryCode, subCategoryDescription)
 }

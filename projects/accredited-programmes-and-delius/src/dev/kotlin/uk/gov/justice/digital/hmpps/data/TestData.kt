@@ -173,10 +173,12 @@ object TestData {
 
     val OFFENCES = listOf(
         OffenceEntity(id(), "036", "Kidnapping", "02", "Hijacking"),
-        OffenceEntity(id(), "036", "Kidnapping", "03", "False Imprisonment")
+        OffenceEntity(id(), "036", "Kidnapping", "03", "False Imprisonment"),
+        OffenceEntity(id(), "036", "Kidnapping", "01", "Kidnapping")
     )
     val MAIN_OFFENCE = MainOffenceGenerator.generate(CUSTODIAL_EVENT, OFFENCES[0])
     val ADDITIONAL_OFFENCE = AdditionalOffenceGenerator.generate(CUSTODIAL_EVENT, OFFENCES[1])
+    val ADDITIONAL_OFFENCE_NO_DATE = AdditionalOffenceGenerator.generate(CUSTODIAL_EVENT, OFFENCES[2], null)
 
     val REGISTER_TYPE = RegisterType(id(), "RVHR", "Very High RoSH")
     val REGISTER_CATEGORY = ReferenceData(id(), "I3", "IOM - Fixed", DATASET)

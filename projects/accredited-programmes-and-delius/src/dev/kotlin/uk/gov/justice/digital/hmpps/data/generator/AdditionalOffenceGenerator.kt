@@ -9,9 +9,9 @@ import uk.gov.justice.digital.hmpps.entity.sentence.offence.OffenceEvent
 import java.time.LocalDate
 
 object AdditionalOffenceGenerator {
-    fun generate(event: Event, offence: OffenceEntity) = AdditionalOffence(
+    fun generate(event: Event, offence: OffenceEntity, date: LocalDate? = LocalDate.of(2000, 1, 1)) = AdditionalOffence(
         id = id(),
-        date = LocalDate.of(2000, 1, 1),
+        date = date,
         event = with(event) {
             OffenceEvent(
                 id = id,
