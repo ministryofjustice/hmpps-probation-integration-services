@@ -21,6 +21,7 @@ data class LicenceConditionNoteDetail(
 
 data class MinimalLicenceCondition(
     val id: Long,
+    val code: String,
     val mainDescription: String,
     val active: Boolean,
 )

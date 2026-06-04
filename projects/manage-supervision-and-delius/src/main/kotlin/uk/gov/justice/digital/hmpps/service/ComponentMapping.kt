@@ -25,7 +25,8 @@ fun List<Requirement>.asMinimals(rar: (Requirement) -> Rar?): List<MinimalRequir
 fun Requirement.toMinimalRequirement(rar: (Requirement) -> Rar?): MinimalRequirement {
     return MinimalRequirement(
         id,
-        populateRequirementDescription(mainCategory!!.description, subCategory?.description, length, rar(this)),
+        mainCategory!!.code,
+        populateRequirementDescription(mainCategory.description, subCategory?.description, length, rar(this)),
         active
     )
 }

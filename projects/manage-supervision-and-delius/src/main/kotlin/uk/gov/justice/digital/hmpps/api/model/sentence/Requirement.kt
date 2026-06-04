@@ -23,6 +23,7 @@ data class Requirement(
 
 data class MinimalRequirement(
     val id: Long,
+    val code: String,
     val description: String,
     val active: Boolean,
 )
