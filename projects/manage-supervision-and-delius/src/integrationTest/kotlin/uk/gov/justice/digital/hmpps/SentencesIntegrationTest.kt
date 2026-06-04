@@ -67,14 +67,34 @@ class SentencesIntegrationTest : IntegrationTestBase() {
                         ACTIVE_ORDER.date
                     ),
                     licenceConditions = listOf(
-                        MinimalLicenceCondition(LC_WITH_NOTES.id, LIC_COND_MAIN_CAT.description, true),
-                        MinimalLicenceCondition(LC_WITH_NOTES_WITHOUT_ADDED_BY.id, LIC_COND_MAIN_CAT.description, true),
-                        MinimalLicenceCondition(LC_WITH_1500_CHAR_NOTE.id, LIC_COND_MAIN_CAT.description, true),
-                        MinimalLicenceCondition(LC_WITHOUT_NOTES.id, LIC_COND_MAIN_CAT.description, true),
+                        MinimalLicenceCondition(
+                            LC_WITH_NOTES.id,
+                            LIC_COND_MAIN_CAT.code,
+                            LIC_COND_MAIN_CAT.description,
+                            true
+                        ),
+                        MinimalLicenceCondition(
+                            LC_WITH_NOTES_WITHOUT_ADDED_BY.id,
+                            LIC_COND_MAIN_CAT.code,
+                            LIC_COND_MAIN_CAT.description,
+                            true
+                        ),
+                        MinimalLicenceCondition(
+                            LC_WITH_1500_CHAR_NOTE.id,
+                            LIC_COND_MAIN_CAT.code,
+                            LIC_COND_MAIN_CAT.description,
+                            true
+                        ),
+                        MinimalLicenceCondition(
+                            LC_WITHOUT_NOTES.id,
+                            LIC_COND_MAIN_CAT.code,
+                            LIC_COND_MAIN_CAT.description,
+                            true
+                        ),
                     ),
                     requirements = listOf(
-                        MinimalRequirement(REQUIREMENT_UNPAID_WORK.id, "Unpaid Work - Intensive", true),
-                        MinimalRequirement(REQUIREMENT.id, "2 of 12 RAR days completed", true),
+                        MinimalRequirement(REQUIREMENT_UNPAID_WORK.id, "W", "Unpaid Work - Intensive", true),
+                        MinimalRequirement(REQUIREMENT.id, "F", "2 of 12 RAR days completed", true),
                     )
                 )
             )
