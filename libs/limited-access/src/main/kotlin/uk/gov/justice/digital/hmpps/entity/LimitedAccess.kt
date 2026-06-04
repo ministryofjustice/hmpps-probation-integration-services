@@ -4,7 +4,9 @@ import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
+import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.ZonedDateTime
 
 @Immutable
 @Entity
@@ -17,6 +19,9 @@ class Exclusion(
     @ManyToOne
     @JoinColumn(name = "user_id")
     val user: LimitedAccessUser,
+
+    @Column(name = "exclusion_date")
+    val start: LocalDate,
 
     @Column(name = "exclusion_end_time")
     val end: LocalDateTime?,
@@ -37,6 +42,9 @@ class Restriction(
     @ManyToOne
     @JoinColumn(name = "user_id")
     val user: LimitedAccessUser,
+
+    @Column(name = "restriction_time")
+    val start: ZonedDateTime,
 
     @Column(name = "restriction_end_time")
     val end: LocalDateTime?,
@@ -95,6 +103,29 @@ interface UserAccessRepository : JpaRepository<LimitedAccessUser, Long> {
 
     @Query(
         """
+        select e.user.username as username, e.start as start, e.end as end
+        from Exclusion e
+        where e.person.crn = :crn
+        and (e.end is null or e.end > current_date)
+        """
+    )
+    fun getExclusionsForCrn(crn: String): List<ExclusionDetail>
+
+    @Query(
+        """
+        select r.user.username as username, r.start as since, r.end as until
+        from Restriction r
+        where r.person.crn = :crn
+        and (r.end is null or r.end > current_date)
+        """
+    )
+    fun getRestrictionsForCrn(crn: String): List<RestrictionDetail>
+
+    @Query("select p from LimitedAccessPerson p where p.crn = :crn")
+    fun findLimitedAccessPersonByCrn(crn: String): LimitedAccessPerson?
+
+    @Query(
+        """
         select p.crn as crn, 'false' as excluded, '' as exclusionMessage, 'true' as restricted, p.restrictionMessage as restrictionMessage
         from LimitedAccessPerson p where p.crn in :crns
         and exists (select r from Restriction r where r.person.id = p.id and (r.end is null or r.end > current_date ))
@@ -113,4 +144,16 @@ interface PersonAccess {
     val exclusionMessage: String?
     val restricted: Boolean
     val restrictionMessage: String?
+}
+
+interface RestrictionDetail {
+    val username: String
+    val since: ZonedDateTime
+    val until: ZonedDateTime?
+}
+
+interface ExclusionDetail {
+    val username: String
+    val start: LocalDate
+    val end: LocalDateTime?
 }
