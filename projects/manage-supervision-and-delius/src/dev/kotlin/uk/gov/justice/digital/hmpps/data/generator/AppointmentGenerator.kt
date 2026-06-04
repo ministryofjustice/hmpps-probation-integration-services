@@ -22,11 +22,15 @@ object AppointmentGenerator {
     val APPOINTMENT_TYPES = CreateAppointment.Type.entries.mapNotNull {
         when (it.code) {
             "CODC" -> null
+            "COVC" -> generateType(it.code, attendanceType = true, locationRequired = "Y", contactOutcomeFlag = true)
             "COPT" -> generateType(it.code, attendanceType = true, locationRequired = "B")
             "CHVS" -> generateType(it.code, attendanceType = true, locationRequired = "N")
             else -> generateType(it.code, attendanceType = true, locationRequired = "Y")
         }
     }
+
+    // The COVC type has contactOutcomeFlag=true — used to test enforcementFlag is set on future appointments
+    val CONTACT_OUTCOME_FLAG_TYPE get() = APPOINTMENT_TYPES.first { it.code == "COVC" }
 
     fun generateType(
         code: String,
@@ -35,6 +39,7 @@ object AppointmentGenerator {
         offenderContact: Boolean = false,
         locationRequired: String,
         editable: Boolean = true,
+        contactOutcomeFlag: Boolean = false,
         id: Long = IdGenerator.getAndIncrement()
     ) = ContactType(
         id,
@@ -44,6 +49,7 @@ object AppointmentGenerator {
         locationRequired = locationRequired,
         offenderContact = offenderContact,
         editable = editable,
+        contactOutcomeFlag = contactOutcomeFlag,
     )
 
     val ATTENDED_COMPLIED = generateOutcome("ATTC", "Attended - Complied", true, true)

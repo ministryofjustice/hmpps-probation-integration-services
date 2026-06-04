@@ -30,7 +30,7 @@ internal class EnforcementService(
 
     fun AppointmentContact.applyEnforcementAction(action: EnforcementAction) {
         enforcementActionId = action.id
-        enforcement = true
+        enforcement = if (action.outstandingContactAction == true) true else null
 
         if (id == null || !enforcementRepository.existsByContactId(id)) {
             enforcementRepository.save(

@@ -131,6 +131,76 @@ class CreateAppointmentIntegrationTest : IntegrationTestBase() {
         sentenceAppointmentRepository.deleteById(appointment.id!!)
     }
 
+    @Test
+    fun `enforcement flag is set when future appointment type has contactOutcomeFlag true`() {
+        val response = mockMvc.post("/appointment/${PersonGenerator.PERSON_1.crn}") {
+            withUserToken(PI_USER.username)
+            json = CreateAppointment(
+                user,
+                type = CreateAppointment.Type.PlannedVideoContactNS.code,
+                start = ZonedDateTime.now().plusDays(1),
+                end = ZonedDateTime.now().plusDays(1).plusHours(1),
+                eventId = PersonGenerator.EVENT_1.id,
+                uuid = UUID.randomUUID()
+            )
+        }
+            .andExpect { status { isCreated() } }
+            .andReturn().response.contentAsJson<AppointmentDetail>()
+
+        val appointment = sentenceAppointmentRepository.findById(response.appointments[0].id).get()
+        // COVC has contactOutcomeFlag=true and no outcome is recorded — enforcementFlag must be true
+        assertThat(appointment.enforcementFlag, equalTo(true))
+
+        sentenceAppointmentRepository.deleteById(appointment.id!!)
+    }
+
+    @Test
+    fun `enforcement flag is not set when future appointment type has contactOutcomeFlag false`() {
+        val response = mockMvc.post("/appointment/${PersonGenerator.PERSON_1.crn}") {
+            withUserToken(PI_USER.username)
+            json = CreateAppointment(
+                user,
+                type = CreateAppointment.Type.InitialAppointmentInOfficeNS.code,
+                start = ZonedDateTime.now().plusDays(1),
+                end = ZonedDateTime.now().plusDays(1).plusHours(1),
+                eventId = PersonGenerator.EVENT_1.id,
+                uuid = UUID.randomUUID()
+            )
+        }
+            .andExpect { status { isCreated() } }
+            .andReturn().response.contentAsJson<AppointmentDetail>()
+
+        val appointment = sentenceAppointmentRepository.findById(response.appointments[0].id).get()
+        // COAI has contactOutcomeFlag=false — enforcementFlag should not be set
+        assertThat(appointment.enforcementFlag, equalTo(null))
+
+        sentenceAppointmentRepository.deleteById(appointment.id!!)
+    }
+
+    @Test
+    fun `enforcement flag is not set when outcome is recorded for past appointment with contactOutcomeFlag type`() {
+        val response = mockMvc.post("/appointment/${PersonGenerator.PERSON_1.crn}") {
+            withUserToken(PI_USER.username)
+            json = CreateAppointment(
+                user,
+                type = CreateAppointment.Type.PlannedVideoContactNS.code,
+                start = ZonedDateTime.now().minusDays(1),
+                end = ZonedDateTime.now().minusDays(1).plusHours(1),
+                eventId = PersonGenerator.EVENT_1.id,
+                outcomeRecorded = true,
+                uuid = UUID.randomUUID()
+            )
+        }
+            .andExpect { status { isCreated() } }
+            .andReturn().response.contentAsJson<AppointmentDetail>()
+
+        val appointment = sentenceAppointmentRepository.findById(response.appointments[0].id).get()
+        // Outcome was recorded so the enforcementFlag branch is not reached
+        assertThat(appointment.enforcementFlag, equalTo(null))
+
+        sentenceAppointmentRepository.deleteById(appointment.id!!)
+    }
+
     companion object {
         private val user = User(STAFF_USER_1.username, TEAM.code, DEFAULT_LOCATION.code)
 

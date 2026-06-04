@@ -111,10 +111,13 @@ class ContactLogService(
             )
 
             if (createContact.enforcementActionCode != null) {
-                contactEnforcementService.updateEnforcementActionForContact(
+                val appliedAction = contactEnforcementService.updateEnforcementActionForContact(
                     savedContact,
                     createContact.enforcementActionCode
                 )
+                setEnforcementFlag(savedContact, appliedAction)
+            } else {
+                setEnforcementFlag(savedContact)
             }
 
             val category = mappaCategoryResolverService.resolveMappaCategory(person.id)
@@ -139,7 +142,6 @@ class ContactLogService(
                     )
                 )
             }
-
             return@audit CreateContactResponse(savedContact.id)
         }
     }
@@ -196,6 +198,7 @@ class ContactLogService(
         request.notes?.let { contact.appendNotes(it) }
         require(contact.sensitive != true || request.sensitiveFlag == true) { "Cannot un-flag a sensitive contact" }
         contact.sensitive = request.sensitiveFlag
+        setEnforcementFlag(contact)
         contactRepository.save(contact)
     }
 
@@ -217,6 +220,18 @@ class ContactLogService(
                 )
             }
     )
+
+    private fun setEnforcementFlag(
+        contact: Contact,
+        appliedAction: EnforcementAction? = contact.action,
+    ) {
+        if (contact.type.contactOutcomeFlag == true && contact.outcome == null) {
+            contact.enforcementFlag = true
+        }
+        if (appliedAction != null && appliedAction.outstandingContactAction == true) {
+            contact.enforcementFlag = true
+        }
+    }
 
     @Transactional
     fun updateContactOutcome(contactId: Long, request: UpdateContactOutcome) {
@@ -278,7 +293,11 @@ class ContactLogService(
 
         contactRepository.save(contact)
         if (request.enforcementActionCode != null) {
-            contactEnforcementService.updateEnforcementActionForContact(contact, request.enforcementActionCode)
+            val appliedAction =
+                contactEnforcementService.updateEnforcementActionForContact(contact, request.enforcementActionCode)
+            setEnforcementFlag(contact, appliedAction)
+        } else {
+            setEnforcementFlag(contact)
         }
     }
 }

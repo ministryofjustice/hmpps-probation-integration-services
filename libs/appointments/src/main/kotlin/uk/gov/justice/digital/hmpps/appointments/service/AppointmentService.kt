@@ -58,6 +58,7 @@ class AppointmentService internal constructor(
 
         appointmentRepository
             .saveAll(map { request ->
+                val type = types[request.typeCode].orNotFoundBy("code", request.typeCode)
                 AppointmentContact(
                     externalReference = request.reference,
                     personId = requireNotNull(request.relatedTo.personId ?: personIds[request.relatedTo.crn]?.id) {
@@ -74,7 +75,8 @@ class AppointmentService internal constructor(
                     team = teams[request.teamCode].orNotFoundBy("code", request.teamCode),
                     staff = staff[request.staffCode].orNotFoundBy("code", request.staffCode),
                     officeLocation = request.locationCode?.let { code -> locations[code].orNotFoundBy("code", code) },
-                    type = types[request.typeCode].orNotFoundBy("code", request.typeCode),
+                    type = type,
+                    enforcement = type.outcomeRequired == true,
                     notes = request.notes,
                 ).checkForSchedulingConflicts(
                     allowConflicts = request.allowConflicts
@@ -313,6 +315,8 @@ class AppointmentService internal constructor(
         complied = outcome.complied
         if (outcome.complied == false && outcome.enforceable == true) {
             enforcementService.applyEnforcementAction(this, enforcementAction, enforcementReviewType)
+        } else {
+            enforcement = null
         }
     }
 
