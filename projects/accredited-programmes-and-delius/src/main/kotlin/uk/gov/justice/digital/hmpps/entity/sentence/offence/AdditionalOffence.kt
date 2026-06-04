@@ -15,7 +15,7 @@ class AdditionalOffence(
     val id: Long,
 
     @Column(name = "offence_date")
-    val date: LocalDate,
+    val date: LocalDate?,
 
     @ManyToOne
     @JoinColumn(name = "event_id")

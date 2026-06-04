@@ -101,6 +101,7 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
         saveAll(TestData.OFFENCES)
         save(TestData.MAIN_OFFENCE)
         save(TestData.ADDITIONAL_OFFENCE)
+        save(TestData.ADDITIONAL_OFFENCE_NO_DATE)
         save(TestData.REGISTER_TYPE)
         save(TestData.REGISTER_CATEGORY)
         save(TestData.REGISTRATION)

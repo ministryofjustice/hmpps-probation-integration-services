@@ -8,7 +8,7 @@ data class Offences(
 )
 
 data class Offence(
-    val date: LocalDate,
+    val date: LocalDate?,
     val mainCategoryCode: String,
     val mainCategoryDescription: String,
     val subCategoryCode: String,
