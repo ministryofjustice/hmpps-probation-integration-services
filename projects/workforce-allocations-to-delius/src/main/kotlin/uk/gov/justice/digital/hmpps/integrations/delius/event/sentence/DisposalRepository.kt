@@ -58,7 +58,8 @@ interface DisposalRepository : JpaRepository<Disposal, Long> {
         and e.active = true and d.active = true
         and om.active = true
         and s.code like '%U' ESCAPE ' '
-    """)
+    """
+    )
     fun findAllLicenceConditionsForCrn(personId: Long): List<LicenceCondition>
 
     @Query(
@@ -70,9 +71,9 @@ interface DisposalRepository : JpaRepository<Disposal, Long> {
         and e.number = :eventNumber
         and e.active = true and d.active = true
         and e.softDeleted = false and d.softDeleted = false
-    """)
+    """
+    )
     fun findAllLicenceConditionsForPersonAndEvent(personId: Long, eventNumber: String): List<LicenceCondition>
-
 
     @Query(
         """
