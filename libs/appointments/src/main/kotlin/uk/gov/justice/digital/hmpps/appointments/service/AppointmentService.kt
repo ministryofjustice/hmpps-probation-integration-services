@@ -75,7 +75,7 @@ class AppointmentService internal constructor(
                     team = teams[request.teamCode].orNotFoundBy("code", request.teamCode),
                     staff = staff[request.staffCode].orNotFoundBy("code", request.staffCode),
                     officeLocation = request.locationCode?.let { code -> locations[code].orNotFoundBy("code", code) },
-                    type = types[request.typeCode].orNotFoundBy("code", request.typeCode),
+                    type = type,
                     enforcement = type.outcomeRequired == true,
                     notes = request.notes,
                 ).checkForSchedulingConflicts(
