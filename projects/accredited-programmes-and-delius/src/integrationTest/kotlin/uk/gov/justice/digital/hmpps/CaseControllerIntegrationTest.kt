@@ -213,6 +213,12 @@ internal class CaseControllerIntegrationTest(
                           "mainCategoryDescription": "Kidnapping",
                           "subCategoryCode": "03",
                           "subCategoryDescription": "False Imprisonment"
+                        },
+                        {
+                          "mainCategoryCode": "036",
+                          "mainCategoryDescription": "Kidnapping",
+                          "subCategoryCode": "01",
+                          "subCategoryDescription": "Kidnapping"
                         }
                       ]
                     }
