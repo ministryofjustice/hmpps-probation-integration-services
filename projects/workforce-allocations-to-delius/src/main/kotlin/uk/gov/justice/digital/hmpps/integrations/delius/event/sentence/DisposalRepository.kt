@@ -48,26 +48,31 @@ interface DisposalRepository : JpaRepository<Disposal, Long> {
 
     @Query(
         """
-        select d.licenceConditions from Disposal d
+        select distinct lc from Disposal d
         join d.event e
+        join d.licenceConditions lc
+        join OrderManager om on e.id = om.eventId
+        join Staff s on om.staff.id = s.id
         where e.person.id = :personId
-        and e.active = true and d.active = true
         and e.softDeleted = false and d.softDeleted = false
-    """
-    )
+        and e.active = true and d.active = true
+        and om.active = true
+        and s.code like '%U' ESCAPE ' '
+    """)
     fun findAllLicenceConditionsForCrn(personId: Long): List<LicenceCondition>
 
     @Query(
         """
-        select d.licenceConditions from Disposal d
+        select distinct lc from Disposal d
         join d.event e
+        join d.licenceConditions lc
         where e.person.id = :personId
         and e.number = :eventNumber
         and e.active = true and d.active = true
         and e.softDeleted = false and d.softDeleted = false
-    """
-    )
+    """)
     fun findAllLicenceConditionsForPersonAndEvent(personId: Long, eventNumber: String): List<LicenceCondition>
+
 
     @Query(
         """
