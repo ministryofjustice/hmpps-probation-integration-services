@@ -1,7 +1,6 @@
 package uk.gov.justice.digital.hmpps.data.generator.personalDetails
 
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.USER
-import uk.gov.justice.digital.hmpps.data.generator.IdGenerator
 import uk.gov.justice.digital.hmpps.data.generator.IdGenerator.id
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.*
@@ -92,11 +91,11 @@ object PersonDetailsGenerator {
     )
     val DISABILITY_3 = Disability(
         id(),
-        PERSONAL_DETAILS.id,
-        DISABILITY_3_RD,
-        LocalDate.now().minusDays(2),
-        LocalDate.now().minusDays(2),
-        USER,
+        personId = PERSONAL_DETAILS.id,
+        type = DISABILITY_3_RD,
+        startDate = LocalDate.now().minusDays(2),
+        lastUpdated = LocalDate.now().minusDays(2),
+        lastUpdatedUser = USER,
         condition = CONDITION_1_RD,
     )
 

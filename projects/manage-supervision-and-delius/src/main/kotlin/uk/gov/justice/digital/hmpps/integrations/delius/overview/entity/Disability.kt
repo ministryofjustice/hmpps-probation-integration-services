@@ -48,6 +48,7 @@ class Disability(
     val softDeleted: Boolean = false,
 
     @ManyToOne
+    @Fetch(FetchMode.JOIN)
     @JoinColumn(name = "disability_condition_id")
     val condition: ReferenceData? = null,
 )
