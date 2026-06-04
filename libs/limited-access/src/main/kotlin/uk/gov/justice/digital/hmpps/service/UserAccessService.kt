@@ -11,6 +11,7 @@ class UserAccessService(private val uar: UserAccessRepository) {
     companion object {
         private val LONDON: ZoneId = ZoneId.of("Europe/London")
     }
+
     fun caseAccessFor(username: String, crn: String) =
         userAccessFor(username, listOf(crn)).access.first { it.crn == crn }
 
@@ -33,8 +34,20 @@ class UserAccessService(private val uar: UserAccessRepository) {
         val restrictions = uar.getRestrictionsForCrn(crn)
         return AllCaseAccess(
             crn = crn,
-            excludedFrom = exclusions.map { LaoDetail(it.username, it.start.atStartOfDay(LONDON), it.end?.atZone(LONDON)) }.ifEmpty { null },
-            restrictedTo = restrictions.map { LaoDetail(it.username, it.since.atZone(LONDON), it.until?.atZone(LONDON)) }.ifEmpty { null },
+            excludedFrom = exclusions.map {
+                LaoDetail(
+                    it.username,
+                    it.start.atStartOfDay(LONDON),
+                    it.end?.atZone(LONDON)
+                )
+            }.ifEmpty { null },
+            restrictedTo = restrictions.map {
+                LaoDetail(
+                    it.username,
+                    it.since.atZone(LONDON),
+                    it.until?.atZone(LONDON)
+                )
+            }.ifEmpty { null },
             exclusionMessage = person?.exclusionMessage,
             restrictionMessage = person?.restrictionMessage,
         )
