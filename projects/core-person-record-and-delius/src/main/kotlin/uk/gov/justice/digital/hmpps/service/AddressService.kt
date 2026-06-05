@@ -45,8 +45,9 @@ class AddressService(
         val addressId = requireNotNull(personClient.getAddress(crn, id).deliusAddressId) {
             "Attempting to delete address without Delius ID"
         }
-        addressRepository.findByIdOrNull(addressId)?.apply { softDeleted = true }
-            ?.trackEvent("AddressDeleted", "crn" to crn, "cprAddressId" to id)
+        addressRepository.findByIdOrNull(addressId).orNotFoundBy("id", id)
+            .apply { softDeleted = true }
+            .trackEvent("AddressDeleted", "crn" to crn, "cprAddressId" to id)
     }
 
     private fun CanonicalAddress.toEntity(personId: Long, existing: PersonAddress? = null) = PersonAddress(
@@ -72,7 +73,7 @@ class AddressService(
         typeVerified = typeVerified,
     )
 
-    private fun PersonAddress.trackEvent(name: String, vararg properties: Pair<String, String>) {
+    private fun PersonAddress.trackEvent(name: String, vararg properties: Pair<String, String>) = also {
         telemetryService.trackEvent(
             name, properties.toMap() + mapOf(
                 "deliusAddressId" to id.toString(),

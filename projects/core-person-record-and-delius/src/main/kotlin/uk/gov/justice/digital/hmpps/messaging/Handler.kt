@@ -16,7 +16,8 @@ import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 class Handler(
     override val converter: NotificationConverter<HmppsDomainEvent>,
     private val addressService: AddressService,
-    private val telemetryService: TelemetryService
+    private val telemetryService: TelemetryService,
+    private val notifier: Notifier,
 ) : NotificationHandler<HmppsDomainEvent> {
     @Publish(
         messages = [
@@ -30,9 +31,9 @@ class Handler(
         val crn = requireNotNull(notification.message.personReference.findCrn()) { "Missing CRN" }
         val id = requireNotNull(notification.message.additionalInformation["cprAddressId"]) { "Missing ID" } as String
         when (notification.eventType) {
-            ADDRESS_CREATED -> addressService.createAddress(crn, id)
-            ADDRESS_UPDATED -> addressService.updateAddress(crn, id)
-            ADDRESS_DELETED -> addressService.deleteAddress(crn, id)
+            ADDRESS_CREATED -> addressService.createAddress(crn, id).also { notifier.addressCreated(crn, id, it) }
+            ADDRESS_UPDATED -> addressService.updateAddress(crn, id).also { notifier.addressUpdated(crn, id, it) }
+            ADDRESS_DELETED -> addressService.deleteAddress(crn, id).also { notifier.addressDeleted(crn, id, it) }
         }
     }
 
