@@ -7,31 +7,33 @@ import uk.gov.justice.digital.hmpps.entity.LimitedAccessUser
 import uk.gov.justice.digital.hmpps.entity.Restriction
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.Person
 import uk.gov.justice.digital.hmpps.integrations.delius.user.entity.User
-import java.time.LocalDateTime
+import java.time.ZonedDateTime
 
 object LimitedAccessGenerator {
     val EXCLUSION = generateExclusion(PersonDetailsGenerator.EXCLUSION)
     val RESTRICTION =
-        generateRestriction(PersonDetailsGenerator.RESTRICTION, endDateTime = LocalDateTime.now().plusDays(1))
+        generateRestriction(PersonDetailsGenerator.RESTRICTION, endDateTime = ZonedDateTime.now().plusDays(1))
     val BOTH_EXCLUSION = generateExclusion(PersonDetailsGenerator.RESTRICTION_EXCLUSION)
     val BOTH_RESTRICTION = generateRestriction(
         PersonDetailsGenerator.RESTRICTION_EXCLUSION,
-        endDateTime = LocalDateTime.now().plusDays(1)
+        endDateTime = ZonedDateTime.now().plusDays(1)
     )
 
     fun generateExclusion(
         person: Person,
         user: User = ContactGenerator.LIMITED_ACCESS_USER,
-        endDateTime: LocalDateTime? = null,
+        start: ZonedDateTime = ZonedDateTime.now(),
+        endDateTime: ZonedDateTime? = null,
         id: Long = IdGenerator.getAndIncrement()
-    ) = Exclusion(person.limitedAccess(), user.limitedAccess(), endDateTime, id)
+    ) = Exclusion(person.limitedAccess(), user.limitedAccess(), start, endDateTime, id)
 
     fun generateRestriction(
         person: Person,
         user: User = ContactGenerator.USER_1,
-        endDateTime: LocalDateTime? = null,
+        start: ZonedDateTime = ZonedDateTime.now(),
+        endDateTime: ZonedDateTime? = null,
         id: Long = IdGenerator.getAndIncrement()
-    ) = Restriction(person.limitedAccess(), user.limitedAccess(), endDateTime, id)
+    ) = Restriction(person.limitedAccess(), user.limitedAccess(), start, endDateTime, id)
 
     private fun Person.limitedAccess() = LimitedAccessPerson(crn, exclusionMessage, restrictionMessage, id)
     private fun User.limitedAccess() = LimitedAccessUser(username, id)

@@ -2,15 +2,20 @@ package uk.gov.justice.digital.hmpps.service
 
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
+import org.hamcrest.Matchers.hasSize
+import org.hamcrest.Matchers.nullValue
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.whenever
+import uk.gov.justice.digital.hmpps.entity.ExclusionDetail
 import uk.gov.justice.digital.hmpps.entity.LimitedAccessUser
 import uk.gov.justice.digital.hmpps.entity.PersonAccess
+import uk.gov.justice.digital.hmpps.entity.RestrictionDetail
 import uk.gov.justice.digital.hmpps.entity.UserAccessRepository
+import java.time.ZonedDateTime
 
 @ExtendWith(MockitoExtension::class)
 internal class UserAccessServiceTest {
@@ -29,7 +34,7 @@ internal class UserAccessServiceTest {
 
         val res = userAccessService.userAccessFor("john-smith", listOf("E123456", "R123456", "B123456", "N123456"))
 
-        assertThat(res.access.size, equalTo(4))
+        assertThat(res.access, hasSize(4))
         assertThat(res, equalTo(userAccess()))
     }
 
@@ -41,7 +46,7 @@ internal class UserAccessServiceTest {
 
         val res = userAccessService.userAccessFor("jane-smith", listOf("E123456", "R123456", "B123456", "N123456"))
 
-        assertThat(res.access.size, equalTo(4))
+        assertThat(res.access, hasSize(4))
         assertThat(res, equalTo(userAccess()))
     }
 
@@ -53,7 +58,7 @@ internal class UserAccessServiceTest {
 
         val res = userAccessService.checkLimitedAccessFor(listOf("E123456", "R123456", "B123456", "N123456"))
 
-        assertThat(res.access.size, equalTo(4))
+        assertThat(res.access, hasSize(4))
         assertThat(res, equalTo(userAccess()))
     }
 
@@ -66,6 +71,90 @@ internal class UserAccessServiceTest {
         val res = userAccessService.caseAccessFor("john-smith", "E123456")
 
         assertThat(res, equalTo(userAccess().access[0]))
+    }
+
+    @Test
+    fun `allCaseAccessForCrn returns exclusions and restrictions`() {
+        whenever(uar.findLimitedAccessPersonByCrn("B123456")).thenReturn(null)
+        whenever(uar.getExclusionsForCrn("B123456")).thenReturn(listOf(stubExclusionDetail("excluded-user")))
+        whenever(uar.getRestrictionsForCrn("B123456")).thenReturn(listOf(stubRestrictionDetail("restricted-user")))
+
+        val res = userAccessService.allCaseAccessForCrn("B123456")
+
+        assertThat(res.crn, equalTo("B123456"))
+        assertThat(res.excludedFrom!!.size, equalTo(1))
+        assertThat(res.excludedFrom!![0].username, equalTo("excluded-user"))
+        assertThat(res.restrictedTo!!.size, equalTo(1))
+        assertThat(res.restrictedTo!![0].username, equalTo("restricted-user"))
+    }
+
+    @Test
+    fun `allCaseAccessForCrn returns null lists when no exclusions or restrictions`() {
+        whenever(uar.findLimitedAccessPersonByCrn("N123456")).thenReturn(null)
+        whenever(uar.getExclusionsForCrn("N123456")).thenReturn(emptyList())
+        whenever(uar.getRestrictionsForCrn("N123456")).thenReturn(emptyList())
+
+        val res = userAccessService.allCaseAccessForCrn("N123456")
+
+        assertThat(res.crn, equalTo("N123456"))
+        assertThat(res.excludedFrom, nullValue())
+        assertThat(res.restrictedTo, nullValue())
+        assertThat(res.exclusionMessage, nullValue())
+        assertThat(res.restrictionMessage, nullValue())
+    }
+
+    @Test
+    fun `allCaseAccessForCrn returns only exclusions when no restrictions`() {
+        whenever(uar.findLimitedAccessPersonByCrn("E123456")).thenReturn(null)
+        whenever(uar.getExclusionsForCrn("E123456")).thenReturn(listOf(stubExclusionDetail("excluded-user")))
+        whenever(uar.getRestrictionsForCrn("E123456")).thenReturn(emptyList())
+
+        val res = userAccessService.allCaseAccessForCrn("E123456")
+
+        assertThat(res.excludedFrom!!.size, equalTo(1))
+        assertThat(res.restrictedTo, nullValue())
+    }
+
+    @Test
+    fun `allCaseAccessForCrn returns only restrictions when no exclusions`() {
+        whenever(uar.findLimitedAccessPersonByCrn("R123456")).thenReturn(null)
+        whenever(uar.getExclusionsForCrn("R123456")).thenReturn(emptyList())
+        whenever(uar.getRestrictionsForCrn("R123456")).thenReturn(listOf(stubRestrictionDetail("restricted-user")))
+
+        val res = userAccessService.allCaseAccessForCrn("R123456")
+
+        assertThat(res.excludedFrom, nullValue())
+        assertThat(res.restrictedTo!!.size, equalTo(1))
+    }
+
+    @Test
+    fun `allCaseAccessForCrn includes messages from person record`() {
+        val person = uk.gov.justice.digital.hmpps.entity.LimitedAccessPerson(
+            crn = "E123456",
+            exclusionMessage = "You are excluded",
+            restrictionMessage = "Access is restricted",
+            id = 1L
+        )
+        whenever(uar.findLimitedAccessPersonByCrn("E123456")).thenReturn(person)
+        whenever(uar.getExclusionsForCrn("E123456")).thenReturn(emptyList())
+        whenever(uar.getRestrictionsForCrn("E123456")).thenReturn(emptyList())
+
+        val res = userAccessService.allCaseAccessForCrn("E123456")
+
+        assertThat(res.exclusionMessage, equalTo("You are excluded"))
+        assertThat(res.restrictionMessage, equalTo("Access is restricted"))
+    }
+
+    private fun stubExclusionDetail(username: String) = object : ExclusionDetail {
+        override val username = username
+        override val since: ZonedDateTime = ZonedDateTime.now().minusDays(1)
+        override val until: ZonedDateTime? = null
+    }
+
+    private fun stubRestrictionDetail(username: String) = object : RestrictionDetail {
+        override val username = username
+        override val since: ZonedDateTime = ZonedDateTime.now().minusDays(1)
+        override val until: ZonedDateTime? = null
     }
 
     private fun givenLimitedAccessResults() =
