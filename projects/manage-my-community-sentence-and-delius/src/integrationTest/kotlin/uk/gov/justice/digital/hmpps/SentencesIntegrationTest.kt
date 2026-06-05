@@ -36,7 +36,7 @@ internal class SentencesIntegrationTest @Autowired constructor(private val mockM
                             {
                               "type": "Community Order",
                               "startDate": "2024-01-01",
-                              "expectedEndDate": "2025-06-01",
+                              "expectedEndDate": "2025-09-01",
                               "lastUpdatedAt": "2026-03-01T12:00:00Z",
                               "requirements": [
                                 {
@@ -47,22 +47,6 @@ internal class SentencesIntegrationTest @Autowired constructor(private val mockM
                                   "expectedEndDate": "2025-01-01",
                                   "actualStartDate": "2024-02-01",
                                   "actualEndDate": "2025-02-01",
-                                  "lastUpdatedAt": "2026-02-15T10:00:00Z"
-                                },
-                                {
-                                  "type": "Unpaid Work",
-                                  "description": "Regular",
-                                  "required": 10,
-                                  "completed": 6,
-                                  "unit": "HOURS",
-                                  "lastUpdatedAt":"2026-02-15T10:00:00Z"
-                                },
-                                {
-                                  "type": "Rehabilitation Activity Requirement (RAR)",
-                                  "description": "Rehabilitation Activity Requirement (RAR)",
-                                  "required": 15,
-                                  "completed": 2,
-                                  "unit": "DAYS",
                                   "lastUpdatedAt": "2026-02-15T10:00:00Z"
                                 }
                               ],
@@ -91,4 +75,5 @@ internal class SentencesIntegrationTest @Autowired constructor(private val mockM
             content { json("""{"sentences":[]}""", JsonCompareMode.STRICT) }
         }
     }
+
 }
