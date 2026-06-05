@@ -668,7 +668,8 @@ object PersonGenerator {
     val BREACH_PREVIOUS_ORDER_2 = generateNsi(OVERVIEW.id, INACTIVE_ORDER_2.event.id, NSI_BREACH_TYPE, NSI_STATUS)
     val BREACH_ON_ACTIVE_ORDER = generateNsi(OVERVIEW.id, ACTIVE_ORDER.event.id, NSI_BREACH_TYPE, NSI_STATUS)
     val RECALL_NSI = generateNsi(OVERVIEW.id, ACTIVE_ORDER.event.id, NSI_RECALL_TYPE, RECALL_STATUS)
-    val INACTIVE_RECALL_NSI = generateNsi(OVERVIEW.id, ACTIVE_ORDER.event.id, NSI_RECALL_TYPE, RECALL_STATUS, active = false)
+    val INACTIVE_RECALL_NSI =
+        generateNsi(OVERVIEW.id, ACTIVE_ORDER.event.id, NSI_RECALL_TYPE, RECALL_STATUS, active = false)
 
     val OPD_NSI = generateNsi(OVERVIEW.id, ACTIVE_ORDER.event.id, NSI_OPD_TYPE, NSI_STATUS, subType = NSI_OPD_SUB_TYPE)
 
