@@ -26,16 +26,23 @@ class Handler(
             Message(title = ADDRESS_DELETED)
         ]
     )
-    override fun handle(notification: Notification<HmppsDomainEvent>) {
+    override fun handle(notification: Notification<HmppsDomainEvent>) = with(notification.message) {
         telemetryService.notificationReceived(notification)
-        val crn = requireNotNull(notification.message.personReference.findCrn()) { "Missing CRN" }
-        val id = requireNotNull(notification.message.additionalInformation["cprAddressId"]) { "Missing ID" } as String
         when (notification.eventType) {
-            ADDRESS_CREATED -> addressService.createAddress(crn, id).also { notifier.addressCreated(crn, id, it) }
-            ADDRESS_UPDATED -> addressService.updateAddress(crn, id).also { notifier.addressUpdated(crn, id, it) }
-            ADDRESS_DELETED -> addressService.deleteAddress(crn, id).also { notifier.addressDeleted(crn, id, it) }
+            ADDRESS_CREATED -> addressService.createAddress(crn, cprId)
+                .also { notifier.addressCreated(crn, cprId, it) }
+
+            ADDRESS_UPDATED -> addressService.updateAddress(crn, cprId, deliusId)
+                .also { notifier.addressUpdated(crn, cprId, it) }
+
+            ADDRESS_DELETED -> addressService.deleteAddress(crn, cprId, deliusId)
+                .also { notifier.addressDeleted(crn, cprId, it) }
         }
     }
+
+    private val HmppsDomainEvent.crn get() = requireNotNull(personReference.findCrn()) { "Missing CRN" }
+    private val HmppsDomainEvent.cprId get() = requireNotNull(additionalInformation["cprAddressId"]) { "Missing CPR ID" } as String
+    private val HmppsDomainEvent.deliusId get() = (requireNotNull(additionalInformation["deliusAddressId"]) { "Missing Delius ID" } as Number).toLong()
 
     companion object {
         const val ADDRESS_CREATED = "core-person-record.probation.address.created"

@@ -4,7 +4,6 @@ import java.time.ZonedDateTime
 
 data class CanonicalAddress(
     val cprAddressId: String,
-    val deliusAddressId: Long? = null,
     val noFixedAbode: Boolean? = null,
     val startDate: ZonedDateTime? = null,
     val endDate: ZonedDateTime? = null,

@@ -3,7 +3,7 @@
     {
       "request": {
         "method": "GET",
-        "urlPath": "/core-person-record/person/probation-integration/U123456/address/cpr-address-created"
+        "urlPath": "/core-person-record/person/probation/U123456/address/cpr-address-created"
       },
       "response": {
         "headers": {
@@ -16,7 +16,7 @@
     {
       "request": {
         "method": "GET",
-        "urlPath": "/core-person-record/person/probation-integration/U123456/address/cpr-address-updated"
+        "urlPath": "/core-person-record/person/probation/U123456/address/cpr-address-updated"
       },
       "response": {
         "headers": {
@@ -29,7 +29,7 @@
     {
       "request": {
         "method": "GET",
-        "urlPath": "/core-person-record/person/probation-integration/U123456/address/cpr-address-deleted"
+        "urlPath": "/core-person-record/person/probation/U123456/address/cpr-address-deleted"
       },
       "response": {
         "headers": {

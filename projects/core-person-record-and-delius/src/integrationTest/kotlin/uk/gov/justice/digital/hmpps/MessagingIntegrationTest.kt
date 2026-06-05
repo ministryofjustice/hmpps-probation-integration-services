@@ -59,6 +59,10 @@ internal class MessagingIntegrationTest @Autowired constructor(
                 "crn" to "U123456",
                 "cprAddressId" to "cpr-address-created",
                 "deliusAddressId" to address.id.toString(),
+                "addressStatus" to address.status.code,
+                "addressType" to address.type?.code,
+                "startDate" to address.startDate?.toString(),
+                "endDate" to address.endDate?.toString(),
             )
         )
         assertAddressDomainEvent(
@@ -95,6 +99,10 @@ internal class MessagingIntegrationTest @Autowired constructor(
                 "crn" to "U123456",
                 "cprAddressId" to "cpr-address-updated",
                 "deliusAddressId" to addressId.toString(),
+                "addressStatus" to address.status.code,
+                "addressType" to address.type?.code,
+                "startDate" to address.startDate?.toString(),
+                "endDate" to address.endDate?.toString(),
             )
         )
         assertAddressDomainEvent(
@@ -109,7 +117,8 @@ internal class MessagingIntegrationTest @Autowired constructor(
     @Test
     fun `soft deletes address from domain event`() {
         val addressId = PersonGenerator.UPDATABLE_PERSON_ADDRESSES[1].id!!
-        assertThat(addressRepository.findByIdOrNull(addressId)?.softDeleted).isFalse
+        val existingAddress = addressRepository.findByIdOrNull(addressId)!!
+        assertThat(existingAddress.softDeleted).isFalse
 
         publish("address-deleted")
 
@@ -121,6 +130,10 @@ internal class MessagingIntegrationTest @Autowired constructor(
                 "crn" to "U123456",
                 "cprAddressId" to "cpr-address-deleted",
                 "deliusAddressId" to addressId.toString(),
+                "addressStatus" to existingAddress.status.code,
+                "addressType" to existingAddress.type?.code,
+                "startDate" to existingAddress.startDate?.toString(),
+                "endDate" to existingAddress.endDate?.toString(),
             )
         )
         assertAddressDomainEvent(
@@ -146,7 +159,7 @@ internal class MessagingIntegrationTest @Autowired constructor(
             """.trimIndent()
         )
 
-        assertThatThrownBy { addressService.updateAddress("U123456", "cpr-address-missing-existing") }
+        assertThatThrownBy { addressService.updateAddress("U123456", "cpr-address-missing-existing", 99999999) }
             .isInstanceOf(NotFoundException::class.java)
             .hasMessage("PersonAddress with id of 99999999 not found")
     }
@@ -221,10 +234,7 @@ internal class MessagingIntegrationTest @Autowired constructor(
     }
 
     private fun stubAddress(id: String, json: String) {
-        wireMockServer.stubFor(
-            get("/core-person-record/person/probation-integration/U123456/address/$id")
-                .willReturn(okJson(json))
-        )
+        wireMockServer.stubFor(get("/core-person-record/person/probation/U123456/address/$id").willReturn(okJson(json)))
     }
 
     private fun softDeleted(addressId: Long) = jdbcTemplate.queryForObject<Int>(

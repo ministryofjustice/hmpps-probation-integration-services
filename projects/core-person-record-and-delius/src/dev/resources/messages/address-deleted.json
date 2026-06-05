@@ -4,7 +4,8 @@
   "description": "A probation address has been deleted in the core person record",
   "occurredAt": "2026-05-01T12:10:00+01:00",
   "additionalInformation": {
-    "cprAddressId": "cpr-address-deleted"
+    "cprAddressId": "cpr-address-deleted",
+    "deliusAddressId": 90000002
   },
   "personReference": {
     "identifiers": [

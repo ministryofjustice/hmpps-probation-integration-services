@@ -4,7 +4,8 @@
   "description": "A probation address has been updated in the core person record",
   "occurredAt": "2026-05-01T12:05:00+01:00",
   "additionalInformation": {
-    "cprAddressId": "cpr-address-updated"
+    "cprAddressId": "cpr-address-updated",
+    "deliusAddressId": 90000001
   },
   "personReference": {
     "identifiers": [
