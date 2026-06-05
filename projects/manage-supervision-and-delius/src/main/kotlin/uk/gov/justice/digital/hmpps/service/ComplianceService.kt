@@ -4,19 +4,15 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.api.model.CodeAndDescription
 import uk.gov.justice.digital.hmpps.api.model.activity.Activity
-import uk.gov.justice.digital.hmpps.api.model.compliance.Breach
-import uk.gov.justice.digital.hmpps.api.model.compliance.NonComplianceDetail
-import uk.gov.justice.digital.hmpps.api.model.compliance.NonComplianceResponse
-import uk.gov.justice.digital.hmpps.api.model.compliance.PersonCompliance
-import uk.gov.justice.digital.hmpps.api.model.compliance.SentenceCompliance
+import uk.gov.justice.digital.hmpps.api.model.compliance.*
 import uk.gov.justice.digital.hmpps.api.model.overview.*
 import uk.gov.justice.digital.hmpps.api.model.overview.Offence
 import uk.gov.justice.digital.hmpps.integrations.delius.compliance.Nsi
 import uk.gov.justice.digital.hmpps.integrations.delius.compliance.NsiRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.compliance.getActiveRecallNsi
 import uk.gov.justice.digital.hmpps.integrations.delius.compliance.getAllBreaches
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.*
 import java.time.LocalDate
-import java.time.ZonedDateTime
 
 @Service
 class ComplianceService(
@@ -46,6 +42,7 @@ class ComplianceService(
             allBreaches.filter { it.startDate()?.let { d -> !d.isBefore(cutoff) } == true }
         } else allBreaches
         val previousOrders = events.filter { it.isInactiveEvent() }
+        val recallNsi = nsiRepository.getActiveRecallNsi(summary.id)
 
         fun breachesForSentence(eventId: Long) = windowedBreaches.filter { it.eventId == eventId }
         fun activeBreachCountForSentence(eventId: Long) =
@@ -74,6 +71,12 @@ class ComplianceService(
                     )
                 },
                 activeBreach = activeBreachCountForSentence(id)?.let {
+                    Breach(
+                        startDate = it.startDate(),
+                        status = it.nsiStatus?.description
+                    )
+                },
+                activeRecall = recallNsi?.let {
                     Breach(
                         startDate = it.startDate(),
                         status = it.nsiStatus?.description
