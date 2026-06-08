@@ -18,7 +18,7 @@ class Custody(
     val disposal: Disposal? = null,
 
     @OneToMany(mappedBy = "custody")
-    @SQLRestriction("key_date_type_id in (select t.standard_reference_list_id from r_standard_reference_list t where t.code_value = '${KeyDate.SENTENCE_EXPIRY_DATE}')")
+    @SQLRestriction("key_date_type_id in (select t.standard_reference_list_id from r_standard_reference_list t where t.code_value = 'SED')")
     val sentenceExpiryDate: List<KeyDate> = emptyList(),
 
     @Column(columnDefinition = "number")
