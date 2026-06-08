@@ -24,7 +24,8 @@ class SentenceService(
         val personId = personRepository.getIdByCrn(crn)
         val events = eventRepository.findByPersonIdAndDisposalNotNull(personId)
         val disposalIds = events.mapNotNull { it.disposal?.id }.distinct()
-        val custodyByDisposalId = disposalIds.associateWith { custodyRepository.findByDisposalId(it) }
+        val custodyByDisposalId = custodyRepository.findAllByDisposalIdIn(disposalIds)
+            .associateBy { it.disposal!!.id }
 
         return SentenceProgress(
             sentences = events.mapNotNull { it.disposal }.map {

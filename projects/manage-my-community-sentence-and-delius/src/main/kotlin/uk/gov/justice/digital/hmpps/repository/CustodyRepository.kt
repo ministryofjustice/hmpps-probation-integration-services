@@ -6,5 +6,5 @@ import uk.gov.justice.digital.hmpps.entity.sentence.Custody
 
 interface CustodyRepository : JpaRepository<Custody, Long> {
     @EntityGraph(attributePaths = ["sentenceExpiryDates"])
-    fun findByDisposalId(disposalId: Long): Custody?
+    fun findAllByDisposalIdIn(disposalIds: Collection<Long>): List<Custody>
 }
