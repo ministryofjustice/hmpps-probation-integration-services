@@ -25,7 +25,7 @@ class Custody(
     @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean = false,
 ) {
-    fun sentenceExpiryDate() = sentenceExpiryDate.firstOrNull()?.date
+    fun sentenceExpiryDate() = sentenceExpiryDate.maxOfOrNull { it.date }
 }
 
 
