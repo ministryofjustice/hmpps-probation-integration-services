@@ -10,7 +10,6 @@ import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
 import uk.gov.justice.digital.hmpps.data.TestData.PersonData
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
-import kotlin.text.get
 
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = RANDOM_PORT)

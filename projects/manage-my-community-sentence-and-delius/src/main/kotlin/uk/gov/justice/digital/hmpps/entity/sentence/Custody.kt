@@ -19,13 +19,13 @@ class Custody(
 
     @OneToMany(mappedBy = "custody")
     @SQLRestriction("key_date_type_id in (select t.standard_reference_list_id from r_standard_reference_list t where t.code_value = 'SED')")
-    val sentenceExpiryDate: List<KeyDate> = emptyList(),
+    val sentenceExpiryDates: List<KeyDate> = emptyList(),
 
     @Column(columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean = false,
 ) {
-    fun sentenceExpiryDate() = sentenceExpiryDate.maxOfOrNull { it.date }
+    fun sentenceExpiryDateValue() = sentenceExpiryDates.maxOfOrNull { it.date }
 }
 
 
