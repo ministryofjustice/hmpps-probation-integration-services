@@ -5,7 +5,8 @@ import org.springframework.data.jpa.repository.Query
 import java.time.ZonedDateTime
 
 interface LicenceConditionManagerRepository : JpaRepository<LicenceConditionManager, Long> {
-    @Query("""
+    @Query(
+        """
     select lm from LicenceConditionManager lm 
     where lm.licenceConditionId = :licenceConditionId 
     and lm.startDate <= :dateTime 

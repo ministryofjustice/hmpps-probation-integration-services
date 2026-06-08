@@ -42,7 +42,7 @@ class CaseViewService(
             sentence.toCvSentence(),
             listOf(sentence.mainOffence()) + additionalOffences.map { it.toCvOffence() },
             requirements.map { it.toCvRequirement() },
-            licenceConditions.map { it.toCvLicenceCondition()},
+            licenceConditions.map { it.toCvLicenceCondition() },
             cpsPack?.toCvDocument(),
             preCon?.toCvDocument(),
             courtReport?.toCvDocument()

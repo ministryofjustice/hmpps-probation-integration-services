@@ -17,8 +17,12 @@ import uk.gov.justice.digital.hmpps.jpa.GeneratedId
 @EntityListeners(AuditingEntityListener::class)
 @AssociationOverride(name = "team", joinColumns = [JoinColumn(name = "allocated_team_id")])
 @AssociationOverride(name = "staff", joinColumns = [JoinColumn(name = "allocated_staff_id")])
-@SequenceGenerator(name = "lic_condition_manager_id_seq", sequenceName = "lic_condition_manager_id_seq", allocationSize = 1)
-class LicenceConditionManager (
+@SequenceGenerator(
+    name = "lic_condition_manager_id_seq",
+    sequenceName = "lic_condition_manager_id_seq",
+    allocationSize = 1
+)
+class LicenceConditionManager(
     @Column(name = "lic_condition_id")
     var licenceConditionId: Long = 0,
 
@@ -28,4 +32,4 @@ class LicenceConditionManager (
     @Column(name = "lic_condition_manager_id")
     @GeneratedId(generator = "lic_condition_manager_id_seq")
     var id: Long = 0
-): ManagerBaseEntity()
+) : ManagerBaseEntity()

@@ -63,4 +63,4 @@ class LicenceConditionMainCategory(
 
     val description: String,
 
-)
+    )
