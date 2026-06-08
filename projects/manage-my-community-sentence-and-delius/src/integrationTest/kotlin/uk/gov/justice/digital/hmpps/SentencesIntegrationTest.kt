@@ -93,7 +93,6 @@ internal class SentencesIntegrationTest @Autowired constructor(private val mockM
             }
     }
 
-
     @Test
     fun `person with no sentences has empty list in response`() {
         mockMvc.get("/person/${PersonData.BASIC.crn}/sentences") { withToken() }.andExpect {
