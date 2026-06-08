@@ -4,6 +4,8 @@ import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.api.model.*
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.allocations.AllocationDemandRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.caseview.CaseViewLicenceCondition
+import uk.gov.justice.digital.hmpps.integrations.delius.caseview.CaseViewLicenceConditionRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.caseview.CaseViewRequirement
 import uk.gov.justice.digital.hmpps.integrations.delius.caseview.CaseViewRequirementRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactRepository
@@ -29,7 +31,8 @@ class AllocationDemandService(
     private val caseViewRequirementRepository: CaseViewRequirementRepository,
     private val eventRepository: EventRepository,
     private val contactRepository: ContactRepository,
-    private val courtAppearanceRepository: CourtAppearanceRepository
+    private val courtAppearanceRepository: CourtAppearanceRepository,
+    private val caseViewLicenceConditionRepository: CaseViewLicenceConditionRepository
 ) {
     fun findAllocationDemand(allocationDemandRequest: AllocationDemandRequest): AllocationDemandResponse {
         return AllocationDemandResponse(
@@ -154,6 +157,8 @@ class AllocationDemandService(
 
         val requirements = caseViewRequirementRepository.findAllByDisposalEventId(eventId)
             .map { it.toRequirement() }
+        val licenceConditions = caseViewLicenceConditionRepository.findAllByDisposalEventId(eventId)
+            .map { it.toLicenceCondition() }
         val initialAppointment = contactRepository.getInitialAppointmentData(person.id, eventId)
         val emails = ldapService.findEmailsForStaffIn(listOfNotNull(staff, allocatingStaff, initialAppointment?.staff))
         return AllocationDemandStaffResponse(
@@ -171,7 +176,8 @@ class AllocationDemandService(
             disposalRepository.findSentenceForEventNumberAndPersonId(person.id, eventNumber),
             courtAppearanceRepository.findOriginalCourt(eventId),
             eventRepository.findAllOffencesByEventId(eventId).sortedByDescending { it.mainOffence },
-            requirements
+            requirements,
+            licenceConditions,
         )
     }
 
@@ -182,5 +188,12 @@ class AllocationDemandService(
         id,
         currentManager().toManager(),
         mainCategory.code == "W"
+    )
+
+    private fun CaseViewLicenceCondition.toLicenceCondition() = LicenceCondition(
+        mainCategory.description,
+        subCategory?.description,
+        id,
+        currentManager().toManager(),
     )
 }

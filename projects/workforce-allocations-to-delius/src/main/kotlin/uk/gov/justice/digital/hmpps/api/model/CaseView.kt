@@ -1,5 +1,7 @@
 package uk.gov.justice.digital.hmpps.api.model
 
+import uk.gov.justice.digital.hmpps.integrations.delius.event.licencecondition.LicenceCondition
+import uk.gov.justice.digital.hmpps.integrations.delius.event.licencecondition.LicenceConditionMainCategory
 import java.time.LocalDate
 import java.time.Period
 
@@ -12,6 +14,7 @@ data class CaseView(
     val sentence: CvSentence,
     val offences: List<CvOffence>,
     val requirements: List<CvRequirement>,
+    val licenceConditions: List<CvLicenceCondition>,
     val cpsPack: CvDocument? = null,
     val preConvictionDocument: CvDocument? = null,
     val courtReport: CvDocument? = null
@@ -46,6 +49,11 @@ data class CvRequirement(
     val mainCategory: String,
     val subCategory: String?,
     val length: String
+)
+
+data class CvLicenceCondition(
+    val mainCategory: String,
+    val subCategory: String?,
 )
 
 data class CvDocument(

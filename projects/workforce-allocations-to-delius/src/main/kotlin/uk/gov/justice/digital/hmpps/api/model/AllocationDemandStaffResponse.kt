@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.api.model
 
+import uk.gov.justice.digital.hmpps.integrations.delius.event.licencecondition.LicenceConditionMainCategory
 import java.time.LocalDate
 import java.time.ZonedDateTime
 
@@ -13,7 +14,8 @@ data class AllocationDemandStaffResponse(
     val sentence: AllocationDemandSentence?,
     val court: Court?,
     val offences: List<Offence>,
-    val activeRequirements: List<Requirement>
+    val activeRequirements: List<Requirement>,
+    val licenceConditions: List<LicenceCondition>,
 )
 
 data class Requirement(
@@ -23,6 +25,13 @@ data class Requirement(
     val id: Long,
     val manager: Manager,
     val isUnpaidWork: Boolean
+)
+
+data class LicenceCondition(
+    val mainCategory: String,
+    val subCategory: String?,
+    val id: Long,
+    val manager: Manager,
 )
 
 interface Court {
