@@ -175,6 +175,9 @@ class AllocationDemandIntegrationTest @Autowired constructor(
                 jsonPath("$.activeRequirements[0].subCategory") { value("Rqmnt Sub Category") }
                 jsonPath("$.activeRequirements[0].length") { value("12 Months") }
                 jsonPath("$.activeRequirements[0].manager.allocated") { value("false") }
+                jsonPath("$.licenceConditions[0].mainCategory") { value(LicenceConditionMainCategoryGenerator.CASE_VIEW.description) }
+                jsonPath("$.licenceConditions[0].subCategory") { value(ReferenceDataGenerator.LICENCE_CONDITION_SUB_CATEGORY.description) }
+                jsonPath("$.licenceConditions[0].manager.allocated") { value("false") }
             }
     }
 

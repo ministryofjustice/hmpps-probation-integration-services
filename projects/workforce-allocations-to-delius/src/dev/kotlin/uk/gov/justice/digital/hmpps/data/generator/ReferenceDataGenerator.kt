@@ -18,6 +18,7 @@ object ReferenceDataGenerator {
     val UNIT_MONTHS = generate(DatasetGenerator.UNITS, "M", "Months")
     val GENDER_MALE = generate(DatasetGenerator.GENDER, "M", "Male")
     val REQUIREMENT_SUB_CATEGORY = generate(DatasetGenerator.REQUIREMENT_SUB_CATEGORY, "SUB", "Rqmnt Sub Category")
+    val LICENCE_CONDITION_SUB_CATEGORY = generate(DatasetGenerator.REQUIREMENT_SUB_CATEGORY, "LC_SUB", "Lic Condition Sub Category")
     val ADDRESS_TYPE = generate(DatasetGenerator.ADDRESS_TYPE, "AT", "AddressType")
     val ADDRESS_STATUS_MAIN = generate(DatasetGenerator.ADDRESS_TYPE, "M", "Main Address Type")
     val ADDRESS_STATUS_PREVIOUS = generate(DatasetGenerator.ADDRESS_TYPE, "P", "Main Address Type")

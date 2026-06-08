@@ -13,9 +13,12 @@ import org.springframework.test.web.servlet.get
 import uk.gov.justice.digital.hmpps.api.model.CvOffence
 import uk.gov.justice.digital.hmpps.api.model.CvRequirement
 import uk.gov.justice.digital.hmpps.api.model.CvSentence
+import uk.gov.justice.digital.hmpps.api.model.CvLicenceCondition
 import uk.gov.justice.digital.hmpps.api.model.ReallocationCaseView
 import uk.gov.justice.digital.hmpps.data.generator.AddressGenerator
+import uk.gov.justice.digital.hmpps.data.generator.LicenceConditionMainCategoryGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
+import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 import java.time.LocalDate
@@ -80,6 +83,15 @@ class ReallocationCaseViewIntegrationTest @Autowired constructor(
                 requirements,
                 hasItems(
                     CvRequirement("Main Category for Case View", "Rqmnt Sub Category", "12 Months")
+                )
+            )
+            assertThat(
+                licenceConditions,
+                hasItems(
+                    CvLicenceCondition(
+                        LicenceConditionMainCategoryGenerator.CASE_VIEW.description,
+                        ReferenceDataGenerator.LICENCE_CONDITION_SUB_CATEGORY.description
+                    )
                 )
             )
         }
