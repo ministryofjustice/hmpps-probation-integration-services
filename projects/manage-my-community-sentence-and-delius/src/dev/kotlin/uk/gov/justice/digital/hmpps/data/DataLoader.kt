@@ -61,9 +61,7 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
             TestData.AppointmentData.NON_APPOINTMENT,
             TestData.AppointmentData.PAST_1,
             TestData.AppointmentData.PAST_2,
-            TestData.SentenceData.SED_KEY_DATE_TYPE,
             TestData.SentenceData.SED_KEY_DATE,
-            TestData.SentenceData.CUSTODY,
         )
     }
 }

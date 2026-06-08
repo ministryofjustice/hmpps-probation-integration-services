@@ -23,7 +23,7 @@ class SentenceService(
     fun getSentenceProgress(crn: String): SentenceProgress {
         val personId = personRepository.getIdByCrn(crn)
         val events = eventRepository.findByPersonIdAndDisposalNotNull(personId)
-        val disposalIds = events.mapNotNull { it.disposal?.id }
+        val disposalIds = events.mapNotNull { it.disposal?.id }.distinct()
         val custodyByDisposalId = disposalIds.associateWith { custodyRepository.findByDisposalId(it) }
 
         return SentenceProgress(
