@@ -40,6 +40,4 @@ class Disposal(
     @Column(columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean = false,
-    @OneToOne(mappedBy = "disposal")
-    val custody: Custody? = null,
 )

@@ -7,6 +7,7 @@ import uk.gov.justice.digital.hmpps.model.DurationUnit
 import uk.gov.justice.digital.hmpps.model.SentenceProgress
 import uk.gov.justice.digital.hmpps.model.SentenceProgress.*
 import uk.gov.justice.digital.hmpps.repository.ContactRepository
+import uk.gov.justice.digital.hmpps.repository.CustodyRepository
 import uk.gov.justice.digital.hmpps.repository.EventRepository
 import uk.gov.justice.digital.hmpps.repository.PersonRepository
 import uk.gov.justice.digital.hmpps.repository.UnpaidWorkAppointmentRepository
@@ -16,17 +17,22 @@ class SentenceService(
     private val eventRepository: EventRepository,
     private val personRepository: PersonRepository,
     private val contactRepository: ContactRepository,
-    private val unpaidWorkAppointmentRepository: UnpaidWorkAppointmentRepository
+    private val unpaidWorkAppointmentRepository: UnpaidWorkAppointmentRepository,
+    private val custodyRepository: CustodyRepository,
 ) {
     fun getSentenceProgress(crn: String): SentenceProgress {
         val personId = personRepository.getIdByCrn(crn)
+        val events = eventRepository.findByPersonIdAndDisposalNotNull(personId)
+        val disposalIds = events.mapNotNull { it.disposal?.id }
+        val custodyByDisposalId = disposalIds.associateWith { custodyRepository.findByDisposalId(it) }
+
         return SentenceProgress(
-            sentences = eventRepository.findByPersonIdAndDisposalNotNull(personId).mapNotNull { it.disposal }.map {
+            sentences = events.mapNotNull { it.disposal }.map {
                 Sentence(
                     type = it.type.description,
                     startDate = it.date,
-                    expectedEndDate = it.custody?.sentenceExpiryDate() ?: it.enteredExpectedEndDate
-                    ?: it.expectedEndDate,
+                    expectedEndDate = custodyByDisposalId[it.id]?.sentenceExpiryDate()
+                        ?: it.enteredExpectedEndDate ?: it.expectedEndDate,
                     lastUpdatedAt = it.lastUpdatedDatetime,
                     requirements = it.requirements.map { requirement ->
                         Requirement(
