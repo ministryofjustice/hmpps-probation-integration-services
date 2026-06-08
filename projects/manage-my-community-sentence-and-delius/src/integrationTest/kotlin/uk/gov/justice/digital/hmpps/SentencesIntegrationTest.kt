@@ -10,6 +10,7 @@ import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
 import uk.gov.justice.digital.hmpps.data.TestData.PersonData
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
+import kotlin.text.get
 
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = RANDOM_PORT)
@@ -31,58 +32,67 @@ internal class SentencesIntegrationTest @Autowired constructor(private val mockM
                 content {
                     json(
                         """
+                    {
+                      "sentences": [
                         {
-                          "sentences": [
+                          "type": "Community Order",
+                          "startDate": "2024-01-01",
+                          "expectedEndDate": "2025-09-01",
+                          "lastUpdatedAt": "2026-03-01T12:00:00Z",
+                          "requirements": [
                             {
-                              "type": "Community Order",
-                              "startDate": "2024-01-01",
-                              "expectedEndDate": "2025-09-01",
-                              "lastUpdatedAt": "2026-03-01T12:00:00Z",
-                              "requirements": [
-                                {
-                                  "type": "Court - Accredited Programme",
-                                  "description": "Building Choices",
-                                  "imposedDate": "2024-01-01",
-                                  "expectedStartDate": "2024-01-15",
-                                  "expectedEndDate": "2025-01-01",
-                                  "actualStartDate": "2024-02-01",
-                                  "actualEndDate": "2025-02-01",
-                                  "lastUpdatedAt": "2026-02-15T10:00:00Z"
-                                },
-                                                                {
-                                  "type": "Unpaid Work",
-                                  "description": "Regular",
-                                  "required": 10,
-                                  "completed": 6,
-                                  "unit": "HOURS",
-                                  "lastUpdatedAt":"2026-02-15T10:00:00Z"
-                                },
-                                {
-                                  "type": "Rehabilitation Activity Requirement (RAR)",
-                                  "description": "Rehabilitation Activity Requirement (RAR)",
-                                  "required": 15,
-                                  "completed": 2,
-                                  "unit": "DAYS",
-                                  "lastUpdatedAt": "2026-02-15T10:00:00Z"
-                                }
-                              ],
-                              "licenceConditions": [
-                                {
-                                  "type": "Alcohol Monitoring (Electronic Monitoring)",
-                                  "description": "You must not drink any alcohol until [END DATE]. You will need to wear an electronic tag all the time so we can check this.",
-                                  "startDate": "2024-02-01",
-                                  "expectedEndDate": "2025-01-01"
-                                }
-                              ]
+                              "type": "Court - Accredited Programme",
+                              "description": "Building Choices",
+                              "imposedDate": "2024-01-01",
+                              "expectedStartDate": "2024-01-15",
+                              "expectedEndDate": "2025-01-01",
+                              "actualStartDate": "2024-02-01",
+                              "actualEndDate": "2025-02-01",
+                              "lastUpdatedAt": "2026-02-15T10:00:00Z"
+                            },
+                            {
+                              "type": "Unpaid Work",
+                              "description": "Regular",
+                              "required": 10,
+                              "completed": 6,
+                              "unit": "HOURS",
+                              "lastUpdatedAt":"2026-02-15T10:00:00Z"
+                            },
+                            {
+                              "type": "Rehabilitation Activity Requirement (RAR)",
+                              "description": "Rehabilitation Activity Requirement (RAR)",
+                              "required": 15,
+                              "completed": 2,
+                              "unit": "DAYS",
+                              "lastUpdatedAt": "2026-02-15T10:00:00Z"
+                            }
+                          ],
+                          "licenceConditions": [
+                            {
+                              "type": "Alcohol Monitoring (Electronic Monitoring)",
+                              "description": "You must not drink any alcohol until [END DATE]. You will need to wear an electronic tag all the time so we can check this.",
+                              "startDate": "2024-02-01",
+                              "expectedEndDate": "2025-01-01"
                             }
                           ]
+                        },
+                        {
+                          "type": "Community Order",
+                          "startDate": "2024-06-01",
+                          "expectedEndDate": "2026-06-01",
+                          "lastUpdatedAt": "2026-02-01T12:00:00Z",
+                          "requirements": [],
+                          "licenceConditions": []
                         }
-                        """.trimIndent(),
+                      ]
+                    }
+                    """.trimIndent(),
                         JsonCompareMode.STRICT
                     )
                 }
             }
     }
+
 
     @Test
     fun `person with no sentences has empty list in response`() {

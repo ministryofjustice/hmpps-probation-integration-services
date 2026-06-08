@@ -39,6 +39,8 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
             TestData.EmergencyContactData.EMERGENCY_CONTACT,
             TestData.SentenceData.EVENT,
             TestData.SentenceData.DISPOSAL,
+            TestData.SentenceData.EVENT_NO_CUSTODY,
+            TestData.SentenceData.DISPOSAL_NO_CUSTODY,
             TestData.RequirementData.REQUIREMENT,
             TestData.RequirementData.UPW_REQUIREMENT,
             TestData.RequirementData.RAR_REQUIREMENT,

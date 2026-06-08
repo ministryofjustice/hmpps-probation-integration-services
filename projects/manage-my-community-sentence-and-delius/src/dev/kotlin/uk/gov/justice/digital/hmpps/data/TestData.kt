@@ -197,6 +197,20 @@ object TestData {
             type = SED_KEY_DATE_TYPE,
             date = LocalDate.of(2025, 9, 1),
         )
+        val EVENT_NO_CUSTODY = Event(
+            id = id(),
+            number = "2",
+            personId = PersonData.DEFAULT.id,
+        )
+        val DISPOSAL_NO_CUSTODY = Disposal(
+            id = id(),
+            event = EVENT_NO_CUSTODY,
+            type = COMMUNITY_ORDER,
+            date = LocalDate.of(2024, 6, 1),
+            expectedEndDate = LocalDate.of(2026, 6, 1),
+            enteredExpectedEndDate = null,
+            lastUpdatedDatetime = ZonedDateTime.of(2026, 2, 1, 12, 0, 0, 0, ZoneId.of("UTC")),
+        )
     }
 
     object RequirementData {
