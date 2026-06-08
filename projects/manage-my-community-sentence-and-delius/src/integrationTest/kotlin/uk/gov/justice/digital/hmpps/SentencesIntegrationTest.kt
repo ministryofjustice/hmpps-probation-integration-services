@@ -75,5 +75,4 @@ internal class SentencesIntegrationTest @Autowired constructor(private val mockM
             content { json("""{"sentences":[]}""", JsonCompareMode.STRICT) }
         }
     }
-
 }

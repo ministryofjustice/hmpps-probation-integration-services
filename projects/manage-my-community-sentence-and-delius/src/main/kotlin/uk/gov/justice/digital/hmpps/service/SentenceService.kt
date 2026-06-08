@@ -25,7 +25,8 @@ class SentenceService(
                 Sentence(
                     type = it.type.description,
                     startDate = it.date,
-                    expectedEndDate = it.custody?.sentenceExpiryDate() ?: it.enteredExpectedEndDate ?: it.expectedEndDate,
+                    expectedEndDate = it.custody?.sentenceExpiryDate() ?: it.enteredExpectedEndDate
+                    ?: it.expectedEndDate,
                     lastUpdatedAt = it.lastUpdatedDatetime,
                     requirements = it.requirements.map { requirement ->
                         Requirement(
