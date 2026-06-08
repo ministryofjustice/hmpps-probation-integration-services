@@ -82,6 +82,7 @@ class AppointmentIntegrationTest : IntegrationTestBase() {
                     ),
                     nsis = listOf(
                         MinimalNsi(PersonGenerator.BREACH_ON_ACTIVE_ORDER.id, "BRE description"),
+                        MinimalNsi(PersonGenerator.RECALL_NSI.id, "REC description"),
                         MinimalNsi(PersonGenerator.OPD_NSI.id, "OPD1 description (OPD1 subtype)")
                     ),
                     licenceConditions = listOf(
