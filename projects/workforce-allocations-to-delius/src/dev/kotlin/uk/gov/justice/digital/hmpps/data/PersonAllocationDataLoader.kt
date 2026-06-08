@@ -38,12 +38,18 @@ class PersonAllocationDataLoader(private val dataManager: DataManager) {
         OrderManagerGenerator.DELETED_EVENT = createEventWithManager(EventGenerator.DELETED)
         OrderManagerGenerator.INACTIVE_EVENT =
             createEventWithManager(EventGenerator.INACTIVE, StaffGenerator.STAFF_FOR_INACTIVE_EVENT)
-        OrderManagerGenerator.ALLOCATED = createEventWithManager(EventGenerator.ALLOCATED, StaffGenerator.ALLOCATED_STAFF)
+        OrderManagerGenerator.ALLOCATED =
+            createEventWithManager(EventGenerator.ALLOCATED, StaffGenerator.ALLOCATED_STAFF)
 
         dataManager.save(DisposalGenerator.DEFAULT.type)
         dataManager.saveAll(listOf(DisposalGenerator.DEFAULT, DisposalGenerator.INACTIVE))
         dataManager.save(LicenceConditionGenerator.generate(disposalId = DisposalGenerator.DEFAULT.id))
-        val allocatedDisposal = dataManager.save(DisposalGenerator.generate(EventGenerator.ALLOCATED, type = DisposalGenerator.DEFAULT.type))
+        val allocatedDisposal = dataManager.save(
+            DisposalGenerator.generate(
+                EventGenerator.ALLOCATED,
+                type = DisposalGenerator.DEFAULT.type
+            )
+        )
         dataManager.save(LicenceConditionGenerator.generate(disposalId = allocatedDisposal.id))
         RequirementManagerGenerator.DEFAULT = createRequirementWithManager(RequirementGenerator.DEFAULT)
         RequirementManagerGenerator.NEW = createRequirementWithManager(RequirementGenerator.NEW)
@@ -63,7 +69,10 @@ class PersonAllocationDataLoader(private val dataManager: DataManager) {
         dataManager.save(OasysAssessmentGenerator.DEFAULT)
     }
 
-    fun createPersonWithManagers(person: Person, staff: Staff = StaffGenerator.DEFAULT): Pair<PersonManager, ResponsibleOfficer> {
+    fun createPersonWithManagers(
+        person: Person,
+        staff: Staff = StaffGenerator.DEFAULT
+    ): Pair<PersonManager, ResponsibleOfficer> {
         dataManager.save(person)
         val pm = dataManager.save(
             PersonManagerGenerator.generate(

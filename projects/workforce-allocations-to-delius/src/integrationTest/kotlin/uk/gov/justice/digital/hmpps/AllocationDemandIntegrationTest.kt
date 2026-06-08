@@ -167,7 +167,10 @@ class AllocationDemandIntegrationTest @Autowired constructor(
         // The ALLOCATED event has an order manager with a non-'U' staff code,
         // so its licence condition must not appear in the response
         val eventNumbers = response.activeEvents.map { it.eventNumber }
-        assertThat(eventNumbers, org.hamcrest.Matchers.not(org.hamcrest.Matchers.hasItem(EventGenerator.ALLOCATED.number)))
+        assertThat(
+            eventNumbers,
+            org.hamcrest.Matchers.not(org.hamcrest.Matchers.hasItem(EventGenerator.ALLOCATED.number))
+        )
         assertThat(response.licenceConditions.size, org.hamcrest.Matchers.equalTo(0))
     }
 

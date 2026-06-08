@@ -101,7 +101,8 @@ class CaseViewService(
     private fun CaseViewAdditionalOffence.toCvOffence() =
         CvOffence(offence.mainCategoryDescription, offence.subCategoryDescription, false)
 
-        private fun uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.LicenceCondition.toCvLicenceCondition() = CvLicenceCondition(
+    private fun uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.LicenceCondition.toCvLicenceCondition() =
+        CvLicenceCondition(
             mainCategory = mainCategory.description,
             subCategory = subCategory?.description,
             startDate = startDate,
