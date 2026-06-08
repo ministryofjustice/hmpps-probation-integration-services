@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.service
 
+import org.hibernate.engine.transaction.internal.jta.JtaStatusHelper.isActive
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.api.model.*
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
@@ -33,17 +34,6 @@ class CaseViewService(
         val preCon = docs[DocumentType.PREVIOUS_CONVICTION]
         val courtReport = documentRepository.findLatestCourtReport(person.id)
         val licenceConditions = disposalRepository.findAllLicenceConditionsForPersonAndEvent(person.id, eventNumber)
-            .map {
-                LicenceCondition(
-                    id = it.id,
-                    startDate = it.startDate,
-                    mainCategory = it.mainCategory.description,
-                    subCategory = it.subCategory?.description,
-                    commencementDate = it.commenceDate,
-                    terminationDate = it.terminationDate,
-                    active = it.activeFlag
-                )
-            }
         return CaseView(
             person.name(),
             person.dateOfBirth,
@@ -56,7 +46,7 @@ class CaseViewService(
             cpsPack?.toCvDocument(),
             preCon?.toCvDocument(),
             courtReport?.toCvDocument(),
-            licenceConditions,
+            licenceConditions.map { it.toCvLicenceCondition() }.sortedBy { it.startDate },
         )
     }
 
@@ -110,6 +100,14 @@ class CaseViewService(
     private fun SentenceSummary.mainOffence() = CvOffence(offenceMainCategory, offenceSubCategory, true)
     private fun CaseViewAdditionalOffence.toCvOffence() =
         CvOffence(offence.mainCategoryDescription, offence.subCategoryDescription, false)
+
+        private fun uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.LicenceCondition.toCvLicenceCondition() = CvLicenceCondition(
+            mainCategory = mainCategory.description,
+            subCategory = subCategory?.description,
+            startDate = startDate,
+            endDate = terminationDate,
+            active = activeFlag,
+        )
 
     private fun CaseViewRequirement.toCvRequirement() = CvRequirement(
         mainCategory.description,

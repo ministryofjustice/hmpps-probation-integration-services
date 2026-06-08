@@ -10,6 +10,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactRepositor
 import uk.gov.justice.digital.hmpps.integrations.delius.courtappearance.CourtAppearanceRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.event.EventRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.*
+import uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.LicenceCondition
 import uk.gov.justice.digital.hmpps.integrations.delius.person.PersonManagerRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.PersonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.getByCrnAndSoftDeletedFalse
@@ -136,15 +137,7 @@ class AllocationDemandService(
         val person = personRepository.getByCrnAndSoftDeletedFalse(crn)
         val events = disposalRepository.findAllUnallocatedActiveEvents(person.id)
         val licenceConditions = disposalRepository.findAllLicenceConditionsForCrn(person.id).map {
-            uk.gov.justice.digital.hmpps.api.model.LicenceCondition(
-                id = it.id,
-                mainCategory = it.mainCategory.description,
-                subCategory = it.subCategory?.description,
-                startDate = it.startDate,
-                commencementDate = it.commenceDate,
-                terminationDate = it.terminationDate,
-                active = it.activeFlag
-            )
+            it.toUnallocatedLicenceCondition()
         }
         return UnallocatedEventsResponse(person.crn, person.name(), events, licenceConditions)
     }
@@ -185,6 +178,17 @@ class AllocationDemandService(
             requirements
         )
     }
+
+    private fun LicenceCondition.toUnallocatedLicenceCondition() =
+        UnallocatedLicenceCondition(
+            id = id,
+            mainCategory = mainCategory.description,
+            subCategory = subCategory?.description,
+            startDate = startDate,
+            commencementDate = commenceDate,
+            terminationDate = terminationDate,
+            active = activeFlag
+        )
 
     private fun CaseViewRequirement.toRequirement() = Requirement(
         mainCategory.description,

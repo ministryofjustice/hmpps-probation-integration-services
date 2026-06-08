@@ -18,6 +18,7 @@ object PersonGenerator {
     )
 
     val NO_REGISTRATIONS = generate("N123456")
+    val ALLOCATED_CASE = generate("A123456")
 
     fun generate(
         crn: String,

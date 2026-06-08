@@ -94,7 +94,7 @@ class DataLoader(
 
         save(ProviderGenerator.DEFAULT)
         save(TeamGenerator.DEFAULT)
-        saveAll(StaffGenerator.DEFAULT, StaffGenerator.STAFF_FOR_INACTIVE_EVENT)
+        saveAll(StaffGenerator.DEFAULT, StaffGenerator.STAFF_FOR_INACTIVE_EVENT, StaffGenerator.ALLOCATED_STAFF)
 
         save(TeamGenerator.ALLOCATION_TEAM)
         save(StaffGenerator.STAFF_WITH_USER)

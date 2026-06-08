@@ -132,6 +132,7 @@ class AllocationDemandIntegrationTest @Autowired constructor(
                 jsonPath("$.activeEvents[0].eventNumber") { value(EventGenerator.DEFAULT.number) }
                 jsonPath("$.activeEvents[0].teamCode") { value(TeamGenerator.DEFAULT.code) }
                 jsonPath("$.activeEvents[0].providerCode") { value(ProviderGenerator.DEFAULT.code) }
+                jsonPath("$.licenceConditions") { isArray() }
             }
     }
 
@@ -144,11 +145,30 @@ class AllocationDemandIntegrationTest @Autowired constructor(
             .andExpect { status { is2xxSuccessful() } }
             .andReturn().response.contentAsJson<UnallocatedEventsResponse>()
 
-        assertThat(response.licenceConditions.size, org.hamcrest.Matchers.greaterThanOrEqualTo(1))
+        assertThat(response.licenceConditions.size, org.hamcrest.Matchers.equalTo(1))
         val lc = response.licenceConditions[0]
         assertThat(lc.mainCategory, org.hamcrest.Matchers.equalTo(LicenceConditionGenerator.MAIN_CATEGORY.description))
         assertThat(lc.subCategory, org.hamcrest.Matchers.equalTo(LicenceConditionGenerator.SUB_CATEGORY.description))
         assertThat(lc.active, org.hamcrest.Matchers.equalTo(true))
+        assertThat(lc.startDate, org.hamcrest.Matchers.equalTo(LocalDate.now().minusDays(30)))
+        assertThat(lc.commencementDate, org.hamcrest.Matchers.equalTo(LocalDate.now().minusDays(28)))
+        assertThat(lc.terminationDate, org.hamcrest.Matchers.nullValue())
+    }
+
+    @Test
+    fun `unallocated events excludes licence conditions for allocated events`() {
+        val person = PersonGenerator.ALLOCATED_CASE
+        val response = mockMvc.get("/allocation-demand/${person.crn}/unallocated-events") {
+            withToken()
+        }
+            .andExpect { status { is2xxSuccessful() } }
+            .andReturn().response.contentAsJson<UnallocatedEventsResponse>()
+
+        // The ALLOCATED event has an order manager with a non-'U' staff code,
+        // so its licence condition must not appear in the response
+        val eventNumbers = response.activeEvents.map { it.eventNumber }
+        assertThat(eventNumbers, org.hamcrest.Matchers.not(org.hamcrest.Matchers.hasItem(EventGenerator.ALLOCATED.number)))
+        assertThat(response.licenceConditions.size, org.hamcrest.Matchers.equalTo(0))
     }
 
     @Test

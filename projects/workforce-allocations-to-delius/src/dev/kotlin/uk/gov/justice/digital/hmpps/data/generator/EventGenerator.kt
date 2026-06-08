@@ -13,6 +13,7 @@ object EventGenerator {
     val HAS_INITIAL_ALLOCATION = generate(eventNumber = "4")
     val INACTIVE = generate(eventNumber = "99", active = false)
     val REALLOCATION = generate(eventNumber = "5")
+    val ALLOCATED = generate(person = PersonGenerator.ALLOCATED_CASE, eventNumber = "1")
 
     val CASE_VIEW = forCaseView()
 

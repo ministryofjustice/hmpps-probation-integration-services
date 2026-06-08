@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.api.model
 
+import org.springframework.cglib.core.Local
 import java.time.LocalDate
 import java.time.Period
 
@@ -15,7 +16,7 @@ data class CaseView(
     val cpsPack: CvDocument? = null,
     val preConvictionDocument: CvDocument? = null,
     val courtReport: CvDocument? = null,
-    val licenceConditions: List<LicenceCondition>? = null
+    val licenceConditions: List<CvLicenceCondition>? = null
 ) {
     val age: Int
         get() = Period.between(dateOfBirth, LocalDate.now()).years
@@ -47,6 +48,14 @@ data class CvRequirement(
     val mainCategory: String,
     val subCategory: String?,
     val length: String
+)
+
+data class CvLicenceCondition(
+    val mainCategory: String,
+    val subCategory: String?,
+    val startDate: LocalDate,
+    val endDate: LocalDate?,
+    val active: Boolean
 )
 
 data class CvDocument(

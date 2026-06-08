@@ -118,10 +118,19 @@ class CaseViewIntegrationTest @Autowired constructor(
                 )
             )
         )
-        assertThat(cv.licenceConditions!!.size, equalTo(1))
-        val lc = cv.licenceConditions!![0]
-        assertThat(lc.mainCategory, equalTo(LicenceConditionGenerator.MAIN_CATEGORY.description))
-        assertThat(lc.subCategory, equalTo(LicenceConditionGenerator.SUB_CATEGORY.description))
-        assertThat(lc.active, equalTo(true))
+        assertThat(cv.licenceConditions!!.size, equalTo(2))
+        // results are sorted ascending by startDate
+        val terminated = cv.licenceConditions!![0]
+        assertThat(terminated.mainCategory, equalTo(LicenceConditionGenerator.MAIN_CATEGORY.description))
+        assertThat(terminated.subCategory, equalTo(LicenceConditionGenerator.SUB_CATEGORY.description))
+        assertThat(terminated.startDate, equalTo(LocalDate.now().minusDays(60)))
+        assertThat(terminated.endDate, equalTo(LocalDate.now().minusDays(5)))
+        assertThat(terminated.active, equalTo(false))
+        val active = cv.licenceConditions!![1]
+        assertThat(active.mainCategory, equalTo(LicenceConditionGenerator.MAIN_CATEGORY.description))
+        assertThat(active.subCategory, equalTo(LicenceConditionGenerator.SUB_CATEGORY.description))
+        assertThat(active.startDate, equalTo(LocalDate.now().minusDays(30)))
+        assertThat(active.endDate, equalTo(null))
+        assertThat(active.active, equalTo(true))
     }
 }

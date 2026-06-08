@@ -8,6 +8,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.caseview.CaseViewDisposa
 import uk.gov.justice.digital.hmpps.integrations.delius.event.Event
 import uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.DisposalType
 import uk.gov.justice.digital.hmpps.set
+import java.time.LocalDate
 import java.time.ZonedDateTime
 
 @Component
@@ -61,5 +62,13 @@ class CaseViewDataLoader(private val dataManager: DataManager, private val entit
             )
         )
         dataManager.save(LicenceConditionGenerator.generate(disposalId = disposal.id))
+        dataManager.save(
+            LicenceConditionGenerator.generate(
+                disposalId = disposal.id,
+                startDate = LocalDate.now().minusDays(60),
+                terminationDate = LocalDate.now().minusDays(5),
+                active = false
+            )
+        )
     }
 }

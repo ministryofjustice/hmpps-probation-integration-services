@@ -14,6 +14,8 @@ object OrderManagerGenerator {
     var NEW = generate(eventId = EventGenerator.NEW.id, startDateTime = ManagerGenerator.START_DATE_TIME)
     var REALLOCATION =
         generate(eventId = EventGenerator.REALLOCATION.id, startDateTime = ManagerGenerator.START_DATE_TIME)
+    var ALLOCATED =
+        generate(eventId = EventGenerator.ALLOCATED.id, startDateTime = ManagerGenerator.START_DATE_TIME, staff = StaffGenerator.ALLOCATED_STAFF)
     var HISTORIC = generate(eventId = EventGenerator.HISTORIC.id, startDateTime = ManagerGenerator.START_DATE_TIME)
     var DELETED_EVENT =
         generate(eventId = EventGenerator.DELETED.id, startDateTime = ManagerGenerator.START_DATE_TIME.minusDays(3))

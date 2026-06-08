@@ -29,6 +29,8 @@ class PersonAllocationDataLoader(private val dataManager: DataManager) {
         PersonManagerGenerator.HISTORIC = hpm
         ResponsibleOfficerGenerator.HISTORIC = hro
 
+        createPersonWithManagers(PersonGenerator.ALLOCATED_CASE, staff = StaffGenerator.ALLOCATED_STAFF)
+
         OrderManagerGenerator.DEFAULT = createEventWithManager(EventGenerator.DEFAULT)
         OrderManagerGenerator.NEW = createEventWithManager(EventGenerator.NEW)
         OrderManagerGenerator.HISTORIC = createEventWithManager(EventGenerator.HISTORIC)
@@ -36,10 +38,13 @@ class PersonAllocationDataLoader(private val dataManager: DataManager) {
         OrderManagerGenerator.DELETED_EVENT = createEventWithManager(EventGenerator.DELETED)
         OrderManagerGenerator.INACTIVE_EVENT =
             createEventWithManager(EventGenerator.INACTIVE, StaffGenerator.STAFF_FOR_INACTIVE_EVENT)
+        OrderManagerGenerator.ALLOCATED = createEventWithManager(EventGenerator.ALLOCATED, StaffGenerator.ALLOCATED_STAFF)
 
         dataManager.save(DisposalGenerator.DEFAULT.type)
         dataManager.saveAll(listOf(DisposalGenerator.DEFAULT, DisposalGenerator.INACTIVE))
         dataManager.save(LicenceConditionGenerator.generate(disposalId = DisposalGenerator.DEFAULT.id))
+        val allocatedDisposal = dataManager.save(DisposalGenerator.generate(EventGenerator.ALLOCATED, type = DisposalGenerator.DEFAULT.type))
+        dataManager.save(LicenceConditionGenerator.generate(disposalId = allocatedDisposal.id))
         RequirementManagerGenerator.DEFAULT = createRequirementWithManager(RequirementGenerator.DEFAULT)
         RequirementManagerGenerator.NEW = createRequirementWithManager(RequirementGenerator.NEW)
         RequirementManagerGenerator.HISTORIC = createRequirementWithManager(RequirementGenerator.HISTORIC)
@@ -58,11 +63,12 @@ class PersonAllocationDataLoader(private val dataManager: DataManager) {
         dataManager.save(OasysAssessmentGenerator.DEFAULT)
     }
 
-    fun createPersonWithManagers(person: Person): Pair<PersonManager, ResponsibleOfficer> {
+    fun createPersonWithManagers(person: Person, staff: Staff = StaffGenerator.DEFAULT): Pair<PersonManager, ResponsibleOfficer> {
         dataManager.save(person)
         val pm = dataManager.save(
             PersonManagerGenerator.generate(
                 personId = person.id,
+                staff = staff,
                 startDateTime = ManagerGenerator.START_DATE_TIME,
                 allocationReason = ReferenceDataGenerator.REALLOCATION_ORDER_ALLOCATION
             )
