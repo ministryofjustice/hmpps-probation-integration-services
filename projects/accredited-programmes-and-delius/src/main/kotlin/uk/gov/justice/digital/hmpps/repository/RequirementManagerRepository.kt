@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.repository
 import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
 import uk.gov.justice.digital.hmpps.entity.sentence.component.manager.RequirementManager
+import uk.gov.justice.digital.hmpps.exception.NotFoundException.Companion.orNotFoundBy
 
 interface RequirementManagerRepository : JpaRepository<RequirementManager, Long> {
     @EntityGraph(
@@ -15,3 +16,7 @@ interface RequirementManagerRepository : JpaRepository<RequirementManager, Long>
     )
     fun findByRequirementId(requirementId: Long): RequirementManager?
 }
+
+fun RequirementManagerRepository.getByRequirementId(requirementId: Long) =
+    findByRequirementId(requirementId).orNotFoundBy("requirementId", requirementId)
+

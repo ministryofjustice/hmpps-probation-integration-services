@@ -19,7 +19,7 @@ class CaseDetailService(
     private val licenceConditionManagerRepository: LicenceConditionManagerRepository,
     private val officeLocationRepository: OfficeLocationRepository,
 ) {
-    fun getPersonalDetails(crn: String) = personRepository.findByCrn(crn)?.let { person ->
+    fun getPersonalDetails(crn: String) = personRepository.getByCrn(crn).let { person ->
         checkNotNull(person.manager) { "Person does not have an active manager" }
         PersonalDetails(
             crn = person.crn,
@@ -36,7 +36,7 @@ class CaseDetailService(
             probationDeliveryUnit = person.manager.team.localAdminUnit.probationDeliveryUnit.toCodedValue(),
             region = with(person.manager.team.provider) { CodedValue(code, description) }
         )
-    } ?: throw NotFoundException("Person", "crn", crn)
+    }
 
     fun getSentence(crn: String, eventNumber: String) =
         eventRepository.findByPersonCrnAndNumber(crn, eventNumber)?.let { event ->
@@ -81,21 +81,32 @@ class CaseDetailService(
         }
     )
 
-    fun getRequirement(id: Long) = requirementManagerRepository.findByRequirementId(id)?.let { manager ->
-        Requirement(
-            manager = Manager(
-                staff = manager.staff.toProbationPractitioner { ldapTemplate.findEmailByUsername(it.username) },
-                team = manager.team.toCodedValue(),
-                probationDeliveryUnit = manager.team.localAdminUnit.probationDeliveryUnit.toCodedValue(),
-                officeLocations = manager.team.officeLocations.map { it.toCodedValue() }
-            ),
-            probationDeliveryUnits = manager.team.pduOfficeLocations(),
-            eventNumber = manager.requirement.disposal.event.number
-        )
-    } ?: throw NotFoundException("Requirement", "id", id)
-
-    fun getLicenceCondition(id: Long) =
-        licenceConditionManagerRepository.findByLicenceConditionId(id)?.let { manager ->
+    fun getRequirement(crn: String, id: Long): Requirement {
+        val person = personRepository.getByCrn(crn)
+        val manager = requirementManagerRepository.getByRequirementId(id)
+        if (manager.requirement.disposal.event.person.crn != person.crn) {
+            throw NotFoundException("Requirement", "id", id)
+        }
+        return manager.let { manager ->
+            Requirement(
+                manager = Manager(
+                    staff = manager.staff.toProbationPractitioner { ldapTemplate.findEmailByUsername(it.username) },
+                    team = manager.team.toCodedValue(),
+                    probationDeliveryUnit = manager.team.localAdminUnit.probationDeliveryUnit.toCodedValue(),
+                    officeLocations = manager.team.officeLocations.map { it.toCodedValue() }
+                ),
+                probationDeliveryUnits = manager.team.pduOfficeLocations(),
+                eventNumber = manager.requirement.disposal.event.number
+            )
+        }
+    }
+    fun getLicenceCondition(crn: String, id: Long): LicenceCondition {
+        val person = personRepository.getByCrn(crn)
+        val manager = licenceConditionManagerRepository.getLicenceConditionManagerById(id)
+        if (manager.licenceCondition.disposal.event.person.crn != person.crn) {
+            throw NotFoundException("Licence Condition", "id", id)
+        }
+        return manager.let { manager ->
             LicenceCondition(
                 Manager(
                     staff = manager.staff.toProbationPractitioner { ldapTemplate.findEmailByUsername(it.username) },
@@ -106,8 +117,8 @@ class CaseDetailService(
                 probationDeliveryUnits = manager.team.pduOfficeLocations(),
                 eventNumber = manager.licenceCondition.disposal.event.number
             )
-        } ?: throw NotFoundException("LicenceCondition", "id", id)
-
+        }
+    }
     private fun Team.pduOfficeLocations() =
         officeLocationRepository.findByRegionId(localAdminUnit.probationDeliveryUnit.regionId)
             .groupBy { it.localAdminUnit.probationDeliveryUnit.toCodedValue() }

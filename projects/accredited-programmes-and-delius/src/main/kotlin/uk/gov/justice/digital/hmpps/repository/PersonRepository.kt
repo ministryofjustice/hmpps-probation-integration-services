@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.repository
 import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
 import uk.gov.justice.digital.hmpps.entity.Person
+import uk.gov.justice.digital.hmpps.exception.NotFoundException.Companion.orNotFoundBy
 
 interface PersonRepository : JpaRepository<Person, Long> {
     @EntityGraph(
@@ -15,3 +16,5 @@ interface PersonRepository : JpaRepository<Person, Long> {
     )
     fun findByCrn(crn: String): Person?
 }
+
+fun PersonRepository.getByCrn(crn: String) = findByCrn(crn).orNotFoundBy("crn", crn)
