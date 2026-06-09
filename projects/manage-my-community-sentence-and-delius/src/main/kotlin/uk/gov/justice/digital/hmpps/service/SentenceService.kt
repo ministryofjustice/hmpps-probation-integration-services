@@ -11,7 +11,6 @@ import uk.gov.justice.digital.hmpps.repository.EventRepository
 import uk.gov.justice.digital.hmpps.repository.PersonRepository
 import uk.gov.justice.digital.hmpps.repository.UnpaidWorkAppointmentRepository
 
-
 @Service
 class SentenceService(
     private val eventRepository: EventRepository,
@@ -30,35 +29,35 @@ class SentenceService(
                     expectedEndDate = it.custody?.sentenceExpiryDate?.date
                         ?: it.enteredExpectedEndDate ?: it.expectedEndDate,
                     lastUpdatedAt = it.lastUpdatedDatetime,
-                        requirements = it.requirements.map { requirement ->
-                            Requirement(
-                                type = requirement.mainCategory.description,
-                                description = requirement.subCategory?.description,
-                                required = requirement.length,
-                                completed = when (requirement.mainCategory.code) {
-                                    RAR -> contactRepository.countRarDaysAttended(requirement.id)
-                                    UPW -> unpaidWorkAppointmentRepository.countHoursAttended(requirement.disposal.id) ?: 0
-                                    else -> null
-                                },
-                                unit = requirement.length?.let { DurationUnit.ofCode(requirement.mainCategory.lengthUnits.code) },
-                                imposedDate = requirement.imposedDate,
-                                expectedStartDate = requirement.expectedStartDate,
-                                expectedEndDate = requirement.expectedEndDate,
-                                actualStartDate = requirement.actualStartDate,
-                                actualEndDate = requirement.actualEndDate,
-                                lastUpdatedAt = requirement.lastUpdatedDatetime,
-                            )
-                        },
-                        licenceConditions = it.licenceConditions.map { licenceCondition ->
-                            LicenceCondition(
-                                type = licenceCondition.mainCategory.description,
-                                description = licenceCondition.subCategory?.description,
-                                startDate = licenceCondition.commencementDate ?: licenceCondition.startDate,
-                                expectedEndDate = licenceCondition.expectedEndDate,
-                            )
-                        },
-                    )
-                }
+                    requirements = it.requirements.map { requirement ->
+                        Requirement(
+                            type = requirement.mainCategory.description,
+                            description = requirement.subCategory?.description,
+                            required = requirement.length,
+                            completed = when (requirement.mainCategory.code) {
+                                RAR -> contactRepository.countRarDaysAttended(requirement.id)
+                                UPW -> unpaidWorkAppointmentRepository.countHoursAttended(requirement.disposal.id) ?: 0
+                                else -> null
+                            },
+                            unit = requirement.length?.let { DurationUnit.ofCode(requirement.mainCategory.lengthUnits.code) },
+                            imposedDate = requirement.imposedDate,
+                            expectedStartDate = requirement.expectedStartDate,
+                            expectedEndDate = requirement.expectedEndDate,
+                            actualStartDate = requirement.actualStartDate,
+                            actualEndDate = requirement.actualEndDate,
+                            lastUpdatedAt = requirement.lastUpdatedDatetime,
+                        )
+                    },
+                    licenceConditions = it.licenceConditions.map { licenceCondition ->
+                        LicenceCondition(
+                            type = licenceCondition.mainCategory.description,
+                            description = licenceCondition.subCategory?.description,
+                            startDate = licenceCondition.commencementDate ?: licenceCondition.startDate,
+                            expectedEndDate = licenceCondition.expectedEndDate,
+                        )
+                    },
+                )
+            }
         )
     }
 }
