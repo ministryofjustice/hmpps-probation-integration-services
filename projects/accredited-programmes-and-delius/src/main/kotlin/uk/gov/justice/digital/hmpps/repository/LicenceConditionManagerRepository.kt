@@ -16,6 +16,7 @@ interface LicenceConditionManagerRepository : JpaRepository<LicenceConditionMana
     )
     fun findByLicenceConditionId(licenceConditionId: Long): LicenceConditionManager?
 
-    fun getLicenceConditionManagerByLicenceConditionId(licenceConditionId: Long) = findByLicenceConditionId(licenceConditionId)
-        .orNotFoundBy("licenceConditionId", licenceConditionId)
+    fun getLicenceConditionManagerByLicenceConditionId(licenceConditionId: Long) =
+        findByLicenceConditionId(licenceConditionId)
+            .orNotFoundBy("licenceConditionId", licenceConditionId)
 }
