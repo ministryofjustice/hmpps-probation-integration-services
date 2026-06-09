@@ -100,6 +100,7 @@ class CaseDetailService(
             )
         }
     }
+
     fun getLicenceCondition(crn: String, id: Long): LicenceCondition {
         val person = personRepository.getByCrn(crn)
         val manager = licenceConditionManagerRepository.getLicenceConditionManagerById(id)
@@ -119,6 +120,7 @@ class CaseDetailService(
             )
         }
     }
+
     private fun Team.pduOfficeLocations() =
         officeLocationRepository.findByRegionId(localAdminUnit.probationDeliveryUnit.regionId)
             .groupBy { it.localAdminUnit.probationDeliveryUnit.toCodedValue() }
