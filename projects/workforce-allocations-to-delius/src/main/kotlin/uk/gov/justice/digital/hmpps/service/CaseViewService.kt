@@ -9,7 +9,6 @@ import uk.gov.justice.digital.hmpps.integrations.delius.document.DocumentReposit
 import uk.gov.justice.digital.hmpps.integrations.delius.document.entity.Document
 import uk.gov.justice.digital.hmpps.integrations.delius.document.entity.DocumentType
 import uk.gov.justice.digital.hmpps.integrations.delius.event.EventRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.event.licencecondition.LicenceConditionRepository
 
 @Service
 class CaseViewService(
