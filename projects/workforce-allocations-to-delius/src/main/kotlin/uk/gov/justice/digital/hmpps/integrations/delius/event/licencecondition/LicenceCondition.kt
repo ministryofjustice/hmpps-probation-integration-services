@@ -53,7 +53,7 @@ class LicenceCondition(
 
 @Entity
 @Immutable
-@Table(name = "r_lic_cond_type_main_category")
+@Table(name = "r_lic_cond_type_main_cat")
 class LicenceConditionMainCategory(
     @Id
     @Column(name = "lic_cond_type_main_cat_id")

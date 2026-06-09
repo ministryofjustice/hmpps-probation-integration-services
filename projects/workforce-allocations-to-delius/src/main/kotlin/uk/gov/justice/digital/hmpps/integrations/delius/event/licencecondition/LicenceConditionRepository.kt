@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.integrations.delius.event.licencecondition
 
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
+import uk.gov.justice.digital.hmpps.integrations.delius.allocations.entity.LicenceConditionTransfer
 
 interface LicenceConditionRepository : JpaRepository<LicenceCondition, Long> {
 
@@ -16,3 +17,5 @@ interface LicenceConditionRepository : JpaRepository<LicenceCondition, Long> {
     )
     fun countPendingTransfers(licenceConditionId: Long): Int
 }
+
+interface LicenceConditionTransferRepository : JpaRepository<LicenceConditionTransfer, Long>

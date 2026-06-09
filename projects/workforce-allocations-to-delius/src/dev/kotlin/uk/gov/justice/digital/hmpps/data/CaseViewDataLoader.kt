@@ -55,6 +55,9 @@ class CaseViewDataLoader(private val dataManager: DataManager, private val entit
         dataManager.save(LicenceConditionMainCategoryGenerator.CASE_VIEW)
         dataManager.save(LicenceConditionGenerator.CASE_VIEW)
         dataManager.save(LicenceConditionManagerGenerator.generate(licenceConditionId = LicenceConditionGenerator.CASE_VIEW.id))
+        LicenceConditionGenerator.NO_SUB_CATEGORY.set("disposal", DisposalGenerator.CASE_VIEW)
+        dataManager.save(LicenceConditionGenerator.NO_SUB_CATEGORY)
+        dataManager.save(LicenceConditionManagerGenerator.generate(licenceConditionId = LicenceConditionGenerator.NO_SUB_CATEGORY.id))
         dataManager.save(CourtGenerator.DEFAULT)
         dataManager.save(CourtAppearanceGenerator.DEFAULT)
         dataManager.saveAll(
