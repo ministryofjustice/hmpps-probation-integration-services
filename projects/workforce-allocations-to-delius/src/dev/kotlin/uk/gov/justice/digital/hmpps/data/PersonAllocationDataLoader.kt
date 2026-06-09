@@ -48,7 +48,8 @@ class PersonAllocationDataLoader(private val dataManager: DataManager) {
 
         dataManager.save(LicenceConditionAllocationMainCategoryGenerator.DEFAULT)
         LicenceConditionManagerGenerator.NEW = createLicenceConditionWithManager(LicenceConditionGenerator.NEW)
-        LicenceConditionManagerGenerator.HISTORIC = createLicenceConditionWithManager(LicenceConditionGenerator.HISTORIC)
+        LicenceConditionManagerGenerator.HISTORIC =
+            createLicenceConditionWithManager(LicenceConditionGenerator.HISTORIC)
 
         dataManager.save(CustodyGenerator.DEFAULT)
         dataManager.save(KeyDateGenerator.DEFAULT)
