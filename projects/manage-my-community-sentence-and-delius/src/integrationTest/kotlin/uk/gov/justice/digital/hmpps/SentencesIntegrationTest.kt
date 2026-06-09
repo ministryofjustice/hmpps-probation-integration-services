@@ -36,7 +36,7 @@ internal class SentencesIntegrationTest @Autowired constructor(private val mockM
                         {
                           "type": "Community Order",
                           "startDate": "2024-01-01",
-                          "expectedEndDate": "2025-09-01",
+                          "expectedEndDate": "2025-10-01",
                           "lastUpdatedAt": "2026-03-01T12:00:00Z",
                           "requirements": [
                             {
