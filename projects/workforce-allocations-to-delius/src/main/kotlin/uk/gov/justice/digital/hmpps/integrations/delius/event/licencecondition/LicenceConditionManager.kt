@@ -15,8 +15,8 @@ import uk.gov.justice.digital.hmpps.jpa.GeneratedId
 @Entity
 @Table(name = "lic_condition_manager")
 @EntityListeners(AuditingEntityListener::class)
-@AssociationOverride(name = "team", joinColumns = [JoinColumn(name = "allocated_team_id")])
-@AssociationOverride(name = "staff", joinColumns = [JoinColumn(name = "allocated_staff_id")])
+@AssociationOverride(name = "team", joinColumns = [JoinColumn(name = "team_id")])
+@AssociationOverride(name = "staff", joinColumns = [JoinColumn(name = "staff_id")])
 @SequenceGenerator(
     name = "lic_condition_manager_id_seq",
     sequenceName = "lic_condition_manager_id_seq",
