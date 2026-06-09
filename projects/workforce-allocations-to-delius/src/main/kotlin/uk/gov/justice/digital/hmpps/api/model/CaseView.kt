@@ -1,7 +1,5 @@
 package uk.gov.justice.digital.hmpps.api.model
 
-import uk.gov.justice.digital.hmpps.integrations.delius.event.licencecondition.LicenceCondition
-import uk.gov.justice.digital.hmpps.integrations.delius.event.licencecondition.LicenceConditionMainCategory
 import java.time.LocalDate
 import java.time.Period
 
