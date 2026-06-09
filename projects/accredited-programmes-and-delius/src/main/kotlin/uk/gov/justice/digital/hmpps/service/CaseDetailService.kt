@@ -103,9 +103,9 @@ class CaseDetailService(
 
     fun getLicenceCondition(crn: String, id: Long): LicenceCondition {
         val person = personRepository.getByCrn(crn)
-        val manager = licenceConditionManagerRepository.getLicenceConditionManagerById(id)
+        val manager = licenceConditionManagerRepository.getLicenceConditionManagerByLicenceConditionId(id)
         if (manager.licenceCondition.disposal.event.person.crn != person.crn) {
-            throw NotFoundException("Licence Condition", "id", id)
+            throw NotFoundException("LicenceCondition", "id", id)
         }
         return manager.let { manager ->
             LicenceCondition(
