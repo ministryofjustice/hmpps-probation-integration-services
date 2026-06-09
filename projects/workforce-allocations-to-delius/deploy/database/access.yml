@@ -9,9 +9,11 @@ database:
       - responsible_officer
       - order_manager
       - rqmnt_manager
+      - lic_condition_manager
       - iaps_offender
       - iaps_event
       - iaps_rqmnt
+      - iaps_lic_condition
     packages:
       - pkg_triggersupport # for caseload rebuild
 

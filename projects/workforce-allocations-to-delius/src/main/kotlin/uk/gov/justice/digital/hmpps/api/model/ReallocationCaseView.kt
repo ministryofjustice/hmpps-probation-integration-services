@@ -9,14 +9,15 @@ data class ReallocationCaseView(
     val pncNumber: String?,
     val mainAddress: CvAddress?,
     val nextAppointmentDate: LocalDate?,
-    val activeEvents: List<ActiveEvent>
+    val activeEvents: List<ReallocationCaseViewActiveEvent>
 ) {
-    data class ActiveEvent(
+    data class ReallocationCaseViewActiveEvent(
         val number: String,
         val failureToComplyCount: Int,
         val failureToComplyStartDate: LocalDate,
         val sentence: CvSentence?,
         val offences: List<CvOffence>,
-        val requirements: List<CvRequirement>
+        val requirements: List<CvRequirement>,
+        val licenceConditions: List<CvLicenceCondition>
     )
 }

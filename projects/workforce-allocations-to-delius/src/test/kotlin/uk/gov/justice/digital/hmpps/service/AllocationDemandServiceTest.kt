@@ -20,12 +20,11 @@ import uk.gov.justice.digital.hmpps.api.model.ManagementStatus.CURRENTLY_MANAGED
 import uk.gov.justice.digital.hmpps.data.generator.*
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.allocations.AllocationDemandRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.caseview.CaseViewLicenceConditionRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.caseview.CaseViewRequirementRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.courtappearance.CourtAppearanceRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.document.DocumentRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.event.EventRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.event.requirement.RequirementRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.AdditionalOffenceRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.DisposalRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.SentenceWithManager
@@ -57,12 +56,6 @@ class AllocationDemandServiceTest {
     lateinit var additionalOffenceRepository: AdditionalOffenceRepository
 
     @Mock
-    lateinit var requirementRepository: RequirementRepository
-
-    @Mock
-    lateinit var documentRepository: DocumentRepository
-
-    @Mock
     lateinit var allocationRiskService: AllocationRiskService
 
     @Mock
@@ -76,6 +69,9 @@ class AllocationDemandServiceTest {
 
     @Mock
     lateinit var courtAppearanceRepository: CourtAppearanceRepository
+
+    @Mock
+    lateinit var caseViewLicenceConditionRepository: CaseViewLicenceConditionRepository
 
     @Mock
     lateinit var requirementTypesToIgnore: List<String>

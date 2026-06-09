@@ -5,6 +5,8 @@ import uk.gov.justice.digital.hmpps.data.generator.*
 import uk.gov.justice.digital.hmpps.data.manager.DataManager
 import uk.gov.justice.digital.hmpps.integrations.delius.event.Event
 import uk.gov.justice.digital.hmpps.integrations.delius.event.OrderManager
+import uk.gov.justice.digital.hmpps.integrations.delius.event.licencecondition.LicenceCondition
+import uk.gov.justice.digital.hmpps.integrations.delius.event.licencecondition.LicenceConditionManager
 import uk.gov.justice.digital.hmpps.integrations.delius.event.requirement.Requirement
 import uk.gov.justice.digital.hmpps.integrations.delius.event.requirement.RequirementManager
 import uk.gov.justice.digital.hmpps.integrations.delius.person.Person
@@ -43,6 +45,11 @@ class PersonAllocationDataLoader(private val dataManager: DataManager) {
         RequirementManagerGenerator.NEW = createRequirementWithManager(RequirementGenerator.NEW)
         RequirementManagerGenerator.HISTORIC = createRequirementWithManager(RequirementGenerator.HISTORIC)
         RequirementManagerGenerator.REALLOCATION = createRequirementWithManager(RequirementGenerator.REALLOCATION)
+
+        dataManager.save(LicenceConditionAllocationMainCategoryGenerator.DEFAULT)
+        LicenceConditionManagerGenerator.NEW = createLicenceConditionWithManager(LicenceConditionGenerator.NEW)
+        LicenceConditionManagerGenerator.HISTORIC =
+            createLicenceConditionWithManager(LicenceConditionGenerator.HISTORIC)
 
         dataManager.save(CustodyGenerator.DEFAULT)
         dataManager.save(KeyDateGenerator.DEFAULT)
@@ -94,6 +101,16 @@ class PersonAllocationDataLoader(private val dataManager: DataManager) {
         return dataManager.save(
             RequirementManagerGenerator.generate(
                 requirementId = requirement.id,
+                startDateTime = ManagerGenerator.START_DATE_TIME
+            )
+        )
+    }
+
+    fun createLicenceConditionWithManager(licenceCondition: LicenceCondition): LicenceConditionManager {
+        dataManager.save(licenceCondition)
+        return dataManager.save(
+            LicenceConditionManagerGenerator.generate(
+                licenceConditionId = licenceCondition.id,
                 startDateTime = ManagerGenerator.START_DATE_TIME
             )
         )
