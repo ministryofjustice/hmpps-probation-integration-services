@@ -31,6 +31,9 @@ class FailureAndEnforcementIntegrationTest @Autowired constructor(
         // check that the enforceable contact is returned
         assertThat(response.enforceableContacts.size).isEqualTo(1)
         assertThat(response.enforceableContacts[0].id).isEqualTo(ContactGenerator.DEFAULT_ENFORCEABLE_CONTACT.id)
+        assertThat(response.enforceableContacts[0].type.description).isEqualTo(ContactGenerator.DEFAULT_CONTACT_TYPE.description)
+        assertThat(response.enforceableContacts[0].type.code).isEqualTo(ContactGenerator.DEFAULT_CONTACT_TYPE.code)
+        assertThat(response.enforceableContacts[0].description).isEqualTo("Description")
         // check that the registration flagged as ALT7 or ALSH is returned
         assertThat(response.registrations.size).isEqualTo(1)
         assertThat(response.registrations[0].type.code).isEqualTo("ALT7")

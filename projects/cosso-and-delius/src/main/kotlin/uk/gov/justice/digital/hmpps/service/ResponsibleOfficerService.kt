@@ -1,6 +1,5 @@
 package uk.gov.justice.digital.hmpps.service
 
-import org.springframework.data.repository.findByIdOrNull
 import org.springframework.ldap.core.LdapTemplate
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.entity.*
@@ -24,15 +23,17 @@ class ResponsibleOfficerService(
         val username = userRepository.findByStaffId(responsibleOfficer.staff.id)?.username
         val emailAddress = username?.let { ldapTemplate.findAttributeByUsername(username, "mail") }
         val telephoneNumber = username?.let { ldapTemplate.findAttributeByUsername(username, "telephoneNumber") }
-        val officeLocation = username
-            ?.let { ldapTemplate.findPreferenceByUsername(username, "replyAddress") }?.toLongOrNull()
-            ?.let { officeLocationRepository.findByIdOrNull(it) }
+        val homeArea = username?.let { ldapTemplate.findAttributeByUsername(username, "userHomeArea") }
+        val defaultReplyAddress = username?.let { ldapTemplate.findPreferenceByUsername(it, "replyAddress")?.toLongOrNull() }
+        val officeLocations = homeArea?.let { officeLocationRepository.findAllByProbationAreaCode(it) }
 
         return ResponsibleOfficerDetails(
             name = with(responsibleOfficer.staff) { Name(forename, middleName, surname) },
             emailAddress = emailAddress,
             telephoneNumber = telephoneNumber,
-            replyAddress = officeLocation?.toAddress(),
+            replyAddresses = officeLocations?.map {
+                it.toAddress().copy(status = if (it.id == defaultReplyAddress) "Default" else null)
+            },
             probationArea = with(responsibleOfficer.probationArea) { CodeAndDescription(code, description) }
         )
     }
@@ -44,6 +45,7 @@ class ResponsibleOfficerService(
 
     private fun OfficeLocation.toAddress() = OfficeAddress(
         id = id,
+        status = null,
         officeDescription = description,
         buildingName = buildingName,
         buildingNumber = buildingNumber,

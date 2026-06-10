@@ -1,9 +1,6 @@
 package uk.gov.justice.digital.hmpps.entity
 
-import jakarta.persistence.Column
-import jakarta.persistence.Entity
-import jakarta.persistence.Id
-import jakarta.persistence.Table
+import jakarta.persistence.*
 import org.hibernate.annotations.SQLRestriction
 import org.springframework.data.jpa.repository.JpaRepository
 import java.time.LocalDate
@@ -24,6 +21,11 @@ class OfficeLocation(
     val district: String?,
     val postcode: String?,
     val endDate: LocalDate?,
+    @ManyToOne
+    @JoinColumn(name = "probation_area_id")
+    val probationArea: ProbationArea,
 )
 
-interface OfficeLocationRepository : JpaRepository<OfficeLocation, Long>
+interface OfficeLocationRepository : JpaRepository<OfficeLocation, Long> {
+    fun findAllByProbationAreaCode(providerCode: String): List<OfficeLocation>
+}

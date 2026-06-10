@@ -5,11 +5,12 @@ data class ResponsibleOfficerDetails(
     val emailAddress: String?,
     val telephoneNumber: String?,
     val probationArea: CodeAndDescription,
-    val replyAddress: OfficeAddress?,
+    val replyAddresses: List<OfficeAddress>?
 )
 
 data class OfficeAddress(
     val id: Long?,
+    val status: String?,
     val officeDescription: String?,
     val buildingName: String?,
     val buildingNumber: String?,

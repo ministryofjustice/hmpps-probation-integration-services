@@ -13,6 +13,21 @@ object OfficeLocationGenerator {
         county = "The County",
         district = "The District",
         postcode = "AA1 1AA",
-        endDate = null
-    )
+        endDate = null,
+        probationArea = ProbationAreaGenerator.PROBATION_AREA_N01,
+        )
+
+    val OFFICE_LOCATION_2 = OfficeLocation(
+        id = 10001100,
+        description = "Office 2",
+        buildingName = "Office Block 2",
+        buildingNumber = "2",
+        streetName = "Street 2",
+        townCity = "Town 2",
+        county = "County 2",
+        district = "District 2",
+        postcode = "AA1 1AB",
+        endDate = null,
+        probationArea = ProbationAreaGenerator.PROBATION_AREA_N01,
+        )
 }
