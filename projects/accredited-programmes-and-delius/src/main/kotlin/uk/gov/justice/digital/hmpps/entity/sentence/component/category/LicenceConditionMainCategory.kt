@@ -18,4 +18,8 @@ class LicenceConditionMainCategory(
     val description: String,
 ) {
     fun toCodedValue() = CodedValue(code, description)
+
+    companion object {
+        const val LICENCE_ACCREDITED_PROGRAMMES = "LAP"
+    }
 }

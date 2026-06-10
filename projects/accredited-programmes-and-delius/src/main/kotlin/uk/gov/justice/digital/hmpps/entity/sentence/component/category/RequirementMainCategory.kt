@@ -18,4 +18,9 @@ class RequirementMainCategory(
     val description: String,
 ) {
     fun toCodedValue() = CodedValue(code, description)
+
+    companion object {
+        const val RAR_GAR_ACCREDITED_PROGRAMMES = "RM38"
+        const val COURT_ACCREDITED_PROGRAMMES = "7"
+    }
 }

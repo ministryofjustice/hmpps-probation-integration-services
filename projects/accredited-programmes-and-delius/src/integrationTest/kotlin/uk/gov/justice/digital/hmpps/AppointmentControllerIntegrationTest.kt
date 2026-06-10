@@ -21,6 +21,7 @@ import uk.gov.justice.digital.hmpps.data.EnforcementRepository
 import uk.gov.justice.digital.hmpps.data.TestData
 import uk.gov.justice.digital.hmpps.data.TestData.CA_COMMUNITY_EVENT
 import uk.gov.justice.digital.hmpps.data.TestData.CA_PERSON
+import uk.gov.justice.digital.hmpps.data.TestData.INVALID_LICENCE_CONDITION
 import uk.gov.justice.digital.hmpps.data.TestData.LICENCE_CONDITIONS
 import uk.gov.justice.digital.hmpps.data.TestData.REQUIREMENTS
 import uk.gov.justice.digital.hmpps.data.generator.IdGenerator.id
@@ -288,18 +289,18 @@ internal class AppointmentControllerIntegrationTest @Autowired constructor(
                 json = CreateAppointmentsRequest(
                     listOf(
                         CreateAppointmentRequest(
-                            appointmentReference,
-                            REQUIREMENTS[2].id,
-                            null,
-                            LocalDate.now().minusDays(7),
-                            LocalTime.now(),
-                            LocalTime.now().plusMinutes(30),
-                            RequestCode("ATTC"),
-                            RequestCode("OFFICE1"),
-                            RequestCode("STAFF01"),
-                            RequestCode("TEAM99"),
-                            "Some notes about the appointment",
-                            true,
+                            reference = appointmentReference,
+                            requirementId = REQUIREMENTS[2].id,
+                            licenceConditionId = null,
+                            date = LocalDate.now().minusDays(7),
+                            startTime = LocalTime.now(),
+                            endTime = LocalTime.now().plusMinutes(30),
+                            outcome = RequestCode("ATTC"),
+                            location = RequestCode("OFFICE1"),
+                            staff = RequestCode("STAFF01"),
+                            team = RequestCode("TEAM99"),
+                            notes = "Some notes about the appointment",
+                            sensitive = true,
                         )
                     )
                 )
@@ -314,22 +315,53 @@ internal class AppointmentControllerIntegrationTest @Autowired constructor(
     fun `can not create appointment without one of requirement or licence condition id`() {
         assertThatThrownBy {
             CreateAppointmentRequest(
-                UUID.randomUUID(),
-                null,
-                null,
-                LocalDate.now().minusDays(7),
-                LocalTime.now(),
-                LocalTime.now().plusMinutes(30),
-                RequestCode("ATTC"),
-                RequestCode("OFFICE1"),
-                RequestCode("STAFF01"),
-                RequestCode("TEAM01"),
-                "Some notes about the appointment",
-                true,
+                reference = UUID.randomUUID(),
+                requirementId = null,
+                licenceConditionId = null,
+                date = LocalDate.now().minusDays(7),
+                startTime = LocalTime.now(),
+                endTime = LocalTime.now().plusMinutes(30),
+                outcome = RequestCode("ATTC"),
+                location = RequestCode("OFFICE1"),
+                staff = RequestCode("STAFF01"),
+                team = RequestCode("TEAM01"),
+                notes = "Some notes about the appointment",
+                sensitive = true,
             )
         }
             .isInstanceOf(IllegalArgumentException::class.java)
             .hasMessage("Either licence condition or requirement id must be specified.")
+    }
+
+    @Test
+    fun `can only create appointments against accredited programmes requirements`() {
+        mockMvc
+            .post("/appointments") {
+                withToken()
+                json = CreateAppointmentsRequest(
+                    listOf(
+                        CreateAppointmentRequest(
+                            reference = UUID.randomUUID(),
+                            requirementId = null,
+                            licenceConditionId = INVALID_LICENCE_CONDITION.id,
+                            date = LocalDate.now().minusDays(7),
+                            startTime = LocalTime.now(),
+                            endTime = LocalTime.now().plusMinutes(30),
+                            outcome = RequestCode("ATTC"),
+                            location = RequestCode("OFFICE1"),
+                            staff = RequestCode("STAFF99"),
+                            team = RequestCode("TEAM01"),
+                            notes = "Some notes about the appointment",
+                            sensitive = true,
+                        )
+                    )
+
+                )
+            }
+            .andExpect { status { isBadRequest() } }
+            .andReturn().response.contentAsJson<ErrorResponse>().also {
+                assertThat(it.message).isEqualTo("Invalid LicenceCondition IDs: [${INVALID_LICENCE_CONDITION.id}]")
+            }
     }
 
     @Test
