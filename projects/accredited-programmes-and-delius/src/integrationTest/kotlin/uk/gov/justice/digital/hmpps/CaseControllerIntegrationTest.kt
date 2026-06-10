@@ -106,16 +106,16 @@ internal class CaseControllerIntegrationTest(
                       "releaseType": "Released on Adult Licence",
                       "licenceConditions": [
                         {
-                          "code": "NLC8",
-                          "description": "Freedom of movement"
+                          "code": "LAP",
+                          "description": "Licence - Accredited Programmes"
                         },
                         {
                           "code": "TEST",
                           "description": "To only attend specific places."
                         },
                         {
-                          "code": "NLC8",
-                          "description": "Freedom of movement"
+                          "code": "LAP",
+                          "description": "Licence - Accredited Programmes"
                         }
                       ],
                       "requirements": [],
@@ -161,16 +161,16 @@ internal class CaseControllerIntegrationTest(
                       "licenceConditions": [],
                       "requirements": [
                         {
-                          "code": "H",
-                          "description": "Alcohol Treatment"
+                          "code": "7",
+                          "description": "Court - Accredited Programmes"
                         },
                         {
-                          "code": "ALCTRT",
-                          "description": "Alcohol Treatment"
+                          "code": "TEST",
+                          "description": "Building Choices"
                         },
                         {
-                          "code": "H",
-                          "description": "Alcohol Treatment"
+                          "code": "7",
+                          "description": "Court - Accredited Programmes"
                         }
                       ],
                       "postSentenceSupervisionRequirements": []

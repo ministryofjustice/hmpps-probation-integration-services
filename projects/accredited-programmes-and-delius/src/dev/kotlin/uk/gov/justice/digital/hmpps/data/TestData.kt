@@ -128,7 +128,7 @@ object TestData {
         PssRequirementGenerator.generate(CUSTODY, PSS_MAIN_TYPE),
         PssRequirementGenerator.generate(CUSTODY, PSS_MAIN_TYPE, PSS_SUB_TYPE)
     )
-    val LICENCE_CONDITION_MAIN_TYPE = LicenceConditionMainCategory(id(), "NLC8", "Freedom of movement")
+    val LICENCE_CONDITION_MAIN_TYPE = LicenceConditionMainCategory(id(), "LAP", "Licence - Accredited Programmes")
     val LICENCE_CONDITION_SUB_TYPE = ReferenceData(id(), "TEST", "To only attend specific places.", DATASET)
     val LICENCE_CONDITIONS = listOf(
         LicenceConditionGenerator.generate(CUSTODIAL_SENTENCE, LICENCE_CONDITION_MAIN_TYPE),
@@ -142,8 +142,12 @@ object TestData {
     val TERMINATION_LICENCE_CONDITION_MANAGER =
         LicenceConditionManager(id(), TERMINATION_LICENCE_CONDITION, STAFF, TEAM)
 
-    val REQUIREMENT_MAIN_TYPE = RequirementMainCategory(id(), "H", "Alcohol Treatment")
-    val REQUIREMENT_SUB_TYPE = ReferenceData(id(), "ALCTRT", "Alcohol Treatment", DATASET)
+    val INVALID_LICENCE_CONDITION_MAIN_TYPE = LicenceConditionMainCategory(id(), "SL1", "Standard 9 conditions")
+    val INVALID_LICENCE_CONDITION =
+        LicenceConditionGenerator.generate(CUSTODIAL_SENTENCE, INVALID_LICENCE_CONDITION_MAIN_TYPE)
+
+    val REQUIREMENT_MAIN_TYPE = RequirementMainCategory(id(), "7", "Court - Accredited Programmes")
+    val REQUIREMENT_SUB_TYPE = ReferenceData(id(), "TEST", "Building Choices", DATASET)
     val REQUIREMENTS = listOf(
         RequirementGenerator.generate(COMMUNITY_SENTENCE, REQUIREMENT_MAIN_TYPE),
         RequirementGenerator.generate(COMMUNITY_SENTENCE, REQUIREMENT_MAIN_TYPE, REQUIREMENT_SUB_TYPE),

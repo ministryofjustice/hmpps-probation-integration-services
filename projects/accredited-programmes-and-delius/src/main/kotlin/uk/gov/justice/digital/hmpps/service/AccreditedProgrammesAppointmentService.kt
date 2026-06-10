@@ -49,8 +49,8 @@ class AccreditedProgrammesAppointmentService(
 
     fun create(request: CreateAppointmentsRequest) {
         with(request.appointments) {
-            val requirements = requirementRepository.getAllByCodeIn(mapNotNull { it.requirementId })
-            val licenceConditions = licenceConditionRepository.getAllByCodeIn(mapNotNull { it.licenceConditionId })
+            val requirements = requirementRepository.getAllByIdIn(mapNotNull { it.requirementId })
+            val licenceConditions = licenceConditionRepository.getAllByIdIn(mapNotNull { it.licenceConditionId })
 
             val createdAppointments = appointmentService.bulkCreate(map { request ->
                 val component = requireNotNull(
