@@ -88,15 +88,15 @@ class CaseDetailService(
             throw NotFoundException("Requirement", "id", id)
         }
         return Requirement(
-                manager = Manager(
-                    staff = manager.staff.toProbationPractitioner { ldapTemplate.findEmailByUsername(it.username) },
-                    team = manager.team.toCodedValue(),
-                    probationDeliveryUnit = manager.team.localAdminUnit.probationDeliveryUnit.toCodedValue(),
-                    officeLocations = manager.team.officeLocations.map { it.toCodedValue() }
-                ),
-                probationDeliveryUnits = manager.team.pduOfficeLocations(),
-                eventNumber = manager.requirement.disposal.event.number
-            )
+            manager = Manager(
+                staff = manager.staff.toProbationPractitioner { ldapTemplate.findEmailByUsername(it.username) },
+                team = manager.team.toCodedValue(),
+                probationDeliveryUnit = manager.team.localAdminUnit.probationDeliveryUnit.toCodedValue(),
+                officeLocations = manager.team.officeLocations.map { it.toCodedValue() }
+            ),
+            probationDeliveryUnits = manager.team.pduOfficeLocations(),
+            eventNumber = manager.requirement.disposal.event.number
+        )
     }
 
     fun getLicenceCondition(crn: String, id: Long): LicenceCondition {
@@ -106,15 +106,15 @@ class CaseDetailService(
             throw NotFoundException("LicenceCondition", "id", id)
         }
         return LicenceCondition(
-                Manager(
-                    staff = manager.staff.toProbationPractitioner { ldapTemplate.findEmailByUsername(it.username) },
-                    team = manager.team.toCodedValue(),
-                    probationDeliveryUnit = manager.team.localAdminUnit.probationDeliveryUnit.toCodedValue(),
-                    officeLocations = manager.team.officeLocations.map { it.toCodedValue() }
-                ),
-                probationDeliveryUnits = manager.team.pduOfficeLocations(),
-                eventNumber = manager.licenceCondition.disposal.event.number
-            )
+            Manager(
+                staff = manager.staff.toProbationPractitioner { ldapTemplate.findEmailByUsername(it.username) },
+                team = manager.team.toCodedValue(),
+                probationDeliveryUnit = manager.team.localAdminUnit.probationDeliveryUnit.toCodedValue(),
+                officeLocations = manager.team.officeLocations.map { it.toCodedValue() }
+            ),
+            probationDeliveryUnits = manager.team.pduOfficeLocations(),
+            eventNumber = manager.licenceCondition.disposal.event.number
+        )
     }
 
     private fun Team.pduOfficeLocations() =
