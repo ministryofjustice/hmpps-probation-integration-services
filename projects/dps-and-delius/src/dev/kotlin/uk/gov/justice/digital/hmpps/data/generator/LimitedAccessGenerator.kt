@@ -5,6 +5,7 @@ import uk.gov.justice.digital.hmpps.entity.LimitedAccessPerson
 import uk.gov.justice.digital.hmpps.entity.LimitedAccessUser
 import uk.gov.justice.digital.hmpps.entity.Person
 import uk.gov.justice.digital.hmpps.entity.Restriction
+import java.time.ZonedDateTime
 
 object LimitedAccessGenerator {
     val LAO_USER = LimitedAccessUser("DpsAndDelius", IdGenerator.getAndIncrement())
@@ -41,6 +42,7 @@ object LimitedAccessGenerator {
     val EXCLUSION = Exclusion(
         person = EXCLUDED_LAO_PERSON,
         user = LAO_USER,
+        start = ZonedDateTime.now(),
         end = null,
         id = IdGenerator.getAndIncrement()
     )
@@ -48,6 +50,7 @@ object LimitedAccessGenerator {
     val RESTRICTION = Restriction(
         person = RESTRICTED_LAO_PERSON,
         user = LAO_USER,
+        start = ZonedDateTime.now(),
         end = null,
         id = IdGenerator.getAndIncrement()
     )

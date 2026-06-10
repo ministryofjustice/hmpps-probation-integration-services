@@ -5,6 +5,6 @@ import org.springframework.web.service.annotation.GetExchange
 import uk.gov.justice.digital.hmpps.client.model.CanonicalAddress
 
 interface PersonClient {
-    @GetExchange("/person/probation-integration/{crn}/address/{id}")
+    @GetExchange("/person/probation/{crn}/address/{id}")
     fun getAddress(@PathVariable crn: String, @PathVariable id: String): CanonicalAddress
 }

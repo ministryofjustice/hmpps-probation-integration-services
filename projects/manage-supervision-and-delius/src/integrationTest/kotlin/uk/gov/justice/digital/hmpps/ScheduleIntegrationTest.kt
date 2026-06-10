@@ -125,11 +125,23 @@ class ScheduleIntegrationTest : IntegrationTestBase() {
         assertThat(res.appointment.documents.size, equalTo(expectedAppointment.documents.size))
         assertThat(res.appointment.location?.postcode, equalTo("H34 7TH"))
         assertThat(res.appointment.description, equalTo(expectedAppointment.description))
+        assertThat(res.appointment.alert, equalTo(false))
         val lc = LicenceConditionGenerator.LC_WITH_NOTES
         assertThat(
             res.appointment.component,
             equalTo(Component(lc.id, lc.mainCategory.description, Component.Type.LICENCE_CONDITION))
         )
+    }
+
+    @Test
+    fun `individual appointment returns alert field as true`() {
+
+        val contact = ContactGenerator.APPT_CONTACT_WITH_ALERT
+        val res =
+            mockMvc.get("/schedule/${contact.person.crn}/appointment/${contact.id}") { withDeliusUserToken("DeliusUser") }
+                .andExpect { status { isOk() } }
+                .andReturn().response.contentAsJson<PersonAppointment>()
+        assertThat(res.appointment.alert, equalTo(true))
     }
 
     @Test

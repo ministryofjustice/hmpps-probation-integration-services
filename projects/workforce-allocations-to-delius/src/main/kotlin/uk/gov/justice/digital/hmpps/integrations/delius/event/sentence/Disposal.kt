@@ -5,6 +5,7 @@ import org.hibernate.annotations.Immutable
 import org.hibernate.type.NumericBooleanConverter
 import uk.gov.justice.digital.hmpps.integrations.delius.allocations.entity.ReferenceData
 import uk.gov.justice.digital.hmpps.integrations.delius.event.Event
+import uk.gov.justice.digital.hmpps.integrations.delius.event.licencecondition.LicenceCondition
 import java.time.ZonedDateTime
 
 @Entity
@@ -47,7 +48,11 @@ class Disposal(
     val softDeleted: Boolean = false,
 
     @Column
-    val terminationDate: ZonedDateTime? = null
+    val terminationDate: ZonedDateTime? = null,
+
+    @OneToMany
+    @JoinColumn(name = "disposal_id")
+    val licenceConditions: List<LicenceCondition> = emptyList()
 ) {
     val length
         get() = "$entryLength ${entryLengthUnit?.description}"

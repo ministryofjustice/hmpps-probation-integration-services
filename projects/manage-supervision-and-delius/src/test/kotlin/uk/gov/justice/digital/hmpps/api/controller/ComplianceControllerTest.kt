@@ -44,6 +44,7 @@ internal class ComplianceControllerTest {
         val mainOffence = Offence(code = "CD1", description = "Main Offence")
         val order = Order(description = "Order", endDate = LocalDate.now(), length = 1, startDate = LocalDate.now())
         val breach = Breach(LocalDate.now(), "A Breach")
+        val activeRecall = Breach(LocalDate.now(), "Recall NSI")
         val activityCount = ActivityCount(1, 0, 1, 0, 1, 1, 1, 2, 4, 1, 0, 1)
         val compliance = Compliance(1, true, 1, 1, 2)
         val sentenceCompliance = SentenceCompliance(
@@ -51,6 +52,7 @@ internal class ComplianceControllerTest {
             mainOffence = mainOffence,
             order = order,
             activeBreach = breach,
+            activeRecall = activeRecall,
             activity = activityCount,
             rarDescription = "2 of 10 RAR days completed",
             rarCategory = "Test RAR",

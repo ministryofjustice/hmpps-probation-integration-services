@@ -17,6 +17,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integration.delius.entity.AddressRepository
+import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
 import uk.gov.justice.digital.hmpps.messaging.HmppsChannelManager
 import uk.gov.justice.digital.hmpps.service.AddressService
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
@@ -25,6 +26,7 @@ import java.time.Instant
 @SpringBootTest
 internal class MessagingIntegrationTest @Autowired constructor(
     @Value("\${messaging.consumer.queue}") private val queueName: String,
+    @Value("\${messaging.producer.topic}") private val topicName: String,
     private val channelManager: HmppsChannelManager,
     private val addressRepository: AddressRepository,
     private val jdbcTemplate: JdbcTemplate,
@@ -57,7 +59,18 @@ internal class MessagingIntegrationTest @Autowired constructor(
                 "crn" to "U123456",
                 "cprAddressId" to "cpr-address-created",
                 "deliusAddressId" to address.id.toString(),
+                "addressStatus" to address.status.code,
+                "addressType" to address.type?.code,
+                "startDate" to address.startDate?.toString(),
+                "endDate" to address.endDate?.toString(),
             )
+        )
+        assertAddressDomainEvent(
+            eventType = "probation-case.address.created",
+            description = "A new address has been created on the probation case",
+            cprAddressId = "cpr-address-created",
+            deliusAddressId = address.id!!,
+            addressStatus = "M"
         )
     }
 
@@ -86,14 +99,26 @@ internal class MessagingIntegrationTest @Autowired constructor(
                 "crn" to "U123456",
                 "cprAddressId" to "cpr-address-updated",
                 "deliusAddressId" to addressId.toString(),
+                "addressStatus" to address.status.code,
+                "addressType" to address.type?.code,
+                "startDate" to address.startDate?.toString(),
+                "endDate" to address.endDate?.toString(),
             )
+        )
+        assertAddressDomainEvent(
+            eventType = "probation-case.address.updated",
+            description = "An address has been updated on the probation case",
+            cprAddressId = "cpr-address-updated",
+            deliusAddressId = addressId,
+            addressStatus = "P"
         )
     }
 
     @Test
     fun `soft deletes address from domain event`() {
         val addressId = PersonGenerator.UPDATABLE_PERSON_ADDRESSES[1].id!!
-        assertThat(addressRepository.findByIdOrNull(addressId)?.softDeleted).isFalse
+        val existingAddress = addressRepository.findByIdOrNull(addressId)!!
+        assertThat(existingAddress.softDeleted).isFalse
 
         publish("address-deleted")
 
@@ -105,7 +130,18 @@ internal class MessagingIntegrationTest @Autowired constructor(
                 "crn" to "U123456",
                 "cprAddressId" to "cpr-address-deleted",
                 "deliusAddressId" to addressId.toString(),
+                "addressStatus" to existingAddress.status.code,
+                "addressType" to existingAddress.type?.code,
+                "startDate" to existingAddress.startDate?.toString(),
+                "endDate" to existingAddress.endDate?.toString(),
             )
+        )
+        assertAddressDomainEvent(
+            eventType = "probation-case.address.deleted",
+            description = "An address has been deleted from the probation case",
+            cprAddressId = "cpr-address-deleted",
+            deliusAddressId = addressId,
+            addressStatus = "M"
         )
     }
 
@@ -123,7 +159,7 @@ internal class MessagingIntegrationTest @Autowired constructor(
             """.trimIndent()
         )
 
-        assertThatThrownBy { addressService.updateAddress("U123456", "cpr-address-missing-existing") }
+        assertThatThrownBy { addressService.updateAddress("U123456", "cpr-address-missing-existing", 99999999) }
             .isInstanceOf(NotFoundException::class.java)
             .hasMessage("PersonAddress with id of 99999999 not found")
     }
@@ -169,11 +205,36 @@ internal class MessagingIntegrationTest @Autowired constructor(
     private fun publish(fileName: String) =
         channelManager.getChannel(queueName).publishAndWait(prepEvent(fileName, wireMockServer.port()))
 
-    private fun stubAddress(id: String, json: String) {
-        wireMockServer.stubFor(
-            get("/core-person-record/person/probation-integration/U123456/address/$id")
-                .willReturn(okJson(json))
+    private fun assertAddressDomainEvent(
+        eventType: String,
+        description: String,
+        cprAddressId: String,
+        deliusAddressId: Long,
+        addressStatus: String
+    ) {
+        val topic = channelManager.getChannel(topicName)
+        val notification = checkNotNull(topic.receive()) { "Expected address domain event to be published" }
+        topic.done(notification.id)
+        val domainEvent = notification.message as HmppsDomainEvent
+
+        assertThat(notification.eventType).isEqualTo(eventType)
+        assertThat(notification.attributes["eventSource"]?.value).isEqualTo("core-person-record")
+        assertThat(domainEvent.version).isEqualTo(1)
+        assertThat(domainEvent.eventType).isEqualTo(eventType)
+        assertThat(domainEvent.description).isEqualTo(description)
+        assertThat(domainEvent.personReference.findCrn()).isEqualTo("U123456")
+        assertThat(domainEvent.additionalInformation).containsExactlyInAnyOrderEntriesOf(
+            mapOf(
+                "addressStatus" to addressStatus,
+                "addressId" to deliusAddressId,
+                "corePersonAddressId" to cprAddressId,
+            )
         )
+        assertThat(topic.receive()).isNull()
+    }
+
+    private fun stubAddress(id: String, json: String) {
+        wireMockServer.stubFor(get("/core-person-record/person/probation/U123456/address/$id").willReturn(okJson(json)))
     }
 
     private fun softDeleted(addressId: Long) = jdbcTemplate.queryForObject<Int>(

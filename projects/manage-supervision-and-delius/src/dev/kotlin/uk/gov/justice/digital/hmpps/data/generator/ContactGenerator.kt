@@ -209,6 +209,8 @@ object ContactGenerator {
         ZonedDateTime.of(LocalDateTime.now(EuropeLondon).minusDays(10), EuropeLondon),
     )
 
+    val APPT_CONTACT_WITH_ALERT = UpdateContactOutcomeGenerator.CONTACT_10
+
     val E_SUPERVISION_ID: UUID = UUID.randomUUID()
     val E_SUPERVISION_CONTACT = generateContact(
         E_SUP_PERSON,

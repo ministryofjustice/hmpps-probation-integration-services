@@ -3,6 +3,8 @@ package uk.gov.justice.digital.hmpps.service
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.entity.PersonAccess
 import uk.gov.justice.digital.hmpps.entity.UserAccessRepository
+import java.time.ZoneId
+import java.time.ZonedDateTime
 
 @Service
 class UserAccessService(private val uar: UserAccessRepository) {
@@ -20,6 +22,31 @@ class UserAccessService(private val uar: UserAccessRepository) {
     fun checkLimitedAccessFor(crns: List<String>): UserAccess {
         val limitations: Map<String, List<PersonAccess>> = uar.checkLimitedAccessFor(crns).groupBy { it.crn }
         return UserAccess(crns.map { limitations[it].combined(it) })
+    }
+
+    fun allCaseAccessForCrn(crn: String): AllCaseAccess {
+        val person = uar.findLimitedAccessPersonByCrn(crn)
+        val exclusions = uar.getExclusionsForCrn(crn)
+        val restrictions = uar.getRestrictionsForCrn(crn)
+        return AllCaseAccess(
+            crn = crn,
+            excludedFrom = exclusions.map {
+                LaoDetail(
+                    it.username,
+                    it.since,
+                    it.until
+                )
+            }.ifEmpty { null },
+            restrictedTo = restrictions.map {
+                LaoDetail(
+                    it.username,
+                    it.since,
+                    it.until
+                )
+            }.ifEmpty { null },
+            exclusionMessage = person?.exclusionMessage,
+            restrictionMessage = person?.restrictionMessage,
+        )
     }
 
     private fun List<PersonAccess>?.combined(crn: String): CaseAccess {
@@ -46,3 +73,17 @@ data class CaseAccess(
 )
 
 data class UserAccess(val access: List<CaseAccess>)
+
+data class AllCaseAccess(
+    val crn: String,
+    val excludedFrom: List<LaoDetail>?,
+    val restrictedTo: List<LaoDetail>?,
+    val exclusionMessage: String? = null,
+    val restrictionMessage: String? = null
+)
+
+data class LaoDetail(
+    val username: String,
+    val since: ZonedDateTime,
+    val until: ZonedDateTime? = null,
+)

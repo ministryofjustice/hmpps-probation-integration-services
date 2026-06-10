@@ -12,6 +12,7 @@ data class CaseView(
     val sentence: CvSentence,
     val offences: List<CvOffence>,
     val requirements: List<CvRequirement>,
+    val licenceConditions: List<CvLicenceCondition>,
     val cpsPack: CvDocument? = null,
     val preConvictionDocument: CvDocument? = null,
     val courtReport: CvDocument? = null
@@ -46,6 +47,11 @@ data class CvRequirement(
     val mainCategory: String,
     val subCategory: String?,
     val length: String
+)
+
+data class CvLicenceCondition(
+    val mainCategory: String,
+    val subCategory: String?,
 )
 
 data class CvDocument(

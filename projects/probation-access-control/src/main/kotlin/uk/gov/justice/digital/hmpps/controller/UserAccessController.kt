@@ -21,4 +21,10 @@ class UserAccessController(
         @Size(min = 1, max = 500, message = "Please provide between 1 and 500 crns")
         @RequestBody crns: List<String>
     ) = userAccessService.userAccessFor(username, crns)
+
+    @PreAuthorize("hasRole('PROBATION_API__ACCESS_CONTROLS__READ')")
+    @GetMapping("/case/{crn}/access")
+    fun getAllExclusionsAndRestrictionsForCrn(
+        @PathVariable crn: String,
+    ) = userAccessService.allCaseAccessForCrn(crn)
 }

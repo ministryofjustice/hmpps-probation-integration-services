@@ -5,9 +5,8 @@ import uk.gov.justice.digital.hmpps.entity.LimitedAccessPerson
 import uk.gov.justice.digital.hmpps.entity.Restriction
 import uk.gov.justice.digital.hmpps.service.entity.Person
 import uk.gov.justice.digital.hmpps.service.entity.StaffUser
-import uk.gov.justice.digital.hmpps.user.AuditUser
 import java.time.LocalDate
-import java.time.LocalDateTime
+import java.time.ZonedDateTime
 
 object PersonGenerator {
     val DEFAULT = generate("X123123")
@@ -38,16 +37,18 @@ object PersonGenerator {
     fun generateExclusion(
         person: Person,
         user: StaffUser,
-        endDateTime: LocalDateTime? = null,
+        start: ZonedDateTime = ZonedDateTime.now(),
+        endDateTime: ZonedDateTime? = null,
         id: Long = IdGenerator.getAndIncrement()
-    ) = Exclusion(person.asLimitedAccessPerson(), user.asLimitedAccessUser(), endDateTime, id)
+    ) = Exclusion(person.asLimitedAccessPerson(), user.asLimitedAccessUser(), start, endDateTime, id)
 
     fun generateRestriction(
         person: Person,
         user: StaffUser,
-        endDateTime: LocalDateTime? = null,
+        start: ZonedDateTime = ZonedDateTime.now(),
+        endDateTime: ZonedDateTime? = null,
         id: Long = IdGenerator.getAndIncrement()
-    ) = Restriction(person.asLimitedAccessPerson(), user.asLimitedAccessUser(), endDateTime, id)
+    ) = Restriction(person.asLimitedAccessPerson(), user.asLimitedAccessUser(), start, endDateTime, id)
 
     fun Person.asLimitedAccessPerson() = LimitedAccessPerson(crn, exclusionMessage, restrictionMessage, id)
 }

@@ -32,6 +32,7 @@ class ComplianceIntegrationTest : IntegrationTestBase() {
         assertThat(res.currentSentences[1].eventNumber, equalTo("7654321"))
         assertThat(res.currentSentences[0].eventNumber, equalTo("1234567"))
         assertThat(res.currentSentences[1].activeBreach?.status, equalTo("An NSI Status"))
+        assertThat(res.currentSentences[1].activeRecall?.status, equalTo("Standard"))
         assertThat(res.currentSentences[1].compliance.breachStarted, equalTo(true))
         assertThat(res.currentSentences[1].compliance.currentBreaches, equalTo(1))
         assertThat(res.currentSentences[1].activity.waitingForEvidenceCount, equalTo(0))

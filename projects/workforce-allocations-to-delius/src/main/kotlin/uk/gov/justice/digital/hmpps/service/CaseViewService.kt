@@ -17,7 +17,8 @@ class CaseViewService(
     private val additionalOffenceRepository: CaseViewAdditionalOffenceRepository,
     private val requirementRepository: CaseViewRequirementRepository,
     private val contactRepository: ContactRepository,
-    private val documentRepository: DocumentRepository
+    private val documentRepository: DocumentRepository,
+    private val caseViewLicenceConditionRepository: CaseViewLicenceConditionRepository,
 ) {
     fun caseView(crn: String, eventNumber: String): CaseView {
         val person = personRepository.getByCrn(crn)
@@ -26,6 +27,7 @@ class CaseViewService(
             ?: throw NotFoundException("Event", "number", eventNumber)
         val additionalOffences = additionalOffenceRepository.findAllByEventId(sentence.eventId)
         val requirements = requirementRepository.findAllByDisposalEventId(sentence.eventId)
+        val licenceConditions = caseViewLicenceConditionRepository.findAllByDisposalEventId(sentence.eventId)
         val docs = documentRepository.findCpsAndPreCons(person.id).associateBy { it.type }
         val cpsPack = docs[DocumentType.CPS_PACK]
         val preCon = docs[DocumentType.PREVIOUS_CONVICTION]
@@ -39,6 +41,7 @@ class CaseViewService(
             sentence.toCvSentence(),
             listOf(sentence.mainOffence()) + additionalOffences.map { it.toCvOffence() },
             requirements.map { it.toCvRequirement() },
+            licenceConditions.map { it.toCvLicenceCondition() },
             cpsPack?.toCvDocument(),
             preCon?.toCvDocument(),
             courtReport?.toCvDocument()
@@ -52,13 +55,15 @@ class CaseViewService(
             val sentence = personRepository.findSentenceSummary(person.id, it.number)
             val additionalOffences = additionalOffenceRepository.findAllByEventId(it.id)
             val requirements = requirementRepository.findAllByDisposalEventId(it.id)
-            ReallocationCaseView.ActiveEvent(
+            val licenceConditions = caseViewLicenceConditionRepository.findAllByDisposalEventId(it.id)
+            ReallocationCaseView.ReallocationCaseViewActiveEvent(
                 it.number,
                 it.failureToComplyCount,
                 listOfNotNull(it.referralDate, it.breachEnd, sentence?.startDate?.toLocalDate()).max(),
                 sentence?.toCvSentence(),
                 listOfNotNull(sentence?.mainOffence()) + additionalOffences.map { o -> o.toCvOffence() },
                 requirements.map { r -> r.toCvRequirement() },
+                licenceConditions.map { r -> r.toCvLicenceCondition() },
             )
         }
         val nextAppointmentDate = contactRepository.getNextAppointmentDate(person.id)
@@ -100,6 +105,11 @@ class CaseViewService(
         mainCategory.description,
         subCategory?.description,
         length?.let { "$length ${mainCategory.units?.description ?: ""}" } ?: ""
+    )
+
+    private fun CaseViewLicenceCondition.toCvLicenceCondition() = CvLicenceCondition(
+        mainCategory.description,
+        subCategory?.description
     )
 
     private fun Document.toCvDocument() = CvDocument(
