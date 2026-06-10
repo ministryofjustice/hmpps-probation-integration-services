@@ -49,11 +49,10 @@ interface RequirementRepository : JpaRepository<Requirement, Long> {
     fun findAllByIdAndMainCategoryCodeIn(
         requirementId: Long,
         mainCategoryCodes: Set<String> = setOf(RAR_GAR_ACCREDITED_PROGRAMMES, COURT_ACCREDITED_PROGRAMMES)
-    ): Requirement
+    ): Requirement?
 
     fun findByIdOrNotFound(id: Long) = findAllByIdAndMainCategoryCodeIn(id).orNotFoundBy("id", id)
-    fun getAllByIdIn(ids: List<Long>) =
-        ids.toSet().let { ids ->
-            findAllByIdInAndActiveTrueAndMainCategoryCodeIn(ids).associateBy { it.id }.reportMissingIds(ids)
-        }
+    fun getAllByIdIn(ids: List<Long>) = ids.toSet().let { ids ->
+        findAllByIdInAndActiveTrueAndMainCategoryCodeIn(ids).associateBy { it.id }.reportMissingIds(ids)
+    }
 }
