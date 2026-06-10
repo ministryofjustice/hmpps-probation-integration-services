@@ -22,9 +22,11 @@ import uk.gov.justice.digital.hmpps.entity.address.PersonAddress
 import uk.gov.justice.digital.hmpps.entity.appointment.Contact
 import uk.gov.justice.digital.hmpps.entity.appointment.ContactOutcome
 import uk.gov.justice.digital.hmpps.entity.appointment.ContactType
+import uk.gov.justice.digital.hmpps.entity.sentence.Custody
 import uk.gov.justice.digital.hmpps.entity.sentence.Disposal
 import uk.gov.justice.digital.hmpps.entity.sentence.DisposalType
 import uk.gov.justice.digital.hmpps.entity.sentence.Event
+import uk.gov.justice.digital.hmpps.entity.sentence.KeyDate
 import uk.gov.justice.digital.hmpps.entity.sentence.NonStatutoryIntervention
 import uk.gov.justice.digital.hmpps.entity.sentence.licencecondition.LicenceCondition
 import uk.gov.justice.digital.hmpps.entity.sentence.licencecondition.LicenceConditionMainCategory
@@ -183,6 +185,31 @@ object TestData {
             expectedEndDate = LocalDate.of(2025, 1, 1),
             enteredExpectedEndDate = LocalDate.of(2025, 6, 1),
             lastUpdatedDatetime = ZonedDateTime.of(2026, 3, 1, 12, 0, 0, 0, ZoneId.of("UTC")),
+        )
+        val CUSTODY = Custody(
+            id = id(),
+            disposal = DISPOSAL,
+        )
+        val SED_KEY_DATE_TYPE = ReferenceData(id(), "SED", "Sentence Expiry Date")
+        val SED_KEY_DATE = KeyDate(
+            id = id(),
+            custody = CUSTODY,
+            type = SED_KEY_DATE_TYPE,
+            date = LocalDate.of(2025, 10, 1),
+        )
+        val EVENT_NO_CUSTODY = Event(
+            id = id(),
+            number = "2",
+            personId = PersonData.DEFAULT.id,
+        )
+        val DISPOSAL_NO_CUSTODY = Disposal(
+            id = id(),
+            event = EVENT_NO_CUSTODY,
+            type = COMMUNITY_ORDER,
+            date = LocalDate.of(2024, 6, 1),
+            expectedEndDate = LocalDate.of(2026, 6, 1),
+            enteredExpectedEndDate = null,
+            lastUpdatedDatetime = ZonedDateTime.of(2026, 2, 1, 12, 0, 0, 0, ZoneId.of("UTC")),
         )
     }
 

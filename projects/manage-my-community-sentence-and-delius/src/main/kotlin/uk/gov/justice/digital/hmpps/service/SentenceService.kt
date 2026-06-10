@@ -16,16 +16,18 @@ class SentenceService(
     private val eventRepository: EventRepository,
     private val personRepository: PersonRepository,
     private val contactRepository: ContactRepository,
-    private val unpaidWorkAppointmentRepository: UnpaidWorkAppointmentRepository
+    private val unpaidWorkAppointmentRepository: UnpaidWorkAppointmentRepository,
 ) {
     fun getSentenceProgress(crn: String): SentenceProgress {
         val personId = personRepository.getIdByCrn(crn)
+        val events = eventRepository.findByPersonIdAndDisposalNotNull(personId)
         return SentenceProgress(
-            sentences = eventRepository.findByPersonIdAndDisposalNotNull(personId).mapNotNull { it.disposal }.map {
+            sentences = events.mapNotNull { it.disposal }.map {
                 Sentence(
                     type = it.type.description,
                     startDate = it.date,
-                    expectedEndDate = it.enteredExpectedEndDate ?: it.expectedEndDate,
+                    expectedEndDate = it.custody?.sentenceExpiryDate?.date
+                        ?: it.enteredExpectedEndDate ?: it.expectedEndDate,
                     lastUpdatedAt = it.lastUpdatedDatetime,
                     requirements = it.requirements.map { requirement ->
                         Requirement(
