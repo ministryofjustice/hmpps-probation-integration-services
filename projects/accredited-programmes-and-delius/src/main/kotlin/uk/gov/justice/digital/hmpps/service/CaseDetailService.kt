@@ -87,8 +87,7 @@ class CaseDetailService(
         if (manager.requirement.disposal.event.person.crn != person.crn) {
             throw NotFoundException("Requirement", "id", id)
         }
-        return manager.let { manager ->
-            Requirement(
+        return Requirement(
                 manager = Manager(
                     staff = manager.staff.toProbationPractitioner { ldapTemplate.findEmailByUsername(it.username) },
                     team = manager.team.toCodedValue(),
@@ -98,7 +97,6 @@ class CaseDetailService(
                 probationDeliveryUnits = manager.team.pduOfficeLocations(),
                 eventNumber = manager.requirement.disposal.event.number
             )
-        }
     }
 
     fun getLicenceCondition(crn: String, id: Long): LicenceCondition {
@@ -107,8 +105,7 @@ class CaseDetailService(
         if (manager.licenceCondition.disposal.event.person.crn != person.crn) {
             throw NotFoundException("LicenceCondition", "id", id)
         }
-        return manager.let { manager ->
-            LicenceCondition(
+        return LicenceCondition(
                 Manager(
                     staff = manager.staff.toProbationPractitioner { ldapTemplate.findEmailByUsername(it.username) },
                     team = manager.team.toCodedValue(),
@@ -118,7 +115,6 @@ class CaseDetailService(
                 probationDeliveryUnits = manager.team.pduOfficeLocations(),
                 eventNumber = manager.licenceCondition.disposal.event.number
             )
-        }
     }
 
     private fun Team.pduOfficeLocations() =
