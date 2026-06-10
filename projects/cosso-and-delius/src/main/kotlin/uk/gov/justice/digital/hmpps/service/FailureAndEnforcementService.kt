@@ -12,7 +12,7 @@ import uk.gov.justice.digital.hmpps.model.CodeAndDescription
 import uk.gov.justice.digital.hmpps.model.ContactResponse
 import uk.gov.justice.digital.hmpps.model.FailureAndEnforcementResponse
 import uk.gov.justice.digital.hmpps.model.RegistrationResponse
-import java.util.UUID
+import java.util.*
 
 @Service
 class FailureAndEnforcementService(
@@ -45,8 +45,8 @@ class FailureAndEnforcementService(
                 RegistrationResponse(
                     id = it.id,
                     type = CodeAndDescription(it.type.code, it.type.description),
-                    level = CodeAndDescription(it.registerLevel.code, it.registerLevel.description),
-                    category = CodeAndDescription(it.registerCategory.code, it.registerCategory.description),
+                    level = it.registerLevel?.let { level -> CodeAndDescription(level.code, level.description) },
+                    category = it.registerCategory?.let { category -> CodeAndDescription(category.code, category.description) },
                     startDate = it.startDate,
                     endDate = it.deregistration?.date,
                     notes = it.notes,

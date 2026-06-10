@@ -1,20 +1,13 @@
 package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.stereotype.Service
-import uk.gov.justice.digital.hmpps.entity.AdditionalOffenceRepository
-import uk.gov.justice.digital.hmpps.entity.CourtAppearanceRepository
-import uk.gov.justice.digital.hmpps.entity.Disposal
-import uk.gov.justice.digital.hmpps.entity.DisposalRepository
-import uk.gov.justice.digital.hmpps.entity.DocumentEntity
-import uk.gov.justice.digital.hmpps.entity.DocumentRepository
-import uk.gov.justice.digital.hmpps.entity.MainOffenceRepository
-import uk.gov.justice.digital.hmpps.entity.RequirementRepository
+import uk.gov.justice.digital.hmpps.entity.*
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.model.CodeAndDescription
 import uk.gov.justice.digital.hmpps.model.OffenceDetails
 import uk.gov.justice.digital.hmpps.model.Requirement
 import uk.gov.justice.digital.hmpps.model.Sentence
-import java.util.UUID
+import java.util.*
 
 @Service
 class OffenceService(
@@ -60,12 +53,12 @@ class OffenceService(
                 Requirement(
                     id = it.id,
                     startDate = it.startDate,
-                    mainCategory = it.requirementType.description,
+                    mainCategory = it.requirementType?.description,
                     length = it.length,
-                    lengthUnit = it.requirementType.units.description,
-                    subCategory = it.requirementSubType.description,
+                    lengthUnit = it.requirementType?.units?.description,
+                    subCategory = it.requirementSubType?.description,
                     secondaryLength = it.length2,
-                    secondaryLengthUnit = it.requirementType.length2Units.description
+                    secondaryLengthUnit = it.requirementType?.length2Units?.description
                 )
             }
     }
@@ -73,10 +66,10 @@ class OffenceService(
     fun getSentence(disposal: Disposal): Sentence {
         return Sentence(
             length = disposal.length,
-            lengthUnits = disposal.lengthUnits.description,
+            lengthUnits = disposal.lengthUnits?.description,
             type = disposal.disposalType.description,
             secondLength = disposal.length2,
-            secondLengthUnits = disposal.length2Units.description
+            secondLengthUnits = disposal.length2Units?.description
         )
     }
 }

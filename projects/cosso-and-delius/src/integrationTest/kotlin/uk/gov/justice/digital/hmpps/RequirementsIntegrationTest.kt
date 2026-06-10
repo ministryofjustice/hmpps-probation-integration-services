@@ -26,7 +26,7 @@ class RequirementsIntegrationTest @Autowired constructor(
             .andReturn().response.contentAsJson<RequirementsResponse>()
         assertThat(response.requirements.size).isEqualTo(1)
         assertThat(response.breachReasons.size).isEqualTo(1)
-        assertThat(response.requirements.get(0).type.code).isEqualTo("Probation")
+        assertThat(response.requirements.get(0).type?.code).isEqualTo("Probation")
         assertThat(response.breachReasons.get(0).code).isEqualTo("Absent")
     }
 

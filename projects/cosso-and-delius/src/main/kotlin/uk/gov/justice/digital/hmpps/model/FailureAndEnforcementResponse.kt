@@ -20,11 +20,11 @@ data class ContactResponse(
 data class RegistrationResponse(
     val id: Long,
     val type: CodeAndDescription,
-    val level: CodeAndDescription,
-    val category: CodeAndDescription,
+    val level: CodeAndDescription?,
+    val category: CodeAndDescription?,
     val startDate: LocalDate,
     val endDate: LocalDate?,
     val notes: String?,
-    val documentsLinked: Boolean,
+    val documentsLinked: Boolean?,
     val deregistered: Boolean,
 )
