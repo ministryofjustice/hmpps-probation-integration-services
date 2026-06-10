@@ -62,8 +62,8 @@ class AddressService(
         telephoneNumber = existing?.telephoneNumber,
         noFixedAbode = noFixedAbode ?: false,
         notes = listOfNotNull(existing?.notes, comment).takeIf { it.isNotEmpty() }?.joinToString("\n\n"),
-        startDate = startDate,
-        endDate = endDate,
+        startDate = startDateTime,
+        endDate = endDateTime,
         status = requireNotNull(status.code?.let { referenceDataRepository.getAddressStatus(it) }) { "Address status is required" },
         type = usages.filter { it.isActive }.apply { require(size <= 1) { "Cannot handle multiple address types" } }
             .singleOrNull()?.usageCode?.code?.let { referenceDataRepository.getAddressType(it) },
