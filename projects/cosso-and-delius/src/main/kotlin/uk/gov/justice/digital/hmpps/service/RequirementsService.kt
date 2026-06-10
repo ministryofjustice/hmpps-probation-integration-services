@@ -27,7 +27,12 @@ class RequirementsService(
                 CossoRequirement(
                     id = it.id,
                     type = it.requirementType?.let { type -> CodeAndDescription(type.code, type.description) },
-                    subType = it.requirementSubType?.let { subType -> CodeAndDescription(subType.code, subType.description) },
+                    subType = it.requirementSubType?.let { subType ->
+                        CodeAndDescription(
+                            subType.code,
+                            subType.description
+                        )
+                    },
                 )
             },
             breachReasons = breachReasons.map { CodeAndDescription(it.code, it.description) }

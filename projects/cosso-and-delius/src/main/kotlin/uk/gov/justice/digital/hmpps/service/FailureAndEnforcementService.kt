@@ -46,7 +46,12 @@ class FailureAndEnforcementService(
                     id = it.id,
                     type = CodeAndDescription(it.type.code, it.type.description),
                     level = it.registerLevel?.let { level -> CodeAndDescription(level.code, level.description) },
-                    category = it.registerCategory?.let { category -> CodeAndDescription(category.code, category.description) },
+                    category = it.registerCategory?.let { category ->
+                        CodeAndDescription(
+                            category.code,
+                            category.description
+                        )
+                    },
                     startDate = it.startDate,
                     endDate = it.deregistration?.date,
                     notes = it.notes,
