@@ -7,7 +7,7 @@ generic-service:
 
   env:
     SENTRY_ENVIRONMENT: preprod
-    INTEGRATIONS_CORE_PERSON_RECORD_URL: https://hmpps-person-record-preprod.hmpps.service.justice.gov.uk
+    INTEGRATIONS_CORE-PERSON-RECORD_URL: https://hmpps-person-record-preprod.hmpps.service.justice.gov.uk
     SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK_SET_URI: https://sign-in-preprod.hmpps.service.justice.gov.uk/auth/.well-known/jwks.json
     SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI: https://sign-in-preprod.hmpps.service.justice.gov.uk/auth/issuer
     MESSAGING_CONSUMER_DETAIL_URLS: https://hmpps-person-record-preprod.hmpps.service.justice.gov.uk
