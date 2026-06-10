@@ -7,8 +7,8 @@ data class RequirementsResponse(
 
 data class CossoRequirement(
     val id: Long,
-    val type: CodeAndDescription,
-    val subType: CodeAndDescription,
+    val type: CodeAndDescription?,
+    val subType: CodeAndDescription?,
 )
 
 

@@ -1,14 +1,6 @@
 package uk.gov.justice.digital.hmpps.entity
 
-import jakarta.persistence.Column
-import jakarta.persistence.Convert
-import jakarta.persistence.Entity
-import jakarta.persistence.Id
-import jakarta.persistence.JoinColumn
-import jakarta.persistence.Lob
-import jakarta.persistence.ManyToOne
-import jakarta.persistence.OneToOne
-import jakarta.persistence.Table
+import jakarta.persistence.*
 import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.NumericBooleanConverter
 import org.hibernate.type.YesNoConverter
@@ -44,7 +36,7 @@ class Registration(
 
     @Column(name = "document_linked", columnDefinition = "char(1)")
     @Convert(converter = YesNoConverter::class)
-    val documentLinked: Boolean,
+    val documentLinked: Boolean? = null,
 
     @ManyToOne
     @JoinColumn(name = "register_type_id")
@@ -52,11 +44,11 @@ class Registration(
 
     @ManyToOne
     @JoinColumn(name = "register_level_id")
-    val registerLevel: ReferenceData,
+    val registerLevel: ReferenceData? = null,
 
     @ManyToOne
     @JoinColumn(name = "register_category_id")
-    val registerCategory: ReferenceData,
+    val registerCategory: ReferenceData? = null,
 
     @Column(name = "soft_deleted", columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)
