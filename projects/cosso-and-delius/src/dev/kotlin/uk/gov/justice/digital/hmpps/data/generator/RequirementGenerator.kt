@@ -17,6 +17,15 @@ object RequirementGenerator {
         active = true
     )
 
+    val REQUIREMENT_MINIMAL_FIELDS = RequirementEntity(
+        id = IdGenerator.getAndIncrement(),
+        disposalId = DisposalGenerator.DEFAULT_DISPOSAL.id,
+        startDate = LocalDate.now().minusDays(6),
+        length = 2,
+        softDeleted = false,
+        active = true
+    )
+
     fun getRequirementType(typeDescription: String) = RequirementType(
         id = IdGenerator.getAndIncrement(),
         code = typeDescription,

@@ -14,7 +14,7 @@ import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.model.FailureAndEnforcementResponse
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
-import java.util.UUID
+import java.util.*
 
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = RANDOM_PORT)
@@ -34,6 +34,10 @@ class FailureAndEnforcementIntegrationTest @Autowired constructor(
         // check that the registration flagged as ALT7 or ALSH is returned
         assertThat(response.registrations.size).isEqualTo(1)
         assertThat(response.registrations[0].type.code).isEqualTo("ALT7")
+        assertThat(response.registrations[0].notes).isEqualTo("Some registration notes")
+        assertThat(response.registrations[0].documentsLinked).isTrue()
+        assertThat(response.registrations[0].deregistered).isFalse()
+        assertThat(response.registrations[0].startDate).isNotNull()
     }
 
     @Test

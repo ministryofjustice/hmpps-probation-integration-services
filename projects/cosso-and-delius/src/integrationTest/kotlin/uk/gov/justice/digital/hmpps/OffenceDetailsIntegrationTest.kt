@@ -12,9 +12,10 @@ import org.springframework.test.web.servlet.get
 import uk.gov.justice.digital.hmpps.data.generator.DocumentGenerator
 import uk.gov.justice.digital.hmpps.data.generator.EventGenerator
 import uk.gov.justice.digital.hmpps.data.generator.RequirementGenerator.DEFAULT_REQUIREMENT
+import uk.gov.justice.digital.hmpps.data.generator.RequirementGenerator.REQUIREMENT_MINIMAL_FIELDS
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 import java.time.LocalDate
-import java.util.UUID
+import java.util.*
 
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = RANDOM_PORT)
@@ -54,6 +55,11 @@ class OffenceDetailsIntegrationTest @Autowired constructor(
                   "subCategory": "Probation2",
                   "secondaryLength": 1,
                   "secondaryLengthUnit": "Days"
+                },
+                {
+                  "id": ${REQUIREMENT_MINIMAL_FIELDS.id},
+                  "startDate": "${requirementStartDate}",
+                  "length": 2
                 }
               ],
               "sentence": {
