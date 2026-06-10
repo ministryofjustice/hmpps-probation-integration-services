@@ -24,7 +24,8 @@ class ResponsibleOfficerService(
         val emailAddress = username?.let { ldapTemplate.findAttributeByUsername(username, "mail") }
         val telephoneNumber = username?.let { ldapTemplate.findAttributeByUsername(username, "telephoneNumber") }
         val homeArea = username?.let { ldapTemplate.findAttributeByUsername(username, "userHomeArea") }
-        val defaultReplyAddress = username?.let { ldapTemplate.findPreferenceByUsername(it, "replyAddress")?.toLongOrNull() }
+        val defaultReplyAddress =
+            username?.let { ldapTemplate.findPreferenceByUsername(it, "replyAddress")?.toLongOrNull() }
         val officeLocations = homeArea?.let { officeLocationRepository.findAllByProbationAreaCode(it) }
 
         return ResponsibleOfficerDetails(

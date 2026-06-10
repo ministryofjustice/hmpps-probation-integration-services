@@ -15,7 +15,7 @@ object OfficeLocationGenerator {
         postcode = "AA1 1AA",
         endDate = null,
         probationArea = ProbationAreaGenerator.PROBATION_AREA_N01,
-        )
+    )
 
     val OFFICE_LOCATION_2 = OfficeLocation(
         id = 10001100,
@@ -29,5 +29,5 @@ object OfficeLocationGenerator {
         postcode = "AA1 1AB",
         endDate = null,
         probationArea = ProbationAreaGenerator.PROBATION_AREA_N01,
-        )
+    )
 }
