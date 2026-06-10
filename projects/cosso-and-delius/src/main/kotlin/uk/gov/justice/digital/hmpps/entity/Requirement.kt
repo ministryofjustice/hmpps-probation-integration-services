@@ -15,7 +15,7 @@ class RequirementEntity(
     val id: Long,
     val disposalId: Long,
     val startDate: LocalDate,
-    val length: Int,
+    val length: Int? = null,
     @ManyToOne
     @JoinColumn(name = "rqmnt_type_main_category_id")
     val requirementType: RequirementType? = null,
