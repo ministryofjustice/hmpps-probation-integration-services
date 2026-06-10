@@ -317,6 +317,28 @@ internal class CaseControllerIntegrationTest(
     }
 
     @Test
+    fun `requirement not found`() {
+        mockMvc.get("/case/${TestData.PERSON.crn}/requirement/999999") {
+            withToken()
+        }.andExpect { status { isNotFound() } }
+    }
+
+    @Test
+    fun `requirement crn not found`() {
+        mockMvc.get("/case/DOESNOTEXIST/requirement/${TestData.REQUIREMENTS[0].id}") {
+            withToken()
+        }.andExpect { status { isNotFound() } }
+    }
+
+    @Test
+    fun `requirement belongs to different person returns 404`() {
+        // REQUIREMENTS[2] belongs to CA_PERSON, not PERSON
+        mockMvc.get("/case/${TestData.PERSON.crn}/requirement/${TestData.REQUIREMENTS[2].id}") {
+            withToken()
+        }.andExpect { status { isNotFound() } }
+    }
+
+    @Test
     fun `licence condition success`() {
         mockMvc.get("/case/${TestData.PERSON.crn}/licence-conditions/${TestData.LICENCE_CONDITIONS.first().id}") {
             withToken()
@@ -369,5 +391,27 @@ internal class CaseControllerIntegrationTest(
                 )
             }
         }
+    }
+
+    @Test
+    fun `licence condition not found`() {
+        mockMvc.get("/case/${TestData.PERSON.crn}/licence-conditions/999999") {
+            withToken()
+        }.andExpect { status { isNotFound() } }
+    }
+
+    @Test
+    fun `licence condition crn not found`() {
+        mockMvc.get("/case/DOESNOTEXIST/licence-conditions/${TestData.LICENCE_CONDITIONS.first().id}") {
+            withToken()
+        }.andExpect { status { isNotFound() } }
+    }
+
+    @Test
+    fun `licence condition belongs to different person returns 404`() {
+        // TERMINATION_LICENCE_CONDITION belongs to TERMINATION_PERSON, not PERSON
+        mockMvc.get("/case/${TestData.PERSON.crn}/licence-conditions/${TestData.TERMINATION_LICENCE_CONDITION.id}") {
+            withToken()
+        }.andExpect { status { isNotFound() } }
     }
 }
