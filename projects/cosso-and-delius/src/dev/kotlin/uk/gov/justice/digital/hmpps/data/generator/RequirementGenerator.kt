@@ -21,7 +21,6 @@ object RequirementGenerator {
         id = IdGenerator.getAndIncrement(),
         disposalId = DisposalGenerator.DEFAULT_DISPOSAL.id,
         startDate = LocalDate.now().minusDays(6),
-        length = 2,
         softDeleted = false,
         active = true
     )

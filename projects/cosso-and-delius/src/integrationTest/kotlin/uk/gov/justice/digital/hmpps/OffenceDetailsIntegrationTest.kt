@@ -58,8 +58,7 @@ class OffenceDetailsIntegrationTest @Autowired constructor(
                 },
                 {
                   "id": ${REQUIREMENT_MINIMAL_FIELDS.id},
-                  "startDate": "${requirementStartDate}",
-                  "length": 2
+                  "startDate": "${requirementStartDate}"
                 }
               ],
               "sentence": {
