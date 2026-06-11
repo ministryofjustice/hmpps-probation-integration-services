@@ -290,6 +290,8 @@ SELECT json_object(
                                                            WHERE e.OFFENDER_ID = o.OFFENDER_ID
                                                              AND e.ACTIVE_FLAG = 1
                                                              AND e.SOFT_DELETED = 0
+                                                             AND d.ACTIVE_FLAG = 1
+                                                             AND d.SOFT_DELETED = 0
                                                              AND d.DISPOSAL_ID IS NULL
                                                              AND outcome.CODE_VALUE = '101'
                                                    ) THEN 'true'
