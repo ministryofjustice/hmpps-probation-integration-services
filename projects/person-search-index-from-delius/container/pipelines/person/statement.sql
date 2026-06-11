@@ -275,7 +275,9 @@ SELECT json_object(
                                                        WHEN EXISTS(SELECT 1
                                                                    FROM EVENT e
                                                                    WHERE e.OFFENDER_ID = o.OFFENDER_ID
-                                                                     AND NOT EXISTS(SELECT 1 FROM DISPOSAL d WHERE d.EVENT_ID = e.EVENT_ID))
+                                                                     AND e.ACTIVE_FLAG = 1
+                                                                     AND e.SOFT_DELETED = 0
+                                                                     AND NOT EXISTS(SELECT 1 FROM DISPOSAL d WHERE d.EVENT_ID = e.EVENT_ID AND d.ACTIVE_FLAG = 1 AND d.SOFT_DELETED = 0))
                                                            THEN 'true'
                                                        ELSE 'false' END FORMAT JSON,
                        'awaitingPsr' VALUE CASE
@@ -286,6 +288,10 @@ SELECT json_object(
                                                                     JOIN EVENT e ON e.EVENT_ID = ca.EVENT_ID
                                                                     LEFT OUTER JOIN DISPOSAL d ON d.EVENT_ID = e.EVENT_ID
                                                            WHERE e.OFFENDER_ID = o.OFFENDER_ID
+                                                             AND e.ACTIVE_FLAG = 1
+                                                             AND e.SOFT_DELETED = 0
+                                                             AND d.ACTIVE_FLAG = 1
+                                                             AND d.SOFT_DELETED = 0
                                                              AND d.DISPOSAL_ID IS NULL
                                                              AND outcome.CODE_VALUE = '101'
                                                    ) THEN 'true'
