@@ -30,6 +30,7 @@ object ContactGenerator {
         softDeleted = false,
         notes = "Some notes",
         outcomeType = ENFORCEABLE_CONTACT_OUTCOME_TYPE,
-        type = DEFAULT_CONTACT_TYPE
+        type = DEFAULT_CONTACT_TYPE,
+        description = "Description"
     )
 }

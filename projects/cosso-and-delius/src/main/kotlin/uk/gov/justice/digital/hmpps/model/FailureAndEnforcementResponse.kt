@@ -11,7 +11,7 @@ data class FailureAndEnforcementResponse(
 data class ContactResponse(
     val id: Long,
     val datetime: ZonedDateTime,
-    val description: String,
+    val description: String?,
     val type: CodeAndDescription,
     val outcome: CodeAndDescription,
     val notes: String?,

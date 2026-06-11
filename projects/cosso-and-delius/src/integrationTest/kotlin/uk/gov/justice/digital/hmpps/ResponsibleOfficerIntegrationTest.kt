@@ -39,17 +39,31 @@ class ResponsibleOfficerIntegrationTest @Autowired constructor(
                             "code": "N02",
                             "description": "DEFAULT_PROBATION_AREA"
                           },
-                          "replyAddress": {
-                            "id": 10001099,
-                            "officeDescription": "Main Office",
-                            "buildingName": "The Office Block",
-                            "buildingNumber": "1",
-                            "streetName": "The Street",
-                            "townCity": "The Town",
-                            "district": "The District",
-                            "county": "The County",
-                            "postcode": "AA1 1AA"
-                          }
+                          "replyAddresses": [
+                            {
+                              "id": 10001099,
+                              "status": "Default",
+                              "officeDescription": "Main Office",
+                              "buildingName": "The Office Block",
+                              "buildingNumber": "1",
+                              "streetName": "The Street",
+                              "townCity": "The Town",
+                              "district": "The District",
+                              "county": "The County",
+                              "postcode": "AA1 1AA"
+                            },
+                            {
+                              "id": 10001100,
+                              "officeDescription": "Office 2",
+                              "buildingName": "Office Block 2",
+                              "buildingNumber": "2",
+                              "streetName": "Street 2",
+                              "townCity": "Town 2",
+                              "district": "District 2",
+                              "county": "County 2",
+                              "postcode": "AA1 1AB"
+                            }
+                          ]
                         }
                         """, JsonCompareMode.STRICT
                     )
@@ -60,6 +74,7 @@ class ResponsibleOfficerIntegrationTest @Autowired constructor(
     @Test
     fun `can get responsible officer details for prison om`() {
         val crn = PERSON_IN_PRISON.crn
+
         mockMvc.get("/responsible-officer/$crn") { withToken() }
             .andExpect {
                 status { isOk() }
@@ -78,17 +93,31 @@ class ResponsibleOfficerIntegrationTest @Autowired constructor(
                             "code": "N02",
                             "description": "DEFAULT_PROBATION_AREA"
                           },
-                          "replyAddress": {
-                            "id": 10001099,
-                            "officeDescription": "Main Office",
-                            "buildingName": "The Office Block",
-                            "buildingNumber": "1",
-                            "streetName": "The Street",
-                            "townCity": "The Town",
-                            "district": "The District",
-                            "county": "The County",
-                            "postcode": "AA1 1AA"
-                          }
+                          "replyAddresses": [
+                            {
+                              "id": 10001099,
+                              "status": "Default",
+                              "officeDescription": "Main Office",
+                              "buildingName": "The Office Block",
+                              "buildingNumber": "1",
+                              "streetName": "The Street",
+                              "townCity": "The Town",
+                              "district": "The District",
+                              "county": "The County",
+                              "postcode": "AA1 1AA"
+                            },
+                            {
+                              "id": 10001100,
+                              "officeDescription": "Office 2",
+                              "buildingName": "Office Block 2",
+                              "buildingNumber": "2",
+                              "streetName": "Street 2",
+                              "townCity": "Town 2",
+                              "district": "District 2",
+                              "county": "County 2",
+                              "postcode": "AA1 1AB"
+                            }
+                          ]
                         }
                         """, JsonCompareMode.STRICT
                     )
@@ -114,7 +143,8 @@ class ResponsibleOfficerIntegrationTest @Autowired constructor(
                           "probationArea": {
                             "code": "N02",
                             "description": "DEFAULT_PROBATION_AREA"
-                          }
+                          },
+                          "replyAddresses": []
                         }
                         """, JsonCompareMode.STRICT
                     )

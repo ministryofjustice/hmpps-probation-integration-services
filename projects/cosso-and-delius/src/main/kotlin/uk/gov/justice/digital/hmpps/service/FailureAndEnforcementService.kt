@@ -35,7 +35,7 @@ class FailureAndEnforcementService(
                 ContactResponse(
                     id = it.id,
                     datetime = it.date.atTime(it.startTime.toLocalTime()).atZone(EuropeLondon),
-                    description = it.type.description,
+                    description = it.description,
                     type = CodeAndDescription(it.type.code, it.type.description),
                     outcome = CodeAndDescription(it.outcomeType.code, it.outcomeType.description),
                     notes = it.notes

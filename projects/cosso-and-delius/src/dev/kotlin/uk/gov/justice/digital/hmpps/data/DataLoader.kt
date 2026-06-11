@@ -64,6 +64,7 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
             ResponsibleOfficerGenerator.PROBATION_MANAGER_WITHOUT_USER,
             ResponsibleOfficerGenerator.RESPONSIBLE_OFFICER_WITHOUT_USER,
             OfficeLocationGenerator.DEFAULT_OFFICE_LOCATION,
+            OfficeLocationGenerator.OFFICE_LOCATION_2
         )
     }
 
