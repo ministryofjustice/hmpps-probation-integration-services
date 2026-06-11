@@ -63,6 +63,7 @@ class CheckInService(
             contactRepository.findByPersonCrnAndEventNumberAndTypeCode(domainEvent.crn, eventNumber)
                 .orIgnore { "Setup not found" }
         }
+        if (contact.event == null) throw IgnorableMessageException("Event not found for setup removal")
         require(domainEvent matches contact) { "Case details mismatch" }
         contact.outcome = contactOutcomeRepository.getByCode(SETUP_REMOVED)
         contactRepository.save(contact).also { audit(it) }
@@ -116,9 +117,9 @@ class CheckInService(
     private operator fun AuditedInteraction.Parameters.invoke(contact: Contact) {
         this["contactId"] = contact.id
         this["offenderId"] = contact.person.id
-        this["eventId"] = contact.event.id
+        this["eventId"] = checkNotNull(contact.event).id
     }
 
     private infix fun HmppsDomainEvent.matches(contact: Contact) =
-        contact.person.crn == crn && (eventNumber == null || contact.event.number == eventNumber)
+        contact.person.crn == crn && (eventNumber == null || contact.event?.number == eventNumber)
 }

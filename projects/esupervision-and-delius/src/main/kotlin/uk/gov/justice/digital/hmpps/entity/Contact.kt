@@ -33,7 +33,7 @@ class Contact(
 
     @ManyToOne
     @JoinColumn(name = "event_id")
-    val event: EventEntity,
+    val event: EventEntity?,
 
     @ManyToOne
     @JoinColumn(name = "contact_type_id")

@@ -59,8 +59,12 @@ class Handler(
                 else -> throw IllegalArgumentException("Unexpected event type: ${notification.eventType}")
             }
         } catch (e: IgnorableMessageException) {
+            val eventName = when (notification.eventType) {
+                SETUP_REMOVED, SENTENCE_TERMINATED -> "CheckInSetupRemovalIgnored"
+                else -> "CheckInEventIgnored"
+            }
             telemetryService.trackEvent(
-                "CheckInEventIgnored",
+                eventName,
                 mapOf("reason" to e.message) + e.additionalProperties + notification.telemetry()
             )
         }
