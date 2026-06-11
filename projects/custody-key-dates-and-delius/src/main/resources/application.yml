@@ -28,6 +28,7 @@ spring:
 
 oauth2.roles:
   - PROBATION_API__CUSTODY_DATES__RW
+  - CALCULATE_RELEASE_DATES__SENTENCE_ENVELOPE__RO
 
 springdoc.default-produces-media-type: application/json
 
@@ -61,7 +62,9 @@ messaging:
 
 integrations:
   prison-api:
-    url: http://localhost:${dev.wiremock.port}
+    url: http://localhost:${dev.wiremock.port}/prison-api
+  crds-api:
+    url: http://localhost:${dev.wiremock.port}/crds
 
 oauth2:
   client-id: custody-key-dates-and-delius

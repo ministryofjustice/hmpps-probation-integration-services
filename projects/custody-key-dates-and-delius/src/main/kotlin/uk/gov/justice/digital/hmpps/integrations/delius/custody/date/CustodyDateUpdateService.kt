@@ -4,6 +4,8 @@ import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.client.RestClientResponseException
+import uk.gov.justice.digital.hmpps.integrations.crds.CrdsApiClient
+import uk.gov.justice.digital.hmpps.integrations.crds.KeyDateCalculator
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.CustodyDateType.*
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.contact.ContactService
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.reference.ReferenceDataRepository
@@ -26,6 +28,8 @@ class CustodyDateUpdateService(
     private val keyDateRepository: KeyDateRepository,
     private val contactService: ContactService,
     private val telemetryService: TelemetryService,
+    private val crdsApiClient: CrdsApiClient,
+    private val keyDateCalculator: KeyDateCalculator,
 ) {
     fun updateCustodyKeyDates(nomsId: String, dryRun: Boolean = false, clientSource: String = "messaging") {
         try {
@@ -51,7 +55,7 @@ class CustodyDateUpdateService(
             singleOrNull() ?: return telemetryService.trackEvent("MissingBookingRef", booking.telemetry(clientSource))
         }
         val custody = custodyRepository.findCustodyById(custodyRepository.findForUpdate(custodyId))
-        val updated = calculateKeyDateChanges(sentenceDetail, custody)
+        val updated = calculateKeyDateChanges(sentenceDetail, custody, booking)
         if (updated.isEmpty()) {
             telemetryService.trackEvent("KeyDatesUnchanged", booking.telemetry(clientSource))
         } else {
@@ -66,18 +70,43 @@ class CustodyDateUpdateService(
         }
     }
 
-    private fun calculateKeyDateChanges(sentenceDetail: SentenceDetail, custody: Custody) = listOfNotNull(
-        custody.keyDate(LICENCE_EXPIRY_DATE.code, sentenceDetail.licenceExpiryDate),
-        custody.keyDate(AUTOMATIC_CONDITIONAL_RELEASE_DATE.code, sentenceDetail.conditionalReleaseDate),
-        custody.keyDate(PAROLE_ELIGIBILITY_DATE.code, sentenceDetail.paroleEligibilityDate),
-        custody.keyDate(SENTENCE_EXPIRY_DATE.code, sentenceDetail.sentenceExpiryDate),
-        custody.keyDate(EXPECTED_RELEASE_DATE.code, sentenceDetail.confirmedReleaseDate),
-        custody.keyDate(HDC_EXPECTED_DATE.code, sentenceDetail.homeDetentionCurfewEligibilityDate),
-        custody.keyDate(POST_SENTENCE_SUPERVISION_END_DATE.code, sentenceDetail.postSentenceSupervisionEndDate.takeIf {
-            custody.disposal?.type?.pssRequirement == true
-        }),
-        custody.keyDate(SUSPENSION_DATE_IF_RESET.code, suspensionDateIfReset(sentenceDetail, custody)),
-    )
+    private fun calculateKeyDateChanges(sentenceDetail: SentenceDetail, custody: Custody, booking: Booking): List<KeyDate> {
+        val envelope = try {
+            crdsApiClient.getOperativeSentenceEnvelope(booking.offenderNo)
+        } catch (_: Exception) {
+            null
+        }
+
+        val isSdsPlus = envelope?.containsAnSDSPlusSentence
+        val crd = sentenceDetail.conditionalReleaseDate
+        val led = sentenceDetail.licenceExpiryDate
+        val sentenceLengthDays = envelope?.sentenceEnvelopeLengthInDays
+
+        val presumptiveElectronicMonitoringEndDate =
+            sentenceLengthDays?.let { days ->
+                crd?.let { keyDateCalculator.calculatePresumptiveEMEndDate(it, days, isSdsPlus)
+                }
+            }
+
+        val finalThirdDate =
+            sentenceLengthDays?.let { days ->
+                led?.let { keyDateCalculator.calculateFinalThirdDate(it, days)
+                }
+            }
+
+        return listOfNotNull(
+            custody.keyDate(LICENCE_EXPIRY_DATE.code, sentenceDetail.licenceExpiryDate),
+            custody.keyDate(AUTOMATIC_CONDITIONAL_RELEASE_DATE.code, sentenceDetail.conditionalReleaseDate),
+            custody.keyDate(PAROLE_ELIGIBILITY_DATE.code, sentenceDetail.paroleEligibilityDate),
+            custody.keyDate(SENTENCE_EXPIRY_DATE.code, sentenceDetail.sentenceExpiryDate),
+            custody.keyDate(EXPECTED_RELEASE_DATE.code, sentenceDetail.confirmedReleaseDate),
+            custody.keyDate(HDC_EXPECTED_DATE.code, sentenceDetail.homeDetentionCurfewEligibilityDate),
+            custody.keyDate(POST_SENTENCE_SUPERVISION_END_DATE.code, sentenceDetail.postSentenceSupervisionEndDate.takeIf { custody.disposal?.type?.pssRequirement == true }),
+            custody.keyDate(SUSPENSION_DATE_IF_RESET.code, suspensionDateIfReset(sentenceDetail, custody)),
+            custody.keyDate(PRESUMPTIVE_EM_END_DATE.code, presumptiveElectronicMonitoringEndDate),
+            custody.keyDate(FINAL_THIRD_START_DATE.code, finalThirdDate),
+        )
+    }
 
     fun suspensionDateIfReset(sentenceDetail: SentenceDetail, custody: Custody): LocalDate? = custody.disposal
         ?.takeIf { it.type.determinateSentence }

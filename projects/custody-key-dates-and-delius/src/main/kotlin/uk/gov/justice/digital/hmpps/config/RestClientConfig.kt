@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.web.client.RestClient
 import uk.gov.justice.digital.hmpps.client.RestClientUtils.createClient
+import uk.gov.justice.digital.hmpps.integrations.crds.CrdsApiClient
 import uk.gov.justice.digital.hmpps.integrations.prison.PrisonApiClient
 
 @Configuration
@@ -17,4 +18,12 @@ class RestClientConfig(private val oauth2Client: RestClient) {
                 .baseUrl("$prisonApiBaseUrl/api/bookings")
                 .build()
         )
+
+    @Bean
+    fun crdsApiClient(@Value("\${integrations.crds-api.url}") crdsApiBaseUrl: String) =
+        createClient<CrdsApiClient>(
+        oauth2Client.mutate()
+            .baseUrl(crdsApiBaseUrl)
+            .build()
+    )
 }
