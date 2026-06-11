@@ -277,7 +277,7 @@ SELECT json_object(
                                                                    WHERE e.OFFENDER_ID = o.OFFENDER_ID
                                                                      AND e.ACTIVE_FLAG = 1
                                                                      AND e.SOFT_DELETED = 0
-                                                                     AND NOT EXISTS(SELECT 1 FROM DISPOSAL d WHERE d.EVENT_ID = e.EVENT_ID))
+                                                                     AND NOT EXISTS(SELECT 1 FROM DISPOSAL d WHERE d.EVENT_ID = e.EVENT_ID AND d.ACTIVE_FLAG = 1 AND d.SOFT_DELETED = 0))
                                                            THEN 'true'
                                                        ELSE 'false' END FORMAT JSON,
                        'awaitingPsr' VALUE CASE
