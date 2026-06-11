@@ -59,7 +59,8 @@ internal class AllocateLicenceConditionServiceTest {
     @InjectMocks
     private lateinit var allocateLicenceConditionService: AllocateLicenceConditionService
 
-    private val allocationDetail = ResourceLoader.file<LicenceConditionAllocation>("get-licence-condition-allocation-body")
+    private val allocationDetail =
+        ResourceLoader.file<LicenceConditionAllocation>("get-licence-condition-allocation-body")
 
     @Test
     fun `when licence condition not for person with crn exception thrown`() {

@@ -32,7 +32,6 @@ class AllocateLicenceConditionService(
     private val optimisationTables: OptimisationTables
 ) : ManagerService<LicenceConditionManager>(auditedInteractionService, licenceConditionManagerRepository) {
 
-
     @Transactional
     fun createLicenceConditionAllocation(crn: String, allocationDetail: LicenceConditionAllocation) =
         audit(BusinessInteractionCode.CREATE_COMPONENT_TRANSFER) { audit ->
@@ -56,7 +55,11 @@ class AllocateLicenceConditionService(
             if (!licenceCondition.disposal.active || !licenceCondition.disposal.event.active) {
                 throw NotActiveException("Event", "number", licenceCondition.disposal.event.number)
             }
-            if (!licenceCondition.active) throw NotActiveException("Licence Condition", "id", allocationDetail.licenceConditionId)
+            if (!licenceCondition.active) throw NotActiveException(
+                "Licence Condition",
+                "id",
+                allocationDetail.licenceConditionId
+            )
 
             val activeLicenceConditionManager = licenceConditionManagerRepository.findActiveManagerAtDate(
                 allocationDetail.licenceConditionId,
@@ -102,9 +105,9 @@ class AllocateLicenceConditionService(
                     newOM,
                     ContactContext(
                         contactTypeRepository.findByCodeOrThrow(ContactTypeCode.SENTENCE_COMPONENT_TRANSFER.value),
-                            offenderId = licenceCondition.person.id,
-                            eventId = licenceCondition.disposal.event.id,
-                            licenceConditionId = licenceCondition.id
+                        offenderId = licenceCondition.person.id,
+                        eventId = licenceCondition.disposal.event.id,
+                        licenceConditionId = licenceCondition.id
                     )
                 )
             )

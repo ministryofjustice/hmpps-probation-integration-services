@@ -114,7 +114,8 @@ class AllocateLicenceConditionIntegrationTest @Autowired constructor(
 
         val allocationDetail = ResourceLoader.file<AllocationDetail.LicenceConditionAllocation>(jsonFile)
 
-        val updatedLcmCount = licenceConditionManagerRepository.findAll().count { it.licenceConditionId == licenceCondition.id }
+        val updatedLcmCount =
+            licenceConditionManagerRepository.findAll().count { it.licenceConditionId == licenceCondition.id }
         assertThat(updatedLcmCount, equalTo(originalLcmCount + 1))
 
         val oldLcm = licenceConditionManagerRepository.findById(existingLcm.id).orElseThrow()
