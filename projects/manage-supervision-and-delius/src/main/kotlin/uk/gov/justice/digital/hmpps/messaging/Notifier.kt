@@ -87,7 +87,9 @@ class Notifier(
                         ),
                     ),
                 ),
-                attributes = MessageAttributes("probation-case.personal-details.updated")
+                attributes = MessageAttributes("probation-case.personal-details.updated").apply {
+                    set("eventSource", "delius")
+                }
             )
         )
     }
@@ -110,7 +112,9 @@ class Notifier(
                         )
                     )
                 ),
-                attributes = MessageAttributes("probation-case.mappa-information.${eventType.value}")
+                attributes = MessageAttributes("probation-case.mappa-information.${eventType.value}").apply {
+                    set("eventSource", "delius")
+                }
             )
         )
     }
