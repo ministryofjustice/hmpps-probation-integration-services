@@ -37,13 +37,13 @@ class AllocateLicenceConditionService(
         audit(BusinessInteractionCode.CREATE_COMPONENT_TRANSFER) { audit ->
             val licenceCondition = licenceConditionRepository.findByIdOrNull(allocationDetail.licenceConditionId)
                 ?: throw IgnorableMessageException(
-                    "Requirement no longer exists",
+                    "Licence Condition no longer exists",
                     mapOf("id" to allocationDetail.licenceConditionId.toString())
                 )
 
             audit["offenderId"] = licenceCondition.person.id
             audit["eventId"] = licenceCondition.disposal.event.id
-            audit["requirementId"] = licenceCondition.id
+            audit["licenceConditionId"] = licenceCondition.id
             optimisationTables.rebuild(licenceCondition.person.id)
 
             if (licenceCondition.person.crn != crn) {

@@ -3,8 +3,8 @@ package uk.gov.justice.digital.hmpps.integrations.workforceallocations
 import com.fasterxml.jackson.annotation.JsonAlias
 import com.fasterxml.jackson.annotation.JsonSubTypes
 import com.fasterxml.jackson.annotation.JsonTypeInfo
-import com.fasterxml.jackson.databind.JsonDeserializer
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize
+import tools.jackson.databind.ValueDeserializer
+import tools.jackson.databind.annotation.JsonDeserialize
 import uk.gov.justice.digital.hmpps.api.model.AllocationReason
 import uk.gov.justice.digital.hmpps.api.model.AllocationType
 import uk.gov.justice.digital.hmpps.api.model.deriveDeliusCodeDefaultInitial
@@ -27,7 +27,7 @@ sealed interface AllocationDetail {
     val code: String
     val allocationReason: AllocationReason?
 
-    @JsonDeserialize(using = JsonDeserializer.None::class)
+    @JsonDeserialize(using = ValueDeserializer.None::class)
     data class PersonAllocation(
         override val id: String,
         override val staffCode: String,
@@ -42,7 +42,7 @@ sealed interface AllocationDetail {
         override val allocationReason: AllocationReason?
     ) : AllocationDetail
 
-    @JsonDeserialize(using = JsonDeserializer.None::class)
+    @JsonDeserialize(using = ValueDeserializer.None::class)
     data class EventAllocation(
         override val id: String,
         override val staffCode: String,
@@ -64,7 +64,7 @@ sealed interface AllocationDetail {
         override val allocationReason: AllocationReason?
     ) : AllocationDetail
 
-    @JsonDeserialize(using = JsonDeserializer.None::class)
+    @JsonDeserialize(using = ValueDeserializer.None::class)
     data class RequirementAllocation(
         override val id: String,
         override val staffCode: String,
@@ -80,7 +80,7 @@ sealed interface AllocationDetail {
         override val allocationReason: AllocationReason?
     ) : AllocationDetail
 
-    @JsonDeserialize(using = JsonDeserializer.None::class)
+    @JsonDeserialize(using = ValueDeserializer.None::class)
     data class LicenceConditionAllocation(
         override val id: String,
         override val staffCode: String,

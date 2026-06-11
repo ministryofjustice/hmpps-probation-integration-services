@@ -1,6 +1,5 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
-import org.hibernate.internal.util.collections.CollectionHelper.listOf
 import uk.gov.justice.digital.hmpps.integrations.delius.allocations.entity.LicenceConditionTransfer
 import uk.gov.justice.digital.hmpps.integrations.delius.allocations.entity.ReferenceData
 import uk.gov.justice.digital.hmpps.integrations.delius.caseview.CaseViewDisposal

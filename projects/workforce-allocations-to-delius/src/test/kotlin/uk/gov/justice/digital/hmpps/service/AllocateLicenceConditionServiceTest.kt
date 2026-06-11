@@ -91,7 +91,7 @@ internal class AllocateLicenceConditionServiceTest {
             )
         }
 
-        assert(exception.message.contains("Requirement no longer exists"))
+        assert(exception.message.contains("Licence Condition no longer exists"))
     }
 
     @Test
