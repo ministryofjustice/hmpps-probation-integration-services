@@ -4,7 +4,8 @@ data class ContactContext(
     val contactType: ContactType,
     val offenderId: Long,
     val eventId: Long? = null,
-    val requirementId: Long? = null
+    val requirementId: Long? = null,
+    val licenceConditionId: Long? = null,
 )
 
 enum class ContactTypeCode(val value: String) {

@@ -116,6 +116,45 @@
         "status": 200,
         "bodyFileName": "historic-requirement-allocation-body.json"
       }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "url": "/allocation/licence-conditions/allocate-new-licence-condition-manager"
+      },
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "bodyFileName": "new-licence-condition-allocation-body.json"
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "url": "/allocation/licence-conditions/reallocate-new-licence-condition-manager"
+      },
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "bodyFileName": "reallocation-licence-condition-allocation-body.json"
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "url": "/allocation/licence-conditions/allocate-historic-licence-condition-manager"
+      },
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "bodyFileName": "historic-licence-condition-allocation-body.json"
+      }
     }
   ]
 }

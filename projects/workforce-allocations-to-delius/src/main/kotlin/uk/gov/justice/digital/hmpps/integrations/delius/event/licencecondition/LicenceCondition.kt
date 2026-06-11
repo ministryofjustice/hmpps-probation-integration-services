@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.integrations.delius.event.licencecondition
 import jakarta.persistence.Column
 import jakarta.persistence.Convert
 import jakarta.persistence.Entity
+import jakarta.persistence.FetchType
 import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
@@ -11,6 +12,8 @@ import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.NumericBooleanConverter
 import org.hibernate.annotations.Immutable
 import uk.gov.justice.digital.hmpps.integrations.delius.allocations.entity.ReferenceData
+import uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.Disposal
+import uk.gov.justice.digital.hmpps.integrations.delius.person.Person
 import java.time.LocalDate
 
 @Entity
@@ -22,8 +25,13 @@ class LicenceCondition(
     @Column(name = "lic_condition_id")
     val id: Long,
 
-    @Column(name = "disposal_id")
-    val disposalId: Long,
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "offender_id", nullable = false)
+    val person: Person,
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "disposal_id", nullable = false)
+    val disposal: Disposal,
 
     @ManyToOne
     @JoinColumn(name = "lic_cond_type_main_cat_id")
@@ -44,7 +52,7 @@ class LicenceCondition(
 
     @Column(name = "active_flag", columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)
-    val activeFlag: Boolean,
+    val active: Boolean,
 
     @Column(columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)

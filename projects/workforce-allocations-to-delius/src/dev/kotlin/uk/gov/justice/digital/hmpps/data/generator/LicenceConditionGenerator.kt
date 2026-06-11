@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
+import org.hibernate.internal.util.collections.CollectionHelper.listOf
 import uk.gov.justice.digital.hmpps.integrations.delius.allocations.entity.LicenceConditionTransfer
 import uk.gov.justice.digital.hmpps.integrations.delius.allocations.entity.ReferenceData
 import uk.gov.justice.digital.hmpps.integrations.delius.caseview.CaseViewDisposal
@@ -8,6 +9,8 @@ import uk.gov.justice.digital.hmpps.integrations.delius.caseview.CaseViewLicence
 import uk.gov.justice.digital.hmpps.integrations.delius.event.licencecondition.LicenceCondition
 import uk.gov.justice.digital.hmpps.integrations.delius.event.licencecondition.LicenceConditionMainCategory
 import uk.gov.justice.digital.hmpps.integrations.delius.event.licencecondition.LicenceConditionManager
+import uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.Disposal
+import uk.gov.justice.digital.hmpps.integrations.delius.person.Person
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.Provider
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.Staff
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.Team
@@ -24,8 +27,27 @@ object LicenceConditionGenerator {
     )
 
     // Conditions with fixed IDs for allocation integration tests
-    val NEW = generateAllocation(id = 8001L)
-    val HISTORIC = generateAllocation(id = 8002L)
+    val DEFAULT = generate()
+    val NEW = generate(id = 8001L)
+    val HISTORIC = generate(id = 8002L)
+    val REALLOCATION = generate(id = 8003L)
+
+    fun generate(
+        person: Person = PersonGenerator.DEFAULT,
+        disposal: Disposal = DisposalGenerator.DEFAULT,
+        id: Long = IdGenerator.getAndIncrement(),
+        active: Boolean = true
+    ) = LicenceCondition(
+        id = id,
+        person = person,
+        disposal = disposal,
+        mainCategory = LicenceConditionAllocationMainCategoryGenerator.DEFAULT,
+        subCategory = ReferenceDataGenerator.LICENCE_CONDITION_SUB_CATEGORY,
+        startDate = LocalDate.now().minusDays(30),
+        commenceDate = LocalDate.now().minusDays(20),
+        terminationDate = null,
+        active = active,
+    )
 
     private fun forCaseView(
         personId: Long = PersonGenerator.CASE_VIEW.id,
@@ -42,20 +64,6 @@ object LicenceConditionGenerator {
         null,
         listOf(),
         active
-    )
-
-    private fun generateAllocation(
-        disposalId: Long = DisposalGenerator.DEFAULT.id,
-        id: Long = IdGenerator.getAndIncrement()
-    ) = LicenceCondition(
-        id = id,
-        disposalId = disposalId,
-        mainCategory = LicenceConditionAllocationMainCategoryGenerator.DEFAULT,
-        subCategory = ReferenceDataGenerator.LICENCE_CONDITION_SUB_CATEGORY,
-        startDate = LocalDate.now().minusDays(30),
-        commenceDate = LocalDate.now().minusDays(20),
-        terminationDate = null,
-        activeFlag = true,
     )
 }
 
@@ -81,8 +89,10 @@ object LicenceConditionAllocationMainCategoryGenerator {
 }
 
 object LicenceConditionManagerGenerator : ManagerGenerator {
+    var DEFAULT = generate(startDateTime = ZonedDateTime.now().minusMonths(1))
     lateinit var NEW: LicenceConditionManager
     lateinit var HISTORIC: LicenceConditionManager
+    lateinit var REALLOCATION: LicenceConditionManager
 
     fun generate(
         licenceConditionId: Long = LicenceConditionGenerator.CASE_VIEW.id,
