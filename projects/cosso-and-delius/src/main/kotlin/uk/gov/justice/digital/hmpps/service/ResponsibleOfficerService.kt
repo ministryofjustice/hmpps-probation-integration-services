@@ -34,7 +34,7 @@ class ResponsibleOfficerService(
             telephoneNumber = telephoneNumber,
             replyAddresses = officeLocations?.map {
                 it.toAddress().copy(status = if (it.id == defaultReplyAddress) "Default" else null)
-            },
+            } ?: emptyList(),
             probationArea = with(responsibleOfficer.probationArea) { CodeAndDescription(code, description) }
         )
     }

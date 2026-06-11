@@ -143,7 +143,8 @@ class ResponsibleOfficerIntegrationTest @Autowired constructor(
                           "probationArea": {
                             "code": "N02",
                             "description": "DEFAULT_PROBATION_AREA"
-                          }
+                          },
+                          "replyAddresses": []
                         }
                         """, JsonCompareMode.STRICT
                     )
