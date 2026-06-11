@@ -60,7 +60,7 @@ class Handler(
             }
         } catch (e: IgnorableMessageException) {
             val eventName = when (notification.eventType) {
-                SETUP_REMOVED, SENTENCE_TERMINATED -> "CheckInSetupRemovalIgnored"
+                SETUP_REMOVED, SENTENCE_TERMINATED -> "CheckInSetupRemovedIgnored"
                 else -> "CheckInEventIgnored"
             }
             telemetryService.trackEvent(

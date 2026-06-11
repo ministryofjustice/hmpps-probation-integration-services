@@ -613,11 +613,11 @@ internal class IntegrationTest @Autowired constructor(
 
     @Test
     fun `setup removal for contact with null event is logged and ignored`() {
-        val notification = prepMessage(MessageGenerator.SETUP_REMOVED_A000002)
+        val notification = prepMessage(MessageGenerator.SETUP_REMOVED_NULL_EVENT_A000001)
         channelManager.getChannel(queueName).publishAndWait(notification)
 
         verify(telemetryService).trackEvent(
-            "CheckInSetupRemovalIgnored",
+            "CheckInSetupRemovedIgnored",
             mapOf(
                 "reason" to "Event not found for setup removal",
                 "eventType" to "esupervision.setup.removed",
