@@ -175,23 +175,24 @@ object TestData {
     }
 
     object OffenceData {
-        val MAIN_OFFENCE_TYPE = Offence(id(), "TH001", "Theft")
-        val ADDITIONAL_OFFENCE_TYPE = Offence(id(), "AB001", "Actual Bodily Harm")
-        val MAIN_OFFENCE = MainOffence(id(), MAIN_OFFENCE_TYPE)
-        val MAIN_OFFENCE_2 = MainOffence(id(), MAIN_OFFENCE_TYPE)
-        val ADDITIONAL_OFFENCE = AdditionalOffence(id(), ADDITIONAL_OFFENCE_TYPE, SentenceData.DISPOSAL)
+        val MAIN_OFFENCE_TYPE: Offence = Offence(id(), "TH001", "Theft")
+        val ADDITIONAL_OFFENCE_TYPE: Offence = Offence(id(), "AB001", "Actual Bodily Harm")
+        val MAIN_OFFENCE: MainOffence = MainOffence(id(), SentenceData.EVENT, MAIN_OFFENCE_TYPE)
+        val MAIN_OFFENCE_2: MainOffence = MainOffence(id(), SentenceData.EVENT_NO_CUSTODY, MAIN_OFFENCE_TYPE)
+        val ADDITIONAL_OFFENCE: AdditionalOffence = AdditionalOffence(id(), SentenceData.EVENT, ADDITIONAL_OFFENCE_TYPE)
     }
 
     object SentenceData {
+        val EVENT_ID: Long = id()
+        val EVENT_NO_CUSTODY_ID: Long = id()
         val EVENT = Event(
-            id = id(),
+            id = EVENT_ID,
             number = "1",
             personId = PersonData.DEFAULT.id,
         )
         val DISPOSAL = Disposal(
             id = id(),
             event = EVENT,
-            mainOffence = OffenceData.MAIN_OFFENCE,
             type = COMMUNITY_ORDER,
             date = LocalDate.of(2024, 1, 1),
             expectedEndDate = LocalDate.of(2025, 1, 1),
@@ -210,14 +211,13 @@ object TestData {
             date = LocalDate.of(2025, 10, 1),
         )
         val EVENT_NO_CUSTODY = Event(
-            id = id(),
+            id = EVENT_NO_CUSTODY_ID,
             number = "2",
             personId = PersonData.DEFAULT.id,
         )
         val DISPOSAL_NO_CUSTODY = Disposal(
             id = id(),
             event = EVENT_NO_CUSTODY,
-            mainOffence = OffenceData.MAIN_OFFENCE_2,
             type = COMMUNITY_ORDER,
             date = LocalDate.of(2024, 6, 1),
             expectedEndDate = LocalDate.of(2026, 6, 1),

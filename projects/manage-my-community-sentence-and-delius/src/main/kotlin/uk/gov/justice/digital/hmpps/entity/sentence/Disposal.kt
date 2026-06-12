@@ -19,11 +19,6 @@ class Disposal(
     @OneToOne
     @JoinColumn(name = "event_id")
     val event: Event,
-    @OneToOne
-    @JoinColumn(name = "main_offence_id")
-    val mainOffence: MainOffence,
-    @OneToMany(mappedBy = "disposal")
-    val additionalOffences: List<AdditionalOffence> = emptyList(),
     @ManyToOne
     @JoinColumn(name = "disposal_type_id")
     val type: DisposalType,
@@ -36,9 +31,11 @@ class Disposal(
     @Column(name = "last_updated_datetime")
     val lastUpdatedDatetime: ZonedDateTime,
     @OneToMany(mappedBy = "disposal")
-    val licenceConditions: List<LicenceCondition> = emptyList(),
+    @OrderBy("id ASC")
+    val licenceConditions: Set<LicenceCondition> = emptySet(),
     @OneToMany(mappedBy = "disposal")
-    val requirements: List<Requirement> = emptyList(),
+    @OrderBy("id ASC")
+    val requirements: Set<Requirement> = emptySet(),
     @Column(columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)
     val activeFlag: Boolean = true,

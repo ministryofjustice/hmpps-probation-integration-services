@@ -18,6 +18,10 @@ class MainOffence(
     val id: Long = 0,
 
     @OneToOne
+    @JoinColumn(name = "event_id")
+    val event: Event,
+
+    @ManyToOne
     @JoinColumn(name = "offence_id")
     val offence: Offence,
 )
@@ -30,10 +34,10 @@ class Offence(
     @Column(name = "offence_id")
     val id: Long = 0,
 
-    @Column(name = "sub_category_code")
+    @Column(name = "code", columnDefinition = "char(5)")
     val code: String,
 
-    @Column(name = "sub_category_description")
+    @Column(name = "description")
     val description: String,
 )
 
@@ -45,11 +49,11 @@ class AdditionalOffence(
     @Column(name = "additional_offence_id")
     val id: Long = 0,
 
-    @OneToOne
-    @JoinColumn(name = "offence_id")
-    val offence: Offence,
+    @ManyToOne
+    @JoinColumn(name = "event_id")
+    val event: Event,
 
     @ManyToOne
-    @JoinColumn(name = "disposal_id")
-    val disposal: Disposal? = null,
+    @JoinColumn(name = "offence_id")
+    val offence: Offence,
 )

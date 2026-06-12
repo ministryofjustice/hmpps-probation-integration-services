@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.entity.sentence.requirement.Requirement.Companion.RAR
 import uk.gov.justice.digital.hmpps.entity.sentence.requirement.Requirement.Companion.UPW
 import uk.gov.justice.digital.hmpps.model.CodeDescription
@@ -19,6 +20,7 @@ class SentenceService(
     private val contactRepository: ContactRepository,
     private val unpaidWorkAppointmentRepository: UnpaidWorkAppointmentRepository,
 ) {
+    @Transactional(readOnly = true)
     fun getSentenceProgress(crn: String): SentenceProgress {
         val personId = personRepository.getIdByCrn(crn)
         val events = eventRepository.findByPersonIdAndDisposalNotNull(personId)
@@ -57,17 +59,17 @@ class SentenceService(
                             expectedEndDate = licenceCondition.expectedEndDate,
                         )
                     },
-                    mainOffence = CodeDescription(
-                        code = it.mainOffence.offence.code,
-                        description = it.mainOffence.offence.description,
-                    ),
-                    additionalOffences = it.additionalOffences.map { offence ->
-                        offence.offence.let {
-                            CodeDescription(
-                                code = it.code,
-                                description = it.description,
-                            )
-                        }
+                    mainOffence = it.event.mainOffence!!.offence.let { offence ->
+                        CodeDescription(
+                            code = offence.code,
+                            description = offence.description,
+                        )
+                    },
+                    additionalOffences = it.event.additionalOffences.map { offence ->
+                        CodeDescription(
+                            code = offence.offence.code,
+                            description = offence.offence.description,
+                        )
                     },
                 )
             }
