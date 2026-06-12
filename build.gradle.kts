@@ -48,7 +48,6 @@ allprojects {
         compilerOptions {
             jvmTarget.set(JvmTarget.JVM_25)
             freeCompilerArgs.add("-Xjsr305=strict") // to make use of Spring's null-safety annotations
-            freeCompilerArgs.add("-Xannotation-default-target=param-property") // see https://youtrack.jetbrains.com/issue/KT-73255
         }
     }
 
