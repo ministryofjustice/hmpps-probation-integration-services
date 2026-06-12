@@ -77,6 +77,7 @@ class AccreditedProgrammesAppointmentService(
                     notes = request.notes,
                     sensitive = request.sensitive,
                     allowConflicts = true,
+                    allowMissingOutcomeInThePast = true,
                 )
             }).onEach { telemetryService.trackEvent("AppointmentCreated", it.telemetry()) }
 

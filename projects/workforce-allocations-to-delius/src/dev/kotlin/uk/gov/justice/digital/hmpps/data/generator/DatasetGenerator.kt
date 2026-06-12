@@ -8,6 +8,7 @@ object DatasetGenerator {
     val OM_ALLOCATION_REASON = generate(DatasetCode.OM_ALLOCATION_REASON)
     val ORDER_ALLOCATION_REASON = generate(DatasetCode.ORDER_ALLOCATION_REASON)
     val RM_ALLOCATION_REASON = generate(DatasetCode.RM_ALLOCATION_REASON)
+    val LM_ALLOCATION_REASON = generate(DatasetCode.LM_ALLOCATION_REASON)
     val OFFICER_GRADE = generate(DatasetCode.OFFICER_GRADE)
     val CUSTODY_STATUS = generate(DatasetCode.CUSTODY_STATUS)
     val THROUGHCARE_DATE_TYPE = generate(DatasetCode.THROUGHCARE_DATE_TYPE)

@@ -12,6 +12,7 @@ import uk.gov.justice.digital.hmpps.integrations.workforceallocations.Allocation
 import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
 import uk.gov.justice.digital.hmpps.message.Notification
 import uk.gov.justice.digital.hmpps.service.AllocateEventService
+import uk.gov.justice.digital.hmpps.service.AllocateLicenceConditionService
 import uk.gov.justice.digital.hmpps.service.AllocatePersonService
 import uk.gov.justice.digital.hmpps.service.AllocateRequirementService
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
@@ -23,6 +24,7 @@ class Handler(
     private val allocatePersonService: AllocatePersonService,
     private val allocateEventService: AllocateEventService,
     private val allocateRequirementService: AllocateRequirementService,
+    private val allocateLicenceConditionService: AllocateLicenceConditionService,
     private val telemetryService: TelemetryService,
     override val converter: NotificationConverter<HmppsDomainEvent>
 ) : NotificationHandler<HmppsDomainEvent> {
@@ -31,6 +33,7 @@ class Handler(
             Message(name = "workforce/person_allocation"),
             Message(name = "workforce/event_allocation"),
             Message(name = "workforce/requirement_allocation"),
+            Message(name = "workforce/licence_condition_allocation")
         ]
     )
     override fun handle(notification: Notification<HmppsDomainEvent>) {
@@ -46,6 +49,11 @@ class Handler(
                 )
 
                 is RequirementAllocation -> allocateRequirementService.createRequirementAllocation(
+                    allocationEvent.findCrn(),
+                    allocationDetail
+                )
+
+                is LicenceConditionAllocation -> allocateLicenceConditionService.createLicenceConditionAllocation(
                     allocationEvent.findCrn(),
                     allocationDetail
                 )
