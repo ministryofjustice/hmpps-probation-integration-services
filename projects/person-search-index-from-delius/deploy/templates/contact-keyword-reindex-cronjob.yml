@@ -43,8 +43,10 @@ spec:
                   value: contact-keyword-full-load
                 - name: PIPELINE_BATCH_SIZE # Maximum number of in-memory events per worker
                   value: '10000'
-                - name: JDBC_BATCH_SIZE # Maximum number of results to return from DB at a time
+                - name: JDBC_BATCH_SIZE # Maximum number of results to return from the DB query at a time
                   value: '100000'
+                - name: JDBC_FETCH_SIZE # Maximum number of results to fetch from the DB on a single JDBC call
+                  value: '1000'
                 - name: APPLICATIONINSIGHTS_CONNECTION_STRING
                   valueFrom:
                     secretKeyRef:
