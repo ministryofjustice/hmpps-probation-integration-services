@@ -84,6 +84,30 @@ class AppointmentServiceTest {
     }
 
     @Test
+    fun `create a past appointment without an outcome when allowed`() {
+        mockCreateReferenceData()
+        val request = TestData.createAppointment(
+            date = LocalDate.now().minusDays(1),
+            startTime = NOON,
+            endTime = NOON.plusHours(1),
+            outcomeCode = null,
+            allowMissingOutcomeInThePast = true
+        )
+        val saved = TestData.appointment(externalReference = request.reference, date = request.date, outcome = null)
+        whenever(appointmentRepository.saveAll(any<List<AppointmentContact>>())).thenReturn(listOf(saved))
+
+        val result = appointmentService.create(request)
+
+        assertThat(result.date).isEqualTo(request.date)
+        assertThat(result.outcomeCode).isNull()
+        verify(appointmentRepository).saveAll(check<List<AppointmentContact>> {
+            assertThat(it).hasSize(1)
+            assertThat(it[0].date).isEqualTo(request.date)
+            assertThat(it[0].outcome).isNull()
+        })
+    }
+
+    @Test
     fun `attempt to create appointment with end time before start time`() {
         assertThatThrownBy { TestData.createAppointment(startTime = NOON, endTime = NOON.minusHours(1)) }
             .isInstanceOf(IllegalArgumentException::class.java)

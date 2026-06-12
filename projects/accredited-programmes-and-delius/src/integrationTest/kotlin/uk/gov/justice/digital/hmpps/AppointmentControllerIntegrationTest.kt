@@ -455,6 +455,37 @@ internal class AppointmentControllerIntegrationTest @Autowired constructor(
     }
 
     @Test
+    fun `can create appointment in the past without an outcome`() {
+        val request = CreateAppointmentRequest(
+            reference = UUID.randomUUID(),
+            requirementId = REQUIREMENTS[2].id,
+            licenceConditionId = null,
+            date = LocalDate.now().minusDays(7),
+            startTime = LocalTime.now(),
+            endTime = LocalTime.now().plusMinutes(30),
+            outcome = null,
+            location = RequestCode("OFFICE1"),
+            staff = RequestCode("STAFF01"),
+            team = RequestCode("TEAM01"),
+            notes = "Some notes about the appointment",
+            sensitive = true,
+        )
+
+        mockMvc.post("/appointments") {
+            withToken()
+            json = CreateAppointmentsRequest(listOf(request))
+        }.andExpect { status { isCreated() } }
+
+        val appointment =
+            contactRepository.findByExternalReference("${Contact.REFERENCE_PREFIX}${request.reference}")
+        assertThat(appointment).isNotNull
+        with(appointment!!) {
+            assertThat(date).isEqualTo(LocalDate.now().minusDays(7))
+            assertThat(outcome).isNull()
+        }
+    }
+
+    @Test
     fun `can update an appointment`() {
         val (existing, appointmentReference) = givenExistingContact()
 
