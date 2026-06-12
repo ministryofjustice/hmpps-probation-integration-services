@@ -60,6 +60,7 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
             ContactGenerator.CONTACT_TO_UPDATE,
             ContactGenerator.CONTACT_TO_UPDATE_EXPIRY,
             ContactGenerator.SETUP_CONTACT_TO_UPDATE,
+            ContactGenerator.SETUP_CONTACT_NULL_EVENT,
             ContactGenerator.SENTENCE_TERMINATED_SETUP_CONTACT,
             RegistrationGenerator.CONTACT_SUSPENDED_REGISTRATION,
             RegistrationGenerator.DEREGISTERED_PRC_REGISTRATION,
