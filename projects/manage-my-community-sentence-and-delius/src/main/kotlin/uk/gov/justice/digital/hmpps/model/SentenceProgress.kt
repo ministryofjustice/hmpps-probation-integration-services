@@ -14,6 +14,8 @@ data class SentenceProgress(
         val lastUpdatedAt: ZonedDateTime,
         val requirements: List<Requirement>,
         val licenceConditions: List<LicenceCondition>,
+        val mainOffence: CodeDescription,
+        val additionalOffences: List<CodeDescription?>,
     )
 
     data class Requirement(

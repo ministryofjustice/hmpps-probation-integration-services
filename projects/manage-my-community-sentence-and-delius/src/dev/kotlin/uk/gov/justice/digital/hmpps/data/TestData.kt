@@ -22,12 +22,15 @@ import uk.gov.justice.digital.hmpps.entity.address.PersonAddress
 import uk.gov.justice.digital.hmpps.entity.appointment.Contact
 import uk.gov.justice.digital.hmpps.entity.appointment.ContactOutcome
 import uk.gov.justice.digital.hmpps.entity.appointment.ContactType
+import uk.gov.justice.digital.hmpps.entity.sentence.AdditionalOffence
 import uk.gov.justice.digital.hmpps.entity.sentence.Custody
 import uk.gov.justice.digital.hmpps.entity.sentence.Disposal
 import uk.gov.justice.digital.hmpps.entity.sentence.DisposalType
 import uk.gov.justice.digital.hmpps.entity.sentence.Event
 import uk.gov.justice.digital.hmpps.entity.sentence.KeyDate
+import uk.gov.justice.digital.hmpps.entity.sentence.MainOffence
 import uk.gov.justice.digital.hmpps.entity.sentence.NonStatutoryIntervention
+import uk.gov.justice.digital.hmpps.entity.sentence.Offence
 import uk.gov.justice.digital.hmpps.entity.sentence.licencecondition.LicenceCondition
 import uk.gov.justice.digital.hmpps.entity.sentence.licencecondition.LicenceConditionMainCategory
 import uk.gov.justice.digital.hmpps.entity.sentence.requirement.Requirement
@@ -171,6 +174,14 @@ object TestData {
         )
     }
 
+    object OffenceData {
+        val MAIN_OFFENCE_TYPE = Offence(id(), "TH001", "Theft")
+        val ADDITIONAL_OFFENCE_TYPE = Offence(id(), "AB001", "Actual Bodily Harm")
+        val MAIN_OFFENCE = MainOffence(id(), MAIN_OFFENCE_TYPE)
+        val MAIN_OFFENCE_2 = MainOffence(id(), MAIN_OFFENCE_TYPE)
+        val ADDITIONAL_OFFENCE = AdditionalOffence(id(), ADDITIONAL_OFFENCE_TYPE, SentenceData.DISPOSAL)
+    }
+
     object SentenceData {
         val EVENT = Event(
             id = id(),
@@ -180,6 +191,7 @@ object TestData {
         val DISPOSAL = Disposal(
             id = id(),
             event = EVENT,
+            mainOffence = OffenceData.MAIN_OFFENCE,
             type = COMMUNITY_ORDER,
             date = LocalDate.of(2024, 1, 1),
             expectedEndDate = LocalDate.of(2025, 1, 1),
@@ -205,6 +217,7 @@ object TestData {
         val DISPOSAL_NO_CUSTODY = Disposal(
             id = id(),
             event = EVENT_NO_CUSTODY,
+            mainOffence = OffenceData.MAIN_OFFENCE_2,
             type = COMMUNITY_ORDER,
             date = LocalDate.of(2024, 6, 1),
             expectedEndDate = LocalDate.of(2026, 6, 1),

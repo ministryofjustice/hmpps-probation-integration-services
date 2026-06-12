@@ -19,6 +19,11 @@ class Disposal(
     @OneToOne
     @JoinColumn(name = "event_id")
     val event: Event,
+    @OneToOne
+    @JoinColumn(name = "main_offence_id")
+    val mainOffence: MainOffence,
+    @OneToMany(mappedBy = "disposal")
+    val additionalOffences: List<AdditionalOffence> = emptyList(),
     @ManyToOne
     @JoinColumn(name = "disposal_type_id")
     val type: DisposalType,

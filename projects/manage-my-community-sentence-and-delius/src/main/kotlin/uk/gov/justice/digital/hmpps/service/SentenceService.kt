@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.service
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.entity.sentence.requirement.Requirement.Companion.RAR
 import uk.gov.justice.digital.hmpps.entity.sentence.requirement.Requirement.Companion.UPW
+import uk.gov.justice.digital.hmpps.model.CodeDescription
 import uk.gov.justice.digital.hmpps.model.DurationUnit
 import uk.gov.justice.digital.hmpps.model.SentenceProgress
 import uk.gov.justice.digital.hmpps.model.SentenceProgress.*
@@ -55,6 +56,18 @@ class SentenceService(
                             startDate = licenceCondition.commencementDate ?: licenceCondition.startDate,
                             expectedEndDate = licenceCondition.expectedEndDate,
                         )
+                    },
+                    mainOffence = CodeDescription(
+                        code = it.mainOffence.offence.code,
+                        description = it.mainOffence.offence.description,
+                    ),
+                    additionalOffences = it.additionalOffences.map { offence ->
+                        offence.offence.let {
+                            CodeDescription(
+                                code = it.code,
+                                description = it.description,
+                            )
+                        }
                     },
                 )
             }
