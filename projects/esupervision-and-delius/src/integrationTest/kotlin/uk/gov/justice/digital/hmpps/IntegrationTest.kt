@@ -617,7 +617,7 @@ internal class IntegrationTest @Autowired constructor(
         channelManager.getChannel(queueName).publishAndWait(notification)
 
         verify(telemetryService).trackEvent(
-            "CheckInSetupRemovedIgnored",
+            "CheckInEventIgnored",
             mapOf(
                 "reason" to "Event not found for setup removal",
                 "eventType" to "esupervision.setup.removed",
