@@ -40,7 +40,8 @@ internal object TestData {
         date: LocalDate = LocalDate.now().plusDays(1),
         startTime: LocalTime = LocalTime.now(),
         endTime: LocalTime = startTime.plusHours(1),
-        outcomeCode: String? = null
+        outcomeCode: String? = null,
+        allowMissingOutcomeInThePast: Boolean = false
     ) = CreateAppointment(
         reference = reference,
         typeCode = TYPE.code,
@@ -51,7 +52,8 @@ internal object TestData {
         staffCode = STAFF.code,
         teamCode = TEAM.code,
         locationCode = OFFICE_LOCATION.code,
-        outcomeCode = outcomeCode
+        outcomeCode = outcomeCode,
+        allowMissingOutcomeInThePast = allowMissingOutcomeInThePast
     )
 
     fun appointment(
