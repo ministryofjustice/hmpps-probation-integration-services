@@ -22,12 +22,15 @@ import uk.gov.justice.digital.hmpps.entity.address.PersonAddress
 import uk.gov.justice.digital.hmpps.entity.appointment.Contact
 import uk.gov.justice.digital.hmpps.entity.appointment.ContactOutcome
 import uk.gov.justice.digital.hmpps.entity.appointment.ContactType
+import uk.gov.justice.digital.hmpps.entity.sentence.AdditionalOffence
 import uk.gov.justice.digital.hmpps.entity.sentence.Custody
 import uk.gov.justice.digital.hmpps.entity.sentence.Disposal
 import uk.gov.justice.digital.hmpps.entity.sentence.DisposalType
 import uk.gov.justice.digital.hmpps.entity.sentence.Event
 import uk.gov.justice.digital.hmpps.entity.sentence.KeyDate
+import uk.gov.justice.digital.hmpps.entity.sentence.MainOffence
 import uk.gov.justice.digital.hmpps.entity.sentence.NonStatutoryIntervention
+import uk.gov.justice.digital.hmpps.entity.sentence.Offence
 import uk.gov.justice.digital.hmpps.entity.sentence.licencecondition.LicenceCondition
 import uk.gov.justice.digital.hmpps.entity.sentence.licencecondition.LicenceConditionMainCategory
 import uk.gov.justice.digital.hmpps.entity.sentence.requirement.Requirement
@@ -171,9 +174,19 @@ object TestData {
         )
     }
 
+    object OffenceData {
+        val MAIN_OFFENCE_TYPE: Offence = Offence(id(), "TH001", "Theft")
+        val ADDITIONAL_OFFENCE_TYPE: Offence = Offence(id(), "AB001", "Actual Bodily Harm")
+        val MAIN_OFFENCE: MainOffence = MainOffence(id(), SentenceData.EVENT, MAIN_OFFENCE_TYPE)
+        val MAIN_OFFENCE_2: MainOffence = MainOffence(id(), SentenceData.EVENT_NO_CUSTODY, MAIN_OFFENCE_TYPE)
+        val ADDITIONAL_OFFENCE: AdditionalOffence = AdditionalOffence(id(), SentenceData.EVENT, ADDITIONAL_OFFENCE_TYPE)
+    }
+
     object SentenceData {
+        val EVENT_ID: Long = id()
+        val EVENT_NO_CUSTODY_ID: Long = id()
         val EVENT = Event(
-            id = id(),
+            id = EVENT_ID,
             number = "1",
             personId = PersonData.DEFAULT.id,
         )
@@ -198,7 +211,7 @@ object TestData {
             date = LocalDate.of(2025, 10, 1),
         )
         val EVENT_NO_CUSTODY = Event(
-            id = id(),
+            id = EVENT_NO_CUSTODY_ID,
             number = "2",
             personId = PersonData.DEFAULT.id,
         )

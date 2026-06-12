@@ -31,9 +31,11 @@ class Disposal(
     @Column(name = "last_updated_datetime")
     val lastUpdatedDatetime: ZonedDateTime,
     @OneToMany(mappedBy = "disposal")
-    val licenceConditions: List<LicenceCondition> = emptyList(),
+    @OrderBy("id ASC")
+    val licenceConditions: Set<LicenceCondition> = emptySet(),
     @OneToMany(mappedBy = "disposal")
-    val requirements: List<Requirement> = emptyList(),
+    @OrderBy("id ASC")
+    val requirements: Set<Requirement> = emptySet(),
     @Column(columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)
     val activeFlag: Boolean = true,

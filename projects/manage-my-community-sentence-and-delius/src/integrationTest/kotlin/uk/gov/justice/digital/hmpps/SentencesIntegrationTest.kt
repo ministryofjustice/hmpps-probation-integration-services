@@ -66,23 +66,38 @@ internal class SentencesIntegrationTest @Autowired constructor(private val mockM
                               "lastUpdatedAt": "2026-02-15T10:00:00Z"
                             }
                           ],
-                          "licenceConditions": [
+                           "licenceConditions": [
                             {
                               "type": "Alcohol Monitoring (Electronic Monitoring)",
                               "description": "You must not drink any alcohol until [END DATE]. You will need to wear an electronic tag all the time so we can check this.",
                               "startDate": "2024-02-01",
                               "expectedEndDate": "2025-01-01"
                             }
-                          ]
-                        },
-                        {
-                          "type": "Community Order",
-                          "startDate": "2024-06-01",
-                          "expectedEndDate": "2026-06-01",
-                          "lastUpdatedAt": "2026-02-01T12:00:00Z",
-                          "requirements": [],
-                          "licenceConditions": []
-                        }
+                           ],
+                           "mainOffence": {
+                             "code": "TH001",
+                             "description": "Theft"
+                           },
+                           "additionalOffences": [
+                             {
+                               "code": "AB001",
+                               "description": "Actual Bodily Harm"
+                             }
+                           ]
+                         },
+                         {
+                           "type": "Community Order",
+                           "startDate": "2024-06-01",
+                           "expectedEndDate": "2026-06-01",
+                           "lastUpdatedAt": "2026-02-01T12:00:00Z",
+                           "requirements": [],
+                           "licenceConditions": [],
+                           "mainOffence": {
+                             "code": "TH001",
+                             "description": "Theft"
+                           },
+                           "additionalOffences": []
+                         }
                       ]
                     }
                     """.trimIndent(),
