@@ -88,7 +88,7 @@ sealed interface AllocationDetail {
         override val createdDate: ZonedDateTime,
         val eventNumber: Long,
         val licenceConditionId: Long,
-        override val datasetCode: DatasetCode = DatasetCode.LC_ALLOCATION_REASON,
+        override val datasetCode: DatasetCode = DatasetCode.LM_ALLOCATION_REASON,
         override val code: String = deriveDeliusCodeDefaultInitial(
             AllocationReason.INITIAL_ALLOCATION,
             AllocationType.LICENCE_CONDITION

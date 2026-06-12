@@ -29,7 +29,7 @@ class DataLoader(
             DatasetGenerator.OM_ALLOCATION_REASON,
             DatasetGenerator.ORDER_ALLOCATION_REASON,
             DatasetGenerator.RM_ALLOCATION_REASON,
-            DatasetGenerator.LC_ALLOCATION_REASON,
+            DatasetGenerator.LM_ALLOCATION_REASON,
             DatasetGenerator.TRANSFER_STATUS,
             DatasetGenerator.OFFICER_GRADE,
             DatasetGenerator.UNITS,
