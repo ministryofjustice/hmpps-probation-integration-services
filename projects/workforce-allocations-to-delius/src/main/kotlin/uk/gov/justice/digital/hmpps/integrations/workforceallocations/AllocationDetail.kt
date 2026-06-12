@@ -16,6 +16,7 @@ import java.time.ZonedDateTime
     JsonSubTypes.Type(AllocationDetail.PersonAllocation::class),
     JsonSubTypes.Type(AllocationDetail.RequirementAllocation::class),
     JsonSubTypes.Type(AllocationDetail.EventAllocation::class),
+    JsonSubTypes.Type(AllocationDetail.LicenceConditionAllocation::class),
 )
 sealed interface AllocationDetail {
     val id: String
@@ -75,6 +76,22 @@ sealed interface AllocationDetail {
         override val code: String = deriveDeliusCodeDefaultInitial(
             AllocationReason.INITIAL_ALLOCATION,
             AllocationType.REQUIREMENT
+        ),
+        override val allocationReason: AllocationReason?
+    ) : AllocationDetail
+
+    @JsonDeserialize(using = ValueDeserializer.None::class)
+    data class LicenceConditionAllocation(
+        override val id: String,
+        override val staffCode: String,
+        override val teamCode: String,
+        override val createdDate: ZonedDateTime,
+        val eventNumber: Long,
+        val licenceConditionId: Long,
+        override val datasetCode: DatasetCode = DatasetCode.LM_ALLOCATION_REASON,
+        override val code: String = deriveDeliusCodeDefaultInitial(
+            AllocationReason.INITIAL_ALLOCATION,
+            AllocationType.LICENCE_CONDITION
         ),
         override val allocationReason: AllocationReason?
     ) : AllocationDetail

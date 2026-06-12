@@ -26,6 +26,9 @@ class Contact(
     @Column(name = "event_id", updatable = false)
     val eventId: Long? = null,
 
+    @Column(name = "lic_condition_id", updatable = false)
+    val licenceConditionId: Long? = null,
+
     @Column(name = "rqmnt_id", updatable = false)
     val requirementId: Long? = null,
 

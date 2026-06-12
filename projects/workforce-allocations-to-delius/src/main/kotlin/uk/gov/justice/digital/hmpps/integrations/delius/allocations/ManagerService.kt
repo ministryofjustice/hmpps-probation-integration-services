@@ -40,6 +40,7 @@ abstract class ManagerService<T : ManagerBaseEntity>(
             type = cci.contactType,
             personId = cci.offenderId,
             eventId = cci.eventId,
+            licenceConditionId = cci.licenceConditionId,
             requirementId = cci.requirementId,
             date = newManager.startDate.toLocalDate(),
             startTime = newManager.startDate,

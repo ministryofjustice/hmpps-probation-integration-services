@@ -46,6 +46,7 @@ class AllocationValidator(
             is AllocationDetail.PersonAllocation -> AllocationType.PERSON
             is AllocationDetail.EventAllocation -> AllocationType.ORDER
             is AllocationDetail.RequirementAllocation -> AllocationType.REQUIREMENT
+            is AllocationDetail.LicenceConditionAllocation -> AllocationType.LICENCE_CONDITION
         }
 
         val allocationReasonCode = deriveDeliusCodeDefaultInitial(allocationDetail.allocationReason, allocationType)
