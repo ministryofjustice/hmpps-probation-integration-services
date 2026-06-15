@@ -90,8 +90,8 @@ class Contact(
     @JoinColumn(name = "latest_enforcement_action_id", referencedColumnName = "enforcement_action_id")
     var latestEnforcementAction: EnforcementAction? = null,
 
-    @OneToOne(mappedBy = "contact")
-    var enforcement: Enforcement? = null,
+    @OneToMany(mappedBy = "contact")
+    var enforcements: List<Enforcement> = mutableListOf(),
 
     @Column(name = "enforcement")
     @Convert(converter = NumericBooleanConverter::class)
@@ -404,7 +404,7 @@ class EnforcementAction(
 @SQLRestriction("soft_deleted = 0")
 @SequenceGenerator(name = "enforcement_id_seq", sequenceName = "enforcement_id_seq", allocationSize = 1)
 class Enforcement(
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "contact_id")
     val contact: Contact,
 
@@ -491,9 +491,6 @@ interface ContactRepository : JpaRepository<Contact, Long> {
         left join fetch e.mainOffence mo
         left join fetch mo.offence moo
         left join fetch rqmnt.subCategory rsc
-        left join fetch c.enforcement enf
-        left join fetch enf.action ea
-        left join fetch ea.contactType
         where c.person.id = :personId
         order by c.date desc, c.startTime desc 
     """
