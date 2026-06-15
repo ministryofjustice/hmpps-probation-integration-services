@@ -44,7 +44,7 @@ class SessionsIntegrationTest @Autowired constructor(
     }
 
     @Test
-    fun `404 returned when one of the team codes does not exist`() {
+    fun `400 returned when one of the team codes does not exist`() {
         mockMvc
             .get(
                 "/sessions?teamCodes=N01UPW&teamCodes=DOESNOTEXIST&startDate=${
@@ -53,7 +53,7 @@ class SessionsIntegrationTest @Autowired constructor(
             ) {
                 withToken()
             }
-            .andExpect { status { isNotFound() } }
+            .andExpect { status { isBadRequest() } }
     }
 
     @Test

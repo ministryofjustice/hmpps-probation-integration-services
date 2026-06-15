@@ -7,6 +7,7 @@ import uk.gov.justice.digital.hmpps.entity.staff.TeamRepository
 import uk.gov.justice.digital.hmpps.entity.unpaidwork.UnpaidWorkAppointmentRepository
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.model.Session
+import uk.gov.justice.digital.hmpps.utils.Extensions.reportMissing
 import java.time.LocalDate
 import java.time.temporal.ChronoUnit
 
@@ -25,9 +26,9 @@ class SessionsService(
         require(ChronoUnit.DAYS.between(startDate, endDate) <= 7) { "Date range cannot be greater than 7 days" }
 
         val teams = teamRepository.findTeamsByCodeIn(teamCodes)
-        val foundCodes = teams.map { it.code }.toSet()
-        val missingCodes = teamCodes.toSet() - foundCodes
-        if (missingCodes.isNotEmpty()) throw NotFoundException("Team", "code", missingCodes.first())
+
+        teams.associateBy { it.code }
+            .reportMissing(teamCodes.toSet())
 
         val teamIds = teams.map { it.id }
         val sessions = unpaidWorkAppointmentRepository.getUnpaidWorkSessionDetails(
