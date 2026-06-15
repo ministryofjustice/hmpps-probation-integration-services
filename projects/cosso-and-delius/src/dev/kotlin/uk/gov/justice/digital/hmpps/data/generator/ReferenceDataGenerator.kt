@@ -87,4 +87,21 @@ object ReferenceDataGenerator {
         selectable = true,
         dataSetId = BREACH_REASON_DATASET.id
     )
+
+
+    val DEFAULT_ADDITIONAL_SENTENCE_TYPE = ReferenceData(
+        id = IdGenerator.getAndIncrement(),
+        code = "FINE",
+        description = "Fine",
+        selectable = true,
+        dataSetId = MISC_DATA_SET_ID
+    )
+
+    val DEFAULT_UNITS = ReferenceData(
+        id = IdGenerator.getAndIncrement(),
+        code = "D",
+        description = "Days",
+        selectable = true,
+        dataSetId = MISC_DATA_SET_ID
+    )
 }

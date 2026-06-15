@@ -67,7 +67,22 @@ class OffenceDetailsIntegrationTest @Autowired constructor(
                 "type": "Probation",
                 "secondLength": 2,
                 "secondLengthUnits": "Days"
-              }
+              },
+              "additionalSentences": [
+                {
+                  "length": 2,
+                  "amount": 100,
+                  "notes": "Additional sentence notes",
+                  "type": {
+                    "code": "FINE",
+                    "description": "Fine"
+                  },
+                  "units": {
+                    "code": "D",
+                    "description": "Days"
+                  }
+                }
+              ]
             }
             """
         mockMvc.get("/offence-details/${uuid}") { withToken() }

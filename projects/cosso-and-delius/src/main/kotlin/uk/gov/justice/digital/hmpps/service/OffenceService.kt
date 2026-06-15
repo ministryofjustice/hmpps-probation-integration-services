@@ -3,10 +3,9 @@ package uk.gov.justice.digital.hmpps.service
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.entity.*
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
+import uk.gov.justice.digital.hmpps.model.*
+import uk.gov.justice.digital.hmpps.model.AdditionalSentence
 import uk.gov.justice.digital.hmpps.model.CodeAndDescription
-import uk.gov.justice.digital.hmpps.model.OffenceDetails
-import uk.gov.justice.digital.hmpps.model.Requirement
-import uk.gov.justice.digital.hmpps.model.Sentence
 import java.util.*
 
 @Service
@@ -16,7 +15,8 @@ class OffenceService(
     private val additionalOffenceRepository: AdditionalOffenceRepository,
     private val courtAppearanceRepository: CourtAppearanceRepository,
     private val disposalRepository: DisposalRepository,
-    private val requirementRepository: RequirementRepository
+    private val requirementRepository: RequirementRepository,
+    private val additionalSentenceRepository: AdditionalSentenceRepository
 ) {
     companion object {
         const val SENTENCE_APPEARANCE_TYPE_CODE = "S"
@@ -36,6 +36,7 @@ class OffenceService(
             ?: throw NotFoundException("CourtAppearance", "eventId", eventId)
         val disposal = disposalRepository.findFirstByEventIdOrderByDisposalDate(eventId)
             ?: throw NotFoundException("Disposal", "eventId", eventId)
+        val additionalSentences = additionalSentenceRepository.findAllByEventId(eventId)
         return OffenceDetails(
             mainOffence = CodeAndDescription(mainOffence.subCategoryCode, mainOffence.subCategoryDescription),
             additionalOffences = additionalOffences,
@@ -43,7 +44,8 @@ class OffenceService(
             sentenceDate = disposal.disposalDate,
             sentenceImposed = CodeAndDescription(courtAppearance.outcome.code, courtAppearance.outcome.description),
             requirementsImposed = getRequirements(disposal.id),
-            sentence = getSentence(disposal)
+            sentence = getSentence(disposal),
+            additionalSentences = getAdditionalSentences(additionalSentences)
         )
     }
 
@@ -71,5 +73,17 @@ class OffenceService(
             secondLength = disposal.length2,
             secondLengthUnits = disposal.length2Units?.description
         )
+    }
+
+    fun getAdditionalSentences(entities: List<uk.gov.justice.digital.hmpps.entity.AdditionalSentence>): List<AdditionalSentence> {
+        return entities.map {
+            AdditionalSentence(
+                length = it.length,
+                amount = it.amount,
+                notes = it.notes,
+                type = CodeAndDescription(it.type.code, it.type.description),
+                units = it.units?.let { u -> CodeAndDescription(u.code, u.description) }
+            )
+        }
     }
 }
