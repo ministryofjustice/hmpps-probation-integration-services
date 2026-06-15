@@ -1,7 +1,6 @@
 package uk.gov.justice.digital.hmpps
 
-import org.hamcrest.MatcherAssert.assertThat
-import org.hamcrest.Matchers.equalTo
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.test.web.servlet.patch
 import org.springframework.test.web.servlet.put
@@ -41,8 +40,8 @@ class EnforcementFlagIntegrationTest : IntegrationTestBase() {
         }
 
         // Contact has no action, so neither condition in setEnforcementFlag is met — enforcementFlag remains null.
-        assertThat(updated?.enforcementFlag, equalTo(null))
-        assertThat(updated?.outcome?.code, equalTo(EnforcementFlagGenerator.OUTCOME_MATCHING_CONTACT_TYPE.code))
+        assertThat(updated.enforcementFlag).isNull()
+        assertThat(updated.outcome?.code).isEqualTo(EnforcementFlagGenerator.OUTCOME_MATCHING_CONTACT_TYPE.code)
     }
 
     /**
@@ -70,8 +69,8 @@ class EnforcementFlagIntegrationTest : IntegrationTestBase() {
         }
 
         // The contact has an action with outstandingContactAction=true, so enforcementFlag is set to true.
-        assertThat(updated?.enforcementFlag, equalTo(true))
-        assertThat(updated?.outcome?.code, equalTo(EnforcementFlagGenerator.OUTCOME_MATCHING_CONTACT_TYPE.code))
+        assertThat(updated.enforcementFlag).isTrue
+        assertThat(updated.outcome?.code).isEqualTo(EnforcementFlagGenerator.OUTCOME_MATCHING_CONTACT_TYPE.code)
     }
 
     /**
@@ -96,7 +95,7 @@ class EnforcementFlagIntegrationTest : IntegrationTestBase() {
         }
 
         // Despite having no outcome, the outstanding action should still trigger enforcementFlag=true.
-        assertThat(updated?.enforcementFlag, equalTo(true))
+        assertThat(updated.enforcementFlag).isTrue
     }
 }
 

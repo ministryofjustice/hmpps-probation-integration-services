@@ -20,6 +20,7 @@ import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.json
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 import java.time.LocalDate
 import java.time.LocalTime
+import java.time.ZonedDateTime
 
 class ContactLogIntegrationTest : IntegrationTestBase() {
 
@@ -388,7 +389,7 @@ class ContactLogIntegrationTest : IntegrationTestBase() {
     fun `create enforcement with valid enforcement action`() {
         val ftcBefore = transactionTemplate.execute {
             entityManager.clear()
-            eventRepository.findById(UpdateContactOutcomeGenerator.EVENT.id).get().ftcCount ?: 0L
+            eventRepository.findById(UpdateContactOutcomeGenerator.EVENT.id).get().ftcCount
         }
 
         val response = mockMvc.post("/contact/${UpdateContactOutcomeGenerator.PERSON.crn}") {
@@ -412,6 +413,8 @@ class ContactLogIntegrationTest : IntegrationTestBase() {
         assertThat(enforcements.size, equalTo(1))
         assertThat(enforcements[0].action?.code, equalTo(UpdateContactOutcomeGenerator.ENFORCEMENT_ACTION.code))
         assertThat(enforcements[0].responseDate, Matchers.notNullValue())
+        assertThat(enforcements[0].createdDatetime, isCloseTo(ZonedDateTime.now()))
+        assertThat(enforcements[0].lastUpdatedDatetime, isCloseTo(ZonedDateTime.now()))
 
         val linkedContacts = contactRepository.findByLinkedContactIdOrderByDateDesc(response.id)
 

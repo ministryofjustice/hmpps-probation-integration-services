@@ -415,6 +415,18 @@ class Enforcement(
     @Column(name = "response_date")
     val responseDate: ZonedDateTime? = null,
 
+    @CreatedDate
+    var createdDatetime: ZonedDateTime? = ZonedDateTime.now(),
+
+    @CreatedBy
+    var createdByUserId: Long? = 0,
+
+    @LastModifiedDate
+    var lastUpdatedDatetime: ZonedDateTime? = ZonedDateTime.now(),
+
+    @LastModifiedBy
+    var lastUpdatedUserId: Long? = 0,
+
     @Column(columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean = false,
