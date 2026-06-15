@@ -101,7 +101,8 @@ class ProvidersService(
         typeCodes: List<String>,
         pageable: Pageable
     ): SessionsResponse {
-        require(ChronoUnit.DAYS.between(startDate, endDate) <= 7) { "Date range cannot be greater than 7 days" }
+require(!endDate.isBefore(startDate)) { "endDate must be on or after startDate" }
+require(ChronoUnit.DAYS.between(startDate, endDate) <= 7) { "Date range cannot be greater than 7 days" }
 
         val teams = teamRepository.findTeamsByCodeIn(teamCodes)
         val missingCodes = teamCodes - teams.map { it.code }.toSet()
