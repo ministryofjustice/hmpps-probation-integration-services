@@ -3,16 +3,14 @@ package uk.gov.justice.digital.hmpps.messaging
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers
 import org.hamcrest.Matchers.containsString
+import org.hamcrest.Matchers.nullValue
 import org.hamcrest.core.IsEqual.equalTo
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
-import org.mockito.kotlin.any
-import org.mockito.kotlin.check
-import org.mockito.kotlin.verify
-import org.mockito.kotlin.whenever
+import org.mockito.kotlin.*
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
 import uk.gov.justice.digital.hmpps.data.generator.*
 import uk.gov.justice.digital.hmpps.integrations.client.OsClient
@@ -132,6 +130,36 @@ internal class PersonServiceTest {
         assertThat(savedPerson.personManager.person.id, equalTo(person.id))
         assertThat(savedPerson.equality.personId, equalTo(person.id))
         assertThat(savedPerson.address?.person?.id, equalTo(person.id))
+    }
+
+    @Test
+    fun `insert address does not save when address data is too large`() {
+        val address = PersonAddress(
+            status = ReferenceDataGenerator.MAIN_ADDRESS_STATUS,
+            person = PersonGenerator.DEFAULT,
+            type = ReferenceDataGenerator.AWAITING_ASSESSMENT,
+            streetName = "a".repeat(36),
+            postcode = "AB1 2CD",
+            uprn = 123456789
+        )
+
+        val savedAddress = personService.insertAddress(address)
+
+        assertThat(savedAddress, nullValue())
+        verify(personAddressRepository, never()).save(any<PersonAddress>())
+        verify(telemetryService).trackEvent(
+            "AddressDataTooLarge", mapOf(
+                "uprn" to "123456789",
+                "buildingName" to null,
+                "addressNumber" to null,
+                "streetName" to "36",
+                "town" to null,
+                "district" to null,
+                "county" to null,
+                "postcode" to "7",
+                "telephoneNumber" to null,
+            )
+        )
     }
 
     private fun mockReferenceData() {
