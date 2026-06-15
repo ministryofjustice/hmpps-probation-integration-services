@@ -133,10 +133,41 @@ class PersonService(
             InsertPersonResult(savedPerson, savedManager, savedEquality, savedAddress)
         }
 
-    fun insertAddress(address: PersonAddress): PersonAddress = audit(BusinessInteractionCode.INSERT_ADDRESS) { audit ->
-        val savedAddress = personAddressRepository.save(address)
-        audit["offenderId"] = address.person.id!!
-        savedAddress
+    fun insertAddress(address: PersonAddress): PersonAddress? {
+        operator fun Int?.compareTo(other: Int): Int = (this ?: 0).compareTo(other)
+        if (
+            listOfNotNull(
+                address.addressNumber?.length,
+                address.buildingName?.length,
+                address.streetName?.length,
+                address.town?.length,
+                address.district?.length,
+                address.county?.length,
+                address.postcode?.length,
+                address.telephoneNumber?.length
+            ).maxOrNull() > 35
+        ) {
+            // TODO remove this check once Delius extends the database column lengths
+            telemetryService.trackEvent(
+                "AddressDataTooLarge", mapOf(
+                    "uprn" to address.uprn?.toString(),
+                    "buildingName" to address.buildingName?.length?.toString(),
+                    "addressNumber" to address.addressNumber?.length?.toString(),
+                    "streetName" to address.streetName?.length?.toString(),
+                    "town" to address.town?.length?.toString(),
+                    "district" to address.district?.length?.toString(),
+                    "county" to address.county?.length?.toString(),
+                    "postcode" to address.postcode?.length?.toString(),
+                    "telephoneNumber" to address.telephoneNumber?.length?.toString(),
+                )
+            )
+            return null
+        }
+        return audit(BusinessInteractionCode.INSERT_ADDRESS) { audit ->
+            val savedAddress = personAddressRepository.save(address)
+            audit["offenderId"] = address.person.id!!
+            savedAddress
+        }
     }
 
     fun updatePerson(person: Person): Person = personRepository.save(person)
