@@ -88,7 +88,6 @@ object ReferenceDataGenerator {
         dataSetId = BREACH_REASON_DATASET.id
     )
 
-
     val DEFAULT_ADDITIONAL_SENTENCE_TYPE = ReferenceData(
         id = IdGenerator.getAndIncrement(),
         code = "FINE",

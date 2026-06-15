@@ -14,8 +14,7 @@ object AdditionalSentenceGenerator {
         amount = BigDecimal.valueOf(100),
         notes = "Additional sentence notes",
         eventId = DEFAULT_EVENT.eventId,
-        type = DEFAULT_ADDITIONAL_SENTENCE_TYPE ,
+        type = DEFAULT_ADDITIONAL_SENTENCE_TYPE,
         units = DEFAULT_UNITS
     )
-
 }
