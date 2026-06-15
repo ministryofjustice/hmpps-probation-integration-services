@@ -2,11 +2,12 @@ package uk.gov.justice.digital.hmpps.messaging
 
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers
-import org.hamcrest.Matchers.containsString
-import org.hamcrest.Matchers.nullValue
+import org.hamcrest.Matchers.*
 import org.hamcrest.core.IsEqual.equalTo
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.MethodSource
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
@@ -18,6 +19,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonAddress
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonAddressRepository
 import uk.gov.justice.digital.hmpps.service.PersonService
+import uk.gov.justice.digital.hmpps.set
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 
 @ExtendWith(MockitoExtension::class)
@@ -132,33 +134,44 @@ internal class PersonServiceTest {
         assertThat(savedPerson.address?.person?.id, equalTo(person.id))
     }
 
-    @Test
-    fun `insert address does not save when address data is too large`() {
-        val address = PersonAddress(
-            status = ReferenceDataGenerator.MAIN_ADDRESS_STATUS,
-            person = PersonGenerator.DEFAULT,
-            type = ReferenceDataGenerator.AWAITING_ASSESSMENT,
-            streetName = "a".repeat(36),
-            postcode = "AB1 2CD",
-            uprn = 123456789
-        )
-
+    @ParameterizedTest
+    @MethodSource("oversizedAddressFields")
+    fun `insert address does not save when any address field is too large`(field: String) {
+        val address = PersonAddressGenerator.MAIN_ADDRESS.apply { set(field, "a".repeat(36)) }
         val savedAddress = personService.insertAddress(address)
 
         assertThat(savedAddress, nullValue())
         verify(personAddressRepository, never()).save(any<PersonAddress>())
         verify(telemetryService).trackEvent(
-            "AddressDataTooLarge", mapOf(
-                "uprn" to "123456789",
-                "buildingName" to null,
-                "addressNumber" to null,
-                "streetName" to "36",
-                "town" to null,
-                "district" to null,
-                "county" to null,
-                "postcode" to "7",
-                "telephoneNumber" to null,
-            )
+            eq("AddressDataTooLarge"),
+            check { assertThat(it[field], equalTo("36")) },
+            any()
+        )
+    }
+
+    @ParameterizedTest
+    @MethodSource("oversizedAddressFields")
+    fun `insert address saves when any address field is not too large`(field: String) {
+        val address = PersonAddressGenerator.MAIN_ADDRESS.apply { set(field, "a".repeat(35)) }
+        whenever(personAddressRepository.save(any<PersonAddress>())).thenReturn(address)
+        val savedAddress = personService.insertAddress(address)
+
+        assertThat(savedAddress, notNullValue())
+        verify(personAddressRepository).save(any<PersonAddress>())
+        verify(telemetryService, never()).trackEvent(eq("AddressDataTooLarge"), any(), any())
+    }
+
+    companion object {
+        @JvmStatic
+        fun oversizedAddressFields() = listOf(
+            "addressNumber",
+            "buildingName",
+            "streetName",
+            "town",
+            "district",
+            "county",
+            "postcode",
+            "telephoneNumber"
         )
     }
 
