@@ -4,6 +4,10 @@ import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.NumericBooleanConverter
+import org.springframework.data.annotation.CreatedBy
+import org.springframework.data.annotation.CreatedDate
+import org.springframework.data.annotation.LastModifiedBy
+import org.springframework.data.annotation.LastModifiedDate
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.ReferenceData
@@ -62,11 +66,21 @@ class Event(
     @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean = false,
 
+    @CreatedDate
     @Column(name = "created_datetime")
-    val dateCreated: ZonedDateTime,
+    var dateCreated: ZonedDateTime = ZonedDateTime.now(),
 
+    @CreatedBy
+    @Column(name = "created_by_user_id")
+    var createdByUserId: Long? = null,
+
+    @LastModifiedDate
     @Column(name = "last_updated_datetime")
-    val lastUpdatedDateTime: ZonedDateTime
+    var lastUpdatedDateTime: ZonedDateTime = ZonedDateTime.now(),
+
+    @LastModifiedBy
+    @Column(name = "last_updated_user_id")
+    var lastUpdatedUserId: Long? = null,
 ) {
     fun isInactiveEvent(): Boolean = !active || disposal?.active == false
 }
