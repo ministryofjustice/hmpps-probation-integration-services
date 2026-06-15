@@ -279,7 +279,11 @@ class ProvidersIntegrationTest @Autowired constructor(
     @Test
     fun `404 returned when one of the team codes does not exist`() {
         mockMvc
-            .get("/providers/sessions?teamCodes=N01UPW&teamCodes=DOESNOTEXIST&startDate=${LocalDate.now().minusDays(3)}&endDate=${LocalDate.now().plusDays(3)}") {
+            .get(
+                "/providers/sessions?teamCodes=N01UPW&teamCodes=DOESNOTEXIST&startDate=${
+                    LocalDate.now().minusDays(3)
+                }&endDate=${LocalDate.now().plusDays(3)}"
+            ) {
                 withToken()
             }
             .andExpect { status { isNotFound() } }
@@ -300,7 +304,11 @@ class ProvidersIntegrationTest @Autowired constructor(
     @Test
     fun `invalid sort property returns bad request on multi-team sessions endpoint`() {
         mockMvc
-            .get("/providers/sessions?teamCodes=N01UPW&startDate=${LocalDate.now().minusDays(3)}&endDate=${LocalDate.now().plusDays(3)}&sort=INVALID") {
+            .get(
+                "/providers/sessions?teamCodes=N01UPW&startDate=${
+                    LocalDate.now().minusDays(3)
+                }&endDate=${LocalDate.now().plusDays(3)}&sort=INVALID"
+            ) {
                 withToken()
             }
             .andExpect { status { isBadRequest() } }
@@ -312,7 +320,11 @@ class ProvidersIntegrationTest @Autowired constructor(
     @Test
     fun `date range greater than 7 days returns bad request on multi-team sessions endpoint`() {
         mockMvc
-            .get("/providers/sessions?teamCodes=N01UPW&startDate=${LocalDate.now().minusDays(10)}&endDate=${LocalDate.now()}") {
+            .get(
+                "/providers/sessions?teamCodes=N01UPW&startDate=${
+                    LocalDate.now().minusDays(10)
+                }&endDate=${LocalDate.now()}"
+            ) {
                 withToken()
             }
             .andExpect { status { isBadRequest() } }

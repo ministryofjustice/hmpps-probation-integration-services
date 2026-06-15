@@ -109,8 +109,15 @@ class ProvidersService(
 
         val teamIds = teams.map { it.id }
         val unpaged = Pageable.unpaged(pageable.sort)
-        val deprecatedAllSessions = unpaidWorkAppointmentRepository.getUnpaidWorkSessionDetails(teamIds, startDate, endDate, typeCodes, unpaged)
-        val sessions = unpaidWorkAppointmentRepository.getUnpaidWorkSessionDetails(teamIds, startDate, endDate, typeCodes, pageable)
+        val deprecatedAllSessions =
+            unpaidWorkAppointmentRepository.getUnpaidWorkSessionDetails(teamIds, startDate, endDate, typeCodes, unpaged)
+        val sessions = unpaidWorkAppointmentRepository.getUnpaidWorkSessionDetails(
+            teamIds,
+            startDate,
+            endDate,
+            typeCodes,
+            pageable
+        )
 
         return SessionsResponse(
             sessions = deprecatedAllSessions.map { it.toModel() }.toList(),
