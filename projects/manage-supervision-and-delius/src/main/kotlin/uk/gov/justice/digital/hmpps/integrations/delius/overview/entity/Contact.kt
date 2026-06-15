@@ -88,7 +88,7 @@ class Contact(
 
     @ManyToOne
     @JoinColumn(name = "latest_enforcement_action_id", referencedColumnName = "enforcement_action_id")
-    val action: EnforcementAction? = null,
+    var latestEnforcementAction: EnforcementAction? = null,
 
     @OneToOne(mappedBy = "contact")
     var enforcement: Enforcement? = null,
@@ -481,7 +481,7 @@ interface ContactRepository : JpaRepository<Contact, Long> {
         left join fetch old.borough brgh
         left join fetch c.outcome o
         left join fetch t.categories cats
-        left join fetch c.action a
+        left join fetch c.latestEnforcementAction a
         left join fetch a.contactType ct
         left join fetch e.disposal d
         left join fetch d.lengthUnit lu
