@@ -2,19 +2,19 @@ package uk.gov.justice.digital.hmpps
 
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers
-import org.hamcrest.Matchers.containsString
-import org.hamcrest.Matchers.equalTo
-import org.hamcrest.Matchers.notNullValue
+import org.hamcrest.Matchers.*
 import org.junit.jupiter.api.Test
 import org.springframework.test.web.servlet.put
 import uk.gov.justice.digital.hmpps.api.model.contact.UpdateContactOutcome
 import uk.gov.justice.digital.hmpps.data.generator.IdGenerator
 import uk.gov.justice.digital.hmpps.data.generator.UpdateContactOutcomeGenerator
 import uk.gov.justice.digital.hmpps.service.ContactLogService
+import uk.gov.justice.digital.hmpps.test.CustomMatchers.isCloseTo
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.json
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 import java.time.LocalDate
 import java.time.LocalTime
+import java.time.ZonedDateTime
 
 class UpdateContactOutcomeIntegrationTest : IntegrationTestBase() {
 
@@ -147,6 +147,8 @@ class UpdateContactOutcomeIntegrationTest : IntegrationTestBase() {
         assertThat(enforcements.size, equalTo(1))
         assertThat(enforcements[0].action?.code, equalTo(UpdateContactOutcomeGenerator.ENFORCEMENT_ACTION.code))
         assertThat(enforcements[0].responseDate, notNullValue())
+        assertThat(enforcements[0].createdDatetime, isCloseTo(ZonedDateTime.now()))
+        assertThat(enforcements[0].lastUpdatedDatetime, isCloseTo(ZonedDateTime.now()))
     }
 
     @Test
