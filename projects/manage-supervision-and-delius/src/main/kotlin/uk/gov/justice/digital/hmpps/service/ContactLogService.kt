@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import tools.jackson.databind.ObjectMapper
 import uk.gov.justice.digital.hmpps.api.model.contact.*
 import uk.gov.justice.digital.hmpps.aspect.UserContext
 import uk.gov.justice.digital.hmpps.audit.service.AuditableService
@@ -42,6 +43,7 @@ class ContactLogService(
     private val contactEnforcementService: ContactEnforcementService,
     private val enforcementRepository: EnforcementRepository,
     private val telemetryService: TelemetryService,
+    private val objectMapper: ObjectMapper,
 ) : AuditableService(auditedInteractionService) {
     companion object {
         const val REVIEW_ENFORCEMENT_STATUS = "ARWS"
@@ -245,10 +247,20 @@ class ContactLogService(
         if (contact.complied == false && contactOutcome?.outcomeCompliantAcceptable == true) {
             telemetryService.trackEvent(
                 "remove enforcement for a compliant contact",
-                mapOf("crn" to contact.person.crn, "contactId" to contactId.toString())
+                mapOf(
+                    "crn" to contact.person.crn,
+                    "contactId" to contactId.toString(),
+                    "enforcements" to contact.enforcements.map {
+                        mapOf(
+                            "id" to it.id,
+                            "action" to it.action?.code,
+                            "responseDate" to it.responseDate
+                        )
+                    }.let { objectMapper.writeValueAsString(it) }
+                )
             )
-            contact.enforcement?.let { enforcementRepository.delete(it) }
-            contact.enforcement = null
+            enforcementRepository.deleteAll(contact.enforcements)
+            contact.enforcements = mutableListOf()
         }
 
         request.notes.let { contact.appendNotes(it) }
