@@ -46,7 +46,11 @@ class SessionsIntegrationTest @Autowired constructor(
     @Test
     fun `404 returned when one of the team codes does not exist`() {
         mockMvc
-            .get("/sessions?teamCodes=N01UPW&teamCodes=DOESNOTEXIST&startDate=${LocalDate.now().minusDays(3)}&endDate=${LocalDate.now().plusDays(3)}") {
+            .get(
+                "/sessions?teamCodes=N01UPW&teamCodes=DOESNOTEXIST&startDate=${
+                    LocalDate.now().minusDays(3)
+                }&endDate=${LocalDate.now().plusDays(3)}"
+            ) {
                 withToken()
             }
             .andExpect { status { isNotFound() } }
@@ -67,7 +71,11 @@ class SessionsIntegrationTest @Autowired constructor(
     @Test
     fun `invalid sort property returns bad request on multi-team sessions endpoint`() {
         mockMvc
-            .get("/sessions?teamCodes=N01UPW&startDate=${LocalDate.now().minusDays(3)}&endDate=${LocalDate.now().plusDays(3)}&sort=INVALID") {
+            .get(
+                "/sessions?teamCodes=N01UPW&startDate=${LocalDate.now().minusDays(3)}&endDate=${
+                    LocalDate.now().plusDays(3)
+                }&sort=INVALID"
+            ) {
                 withToken()
             }
             .andExpect { status { isBadRequest() } }

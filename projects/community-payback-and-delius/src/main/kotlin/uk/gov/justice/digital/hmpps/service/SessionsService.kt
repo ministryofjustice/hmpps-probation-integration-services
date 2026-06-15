@@ -30,10 +30,16 @@ class SessionsService(
         if (missingCodes.isNotEmpty()) throw NotFoundException("Team", "code", missingCodes.first())
 
         val teamIds = teams.map { it.id }
-        val sessions = unpaidWorkAppointmentRepository.getUnpaidWorkSessionDetails(teamIds, startDate, endDate, typeCodes, pageable)
+        val sessions = unpaidWorkAppointmentRepository.getUnpaidWorkSessionDetails(
+            teamIds,
+            startDate,
+            endDate,
+            typeCodes,
+            pageable
+        )
 
         return PagedModel(
-             sessions.map { it.toModel() }
+            sessions.map { it.toModel() }
         )
     }
 }
