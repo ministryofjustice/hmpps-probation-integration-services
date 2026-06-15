@@ -10,6 +10,7 @@ import uk.gov.justice.digital.hmpps.audit.entity.AuditedInteraction
 import uk.gov.justice.digital.hmpps.audit.service.AuditableService
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
 import uk.gov.justice.digital.hmpps.client.AlfrescoUploadClient
+import uk.gov.justice.digital.hmpps.client.RestClientUtils.nullIfNotFound
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.Document
 import uk.gov.justice.digital.hmpps.integrations.delius.Document.Companion.suicideRiskFormUrn
@@ -44,7 +45,7 @@ class DocumentService(
         document.lastUpdatedUserId = auditUserService.findUser(event.username)?.id
             ?: throw NotFoundException("User", "username", event.username)
 
-        alfrescoUploadClient.delete(document.alfrescoId)
+        nullIfNotFound { alfrescoUploadClient.delete(document.alfrescoId) }
         document.alfrescoId = alfrescoUploadClient.upload(document.toMultipart(file)).id
 
         documentRepository.save(document)
@@ -56,7 +57,7 @@ class DocumentService(
         documentRepository.delete(document)
         updateParent(document)
         alfrescoUploadClient.release(document.alfrescoId)
-        alfrescoUploadClient.delete(document.alfrescoId)
+        nullIfNotFound { alfrescoUploadClient.delete(document.alfrescoId) }
     }
 
     fun listDocumentsForContacts(contactIds: List<Long>): ContactDocumentResponse {
