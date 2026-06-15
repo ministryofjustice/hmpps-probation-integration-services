@@ -223,7 +223,7 @@ class ContactLogService(
 
     private fun setEnforcementFlag(
         contact: Contact,
-        appliedAction: EnforcementAction? = contact.action,
+        appliedAction: EnforcementAction? = contact.latestEnforcementAction,
     ) {
         if (contact.type.contactOutcomeFlag == true && contact.outcome == null) {
             contact.enforcementFlag = true

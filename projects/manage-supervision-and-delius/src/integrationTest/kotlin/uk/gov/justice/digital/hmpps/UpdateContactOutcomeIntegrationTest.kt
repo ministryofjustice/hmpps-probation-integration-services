@@ -4,6 +4,7 @@ import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers
 import org.hamcrest.Matchers.*
 import org.junit.jupiter.api.Test
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.test.web.servlet.put
 import uk.gov.justice.digital.hmpps.api.model.contact.UpdateContactOutcome
 import uk.gov.justice.digital.hmpps.data.generator.IdGenerator
@@ -149,6 +150,11 @@ class UpdateContactOutcomeIntegrationTest : IntegrationTestBase() {
         assertThat(enforcements[0].responseDate, notNullValue())
         assertThat(enforcements[0].createdDatetime, isCloseTo(ZonedDateTime.now()))
         assertThat(enforcements[0].lastUpdatedDatetime, isCloseTo(ZonedDateTime.now()))
+        val appointment = contactRepository.findByIdOrNull(UpdateContactOutcomeGenerator.CONTACT_3.id)
+        assertThat(
+            appointment?.latestEnforcementAction?.code,
+            equalTo(UpdateContactOutcomeGenerator.ENFORCEMENT_ACTION.code)
+        )
     }
 
     @Test

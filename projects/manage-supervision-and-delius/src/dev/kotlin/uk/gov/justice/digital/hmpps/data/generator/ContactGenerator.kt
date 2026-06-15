@@ -414,7 +414,7 @@ object ContactGenerator {
         staff = staff,
         location = LOCATION_BRK_1,
         notes = notes,
-        action = action,
+        latestEnforcementAction = action,
         event = event,
         outcome = outcome,
         description = description,

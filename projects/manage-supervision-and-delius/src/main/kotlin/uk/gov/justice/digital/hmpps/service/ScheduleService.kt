@@ -15,7 +15,6 @@ import uk.gov.justice.digital.hmpps.api.model.user.PersonManager
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.ContactDocument
-import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.DocumentRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.LicenceCondition
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.OffenderManager
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.OffenderManagerRepository
@@ -157,7 +156,7 @@ fun Contact.toActivityOverview(): Activity {
         rescheduledPop = rescheduledPop(),
         rearrangeOrCancelReason = if (rescheduled()) outcome?.description else null,
         isAppointment = type.attendanceContact,
-        action = action?.description,
+        action = latestEnforcementAction?.description,
         isSystemContact = type.systemGenerated,
         isEmailOrTextFromPop = isEmailOrTextFromPop(),
         isEmailOrTextToPop = isEmailOrTextToPop(),
@@ -219,7 +218,7 @@ fun Contact.toActivity(noteId: Int? = null): Activity {
             surname = lastUpdatedUser.surname
         ) else null,
         isAppointment = type.attendanceContact,
-        action = action?.description,
+        action = latestEnforcementAction?.description,
         isSystemContact = type.systemGenerated,
         isEmailOrTextFromPop = isEmailOrTextFromPop(),
         isEmailOrTextToPop = isEmailOrTextToPop(),
