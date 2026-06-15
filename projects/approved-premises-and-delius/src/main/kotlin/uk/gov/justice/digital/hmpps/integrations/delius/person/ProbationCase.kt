@@ -60,13 +60,14 @@ class ProbationCase(
     @JoinColumn(name = "gender_identity_id")
     val genderIdentity: ReferenceData?,
 
+    @Column(name = "gender_identity_description")
     val genderIdentityDescription: String?,
 
-    @Column(columnDefinition = "number")
+    @Column(name = "current_exclusion", columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)
     val currentExclusion: Boolean?,
 
-    @Column(columnDefinition = "number")
+    @Column(name = "current_restriction", columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)
     val currentRestriction: Boolean?,
 
@@ -105,7 +106,7 @@ class CommunityManager(
     @Convert(converter = NumericBooleanConverter::class)
     val active: Boolean = true,
 
-    @Column(columnDefinition = "number")
+    @Column(name = "soft_deleted", columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean = false,
 
