@@ -70,4 +70,37 @@ internal class CourtMessageHandlerTest {
         assertThat(outputHearing.hearing.prosecutionCases.size, equalTo(1))
         assertThat(outputHearing.hearing.prosecutionCases[0].defendants.size, equalTo(1))
     }
+
+    @Test
+    fun `message with non-person defendant is ignored`() {
+        val hearing = MessageGenerator.COMMON_PLATFORM_EVENT_MULTIPLE_DEFENDANTS
+        val prosecutionCase = hearing.hearing.prosecutionCases.first()
+        val personDefendant = prosecutionCase.defendants.first()
+        val nonPersonDefendant = prosecutionCase.defendants.last().copy(
+            personDefendant = null,
+            legalEntityDefendant = mapOf("name" to "Test Ltd"),
+            cprUUID = null
+        )
+        val notification = Notification(
+            message = hearing.copy(
+                hearing = hearing.hearing.copy(
+                    prosecutionCases = listOf(
+                        prosecutionCase.copy(defendants = listOf(nonPersonDefendant, personDefendant))
+                    )
+                )
+            )
+        )
+
+        whenever(converter.fromMessage(any())).thenReturn(notification)
+
+        handler.handle(objectMapper.writeValueAsString(notification))
+
+        val captor = argumentCaptor<Message<String>>()
+        verify(sqsTemplate).send(eq("send-queue"), captor.capture())
+
+        val output = objectMapper.readValue(captor.firstValue.payload, jacksonTypeRef<Notification<String>>())
+        val outputHearing = objectMapper.readValue(output.message, CommonPlatformHearing::class.java)
+
+        assertThat(outputHearing.hearing.prosecutionCases[0].defendants.single().id, equalTo(personDefendant.id))
+    }
 }

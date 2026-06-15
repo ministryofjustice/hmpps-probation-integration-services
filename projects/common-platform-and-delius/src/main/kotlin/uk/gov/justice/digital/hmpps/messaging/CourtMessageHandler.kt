@@ -47,6 +47,7 @@ class CourtMessageHandler(
             hearing.prosecutionCases
                 .flatMap { case -> case.defendants.map { defendant -> case to defendant } }
                 .forEach { (case, defendant) ->
+                    if (defendant.personDefendant == null) return@forEach
                     val cprUuid = requireNotNull(defendant.cprUUID) { "Missing Core Person UUID" }
                     val newCase = case.copy(defendants = listOf(defendant))
                     val newHearing = hearing.copy(prosecutionCases = listOf(newCase))
