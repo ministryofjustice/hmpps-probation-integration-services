@@ -94,6 +94,38 @@ class ProvidersService(
         // return PagedModel(sessions.map { it.toModel() })
     }
 
+    fun getSessions(
+        teamCodes: List<String>,
+        startDate: LocalDate,
+        endDate: LocalDate,
+        typeCodes: List<String>,
+        pageable: Pageable
+    ): SessionsResponse {
+        require(!endDate.isBefore(startDate)) { "endDate must be on or after startDate" }
+        require(ChronoUnit.DAYS.between(startDate, endDate) <= 7) { "Date range cannot be greater than 7 days" }
+
+        val teams = teamRepository.findTeamsByCodeIn(teamCodes)
+        val missingCodes = teamCodes - teams.map { it.code }.toSet()
+        if (missingCodes.isNotEmpty()) throw NotFoundException("Team", "code", missingCodes)
+
+        val teamIds = teams.map { it.id }
+        val unpaged = Pageable.unpaged(pageable.sort)
+        val deprecatedAllSessions =
+            unpaidWorkAppointmentRepository.getUnpaidWorkSessionDetails(teamIds, startDate, endDate, typeCodes, unpaged)
+        val sessions = unpaidWorkAppointmentRepository.getUnpaidWorkSessionDetails(
+            teamIds,
+            startDate,
+            endDate,
+            typeCodes,
+            pageable
+        )
+
+        return SessionsResponse(
+            sessions = deprecatedAllSessions.map { it.toModel() }.toList(),
+            page = sessions.map { it.toModel() }
+        )
+    }
+
     fun getLocationsForTeam(teamCode: String): PickUpLocationsResponse {
         val team = teamRepository.findTeamByCode(teamCode).orNotFoundBy("code", teamCode)
         val officeLocations = officeLocationRepository.getLocationsByTeam(team.id)
