@@ -3,8 +3,7 @@ package uk.gov.justice.digital.hmpps
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock.get
 import com.github.tomakehurst.wiremock.client.WireMock.okJson
-import org.assertj.core.api.Assertions.assertThat
-import org.assertj.core.api.Assertions.assertThatThrownBy
+import org.assertj.core.api.Assertions.*
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.verify
 import org.springframework.beans.factory.annotation.Autowired
@@ -15,6 +14,7 @@ import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.jdbc.core.queryForObject
 import org.springframework.test.context.bean.override.mockito.MockitoBean
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
+import uk.gov.justice.digital.hmpps.data.generator.UserGenerator
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integration.delius.entity.AddressRepository
 import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
@@ -22,6 +22,8 @@ import uk.gov.justice.digital.hmpps.messaging.HmppsChannelManager
 import uk.gov.justice.digital.hmpps.service.AddressService
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import java.time.Instant
+import java.time.ZonedDateTime
+import java.time.temporal.ChronoUnit
 
 @SpringBootTest
 internal class MessagingIntegrationTest @Autowired constructor(
@@ -53,6 +55,10 @@ internal class MessagingIntegrationTest @Autowired constructor(
         assertThat(address.startDate!!.toInstant()).isEqualTo(Instant.parse("2026-02-03T09:15:30Z"))
         assertThat(address.status.code).isEqualTo("M")
         assertThat(address.type?.code).isEqualTo("A01C")
+        assertThat(address.createdByUserId).isEqualTo(UserGenerator.AUDIT_USER.id)
+        assertThat(address.createdDatetime).isCloseTo(ZonedDateTime.now(), within(5, ChronoUnit.SECONDS))
+        assertThat(address.lastUpdatedUserId).isEqualTo(UserGenerator.AUDIT_USER.id)
+        assertThat(address.lastUpdatedDatetime).isCloseTo(ZonedDateTime.now(), within(5, ChronoUnit.SECONDS))
         verify(telemetryService).trackEvent(
             "AddressCreated",
             mapOf(
@@ -76,9 +82,10 @@ internal class MessagingIntegrationTest @Autowired constructor(
 
     @Test
     fun `updates address from domain event`() {
+        val addressId = PersonGenerator.UPDATABLE_PERSON_ADDRESSES[0].id!!
+        val addressBefore = addressRepository.findByIdOrNull(addressId)!!
         publish("address-updated")
 
-        val addressId = PersonGenerator.UPDATABLE_PERSON_ADDRESSES[0].id!!
         val address = addressRepository.findByIdOrNull(addressId)!!
         assertThat(address.addressNumber).isEqualTo("22")
         assertThat(address.buildingName).isEqualTo("Flat 4 Updated House")
@@ -93,6 +100,12 @@ internal class MessagingIntegrationTest @Autowired constructor(
         assertThat(address.endDate!!.toInstant()).isEqualTo(Instant.parse("2026-04-05T11:45:00Z"))
         assertThat(address.status.code).isEqualTo("P")
         assertThat(address.type?.code).isEqualTo("A01C")
+        assertThat(address.createdByUserId).isEqualTo(UserGenerator.AUDIT_USER.id)
+        assertThat(address.createdDatetime).isEqualTo(addressBefore.createdDatetime)
+        assertThat(address.lastUpdatedUserId).isEqualTo(UserGenerator.AUDIT_USER.id)
+        assertThat(address.lastUpdatedDatetime)
+            .isNotEqualTo(addressBefore.lastUpdatedDatetime)
+            .isCloseTo(ZonedDateTime.now(), within(5, ChronoUnit.SECONDS))
         verify(telemetryService).trackEvent(
             "AddressUpdated",
             mapOf(

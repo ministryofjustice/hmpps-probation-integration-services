@@ -29,29 +29,29 @@ class PersonAddress(
     val version: Long = 0,
     @Column(name = "offender_id")
     val personId: Long,
-    val addressNumber: String?,
+    var addressNumber: String?,
     var buildingName: String?,
     var streetName: String?,
     var townCity: String?,
     var county: String?,
     var district: String?,
-    val postcode: String?,
-    val uprn: Long?,
-    val telephoneNumber: String?,
+    var postcode: String?,
+    var uprn: Long?,
+    var telephoneNumber: String?,
     @Convert(converter = YesNoConverter::class)
-    val noFixedAbode: Boolean,
+    var noFixedAbode: Boolean,
     @Lob
-    val notes: String?,
-    val startDate: ZonedDateTime?,
-    val endDate: ZonedDateTime?,
+    var notes: String?,
+    var startDate: ZonedDateTime?,
+    var endDate: ZonedDateTime?,
     @ManyToOne
     @JoinColumn(name = "address_status_id")
-    val status: ReferenceData,
+    var status: ReferenceData,
     @ManyToOne
     @JoinColumn(name = "address_type_id")
-    val type: ReferenceData?,
+    var type: ReferenceData?,
     @Convert(converter = YesNoConverter::class)
-    val typeVerified: Boolean?,
+    var typeVerified: Boolean?,
     @Column(name = "soft_deleted", columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)
     var softDeleted: Boolean = false,
