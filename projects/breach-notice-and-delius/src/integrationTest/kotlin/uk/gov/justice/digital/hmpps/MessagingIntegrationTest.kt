@@ -145,6 +145,45 @@ internal class MessagingIntegrationTest @Autowired constructor(
         wireMockServer.verify(deleteRequestedFor(urlEqualTo("/alfresco/deletehard/${DELETED_BREACH_NOTICE.alfrescoId}")).withAlfrescoHeaders())
     }
 
+    @Test
+    fun `breach notice is created even when alfresco document already deleted`() {
+        // Given the Alfresco delete returns 404 (document already gone)
+        wireMockServer.stubFor(
+            delete(urlPathMatching("/alfresco/deletehard/.+"))
+                .atPriority(1)
+                .willReturn(aResponse().withStatus(404))
+        )
+
+        // And a valid breach notice message
+        val notification = prepEvent("breach-notice-created", wireMockServer.port())
+
+        // When it is received
+        channelManager.getChannel(queueName).publishAndWait(notification)
+
+        // Then the upload still succeeds
+        verify(telemetryService).trackEvent(
+            "DocumentUploaded",
+            mapOf(
+                "crn" to "A000001",
+                "breachNoticeId" to "00000000-0000-0000-0000-000000000001",
+                "username" to "TestUser"
+            ),
+            mapOf()
+        )
+
+        // And the document is still updated in the database
+        val document = documentRepository.findById(DEFAULT_BREACH_NOTICE.id).get()
+        assertThat(document.name).isEqualTo("name.pdf")
+        assertThat(document.status).isEqualTo("Y")
+
+        // And the upload to Alfresco was still called
+        wireMockServer.verify(postRequestedFor(urlEqualTo("/alfresco/uploadnew")))
+
+        // Reset the stub priority
+        wireMockServer.resetToDefaultMappings()
+    }
+
+
     private fun RequestPatternBuilder.withAlfrescoHeaders() = withHeader("Authorization", absent())
         .withHeader("X-DocRepository-Remote-User", equalTo("N00"))
         .withHeader("X-DocRepository-Real-Remote-User", equalTo("BreachNoticeAndDelius"))
