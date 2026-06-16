@@ -183,7 +183,6 @@ internal class MessagingIntegrationTest @Autowired constructor(
         wireMockServer.resetToDefaultMappings()
     }
 
-
     private fun RequestPatternBuilder.withAlfrescoHeaders() = withHeader("Authorization", absent())
         .withHeader("X-DocRepository-Remote-User", equalTo("N00"))
         .withHeader("X-DocRepository-Real-Remote-User", equalTo("BreachNoticeAndDelius"))
