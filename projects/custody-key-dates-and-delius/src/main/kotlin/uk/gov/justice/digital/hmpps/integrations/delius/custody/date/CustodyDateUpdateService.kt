@@ -72,14 +72,14 @@ class CustodyDateUpdateService(
 
     private fun calculateKeyDateChanges(sentenceDetail: SentenceDetail, custody: Custody, booking: Booking): List<KeyDate> {
         val envelope = try {
-            crdsApiClient.getOperativeSentenceEnvelope(booking.offenderNo)
+            crdsApiClient.getOperativeSentenceEnvelope(booking.bookingNo)
         } catch (_: Exception) {
             null
         }
 
         val isSdsPlus = envelope?.containsAnSDSPlusSentence
         val crd = sentenceDetail.conditionalReleaseDate
-        val led = sentenceDetail.licenceExpiryDate
+        val sed = sentenceDetail.sentenceExpiryDate
         val sentenceLengthDays = envelope?.sentenceEnvelopeLengthInDays
 
         val presumptiveElectronicMonitoringEndDate =
@@ -90,7 +90,7 @@ class CustodyDateUpdateService(
 
         val finalThirdDate =
             sentenceLengthDays?.let { days ->
-                led?.let { keyDateCalculator.calculateFinalThirdDate(it, days)
+                sed?.let { keyDateCalculator.calculateFinalThirdDate(it, days)
                 }
             }
 
