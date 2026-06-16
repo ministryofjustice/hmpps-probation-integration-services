@@ -157,30 +157,32 @@ internal class MessagingIntegrationTest @Autowired constructor(
         // And a valid breach notice message
         val notification = prepEvent("breach-notice-created", wireMockServer.port())
 
-        // When it is received
-        channelManager.getChannel(queueName).publishAndWait(notification)
+        try {
+            // When it is received
+            channelManager.getChannel(queueName).publishAndWait(notification)
 
-        // Then the upload still succeeds
-        verify(telemetryService).trackEvent(
-            "DocumentUploaded",
-            mapOf(
-                "crn" to "A000001",
-                "breachNoticeId" to "00000000-0000-0000-0000-000000000001",
-                "username" to "TestUser"
-            ),
-            mapOf()
-        )
+            // Then the upload still succeeds
+            verify(telemetryService).trackEvent(
+                "DocumentUploaded",
+                mapOf(
+                    "crn" to "A000001",
+                    "breachNoticeId" to "00000000-0000-0000-0000-000000000001",
+                    "username" to "TestUser"
+                ),
+                mapOf()
+            )
 
-        // And the document is still updated in the database
-        val document = documentRepository.findById(DEFAULT_BREACH_NOTICE.id).get()
-        assertThat(document.name).isEqualTo("name.pdf")
-        assertThat(document.status).isEqualTo("Y")
+            // And the document is still updated in the database
+            val document = documentRepository.findById(DEFAULT_BREACH_NOTICE.id).get()
+            assertThat(document.name).isEqualTo("name.pdf")
+            assertThat(document.status).isEqualTo("Y")
 
-        // And the upload to Alfresco was still called
-        wireMockServer.verify(postRequestedFor(urlEqualTo("/alfresco/uploadnew")))
-
-        // Reset the stub priority
-        wireMockServer.resetToDefaultMappings()
+            // And the upload to Alfresco was still called
+            wireMockServer.verify(postRequestedFor(urlEqualTo("/alfresco/uploadnew")))
+        } finally {
+            // Reset WireMock mappings (removes the 404 stub)
+            wireMockServer.resetToDefaultMappings()
+        }
     }
 
     private fun RequestPatternBuilder.withAlfrescoHeaders() = withHeader("Authorization", absent())
