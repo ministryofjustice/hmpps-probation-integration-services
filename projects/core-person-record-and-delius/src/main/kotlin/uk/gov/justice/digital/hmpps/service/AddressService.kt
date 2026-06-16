@@ -67,24 +67,24 @@ class AddressService(
             existing.type = usages.toEntity()
             existing.typeVerified = typeVerified
         } ?: PersonAddress(
-        personId = personId,
-        addressNumber = buildingNumber,
-        buildingName = listOfNotNull(subBuildingName, buildingName).joinToString(" "),
-        streetName = thoroughfareName,
-        townCity = postTown,
-        county = county,
-        district = dependentLocality,
-        postcode = postcode,
+            personId = personId,
+            addressNumber = buildingNumber,
+            buildingName = listOfNotNull(subBuildingName, buildingName).joinToString(" "),
+            streetName = thoroughfareName,
+            townCity = postTown,
+            county = county,
+            district = dependentLocality,
+            postcode = postcode,
             telephoneNumber = null,
-        uprn = uprn?.toLongOrNull(),
-        noFixedAbode = noFixedAbode ?: false,
+            uprn = uprn?.toLongOrNull(),
+            noFixedAbode = noFixedAbode ?: false,
             notes = comment?.takeIf { it.isNotEmpty() },
-        startDate = startDateTime,
-        endDate = endDateTime,
+            startDate = startDateTime,
+            endDate = endDateTime,
             status = status.toEntity(),
             type = usages.toEntity(),
-        typeVerified = typeVerified,
-    )
+            typeVerified = typeVerified,
+        )
 
     private fun CanonicalAddressStatus.toEntity() =
         requireNotNull(code?.let { referenceDataRepository.getAddressStatus(it) }) { "Address status is required" }
