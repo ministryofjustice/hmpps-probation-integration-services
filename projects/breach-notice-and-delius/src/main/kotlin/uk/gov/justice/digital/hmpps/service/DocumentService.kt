@@ -1,6 +1,8 @@
 package uk.gov.justice.digital.hmpps.service
 
 import jakarta.persistence.EntityManager
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.http.MediaType
 import org.springframework.http.client.MultipartBodyBuilder
 import org.springframework.stereotype.Service
@@ -20,6 +22,7 @@ import uk.gov.justice.digital.hmpps.messaging.username
 import uk.gov.justice.digital.hmpps.user.AuditUserService
 import java.time.ZonedDateTime
 import java.util.*
+import org.springframework.web.client.HttpClientErrorException
 
 @Service
 class DocumentService(
@@ -29,6 +32,11 @@ class DocumentService(
     private val alfrescoUploadClient: AlfrescoUploadClient,
     private val entityManager: EntityManager,
 ) : AuditableService(auditedInteractionService) {
+
+    companion object {
+        private val log: Logger = LoggerFactory.getLogger(DocumentService::class.java)
+    }
+
     fun uploadDocument(event: HmppsDomainEvent, file: ByteArray) = audit(BusinessInteractionCode.UPLOAD_DOCUMENT) {
         check(file.isPdf()) { "Invalid PDF file: ${event.detailUrl}" }
 
@@ -41,7 +49,11 @@ class DocumentService(
         document.lastUpdatedUserId = auditUserService.findUser(event.username)?.id
             ?: throw NotFoundException("User", "username", event.username)
 
-        alfrescoUploadClient.delete(document.alfrescoId)
+        try {
+            alfrescoUploadClient.delete(document.alfrescoId)
+        } catch (e: HttpClientErrorException.NotFound) {
+            log.debug("Alfresco document {} already deleted, proceeding with upload", document.alfrescoId)
+        }
         document.alfrescoId = alfrescoUploadClient.upload(document.toMultipart(file)).id
 
         documentRepository.save(document)
