@@ -28,6 +28,9 @@ class Disposal(
     @JoinColumn(name = "event_id")
     val event: Event,
 
+    @OneToMany(mappedBy = "disposal")
+    val requirements: List<Requirement> = emptyList(),
+
     @Column(columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean = false,

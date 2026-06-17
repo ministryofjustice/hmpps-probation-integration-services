@@ -84,6 +84,10 @@ class CaseControllerIntegrationTest @Autowired constructor(
         assertThat(response.unpaidWorkDetails[0].completedMinutes).isEqualTo(870)
         assertThat(response.unpaidWorkDetails[0].completedEteMinutes).isEqualTo(0)
         assertThat(response.unpaidWorkDetails[0].adjustments).isEqualTo(4)
+        assertThat(response.unpaidWorkDetails[0].eventOutcome).isNotNull
+        assertThat(response.unpaidWorkDetails[0].eventOutcome.code).isNotEmpty
+        assertThat(response.unpaidWorkDetails[0].eventOutcome.description).isNotEmpty
+        assertThat(response.unpaidWorkDetails[0].unpaidWorkRequirements).isNotNull
     }
 
     @Test
@@ -96,6 +100,37 @@ class CaseControllerIntegrationTest @Autowired constructor(
                 jsonPath("$.case.currentRestriction") { value(true) }
                 jsonPath("$.case.restrictionMessage") { value("username not provided so cannot determine restriction") }
             }
+    }
+
+    @Test
+    fun `summary includes eventOutcome with code and description`() {
+        val username = UserGenerator.DEFAULT_USER.username
+        val response =
+            mockMvc.get("/case/${PersonGenerator.DEFAULT_PERSON.crn}/summary?username=${username}") { withToken() }
+                .andExpect { status { isOk() } }
+                .andReturn().response.contentAsJson<UnpaidWorkDetails>()
+
+        val firstDetail = response.unpaidWorkDetails[0]
+        assertThat(firstDetail.eventOutcome).isNotNull
+        assertThat(firstDetail.eventOutcome.code).isNotBlank
+        assertThat(firstDetail.eventOutcome.description).isNotBlank
+    }
+
+    @Test
+    fun `summary includes unpaidWorkRequirements for events with requirements`() {
+        val username = UserGenerator.DEFAULT_USER.username
+        val response =
+            mockMvc.get("/case/${PersonGenerator.DEFAULT_PERSON.crn}/summary?username=${username}") { withToken() }
+                .andExpect { status { isOk() } }
+                .andReturn().response.contentAsJson<UnpaidWorkDetails>()
+
+        val firstDetail = response.unpaidWorkDetails[0]
+        assertThat(firstDetail.unpaidWorkRequirements).isNotNull
+        assertThat(firstDetail.unpaidWorkRequirements).isNotEmpty
+        val requirements = firstDetail.unpaidWorkRequirements!!
+        assertThat(requirements.first().subType).isNotNull
+        assertThat(requirements.first().subType?.code).isNotBlank
+        assertThat(requirements.first().subType?.description).isNotBlank
     }
 
     @Test

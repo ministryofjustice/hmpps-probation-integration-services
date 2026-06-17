@@ -62,7 +62,10 @@ class CaseSummaryService(
                 adjustments = matchingMinutes.sumOf { it.positiveAdjustments - it.negativeAdjustments },
                 completedMinutes = matchingMinutes.sumOf { it.completedMinutes },
                 completedEteMinutes = eteMinutes,
-                eventOutcome = disposal.type.description,
+                eventOutcome = CodeDescription(
+                    disposal.type.code,
+                    disposal.type.description,
+                ),
                 upwStatus = detail.status?.description,
                 referralDate = disposal.event.referralDate,
                 convictionDate = disposal.event.convictionDate,
@@ -72,7 +75,17 @@ class CaseSummaryService(
                     count = mainOffence.offenceCount,
                     code = mainOffence.offence.code,
                     description = mainOffence.offence.description
-                )
+                ),
+                unpaidWorkRequirements = disposal.requirements.mapNotNull { requirement ->
+                    requirement.requirementSubCategory?.let {
+                        RequirementSubType(
+                            CodeDescription(
+                                it.codeValue,
+                                it.codeDescription
+                            ),
+                        )
+                    }
+                }
             )
         }
         return UnpaidWorkDetails(case, upwMinutes)

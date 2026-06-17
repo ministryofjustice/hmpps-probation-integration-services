@@ -7,6 +7,7 @@ import uk.gov.justice.digital.hmpps.entity.contact.ContactType
 import uk.gov.justice.digital.hmpps.entity.contact.EnforcementAction
 import uk.gov.justice.digital.hmpps.entity.sentence.DisposalType
 import uk.gov.justice.digital.hmpps.entity.sentence.RequirementMainCategory
+import uk.gov.justice.digital.hmpps.entity.sentence.RequirementSubCategory
 import uk.gov.justice.digital.hmpps.entity.unpaidwork.UnpaidWorkDay
 import uk.gov.justice.digital.hmpps.model.Behaviour
 import uk.gov.justice.digital.hmpps.model.WorkQuality
@@ -101,6 +102,12 @@ object ReferenceDataGenerator {
         description = "Unpaid Work"
     )
 
+    val UPW_RQMNT_SUB_CATEGORY = generateRequirementSubCategory(
+        codeValue = "UPW001",
+        codeDescription = "Unpaid Work Hours",
+        datasetId = DatasetGenerator.UPW_PROJECT_CATEGORY_DATASET.id
+    )
+
     val DEFAULT_DISPOSAL_TYPE = generateDisposalType(
         code = "100",
         description = "Community Order",
@@ -182,6 +189,14 @@ object ReferenceDataGenerator {
         code: String,
         description: String,
     ) = RequirementMainCategory(id, code, description)
+
+    fun generateRequirementSubCategory(
+        id: Long = IdGenerator.getAndIncrement(),
+        codeValue: String,
+        codeDescription: String,
+        datasetId: Long,
+        selectable: Boolean = true,
+    ) = RequirementSubCategory(id, codeValue, codeDescription, datasetId, selectable)
 
     fun generateDisposalType(
         id: Long = IdGenerator.getAndIncrement(),
