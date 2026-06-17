@@ -208,4 +208,4 @@ jobs:
           - [ ] Approve workflow: https://github.com/ministryofjustice/hmpps-probation-integration-services/actions/runs/${{ github.run_id }}' \
             --label bootstrap
         env:
-          GITHUB_TOKEN: ${{ github.token }}
+          GH_TOKEN: ${{ github.token }}
