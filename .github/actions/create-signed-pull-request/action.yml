@@ -15,11 +15,8 @@ inputs:
   path:
     description: Relative path under $GITHUB_WORKSPACE to the repository. Defaults to $GITHUB_WORKSPACE.
   token:
+    required: true
     description: A GitHub app token
-  owner:
-    description: GitHub repository owner, defaults to current repository
-  repository:
-    description: GitHub repository name, defaults to current repository
 
 outputs:
   pull-request-number:
@@ -93,4 +90,4 @@ runs:
         body: ${{ env.body }}
         commit_message: ${{ inputs.commit-message }}
         labels: ${{ inputs.labels }}
-        GITHUB_TOKEN: ${{ inputs.token }}
+        GH_TOKEN: ${{ inputs.token }}
