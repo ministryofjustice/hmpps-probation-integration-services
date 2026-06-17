@@ -66,14 +66,6 @@ runs:
       env:
         add_paths: ${{ inputs.add-paths }}
 
-    - name: Check token length
-      run: |
-        echo "Length = "
-        echo "$token" | wc -c
-      shell: bash
-      env:
-        token: ${{ inputs.token }}
-
     - name: Commit and push
       uses: grafana/github-api-commit-action@b1d81091e8480dd11fcea8bc1f0ab977a0376ca5 # v1.0.0
       with:
@@ -89,7 +81,7 @@ runs:
       run: |
         git fetch origin "$branch"
         git checkout "$branch"
-        url=$(gh pr create --title "$commit_message" --body "$body" --label "$labels")
+        url=$(gh pr create --title "$commit_message" --body "$body" --label "$labels" --head "$(git branch --show-current)")
         echo "pull-request-url=$url" | tee -a "$GITHUB_OUTPUT"
         echo "pull-request-number=$(gh pr view "$url" --json number --jq .number)" | tee -a "$GITHUB_OUTPUT"
         echo "pull-request-head-sha=$(gh pr view "$url" --json headRefOid --jq .headRefOid)" | tee -a "$GITHUB_OUTPUT"
