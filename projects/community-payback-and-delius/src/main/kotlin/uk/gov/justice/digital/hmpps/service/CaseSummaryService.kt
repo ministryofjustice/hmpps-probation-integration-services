@@ -49,11 +49,11 @@ class CaseSummaryService(
             restrictionMessage = laoStatus.restrictionMessage,
         )
 
-        val upwMinutes = details.map { detail ->
+        val upwMinutes = details.mapNotNull { detail ->
             val matchingMinutes = requiredMinutes.filter { it.id == detail.id }
             val eteMinutes = eteAppts.filter { it.details.id == detail.id }.sumOf { it.minutesCredited ?: 0 }
             val disposal = detail.disposal
-            val mainOffence = mainOffencesByEventId.getValue(disposal.event.id)
+            val mainOffence = mainOffencesByEventId[disposal.event.id] ?: return@mapNotNull null
             UnpaidWorkMinutes(
                 eventNumber = disposal.event.number.toLong(),
                 sentenceDate = disposal.date,

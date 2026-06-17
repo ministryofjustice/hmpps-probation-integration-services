@@ -60,5 +60,5 @@ interface MainOffenceRepository : JpaRepository<MainOffence, Long> {
     fun findByEventIdIn(eventIds: Collection<Long>): List<MainOffence>
 
     fun getByEventIdIn(eventIds: Collection<Long>) =
-        eventIds.toSet().let { ids -> findByEventIdIn(ids).associateBy { it.event.id }.reportMissing(ids) }
+        findByEventIdIn(eventIds).associateBy { it.event.id }.reportMissing(eventIds.toSet())
 }
