@@ -85,8 +85,8 @@ class CaseControllerIntegrationTest @Autowired constructor(
         assertThat(response.unpaidWorkDetails[0].completedEteMinutes).isEqualTo(0)
         assertThat(response.unpaidWorkDetails[0].adjustments).isEqualTo(4)
         assertThat(response.unpaidWorkDetails[0].eventOutcome).isNotNull
-        assertThat(response.unpaidWorkDetails[0].eventOutcome.code).isNotEmpty
-        assertThat(response.unpaidWorkDetails[0].eventOutcome.description).isNotEmpty
+        assertThat(response.unpaidWorkDetails[0].eventOutcome).isNotEmpty()
+        assertThat(response.unpaidWorkDetails[0].eventOutcomeCode).isNotEmpty()
         assertThat(response.unpaidWorkDetails[0].unpaidWorkRequirements).isNotNull
     }
 
@@ -112,8 +112,8 @@ class CaseControllerIntegrationTest @Autowired constructor(
 
         val firstDetail = response.unpaidWorkDetails[0]
         assertThat(firstDetail.eventOutcome).isNotNull
-        assertThat(firstDetail.eventOutcome.code).isNotBlank
-        assertThat(firstDetail.eventOutcome.description).isNotBlank
+        assertThat(firstDetail.eventOutcome).isNotBlank()
+        assertThat(firstDetail.eventOutcomeCode).isNotBlank()
     }
 
     @Test
@@ -127,7 +127,7 @@ class CaseControllerIntegrationTest @Autowired constructor(
         val firstDetail = response.unpaidWorkDetails[0]
         assertThat(firstDetail.unpaidWorkRequirements).isNotNull
         assertThat(firstDetail.unpaidWorkRequirements).isNotEmpty
-        val requirements = firstDetail.unpaidWorkRequirements!!
+        val requirements = firstDetail.unpaidWorkRequirements
         assertThat(requirements.first().subType).isNotNull
         assertThat(requirements.first().subType?.code).isNotBlank
         assertThat(requirements.first().subType?.description).isNotBlank

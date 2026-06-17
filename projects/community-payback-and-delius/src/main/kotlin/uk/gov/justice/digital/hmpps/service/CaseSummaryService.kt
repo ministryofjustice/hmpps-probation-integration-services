@@ -8,7 +8,6 @@ import uk.gov.justice.digital.hmpps.entity.sentence.MainOffenceRepository
 import uk.gov.justice.digital.hmpps.entity.unpaidwork.LinkedListRepository
 import uk.gov.justice.digital.hmpps.entity.unpaidwork.UnpaidWorkAppointmentRepository
 import uk.gov.justice.digital.hmpps.entity.unpaidwork.UpwDetailsRepository
-import uk.gov.justice.digital.hmpps.exception.NotFoundException.Companion.orNotFoundBy
 import uk.gov.justice.digital.hmpps.model.*
 
 @Service
@@ -34,6 +33,7 @@ class CaseSummaryService(
             eventIds = events.map { it.id },
             projectTypeCodes = linkedListEntry.map { it.data2.code }
         )
+        val mainOffencesByEventId = mainOffenceRepository.getByEventIdIn(events.map { it.id })
 
         val case = Case(
             crn = crn,
@@ -53,8 +53,7 @@ class CaseSummaryService(
             val matchingMinutes = requiredMinutes.filter { it.id == detail.id }
             val eteMinutes = eteAppts.filter { it.details.id == detail.id }.sumOf { it.minutesCredited ?: 0 }
             val disposal = detail.disposal
-            val mainOffence = mainOffenceRepository.findByEventId(disposal.event.id)
-                .orNotFoundBy("event id", disposal.event.id.toString())
+            val mainOffence = mainOffencesByEventId.getValue(disposal.event.id)
             UnpaidWorkMinutes(
                 eventNumber = disposal.event.number.toLong(),
                 sentenceDate = disposal.date,
@@ -62,10 +61,8 @@ class CaseSummaryService(
                 adjustments = matchingMinutes.sumOf { it.positiveAdjustments - it.negativeAdjustments },
                 completedMinutes = matchingMinutes.sumOf { it.completedMinutes },
                 completedEteMinutes = eteMinutes,
-                eventOutcome = CodeDescription(
-                    disposal.type.code,
-                    disposal.type.description,
-                ),
+                eventOutcome = disposal.type.description,
+                eventOutcomeCode = disposal.type.code,
                 upwStatus = detail.status?.description,
                 referralDate = disposal.event.referralDate,
                 convictionDate = disposal.event.convictionDate,
