@@ -12,8 +12,6 @@ inputs:
     description: The message to use when committing changes.
   labels:
     description: A comma or newline separated list of labels.
-  path:
-    description: Relative path under $GITHUB_WORKSPACE to the repository. Defaults to $GITHUB_WORKSPACE.
   token:
     required: true
     description: A GitHub app token
@@ -32,12 +30,6 @@ outputs:
 runs:
   using: composite
   steps:
-    - name: Get working directory or default
-      run: echo "path=${path:-$GITHUB_WORKSPACE}" | tee -a "$GITHUB_ENV"
-      shell: bash
-      env:
-        path: ${{ inputs.path }}
-
     - name: Get pull request body or default
       run: echo "body=${body:-"Automated changes by a [GitHub Actions workflow]($url)."}" | tee -a "$GITHUB_ENV"
       shell: bash
@@ -48,7 +40,6 @@ runs:
     - name: Create branch if it doesn't exist
       run: git checkout "$branch_name" || git checkout -b "$branch_name"
       shell: bash
-      working-directory: ${{ env.path }}
       env:
         branch_name: ${{ inputs.branch }}
 
@@ -62,7 +53,6 @@ runs:
         done <<< "$add_paths"
         git status
       shell: bash
-      working-directory: ${{ env.path }}
       env:
         add_paths: ${{ inputs.add-paths }}
 
@@ -73,8 +63,6 @@ runs:
         create-branch-on-remote: true
         success-if-no-changes: true
         token: ${{ inputs.token }}
-      env:
-        GH_TOKEN: ${{ inputs.token }}
 
     - name: Create pull request
       id: pr
@@ -86,7 +74,6 @@ runs:
         echo "pull-request-number=$(gh pr view "$url" --json number --jq .number)" | tee -a "$GITHUB_OUTPUT"
         echo "pull-request-head-sha=$(gh pr view "$url" --json headRefOid --jq .headRefOid)" | tee -a "$GITHUB_OUTPUT"
       shell: bash
-      working-directory: ${{ env.path }}
       env:
         branch: ${{ inputs.branch }}
         body: ${{ env.body }}
