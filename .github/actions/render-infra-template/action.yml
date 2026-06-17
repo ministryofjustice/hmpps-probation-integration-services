@@ -2,6 +2,9 @@ name: Render project template
 description: Renders a project template from the templates/projects directory and adds it to the Gradle build
 
 inputs:
+  issue_number:
+    description: Issue number (e.g. PI-123)
+    required: true
   project_name:
     description: Project name
     required: true

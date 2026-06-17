@@ -313,12 +313,12 @@ jobs:
     outputs:
       pull-request-url: ${{ steps.render-template.outputs.pull-request-url }}
     steps:
-      - uses: ministryofjustice/hmpps-probation-integration-services/.github/workflows/render-sqs-template.yml@fix-bootstrap-token-2
+      - uses: ministryofjustice/hmpps-probation-integration-services/.github/actions/render-sqs-template@fix-bootstrap-token-2
         id: render-template
         with:
           issue_number: ${{ inputs.issue_number }}
           project_name: ${{ inputs.project_name }}
-          namespace: hmpps-probation-integration-services-dev
+          environment: dev
 
   sqs-queue-setup-preprod:
     runs-on: ubuntu-latest
@@ -330,12 +330,12 @@ jobs:
     outputs:
       pull-request-url: ${{ steps.render-template.outputs.pull-request-url }}
     steps:
-      - uses: ministryofjustice/hmpps-probation-integration-services/.github/workflows/render-sqs-template.yml@fix-bootstrap-token-2
+      - uses: ministryofjustice/hmpps-probation-integration-services/.github/actions/render-sqs-template@fix-bootstrap-token-2
         id: render-template
         with:
           issue_number: ${{ inputs.issue_number }}
           project_name: ${{ inputs.project_name }}
-          namespace: hmpps-probation-integration-services-dev
+          environment: preprod
 
   sqs-queue-setup-prod:
     runs-on: ubuntu-latest
@@ -347,12 +347,12 @@ jobs:
     outputs:
       pull-request-url: ${{ steps.render-template.outputs.pull-request-url }}
     steps:
-      - uses: ministryofjustice/hmpps-probation-integration-services/.github/workflows/render-sqs-template.yml@fix-bootstrap-token-2
+      - uses: ministryofjustice/hmpps-probation-integration-services/.github/actions/render-sqs-template@fix-bootstrap-token-2
         id: render-template
         with:
           issue_number: ${{ inputs.issue_number }}
           project_name: ${{ inputs.project_name }}
-          namespace: hmpps-probation-integration-services-dev
+          environment: prod
 
   issue-for-sqs-queue-setup:
     runs-on: ubuntu-latest
@@ -394,7 +394,7 @@ jobs:
     outputs:
       pull-request-url: ${{ steps.render-template.outputs.pull-request-url }}
     steps:
-      - uses: ministryofjustice/hmpps-probation-integration-services/.github/workflows/render-infra-template.yml@fix-bootstrap-token-2
+      - uses: ministryofjustice/hmpps-probation-integration-services/.github/actions/render-infra-template@fix-bootstrap-token-2
         id: render-template
         with:
           issue_number: ${{ inputs.issue_number }}
@@ -411,7 +411,7 @@ jobs:
     outputs:
       pull-request-url: ${{ steps.render-template.outputs.pull-request-url }}
     steps:
-      - uses: ministryofjustice/hmpps-probation-integration-services/.github/workflows/render-infra-template.yml@fix-bootstrap-token-2
+      - uses: ministryofjustice/hmpps-probation-integration-services/.github/actions/render-infra-template@fix-bootstrap-token-2
         id: render-template
         with:
           issue_number: ${{ inputs.issue_number }}
@@ -428,7 +428,7 @@ jobs:
     outputs:
       pull-request-url: ${{ steps.render-template.outputs.pull-request-url }}
     steps:
-      - uses: ministryofjustice/hmpps-probation-integration-services/.github/workflows/render-infra-template.yml@fix-bootstrap-token-2
+      - uses: ministryofjustice/hmpps-probation-integration-services/.github/actions/render-infra-template@fix-bootstrap-token-2
         id: render-template
         with:
           issue_number: ${{ inputs.issue_number }}
