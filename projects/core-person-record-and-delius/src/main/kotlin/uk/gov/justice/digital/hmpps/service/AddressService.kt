@@ -8,6 +8,8 @@ import uk.gov.justice.digital.hmpps.audit.service.AuditableService
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
 import uk.gov.justice.digital.hmpps.client.PersonClient
 import uk.gov.justice.digital.hmpps.client.model.CanonicalAddress
+import uk.gov.justice.digital.hmpps.client.model.CanonicalAddressStatus
+import uk.gov.justice.digital.hmpps.client.model.CanonicalAddressUsage
 import uk.gov.justice.digital.hmpps.exception.NotFoundException.Companion.orNotFoundBy
 import uk.gov.justice.digital.hmpps.integration.delius.entity.AddressRepository
 import uk.gov.justice.digital.hmpps.integration.delius.entity.PersonAddress
@@ -47,28 +49,49 @@ class AddressService(
             .trackEvent("AddressDeleted", "crn" to crn, "cprAddressId" to cprId)
     }
 
-    private fun CanonicalAddress.toEntity(personId: Long, existing: PersonAddress? = null) = PersonAddress(
-        id = existing?.id,
-        version = existing?.version ?: 0,
-        personId = personId,
-        addressNumber = buildingNumber,
-        buildingName = listOfNotNull(subBuildingName, buildingName).joinToString(" "),
-        streetName = thoroughfareName,
-        townCity = postTown,
-        county = null,
-        district = dependentLocality,
-        postcode = postcode,
-        uprn = uprn?.toLongOrNull(),
-        telephoneNumber = existing?.telephoneNumber,
-        noFixedAbode = noFixedAbode ?: false,
-        notes = listOfNotNull(existing?.notes, comment).takeIf { it.isNotEmpty() }?.joinToString("\n\n"),
-        startDate = startDateTime,
-        endDate = endDateTime,
-        status = requireNotNull(status.code?.let { referenceDataRepository.getAddressStatus(it) }) { "Address status is required" },
-        type = usages.filter { it.isActive }.apply { require(size <= 1) { "Cannot handle multiple address types" } }
-            .singleOrNull()?.usageCode?.code?.let { referenceDataRepository.getAddressType(it) },
-        typeVerified = typeVerified,
-    )
+    private fun CanonicalAddress.toEntity(personId: Long, existing: PersonAddress? = null) =
+        existing?.also { existing ->
+            existing.addressNumber = buildingNumber
+            existing.buildingName = listOfNotNull(subBuildingName, buildingName).joinToString(" ")
+            existing.streetName = thoroughfareName
+            existing.townCity = postTown
+            existing.county = county
+            existing.district = dependentLocality
+            existing.postcode = postcode
+            existing.uprn = uprn?.toLongOrNull()
+            existing.noFixedAbode = noFixedAbode ?: false
+            existing.notes = listOfNotNull(existing.notes, comment).takeIf { it.isNotEmpty() }?.joinToString("\n\n")
+            existing.startDate = startDateTime
+            existing.endDate = endDateTime
+            existing.status = status.toEntity()
+            existing.type = usages.toEntity()
+            existing.typeVerified = typeVerified
+        } ?: PersonAddress(
+            personId = personId,
+            addressNumber = buildingNumber,
+            buildingName = listOfNotNull(subBuildingName, buildingName).joinToString(" "),
+            streetName = thoroughfareName,
+            townCity = postTown,
+            county = county,
+            district = dependentLocality,
+            postcode = postcode,
+            telephoneNumber = null,
+            uprn = uprn?.toLongOrNull(),
+            noFixedAbode = noFixedAbode ?: false,
+            notes = comment?.takeIf { it.isNotEmpty() },
+            startDate = startDateTime,
+            endDate = endDateTime,
+            status = status.toEntity(),
+            type = usages.toEntity(),
+            typeVerified = typeVerified,
+        )
+
+    private fun CanonicalAddressStatus.toEntity() =
+        requireNotNull(code?.let { referenceDataRepository.getAddressStatus(it) }) { "Address status is required" }
+
+    private fun List<CanonicalAddressUsage>.toEntity() =
+        filter { it.isActive }.apply { require(size <= 1) { "Cannot handle multiple address types" } }
+            .singleOrNull()?.usageCode?.code?.let { referenceDataRepository.getAddressType(it) }
 
     private fun PersonAddress.trackEvent(name: String, vararg properties: Pair<String, String>) = also {
         telemetryService.trackEvent(
