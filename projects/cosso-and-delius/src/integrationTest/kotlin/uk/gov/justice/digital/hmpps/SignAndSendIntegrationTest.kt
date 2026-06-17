@@ -8,7 +8,6 @@ import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDO
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
-import org.springframework.test.web.servlet.post
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.DEFAULT_PERSON
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.PERSON_IN_PRISON
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.PERSON_WITH_RESPONSIBLE_OFFICER_WITHOUT_USER
@@ -78,9 +77,9 @@ class SignAndSendIntegrationTest @Autowired constructor(
 
     @Test
     fun `404 when crn not found`() {
-        mockMvc.post("/sign-and-send/X987654") {
+        mockMvc.get("/sign-and-send/X987654") {
             withToken()
         }
-            .andExpect { status { is4xxClientError() } }
+            .andExpect { status { isNotFound() } }
     }
 }
