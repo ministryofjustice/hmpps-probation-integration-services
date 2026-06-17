@@ -83,12 +83,12 @@ class ResponsibleOfficerIntegrationTest @Autowired constructor(
                         """
                         {
                           "name": {
-                            "forename": "John",
-                            "middleName": "Bob",
-                            "surname": "Smith"
+                            "forename": "Jack",
+                            "middleName": "Pom",
+                            "surname": "Harry"
                           },
-                          "emailAddress": "john.smith@moj.gov.uk",
-                          "telephoneNumber": "07247764536",
+                          "emailAddress": "jack.harry@moj.gov.uk",
+                          "telephoneNumber": "07123456789",
                           "probationArea": {
                             "code": "N02",
                             "description": "DEFAULT_PROBATION_AREA"

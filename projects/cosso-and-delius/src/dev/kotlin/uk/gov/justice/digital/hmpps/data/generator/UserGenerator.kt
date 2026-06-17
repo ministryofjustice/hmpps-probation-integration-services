@@ -7,7 +7,12 @@ object UserGenerator {
     val AUDIT_USER: AuditUser = AuditUser(IdGenerator.getAndIncrement(), "CossoAndDelius")
     val DEFAULT_PROBATION_USER: User = User(
         IdGenerator.getAndIncrement(),
-        StaffGenerator.DEFAULT_PROBATION_STAFF.id,
+        StaffGenerator.DEFAULT_PROBATION_STAFF,
         "J0nSm17h"
-    ) // Use a placeholder staffId
+    )
+    val POM_USER: User = User(
+        IdGenerator.getAndIncrement(),
+        StaffGenerator.PRISON_OFFENDER_MANAGER_STAFF,
+        "JackHarry"
+    )
 }

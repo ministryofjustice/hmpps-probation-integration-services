@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.entity
 import jakarta.persistence.*
 import org.hibernate.annotations.SQLRestriction
 import org.springframework.data.jpa.repository.JpaRepository
+import uk.gov.justice.digital.hmpps.model.OfficeAddress
 import java.time.LocalDate
 
 @Entity
@@ -24,6 +25,19 @@ class OfficeLocation(
     @ManyToOne
     @JoinColumn(name = "probation_area_id")
     val probationArea: ProbationArea,
+)
+
+fun OfficeLocation.toAddress() = OfficeAddress(
+    id,
+    null,
+    description,
+    buildingName,
+    buildingNumber,
+    streetName,
+    townCity,
+    district,
+    county,
+    postcode,
 )
 
 interface OfficeLocationRepository : JpaRepository<OfficeLocation, Long> {
