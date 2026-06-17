@@ -25,10 +25,6 @@ outputs:
 runs:
   using: composite
   steps:
-    - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
-      with:
-        path: template-${{ inputs.environment }}
-
     - id: project_name
       shell: bash # language=bash
       run: echo "with_underscores_uppercase=$(echo "$project_name" | sed 's/-/_/g' | tr '[:lower:]' '[:upper:]')" | tee -a "$GITHUB_OUTPUT"
@@ -51,7 +47,7 @@ runs:
     - name: Render Terraform queue template
       shell: bash # language=bash
       run: |
-        sed 's/SERVICE_NAME_UPPERCASE/${{ steps.project_name.outputs.with_underscores_uppercase }}/g;s/SERVICE_NAME/'"$project_name"'/g' "template-$environment/templates/sqs.tf" > "namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-$environment/resources/${project_name}-queue.tf"
+        sed 's/SERVICE_NAME_UPPERCASE/${{ steps.project_name.outputs.with_underscores_uppercase }}/g;s/SERVICE_NAME/'"$project_name"'/g' "${GITHUB_ACTION_PATH}/../../../templates/sqs.tf" > "namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-$environment/resources/${project_name}-queue.tf"
         sed -i '/queue = \[/a \      module.'"$project_name"'-queue.sqs_arn,' "namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-$environment/resources/iam.tf"
         sed -i '/dlq = \[/a \      module.'"$project_name"'-dlq.sqs_arn,' "namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-$environment/resources/iam.tf"
       env:
@@ -66,4 +62,3 @@ runs:
         branch: ${{ inputs.issue_number }}-create-${{ inputs.project_name }}-queue-${{ inputs.environment }}
         commit-message: ${{ inputs.issue_number }} Create SQS queues for ${{ inputs.project_name }} (${{ inputs.environment }})
         token: ${{ steps.app-token.outputs.token }}
-        labels: bootstrap
