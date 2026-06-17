@@ -67,7 +67,9 @@ runs:
         add_paths: ${{ inputs.add-paths }}
 
     - name: Check token length
-      run: echo "$token" | wc -l
+      run: |
+        echo "Length = "
+        echo "$token" | wc -c
       shell: bash
       env:
         token: ${{ inputs.token }}
