@@ -64,5 +64,42 @@ internal class SentenceComplianceMappingTest {
         assertThat(res.currentBreaches, equalTo(2))
         assertThat(res.failureToComplyCount, equalTo(0))
     }
+
+    @Test
+    fun `counts only inactive recalls as prior recalls on current order`() {
+        val recallType = NsiType(code = "REC", description = "Recall", id = 2)
+        val status = NsiStatus(id = 1, code = "STATUS", description = "Status")
+
+        val priorRecall = Nsi(
+            personId = 1,
+            type = recallType,
+            eventId = 99,
+            actualStartDate = LocalDate.now().minusDays(5),
+            expectedStartDate = null,
+            nsiStatus = status,
+            id = 3,
+            lastUpdated = ZonedDateTime.now(),
+            active = false,
+        )
+        val activeRecall = Nsi(
+            personId = 1,
+            type = recallType,
+            eventId = 99,
+            actualStartDate = LocalDate.now().minusDays(1),
+            expectedStartDate = null,
+            nsiStatus = status,
+            id = 4,
+            lastUpdated = ZonedDateTime.now(),
+            active = true,
+        )
+
+        val res = toSentenceCompliance(
+            activities = emptyList(),
+            breaches = emptyList(),
+            recalls = listOf(priorRecall, activeRecall)
+        )
+
+        assertThat(res.priorRecallsOnCurrentOrderCount, equalTo(1))
+    }
 }
 
