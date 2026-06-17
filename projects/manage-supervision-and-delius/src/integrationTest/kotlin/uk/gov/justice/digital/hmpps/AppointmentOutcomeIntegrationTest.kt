@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps
 
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
+import org.hamcrest.Matchers.nullValue
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.any
@@ -64,6 +65,7 @@ class AppointmentOutcomeIntegrationTest : IntegrationTestBase() {
         assertNull(createdAppointment.notes)
         assertNull(createdAppointment.outcomeId)
         assertNull(createdAppointment.sensitive)
+        assertThat(createdAppointment.enforcementFlag, equalTo(true))
 
         val request = Outcome(response.appointments[0].id, true, "my notes", true)
 
@@ -90,6 +92,7 @@ class AppointmentOutcomeIntegrationTest : IntegrationTestBase() {
         assertThat(updatedAppointment.staffId, equalTo(createdAppointment.staffId))
         assertThat(updatedAppointment.probationAreaId, equalTo(createdAppointment.probationAreaId))
         assertThat(updatedAppointment.officeLocationId, equalTo(createdAppointment.officeLocationId))
+        assertThat(updatedAppointment.enforcementFlag, nullValue())
 
         //should be 2 visor domain events, one for the creation of the appt, and one for the outcome recording
         verify(notifier, times(1)).contactCreated(

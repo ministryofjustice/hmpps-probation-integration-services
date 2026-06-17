@@ -8,7 +8,6 @@ import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.USER
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.generateOutcome
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.integrations.delius.appointment.AppointmentOutcome
-import uk.gov.justice.digital.hmpps.integrations.delius.appointment.AppointmentProvider
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.ContactOutcome
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.ContactType
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.Person
@@ -22,6 +21,7 @@ object AppointmentGenerator {
     val APPOINTMENT_TYPES = CreateAppointment.Type.entries.mapNotNull {
         when (it.code) {
             "CODC" -> null
+            "COAP" -> generateType(it.code, attendanceType = true, locationRequired = "Y", contactOutcomeFlag = true)
             "COVC" -> generateType(it.code, attendanceType = true, locationRequired = "Y", contactOutcomeFlag = true)
             "COPT" -> generateType(it.code, attendanceType = true, locationRequired = "B")
             "CHVS" -> generateType(it.code, attendanceType = true, locationRequired = "N")
