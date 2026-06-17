@@ -1,0 +1,9 @@
+database:
+  access:
+    username_key: /warrant-risk-assessment-and-delius/db-username
+    password_key: /warrant-risk-assessment-and-delius/db-password
+
+  audit:
+    username: WarrantRiskAssessmentAndDelius
+    forename: Probation Integration # TODO change this to something meaningful for your service
+    surname: Service

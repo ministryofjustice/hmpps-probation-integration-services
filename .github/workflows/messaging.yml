@@ -45,6 +45,7 @@ on:
           - suicide-risk-form-and-delius-queue
           - community-payback-and-delius-queue
           - cosso-and-delius-queue
+          - warrant-risk-assessment-and-delius-queue
           # ^ add new queues here
 
 jobs:
