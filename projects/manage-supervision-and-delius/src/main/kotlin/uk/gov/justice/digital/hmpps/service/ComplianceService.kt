@@ -94,9 +94,9 @@ class ComplianceService(
                     ),
                 ),
                 compliance = toSentenceCompliance(
-                    sentenceActivity(eventNumber),
-                    breachesForSentence(id),
-                    recallsForSentence(id)
+                    activities = sentenceActivity(eventNumber),
+                    breaches = breachesForSentence(id),
+                    recalls = recallsForSentence(id)
                 )
             )
         }

@@ -12,7 +12,7 @@ import java.time.ZonedDateTime
 internal class SentenceComplianceMappingTest {
 
     @Test
-    fun `counts inactive breaches as prior breaches on current order`() {
+    fun `counts inactive breaches and recalls as prior on current order`() {
         val breachType = NsiType(code = "BRE", description = "Breach", id = 1)
         val recallType = NsiType(code = "REC", description = "Recall", id = 2)
         val status = NsiStatus(id = 1, code = "STATUS", description = "Status")
