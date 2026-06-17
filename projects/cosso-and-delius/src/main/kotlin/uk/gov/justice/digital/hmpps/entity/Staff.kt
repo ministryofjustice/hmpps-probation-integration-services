@@ -16,7 +16,7 @@ class Staff(
     @ManyToOne
     @JoinColumn(name = "title_id")
     val title: ReferenceData? = null
-    )
+)
 
 fun Staff.name() = Name(forename, middleName, surname)
 
