@@ -110,6 +110,7 @@ jobs:
             projects/${{ inputs.project_name }}
           branch: bootstrap/${{ inputs.project_name }}
           commit-message: ${{ inputs.issue_number }} Create initial project for ${{ inputs.project_name }}
+          labels: bootstrap
           token: ${{ steps.app-token.outputs.token }}
 
       - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
@@ -155,6 +156,7 @@ jobs:
           add-paths: .github/workflows
           branch: ${{ inputs.issue_number }}-create-${{ inputs.project_name }}-project
           commit-message: ${{ inputs.issue_number }} Add option to run tests for ${{ inputs.project_name }}
+          labels: bootstrap
           token: ${{ steps.app-token.outputs.token }}
 
   issue-for-project-setup:
@@ -319,6 +321,8 @@ jobs:
           issue_number: ${{ inputs.issue_number }}
           project_name: ${{ inputs.project_name }}
           environment: dev
+          app-client-id: ${{ secrets.BOT_EXTERNAL_REPOS_APP_ID }}
+          app-private-key: ${{ secrets.BOT_EXTERNAL_REPOS_APP_PRIVATE_KEY }}
 
   sqs-queue-setup-preprod:
     runs-on: ubuntu-latest
@@ -336,6 +340,8 @@ jobs:
           issue_number: ${{ inputs.issue_number }}
           project_name: ${{ inputs.project_name }}
           environment: preprod
+          app-client-id: ${{ secrets.BOT_EXTERNAL_REPOS_APP_ID }}
+          app-private-key: ${{ secrets.BOT_EXTERNAL_REPOS_APP_PRIVATE_KEY }}
 
   sqs-queue-setup-prod:
     runs-on: ubuntu-latest
@@ -353,6 +359,8 @@ jobs:
           issue_number: ${{ inputs.issue_number }}
           project_name: ${{ inputs.project_name }}
           environment: prod
+          app-client-id: ${{ secrets.BOT_EXTERNAL_REPOS_APP_ID }}
+          app-private-key: ${{ secrets.BOT_EXTERNAL_REPOS_APP_PRIVATE_KEY }}
 
   issue-for-sqs-queue-setup:
     runs-on: ubuntu-latest
@@ -400,6 +408,8 @@ jobs:
           issue_number: ${{ inputs.issue_number }}
           project_name: ${{ inputs.project_name }}
           environment: dev
+          app-client-id: ${{ secrets.BOT_EXTERNAL_REPOS_APP_ID }}
+          app-private-key: ${{ secrets.BOT_EXTERNAL_REPOS_APP_PRIVATE_KEY }}
 
   infra-setup-preprod:
     runs-on: ubuntu-latest
@@ -417,6 +427,8 @@ jobs:
           issue_number: ${{ inputs.issue_number }}
           project_name: ${{ inputs.project_name }}
           environment: preprod
+          app-client-id: ${{ secrets.BOT_EXTERNAL_REPOS_APP_ID }}
+          app-private-key: ${{ secrets.BOT_EXTERNAL_REPOS_APP_PRIVATE_KEY }}
 
   infra-setup-prod:
     runs-on: ubuntu-latest
@@ -434,6 +446,8 @@ jobs:
           issue_number: ${{ inputs.issue_number }}
           project_name: ${{ inputs.project_name }}
           environment: prod
+          app-client-id: ${{ secrets.BOT_EXTERNAL_REPOS_APP_ID }}
+          app-private-key: ${{ secrets.BOT_EXTERNAL_REPOS_APP_PRIVATE_KEY }}
 
   issue-for-infra-setup:
     runs-on: ubuntu-latest

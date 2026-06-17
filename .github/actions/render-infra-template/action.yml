@@ -11,6 +11,12 @@ inputs:
   environment:
     description: Namespace suffix e.g. dev
     required: true
+  app-client-id:
+    description: App ID
+    required: true
+  app-private-key:
+    description: App private key
+    required: true
 outputs:
   pull-request-url:
     description: URL of the pull request created
@@ -19,9 +25,13 @@ outputs:
 runs:
   using: composite
   steps:
+    - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+      with:
+        path: template-${{ inputs.environment }}
+
     - id: project_name
       shell: bash # language=bash
-      run: echo "with_underscores_uppercase=$(echo "$project_name" | sed 's/-/_/g' | tr '[:lower:]' '[:upper:]')" | tee -a "$GITHUB_OUTPUT"
+      run: echo "hash=$(echo -n $project_name | sha1sum | head -c 8)" | tee -a "$GITHUB_OUTPUT"
       env:
         project_name: ${{ inputs.project_name }}
 
@@ -30,17 +40,12 @@ runs:
       with:
         owner: ministryofjustice
         repositories: cloud-platform-environments
-        client-id: ${{ secrets.BOT_EXTERNAL_REPOS_APP_ID }}
-        private-key: ${{ secrets.BOT_EXTERNAL_REPOS_APP_PRIVATE_KEY }}
+        client-id: ${{ inputs.app-client-id }}
+        private-key: ${{ inputs.app-private-key }}
 
     - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
       with:
         repository: ministryofjustice/cloud-platform-environments
-        token: ${{ steps.app-token.outputs.token }}
-
-    - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
-      with:
-        path: template-${{ inputs.environment }}
         token: ${{ steps.app-token.outputs.token }}
 
     - name: Add Pingdom check
@@ -56,7 +61,7 @@ runs:
         sed 's/$SERVICE_NAME/'"${project_name}"'/g;
              s/$SERVICE_URL/'"${project_name}-${environment}"'.hmpps.service.justice.gov.uk/g;
              s/$SERVICE_SHORT_URL/'"${project_name_hash}-${environment}"'.hmpps.service.justice.gov.uk/g;
-             s/$ENV/'"${environment}"'/g' \ 
+             s/$ENV/'"${environment}"'/g' \
           "template-${environment}/templates/certificate.yml" >> "namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-$environment/05-certificates.yml"
       env:
         project_name: ${{ inputs.project_name }}
@@ -71,3 +76,4 @@ runs:
         branch: ${{ inputs.issue_number }}-create-${{ inputs.project_name }}-infra-${{ inputs.environment }}
         commit-message: ${{ inputs.issue_number }} Create certificate for ${{ inputs.project_name }} (${{ inputs.environment }})
         token: ${{ steps.app-token.outputs.token }}
+        labels: bootstrap
