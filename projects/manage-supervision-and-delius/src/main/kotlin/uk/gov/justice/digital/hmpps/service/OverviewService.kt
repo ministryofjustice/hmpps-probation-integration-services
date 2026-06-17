@@ -50,7 +50,8 @@ class OverviewService(
         val previousOrders = events.filter { it.isInactiveEvent() }
         val previousOrdersBreached =
             allBreaches.filter { breach -> breach.eventId in previousOrders.map { it.id } }.size
-        val compliance = toSentenceCompliance(previousAppointments.map { it.toActivityOverview() }, allBreaches, allRecalls)
+        val compliance =
+            toSentenceCompliance(previousAppointments.map { it.toActivityOverview() }, allBreaches, allRecalls)
         val registrations = registrationRepository.findByPersonId(person.id)
         val mappa = riskFlagRepository.findActiveMappaRegistrationByOffenderId(person.id, PageRequest.of(0, 1))
             .firstOrNull()

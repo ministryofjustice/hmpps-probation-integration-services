@@ -93,7 +93,11 @@ class ComplianceService(
                         eventNumber
                     ),
                 ),
-                compliance = toSentenceCompliance(sentenceActivity(eventNumber), breachesForSentence(id), recallsForSentence(id))
+                compliance = toSentenceCompliance(
+                    sentenceActivity(eventNumber),
+                    breachesForSentence(id),
+                    recallsForSentence(id)
+                )
             )
         }
         return PersonCompliance(
