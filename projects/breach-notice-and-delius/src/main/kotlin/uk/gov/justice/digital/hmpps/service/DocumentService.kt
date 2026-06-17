@@ -30,6 +30,7 @@ class DocumentService(
     private val alfrescoUploadClient: AlfrescoUploadClient,
     private val entityManager: EntityManager,
 ) : AuditableService(auditedInteractionService) {
+
     fun uploadDocument(event: HmppsDomainEvent, file: ByteArray) = audit(BusinessInteractionCode.UPLOAD_DOCUMENT) {
         check(file.isPdf()) { "Invalid PDF file: ${event.detailUrl}" }
 
