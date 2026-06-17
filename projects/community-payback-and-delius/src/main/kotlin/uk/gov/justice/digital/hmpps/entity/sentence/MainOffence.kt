@@ -11,7 +11,6 @@ import jakarta.persistence.Table
 import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.NumericBooleanConverter
 import org.springframework.data.jpa.repository.JpaRepository
-import uk.gov.justice.digital.hmpps.utils.Extensions.reportMissing
 import java.time.LocalDate
 
 @Entity
@@ -60,5 +59,5 @@ interface MainOffenceRepository : JpaRepository<MainOffence, Long> {
     fun findByEventIdIn(eventIds: Collection<Long>): List<MainOffence>
 
     fun getByEventIdIn(eventIds: Collection<Long>) =
-        findByEventIdIn(eventIds).associateBy { it.event.id }.reportMissing(eventIds.toSet())
+        findByEventIdIn(eventIds).associateBy { it.event.id }
 }

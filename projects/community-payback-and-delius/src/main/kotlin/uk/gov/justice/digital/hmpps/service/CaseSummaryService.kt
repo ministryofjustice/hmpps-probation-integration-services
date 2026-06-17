@@ -85,7 +85,7 @@ class CaseSummaryService(
                 }
             )
         }
-        return UnpaidWorkDetails(case, upwMinutes)
+        return UnpaidWorkDetails(case, upwMinutes.sortedBy { it.eventNumber })
     }
 
     private fun getLaoStatus(crn: String, username: String?) =
