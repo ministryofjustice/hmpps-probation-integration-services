@@ -2,6 +2,15 @@ database:
   access:
     username_key: /warrant-risk-assessment-and-delius/db-username
     password_key: /warrant-risk-assessment-and-delius/db-password
+    tables:
+      - audited_interaction
+      - offender
+      - offender_address
+      - r_standard_reference_list
+      - personal_contact
+      - address
+      - contact
+      - r_contact_type
 
   audit:
     username: WarrantRiskAssessmentAndDelius

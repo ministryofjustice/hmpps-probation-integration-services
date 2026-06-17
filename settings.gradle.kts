@@ -63,6 +63,7 @@ include(
     "tier-to-delius",
     "unpaid-work-and-delius",
     "workforce-allocations-to-delius",
+    "warrant-risk-assessment-and-delius",
     "libs:appointments",
     "libs:audit",
     "libs:commons",
