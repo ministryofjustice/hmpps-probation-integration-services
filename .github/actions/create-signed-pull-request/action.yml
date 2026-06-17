@@ -66,6 +66,12 @@ runs:
       env:
         add_paths: ${{ inputs.add-paths }}
 
+    - name: Check token length
+      run: echo "$token" | wc -l
+      shell: bash
+      env:
+        token: ${{ inputs.token }}
+
     - name: Commit and push
       uses: grafana/github-api-commit-action@b1d81091e8480dd11fcea8bc1f0ab977a0376ca5 # v1.0.0
       with:
@@ -73,6 +79,8 @@ runs:
         create-branch-on-remote: true
         success-if-no-changes: true
         token: ${{ inputs.token }}
+      env:
+        GH_TOKEN: ${{ inputs.token }}
 
     - name: Create pull request
       id: pr
