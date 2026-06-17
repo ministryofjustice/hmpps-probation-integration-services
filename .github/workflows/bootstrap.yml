@@ -173,7 +173,7 @@ jobs:
             --title "$issue_number Complete project setup for $project_name" \
             --body '
           - [ ] Merge project pull request: ${{ needs.project-setup.outputs.pull-request-url }}
-          - [ ] Merge e2e tests pull request: ${{ steps.e2e-test-setup.outputs.pull-request-url }}' \
+          - [ ] Merge e2e tests pull request: ${{ needs.e2e-test-setup.outputs.pull-request-url }}' \
             --label bootstrap
         env:
           issue_number: ${{ inputs.issue_number }}
@@ -452,9 +452,9 @@ jobs:
             --title "$issue_number Complete infrastructure setup for $project_name" \
             --body '
           - [ ] Request approval in [#ask-cloud-platform](https://mojdt.slack.com/archives/C57UPMZLY) for the following pull requests
-          > ${{ steps.dev-pr.outputs.pull-request-url }}
-          > ${{ steps.preprod-pr.outputs.pull-request-url }}
-          > ${{ steps.prod-pr.outputs.pull-request-url }}
+          > ${{ needs.infra-setup-dev.outputs.pull-request-url }}
+          > ${{ needs.infra-setup-preprod.outputs.pull-request-url }}
+          > ${{ needs.infra-setup-prod.outputs.pull-request-url }}
           - [ ] Merge the pull requests' \
             --label bootstrap
         env:
