@@ -8,6 +8,7 @@ import uk.gov.justice.digital.hmpps.api.model.overview.*
 import uk.gov.justice.digital.hmpps.api.model.overview.Offence
 import uk.gov.justice.digital.hmpps.integrations.delius.compliance.NsiRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.compliance.getAllBreaches
+import uk.gov.justice.digital.hmpps.integrations.delius.compliance.getAllRecalls
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.Disability
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.PersonalCircumstance
@@ -45,10 +46,11 @@ class OverviewService(
         val activeEvents = events.filter { !it.isInactiveEvent() }
         val sentences = activeEvents.map { it.toSentence() }
         val allBreaches = nsiRepository.getAllBreaches(person.id)
+        val allRecalls = nsiRepository.getAllRecalls(person.id)
         val previousOrders = events.filter { it.isInactiveEvent() }
         val previousOrdersBreached =
             allBreaches.filter { breach -> breach.eventId in previousOrders.map { it.id } }.size
-        val compliance = toSentenceCompliance(previousAppointments.map { it.toActivityOverview() }, allBreaches)
+        val compliance = toSentenceCompliance(previousAppointments.map { it.toActivityOverview() }, allBreaches, allRecalls)
         val registrations = registrationRepository.findByPersonId(person.id)
         val mappa = riskFlagRepository.findActiveMappaRegistrationByOffenderId(person.id, PageRequest.of(0, 1))
             .firstOrNull()

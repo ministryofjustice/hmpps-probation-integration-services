@@ -11,6 +11,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.compliance.Nsi
 import uk.gov.justice.digital.hmpps.integrations.delius.compliance.NsiRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.compliance.getActiveRecallNsi
 import uk.gov.justice.digital.hmpps.integrations.delius.compliance.getAllBreaches
+import uk.gov.justice.digital.hmpps.integrations.delius.compliance.getAllRecalls
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.*
 import java.time.LocalDate
 
@@ -38,13 +39,18 @@ class ComplianceService(
         val allActiveSentenceActivity =
             activityService.getPersonSentenceActivity(summary.id, currentSentences.map { it.id }, months)
         val allBreaches = nsiRepository.getAllBreaches(summary.id)
+        val allRecalls = nsiRepository.getAllRecalls(summary.id)
         val windowedBreaches = if (cutoff != null) {
             allBreaches.filter { it.startDate()?.let { d -> !d.isBefore(cutoff) } == true }
         } else allBreaches
+        val windowedRecalls = if (cutoff != null) {
+            allRecalls.filter { it.startDate()?.let { d -> !d.isBefore(cutoff) } == true }
+        } else allRecalls
         val previousOrders = events.filter { it.isInactiveEvent() }
         val recallNsi = nsiRepository.getActiveRecallNsi(summary.id)
 
         fun breachesForSentence(eventId: Long) = windowedBreaches.filter { it.eventId == eventId }
+        fun recallsForSentence(eventId: Long) = windowedRecalls.filter { it.eventId == eventId }
         fun activeBreachCountForSentence(eventId: Long) =
             allBreaches.firstOrNull { it.eventId == eventId && it.active }
 
@@ -87,7 +93,7 @@ class ComplianceService(
                         eventNumber
                     ),
                 ),
-                compliance = toSentenceCompliance(sentenceActivity(eventNumber), breachesForSentence(id))
+                compliance = toSentenceCompliance(sentenceActivity(eventNumber), breachesForSentence(id), recallsForSentence(id))
             )
         }
         return PersonCompliance(
@@ -185,10 +191,11 @@ fun toActivityCounts(activities: List<Activity>) = ActivityCount(
     acceptableAbsenceCount = activities.count { it.isPastAppointment && it.wasAbsent == true && it.acceptableAbsence == true },
 )
 
-fun toSentenceCompliance(activities: List<Activity>, breaches: List<Nsi>) = Compliance(
+fun toSentenceCompliance(activities: List<Activity>, breaches: List<Nsi>, recalls: List<Nsi>) = Compliance(
     breachStarted = breaches.count { it.active } > 0,
     breachesOnCurrentOrderCount = breaches.count { it.active },
     priorBreachesOnCurrentOrderCount = breaches.count { !it.active },
+    priorRecallsOnCurrentOrderCount = recalls.count { !it.active },
     currentBreaches = breaches.count(),
     failureToComplyCount = activities.count { it.isPastAppointment && it.didTheyComply == false }
 )

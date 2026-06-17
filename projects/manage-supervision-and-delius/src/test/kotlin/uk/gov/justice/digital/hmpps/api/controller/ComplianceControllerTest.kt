@@ -46,7 +46,7 @@ internal class ComplianceControllerTest {
         val breach = Breach(LocalDate.now(), "A Breach")
         val activeRecall = Breach(LocalDate.now(), "Recall NSI")
         val activityCount = ActivityCount(1, 0, 1, 0, 1, 1, 1, 2, 4, 1, 0, 1)
-        val compliance = Compliance(1, true, 1, 1, 2)
+        val compliance = Compliance(1, true, 1, 0, 1, 2)
         val sentenceCompliance = SentenceCompliance(
             eventNumber = "3",
             mainOffence = mainOffence,

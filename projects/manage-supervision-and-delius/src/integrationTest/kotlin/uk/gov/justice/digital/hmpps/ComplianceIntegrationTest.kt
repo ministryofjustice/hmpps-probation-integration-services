@@ -35,6 +35,7 @@ class ComplianceIntegrationTest : IntegrationTestBase() {
         assertThat(res.currentSentences[1].activeRecall?.status, equalTo("Standard"))
         assertThat(res.currentSentences[1].compliance.breachStarted, equalTo(true))
         assertThat(res.currentSentences[1].compliance.currentBreaches, equalTo(1))
+        assertThat(res.currentSentences[1].compliance.priorBreachesOnCurrentOrderCount, equalTo(0))
         assertThat(res.currentSentences[1].activity.waitingForEvidenceCount, equalTo(0))
         assertThat(res.currentSentences[1].activity.compliedAppointmentsCount, equalTo(2))
         assertThat(res.currentSentences[1].activity.outcomeNotRecordedCount, equalTo(2))
