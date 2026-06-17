@@ -73,7 +73,7 @@ class CaseSummaryService(
                     code = mainOffence.offence.code,
                     description = mainOffence.offence.description
                 ),
-                unpaidWorkRequirements = disposal.requirements.mapNotNull { requirement ->
+                unpaidWorkRequirements = disposal.upwRequirements.mapNotNull { requirement ->
                     requirement.requirementSubCategory?.let {
                         RequirementSubType(
                             CodeDescription(

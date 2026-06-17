@@ -34,7 +34,10 @@ class Disposal(
     @Column(columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean = false,
-)
+) {
+    val upwRequirements: List<Requirement>
+        get() = requirements.filter { it.requirementMainCategory?.code == "W" }
+}
 
 @Entity
 @Immutable
