@@ -4,8 +4,8 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.api.model.appointment.Outcome
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
-import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.SentenceAppointmentRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.ContactTypeOutcomeRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.SentenceAppointmentRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.getByTypeIdAndOutcomeCode
 import uk.gov.justice.digital.hmpps.messaging.EventType
 import uk.gov.justice.digital.hmpps.messaging.Notifier
@@ -30,6 +30,7 @@ class AppointmentOutcomeService(
                     contactTypeOutcomeRepository.getByTypeIdAndOutcomeCode(appointment.type.id, "ATTC")
                 attended = "Y"
                 complied = "Y"
+                enforcementFlag = null
                 outcomeId = contactTypeOutcome.outcome.id
             }
             notes = listOfNotNull(notes, outcome.notes).joinToString(System.lineSeparator())

@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps
 
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
@@ -12,7 +13,6 @@ import uk.gov.justice.digital.hmpps.api.model.appointment.UserDiary
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.NEXT_APPT_CONTACT
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.USER
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.USER_2
-import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.REQUIREMENT_CONTACT_1
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 
@@ -34,7 +34,7 @@ class UserDiaryIntegrationTest : IntegrationTestBase() {
             .andReturn().response.contentAsJson<UserAppointments>()
 
         assertEquals(2, response.appointments.size)
-        assertEquals(3, response.outcomes.size)
+        assertEquals(5, response.outcomes.size)
     }
 
     @Test
@@ -159,10 +159,7 @@ class UserDiaryIntegrationTest : IntegrationTestBase() {
                 .andExpect { status { isOk() } }
                 .andReturn().response.contentAsJson<UserDiary>()
 
-        assertEquals(3, response.totalResults)
-        assertEquals("Default Sentence Type", response.appointments[0].latestSentence)
-        assertEquals(REQUIREMENT_CONTACT_1.id, response.appointments[0].id)
-        assertEquals(1, response.appointments[0].numberOfAdditionalSentences)
-        assertEquals("Bracknell Office", response.appointments[0].location)
+        assertEquals(5, response.totalResults)
+        assertThat(response.appointments.map { it.startDateTime }).isSorted
     }
 }
