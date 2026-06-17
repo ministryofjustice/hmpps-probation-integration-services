@@ -22,7 +22,7 @@ runs:
       shell: bash
       env:
         PR_URL: ${{ github.event.pull_request.html_url }}
-        GITHUB_TOKEN: ${{ inputs.token }}
+        GH_TOKEN: ${{ inputs.token }}
 
     - name: Auto-approve minor or patch versions
       run: gh pr review --approve "$PR_URL"
@@ -30,4 +30,4 @@ runs:
       shell: bash
       env:
         PR_URL: ${{ github.event.pull_request.html_url }}
-        GITHUB_TOKEN: ${{ inputs.token }}
+        GH_TOKEN: ${{ inputs.token }}
