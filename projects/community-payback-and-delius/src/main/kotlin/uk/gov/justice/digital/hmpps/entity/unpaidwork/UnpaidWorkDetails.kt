@@ -57,7 +57,7 @@ class UnpaidWorkDetails(
 )
 
 interface UpwDetailsRepository : JpaRepository<UnpaidWorkDetails, Long> {
-    @EntityGraph(attributePaths = ["disposal.requirements", "disposal.requirements.requirementSubCategory"])
+    @EntityGraph(attributePaths = ["disposal.upwRequirements", "disposal.upwRequirements.requirementSubCategory"])
     @Query(
         """
             select distinct d from UnpaidWorkDetails d
@@ -68,7 +68,7 @@ interface UpwDetailsRepository : JpaRepository<UnpaidWorkDetails, Long> {
     )
     fun findByEventIdIn(eventId: Long): List<UnpaidWorkDetails>
 
-    @EntityGraph(attributePaths = ["disposal.requirements", "disposal.requirements.requirementSubCategory"])
+    @EntityGraph(attributePaths = ["disposal.upwRequirements", "disposal.upwRequirements.requirementSubCategory"])
     @Query(
         """
             select distinct d from UnpaidWorkDetails d

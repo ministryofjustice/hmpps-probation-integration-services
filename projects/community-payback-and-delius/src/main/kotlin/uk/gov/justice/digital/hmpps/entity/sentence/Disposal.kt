@@ -29,15 +29,19 @@ class Disposal(
     val event: Event,
 
     @OneToMany(mappedBy = "disposal")
-    val requirements: List<Requirement> = emptyList(),
+    @SQLRestriction(
+        """exists (
+            select 1 from r_rqmnt_type_main_category mc
+            where mc.rqmnt_type_main_category_id = rqmnt_type_main_category_id
+            and mc.code = 'W'
+        )"""
+    )
+    val upwRequirements: List<Requirement> = emptyList(),
 
     @Column(columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean = false,
-) {
-    val upwRequirements: List<Requirement>
-        get() = requirements.filter { it.requirementMainCategory?.code == "W" }
-}
+)
 
 @Entity
 @Immutable
