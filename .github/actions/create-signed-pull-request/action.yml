@@ -72,7 +72,7 @@ runs:
         commit-message: ${{ inputs.commit-message }}
         create-branch-on-remote: true
         success-if-no-changes: true
-        token: ${{ steps.app-token.outputs.token }}
+        token: ${{ inputs.token }}
 
     - name: Create pull request
       id: pr
