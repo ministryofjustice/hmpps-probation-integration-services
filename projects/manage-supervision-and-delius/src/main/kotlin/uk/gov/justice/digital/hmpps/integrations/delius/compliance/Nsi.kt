@@ -111,4 +111,4 @@ interface NsiRepository : JpaRepository<Nsi, Long> {
 fun NsiRepository.getAllBreaches(personId: Long): List<Nsi> = findByPersonIdAndTypeCode(personId, "BRE")
 fun NsiRepository.getActiveRecallNsi(personId: Long): Nsi? = findByPersonIdAndTypeCodeAndActiveTrue(personId, "REC")
 fun NsiRepository.breachCountForEvents(ids: Set<Long>): Int = countByTypeCodeAndEventIdIn("BRE", ids)
-
+fun NsiRepository.getAllRecalls(personId: Long): List<Nsi> = findByPersonIdAndTypeCode(personId, "REC")
