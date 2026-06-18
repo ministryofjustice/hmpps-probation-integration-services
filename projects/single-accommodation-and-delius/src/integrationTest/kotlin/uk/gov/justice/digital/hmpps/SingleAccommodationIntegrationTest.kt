@@ -316,6 +316,8 @@ internal class SingleAccommodationIntegrationTest @Autowired constructor(
 
         val response = mockMvc.get("/case/${UserGenerator.DEFAULT.username}/${person.crn}") { withToken() }
             .andExpect { status { is2xxSuccessful() } }
+            .andReturn().response.contentAsJson<Case>()
+
         assertThat(response.roshLevel).isNotNull()
         assertThat(response.roshLevel!!.code).isIn("RLRH", "RMRH", "RHRH", "RVHR")
         assertThat(response.roshLevel!!.code).isEqualTo("RHRH")
