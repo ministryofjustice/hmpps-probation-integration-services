@@ -2,7 +2,6 @@ package uk.gov.justice.digital.hmpps.api.model.contact
 
 import uk.gov.justice.digital.hmpps.api.model.Name
 import java.time.LocalDate
-import java.time.LocalDateTime
 import java.time.ZonedDateTime
 
 data class EnforcementContactResponse(

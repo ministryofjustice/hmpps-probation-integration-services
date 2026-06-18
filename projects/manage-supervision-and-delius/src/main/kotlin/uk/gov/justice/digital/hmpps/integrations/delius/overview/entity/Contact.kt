@@ -936,7 +936,7 @@ interface ContactRepository : JpaRepository<Contact, Long> {
         staffId: Long,
         filterDueDate: Int,
         dueDateThreshold: String,
-        cutoff: LocalDate?,
+        cutoff: LocalDateTime?,
         pageable: Pageable
     ): Page<EnforcementAppointment>
 }

@@ -298,14 +298,14 @@ class UserService(
         months: Int
     ): EnforcementContactResponse {
         require(months in 0..120) { "Months must be between 0 and 120" }
-        val cutoff = if (months > 0) LocalDate.now().minusMonths(months.toLong()) else null
-
+        val today = LocalDateTime.now().toLocalDate().atStartOfDay()
+        val cutoff = if (months > 0) today.minusMonths(months.toLong()) else null
         val user = getUser(username)
         return user.staff?.let {
             val contacts = contactRepository.findEnforcementContactsByUser(
                 user.staff.id,
                 if (filterDueDate) 1 else 0,
-                LocalDate.now().plusDays(1).format(DateTimeFormatter.ISO_LOCAL_DATE),
+                today.plusDays(1).format(DateTimeFormatter.ISO_LOCAL_DATE),
                 cutoff,
                 pageable
             )

@@ -449,7 +449,7 @@ internal class UserServiceTest {
 
         service.getEnforcementContacts(username, pageable, filterDueDate = false, months = 0)
 
-        val cutoffCaptor = argumentCaptor<LocalDate?>()
+        val cutoffCaptor = argumentCaptor<LocalDateTime?>()
         verify(contactRepository).findEnforcementContactsByUser(
             anyLong(),
             anyInt(),
@@ -464,7 +464,7 @@ internal class UserServiceTest {
     fun `get enforcement contacts with months over zero sends cutoff date`() {
         val pageable = PageRequest.of(0, 10)
         val username = "user"
-        val expectedCutoff = LocalDate.now().minusMonths(6)
+        val expectedCutoff = LocalDate.now().atStartOfDay().minusMonths(6)
         stubUserAndEnforcementContacts(
             username,
             listOf(
@@ -485,7 +485,7 @@ internal class UserServiceTest {
 
         service.getEnforcementContacts(username, pageable, filterDueDate = false, months = 6)
 
-        val cutoffCaptor = argumentCaptor<LocalDate?>()
+        val cutoffCaptor = argumentCaptor<LocalDateTime?>()
         verify(contactRepository).findEnforcementContactsByUser(
             anyLong(),
             anyInt(),
