@@ -8,6 +8,7 @@ import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedBy
 import org.springframework.data.annotation.LastModifiedDate
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
+import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import uk.gov.justice.digital.hmpps.entity.ReferenceData
@@ -56,9 +57,10 @@ class UnpaidWorkDetails(
 )
 
 interface UpwDetailsRepository : JpaRepository<UnpaidWorkDetails, Long> {
+    @EntityGraph(attributePaths = ["disposal.upwRequirements", "disposal.upwRequirements.requirementSubCategory"])
     @Query(
         """
-            select d from UnpaidWorkDetails d
+            select distinct d from UnpaidWorkDetails d
             where d.disposal.event.id = :eventId
             and d.softDeleted = false
             and d.disposal.softDeleted = false
@@ -66,9 +68,10 @@ interface UpwDetailsRepository : JpaRepository<UnpaidWorkDetails, Long> {
     )
     fun findByEventIdIn(eventId: Long): List<UnpaidWorkDetails>
 
+    @EntityGraph(attributePaths = ["disposal.upwRequirements", "disposal.upwRequirements.requirementSubCategory"])
     @Query(
         """
-            select d from UnpaidWorkDetails d
+            select distinct d from UnpaidWorkDetails d
             where d.disposal.event.id in :eventId
             and d.softDeleted = false
             and d.disposal.softDeleted = false

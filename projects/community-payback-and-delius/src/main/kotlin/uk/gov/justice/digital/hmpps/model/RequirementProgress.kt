@@ -5,3 +5,7 @@ data class RequirementProgress(
     val completedMinutes: Long,
     val adjustments: Long,
 )
+
+data class RequirementSubType(
+    val subType: CodeDescription?
+)

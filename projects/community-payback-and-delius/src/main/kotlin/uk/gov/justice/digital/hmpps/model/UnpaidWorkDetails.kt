@@ -15,11 +15,13 @@ data class UnpaidWorkMinutes(
     val completedMinutes: Long,
     val completedEteMinutes: Long,
     val eventOutcome: String,
+    val eventOutcomeCode: String,
     val upwStatus: String?,
     val referralDate: LocalDate,
     val convictionDate: LocalDate?,
     val court: CodeDescription?,
-    val mainOffence: Offence
+    val mainOffence: Offence,
+    val unpaidWorkRequirements: List<RequirementSubType> = emptyList()
 )
 
 data class Offence(

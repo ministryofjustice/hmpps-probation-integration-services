@@ -56,4 +56,8 @@ class Offence(
 
 interface MainOffenceRepository : JpaRepository<MainOffence, Long> {
     fun findByEventId(eventId: Long): MainOffence?
+    fun findByEventIdIn(eventIds: Collection<Long>): List<MainOffence>
+
+    fun getByEventIdIn(eventIds: Collection<Long>) =
+        findByEventIdIn(eventIds).associateBy { it.event.id }
 }
