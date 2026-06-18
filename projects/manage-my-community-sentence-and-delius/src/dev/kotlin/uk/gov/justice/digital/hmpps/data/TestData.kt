@@ -392,10 +392,6 @@ object TestData {
             LocalDate.of(2050, 1, 1), LocalTime.of(12, 30), LocalTime.of(13, 15),
             attended = false, complied = false,
         )
-        val SENSITIVE_APPOINTMENT = generate(
-            LocalDate.of(2020, 1, 1), LocalTime.of(15, 0), LocalTime.of(15, 30),
-            sensitive = true
-        )
 
         fun generate(
             date: LocalDate,

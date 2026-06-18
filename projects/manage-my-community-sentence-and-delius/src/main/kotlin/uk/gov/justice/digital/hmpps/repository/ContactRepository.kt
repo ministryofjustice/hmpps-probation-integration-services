@@ -13,7 +13,6 @@ interface ContactRepository : JpaRepository<Contact, Long> {
         select c from Contact c
         where c.personId = :personId
           and c.type.attendance = true
-          and (c.sensitive is null or c.sensitive = false)
           and (trunc(c.date, day) > trunc(local_date, day) or
                trunc(c.date, day) = trunc(local_date, day) and to_char(c.startTime, 'HH24:MI') >= to_char(local_time, 'HH24:MI'))
         order by c.date asc, c.startTime asc
@@ -37,7 +36,6 @@ interface ContactRepository : JpaRepository<Contact, Long> {
         select c from Contact c
         where c.personId = :personId
           and c.type.attendance = true
-          and (c.sensitive is null or c.sensitive = false)
           and (trunc(c.date, day) < trunc(local_date, day) or
                trunc(c.date, day) = trunc(local_date, day) and to_char(c.startTime, 'HH24:MI') < to_char(local_time, 'HH24:MI'))
         order by c.date desc, c.startTime desc
