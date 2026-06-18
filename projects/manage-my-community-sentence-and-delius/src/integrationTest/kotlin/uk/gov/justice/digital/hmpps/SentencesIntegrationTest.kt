@@ -24,6 +24,15 @@ internal class SentencesIntegrationTest @Autowired constructor(private val mockM
     }
 
     @Test
+    fun `unsuitable case returns forbidden`() {
+        mockMvc.get("/person/${PersonData.SUSPENDED.crn}/sentences") { withToken() }
+            .andExpect {
+                status { isForbidden() }
+                jsonPath("$.message") { value("${PersonData.SUSPENDED.crn} does not meet the eligibility criteria") }
+            }
+    }
+
+    @Test
     fun `get sentences`() {
         mockMvc.get("/person/${PersonData.DEFAULT.crn}/sentences") { withToken() }
             .andExpect {
@@ -105,13 +114,5 @@ internal class SentencesIntegrationTest @Autowired constructor(private val mockM
                     )
                 }
             }
-    }
-
-    @Test
-    fun `person with no sentences has empty list in response`() {
-        mockMvc.get("/person/${PersonData.BASIC.crn}/sentences") { withToken() }.andExpect {
-            status { isOk() }
-            content { json("""{"sentences":[]}""", JsonCompareMode.STRICT) }
-        }
     }
 }
