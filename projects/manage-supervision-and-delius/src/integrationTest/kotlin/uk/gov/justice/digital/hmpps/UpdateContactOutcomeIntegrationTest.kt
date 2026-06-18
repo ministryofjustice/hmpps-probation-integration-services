@@ -4,6 +4,7 @@ import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers
 import org.hamcrest.Matchers.*
 import org.junit.jupiter.api.Test
+import org.springframework.http.MediaType
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.test.web.servlet.put
 import uk.gov.justice.digital.hmpps.api.model.contact.UpdateContactOutcome
@@ -64,6 +65,44 @@ class UpdateContactOutcomeIntegrationTest : IntegrationTestBase() {
                 alert = false,
                 sensitive = false
             )
+        }.andExpect { status { isBadRequest() } }
+    }
+
+    @Test
+    fun `null outcome code and alert returns bad request`() {
+        mockMvc.put("/contact/${UpdateContactOutcomeGenerator.CONTACT_1.id}") {
+            withToken()
+            contentType = MediaType.APPLICATION_JSON
+            content =
+                """
+                {
+                  "date": "2099-01-01",
+                  "time": "10:00:00",
+                  "outcomeCode": null,
+                  "enforcementActionCode": null,
+                  "notes": "Test notes",
+                  "alert": null,
+                  "sensitive": false
+                }
+                """.trimIndent()
+        }.andExpect { status { isBadRequest() } }
+    }
+
+    @Test
+    fun `missing outcome code and alert returns bad request`() {
+        mockMvc.put("/contact/${UpdateContactOutcomeGenerator.CONTACT_1.id}") {
+            withToken()
+            contentType = MediaType.APPLICATION_JSON
+            content =
+                """
+                {
+                  "date": "2099-01-01",
+                  "time": "10:00:00",
+                  "enforcementActionCode": null,
+                  "notes": "Test notes",
+                  "sensitive": false
+                }
+                """.trimIndent()
         }.andExpect { status { isBadRequest() } }
     }
 
@@ -265,52 +304,6 @@ class UpdateContactOutcomeIntegrationTest : IntegrationTestBase() {
             contactRepository.findByLinkedContactIdOrderByDateDesc(UpdateContactOutcomeGenerator.CONTACT_7.id)
         assertThat(linkedContacts.size, equalTo(2))
         assertThat(linkedContacts.any { it.type.code == ContactLogService.REVIEW_ENFORCEMENT_STATUS }, equalTo(true))
-    }
-
-    @Test
-    fun `null outcome code leaves existing outcome unchanged`() {
-        val originalOutcomeCode =
-            contactRepository.findById(UpdateContactOutcomeGenerator.CONTACT_9.id).get().outcome?.code
-
-        mockMvc.put("/contact/${UpdateContactOutcomeGenerator.CONTACT_9.id}") {
-            withToken()
-            json = UpdateContactOutcome(
-                date = LocalDate.now().plusDays(1),
-                time = LocalTime.of(10, 0),
-                outcomeCode = null,
-                enforcementActionCode = null,
-                notes = "Notes without changing outcome",
-                alert = false,
-                sensitive = false
-            )
-        }.andExpect { status { isOk() } }
-
-        val updated = contactRepository.findById(UpdateContactOutcomeGenerator.CONTACT_9.id).get()
-        assertThat(updated.outcome?.code, equalTo(originalOutcomeCode))
-        assertThat(updated.notes, containsString("Notes without changing outcome"))
-    }
-
-    @Test
-    fun `null alert leaves existing alert state unchanged`() {
-        val before = contactRepository.findById(UpdateContactOutcomeGenerator.CONTACT_10.id).get()
-        assertThat(before.alert, equalTo(true))
-
-        mockMvc.put("/contact/${UpdateContactOutcomeGenerator.CONTACT_10.id}") {
-            withToken()
-            json = UpdateContactOutcome(
-                date = LocalDate.now().plusDays(1),
-                time = LocalTime.of(10, 0),
-                outcomeCode = UpdateContactOutcomeGenerator.OUTCOME.code,
-                enforcementActionCode = null,
-                notes = "Notes without changing alert",
-                alert = null,
-                sensitive = false
-            )
-        }.andExpect { status { isOk() } }
-
-        val updated = contactRepository.findById(UpdateContactOutcomeGenerator.CONTACT_10.id).get()
-        assertThat(updated.alert, equalTo(true))
-        assertThat(updated.notes, containsString("Notes without changing alert"))
     }
 
     @Test
