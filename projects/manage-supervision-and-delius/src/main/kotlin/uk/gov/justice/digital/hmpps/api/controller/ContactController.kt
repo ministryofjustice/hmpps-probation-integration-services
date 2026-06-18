@@ -44,11 +44,13 @@ class ContactController(
         @PathVariable username: String,
         @RequestParam(defaultValue = "0") page: Int,
         @RequestParam(defaultValue = "10") size: Int,
-        @RequestParam(defaultValue = "false") filterDueDate: Boolean
+        @RequestParam(defaultValue = "false") filterDueDate: Boolean,
+        @RequestParam(defaultValue = "0") months: Int
     ) = userService.getEnforcementContacts(
         username,
         PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "contact_date")),
-        filterDueDate
+        filterDueDate,
+        months
     )
 
     @PatchMapping("/{contactId}")

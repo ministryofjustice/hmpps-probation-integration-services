@@ -899,7 +899,8 @@ interface ContactRepository : JpaRepository<Contact, Long> {
                    rtmc.code                as rqmntmaincatcode,
                    rco.description          as outcomedescription,
                    ea.description           as enforcementactiondescription,
-                   enf.response_date        as evidenceduedate
+                   enf.response_date        as evidenceduedate,
+                   enf.last_updated_datetime as lastModifiedDate
             from contact c
             join r_contact_type rct on rct.contact_type_id = c.contact_type_id
             join offender o on o.offender_id = c.offender_id
@@ -911,6 +912,7 @@ interface ContactRepository : JpaRepository<Contact, Long> {
             left join rqmnt r on r.rqmnt_id = c.rqmnt_id
             left join r_rqmnt_type_main_category rtmc on rtmc.rqmnt_type_main_category_id = r.rqmnt_type_main_category_id
             where c.soft_deleted = 0
+            and (:cutoff IS NULL OR enf.last_updated_datetime >= :cutoff)
             and s.staff_id = :staffId
             and c.complied = 'N'
             and (:filterDueDate = 0 or to_char(enf.response_date, 'YYYY-MM-DD') <= :dueDateThreshold)
@@ -923,6 +925,7 @@ interface ContactRepository : JpaRepository<Contact, Long> {
             join caseload cl on s.staff_id = cl.staff_employee_id and c.offender_id = cl.offender_id and (cl.role_code = 'OM')
             join enforcement enf on enf.contact_id = c.contact_id and enf.soft_deleted = 0
             where c.soft_deleted = 0
+            and (:cutoff IS NULL OR enf.last_updated_datetime >= :cutoff)
             and s.staff_id = :staffId
             and c.complied = 'N'
             and (:filterDueDate = 0 or to_char(enf.response_date, 'YYYY-MM-DD') <= :dueDateThreshold)
@@ -933,6 +936,7 @@ interface ContactRepository : JpaRepository<Contact, Long> {
         staffId: Long,
         filterDueDate: Int,
         dueDateThreshold: String,
+        cutoff: LocalDate?,
         pageable: Pageable
     ): Page<EnforcementAppointment>
 }
@@ -978,6 +982,7 @@ interface EnforcementAppointment {
     val outcomeDescription: String?
     val enforcementActionDescription: String?
     val evidenceDueDate: LocalDateTime?
+    val lastModifiedDate: LocalDateTime
 }
 
 interface EnforcementRepository : JpaRepository<Enforcement, Long>
