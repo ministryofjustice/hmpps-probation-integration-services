@@ -9,9 +9,15 @@ data class OffenceDetails(
     val sentencingCourt: String,
     val sentenceDate: LocalDate,
     val sentenceImposed: CodeAndDescription,
+    val suspendedCustodyLength: SuspendedCustodyLength?,
     val requirementsImposed: List<Requirement>,
     val sentence: Sentence,
     val additionalSentences: List<AdditionalSentence>,
+)
+
+data class SuspendedCustodyLength(
+    val length: Int?,
+    val units: String?,
 )
 
 data class Requirement(

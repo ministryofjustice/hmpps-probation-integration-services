@@ -44,6 +44,10 @@ class OffenceDetailsIntegrationTest @Autowired constructor(
               "sentenceImposed": {
                 "code": "PR",
                 "description": "Probation"
+              },              
+              "suspendedCustodyLength": {
+                "length": 2,
+                "units": "Days"
               },
               "requirementsImposed": [
                 {
@@ -64,7 +68,7 @@ class OffenceDetailsIntegrationTest @Autowired constructor(
               "sentence": {
                 "length": 1,
                 "lengthUnits": "Months",
-                "type": "Probation",
+                "type": "CJA - Suspended Sentence Order",
                 "secondLength": 2,
                 "secondLengthUnits": "Days"
               },
