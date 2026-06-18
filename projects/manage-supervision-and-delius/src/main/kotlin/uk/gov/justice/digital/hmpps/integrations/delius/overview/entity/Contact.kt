@@ -892,7 +892,7 @@ interface ContactRepository : JpaRepository<Contact, Long> {
                    o.date_of_birth_date     as dob,
                    c.contact_id             as id,
                    o.crn                    as crn,
-                   c.contact_date           as contact_date,
+                   c.contact_date           as contactDate,
                    rct.description          as contactdescription,
                    rct.code                 as typecode,
                    case when c.complied = 'N' then 0 else 1 end as complied,

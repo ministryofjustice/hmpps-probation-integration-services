@@ -5,6 +5,7 @@ import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.notNullValue
 import org.junit.jupiter.api.Test
 import org.springframework.test.web.servlet.get
+import uk.gov.justice.digital.hmpps.advice.ErrorResponse
 import uk.gov.justice.digital.hmpps.api.model.contact.EnforcementContactResponse
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.USER
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.USER_2
@@ -83,5 +84,40 @@ class EnforcementContactIntegrationTest : IntegrationTestBase() {
                     .executeUpdate()
             }
         }
+    }
+
+    @Test
+    fun `enforcement contacts can be sorted by last modified date desc`() {
+        val response = mockMvc.get("/contact/${USER.username}/enforcements?months=0&sortBy=lastModifiedDate&direction=DESC") { withToken() }
+            .andExpect { status { isOk() } }
+            .andReturn().response.contentAsJson<EnforcementContactResponse>()
+
+        val isDescending = response.enforcementContacts
+            .zipWithNext()
+            .all { (current, next) -> !current.lastModifiedDate.isBefore(next.lastModifiedDate) }
+
+        assertThat(isDescending, equalTo(true))
+    }
+
+    @Test
+    fun `enforcement contacts can be sorted by contact date`() {
+        val response = mockMvc.get("/contact/${USER.username}/enforcements?months=0&sortBy=contactDate") { withToken() }
+            .andExpect { status { isOk() } }
+            .andReturn().response.contentAsJson<EnforcementContactResponse>()
+
+        val isDescending = response.enforcementContacts
+            .zipWithNext()
+            .all { (current, next) -> !current.appointmentDate.isBefore(next.appointmentDate) }
+
+        assertThat(isDescending, equalTo(true))
+    }
+
+    @Test
+    fun `unsupported enforcement sort field returns bad request`() {
+        val response = mockMvc.get("/contact/${USER.username}/enforcements?months=0&sortBy=unsupported") { withToken() }
+            .andExpect { status { isBadRequest() } }
+            .andReturn().response.contentAsJson<ErrorResponse>()
+
+        assertThat(response.message, equalTo("Sort by unsupported is not implemented"))
     }
 }
