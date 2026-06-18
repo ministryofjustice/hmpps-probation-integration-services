@@ -88,9 +88,10 @@ class EnforcementContactIntegrationTest : IntegrationTestBase() {
 
     @Test
     fun `enforcement contacts can be sorted by last modified date desc`() {
-        val response = mockMvc.get("/contact/${USER.username}/enforcements?months=0&sortBy=lastModifiedDate&direction=DESC") { withToken() }
-            .andExpect { status { isOk() } }
-            .andReturn().response.contentAsJson<EnforcementContactResponse>()
+        val response =
+            mockMvc.get("/contact/${USER.username}/enforcements?months=0&sortBy=lastModifiedDate&direction=DESC") { withToken() }
+                .andExpect { status { isOk() } }
+                .andReturn().response.contentAsJson<EnforcementContactResponse>()
 
         val isDescending = response.enforcementContacts
             .zipWithNext()
