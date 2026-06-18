@@ -316,16 +316,14 @@ internal class SingleAccommodationIntegrationTest @Autowired constructor(
 
         val response = mockMvc.get("/case/${UserGenerator.DEFAULT.username}/${person.crn}") { withToken() }
             .andExpect { status { is2xxSuccessful() } }
-            .andReturn().response.contentAsJson<Case>()
-
-        assertThat(response.roshLevel).isNotNull
+        assertThat(response.roshLevel).isNotNull()
         assertThat(response.roshLevel!!.code).isIn("RLRH", "RMRH", "RHRH", "RVHR")
         assertThat(response.roshLevel!!.code).isEqualTo("RHRH")
         assertThat(response.roshLevel!!.description).isEqualTo("High RoSH")
     }
 
     @Test
-    fun `roshLevel is null when person only has non-RoSH registrations`() {
+    fun `roshLevel is null when person has no RoSH registrations`() {
         val person = PersonGenerator.TEAM
 
         val response = mockMvc.get("/case/${UserGenerator.DEFAULT.username}/${person.crn}") { withToken() }
