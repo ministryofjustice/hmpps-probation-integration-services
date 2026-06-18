@@ -24,6 +24,20 @@ internal class AppointmentIntegrationTest @Autowired constructor(private val moc
     }
 
     @Test
+    fun `unsuitable case returns forbidden`() {
+        mockMvc.get("/person/${PersonData.SUSPENDED.crn}/future-appointments") { withToken() }
+            .andExpect {
+                status { isForbidden() }
+                jsonPath("$.message") { value("${PersonData.SUSPENDED.crn} does not meet the eligibility criteria") }
+            }
+        mockMvc.get("/person/${PersonData.SUSPENDED.crn}/past-appointments") { withToken() }
+            .andExpect {
+                status { isForbidden() }
+                jsonPath("$.message") { value("${PersonData.SUSPENDED.crn} does not meet the eligibility criteria") }
+            }
+    }
+
+    @Test
     fun `get future appointments`() {
         mockMvc.get("/person/${PersonData.DEFAULT.crn}/future-appointments") { withToken() }
             .andExpect {
@@ -38,7 +52,6 @@ internal class AppointmentIntegrationTest @Autowired constructor(private val moc
                               "startTime": "09:00:00",
                               "endTime": "09:30:00",
                               "type": "Office Appointment",
-                              "description": "Future appointment",
                               "practitioner": {
                                 "name": {
                                   "forename": "Test",
@@ -62,7 +75,6 @@ internal class AppointmentIntegrationTest @Autowired constructor(private val moc
                               "startTime": "12:00:00",
                               "endTime": "13:30:00",
                               "type": "Office Appointment",
-                              "description": "Future appointment - no location",
                               "practitioner": {
                                 "name": {
                                   "forename": "Test",
@@ -77,7 +89,6 @@ internal class AppointmentIntegrationTest @Autowired constructor(private val moc
                               "startTime": "12:30:00",
                               "endTime": "13:15:00",
                               "type": "Office Appointment",
-                              "description": "Future UPW Appointment",
                               "practitioner": {
                                 "name": {
                                   "forename": "Test",
@@ -152,7 +163,6 @@ internal class AppointmentIntegrationTest @Autowired constructor(private val moc
                               "startTime": "15:00:00",
                               "endTime": "15:30:00",
                               "type": "Office Appointment",
-                              "description": "Past appointment - attended",
                               "practitioner": {
                                 "name": {
                                   "forename": "Test",
@@ -179,7 +189,6 @@ internal class AppointmentIntegrationTest @Autowired constructor(private val moc
                               "startTime": "12:30:00",
                               "endTime": "13:15:00",
                               "type": "Office Appointment",
-                              "description": "Past UPW Appointment",
                               "practitioner": {
                                 "name": {
                                   "forename": "Test",
@@ -229,7 +238,6 @@ internal class AppointmentIntegrationTest @Autowired constructor(private val moc
                               "startTime": "10:00:00",
                               "endTime": "10:45:00",
                               "type": "Office Appointment",
-                              "description": "Past appointment - not attended",
                               "practitioner": {
                                 "name": {
                                   "forename": "Test",
@@ -280,7 +288,6 @@ internal class AppointmentIntegrationTest @Autowired constructor(private val moc
                               "startTime": "12:00:00",
                               "endTime": "13:30:00",
                               "type": "Office Appointment",
-                              "description": "Future appointment - no location",
                               "practitioner": {
                                 "name": {
                                   "forename": "Test",

@@ -14,4 +14,5 @@ class DisposalType(
     @Column(name = "disposal_type_id")
     val id: Long,
     val description: String,
+    val sentenceType: String? = null,
 )
