@@ -43,6 +43,10 @@ class OffenceService(
             sentencingCourt = courtAppearance.court.courtName,
             sentenceDate = disposal.disposalDate,
             sentenceImposed = CodeAndDescription(courtAppearance.outcome.code, courtAppearance.outcome.description),
+            suspendedCustodyLength = SuspendedCustodyLength(
+                length = disposal.length2,
+                units = disposal.length2Units?.description
+            ).takeIf { disposal.disposalType.isSuspendedSentenceOrder },
             requirementsImposed = getRequirements(disposal.id),
             sentence = getSentence(disposal),
             additionalSentences = getAdditionalSentences(additionalSentences)

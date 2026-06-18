@@ -43,8 +43,22 @@ class DisposalType(
     @Column(name = "disposal_type_id")
     val id: Long,
     @Column(name = "description")
-    val description: String
+    val description: String,
+    @Column(name = "disposal_type_code")
+    val code: String,
 )
+
+enum class SuspendedSentenceCode(val code: String) {
+    ORA("330"),
+    CJA("203"),
+    SA2020("341");
+
+    companion object {
+        val ssoCodes = entries.map { it.code }.toSet()
+    }
+}
+
+val DisposalType.isSuspendedSentenceOrder: Boolean get() = code in SuspendedSentenceCode.ssoCodes
 
 interface DisposalRepository : JpaRepository<Disposal, Long> {
     fun findByEventId(eventId: Long): List<Disposal>
