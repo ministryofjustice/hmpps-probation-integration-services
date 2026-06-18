@@ -130,6 +130,105 @@ internal class ComplianceServiceTest {
         assertThat(res.previousOrders, equalTo(PreviousOrders(0, 0, null, emptyList())))
     }
 
+    @Test
+    fun `filters breaches and recalls by cutoff when months provided`() {
+        val crn = "X000005"
+        val events = listOf(
+            mockedEvent(3, "3", inactive = false),
+        )
+
+        whenever(eventRepository.findByPersonId(personSummary.id)).thenReturn(events)
+
+        // Breach outside window (before cutoff)
+        val breachOutsideWindow = Nsi(
+            personId = personSummary.id,
+            type = NsiType("BRE", "Breach", 1),
+            eventId = 3,
+            actualStartDate = LocalDate.now().minusMonths(4),
+            expectedStartDate = LocalDate.now().minusMonths(4),
+            id = 10,
+            lastUpdated = ZonedDateTime.now(),
+            active = false
+        )
+
+        // Breach inside window (after cutoff)
+        val breachInsideWindow = Nsi(
+            personId = personSummary.id,
+            type = NsiType("BRE", "Breach", 1),
+            eventId = 3,
+            actualStartDate = LocalDate.now().minusMonths(1),
+            expectedStartDate = LocalDate.now().minusMonths(1),
+            id = 11,
+            lastUpdated = ZonedDateTime.now(),
+            active = false
+        )
+
+        // Breach with no start date
+        val breachNullStartDate = Nsi(
+            personId = personSummary.id,
+            type = NsiType("BRE", "Breach", 1),
+            eventId = 3,
+            actualStartDate = null,
+            expectedStartDate = null,
+            id = 12,
+            lastUpdated = ZonedDateTime.now(),
+            active = false
+        )
+
+        // Recall outside window (before cutoff)
+        val recallOutsideWindow = Nsi(
+            personId = personSummary.id,
+            type = NsiType("REC", "Recall", 2),
+            eventId = 3,
+            actualStartDate = LocalDate.now().minusMonths(4),
+            expectedStartDate = LocalDate.now().minusMonths(4),
+            id = 1,
+            lastUpdated = ZonedDateTime.now(),
+            active = false
+        )
+
+        // Recall inside window (after cutoff)
+        val recallInsideWindow = Nsi(
+            personId = personSummary.id,
+            type = NsiType("REC", "Recall", 2),
+            eventId = 3,
+            actualStartDate = LocalDate.now().minusMonths(1),
+            expectedStartDate = LocalDate.now().minusMonths(1),
+            id = 2,
+            lastUpdated = ZonedDateTime.now(),
+            active = false
+        )
+
+        // Recall with no start date
+        val recallNullStartDate = Nsi(
+            personId = personSummary.id,
+            type = NsiType("REC", "Recall", 2),
+            eventId = 3,
+            actualStartDate = null,
+            expectedStartDate = null,
+            id = 3,
+            lastUpdated = ZonedDateTime.now(),
+            active = false
+        )
+
+        whenever(nsiRepository.findByPersonIdAndTypeCode(personSummary.id, "BRE")).thenReturn(
+            listOf(breachOutsideWindow, breachInsideWindow, breachNullStartDate)
+        )
+        whenever(nsiRepository.findByPersonIdAndTypeCode(personSummary.id, "REC")).thenReturn(
+            listOf(recallOutsideWindow, recallInsideWindow, recallNullStartDate)
+        )
+        whenever(nsiRepository.findByPersonIdAndTypeCodeAndActiveTrue(personSummary.id, "REC")).thenReturn(null)
+
+        whenever(activityService.getPersonSentenceActivity(any(), any(), any())).thenReturn(emptyList())
+
+        whenever(personRepository.findSummary(crn)).thenReturn(personSummary)
+
+        // Call with months = 2 to filter breaches and recalls
+        val res = service.getPersonCompliance(crn, 2)
+        assertThat(res.currentSentences.size, equalTo(1))
+        // Only one breach and one recall should be in the windowed lists (the inside window ones)
+    }
+
     private fun breachForEvent(eventId: Long) = Nsi(
         personId = personSummary.id,
         type = NsiType("BRE", "Breach", 1),
