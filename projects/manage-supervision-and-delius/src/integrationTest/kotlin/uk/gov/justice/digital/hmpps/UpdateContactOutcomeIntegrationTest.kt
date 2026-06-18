@@ -4,6 +4,7 @@ import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers
 import org.hamcrest.Matchers.*
 import org.junit.jupiter.api.Test
+import org.springframework.http.MediaType
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.test.web.servlet.put
 import uk.gov.justice.digital.hmpps.api.model.contact.UpdateContactOutcome
@@ -64,6 +65,44 @@ class UpdateContactOutcomeIntegrationTest : IntegrationTestBase() {
                 alert = false,
                 sensitive = false
             )
+        }.andExpect { status { isBadRequest() } }
+    }
+
+    @Test
+    fun `null outcome code and alert returns bad request`() {
+        mockMvc.put("/contact/${UpdateContactOutcomeGenerator.CONTACT_1.id}") {
+            withToken()
+            contentType = MediaType.APPLICATION_JSON
+            content =
+                """
+                {
+                  "date": "2099-01-01",
+                  "time": "10:00:00",
+                  "outcomeCode": null,
+                  "enforcementActionCode": null,
+                  "notes": "Test notes",
+                  "alert": null,
+                  "sensitive": false
+                }
+                """.trimIndent()
+        }.andExpect { status { isBadRequest() } }
+    }
+
+    @Test
+    fun `missing outcome code and alert returns bad request`() {
+        mockMvc.put("/contact/${UpdateContactOutcomeGenerator.CONTACT_1.id}") {
+            withToken()
+            contentType = MediaType.APPLICATION_JSON
+            content =
+                """
+                {
+                  "date": "2099-01-01",
+                  "time": "10:00:00",
+                  "enforcementActionCode": null,
+                  "notes": "Test notes",
+                  "sensitive": false
+                }
+                """.trimIndent()
         }.andExpect { status { isBadRequest() } }
     }
 
