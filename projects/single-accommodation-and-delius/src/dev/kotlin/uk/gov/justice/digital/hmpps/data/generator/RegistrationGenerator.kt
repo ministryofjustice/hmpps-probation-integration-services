@@ -8,5 +8,11 @@ object RegisterTypeGenerator {
         code = "RHRH",
         description = "High RoSH"
     )
+
+    val NON_ROSH = RegisterType(
+        id = IdGenerator.getAndIncrement(),
+        code = "HOIE",
+        description = "Home Office Interest"
+    )
 }
 

@@ -20,6 +20,8 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
         save(PersonGenerator.RESTRICTED)
         save(PersonGenerator.TEAM)
         save(PersonGenerator.OTHER_TEAM)
+        save(RegisterTypeGenerator.NON_ROSH)
+        save(PersonGenerator.WITH_NON_ROSH_REGISTRATION)
         save(StaffGenerator.DEFAULT)
         save(StaffGenerator.TEAM_STAFF)
         save(StaffGenerator.OTHER_TEAM_STAFF)

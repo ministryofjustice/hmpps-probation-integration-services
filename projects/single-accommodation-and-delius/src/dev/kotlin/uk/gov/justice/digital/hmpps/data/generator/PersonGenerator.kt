@@ -111,4 +111,27 @@ object PersonGenerator {
         ),
         roshRegistrations = emptyList(),
     )
+
+    val WITH_NON_ROSH_REGISTRATION = Person(
+        id = id(),
+        crn = "A000004",
+        firstName = "Mixed",
+        secondName = null,
+        thirdName = null,
+        surname = "Registrations",
+        dateOfBirth = LocalDate.of(1990, 2, 20),
+        gender = ReferenceDataGenerator.GENDER_MALE,
+        noms = "A0004AA",
+        pnc = "2010/00000003",
+        manager = PersonManager(
+            id = id(),
+            team = TeamGenerator.DEFAULT,
+            staff = StaffGenerator.DEFAULT,
+            probationAreaId = ProviderGenerator.DEFAULT.id,
+        ),
+        roshRegistrations = listOf(
+            Registration(id = id(), type = RegisterTypeGenerator.NON_ROSH),
+            Registration(id = id(), type = RegisterTypeGenerator.HIGH_ROSH),
+        ),
+    )
 }
