@@ -93,13 +93,19 @@ internal class SentenceComplianceMappingTest {
             active = true,
         )
 
-        val res = toSentenceCompliance(
+        val inactiveOnly = toSentenceCompliance(
             activities = emptyList(),
             breaches = emptyList(),
-            recalls = listOf(priorRecall, activeRecall)
+            recalls = listOf(priorRecall)
+        )
+        val activeOnly = toSentenceCompliance(
+            activities = emptyList(),
+            breaches = emptyList(),
+            recalls = listOf(activeRecall)
         )
 
-        assertThat(res.priorRecallsOnCurrentOrderCount, equalTo(1))
+        assertThat(inactiveOnly.priorRecallsOnCurrentOrderCount, equalTo(1))
+        assertThat(activeOnly.priorRecallsOnCurrentOrderCount, equalTo(0))
     }
 }
 
