@@ -294,14 +294,19 @@ class UserService(
     fun getEnforcementContacts(
         username: String,
         pageable: Pageable,
-        filterDueDate: Boolean
+        filterDueDate: Boolean,
+        months: Int
     ): EnforcementContactResponse {
+        require(months in 0..120) { "Months must be between 0 and 120" }
+        val today = LocalDateTime.now().toLocalDate().atStartOfDay()
+        val cutoff = if (months > 0) today.minusMonths(months.toLong()) else null
         val user = getUser(username)
         return user.staff?.let {
             val contacts = contactRepository.findEnforcementContactsByUser(
                 user.staff.id,
                 if (filterDueDate) 1 else 0,
-                LocalDate.now().plusDays(1).format(DateTimeFormatter.ISO_LOCAL_DATE),
+                today.plusDays(1).format(DateTimeFormatter.ISO_LOCAL_DATE),
+                cutoff,
                 pageable
             )
             EnforcementContactResponse(
@@ -442,5 +447,6 @@ private fun EnforcementAppointment.toEnforcementContactItem() = EnforcementConta
     appointmentOutcome = outcomeDescription,
     enforcementAction = enforcementActionDescription,
     evidenceDueDate = evidenceDueDate?.toLocalDate(),
-    deliusManaged = CreateAppointment.Type.entries.none { it.code == typeCode } || complied == 0 || rqmntMainCatCode == "F"
+    deliusManaged = CreateAppointment.Type.entries.none { it.code == typeCode } || complied == 0 || rqmntMainCatCode == "F",
+    lastModifiedDate = lastModifiedDate.atZone(EuropeLondon)
 )

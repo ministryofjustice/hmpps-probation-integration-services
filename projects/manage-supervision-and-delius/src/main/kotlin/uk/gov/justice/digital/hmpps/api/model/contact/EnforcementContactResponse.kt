@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.api.model.contact
 
 import uk.gov.justice.digital.hmpps.api.model.Name
 import java.time.LocalDate
+import java.time.ZonedDateTime
 
 data class EnforcementContactResponse(
     val size: Int,
@@ -21,5 +22,6 @@ data class EnforcementContactItem(
     val appointmentOutcome: String?,
     val enforcementAction: String?,
     val evidenceDueDate: LocalDate?,
-    val deliusManaged: Boolean
+    val deliusManaged: Boolean,
+    val lastModifiedDate: ZonedDateTime
 )
