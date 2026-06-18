@@ -10,7 +10,7 @@ import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.DEFAULT_PERSON
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.PERSON_IN_PRISON
-import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.PERSON_WITH_RESPONSIBLE_OFFICER_WITHOUT_USER
+import uk.gov.justice.digital.hmpps.data.generator.UserGenerator
 import uk.gov.justice.digital.hmpps.model.SignAndSendResponse
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
@@ -24,8 +24,8 @@ class SignAndSendIntegrationTest @Autowired constructor(
     @Test
     fun `sign and send details returned with valid crn (om)`() {
         val crn = DEFAULT_PERSON.crn
-        val result = mockMvc.get("/sign-and-send/$crn") { withToken() }
-            .andExpect { status { isOk() } }
+        val username = UserGenerator.DEFAULT_PROBATION_USER.username
+        val result = mockMvc.get("/sign-and-send/$crn/$username") { withToken() }.andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<SignAndSendResponse>()
         assertThat(result.userDetails?.forename).isEqualTo("John")
         assertThat(result.userDetails?.surname).isEqualTo("Smith")
@@ -43,8 +43,8 @@ class SignAndSendIntegrationTest @Autowired constructor(
     @Test
     fun `sign and send details returned with valid crn (pom)`() {
         val crn = PERSON_IN_PRISON.crn
-        val result = mockMvc.get("/sign-and-send/$crn") { withToken() }
-            .andExpect { status { isOk() } }
+        val username = UserGenerator.POM_USER.username
+        val result = mockMvc.get("/sign-and-send/$crn/$username") { withToken() }.andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<SignAndSendResponse>()
         assertThat(result.userDetails?.forename).isEqualTo("Jack")
         assertThat(result.userDetails?.surname).isEqualTo("Harry")
@@ -60,26 +60,23 @@ class SignAndSendIntegrationTest @Autowired constructor(
     }
 
     @Test
-    fun `can get responsible officer details when user is missing`() {
-        val crn = PERSON_WITH_RESPONSIBLE_OFFICER_WITHOUT_USER.crn
-        val result = mockMvc.get("/sign-and-send/$crn") { withToken() }
-            .andExpect { status { isOk() } }
-            .andReturn().response.contentAsJson<SignAndSendResponse>()
-        assertThat(result.userDetails).isNull()
-        assertThat(result.responsibleOfficer?.title).isNull()
-        assertThat(result.responsibleOfficer?.name?.forename).isEqualTo("Jane")
-        assertThat(result.responsibleOfficer?.name?.middleName).isEqualTo("Mary")
-        assertThat(result.responsibleOfficer?.name?.surname).isEqualTo("Doe")
-        assertThat(result.telephoneNumber).isNull()
-        assertThat(result.emailAddress).isNull()
-        assertThat(result.addresses.size).isEqualTo(0)
+    fun `username not found returns 404 response`() {
+        mockMvc.get("/sign-and-send/${DEFAULT_PERSON.crn}/nonexistent") {
+            withToken()
+        }.andExpect { status { isNotFound() } }
+    }
+
+    @Test
+    fun `no home area returns 400 response`() {
+        mockMvc.get("/basic-details/${DEFAULT_PERSON.crn}/NoHomeArea") {
+            withToken()
+        }.andExpect { status { isBadRequest() } }
     }
 
     @Test
     fun `404 when crn not found`() {
         mockMvc.get("/sign-and-send/X987654") {
             withToken()
-        }
-            .andExpect { status { isNotFound() } }
+        }.andExpect { status { isNotFound() } }
     }
 }

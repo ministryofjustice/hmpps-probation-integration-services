@@ -10,6 +10,7 @@ import uk.gov.justice.digital.hmpps.service.SignAndSendService
 @RestController
 class SignAndSendController(private val signAndSendService: SignAndSendService) {
     @PreAuthorize("hasRole('PROBATION_API__COSSO__CASE_DETAILS')")
-    @GetMapping("/sign-and-send/{crn}")
-    fun getSignAndSend(@PathVariable crn: String): SignAndSendResponse = signAndSendService.getSignAndSend(crn)
+    @GetMapping("/sign-and-send/{crn}/{username}")
+    fun getSignAndSend(@PathVariable crn: String, @PathVariable username: String):
+        SignAndSendResponse = signAndSendService.getSignAndSend(crn, username)
 }
