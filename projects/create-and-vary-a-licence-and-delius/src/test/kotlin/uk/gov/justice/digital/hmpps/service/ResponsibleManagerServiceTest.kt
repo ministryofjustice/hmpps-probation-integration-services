@@ -39,6 +39,6 @@ internal class ResponsibleManagerServiceTest {
 
         val res = service.findCommunityManager(person.crn, true)
         assertThat(res, equalTo(cm.asManager()))
-        verify(ldapTemplate, never()).search(any(), any<AttributesMapper<String?>>())
+        verify(ldapTemplate, never()).search(any(), any<AttributesMapper<String>>())
     }
 }

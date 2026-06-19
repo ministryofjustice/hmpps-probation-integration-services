@@ -73,7 +73,7 @@ class ApiControllerTest {
     fun `linked user account returns email`() {
         whenever(personRepository.findByPrisonerId(PERSON.prisonerId)).thenReturn(PERSON)
         whenever(communityManagerRepository.findByPersonId(PERSON.id)).thenReturn(COMMUNITY_MANAGER_WITH_USER)
-        whenever(ldapTemplate.search(any(), any<AttributesMapper<String?>>())).thenReturn(listOf("test@example.com"))
+        whenever(ldapTemplate.search(any(), any<AttributesMapper<String>>())).thenReturn(listOf("test@example.com"))
 
         apiController.getCommunityManager(PERSON.prisonerId).run {
             assertThat(firstName, equalTo("Test"))

@@ -49,6 +49,6 @@ internal class ProbationRecordServiceTest {
 
         service.findByIdentifier(Identifier(person.nomsId))
 
-        verify(ldapTemplate, never()).search(any(), any<AttributesMapper<String?>>())
+        verify(ldapTemplate, never()).search(any(), any<AttributesMapper<String>>())
     }
 }

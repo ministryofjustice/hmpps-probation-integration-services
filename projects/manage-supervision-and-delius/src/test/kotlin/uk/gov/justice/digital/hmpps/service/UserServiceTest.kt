@@ -195,7 +195,7 @@ internal class UserServiceTest {
             ),
             DEFAULT_TEAM
         )
-        whenever(ldapTemplate.search(any(), any<AttributesMapper<Any?>>()))
+        whenever(ldapTemplate.search(any(), any<AttributesMapper<Any>>()))
             .thenReturn(listOf(OffenderManagerGenerator.PAU_USER_RECORD1.id.provider.code)) // homeArea
             .thenReturn(listOf("7"))                                                         // defaultTeam
             .thenReturn(listOf("username" to null))
@@ -257,7 +257,7 @@ internal class UserServiceTest {
             DEFAULT_TEAM
         )
 
-        whenever(ldapTemplate.search(any(), any<AttributesMapper<Any?>>()))
+        whenever(ldapTemplate.search(any(), any<AttributesMapper<Any>>()))
             .thenReturn(listOf(OffenderManagerGenerator.PAU_USER_RECORD1.id.provider.code)) // homeArea
             .thenReturn(emptyList())                                                         // no defaultTeam
             .thenReturn(listOf("username" to null))                                          // email lookup
@@ -303,7 +303,7 @@ internal class UserServiceTest {
         )
 
         // Mock for homeArea lookup (returns String)
-        whenever(ldapTemplate.search(any(), any<AttributesMapper<Any?>>()))
+        whenever(ldapTemplate.search(any(), any<AttributesMapper<Any>>()))
             .thenReturn(listOf(OffenderManagerGenerator.PAU_USER_RECORD1.id.provider.code)) // homeArea (String)
             .thenReturn(listOf("username" to null)) // email lookup (Pair)
             .thenReturn(listOf("7"))
@@ -337,7 +337,7 @@ internal class UserServiceTest {
             Team(1, "t01", "team1", listOf(DEFAULT_STAFF, STAFF_1), DEFAULT_PROVIDER, DEFAULT_DISTRICT, LocalDate.now())
         )
 
-        whenever(ldapTemplate.search(any(), any<AttributesMapper<Any?>>()))
+        whenever(ldapTemplate.search(any(), any<AttributesMapper<Any>>()))
             .thenReturn(listOf(OffenderManagerGenerator.PAU_USER_RECORD1.id.provider.code)) // homeArea (String)
             .thenReturn(listOf("username" to null))                                          // email lookup (Pair)
             .thenReturn(emptyList())                                                         // defaultTeam preference (no value)
