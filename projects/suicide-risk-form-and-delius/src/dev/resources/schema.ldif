@@ -40,3 +40,10 @@ objectclass: top
 objectclass: UserPreferences
 cn: UserPreferences
 replyAddress: 2
+
+dn: cn=NoHomeArea,ou=Users,dc=moj,dc=com
+objectclass: top
+objectclass: inetOrgPerson
+cn: NoHomeArea
+sn: Smith
+givenname: John

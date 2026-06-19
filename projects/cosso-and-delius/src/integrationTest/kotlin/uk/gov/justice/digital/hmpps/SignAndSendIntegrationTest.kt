@@ -68,7 +68,7 @@ class SignAndSendIntegrationTest @Autowired constructor(
 
     @Test
     fun `no home area returns 400 response`() {
-        mockMvc.get("/basic-details/${DEFAULT_PERSON.crn}/NoHomeArea") {
+        mockMvc.get("/sign-and-send/${DEFAULT_PERSON.crn}/NoHomeArea") {
             withToken()
         }.andExpect { status { isBadRequest() } }
     }

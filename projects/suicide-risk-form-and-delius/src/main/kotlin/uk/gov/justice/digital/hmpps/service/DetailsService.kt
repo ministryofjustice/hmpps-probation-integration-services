@@ -10,6 +10,7 @@ import uk.gov.justice.digital.hmpps.ldap.findPreferenceByUsername
 import uk.gov.justice.digital.hmpps.model.BasicDetails
 import uk.gov.justice.digital.hmpps.model.DocumentCrn
 import uk.gov.justice.digital.hmpps.model.SignAndSendResponse
+import uk.gov.justice.digital.hmpps.model.TitleAndName
 import java.util.*
 
 @Service
@@ -20,7 +21,6 @@ class DetailsService(
     private val ldapTemplate: LdapTemplate,
     private val documentRepository: DocumentRepository,
     private val responsibleOfficerRepository: ResponsibleOfficerRepository,
-    private val userRepository: UserRepository
 ) {
     fun basicDetails(crn: String): BasicDetails {
         val person = personRepository.getByCrn(crn)
@@ -34,9 +34,13 @@ class DetailsService(
         )
     }
 
-    fun signAndSend(crn: String): SignAndSendResponse {
+    fun signAndSend(crn: String, username: String): SignAndSendResponse {
         personRepository.getByCrn(crn)
-
+        val ldapUser =
+            ldapTemplate.findByUsername<LdapUser>(username) ?: throw NotFoundException("User", "username", username)
+        val homeArea = ldapUser.userHomeArea ?: throw IllegalArgumentException("No home area found for $username")
+        val defaultReplyAddress = ldapTemplate.findPreferenceByUsername(username, "replyAddress")?.toLongOrNull()
+        val officeLocations = officeLocationRepository.findAllByProviderCode(homeArea)
         val responsibleOfficer = responsibleOfficerRepository.findByPerson_Crn(crn)
             ?: throw NotFoundException("ResponsibleOfficer", "CRN", crn)
         val offenderManager = responsibleOfficer.offenderManager
@@ -44,24 +48,14 @@ class DetailsService(
         val staff = (offenderManager?.staff ?: prisonOffenderManager?.staff)
             ?: throw NotFoundException("Person", "CRN", crn)
 
-        val ldapUser = userRepository.findByStaffId(staff.id)?.let {
-            ldapTemplate.findByUsername<LdapUser>(it.username)
-        }
-
-        val addresses = ldapUser?.userHomeArea?.let { homeArea ->
-            val defaultReplyAddress =
-                ldapTemplate.findPreferenceByUsername(ldapUser.username, "replyAddress")?.toLongOrNull()
-
-            officeLocationRepository.findAllByProviderCode(ldapUser.userHomeArea).map {
-                it.toAddress().copy(status = if (it.id == defaultReplyAddress) "Default" else null)
-            }
-        } ?: emptyList()
-
         return SignAndSendResponse(
-            name = ldapUser?.name() ?: staff.name(),
-            telephoneNumber = ldapUser?.telephoneNumber,
-            emailAddress = ldapUser?.email,
-            addresses = addresses,
+            userDetails = ldapUser.name(),
+            responsibleOfficer = TitleAndName(staff.title?.description, staff.name()),
+            telephoneNumber = ldapUser.telephoneNumber,
+            emailAddress = ldapUser.email,
+            addresses = officeLocations.map {
+                it.toAddress().copy(status = if (it.id == defaultReplyAddress) "Default" else null)
+            },
         )
     }
 
