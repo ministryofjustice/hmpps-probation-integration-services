@@ -80,6 +80,7 @@ internal class BasicDetailsIntegrationTest @Autowired constructor(
                         ),
                         employerAddress = EmployerAddress(
                             id = PersonalContactGenerator.EMPLOYER_ADDRESS.id,
+                            status = "Main",
                             buildingName = null,
                             buildingNumber = "1",
                             streetName = "Employer Street",
