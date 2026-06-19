@@ -65,6 +65,8 @@ oauth2:
   client-id: esupervision-and-delius
   client-secret: esupervision-and-delius
 
+sentry.environment: local
+
 logging.level:
   uk.gov.justice.digital.hmpps: DEBUG
   org.hibernate.tool.schema: ERROR

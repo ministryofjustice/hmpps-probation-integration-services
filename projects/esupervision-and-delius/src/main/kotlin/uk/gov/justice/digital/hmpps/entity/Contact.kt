@@ -173,10 +173,8 @@ interface ContactRepository : JpaRepository<Contact, Long> {
         typeCode: String = ContactType.E_SUPERVISION_SETUP_COMPLETED
     ): Contact?
 
+    fun findByExternalReference(externalReference: String): Contact?
     fun findByExternalReferenceIn(externalReference: List<String>): Contact?
     fun getByExternalReferenceIn(externalReference: List<String>): Contact =
         findByExternalReferenceIn(externalReference).orNotFoundBy("externalReference", externalReference)
-
-    fun getByExternalReference(externalReference: String): Contact =
-        findByExternalReferenceIn(listOf(externalReference)).orNotFoundBy("externalReference", externalReference)
 }
