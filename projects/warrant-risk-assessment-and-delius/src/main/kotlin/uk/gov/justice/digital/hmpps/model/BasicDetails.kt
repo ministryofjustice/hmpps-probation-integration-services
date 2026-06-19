@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.model
 
+import com.fasterxml.jackson.annotation.JsonInclude
 import java.time.LocalDate
 
 data class BasicDetails(
@@ -24,6 +25,7 @@ data class Name(
 data class AddressDetail(
     val id: Long,
     val status: String,
+    @JsonInclude(JsonInclude.Include.ALWAYS)
     val buildingName: String?,
     val buildingNumber: String?,
     val streetName: String?,
@@ -42,6 +44,8 @@ data class Employer(
 
 data class EmployerAddress(
     val id: Long,
+    val status: String?,
+    @JsonInclude(JsonInclude.Include.ALWAYS)
     val buildingName: String?,
     val buildingNumber: String?,
     val streetName: String?,

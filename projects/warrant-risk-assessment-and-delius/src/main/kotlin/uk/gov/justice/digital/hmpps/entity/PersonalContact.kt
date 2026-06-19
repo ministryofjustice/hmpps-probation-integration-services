@@ -60,6 +60,10 @@ class ContactAddress(
     @Column(name = "address_id")
     val id: Long,
 
+    @ManyToOne
+    @JoinColumn(name = "address_status_id")
+    val status: ReferenceData? = null,
+
     val buildingName: String? = null,
 
     @Column(name = "address_number")

@@ -61,6 +61,7 @@ private fun PersonalContact.toModel() = Employer(
 
 private fun ContactAddress.toModel() = EmployerAddress(
     id = id,
+    status = status?.description,
     buildingName = buildingName,
     buildingNumber = buildingNumber,
     streetName = streetName,
