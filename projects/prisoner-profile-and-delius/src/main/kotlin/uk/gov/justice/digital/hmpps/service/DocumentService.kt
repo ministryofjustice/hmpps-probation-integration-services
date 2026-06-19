@@ -21,7 +21,6 @@ class DocumentService(
     private val documentRepository: DocumentRepository,
     private val alfrescoClient: AlfrescoClient,
     private val limitedAccessService: UserAccessService,
-    private val featureFlags: FeatureFlags,
 ) {
 
     fun downloadDocument(id: String): ResponseEntity<StreamingResponseBody> {
