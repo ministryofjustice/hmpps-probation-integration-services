@@ -8,7 +8,7 @@
   "buildingName": "Updated House",
   "buildingNumber": "22",
   "thoroughfareName": "Updated Street",
-  "dependentLocality": "Updated District",
+  "dependentLocality": "Updated District longer than 35 characters that should be truncated",
   "postTown": "Updated Town",
   "uprn": "100020002",
   "status": {

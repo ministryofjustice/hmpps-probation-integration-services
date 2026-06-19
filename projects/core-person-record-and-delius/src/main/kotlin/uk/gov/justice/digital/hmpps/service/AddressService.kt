@@ -52,11 +52,11 @@ class AddressService(
     private fun CanonicalAddress.toEntity(personId: Long, existing: PersonAddress? = null) =
         existing?.also { existing ->
             existing.addressNumber = buildingNumber
-            existing.buildingName = listOfNotNull(subBuildingName, buildingName).joinToString(" ")
-            existing.streetName = thoroughfareName
+            existing.buildingName = listOfNotNull(subBuildingName, buildingName).joinToString(" ").truncate()
+            existing.streetName = thoroughfareName?.truncate()
             existing.townCity = postTown
             existing.county = county
-            existing.district = dependentLocality
+            existing.district = dependentLocality?.truncate()
             existing.postcode = postcode
             existing.uprn = uprn?.toLongOrNull()
             existing.noFixedAbode = noFixedAbode ?: false
@@ -69,11 +69,11 @@ class AddressService(
         } ?: PersonAddress(
             personId = personId,
             addressNumber = buildingNumber,
-            buildingName = listOfNotNull(subBuildingName, buildingName).joinToString(" "),
-            streetName = thoroughfareName,
+            buildingName = listOfNotNull(subBuildingName, buildingName).joinToString(" ").truncate(),
+            streetName = thoroughfareName?.truncate(),
             townCity = postTown,
             county = county,
-            district = dependentLocality,
+            district = dependentLocality?.truncate(),
             postcode = postcode,
             telephoneNumber = null,
             uprn = uprn?.toLongOrNull(),
@@ -92,6 +92,9 @@ class AddressService(
     private fun List<CanonicalAddressUsage>.toEntity() =
         filter { it.isActive }.apply { require(size <= 1) { "Cannot handle multiple address types" } }
             .singleOrNull()?.usageCode?.code?.let { referenceDataRepository.getAddressType(it) }
+
+    private fun String.truncate(predicate: String.() -> Boolean = { length in 36..80 }) =
+        if (predicate()) "${substring(0, 34)}…" else this
 
     private fun PersonAddress.trackEvent(name: String, vararg properties: Pair<String, String>) = also {
         telemetryService.trackEvent(
