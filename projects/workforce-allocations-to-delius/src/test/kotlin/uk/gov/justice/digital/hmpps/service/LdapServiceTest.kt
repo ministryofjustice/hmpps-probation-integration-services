@@ -29,7 +29,7 @@ class LdapServiceTest {
     @Test
     fun `email found for single staff`() {
         val staff = StaffGenerator.generateStaffWithUser("email", user = StaffUserGenerator.generate("HasEmail"))
-        whenever(ldapTemplate.search(any(), any<AttributesMapper<String?>>())).thenReturn(listOf("email@user.com"))
+        whenever(ldapTemplate.search(any(), any<AttributesMapper<String>>())).thenReturn(listOf("email@user.com"))
 
         val email = ldapService.findEmailForStaff(staff)
 
