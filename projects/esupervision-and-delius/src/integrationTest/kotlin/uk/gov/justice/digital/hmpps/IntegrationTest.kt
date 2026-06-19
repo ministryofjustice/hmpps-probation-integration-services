@@ -390,6 +390,7 @@ internal class IntegrationTest @Autowired constructor(
                             "forename": "${PersonGenerator.DEFAULT_PERSON.firstName}",
                             "surname": "${PersonGenerator.DEFAULT_PERSON.lastName}"
                           },
+                          "dateOfBirth": "${PersonGenerator.DEFAULT_PERSON.dateOfBirth}",
                           "mobile": "${PersonGenerator.DEFAULT_PERSON.mobile.toString()}",
                           "email": "${PersonGenerator.DEFAULT_PERSON.emailAddress}",
                           "events": [

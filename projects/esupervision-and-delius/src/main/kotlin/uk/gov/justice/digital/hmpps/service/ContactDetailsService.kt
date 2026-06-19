@@ -23,6 +23,7 @@ class ContactDetailsService(
                     forename = com.person.firstName,
                     surname = com.person.lastName
                 ),
+                dateOfBirth = com.person.dateOfBirth,
                 mobile = com.person.mobile,
                 email = com.person.emailAddress,
                 events = com.person.activeEvents.map { it.asEvent() },
@@ -57,6 +58,7 @@ class ContactDetailsService(
                         forename = com.person.firstName,
                         surname = com.person.lastName,
                     ),
+                    dateOfBirth = com.person.dateOfBirth,
                     mobile = com.person.mobile,
                     email = com.person.emailAddress,
                     events = com.person.activeEvents.map { it.asEvent() },
