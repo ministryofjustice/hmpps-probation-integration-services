@@ -10,8 +10,8 @@ import org.springframework.ldap.core.LdapTemplate
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
 import uk.gov.justice.digital.hmpps.data.generator.*
+import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.DEFAULT_PERSON
 import uk.gov.justice.digital.hmpps.integrations.delius.LdapUser
-import uk.gov.justice.digital.hmpps.integrations.delius.name
 import uk.gov.justice.digital.hmpps.integrations.delius.toAddress
 import uk.gov.justice.digital.hmpps.ldap.findByUsername
 import uk.gov.justice.digital.hmpps.model.*
@@ -53,12 +53,13 @@ internal class BasicDetailsIntegrationTest @Autowired constructor(
 
     @Test
     fun `can retrieve user details for sign and send endpoint`() {
-        val person = PersonGenerator.DEFAULT_PERSON
+        val person = DEFAULT_PERSON
         val user = UserGenerator.DEFAULT
         val ldapUser = ldapTemplate.findByUsername<LdapUser>(user.username)!!
+        val staff = StaffGenerator.DEFAULT
         val officeLocation = OfficeLocationGenerator.DEFAULT
 
-        val response = mockMvc.get("/sign-and-send/${person.crn}") {
+        val response = mockMvc.get("/sign-and-send/${person.crn}/${user.username}") {
             withToken()
         }
             .andExpect { status { is2xxSuccessful() } }
@@ -66,10 +67,10 @@ internal class BasicDetailsIntegrationTest @Autowired constructor(
 
         assertThat(response).isEqualTo(
             SignAndSendResponse(
-                name = Name(
-                    ldapUser.firstName,
-                    null,
-                    ldapUser.surname
+                userDetails = Name(ldapUser.firstName, null, ldapUser.surname),
+                responsibleOfficer = TitleAndName(
+                    title = staff.title?.description,
+                    name = Name(staff.firstName, staff.middleName, staff.surname)
                 ),
                 telephoneNumber = ldapUser.telephoneNumber,
                 emailAddress = ldapUser.email,
@@ -96,9 +97,10 @@ internal class BasicDetailsIntegrationTest @Autowired constructor(
         val person = PersonGenerator.PERSON_NO_REGISTRATIONS
         val user = UserGenerator.OFFICER_2
         val ldapUser = ldapTemplate.findByUsername<LdapUser>(user.username)!!
+        val staff = StaffGenerator.OFFICER_2
         val officeLocation = OfficeLocationGenerator.DEFAULT_2
 
-        val response = mockMvc.get("/sign-and-send/${person.crn}") {
+        val response = mockMvc.get("/sign-and-send/${person.crn}/${user.username}") {
             withToken()
         }
             .andExpect { status { is2xxSuccessful() } }
@@ -106,10 +108,10 @@ internal class BasicDetailsIntegrationTest @Autowired constructor(
 
         assertThat(response).isEqualTo(
             SignAndSendResponse(
-                name = Name(
-                    ldapUser.firstName,
-                    null,
-                    ldapUser.surname
+                userDetails = Name(ldapUser.firstName, null, ldapUser.surname),
+                responsibleOfficer = TitleAndName(
+                    title = staff.title?.description,
+                    name = Name(staff.firstName, staff.middleName, staff.surname)
                 ),
                 telephoneNumber = ldapUser.telephoneNumber,
                 emailAddress = ldapUser.email,
@@ -132,24 +134,24 @@ internal class BasicDetailsIntegrationTest @Autowired constructor(
     }
 
     @Test
-    fun `returns empty fields for sign and send endpoint when staff has no user record`() {
-        val person = PersonGenerator.PERSON_NO_USER
-        val staff = StaffGenerator.OFFICER_NO_USER
-
-        val response = mockMvc.get("/sign-and-send/${person.crn}") {
+    fun `username not found returns 404 response`() {
+        mockMvc.get("/sign-and-send/${DEFAULT_PERSON.crn}/nonexistent") {
             withToken()
-        }
-            .andExpect { status { is2xxSuccessful() } }
-            .andReturn().response.contentAsJson<SignAndSendResponse>()
+        }.andExpect { status { isNotFound() } }
+    }
 
-        assertThat(response).isEqualTo(
-            SignAndSendResponse(
-                name = staff.name(),
-                telephoneNumber = null,
-                emailAddress = null,
-                addresses = emptyList()
-            )
-        )
+    @Test
+    fun `no home area returns 400 response`() {
+        mockMvc.get("/sign-and-send/${DEFAULT_PERSON.crn}/NoHomeArea") {
+            withToken()
+        }.andExpect { status { isBadRequest() } }
+    }
+
+    @Test
+    fun `404 when crn not found`() {
+        mockMvc.get("/sign-and-send/X987654") {
+            withToken()
+        }.andExpect { status { isNotFound() } }
     }
 
     @Test
