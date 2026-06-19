@@ -99,7 +99,9 @@ class CaseListService(
             description = manager.team.description
         ),
         gender = gender.description,
-        roshLevel = roshRegistrations.firstOrNull()?.type?.let { CodeDescription(it.code, it.description) },
+        roshLevel = roshRegistrations
+            .firstOrNull { it.type.code in uk.gov.justice.digital.hmpps.integrations.delius.RegisterType.ROSH_CODES }
+            ?.type?.let { CodeDescription(it.code, it.description) },
         expectedReleaseDate = expectedReleaseDate,
         userExcluded = access.userExcluded,
         userRestricted = access.userRestricted,
