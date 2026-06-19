@@ -106,5 +106,4 @@ internal class PrisonerDocumentsIntTest @Autowired constructor(
                 }
             }
     }
-
 }
