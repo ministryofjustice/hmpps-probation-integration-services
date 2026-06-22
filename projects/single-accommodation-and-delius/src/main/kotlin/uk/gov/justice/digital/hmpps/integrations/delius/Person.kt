@@ -52,6 +52,7 @@ class Person(
 
     val restrictionMessage: String? = null,
 
+    @Column(name = "soft_deleted", columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean = false,
 )
