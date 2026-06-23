@@ -185,7 +185,7 @@ class ContactLogService(
         request.notes?.let { contact.appendNotes(it) }
         require(contact.sensitive != true || request.sensitiveFlag == true) { "Cannot un-flag a sensitive contact" }
         contact.sensitive = request.sensitiveFlag
-        if (request.alert == true) {
+        if (request.alert == true && contact.alert != true) {
             createAlert(contact)
         } else if (request.alert == false && contact.alert == true) {
             removeAlert(contact)

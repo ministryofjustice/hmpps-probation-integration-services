@@ -148,6 +148,33 @@ class UpdateContactIntegrationTest : IntegrationTestBase() {
     }
 
     @Test
+    fun `update contact alert request with no active person manager returns not found`() {
+        val alertableContact = contactRepository.save(
+            generateContact(
+                person = PersonGenerator.PRE_SENTENCE_PERSON,
+                contactType = ContactGenerator.EMAIL_POP_CT,
+                startDateTime = ZonedDateTime.now(),
+                event = PersonGenerator.EVENT_1
+            )
+        )
+
+        val request = UpdateContact(
+            dateTime = ZonedDateTime.now(),
+            notes = null,
+            sensitiveFlag = null,
+            alert = true
+        )
+
+        mockMvc.patch("/contact/${alertableContact.id}") {
+            withToken()
+            json = request
+        }
+            .andExpect { status { isNotFound() } }
+
+        assertThat(contactAlertRepository.findByContactId(alertableContact.id)).isEmpty()
+    }
+
+    @Test
     fun `update contact deletes alert when requested`() {
         val alertedContact = contactRepository.save(
             generateContact(
