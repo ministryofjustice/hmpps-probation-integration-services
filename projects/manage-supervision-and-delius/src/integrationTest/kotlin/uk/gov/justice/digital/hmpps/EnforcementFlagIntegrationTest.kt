@@ -85,7 +85,8 @@ class EnforcementFlagIntegrationTest : IntegrationTestBase() {
             json = UpdateContact(
                 dateTime = ZonedDateTime.now(),
                 notes = "Updating contact with outstanding action",
-                sensitiveFlag = null
+                sensitiveFlag = null,
+                alert = null
             )
         }.andExpect { status { isOk() } }
 

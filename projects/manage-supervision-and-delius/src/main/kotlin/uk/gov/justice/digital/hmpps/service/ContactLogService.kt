@@ -127,22 +127,7 @@ class ContactLogService(
             notifier.contactCreated(savedContact.id, createContact.visorReport, category, crn, EventType.CREATED)
 
             if (createContact.alert) {
-                val personManager = offenderManagerRepository.findOffenderManagersByPersonIdAndActiveIsTrue(person.id)
-                    ?: throw NotFoundException(
-                        "PersonManager",
-                        "personId",
-                        person.id
-                    )
-                contactAlertRepository.save(
-                    ContactAlert(
-                        contact = savedContact,
-                        typeId = contactType.id,
-                        personId = person.id,
-                        personManagerId = personManager.id,
-                        staff = personManager.staff,
-                        teamId = personManager.team.id
-                    )
-                )
+                createAlert(savedContact)
             }
             return@audit CreateContactResponse(savedContact.id)
         }
@@ -200,8 +185,41 @@ class ContactLogService(
         request.notes?.let { contact.appendNotes(it) }
         require(contact.sensitive != true || request.sensitiveFlag == true) { "Cannot un-flag a sensitive contact" }
         contact.sensitive = request.sensitiveFlag
+        if (request.alert == true && contact.alert != true) {
+            createAlert(contact)
+        } else if (request.alert == false && contact.alert == true) {
+            removeAlert(contact)
+        }
         setEnforcementFlag(contact)
         contactRepository.save(contact)
+    }
+
+    private fun removeAlert(contact: Contact) {
+        val existingAlerts = contactAlertRepository.findByContactId(contact.id)
+        if (existingAlerts.isNotEmpty()) {
+            contactAlertRepository.deleteByContactIdIn(listOf(contact.id))
+        }
+        contact.alert = false
+    }
+
+    private fun createAlert(contact: Contact) {
+        val personManager = offenderManagerRepository.findOffenderManagersByPersonIdAndActiveIsTrue(contact.person.id)
+            ?: throw NotFoundException(
+                "PersonManager",
+                "personId",
+                contact.person.id
+            )
+        contactAlertRepository.save(
+            ContactAlert(
+                contact = contact,
+                typeId = contact.type.id,
+                personId = contact.person.id,
+                personManagerId = personManager.id,
+                staff = personManager.staff,
+                teamId = personManager.team.id
+            )
+        )
+        contact.alert = true
     }
 
     fun getContactOutcomesForType(typeCode: String): ContactOutcomes = ContactOutcomes(
@@ -266,30 +284,9 @@ class ContactLogService(
 
 
         if (request.alert && contact.alert != true) {
-            val personManager =
-                offenderManagerRepository.findOffenderManagersByPersonIdAndActiveIsTrue(contact.person.id)
-                    ?: throw NotFoundException(
-                        "PersonManager",
-                        "personId",
-                        contact.person.id
-                    )
-            contactAlertRepository.save(
-                ContactAlert(
-                    contact = contact,
-                    typeId = contact.type.id,
-                    personId = contact.person.id,
-                    personManagerId = personManager.id,
-                    staff = personManager.staff,
-                    teamId = personManager.team.id
-                )
-            )
-            contact.alert = true
+            createAlert(contact)
         } else if (request.alert == false && contact.alert == true) {
-            val existingAlerts = contactAlertRepository.findByContactId(contact.id)
-            if (existingAlerts.isNotEmpty()) {
-                contactAlertRepository.deleteByContactIdIn(listOf(contact.id))
-            }
-            contact.alert = false
+            removeAlert(contact)
         }
 
         require(contact.sensitive != true || request.sensitive == true) { "Cannot un-flag a sensitive contact" }
