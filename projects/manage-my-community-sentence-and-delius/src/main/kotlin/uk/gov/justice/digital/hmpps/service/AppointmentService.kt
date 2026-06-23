@@ -4,7 +4,7 @@ import org.springframework.data.domain.Pageable
 import org.springframework.data.web.PagedModel
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.model.Appointment
-import uk.gov.justice.digital.hmpps.model.Appointment.Companion.toAppointment
+import uk.gov.justice.digital.hmpps.model.Appointment.Companion.toModel
 import uk.gov.justice.digital.hmpps.repository.ContactRepository
 import uk.gov.justice.digital.hmpps.repository.PersonRepository
 
@@ -15,11 +15,11 @@ class AppointmentService(
 ) {
     fun getFutureAppointments(crn: String, pageable: Pageable): PagedModel<Appointment> {
         val personId = personRepository.getIdByCrn(crn)
-        return PagedModel(contactRepository.findFutureAppointments(personId, pageable).map { it.toAppointment() })
+        return PagedModel(contactRepository.findFutureAppointments(personId, pageable).map { it.toModel() })
     }
 
     fun getPastAppointments(crn: String, pageable: Pageable): PagedModel<Appointment> {
         val personId = personRepository.getIdByCrn(crn)
-        return PagedModel(contactRepository.findPastAppointments(personId, pageable).map { it.toAppointment() })
+        return PagedModel(contactRepository.findPastAppointments(personId, pageable).map { it.toModel() })
     }
 }

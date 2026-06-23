@@ -48,8 +48,8 @@ object TestData {
         val EMERGENCY_CONTACT_TYPE = ReferenceData(id(), PersonalContact.EMERGENCY_CONTACT, "Emergency Contact")
         val HOURS = ReferenceData(id(), "H", "Hours")
         val DAYS = ReferenceData(id(), "D", "Days")
-        val APPOINTMENT_CONTACT_TYPE = ContactType(id(), "Office Appointment", true)
-        val NON_APPOINTMENT_CONTACT_TYPE = ContactType(id(), "Case Note", false)
+        val APPOINTMENT_CONTACT_TYPE = ContactType(id(), "COF", "Office Appointment", true)
+        val NON_APPOINTMENT_CONTACT_TYPE = ContactType(id(), "CSN", "Case Note", false)
         val COMMUNITY_ORDER = DisposalType(id(), "Community Order", "NP")
         val REQUIREMENT_CATEGORY = RequirementMainCategory(id(), "C", "Court - Accredited Programme", DAYS)
         val REQUIREMENT_SUBCATEGORY = ReferenceData(id(), "BC", "Building Choices")
@@ -59,7 +59,7 @@ object TestData {
             RequirementMainCategory(id(), Requirement.RAR, "Rehabilitation Activity Requirement (RAR)", DAYS)
         val RAR_REQUIREMENT_SUBCATEGORY = ReferenceData(id(), "RAR", "Rehabilitation Activity Requirement (RAR)")
         val LICENCE_CONDITION_CATEGORY =
-            LicenceConditionMainCategory(id(), "Alcohol Monitoring (Electronic Monitoring)")
+            LicenceConditionMainCategory(id(), "ALC", "Alcohol Monitoring (Electronic Monitoring)")
         val LICENCE_CONDITION_SUBCATEGORY = ReferenceData(
             id = id(),
             code = "ALC",
