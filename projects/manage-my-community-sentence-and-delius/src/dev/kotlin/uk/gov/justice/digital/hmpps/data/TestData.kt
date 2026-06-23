@@ -59,7 +59,7 @@ object TestData {
             RequirementMainCategory(id(), Requirement.RAR, "Rehabilitation Activity Requirement (RAR)", DAYS)
         val RAR_REQUIREMENT_SUBCATEGORY = ReferenceData(id(), "RAR", "Rehabilitation Activity Requirement (RAR)")
         val LICENCE_CONDITION_CATEGORY =
-            LicenceConditionMainCategory(id(), "Alcohol Monitoring (Electronic Monitoring)")
+            LicenceConditionMainCategory(id(), "ALC", "Alcohol Monitoring (Electronic Monitoring)")
         val LICENCE_CONDITION_SUBCATEGORY = ReferenceData(
             id = id(),
             code = "ALC",

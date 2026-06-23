@@ -5,6 +5,7 @@ import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.entity.sentence.requirement.Requirement.Companion.RAR
 import uk.gov.justice.digital.hmpps.entity.sentence.requirement.Requirement.Companion.UPW
 import uk.gov.justice.digital.hmpps.model.CodeDescription
+import uk.gov.justice.digital.hmpps.model.CodeDescription.Companion.toModel
 import uk.gov.justice.digital.hmpps.model.DurationUnit
 import uk.gov.justice.digital.hmpps.model.SentenceProgress
 import uk.gov.justice.digital.hmpps.model.SentenceProgress.*
@@ -36,6 +37,8 @@ class SentenceService(
                         Requirement(
                             type = requirement.mainCategory.description,
                             description = requirement.subCategory?.description,
+                            mainCategory = requirement.mainCategory.toModel(),
+                            subCategory = requirement.subCategory?.toModel(),
                             required = requirement.length,
                             completed = when (requirement.mainCategory.code) {
                                 RAR -> contactRepository.countRarDaysAttended(requirement.id)
@@ -55,6 +58,8 @@ class SentenceService(
                         LicenceCondition(
                             type = licenceCondition.mainCategory.description,
                             description = licenceCondition.subCategory?.description,
+                            mainCategory = licenceCondition.mainCategory.toModel(),
+                            subCategory = licenceCondition.subCategory?.toModel(),
                             startDate = licenceCondition.commencementDate ?: licenceCondition.startDate,
                             expectedEndDate = licenceCondition.expectedEndDate,
                         )

@@ -22,7 +22,7 @@ data class Appointment(
     val unpaidWork: UpwResponse?
 ) {
     companion object {
-        fun Contact.toAppointment() = Appointment(
+        fun Contact.toModel() = Appointment(
             date = date,
             startTime = startTime,
             endTime = endTime,
