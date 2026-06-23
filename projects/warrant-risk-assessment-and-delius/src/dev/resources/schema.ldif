@@ -1,0 +1,19 @@
+dn: ou=Users,dc=moj,dc=com
+objectclass: top
+objectclass: organizationalUnit
+ou: Users
+
+dn: cn=BillyKid,ou=Users,dc=moj,dc=com
+objectclass: top
+objectclass: inetOrgPerson
+cn: BillyKid
+sn: Kid
+givenname: Billy
+telephoneNumber: 07707123456
+userHomeArea: N01
+
+dn: cn=UserPreferences,cn=BillyKid,ou=Users,dc=moj,dc=com
+objectclass: top
+objectclass: UserPreferences
+cn: UserPreferences
+replyAddress: 1000010
