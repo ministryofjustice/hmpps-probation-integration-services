@@ -70,7 +70,11 @@ class CustodyDateUpdateService(
         }
     }
 
-    private fun calculateKeyDateChanges(sentenceDetail: SentenceDetail, custody: Custody, booking: Booking): List<KeyDate> {
+    private fun calculateKeyDateChanges(
+        sentenceDetail: SentenceDetail,
+        custody: Custody,
+        booking: Booking
+    ): List<KeyDate> {
         val envelope = try {
             crdsApiClient.getOperativeSentenceEnvelope(booking.bookingNo)
         } catch (_: Exception) {
@@ -84,13 +88,15 @@ class CustodyDateUpdateService(
 
         val presumptiveElectronicMonitoringEndDate =
             sentenceLengthDays?.let { days ->
-                crd?.let { keyDateCalculator.calculatePresumptiveEMEndDate(it, days, isSdsPlus)
+                crd?.let {
+                    keyDateCalculator.calculatePresumptiveEMEndDate(it, days, isSdsPlus)
                 }
             }
 
         val finalThirdDate =
             sentenceLengthDays?.let { days ->
-                sed?.let { keyDateCalculator.calculateFinalThirdDate(it, days)
+                sed?.let {
+                    keyDateCalculator.calculateFinalThirdDate(it, days)
                 }
             }
 
@@ -101,7 +107,9 @@ class CustodyDateUpdateService(
             custody.keyDate(SENTENCE_EXPIRY_DATE.code, sentenceDetail.sentenceExpiryDate),
             custody.keyDate(EXPECTED_RELEASE_DATE.code, sentenceDetail.confirmedReleaseDate),
             custody.keyDate(HDC_EXPECTED_DATE.code, sentenceDetail.homeDetentionCurfewEligibilityDate),
-            custody.keyDate(POST_SENTENCE_SUPERVISION_END_DATE.code, sentenceDetail.postSentenceSupervisionEndDate.takeIf { custody.disposal?.type?.pssRequirement == true }),
+            custody.keyDate(
+                POST_SENTENCE_SUPERVISION_END_DATE.code,
+                sentenceDetail.postSentenceSupervisionEndDate.takeIf { custody.disposal?.type?.pssRequirement == true }),
             custody.keyDate(SUSPENSION_DATE_IF_RESET.code, suspensionDateIfReset(sentenceDetail, custody)),
             custody.keyDate(PRESUMPTIVE_EM_END_DATE.code, presumptiveElectronicMonitoringEndDate),
             custody.keyDate(FINAL_THIRD_START_DATE.code, finalThirdDate),

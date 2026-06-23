@@ -22,8 +22,8 @@ class RestClientConfig(private val oauth2Client: RestClient) {
     @Bean
     fun crdsApiClient(@Value("\${integrations.crds-api.url}") crdsApiBaseUrl: String) =
         createClient<CrdsApiClient>(
-        oauth2Client.mutate()
-            .baseUrl(crdsApiBaseUrl)
-            .build()
-    )
+            oauth2Client.mutate()
+                .baseUrl(crdsApiBaseUrl)
+                .build()
+        )
 }
