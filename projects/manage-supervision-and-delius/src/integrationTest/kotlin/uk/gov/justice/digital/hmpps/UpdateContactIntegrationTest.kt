@@ -5,6 +5,9 @@ import org.junit.jupiter.api.Test
 import org.springframework.test.web.servlet.patch
 import uk.gov.justice.digital.hmpps.api.model.contact.UpdateContact
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator
+import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.generateContact
+import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.generateContactAlert
+import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.json
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 import java.time.ZonedDateTime
@@ -19,7 +22,8 @@ class UpdateContactIntegrationTest : IntegrationTestBase() {
         val request = UpdateContact(
             dateTime = ZonedDateTime.now(),
             notes = "Updated notes",
-            sensitiveFlag = null
+            sensitiveFlag = null,
+            alert = null
         )
 
         mockMvc.patch("/contact/${contact.id}") {
@@ -34,7 +38,8 @@ class UpdateContactIntegrationTest : IntegrationTestBase() {
         val request = UpdateContact(
             dateTime = ZonedDateTime.now(),
             notes = null,
-            sensitiveFlag = null
+            sensitiveFlag = null,
+            alert = null
         )
 
         mockMvc.patch("/contact/987322642") {
@@ -50,7 +55,8 @@ class UpdateContactIntegrationTest : IntegrationTestBase() {
         val request = UpdateContact(
             dateTime = ZonedDateTime.now(),
             notes = null,
-            sensitiveFlag = null
+            sensitiveFlag = null,
+            alert = null
         )
 
 
@@ -66,7 +72,8 @@ class UpdateContactIntegrationTest : IntegrationTestBase() {
         val request = UpdateContact(
             dateTime = ZonedDateTime.now(),
             notes = "Appended note",
-            sensitiveFlag = null
+            sensitiveFlag = null,
+            alert = null
         )
 
 
@@ -85,7 +92,8 @@ class UpdateContactIntegrationTest : IntegrationTestBase() {
         val request = UpdateContact(
             dateTime = ZonedDateTime.now(),
             notes = null,
-            sensitiveFlag = true
+            sensitiveFlag = true,
+            alert = null
         )
 
         mockMvc.patch("/contact/${contact.id}") {
@@ -99,7 +107,8 @@ class UpdateContactIntegrationTest : IntegrationTestBase() {
         val request2 = UpdateContact(
             dateTime = ZonedDateTime.now(),
             notes = null,
-            sensitiveFlag = false
+            sensitiveFlag = false,
+            alert = null
         )
 
         mockMvc.patch("/contact/${contact.id}") {
@@ -107,5 +116,65 @@ class UpdateContactIntegrationTest : IntegrationTestBase() {
             json = request2
         }
             .andExpect { status { isBadRequest() } }
+    }
+
+    @Test
+    fun `update contact creates alert when requested`() {
+        val alertableContact = contactRepository.save(
+            generateContact(
+                person = PersonGenerator.OVERVIEW,
+                contactType = ContactGenerator.EMAIL_POP_CT,
+                startDateTime = ZonedDateTime.now(),
+                event = PersonGenerator.EVENT_1
+            )
+        )
+
+        val request = UpdateContact(
+            dateTime = ZonedDateTime.now(),
+            notes = null,
+            sensitiveFlag = null,
+            alert = true
+        )
+
+        mockMvc.patch("/contact/${alertableContact.id}") {
+            withToken()
+            json = request
+        }
+            .andExpect { status { isOk() } }
+
+        val savedContact = contactRepository.findById(alertableContact.id).get()
+        assertThat(savedContact.alert).isTrue
+        assertThat(contactAlertRepository.findByContactId(alertableContact.id)).hasSize(1)
+    }
+
+    @Test
+    fun `update contact deletes alert when requested`() {
+        val alertedContact = contactRepository.save(
+            generateContact(
+                person = PersonGenerator.OVERVIEW,
+                contactType = ContactGenerator.EMAIL_POP_CT,
+                startDateTime = ZonedDateTime.now(),
+                alert = true,
+                event = PersonGenerator.EVENT_1
+            )
+        )
+        contactAlertRepository.save(generateContactAlert(alertedContact))
+
+        val request = UpdateContact(
+            dateTime = ZonedDateTime.now(),
+            notes = null,
+            sensitiveFlag = null,
+            alert = false
+        )
+
+        mockMvc.patch("/contact/${alertedContact.id}") {
+            withToken()
+            json = request
+        }
+            .andExpect { status { isOk() } }
+
+        val savedContact = contactRepository.findById(alertedContact.id).get()
+        assertThat(savedContact.alert).isFalse
+        assertThat(contactAlertRepository.findByContactId(alertedContact.id)).isEmpty()
     }
 }
