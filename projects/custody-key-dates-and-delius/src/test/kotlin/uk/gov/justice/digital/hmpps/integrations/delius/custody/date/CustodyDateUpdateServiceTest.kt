@@ -20,6 +20,8 @@ import uk.gov.justice.digital.hmpps.data.generator.SentenceGenerator.generateCus
 import uk.gov.justice.digital.hmpps.data.generator.SentenceGenerator.generateDisposal
 import uk.gov.justice.digital.hmpps.data.generator.SentenceGenerator.generateDisposalType
 import uk.gov.justice.digital.hmpps.data.generator.SentenceGenerator.generateEvent
+import uk.gov.justice.digital.hmpps.integrations.crds.CrdsApiClient
+import uk.gov.justice.digital.hmpps.integrations.crds.KeyDateCalculator
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.contact.ContactService
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.reference.DatasetCode
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.reference.ReferenceDataRepository
@@ -35,6 +37,9 @@ internal class CustodyDateUpdateServiceTest {
 
     @Mock
     lateinit var prisonApi: PrisonApiClient
+
+    @Mock
+    lateinit var crdsApiClient: CrdsApiClient
 
     @Mock
     lateinit var personRepository: PersonRepository
@@ -53,6 +58,9 @@ internal class CustodyDateUpdateServiceTest {
 
     @Mock
     lateinit var telemetryService: TelemetryService
+
+    @Mock
+    lateinit var keyDateCalculator: KeyDateCalculator
 
     @InjectMocks
     lateinit var custodyDateUpdateService: CustodyDateUpdateService
