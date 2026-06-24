@@ -17,6 +17,7 @@ import org.springframework.ldap.query.LdapQueryBuilder.query
 import org.springframework.ldap.query.SearchScope
 import org.springframework.ldap.support.LdapNameBuilder
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
+import uk.gov.justice.digital.hmpps.retry.retry
 import javax.naming.Name
 import javax.naming.directory.Attributes
 import javax.naming.directory.BasicAttribute
@@ -33,17 +34,10 @@ inline fun <reified T> LdapTemplate.findByUsername(@SpanAttribute username: Stri
     find(query().byUsername(username), T::class.java).singleOrNull()
 
 @WithSpan
-fun LdapTemplate.findEmailByUsername(@SpanAttribute username: String) = findAttributeByUsername(username, "mail")
-
-@WithSpan
-fun LdapTemplate.findEmailByUsernameOrNull(@SpanAttribute username: String): String? = try {
-    findEmailByUsername(username)
-} catch (e: CommunicationException) {
-    Span.current().recordException(e)
-    null
-} catch (_: NotFoundException) {
-    null
-}
+fun LdapTemplate.findEmailByUsername(@SpanAttribute username: String) =
+    retry(3, listOf(CommunicationException::class)) {
+        findAttributeByUsername(username, "mail")
+    }
 
 @WithSpan
 fun LdapTemplate.findEmailByUsernames(usernames: List<String>) = findAttributeByUsernames(usernames, "mail")
