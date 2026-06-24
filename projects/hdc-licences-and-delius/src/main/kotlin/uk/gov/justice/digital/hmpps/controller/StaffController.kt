@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController
 import uk.gov.justice.digital.hmpps.entity.CommunityManagerEntity
 import uk.gov.justice.digital.hmpps.entity.StaffEntity
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
-import uk.gov.justice.digital.hmpps.ldap.findEmailByUsernameOrNull
+import uk.gov.justice.digital.hmpps.ldap.findEmailByUsername
 import uk.gov.justice.digital.hmpps.model.CommunityManager
 import uk.gov.justice.digital.hmpps.model.LocalAdminUnit
 import uk.gov.justice.digital.hmpps.model.Name
@@ -73,7 +73,7 @@ class StaffController(
             )
         },
         username = user?.username,
-        email = user?.username?.let { username -> ldapTemplate.findEmailByUsernameOrNull(username) }
+        email = user?.username?.let { username -> ldapTemplate.findEmailByUsername(username) }
     )
 
     private fun CommunityManagerEntity.toModel() = CommunityManager(
