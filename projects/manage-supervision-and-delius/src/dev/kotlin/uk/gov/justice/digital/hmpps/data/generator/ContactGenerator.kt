@@ -202,11 +202,16 @@ object ContactGenerator {
             attended = true,
             sensitive = false,
             complied = true,
-            requirement = generateRequirement(disposal = PersonGenerator.CUSTODY_DISPOSAL, subCategory = null, terminationDetails = null,  mainCategory = RequirementMainCategory(
-                id = IdGenerator.getAndIncrement(),
-                code = "F",
-                description = "F code"
-            )),
+            requirement = generateRequirement(
+                disposal = PersonGenerator.CUSTODY_DISPOSAL,
+                subCategory = null,
+                terminationDetails = null,
+                mainCategory = RequirementMainCategory(
+                    id = IdGenerator.getAndIncrement(),
+                    code = "F",
+                    description = "F code"
+                )
+            ),
             notes = "Notes",
         )
     val FIRST_APPT_CONTACT = generateContact(

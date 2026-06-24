@@ -66,7 +66,11 @@ internal class ScheduleServiceTest {
             appointmentContact("ZZZZ")
         )
         whenever(personRepository.findSummary(crn)).thenReturn(summaryEntity())
-        whenever(contactRepository.findUpComingAppointments(any(), any(), any(), any())).thenReturn(PageImpl(expectedContacts))
+        whenever(contactRepository.findUpComingAppointments(any(), any(), any(), any())).thenReturn(
+            PageImpl(
+                expectedContacts
+            )
+        )
 
         val res = service.getPersonUpcomingSchedule(crn, PageRequest.of(0, 10))
 
@@ -96,7 +100,11 @@ internal class ScheduleServiceTest {
             appointmentContact("EFGH")
         )
         whenever(personRepository.findSummary(crn)).thenReturn(summaryEntity())
-        whenever(contactRepository.findPageablePreviousAppointments(any(), any(), any(), any())).thenReturn(PageImpl(expectedContacts))
+        whenever(contactRepository.findPageablePreviousAppointments(any(), any(), any(), any())).thenReturn(
+            PageImpl(
+                expectedContacts
+            )
+        )
 
         val res = service.getPersonPreviousSchedule(
             crn,
