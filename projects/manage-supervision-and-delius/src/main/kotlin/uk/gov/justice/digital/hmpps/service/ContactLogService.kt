@@ -22,7 +22,10 @@ import uk.gov.justice.digital.hmpps.integrations.delius.user.team.getTeam
 import uk.gov.justice.digital.hmpps.messaging.EventType
 import uk.gov.justice.digital.hmpps.messaging.Notifier
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
+import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
 
 @Service
 class ContactLogService(
@@ -44,6 +47,7 @@ class ContactLogService(
     private val enforcementRepository: EnforcementRepository,
     private val telemetryService: TelemetryService,
     private val objectMapper: ObjectMapper,
+
 ) : AuditableService(auditedInteractionService) {
     companion object {
         const val REVIEW_ENFORCEMENT_STATUS = "ARWS"
@@ -305,5 +309,52 @@ class ContactLogService(
         } else {
             setEnforcementFlag(contact)
         }
+    }
+
+    @Transactional
+    fun updateEnforcementContactOutcome(contactId: Long, request: UpdateEnforcementActions){
+        val contact = contactRepository.getContact(contactId)
+        require(contact.outcome != null) { "Contact requires outcome" }
+        contact.enforcementFlag = true
+        var latestAction: EnforcementAction? = null
+        request.enforcementActions.forEach { ea ->
+            val enforcementAction = enforcementActionsRepository.getEnforcementActionByCode(ea.code!!)
+            require(enforcementActionsRepository.findByContactOutcomeId(contact.outcome!!.id).contains(enforcementAction))
+                { "Enforcement action must be valid for outcome" }
+            latestAction = enforcementAction
+            val enforcement = Enforcement(
+                contact = contact,
+                action = enforcementAction,
+                responseDate = null
+            )
+            createEnforcementContact(contact)
+            enforcementRepository.save(enforcement)
+            contact.appendNotes(
+                """
+                ${DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm").format(LocalDateTime.now())}
+                Enforcement Action: ${enforcementAction.description}
+                """.trimIndent()
+            )
+        }
+        latestAction?.let { contact.latestEnforcementAction = it }
+    }
+
+    private fun createEnforcementContact(contact: Contact) {
+        val enforcementContact = Contact(
+            person = contact.person,
+            notes = "",
+            linkedContactId = contact.id,
+            type = contactTypeRepository.getContactType("AROM"),
+            date = LocalDate.now(),
+            startTime = ZonedDateTime.now(),
+            event = contact.event,
+            nsiId = contact.nsiId,
+            requirement = contact.requirement,
+            licenceCondition = contact.licenceCondition,
+            provider = contact.provider,
+            team = contact.team,
+            staff = contact.staff,
+        )
+        contactRepository.save(enforcementContact)
     }
 }
