@@ -85,6 +85,9 @@ class UpdateEnforcementActionsIntegrationTest : IntegrationTestBase() {
         assertThat(linkedContactCountAfter, equalTo(linkedContactCountBefore + 2))
         assertThat(updatedContact.enforcementFlag, equalTo(true))
         assertThat(updatedContact.latestEnforcementAction?.code, equalTo(secondActionCode))
-        assertThat(updatedContact.notes ?: "", containsString("Enforcement Action: ${UpdateContactOutcomeGenerator.ENFORCEMENT_ACTION.description}"))
+        assertThat(
+            updatedContact.notes ?: "",
+            containsString("Enforcement Action: ${UpdateContactOutcomeGenerator.ENFORCEMENT_ACTION.description}")
+        )
     }
 }

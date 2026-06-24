@@ -48,7 +48,7 @@ class ContactLogService(
     private val telemetryService: TelemetryService,
     private val objectMapper: ObjectMapper,
 
-) : AuditableService(auditedInteractionService) {
+    ) : AuditableService(auditedInteractionService) {
     companion object {
         const val REVIEW_ENFORCEMENT_STATUS = "ARWS"
     }
@@ -312,7 +312,7 @@ class ContactLogService(
     }
 
     @Transactional
-    fun updateEnforcementContactOutcome(contactId: Long, request: UpdateEnforcementActions){
+    fun updateEnforcementContactOutcome(contactId: Long, request: UpdateEnforcementActions) {
         val contact = contactRepository.getContact(contactId)
         require(contact.outcome != null) { "Contact requires outcome" }
         contact.enforcementFlag = true
@@ -322,7 +322,7 @@ class ContactLogService(
         request.enforcementActions.forEach { ea ->
             val enforcementAction = enforcementActionsRepository.getEnforcementActionByCode(ea.code)
             require(validActionIds.contains(enforcementAction.id))
-                { "Enforcement action must be valid for outcome" }
+            { "Enforcement action must be valid for outcome" }
             latestAction = enforcementAction
             val enforcement = Enforcement(
                 contact = contact,
