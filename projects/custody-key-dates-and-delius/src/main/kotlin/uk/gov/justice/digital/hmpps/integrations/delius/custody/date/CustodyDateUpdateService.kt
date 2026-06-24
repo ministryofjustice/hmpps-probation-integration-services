@@ -71,7 +71,11 @@ class CustodyDateUpdateService(
         }
     }
 
-    private fun calculateKeyDateChanges(sentenceDetail: SentenceDetail, custody: Custody, envelope: OperativeSentenceEnvelope) =
+    private fun calculateKeyDateChanges(
+        sentenceDetail: SentenceDetail,
+        custody: Custody,
+        envelope: OperativeSentenceEnvelope
+    ) =
         listOfNotNull(
             custody.keyDate(LICENCE_EXPIRY_DATE.code, sentenceDetail.licenceExpiryDate),
             custody.keyDate(AUTOMATIC_CONDITIONAL_RELEASE_DATE.code, sentenceDetail.conditionalReleaseDate),
@@ -83,7 +87,10 @@ class CustodyDateUpdateService(
                 POST_SENTENCE_SUPERVISION_END_DATE.code,
                 sentenceDetail.postSentenceSupervisionEndDate.takeIf { custody.disposal?.type?.pssRequirement == true }),
             custody.keyDate(SUSPENSION_DATE_IF_RESET.code, suspensionDateIfReset(sentenceDetail, custody)),
-            custody.keyDate(PRESUMPTIVE_EM_END_DATE.code, presumptiveElectronicMonitoringEndDate(sentenceDetail, envelope)),
+            custody.keyDate(
+                PRESUMPTIVE_EM_END_DATE.code,
+                presumptiveElectronicMonitoringEndDate(sentenceDetail, envelope)
+            ),
             custody.keyDate(FINAL_THIRD_START_DATE.code, finalThirdDate(sentenceDetail, envelope)),
         )
 
@@ -95,7 +102,10 @@ class CustodyDateUpdateService(
             keyDateCalculator.calculateSuspensionDateIfReset(startDate, endDate)
         }
 
-    private fun presumptiveElectronicMonitoringEndDate(sentenceDetail: SentenceDetail, envelope: OperativeSentenceEnvelope): LocalDate? =
+    private fun presumptiveElectronicMonitoringEndDate(
+        sentenceDetail: SentenceDetail,
+        envelope: OperativeSentenceEnvelope
+    ): LocalDate? =
         envelope.sentenceEnvelopeLengthInDays?.let { days ->
             sentenceDetail.conditionalReleaseDate?.let { crd ->
                 keyDateCalculator.calculatePresumptiveEMEndDate(crd, days, envelope.containsAnSDSPlusSentence)

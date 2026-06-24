@@ -263,11 +263,11 @@ internal class CustodyDateUpdateServiceTest {
 
     private fun setupCrdsMock() {
         whenever(crdsApiClient.getOperativeSentenceEnvelope(any())).thenReturn(
-                OperativeSentenceEnvelope(
-                    sentenceEnvelopeLengthInDays = 50L,
-                    containsAnSDSPlusSentence = true,
-                )
+            OperativeSentenceEnvelope(
+                sentenceEnvelopeLengthInDays = 50L,
+                containsAnSDSPlusSentence = true,
             )
+        )
     }
 
     @ParameterizedTest
