@@ -16,7 +16,10 @@ data class ReferralSession(
 ) {
     val latestFeedback: Appointment? =
         if (appointmentFeedback.attendanceFeedback.attended != null) {
-            appointmentId?.let { Appointment(it, appointmentFeedback) }
+            Appointment(
+                checkNotNull(appointmentId) { "Feedback present but appointmentId is missing for session $id" },
+                appointmentFeedback
+            )
         } else {
             oldAppointments.latestAttendanceRecorded()
         }
