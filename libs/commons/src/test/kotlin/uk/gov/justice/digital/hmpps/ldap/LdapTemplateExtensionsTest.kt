@@ -10,7 +10,6 @@ import org.mockito.ArgumentMatchers.eq
 import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.*
-import org.springframework.ldap.CommunicationException
 import org.springframework.ldap.NameNotFoundException
 import org.springframework.ldap.core.AttributesMapper
 import org.springframework.ldap.core.DirContextOperations
