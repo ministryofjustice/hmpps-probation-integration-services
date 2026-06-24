@@ -1,7 +1,9 @@
 package uk.gov.justice.digital.hmpps.api.model.contact
 
-import uk.gov.justice.digital.hmpps.api.model.compliance.EnforcementAction
-
 data class UpdateEnforcementActions(
-    val enforcementActions: List<EnforcementAction>
+    val enforcementActions: List<EnforcementActionForUpdate>
+)
+
+data class EnforcementActionForUpdate(
+    val code: String,
 )

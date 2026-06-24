@@ -48,7 +48,7 @@ class ContactLogService(
     private val telemetryService: TelemetryService,
     private val objectMapper: ObjectMapper,
 
-    ) : AuditableService(auditedInteractionService) {
+) : AuditableService(auditedInteractionService) {
     companion object {
         const val REVIEW_ENFORCEMENT_STATUS = "ARWS"
     }
@@ -312,22 +312,22 @@ class ContactLogService(
     }
 
     @Transactional
-    fun updateEnforcementContactOutcome(contactId: Long, request: UpdateEnforcementActions) {
+    fun updateEnforcementContactOutcome(contactId: Long, request: UpdateEnforcementActions){
         val contact = contactRepository.getContact(contactId)
         require(contact.outcome != null) { "Contact requires outcome" }
         contact.enforcementFlag = true
         var latestAction: EnforcementAction? = null
+        val outcomeId = contact.outcome!!.id
+        val validActionIds = enforcementActionsRepository.findByContactOutcomeId(outcomeId).map { it.id }.toSet()
         request.enforcementActions.forEach { ea ->
-            val enforcementAction = enforcementActionsRepository.getEnforcementActionByCode(ea.code!!)
-            require(
-                enforcementActionsRepository.findByContactOutcomeId(contact.outcome!!.id).contains(enforcementAction)
-            )
-            { "Enforcement action must be valid for outcome" }
+            val enforcementAction = enforcementActionsRepository.getEnforcementActionByCode(ea.code)
+            require(validActionIds.contains(enforcementAction.id))
+                { "Enforcement action must be valid for outcome" }
             latestAction = enforcementAction
             val enforcement = Enforcement(
                 contact = contact,
                 action = enforcementAction,
-                responseDate = null
+                responseDate = contact.startTime?.plusDays(enforcementAction.responseByPeriod ?: 0)
             )
             createEnforcementContact(contact)
             enforcementRepository.save(enforcement)
@@ -348,7 +348,7 @@ class ContactLogService(
             linkedContactId = contact.id,
             type = contactTypeRepository.getContactType("AROM"),
             date = LocalDate.now(),
-            startTime = ZonedDateTime.now(),
+            startTime = ZonedDateTime.now(EuropeLondon),
             event = contact.event,
             nsiId = contact.nsiId,
             requirement = contact.requirement,

@@ -115,6 +115,25 @@ object UpdateContactOutcomeGenerator {
         )
     )
 
+    val ENFORCEMENT_ACTION_2 =
+        ContactGenerator.generateEnforcementAction("UCOENF2", "UCO Second Enforcement Action", CONTACT_TYPE)
+
+    val ENFORCEMENT_ACTION_2_OUTCOME_TYPE = EnforcementActionContactOutcome(
+        EnforcementActionContactOutcomeId(
+            enforcementActionId = ENFORCEMENT_ACTION_2.id,
+            contactOutcomeTypeId = OUTCOME.id
+        )
+    )
+
+    val AROM_CONTACT_TYPE = ContactType(
+        id = IdGenerator.getAndIncrement(),
+        code = "AROM",
+        attendanceContact = false,
+        description = "Add review outcome manual",
+        locationRequired = "N",
+        editable = true
+    )
+
     val CONTACT_3 = ContactGenerator.generateContact(
         PERSON,
         CONTACT_TYPE,

@@ -85,7 +85,7 @@ class ContactController(
 
     @PostMapping("/{contactId}/enforcement-actions")
     @WithDeliusUser
-    fun updateEnforcementContactOutcome(
+    fun addEnforcementActions(
         @PathVariable contactId: Long,
         @RequestBody request: UpdateEnforcementActions,
     ) = contactLogService.updateEnforcementContactOutcome(contactId, request)
