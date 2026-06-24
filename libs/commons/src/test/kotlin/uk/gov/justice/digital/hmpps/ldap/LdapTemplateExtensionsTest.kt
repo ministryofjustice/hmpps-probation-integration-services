@@ -66,7 +66,7 @@ class LdapTemplateExtensionsTest {
 
     @Test
     fun `find email by username or null returns email when LDAP is available`() {
-            .thenReturn(listOf("test@example.com"))
+        .thenReturn(listOf("test@example.com"))
 
         val email = ldapTemplate.findEmailByUsernameOrNull("test")
 
@@ -75,7 +75,7 @@ class LdapTemplateExtensionsTest {
 
     @Test
     fun `find email by username or null returns null when LDAP communication fails`() {
-            .thenThrow(CommunicationException(javax.naming.CommunicationException("LDAP server unavailable")))
+        .thenThrow(CommunicationException(javax.naming.CommunicationException("LDAP server unavailable")))
 
         val email = ldapTemplate.findEmailByUsernameOrNull("test")
 
@@ -84,7 +84,7 @@ class LdapTemplateExtensionsTest {
 
     @Test
     fun `find email by username or null returns null when user not found`() {
-            .thenThrow(NameNotFoundException("No Such Object"))
+        .thenThrow(NameNotFoundException("No Such Object"))
 
         val email = ldapTemplate.findEmailByUsernameOrNull("test")
 
