@@ -110,4 +110,22 @@ internal class ScheduleServiceTest {
         )
         assertThat(res.personSchedule.appointments, equalTo(expectedContacts.map { it.toActivity() }))
     }
+
+    @Test
+    fun `deliusManaged is false when contact type is in CreateAppointment types`() {
+        val contact = ContactGenerator.NEXT_APPT_CONTACT
+        assertThat(contact.toActivity().deliusManaged, equalTo(false))
+    }
+
+    @Test
+    fun `deliusManaged is true when contact type is unknown (not in CreateAppointment types)`() {
+        val contact = ContactGenerator.FIRST_NON_APPT_CONTACT
+        assertThat(contact.toActivity().deliusManaged, equalTo(true))
+    }
+
+    @Test
+    fun `deliusManaged is true when requirement mainCategory code is F`() {
+        val contact = ContactGenerator.FIRST_NON_APPT_CONTACT
+        assertThat(contact.toActivity().deliusManaged, equalTo(true))
+    }
 }
