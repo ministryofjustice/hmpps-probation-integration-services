@@ -1,7 +1,4 @@
 {
   "sentenceEnvelopeLengthInDays": 50,
-  "earliestSentenceStartDate": "2020-01-01",
-  "isPostRecallSentenceEnvelope": false,
-  "containsAnSDSPlusSentence": false,
-  "sentenceEnvelopeSource": "CRDS"
+  "containsAnSDSPlusSentence": false
 }

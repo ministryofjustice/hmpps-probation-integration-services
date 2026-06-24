@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.client.RestClientResponseException
 import uk.gov.justice.digital.hmpps.integrations.crds.CrdsApiClient
 import uk.gov.justice.digital.hmpps.integrations.crds.KeyDateCalculator
+import uk.gov.justice.digital.hmpps.integrations.crds.OperativeSentenceEnvelope
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.CustodyDateType.*
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.contact.ContactService
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.reference.ReferenceDataRepository
@@ -16,7 +17,6 @@ import uk.gov.justice.digital.hmpps.integrations.prison.PrisonApiClient
 import uk.gov.justice.digital.hmpps.integrations.prison.SentenceDetail
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import java.time.LocalDate
-import java.time.temporal.ChronoUnit.DAYS
 
 @Service
 @Transactional
@@ -55,7 +55,8 @@ class CustodyDateUpdateService(
             singleOrNull() ?: return telemetryService.trackEvent("MissingBookingRef", booking.telemetry(clientSource))
         }
         val custody = custodyRepository.findCustodyById(custodyRepository.findForUpdate(custodyId))
-        val updated = calculateKeyDateChanges(sentenceDetail, custody, booking)
+        val envelope = crdsApiClient.getOperativeSentenceEnvelope(booking.bookingNo)
+        val updated = calculateKeyDateChanges(sentenceDetail, custody, envelope)
         if (updated.isEmpty()) {
             telemetryService.trackEvent("KeyDatesUnchanged", booking.telemetry(clientSource))
         } else {
@@ -70,37 +71,8 @@ class CustodyDateUpdateService(
         }
     }
 
-    private fun calculateKeyDateChanges(
-        sentenceDetail: SentenceDetail,
-        custody: Custody,
-        booking: Booking
-    ): List<KeyDate> {
-        val envelope = try {
-            crdsApiClient.getOperativeSentenceEnvelope(booking.bookingNo)
-        } catch (_: Exception) {
-            null
-        }
-
-        val isSdsPlus = envelope?.containsAnSDSPlusSentence
-        val crd = sentenceDetail.conditionalReleaseDate
-        val sed = sentenceDetail.sentenceExpiryDate
-        val sentenceLengthDays = envelope?.sentenceEnvelopeLengthInDays
-
-        val presumptiveElectronicMonitoringEndDate =
-            sentenceLengthDays?.let { days ->
-                crd?.let {
-                    keyDateCalculator.calculatePresumptiveEMEndDate(it, days, isSdsPlus)
-                }
-            }
-
-        val finalThirdDate =
-            sentenceLengthDays?.let { days ->
-                sed?.let {
-                    keyDateCalculator.calculateFinalThirdDate(it, days)
-                }
-            }
-
-        return listOfNotNull(
+    private fun calculateKeyDateChanges(sentenceDetail: SentenceDetail, custody: Custody, envelope: OperativeSentenceEnvelope) =
+        listOfNotNull(
             custody.keyDate(LICENCE_EXPIRY_DATE.code, sentenceDetail.licenceExpiryDate),
             custody.keyDate(AUTOMATIC_CONDITIONAL_RELEASE_DATE.code, sentenceDetail.conditionalReleaseDate),
             custody.keyDate(PAROLE_ELIGIBILITY_DATE.code, sentenceDetail.paroleEligibilityDate),
@@ -111,17 +83,30 @@ class CustodyDateUpdateService(
                 POST_SENTENCE_SUPERVISION_END_DATE.code,
                 sentenceDetail.postSentenceSupervisionEndDate.takeIf { custody.disposal?.type?.pssRequirement == true }),
             custody.keyDate(SUSPENSION_DATE_IF_RESET.code, suspensionDateIfReset(sentenceDetail, custody)),
-            custody.keyDate(PRESUMPTIVE_EM_END_DATE.code, presumptiveElectronicMonitoringEndDate),
-            custody.keyDate(FINAL_THIRD_START_DATE.code, finalThirdDate),
+            custody.keyDate(PRESUMPTIVE_EM_END_DATE.code, presumptiveElectronicMonitoringEndDate(sentenceDetail, envelope)),
+            custody.keyDate(FINAL_THIRD_START_DATE.code, finalThirdDate(sentenceDetail, envelope)),
         )
-    }
 
     fun suspensionDateIfReset(sentenceDetail: SentenceDetail, custody: Custody): LocalDate? = custody.disposal
         ?.takeIf { it.type.determinateSentence }
         ?.let {
             val startDate = it.event.firstReleaseDate ?: sentenceDetail.conditionalReleaseDate ?: return null
             val endDate = sentenceDetail.sentenceExpiryDate ?: return null
-            return if (startDate < endDate) startDate.plusDays(DAYS.between(startDate, endDate) * 2 / 3) else null
+            keyDateCalculator.calculateSuspensionDateIfReset(startDate, endDate)
+        }
+
+    private fun presumptiveElectronicMonitoringEndDate(sentenceDetail: SentenceDetail, envelope: OperativeSentenceEnvelope): LocalDate? =
+        envelope.sentenceEnvelopeLengthInDays?.let { days ->
+            sentenceDetail.conditionalReleaseDate?.let { crd ->
+                keyDateCalculator.calculatePresumptiveEMEndDate(crd, days, envelope.containsAnSDSPlusSentence)
+            }
+        }
+
+    private fun finalThirdDate(sentenceDetail: SentenceDetail, envelope: OperativeSentenceEnvelope): LocalDate? =
+        envelope.sentenceEnvelopeLengthInDays?.let { days ->
+            sentenceDetail.sentenceExpiryDate?.let { sed ->
+                keyDateCalculator.calculateFinalThirdDate(sed, days)
+            }
         }
 
     private fun Custody.keyDate(code: String, date: LocalDate?): KeyDate? = date?.let {

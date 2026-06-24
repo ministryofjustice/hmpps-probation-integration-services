@@ -3,13 +3,13 @@ package uk.gov.justice.digital.hmpps.integrations.delius.custody.date
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.nullValue
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments.arguments
 import org.junit.jupiter.params.provider.MethodSource
 import org.mockito.ArgumentMatchers.anyList
-import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.*
@@ -22,6 +22,7 @@ import uk.gov.justice.digital.hmpps.data.generator.SentenceGenerator.generateDis
 import uk.gov.justice.digital.hmpps.data.generator.SentenceGenerator.generateEvent
 import uk.gov.justice.digital.hmpps.integrations.crds.CrdsApiClient
 import uk.gov.justice.digital.hmpps.integrations.crds.KeyDateCalculator
+import uk.gov.justice.digital.hmpps.integrations.crds.OperativeSentenceEnvelope
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.contact.ContactService
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.reference.DatasetCode
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.reference.ReferenceDataRepository
@@ -59,11 +60,22 @@ internal class CustodyDateUpdateServiceTest {
     @Mock
     lateinit var telemetryService: TelemetryService
 
-    @Mock
-    lateinit var keyDateCalculator: KeyDateCalculator
-
-    @InjectMocks
     lateinit var custodyDateUpdateService: CustodyDateUpdateService
+
+    @BeforeEach
+    fun setup() {
+        custodyDateUpdateService = CustodyDateUpdateService(
+            prisonApi,
+            personRepository,
+            custodyRepository,
+            referenceDataRepository,
+            keyDateRepository,
+            contactService,
+            telemetryService,
+            crdsApiClient,
+            KeyDateCalculator()
+        )
+    }
 
     @Test
     fun `inactive bookings are not processed`() {
@@ -131,6 +143,7 @@ internal class CustodyDateUpdateServiceTest {
 
     @Test
     fun `key date save and delete not called without appropriate key dates`() {
+        setupCrdsMock()
         val booking = Booking(127, "FG37K", true, PersonGenerator.DEFAULT.nomsId!!)
         val custody = SentenceGenerator.generateCustodialSentence(
             disposal = SentenceGenerator.generateDisposal(SentenceGenerator.generateEvent()),
@@ -154,6 +167,7 @@ internal class CustodyDateUpdateServiceTest {
 
     @Test
     fun `PSSED is included when disposal type has PSS_RQMNT Y`() {
+        setupCrdsMock()
         val booking = Booking(127, "FG37K", true, PersonGenerator.DEFAULT.nomsId!!)
         val pssDate = LocalDate.of(2025, 6, 1)
         val custody = generateCustodialSentence(
@@ -192,6 +206,7 @@ internal class CustodyDateUpdateServiceTest {
 
     @Test
     fun `PSSED is excluded when disposal type does not have PSS_RQMNT Y`() {
+        setupCrdsMock()
         val booking = Booking(127, "FG37K", true, PersonGenerator.DEFAULT.nomsId!!)
         val pssDate = LocalDate.of(2025, 6, 1)
         val custody = generateCustodialSentence(
@@ -244,6 +259,15 @@ internal class CustodyDateUpdateServiceTest {
         )
 
         assertThat(suspensionDateIfReset, nullValue())
+    }
+
+    private fun setupCrdsMock() {
+        whenever(crdsApiClient.getOperativeSentenceEnvelope(any())).thenReturn(
+                OperativeSentenceEnvelope(
+                    sentenceEnvelopeLengthInDays = 50L,
+                    containsAnSDSPlusSentence = true,
+                )
+            )
     }
 
     @ParameterizedTest
