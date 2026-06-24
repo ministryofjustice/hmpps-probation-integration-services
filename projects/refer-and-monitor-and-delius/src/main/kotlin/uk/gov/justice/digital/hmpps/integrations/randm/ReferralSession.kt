@@ -16,7 +16,7 @@ data class ReferralSession(
 ) {
     val latestFeedback: Appointment? =
         if (appointmentFeedback.attendanceFeedback.attended != null) {
-            appointmentId?.let { Appointment (it, appointmentFeedback) }
+            appointmentId?.let { Appointment(it, appointmentFeedback) }
         } else {
             oldAppointments.latestAttendanceRecorded()
         }
