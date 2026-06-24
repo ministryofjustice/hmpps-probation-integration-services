@@ -10,6 +10,7 @@ import org.mockito.ArgumentMatchers.eq
 import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.*
+import org.springframework.ldap.CommunicationException
 import org.springframework.ldap.NameNotFoundException
 import org.springframework.ldap.core.AttributesMapper
 import org.springframework.ldap.core.DirContextOperations
@@ -61,6 +62,36 @@ class LdapTemplateExtensionsTest {
         val email = ldapTemplate.findEmailByUsername("test")
 
         assertThat(email, equalTo("test@example.com"))
+    }
+
+    @Test
+    fun `findEmailByUsernameOrNull returns email when LDAP is available`() {
+        whenever(ldapTemplate.search(any(), any<AttributesMapper<String?>>()))
+            .thenReturn(listOf("test@example.com"))
+
+        val email = ldapTemplate.findEmailByUsernameOrNull("test")
+
+        assertThat(email, equalTo("test@example.com"))
+    }
+
+    @Test
+    fun `findEmailByUsernameOrNull returns null when LDAP communication fails`() {
+        whenever(ldapTemplate.search(any(), any<AttributesMapper<String?>>()))
+            .thenThrow(CommunicationException(javax.naming.CommunicationException("LDAP server unavailable")))
+
+        val email = ldapTemplate.findEmailByUsernameOrNull("test")
+
+        assertThat(email, nullValue())
+    }
+
+    @Test
+    fun `findEmailByUsernameOrNull returns null when user not found`() {
+        whenever(ldapTemplate.search(any(), any<AttributesMapper<String?>>()))
+            .thenThrow(NameNotFoundException("No Such Object"))
+
+        val email = ldapTemplate.findEmailByUsernameOrNull("test")
+
+        assertThat(email, nullValue())
     }
 
     @Test
