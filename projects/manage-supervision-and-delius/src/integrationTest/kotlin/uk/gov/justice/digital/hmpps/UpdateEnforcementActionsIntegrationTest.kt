@@ -96,7 +96,10 @@ class UpdateEnforcementActionsIntegrationTest : IntegrationTestBase() {
         assertThat(linkedContactCountAfter, equalTo(linkedContactCountBefore + 1))
         assertThat(updatedContact.enforcementFlag, equalTo(true))
         assertThat(updatedContact.latestEnforcementAction?.code, equalTo(actionCode))
-        assertThat(updatedContact.notes ?: "", containsString("Enforcement Action: ${UpdateContactOutcomeGenerator.PERSON_LEVEL_ENFORCEMENT_ACTION.description}"))
+        assertThat(
+            updatedContact.notes ?: "",
+            containsString("Enforcement Action: ${UpdateContactOutcomeGenerator.PERSON_LEVEL_ENFORCEMENT_ACTION.description}")
+        )
     }
 
     private fun ensureAromContactTypeExists() {
