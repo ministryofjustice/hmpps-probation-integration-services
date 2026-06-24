@@ -331,6 +331,7 @@ class DataLoader(dataManager: DataManager, private val jdbcTemplate: JdbcTemplat
             UpdateContactOutcomeGenerator.CONTACT_2,
             UpdateContactOutcomeGenerator.CONTACT_3,
             UpdateContactOutcomeGenerator.CONTACT_4,
+            UpdateContactOutcomeGenerator.CONTACT_NO_OUTCOME,
             UpdateContactOutcomeGenerator.CONTACT_5,
             UpdateContactOutcomeGenerator.CONTACT_6,
             UpdateContactOutcomeGenerator.FTC_DISPOSAL_TYPE,

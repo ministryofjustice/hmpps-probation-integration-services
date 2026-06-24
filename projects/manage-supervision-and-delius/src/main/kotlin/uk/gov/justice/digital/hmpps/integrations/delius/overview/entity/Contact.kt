@@ -1130,6 +1130,16 @@ interface EnforcementActionsRepository : JpaRepository<EnforcementAction, Long> 
     )
     fun findByContactOutcomeId(outcomeId: Long): List<EnforcementAction>
     fun findEnforcementActionByCode(code: String): MutableList<EnforcementAction>
+
+    @Query(
+        """
+        select ea.* from r_enforcement_action ea
+        join r_enf_act_contact_out_type eaco on eaco.enforcement_action_id = ea.enforcement_action_id
+        where eaco.contact_outcome_type_id = ?1 and ea.code in (?2)
+        """,
+        nativeQuery = true
+    )
+    fun findByContactOutcomeIdAndCodeIn(outcomeId: Long, codes: List<String>): List<EnforcementAction>
 }
 
 fun EnforcementActionsRepository.getEnforcementActionByCode(code: String): EnforcementAction =

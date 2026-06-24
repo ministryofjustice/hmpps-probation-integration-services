@@ -152,6 +152,16 @@ object UpdateContactOutcomeGenerator {
         event = EVENT
     )
 
+    // Contact with no outcome — used to verify enforcement fails when outcome is missing
+    val CONTACT_NO_OUTCOME = ContactGenerator.generateContact(
+        PERSON,
+        CONTACT_TYPE,
+        ZonedDateTime.of(LocalDateTime.now(EuropeLondon).plusHours(7), EuropeLondon),
+        team = TEAM,
+        staff = STAFF,
+        event = EVENT
+    )
+
     // A person-level contact type (offenderContact = true) — not linked to an event
     val PERSON_LEVEL_CONTACT_TYPE = ContactType(
         id = IdGenerator.getAndIncrement(),

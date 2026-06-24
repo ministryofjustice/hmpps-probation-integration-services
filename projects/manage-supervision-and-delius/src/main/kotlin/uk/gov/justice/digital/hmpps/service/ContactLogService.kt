@@ -48,7 +48,7 @@ class ContactLogService(
     private val telemetryService: TelemetryService,
     private val objectMapper: ObjectMapper,
 
-    ) : AuditableService(auditedInteractionService) {
+) : AuditableService(auditedInteractionService) {
     companion object {
         const val REVIEW_ENFORCEMENT_STATUS = "ARWS"
     }
@@ -312,24 +312,21 @@ class ContactLogService(
     }
 
     @Transactional
-    fun updateEnforcementContactOutcome(contactId: Long, request: UpdateEnforcementActions) {
+    fun updateEnforcementContactOutcome(contactId: Long, request: UpdateEnforcementActions){
         val contact = contactRepository.getContact(contactId)
-        require(contact.outcome != null) { "Contact requires outcome" }
+        require(contact.outcome?.outcomeCompliantAcceptable == false ) { "Contact requires outcome to be non compliant" }
         contact.enforcementFlag = true
-        var latestAction: EnforcementAction? = null
         val outcomeId = contact.outcome!!.id
-        val validActionIds = enforcementActionsRepository.findByContactOutcomeId(outcomeId).map { it.id }.toSet()
+        val validActions = enforcementActionsRepository.findByContactOutcomeIdAndCodeIn(outcomeId, request.enforcementActions.map { it.code }.toList())
         request.enforcementActions.forEach { ea ->
-            val enforcementAction = enforcementActionsRepository.getEnforcementActionByCode(ea.code)
-            require(validActionIds.contains(enforcementAction.id))
-            { "Enforcement action must be valid for outcome" }
-            latestAction = enforcementAction
+            val enforcementAction = validActions.singleOrNull { it.code == ea.code } ?: error("Enforcement action must be valid for outcome")
+            val responseDate = enforcementAction.responseByPeriod.let { if (it == null) null else contact.startTime?.plusDays(it) }
             val enforcement = Enforcement(
                 contact = contact,
                 action = enforcementAction,
-                responseDate = contact.startTime?.plusDays(enforcementAction.responseByPeriod ?: 0)
+                responseDate = responseDate
             )
-            createEnforcementContact(contact)
+            createEnforcementContact(contact, enforcementAction)
             enforcementRepository.save(enforcement)
             contact.appendNotes(
                 """
@@ -338,15 +335,16 @@ class ContactLogService(
                 """.trimIndent()
             )
         }
-        latestAction?.let { contact.latestEnforcementAction = it }
+        contact.latestEnforcementAction = validActions.single { it.code == request.enforcementActions.last().code }
     }
 
-    private fun createEnforcementContact(contact: Contact) {
+
+    private fun createEnforcementContact(contact: Contact, enforcementAction: EnforcementAction) {
         val enforcementContact = Contact(
             person = contact.person,
             notes = "",
             linkedContactId = contact.id,
-            type = contactTypeRepository.getContactType("AROM"),
+            type = contactTypeRepository.findById(enforcementAction.contactType.id).get().orNotFoundBy("id", enforcementAction.contactType.id),
             date = LocalDate.now(),
             startTime = ZonedDateTime.now(EuropeLondon),
             event = contact.event,
