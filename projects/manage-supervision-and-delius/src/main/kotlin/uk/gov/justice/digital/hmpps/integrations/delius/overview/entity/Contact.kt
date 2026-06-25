@@ -1139,7 +1139,7 @@ interface EnforcementActionsRepository : JpaRepository<EnforcementAction, Long> 
         """,
         nativeQuery = true
     )
-    fun findByContactOutcomeIdAndCodeIn(outcomeId: Long, codes: List<String>): List<EnforcementAction>
+    fun findByContactOutcomeIdAndCodeIn(outcomeId: Long, codes: Set<String>): List<EnforcementAction>
 }
 
 fun EnforcementActionsRepository.getEnforcementActionByCode(code: String): EnforcementAction =

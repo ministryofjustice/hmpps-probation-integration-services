@@ -319,13 +319,13 @@ class ContactLogService(
         val outcomeId = contact.outcome!!.id
         val validActions = enforcementActionsRepository.findByContactOutcomeIdAndCodeIn(
             outcomeId,
-            request.enforcementActions.map { it.code }.toList()
+            request.enforcementActions.map { it.code }.toSet()
         )
         request.enforcementActions.forEach { ea ->
             val enforcementAction = validActions.singleOrNull { it.code == ea.code }
                 ?: error("Enforcement action must be valid for outcome")
             val responseDate =
-                enforcementAction.responseByPeriod.let { if (it == null) null else contact.startTime?.plusDays(it) }
+                enforcementAction.responseByPeriod?.let { contact.startTime?.plusDays(it) }
             val enforcement = Enforcement(
                 contact = contact,
                 action = enforcementAction,
