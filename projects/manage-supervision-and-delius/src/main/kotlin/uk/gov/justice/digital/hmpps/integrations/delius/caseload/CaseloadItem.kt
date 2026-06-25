@@ -20,6 +20,7 @@ interface CaseloadItem {
     val prevAppointmentDateTime: LocalDateTime?
     val prevAppointmentTypeDescription: String?
     val allocatedDate: LocalDateTime?
+    val currentTierCode: String?
 }
 
 interface TeamCaseloadItem {

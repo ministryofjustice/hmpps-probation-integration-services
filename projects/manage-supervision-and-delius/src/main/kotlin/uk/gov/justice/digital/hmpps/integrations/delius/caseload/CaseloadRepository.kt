@@ -103,10 +103,12 @@ from ( with filtered_caseload as ( select caseload.*
               prev_appointment.date_time                  as prev_appointment_date_time,
               prev_appointment.type_description           as prev_appointment_type_description,
               team.code                                   as team_code,
-              ca.allocation_decision_date                 as allocated_date
+              ca.allocation_decision_date                 as allocated_date,
+              current_tier.code_value                     as current_tier_code
        from filtered_caseload
        join team on team.team_id = filtered_caseload.trust_provider_team_id
        join offender person on filtered_caseload.offender_id = person.offender_id
+       left join r_standard_reference_list current_tier on current_tier.standard_reference_list_id = person.current_tier
        left join case_allocation ca on ca.offender_id = filtered_caseload.offender_id and ca.event_id = filtered_caseload.event_id
        left join next_appointment on filtered_caseload.offender_id = next_appointment.offender_id
        left join prev_appointment on filtered_caseload.offender_id = prev_appointment.offender_id
@@ -114,14 +116,17 @@ from ( with filtered_caseload as ( select caseload.*
        left join disposal on sentence_stats.latest_disposal_id = disposal.disposal_id
        left join r_disposal_type on disposal.disposal_type_id = r_disposal_type.disposal_type_id
        where (:nextContactCode is null or next_appointment.type_code = :nextContactCode)
-         and (:sentenceCode is null or r_disposal_type.disposal_type_code = :sentenceCode) ) main
+         and (:sentenceCode is null or r_disposal_type.disposal_type_code = :sentenceCode)
+         and (:tierCode is null or current_tier.code_value = :tierCode) ) main
 order by null
     """,
         countQuery = """
         with filtered_caseload as ( select caseload.*
                                         from caseload
                                         join offender person on caseload.offender_id = person.offender_id
+                                        left join r_standard_reference_list current_tier on current_tier.standard_reference_list_id = person.current_tier
                                         where caseload.staff_employee_id = :staffId
+                                          and (:tierCode is null or current_tier.code_value = :tierCode)
                                           and caseload.role_code = 'OM'
                                           and caseload.trust_provider_flag = 0
                                           and (:nameOrCrn is null or lower(person.crn) like '%' || :nameOrCrn || '%' or
@@ -185,6 +190,7 @@ order by null
         nameOrCrn: String? = null,
         nextContactCode: String? = null,
         sentenceCode: String? = null,
+        tierCode: String? = null,
     ): Page<CaseloadItem>
 
     @Query(

@@ -100,6 +100,9 @@ internal class UserServiceTest {
     @Mock
     lateinit var providerRepository: ProviderRepository
 
+    @Mock
+    lateinit var referenceDataRepository: uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.ReferenceDataRepository
+
     @InjectMocks
     lateinit var service: UserService
 
@@ -759,6 +762,7 @@ internal class UserServiceTest {
         override val prevAppointmentDateTime = null
         override val prevAppointmentTypeDescription = null
         override val allocatedDate: LocalDateTime? = null
+        override val currentTierCode: String? = null
     }
 
     fun Caseload.toTeamCaseloadItem() = object : TeamCaseloadItem {

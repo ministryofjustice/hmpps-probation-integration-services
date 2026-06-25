@@ -40,7 +40,6 @@ class CaseloadController(private val userService: UserService) {
     fun getUserTeams(@PathVariable username: String) = userService.getUserTeams(username)
 
     @GetMapping("/team/{teamCode}")
-
     @Operation(summary = "Gets the caseload for the team")
     fun getTeamCaseload(
         @PathVariable teamCode: String,

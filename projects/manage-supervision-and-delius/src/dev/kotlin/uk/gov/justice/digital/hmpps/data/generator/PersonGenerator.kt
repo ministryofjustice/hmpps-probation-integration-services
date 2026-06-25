@@ -14,6 +14,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.compliance.Nsi
 import uk.gov.justice.digital.hmpps.integrations.delius.compliance.NsiStatus
 import uk.gov.justice.digital.hmpps.integrations.delius.compliance.NsiType
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.*
+import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.Dataset
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.ReferenceData
 import uk.gov.justice.digital.hmpps.integrations.delius.risk.DeRegistration
 import uk.gov.justice.digital.hmpps.integrations.delius.risk.RegistrationReview
@@ -29,7 +30,10 @@ object PersonGenerator {
     val GENDER_MALE = ReferenceData(IdGenerator.getAndIncrement(), "M", "Male")
     val MAPPA_CATEGORY = ReferenceData(IdGenerator.getAndIncrement(), "X9", "X9 Desc")
     val MAPPA_LEVEL = ReferenceData(IdGenerator.getAndIncrement(), "M2", "M2 Desc")
-    val OVERVIEW = generateOverview("X000004")
+    val TIER_DATASET = Dataset(IdGenerator.getAndIncrement(), "TIER")
+    val TIER_B2 = ReferenceData(IdGenerator.getAndIncrement(), "UB2", "B2", TIER_DATASET.id)
+    val TIER_C1 = ReferenceData(IdGenerator.getAndIncrement(), "UC1", "C1", TIER_DATASET.id)
+    val OVERVIEW = generateOverview("X000004", tier = TIER_B2)
     val E_SUP_PERSON = generateOverview("E500700")
     val CUSTODY_DISPOSAL_TYPE = generateDisposalType("CST", "Custody Sentence Type", "NC", 0)
     val CUSTODY_PERSON = generateOverview(crn = "X123422", forename = "custody", surname = "person")
@@ -494,7 +498,8 @@ object PersonGenerator {
         gender: ReferenceData = GENDER_MALE,
         id: Long = IdGenerator.getAndIncrement(),
         exclusionMessage: String? = null,
-        restrictionMessage: String? = null
+        restrictionMessage: String? = null,
+        tier: ReferenceData? = null
     ) = Person(
         id = id,
         crn = crn,
@@ -516,7 +521,8 @@ object PersonGenerator {
         genderIdentity = null,
         genderIdentityDescription = null,
         exclusionMessage = exclusionMessage,
-        restrictionMessage = restrictionMessage
+        restrictionMessage = restrictionMessage,
+        tier = tier
     )
 
     fun generateRequirement(

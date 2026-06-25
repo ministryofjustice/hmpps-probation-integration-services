@@ -10,6 +10,7 @@ import org.springframework.ldap.query.LdapQueryBuilder.query
 import org.springframework.ldap.query.SearchScope
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import uk.gov.justice.digital.hmpps.api.model.CodeAndDescription
 import uk.gov.justice.digital.hmpps.api.model.Name
 import uk.gov.justice.digital.hmpps.api.model.appointment.CreateAppointment
 import uk.gov.justice.digital.hmpps.api.model.appointment.UserAppointment
@@ -30,6 +31,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.caseload.TeamCaseloadIte
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.BoroughRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.EnforcementAppointment
+import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.ReferenceDataRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.LdapUser
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.StaffUser
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.StaffUserRepository
@@ -60,7 +62,8 @@ class UserService(
     private val boroughRepository: BoroughRepository,
     private val ldapTemplate: LdapTemplate,
     private val deliusUserAspect: DeliusUserAspect,
-    private val providerRepository: ProviderRepository
+    private val providerRepository: ProviderRepository,
+    private val referenceDataRepository: ReferenceDataRepository
 ) {
     fun getUserDetails(username: String): UserDetails {
         val ldapUser = ldapTemplate.findByUsername<LdapUser>(username)
@@ -124,12 +127,14 @@ class UserService(
             staffId = staff.id,
             nameOrCrn = searchFilter.nameOrCrn?.trim()?.lowercase(),
             nextContactCode = searchFilter.nextContactCode?.trim()?.uppercase(),
-            sentenceCode = searchFilter.sentenceCode?.trim()?.uppercase()
+            sentenceCode = searchFilter.sentenceCode?.trim()?.uppercase(),
+            tierCode = searchFilter.tierCode?.trim()?.uppercase()
         )
         val sentenceTypes =
             caseloadRepository.findSentenceTypesForStaff(staff.id).map { KeyPair(it.code.trim(), it.description) }
         val contactTypes =
             caseloadRepository.findContactTypesForStaff(staff.id).map { KeyPair(it.code.trim(), it.description) }
+        val tierTypes = referenceDataRepository.findByDatasetCode("TIER").map { KeyPair(it.code, it.description) }
         val userAccess = userAccessService.userAccessFor(username, caseload.content.map { it.crn })
 
         return StaffCaseload(
@@ -138,7 +143,7 @@ class UserService(
             provider = staff.provider.description,
             caseload = caseload.content.map { it.toStaffCase(userAccess.access.first { ua -> ua.crn == it.crn }) },
             staff = staff.name(),
-            metaData = MetaData(sentenceTypes = sentenceTypes, contactTypes = contactTypes),
+            metaData = MetaData(sentenceTypes = sentenceTypes, contactTypes = contactTypes, tierTypes = tierTypes),
             sortedBy = sortedBy
         )
     }
@@ -351,6 +356,8 @@ class UserService(
             .map { Staff(name = Name(forename = it.forename, surname = it.surname), code = it.code) }
         return TeamStaff(provider = provider, staff = staff)
     }
+
+    fun getTiers() = referenceDataRepository.findByDatasetCode("TIER").map { CodeAndDescription(it.code, it.description) }
 }
 
 fun CaseloadItem.toStaffCase(caseAccess: CaseAccess? = null) = if (caseAccess.isLao()) {
@@ -376,7 +383,8 @@ fun CaseloadItem.toStaffCase(caseAccess: CaseAccess? = null) = if (caseAccess.is
         dob = dateOfBirth?.toLocalDate(),
         latestSentence = latestSentenceTypeDescription,
         numberOfAdditionalSentences = totalSentences - 1,
-        allocatedOn = allocatedDate?.toLocalDate()
+        allocatedOn = allocatedDate?.toLocalDate(),
+        currentTier = currentTierCode
     )
 }
 

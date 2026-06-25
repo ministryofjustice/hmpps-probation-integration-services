@@ -15,6 +15,8 @@ import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.STAFF_1
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.USER
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.USER_1
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.OVERVIEW
+import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.TIER_B2
+import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.TIER_C1
 import uk.gov.justice.digital.hmpps.data.generator.personalDetails.PersonDetailsGenerator.PERSONAL_DETAILS
 import uk.gov.justice.digital.hmpps.service.name
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
@@ -36,6 +38,7 @@ class UserIntegrationTest : IntegrationTestBase() {
         assertThat(res.caseload[0].crn, equalTo(OVERVIEW.crn))
         assertThat(res.caseload[0].caseName, equalTo(OVERVIEW.name()))
         assertThat(res.caseload[0].allocatedOn, equalTo(LocalDate.of(2024, 6, 15)))
+        assertThat(res.caseload[0].currentTier, equalTo(TIER_B2.code))
     }
 
     @Test
@@ -253,6 +256,7 @@ class UserIntegrationTest : IntegrationTestBase() {
         assertThat(res.caseload[0].caseName?.surname, equalTo("Surname"))
         assertThat(res.metaData?.contactTypes?.size, equalTo(1))
         assertThat(res.metaData?.sentenceTypes?.size, equalTo(1))
+        assertThat(res.metaData?.tierTypes?.size, equalTo(2))
     }
 
     @Test
@@ -295,5 +299,35 @@ class UserIntegrationTest : IntegrationTestBase() {
         val user = USER
         mockMvc.post("/caseload/user/${user.username}/search?sortBy=sentence.desc") { withToken() }
             .andExpect { status { isBadRequest() } }
+    }
+
+    @Test
+    fun `caseload search returns 1 case when tierCode specified in filter`() {
+
+        val user = USER
+        val res = mockMvc.post("/caseload/user/${user.username}/search") {
+            withToken()
+            json = UserSearchFilter(tierCode = TIER_B2.code)
+        }
+            .andExpect { status { isOk() } }
+            .andReturn().response.contentAsJson<StaffCaseload>()
+
+        assertThat(res.caseload.size, equalTo(1))
+        assertThat(res.caseload[0].crn, equalTo("X000004"))
+        assertThat(res.caseload[0].currentTier, equalTo(TIER_B2.code))
+    }
+
+    @Test
+    fun `caseload search returns 0 cases when tierCode specified does not match any case`() {
+
+        val user = USER
+        val res = mockMvc.post("/caseload/user/${user.username}/search") {
+            withToken()
+            json = UserSearchFilter(tierCode = TIER_C1.code)
+        }
+            .andExpect { status { isOk() } }
+            .andReturn().response.contentAsJson<StaffCaseload>()
+
+        assertThat(res.caseload.size, equalTo(0))
     }
 }

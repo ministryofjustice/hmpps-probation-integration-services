@@ -14,4 +14,5 @@ data class StaffCase(
     val numberOfAdditionalSentences: Long? = null,
     val limitedAccess: Boolean? = false,
     val allocatedOn: LocalDate? = null,
+    val currentTier: String? = null
 )

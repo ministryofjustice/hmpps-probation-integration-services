@@ -56,6 +56,9 @@ class DataLoader(dataManager: DataManager, private val jdbcTemplate: JdbcTemplat
             PersonGenerator.MAPPA_LEVEL
         )
 
+        save(PersonGenerator.TIER_DATASET)
+        saveAll(PersonGenerator.TIER_B2, PersonGenerator.TIER_C1)
+
         PersonGenerator.DISABILITIES.forEach { save(it.type) }
         PersonGenerator.PROVISIONS.forEach { save(it.type) }
         PersonGenerator.PERSONAL_CIRCUMSTANCES.forEach {

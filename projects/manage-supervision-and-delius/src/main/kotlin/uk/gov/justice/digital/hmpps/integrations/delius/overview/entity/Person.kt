@@ -69,6 +69,10 @@ class Person(
     val previousSurname: String? = null,
 
     @ManyToOne
+    @JoinColumn(name = "current_tier")
+    val tier: ReferenceData? = null,
+
+    @ManyToOne
     @JoinColumn(name = "gender_id")
     val gender: ReferenceData,
 

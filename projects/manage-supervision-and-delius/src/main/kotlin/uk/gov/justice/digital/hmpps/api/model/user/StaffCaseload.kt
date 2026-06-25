@@ -14,7 +14,8 @@ data class StaffCaseload(
 
 data class MetaData(
     val sentenceTypes: List<KeyPair>,
-    val contactTypes: List<KeyPair>
+    val contactTypes: List<KeyPair>,
+    val tierTypes: List<KeyPair>
 )
 
 data class KeyPair(
