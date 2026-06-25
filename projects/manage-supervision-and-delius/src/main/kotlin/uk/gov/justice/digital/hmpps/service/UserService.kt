@@ -357,7 +357,8 @@ class UserService(
         return TeamStaff(provider = provider, staff = staff)
     }
 
-    fun getTiers() = referenceDataRepository.findByDatasetCode("TIER").map { CodeAndDescription(it.code, it.description) }
+    fun getTiers() =
+        referenceDataRepository.findByDatasetCode("TIER").map { CodeAndDescription(it.code, it.description) }
 }
 
 fun CaseloadItem.toStaffCase(caseAccess: CaseAccess? = null) = if (caseAccess.isLao()) {
