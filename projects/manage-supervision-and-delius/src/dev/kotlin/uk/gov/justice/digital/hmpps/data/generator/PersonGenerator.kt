@@ -155,7 +155,7 @@ object PersonGenerator {
         LocalDate.now()
     )
 
-    val DEFAULT_DISPOSAL_TYPE = generateDisposalType("DFS", "Default Sentence Type", "NP", 0)
+    val DEFAULT_DISPOSAL_TYPE = generateDisposalType("DFS", "Default Sentence Type", "NP", 0, pssRequirement = true)
 
     val TERMINATION_REASON = generateTerminationReason()
 
@@ -548,8 +548,9 @@ object PersonGenerator {
         description: String,
         sentenceType: String? = null,
         ftcLimit: Long? = null,
+        pssRequirement: Boolean? = null,
         id: Long = IdGenerator.getAndIncrement()
-    ) = DisposalType(code, description, sentenceType, ftcLimit, id)
+    ) = DisposalType(code, description, sentenceType, ftcLimit, pssRequirement, id)
 
     fun generateTerminationReason() =
         ReferenceData(id = IdGenerator.getAndIncrement(), code = "TERM1", "Termination Reason")

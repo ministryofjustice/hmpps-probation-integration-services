@@ -4,6 +4,7 @@ import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.NumericBooleanConverter
+import org.hibernate.type.YesNoConverter
 import org.springframework.data.annotation.CreatedBy
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedBy
@@ -174,6 +175,10 @@ class DisposalType(
 
     @Column(name = "ftc_limit")
     val ftcLimit: Long? = null,
+
+    @Column(name = "pss_rqmnt")
+    @Convert(converter = YesNoConverter::class)
+    val pssRequirement: Boolean? = null,
 
     @Id
     @Column(name = "disposal_type_id")

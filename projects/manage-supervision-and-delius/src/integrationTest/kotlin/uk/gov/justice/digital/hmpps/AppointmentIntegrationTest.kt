@@ -78,7 +78,8 @@ class AppointmentIntegrationTest : IntegrationTestBase() {
                     eventNumber = EVENT_1.eventNumber,
                     order = MinimalOrder(
                         ACTIVE_ORDER.type.description + " (12 Months)",
-                        SentenceType.COMMUNITY, ACTIVE_ORDER.date
+                        SentenceType.COMMUNITY, ACTIVE_ORDER.date,
+                        pss = true
                     ),
                     nsis = listOf(
                         MinimalNsi(PersonGenerator.BREACH_ON_ACTIVE_ORDER.id, "BRE description"),
