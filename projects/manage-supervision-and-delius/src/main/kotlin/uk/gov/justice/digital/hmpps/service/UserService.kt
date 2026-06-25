@@ -63,7 +63,6 @@ class UserService(
     private val ldapTemplate: LdapTemplate,
     private val deliusUserAspect: DeliusUserAspect,
     private val providerRepository: ProviderRepository,
-    private val referenceDataRepository: ReferenceDataRepository
 ) {
     fun getUserDetails(username: String): UserDetails {
         val ldapUser = ldapTemplate.findByUsername<LdapUser>(username)
@@ -134,7 +133,7 @@ class UserService(
             caseloadRepository.findSentenceTypesForStaff(staff.id).map { KeyPair(it.code.trim(), it.description) }
         val contactTypes =
             caseloadRepository.findContactTypesForStaff(staff.id).map { KeyPair(it.code.trim(), it.description) }
-        val tierTypes = referenceDataRepository.findByDatasetCode("TIER").map { KeyPair(it.code.trim(), it.description) }
+        val tierTypes = caseloadRepository.findTiersForStaff(staff.id).map { KeyPair(it.code.trim(), it.description) }
         val userAccess = userAccessService.userAccessFor(username, caseload.content.map { it.crn })
 
         return StaffCaseload(

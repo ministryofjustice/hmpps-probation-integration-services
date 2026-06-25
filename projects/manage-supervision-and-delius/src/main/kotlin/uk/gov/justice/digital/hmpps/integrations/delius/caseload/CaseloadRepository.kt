@@ -4,6 +4,7 @@ import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
+import uk.gov.justice.digital.hmpps.api.model.CodeAndDescription
 import uk.gov.justice.digital.hmpps.integrations.delius.caseload.entity.Caseload
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.DisposalType
 import uk.gov.justice.digital.hmpps.integrations.delius.user.entity.ContactTypeDetails
@@ -251,4 +252,17 @@ order by null
         """
     )
     fun findSentenceTypesForStaff(id: Long): List<DisposalType>
+
+    @Query(
+        """
+            select distinct new uk.gov.justice.digital.hmpps.api.model.CodeAndDescription(o.tier.code, o.tier.description) 
+            from Caseload c
+            join Person o on o.id = c.person.id
+            where c.staff.id = :id
+            and c.roleCode = 'OM'
+            and o.tier is not null
+            order by o.tier.code asc
+        """
+    )
+    fun findTiersForStaff(id: Long): List<CodeAndDescription>
 }

@@ -256,7 +256,7 @@ class UserIntegrationTest : IntegrationTestBase() {
         assertThat(res.caseload[0].caseName?.surname, equalTo("Surname"))
         assertThat(res.metaData?.contactTypes?.size, equalTo(1))
         assertThat(res.metaData?.sentenceTypes?.size, equalTo(1))
-        assertThat(res.metaData?.tierTypes?.size, equalTo(2))
+        assertThat(res.metaData?.tierTypes?.size, equalTo(1))
     }
 
     @Test

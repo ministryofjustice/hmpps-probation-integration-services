@@ -100,9 +100,6 @@ internal class UserServiceTest {
     @Mock
     lateinit var providerRepository: ProviderRepository
 
-    @Mock
-    lateinit var referenceDataRepository: uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.ReferenceDataRepository
-
     @InjectMocks
     lateinit var service: UserService
 
