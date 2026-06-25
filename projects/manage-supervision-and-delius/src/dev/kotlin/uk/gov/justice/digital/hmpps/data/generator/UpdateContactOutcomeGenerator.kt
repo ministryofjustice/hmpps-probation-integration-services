@@ -115,6 +115,25 @@ object UpdateContactOutcomeGenerator {
         )
     )
 
+    val ENFORCEMENT_ACTION_2 =
+        ContactGenerator.generateEnforcementAction("UCOENF2", "UCO Second Enforcement Action", CONTACT_TYPE)
+
+    val ENFORCEMENT_ACTION_2_OUTCOME_TYPE = EnforcementActionContactOutcome(
+        EnforcementActionContactOutcomeId(
+            enforcementActionId = ENFORCEMENT_ACTION_2.id,
+            contactOutcomeTypeId = OUTCOME.id
+        )
+    )
+
+    val AROM_CONTACT_TYPE = ContactType(
+        id = IdGenerator.getAndIncrement(),
+        code = "AROM",
+        attendanceContact = false,
+        description = "Add review outcome manual",
+        locationRequired = "N",
+        editable = true
+    )
+
     val CONTACT_3 = ContactGenerator.generateContact(
         PERSON,
         CONTACT_TYPE,
@@ -128,6 +147,16 @@ object UpdateContactOutcomeGenerator {
         PERSON,
         CONTACT_TYPE,
         ZonedDateTime.of(LocalDateTime.now(EuropeLondon).plusHours(6), EuropeLondon),
+        team = TEAM,
+        staff = STAFF,
+        event = EVENT
+    )
+
+    // Contact with no outcome — used to verify enforcement fails when outcome is missing
+    val CONTACT_NO_OUTCOME = ContactGenerator.generateContact(
+        PERSON,
+        CONTACT_TYPE,
+        ZonedDateTime.of(LocalDateTime.now(EuropeLondon).plusHours(7), EuropeLondon),
         team = TEAM,
         staff = STAFF,
         event = EVENT
