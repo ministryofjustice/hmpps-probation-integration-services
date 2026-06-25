@@ -55,7 +55,7 @@ jobs:
       contents: read
       issues: write
     steps:
-      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
       - name: Create issue for manual steps
         run: |
           gh issue create \
@@ -87,7 +87,7 @@ jobs:
           client-id: ${{ secrets.BOT_APP_ID }}
           private-key: ${{ secrets.BOT_APP_PRIVATE_KEY }}
 
-      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
           ref: main
           token: ${{ steps.app-token.outputs.token }}
@@ -113,7 +113,7 @@ jobs:
           labels: bootstrap
           token: ${{ steps.app-token.outputs.token }}
 
-      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
           ref: main
           path: hmpps-probation-integration-e2e-tests
@@ -138,7 +138,7 @@ jobs:
           client-id: ${{ secrets.BOT_APP_ID }}
           private-key: ${{ secrets.BOT_APP_PRIVATE_KEY }}
 
-      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
           ref: main
           repository: ministryofjustice/hmpps-probation-integration-e2e-tests
@@ -168,7 +168,7 @@ jobs:
       - project-setup
       - e2e-test-setup
     steps:
-      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
       - name: Create issue for manual steps
         run: |
           gh issue create \
@@ -190,7 +190,7 @@ jobs:
     outputs:
       project_slug: ${{ steps.project.outputs.slug }}
     steps:
-      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
 
       - name: Create project
         id: project
@@ -276,7 +276,7 @@ jobs:
         environment: [ "test", "preprod", "prod" ]
     environment: ${{ matrix.environment }}
     steps:
-      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
 
       - uses: ./.github/actions/cloud-platform-auth
         with:
@@ -372,7 +372,7 @@ jobs:
       - sqs-queue-setup-preprod
       - sqs-queue-setup-prod
     steps:
-      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
       - name: Create issue for manual steps
         run: |
           gh issue create \
@@ -459,7 +459,7 @@ jobs:
       - infra-setup-preprod
       - infra-setup-prod
     steps:
-      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
       - name: Create issue for manual steps
         run: |
           gh issue create \
