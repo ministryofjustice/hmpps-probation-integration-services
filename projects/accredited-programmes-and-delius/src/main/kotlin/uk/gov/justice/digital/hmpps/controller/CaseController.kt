@@ -31,7 +31,15 @@ class CaseController(private val caseDetailService: CaseDetailService) {
     fun getRequirement(@PathVariable crn: String, @PathVariable id: Long) =
         caseDetailService.getRequirement(crn, id)
 
+    @GetMapping(value = ["/case/{crn}/requirements"])
+    fun getRequirements(@PathVariable crn: String) =
+        caseDetailService.getRequirements(crn)
+
     @GetMapping(value = ["/case/{crn}/licence-conditions/{id}"])
     fun getLicenceCondition(@PathVariable crn: String, @PathVariable id: Long) =
         caseDetailService.getLicenceCondition(crn, id)
+
+    @GetMapping(value = ["/case/{crn}/licence-conditions"])
+    fun getLicenceConditions(@PathVariable crn: String) =
+        caseDetailService.getLicenceConditions(crn)
 }
