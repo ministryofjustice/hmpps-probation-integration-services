@@ -16,6 +16,7 @@ import org.springframework.ldap.core.DirContextOperations
 import org.springframework.ldap.core.LdapTemplate
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.ldap.entity.LdapUser
+import java.util.*
 import javax.naming.Name
 import javax.naming.directory.Attributes
 import javax.naming.ldap.LdapName
@@ -55,8 +56,8 @@ class LdapTemplateExtensionsTest {
 
     @Test
     fun `find email by username`() {
-        whenever(ldapTemplate.search(any(), any<AttributesMapper<String?>>()))
-            .thenReturn(listOf("test@example.com"))
+        whenever(ldapTemplate.search(any(), any<AttributesMapper<Optional<String>>>()))
+            .thenReturn(listOf(Optional.ofNullable("test@example.com")))
 
         val email = ldapTemplate.findEmailByUsername("test")
 
@@ -65,8 +66,8 @@ class LdapTemplateExtensionsTest {
 
     @Test
     fun `find preference by username`() {
-        whenever(ldapTemplate.search(any(), any<AttributesMapper<String?>>()))
-            .thenReturn(listOf("test preference"))
+        whenever(ldapTemplate.search(any(), any<AttributesMapper<Optional<String>>>()))
+            .thenReturn(listOf(Optional.ofNullable("test preference")))
 
         val preference = ldapTemplate.findPreferenceByUsername("test", "attribute")
 
@@ -75,7 +76,7 @@ class LdapTemplateExtensionsTest {
 
     @Test
     fun `find preference by username throws not found`() {
-        whenever(ldapTemplate.search(any(), any<AttributesMapper<String?>>()))
+        whenever(ldapTemplate.search(any(), any<AttributesMapper<String>>()))
             .thenThrow(NameNotFoundException("not found"))
 
         assertThrows<NotFoundException> { ldapTemplate.findPreferenceByUsername("test", "attribute") }
@@ -84,8 +85,8 @@ class LdapTemplateExtensionsTest {
 
     @Test
     fun `get roles`() {
-        whenever(ldapTemplate.search(any(), any<AttributesMapper<String?>>()))
-            .thenReturn(listOf("ROLE1", "ROLE2", null))
+        whenever(ldapTemplate.search(any(), any<AttributesMapper<String>>()))
+            .thenReturn(listOf("ROLE1", "ROLE2"))
 
         val roles = ldapTemplate.getRoles("test")
 
@@ -159,7 +160,7 @@ class LdapTemplateExtensionsTest {
     @Test
     fun `unknown username throws NotFoundException when getting roles`() {
 
-        whenever(ldapTemplate.search(any(), any<AttributesMapper<String?>>()))
+        whenever(ldapTemplate.search(any(), any<AttributesMapper<String>>()))
             .thenThrow(NameNotFoundException("No Such Object"))
 
         assertThrows<NotFoundException> { ldapTemplate.getRoles("test") }
@@ -168,7 +169,7 @@ class LdapTemplateExtensionsTest {
     @Test
     fun `unknown username throws NotFoundException finding by username`() {
 
-        whenever(ldapTemplate.search(any(), any<AttributesMapper<String?>>()))
+        whenever(ldapTemplate.search(any(), any<AttributesMapper<String>>()))
             .thenThrow(NameNotFoundException("No Such Object"))
 
         assertThrows<NotFoundException> { ldapTemplate.findEmailByUsername("test") }

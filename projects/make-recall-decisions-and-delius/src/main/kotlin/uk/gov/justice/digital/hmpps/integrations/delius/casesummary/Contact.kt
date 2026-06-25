@@ -22,6 +22,10 @@ class Contact(
     @Column(name = "contact_id")
     val id: Long,
 
+    @Version
+    @Column(name = "row_version")
+    val version: Long = 0,
+
     @Column(name = "offender_id")
     val personId: Long,
 

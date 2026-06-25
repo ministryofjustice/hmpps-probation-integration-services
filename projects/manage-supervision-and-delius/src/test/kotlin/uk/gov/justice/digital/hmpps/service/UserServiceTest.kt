@@ -60,6 +60,7 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.ZonedDateTime
+import java.util.*
 
 @ExtendWith(MockitoExtension::class)
 internal class UserServiceTest {
@@ -195,9 +196,9 @@ internal class UserServiceTest {
             ),
             DEFAULT_TEAM
         )
-        whenever(ldapTemplate.search(any(), any<AttributesMapper<Any?>>()))
-            .thenReturn(listOf(OffenderManagerGenerator.PAU_USER_RECORD1.id.provider.code)) // homeArea
-            .thenReturn(listOf("7"))                                                         // defaultTeam
+        whenever(ldapTemplate.search(any(), any<AttributesMapper<Any>>()))
+            .thenReturn(listOf(Optional.of(OffenderManagerGenerator.PAU_USER_RECORD1.id.provider.code))) // homeArea
+            .thenReturn(listOf(Optional.of("7")))                                                        // defaultTeam
             .thenReturn(listOf("username" to null))
 
         whenever(probationAreaUserRepository.findByUsername(STAFF_USER_1.username)).thenReturn(probationAreaUsers)
@@ -257,8 +258,8 @@ internal class UserServiceTest {
             DEFAULT_TEAM
         )
 
-        whenever(ldapTemplate.search(any(), any<AttributesMapper<Any?>>()))
-            .thenReturn(listOf(OffenderManagerGenerator.PAU_USER_RECORD1.id.provider.code)) // homeArea
+        whenever(ldapTemplate.search(any(), any<AttributesMapper<Any>>()))
+            .thenReturn(listOf(Optional.of(OffenderManagerGenerator.PAU_USER_RECORD1.id.provider.code))) // homeArea
             .thenReturn(emptyList())                                                         // no defaultTeam
             .thenReturn(listOf("username" to null))                                          // email lookup
 
@@ -303,10 +304,10 @@ internal class UserServiceTest {
         )
 
         // Mock for homeArea lookup (returns String)
-        whenever(ldapTemplate.search(any(), any<AttributesMapper<Any?>>()))
-            .thenReturn(listOf(OffenderManagerGenerator.PAU_USER_RECORD1.id.provider.code)) // homeArea (String)
+        whenever(ldapTemplate.search(any(), any<AttributesMapper<Any>>()))
+            .thenReturn(listOf(Optional.of(OffenderManagerGenerator.PAU_USER_RECORD1.id.provider.code))) // homeArea (String)
             .thenReturn(listOf("username" to null)) // email lookup (Pair)
-            .thenReturn(listOf("7"))
+            .thenReturn(listOf(Optional.of("7")))
 
         whenever(probationAreaUserRepository.findByUsername(STAFF_USER_1.username)).thenReturn(probationAreaUsers)
         whenever(teamRepository.findByProviderCode(PROVIDER_2.code)).thenReturn(teams)
@@ -337,8 +338,8 @@ internal class UserServiceTest {
             Team(1, "t01", "team1", listOf(DEFAULT_STAFF, STAFF_1), DEFAULT_PROVIDER, DEFAULT_DISTRICT, LocalDate.now())
         )
 
-        whenever(ldapTemplate.search(any(), any<AttributesMapper<Any?>>()))
-            .thenReturn(listOf(OffenderManagerGenerator.PAU_USER_RECORD1.id.provider.code)) // homeArea (String)
+        whenever(ldapTemplate.search(any(), any<AttributesMapper<Any>>()))
+            .thenReturn(listOf(Optional.of(OffenderManagerGenerator.PAU_USER_RECORD1.id.provider.code))) // homeArea (String)
             .thenReturn(listOf("username" to null))                                          // email lookup (Pair)
             .thenReturn(emptyList())                                                         // defaultTeam preference (no value)
 

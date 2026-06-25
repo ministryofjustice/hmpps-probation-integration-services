@@ -18,6 +18,7 @@ import org.springframework.ldap.query.SearchScope
 import org.springframework.ldap.support.LdapNameBuilder
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.retry.retry
+import java.util.*
 import javax.naming.Name
 import javax.naming.directory.Attributes
 import javax.naming.directory.BasicAttribute
@@ -30,7 +31,7 @@ fun LdapQueryBuilder.byUsername(username: String): LdapQuery =
     searchScope(SearchScope.ONELEVEL).where("cn").`is`(username)
 
 @WithSpan
-inline fun <reified T> LdapTemplate.findByUsername(@SpanAttribute username: String) =
+inline fun <reified T : Any> LdapTemplate.findByUsername(@SpanAttribute username: String) =
     find(query().byUsername(username), T::class.java).singleOrNull()
 
 @WithSpan
@@ -51,8 +52,8 @@ fun LdapTemplate.findAttributeByUsername(@SpanAttribute username: String, @SpanA
             .where("objectclass").`is`("inetOrgPerson")
             .and("objectclass").`is`("top")
             .and("cn").`is`(username),
-        AttributesMapper { it[attribute]?.get()?.toString() }
-    ).singleOrNull()
+        AttributesMapper { Optional.ofNullable(it[attribute]?.get()?.toString()) }
+    ).singleOrNull()?.orElse(null)
 } catch (_: NameNotFoundException) {
     throw NotFoundException("User", "username", username)
 }
@@ -78,7 +79,7 @@ fun LdapTemplate.findAttributeByUsernames(usernames: List<String>, @SpanAttribut
         .associate { it.first!! to it.second }
 
 @WithSpan
-inline fun <reified T> LdapTemplate.findByUsernames(usernames: List<String>): List<T> =
+inline fun <reified T : Any> LdapTemplate.findByUsernames(usernames: List<String>): List<T> =
     usernames.asSequence()
         .distinct()
         .chunked(LDAP_MAX_RESULTS_PER_QUERY)
@@ -97,8 +98,8 @@ fun LdapTemplate.findPreferenceByUsername(@SpanAttribute username: String, @Span
             .attributes(attribute)
             .searchScope(SearchScope.OBJECT)
             .where("objectclass").`is`("UserPreferences"),
-        AttributesMapper { it[attribute]?.get()?.toString() }
-    ).singleOrNull()
+        AttributesMapper { Optional.ofNullable(it[attribute]?.get()?.toString()) }
+    ).singleOrNull()?.orElse(null)
 } catch (_: NameNotFoundException) {
     throw NotFoundException("User preferences", "username", username)
 }
@@ -112,7 +113,7 @@ fun LdapTemplate.getRoles(@SpanAttribute username: String) = try {
             .searchScope(SearchScope.ONELEVEL)
             .where("objectclass").`is`("NDRole")
             .or("objectclass").`is`("NDRoleAssociation"),
-        AttributesMapper { it["cn"]?.get()?.toString() }
+        AttributesMapper { it["cn"].get().toString() }
     ).filterNotNull()
 } catch (_: NameNotFoundException) {
     throw NotFoundException("User", "username", username)

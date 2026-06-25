@@ -45,6 +45,10 @@ class Contact(
     @Column(name = "contact_id")
     val id: Long = 0,
 
+    @Version
+    @Column(name = "row_version")
+    val version: Long = 0,
+
     @ManyToOne
     @JoinColumn(name = "offender_id")
     val person: Person,
@@ -176,7 +180,7 @@ class Contact(
     @Column(name = "trust_provider_team_id")
     val trustProviderTeamId: Long = 0,
 
-    val partitionAreaId: Long = 0
+    val partitionAreaId: Long = 0,
 ) {
 
     fun startDateTime(): ZonedDateTime {
