@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.ldap
 import io.opentelemetry.api.trace.Span
 import io.opentelemetry.instrumentation.annotations.SpanAttribute
 import io.opentelemetry.instrumentation.annotations.WithSpan
+import org.springframework.ldap.CommunicationException
 import org.springframework.ldap.NameAlreadyBoundException
 import org.springframework.ldap.NameNotFoundException
 import org.springframework.ldap.core.AttributesMapper
@@ -16,6 +17,7 @@ import org.springframework.ldap.query.LdapQueryBuilder.query
 import org.springframework.ldap.query.SearchScope
 import org.springframework.ldap.support.LdapNameBuilder
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
+import uk.gov.justice.digital.hmpps.retry.retry
 import javax.naming.Name
 import javax.naming.directory.Attributes
 import javax.naming.directory.BasicAttribute
@@ -32,7 +34,10 @@ inline fun <reified T> LdapTemplate.findByUsername(@SpanAttribute username: Stri
     find(query().byUsername(username), T::class.java).singleOrNull()
 
 @WithSpan
-fun LdapTemplate.findEmailByUsername(@SpanAttribute username: String) = findAttributeByUsername(username, "mail")
+fun LdapTemplate.findEmailByUsername(@SpanAttribute username: String) =
+    retry(3, listOf(CommunicationException::class)) {
+        findAttributeByUsername(username, "mail")
+    }
 
 @WithSpan
 fun LdapTemplate.findEmailByUsernames(usernames: List<String>) = findAttributeByUsernames(usernames, "mail")
