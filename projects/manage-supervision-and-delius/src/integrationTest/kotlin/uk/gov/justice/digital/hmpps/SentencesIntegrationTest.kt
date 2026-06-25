@@ -64,7 +64,8 @@ class SentencesIntegrationTest : IntegrationTestBase() {
                     order = MinimalOrder(
                         ACTIVE_ORDER.type.description + " (12 Months)",
                         SentenceType.COMMUNITY,
-                        ACTIVE_ORDER.date
+                        ACTIVE_ORDER.date,
+                        pss = true
                     ),
                     licenceConditions = listOf(
                         MinimalLicenceCondition(
