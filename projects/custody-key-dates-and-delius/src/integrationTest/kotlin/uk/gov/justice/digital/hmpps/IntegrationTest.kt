@@ -143,7 +143,7 @@ internal class IntegrationTest @Autowired constructor(
         assertThat(erd?.date, equalTo(LocalDate.parse("2022-11-27")))
         assertThat(hde?.date, equalTo(LocalDate.parse("2022-10-28")))
         assertThat(pr1?.date, equalTo(LocalDate.parse("2024-10-05")))
-        assertThat(emed?.date, equalTo(LocalDate.parse("2022-12-05")))
+        assertThat(emed?.date, equalTo(LocalDate.parse("2022-11-30")))
         assertThat(fthrd?.date, equalTo(LocalDate.parse("2025-08-25")))
 
         assertThat(led?.softDeleted, equalTo(false))
@@ -171,7 +171,7 @@ internal class IntegrationTest @Autowired constructor(
             EXP 27/11/2022
             HDE 28/10/2022
             PR1 05/10/2024
-            EMED 05/12/2022
+            EMED 30/11/2022
             FTHRD 25/08/2025
                 """.trimIndent()
             )
