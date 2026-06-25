@@ -6,7 +6,7 @@ import java.util.UUID
 
 data class ReferralSession(
     val id: UUID,
-    val appointmentId: UUID,
+    val appointmentId: UUID?,
     val sessionNumber: Int,
     val appointmentTime: ZonedDateTime,
     @JsonAlias("deliusAppointmentId")
@@ -16,7 +16,10 @@ data class ReferralSession(
 ) {
     val latestFeedback: Appointment? =
         if (appointmentFeedback.attendanceFeedback.attended != null) {
-            Appointment(appointmentId, appointmentFeedback)
+            Appointment(
+                checkNotNull(appointmentId) { "Feedback present but appointmentId is missing for session $id" },
+                appointmentFeedback
+            )
         } else {
             oldAppointments.latestAttendanceRecorded()
         }
