@@ -11,7 +11,7 @@ import java.time.LocalDate
 @Entity
 @Immutable
 @Table(name = "personal_contact")
-@SQLRestriction("soft_deleted = 0 and end_date is null or end_date > current_date)")
+@SQLRestriction("soft_deleted = 0 and (end_date is null or end_date > current_date)")
 class PersonalContact(
     @Id
     @Column(name = "personal_contact_id")

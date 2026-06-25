@@ -10,7 +10,7 @@ import java.time.LocalDate
 @Entity
 @Immutable
 @Table(name = "offender_address")
-@SQLRestriction("soft_deleted = 0 and end_date is null or end_date > current_date)")
+@SQLRestriction("soft_deleted = 0 and (end_date is null or end_date > current_date)")
 class Address(
     @Id
     @Column(name = "offender_address_id")
