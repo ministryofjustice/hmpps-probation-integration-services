@@ -18,6 +18,7 @@ import org.springframework.ldap.query.SearchScope
 import org.springframework.ldap.support.LdapNameBuilder
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.retry.retry
+import java.util.*
 import javax.naming.Name
 import javax.naming.directory.Attributes
 import javax.naming.directory.BasicAttribute
@@ -51,8 +52,8 @@ fun LdapTemplate.findAttributeByUsername(@SpanAttribute username: String, @SpanA
             .where("objectclass").`is`("inetOrgPerson")
             .and("objectclass").`is`("top")
             .and("cn").`is`(username),
-        AttributesMapper { it[attribute].get().toString() }
-    ).singleOrNull()
+        AttributesMapper { Optional.ofNullable(it[attribute]?.get()?.toString()) }
+    ).singleOrNull()?.orElse(null)
 } catch (_: NameNotFoundException) {
     throw NotFoundException("User", "username", username)
 }
@@ -97,8 +98,8 @@ fun LdapTemplate.findPreferenceByUsername(@SpanAttribute username: String, @Span
             .attributes(attribute)
             .searchScope(SearchScope.OBJECT)
             .where("objectclass").`is`("UserPreferences"),
-        AttributesMapper { it[attribute].get().toString() }
-    ).singleOrNull()
+        AttributesMapper { Optional.ofNullable(it[attribute]?.get()?.toString()) }
+    ).singleOrNull()?.orElse(null)
 } catch (_: NameNotFoundException) {
     throw NotFoundException("User preferences", "username", username)
 }
