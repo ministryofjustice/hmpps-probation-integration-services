@@ -16,6 +16,7 @@ import org.springframework.ldap.core.DirContextOperations
 import org.springframework.ldap.core.LdapTemplate
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.ldap.entity.LdapUser
+import java.util.*
 import javax.naming.Name
 import javax.naming.directory.Attributes
 import javax.naming.ldap.LdapName
@@ -55,8 +56,8 @@ class LdapTemplateExtensionsTest {
 
     @Test
     fun `find email by username`() {
-        whenever(ldapTemplate.search(any(), any<AttributesMapper<String>>()))
-            .thenReturn(listOf("test@example.com"))
+        whenever(ldapTemplate.search(any(), any<AttributesMapper<Optional<String>>>()))
+            .thenReturn(listOf(Optional.ofNullable("test@example.com")))
 
         val email = ldapTemplate.findEmailByUsername("test")
 
@@ -65,8 +66,8 @@ class LdapTemplateExtensionsTest {
 
     @Test
     fun `find preference by username`() {
-        whenever(ldapTemplate.search(any(), any<AttributesMapper<String>>()))
-            .thenReturn(listOf("test preference"))
+        whenever(ldapTemplate.search(any(), any<AttributesMapper<Optional<String>>>()))
+            .thenReturn(listOf(Optional.ofNullable("test preference")))
 
         val preference = ldapTemplate.findPreferenceByUsername("test", "attribute")
 
