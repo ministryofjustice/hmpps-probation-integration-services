@@ -14,6 +14,7 @@ class BasicDetailsService(
     fun getBasicDetails(crn: String): BasicDetails {
         val person = personRepository.getPerson(crn)
         val addresses = addressRepository.findByPersonIdAndEndDateIsNull(person.id)
+            .sortedWith(compareBy<Address>({ it.status.code }, { it.id }))
         val employers = personalContactRepository.findCurrentEmployersByPersonId(person.id)
         val lastHomeVisitDate = contactRepository.findLastHomeVisitDate(person.id)
 
