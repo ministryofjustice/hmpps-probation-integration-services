@@ -9,14 +9,14 @@ import kotlin.math.roundToLong
 class KeyDateCalculator {
 
     companion object {
-        private const val SDS_PERCENTAGE = 0.17
+        private const val SDS_PERCENTAGE = 0.07
         private const val SDS_PLUS_PERCENTAGE = 0.17
     }
 
     /**
      * EMED Calculation = CRD + X% of sentence length
-     * For SDS this is 17%
-     * Currently SDS+ is also 17% but subject to change.
+     * For SDS this is 7%
+     * For SDS+ this is 17%
      */
     fun calculatePresumptiveEMEndDate(crd: LocalDate, sentenceLengthDays: Long, isSdsPlus: Boolean?): LocalDate {
 
