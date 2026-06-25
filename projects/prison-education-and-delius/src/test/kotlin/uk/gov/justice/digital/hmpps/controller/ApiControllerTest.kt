@@ -21,6 +21,7 @@ import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.repository.AddressRepository
 import uk.gov.justice.digital.hmpps.repository.CommunityManagerRepository
 import uk.gov.justice.digital.hmpps.repository.PersonRepository
+import java.util.*
 
 @ExtendWith(MockitoExtension::class)
 class ApiControllerTest {
@@ -73,7 +74,8 @@ class ApiControllerTest {
     fun `linked user account returns email`() {
         whenever(personRepository.findByPrisonerId(PERSON.prisonerId)).thenReturn(PERSON)
         whenever(communityManagerRepository.findByPersonId(PERSON.id)).thenReturn(COMMUNITY_MANAGER_WITH_USER)
-        whenever(ldapTemplate.search(any(), any<AttributesMapper<String>>())).thenReturn(listOf("test@example.com"))
+        whenever(ldapTemplate.search(any(), any<AttributesMapper<Optional<String>>>()))
+            .thenReturn(listOf(Optional.of("test@example.com")))
 
         apiController.getCommunityManager(PERSON.prisonerId).run {
             assertThat(firstName, equalTo("Test"))

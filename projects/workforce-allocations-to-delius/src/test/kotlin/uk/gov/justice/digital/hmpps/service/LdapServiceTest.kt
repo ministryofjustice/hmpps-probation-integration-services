@@ -17,6 +17,7 @@ import org.springframework.ldap.core.LdapTemplate
 import uk.gov.justice.digital.hmpps.data.generator.StaffGenerator
 import uk.gov.justice.digital.hmpps.data.generator.StaffUserGenerator
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.StaffWithUser
+import java.util.*
 
 @ExtendWith(MockitoExtension::class)
 class LdapServiceTest {
@@ -29,7 +30,8 @@ class LdapServiceTest {
     @Test
     fun `email found for single staff`() {
         val staff = StaffGenerator.generateStaffWithUser("email", user = StaffUserGenerator.generate("HasEmail"))
-        whenever(ldapTemplate.search(any(), any<AttributesMapper<String>>())).thenReturn(listOf("email@user.com"))
+        whenever(ldapTemplate.search(any(), any<AttributesMapper<Optional<String>>>()))
+            .thenReturn(listOf(Optional.of("email@user.com")))
 
         val email = ldapService.findEmailForStaff(staff)
 
