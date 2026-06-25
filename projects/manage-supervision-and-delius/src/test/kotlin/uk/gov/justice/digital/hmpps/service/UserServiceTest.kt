@@ -758,6 +758,7 @@ internal class UserServiceTest {
         override val prevAppointmentId = null
         override val prevAppointmentDateTime = null
         override val prevAppointmentTypeDescription = null
+        override val allocatedDate: LocalDateTime? = null
     }
 
     fun Caseload.toTeamCaseloadItem() = object : TeamCaseloadItem {

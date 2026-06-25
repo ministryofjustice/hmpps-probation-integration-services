@@ -474,6 +474,8 @@ class DataLoader(dataManager: DataManager, private val jdbcTemplate: JdbcTemplat
         save(PersonGenerator.CASELOAD_PERSON_3)
         save(PersonGenerator.SMS_PERSON)
 
+        save(PersonGenerator.CASE_ALLOCATION_1)
+
         save(PersonGenerator.CASELOAD_LIMITED_ACCESS_EXCLUSION)
         save(PersonGenerator.CASELOAD_LIMITED_ACCESS_RESTRICTION)
         save(PersonGenerator.CASELOAD_LIMITED_ACCESS_BOTH)

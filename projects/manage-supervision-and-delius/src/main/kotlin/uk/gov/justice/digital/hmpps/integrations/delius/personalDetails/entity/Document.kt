@@ -325,7 +325,12 @@ class Assessment(
 )
 
 @Entity
-class CaseAllocation(@Id val caseAllocationId: Long, val eventId: Long)
+class CaseAllocation(
+    @Id val caseAllocationId: Long,
+    val eventId: Long,
+    val offenderId: Long,
+    val allocationDecisionDate: LocalDateTime? = null,
+)
 
 @Entity
 class AddressAssessment(@Id val addressAssessmentId: Long, val assessmentDate: LocalDate, val offenderAddressId: Long)

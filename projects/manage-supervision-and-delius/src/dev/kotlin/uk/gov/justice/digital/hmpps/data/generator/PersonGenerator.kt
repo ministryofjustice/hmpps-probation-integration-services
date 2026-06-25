@@ -9,6 +9,7 @@ import uk.gov.justice.digital.hmpps.data.generator.personalDetails.PersonDetails
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.integrations.delius.caseload.entity.Caseload
 import uk.gov.justice.digital.hmpps.integrations.delius.caseload.entity.CaseloadPerson
+import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.CaseAllocation
 import uk.gov.justice.digital.hmpps.integrations.delius.compliance.Nsi
 import uk.gov.justice.digital.hmpps.integrations.delius.compliance.NsiStatus
 import uk.gov.justice.digital.hmpps.integrations.delius.compliance.NsiType
@@ -358,9 +359,16 @@ object PersonGenerator {
         PersonDetailsGenerator.RESTRICTION_EXCLUSION.id
     )
 
-    val CASELOAD_PERSON_1 = generateCaseload(PERSON_1, DEFAULT_STAFF, DEFAULT_TEAM)
+    val CASELOAD_PERSON_1 = generateCaseload(PERSON_1, DEFAULT_STAFF, DEFAULT_TEAM, EVENT_1.id)
     val CASELOAD_PERSON_2 = generateCaseload(PERSON_2, STAFF_1, DEFAULT_TEAM)
     val CASELOAD_PERSON_3 = generateCaseload(PERSON_2, DEFAULT_STAFF, DEFAULT_TEAM)
+
+    val CASE_ALLOCATION_1 = CaseAllocation(
+        caseAllocationId = IdGenerator.getAndIncrement(),
+        offenderId = OVERVIEW.id,
+        eventId = EVENT_1.id,
+        allocationDecisionDate = LocalDateTime.of(2024, 6, 15, 10, 0)
+    )
 
     val CASELOAD_LIMITED_ACCESS_EXCLUSION =
         generateCaseload(CL_EXCLUDED, LIMITED_ACCESS_STAFF, DEFAULT_TEAM)
@@ -699,12 +707,13 @@ object PersonGenerator {
         active = active
     )
 
-    fun generateCaseload(caseLoadPerson: CaseloadPerson, staff: Staff, team: Team) = Caseload(
+    fun generateCaseload(caseLoadPerson: CaseloadPerson, staff: Staff, team: Team, eventId: Long? = null) = Caseload(
         id = IdGenerator.getAndIncrement(),
         person = caseLoadPerson,
         staff = staff,
         team = team,
-        roleCode = "OM"
+        roleCode = "OM",
+        eventId = eventId
     )
 
     fun generateCaseloadPerson(
