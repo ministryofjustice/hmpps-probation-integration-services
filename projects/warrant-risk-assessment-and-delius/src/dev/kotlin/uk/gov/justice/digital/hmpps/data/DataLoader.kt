@@ -10,7 +10,6 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
     override fun systemUser() = UserGenerator.AUDIT_USER
 
     override fun setupData() {
-        save(UserGenerator.AUDIT_USER)
         save(PersonGenerator.TITLE)
         save(PersonGenerator.DEFAULT)
         save(PersonGenerator.NO_OPTIONAL_FIELDS)
