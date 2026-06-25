@@ -134,7 +134,7 @@ class UserService(
             caseloadRepository.findSentenceTypesForStaff(staff.id).map { KeyPair(it.code.trim(), it.description) }
         val contactTypes =
             caseloadRepository.findContactTypesForStaff(staff.id).map { KeyPair(it.code.trim(), it.description) }
-        val tierTypes = referenceDataRepository.findByDatasetCode("TIER").map { KeyPair(it.code, it.description) }
+        val tierTypes = referenceDataRepository.findByDatasetCode("TIER").map { KeyPair(it.code.trim(), it.description) }
         val userAccess = userAccessService.userAccessFor(username, caseload.content.map { it.crn })
 
         return StaffCaseload(
@@ -356,9 +356,6 @@ class UserService(
             .map { Staff(name = Name(forename = it.forename, surname = it.surname), code = it.code) }
         return TeamStaff(provider = provider, staff = staff)
     }
-
-    fun getTiers() =
-        referenceDataRepository.findByDatasetCode("TIER").map { CodeAndDescription(it.code, it.description) }
 }
 
 fun CaseloadItem.toStaffCase(caseAccess: CaseAccess? = null) = if (caseAccess.isLao()) {

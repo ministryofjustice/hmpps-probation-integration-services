@@ -72,7 +72,7 @@ class Person(
     @JoinColumn(name = "current_tier")
     val tier: ReferenceData? = null,
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "gender_id")
     val gender: ReferenceData,
 
