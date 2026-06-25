@@ -7,6 +7,8 @@ import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.ldap.findEmailByUsername
 import uk.gov.justice.digital.hmpps.model.*
 import uk.gov.justice.digital.hmpps.repository.*
+import uk.gov.justice.digital.hmpps.entity.sentence.component.LicenceCondition as LicenceConditionEntity
+import uk.gov.justice.digital.hmpps.entity.sentence.component.Requirement as RequirementEntity
 
 @Service
 class CaseDetailService(
@@ -15,9 +17,9 @@ class CaseDetailService(
     private val ldapTemplate: LdapTemplate,
     private val offenceRepository: OffenceRepository,
     private val registrationRepository: RegistrationRepository,
-    private val requirementManagerRepository: RequirementManagerRepository,
-    private val licenceConditionManagerRepository: LicenceConditionManagerRepository,
     private val officeLocationRepository: OfficeLocationRepository,
+    private val licenceConditionRepository: LicenceConditionRepository,
+    private val requirementRepository: RequirementRepository,
 ) {
     fun getPersonalDetails(crn: String) = personRepository.getByCrn(crn).let { person ->
         checkNotNull(person.manager) { "Person does not have an active manager" }
@@ -82,12 +84,42 @@ class CaseDetailService(
     )
 
     fun getRequirement(crn: String, id: Long): Requirement {
-        val person = personRepository.getByCrn(crn)
-        val manager = requirementManagerRepository.getByRequirementId(id)
-        if (manager.requirement.disposal.event.person.crn != person.crn) {
-            throw NotFoundException("Requirement", "id", id)
-        }
-        return Requirement(
+        if (!personRepository.existsByCrn(crn)) throw NotFoundException("Person", "crn", crn)
+        val requirement = requirementRepository.findByIdOrNotFound(id)
+        require(requirement.disposal.event.person.crn == crn) { "CRN does not match requirement" }
+        return requirement.toModel()
+    }
+
+    fun getRequirements(crn: String): Requirements {
+        if (!personRepository.existsByCrn(crn)) throw NotFoundException("Person", "crn", crn)
+        val requirements = requirementRepository.findAllByDisposalEventPersonCrnAndMainCategoryCodeIn(crn)
+        return Requirements(requirements.map { it.toModel() })
+    }
+
+    fun getLicenceCondition(crn: String, id: Long): LicenceCondition {
+        if (!personRepository.existsByCrn(crn)) throw NotFoundException("Person", "crn", crn)
+        val licenceCondition = licenceConditionRepository.findByIdOrNotFound(id)
+        require(licenceCondition.disposal.event.person.crn == crn) { "CRN does not match licence condition" }
+        return licenceCondition.toModel()
+    }
+
+    fun getLicenceConditions(crn: String): LicenceConditions {
+        if (!personRepository.existsByCrn(crn)) throw NotFoundException("Person", "crn", crn)
+        val licenceConditions = licenceConditionRepository.findAllByDisposalEventPersonCrnAndMainCategoryCodeIn(crn)
+        return LicenceConditions(content = licenceConditions.map { it.toModel() })
+    }
+
+    private fun Team.pduOfficeLocations() =
+        officeLocationRepository.findByRegionId(localAdminUnit.probationDeliveryUnit.regionId)
+            .groupBy { it.localAdminUnit.probationDeliveryUnit.toCodedValue() }
+            .map { (key, value) -> PduOfficeLocations(key.code, key.description, value.map { it.toCodedValue() }) }
+
+    private fun LicenceConditionEntity.toModel(): LicenceCondition {
+        val manager = checkNotNull(manager) { "Licence condition does not have an active manager" }
+        return LicenceCondition(
+            id = id,
+            mainCategory = mainCategory.toCodedValue(),
+            subCategory = subCategory?.toCodedValue(),
             manager = Manager(
                 staff = manager.staff.toProbationPractitioner { ldapTemplate.findEmailByUsername(it.username) },
                 team = manager.team.toCodedValue(),
@@ -95,30 +127,26 @@ class CaseDetailService(
                 officeLocations = manager.team.officeLocations.map { it.toCodedValue() }
             ),
             probationDeliveryUnits = manager.team.pduOfficeLocations(),
-            eventNumber = manager.requirement.disposal.event.number
+            eventNumber = manager.licenceCondition.disposal.event.number,
+            createdAt = createdDatetime
         )
     }
 
-    fun getLicenceCondition(crn: String, id: Long): LicenceCondition {
-        val person = personRepository.getByCrn(crn)
-        val manager = licenceConditionManagerRepository.getLicenceConditionManagerByLicenceConditionId(id)
-        if (manager.licenceCondition.disposal.event.person.crn != person.crn) {
-            throw NotFoundException("LicenceCondition", "id", id)
-        }
-        return LicenceCondition(
-            Manager(
+    private fun RequirementEntity.toModel(): Requirement {
+        val manager = checkNotNull(manager) { "Requirement does not have an active manager" }
+        return Requirement(
+            id = id,
+            mainCategory = mainCategory?.toCodedValue(),
+            subCategory = subCategory?.toCodedValue(),
+            manager = Manager(
                 staff = manager.staff.toProbationPractitioner { ldapTemplate.findEmailByUsername(it.username) },
                 team = manager.team.toCodedValue(),
                 probationDeliveryUnit = manager.team.localAdminUnit.probationDeliveryUnit.toCodedValue(),
                 officeLocations = manager.team.officeLocations.map { it.toCodedValue() }
             ),
             probationDeliveryUnits = manager.team.pduOfficeLocations(),
-            eventNumber = manager.licenceCondition.disposal.event.number
+            eventNumber = manager.requirement.disposal.event.number,
+            createdAt = createdDatetime
         )
     }
-
-    private fun Team.pduOfficeLocations() =
-        officeLocationRepository.findByRegionId(localAdminUnit.probationDeliveryUnit.regionId)
-            .groupBy { it.localAdminUnit.probationDeliveryUnit.toCodedValue() }
-            .map { (key, value) -> PduOfficeLocations(key.code, key.description, value.map { it.toCodedValue() }) }
 }
