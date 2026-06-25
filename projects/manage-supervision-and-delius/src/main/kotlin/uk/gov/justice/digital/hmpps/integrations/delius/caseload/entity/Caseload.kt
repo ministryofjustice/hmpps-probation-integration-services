@@ -33,4 +33,7 @@ data class Caseload(
     @Column(name = "trust_provider_flag", columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)
     val trustProviderFlag: Boolean = false,
+
+    @Column(name = "event_id")
+    val eventId: Long? = null,
 )
