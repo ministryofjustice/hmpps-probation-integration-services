@@ -332,8 +332,8 @@ class ContactLogService(
                 """.trimIndent()
             )
         }
-        contact.latestEnforcementAction = validActions.single { it.code == request.enforcementActions.last().code }
-        val enforcementAction = validActions.last()
+        val enforcementAction = validActions.single { it.code == request.enforcementActions.last().code }
+        contact.latestEnforcementAction = enforcementAction
         val responseDate =
             enforcementAction.responseByPeriod?.let { contact.startTime?.plusDays(it) }
         val existingEnforcement = contact.enforcement

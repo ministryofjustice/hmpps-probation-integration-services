@@ -24,11 +24,13 @@ class ContactEnforcementService(
                 .firstOrNull { it.code == enforcementActionCode }) { "Enforcement action not valid for outcome" }
         contact.latestEnforcementAction = enforcementAction
         if (contact.enforcement == null) {
+            val responseDate =
+                enforcementAction.responseByPeriod?.let { contact.startTime?.plusDays(it) }
             enforcementRepository.save(
                 Enforcement(
                     contact = contact,
                     action = enforcementAction,
-                    responseDate = contact.startTime?.plusDays(enforcementAction.responseByPeriod ?: 0)
+                    responseDate = responseDate
                 )
             )
         } else {
