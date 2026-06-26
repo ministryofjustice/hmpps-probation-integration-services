@@ -144,4 +144,28 @@ class UpdateEnforcementActionsIntegrationTest : IntegrationTestBase() {
         val updatedContact = contactRepository.findById(contactId).get()
         assertThat(updatedContact.latestEnforcementAction?.code, equalTo(actionCode))
     }
+
+    @Test
+    fun `new enforcement is created when enforcement actions endpoint is called on contact without existing enforcement`() {
+        val contactId = UpdateContactOutcomeGenerator.CONTACT_13.id
+
+        val enforcementsBefore = enforcementRepository.findAll().filter { it.contact.id == contactId }
+        assertThat(enforcementsBefore.size, equalTo(0))
+
+        mockMvc.post("/contact/$contactId/enforcement-actions") {
+            withToken()
+            json = UpdateEnforcementActions(
+                enforcementActions = listOf(
+                    EnforcementActionForUpdate(code = UpdateContactOutcomeGenerator.ENFORCEMENT_ACTION.code)
+                )
+            )
+        }.andExpect { status { isOk() } }
+
+        val enforcementsAfter = transactionTemplate.execute {
+            entityManager.clear()
+            enforcementRepository.findAll().filter { it.contact.id == contactId }
+        }
+        assertThat(enforcementsAfter?.size, equalTo(1))
+        assertThat(enforcementsAfter?.get(0)?.action?.code, equalTo(UpdateContactOutcomeGenerator.ENFORCEMENT_ACTION.code))
+    }
 }

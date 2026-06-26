@@ -379,4 +379,38 @@ class UpdateContactOutcomeIntegrationTest : IntegrationTestBase() {
             equalTo(UpdateContactOutcomeGenerator.ENFORCEMENT_ACTION_2.code)
         )
     }
+
+    @Test
+    fun `existing enforcement is updated with null response date when action has no response period`() {
+        val enforcementsBefore = enforcementRepository.findAll().filter {
+            it.contact.id == UpdateContactOutcomeGenerator.CONTACT_14.id
+        }
+        assertThat(enforcementsBefore.size, equalTo(1))
+
+        mockMvc.put("/contact/${UpdateContactOutcomeGenerator.CONTACT_14.id}") {
+            withToken()
+            json = UpdateContactOutcome(
+                date = LocalDate.now().plusDays(1),
+                time = LocalTime.of(11, 0),
+                outcomeCode = UpdateContactOutcomeGenerator.OUTCOME.code,
+                enforcementActionCode = UpdateContactOutcomeGenerator.ENFORCEMENT_ACTION_NULL_RESPONSE.code,
+                notes = "Null response period enforcement",
+                alert = false,
+                sensitive = false
+            )
+        }.andExpect { status { isOk() } }
+
+        val enforcementsAfter = transactionTemplate.execute {
+            entityManager.clear()
+            enforcementRepository.findAll().filter {
+                it.contact.id == UpdateContactOutcomeGenerator.CONTACT_14.id
+            }
+        }
+        assertThat(enforcementsAfter?.size, equalTo(1))
+        assertThat(
+            enforcementsAfter?.get(0)?.action?.code,
+            equalTo(UpdateContactOutcomeGenerator.ENFORCEMENT_ACTION_NULL_RESPONSE.code)
+        )
+        assertThat(enforcementsAfter?.get(0)?.responseDate, Matchers.nullValue())
+    }
 }
