@@ -271,17 +271,17 @@ class ContactLogService(
                 mapOf(
                     "crn" to contact.person.crn,
                     "contactId" to contactId.toString(),
-                    "enforcements" to contact.enforcements.map {
+                    "enforcements" to contact.enforcement.let {
                         mapOf(
-                            "id" to it.id,
-                            "action" to it.action?.code,
-                            "responseDate" to it.responseDate
+                            "id" to it?.id,
+                            "action" to it?.action?.code,
+                            "responseDate" to it?.responseDate
                         )
                     }.let { objectMapper.writeValueAsString(it) }
                 )
             )
-            enforcementRepository.deleteAll(contact.enforcements)
-            contact.enforcements = mutableListOf()
+            contact.enforcement?.let { enforcementRepository.delete(it) }
+            contact.enforcement = null
         }
 
         request.notes.let { contact.appendNotes(it) }
@@ -324,15 +324,7 @@ class ContactLogService(
         request.enforcementActions.forEach { ea ->
             val enforcementAction = validActions.singleOrNull { it.code == ea.code }
                 ?: error("Enforcement action must be valid for outcome")
-            val responseDate =
-                enforcementAction.responseByPeriod?.let { contact.startTime?.plusDays(it) }
-            val enforcement = Enforcement(
-                contact = contact,
-                action = enforcementAction,
-                responseDate = responseDate
-            )
             createEnforcementContact(contact, enforcementAction)
-            enforcementRepository.save(enforcement)
             contact.appendNotes(
                 """
                 ${DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm").format(LocalDateTime.now())}
@@ -341,6 +333,21 @@ class ContactLogService(
             )
         }
         contact.latestEnforcementAction = validActions.single { it.code == request.enforcementActions.last().code }
+        val enforcementAction = validActions.last()
+        val responseDate =
+            enforcementAction.responseByPeriod?.let { contact.startTime?.plusDays(it) }
+        val existingEnforcement = contact.enforcement
+        if (existingEnforcement == null) {
+            val enforcement = Enforcement(
+                contact = contact,
+                action = enforcementAction,
+                responseDate = responseDate
+            )
+            enforcementRepository.save(enforcement)
+        } else {
+            existingEnforcement.action = enforcementAction
+            existingEnforcement.responseDate = responseDate
+        }
     }
 
     private fun createEnforcementContact(contact: Contact, enforcementAction: EnforcementAction) {

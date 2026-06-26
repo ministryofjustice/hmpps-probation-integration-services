@@ -32,6 +32,7 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
+import java.util.Optional
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.LicenceCondition as LicenceConditionEntity
 
 @Entity
@@ -94,8 +95,8 @@ class Contact(
     @JoinColumn(name = "latest_enforcement_action_id", referencedColumnName = "enforcement_action_id")
     var latestEnforcementAction: EnforcementAction? = null,
 
-    @OneToMany(mappedBy = "contact")
-    var enforcements: List<Enforcement> = mutableListOf(),
+    @OneToOne(mappedBy = "contact")
+    var enforcement: Enforcement? = null,
 
     @Column(name = "enforcement")
     @Convert(converter = NumericBooleanConverter::class)
@@ -402,22 +403,21 @@ class EnforcementAction(
     val id: Long = 0
 )
 
-@Immutable
 @Entity
 @Table(name = "enforcement")
 @SQLRestriction("soft_deleted = 0")
 @SequenceGenerator(name = "enforcement_id_seq", sequenceName = "enforcement_id_seq", allocationSize = 1)
 class Enforcement(
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "contact_id")
     val contact: Contact,
 
     @ManyToOne
     @JoinColumn(name = "enforcement_action_id")
-    val action: EnforcementAction? = null,
+    var action: EnforcementAction? = null,
 
     @Column(name = "response_date")
-    val responseDate: ZonedDateTime? = null,
+    var responseDate: ZonedDateTime? = null,
 
     @CreatedDate
     var createdDatetime: ZonedDateTime? = ZonedDateTime.now(),
