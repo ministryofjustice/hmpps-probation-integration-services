@@ -14,6 +14,7 @@ import uk.gov.justice.digital.hmpps.data.generator.PersonalContactGenerator
 import uk.gov.justice.digital.hmpps.model.*
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
+import kotlin.text.get
 
 @AutoConfigureMockMvc
 @SpringBootTest
@@ -33,67 +34,57 @@ internal class BasicDetailsIntegrationTest @Autowired constructor(
             .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<BasicDetails>()
 
-        assertThat(response).isEqualTo(
-            BasicDetails(
-                title = "Mr",
-                name = Name(
-                    forename = "Billy",
-                    middleName = "The",
-                    surname = "Kid",
+        assertThat(response.title).isEqualTo("Mr")
+        assertThat(response.name).isEqualTo(Name(forename = "Billy", middleName = "The", surname = "Kid"))
+        assertThat(response.dateOfBirth).isEqualTo(person.dateOfBirth)
+        assertThat(response.nationalInsuranceNumber).isEqualTo("XX000000X")
+        assertThat(response.telephoneNumber).isEqualTo("01912525252")
+        assertThat(response.mobileNumber).isEqualTo("07707123456")
+        assertThat(response.emailAddress).isEqualTo("test@test.com")
+        assertThat(response.lastHomeVisitDate).isEqualTo(ContactGenerator.LAST_HOME_VISIT.date)
+
+        assertThat(response.addresses).containsExactlyInAnyOrder(
+            AddressDetail(
+                id = AddressGenerator.MAIN_ADDRESS.id,
+                status = "Main",
+                buildingName = "Main Building",
+                buildingNumber = "2789",
+                streetName = "Main Street",
+                townCity = "Maintown",
+                district = "MainDistrict",
+                county = "Maincounty",
+                postcode = "MA30 3IN",
+            ),
+            AddressDetail(
+                id = AddressGenerator.POSTAL_ADDRESS.id,
+                status = "Postal",
+                buildingName = null,
+                buildingNumber = "281",
+                streetName = "Postal Default Street",
+                townCity = "Postinton",
+                district = "Postrict",
+                county = "County Post",
+                postcode = "NE30 3ZZ",
+            ),
+        )
+
+        assertThat(response.employers).containsExactlyInAnyOrder(
+            Employer(
+                employerName = Name(forename = "Billy", middleName = "The", surname = "Kid"),
+                employerAddress = EmployerAddress(
+                    id = PersonalContactGenerator.EMPLOYER_ADDRESS.id,
+                    status = "Main",
+                    buildingName = "Employer Building",
+                    buildingNumber = "1",
+                    streetName = "Employer Street",
+                    townCity = "Town City",
+                    district = "District",
+                    county = "County",
+                    postcode = "NE30 3ZZ",
                 ),
-                dateOfBirth = person.dateOfBirth,
-                nationalInsuranceNumber = "XX000000X",
-                telephoneNumber = "01912525252",
-                mobileNumber = "07707123456",
-                emailAddress = "test@test.com",
-                lastHomeVisitDate = ContactGenerator.LAST_HOME_VISIT.date,
-                addresses = listOf(
-                    AddressDetail(
-                        id = AddressGenerator.MAIN_ADDRESS.id,
-                        status = "Main",
-                        buildingName = null,
-                        buildingNumber = "2789",
-                        streetName = "Main Street",
-                        townCity = "Maintown",
-                        district = "MainDistrict",
-                        county = "Maincounty",
-                        postcode = "MA30 3IN",
-                    ),
-                    AddressDetail(
-                        id = AddressGenerator.POSTAL_ADDRESS.id,
-                        status = "Postal",
-                        buildingName = null,
-                        buildingNumber = "281",
-                        streetName = "Postal Default Street",
-                        townCity = "Postinton",
-                        district = "Postrict",
-                        county = "County Post",
-                        postcode = "NE30 3ZZ",
-                    ),
-                ),
-                employers = listOf(
-                    Employer(
-                        employerName = Name(
-                            forename = "Billy",
-                            middleName = "The",
-                            surname = "Kid",
-                        ),
-                        employerAddress = EmployerAddress(
-                            id = PersonalContactGenerator.EMPLOYER_ADDRESS.id,
-                            status = "Main",
-                            buildingName = null,
-                            buildingNumber = "1",
-                            streetName = "Employer Street",
-                            townCity = "Town City",
-                            district = "District",
-                            county = "County",
-                            postcode = "NE30 3ZZ",
-                        ),
-                        telephoneNumber = "01912111111",
-                        mobileNumber = null,
-                    ),
-                ),
-            )
+                telephoneNumber = "01912111111",
+                mobileNumber = null,
+            ),
         )
     }
 
