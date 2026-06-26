@@ -1,8 +1,8 @@
-package uk.gov.justice.digital.hmpps.integrations.crds
+package uk.gov.justice.digital.hmpps.integrations.delius.custody.date
 
 import org.springframework.stereotype.Component
 import java.time.LocalDate
-import java.time.temporal.ChronoUnit.DAYS
+import java.time.temporal.ChronoUnit
 import kotlin.math.roundToLong
 
 @Component
@@ -41,6 +41,6 @@ class KeyDateCalculator {
      * Reset suspension date = 2/3 between start and end dates
      */
     fun calculateSuspensionDateIfReset(startDate: LocalDate, endDate: LocalDate): LocalDate? {
-        return if (startDate < endDate) startDate.plusDays(DAYS.between(startDate, endDate) * 2 / 3) else null
+        return if (startDate < endDate) startDate.plusDays(ChronoUnit.DAYS.between(startDate, endDate) * 2 / 3) else null
     }
 }
