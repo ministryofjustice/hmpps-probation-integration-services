@@ -22,6 +22,9 @@ val DEFAULT = generate(
 
 val NO_OPTIONAL_FIELDS = generate(crn = "A000002")
 
+val PRISON_MANAGED = generate(crn = "P000001")
+val NO_PREFERRED_ADDRESS = generate(crn = "N000001")
+
 fun generate(
         crn: String,
         forename: String = "Test",

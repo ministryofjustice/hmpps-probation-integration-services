@@ -9,4 +9,16 @@ object StaffGenerator {
         middleName = "The",
         surname = "Kid",
     )
+
+    val PRISON_STAFF = Staff(
+        id = IdGenerator.getAndIncrement(),
+        forename = "Prison",
+        surname = "Officer",
+    )
+
+    val NO_PREFERRED_ADDRESS_STAFF = Staff(
+        id = IdGenerator.getAndIncrement(),
+        forename = "No",
+        surname = "Address",
+    )
 }

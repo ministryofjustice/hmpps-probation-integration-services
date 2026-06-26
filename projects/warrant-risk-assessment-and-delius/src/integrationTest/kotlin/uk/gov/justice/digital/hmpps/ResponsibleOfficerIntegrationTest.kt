@@ -59,4 +59,40 @@ internal class ResponsibleOfficerIntegrationTest @Autowired constructor(
                 }
             }
     }
+
+    @Test
+    fun `returns responsible officer details when managed by prison offender manager`() {
+        val crn = PersonGenerator.PRISON_MANAGED.crn
+        mockMvc.get("/responsible-officer/$crn") { withToken() }
+            .andExpect {
+                status { isOk() }
+                content {
+                    json(
+                        """
+                    {
+                      "name": {
+                        "forename": "Prison",
+                        "surname": "Officer"
+                      },
+                      "probationArea": {
+                        "code": "N01",
+                        "description": "N01 Probation Area"
+                      }
+                    }
+                    """, JsonCompareMode.LENIENT
+                    )
+                }
+            }
+    }
+
+    @Test
+    fun `returns responsible officer with fallback address when preferred address not found`() {
+        val crn = PersonGenerator.NO_PREFERRED_ADDRESS.crn
+        mockMvc.get("/responsible-officer/$crn") { withToken() }
+            .andExpect {
+                status { isOk() }
+                jsonPath("$.replyAddress.status") { doesNotExist() }
+            }
+    }
+
 }

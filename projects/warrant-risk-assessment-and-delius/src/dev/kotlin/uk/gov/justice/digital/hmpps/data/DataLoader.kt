@@ -38,6 +38,14 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
         save(ContactGenerator.HOME_VISIT_TYPE)
         save(ContactGenerator.OLDER_HOME_VISIT)
         save(ContactGenerator.LAST_HOME_VISIT)
+        save(StaffGenerator.PRISON_STAFF)
+        save(PersonGenerator.PRISON_MANAGED)
+        save(PersonGenerator.NO_PREFERRED_ADDRESS)
+        save(ResponsibleOfficerGenerator.PRISON_OFFENDER_MANAGER)
+        save(ResponsibleOfficerGenerator.PRISON_RESPONSIBLE_OFFICER)
 
+        save(StaffGenerator.NO_PREFERRED_ADDRESS_STAFF)
+        save(ResponsibleOfficerGenerator.NO_PREFERRED_ADDRESS_OFFENDER_MANAGER)
+        save(ResponsibleOfficerGenerator.NO_PREFERRED_ADDRESS_RESPONSIBLE_OFFICER)
     }
 }
