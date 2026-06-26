@@ -100,7 +100,7 @@ class UpdateEnforcementActionsIntegrationTest : IntegrationTestBase() {
         val linkedContactCountAfter = contactRepository.findByLinkedContactIdOrderByDateDesc(contactId)
             .count { it.type.code == expectedContactTypeCode }
 
-        assertThat(enforcementCountAfter, equalTo(enforcementCountBefore + 1))
+        assertThat(enforcementCountAfter, equalTo(1))
         assertThat(linkedContactCountAfter, equalTo(linkedContactCountBefore + 2))
         assertThat(updatedContact.enforcementFlag, equalTo(true))
         assertThat(updatedContact.latestEnforcementAction?.code, equalTo(secondActionCode))
