@@ -35,7 +35,7 @@ class ContactEnforcementService(
             )
         } else {
             contact.enforcement!!.action = enforcementAction
-            contact.enforcement!!.responseDate = contact.startTime?.plusDays(enforcementAction.responseByPeriod ?: 0)
+            contact.enforcement!!.responseDate = enforcementAction.responseByPeriod?.let { contact.startTime?.plusDays(it) }
         }
         contactRepository.save(
             Contact(

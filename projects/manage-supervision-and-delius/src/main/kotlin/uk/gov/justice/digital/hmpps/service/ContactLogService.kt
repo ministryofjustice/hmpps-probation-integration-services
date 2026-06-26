@@ -271,11 +271,11 @@ class ContactLogService(
                 mapOf(
                     "crn" to contact.person.crn,
                     "contactId" to contactId.toString(),
-                    "enforcements" to contact.enforcement.let {
+                    "enforcements" to contact.enforcement?.let {
                         mapOf(
-                            "id" to it?.id,
-                            "action" to it?.action?.code,
-                            "responseDate" to it?.responseDate
+                            "id" to it.id,
+                            "action" to it.action?.code,
+                            "responseDate" to it.responseDate
                         )
                     }.let { objectMapper.writeValueAsString(it) }
                 )
