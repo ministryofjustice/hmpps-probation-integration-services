@@ -234,7 +234,7 @@ internal class CustodyDateUpdateServiceTest {
         val disposal = generateDisposal(event)
         val custody = generateCustodialSentence(disposal = disposal, bookingRef = "ABC")
 
-        val suspensionDateIfReset = custodyDateUpdateService.suspensionDateIfReset(
+        val suspensionDateIfReset = KeyDateCalculator().suspensionDateIfReset(
             SentenceDetail(
                 conditionalReleaseDate = LocalDate.of(2026, 1, 1),
                 sentenceExpiryDate = LocalDate.of(2026, 1, 1)
@@ -250,7 +250,7 @@ internal class CustodyDateUpdateServiceTest {
         val disposal = generateDisposal(event, generateDisposalType("L2"))
         val custody = generateCustodialSentence(disposal = disposal, bookingRef = "ABC")
 
-        val suspensionDateIfReset = custodyDateUpdateService.suspensionDateIfReset(
+        val suspensionDateIfReset = KeyDateCalculator().suspensionDateIfReset(
             SentenceDetail(
                 conditionalReleaseDate = LocalDate.of(2024, 1, 1),
                 sentenceExpiryDate = LocalDate.of(2025, 1, 1)
@@ -277,7 +277,7 @@ internal class CustodyDateUpdateServiceTest {
         expected: LocalDate?
     ) {
         val custody = generateCustodialSentence(disposal = generateDisposal(generateEvent()), bookingRef = "ABC")
-        val suspensionDateIfReset = custodyDateUpdateService.suspensionDateIfReset(
+        val suspensionDateIfReset = KeyDateCalculator().suspensionDateIfReset(
             SentenceDetail(
                 conditionalReleaseDate = conditionalReleaseDate,
                 sentenceExpiryDate = sentenceExpiryDate

@@ -1,6 +1,8 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.custody.date
 
 import org.springframework.stereotype.Component
+import uk.gov.justice.digital.hmpps.integrations.crds.OperativeSentenceEnvelope
+import uk.gov.justice.digital.hmpps.integrations.prison.SentenceDetail
 import java.time.LocalDate
 import java.time.temporal.ChronoUnit
 import kotlin.math.roundToLong
@@ -18,34 +20,39 @@ class KeyDateCalculator {
      * For SDS this is 7%
      * For SDS+ this is 17%
      */
-    fun calculatePresumptiveEMEndDate(crd: LocalDate, sentenceLengthDays: Long, isSdsPlus: Boolean?): LocalDate {
-
-        val percentage = if (isSdsPlus == true) {
+    fun presumptiveElectronicMonitoringEndDate(
+        sentenceDetail: SentenceDetail, envelope: OperativeSentenceEnvelope
+    ): LocalDate? = sentenceDetail.conditionalReleaseDate?.let { crd ->
+        val percentage = if (envelope.containsAnSDSPlusSentence) {
             SDS_PLUS_PERCENTAGE
         } else {
             SDS_PERCENTAGE
         }
-        val extraDays = (sentenceLengthDays * percentage).roundToLong()
-        return crd.plusDays(extraDays)
+        val extraDays = (envelope.sentenceEnvelopeLengthInDays * percentage).roundToLong()
+        crd.plusDays(extraDays)
     }
 
     /**
      * FTHRD Calculation = SLED - 1/3 sentence length
      */
-    fun calculateFinalThirdDate(sled: LocalDate, sentenceLengthDays: Long): LocalDate {
-        val deduction = sentenceLengthDays / 3
-        return sled.minusDays(deduction)
-    }
+    fun finalThirdDate(sentenceDetail: SentenceDetail, envelope: OperativeSentenceEnvelope): LocalDate? =
+        sentenceDetail.sentenceExpiryDate?.let { sed ->
+            val deduction = envelope.sentenceEnvelopeLengthInDays / 3
+            sed.minusDays(deduction)
+        }
 
     /**
      * Reset suspension date = 2/3 between start and end dates
      */
-    fun calculateSuspensionDateIfReset(startDate: LocalDate, endDate: LocalDate): LocalDate? {
-        return if (startDate < endDate) startDate.plusDays(
-            ChronoUnit.DAYS.between(
-                startDate,
-                endDate
-            ) * 2 / 3
-        ) else null
-    }
+    fun suspensionDateIfReset(sentenceDetail: SentenceDetail, custody: Custody): LocalDate? =
+        custody.disposal?.takeIf { it.type.determinateSentence }?.let {
+            val startDate = it.event.firstReleaseDate ?: sentenceDetail.conditionalReleaseDate ?: return null
+            val endDate = sentenceDetail.sentenceExpiryDate ?: return null
+            if (startDate < endDate) {
+                val daysBetween = ChronoUnit.DAYS.between(startDate, endDate)
+                startDate.plusDays(daysBetween * 2 / 3)
+            } else {
+                null
+            }
+        }
 }
