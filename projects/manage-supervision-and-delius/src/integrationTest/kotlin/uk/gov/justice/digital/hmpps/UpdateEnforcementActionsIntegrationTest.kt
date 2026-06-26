@@ -115,4 +115,33 @@ class UpdateEnforcementActionsIntegrationTest : IntegrationTestBase() {
             containsString("Enforcement Action: ${UpdateContactOutcomeGenerator.ENFORCEMENT_ACTION_2.description}")
         )
     }
+
+    @Test
+    fun `existing enforcement is updated when enforcement actions endpoint is called on contact with existing enforcement`() {
+        val contactId = UpdateContactOutcomeGenerator.CONTACT_12.id
+        val actionCode = UpdateContactOutcomeGenerator.ENFORCEMENT_ACTION_2.code
+
+        val enforcementsBefore = enforcementRepository.findAll().filter { it.contact.id == contactId }
+        assertThat(enforcementsBefore.size, equalTo(1))
+        assertThat(enforcementsBefore[0].action?.code, equalTo(UpdateContactOutcomeGenerator.ENFORCEMENT_ACTION.code))
+
+        mockMvc.post("/contact/$contactId/enforcement-actions") {
+            withToken()
+            json = UpdateEnforcementActions(
+                enforcementActions = listOf(
+                    EnforcementActionForUpdate(code = actionCode)
+                )
+            )
+        }.andExpect { status { isOk() } }
+
+        val enforcementsAfter = transactionTemplate.execute {
+            entityManager.clear()
+            enforcementRepository.findAll().filter { it.contact.id == contactId }
+        }
+        assertThat(enforcementsAfter?.size, equalTo(1))
+        assertThat(enforcementsAfter?.get(0)?.action?.code, equalTo(actionCode))
+
+        val updatedContact = contactRepository.findById(contactId).get()
+        assertThat(updatedContact.latestEnforcementAction?.code, equalTo(actionCode))
+    }
 }

@@ -447,4 +447,36 @@ object UpdateContactOutcomeGenerator {
         outcome = OUTCOME,
         alert = true
     )
+
+    // Contact with existing enforcement — used to verify updating enforcement via PUT /contact/{id}
+    val CONTACT_11 = ContactGenerator.generateContact(
+        PERSON,
+        CONTACT_TYPE,
+        ZonedDateTime.of(LocalDateTime.now(EuropeLondon).plusHours(13), EuropeLondon),
+        team = TEAM,
+        staff = STAFF,
+        event = EVENT,
+        outcome = OUTCOME
+    )
+
+    val ENFORCEMENT_FOR_CONTACT_11 = ContactGenerator.generateEnforcement(
+        contact = CONTACT_11,
+        action = ENFORCEMENT_ACTION
+    )
+
+    // Contact with existing enforcement — used to verify updating enforcement via POST /contact/{id}/enforcement-actions
+    val CONTACT_12 = ContactGenerator.generateContact(
+        PERSON,
+        CONTACT_TYPE,
+        ZonedDateTime.of(LocalDateTime.now(EuropeLondon).plusHours(14), EuropeLondon),
+        team = TEAM,
+        staff = STAFF,
+        event = EVENT,
+        outcome = OUTCOME
+    )
+
+    val ENFORCEMENT_FOR_CONTACT_12 = ContactGenerator.generateEnforcement(
+        contact = CONTACT_12,
+        action = ENFORCEMENT_ACTION
+    )
 }
