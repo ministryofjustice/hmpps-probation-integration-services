@@ -13,7 +13,7 @@ class BasicDetailsService(
 ) {
     fun getBasicDetails(crn: String): BasicDetails {
         val person = personRepository.getPerson(crn)
-        val addresses = addressRepository.findByPersonIdAndEndDateIsNull(person.id)
+        val addresses = addressRepository.findByPersonId(person.id)
         val employers = personalContactRepository.findCurrentEmployersByPersonId(person.id)
         val lastHomeVisitDate = contactRepository.findLastHomeVisitDate(person.id)
 

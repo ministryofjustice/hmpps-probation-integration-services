@@ -53,5 +53,5 @@ class Address(
 )
 
 interface AddressRepository : JpaRepository<Address, Long> {
-    fun findByPersonIdAndEndDateIsNull(personId: Long): List<Address>
+    fun findByPersonId(personId: Long): List<Address>
 }
