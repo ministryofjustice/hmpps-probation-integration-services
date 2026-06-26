@@ -166,6 +166,9 @@ class UpdateEnforcementActionsIntegrationTest : IntegrationTestBase() {
             enforcementRepository.findAll().filter { it.contact.id == contactId }
         }
         assertThat(enforcementsAfter?.size, equalTo(1))
-        assertThat(enforcementsAfter?.get(0)?.action?.code, equalTo(UpdateContactOutcomeGenerator.ENFORCEMENT_ACTION.code))
+        assertThat(
+            enforcementsAfter?.get(0)?.action?.code,
+            equalTo(UpdateContactOutcomeGenerator.ENFORCEMENT_ACTION.code)
+        )
     }
 }
