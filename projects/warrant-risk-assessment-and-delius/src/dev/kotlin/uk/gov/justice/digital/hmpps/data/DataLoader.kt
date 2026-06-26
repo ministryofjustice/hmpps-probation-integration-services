@@ -38,7 +38,7 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
         save(ContactGenerator.HOME_VISIT_TYPE)
         save(ContactGenerator.OLDER_HOME_VISIT)
         save(ContactGenerator.LAST_HOME_VISIT)
-<<<<<<< HEAD
+        <<<<<<< HEAD
         save(StaffGenerator.PRISON_STAFF)
         save(PersonGenerator.PRISON_MANAGED)
         save(PersonGenerator.NO_PREFERRED_ADDRESS)
@@ -48,7 +48,7 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
         save(StaffGenerator.NO_PREFERRED_ADDRESS_STAFF)
         save(ResponsibleOfficerGenerator.NO_PREFERRED_ADDRESS_OFFENDER_MANAGER)
         save(ResponsibleOfficerGenerator.NO_PREFERRED_ADDRESS_RESPONSIBLE_OFFICER)
-=======
->>>>>>> 91e97ddcff72e5ee657d43059ffba63723839cc6
+        ====== =
+        >>>>>>> 91e97ddcff72e5ee657d43059ffba63723839cc6
     }
 }

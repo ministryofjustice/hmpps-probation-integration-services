@@ -22,38 +22,39 @@ object PersonGenerator {
 
     val NO_OPTIONAL_FIELDS = generate(crn = "A000002")
 
-<<<<<<< HEAD
-val PRISON_MANAGED = generate(crn = "P000001")
-val NO_PREFERRED_ADDRESS = generate(crn = "N000001")
+    <<<<<<< HEAD
+    val PRISON_MANAGED = generate(crn = "P000001")
+    val NO_PREFERRED_ADDRESS = generate(crn = "N000001")
 
-fun generate(
-=======
     fun generate(
->>>>>>> 91e97ddcff72e5ee657d43059ffba63723839cc6
-        crn: String,
-        forename: String = "Test",
-        secondName: String? = null,
-        thirdName: String? = null,
-        surname: String = "Person",
-        dateOfBirth: LocalDate = LocalDate.of(1990, 1, 1),
-        telephoneNumber: String? = null,
-        mobileNumber: String? = null,
-        emailAddress: String? = null,
-        niNumber: String? = null,
-        title: ReferenceData? = null,
-        id: Long = IdGenerator.getAndIncrement(),
+        ====== =
+
+    fun generate(
+        >>>>>>> 91e97ddcff72e5ee657d43059ffba63723839cc6
+    crn: String,
+    forename: String = "Test",
+    secondName: String? = null,
+    thirdName: String? = null,
+    surname: String = "Person",
+    dateOfBirth: LocalDate = LocalDate.of(1990, 1, 1),
+    telephoneNumber: String? = null,
+    mobileNumber: String? = null,
+    emailAddress: String? = null,
+    niNumber: String? = null,
+    title: ReferenceData? = null,
+    id: Long = IdGenerator.getAndIncrement(),
     ) = Person(
-        id = id,
-        crn = crn,
-        forename = forename,
-        secondName = secondName,
-        thirdName = thirdName,
-        surname = surname,
-        dateOfBirth = dateOfBirth,
-        telephoneNumber = telephoneNumber,
-        mobileNumber = mobileNumber,
-        emailAddress = emailAddress,
-        niNumber = niNumber,
-        title = title,
+    id = id,
+    crn = crn,
+    forename = forename,
+    secondName = secondName,
+    thirdName = thirdName,
+    surname = surname,
+    dateOfBirth = dateOfBirth,
+    telephoneNumber = telephoneNumber,
+    mobileNumber = mobileNumber,
+    emailAddress = emailAddress,
+    niNumber = niNumber,
+    title = title,
     )
 }
