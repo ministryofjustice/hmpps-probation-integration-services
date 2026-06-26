@@ -2,7 +2,6 @@ package uk.gov.justice.digital.hmpps.integrations.delius
 
 import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
-import org.springframework.data.jpa.repository.JpaRepository
 import uk.gov.justice.digital.hmpps.model.Name
 
 @Immutable
@@ -34,7 +33,3 @@ class Staff(
 )
 
 fun Staff.name() = Name(firstName, middleName, surname)
-
-interface StaffRepository : JpaRepository<Staff, Long> {
-    fun findByUserUsername(username: String): Staff?
-}

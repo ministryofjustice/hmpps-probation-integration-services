@@ -24,7 +24,7 @@ class OfficeLocation(
     val endDate: LocalDate?,
     @ManyToOne
     @JoinColumn(name = "probation_area_id")
-    val probationArea: ProbationArea,
+    val provider: ProbationArea,
 )
 
 fun OfficeLocation.toAddress() = OfficeAddress(
@@ -41,5 +41,5 @@ fun OfficeLocation.toAddress() = OfficeAddress(
 )
 
 interface OfficeLocationRepository : JpaRepository<OfficeLocation, Long> {
-    fun findAllByProbationAreaCode(providerCode: String): List<OfficeLocation>
+    fun findAllByProviderCode(providerCode: String): List<OfficeLocation>
 }
