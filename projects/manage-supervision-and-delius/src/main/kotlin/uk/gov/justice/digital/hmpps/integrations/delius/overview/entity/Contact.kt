@@ -45,6 +45,10 @@ class Contact(
     @Column(name = "contact_id")
     val id: Long = 0,
 
+    @Version
+    @Column(name = "row_version")
+    val version: Long = 0,
+
     @ManyToOne
     @JoinColumn(name = "offender_id")
     val person: Person,
@@ -90,8 +94,8 @@ class Contact(
     @JoinColumn(name = "latest_enforcement_action_id", referencedColumnName = "enforcement_action_id")
     var latestEnforcementAction: EnforcementAction? = null,
 
-    @OneToMany(mappedBy = "contact")
-    var enforcements: List<Enforcement> = mutableListOf(),
+    @OneToOne(mappedBy = "contact")
+    var enforcement: Enforcement? = null,
 
     @Column(name = "enforcement")
     @Convert(converter = NumericBooleanConverter::class)
@@ -176,7 +180,7 @@ class Contact(
     @Column(name = "trust_provider_team_id")
     val trustProviderTeamId: Long = 0,
 
-    val partitionAreaId: Long = 0
+    val partitionAreaId: Long = 0,
 ) {
 
     fun startDateTime(): ZonedDateTime {
@@ -398,22 +402,21 @@ class EnforcementAction(
     val id: Long = 0
 )
 
-@Immutable
 @Entity
 @Table(name = "enforcement")
 @SQLRestriction("soft_deleted = 0")
 @SequenceGenerator(name = "enforcement_id_seq", sequenceName = "enforcement_id_seq", allocationSize = 1)
 class Enforcement(
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "contact_id")
     val contact: Contact,
 
     @ManyToOne
     @JoinColumn(name = "enforcement_action_id")
-    val action: EnforcementAction? = null,
+    var action: EnforcementAction? = null,
 
     @Column(name = "response_date")
-    val responseDate: ZonedDateTime? = null,
+    var responseDate: ZonedDateTime? = null,
 
     @CreatedDate
     var createdDatetime: ZonedDateTime? = ZonedDateTime.now(),
@@ -1130,6 +1133,16 @@ interface EnforcementActionsRepository : JpaRepository<EnforcementAction, Long> 
     )
     fun findByContactOutcomeId(outcomeId: Long): List<EnforcementAction>
     fun findEnforcementActionByCode(code: String): MutableList<EnforcementAction>
+
+    @Query(
+        """
+        select ea.* from r_enforcement_action ea
+        join r_enf_act_contact_out_type eaco on eaco.enforcement_action_id = ea.enforcement_action_id
+        where eaco.contact_outcome_type_id = ?1 and ea.code in (?2)
+        """,
+        nativeQuery = true
+    )
+    fun findByContactOutcomeIdAndCodeIn(outcomeId: Long, codes: Set<String>): List<EnforcementAction>
 }
 
 fun EnforcementActionsRepository.getEnforcementActionByCode(code: String): EnforcementAction =

@@ -8,6 +8,7 @@ object ProbationAreaGenerator {
         code = "B01",
         description = "probationAreaDescription",
     )
+
     // This is the "home area" code that will be in LDAP
     val HOME_PROBATION_AREA = ProbationArea(
         id = IdGenerator.getAndIncrement(),

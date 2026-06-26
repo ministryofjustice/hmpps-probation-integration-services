@@ -15,7 +15,9 @@ class Staff(
     val surname: String,
     @ManyToOne
     @JoinColumn(name = "title_id")
-    val title: ReferenceData? = null
+    val title: ReferenceData? = null,
+    @OneToOne(mappedBy = "staff")
+    val user: User?,
 )
 
 fun Staff.name() = Name(forename, middleName, surname)

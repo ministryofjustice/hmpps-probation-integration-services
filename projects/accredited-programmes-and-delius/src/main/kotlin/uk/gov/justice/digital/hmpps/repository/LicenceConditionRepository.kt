@@ -50,6 +50,27 @@ interface LicenceConditionRepository : JpaRepository<LicenceCondition, Long> {
         mainCategoryCodes: Set<String> = setOf(LICENCE_ACCREDITED_PROGRAMMES)
     ): LicenceCondition?
 
+    @EntityGraph(
+        attributePaths = [
+            "mainCategory",
+            "subCategory",
+            "manager",
+            "terminationReason",
+            "disposal.type",
+            "disposal.lengthUnits",
+            "disposal.event.person.gender.dataset",
+            "disposal.event.person.ethnicity.dataset",
+            "disposal.event.person.manager.staff.user",
+            "disposal.event.person.manager.team.localAdminUnit.probationDeliveryUnit",
+            "disposal.event.person.manager.team.provider",
+            "disposal.custody",
+        ]
+    )
+    fun findAllByDisposalEventPersonCrnAndMainCategoryCodeIn(
+        crn: String,
+        mainCategoryCodes: Set<String> = setOf(LICENCE_ACCREDITED_PROGRAMMES)
+    ): List<LicenceCondition>
+
     fun findByIdOrNotFound(id: Long) = findByIdAndMainCategoryCodeIn(id).orNotFoundBy("id", id)
     fun getAllByIdIn(ids: List<Long>) = ids.toSet().let { ids ->
         findAllByIdInAndActiveTrueAndMainCategoryCodeIn(ids).associateBy { it.id }.reportMissingIds(ids)

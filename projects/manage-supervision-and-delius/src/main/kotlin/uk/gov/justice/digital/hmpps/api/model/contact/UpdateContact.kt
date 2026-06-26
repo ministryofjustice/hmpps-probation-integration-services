@@ -7,7 +7,8 @@ import java.time.ZonedDateTime
 data class UpdateContact(
     val dateTime: ZonedDateTime,
     val notes: String?,
-    val sensitiveFlag: Boolean?
+    val sensitiveFlag: Boolean?,
+    val alert: Boolean?
 )
 
 data class UpdateContactOutcome(

@@ -19,7 +19,11 @@ class Contact(
     @Id
     @Column(name = "contact_id", updatable = false)
     @GeneratedId(generator = "contact_id_seq")
-    val id: Long,
+    val id: Long = 0,
+
+    @Version
+    @Column(name = "row_version")
+    var version: Long = 0,
 
     @Column(name = "offender_id", updatable = false)
     val personId: Long,
@@ -61,10 +65,6 @@ class Contact(
     @Column(name = "soft_deleted", columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)
     var softDeleted: Boolean = false,
-
-    @Column(name = "row_version")
-    @Version
-    var version: Long = 0,
 
     @Column
     val partitionAreaId: Long = 0,

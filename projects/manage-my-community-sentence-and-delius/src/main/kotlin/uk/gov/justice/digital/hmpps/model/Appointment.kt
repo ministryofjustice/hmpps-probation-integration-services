@@ -12,6 +12,7 @@ data class Appointment(
     val startTime: LocalTime,
     val endTime: LocalTime?,
     val type: String,
+    val typeCode: String,
     val practitioner: Practitioner,
     val location: OfficeAddress?,
     val attended: Boolean?,
@@ -22,11 +23,12 @@ data class Appointment(
     val unpaidWork: UpwResponse?
 ) {
     companion object {
-        fun Contact.toAppointment() = Appointment(
+        fun Contact.toModel() = Appointment(
             date = date,
             startTime = startTime,
             endTime = endTime,
             type = type.description,
+            typeCode = type.code,
             practitioner = Practitioner(staff.name()),
             location = location?.toModel(),
             attended = attended,

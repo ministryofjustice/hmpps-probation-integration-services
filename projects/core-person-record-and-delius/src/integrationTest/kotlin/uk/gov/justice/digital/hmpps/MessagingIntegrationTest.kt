@@ -234,7 +234,7 @@ internal class MessagingIntegrationTest @Autowired constructor(
     }
 
     @Test
-    fun `soft deletes address from domain event`() {
+    fun `hard deletes address from domain event`() {
         val addressId = PersonGenerator.UPDATABLE_PERSON_ADDRESSES[1].id!!
         val existingAddress = addressRepository.findByIdOrNull(addressId)!!
         assertThat(existingAddress.softDeleted).isFalse
@@ -242,7 +242,7 @@ internal class MessagingIntegrationTest @Autowired constructor(
         publish("address-deleted")
 
         assertThat(addressRepository.findByIdOrNull(addressId)).isNull()
-        assertThat(softDeleted(addressId)).isEqualTo(1)
+        assertThat(count(addressId)).isEqualTo(0)
         verify(telemetryService).trackEvent(
             "AddressDeleted",
             mapOf(
@@ -367,8 +367,8 @@ internal class MessagingIntegrationTest @Autowired constructor(
         )
     ).id!!
 
-    private fun softDeleted(addressId: Long) = jdbcTemplate.queryForObject<Int>(
-        "select soft_deleted from offender_address where offender_address_id = ?",
+    private fun count(addressId: Long) = jdbcTemplate.queryForObject<Int>(
+        "select count(*) from offender_address where offender_address_id = ?",
         addressId
     )
 }

@@ -38,4 +38,5 @@ class Person(
 
 interface PersonRepository : JpaRepository<Person, Long> {
     fun findByCrn(crn: String): Person?
+    fun existsByCrn(crn: String): Boolean
 }

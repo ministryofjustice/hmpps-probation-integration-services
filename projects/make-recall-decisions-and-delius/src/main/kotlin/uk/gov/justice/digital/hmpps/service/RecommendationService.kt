@@ -100,10 +100,9 @@ class RecommendationService(
     ): Contact {
         checkNotNull(manager) { "No Active Person Manager" }
         return Contact(
-            0,
-            id,
-            date,
-            date,
+            personId = id,
+            date = date,
+            startTime = date,
             type = type,
             notes = details.notes,
             providerId = manager.providerId,

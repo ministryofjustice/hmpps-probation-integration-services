@@ -15,6 +15,7 @@ interface PersonRepository : JpaRepository<Person, Long> {
         ]
     )
     fun findByCrn(crn: String): Person?
+    fun existsByCrn(crn: String): Boolean
 }
 
 fun PersonRepository.getByCrn(crn: String) = findByCrn(crn).orNotFoundBy("crn", crn)

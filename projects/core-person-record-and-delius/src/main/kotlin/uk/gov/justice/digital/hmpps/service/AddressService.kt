@@ -45,7 +45,7 @@ class AddressService(
 
     fun deleteAddress(crn: String, cprId: String, deliusId: Long) = audit(DELETE_ADDRESS) {
         addressRepository.findByIdOrNull(deliusId).orNotFoundBy("id", deliusId)
-            .apply { softDeleted = true }
+            .also { addressRepository.delete(it) }
             .trackEvent("AddressDeleted", "crn" to crn, "cprAddressId" to cprId)
     }
 

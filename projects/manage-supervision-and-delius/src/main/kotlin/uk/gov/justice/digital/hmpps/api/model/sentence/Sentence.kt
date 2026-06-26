@@ -28,6 +28,7 @@ data class MinimalOrder(
     val sentenceType: SentenceType? = null,
     val startDate: LocalDate? = null,
     val endDate: LocalDate? = null,
+    val pss: Boolean? = null,
 )
 
 data class NoteDetail(
