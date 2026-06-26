@@ -10,6 +10,7 @@ object PersonalContactGenerator {
 
     val EMPLOYER_ADDRESS = generateAddress(
         status = AddressGenerator.MAIN_STATUS,
+        buildingName = "Employer Building",
         buildingNumber = "1",
         streetName = "Employer Street",
         townCity = "Town City",

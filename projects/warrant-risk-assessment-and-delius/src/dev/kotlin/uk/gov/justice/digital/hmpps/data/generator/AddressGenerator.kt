@@ -11,6 +11,7 @@ object AddressGenerator {
     val MAIN_ADDRESS = generate(
         personId = PersonGenerator.DEFAULT.id,
         status = MAIN_STATUS,
+        buildingName = "Main Building",
         buildingNumber = "2789",
         streetName = "Main Street",
         townCity = "Maintown",
