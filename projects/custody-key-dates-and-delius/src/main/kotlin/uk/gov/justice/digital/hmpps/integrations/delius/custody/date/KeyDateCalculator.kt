@@ -41,6 +41,11 @@ class KeyDateCalculator {
      * Reset suspension date = 2/3 between start and end dates
      */
     fun calculateSuspensionDateIfReset(startDate: LocalDate, endDate: LocalDate): LocalDate? {
-        return if (startDate < endDate) startDate.plusDays(ChronoUnit.DAYS.between(startDate, endDate) * 2 / 3) else null
+        return if (startDate < endDate) startDate.plusDays(
+            ChronoUnit.DAYS.between(
+                startDate,
+                endDate
+            ) * 2 / 3
+        ) else null
     }
 }
