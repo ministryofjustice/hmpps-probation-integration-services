@@ -5,9 +5,9 @@ import uk.gov.justice.digital.hmpps.entity.ReferenceData
 import java.time.LocalDate
 
 object PersonGenerator {
-val TITLE = ReferenceData(IdGenerator.getAndIncrement(), "MR", "Mr")
+    val TITLE = ReferenceData(IdGenerator.getAndIncrement(), "MR", "Mr")
 
-val DEFAULT = generate(
+    val DEFAULT = generate(
         crn = "A000001",
         forename = "Billy",
         secondName = "The",
@@ -18,23 +18,23 @@ val DEFAULT = generate(
         emailAddress = "test@test.com",
         niNumber = "XX000000X",
         title = TITLE,
-        )
+    )
 
-val NO_OPTIONAL_FIELDS = generate(crn = "A000002")
+    val NO_OPTIONAL_FIELDS = generate(crn = "A000002")
 
-fun generate(
+    fun generate(
         crn: String,
         forename: String = "Test",
         secondName: String? = null,
         thirdName: String? = null,
         surname: String = "Person",
         dateOfBirth: LocalDate = LocalDate.of(1990, 1, 1),
-telephoneNumber: String? = null,
-mobileNumber: String? = null,
-emailAddress: String? = null,
-niNumber: String? = null,
-title: ReferenceData? = null,
-id: Long = IdGenerator.getAndIncrement(),
+        telephoneNumber: String? = null,
+        mobileNumber: String? = null,
+        emailAddress: String? = null,
+        niNumber: String? = null,
+        title: ReferenceData? = null,
+        id: Long = IdGenerator.getAndIncrement(),
     ) = Person(
         id = id,
         crn = crn,
@@ -48,5 +48,5 @@ id: Long = IdGenerator.getAndIncrement(),
         emailAddress = emailAddress,
         niNumber = niNumber,
         title = title,
-        )
+    )
 }

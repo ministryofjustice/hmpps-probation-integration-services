@@ -38,6 +38,5 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
         save(ContactGenerator.HOME_VISIT_TYPE)
         save(ContactGenerator.OLDER_HOME_VISIT)
         save(ContactGenerator.LAST_HOME_VISIT)
-
     }
 }
