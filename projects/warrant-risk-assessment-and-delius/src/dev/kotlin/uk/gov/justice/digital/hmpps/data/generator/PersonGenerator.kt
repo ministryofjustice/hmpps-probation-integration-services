@@ -22,14 +22,11 @@ object PersonGenerator {
 
     val NO_OPTIONAL_FIELDS = generate(crn = "A000002")
 
-<<<<<<< HEAD
-val PRISON_MANAGED = generate(crn = "P000001")
-val NO_PREFERRED_ADDRESS = generate(crn = "N000001")
+    val PRISON_MANAGED = generate(crn = "P000001")
 
-fun generate(
-=======
+    val NO_PREFERRED_ADDRESS = generate(crn = "N000001")
+
     fun generate(
->>>>>>> 91e97ddcff72e5ee657d43059ffba63723839cc6
         crn: String,
         forename: String = "Test",
         secondName: String? = null,
