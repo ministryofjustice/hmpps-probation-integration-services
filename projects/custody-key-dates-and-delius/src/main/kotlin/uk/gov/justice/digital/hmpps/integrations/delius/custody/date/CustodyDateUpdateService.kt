@@ -82,9 +82,17 @@ class CustodyDateUpdateService(
             custody.keyDate(SENTENCE_EXPIRY_DATE.code, sentenceDetail.sentenceExpiryDate),
             custody.keyDate(EXPECTED_RELEASE_DATE.code, sentenceDetail.confirmedReleaseDate),
             custody.keyDate(HDC_EXPECTED_DATE.code, sentenceDetail.homeDetentionCurfewEligibilityDate),
-            custody.keyDate(POST_SENTENCE_SUPERVISION_END_DATE.code, sentenceDetail.postSentenceSupervisionEndDate.takeIf { custody.disposal?.type?.pssRequirement == true }),
-            custody.keyDate(SUSPENSION_DATE_IF_RESET.code, keyDateCalculator.suspensionDateIfReset(sentenceDetail, custody)),
-            custody.keyDate(PRESUMPTIVE_EM_END_DATE.code, keyDateCalculator.presumptiveElectronicMonitoringEndDate(sentenceDetail, envelope)),
+            custody.keyDate(
+                POST_SENTENCE_SUPERVISION_END_DATE.code,
+                sentenceDetail.postSentenceSupervisionEndDate.takeIf { custody.disposal?.type?.pssRequirement == true }),
+            custody.keyDate(
+                SUSPENSION_DATE_IF_RESET.code,
+                keyDateCalculator.suspensionDateIfReset(sentenceDetail, custody)
+            ),
+            custody.keyDate(
+                PRESUMPTIVE_EM_END_DATE.code,
+                keyDateCalculator.presumptiveElectronicMonitoringEndDate(sentenceDetail, envelope)
+            ),
             custody.keyDate(FINAL_THIRD_START_DATE.code, keyDateCalculator.finalThirdDate(sentenceDetail, envelope)),
         )
 
