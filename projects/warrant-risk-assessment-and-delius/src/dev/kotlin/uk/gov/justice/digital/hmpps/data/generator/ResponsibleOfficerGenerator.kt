@@ -50,5 +50,4 @@ object ResponsibleOfficerGenerator {
         person = PersonGenerator.NO_PREFERRED_ADDRESS,
         offenderManager = NO_PREFERRED_ADDRESS_OFFENDER_MANAGER,
     )
-
 }

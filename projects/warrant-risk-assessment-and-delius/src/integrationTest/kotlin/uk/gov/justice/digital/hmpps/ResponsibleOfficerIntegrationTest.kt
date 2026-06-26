@@ -94,5 +94,4 @@ internal class ResponsibleOfficerIntegrationTest @Autowired constructor(
                 jsonPath("$.replyAddress.status") { doesNotExist() }
             }
     }
-
 }
