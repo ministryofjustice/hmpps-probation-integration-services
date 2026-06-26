@@ -62,7 +62,7 @@ class ContactOutcomesIntegrationTest : IntegrationTestBase() {
         assertThat(response.outcomes, hasSize(1))
         assertThat(response.outcomes[0].code, equalTo(UpdateContactOutcomeGenerator.OUTCOME.code))
         assertThat(response.outcomes[0].description, equalTo(UpdateContactOutcomeGenerator.OUTCOME.description))
-        assertThat(response.outcomes[0].enforcementActions, hasSize(2))
+        assertThat(response.outcomes[0].enforcementActions, hasSize(3))
         assertThat(
             response.outcomes[0].enforcementActions[0].code,
             equalTo(UpdateContactOutcomeGenerator.ENFORCEMENT_ACTION.code)
@@ -82,6 +82,14 @@ class ContactOutcomesIntegrationTest : IntegrationTestBase() {
         assertThat(
             response.outcomes[0].enforcementActions[1].description,
             equalTo(UpdateContactOutcomeGenerator.ENFORCEMENT_ACTION_2.description)
+        )
+        assertThat(
+            response.outcomes[0].enforcementActions[2].code,
+            equalTo(UpdateContactOutcomeGenerator.ENFORCEMENT_ACTION_NULL_RESPONSE.code)
+        )
+        assertThat(
+            response.outcomes[0].enforcementActions[2].defaultResponsePeriodDays,
+            equalTo(UpdateContactOutcomeGenerator.ENFORCEMENT_ACTION_NULL_RESPONSE.responseByPeriod)
         )
     }
 }
