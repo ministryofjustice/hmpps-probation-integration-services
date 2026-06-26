@@ -98,6 +98,7 @@ subprojects {
         }
         register<BuildInfo>("buildInfo") {
             destinationDir = projectDir
+            filename = "build-info.properties"
         }
     }
 
