@@ -11,6 +11,7 @@ import uk.gov.justice.digital.hmpps.exception.InvalidRequestException
 import uk.gov.justice.digital.hmpps.api.model.contact.CreateContact
 import uk.gov.justice.digital.hmpps.api.model.contact.UpdateContact
 import uk.gov.justice.digital.hmpps.api.model.contact.UpdateContactOutcome
+import uk.gov.justice.digital.hmpps.api.model.contact.UpdateEnforcementActions
 import uk.gov.justice.digital.hmpps.aspect.WithDeliusUser
 import uk.gov.justice.digital.hmpps.service.ContactLogService
 import uk.gov.justice.digital.hmpps.service.UserService
@@ -81,4 +82,11 @@ class ContactController(
         @PathVariable contactId: Long,
         @RequestBody request: UpdateContactOutcome,
     ) = contactLogService.updateContactOutcome(contactId, request)
+
+    @PostMapping("/{contactId}/enforcement-actions")
+    @WithDeliusUser
+    fun addEnforcementActions(
+        @PathVariable contactId: Long,
+        @RequestBody request: UpdateEnforcementActions,
+    ) = contactLogService.updateEnforcementContactOutcome(contactId, request)
 }

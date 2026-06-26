@@ -4,6 +4,7 @@ import uk.gov.justice.digital.hmpps.data.generator.AppointmentGenerator.generate
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.Contact
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.ContactType
+import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.EnforcementAction
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.EnforcementActionContactOutcome
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.EnforcementActionContactOutcomeId
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.OffenderManager
@@ -115,6 +116,25 @@ object UpdateContactOutcomeGenerator {
         )
     )
 
+    val ENFORCEMENT_ACTION_2 =
+        ContactGenerator.generateEnforcementAction("UCOENF2", "UCO Second Enforcement Action", CONTACT_TYPE)
+
+    val ENFORCEMENT_ACTION_2_OUTCOME_TYPE = EnforcementActionContactOutcome(
+        EnforcementActionContactOutcomeId(
+            enforcementActionId = ENFORCEMENT_ACTION_2.id,
+            contactOutcomeTypeId = OUTCOME.id
+        )
+    )
+
+    val AROM_CONTACT_TYPE = ContactType(
+        id = IdGenerator.getAndIncrement(),
+        code = "AROM",
+        attendanceContact = false,
+        description = "Add review outcome manual",
+        locationRequired = "N",
+        editable = true
+    )
+
     val CONTACT_3 = ContactGenerator.generateContact(
         PERSON,
         CONTACT_TYPE,
@@ -128,6 +148,16 @@ object UpdateContactOutcomeGenerator {
         PERSON,
         CONTACT_TYPE,
         ZonedDateTime.of(LocalDateTime.now(EuropeLondon).plusHours(6), EuropeLondon),
+        team = TEAM,
+        staff = STAFF,
+        event = EVENT
+    )
+
+    // Contact with no outcome — used to verify enforcement fails when outcome is missing
+    val CONTACT_NO_OUTCOME = ContactGenerator.generateContact(
+        PERSON,
+        CONTACT_TYPE,
+        ZonedDateTime.of(LocalDateTime.now(EuropeLondon).plusHours(7), EuropeLondon),
         team = TEAM,
         staff = STAFF,
         event = EVENT
@@ -417,5 +447,80 @@ object UpdateContactOutcomeGenerator {
         event = EVENT,
         outcome = OUTCOME,
         alert = true
+    )
+
+    // Contact with existing enforcement — used to verify updating enforcement via PUT /contact/{id}
+    val CONTACT_11 = ContactGenerator.generateContact(
+        PERSON,
+        CONTACT_TYPE,
+        ZonedDateTime.of(LocalDateTime.now(EuropeLondon).plusHours(13), EuropeLondon),
+        team = TEAM,
+        staff = STAFF,
+        event = EVENT,
+        outcome = OUTCOME
+    )
+
+    val ENFORCEMENT_FOR_CONTACT_11 = ContactGenerator.generateEnforcement(
+        contact = CONTACT_11,
+        action = ENFORCEMENT_ACTION
+    )
+
+    // Contact with existing enforcement — used to verify updating enforcement via POST /contact/{id}/enforcement-actions
+    val CONTACT_12 = ContactGenerator.generateContact(
+        PERSON,
+        CONTACT_TYPE,
+        ZonedDateTime.of(LocalDateTime.now(EuropeLondon).plusHours(14), EuropeLondon),
+        team = TEAM,
+        staff = STAFF,
+        event = EVENT,
+        outcome = OUTCOME
+    )
+
+    val ENFORCEMENT_FOR_CONTACT_12 = ContactGenerator.generateEnforcement(
+        contact = CONTACT_12,
+        action = ENFORCEMENT_ACTION
+    )
+
+    // Contact without existing enforcement — used to verify POST creates a new enforcement (covers ContactLogService if branch)
+    val CONTACT_13 = ContactGenerator.generateContact(
+        PERSON,
+        CONTACT_TYPE,
+        ZonedDateTime.of(LocalDateTime.now(EuropeLondon).plusHours(15), EuropeLondon),
+        team = TEAM,
+        staff = STAFF,
+        event = EVENT,
+        outcome = OUTCOME
+    )
+
+    // Enforcement action with null responseByPeriod — covers null condition branch
+    val ENFORCEMENT_ACTION_NULL_RESPONSE = EnforcementAction(
+        id = IdGenerator.getAndIncrement(),
+        code = "UCOENF3",
+        description = "UCO Null Response Enforcement",
+        contactType = CONTACT_TYPE,
+        responseByPeriod = null
+    )
+
+    val ENFORCEMENT_ACTION_NULL_RESPONSE_OUTCOME_TYPE = EnforcementActionContactOutcome(
+        EnforcementActionContactOutcomeId(
+            enforcementActionId = ENFORCEMENT_ACTION_NULL_RESPONSE.id,
+            contactOutcomeTypeId = OUTCOME.id
+        )
+    )
+
+    // Contact with existing enforcement — used to verify PUT updates enforcement with null responseByPeriod
+    val CONTACT_14 = ContactGenerator.generateContact(
+        PERSON,
+        CONTACT_TYPE,
+        ZonedDateTime.of(LocalDateTime.now(EuropeLondon).plusHours(16), EuropeLondon),
+        team = TEAM,
+        staff = STAFF,
+        event = EVENT,
+        outcome = OUTCOME
+    )
+
+    val ENFORCEMENT_FOR_CONTACT_14 = ContactGenerator.generateEnforcement(
+        contact = CONTACT_14,
+        action = ENFORCEMENT_ACTION
     )
 }

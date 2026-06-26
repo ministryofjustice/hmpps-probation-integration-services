@@ -319,6 +319,9 @@ class DataLoader(dataManager: DataManager, private val jdbcTemplate: JdbcTemplat
             UpdateContactOutcomeGenerator.CONTACT_TYPE_OUTCOME,
             UpdateContactOutcomeGenerator.ENFORCEMENT_ACTION,
             UpdateContactOutcomeGenerator.ENFORCEMENT_ACTION_OUTCOME_TYPE,
+            UpdateContactOutcomeGenerator.ENFORCEMENT_ACTION_2,
+            UpdateContactOutcomeGenerator.ENFORCEMENT_ACTION_2_OUTCOME_TYPE,
+            UpdateContactOutcomeGenerator.AROM_CONTACT_TYPE,
             UpdateContactOutcomeGenerator.PERSON_LEVEL_CONTACT_TYPE,
             UpdateContactOutcomeGenerator.PERSON_LEVEL_OUTCOME,
             UpdateContactOutcomeGenerator.PERSON_LEVEL_CONTACT_TYPE_OUTCOME,
@@ -328,6 +331,7 @@ class DataLoader(dataManager: DataManager, private val jdbcTemplate: JdbcTemplat
             UpdateContactOutcomeGenerator.CONTACT_2,
             UpdateContactOutcomeGenerator.CONTACT_3,
             UpdateContactOutcomeGenerator.CONTACT_4,
+            UpdateContactOutcomeGenerator.CONTACT_NO_OUTCOME,
             UpdateContactOutcomeGenerator.CONTACT_5,
             UpdateContactOutcomeGenerator.CONTACT_6,
             UpdateContactOutcomeGenerator.FTC_DISPOSAL_TYPE,
@@ -368,6 +372,15 @@ class DataLoader(dataManager: DataManager, private val jdbcTemplate: JdbcTemplat
             UpdateContactOutcomeGenerator.ENFORCEMENT_FOR_CONTACT_8,
             UpdateContactOutcomeGenerator.CONTACT_9,
             UpdateContactOutcomeGenerator.CONTACT_10,
+            UpdateContactOutcomeGenerator.CONTACT_11,
+            UpdateContactOutcomeGenerator.ENFORCEMENT_FOR_CONTACT_11,
+            UpdateContactOutcomeGenerator.CONTACT_12,
+            UpdateContactOutcomeGenerator.ENFORCEMENT_FOR_CONTACT_12,
+            UpdateContactOutcomeGenerator.CONTACT_13,
+            UpdateContactOutcomeGenerator.ENFORCEMENT_ACTION_NULL_RESPONSE,
+            UpdateContactOutcomeGenerator.ENFORCEMENT_ACTION_NULL_RESPONSE_OUTCOME_TYPE,
+            UpdateContactOutcomeGenerator.CONTACT_14,
+            UpdateContactOutcomeGenerator.ENFORCEMENT_FOR_CONTACT_14,
         )
 
         saveAll(
@@ -473,6 +486,8 @@ class DataLoader(dataManager: DataManager, private val jdbcTemplate: JdbcTemplat
         save(PersonGenerator.CASELOAD_PERSON_2)
         save(PersonGenerator.CASELOAD_PERSON_3)
         save(PersonGenerator.SMS_PERSON)
+
+        save(PersonGenerator.CASE_ALLOCATION_1)
 
         save(PersonGenerator.CASELOAD_LIMITED_ACCESS_EXCLUSION)
         save(PersonGenerator.CASELOAD_LIMITED_ACCESS_RESTRICTION)

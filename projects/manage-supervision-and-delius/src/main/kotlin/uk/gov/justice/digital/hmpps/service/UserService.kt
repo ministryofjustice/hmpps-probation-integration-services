@@ -376,6 +376,7 @@ fun CaseloadItem.toStaffCase(caseAccess: CaseAccess? = null) = if (caseAccess.is
         dob = dateOfBirth?.toLocalDate(),
         latestSentence = latestSentenceTypeDescription,
         numberOfAdditionalSentences = totalSentences - 1,
+        allocatedOn = allocatedDate?.toLocalDate()
     )
 }
 

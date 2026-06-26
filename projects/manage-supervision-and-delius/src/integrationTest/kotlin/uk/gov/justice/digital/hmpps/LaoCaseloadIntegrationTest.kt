@@ -39,6 +39,7 @@ internal class LaoCaseloadIntegrationTest : IntegrationTestBase() {
         assertThat(caseload[0].nextAppointment, equalTo(null))
         assertThat(caseload[0].previousAppointment, equalTo(null))
         assertThat(caseload[0].numberOfAdditionalSentences, equalTo(null))
+        assertThat(caseload[0].allocatedOn, equalTo(null))
 
         assertThat(caseload[1].limitedAccess, equalTo(true))
         assertThat(caseload[1].caseName, equalTo(null))

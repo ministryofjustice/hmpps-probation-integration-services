@@ -23,8 +23,8 @@ class UserService(
             .attributes("cn")
             .searchScope(org.springframework.ldap.query.SearchScope.ONELEVEL)
             .where("mail").`is`(email),
-        AttributesMapper { it["cn"]?.get()?.toString() }
-    ).filterNotNull().toList()
+        AttributesMapper { it["cn"].get().toString() }
+    )
 
     data class UserExistsResponse(
         val email: String,

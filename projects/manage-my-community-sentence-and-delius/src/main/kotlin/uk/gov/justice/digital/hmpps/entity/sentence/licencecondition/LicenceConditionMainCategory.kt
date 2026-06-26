@@ -13,5 +13,6 @@ class LicenceConditionMainCategory(
     @Id
     @Column(name = "lic_cond_type_main_cat_id")
     val id: Long,
+    val code: String,
     val description: String,
 )

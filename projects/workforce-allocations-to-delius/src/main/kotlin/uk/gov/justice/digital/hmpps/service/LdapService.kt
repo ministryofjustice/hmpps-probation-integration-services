@@ -34,7 +34,7 @@ class LdapService(private val ldapTemplate: LdapTemplate) {
             .where("cn").`is`(role)
             .and("objectclass").`is`("NDRoleAssociation"),
         AttributesMapper {
-            LdapUtils.getStringValue(LdapUtils.newLdapName(it["entryDN"]?.get()?.toString()), 3)
+            LdapUtils.getStringValue(LdapUtils.newLdapName(it["entryDN"].get().toString()), 3)
         }
     )
 }

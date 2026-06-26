@@ -52,6 +52,7 @@ internal class AppointmentIntegrationTest @Autowired constructor(private val moc
                               "startTime": "09:00:00",
                               "endTime": "09:30:00",
                               "type": "Office Appointment",
+                              "typeCode": "COF",
                               "practitioner": {
                                 "name": {
                                   "forename": "Test",
@@ -75,6 +76,7 @@ internal class AppointmentIntegrationTest @Autowired constructor(private val moc
                               "startTime": "12:00:00",
                               "endTime": "13:30:00",
                               "type": "Office Appointment",
+                              "typeCode": "COF",
                               "practitioner": {
                                 "name": {
                                   "forename": "Test",
@@ -89,6 +91,7 @@ internal class AppointmentIntegrationTest @Autowired constructor(private val moc
                               "startTime": "12:30:00",
                               "endTime": "13:15:00",
                               "type": "Office Appointment",
+                              "typeCode": "COF",
                               "practitioner": {
                                 "name": {
                                   "forename": "Test",
@@ -163,6 +166,7 @@ internal class AppointmentIntegrationTest @Autowired constructor(private val moc
                               "startTime": "15:00:00",
                               "endTime": "15:30:00",
                               "type": "Office Appointment",
+                              "typeCode": "COF",
                               "practitioner": {
                                 "name": {
                                   "forename": "Test",
@@ -189,6 +193,7 @@ internal class AppointmentIntegrationTest @Autowired constructor(private val moc
                               "startTime": "12:30:00",
                               "endTime": "13:15:00",
                               "type": "Office Appointment",
+                              "typeCode": "COF",
                               "practitioner": {
                                 "name": {
                                   "forename": "Test",
@@ -238,6 +243,7 @@ internal class AppointmentIntegrationTest @Autowired constructor(private val moc
                               "startTime": "10:00:00",
                               "endTime": "10:45:00",
                               "type": "Office Appointment",
+                              "typeCode": "COF",
                               "practitioner": {
                                 "name": {
                                   "forename": "Test",
@@ -288,6 +294,7 @@ internal class AppointmentIntegrationTest @Autowired constructor(private val moc
                               "startTime": "12:00:00",
                               "endTime": "13:30:00",
                               "type": "Office Appointment",
+                              "typeCode": "COF",
                               "practitioner": {
                                 "name": {
                                   "forename": "Test",

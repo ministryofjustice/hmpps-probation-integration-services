@@ -46,7 +46,7 @@ class ScheduleService(
                     ?.let { Name(it.forename, null, it.surname) }
                 document.toDocument(author)
             },
-            enforcementAction = contact.enforcements.sortedBy { it.createdDatetime }.lastOrNull()?.let {
+            enforcementAction = contact.enforcement?.let {
                 EnforcementAction(
                     code = it.action?.code,
                     description = it.action?.description,
@@ -165,7 +165,7 @@ fun Contact.toActivityOverview(): Activity {
         isCommunication = isCommunication(),
         description = description,
         outcome = outcome?.description,
-        deliusManaged = CreateAppointment.Type.entries.none { it.code == type.code } || complied == false || requirement?.mainCategory?.code == "F",
+        deliusManaged = CreateAppointment.Type.entries.none { it.code == type.code } || requirement?.mainCategory?.code == "F",
         esupervisionId = eSupervisionId()
     )
 }
@@ -228,7 +228,7 @@ fun Contact.toActivity(noteId: Int? = null): Activity {
         eventNumber = event?.eventNumber,
         description = description,
         outcome = outcome?.description,
-        deliusManaged = CreateAppointment.Type.entries.none { it.code == type.code } || complied == false || requirement?.mainCategory?.code == "F",
+        deliusManaged = CreateAppointment.Type.entries.none { it.code == type.code } || requirement?.mainCategory?.code == "F",
         isVisor = isVisor,
         eventId = event?.id,
         component = requirement?.asComponent() ?: licenceCondition?.asComponent(),
