@@ -261,11 +261,16 @@ class ContactLogService(
     fun updateContactOutcome(contactId: Long, request: UpdateContactOutcome) {
         val contact = contactRepository.getContact(contactId)
         val contactType = contact.type.code
-        val contactOutcome = contactTypeRepository.findSelectableOutcomesByTypeCode(contactType)
-            .firstOrNull { it.code == request.outcomeCode }
-            .orNotFoundBy("code", request.outcomeCode)
+        val contactOutcome = request.outcomeCode?.let { code ->
+            contactTypeRepository.findSelectableOutcomesByTypeCode(contactType)
+                .firstOrNull { it.code == code }
+                .orNotFoundBy("code", code)
+        }
+        if (contactOutcome == null) {
+            require(contact.outcome == null) { "Contact outcome cannot be updated to a non-existent outcome" }
+        }
 
-        if (contact.complied == false && contactOutcome.outcomeCompliantAcceptable == true) {
+        if (contact.complied == false && contactOutcome?.outcomeCompliantAcceptable == true) {
             telemetryService.trackEvent(
                 "remove enforcement for a compliant contact",
                 mapOf(
@@ -298,16 +303,15 @@ class ContactLogService(
         contact.date = request.date
         contact.startTime = ZonedDateTime.ofLocal(request.date.atTime(request.time), EuropeLondon, null)
         contact.outcome = contactOutcome
-        contact.attended = contactOutcome.outcomeAttendance
-        contact.complied = contactOutcome.outcomeCompliantAcceptable
+        contact.attended = contactOutcome?.outcomeAttendance
+        contact.complied = contactOutcome?.outcomeCompliantAcceptable
 
         contactRepository.save(contact)
-        if (request.enforcementActionCode != null) {
-            val appliedAction =
-                contactEnforcementService.updateEnforcementActionForContact(contact, request.enforcementActionCode)
-            setEnforcementFlag(contact, appliedAction)
-        } else {
-            setEnforcementFlag(contact)
+        contactOutcome?.let {
+            val appliedAction = request.enforcementActionCode?.let { code ->
+                contactEnforcementService.updateEnforcementActionForContact(contact, code)
+            }
+            setEnforcementFlag(contact, appliedAction ?: contact.latestEnforcementAction)
         }
     }
 
