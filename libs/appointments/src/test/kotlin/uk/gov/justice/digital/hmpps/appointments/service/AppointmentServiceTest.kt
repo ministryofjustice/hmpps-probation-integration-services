@@ -869,6 +869,55 @@ class AppointmentServiceTest {
             .hasMessage("Outcome must be provided when amending an appointment in the past")
     }
 
+    @Test
+    fun `amend past appointment succeeds without outcome when allowed`() {
+        val date = LocalDate.now().minusDays(1)
+        val newDate = date.minusDays(1)
+        val existing = TestData.appointment(
+            date = date,
+            startTime = date.atTime(9, 0).atZone(EuropeLondon),
+            endTime = date.atTime(14, 0).atZone(EuropeLondon)
+        )
+        whenever(appointmentRepository.findByExternalReferenceIn(listOf(existing.externalReference!!)))
+            .thenReturn(listOf(existing))
+        whenever(outcomeRepository.findAllByCodeIn(emptySet())).thenReturn(emptyList())
+        mockEnforcementReferenceData()
+
+        appointmentService.update(existing) {
+            reference = { existing.externalReference }
+            amendDateTime = { copy(date = newDate) }
+            applyOutcome = { Outcome(outcomeCode = null, allowMissingOutcomeInThePast = true) }
+        }
+
+        assertThat(existing.externalReference).isEqualTo("REF01")
+        assertThat(existing.date).isEqualTo(newDate)
+        assertThat(existing.outcome).isNull()
+    }
+
+    @Test
+    fun `removing past outcome fails even if past amendments are allowed`() {
+        val date = LocalDate.now().minusDays(1)
+        val existing = TestData.appointment(
+            date = date,
+            startTime = date.atTime(9, 0).atZone(EuropeLondon),
+            endTime = date.atTime(14, 0).atZone(EuropeLondon),
+            outcome = TestData.OUTCOME,
+        )
+        whenever(appointmentRepository.findByExternalReferenceIn(listOf(existing.externalReference!!)))
+            .thenReturn(listOf(existing))
+        whenever(outcomeRepository.findAllByCodeIn(emptySet())).thenReturn(emptyList())
+        mockEnforcementReferenceData()
+
+        assertThatThrownBy {
+            appointmentService.update(existing) {
+                reference = { existing.externalReference }
+                applyOutcome = { Outcome(outcomeCode = null, allowMissingOutcomeInThePast = true) }
+            }
+        }
+            .isInstanceOf(IllegalArgumentException::class.java)
+            .hasMessage("Outcome cannot be amended")
+    }
+
     private fun mockCreateReferenceData() {
         whenever(typeRepository.findAllByCodeIn(any())).thenReturn(listOf(TestData.TYPE))
         whenever(outcomeRepository.findAllByCodeIn(any())).thenReturn(emptyList())
