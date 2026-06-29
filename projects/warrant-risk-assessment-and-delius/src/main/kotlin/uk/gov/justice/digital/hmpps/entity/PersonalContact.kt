@@ -93,6 +93,7 @@ interface PersonalContactRepository : JpaRepository<PersonalContact, Long> {
         select pc from PersonalContact pc
         where pc.personId = :personId
         and pc.relationshipType.code = 'CE'
+        """
     )
     fun findCurrentEmployersByPersonId(personId: Long): List<PersonalContact>
 }
