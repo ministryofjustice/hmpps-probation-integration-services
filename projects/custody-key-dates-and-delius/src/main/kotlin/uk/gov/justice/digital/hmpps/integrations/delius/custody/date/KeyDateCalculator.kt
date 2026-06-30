@@ -9,27 +9,21 @@ import kotlin.math.roundToLong
 
 @Component
 class KeyDateCalculator {
-
-    companion object {
-        private const val SDS_PERCENTAGE = 0.07
-        private const val SDS_PLUS_PERCENTAGE = 0.17
-    }
-
     /**
-     * EMED Calculation = CRD + X% of sentence length
-     * For SDS this is 7%
-     * For SDS+ this is 17%
+     * EMED Calculation
+     * For SDS Sentences, EMED = SED - (60% of the total sentence length)
+     * For SDS+ Sentences, EMED = SED - (1/3rd of the total sentence length)
      */
     fun presumptiveElectronicMonitoringEndDate(
         sentenceDetail: SentenceDetail, envelope: OperativeSentenceEnvelope
-    ): LocalDate? = sentenceDetail.conditionalReleaseDate?.let { crd ->
-        val percentage = if (envelope.containsAnSDSPlusSentence) {
-            SDS_PLUS_PERCENTAGE
+    ): LocalDate? = sentenceDetail.sentenceExpiryDate?.let { sed ->
+        val length = envelope.sentenceEnvelopeLengthInDays
+        val deduction = if (envelope.containsAnSDSPlusSentence) {
+            length / 3.0
         } else {
-            SDS_PERCENTAGE
+            length * 0.60
         }
-        val extraDays = (envelope.sentenceEnvelopeLengthInDays * percentage).roundToLong()
-        crd.plusDays(extraDays)
+        sed.minusDays(deduction.roundToLong())
     }
 
     /**
