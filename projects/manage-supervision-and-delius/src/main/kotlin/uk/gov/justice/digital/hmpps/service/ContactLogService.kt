@@ -267,7 +267,10 @@ class ContactLogService(
                 .orNotFoundBy("code", code)
         }
         if (contactOutcome == null) {
-            require(contact.outcome == null) { "Contact outcome cannot be updated to a non-existent outcome" }
+            require(contact.outcome == null) { "outcomeCode cannot be null when the contact already has an outcome" }
+        }
+        if (request.enforcementActionCode != null && contactOutcome == null) {
+            throw InvalidRequestException("outcome is required when an enforcement action is provided")
         }
 
         if (contact.complied == false && contactOutcome?.outcomeCompliantAcceptable == true) {
@@ -307,12 +310,12 @@ class ContactLogService(
         contact.complied = contactOutcome?.outcomeCompliantAcceptable
 
         contactRepository.save(contact)
-        contactOutcome?.let {
-            val appliedAction = request.enforcementActionCode?.let { code ->
+        val appliedAction = if (contactOutcome != null) {
+            request.enforcementActionCode?.let { code ->
                 contactEnforcementService.updateEnforcementActionForContact(contact, code)
             }
-            setEnforcementFlag(contact, appliedAction ?: contact.latestEnforcementAction)
-        }
+        } else null
+        setEnforcementFlag(contact, appliedAction ?: contact.latestEnforcementAction)
     }
 
     @Transactional
