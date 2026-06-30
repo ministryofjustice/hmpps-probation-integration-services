@@ -7,20 +7,17 @@ import java.time.LocalDate
 
 @Entity
 @SQLRestriction("soft_deleted = 0")
-class Release(
+class Recall(
     @Id
-    @Column(name = "release_id")
+    @Column(name = "recall_id")
     val id: Long,
 
-    @Column(name = "actual_release_date")
+    @Column(name = "recall_date")
     val date: LocalDate,
 
-    @OneToOne(mappedBy = "release")
-    val recall: Recall? = null,
-
-    @ManyToOne
-    @JoinColumn(name = "custody_id")
-    val custody: Custody? = null,
+    @OneToOne
+    @JoinColumn(name = "release_id")
+    val release: Release? = null,
 
     @Column(columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)
