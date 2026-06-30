@@ -94,8 +94,10 @@ class Contact(
     @JoinColumn(name = "latest_enforcement_action_id", referencedColumnName = "enforcement_action_id")
     var latestEnforcementAction: EnforcementAction? = null,
 
+    // there should only be one enforcement per contact, modeled
+    // as a one to many due to needing lazy loading
     @OneToMany(mappedBy = "contact", fetch = FetchType.LAZY, orphanRemoval = true)
-    var enforcements: MutableList<Enforcement> = mutableListOf(),
+    var enforcementEntries: MutableList<Enforcement> = mutableListOf(),
 
     @Column(name = "enforcement")
     @Convert(converter = NumericBooleanConverter::class)
@@ -182,6 +184,7 @@ class Contact(
 
     val partitionAreaId: Long = 0,
 ) {
+    val enforcement: Enforcement? get() = enforcementEntries.singleOrNull()
 
     fun startDateTime(): ZonedDateTime {
         val startTime = startTime

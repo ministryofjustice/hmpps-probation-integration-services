@@ -23,7 +23,7 @@ class ContactEnforcementService(
             enforcementActionsRepository.findByContactOutcomeId(contactOutcome.id)
                 .firstOrNull { it.code == enforcementActionCode }) { "Enforcement action not valid for outcome" }
         contact.latestEnforcementAction = enforcementAction
-        val enforcement = contact.enforcements.firstOrNull()
+        val enforcement = contact.enforcement
         if (enforcement == null) {
             val responseDate =
                 enforcementAction.responseByPeriod?.let { contact.startTime?.plusDays(it) }

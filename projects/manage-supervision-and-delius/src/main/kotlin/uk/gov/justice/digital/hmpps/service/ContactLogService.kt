@@ -271,7 +271,7 @@ class ContactLogService(
                 mapOf(
                     "crn" to contact.person.crn,
                     "contactId" to contactId.toString(),
-                    "enforcements" to contact.enforcements.firstOrNull()?.let {
+                    "enforcement" to contact.enforcement?.let {
                         mapOf(
                             "id" to it.id,
                             "action" to it.action?.code,
@@ -280,7 +280,7 @@ class ContactLogService(
                     }.let { objectMapper.writeValueAsString(it) }
                 )
             )
-            contact.enforcements.clear()
+            contact.enforcementEntries.clear()
         }
 
         request.notes.let { contact.appendNotes(it) }
@@ -335,7 +335,7 @@ class ContactLogService(
         contact.latestEnforcementAction = enforcementAction
         val responseDate =
             enforcementAction.responseByPeriod?.let { contact.startTime?.plusDays(it) }
-        val existingEnforcement = contact.enforcements.firstOrNull()
+        val existingEnforcement = contact.enforcement
         if (existingEnforcement == null) {
             val enforcement = Enforcement(
                 contact = contact,
