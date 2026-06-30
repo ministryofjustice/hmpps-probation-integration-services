@@ -271,7 +271,7 @@ class ContactLogService(
                 mapOf(
                     "crn" to contact.person.crn,
                     "contactId" to contactId.toString(),
-                    "enforcements" to contact.enforcement?.let {
+                    "enforcement" to contact.enforcement?.let {
                         mapOf(
                             "id" to it.id,
                             "action" to it.action?.code,
@@ -280,8 +280,7 @@ class ContactLogService(
                     }.let { objectMapper.writeValueAsString(it) }
                 )
             )
-            contact.enforcement?.let { enforcementRepository.delete(it) }
-            contact.enforcement = null
+            contact.enforcementEntries.clear()
         }
 
         request.notes.let { contact.appendNotes(it) }
