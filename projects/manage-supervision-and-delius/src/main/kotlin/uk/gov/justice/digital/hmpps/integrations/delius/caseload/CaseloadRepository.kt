@@ -107,7 +107,7 @@ from ( with filtered_caseload as ( select caseload.*
        from filtered_caseload
        join team on team.team_id = filtered_caseload.trust_provider_team_id
        join offender person on filtered_caseload.offender_id = person.offender_id
-       left join offender_manager om on om.offender_id = filtered_caseload.offender_id and om.end_date is null
+        left join offender_manager om on om.offender_id = filtered_caseload.offender_id and om.allocation_staff_id = filtered_caseload.staff_employee_id and om.end_date is null and om.soft_deleted = 0 and om.active_flag = 1
        left join next_appointment on filtered_caseload.offender_id = next_appointment.offender_id
        left join prev_appointment on filtered_caseload.offender_id = prev_appointment.offender_id
        left join sentence_stats on filtered_caseload.offender_id = sentence_stats.offender_id
