@@ -269,9 +269,8 @@ class ContactLogService(
         if (contactOutcome == null) {
             require(contact.outcome == null) { "outcomeCode cannot be null when the contact already has an outcome" }
         }
-        if (request.enforcementActionCode != null && contactOutcome == null) {
-            throw InvalidRequestException("outcome is required when an enforcement action is provided")
-        }
+        require(request.enforcementActionCode == null || contactOutcome != null)
+        { "Outcome is required when an enforcement action is provided" }
 
         if (contact.complied == false && contactOutcome?.outcomeCompliantAcceptable == true) {
             telemetryService.trackEvent(
@@ -310,10 +309,8 @@ class ContactLogService(
         contact.complied = contactOutcome?.outcomeCompliantAcceptable
 
         contactRepository.save(contact)
-        val appliedAction = if (contactOutcome != null) {
-            request.enforcementActionCode?.let { code ->
-                contactEnforcementService.updateEnforcementActionForContact(contact, code)
-            }
+        val appliedAction = if (contactOutcome != null && request.enforcementActionCode != null) {
+                contactEnforcementService.updateEnforcementActionForContact(contact, request.enforcementActionCode)
         } else null
         setEnforcementFlag(contact, appliedAction ?: contact.latestEnforcementAction)
     }
