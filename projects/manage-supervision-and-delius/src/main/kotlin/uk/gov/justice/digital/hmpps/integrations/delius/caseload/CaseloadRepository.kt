@@ -103,11 +103,11 @@ from ( with filtered_caseload as ( select caseload.*
               prev_appointment.date_time                  as prev_appointment_date_time,
               prev_appointment.type_description           as prev_appointment_type_description,
               team.code                                   as team_code,
-              ca.allocation_decision_date                 as allocated_date
+              om.allocation_date                          as allocated_date
        from filtered_caseload
        join team on team.team_id = filtered_caseload.trust_provider_team_id
        join offender person on filtered_caseload.offender_id = person.offender_id
-       left join case_allocation ca on ca.offender_id = filtered_caseload.offender_id and ca.event_id = filtered_caseload.event_id
+       left join offender_manager om on om.offender_id = filtered_caseload.offender_id and om.end_date is null
        left join next_appointment on filtered_caseload.offender_id = next_appointment.offender_id
        left join prev_appointment on filtered_caseload.offender_id = prev_appointment.offender_id
        left join sentence_stats on filtered_caseload.offender_id = sentence_stats.offender_id

@@ -35,7 +35,7 @@ class UserIntegrationTest : IntegrationTestBase() {
         assertThat(res.provider, equalTo(DEFAULT_PROVIDER.description))
         assertThat(res.caseload[0].crn, equalTo(OVERVIEW.crn))
         assertThat(res.caseload[0].caseName, equalTo(OVERVIEW.name()))
-        assertThat(res.caseload[0].allocatedOn, equalTo(LocalDate.of(2024, 6, 15)))
+        assertThat(res.caseload[0].allocatedOn, equalTo(LocalDate.of(2025, 2, 10)))
     }
 
     @Test
@@ -170,7 +170,7 @@ class UserIntegrationTest : IntegrationTestBase() {
         assertThat(res.caseload.size, equalTo(1))
         assertThat(res.caseload[0].crn, equalTo("X000004"))
         assertThat(res.caseload[0].latestSentence, equalTo("Default Sentence Type"))
-        assertThat(res.caseload[0].allocatedOn, equalTo(LocalDate.of(2024, 6, 15)))
+        assertThat(res.caseload[0].allocatedOn, equalTo(LocalDate.of(2025, 2, 10)))
     }
 
     @Test
