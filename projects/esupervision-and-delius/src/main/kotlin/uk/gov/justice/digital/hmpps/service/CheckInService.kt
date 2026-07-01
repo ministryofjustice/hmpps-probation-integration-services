@@ -71,7 +71,7 @@ class CheckInService(
         }
         if (contact.event == null) throw IgnorableMessageException("Event not found for setup removal")
         require(domainEvent matches contact) { "Case details mismatch" }
-        contact.outcome = contactOutcomeRepository.getByCode(SETUP_REMOVED)
+        contact.outcome = contactOutcomeRepository.getByCode(domainEvent.outcomeCode)
         contactRepository.save(contact).also { audit(it) }
     }
 

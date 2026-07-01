@@ -153,6 +153,9 @@ class ContactOutcome(
     companion object {
         const val SETUP_COMPLETED = "ESPSC"
         const val SETUP_REMOVED = "ESPRD"
+        const val MANUAL_STOP = "ESPMP"
+        const val NO_ACTIVE_EVENTS = "ESPNA"
+        const val IN_RESET = "ESPRS"
     }
 }
 
