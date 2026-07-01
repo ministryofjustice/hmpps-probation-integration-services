@@ -28,6 +28,7 @@ spring:
 
 oauth2.roles:
   - PROBATION_API__WARRANT_RISK_ASSESSMENT__BASIC_DETAILS
+  - PROBATION_API__WARRANT_RISK_ASSESSMENT__MAPPA_INFORMATION
 
 springdoc.default-produces-media-type: application/json
 
