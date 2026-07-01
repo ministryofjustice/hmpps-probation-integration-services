@@ -71,9 +71,7 @@ class CheckInService(
         }
         if (contact.event == null) throw IgnorableMessageException("Event not found for setup removal")
         require(domainEvent matches contact) { "Case details mismatch" }
-        val outcomeCode =
-            domainEvent.additionalInformation["outcomeCode"]?.toString()?.takeIf { it.isNotBlank() } ?: SETUP_REMOVED
-        contact.outcome = contactOutcomeRepository.getByCode(outcomeCode)
+        contact.outcome = contactOutcomeRepository.getByCode(domainEvent.outcomeCode)
         contactRepository.save(contact).also { audit(it) }
     }
 

@@ -5,6 +5,10 @@ import com.asyncapi.kotlinasyncapi.annotation.channel.Message
 import com.asyncapi.kotlinasyncapi.annotation.channel.Publish
 import org.springframework.stereotype.Component
 import uk.gov.justice.digital.hmpps.converter.NotificationConverter
+import uk.gov.justice.digital.hmpps.entity.ContactOutcome.Companion.IN_RESET
+import uk.gov.justice.digital.hmpps.entity.ContactOutcome.Companion.MANUAL_STOP
+import uk.gov.justice.digital.hmpps.entity.ContactOutcome.Companion.NO_ACTIVE_EVENTS
+import uk.gov.justice.digital.hmpps.entity.ContactOutcome.Companion.SETUP_REMOVED
 import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException
 import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
 import uk.gov.justice.digital.hmpps.message.Notification
@@ -95,3 +99,6 @@ val HmppsDomainEvent.crn get() = requireNotNull(personReference.findCrn())
 val HmppsDomainEvent.checkInUrl get() = additionalInformation["checkInUrl"]?.toString()
 val HmppsDomainEvent.eventNumber get() = additionalInformation["eventNumber"]?.toString()
 val HmppsDomainEvent.setupId get() = additionalInformation["setupId"]?.toString()
+val HmppsDomainEvent.outcomeCode get() = requireNotNull(additionalInformation["outcomeCode"]).toString().also {
+    require(it in listOf(SETUP_REMOVED, MANUAL_STOP, NO_ACTIVE_EVENTS, IN_RESET)) { "Unexpected outcome code: $it" }
+}
