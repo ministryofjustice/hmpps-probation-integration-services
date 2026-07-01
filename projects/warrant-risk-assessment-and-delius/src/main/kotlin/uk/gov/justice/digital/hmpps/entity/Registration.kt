@@ -4,6 +4,8 @@ import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.NumericBooleanConverter
+import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import java.time.LocalDate
@@ -63,10 +65,10 @@ interface RegistrationRepository : JpaRepository<Registration, Long> {
         join fetch r.type
         where r.personId = :personId
         and r.type.code in :codes
-        order by r.date desc
+        order by r.date desc, r.id desc
         """
     )
-    fun findLatestByPersonIdAndTypeCodes(personId: Long, codes: List<String>): List<Registration>
+    fun findLatestByPersonIdAndTypeCodes(personId: Long, codes: List<String>, pageable: Pageable = PageRequest.of(0, 1)): List<Registration>
 }
 
 fun RegistrationRepository.findLatestMappaRegistration(personId: Long): Registration? =
