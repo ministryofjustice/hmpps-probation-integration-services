@@ -4,7 +4,6 @@ import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.NumericBooleanConverter
-import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import java.time.LocalDate
@@ -33,7 +32,7 @@ class Registration(
 
     @Column(name = "deregistered", columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)
-    val deRegistered: Boolean = false,
+    val deregistered: Boolean = false,
 
     @Column(name = "soft_deleted", columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)
