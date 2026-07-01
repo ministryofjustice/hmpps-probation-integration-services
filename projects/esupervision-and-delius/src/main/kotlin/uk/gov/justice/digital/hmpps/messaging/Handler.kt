@@ -99,6 +99,7 @@ val HmppsDomainEvent.crn get() = requireNotNull(personReference.findCrn())
 val HmppsDomainEvent.checkInUrl get() = additionalInformation["checkInUrl"]?.toString()
 val HmppsDomainEvent.eventNumber get() = additionalInformation["eventNumber"]?.toString()
 val HmppsDomainEvent.setupId get() = additionalInformation["setupId"]?.toString()
-val HmppsDomainEvent.outcomeCode get() = requireNotNull(additionalInformation["outcomeCode"]).toString().also {
-    require(it in listOf(SETUP_REMOVED, MANUAL_STOP, NO_ACTIVE_EVENTS, IN_RESET)) { "Unexpected outcome code: $it" }
-}
+val HmppsDomainEvent.outcomeCode
+    get() = requireNotNull(additionalInformation["outcomeCode"]).toString().also {
+        require(it in listOf(SETUP_REMOVED, MANUAL_STOP, NO_ACTIVE_EVENTS, IN_RESET)) { "Unexpected outcome code: $it" }
+    }
