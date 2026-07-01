@@ -30,6 +30,5 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
         save(RegistrationGenerator.MAPPA_TYPE_M2)
         save(RegistrationGenerator.MAPPA_REGISTRATION)
         save(RegistrationGenerator.OLDER_MAPPA_REGISTRATION)
-
     }
 }
