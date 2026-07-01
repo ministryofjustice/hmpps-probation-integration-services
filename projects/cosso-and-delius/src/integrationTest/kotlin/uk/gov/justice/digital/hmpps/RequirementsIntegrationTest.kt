@@ -24,7 +24,7 @@ class RequirementsIntegrationTest @Autowired constructor(
         val response = mockMvc.get("/requirements/${uuid}") { withToken() }
             .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<RequirementsResponse>()
-        assertThat(response.requirements.size).isEqualTo(2)
+        assertThat(response.requirements.size).isEqualTo(3)
         assertThat(response.breachReasons.size).isEqualTo(1)
         assertThat(response.requirements.get(0).type?.code).isEqualTo("Probation")
         assertThat(response.breachReasons.get(0).code).isEqualTo("Absent")

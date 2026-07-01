@@ -30,8 +30,8 @@ class SignAndSendIntegrationTest @Autowired constructor(
         val username = UserGenerator.DEFAULT_PROBATION_USER.username
         val result = mockMvc.get("/sign-and-send/$crn/$username") { withToken() }.andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<SignAndSendResponse>()
-        assertThat(result.userDetails.name?.forename).isEqualTo("John")
-        assertThat(result.userDetails.name?.surname).isEqualTo("Smith")
+        assertThat(result.userDetails?.forename).isEqualTo("John")
+        assertThat(result.userDetails?.surname).isEqualTo("Smith")
         assertThat(result.responsibleOfficer.title).isEqualTo("Mr")
         assertThat(result.responsibleOfficer.name?.forename).isEqualTo("John")
         assertThat(result.responsibleOfficer.name?.middleName).isEqualTo("Bob")
@@ -49,8 +49,8 @@ class SignAndSendIntegrationTest @Autowired constructor(
         val username = UserGenerator.POM_USER.username
         val result = mockMvc.get("/sign-and-send/$crn/$username") { withToken() }.andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<SignAndSendResponse>()
-        assertThat(result.userDetails.name?.forename).isEqualTo("Jack")
-        assertThat(result.userDetails.name?.surname).isEqualTo("Harry")
+        assertThat(result.userDetails?.forename).isEqualTo("Jack")
+        assertThat(result.userDetails?.surname).isEqualTo("Harry")
         assertThat(result.responsibleOfficer.title).isEqualTo("Mr")
         assertThat(result.responsibleOfficer.name?.forename).isEqualTo("Jack")
         assertThat(result.responsibleOfficer.name?.middleName).isEqualTo("Pom")

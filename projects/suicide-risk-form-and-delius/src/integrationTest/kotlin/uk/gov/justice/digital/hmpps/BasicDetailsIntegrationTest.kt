@@ -63,7 +63,7 @@ internal class BasicDetailsIntegrationTest @Autowired constructor(
 
         assertThat(response).isEqualTo(
             SignAndSendResponse(
-                userDetails = UserDetails(Name(ldapUser.firstName, null, ldapUser.surname)),
+                userDetails = Name(ldapUser.firstName, null, ldapUser.surname),
                 responsibleOfficer = ResponsibleOfficerResponse(
                     title = staff.title?.description,
                     name = Name(staff.firstName, staff.middleName, staff.surname),
@@ -102,7 +102,7 @@ internal class BasicDetailsIntegrationTest @Autowired constructor(
 
         assertThat(response).isEqualTo(
             SignAndSendResponse(
-                userDetails = UserDetails(Name(ldapUser.firstName, null, ldapUser.surname)),
+                userDetails = Name(ldapUser.firstName, null, ldapUser.surname),
                 responsibleOfficer = ResponsibleOfficerResponse(
                     title = staff.title?.description,
                     name = Name(staff.firstName, staff.middleName, staff.surname),
