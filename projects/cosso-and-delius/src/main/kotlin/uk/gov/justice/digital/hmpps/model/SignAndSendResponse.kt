@@ -5,7 +5,6 @@ data class SignAndSendResponse(
     val responsibleOfficer: ResponsibleOfficerResponse
 )
 
-
 data class ResponsibleOfficerResponse(
     val title: String?,
     val name: Name?,
