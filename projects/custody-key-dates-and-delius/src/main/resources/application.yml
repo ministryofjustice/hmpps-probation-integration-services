@@ -3,7 +3,7 @@ spring:
   jackson:
     default-property-inclusion: non_null
   jpa:
-    hibernate.ddl-auto: validate
+    #    hibernate.ddl-auto: validate # TODO re-enable this after "sds-plus-flag-enabled" feature flag is enabled
     properties:
       hibernate:
         timezone.default_storage: NORMALIZE
@@ -28,6 +28,7 @@ spring:
 
 oauth2.roles:
   - PROBATION_API__CUSTODY_DATES__RW
+  - CALCULATE_RELEASE_DATES__CALCULATE__RO
 
 springdoc.default-produces-media-type: application/json
 
@@ -61,7 +62,9 @@ messaging:
 
 integrations:
   prison-api:
-    url: http://localhost:${dev.wiremock.port}
+    url: http://localhost:${dev.wiremock.port}/prison-api
+  crds-api:
+    url: http://localhost:${dev.wiremock.port}/crds
 
 oauth2:
   client-id: custody-key-dates-and-delius

@@ -5,9 +5,13 @@ import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.NumericBooleanConverter
 import org.hibernate.type.YesNoConverter
+import org.springframework.data.annotation.LastModifiedBy
+import org.springframework.data.annotation.LastModifiedDate
+import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.reference.ReferenceData
 import uk.gov.justice.digital.hmpps.integrations.delius.person.Person
 import java.time.LocalDate
+import java.time.ZonedDateTime
 
 @Immutable
 @Entity
@@ -63,6 +67,48 @@ class Disposal(
     @Column(updatable = false, columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean = false
+)
+
+@Entity
+@Table(name = "disposal")
+@EntityListeners(AuditingEntityListener::class)
+class DisposalWithSdsPlus(
+
+    @Id
+    @Column(name = "disposal_id")
+    val id: Long,
+
+    @OneToOne
+    @JoinColumn(name = "event_id", updatable = false)
+    val event: Event,
+
+    @ManyToOne
+    @JoinColumn(name = "disposal_type_id")
+    val type: DisposalType,
+
+    @Column(name = "active_flag", updatable = false, columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
+    val active: Boolean = true,
+
+    @Column(updatable = false, columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
+    val softDeleted: Boolean = false,
+
+    @Column(name = "sds_plus")
+    @Convert(converter = YesNoConverter::class)
+    var sdsPlus: Boolean? = null,
+
+    @LastModifiedBy
+    @Column(name = "last_updated_user_id")
+    var lastModifiedUserId: Long? = 0,
+
+    @LastModifiedDate
+    @Column(name = "last_updated_datetime")
+    val lastModifiedDate: ZonedDateTime? = ZonedDateTime.now(),
+
+    @Version
+    @Column(name = "row_version")
+    val version: Long? = 0
 )
 
 @Entity

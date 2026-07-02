@@ -5,20 +5,20 @@ import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Test
 import org.mockito.ArgumentMatchers.anyMap
-import org.mockito.kotlin.check
-import org.mockito.kotlin.eq
-import org.mockito.kotlin.times
-import org.mockito.kotlin.verify
+import org.mockito.kotlin.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.test.context.bean.override.mockito.MockitoBean
 import uk.gov.justice.digital.hmpps.data.generator.MessageGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.SentenceGenerator.DEFAULT_CUSTODY
+import uk.gov.justice.digital.hmpps.flags.FeatureFlags
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.Custody
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.CustodyDateType
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.CustodyRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.DisposalWithSdsPlusRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.contact.ContactRepository
 import uk.gov.justice.digital.hmpps.message.MessageAttributes
 import uk.gov.justice.digital.hmpps.message.Notification
@@ -38,8 +38,12 @@ internal class IntegrationTest @Autowired constructor(
     private val queueName: String,
     private val channelManager: HmppsChannelManager,
     private val contactRepository: ContactRepository,
-    private val custodyRepository: CustodyRepository
+    private val custodyRepository: CustodyRepository,
+    private val disposalWithSdsPlusRepository: DisposalWithSdsPlusRepository
 ) {
+
+    @MockitoBean
+    lateinit var featureFlags: FeatureFlags
 
     @MockitoBean
     lateinit var telemetryService: TelemetryService
@@ -48,6 +52,8 @@ internal class IntegrationTest @Autowired constructor(
 
     @Test
     fun `Custody Key Dates updated as expected`() {
+        whenever(featureFlags.enabled("sds-plus-flag-enabled")).thenReturn(true)
+
         val notification = Notification(message = MessageGenerator.SENTENCE_DATE_CHANGED)
 
         val first = CompletableFuture.runAsync {
@@ -63,6 +69,10 @@ internal class IntegrationTest @Autowired constructor(
 
         val custodyId = custodyRepository.findCustodyId(PersonGenerator.DEFAULT.id, DEFAULT_CUSTODY.bookingRef).first()
         val custody = custodyRepository.findCustodyById(custodyId)
+        val disposalId = custody.disposal!!.id
+        val updatedDisposal = disposalWithSdsPlusRepository.findByIdOrNull(disposalId)
+        assertThat(updatedDisposal?.sdsPlus, equalTo(true))
+
         verifyUpdatedKeyDates(custody)
         verifyContactCreated()
 
@@ -134,6 +144,8 @@ internal class IntegrationTest @Autowired constructor(
         val erd = custody.keyDate(CustodyDateType.EXPECTED_RELEASE_DATE.code)
         val hde = custody.keyDate(CustodyDateType.HDC_EXPECTED_DATE.code)
         val pr1 = custody.keyDate(CustodyDateType.SUSPENSION_DATE_IF_RESET.code)
+        val emed = custody.keyDate(CustodyDateType.PRESUMPTIVE_EM_END_DATE.code)
+        val fthrd = custody.keyDate(CustodyDateType.FINAL_THIRD_START_DATE.code)
 
         assertThat(sed?.date, equalTo(LocalDate.parse(sedDate)))
         assertThat(crd?.date, equalTo(LocalDate.parse("2022-11-26")))
@@ -141,6 +153,8 @@ internal class IntegrationTest @Autowired constructor(
         assertThat(erd?.date, equalTo(LocalDate.parse("2022-11-27")))
         assertThat(hde?.date, equalTo(LocalDate.parse("2022-10-28")))
         assertThat(pr1?.date, equalTo(LocalDate.parse("2024-10-05")))
+        assertThat(emed?.date, equalTo(LocalDate.parse("2025-05-11")))
+        assertThat(fthrd?.date, equalTo(LocalDate.parse("2025-05-12")))
 
         assertThat(led?.softDeleted, equalTo(false))
     }
@@ -167,6 +181,8 @@ internal class IntegrationTest @Autowired constructor(
             EXP 27/11/2022
             HDE 28/10/2022
             PR1 05/10/2024
+            EMED 11/05/2025
+            FTHRD 12/05/2025
                 """.trimIndent()
             )
         )

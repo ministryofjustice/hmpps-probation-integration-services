@@ -1,13 +1,13 @@
 {
   "request": {
     "method": "GET",
-    "urlPath": "/prison-api/api/bookings/1200837/sentenceDetail"
+    "urlPath": "/crds/sentence-and-offence-information/1200835"
   },
   "response": {
     "status": 200,
     "headers": {
       "Content-Type": "application/json"
     },
-    "bodyFileName": "sentence_detail_1200837.json"
+    "bodyFileName": "crds_default.json"
   }
 }

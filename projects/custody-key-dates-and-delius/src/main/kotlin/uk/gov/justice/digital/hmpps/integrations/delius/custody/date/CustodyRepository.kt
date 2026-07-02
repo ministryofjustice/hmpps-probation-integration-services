@@ -1,10 +1,7 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.custody.date
 
 import jakarta.persistence.LockModeType
-import org.springframework.data.jpa.repository.EntityGraph
-import org.springframework.data.jpa.repository.JpaRepository
-import org.springframework.data.jpa.repository.Lock
-import org.springframework.data.jpa.repository.Query
+import org.springframework.data.jpa.repository.*
 
 interface CustodyRepository : JpaRepository<Custody, Long> {
     @EntityGraph(attributePaths = ["status.dataset", "disposal.event.manager", "keyDates.type"])
@@ -26,4 +23,10 @@ interface CustodyRepository : JpaRepository<Custody, Long> {
     @Lock(LockModeType.PESSIMISTIC_READ)
     @Query("select c.id from Custody c where c.id = :id")
     fun findForUpdate(id: Long): Long
+}
+
+interface DisposalWithSdsPlusRepository : JpaRepository<DisposalWithSdsPlus, Long> {
+    @Modifying
+    @Query("update DisposalWithSdsPlus d set d.sdsPlus = :sdsPlus where d.id = :id")
+    fun updateSdsPlusFlag(id: Long, sdsPlus: Boolean)
 }

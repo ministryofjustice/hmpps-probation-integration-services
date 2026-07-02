@@ -1,0 +1,53 @@
+package uk.gov.justice.digital.hmpps.integrations.delius.custody.date
+
+import org.springframework.stereotype.Component
+import uk.gov.justice.digital.hmpps.integrations.crds.AnalysedSentenceAndOffence
+import uk.gov.justice.digital.hmpps.integrations.prison.SentenceDetail
+import java.time.LocalDate
+import java.time.temporal.ChronoUnit
+import kotlin.math.roundToLong
+
+@Component
+class KeyDateCalculator {
+    /**
+     * EMED Calculation
+     * For SDS Sentences, EMED = SED - (60% of the total sentence length)
+     * For SDS+ Sentences, EMED = SED - (1/3rd of the total sentence length)
+     */
+    fun presumptiveElectronicMonitoringEndDate(
+        sentenceDetail: SentenceDetail, sentences: List<AnalysedSentenceAndOffence>
+    ): LocalDate? = sentenceDetail.sentenceExpiryDate?.let { sed ->
+        val lengthInDays = sentences.sumOf { it.effectiveSentenceLengthDays }
+        val deduction = if (sentences.any { it.isSDSPlus }) {
+            lengthInDays / 3.0
+        } else {
+            lengthInDays * 0.60
+        }
+        sed.minusDays(deduction.roundToLong())
+    }
+
+    /**
+     * FTHRD Calculation = SLED - 1/3 sentence length
+     */
+    fun finalThirdDate(sentenceDetail: SentenceDetail, sentences: List<AnalysedSentenceAndOffence>): LocalDate? =
+        sentenceDetail.sentenceExpiryDate?.let { sed ->
+            val lengthInDays = sentences.sumOf { it.effectiveSentenceLengthDays }
+            val deduction = lengthInDays / 3
+            sed.minusDays(deduction)
+        }
+
+    /**
+     * Reset suspension date = 2/3 between start and end dates
+     */
+    fun suspensionDateIfReset(sentenceDetail: SentenceDetail, custody: Custody): LocalDate? =
+        custody.disposal?.takeIf { it.type.determinateSentence }?.let {
+            val startDate = it.event.firstReleaseDate ?: sentenceDetail.conditionalReleaseDate ?: return null
+            val endDate = sentenceDetail.sentenceExpiryDate ?: return null
+            if (startDate < endDate) {
+                val daysBetween = ChronoUnit.DAYS.between(startDate, endDate)
+                startDate.plusDays(daysBetween * 2 / 3)
+            } else {
+                null
+            }
+        }
+}
