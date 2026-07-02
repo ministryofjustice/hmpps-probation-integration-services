@@ -1,8 +1,6 @@
 package uk.gov.justice.digital.hmpps.service
 
-import org.springframework.ldap.core.LdapTemplate
 import org.springframework.stereotype.Service
-import uk.gov.justice.digital.hmpps.ldap.findAttributeByUsername
 import uk.gov.justice.digital.hmpps.model.Address.Companion.toModel
 import uk.gov.justice.digital.hmpps.model.Manager
 import uk.gov.justice.digital.hmpps.model.OfficeAddress.Companion.toModel
@@ -18,7 +16,6 @@ class PersonalDetailsService(
     private val personRepository: PersonRepository,
     private val personAddressRepository: PersonAddressRepository,
     private val personalContactRepository: PersonalContactRepository,
-    private val ldapTemplate: LdapTemplate
 ) {
     fun getName(crn: String) = personRepository.getNameByCrn(crn)
 
@@ -38,10 +35,7 @@ class PersonalDetailsService(
             emergencyContacts = emergencyContacts.map { it.toModel() },
             practitioner = Manager(
                 name = person.manager.staff.name(),
-                telephoneNumber = person.manager.staff.user?.username?.let {
-                    ldapTemplate.findAttributeByUsername(it, "telephoneNumber")
-                },
-                team = Team(person.manager.team.officeLocations.map { it.toModel() })
+                team = with(person.manager.team) { Team(telephone, officeLocations.map { it.toModel() }) }
             )
         )
     }
