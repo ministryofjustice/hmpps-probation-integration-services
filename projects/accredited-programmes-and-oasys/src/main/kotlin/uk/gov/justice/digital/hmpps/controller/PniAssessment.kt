@@ -11,7 +11,14 @@ data class PniAssessment(
     val osp: Osp?,
     val rsrPercentage: Double?,
     val offenderAge: Int,
-    val questions: Questions
+    val questions: Questions,
+    val staticAllReoffendingPredictor: Predictor?,
+    val dynamicAllReoffendingPredictor: Predictor?,
+    val staticViolentReoffendingPredictor: Predictor?,
+    val dynamicViolentReoffendingPredictor: Predictor?,
+    val staticSeriousViolentReoffendingPredictor: Predictor?,
+    val dynamicSeriousViolentReoffendingPredictor: Predictor?,
+
 )
 
 data class Ldc(val score: Int, val subTotal: Int) {
@@ -28,6 +35,12 @@ data class Osp(val cdc: ScoreLevel?, val iiic: ScoreLevel?) {
     }
 }
 
+data class Predictor(val score: Double?, val level: ScoreLevel?) {
+    companion object {
+        fun from(score: Double?, level: ScoreLevel?): Predictor? =
+            if (score == null && level == null) null else Predictor(score, level)
+    }
+}
 data class Questions(
     val everCommittedSexualOffence: ScoredAnswer.YesNo,
     val openSexualOffendingQuestions: ScoredAnswer.YesNo?,
