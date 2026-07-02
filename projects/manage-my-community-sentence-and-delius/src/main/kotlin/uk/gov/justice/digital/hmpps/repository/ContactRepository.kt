@@ -21,7 +21,7 @@ interface ContactRepository : JpaRepository<Contact, Long> {
     @EntityGraph(
         attributePaths = [
             "type",
-            "staff.user",
+            "staff",
             "location",
             "unpaidWorkAppointment",
             "unpaidWorkAppointment.pickUpLocation",
@@ -44,7 +44,7 @@ interface ContactRepository : JpaRepository<Contact, Long> {
     @EntityGraph(
         attributePaths = [
             "type",
-            "staff.user",
+            "staff",
             "location",
             "unpaidWorkAppointment",
             "unpaidWorkAppointment.pickUpLocation",
