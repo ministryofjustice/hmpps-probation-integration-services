@@ -1,6 +1,6 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
-import uk.gov.justice.digital.hmpps.entity.Address
+import uk.gov.justice.digital.hmpps.entity.ContactAddress
 import uk.gov.justice.digital.hmpps.entity.ReferenceData
 import java.time.LocalDate
 
@@ -54,7 +54,7 @@ object AddressGenerator {
         startDate: LocalDate = LocalDate.now().minusMonths(6),
         endDate: LocalDate? = null,
         id: Long = IdGenerator.getAndIncrement(),
-    ) = Address(
+    ) = ContactAddress(
         id = id,
         personId = personId,
         status = status,
