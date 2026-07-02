@@ -13,6 +13,7 @@ class Team(
     @Column(columnDefinition = "char(6)")
     val code: String,
     val description: String,
+    val telephone: String?,
     @ManyToMany
     @JoinTable(
         name = "team_office_location",

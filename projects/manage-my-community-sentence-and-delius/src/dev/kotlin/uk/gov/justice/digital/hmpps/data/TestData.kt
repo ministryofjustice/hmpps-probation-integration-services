@@ -31,7 +31,6 @@ import uk.gov.justice.digital.hmpps.entity.sentence.requirement.Requirement
 import uk.gov.justice.digital.hmpps.entity.sentence.requirement.RequirementMainCategory
 import uk.gov.justice.digital.hmpps.entity.staff.CommunityManager
 import uk.gov.justice.digital.hmpps.entity.staff.Staff
-import uk.gov.justice.digital.hmpps.entity.staff.StaffUser
 import uk.gov.justice.digital.hmpps.entity.staff.Team
 import uk.gov.justice.digital.hmpps.entity.unpaidwork.UnpaidWorkAppointment
 import uk.gov.justice.digital.hmpps.entity.unpaidwork.UnpaidWorkDetails
@@ -81,12 +80,11 @@ object TestData {
             county = "Test County",
             postcode = "TE1 1ST"
         )
-        val TEAM = Team(id(), "N01ABC", "Test Team", listOf(OFFICE))
+        val TEAM = Team(id(), "N01T01", "Test Team", "01000000001", listOf(OFFICE))
     }
 
     object StaffData {
-        val STAFF = Staff(id(), "N01ABCD", "Test", "Staff", StaffUser(id(), "test.user"))
-        val STAFF_WITHOUT_USER = Staff(id(), "N01DCBA", "Test", "NoUser")
+        val STAFF = Staff(id(), "N01S001", "Test", "Staff")
     }
 
     object PersonData {
@@ -113,7 +111,7 @@ object TestData {
             surname = "Two",
             dateOfBirth = LocalDate.of(1980, 1, 1),
             mobileNumber = "07222222222",
-            manager = CommunityManager(id(), StaffData.STAFF_WITHOUT_USER, TeamData.TEAM),
+            manager = CommunityManager(id(), StaffData.STAFF, TeamData.TEAM),
             lastUpdatedDatetime = ZonedDateTime.of(2025, 5, 1, 9, 15, 0, 0, ZoneId.of("UTC")),
         )
 
