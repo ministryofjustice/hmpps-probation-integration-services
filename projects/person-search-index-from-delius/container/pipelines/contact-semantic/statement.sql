@@ -59,7 +59,8 @@ from (with page as (select contact.*
                      'outcomeCode' value r_contact_outcome_type.code,
                      'outcomeDescription' value r_contact_outcome_type.description,
                      'softDeleted' value contact.soft_deleted,
-                     'rowVersion' value contact.row_version
+                     'rowVersion' value contact.row_version,
+                     'supervisionPackage' value r_contact_type.supervision_package
                      returning clob) as "json",
              contact.contact_id      as "contactId"
       from (select * from page union all select * from single) contact
