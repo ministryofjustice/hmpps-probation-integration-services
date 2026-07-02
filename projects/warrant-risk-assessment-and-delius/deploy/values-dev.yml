@@ -1,6 +1,6 @@
 generic-service:
   ingress:
-    host: warrant-risk-assessment-api-dev.hmpps.service.justice.gov.uk
+    host: warrant-risk-assessment-and-delius-dev.hmpps.service.justice.gov.uk
 
   scheduledDowntime:
     enabled: true
