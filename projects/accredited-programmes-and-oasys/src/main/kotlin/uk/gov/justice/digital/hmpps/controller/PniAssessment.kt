@@ -19,7 +19,7 @@ data class PniAssessment(
     val staticSeriousViolentReoffendingPredictor: Predictor?,
     val dynamicSeriousViolentReoffendingPredictor: Predictor?,
 
-)
+    )
 
 data class Ldc(val score: Int, val subTotal: Int) {
     companion object {
@@ -41,6 +41,7 @@ data class Predictor(val score: Double?, val level: ScoreLevel?) {
             if (score == null && level == null) null else Predictor(score, level)
     }
 }
+
 data class Questions(
     val everCommittedSexualOffence: ScoredAnswer.YesNo,
     val openSexualOffendingQuestions: ScoredAnswer.YesNo?,
