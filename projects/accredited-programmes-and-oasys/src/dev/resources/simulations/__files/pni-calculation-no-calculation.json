@@ -48,6 +48,26 @@
         "ospIiicScoreLevel": "Not Applicable",
         "rsrPercentageScore": 0.56,
         "offenderAge": 40
+      },
+      "newActuarialPredictors": {
+        "ogrs4gYr2": 35.98,
+        "ogrs4gBand": "Low",
+        "ogrs4gCalculated": "Y",
+        "ogrs4vYr2": 32.29,
+        "ogrs4vBand": "Medium",
+        "ogrs4vCalculated": "Y",
+        "ogp2Yr2": null,
+        "ogp2Band": null,
+        "ogp2Calculated": "E",
+        "ovp2Yr2": null,
+        "ovp2Band": null,
+        "ovp2Calculated": "E",
+        "snsvStaticYr2": null,
+        "snsvStaticYr2Band": null,
+        "snsvStaticCalculated": "N",
+        "snsvDynamicYr2": 36.44,
+        "snsvDynamicYr2Band": "Very High",
+        "snsvDynamicCalculated": "Y"
       }
     }
   ]
