@@ -297,8 +297,14 @@ internal class CustodyDateUpdateServiceTest {
             )
         )
         whenever(prisonApi.getBooking(booking.id, basicInfo = false, extraInfo = true)).thenReturn(booking)
-        whenever(personRepository.findByNomsIdIgnoreCaseAndSoftDeletedIsFalse(booking.offenderNo)).thenReturn(PersonGenerator.DEFAULT)
-        whenever(custodyRepository.findCustodyId(PersonGenerator.DEFAULT.id, booking.bookingNo)).thenReturn(listOf(custody.id))
+        whenever(personRepository.findByNomsIdIgnoreCaseAndSoftDeletedIsFalse(booking.offenderNo)).thenReturn(
+            PersonGenerator.DEFAULT
+        )
+        whenever(custodyRepository.findCustodyId(PersonGenerator.DEFAULT.id, booking.bookingNo)).thenReturn(
+            listOf(
+                custody.id
+            )
+        )
         whenever(custodyRepository.findForUpdate(custody.id)).thenReturn(custody.id)
         whenever(custodyRepository.findCustodyById(custody.id)).thenReturn(custody)
         custodyDateUpdateService.updateCustodyKeyDates(bookingId = booking.id)
@@ -334,13 +340,13 @@ internal class CustodyDateUpdateServiceTest {
         )
         whenever(prisonApi.getBooking(booking.id, basicInfo = false, extraInfo = true)).thenReturn(booking)
         whenever(personRepository.findByNomsIdIgnoreCaseAndSoftDeletedIsFalse(booking.offenderNo)).thenReturn(
-                PersonGenerator.DEFAULT
-            )
+            PersonGenerator.DEFAULT
+        )
         whenever(custodyRepository.findCustodyId(PersonGenerator.DEFAULT.id, booking.bookingNo)).thenReturn(
-                listOf(
-                    custody.id
-                )
+            listOf(
+                custody.id
             )
+        )
         whenever(custodyRepository.findForUpdate(custody.id)).thenReturn(custody.id)
         whenever(custodyRepository.findCustodyById(custody.id)).thenReturn(custody)
         custodyDateUpdateService.updateCustodyKeyDates(bookingId = booking.id)

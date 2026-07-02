@@ -110,6 +110,7 @@ class DisposalWithSdsPlus(
     @Column(name = "row_version")
     val version: Long? = 0
 )
+
 @Entity
 @Immutable
 @Table(name = "r_disposal_type")
