@@ -4,8 +4,8 @@ import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.service.annotation.GetExchange
 
 interface CrdsApiClient {
-    @GetExchange("/operative-sentence-envelope/{prisonerId}")
-    fun getOperativeSentenceEnvelope(
-        @PathVariable prisonerId: String
-    ): OperativeSentenceEnvelope
+    @GetExchange("/sentence-and-offence-information/{bookingId}")
+    fun getSentenceAndOffenceInformation(
+        @PathVariable bookingId: Long
+    ): List<AnalysedSentenceAndOffence>
 }

@@ -4,8 +4,9 @@ import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.client.RestClientResponseException
+import uk.gov.justice.digital.hmpps.flags.FeatureFlags
+import uk.gov.justice.digital.hmpps.integrations.crds.AnalysedSentenceAndOffence
 import uk.gov.justice.digital.hmpps.integrations.crds.CrdsApiClient
-import uk.gov.justice.digital.hmpps.integrations.crds.OperativeSentenceEnvelope
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.CustodyDateType.*
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.contact.ContactService
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.reference.ReferenceDataRepository
@@ -23,12 +24,14 @@ class CustodyDateUpdateService(
     private val prisonApi: PrisonApiClient,
     private val personRepository: PersonRepository,
     private val custodyRepository: CustodyRepository,
+    private val disposalWithSdsPlusRepository: DisposalWithSdsPlusRepository,
     private val referenceDataRepository: ReferenceDataRepository,
     private val keyDateRepository: KeyDateRepository,
     private val contactService: ContactService,
     private val telemetryService: TelemetryService,
     private val crdsApiClient: CrdsApiClient,
     private val keyDateCalculator: KeyDateCalculator,
+    private val featureFlags: FeatureFlags,
 ) {
     fun updateCustodyKeyDates(nomsId: String, dryRun: Boolean = false, clientSource: String = "messaging") {
         try {
@@ -54,14 +57,19 @@ class CustodyDateUpdateService(
             singleOrNull() ?: return telemetryService.trackEvent("MissingBookingRef", booking.telemetry(clientSource))
         }
         val custody = custodyRepository.findCustodyById(custodyRepository.findForUpdate(custodyId))
-        val envelope = crdsApiClient.getOperativeSentenceEnvelope(booking.offenderNo)
-        val updated = calculateKeyDateChanges(sentenceDetail, custody, envelope)
+        val sentences = crdsApiClient.getSentenceAndOffenceInformation(booking.id)
+        val updated = calculateKeyDateChanges(sentenceDetail, custody, sentences)
         if (updated.isEmpty()) {
             telemetryService.trackEvent("KeyDatesUnchanged", booking.telemetry(clientSource))
         } else {
             if (!dryRun) {
                 keyDateRepository.saveAll(updated)
                 contactService.createForKeyDateChanges(custody, updated)
+                if (featureFlags.enabled("sds-plus-flag-enabled")) {
+                    custody.disposal?.id?.let { disposalId ->
+                        disposalWithSdsPlusRepository.updateSdsPlusFlag(disposalId, sentences.any { it.isSDSPlus })
+                    }
+                }
             }
             telemetryService.trackEvent(
                 if (dryRun) "KeyDatesDryRun" else "KeyDatesUpdated",
@@ -73,7 +81,7 @@ class CustodyDateUpdateService(
     private fun calculateKeyDateChanges(
         sentenceDetail: SentenceDetail,
         custody: Custody,
-        envelope: OperativeSentenceEnvelope
+        sentences: List<AnalysedSentenceAndOffence>
     ) =
         listOfNotNull(
             custody.keyDate(LICENCE_EXPIRY_DATE.code, sentenceDetail.licenceExpiryDate),
@@ -91,9 +99,9 @@ class CustodyDateUpdateService(
             ),
             custody.keyDate(
                 PRESUMPTIVE_EM_END_DATE.code,
-                keyDateCalculator.presumptiveElectronicMonitoringEndDate(sentenceDetail, envelope)
+                keyDateCalculator.presumptiveElectronicMonitoringEndDate(sentenceDetail, sentences)
             ),
-            custody.keyDate(FINAL_THIRD_START_DATE.code, keyDateCalculator.finalThirdDate(sentenceDetail, envelope)),
+            custody.keyDate(FINAL_THIRD_START_DATE.code, keyDateCalculator.finalThirdDate(sentenceDetail, sentences)),
         )
 
     private fun Custody.keyDate(code: String, date: LocalDate?): KeyDate? = date?.let {

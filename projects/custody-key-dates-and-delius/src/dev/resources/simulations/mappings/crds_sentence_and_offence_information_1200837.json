@@ -1,13 +1,13 @@
 {
   "request": {
     "method": "GET",
-    "urlPath": "/crds/operative-sentence-envelope/A5089DY"
+    "urlPath": "/crds/sentence-and-offence-information/1200837"
   },
   "response": {
     "status": 200,
     "headers": {
       "Content-Type": "application/json"
     },
-    "bodyFileName": "crds_envelope_default.json"
+    "bodyFileName": "crds_default.json"
   }
 }

@@ -20,8 +20,9 @@ import uk.gov.justice.digital.hmpps.data.generator.SentenceGenerator.generateCus
 import uk.gov.justice.digital.hmpps.data.generator.SentenceGenerator.generateDisposal
 import uk.gov.justice.digital.hmpps.data.generator.SentenceGenerator.generateDisposalType
 import uk.gov.justice.digital.hmpps.data.generator.SentenceGenerator.generateEvent
+import uk.gov.justice.digital.hmpps.flags.FeatureFlags
+import uk.gov.justice.digital.hmpps.integrations.crds.AnalysedSentenceAndOffence
 import uk.gov.justice.digital.hmpps.integrations.crds.CrdsApiClient
-import uk.gov.justice.digital.hmpps.integrations.crds.OperativeSentenceEnvelope
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.contact.ContactService
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.reference.DatasetCode
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.reference.ReferenceDataRepository
@@ -48,6 +49,9 @@ internal class CustodyDateUpdateServiceTest {
     lateinit var custodyRepository: CustodyRepository
 
     @Mock
+    lateinit var disposalWithSdsPlusRepository: DisposalWithSdsPlusRepository
+
+    @Mock
     lateinit var referenceDataRepository: ReferenceDataRepository
 
     @Mock
@@ -59,6 +63,9 @@ internal class CustodyDateUpdateServiceTest {
     @Mock
     lateinit var telemetryService: TelemetryService
 
+    @Mock
+    lateinit var featureFlags: FeatureFlags
+
     lateinit var custodyDateUpdateService: CustodyDateUpdateService
 
     @BeforeEach
@@ -67,12 +74,14 @@ internal class CustodyDateUpdateServiceTest {
             prisonApi,
             personRepository,
             custodyRepository,
+            disposalWithSdsPlusRepository,
             referenceDataRepository,
             keyDateRepository,
             contactService,
             telemetryService,
             crdsApiClient,
-            KeyDateCalculator()
+            KeyDateCalculator(),
+            featureFlags
         )
     }
 
@@ -260,11 +269,91 @@ internal class CustodyDateUpdateServiceTest {
         assertThat(suspensionDateIfReset, nullValue())
     }
 
+    @Test
+    fun `SDS+ flag enabled updates disposal sdsPlus`() {
+        setupCrdsMock()
+        whenever(featureFlags.enabled("sds-plus-flag-enabled")).thenReturn(true)
+        listOf(
+            CustodyDateType.AUTOMATIC_CONDITIONAL_RELEASE_DATE,
+            CustodyDateType.SENTENCE_EXPIRY_DATE,
+            CustodyDateType.SUSPENSION_DATE_IF_RESET,
+            CustodyDateType.PRESUMPTIVE_EM_END_DATE,
+            CustodyDateType.FINAL_THIRD_START_DATE
+        ).forEach { type ->
+            whenever(
+                referenceDataRepository.findByDatasetAndCode(
+                    DatasetCode.KEY_DATE_TYPE,
+                    type.code
+                )
+            ).thenReturn(ReferenceDataGenerator.KEY_DATE_TYPES[type.code]!!)
+        }
+        val booking = Booking(127, "FG37K", true, PersonGenerator.DEFAULT.nomsId!!)
+        val custody =
+            generateCustodialSentence(disposal = generateDisposal(generateEvent()), bookingRef = booking.bookingNo)
+        whenever(prisonApi.getSentenceDetail(booking.id)).thenReturn(
+            SentenceDetail(
+                conditionalReleaseDate = LocalDate.of(2024, 1, 1),
+                sentenceExpiryDate = LocalDate.of(2025, 1, 1)
+            )
+        )
+        whenever(prisonApi.getBooking(booking.id, basicInfo = false, extraInfo = true)).thenReturn(booking)
+        whenever(personRepository.findByNomsIdIgnoreCaseAndSoftDeletedIsFalse(booking.offenderNo)).thenReturn(PersonGenerator.DEFAULT)
+        whenever(custodyRepository.findCustodyId(PersonGenerator.DEFAULT.id, booking.bookingNo)).thenReturn(listOf(custody.id))
+        whenever(custodyRepository.findForUpdate(custody.id)).thenReturn(custody.id)
+        whenever(custodyRepository.findCustodyById(custody.id)).thenReturn(custody)
+        custodyDateUpdateService.updateCustodyKeyDates(bookingId = booking.id)
+        verify(disposalWithSdsPlusRepository).updateSdsPlusFlag(eq(custody.disposal?.id!!), eq(true))
+    }
+
+    @Test
+    fun `SDS+ flag disabled does not update disposal`() {
+        setupCrdsMock()
+        val booking = Booking(127, "FG37K", true, PersonGenerator.DEFAULT.nomsId!!)
+        val custody = generateCustodialSentence(
+            disposal = generateDisposal(generateEvent()), bookingRef = booking.bookingNo
+        )
+        listOf(
+            CustodyDateType.AUTOMATIC_CONDITIONAL_RELEASE_DATE,
+            CustodyDateType.SENTENCE_EXPIRY_DATE,
+            CustodyDateType.SUSPENSION_DATE_IF_RESET,
+            CustodyDateType.PRESUMPTIVE_EM_END_DATE,
+            CustodyDateType.FINAL_THIRD_START_DATE
+        ).forEach { type ->
+            whenever(
+                referenceDataRepository.findByDatasetAndCode(
+                    DatasetCode.KEY_DATE_TYPE,
+                    type.code
+                )
+            ).thenReturn(ReferenceDataGenerator.KEY_DATE_TYPES[type.code]!!)
+        }
+        whenever(prisonApi.getSentenceDetail(booking.id)).thenReturn(
+            SentenceDetail(
+                conditionalReleaseDate = LocalDate.of(2024, 1, 1),
+                sentenceExpiryDate = LocalDate.of(2025, 1, 1)
+            )
+        )
+        whenever(prisonApi.getBooking(booking.id, basicInfo = false, extraInfo = true)).thenReturn(booking)
+        whenever(personRepository.findByNomsIdIgnoreCaseAndSoftDeletedIsFalse(booking.offenderNo)).thenReturn(
+                PersonGenerator.DEFAULT
+            )
+        whenever(custodyRepository.findCustodyId(PersonGenerator.DEFAULT.id, booking.bookingNo)).thenReturn(
+                listOf(
+                    custody.id
+                )
+            )
+        whenever(custodyRepository.findForUpdate(custody.id)).thenReturn(custody.id)
+        whenever(custodyRepository.findCustodyById(custody.id)).thenReturn(custody)
+        custodyDateUpdateService.updateCustodyKeyDates(bookingId = booking.id)
+        verify(disposalWithSdsPlusRepository, never()).updateSdsPlusFlag(any(), any())
+    }
+
     private fun setupCrdsMock() {
-        whenever(crdsApiClient.getOperativeSentenceEnvelope(any())).thenReturn(
-            OperativeSentenceEnvelope(
-                sentenceEnvelopeLengthInDays = 50L,
-                containsAnSDSPlusSentence = true,
+        whenever(crdsApiClient.getSentenceAndOffenceInformation(any())).thenReturn(
+            listOf(
+                AnalysedSentenceAndOffence(
+                    isSDSPlus = true,
+                    effectiveSentenceLengthDays = 365
+                )
             )
         )
     }
