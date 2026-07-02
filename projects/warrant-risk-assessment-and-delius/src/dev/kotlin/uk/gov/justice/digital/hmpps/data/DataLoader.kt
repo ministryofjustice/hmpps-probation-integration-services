@@ -25,5 +25,10 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
         save(ContactGenerator.HOME_VISIT_TYPE)
         save(ContactGenerator.OLDER_HOME_VISIT)
         save(ContactGenerator.LAST_HOME_VISIT)
+
+        save(RegistrationGenerator.MAPPA_TYPE)
+        save(RegistrationGenerator.MAPPA_TYPE_M2)
+        save(RegistrationGenerator.MAPPA_REGISTRATION)
+        save(RegistrationGenerator.OLDER_MAPPA_REGISTRATION)
     }
 }
