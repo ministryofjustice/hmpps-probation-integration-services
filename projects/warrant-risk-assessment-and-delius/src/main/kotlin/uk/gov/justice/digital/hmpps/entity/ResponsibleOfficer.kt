@@ -28,7 +28,13 @@ class ResponsibleOfficer(
 
     @Column(name = "end_date")
     val endDate: LocalDate? = null,
-)
+) {
+    val staff: Staff
+        get() = checkNotNull(offenderManager?.staff ?: prisonOffenderManager?.staff) {
+            "Responsible officer has no staff"
+        }
+    val username: String? get() = staff.user?.username
+}
 
 @Entity
 @Table(name = "offender_manager")

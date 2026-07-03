@@ -3,68 +3,54 @@ package uk.gov.justice.digital.hmpps.service
 import org.springframework.ldap.core.LdapTemplate
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.entity.*
-import uk.gov.justice.digital.hmpps.exception.NotFoundException
+import uk.gov.justice.digital.hmpps.exception.NotFoundException.Companion.orNotFoundBy
 import uk.gov.justice.digital.hmpps.ldap.findAttributeByUsername
 import uk.gov.justice.digital.hmpps.ldap.findPreferenceByUsername
-import uk.gov.justice.digital.hmpps.model.*
+import uk.gov.justice.digital.hmpps.model.CodeAndDescription
+import uk.gov.justice.digital.hmpps.model.Name
+import uk.gov.justice.digital.hmpps.model.OfficeAddress
+import uk.gov.justice.digital.hmpps.model.ResponsibleOfficerDetails
 
 @Service
 class ResponsibleOfficerService(
     private val responsibleOfficerRepository: ResponsibleOfficerRepository,
     private val ldapTemplate: LdapTemplate,
     private val officeLocationRepository: OfficeLocationRepository,
-    private val userRepository: UserRepository,
 ) {
     fun getResponsibleOfficerDetails(crn: String): ResponsibleOfficerDetails {
-        val responsibleOfficer = responsibleOfficerRepository.findByPersonCrn(crn)
-            ?: throw NotFoundException("ResponsibleOfficer", "crn", crn)
-
-        val staff = checkNotNull(
-            responsibleOfficer.offenderManager?.staff ?: responsibleOfficer.prisonOffenderManager?.staff
-        )
-        val probationArea = checkNotNull(
-            responsibleOfficer.offenderManager?.probationArea ?: responsibleOfficer.prisonOffenderManager?.probationArea
-        )
-
-        val username = userRepository.findByStaffId(staff.id)?.username
+        val responsibleOfficer = responsibleOfficerRepository.findByPersonCrn(crn).orNotFoundBy("CRN", crn)
+        val username = responsibleOfficer.username
+        val emailAddress = username?.let { ldapTemplate.findAttributeByUsername(it, "mail") }
         val telephoneNumber = username?.let { ldapTemplate.findAttributeByUsername(it, "telephoneNumber") }
         val homeArea = username?.let { ldapTemplate.findAttributeByUsername(it, "userHomeArea") }
-        val defaultReplyAddressId =
+        val defaultReplyAddress =
             username?.let { ldapTemplate.findPreferenceByUsername(it, "replyAddress")?.toLongOrNull() }
-
         val officeLocations = homeArea?.let { officeLocationRepository.findAllByProbationAreaCode(it) }
 
-        // Find the default reply address (the one matching the user's preference)
-        val replyAddress = officeLocations
-            ?.firstOrNull { it.id == defaultReplyAddressId }
-            ?.toOfficeAddress(status = "Postal")
-            ?: officeLocations?.firstOrNull()?.toOfficeAddress(status = null)
-
         return ResponsibleOfficerDetails(
-            name = Name(
-                forename = staff.forename,
-                middleName = staff.middleName,
-                surname = staff.surname,
-            ),
+            name = with(responsibleOfficer.staff) { Name(forename, middleName, surname) },
+            emailAddress = emailAddress,
             telephoneNumber = telephoneNumber,
-            probationArea = CodeAndDescription(
-                code = probationArea.code,
-                description = probationArea.description,
-            ),
-            replyAddress = replyAddress,
+            replyAddresses = officeLocations?.map {
+                it.toAddress().copy(status = if (it.id == defaultReplyAddress) "Default" else null)
+            } ?: emptyList(),
+            probationArea = with(responsibleOfficer.probationArea) { CodeAndDescription(code, description) }
         )
     }
 
-    private fun OfficeLocation.toOfficeAddress(status: String?) = OfficeAddress(
+    private val ResponsibleOfficer.probationArea
+        get() = checkNotNull(offenderManager?.probationArea ?: prisonOffenderManager?.probationArea)
+
+    private fun OfficeLocation.toAddress() = OfficeAddress(
         id = id,
-        status = status,
+        status = null,
         officeDescription = description,
         buildingName = buildingName,
         buildingNumber = buildingNumber,
         streetName = streetName,
         townCity = townCity,
-        district = district,
         county = county,
+        district = district,
         postcode = postcode,
     )
 }

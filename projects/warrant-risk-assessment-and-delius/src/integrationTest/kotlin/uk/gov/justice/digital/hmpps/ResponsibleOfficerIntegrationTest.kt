@@ -41,18 +41,19 @@ internal class ResponsibleOfficerIntegrationTest @Autowired constructor(
                             "code": "B01",
                             "description": "probationAreaDescription"
                           },
-                          "replyAddress": {
-                            "id": 1000010,
-                            "status": "Postal",
-                            "officeDescription": "Jail Centre Plus",
-                            "buildingName": null,
-                            "buildingNumber": "281",
-                            "streetName": "Postal Default Street",
-                            "townCity": "Postinton",
-                            "district": "Postrict",
-                            "county": "County Post",
-                            "postcode": "NE30 3ZZ"
-                          }
+                          "replyAddresses": [
+                            {
+                              "id": 1000010,
+                              "status": "Default",
+                              "officeDescription": "Jail Centre Plus",
+                              "buildingNumber": "281",
+                              "streetName": "Postal Default Street",
+                              "townCity": "Postinton",
+                              "district": "Postrict",
+                              "county": "County Post",
+                              "postcode": "NE30 3ZZ"
+                            }
+                          ]
                         }
                         """, JsonCompareMode.STRICT
                     )
@@ -86,12 +87,13 @@ internal class ResponsibleOfficerIntegrationTest @Autowired constructor(
     }
 
     @Test
-    fun `returns responsible officer with fallback address when preferred address not found`() {
+    fun `returns responsible officer with empty addresses when preferred address not found`() {
         val crn = PersonGenerator.NO_PREFERRED_ADDRESS.crn
         mockMvc.get("/responsible-officer/$crn") { withToken() }
             .andExpect {
                 status { isOk() }
-                jsonPath("$.replyAddress.status") { doesNotExist() }
+                jsonPath("$.replyAddresses") { isArray() }
+                jsonPath("$.replyAddresses[0].status") { doesNotExist() }
             }
     }
 }
