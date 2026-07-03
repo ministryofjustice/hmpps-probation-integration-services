@@ -113,7 +113,7 @@ class AlertContactIntegrationTest : IntegrationTestBase() {
             .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<UserAlerts>()
 
-        assertThat(sortedByTypeDescription.content.map { it.type.description }).containsExactly(
+        assertThat(sortedByTypeDescription.content.map { it.type?.description }).containsExactly(
             "Non attendance contact type",
             "Breach Contact Type"
         )

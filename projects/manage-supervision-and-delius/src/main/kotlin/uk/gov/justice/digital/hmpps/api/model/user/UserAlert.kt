@@ -7,9 +7,9 @@ import java.time.LocalTime
 
 data class UserAlert(
     val id: Long,
-    val type: UserAlertType,
-    val crn: String,
-    val name: Name,
+    val type: UserAlertType?,
+    val crn: String?,
+    val name: Name?,
     val date: LocalDate,
     val startTime: LocalTime,
     val description: String?,
@@ -18,7 +18,7 @@ data class UserAlert(
     val officer: Staff?
 )
 
-data class UserAlertType(val description: String, val editable: Boolean)
+data class UserAlertType(val description: String?, val editable: Boolean)
 
 data class UserAlerts(
     val content: List<UserAlert>,
