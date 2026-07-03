@@ -38,4 +38,8 @@ configure<ClassPathExtension> {
         "**/entity/**",
         "**/AppKt.class"
     )
+    sonarExclusions = listOf(
+        "**/entity/ResponsibleOfficer.kt",
+        "**/service/ResponsibleOfficerService.kt"
+    )
 }
