@@ -31,7 +31,7 @@ spring:
   threads.virtual.enabled: true
 
 oauth2.roles:
-  - PROBATION_API__WARRANT_RISK_ASSESSMENT
+  - PROBATION_API__WARRANT_RISK_ASSESSMENT__CASE_DETAIL
 
 springdoc.default-produces-media-type: application/json
 
