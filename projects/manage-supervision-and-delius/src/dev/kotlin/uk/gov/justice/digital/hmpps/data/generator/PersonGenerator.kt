@@ -30,6 +30,7 @@ object PersonGenerator {
     val MAPPA_CATEGORY = ReferenceData(IdGenerator.getAndIncrement(), "X9", "X9 Desc")
     val MAPPA_LEVEL = ReferenceData(IdGenerator.getAndIncrement(), "M2", "M2 Desc")
     val OVERVIEW = generateOverview("X000004")
+    val SOFT_DELETED = generateOverview("X000099", forename = "Deleted", surname = "Person", softDeleted = true)
     val E_SUP_PERSON = generateOverview("E500700")
     val CUSTODY_DISPOSAL_TYPE = generateDisposalType("CST", "Custody Sentence Type", "NC", 0)
     val CUSTODY_PERSON = generateOverview(crn = "X123422", forename = "custody", surname = "person")
@@ -494,7 +495,8 @@ object PersonGenerator {
         gender: ReferenceData = GENDER_MALE,
         id: Long = IdGenerator.getAndIncrement(),
         exclusionMessage: String? = null,
-        restrictionMessage: String? = null
+        restrictionMessage: String? = null,
+        softDeleted: Boolean = false
     ) = Person(
         id = id,
         crn = crn,
@@ -516,7 +518,8 @@ object PersonGenerator {
         genderIdentity = null,
         genderIdentityDescription = null,
         exclusionMessage = exclusionMessage,
-        restrictionMessage = restrictionMessage
+        restrictionMessage = restrictionMessage,
+        softDeleted = softDeleted
     )
 
     fun generateRequirement(

@@ -11,6 +11,7 @@ import uk.gov.justice.digital.hmpps.api.model.user.*
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.generateContactAlert
 import uk.gov.justice.digital.hmpps.data.generator.IdGenerator
+import uk.gov.justice.digital.hmpps.data.generator.OffenderManagerGenerator
 import uk.gov.justice.digital.hmpps.data.generator.OffenderManagerGenerator.STAFF_USER_1
 import uk.gov.justice.digital.hmpps.data.generator.OffenderManagerGenerator.STAFF_USER_2
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
@@ -117,6 +118,54 @@ class AlertContactIntegrationTest : IntegrationTestBase() {
             "Non attendance contact type",
             "Breach Contact Type"
         )
+    }
+
+    @Test
+    fun `alerts for soft deleted person are not returned`() {
+        val user = STAFF_USER_1
+        val softDeletedPerson = PersonGenerator.SOFT_DELETED
+        val om = OffenderManagerGenerator.OFFENDER_MANAGER_SOFT_DELETED_PERSON
+
+        val contactId = IdGenerator.getAndIncrement()
+
+        // Use native SQL to insert contact for soft-deleted person (bypasses @SQLRestriction on Person)
+        transactionTemplate.execute {
+            entityManager.createNativeQuery(
+                """
+                INSERT INTO contact (contact_id, offender_id, contact_type_id, contact_date, contact_start_time,
+                    alert_active, soft_deleted, description, staff_id, trust_provider_team_id, partition_area_id, row_version)
+                VALUES (:id, :personId, :typeId, CURRENT_DATE, CURRENT_TIMESTAMP,
+                    'Y', 0, 'Alert for soft deleted person', :staffId, 0, 0, 0)
+                """.trimIndent()
+            )
+                .setParameter("id", contactId)
+                .setParameter("personId", softDeletedPerson.id)
+                .setParameter("typeId", ContactGenerator.BREACH_CONTACT_TYPE.id)
+                .setParameter("staffId", om.staff.id)
+                .executeUpdate()
+
+            entityManager.createNativeQuery(
+                """
+                INSERT INTO contact_alert (contact_alert_id, contact_id, contact_type_id, offender_id,
+                    trust_provider_team_id, offender_manager_id, staff_employee_id)
+                VALUES (:alertId, :contactId, :typeId, :personId, :teamId, :omId, :staffId)
+                """.trimIndent()
+            )
+                .setParameter("alertId", IdGenerator.getAndIncrement())
+                .setParameter("contactId", contactId)
+                .setParameter("typeId", ContactGenerator.BREACH_CONTACT_TYPE.id)
+                .setParameter("personId", softDeletedPerson.id)
+                .setParameter("teamId", om.team.id)
+                .setParameter("omId", om.id)
+                .setParameter("staffId", om.staff.id)
+                .executeUpdate()
+        }
+
+        val response = mockMvc.get("/alerts") { withUserToken(user.username) }
+            .andExpect { status { isOk() } }
+            .andReturn().response.contentAsJson<UserAlerts>()
+
+        assertThat(response.content.none { it.id == contactId }).isTrue()
     }
 
     @Test
