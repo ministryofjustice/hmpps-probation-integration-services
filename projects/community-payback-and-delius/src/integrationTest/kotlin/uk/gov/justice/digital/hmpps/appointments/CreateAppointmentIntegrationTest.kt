@@ -344,16 +344,57 @@ class CreateAppointmentIntegrationTest @Autowired constructor(
     }
 
     @Test
-    fun `creating appointment with a status code of 'Unallocated' and hours not all worked changes to 'WK'`() {
-        val request = TestData.createAppointmentWithStatusUnallocated()
+    fun `creating an appointment with a supervisor team sets the team`() {
+        val request = TestData.createAppointment().copy(
+            supervisorTeam = Code(TeamGenerator.SECOND_UPW_TEAM.code)
+        )
+
         val created = mockMvc
             .post("/projects/$PROJECT/appointments") {
                 withToken()
                 json = CreateAppointmentsRequest(listOf(request))
             }
             .andExpect { status { isOk() } }
+            .andExpect { content { jsonPath("size()") { value(1) } } }
             .andReturn().response.contentAsJson<List<CreatedAppointment>>().first()
-        val actualStatus = unpaidWorkAppointmentRepository.findById(created.id).get().details.status?.code
-        assertThat(actualStatus).isEqualTo("WK")
+
+        unpaidWorkAppointmentRepository.findById(created.id).get().also {
+            assertThat(it.team.code).isEqualTo(TeamGenerator.SECOND_UPW_TEAM.code)
+            assertThat(it.contact.team.code).isEqualTo(TeamGenerator.SECOND_UPW_TEAM.code)
+        }
+    }
+
+    @Test
+    fun `creating an appointment without a supervisor team defaults to project team`() {
+        val request = TestData.createAppointment().copy(supervisorTeam = null)
+
+        val created = mockMvc
+            .post("/projects/$PROJECT/appointments") {
+                withToken()
+                json = CreateAppointmentsRequest(listOf(request))
+            }
+            .andExpect { status { isOk() } }
+            .andExpect { content { jsonPath("size()") { value(1) } } }
+            .andReturn().response.contentAsJson<List<CreatedAppointment>>().first()
+
+        unpaidWorkAppointmentRepository.findById(created.id).get().also {
+            assertThat(it.team.code).isEqualTo(UPW_PROJECT_3.team.code)
+            assertThat(it.contact.team.code).isEqualTo(UPW_PROJECT_3.team.code)
+        }
+    }
+
+    @Test
+    fun `creating an appointment with an invalid supervisor team returns an error`() {
+        val request = TestData.createAppointment().copy(supervisorTeam = Code("INVALID"))
+
+        mockMvc
+            .post("/projects/$PROJECT/appointments") {
+                withToken()
+                json = CreateAppointmentsRequest(listOf(request))
+            }
+            .andExpect { status { isBadRequest() } }
+            .andReturn().response.contentAsJson<ErrorResponse>().also {
+                assertThat(it.message).isEqualTo("Invalid Team: [INVALID]")
+            }
     }
 }

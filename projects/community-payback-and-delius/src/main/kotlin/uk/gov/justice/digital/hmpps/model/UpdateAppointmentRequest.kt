@@ -20,5 +20,6 @@ data class UpdateAppointmentRequest(
     val behaviour: Behaviour?,
     val sensitive: Boolean?,
     val alertActive: Boolean?,
-    val pickUp: CreateAppointmentPickUpData?
+    val pickUp: CreateAppointmentPickUpData?,
+    val supervisorTeam: Code?,
 )

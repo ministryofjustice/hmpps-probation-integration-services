@@ -15,6 +15,7 @@ import uk.gov.justice.digital.hmpps.entity.contact.toCodeDescription
 import uk.gov.justice.digital.hmpps.entity.sentence.EventRepository
 import uk.gov.justice.digital.hmpps.entity.staff.OfficeLocationRepository
 import uk.gov.justice.digital.hmpps.entity.staff.StaffRepository
+import uk.gov.justice.digital.hmpps.entity.staff.TeamRepository
 import uk.gov.justice.digital.hmpps.entity.staff.toSupervisor
 import uk.gov.justice.digital.hmpps.entity.unpaidwork.*
 import uk.gov.justice.digital.hmpps.entity.unpaidwork.UnpaidWorkDetails
@@ -40,6 +41,7 @@ class CommunityPaybackAppointmentsService(
     private val eventRepository: EventRepository,
     private val upwDetailsRepository: UpwDetailsRepository,
     private val officeLocationRepository: OfficeLocationRepository,
+    private val teamRepository: TeamRepository,
 ) {
     fun getAppointment(projectCode: String, appointmentId: Long, username: String): AppointmentResponse {
         val project = unpaidWorkProjectRepository.getByCode(projectCode)
@@ -179,6 +181,7 @@ class CommunityPaybackAppointmentsService(
         val eventIds = eventRepository.getEventIds(map { it.crn to it.eventNumber })
         val upwDetails = upwDetailsRepository.getByEventIdIn(eventIds.values)
         val staff = staffRepository.getByCodeIn(mapNotNull { it.supervisor?.code })
+        val teams = teamRepository.getByCodeIn(mapNotNull { it.supervisorTeam?.code })
         val locations = officeLocationRepository.getByCodeIn(mapNotNull { it.pickUp?.location?.code })
         val outcomes = contactOutcomeRepository.getByCodeIn(mapNotNull { it.outcome?.code })
         val workQuality = referenceDataRepository.findByDatasetCode(Dataset.UPW_WORK_QUALITY).associateBy { it.code }
@@ -198,7 +201,7 @@ class CommunityPaybackAppointmentsService(
                     startTime = request.startTime,
                     endTime = request.endTime,
                     staffCode = request.supervisor?.code ?: project.team.unallocatedStaff().code,
-                    teamCode = project.team.code,
+                    teamCode = request.supervisorTeam?.code ?: project.team.code,
                     outcomeCode = request.outcome?.code,
                     notes = request.notes,
                     alert = request.alertActive,
@@ -220,7 +223,7 @@ class CommunityPaybackAppointmentsService(
                     pickUpTime = request.pickUp?.time,
                     staff = request.supervisor?.code?.let { staff[it].orNotFoundBy("code", it) }
                         ?: project.team.unallocatedStaff(),
-                    team = project.team,
+                    team = request.supervisorTeam?.code?.let { teams[it].orNotFoundBy("code", it) } ?: project.team,
                     project = project,
                     minutesOffered = request.minutesOffered
                         ?: ChronoUnit.MINUTES.between(request.startTime, request.endTime),
@@ -261,17 +264,19 @@ class CommunityPaybackAppointmentsService(
             amendDateTime =
                 { copy(date = it.date, startTime = it.startTime, endTime = it.endTime, allowConflicts = true) }
             applyOutcome = { copy(outcomeCode = it.outcome?.code) }
-            reassign = { copy(staffCode = it.supervisor.code) }
+            reassign = { copy(staffCode = it.supervisor.code, teamCode = it.supervisorTeam?.code ?: teamCode) }
             flagAs = { copy(alert = it.alertActive, sensitive = it.sensitive) }
             appendNotes = { it.notes }
         }
 
         val outcome = request.outcome?.let { contactOutcomeRepository.getByCode(it.code) }
+        val updatedTeam = request.supervisorTeam?.let { teamRepository.getByCode(it.code) } ?: unpaidWorkAppointment.team
         unpaidWorkAppointment.apply {
             date = request.date
             startTime = request.startTime
             endTime = request.endTime
             staff = staffRepository.getByCode(request.supervisor.code)
+            team = updatedTeam
             hiVisWorn = request.hiVisWorn
             workedIntensively = request.workedIntensively
             minutesCredited = request.minutesCredited
