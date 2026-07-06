@@ -52,7 +52,7 @@ class UserAlertService(
 
 private fun Contact.toUserAlert(noteId: Int? = null): UserAlert = UserAlert(
     id,
-     UserAlertType(type.description, type.editable == true),
+    UserAlertType(type.description, type.editable == true),
     person.crn,
     person.name(),
     date,
