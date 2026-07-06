@@ -8,6 +8,7 @@ data class UpdateAppointmentRequest(
     val version: UUID,
     val outcome: Code?,
     val supervisor: Code,
+    val supervisorTeam: Code?,
     val date: LocalDate,
     val startTime: LocalTime,
     val endTime: LocalTime,
@@ -21,5 +22,4 @@ data class UpdateAppointmentRequest(
     val sensitive: Boolean?,
     val alertActive: Boolean?,
     val pickUp: CreateAppointmentPickUpData?,
-    val supervisorTeam: Code?,
 )
