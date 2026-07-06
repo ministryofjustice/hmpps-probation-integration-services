@@ -190,7 +190,7 @@ class UnpaidWorkAppointment(
 
     @ManyToOne
     @JoinColumn(name = "team_id")
-    val team: Team,
+    var team: Team,
 
     @Convert(converter = YesNoConverter::class)
     @Column(name = "high_visibility_vest")
