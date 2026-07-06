@@ -270,7 +270,8 @@ class CommunityPaybackAppointmentsService(
         }
 
         val outcome = request.outcome?.let { contactOutcomeRepository.getByCode(it.code) }
-        val updatedTeam = request.supervisorTeam?.let { teamRepository.getByCode(it.code) } ?: unpaidWorkAppointment.team
+        val updatedTeam =
+            request.supervisorTeam?.let { teamRepository.getByCode(it.code) } ?: unpaidWorkAppointment.team
         unpaidWorkAppointment.apply {
             date = request.date
             startTime = request.startTime
