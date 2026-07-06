@@ -17,7 +17,7 @@ class ResponsibleOfficerController(
     private val responsibleOfficerService: ResponsibleOfficerService,
 ) {
     @GetMapping("/responsible-officer/{crn}")
-    @PreAuthorize("hasRole('PROBATION_API__WARRANT_RISK_ASSESSMENT__RESPONSIBLE_OFFICER')")
+    @PreAuthorize("hasRole('PROBATION_API__WARRANT_RISK_ASSESSMENT')")
     @Operation(
         summary = "Retrieve responsible officer details for a person",
         responses = [
