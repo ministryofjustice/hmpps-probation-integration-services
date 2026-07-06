@@ -52,13 +52,13 @@ class UserAlertService(
 
 private fun Contact.toUserAlert(noteId: Int? = null): UserAlert = UserAlert(
     id,
-    runCatching { UserAlertType(type.description, type.editable == true) }.getOrNull(),
-    runCatching { person.crn }.getOrNull(),
-    runCatching { person.name() }.getOrNull(),
+     UserAlertType(type.description, type.editable == true),
+    person.crn,
+    person.name(),
     date,
     startTime?.toLocalTime() ?: LocalTime.MIN,
     description,
     if (noteId == null) formatNote(notes, true) else listOf(),
     noteId?.let { formatNote(notes, false).takeIf { it.size > noteId }?.get(noteId) },
-    staff?.let { runCatching { Staff(Name(it.forename, surname = it.surname), it.code) }.getOrNull() }
+    staff?.let { Staff(Name(it.forename, surname = it.surname), it.code) }
 )
