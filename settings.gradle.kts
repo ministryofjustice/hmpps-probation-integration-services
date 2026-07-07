@@ -87,14 +87,14 @@ dependencyResolutionManagement {
             library("asyncapi", "org.openfolder:kotlin-asyncapi-spring-web:3.2.3")
             library("aws-s3", "io.awspring.cloud:spring-cloud-aws-starter-s3:4.0.2")
             library("aws-autoconfigure", "io.awspring.cloud:spring-cloud-aws-autoconfigure:4.0.2")
-            library("aws-query-protocol", "software.amazon.awssdk:aws-query-protocol:2.46.17")
+            library("aws-query-protocol", "software.amazon.awssdk:aws-query-protocol:2.46.21")
             library("aws-sns", "io.awspring.cloud:spring-cloud-aws-starter-sns:4.0.2")
             library("aws-sqs", "io.awspring.cloud:spring-cloud-aws-starter-sqs:4.0.2")
             library("aws-starter", "io.awspring.cloud:spring-cloud-aws-starter:4.0.2")
-            library("aws-sts", "software.amazon.awssdk:sts:2.46.17")
+            library("aws-sts", "software.amazon.awssdk:sts:2.46.21")
             library("azure-app-insights", "com.microsoft.azure:applicationinsights-web:3.7.9")
             library("azure-identity", "com.azure:azure-identity:1.18.4")
-            library("flipt", "io.flipt:flipt-client-java:1.3.2")
+            library("flipt", "io.flipt:flipt-client-java:1.3.3")
             library("html2md", "com.vladsch.flexmark:flexmark-html2md-converter:0.64.8")
             library("microsoft-graph", "com.microsoft.graph:microsoft-graph:6.65.0")
             library("mockito-inline", "org.mockito:mockito-inline:5.2.0")
@@ -106,7 +106,7 @@ dependencyResolutionManagement {
                 "opentelemetry-annotations",
                 "io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:2.29.0"
             )
-            library("sentry", "io.sentry:sentry-spring-boot-4:8.46.0")
+            library("sentry", "io.sentry:sentry-spring-boot-4:8.47.0")
             library("springdoc", "org.springdoc:springdoc-openapi-starter-webmvc-ui:3.0.1")
             library("wiremock", "org.wiremock:wiremock-standalone:3.13.2")
 
@@ -122,8 +122,8 @@ dependencyResolutionManagement {
 }
 
 plugins {
-    id("com.gradle.develocity") version "4.4.3"
-    id("com.github.burrunan.s3-build-cache") version "1.9.6"
+    id("com.gradle.develocity") version "4.5.0"
+    id("com.github.burrunan.s3-build-cache") version "1.9.7"
 }
 
 develocity {
