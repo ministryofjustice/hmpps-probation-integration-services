@@ -153,7 +153,7 @@ class UnpaidWorkAppointment(
 
     @ManyToOne
     @JoinColumn(name = "upw_project_id")
-    val project: UnpaidWorkProject,
+    var project: UnpaidWorkProject,
 
     @ManyToOne
     @JoinColumn(name = "upw_details_id")
