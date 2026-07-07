@@ -89,8 +89,8 @@ internal class PersonalDetailsIntegrationTest @Autowired constructor(private val
                               "forename": "Test",
                               "surname": "Staff"
                             },
-                            "telephoneNumber": "07000000000",
                             "team": {
+                              "telephoneNumber": "01000000001",
                               "officeAddresses": [
                                 {
                                   "houseNumber": "123",

@@ -8,6 +8,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.requirement.RequirementE
 
 object DisposalGenerator {
     val DEFAULT = generate()
+    val RECALLED = generate(event = EventGenerator.RECALLED)
 
     fun generate(
         event: EventEntity = EventGenerator.DEFAULT,

@@ -13,6 +13,7 @@ import uk.gov.justice.digital.hmpps.data.generator.UPWGenerator.UPW_PROJECT_1
 import uk.gov.justice.digital.hmpps.data.generator.UPWGenerator.UPW_PROJECT_AVAILABILITY_1
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
+import java.time.format.DateTimeFormatter
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -68,7 +69,9 @@ class ProjectsIntegrationTest @Autowired constructor(
                               "frequency": "Weekly",
                               "dayOfWeek": "MONDAY",
                               "startDateInclusive": "${UPW_PROJECT_AVAILABILITY_1.startDate}",
-                              "endDateExclusive": "${UPW_PROJECT_AVAILABILITY_1.endDate}"
+                              "endDateExclusive": "${UPW_PROJECT_AVAILABILITY_1.endDate}",
+                              "startTime": "${UPW_PROJECT_AVAILABILITY_1.startTime!!.format(DateTimeFormatter.ISO_LOCAL_TIME)}",
+                              "endTime": "${UPW_PROJECT_AVAILABILITY_1.endTime!!.format(DateTimeFormatter.ISO_LOCAL_TIME)}"
                             }
                           ]
                         }

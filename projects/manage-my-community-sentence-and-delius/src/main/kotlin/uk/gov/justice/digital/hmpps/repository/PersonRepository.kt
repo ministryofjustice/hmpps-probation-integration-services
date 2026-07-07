@@ -16,7 +16,7 @@ interface PersonRepository : JpaRepository<Person, Long> {
     fun findIdByCrn(crn: String): Long?
     fun getIdByCrn(crn: String) = findIdByCrn(crn) ?: throw NotFoundException("Person", "CRN", crn)
 
-    @EntityGraph(attributePaths = ["manager.staff.user", "manager.team.officeLocations"])
+    @EntityGraph(attributePaths = ["manager.staff", "manager.team.officeLocations"])
     fun findByCrn(crn: String): Person?
     fun getByCrn(crn: String) = findByCrn(crn) ?: throw NotFoundException("Person", "CRN", crn)
 }
