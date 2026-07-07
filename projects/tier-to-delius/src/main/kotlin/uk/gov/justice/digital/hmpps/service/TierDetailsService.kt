@@ -37,8 +37,8 @@ class TierDetailsService(
         val convictions = mapToConvictions(eventEntities)
         val ogrsScore = getRiskOgrs(case)
         val rsrScore = getStaticOrDynamicRsrScore(case)
-        val latestReleaseDate =
-            eventEntities.mapNotNull { it.disposal?.custody }.flatMap { it.releases }.maxOfOrNull { it.date }
+        val latestReleaseDate = eventEntities.mapNotNull { it.disposal?.custody }.flatMap { it.releases }
+            .maxByOrNull { it.date }?.takeIf { it.recall == null }?.date
 
         return TierDetails(
             gender = case.gender.description,

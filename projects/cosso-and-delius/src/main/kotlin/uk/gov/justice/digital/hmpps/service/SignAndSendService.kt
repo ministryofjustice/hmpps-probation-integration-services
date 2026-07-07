@@ -9,7 +9,6 @@ import uk.gov.justice.digital.hmpps.ldap.findByUsername
 import uk.gov.justice.digital.hmpps.ldap.findPreferenceByUsername
 import uk.gov.justice.digital.hmpps.model.ResponsibleOfficerResponse
 import uk.gov.justice.digital.hmpps.model.SignAndSendResponse
-import uk.gov.justice.digital.hmpps.model.UserDetails
 
 @Service
 class SignAndSendService(
@@ -29,7 +28,7 @@ class SignAndSendService(
         }
 
         return SignAndSendResponse(
-            userDetails = UserDetails(name = user.name()),
+            userDetails = user.name(),
             responsibleOfficer = ResponsibleOfficerResponse(
                 title = responsibleOfficer.staff.title?.description,
                 name = responsibleOfficer.staff.name(),

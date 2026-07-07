@@ -53,22 +53,27 @@ class PersonalContact(
 
 @Entity
 @Immutable
-@Table(name = "address")
-@SQLRestriction("soft_deleted = 0")
+@Table(name = "offender_address")
+@SQLRestriction("soft_deleted = 0 and (end_date is null or end_date > current_date)")
 class ContactAddress(
     @Id
-    @Column(name = "address_id")
+    @Column(name = "offender_address_id")
     val id: Long,
+
+    @Column(name = "offender_id")
+    val personId: Long,
 
     @ManyToOne
     @JoinColumn(name = "address_status_id")
-    val status: ReferenceData? = null,
+    val status: ReferenceData,
 
+    @Column(name = "building_name")
     val buildingName: String? = null,
 
     @Column(name = "address_number")
     val buildingNumber: String? = null,
 
+    @Column(name = "street_name")
     val streetName: String? = null,
 
     @Column(name = "town_city")
@@ -82,6 +87,12 @@ class ContactAddress(
 
     val telephoneNumber: String? = null,
 
+    @Column(name = "start_date")
+    val startDate: LocalDate? = null,
+
+    @Column(name = "end_date")
+    val endDate: LocalDate? = null,
+
     @Column(columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean = false,
@@ -93,8 +104,11 @@ interface PersonalContactRepository : JpaRepository<PersonalContact, Long> {
         select pc from PersonalContact pc
         where pc.personId = :personId
         and pc.relationshipType.code = 'CE'
-        and pc.endDate is null
         """
     )
     fun findCurrentEmployersByPersonId(personId: Long): List<PersonalContact>
+}
+
+interface ContactAddressRepository : JpaRepository<ContactAddress, Long> {
+    fun findByPersonId(personId: Long): List<ContactAddress>
 }

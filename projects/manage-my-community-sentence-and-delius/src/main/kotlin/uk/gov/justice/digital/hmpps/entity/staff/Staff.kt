@@ -3,7 +3,6 @@ package uk.gov.justice.digital.hmpps.entity.staff
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.Id
-import jakarta.persistence.OneToOne
 import org.hibernate.annotations.Immutable
 import uk.gov.justice.digital.hmpps.model.Name
 
@@ -17,8 +16,6 @@ class Staff(
     val code: String,
     val forename: String,
     val surname: String,
-    @OneToOne(mappedBy = "staff")
-    val user: StaffUser? = null,
 ) {
     fun name() = Name(forename, null, surname)
 }

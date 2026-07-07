@@ -146,6 +146,17 @@ object OffenderManagerGenerator {
             lastUpdated = ZonedDateTime.of(LocalDate.of(2025, 2, 10), LocalTime.NOON, EuropeLondon)
         )
 
+    val OFFENDER_MANAGER_SOFT_DELETED_PERSON =
+        OffenderManager(
+            IdGenerator.getAndIncrement(),
+            PersonGenerator.SOFT_DELETED,
+            DEFAULT_PROVIDER,
+            TEAM,
+            STAFF_1,
+            LocalDate.of(2025, 2, 10),
+            lastUpdated = ZonedDateTime.of(LocalDate.of(2025, 2, 10), LocalTime.NOON, EuropeLondon)
+        )
+
     val OFFENDER_MANAGER_MISSING_EMAIL =
         OffenderManager(
             IdGenerator.getAndIncrement(),
@@ -220,6 +231,14 @@ object OffenderManagerGenerator {
         startDate = ZonedDateTime.now(),
         endDate = ZonedDateTime.now(),
         offenderManagerId = OFFENDER_MANAGER_ACTIVE.id
+    )
+
+    val RESPONSIBLE_OFFICER_OM_SOFT_DELETED_PERSON = ResponsibleOfficer(
+        IdGenerator.getAndIncrement(),
+        PersonGenerator.SOFT_DELETED.id,
+        startDate = ZonedDateTime.now(),
+        endDate = ZonedDateTime.now(),
+        offenderManagerId = OFFENDER_MANAGER_SOFT_DELETED_PERSON.id
     )
 
     val RESPONSIBLE_OFFICER_OM_INACTIVE = ResponsibleOfficer(

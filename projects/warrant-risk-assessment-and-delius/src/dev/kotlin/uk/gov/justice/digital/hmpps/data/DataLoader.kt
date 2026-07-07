@@ -10,6 +10,14 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
     override fun systemUser() = UserGenerator.AUDIT_USER
 
     override fun setupData() {
+        save(ProbationAreaGenerator.DEFAULT_PROBATION_AREA)
+        save(ProbationAreaGenerator.HOME_PROBATION_AREA)
+        save(StaffGenerator.DEFAULT_STAFF)
+        save(ResponsibleOfficerGenerator.DEFAULT_USER)
+        save(ResponsibleOfficerGenerator.DEFAULT_OFFENDER_MANAGER)
+        save(ResponsibleOfficerGenerator.DEFAULT_RESPONSIBLE_OFFICER)
+        save(OfficeLocationGenerator.DEFAULT_OFFICE_LOCATION)
+
         save(PersonGenerator.TITLE)
         save(PersonGenerator.DEFAULT)
         save(PersonGenerator.NO_OPTIONAL_FIELDS)
@@ -26,9 +34,20 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
         save(ContactGenerator.OLDER_HOME_VISIT)
         save(ContactGenerator.LAST_HOME_VISIT)
 
+        save(StaffGenerator.PRISON_STAFF)
+        save(PersonGenerator.PRISON_MANAGED)
+        save(PersonGenerator.NO_PREFERRED_ADDRESS)
+        save(ResponsibleOfficerGenerator.PRISON_OFFENDER_MANAGER)
+        save(ResponsibleOfficerGenerator.PRISON_RESPONSIBLE_OFFICER)
+
+        save(StaffGenerator.NO_PREFERRED_ADDRESS_STAFF)
+        save(ResponsibleOfficerGenerator.NO_PREFERRED_ADDRESS_OFFENDER_MANAGER)
+        save(ResponsibleOfficerGenerator.NO_PREFERRED_ADDRESS_RESPONSIBLE_OFFICER)
+
         save(RegistrationGenerator.MAPPA_TYPE)
         save(RegistrationGenerator.MAPPA_TYPE_M2)
         save(RegistrationGenerator.MAPPA_REGISTRATION)
         save(RegistrationGenerator.OLDER_MAPPA_REGISTRATION)
+
     }
 }

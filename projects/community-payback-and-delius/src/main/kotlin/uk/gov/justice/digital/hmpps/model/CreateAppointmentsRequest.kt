@@ -30,6 +30,8 @@ data class CreateAppointmentRequest(
     // allocation
     @Schema(description = "The appointment supervisor. Defaults to the unallocated staff member in the project team.")
     val supervisor: Code?,
+    val supervisorTeam: Code?,
+    val project: Code?,
 
     // unpaid work details
     val allocationId: Long?,

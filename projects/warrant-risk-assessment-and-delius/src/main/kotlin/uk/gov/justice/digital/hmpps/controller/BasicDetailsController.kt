@@ -16,7 +16,7 @@ import uk.gov.justice.digital.hmpps.service.BasicDetailsService
 class BasicDetailsController(private val basicDetailsService: BasicDetailsService) {
 
     @GetMapping("/basic-details/{crn}")
-    @PreAuthorize("hasRole('PROBATION_API__WARRANT_RISK_ASSESSMENT__BASIC_DETAILS')")
+    @PreAuthorize("hasRole('PROBATION_API__WARRANT_RISK_ASSESSMENT__CASE_DETAIL')")
     @Operation(
         summary = "Retrieve basic offender details for the WRA form",
         responses = [
