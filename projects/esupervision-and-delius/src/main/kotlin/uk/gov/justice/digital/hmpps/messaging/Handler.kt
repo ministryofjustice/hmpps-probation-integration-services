@@ -33,7 +33,6 @@ class Handler(
             Message(title = CHECK_IN_UPDATED),
             Message(title = SETUP_COMPLETED),
             Message(title = SETUP_REMOVED),
-            Message(title = SENTENCE_TERMINATED),
         ]
     )
     override fun handle(notification: Notification<HmppsDomainEvent>) {
@@ -55,7 +54,7 @@ class Handler(
                     telemetryService.trackEvent("CheckInSetupCompleted", notification.telemetry())
                 }
 
-                SETUP_REMOVED, SENTENCE_TERMINATED -> {
+                SETUP_REMOVED -> {
                     checkInService.removeSetup(notification.message)
                     telemetryService.trackEvent("CheckInSetupRemoved", notification.telemetry())
                 }
@@ -77,7 +76,6 @@ class Handler(
         const val CHECK_IN_UPDATED = "esupervision.check-in.updated"
         const val SETUP_COMPLETED = "esupervision.setup.completed"
         const val SETUP_REMOVED = "esupervision.setup.removed"
-        const val SENTENCE_TERMINATED = "probation-case.sentence.terminated"
     }
 }
 
