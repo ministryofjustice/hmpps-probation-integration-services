@@ -69,20 +69,21 @@ end;
 /
 
 declare
-    l_username          varchar2(255) := '{{ username }}';
-    l_password          varchar2(255) := '{{ password }}';
-    l_rolename          varchar2(255) := '{{ username }}_role';
-    l_shared_rolename   varchar2(255) := 'probation_integration_shared_role';
-    l_profile_name      varchar2(255) := 'probation_integration_user_profile';
-    l_audit_create_user varchar2(255) := '{{ database.audit.create_user | default(true) }}';
-    l_audit_username    varchar2(255) := '{{ database.audit.username }}';
-    l_audit_forename    varchar2(255) := '{{ database.audit.forename }}';
-    l_audit_surname     varchar2(255) := '{{ database.audit.surname }}';
-    l_system_user_id    integer       := 4; -- 'Data Maintenance' user
-    l_user_exists       integer;
-    l_role_exists       integer;
-    l_sequence_exists   integer;
-    l_user_version      integer;
+    l_username                  varchar2(255) := '{{ username }}';
+    l_password                  varchar2(255) := '{{ password }}';
+    l_rolename                  varchar2(255) := '{{ username }}_role';
+    l_shared_rolename           varchar2(255) := 'probation_integration_shared_role';
+    l_profile_name              varchar2(255) := 'probation_integration_user_profile';
+    l_audit_create_user         varchar2(255) := '{{ database.audit.create_user | default(true) }}';
+    l_audit_username            varchar2(255) := '{{ database.audit.username }}';
+    l_audit_forename            varchar2(255) := '{{ database.audit.forename }}';
+    l_audit_surname             varchar2(255) := '{{ database.audit.surname }}';
+    l_system_user_id            integer       := 4; -- 'Data Maintenance' user
+    l_user_exists               integer;
+    l_role_exists               integer;
+    l_sequence_exists           integer;
+    l_user_version              integer;
+    l_service_user_table_exists integer;
 begin
 
     -- Create role
@@ -176,6 +177,9 @@ begin
     dbms_output.put_line('granted ' || l_shared_rolename || ' to ' || l_username);
     execute immediate 'grant ' || l_rolename || ' to ' || l_username;
     dbms_output.put_line('granted ' || l_rolename || ' to ' || l_username);
+    -- Revoke roles from sys user account
+    execute immediate 'revoke ' || l_rolename || ' from sys';
+    dbms_output.put_line('revoked ' || l_rolename || ' role from sys');
 
     -- Create Delius user for auditing
     if lower(l_audit_create_user) = 'true' then
@@ -205,6 +209,34 @@ begin
         from delius_app_schema.user_
         where upper(user_.distinguished_name) = upper(l_audit_username);
         dbms_output.put_line('audit user ' || l_audit_username || ' is at version ' || l_user_version);
+
+        -- Create r_service_user mapping
+        select count(*)
+        into l_service_user_table_exists
+        from dba_tables
+        where owner = 'DELIUS_APP_SCHEMA'
+          and table_name = 'R_SERVICE_USER';
+        if l_service_user_table_exists = 1 then
+            execute immediate q'[
+            merge into delius_app_schema.r_service_user target
+            using ( select upper(:username) as service_username, user_.user_id
+                    from delius_app_schema.user_
+                    where upper(user_.distinguished_name) = upper(:audit_username) ) input
+            on (target.service_username = input.service_username)
+            when matched then
+                update
+                set target.user_id = input.user_id
+                where target.user_id is null
+                   or target.user_id <> input.user_id
+            when not matched then
+                insert (service_user_id, service_username, user_id)
+                values (delius_app_schema.service_user_id_seq.nextval, input.service_username, input.user_id);
+            ]' using l_username, l_audit_username;
+            dbms_output.put_line('set r_service_user mapping for ' || l_username || ' to ' || l_audit_username);
+        else
+            dbms_output.put_line('r_service_user table does not exist');
+        end if;
+
     end if;
 
     -- Set VPD client id on logon, to link the Oracle user to the Delius user
