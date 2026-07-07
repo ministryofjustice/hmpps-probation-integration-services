@@ -17,7 +17,7 @@ class MappaInformationController(
     private val mappaInformationService: MappaInformationService,
 ) {
     @GetMapping("/mappa-information/{crn}")
-    @PreAuthorize("hasRole('PROBATION_API__WARRANT_RISK_ASSESSMENT__MAPPA_INFORMATION')")
+    @PreAuthorize("hasRole('PROBATION_API__WARRANT_RISK_ASSESSMENT__CASE_DETAIL')")
     @Operation(
         summary = "Retrieve MAPPA information for a person",
         description = "Returns the latest open MAPPA registration for the given CRN",
