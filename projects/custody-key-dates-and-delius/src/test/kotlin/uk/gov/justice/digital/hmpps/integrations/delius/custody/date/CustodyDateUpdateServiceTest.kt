@@ -364,7 +364,8 @@ internal class CustodyDateUpdateServiceTest {
     fun `SDS+ flag not updated when sentence envelope and custody booking ids are mismatched`() {
         whenever(featureFlags.enabled("sds-plus-flag-enabled")).thenReturn(true)
         val booking = Booking(1234567, "FG37K", true, PersonGenerator.DEFAULT.nomsId!!)
-        val custody = generateCustodialSentence(disposal = generateDisposal(generateEvent()), bookingRef = booking.bookingNo)
+        val custody =
+            generateCustodialSentence(disposal = generateDisposal(generateEvent()), bookingRef = booking.bookingNo)
         listOf(
             CustodyDateType.AUTOMATIC_CONDITIONAL_RELEASE_DATE,
             CustodyDateType.SENTENCE_EXPIRY_DATE,
