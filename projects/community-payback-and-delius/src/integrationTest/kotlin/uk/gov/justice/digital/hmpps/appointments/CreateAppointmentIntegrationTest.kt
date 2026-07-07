@@ -411,4 +411,56 @@ class CreateAppointmentIntegrationTest @Autowired constructor(
                 assertThat(it.message).isEqualTo("Invalid Team: [INVALID]")
             }
     }
+
+    @Test
+    fun `creating an appointment with a different project sets the project`() {
+        val alternateProject = UPWGenerator.UPW_PROJECT_2
+        val request = TestData.createAppointment().copy(project = Code(alternateProject.code))
+
+        val created = mockMvc
+            .post("/projects/$PROJECT/appointments") {
+                withToken()
+                json = CreateAppointmentsRequest(listOf(request))
+            }
+            .andExpect { status { isOk() } }
+            .andExpect { content { jsonPath("size()") { value(1) } } }
+            .andReturn().response.contentAsJson<List<CreatedAppointment>>().first()
+
+        unpaidWorkAppointmentRepository.findById(created.id).get().also {
+            assertThat(it.project.code).isEqualTo(alternateProject.code)
+        }
+    }
+
+    @Test
+    fun `creating an appointment without a project defaults to the url project`() {
+        val request = TestData.createAppointment().copy(project = null)
+
+        val created = mockMvc
+            .post("/projects/$PROJECT/appointments") {
+                withToken()
+                json = CreateAppointmentsRequest(listOf(request))
+            }
+            .andExpect { status { isOk() } }
+            .andExpect { content { jsonPath("size()") { value(1) } } }
+            .andReturn().response.contentAsJson<List<CreatedAppointment>>().first()
+
+        unpaidWorkAppointmentRepository.findById(created.id).get().also {
+            assertThat(it.project.code).isEqualTo(PROJECT)
+        }
+    }
+
+    @Test
+    fun `creating an appointment with an invalid project code returns an error`() {
+        val request = TestData.createAppointment().copy(project = Code("INVALID"))
+
+        mockMvc
+            .post("/projects/$PROJECT/appointments") {
+                withToken()
+                json = CreateAppointmentsRequest(listOf(request))
+            }
+            .andExpect { status { isBadRequest() } }
+            .andReturn().response.contentAsJson<ErrorResponse>().also {
+                assertThat(it.message).isEqualTo("Invalid UnpaidWorkProject: [INVALID]")
+            }
+    }
 }

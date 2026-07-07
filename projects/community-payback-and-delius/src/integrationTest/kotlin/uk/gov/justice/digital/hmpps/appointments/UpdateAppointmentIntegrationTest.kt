@@ -231,4 +231,53 @@ class UpdateAppointmentIntegrationTest @Autowired constructor(
         val appointment = unpaidWorkAppointmentRepository.getAppointment(original.id)
         assertThat(appointment.team.code).isEqualTo(originalTeamCode)
     }
+
+    @Test
+    fun `updating appointment with a different project sets the project`() {
+        val original = unpaidWorkAppointmentRepository.getAppointment(UPWGenerator.UPW_APPOINTMENT_TO_UPDATE[8].id)
+        val newProject = UPWGenerator.UPW_PROJECT_1
+
+        mockMvc.put("/projects/$PROJECT/appointments/${original.id}") {
+            withToken()
+            json = TestData.updateAppointment(original.id).copy(
+                version = UUID(original.rowVersion, original.contact.rowVersion),
+                project = Code(newProject.code)
+            )
+        }.andExpect { status { isOk() } }
+
+        val appointment = unpaidWorkAppointmentRepository.getAppointment(original.id)
+        assertThat(appointment.project.code).isEqualTo(newProject.code)
+    }
+
+    @Test
+    fun `updating appointment without a project keeps existing project`() {
+        val original = unpaidWorkAppointmentRepository.getAppointment(UPWGenerator.UPW_APPOINTMENT_TO_UPDATE[9].id)
+
+        mockMvc.put("/projects/$PROJECT/appointments/${original.id}") {
+            withToken()
+            json = TestData.updateAppointment(original.id).copy(
+                version = UUID(original.rowVersion, original.contact.rowVersion),
+                project = null
+            )
+        }.andExpect { status { isOk() } }
+
+        val appointment = unpaidWorkAppointmentRepository.getAppointment(original.id)
+        assertThat(appointment.project.code).isEqualTo(PROJECT)
+    }
+
+    @Test
+    fun `updating appointment with an invalid project code returns an error`() {
+        val original = unpaidWorkAppointmentRepository.getAppointment(UPWGenerator.UPW_APPOINTMENT_TO_UPDATE[8].id)
+
+        mockMvc.put("/projects/${original.project.code}/appointments/${original.id}") {
+            withToken()
+            json = TestData.updateAppointment(original.id).copy(
+                version = UUID(original.rowVersion, original.contact.rowVersion),
+                project = Code("INVALID")
+            )
+        }.andExpect { status { isNotFound() } }
+            .andReturn().response.contentAsJson<ErrorResponse>().also {
+                assertThat(it.message).isEqualTo("UnpaidWorkProject with code of INVALID not found")
+            }
+    }
 }

@@ -9,6 +9,7 @@ data class UpdateAppointmentRequest(
     val outcome: Code?,
     val supervisor: Code,
     val supervisorTeam: Code?,
+    val project: Code?,
     val date: LocalDate,
     val startTime: LocalTime,
     val endTime: LocalTime,
