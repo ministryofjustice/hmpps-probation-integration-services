@@ -1,6 +1,5 @@
-[
-  {
-    "isSDSPlus": true,
-    "effectiveSentenceLengthDays": 365
-  }
-]
+{
+  "bookingId": 123456,
+  "containsAnSDSPlusSentence": false,
+  "sentenceEnvelopeLengthInDays": 50
+}

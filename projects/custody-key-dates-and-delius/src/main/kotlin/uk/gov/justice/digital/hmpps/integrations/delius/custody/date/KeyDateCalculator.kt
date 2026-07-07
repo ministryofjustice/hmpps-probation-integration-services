@@ -1,7 +1,7 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.custody.date
 
 import org.springframework.stereotype.Component
-import uk.gov.justice.digital.hmpps.integrations.crds.AnalysedSentenceAndOffence
+import uk.gov.justice.digital.hmpps.integrations.crds.OperativeSentenceEnvelope
 import uk.gov.justice.digital.hmpps.integrations.prison.SentenceDetail
 import java.time.LocalDate
 import java.time.temporal.ChronoUnit
@@ -15,10 +15,10 @@ class KeyDateCalculator {
      * For SDS+ Sentences, EMED = SED - (1/3rd of the total sentence length)
      */
     fun presumptiveElectronicMonitoringEndDate(
-        sentenceDetail: SentenceDetail, sentences: List<AnalysedSentenceAndOffence>
+        sentenceDetail: SentenceDetail, envelope: OperativeSentenceEnvelope
     ): LocalDate? = sentenceDetail.sentenceExpiryDate?.let { sed ->
-        val lengthInDays = sentences.sumOf { it.effectiveSentenceLengthDays }
-        val deduction = if (sentences.any { it.isSDSPlus }) {
+        val lengthInDays = envelope.sentenceEnvelopeLengthInDays
+        val deduction = if (envelope.containsAnSDSPlusSentence) {
             lengthInDays / 3.0
         } else {
             lengthInDays * 0.60
@@ -29,10 +29,10 @@ class KeyDateCalculator {
     /**
      * FTHRD Calculation = SLED - 1/3 sentence length
      */
-    fun finalThirdDate(sentenceDetail: SentenceDetail, sentences: List<AnalysedSentenceAndOffence>): LocalDate? =
+    fun finalThirdDate(sentenceDetail: SentenceDetail, envelope: OperativeSentenceEnvelope): LocalDate? =
         sentenceDetail.sentenceExpiryDate?.let { sed ->
-            val lengthInDays = sentences.sumOf { it.effectiveSentenceLengthDays }
-            val deduction = lengthInDays / 3
+            val lengthInDays = envelope.sentenceEnvelopeLengthInDays
+            val deduction = (lengthInDays / 3.0).roundToLong()
             sed.minusDays(deduction)
         }
 

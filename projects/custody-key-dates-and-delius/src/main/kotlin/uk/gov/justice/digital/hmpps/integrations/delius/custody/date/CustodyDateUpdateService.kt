@@ -5,8 +5,8 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.client.RestClientResponseException
 import uk.gov.justice.digital.hmpps.flags.FeatureFlags
-import uk.gov.justice.digital.hmpps.integrations.crds.AnalysedSentenceAndOffence
 import uk.gov.justice.digital.hmpps.integrations.crds.CrdsApiClient
+import uk.gov.justice.digital.hmpps.integrations.crds.OperativeSentenceEnvelope
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.CustodyDateType.*
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.contact.ContactService
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.reference.ReferenceDataRepository
@@ -57,8 +57,8 @@ class CustodyDateUpdateService(
             singleOrNull() ?: return telemetryService.trackEvent("MissingBookingRef", booking.telemetry(clientSource))
         }
         val custody = custodyRepository.findCustodyById(custodyRepository.findForUpdate(custodyId))
-        val sentences = crdsApiClient.getSentenceAndOffenceInformation(booking.id)
-        val updated = calculateKeyDateChanges(sentenceDetail, custody, sentences)
+        val envelope = crdsApiClient.getOperativeSentenceEnvelope(booking.offenderNo)
+        val updated = calculateKeyDateChanges(sentenceDetail, custody, envelope)
         if (updated.isEmpty()) {
             telemetryService.trackEvent("KeyDatesUnchanged", booking.telemetry(clientSource))
         } else {
@@ -66,8 +66,19 @@ class CustodyDateUpdateService(
                 keyDateRepository.saveAll(updated)
                 contactService.createForKeyDateChanges(custody, updated)
                 if (featureFlags.enabled("sds-plus-flag-enabled")) {
-                    custody.disposal?.id?.let { disposalId ->
-                        disposalWithSdsPlusRepository.updateSdsPlusFlag(disposalId, sentences.any { it.isSDSPlus })
+                    if (booking.id != envelope.bookingId) {
+                        telemetryService.trackEvent(
+                            "SentenceEnvelopeBookingIdMismatch", mapOf(
+                                "bookingId" to booking.id.toString(),
+                                "envelopeBookingId" to envelope.bookingId.toString()
+                            )
+                        )
+                    } else {
+                        custody.disposal?.id?.let { disposalId ->
+                            disposalWithSdsPlusRepository.updateSdsPlusFlag(
+                                disposalId, envelope.containsAnSDSPlusSentence
+                            )
+                        }
                     }
                 }
             }
@@ -81,7 +92,7 @@ class CustodyDateUpdateService(
     private fun calculateKeyDateChanges(
         sentenceDetail: SentenceDetail,
         custody: Custody,
-        sentences: List<AnalysedSentenceAndOffence>
+        envelope: OperativeSentenceEnvelope
     ) =
         listOfNotNull(
             custody.keyDate(LICENCE_EXPIRY_DATE.code, sentenceDetail.licenceExpiryDate),
@@ -99,9 +110,9 @@ class CustodyDateUpdateService(
             ),
             custody.keyDate(
                 PRESUMPTIVE_EM_END_DATE.code,
-                keyDateCalculator.presumptiveElectronicMonitoringEndDate(sentenceDetail, sentences)
+                keyDateCalculator.presumptiveElectronicMonitoringEndDate(sentenceDetail, envelope)
             ),
-            custody.keyDate(FINAL_THIRD_START_DATE.code, keyDateCalculator.finalThirdDate(sentenceDetail, sentences)),
+            custody.keyDate(FINAL_THIRD_START_DATE.code, keyDateCalculator.finalThirdDate(sentenceDetail, envelope)),
         )
 
     private fun Custody.keyDate(code: String, date: LocalDate?): KeyDate? = date?.let {

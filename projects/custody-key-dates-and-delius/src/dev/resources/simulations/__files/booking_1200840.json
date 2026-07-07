@@ -1,0 +1,10 @@
+{
+  "bookingId": 1200840,
+  "bookingNo": "78340A",
+  "offenderNo": "A0004DY",
+  "firstName": "Test",
+  "lastName": "Sds",
+  "agencyId": "Plus",
+  "activeFlag": true,
+  "dateOfBirth": "1970-01-01"
+}

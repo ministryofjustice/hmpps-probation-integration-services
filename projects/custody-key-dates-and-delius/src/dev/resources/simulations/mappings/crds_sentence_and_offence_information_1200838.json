@@ -1,7 +1,7 @@
 {
   "request": {
     "method": "GET",
-    "urlPath": "/crds/sentence-and-offence-information/1200838"
+    "urlPath": "/crds/operative-sentence-envelope/A0002DY"
   },
   "response": {
     "status": 200,

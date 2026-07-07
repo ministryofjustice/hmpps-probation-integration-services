@@ -21,8 +21,8 @@ import uk.gov.justice.digital.hmpps.data.generator.SentenceGenerator.generateDis
 import uk.gov.justice.digital.hmpps.data.generator.SentenceGenerator.generateDisposalType
 import uk.gov.justice.digital.hmpps.data.generator.SentenceGenerator.generateEvent
 import uk.gov.justice.digital.hmpps.flags.FeatureFlags
-import uk.gov.justice.digital.hmpps.integrations.crds.AnalysedSentenceAndOffence
 import uk.gov.justice.digital.hmpps.integrations.crds.CrdsApiClient
+import uk.gov.justice.digital.hmpps.integrations.crds.OperativeSentenceEnvelope
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.contact.ContactService
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.reference.DatasetCode
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.reference.ReferenceDataRepository
@@ -271,7 +271,6 @@ internal class CustodyDateUpdateServiceTest {
 
     @Test
     fun `SDS+ flag enabled updates disposal sdsPlus`() {
-        setupCrdsMock()
         whenever(featureFlags.enabled("sds-plus-flag-enabled")).thenReturn(true)
         listOf(
             CustodyDateType.AUTOMATIC_CONDITIONAL_RELEASE_DATE,
@@ -307,6 +306,14 @@ internal class CustodyDateUpdateServiceTest {
         )
         whenever(custodyRepository.findForUpdate(custody.id)).thenReturn(custody.id)
         whenever(custodyRepository.findCustodyById(custody.id)).thenReturn(custody)
+
+        whenever(crdsApiClient.getOperativeSentenceEnvelope(booking.offenderNo)).thenReturn(
+            OperativeSentenceEnvelope(
+                sentenceEnvelopeLengthInDays = 50L,
+                containsAnSDSPlusSentence = true,
+                bookingId = booking.id
+            )
+        )
         custodyDateUpdateService.updateCustodyKeyDates(bookingId = booking.id)
         verify(disposalWithSdsPlusRepository).updateSdsPlusFlag(eq(custody.disposal?.id!!), eq(true))
     }
@@ -353,13 +360,70 @@ internal class CustodyDateUpdateServiceTest {
         verify(disposalWithSdsPlusRepository, never()).updateSdsPlusFlag(any(), any())
     }
 
-    private fun setupCrdsMock() {
-        whenever(crdsApiClient.getSentenceAndOffenceInformation(any())).thenReturn(
-            listOf(
-                AnalysedSentenceAndOffence(
-                    isSDSPlus = true,
-                    effectiveSentenceLengthDays = 365
+    @Test
+    fun `SDS+ flag not updated when sentence envelope and custody booking ids are mismatched`() {
+        whenever(featureFlags.enabled("sds-plus-flag-enabled")).thenReturn(true)
+        val booking = Booking(1234567, "FG37K", true, PersonGenerator.DEFAULT.nomsId!!)
+        val custody = generateCustodialSentence(disposal = generateDisposal(generateEvent()), bookingRef = booking.bookingNo)
+        listOf(
+            CustodyDateType.AUTOMATIC_CONDITIONAL_RELEASE_DATE,
+            CustodyDateType.SENTENCE_EXPIRY_DATE,
+            CustodyDateType.SUSPENSION_DATE_IF_RESET,
+            CustodyDateType.PRESUMPTIVE_EM_END_DATE,
+            CustodyDateType.FINAL_THIRD_START_DATE
+        ).forEach { type ->
+            whenever(
+                referenceDataRepository.findByDatasetAndCode(
+                    DatasetCode.KEY_DATE_TYPE, type.code
                 )
+            ).thenReturn(ReferenceDataGenerator.KEY_DATE_TYPES[type.code]!!)
+        }
+        whenever(prisonApi.getSentenceDetail(booking.id)).thenReturn(
+            SentenceDetail(
+                conditionalReleaseDate = LocalDate.of(2024, 1, 1), sentenceExpiryDate = LocalDate.of(2025, 1, 1)
+            )
+        )
+        whenever(
+            prisonApi.getBooking(
+                booking.id, basicInfo = false, extraInfo = true
+            )
+        ).thenReturn(booking)
+        whenever(
+            personRepository.findByNomsIdIgnoreCaseAndSoftDeletedIsFalse(
+                booking.offenderNo
+            )
+        ).thenReturn(PersonGenerator.DEFAULT)
+        whenever(
+            custodyRepository.findCustodyId(
+                PersonGenerator.DEFAULT.id, booking.bookingNo
+            )
+        ).thenReturn(listOf(custody.id))
+        whenever(custodyRepository.findForUpdate(custody.id)).thenReturn(custody.id)
+        whenever(custodyRepository.findCustodyById(custody.id)).thenReturn(custody)
+        whenever(
+            crdsApiClient.getOperativeSentenceEnvelope(booking.offenderNo)
+        ).thenReturn(
+            OperativeSentenceEnvelope(
+                sentenceEnvelopeLengthInDays = 50L, containsAnSDSPlusSentence = true, bookingId = 999999L
+            )
+        )
+        custodyDateUpdateService.updateCustodyKeyDates(booking.id)
+
+        verify(disposalWithSdsPlusRepository, never()).updateSdsPlusFlag(any(), any())
+        verify(telemetryService).trackEvent(
+            eq("SentenceEnvelopeBookingIdMismatch"), check {
+                assertThat(it["bookingId"], equalTo("1234567"))
+                assertThat(it["envelopeBookingId"], equalTo("999999"))
+            }, any()
+        )
+    }
+
+    private fun setupCrdsMock() {
+        whenever(crdsApiClient.getOperativeSentenceEnvelope(any())).thenReturn(
+            OperativeSentenceEnvelope(
+                sentenceEnvelopeLengthInDays = 50L,
+                containsAnSDSPlusSentence = false,
+                bookingId = 1L
             )
         )
     }

@@ -28,7 +28,7 @@ spring:
 
 oauth2.roles:
   - PROBATION_API__CUSTODY_DATES__RW
-  - CALCULATE_RELEASE_DATES__CALCULATE__RO
+  - CALCULATE_RELEASE_DATES__SENTENCE_ENVELOPE__RO
 
 springdoc.default-produces-media-type: application/json
 

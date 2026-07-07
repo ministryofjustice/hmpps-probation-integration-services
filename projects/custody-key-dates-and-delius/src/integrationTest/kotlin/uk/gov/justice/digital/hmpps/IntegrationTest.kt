@@ -52,8 +52,7 @@ internal class IntegrationTest @Autowired constructor(
 
     @Test
     fun `Custody Key Dates updated as expected`() {
-        whenever(featureFlags.enabled("sds-plus-flag-enabled")).thenReturn(true)
-
+        whenever(featureFlags.enabled("sds-plus-flag-enabled")).thenReturn(false)
         val notification = Notification(message = MessageGenerator.SENTENCE_DATE_CHANGED)
 
         val first = CompletableFuture.runAsync {
@@ -69,10 +68,8 @@ internal class IntegrationTest @Autowired constructor(
 
         val custodyId = custodyRepository.findCustodyId(PersonGenerator.DEFAULT.id, DEFAULT_CUSTODY.bookingRef).first()
         val custody = custodyRepository.findCustodyById(custodyId)
-        val disposalId = custody.disposal!!.id
-        val updatedDisposal = disposalWithSdsPlusRepository.findByIdOrNull(disposalId)
-        assertThat(updatedDisposal?.sdsPlus, equalTo(true))
-
+        val disposal = disposalWithSdsPlusRepository.findByIdOrNull(custody.disposal!!.id)
+        assertThat(disposal?.sdsPlus, equalTo(null))
         verifyUpdatedKeyDates(custody)
         verifyContactCreated()
 
@@ -153,8 +150,8 @@ internal class IntegrationTest @Autowired constructor(
         assertThat(erd?.date, equalTo(LocalDate.parse("2022-11-27")))
         assertThat(hde?.date, equalTo(LocalDate.parse("2022-10-28")))
         assertThat(pr1?.date, equalTo(LocalDate.parse("2024-10-05")))
-        assertThat(emed?.date, equalTo(LocalDate.parse("2025-05-11")))
-        assertThat(fthrd?.date, equalTo(LocalDate.parse("2025-05-12")))
+        assertThat(emed?.date, equalTo(LocalDate.parse("2025-08-11")))
+        assertThat(fthrd?.date, equalTo(LocalDate.parse("2025-08-24")))
 
         assertThat(led?.softDeleted, equalTo(false))
     }
@@ -181,8 +178,8 @@ internal class IntegrationTest @Autowired constructor(
             EXP 27/11/2022
             HDE 28/10/2022
             PR1 05/10/2024
-            EMED 11/05/2025
-            FTHRD 12/05/2025
+            EMED 11/08/2025
+            FTHRD 24/08/2025
                 """.trimIndent()
             )
         )
@@ -208,5 +205,27 @@ internal class IntegrationTest @Autowired constructor(
         val pssed = custody.keyDates.firstOrNull { it.type.code == "PSSED" }
         assertNotNull(pssed)
         assertThat(pssed!!.date, equalTo(LocalDate.parse("2026-06-15")))
+    }
+
+    @Test
+    fun `SDS plus updated when feature flag enabled`() {
+        whenever(featureFlags.enabled("sds-plus-flag-enabled")).thenReturn(true)
+        val notification = Notification(message = MessageGenerator.SENTENCE_DATE_CHANGED_SDS)
+        channelManager.getChannel(queueName).publishAndWait(notification)
+        val custodyId = custodyRepository.findCustodyId(PersonGenerator.SDS_PLUS_PERSON.id, "78340A").first()
+        val custody = custodyRepository.findCustodyById(custodyId)
+        val disposal = disposalWithSdsPlusRepository.findByIdOrNull(custody.disposal!!.id)
+        assertThat(disposal?.sdsPlus, equalTo(true))
+        verifyUpdatedKeyDatesForSdsPlus(custody)
+    }
+
+    private fun verifyUpdatedKeyDatesForSdsPlus(custody: Custody) {
+        val sed = custody.keyDate(CustodyDateType.SENTENCE_EXPIRY_DATE.code)
+        val emed = custody.keyDate(CustodyDateType.PRESUMPTIVE_EM_END_DATE.code)
+        val fthrd = custody.keyDate(CustodyDateType.FINAL_THIRD_START_DATE.code)
+
+        assertThat(sed?.date, equalTo(LocalDate.parse("2025-09-10")))
+        assertThat(emed?.date, equalTo(LocalDate.parse("2025-05-11")))
+        assertThat(fthrd?.date, equalTo(LocalDate.parse("2025-05-11")))
     }
 }

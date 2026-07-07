@@ -1,13 +1,13 @@
 {
   "request": {
     "method": "GET",
-    "urlPath": "/crds/operative-sentence-envelope/A0001DY"
+    "urlPath": "/crds/operative-sentence-envelope/A0004DY"
   },
   "response": {
     "status": 200,
     "headers": {
       "Content-Type": "application/json"
     },
-    "bodyFileName": "crds_default.json"
+    "bodyFileName": "crds_sds_plus.json"
   }
 }

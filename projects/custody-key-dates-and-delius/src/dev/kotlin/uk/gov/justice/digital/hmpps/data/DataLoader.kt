@@ -72,6 +72,8 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
 
         createPersonWithKeyDates(PersonGenerator.PERSON_WITH_KEYDATES_BY_CRN, "48340A", keyDateTypes)
 
+        createPersonWithKeyDates(PersonGenerator.SDS_PLUS_PERSON, "78340A", keyDateTypes)
+
         save(SentenceGenerator.PSS_DISPOSAL_TYPE)
         val pssPerson = save(PersonGenerator.PSS_PERSON)
         val pssEvent = save(generateEvent(pssPerson, "1"))
