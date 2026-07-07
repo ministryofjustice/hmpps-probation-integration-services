@@ -9,28 +9,29 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RestController
 import uk.gov.justice.digital.hmpps.advice.ErrorResponse
-import uk.gov.justice.digital.hmpps.model.BasicDetails
-import uk.gov.justice.digital.hmpps.service.BasicDetailsService
+import uk.gov.justice.digital.hmpps.model.ResponsibleOfficerDetails
+import uk.gov.justice.digital.hmpps.service.ResponsibleOfficerService
 
 @RestController
-class BasicDetailsController(private val basicDetailsService: BasicDetailsService) {
-
-    @GetMapping("/basic-details/{crn}")
+class ResponsibleOfficerController(
+    private val responsibleOfficerService: ResponsibleOfficerService,
+) {
+    @GetMapping("/responsible-officer/{crn}")
     @PreAuthorize("hasRole('PROBATION_API__WARRANT_RISK_ASSESSMENT__CASE_DETAIL')")
     @Operation(
-        summary = "Retrieve basic offender details for the WRA form",
+        summary = "Retrieve responsible officer details for a person",
         responses = [
             ApiResponse(
                 responseCode = "200",
-                description = "Basic details retrieved",
+                description = "Responsible officer details retrieved",
                 content = [Content(
                     mediaType = "application/json",
-                    schema = Schema(implementation = BasicDetails::class)
+                    schema = Schema(implementation = ResponsibleOfficerDetails::class)
                 )]
             ),
             ApiResponse(
                 responseCode = "404",
-                description = "Person not found for the given CRN",
+                description = "Person or responsible officer not found",
                 content = [Content(
                     mediaType = "application/json",
                     schema = Schema(implementation = ErrorResponse::class)
@@ -38,6 +39,6 @@ class BasicDetailsController(private val basicDetailsService: BasicDetailsServic
             )
         ]
     )
-    fun getBasicDetails(@PathVariable crn: String): BasicDetails =
-        basicDetailsService.getBasicDetails(crn)
+    fun getResponsibleOfficerDetails(@PathVariable crn: String): ResponsibleOfficerDetails =
+        responsibleOfficerService.getResponsibleOfficerDetails(crn)
 }

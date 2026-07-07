@@ -7,13 +7,13 @@ import uk.gov.justice.digital.hmpps.model.*
 @Service
 class BasicDetailsService(
     private val personRepository: PersonRepository,
-    private val addressRepository: AddressRepository,
+    private val contactAddressRepository: ContactAddressRepository,
     private val personalContactRepository: PersonalContactRepository,
     private val contactRepository: ContactRepository,
 ) {
     fun getBasicDetails(crn: String): BasicDetails {
         val person = personRepository.getPerson(crn)
-        val addresses = addressRepository.findByPersonId(person.id)
+        val addresses = contactAddressRepository.findByPersonId(person.id)
         val employers = personalContactRepository.findCurrentEmployersByPersonId(person.id)
         val lastHomeVisitDate = contactRepository.findLastHomeVisitDate(person.id)
 
@@ -30,13 +30,13 @@ class BasicDetailsService(
             mobileNumber = person.mobileNumber,
             emailAddress = person.emailAddress,
             lastHomeVisitDate = lastHomeVisitDate,
-            addresses = addresses.map { it.toModel() },
+            addresses = addresses.map { it.toAddressDetail() },
             employers = employers.map { it.toModel() },
         )
     }
 }
 
-private fun Address.toModel() = AddressDetail(
+private fun ContactAddress.toAddressDetail() = AddressDetail(
     id = id,
     status = status.description,
     buildingName = buildingName,
@@ -54,14 +54,14 @@ private fun PersonalContact.toModel() = Employer(
         middleName = middleNames,
         surname = surname,
     ),
-    employerAddress = address?.toModel(),
+    employerAddress = address?.toEmployerAddress(),
     telephoneNumber = address?.telephoneNumber,
     mobileNumber = mobileNumber,
 )
 
-private fun ContactAddress.toModel() = EmployerAddress(
+private fun ContactAddress.toEmployerAddress() = EmployerAddress(
     id = id,
-    status = status?.description,
+    status = status.description,
     buildingName = buildingName,
     buildingNumber = buildingNumber,
     streetName = streetName,

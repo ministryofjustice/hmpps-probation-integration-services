@@ -2,7 +2,7 @@ enabled: false # TODO set this to true when you're ready to deploy your service
 
 generic-service:
   ingress:
-    host: warrant-risk-assessment-and-delius.hmpps.service.justice.gov.uk
+    host: warrant-risk-assessment-and-delius-prod.hmpps.service.justice.gov.uk
 
   env:
     SENTRY_ENVIRONMENT: prod
