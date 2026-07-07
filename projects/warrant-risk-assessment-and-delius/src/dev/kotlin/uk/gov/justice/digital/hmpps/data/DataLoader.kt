@@ -43,5 +43,10 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
         save(StaffGenerator.NO_PREFERRED_ADDRESS_STAFF)
         save(ResponsibleOfficerGenerator.NO_PREFERRED_ADDRESS_OFFENDER_MANAGER)
         save(ResponsibleOfficerGenerator.NO_PREFERRED_ADDRESS_RESPONSIBLE_OFFICER)
+
+        save(RegistrationGenerator.MAPPA_TYPE)
+        save(RegistrationGenerator.MAPPA_TYPE_M2)
+        save(RegistrationGenerator.MAPPA_REGISTRATION)
+        save(RegistrationGenerator.OLDER_MAPPA_REGISTRATION)
     }
 }
