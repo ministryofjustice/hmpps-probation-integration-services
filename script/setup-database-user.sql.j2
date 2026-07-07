@@ -84,6 +84,7 @@ declare
     l_sequence_exists           integer;
     l_user_version              integer;
     l_service_user_table_exists integer;
+    l_sys_has_role integer;
 begin
 
     -- Create role
@@ -178,8 +179,11 @@ begin
     execute immediate 'grant ' || l_rolename || ' to ' || l_username;
     dbms_output.put_line('granted ' || l_rolename || ' to ' || l_username);
     -- Revoke roles from sys user account
-    execute immediate 'revoke ' || l_rolename || ' from sys';
-    dbms_output.put_line('revoked ' || l_rolename || ' role from sys');
+    select count(*) into l_sys_has_role from dba_role_privs where grantee = 'SYS' and granted_role = upper(l_rolename);
+    if l_sys_has_role > 0 then
+        execute immediate 'revoke ' || l_rolename || ' from sys';
+        dbms_output.put_line('revoked ' || l_rolename || ' role from sys');
+    end if;
 
     -- Create Delius user for auditing
     if lower(l_audit_create_user) = 'true' then
