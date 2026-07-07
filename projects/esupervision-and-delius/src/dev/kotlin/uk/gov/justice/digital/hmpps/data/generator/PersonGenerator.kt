@@ -15,13 +15,11 @@ object PersonGenerator {
     val FALLBACK_EVENT_PERSON = generatePerson("A000005")
     val PUNCTUATION_IN_NAME = generatePerson("A000006", "Joe", "O'Neil")
     val SENSITIVE_CONTACT = generatePerson("A000007")
-    val SENTENCE_TERMINATED_PERSON = generatePerson("A000008")
 
     val DEFAULT_COM = generatePersonManager(DEFAULT_PERSON)
     val NO_ACTIVE_EVENT_COM = generatePersonManager(NO_ACTIVE_EVENT_PERSON)
     val FALLBACK_EVENT_COM = generatePersonManager(FALLBACK_EVENT_PERSON)
     val SENSITIVE_CONTACT_MANAGER = generatePersonManager(SENSITIVE_CONTACT)
-    val SENTENCE_TERMINATED_MANAGER = generatePersonManager(SENTENCE_TERMINATED_PERSON)
 
     fun generatePerson(
         crn: String,
