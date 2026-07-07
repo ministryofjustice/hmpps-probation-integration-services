@@ -883,7 +883,7 @@ interface ContactRepository : JpaRepository<Contact, Long> {
             SELECT c from ContactAlert ca
             join ca.contact c
             join OffenderManager com on com.person.id = c.person.id and com.active = true and com.softDeleted = false
-            where c.alert = true and c.softDeleted = false
+            where c.alert = true and c.softDeleted = false and c.person.softDeleted = false
             and ca.staff.user.username = :username and com.staff.id = ca.staff.id
         """
     )

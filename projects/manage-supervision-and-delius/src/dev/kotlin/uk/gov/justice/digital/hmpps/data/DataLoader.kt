@@ -69,6 +69,7 @@ class DataLoader(dataManager: DataManager, private val jdbcTemplate: JdbcTemplat
         saveAll(PersonGenerator.PROVISIONS)
         saveAll(PersonGenerator.PERSONAL_CIRCUMSTANCES)
         save(PersonGenerator.OVERVIEW)
+        save(PersonGenerator.SOFT_DELETED)
         save(PersonGenerator.E_SUP_PERSON)
         save(MonthsFilterGenerator.GENDER)
         save(MonthsFilterGenerator.PERSON)
@@ -134,6 +135,8 @@ class DataLoader(dataManager: DataManager, private val jdbcTemplate: JdbcTemplat
             OffenderManagerGenerator.STAFF_TEAM_1,
             OffenderManagerGenerator.RESPONSIBLE_OFFICER_OM_ACTIVE,
             OffenderManagerGenerator.OFFENDER_MANAGER_ACTIVE,
+            OffenderManagerGenerator.RESPONSIBLE_OFFICER_OM_SOFT_DELETED_PERSON,
+            OffenderManagerGenerator.OFFENDER_MANAGER_SOFT_DELETED_PERSON,
             OffenderManagerGenerator.RESPONSIBLE_OFFICER_OM_INACTIVE,
             OffenderManagerGenerator.RESPONSIBLE_OFFICER_OM_UNALLOCATED,
             OffenderManagerGenerator.OFFENDER_MANAGER_INACTIVE,
