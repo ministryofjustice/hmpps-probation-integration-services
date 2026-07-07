@@ -17,5 +17,4 @@ object MessageGenerator {
         ResourceLoader.get<HmppsDomainEvent>("esupervision-setup-removed-in-reset-A000001")
     val SETUP_REMOVED_NULL_EVENT_A000001 =
         ResourceLoader.get<HmppsDomainEvent>("esupervision-setup-removed-null-event-A000001")
-    val SENTENCE_TERMINATED_A000008 = ResourceLoader.get<HmppsDomainEvent>("esupervision-sentence-terminated-A000008")
 }

@@ -27,13 +27,6 @@ object ContactGenerator {
         outcome = ContactOutcomeGenerator.COT_ESPC,
         externalReference = Contact.externalReferencePrefix(SETUP_COMPLETED) + "d9e1f2a3-b4c5-6789-0abc-def123456789"
     )
-    val SENTENCE_TERMINATED_SETUP_CONTACT = generateContact(
-        person = PersonGenerator.SENTENCE_TERMINATED_PERSON,
-        event = EventGenerator.SENTENCE_TERMINATED_EVENT,
-        type = ContactTypeGenerator.CT_ESPCHS,
-        outcome = ContactOutcomeGenerator.COT_ESPC,
-        externalReference = Contact.externalReferencePrefix(SETUP_COMPLETED) + "8f692c7f-8047-49c3-bb53-8572aefee012"
-    )
     val SETUP_CONTACT_MANUAL_STOP = generateContact(
         type = ContactTypeGenerator.CT_ESPCHS,
         outcome = ContactOutcomeGenerator.COT_ESPC,

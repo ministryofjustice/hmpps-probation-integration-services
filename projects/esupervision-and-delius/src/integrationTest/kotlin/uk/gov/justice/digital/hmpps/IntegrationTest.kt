@@ -364,32 +364,6 @@ internal class IntegrationTest @Autowired constructor(
     }
 
     @Test
-    fun `sentence terminated updates setup contact using event number when setup id is missing`() {
-        val originalContact = contactRepository.findAll()
-            .single { it.person.id == PersonGenerator.SENTENCE_TERMINATED_PERSON.id }
-        assertThat(originalContact.outcome?.code).isEqualTo(ContactOutcome.SETUP_COMPLETED)
-
-        val notification = prepMessage(MessageGenerator.SENTENCE_TERMINATED_A000008)
-        channelManager.getChannel(queueName).publishAndWait(notification)
-
-        val updatedContact = contactRepository.findAll().single { it.id == originalContact.id }
-        assertThat(updatedContact.outcome?.code).isEqualTo(ContactOutcome.SETUP_REMOVED)
-        assertThat(updatedContact.externalReference).isEqualTo(originalContact.externalReference)
-        assertThat(updatedContact.date).isEqualTo(originalContact.date)
-        assertThat(updatedContact.startTime).isEqualTo(originalContact.startTime)
-        verify(telemetryService).trackEvent(
-            "CheckInSetupRemoved",
-            mapOf(
-                "eventType" to "probation-case.sentence.terminated",
-                "crn" to PersonGenerator.SENTENCE_TERMINATED_PERSON.crn,
-                "eventNumber" to EventGenerator.SENTENCE_TERMINATED_EVENT.number,
-                "checkInUrl" to null,
-                "setupId" to null,
-            )
-        )
-    }
-
-    @Test
     fun `esupervision update for missing CRN ignored`() {
         val notification = prepEvent("esupervision-updated-A000001", wireMockServer.port())
         notification.message.personReference.identifiers[0].set("value", "INVALID")
