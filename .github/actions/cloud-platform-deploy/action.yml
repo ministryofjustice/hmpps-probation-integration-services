@@ -11,9 +11,6 @@ inputs:
   version:
     description: The version of the service to deploy
     required: true
-  api:
-    description: The KUBE_ENV_API
-    required: true
   cert:
     description: The KUBE_CERT
     required: true
@@ -75,7 +72,6 @@ runs:
     - name: Authenticate
       uses: ./.github/actions/cloud-platform-auth
       with:
-        api: ${{ inputs.api }}
         cert: ${{ inputs.cert }}
         cluster: ${{ inputs.cluster }}
         namespace: ${{ inputs.namespace }}

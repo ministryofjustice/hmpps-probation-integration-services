@@ -280,7 +280,6 @@ jobs:
 
       - uses: ./.github/actions/cloud-platform-auth
         with:
-          api: ${{ secrets.KUBE_ENV_API }}
           cert: ${{ secrets.KUBE_CERT }}
           cluster: ${{ secrets.KUBE_CLUSTER }}
           namespace: ${{ secrets.KUBE_NAMESPACE }}

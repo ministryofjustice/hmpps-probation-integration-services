@@ -68,7 +68,6 @@ jobs:
       - name: Authenticate with MOJ Cloud Platform
         uses: ./.github/actions/cloud-platform-auth
         with:
-          api: ${{ secrets.KUBE_ENV_API }}
           cert: ${{ secrets.PREPROD_KUBE_CERT }}
           cluster: ${{ secrets.PREPROD_KUBE_CLUSTER }}
           namespace: ${{ secrets.PREPROD_KUBE_NAMESPACE }}
