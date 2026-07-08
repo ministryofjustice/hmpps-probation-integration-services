@@ -167,7 +167,7 @@ jobs:
     needs: get-projects
     strategy:
       matrix:
-        project: ${{ fromJSON(needs.get-projects.outputs.read_write_projects) }}
+        project: ${{ fromJSON(needs.get-projects.outputs.projects) }}
         exclude:
           - project: domain-events-and-delius
           - project: offender-events-and-delius
@@ -185,7 +185,7 @@ jobs:
           token: ${{ secrets.KUBE_TOKEN }}
 
       - name: Block updates
-        if: inputs.action == 'enable'
+        if: inputs.action == 'enable' && contains(fromJSON(needs.get-projects.outputs.read_write_projects), matrix.project)
         run: | # Patching ingresses intermittently fails on MOJ Cloud Platform, so we retry this step
           for i in {1..10}; do
             echo "Attempt ${i}/10..."
@@ -211,7 +211,7 @@ jobs:
           | kubectl apply -f -
 
       - name: Unblock updates
-        if: inputs.action == 'disable'
+        if: inputs.action == 'disable' && contains(fromJSON(needs.get-projects.outputs.read_write_projects), matrix.project)
         run: | # Patching ingresses intermittently fails on MOJ Cloud Platform, so we retry this step
           for i in {1..10}; do
             echo "Attempt ${i}/10..."
