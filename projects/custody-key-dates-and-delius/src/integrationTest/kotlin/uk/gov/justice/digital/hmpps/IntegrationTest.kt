@@ -151,7 +151,7 @@ internal class IntegrationTest @Autowired constructor(
         assertThat(hde?.date, equalTo(LocalDate.parse("2022-10-28")))
         assertThat(pr1?.date, equalTo(LocalDate.parse("2024-10-05")))
         assertThat(emed?.date, equalTo(LocalDate.parse("2025-08-11")))
-        assertThat(fthrd?.date, equalTo(LocalDate.parse("2025-08-24")))
+        assertThat(fthrd?.date, equalTo(LocalDate.parse("2025-08-25")))
 
         assertThat(led?.softDeleted, equalTo(false))
     }
@@ -179,7 +179,7 @@ internal class IntegrationTest @Autowired constructor(
             HDE 28/10/2022
             PR1 05/10/2024
             EMED 11/08/2025
-            FTHRD 24/08/2025
+            FTHRD 25/08/2025
                 """.trimIndent()
             )
         )
@@ -225,7 +225,7 @@ internal class IntegrationTest @Autowired constructor(
         val fthrd = custody.keyDate(CustodyDateType.FINAL_THIRD_START_DATE.code)
 
         assertThat(sed?.date, equalTo(LocalDate.parse("2025-09-10")))
-        assertThat(emed?.date, equalTo(LocalDate.parse("2025-05-11")))
-        assertThat(fthrd?.date, equalTo(LocalDate.parse("2025-05-11")))
+        assertThat(emed?.date, equalTo(LocalDate.parse("2025-05-12")))
+        assertThat(fthrd?.date, equalTo(LocalDate.parse("2025-05-12")))
     }
 }

@@ -5,7 +5,6 @@ import uk.gov.justice.digital.hmpps.integrations.crds.OperativeSentenceEnvelope
 import uk.gov.justice.digital.hmpps.integrations.prison.SentenceDetail
 import java.time.LocalDate
 import java.time.temporal.ChronoUnit
-import kotlin.math.roundToLong
 
 @Component
 class KeyDateCalculator {
@@ -19,11 +18,11 @@ class KeyDateCalculator {
     ): LocalDate? = sentenceDetail.sentenceExpiryDate?.let { sed ->
         val lengthInDays = envelope.sentenceEnvelopeLengthInDays
         val deduction = if (envelope.containsAnSDSPlusSentence) {
-            lengthInDays / 3.0
+            lengthInDays / 3
         } else {
-            lengthInDays * 0.60
+            (lengthInDays * 60) / 100
         }
-        sed.minusDays(deduction.roundToLong())
+        sed.minusDays(deduction)
     }
 
     /**
@@ -31,8 +30,7 @@ class KeyDateCalculator {
      */
     fun finalThirdDate(sentenceDetail: SentenceDetail, envelope: OperativeSentenceEnvelope): LocalDate? =
         sentenceDetail.sentenceExpiryDate?.let { sed ->
-            val lengthInDays = envelope.sentenceEnvelopeLengthInDays
-            val deduction = (lengthInDays / 3.0).roundToLong()
+            val deduction = envelope.sentenceEnvelopeLengthInDays / 3
             sed.minusDays(deduction)
         }
 
