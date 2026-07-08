@@ -130,5 +130,4 @@ internal class PersonalDetailsIntegrationTest @Autowired constructor(private val
             jsonPath("$.message") { value("${PersonData.LAO_RESTRICTED.crn} does not meet the eligibility criteria") }
         }
     }
-
 }
