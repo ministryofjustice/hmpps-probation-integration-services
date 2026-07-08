@@ -450,8 +450,8 @@ object TestData {
         val LAO_PERSON = LimitedAccessPerson(
             crn = PersonData.LAO_RESTRICTED.crn,
             exclusionMessage = null,
-            restrictionMessage = "This case has restricted access",
-            id = PersonData.LAO_RESTRICTED.id  // same offender_id
+            restrictionMessage = null,
+            id = PersonData.LAO_RESTRICTED.id
         )
         val LAO_USER = LimitedAccessUser(
             username = "LaoTestUser",
