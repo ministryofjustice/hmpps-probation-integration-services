@@ -58,6 +58,7 @@ from (with page as (select contact.*
                      'typeShortDescription' value r_contact_type.short_description,
                      'outcomeCode' value r_contact_outcome_type.code,
                      'outcomeDescription' value r_contact_outcome_type.description,
+                     'sparksCode' value r_standard_reference_list.code_value,
                      'sparksDescription' value r_standard_reference_list.code_description,
                      'softDeleted' value contact.soft_deleted,
                      'rowVersion' value contact.row_version
