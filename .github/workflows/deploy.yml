@@ -60,7 +60,6 @@ jobs:
           project: ${{ matrix.project }}
           environment: ${{ inputs.environment }}
           version: ${{ inputs.version }}
-          api: ${{ secrets.KUBE_ENV_API }}
           cert: ${{ secrets.KUBE_CERT }}
           cluster: ${{ secrets.KUBE_CLUSTER }}
           namespace: ${{ secrets.KUBE_NAMESPACE }}
