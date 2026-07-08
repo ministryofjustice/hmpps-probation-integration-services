@@ -122,4 +122,13 @@ internal class PersonalDetailsIntegrationTest @Autowired constructor(private val
             jsonPath("$.lastUpdatedAt") { isNotEmpty() }
         }
     }
+
+    @Test
+    fun `LAO restricted case returns forbidden`() {
+        mockMvc.get("/person/${PersonData.LAO_RESTRICTED.crn}/personal-details") { withToken() }.andExpect {
+            status { isForbidden() }
+            jsonPath("$.message") { value("${PersonData.LAO_RESTRICTED.crn} does not meet the eligibility criteria") }
+        }
+    }
+
 }

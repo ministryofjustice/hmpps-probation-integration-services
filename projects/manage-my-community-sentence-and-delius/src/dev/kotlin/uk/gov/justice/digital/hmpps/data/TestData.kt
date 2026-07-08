@@ -13,9 +13,12 @@ import uk.gov.justice.digital.hmpps.data.TestData.ReferenceData.UPW_REQUIREMENT_
 import uk.gov.justice.digital.hmpps.data.TestData.RequirementData.RAR_REQUIREMENT
 import uk.gov.justice.digital.hmpps.data.TestData.SentenceData.DISPOSAL
 import uk.gov.justice.digital.hmpps.data.generator.IdGenerator.id
+import uk.gov.justice.digital.hmpps.entity.LimitedAccessPerson
+import uk.gov.justice.digital.hmpps.entity.LimitedAccessUser
 import uk.gov.justice.digital.hmpps.entity.Person
 import uk.gov.justice.digital.hmpps.entity.PersonalContact
 import uk.gov.justice.digital.hmpps.entity.ReferenceData
+import uk.gov.justice.digital.hmpps.entity.Restriction
 import uk.gov.justice.digital.hmpps.entity.address.Address
 import uk.gov.justice.digital.hmpps.entity.address.OfficeLocation
 import uk.gov.justice.digital.hmpps.entity.address.PersonAddress
@@ -124,6 +127,16 @@ object TestData {
             manager = CommunityManager(id(), StaffData.STAFF, TeamData.TEAM),
             lastUpdatedDatetime = ZonedDateTime.of(2025, 5, 1, 9, 15, 0, 0, ZoneId.of("UTC")),
         )
+
+        val LAO_RESTRICTED = Person(
+            id = id(),
+            crn = "X000004",
+            firstName = "Test",
+            surname = "Restricted",
+            dateOfBirth = LocalDate.of(1985, 6, 15),
+            manager = CommunityManager(id(), StaffData.STAFF, TeamData.TEAM),
+            lastUpdatedDatetime = ZonedDateTime.of(2025, 5, 1, 9, 15, 0, 0, ZoneId.of("UTC")),
+        )
     }
 
     object AddressData {
@@ -184,6 +197,7 @@ object TestData {
         val BASIC_MAIN_OFFENCE: MainOffence = MainOffence(id(), SentenceData.BASIC_EVENT, MAIN_OFFENCE_TYPE)
         val SUSPENDED_MAIN_OFFENCE: MainOffence = MainOffence(id(), SentenceData.SUSPENDED_EVENT, MAIN_OFFENCE_TYPE)
         val ADDITIONAL_OFFENCE: AdditionalOffence = AdditionalOffence(id(), SentenceData.EVENT, ADDITIONAL_OFFENCE_TYPE)
+        val LAO_MAIN_OFFENCE: MainOffence = MainOffence(id(), SentenceData.LAO_EVENT, MAIN_OFFENCE_TYPE)
     }
 
     object SentenceData {
@@ -248,6 +262,20 @@ object TestData {
         val SUSPENDED_DISPOSAL = Disposal(
             id = id(),
             event = SUSPENDED_EVENT,
+            type = COMMUNITY_ORDER,
+            date = LocalDate.of(2024, 1, 1),
+            expectedEndDate = LocalDate.of(2025, 1, 1),
+            enteredExpectedEndDate = null,
+            lastUpdatedDatetime = ZonedDateTime.of(2026, 1, 1, 12, 0, 0, 0, ZoneId.of("UTC")),
+        )
+        val LAO_EVENT = Event(
+            id = id(),
+            number = "1",
+            personId = PersonData.LAO_RESTRICTED.id,
+        )
+        val LAO_DISPOSAL = Disposal(
+            id = id(),
+            event = LAO_EVENT,
             type = COMMUNITY_ORDER,
             date = LocalDate.of(2024, 1, 1),
             expectedEndDate = LocalDate.of(2025, 1, 1),
@@ -415,6 +443,26 @@ object TestData {
             outcome = outcome,
             sensitive = sensitive,
             lastUpdatedDatetime = ZonedDateTime.of(2024, 1, 1, 0, 0, 0, 0, ZoneId.of("UTC"))
+        )
+    }
+
+    object LaoData {
+        val LAO_PERSON = LimitedAccessPerson(
+            crn = PersonData.LAO_RESTRICTED.crn,
+            exclusionMessage = null,
+            restrictionMessage = "This case has restricted access",
+            id = PersonData.LAO_RESTRICTED.id  // same offender_id
+        )
+        val LAO_USER = LimitedAccessUser(
+            username = "LaoTestUser",
+            id = id()
+        )
+        val RESTRICTION = Restriction(
+            person = LAO_PERSON,
+            user = LAO_USER,
+            start = ZonedDateTime.of(2024, 1, 1, 0, 0, 0, 0, ZoneId.of("UTC")),
+            end = null, // active (no end date)
+            id = id()
         )
     }
 }

@@ -75,6 +75,12 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
             TestData.AppointmentData.PAST_ATTENDED,
             TestData.AppointmentData.PAST_NOT_ATTENDED,
             TestData.SentenceData.SED_KEY_DATE,
+            TestData.PersonData.LAO_RESTRICTED,
+            TestData.SentenceData.LAO_EVENT,
+            TestData.OffenceData.LAO_MAIN_OFFENCE,
+            TestData.SentenceData.LAO_DISPOSAL,
+            TestData.LaoData.LAO_USER,
+            TestData.LaoData.RESTRICTION,
         )
     }
 }
