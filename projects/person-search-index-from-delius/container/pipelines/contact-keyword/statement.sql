@@ -38,6 +38,7 @@ from (with page as (select * from contact where :contact_id = 0
                      'typeShortDescription' value r_contact_type.short_description,
                      'outcomeCode' value r_contact_outcome_type.code,
                      'outcomeDescription' value r_contact_outcome_type.description,
+                     'sparksDescription' value r_stadard_reference_list.code_description,
                      'softDeleted' value contact.soft_deleted,
                      'rowVersion' value contact.row_version
                      returning clob) as "json",
@@ -47,6 +48,8 @@ from (with page as (select * from contact where :contact_id = 0
                left outer join r_contact_type on r_contact_type.contact_type_id = contact.contact_type_id
                left outer join r_contact_outcome_type
                                on r_contact_outcome_type.contact_outcome_type_id = contact.contact_outcome_type_id
+               left outer join contact_sparks on contact.contact_id = contact_sparks.contact_id
+               left outer join r_standard_reference_list on contact_sparks.sparks_id = r_standard_reference
       where contact.soft_deleted = 0)
 union all
 
