@@ -320,7 +320,11 @@ internal class CustodyDateUpdateServiceTest {
             event = disposal.event,
             type = disposal.type
         )
-        whenever(disposalWithSdsPlusRepository.findById(custody.disposal!!.id)).thenReturn(Optional.of(disposalWithSdsPlus))
+        whenever(disposalWithSdsPlusRepository.findById(custody.disposal!!.id)).thenReturn(
+            Optional.of(
+                disposalWithSdsPlus
+            )
+        )
         custodyDateUpdateService.updateCustodyKeyDates(bookingId = booking.id)
         verify(disposalWithSdsPlusRepository).save(
             check<DisposalWithSdsPlus> {
