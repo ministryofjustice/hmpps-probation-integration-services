@@ -27,9 +27,9 @@ runs:
         jinja2 \
           -D "username=$(kubectl get secret "${project}-database" -o json | jq -r '.data.DB_USERNAME | @base64d')" \
           -D "password=$(kubectl get secret "${project}-database" -o json | jq -r '.data.DB_PASSWORD | @base64d')" \
-          ./script/setup-database-user.sql.j2 \
+          "${GITHUB_ACTION_PATH}/../../../script/setup-database-user.sql.j2" \
           "./projects/${project}/deploy/database/access.yml" \
-        > ./script/setup-database-user.sql
+        > "${GITHUB_ACTION_PATH}/../../../script/setup-database-user.sql"
       env:
         project: ${{ inputs.project }}
 
@@ -40,7 +40,7 @@ runs:
         command_id=$(
           aws ssm send-command \
             --document-name "AWS-RunShellScript" \
-            --parameters "commands='base64 -d <<<$(base64 -w0 ./script/setup-database-user.sql) | sudo -u oracle -i sqlplus -s / as sysdba'" \
+            --parameters "commands='base64 -d <<<$(base64 -w0 "${GITHUB_ACTION_PATH}/../../../script/setup-database-user.sql") | sudo -u oracle -i sqlplus -s / as sysdba'" \
             --instance-ids "$instance_id" \
           | jq -r '.Command.CommandId'
         )
