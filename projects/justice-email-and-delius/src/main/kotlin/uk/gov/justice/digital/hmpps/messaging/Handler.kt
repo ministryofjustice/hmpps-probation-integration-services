@@ -131,8 +131,7 @@ class Handler(
                         .where("objectclass").`is`("inetOrgPerson")
                         .and("objectclass").`is`("top")
                         .and("mail").`is`(emailAddress),
-                    AttributesMapper { it["cn"]?.get()?.toString() })
-                .filterNotNull()
+                    AttributesMapper { it["cn"].get().toString() })
                 .mapNotNull { staffRepository.findByUserUsername(it)?.id }
         } catch (_: NameNotFoundException) {
             return null

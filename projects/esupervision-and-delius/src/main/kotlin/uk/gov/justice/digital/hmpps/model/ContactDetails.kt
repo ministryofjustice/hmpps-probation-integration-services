@@ -5,6 +5,7 @@ import java.time.LocalDate
 data class ContactDetails(
     val crn: String,
     val name: Name,
+    val dateOfBirth: LocalDate,
     val mobile: String?,
     val email: String?,
     val events: List<Event>,

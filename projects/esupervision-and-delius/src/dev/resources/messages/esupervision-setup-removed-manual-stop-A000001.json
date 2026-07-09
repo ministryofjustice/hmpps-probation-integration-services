@@ -1,0 +1,19 @@
+{
+  "eventType": "esupervision.setup.removed",
+  "version": 1,
+  "description": "An e-Supervision setup was removed",
+  "occurredAt": "2026-04-02T09:30:00+01:00",
+  "additionalInformation": {
+    "eventNumber": "2",
+    "setupId": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+    "outcomeCode": "ESPMP"
+  },
+  "personReference": {
+    "identifiers": [
+      {
+        "type": "CRN",
+        "value": "A000001"
+      }
+    ]
+  }
+}

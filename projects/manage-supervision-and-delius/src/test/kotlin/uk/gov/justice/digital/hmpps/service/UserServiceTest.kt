@@ -4,12 +4,16 @@ import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.ArgumentMatchers.*
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.any
+import org.mockito.kotlin.anyOrNull
+import org.mockito.kotlin.argumentCaptor
+import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.PageRequest
@@ -17,6 +21,7 @@ import org.springframework.data.domain.Pageable
 import org.springframework.ldap.core.AttributesMapper
 import org.springframework.ldap.core.LdapTemplate
 import uk.gov.justice.digital.hmpps.api.model.Name
+import uk.gov.justice.digital.hmpps.api.model.appointment.CreateAppointment
 import uk.gov.justice.digital.hmpps.api.model.appointment.UserAppointment
 import uk.gov.justice.digital.hmpps.api.model.appointment.UserDiary
 import uk.gov.justice.digital.hmpps.api.model.user.DefaultUserDetails
@@ -42,6 +47,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.caseload.entity.Caseload
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.Appointment
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.BoroughRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.ContactRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.EnforcementAppointment
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.StaffAndRole
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.StaffUserRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.user.entity.ProbationAreaUserRepository
@@ -54,6 +60,7 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.ZonedDateTime
+import java.util.*
 
 @ExtendWith(MockitoExtension::class)
 internal class UserServiceTest {
@@ -189,9 +196,9 @@ internal class UserServiceTest {
             ),
             DEFAULT_TEAM
         )
-        whenever(ldapTemplate.search(any(), any<AttributesMapper<Any?>>()))
-            .thenReturn(listOf(OffenderManagerGenerator.PAU_USER_RECORD1.id.provider.code)) // homeArea
-            .thenReturn(listOf("7"))                                                         // defaultTeam
+        whenever(ldapTemplate.search(any(), any<AttributesMapper<Any>>()))
+            .thenReturn(listOf(Optional.of(OffenderManagerGenerator.PAU_USER_RECORD1.id.provider.code))) // homeArea
+            .thenReturn(listOf(Optional.of("7")))                                                        // defaultTeam
             .thenReturn(listOf("username" to null))
 
         whenever(probationAreaUserRepository.findByUsername(STAFF_USER_1.username)).thenReturn(probationAreaUsers)
@@ -251,8 +258,8 @@ internal class UserServiceTest {
             DEFAULT_TEAM
         )
 
-        whenever(ldapTemplate.search(any(), any<AttributesMapper<Any?>>()))
-            .thenReturn(listOf(OffenderManagerGenerator.PAU_USER_RECORD1.id.provider.code)) // homeArea
+        whenever(ldapTemplate.search(any(), any<AttributesMapper<Any>>()))
+            .thenReturn(listOf(Optional.of(OffenderManagerGenerator.PAU_USER_RECORD1.id.provider.code))) // homeArea
             .thenReturn(emptyList())                                                         // no defaultTeam
             .thenReturn(listOf("username" to null))                                          // email lookup
 
@@ -297,10 +304,10 @@ internal class UserServiceTest {
         )
 
         // Mock for homeArea lookup (returns String)
-        whenever(ldapTemplate.search(any(), any<AttributesMapper<Any?>>()))
-            .thenReturn(listOf(OffenderManagerGenerator.PAU_USER_RECORD1.id.provider.code)) // homeArea (String)
+        whenever(ldapTemplate.search(any(), any<AttributesMapper<Any>>()))
+            .thenReturn(listOf(Optional.of(OffenderManagerGenerator.PAU_USER_RECORD1.id.provider.code))) // homeArea (String)
             .thenReturn(listOf("username" to null)) // email lookup (Pair)
-            .thenReturn(listOf("7"))
+            .thenReturn(listOf(Optional.of("7")))
 
         whenever(probationAreaUserRepository.findByUsername(STAFF_USER_1.username)).thenReturn(probationAreaUsers)
         whenever(teamRepository.findByProviderCode(PROVIDER_2.code)).thenReturn(teams)
@@ -331,8 +338,8 @@ internal class UserServiceTest {
             Team(1, "t01", "team1", listOf(DEFAULT_STAFF, STAFF_1), DEFAULT_PROVIDER, DEFAULT_DISTRICT, LocalDate.now())
         )
 
-        whenever(ldapTemplate.search(any(), any<AttributesMapper<Any?>>()))
-            .thenReturn(listOf(OffenderManagerGenerator.PAU_USER_RECORD1.id.provider.code)) // homeArea (String)
+        whenever(ldapTemplate.search(any(), any<AttributesMapper<Any>>()))
+            .thenReturn(listOf(Optional.of(OffenderManagerGenerator.PAU_USER_RECORD1.id.provider.code))) // homeArea (String)
             .thenReturn(listOf("username" to null))                                          // email lookup (Pair)
             .thenReturn(emptyList())                                                         // defaultTeam preference (no value)
 
@@ -407,6 +414,210 @@ internal class UserServiceTest {
         assertEquals(expected, response)
     }
 
+    @Test
+    fun `get enforcement contacts validates months range`() {
+        val pageable = PageRequest.of(0, 10)
+
+        assertThrows<IllegalArgumentException> {
+            service.getEnforcementContacts("user", pageable, filterDueDate = false, months = -1)
+        }
+        assertThrows<IllegalArgumentException> {
+            service.getEnforcementContacts("user", pageable, filterDueDate = false, months = 121)
+        }
+    }
+
+    @Test
+    fun `get enforcement contacts with months zero sends null cutoff`() {
+        val pageable = PageRequest.of(0, 10)
+        val username = "user"
+        stubUserAndEnforcementContacts(
+            username,
+            listOf(
+                TestEnforcementAppointment(
+                    _id = 1,
+                    _forename = "first",
+                    _surname = "last",
+                    _dob = LocalDateTime.of(1990, 1, 1, 0, 0),
+                    _crn = "X12345",
+                    _contactDate = LocalDateTime.now(),
+                    _contactDescription = "contact",
+                    _typeCode = CreateAppointment.Type.entries.first().code,
+                    _complied = 1,
+                    _rqmntMainCatCode = "A"
+                )
+            )
+        )
+
+        service.getEnforcementContacts(username, pageable, filterDueDate = false, months = 0)
+
+        val cutoffCaptor = argumentCaptor<LocalDateTime?>()
+        verify(contactRepository).findEnforcementContactsByUser(
+            anyLong(),
+            anyInt(),
+            anyString(),
+            cutoffCaptor.capture(),
+            any()
+        )
+        assertThat(cutoffCaptor.firstValue, equalTo(null))
+    }
+
+    @Test
+    fun `get enforcement contacts with months over zero sends cutoff date`() {
+        val pageable = PageRequest.of(0, 10)
+        val username = "user"
+        val expectedCutoff = LocalDate.now().atStartOfDay().minusMonths(6)
+        stubUserAndEnforcementContacts(
+            username,
+            listOf(
+                TestEnforcementAppointment(
+                    _id = 1,
+                    _forename = "first",
+                    _surname = "last",
+                    _dob = LocalDateTime.of(1990, 1, 1, 0, 0),
+                    _crn = "X12345",
+                    _contactDate = LocalDateTime.now(),
+                    _contactDescription = "contact",
+                    _typeCode = CreateAppointment.Type.entries.first().code,
+                    _complied = 1,
+                    _rqmntMainCatCode = "A"
+                )
+            )
+        )
+
+        service.getEnforcementContacts(username, pageable, filterDueDate = false, months = 6)
+
+        val cutoffCaptor = argumentCaptor<LocalDateTime?>()
+        verify(contactRepository).findEnforcementContactsByUser(
+            anyLong(),
+            anyInt(),
+            anyString(),
+            cutoffCaptor.capture(),
+            any()
+        )
+        assertThat(cutoffCaptor.firstValue, equalTo(expectedCutoff))
+    }
+
+    @Test
+    fun `enforcement contact is delius managed when type is not in create appointment list`() {
+        val pageable = PageRequest.of(0, 10)
+        val username = "user"
+        stubUserAndEnforcementContacts(
+            username,
+            listOf(
+                TestEnforcementAppointment(
+                    _id = 2,
+                    _forename = "first",
+                    _surname = "last",
+                    _dob = LocalDateTime.of(1990, 1, 1, 0, 0),
+                    _crn = "X12345",
+                    _contactDate = LocalDateTime.now(),
+                    _contactDescription = "contact",
+                    _typeCode = "UNKNOWN",
+                    _complied = 1,
+                    _rqmntMainCatCode = "A"
+                )
+            )
+        )
+
+        val response = service.getEnforcementContacts(username, pageable, filterDueDate = false, months = 0)
+
+        assertThat(response.enforcementContacts.first().deliusManaged, equalTo(true))
+    }
+
+    @Test
+    fun `enforcement contact is delius managed when complied is zero`() {
+        val pageable = PageRequest.of(0, 10)
+        val username = "user"
+        stubUserAndEnforcementContacts(
+            username,
+            listOf(
+                TestEnforcementAppointment(
+                    _id = 3,
+                    _forename = "first",
+                    _surname = "last",
+                    _dob = LocalDateTime.of(1990, 1, 1, 0, 0),
+                    _crn = "X12345",
+                    _contactDate = LocalDateTime.now(),
+                    _contactDescription = "contact",
+                    _typeCode = CreateAppointment.Type.entries.first().code,
+                    _complied = 0,
+                    _rqmntMainCatCode = "A"
+                )
+            )
+        )
+
+        val response = service.getEnforcementContacts(username, pageable, filterDueDate = false, months = 0)
+
+        assertThat(response.enforcementContacts.first().deliusManaged, equalTo(true))
+    }
+
+    @Test
+    fun `enforcement contact is delius managed when requirement category is F`() {
+        val pageable = PageRequest.of(0, 10)
+        val username = "user"
+        stubUserAndEnforcementContacts(
+            username,
+            listOf(
+                TestEnforcementAppointment(
+                    _id = 4,
+                    _forename = "first",
+                    _surname = "last",
+                    _dob = LocalDateTime.of(1990, 1, 1, 0, 0),
+                    _crn = "X12345",
+                    _contactDate = LocalDateTime.now(),
+                    _contactDescription = "contact",
+                    _typeCode = CreateAppointment.Type.entries.first().code,
+                    _complied = 1,
+                    _rqmntMainCatCode = "F"
+                )
+            )
+        )
+
+        val response = service.getEnforcementContacts(username, pageable, filterDueDate = false, months = 0)
+
+        assertThat(response.enforcementContacts.first().deliusManaged, equalTo(true))
+    }
+
+    @Test
+    fun `enforcement contact is not delius managed when all conditions are false`() {
+        val pageable = PageRequest.of(0, 10)
+        val username = "user"
+        stubUserAndEnforcementContacts(
+            username,
+            listOf(
+                TestEnforcementAppointment(
+                    _id = 5,
+                    _forename = "first",
+                    _surname = "last",
+                    _dob = LocalDateTime.of(1990, 1, 1, 0, 0),
+                    _crn = "X12345",
+                    _contactDate = LocalDateTime.now(),
+                    _contactDescription = "contact",
+                    _typeCode = CreateAppointment.Type.entries.first().code,
+                    _complied = 1,
+                    _rqmntMainCatCode = "A"
+                )
+            )
+        )
+
+        val response = service.getEnforcementContacts(username, pageable, filterDueDate = false, months = 0)
+
+        assertThat(response.enforcementContacts.first().deliusManaged, equalTo(false))
+    }
+
+    private fun stubUserAndEnforcementContacts(username: String, contacts: List<EnforcementAppointment>) {
+        whenever(userRepository.findUserByUsername(username)).thenReturn(USER)
+        whenever(
+            contactRepository.findEnforcementContactsByUser(
+                anyLong(),
+                anyInt(),
+                anyString(),
+                anyOrNull(),
+                any<Pageable>()
+            )
+        ).thenReturn(PageImpl(contacts))
+    }
+
     data class StaffRole(
         val _code: String,
         val _username: String,
@@ -479,6 +690,58 @@ internal class UserServiceTest {
             get() = null
     }
 
+    data class TestEnforcementAppointment(
+        val _id: Long,
+        val _forename: String,
+        val _secondName: String? = null,
+        val _thirdName: String? = null,
+        val _surname: String,
+        val _dob: LocalDateTime,
+        val _crn: String,
+        val _contactDate: LocalDateTime,
+        val _contactDescription: String,
+        val _typeCode: String,
+        val _complied: Int?,
+        val _rqmntMainCatCode: String?,
+        val _outcomeDescription: String? = null,
+        val _enforcementActionDescription: String? = null,
+        val _evidenceDueDate: LocalDateTime? = null,
+        val _lastModifiedDate: LocalDateTime = LocalDateTime.now()
+    ) : EnforcementAppointment {
+        override val forename: String
+            get() = _forename
+        override val secondName: String?
+            get() = _secondName
+        override val thirdName: String?
+            get() = _thirdName
+        override val surname: String
+            get() = _surname
+        override val dob: LocalDateTime
+            get() = _dob
+        override val id: Long
+            get() = _id
+        override val crn: String
+            get() = _crn
+        override val contactDate: LocalDateTime
+            get() = _contactDate
+        override val contactDescription: String
+            get() = _contactDescription
+        override val typeCode: String
+            get() = _typeCode
+        override val complied: Int?
+            get() = _complied
+        override val rqmntMainCatCode: String?
+            get() = _rqmntMainCatCode
+        override val outcomeDescription: String?
+            get() = _outcomeDescription
+        override val enforcementActionDescription: String?
+            get() = _enforcementActionDescription
+        override val evidenceDueDate: LocalDateTime?
+            get() = _evidenceDueDate
+        override val lastModifiedDate: LocalDateTime
+            get() = _lastModifiedDate
+    }
+
     fun Caseload.toCaseloadItem() = object : CaseloadItem {
         override val offenderId = person.id
         override val crn = person.crn
@@ -496,6 +759,7 @@ internal class UserServiceTest {
         override val prevAppointmentId = null
         override val prevAppointmentDateTime = null
         override val prevAppointmentTypeDescription = null
+        override val allocatedDate: LocalDateTime? = null
     }
 
     fun Caseload.toTeamCaseloadItem() = object : TeamCaseloadItem {

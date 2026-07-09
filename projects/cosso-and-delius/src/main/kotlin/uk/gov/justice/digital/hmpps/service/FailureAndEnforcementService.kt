@@ -55,7 +55,7 @@ class FailureAndEnforcementService(
                     startDate = it.startDate,
                     endDate = it.deregistration?.date,
                     notes = it.notes,
-                    documentsLinked = it.documentLinked,
+                    documentsLinked = it.documentLinked ?: false,
                     deregistered = it.deregistered,
                 )
             }

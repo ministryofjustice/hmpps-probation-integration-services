@@ -23,7 +23,7 @@ object ResponsibleOfficerGenerator {
         id = id(),
         person = PersonGenerator.PERSON_IN_PRISON,
         probationArea = ProbationAreaGenerator.DEFAULT_PROBATION_AREA,
-        staff = StaffGenerator.DEFAULT_PROBATION_STAFF,
+        staff = StaffGenerator.PRISON_OFFENDER_MANAGER_STAFF,
         emailAddress = "om@prison.gov.uk",
         telephoneNumber = "01234567890"
     )

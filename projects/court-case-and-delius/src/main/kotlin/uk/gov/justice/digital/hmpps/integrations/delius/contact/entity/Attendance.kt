@@ -47,7 +47,11 @@ class Contact(
 
     @Column(columnDefinition = "NUMBER")
     @Convert(converter = NumericBooleanConverter::class)
-    val softDeleted: Boolean = false
+    val softDeleted: Boolean = false,
+
+    @Version
+    @Column(name = "row_version")
+    val version: Long = 0
 )
 
 @Immutable
@@ -99,4 +103,3 @@ interface AttendanceRepository : JpaRepository<CaseNote, Long> {
     )
     fun findByOffenderAndEventId(eventId: Long, personId: Long, contactDate: LocalDate): List<Contact>
 }
-

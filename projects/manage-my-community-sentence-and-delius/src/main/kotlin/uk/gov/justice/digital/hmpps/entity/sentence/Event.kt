@@ -17,6 +17,10 @@ class Event(
     @Column(name = "offender_id")
     val personId: Long,
     @OneToOne(mappedBy = "event")
+    val mainOffence: MainOffence? = null,
+    @OneToMany(mappedBy = "event")
+    val additionalOffences: Set<AdditionalOffence> = emptySet(),
+    @OneToOne(mappedBy = "event")
     val disposal: Disposal? = null,
     @Column(columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)

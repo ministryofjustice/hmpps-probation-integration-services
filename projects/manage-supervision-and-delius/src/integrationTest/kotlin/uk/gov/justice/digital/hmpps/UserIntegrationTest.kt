@@ -34,6 +34,7 @@ class UserIntegrationTest : IntegrationTestBase() {
         assertThat(res.provider, equalTo(DEFAULT_PROVIDER.description))
         assertThat(res.caseload[0].crn, equalTo(OVERVIEW.crn))
         assertThat(res.caseload[0].caseName, equalTo(OVERVIEW.name()))
+        assertThat(res.caseload[0].allocatedOn, equalTo(null))
     }
 
     @Test
@@ -47,6 +48,7 @@ class UserIntegrationTest : IntegrationTestBase() {
         assertThat(res.provider, equalTo(DEFAULT_PROVIDER.description))
         assertThat(res.caseload[0].crn, equalTo(PERSONAL_DETAILS.crn))
         assertThat(res.caseload[0].caseName, equalTo(PERSONAL_DETAILS.name()))
+        assertThat(res.caseload[0].allocatedOn, equalTo(null))
     }
 
     @Test
@@ -167,6 +169,7 @@ class UserIntegrationTest : IntegrationTestBase() {
         assertThat(res.caseload.size, equalTo(1))
         assertThat(res.caseload[0].crn, equalTo("X000004"))
         assertThat(res.caseload[0].latestSentence, equalTo("Default Sentence Type"))
+        assertThat(res.caseload[0].allocatedOn, equalTo(null))
     }
 
     @Test

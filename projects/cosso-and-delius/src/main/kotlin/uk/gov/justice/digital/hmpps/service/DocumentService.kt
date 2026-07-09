@@ -10,6 +10,7 @@ import uk.gov.justice.digital.hmpps.audit.entity.AuditedInteraction
 import uk.gov.justice.digital.hmpps.audit.service.AuditableService
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
 import uk.gov.justice.digital.hmpps.client.AlfrescoUploadClient
+import uk.gov.justice.digital.hmpps.client.RestClientUtils.nullIfNotFound
 import uk.gov.justice.digital.hmpps.entity.DocumentEntity
 import uk.gov.justice.digital.hmpps.entity.DocumentEntity.Companion.cossoBreachNoticeUrn
 import uk.gov.justice.digital.hmpps.entity.DocumentRepository
@@ -19,7 +20,7 @@ import uk.gov.justice.digital.hmpps.messaging.cossoBreachNoticeId
 import uk.gov.justice.digital.hmpps.messaging.username
 import uk.gov.justice.digital.hmpps.user.AuditUserService
 import java.time.ZonedDateTime
-import java.util.UUID
+import java.util.*
 
 @Service
 class DocumentService(
@@ -52,7 +53,7 @@ class DocumentService(
         documentRepository.delete(document)
         updateParent(document)
         alfrescoUploadClient.release(document.alfrescoId)
-        alfrescoUploadClient.delete(document.alfrescoId)
+        nullIfNotFound { alfrescoUploadClient.delete(document.alfrescoId) }
     }
 
     fun updateParent(document: DocumentEntity) {

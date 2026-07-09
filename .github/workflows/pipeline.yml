@@ -41,7 +41,7 @@ jobs:
       prod_deployments: ${{ steps.merge-changes.outputs.prod }}
       version: ${{ needs.build.outputs.version }}
     steps:
-      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
       - name: Merge changes from the matrix build
         id: merge-changes
         uses: ./.github/actions/merge-changes
@@ -55,7 +55,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     steps:
-      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
       - uses: ./.github/actions/analyse
         with:
           sonar-token: ${{ secrets.SONAR_TOKEN }}
@@ -116,9 +116,10 @@ jobs:
       - uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
         id: app-token
         with:
+          owner: ministryofjustice
+          repositories: hmpps-probation-integration-e2e-tests
           client-id: ${{ secrets.BOT_APP_ID }}
           private-key: ${{ secrets.BOT_APP_PRIVATE_KEY }}
-          repositories: hmpps-probation-integration-e2e-tests
       - name: Run tests
         id: run
         uses: ministryofjustice/hmpps-probation-integration-e2e-tests/.github/actions/run-tests@main

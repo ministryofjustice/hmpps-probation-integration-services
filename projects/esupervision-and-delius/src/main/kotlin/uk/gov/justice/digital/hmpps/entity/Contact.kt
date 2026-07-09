@@ -17,7 +17,6 @@ import uk.gov.justice.digital.hmpps.messaging.Handler.Companion.CHECK_IN_EXPIRED
 import uk.gov.justice.digital.hmpps.messaging.Handler.Companion.CHECK_IN_RECEIVED
 import uk.gov.justice.digital.hmpps.messaging.Handler.Companion.CHECK_IN_REVIEWED
 import uk.gov.justice.digital.hmpps.messaging.Handler.Companion.CHECK_IN_UPDATED
-import uk.gov.justice.digital.hmpps.messaging.Handler.Companion.SENTENCE_TERMINATED
 import uk.gov.justice.digital.hmpps.messaging.Handler.Companion.SETUP_COMPLETED
 import uk.gov.justice.digital.hmpps.messaging.Handler.Companion.SETUP_REMOVED
 import java.time.LocalDate
@@ -33,7 +32,7 @@ class Contact(
 
     @ManyToOne
     @JoinColumn(name = "event_id")
-    val event: EventEntity,
+    val event: EventEntity?,
 
     @ManyToOne
     @JoinColumn(name = "contact_type_id")
@@ -117,7 +116,7 @@ class Contact(
         fun externalReferencePrefix(eventType: String): String = when (eventType) {
             CHECK_IN_RECEIVED, CHECK_IN_REVIEWED, CHECK_IN_UPDATED -> "urn:uk:gov:hmpps:esupervision:check-in:"
             CHECK_IN_EXPIRED -> "urn:uk:gov:hmpps:esupervision:check-in-expiry:"
-            SETUP_COMPLETED, SETUP_REMOVED, SENTENCE_TERMINATED -> "urn:uk:gov:hmpps:esupervision:setup:"
+            SETUP_COMPLETED, SETUP_REMOVED -> "urn:uk:gov:hmpps:esupervision:setup:"
             else -> throw IllegalArgumentException("Unexpected event type: $eventType")
         }
 
@@ -153,6 +152,9 @@ class ContactOutcome(
     companion object {
         const val SETUP_COMPLETED = "ESPSC"
         const val SETUP_REMOVED = "ESPRD"
+        const val MANUAL_STOP = "ESPMP"
+        const val NO_ACTIVE_EVENTS = "ESPNA"
+        const val IN_RESET = "ESPRS"
     }
 }
 
@@ -173,10 +175,8 @@ interface ContactRepository : JpaRepository<Contact, Long> {
         typeCode: String = ContactType.E_SUPERVISION_SETUP_COMPLETED
     ): Contact?
 
+    fun findByExternalReference(externalReference: String): Contact?
     fun findByExternalReferenceIn(externalReference: List<String>): Contact?
     fun getByExternalReferenceIn(externalReference: List<String>): Contact =
         findByExternalReferenceIn(externalReference).orNotFoundBy("externalReference", externalReference)
-
-    fun getByExternalReference(externalReference: String): Contact =
-        findByExternalReferenceIn(listOf(externalReference)).orNotFoundBy("externalReference", externalReference)
 }

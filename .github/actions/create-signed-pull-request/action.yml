@@ -12,14 +12,9 @@ inputs:
     description: The message to use when committing changes.
   labels:
     description: A comma or newline separated list of labels.
-  path:
-    description: Relative path under $GITHUB_WORKSPACE to the repository. Defaults to $GITHUB_WORKSPACE.
   token:
+    required: true
     description: A GitHub app token
-  owner:
-    description: GitHub repository owner, defaults to current repository
-  repository:
-    description: GitHub repository name, defaults to current repository
 
 outputs:
   pull-request-number:
@@ -35,12 +30,6 @@ outputs:
 runs:
   using: composite
   steps:
-    - name: Get working directory or default
-      run: echo "path=${path:-$GITHUB_WORKSPACE}" | tee -a "$GITHUB_ENV"
-      shell: bash
-      env:
-        path: ${{ inputs.path }}
-
     - name: Get pull request body or default
       run: echo "body=${body:-"Automated changes by a [GitHub Actions workflow]($url)."}" | tee -a "$GITHUB_ENV"
       shell: bash
@@ -51,7 +40,6 @@ runs:
     - name: Create branch if it doesn't exist
       run: git checkout "$branch_name" || git checkout -b "$branch_name"
       shell: bash
-      working-directory: ${{ env.path }}
       env:
         branch_name: ${{ inputs.branch }}
 
@@ -65,7 +53,6 @@ runs:
         done <<< "$add_paths"
         git status
       shell: bash
-      working-directory: ${{ env.path }}
       env:
         add_paths: ${{ inputs.add-paths }}
 
@@ -75,22 +62,21 @@ runs:
         commit-message: ${{ inputs.commit-message }}
         create-branch-on-remote: true
         success-if-no-changes: true
-        token: ${{ steps.app-token.outputs.token }}
+        token: ${{ inputs.token }}
 
     - name: Create pull request
       id: pr
       run: |
         git fetch origin "$branch"
         git checkout "$branch"
-        url=$(gh pr create --title "$commit_message" --body "$body" --label "$labels")
+        url=$(gh pr create --title "$commit_message" --body "$body" --label "$labels" --head "$(git branch --show-current)")
         echo "pull-request-url=$url" | tee -a "$GITHUB_OUTPUT"
         echo "pull-request-number=$(gh pr view "$url" --json number --jq .number)" | tee -a "$GITHUB_OUTPUT"
         echo "pull-request-head-sha=$(gh pr view "$url" --json headRefOid --jq .headRefOid)" | tee -a "$GITHUB_OUTPUT"
       shell: bash
-      working-directory: ${{ env.path }}
       env:
         branch: ${{ inputs.branch }}
         body: ${{ env.body }}
         commit_message: ${{ inputs.commit-message }}
         labels: ${{ inputs.labels }}
-        GITHUB_TOKEN: ${{ inputs.token }}
+        GH_TOKEN: ${{ inputs.token }}

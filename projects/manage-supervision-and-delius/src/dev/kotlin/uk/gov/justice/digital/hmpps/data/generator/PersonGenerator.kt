@@ -9,6 +9,7 @@ import uk.gov.justice.digital.hmpps.data.generator.personalDetails.PersonDetails
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.integrations.delius.caseload.entity.Caseload
 import uk.gov.justice.digital.hmpps.integrations.delius.caseload.entity.CaseloadPerson
+import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.CaseAllocation
 import uk.gov.justice.digital.hmpps.integrations.delius.compliance.Nsi
 import uk.gov.justice.digital.hmpps.integrations.delius.compliance.NsiStatus
 import uk.gov.justice.digital.hmpps.integrations.delius.compliance.NsiType
@@ -29,6 +30,7 @@ object PersonGenerator {
     val MAPPA_CATEGORY = ReferenceData(IdGenerator.getAndIncrement(), "X9", "X9 Desc")
     val MAPPA_LEVEL = ReferenceData(IdGenerator.getAndIncrement(), "M2", "M2 Desc")
     val OVERVIEW = generateOverview("X000004")
+    val SOFT_DELETED = generateOverview("X000099", forename = "Deleted", surname = "Person", softDeleted = true)
     val E_SUP_PERSON = generateOverview("E500700")
     val CUSTODY_DISPOSAL_TYPE = generateDisposalType("CST", "Custody Sentence Type", "NC", 0)
     val CUSTODY_PERSON = generateOverview(crn = "X123422", forename = "custody", surname = "person")
@@ -155,7 +157,7 @@ object PersonGenerator {
         LocalDate.now()
     )
 
-    val DEFAULT_DISPOSAL_TYPE = generateDisposalType("DFS", "Default Sentence Type", "NP", 0)
+    val DEFAULT_DISPOSAL_TYPE = generateDisposalType("DFS", "Default Sentence Type", "NP", 0, pssRequirement = true)
 
     val TERMINATION_REASON = generateTerminationReason()
 
@@ -358,9 +360,16 @@ object PersonGenerator {
         PersonDetailsGenerator.RESTRICTION_EXCLUSION.id
     )
 
-    val CASELOAD_PERSON_1 = generateCaseload(PERSON_1, DEFAULT_STAFF, DEFAULT_TEAM)
+    val CASELOAD_PERSON_1 = generateCaseload(PERSON_1, DEFAULT_STAFF, DEFAULT_TEAM, EVENT_1.id)
     val CASELOAD_PERSON_2 = generateCaseload(PERSON_2, STAFF_1, DEFAULT_TEAM)
     val CASELOAD_PERSON_3 = generateCaseload(PERSON_2, DEFAULT_STAFF, DEFAULT_TEAM)
+
+    val CASE_ALLOCATION_1 = CaseAllocation(
+        caseAllocationId = IdGenerator.getAndIncrement(),
+        offenderId = OVERVIEW.id,
+        eventId = EVENT_1.id,
+        allocationDecisionDate = LocalDateTime.of(2024, 6, 15, 10, 0)
+    )
 
     val CASELOAD_LIMITED_ACCESS_EXCLUSION =
         generateCaseload(CL_EXCLUDED, LIMITED_ACCESS_STAFF, DEFAULT_TEAM)
@@ -486,7 +495,8 @@ object PersonGenerator {
         gender: ReferenceData = GENDER_MALE,
         id: Long = IdGenerator.getAndIncrement(),
         exclusionMessage: String? = null,
-        restrictionMessage: String? = null
+        restrictionMessage: String? = null,
+        softDeleted: Boolean = false
     ) = Person(
         id = id,
         crn = crn,
@@ -508,7 +518,8 @@ object PersonGenerator {
         genderIdentity = null,
         genderIdentityDescription = null,
         exclusionMessage = exclusionMessage,
-        restrictionMessage = restrictionMessage
+        restrictionMessage = restrictionMessage,
+        softDeleted = softDeleted
     )
 
     fun generateRequirement(
@@ -548,8 +559,9 @@ object PersonGenerator {
         description: String,
         sentenceType: String? = null,
         ftcLimit: Long? = null,
+        pssRequirement: Boolean? = null,
         id: Long = IdGenerator.getAndIncrement()
-    ) = DisposalType(code, description, sentenceType, ftcLimit, id)
+    ) = DisposalType(code, description, sentenceType, ftcLimit, pssRequirement, id)
 
     fun generateTerminationReason() =
         ReferenceData(id = IdGenerator.getAndIncrement(), code = "TERM1", "Termination Reason")
@@ -699,12 +711,13 @@ object PersonGenerator {
         active = active
     )
 
-    fun generateCaseload(caseLoadPerson: CaseloadPerson, staff: Staff, team: Team) = Caseload(
+    fun generateCaseload(caseLoadPerson: CaseloadPerson, staff: Staff, team: Team, eventId: Long? = null) = Caseload(
         id = IdGenerator.getAndIncrement(),
         person = caseLoadPerson,
         staff = staff,
         team = team,
-        roleCode = "OM"
+        roleCode = "OM",
+        eventId = eventId
     )
 
     fun generateCaseloadPerson(

@@ -12,6 +12,7 @@ import org.springframework.test.web.servlet.get
 import uk.gov.justice.digital.hmpps.data.generator.DocumentGenerator
 import uk.gov.justice.digital.hmpps.data.generator.EventGenerator
 import uk.gov.justice.digital.hmpps.data.generator.RequirementGenerator.DEFAULT_REQUIREMENT
+import uk.gov.justice.digital.hmpps.data.generator.RequirementGenerator.INACTIVE_REQUIREMENT
 import uk.gov.justice.digital.hmpps.data.generator.RequirementGenerator.REQUIREMENT_MINIMAL_FIELDS
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 import java.time.LocalDate
@@ -44,6 +45,10 @@ class OffenceDetailsIntegrationTest @Autowired constructor(
               "sentenceImposed": {
                 "code": "PR",
                 "description": "Probation"
+              },              
+              "suspendedCustodyLength": {
+                "length": 2,
+                "units": "Days"
               },
               "requirementsImposed": [
                 {
@@ -59,15 +64,40 @@ class OffenceDetailsIntegrationTest @Autowired constructor(
                 {
                   "id": ${REQUIREMENT_MINIMAL_FIELDS.id},
                   "startDate": "${requirementStartDate}"
+                },
+                {
+                  "id": ${INACTIVE_REQUIREMENT.id},
+                  "startDate": "${requirementStartDate}",
+                  "mainCategory": "Inactive",
+                  "length": 2,
+                  "lengthUnit": "Months",
+                  "subCategory": "Probation2",
+                  "secondaryLength": 1,
+                  "secondaryLengthUnit": "Days"
                 }
               ],
               "sentence": {
                 "length": 1,
                 "lengthUnits": "Months",
-                "type": "Probation",
+                "type": "CJA - Suspended Sentence Order",
                 "secondLength": 2,
                 "secondLengthUnits": "Days"
-              }
+              },
+              "additionalSentences": [
+                {
+                  "length": 2,
+                  "amount": 100,
+                  "notes": "Additional sentence notes",
+                  "type": {
+                    "code": "FINE",
+                    "description": "Fine"
+                  },
+                  "units": {
+                    "code": "D",
+                    "description": "Days"
+                  }
+                }
+              ]
             }
             """
         mockMvc.get("/offence-details/${uuid}") { withToken() }

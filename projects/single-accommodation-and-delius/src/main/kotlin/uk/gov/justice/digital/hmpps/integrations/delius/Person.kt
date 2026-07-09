@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.integrations.delius
 import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
+import org.hibernate.type.NumericBooleanConverter
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.repository.EntityGraph
@@ -12,6 +13,7 @@ import java.time.LocalDate
 @Entity
 @Immutable
 @Table(name = "offender")
+@SQLRestriction("soft_deleted = 0")
 class Person(
 
     @Id
@@ -49,6 +51,10 @@ class Person(
     val exclusionMessage: String? = null,
 
     val restrictionMessage: String? = null,
+
+    @Column(name = "soft_deleted", columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
+    val softDeleted: Boolean = false,
 )
 
 interface PersonRepository : JpaRepository<Person, Long> {

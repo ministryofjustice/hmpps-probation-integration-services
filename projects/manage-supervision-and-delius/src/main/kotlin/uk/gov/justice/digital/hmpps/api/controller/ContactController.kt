@@ -7,9 +7,11 @@ import org.springframework.data.domain.Sort
 import org.springframework.http.HttpStatus
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
+import uk.gov.justice.digital.hmpps.exception.InvalidRequestException
 import uk.gov.justice.digital.hmpps.api.model.contact.CreateContact
 import uk.gov.justice.digital.hmpps.api.model.contact.UpdateContact
 import uk.gov.justice.digital.hmpps.api.model.contact.UpdateContactOutcome
+import uk.gov.justice.digital.hmpps.api.model.contact.UpdateEnforcementActions
 import uk.gov.justice.digital.hmpps.aspect.WithDeliusUser
 import uk.gov.justice.digital.hmpps.service.ContactLogService
 import uk.gov.justice.digital.hmpps.service.UserService
@@ -44,12 +46,28 @@ class ContactController(
         @PathVariable username: String,
         @RequestParam(defaultValue = "0") page: Int,
         @RequestParam(defaultValue = "10") size: Int,
-        @RequestParam(defaultValue = "false") filterDueDate: Boolean
+        @RequestParam(defaultValue = "false") filterDueDate: Boolean,
+        @RequestParam(defaultValue = "0") months: Int,
+        @RequestParam(defaultValue = "contactDate") sortBy: String,
+        @RequestParam(defaultValue = "DESC") direction: String,
     ) = userService.getEnforcementContacts(
         username,
-        PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "contact_date")),
-        filterDueDate
+        PageRequest.of(page, size, Sort.by(sortDirection(direction), sortColumn(sortBy))),
+        filterDueDate,
+        months
     )
+
+    private fun sortColumn(sortBy: String): String = when (sortBy.lowercase()) {
+        "contactdate" -> "contactDate"
+        "lastmodifieddate" -> "lastModifiedDate"
+        else -> throw InvalidRequestException("Sort by $sortBy is not implemented")
+    }
+
+    private fun sortDirection(direction: String) = runCatching {
+        Sort.Direction.valueOf(direction.uppercase())
+    }.getOrElse {
+        throw InvalidRequestException("Sort direction $direction is not supported")
+    }
 
     @PatchMapping("/{contactId}")
     @WithDeliusUser
@@ -64,4 +82,11 @@ class ContactController(
         @PathVariable contactId: Long,
         @RequestBody request: UpdateContactOutcome,
     ) = contactLogService.updateContactOutcome(contactId, request)
+
+    @PostMapping("/{contactId}/enforcement-actions")
+    @WithDeliusUser
+    fun addEnforcementActions(
+        @PathVariable contactId: Long,
+        @RequestBody request: UpdateEnforcementActions,
+    ) = contactLogService.updateEnforcementContactOutcome(contactId, request)
 }

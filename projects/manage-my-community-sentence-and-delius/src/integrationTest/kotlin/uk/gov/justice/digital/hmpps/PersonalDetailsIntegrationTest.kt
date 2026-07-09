@@ -24,6 +24,16 @@ internal class PersonalDetailsIntegrationTest @Autowired constructor(private val
     }
 
     @Test
+    fun `unsuitable case returns forbidden`() {
+        mockMvc.get("/person/${PersonData.SUSPENDED.crn}/personal-details") { withToken() }
+            .andExpect {
+                status { isForbidden() }
+                jsonPath("$.status") { value(403) }
+                jsonPath("$.message") { value("${PersonData.SUSPENDED.crn} does not meet the eligibility criteria") }
+            }
+    }
+
+    @Test
     fun `get person name`() {
         mockMvc.get("/person/${PersonData.DEFAULT.crn}/name") { withToken() }
             .andExpect {
@@ -79,8 +89,8 @@ internal class PersonalDetailsIntegrationTest @Autowired constructor(private val
                               "forename": "Test",
                               "surname": "Staff"
                             },
-                            "telephoneNumber": "07000000000",
                             "team": {
+                              "telephoneNumber": "01000000001",
                               "officeAddresses": [
                                 {
                                   "houseNumber": "123",

@@ -25,3 +25,19 @@ objectclass: inetOrgPerson
 cn: NoHomeArea
 sn: Smith
 givenname: John
+
+dn: cn=JackHarry,ou=Users,dc=moj,dc=com
+objectclass: top
+objectclass: inetOrgPerson
+cn: JackHarry
+sn: Harry
+givenname: Jack
+mail: jack.harry@moj.gov.uk
+telephoneNumber: 07123456789
+userHomeArea: N01
+
+dn: cn=UserPreferences,cn=JackHarry,ou=Users,dc=moj,dc=com
+objectclass: top
+objectclass: UserPreferences
+cn: UserPreferences
+replyAddress: 10001099

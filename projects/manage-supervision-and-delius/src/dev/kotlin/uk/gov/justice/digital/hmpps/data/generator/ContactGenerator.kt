@@ -7,6 +7,7 @@ import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.DEFAULT_PROV
 import uk.gov.justice.digital.hmpps.data.generator.LicenceConditionGenerator.LONG_NOTE
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.E_SUP_PERSON
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.OVERVIEW
+import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.generateRequirement
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.integrations.delius.caseload.entity.Caseload
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.*
@@ -190,6 +191,29 @@ object ContactGenerator {
         OTHER_CT,
         ZonedDateTime.of(LocalDateTime.now(EuropeLondon).plusHours(1), EuropeLondon),
     )
+    val NON_APPT_CONTACT_WITH_RAR_REQ =
+        Contact(
+            id = IdGenerator.getAndIncrement(),
+            person = OVERVIEW,
+            type = OTHER_CT,
+            date = LocalDate.now(),
+            startTime = ZonedDateTime.now(),
+            rarActivity = true,
+            attended = true,
+            sensitive = false,
+            complied = true,
+            requirement = generateRequirement(
+                disposal = PersonGenerator.CUSTODY_DISPOSAL,
+                subCategory = null,
+                terminationDetails = null,
+                mainCategory = RequirementMainCategory(
+                    id = IdGenerator.getAndIncrement(),
+                    code = "F",
+                    description = "F code"
+                )
+            ),
+            notes = "Notes",
+        )
     val FIRST_APPT_CONTACT = generateContact(
         OVERVIEW,
         APPT_CT_2,
@@ -414,7 +438,7 @@ object ContactGenerator {
         staff = staff,
         location = LOCATION_BRK_1,
         notes = notes,
-        action = action,
+        latestEnforcementAction = action,
         event = event,
         outcome = outcome,
         description = description,

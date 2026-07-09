@@ -13,7 +13,8 @@ object DisposalGenerator {
         length2 = 2,
         disposalType = DisposalType(
             id = IdGenerator.getAndIncrement(),
-            description = "Probation"
+            description = "CJA - Suspended Sentence Order",
+            code = "203"
         ),
         lengthUnits = ReferenceDataGenerator.LENGTH_UNITS_MONTHS,
         length2Units = ReferenceDataGenerator.LENGTH_UNITS_DAYS,

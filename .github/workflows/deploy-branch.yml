@@ -69,6 +69,7 @@ on:
           - manage-my-community-sentence-and-delius
           - single-accommodation-and-delius
           - probation-access-control
+          - warrant-risk-assessment-and-delius
           # ^ add new projects here
           # GitHub Actions doesn't support dynamic choices, we must add each project here to enable manual deployments
           # See https://github.com/community/community/discussions/11795
@@ -92,7 +93,7 @@ jobs:
     outputs:
       version: ${{ steps.gradle.outputs.version || steps.docker.outputs.version }}
     steps:
-      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
 
       - name: Check project type
         id: check-project

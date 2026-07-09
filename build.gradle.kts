@@ -11,7 +11,7 @@ plugins {
     kotlin("jvm") version "2.4.0"
     kotlin("plugin.noarg") version "2.4.0" apply false
     kotlin("plugin.spring") version "2.4.0" apply false
-    id("org.springframework.boot") version "4.0.6" apply false
+    id("org.springframework.boot") version "4.1.0" apply false
     id("io.spring.dependency-management") version "1.1.7" apply false
     id("com.gorylenko.gradle-git-properties") version "2.5.7" apply false
     id("com.google.cloud.tools.jib") apply false
@@ -23,7 +23,7 @@ plugins {
 val agentDeps: Configuration by configurations.creating
 
 dependencies {
-    agentDeps("com.microsoft.azure:applicationinsights-agent:3.7.8")
+    agentDeps("com.microsoft.azure:applicationinsights-agent:3.7.9")
 }
 
 project.tasks.register<Copy>("copyAgent") {
@@ -48,7 +48,6 @@ allprojects {
         compilerOptions {
             jvmTarget.set(JvmTarget.JVM_25)
             freeCompilerArgs.add("-Xjsr305=strict") // to make use of Spring's null-safety annotations
-            freeCompilerArgs.add("-Xannotation-default-target=param-property") // see https://youtrack.jetbrains.com/issue/KT-73255
         }
     }
 
@@ -99,6 +98,7 @@ subprojects {
         }
         register<BuildInfo>("buildInfo") {
             destinationDir = projectDir
+            filename = "build-info.properties"
         }
     }
 

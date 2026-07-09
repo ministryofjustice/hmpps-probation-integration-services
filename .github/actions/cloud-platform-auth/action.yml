@@ -2,9 +2,6 @@ name: Cloud Platform Auth
 description: Authenticate with MOJ Cloud Platform
 
 inputs:
-  api:
-    description: The KUBE_ENV_API
-    required: true
   cert:
     description: The KUBE_CERT
     required: true
@@ -37,6 +34,6 @@ runs:
       env:
         cert: ${{ inputs.cert }}
         cluster: ${{ inputs.cluster }}
-        api: ${{ inputs.api }}
+        api: https://${{ inputs.cluster }}
         namespace: ${{ inputs.namespace }}
         token: ${{ inputs.token }}

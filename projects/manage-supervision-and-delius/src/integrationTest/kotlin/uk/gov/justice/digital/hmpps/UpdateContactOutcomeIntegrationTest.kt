@@ -2,19 +2,21 @@ package uk.gov.justice.digital.hmpps
 
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers
-import org.hamcrest.Matchers.containsString
-import org.hamcrest.Matchers.equalTo
-import org.hamcrest.Matchers.notNullValue
+import org.hamcrest.Matchers.*
 import org.junit.jupiter.api.Test
+import org.springframework.http.MediaType
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.test.web.servlet.put
 import uk.gov.justice.digital.hmpps.api.model.contact.UpdateContactOutcome
 import uk.gov.justice.digital.hmpps.data.generator.IdGenerator
 import uk.gov.justice.digital.hmpps.data.generator.UpdateContactOutcomeGenerator
 import uk.gov.justice.digital.hmpps.service.ContactLogService
+import uk.gov.justice.digital.hmpps.test.CustomMatchers.isCloseTo
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.json
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 import java.time.LocalDate
 import java.time.LocalTime
+import java.time.ZonedDateTime
 
 class UpdateContactOutcomeIntegrationTest : IntegrationTestBase() {
 
@@ -63,6 +65,44 @@ class UpdateContactOutcomeIntegrationTest : IntegrationTestBase() {
                 alert = false,
                 sensitive = false
             )
+        }.andExpect { status { isBadRequest() } }
+    }
+
+    @Test
+    fun `null outcome code and alert returns bad request`() {
+        mockMvc.put("/contact/${UpdateContactOutcomeGenerator.CONTACT_1.id}") {
+            withToken()
+            contentType = MediaType.APPLICATION_JSON
+            content =
+                """
+                {
+                  "date": "2099-01-01",
+                  "time": "10:00:00",
+                  "outcomeCode": null,
+                  "enforcementActionCode": null,
+                  "notes": "Test notes",
+                  "alert": null,
+                  "sensitive": false
+                }
+                """.trimIndent()
+        }.andExpect { status { isBadRequest() } }
+    }
+
+    @Test
+    fun `missing outcome code and alert returns bad request`() {
+        mockMvc.put("/contact/${UpdateContactOutcomeGenerator.CONTACT_1.id}") {
+            withToken()
+            contentType = MediaType.APPLICATION_JSON
+            content =
+                """
+                {
+                  "date": "2099-01-01",
+                  "time": "10:00:00",
+                  "enforcementActionCode": null,
+                  "notes": "Test notes",
+                  "sensitive": false
+                }
+                """.trimIndent()
         }.andExpect { status { isBadRequest() } }
     }
 
@@ -147,6 +187,13 @@ class UpdateContactOutcomeIntegrationTest : IntegrationTestBase() {
         assertThat(enforcements.size, equalTo(1))
         assertThat(enforcements[0].action?.code, equalTo(UpdateContactOutcomeGenerator.ENFORCEMENT_ACTION.code))
         assertThat(enforcements[0].responseDate, notNullValue())
+        assertThat(enforcements[0].createdDatetime, isCloseTo(ZonedDateTime.now()))
+        assertThat(enforcements[0].lastUpdatedDatetime, isCloseTo(ZonedDateTime.now()))
+        val appointment = contactRepository.findByIdOrNull(UpdateContactOutcomeGenerator.CONTACT_3.id)
+        assertThat(
+            appointment?.latestEnforcementAction?.code,
+            equalTo(UpdateContactOutcomeGenerator.ENFORCEMENT_ACTION.code)
+        )
     }
 
     @Test
@@ -260,52 +307,6 @@ class UpdateContactOutcomeIntegrationTest : IntegrationTestBase() {
     }
 
     @Test
-    fun `null outcome code leaves existing outcome unchanged`() {
-        val originalOutcomeCode =
-            contactRepository.findById(UpdateContactOutcomeGenerator.CONTACT_9.id).get().outcome?.code
-
-        mockMvc.put("/contact/${UpdateContactOutcomeGenerator.CONTACT_9.id}") {
-            withToken()
-            json = UpdateContactOutcome(
-                date = LocalDate.now().plusDays(1),
-                time = LocalTime.of(10, 0),
-                outcomeCode = null,
-                enforcementActionCode = null,
-                notes = "Notes without changing outcome",
-                alert = false,
-                sensitive = false
-            )
-        }.andExpect { status { isOk() } }
-
-        val updated = contactRepository.findById(UpdateContactOutcomeGenerator.CONTACT_9.id).get()
-        assertThat(updated.outcome?.code, equalTo(originalOutcomeCode))
-        assertThat(updated.notes, containsString("Notes without changing outcome"))
-    }
-
-    @Test
-    fun `null alert leaves existing alert state unchanged`() {
-        val before = contactRepository.findById(UpdateContactOutcomeGenerator.CONTACT_10.id).get()
-        assertThat(before.alert, equalTo(true))
-
-        mockMvc.put("/contact/${UpdateContactOutcomeGenerator.CONTACT_10.id}") {
-            withToken()
-            json = UpdateContactOutcome(
-                date = LocalDate.now().plusDays(1),
-                time = LocalTime.of(10, 0),
-                outcomeCode = UpdateContactOutcomeGenerator.OUTCOME.code,
-                enforcementActionCode = null,
-                notes = "Notes without changing alert",
-                alert = null,
-                sensitive = false
-            )
-        }.andExpect { status { isOk() } }
-
-        val updated = contactRepository.findById(UpdateContactOutcomeGenerator.CONTACT_10.id).get()
-        assertThat(updated.alert, equalTo(true))
-        assertThat(updated.notes, containsString("Notes without changing alert"))
-    }
-
-    @Test
     fun `existing enforcement is deleted when outcome is updated to compliant`() {
         // Verify the enforcement exists before the update
         val enforcementsBefore = enforcementRepository.findAll().filter {
@@ -337,5 +338,115 @@ class UpdateContactOutcomeIntegrationTest : IntegrationTestBase() {
         val updated = contactRepository.findById(UpdateContactOutcomeGenerator.CONTACT_8.id).get()
         assertThat(updated.outcome?.code, equalTo(UpdateContactOutcomeGenerator.CMP_COMPLIANT_OUTCOME.code))
         assertThat(updated.complied, equalTo(true))
+    }
+
+    @Test
+    fun `existing enforcement is updated when enforcement action is applied to contact with existing enforcement`() {
+        val enforcementsBefore = enforcementRepository.findAll().filter {
+            it.contact.id == UpdateContactOutcomeGenerator.CONTACT_11.id
+        }
+        assertThat(enforcementsBefore.size, equalTo(1))
+        assertThat(enforcementsBefore[0].action?.code, equalTo(UpdateContactOutcomeGenerator.ENFORCEMENT_ACTION.code))
+
+        mockMvc.put("/contact/${UpdateContactOutcomeGenerator.CONTACT_11.id}") {
+            withToken()
+            json = UpdateContactOutcome(
+                date = LocalDate.now().plusDays(1),
+                time = LocalTime.of(11, 0),
+                outcomeCode = UpdateContactOutcomeGenerator.OUTCOME.code,
+                enforcementActionCode = UpdateContactOutcomeGenerator.ENFORCEMENT_ACTION_2.code,
+                notes = "Update enforcement action",
+                alert = false,
+                sensitive = false
+            )
+        }.andExpect { status { isOk() } }
+
+        val enforcementsAfter = transactionTemplate.execute {
+            entityManager.clear()
+            enforcementRepository.findAll().filter {
+                it.contact.id == UpdateContactOutcomeGenerator.CONTACT_11.id
+            }
+        }
+        assertThat(enforcementsAfter?.size, equalTo(1))
+        assertThat(
+            enforcementsAfter?.get(0)?.action?.code,
+            equalTo(UpdateContactOutcomeGenerator.ENFORCEMENT_ACTION_2.code)
+        )
+
+        val updated = contactRepository.findById(UpdateContactOutcomeGenerator.CONTACT_11.id).get()
+        assertThat(
+            updated.latestEnforcementAction?.code,
+            equalTo(UpdateContactOutcomeGenerator.ENFORCEMENT_ACTION_2.code)
+        )
+    }
+
+    @Test
+    fun `null outcome code on contact without existing outcome succeeds`() {
+        mockMvc.put("/contact/${UpdateContactOutcomeGenerator.CONTACT_NO_OUTCOME.id}") {
+            withToken()
+            json = UpdateContactOutcome(
+                date = LocalDate.now().plusDays(1),
+                time = LocalTime.of(10, 0),
+                outcomeCode = null,
+                enforcementActionCode = null,
+                notes = "No outcome update",
+                alert = false,
+                sensitive = false
+            )
+        }.andExpect { status { isOk() } }
+
+        val updated = contactRepository.findById(UpdateContactOutcomeGenerator.CONTACT_NO_OUTCOME.id).get()
+        assertThat(updated.outcome, Matchers.nullValue())
+        assertThat(updated.notes, containsString("No outcome update"))
+    }
+
+    @Test
+    fun `null outcome code on contact with existing outcome returns bad request`() {
+        mockMvc.put("/contact/${UpdateContactOutcomeGenerator.CONTACT_9.id}") {
+            withToken()
+            json = UpdateContactOutcome(
+                date = LocalDate.now().plusDays(1),
+                time = LocalTime.of(10, 0),
+                outcomeCode = null,
+                enforcementActionCode = null,
+                notes = "Should fail",
+                alert = false,
+                sensitive = false
+            )
+        }.andExpect { status { isBadRequest() } }
+    }
+
+    @Test
+    fun `existing enforcement is updated with null response date when action has no response period`() {
+        val enforcementsBefore = enforcementRepository.findAll().filter {
+            it.contact.id == UpdateContactOutcomeGenerator.CONTACT_14.id
+        }
+        assertThat(enforcementsBefore.size, equalTo(1))
+
+        mockMvc.put("/contact/${UpdateContactOutcomeGenerator.CONTACT_14.id}") {
+            withToken()
+            json = UpdateContactOutcome(
+                date = LocalDate.now().plusDays(1),
+                time = LocalTime.of(11, 0),
+                outcomeCode = UpdateContactOutcomeGenerator.OUTCOME.code,
+                enforcementActionCode = UpdateContactOutcomeGenerator.ENFORCEMENT_ACTION_NULL_RESPONSE.code,
+                notes = "Null response period enforcement",
+                alert = false,
+                sensitive = false
+            )
+        }.andExpect { status { isOk() } }
+
+        val enforcementsAfter = transactionTemplate.execute {
+            entityManager.clear()
+            enforcementRepository.findAll().filter {
+                it.contact.id == UpdateContactOutcomeGenerator.CONTACT_14.id
+            }
+        }
+        assertThat(enforcementsAfter?.size, equalTo(1))
+        assertThat(
+            enforcementsAfter?.get(0)?.action?.code,
+            equalTo(UpdateContactOutcomeGenerator.ENFORCEMENT_ACTION_NULL_RESPONSE.code)
+        )
+        assertThat(enforcementsAfter?.get(0)?.responseDate, Matchers.nullValue())
     }
 }

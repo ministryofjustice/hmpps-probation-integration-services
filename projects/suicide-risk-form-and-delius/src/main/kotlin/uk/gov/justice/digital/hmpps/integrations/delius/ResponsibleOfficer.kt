@@ -1,12 +1,6 @@
 package uk.gov.justice.digital.hmpps.integrations.delius
 
-import jakarta.persistence.Column
-import jakarta.persistence.Convert
-import jakarta.persistence.Entity
-import jakarta.persistence.Id
-import jakarta.persistence.JoinColumn
-import jakarta.persistence.OneToOne
-import jakarta.persistence.Table
+import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.NumericBooleanConverter
@@ -35,9 +29,14 @@ class ResponsibleOfficer(
     val prisonOffenderManager: PrisonOffenderManager? = null,
 
     @Column(name = "end_date")
-    val endDate: LocalDate? = null
-
-)
+    val endDate: LocalDate? = null,
+) {
+    val staff: Staff
+        get() = checkNotNull(offenderManager?.staff ?: prisonOffenderManager?.staff) {
+            "Responsible officer has no staff"
+        }
+    val username: String? get() = staff.user?.username
+}
 
 @Entity
 @Immutable
@@ -81,7 +80,7 @@ class PrisonOffenderManager(
 )
 
 interface ResponsibleOfficerRepository : JpaRepository<ResponsibleOfficer, Long> {
-    fun findByPerson_Crn(crn: String): ResponsibleOfficer?
+    fun findByPersonCrn(crn: String): ResponsibleOfficer?
 }
 
 

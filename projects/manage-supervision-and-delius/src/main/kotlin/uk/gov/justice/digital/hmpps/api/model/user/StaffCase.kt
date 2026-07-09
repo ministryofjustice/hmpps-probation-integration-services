@@ -12,5 +12,6 @@ data class StaffCase(
     val previousAppointment: Appointment? = null,
     val latestSentence: String? = null,
     val numberOfAdditionalSentences: Long? = null,
-    val limitedAccess: Boolean? = false
+    val limitedAccess: Boolean? = false,
+    val allocatedOn: LocalDate? = null,
 )

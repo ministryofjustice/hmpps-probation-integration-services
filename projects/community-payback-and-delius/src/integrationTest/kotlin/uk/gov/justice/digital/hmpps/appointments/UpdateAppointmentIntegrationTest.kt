@@ -15,6 +15,7 @@ import uk.gov.justice.digital.hmpps.data.entity.ContactAlertRepository
 import uk.gov.justice.digital.hmpps.data.entity.EnforcementRepository
 import uk.gov.justice.digital.hmpps.data.generator.UPWGenerator
 import uk.gov.justice.digital.hmpps.data.generator.UPWGenerator.UPW_PROJECT_2
+import uk.gov.justice.digital.hmpps.data.generator.TeamGenerator
 import uk.gov.justice.digital.hmpps.entity.ReferenceDataRepository
 import uk.gov.justice.digital.hmpps.entity.contact.ContactRepository
 import uk.gov.justice.digital.hmpps.entity.contact.ContactType.Code.REVIEW_ENFORCEMENT_STATUS
@@ -196,5 +197,87 @@ class UpdateAppointmentIntegrationTest @Autowired constructor(
 
         val actualStatus = unpaidWorkAppointmentRepository.getAppointment(original.id).details.status?.code
         assertThat(actualStatus).isEqualTo("HC")
+    }
+
+    @Test
+    fun `updating appointment with a supervisor team sets the team`() {
+        val original = unpaidWorkAppointmentRepository.getAppointment(UPWGenerator.UPW_APPOINTMENT_TO_UPDATE[6].id)
+
+        mockMvc.put("/projects/$PROJECT/appointments/${original.id}") {
+            withToken()
+            json = TestData.updateAppointment(original.id).copy(
+                version = UUID(original.rowVersion, original.contact.rowVersion),
+                supervisorTeam = Code(TeamGenerator.SECOND_UPW_TEAM.code)
+            )
+        }.andExpect { status { isOk() } }
+
+        val appointment = unpaidWorkAppointmentRepository.getAppointment(original.id)
+        assertThat(appointment.team.code).isEqualTo(TeamGenerator.SECOND_UPW_TEAM.code)
+    }
+
+    @Test
+    fun `updating appointment without a supervisor team keeps existing team`() {
+        val original = unpaidWorkAppointmentRepository.getAppointment(UPWGenerator.UPW_APPOINTMENT_TO_UPDATE[7].id)
+        val originalTeamCode = original.team.code
+
+        mockMvc.put("/projects/$PROJECT/appointments/${original.id}") {
+            withToken()
+            json = TestData.updateAppointment(original.id).copy(
+                version = UUID(original.rowVersion, original.contact.rowVersion),
+                supervisorTeam = null
+            )
+        }.andExpect { status { isOk() } }
+
+        val appointment = unpaidWorkAppointmentRepository.getAppointment(original.id)
+        assertThat(appointment.team.code).isEqualTo(originalTeamCode)
+    }
+
+    @Test
+    fun `updating appointment with a different project sets the project`() {
+        val original = unpaidWorkAppointmentRepository.getAppointment(UPWGenerator.UPW_APPOINTMENT_TO_UPDATE[8].id)
+        val newProject = UPWGenerator.UPW_PROJECT_1
+
+        mockMvc.put("/projects/$PROJECT/appointments/${original.id}") {
+            withToken()
+            json = TestData.updateAppointment(original.id).copy(
+                version = UUID(original.rowVersion, original.contact.rowVersion),
+                project = Code(newProject.code)
+            )
+        }.andExpect { status { isOk() } }
+
+        val appointment = unpaidWorkAppointmentRepository.getAppointment(original.id)
+        assertThat(appointment.project.code).isEqualTo(newProject.code)
+    }
+
+    @Test
+    fun `updating appointment without a project keeps existing project`() {
+        val original = unpaidWorkAppointmentRepository.getAppointment(UPWGenerator.UPW_APPOINTMENT_TO_UPDATE[9].id)
+
+        mockMvc.put("/projects/$PROJECT/appointments/${original.id}") {
+            withToken()
+            json = TestData.updateAppointment(original.id).copy(
+                version = UUID(original.rowVersion, original.contact.rowVersion),
+                project = null
+            )
+        }.andExpect { status { isOk() } }
+
+        val appointment = unpaidWorkAppointmentRepository.getAppointment(original.id)
+        assertThat(appointment.project.code).isEqualTo(PROJECT)
+    }
+
+    @Test
+    fun `updating appointment with an invalid project code returns an error`() {
+        val original = unpaidWorkAppointmentRepository.getAppointment(UPWGenerator.UPW_APPOINTMENT_TO_UPDATE[8].id)
+
+        mockMvc.put("/projects/${original.project.code}/appointments/${original.id}") {
+            withToken()
+            json = TestData.updateAppointment(original.id).copy(
+                version = UUID(original.rowVersion, original.contact.rowVersion),
+                project = Code("INVALID")
+            )
+        }.andExpect { status { isNotFound() } }
+            .andReturn().response.contentAsJson<ErrorResponse>().also {
+                assertThat(it.message).isEqualTo("UnpaidWorkProject with code of INVALID not found")
+            }
     }
 }

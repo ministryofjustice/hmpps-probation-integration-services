@@ -29,7 +29,6 @@ class Contact(
     @ManyToOne
     @JoinColumn(name = "contact_type_id")
     val type: ContactType,
-    val description: String? = null,
     @ManyToOne
     @JoinColumn(name = "contact_outcome_type_id")
     val outcome: ContactOutcome? = null,

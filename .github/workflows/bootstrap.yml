@@ -55,7 +55,7 @@ jobs:
       contents: read
       issues: write
     steps:
-      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
       - name: Create issue for manual steps
         run: |
           gh issue create \
@@ -65,9 +65,9 @@ jobs:
           - [ ] Raise in Slack: [#hmpps-auth-audit-registers](https://mojdt.slack.com/archives/C02S71KUBED)' \
             --label bootstrap
         env:
-          GITHUB_TOKEN: ${{ github.token }}
           issue_number: ${{ inputs.issue_number }}
           project_name: ${{ inputs.project_name }}
+          GH_TOKEN: ${{ github.token }}
 
   project-setup:
     if: ${{ inputs.project_template != 'No template - I want to create the project from scratch' }}
@@ -76,15 +76,18 @@ jobs:
       contents: read
       id-token: write
       pull-requests: write
+    outputs:
+      pull-request-url: ${{ steps.pr.outputs.pull-request-url }}
     steps:
       - uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
         id: app-token
         with:
+          owner: ministryofjustice
           repositories: hmpps-probation-integration-services,hmpps-probation-integration-e2e-tests
           client-id: ${{ secrets.BOT_APP_ID }}
           private-key: ${{ secrets.BOT_APP_PRIVATE_KEY }}
 
-      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
           ref: main
           token: ${{ steps.app-token.outputs.token }}
@@ -97,7 +100,7 @@ jobs:
 
       - name: Create pull request
         id: pr
-        uses: ./.github/actions/create-signed-pull-request
+        uses: ministryofjustice/hmpps-probation-integration-services/.github/actions/create-signed-pull-request@main
         with:
           add-paths: |
             settings.gradle.kts
@@ -107,42 +110,77 @@ jobs:
             projects/${{ inputs.project_name }}
           branch: bootstrap/${{ inputs.project_name }}
           commit-message: ${{ inputs.issue_number }} Create initial project for ${{ inputs.project_name }}
+          labels: bootstrap
           token: ${{ steps.app-token.outputs.token }}
 
-      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
           ref: main
           path: hmpps-probation-integration-e2e-tests
           repository: ministryofjustice/hmpps-probation-integration-e2e-tests
           token: ${{ steps.app-token.outputs.token }}
 
+  e2e-test-setup:
+    if: ${{ inputs.project_template != 'No template - I want to create the project from scratch' }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+      pull-requests: write
+    outputs:
+      pull-request-url: ${{ steps.e2e-pr.outputs.pull-request-url }}
+    steps:
+      - uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+        id: app-token
+        with:
+          owner: ministryofjustice
+          repositories: hmpps-probation-integration-e2e-tests
+          client-id: ${{ secrets.BOT_APP_ID }}
+          private-key: ${{ secrets.BOT_APP_PRIVATE_KEY }}
+
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          ref: main
+          repository: ministryofjustice/hmpps-probation-integration-e2e-tests
+          token: ${{ steps.app-token.outputs.token }}
+
       - name: Update e2e test repo
-        run: sed -i '/add new projects here/i \          - '"'"'["'"$project_name"'"]'"'"'' hmpps-probation-integration-e2e-tests/.github/workflows/test-single-project.yml
+        run: sed -i '/add new projects here/i \          - '"'"'["'"$project_name"'"]'"'"'' .github/workflows/test-single-project.yml
         env:
           project_name: ${{ inputs.project_name }}
 
       - name: Create pull request
         id: e2e-pr
-        uses: ./.github/actions/create-signed-pull-request
+        uses: ministryofjustice/hmpps-probation-integration-services/.github/actions/create-signed-pull-request@main
         with:
-          path: hmpps-probation-integration-e2e-tests
           add-paths: .github/workflows
           branch: ${{ inputs.issue_number }}-create-${{ inputs.project_name }}-project
           commit-message: ${{ inputs.issue_number }} Add option to run tests for ${{ inputs.project_name }}
+          labels: bootstrap
           token: ${{ steps.app-token.outputs.token }}
 
+  issue-for-project-setup:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
+    needs:
+      - project-setup
+      - e2e-test-setup
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
       - name: Create issue for manual steps
         run: |
           gh issue create \
             --title "$issue_number Complete project setup for $project_name" \
             --body '
-          - [ ] Merge project pull request: ${{ steps.pr.outputs.pull-request-url }}
-          - [ ] Merge e2e tests pull request: ${{ steps.e2e-pr.outputs.pull-request-url }}' \
+          - [ ] Merge project pull request: ${{ needs.project-setup.outputs.pull-request-url }}
+          - [ ] Merge e2e tests pull request: ${{ needs.e2e-test-setup.outputs.pull-request-url }}' \
             --label bootstrap
         env:
-          GITHUB_TOKEN: ${{ github.token }}
           issue_number: ${{ inputs.issue_number }}
-          project_name: ${{ inputs. project_name }}
+          project_name: ${{ inputs.project_name }}
+          GH_TOKEN: ${{ github.token }}
 
   sentry-setup:
     runs-on: ubuntu-latest
@@ -152,7 +190,7 @@ jobs:
     outputs:
       project_slug: ${{ steps.project.outputs.slug }}
     steps:
-      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
 
       - name: Create project
         id: project
@@ -238,11 +276,10 @@ jobs:
         environment: [ "test", "preprod", "prod" ]
     environment: ${{ matrix.environment }}
     steps:
-      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
 
       - uses: ./.github/actions/cloud-platform-auth
         with:
-          api: ${{ secrets.KUBE_ENV_API }}
           cert: ${{ secrets.KUBE_CERT }}
           cluster: ${{ secrets.KUBE_CLUSTER }}
           namespace: ${{ secrets.KUBE_NAMESPACE }}
@@ -267,96 +304,74 @@ jobs:
           VALUE: ${{ steps.client_key.outputs.dsn }}
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
 
-  sqs-queue-setup:
+  sqs-queue-setup-dev:
     runs-on: ubuntu-latest
     if: ${{ inputs.create_queue }}
     permissions:
       contents: read
       id-token: write
-      issues: write
       pull-requests: write
+    outputs:
+      pull-request-url: ${{ steps.render-template.outputs.pull-request-url }}
     steps:
-      - id: project_name
-        run: echo "with_underscores_uppercase=$(echo "$project_name" | sed 's/-/_/g' | tr '[:lower:]' '[:upper:]')" | tee -a "$GITHUB_OUTPUT"
-        env:
+      - uses: ministryofjustice/hmpps-probation-integration-services/.github/actions/render-sqs-template@main
+        id: render-template
+        with:
+          issue_number: ${{ inputs.issue_number }}
           project_name: ${{ inputs.project_name }}
+          environment: dev
+          app-client-id: ${{ secrets.BOT_EXTERNAL_REPOS_APP_ID }}
+          app-private-key: ${{ secrets.BOT_EXTERNAL_REPOS_APP_PRIVATE_KEY }}
 
-      - uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
-        id: app-token
+  sqs-queue-setup-preprod:
+    runs-on: ubuntu-latest
+    if: ${{ inputs.create_queue }}
+    permissions:
+      contents: read
+      id-token: write
+      pull-requests: write
+    outputs:
+      pull-request-url: ${{ steps.render-template.outputs.pull-request-url }}
+    steps:
+      - uses: ministryofjustice/hmpps-probation-integration-services/.github/actions/render-sqs-template@main
+        id: render-template
         with:
-          repositories: cloud-platform-environments
-          client-id: ${{ secrets.BOT_EXTERNAL_REPOS_APP_ID }}
-          private-key: ${{ secrets.BOT_EXTERNAL_REPOS_APP_PRIVATE_KEY }}
-
-      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
-
-      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
-        with:
-          path: cloud-platform-environments-dev
-          repository: ministryofjustice/cloud-platform-environments
-          token: ${{ steps.app-token.outputs.token }}
-
-      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
-        with:
-          path: cloud-platform-environments-preprod
-          repository: ministryofjustice/cloud-platform-environments
-          token: ${{ steps.app-token.outputs.token }}
-
-      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
-        with:
-          path: cloud-platform-environments-prod
-          repository: ministryofjustice/cloud-platform-environments
-          token: ${{ steps.app-token.outputs.token }}
-
-      - name: Render Terraform queue template
-        run: |
-          sed 's/SERVICE_NAME_UPPERCASE/${{ steps.project_name.outputs.with_underscores_uppercase }}/g;s/SERVICE_NAME/'"$project_name"'/g' templates/sqs.tf > 'cloud-platform-environments-dev/namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-dev/resources/'"$project_name"'-queue.tf'
-          sed 's/SERVICE_NAME_UPPERCASE/${{ steps.project_name.outputs.with_underscores_uppercase }}/g;s/SERVICE_NAME/'"$project_name"'/g' templates/sqs.tf > 'cloud-platform-environments-preprod/namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-preprod/resources/'"$project_name"'-queue.tf'
-          sed 's/SERVICE_NAME_UPPERCASE/${{ steps.project_name.outputs.with_underscores_uppercase }}/g;s/SERVICE_NAME/'"$project_name"'/g' templates/sqs.tf > 'cloud-platform-environments-prod/namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-prod/resources/'"$project_name"'-queue.tf'
-        env:
+          issue_number: ${{ inputs.issue_number }}
           project_name: ${{ inputs.project_name }}
+          environment: preprod
+          app-client-id: ${{ secrets.BOT_EXTERNAL_REPOS_APP_ID }}
+          app-private-key: ${{ secrets.BOT_EXTERNAL_REPOS_APP_PRIVATE_KEY }}
 
-      - name: Update IAM access to queues
-        run: |
-          sed -i '/queue = \[/a \      module.'"$project_name"'-queue.sqs_arn,' 'cloud-platform-environments-dev/namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-dev/resources/iam.tf'
-          sed -i '/queue = \[/a \      module.'"$project_name"'-queue.sqs_arn,' 'cloud-platform-environments-preprod/namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-preprod/resources/iam.tf'
-          sed -i '/queue = \[/a \      module.'"$project_name"'-queue.sqs_arn,' 'cloud-platform-environments-prod/namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-prod/resources/iam.tf'
-          sed -i '/dlq = \[/a \      module.'"$project_name"'-dlq.sqs_arn,' 'cloud-platform-environments-dev/namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-dev/resources/iam.tf'
-          sed -i '/dlq = \[/a \      module.'"$project_name"'-dlq.sqs_arn,' 'cloud-platform-environments-preprod/namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-preprod/resources/iam.tf'
-          sed -i '/dlq = \[/a \      module.'"$project_name"'-dlq.sqs_arn,' 'cloud-platform-environments-prod/namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-prod/resources/iam.tf'
-        env:
+  sqs-queue-setup-prod:
+    runs-on: ubuntu-latest
+    if: ${{ inputs.create_queue }}
+    permissions:
+      contents: read
+      id-token: write
+      pull-requests: write
+    outputs:
+      pull-request-url: ${{ steps.render-template.outputs.pull-request-url }}
+    steps:
+      - uses: ministryofjustice/hmpps-probation-integration-services/.github/actions/render-sqs-template@main
+        id: render-template
+        with:
+          issue_number: ${{ inputs.issue_number }}
           project_name: ${{ inputs.project_name }}
+          environment: prod
+          app-client-id: ${{ secrets.BOT_EXTERNAL_REPOS_APP_ID }}
+          app-private-key: ${{ secrets.BOT_EXTERNAL_REPOS_APP_PRIVATE_KEY }}
 
-      - name: Create dev pull request
-        id: dev-pr
-        uses: ./.github/actions/create-signed-pull-request
-        with:
-          path: cloud-platform-environments-dev
-          add-paths: namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-dev
-          branch: ${{ inputs.issue_number }}-create-${{ inputs.project_name }}-queue-dev
-          commit-message: ${{ inputs.issue_number }} Create SQS queues for ${{ inputs.project_name }} (dev)
-          token: ${{ steps.app-token.outputs.token }}
-
-      - name: Create preprod pull request
-        id: preprod-pr
-        uses: ./.github/actions/create-signed-pull-request
-        with:
-          path: cloud-platform-environments-preprod
-          add-paths: namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-preprod
-          branch: ${{ inputs.issue_number }}-create-${{ inputs.project_name }}-queue-preprod
-          commit-message: ${{ inputs.issue_number }} Create SQS queues for ${{ inputs.project_name }} (preprod)
-          token: ${{ steps.app-token.outputs.token }}
-
-      - name: Create prod pull request
-        id: prod-pr
-        uses: ./.github/actions/create-signed-pull-request
-        with:
-          path: cloud-platform-environments-prod
-          add-paths: namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-prod
-          branch: ${{ inputs.issue_number }}-create-${{ inputs.project_name }}-queue-prod
-          commit-message: ${{ inputs.issue_number }} Create SQS queues for ${{ inputs.project_name }} (prod)
-          token: ${{ steps.app-token.outputs.token }}
-
+  issue-for-sqs-queue-setup:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
+    needs:
+      - sqs-queue-setup-dev
+      - sqs-queue-setup-preprod
+      - sqs-queue-setup-prod
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
       - name: Create issue for manual steps
         run: |
           gh issue create \
@@ -366,112 +381,96 @@ jobs:
           - [ ] Enter the event types the service will consume into the filter_policy for preprod: [Edit file](https://github.com/ministryofjustice/cloud-platform-environments/edit/${issue_number}-create-${project_name}-queue-preprod/namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-preprod/resources/${project_name}-queue.tf)
           - [ ] Enter the event types the service will consume into the filter_policy for prod: [Edit file](https://github.com/ministryofjustice/cloud-platform-environments/edit/${issue_number}-create-${project_name}-queue-prod/namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-prod/resources/${project_name}-queue.tf)
           - [ ] Request approval in [#ask-cloud-platform](https://mojdt.slack.com/archives/C57UPMZLY)
-          > ${{ steps.dev-pr.outputs.pull-request-url }}
-          > ${{ steps.preprod-pr.outputs.pull-request-url }}
-          > ${{ steps.prod-pr.outputs.pull-request-url }}
+          > ${{ needs.sqs-queue-setup-dev.outputs.pull-request-url }}
+          > ${{ needs.sqs-queue-setup-preprod.outputs.pull-request-url }}
+          > ${{ needs.sqs-queue-setup-prod.outputs.pull-request-url }}
           - [ ] Merge the pull requests" \
             --label bootstrap
         env:
-          GITHUB_TOKEN: ${{ github.token }}
           issue_number: ${{ inputs.issue_number }}
           project_name: ${{ inputs.project_name }}
+          GH_TOKEN: ${{ github.token }}
 
-  infra-setup:
+  infra-setup-dev:
     runs-on: ubuntu-latest
     if: ${{ inputs.create_infra }}
     permissions:
       contents: read
       id-token: write
-      issues: write
       pull-requests: write
+    outputs:
+      pull-request-url: ${{ steps.render-template.outputs.pull-request-url }}
     steps:
-      - id: project_name
-        run: echo "hash=$(echo -n $project_name | sha1sum | head -c 8)" | tee -a "$GITHUB_OUTPUT"
-        env:
+      - uses: ministryofjustice/hmpps-probation-integration-services/.github/actions/render-infra-template@main
+        id: render-template
+        with:
+          issue_number: ${{ inputs.issue_number }}
           project_name: ${{ inputs.project_name }}
+          environment: dev
+          app-client-id: ${{ secrets.BOT_EXTERNAL_REPOS_APP_ID }}
+          app-private-key: ${{ secrets.BOT_EXTERNAL_REPOS_APP_PRIVATE_KEY }}
 
-      - uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
-        id: app-token
+  infra-setup-preprod:
+    runs-on: ubuntu-latest
+    if: ${{ inputs.create_infra }}
+    permissions:
+      contents: read
+      id-token: write
+      pull-requests: write
+    outputs:
+      pull-request-url: ${{ steps.render-template.outputs.pull-request-url }}
+    steps:
+      - uses: ministryofjustice/hmpps-probation-integration-services/.github/actions/render-infra-template@main
+        id: render-template
         with:
-          repositories: cloud-platform-environments
-          client-id: ${{ secrets.BOT_EXTERNAL_REPOS_APP_ID }}
-          private-key: ${{ secrets.BOT_EXTERNAL_REPOS_APP_PRIVATE_KEY }}
-
-      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
-
-      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
-        with:
-          path: cloud-platform-environments-dev
-          repository: ministryofjustice/cloud-platform-environments
-          token: ${{ steps.app-token.outputs.token }}
-
-      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
-        with:
-          path: cloud-platform-environments-preprod
-          repository: ministryofjustice/cloud-platform-environments
-          token: ${{ steps.app-token.outputs.token }}
-
-      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
-        with:
-          path: cloud-platform-environments-prod
-          repository: ministryofjustice/cloud-platform-environments
-          token: ${{ steps.app-token.outputs.token }}
-
-      - name: Add Pingdom check
-        run: sed -i '/add new projects here/i \    "'$project_name'",' 'cloud-platform-environments-prod/namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-prod/resources/pingdom.tf'
-        env:
+          issue_number: ${{ inputs.issue_number }}
           project_name: ${{ inputs.project_name }}
+          environment: preprod
+          app-client-id: ${{ secrets.BOT_EXTERNAL_REPOS_APP_ID }}
+          app-private-key: ${{ secrets.BOT_EXTERNAL_REPOS_APP_PRIVATE_KEY }}
 
-      - name: Render certificate templates
-        run: |
-          sed 's/$SERVICE_NAME/'${project_name}'/g;s/$SERVICE_URL/'${project_name}'-dev.hmpps.service.justice.gov.uk/g;s/$SERVICE_SHORT_URL/${{ steps.project_name.outputs.hash }}-dev.hmpps.service.justice.gov.uk/g;s/$ENV/dev/g' templates/certificate.yml >> 'cloud-platform-environments-dev/namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-dev/05-certificates.yml'
-          sed 's/$SERVICE_NAME/'${project_name}'/g;s/$SERVICE_URL/'${project_name}'-preprod.hmpps.service.justice.gov.uk/g;s/$SERVICE_SHORT_URL/${{ steps.project_name.outputs.hash }}-preprod.hmpps.service.justice.gov.uk/g;s/$ENV/preprod/g' templates/certificate.yml >> 'cloud-platform-environments-preprod/namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-preprod/05-certificates.yml'
-          sed 's/$SERVICE_NAME/'${project_name}'/g;s/$SERVICE_URL/'${project_name}'.hmpps.service.justice.gov.uk/g;s/$SERVICE_SHORT_URL/${{ steps.project_name.outputs.hash }}.hmpps.service.justice.gov.uk/g;s/$ENV/prod/g' templates/certificate.yml >> 'cloud-platform-environments-prod/namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-prod/05-certificates.yml'
-        env:
+  infra-setup-prod:
+    runs-on: ubuntu-latest
+    if: ${{ inputs.create_infra }}
+    permissions:
+      contents: read
+      id-token: write
+      pull-requests: write
+    outputs:
+      pull-request-url: ${{ steps.render-template.outputs.pull-request-url }}
+    steps:
+      - uses: ministryofjustice/hmpps-probation-integration-services/.github/actions/render-infra-template@main
+        id: render-template
+        with:
+          issue_number: ${{ inputs.issue_number }}
           project_name: ${{ inputs.project_name }}
+          environment: prod
+          app-client-id: ${{ secrets.BOT_EXTERNAL_REPOS_APP_ID }}
+          app-private-key: ${{ secrets.BOT_EXTERNAL_REPOS_APP_PRIVATE_KEY }}
 
-      - name: Create dev pull request
-        id: dev-pr
-        uses: ./.github/actions/create-signed-pull-request
-        with:
-          path: cloud-platform-environments-dev
-          add-paths: namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-dev
-          branch: ${{ inputs.issue_number }}-create-${{ inputs.project_name }}-infra-dev
-          commit-message: ${{ inputs.issue_number }} Create certificate for ${{ inputs.project_name }} (dev)
-          token: ${{ steps.app-token.outputs.token }}
-
-      - name: Create preprod pull request
-        id: preprod-pr
-        uses: ./.github/actions/create-signed-pull-request
-        with:
-          path: cloud-platform-environments-preprod
-          add-paths: namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-preprod
-          branch: ${{ inputs.issue_number }}-create-${{ inputs.project_name }}-infra-preprod
-          commit-message: ${{ inputs.issue_number }} Create certificate for ${{ inputs.project_name }} (preprod)
-          token: ${{ steps.app-token.outputs.token }}
-
-      - name: Create prod pull request
-        id: prod-pr
-        uses: ./.github/actions/create-signed-pull-request
-        with:
-          path: cloud-platform-environments-prod
-          add-paths: namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-prod
-          branch: ${{ inputs.issue_number }}-create-${{ inputs.project_name }}-infra-prod
-          commit-message: ${{ inputs.issue_number }} Create Pingdom check and certificate for ${{ inputs.project_name }} (prod)
-          token: ${{ steps.app-token.outputs.token }}
-
+  issue-for-infra-setup:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
+    needs:
+      - infra-setup-dev
+      - infra-setup-preprod
+      - infra-setup-prod
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
       - name: Create issue for manual steps
         run: |
           gh issue create \
             --title "$issue_number Complete infrastructure setup for $project_name" \
             --body '
           - [ ] Request approval in [#ask-cloud-platform](https://mojdt.slack.com/archives/C57UPMZLY) for the following pull requests
-          > ${{ steps.dev-pr.outputs.pull-request-url }}
-          > ${{ steps.preprod-pr.outputs.pull-request-url }}
-          > ${{ steps.prod-pr.outputs.pull-request-url }}
+          > ${{ needs.infra-setup-dev.outputs.pull-request-url }}
+          > ${{ needs.infra-setup-preprod.outputs.pull-request-url }}
+          > ${{ needs.infra-setup-prod.outputs.pull-request-url }}
           - [ ] Merge the pull requests' \
             --label bootstrap
         env:
-          GITHUB_TOKEN: ${{ github.token }}
           project_name: ${{ inputs.project_name }}
           issue_number: ${{ inputs.issue_number }}
+          GH_TOKEN: ${{ github.token }}

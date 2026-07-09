@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import tools.jackson.databind.ObjectMapper
 import uk.gov.justice.digital.hmpps.api.model.contact.*
 import uk.gov.justice.digital.hmpps.aspect.UserContext
 import uk.gov.justice.digital.hmpps.audit.service.AuditableService
@@ -21,7 +22,10 @@ import uk.gov.justice.digital.hmpps.integrations.delius.user.team.getTeam
 import uk.gov.justice.digital.hmpps.messaging.EventType
 import uk.gov.justice.digital.hmpps.messaging.Notifier
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
+import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
 
 @Service
 class ContactLogService(
@@ -42,7 +46,9 @@ class ContactLogService(
     private val contactEnforcementService: ContactEnforcementService,
     private val enforcementRepository: EnforcementRepository,
     private val telemetryService: TelemetryService,
-) : AuditableService(auditedInteractionService) {
+    private val objectMapper: ObjectMapper,
+
+    ) : AuditableService(auditedInteractionService) {
     companion object {
         const val REVIEW_ENFORCEMENT_STATUS = "ARWS"
     }
@@ -125,22 +131,7 @@ class ContactLogService(
             notifier.contactCreated(savedContact.id, createContact.visorReport, category, crn, EventType.CREATED)
 
             if (createContact.alert) {
-                val personManager = offenderManagerRepository.findOffenderManagersByPersonIdAndActiveIsTrue(person.id)
-                    ?: throw NotFoundException(
-                        "PersonManager",
-                        "personId",
-                        person.id
-                    )
-                contactAlertRepository.save(
-                    ContactAlert(
-                        contact = savedContact,
-                        typeId = contactType.id,
-                        personId = person.id,
-                        personManagerId = personManager.id,
-                        staff = personManager.staff,
-                        teamId = personManager.team.id
-                    )
-                )
+                createAlert(savedContact)
             }
             return@audit CreateContactResponse(savedContact.id)
         }
@@ -198,8 +189,41 @@ class ContactLogService(
         request.notes?.let { contact.appendNotes(it) }
         require(contact.sensitive != true || request.sensitiveFlag == true) { "Cannot un-flag a sensitive contact" }
         contact.sensitive = request.sensitiveFlag
+        if (request.alert == true && contact.alert != true) {
+            createAlert(contact)
+        } else if (request.alert == false && contact.alert == true) {
+            removeAlert(contact)
+        }
         setEnforcementFlag(contact)
         contactRepository.save(contact)
+    }
+
+    private fun removeAlert(contact: Contact) {
+        val existingAlerts = contactAlertRepository.findByContactId(contact.id)
+        if (existingAlerts.isNotEmpty()) {
+            contactAlertRepository.deleteByContactIdIn(listOf(contact.id))
+        }
+        contact.alert = false
+    }
+
+    private fun createAlert(contact: Contact) {
+        val personManager = offenderManagerRepository.findOffenderManagersByPersonIdAndActiveIsTrue(contact.person.id)
+            ?: throw NotFoundException(
+                "PersonManager",
+                "personId",
+                contact.person.id
+            )
+        contactAlertRepository.save(
+            ContactAlert(
+                contact = contact,
+                typeId = contact.type.id,
+                personId = contact.person.id,
+                personManagerId = personManager.id,
+                staff = personManager.staff,
+                teamId = personManager.team.id
+            )
+        )
+        contact.alert = true
     }
 
     fun getContactOutcomesForType(typeCode: String): ContactOutcomes = ContactOutcomes(
@@ -223,7 +247,7 @@ class ContactLogService(
 
     private fun setEnforcementFlag(
         contact: Contact,
-        appliedAction: EnforcementAction? = contact.action,
+        appliedAction: EnforcementAction? = contact.latestEnforcementAction,
     ) {
         if (contact.type.contactOutcomeFlag == true && contact.outcome == null) {
             contact.enforcementFlag = true
@@ -237,67 +261,115 @@ class ContactLogService(
     fun updateContactOutcome(contactId: Long, request: UpdateContactOutcome) {
         val contact = contactRepository.getContact(contactId)
         val contactType = contact.type.code
-        val contactOutcome = request.outcomeCode?.let { requestOutcomeCode ->
+        val contactOutcome = request.outcomeCode?.let { code ->
             contactTypeRepository.findSelectableOutcomesByTypeCode(contactType)
-                .firstOrNull { it.code == requestOutcomeCode }
-                .orNotFoundBy("code", requestOutcomeCode)
+                .firstOrNull { it.code == code }
+                .orNotFoundBy("code", code)
         }
+        if (contactOutcome == null) {
+            require(contact.outcome == null) { "outcomeCode cannot be null when the contact already has an outcome" }
+        }
+        require(request.enforcementActionCode == null || contactOutcome != null)
+        { "Outcome is required when an enforcement action is provided" }
+
         if (contact.complied == false && contactOutcome?.outcomeCompliantAcceptable == true) {
             telemetryService.trackEvent(
                 "remove enforcement for a compliant contact",
-                mapOf("crn" to contact.person.crn, "contactId" to contactId.toString())
+                mapOf(
+                    "crn" to contact.person.crn,
+                    "contactId" to contactId.toString(),
+                    "enforcement" to contact.enforcement?.let {
+                        mapOf(
+                            "id" to it.id,
+                            "action" to it.action?.code,
+                            "responseDate" to it.responseDate
+                        )
+                    }.let { objectMapper.writeValueAsString(it) }
+                )
             )
-            contact.enforcement?.let { enforcementRepository.delete(it) }
-            contact.enforcement = null
+            contact.enforcementEntries.clear()
         }
 
         request.notes.let { contact.appendNotes(it) }
 
 
-        if (request.alert == true && contact.alert != true) {
-            val personManager =
-                offenderManagerRepository.findOffenderManagersByPersonIdAndActiveIsTrue(contact.person.id)
-                    ?: throw NotFoundException(
-                        "PersonManager",
-                        "personId",
-                        contact.person.id
-                    )
-            contactAlertRepository.save(
-                ContactAlert(
-                    contact = contact,
-                    typeId = contact.type.id,
-                    personId = contact.person.id,
-                    personManagerId = personManager.id,
-                    staff = personManager.staff,
-                    teamId = personManager.team.id
-                )
-            )
-            contact.alert = true
+        if (request.alert && contact.alert != true) {
+            createAlert(contact)
         } else if (request.alert == false && contact.alert == true) {
-            val existingAlerts = contactAlertRepository.findByContactId(contact.id)
-            if (existingAlerts.isNotEmpty()) {
-                contactAlertRepository.deleteByContactIdIn(listOf(contact.id))
-            }
-            contact.alert = false
+            removeAlert(contact)
         }
 
         require(contact.sensitive != true || request.sensitive == true) { "Cannot un-flag a sensitive contact" }
         contact.sensitive = request.sensitive
         contact.date = request.date
         contact.startTime = ZonedDateTime.ofLocal(request.date.atTime(request.time), EuropeLondon, null)
-        contactOutcome?.let {
-            contact.outcome = contactOutcome
-            contact.attended = contactOutcome.outcomeAttendance
-            contact.complied = contactOutcome.outcomeCompliantAcceptable
-        }
+        contact.outcome = contactOutcome
+        contact.attended = contactOutcome?.outcomeAttendance
+        contact.complied = contactOutcome?.outcomeCompliantAcceptable
 
         contactRepository.save(contact)
-        if (request.enforcementActionCode != null) {
-            val appliedAction =
-                contactEnforcementService.updateEnforcementActionForContact(contact, request.enforcementActionCode)
-            setEnforcementFlag(contact, appliedAction)
-        } else {
-            setEnforcementFlag(contact)
+        val appliedAction = if (contactOutcome != null && request.enforcementActionCode != null) {
+            contactEnforcementService.updateEnforcementActionForContact(contact, request.enforcementActionCode)
+        } else null
+        setEnforcementFlag(contact, appliedAction ?: contact.latestEnforcementAction)
+    }
+
+    @Transactional
+    fun updateEnforcementContactOutcome(contactId: Long, request: UpdateEnforcementActions) {
+        val contact = contactRepository.getContact(contactId)
+        require(contact.outcome?.outcomeCompliantAcceptable == false) { "Contact requires outcome to be non compliant" }
+        contact.enforcementFlag = true
+        val outcomeId = contact.outcome!!.id
+        val validActions = enforcementActionsRepository.findByContactOutcomeIdAndCodeIn(
+            outcomeId,
+            request.enforcementActions.map { it.code }.toSet()
+        )
+        request.enforcementActions.forEach { ea ->
+            val enforcementAction = validActions.singleOrNull { it.code == ea.code }
+                ?: error("Enforcement action must be valid for outcome")
+            createEnforcementContact(contact, enforcementAction)
+            contact.appendNotes(
+                """
+                ${DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm").format(LocalDateTime.now())}
+                Enforcement Action: ${enforcementAction.description}
+                """.trimIndent()
+            )
         }
+        val enforcementAction = validActions.single { it.code == request.enforcementActions.last().code }
+        contact.latestEnforcementAction = enforcementAction
+        val responseDate =
+            enforcementAction.responseByPeriod?.let { contact.startTime?.plusDays(it) }
+        val existingEnforcement = contact.enforcement
+        if (existingEnforcement == null) {
+            val enforcement = Enforcement(
+                contact = contact,
+                action = enforcementAction,
+                responseDate = responseDate
+            )
+            enforcementRepository.save(enforcement)
+        } else {
+            existingEnforcement.action = enforcementAction
+            existingEnforcement.responseDate = responseDate
+        }
+    }
+
+    private fun createEnforcementContact(contact: Contact, enforcementAction: EnforcementAction) {
+        val enforcementContact = Contact(
+            person = contact.person,
+            notes = "",
+            linkedContactId = contact.id,
+            type = contactTypeRepository.findById(enforcementAction.contactType.id).get()
+                .orNotFoundBy("id", enforcementAction.contactType.id),
+            date = LocalDate.now(),
+            startTime = ZonedDateTime.now(EuropeLondon),
+            event = contact.event,
+            nsiId = contact.nsiId,
+            requirement = contact.requirement,
+            licenceCondition = contact.licenceCondition,
+            provider = contact.provider,
+            team = contact.team,
+            staff = contact.staff,
+        )
+        contactRepository.save(enforcementContact)
     }
 }

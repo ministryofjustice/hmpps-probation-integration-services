@@ -22,19 +22,15 @@ import uk.gov.justice.digital.hmpps.entity.address.PersonAddress
 import uk.gov.justice.digital.hmpps.entity.appointment.Contact
 import uk.gov.justice.digital.hmpps.entity.appointment.ContactOutcome
 import uk.gov.justice.digital.hmpps.entity.appointment.ContactType
-import uk.gov.justice.digital.hmpps.entity.sentence.Custody
-import uk.gov.justice.digital.hmpps.entity.sentence.Disposal
-import uk.gov.justice.digital.hmpps.entity.sentence.DisposalType
-import uk.gov.justice.digital.hmpps.entity.sentence.Event
-import uk.gov.justice.digital.hmpps.entity.sentence.KeyDate
-import uk.gov.justice.digital.hmpps.entity.sentence.NonStatutoryIntervention
+import uk.gov.justice.digital.hmpps.entity.registration.RegisterType
+import uk.gov.justice.digital.hmpps.entity.registration.Registration
+import uk.gov.justice.digital.hmpps.entity.sentence.*
 import uk.gov.justice.digital.hmpps.entity.sentence.licencecondition.LicenceCondition
 import uk.gov.justice.digital.hmpps.entity.sentence.licencecondition.LicenceConditionMainCategory
 import uk.gov.justice.digital.hmpps.entity.sentence.requirement.Requirement
 import uk.gov.justice.digital.hmpps.entity.sentence.requirement.RequirementMainCategory
 import uk.gov.justice.digital.hmpps.entity.staff.CommunityManager
 import uk.gov.justice.digital.hmpps.entity.staff.Staff
-import uk.gov.justice.digital.hmpps.entity.staff.StaffUser
 import uk.gov.justice.digital.hmpps.entity.staff.Team
 import uk.gov.justice.digital.hmpps.entity.unpaidwork.UnpaidWorkAppointment
 import uk.gov.justice.digital.hmpps.entity.unpaidwork.UnpaidWorkDetails
@@ -51,9 +47,9 @@ object TestData {
         val EMERGENCY_CONTACT_TYPE = ReferenceData(id(), PersonalContact.EMERGENCY_CONTACT, "Emergency Contact")
         val HOURS = ReferenceData(id(), "H", "Hours")
         val DAYS = ReferenceData(id(), "D", "Days")
-        val APPOINTMENT_CONTACT_TYPE = ContactType(id(), "Office Appointment", true)
-        val NON_APPOINTMENT_CONTACT_TYPE = ContactType(id(), "Case Note", false)
-        val COMMUNITY_ORDER = DisposalType(id(), "Community Order")
+        val APPOINTMENT_CONTACT_TYPE = ContactType(id(), "COF", "Office Appointment", true)
+        val NON_APPOINTMENT_CONTACT_TYPE = ContactType(id(), "CSN", "Case Note", false)
+        val COMMUNITY_ORDER = DisposalType(id(), "Community Order", "NP")
         val REQUIREMENT_CATEGORY = RequirementMainCategory(id(), "C", "Court - Accredited Programme", DAYS)
         val REQUIREMENT_SUBCATEGORY = ReferenceData(id(), "BC", "Building Choices")
         val UPW_REQUIREMENT_CATEGORY = RequirementMainCategory(id(), Requirement.UPW, "Unpaid Work", HOURS)
@@ -62,7 +58,7 @@ object TestData {
             RequirementMainCategory(id(), Requirement.RAR, "Rehabilitation Activity Requirement (RAR)", DAYS)
         val RAR_REQUIREMENT_SUBCATEGORY = ReferenceData(id(), "RAR", "Rehabilitation Activity Requirement (RAR)")
         val LICENCE_CONDITION_CATEGORY =
-            LicenceConditionMainCategory(id(), "Alcohol Monitoring (Electronic Monitoring)")
+            LicenceConditionMainCategory(id(), "ALC", "Alcohol Monitoring (Electronic Monitoring)")
         val LICENCE_CONDITION_SUBCATEGORY = ReferenceData(
             id = id(),
             code = "ALC",
@@ -84,12 +80,11 @@ object TestData {
             county = "Test County",
             postcode = "TE1 1ST"
         )
-        val TEAM = Team(id(), "N01ABC", "Test Team", listOf(OFFICE))
+        val TEAM = Team(id(), "N01T01", "Test Team", "01000000001", listOf(OFFICE))
     }
 
     object StaffData {
-        val STAFF = Staff(id(), "N01ABCD", "Test", "Staff", StaffUser(id(), "test.user"))
-        val STAFF_WITHOUT_USER = Staff(id(), "N01DCBA", "Test", "NoUser")
+        val STAFF = Staff(id(), "N01S001", "Test", "Staff")
     }
 
     object PersonData {
@@ -116,7 +111,17 @@ object TestData {
             surname = "Two",
             dateOfBirth = LocalDate.of(1980, 1, 1),
             mobileNumber = "07222222222",
-            manager = CommunityManager(id(), StaffData.STAFF_WITHOUT_USER, TeamData.TEAM),
+            manager = CommunityManager(id(), StaffData.STAFF, TeamData.TEAM),
+            lastUpdatedDatetime = ZonedDateTime.of(2025, 5, 1, 9, 15, 0, 0, ZoneId.of("UTC")),
+        )
+
+        val SUSPENDED = Person(
+            id = id(),
+            crn = "X000003",
+            firstName = "Test",
+            surname = "Suspended",
+            dateOfBirth = LocalDate.of(1970, 1, 1),
+            manager = CommunityManager(id(), StaffData.STAFF, TeamData.TEAM),
             lastUpdatedDatetime = ZonedDateTime.of(2025, 5, 1, 9, 15, 0, 0, ZoneId.of("UTC")),
         )
     }
@@ -171,6 +176,16 @@ object TestData {
         )
     }
 
+    object OffenceData {
+        val MAIN_OFFENCE_TYPE: Offence = Offence(id(), "TH001", "Theft")
+        val ADDITIONAL_OFFENCE_TYPE: Offence = Offence(id(), "AB001", "Actual Bodily Harm")
+        val MAIN_OFFENCE: MainOffence = MainOffence(id(), SentenceData.EVENT, MAIN_OFFENCE_TYPE)
+        val MAIN_OFFENCE_2: MainOffence = MainOffence(id(), SentenceData.EVENT_NO_CUSTODY, MAIN_OFFENCE_TYPE)
+        val BASIC_MAIN_OFFENCE: MainOffence = MainOffence(id(), SentenceData.BASIC_EVENT, MAIN_OFFENCE_TYPE)
+        val SUSPENDED_MAIN_OFFENCE: MainOffence = MainOffence(id(), SentenceData.SUSPENDED_EVENT, MAIN_OFFENCE_TYPE)
+        val ADDITIONAL_OFFENCE: AdditionalOffence = AdditionalOffence(id(), SentenceData.EVENT, ADDITIONAL_OFFENCE_TYPE)
+    }
+
     object SentenceData {
         val EVENT = Event(
             id = id(),
@@ -202,6 +217,16 @@ object TestData {
             number = "2",
             personId = PersonData.DEFAULT.id,
         )
+        val BASIC_EVENT = Event(
+            id = id(),
+            number = "1",
+            personId = PersonData.BASIC.id,
+        )
+        val SUSPENDED_EVENT = Event(
+            id = id(),
+            number = "1",
+            personId = PersonData.SUSPENDED.id,
+        )
         val DISPOSAL_NO_CUSTODY = Disposal(
             id = id(),
             event = EVENT_NO_CUSTODY,
@@ -211,6 +236,31 @@ object TestData {
             enteredExpectedEndDate = null,
             lastUpdatedDatetime = ZonedDateTime.of(2026, 2, 1, 12, 0, 0, 0, ZoneId.of("UTC")),
         )
+        val BASIC_DISPOSAL = Disposal(
+            id = id(),
+            event = BASIC_EVENT,
+            type = COMMUNITY_ORDER,
+            date = LocalDate.of(2024, 1, 1),
+            expectedEndDate = LocalDate.of(2025, 1, 1),
+            enteredExpectedEndDate = null,
+            lastUpdatedDatetime = ZonedDateTime.of(2026, 1, 1, 12, 0, 0, 0, ZoneId.of("UTC")),
+        )
+        val SUSPENDED_DISPOSAL = Disposal(
+            id = id(),
+            event = SUSPENDED_EVENT,
+            type = COMMUNITY_ORDER,
+            date = LocalDate.of(2024, 1, 1),
+            expectedEndDate = LocalDate.of(2025, 1, 1),
+            enteredExpectedEndDate = null,
+            lastUpdatedDatetime = ZonedDateTime.of(2026, 1, 1, 12, 0, 0, 0, ZoneId.of("UTC")),
+        )
+    }
+
+    object RegistrationData {
+        val CONTACT_SUSPENDED_TYPE =
+            RegisterType(id(), RegisterType.CONTACT_SUSPENDED_TYPE_CODE, "Contact Suspended")
+        val CONTACT_SUSPENDED =
+            Registration(id(), PersonData.SUSPENDED.id, CONTACT_SUSPENDED_TYPE)
     }
 
     object RequirementData {
@@ -266,13 +316,13 @@ object TestData {
         )
         val PAST_UNPAID_WORK_APPOINTMENT = UnpaidWorkAppointment(
             id(), UNPAID_WORK_DETAILS, minutesCredited = 180,
-            contact = AppointmentData.PAST_UPW_CONTACT_1,
+            contact = AppointmentData.PAST_UPW_CONTACT,
             pickUpLocation = TeamData.OFFICE,
             project = UNPAID_WORK_PROJECT_1
         )
         val FUTURE_UNPAID_WORK_APPOINTMENT = UnpaidWorkAppointment(
             id(), UNPAID_WORK_DETAILS, minutesCredited = 180,
-            contact = AppointmentData.FUTURE_UPW_CONTACT_1,
+            contact = AppointmentData.FUTURE_UPW_CONTACT,
             pickUpLocation = TeamData.OFFICE,
             project = UNPAID_WORK_PROJECT_1
         )
@@ -292,7 +342,6 @@ object TestData {
             date: LocalDate,
             startTime: LocalTime,
             endTime: LocalTime,
-            description: String? = null,
             type: ContactType = ReferenceData.NON_APPOINTMENT_CONTACT_TYPE,
             attended: Boolean? = true,
             complied: Boolean? = true,
@@ -303,7 +352,6 @@ object TestData {
             startTime = startTime,
             endTime = endTime,
             type = type,
-            description = description,
             nsiId = RAR_NSI.id,
             staff = StaffData.STAFF,
             attended = attended,
@@ -314,39 +362,32 @@ object TestData {
     }
 
     object AppointmentData {
-        val FUTURE_1 = generate(
+        val FUTURE_APPOINTMENT = generate(
             LocalDate.of(2050, 1, 1), LocalTime.of(9, 0), LocalTime.of(9, 30),
-            description = "Future appointment",
         )
-        val FUTURE_2 = generate(
+        val FUTURE_NO_LOCATION = generate(
             LocalDate.of(2050, 1, 1), LocalTime.of(12, 0), LocalTime.of(13, 30),
-            description = "Future appointment - no location",
             location = null
         )
         val NON_APPOINTMENT = generate(
             LocalDate.of(2050, 1, 1), LocalTime.of(10, 0), LocalTime.of(10, 30),
             type = ReferenceData.NON_APPOINTMENT_CONTACT_TYPE,
-            description = "Non attendance contact",
         )
-        val PAST_1 = generate(
+        val PAST_ATTENDED = generate(
             LocalDate.of(2020, 1, 1), LocalTime.of(15, 0), LocalTime.of(15, 30),
-            description = "Past appointment - attended",
             attended = true, complied = true,
             outcome = ATTENDED_COMPLIED_OUTCOME
         )
-        val PAST_2 = generate(
+        val PAST_NOT_ATTENDED = generate(
             LocalDate.of(2020, 1, 1), LocalTime.of(10, 0), LocalTime.of(10, 45),
-            description = "Past appointment - not attended",
             attended = false, complied = false,
         )
-        val PAST_UPW_CONTACT_1 = generate(
+        val PAST_UPW_CONTACT = generate(
             LocalDate.of(2020, 1, 1), LocalTime.of(12, 30), LocalTime.of(13, 15),
-            description = "Past UPW Appointment",
             attended = false, complied = false,
         )
-        val FUTURE_UPW_CONTACT_1 = generate(
+        val FUTURE_UPW_CONTACT = generate(
             LocalDate.of(2050, 1, 1), LocalTime.of(12, 30), LocalTime.of(13, 15),
-            description = "Future UPW Appointment",
             attended = false, complied = false,
         )
 
@@ -354,12 +395,12 @@ object TestData {
             date: LocalDate,
             startTime: LocalTime,
             endTime: LocalTime,
-            description: String? = null,
             type: ContactType = ReferenceData.APPOINTMENT_CONTACT_TYPE,
             location: OfficeLocation? = TeamData.OFFICE,
             attended: Boolean? = null,
             complied: Boolean? = null,
             outcome: ContactOutcome? = null,
+            sensitive: Boolean? = null,
         ) = Contact(
             id = id(),
             personId = PersonData.DEFAULT.id,
@@ -367,12 +408,12 @@ object TestData {
             startTime = startTime,
             endTime = endTime,
             type = type,
-            description = description,
             location = location,
             staff = StaffData.STAFF,
             attended = attended,
             complied = complied,
             outcome = outcome,
+            sensitive = sensitive,
             lastUpdatedDatetime = ZonedDateTime.of(2024, 1, 1, 0, 0, 0, 0, ZoneId.of("UTC"))
         )
     }

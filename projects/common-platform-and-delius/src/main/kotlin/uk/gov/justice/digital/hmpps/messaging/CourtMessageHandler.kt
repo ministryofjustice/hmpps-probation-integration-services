@@ -47,7 +47,7 @@ class CourtMessageHandler(
             hearing.prosecutionCases
                 .flatMap { case -> case.defendants.map { defendant -> case to defendant } }
                 .forEach { (case, defendant) ->
-                    val cprUuid = requireNotNull(defendant.cprUUID) { "Missing Core Person UUID" }
+                    if (defendant.personDefendant == null || defendant.cprUUID == null) return@forEach
                     val newCase = case.copy(defendants = listOf(defendant))
                     val newHearing = hearing.copy(prosecutionCases = listOf(newCase))
                     val newNotification = Notification(
@@ -56,14 +56,14 @@ class CourtMessageHandler(
                     )
                     val outgoingMessage = MessageBuilder.createMessage(
                         objectMapper.writeValueAsString(newNotification),
-                        MessageHeaders(mapOf(SqsHeaders.MessageSystemAttributes.SQS_MESSAGE_GROUP_ID_HEADER to cprUuid))
+                        MessageHeaders(mapOf(SqsHeaders.MessageSystemAttributes.SQS_MESSAGE_GROUP_ID_HEADER to defendant.cprUUID))
                     )
                     sqsTemplate.send(sendQueue, outgoingMessage)
 
                     telemetryService.trackEvent(
                         "CourtMessageHandlerSentToFIFO", mapOf(
                             "hearingId" to newHearing.id,
-                            "cprUUID" to cprUuid
+                            "cprUUID" to defendant.cprUUID
                         )
                     )
                 }

@@ -41,3 +41,4 @@ val SentenceCounts.status: ProbationStatus
         previousCount > 0 -> ProbationStatus.PREVIOUSLY_KNOWN
         else -> ProbationStatus.NOT_SENTENCED
     }
+

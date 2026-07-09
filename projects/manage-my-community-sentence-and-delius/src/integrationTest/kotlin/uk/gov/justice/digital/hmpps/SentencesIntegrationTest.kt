@@ -24,6 +24,15 @@ internal class SentencesIntegrationTest @Autowired constructor(private val mockM
     }
 
     @Test
+    fun `unsuitable case returns forbidden`() {
+        mockMvc.get("/person/${PersonData.SUSPENDED.crn}/sentences") { withToken() }
+            .andExpect {
+                status { isForbidden() }
+                jsonPath("$.message") { value("${PersonData.SUSPENDED.crn} does not meet the eligibility criteria") }
+            }
+    }
+
+    @Test
     fun `get sentences`() {
         mockMvc.get("/person/${PersonData.DEFAULT.crn}/sentences") { withToken() }
             .andExpect {
@@ -31,72 +40,111 @@ internal class SentencesIntegrationTest @Autowired constructor(private val mockM
                 content {
                     json(
                         """
-                    {
-                      "sentences": [
                         {
-                          "type": "Community Order",
-                          "startDate": "2024-01-01",
-                          "expectedEndDate": "2025-10-01",
-                          "lastUpdatedAt": "2026-03-01T12:00:00Z",
-                          "requirements": [
+                          "sentences": [
                             {
-                              "type": "Court - Accredited Programme",
-                              "description": "Building Choices",
-                              "imposedDate": "2024-01-01",
-                              "expectedStartDate": "2024-01-15",
-                              "expectedEndDate": "2025-01-01",
-                              "actualStartDate": "2024-02-01",
-                              "actualEndDate": "2025-02-01",
-                              "lastUpdatedAt": "2026-02-15T10:00:00Z"
+                              "type": "Community Order",
+                              "startDate": "2024-01-01",
+                              "expectedEndDate": "2025-10-01",
+                              "lastUpdatedAt": "2026-03-01T12:00:00Z",
+                              "requirements": [
+                                {
+                                  "type": "Court - Accredited Programme",
+                                  "description": "Building Choices",
+                                  "mainCategory": {
+                                    "code": "C",
+                                    "description": "Court - Accredited Programme"
+                                  },
+                                  "subCategory": {
+                                    "code": "BC",
+                                    "description": "Building Choices"
+                                  },
+                                  "imposedDate": "2024-01-01",
+                                  "expectedStartDate": "2024-01-15",
+                                  "expectedEndDate": "2025-01-01",
+                                  "actualStartDate": "2024-02-01",
+                                  "actualEndDate": "2025-02-01",
+                                  "lastUpdatedAt": "2026-02-15T10:00:00Z"
+                                },
+                                {
+                                  "type": "Unpaid Work",
+                                  "description": "Regular",
+                                  "mainCategory": {
+                                    "code": "W",
+                                    "description": "Unpaid Work"
+                                  },
+                                  "subCategory": {
+                                    "code": "UPW",
+                                    "description": "Regular"
+                                  },
+                                  "required": 10,
+                                  "completed": 6,
+                                  "unit": "HOURS",
+                                  "lastUpdatedAt": "2026-02-15T10:00:00Z"
+                                },
+                                {
+                                  "type": "Rehabilitation Activity Requirement (RAR)",
+                                  "description": "Rehabilitation Activity Requirement (RAR)",
+                                  "mainCategory": {
+                                    "code": "F",
+                                    "description": "Rehabilitation Activity Requirement (RAR)"
+                                  },
+                                  "subCategory": {
+                                    "code": "RAR",
+                                    "description": "Rehabilitation Activity Requirement (RAR)"
+                                  },
+                                  "required": 15,
+                                  "completed": 2,
+                                  "unit": "DAYS",
+                                  "lastUpdatedAt": "2026-02-15T10:00:00Z"
+                                }
+                              ],
+                              "licenceConditions": [
+                                {
+                                  "type": "Alcohol Monitoring (Electronic Monitoring)",
+                                  "description": "You must not drink any alcohol until [END DATE]. You will need to wear an electronic tag all the time so we can check this.",
+                                  "mainCategory": {
+                                    "code": "ALC",
+                                    "description": "Alcohol Monitoring (Electronic Monitoring)"
+                                  },
+                                  "subCategory": {
+                                    "code": "ALC",
+                                    "description": "You must not drink any alcohol until [END DATE]. You will need to wear an electronic tag all the time so we can check this."
+                                  },
+                                  "startDate": "2024-02-01",
+                                  "expectedEndDate": "2025-01-01"
+                                }
+                              ],
+                              "mainOffence": {
+                                "code": "TH001",
+                                "description": "Theft"
+                              },
+                              "additionalOffences": [
+                                {
+                                  "code": "AB001",
+                                  "description": "Actual Bodily Harm"
+                                }
+                              ]
                             },
                             {
-                              "type": "Unpaid Work",
-                              "description": "Regular",
-                              "required": 10,
-                              "completed": 6,
-                              "unit": "HOURS",
-                              "lastUpdatedAt":"2026-02-15T10:00:00Z"
-                            },
-                            {
-                              "type": "Rehabilitation Activity Requirement (RAR)",
-                              "description": "Rehabilitation Activity Requirement (RAR)",
-                              "required": 15,
-                              "completed": 2,
-                              "unit": "DAYS",
-                              "lastUpdatedAt": "2026-02-15T10:00:00Z"
-                            }
-                          ],
-                          "licenceConditions": [
-                            {
-                              "type": "Alcohol Monitoring (Electronic Monitoring)",
-                              "description": "You must not drink any alcohol until [END DATE]. You will need to wear an electronic tag all the time so we can check this.",
-                              "startDate": "2024-02-01",
-                              "expectedEndDate": "2025-01-01"
+                              "type": "Community Order",
+                              "startDate": "2024-06-01",
+                              "expectedEndDate": "2026-06-01",
+                              "lastUpdatedAt": "2026-02-01T12:00:00Z",
+                              "requirements": [],
+                              "licenceConditions": [],
+                              "mainOffence": {
+                                "code": "TH001",
+                                "description": "Theft"
+                              },
+                              "additionalOffences": []
                             }
                           ]
-                        },
-                        {
-                          "type": "Community Order",
-                          "startDate": "2024-06-01",
-                          "expectedEndDate": "2026-06-01",
-                          "lastUpdatedAt": "2026-02-01T12:00:00Z",
-                          "requirements": [],
-                          "licenceConditions": []
                         }
-                      ]
-                    }
-                    """.trimIndent(),
+                        """.trimIndent(),
                         JsonCompareMode.STRICT
                     )
                 }
             }
-    }
-
-    @Test
-    fun `person with no sentences has empty list in response`() {
-        mockMvc.get("/person/${PersonData.BASIC.crn}/sentences") { withToken() }.andExpect {
-            status { isOk() }
-            content { json("""{"sentences":[]}""", JsonCompareMode.STRICT) }
-        }
     }
 }

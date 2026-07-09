@@ -1,6 +1,7 @@
 rootProject.name = "probation-integration-services"
 include(
     // ⌄ add new projects here
+    "warrant-risk-assessment-and-delius",
     "probation-access-control",
     "single-accommodation-and-delius",
     "manage-my-community-sentence-and-delius",
@@ -83,29 +84,29 @@ rootProject.allChildren()
 dependencyResolutionManagement {
     versionCatalogs {
         create("libs") {
-            library("asyncapi", "org.openfolder:kotlin-asyncapi-spring-web:3.2.2")
+            library("asyncapi", "org.openfolder:kotlin-asyncapi-spring-web:3.2.3")
             library("aws-s3", "io.awspring.cloud:spring-cloud-aws-starter-s3:4.0.2")
             library("aws-autoconfigure", "io.awspring.cloud:spring-cloud-aws-autoconfigure:4.0.2")
-            library("aws-query-protocol", "software.amazon.awssdk:aws-query-protocol:2.46.5")
+            library("aws-query-protocol", "software.amazon.awssdk:aws-query-protocol:2.46.21")
             library("aws-sns", "io.awspring.cloud:spring-cloud-aws-starter-sns:4.0.2")
             library("aws-sqs", "io.awspring.cloud:spring-cloud-aws-starter-sqs:4.0.2")
             library("aws-starter", "io.awspring.cloud:spring-cloud-aws-starter:4.0.2")
-            library("aws-sts", "software.amazon.awssdk:sts:2.46.5")
-            library("azure-app-insights", "com.microsoft.azure:applicationinsights-web:3.7.8")
-            library("azure-identity", "com.azure:azure-identity:1.18.3")
-            library("flipt", "io.flipt:flipt-client-java:1.3.1")
+            library("aws-sts", "software.amazon.awssdk:sts:2.46.21")
+            library("azure-app-insights", "com.microsoft.azure:applicationinsights-web:3.7.9")
+            library("azure-identity", "com.azure:azure-identity:1.18.4")
+            library("flipt", "io.flipt:flipt-client-java:1.3.3")
             library("html2md", "com.vladsch.flexmark:flexmark-html2md-converter:0.64.8")
             library("microsoft-graph", "com.microsoft.graph:microsoft-graph:6.65.0")
             library("mockito-inline", "org.mockito:mockito-inline:5.2.0")
             library("mockito-kotlin", "org.mockito.kotlin:mockito-kotlin:6.3.0")
             library("notify", "uk.gov.service.notify:notifications-java-client:6.0.0-RELEASE")
-            library("opensearch", "org.opensearch.client:opensearch-java:3.8.0")
+            library("opensearch", "org.opensearch.client:opensearch-java:3.9.0")
             library("opensearch-starter", "org.opensearch.client:spring-data-opensearch-starter:2.0.6")
             library(
                 "opentelemetry-annotations",
-                "io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:2.28.1"
+                "io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:2.29.0"
             )
-            library("sentry", "io.sentry:sentry-spring-boot-4:8.43.1")
+            library("sentry", "io.sentry:sentry-spring-boot-4:8.47.0")
             library("springdoc", "org.springdoc:springdoc-openapi-starter-webmvc-ui:3.0.1")
             library("wiremock", "org.wiremock:wiremock-standalone:3.13.2")
 
@@ -121,8 +122,8 @@ dependencyResolutionManagement {
 }
 
 plugins {
-    id("com.gradle.develocity") version "4.4.2"
-    id("com.github.burrunan.s3-build-cache") version "1.9.5"
+    id("com.gradle.develocity") version "4.5.0"
+    id("com.github.burrunan.s3-build-cache") version "1.9.7"
 }
 
 develocity {

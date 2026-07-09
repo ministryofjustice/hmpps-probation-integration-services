@@ -45,6 +45,10 @@ class Contact(
     @Column(name = "contact_id")
     val id: Long = 0,
 
+    @Version
+    @Column(name = "row_version")
+    val version: Long = 0,
+
     @ManyToOne
     @JoinColumn(name = "offender_id")
     val person: Person,
@@ -88,10 +92,12 @@ class Contact(
 
     @ManyToOne
     @JoinColumn(name = "latest_enforcement_action_id", referencedColumnName = "enforcement_action_id")
-    val action: EnforcementAction? = null,
+    var latestEnforcementAction: EnforcementAction? = null,
 
-    @OneToOne(mappedBy = "contact")
-    var enforcement: Enforcement? = null,
+    // there should only be one enforcement per contact, modeled
+    // as a one to many due to needing lazy loading
+    @OneToMany(mappedBy = "contact", fetch = FetchType.LAZY, orphanRemoval = true)
+    var enforcementEntries: MutableList<Enforcement> = mutableListOf(),
 
     @Column(name = "enforcement")
     @Convert(converter = NumericBooleanConverter::class)
@@ -176,8 +182,9 @@ class Contact(
     @Column(name = "trust_provider_team_id")
     val trustProviderTeamId: Long = 0,
 
-    val partitionAreaId: Long = 0
+    val partitionAreaId: Long = 0,
 ) {
+    val enforcement: Enforcement? get() = enforcementEntries.singleOrNull()
 
     fun startDateTime(): ZonedDateTime {
         val startTime = startTime
@@ -398,22 +405,33 @@ class EnforcementAction(
     val id: Long = 0
 )
 
-@Immutable
 @Entity
 @Table(name = "enforcement")
 @SQLRestriction("soft_deleted = 0")
 @SequenceGenerator(name = "enforcement_id_seq", sequenceName = "enforcement_id_seq", allocationSize = 1)
 class Enforcement(
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "contact_id")
     val contact: Contact,
 
     @ManyToOne
     @JoinColumn(name = "enforcement_action_id")
-    val action: EnforcementAction? = null,
+    var action: EnforcementAction? = null,
 
     @Column(name = "response_date")
-    val responseDate: ZonedDateTime? = null,
+    var responseDate: ZonedDateTime? = null,
+
+    @CreatedDate
+    var createdDatetime: ZonedDateTime? = ZonedDateTime.now(),
+
+    @CreatedBy
+    var createdByUserId: Long? = 0,
+
+    @LastModifiedDate
+    var lastUpdatedDatetime: ZonedDateTime? = ZonedDateTime.now(),
+
+    @LastModifiedBy
+    var lastUpdatedUserId: Long? = 0,
 
     @Column(columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)
@@ -469,7 +487,7 @@ interface ContactRepository : JpaRepository<Contact, Long> {
         left join fetch old.borough brgh
         left join fetch c.outcome o
         left join fetch t.categories cats
-        left join fetch c.action a
+        left join fetch c.latestEnforcementAction a
         left join fetch a.contactType ct
         left join fetch e.disposal d
         left join fetch d.lengthUnit lu
@@ -479,9 +497,6 @@ interface ContactRepository : JpaRepository<Contact, Long> {
         left join fetch e.mainOffence mo
         left join fetch mo.offence moo
         left join fetch rqmnt.subCategory rsc
-        left join fetch c.enforcement enf
-        left join fetch enf.action ea
-        left join fetch ea.contactType
         where c.person.id = :personId
         order by c.date desc, c.startTime desc 
     """
@@ -868,7 +883,7 @@ interface ContactRepository : JpaRepository<Contact, Long> {
             SELECT c from ContactAlert ca
             join ca.contact c
             join OffenderManager com on com.person.id = c.person.id and com.active = true and com.softDeleted = false
-            where c.alert = true and c.softDeleted = false
+            where c.alert = true and c.softDeleted = false and c.person.softDeleted = false
             and ca.staff.user.username = :username and com.staff.id = ca.staff.id
         """
     )
@@ -883,14 +898,15 @@ interface ContactRepository : JpaRepository<Contact, Long> {
                    o.date_of_birth_date     as dob,
                    c.contact_id             as id,
                    o.crn                    as crn,
-                   c.contact_date           as contact_date,
+                   c.contact_date           as contactDate,
                    rct.description          as contactdescription,
                    rct.code                 as typecode,
                    case when c.complied = 'N' then 0 else 1 end as complied,
                    rtmc.code                as rqmntmaincatcode,
                    rco.description          as outcomedescription,
                    ea.description           as enforcementactiondescription,
-                   enf.response_date        as evidenceduedate
+                   enf.response_date        as evidenceduedate,
+                   enf.last_updated_datetime as lastModifiedDate
             from contact c
             join r_contact_type rct on rct.contact_type_id = c.contact_type_id
             join offender o on o.offender_id = c.offender_id
@@ -902,6 +918,7 @@ interface ContactRepository : JpaRepository<Contact, Long> {
             left join rqmnt r on r.rqmnt_id = c.rqmnt_id
             left join r_rqmnt_type_main_category rtmc on rtmc.rqmnt_type_main_category_id = r.rqmnt_type_main_category_id
             where c.soft_deleted = 0
+            and (:cutoff IS NULL OR enf.last_updated_datetime >= :cutoff)
             and s.staff_id = :staffId
             and c.complied = 'N'
             and (:filterDueDate = 0 or to_char(enf.response_date, 'YYYY-MM-DD') <= :dueDateThreshold)
@@ -914,6 +931,7 @@ interface ContactRepository : JpaRepository<Contact, Long> {
             join caseload cl on s.staff_id = cl.staff_employee_id and c.offender_id = cl.offender_id and (cl.role_code = 'OM')
             join enforcement enf on enf.contact_id = c.contact_id and enf.soft_deleted = 0
             where c.soft_deleted = 0
+            and (:cutoff IS NULL OR enf.last_updated_datetime >= :cutoff)
             and s.staff_id = :staffId
             and c.complied = 'N'
             and (:filterDueDate = 0 or to_char(enf.response_date, 'YYYY-MM-DD') <= :dueDateThreshold)
@@ -924,6 +942,7 @@ interface ContactRepository : JpaRepository<Contact, Long> {
         staffId: Long,
         filterDueDate: Int,
         dueDateThreshold: String,
+        cutoff: LocalDateTime?,
         pageable: Pageable
     ): Page<EnforcementAppointment>
 }
@@ -969,6 +988,7 @@ interface EnforcementAppointment {
     val outcomeDescription: String?
     val enforcementActionDescription: String?
     val evidenceDueDate: LocalDateTime?
+    val lastModifiedDate: LocalDateTime
 }
 
 interface EnforcementRepository : JpaRepository<Enforcement, Long>
@@ -1116,6 +1136,16 @@ interface EnforcementActionsRepository : JpaRepository<EnforcementAction, Long> 
     )
     fun findByContactOutcomeId(outcomeId: Long): List<EnforcementAction>
     fun findEnforcementActionByCode(code: String): MutableList<EnforcementAction>
+
+    @Query(
+        """
+        select ea.* from r_enforcement_action ea
+        join r_enf_act_contact_out_type eaco on eaco.enforcement_action_id = ea.enforcement_action_id
+        where eaco.contact_outcome_type_id = ?1 and ea.code in (?2)
+        """,
+        nativeQuery = true
+    )
+    fun findByContactOutcomeIdAndCodeIn(outcomeId: Long, codes: Set<String>): List<EnforcementAction>
 }
 
 fun EnforcementActionsRepository.getEnforcementActionByCode(code: String): EnforcementAction =

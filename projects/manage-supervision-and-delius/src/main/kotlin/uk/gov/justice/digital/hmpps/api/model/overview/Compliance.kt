@@ -5,5 +5,6 @@ data class Compliance(
     val breachStarted: Boolean,
     val breachesOnCurrentOrderCount: Int,
     val priorBreachesOnCurrentOrderCount: Int,
+    val priorRecallsOnCurrentOrderCount: Int,
     val failureToComplyCount: Int,
 )

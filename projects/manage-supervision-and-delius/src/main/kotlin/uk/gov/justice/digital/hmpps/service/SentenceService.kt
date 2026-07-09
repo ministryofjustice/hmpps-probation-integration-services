@@ -291,8 +291,10 @@ fun Disposal.toMinimalOrder(sentenceType: SentenceType): MinimalOrder {
         }
     }
 
-    return MinimalOrder(type.description + (lengthUnit?.let { " (${length} ${it.description})" } ?: ""),
-        sentenceType,
-        date,
-        expectedEndDate())
+    return MinimalOrder(
+        description = type.description + (lengthUnit?.let { " (${length} ${it.description})" } ?: ""),
+        sentenceType = sentenceType,
+        startDate = date,
+        endDate = expectedEndDate(),
+        pss = type.pssRequirement)
 }

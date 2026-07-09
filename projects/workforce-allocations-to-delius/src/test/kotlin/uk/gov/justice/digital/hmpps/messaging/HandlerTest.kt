@@ -16,6 +16,7 @@ import uk.gov.justice.digital.hmpps.message.Notification
 import uk.gov.justice.digital.hmpps.message.PersonIdentifier
 import uk.gov.justice.digital.hmpps.message.PersonReference
 import uk.gov.justice.digital.hmpps.service.AllocateEventService
+import uk.gov.justice.digital.hmpps.service.AllocateLicenceConditionService
 import uk.gov.justice.digital.hmpps.service.AllocatePersonService
 import uk.gov.justice.digital.hmpps.service.AllocateRequirementService
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
@@ -34,6 +35,9 @@ internal class HandlerTest {
 
     @Mock
     internal lateinit var allocateRequirementService: AllocateRequirementService
+
+    @Mock
+    internal lateinit var allocateLicenceConditionService: AllocateLicenceConditionService
 
     @Mock
     internal lateinit var telemetryService: TelemetryService

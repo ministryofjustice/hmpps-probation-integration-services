@@ -1,0 +1,64 @@
+name: Render project template
+description: Renders a project template from the templates/projects directory and adds it to the Gradle build
+
+inputs:
+  issue_number:
+    description: Issue number (e.g. PI-123)
+    required: true
+  project_name:
+    description: Project name
+    required: true
+  environment:
+    description: Namespace suffix e.g. dev
+    required: true
+  app-client-id:
+    description: App ID
+    required: true
+  app-private-key:
+    description: App private key
+    required: true
+outputs:
+  pull-request-url:
+    description: URL of the pull request created
+    value: ${{ steps.pr.outputs.pull-request-url }}
+
+runs:
+  using: composite
+  steps:
+    - id: project_name
+      shell: bash # language=bash
+      run: echo "with_underscores_uppercase=$(echo "$project_name" | sed 's/-/_/g' | tr '[:lower:]' '[:upper:]')" | tee -a "$GITHUB_OUTPUT"
+      env:
+        project_name: ${{ inputs.project_name }}
+
+    - uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+      id: app-token
+      with:
+        owner: ministryofjustice
+        repositories: cloud-platform-environments
+        client-id: ${{ inputs.app-client-id }}
+        private-key: ${{ inputs.app-private-key }}
+
+    - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      with:
+        repository: ministryofjustice/cloud-platform-environments
+        token: ${{ steps.app-token.outputs.token }}
+
+    - name: Render Terraform queue template
+      shell: bash # language=bash
+      run: |
+        sed 's/SERVICE_NAME_UPPERCASE/${{ steps.project_name.outputs.with_underscores_uppercase }}/g;s/SERVICE_NAME/'"$project_name"'/g' "${GITHUB_ACTION_PATH}/../../../templates/sqs.tf" > "namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-$environment/resources/${project_name}-queue.tf"
+        sed -i '/queue = \[/a \      module.'"$project_name"'-queue.sqs_arn,' "namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-$environment/resources/iam.tf"
+        sed -i '/dlq = \[/a \      module.'"$project_name"'-dlq.sqs_arn,' "namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-$environment/resources/iam.tf"
+      env:
+        project_name: ${{ inputs.project_name }}
+        environment: ${{ inputs.environment }}
+
+    - name: Create pull request
+      id: pr
+      uses: ministryofjustice/hmpps-probation-integration-services/.github/actions/create-signed-pull-request@main
+      with:
+        add-paths: namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-${{ inputs.environment }}
+        branch: ${{ inputs.issue_number }}-create-${{ inputs.project_name }}-queue-${{ inputs.environment }}
+        commit-message: ${{ inputs.issue_number }} Create SQS queues for ${{ inputs.project_name }} (${{ inputs.environment }})
+        token: ${{ steps.app-token.outputs.token }}

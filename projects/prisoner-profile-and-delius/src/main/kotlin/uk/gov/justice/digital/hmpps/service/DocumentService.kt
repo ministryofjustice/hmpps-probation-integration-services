@@ -21,23 +21,19 @@ class DocumentService(
     private val documentRepository: DocumentRepository,
     private val alfrescoClient: AlfrescoClient,
     private val limitedAccessService: UserAccessService,
-    private val featureFlags: FeatureFlags,
 ) {
-    companion object {
-        const val FLIPT_KEY = "dps_lao_restriction"
-    }
 
     fun downloadDocument(id: String): ResponseEntity<StreamingResponseBody> {
         val (name, crn) = documentRepository.findNameAndCrnByAlfrescoId(id)
             ?: throw NotFoundException("Document", "alfrescoId", id)
-        if (featureFlags.enabled(FLIPT_KEY)) checkForLao(crn)
+        checkForLao(crn)
         return alfrescoClient.streamDocument(id, name)
     }
 
     @Transactional
     fun getDocumentsForCase(nomisId: String): ProbationDocumentsResponse =
         personRepository.findByNomisId(nomisId)?.let { person ->
-            if (featureFlags.enabled(FLIPT_KEY)) checkForLao(person.crn)
+            checkForLao(person.crn)
             val documents = documentRepository.getPersonAndEventDocuments(person.id)
             val eventDocuments = documents.filter { it.relatesToEvent() }.groupBy { it.eventId!! }
             ProbationDocumentsResponse(

@@ -62,7 +62,7 @@ internal class IntegrationTest @Autowired constructor(
         }
         assertThat(contact.type.code).isEqualTo(ContactType.E_SUPERVISION_CHECK_IN)
         assertThat(contact.date).isEqualTo(notification.message.occurredAt.toLocalDate())
-        assertThat(contact.event.id).isEqualTo(EventGenerator.EVENT_2.id)
+        assertThat(contact.event?.id).isEqualTo(EventGenerator.EVENT_2.id)
         assertThat(contact.provider.id).isEqualTo(ProviderGenerator.DEFAULT_PROVIDER.id)
         assertThat(contact.team.id).isEqualTo(ProviderGenerator.DEFAULT_TEAM.id)
         assertThat(contact.staff.id).isEqualTo(ProviderGenerator.DEFAULT_STAFF.id)
@@ -92,7 +92,7 @@ internal class IntegrationTest @Autowired constructor(
         }
         assertThat(contact.type.code).isEqualTo(ContactType.E_SUPERVISION_CHECK_IN)
         assertThat(contact.date).isEqualTo(notification.message.occurredAt.toLocalDate())
-        assertThat(contact.event.id).isEqualTo(EventGenerator.EVENT_2.id)
+        assertThat(contact.event?.id).isEqualTo(EventGenerator.EVENT_2.id)
         assertThat(contact.provider.id).isEqualTo(ProviderGenerator.DEFAULT_PROVIDER.id)
         assertThat(contact.team.id).isEqualTo(ProviderGenerator.DEFAULT_TEAM.id)
         assertThat(contact.staff.id).isEqualTo(ProviderGenerator.DEFAULT_STAFF.id)
@@ -114,7 +114,7 @@ internal class IntegrationTest @Autowired constructor(
 
         val contact = contactRepository.findAll()
             .single { it.person.id == person.id && it.description == "Online check in completed" }
-        assertThat(contact.event.id).isEqualTo(EventGenerator.FALLBACK_EVENT_2.id)
+        assertThat(contact.event?.id).isEqualTo(EventGenerator.FALLBACK_EVENT_2.id)
         assertThat(contact.isSensitive).isEqualTo(false)
     }
 
@@ -128,8 +128,8 @@ internal class IntegrationTest @Autowired constructor(
 
         val contact = contactRepository.findAll()
             .single { it.person.id == PersonGenerator.NO_ACTIVE_EVENT_PERSON.id && it.description == "Online check in completed" }
-        assertThat(contact.event.id).isEqualTo(EventGenerator.INACTIVE_EVENT.id)
-        assertThat(contact.event.active).isFalse()
+        assertThat(contact.event?.id).isEqualTo(EventGenerator.INACTIVE_EVENT.id)
+        assertThat(contact.event?.active).isFalse()
         assertThat(contact.isSensitive).isEqualTo(false)
         assertThat(contact.notes).isEqualTo("Review the online check in using the manage probation check ins service: https://esupervision/check-in/received")
     }
@@ -155,7 +155,7 @@ internal class IntegrationTest @Autowired constructor(
         }
         assertThat(contact.description).isEqualTo("Online check in completed")
         assertThat(contact.type.code).isEqualTo(ContactType.E_SUPERVISION_CHECK_IN)
-        assertThat(contact.event.id).isEqualTo(EventGenerator.EVENT_2.id)
+        assertThat(contact.event?.id).isEqualTo(EventGenerator.EVENT_2.id)
         assertThat(contact.provider.id).isEqualTo(ProviderGenerator.DEFAULT_PROVIDER.id)
         assertThat(contact.team.id).isEqualTo(ProviderGenerator.DEFAULT_TEAM.id)
         assertThat(contact.staff.id).isEqualTo(ProviderGenerator.DEFAULT_STAFF.id)
@@ -245,7 +245,7 @@ internal class IntegrationTest @Autowired constructor(
         assertThat(contact.outcome?.code).isEqualTo(ContactOutcome.SETUP_COMPLETED)
         assertThat(contact.date).isEqualTo(notification.message.occurredAt.toLocalDate())
         assertThat(contact.person.id).isEqualTo(PersonGenerator.DEFAULT_PERSON.id)
-        assertThat(contact.event.id).isEqualTo(EventGenerator.EVENT_2.id)
+        assertThat(contact.event?.id).isEqualTo(EventGenerator.EVENT_2.id)
         assertThat(contact.provider.id).isEqualTo(ProviderGenerator.DEFAULT_PROVIDER.id)
         assertThat(contact.team.id).isEqualTo(ProviderGenerator.DEFAULT_TEAM.id)
         assertThat(contact.staff.id).isEqualTo(ProviderGenerator.DEFAULT_STAFF.id)
@@ -292,27 +292,73 @@ internal class IntegrationTest @Autowired constructor(
     }
 
     @Test
-    fun `sentence terminated updates setup contact using event number when setup id is missing`() {
-        val originalContact = contactRepository.findAll()
-            .single { it.person.id == PersonGenerator.SENTENCE_TERMINATED_PERSON.id }
+    fun `esupervision setup removed with ESPMP outcome code`() {
+        val originalContact = contactRepository.findAll().single {
+            it.externalReference == "urn:uk:gov:hmpps:esupervision:setup:a1b2c3d4-e5f6-7890-abcd-ef1234567890"
+        }
         assertThat(originalContact.outcome?.code).isEqualTo(ContactOutcome.SETUP_COMPLETED)
 
-        val notification = prepMessage(MessageGenerator.SENTENCE_TERMINATED_A000008)
+        val notification = prepMessage(MessageGenerator.SETUP_REMOVED_MANUAL_STOP_A000001)
         channelManager.getChannel(queueName).publishAndWait(notification)
 
         val updatedContact = contactRepository.findAll().single { it.id == originalContact.id }
-        assertThat(updatedContact.outcome?.code).isEqualTo(ContactOutcome.SETUP_REMOVED)
-        assertThat(updatedContact.externalReference).isEqualTo(originalContact.externalReference)
-        assertThat(updatedContact.date).isEqualTo(originalContact.date)
-        assertThat(updatedContact.startTime).isEqualTo(originalContact.startTime)
+        assertThat(updatedContact.outcome?.code).isEqualTo(ContactOutcome.MANUAL_STOP)
         verify(telemetryService).trackEvent(
             "CheckInSetupRemoved",
             mapOf(
-                "eventType" to "probation-case.sentence.terminated",
-                "crn" to PersonGenerator.SENTENCE_TERMINATED_PERSON.crn,
-                "eventNumber" to EventGenerator.SENTENCE_TERMINATED_EVENT.number,
+                "eventType" to "esupervision.setup.removed",
+                "crn" to PersonGenerator.DEFAULT_PERSON.crn,
+                "eventNumber" to EventGenerator.EVENT_2.number,
                 "checkInUrl" to null,
-                "setupId" to null,
+                "setupId" to "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+            )
+        )
+    }
+
+    @Test
+    fun `esupervision setup removed with ESPNA outcome code`() {
+        val originalContact = contactRepository.findAll().single {
+            it.externalReference == "urn:uk:gov:hmpps:esupervision:setup:b2c3d4e5-f6a7-8901-bcde-f12345678901"
+        }
+        assertThat(originalContact.outcome?.code).isEqualTo(ContactOutcome.SETUP_COMPLETED)
+
+        val notification = prepMessage(MessageGenerator.SETUP_REMOVED_NO_ACTIVE_EVENTS_A000001)
+        channelManager.getChannel(queueName).publishAndWait(notification)
+
+        val updatedContact = contactRepository.findAll().single { it.id == originalContact.id }
+        assertThat(updatedContact.outcome?.code).isEqualTo(ContactOutcome.NO_ACTIVE_EVENTS)
+        verify(telemetryService).trackEvent(
+            "CheckInSetupRemoved",
+            mapOf(
+                "eventType" to "esupervision.setup.removed",
+                "crn" to PersonGenerator.DEFAULT_PERSON.crn,
+                "eventNumber" to EventGenerator.EVENT_2.number,
+                "checkInUrl" to null,
+                "setupId" to "b2c3d4e5-f6a7-8901-bcde-f12345678901",
+            )
+        )
+    }
+
+    @Test
+    fun `esupervision setup removed with ESPRS outcome code`() {
+        val originalContact = contactRepository.findAll().single {
+            it.externalReference == "urn:uk:gov:hmpps:esupervision:setup:c3d4e5f6-a7b8-9012-cdef-123456789012"
+        }
+        assertThat(originalContact.outcome?.code).isEqualTo(ContactOutcome.SETUP_COMPLETED)
+
+        val notification = prepMessage(MessageGenerator.SETUP_REMOVED_IN_RESET_A000001)
+        channelManager.getChannel(queueName).publishAndWait(notification)
+
+        val updatedContact = contactRepository.findAll().single { it.id == originalContact.id }
+        assertThat(updatedContact.outcome?.code).isEqualTo(ContactOutcome.IN_RESET)
+        verify(telemetryService).trackEvent(
+            "CheckInSetupRemoved",
+            mapOf(
+                "eventType" to "esupervision.setup.removed",
+                "crn" to PersonGenerator.DEFAULT_PERSON.crn,
+                "eventNumber" to EventGenerator.EVENT_2.number,
+                "checkInUrl" to null,
+                "setupId" to "c3d4e5f6-a7b8-9012-cdef-123456789012",
             )
         )
     }
@@ -368,7 +414,7 @@ internal class IntegrationTest @Autowired constructor(
         }
         assertThat(contact.description).isEqualTo("Check in has not been submitted on time")
         assertThat(contact.type.code).isEqualTo(ContactType.E_SUPERVISION_CHECK_IN)
-        assertThat(contact.event.id).isEqualTo(EventGenerator.EVENT_2.id)
+        assertThat(contact.event?.id).isEqualTo(EventGenerator.EVENT_2.id)
         assertThat(contact.provider.id).isEqualTo(ProviderGenerator.DEFAULT_PROVIDER.id)
         assertThat(contact.team.id).isEqualTo(ProviderGenerator.DEFAULT_TEAM.id)
         assertThat(contact.staff.id).isEqualTo(ProviderGenerator.DEFAULT_STAFF.id)
@@ -390,6 +436,7 @@ internal class IntegrationTest @Autowired constructor(
                             "forename": "${PersonGenerator.DEFAULT_PERSON.firstName}",
                             "surname": "${PersonGenerator.DEFAULT_PERSON.lastName}"
                           },
+                          "dateOfBirth": "${PersonGenerator.DEFAULT_PERSON.dateOfBirth}",
                           "mobile": "${PersonGenerator.DEFAULT_PERSON.mobile.toString()}",
                           "email": "${PersonGenerator.DEFAULT_PERSON.emailAddress}",
                           "events": [
@@ -609,5 +656,23 @@ internal class IntegrationTest @Autowired constructor(
             json = testBody
             withToken()
         }.andExpect { status { isNotFound() } }
+    }
+
+    @Test
+    fun `setup removal for contact with null event is logged and ignored`() {
+        val notification = prepMessage(MessageGenerator.SETUP_REMOVED_NULL_EVENT_A000001)
+        channelManager.getChannel(queueName).publishAndWait(notification)
+
+        verify(telemetryService).trackEvent(
+            "CheckInEventIgnored",
+            mapOf(
+                "reason" to "Event not found for setup removal",
+                "eventType" to "esupervision.setup.removed",
+                "crn" to PersonGenerator.DEFAULT_PERSON.crn,
+                "eventNumber" to EventGenerator.EVENT_2.number,
+                "checkInUrl" to null,
+                "setupId" to "d9e1f2a3-b4c5-6789-0abc-def123456789",
+            )
+        )
     }
 }

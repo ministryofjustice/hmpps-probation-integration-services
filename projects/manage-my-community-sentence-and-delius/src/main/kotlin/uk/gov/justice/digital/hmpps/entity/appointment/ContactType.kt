@@ -11,6 +11,7 @@ class ContactType(
     @Id
     @Column(name = "contact_type_id")
     val id: Long,
+    val code: String,
     val description: String,
     @Column(name = "attendance_contact")
     @Convert(converter = YesNoConverter::class)

@@ -4,11 +4,13 @@ import org.springframework.ldap.core.LdapTemplate
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
+import uk.gov.justice.digital.hmpps.exception.NotFoundException.Companion.orNotFoundBy
 import uk.gov.justice.digital.hmpps.integrations.delius.*
 import uk.gov.justice.digital.hmpps.ldap.findByUsername
 import uk.gov.justice.digital.hmpps.ldap.findPreferenceByUsername
 import uk.gov.justice.digital.hmpps.model.BasicDetails
 import uk.gov.justice.digital.hmpps.model.DocumentCrn
+import uk.gov.justice.digital.hmpps.model.ResponsibleOfficerResponse
 import uk.gov.justice.digital.hmpps.model.SignAndSendResponse
 import java.util.*
 
@@ -20,7 +22,6 @@ class DetailsService(
     private val ldapTemplate: LdapTemplate,
     private val documentRepository: DocumentRepository,
     private val responsibleOfficerRepository: ResponsibleOfficerRepository,
-    private val userRepository: UserRepository
 ) {
     fun basicDetails(crn: String): BasicDetails {
         val person = personRepository.getByCrn(crn)
@@ -34,34 +35,28 @@ class DetailsService(
         )
     }
 
-    fun signAndSend(crn: String): SignAndSendResponse {
-        personRepository.getByCrn(crn)
+    fun signAndSend(crn: String, username: String): SignAndSendResponse {
+        if (!personRepository.existsByCrn(crn)) throw NotFoundException("Person", "CRN", crn)
 
-        val responsibleOfficer = responsibleOfficerRepository.findByPerson_Crn(crn)
-            ?: throw NotFoundException("ResponsibleOfficer", "CRN", crn)
-        val offenderManager = responsibleOfficer.offenderManager
-        val prisonOffenderManager = responsibleOfficer.prisonOffenderManager
-        val staff = (offenderManager?.staff ?: prisonOffenderManager?.staff)
-            ?: throw NotFoundException("Person", "CRN", crn)
-
-        val ldapUser = userRepository.findByStaffId(staff.id)?.let {
-            ldapTemplate.findByUsername<LdapUser>(it.username)
+        val user = ldapTemplate.findByUsername<LdapUser>(username).orNotFoundBy("username", username)
+        val responsibleOfficer = responsibleOfficerRepository.findByPersonCrn(crn).orNotFoundBy("CRN", crn)
+        val responsibleOfficerUser = responsibleOfficer.username?.let { ldapTemplate.findByUsername<LdapUser>(it) }
+        val defaultReplyAddress = responsibleOfficer.username?.let {
+            ldapTemplate.findPreferenceByUsername(it, "replyAddress")?.toLongOrNull()
         }
 
-        val addresses = ldapUser?.userHomeArea?.let { homeArea ->
-            val defaultReplyAddress =
-                ldapTemplate.findPreferenceByUsername(ldapUser.username, "replyAddress")?.toLongOrNull()
-
-            officeLocationRepository.findAllByProviderCode(ldapUser.userHomeArea).map {
-                it.toAddress().copy(status = if (it.id == defaultReplyAddress) "Default" else null)
-            }
-        } ?: emptyList()
-
         return SignAndSendResponse(
-            name = ldapUser?.name() ?: staff.name(),
-            telephoneNumber = ldapUser?.telephoneNumber,
-            emailAddress = ldapUser?.email,
-            addresses = addresses,
+            userDetails = user.name(),
+            responsibleOfficer = ResponsibleOfficerResponse(
+                title = responsibleOfficer.staff.title?.description,
+                name = responsibleOfficer.staff.name(),
+                telephoneNumber = responsibleOfficerUser?.telephoneNumber,
+                emailAddress = responsibleOfficerUser?.email,
+                addresses = responsibleOfficerUser?.userHomeArea
+                    ?.let { officeLocationRepository.findAllByProviderCode(it) }
+                    ?.map { it.toAddress().copy(status = if (it.id == defaultReplyAddress) "Default" else null) }
+                    ?: emptyList(),
+            )
         )
     }
 

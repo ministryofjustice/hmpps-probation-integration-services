@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.entity.sentence
 import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.type.NumericBooleanConverter
+import org.hibernate.type.YesNoConverter
 
 @Entity
 @Table(name = "rqmnt")
@@ -15,6 +16,10 @@ class Requirement(
     @ManyToOne
     @JoinColumn(name = "rqmnt_type_main_category_id")
     val requirementMainCategory: RequirementMainCategory?,
+
+    @ManyToOne
+    @JoinColumn(name = "rqmnt_type_sub_category_id")
+    val requirementSubCategory: RequirementSubCategory?,
 
     @Column(name = "length")
     val length: Long? = null,
@@ -39,4 +44,26 @@ class RequirementMainCategory(
     val code: String,
 
     val description: String,
+)
+
+@Immutable
+@Entity
+@Table(name = "r_standard_reference_list")
+class RequirementSubCategory(
+    @Id
+    @Column(name = "standard_reference_list_id")
+    val id: Long,
+
+    @Column(name = "code_value")
+    val codeValue: String,
+
+    @Column(name = "code_description")
+    val codeDescription: String,
+
+    @Column(name = "reference_data_master_id", nullable = false)
+    val datasetId: Long,
+
+    @Column(name = "selectable")
+    @Convert(converter = YesNoConverter::class)
+    val selectable: Boolean = true
 )

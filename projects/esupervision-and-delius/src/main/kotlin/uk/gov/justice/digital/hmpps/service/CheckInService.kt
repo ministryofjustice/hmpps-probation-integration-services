@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.service
 
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.audit.entity.AuditedInteraction
@@ -16,6 +17,7 @@ import uk.gov.justice.digital.hmpps.entity.audit.BusinessInteractionCode.UPDATE_
 import uk.gov.justice.digital.hmpps.entity.event.EventRepository
 import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException
 import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException.Companion.orIgnore
+import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
 import uk.gov.justice.digital.hmpps.messaging.*
 import uk.gov.justice.digital.hmpps.messaging.detail.CheckInDetail
@@ -31,6 +33,7 @@ class CheckInService(
     private val contactOutcomeRepository: ContactOutcomeRepository,
     private val contactRepository: ContactRepository,
     private val personRepository: PersonRepository,
+    @Value("\${sentry.environment}") private val env: String,
 ) : AuditableService(auditedInteractionService) {
     fun receiveCheckIn(domainEvent: HmppsDomainEvent) = audit(ADD_CONTACT) { audit ->
         if (!personRepository.existsByCrn(domainEvent.crn)) throw IgnorableMessageException("CRN not found")
@@ -57,14 +60,18 @@ class CheckInService(
         if (!personRepository.existsByCrn(domainEvent.crn)) throw IgnorableMessageException("CRN not found")
         val contact = if (domainEvent.setupId != null) {
             val externalReference = Contact.externalReferencePrefix(domainEvent.eventType) + domainEvent.setupId
-            contactRepository.getByExternalReference(externalReference)
+            contactRepository.findByExternalReference(externalReference) ?: when (env) {
+                "dev" -> throw IgnorableMessageException("Setup not found")
+                else -> throw NotFoundException("Contact", "externalReference", externalReference)
+            }
         } else {
             val eventNumber = requireNotNull(domainEvent.eventNumber) { "No setupId or eventNumber" }
             contactRepository.findByPersonCrnAndEventNumberAndTypeCode(domainEvent.crn, eventNumber)
                 .orIgnore { "Setup not found" }
         }
+        if (contact.event == null) throw IgnorableMessageException("Event not found for setup removal")
         require(domainEvent matches contact) { "Case details mismatch" }
-        contact.outcome = contactOutcomeRepository.getByCode(SETUP_REMOVED)
+        contact.outcome = contactOutcomeRepository.getByCode(domainEvent.outcomeCode)
         contactRepository.save(contact).also { audit(it) }
     }
 
@@ -116,9 +123,9 @@ class CheckInService(
     private operator fun AuditedInteraction.Parameters.invoke(contact: Contact) {
         this["contactId"] = contact.id
         this["offenderId"] = contact.person.id
-        this["eventId"] = contact.event.id
+        this["eventId"] = checkNotNull(contact.event).id
     }
 
     private infix fun HmppsDomainEvent.matches(contact: Contact) =
-        contact.person.crn == crn && (eventNumber == null || contact.event.number == eventNumber)
+        contact.person.crn == crn && (eventNumber == null || contact.event?.number == eventNumber)
 }

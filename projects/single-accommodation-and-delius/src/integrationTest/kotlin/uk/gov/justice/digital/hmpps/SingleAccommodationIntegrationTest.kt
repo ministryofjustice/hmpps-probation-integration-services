@@ -37,8 +37,8 @@ internal class SingleAccommodationIntegrationTest @Autowired constructor(
             .andExpect { status { is2xxSuccessful() } }
             .andReturn().response.contentAsJson<CaseListResponse>()
 
-        assertThat(response.cases.size).isEqualTo(4)
-        assertThat(response.page.totalElements).isEqualTo(4)
+        assertThat(response.cases.size).isEqualTo(5)
+        assertThat(response.page.totalElements).isEqualTo(5)
         assertThat(response.page.totalPages).isEqualTo(1)
         assertThat(response.page.number).isEqualTo(0)
         assertThat(response.page.size).isEqualTo(50)
@@ -88,7 +88,7 @@ internal class SingleAccommodationIntegrationTest @Autowired constructor(
             .andExpect { status { is2xxSuccessful() } }
             .andReturn().response.contentAsJson<CaseListResponse>()
 
-        assertThat(response.cases.size).isEqualTo(5)
+        assertThat(response.cases.size).isEqualTo(6)
 
         val otherTeamExcludedCase = response.cases.single { it.crn == otherTeamExcludedPerson.crn }
         assertThat(otherTeamExcludedCase.userExcluded).isFalse()
@@ -110,8 +110,8 @@ internal class SingleAccommodationIntegrationTest @Autowired constructor(
             .andReturn().response.contentAsJson<CaseListResponse>()
 
         assertThat(firstPage.cases.size).isEqualTo(2)
-        assertThat(firstPage.page.totalElements).isEqualTo(4)
-        assertThat(firstPage.page.totalPages).isEqualTo(2)
+        assertThat(firstPage.page.totalElements).isEqualTo(5)
+        assertThat(firstPage.page.totalPages).isEqualTo(3)
         assertThat(firstPage.page.number).isEqualTo(0)
         assertThat(firstPage.page.size).isEqualTo(2)
 
@@ -120,8 +120,8 @@ internal class SingleAccommodationIntegrationTest @Autowired constructor(
             .andReturn().response.contentAsJson<CaseListResponse>()
 
         assertThat(secondPage.cases.size).isEqualTo(2)
-        assertThat(secondPage.page.totalElements).isEqualTo(4)
-        assertThat(secondPage.page.totalPages).isEqualTo(2)
+        assertThat(secondPage.page.totalElements).isEqualTo(5)
+        assertThat(secondPage.page.totalPages).isEqualTo(3)
         assertThat(secondPage.page.number).isEqualTo(1)
         assertThat(secondPage.page.size).isEqualTo(2)
     }
@@ -308,5 +308,30 @@ internal class SingleAccommodationIntegrationTest @Autowired constructor(
                 limitedAccess = true,
             )
         )
+    }
+
+    @Test
+    fun `roshLevel only returns valid RoSH codes and ignores other registration types`() {
+        val person = PersonGenerator.WITH_NON_ROSH_REGISTRATION
+
+        val response = mockMvc.get("/case/${UserGenerator.DEFAULT.username}/${person.crn}") { withToken() }
+            .andExpect { status { is2xxSuccessful() } }
+            .andReturn().response.contentAsJson<Case>()
+
+        assertThat(response.roshLevel).isNotNull()
+        assertThat(response.roshLevel!!.code).isIn("RLRH", "RMRH", "RHRH", "RVHR")
+        assertThat(response.roshLevel!!.code).isEqualTo("RHRH")
+        assertThat(response.roshLevel!!.description).isEqualTo("High RoSH")
+    }
+
+    @Test
+    fun `roshLevel is null when person has no RoSH registrations`() {
+        val person = PersonGenerator.TEAM
+
+        val response = mockMvc.get("/case/${UserGenerator.DEFAULT.username}/${person.crn}") { withToken() }
+            .andExpect { status { is2xxSuccessful() } }
+            .andReturn().response.contentAsJson<Case>()
+
+        assertThat(response.roshLevel).isNull()
     }
 }

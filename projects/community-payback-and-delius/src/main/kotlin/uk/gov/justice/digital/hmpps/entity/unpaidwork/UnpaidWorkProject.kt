@@ -9,6 +9,7 @@ import uk.gov.justice.digital.hmpps.entity.ReferenceData
 import uk.gov.justice.digital.hmpps.entity.person.Address
 import uk.gov.justice.digital.hmpps.entity.staff.Team
 import uk.gov.justice.digital.hmpps.exception.NotFoundException.Companion.orNotFoundBy
+import uk.gov.justice.digital.hmpps.utils.Extensions.reportMissing
 import java.time.DayOfWeek
 import java.time.LocalDate
 
@@ -76,7 +77,14 @@ interface UnpaidWorkProjectRepository : JpaRepository<UnpaidWorkProject, Long> {
     fun findByCode(code: String): UnpaidWorkProject?
 
     @EntityGraph(attributePaths = ["placementAddress", "beneficiaryContactAddress", "team.provider", "projectType", "availability"])
+    fun findByCodeIn(codes: Collection<String>): List<UnpaidWorkProject>
+
+    @EntityGraph(attributePaths = ["placementAddress", "beneficiaryContactAddress", "team.provider", "projectType", "availability"])
     fun findAllByIdIn(ids: Collection<Long>): List<UnpaidWorkProject>
 }
 
 fun UnpaidWorkProjectRepository.getByCode(code: String) = findByCode(code).orNotFoundBy("code", code)
+
+fun UnpaidWorkProjectRepository.getByCodeIn(codes: List<String>) = codes.toSet().let { codes ->
+    findByCodeIn(codes).associateBy { it.code }.reportMissing(codes)
+}

@@ -2,15 +2,8 @@ package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
-import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.Contact
-import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.ContactRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.ContactTypeRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.Enforcement
-import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.EnforcementAction
-import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.EnforcementActionsRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.EnforcementRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.getContactType
 import uk.gov.justice.digital.hmpps.exception.NotFoundException.Companion.orNotFoundBy
+import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.*
 import uk.gov.justice.digital.hmpps.service.ContactLogService.Companion.REVIEW_ENFORCEMENT_STATUS
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -29,13 +22,23 @@ class ContactEnforcementService(
         val enforcementAction = requireNotNull(
             enforcementActionsRepository.findByContactOutcomeId(contactOutcome.id)
                 .firstOrNull { it.code == enforcementActionCode }) { "Enforcement action not valid for outcome" }
-        enforcementRepository.save(
-            Enforcement(
-                contact = contact,
-                action = enforcementAction,
-                responseDate = contact.startTime?.plusDays(enforcementAction.responseByPeriod ?: 0)
+        contact.latestEnforcementAction = enforcementAction
+        val enforcement = contact.enforcement
+        if (enforcement == null) {
+            val responseDate =
+                enforcementAction.responseByPeriod?.let { contact.startTime?.plusDays(it) }
+            enforcementRepository.save(
+                Enforcement(
+                    contact = contact,
+                    action = enforcementAction,
+                    responseDate = responseDate
+                )
             )
-        )
+        } else {
+            enforcement.action = enforcementAction
+            enforcement.responseDate =
+                enforcementAction.responseByPeriod?.let { contact.startTime?.plusDays(it) }
+        }
         contactRepository.save(
             Contact(
                 person = contact.person,

@@ -8,7 +8,6 @@ import uk.gov.justice.digital.hmpps.entity.sentence.MainOffenceRepository
 import uk.gov.justice.digital.hmpps.entity.unpaidwork.LinkedListRepository
 import uk.gov.justice.digital.hmpps.entity.unpaidwork.UnpaidWorkAppointmentRepository
 import uk.gov.justice.digital.hmpps.entity.unpaidwork.UpwDetailsRepository
-import uk.gov.justice.digital.hmpps.exception.NotFoundException.Companion.orNotFoundBy
 import uk.gov.justice.digital.hmpps.model.*
 
 @Service
@@ -34,6 +33,7 @@ class CaseSummaryService(
             eventIds = events.map { it.id },
             projectTypeCodes = linkedListEntry.map { it.data2.code }
         )
+        val mainOffencesByEventId = mainOffenceRepository.getByEventIdIn(events.map { it.id })
 
         val case = Case(
             crn = crn,
@@ -49,12 +49,11 @@ class CaseSummaryService(
             restrictionMessage = laoStatus.restrictionMessage,
         )
 
-        val upwMinutes = details.map { detail ->
+        val upwMinutes = details.mapNotNull { detail ->
             val matchingMinutes = requiredMinutes.filter { it.id == detail.id }
             val eteMinutes = eteAppts.filter { it.details.id == detail.id }.sumOf { it.minutesCredited ?: 0 }
             val disposal = detail.disposal
-            val mainOffence = mainOffenceRepository.findByEventId(disposal.event.id)
-                .orNotFoundBy("event id", disposal.event.id.toString())
+            val mainOffence = mainOffencesByEventId[disposal.event.id] ?: return@mapNotNull null
             UnpaidWorkMinutes(
                 eventNumber = disposal.event.number.toLong(),
                 sentenceDate = disposal.date,
@@ -63,6 +62,7 @@ class CaseSummaryService(
                 completedMinutes = matchingMinutes.sumOf { it.completedMinutes },
                 completedEteMinutes = eteMinutes,
                 eventOutcome = disposal.type.description,
+                eventOutcomeCode = disposal.type.code,
                 upwStatus = detail.status?.description,
                 referralDate = disposal.event.referralDate,
                 convictionDate = disposal.event.convictionDate,
@@ -72,10 +72,20 @@ class CaseSummaryService(
                     count = mainOffence.offenceCount,
                     code = mainOffence.offence.code,
                     description = mainOffence.offence.description
-                )
+                ),
+                unpaidWorkRequirements = disposal.upwRequirements.mapNotNull { requirement ->
+                    requirement.requirementSubCategory?.let {
+                        RequirementSubType(
+                            CodeDescription(
+                                it.codeValue,
+                                it.codeDescription
+                            ),
+                        )
+                    }
+                }
             )
         }
-        return UnpaidWorkDetails(case, upwMinutes)
+        return UnpaidWorkDetails(case, upwMinutes.sortedBy { it.eventNumber })
     }
 
     private fun getLaoStatus(crn: String, username: String?) =

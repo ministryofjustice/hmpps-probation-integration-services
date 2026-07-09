@@ -516,36 +516,43 @@ object UPWGenerator {
 
     val DEFAULT_RQMNT = generateRequirement(
         length = 120,
-        disposal = DISPOSAL_1
+        disposal = DISPOSAL_1,
+        requirementSubCategory = ReferenceDataGenerator.UPW_RQMNT_SUB_CATEGORY
     )
 
     val SECOND_RQMNT = generateRequirement(
         length = 180,
-        disposal = DISPOSAL_2
+        disposal = DISPOSAL_2,
+        requirementSubCategory = ReferenceDataGenerator.UPW_RQMNT_SUB_CATEGORY
     )
 
     val THIRD_RQMNT = generateRequirement(
         length = 6,
-        disposal = DISPOSAL_3
+        disposal = DISPOSAL_3,
+        requirementSubCategory = ReferenceDataGenerator.UPW_RQMNT_SUB_CATEGORY
     )
 
     val FOURTH_RQMNT = generateRequirement(
         length = 10000,
-        disposal = DISPOSAL_4
+        disposal = DISPOSAL_4,
+        requirementSubCategory = ReferenceDataGenerator.UPW_RQMNT_SUB_CATEGORY
     )
 
     val SIXTH_RQMNT = generateRequirement(
         length = 1,
-        disposal = DISPOSAL_6
+        disposal = DISPOSAL_6,
+        requirementSubCategory = ReferenceDataGenerator.UPW_RQMNT_SUB_CATEGORY
     )
     val SEVENTH_RQMNT = generateRequirement(
         length = 60,
-        disposal = DISPOSAL_7
+        disposal = DISPOSAL_7,
+        requirementSubCategory = ReferenceDataGenerator.UPW_RQMNT_SUB_CATEGORY
     )
 
     val ADJUSTMENT_RQMNT = generateRequirement(
         length = 100000,
-        disposal = DISPOSAL_ADJUSTMENT
+        disposal = DISPOSAL_ADJUSTMENT,
+        requirementSubCategory = ReferenceDataGenerator.UPW_RQMNT_SUB_CATEGORY
     )
 
     val DEFAULT_UPW_DETAILS_ADJUSTMENT_POSITIVE = generateUPWAdjustment(
@@ -809,8 +816,9 @@ object UPWGenerator {
         requirementMainCategory: RequirementMainCategory? = ReferenceDataGenerator.UPW_RQMNT_MAIN_CATEGORY,
         length: Long,
         disposal: Disposal,
-        softDeleted: Boolean = false
-    ) = Requirement(id, requirementMainCategory, length, disposal, softDeleted)
+        softDeleted: Boolean = false,
+        requirementSubCategory: RequirementSubCategory? = null
+    ) = Requirement(id, requirementMainCategory, requirementSubCategory, length, disposal, softDeleted)
 
     fun generateUpwAllocation(
         id: Long = IdGenerator.getAndIncrement(),
