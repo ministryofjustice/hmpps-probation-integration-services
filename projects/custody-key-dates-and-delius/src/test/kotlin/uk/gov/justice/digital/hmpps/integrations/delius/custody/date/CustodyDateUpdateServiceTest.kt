@@ -32,6 +32,7 @@ import uk.gov.justice.digital.hmpps.integrations.prison.PrisonApiClient
 import uk.gov.justice.digital.hmpps.integrations.prison.SentenceDetail
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import java.time.LocalDate
+import java.util.*
 
 @ExtendWith(MockitoExtension::class)
 internal class CustodyDateUpdateServiceTest {
@@ -287,8 +288,8 @@ internal class CustodyDateUpdateServiceTest {
             ).thenReturn(ReferenceDataGenerator.KEY_DATE_TYPES[type.code]!!)
         }
         val booking = Booking(127, "FG37K", true, PersonGenerator.DEFAULT.nomsId!!)
-        val custody =
-            generateCustodialSentence(disposal = generateDisposal(generateEvent()), bookingRef = booking.bookingNo)
+        val disposal = generateDisposal(generateEvent())
+        val custody = generateCustodialSentence(disposal = disposal, bookingRef = booking.bookingNo)
         whenever(prisonApi.getSentenceDetail(booking.id)).thenReturn(
             SentenceDetail(
                 conditionalReleaseDate = LocalDate.of(2024, 1, 1),
@@ -314,8 +315,18 @@ internal class CustodyDateUpdateServiceTest {
                 bookingId = booking.id
             )
         )
+        val disposalWithSdsPlus = DisposalWithSdsPlus(
+            id = disposal.id,
+            event = disposal.event,
+            type = disposal.type
+        )
+        whenever(disposalWithSdsPlusRepository.findById(custody.disposal!!.id)).thenReturn(Optional.of(disposalWithSdsPlus))
         custodyDateUpdateService.updateCustodyKeyDates(bookingId = booking.id)
-        verify(disposalWithSdsPlusRepository).updateSdsPlusFlag(eq(custody.disposal?.id!!), eq(true))
+        verify(disposalWithSdsPlusRepository).save(
+            check<DisposalWithSdsPlus> {
+                assertThat(it.sdsPlus, equalTo(true))
+            }
+        )
     }
 
     @Test
@@ -357,7 +368,7 @@ internal class CustodyDateUpdateServiceTest {
         whenever(custodyRepository.findForUpdate(custody.id)).thenReturn(custody.id)
         whenever(custodyRepository.findCustodyById(custody.id)).thenReturn(custody)
         custodyDateUpdateService.updateCustodyKeyDates(bookingId = booking.id)
-        verify(disposalWithSdsPlusRepository, never()).updateSdsPlusFlag(any(), any())
+        verify(disposalWithSdsPlusRepository, never()).save(any<DisposalWithSdsPlus>())
     }
 
     @Test
@@ -410,7 +421,7 @@ internal class CustodyDateUpdateServiceTest {
         )
         custodyDateUpdateService.updateCustodyKeyDates(booking.id)
 
-        verify(disposalWithSdsPlusRepository, never()).updateSdsPlusFlag(any(), any())
+        verify(disposalWithSdsPlusRepository, never()).save(any<DisposalWithSdsPlus>())
         verify(telemetryService).trackEvent(
             eq("SentenceEnvelopeBookingIdMismatch"), check {
                 assertThat(it["bookingId"], equalTo("1234567"))

@@ -66,7 +66,19 @@ class Disposal(
 
     @Column(updatable = false, columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)
-    val softDeleted: Boolean = false
+    val softDeleted: Boolean = false,
+
+    @LastModifiedBy
+    @Column(name = "last_updated_user_id")
+    var lastModifiedUserId: Long = 0,
+
+    @LastModifiedDate
+    @Column(name = "last_updated_datetime")
+    val lastModifiedDate: ZonedDateTime? = ZonedDateTime.now(),
+
+    @Version
+    @Column(name = "row_version")
+    val version: Long = 0
 )
 
 @Entity
@@ -100,7 +112,7 @@ class DisposalWithSdsPlus(
 
     @LastModifiedBy
     @Column(name = "last_updated_user_id")
-    var lastModifiedUserId: Long? = 0,
+    var lastModifiedUserId: Long = 0,
 
     @LastModifiedDate
     @Column(name = "last_updated_datetime")
@@ -108,7 +120,7 @@ class DisposalWithSdsPlus(
 
     @Version
     @Column(name = "row_version")
-    val version: Long? = 0
+    val version: Long = 0
 )
 
 @Entity

@@ -4,6 +4,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.client.RestClientResponseException
+import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.flags.FeatureFlags
 import uk.gov.justice.digital.hmpps.integrations.crds.CrdsApiClient
 import uk.gov.justice.digital.hmpps.integrations.crds.OperativeSentenceEnvelope
@@ -75,9 +76,10 @@ class CustodyDateUpdateService(
                         )
                     } else {
                         custody.disposal?.id?.let { disposalId ->
-                            disposalWithSdsPlusRepository.updateSdsPlusFlag(
-                                disposalId, envelope.containsAnSDSPlusSentence
-                            )
+                            val disposal = disposalWithSdsPlusRepository.findById(disposalId)
+                                .orElseThrow { NotFoundException("Disposal $disposalId not found") }
+                            disposal.sdsPlus = envelope.containsAnSDSPlusSentence
+                            disposalWithSdsPlusRepository.save(disposal)
                         }
                     }
                 }

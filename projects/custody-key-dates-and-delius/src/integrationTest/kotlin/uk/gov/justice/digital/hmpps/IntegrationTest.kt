@@ -14,6 +14,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean
 import uk.gov.justice.digital.hmpps.data.generator.MessageGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.SentenceGenerator.DEFAULT_CUSTODY
+import uk.gov.justice.digital.hmpps.data.generator.UserGenerator
 import uk.gov.justice.digital.hmpps.flags.FeatureFlags
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.Custody
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.CustodyDateType
@@ -216,6 +217,9 @@ internal class IntegrationTest @Autowired constructor(
         val custody = custodyRepository.findCustodyById(custodyId)
         val disposal = disposalWithSdsPlusRepository.findByIdOrNull(custody.disposal!!.id)
         assertThat(disposal?.sdsPlus, equalTo(true))
+        assertThat(disposal?.lastModifiedUserId, equalTo(UserGenerator.AUDIT_USER.id))
+        assertThat(disposal?.version, equalTo(1L))
+        assertNotNull(disposal?.lastModifiedDate)
         verifyUpdatedKeyDatesForSdsPlus(custody)
     }
 
