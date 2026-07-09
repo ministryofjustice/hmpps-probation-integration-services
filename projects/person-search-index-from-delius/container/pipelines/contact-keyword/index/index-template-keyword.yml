@@ -831,7 +831,11 @@ template:
           code:
             type: keyword
           description:
-            type: keyword
+            type: text
+            analyzer: probation_text_analyzer
+            fields:
+              keyword:
+                type: keyword
       attended:
         type: keyword
         copy_to: outcome
