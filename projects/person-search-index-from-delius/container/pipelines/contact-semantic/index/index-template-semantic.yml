@@ -1288,6 +1288,20 @@ template:
         fields:
           keyword:
             type: keyword
+      sparks:
+        properties:
+          code:
+            type: text
+            analyzer: probation_text_analyzer
+            fields:
+              keyword:
+                type: keyword
+          description:
+            type: text
+            analyzer: probation_text_analyzer
+            fields:
+              keyword:
+                type: keyword
       attended:
         type: text
         analyzer: probation_text_analyzer
