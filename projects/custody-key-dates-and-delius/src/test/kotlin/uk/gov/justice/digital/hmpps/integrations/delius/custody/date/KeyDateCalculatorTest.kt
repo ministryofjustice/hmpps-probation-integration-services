@@ -19,7 +19,8 @@ internal class KeyDateCalculatorTest {
     @ParameterizedTest
     @MethodSource("suspensionDateCases")
     fun `check two-thirds point`(
-        conditionalReleaseDate: LocalDate?, sentenceExpiryDate: LocalDate?, expected: LocalDate?) {
+        conditionalReleaseDate: LocalDate?, sentenceExpiryDate: LocalDate?, expected: LocalDate?
+    ) {
         val custody = generateCustodialSentence(
             disposal = generateDisposal(generateEvent()), bookingRef = "ABC"
         )
@@ -34,7 +35,8 @@ internal class KeyDateCalculatorTest {
     @ParameterizedTest
     @MethodSource("emedCases")
     fun `calculate presumptive em end date`(
-        sentenceExpiryDate: LocalDate?, sentenceLength: Long, sdsPlus: Boolean, expected: LocalDate?) {
+        sentenceExpiryDate: LocalDate?, sentenceLength: Long, sdsPlus: Boolean, expected: LocalDate?
+    ) {
         val result = calculator.presumptiveElectronicMonitoringEndDate(
             SentenceDetail(sentenceExpiryDate = sentenceExpiryDate),
             OperativeSentenceEnvelope(
