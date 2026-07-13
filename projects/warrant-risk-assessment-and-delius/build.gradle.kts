@@ -18,6 +18,9 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation("tools.jackson.module:jackson-module-kotlin")
     implementation(libs.springdoc)
+    implementation("org.springframework.boot:spring-boot-starter-data-ldap")
+
+    dev("com.unboundid:unboundid-ldapsdk")
 
     dev(project(":libs:dev-tools"))
     dev("com.h2database:h2")

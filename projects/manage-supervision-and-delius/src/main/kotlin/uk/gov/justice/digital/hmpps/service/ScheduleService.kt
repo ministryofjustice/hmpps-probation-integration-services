@@ -46,7 +46,7 @@ class ScheduleService(
                     ?.let { Name(it.forename, null, it.surname) }
                 document.toDocument(author)
             },
-            enforcementAction = contact.enforcements.sortedBy { it.createdDatetime }.lastOrNull()?.let {
+            enforcementAction = contact.enforcement?.let {
                 EnforcementAction(
                     code = it.action?.code,
                     description = it.action?.description,

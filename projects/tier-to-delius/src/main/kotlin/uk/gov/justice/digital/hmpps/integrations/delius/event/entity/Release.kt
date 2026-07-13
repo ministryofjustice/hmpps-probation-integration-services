@@ -15,6 +15,9 @@ class Release(
     @Column(name = "actual_release_date")
     val date: LocalDate,
 
+    @OneToOne(mappedBy = "release")
+    val recall: Recall? = null,
+
     @ManyToOne
     @JoinColumn(name = "custody_id")
     val custody: Custody? = null,

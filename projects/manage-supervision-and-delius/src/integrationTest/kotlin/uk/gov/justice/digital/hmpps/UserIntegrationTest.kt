@@ -20,7 +20,6 @@ import uk.gov.justice.digital.hmpps.service.name
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.json
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
-import java.time.LocalDate
 
 class UserIntegrationTest : IntegrationTestBase() {
 
@@ -35,7 +34,7 @@ class UserIntegrationTest : IntegrationTestBase() {
         assertThat(res.provider, equalTo(DEFAULT_PROVIDER.description))
         assertThat(res.caseload[0].crn, equalTo(OVERVIEW.crn))
         assertThat(res.caseload[0].caseName, equalTo(OVERVIEW.name()))
-        assertThat(res.caseload[0].allocatedOn, equalTo(LocalDate.of(2024, 6, 15)))
+        assertThat(res.caseload[0].allocatedOn, equalTo(null))
     }
 
     @Test
@@ -170,7 +169,7 @@ class UserIntegrationTest : IntegrationTestBase() {
         assertThat(res.caseload.size, equalTo(1))
         assertThat(res.caseload[0].crn, equalTo("X000004"))
         assertThat(res.caseload[0].latestSentence, equalTo("Default Sentence Type"))
-        assertThat(res.caseload[0].allocatedOn, equalTo(LocalDate.of(2024, 6, 15)))
+        assertThat(res.caseload[0].allocatedOn, equalTo(null))
     }
 
     @Test

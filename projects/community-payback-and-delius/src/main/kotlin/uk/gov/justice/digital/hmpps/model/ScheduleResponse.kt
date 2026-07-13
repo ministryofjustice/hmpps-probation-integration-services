@@ -31,7 +31,9 @@ data class ProjectAvailabilityDetails(
     val frequency: String?,
     val dayOfWeek: String,
     val startDateInclusive: LocalDate?,
-    val endDateExclusive: LocalDate?
+    val endDateExclusive: LocalDate?,
+    val startTime: LocalTime?,
+    val endTime: LocalTime?
 )
 
 data class AppointmentScheduleResponse(
@@ -66,7 +68,9 @@ fun UnpaidWorkProjectAvailability.toProjectAvailabilityDetails() = ProjectAvaila
     frequency = frequency?.description,
     dayOfWeek = dayOfWeek.weekDay,
     startDateInclusive = startDate,
-    endDateExclusive = endDate
+    endDateExclusive = endDate,
+    startTime = startTime,
+    endTime = endTime
 )
 
 fun UnpaidWorkAppointment.toAppointmentScheduleResponse() = AppointmentScheduleResponse(

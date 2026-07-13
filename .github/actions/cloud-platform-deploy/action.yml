@@ -11,9 +11,6 @@ inputs:
   version:
     description: The version of the service to deploy
     required: true
-  api:
-    description: The KUBE_ENV_API
-    required: true
   cert:
     description: The KUBE_CERT
     required: true
@@ -75,14 +72,13 @@ runs:
     - name: Authenticate
       uses: ./.github/actions/cloud-platform-auth
       with:
-        api: ${{ inputs.api }}
         cert: ${{ inputs.cert }}
         cluster: ${{ inputs.cluster }}
         namespace: ${{ inputs.namespace }}
         token: ${{ inputs.token }}
 
     - name: Install Helm
-      uses: azure/setup-helm@dda3372f752e03dde6b3237bc9431cdc2f7a02a2 # v5.0.0
+      uses: azure/setup-helm@9bc31f4ebc9c6b171d7bfbaa5d006ae7abdb4310 # v5.0.1
 
     - name: Deploy
       shell: bash # language=bash

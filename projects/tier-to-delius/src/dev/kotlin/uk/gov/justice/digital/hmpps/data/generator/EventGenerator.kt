@@ -5,6 +5,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.person.CaseEntity
 
 object EventGenerator {
     val DEFAULT = generate(eventNumber = "1")
+    val RECALLED = generate(eventNumber = "2")
 
     fun generate(
         person: CaseEntity = CaseEntityGenerator.DEFAULT,

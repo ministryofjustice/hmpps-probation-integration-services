@@ -6,7 +6,9 @@ import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.YesNoConverter
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
+import uk.gov.justice.digital.hmpps.exception.NotFoundException.Companion.orNotFoundBy
 import uk.gov.justice.digital.hmpps.model.CodeDescription
+import uk.gov.justice.digital.hmpps.utils.Extensions.reportMissing
 import java.time.LocalDate
 
 @Immutable
@@ -86,7 +88,13 @@ interface TeamRepository : JpaRepository<Team, Long> {
 
     fun findTeamByCode(teamCode: String): Team?
 
+    fun getByCode(code: String): Team = findTeamByCode(code).orNotFoundBy("code", code)
+
     fun findTeamsByCodeIn(teamCodes: List<String>): List<Team>
+
+    fun getByCodeIn(codes: List<String>) = codes.toSet().let { codes ->
+        findTeamsByCodeIn(codes.toList()).associateBy { it.code }.reportMissing(codes)
+    }
 }
 
 fun Team.toCodeDescription() = CodeDescription(

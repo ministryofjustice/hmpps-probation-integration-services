@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.person
 
 import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.jpa.repository.Modifying
 import org.springframework.data.jpa.repository.Query
 
 interface PersonRepository : JpaRepository<Person, Long> {
@@ -18,4 +19,8 @@ interface PersonRepository : JpaRepository<Person, Long> {
         """
     )
     fun findAllCrns(): List<String>
+
+    @Modifying
+    @Query("update PersonWithV3Tier p set p.v3TierId = :v3TierId where p.crn = :crn")
+    fun updateV3TierColumn(crn: String, v3TierId: Long)
 }

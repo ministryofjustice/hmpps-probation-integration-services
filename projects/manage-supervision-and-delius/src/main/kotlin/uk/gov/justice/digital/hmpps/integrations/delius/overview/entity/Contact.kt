@@ -94,8 +94,10 @@ class Contact(
     @JoinColumn(name = "latest_enforcement_action_id", referencedColumnName = "enforcement_action_id")
     var latestEnforcementAction: EnforcementAction? = null,
 
-    @OneToMany(mappedBy = "contact")
-    var enforcements: List<Enforcement> = mutableListOf(),
+    // there should only be one enforcement per contact, modeled
+    // as a one to many due to needing lazy loading
+    @OneToMany(mappedBy = "contact", fetch = FetchType.LAZY, orphanRemoval = true)
+    var enforcementEntries: MutableList<Enforcement> = mutableListOf(),
 
     @Column(name = "enforcement")
     @Convert(converter = NumericBooleanConverter::class)
@@ -182,6 +184,7 @@ class Contact(
 
     val partitionAreaId: Long = 0,
 ) {
+    val enforcement: Enforcement? get() = enforcementEntries.singleOrNull()
 
     fun startDateTime(): ZonedDateTime {
         val startTime = startTime
@@ -402,7 +405,6 @@ class EnforcementAction(
     val id: Long = 0
 )
 
-@Immutable
 @Entity
 @Table(name = "enforcement")
 @SQLRestriction("soft_deleted = 0")
@@ -414,10 +416,10 @@ class Enforcement(
 
     @ManyToOne
     @JoinColumn(name = "enforcement_action_id")
-    val action: EnforcementAction? = null,
+    var action: EnforcementAction? = null,
 
     @Column(name = "response_date")
-    val responseDate: ZonedDateTime? = null,
+    var responseDate: ZonedDateTime? = null,
 
     @CreatedDate
     var createdDatetime: ZonedDateTime? = ZonedDateTime.now(),
@@ -881,7 +883,7 @@ interface ContactRepository : JpaRepository<Contact, Long> {
             SELECT c from ContactAlert ca
             join ca.contact c
             join OffenderManager com on com.person.id = c.person.id and com.active = true and com.softDeleted = false
-            where c.alert = true and c.softDeleted = false
+            where c.alert = true and c.softDeleted = false and c.person.softDeleted = false
             and ca.staff.user.username = :username and com.staff.id = ca.staff.id
         """
     )

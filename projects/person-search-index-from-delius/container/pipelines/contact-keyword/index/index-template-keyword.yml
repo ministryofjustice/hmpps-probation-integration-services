@@ -826,6 +826,16 @@ template:
       outcomeDescription:
         type: keyword
         copy_to: outcome
+      sparks:
+        properties:
+          code:
+            type: keyword
+          description:
+            type: text
+            analyzer: probation_text_analyzer
+            fields:
+              keyword:
+                type: keyword
       attended:
         type: keyword
         copy_to: outcome
