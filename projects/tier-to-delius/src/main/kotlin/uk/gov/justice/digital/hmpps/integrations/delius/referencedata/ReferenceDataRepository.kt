@@ -9,6 +9,9 @@ interface ReferenceDataRepository : JpaRepository<ReferenceData, Long> {
         findByCodeAndSetName(code, set) ?: throw NotFoundException(set, "code", code)
 
     fun getV2Tier(tierScore: String) = getByCodeAndSetName("U${tierScore}", "TIER")
-    fun getV3Tier(tierScore: String, provisional: Boolean?) =
-        getByCodeAndSetName("SP${tierScore}${if (provisional == true) "I" else ""}", "TIER")
+    fun getV3Tier(tierScore: String, provisional: Boolean) = when (tierScore) {
+        "MISSING" -> "SPM"
+        "NOT_SUPERVISED" -> "SPNA"
+        else -> "SP${tierScore}${if (provisional) "I" else ""}"
+    }.let { getByCodeAndSetName(it, "TIER") }
 }
