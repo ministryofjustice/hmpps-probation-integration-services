@@ -45,47 +45,9 @@ class Event(
     val softDeleted: Boolean = false
 )
 
-@Immutable
 @Entity
-class Disposal(
-    @Id
-    @Column(name = "disposal_id")
-    val id: Long,
-
-    @OneToOne
-    @JoinColumn(name = "event_id", updatable = false)
-    val event: Event,
-
-    @ManyToOne
-    @JoinColumn(name = "disposal_type_id")
-    val type: DisposalType,
-
-    @Column(name = "active_flag", updatable = false, columnDefinition = "number")
-    @Convert(converter = NumericBooleanConverter::class)
-    val active: Boolean = true,
-
-    @Column(updatable = false, columnDefinition = "number")
-    @Convert(converter = NumericBooleanConverter::class)
-    val softDeleted: Boolean = false,
-
-    @LastModifiedBy
-    @Column(name = "last_updated_user_id")
-    var lastModifiedUserId: Long = 0,
-
-    @LastModifiedDate
-    @Column(name = "last_updated_datetime")
-    val lastModifiedDate: ZonedDateTime? = ZonedDateTime.now(),
-
-    @Version
-    @Column(name = "row_version")
-    val version: Long = 0
-)
-
-@Entity
-@Table(name = "disposal")
 @EntityListeners(AuditingEntityListener::class)
-class DisposalWithSdsPlus(
-
+class Disposal(
     @Id
     @Column(name = "disposal_id")
     val id: Long,

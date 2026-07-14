@@ -28,4 +28,4 @@ interface CustodyRepository : JpaRepository<Custody, Long> {
     fun findForUpdate(id: Long): Long
 }
 
-interface DisposalWithSdsPlusRepository : JpaRepository<DisposalWithSdsPlus, Long>
+interface DisposalRepository : JpaRepository<Disposal, Long>

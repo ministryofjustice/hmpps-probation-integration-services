@@ -47,7 +47,7 @@ internal class CustodyDateUpdateServiceTest {
     lateinit var custodyRepository: CustodyRepository
 
     @Mock
-    lateinit var disposalWithSdsPlusRepository: DisposalWithSdsPlusRepository
+    lateinit var disposalRepository: DisposalRepository
 
     @Mock
     lateinit var referenceDataRepository: ReferenceDataRepository
@@ -72,7 +72,7 @@ internal class CustodyDateUpdateServiceTest {
             prisonApi,
             personRepository,
             custodyRepository,
-            disposalWithSdsPlusRepository,
+            disposalRepository,
             referenceDataRepository,
             keyDateRepository,
             contactService,
@@ -268,7 +268,7 @@ internal class CustodyDateUpdateServiceTest {
     }
 
     @Test
-    fun `SDS+ flag enabled updates disposal sdsPlus`() {
+    fun `SDS+ flag enabled updates disposal and creates EMED and FTHRD key dates`() {
         whenever(featureFlags.enabled("sds-plus-flag-enabled")).thenReturn(true)
         listOf(
             CustodyDateType.AUTOMATIC_CONDITIONAL_RELEASE_DATE,
@@ -312,26 +312,35 @@ internal class CustodyDateUpdateServiceTest {
                 bookingId = booking.id
             )
         )
-        val disposalWithSdsPlus = DisposalWithSdsPlus(
-            id = disposal.id,
-            event = disposal.event,
-            type = disposal.type
-        )
-        whenever(disposalWithSdsPlusRepository.findById(custody.disposal!!.id)).thenReturn(
+        whenever(disposalRepository.findById(custody.disposal!!.id)).thenReturn(
             Optional.of(
-                disposalWithSdsPlus
+                disposal
             )
         )
         custodyDateUpdateService.updateCustodyKeyDates(bookingId = booking.id)
-        verify(disposalWithSdsPlusRepository).save(
-            check<DisposalWithSdsPlus> {
+        verify(disposalRepository).save(
+            check<Disposal> {
                 assertThat(it.sdsPlus, equalTo(true))
-            }
-        )
+            })
+        verify(keyDateRepository).saveAll(
+            check<List<KeyDate>> { saved ->
+                assertThat(
+                    saved.any {
+                        it.type.code == CustodyDateType.PRESUMPTIVE_EM_END_DATE.code
+                    }, equalTo(true)
+                )
+
+                assertThat(
+                    saved.any {
+                        it.type.code == CustodyDateType.FINAL_THIRD_START_DATE.code
+                    }, equalTo(true)
+                )
+            })
     }
 
     @Test
-    fun `SDS+ flag disabled does not update disposal`() {
+    fun `EMED and FTHRD not created when feature flag disabled`() {
+        whenever(featureFlags.enabled("sds-plus-flag-enabled")).thenReturn(false)
         setupCrdsMock()
         val booking = Booking(127, "FG37K", true, PersonGenerator.DEFAULT.nomsId!!)
         val custody = generateCustodialSentence(
@@ -341,8 +350,6 @@ internal class CustodyDateUpdateServiceTest {
             CustodyDateType.AUTOMATIC_CONDITIONAL_RELEASE_DATE,
             CustodyDateType.SENTENCE_EXPIRY_DATE,
             CustodyDateType.SUSPENSION_DATE_IF_RESET,
-            CustodyDateType.PRESUMPTIVE_EM_END_DATE,
-            CustodyDateType.FINAL_THIRD_START_DATE
         ).forEach { type ->
             whenever(
                 referenceDataRepository.findByDatasetAndCode(
@@ -369,7 +376,23 @@ internal class CustodyDateUpdateServiceTest {
         whenever(custodyRepository.findForUpdate(custody.id)).thenReturn(custody.id)
         whenever(custodyRepository.findCustodyById(custody.id)).thenReturn(custody)
         custodyDateUpdateService.updateCustodyKeyDates(bookingId = booking.id)
-        verify(disposalWithSdsPlusRepository, never()).save(any<DisposalWithSdsPlus>())
+        verify(disposalRepository, never()).save(any<Disposal>())
+
+        verify(keyDateRepository).saveAll(
+            check<List<KeyDate>> { saved ->
+                assertThat(
+                    saved.any {
+                        it.type.code == CustodyDateType.PRESUMPTIVE_EM_END_DATE.code
+                    }, equalTo(false)
+                )
+
+                assertThat(
+                    saved.any {
+                        it.type.code == CustodyDateType.FINAL_THIRD_START_DATE.code
+                    }, equalTo(false)
+                )
+            })
+
     }
 
     @Test
@@ -422,7 +445,7 @@ internal class CustodyDateUpdateServiceTest {
         )
         custodyDateUpdateService.updateCustodyKeyDates(booking.id)
 
-        verify(disposalWithSdsPlusRepository, never()).save(any<DisposalWithSdsPlus>())
+        verify(disposalRepository, never()).save(any<Disposal>())
         verify(telemetryService).trackEvent(
             eq("SentenceEnvelopeBookingIdMismatch"), check {
                 assertThat(it["bookingId"], equalTo("1234567"))

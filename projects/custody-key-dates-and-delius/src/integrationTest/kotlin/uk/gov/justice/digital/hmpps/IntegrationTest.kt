@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.Assertions.assertNotNull
+import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Test
 import org.mockito.ArgumentMatchers.anyMap
 import org.mockito.kotlin.*
@@ -19,7 +20,7 @@ import uk.gov.justice.digital.hmpps.flags.FeatureFlags
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.Custody
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.CustodyDateType
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.CustodyRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.DisposalWithSdsPlusRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.DisposalRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.contact.ContactRepository
 import uk.gov.justice.digital.hmpps.message.MessageAttributes
 import uk.gov.justice.digital.hmpps.message.Notification
@@ -40,7 +41,7 @@ internal class IntegrationTest @Autowired constructor(
     private val channelManager: HmppsChannelManager,
     private val contactRepository: ContactRepository,
     private val custodyRepository: CustodyRepository,
-    private val disposalWithSdsPlusRepository: DisposalWithSdsPlusRepository
+    private val disposalRepository: DisposalRepository
 ) {
 
     @MockitoBean
@@ -69,10 +70,13 @@ internal class IntegrationTest @Autowired constructor(
 
         val custodyId = custodyRepository.findCustodyId(PersonGenerator.DEFAULT.id, DEFAULT_CUSTODY.bookingRef).first()
         val custody = custodyRepository.findCustodyById(custodyId)
-        val disposal = disposalWithSdsPlusRepository.findByIdOrNull(custody.disposal!!.id)
+        val disposal = disposalRepository.findByIdOrNull(custody.disposal!!.id)
         assertThat(disposal?.sdsPlus, equalTo(null))
         verifyUpdatedKeyDates(custody)
         verifyContactCreated()
+
+        assertNull(custody.keyDate(CustodyDateType.PRESUMPTIVE_EM_END_DATE.code))
+        assertNull(custody.keyDate(CustodyDateType.FINAL_THIRD_START_DATE.code))
 
         verify(telemetryService).trackEvent(
             eq("KeyDatesUpdated"),
@@ -91,6 +95,7 @@ internal class IntegrationTest @Autowired constructor(
 
     @Test
     fun `Custody Key Dates updated from SENTENCE_CHANGED event`() {
+        whenever(featureFlags.enabled("sds-plus-flag-enabled")).thenReturn(false)
         val notification = Notification(
             message = MessageGenerator.SENTENCE_CHANGED,
             attributes = MessageAttributes(eventType = "SENTENCE_CHANGED")
@@ -151,8 +156,8 @@ internal class IntegrationTest @Autowired constructor(
         assertThat(erd?.date, equalTo(LocalDate.parse("2022-11-27")))
         assertThat(hde?.date, equalTo(LocalDate.parse("2022-10-28")))
         assertThat(pr1?.date, equalTo(LocalDate.parse("2024-10-05")))
-        assertThat(emed?.date, equalTo(LocalDate.parse("2025-08-11")))
-        assertThat(fthrd?.date, equalTo(LocalDate.parse("2025-08-24")))
+        assertNull(emed)
+        assertNull(fthrd)
 
         assertThat(led?.softDeleted, equalTo(false))
     }
@@ -179,8 +184,6 @@ internal class IntegrationTest @Autowired constructor(
             EXP 27/11/2022
             HDE 28/10/2022
             PR1 05/10/2024
-            EMED 11/08/2025
-            FTHRD 24/08/2025
                 """.trimIndent()
             )
         )
@@ -209,27 +212,24 @@ internal class IntegrationTest @Autowired constructor(
     }
 
     @Test
-    fun `SDS plus updated when feature flag enabled`() {
+    fun `EMED and FTHRD dates created and disposal updated when feature flag enabled`() {
         whenever(featureFlags.enabled("sds-plus-flag-enabled")).thenReturn(true)
         val notification = Notification(message = MessageGenerator.SENTENCE_DATE_CHANGED_SDS)
         channelManager.getChannel(queueName).publishAndWait(notification)
         val custodyId = custodyRepository.findCustodyId(PersonGenerator.SDS_PLUS_PERSON.id, "78340A").first()
         val custody = custodyRepository.findCustodyById(custodyId)
-        val disposal = disposalWithSdsPlusRepository.findByIdOrNull(custody.disposal!!.id)
+        val disposal = disposalRepository.findByIdOrNull(custody.disposal!!.id)
         assertThat(disposal?.sdsPlus, equalTo(true))
         assertThat(disposal?.lastModifiedUserId, equalTo(UserGenerator.AUDIT_USER.id))
         assertThat(disposal?.version, equalTo(1L))
         assertNotNull(disposal?.lastModifiedDate)
-        verifyUpdatedKeyDatesForSdsPlus(custody)
-    }
-
-    private fun verifyUpdatedKeyDatesForSdsPlus(custody: Custody) {
-        val sed = custody.keyDate(CustodyDateType.SENTENCE_EXPIRY_DATE.code)
-        val emed = custody.keyDate(CustodyDateType.PRESUMPTIVE_EM_END_DATE.code)
-        val fthrd = custody.keyDate(CustodyDateType.FINAL_THIRD_START_DATE.code)
-
-        assertThat(sed?.date, equalTo(LocalDate.parse("2025-09-10")))
-        assertThat(emed?.date, equalTo(LocalDate.parse("2025-05-11")))
-        assertThat(fthrd?.date, equalTo(LocalDate.parse("2025-05-11")))
+        assertThat(
+            custody.keyDate(CustodyDateType.PRESUMPTIVE_EM_END_DATE.code)?.date,
+            equalTo(LocalDate.parse("2025-05-11"))
+        )
+        assertThat(
+            custody.keyDate(CustodyDateType.FINAL_THIRD_START_DATE.code)?.date,
+            equalTo(LocalDate.parse("2025-05-11"))
+        )
     }
 }

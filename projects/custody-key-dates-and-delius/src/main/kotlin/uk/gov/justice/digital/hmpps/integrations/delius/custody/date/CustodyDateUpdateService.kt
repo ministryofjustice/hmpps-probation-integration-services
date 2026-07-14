@@ -25,7 +25,7 @@ class CustodyDateUpdateService(
     private val prisonApi: PrisonApiClient,
     private val personRepository: PersonRepository,
     private val custodyRepository: CustodyRepository,
-    private val disposalWithSdsPlusRepository: DisposalWithSdsPlusRepository,
+    private val disposalRepository: DisposalRepository,
     private val referenceDataRepository: ReferenceDataRepository,
     private val keyDateRepository: KeyDateRepository,
     private val contactService: ContactService,
@@ -59,14 +59,16 @@ class CustodyDateUpdateService(
         }
         val custody = custodyRepository.findCustodyById(custodyRepository.findForUpdate(custodyId))
         val envelope = crdsApiClient.getOperativeSentenceEnvelope(booking.offenderNo)
-        val updated = calculateKeyDateChanges(sentenceDetail, custody, envelope)
+
+        val sdsPlusEnabled = featureFlags.enabled("sds-plus-flag-enabled")
+        val updated = calculateKeyDateChanges(sentenceDetail, custody, envelope, sdsPlusEnabled)
         if (updated.isEmpty()) {
             telemetryService.trackEvent("KeyDatesUnchanged", booking.telemetry(clientSource))
         } else {
             if (!dryRun) {
                 keyDateRepository.saveAll(updated)
                 contactService.createForKeyDateChanges(custody, updated)
-                if (featureFlags.enabled("sds-plus-flag-enabled")) {
+                if (sdsPlusEnabled) {
                     if (booking.id != envelope.bookingId) {
                         telemetryService.trackEvent(
                             "SentenceEnvelopeBookingIdMismatch", mapOf(
@@ -76,10 +78,10 @@ class CustodyDateUpdateService(
                         )
                     } else {
                         custody.disposal?.id?.let { disposalId ->
-                            val disposal = disposalWithSdsPlusRepository.findById(disposalId)
+                            val disposal = disposalRepository.findById(disposalId)
                                 .orElseThrow { NotFoundException("Disposal $disposalId not found") }
                             disposal.sdsPlus = envelope.containsAnSDSPlusSentence
-                            disposalWithSdsPlusRepository.save(disposal)
+                            disposalRepository.save(disposal)
                         }
                     }
                 }
@@ -94,7 +96,8 @@ class CustodyDateUpdateService(
     private fun calculateKeyDateChanges(
         sentenceDetail: SentenceDetail,
         custody: Custody,
-        envelope: OperativeSentenceEnvelope
+        envelope: OperativeSentenceEnvelope,
+        sdsPlusEnabled: Boolean
     ) =
         listOfNotNull(
             custody.keyDate(LICENCE_EXPIRY_DATE.code, sentenceDetail.licenceExpiryDate),
@@ -110,11 +113,20 @@ class CustodyDateUpdateService(
                 SUSPENSION_DATE_IF_RESET.code,
                 keyDateCalculator.suspensionDateIfReset(sentenceDetail, custody)
             ),
-            custody.keyDate(
-                PRESUMPTIVE_EM_END_DATE.code,
-                keyDateCalculator.presumptiveElectronicMonitoringEndDate(sentenceDetail, envelope)
-            ),
-            custody.keyDate(FINAL_THIRD_START_DATE.code, keyDateCalculator.finalThirdDate(sentenceDetail, envelope)),
+            sdsPlusEnabled.takeIf { it }?.let {
+                custody.keyDate(
+                    PRESUMPTIVE_EM_END_DATE.code, keyDateCalculator.presumptiveElectronicMonitoringEndDate(
+                        sentenceDetail, envelope
+                    )
+                )
+            },
+            sdsPlusEnabled.takeIf { it }?.let {
+                custody.keyDate(
+                    FINAL_THIRD_START_DATE.code, keyDateCalculator.finalThirdDate(
+                        sentenceDetail, envelope
+                    )
+                )
+            }
         )
 
     private fun Custody.keyDate(code: String, date: LocalDate?): KeyDate? = date?.let {
