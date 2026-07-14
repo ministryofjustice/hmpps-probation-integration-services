@@ -51,7 +51,7 @@ internal class ReferenceDataRepositoryTest {
     companion object {
         @JvmStatic
         fun v3mappings() = listOf(
-            Arguments.of("MISSING", false, "SPM"),
+            Arguments.of("MISSING", false, "M"),
             Arguments.of("NOT_SUPERVISED", false, "SPNA"),
             Arguments.of("B", true, "SPBI"),
             Arguments.of("B", false, "SPB"),
