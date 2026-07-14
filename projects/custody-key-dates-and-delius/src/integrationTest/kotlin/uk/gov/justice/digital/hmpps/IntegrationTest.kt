@@ -10,7 +10,6 @@ import org.mockito.kotlin.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.data.repository.findByIdOrNull
 import org.springframework.test.context.bean.override.mockito.MockitoBean
 import uk.gov.justice.digital.hmpps.data.generator.MessageGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
@@ -20,7 +19,6 @@ import uk.gov.justice.digital.hmpps.flags.FeatureFlags
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.Custody
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.CustodyDateType
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.CustodyRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.DisposalRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.contact.ContactRepository
 import uk.gov.justice.digital.hmpps.message.MessageAttributes
 import uk.gov.justice.digital.hmpps.message.Notification
@@ -40,8 +38,7 @@ internal class IntegrationTest @Autowired constructor(
     private val queueName: String,
     private val channelManager: HmppsChannelManager,
     private val contactRepository: ContactRepository,
-    private val custodyRepository: CustodyRepository,
-    private val disposalRepository: DisposalRepository
+    private val custodyRepository: CustodyRepository
 ) {
 
     @MockitoBean
@@ -70,8 +67,7 @@ internal class IntegrationTest @Autowired constructor(
 
         val custodyId = custodyRepository.findCustodyId(PersonGenerator.DEFAULT.id, DEFAULT_CUSTODY.bookingRef).first()
         val custody = custodyRepository.findCustodyById(custodyId)
-        val disposal = disposalRepository.findByIdOrNull(custody.disposal!!.id)
-        assertThat(disposal?.sdsPlus, equalTo(null))
+        assertThat(custody.disposal?.sdsPlus, equalTo(null))
         verifyUpdatedKeyDates(custody)
         verifyContactCreated()
 
@@ -218,11 +214,10 @@ internal class IntegrationTest @Autowired constructor(
         channelManager.getChannel(queueName).publishAndWait(notification)
         val custodyId = custodyRepository.findCustodyId(PersonGenerator.SDS_PLUS_PERSON.id, "78340A").first()
         val custody = custodyRepository.findCustodyById(custodyId)
-        val disposal = disposalRepository.findByIdOrNull(custody.disposal!!.id)
-        assertThat(disposal?.sdsPlus, equalTo(true))
-        assertThat(disposal?.lastModifiedUserId, equalTo(UserGenerator.AUDIT_USER.id))
-        assertThat(disposal?.version, equalTo(1L))
-        assertNotNull(disposal?.lastModifiedDate)
+        assertThat(custody.disposal?.sdsPlus, equalTo(true))
+        assertThat(custody.disposal?.lastModifiedUserId, equalTo(UserGenerator.AUDIT_USER.id))
+        assertThat(custody.disposal?.version, equalTo(1L))
+        assertNotNull(custody.disposal?.lastModifiedDate)
         assertThat(
             custody.keyDate(CustodyDateType.PRESUMPTIVE_EM_END_DATE.code)?.date,
             equalTo(LocalDate.parse("2025-05-11"))

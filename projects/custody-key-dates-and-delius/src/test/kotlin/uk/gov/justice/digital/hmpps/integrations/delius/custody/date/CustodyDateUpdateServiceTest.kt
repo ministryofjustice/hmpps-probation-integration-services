@@ -29,7 +29,6 @@ import uk.gov.justice.digital.hmpps.integrations.prison.PrisonApiClient
 import uk.gov.justice.digital.hmpps.integrations.prison.SentenceDetail
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import java.time.LocalDate
-import java.util.*
 
 @ExtendWith(MockitoExtension::class)
 internal class CustodyDateUpdateServiceTest {
@@ -312,12 +311,8 @@ internal class CustodyDateUpdateServiceTest {
                 bookingId = booking.id
             )
         )
-        whenever(disposalRepository.findById(custody.disposal!!.id)).thenReturn(
-            Optional.of(
-                disposal
-            )
-        )
         custodyDateUpdateService.updateCustodyKeyDates(bookingId = booking.id)
+        assertThat(custody.disposal!!.sdsPlus, equalTo(true))
         verify(disposalRepository).save(
             check<Disposal> {
                 assertThat(it.sdsPlus, equalTo(true))
