@@ -7,18 +7,19 @@ import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.*
-import uk.gov.justice.digital.hmpps.appointments.entity.AppointmentEntities
 import uk.gov.justice.digital.hmpps.appointments.entity.AppointmentEntities.AppointmentContact
 import uk.gov.justice.digital.hmpps.appointments.entity.AppointmentEntities.Type.Companion.REVIEW_ENFORCEMENT_STATUS
 import uk.gov.justice.digital.hmpps.appointments.repository.AppointmentRepositories.AppointmentRepository
 import uk.gov.justice.digital.hmpps.appointments.repository.AppointmentRepositories.EnforcementRepository
 import uk.gov.justice.digital.hmpps.appointments.repository.AppointmentRepositories.EventRepository
 import uk.gov.justice.digital.hmpps.appointments.test.TestData
-import uk.gov.justice.digital.hmpps.data.generator.IdGenerator.id
+import uk.gov.justice.digital.hmpps.appointments.test.TestData.ACTION
+import uk.gov.justice.digital.hmpps.appointments.test.TestData.ACTION_WITHOUT_OUTSTANDING
+import uk.gov.justice.digital.hmpps.appointments.test.TestData.ACTION_WITH_NULL_OUTSTANDING
 import uk.gov.justice.digital.hmpps.set
 
 @ExtendWith(MockitoExtension::class)
-class EnforcementServiceTest() {
+class EnforcementServiceTest {
     @Mock
     private lateinit var enforcementRepository: EnforcementRepository
 
@@ -33,75 +34,51 @@ class EnforcementServiceTest() {
 
     @Test
     fun `sets enforcement flag to true when action has outstandingContactAction`() {
-        val actionWithOutstanding = AppointmentEntities.EnforcementAction(
-            id(),
-            "ACT02",
-            "Action 2",
-            7,
-            outstandingContactAction = true,
-            TestData.TYPE
-        )
         val appointment = TestData.appointment()
-        whenever(enforcementRepository.existsByContactId(appointment.id!!)).thenReturn(true)
+        whenever(enforcementRepository.findByContactId(appointment.id!!)).thenReturn(TestData.enforcement(appointment))
 
-        enforcementService.applyEnforcementAction(appointment, actionWithOutstanding, TestData.REVIEW_TYPE)
+        enforcementService.applyEnforcementAction(appointment, ACTION, TestData.REVIEW_TYPE)
 
-        assertThat(appointment.enforcement).isTrue()
-        assertThat(appointment.enforcementActionId).isEqualTo(actionWithOutstanding.id)
+        assertThat(appointment.enforcementFlag).isTrue
+        assertThat(appointment.enforcementActionId).isEqualTo(ACTION.id)
     }
 
     @Test
     fun `sets enforcement flag to null when action does not have outstandingContactAction`() {
-        val actionWithoutOutstanding = AppointmentEntities.EnforcementAction(
-            id(),
-            "ACT03",
-            "Action 3",
-            7,
-            outstandingContactAction = false,
-            TestData.TYPE
-        )
         val appointment = TestData.appointment()
-        whenever(enforcementRepository.existsByContactId(appointment.id!!)).thenReturn(true)
+        whenever(enforcementRepository.findByContactId(appointment.id!!)).thenReturn(TestData.enforcement(appointment))
 
-        enforcementService.applyEnforcementAction(appointment, actionWithoutOutstanding, TestData.REVIEW_TYPE)
+        enforcementService.applyEnforcementAction(appointment, ACTION_WITHOUT_OUTSTANDING, TestData.REVIEW_TYPE)
 
-        assertThat(appointment.enforcement).isNull()
-        assertThat(appointment.enforcementActionId).isEqualTo(actionWithoutOutstanding.id)
+        assertThat(appointment.enforcementFlag).isNull()
+        assertThat(appointment.enforcementActionId).isEqualTo(ACTION_WITHOUT_OUTSTANDING.id)
     }
 
     @Test
     fun `sets enforcement flag to null when outstandingContactAction is null`() {
-        val actionNullOutstanding = AppointmentEntities.EnforcementAction(
-            id(),
-            "ACT04",
-            "Action 4",
-            7,
-            outstandingContactAction = null,
-            TestData.TYPE
-        )
         val appointment = TestData.appointment()
-        whenever(enforcementRepository.existsByContactId(appointment.id!!)).thenReturn(true)
+        whenever(enforcementRepository.findByContactId(appointment.id!!)).thenReturn(TestData.enforcement(appointment))
 
-        enforcementService.applyEnforcementAction(appointment, actionNullOutstanding, TestData.REVIEW_TYPE)
+        enforcementService.applyEnforcementAction(appointment, ACTION_WITH_NULL_OUTSTANDING, TestData.REVIEW_TYPE)
 
-        assertThat(appointment.enforcement).isNull()
+        assertThat(appointment.enforcementFlag).isNull()
     }
 
     @Test
     fun `creates enforcement and contact if it doesn't exist`() {
         val appointment = TestData.appointment(notes = "Some notes")
-        whenever(enforcementRepository.existsByContactId(appointment.id!!)).thenReturn(false)
+        whenever(enforcementRepository.findByContactId(appointment.id!!)).thenReturn(null)
 
-        enforcementService.applyEnforcementAction(appointment, TestData.ACTION, TestData.REVIEW_TYPE)
+        enforcementService.applyEnforcementAction(appointment, ACTION, TestData.REVIEW_TYPE)
 
         verify(enforcementRepository).save(any())
         verify(appointmentRepository).save(check<AppointmentContact> {
-            assertThat(it.type).isEqualTo(TestData.ACTION.type)
+            assertThat(it.type).isEqualTo(ACTION.type)
             assertThat(it.linkedContact).isEqualTo(appointment)
             assertThat(it.notes).isNull()
         })
-        assertThat(appointment.enforcement).isEqualTo(true)
-        assertThat(appointment.enforcementActionId).isEqualTo(TestData.ACTION.id)
+        assertThat(appointment.enforcementFlag).isTrue
+        assertThat(appointment.enforcementActionId).isEqualTo(ACTION.id)
         assertThat(appointment.notes).matches(
             """
             Some notes
@@ -113,14 +90,33 @@ class EnforcementServiceTest() {
     }
 
     @Test
-    fun `doesn't create an enforcement if it already exists`() {
+    fun `updates enforcement if it already exists`() {
         val appointment = TestData.appointment()
-        whenever(enforcementRepository.existsByContactId(appointment.id!!)).thenReturn(true)
+        whenever(enforcementRepository.findByContactId(appointment.id!!))
+            .thenReturn(TestData.enforcement(appointment, ACTION_WITHOUT_OUTSTANDING))
 
-        enforcementService.applyEnforcementAction(appointment, TestData.ACTION, TestData.REVIEW_TYPE)
+        enforcementService.applyEnforcementAction(appointment, ACTION, TestData.REVIEW_TYPE)
 
-        verify(enforcementRepository, never()).save(any())
-        verify(appointmentRepository, never()).save(any())
+        verify(enforcementRepository).save(check {
+            assertThat(it.contact).isEqualTo(appointment)
+            assertThat(it.action).isEqualTo(ACTION)
+        })
+        assertThat(appointment.enforcementFlag).isTrue
+        assertThat(appointment.enforcementActionId).isEqualTo(ACTION.id)
+    }
+
+    @Test
+    fun `soft-deletes enforcement when updating to a compliant outcome`() {
+        val event = TestData.event()
+        val appointment = TestData.appointment(event = event)
+        val enforcement = TestData.enforcement(appointment, ACTION)
+        whenever(enforcementRepository.findByContactId(appointment.id!!))
+            .thenReturn(enforcement)
+
+        enforcementService.removeEnforcementAction(appointment)
+
+        assertThat(enforcement.softDeleted).isTrue
+        verify(appointmentRepository).countFailureToComply(event)
     }
 
     @Test
@@ -130,11 +126,11 @@ class EnforcementServiceTest() {
         val appointment = TestData.appointment(event = event)
         event.set("disposal", disposal)
 
-        whenever(enforcementRepository.existsByContactId(appointment.id!!)).thenReturn(true)
+        whenever(enforcementRepository.findByContactId(appointment.id!!)).thenReturn(TestData.enforcement(appointment))
         whenever(appointmentRepository.countFailureToComply(event)).thenReturn(3)
         whenever(appointmentRepository.enforcementReviewExists(event.id, event.breachEnd)).thenReturn(false)
 
-        enforcementService.applyEnforcementAction(appointment, TestData.ACTION, TestData.REVIEW_TYPE)
+        enforcementService.applyEnforcementAction(appointment, ACTION, TestData.REVIEW_TYPE)
 
         verify(appointmentRepository).save(check<AppointmentContact> {
             assertThat(it.type).isEqualTo(TestData.REVIEW_TYPE)
@@ -149,11 +145,11 @@ class EnforcementServiceTest() {
         val appointment = TestData.appointment(event = event)
         event.set("disposal", disposal)
 
-        whenever(enforcementRepository.existsByContactId(appointment.id!!)).thenReturn(true)
+        whenever(enforcementRepository.findByContactId(appointment.id!!)).thenReturn(TestData.enforcement(appointment))
         whenever(appointmentRepository.countFailureToComply(event)).thenReturn(3)
         whenever(appointmentRepository.enforcementReviewExists(event.id, event.breachEnd)).thenReturn(true)
 
-        enforcementService.applyEnforcementAction(appointment, TestData.ACTION, TestData.REVIEW_TYPE)
+        enforcementService.applyEnforcementAction(appointment, ACTION, TestData.REVIEW_TYPE)
 
         verify(appointmentRepository, never()).save(check {
             assertThat(it.type.code).isEqualTo(REVIEW_ENFORCEMENT_STATUS)
@@ -167,10 +163,10 @@ class EnforcementServiceTest() {
         val eventWithDisposal = TestData.event(disposal = disposal)
         val appointment = TestData.appointment(event = eventWithDisposal)
 
-        whenever(enforcementRepository.existsByContactId(appointment.id!!)).thenReturn(true)
+        whenever(enforcementRepository.findByContactId(appointment.id!!)).thenReturn(TestData.enforcement(appointment))
         whenever(appointmentRepository.countFailureToComply(eventWithDisposal)).thenReturn(2)
 
-        enforcementService.applyEnforcementAction(appointment, TestData.ACTION, TestData.REVIEW_TYPE)
+        enforcementService.applyEnforcementAction(appointment, ACTION, TestData.REVIEW_TYPE)
 
         verify(appointmentRepository, never()).save(check {
             assertThat(it.type.code).isEqualTo(REVIEW_ENFORCEMENT_STATUS)
