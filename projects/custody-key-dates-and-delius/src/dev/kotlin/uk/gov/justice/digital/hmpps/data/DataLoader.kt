@@ -29,10 +29,10 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
         )
         save(ReferenceDataGenerator.DEFAULT_CUSTODY_STATUS)
         val keyDateTypes = saveAll(ReferenceDataGenerator.KEY_DATE_TYPES.values).filterNot {
-                it.code in setOf(
-                    CustodyDateType.PRESUMPTIVE_EM_END_DATE.code, CustodyDateType.FINAL_THIRD_START_DATE.code
-                )
-            }
+            it.code in setOf(
+                CustodyDateType.PRESUMPTIVE_EM_END_DATE.code, CustodyDateType.FINAL_THIRD_START_DATE.code
+            )
+        }
 
         save(ContactTypeGenerator.EDSS)
         save(SentenceGenerator.DEFAULT_DISPOSAL_TYPE)

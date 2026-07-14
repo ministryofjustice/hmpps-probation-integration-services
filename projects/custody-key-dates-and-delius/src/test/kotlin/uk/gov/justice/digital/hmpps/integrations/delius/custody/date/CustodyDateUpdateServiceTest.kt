@@ -392,7 +392,6 @@ internal class CustodyDateUpdateServiceTest {
                     }, equalTo(false)
                 )
             })
-
     }
 
     @Test
