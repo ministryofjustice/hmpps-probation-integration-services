@@ -6,6 +6,7 @@ import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.NumericBooleanConverter
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
+import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import java.time.ZonedDateTime
@@ -63,19 +64,14 @@ class PrisonManager(
 interface ResponsibleOfficerRepository : JpaRepository<ResponsibleOfficer, Long> {
     fun findByPersonCrn(crn: String): ResponsibleOfficer?
 
+    @EntityGraph(attributePaths = ["person"])
     @Query(
         """
-        select distinct p.crn as crn from Staff s
-        left join PersonManager pm on pm.staff = s
-        left join ResponsibleOfficer ro on ro.communityManager = pm
-        left join ro.person p
-        where upper(trim(s.code)) = upper(trim(:officerCode))
-        order by p.crn
+        select ro from ResponsibleOfficer ro
+        join ro.communityManager cm
+        join cm.staff staff
+        where upper(trim(staff.code)) = upper(trim(:officerCode))
         """
     )
-    fun findAllByOfficerCode(officerCode: String, pageable: Pageable): Page<ManagedCaseCrn>
-}
-
-interface ManagedCaseCrn {
-    val crn: String?
+    fun findAllByOfficerCode(officerCode: String, pageable: Pageable): Page<ResponsibleOfficer>
 }
