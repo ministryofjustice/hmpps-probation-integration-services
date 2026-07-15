@@ -186,7 +186,6 @@ class CaseControllerIntegrationTest @Autowired constructor(
 
     @Test
     fun `returns active personal circumstances sorted by start date`() {
-        ensurePersonalCircumstanceSoftDeletedColumn()
         transactionTemplate.execute {
             val person = personRepository.findByCrn(PersonGenerator.DEFAULT_PERSON.crn)!!
             val type = persistCircumstanceType("TYPE1", "Type 1")
@@ -239,7 +238,6 @@ class CaseControllerIntegrationTest @Autowired constructor(
 
     @Test
     fun `returns empty personal circumstances for known person with none`() {
-        ensurePersonalCircumstanceSoftDeletedColumn()
         val response = mockMvc.get("/case/${PersonGenerator.PERSON_2.crn}/personal-circumstances") { withToken() }
             .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<List<PersonalCircumstances>>()
@@ -254,15 +252,6 @@ class CaseControllerIntegrationTest @Autowired constructor(
             .andReturn().response.contentAsJson<ErrorResponse>().also {
                 assertThat(it.message).contains("Person with crn of X999999 not found")
             }
-    }
-
-    private fun ensurePersonalCircumstanceSoftDeletedColumn() {
-        transactionTemplate.execute {
-            entityManager.createNativeQuery(
-                "alter table personal_circumstance add if not exists soft_deleted number default 0"
-            ).executeUpdate()
-            null
-        }
     }
 
     private fun persistCircumstanceType(code: String, description: String): PersonalCircumstanceType =

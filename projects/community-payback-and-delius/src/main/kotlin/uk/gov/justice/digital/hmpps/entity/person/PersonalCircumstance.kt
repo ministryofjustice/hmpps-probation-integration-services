@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.entity.person
 
 import jakarta.persistence.Column
+import jakarta.persistence.Convert
 import jakarta.persistence.Entity
 import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
@@ -9,6 +10,7 @@ import jakarta.persistence.OneToOne
 import jakarta.persistence.Table
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
+import org.hibernate.type.NumericBooleanConverter
 import org.springframework.data.jpa.repository.JpaRepository
 import java.time.ZonedDateTime
 
@@ -37,7 +39,11 @@ class PersonalCircumstance(
     val startDate: ZonedDateTime,
 
     @Column(name = "end_date")
-    val endDate: ZonedDateTime? = null
+    val endDate: ZonedDateTime? = null,
+
+    @Column(columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
+    val softDeleted: Boolean = false
 )
 
 @Entity
