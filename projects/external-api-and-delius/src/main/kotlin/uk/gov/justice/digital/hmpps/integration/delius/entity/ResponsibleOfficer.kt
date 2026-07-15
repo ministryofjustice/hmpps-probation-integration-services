@@ -4,7 +4,10 @@ import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.NumericBooleanConverter
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.jpa.repository.Query
 import java.time.ZonedDateTime
 
 @Immutable
@@ -59,4 +62,20 @@ class PrisonManager(
 
 interface ResponsibleOfficerRepository : JpaRepository<ResponsibleOfficer, Long> {
     fun findByPersonCrn(crn: String): ResponsibleOfficer?
+
+    @Query(
+        """
+        select distinct p.crn as crn from Staff s
+        left join PersonManager pm on pm.staff = s
+        left join ResponsibleOfficer ro on ro.communityManager = pm
+        left join ro.person p
+        where upper(trim(s.code)) = upper(trim(:officerCode))
+        order by p.crn
+        """
+    )
+    fun findAllByOfficerCode(officerCode: String, pageable: Pageable): Page<ManagedCaseCrn>
+}
+
+interface ManagedCaseCrn {
+    val crn: String?
 }
