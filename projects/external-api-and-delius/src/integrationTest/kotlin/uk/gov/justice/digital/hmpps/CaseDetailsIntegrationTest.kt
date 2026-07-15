@@ -129,12 +129,12 @@ internal class CaseDetailsIntegrationTest : BaseIntegrationTest() {
     fun `returns empty managed cases page when officer has no people`() {
         transactionTemplate.execute { createOfficer("M345678") }
 
-        val response = mockMvc.get("/staff/M345678/managed-cases") { withToken() }
+        val response = mockMvc.get("/staff/M345678/managed-cases?size=1") { withToken() }
             .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<CrnPage>()
 
         assertThat(response.number, equalTo(0))
-        assertThat(response.size, equalTo(10))
+        assertThat(response.size, equalTo(1))
         assertThat(response.totalElements, equalTo(0))
         assertThat(response.totalPages, equalTo(0))
         assertThat(response.content, empty())
