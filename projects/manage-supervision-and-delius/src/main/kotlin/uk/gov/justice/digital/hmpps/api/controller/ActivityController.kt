@@ -15,7 +15,8 @@ import uk.gov.justice.digital.hmpps.service.ActivityService
 class ActivityController(private val activityService: ActivityService) {
 
     @GetMapping
-    @Operation(summary = "Gets all activity for a person",
+    @Operation(
+        summary = "Gets all activity for a person",
         description = "Returns all contacts split into two lists: past contacts in descending date order " +
             "(most recent first) under 'activities', and future contacts in ascending date order " +
             "(earliest first) under 'futureActivities'."
