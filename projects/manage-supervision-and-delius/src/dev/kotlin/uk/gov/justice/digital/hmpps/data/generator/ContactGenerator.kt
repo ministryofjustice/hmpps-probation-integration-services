@@ -164,7 +164,7 @@ object ContactGenerator {
     val POSSIBLE_OUTCOME_4 =
         generateContactTypeOutcome(APPT_CT_1.id, ACCEPTABLE_ABSENCE.id, APPT_CT_1, ACCEPTABLE_ABSENCE)
 
-    val PREVIOUS_APPT_CONTACT_ABSENT  by lazy {
+    val PREVIOUS_APPT_CONTACT_ABSENT by lazy {
         generateContact(
             OVERVIEW,
             APPT_CT_1,
@@ -295,8 +295,18 @@ object ContactGenerator {
         generateEnforcementAction("EA02", "First Warning Letter Sent", BREACH_CONTACT_TYPE)
 
     val ENFORCEMENT by lazy { generateEnforcement(ENFORCEMENT_CONTACT_1, ZonedDateTime.now(EuropeLondon).plusDays(7)) }
-    val DUE_SOON_ENFORCEMENT by lazy { generateEnforcement(ENFORCEMENT_CONTACT_2, ZonedDateTime.now(EuropeLondon).plusDays(1)) }
-    val OVERDUE_ENFORCEMENT by lazy { generateEnforcement(ENFORCEMENT_CONTACT_3, ZonedDateTime.now(EuropeLondon).minusDays(1)) }
+    val DUE_SOON_ENFORCEMENT by lazy {
+        generateEnforcement(
+            ENFORCEMENT_CONTACT_2,
+            ZonedDateTime.now(EuropeLondon).plusDays(1)
+        )
+    }
+    val OVERDUE_ENFORCEMENT by lazy {
+        generateEnforcement(
+            ENFORCEMENT_CONTACT_3,
+            ZonedDateTime.now(EuropeLondon).minusDays(1)
+        )
+    }
     val ENFORCEMENT_APPOINTMENT_CONTACT by lazy {
         generateContact(
             PersonGenerator.ENFORCEMENT_APPOINTMENT_PERSON,
