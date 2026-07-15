@@ -6,7 +6,6 @@ import jakarta.persistence.Entity
 import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
-import jakarta.persistence.OneToOne
 import jakarta.persistence.Table
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
@@ -27,11 +26,11 @@ class PersonalCircumstance(
     @JoinColumn(name = "offender_id")
     val person: Person,
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "circumstance_type_id")
     val type: PersonalCircumstanceType,
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "circumstance_sub_type_id")
     val subType: PersonalCircumstanceSubType? = null,
 
