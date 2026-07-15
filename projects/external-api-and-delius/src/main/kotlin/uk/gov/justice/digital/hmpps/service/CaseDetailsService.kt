@@ -1,8 +1,11 @@
 package uk.gov.justice.digital.hmpps.service
 
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.ldap.core.LdapTemplate
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import uk.gov.justice.digital.hmpps.exception.NotFoundException.Companion.orNotFoundBy
 import uk.gov.justice.digital.hmpps.integration.delius.EventRepository
 import uk.gov.justice.digital.hmpps.integration.delius.entity.*
 import uk.gov.justice.digital.hmpps.integration.delius.getEvent
@@ -26,7 +29,8 @@ class CaseDetailsService(
     private val personRepository: PersonRepository,
     private val ogrsAssessmentRepository: OgrsAssessmentRepository,
     private val ldapTemplate: LdapTemplate,
-    private val limitedAccess: LimitedAccessService
+    private val limitedAccess: LimitedAccessService,
+    private val staffRepository: StaffRepository
 ) {
     fun getAddresses(crn: String): AddressWrapper {
         val addresses = personAddressRepository.findAllByPersonCrn(crn)
@@ -46,6 +50,12 @@ class CaseDetailsService(
     }
 
     fun getLimitedAccessDetail(crn: String): LimitedAccessDetail = personRepository.getByCrn(crn).limitedAccessDetail()
+
+    fun getResponsiblePersons(officerCode: String, pageable: Pageable): Page<String> {
+        staffRepository.findByCode(officerCode.trim().uppercase()).orNotFoundBy("officerCode", officerCode)
+        return responsibleOfficerRepository.findAllByOfficerCode(officerCode.trim(), pageable)
+            .map { it.person.crn }
+    }
 
     @Transactional(readOnly = true)
     fun getCaseDetails(crn: String, eventNumber: Int): CaseDetails {

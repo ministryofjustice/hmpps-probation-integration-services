@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.integration.delius.entity
 
 import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
+import org.springframework.data.jpa.repository.JpaRepository
 import uk.gov.justice.digital.hmpps.model.Name
 import kotlin.jvm.Transient
 
@@ -47,4 +48,8 @@ class StaffUser(
 
     @Transient
     var telephone: String? = null
+}
+
+interface StaffRepository : JpaRepository<Staff, Long> {
+    fun findByCode(code: String): Staff?
 }
