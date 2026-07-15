@@ -1,27 +1,42 @@
 package uk.gov.justice.digital.hmpps
 
+import jakarta.persistence.EntityManager
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc
+import org.springframework.transaction.support.TransactionTemplate
 import org.springframework.test.json.JsonCompareMode
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
 import uk.gov.justice.digital.hmpps.advice.ErrorResponse
+import uk.gov.justice.digital.hmpps.data.generator.IdGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.UPWGenerator
 import uk.gov.justice.digital.hmpps.data.generator.UserGenerator
+import uk.gov.justice.digital.hmpps.entity.person.PersonRepository
+import uk.gov.justice.digital.hmpps.entity.person.PersonalCircumstance
+import uk.gov.justice.digital.hmpps.entity.person.PersonalCircumstanceSubType
+import uk.gov.justice.digital.hmpps.entity.person.PersonalCircumstanceType
+import uk.gov.justice.digital.hmpps.model.PersonalCircumstances
 import uk.gov.justice.digital.hmpps.model.ScheduleResponse
 import uk.gov.justice.digital.hmpps.model.UnpaidWorkDetails
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
+import java.time.temporal.ChronoUnit
+import java.time.ZonedDateTime
 
 @AutoConfigureMockMvc
 @SpringBootTest
 class CaseControllerIntegrationTest @Autowired constructor(
-    private val mockMvc: MockMvc
+    private val mockMvc: MockMvc,
+    private val transactionTemplate: TransactionTemplate,
+    private val personRepository: PersonRepository,
 ) {
+    @Autowired
+    lateinit var entityManager: EntityManager
+
     @Test
     fun `returns schedule with requirement progress, allocations and appointments`() {
         val response = mockMvc
@@ -168,4 +183,91 @@ class CaseControllerIntegrationTest @Autowired constructor(
         mockMvc.get("/case/X999999/registrations") { withToken() }
             .andExpect { status { isNotFound() } }
     }
+
+    @Test
+    fun `returns active personal circumstances sorted by start date`() {
+        ensurePersonalCircumstanceSoftDeletedColumn()
+        transactionTemplate.execute {
+            val person = personRepository.findByCrn(PersonGenerator.DEFAULT_PERSON.crn)!!
+            val type = persistCircumstanceType("TYPE1", "Type 1")
+            val subType = persistCircumstanceSubType("SUB1", "Sub Type 1")
+            val now = ZonedDateTime.now().truncatedTo(ChronoUnit.SECONDS)
+
+            entityManager.persist(
+                PersonalCircumstance(
+                    id = IdGenerator.getAndIncrement(),
+                    person = person,
+                    type = type,
+                    subType = subType,
+                    startDate = now.minusDays(10),
+                    endDate = null
+                )
+            )
+            entityManager.persist(
+                PersonalCircumstance(
+                    id = IdGenerator.getAndIncrement(),
+                    person = person,
+                    type = persistCircumstanceType("TYPE2", "Type 2"),
+                    subType = null,
+                    startDate = now.minusDays(2),
+                    endDate = now.plusDays(5)
+                )
+            )
+            entityManager.persist(
+                PersonalCircumstance(
+                    id = IdGenerator.getAndIncrement(),
+                    person = person,
+                    type = persistCircumstanceType("TYPE3", "Type 3"),
+                    subType = null,
+                    startDate = now.minusDays(20),
+                    endDate = now.minusDays(1)
+                )
+            )
+            null
+        }
+
+        val response = mockMvc.get("/case/${PersonGenerator.DEFAULT_PERSON.crn}/personal-circumstances") { withToken() }
+            .andExpect { status { isOk() } }
+            .andReturn().response.contentAsJson<List<PersonalCircumstances>>()
+
+        assertThat(response).hasSize(2)
+        assertThat(response[0].type.code).isEqualTo("TYPE1")
+        assertThat(response[0].subType?.code).isEqualTo("SUB1")
+        assertThat(response[1].type.code).isEqualTo("TYPE2")
+        assertThat(response[1].subType).isNull()
+    }
+
+    @Test
+    fun `returns empty personal circumstances for known person with none`() {
+        ensurePersonalCircumstanceSoftDeletedColumn()
+        val response = mockMvc.get("/case/${PersonGenerator.PERSON_2.crn}/personal-circumstances") { withToken() }
+            .andExpect { status { isOk() } }
+            .andReturn().response.contentAsJson<List<PersonalCircumstances>>()
+
+        assertThat(response).isEmpty()
+    }
+
+    @Test
+    fun `returns 404 for unknown person personal circumstances`() {
+        mockMvc.get("/case/X999999/personal-circumstances") { withToken() }
+            .andExpect { status { isNotFound() } }
+            .andReturn().response.contentAsJson<ErrorResponse>().also {
+                assertThat(it.message).contains("Person with crn of X999999 not found")
+            }
+    }
+
+    private fun ensurePersonalCircumstanceSoftDeletedColumn() {
+        transactionTemplate.execute {
+            entityManager.createNativeQuery(
+                "alter table personal_circumstance add if not exists soft_deleted number default 0"
+            ).executeUpdate()
+            null
+        }
+    }
+
+    private fun persistCircumstanceType(code: String, description: String): PersonalCircumstanceType =
+        PersonalCircumstanceType(IdGenerator.getAndIncrement(), code, description).also(entityManager::persist)
+
+    private fun persistCircumstanceSubType(code: String, description: String): PersonalCircumstanceSubType =
+        PersonalCircumstanceSubType(IdGenerator.getAndIncrement(), code, description).also(entityManager::persist)
 }
