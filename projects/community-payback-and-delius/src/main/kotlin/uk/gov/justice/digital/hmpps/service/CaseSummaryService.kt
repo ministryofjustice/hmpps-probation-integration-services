@@ -108,10 +108,10 @@ class CaseSummaryService(
         return personalCircumstanceRepository.findByPerson_Crn(crn)
             .filter { it.endDate == null || it.endDate.isAfter(ZonedDateTime.now()) }
             .sortedBy { it.startDate }.map {
-            PersonalCircumstances(
-                type = CodeDescription(it.type.code, it.type.description),
-                subType = it.subType?.let { subType -> CodeDescription(subType.code, subType.description) }
-            )
-        }
+                PersonalCircumstances(
+                    type = CodeDescription(it.type.code, it.type.description),
+                    subType = it.subType?.let { subType -> CodeDescription(subType.code, subType.description) }
+                )
+            }
     }
 }
