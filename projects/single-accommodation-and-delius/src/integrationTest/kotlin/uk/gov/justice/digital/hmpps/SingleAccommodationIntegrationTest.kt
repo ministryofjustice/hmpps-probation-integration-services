@@ -35,8 +35,8 @@ internal class SingleAccommodationIntegrationTest @Autowired constructor(
 
         val response =
             mockMvc.get("/case-list/${user.username}?teamCode=${user.staff!!.teams.first().code}") { withToken() }
-            .andExpect { status { is2xxSuccessful() } }
-            .andReturn().response.contentAsJson<CaseListResponse>()
+                .andExpect { status { is2xxSuccessful() } }
+                .andReturn().response.contentAsJson<CaseListResponse>()
 
         assertThat(response.cases.size).isEqualTo(5)
         assertThat(response.page.totalElements).isEqualTo(5)
@@ -105,11 +105,10 @@ internal class SingleAccommodationIntegrationTest @Autowired constructor(
 
         val otherTeamResponse =
             mockMvc.get("/case-list/${bothTeamsUser.username}?teamCode=${otherTeam.code}") { withToken() }
-            .andExpect { status { is2xxSuccessful() } }
-            .andReturn().response.contentAsJson<CaseListResponse>()
+                .andExpect { status { is2xxSuccessful() } }
+                .andReturn().response.contentAsJson<CaseListResponse>()
 
         assertThat(otherTeamResponse.cases.size).isEqualTo(1)
-
     }
 
     @Test
