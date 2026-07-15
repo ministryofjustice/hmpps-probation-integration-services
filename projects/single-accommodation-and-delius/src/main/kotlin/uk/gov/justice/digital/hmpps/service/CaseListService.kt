@@ -31,7 +31,7 @@ class CaseListService(
         }
 
         val casesPageable = when {
-            teamCode == null -> personRepository.findByManagerStaff(staff, pageable)
+            teamCode.isNullOrEmpty() -> personRepository.findByManagerStaff(staff, pageable)
             !teamId.isNullOrEmpty() -> personRepository.findByManagerTeamIdIn(teamId, pageable)
             else -> Page.empty(pageable)
         }
