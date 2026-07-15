@@ -33,7 +33,8 @@ internal class SingleAccommodationIntegrationTest @Autowired constructor(
         val staff = StaffGenerator.DEFAULT
         val team = TeamGenerator.DEFAULT
 
-        val response = mockMvc.get("/case-list/${user.username}") { withToken() }
+        val response =
+            mockMvc.get("/case-list/${user.username}?teamCode=${user.staff!!.teams.first().code}") { withToken() }
             .andExpect { status { is2xxSuccessful() } }
             .andReturn().response.contentAsJson<CaseListResponse>()
 
@@ -79,17 +80,19 @@ internal class SingleAccommodationIntegrationTest @Autowired constructor(
     }
 
     @Test
-    fun `can retrieve case list for all of user's teams`() {
-        val user = UserGenerator.OTHER
+    fun `can retrieve case list for all of user's teams with limited access flags set`() {
+        val bothTeamsUser = UserGenerator.OTHER
+        val team = TeamGenerator.DEFAULT
+        val otherTeam = TeamGenerator.OTHER_TEAM
+
         val otherTeamExcludedPerson = PersonGenerator.EXCLUDED
         val otherTeamRestrictedPerson = PersonGenerator.RESTRICTED
 
-        val response = mockMvc.get("/case-list/${user.username}") { withToken() }
+        val response = mockMvc.get("/case-list/${bothTeamsUser.username}?teamCode=${team.code}") { withToken() }
             .andExpect { status { is2xxSuccessful() } }
             .andReturn().response.contentAsJson<CaseListResponse>()
 
-        assertThat(response.cases.size).isEqualTo(6)
-
+        assertThat(response.cases.size).isEqualTo(5)
         val otherTeamExcludedCase = response.cases.single { it.crn == otherTeamExcludedPerson.crn }
         assertThat(otherTeamExcludedCase.userExcluded).isFalse()
         assertThat(otherTeamExcludedCase.userRestricted).isFalse()
@@ -99,6 +102,35 @@ internal class SingleAccommodationIntegrationTest @Autowired constructor(
         assertThat(otherTeamRestrictedCase.userExcluded).isFalse()
         assertThat(otherTeamRestrictedCase.userRestricted).isFalse()
         assertThat(otherTeamRestrictedCase.limitedAccess).isTrue()
+
+        val otherTeamResponse =
+            mockMvc.get("/case-list/${bothTeamsUser.username}?teamCode=${otherTeam.code}") { withToken() }
+            .andExpect { status { is2xxSuccessful() } }
+            .andReturn().response.contentAsJson<CaseListResponse>()
+
+        assertThat(otherTeamResponse.cases.size).isEqualTo(1)
+
+    }
+
+    @Test
+    fun `can retrieve case list only for specified team`() {
+        val user = UserGenerator.OTHER
+        val defaultTeam = TeamGenerator.DEFAULT
+
+        val cases = mockMvc.get("/case-list/${user.username}?teamCode=${defaultTeam.code}") { withToken() }
+            .andExpect { status { is2xxSuccessful() } }
+            .andReturn().response.contentAsJson<CaseListResponse>().cases
+
+        assertThat(cases.size).isEqualTo(5)
+        assertThat(cases.map { it.team.code }).allMatch { it == defaultTeam.code }
+
+        val otherTeam = TeamGenerator.OTHER_TEAM
+        val otherCases = mockMvc.get("/case-list/${user.username}?teamCode=${otherTeam.code}") { withToken() }
+            .andExpect { status { is2xxSuccessful() } }
+            .andReturn().response.contentAsJson<CaseListResponse>().cases
+
+        assertThat(otherCases.size).isEqualTo(1)
+        assertThat(otherCases.map { it.team.code }).allMatch { it == otherTeam.code }
     }
 
     @Test
@@ -110,8 +142,8 @@ internal class SingleAccommodationIntegrationTest @Autowired constructor(
             .andReturn().response.contentAsJson<CaseListResponse>()
 
         assertThat(firstPage.cases.size).isEqualTo(2)
-        assertThat(firstPage.page.totalElements).isEqualTo(5)
-        assertThat(firstPage.page.totalPages).isEqualTo(3)
+        assertThat(firstPage.page.totalElements).isEqualTo(4)
+        assertThat(firstPage.page.totalPages).isEqualTo(2)
         assertThat(firstPage.page.number).isEqualTo(0)
         assertThat(firstPage.page.size).isEqualTo(2)
 
@@ -120,8 +152,8 @@ internal class SingleAccommodationIntegrationTest @Autowired constructor(
             .andReturn().response.contentAsJson<CaseListResponse>()
 
         assertThat(secondPage.cases.size).isEqualTo(2)
-        assertThat(secondPage.page.totalElements).isEqualTo(5)
-        assertThat(secondPage.page.totalPages).isEqualTo(3)
+        assertThat(secondPage.page.totalElements).isEqualTo(4)
+        assertThat(secondPage.page.totalPages).isEqualTo(2)
         assertThat(secondPage.page.number).isEqualTo(1)
         assertThat(secondPage.page.size).isEqualTo(2)
     }
