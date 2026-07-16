@@ -6,7 +6,7 @@ import uk.gov.justice.digital.hmpps.entity.person.PersonalCircumstanceType
 import java.time.ZonedDateTime
 import java.time.temporal.ChronoUnit
 
-object PersonalCircumstancesGenerator{
+object PersonalCircumstancesGenerator {
     val person = PersonGenerator.DEFAULT_PERSON
     val TYPE = PersonalCircumstanceType(IdGenerator.getAndIncrement(), "TYPE1", "Type 1")
     val TYPE2 = PersonalCircumstanceType(IdGenerator.getAndIncrement(), "TYPE2", "Type 2")
