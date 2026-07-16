@@ -5,7 +5,6 @@ import org.hibernate.annotations.Immutable
 import org.hibernate.type.YesNoConverter
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
-import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.exception.NotFoundException.Companion.orNotFoundBy
 import uk.gov.justice.digital.hmpps.model.CodeDescription
 import uk.gov.justice.digital.hmpps.utils.Extensions.reportMissing
@@ -29,13 +28,6 @@ class ContactType(
         REVIEW_ENFORCEMENT_STATUS("ARWS")
     }
 }
-
-interface ContactTypeRepository : JpaRepository<ContactType, Long> {
-    fun findByCode(code: String): ContactType?
-}
-
-fun ContactTypeRepository.getByCode(code: String) =
-    findByCode(code) ?: throw NotFoundException("ContactType", "code", code)
 
 @Immutable
 @Entity

@@ -106,6 +106,22 @@ class EnforcementServiceTest {
     }
 
     @Test
+    fun `does not create duplicate linked contact or note when action is unchanged`() {
+        val appointment = TestData.appointment(notes = "Some notes")
+        whenever(enforcementRepository.findByContactId(appointment.id!!))
+            .thenReturn(TestData.enforcement(appointment, ACTION))
+
+        enforcementService.applyEnforcementAction(appointment, ACTION, TestData.REVIEW_TYPE)
+
+        verify(enforcementRepository).save(check {
+            assertThat(it.contact).isEqualTo(appointment)
+            assertThat(it.action).isEqualTo(ACTION)
+        })
+        verify(appointmentRepository, never()).save(any())
+        assertThat(appointment.notes).isEqualTo("Some notes")
+    }
+
+    @Test
     fun `soft-deletes enforcement when updating to a compliant outcome`() {
         val event = TestData.event()
         val appointment = TestData.appointment(event = event)
@@ -139,6 +155,25 @@ class EnforcementServiceTest {
     }
 
     @Test
+    fun `increments ftc count and creates review contact if limit reached`() {
+        val event = TestData.event()
+        val disposal = TestData.disposal(event = event, ftcLimit = 2)
+        val appointment = TestData.appointment(event = event)
+        event.set("disposal", disposal)
+
+        whenever(enforcementRepository.findByContactId(appointment.id!!)).thenReturn(TestData.enforcement(appointment))
+        whenever(appointmentRepository.countFailureToComply(event)).thenReturn(2)
+        whenever(appointmentRepository.enforcementReviewExists(event.id, event.breachEnd)).thenReturn(false)
+
+        enforcementService.applyEnforcementAction(appointment, ACTION, TestData.REVIEW_TYPE)
+
+        verify(appointmentRepository).save(check<AppointmentContact> {
+            assertThat(it.type).isEqualTo(TestData.REVIEW_TYPE)
+        })
+        assertThat(event.ftcCount).isEqualTo(2L)
+    }
+
+    @Test
     fun `review contact not created if it already exists`() {
         val event = TestData.event()
         val disposal = TestData.disposal(event = event, ftcLimit = 2)
@@ -157,14 +192,14 @@ class EnforcementServiceTest {
     }
 
     @Test
-    fun `does not create review contact if limit not exceeded`() {
+    fun `does not create review contact if count is below limit`() {
         val event = TestData.event()
         val disposal = TestData.disposal(event = event, ftcLimit = 2)
         val eventWithDisposal = TestData.event(disposal = disposal)
         val appointment = TestData.appointment(event = eventWithDisposal)
 
         whenever(enforcementRepository.findByContactId(appointment.id!!)).thenReturn(TestData.enforcement(appointment))
-        whenever(appointmentRepository.countFailureToComply(eventWithDisposal)).thenReturn(2)
+        whenever(appointmentRepository.countFailureToComply(eventWithDisposal)).thenReturn(1)
 
         enforcementService.applyEnforcementAction(appointment, ACTION, TestData.REVIEW_TYPE)
 

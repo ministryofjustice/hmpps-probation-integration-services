@@ -120,6 +120,7 @@ internal object AppointmentEntities {
         @Column(name = "latest_enforcement_action_id")
         var enforcementActionId: Long? = null,
 
+        @Column(name = "enforcement")
         var enforcementFlag: Boolean? = null,
 
         @ManyToOne

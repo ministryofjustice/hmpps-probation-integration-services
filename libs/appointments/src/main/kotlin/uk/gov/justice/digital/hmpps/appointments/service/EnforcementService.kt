@@ -42,7 +42,8 @@ internal class EnforcementService(
         if (action == null) {
             existingEnforcement?.apply { softDeleted = true }
         } else {
-            enforcementRepository.save(existingEnforcement?.apply {
+            val actionChanged = existingEnforcement?.action?.id != action.id
+            enforcementRepository.save(existingEnforcement?.takeIf { actionChanged }?.apply {
                 this.action = action
                 this.responseDate = action.responseByPeriod?.let { ZonedDateTime.now().plusDays(it) }
             } ?: Enforcement(
@@ -50,14 +51,16 @@ internal class EnforcementService(
                 action = action,
                 responseDate = action.responseByPeriod?.let { ZonedDateTime.now().plusDays(it) }
             ))
-            createEnforcementActionContact(action)
-            notes = listOfNotNull(
-                notes,
-                """
-                ${DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm").format(LocalDateTime.now())}
-                Enforcement Action: ${action.description}
-                """.trimIndent()
-            ).joinToString("\n\n")
+            if (actionChanged) {
+                createEnforcementActionContact(action)
+                notes = listOfNotNull(
+                    notes,
+                    """
+                    ${DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm").format(LocalDateTime.now())}
+                    Enforcement Action: ${action.description}
+                    """.trimIndent()
+                ).joinToString("\n\n")
+            }
         }
     }
 
@@ -70,7 +73,7 @@ internal class EnforcementService(
     private fun AppointmentContact.checkFailureToComplyLimit(reviewType: Type) {
         val event = event ?: return
         val ftcLimit = event.disposal?.type?.ftcLimit ?: return
-        if ((event.ftcCount ?: 0) > ftcLimit &&
+        if ((event.ftcCount ?: 0) >= ftcLimit &&
             !appointmentRepository.enforcementReviewExists(event.id, event.breachEnd)
         ) {
             createEnforcementReviewContact(reviewType)

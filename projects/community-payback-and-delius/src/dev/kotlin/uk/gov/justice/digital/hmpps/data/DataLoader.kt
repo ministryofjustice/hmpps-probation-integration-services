@@ -156,6 +156,7 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
         save(UPWGenerator.UPW_DETAILS_ADJUSTMENT)
         save(UPWGenerator.DEFAULT_UPW_ALLOCATION)
         save(UPWGenerator.DEFAULT_CONTACT)
+        save(UPWGenerator.DEFAULT_ENFORCEMENT)
         save(UPWGenerator.CONTACT_NO_ENFORCEMENT)
         save(UPWGenerator.CONTACT_NO_ENFORCEMENT_ADJUSTMENT)
         save(UPWGenerator.DEFAULT_UPW_APPOINTMENT)
