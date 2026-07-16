@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query
 
 interface PersonRepository : JpaRepository<Person, Long> {
     fun findByCrnAndSoftDeletedIsFalse(crn: String): Person?
+    fun existsByCrnAndSoftDeletedIsFalse(crn: String): Boolean
 
     @Query(
         """

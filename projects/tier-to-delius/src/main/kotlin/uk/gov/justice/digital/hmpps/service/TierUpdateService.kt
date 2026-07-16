@@ -71,6 +71,7 @@ class TierUpdateService(
     }
 
     fun updateV3TierColumn(crn: String, tierCalculation: TierCalculationV3) {
+        if (!personRepository.existsByCrnAndSoftDeletedIsFalse(crn)) throw IgnorableMessageException("PersonNotFound")
         val tier = referenceDataRepository.getV3Tier(tierCalculation.tierScore, tierCalculation.provisional)
         personRepository.updateV3TierColumn(crn, tier.id)
     }
