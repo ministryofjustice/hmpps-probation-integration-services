@@ -113,10 +113,7 @@ class EnforcementServiceTest {
 
         enforcementService.applyEnforcementAction(appointment, ACTION, TestData.REVIEW_TYPE)
 
-        verify(enforcementRepository).save(check {
-            assertThat(it.contact).isEqualTo(appointment)
-            assertThat(it.action).isEqualTo(ACTION)
-        })
+        verify(enforcementRepository, never()).save(any())
         verify(appointmentRepository, never()).save(any())
         assertThat(appointment.notes).isEqualTo("Some notes")
     }

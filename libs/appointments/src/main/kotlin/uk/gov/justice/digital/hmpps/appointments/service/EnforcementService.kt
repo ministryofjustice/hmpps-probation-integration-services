@@ -41,9 +41,8 @@ internal class EnforcementService(
         val existingEnforcement = id?.let { enforcementRepository.findByContactId(id) }
         if (action == null) {
             existingEnforcement?.apply { softDeleted = true }
-        } else {
-            val actionChanged = existingEnforcement?.action?.id != action.id
-            enforcementRepository.save(existingEnforcement?.takeIf { actionChanged }?.apply {
+        } else if (existingEnforcement?.action?.id != action.id) {
+            enforcementRepository.save(existingEnforcement?.apply {
                 this.action = action
                 this.responseDate = action.responseByPeriod?.let { ZonedDateTime.now().plusDays(it) }
             } ?: Enforcement(
@@ -51,27 +50,25 @@ internal class EnforcementService(
                 action = action,
                 responseDate = action.responseByPeriod?.let { ZonedDateTime.now().plusDays(it) }
             ))
-            if (actionChanged) {
-                createEnforcementActionContact(action)
-                notes = listOfNotNull(
-                    notes,
-                    """
+            createEnforcementActionContact(action)
+            notes = listOfNotNull(
+                notes,
+                """
                     ${DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm").format(LocalDateTime.now())}
                     Enforcement Action: ${action.description}
                     """.trimIndent()
-                ).joinToString("\n\n")
-            }
+            ).joinToString("\n\n")
         }
     }
 
     private fun AppointmentContact.updateFailureToComplyCount() {
-        val event = event ?: eventId?.let { eventRepository.findByIdOrNull(it) } ?: return
+        val event = event() ?: return
         appointmentRepository.save(this)
         event.ftcCount = appointmentRepository.countFailureToComply(event)
     }
 
     private fun AppointmentContact.checkFailureToComplyLimit(reviewType: Type) {
-        val event = event ?: return
+        val event = event() ?: return
         val ftcLimit = event.disposal?.type?.ftcLimit ?: return
         if ((event.ftcCount ?: 0) >= ftcLimit &&
             !appointmentRepository.enforcementReviewExists(event.id, event.breachEnd)
@@ -122,4 +119,6 @@ internal class EnforcementService(
             )
         )
     }
+
+    private fun AppointmentContact.event() = event ?: eventId?.let { eventRepository.findByIdOrNull(it) }
 }

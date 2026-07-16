@@ -258,7 +258,6 @@ class CommunityPaybackAppointmentsService(
     ) {
         val unpaidWorkAppointment = unpaidWorkAppointmentRepository.getAppointment(appointmentId)
             .requireUnchangedDateAfterOutcome(request.date)
-            .requireDateAfterSentenceDate()
             .validateVersion(request.version)
 
         require(projectCode == unpaidWorkAppointment.project.code) {
@@ -308,7 +307,7 @@ class CommunityPaybackAppointmentsService(
             pickUpTime = request.pickUp?.time
             pickUpLocation = request.pickUp?.location?.code?.let { code -> officeLocationRepository.getByCode(code) }
             updateStatus(details)
-        }
+        }.requireDateAfterSentenceDate()
     }
 
     fun updateStatus(details: UnpaidWorkDetails) {
