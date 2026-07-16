@@ -17,9 +17,9 @@ class ActivityController(private val activityService: ActivityService) {
     @GetMapping
     @Operation(
         summary = "Gets all activity for a person",
-        description = "Returns all contacts split into two lists: past contacts in descending date order " +
-            "(most recent first) under 'activities', and future contacts in ascending date order " +
-            "(earliest first) under 'futureActivities'."
+        description = """Returns all contacts split into two lists: past contacts in descending date order
+            (most recent first) under 'activities', and future contacts in ascending date order
+            (earliest first) under 'futureActivities'."""
     )
     fun getPersonActivity(@PathVariable crn: String) = activityService.getPersonActivity(crn)
 

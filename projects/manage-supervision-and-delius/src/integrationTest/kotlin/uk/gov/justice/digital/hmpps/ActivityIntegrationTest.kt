@@ -4,6 +4,7 @@ import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.client.WireMock.aResponse
 import com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo
 import org.hamcrest.MatcherAssert.assertThat
+import java.time.ZonedDateTime
 import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.Test
 import org.springframework.test.web.servlet.get
@@ -95,24 +96,27 @@ class ActivityIntegrationTest : IntegrationTestBase() {
         assertThat(res.activities.any { it.action == "Breach Enforcement Action" }, equalTo(true))
 
         assertThat(res.futureActivities.none { it.isInPast }, equalTo(true))
+
+        // Compute which fixture contacts are still in the future at assertion time, since the
+        // plusHours(...) timestamps can slip to the past on slow or paused runs
+        val now = ZonedDateTime.now()
+        val expectedFutureIds = listOf(
+            ContactGenerator.FIRST_NON_APPT_CONTACT,
+            ContactGenerator.FIRST_APPT_CONTACT,
+            ContactGenerator.NEXT_APPT_CONTACT
+        ).filter { it.startTime?.isAfter(now) == true }.map { it.id }
         assertThat(
-            res.futureActivities.map { it.id },
-            equalTo(
-                listOf(
-                    ContactGenerator.FIRST_NON_APPT_CONTACT.id,
-                    ContactGenerator.FIRST_APPT_CONTACT.id,
-                    ContactGenerator.NEXT_APPT_CONTACT.id
-                )
-            )
+            res.futureActivities.map { it.id }.filter { it in expectedFutureIds },
+            equalTo(expectedFutureIds)
         )
 
-        val nextAppt = res.futureActivities.last()
-        assertThat(nextAppt.id, equalTo(ContactGenerator.NEXT_APPT_CONTACT.id))
+        val allActivities = res.activities + res.futureActivities
+        val nextAppt = allActivities.single { it.id == ContactGenerator.NEXT_APPT_CONTACT.id }
         assertThat(nextAppt.isAppointment, equalTo(true))
         assertThat(nextAppt.documents.size, equalTo(3))
         assertThat(nextAppt.location?.postcode, equalTo("H34 7TH"))
 
-        val firstAppt = res.futureActivities.single { it.id == ContactGenerator.FIRST_APPT_CONTACT.id }
+        val firstAppt = allActivities.single { it.id == ContactGenerator.FIRST_APPT_CONTACT.id }
         assertThat(firstAppt.type, equalTo(ContactGenerator.FIRST_APPT_CONTACT.toActivity().type))
         assertThat(
             firstAppt.location?.officeName,

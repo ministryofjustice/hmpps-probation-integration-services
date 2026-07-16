@@ -62,7 +62,7 @@ class ActivityService(
 
         return PersonActivity(
             personSummary = summary.toPersonSummary(),
-            activities = past,
+            activities = past.sortedByDescending() { it.startDateTime },
             futureActivities = future.sortedBy { it.startDateTime }
         )
     }
