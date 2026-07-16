@@ -16,7 +16,7 @@ import java.time.ZonedDateTime
 @Entity
 @Table(name = "personal_circumstance")
 @Immutable
-@SQLRestriction("soft_deleted = 0")
+@SQLRestriction("soft_deleted = 0 and (end_date is null OR end_date > current_date)")
 class PersonalCircumstance(
     @Id
     @Column(name = "personal_circumstance_id")
@@ -74,5 +74,5 @@ class PersonalCircumstanceSubType(
 )
 
 interface PersonalCircumstanceRepository : JpaRepository<PersonalCircumstance, Long> {
-    fun findByPerson_Crn(crn: String): List<PersonalCircumstance>
+    fun findByPerson_CrnOrderByStartDate(crn: String): List<PersonalCircumstance>
 }

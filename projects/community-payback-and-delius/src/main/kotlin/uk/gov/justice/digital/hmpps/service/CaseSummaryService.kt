@@ -104,12 +104,11 @@ class CaseSummaryService(
         )
 
     fun getPersonalCircumstances(crn: String): List<PersonalCircumstances> {
-        val circumstances = personalCircumstanceRepository.findByPerson_Crn(crn)
-        if (circumstances.isEmpty() && !personRepository.existsByCrn(crn)) throw NotFoundException("Person", "crn", crn)
+        if (!personRepository.existsByCrn(crn)) throw NotFoundException("Person", "crn", crn)
+        val circumstances = personalCircumstanceRepository.findByPerson_CrnOrderByStartDate(crn)
         val now = ZonedDateTime.now()
         return circumstances
-            .filter { it.endDate == null || it.endDate.isAfter(now) }
-            .sortedBy { it.startDate }.map {
+            .map {
                 PersonalCircumstances(
                     type = CodeDescription(it.type.code, it.type.description),
                     subType = it.subType?.let { subType -> CodeDescription(subType.code, subType.description) }
