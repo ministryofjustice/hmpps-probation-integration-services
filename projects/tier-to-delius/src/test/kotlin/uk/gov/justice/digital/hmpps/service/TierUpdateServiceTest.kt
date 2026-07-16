@@ -241,6 +241,7 @@ internal class TierUpdateServiceTest {
     fun `should update v3 tier hidden column`() {
         val updatedTierScore = ReferenceDataGenerator.generate("SPBI", TIER)
         whenever(referenceDataRepository.getV3Tier("B", true)).thenReturn(updatedTierScore)
+        whenever(personRepository.existsByCrnAndSoftDeletedIsFalse(person.crn)).thenReturn(true)
 
         tierUpdateService.updateV3TierColumn(
             person.crn,

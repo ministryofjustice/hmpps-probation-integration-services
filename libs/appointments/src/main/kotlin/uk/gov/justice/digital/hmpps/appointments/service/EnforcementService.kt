@@ -23,41 +23,56 @@ internal class EnforcementService(
     private val eventRepository: EventRepository,
 ) {
 
-    fun applyEnforcementAction(appointment: AppointmentContact, action: EnforcementAction, reviewType: Type) {
+    fun applyEnforcementAction(appointment: AppointmentContact, action: EnforcementAction?, reviewType: Type) {
         appointment.applyEnforcementAction(action)
-        appointment.updateFailureToComplyCount(reviewType)
+        appointment.updateFailureToComplyCount()
+        appointment.checkFailureToComplyLimit(reviewType)
     }
 
-    fun AppointmentContact.applyEnforcementAction(action: EnforcementAction) {
-        enforcementActionId = action.id
-        enforcement = if (action.outstandingContactAction == true) true else null
+    fun removeEnforcementAction(appointment: AppointmentContact) {
+        appointment.applyEnforcementAction()
+        appointment.updateFailureToComplyCount()
+    }
 
-        if (id == null || !enforcementRepository.existsByContactId(id)) {
-            enforcementRepository.save(
-                Enforcement(
-                    contact = this,
-                    action = action,
-                    responseDate = action.responseByPeriod?.let { ZonedDateTime.now().plusDays(it) }
-                )
-            )
+    fun AppointmentContact.applyEnforcementAction(action: EnforcementAction? = null) {
+        enforcementActionId = action?.id
+        enforcementFlag = if (action?.outstandingContactAction == true) true else null
+
+        val existingEnforcement = id?.let { enforcementRepository.findByContactId(id) }
+        if (action == null) {
+            existingEnforcement?.apply { softDeleted = true }
+        } else if (existingEnforcement?.action?.id != action.id) {
+            enforcementRepository.save(existingEnforcement?.apply {
+                this.action = action
+                this.responseDate = action.responseByPeriod?.let { ZonedDateTime.now().plusDays(it) }
+            } ?: Enforcement(
+                contact = this,
+                action = action,
+                responseDate = action.responseByPeriod?.let { ZonedDateTime.now().plusDays(it) }
+            ))
             createEnforcementActionContact(action)
             notes = listOfNotNull(
                 notes,
                 """
-                ${DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm").format(LocalDateTime.now())}
-                Enforcement Action: ${action.description}
-                """.trimIndent()
+                    ${DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm").format(LocalDateTime.now())}
+                    Enforcement Action: ${action.description}
+                    """.trimIndent()
             ).joinToString("\n\n")
         }
     }
 
-    private fun AppointmentContact.updateFailureToComplyCount(reviewType: Type) {
-        val event = event ?: eventId?.let { eventRepository.findByIdOrNull(it) } ?: return
+    private fun AppointmentContact.updateFailureToComplyCount() {
+        val event = event() ?: return
         appointmentRepository.save(this)
         event.ftcCount = appointmentRepository.countFailureToComply(event)
+    }
 
+    private fun AppointmentContact.checkFailureToComplyLimit(reviewType: Type) {
+        val event = event() ?: return
         val ftcLimit = event.disposal?.type?.ftcLimit ?: return
-        if (event.ftcCount!! > ftcLimit && !appointmentRepository.enforcementReviewExists(event.id, event.breachEnd)) {
+        if ((event.ftcCount ?: 0) >= ftcLimit &&
+            !appointmentRepository.enforcementReviewExists(event.id, event.breachEnd)
+        ) {
             createEnforcementReviewContact(reviewType)
         }
     }
@@ -104,4 +119,6 @@ internal class EnforcementService(
             )
         )
     }
+
+    private fun AppointmentContact.event() = event ?: eventId?.let { eventRepository.findByIdOrNull(it) }
 }
