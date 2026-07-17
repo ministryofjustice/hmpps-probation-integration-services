@@ -106,7 +106,6 @@ class CaseSummaryService(
     fun getPersonalCircumstances(crn: String): List<PersonalCircumstances> {
         if (!personRepository.existsByCrn(crn)) throw NotFoundException("Person", "crn", crn)
         val circumstances = personalCircumstanceRepository.findByPerson_CrnOrderByStartDate(crn)
-        val now = ZonedDateTime.now()
         return circumstances
             .map {
                 PersonalCircumstances(
