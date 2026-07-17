@@ -93,6 +93,9 @@ data class DisposalType(
     @Column(name = "disposal_type_id")
     val id: Long,
 
+    @Column(name = "sentence_type")
+    val sentenceType: String? = null,
+
     @Column
     val requiredInformation: String,
 
@@ -101,6 +104,7 @@ data class DisposalType(
     val pssRequirement: Boolean? = null,
 ) {
     val determinateSentence: Boolean get() = requiredInformation == "L1"
+    val sdsSentence: Boolean get() = sentenceType == "SC" && requiredInformation == "L1"
 }
 
 @Immutable

@@ -57,17 +57,17 @@ class CustodyDateUpdateService(
             singleOrNull() ?: return telemetryService.trackEvent("MissingBookingRef", booking.telemetry(clientSource))
         }
         val custody = custodyRepository.findCustodyById(custodyRepository.findForUpdate(custodyId))
-        val envelope = crdsApiClient.getOperativeSentenceEnvelope(booking.offenderNo)
-
         val sdsPlusEnabled = featureFlags.enabled("sds-plus-flag-enabled")
-        val updated = calculateKeyDateChanges(sentenceDetail, custody, envelope, sdsPlusEnabled)
+        val sdsEligible = sdsPlusEnabled && custody.disposal?.isDeliusSdsCase() == true
+        val envelope = if (sdsEligible) crdsApiClient.getOperativeSentenceEnvelope(booking.offenderNo) else null
+        val updated = calculateKeyDateChanges(sentenceDetail, custody, envelope)
         if (updated.isEmpty()) {
             telemetryService.trackEvent("KeyDatesUnchanged", booking.telemetry(clientSource))
         } else {
             if (!dryRun) {
                 keyDateRepository.saveAll(updated)
                 contactService.createForKeyDateChanges(custody, updated)
-                if (sdsPlusEnabled) {
+                if (sdsEligible && envelope != null) {
                     if (booking.id != envelope.bookingId) {
                         telemetryService.trackEvent(
                             "SentenceEnvelopeBookingIdMismatch", mapOf(
@@ -76,7 +76,7 @@ class CustodyDateUpdateService(
                             )
                         )
                     } else {
-                        custody.disposal?.let { disposal ->
+                        custody.disposal.let { disposal ->
                             disposal.sdsPlus = envelope.containsAnSDSPlusSentence
                             disposalRepository.save(disposal)
                         }
@@ -93,8 +93,7 @@ class CustodyDateUpdateService(
     private fun calculateKeyDateChanges(
         sentenceDetail: SentenceDetail,
         custody: Custody,
-        envelope: OperativeSentenceEnvelope,
-        sdsPlusEnabled: Boolean
+        envelope: OperativeSentenceEnvelope?
     ) =
         listOfNotNull(
             custody.keyDate(LICENCE_EXPIRY_DATE.code, sentenceDetail.licenceExpiryDate),
@@ -110,19 +109,11 @@ class CustodyDateUpdateService(
                 SUSPENSION_DATE_IF_RESET.code,
                 keyDateCalculator.suspensionDateIfReset(sentenceDetail, custody)
             ),
-            sdsPlusEnabled.takeIf { it }?.let {
-                custody.keyDate(
-                    PRESUMPTIVE_EM_END_DATE.code, keyDateCalculator.presumptiveElectronicMonitoringEndDate(
-                        sentenceDetail, envelope
-                    )
-                )
+            envelope?.let { envelope ->
+                custody.keyDate(PRESUMPTIVE_EM_END_DATE.code, keyDateCalculator.presumptiveElectronicMonitoringEndDate(sentenceDetail, envelope))
             },
-            sdsPlusEnabled.takeIf { it }?.let {
-                custody.keyDate(
-                    FINAL_THIRD_START_DATE.code, keyDateCalculator.finalThirdDate(
-                        sentenceDetail, envelope
-                    )
-                )
+            envelope?.let { envelope ->
+                custody.keyDate(FINAL_THIRD_START_DATE.code, keyDateCalculator.finalThirdDate(sentenceDetail, envelope))
             }
         )
 
@@ -143,6 +134,8 @@ class CustodyDateUpdateService(
         }
         return firstOrNull()
     }
+
+    private fun Disposal.isDeliusSdsCase(): Boolean = type.sdsSentence
 
     private fun Booking.telemetry(clientSource: String) = mapOf(
         "nomsNumber" to offenderNo,
