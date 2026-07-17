@@ -46,22 +46,35 @@ internal class ActivityServiceTest {
     }
 
     @Test
-    fun `calls get person activity function`() {
+    fun `calls get person activity function splitting past and future contacts`() {
         val crn = "X000005"
-        val expectedContacts = listOf(
+        val pastContacts = listOf(
+            ContactGenerator.PREVIOUS_APPT_CONTACT,
+            ContactGenerator.PREVIOUS_APPT_CONTACT_ABSENT
+        )
+        val futureContacts = listOf(
             ContactGenerator.NEXT_APPT_CONTACT,
-            ContactGenerator.FIRST_NON_APPT_CONTACT,
             ContactGenerator.FIRST_APPT_CONTACT,
-            ContactGenerator.PREVIOUS_APPT_CONTACT_ABSENT,
-            ContactGenerator.PREVIOUS_APPT_CONTACT
+            ContactGenerator.FIRST_NON_APPT_CONTACT
         )
         whenever(personRepository.findSummary(crn)).thenReturn(personSummary)
-        whenever(contactRepository.findByPersonId(any())).thenReturn(expectedContacts)
+        whenever(contactRepository.findByPersonId(any())).thenReturn(futureContacts + pastContacts)
         val res = service.getPersonActivity(crn)
         assertThat(
             res.personSummary, equalTo(PERSONAL_DETAILS.toSummary())
         )
-        assertThat(res.activities, equalTo(expectedContacts.map { it.toActivity() }))
-        assertThat(res.activities[1].isAppointment, equalTo(false))
+        assertThat(res.activities, equalTo(pastContacts.map { it.toActivity() }))
+        assertThat(res.activities.all { it.isInPast }, equalTo(true))
+        assertThat(
+            res.futureActivities.map { it.id },
+            equalTo(
+                listOf(
+                    ContactGenerator.FIRST_NON_APPT_CONTACT.id,
+                    ContactGenerator.FIRST_APPT_CONTACT.id,
+                    ContactGenerator.NEXT_APPT_CONTACT.id
+                )
+            )
+        )
+        assertThat(res.futureActivities.none { it.isInPast }, equalTo(true))
     }
 }
