@@ -110,7 +110,10 @@ class CustodyDateUpdateService(
                 keyDateCalculator.suspensionDateIfReset(sentenceDetail, custody)
             ),
             envelope?.let { envelope ->
-                custody.keyDate(PRESUMPTIVE_EM_END_DATE.code, keyDateCalculator.presumptiveElectronicMonitoringEndDate(sentenceDetail, envelope))
+                custody.keyDate(
+                    PRESUMPTIVE_EM_END_DATE.code,
+                    keyDateCalculator.presumptiveElectronicMonitoringEndDate(sentenceDetail, envelope)
+                )
             },
             envelope?.let { envelope ->
                 custody.keyDate(FINAL_THIRD_START_DATE.code, keyDateCalculator.finalThirdDate(sentenceDetail, envelope))
