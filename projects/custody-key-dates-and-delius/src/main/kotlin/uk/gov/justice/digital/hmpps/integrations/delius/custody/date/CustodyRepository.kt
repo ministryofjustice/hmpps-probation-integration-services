@@ -27,3 +27,5 @@ interface CustodyRepository : JpaRepository<Custody, Long> {
     @Query("select c.id from Custody c where c.id = :id")
     fun findForUpdate(id: Long): Long
 }
+
+interface DisposalRepository : JpaRepository<Disposal, Long>

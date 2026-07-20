@@ -1,13 +1,13 @@
 {
   "request": {
     "method": "GET",
-    "urlPath": "/prison-api/api/bookings/1200837/sentenceDetail"
+    "urlPath": "/crds/operative-sentence-envelope/A0004DY"
   },
   "response": {
     "status": 200,
     "headers": {
       "Content-Type": "application/json"
     },
-    "bodyFileName": "sentence_detail_1200837.json"
+    "bodyFileName": "crds_sds_plus.json"
   }
 }

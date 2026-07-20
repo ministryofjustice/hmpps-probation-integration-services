@@ -3,27 +3,27 @@
     {
       "request": {
         "method": "GET",
-        "urlPath": "/prison-api/api/bookings/1200836"
+        "urlPath": "/prison-api/api/bookings/1200840"
       },
       "response": {
         "status": 200,
         "headers": {
           "Content-Type": "application/json"
         },
-        "bodyFileName": "booking_1200836.json"
+        "bodyFileName": "booking_1200840.json"
       }
     },
     {
       "request": {
         "method": "GET",
-        "urlPath": "/prison-api/api/bookings/offenderNo/A0001DY"
+        "urlPath": "/prison-api/api/bookings/offenderNo/A0004DY"
       },
       "response": {
         "status": 200,
         "headers": {
           "Content-Type": "application/json"
         },
-        "bodyFileName": "booking_noms_A0001DY.json"
+        "bodyFileName": "booking_noms_A0004DY.json"
       }
     }
   ]
