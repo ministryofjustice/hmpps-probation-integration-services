@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.data.generator
 
 import uk.gov.justice.digital.hmpps.api.model.appointment.CreateAppointment
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.DEFAULT_PROVIDER
+import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.ENFORCEMENT_STAFF
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.DEFAULT_STAFF
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.DEFAULT_TEAM
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.USER
@@ -58,9 +59,35 @@ object AppointmentGenerator {
     val SERVICE_RESCHEDULED_OUTCOME =
         generateOutcome(AppointmentOutcome.Code.RESCHEDULED_SERVICE.value, "Rescheduled - Service Request", false, true)
 
+    val NON_SELECTABLE_OUTCOME =
+        ContactOutcome(
+            id = IdGenerator.getAndIncrement(),
+            code = "NSOC",
+            description = "Non-selectable outcome for overdue filter test",
+            outcomeAttendance = true,
+            outcomeCompliantAcceptable = true,
+            selectable = false
+        )
+
     val CONTACT_TYPE_OUTCOMES = APPOINTMENT_TYPES.map {
         generateContactTypeOutcome(it.id, ATTENDED_COMPLIED.id, it, ATTENDED_COMPLIED)
     }
+
+    val NON_SELECTABLE_APPOINTMENT_TYPE =
+        generateType(
+            code = "CNSL",
+            description = "Non-selectable overdue filter appointment type",
+            attendanceType = true,
+            locationRequired = "Y",
+            contactOutcomeFlag = true
+        )
+
+    val NON_SELECTABLE_CONTACT_TYPE_OUTCOME = generateContactTypeOutcome(
+        NON_SELECTABLE_APPOINTMENT_TYPE.id,
+        NON_SELECTABLE_OUTCOME.id,
+        NON_SELECTABLE_APPOINTMENT_TYPE,
+        NON_SELECTABLE_OUTCOME
+    )
 
     val PERSON_APPOINTMENT =
         generateAppointment(
@@ -93,6 +120,27 @@ object AppointmentGenerator {
             staffId = DEFAULT_STAFF.id,
             teamId = DEFAULT_TEAM.id,
         )
+
+    val NON_SELECTABLE_OVERDUE_APPOINTMENT =
+        SentenceAppointment(
+            person = PersonGenerator.SMS_PERSON,
+            type = NON_SELECTABLE_APPOINTMENT_TYPE,
+            date = ZonedDateTime.of(2022, 11, 27, 7, 0, 0, 0, EuropeLondon).toLocalDate(),
+            startTime = ZonedDateTime.of(2022, 11, 27, 7, 0, 0, 0, EuropeLondon),
+            endTime = ZonedDateTime.of(2022, 11, 27, 8, 0, 0, 0, EuropeLondon),
+            externalReference = "urn:uk:gov:hmpps:manage-supervision-service:appointment:00000000-0000-0000-0000-000000000099",
+            description = "Non-selectable overdue test appointment",
+            softDeleted = false,
+            notes = "Notes",
+            sensitive = false,
+            staffId = ENFORCEMENT_STAFF.id,
+            teamId = DEFAULT_TEAM.id,
+            probationAreaId = DEFAULT_PROVIDER.id,
+            eventId = null
+        ).apply {
+            createdByUserId = USER.id
+            lastUpdatedUserId = USER.id
+        }
 
     fun generateAppointment(
         person: Person,
