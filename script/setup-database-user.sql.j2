@@ -234,7 +234,7 @@ begin
                    or target.user_id <> input.user_id
             when not matched then
                 insert (service_user_id, service_username, user_id)
-                values (delius_app_schema.service_user_id_seq.nextval, input.service_username, input.user_id);
+                values (delius_app_schema.service_user_id_seq.nextval, input.service_username, input.user_id)
             ]' using l_username, l_audit_username;
             dbms_output.put_line('set r_service_user mapping for ' || l_username || ' to ' || l_audit_username);
         else

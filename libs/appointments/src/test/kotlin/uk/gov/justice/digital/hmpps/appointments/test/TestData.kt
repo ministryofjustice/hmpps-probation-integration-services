@@ -5,6 +5,8 @@ import uk.gov.justice.digital.hmpps.appointments.entity.AppointmentEntities.Appo
 import uk.gov.justice.digital.hmpps.appointments.entity.AppointmentEntities.AppointmentOutcome
 import uk.gov.justice.digital.hmpps.appointments.entity.AppointmentEntities.Disposal
 import uk.gov.justice.digital.hmpps.appointments.entity.AppointmentEntities.DisposalType
+import uk.gov.justice.digital.hmpps.appointments.entity.AppointmentEntities.Enforcement
+import uk.gov.justice.digital.hmpps.appointments.entity.AppointmentEntities.EnforcementAction
 import uk.gov.justice.digital.hmpps.appointments.entity.AppointmentEntities.Event
 import uk.gov.justice.digital.hmpps.appointments.entity.AppointmentEntities.OfficeLocation
 import uk.gov.justice.digital.hmpps.appointments.entity.AppointmentEntities.Staff
@@ -33,7 +35,11 @@ internal object TestData {
     val STAFF = Staff(id(), "S01")
     val OFFICE_LOCATION = OfficeLocation(id(), "LOC1")
     val ACTION =
-        AppointmentEntities.EnforcementAction(id(), "ACT01", "Action 1", 7, outstandingContactAction = true, TYPE)
+        EnforcementAction(id(), "ACT01", "Action 1", 7, outstandingContactAction = true, TYPE)
+    val ACTION_WITHOUT_OUTSTANDING =
+        EnforcementAction(id(), "ACT02", "Action 2", 7, outstandingContactAction = false, TYPE)
+    val ACTION_WITH_NULL_OUTSTANDING =
+        EnforcementAction(id(), "ACT03", "Action 3", 7, outstandingContactAction = null, TYPE)
 
     fun createAppointment(
         reference: String = "REF01",
@@ -101,5 +107,12 @@ internal object TestData {
         event = event,
         type = DisposalType(id(), "DT01", ftcLimit),
         date = LocalDate.now().minusMonths(1)
+    )
+
+    fun enforcement(contact: AppointmentContact, action: EnforcementAction = ACTION) = Enforcement(
+        id = id(),
+        contact = contact,
+        action = action,
+        responseDate = ZonedDateTime.now().plusDays(7),
     )
 }

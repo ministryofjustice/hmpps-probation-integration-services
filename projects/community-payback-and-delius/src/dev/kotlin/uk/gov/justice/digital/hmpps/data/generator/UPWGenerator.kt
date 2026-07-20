@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
+import uk.gov.justice.digital.hmpps.data.entity.Enforcement
 import uk.gov.justice.digital.hmpps.data.generator.IdGenerator.id
 import uk.gov.justice.digital.hmpps.entity.ReferenceData
 import uk.gov.justice.digital.hmpps.entity.contact.Contact
@@ -311,6 +312,12 @@ object UPWGenerator {
         alertsActive = true,
         externalReference = "$APPOINTMENT_REFERENCE_PREFIX$DEFAULT_CONTACT_EXTERNAL_REF_UUID",
         personId = PersonGenerator.DEFAULT_PERSON.id
+    )
+
+    val DEFAULT_ENFORCEMENT = Enforcement(
+        contact = DEFAULT_CONTACT,
+        enforcementAction = ReferenceDataGenerator.ROM_ENFORCEMENT_ACTION,
+        responseDate = LocalDate.now().plusDays(7)
     )
 
     val CONTACT_NO_ENFORCEMENT_EXTERNAL_REF_UUID = UUID.randomUUID().toString()

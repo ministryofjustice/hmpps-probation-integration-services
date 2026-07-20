@@ -12,13 +12,13 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - uses: actions/setup-java@1bcf9fb12cf4aa7d266a90ae39939e61372fe520 # v5.4.0
+    - uses: actions/setup-java@0f481fcb613427c0f801b606911222b5b6f3083a # v5.5.0
       with:
         java-version: 25
         distribution: temurin
 
     - name: Assume role for access to cache bucket
-      uses: aws-actions/configure-aws-credentials@254c19bd240aabef8777f48595e9d2d7b972184b # v6.2.1
+      uses: aws-actions/configure-aws-credentials@517a711dbcd0e402f90c77e7e2f81e849156e31d # v6.2.2
       if: inputs.cache-role != ''
       with:
         aws-region: eu-west-2
