@@ -35,6 +35,7 @@ class UserDiaryIntegrationTest : IntegrationTestBase() {
 
         assertEquals(2, response.appointments.size)
         assertEquals(5, response.outcomes.size)
+        assertThat(response.outcomes.map { it.type }).doesNotContain("Non-selectable overdue filter appointment type")
     }
 
     @Test
