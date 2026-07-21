@@ -63,7 +63,7 @@ internal class EnforcementService(
 
     private fun AppointmentContact.updateFailureToComplyCount() {
         val event = event() ?: return
-        appointmentRepository.save(this)
+        appointmentRepository.saveAndFlush(this)
         event.ftcCount = appointmentRepository.countFailureToComply(event)
     }
 
