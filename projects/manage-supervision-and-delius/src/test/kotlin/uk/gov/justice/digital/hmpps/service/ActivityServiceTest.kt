@@ -57,13 +57,25 @@ internal class ActivityServiceTest {
             ContactGenerator.FIRST_APPT_CONTACT,
             ContactGenerator.FIRST_NON_APPT_CONTACT
         )
+        val allContacts = futureContacts + pastContacts
+
         whenever(personRepository.findSummary(crn)).thenReturn(personSummary)
-        whenever(contactRepository.findByPersonId(any())).thenReturn(futureContacts + pastContacts)
+        whenever(contactRepository.findByPersonId(any())).thenReturn(allContacts)
         val res = service.getPersonActivity(crn)
         assertThat(
             res.personSummary, equalTo(PERSONAL_DETAILS.toSummary())
         )
         assertThat(res.activities.size, equalTo(5))
+
+        val expectedOrderedIds = allContacts
+            .map { it.toActivity() }
+            .sortedByDescending { it.startDateTime }
+            .map { it.id }
+
+        assertThat(
+            res.activities.map { it.id }, equalTo(expectedOrderedIds)
+        )
+
         assertThat(
             res.activities.map { it.startDateTime },
             equalTo(res.activities.map { it.startDateTime }.sortedDescending())
