@@ -146,6 +146,27 @@ object AppointmentGenerator {
         }
     }
 
+    val NON_SELECTABLE_USER_DIARY_APPOINTMENT =
+        SentenceAppointment(
+            person = PersonGenerator.ENFORCEMENT_PERSON,
+            type = NON_SELECTABLE_APPOINTMENT_TYPE,
+            date = ZonedDateTime.of(2022, 12, 1, 9, 0, 0, 0, EuropeLondon).toLocalDate(),
+            startTime = ZonedDateTime.of(2022, 12, 1, 9, 0, 0, 0, EuropeLondon),
+            endTime = ZonedDateTime.of(2022, 12, 1, 10, 0, 0, 0, EuropeLondon),
+            externalReference = "urn:uk:gov:hmpps:manage-supervision-service:appointment:00000000-0000-0000-0000-000000000098",
+            description = "Non-selectable diary test appointment",
+            softDeleted = false,
+            notes = "Notes",
+            sensitive = false,
+            staffId = DEFAULT_STAFF.id,
+            teamId = DEFAULT_TEAM.id,
+            probationAreaId = DEFAULT_PROVIDER.id,
+            eventId = null
+        ).apply {
+            createdByUserId = USER.id
+            lastUpdatedUserId = USER.id
+        }
+
     fun generateAppointment(
         person: Person,
         start: ZonedDateTime,
