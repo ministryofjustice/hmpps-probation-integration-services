@@ -97,12 +97,12 @@ class ActivityIntegrationTest : IntegrationTestBase() {
 
         assertThat(res.activities.any { it.action == "Breach Enforcement Action" }, equalTo(true))
 
-        val nextAppt = res.activities.first { it.id == ContactGenerator.NEXT_APPT_CONTACT.id }
+        val nextAppt = res.activities.single { it.id == ContactGenerator.NEXT_APPT_CONTACT.id }
         assertThat(nextAppt.isAppointment, equalTo(true))
         assertThat(nextAppt.documents.size, equalTo(3))
         assertThat(nextAppt.location?.postcode, equalTo("H34 7TH"))
 
-        val firstAppt = res.activities.first { it.id == ContactGenerator.FIRST_APPT_CONTACT.id }
+        val firstAppt = res.activities.single { it.id == ContactGenerator.FIRST_APPT_CONTACT.id }
         assertThat(firstAppt.type, equalTo(ContactGenerator.FIRST_APPT_CONTACT.toActivity().type))
         assertThat(
             firstAppt.location?.officeName,
