@@ -46,7 +46,7 @@ internal class ActivityServiceTest {
     }
 
     @Test
-    fun `calls get person activity function splitting past and future contacts`() {
+    fun `calls get person activity function returning all contacts sorted by date descending`() {
         val crn = "X000005"
         val pastContacts = listOf(
             ContactGenerator.PREVIOUS_APPT_CONTACT,
@@ -63,18 +63,10 @@ internal class ActivityServiceTest {
         assertThat(
             res.personSummary, equalTo(PERSONAL_DETAILS.toSummary())
         )
-        assertThat(res.activities, equalTo(pastContacts.map { it.toActivity() }))
-        assertThat(res.activities.all { it.isInPast }, equalTo(true))
+        assertThat(res.activities.size, equalTo(5))
         assertThat(
-            res.futureActivities.map { it.id },
-            equalTo(
-                listOf(
-                    ContactGenerator.FIRST_NON_APPT_CONTACT.id,
-                    ContactGenerator.FIRST_APPT_CONTACT.id,
-                    ContactGenerator.NEXT_APPT_CONTACT.id
-                )
-            )
+            res.activities.map { it.startDateTime },
+            equalTo(res.activities.map { it.startDateTime }.sortedDescending())
         )
-        assertThat(res.futureActivities.none { it.isInPast }, equalTo(true))
     }
 }

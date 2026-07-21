@@ -89,23 +89,25 @@ object AppointmentGenerator {
         NON_SELECTABLE_OUTCOME
     )
 
-    val PERSON_APPOINTMENT =
+    val PERSON_APPOINTMENT by lazy {
         generateAppointment(
             PersonGenerator.OVERVIEW,
             ZonedDateTime.of(2024, 11, 27, 9, 0, 0, 0, EuropeLondon),
             ZonedDateTime.of(2024, 11, 27, 10, 0, 0, 0, EuropeLondon),
             USER.staff?.id!!
         )
+    }
 
-    val LATE_NIGHT_APPOINTMENT =
+    val LATE_NIGHT_APPOINTMENT by lazy {
         generateAppointment(
             PersonGenerator.OVERVIEW,
             ZonedDateTime.of(2024, 11, 27, 23, 0, 0, 0, EuropeLondon),
             ZonedDateTime.of(2024, 11, 27, 23, 30, 0, 0, EuropeLondon),
             USER.staff?.id!!
         )
+    }
 
-    val SMS_APPOINTMENT =
+    val SMS_APPOINTMENT by lazy {
         SentenceAppointment(
             person = PersonGenerator.SMS_PERSON,
             type = APPOINTMENT_TYPES[0],
@@ -120,8 +122,9 @@ object AppointmentGenerator {
             staffId = DEFAULT_STAFF.id,
             teamId = DEFAULT_TEAM.id,
         )
+    }
 
-    val NON_SELECTABLE_OVERDUE_APPOINTMENT =
+    val NON_SELECTABLE_OVERDUE_APPOINTMENT by lazy {
         SentenceAppointment(
             person = PersonGenerator.SMS_PERSON,
             type = NON_SELECTABLE_APPOINTMENT_TYPE,
@@ -141,6 +144,7 @@ object AppointmentGenerator {
             createdByUserId = USER.id
             lastUpdatedUserId = USER.id
         }
+    }
 
     fun generateAppointment(
         person: Person,
