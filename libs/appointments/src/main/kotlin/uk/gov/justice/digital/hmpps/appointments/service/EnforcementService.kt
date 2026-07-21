@@ -10,6 +10,7 @@ import uk.gov.justice.digital.hmpps.appointments.entity.AppointmentEntities.Type
 import uk.gov.justice.digital.hmpps.appointments.repository.AppointmentRepositories.AppointmentRepository
 import uk.gov.justice.digital.hmpps.appointments.repository.AppointmentRepositories.EnforcementRepository
 import uk.gov.justice.digital.hmpps.appointments.repository.AppointmentRepositories.EventRepository
+import uk.gov.justice.digital.hmpps.logging.Logger.logger
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.ZonedDateTime
@@ -22,7 +23,6 @@ internal class EnforcementService(
     private val appointmentRepository: AppointmentRepository,
     private val eventRepository: EventRepository,
 ) {
-
     fun applyEnforcementAction(appointment: AppointmentContact, action: EnforcementAction?, reviewType: Type) {
         appointment.applyEnforcementAction(action)
         appointment.updateFailureToComplyCount()

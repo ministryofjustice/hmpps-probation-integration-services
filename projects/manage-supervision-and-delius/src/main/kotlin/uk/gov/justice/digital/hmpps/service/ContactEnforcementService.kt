@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.exception.NotFoundException.Companion.orNotFoundBy
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.*
+import uk.gov.justice.digital.hmpps.logging.Logger.logger
 import uk.gov.justice.digital.hmpps.service.ContactLogService.Companion.REVIEW_ENFORCEMENT_STATUS
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -17,6 +18,9 @@ class ContactEnforcementService(
     private val enforcementRepository: EnforcementRepository,
     private val enforcementActionsRepository: EnforcementActionsRepository,
 ) {
+    companion object {
+        private val log = ContactEnforcementService.logger()
+    }
     fun updateEnforcementActionForContact(contact: Contact, enforcementActionCode: String): EnforcementAction {
         val contactOutcome = contact.outcome.orNotFoundBy("contactId", contact.id)
         val enforcementAction = requireNotNull(
@@ -65,6 +69,8 @@ class ContactEnforcementService(
             )
         })
         contact.event?.run {
+            contactRepository.flush()
+            log.info("ftc being updated for contact: ${contact.event.id}")
             ftcCount = contactRepository.countFailureToComply(this)
             val ftcLimit = disposal?.type?.ftcLimit ?: return@run
             if (ftcCount > ftcLimit && !contactRepository.enforcementReviewExists(
