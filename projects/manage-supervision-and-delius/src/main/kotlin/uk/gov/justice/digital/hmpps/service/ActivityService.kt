@@ -58,12 +58,11 @@ class ActivityService(
     fun getPersonActivity(crn: String): PersonActivity {
         val summary = personRepository.getSummary(crn)
         val contacts = contactRepository.findByPersonId(summary.id)
-        val (past, future) = contacts.map { it.toActivity() }.partition { it.isInPast }
+        val activities = contacts.map { it.toActivity() }.sortedByDescending { it.startDateTime }
 
         return PersonActivity(
             personSummary = summary.toPersonSummary(),
-            activities = past.sortedByDescending() { it.startDateTime },
-            futureActivities = future.sortedBy { it.startDateTime }
+            activities = activities
         )
     }
 
@@ -79,4 +78,3 @@ class ActivityService(
         }.map { it.toActivity() }
     }
 }
-
