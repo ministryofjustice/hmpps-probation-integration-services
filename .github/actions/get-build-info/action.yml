@@ -17,22 +17,21 @@ runs:
     - name: Get build info
       run: |
         echo '::group::Generate build info'
-        ./gradlew "${PROJECT}:buildInfo" "${PROJECT}:gitInfo"
-        sed -i "s/build.version=.*/build.version=$VERSION/" "projects/${PROJECT}/build-info.properties"
+        ./gradlew "${PROJECT}:buildInfo" "${PROJECT}:generateGitProperties"
         echo '::endgroup::'
       shell: bash
       env:
-        VERSION: ${{ inputs.version }}
+        ORG_GRADLE_PROJECT_version: ${{ inputs.version }}
         PROJECT: ${{ inputs.project }}
 
     - name: Store build info
       uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
       with:
         name: build-info-${{ inputs.project }}
-        path: projects/${{ inputs.project }}/build-info.properties
+        path: projects/${{ inputs.project }}/build/info/build-info.properties
 
     - name: Store git info
       uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
       with:
         name: git-info-${{ inputs.project }}
-        path: projects/${{ inputs.project }}/git.properties
+        path: projects/${{ inputs.project }}/build/info/git-info.properties

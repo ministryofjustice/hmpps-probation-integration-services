@@ -10,6 +10,7 @@ import uk.gov.justice.digital.hmpps.data.generator.SentenceGenerator.generateOrd
 import uk.gov.justice.digital.hmpps.data.loader.BaseDataLoader
 import uk.gov.justice.digital.hmpps.data.manager.DataManager
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.Custody
+import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.CustodyDateType
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.KeyDate
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.reference.ReferenceData
 import uk.gov.justice.digital.hmpps.integrations.delius.person.Person
@@ -27,7 +28,12 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
             )
         )
         save(ReferenceDataGenerator.DEFAULT_CUSTODY_STATUS)
-        val keyDateTypes = saveAll(ReferenceDataGenerator.KEY_DATE_TYPES.values)
+        val keyDateTypes = saveAll(ReferenceDataGenerator.KEY_DATE_TYPES.values).filterNot {
+            it.code in setOf(
+                CustodyDateType.PRESUMPTIVE_EM_END_DATE.code, CustodyDateType.FINAL_THIRD_START_DATE.code
+            )
+        }
+
         save(ContactTypeGenerator.EDSS)
         save(SentenceGenerator.DEFAULT_DISPOSAL_TYPE)
 
@@ -71,6 +77,8 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
         createPersonWithKeyDates(PersonGenerator.PERSON_WITH_KEYDATES, "38340A", keyDateTypes)
 
         createPersonWithKeyDates(PersonGenerator.PERSON_WITH_KEYDATES_BY_CRN, "48340A", keyDateTypes)
+
+        createPersonWithKeyDates(PersonGenerator.SDS_PLUS_PERSON, "78340A", keyDateTypes)
 
         save(SentenceGenerator.PSS_DISPOSAL_TYPE)
         val pssPerson = save(PersonGenerator.PSS_PERSON)

@@ -9,6 +9,7 @@ object PersonalContactGenerator {
     val CURRENT_EMPLOYER_TYPE = ReferenceData(IdGenerator.getAndIncrement(), "CE", "Current Employer")
 
     val EMPLOYER_ADDRESS = generateAddress(
+        personId = IdGenerator.getAndIncrement(),
         status = AddressGenerator.MAIN_STATUS,
         buildingName = "Employer Building",
         buildingNumber = "1",
@@ -62,7 +63,8 @@ object PersonalContactGenerator {
     )
 
     fun generateAddress(
-        status: ReferenceData? = null,
+        personId: Long = PersonGenerator.DEFAULT.id,
+        status: ReferenceData = AddressGenerator.MAIN_STATUS,
         buildingName: String? = null,
         buildingNumber: String? = null,
         streetName: String? = null,
@@ -74,6 +76,7 @@ object PersonalContactGenerator {
         id: Long = IdGenerator.getAndIncrement(),
     ) = ContactAddress(
         id = id,
+        personId = personId,
         status = status,
         buildingName = buildingName,
         buildingNumber = buildingNumber,

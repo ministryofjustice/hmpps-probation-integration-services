@@ -102,10 +102,16 @@ class AccreditedProgrammesAppointmentService(
         appointmentService.bulkUpdate(request.appointments) {
             reference = { "${Contact.REFERENCE_PREFIX}${it.reference}" }
             amendDateTime = {
-                Schedule(it.date, it.startTime, it.endTime, allowConflicts = true, allowDurationReduction = true)
+                Schedule(
+                    it.date,
+                    it.startTime,
+                    it.endTime,
+                    allowConflicts = true,
+                    allowDurationReductionWithOutcome = true
+                )
             }
             reassign = { Assignee(it.staff.code, it.team.code, it.location?.code) }
-            applyOutcome = { Outcome(it.outcome?.code) }
+            applyOutcome = { Outcome(it.outcome?.code, allowMissingOutcomeInThePast = true) }
             appendNotes = { it.notes }
             flagAs = { copy(sensitive = it.sensitive) }
         }.onEach { telemetryService.trackEvent("AppointmentUpdated", it.telemetry()) }

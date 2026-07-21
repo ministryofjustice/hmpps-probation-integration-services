@@ -26,8 +26,11 @@ class DataLoader(dataManager: DataManager, private val jdbcTemplate: JdbcTemplat
             AppointmentGenerator.ATTENDED_COMPLIED,
             AppointmentGenerator.POP_RESCHEDULED_OUTCOME,
             AppointmentGenerator.SERVICE_RESCHEDULED_OUTCOME,
+            AppointmentGenerator.NON_SELECTABLE_OUTCOME,
             *AppointmentGenerator.APPOINTMENT_TYPES.toTypedArray(),
+            AppointmentGenerator.NON_SELECTABLE_APPOINTMENT_TYPE,
             *AppointmentGenerator.CONTACT_TYPE_OUTCOMES.toTypedArray(),
+            AppointmentGenerator.NON_SELECTABLE_CONTACT_TYPE_OUTCOME,
             ContactGenerator.DEFAULT_PROVIDER,
             ContactGenerator.DEFAULT_BOROUGH,
             ContactGenerator.DEFAULT_DISTRICT,
@@ -69,6 +72,7 @@ class DataLoader(dataManager: DataManager, private val jdbcTemplate: JdbcTemplat
         saveAll(PersonGenerator.PROVISIONS)
         saveAll(PersonGenerator.PERSONAL_CIRCUMSTANCES)
         save(PersonGenerator.OVERVIEW)
+        save(PersonGenerator.SOFT_DELETED)
         save(PersonGenerator.E_SUP_PERSON)
         save(MonthsFilterGenerator.GENDER)
         save(MonthsFilterGenerator.PERSON)
@@ -134,6 +138,8 @@ class DataLoader(dataManager: DataManager, private val jdbcTemplate: JdbcTemplat
             OffenderManagerGenerator.STAFF_TEAM_1,
             OffenderManagerGenerator.RESPONSIBLE_OFFICER_OM_ACTIVE,
             OffenderManagerGenerator.OFFENDER_MANAGER_ACTIVE,
+            OffenderManagerGenerator.RESPONSIBLE_OFFICER_OM_SOFT_DELETED_PERSON,
+            OffenderManagerGenerator.OFFENDER_MANAGER_SOFT_DELETED_PERSON,
             OffenderManagerGenerator.RESPONSIBLE_OFFICER_OM_INACTIVE,
             OffenderManagerGenerator.RESPONSIBLE_OFFICER_OM_UNALLOCATED,
             OffenderManagerGenerator.OFFENDER_MANAGER_INACTIVE,
@@ -501,9 +507,9 @@ class DataLoader(dataManager: DataManager, private val jdbcTemplate: JdbcTemplat
 
         save(AppointmentGenerator.PERSON_APPOINTMENT)
         save(AppointmentGenerator.LATE_NIGHT_APPOINTMENT)
-
         save(AppointmentGenerator.SMS_APPOINTMENT)
-
+        save(AppointmentGenerator.NON_SELECTABLE_OVERDUE_APPOINTMENT)
+        save(AppointmentGenerator.NON_SELECTABLE_USER_DIARY_APPOINTMENT)
         saveAll(
             PersonGenerator.RESCHEDULED_PERSON_1,
             PersonGenerator.RESCHEDULED_PERSON_2,

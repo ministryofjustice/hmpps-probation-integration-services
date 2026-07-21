@@ -261,17 +261,24 @@ class ContactLogService(
     fun updateContactOutcome(contactId: Long, request: UpdateContactOutcome) {
         val contact = contactRepository.getContact(contactId)
         val contactType = contact.type.code
-        val contactOutcome = contactTypeRepository.findSelectableOutcomesByTypeCode(contactType)
-            .firstOrNull { it.code == request.outcomeCode }
-            .orNotFoundBy("code", request.outcomeCode)
+        val contactOutcome = request.outcomeCode?.let { code ->
+            contactTypeRepository.findSelectableOutcomesByTypeCode(contactType)
+                .firstOrNull { it.code == code }
+                .orNotFoundBy("code", code)
+        }
+        if (contactOutcome == null) {
+            require(contact.outcome == null) { "outcomeCode cannot be null when the contact already has an outcome" }
+        }
+        require(request.enforcementActionCode == null || contactOutcome != null)
+        { "Outcome is required when an enforcement action is provided" }
 
-        if (contact.complied == false && contactOutcome.outcomeCompliantAcceptable == true) {
+        if (contact.complied == false && contactOutcome?.outcomeCompliantAcceptable == true) {
             telemetryService.trackEvent(
                 "remove enforcement for a compliant contact",
                 mapOf(
                     "crn" to contact.person.crn,
                     "contactId" to contactId.toString(),
-                    "enforcements" to contact.enforcement?.let {
+                    "enforcement" to contact.enforcement?.let {
                         mapOf(
                             "id" to it.id,
                             "action" to it.action?.code,
@@ -280,8 +287,7 @@ class ContactLogService(
                     }.let { objectMapper.writeValueAsString(it) }
                 )
             )
-            contact.enforcement?.let { enforcementRepository.delete(it) }
-            contact.enforcement = null
+            contact.enforcementEntries.clear()
         }
 
         request.notes.let { contact.appendNotes(it) }
@@ -298,17 +304,14 @@ class ContactLogService(
         contact.date = request.date
         contact.startTime = ZonedDateTime.ofLocal(request.date.atTime(request.time), EuropeLondon, null)
         contact.outcome = contactOutcome
-        contact.attended = contactOutcome.outcomeAttendance
-        contact.complied = contactOutcome.outcomeCompliantAcceptable
+        contact.attended = contactOutcome?.outcomeAttendance
+        contact.complied = contactOutcome?.outcomeCompliantAcceptable
 
         contactRepository.save(contact)
-        if (request.enforcementActionCode != null) {
-            val appliedAction =
-                contactEnforcementService.updateEnforcementActionForContact(contact, request.enforcementActionCode)
-            setEnforcementFlag(contact, appliedAction)
-        } else {
-            setEnforcementFlag(contact)
-        }
+        val appliedAction = if (contactOutcome != null && request.enforcementActionCode != null) {
+            contactEnforcementService.updateEnforcementActionForContact(contact, request.enforcementActionCode)
+        } else null
+        setEnforcementFlag(contact, appliedAction ?: contact.latestEnforcementAction)
     }
 
     @Transactional

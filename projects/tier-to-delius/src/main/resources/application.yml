@@ -3,7 +3,7 @@ spring:
   jackson:
     default-property-inclusion: non_null
   jpa:
-    hibernate.ddl-auto: validate
+    hibernate.ddl-auto: none # TODO re-enable after offender.v3_tier_id column is added
     properties:
       hibernate:
         timezone.default_storage: NORMALIZE

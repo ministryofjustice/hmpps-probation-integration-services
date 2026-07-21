@@ -153,7 +153,7 @@ class UnpaidWorkAppointment(
 
     @ManyToOne
     @JoinColumn(name = "upw_project_id")
-    val project: UnpaidWorkProject,
+    var project: UnpaidWorkProject,
 
     @ManyToOne
     @JoinColumn(name = "upw_details_id")
@@ -190,7 +190,7 @@ class UnpaidWorkAppointment(
 
     @ManyToOne
     @JoinColumn(name = "team_id")
-    val team: Team,
+    var team: Team,
 
     @Convert(converter = YesNoConverter::class)
     @Column(name = "high_visibility_vest")

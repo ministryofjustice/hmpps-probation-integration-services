@@ -30,7 +30,6 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
             TestData.TeamData.OFFICE,
             TestData.TeamData.TEAM,
             TestData.StaffData.STAFF,
-            TestData.StaffData.STAFF_WITHOUT_USER,
             TestData.PersonData.DEFAULT,
             TestData.PersonData.BASIC,
             TestData.PersonData.SUSPENDED,

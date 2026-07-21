@@ -94,8 +94,10 @@ class Contact(
     @JoinColumn(name = "latest_enforcement_action_id", referencedColumnName = "enforcement_action_id")
     var latestEnforcementAction: EnforcementAction? = null,
 
-    @OneToOne(mappedBy = "contact")
-    var enforcement: Enforcement? = null,
+    // there should only be one enforcement per contact, modeled
+    // as a one to many due to needing lazy loading
+    @OneToMany(mappedBy = "contact", fetch = FetchType.LAZY, orphanRemoval = true)
+    var enforcementEntries: MutableList<Enforcement> = mutableListOf(),
 
     @Column(name = "enforcement")
     @Convert(converter = NumericBooleanConverter::class)
@@ -182,6 +184,7 @@ class Contact(
 
     val partitionAreaId: Long = 0,
 ) {
+    val enforcement: Enforcement? get() = enforcementEntries.singleOrNull()
 
     fun startDateTime(): ZonedDateTime {
         val startTime = startTime
@@ -407,7 +410,7 @@ class EnforcementAction(
 @SQLRestriction("soft_deleted = 0")
 @SequenceGenerator(name = "enforcement_id_seq", sequenceName = "enforcement_id_seq", allocationSize = 1)
 class Enforcement(
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "contact_id")
     val contact: Contact,
 
@@ -776,6 +779,13 @@ interface ContactRepository : JpaRepository<Contact, Long> {
             and rct.attendance_contact = 'Y'  
             and rct.contact_outcome_flag = 'Y' 
             and c.contact_outcome_type_id is null 
+            and exists (
+                select 1
+                from r_contact_type_outcome cto
+                join r_contact_outcome_type cot on cot.contact_outcome_type_id = cto.contact_outcome_type_id
+                where cto.contact_type_id = c.contact_type_id
+                and cot.selectable = 'Y'
+            )
             and (to_char(c.contact_date,'YYYY-MM-DD') < :dateNow or (to_char(c.contact_date,'YYYY-MM-DD') = :dateNow
             and to_char(c.contact_start_time,'HH24:MI') < :timeNow)) 
         """,
@@ -792,6 +802,13 @@ interface ContactRepository : JpaRepository<Contact, Long> {
             and rct.attendance_contact = 'Y' 
             and rct.contact_outcome_flag = 'Y'
             and c.contact_outcome_type_id is null
+            and exists (
+                select 1
+                from r_contact_type_outcome cto
+                join r_contact_outcome_type cot on cot.contact_outcome_type_id = cto.contact_outcome_type_id
+                where cto.contact_type_id = c.contact_type_id
+                and cot.selectable = 'Y'
+            )
             and (to_char(c.contact_date,'YYYY-MM-DD') < :dateNow  or (to_char(c.contact_date,'YYYY-MM-DD') = :dateNow
             and to_char(c.contact_start_time,'HH24:MI') < :timeNow)) 
         """
@@ -827,6 +844,13 @@ interface ContactRepository : JpaRepository<Contact, Long> {
                and rct.attendance_contact = 'Y'
                and rct.contact_outcome_flag = 'Y'
                and c.contact_outcome_type_id is null
+               and exists (
+                   select 1
+                   from r_contact_type_outcome cto
+                   join r_contact_outcome_type cot on cot.contact_outcome_type_id = cto.contact_outcome_type_id
+                   where cto.contact_type_id = c.contact_type_id
+                     and cot.selectable = 'Y'
+               )
                and c.soft_deleted = 0
                and (to_char(c.contact_date, 'YYYY-MM-DD') < :dateNow or
                     (to_char(c.contact_date, 'YYYY-MM-DD') = :dateNow and
@@ -862,6 +886,13 @@ interface ContactRepository : JpaRepository<Contact, Long> {
         and rct.attendance_contact = 'Y'  
         and rct.contact_outcome_flag = 'Y'
         and c.contact_outcome_type_id is null 
+        and exists (
+            select 1
+            from r_contact_type_outcome cto
+            join r_contact_outcome_type cot on cot.contact_outcome_type_id = cto.contact_outcome_type_id
+            where cto.contact_type_id = c.contact_type_id
+              and cot.selectable = 'Y'
+        )
         and c.soft_deleted = 0
         and (to_char(c.contact_date,'YYYY-MM-DD') < :dateNow
         or (to_char(c.contact_date,'YYYY-MM-DD') = :dateNow and to_char(c.contact_start_time,'HH24:MI') < :timeNow))              
@@ -880,7 +911,7 @@ interface ContactRepository : JpaRepository<Contact, Long> {
             SELECT c from ContactAlert ca
             join ca.contact c
             join OffenderManager com on com.person.id = c.person.id and com.active = true and com.softDeleted = false
-            where c.alert = true and c.softDeleted = false
+            where c.alert = true and c.softDeleted = false and c.person.softDeleted = false
             and ca.staff.user.username = :username and com.staff.id = ca.staff.id
         """
     )

@@ -55,6 +55,7 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
             CourtAppearanceGenerator.MISSING_DISPOSAL_COURT_APPEARANCE,
             RequirementGenerator.DEFAULT_REQUIREMENT,
             RequirementGenerator.REQUIREMENT_MINIMAL_FIELDS,
+            RequirementGenerator.INACTIVE_REQUIREMENT,
             AdditionalOffenceGenerator.DEFAULT_ADDITIONAL_OFFENCE,
             AdditionalSentenceGenerator.DEFAULT_ADDITIONAL_SENTENCE,
             StaffGenerator.DEFAULT_PROBATION_STAFF,

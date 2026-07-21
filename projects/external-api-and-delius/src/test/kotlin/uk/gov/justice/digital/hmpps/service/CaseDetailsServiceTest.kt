@@ -30,6 +30,7 @@ import uk.gov.justice.digital.hmpps.integration.delius.entity.PersonManagerRepos
 import uk.gov.justice.digital.hmpps.integration.delius.entity.PersonRepository
 import uk.gov.justice.digital.hmpps.integration.delius.entity.RegistrationRepository
 import uk.gov.justice.digital.hmpps.integration.delius.entity.ResponsibleOfficerRepository
+import uk.gov.justice.digital.hmpps.integration.delius.entity.StaffRepository
 import uk.gov.justice.digital.hmpps.model.*
 import java.time.LocalDate
 import java.time.LocalTime
@@ -69,6 +70,9 @@ internal class CaseDetailsServiceTest {
 
     @Mock
     lateinit var limitedAccessService: LimitedAccessService
+
+    @Mock
+    lateinit var staffRepository: StaffRepository
 
     @InjectMocks
     lateinit var caseDetailsService: CaseDetailsService

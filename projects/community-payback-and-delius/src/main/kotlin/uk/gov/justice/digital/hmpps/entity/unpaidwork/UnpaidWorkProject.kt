@@ -9,6 +9,7 @@ import uk.gov.justice.digital.hmpps.entity.ReferenceData
 import uk.gov.justice.digital.hmpps.entity.person.Address
 import uk.gov.justice.digital.hmpps.entity.staff.Team
 import uk.gov.justice.digital.hmpps.exception.NotFoundException.Companion.orNotFoundBy
+import uk.gov.justice.digital.hmpps.utils.Extensions.reportMissing
 import java.time.DayOfWeek
 import java.time.LocalDate
 
@@ -56,16 +57,14 @@ class UnpaidWorkProject(
     @JoinColumn(name = "beneficiary_contact_address_id")
     val beneficiaryContactAddress: Address?,
 ) {
-    fun requireAvailabilityOnDates(dates: List<LocalDate>) = apply {
-        require(completionDate == null || completionDate > dates.max()) {
-            "Appointment cannot be scheduled after the project completion date (${dates.max()} > $completionDate)"
+    fun requireAvailabilityOnDate(date: LocalDate) = apply {
+        require(completionDate == null || completionDate > date) {
+            "Appointment cannot be scheduled after the project completion date (${date} > $completionDate)"
         }
         if (availability.isNotEmpty()) {
             val availableDays = availability.map { DayOfWeek.valueOf(it.dayOfWeek.weekDay.uppercase()) }.toSet()
-            val requestedDays = dates.map { it.dayOfWeek }.toSet()
-            val invalidDays = requestedDays - availableDays
-            require(invalidDays.isEmpty()) {
-                "Project is not available on the following days: $invalidDays"
+            require(date.dayOfWeek in availableDays) {
+                "Project is not available on the following day: $date (${date.dayOfWeek}). Available days: $availableDays"
             }
         }
     }
@@ -76,7 +75,14 @@ interface UnpaidWorkProjectRepository : JpaRepository<UnpaidWorkProject, Long> {
     fun findByCode(code: String): UnpaidWorkProject?
 
     @EntityGraph(attributePaths = ["placementAddress", "beneficiaryContactAddress", "team.provider", "projectType", "availability"])
+    fun findByCodeIn(codes: Collection<String>): List<UnpaidWorkProject>
+
+    @EntityGraph(attributePaths = ["placementAddress", "beneficiaryContactAddress", "team.provider", "projectType", "availability"])
     fun findAllByIdIn(ids: Collection<Long>): List<UnpaidWorkProject>
 }
 
 fun UnpaidWorkProjectRepository.getByCode(code: String) = findByCode(code).orNotFoundBy("code", code)
+
+fun UnpaidWorkProjectRepository.getByCodeIn(codes: List<String>) = codes.toSet().let { codes ->
+    findByCodeIn(codes).associateBy { it.code }.reportMissing(codes)
+}

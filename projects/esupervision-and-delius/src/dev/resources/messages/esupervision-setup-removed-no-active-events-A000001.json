@@ -1,0 +1,19 @@
+{
+  "eventType": "esupervision.setup.removed",
+  "version": 1,
+  "description": "An e-Supervision setup was removed",
+  "occurredAt": "2026-04-02T09:30:00+01:00",
+  "additionalInformation": {
+    "eventNumber": "2",
+    "setupId": "b2c3d4e5-f6a7-8901-bcde-f12345678901",
+    "outcomeCode": "ESPNA"
+  },
+  "personReference": {
+    "identifiers": [
+      {
+        "type": "CRN",
+        "value": "A000001"
+      }
+    ]
+  }
+}

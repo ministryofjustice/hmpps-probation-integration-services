@@ -1,0 +1,5 @@
+{
+  "bookingId": 123456,
+  "containsAnSDSPlusSentence": false,
+  "sentenceEnvelopeLengthInDays": 50
+}

@@ -13,7 +13,7 @@ plugins {
     kotlin("plugin.spring") version "2.4.0" apply false
     id("org.springframework.boot") version "4.1.0" apply false
     id("io.spring.dependency-management") version "1.1.7" apply false
-    id("com.gorylenko.gradle-git-properties") version "2.5.7" apply false
+    id("com.gorylenko.gradle-git-properties") version "4.0.1" apply false
     id("com.google.cloud.tools.jib") apply false
     id("base")
     id("org.sonarqube")
@@ -91,14 +91,16 @@ subprojects {
             isReproducibleFileOrder = true
             archiveFileName.set("${archiveBaseName.get()}-${archiveClassifier.get()}.${archiveExtension.get()}")
         }
-        named<GenerateGitPropertiesTask>("generateGitProperties") { enabled = false }
-        register<GenerateGitPropertiesTask>("gitInfo") {
-            gitProperties.gitPropertiesResourceDir = projectDir
-            gitProperties.dotGitDirectory = rootDir.resolve(".git")
-        }
+        // Generate build info into a different directory so that it isn't included in the final image - to improve caching and reproducibility
         register<BuildInfo>("buildInfo") {
-            destinationDir = projectDir
+            description = "Generate Spring build info"
+            destinationDir = layout.buildDirectory.dir("info")
             filename = "build-info.properties"
+        }
+        withType<GenerateGitPropertiesTask> {
+            gitProperties.gitPropertiesResourceDir = layout.buildDirectory.dir("info")
+            gitProperties.gitPropertiesName = "git-info.properties"
+            gitProperties.dotGitDirectory = rootDir.resolve(".git")
         }
     }
 

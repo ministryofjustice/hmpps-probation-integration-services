@@ -25,6 +25,18 @@ object RequirementGenerator {
         active = true
     )
 
+    val INACTIVE_REQUIREMENT = RequirementEntity(
+        id = IdGenerator.getAndIncrement(),
+        disposalId = DisposalGenerator.DEFAULT_DISPOSAL.id,
+        startDate = LocalDate.now().minusDays(6),
+        requirementType = getRequirementType("Inactive"),
+        requirementSubType = ReferenceDataGenerator.DEFAULT_REQUIREMENT_SUBTYPE,
+        length = 2,
+        length2 = 1,
+        softDeleted = false,
+        active = false
+    )
+
     fun getRequirementType(typeDescription: String) = RequirementType(
         id = IdGenerator.getAndIncrement(),
         code = typeDescription,

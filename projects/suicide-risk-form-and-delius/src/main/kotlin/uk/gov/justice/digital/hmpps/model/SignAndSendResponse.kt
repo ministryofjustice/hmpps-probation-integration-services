@@ -1,12 +1,8 @@
 package uk.gov.justice.digital.hmpps.model
 
 data class SignAndSendResponse(
-    val userDetails: UserDetails,
+    val userDetails: LdapName?,
     val responsibleOfficer: ResponsibleOfficerResponse,
-)
-
-data class UserDetails(
-    val name: Name?,
 )
 
 data class ResponsibleOfficerResponse(

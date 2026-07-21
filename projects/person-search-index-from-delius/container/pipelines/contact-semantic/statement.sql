@@ -58,6 +58,14 @@ from (with page as (select contact.*
                      'typeShortDescription' value r_contact_type.short_description,
                      'outcomeCode' value r_contact_outcome_type.code,
                      'outcomeDescription' value r_contact_outcome_type.description,
+                     'sparks' value (select json_arrayagg(
+                                                    json_object('code' value srl.code_value,
+                                                                'description' value srl.code_description)
+                                                        returning clob)
+                                     from contact_sparks cs
+                                     join r_standard_reference_list srl
+                                     on cs.sparks_id = srl.standard_reference_list_id
+                                     where cs.contact_id = contact.contact_id) format json,
                      'softDeleted' value contact.soft_deleted,
                      'rowVersion' value contact.row_version,
                      'supervisionPackage' value r_contact_type.supervision_package

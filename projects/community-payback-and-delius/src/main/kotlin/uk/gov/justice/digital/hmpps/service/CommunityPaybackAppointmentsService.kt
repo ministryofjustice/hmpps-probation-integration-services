@@ -15,6 +15,7 @@ import uk.gov.justice.digital.hmpps.entity.contact.toCodeDescription
 import uk.gov.justice.digital.hmpps.entity.sentence.EventRepository
 import uk.gov.justice.digital.hmpps.entity.staff.OfficeLocationRepository
 import uk.gov.justice.digital.hmpps.entity.staff.StaffRepository
+import uk.gov.justice.digital.hmpps.entity.staff.TeamRepository
 import uk.gov.justice.digital.hmpps.entity.staff.toSupervisor
 import uk.gov.justice.digital.hmpps.entity.unpaidwork.*
 import uk.gov.justice.digital.hmpps.entity.unpaidwork.UnpaidWorkDetails
@@ -40,6 +41,7 @@ class CommunityPaybackAppointmentsService(
     private val eventRepository: EventRepository,
     private val upwDetailsRepository: UpwDetailsRepository,
     private val officeLocationRepository: OfficeLocationRepository,
+    private val teamRepository: TeamRepository,
 ) {
     fun getAppointment(projectCode: String, appointmentId: Long, username: String): AppointmentResponse {
         val project = unpaidWorkProjectRepository.getByCode(projectCode)
@@ -175,17 +177,20 @@ class CommunityPaybackAppointmentsService(
         projectCode: String,
         requests: CreateAppointmentsRequest
     ): List<CreatedAppointment> = with(requests.appointments) {
-        val project = unpaidWorkProjectRepository.getByCode(projectCode).requireAvailabilityOnDates(map { it.date })
+        val defaultProject = unpaidWorkProjectRepository.getByCode(projectCode)
         val eventIds = eventRepository.getEventIds(map { it.crn to it.eventNumber })
         val upwDetails = upwDetailsRepository.getByEventIdIn(eventIds.values)
         val staff = staffRepository.getByCodeIn(mapNotNull { it.supervisor?.code })
+        val teams = teamRepository.getByCodeIn(mapNotNull { it.supervisorTeam?.code })
         val locations = officeLocationRepository.getByCodeIn(mapNotNull { it.pickUp?.location?.code })
         val outcomes = contactOutcomeRepository.getByCodeIn(mapNotNull { it.outcome?.code })
         val workQuality = referenceDataRepository.findByDatasetCode(Dataset.UPW_WORK_QUALITY).associateBy { it.code }
         val behaviour = referenceDataRepository.findByDatasetCode(Dataset.UPW_BEHAVIOUR).associateBy { it.code }
-
+        val projects = unpaidWorkProjectRepository.getByCodeIn(mapNotNull { it.project?.code })
         appointmentService
             .bulkCreate(map { request ->
+                val updatedProject =
+                    request.project?.let { projects[it.code].orNotFoundBy("code", it.code) } ?: defaultProject
                 CreateAppointment(
                     reference = "$REFERENCE_PREFIX${request.reference}",
                     typeCode = ContactType.Code.UNPAID_WORK_APPOINTMENT.value,
@@ -197,8 +202,8 @@ class CommunityPaybackAppointmentsService(
                     date = request.date,
                     startTime = request.startTime,
                     endTime = request.endTime,
-                    staffCode = request.supervisor?.code ?: project.team.unallocatedStaff().code,
-                    teamCode = project.team.code,
+                    staffCode = request.supervisor?.code ?: updatedProject.team.unallocatedStaff().code,
+                    teamCode = request.supervisorTeam?.code ?: updatedProject.team.code,
                     outcomeCode = request.outcome?.code,
                     notes = request.notes,
                     alert = request.alertActive,
@@ -208,6 +213,8 @@ class CommunityPaybackAppointmentsService(
             })
             .associateBy { appointment -> single { "$REFERENCE_PREFIX${it.reference}" == appointment.reference } }
             .map { (request, appointment) ->
+                val updatedProject =
+                    request.project?.let { projects[it.code].orNotFoundBy("code", it.code) } ?: defaultProject
                 CreateUnpaidWorkAppointment(
                     contactId = appointment.id,
                     personId = appointment.relatedTo.personId!!,
@@ -219,9 +226,10 @@ class CommunityPaybackAppointmentsService(
                         ?.let { code -> locations[code].orNotFoundBy("code", code) },
                     pickUpTime = request.pickUp?.time,
                     staff = request.supervisor?.code?.let { staff[it].orNotFoundBy("code", it) }
-                        ?: project.team.unallocatedStaff(),
-                    team = project.team,
-                    project = project,
+                        ?: updatedProject.team.unallocatedStaff(),
+                    team = request.supervisorTeam?.code?.let { teams[it].orNotFoundBy("code", it) }
+                        ?: updatedProject.team,
+                    project = updatedProject.requireAvailabilityOnDate(request.date),
                     minutesOffered = request.minutesOffered
                         ?: ChronoUnit.MINUTES.between(request.startTime, request.endTime),
                     minutesCredited = request.minutesCredited,
@@ -236,7 +244,7 @@ class CommunityPaybackAppointmentsService(
                     allocationId = request.allocationId,
                     notes = appointment.notes,
                     reference = request.reference
-                )
+                ).requireDateAfterSentenceDate()
             }
             .also(createUnpaidWorkAppointmentRepository::saveAll)
             .also { upwDetails.values.onEach { updateStatus(it) } }
@@ -249,29 +257,43 @@ class CommunityPaybackAppointmentsService(
         request: UpdateAppointmentRequest
     ) {
         val unpaidWorkAppointment = unpaidWorkAppointmentRepository.getAppointment(appointmentId)
-        unpaidWorkAppointment.validateVersion(request.version.mostSignificantBits)
-        unpaidWorkAppointment.contact.validateVersion(request.version.leastSignificantBits)
+            .requireUnchangedDateAfterOutcome(request.date)
+            .validateVersion(request.version)
 
         require(projectCode == unpaidWorkAppointment.project.code) {
             "Appointment is not for the provided project"
         }
 
+        val updatedProject =
+            request.project?.let { unpaidWorkProjectRepository.getByCode(it.code) } ?: unpaidWorkAppointment.project
+
         val appointment = appointmentService.update(request) {
             id = { unpaidWorkAppointment.contact.id }
-            amendDateTime =
-                { copy(date = it.date, startTime = it.startTime, endTime = it.endTime, allowConflicts = true) }
-            applyOutcome = { copy(outcomeCode = it.outcome?.code) }
-            reassign = { copy(staffCode = it.supervisor.code) }
+            amendDateTime = {
+                copy(
+                    date = it.date,
+                    startTime = it.startTime,
+                    endTime = it.endTime,
+                    allowConflicts = true,
+                    allowRescheduleWithOutcome = true
+                )
+            }
+            applyOutcome = { copy(outcomeCode = it.outcome?.code, allowChanges = true) }
+            reassign = { copy(staffCode = it.supervisor.code, teamCode = it.supervisorTeam?.code ?: teamCode) }
             flagAs = { copy(alert = it.alertActive, sensitive = it.sensitive) }
             appendNotes = { it.notes }
         }
 
         val outcome = request.outcome?.let { contactOutcomeRepository.getByCode(it.code) }
+        val updatedTeam =
+            request.supervisorTeam?.let { teamRepository.getByCode(it.code) } ?: unpaidWorkAppointment.team
         unpaidWorkAppointment.apply {
             date = request.date
             startTime = request.startTime
             endTime = request.endTime
             staff = staffRepository.getByCode(request.supervisor.code)
+            team = updatedTeam
+            project = updatedProject.requireAvailabilityOnDate(request.date)
             hiVisWorn = request.hiVisWorn
             workedIntensively = request.workedIntensively
             minutesCredited = request.minutesCredited
@@ -285,7 +307,7 @@ class CommunityPaybackAppointmentsService(
             pickUpTime = request.pickUp?.time
             pickUpLocation = request.pickUp?.location?.code?.let { code -> officeLocationRepository.getByCode(code) }
             updateStatus(details)
-        }
+        }.requireDateAfterSentenceDate()
     }
 
     fun updateStatus(details: UnpaidWorkDetails) {
@@ -309,7 +331,8 @@ class CommunityPaybackAppointmentsService(
         else if the status is any other value then keep the status as is
          */
         val statusCode = when {
-            remainingMinutes <= 0L -> "HC"
+            remainingMinutes <= 0L && currentStatus != "HC" -> "HC"
+            remainingMinutes > 0L && currentStatus == "HC" -> "WK"
             currentStatus == null -> "WK"
             currentStatus == "UN" -> "WK"
             else -> return
@@ -344,7 +367,24 @@ class CommunityPaybackAppointmentsService(
         return String.format("%02d:%02d", hours, mins)
     }
 
-    private fun Versioned.validateVersion(version: Long) {
+    private fun UnpaidWorkAppointment.requireUnchangedDateAfterOutcome(date: LocalDate) = apply {
+        require(contact.outcome == null || date == this.date) {
+            "Appointment date cannot be changed when an outcome has been recorded"
+        }
+    }
+
+    private fun UnpaidWorkAppointment.requireDateAfterSentenceDate() = apply {
+        require(date >= details.disposal.date) { "Appointment date must be on or after sentence date ($date < ${details.disposal.date})" }
+    }
+
+    private fun CreateUnpaidWorkAppointment.requireDateAfterSentenceDate() = apply {
+        require(date >= details.disposal.date) { "Appointment date must be on or after sentence date ($date < ${details.disposal.date})" }
+    }
+
+    private fun UnpaidWorkAppointment.validateVersion(version: UUID) = validateVersion(version.mostSignificantBits)
+        .also { contact.validateVersion(version.leastSignificantBits) }
+
+    private fun <T : Versioned> T.validateVersion(version: Long) = apply {
         if (rowVersion != version) {
             throw ObjectOptimisticLockingFailureException(this::class.java, id!!)
         }

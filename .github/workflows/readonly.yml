@@ -70,7 +70,6 @@ jobs:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
       - uses: ./.github/actions/cloud-platform-auth
         with:
-          api: ${{ secrets.KUBE_ENV_API }}
           cert: ${{ secrets.KUBE_CERT }}
           cluster: ${{ secrets.KUBE_CLUSTER }}
           namespace: ${{ secrets.KUBE_NAMESPACE }}
@@ -80,8 +79,6 @@ jobs:
           projects=$(
             kubectl get deployments -o jsonpath='{.items[*].metadata.name}' | xargs -n1 \
             | grep -v delius-database \
-            | grep -v domain-events-and-delius \
-            | grep -v offender-events-and-delius \
             | grep -v opensearch-proxy \
             | jq --raw-input . | jq --slurp --compact-output .
           )
@@ -110,7 +107,6 @@ jobs:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
       - uses: ./.github/actions/cloud-platform-auth
         with:
-          api: ${{ secrets.KUBE_ENV_API }}
           cert: ${{ secrets.KUBE_CERT }}
           cluster: ${{ secrets.KUBE_CLUSTER }}
           namespace: ${{ secrets.KUBE_NAMESPACE }}
@@ -130,13 +126,15 @@ jobs:
     strategy:
       matrix:
         project: ${{ fromJson(needs.get-projects.outputs.projects) }}
+        exclude:
+          - project: domain-events-and-delius
+          - project: offender-events-and-delius
     permissions:
       contents: read
     steps:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
       - uses: ./.github/actions/cloud-platform-auth
         with:
-          api: ${{ secrets.KUBE_ENV_API }}
           cert: ${{ secrets.KUBE_CERT }}
           cluster: ${{ secrets.KUBE_CLUSTER }}
           namespace: ${{ secrets.KUBE_NAMESPACE }}
@@ -166,7 +164,10 @@ jobs:
     needs: get-projects
     strategy:
       matrix:
-        project: ${{ fromJSON(needs.get-projects.outputs.read_write_projects) }}
+        project: ${{ fromJSON(needs.get-projects.outputs.projects) }}
+        exclude:
+          - project: domain-events-and-delius
+          - project: offender-events-and-delius
     permissions:
       contents: read
     steps:
@@ -174,14 +175,13 @@ jobs:
 
       - uses: ./.github/actions/cloud-platform-auth
         with:
-          api: ${{ secrets.KUBE_ENV_API }}
           cert: ${{ secrets.KUBE_CERT }}
           cluster: ${{ secrets.KUBE_CLUSTER }}
           namespace: ${{ secrets.KUBE_NAMESPACE }}
           token: ${{ secrets.KUBE_TOKEN }}
 
       - name: Block updates
-        if: inputs.action == 'enable'
+        if: inputs.action == 'enable' && contains(fromJSON(needs.get-projects.outputs.read_write_projects), matrix.project)
         run: | # Patching ingresses intermittently fails on MOJ Cloud Platform, so we retry this step
           for i in {1..10}; do
             echo "Attempt ${i}/10..."
@@ -207,7 +207,7 @@ jobs:
           | kubectl apply -f -
 
       - name: Unblock updates
-        if: inputs.action == 'disable'
+        if: inputs.action == 'disable' && contains(fromJSON(needs.get-projects.outputs.read_write_projects), matrix.project)
         run: | # Patching ingresses intermittently fails on MOJ Cloud Platform, so we retry this step
           for i in {1..10}; do
             echo "Attempt ${i}/10..."
@@ -233,7 +233,6 @@ jobs:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
       - uses: ./.github/actions/cloud-platform-auth
         with:
-          api: ${{ secrets.KUBE_ENV_API }}
           cert: ${{ secrets.KUBE_CERT }}
           cluster: ${{ secrets.KUBE_CLUSTER }}
           namespace: ${{ secrets.KUBE_NAMESPACE }}
@@ -302,9 +301,10 @@ jobs:
           - topic-pi-manage-people-on-probation
           - topic-pi-manage-my-community-sentence
           - topic-hmpps-external-api-and-delius
+          - topic-pi-esupervision
     steps:
       - name: Send message to Slack
-        uses: slackapi/slack-github-action@45a88b9581bfab2566dc881e2cd66d334e621e2c # v3.0.3
+        uses: slackapi/slack-github-action@0d95c9a7becc1e6e297d76df9bc735c44f4cbcbc # v3.0.5
         if: ${{ !contains(needs.*.result, 'failure') }}
         with:
           method: chat.postMessage
@@ -334,7 +334,7 @@ jobs:
             }
 
       - name: Send failure message to Slack
-        uses: slackapi/slack-github-action@45a88b9581bfab2566dc881e2cd66d334e621e2c # v3.0.3
+        uses: slackapi/slack-github-action@0d95c9a7becc1e6e297d76df9bc735c44f4cbcbc # v3.0.5
         if: ${{ contains(needs.*.result, 'failure') && matrix.channel == 'probation-integration-notifications' }}
         with:
           method: chat.postMessage

@@ -5,7 +5,8 @@
   "occurredAt": "2026-04-02T09:30:00+01:00",
   "additionalInformation": {
     "eventNumber": "2",
-    "setupId": "d9e1f2a3-b4c5-6789-0abc-def123456789"
+    "setupId": "d9e1f2a3-b4c5-6789-0abc-def123456789",
+    "outcomeCode": "ESPRD"
   },
   "personReference": {
     "identifiers": [

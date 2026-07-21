@@ -7,7 +7,6 @@ import uk.gov.justice.digital.hmpps.datetime.DeliusDateTimeFormatter
 import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException
 import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException.Companion.orIgnore
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
-import uk.gov.justice.digital.hmpps.flags.FeatureFlags
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.Contact
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.ContactTypeCode
@@ -20,15 +19,16 @@ import uk.gov.justice.digital.hmpps.integrations.delius.person.Person
 import uk.gov.justice.digital.hmpps.integrations.delius.person.PersonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceData
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceDataRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.getByCodeAndSetName
 import uk.gov.justice.digital.hmpps.integrations.delius.staff.StaffRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.staff.getByCode
 import uk.gov.justice.digital.hmpps.integrations.delius.team.TeamRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.team.getByCode
-import uk.gov.justice.digital.hmpps.integrations.tier.TierCalculation
+import uk.gov.justice.digital.hmpps.integrations.tier.TierCalculationV2
+import uk.gov.justice.digital.hmpps.integrations.tier.TierCalculationV3
 import java.time.ZonedDateTime
 
 @Service
+@Transactional
 class TierUpdateService(
     private val personRepository: PersonRepository,
     private val referenceDataRepository: ReferenceDataRepository,
@@ -38,29 +38,42 @@ class TierUpdateService(
     private val teamRepository: TeamRepository,
     private val contactTypeRepository: ContactTypeRepository,
     private val optimisationTables: OptimisationTables,
-    private val featureFlags: FeatureFlags,
 ) {
-    @Transactional
-    fun updateTier(crn: String, tierCalculation: TierCalculation) {
+    fun updateTier(crn: String, tierCalculation: TierCalculationV2) {
         val person = personRepository.findByCrnAndSoftDeletedIsFalse(crn).orIgnore { "PersonNotFound" }
+        val tier = referenceDataRepository.getV2Tier(tierCalculation.tierScore)
+        updateTier(person, tier, tierCalculation.calculationDate)
+    }
+
+    fun updateTier(crn: String, tierCalculation: TierCalculationV3) {
+        val person = personRepository.findByCrnAndSoftDeletedIsFalse(crn).orIgnore { "PersonNotFound" }
+        val tier = referenceDataRepository.getV3Tier(tierCalculation.tierScore, tierCalculation.provisional)
+        updateTier(person, tier, tierCalculation.calculationDate)
+    }
+
+    fun updateTier(person: Person, tier: ReferenceData, calculationDate: ZonedDateTime) {
         optimisationTables.rebuild(person.id)
-        val tierCodePrefix = if (featureFlags.enabled("tier-to-delius-v3")) "SP" else "U"
-        val tier = referenceDataRepository.getByCodeAndSetName("$tierCodePrefix${tierCalculation.tierScore}", "TIER")
         val changeReason = referenceDataRepository.getByCodeAndSetName("ATS", "TIER CHANGE REASON")
         val latestTier = managementTierRepository.findByIdPersonIdAndEndDateIsNull(person.id)
 
         if (person.currentTier == tier.id) throw IgnorableMessageException("UnchangedTierIgnored")
-        if (latestTier != null && !latestTier.id.dateChanged.isBefore(tierCalculation.calculationDate)) {
+        if (latestTier != null && !latestTier.id.dateChanged.isBefore(calculationDate)) {
             throw IgnorableMessageException("OutOfOrderMessageIgnored")
         }
 
         latestTier?.also {
-            it.endDate = tierCalculation.calculationDate
+            it.endDate = calculationDate
             managementTierRepository.saveAndFlush(it)
         }
-        createTier(person, tier, tierCalculation.calculationDate, changeReason)
-        createContact(person, tier, tierCalculation.calculationDate, changeReason)
+        createTier(person, tier, calculationDate, changeReason)
+        createContact(person, tier, calculationDate, changeReason)
         updatePerson(person, tier)
+    }
+
+    fun updateV3TierColumn(crn: String, tierCalculation: TierCalculationV3) {
+        if (!personRepository.existsByCrnAndSoftDeletedIsFalse(crn)) throw IgnorableMessageException("PersonNotFound")
+        val tier = referenceDataRepository.getV3Tier(tierCalculation.tierScore, tierCalculation.provisional)
+        personRepository.updateV3TierColumn(crn, tier.id)
     }
 
     private fun createTier(
@@ -98,9 +111,9 @@ class TierUpdateService(
                 person = person,
                 startTime = calculationDate,
                 notes = """
-                        Tier Change Date: $formattedDate
-                        Tier: ${tier.description}
-                        Tier Change Reason: ${changeReason.description}
+                    Tier Change Date: $formattedDate
+                    Tier: ${tier.description}
+                    Tier Change Reason: ${changeReason.description}
                 """.trimIndent(),
                 staffId = staffRepository.getByCode("${areaCode}UTSO").id,
                 teamId = teamRepository.getByCode("${areaCode}UTS").id,

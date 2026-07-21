@@ -15,7 +15,6 @@ import java.time.LocalDate
 import java.time.ZonedDateTime
 
 @Entity
-@Table(name = "enforcement")
 @EntityListeners(AuditingEntityListener::class)
 class Enforcement(
     @Id
@@ -23,6 +22,10 @@ class Enforcement(
     @GeneratedId(generator = "enforcement_id_seq")
     @Column(name = "enforcement_id")
     val id: Long = 0,
+
+    @Version
+    @Column(name = "row_version")
+    val version: Long = 0,
 
     @ManyToOne
     @JoinColumn(name = "contact_id")

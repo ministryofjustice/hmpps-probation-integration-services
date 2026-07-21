@@ -191,34 +191,34 @@ object ContactGenerator {
         OTHER_CT,
         ZonedDateTime.of(LocalDateTime.now(EuropeLondon).plusHours(1), EuropeLondon),
     )
-    val NON_APPT_CONTACT_WITH_RAR_REQ =
-        Contact(
-            id = IdGenerator.getAndIncrement(),
-            person = OVERVIEW,
-            type = OTHER_CT,
-            date = LocalDate.now(),
-            startTime = ZonedDateTime.now(),
-            rarActivity = true,
-            attended = true,
-            sensitive = false,
-            complied = true,
-            requirement = generateRequirement(
-                disposal = PersonGenerator.CUSTODY_DISPOSAL,
-                subCategory = null,
-                terminationDetails = null,
-                mainCategory = RequirementMainCategory(
-                    id = IdGenerator.getAndIncrement(),
-                    code = "F",
-                    description = "F code"
-                )
-            ),
-            notes = "Notes",
-        )
+    val NON_APPT_CONTACT_WITH_RAR_REQ = Contact(
+        id = IdGenerator.getAndIncrement(),
+        person = OVERVIEW,
+        type = OTHER_CT,
+        date = LocalDate.now(),
+        startTime = ZonedDateTime.now(),
+        rarActivity = true,
+        attended = true,
+        sensitive = false,
+        complied = true,
+        requirement = generateRequirement(
+            disposal = PersonGenerator.CUSTODY_DISPOSAL,
+            subCategory = null,
+            terminationDetails = null,
+            mainCategory = RequirementMainCategory(
+                id = IdGenerator.getAndIncrement(),
+                code = "F",
+                description = "F code"
+            )
+        ),
+        notes = "Notes",
+    )
     val FIRST_APPT_CONTACT = generateContact(
         OVERVIEW,
         APPT_CT_2,
         ZonedDateTime.of(LocalDateTime.now(EuropeLondon).plusHours(2), EuropeLondon),
     )
+
     val NEXT_APPT_CONTACT = generateContact(
         OVERVIEW,
         APPT_CT_3,
@@ -271,8 +271,14 @@ object ContactGenerator {
         generateEnforcementAction("EA02", "First Warning Letter Sent", BREACH_CONTACT_TYPE)
 
     val ENFORCEMENT = generateEnforcement(ENFORCEMENT_CONTACT_1, ZonedDateTime.now(EuropeLondon).plusDays(7))
-    val DUE_SOON_ENFORCEMENT = generateEnforcement(ENFORCEMENT_CONTACT_2, ZonedDateTime.now(EuropeLondon).plusDays(1))
-    val OVERDUE_ENFORCEMENT = generateEnforcement(ENFORCEMENT_CONTACT_3, ZonedDateTime.now(EuropeLondon).minusDays(1))
+    val DUE_SOON_ENFORCEMENT = generateEnforcement(
+        ENFORCEMENT_CONTACT_2,
+        ZonedDateTime.now(EuropeLondon).plusDays(1)
+    )
+    val OVERDUE_ENFORCEMENT = generateEnforcement(
+        ENFORCEMENT_CONTACT_3,
+        ZonedDateTime.now(EuropeLondon).minusDays(1)
+    )
     val ENFORCEMENT_APPOINTMENT_CONTACT = generateContact(
         PersonGenerator.ENFORCEMENT_APPOINTMENT_PERSON,
         APPT_CT_1,
@@ -332,27 +338,25 @@ object ContactGenerator {
         workInProgress = true
     )
 
-    val UPDATABLE_CONTACT =
-        generateContact(
-            person = PersonGenerator.UPDATE_PERSON,
-            contactType = ContactGenerator.EMAIL_POP_CT,
-            startDateTime = ZonedDateTime.of(LocalDate.now().atTime(10, 0), EuropeLondon),
-            notes = "Original notes",
-            staff = DEFAULT_STAFF,
-            team = DEFAULT_TEAM,
-            event = PersonGenerator.UPDATE_CONTACT_EVENT
-        )
+    val UPDATABLE_CONTACT = generateContact(
+        person = PersonGenerator.UPDATE_PERSON,
+        contactType = ContactGenerator.EMAIL_POP_CT,
+        startDateTime = ZonedDateTime.of(LocalDate.now().atTime(10, 0), EuropeLondon),
+        notes = "Original notes",
+        staff = DEFAULT_STAFF,
+        team = DEFAULT_TEAM,
+        event = PersonGenerator.UPDATE_CONTACT_EVENT
+    )
 
     // Uses APPT_CT_1 (code "C089") which is NOT in CreateContact.Type — invalid for update
-    val NON_UPDATABLE_CONTACT =
-        generateContact(
-            person = PersonGenerator.UPDATE_PERSON,
-            contactType = ContactGenerator.APPT_CT_1,
-            startDateTime = ZonedDateTime.of(LocalDate.now().atTime(11, 0), EuropeLondon),
-            staff = DEFAULT_STAFF,
-            team = DEFAULT_TEAM,
-            event = PersonGenerator.UPDATE_CONTACT_EVENT
-        )
+    val NON_UPDATABLE_CONTACT = generateContact(
+        person = PersonGenerator.UPDATE_PERSON,
+        contactType = ContactGenerator.APPT_CT_1,
+        startDateTime = ZonedDateTime.of(LocalDate.now().atTime(11, 0), EuropeLondon),
+        staff = DEFAULT_STAFF,
+        team = DEFAULT_TEAM,
+        event = PersonGenerator.UPDATE_CONTACT_EVENT
+    )
 
     fun generateContactDocument(
         personId: Long,
