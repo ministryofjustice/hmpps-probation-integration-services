@@ -12,6 +12,7 @@ import org.springframework.test.web.servlet.get
 import uk.gov.justice.digital.hmpps.data.generator.DocumentGenerator
 import uk.gov.justice.digital.hmpps.data.generator.EventGenerator
 import uk.gov.justice.digital.hmpps.data.generator.RequirementGenerator.DEFAULT_REQUIREMENT
+import uk.gov.justice.digital.hmpps.data.generator.RequirementGenerator.INACTIVE_REQUIREMENT
 import uk.gov.justice.digital.hmpps.data.generator.RequirementGenerator.REQUIREMENT_MINIMAL_FIELDS
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 import java.time.LocalDate
@@ -63,6 +64,16 @@ class OffenceDetailsIntegrationTest @Autowired constructor(
                 {
                   "id": ${REQUIREMENT_MINIMAL_FIELDS.id},
                   "startDate": "${requirementStartDate}"
+                },
+                {
+                  "id": ${INACTIVE_REQUIREMENT.id},
+                  "startDate": "${requirementStartDate}",
+                  "mainCategory": "Inactive",
+                  "length": 2,
+                  "lengthUnit": "Months",
+                  "subCategory": "Probation2",
+                  "secondaryLength": 1,
+                  "secondaryLengthUnit": "Days"
                 }
               ],
               "sentence": {
