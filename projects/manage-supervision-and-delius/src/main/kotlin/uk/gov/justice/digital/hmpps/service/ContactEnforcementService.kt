@@ -21,6 +21,7 @@ class ContactEnforcementService(
     companion object {
         private val log = ContactEnforcementService.logger()
     }
+
     fun updateEnforcementActionForContact(contact: Contact, enforcementActionCode: String): EnforcementAction {
         val contactOutcome = contact.outcome.orNotFoundBy("contactId", contact.id)
         val enforcementAction = requireNotNull(

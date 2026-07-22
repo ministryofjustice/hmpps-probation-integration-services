@@ -93,7 +93,8 @@ class ContactOutcomesIntegrationTest : IntegrationTestBase() {
             equalTo(UpdateContactOutcomeGenerator.ENFORCEMENT_ACTION_NULL_RESPONSE.responseByPeriod)
         )
 
-        val compliantOutcome = response.outcomes.first { it.code == UpdateContactOutcomeGenerator.COMPLIANT_OUTCOME.code }
+        val compliantOutcome =
+            response.outcomes.first { it.code == UpdateContactOutcomeGenerator.COMPLIANT_OUTCOME.code }
         assertThat(compliantOutcome.code, equalTo(UpdateContactOutcomeGenerator.COMPLIANT_OUTCOME.code))
         assertThat(compliantOutcome.enforcementActions, hasSize(0))
     }
