@@ -11,8 +11,8 @@ import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
 import uk.gov.justice.digital.hmpps.advice.ErrorResponse
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
-import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator
 import uk.gov.justice.digital.hmpps.data.generator.UPWGenerator
+import uk.gov.justice.digital.hmpps.data.generator.UPWGenerator.DEFAULT_ENFORCEMENT
 import uk.gov.justice.digital.hmpps.data.generator.UPWGenerator.UPW_APPOINTMENT_NO_ENFORCEMENT
 import uk.gov.justice.digital.hmpps.data.generator.UPWGenerator.UPW_APPOINTMENT_WITHOUT_PICKUP
 import uk.gov.justice.digital.hmpps.data.generator.UPWGenerator.UPW_PROJECT_1
@@ -67,7 +67,7 @@ class GetAppointmentIntegrationTest @Autowired constructor(
         assertThat(response.case.crn).isEqualTo(PersonGenerator.DEFAULT_PERSON.crn)
         assertThat(response.event.number).isEqualTo(1)
         assertThat(response.penaltyHours).isEqualTo("01:05")
-        assertThat(response.enforcementAction!!.respondBy).isEqualTo(response.date.plusDays(ReferenceDataGenerator.ROM_ENFORCEMENT_ACTION.responseByPeriod!!))
+        assertThat(response.enforcementAction!!.respondBy).isEqualTo(DEFAULT_ENFORCEMENT.responseDate)
         assertThat(response.behaviour).isEqualTo(Behaviour.EXCELLENT)
         assertThat(response.pickUpData!!.location!!.description).isEqualTo(UPWGenerator.DEFAULT_UPW_APPOINTMENT.pickUpLocation!!.description)
         assertThat(response.pickUpData!!.location!!.code).isEqualTo(UPWGenerator.DEFAULT_UPW_APPOINTMENT.pickUpLocation!!.code)

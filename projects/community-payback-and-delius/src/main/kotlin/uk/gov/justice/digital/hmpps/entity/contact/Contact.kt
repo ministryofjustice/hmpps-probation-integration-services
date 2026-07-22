@@ -56,6 +56,9 @@ class Contact(
     @JoinColumn(name = "latest_enforcement_action_id")
     val latestEnforcementAction: EnforcementAction? = null,
 
+    @OneToOne(mappedBy = "contact")
+    val enforcement: Enforcement? = null,
+
     @Column(name = "contact_date")
     var date: LocalDate,
 
