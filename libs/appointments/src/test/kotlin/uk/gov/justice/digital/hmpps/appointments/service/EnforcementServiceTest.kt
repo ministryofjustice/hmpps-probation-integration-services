@@ -119,7 +119,7 @@ class EnforcementServiceTest {
     }
 
     @Test
-    fun `soft-deletes enforcement when updating to a compliant outcome`() {
+    fun `hard-deletes enforcement when updating to a compliant outcome`() {
         val event = TestData.event()
         val appointment = TestData.appointment(event = event)
         val enforcement = TestData.enforcement(appointment, ACTION)
@@ -128,7 +128,7 @@ class EnforcementServiceTest {
 
         enforcementService.removeEnforcementAction(appointment)
 
-        assertThat(enforcement.softDeleted).isTrue
+        verify(enforcementRepository).delete(enforcement)
         verify(appointmentRepository).countFailureToComply(event)
     }
 
