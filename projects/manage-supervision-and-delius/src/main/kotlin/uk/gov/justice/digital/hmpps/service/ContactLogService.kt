@@ -90,7 +90,7 @@ class ContactLogService(
                 throw InvalidRequestException("outcome is required when an enforcement action is provided")
             }
 
-            val savedContact = contactRepository.save(
+            val savedContact = contactRepository.saveAndFlush(
                 Contact(
                     date = createContact.date,
                     startTime = createContact.date.atTime(createContact.time).atZone(EuropeLondon),
@@ -122,6 +122,9 @@ class ContactLogService(
                     createContact.enforcementActionCode
                 )
                 setEnforcementFlag(savedContact, appliedAction)
+            } else if (contactOutcome?.outcomeCompliantAcceptable == false) {
+                updateFtcCount(savedContact)
+                setEnforcementFlag(savedContact)
             } else {
                 setEnforcementFlag(savedContact)
             }
@@ -310,6 +313,9 @@ class ContactLogService(
         contactRepository.save(contact)
         val appliedAction = if (contactOutcome != null && request.enforcementActionCode != null) {
             contactEnforcementService.updateEnforcementActionForContact(contact, request.enforcementActionCode)
+        } else if (contactOutcome != null && contact.complied == false) {
+            updateFtcCount(contact)
+            null
         } else null
         setEnforcementFlag(contact, appliedAction ?: contact.latestEnforcementAction)
     }
@@ -351,6 +357,14 @@ class ContactLogService(
             existingEnforcement.action = enforcementAction
             existingEnforcement.responseDate = responseDate
         }
+    }
+
+    private fun updateFtcCount(contact: Contact) {
+        val event = contact.event ?: return
+        contactRepository.flush()
+        val count = contactRepository.countFailureToComply(event)
+        event.ftcCount = count
+        eventRepository.save(event)
     }
 
     private fun createEnforcementContact(contact: Contact, enforcementAction: EnforcementAction) {
