@@ -80,7 +80,7 @@ internal class SingleAccommodationIntegrationTest @Autowired constructor(
     }
 
     @Test
-    fun `can retrieve case list for all of user's teams with limited access flags set`() {
+    fun `can retrieve case list for a specified team with limited access flags set`() {
         val bothTeamsUser = UserGenerator.OTHER
         val team = TeamGenerator.DEFAULT
         val otherTeam = TeamGenerator.OTHER_TEAM
