@@ -857,8 +857,6 @@ template:
         type: date
       requiresOutcome:
         type: keyword
-      supervisionPackage:
-        type: keyword
       attendanceContact:
         type: keyword
       outcomeRequiredFlag:
