@@ -10,7 +10,6 @@ import uk.gov.justice.digital.hmpps.appointments.entity.AppointmentEntities.Type
 import uk.gov.justice.digital.hmpps.appointments.repository.AppointmentRepositories.AppointmentRepository
 import uk.gov.justice.digital.hmpps.appointments.repository.AppointmentRepositories.EnforcementRepository
 import uk.gov.justice.digital.hmpps.appointments.repository.AppointmentRepositories.EventRepository
-import uk.gov.justice.digital.hmpps.logging.Logger.logger
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.ZonedDateTime
