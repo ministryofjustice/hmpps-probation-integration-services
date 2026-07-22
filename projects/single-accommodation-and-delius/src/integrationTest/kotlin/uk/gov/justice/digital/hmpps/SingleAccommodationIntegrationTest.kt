@@ -132,7 +132,6 @@ internal class SingleAccommodationIntegrationTest @Autowired constructor(
 
         assertThat(otherCases.size).isEqualTo(1)
         assertThat(otherCases.map { it.team.code }).allMatch { it == otherTeam.code }
-
     }
 
     @Test
