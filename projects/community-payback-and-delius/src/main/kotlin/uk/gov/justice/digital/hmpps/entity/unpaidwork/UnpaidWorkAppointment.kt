@@ -109,11 +109,16 @@ import java.util.*
                 NamedAttributeNode(value = "outcome"),
                 NamedAttributeNode(value = "event"),
                 NamedAttributeNode(value = "latestEnforcementAction", subgraph = "enforcementAction"),
+                NamedAttributeNode(value = "enforcement", subgraph = "enforcement"),
             ]
         ),
         NamedSubgraph(
             name = "enforcementAction",
             attributeNodes = [NamedAttributeNode(value = "contactType")]
+        ),
+        NamedSubgraph(
+            name = "enforcement",
+            attributeNodes = [NamedAttributeNode(value = "action")]
         ),
         NamedSubgraph(
             name = "staff",
