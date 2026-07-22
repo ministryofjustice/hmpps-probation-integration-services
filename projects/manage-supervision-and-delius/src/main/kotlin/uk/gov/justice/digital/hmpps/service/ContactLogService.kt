@@ -360,11 +360,11 @@ class ContactLogService(
     }
 
     private fun updateFtcCount(contact: Contact) {
+        val event = contact.event ?: return
         contactRepository.flush()
-        contactRepository.countFailureToComply(contact.event!!, contact.event.id).let { count ->
-            contact.event.ftcCount = count
-            eventRepository.saveAndFlush(contact.event)
-        }
+        val count = contactRepository.countFailureToComply(event)
+        event.ftcCount = count
+        eventRepository.saveAndFlush(event)
     }
 
     private fun createEnforcementContact(contact: Contact, enforcementAction: EnforcementAction) {
