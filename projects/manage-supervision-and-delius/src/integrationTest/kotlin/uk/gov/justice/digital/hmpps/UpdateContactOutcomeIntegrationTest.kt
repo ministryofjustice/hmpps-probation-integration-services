@@ -401,6 +401,67 @@ class UpdateContactOutcomeIntegrationTest : IntegrationTestBase() {
     }
 
     @Test
+    fun `ftc count is incremented when non-compliant outcome is set without enforcement action`() {
+        val ftcBefore = transactionTemplate.execute {
+            entityManager.clear()
+            eventRepository.findById(UpdateContactOutcomeGenerator.EVENT.id).get().ftcCount ?: 0L
+        }
+
+        mockMvc.put("/contact/${UpdateContactOutcomeGenerator.CONTACT_15.id}") {
+            withToken()
+            json = UpdateContactOutcome(
+                date = LocalDate.now().plusDays(5),
+                time = LocalTime.of(10, 0),
+                outcomeCode = UpdateContactOutcomeGenerator.OUTCOME.code,
+                enforcementActionCode = null,
+                notes = "Non-compliant without enforcement action",
+                alert = false,
+                sensitive = false
+            )
+        }.andExpect { status { isOk() } }
+
+        val ftcAfter = transactionTemplate.execute {
+            entityManager.clear()
+            eventRepository.findById(UpdateContactOutcomeGenerator.EVENT.id).get().ftcCount ?: 0L
+        }
+        assertThat(ftcAfter, Matchers.greaterThan(ftcBefore))
+
+        val updated = contactRepository.findById(UpdateContactOutcomeGenerator.CONTACT_15.id).get()
+        assertThat(updated.complied, equalTo(false))
+        assertThat(updated.outcome?.code, equalTo(UpdateContactOutcomeGenerator.OUTCOME.code))
+    }
+
+    @Test
+    fun `ftc count is not incremented when compliant outcome is set without enforcement action`() {
+        val ftcBefore = transactionTemplate.execute {
+            entityManager.clear()
+            eventRepository.findById(UpdateContactOutcomeGenerator.EVENT.id).get().ftcCount ?: 0L
+        }
+
+        mockMvc.put("/contact/${UpdateContactOutcomeGenerator.CONTACT_16.id}") {
+            withToken()
+            json = UpdateContactOutcome(
+                date = LocalDate.now().plusDays(6),
+                time = LocalTime.of(10, 0),
+                outcomeCode = UpdateContactOutcomeGenerator.COMPLIANT_OUTCOME.code,
+                enforcementActionCode = null,
+                notes = "Compliant outcome - no FTC increment",
+                alert = false,
+                sensitive = false
+            )
+        }.andExpect { status { isOk() } }
+
+        val ftcAfter = transactionTemplate.execute {
+            entityManager.clear()
+            eventRepository.findById(UpdateContactOutcomeGenerator.EVENT.id).get().ftcCount ?: 0L
+        }
+        assertThat(ftcAfter, equalTo(ftcBefore))
+
+        val updated = contactRepository.findById(UpdateContactOutcomeGenerator.CONTACT_16.id).get()
+        assertThat(updated.complied, equalTo(true))
+    }
+
+    @Test
     fun `null outcome code on contact with existing outcome returns bad request`() {
         mockMvc.put("/contact/${UpdateContactOutcomeGenerator.CONTACT_9.id}") {
             withToken()

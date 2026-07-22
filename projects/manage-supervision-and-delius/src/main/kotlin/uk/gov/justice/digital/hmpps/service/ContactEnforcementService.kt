@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.exception.NotFoundException.Companion.orNotFoundBy
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.*
@@ -11,6 +12,7 @@ import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 
 @Service
+@Transactional
 class ContactEnforcementService(
     private val contactRepository: ContactRepository,
     private val contactTypeRepository: ContactTypeRepository,
@@ -65,6 +67,7 @@ class ContactEnforcementService(
             )
         })
         contact.event?.run {
+            contactRepository.flush()
             ftcCount = contactRepository.countFailureToComply(this)
             val ftcLimit = disposal?.type?.ftcLimit ?: return@run
             if (ftcCount > ftcLimit && !contactRepository.enforcementReviewExists(

@@ -22,7 +22,6 @@ internal class EnforcementService(
     private val appointmentRepository: AppointmentRepository,
     private val eventRepository: EventRepository,
 ) {
-
     fun applyEnforcementAction(appointment: AppointmentContact, action: EnforcementAction?, reviewType: Type) {
         appointment.applyEnforcementAction(action)
         appointment.updateFailureToComplyCount()
@@ -40,7 +39,7 @@ internal class EnforcementService(
 
         val existingEnforcement = id?.let { enforcementRepository.findByContactId(id) }
         if (action == null) {
-            existingEnforcement?.apply { softDeleted = true }
+            existingEnforcement?.let { enforcementRepository.delete(it) }
         } else if (existingEnforcement?.action?.id != action.id) {
             enforcementRepository.save(existingEnforcement?.apply {
                 this.action = action
@@ -63,7 +62,7 @@ internal class EnforcementService(
 
     private fun AppointmentContact.updateFailureToComplyCount() {
         val event = event() ?: return
-        appointmentRepository.save(this)
+        appointmentRepository.saveAndFlush(this)
         event.ftcCount = appointmentRepository.countFailureToComply(event)
     }
 
