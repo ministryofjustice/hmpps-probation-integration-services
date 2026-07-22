@@ -59,38 +59,43 @@ class ContactOutcomesIntegrationTest : IntegrationTestBase() {
         }.andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<ContactOutcomes>()
 
-        assertThat(response.outcomes, hasSize(1))
-        assertThat(response.outcomes[0].code, equalTo(UpdateContactOutcomeGenerator.OUTCOME.code))
-        assertThat(response.outcomes[0].description, equalTo(UpdateContactOutcomeGenerator.OUTCOME.description))
-        assertThat(response.outcomes[0].enforcementActions, hasSize(3))
+        assertThat(response.outcomes, hasSize(2))
+        val nonCompliantOutcome = response.outcomes.first { it.code == UpdateContactOutcomeGenerator.OUTCOME.code }
+        assertThat(nonCompliantOutcome.code, equalTo(UpdateContactOutcomeGenerator.OUTCOME.code))
+        assertThat(nonCompliantOutcome.description, equalTo(UpdateContactOutcomeGenerator.OUTCOME.description))
+        assertThat(nonCompliantOutcome.enforcementActions, hasSize(3))
         assertThat(
-            response.outcomes[0].enforcementActions[0].code,
+            nonCompliantOutcome.enforcementActions[0].code,
             equalTo(UpdateContactOutcomeGenerator.ENFORCEMENT_ACTION.code)
         )
         assertThat(
-            response.outcomes[0].enforcementActions[0].description,
+            nonCompliantOutcome.enforcementActions[0].description,
             equalTo(UpdateContactOutcomeGenerator.ENFORCEMENT_ACTION.description)
         )
         assertThat(
-            response.outcomes[0].enforcementActions[0].defaultResponsePeriodDays,
+            nonCompliantOutcome.enforcementActions[0].defaultResponsePeriodDays,
             equalTo(UpdateContactOutcomeGenerator.ENFORCEMENT_ACTION.responseByPeriod)
         )
         assertThat(
-            response.outcomes[0].enforcementActions[1].code,
+            nonCompliantOutcome.enforcementActions[1].code,
             equalTo(UpdateContactOutcomeGenerator.ENFORCEMENT_ACTION_2.code)
         )
         assertThat(
-            response.outcomes[0].enforcementActions[1].description,
+            nonCompliantOutcome.enforcementActions[1].description,
             equalTo(UpdateContactOutcomeGenerator.ENFORCEMENT_ACTION_2.description)
         )
         assertThat(
-            response.outcomes[0].enforcementActions[2].code,
+            nonCompliantOutcome.enforcementActions[2].code,
             equalTo(UpdateContactOutcomeGenerator.ENFORCEMENT_ACTION_NULL_RESPONSE.code)
         )
         assertThat(
-            response.outcomes[0].enforcementActions[2].defaultResponsePeriodDays,
+            nonCompliantOutcome.enforcementActions[2].defaultResponsePeriodDays,
             equalTo(UpdateContactOutcomeGenerator.ENFORCEMENT_ACTION_NULL_RESPONSE.responseByPeriod)
         )
+
+        val compliantOutcome = response.outcomes.first { it.code == UpdateContactOutcomeGenerator.COMPLIANT_OUTCOME.code }
+        assertThat(compliantOutcome.code, equalTo(UpdateContactOutcomeGenerator.COMPLIANT_OUTCOME.code))
+        assertThat(compliantOutcome.enforcementActions, hasSize(0))
     }
 }
 

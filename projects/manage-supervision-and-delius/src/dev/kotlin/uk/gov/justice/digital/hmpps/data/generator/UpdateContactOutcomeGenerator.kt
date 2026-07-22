@@ -523,4 +523,30 @@ object UpdateContactOutcomeGenerator {
         contact = CONTACT_14,
         action = ENFORCEMENT_ACTION
     )
+
+    // Compliant outcome for CONTACT_TYPE — used to verify FTC count is NOT incremented
+    val COMPLIANT_OUTCOME = ContactGenerator.generateOutcome("UCOCMP", "UCO Compliant", true, true)
+
+    val COMPLIANT_CONTACT_TYPE_OUTCOME =
+        generateContactTypeOutcome(CONTACT_TYPE.id, COMPLIANT_OUTCOME.id, CONTACT_TYPE, COMPLIANT_OUTCOME)
+
+    // Contact for testing FTC increment on non-compliant outcome WITHOUT enforcement action
+    val CONTACT_15 = ContactGenerator.generateContact(
+        PERSON,
+        CONTACT_TYPE,
+        ZonedDateTime.of(LocalDateTime.now(EuropeLondon).plusHours(17), EuropeLondon),
+        team = TEAM,
+        staff = STAFF,
+        event = EVENT
+    )
+
+    // Contact for testing that compliant outcome does NOT increment FTC
+    val CONTACT_16 = ContactGenerator.generateContact(
+        PERSON,
+        CONTACT_TYPE,
+        ZonedDateTime.of(LocalDateTime.now(EuropeLondon).plusHours(18), EuropeLondon),
+        team = TEAM,
+        staff = STAFF,
+        event = EVENT
+    )
 }
