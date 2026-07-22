@@ -779,6 +779,13 @@ interface ContactRepository : JpaRepository<Contact, Long> {
             and rct.attendance_contact = 'Y'  
             and rct.contact_outcome_flag = 'Y' 
             and c.contact_outcome_type_id is null 
+            and exists (
+                select 1
+                from r_contact_type_outcome cto
+                join r_contact_outcome_type cot on cot.contact_outcome_type_id = cto.contact_outcome_type_id
+                where cto.contact_type_id = c.contact_type_id
+                and cot.selectable = 'Y'
+            )
             and (to_char(c.contact_date,'YYYY-MM-DD') < :dateNow or (to_char(c.contact_date,'YYYY-MM-DD') = :dateNow
             and to_char(c.contact_start_time,'HH24:MI') < :timeNow)) 
         """,
@@ -795,6 +802,13 @@ interface ContactRepository : JpaRepository<Contact, Long> {
             and rct.attendance_contact = 'Y' 
             and rct.contact_outcome_flag = 'Y'
             and c.contact_outcome_type_id is null
+            and exists (
+                select 1
+                from r_contact_type_outcome cto
+                join r_contact_outcome_type cot on cot.contact_outcome_type_id = cto.contact_outcome_type_id
+                where cto.contact_type_id = c.contact_type_id
+                and cot.selectable = 'Y'
+            )
             and (to_char(c.contact_date,'YYYY-MM-DD') < :dateNow  or (to_char(c.contact_date,'YYYY-MM-DD') = :dateNow
             and to_char(c.contact_start_time,'HH24:MI') < :timeNow)) 
         """
@@ -830,6 +844,13 @@ interface ContactRepository : JpaRepository<Contact, Long> {
                and rct.attendance_contact = 'Y'
                and rct.contact_outcome_flag = 'Y'
                and c.contact_outcome_type_id is null
+               and exists (
+                   select 1
+                   from r_contact_type_outcome cto
+                   join r_contact_outcome_type cot on cot.contact_outcome_type_id = cto.contact_outcome_type_id
+                   where cto.contact_type_id = c.contact_type_id
+                     and cot.selectable = 'Y'
+               )
                and c.soft_deleted = 0
                and (to_char(c.contact_date, 'YYYY-MM-DD') < :dateNow or
                     (to_char(c.contact_date, 'YYYY-MM-DD') = :dateNow and
@@ -865,6 +886,13 @@ interface ContactRepository : JpaRepository<Contact, Long> {
         and rct.attendance_contact = 'Y'  
         and rct.contact_outcome_flag = 'Y'
         and c.contact_outcome_type_id is null 
+        and exists (
+            select 1
+            from r_contact_type_outcome cto
+            join r_contact_outcome_type cot on cot.contact_outcome_type_id = cto.contact_outcome_type_id
+            where cto.contact_type_id = c.contact_type_id
+              and cot.selectable = 'Y'
+        )
         and c.soft_deleted = 0
         and (to_char(c.contact_date,'YYYY-MM-DD') < :dateNow
         or (to_char(c.contact_date,'YYYY-MM-DD') = :dateNow and to_char(c.contact_start_time,'HH24:MI') < :timeNow))              

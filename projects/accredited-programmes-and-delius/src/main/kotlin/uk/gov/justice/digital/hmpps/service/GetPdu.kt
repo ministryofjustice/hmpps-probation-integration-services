@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.stereotype.Service
+import uk.gov.justice.digital.hmpps.exception.NotFoundException.Companion.orNotFoundBy
 import uk.gov.justice.digital.hmpps.model.CodedValue
 import uk.gov.justice.digital.hmpps.model.PduOfficeLocations
 import uk.gov.justice.digital.hmpps.repository.OfficeLocationRepository
@@ -13,7 +14,7 @@ class GetPdu(
 ) {
 
     fun pduOfficeLocations(code: String): PduOfficeLocations {
-        val pdu = pduRepository.getByCodeAndSelectableTrue(code)!!
+        val pdu = pduRepository.getByCodeAndSelectableTrue(code).orNotFoundBy("code", code)
         return PduOfficeLocations(
             pdu.code, pdu.description,
             officeLocationRepository.findByPduCode(code)

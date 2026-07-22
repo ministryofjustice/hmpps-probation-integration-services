@@ -5,9 +5,13 @@ import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.NumericBooleanConverter
 import org.hibernate.type.YesNoConverter
+import org.springframework.data.annotation.LastModifiedBy
+import org.springframework.data.annotation.LastModifiedDate
+import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.reference.ReferenceData
 import uk.gov.justice.digital.hmpps.integrations.delius.person.Person
 import java.time.LocalDate
+import java.time.ZonedDateTime
 
 @Immutable
 @Entity
@@ -41,8 +45,8 @@ class Event(
     val softDeleted: Boolean = false
 )
 
-@Immutable
 @Entity
+@EntityListeners(AuditingEntityListener::class)
 class Disposal(
     @Id
     @Column(name = "disposal_id")
@@ -62,7 +66,23 @@ class Disposal(
 
     @Column(updatable = false, columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)
-    val softDeleted: Boolean = false
+    val softDeleted: Boolean = false,
+
+    @Column(name = "sds_plus")
+    @Convert(converter = YesNoConverter::class)
+    var sdsPlus: Boolean? = null,
+
+    @LastModifiedBy
+    @Column(name = "last_updated_user_id")
+    var lastModifiedUserId: Long = 0,
+
+    @LastModifiedDate
+    @Column(name = "last_updated_datetime")
+    val lastModifiedDate: ZonedDateTime? = ZonedDateTime.now(),
+
+    @Version
+    @Column(name = "row_version")
+    val version: Long = 0
 )
 
 @Entity
@@ -73,6 +93,9 @@ data class DisposalType(
     @Column(name = "disposal_type_id")
     val id: Long,
 
+    @Column(name = "sentence_type")
+    val sentenceType: String? = null,
+
     @Column
     val requiredInformation: String,
 
@@ -81,6 +104,7 @@ data class DisposalType(
     val pssRequirement: Boolean? = null,
 ) {
     val determinateSentence: Boolean get() = requiredInformation == "L1"
+    val sdsSentence: Boolean get() = sentenceType == "SC" && requiredInformation == "L1"
 }
 
 @Immutable
