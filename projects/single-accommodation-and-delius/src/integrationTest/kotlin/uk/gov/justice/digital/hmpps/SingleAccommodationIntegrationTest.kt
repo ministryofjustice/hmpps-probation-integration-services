@@ -116,6 +116,17 @@ internal class SingleAccommodationIntegrationTest @Autowired constructor(
     }
 
     @Test
+    fun `invalid team name returns an empty list`() {
+        val user = UserGenerator.DEFAULT
+
+        val response = mockMvc.get("/case-list/${user.username}?teamCode=INVALID") { withToken() }
+            .andExpect { status { is2xxSuccessful() } }
+            .andReturn().response.contentAsJson<CaseListResponse>()
+
+        assertThat(response.cases.size).isEqualTo(0)
+    }
+
+    @Test
     fun `can paginate case list`() {
         val user = UserGenerator.DEFAULT
 
