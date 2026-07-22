@@ -54,7 +54,7 @@ class OffenceService(
     }
 
     fun getRequirements(disposalId: Long): List<Requirement> {
-        return requirementRepository.getByDisposalIdAndActiveTrue(disposalId)
+        return requirementRepository.getByDisposalId(disposalId)
             .map {
                 Requirement(
                     id = it.id,

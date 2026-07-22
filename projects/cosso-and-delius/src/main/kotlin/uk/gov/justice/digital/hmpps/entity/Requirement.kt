@@ -52,5 +52,5 @@ class RequirementType(
 
 interface RequirementRepository : JpaRepository<RequirementEntity, Long> {
     fun findAllByDisposalIdIn(disposalIds: List<Long>): List<RequirementEntity>
-    fun getByDisposalIdAndActiveTrue(disposalId: Long): List<RequirementEntity>
+    fun getByDisposalId(disposalId: Long): List<RequirementEntity>
 }
