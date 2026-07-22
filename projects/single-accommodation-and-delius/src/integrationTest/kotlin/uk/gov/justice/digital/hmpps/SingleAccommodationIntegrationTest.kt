@@ -34,7 +34,7 @@ internal class SingleAccommodationIntegrationTest @Autowired constructor(
         val team = TeamGenerator.DEFAULT
 
         val response =
-            mockMvc.get("/case-list/${user.username}?teamCode=${user.staff!!.teams.first().code}") { withToken() }
+            mockMvc.get("/case-list/${user.username}?teamCode=${team.code}") { withToken() }
                 .andExpect { status { is2xxSuccessful() } }
                 .andReturn().response.contentAsJson<CaseListResponse>()
 
