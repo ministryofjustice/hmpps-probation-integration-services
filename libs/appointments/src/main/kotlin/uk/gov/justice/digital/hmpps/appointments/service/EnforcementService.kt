@@ -40,7 +40,7 @@ internal class EnforcementService(
 
         val existingEnforcement = id?.let { enforcementRepository.findByContactId(id) }
         if (action == null) {
-            existingEnforcement?.apply { softDeleted = true }
+            existingEnforcement?.let { enforcementRepository.delete(it) }
         } else if (existingEnforcement?.action?.id != action.id) {
             enforcementRepository.save(existingEnforcement?.apply {
                 this.action = action
