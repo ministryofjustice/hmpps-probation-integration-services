@@ -34,8 +34,8 @@ internal class SingleAccommodationIntegrationTest @Autowired constructor(
         val team = TeamGenerator.DEFAULT
 
         val response = mockMvc.get("/case-list/${user.username}") { withToken() }
-                .andExpect { status { is2xxSuccessful() } }
-                .andReturn().response.contentAsJson<CaseListResponse>()
+            .andExpect { status { is2xxSuccessful() } }
+            .andReturn().response.contentAsJson<CaseListResponse>()
 
         assertThat(response.cases.size).isEqualTo(4)
         assertThat(response.page.totalElements).isEqualTo(4)
@@ -101,7 +101,6 @@ internal class SingleAccommodationIntegrationTest @Autowired constructor(
         assertThat(otherTeamExcludedCase.userRestricted).isFalse()
         assertThat(otherTeamExcludedCase.limitedAccess).isTrue()
 
-
         val otherTeamRestrictedCase = response.cases.single { it.crn == otherTeamRestrictedPerson.crn }
         assertThat(otherTeamRestrictedCase.userExcluded).isFalse()
         assertThat(otherTeamRestrictedCase.userRestricted).isFalse()
@@ -115,7 +114,6 @@ internal class SingleAccommodationIntegrationTest @Autowired constructor(
         assertThat(otherTeamResponse.cases.size).isEqualTo(1)
         assertThat(otherTeamResponse.cases.map { it.team.code }).allMatch { it == otherTeam.code }
     }
-
 
     @Test
     fun `can paginate case list`() {
