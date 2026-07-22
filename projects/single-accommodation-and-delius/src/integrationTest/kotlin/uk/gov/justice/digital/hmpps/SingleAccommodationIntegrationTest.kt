@@ -27,24 +27,25 @@ internal class SingleAccommodationIntegrationTest @Autowired constructor(
     lateinit var telemetryService: TelemetryService
 
     @Test
-    fun `can retrieve case list for user's team`() {
+    fun `can retrieve case list only with cases allocated to user`() {
         val user = UserGenerator.DEFAULT
         val person = PersonGenerator.DEFAULT
         val staff = StaffGenerator.DEFAULT
         val team = TeamGenerator.DEFAULT
 
         val response =
-            mockMvc.get("/case-list/${user.username}?teamCode=${team.code}") { withToken() }
+            mockMvc.get("/case-list/${user.username}") { withToken() }
                 .andExpect { status { is2xxSuccessful() } }
                 .andReturn().response.contentAsJson<CaseListResponse>()
 
-        assertThat(response.cases.size).isEqualTo(5)
-        assertThat(response.page.totalElements).isEqualTo(5)
+        assertThat(response.cases.size).isEqualTo(4)
+        assertThat(response.page.totalElements).isEqualTo(4)
         assertThat(response.page.totalPages).isEqualTo(1)
         assertThat(response.page.number).isEqualTo(0)
         assertThat(response.page.size).isEqualTo(50)
-        assertThat(response.cases.any { it.crn == PersonGenerator.TEAM.crn && it.staff.code == StaffGenerator.TEAM_STAFF.code }).isTrue()
+        assertThat(response.cases.any { it.crn == PersonGenerator.TEAM.crn && it.staff.code == StaffGenerator.TEAM_STAFF.code }).isFalse()
         assertThat(response.cases.none { it.crn == PersonGenerator.OTHER_TEAM.crn }).isTrue()
+        assertThat(response.cases.all { it.staff.username == user.username }).isTrue()
         val defaultCase = response.cases.first { it.crn == person.crn }
         assertThat(defaultCase).isEqualTo(
             Case(
@@ -112,7 +113,7 @@ internal class SingleAccommodationIntegrationTest @Autowired constructor(
     }
 
     @Test
-    fun `can retrieve case list only for specified team`() {
+    fun `can retrieve case list for a specific user's team`() {
         val user = UserGenerator.OTHER
         val defaultTeam = TeamGenerator.DEFAULT
 
@@ -122,6 +123,7 @@ internal class SingleAccommodationIntegrationTest @Autowired constructor(
 
         assertThat(cases.size).isEqualTo(5)
         assertThat(cases.map { it.team.code }).allMatch { it == defaultTeam.code }
+        assertThat(cases.any { it.crn == PersonGenerator.TEAM.crn && it.staff.code == StaffGenerator.TEAM_STAFF.code }).isTrue()
 
         val otherTeam = TeamGenerator.OTHER_TEAM
         val otherCases = mockMvc.get("/case-list/${user.username}?teamCode=${otherTeam.code}") { withToken() }
@@ -130,6 +132,7 @@ internal class SingleAccommodationIntegrationTest @Autowired constructor(
 
         assertThat(otherCases.size).isEqualTo(1)
         assertThat(otherCases.map { it.team.code }).allMatch { it == otherTeam.code }
+
     }
 
     @Test
