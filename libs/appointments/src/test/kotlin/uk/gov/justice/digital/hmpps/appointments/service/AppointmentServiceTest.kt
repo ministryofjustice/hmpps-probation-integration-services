@@ -504,6 +504,54 @@ class AppointmentServiceTest {
     }
 
     @Test
+    fun `change compliant appointment outcome to non-compliant when changes allowed`() {
+        val existing = TestData.appointment(
+            date = LocalDate.now().minusDays(1),
+            outcome = OUTCOME
+        )
+
+        whenever(appointmentRepository.findByExternalReferenceIn(listOf(existing.externalReference!!)))
+            .thenReturn(listOf(existing))
+        whenever(outcomeRepository.findAllByCodeIn(setOf(FTC_OUTCOME.code))).thenReturn(listOf(FTC_OUTCOME))
+        mockEnforcementReferenceData()
+
+        appointmentService.update(existing) {
+            reference = { existing.externalReference }
+            applyOutcome = { Outcome(outcomeCode = FTC_OUTCOME.code, allowChanges = true) }
+        }
+
+        assertThat(existing.outcome).isEqualTo(FTC_OUTCOME)
+        assertThat(existing.attended).isEqualTo(FTC_OUTCOME.attended)
+        assertThat(existing.complied).isEqualTo(FTC_OUTCOME.complied)
+        verify(enforcementService).applyEnforcementAction(eq(existing), eq(TestData.ACTION), eq(TestData.REVIEW_TYPE))
+        verifyNoInteractions(alertService)
+    }
+
+    @Test
+    fun `change non-compliant appointment outcome to compliant when changes allowed`() {
+        val existing = TestData.appointment(
+            date = LocalDate.now().minusDays(1),
+            outcome = FTC_OUTCOME
+        )
+
+        whenever(appointmentRepository.findByExternalReferenceIn(listOf(existing.externalReference!!)))
+            .thenReturn(listOf(existing))
+        whenever(outcomeRepository.findAllByCodeIn(setOf(OUTCOME.code))).thenReturn(listOf(OUTCOME))
+        mockEnforcementReferenceData()
+
+        appointmentService.update(existing) {
+            reference = { existing.externalReference }
+            applyOutcome = { Outcome(outcomeCode = OUTCOME.code, allowChanges = true) }
+        }
+
+        assertThat(existing.outcome).isEqualTo(OUTCOME)
+        assertThat(existing.attended).isEqualTo(OUTCOME.attended)
+        assertThat(existing.complied).isEqualTo(OUTCOME.complied)
+        verify(enforcementService).removeEnforcementAction(existing)
+        verifyNoInteractions(alertService)
+    }
+
+    @Test
     fun `attempt to apply non-compliant outcome to future appointment`() {
         val existing = TestData.appointment(date = LocalDate.now().plusDays(1))
 
@@ -540,6 +588,33 @@ class AppointmentServiceTest {
         assertThat(existing.outcome?.code).isEqualTo(ACCEPTABLE_ABSENCE_OUTCOME.code)
         assertThat(existing.attended).isFalse
         assertThat(existing.complied).isTrue
+        verify(enforcementService).removeEnforcementAction(existing)
+        verifyNoInteractions(alertService)
+    }
+
+    @Test
+    fun `remove future appointment acceptable absence outcome when changes allowed`() {
+        val existing = TestData.appointment(
+            date = LocalDate.now().plusDays(1),
+            outcome = ACCEPTABLE_ABSENCE_OUTCOME
+        ).apply {
+            attended = ACCEPTABLE_ABSENCE_OUTCOME.attended
+            complied = ACCEPTABLE_ABSENCE_OUTCOME.complied
+        }
+
+        whenever(appointmentRepository.findByExternalReferenceIn(listOf(existing.externalReference!!)))
+            .thenReturn(listOf(existing))
+        whenever(outcomeRepository.findAllByCodeIn(emptySet())).thenReturn(emptyList())
+        mockEnforcementReferenceData()
+
+        appointmentService.update(existing) {
+            reference = { existing.externalReference }
+            applyOutcome = { Outcome(outcomeCode = null, allowChanges = true) }
+        }
+
+        assertThat(existing.outcome).isNull()
+        assertThat(existing.attended).isNull()
+        assertThat(existing.complied).isNull()
         verify(enforcementService).removeEnforcementAction(existing)
         verifyNoInteractions(alertService)
     }
