@@ -280,6 +280,10 @@ fun formatNote(notes: String?, truncateNote: Boolean): List<NoteDetail> {
                 }
             )
         }.filter { it.note != "null" && it.note.isNotEmpty() }
+            .let { notes ->
+                val notesWithHeader = notes.filter { it.createdBy != null }.map { it.note }.toSet()
+                notes.filter { it.createdBy != null || it.note !in notesWithHeader }
+            }
     } ?: listOf()
 }
 
